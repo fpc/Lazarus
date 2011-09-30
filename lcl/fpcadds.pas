@@ -48,6 +48,9 @@ function CompareValue ( const A, B  : Int64) : TValueRelationship; inline;
 {$ENDIF}
 function StrToWord(const s: string): word;
 
+function AlignToPtr(const p: Pointer): Pointer;
+function AlignToInt(const p: Pointer): Pointer;
+
 implementation
 
 function StrToWord(const s: string): word;
@@ -60,6 +63,24 @@ begin
     Result:=Result*10+ord(s[p])-ord('0');
     inc(p);
   end;
+end;
+
+function AlignToPtr(const p: Pointer): Pointer;
+begin
+{$IFDEF FPC_REQUIRES_PROPER_ALIGNMENT}
+  Result := Align(p, SizeOf(Pointer));
+{$ELSE}
+  Result := p;
+{$ENDIF}
+end;
+
+function AlignToInt(const p: Pointer): Pointer;
+begin
+{$IFDEF FPC_REQUIRES_PROPER_ALIGNMENT}
+  Result := Align(p, SizeOf(integer));
+{$ELSE}
+  Result := p;
+{$ENDIF}
 end;
 
 {$IFNDEF FPC_HAS_QWORDCOMPAREVALUE}

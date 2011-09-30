@@ -1689,17 +1689,6 @@ end;
 
 // -----------------------------------------------------------
 
-function AlignToPtr(const p: Pointer): Pointer;
-begin
-{$IFDEF FPC_REQUIRES_PROPER_ALIGNMENT}
-  Result := Align(p, SizeOf(Pointer));
-{$ELSE}
-  Result := p;
-{$ENDIF}
-end;
-
-// -----------------------------------------------------------
-
 procedure WritePublishedProperties(Instance: TPersistent);
 var
   TypeInfo: PTypeInfo;

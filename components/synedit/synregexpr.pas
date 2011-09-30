@@ -119,7 +119,8 @@ interface
 
 uses
  Classes,  // TStrings in Split method
- SysUtils; // Exception
+ SysUtils,
+ FPCAdds; // Exception
 
 type
  {$IFDEF UniCode}
@@ -686,24 +687,6 @@ const
  {$ELSE}
  XIgnoredChars = [' ', #9, #$d, #$a];
  {$ENDIF}
-
- function AlignToPtr(const p: Pointer): Pointer;
- begin
- {$IFDEF FPC_REQUIRES_PROPER_ALIGNMENT}
-   Result := Align(p, SizeOf(Pointer));
- {$ELSE}
-   Result := p;
- {$ENDIF}
- end;
-
- function AlignToInt(const p: Pointer): Pointer;
- begin
- {$IFDEF FPC_REQUIRES_PROPER_ALIGNMENT}
-   Result := Align(p, SizeOf(integer));
- {$ELSE}
-   Result := p;
- {$ENDIF}
- end;
 
 {=============================================================}
 {=================== WideString functions ====================}
