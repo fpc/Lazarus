@@ -4636,7 +4636,8 @@ var
     TypeInfo: PTypeInfo;
     TypeData: PTypeData;
     PropInfo: PPropInfo;
-    CurCount: integer;
+    PropList: PPropList;
+    CurCount,i: integer;
     PropType: PTypeInfo;
     NodeExt: TCodeTreeNodeExtension;
     CurMethod: TMethod;
@@ -4652,60 +4653,58 @@ var
     repeat
       // read all property infos of current class
       TypeData:=GetTypeData(TypeInfo);
-      // skip unit name
-      PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
       // read property count
-      CurCount:=PWord(PropInfo)^;
-      inc(PtrUInt(PropInfo),SizeOf(Word));
-      {$IFDEF VerboseDanglingComponentEvents}
-      debugln('    UnitName=',TypeData^.UnitName,' Type=',TypeInfo^.Name,' CurPropCount=',dbgs(CurCount));
-      {$ENDIF}
-      // read properties
-      while CurCount>0 do begin
-        // point PropInfo to next propinfo record.
-        // Located at Name[Length(Name)+1] !
+      CurCount:=GetPropList(TypeInfo,PropList);
+      try
         {$IFDEF VerboseDanglingComponentEvents}
-        debugln('      Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name);
+        debugln('    UnitName=',TypeData^.UnitName,' Type=',TypeInfo^.Name,' CurPropCount=',dbgs(CurCount));
         {$ENDIF}
-        PropType:=PropInfo^.PropType;
+        // read properties
+        for i:=0 to CurCount-1 do begin
+          PropInfo:=PropList^[i];
+          {$IFDEF VerboseDanglingComponentEvents}
+          debugln('      Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name);
+          {$ENDIF}
+          PropType:=PropInfo^.PropType;
 
-        if (PropType^.Kind=tkMethod) then begin
-          // RTTI property is method
-          // -> search method in source
-          CurMethod:=GetMethodProp(APersistent,PropInfo);
-          if (CurMethod.Data<>nil) or (CurMethod.Code<>nil) then begin
-            if Assigned(OverrideGetMethodName) then
-              CurMethodName:=OverrideGetMethodName(CurMethod,RootComponent)
-            else
-              CurMethodName:=OnGetMethodName(CurMethod,RootComponent);
-            {$IFDEF VerboseDanglingComponentEvents}
-            debugln('      Persistent ',DbgSName(APersistent),' Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' CurMethodName="',CurMethodName,'"');
-            {$ENDIF}
-            if CurMethodName<>'' then begin
-              NodeExt:=FindCodeTreeNodeExt(PublishedMethods,CurMethodName);
-              if NodeExt=nil then begin
-                // method not found -> dangling event
-                AddDanglingEvent(APersistent,PropInfo);
+          if (PropType^.Kind=tkMethod) then begin
+            // RTTI property is method
+            // -> search method in source
+            CurMethod:=GetMethodProp(APersistent,PropInfo);
+            if (CurMethod.Data<>nil) or (CurMethod.Code<>nil) then begin
+              if Assigned(OverrideGetMethodName) then
+                CurMethodName:=OverrideGetMethodName(CurMethod,RootComponent)
+              else
+                CurMethodName:=OnGetMethodName(CurMethod,RootComponent);
+              {$IFDEF VerboseDanglingComponentEvents}
+              debugln('      Persistent ',DbgSName(APersistent),' Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' CurMethodName="',CurMethodName,'"');
+              {$ENDIF}
+              if CurMethodName<>'' then begin
+                NodeExt:=FindCodeTreeNodeExt(PublishedMethods,CurMethodName);
+                if NodeExt=nil then begin
+                  // method not found -> dangling event
+                  AddDanglingEvent(APersistent,PropInfo);
+                end;
               end;
             end;
-          end;
-        end else if (PropType^.Kind=tkClass) then begin
-          // RTTI property is class instance
-          ObjValue := TObject(GetObjectProp(APersistent, PropInfo));
-          if ObjValue is TCollection then begin
-            // collection
+          end else if (PropType^.Kind=tkClass) then begin
+            // RTTI property is class instance
+            ObjValue := TObject(GetObjectProp(APersistent, PropInfo));
+            if ObjValue is TCollection then begin
+              // collection
 
-          end else if (ObjValue is TPersistent)
-          and (not (ObjValue is TComponent)
-               or (csSubComponent in TComponent(ObjValue).ComponentStyle))
-          then begin
-            // sub persistent (e.g. Canvas.Font)
-            //debugln(['CheckMethodsInPersistent sub persistent: ',DbgSName(ObjValue)]);
-            CheckMethodsInPersistent(TPersistent(ObjValue));
+            end else if (ObjValue is TPersistent)
+            and (not (ObjValue is TComponent)
+                 or (csSubComponent in TComponent(ObjValue).ComponentStyle))
+            then begin
+              // sub persistent (e.g. Canvas.Font)
+              //debugln(['CheckMethodsInPersistent sub persistent: ',DbgSName(ObjValue)]);
+              CheckMethodsInPersistent(TPersistent(ObjValue));
+            end;
           end;
-        end;
-        PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
-        dec(CurCount);
+       end;
+      finally
+        FreeMem(PropList);
       end;
       TypeInfo:=TypeData^.ParentInfo;
     until TypeInfo=nil;
