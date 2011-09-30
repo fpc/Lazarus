@@ -181,7 +181,8 @@ var
     TypeInfo: PTypeInfo;
     TypeData: PTypeData;
     PropInfo: PPropInfo;
-    CurCount: Word;
+    PropList: PPropList;
+    CurCount,ic: integer;
     AMethod: TMethod;
     AMethodName: String;
     i: Integer;
@@ -191,35 +192,33 @@ var
     repeat
       // read all property infos of current class
       TypeData:=GetTypeData(TypeInfo);
-      // skip unitname
-      PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
       // read property count
-      CurCount:=PWord(PropInfo)^;
-      inc(PtrUInt(PropInfo),SizeOf(Word));
-      // read properties
-      while CurCount>0 do begin
-        // point PropInfo to next propinfo record.
-        // Located at Name[Length(Name)+1] !
-        if (PropInfo^.PropType^.Kind=tkMethod) then begin
-          // event
-          AMethod:=GetMethodProp(AComponent,PropInfo);
-          AMethodName:=GlobalDesignHook.GetMethodName(AMethod,nil);
-          //DebugLn(['CheckEvents ',PropInfo^.Name,' AMethodName=',AMethodName]);
-          if AMethodName<>'' then begin
-            i:=RemovedProcHeads.Count-1;
-            while (i>=0)
-            and (SysUtils.CompareText(RemovedProcHeads[i],AMethodName)<>0) do
-              dec(i);
-            if i>=0 then begin
-              DebugLn(['RemoveEmptyMethods Clearing Property=',PropInfo^.Name,' AMethodName=',AMethodName]);
-              FillByte(AMethod,SizeOf(AMethod),0);
-              SetMethodProp(AComponent,PropInfo,AMethod);
-              PropChanged:=true;
+      CurCount:=GetPropList(TypeInfo,PropList);;
+      try
+        // read properties
+        for ic:=0 to CurCount-1 do begin
+          PropInfo:=PropList^[ic];
+          if (PropInfo^.PropType^.Kind=tkMethod) then begin
+            // event
+            AMethod:=GetMethodProp(AComponent,PropInfo);
+            AMethodName:=GlobalDesignHook.GetMethodName(AMethod,nil);
+            //DebugLn(['CheckEvents ',PropInfo^.Name,' AMethodName=',AMethodName]);
+            if AMethodName<>'' then begin
+              i:=RemovedProcHeads.Count-1;
+              while (i>=0)
+              and (SysUtils.CompareText(RemovedProcHeads[i],AMethodName)<>0) do
+                dec(i);
+              if i>=0 then begin
+                DebugLn(['RemoveEmptyMethods Clearing Property=',PropInfo^.Name,' AMethodName=',AMethodName]);
+                FillByte(AMethod,SizeOf(AMethod),0);
+                SetMethodProp(AComponent,PropInfo,AMethod);
+                PropChanged:=true;
+              end;
             end;
           end;
         end;
-        PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
-        dec(CurCount);
+      finally
+        FreeMem(PropList);
       end;
       TypeInfo:=TypeData^.ParentInfo;
     until TypeInfo=nil;
