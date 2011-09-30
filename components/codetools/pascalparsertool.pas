@@ -3088,7 +3088,7 @@ procedure TPascalParserTool.ReadVariableType;
     interface
       var a:b;
         a:b; cvar;
-        a:b; public name 'string constant';
+        a:b; public name 'string constant' section 'string constant';
         a:b; public name <id>;
         a:b; external name 'string constant';
         a:b; cvar; external;
@@ -3162,6 +3162,14 @@ begin
         and (not AtomIsIdentifier(false)) then
           RaiseStringExpectedButAtomFound(ctsStringConstant);
         ReadConstant(true,false,[]);
+        if UpAtomIs('SECTION') then begin
+          // for example FreePascal_TLS_callback : pointer = @Exec_Tls_callback; public name '__FPC_tls_callbacks' section '.CRT$XLFPC'
+          ReadNextAtom;
+          if (not AtomIsStringConstant)
+          and (not AtomIsIdentifier(false)) then
+            RaiseStringExpectedButAtomFound(ctsStringConstant);
+          ReadConstant(true,false,[]);
+        end;
       end;
       if CurPos.Flag<>cafSemicolon then
         RaiseCharExpectedButAtomFound(';');
@@ -3612,6 +3620,12 @@ begin
         if not AtomIsStringConstant then
           RaiseStringExpectedButAtomFound(ctsStringConstant);
         ReadNextAtom;
+        if UpAtomIs('SECTION') then begin
+          ReadNextAtom;
+          if not AtomIsStringConstant then
+            RaiseStringExpectedButAtomFound(ctsStringConstant);
+          ReadNextAtom;
+        end;
       end;
       if CurPos.Flag<>cafSemicolon then
         RaiseStringExpectedButAtomFound(';');
