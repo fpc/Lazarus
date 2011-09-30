@@ -1494,18 +1494,6 @@ begin
   Result:=FAnchorSides[Kind];
 end;
 
-function TControl.GetAnchorSideIndex(Index: integer): TAnchorSide;
-begin
-  case Index of
-  0: Result:=FAnchorSides[akLeft];
-  1: Result:=FAnchorSides[akTop];
-  2: Result:=FAnchorSides[akRight];
-  3: Result:=FAnchorSides[akBottom];
-  else
-  Result:=nil;
-  end;
-end;
-
 function TControl.GetAnchoredControls(Index: integer): TControl;
 begin
   Result := TControl(FAnchoredControls[Index]);
@@ -1813,9 +1801,9 @@ begin
     FOnMouseWheelUp(Self, Shift, MousePos, Result);
 end;
 
-procedure TControl.SetAnchorSideIndex(Index: integer; const AValue: TAnchorSide);
+procedure TControl.SetAnchorSide(Kind: TAnchorKind; AValue: TAnchorSide);
 begin
-  GetAnchorSideIndex(Index).Assign(AValue);
+  GetAnchorSide(Kind).Assign(AValue);
 end;
 
 procedure TControl.SetBorderSpacing(const AValue: TControlBorderSpacing);

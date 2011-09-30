@@ -996,7 +996,6 @@ type
     procedure DoActionChange(Sender: TObject);
     function GetAutoSizingAll: Boolean;
     function GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
-    function GetAnchorSideIndex(Index: integer): TAnchorSide;
     function GetAnchoredControls(Index: integer): TControl;
     function GetBoundsRect: TRect;
     function GetClientHeight: Integer;
@@ -1023,7 +1022,7 @@ type
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
                           Shift: TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
-    procedure SetAnchorSideIndex(Index: integer; const AValue: TAnchorSide);
+    procedure SetAnchorSide(Kind: TAnchorKind; AValue: TAnchorSide);
     procedure SetBorderSpacing(const AValue: TControlBorderSpacing);
     procedure SetBoundsRect(const ARect: TRect);
     procedure SetBoundsRectForNewParent(const AValue: TRect);
@@ -1462,10 +1461,10 @@ type
     property BiDiMode: TBiDiMode read FBiDiMode write SetBiDiMode stored IsBiDiModeStored default bdLeftToRight;
     property ParentBiDiMode: Boolean read FParentBiDiMode write SetParentBiDiMode default True;
   published
-    property AnchorSideLeft: TAnchorSide index 0 read GetAnchorSideIndex write SetAnchorSideIndex;
-    property AnchorSideTop: TAnchorSide index 1 read GetAnchorSideIndex write SetAnchorSideIndex;
-    property AnchorSideRight: TAnchorSide index 2 read GetAnchorSideIndex write SetAnchorSideIndex;
-    property AnchorSideBottom: TAnchorSide index 3 read GetAnchorSideIndex write SetAnchorSideIndex;
+    property AnchorSideLeft: TAnchorSide index akLeft read GetAnchorSide write SetAnchorSide;
+    property AnchorSideTop: TAnchorSide index akTop read GetAnchorSide write SetAnchorSide;
+    property AnchorSideRight: TAnchorSide index akRight read GetAnchorSide write SetAnchorSide;
+    property AnchorSideBottom: TAnchorSide index akBottom read GetAnchorSide write SetAnchorSide;
     property Cursor: TCursor read GetCursor write SetCursor default crDefault;
     property Left: Integer read FLeft write SetLeft; // no default value - controls usually placed to different positions
     property Height: Integer read FHeight write SetHeight; // no default value - controls usually have differnt sizes
