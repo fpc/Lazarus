@@ -2,10 +2,11 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="instantfpclaz"/>
+    <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
       <Version Value="10"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Linking>
         <Debugging>
@@ -13,9 +14,15 @@
         </Debugging>
       </Linking>
       <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Designtime package to add menu items to create instantfpc projects and files."/>
+    <License Value="Modified LGPL-2"/>
+    <Version Major="1"/>
     <Files Count="1">
       <Item1>
         <Filename Value="instantfpcregisterlaz.pas"/>
@@ -23,7 +30,7 @@
         <UnitName Value="InstantFPCRegisterLaz"/>
       </Item1>
     </Files>
-    <Type Value="RunAndDesignTime"/>
+    <Type Value="DesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="IDEIntf"/>
