@@ -10,7 +10,7 @@ uses
   PairSplitter, ExtDlgs, StdActns, DbCtrls, DBGrids, DBActns, EditBtn,
   ActnList, FileCtrl, Graphics, XMLPropStorage, IniPropStorage, BarChart,
   ColorBox, ButtonPanel, LResources, LazHelpHTML, PopupNotifier, AsyncProcess,
-  UTF8Process, ShellCtrls;
+  UTF8Process, ShellCtrls, ValEdit;
 
 procedure Register;
 
@@ -54,6 +54,7 @@ begin
   RegisterUnit('AsyncProcess', @AsyncProcess.Register);
   RegisterUnit('UTF8Process', @UTF8Process.Register);
   RegisterUnit('ShellCtrls', @ShellCtrls.Register);
+  //RegisterUnit('ValEdit', @ValEdit.Register);  Doesn't work here, must be added to LCLBase package.
 end;
 
 end.

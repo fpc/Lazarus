@@ -428,7 +428,7 @@ begin
   MapReplacement('TControlBar',       'TToolBar');
   MapReplacement('TCoolBar',          'TToolBar');
   MapReplacement('TComboBoxEx',       'TComboBox');
-  MapReplacement('TValueListEditor',  'TStringGrid');
+//  MapReplacement('TValueListEditor',  'TStringGrid');
   MapReplacement('TRichEdit',         'TMemo'); // or TRichMemo from CRC.
   MapReplacement('TDBRichEdit',       'TDBMemo');
   MapReplacement('TApplicationEvents','TApplicationProperties');

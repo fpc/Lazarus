@@ -25,13 +25,14 @@ uses
   WSExtCtrls, WSExtDlgs, WSFactory, WSForms, WSGrids, WSImgList, WSLCLClasses, 
   WSMenus, WSPairSplitter, WSProc, WSReferences, WSSpin, WSStdCtrls, 
   WSToolwin, ActnList, Arrow, AsyncProcess, AvgLvlTree, ButtonPanel, Buttons, 
-  Calendar, RegisterLCL, LazarusPackageIntf;
+  Calendar, RegisterLCL, ValEdit, LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
   RegisterUnit('RegisterLCL', @RegisterLCL.Register); 
+  RegisterUnit('ValEdit', @ValEdit.Register); 
 end; 
 
 initialization

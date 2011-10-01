@@ -108,6 +108,7 @@ components/ttrackbar.png
 components/ttrayicon.png
 components/ttreeview.png
 components/tupdown.png
+components/tvaluelisteditor.png
 components/txmlconfig.png
 components/txmlpropstorage.png
 components/unregisteredcomponent.png
