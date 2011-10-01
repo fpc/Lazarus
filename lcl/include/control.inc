@@ -2300,7 +2300,10 @@ procedure TControl.Click;
 begin
   //DebugLn(['TControl.Click ',DbgSName(Self)]);
   if (not (csDesigning in ComponentState)) and (ActionLink <> nil) and
-     ((Action=nil) or (@FOnClick <> @Action.OnExecute) or Assigned(FOnClick)) then
+     ((Action=nil)
+       or (not CompareMem(@FOnClick, @Action.OnExecute, SizeOf(TMethod)))
+       or Assigned(FOnClick))
+  then
     ActionLink.Execute(Self)
   else
   if Assigned(FOnClick) then
