@@ -82,6 +82,7 @@ begin
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
   AProject.LazCompilerOptions.SetAlternativeCompile(
     'instantfpc --skip-run -B -gl "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
+  AProject.RunParameters.HostApplicationFilename:='$(InstantFPCCache)/$NameOnly($(ProjFile))';
 
   // create program source
   NewSource:=TStringList.Create;

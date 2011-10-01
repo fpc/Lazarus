@@ -787,7 +787,6 @@ type
     fProjectInfoFileDate: LongInt;
     FPublishOptions: TPublishProjectOptions;
     FRevertLockCount: integer;
-    FRunParameterOptions: TRunParamsOptions;
     FSessionModifiedBackup: boolean;
     FSessionStorePathDelim: TPathDelimSwitch;
     FSkipCheckLCLInterfaces: boolean;
@@ -806,6 +805,7 @@ type
     function GetMainFilename: String;
     function GetMainUnitInfo: TUnitInfo;
     function GetProjResources: TProjectResources;
+    function GetRunParameterOptions: TRunParamsOptions;
     function GetTargetFilename: string;
     function GetUnits(Index: integer): TUnitInfo;
     function JumpHistoryCheckPosition(
@@ -1095,7 +1095,7 @@ type
                                      read FPublishOptions write FPublishOptions;
     property ProjResources: TProjectResources read GetProjResources;
 
-    property RunParameterOptions: TRunParamsOptions read FRunParameterOptions;
+    property RunParameterOptions: TRunParamsOptions read GetRunParameterOptions;
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
     property StateFileDate: longint read FStateFileDate write FStateFileDate;
     property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
@@ -2575,7 +2575,7 @@ begin
   FSourceDirectories.OnChanged:=@SourceDirectoriesChanged;
   UpdateProjectDirectory;
   FPublishOptions:=TPublishProjectOptions.Create(Self);
-  FRunParameterOptions:=TRunParamsOptions.Create;
+  FRunParameters:=TRunParamsOptions.Create;
   Title := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
 
@@ -2603,7 +2603,7 @@ begin
   FreeThenNil(FJumpHistory);
   FreeThenNil(FSourceDirectories);
   FreeThenNil(FPublishOptions);
-  FreeThenNil(FRunParameterOptions);
+  FreeThenNil(FRunParameters);
   FreeThenNil(FDefineTemplates);
 
   inherited Destroy;
@@ -3699,7 +3699,7 @@ begin
   for i:=0 to UnitCount-1 do Units[i].Free;
   FUnitList.Clear;
   
-  FRunParameterOptions.Clear;
+  RunParameters.Clear;
 
   FActiveWindowIndexAtStart := -1;
   FSkipCheckLCLInterfaces:=false;
@@ -4291,6 +4291,11 @@ end;
 function TProject.GetProjResources: TProjectResources;
 begin
   Result:=TProjectResources(Resources);
+end;
+
+function TProject.GetRunParameterOptions: TRunParamsOptions;
+begin
+  Result:=TRunParamsOptions(FRunParameters);
 end;
 
 function TProject.GetProjectInfoFile:string;

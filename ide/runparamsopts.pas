@@ -49,7 +49,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, LCLProc, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, ExtCtrls, Laz_XMLCfg,
-  BaseIDEIntf, IDEContextHelpEdit, IDEHelpIntf,
+  BaseIDEIntf, IDEContextHelpEdit, IDEHelpIntf, ProjectIntf,
   IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, FileUtil,
   ButtonPanel;
 
@@ -67,46 +67,16 @@ type
 
   { TRunParamsOptions }
 
-  TRunParamsOptions = class
-  private
-    // local options
-    fHostApplicationFilename: string;
-    fCmdLineParams: string;
-    fUseDisplay: boolean;
-    fUseLaunchingApplication: boolean;
-    fLaunchingApplicationPathPlusParams: string;
-    fWorkingDirectory: string;
-    fDisplay: string;
-
-    // environment options
-    fUserOverrides: TStringList;
-    fIncludeSystemVariables: boolean;
+  TRunParamsOptions = class(TAbstractRunParamsOptions)
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Clear;
+    procedure Clear; override;
     function Load(XMLConfig: TXMLConfig; const Path: string;
       AdjustPathDelims: boolean): TModalResult;
     function Save(XMLConfig: TXMLConfig; const Path: string;
       UsePathDelim: TPathDelimSwitch): TModalResult;
-    procedure AssignEnvironmentTo(Strings: TStrings);
-
-    // local options
-    property HostApplicationFilename: string
-      Read fHostApplicationFilename Write fHostApplicationFilename;
-    property CmdLineParams: string Read fCmdLineParams Write fCmdLineParams;
-    property UseLaunchingApplication: boolean
-      Read fUseLaunchingApplication Write fUseLaunchingApplication;
-    property LaunchingApplicationPathPlusParams: string
-      Read fLaunchingApplicationPathPlusParams Write fLaunchingApplicationPathPlusParams;
-    property WorkingDirectory: string Read fWorkingDirectory Write fWorkingDirectory;
-    property UseDisplay: boolean Read fUseDisplay Write FUseDisplay;
-    property Display: string Read fDisplay Write fDisplay;
-
-    // environment options
-    property UserOverrides: TStringList Read fUserOverrides;
-    property IncludeSystemVariables: boolean
-      Read fIncludeSystemVariables Write fIncludeSystemVariables;
+    procedure AssignEnvironmentTo(Strings: TStrings); override;
   end;
 
   {

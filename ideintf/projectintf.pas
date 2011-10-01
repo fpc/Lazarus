@@ -316,6 +316,42 @@ type
     property Descriptor: TProjectDescriptor read FDescriptor write FDescriptor;
   end;
 
+  TAbstractRunParamsOptions = class
+  protected
+    // local options
+    fHostApplicationFilename: string;
+    fCmdLineParams: string;
+    fUseDisplay: boolean;
+    fUseLaunchingApplication: boolean;
+    fLaunchingApplicationPathPlusParams: string;
+    fWorkingDirectory: string;
+    fDisplay: string;
+
+    // environment options
+    fUserOverrides: TStringList;
+    fIncludeSystemVariables: boolean;
+  public
+    procedure Clear; virtual; abstract;
+    procedure AssignEnvironmentTo(Strings: TStrings); virtual; abstract;
+
+    // local options
+    property HostApplicationFilename: string
+      Read fHostApplicationFilename Write fHostApplicationFilename;
+    property CmdLineParams: string Read fCmdLineParams Write fCmdLineParams;
+    property UseLaunchingApplication: boolean
+      Read fUseLaunchingApplication Write fUseLaunchingApplication;
+    property LaunchingApplicationPathPlusParams: string
+      Read fLaunchingApplicationPathPlusParams Write fLaunchingApplicationPathPlusParams;
+    property WorkingDirectory: string Read fWorkingDirectory Write fWorkingDirectory;
+    property UseDisplay: boolean Read fUseDisplay Write FUseDisplay;
+    property Display: string Read fDisplay Write fDisplay;
+
+    // environment options
+    property UserOverrides: TStringList Read fUserOverrides;
+    property IncludeSystemVariables: boolean
+      Read fIncludeSystemVariables Write fIncludeSystemVariables;
+  end;
+
   { TLazProject - interface class to a Lazarus project }
 
   TProjectFileSearchFlag = (
@@ -355,6 +391,7 @@ type
     FLazCompilerOptions: TLazCompilerOptions;
     FFlags: TProjectFlags;
     FResources: TObject;
+    FRunParameters: TAbstractRunParamsOptions;
     function GetUseManifest: boolean; virtual; abstract;
     procedure SetUseManifest(AValue: boolean); virtual; abstract;
     function GetMainFile: TLazProjectFile; virtual; abstract;
@@ -424,6 +461,7 @@ type
     property UseAppBundle: Boolean read FUseAppBundle write FUseAppBundle;
     property Resources: TObject read FResources; // TAbstractProjectResources
     property UseManifest: boolean read GetUseManifest write SetUseManifest;
+    property RunParameters: TAbstractRunParamsOptions read FRunParameters;
   end;
 
   TLazProjectClass = class of TLazProject;
