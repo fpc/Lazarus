@@ -545,9 +545,8 @@ var
   Filename: String;
   NewFileType: TPkgFileType;
   HasRegisterProc: boolean;
-  LastParams: TAddToPkgResult;
+  CurParams, LastParams: TAddToPkgResult;
   ok: Boolean;
-  CurParams: TAddToPkgResult;
 begin
   ok:=false;
   try
@@ -630,6 +629,7 @@ begin
       LastParams:=CurParams;
       inc(i);
     end;
+    FilesAddButton.Enabled:=FilesListView.Items.Count>0;
     ok:=LastParams<>nil;
   finally
     if not ok then Params.Clear;
@@ -677,6 +677,7 @@ begin
       end;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
+    FilesAddButton.Enabled:=FilesListView.Items.Count>0;
   finally
     OpenDialog.Free;
   end;
@@ -689,6 +690,7 @@ begin
   for i:=FilesListView.Items.Count-1 downto 0 do
     if FilesListView.Items[i].Selected then
       FilesListView.Items.Delete(i);
+  FilesAddButton.Enabled:=FilesListView.Items.Count>0;
 end;
 
 procedure TAddToPackageDlg.FilesDirButtonClick(Sender: TObject);
@@ -712,6 +714,7 @@ begin
         NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
       end;
     end;
+    FilesAddButton.Enabled:=FilesListView.Items.Count>0;
   finally
     Files.Free;
   end;
@@ -1163,10 +1166,7 @@ begin
     ShowHint:=true;
     Hint:=lisDeleteSelectedFiles;
   end;
-  
-  with FilesAddButton do begin
-    Caption:=lisA2PAddFilesToPackage;
-  end;
+  FilesAddButton.Caption:=lisA2PAddFilesToPackage;
 end;
 
 procedure TAddToPackageDlg.OnIterateComponentClasses(PkgComponent: TPkgComponent);

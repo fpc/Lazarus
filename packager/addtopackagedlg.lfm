@@ -13,13 +13,15 @@ object AddToPackageDlg: TAddToPackageDlg
   OnDestroy = FormDestroy
   OnKeyDown = AddToPackageDlgKeyDown
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object NoteBook: TPageControl
     Left = 0
     Height = 322
     Top = 0
     Width = 658
+    ActivePage = AddFilesPage
     Align = alClient
+    TabIndex = 3
     TabOrder = 0
     object NewFilePage: TTabSheet
       Caption = 'New File'
@@ -44,8 +46,6 @@ object AddToPackageDlg: TAddToPackageDlg
       end
       object NewFileDescriptionGroupBox: TGroupBox
         AnchorSideLeft.Control = NewFileTreeView
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideRight.Side = asrBottom
         Left = 249
         Height = 249
         Top = 0
@@ -79,7 +79,6 @@ object AddToPackageDlg: TAddToPackageDlg
         ClientWidth = 656
         TabOrder = 2
         object NewFileOkButton: TBitBtn
-          AnchorSideBottom.Side = asrBottom
           Left = 342
           Height = 29
           Top = 6
@@ -375,7 +374,6 @@ object AddToPackageDlg: TAddToPackageDlg
         ClientWidth = 654
         TabOrder = 8
         object NewComponentButton: TBitBtn
-          AnchorSideTop.Side = asrBottom
           Left = 228
           Height = 27
           Top = 6
@@ -497,7 +495,6 @@ object AddToPackageDlg: TAddToPackageDlg
         Top = 171
         Width = 28
         BorderSpacing.Top = 6
-        Color = clBtnFace
         NumGlyphs = 0
         OnClick = ComponentIconSpeedButtonClick
         ShowHint = True
@@ -572,7 +569,6 @@ object AddToPackageDlg: TAddToPackageDlg
           TabOrder = 0
         end
         object NewDependButton: TBitBtn
-          AnchorSideTop.Side = asrBottom
           Left = 326
           Height = 29
           Top = 6
@@ -723,7 +719,6 @@ object AddToPackageDlg: TAddToPackageDlg
             Caption = 'Type'
             Width = 436
           end>
-        ItemIndex = -1
         MultiSelect = True
         TabOrder = 0
         ViewStyle = vsReport
@@ -740,9 +735,8 @@ object AddToPackageDlg: TAddToPackageDlg
         ClientWidth = 654
         TabOrder = 1
         object FilesBrowseButton: TButton
-          AnchorSideBottom.Side = asrBottom
-          Left = -16
           Height = 27
+          Left = 48
           Top = 6
           Width = 139
           Align = alRight
@@ -762,6 +756,7 @@ object AddToPackageDlg: TAddToPackageDlg
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'FilesAddButton'
+          Enabled = False
           OnClick = FilesAddButtonClick
           TabOrder = 1
         end
@@ -776,6 +771,7 @@ object AddToPackageDlg: TAddToPackageDlg
           BorderSpacing.Around = 6
           Caption = 'FilesShortenButton'
           NumGlyphs = 0
+          OnClick = FilesShortenButtonClick
           TabOrder = 2
         end
         object FilesDeleteButton: TBitBtn
@@ -789,6 +785,7 @@ object AddToPackageDlg: TAddToPackageDlg
           BorderSpacing.Around = 6
           Caption = 'FilesDeleteButton'
           NumGlyphs = 0
+          OnClick = FilesDeleteButtonClick
           TabOrder = 3
         end
         object FilesDirButton: TButton
