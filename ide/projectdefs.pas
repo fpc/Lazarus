@@ -1275,6 +1275,7 @@ begin
   MainFile.IsPartOfProject:=true;
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
+  AProject.UseAppBundle:=true;
 
   // create program source
   le:=LineEnding;
@@ -1337,6 +1338,7 @@ begin
   MainFile.IsPartOfProject:=true;
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
+  AProject.UseAppBundle:=true;
 
   // create program source
   le:=LineEnding;

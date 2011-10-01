@@ -347,6 +347,7 @@ type
     FTitle: String;
     FSessionStorage: TProjectSessionStorage;
     FLazDocPaths: string;
+    FUseAppBundle: Boolean;
     procedure SetCleanOutputFileMask(const AValue: string);
     procedure SetCleanSourcesFileMask(const AValue: string);
     procedure SetLazDocPaths(const AValue: string);
@@ -416,6 +417,7 @@ type
     property CleanSourcesFileMask: string read FCleanSourcesFileMask write SetCleanSourcesFileMask; // saved in session
     property CustomData: TStringToStringTree read FCustomData;
     property CustomSessionData: TStringToStringTree read FCustomSessionData;
+    property UseAppBundle: Boolean read FUseAppBundle write FUseAppBundle;
   end;
 
   TLazProjectClass = class of TLazProject;
