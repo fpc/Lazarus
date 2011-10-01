@@ -1224,42 +1224,42 @@ EndDrag stops dragging, the image is removed from the screen.
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TMouseWheelEvent">
-        <short>[?]</short>
+        <short>Type of an OnMouseWheel event handler.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TMouseWheelEvent.Sender">
-        <short/>
+        <short>The control under the mouse.</short>
       </element>
       <element name="TMouseWheelEvent.Shift">
-        <short/>
+        <short>State of the modifier keys and mouse buttons.</short>
       </element>
       <element name="TMouseWheelEvent.WheelDelta">
-        <short/>
+        <short>How many notches the wheel has been turned.</short>
       </element>
       <element name="TMouseWheelEvent.MousePos">
-        <short/>
+        <short>The mouse position, in client[?] coordinates.</short>
       </element>
       <element name="TMouseWheelEvent.Handled">
-        <short/>
+        <short>Set Handled to True when the event was handled.</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TMouseWheelUpDownEvent">
-        <short>[?]</short>
+        <short>Type of OnMouseWheelUp/Down event handlers.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TMouseWheelUpDownEvent.Sender">
-        <short/>
+        <short>The control under the mouse.</short>
       </element>
       <element name="TMouseWheelUpDownEvent.Shift">
-        <short/>
+        <short>State of the modifier keys and mouse buttons.</short>
       </element>
       <element name="TMouseWheelUpDownEvent.MousePos">
-        <short/>
+        <short>The mouse position, in client[?] coordinates.</short>
       </element>
       <element name="TMouseWheelUpDownEvent.Handled">
-        <short/>
+        <short>Set Handled to True when the event was handled.</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDragState">
@@ -3165,10 +3165,32 @@ dmFindTarget: find child control under the mouse
           then Button1.AnchorSide[akRight].Control=Edit1 and Button1.AnchorSide[akRight].Side=asrLeft.</descr>
         <seealso/>
       </element>
-      <!-- object Visibility: default -->
+<!-- object Visibility: default -->
       <element name="TControlActionLink">
-        <short>A link between an Action and a Control.</short>
-        <descr>[?]
+        <short>Links an Action to a control.</short>
+        <descr>
+          <p>
+            An ActionLink is created by a control, when an Action is assigned to the control.
+            TControl.Action effectively becomes control.ActionLink.Action.
+          </p><p>
+            The ActionLink propagates changes of Action properties to the client control.
+            It's assumed that properties of the <b>same value</b> (in the Control and Action) are linked to the Action,
+            and follow changes to the Action properties.
+          </p><p>
+            Linked control properties are (by default):
+          </p>
+          <ul>
+            <li>Caption</li>
+            <li>Enabled</li>
+            <li>Hint</li>
+            <li>HelpContext, HelpKeyword, HelpType: these are linked only if all three property values match.</li>
+            <li>Visible</li>
+            <li>OnClick is linked to Action.Execute</li>
+          </ul>
+          <p>
+            The control can update itself, when it receives a Change notification from the ActionLink
+            <link id="TControl.ActionChange"/>.
+          </p>
         </descr>
         <errors/>
         <seealso/>
@@ -3176,13 +3198,14 @@ dmFindTarget: find child control under the mouse
       <!-- variable Visibility: protected -->
       <element name="TControlActionLink.FClient">
         <short>The client control that is linked to the action.</short>
-        <descr/>
-        <seealso/>
+        <descr>It can be assumed that FClient is not Nil.</descr>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TControlActionLink.AssignClient" link="#rtl.Classes.TBasicActionLink.AssignClient"/>
+      <element name="TControlActionLink.AssignClient" link="#rtl.Classes.TBasicActionLink.AssignClient">
+        <short>Called during construction, sets FClient to the given control.</short>
+      </element>
       <element name="TControlActionLink.AssignClient.AClient">
-        <short/>
+        <short>The control linked to the action.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlActionLink.IsCaptionLinked" link="#LCL.ActnList.TActionLink.IsCaptionLinked"/>
@@ -3195,9 +3218,12 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TControlActionLink.IsHelpLinked" link="#LCL.ActnList.TActionLink.IsHelpLinked"/>
+      <element name="TControlActionLink.IsHelpLinked" link="#LCL.ActnList.TActionLink.IsHelpLinked">
+        <short>Help properties are assumed linked only when all these properties match.</short>
+        <descr>Compares the HelpContext, HelpKeyword and HelpType properties.</descr>
+      </element>
       <element name="TControlActionLink.IsHelpLinked.Result">
-        <short/>
+        <short>True only if all three Control properties match the Action properties.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlActionLink.IsHintLinked" link="#LCL.ActnList.TActionLink.IsHintLinked"/>
@@ -3234,7 +3260,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlActionLink.SetCaption">
-        <short>Sets the client's Caption, if [...?]
+        <short>Sets the client's Caption, if the old values match.
         </short>
         <descr/>
         <errors/>
@@ -3247,7 +3273,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlActionLink.SetEnabled">
-        <short>Sets client's Enabled, if [...?].
+        <short>Sets client's Enabled, if the old values match.
         </short>
         <descr/>
         <errors/>
@@ -3258,7 +3284,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlActionLink.SetHint">
-        <short>Sets client's Hint, if [...?]
+        <short>Sets client's Hint, if the old values match.
         </short>
         <descr/>
         <errors/>
@@ -3269,7 +3295,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlActionLink.SetHelpContext">
-        <short>Sets client's HelpContext, if [...?]
+        <short>Sets client's HelpContext, if the old Help properties match (IsHelpLinked).
         </short>
         <descr/>
         <errors/>
@@ -3280,7 +3306,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlActionLink.SetHelpKeyword">
-        <short>Sets client's HelpKeyword, if [...?]
+        <short>Sets client's HelpKeyword, if the old Help properties match (IsHelpLinked).
         </short>
         <descr/>
         <errors/>
@@ -3291,7 +3317,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlActionLink.SetHelpType">
-        <short>Sets client's HelpType, if [...?]
+        <short>Sets client's HelpType, if the old Help properties match (IsHelpLinked).
         </short>
         <descr/>
         <errors/>
@@ -3302,7 +3328,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlActionLink.SetVisible">
-        <short>Sets client's Visible, if [...?]
+        <short>Sets client's Visible, if the old values match.
         </short>
         <descr/>
         <errors/>
@@ -3313,7 +3339,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlActionLink.SetOnExecute">
-        <short>Set client's OnClick, if [...?]</short>
+        <short>Set client's OnClick, if the old values match.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3323,7 +3350,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TControlActionLinkClass" link="TControlActionLink">
-        <short>Class of <var>TControlActionLink</var>
+        <short>Class of <link id="TControlActionLink"/>.
         </short>
         <descr/>
         <seealso/>
@@ -3358,7 +3385,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlAutoSizePhase.caspShowing">
-        <short>make handles visible</short>
+        <short>make handles visible[?]</short>
       </element>
       <!-- set type Visibility: default -->
       <element name="TControlAutoSizePhases" link="TControlAutoSizePhase"/>
@@ -3368,7 +3395,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- range type Visibility: default -->
       <element name="TTabOrder">
-        <short>Type of TWinControl.TabOrder.</short>
+        <short>Type of <link id="TWinControl.TabOrder"/>.</short>
         <descr/>
         <seealso/>
       </element>
@@ -3397,7 +3424,7 @@ dmFindTarget: find child control under the mouse
         <short>Mouse position in client coordinates; (-1,-1) if the event was not generated by a click.</short>
       </element>
       <element name="TContextPopupEvent.Handled">
-        <short>Set to True when everything was handled; False shows the associated PopupMenu.</short>
+        <short>Set Handled to True when everything was handled; False shows the associated PopupMenu, by default.</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TControlFlag">
@@ -3409,34 +3436,34 @@ dmFindTarget: find child control under the mouse
         <short>set by TControl.ReadState, unset by TControl.Loaded when all on form finished loading</short>
       </element>
       <element name="TControlFlag.cfAutoSizeNeeded">
-        <short/>
+        <short>Set when AutoSize was delayed[?]</short>
       </element>
       <element name="TControlFlag.cfLeftLoaded">
-        <short>cfLeftLoaded is set, when 'Left' is set during loading.</short>
+        <short>Set when Left was set during loading.</short>
       </element>
       <element name="TControlFlag.cfTopLoaded">
-        <short>[?]</short>
+        <short>Set when Top was set during loading.</short>
       </element>
       <element name="TControlFlag.cfWidthLoaded">
-        <short>[?]</short>
+        <short>Set when Width was set during loading.</short>
       </element>
       <element name="TControlFlag.cfHeightLoaded">
-        <short>[?]</short>
+        <short>Set when Height was set during loading.</short>
       </element>
       <element name="TControlFlag.cfClientWidthLoaded">
-        <short>[?]</short>
+        <short>Set when ClientWidth was set during loading.</short>
       </element>
       <element name="TControlFlag.cfClientHeightLoaded">
-        <short>[?]</short>
+        <short>Set when ClientHeight was set during loading.</short>
       </element>
       <element name="TControlFlag.cfBoundsRectForNewParentValid">
-        <short>[?]</short>
+        <short>Set when BoundsRectForNewParent has been initialized.</short>
       </element>
       <element name="TControlFlag.cfBaseBoundsValid">
         <short>[?]</short>
       </element>
       <element name="TControlFlag.cfPreferredSizeValid">
-        <short>[?]</short>
+        <short>Set when PreferredSize has been calculated (CalculatePreferredSize).</short>
       </element>
       <element name="TControlFlag.cfPreferredMinSizeValid">
         <short>[?]</short>
@@ -3461,7 +3488,7 @@ dmFindTarget: find child control under the mouse
       <!-- enumeration type Visibility: default -->
       <element name="TControlHandlerType">
         <short>Notification handler types.</short>
-        <descr/>
+        <descr>Notification handlers only receive an Sender, and must know themselves why they have been invoked.</descr>
         <seealso/>
       </element>
       <element name="TControlHandlerType.chtOnResize">
@@ -3490,12 +3517,15 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.FAnchors" link="TControl.Anchors"/>
       <element name="TControl.FAnchorSides" link="TControl.AnchorSides"/>
       <element name="TControl.FAutoSize" link="TControl.AutoSize"/>
-      <element name="TControl.FAutoSizing" link="TControl.AutoSizing"/>
       <element name="TControl.FAutoSizingAll" link="TControl.AutoSizingAll"/>
       <element name="TControl.FAutoSizingLockCount" link="TControl.AutoSizingLockCount"/>
-      <element name="TControl.FAutoSizingSelf"/>
+      <element name="TControl.FAutoSizingSelf">
+        <short>[?]</short>
+      </element>
       <element name="TControl.FBaseBounds" link="TControl.BaseBounds"/>
-      <element name="TControl.FBaseBoundsLock"/>
+      <element name="TControl.FBaseBoundsLock">
+        <short>[?]</short>
+      </element>
       <element name="TControl.FBaseParentClientSize" link="TControl.BaseParentClientSize"/>
       <element name="TControl.FBiDiMode" link="TControl.BiDiMode"/>
       <element name="TControl.FBorderSpacing" link="TControl.BorderSpacing"/>
@@ -3516,12 +3546,13 @@ dmFindTarget: find child control under the mouse
         </descr>
       </element>
       <element name="TControl.FConstraints" link="TControl.Constraints"/>
-      <element name="TControl.FControlFlags"/>
-      <element name="TControl.FControlHandlers"/>
-      <!-- variable Visibility: protected -->
+      <element name="TControl.FControlFlags" link="TControlFlag"/>
+      <element name="TControl.FControlHandlers">
+        <short>Array of the installable notification handlers.
+        </short>
+      </element>
       <element name="TControl.FControlState" link="TControl.ControlState"/>
       <element name="TControl.FControlStyle" link="TControl.ControlStyle"/>
-      <element name="TControl.FCtl3D"/>
       <element name="TControl.FCursor" link="TControl.Cursor"/>
       <element name="TControl.FDesktopFont" link="TControl.DesktopFont"/>
       <element name="TControl.FDockOrientation" link="TControl.DockOrientation"/>
@@ -3538,15 +3569,15 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.FHint" link="TControl.Hint"/>
       <element name="TControl.FHostDockSite" link="TControl.HostDockSite"/>
       <element name="TControl.FIsControl" link="TControl.IsControl"/>
-      <element name="TControl.fLastAlignedBoundsTried"/>
       <element name="TControl.FLastDoChangeBounds"/>
-      <element name="TControl.FLastResizeClientHeight"/>
       <element name="TControl.FLastDoChangeClientSize"/>
       <element name="TControl.FLastResizeClientWidth"/>
       <element name="TControl.FLastResizeHeight"/>
       <element name="TControl.FLastResizeWidth"/>
       <element name="TControl.FLeft" link="TControl.Left"/>
-      <element name="TControl.FLoadedClientSize"/>
+      <element name="TControl.FLoadedClientSize">
+        <short>Intended ClientSize, initialized during loading[?]</short>
+      </element>
       <element name="TControl.FLRDockWidth" link="TControl.LRDockWidth"/>
       <element name="TControl.FMouseEntered" link="TControl.MouseEntered"/>
       <element name="TControl.FOnChangeBounds" link="TControl.OnChangeBounds"/>
@@ -3586,7 +3617,9 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.FReadBounds" link="TControl.ReadBounds"/>
       <element name="TControl.FSessionProperties" link="TControl.SessionProperties"/>
       <element name="TControl.FShowHint" link="TControl.ShowHint"/>
-      <element name="TControl.FSizeLock"/>
+      <element name="TControl.FSizeLock">
+        <short>[?]</short>
+      </element>
       <element name="TControl.FTBDockHeight" link="TControl.TBDockHeight"/>
       <element name="TControl.FTop" link="TControl.Top"/>
       <element name="TControl.FUndockHeight" link="TControl.UndockHeight"/>
@@ -3601,7 +3634,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: private -->
       <element name="TControl.DoActionChange">
-        <short>Handler for a changed Action.</short>
+        <short>Internal handler for a changed Action, invoked from the ActionLink.</short>
         <descr>When the action is assigned to this control, updates related properties using <link id="TControl.ActionChange">ActionChange</link>.</descr>
       </element>
       <element name="TControl.DoActionChange.Sender">
@@ -3619,24 +3652,6 @@ dmFindTarget: find child control under the mouse
       </element>
       <element name="TControl.GetAnchorSide.Kind">
         <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TControl.GetAnchorSideIndex">
-        <short>Indexed access to AnchorSides.</short>
-        <descr>
-          <remark>
-            For some inobvious reason the index values differ from ord(side).
-            i.e. Left and Top are swapped.
-          </remark>
-        </descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TControl.GetAnchorSideIndex.Result">
-        <short>The AnchorSide.</short>
-      </element>
-      <element name="TControl.GetAnchorSideIndex.Index">
-        <short>The index value, does not match ord(side)!</short>
       </element>
       <!-- function Visibility: private -->
       <element name="TControl.GetAnchoredControls" link="TControl.AnchoredControls"/>
@@ -3806,19 +3821,6 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <element name="TControl.DoMouseUp.Button">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TControl.SetAnchorSideIndex">
-        <short>Indexed setting of AnchorSide[?]</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TControl.SetAnchorSideIndex.Index">
-        <short/>
-      </element>
-      <element name="TControl.SetAnchorSideIndex.AValue">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
@@ -4175,8 +4177,9 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoSetBounds">
-        <short>Perform the actual setting of the boundary rectangle.</short>
-        <descr>DoSetBounds is a low level function to set the private variables FLeft, FTop, FWidth, FHeight.
+        <short>Sets the bounds (Left, Top, Height, Width).</short>
+        <descr>[This description doesn't look correct?]
+          DoSetBounds is a low level function to set the private variables FLeft, FTop, FWidth, FHeight.
           Do not call this function, only the LCL calls it.
           It also updates FClientWidth and FClientHeight accordingly.
           Override this to update the content layout of the control, for example scroll bars.
@@ -4884,11 +4887,11 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <short/>
       </element>
       <element name="TControl.GetDockEdge.MousePos">
-        <short/>
+        <short>Mouse position in client coordinates.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetDragImages">
-        <short>Get the list of Images to be dragged - returned as a list</short>
+        <short>Get the list of images usable during dragging.</short>
       </element>
       <element name="TControl.GetDragImages.Result">
         <short/>
@@ -5119,7 +5122,8 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.Click">
         <short>Invokes the
           <link id="#lcl.Controls.TControl.OnClick">OnClick</link>
-          handler.</short>
+          and ActionLink.Execute
+          handlers.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DblClick">
@@ -5251,8 +5255,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
        <!-- procedure Visibility: protected -->
       <element name="TControl.Changed">
-        <short>
-          <var>Changed</var> - method to signal that a change has occured</short>
+        <short>Call this method whenever a change has occured, to trigger further processing.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5371,8 +5374,8 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ParentFontChanged">
-        <short>
-          <var>ParentFontChanged</var> - method for dealing with a change in the font of the parent</short>
+        <short>[Delphi compatible] Does nothing here, all work is done in CMParentFontChanged.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5480,12 +5483,14 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ParentFormHandleInitialized">
-        <short>
-          <var>ParentFormHandleInitialized</var> - called by
-          <var>ChildHandlesCreated</var> of parent form</short>
+        <short>Internal handler for activities after a form widget has been created.
+        </short>
         <descr>
+          <p>Called by <var>ChildHandlesCreated</var> of parent form.
+          </p>
           <p>Functions like GetTextWidth require valid widgets and their device contexts.
-            That's why AdjustSize delays AutoSizing till this moment.</p>
+            That's why AutoSizing is delayed till this moment.
+          </p>
         </descr>
       </element>
       <!-- procedure Visibility: protected -->
@@ -5563,44 +5568,61 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.DoOnShowHint.HintInfo">
         <short/>
       </element>
+      <!-- procedure Visibility: protected -->
       <element name="TControl.DoMouseWheel">
-        <short>
-          <var>DoMouseWheel</var> - performs the action to deal with a movement of the mouse wheel; returns True if handled</short>
+        <short>Invokes the OnMouseWheel handlers, when the wheel has been turned.
+        </short>
+        <descr>
+          <p>
+            Multiple wheel handlers can be implemented.
+            First the general OnMouseWheel handler is tried, and if it doesn't report the event handled,
+            then OnMouseWheelUp or OnMouseWheelDown are tried.
+          </p><p>
+            The actual WheelDelta is available <b>only</b> to the OnMouseWheel handler,
+            not to the up and down handlers [Delphi compatible].
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMouseWheelEvent"/>
+          <link id="TMouseWheelUpDownEvent"/>
+        </seealso>
       </element>
       <element name="TControl.DoMouseWheel.Result">
-        <short></short>
+        <short>Set Result to True if handled.</short>
       </element>
       <element name="TControl.DoMouseWheel.Shift">
-        <short></short>
+        <short>State of the modifier keys and mouse buttons.</short>
       </element>
       <element name="TControl.DoMouseWheel.WheelDelta">
-        <short></short>
+        <short>How many notches the wheel has been turned.</short>
       </element>
       <element name="TControl.DoMouseWheel.MousePos">
-        <short></short>
+        <short>The mouse coordinates [client/screen?]</short>
       </element>
+      <!-- procedure Visibility: protected -->
       <element name="TControl.DoMouseWheelDown">
-        <short>[?]</short>
+        <short>Invokes the OnMouseWheelDown handler.</short>
       </element>
       <element name="TControl.DoMouseWheelDown.Result">
+        <short>True if handled.</short>
+      </element>
+      <element name="TControl.DoMouseWheelDown.Shift" link="TMouseWheelEvent.Shift">
         <short></short>
       </element>
-      <element name="TControl.DoMouseWheelDown.Shift">
+      <element name="TControl.DoMouseWheelDown.MousePos" link="TMouseWheelEvent.MousePos">
         <short></short>
       </element>
-      <element name="TControl.DoMouseWheelDown.MousePos">
-        <short></short>
-      </element>
+      <!-- procedure Visibility: protected -->
       <element name="TControl.DoMouseWheelUp">
-        <short>[?]</short>
+        <short>Invokes the OnMouseWheelUp handler.</short>
       </element>
       <element name="TControl.DoMouseWheelUp.Result">
+        <short>True if handled.</short>
+      </element>
+      <element name="TControl.DoMouseWheelUp.Shift" link="TMouseWheelEvent.Shift">
         <short></short>
       </element>
-      <element name="TControl.DoMouseWheelUp.Shift">
-        <short></short>
-      </element>
-      <element name="TControl.DoMouseWheelUp.MousePos">
+      <element name="TControl.DoMouseWheelUp.MousePos" link="TMouseWheelEvent.MousePos">
         <short></short>
       </element>
       <!-- procedure Visibility: protected -->
@@ -5852,18 +5874,13 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AdjustSize">
-        <short>
-          <var>AdjustSize</var> - Smart way to
-          <var>DoAutoSize</var>
+        <short>Smart way to <var>DoAutoSize</var>.
         </short>
         <descr>
-          <p>
-            <var>TControl.AdjustSize</var> calls
-            <var>DoAutoSize</var> in a smart fashion.</p>
-          <p>During loading and handle creation the calls are delayed.</p>
-          <p>This method initially does the same as <var>TWinControl.DoAutoSize</var>.
+          <p>This method does the same as Delphi <var>TWinControl.DoAutoSize</var>.
             But since <var>DoAutoSize</var> is commonly overriden by descendant components, it is not useful to perform all tests, which can result in too much overhead.[?]
             To reduce this the LCL calls <var>AdjustSize</var> instead.</p>
+          <p>During loading and handle creation the calls are delayed.</p>
         </descr>
         <seealso>
           <link id="#lcl.Controls.AutoSize"/>
@@ -6256,7 +6273,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <short>If False, start drag only after the cursor has moved.</short>
       </element>
       <element name="TControl.BeginDrag.Threshold">
-        <short>Minimum movement of cursor before delayed dragging starts (in pixels); ignored if Immediate=True.</short>
+        <short>Minimum movement of cursor before delayed dragging starts (in pixels); -1 means DragManager default; ignored if Immediate=True.</short>
       </element>
         <!-- procedure Visibility: public -->
       <element name="TControl.BringToFront">
@@ -6823,6 +6840,8 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- property Visibility: public -->
       <element name="TControl.Action">
         <short>The Action associated with this control.</short>
+        <descr>The Action property is a shortcut to ActionLink.Action.
+        </descr>
         <seealso>
           <link id="#rtl.Classes.TBasicAction"/>
         </seealso>
@@ -9400,57 +9419,6 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoExit">
         <short>Invoke the <var>OnExit</var> event handler.</short>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TWinControl.DoMouseWheel">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.DoMouseWheel.Result">
-        <short/>
-      </element>
-      <element name="TWinControl.DoMouseWheel.Shift">
-        <short/>
-      </element>
-      <element name="TWinControl.DoMouseWheel.WheelDelta">
-        <short/>
-      </element>
-      <element name="TWinControl.DoMouseWheel.MousePos">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TWinControl.DoMouseWheelDown">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.DoMouseWheelDown.Result">
-        <short/>
-      </element>
-      <element name="TWinControl.DoMouseWheelDown.Shift">
-        <short/>
-      </element>
-      <element name="TWinControl.DoMouseWheelDown.MousePos">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TWinControl.DoMouseWheelUp">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.DoMouseWheelUp.Result">
-        <short/>
-      </element>
-      <element name="TWinControl.DoMouseWheelUp.Shift">
-        <short/>
-      </element>
-      <element name="TWinControl.DoMouseWheelUp.MousePos">
-        <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoKeyDownBeforeInterface">
