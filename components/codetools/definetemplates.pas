@@ -1227,6 +1227,7 @@ begin
           OutLen:=TheProcess.Output.Read(Buf[1],length(Buf));
         end else
           OutLen:=0;
+        //debugln(['RunTool OutLen=',OutLen,' Buf="',copy(Buf,1,OutLen),'"']);
         LineStart:=1;
         i:=1;
         while i<=OutLen do begin
@@ -1241,8 +1242,11 @@ begin
           end;
           inc(i);
         end;
-        OutputLine:=copy(Buf,LineStart,OutLen-LineStart+1);
+        OutputLine:=OutputLine+copy(Buf,LineStart,OutLen-LineStart+1);
       until OutLen=0;
+      //debugln(['RunTool Last=',OutputLine]);
+      if OutputLine<>'' then
+        Result.Add(OutputLine);
       TheProcess.WaitOnExit;
     finally
       TheProcess.Free;
