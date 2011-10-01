@@ -2299,11 +2299,7 @@ end;
 procedure TControl.Click;
 begin
   //DebugLn(['TControl.Click ',DbgSName(Self)]);
-  if (not (csDesigning in ComponentState)) and (ActionLink <> nil) and
-     ((Action=nil)
-       or (not CompareMem(@FOnClick, @Action.OnExecute, SizeOf(TMethod)))
-       or Assigned(FOnClick))
-  then
+  if (not (csDesigning in ComponentState)) and (ActionLink <> nil) then
     ActionLink.Execute(Self)
   else
   if Assigned(FOnClick) then
