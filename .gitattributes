@@ -5722,6 +5722,7 @@ lcl/update_allunits.lpi svneol=native#text/plain
 lcl/update_allunits.lpr svneol=native#text/plain
 lcl/utf8process.pp svneol=native#text/pascal
 lcl/utrace.pp svneol=native#text/pascal
+lcl/valedit.pas svneol=native#text/plain
 lcl/widgetset/README.txt svneol=native#text/plain
 lcl/widgetset/wsarrow.pp svneol=native#text/pascal
 lcl/widgetset/wsbuttons.pp svneol=native#text/pascal
