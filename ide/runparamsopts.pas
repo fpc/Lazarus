@@ -391,9 +391,6 @@ begin
 end;
 
 procedure TRunParamsOptsDlg.SetupLocalPage;
-var
-  List: THistoryList;
-  S: String;
 begin
   HostApplicationGroupBox.Caption   := dlgHostApplication;
   HostApplicationBrowseBtn.Caption  := '...';
@@ -406,29 +403,6 @@ begin
   DisplayGroupBox.Caption := dlgRunODisplay;
   UseDisplayCheckBox.Caption := dlgRunOUsedisplay;
   DisplayEdit.Parent := DisplayGroupBox;
-
-  // history list: WorkingDirectoryComboBox
-  List:=InputHistories.HistoryLists.GetList(hlWorkingDirectory,true);
-  WorkingDirectoryComboBox.Items.Assign(List);
-
-  // history list: UseLaunchingApplicationComboBox
-  List := InputHistories.HistoryLists.GetList(hlLaunchingApplication,true);
-  S := FindTerminalInPath;
-  if S <> '' then
-    List.AppendEntry(S);
-  {$IFNDEF MSWINDOWS}
-  S := FindTerminalInPath('gnome-terminal');
-  if S <> '' then
-    List.AppendEntry(S);
-  S := FindTerminalInPath('konsole');
-  if S <> '' then
-    List.AppendEntry(S);
-  {$ENDIF}
-  UseLaunchingApplicationComboBox.Items.Assign(List);
-
-  // history list: CmdLineParametersComboBox
-  List:=InputHistories.HistoryLists.GetList(hlCmdLineParameters,true);
-  CmdLineParametersComboBox.Items.Assign(List);
 end;
 
 procedure TRunParamsOptsDlg.SetupEnvironmentPage;
@@ -642,16 +616,45 @@ begin
 end;
 
 procedure TRunParamsOptsDlg.SetOptions(NewOptions: TRunParamsOptions);
+var
+  List: THistoryList;
+  S: String;
 begin
   fOptions := NewOptions;
 
   // local
   HostApplicationEdit.Text   := fOptions.HostApplicationFilename;
-  CmdLineParametersComboBox.Text := fOptions.CmdLineParams;
-  UseLaunchingApplicationCheckBox.Checked := fOptions.UseLaunchingApplication;
-  SetComboBoxText(UseLaunchingApplicationComboBox,
-                  fOptions.LaunchingApplicationPathPlusParams);
+
+  // WorkingDirectoryComboBox
+  List:=InputHistories.HistoryLists.GetList(hlWorkingDirectory,true);
+  List.AppendEntry(fOptions.WorkingDirectory);
+  WorkingDirectoryComboBox.Items.Assign(List);
   WorkingDirectoryComboBox.Text := fOptions.WorkingDirectory;
+
+  // UseLaunchingApplicationComboBox
+  UseLaunchingApplicationCheckBox.Checked := fOptions.UseLaunchingApplication;
+  List := InputHistories.HistoryLists.GetList(hlLaunchingApplication,true);
+  List.AppendEntry(fOptions.LaunchingApplicationPathPlusParams);
+  S := FindTerminalInPath;
+  if S <> '' then
+    List.AppendEntry(S);
+  {$IFNDEF MSWINDOWS}
+  S := FindTerminalInPath('gnome-terminal');
+  if S <> '' then
+    List.AppendEntry(S);
+  S := FindTerminalInPath('konsole');
+  if S <> '' then
+    List.AppendEntry(S);
+  {$ENDIF}
+  UseLaunchingApplicationComboBox.Items.Assign(List);
+  UseLaunchingApplicationComboBox.Text:=fOptions.LaunchingApplicationPathPlusParams;
+
+  // CmdLineParametersComboBox
+  List:=InputHistories.HistoryLists.GetList(hlCmdLineParameters,true);
+  List.AppendEntry(fOptions.CmdLineParams);
+  CmdLineParametersComboBox.Items.Assign(List);
+  CmdLineParametersComboBox.Text := fOptions.CmdLineParams;
+
   UseDisplayCheckBox.Checked := fOptions.UseDisplay;
   DisplayEdit.Text := fOptions.Display;
 
