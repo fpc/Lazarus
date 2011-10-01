@@ -3100,6 +3100,8 @@ begin
   NotifyApplicationUserInput(Msg.Msg);
   Result := DeliverMessage(Msg) <> 0;
 
+  SetNoMousePropagation(QWidgetH(Sender), False);
+
   {propagate mousewheel to parent if our sender is TPanel,
    fixes problem with mousewheel scroll with lazreport}
   if (LCLObject <> nil) and
