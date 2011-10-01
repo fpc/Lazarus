@@ -55,17 +55,15 @@ type
     procedure AdjustColumnWidths; virtual;
     procedure AdjustRowCount; virtual;
     procedure ColWidthsChanged; override;
-    procedure DrawCell(ACol, ARow: Longint; ARect: TRect;
-      AState: TGridDrawState); override;
     function GetEditText(ACol, ARow: Integer): string; override;
-    function GetCell(ACol, ARow: Integer): string;
+    function GetCells(ACol, ARow: Integer): string; override;
+    procedure SetCells(ACol, ARow: Integer; const AValue: string); override;
     procedure SetEditText(ACol, ARow: Integer; const Value: string); override;
-    procedure SetCell(ACol, ARow: Integer; const Value: string);
+    procedure TitlesChanged(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Modified;
-    property Cells[ACol, ARow: Integer]: string read GetCell write SetCell;
     property Keys[Index: Integer]: string read GetKey write SetKey;
     property Values[const Key: string]: string read GetValue write SetValue;
   published
@@ -201,9 +199,17 @@ constructor TValueListEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FStrings := TStringList.Create;       // ToDo: create a specialized type.
+  // NOTE: here there should be a handler for Strings.OnChange event
+  //       so changing externally any value (or count) would be
+  //       reflected in grid
   FTitleCaptions := TStringList.Create;
-  Columns.Add;
-  Columns.Add;
+  TStringList(FTitleCaptions).OnChange := @TitlesChanged;
+  with Columns.Add do
+    Title.Caption := 'Key';
+  with Columns.Add do begin
+    Title.Caption := 'Value';
+    DropDownRows := 8;
+  end;
   // or: ColCount:=2;
 //  inherited RowCount := 2;
   FixedCols := 0;
@@ -214,7 +220,6 @@ begin
   Options := [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine,
               goColSizing, goEditing, goAlwaysShowEditor, goThumbTracking];
   FDisplayOptions := [doColumnTitles, doAutoColResize, doKeyColFixed];
-  ShowColumnTitles;
   Col := 1;
   FDropDownRows := 8;
 end;
@@ -303,45 +308,6 @@ end;
 procedure TValueListEditor.SetTitleCaptions(const AValue: TStrings);
 begin
   FTitleCaptions.Assign(AValue);
-  // Refresh the display.
-  ShowColumnTitles;
-  AdjustRowCount;
-  Invalidate;
-end;
-
-function TValueListEditor.GetCell(ACol, ARow: Integer): string;
-var
-  I: Integer;
-begin
-  Result:='';
-  if ARow=0 then begin
-    if doColumnTitles in DisplayOptions then
-      if ACol<FTitleCaptions.Count then
-        Result:=FTitleCaptions[ACol];
-    exit;
-  end;
-  I:=ARow-FixedRows;
-  if Strings.Count<=I then exit;
-  if ACol=0 then
-    Result:=Strings.Names[I]
-  else if ACol=1 then
-    Result:=Strings.ValueFromIndex[I];
-end;
-
-procedure TValueListEditor.SetCell(ACol, ARow: Integer; const Value: string);
-var
-  I: Integer;
-  Line: string;
-begin
-  I:=ARow-FixedRows;
-  if ACol=0 then
-    Line:=Value+'='+Cells[1,ARow]
-  else
-    Line:=Cells[0,ARow]+'='+Value;
-  if I>=Strings.Count then
-    Strings.Insert(I,Line)
-  else
-    Strings[I]:=Line;
 end;
 
 function TValueListEditor.GetKey(Index: Integer): string;
@@ -424,13 +390,41 @@ begin
   inherited;
 end;
 
-
-procedure TValueListEditor.DrawCell(ACol, ARow: Integer; ARect: TRect;
-  AState: TGridDrawState);
+function TValueListEditor.GetCells(ACol, ARow: Integer): string;
+var
+  I: Integer;
 begin
-// ToDo: Change TextRect based on item properties.
-  inherited DrawCell(ACol, ARow, ARect, AState);
+  Result:='';
+  if ARow=0 then begin
+    if doColumnTitles in DisplayOptions then
+      if ACol<FTitleCaptions.Count then
+        Result:=FTitleCaptions[ACol];
+    exit;
+  end;
+  I:=ARow-FixedRows;
+  if Strings.Count<=I then exit;
+  if ACol=0 then
+    Result:=Strings.Names[I]
+  else if ACol=1 then
+    Result:=Strings.ValueFromIndex[I];
 end;
+
+procedure TValueListEditor.SetCells(ACol, ARow: Integer; const AValue: string);
+var
+  I: Integer;
+  Line: string;
+begin
+  I:=ARow-FixedRows;
+  if ACol=0 then
+    Line:=AValue+'='+Cells[1,ARow]
+  else
+    Line:=Cells[0,ARow]+'='+AValue;
+  if I>=Strings.Count then
+    Strings.Insert(I,Line)
+  else
+    Strings[I]:=Line;
+end;
+
 
 function TValueListEditor.GetEditText(ACol, ARow: Longint): string;
 begin
@@ -448,6 +442,14 @@ begin
   // The error must be postponed until user moves to other cell.
 end;
 
+
+procedure TValueListEditor.TitlesChanged(Sender: TObject);
+begin
+  // Refresh the display.
+  ShowColumnTitles;
+  AdjustRowCount;
+  Invalidate;
+end;
 
 class procedure TValueListEditor.WSRegisterClass;
 begin
