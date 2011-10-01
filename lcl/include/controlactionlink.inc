@@ -65,7 +65,7 @@ end;
 function TControlActionLink.IsOnExecuteLinked: Boolean;
 begin
   Result := inherited IsOnExecuteLinked
-            and (FClient.OnClick = Action.OnExecute);
+         and CompareMethods(TMethod(FClient.OnClick),TMethod(Action.OnExecute));
 end;
 
 procedure TControlActionLink.SetCaption(const Value: string);
