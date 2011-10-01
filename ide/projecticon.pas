@@ -56,6 +56,7 @@ type
 
     function GetStream: TStream;
     procedure SetStream(AStream: TStream);
+    procedure LoadDefaultIcon;
 
     function UpdateResources(AResources: TAbstractProjectResources;
                              const MainFilename: string): Boolean; override;
@@ -94,6 +95,21 @@ begin
     AStream.ReadBuffer(NewIconData[0], AStream.Size);
   end;
   IconData := NewIconData;
+end;
+
+procedure TProjectIcon.LoadDefaultIcon;
+var
+  DefaultRes: TLResource;
+  ResStream: TLazarusResourceStream;
+begin
+  // Load default icon
+  DefaultRes := LazarusResources.Find('LazarusProject', 'ICO');
+  if DefaultRes <> nil then
+  begin
+    ResStream := TLazarusResourceStream.CreateFromHandle(DefaultRes);
+    SetStream(ResStream);
+    ResStream.Free;
+  end;
 end;
 
 function TProjectIcon.UpdateResources(AResources: TAbstractProjectResources;
@@ -217,22 +233,10 @@ begin
 end;
 
 constructor TProjectIcon.Create;
-var
-  DefaultRes: TLResource;
-  ResStream: TLazarusResourceStream;
 begin
   inherited Create;
 
   FData := nil;
-
-  // Load default icon
-  DefaultRes := LazarusResources.Find('LazarusProject', 'ICO');
-  if DefaultRes <> nil then
-  begin
-    ResStream := TLazarusResourceStream.CreateFromHandle(DefaultRes);
-    SetStream(ResStream);
-    ResStream.Free;
-  end;
 end;
 
 procedure TProjectIcon.SetIconData(const AValue: TIconData);

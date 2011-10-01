@@ -56,7 +56,7 @@ uses
   // IDEIntf
   CompOptsIntf, ProjectIntf, MacroIntf, LazIDEIntf,
   // IDE
-  CompOptsModes, ProjectResources, LazConf,
+  CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
   LazarusIDEStrConsts, CompilerOptions,
   TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
   FileReferenceList, EditDefineTree, PackageDefs, PackageSystem, IDEOptionsIntf,
@@ -847,6 +847,8 @@ type
     procedure SetModified(const AValue: boolean); override;
     procedure SetSessionModified(const AValue: boolean); override;
     procedure SetExecutableType(const AValue: TProjectExecutableType); override;
+    function GetUseManifest: boolean; override;
+    procedure SetUseManifest(AValue: boolean); override;
   protected
     // special unit lists
     procedure AddToList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
@@ -960,6 +962,7 @@ type
     // resources
     function GetMainResourceFilename(AnUnitInfo: TUnitInfo): string;
     function GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer):TCodeBuffer;
+    procedure LoadDefaultIcon; override;
 
     // filenames and fileinfo
     function RemoveProjectPathFromFilename(const AFilename: string): string;
@@ -3855,6 +3858,16 @@ begin
   end;
 end;
 
+function TProject.GetUseManifest: boolean;
+begin
+  Result:=TProjectXPManifest(ProjResources[TProjectXPManifest]).UseManifest;
+end;
+
+procedure TProject.SetUseManifest(AValue: boolean);
+begin
+  TProjectXPManifest(ProjResources[TProjectXPManifest]).UseManifest:=AValue;
+end;
+
 class function TProject.GetInstance: TAbstractIDEOptions;
 begin
   Result := Project1;
@@ -4074,6 +4087,11 @@ begin
     inc(i);
     Result:=CodeToolBoss.FindNextResourceFile(AnUnitInfo.Source,LinkIndex);
   end;
+end;
+
+procedure TProject.LoadDefaultIcon;
+begin
+  TProjectIcon(ProjResources[TProjectIcon]).LoadDefaultIcon;
 end;
 
 function TProject.SearchFile(const Filename,SearchPaths,InitialDir:string):string;

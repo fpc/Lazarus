@@ -355,6 +355,8 @@ type
     FLazCompilerOptions: TLazCompilerOptions;
     FFlags: TProjectFlags;
     FResources: TObject;
+    function GetUseManifest: boolean; virtual; abstract;
+    procedure SetUseManifest(AValue: boolean); virtual; abstract;
     function GetMainFile: TLazProjectFile; virtual; abstract;
     function GetMainFileID: Integer; virtual; abstract;
     procedure SetMainFileID(const AValue: Integer); virtual; abstract;
@@ -390,6 +392,7 @@ type
     function GetShortFilename(const Filename: string; UseUp: boolean): string; virtual; abstract;
     procedure ConvertToLPIFilename(var AFilename: string); virtual; abstract;
     procedure ConvertFromLPIFilename(var AFilename: string); virtual; abstract;
+    procedure LoadDefaultIcon; virtual;
   public
     property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property Files[Index: integer]: TLazProjectFile read GetFiles;
@@ -420,6 +423,7 @@ type
     property CustomSessionData: TStringToStringTree read FCustomSessionData;
     property UseAppBundle: Boolean read FUseAppBundle write FUseAppBundle;
     property Resources: TObject read FResources; // TAbstractProjectResources
+    property UseManifest: boolean read GetUseManifest write SetUseManifest;
   end;
 
   TLazProjectClass = class of TLazProject;
@@ -1089,6 +1093,11 @@ begin
   if ClearUnits then
     for i:=0 to FileCount-1 do
       Files[i].ClearModifieds;
+end;
+
+procedure TLazProject.LoadDefaultIcon;
+begin
+
 end;
 
 { TLazProjectFile }
