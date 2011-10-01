@@ -51,7 +51,7 @@ uses
   // IDE
   LazConf, CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping,
   SourceEditor, ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
-  CmdLineDebugger, IDEOptionDefs, LazarusIDEStrConsts,
+  CmdLineDebugger, IDEOptionDefs, LazarusIDEStrConsts, TransferMacros,
   MainBar, MainIntf, MainBase, BaseBuildManager,
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
@@ -2083,6 +2083,7 @@ begin
 
     Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
     NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
+    GlobalMacroList.SubstituteStr(NewWorkingDir);
     if (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir)) then begin
       MessageDlg(lisUnableToRun,
         Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki, ['"',
