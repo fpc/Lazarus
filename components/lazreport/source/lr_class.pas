@@ -4631,7 +4631,7 @@ var
   bx, by, bx1, by1, w1, w2: Integer;
 begin
   if FrameStyle=frsDouble then
-    w1 := Round(FrameWidth * 1.5);
+    w1 := Round(FrameWidth * 1.5)
   else
     w1 := Round(FrameWidth);
 
