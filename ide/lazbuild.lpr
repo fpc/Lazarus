@@ -689,7 +689,7 @@ begin
   end;
 
   // regenerate resources
-  if not Project1.Resources.Regenerate(SrcFileName, False, True, '') then
+  if not Project1.ProjResources.Regenerate(SrcFileName, False, True, '') then
     DebugLn('TMainIDE.DoSaveProject Project1.Resources.Regenerate failed');
 
   // get compiler parameters
