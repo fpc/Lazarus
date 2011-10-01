@@ -241,6 +241,8 @@ type
                             ): Boolean; overload;
     function  ProcessResult(var AResult: TGDBMIExecResult; ATimeOut: Integer = -1): Boolean;
     function  ProcessGDBResultText(S: String): String;
+    function  GetStackDepth(MaxDepth: integer): Integer;
+    function  FindStackFrame(FP: TDBGPtr; StartAt, MaxDepth: Integer): Integer;
     function  GetFrame(const AIndex: Integer): String;
     function  GetText(const ALocation: TDBGPtr): String; overload;
     function  GetText(const AExpression: String; const AValues: array of const): String; overload;
@@ -619,6 +621,9 @@ type
     FExecType: TGDBMIExecCommandType;
     FCommand: String;
     FCanKillNow, FDidKillNow: Boolean;
+    FRunToSrc: String;
+    FRunToLine: Integer;
+    FStepBreakPoint: Integer;
   protected
     procedure DoLockQueueExecute; override;
     procedure DoUnockQueueExecute; override;
@@ -4221,7 +4226,6 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
   function GetLocation: TDBGLocationRec; // update current location
   var
     R: TGDBMIExecResult;
-    List: TGDBMINameValueList;
     S: String;
     FP: TDBGPtr;
     i, cnt: longint;
@@ -4243,32 +4247,16 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
 
       if FP <> 0 then begin
         // try finding the stackframe
-        ExecuteCommand('-stack-info-depth', R);
-        List := TGDBMINameValueList.Create(R);
-        cnt := Min(StrToIntDef(List.Values['depth'], -1), 32); // do not search more than 32 deep, takes a lot of time
-        FreeAndNil(List);
-        i := 0;
-        List := TGDBMINameValueList.Create(R);
-        repeat
-          if not ExecuteCommand('-stack-select-frame %u', [i], R)
-          or (R.State = dsError)
-          then break;
+        cnt := GetStackDepth(33);  // do not search more than 32 deep, takes a lot of time
+        i := FindStackFrame(Fp, 0, cnt);
+        if i >= 0 then begin
+          FTheDebugger.FCurrentStackFrame := i;
+        end
+        else begin
+          ExecuteCommand('-stack-select-frame %u', [FTheDebugger.FCurrentStackFrame], R);
+        end;
 
-          if not ExecuteCommand('-data-evaluate-expression $fp', R)
-          or (R.State = dsError)
-          then break;
-          List.Init(R.Values);
-          if Fp = StrToQWordDef(List.Values['value'], 0) then begin
-            FTheDebugger.FCurrentStackFrame := i;
-            break;
-          end;
-
-          inc(i);
-        until i >= cnt;
-        List.Free;
-	    if FTheDebugger.FCurrentStackFrame <> i
-        then ExecuteCommand('-stack-select-frame %u', [FTheDebugger.FCurrentStackFrame], R);
-	    if FTheDebugger.FCurrentStackFrame <> 0
+        if FTheDebugger.FCurrentStackFrame <> 0
         then begin
           // This frame should have all the info we need
           s := GetFrame(FTheDebugger.FCurrentStackFrame);
@@ -4664,6 +4652,13 @@ begin
         Exit;
       end;
 
+      if (FStepBreakPoint > 0) and (BreakID = FStepBreakPoint)
+      then begin
+        SetDebuggerState(dsPause);
+        ProcessFrame(FTheDebugger.FCurrentLocation );
+        exit;
+      end;
+
       ProcessBreakPoint(BreakID, List, gbrBreak);
       exit;
     end;
@@ -4853,9 +4848,153 @@ function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
     end;
   end;
 
+  function CheckResultForError(var ARes: TGDBMIExecResult): Boolean;
+  begin
+    Result := False;
+    if (ARes.State = dsError) and (not HandleRunError(ARes)) then begin
+      DoDbgEvent(ecDebugger, etDefault, Format(gdbmiFatalErrorOccured, [ARes.Values]));
+      SetDebuggerState(dsError);
+      Result := True;
+    end;
+  end;
+
+  function FindStackWithSymbols(StartAt,
+    MaxDepth: Integer): Integer;
+  var
+    R: TGDBMIExecResult;
+    List: TGDBMINameValueList;
+  begin
+    // Result;
+    // -1 : Not found
+    // -2 : FP is outside stack
+    Result := StartAt;
+    List := TGDBMINameValueList.Create('');
+    try
+      repeat
+        if not ExecuteCommand('-stack-list-frames %d %d', [Result, Result], R)
+        or (R.State = dsError)
+        then begin
+          Result := -1;
+          break;
+        end;
+
+        List.Init(R.Values);
+        List.SetPath('stack');
+        if List.Count > 0 then List.Init(List.GetString(0));
+        List.SetPath('frame');
+        if List.Values['file'] <> ''
+        then exit;
+
+        inc(Result);
+      until Result > MaxDepth;
+
+      Result := -1;
+    finally
+      List.Free;
+    end;
+  end;
+
+var
+  FP: TDBGPtr;
+
+  function DoContinueStepping: Boolean;
+    procedure DoEndStepping;
+    begin
+      Result := True;
+      FCommand := '';
+      SetDebuggerState(dsPause);
+      FTheDebugger.DoCurrent(FTheDebugger.FCurrentLocation);
+    end;
+  const
+    MaxStackDepth = 99;
+  var
+    cnt, i: Integer;
+    R: TGDBMIExecResult;
+  begin
+    // TODO: an exception can skip the step-end breakpoint....
+    // TODO: the "break" breakpoint can stop on the current, instead of the next instruction
+
+    Result := False;
+    case FExecType of
+      ectContinue, ectRun:
+        begin
+          FCommand := '-exec-continue';
+          Result := True;
+        end;
+      ectRunTo:  // check if we are at correct location
+        begin
+          Result := not(
+              ( (FTheDebugger.FCurrentLocation.SrcFile = FRunToSrc) or
+                (FTheDebugger.FCurrentLocation.SrcFullName = FRunToSrc) ) and
+              (FTheDebugger.FCurrentLocation.SrcLine = FRunToLine)
+            );
+          if not Result
+          then DoEndStepping;  // location reached
+        end;
+      ectStepOver, ectStepOverInstruction, ectStepOut, ectStepInto:
+        begin
+          Result := FStepBreakPoint > 0;
+          if Result
+          then exit;
+
+          i := -1;
+          if FP <> 0 then begin
+            cnt := GetStackDepth(MaxStackDepth);
+            if FExecType = ectStepInto
+            then i := FindStackWithSymbols(0, cnt)
+            else i := FindStackFrame(Fp, 0, cnt);
+            if (FExecType = ectStepOut) and (i >= 0)
+            then inc(i);
+          end;
+
+          if (i = 0) or (i = -2)  // -2 already stepped out of the desired frame, enter dsPause
+          then begin
+            DoEndStepping;
+            exit;
+          end;
+
+          if i > 0
+          then begin
+            // must use none gdbmi commands
+            if (not ExecuteCommand('frame %d', [i], R)) or (R.State = dsError)
+            then i := -3; // error to user
+            if (i < 0) or (not ExecuteCommand('break', [i], R)) or (R.State = dsError)
+            then i := -3; // error to user
+
+            FStepBreakPoint := StrToIntDef(GetPart(['Breakpoint '], [' at '], R.Values), -1);
+            if FStepBreakPoint < 0
+            then i := -3;
+
+            if i > 0 then begin
+              Result := True;
+              FCommand := '-exec-continue';
+            end;
+          end;
+          if i < 0
+          then begin
+            DebugLn(['CommandExecute: exStepOver, frame not found: ', i]);
+            DoEndStepping; // TODO User-error feedback
+          end;
+        end;
+      //ectStepOut:
+      //  begin
+      //  end;
+      //ectStepInto:
+      //  begin
+      //  end;
+      //ectStepOverInstruction:
+      //  begin
+      //  end;
+      ectStepIntoInstruction:
+        DoEndStepping;
+      ectReturn:
+        DoEndStepping;
+    end;
+  end;
+
 var
   StoppedParams, RunWarnings: String;
-  ContinueExecution: Boolean;
+  ContinueExecution, ContinueStep: Boolean;
   NextExecCmdObj: TGDBMIDebuggerCommandExecute;
   R: TGDBMIExecResult;
 begin
@@ -4863,84 +5002,87 @@ begin
   FCanKillNow := False;
   FDidKillNow := False;
   FNextExecQueued := False;
-  //ContinueExecution := True;
+  FP := 0;
+  ContinueStep := False; // A step command was interupted, and is continued on breakpoint
+  FStepBreakPoint := -1;
 
-  FTheDebugger.QueueExecuteLock; // prevent other commands from executing
   try
-    if not ExecuteCommand(FCommand, FResult)
-    then exit;
+    repeat
+      FTheDebugger.QueueExecuteLock; // prevent other commands from executing
+      try
+        if (not ContinueStep) and
+           (FExecType in [ectStepOver, ectStepInto, ectStepOut, ectStepOverInstruction, ectStepIntoInstruction])
+        then FP := GetPtrValue('$fp', []);
 
-    if (FResult.State = dsError) and (not HandleRunError(FResult)) then begin
-      DoDbgEvent(ecDebugger, etDefault, Format(gdbmiFatalErrorOccured, [FResult.Values]));
-      SetDebuggerState(dsError);
-      exit;
-    end
-    else
-      RunWarnings := FLogWarnings;
+        if not ExecuteCommand(FCommand, FResult)
+        then exit;
+        if CheckResultForError(FResult)
+        then exit;
+        RunWarnings := FLogWarnings;
 
-    if (FResult.State <> dsNone)
-    then SetDebuggerState(FResult.State);
+        if (FResult.State <> dsNone)
+        then SetDebuggerState(FResult.State);
 
-    // if ContinueExecution will be true, the we ignore dsError..
+        // if ContinueExecution will be true, the we ignore dsError..
+        // TODO: check for cancelled
+        StoppedParams := '';
+        FCanKillNow := True;
+        R.State := dsNone;
+        if FResult.State = dsRun
+        then Result := ProcessRunning(StoppedParams, R);
+      finally
+        FCanKillNow := False;
+        // allow other commands to execute
+        // e.g. source-line-info, watches.. all triggered in ProcessStopped)
+        //TODO: prevent the next exec-command from running (or the order of SetLocation in Process Stopped is wrong)
+        FTheDebugger.QueueExecuteUnlock;
+      end;
 
-    // TODO: chack for cancelled
+      if FDidKillNow or CheckResultForError(R)
+      then exit;
+      if HandleBreakPointError(FResult, RunWarnings + LineEnding + FLogWarnings) then begin
+        if FResult.State = dsStop then exit;
+      end;
 
-    StoppedParams := '';
-    FCanKillNow := True;
-    r.State := dsNone;
-    if FResult.State = dsRun
-    then Result := ProcessRunning(StoppedParams, R);
+      ContinueExecution := False;
+      ContinueStep := False;
+      if StoppedParams <> ''
+      then ContinueExecution := ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
+      if ContinueExecution
+      then begin
+        ContinueStep := DoContinueStepping;
+
+        if (not ContinueStep) and (FCommand <> '') then begin
+          // - Fall back to "old" behaviour and queue a new exec-continue
+          // - Queue is unlocked, so nothing should be empty
+          //   But make info available, if anything wants to queue
+          FNextExecQueued := True;
+          {$IFDEF DBGMI_QUEUE_DEBUG}
+          DebugLn(['CommandExecute: Internal queuing -exec-continue (ContinueExecution = True)']);
+          {$ENDIF}
+          FTheDebugger.FPauseWaitState := pwsNone;
+          NextExecCmdObj := TGDBMIDebuggerCommandExecute.Create(FTheDebugger, ectContinue);
+          FTheDebugger.QueueExecuteLock; // force queue
+          FTheDebugger.QueueCommand(NextExecCmdObj, DebuggerState = dsInternalPause); // TODO: ForceQueue, only until better means of queue control... (allow snapshot to run)
+          FTheDebugger.QueueExecuteUnlock;
+        end;
+      end;
+
+    until (not ContinueStep) or (FCommand = '');
 
   finally
-    FCanKillNow := False;
-    // allow other commands to execute
-    // e.g. source-line-info, watches.. all triggered in ProcessStopped)
-    //TODO: prevent the next exec-command from running (or the order of SetLocation in Process Stopped is wrong)
-    FTheDebugger.QueueExecuteUnlock;
+    if FStepBreakPoint > 0
+    then ExecuteCommand('-break-delete %d', [FStepBreakPoint], []);
+    FStepBreakPoint := -1;
   end;
-
-  if FDidKillNow
-  then exit;
-
-  if (r.State = dsError) and (not HandleRunError(R)) then begin
-    DoDbgEvent(ecDebugger, etDefault, Format(gdbmiFatalErrorOccured, [R.Values]));
-    SetDebuggerState(dsError);
-    exit;
-  end;
-
-  if HandleBreakPointError(FResult, RunWarnings + LineEnding + FLogWarnings) then begin
-    if FResult.State = dsStop then exit;
-  end;
-
-  ContinueExecution := False;
-  if StoppedParams <> ''
-  then ContinueExecution := ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState = pwsInternal);
-  if ContinueExecution
-  then begin
-    // - The "old" behaviour was to queue a new exec-continue
-    //   Keep the old behaviour for now: eventually change this procedure "DoExecute" do run a loop, until no continuation is needed)
-    // - Queue is unlockes, so nothing should be queued after the continuation cmd
-    //   But make info available, if anything wants to queue
-    FNextExecQueued := True;
-    {$IFDEF DBGMI_QUEUE_DEBUG}
-    DebugLn(['CommandExecute: Internal queuing -exec-continue (ContinueExecution = True)']);
-    {$ENDIF}
-    FTheDebugger.FPauseWaitState := pwsNone;
-    NextExecCmdObj := TGDBMIDebuggerCommandExecute.Create(FTheDebugger, ectContinue);
-    // Queue it, so we execute once this Cmd exits; do not execute recursive
-    FTheDebugger.QueueExecuteLock;
-    FTheDebugger.QueueCommand(NextExecCmdObj, DebuggerState = dsInternalPause); // TODO: ForceQueue, only until better means of queue control... (allow snapshot to run)
-    FTheDebugger.QueueExecuteUnlock;
-  end;
-
 
   if (not ContinueExecution) and (DebuggerState = dsRun) and
      (TargetInfo^.TargetPID <> 0) and (FTheDebugger.PauseWaitState <> pwsInternal)
   then begin
+    // Handle the unforeseen
     if (StoppedParams <> '')
     then debugln(['ERROR: Got stop params, but did not change FTheDebugger.state: ', StoppedParams])
     else debugln(['ERROR: Got NO stop params at all, but was running']);
-    //SetDebuggerState(dsError); // we cannot be running anymore
     SetDebuggerState(dsPause);
   end;
 end;
@@ -4963,7 +5105,12 @@ begin
   case FExecType of
     ectContinue: FCommand := '-exec-continue';
     ectRun:      FCommand := '-exec-run';
-    ectRunTo:    FCommand := Format('-exec-until %s:%d', Args);
+    ectRunTo:
+      begin
+                 FCommand := Format('-exec-until %s:%d', Args);
+                 FRunToSrc := AnsiString(Args[0].VAnsiString);
+                 FRunToLine := Args[1].VInteger;
+      end;
     ectStepOver: FCommand := '-exec-next';
     ectStepOut:  FCommand := '-exec-finish';
     ectStepInto: FCommand := '-exec-step';
@@ -9733,6 +9880,88 @@ begin
   end;
   SetLength(Result, n);
   Result := Result + Trailor;
+end;
+
+function TGDBMIDebuggerCommand.GetStackDepth(MaxDepth: integer): Integer;
+var
+  R: TGDBMIExecResult;
+  List: TGDBMINameValueList;
+begin
+  Result := -1;
+  if (MaxDepth < 0) and (not ExecuteCommand('-stack-info-depth', R))
+  then exit;
+  if (MaxDepth >= 0) and (not ExecuteCommand('-stack-info-depth %d', [MaxDepth], R))
+  then exit;
+  if R.State = dsError
+  then exit;
+
+  List := TGDBMINameValueList.Create(R);
+  Result := StrToIntDef(List.Values['depth'], -1);
+  FreeAndNil(List);
+end;
+
+function TGDBMIDebuggerCommand.FindStackFrame(FP: TDBGPtr; StartAt,
+  MaxDepth: Integer): Integer;
+var
+  R: TGDBMIExecResult;
+  List: TGDBMINameValueList;
+  Cur, Prv: QWord;
+begin
+  // Result;
+  // -1 : Not found
+  // -2 : FP is outside stack
+  Result := StartAt;
+  Cur := 0;
+  List := TGDBMINameValueList.Create('');
+  try
+    repeat
+      if not ExecuteCommand('-stack-select-frame %u', [Result], R)
+      or (R.State = dsError)
+      then begin
+        Result := -1;
+        break;
+      end;
+
+      if not ExecuteCommand('-data-evaluate-expression $fp', R)
+      or (R.State = dsError)
+      then begin
+        Result := -1;
+        break;
+      end;
+
+      List.Init(R.Values);
+      Prv := Cur;
+      Cur := StrToQWordDef(List.Values['value'], 0);
+      if Fp = Cur then begin
+        exit;
+      end;
+
+      if (Prv <> 0) and (Prv < Cur)
+      then begin
+        // FP is increasing
+        if FP < Prv
+        then begin
+          Result := -2;
+          exit;
+        end;
+      end;
+      if (Prv <> 0) and (Prv > Cur)
+      then begin
+        // FP is decreasing
+        if FP > Prv
+        then begin
+          Result := -2;
+          exit;
+        end;
+      end;
+
+      inc(Result);
+    until Result > MaxDepth;
+
+    Result := -1;
+  finally
+    List.Free;
+  end;
 end;
 
 function TGDBMIDebuggerCommand.GetFrame(const AIndex: Integer): String;
