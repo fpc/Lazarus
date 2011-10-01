@@ -4478,6 +4478,7 @@ images/components/ttrackbar.png -text svneol=unset#image/png
 images/components/ttrayicon.png -text svneol=unset#image/png
 images/components/ttreeview.png -text svneol=unset#image/png
 images/components/tupdown.png -text svneol=unset#image/png
+images/components/tvaluelisteditor.png -text
 images/components/txmlconfig.png -text svneol=unset#image/png
 images/components/txmlpropstorage.png -text svneol=unset#image/png
 images/components/unregisteredcomponent.png -text svneol=unset#image/png
