@@ -80,6 +80,8 @@ begin
   AProject.LazCompilerOptions.UnitOutputDirectory:='';
   AProject.LazCompilerOptions.TargetFilename:='program1';
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
+  AProject.LazCompilerOptions.SetAlternativeCompile(
+    'instantfpc --skip-run -B -gl "-Fu$(ProjUnitPath)" $Name($(ProjFile))',true);
 
   // create program source
   NewSource:=TStringList.Create;

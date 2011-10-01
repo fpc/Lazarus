@@ -503,6 +503,9 @@ type
     function CreateDiff(CompOpts: TBaseCompilerOptions;
                         Tool: TCompilerDiffTool = nil): boolean; virtual;// true if differ
 
+    procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean
+      ); override;
+
     function MakeOptionsString(Flags: TCompilerCmdLineOptions): String;
     function MakeOptionsString(const MainSourceFileName: string;
                                Flags: TCompilerCmdLineOptions): String; virtual;
@@ -3356,6 +3359,16 @@ begin
   if Done(ExecuteAfter.CreateDiff(CompOpts.ExecuteAfter,Tool)) then exit;
   if Done(Tool.AddDiff('CreateMakefileOnBuild',fCreateMakefileOnBuild,CompOpts.fCreateMakefileOnBuild)) then exit;
   if Result then debugln(['TBaseCompilerOptions.CreateDiff END']);
+end;
+
+procedure TBaseCompilerOptions.SetAlternativeCompile(const Command: string;
+  ScanFPCMsgs: boolean);
+begin
+  CompilerPath:='';
+  ExecuteBefore.Command:=Command;
+  ExecuteBefore.ScanForFPCMessages:=ScanFPCMsgs;
+  ExecuteBefore.ScanForMakeMessages:=ScanFPCMsgs;
+  ExecuteBefore.ShowAllMessages:=false;
 end;
 
 

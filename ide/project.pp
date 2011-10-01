@@ -531,6 +531,8 @@ type
                         Tool: TCompilerDiffTool = nil): boolean; override; // true if differ
     procedure InvalidateOptions;
     function GetEffectiveLCLWidgetType: string; override;
+    procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean
+      ); override;
   public
     property LazProject: TProject read FProject;
   published
@@ -6015,6 +6017,13 @@ begin
     Result:=LCLPlatformDirNames[lpNoGUI];
   if (Result='') or (SysUtils.CompareText(Result,'default')=0) then
     Result:= LCLPlatformDirNames[GetDefaultLCLWidgetType];
+end;
+
+procedure TProjectCompilerOptions.SetAlternativeCompile(const Command: string;
+  ScanFPCMsgs: boolean);
+begin
+  inherited SetAlternativeCompile(Command, ScanFPCMsgs);
+  CompileReasons:=[];
 end;
 
 class function TProjectCompilerOptions.GetInstance: TAbstractIDEOptions;

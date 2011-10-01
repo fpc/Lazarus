@@ -398,6 +398,9 @@ type
                                        write SetCustomConfigFile;
     property ConfigFilePath: String read fConfigFilePath write SetConfigFilePath;
     property CustomOptions: string read GetCustomOptions write SetCustomOptions;
+
+    // execute other
+    procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); virtual; abstract; // disable normal compile and call this instead
   end;
 
 implementation
