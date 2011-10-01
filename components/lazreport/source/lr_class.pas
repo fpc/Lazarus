@@ -512,6 +512,7 @@ type
     procedure Draw(aCanvas: TCanvas); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
     function GetClipRgn(rt: TfrRgnType): HRGN; override;
+    function PointInView(aX,aY: Integer): Boolean; override;
     
   published
     property FrameColor;
@@ -4623,6 +4624,23 @@ begin
     Result := CreateRectRgn(bx, by, bx1, by1)
   else
     Result := CreateRectRgn(bx - 10, by - 10, bx1 + 10, by1 + 10);
+end;
+
+function TfrLineView.PointInView(aX, aY: Integer): Boolean;
+var
+  bx, by, bx1, by1, w1, w2: Integer;
+begin
+  if FrameStyle=frsDouble then
+    w1 := Round(FrameWidth * 1.5);
+  else
+    w1 := Round(FrameWidth);
+
+  bx:=x-w1;
+  by:=y-w1;
+  bx1:=x+dx+w1;
+  by1:=y+dy+w1;
+
+  Result:=(ax>=bx) and (ax<=bx1) and (ay>=by) and (ay<=by1);
 end;
 
 {----------------------------------------------------------------------------}
