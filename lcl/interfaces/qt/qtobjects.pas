@@ -569,6 +569,7 @@ type
     FPrinterContext: TQtDeviceContext;
   private
     FPrinterActive: Boolean;
+    function GetDuplexMode: QPrinterDuplexMode;
     function getPrinterContext: TQtDeviceContext;
     function getCollateCopies: Boolean;
     function getColorMode: QPrinterColorMode;
@@ -587,6 +588,7 @@ type
     procedure setCreator(const AValue: WideString);
     procedure setDocName(const AValue: WideString);
     procedure setDoubleSidedPrinting(const AValue: Boolean);
+    procedure SetDuplexMode(AValue: QPrinterDuplexMode);
     procedure setFontEmbedding(const AValue: Boolean);
     procedure setFullPage(const AValue: Boolean);
     procedure setOutputFormat(const AValue: QPrinterOutputFormat);
@@ -609,8 +611,12 @@ type
     procedure setNumCopies(const AValue: Integer);
     function getPrinterState: QPrinterPrinterState;
   public
-    constructor Create; virtual;
+    constructor Create; virtual; overload;
+    constructor Create(AMode: QPrinterPrinterMode); virtual; overload;
     destructor Destroy; override;
+
+    function DefaultPrinter: WideString;
+    function GetAvailablePrinters(Lst: TStrings): Boolean;
     
     procedure beginDoc;
     procedure endDoc;
@@ -621,16 +627,22 @@ type
     function fromPage: Integer;
     function toPage: Integer;
     function PaintEngine: QPaintEngineH;
-    function PageRect: TRect;
-    function PaperRect: TRect;
+    function PageRect: TRect; overload;
+    function PaperRect: TRect; overload;
+    function PageRect(AUnits: QPrinterUnit): TRect; overload;
+    function PaperRect(AUnits: QPrinterUnit): TRect; overload;
     function PrintEngine: QPrintEngineH;
+    function GetPaperSize(AUnits: QPrinterUnit): TSize;
+    procedure SetPaperSize(ASize: TSize; AUnits: QPrinterUnit);
+    function SupportedResolutions: TPtrIntArray;
     
     property Collate: Boolean read getCollateCopies write setCollateCopies;
     property ColorMode: QPrinterColorMode read getColorMode write setColorMode;
     property Creator: WideString read getCreator write setCreator;
+    property DeviceType: Integer read getDevType;
     property DocName: WideString read getDocName write setDocName;
     property DoubleSidedPrinting: Boolean read getDoubleSidedPrinting write setDoubleSidedPrinting;
-    property DeviceType: Integer read getDevType;
+    property Duplex: QPrinterDuplexMode read GetDuplexMode write SetDuplexMode;
     property FontEmbedding: Boolean read getFontEmbedding write setFontEmbedding;
     property FullPage: Boolean read getFullPage write setFullPage;
     property Handle: QPrinterH read FHandle;
@@ -3870,12 +3882,74 @@ begin
   FHandle := QPrinter_create(QPrinterHighResolution);
 end;
 
+constructor TQtPrinter.Create(AMode: QPrinterPrinterMode);
+begin
+  FPrinterActive := False;
+  FHandle := QPrinter_create(AMode);
+end;
+
 destructor TQtPrinter.Destroy;
 begin
   endDoc;
   if FHandle <> nil then
     QPrinter_destroy(FHandle);
   inherited Destroy;
+end;
+
+{returns default system printer}
+function TQtPrinter.DefaultPrinter: WideString;
+var
+  prnName: WideString;
+  PrnInfo: QPrinterInfoH;
+begin
+  PrnInfo := QPrinterInfo_create();
+  QPrinterInfo_defaultPrinter(PrnInfo);
+  QPrinterInfo_printerName(PrnInfo, @PrnName);
+  QPrinterInfo_destroy(PrnInfo);
+  if PrnName = '' then
+    PrnName := 'unknown';
+  Result := UTF8ToUTF16(PrnName);
+end;
+
+{returns available list of printers.
+ if there's no printer on system result will be false.
+ Default sys printer is always 1st in the list.}
+function TQtPrinter.GetAvailablePrinters(Lst: TStrings): Boolean;
+var
+  Str: WideString;
+  PrnName: WideString;
+  i: Integer;
+  PrnInfo: QPrinterInfoH;
+  Prntr: QPrinterInfoH;
+  PrnList: TPtrIntArray;
+begin
+  Result := False;
+  Str := DefaultPrinter;
+  // EnumQPrinters(Lst);
+  PrnInfo := QPrinterInfo_create();
+  try
+    Lst.Clear;
+    QPrinterInfo_availablePrinters(@PrnList);
+    for i := Low(PrnList) to High(PrnList) do
+    begin
+      Prntr := QPrinterInfoH(PrnList[i]);
+      if Assigned(Prntr) and not QPrinterInfo_isNull(Prntr) then
+      begin
+        QPrinterInfo_printerName(Prntr, @PrnName);
+        if QPrinterInfo_isDefault(Prntr) then
+          Lst.Insert(0, UTF8ToUTF16(PrnName))
+        else
+          Lst.Add(UTF8ToUTF16(PrnName));
+      end;
+    end;
+  finally
+    QPrinterInfo_destroy(PrnInfo);
+  end;
+
+  i := Lst.IndexOf(Str);
+  if i > 0 then
+    Lst.Move(i, 0);
+  Result := Lst.Count > 0;
 end;
 
 procedure TQtPrinter.beginDoc;
@@ -3901,6 +3975,11 @@ begin
   if FPrinterContext = nil then
     FPrinterContext := TQtDeviceContext.CreatePrinterContext(Handle);
   Result := FPrinterContext;
+end;
+
+function TQtPrinter.GetDuplexMode: QPrinterDuplexMode;
+begin
+  Result := QPrinter_duplex(FHandle);
 end;
 
 function TQtPrinter.getCollateCopies: Boolean;
@@ -4013,6 +4092,11 @@ begin
   QPrinter_setDoubleSidedPrinting(FHandle, AValue);
 end;
 
+procedure TQtPrinter.SetDuplexMode(AValue: QPrinterDuplexMode);
+begin
+  QPrinter_setDuplex(FHandle, AValue);
+end;
+
 procedure TQtPrinter.setFontEmbedding(const AValue: Boolean);
 begin
   QPrinter_setFontEmbeddingEnabled(FHandle, AValue);
@@ -4067,12 +4151,12 @@ end;
 
 procedure TQtPrinter.setPageSize(const AValue: QPrinterPageSize);
 begin
-  QPrinter_setPageSize(FHandle, AValue);
+  QPrinter_setPaperSize(FHandle, AValue);
 end;
 
 function TQtPrinter.getPageSize: QPrinterPageSize;
 begin
-  Result := QPrinter_pageSize(FHandle);
+  Result := QPrinter_paperSize(FHandle);
 end;
 
 procedure TQtPrinter.setPageOrder(const AValue: QPrinterPageOrder);
@@ -4163,9 +4247,57 @@ begin
   QPrinter_paperRect(FHandle, @Result);
 end;
 
+function TQtPrinter.PageRect(AUnits: QPrinterUnit): TRect;
+var
+  R: QRectFH;
+begin
+  R := QRectF_create();
+  QPrinter_pageRect(FHandle, R, AUnits);
+  QRectF_toRect(R, @Result);
+  QRectF_destroy(R);
+end;
+
+function TQtPrinter.PaperRect(AUnits: QPrinterUnit): TRect;
+var
+  R: QRectFH;
+begin
+  R := QRectF_create();
+  QPrinter_paperRect(FHandle, R, AUnits);
+  QRectF_toRect(R, @Result);
+  QRectF_destroy(R);
+end;
+
 function TQtPrinter.PrintEngine: QPrintEngineH;
 begin
   Result := QPrinter_printEngine(FHandle);
+end;
+
+function TQtPrinter.GetPaperSize(AUnits: QPrinterUnit): TSize;
+var
+  SizeF: QSizeFH;
+begin
+  SizeF := QSizeF_create(0, 0);
+  QPrinter_paperSize(FHandle, SizeF, AUnits);
+  Result.cx := Round(QSizeF_width(SizeF));
+  Result.cy := Round(QSizeF_height(SizeF));
+  QSizeF_destroy(SizeF);
+end;
+
+procedure TQtPrinter.SetPaperSize(ASize: TSize; AUnits: QPrinterUnit);
+var
+  SizeF: QSizeFH;
+begin
+  SizeF := QSizeF_create(@ASize);
+  try
+    QPrinter_setPaperSize(FHandle, SizeF, AUnits);
+  finally
+    QSizeF_destroy(SizeF);
+  end;
+end;
+
+function TQtPrinter.SupportedResolutions: TPtrIntArray;
+begin
+  QPrinter_supportedResolutions(FHandle, @Result);
 end;
 
 
