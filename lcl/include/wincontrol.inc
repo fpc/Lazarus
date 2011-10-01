@@ -1706,6 +1706,7 @@ var
   i: Integer;
   Child: TAutoSizeBox;
   CurLeftTop: Integer;
+  s: LongInt;
 begin
   CurLeftTop:=0;
   for i:=0 to ChildCount[Orientation]-1 do begin
@@ -1714,7 +1715,10 @@ begin
       inc(CurLeftTop,Child.BorderLeftTop[Orientation]);
     Child.LeftTop[Orientation]:=CurLeftTop;
     inc(CurLeftTop,Child.PreferredSize[Orientation]);
-    inc(CurLeftTop,Child.BorderRightBottom[Orientation]);
+    s:=Child.BorderRightBottom[Orientation];
+    if i<ChildCount[Orientation]-1 then
+      s:=Max(s,Children[Orientation][i+1].BorderLeftTop[Orientation]);
+    inc(CurLeftTop,s);
   end;
 end;
 
@@ -1735,6 +1739,7 @@ var
   var
     i: Integer;
     Child: TAutoSizeBox;
+    s: LongInt;
   begin
     Result:=0;
     for i:=0 to ChildCount[Orientation]-1 do begin
@@ -1744,7 +1749,10 @@ var
       if Child.PreferredSize[Orientation]<1 then
         Child.PreferredSize[Orientation]:=1;
       inc(Result,Child.PreferredSize[Orientation]);
-      inc(Result,Child.BorderRightBottom[Orientation]);
+      s:=Child.BorderRightBottom[Orientation];
+      if i<ChildCount[Orientation]-1 then
+        s:=Max(s,Children[Orientation][i+1].BorderLeftTop[Orientation]);
+      inc(Result,s);
     end;
   end;
   
