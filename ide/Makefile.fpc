@@ -120,7 +120,8 @@ BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
   -Fu../components/todolist/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/jcf2/IdePlugin/lazarus/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/chmhelp/packages/help/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/chmhelp/packages/idehelp/lib/$(CPU_TARGET)-$(OS_TARGET)
+  -Fu../components/chmhelp/packages/idehelp/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/instantfpc/lib/$(CPU_TARGET)-$(OS_TARGET)
 
 LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 

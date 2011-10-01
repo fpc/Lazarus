@@ -36,6 +36,7 @@ bigidecomponents: all
         $(MAKE) -C jcf2/IdePlugin/lazarus
         $(MAKE) -C chmhelp/packages/help
         $(MAKE) -C chmhelp/packages/idehelp
+        $(MAKE) -C instantfpc
 ifneq ($(OS_TARGET),darwin)
         $(MAKE) -C tdbf
         $(MAKE) -C sqldb
@@ -61,6 +62,7 @@ bigideclean:
         $(MAKE) -C jcf2/IdePlugin/lazarus clean
         $(MAKE) -C chmhelp/packages/help clean
         $(MAKE) -C chmhelp/packages/idehelp clean
+        $(MAKE) -C instantfpc clean
 ifneq ($(OS_TARGET),darwin)
         $(MAKE) -C tdbf clean
         $(MAKE) -C sqldb clean
