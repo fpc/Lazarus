@@ -76,6 +76,8 @@ type
                               var Abort: boolean): string;
     function MacroFuncMakeLib(const Filename: string; const Data: PtrInt;
                               var Abort: boolean): string;
+    function MacroFuncInstantFPCCache(const Param: string; const Data: PtrInt;
+                           var Abort: boolean): string;// path of the instantfpc cache
     function MacroFuncParams(const Param: string; const Data: PtrInt;
                              var Abort: boolean): string;
     function MacroFuncProject(const Param: string; const Data: PtrInt;
@@ -136,6 +138,9 @@ type
     // Macro FPCVer
     FFPCVer: string;
     FFPCVerChangeStamp: integer;
+    // Macro InstantFPCCache
+    FMacroInstantFPCCache: string;
+    FMacroInstantFPCCacheValid: boolean;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
     function OnGetBuildMacroValues(Options: TBaseCompilerOptions;
@@ -328,6 +333,8 @@ begin
                       lisMakeExe,@MacroFuncMakeLib,[]));
   GlobalMacroList.Add(TTransferMacro.Create('Make','',
                       lisPathOfTheMakeUtility, @MacroFuncMake, []));
+  GlobalMacroList.Add(TTransferMacro.Create('InstantFPCCache','',
+                      lisPathOfTheInstantfpcCache, @MacroFuncInstantFPCCache, []));
   GlobalMacroList.Add(TTransferMacro.Create('IDEBuildOptions','',
                       lisIDEBuildOptions, @MacroFuncIDEBuildOptions, []));
   GlobalMacroList.Add(TTransferMacro.Create('PrimaryConfigPath','',
@@ -1391,6 +1398,35 @@ function TBuildManager.MacroFuncMakeLib(const Filename: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
   Result:=MakeStandardLibFilename(GetTargetOS,Filename);
+end;
+
+function TBuildManager.MacroFuncInstantFPCCache(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+var
+  Prog: String;
+  List: TStringList;
+begin
+  if not FMacroInstantFPCCacheValid then begin
+    FMacroInstantFPCCache:='';
+    FMacroInstantFPCCacheValid:=true;
+    Prog:=FindDefaultExecutablePath('instantfpc'+GetExecutableExt);
+    if Prog<>'' then begin
+      List:=nil;
+      try
+        debugln(['TBuildManager.MacroFuncInstantFPCCache ',Prog]);
+        List:=RunTool(Prog,'--get-cache');
+        if (List<>nil) and (List.Count>0) then
+          FMacroInstantFPCCache:=List[0];
+        List.Free;
+      except
+        on E: Exception do begin
+          debugln(['TBuildManager.MacroFuncInstantFPCCache error running '+Prog+': '+E.Message]);
+        end;
+      end;
+    end;
+    debugln(['TBuildManager.MacroFuncInstantFPCCache ',FMacroInstantFPCCache]);
+  end;
+  Result:=FMacroInstantFPCCache;
 end;
 
 function TBuildManager.MacroFuncProject(const Param: string; const Data: PtrInt;

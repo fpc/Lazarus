@@ -5086,6 +5086,7 @@ resourcestring
     +'directory %s%s%s is not writable.%sSee the Lazarus website for other '
     +'ways to install Lazarus.';
   lisIDEBuildOptions = 'IDE build options';
+  lisPathOfTheInstantfpcCache = 'path of the instantfpc cache';
   lisPrimaryConfigPath = 'Primary config path';
   lisSecondaryConfigPath = 'Secondary config path';
   lisUnableToWriteTheProjectInfoFileError = 'Unable to write the project info '
