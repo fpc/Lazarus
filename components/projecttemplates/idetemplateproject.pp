@@ -290,6 +290,9 @@ begin
   AProject.AddPackageDependency('FCL');
   AProject.AddPackageDependency('LCL');
   AProject.Title:=FProjectName;
+  AProject.UseAppBundle:=true;
+  AProject.UseManifest:=true;
+  AProject.LoadDefaultIcon;
   If Assigned(FTemplate) then
     begin
     FTemplate.CreateProjectDirs(FProjectDirectory,FVariables);
