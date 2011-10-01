@@ -1286,7 +1286,7 @@ begin
   if AnUnitInfo.IsPartOfProject then
   begin
     // use project resource type
-    Result := Project1.Resources.ResourceType;
+    Result := Project1.ProjResources.ResourceType;
   end
   else
     Result := rtLRS;
@@ -1357,7 +1357,7 @@ var
   Code: TCodeBuffer;
 begin
   // update project resource
-  Project1.Resources.Regenerate(Project1.MainFileName, False, True, TestDir);
+  Project1.ProjResources.Regenerate(Project1.MainFileName, False, True, TestDir);
   AnUnitInfo := Project1.FirstPartOfProject;
   while AnUnitInfo<>nil do 
   begin

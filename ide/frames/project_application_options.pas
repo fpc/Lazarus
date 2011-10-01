@@ -217,10 +217,10 @@ begin
   begin
     TitleEdit.Text := Title;
     UseAppBundleCheckBox.Checked := UseAppBundle;
-    UseXPManifestCheckBox.Checked := TProjectXPManifest(Resources[TProjectXPManifest]).UseManifest;
-    DpiAwareCheckBox.Checked := TProjectXPManifest(Resources[TProjectXPManifest]).DpiAware;
+    UseXPManifestCheckBox.Checked := TProjectXPManifest(ProjResources[TProjectXPManifest]).UseManifest;
+    DpiAwareCheckBox.Checked := TProjectXPManifest(ProjResources[TProjectXPManifest]).DpiAware;
     DpiAwareCheckBox.Enabled := UseXPManifestCheckBox.Checked;
-    AStream := TProjectIcon(Resources[TProjectIcon]).GetStream;
+    AStream := TProjectIcon(ProjResources[TProjectIcon]).GetStream;
     try
       SetIconFromStream(AStream);
     finally
@@ -238,13 +238,13 @@ begin
     Title := TitleEdit.Text;
     AStream := GetIconAsStream;
     try
-      TProjectIcon(Resources[TProjectIcon]).SetStream(AStream);
+      TProjectIcon(ProjResources[TProjectIcon]).SetStream(AStream);
     finally
       AStream.Free;
     end;
     UseAppBundle := UseAppBundleCheckBox.Checked;
-    TProjectXPManifest(Resources[TProjectXPManifest]).UseManifest := UseXPManifestCheckBox.Checked;
-    TProjectXPManifest(Resources[TProjectXPManifest]).DpiAware := DpiAwareCheckBox.Checked;
+    TProjectXPManifest(ProjResources[TProjectXPManifest]).UseManifest := UseXPManifestCheckBox.Checked;
+    TProjectXPManifest(ProjResources[TProjectXPManifest]).DpiAware := DpiAwareCheckBox.Checked;
   end;
 end;
 

@@ -784,7 +784,6 @@ type
     fProjectInfoFileBufChangeStamp: integer;
     fProjectInfoFileDate: LongInt;
     FPublishOptions: TPublishProjectOptions;
-    FResources: TProjectResources;
     FRevertLockCount: integer;
     FRunParameterOptions: TRunParamsOptions;
     FSessionModifiedBackup: boolean;
@@ -804,6 +803,7 @@ type
     function GetFirstUnitWithEditorIndex: TUnitInfo;
     function GetMainFilename: String;
     function GetMainUnitInfo: TUnitInfo;
+    function GetProjResources: TProjectResources;
     function GetTargetFilename: string;
     function GetUnits(Index: integer): TUnitInfo;
     function JumpHistoryCheckPosition(
@@ -1088,7 +1088,7 @@ type
                                read GetProjectInfoFile write SetProjectInfoFile;
     property PublishOptions: TPublishProjectOptions
                                      read FPublishOptions write FPublishOptions;
-    property Resources: TProjectResources read FResources;
+    property ProjResources: TProjectResources read GetProjResources;
 
     property RunParameterOptions: TRunParamsOptions read FRunParameterOptions;
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
@@ -2575,7 +2575,7 @@ begin
   FUnitList := TFPList.Create;  // list of TUnitInfo
 
   FResources := TProjectResources.Create(Self);
-  FResources.OnModified := @EmbeddedObjectModified;
+  ProjResources.OnModified := @EmbeddedObjectModified;
 end;
 
 {------------------------------------------------------------------------------
@@ -2864,7 +2864,7 @@ begin
            '');
 
         // Resources
-        Resources.WriteToProjectFile(xmlconfig, Path);
+        ProjResources.WriteToProjectFile(xmlconfig, Path);
 
         // save custom data
         SaveStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
@@ -3410,7 +3410,7 @@ begin
       LoadBuildModes(XMLConfig,Path,true);
 
       // Resources
-      Resources.ReadFromProjectFile(xmlconfig, Path);
+      ProjResources.ReadFromProjectFile(xmlconfig, Path);
 
       // load custom data
       LoadStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
@@ -3834,7 +3834,7 @@ begin
   if not AValue then
   begin
     PublishOptions.Modified := False;
-    Resources.Modified := False;
+    ProjResources.Modified := False;
     BuildModes.Modified:=false;
     SessionModified := False;
   end;
@@ -4236,7 +4236,7 @@ end;
 
 procedure TProject.EmbeddedObjectModified(Sender: TObject);
 begin
-  if Resources.Modified then
+  if ProjResources.Modified then
     Modified := True;
 end;
 
@@ -4266,6 +4266,11 @@ begin
     Result:=Units[MainUnitID]
   else
     Result:=nil;
+end;
+
+function TProject.GetProjResources: TProjectResources;
+begin
+  Result:=TProjectResources(Resources);
 end;
 
 function TProject.GetProjectInfoFile:string;
@@ -5137,7 +5142,7 @@ begin
       if MainUnitInfo = AnUnitInfo then
       begin
         // we are renaming a project => update resource directives
-        Resources.RenameDirectives(OldUnitName, NewUnitName);
+        ProjResources.RenameDirectives(OldUnitName, NewUnitName);
       end;
     end;
   end;

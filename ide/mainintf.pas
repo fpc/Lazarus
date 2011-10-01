@@ -647,7 +647,7 @@ end;
 
 function TFileDescPascalUnitWithProjectResource.GetResourceType: TResourceType;
 begin
-  Result := Project1.Resources.ResourceType;
+  Result := Project1.ProjResources.ResourceType;
 end;
 
 end.

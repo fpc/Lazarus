@@ -5105,10 +5105,10 @@ begin
     SetAutoCreateForms;
     // extend include path
     AProject.AutoAddOutputDirToIncPath;
-    if AProject.Resources.Modified and (AProject.MainUnitID >= 0) then
+    if AProject.ProjResources.Modified and (AProject.MainUnitID >= 0) then
     begin
-      if not AProject.Resources.Regenerate(AProject.MainFilename, True, False, '') then
-        MessageDlg(AProject.Resources.Messages.Text, mtWarning, [mbOk], 0);
+      if not AProject.ProjResources.Regenerate(AProject.MainFilename, True, False, '') then
+        MessageDlg(AProject.ProjResources.Messages.Text, mtWarning, [mbOk], 0);
     end;
     UpdateCaption;
     AProject.DefineTemplates.AllChanged;
@@ -8272,7 +8272,7 @@ begin
     begin
       GetMainUnit(MainUnitInfo, MainUnitSrcEdit, true);
 
-      if not Project1.Resources.RenameDirectives(MainUnitInfo.Filename,NewProgramFilename)
+      if not Project1.ProjResources.RenameDirectives(MainUnitInfo.Filename,NewProgramFilename)
       then begin
         DebugLn(['TMainIDE.DoShowSaveProjectAsDialog failed renaming directives Old="',MainUnitInfo.Filename,'" New="',NewProgramFilename,'"']);
         // silently ignore
@@ -10552,7 +10552,7 @@ begin
       end;
 
       // init resource files
-      if not Project1.Resources.Regenerate(Project1.MainFilename, True, False,'') then
+      if not Project1.ProjResources.Regenerate(Project1.MainFilename, True, False,'') then
         DebugLn('TMainIDE.DoNewProject Project1.Resources.Regenerate failed');
     finally
       Project1.EndUpdate;
@@ -11319,7 +11319,7 @@ begin
     Result:=DoSaveAll([sfCheckAmbiguousFiles])
   else
     Result:=DoSaveProjectToTestDirectory([sfSaveNonProjectFiles]);
-  Project1.Resources.DoBeforeBuild(AReason, Project1.IsVirtual);
+  Project1.ProjResources.DoBeforeBuild(AReason, Project1.IsVirtual);
   Project1.UpdateExecutableType;
   if Result<>mrOk then begin
     {$IFDEF VerboseSaveForBuild}
@@ -11599,7 +11599,7 @@ begin
     Result:=DoSaveForBuild(AReason);
     if Result<>mrOk then exit;
 
-    if (Project1.Resources.ResourceType=rtRes) then begin
+    if (Project1.ProjResources.ResourceType=rtRes) then begin
       // FPC resources are only supported with FPC 2.4+
       CodeToolBoss.GetFPCVersionForDirectory(
         ExtractFilePath(Project1.MainFilename),FPCVersion,FPCRelease,FPCPatch);
@@ -11730,7 +11730,7 @@ begin
       if not (Result in [mrOk,mrIgnore]) then exit;
     end;
 
-    if not Project1.Resources.Regenerate(Project1.MainFilename, False, True, TargetExeDirectory) then
+    if not Project1.ProjResources.Regenerate(Project1.MainFilename, False, True, TargetExeDirectory) then
       Exit;
 
     // execute compilation tool 'Before'
@@ -11809,7 +11809,7 @@ begin
       end;
     end;
 
-    Project1.Resources.DoAfterBuild(AReason, Project1.IsVirtual);
+    Project1.ProjResources.DoAfterBuild(AReason, Project1.IsVirtual);
     // add success message
     MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, ['"',
                                         Project1.ShortDescription, '"']),'',-1);

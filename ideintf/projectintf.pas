@@ -354,6 +354,7 @@ type
   protected
     FLazCompilerOptions: TLazCompilerOptions;
     FFlags: TProjectFlags;
+    FResources: TObject;
     function GetMainFile: TLazProjectFile; virtual; abstract;
     function GetMainFileID: Integer; virtual; abstract;
     procedure SetMainFileID(const AValue: Integer); virtual; abstract;
@@ -418,6 +419,7 @@ type
     property CustomData: TStringToStringTree read FCustomData;
     property CustomSessionData: TStringToStringTree read FCustomSessionData;
     property UseAppBundle: Boolean read FUseAppBundle write FUseAppBundle;
+    property Resources: TObject read FResources; // TAbstractProjectResources
   end;
 
   TLazProjectClass = class of TLazProject;

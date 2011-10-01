@@ -68,7 +68,7 @@ type
     property Resource[AIndex: TAbstractProjectResourceClass]: TAbstractProjectResource read GetProjectResource; default;
   end;
 
-  procedure RegisterProjectResource(AResource: TAbstractProjectResourceClass);
+procedure RegisterProjectResource(AResource: TAbstractProjectResourceClass);
 
 implementation
 

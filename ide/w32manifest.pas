@@ -106,7 +106,7 @@ end;
 constructor TProjectXPManifest.Create;
 begin
   inherited Create;
-  UseManifest := True;
+  UseManifest := False;
   DpiAware := False;
 end;
 

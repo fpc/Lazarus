@@ -84,7 +84,7 @@ begin
     UseDesignTimePkgsCheckBox.Checked := (pfUseDesignTimePackages in Flags);
     AlwaysBuildCheckBox.Checked := (pfAlwaysBuild in Flags);
     LRSInOutputDirCheckBox.Checked := (pfLRSFilesInOutputDirectory in Flags);
-    case Resources.ResourceType of
+    case ProjResources.ResourceType of
       rtLRS: UseLRSFilesRadioButton.Checked := True;
       rtRes: UseFPCResourcesRadioButton.Checked := True;
     end;
@@ -127,9 +127,9 @@ begin
   SetProjectFlag(pfLRSFilesInOutputDirectory, LRSInOutputDirCheckBox.Checked);
   Project.Flags := NewFlags;
   if UseLRSFilesRadioButton.Checked then
-    Project.Resources.ResourceType := rtLRS
+    Project.ProjResources.ResourceType := rtLRS
   else
-    Project.Resources.ResourceType := rtRes;
+    Project.ProjResources.ResourceType := rtRes;
   case PathDelimComboBox.ItemIndex of
   0: Project.StorePathDelim:=pdsNone;
   1: Project.StorePathDelim:=pdsUnix;

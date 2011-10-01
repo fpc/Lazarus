@@ -127,7 +127,7 @@ procedure TProjectVersionInfoOptionsFrame.ReadSettings(AOptions: TAbstractIDEOpt
 var
   i: integer;
 begin
-  FVersionInfo := TProjectVersionInfo((AOptions as TProject).Resources[TProjectVersionInfo]);
+  FVersionInfo := TProjectVersionInfo((AOptions as TProject).ProjResources[TProjectVersionInfo]);
 
   UseVersionInfoCheckBox.Checked := FVersionInfo.UseVersionInfo;
   MajorVersionSpinEdit.Value := FVersionInfo.MajorVersionNr;
@@ -164,7 +164,7 @@ var
   i: integer;
   t: TProjectVersionStringTable;
 begin
-  VersionInfo := TProjectVersionInfo((AOptions as TProject).Resources[TProjectVersionInfo]);
+  VersionInfo := TProjectVersionInfo((AOptions as TProject).ProjResources[TProjectVersionInfo]);
   VersionInfo.UseVersionInfo := UseVersionInfoCheckBox.Checked;
   VersionInfo.AutoIncrementBuild := AutomaticallyIncreaseBuildCheckBox.Checked;
   VersionInfo.MajorVersionNr := MajorVersionSpinEdit.Value;

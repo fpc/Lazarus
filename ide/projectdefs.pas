@@ -39,7 +39,8 @@ interface
 uses
   Classes, SysUtils, Laz_XMLCfg,
   Controls, Forms, SynRegExpr, FileProcs, LCLProc,
-  CompOptsIntf, ProjectIntf, PublishModule, LazIDEIntf,
+  CompOptsIntf, ProjectIntf, PublishModule, LazIDEIntf, W32Manifest,
+  ProjectResourcesIntf,
   frmCustomApplicationOptions, IDEProcs, LazarusIDEStrConsts;
 
 type
@@ -1276,6 +1277,7 @@ begin
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
   AProject.UseAppBundle:=true;
+  TProjectXPManifest(TAbstractProjectResources(AProject.Resources)[TProjectXPManifest]).UseManifest:=true;
 
   // create program source
   le:=LineEnding;
@@ -1339,6 +1341,7 @@ begin
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
   AProject.UseAppBundle:=true;
+  TProjectXPManifest(TAbstractProjectResources(AProject.Resources)[TProjectXPManifest]).UseManifest:=true;
 
   // create program source
   le:=LineEnding;
