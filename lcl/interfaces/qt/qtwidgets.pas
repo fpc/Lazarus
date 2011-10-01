@@ -5725,6 +5725,7 @@ begin
     Parent := nil;
   Result := QGroupBox_create(Parent);
   FCentralWidget := QStackedWidget_create(Result);
+  QWidget_setMouseTracking(FCentralWidget, True);
   {we set QtNoFocus by default, since we don't want
   FCentralWidget grabs focus on mouse click}
   QWidget_setFocusPolicy(FCentralWidget, QtNoFocus);
