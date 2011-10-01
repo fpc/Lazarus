@@ -338,17 +338,6 @@ type
     function GetLocalizedDescription: string; override;
   end;
   
-  { TFileDescInstantFPCProgram }
-
-  TFileDescInstantFPCProgram = class(TProjectFileDescriptor)
-  public
-    constructor Create; override;
-    function GetLocalizedName: string; override;
-    function GetLocalizedDescription: string; override;
-    function CreateSource(const Filename, SourceName,
-                          ResourceName: string): string; override;
-  end;
-
 implementation
 
 
@@ -380,43 +369,6 @@ begin
     end;
   end;
   Result:='['+Result+']';
-end;
-
-{ TFileDescInstantFPCProgram }
-
-constructor TFileDescInstantFPCProgram.Create;
-begin
-  inherited Create;
-  Name:=FileDescNameInstantFPC;
-  DefaultFilename:='program1.pas';
-  DefaultSourceName:='program1';
-  DefaultFileExt:='.pas';
-  RunFileIfActive:=true;
-  IsPascalUnit:=true;
-  AddToProject:=false;
-end;
-
-function TFileDescInstantFPCProgram.GetLocalizedName: string;
-begin
-  Result:='InstantFPC Program';
-end;
-
-function TFileDescInstantFPCProgram.GetLocalizedDescription: string;
-begin
-  Result:='Single file program using instantfpc to compile and execute';
-end;
-
-function TFileDescInstantFPCProgram.CreateSource(const Filename, SourceName,
-  ResourceName: string): string;
-begin
-  Result:='#!/usr/bin/env instantfpc'+LineEnding
-    +'{$mode objfpc}{$H+}'+LineEnding
-    +LineEnding
-    +'uses Classes, SysUtils;'+LineEnding
-    +LineEnding
-    +'begin'+LineEnding
-    +LineEnding
-    +'end.'+LineEnding;
 end;
 
 { TMainIDEInterface }
