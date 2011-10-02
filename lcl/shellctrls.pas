@@ -314,7 +314,7 @@ var
 begin
   if FShellListView = Value then Exit;
 
-  if Assigned(FShellListView) and Assigned(Value) then
+  if Assigned(FShellListView) then
   begin
     Tmp := FShellListView;
     FShellListView := nil;
@@ -692,7 +692,8 @@ begin
 
   FShellTreeView := Value;
 
-  Clear;
+  if not (csDestroying in ComponentState) then
+    Clear;
 
   if Value <> nil then
   begin
