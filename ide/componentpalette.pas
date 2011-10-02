@@ -244,7 +244,7 @@ begin
   ClearButtons;
   FPageControl:=AValue;
   if FPageControl<>nil then begin
-    FPageControl.OnPageChanged:=@ActivePageChanged;
+    FPageControl.OnChange:=@ActivePageChanged;
   end;
   UpdateNoteBookButtons;
 end;

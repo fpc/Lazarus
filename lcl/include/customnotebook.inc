@@ -278,8 +278,8 @@ end;
 
 procedure TCustomTabControl.DoChange;
 begin
-  if Assigned(OnPageChanged) then
-    OnPageChanged(Self);
+  if Assigned(OnChange) then
+    OnChange(Self);
 end;
 
 {------------------------------------------------------------------------------

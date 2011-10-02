@@ -5133,7 +5133,7 @@ Begin
     else
       Options:=Options-[nboShowCloseButtons];
     TabPosition := EditorOpts.TabPosition;
-    OnPageChanged := @NotebookPageChanged;
+    OnChange := @NotebookPageChanged;
     OnCloseTabClicked  := @CloseTabClicked;
     OnMouseDown:=@NotebookMouseDown;
     TabDragMode := dmAutomatic;

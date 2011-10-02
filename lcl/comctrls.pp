@@ -423,7 +423,6 @@ type
                                              write FOnCloseTabClicked;
     property OnGetImageIndex: TTabGetImageEvent read FOnGetImageIndex
                                                 write FOnGetImageIndex;
-    property OnPageChanged: TNotifyEvent read FOnPageChanged write FOnPageChanged;
     property Options: TNoteBookOptions read FOptions write SetOptions default [];
     property Page[Index: Integer]: TCustomPage read GetPage;
     property PageCount: integer read GetPageCount;
@@ -575,7 +574,6 @@ type
     property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
-    property OnPageChanged;
     property OnResize;
     property OnStartDock;
     property OnStartDrag;

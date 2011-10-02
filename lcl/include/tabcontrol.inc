@@ -237,7 +237,7 @@ begin
   FNoteBook.Parent := TabControl;
   FNoteBook.OnGetImageIndex := @NBGetImageIndex;
   FNoteBook.OnChanging := @NBChanging;
-  FNoteBook.OnPageChanged := @NBPageChanged;
+  FNoteBook.OnChange := @NBPageChanged;
   TabControlBoundsChange;
 end;
 
