@@ -1807,8 +1807,7 @@ begin
   FreeIDEWindows;
 end;
 
-procedure TMainIDE.MainIDEFormCloseQuery(Sender: TObject;
-  var CanClose: boolean);
+procedure TMainIDE.MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
 var
   MsgResult: integer;
 const IsClosing: Boolean = False;
@@ -1826,8 +1825,7 @@ begin
     if not CloseQueryIDEWindows then exit;
 
     // check packages
-    if (PkgBoss.DoSaveAllPackages([psfAskBeforeSaving])<>mrOk)
-    or (PkgBoss.DoCloseAllPackageEditors<>mrOk) then exit;
+    if PkgBoss.DoCloseAllPackageEditors<>mrOk then exit;
 
     // check project
     if SomethingOfProjectIsModified then begin

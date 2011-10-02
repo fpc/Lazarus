@@ -2282,19 +2282,18 @@ begin
   
   if APackage.IsVirtual then Include(Flags,psfSaveAs);
 
-  // check if package needs saving
-  if (not (psfSaveAs in Flags))
-  and (not APackage.ReadOnly) and (not APackage.Modified)
-  and FileExistsCached(APackage.Filename) then begin
+  if not ( (psfSaveAs in Flags) or APackage.ReadOnly or APackage.Modified
+          or FileExistsCached(APackage.Filename)
+          or (APackage.UserIgnoreChangeStamp<>APackage.ChangeStamp )) then
+  begin
     Result:=mrOk;
     exit;
   end;
 
   // ask user if package should be saved
   if psfAskBeforeSaving in Flags then begin
-    Result:=IDEMessageDialog(lisPkgMangSavePackage2,
-               Format(lisPkgMangPackageChangedSave, ['"', APackage.IDAsString,
-                 '"']),
+    Result:=IDEMessageDialog(lisPkgMangSavePackage,
+               Format(lisPkgMangPackageChangedSave, ['"',APackage.IDAsString,'"']),
                mtConfirmation,[mbYes,mbNo,mbAbort]);
     if (Result=mrNo) then Result:=mrIgnore;
     if Result<>mrYes then exit;

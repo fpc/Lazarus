@@ -3646,7 +3646,7 @@ resourcestring
   lisPkgMangThereIsAlreadyAPackageLoadedFromFile = 'There is already a '
     +'package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package '
     +'Graph.%sReplace is impossible.';
-  lisPkgMangSavePackage = 'Save Package?';
+  lisPkgMangSavePackage = 'Save package?';
   lisPkgMangLoadingPackageWillReplacePackage = 'Loading package %s will '
     +'replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave '
     +'old package %s?';
@@ -3675,7 +3675,6 @@ resourcestring
   lisPkgMangTheFilenameDoesNotCorrespondToThePackage = 'The filename %s%s%s '
     +'does not correspond to the package name %s%s%s in the file.%sChange '
     +'package name to %s%s%s?';
-  lisPkgMangSavePackage2 = 'Save package?';
   lisPkgMangPackageFileMissing = 'Package file missing';
   lisPkgMangTheFileOfPackageIsMissing = 'The file %s%s%s%sof package %s is '
     +'missing.';
@@ -3988,8 +3987,7 @@ resourcestring
   lisPckEditViewPackageSource = 'View Package Source';
   lisPckEditGeneralOptions = 'General Options';
   lisPckEditSaveChanges = 'Save Changes?';
-  lisPckEditPackageHasChangedSavePackage = 'Package %s%s%s has changed.%sSave '
-    +'package?';
+  lisPckEditPackageHasChangedSavePackage = 'Package %s%s%s has changed.%sSave package?';
   lisPckEditPage = '%s, Page: %s';
   lisPckEditRemoveFile2 = 'Remove file?';
   lisPckEditRemoveFileFromPackage = 'Remove file %s%s%s%sfrom package %s%s%s?';
