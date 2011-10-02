@@ -888,7 +888,7 @@ begin
   ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EnvOptsConfFileName);
   CopySecondaryConfigFile(EnvOptsConfFileName);
   if (not FileExistsUTF8(ConfFileName)) then begin
-    DebugLn('Note: environment config file not found - using defaults');
+    //DebugLn('Note: environment config file not found - using defaults');
   end;
   Filename:=ConfFilename;
 end;

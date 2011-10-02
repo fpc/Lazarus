@@ -178,7 +178,7 @@ begin
     ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+MiscOptsFilename);
     CopySecondaryConfigFile(MiscOptsFilename);
     if (not FileExistsUTF8(ConfFileName)) then begin
-      DebugLn('NOTE: miscellaneous options file not found - using defaults');
+      //DebugLn('Note: miscellaneous options file not found - using defaults');
     end;
     FFilename:=ConfFilename;
   end;
