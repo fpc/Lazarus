@@ -1564,7 +1564,7 @@ begin
   if FSortAlphabetically=AValue then exit;
   FSortAlphabetically:=AValue;
   SortAlphabeticallySpeedButton.Down:=FSortAlphabetically;
-  FilterEdit.ShowDirHierarchy:=FShowDirectoryHierarchy;
+  FilterEdit.SortData:=FSortAlphabetically;
   FilterEdit.InvalidateFilter;
 end;
 
