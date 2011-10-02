@@ -2426,7 +2426,8 @@ begin
             +KeyAndShiftStateToEditorKeyString(Cmd.ShortcutA)+' for focus</div>'+LineEnding;
         end;
       end;
-      HTMLHint:='<html><head><link rel="stylesheet" href="lazdoc://lazarus/lazdoc.css" type="text/css"></head>'+LineEnding
+      HTMLHint:='<html><head><link rel="stylesheet" href="lazdoc://lazarus/lazdoc.css" type="text/css">'+LineEnding
+        +'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'+LineEnding
         +'<body>'+LineEnding+HTMLHint+'</body>'+LineEnding;
       Result:=chprSuccess;
     end else
