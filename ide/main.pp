@@ -3968,7 +3968,8 @@ begin
     PkgFile:=PackageGraph.FindFileInAllPackages(AUnitInfo.Filename,true,
                                             not AUnitInfo.IsPartOfProject);
     OpenPkgCurF:=Assigned(PkgFile);
-    AddCurF:=(not AUnitInfo.IsVirtual) and FileExistsUTF8(AUnitInfo.Filename);
+    AddCurF:=(not AUnitInfo.IsVirtual) and FileExistsUTF8(AUnitInfo.Filename)
+          and not AUnitInfo.IsPartOfProject;
   end;
   MainIDEBar.itmPkgOpenPackageOfCurUnit.Enabled:=OpenPkgCurF;
   MainIDEBar.itmPkgAddCurFileToPkg.Enabled:=AddCurF;
