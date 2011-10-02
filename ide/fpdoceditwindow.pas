@@ -1270,29 +1270,23 @@ var
   function SetValue(Item: TFPDocItem): boolean;
   var
     NewValue: String;
-    ErrorList: TObjectList;
   begin
     Result:=false;
     NewValue:=Values[Item];
-    ErrorList:=nil;
     try
-      try
-        FixFPDocFragment(NewValue,
-               Item in [fpdiShort,fpdiDescription,fpdiErrors,fpdiSeeAlso],
-               true,ErrorList);
-        CurDocFile.SetChildValue(TopNode,FPDocItemNames[Item],NewValue);
-        Result:=true;
-      except
-        on E: EXMLReadError do begin
-          DebugLn(['SetValue ',dbgs(E.LineCol),' Name=',FPDocItemNames[Item]]);
-          JumpToError(Item,E.LineCol);
-          MessageDlg(lisFPDocFPDocSyntaxError,
-            Format(lisFPDocThereIsASyntaxErrorInTheFpdocElement, [FPDocItemNames
-              [Item], #13#13, E.Message]), mtError, [mbOk], '');
-        end;
+      FixFPDocFragment(NewValue,
+             Item in [fpdiShort,fpdiDescription,fpdiErrors,fpdiSeeAlso],
+             true);
+      CurDocFile.SetChildValue(TopNode,FPDocItemNames[Item],NewValue);
+      Result:=true;
+    except
+      on E: EXMLReadError do begin
+        DebugLn(['SetValue ',dbgs(E.LineCol),' Name=',FPDocItemNames[Item]]);
+        JumpToError(Item,E.LineCol);
+        MessageDlg(lisFPDocFPDocSyntaxError,
+          Format(lisFPDocThereIsASyntaxErrorInTheFpdocElement, [FPDocItemNames
+            [Item], #13#13, E.Message]), mtError, [mbOk], '');
       end;
-    finally
-      FreeAndNil(ErrorList);
     end;
   end;
 

@@ -44,7 +44,7 @@ uses
   // codetools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
   KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, CustomCodeTool,
-  FileProcs,
+  FileProcs, CTXMLFixFragment,
   {$IFNDEF OldXMLCfg}
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   {$ELSE}
@@ -1889,6 +1889,7 @@ begin
       CodeNode:=CodeNode.Parent;
     end;
   end;
+  //FixFPDocAttributeValue(Result);
 end;
 
 function TCodeHelpManager.GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode;

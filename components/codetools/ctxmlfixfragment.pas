@@ -33,12 +33,16 @@ interface
 uses
   Classes, SysUtils, FileProcs, contnrs, BasicCodeTools;
 
+type
+  PObjectList = ^TObjectList;
+
 procedure FixFPDocFragment(var Fragment: string;
   AllowTags,    // for attribute values set this to false, so that all < are converted
   Fix: boolean; // fix errors using heuristics creating valid xml
-  out ErrorList: TObjectList;
+  ErrorList: PObjectList = nil;
   Verbose: boolean = false // write debugln to stdout
   );
+procedure FixFPDocAttributeValue(var Value: string);
 
 implementation
 
@@ -51,7 +55,7 @@ type
   end;
 
 procedure FixFPDocFragment(var Fragment: string; AllowTags, Fix: boolean;
-  out ErrorList: TObjectList; Verbose: boolean);
+  ErrorList: PObjectList; Verbose: boolean);
 { - Fix all tags to lowercase to reduce svn commits
   - auto close comments
   - remove #0 from comments
@@ -105,12 +109,13 @@ var
                           copy(Fragment,Rel(ErrorPos),LineEnd-Rel(ErrorPos)+1)]);
     end;
     if not Fix then exit;
-    if ErrorList=nil then
-      ErrorList:=TObjectList.Create(true);
+    if ErrorList=nil then exit;
+    if ErrorList^=nil then
+      ErrorList^:=TObjectList.Create(true);
     NewError:=TFPDocFragmentError.Create;
     NewError.ErrorPos:=Rel(ErrorPos);
     NewError.Msg:=ErrorMsg;
-    ErrorList.Add(NewError);
+    ErrorList^.Add(NewError);
   end;
 
   procedure Replace(StartPos, Len: integer; const NewTxt: string);
@@ -486,7 +491,6 @@ var
   end;
 
 begin
-  ErrorList:=nil;
   if Fragment='' then exit;
   Top:=-1;
   TopItem:=nil;
@@ -514,6 +518,9 @@ begin
         HandleSpecialChar;
       '&':
         ParseAmpersand;
+      '"','''':
+        if not AllowTags then
+          HandleSpecialChar;
       else
         inc(p);
       end;
@@ -528,6 +535,11 @@ begin
   finally
     ReAllocMem(Stack,0);
   end;
+end;
+
+procedure FixFPDocAttributeValue(var Value: string);
+begin
+  FixFPDocFragment(Value,false,true);
 end;
 
 end.

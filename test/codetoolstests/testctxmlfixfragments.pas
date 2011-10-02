@@ -4,6 +4,7 @@
 
  Test individually:
      ./runtests --format=plain --suite=TestFixXMLFragmentComment
+     ./runtests --format=plain --suite=TestFixXMLValue
 }
 unit TestCTXMLFixFragments;
 
@@ -12,7 +13,7 @@ unit TestCTXMLFixFragments;
 interface
 
 uses
-  fpcunit, Classes, SysUtils, FileProcs, contnrs, testglobals, CTXMLFixFragment;
+  fpcunit, Classes, SysUtils, FileProcs, testglobals, CTXMLFixFragment;
 
 type
 
@@ -20,7 +21,8 @@ type
 
   TTestCTXMLFixFragment = class(TTestCase)
   protected
-    function Test(Title, Fragment, FixedFragment: string): boolean;
+    function TestFrag(Title, Fragment, FixedFragment: string): boolean;
+    function TestAttr(Title, Value, FixedValue: string): boolean;
   published
     procedure TestFixXMLFragmentComment;
     procedure TestFixXMLFragmentInvalidCharacters;
@@ -28,76 +30,95 @@ type
     procedure TestFixXMLFragmentAttribute;
     procedure TestFixXMLFragmentCloseTag;
     procedure TestFixXMLFragmentBugReports;
+    // attribute value
+    procedure TestFixXMLValue;
   end;
 
 implementation
 
 { TTestCTXMLFixFragment }
 
-function TTestCTXMLFixFragment.Test(Title, Fragment, FixedFragment: string
+function TTestCTXMLFixFragment.TestFrag(Title, Fragment, FixedFragment: string
   ): boolean;
 var
   s: String;
-  ErrorList: TObjectList;
 begin
   Result:=true;
-  try
-    s:=Fragment;
-    FixFPDocFragment(s,true,true,ErrorList,false);
-    AssertEquals(Title+' fragment: '+DbgStr(Fragment),dbgstr(FixedFragment),dbgstr(s));
-  finally
-    ErrorList.Free;
-  end;
+  s:=Fragment;
+  FixFPDocFragment(s,true,true,nil,false);
+  AssertEquals(Title+' fragment: '+DbgStr(Fragment),dbgstr(FixedFragment),dbgstr(s));
+end;
+
+function TTestCTXMLFixFragment.TestAttr(Title, Value, FixedValue: string
+  ): boolean;
+var
+  s: String;
+begin
+  Result:=true;
+  s:=Value;
+  FixFPDocAttributeValue(s);
+  AssertEquals(Title+' value: '+DbgStr(Value),dbgstr(FixedValue),dbgstr(s));
 end;
 
 procedure TTestCTXMLFixFragment.TestFixXMLFragmentComment;
 begin
-  Test('close comment','<!--','<!---->');
-  Test('close comment and delete invalid char','<!--null'#0#1#2'comment','<!--nullcomment-->');
+  TestFrag('close comment','<!--','<!---->');
+  TestFrag('close comment and delete invalid char','<!--null'#0#1#2'comment','<!--nullcomment-->');
 end;
 
 procedure TTestCTXMLFixFragment.TestFixXMLFragmentInvalidCharacters;
 begin
-  Test('delete special characters','A'#0'B'#1#127,'AB');
-  Test('replace tag characters','LT< GT>AMP&','LT&lt; GT&gt;AMP&amp;');
-  Test('lower case special characters','&LT;','&lt;');
+  TestFrag('delete special characters','A'#0'B'#1#127,'AB');
+  TestFrag('replace tag characters','LT< GT>AMP&','LT&lt; GT&gt;AMP&amp;');
+  TestFrag('lower case special characters','&LT;','&lt;');
 end;
 
 procedure TTestCTXMLFixFragment.TestFixXMLFragmentOpenTag;
 begin
-  Test('valid short tag','<link/>','<link/>');
-  Test('valid short with empty attribute tag','<link id=""/>','<link id=""/>');
-  Test('missing tag name','<>','&lt;&gt;');
-  Test('lower case tag name','<A></a>','<a></a>');
-  Test('invalid character in tag','<a "></a>','<a >"&gt;</a>');
+  TestFrag('valid short tag','<link/>','<link/>');
+  TestFrag('valid short with empty attribute tag','<link id=""/>','<link id=""/>');
+  TestFrag('missing tag name','<>','&lt;&gt;');
+  TestFrag('lower case tag name','<A></a>','<a></a>');
+  TestFrag('invalid character in tag','<a "></a>','<a >"&gt;</a>');
 end;
 
 procedure TTestCTXMLFixFragment.TestFixXMLFragmentAttribute;
 begin
-  Test('lower case attribute name','<a Name=""></a>','<a name=""></a>');
-  Test('missing attribute equal','<a name ""></a>','<a name =""></a>');
-  Test('missing attribute value','<a name=></a>','<a name=""></a>');
-  Test('missing attribute quotes','<a name=1></a>','<a name="1"></a>');
-  Test('missing attribute ending quote','<a name="1></a>','<a name="1"></a>');
-  Test('invalid character in attribute value','<a name="&"></a>','<a name="&amp;"></a>');
-  Test('amp attribute value','<a name="&amp;"></a>','<a name="&amp;"></a>');
+  TestFrag('lower case attribute name','<a Name=""></a>','<a name=""></a>');
+  TestFrag('missing attribute equal','<a name ""></a>','<a name =""></a>');
+  TestFrag('missing attribute value','<a name=></a>','<a name=""></a>');
+  TestFrag('missing attribute quotes','<a name=1></a>','<a name="1"></a>');
+  TestFrag('missing attribute ending quote','<a name="1></a>','<a name="1"></a>');
+  TestFrag('invalid character in xml fragment attribute value','<a name="&"></a>','<a name="&amp;"></a>');
+  TestFrag('amp attribute value','<a name="&amp;"></a>','<a name="&amp;"></a>');
 end;
 
 procedure TTestCTXMLFixFragment.TestFixXMLFragmentCloseTag;
 begin
-  Test('lower case close tag name','<a></A>','<a></a>');
-  Test('close open tag','<a>','<a/>');
-  Test('close open sub tag','<p><a></p>','<p><a/></p>');
-  Test('disable invalid close tag','</p>','&lt;/p&gt;');
+  TestFrag('lower case close tag name','<a></A>','<a></a>');
+  TestFrag('close open tag','<a>','<a/>');
+  TestFrag('close open sub tag','<p><a></p>','<p><a/></p>');
+  TestFrag('disable invalid close tag','</p>','&lt;/p&gt;');
 end;
 
 procedure TTestCTXMLFixFragment.TestFixXMLFragmentBugReports;
 begin
-  Test('15120','operator <(TPoint, TPoint): Boolean',
+  TestFrag('15120','operator <(TPoint, TPoint): Boolean',
                  'operator &lt;(TPoint, TPoint): Boolean');
-  Test('16671','<br>',
+  TestFrag('16671','<br>',
                '<br/>');
-  Test('18800','<link id="foo"/>','<link id="foo"/>');
+  TestFrag('18800','<link id="foo"/>','<link id="foo"/>');
+end;
+
+procedure TTestCTXMLFixFragment.TestFixXMLValue;
+begin
+  TestAttr('invalid character in xml attribute value','operator<','operator&lt;');
+  TestAttr('correct character in xml attribute value','&amp;','&amp;');
+  TestAttr('lower case character name in attribute value','&AMP;','&amp;');
+  TestAttr('" in attribute value','"','&quot;');
+  TestAttr(''' in attribute value','''','&apos;');
+  TestAttr('< in attribute value','<','&lt;');
+  TestAttr('> in attribute value','>','&gt;');
 end;
 
 initialization
