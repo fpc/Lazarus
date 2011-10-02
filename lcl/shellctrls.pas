@@ -309,13 +309,24 @@ begin
 
 procedure TCustomShellTreeView.SetShellListView(
   const Value: TCustomShellListView);
+var
+  Tmp: TCustomShellListView;
 begin
+  if FShellListView = Value then Exit;
+
+  if Assigned(FShellListView) and Assigned(Value) then
+  begin
+    Tmp := FShellListView;
+    FShellListView := nil;
+    Tmp.ShellTreeView := nil;
+  end;
+
   FShellListView := Value;
 
   // Update the pair, it will then update itself
   // in the setter of this property
   // Updates only if necessary to avoid circular calls of the setters
-  if Value.ShellTreeView <> Self then
+  if Assigned(Value) and (Value.ShellTreeView <> Self) then
     Value.ShellTreeView := Self;
 end;
 
@@ -373,6 +384,7 @@ end;
 
 destructor TCustomShellTreeView.Destroy;
 begin
+  ShellListView := nil;
   inherited Destroy;
 end;
 
@@ -667,22 +679,30 @@ end;
 
 procedure TCustomShellListView.SetShellTreeView(
   const Value: TCustomShellTreeView);
+var
+  Tmp: TCustomShellTreeView;
 begin
-  if FShellTreeView <> Value then
+  if FShellTreeView = Value then Exit;
+  if FShellTreeView <> nil then
   begin
-    FShellTreeView := Value;
-
-    Clear;
-
-    if Value <> nil then
-    begin
-      FRoot := Value.GetPathFromNode(Value.Selected);
-      PopulateWithRoot();
-    end;
+    Tmp := FShellTreeView;
+    FShellTreeView := nil;
+    Tmp.ShellListView := nil;
   end;
 
-  // Also update the pair, but only if necessary to avoid circular calls of the setters
-  if Value.ShellListView <> Self then Value.ShellListView := Self;
+  FShellTreeView := Value;
+
+  Clear;
+
+  if Value <> nil then
+  begin
+    FRoot := Value.GetPathFromNode(Value.Selected);
+    PopulateWithRoot();
+
+    // Also update the pair, but only if necessary to avoid circular calls of the setters
+    if Value.ShellListView <> Self then Value.ShellListView := Self;
+  end;
+
 end;
 
 procedure TCustomShellListView.SetMask(const AValue: string);
@@ -727,7 +747,7 @@ end;
 
 destructor TCustomShellListView.Destroy;
 begin
-
+  ShellTreeView := nil;
   inherited Destroy;
 end;
 
