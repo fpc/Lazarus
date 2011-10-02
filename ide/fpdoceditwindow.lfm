@@ -24,7 +24,6 @@ object FPDocEditor: TFPDocEditor
     TabOrder = 0
     TabPosition = tpBottom
     OnChange = PageControlChange
-    OnPageChanged = PageControlChange
     object ShortTabSheet: TTabSheet
       Caption = 'ShortTabSheet'
       ClientHeight = 123

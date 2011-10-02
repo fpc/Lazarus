@@ -88,7 +88,6 @@ object InitialSetupDialog: TInitialSetupDialog
     TabIndex = 2
     TabOrder = 3
     OnChange = PropertiesPageControlChange
-    OnPageChanged = PropertiesPageControlChange
     Options = [nboHidePageListPopup]
     object LazarusTabSheet: TTabSheet
       Caption = 'LazarusTabSheet'

@@ -24,7 +24,6 @@ object SearchResultsView: TSearchResultsView
     OnChange = ResultsNoteBookPageChanged
     OnCloseTabClicked = ResultsNoteBookClosetabclicked
     OnMouseDown = ResultsNoteBookMouseDown
-    OnPageChanged = ResultsNoteBookPageChanged
     Options = [nboShowCloseButtons, nboMultiLine]
   end
   object ToolBar: TToolBar

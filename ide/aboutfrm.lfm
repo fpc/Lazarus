@@ -18,7 +18,7 @@ object AboutForm: TAboutForm
     Top = 0
     Width = 460
     Align = alClient
-    OnPageChanged = NotebookPageChanged
+    OnChange = NotebookPageChanged
     TabOrder = 0
     object VersionPage: TTabSheet
       Caption = 'Version'

@@ -21,7 +21,7 @@ object CodeExplorerView: TCodeExplorerView
     BorderSpacing.Top = 2
     TabIndex = 0
     TabOrder = 0
-    OnPageChanged = MainNotebookPageChanged
+    OnChange = MainNotebookPageChanged
     object CodePage: TTabSheet
       Caption = 'CodePage'
       ClientHeight = 488

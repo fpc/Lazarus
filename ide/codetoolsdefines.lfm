@@ -83,7 +83,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
-      OnPageChanged = ValueNoteBookPageChanged
+      OnChange = ValueNoteBookPageChanged
       TabOrder = 0
       object ValueAsTextPage: TTabSheet
         Caption = 'ValueAsTextPage'
