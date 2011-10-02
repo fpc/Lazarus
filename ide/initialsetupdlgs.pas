@@ -863,8 +863,6 @@ end;
 { TInitialSetupDialog }
 
 procedure TInitialSetupDialog.FormCreate(Sender: TObject);
-var
-  Node: TTreeNode;
 begin
   Caption:=Format(lisWelcomeToLazarusIDE, [GetLazarusVersionString]);
 
@@ -896,12 +894,6 @@ begin
   FPCSrcDirLabel.Caption:=Format(
     lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro, [SetDirSeparators('rtl'
     +'/linux/system.pp')]);
-
-  // select first error
-  Node:=FirstErrorNode;
-  if Node=nil then
-    Node:=TVNodeLazarus;
-  PropertiesTreeView.Selected:=Node;
 end;
 
 procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);
@@ -1405,10 +1397,17 @@ begin
 end;
 
 procedure TInitialSetupDialog.Init;
+var
+  Node: TTreeNode;
 begin
   InitLazarusDir;
   InitCompilerFilename;
   InitFPCSrcDir;
+  // select first error
+  Node:=FirstErrorNode;
+  if Node=nil then
+    Node:=TVNodeLazarus;
+  PropertiesTreeView.Selected:=Node;
 end;
 
 end.
