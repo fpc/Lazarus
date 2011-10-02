@@ -28,6 +28,10 @@ procedure TDBText.DataChange(Sender: TObject);
 begin
   if FDataLink.Field <> nil then
     Caption := FDataLink.Field.DisplayText
+  // This designing check avoids getting a 1x1 control in design mode,
+  // see http://bugs.freepascal.org/view.php?id=19021
+  else if csDesigning in ComponentState then
+    Caption := Name
   else
     Caption := '';
 end;
