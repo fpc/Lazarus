@@ -3686,7 +3686,6 @@ resourcestring
   lisThePackageAddsThePathToTheIncludePathOfTheIDEThisI = 'The package %s '
     +'adds the path "%s" to the include path of the IDE.%sThis is probably a '
     +'misconfiguration of the package.';
-  lisPkgMangPackageChangedSave = 'Package %s%s%s changed. Save?';
   lisPkgMangErrorWritingPackage = 'Error Writing Package';
   lisPkgMangUnableToWritePackageToFileError = 'Unable to write package %s%s%s%'
     +'sto file %s%s%s.%sError: %s';
@@ -3986,7 +3985,6 @@ resourcestring
   lisPckEditUninstall = 'Uninstall';
   lisPckEditViewPackageSource = 'View Package Source';
   lisPckEditGeneralOptions = 'General Options';
-  lisPckEditSaveChanges = 'Save Changes?';
   lisPckEditPackageHasChangedSavePackage = 'Package %s%s%s has changed.%sSave package?';
   lisPckEditPage = '%s, Page: %s';
   lisPckEditRemoveFile2 = 'Remove file?';

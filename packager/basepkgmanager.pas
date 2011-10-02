@@ -156,8 +156,7 @@ var
   
 const
   PkgSaveFlagNames: array[TPkgSaveFlag] of string = (
-    'psfSaveAs',
-    'psfAskBeforeSaving'
+    'psfSaveAs'
     );
 
   PkgOpenFlagNames: array[TPkgOpenFlag] of string = (

@@ -902,7 +902,7 @@ begin
   if (LazPackage=nil) or (lpfDestroying in LazPackage.Flags)
   or (LazPackage.ReadOnly) or (not LazPackage.Modified) then exit;
 
-  MsgResult:=MessageDlg(lisPckEditSaveChanges,
+  MsgResult:=MessageDlg(lisPkgMangSavePackage,
     Format(lisPckEditPackageHasChangedSavePackage,['"',LazPackage.IDAsString,'"',#13]),
     mtConfirmation,[mbYes,mbNo,mbAbort],0);
   case MsgResult of

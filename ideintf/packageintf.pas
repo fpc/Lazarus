@@ -150,8 +150,7 @@ type
 
 type
   TPkgSaveFlag = (
-    psfSaveAs,
-    psfAskBeforeSaving
+    psfSaveAs
     );
   TPkgSaveFlags = set of TPkgSaveFlag;
 

@@ -2290,15 +2290,6 @@ begin
     exit;
   end;
 
-  // ask user if package should be saved
-  if psfAskBeforeSaving in Flags then begin
-    Result:=IDEMessageDialog(lisPkgMangSavePackage,
-               Format(lisPkgMangPackageChangedSave, ['"',APackage.IDAsString,'"']),
-               mtConfirmation,[mbYes,mbNo,mbAbort]);
-    if (Result=mrNo) then Result:=mrIgnore;
-    if Result<>mrYes then exit;
-  end;
-  
   // warn about missing files
   Result:=WarnAboutMissingPackageFiles(APackage);
   if Result<>mrOk then exit;
