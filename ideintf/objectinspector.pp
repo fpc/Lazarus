@@ -2871,7 +2871,11 @@ begin
   if FCurrentEdit=ValueEdit then
     ValueEdit.Text:=NewValue
   else if FCurrentEdit=ValueComboBox then
-    ValueComboBox.Text:=NewValue
+  begin
+    ValueComboBox.Text:=NewValue;
+    if ValueComboBox.Style=csOwnerDrawVariable then
+       Exclude(FStates,pgsGetComboItemsCalled);
+  end
   else if FCurrentEdit=ValueCheckBox then begin
     ValueCheckBox.Caption:=NewValue;
     ValueCheckBox.Checked:=NewValue='True';

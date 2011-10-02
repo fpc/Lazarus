@@ -311,7 +311,10 @@ begin
 end;
 
 procedure TColorPropertyEditor.GetValues(Proc: TGetStrProc);
+var
+  CValue: Longint;
 begin
+  if not IdentToColor(GetVisualValue, CValue) then Proc(GetVisualValue);
   GetColorValues(Proc);
 end;
 
