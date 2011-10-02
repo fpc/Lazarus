@@ -264,8 +264,8 @@ begin
       AFilename:=LazPackage.Directory+AFilename
     else begin
       MessageDlg(lisA2PInvalidFilename,
-        Format(lisA2PTheFilenameIsAmbiguousPleaseSpecifiyAFilename, ['"',
-          AFilename, '"', #13]),
+        Format(lisA2PTheFilenameIsAmbiguousPleaseSpecifiyAFilename,
+               ['"', AFilename, '"', #13]),
         mtError,[mbCancel],0);
       exit;
     end;
@@ -276,8 +276,8 @@ begin
     if (not FileExistsUTF8(AFilename)) then begin
       if AddFileType=d2ptUnit then begin
         MessageDlg(lisFileNotFound,
-          Format(lisPkgMangFileNotFound, ['"', AFilename, '"']), mtError, [
-            mbCancel], 0);
+          Format(lisPkgMangFileNotFound, ['"', AFilename, '"']),
+          mtError, [mbCancel], 0);
         exit;
       end;
     end;
@@ -299,12 +299,11 @@ begin
   if FilenameIsAbsolute(AFilename) then begin
     if Assigned(OnGetIDEFileInfo) then begin
       IDEFileFlags:=[];
-      OnGetIDEFileInfo(nil,AFilename,[ifsPartOfProject],
-                       IDEFileFlags);
+      OnGetIDEFileInfo(nil,AFilename,[ifsPartOfProject],IDEFileFlags);
       if (ifsPartOfProject in IDEFileFlags) then begin
         MessageDlg(lisA2PFileIsUsed,
-          Format(lisA2PTheFileIsPartOfTheCurrentProjectItIsABadIdea, ['"',
-            AFilename, '"', #13]),
+          Format(lisA2PTheFileIsPartOfTheCurrentProjectItIsABadIdea,
+                 ['"', AFilename, '"', #13]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -337,8 +336,7 @@ begin
       // a unit with this name already exists in the package
       // => warn
       if MessageDlg(lisA2PUnitnameAlreadyExists,
-        Format(lisA2PTheUnitnameAlreadyExistsInThisPackage, ['"', AnUnitName,
-          '"']),
+        Format(lisA2PTheUnitnameAlreadyExistsInThisPackage, ['"',AnUnitName,'"']),
         mtError,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
     end else begin
       PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true,true);
@@ -346,8 +344,8 @@ begin
         // there is already a unit with this name in another package
         // => warn
         if MessageDlg(lisA2PUnitnameAlreadyExists,
-          Format(lisA2PTheUnitnameAlreadyExistsInThePackage, ['"', AnUnitName,
-            '"', #13, PkgFile.LazPackage.IDAsString]),
+          Format(lisA2PTheUnitnameAlreadyExistsInThePackage,
+                 ['"', AnUnitName, '"', #13, PkgFile.LazPackage.IDAsString]),
           mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
       end;
     end;
@@ -355,8 +353,8 @@ begin
     // check if unitname is a componentclass
     if IDEComponentPalette.FindComponent(AnUnitName)<>nil then begin
       if MessageDlg(lisA2PAmbiguousUnitName,
-        Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent, ['"',
-          AnUnitName, '"', #13]),
+        Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent,
+               ['"', AnUnitName, '"', #13]),
         mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
       then
         exit;

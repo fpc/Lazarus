@@ -2383,8 +2383,7 @@ begin
   PackageGraphExplorer.ShowPath(PathList);
 end;
 
-function TPkgManager.ShowBrokenDependenciesReport(Dependencies: TFPList
-  ): TModalResult;
+function TPkgManager.ShowBrokenDependenciesReport(Dependencies: TFPList): TModalResult;
 var
   Msg: String;
   i: Integer;
@@ -2490,8 +2489,7 @@ begin
   end;
 end;
 
-function TPkgManager.RedirectPackageDependency(APackage: TIDEPackage
-  ): TIDEPackage;
+function TPkgManager.RedirectPackageDependency(APackage: TIDEPackage): TIDEPackage;
 begin
   Result:=APackage;
   if Result=PackageGraph.LCLBasePackage then begin
@@ -3308,7 +3306,7 @@ begin
   if ActiveSourceEditor=nil then exit;
 
   Filename:=ActiveUnitInfo.Filename;
-  
+
   // check if filename is absolute
   if ActiveUnitInfo.IsVirtual or (not FileExistsUTF8(Filename)) then begin
     Result:=IDEMessageDialog(lisPkgMangFileNotSaved,
@@ -3319,18 +3317,18 @@ begin
   // check if file is part of project
   if ActiveUnitInfo.IsPartOfProject then begin
     Result:=IDEMessageDialog(lisPkgMangFileIsInProject,
-      Format(lisPkgMangWarningTheFileBelongsToTheCurrentProject, ['"',
-        Filename, '"', #13])
+      Format(lisPkgMangWarningTheFileBelongsToTheCurrentProject,
+             ['"', Filename, '"', #13])
       ,mtWarning,[mbIgnore,mbCancel]);
     if Result<>mrIgnore then exit;
   end;
-  
+
   // check if file is already in a package
   PkgFile:=PackageGraph.FindFileInAllPackages(Filename,true,true);
   if PkgFile<>nil then begin
     Result:=IDEMessageDialog(lisPkgMangFileIsAlreadyInPackage,
-      Format(lisPkgMangTheFileIsAlreadyInThePackage, ['"', Filename, '"', #13,
-        PkgFile.LazPackage.IDAsString]),
+      Format(lisPkgMangTheFileIsAlreadyInThePackage,
+             ['"', Filename, '"', #13, PkgFile.LazPackage.IDAsString]),
       mtWarning,[mbIgnore,mbCancel]);
     if Result<>mrIgnore then exit;
   end;
@@ -3371,8 +3369,8 @@ begin
         if not APackage.IsVirtual then
           AFilename:=CreateRelativePath(AFilename,APackage.Directory);
         Result:=IDEQuestionDialog(lisPkgMangPackageFileMissing,
-          Format(lisPkgMangTheFileOfPackageIsMissing, ['"', AFilename, '"',
-            #13, APackage.IDAsString]),
+          Format(lisPkgMangTheFileOfPackageIsMissing,
+                 ['"', AFilename, '"', #13, APackage.IDAsString]),
           mtWarning,[mrIgnore,mrAbort]);
         if Result<>mrAbort then
           Result:=mrOk;
@@ -3383,8 +3381,8 @@ begin
       if not APackage.IsVirtual then begin
         // an unsaved file
         Result:=IDEQuestionDialog(lisPkgMangPackageFileNotSaved,
-          Format(lisPkgMangTheFileOfPackageNeedsToBeSavedFirst, ['"',
-            AFilename, '"', #13, APackage.IDAsString]),
+          Format(lisPkgMangTheFileOfPackageNeedsToBeSavedFirst,
+                 ['"', AFilename, '"', #13, APackage.IDAsString]),
           mtWarning, [mrIgnore, lisPkgMangIgnoreAndSavePackageNow, mrAbort]);
         if Result<>mrAbort then
           Result:=mrOk;
@@ -3509,8 +3507,8 @@ begin
     // check if package is designtime package
     if APackage.PackageType=lptRunTime then begin
       Result:=IDEMessageDialog(lisPkgMangPackageIsNoDesigntimePackage,
-        Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages, [
-          APackage.IDAsString, #13]),
+        Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages,
+               [APackage.IDAsString, #13]),
         mtError,[mbIgnore,mbAbort]);
       if Result<>mrIgnore then exit;
     end;
@@ -3547,13 +3545,11 @@ begin
         s:=s+RequiredPackage.IDAsString+#13;
       end;
       if PkgList.Count=0 then
-        Msg:=Format(
-          lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac, [
-          APackage.IDAsString])
+        Msg:=Format(lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac,
+                    [APackage.IDAsString])
       else
-        Msg:=Format(
-          lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac2, [
-          APackage.IDAsString]);
+        Msg:=Format(lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac2,
+                    [APackage.IDAsString]);
       Result:=IDEMessageDialog(lisPkgMangAutomaticallyInstalledPackages,
         Msg+#13+s,mtConfirmation,[mbOk,mbCancel]);
       if Result<>mrOk then exit;
@@ -3599,8 +3595,8 @@ begin
 
   // ask user to rebuild Lazarus now
   Result:=IDEMessageDialog(lisPkgMangRebuildLazarus,
-    Format(lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus, [
-      '"', APackage.IDAsString, '"', #13, #13, #13]),
+    Format(lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus,
+           ['"', APackage.IDAsString, '"', #13, #13, #13]),
     mtConfirmation,[mbYes,mbNo]);
   if Result<>mrYes then begin
     Result:=mrOk;
@@ -3630,8 +3626,8 @@ begin
     DoShowPackageGraphPathList(DependencyPath);
     ParentPackage:=TLazPackage(DependencyPath[0]);
     Result:=IDEMessageDialogAb(lisPkgMangPackageIsRequired,
-      Format(lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation, [
-        APackage.IDAsString, ParentPackage.IDAsString, #13]),
+      Format(lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation,
+             [APackage.IDAsString, ParentPackage.IDAsString, #13]),
       mtError,[mbCancel],ShowAbort);
     exit;
   end;
@@ -3639,8 +3635,7 @@ begin
   // check if package is a lazarus base package
   if PackageGraph.IsStaticBasePackage(APackage.Name) then begin
     Result:=IDEMessageDialogAb(lisUninstallImpossible,
-      Format(lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh, [
-        APackage.Name]),
+      Format(lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh,[APackage.Name]),
       mtError,[mbCancel],ShowAbort);
     exit;
   end;
@@ -3682,8 +3677,8 @@ begin
     if not (puifDoNotBuildIDE in Flags) then begin
       // ask user to rebuilt Lazarus now
       Result:=IDEMessageDialog(lisPkgMangRebuildLazarus,
-        Format(lisPkgMangThePackageWasMarkedCurrentlyLazarus, ['"',
-          APackage.IDAsString, '"', #13, #13, #13]),
+        Format(lisPkgMangThePackageWasMarkedCurrentlyLazarus,
+               ['"', APackage.IDAsString, '"', #13, #13, #13]),
         mtConfirmation,[mbYes,mbNo]);
       if Result=mrNo then begin
         Result:=mrOk;
