@@ -287,7 +287,7 @@ begin
   if FilenameIsAbsolute(AFilename) then begin
     PkgFile:=LazPackage.FindPkgFile(AFilename,true,false);
     if PkgFile<>nil then begin
-      Msg:=Format(lisA2PFileAlreadyExistsInTheProject, ['"', AFilename, '"']);
+      Msg:=Format(lisA2PFileAlreadyExistsInThePackage, ['"', AFilename, '"']);
       if PkgFile.Filename<>AFilename then
         Msg:=Format(lisA2PExistingFile, [#13, '"', PkgFile.Filename, '"']);
       MessageDlg(lisA2PFileAlreadyExists, Msg, mtError, [mbCancel], 0);

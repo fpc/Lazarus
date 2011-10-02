@@ -3848,8 +3848,7 @@ resourcestring
   lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent = 'The unit name %s%s%s '
     +'is the same as an registered component.%sUsing this can cause strange '
     +'error messages.';
-  lisA2PFileAlreadyExistsInTheProject = 'File %s%s%s already exists in the '
-    +'project.';
+  lisA2PFileAlreadyExistsInThePackage = 'File %s%s%s already exists in the package.';
   lisA2PExistingFile = '%sExisting file: %s%s%s';
   lisA2PFileAlreadyExists = 'File already exists';
   lisA2PFileIsUsed = 'File is used';
