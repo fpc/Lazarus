@@ -287,7 +287,7 @@ begin
   if FilenameIsAbsolute(AFilename) then begin
     PkgFile:=LazPackage.FindPkgFile(AFilename,true,false);
     if PkgFile<>nil then begin
-      Msg:=Format(lisA2PFileAlreadyExistsInThePackage, ['"', AFilename, '"']);
+      Msg:=Format(lisA2PFileAlreadyExistsInThePackage, ['"',AFilename,'"']);
       if PkgFile.Filename<>AFilename then
         Msg:=Format(lisA2PExistingFile, [#13, '"', PkgFile.Filename, '"']);
       MessageDlg(lisA2PFileAlreadyExists, Msg, mtError, [mbCancel], 0);
@@ -333,16 +333,14 @@ begin
     // check if unitname already exists in package
     PkgFile:=LazPackage.FindUnit(AnUnitName,true,PkgFile);
     if PkgFile<>nil then begin
-      // a unit with this name already exists in the package
-      // => warn
+      // a unit with this name already exists in this package => warn
       if MessageDlg(lisA2PUnitnameAlreadyExists,
         Format(lisA2PTheUnitnameAlreadyExistsInThisPackage, ['"',AnUnitName,'"']),
         mtError,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
     end else begin
       PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true,true);
       if (PkgFile<>nil) and (PkgFile.LazPackage<>LazPackage) then begin
-        // there is already a unit with this name in another package
-        // => warn
+        // there is already a unit with this name in another package => warn
         if MessageDlg(lisA2PUnitnameAlreadyExists,
           Format(lisA2PTheUnitnameAlreadyExistsInThePackage,
                  ['"', AnUnitName, '"', #13, PkgFile.LazPackage.IDAsString]),
@@ -390,8 +388,7 @@ begin
   // check packagename
   if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
     MessageDlg(lisProjAddInvalidPackagename,
-      Format(lisA2PThePackageNameIsInvalidPleaseChooseAnExisting, ['"',
-        NewPkgName, '"', #13]),
+      Format(lisA2PThePackageNameIsInvalidPleaseChooseAnExisting, ['"', NewPkgName, '"', #13]),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -399,8 +396,7 @@ begin
   // check if package is already required
   if LazPackage.FindDependencyByName(NewPkgName)<>nil then begin
     MessageDlg(lisProjAddDependencyAlreadyExists,
-      Format(lisA2PThePackageHasAlreadyADependencyForThe, ['"', NewPkgName, '"']
-        ),
+      Format(lisA2PThePackageHasAlreadyADependencyForThe, ['"', NewPkgName, '"']),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -409,8 +405,8 @@ begin
   if not PackageGraph.DependencyExists(NewDependency,fpfSearchAllExisting)
   then begin
     MessageDlg(lisProjAddPackageNotFound,
-      Format(lisA2PNoPackageFoundForDependencyPleaseChooseAnExisting, ['"',
-        NewDependency.AsString, '"', #13]),
+      Format(lisA2PNoPackageFoundForDependencyPleaseChooseAnExisting,
+             ['"', NewDependency.AsString, '"', #13]),
       mtError,[mbCancel],0);
     exit;
   end;
