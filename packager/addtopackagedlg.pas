@@ -247,6 +247,7 @@ var
   IDEFileFlags: TIDEFileStateFlags;
 begin
   Result:=false;
+  PkgFile:=Nil;
 
   // check if package is readonly
   if LazPackage.ReadOnly then begin
@@ -289,7 +290,7 @@ begin
     if PkgFile<>nil then begin
       Msg:=Format(lisA2PFileAlreadyExistsInThePackage, ['"',AFilename,'"']);
       if PkgFile.Filename<>AFilename then
-        Msg:=Format(lisA2PExistingFile, [#13, '"', PkgFile.Filename, '"']);
+        Msg:=Msg+LineEnding+Format(lisA2PExistingFile2, ['"',PkgFile.Filename,'"']);
       MessageDlg(lisA2PFileAlreadyExists, Msg, mtError, [mbCancel], 0);
       exit;
     end;
@@ -357,8 +358,6 @@ begin
       then
         exit;
     end;
-  end else begin
-    AnUnitName:='';
   end;
 
   // ok
