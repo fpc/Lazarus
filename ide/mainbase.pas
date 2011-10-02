@@ -110,7 +110,7 @@ type
     procedure SetupSourceMenu; virtual;
     procedure SetupProjectMenu; virtual;
     procedure SetupRunMenu; virtual;
-    procedure SetupComponentsMenu; virtual;
+    procedure SetupPackageMenu; virtual;
     procedure SetupToolsMenu; virtual;
     procedure SetupWindowsMenu; virtual;
     procedure SetupHelpMenu; virtual;
@@ -713,7 +713,7 @@ begin
   end;
 end;
 
-procedure TMainIDEBase.SetupComponentsMenu;
+procedure TMainIDEBase.SetupPackageMenu;
 var
   ParentMI: TIDEMenuSection;
 begin

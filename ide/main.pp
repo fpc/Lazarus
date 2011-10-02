@@ -673,7 +673,7 @@ type
     procedure SetupSourceMenu; override;
     procedure SetupProjectMenu; override;
     procedure SetupRunMenu; override;
-    procedure SetupComponentsMenu; override;
+    procedure SetupPackageMenu; override;
     procedure SetupToolsMenu; override;
     procedure SetupWindowsMenu; override;
     procedure SetupHelpMenu; override;
@@ -2394,7 +2394,7 @@ begin
   SetupSourceMenu;
   SetupProjectMenu;
   SetupRunMenu;
-  SetupComponentsMenu;
+  SetupPackageMenu;
   SetupToolsMenu;
   SetupWindowsMenu;
   SetupHelpMenu;
@@ -2640,9 +2640,9 @@ begin
   end;
 end;
 
-procedure TMainIDE.SetupComponentsMenu;
+procedure TMainIDE.SetupPackageMenu;
 begin
-  inherited SetupComponentsMenu;
+  inherited SetupPackageMenu;
   mnuPackage.OnClick:=@mnuPackageClicked;
 end;
 
