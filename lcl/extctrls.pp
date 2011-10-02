@@ -150,6 +150,7 @@ type
     property DragCursor;
     property DragMode;
     property Enabled;
+//    property OnChange;
     property OnChangeBounds;
 //    property OnChanging;
     property OnContextPopup;
@@ -163,7 +164,6 @@ type
     property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
-//    property OnPageChanged;
     property OnResize;
     property OnStartDrag;
 //    property Options;

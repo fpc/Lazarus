@@ -72,7 +72,6 @@ object MainForm: TMainForm
     TabIndex = 3
     TabOrder = 1
     OnChange = PCConfigChange
-    OnPageChanged = PCConfigChange
     object TSOptions: TTabSheet
       Caption = 'Options'
       ClientHeight = 380

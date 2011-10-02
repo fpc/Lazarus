@@ -780,8 +780,8 @@ var
   p: TObject;
 begin
   //inherited DoChange;
-  if Assigned(OnPageChanged) then
-    OnPageChanged(Self)
+  if Assigned(OnChange) then
+    OnChange(Self)
   else begin
   //emulate page switch
     for i := 0 to TabCount - 1 do begin

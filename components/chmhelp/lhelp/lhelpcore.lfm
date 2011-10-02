@@ -253,7 +253,6 @@ object HelpForm: THelpForm
     TabPosition = tpBottom
     OnChange = PageControlChange
     OnEnter = PageControlEnter
-    OnPageChanged = PageControlChange
   end
   object MainMenu1: TMainMenu
     left = 208

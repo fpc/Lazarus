@@ -1988,9 +1988,9 @@
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomTabControl.OnPageChanged">
+      <element name="TCustomTabControl.OnChange">
         <short>
-          <var>OnPageChanged</var> - event handler for a change in the page</short>
+          <var>OnChange</var> - event handler for a change in the page</short>
         <descr/>
         <seealso/>
       </element>
@@ -3519,7 +3519,7 @@
           <p>
             <var>Create</var> - constructor for <var>TTabControlNoteBookStrings</var>: calls inherited <var>Create</var> then sets some default Actions</p>
           <p>Among the actions set are:</p>
-          <p>OnGetImageIndex, OnChanging, OnPageChanged. Notebook is created with a nominated parent</p>
+          <p>OnGetImageIndex, OnChanging, OnChange. Notebook is created with a nominated parent</p>
         </descr>
         <errors/>
         <seealso>
@@ -18206,7 +18206,6 @@ the comparision is case sensitive.
       <element name="TPageControl.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
       <element name="TPageControl.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
       <element name="TPageControl.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
-      <element name="TPageControl.OnPageChanged" link="#LCL.ComCtrls.TCustomTabControl.OnPageChanged"/>
       <element name="TPageControl.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TPageControl.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TPageControl.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
