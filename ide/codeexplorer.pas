@@ -861,10 +861,12 @@ var
   ShowNode: Boolean;
   ShowChilds: Boolean;
   Category: TCodeExplorerCategory;
+  CurParentViewNode: TTreeNode;
 begin
   while CodeNode<>nil do begin
     ShowNode:=true;
     ShowChilds:=true;
+    CurParentViewNode:=ParentViewNode;
 
     // don't show statements
     if (CodeNode.Desc in AllPascalStatements+[ctnParameterList]) then begin
@@ -919,7 +921,7 @@ begin
       end;
 
       // don't show single hint modifiers
-      if (CodeNode.Desc = ctnHintModifier) and (ParentViewNode = nil) then
+      if (CodeNode.Desc = ctnHintModifier) and (CurParentViewNode = nil) then
       begin
         ShowNode:=false;
         ShowChilds:=false;
@@ -955,8 +957,8 @@ begin
               fCategoryNodes[Category].ImageIndex:=NodeImageIndex;
               fCategoryNodes[Category].SelectedIndex:=NodeImageIndex;
             end;
-            if not Assigned(ParentViewNode) then
-              ParentViewNode:=fCategoryNodes[Category];
+            if (CurParentViewNode=nil) then
+              CurParentViewNode:=fCategoryNodes[Category];
             InFrontViewNode:=nil;
           end;
         end else begin
@@ -975,13 +977,13 @@ begin
       NodeText:=GetCodeNodeDescription(ACodeTool,CodeNode);
       NodeImageIndex:=GetCodeNodeImage(ACodeTool,CodeNode);
       //if NodeText='TCodeExplorerView' then
-      //  debugln(['TCodeExplorerView.CreateIdentifierNodes CodeNode=',CodeNode.DescAsString,' NodeText="',NodeText,'" Category=',dbgs(Category),' InFrontViewNode=',InFrontViewNode<>nil,' ParentViewNode=',ParentViewNode<>nil]);
+      //  debugln(['TCodeExplorerView.CreateIdentifierNodes CodeNode=',CodeNode.DescAsString,' NodeText="',NodeText,'" Category=',dbgs(Category),' InFrontViewNode=',InFrontViewNode<>nil,' CurParentViewNode=',CurParentViewNode<>nil]);
       if InFrontViewNode<>nil then
         ViewNode:=CodeTreeview.Items.InsertObjectBehind(
                                               InFrontViewNode,NodeText,NodeData)
-      else if ParentViewNode<>nil then
+      else if CurParentViewNode<>nil then
         ViewNode:=CodeTreeview.Items.AddChildObject(
-                                               ParentViewNode,NodeText,NodeData)
+                                               CurParentViewNode,NodeText,NodeData)
       else
         ViewNode:=CodeTreeview.Items.AddObject(nil,NodeText,NodeData);
       ViewNode.ImageIndex:=NodeImageIndex;
@@ -989,7 +991,7 @@ begin
       InFrontViewNode:=ViewNode;
     end else begin
       // do not add a node to the TTreeView
-      ViewNode:=ParentViewNode;
+      ViewNode:=CurParentViewNode;
       AddImplementationNode(ACodeTool,CodeNode);
     end;
     if ShowChilds then
