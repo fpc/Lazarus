@@ -304,7 +304,7 @@ type
           itmRunMenuAddBpAddress: TIDEMenuCommand;
           itmRunMenuAddBpWatchPoint: TIDEMenuCommand;
 
-    // components menu
+    // packages menu
     //mnuComponents: TIDEMenuSection;
       //itmPkgOpening: TIDEMenuSection;
         itmPkgNewPackage: TIDEMenuCommand;
