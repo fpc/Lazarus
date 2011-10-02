@@ -3701,10 +3701,6 @@ resourcestring
   lisPkgMangPackageHasNoValidOutputDirectory = 'Package %s%s%s has no valid '
     +'output directory:%s%s%s%s';
   lisPkgMangpackageMainSourceFile = 'package main source file';
-  lisPkgMangRenameFileInPackage = 'Rename file in package?';
-  lisPkgMangThePackageOwnsTheFileShouldTheFileBeRenamed = 'The package %s '
-    +'owns the file%s%s%s%s.%sShould the file be renamed in the package as '
-    +'well?';
   lisErrorLoadingFile = 'Error loading file';
   lisLoadingFailed = 'Loading %s failed.';
   lisPkgMangAddingNewDependencyForProjectPackage = '%sAdding new Dependency '

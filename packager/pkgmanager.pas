@@ -2595,21 +2595,9 @@ begin
   NewPkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true,false);
   if (NewPkgFile<>nil) and (OldPackage<>NewPkgFile.LazPackage) then exit;
 
-  Result:=IDEMessageDialog(lisPkgMangRenameFileInPackage,
-    Format(lisPkgMangThePackageOwnsTheFileShouldTheFileBeRenamed, [
-      OldPackage.IDAsString, #13, '"', OldFilename, '"', #13]),
-    mtConfirmation,[mbYes,mbNo,mbAbort]);
-  if Result=mrNo then begin
-    Result:=mrOk;
-    exit;
-  end;
-  if Result<>mrYes then exit;
-  
   OldPkgFile.Filename:=NewFilename;
   if OldPackage.Editor<>nil then OldPackage.Editor.UpdateAll(true);
   OldPackage.Modified:=true;
-
-  Result:=mrOk;
 end;
 
 {------------------------------------------------------------------------------
