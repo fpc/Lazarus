@@ -2586,8 +2586,7 @@ begin
   if (OldFilename=NewFilename) then
     exit;
   //debugln('TPkgManager.OnRenameFile A OldFilename="',OldFilename,'" New="',NewFilename,'"');
-  OldPkgFile:=PackageGraph.FindFileInAllPackages(OldFilename,true,
-                                                 not IsPartOfProject);
+  OldPkgFile:=PackageGraph.FindFileInAllPackages(OldFilename,true,not IsPartOfProject);
   if (OldPkgFile=nil) or (OldPkgFile.LazPackage.ReadOnly) then
     exit;
   OldPackage:=OldPkgFile.LazPackage;
@@ -2596,7 +2595,8 @@ begin
   if (NewPkgFile<>nil) and (OldPackage<>NewPkgFile.LazPackage) then exit;
 
   OldPkgFile.Filename:=NewFilename;
-  if OldPackage.Editor<>nil then OldPackage.Editor.UpdateAll(true);
+  if OldPackage.Editor<>nil then
+    OldPackage.Editor.UpdateAll(true);
   OldPackage.Modified:=true;
 end;
 

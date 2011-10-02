@@ -906,10 +906,10 @@ begin
     Format(lisPckEditPackageHasChangedSavePackage,['"',LazPackage.IDAsString,'"',#13]),
     mtConfirmation,[mbYes,mbNo,mbAbort],0);
   case MsgResult of
-  mrYes:
-    MsgResult:=PackageEditors.SavePackage(LazPackage,false);
-  mrNo:
-    LazPackage.UserIgnoreChangeStamp:=LazPackage.ChangeStamp;
+    mrYes:
+      MsgResult:=PackageEditors.SavePackage(LazPackage,false);
+    mrNo:
+      LazPackage.UserIgnoreChangeStamp:=LazPackage.ChangeStamp;
   end;
   if MsgResult=mrAbort then CanClose:=false;
 end;
