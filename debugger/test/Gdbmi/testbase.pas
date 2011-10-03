@@ -208,12 +208,14 @@ type
     FTestCnt, FTestErrorCnt, FIgnoredErrorCnt, FUnexpectedSuccessCnt, FSucessCnt: Integer;
     FCurrentPrgName, FCurrentExename: String;
     FLogFile: TextFile;
+    FLogFileCreated: Boolean;
     function GetCompilerInfo: TCompilerInfo;
     function GetDebuggerInfo: TDebuggerInfo;
     function GetSymbolType: TSymbolType;
   protected
     function CreateResult: TTestResult; override;
     function GetLogActive: Boolean;
+    procedure CreateLog;
     procedure SetUp; override;
     procedure TearDown; override;
     procedure DoDbgOutPut(Sender: TObject; const AText: String); virtual;
@@ -236,6 +238,7 @@ type
     Procedure TestCompile(const PrgName: string; out ExeName: string; NamePostFix: String=''; ExtraArgs: String=''); overload;
     Procedure TestCompile(const PrgName: string; out ExeName: string; UsesDirs: array of TUsesDir;
                           NamePostFix: String=''; ExtraArgs: String=''); overload;
+    function SkipTest: Boolean;
   public
     property Parent: TGDBTestsuite read FParent write FParent;
     property DebuggerInfo: TDebuggerInfo read GetDebuggerInfo;
@@ -269,6 +272,8 @@ var
   WriteLog: Boolean;
 
 implementation
+
+uses TestGDBMIControl;
 
 var
   Compilers: TCompilerList = nil;
@@ -346,6 +351,7 @@ end;
 procedure TGDBTestCase.InternalDbgOutPut(Sender: TObject; const AText: String);
 begin
   if GetLogActive then begin
+    CreateLog;
     writeln(FLogFile, AText);
   end;
   DoDbgOutPut(Sender, AText);
@@ -382,13 +388,14 @@ begin
   Result := WriteLog;
 end;
 
-procedure TGDBTestCase.SetUp;
+procedure TGDBTestCase.CreateLog;
 var
   name: String;
   i: Integer;
   dir: String;
 begin
-  if GetLogActive then begin
+  if FLogFileCreated then exit;
+  //if GetLogActive then begin
     name := TestName
       + '_' + NameToFileName(GetCompilerInfo.Name)
       + '_' + SymbolTypeNames[GetSymbolType]
@@ -403,14 +410,20 @@ begin
         name[i] := '_';
     AssignFile(FLogFile, Dir +  name);
     Rewrite(FLogFile);
-  end;
+    FLogFileCreated := True;
+  //end;
+end;
+
+procedure TGDBTestCase.SetUp;
+begin
+  FLogFileCreated := False;
   inherited SetUp;
 end;
 
 procedure TGDBTestCase.TearDown;
 begin
   inherited TearDown;
-  if GetLogActive then begin
+  if FLogFileCreated then begin
     CloseFile(FLogFile);
   end;
 end;
@@ -430,6 +443,7 @@ begin
   FRegisters := TIDERegisters.Create;
 
   Result := GdbClass.Create(DebuggerInfo.ExeName);
+  Result.OnDbgOutput  := @InternalDbgOutPut;
 
   //TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
   FWatches.Supplier := Result.Watches;
@@ -449,7 +463,6 @@ begin
   Result.FileName   := TestExeName;
   Result.Arguments := '';
   Result.ShowConsole := True;
-  Result.OnDbgOutput  := @InternalDbgOutPut;
 
 end;
 
@@ -583,6 +596,7 @@ begin
                [FTestErrorCnt, FTestCnt, FIgnoredErrorCnt, FUnexpectedSuccessCnt, FSucessCnt ]);
   FTestErrors := '';
   if GetLogActive then begin
+    CreateLog;
     writeln(FLogFile, '***' + s1 + '***' +LineEnding);
     writeln(FLogFile, '================= Failed:'+LineEnding);
     writeln(FLogFile, s);
@@ -607,11 +621,19 @@ procedure TGDBTestCase.TestCompile(const PrgName: string; out ExeName: string;
   UsesDirs: array of TUsesDir; NamePostFix: String; ExtraArgs: String);
 begin
   if GetLogActive then begin
+    CreateLog;
     writeln(FLogFile, LineEnding+LineEnding+'******************* compile '+PrgName + ' ' + ExtraArgs +LineEnding);
   end;
   Parent.TestCompile(PrgName, ExeName, UsesDirs, NamePostFix, ExtraArgs);
   FCurrentPrgName := PrgName;
   FCurrentExename := ExeName;
+end;
+
+function TGDBTestCase.SkipTest: Boolean;
+begin
+  Result := not TestControlForm.chkGDB.Checked[TestControlForm.chkGDB.Items.IndexOf(DebuggerInfo.Name)];
+  Result := Result or
+            not TestControlForm.chkFPC.Checked[TestControlForm.chkFPC.Items.IndexOf(CompilerInfo.Name)];
 end;
 
 { TBaseList }

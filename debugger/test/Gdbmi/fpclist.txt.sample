@@ -13,3 +13,7 @@ symbols=gs,gw,gwset
 exe=c:\FPC\trunk\bin\i386-win32\fpc.exe
 symbols=gs,gw,gwset,gw3
 
+[fpc trunk external linker]
+exe=c:\FPC\trunk\bin\i386-win32\fpc.exe
+symbols=gs,gw,gwset,gw3
+opts=-Xe
