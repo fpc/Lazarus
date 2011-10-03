@@ -818,7 +818,7 @@ begin
   if InitialDir <> '' then
   begin
     if Succeeded(SHCreateItemFromParsingName(PWideChar(UTF8ToUTF16(InitialDir)), nil, IShellItem, DefaultFolderItem)) then
-      ADialog.SetDefaultFolder(DefaultFolderItem);
+      ADialog.SetFolder(DefaultFolderItem);
   end;
 
   ParsedFilter := TParseStringList.Create(AOpenDialog.Filter, '|');
