@@ -373,16 +373,12 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
     Top = 469
     Width = 488
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&ОК'
     OKButton.OnClick = OkButtonClick
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Справка'
     HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Закрыть'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Отмена'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False

@@ -20,15 +20,11 @@ object CharacterMapDialog: TCharacterMapDialog
     Top = 394
     Width = 472
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     OKButton.Enabled = False
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     CancelButton.Enabled = False
     TabOrder = 0
     ShowButtons = [pbClose, pbHelp]

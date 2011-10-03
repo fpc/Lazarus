@@ -47,15 +47,11 @@ object AddProfileForm: TAddProfileForm
     Top = 78
     Width = 431
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&ОК'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Справка'
     HelpButton.Enabled = False
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Закрыть'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Отмена'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False

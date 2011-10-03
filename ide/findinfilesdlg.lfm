@@ -205,16 +205,12 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     Top = 368
     Width = 429
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 6
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False

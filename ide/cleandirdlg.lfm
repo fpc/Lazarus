@@ -153,7 +153,6 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Top = 277
     Width = 438
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&ОК'
     HelpButton.Name = 'HelpButton'
     CloseButton.Name = 'CloseButton'
     CloseButton.Enabled = False

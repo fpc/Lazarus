@@ -282,16 +282,12 @@ object ExternalToolOptionDlg: TExternalToolOptionDlg
     Top = 469
     Width = 649
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 8
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False

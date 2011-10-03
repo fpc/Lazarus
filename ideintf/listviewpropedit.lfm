@@ -202,14 +202,10 @@ object ListViewItemsEditorForm: TListViewItemsEditorForm
     Top = 268
     Width = 513
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&ОК'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Справка'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Закрыть'
     CloseButton.OnClick = btnApplyClick
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Отмена'
     TabOrder = 2
     ShowBevel = False
   end

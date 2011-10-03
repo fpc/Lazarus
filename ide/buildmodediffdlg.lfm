@@ -15,15 +15,11 @@ object BuildModeDiffDialog: TBuildModeDiffDialog
     Top = 276
     Width = 481
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     OKButton.Enabled = False
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     HelpButton.Enabled = False
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     CancelButton.Enabled = False
     TabOrder = 0
     ShowButtons = [pbClose]

@@ -169,13 +169,9 @@ object ComponentListForm: TComponentListForm
     Top = 515
     Width = 212
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 2
     ShowButtons = [pbClose]
   end
