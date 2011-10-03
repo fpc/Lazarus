@@ -10,8 +10,14 @@
         <OtherUnitFiles Value="forms;widgetset"/>
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Conditionals Value="if SrcOS<>'win' then
+      <Conditionals Value="if SrcOS&lt;>'win' then
   UnitPath := 'nonwin32';"/>
+      <Linking>
+        <Debugging>
+          <GenerateDebugInfo Value="True"/>
+          <DebugInfoType Value="dsAuto"/>
+        </Debugging>
+      </Linking>
       <Other>
         <Verbosity>
           <ShowNotes Value="False"/>
@@ -31,7 +37,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="294">
+    <Files Count="295">
       <Item1>
         <Filename Value="barchart.pp"/>
         <UnitName Value="BarChart"/>
@@ -1215,6 +1221,10 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="ValEdit"/>
       </Item294>
+      <Item295>
+        <Filename Value="lazutf8classes.pas"/>
+        <UnitName Value="lazutf8classes"/>
+      </Item295>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>

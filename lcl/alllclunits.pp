@@ -25,7 +25,7 @@ uses
   WSExtCtrls, WSExtDlgs, WSFactory, WSForms, WSGrids, WSImgList, WSLCLClasses, 
   WSMenus, WSPairSplitter, WSProc, WSReferences, WSSpin, WSStdCtrls, 
   WSToolwin, ActnList, Arrow, AsyncProcess, AvgLvlTree, ButtonPanel, Buttons, 
-  Calendar, RegisterLCL, ValEdit, LazarusPackageIntf;
+  Calendar, RegisterLCL, ValEdit, lazutf8classes, LazarusPackageIntf;
 
 implementation
 

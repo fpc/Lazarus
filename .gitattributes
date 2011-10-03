@@ -5638,6 +5638,7 @@ lcl/lazconfigstorage.pas svneol=native#text/pascal
 lcl/lazhelphtml.pas svneol=native#text/pascal
 lcl/lazhelpintf.pas svneol=native#text/pascal
 lcl/lazlinkedlist.pas svneol=native#text/pascal
+lcl/lazutf8classes.pas svneol=native#text/pascal
 lcl/lcl_calc_images.lrs svneol=native#text/pascal
 lcl/lcl_dbgrid_images.lrs svneol=native#text/pascal
 lcl/lcl_dbnav_images.lrs svneol=native#text/pascal
