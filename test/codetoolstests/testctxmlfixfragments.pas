@@ -91,6 +91,7 @@ begin
   TestFrag('missing attribute ending quote','<a name="1></a>','<a name="1"></a>');
   TestFrag('invalid character in xml fragment attribute value','<a name="&"></a>','<a name="&amp;"></a>');
   TestFrag('amp attribute value','<a name="&amp;"></a>','<a name="&amp;"></a>');
+  TestFrag('lt attribute value','<a name="operator&lt;"></a>','<a name="operator&lt;"></a>');
 end;
 
 procedure TTestCTXMLFixFragment.TestFixXMLFragmentCloseTag;

@@ -360,6 +360,7 @@ function ToUnixLineEnding(const s: String): String;
 function ToOSLineEnding(const s: String): String;
 function ReplaceLineEndings(const s, NewLineEnds: string): string;
 function AppendLineEnding(const s: string): string; // append if not empty and there is not already a line ending
+function XMLUnescape(s: string): string; // convert escape characters
 
 implementation
 
@@ -448,6 +449,76 @@ begin
   Result:=s;
   if (Result='') or (Result[length(Result)] in [#10,#13]) then exit;
   Result:=Result+LineEnding;
+end;
+
+function XMLUnescape(s: string): string;
+var
+  p: PChar;
+
+  procedure Replace(StartPos: PChar; const NewTxt: string);
+  var
+    RelStartP: PtrInt;
+  begin
+    RelStartP:=StartPos-PChar(s);
+    s:=copy(s,1,RelStartP)+NewTxt+copy(s,p-PChar(s)+1,length(s));
+    p:=PChar(s)+RelStartP+length(NewTxt);
+  end;
+
+var
+  StartPos: PChar;
+  i: Integer;
+  CurChar: String;
+begin
+  if s='' then exit('');
+  p:=PChar(s);
+  repeat
+    if (p^=#0) and (p-PChar(s)>=length(s)) then
+      break
+    else if p^='&' then begin
+      StartPos:=p;
+      CurChar:='';
+      case p[1] of
+      '0'..'9':
+        begin
+          // decimal number
+          i:=0;
+          while p^ in ['0'..'9'] do
+          begin
+            if i>=0 then
+              i:=i+10+ord(p^)-ord('0');
+            if i>$10FFFF then
+              i:=-1;
+            inc(p);
+          end;
+          if i>=0 then
+            CurChar:=UnicodeToUTF8(i);
+        end;
+      'a'..'z','A'..'Z':
+        begin
+          // name
+          inc(p);
+          while not (p^ in [';',#0]) do inc(p);
+          if p^=';' then begin
+            if CompareIdentifiers(StartPos+1,'amp')=0 then
+              CurChar:='&'
+            else if CompareIdentifiers(StartPos+1,'quot')=0 then
+              CurChar:='"'
+            else if CompareIdentifiers(StartPos+1,'apos')=0 then
+              CurChar:=''''
+            else if CompareIdentifiers(StartPos+1,'lt')=0 then
+              CurChar:='<'
+            else if CompareIdentifiers(StartPos+1,'gt')=0 then
+              CurChar:='>';
+          end;
+        end;
+      end;
+      while not (p^ in [';',#0]) do inc(p);
+      if p^=';' then inc(p);
+      Replace(StartPos,CurChar);
+    end else
+      inc(p);
+  until false;
+  Result:=s;
 end;
 
 function CompareLazFPDocFilenames(Data1, Data2: Pointer): integer;
@@ -1889,7 +1960,6 @@ begin
       CodeNode:=CodeNode.Parent;
     end;
   end;
-  //FixFPDocAttributeValue(Result);
 end;
 
 function TCodeHelpManager.GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode;
