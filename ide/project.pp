@@ -5479,9 +5479,8 @@ end;
 procedure TProject.EditorInfoAdd(EdInfo: TUnitEditorInfo);
 begin
   FAllEditorsInfoList.Add(EdInfo);
-  if Assigned(EdInfo.EditorComponent) then
-//  FAllEditorsInfoMap.Add(EdInfo.EditorComponent, EdInfo);
-    raise Exception.Create('Should never happen. TUnitEditorInfo.EditorComponent is set later.');
+  Assert(not Assigned(EdInfo.EditorComponent),
+         'TUnitEditorInfo.EditorComponent should not be assigned. It is set later.');
 end;
 
 procedure TProject.EditorInfoRemove(EdInfo: TUnitEditorInfo);
