@@ -761,6 +761,7 @@ components/dbexport/tsimplexmlexporter.xpm svneol=native#text/plain
 components/dbexport/tsqlexporter.xpm svneol=native#text/plain
 components/dbexport/tstandardexportformats.xpm svneol=native#text/plain
 components/dbexport/ttexexporter.xpm svneol=native#text/plain
+components/dbexport/txmlxsdexporter.xpm svneol=native#text/plain
 components/editortoolbar/editortoolbar.lpk svneol=native#text/plain
 components/editortoolbar/editortoolbar.lrs svneol=native#text/pascal
 components/editortoolbar/editortoolbar.pas svneol=native#text/plain

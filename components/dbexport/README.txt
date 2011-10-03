@@ -11,11 +11,15 @@ TFixedLengthExporter - Export to Fixed Length format file.
 
 TSimpleXMLExporter - Export to XML file (no UTF-8, just ASCII)
 
+TXMLXSDexporter - Export to various kinds of UTF-8 XML file formats (Microsoft Access, Microsoft Excel, ADO.NET, Delphi ClientDataset)
+
 TSimpleJSONExporter - Export to JSON file (no UTF-8, just ASCII)
 
 TSQLExporter - Export data as a series of SQL insert/update statements.
 
 TFPDBFEport - Export to a DBF file.
+
+TXMLXSDExporter - Export to various kinds of UTF-8 XML file formats (Microsoft Access, Microsoft Excel, ADO.NET, Delphi ClientDataset)
 
 TDataExporter - Dialog component which allows to select a registered export
 format, configures the export settings, and exports the data. Right-click on
