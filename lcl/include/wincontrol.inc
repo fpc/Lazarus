@@ -7627,8 +7627,6 @@ begin
           exit;
       end;
     end;
-  
-    Assert(not ParentDestroyingHandle, Format('WARNING:[TWinControl.HandleNeeded] creating handle for %s while destroying handles!', [ClassName]));
     CreateHandle;
   end;
 end;
