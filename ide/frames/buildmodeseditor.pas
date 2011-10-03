@@ -383,7 +383,7 @@ begin
     begin
       NewValue:=OldValue;
       MessageDlg(lisCCOErrorCaption,
-        lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn2,
+        lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn,
         mtError,[mbCancel],0);
       exit;
     end;

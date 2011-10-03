@@ -3347,8 +3347,7 @@ begin
                                    @MainIDE.GetIDEFileState);
 end;
 
-function TPkgManager.WarnAboutMissingPackageFiles(APackage: TLazPackage
-  ): TModalResult;
+function TPkgManager.WarnAboutMissingPackageFiles(APackage: TLazPackage): TModalResult;
 var
   i: Integer;
   AFile: TPkgFile;

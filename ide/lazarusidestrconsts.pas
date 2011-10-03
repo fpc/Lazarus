@@ -3558,8 +3558,7 @@ resourcestring
   lisThePackageAlreadyContainsAUnitWithThisName = 'The package already '
     +'contains a unit with this name.';
   lisPkgMangThereIsAlreadyAnotherPackageWithTheName = 'There is already '
-    +'another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %'
-    +'s%s%s';
+    +'another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s';
   lisPkgMangFilenameIsUsedByProject = 'Filename is used by project';
   lisPkgMangTheFileNameIsPartOfTheCurrentProject = 'The file name %s%s%s is '
     +'part of the current project.%sProjects and Packages should not share files.';
@@ -3582,8 +3581,7 @@ resourcestring
   lisDeleteAllTheseFiles = 'Delete all these files?';
   lisPkgMangUnsavedPackage = 'Unsaved package';
   lisFpcmakeFailed = 'fpcmake failed';
-  lisCallingToCreateMakefileFromFailed = 'Calling %s to create Makefile from %'
-    +'s failed.';
+  lisCallingToCreateMakefileFromFailed = 'Calling %s to create Makefile from %s failed.';
   lisPkgMangThereIsAnUnsavedPackageInTheRequiredPackages = 'There is an '
     +'unsaved package in the required packages. See package graph.';
   lisPkgMangBrokenDependency = 'Broken dependency';
@@ -3661,23 +3659,20 @@ resourcestring
   lisUnitInPackage = '%s unit %s in package %s%s';
   lisPkgMangSkipThisPackage = 'Skip this package';
   lisPkgMangInvalidFileExtension = 'Invalid file extension';
-  lisPkgMangTheFileIsNotALazarusPackage = 'The file %s%s%s is not a lazarus '
-    +'package.';
+  lisPkgMangTheFileIsNotALazarusPackage = 'The file %s%s%s is not a lazarus package.';
   lisPkgMangInvalidPackageFilename = 'Invalid package filename';
   lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName = 'The package '
     +'file name %s%s%s in%s%s%s%s is not a valid lazarus package name.';
   lisPkgMangFileNotFound = 'File %s%s%s not found.';
   lisPkgMangErrorReadingPackage = 'Error Reading Package';
-  lisPkgUnableToReadPackageFileError = 'Unable to read package file %s%s%s.%'
-    +'sError: %s';
+  lisPkgUnableToReadPackageFileError = 'Unable to read package file %s%s%s.%sError: %s';
   lisPkgMangFilenameDiffersFromPackagename =
     'Filename differs from Packagename';
   lisPkgMangTheFilenameDoesNotCorrespondToThePackage = 'The filename %s%s%s '
     +'does not correspond to the package name %s%s%s in the file.%sChange '
     +'package name to %s%s%s?';
   lisPkgMangPackageFileMissing = 'Package file missing';
-  lisPkgMangTheFileOfPackageIsMissing = 'The file %s%s%s%sof package %s is '
-    +'missing.';
+  lisPkgMangTheFileOfPackageIsMissing = 'The file %s%s%s%sof package %s is missing.';
   lisPkgMangPackageFileNotSaved = 'Package file not saved';
   lisPkgMangTheFileOfPackageNeedsToBeSavedFirst = 'The file %s%s%s%sof '
     +'package %s needs to be saved first.';
@@ -3690,10 +3685,8 @@ resourcestring
   lisPkgMangUnableToWritePackageToFileError = 'Unable to write package %s%s%s%'
     +'sto file %s%s%s.%sError: %s';
   lisSeeProjectProjectInspector = '%sSee Project -> Project Inspector';
-  lisPkgMangTheFollowingPackageFailedToLoad = 'The following package failed '
-    +'to load:';
-  lisPkgMangTheFollowingPackagesFailedToLoad = 'The following packages failed '
-    +'to load:';
+  lisPkgMangTheFollowingPackageFailedToLoad = 'The following package failed to load:';
+  lisPkgMangTheFollowingPackagesFailedToLoad = 'The following packages failed to load:';
   lisMissingPackages = 'Missing Packages';
   lisPkgManginvalidCompilerFilename = 'invalid Compiler filename';
   lisPkgMangTheCompilerFileForPackageIsNotAValidExecutable = 'The compiler '
@@ -3735,8 +3728,7 @@ resourcestring
     +'restarting of lazarus.%s%sDo you want to rebuild Lazarus now?';
   lisPkgMangPackageIsRequired = 'Package is required';
   lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation = 'The package %'
-    +'s is required by %s, which is marked for installation.%sSee package '
-    +'graph.';
+    +'s is required by %s, which is marked for installation.%sSee package graph.';
   lisPkgMangUninstallPackage = 'Uninstall package?';
   lisPkgMangUninstallPackage2 = 'Uninstall package %s?';
   lisPkgMangThePackageWasMarkedCurrentlyLazarus = 'The package %s%s%s was '
@@ -3759,31 +3751,26 @@ resourcestring
   lisIDEInfoErrorRunningCompileAfterToolFailedForPackage = 'Error: running ''co'
     +'mpile after'' tool failed for package %s';
   lisIDEInfoCreatingMakefileForPackage = 'Creating Makefile for package %s';
-  lisIDEInfoWARNINGUnitNameInvalidPackage = 'WARNING: unit name invalid %s, '
-    +'package=%s';
+  lisIDEInfoWARNINGUnitNameInvalidPackage = 'WARNING: unit name invalid %s, package=%s';
 
   // package system
   lisPkgSysInvalidUnitname = 'Invalid Unitname: %s';
   lisPkgSysUnitWasNotFoundInTheLpkFileProbablyThisLpkFileWasN = 'Unit "%s" was'
     +' not found in the lpk file.%sProbably this lpk file was not used for '
     +'building this IDE. Or the package misuses the procedure RegisterUnit.';
-  lisPkgSysUnitWasRemovedFromPackageLpk = 'Unit "%s" was removed from package '
-    +'(lpk)';
+  lisPkgSysUnitWasRemovedFromPackageLpk = 'Unit "%s" was removed from package (lpk)';
   lisPkgSysCanNotRegisterComponentsWithoutUnit = 'Can not register components '
     +'without unit';
   lisPkgSysInvalidComponentClass = 'Invalid component class';
-  lisPkgSysComponentClassAlreadyDefined = 'Component Class %s%s%s already '
-    +'defined';
+  lisPkgSysComponentClassAlreadyDefined = 'Component Class %s%s%s already defined';
   lisPkgSysRegisterUnitWasCalledButNoPackageIsRegistering = 'RegisterUnit was '
     +'called, but no package is registering.';
   lisPkgSysUnitName = '%s%sUnit Name: %s%s%s';
   lisPkgSysFileName = '%s%sFile Name: %s%s%s';
   lisPkgSysPackageRegistrationError = 'Package registration error';
-  lisPkgSysTheRTLFreePascalComponentLibraryProvidesTheBase =
-      'The RTL - '
+  lisPkgSysTheRTLFreePascalComponentLibraryProvidesTheBase = 'The RTL - '
     +'The Run-Time Library is the basis of all Free Pascal programs.';
-  lisPkgSysTheFCLFreePascalComponentLibraryProvidesTheBase =
-      'The FCL - '
+  lisPkgSysTheFCLFreePascalComponentLibraryProvidesTheBase = 'The FCL - '
     +'Free Pascal Component Library provides the base classes for Object Pascal.';
   lisPkgSysTheLCLLazarusComponentLibraryContainsAllBase = 'The LCL - Lazarus '
     +'Component Library contains all base components for form editing.';
@@ -3867,8 +3854,7 @@ resourcestring
   lisA2PTheUnitNameAndFilenameDiffer = 'The unit name %s%s%s%sand filename %s%'
     +'s%s differ.';
   lisA2PFileAlreadyInPackage = 'File already in package';
-  lisA2PTheFileIsAlreadyInThePackage = 'The file %s%s%s is already in the '
-    +'package.';
+  lisA2PTheFileIsAlreadyInThePackage = 'The file %s%s%s is already in the package.';
   lisA2PInvalidFile = 'Invalid file';
   lisA2PAPascalUnitMustHaveTheExtensionPPOrPas = 'A pascal unit must have the '
     +'extension .pp or .pas';
@@ -3932,8 +3918,7 @@ resourcestring
   
   // open installed packages dialog
   lisOIPFilename = 'Filename:  %s';
-  lisOIPThisPackageWasAutomaticallyCreated = '%sThis package was '
-    +'automatically created';
+  lisOIPThisPackageWasAutomaticallyCreated = '%sThis package was automatically created';
   lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound = '%sThis package is '
     +'installed, but the lpk file was not found';
   lisOIPDescriptionDescription = '%sDescription:  %s';
@@ -4210,8 +4195,7 @@ resourcestring
     +'code to extract a new procedure/method.';
   lisInvalidSelection = 'Invalid selection';
   lisThisStatementCanNotBeExtractedPleaseSelectSomeCode = 'This statement can '
-    +'not be extracted.%sPlease select some code to extract a new procedure/'
-    +'method.';
+    +'not be extracted.%sPlease select some code to extract a new procedure/method.';
   lisExtractProcedure = 'Extract Procedure';
   lisNameOfNewProcedure = 'Name of new procedure';
   lisExtract = 'Extract';
@@ -4324,13 +4308,11 @@ resourcestring
   lisCustomProgram = 'Custom Program';
   lisProgram = 'Program';
   lisConsoleApplication = 'Console application';
-  lisFreepascalProgramUsingTCustomApplicationToEasilyCh =
-      'Free Pascal program '
+  lisFreepascalProgramUsingTCustomApplicationToEasilyCh = 'Free Pascal program '
     +'using TCustomApplication to easily check command line options, handling '
     +'exceptions, etc. The program source is automatically maintained by Lazarus.';
   lisProgramAFreepascalProgramTheProgramFileIsAutomatic = 'Program%sA '
-    +'Free Pascal program. The program source is automatically maintained by '
-    +'Lazarus.';
+    +'Free Pascal program. The program source is automatically maintained by Lazarus.';
   lisCustomProgramAFreepascalProgram = 'Custom Program%sA Free Pascal program.';
   lisLibraryAFreepascalLibraryDllUnderWindowsSoUnderLin = 'Library%sA '
     +'Free Pascal library (.dll under Windows, .so under Linux, .dylib under '
@@ -4352,8 +4334,7 @@ resourcestring
   lisUnableToStreamSelectedComponents2 =
     'Unable to stream selected components.';
   lisUnableToChangeClassOfTo = '%s%sUnable to change class of %s to %s';
-  lisCanOnlyChangeTheClassOfTComponents = 'Can only change the class of '
-    +'TComponents.';
+  lisCanOnlyChangeTheClassOfTComponents = 'Can only change the class of TComponents.';
   lisOldClass = 'Old Class';
   lisNewClass = 'New Class';
   lisOldAncestors = 'Old Ancestors';
@@ -4427,8 +4408,7 @@ resourcestring
   lisPDProgress = 'Progress';
   lisPDAbort = 'Abort';
   lisPOSaveInLpiFil = 'Save in .lpi file';
-  lisPOSaveInLpsFileInProjectDirectory = 'Save in .lps file in project '
-    +'directory';
+  lisPOSaveInLpsFileInProjectDirectory = 'Save in .lps file in project directory';
   lisPOSaveInIDEConfigDirectory = 'Save in IDE config directory';
   lisPODoNotSaveAnySessionInfo = 'Do not save any session info';
   lisPOSaveSessionInformationIn = 'Save session information in';
@@ -4498,8 +4478,7 @@ resourcestring
   lisDebugOptionsFrmEnterExceptionName = 'Enter the name of the exception';
   lisDebugOptionsFrmDuplicateExceptionName = 'Duplicate Exception name';
   dlgDebugOptionsPathEditorDlgCaption = 'Path Editor';
-  lisHFMHelpForFreePascalCompilerMessage = 'Help for Free Pascal Compiler '
-    +'message';
+  lisHFMHelpForFreePascalCompilerMessage = 'Help for Free Pascal Compiler message';
   lisRelativePaths = 'Relative paths';
   lisLazBuildSaveSettings = 'Save settings';
   rsFormDataFileDfm = 'Form data file (*.dfm)|*.dfm';
@@ -4570,8 +4549,7 @@ resourcestring
   lisErrorSavingTo = 'Error saving %s to%s%s%s%s';
   lisXMLError = 'XML Error';
   lisXMLParserErrorInFileError = 'XML parser error in file %s%sError: %s';
-  lisUnableToWriteXmlStreamToError = 'Unable to write xml stream to %s%'
-    +'sError: %s';
+  lisUnableToWriteXmlStreamToError = 'Unable to write xml stream to %s%sError: %s';
   lisFileIsSymlink = 'File is symlink';
   lisTheFileIsASymlinkOpenInstead = 'The file %s%s%s is a symlink.%s%sOpen %s%'
     +'s%s instead?';
@@ -4805,8 +4783,7 @@ resourcestring
   lisProjectUnit = 'project unit';
   lisSyntaxMode = 'Syntax mode';
   lisUseAnsistrings = 'Use Ansistrings';
-  lisDoNotShowThisDialogForThisProject = 'Do not show this dialog for this '
-    +'project';
+  lisDoNotShowThisDialogForThisProject = 'Do not show this dialog for this project';
   lisObjectPascalDefault = 'Object Pascal - default';
   lisDelphi = 'Delphi';
   lisTurboPascal = 'Turbo Pascal';
@@ -4819,12 +4796,10 @@ resourcestring
   lisDeleteSelectedFiles = 'Delete selected files';
   lisAddDirectory = 'Add directory';
   lisAddFilesOfDirectory = 'Add files of directory';
-  lisUnableToCreateLinkWithTarget = 'Unable to create link %s%s%s with '
-    +'target %s%s%s';
+  lisUnableToCreateLinkWithTarget = 'Unable to create link %s%s%s with target %s%s%s';
   lisBuildAllFilesOfProjectPackageIDE =
     'build all files of project/package/IDE';
-  lisApplyBuildFlagsBToDependenciesToo = 'apply build flags (-B) to '
-    +'dependencies too';
+  lisApplyBuildFlagsBToDependenciesToo = 'apply build flags (-B) to dependencies too';
   lisDoNotCompileDependencies = 'do not compile dependencies';
   lisBuildIDEWithPackages = 'build IDE with packages';
   lisShowVersionAndExit = 'show version and exit';
@@ -4901,8 +4876,7 @@ resourcestring
   dlgCOCreateNodeBelow = 'Create node below';
   dlgCOCreateChildNode = 'Create child node';
   lisResult = 'Result :=';
-  lisPropertiesOfConditionalCompilerOption = 'Properties of conditional '
-    +'compiler option';
+  lisPropertiesOfConditionalCompilerOption = 'Properties of conditional compiler option';
   lisAction = 'Action:';
   lisValue = 'Value:';
   lisValues = 'Values';
@@ -4954,11 +4928,9 @@ resourcestring
     +'for this target and the fpc.cfg contains the right directories.';
   lisCouldNotRemoveFromMainSource = 'Could not remove %s%s%s from main source!';
   lisCouldNotAddToMainSource = 'Could not add %s%s%s to main source!';
-  lisCouldNotRemoveRFromMainSource = 'Could not remove %s{$R %s%s} from main '
-    +'source!';
+  lisCouldNotRemoveRFromMainSource = 'Could not remove %s{$R %s%s} from main source!';
   lisCouldNotAddRToMainSource = 'Could not add %s{$R %s%s} to main source!';
-  lisCouldNotRemoveIFromMainSource = 'Could not remove %s{$I %s%s} from main '
-    +'source!';
+  lisCouldNotRemoveIFromMainSource = 'Could not remove %s{$I %s%s} from main source!';
   lisCouldNotAddIToMainSource = 'Could not add %s{$I %s%s} to main source!';
   lisFailedToLoadFoldStat = 'Failed to load fold state';
   lisUppercaseString = 'uppercase string';
@@ -4991,8 +4963,7 @@ resourcestring
   lisPrecedingWord = 'Preceding word';
   lisForm = 'Form';
   lisInheritedProjectComponent = 'Inherited project component';
-  lisNewDlgInheritFromAProjectFormComponent = 'Inherit from a project form or '
-    +'component';
+  lisNewDlgInheritFromAProjectFormComponent = 'Inherit from a project form or component';
   lisFrame = 'Frame';
   lisDataModule = 'Data Module';
   lisNoLFMFile = 'No LFM file';
@@ -5126,8 +5097,7 @@ resourcestring
   lisTheProjectHasNoMainSourceFile = 'The project has no main source file.';
   lisInvalidBuildMacroTheNameIsAKeyword = 'Invalid build macro "%s". The name '
     +'is a keyword.';
-  lisTheBuildMacroDoesNotBeginWith = 'The build macro "%s" does not begin '
-    +'with "%s".';
+  lisTheBuildMacroDoesNotBeginWith = 'The build macro "%s" does not begin with "%s".';
   lisRenameTo = 'Rename to %s';
   lisAddValueToMacro = 'Add value to macro %s';
   lisDeleteMacro = 'Delete macro %s';
@@ -5154,11 +5124,7 @@ resourcestring
   lisInSession = 'In session';
   lisThereMustBeAtLeastOneBuildMode = 'There must be at least one build mode.';
   lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn = 'The first build '
-    +'mode is the default mode and must be stored in the project, not in the '
-    +'session.';
-  lisTheFirstBuildModeIsTheDefaultModeAndMustBeStoredIn2 = 'The first build '
-    +'mode is the default mode and must be stored in the project, not in the '
-    +'session.';
+    +'mode is the default mode and must be stored in the project, not in the session.';
   lisAddNewBuildModeCopyingSettingsFrom = 'Add new build mode, copying '
     +'settings from "%s"';
   lisDeleteMode = 'Delete mode "%s"';
@@ -5174,11 +5140,9 @@ resourcestring
   lisInformationAboutUsedFPC = 'Information about used FPC';
 
   //Build mode differences dialog
-  lisBuildModeDiffDifferencesBetweenBuildModes = 'Differences between build '
-    +'modes';
+  lisBuildModeDiffDifferencesBetweenBuildModes = 'Differences between build modes';
   lisBuildModeDiffMode = 'Mode:';
-  lisBuildModeDiffDifferencesToOtherBuildModes = 'Differences to other build '
-    +'modes';
+  lisBuildModeDiffDifferencesToOtherBuildModes = 'Differences to other build modes';
 
   //IDE info dialog
   lisIDEInfoInformationAboutTheIDE = 'Information about the IDE';
@@ -5339,10 +5303,8 @@ resourcestring
   lisConfigureLazarusIDE = 'Configure Lazarus IDE';
   lisFileIsNotAnExecutable = 'File is not an executable';
   lisFpcCfgIsMissing = 'fpc.cfg is missing.';
-  lisSystemPpuNotFoundCheckYourFpcCfg = 'system.ppu not found. Check your fpc.'
-    +'cfg.';
-  lisClassesPpuNotFoundCheckYourFpcCfg = 'classes.ppu not found. Check your '
-    +'fpc.cfg.';
+  lisSystemPpuNotFoundCheckYourFpcCfg = 'system.ppu not found. Check your fpc.cfg.';
+  lisClassesPpuNotFoundCheckYourFpcCfg = 'classes.ppu not found. Check your fpc.cfg.';
   lisWelcomeToLazarusIDE = 'Welcome to Lazarus IDE %s';
   lisStartIDE = 'Start IDE';
   lisUnableToLoadFile2 = 'unable to load file %s: %s';
@@ -5383,8 +5345,7 @@ resourcestring
   lisCBPFiles = '%s (%s files)';
   lisCBPReallyDeleteSourceFiles = 'Really delete %s source files%s%s';
   lisChangesWereNotSaved = 'Changes were not saved';
-  lisDoYouStillWantToOpenAnotherProject = 'Do you still want to open another '
-    +'project?';
+  lisDoYouStillWantToOpenAnotherProject = 'Do you still want to open another project?';
   lisDiscardChangesAndOpenProject = 'Discard changes and open project';
   lisDoYouStillWantToCreateTheNewProject = 'Do you still want to create the '
     +'new project?';
