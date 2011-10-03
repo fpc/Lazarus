@@ -20,7 +20,7 @@ interface
 
 uses
   Math, Types, SysUtils, Classes, LCLProc,Controls, ExtCtrls, StdCtrls, Buttons,
-  Forms, GraphType, Graphics, LMessages, LCLStrConsts, Themes;
+  Forms, GraphType, Graphics, LMessages, Themes;
 
 type
   TButtonOrder  = (boDefault, boCloseCancelOK, boCloseOKCancel);
@@ -39,8 +39,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    // IDE translation at designtime is used as default
-    property Caption stored True;
+    // Caption is stored only if DefaultCaption = false
+    property Caption stored IsCaptionStored;
+    property DefaultCaption stored True;
     property Left stored False;
     property Top stored False;
     property Width stored False;
@@ -487,18 +488,6 @@ const
     bkOK, bkCancel, bkClose, bkHelp
   );
 
-  function GetCaption(Btn: TPanelButton): string;
-  begin
-    case Btn of
-      pbOK: Result:=rsMbOK;
-      pbCancel: Result:=rsMbCancel;
-      pbClose: Result:=rsMbClose;
-      pbHelp: Result:=rsMbHelp;
-    else
-      Result:='?';
-    end;
-  end;
-
 var
   Details: TThemedElementDetails;
   DefButtonSize: TSize;
@@ -515,7 +504,6 @@ begin
     Kind     := KINDS[AButton];
     Constraints.MinWidth := DefButtonSize.cx;
     Constraints.MinHeight := DefButtonSize.cy;
-    Caption  := GetCaption(AButton);
     AutoSize := true;
     TabOrder := Ord(AButton); //initial order
     Align    := alCustom;
