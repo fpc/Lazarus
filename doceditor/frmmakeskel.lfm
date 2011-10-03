@@ -155,15 +155,11 @@ object MakeSkelForm: TMakeSkelForm
     Top = 349
     Width = 474
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     OKButton.Enabled = False
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 6
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

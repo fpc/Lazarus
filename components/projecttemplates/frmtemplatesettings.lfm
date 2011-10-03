@@ -40,16 +40,12 @@ object TemplateSettingsForm: TTemplateSettingsForm
     Top = 87
     Width = 388
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     HelpButton.Enabled = False
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False

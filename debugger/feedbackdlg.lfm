@@ -17,15 +17,11 @@ object DbgFeedbackDlg: TDbgFeedbackDlg
     Top = 172
     Width = 593
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Stop'
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowGlyphs = [pbOK, pbCancel]

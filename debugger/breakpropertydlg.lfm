@@ -399,16 +399,12 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     Width = 438
     Anchors = [akTop, akLeft, akRight, akBottom]
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     OKButton.OnClick = btnOKClick
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     HelpButton.OnClick = btnHelpClick
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 5
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False

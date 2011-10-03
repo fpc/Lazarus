@@ -15,15 +15,11 @@ object ReplaceFuncsForm: TReplaceFuncsForm
     Top = 586
     Width = 916
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
