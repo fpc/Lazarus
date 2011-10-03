@@ -1,5 +1,5 @@
 {%MainUnit gtk2proc.pp}{%MainUnit gtkint.pp}
-{ $Id$ }
+{ $Id$ }`
 
 {******************************************************************************
   Centralized includefile for some common gtk defines
@@ -91,3 +91,5 @@
 {$DEFINE EnabledGtkThreading}
 {$define GTK_2_8}
 
+// See http://bugs.freepascal.org/view.php?id=18966
+{$define Gtk2CallMouseDownBeforeContext}
