@@ -70,6 +70,8 @@ type
     procedure MouseDown(APoint: TPoint); virtual;
     procedure MouseMove(APoint: TPoint); virtual;
     procedure MouseUp(APoint: TPoint); virtual;
+    procedure MouseWheelDown(APoint: TPoint); virtual;
+    procedure MouseWheelUp(APoint: TPoint); virtual;
     procedure RestoreCursor;
     procedure SetCursor;
     procedure SetIndex(AValue: Integer); override;
@@ -220,24 +222,34 @@ type
       read FRatioLimit write FRatioLimit default zrlNone;
   end;
 
-  { TZoomClickTool }
-
-  TZoomClickTool = class(TBasicZoomTool)
+  TBasicZoomStepTool = class(TBasicZoomTool)
   strict private
     FFixedPoint: Boolean;
     FZoomFactor: Double;
     FZoomRatio: Double;
     function ZoomFactorIsStored: boolean;
     function ZoomRatioIsStored: boolean;
+  strict protected
+    procedure DoZoomStep(const APoint: TPoint; const AFactor: TDoublePoint);
   public
     constructor Create(AOwner: TComponent); override;
-    procedure MouseDown(APoint: TPoint); override;
   published
     property FixedPoint: Boolean read FFixedPoint write FFixedPoint default false;
     property ZoomFactor: Double
       read FZoomFactor write FZoomFactor stored ZoomFactorIsStored;
     property ZoomRatio: Double
       read FZoomRatio write FZoomRatio stored ZoomRatioIsStored;
+  end;
+
+  TZoomClickTool = class(TBasicZoomStepTool)
+  public
+    procedure MouseDown(APoint: TPoint); override;
+  end;
+
+  TZoomMouseWheelTool = class(TBasicZoomStepTool)
+  public
+    procedure MouseWheelDown(APoint: TPoint); override;
+    procedure MouseWheelUp(APoint: TPoint); override;
   end;
 
   TPanDirection = (pdLeft, pdUp, pdRight, pdDown);
@@ -520,11 +532,13 @@ begin
     if Toolset.FIsHandled then exit;
   end;
   case AEventId of
-    evidKeyDown  : KeyDown  (APoint);
-    evidKeyUp    : KeyUp    (APoint);
-    evidMouseDown: MouseDown(APoint);
-    evidMouseMove: MouseMove(APoint);
-    evidMouseUp  : MouseUp  (APoint);
+    evidKeyDown       : KeyDown       (APoint);
+    evidKeyUp         : KeyUp         (APoint);
+    evidMouseDown     : MouseDown     (APoint);
+    evidMouseMove     : MouseMove     (APoint);
+    evidMouseUp       : MouseUp       (APoint);
+    evidMouseWheelDown: MouseWheelDown(APoint);
+    evidMouseWheelUp  : MouseWheelUp  (APoint);
   end;
   ev := FEventsAfter[AEventId];
   if Assigned(ev) then
@@ -606,6 +620,16 @@ begin
 end;
 
 procedure TChartTool.MouseUp(APoint: TPoint);
+begin
+  Unused(APoint);
+end;
+
+procedure TChartTool.MouseWheelDown(APoint: TPoint);
+begin
+  Unused(APoint);
+end;
+
+procedure TChartTool.MouseWheelUp(APoint: TPoint);
 begin
   Unused(APoint);
 end;
@@ -1000,21 +1024,21 @@ begin
     FChart.OnDrawReticule(FChart, bestS.Index, best.FIndex, best.FValue);
 end;
 
-{ TZoomClickTool }
+{ TBasicZoomStepTool }
 
-constructor TZoomClickTool.Create(AOwner: TComponent);
+constructor TBasicZoomStepTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FZoomFactor := 1.0;
   FZoomRatio := 1.0;
 end;
 
-procedure TZoomClickTool.MouseDown(APoint: TPoint);
+procedure TBasicZoomStepTool.DoZoomStep(
+  const APoint: TPoint; const AFactor: TDoublePoint);
 var
-  sz, center, ratio, zoom: TDoublePoint;
+  sz, center, ratio: TDoublePoint;
   ext: TDoubleRect;
 begin
-  if (ZoomFactor <= 0) or (ZoomRatio <= 0) then exit;
   ext := FChart.LogicalExtent;
   center := FChart.ImageToGraph(APoint);
   sz := ext.b - ext.a;
@@ -1022,21 +1046,42 @@ begin
     ratio := (center - ext.a) / sz
   else
     ratio := DoublePoint(0.5, 0.5);
-  zoom := DoublePoint(ZoomFactor, ZoomFactor * ZoomRatio);
-  ext.a := center - sz * ratio / zoom;
-  ext.b := center + sz * (DoublePoint(1, 1) - ratio) / zoom;
+  ext.a := center - sz * ratio / AFactor;
+  ext.b := center + sz * (DoublePoint(1, 1) - ratio) / AFactor;
   DoZoom(ext, false);
   Handled;
 end;
 
-function TZoomClickTool.ZoomFactorIsStored: boolean;
+function TBasicZoomStepTool.ZoomFactorIsStored: boolean;
 begin
   Result := FZoomFactor <> 1.0;
 end;
 
-function TZoomClickTool.ZoomRatioIsStored: boolean;
+function TBasicZoomStepTool.ZoomRatioIsStored: boolean;
 begin
   Result := FZoomRatio <> 1.0;
+end;
+
+{ TZoomClickTool }
+
+procedure TZoomClickTool.MouseDown(APoint: TPoint);
+begin
+  if (ZoomFactor <= 0) or (ZoomRatio <= 0) then exit;
+  DoZoomStep(APoint, DoublePoint(ZoomFactor, ZoomFactor * ZoomRatio));
+end;
+
+{ TZoomMouseWheelTool }
+
+procedure TZoomMouseWheelTool.MouseWheelDown(APoint: TPoint);
+begin
+  if (ZoomFactor <= 0) or (ZoomRatio <= 0) then exit;
+  DoZoomStep(APoint, DoublePoint(ZoomFactor, ZoomFactor * ZoomRatio));
+end;
+
+procedure TZoomMouseWheelTool.MouseWheelUp(APoint: TPoint);
+begin
+  if (ZoomFactor <= 0) or (ZoomRatio <= 0) then exit;
+  DoZoomStep(APoint, DoublePoint(1 / ZoomFactor, 1 / ZoomFactor / ZoomRatio));
 end;
 
 { TBasicPanTool }
@@ -1430,8 +1475,9 @@ initialization
 
   ToolsClassRegistry := TStringList.Create;
   OnInitBuiltinTools := @InitBuitlinTools;
-  RegisterChartToolClass(TZoomDragTool, 'Zoom drag');
-  RegisterChartToolClass(TZoomClickTool, 'Zoom click');
+  RegisterChartToolClass(TZoomDragTool, 'Zoom on drag');
+  RegisterChartToolClass(TZoomClickTool, 'Zoom on click');
+  RegisterChartToolClass(TZoomMouseWheelTool, 'Zoom on mouse wheel');
   RegisterChartToolClass(TPanDragTool, 'Panning drag');
   RegisterChartToolClass(TPanClickTool, 'Panning click');
   RegisterChartToolClass(TReticuleTool, 'Reticule');

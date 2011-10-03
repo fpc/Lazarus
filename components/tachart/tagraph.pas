@@ -707,6 +707,9 @@ const
   EV: array [Boolean] of TChartToolEventId = (
     evidMouseWheelDown, evidMouseWheelUp);
 begin
+  // These modifiers are added by mousewheel event, but not by mouse button
+  // and key events. Ignore them to avoid user confusion.
+  AShift -= [ssNum, ssCaps, ssScroll];
   Result :=
     GetToolset.Dispatch(Self, EV[AWheelDelta > 0], AShift, AMousePos) or
     inherited DoMouseWheel(AShift, AWheelDelta, AMousePos);
