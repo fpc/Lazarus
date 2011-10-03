@@ -267,7 +267,10 @@ procedure TCustomBitBtn.Loaded;
 begin
   inherited Loaded;
   if (Kind <> bkCustom) and DefaultCaption and (Caption = '') then
-    Caption := GetCaptionOfKind(Kind);
+  begin
+    Caption := GetCaptionOfKind(Kind); // Will trigger TextChanged
+    DefaultCaption := True;
+  end;
 end;
 
 procedure TCustomBitBtn.TextChanged;
