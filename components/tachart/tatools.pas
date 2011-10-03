@@ -103,6 +103,10 @@ type
       index 3 read GetAfterEvent write SetAfterEvent;
     property OnAfterMouseUp: TChartToolEvent
       index 4 read GetAfterEvent write SetAfterEvent;
+    property OnAfterMouseWheelDown: TChartToolEvent
+      index 5 read GetAfterEvent write SetAfterEvent;
+    property OnAfterMouseWheelUp: TChartToolEvent
+      index 6 read GetAfterEvent write SetAfterEvent;
 
     property OnBeforeKeyDown: TChartToolEvent
       index 0 read GetBeforeEvent write SetBeforeEvent;
@@ -114,6 +118,10 @@ type
       index 3 read GetBeforeEvent write SetBeforeEvent;
     property OnBeforeMouseUp: TChartToolEvent
       index 4 read GetBeforeEvent write SetBeforeEvent;
+    property OnBeforeMouseWheelDown: TChartToolEvent
+      index 5 read GetBeforeEvent write SetBeforeEvent;
+    property OnBeforeMouseWheelUp: TChartToolEvent
+      index 6 read GetBeforeEvent write SetBeforeEvent;
   end;
 
   {$IFNDEF fpdoc} // Workaround for issue #18549.

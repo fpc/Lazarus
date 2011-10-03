@@ -104,7 +104,8 @@ type
   end;
 
   TChartToolEventId = (
-    evidKeyDown, evidKeyUp, evidMouseDown, evidMouseMove, evidMouseUp);
+    evidKeyDown, evidKeyUp, evidMouseDown, evidMouseMove, evidMouseUp,
+    evidMouseWheelDown, evidMouseWheelUp);
 
   { TBasicChartToolset }
 
@@ -248,16 +249,20 @@ type
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData);
   protected
-    procedure Clear(ADrawer: IChartDrawer; const ARect: TRect);
-    procedure DisplaySeries(ADrawer: IChartDrawer);
-    procedure DrawBackWall(ADrawer: IChartDrawer);
-    procedure KeyDownAfterInterface(var AKey: Word; AShift: TShiftState); override;
-    procedure KeyUpAfterInterface(var AKey: Word; AShift: TShiftState); override;
+    function DoMouseWheel(
+      AShift: TShiftState; AWheelDelta: Integer;
+      AMousePos: TPoint): Boolean; override;
     procedure MouseDown(
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(
       AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
+  protected
+    procedure Clear(ADrawer: IChartDrawer; const ARect: TRect);
+    procedure DisplaySeries(ADrawer: IChartDrawer);
+    procedure DrawBackWall(ADrawer: IChartDrawer);
+    procedure KeyDownAfterInterface(var AKey: Word; AShift: TShiftState); override;
+    procedure KeyUpAfterInterface(var AKey: Word; AShift: TShiftState); override;
     {$IFDEF LCLGtk2}
     procedure DoOnResize; override;
     {$ENDIF}
@@ -694,6 +699,17 @@ begin
   end;
   if AxisVisible then
     AxisList.Draw(MaxInt, axisIndex);
+end;
+
+function TChart.DoMouseWheel(
+  AShift: TShiftState; AWheelDelta: Integer; AMousePos: TPoint): Boolean;
+const
+  EV: array [Boolean] of TChartToolEventId = (
+    evidMouseWheelDown, evidMouseWheelUp);
+begin
+  Result :=
+    GetToolset.Dispatch(Self, EV[AWheelDelta > 0], AShift, AMousePos) or
+    inherited DoMouseWheel(AShift, AWheelDelta, AMousePos);
 end;
 
 {$IFDEF LCLGtk2}
