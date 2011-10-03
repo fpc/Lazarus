@@ -93,7 +93,7 @@ type
     property Toolset: TChartToolset read FToolset write SetToolset;
   published
     property Enabled: Boolean read FEnabled write FEnabled default true;
-    property Shift: TShiftState read FShift write FShift;
+    property Shift: TShiftState read FShift write FShift default [];
   published
     property OnAfterKeyDown: TChartToolEvent
       index 0 read GetAfterEvent write SetAfterEvent;
@@ -270,7 +270,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property ActiveCursor default crSizeAll;
     property LimitToExtent: TPanDirectionSet
       read FLimitToExtent write FLimitToExtent default [];
   end;
@@ -278,7 +277,7 @@ type
   { TPanDragTool }
 
   TPanDragTool = class(TBasicPanTool)
-  private
+  strict private
     FDirections: TPanDirectionSet;
     FOrigin: TPoint;
   public
@@ -287,6 +286,7 @@ type
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
   published
+    property ActiveCursor default crSizeAll;
     property Directions: TPanDirectionSet
       read FDirections write FDirections default PAN_DIRECTIONS_ALL;
   end;
@@ -309,8 +309,27 @@ type
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
   published
+    property ActiveCursor default crSizeAll;
     property Interval: Cardinal read FInterval write FInterval default 0;
     property Margins: TChartMargins read FMargins write FMargins;
+  end;
+
+  { TPanMouseWheelTool }
+
+  TPanMouseWheelTool = class(TBasicPanTool)
+  strict private
+    FStep: Cardinal;
+    FWheelUpDirection: TPanDirection;
+
+    procedure DoPan(AStep: Integer);
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure MouseWheelDown(APoint: TPoint); override;
+    procedure MouseWheelUp(APoint: TPoint); override;
+  published
+    property Step: Cardinal read FStep write FStep default 10;
+    property WheelUpDirection: TPanDirection
+      read FWheelUpDirection write FWheelUpDirection default pdUp;
   end;
 
   TChartDistanceMode = (cdmXY, cdmOnlyX, cdmOnlyY);
@@ -1227,6 +1246,35 @@ begin
     PanBy(FOffset);
 end;
 
+{ TPanMouseWheelTool }
+
+constructor TPanMouseWheelTool.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  SetPropDefaults(Self, ['Step', 'WheelUpDirection']);
+end;
+
+procedure TPanMouseWheelTool.DoPan(AStep: Integer);
+const
+  DIR_TO_OFFSET: array [TPanDirection] of TPoint =
+    // pdLeft, pdUp, pdRight, pdDown
+    ((X: -1; Y: 0), (X: 0; Y: -1), (X: 1; Y: 0), (X: 0; Y: 1));
+begin
+  PanBy(DIR_TO_OFFSET[WheelUpDirection] * AStep);
+end;
+
+procedure TPanMouseWheelTool.MouseWheelDown(APoint: TPoint);
+begin
+  Unused(APoint);
+  DoPan(-Step);
+end;
+
+procedure TPanMouseWheelTool.MouseWheelUp(APoint: TPoint);
+begin
+  Unused(APoint);
+  DoPan(Step);
+end;
+
 { TDataPointTool }
 
 constructor TDataPointTool.Create(AOwner: TComponent);
@@ -1475,11 +1523,12 @@ initialization
 
   ToolsClassRegistry := TStringList.Create;
   OnInitBuiltinTools := @InitBuitlinTools;
-  RegisterChartToolClass(TZoomDragTool, 'Zoom on drag');
-  RegisterChartToolClass(TZoomClickTool, 'Zoom on click');
-  RegisterChartToolClass(TZoomMouseWheelTool, 'Zoom on mouse wheel');
-  RegisterChartToolClass(TPanDragTool, 'Panning drag');
-  RegisterChartToolClass(TPanClickTool, 'Panning click');
+  RegisterChartToolClass(TZoomDragTool, 'Zoom by drag');
+  RegisterChartToolClass(TZoomClickTool, 'Zoom by click');
+  RegisterChartToolClass(TZoomMouseWheelTool, 'Zoom by mouse wheel');
+  RegisterChartToolClass(TPanDragTool, 'Panning by drag');
+  RegisterChartToolClass(TPanClickTool, 'Panning by click');
+  RegisterChartToolClass(TPanMouseWheelTool, 'Panning by mouse wheel');
   RegisterChartToolClass(TReticuleTool, 'Reticule');
   RegisterChartToolClass(TDataPointClickTool, 'Data point click');
   RegisterChartToolClass(TDataPointDragTool, 'Data point drag');
