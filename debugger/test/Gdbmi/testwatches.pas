@@ -463,8 +463,8 @@ begin
 
   Add('ArgDouble',       wdfDefault,  '1\.123',      skSimple,      'Double', []);
   Add('VArgDouble',      wdfDefault,  '1\.123',      skSimple,      'Double', []);
-  Add('ArgExtended',     wdfDefault,  '2\.345',      skSimple,      'Extended', []);
-  Add('VArgExtended',    wdfDefault,  '2\.345',      skSimple,      'Extended', []);
+  Add('ArgExtended',     wdfDefault,  '2\.345',      skSimple,      'Extended|double', [fTpMtch]);
+  Add('VArgExtended',    wdfDefault,  '2\.345',      skSimple,      'Extended|double', [fTpMtch]);
 
   (*
   Add('ArgPByte',      wdfDefault,  '',      sk,      'PByte', []);
@@ -805,13 +805,13 @@ procedure TTestWatches.RunTestWatches(NamePreFix: String; TestExeName, ExtraOpts
     else
       s := WatchValue;
 
-    if flag then begin
+    //if flag then begin
       rx := TRegExpr.Create;
       rx.ModifierI := true;
       rx.Expression := Data.ExpMatch;
       if Data.ExpMatch <> ''
       then TestTrue(Name + ' Matches "'+Data.ExpMatch + '", but was "' + s + '"', rx.Exec(s));
-    end;
+    //end;
 
     flag := (AWatch <> nil) and (Data.ExpTypeName <> '');
     if flag then flag := TestTrue(Name + ' has typeinfo',  WV.TypeInfo <> nil);
@@ -889,32 +889,37 @@ begin
     (* Start debugging *)
     dbg.ShowConsole := True;
     dbg.Run;
-
-    (* Hit first breakpoint: Test *)
-    (* SubFoo -- Called with none nil data *)
-    FDbgOutPutEnable := True;
-    for i := low(ExpectBreakFooGdb) to high(ExpectBreakFooGdb) do begin
-      if not SkipTest(ExpectBreakFooGdb[i]) then begin
-        FDbgOutPut := '';
-        dbg.TestCmd(ExpectBreakFooGdb[i].Expression);
-        TestWatch('Brk1 Direct Gdb '+IntToStr(i)+' ', nil, ExpectBreakFooGdb[i], FDbgOutPut);
+    if TestTrue('State=Pause', dbg.State = dsPause)
+    then begin
+      (* Hit first breakpoint: NESTED SubFoo -- (1st loop) Called with none nil data *)
+      for i := low(ExpectBreakSubFoo) to high(ExpectBreakSubFoo) do begin
+        if not SkipTest(ExpectBreakSubFoo[i]) then
+          TestWatch('Brk1 '+IntToStr(i)+' ', WListSub[i], ExpectBreakSubFoo[i]);
       end;
-    end;
-    FDbgOutPutEnable := False;
 
-    for i := low(ExpectBreakSubFoo) to high(ExpectBreakSubFoo) do begin
-      if not SkipTest(ExpectBreakSubFoo[i]) then
-        TestWatch('Brk1 '+IntToStr(i)+' ', WListSub[i], ExpectBreakSubFoo[i]);
+      dbg.Run;
     end;
 
-    dbg.Run;
+    if TestTrue('State=Pause', dbg.State = dsPause)
+    then begin
+      (* Hit 2nd breakpoint: Foo -- (1st loop) Called with none nil data *)
 
-    (* Hit second breakpoint: Test *)
-    (* Foo -- Called with none nil data *)
+      FDbgOutPutEnable := True;
+      for i := low(ExpectBreakFooGdb) to high(ExpectBreakFooGdb) do begin
+        if not SkipTest(ExpectBreakFooGdb[i]) then begin
+          FDbgOutPut := '';
+          dbg.TestCmd(ExpectBreakFooGdb[i].Expression);
+          TestWatch('Brk1 Direct Gdb '+IntToStr(i)+' ', nil, ExpectBreakFooGdb[i], FDbgOutPut);
+        end;
+      end;
+      FDbgOutPutEnable := False;
 
-    for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
-      if not SkipTest(ExpectBreakFoo[i]) then
-        TestWatch('Brk1 '+IntToStr(i)+' ', WList[i], ExpectBreakFoo[i]);
+      for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
+        if not SkipTest(ExpectBreakFoo[i]) then
+          TestWatch('Brk1 '+IntToStr(i)+' ', WList[i], ExpectBreakFoo[i]);
+      end;
+
+      dbg.Run;
     end;
 
     // TODO: 2nd round, with NIL data
@@ -936,6 +941,7 @@ var
   TestExeName: string;
   UsedUnits: TUsesDir;
 begin
+  if SkipTest then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch')] then exit;
 
   FDoStatIntArray := TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Unstable')];

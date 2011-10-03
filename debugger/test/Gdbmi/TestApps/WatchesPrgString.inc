@@ -31,6 +31,7 @@
 
   {$IFDEF FooFunc_LocalVar}
   //var
+    VarAnsiString: AnsiString;
     VarTMyAnsiString: TMyAnsiString;
     VarPMyAnsiString: PMyAnsiString;
     VarPPMyAnsiString: PPMyAnsiString;
@@ -65,6 +66,7 @@
 
   {$IFDEF FooFunc_Body}
   //begin
+    VarAnsiString := 'abcd';
     VarTMyAnsiString := ArgTMyAnsiString + '-var';
     VarPMyAnsiString := ArgPMyAnsiString;
     VarPPMyAnsiString := ArgPPMyAnsiString;

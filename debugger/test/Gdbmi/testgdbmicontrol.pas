@@ -14,10 +14,13 @@ type
 
 TTestControlForm = class(TForm)
     CheckListBox1: TCheckListBox;
+    chkGDB: TCheckListBox;
     CheckWriteLogs: TCheckBox;
+    chkFPC: TCheckListBox;
     EditLogDir: TEdit;
     Label1: TLabel;
     Panel1: TPanel;
+    Panel2: TPanel;
     procedure CheckWriteLogsChange(Sender: TObject);
 procedure EditLogDirChange(Sender: TObject);
 procedure FormShow(Sender: TObject);
@@ -39,7 +42,9 @@ uses GuiTestRunner, TestBase;
 
 procedure TTestControlForm.FormShow(Sender: TObject);
 var
-  j: Integer;
+  i, j: Integer;
+  d: TDebuggerList;
+  c: TCompilerList;
 begin
   OnShow := nil;
   Top := TestRunner.Top;
@@ -71,6 +76,16 @@ begin
   j := CheckListBox1.Items.Add('TTestBreakPoint');
   CheckListBox1.Checked[j] := True;
 
+  d := GetDebuggers;
+  for i := 0 to d.Count - 1 do begin
+    j := chkGDB.Items.Add(d.Name[i]);
+    chkGDB.Checked[j] := True;
+  end;
+  c := GetCompilers;
+  for i := 0 to c.Count - 1 do begin
+    j := chkFPC.Items.Add(c.Name[i]);
+    chkFPC.Checked[j] := True;
+  end;
 end;
 
 procedure TTestControlForm.EditLogDirChange(Sender: TObject);

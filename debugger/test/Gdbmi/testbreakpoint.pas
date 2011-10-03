@@ -75,6 +75,7 @@ var
   dbg: TTestBrkGDBMIDebugger;
   i: LongInt;
 begin
+  if SkipTest then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
   ClearTestErrors;
   FBrkErr := nil;
@@ -94,7 +95,7 @@ begin
     dbg.Run;
     // hit breakpoint
     dbg.FReplaceBreak := True;
-    FBrkErr := dbg.BreakPoints.Add('*200'+LineEnding+'#', 200);
+    FBrkErr := dbg.BreakPoints.Add(TDBGPtr(200));
     with FBrkErr do begin
       InitialEnabled := True;
       Enabled := True;

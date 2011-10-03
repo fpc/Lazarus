@@ -57,6 +57,7 @@ var
   TestExeName, TstName: string;
   dbg: TGDBMIDebugger;
 begin
+  if SkipTest then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
   ClearTestErrors;
 

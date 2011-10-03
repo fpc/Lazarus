@@ -1,0 +1,15 @@
+// Comment
+
+[fpc 2.4.2]
+exe=c:\FPC\rel_2_4_2\bin\i386-win32\fpc.exe
+symbols=gs,gw,gwset
+//symbols=none,gs,gw,gwset
+
+[fpc 2.4.4]
+exe=c:\FPC\rel_2_4_4\bin\i386-win32\fpc.exe
+symbols=gs,gw,gwset
+
+[fpc trunk]
+exe=c:\FPC\trunk\bin\i386-win32\fpc.exe
+symbols=gs,gw,gwset,gw3
+

@@ -125,14 +125,36 @@
 
     TDynIntArray2 = Array of TDynIntArray;
 
+
+// dyn array with record
+  Record1 = record
+    a : integer;
+    b : integer;
+  end;
+  Record1Array = array of Record1;
+  Record2 = record
+    c : integer;
+    recs : Record1Array;
+  end;
+  PRecord2 = ^Record2;
+
   {$ENDIF}
 
   {$IFDEF Global_Var}
   //var
+// dyn array with record
+  myRec2 : PRecord2;
   {$ENDIF}
 
   {$IFDEF Global_Body}
   //begin
+    new(myRec2);
+    myRec2^.c := 16;
+    SetLength(myRec2^.recs, 16);
+    myRec2^.recs[0].a := 10;
+    myRec2^.recs[0].b := 20;
+    myRec2^.recs[1].a := 11;
+    myRec2^.recs[1].b := 21;
   {$ENDIF}
 
   {$IFDEF Global_Body_NIL}

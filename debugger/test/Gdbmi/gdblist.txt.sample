@@ -1,0 +1,19 @@
+// Comment
+// Version is 3 pairs of 2 digits
+
+[gdb 6.7.50]
+exe=C:\GDB\6.7.50\gdb.exe
+version=060750
+symbols=none,gs,gw,gwset
+
+[gdb 7.0]
+exe=C:\GDB\7.0\gdb.exe
+version=070000
+symbols=none,gs,gw,gwset
+//symbols=none,gs,gw,gwset,gw3
+
+[gdb 7.3-50 with patches]
+exe=C:\GDB\7.3-50\gdb.exe
+version=070350
+symbols=none,gs,gw,gwset,gw3
+
