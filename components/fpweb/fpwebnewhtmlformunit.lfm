@@ -16,14 +16,10 @@ object fpwebNewHTMLFormForm: TfpwebNewHTMLFormForm
     Top = 329
     Width = 458
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&ОК'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Справка'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Закрыть'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Отмена'
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

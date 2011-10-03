@@ -602,14 +602,10 @@ object OptionsForm: TOptionsForm
     Top = 499
     Width = 462
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     CancelButton.OnClick = CancelButtonClick
     TabOrder = 1
     DefaultButton = pbCancel

@@ -45,13 +45,9 @@ object NewHTTPApplicationForm: TNewHTTPApplicationForm
     Top = 270
     Width = 372
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel]
   end

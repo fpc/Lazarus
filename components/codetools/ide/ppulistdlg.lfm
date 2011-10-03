@@ -17,14 +17,10 @@ object PPUListDialog: TPPUListDialog
     Top = 483
     Width = 728
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 0
     ShowButtons = [pbClose, pbHelp]
   end

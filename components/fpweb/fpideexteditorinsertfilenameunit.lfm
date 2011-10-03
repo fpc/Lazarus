@@ -72,14 +72,10 @@ object fpIDEExtEditorInsertFileNameForm: TfpIDEExtEditorInsertFileNameForm
     Top = 366
     Width = 491
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&ОК'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = 'C&lose'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = '&Cancel'
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

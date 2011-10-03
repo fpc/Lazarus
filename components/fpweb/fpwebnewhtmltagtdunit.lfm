@@ -339,14 +339,10 @@ object fpwebNewHtmlTagTDForm: TfpwebNewHtmlTagTDForm
     Top = 428
     Width = 515
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&ОК'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = 'C&lose'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = '&Cancel'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

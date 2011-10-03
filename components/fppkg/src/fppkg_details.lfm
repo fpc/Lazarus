@@ -133,13 +133,9 @@ object PkgDetailsForm: TPkgDetailsForm
     Top = 317
     Width = 372
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 1
     ShowButtons = [pbClose]
   end

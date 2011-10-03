@@ -14,13 +14,9 @@ object CodyNodeInfoDialog: TCodyNodeInfoDialog
     Top = 419
     Width = 569
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 0
     ShowButtons = [pbClose]
   end

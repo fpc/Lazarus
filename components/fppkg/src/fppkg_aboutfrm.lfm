@@ -16,13 +16,9 @@ object FppkgAboutForm: TFppkgAboutForm
     Top = 200
     Width = 308
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 0
     ShowButtons = [pbClose]
   end

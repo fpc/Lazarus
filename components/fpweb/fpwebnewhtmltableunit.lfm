@@ -196,14 +196,10 @@ object fpWebNewHtmlTableForm: TfpWebNewHtmlTableForm
     Top = 474
     Width = 532
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&ОК'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = 'C&lose'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = '&Cancel'
     TabOrder = 7
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

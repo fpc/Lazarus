@@ -16,14 +16,10 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
     Top = 428
     Width = 616
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&ОК'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = 'Cl&ose'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = '&Cancel'
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
