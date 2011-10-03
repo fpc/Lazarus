@@ -1483,7 +1483,12 @@ begin
   StatusBar := LCLObject as TStatusBar;
   GetClientRect(r);
   if StatusBar.SimplePanel then
-    DrawCarbonStatusBar( TCarbonContext(Context).CGContext, r, [], nil)
+  begin
+    SetLength(items, 1);
+    items[0].Width:=r.Right-r.Left;
+    items[0].Text:=StatusBar.SimpleText;
+    items[0].Align:=taLeftJustify; //todo: select proper Justify based on lanuage text-mode (r2l, l2r)!
+  end
   else
   begin
     SetLength(items, StatusBar.Panels.Count);
@@ -1493,8 +1498,8 @@ begin
       items[i].Text:=StatusBar.Panels[i].Text;
       items[i].Align:=StatusBar.Panels[i].Alignment;
     end;
-    DrawCarbonStatusBar( TCarbonContext(Context).CGContext, r, items, nil)
   end;
+  DrawCarbonStatusBar( TCarbonContext(Context).CGContext, r, items, nil);
   {$endif}
 end;
 
@@ -1559,7 +1564,7 @@ var
 begin
 {$ifdef CarbonOldStatusBar}
   StatusBar := LCLObject as TStatusBar;
-  
+
   if StatusBar.SimplePanel then
   begin
     // hide panels
