@@ -145,6 +145,8 @@ object Form1: TForm1
         'Right-drag left/right, Shift+right-drag up/down'
         'Right-click near the margin'
         'Right-click near the margin and hold'
+        'Shift+mousewheel up/down'
+        'Shift+mousewheel right/left'
       )
       OnClick = rgPanClick
       TabOrder = 1
@@ -156,7 +158,7 @@ object Form1: TForm1
     Top = 500
     Width = 554
     Align = alBottom
-    Caption = 'Press Ctrl to activate reticlue, Alt-drag to move vertical lines'
+    Caption = 'Press Ctrl to display crosshairs, Alt-drag to move vertical lines'
     TabOrder = 2
   end
   object ChartToolset1: TChartToolset
@@ -198,11 +200,6 @@ object Form1: TForm1
       ActiveCursor = crSizeNS
       Directions = [pdUp, pdDown]
     end
-    object ChartToolset1DataPointDragTool1: TDataPointDragTool
-      Shift = [ssAlt, ssLeft]
-      OnBeforeMouseMove = ChartToolset1DataPointDragTool1BeforeMouseMove
-      AffectedSeries = '2,3'
-    end
     object ChartToolset1PanClickTool1: TPanClickTool
       Enabled = False
       Shift = [ssRight]
@@ -210,6 +207,16 @@ object Form1: TForm1
       Margins.Top = 30
       Margins.Right = 30
       Margins.Bottom = 30
+    end
+    object ChartToolset1PanMouseWheelTool1: TPanMouseWheelTool
+      Enabled = False
+      Shift = [ssShift]
+      Step = 20
+    end
+    object ChartToolset1DataPointDragTool1: TDataPointDragTool
+      Shift = [ssAlt, ssLeft]
+      OnBeforeMouseMove = ChartToolset1DataPointDragTool1BeforeMouseMove
+      AffectedSeries = '2,3'
     end
     object ChartToolset1DataPointCrosshairTool1: TDataPointCrosshairTool
       Shift = [ssCtrl]

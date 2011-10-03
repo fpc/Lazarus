@@ -24,6 +24,7 @@ type
     ChartToolset1PanAny: TPanDragTool;
     ChartToolset1PanClickTool1: TPanClickTool;
     ChartToolset1PanHor: TPanDragTool;
+    ChartToolset1PanMouseWheelTool1: TPanMouseWheelTool;
     ChartToolset1PanVert: TPanDragTool;
     ChartToolset1ZoomDragTool1: TZoomDragTool;
     ChartToolset1ZoomMouseWheelTool1: TZoomMouseWheelTool;
@@ -52,7 +53,7 @@ type
   end;
 
 var
-  Form1: TForm1; 
+  Form1: TForm1;
 
 implementation
 
@@ -135,6 +136,13 @@ begin
   ChartToolset1PanVert.Enabled := i = 1;
   ChartToolset1PanClickTool1.Enabled := i in [2, 3];
   ChartToolset1PanClickTool1.Interval := IfThen(i = 2, 0, 200);
+  with ChartToolset1PanMouseWheelTool1 do begin
+    Enabled := i in [4, 5];
+    if i = 4 then
+      WheelUpDirection := pdUp
+    else
+      WheelUpDirection := pdRight;
+  end;
 end;
 
 procedure TForm1.rgZoomClick(Sender: TObject);
