@@ -141,6 +141,7 @@ type
 
   TCustomBitBtn = class(TCustomButton)
   private
+    FDefaultCaption: Boolean;
     FKind: TBitBtnKind;
     FLayout: TButtonLayout;
     FMargin: integer;
@@ -165,6 +166,8 @@ type
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure GlyphChanged(Sender: TObject);
     procedure InitializeWnd; override;
+    function IsCaptionStored: Boolean;
+    procedure Loaded; override;
     procedure TextChanged; override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure CMAppShowBtnGlyphChanged(var Message: TLMessage); message CM_APPSHOWBTNGLYPHCHANGED;
@@ -176,6 +179,8 @@ type
     procedure LoadGlyphFromStock(idButton: Integer);
     function CanShowGlyph: Boolean;
   public
+    property Caption stored IsCaptionStored;
+    property DefaultCaption: Boolean read FDefaultCaption write FDefaultCaption default False;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
     property Kind: TBitBtnKind read FKind write SetKind default bkCustom;
@@ -202,6 +207,7 @@ type
     property Color;
     property Constraints;
     property Default;
+    property DefaultCaption;
     property Enabled;
     property Font;
     property Glyph;

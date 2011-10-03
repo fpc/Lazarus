@@ -22,6 +22,7 @@ constructor TCustomBitBtn.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FCompStyle := csBitBtn;
+  FDefaultCaption := False;
   FKind := bkCustom;
   FLayout := blGlyphLeft;
   FSpacing := 3;
@@ -132,9 +133,10 @@ procedure TCustomBitBtn.SetKind(AValue: TBitBtnKind);
 begin
   if FKind = AValue then Exit;
   FKind := AValue;
-  if FKind = bkCustom then Exit;
-  
-  RealizeKind;
+  if FKind <> bkCustom then
+    RealizeKind;
+  if not (csLoading in ComponentState) then
+    DefaultCaption := FKind <> bkCustom;
 end;
 
 procedure TCustomBitBtn.SetLayout(AValue: TButtonLayout);
@@ -256,10 +258,23 @@ begin
   TWSBitBtnClass(WidgetSetClass).SetSpacing(Self, FSpacing);  
 end;
 
+function TCustomBitBtn.IsCaptionStored: Boolean;
+begin
+  Result := inherited IsCaptionStored and not DefaultCaption;
+end;
+
+procedure TCustomBitBtn.Loaded;
+begin
+  inherited Loaded;
+  if (Kind <> bkCustom) and DefaultCaption and (Caption = '') then
+    Caption := GetCaptionOfKind(Kind);
+end;
+
 procedure TCustomBitBtn.TextChanged;
 begin
   inherited TextChanged;
   AdjustSize;
+  DefaultCaption := False;
 end;
 
 class function TCustomBitBtn.GetControlClassDefaultSize: TSize;

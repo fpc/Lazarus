@@ -1008,7 +1008,6 @@ type
     function GetUndockWidth: Integer;
     function IsAnchorsStored: boolean;
     function IsBiDiModeStored: boolean;
-    function IsCaptionStored: Boolean;
     function IsEnabledStored: Boolean;
     function IsFontStored: Boolean;
     function IsHintStored: Boolean;
@@ -1073,6 +1072,7 @@ type
     procedure DoBorderSpacingChange(Sender: TObject;
                                     InnerSpaceChanged: Boolean); virtual;
     function IsBorderSpacingInnerBorderStored: Boolean; virtual;
+    function IsCaptionStored: Boolean;
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); virtual;
     procedure ConstrainedResize(var MinWidth, MinHeight,
                                 MaxWidth, MaxHeight: TConstraintSize); virtual;

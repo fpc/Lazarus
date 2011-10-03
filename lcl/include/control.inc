@@ -1049,6 +1049,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  TControl IsCaptionStored
+------------------------------------------------------------------------------}
+function TControl.IsCaptionStored: Boolean;
+begin
+  Result := (ActionLink = nil) or not ActionLink.IsCaptionLinked;
+end;
+
+{------------------------------------------------------------------------------
   procedure TControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
 ------------------------------------------------------------------------------}
 procedure TControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
@@ -2854,14 +2862,6 @@ end;
 function TControl.GetActionLinkClass: TControlActionLinkClass;
 begin
   Result := TControlActionLink;
-end;
-
-{------------------------------------------------------------------------------
-  TControl IsCaptionStored
-------------------------------------------------------------------------------}
-function TControl.IsCaptionStored: Boolean;
-begin
-  Result := (ActionLink = nil) or not ActionLink.IsCaptionLinked;
 end;
 
 function TControl.IsClientHeightStored: Boolean;
