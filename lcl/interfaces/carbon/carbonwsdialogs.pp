@@ -296,7 +296,7 @@ begin
   if supportPackages then
     CreationOptions.optionFlags := CreationOptions.optionFlags or kNavSupportPackages;
   try
-    if FileDialog is TSaveDialog then
+    if FileDialog.FCompStyle=csSaveFileDialog then
     begin  // Checking for TSaveDialog first since it's descendent of TOpenDialog
       CreateCFString(ExtractFileName(FileDialog.FileName),
         CreationOptions.saveFileName);  // Note doesn't like path
