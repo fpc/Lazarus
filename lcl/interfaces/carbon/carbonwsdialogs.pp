@@ -391,6 +391,7 @@ begin
         if OSError(NavDisposeReply(DialogReply), Self, SShowModal,
           'NavDisposeReply') then Exit;
           
+        FileDialog.FilterIndex := FilterIndex;
         FileDialog.UserChoice := mrOK;
       end;
     finally
