@@ -26,6 +26,7 @@ type
     ChartToolset1PanHor: TPanDragTool;
     ChartToolset1PanVert: TPanDragTool;
     ChartToolset1ZoomDragTool1: TZoomDragTool;
+    ChartToolset1ZoomMouseWheelTool1: TZoomMouseWheelTool;
     ChartToolset1ZoomOut: TZoomClickTool;
     ChartToolset1ZoomIn: TZoomClickTool;
     cbFixedPoint: TCheckBox;
@@ -56,7 +57,7 @@ var
 implementation
 
 uses
-  Math;
+  Math, TAChartUtils;
 
 {$R *.lfm}
 
@@ -64,18 +65,20 @@ uses
 
 procedure TForm1.cbAnimateClick(Sender: TObject);
 var
-  i: Integer;
+  t: TChartTool;
 begin
-  i := IfThen(cbAnimate.Checked, 3, 0);
-  ChartToolset1ZoomDragTool1.AnimationSteps := i;
-  ChartToolset1ZoomIn.AnimationSteps := i;
-  ChartToolset1ZoomOut.AnimationSteps := i;
+  for t in ChartToolset1.Tools do
+    if t is TBasicZoomTool then
+      (t as TBasicZoomTool).AnimationSteps := IfThen(cbAnimate.Checked, 3, 0);
 end;
 
 procedure TForm1.cbFixedPointChange(Sender: TObject);
+var
+  t: TChartTool;
 begin
-  ChartToolset1ZoomIn.FixedPoint := cbFixedPoint.Checked;
-  ChartToolset1ZoomOut.FixedPoint := cbFixedPoint.Checked;
+  for t in ChartToolset1.Tools do
+    if t is TBasicZoomStepTool then
+      (t as TBasicZoomStepTool).FixedPoint := cbFixedPoint.Checked;
 end;
 
 procedure TForm1.Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
@@ -86,12 +89,14 @@ end;
 procedure TForm1.ChartToolset1DataPointCrosshairTool1AfterKeyUp(
   ATool: TChartTool; APoint: TPoint);
 begin
+  Unused(ATool, APoint);
   ChartToolset1DataPointCrosshairTool1.Hide;
 end;
 
 procedure TForm1.ChartToolset1DataPointCrosshairTool1AfterMouseMove(
   ATool: TChartTool; APoint: TPoint);
 begin
+  Unused(ATool, APoint);
   Chart1.SetFocus;
 end;
 
@@ -134,16 +139,28 @@ end;
 
 procedure TForm1.rgZoomClick(Sender: TObject);
 var
-  b: Boolean;
+  t: TChartTool;
 begin
-  b := rgZoom.ItemIndex <= 1;
-  ChartToolset1ZoomDragTool1.Enabled := b;
-  if rgZoom.ItemIndex = 1 then
-    ChartToolset1ZoomDragTool1.RatioLimit := zrlProportional
-  else
-    ChartToolset1ZoomDragTool1.RatioLimit := zrlNone;
-  ChartToolset1ZoomIn.Enabled := not b;
-  ChartToolset1ZoomOut.Enabled := not b;
+  for t in ChartToolset1.Tools do
+    if Pos('Zoom', t.Name) > 0 then
+      t.Enabled := false;
+  case rgZoom.ItemIndex of
+    0: begin
+      ChartToolset1ZoomDragTool1.Enabled := true;
+      ChartToolset1ZoomDragTool1.RatioLimit := zrlNone;
+    end;
+    1: begin
+      ChartToolset1ZoomDragTool1.Enabled := true;
+      ChartToolset1ZoomDragTool1.RatioLimit := zrlProportional
+    end;
+    2: begin
+      ChartToolset1ZoomIn.Enabled := true;
+      ChartToolset1ZoomOut.Enabled := true;
+    end;
+    3: begin
+      ChartToolset1ZoomMouseWheelTool1.Enabled := true;
+    end;
+  end;
 end;
 
 end.

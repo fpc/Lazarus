@@ -1,16 +1,16 @@
 object Form1: TForm1
   Left = 292
-  Height = 484
+  Height = 518
   Top = 152
   Width = 554
   Caption = 'Form1'
-  ClientHeight = 484
+  ClientHeight = 518
   ClientWidth = 554
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object Chart1: TChart
     Left = 0
-    Height = 360
+    Height = 374
     Top = 0
     Width = 554
     AxisList = <    
@@ -68,16 +68,16 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 106
-    Top = 360
+    Height = 126
+    Top = 374
     Width = 554
     Align = alBottom
-    ClientHeight = 106
+    ClientHeight = 126
     ClientWidth = 554
     TabOrder = 1
     object rgZoom: TRadioGroup
       Left = 1
-      Height = 104
+      Height = 124
       Top = 1
       Width = 255
       Align = alLeft
@@ -91,20 +91,21 @@ object Form1: TForm1
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 86
+      ClientHeight = 106
       ClientWidth = 251
       ItemIndex = 2
       Items.Strings = (
         'Drag to zoom'
         'Drag to zoom proportionally'
         'Click to zoom in, Shift+click to zoom out'
+        'Mouse wheel to zoom'
       )
       OnClick = rgZoomClick
       TabOrder = 0
       object cbFixedPoint: TCheckBox
         Left = 6
-        Height = 15
-        Top = 50
+        Height = 16
+        Top = 68
         Width = 239
         Caption = 'Fixed point'
         OnChange = cbFixedPointChange
@@ -112,8 +113,8 @@ object Form1: TForm1
       end
       object cbAnimate: TCheckBox
         Left = 6
-        Height = 15
-        Top = 65
+        Height = 16
+        Top = 84
         Width = 239
         Caption = 'Animate'
         OnClick = cbAnimateClick
@@ -122,7 +123,7 @@ object Form1: TForm1
     end
     object rgPan: TRadioGroup
       Left = 256
-      Height = 104
+      Height = 124
       Top = 1
       Width = 292
       Align = alLeft
@@ -136,7 +137,7 @@ object Form1: TForm1
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 86
+      ClientHeight = 106
       ClientWidth = 288
       ItemIndex = 0
       Items.Strings = (
@@ -152,7 +153,7 @@ object Form1: TForm1
   object Panel2: TPanel
     Left = 0
     Height = 18
-    Top = 466
+    Top = 500
     Width = 554
     Align = alBottom
     Caption = 'Press Ctrl to activate reticlue, Alt-drag to move vertical lines'
@@ -171,13 +172,19 @@ object Form1: TForm1
       AnimationInterval = 100
       ZoomFactor = 2
     end
-    object ChartToolset1PanAny: TPanDragTool
-      Shift = [ssRight]
+    object ChartToolset1ZoomMouseWheelTool1: TZoomMouseWheelTool
+      Enabled = False
+      Shift = []
+      AnimationInterval = 100
+      ZoomFactor = 0.75
     end
     object ChartToolset1ZoomDragTool1: TZoomDragTool
       Enabled = False
       Shift = [ssLeft]
       AnimationInterval = 100
+    end
+    object ChartToolset1PanAny: TPanDragTool
+      Shift = [ssRight]
     end
     object ChartToolset1PanHor: TPanDragTool
       Enabled = False
