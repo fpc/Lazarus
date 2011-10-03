@@ -155,7 +155,7 @@ begin
     Result:=Result+'|'+T;
 end;
 
-Procedure SplitLinkText(LT : String; Var L,T : String);
+Procedure SplitLinkText(LT : String; out L,T : String);
 
 Var
   P : Integer;
@@ -683,7 +683,7 @@ Function  TElementEditor.CurrentXML : String;
   end;
 
 Var
-  I,P : Integer;
+  I : Integer;
   S,L,LT : String;
 
 begin
@@ -1011,7 +1011,6 @@ procedure TElementEditor.DoEditSeeAlso(Sender: TObject);
 
 Var
   S,T : String;
-  P : Integer;
 
 begin
   if Sender=nil then ;

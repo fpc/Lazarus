@@ -20,7 +20,7 @@
       <UseVersionInfo Value="True"/>
       <MinorVersionNr Value="9"/>
       <RevisionNr Value="29"/>
-      <StringTable CompanyName="Lazarus team" FileDescription="Lazarus documents editor" InternalName="LazDE" OriginalFilename="LazDE" ProductVersion=""/>
+      <StringTable CompanyName="Lazarus team" InternalName="LazDE" ProductVersion="" FileDescription="Lazarus documents editor" OriginalFilename="LazDE"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
@@ -181,6 +181,12 @@
         <UseAnsiStrings Value="False"/>
       </SyntaxOptions>
     </Parsing>
+    <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="True"/>
+        <DebugInfoType Value="dsAuto"/>
+      </Debugging>
+    </Linking>
     <Other>
       <ConfigFile>
         <StopAfterErrCount Value="10"/>
