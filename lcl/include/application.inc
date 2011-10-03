@@ -2331,9 +2331,48 @@ begin
 end;
 
 function TApplication.IsRTLLang(ALang: String): Boolean;
+var
+ lng : String;
+ p   : word;
+
+  function sep_pos : word; inline;
+  begin
+    Result := Pos('-', lng);
+    if Result = 0 then
+      Result := Pos('_', lng);
+  end;
+
 begin
-  Result := (LowerCase(ALang) = 'ar') or
-            (LowerCase(ALang) = 'he');
+  lng    := LowerCase(ALang);
+  p      := sep_pos;
+  if p > 0 then 
+    lng := copy(lng, 1, p-1);
+
+  Result := (lng = 'ar') or // Arabic
+            (lng = 'he') or // Hebrew
+            (lng = 'yi') or // Yiddish
+
+            // The languages bellow usually use arabic as the language name
+            (lng = 'dv') or
+            (lng = 'ps') or
+            (lng = 'az') or
+            (lng = 'fa') or
+            (lng = 'ks') or
+            (lng = 'ku') or
+            (lng = 'pa') or
+            (lng = 'sd') or
+            (lng = 'tk') or
+            (lng = 'ug') or
+            (lng = 'ur') { or
+
+              Not sure about the following languages ... 
+              They do not have 2 letters ISO standard are they in use ?
+            (lng = 'jpr') or
+            (lng = 'syr') or
+            (lng = 'nqo') or
+            (lng = 'jrb')
+            }
+            ;
 end;
 
 function TApplication.Direction(ALang: String): TBiDiMode;
