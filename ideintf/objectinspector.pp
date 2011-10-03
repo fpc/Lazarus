@@ -311,6 +311,8 @@ type
     procedure ResetHintTimer;
     procedure HideHint;
     procedure OnUserInput(Sender: TObject; Msg: Cardinal);
+    procedure HintMouseDown(Sender: TObject; Button: TMouseButton;
+                            Shift: TShiftState; X, Y: Integer);
 
     procedure IncreaseChangeStep;
     function GridIsUpdating: boolean;
@@ -790,6 +792,12 @@ implementation
 uses
   math;
 
+type
+  TOIHintWindow = class(THintWindow)
+  public
+    property OnMouseDown;
+  end;
+
 const
   DefaultOIPageNames: array[TObjectInspectorPage] of shortstring = (
     'PropertyPage',
@@ -1119,8 +1127,9 @@ begin
     FHintTimer.Enabled := False;
     FHintTimer.OnTimer := @HintTimer;
 
-    FHintWindow := THintWindow.Create(Self);
+    FHintWindow := TOIHintWindow.Create(Self);
 
+    TOIHintWindow(FHintWindow).OnMouseDown := @HintMouseDown;
     FHIntWindow.Visible := False;
     FHintWindow.Caption := 'This is a hint window'#13#10'Neat huh?';
     FHintWindow.HideInterval := 4000;
@@ -2262,6 +2271,15 @@ end;
 procedure TOICustomPropertyGrid.OnUserInput(Sender: TObject; Msg: Cardinal);
 begin
   ResetHintTimer;
+end;
+
+procedure TOICustomPropertyGrid.HintMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  pos: TPoint;
+begin
+  pos := ScreenToClient(FHintWindow.ClientToScreen(Point(X, Y)));
+  MouseDown(Button, Shift, pos.X, pos.Y);
 end;
 
 procedure TOICustomPropertyGrid.EndDragSplitter;
