@@ -839,14 +839,10 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     Top = 349
     Width = 426
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

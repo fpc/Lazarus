@@ -78,14 +78,10 @@ object frBandEditorForm: TfrBandEditorForm
     Top = 110
     Width = 329
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

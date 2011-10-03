@@ -63,14 +63,10 @@ object frGroupEditorForm: TfrGroupEditorForm
     Top = 75
     Width = 493
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

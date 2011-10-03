@@ -38,15 +38,11 @@ object SVNUpdateFrm: TSVNUpdateFrm
     Top = 256
     Width = 628
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     HelpButton.OnClick = ShowLogButtonClick
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 1
     ShowButtons = [pbOK, pbHelp]
   end

@@ -255,14 +255,10 @@ object frBarCodeForm: TfrBarCodeForm
     Top = 293
     Width = 341
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     TabOrder = 5
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

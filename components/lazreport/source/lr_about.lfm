@@ -138,14 +138,10 @@ object frAboutForm: TfrAboutForm
     Top = 132
     Width = 273
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     OKButton.Enabled = False
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     CancelButton.Enabled = False
     TabOrder = 0
     ShowButtons = [pbClose, pbHelp]

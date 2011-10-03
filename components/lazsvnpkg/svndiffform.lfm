@@ -17,16 +17,12 @@ object SVNDiffFrm: TSVNDiffFrm
     Top = 422
     Width = 605
     OKButton.Name = 'OKButton'
-    OKButton.Caption = '&OK'
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
-    HelpButton.Caption = '&Help'
     HelpButton.OnClick = SaveButtonClick
     CloseButton.Name = 'CloseButton'
-    CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
-    CancelButton.Caption = 'Cancel'
     CancelButton.Enabled = False
     TabOrder = 0
     ShowButtons = [pbOK, pbHelp]
