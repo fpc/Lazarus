@@ -404,7 +404,7 @@ end;
 
 constructor TOIAddRemoveFavouriteDlg.Create(TheOwner: TComponent);
 begin
-  inherited Create(TheOwner);
+  inherited CreateNew(TheOwner);
   
   Name:='OIAddToFavouriteDlg';
   Width:=300;
