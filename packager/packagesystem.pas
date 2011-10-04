@@ -61,7 +61,7 @@ uses
   LazarusIDEStrConsts, EnvironmentOpts, IDEProcs, LazConf, TransferMacros,
   DialogProcs, IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
   ComponentReg, ProjectIntf,
-  FCLLaz, AllLCLUnits, allsynedit, LazControls;
+  FCLLaz, AllLCLUnits, allsynedit, LazControls, LazUtils;
   
 type
   TFindPackageFlag = (
@@ -117,6 +117,7 @@ type
     FIDEIntfPackage: TLazPackage;
     FItems: TFPList;   // unsorted list of TLazPackage
     FLazarusBasePackages: TFPList;
+    FLazUtilsPackage: TLazPackage;
     FLCLBasePackage: TLazPackage;
     FLCLPackage: TLazPackage;
     FOnAddPackage: TPkgAddedEvent;
@@ -141,6 +142,7 @@ type
     function CreateLCLPackage: TLazPackage;
     function CreateSynEditPackage: TLazPackage;
     function CreateLazControlsPackage: TLazPackage;
+    function CreateLazUtilsPackage: TLazPackage;
     function CreateCodeToolsPackage: TLazPackage;
     function CreateIDEIntfPackage: TLazPackage;
     function CreateDefaultPackage: TLazPackage;
@@ -367,6 +369,7 @@ type
     property LCLPackage: TLazPackage read FLCLPackage;
     property SynEditPackage: TLazPackage read FSynEditPackage;
     property LazControlsPackage: TLazPackage read FLazControlsPackage;
+    property LazUtilsPackage: TLazPackage read FLazUtilsPackage;
     property CodeToolsPackage: TLazPackage read FCodeToolsPackage;
     property IDEIntfPackage: TLazPackage read FIDEIntfPackage;
     property LazarusBasePackages: TFPList read FLazarusBasePackages;
@@ -723,6 +726,8 @@ begin
     FSynEditPackage:=nil
   else if CurPkg=LazControlsPackage then
     FLazControlsPackage:=nil
+  else if CurPkg=LazUtilsPackage then
+    FLazUtilsPackage:=nil
   else if CurPkg=CodeToolsPackage then
     FCodeToolsPackage:=nil;
   FLazarusBasePackages.Remove(CurPkg);
@@ -1815,6 +1820,46 @@ begin
   end;
 end;
 
+function TLazPackageGraph.CreateLazUtilsPackage: TLazPackage;
+begin
+  Result:=TLazPackage.Create;
+  with Result do begin
+    AutoCreated:=true;
+    Name:='LazUtils';
+    Filename:=SetDirSeparators('$(LazarusDir)/components/lazutils/lazutils.lpk');
+    Version.SetValues(1,0,1,0);
+    Author:='Lazarus Team';
+    License:='Modified LGPL-2';
+    AutoInstall:=pitStatic;
+    AutoUpdate:=pupManually;
+    Description:='Useful units for Lazarus packages';
+    PackageType:=lptRunAndDesignTime;
+    Installed:=pitStatic;
+    CompilerOptions.UnitOutputDirectory:='';
+    POOutputDirectory:='languages';
+    LazDocPaths:='docs';
+    Translated:=SystemLanguageID1;
+    AddToProjectUsesSection:=false;
+
+    // add requirements
+    AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result,true));
+
+    AddFile('lazutf8.pas','LazUTF8',pftUnit,[],cpBase);
+
+    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
+
+    // add unit paths
+    UsageOptions.UnitPath:=SetDirSeparators('$(PkgOutDir)');
+
+    // use the components/units/..../allcodetoolsunits.o file as indicator,
+    // if lazutils have been recompiled
+    OutputStateFile:=SetDirSeparators(
+      '$(LazarusDir)/components/lazutils/lib/$(TargetCPU)-$(TargetOS)/lazutils.o');
+
+    Modified:=false;
+  end;
+end;
+
 function TLazPackageGraph.CreateCodeToolsPackage: TLazPackage;
 begin
   Result:=TLazPackage.Create;
@@ -2002,6 +2047,7 @@ function TLazPackageGraph.CreateLazarusBasePackage(PkgName: string
 begin
   PkgName:=lowercase(PkgName);
   if PkgName='fcl' then Result:=CreateFCLPackage
+  else if PkgName='lazutils' then Result:=CreateLazUtilsPackage
   else if PkgName='lclbase' then Result:=CreateLCLBasePackage
   else if PkgName='lcl' then Result:=CreateLCLPackage
   else if PkgName='ideintf' then Result:=CreateIDEIntfPackage
@@ -2040,6 +2086,8 @@ begin
       SetBasePackage(FFCLPackage);
       APackage.SetAllComponentPriorities(FCLCompPriority);
     end
+    else if SysUtils.CompareText(APackage.Name,'LazUtils')=0 then
+      SetBasePackage(FLazUtilsPackage)
     else if SysUtils.CompareText(APackage.Name,'LCLBase')=0 then begin
       SetBasePackage(FLCLBasePackage);
       APackage.SetAllComponentPriorities(LCLCompPriority);
@@ -2156,6 +2204,7 @@ procedure TLazPackageGraph.LoadStaticBasePackages;
 
 begin
   LoadLazarusBasePackage('FCL');
+  LoadLazarusBasePackage('LazUtils');
   LoadLazarusBasePackage('LCLBase');
   LoadLazarusBasePackage('LCL');
   LoadLazarusBasePackage('IDEIntf');
@@ -2294,6 +2343,7 @@ function TLazPackageGraph.IsStaticBasePackage(PackageName: string
 begin
   PackageName:=lowercase(PackageName);
   Result:=(PackageName='fcl')
+       or (PackageName='lazutils')
        or (PackageName='lclbase')
        or (PackageName='lcl')
        or (PackageName='synedit')
