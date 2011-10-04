@@ -14,6 +14,12 @@
           <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
+      <Linking>
+        <Debugging>
+          <GenerateDebugInfo Value="True"/>
+          <DebugInfoType Value="dsAuto"/>
+        </Debugging>
+      </Linking>
       <Other>
         <Verbosity>
           <ShowHints Value="False"/>
@@ -29,7 +35,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="67">
+    <Files Count="57">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -167,138 +173,98 @@
         <UnitName Value="KeywordFuncLists"/>
       </Item34>
       <Item35>
-        <Filename Value="laz_dom.pas"/>
-        <UnitName Value="Laz_DOM"/>
-      </Item35>
-      <Item36>
-        <Filename Value="laz_xmlcfg.pas"/>
-        <UnitName Value="Laz_XMLCfg"/>
-      </Item36>
-      <Item37>
-        <Filename Value="laz_xmlread.pas"/>
-        <UnitName Value="Laz_XMLRead"/>
-      </Item37>
-      <Item38>
-        <Filename Value="laz_xmlstreaming.pas"/>
-        <UnitName Value="Laz_XMLStreaming"/>
-      </Item38>
-      <Item39>
-        <Filename Value="laz_xmlwrite.pas"/>
-        <UnitName Value="Laz_XMLWrite"/>
-      </Item39>
-      <Item40>
         <Filename Value="lfmtrees.pas"/>
         <UnitName Value="LFMTrees"/>
-      </Item40>
-      <Item41>
+      </Item35>
+      <Item36>
         <Filename Value="linkscanner.pas"/>
         <UnitName Value="LinkScanner"/>
-      </Item41>
-      <Item42>
+      </Item36>
+      <Item37>
         <Filename Value="memcheck.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="MemCheck"/>
-      </Item42>
-      <Item43>
+      </Item37>
+      <Item38>
         <Filename Value="memcheck_laz.inc"/>
         <Type Value="Include"/>
-      </Item43>
-      <Item44>
+      </Item38>
+      <Item39>
         <Filename Value="methodjumptool.pas"/>
         <UnitName Value="MethodJumpTool"/>
-      </Item44>
-      <Item45>
+      </Item39>
+      <Item40>
         <Filename Value="multikeywordlisttool.pas"/>
         <UnitName Value="MultiKeyWordListTool"/>
-      </Item45>
-      <Item46>
+      </Item40>
+      <Item41>
         <Filename Value="nonpascalcodetools.pas"/>
         <UnitName Value="NonPascalCodeTools"/>
-      </Item46>
-      <Item47>
+      </Item41>
+      <Item42>
         <Filename Value="pascalparsertool.pas"/>
         <UnitName Value="PascalParserTool"/>
-      </Item47>
-      <Item48>
+      </Item42>
+      <Item43>
         <Filename Value="pascalreadertool.pas"/>
         <UnitName Value="PascalReaderTool"/>
-      </Item48>
-      <Item49>
+      </Item43>
+      <Item44>
         <Filename Value="ppucodetools.pas"/>
         <UnitName Value="PPUCodeTools"/>
-      </Item49>
-      <Item50>
+      </Item44>
+      <Item45>
         <Filename Value="ppugraph.pas"/>
         <UnitName Value="PPUGraph"/>
-      </Item50>
-      <Item51>
+      </Item45>
+      <Item46>
         <Filename Value="ppuparser.pas"/>
         <UnitName Value="PPUParser"/>
-      </Item51>
-      <Item52>
+      </Item46>
+      <Item47>
         <Filename Value="resourcecodetool.pas"/>
         <UnitName Value="ResourceCodeTool"/>
-      </Item52>
-      <Item53>
+      </Item47>
+      <Item48>
         <Filename Value="sourcechanger.pas"/>
         <UnitName Value="SourceChanger"/>
-      </Item53>
-      <Item54>
+      </Item48>
+      <Item49>
         <Filename Value="sourcelog.pas"/>
         <UnitName Value="SourceLog"/>
-      </Item54>
-      <Item55>
+      </Item49>
+      <Item50>
         <Filename Value="stdcodetools.pas"/>
         <UnitName Value="StdCodeTools"/>
-      </Item55>
-      <Item56>
+      </Item50>
+      <Item51>
         <Filename Value="otheridentifiertree.pas"/>
         <UnitName Value="OtherIdentifierTree"/>
-      </Item56>
-      <Item57>
+      </Item51>
+      <Item52>
         <Filename Value="fpcsrcrules.inc"/>
         <Type Value="Include"/>
-      </Item57>
-      <Item58>
-        <Filename Value="laz2_xmlutils.pas"/>
-        <UnitName Value="laz2_xmlutils"/>
-      </Item58>
-      <Item59>
-        <Filename Value="laz2_dom.pas"/>
-        <UnitName Value="laz2_DOM"/>
-      </Item59>
-      <Item60>
-        <Filename Value="laz2_xmlwrite.pas"/>
-        <UnitName Value="laz2_XMLWrite"/>
-      </Item60>
-      <Item61>
-        <Filename Value="laz2_xmlread.pas"/>
-        <UnitName Value="laz2_XMLRead"/>
-      </Item61>
-      <Item62>
+      </Item52>
+      <Item53>
         <Filename Value="codetoolscfgscript.pas"/>
         <UnitName Value="CodeToolsCfgScript"/>
-      </Item62>
-      <Item63>
+      </Item53>
+      <Item54>
         <Filename Value="ctxmlfixfragment.pas"/>
         <UnitName Value="CTXMLFixFragment"/>
-      </Item63>
-      <Item64>
+      </Item54>
+      <Item55>
         <Filename Value="ctunitgraph.pas"/>
         <UnitName Value="CTUnitGraph"/>
-      </Item64>
-      <Item65>
+      </Item55>
+      <Item56>
         <Filename Value="changedeclarationtool.pas"/>
         <UnitName Value="ChangeDeclarationTool"/>
-      </Item65>
-      <Item66>
+      </Item56>
+      <Item57>
         <Filename Value="codetoolsfpcmsgs.pas"/>
         <UnitName Value="CodeToolsFPCMsgs"/>
-      </Item66>
-      <Item67>
-        <Filename Value="laz2_xmlcfg.pas"/>
-        <UnitName Value="Laz2_XMLCfg"/>
-      </Item67>
+      </Item57>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>
@@ -306,11 +272,14 @@
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="1">
+    <RequiredPkgs Count="2">
       <Item1>
+        <PackageName Value="LazUtils"/>
+      </Item1>
+      <Item2>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item1>
+      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
