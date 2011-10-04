@@ -261,6 +261,8 @@ begin
     else
       CollectionListBox.ItemIndex := CollectionListBox.Items.Count - 1;
   end;
+  UpdateButtons;
+  UpdateCaption;
 end;
 
 procedure TCollectionPropertyEditorForm.RefreshPropertyValues;
