@@ -42,7 +42,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, AVL_Tree, CodeToolsStrConsts;
+  Classes, SysUtils, LazUTF8, LazDbgLog, LazFileCache, LazFileUtils,
+  AVL_Tree, CodeToolsStrConsts;
 
 type
   TFPCStreamSeekType = int64;
@@ -76,38 +77,60 @@ type
     ctsfcAllCase   // search case insensitive
     );
 
-function CompareFilenames(const Filename1, Filename2: string): integer;
-function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
+function CompareFilenames(const Filename1, Filename2: string): integer; inline;
+function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer; inline;
 function CompareFileExt(const Filename, Ext: string;
-                        CaseSensitive: boolean): integer;
-function CompareFilenameStarts(const Filename1, Filename2: string): integer;
+                        CaseSensitive: boolean): integer; inline;
+function CompareFilenameStarts(const Filename1, Filename2: string): integer; inline;
 function CompareFilenames(Filename1: PChar; Len1: integer;
-  Filename2: PChar; Len2: integer): integer;
-function DirPathExists(DirectoryName: string): boolean;
-function DirectoryIsWritable(const DirectoryName: string): boolean;
-function ExtractFileNameOnly(const AFilename: string): string;
-function FilenameIsAbsolute(const TheFilename: string):boolean;
-function FilenameIsWinAbsolute(const TheFilename: string):boolean;
-function FilenameIsUnixAbsolute(const TheFilename: string):boolean;
-function ForceDirectory(DirectoryName: string): boolean;
-procedure CheckIfFileIsExecutable(const AFilename: string);
-function FileIsExecutable(const AFilename: string): boolean;
-function FileIsReadable(const AFilename: string): boolean;
-function FileIsWritable(const AFilename: string): boolean;
-function FileIsText(const AFilename: string): boolean;
-function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
-function FilenameIsTrimmed(const TheFilename: string): boolean;
-function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
-function TrimFilename(const AFilename: string): string;
-function CleanAndExpandFilename(const Filename: string): string; // empty string returns current directory
-function CleanAndExpandDirectory(const Filename: string): string; // empty string returns current directory
-function TrimAndExpandFilename(const Filename: string): string; // empty string returns empty string
-function TrimAndExpandDirectory(const Filename: string): string; // empty string returns empty string
+  Filename2: PChar; Len2: integer): integer; inline;
+function DirPathExists(DirectoryName: string): boolean; inline;
+function DirectoryIsWritable(const DirectoryName: string): boolean; inline;
+function ExtractFileNameOnly(const AFilename: string): string; inline;
+function FilenameIsAbsolute(const TheFilename: string):boolean; inline;
+function FilenameIsWinAbsolute(const TheFilename: string):boolean; inline;
+function FilenameIsUnixAbsolute(const TheFilename: string):boolean; inline;
+function ForceDirectory(DirectoryName: string): boolean; inline;
+procedure CheckIfFileIsExecutable(const AFilename: string); inline;
+function FileIsExecutable(const AFilename: string): boolean; inline;
+function FileIsReadable(const AFilename: string): boolean; inline;
+function FileIsWritable(const AFilename: string): boolean; inline;
+function FileIsText(const AFilename: string): boolean; inline;
+function FileIsText(const AFilename: string; out FileReadable: boolean): boolean; inline;
+function FilenameIsTrimmed(const TheFilename: string): boolean; inline;
+function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean; inline;
+function TrimFilename(const AFilename: string): string; inline;
+function CleanAndExpandFilename(const Filename: string): string; inline;// empty string returns current directory
+function CleanAndExpandDirectory(const Filename: string): string; inline;// empty string returns current directory
+function TrimAndExpandFilename(const Filename: string): string; inline;// empty string returns empty string
+function TrimAndExpandDirectory(const Filename: string): string; inline;// empty string returns empty string
 function CreateRelativePath(const Filename, BaseDirectory: string;
-                            UsePointDirectory: boolean = false): string;
-function FileIsInPath(const Filename, Path: string): boolean;
-function AppendPathDelim(const Path: string): string;
-function ChompPathDelim(const Path: string): string;
+                            UsePointDirectory: boolean = false): string; inline;
+function FileIsInPath(const Filename, Path: string): boolean; inline;
+function AppendPathDelim(const Path: string): string; inline;
+function ChompPathDelim(const Path: string): string; inline;
+
+// file operations
+function FileExistsUTF8(const Filename: string): boolean; inline;
+function FileAgeUTF8(const FileName: string): Longint; inline;
+function DirectoryExistsUTF8(const Directory: string): Boolean; inline;
+function ExpandFileNameUTF8(const FileName: string): string; inline;
+function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint; inline;
+function FindNextUTF8(var Rslt: TSearchRec): Longint; inline;
+procedure FindCloseUTF8(var F: TSearchrec); inline;
+function FileSetDateUTF8(const FileName: String; Age: Longint): Longint; inline;
+function FileGetAttrUTF8(const FileName: String): Longint; inline;
+function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint; inline;
+function DeleteFileUTF8(const FileName: String): Boolean; inline;
+function RenameFileUTF8(const OldName, NewName: String): Boolean; inline;
+function FileSearchUTF8(const Name, DirList : String): String; inline;
+function FileIsReadOnlyUTF8(const FileName: String): Boolean; inline;
+function GetCurrentDirUTF8: String; inline;
+function SetCurrentDirUTF8(const NewDir: String): Boolean; inline;
+function CreateDirUTF8(const NewDir: String): Boolean; inline;
+function RemoveDirUTF8(const Dir: String): Boolean; inline;
+function ForceDirectoriesUTF8(const Dir: string): Boolean; inline;
+
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function GetTempFilename(const Path, Prefix: string): string;
 function SearchFileInDir(const Filename, BaseDirectory: string;
@@ -116,7 +139,6 @@ function SearchFileInPath(const Filename, BasePath, SearchPath,
                       Delimiter: string; SearchCase: TCTSearchFileCase): string;
 function FilenameIsMatching(const Mask, Filename: string;
                             MatchExactly: boolean): boolean;
-function GetFilenameOnDisk(const AFilename: string): string;
 function FindDiskFilename(const Filename: string): string;
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
@@ -124,6 +146,22 @@ function GetDarwinSystemFilename(Filename: string): string;
 function ReadAllLinks(const Filename: string;
                       ExceptionOnError: boolean): string; // if a link is broken returns ''
 function TryReadAllLinks(const Filename: string): string; // if a link is broken returns Filename
+
+const
+  CTInvalidChangeStamp = LUInvalidChangeStamp;
+  CTInvalidChangeStamp64 = LUInvalidChangeStamp64; // using a value outside integer to spot wrong types early
+procedure CTIncreaseChangeStamp(var ChangeStamp: integer); inline;
+procedure CTIncreaseChangeStamp64(var ChangeStamp: int64); inline;
+
+function FileExistsCached(const AFilename: string): boolean; inline;
+function DirPathExistsCached(const AFilename: string): boolean; inline;
+function DirectoryIsWritableCached(const ADirectoryName: string): boolean; inline;
+function FileIsExecutableCached(const AFilename: string): boolean; inline;
+function FileIsReadableCached(const AFilename: string): boolean; inline;
+function FileIsWritableCached(const AFilename: string): boolean; inline;
+function FileIsTextCached(const AFilename: string): boolean; inline;
+function FileAgeCached(const AFileName: string): Longint; inline;
+function GetFilenameOnDisk(const AFilename: string): string; inline;
 
 function CompareAnsiStringFilenames(Data1, data2: Pointer): integer;
 function CompareFilenameOnly(Filename: PChar; FilenameLen: integer;
@@ -156,12 +194,6 @@ function FindPathInSearchPath(APath: PChar; APathLen: integer;
 function ReadNextFPCParameter(const CmdLine: string; var Position: integer;
     out StartPos: integer): boolean;
 
-const
-  CTInvalidChangeStamp = Low(integer);
-  CTInvalidChangeStamp64 = Low(int64); // using a value outside integer to spot wrong types early
-procedure CTIncreaseChangeStamp(var ChangeStamp: integer); inline;
-procedure CTIncreaseChangeStamp64(var ChangeStamp: int64); inline;
-
 type
   TCTPascalExtType = (petNone, petPAS, petPP, petP);
 
@@ -169,153 +201,18 @@ const
   CTPascalExtension: array[TCTPascalExtType] of string =
     ('', '.pas', '.pp', '.p');
 
-type
-  TFileStateCacheItemFlag = (
-    fsciExists,    // file or directory exists
-    fsciDirectory, // file exists and is directory
-    fsciReadable,  // file is readable
-    fsciWritable,  // file is writable
-    fsciDirectoryReadable, // file is directory and can be searched
-    fsciDirectoryWritable, // file is directory and new files can be created
-    fsciText,      // file is text file (not binary)
-    fsciExecutable,// file is executable
-    fsciAge        // file age is valid
-    );
-  TFileStateCacheItemFlags = set of TFileStateCacheItemFlag;
-
-  { TFileStateCacheItem }
-
-  TFileStateCacheItem = class
-  private
-    FAge: longint;
-    FFilename: string;
-    FFlags: TFileStateCacheItemFlags;
-    FTestedFlags: TFileStateCacheItemFlags;
-    FTimeStamp: int64;
-  public
-    constructor Create(const TheFilename: string; NewTimeStamp: int64);
-    function CalcMemSize: PtrUint;
-  public
-    property Filename: string read FFilename;
-    property Flags: TFileStateCacheItemFlags read FFlags;
-    property TestedFlags: TFileStateCacheItemFlags read FTestedFlags;
-    property TimeStamp: int64 read FTimeStamp;
-    property Age: longint read FAge;
-  end;
-
-  TOnChangeFileStateTimeStamp = procedure(Sender: TObject;
-                                          const AFilename: string) of object;
-
-  { TFileStateCache }
-
-  TFileStateCache = class
-  private
-    FFiles: TAVLTree; // tree of TFileStateCacheItem
-    FTimeStamp: int64;
-    FLockCount: integer;
-    FChangeTimeStampHandler: array of TOnChangeFileStateTimeStamp;
-    procedure SetFlag(AFile: TFileStateCacheItem;
-                      AFlag: TFileStateCacheItemFlag; NewValue: boolean);
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Lock;
-    procedure Unlock;
-    function Locked: boolean;
-    procedure IncreaseTimeStamp(const AFilename: string);
-    function FileExistsCached(const AFilename: string): boolean;
-    function DirPathExistsCached(const AFilename: string): boolean;
-    function DirectoryIsWritableCached(const DirectoryName: string): boolean;
-    function FileIsExecutableCached(const AFilename: string): boolean;
-    function FileIsReadableCached(const AFilename: string): boolean;
-    function FileIsWritableCached(const AFilename: string): boolean;
-    function FileIsTextCached(const AFilename: string): boolean;
-    function FileAgeCached(const AFileName: string): Longint;
-    function FindFile(const Filename: string;
-                      CreateIfNotExists: boolean): TFileStateCacheItem;
-    function Check(const Filename: string; AFlag: TFileStateCacheItemFlag;
-                   out AFile: TFileStateCacheItem; var FlagIsSet: boolean): boolean;
-    procedure WriteDebugReport;
-    procedure AddChangeTimeStampHandler(const Handler: TOnChangeFileStateTimeStamp);
-    procedure RemoveChangeTimeStampHandler(const Handler: TOnChangeFileStateTimeStamp);
-    function CalcMemSize: PtrUint;
-  public
-    property TimeStamp: int64 read FTimeStamp;
-  end;
-
-type
-  TOnFileExistsCached = function(Filename: string): boolean of object;
-  TOnFileAgeCached = function(Filename: string): longint of object;
-var
-  FileStateCache: TFileStateCache = nil;
-  OnFileExistsCached: TOnFileExistsCached = nil; // set by unit CodeToolManager
-  OnFileAgeCached: TOnFileAgeCached = nil; // set by unit CodeToolManager
-
-function FileExistsCached(const AFilename: string): boolean;
-function DirPathExistsCached(const AFilename: string): boolean;
-function DirectoryIsWritableCached(const ADirectoryName: string): boolean;
-function FileIsExecutableCached(const AFilename: string): boolean;
-function FileIsReadableCached(const AFilename: string): boolean;
-function FileIsWritableCached(const AFilename: string): boolean;
-function FileIsTextCached(const AFilename: string): boolean;
-function FileAgeCached(const AFileName: string): Longint;
 function FileAgeToStr(aFileAge: longint): string;
 
-procedure InvalidateFileStateCache(const Filename: string = ''); inline;
-function CompareFileStateItems(Data1, Data2: Pointer): integer;
-function CompareFilenameWithFileStateCacheItem(Key, Data: Pointer): integer;
-
-const
-  FileStateCacheItemFlagNames: array[TFileStateCacheItemFlag] of string = (
-    'fsciExists',
-    'fsciDirectory',
-    'fsciReadable',
-    'fsciWritable',
-    'fsciDirectoryReadable',
-    'fsciDirectoryWritable',
-    'fsciText',
-    'fsciExecutable',
-    'fsciAge'
-    );
-
-var
-  FPUpChars: array[char] of char;
-
-// AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, MacOSX
-// but normally these OS use UTF-8 as system encoding so the widestringmanager
-// is not needed.
-function NeedRTLAnsi: boolean;// true if system encoding is not UTF-8
-procedure SetNeedRTLAnsi(NewValue: boolean);
-function UTF8ToSys(const s: string): string;// as UTF8ToAnsi but more independent of widestringmanager
-function SysToUTF8(const s: string): string;// as AnsiToUTF8 but more independent of widestringmanager
-function UTF8CharacterLength(p: PChar): integer;
-
-// file operations
-function FileExistsUTF8(const Filename: string): boolean;
-function FileAgeUTF8(const FileName: string): Longint;
-function DirectoryExistsUTF8(const Directory: string): Boolean;
-function ExpandFileNameUTF8(const FileName: string): string;
-function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
-function FindNextUTF8(var Rslt: TSearchRec): Longint;
-procedure FindCloseUTF8(var F: TSearchrec);
-function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
-function FileGetAttrUTF8(const FileName: String): Longint;
-function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
-function DeleteFileUTF8(const FileName: String): Boolean;
-function RenameFileUTF8(const OldName, NewName: String): Boolean;
-function FileSearchUTF8(const Name, DirList : String): String;
-function FileIsReadOnlyUTF8(const FileName: String): Boolean;
-function GetCurrentDirUTF8: String;
-function SetCurrentDirUTF8(const NewDir: String): Boolean;
-function CreateDirUTF8(const NewDir: String): Boolean;
-function RemoveDirUTF8(const Dir: String): Boolean;
-function ForceDirectoriesUTF8(const Dir: string): Boolean;
+function UTF8ToSys(const s: string): string; inline;// as UTF8ToAnsi but more independent of widestringmanager
+function SysToUTF8(const s: string): string; inline;// as AnsiToUTF8 but more independent of widestringmanager
+function UTF8CharacterLength(p: PChar): integer; inline;
 
 // environment
 function ParamStrUTF8(Param: Integer): string;
 function GetEnvironmentStringUTF8(Index : Integer): String;
 function GetEnvironmentVariableUTF8(const EnvVar: String): String;
 
+procedure InvalidateFileStateCache(const Filename: string = ''); inline;
 
 // basic utility -> should go to RTL
 function ComparePointers(p1, p2: Pointer): integer; inline;
@@ -387,6 +284,10 @@ function DbgS(const i1,i2,i3,i4: integer): string; overload;
 function DbgStr(const StringWithSpecialChars: string): string; overload;
 function DbgStr(const StringWithSpecialChars: string; StartPos, Len: PtrInt): string; overload;
 
+function MemSizeString(const s: string): PtrUInt; inline;
+function MemSizeFPList(const List: TFPList): PtrUInt; inline;
+function GetStringRefCount(const s: string): PtrInt; inline;
+
 type
   TCTMemStat = class
   public
@@ -412,9 +313,6 @@ type
 
 function CompareCTMemStat(Stat1, Stat2: TCTMemStat): integer;
 function CompareNameWithCTMemStat(KeyAnsiString: Pointer; Stat: TCTMemStat): integer;
-function MemSizeString(const s: string): PtrUInt;
-function MemSizeFPList(const List: TFPList): PtrUInt;
-function GetStringRefCount(const s: string): PtrInt;
 
 function GetTicks: int64;
 
@@ -472,219 +370,19 @@ var
   LineInfoCache: TAVLTree = nil;
   LastTick: int64 = 0;
 
-var
-  FNeedRTLAnsi: boolean = false;
-  FNeedRTLAnsiValid: boolean = false;
-
-function NeedRTLAnsi: boolean;
-{$IFDEF WinCE}
-// CP_UTF8 is missing in the windows unit of the Windows CE RTL
-const
-  CP_UTF8 = 65001;
-{$ENDIF}
-{$IFNDEF Windows}
-var
-  Lang: String;
-  i: LongInt;
-  Encoding: String;
-{$ENDIF}
-begin
-  if FNeedRTLAnsiValid then
-    exit(FNeedRTLAnsi);
-  {$IFDEF Windows}
-  FNeedRTLAnsi:=GetACP<>CP_UTF8;
-  {$ELSE}
-  FNeedRTLAnsi:=false;
-  Lang := SysUtils.GetEnvironmentVariable('LC_ALL');
-  if Length(lang) = 0 then
-  begin
-    Lang := SysUtils.GetEnvironmentVariable('LC_MESSAGES');
-    if Length(Lang) = 0 then
-    begin
-      Lang := SysUtils.GetEnvironmentVariable('LANG');
-    end;
-  end;
-  i:=System.Pos('.',Lang);
-  if (i>0) then begin
-    Encoding:=copy(Lang,i+1,length(Lang)-i);
-    FNeedRTLAnsi:=(SysUtils.CompareText(Encoding,'UTF-8')=0)
-              or (SysUtils.CompareText(Encoding,'UTF8')=0);
-  end;
-  {$ENDIF}
-  FNeedRTLAnsiValid:=true;
-  Result:=FNeedRTLAnsi;
-end;
-
-procedure SetNeedRTLAnsi(NewValue: boolean);
-begin
-  FNeedRTLAnsi:=NewValue;
-  FNeedRTLAnsiValid:=true;
-end;
-
-function IsASCII(const s: string): boolean; inline;
-var
-  i: Integer;
-begin
-  for i:=1 to length(s) do if ord(s[i])>127 then exit(false);
-  Result:=true;
-end;
-
 function UTF8ToSys(const s: string): string;
 begin
-  if NeedRTLAnsi and (not IsASCII(s)) then
-    Result:=UTF8ToAnsi(s)
-  else
-    Result:=s;
+  Result:=LazUTF8.UTF8ToSys(s);
 end;
 
 function SysToUTF8(const s: string): string;
 begin
-  if NeedRTLAnsi and (not IsASCII(s)) then
-    Result:=AnsiToUTF8(s)
-  else
-    Result:=s;
+  Result:=LazUTF8.SysToUTF8(s);
 end;
 
 function UTF8CharacterLength(p: PChar): integer;
 begin
-  if p<>nil then begin
-    if ord(p^)<%11000000 then begin
-      // regular single byte character (#0 is a character, this is pascal ;)
-      Result:=1;
-    end
-    else if ((ord(p^) and %11100000) = %11000000) then begin
-      // could be 2 byte character
-      if (ord(p[1]) and %11000000) = %10000000 then
-        Result:=2
-      else
-        Result:=1;
-    end
-    else if ((ord(p^) and %11110000) = %11100000) then begin
-      // could be 3 byte character
-      if ((ord(p[1]) and %11000000) = %10000000)
-      and ((ord(p[2]) and %11000000) = %10000000) then
-        Result:=3
-      else
-        Result:=1;
-    end
-    else if ((ord(p^) and %11111000) = %11110000) then begin
-      // could be 4 byte character
-      if ((ord(p[1]) and %11000000) = %10000000)
-      and ((ord(p[2]) and %11000000) = %10000000)
-      and ((ord(p[3]) and %11000000) = %10000000) then
-        Result:=4
-      else
-        Result:=1;
-    end
-    else
-      Result:=1
-  end else
-    Result:=0;
-end;
-
-function FileExistsUTF8(const Filename: string): boolean;
-begin
-  Result:=SysUtils.FileExists(UTF8ToSys(Filename));
-end;
-
-function FileAgeUTF8(const FileName: String): Longint;
-begin
-  Result:=SysUtils.FileAge(UTF8ToSys(Filename));
-end;
-
-function DirectoryExistsUTF8(const Directory: string): Boolean;
-begin
-  Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));
-end;
-
-function ExpandFileNameUTF8(const FileName: string): string;
-begin
-  Result:=SysToUTF8(SysUtils.ExpandFileName(UTF8ToSys(Filename)));
-end;
-
-function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
-  ): Longint;
-begin
-  Result:=SysUtils.FindFirst(UTF8ToSys(Path),Attr,Rslt);
-  Rslt.Name:=SysToUTF8(Rslt.Name);
-end;
-
-function FindNextUTF8(var Rslt: TSearchRec): Longint;
-begin
-  Rslt.Name:=UTF8ToSys(Rslt.Name);
-  Result:=SysUtils.FindNext(Rslt);
-  Rslt.Name:=SysToUTF8(Rslt.Name);
-end;
-
-procedure FindCloseUTF8(var F: TSearchrec);
-begin
-  SysUtils.FindClose(F);
-end;
-
-function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
-begin
-  Result:=SysUtils.FileSetDate(UTF8ToSys(Filename),Age);
-  InvalidateFileStateCache(Filename);
-end;
-
-function FileGetAttrUTF8(const FileName: String): Longint;
-begin
-  Result:=SysUtils.FileGetAttr(UTF8ToSys(Filename));
-end;
-
-function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
-begin
-  Result:=SysUtils.FileSetAttr(UTF8ToSys(Filename),Attr);
-  InvalidateFileStateCache(Filename);
-end;
-
-function DeleteFileUTF8(const FileName: String): Boolean;
-begin
-  Result:=SysUtils.DeleteFile(UTF8ToSys(Filename));
-  if Result then
-    InvalidateFileStateCache;
-end;
-
-function RenameFileUTF8(const OldName, NewName: String): Boolean;
-begin
-  Result:=SysUtils.RenameFile(UTF8ToSys(OldName),UTF8ToSys(NewName));
-  if Result then
-    InvalidateFileStateCache;
-end;
-
-function FileSearchUTF8(const Name, DirList: String): String;
-begin
-  Result:=SysToUTF8(SysUtils.FileSearch(UTF8ToSys(Name),UTF8ToSys(DirList)));
-end;
-
-function FileIsReadOnlyUTF8(const FileName: String): Boolean;
-begin
-  Result:=SysUtils.FileIsReadOnly(UTF8ToSys(Filename));
-end;
-
-function GetCurrentDirUTF8: String;
-begin
-  Result:=SysToUTF8(SysUtils.GetCurrentDir);
-end;
-
-function SetCurrentDirUTF8(const NewDir: String): Boolean;
-begin
-  Result:=SysUtils.SetCurrentDir(UTF8ToSys(NewDir));
-end;
-
-function CreateDirUTF8(const NewDir: String): Boolean;
-begin
-  Result:=SysUtils.CreateDir(UTF8ToSys(NewDir));
-end;
-
-function RemoveDirUTF8(const Dir: String): Boolean;
-begin
-  Result:=SysUtils.RemoveDir(UTF8ToSys(Dir));
-end;
-
-function ForceDirectoriesUTF8(const Dir: string): Boolean;
-begin
-  Result:=SysUtils.ForceDirectories(UTF8ToSys(Dir));
+  Result:=LazUTF8.UTF8CharacterLength(p);
 end;
 
 function ParamStrUTF8(Param: Integer): string;
@@ -700,6 +398,252 @@ end;
 function GetEnvironmentVariableUTF8(const EnvVar: String): String;
 begin
   Result:=SysToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToSys(EnvVar)));
+end;
+
+function CompareFilenames(const Filename1, Filename2: string): integer;
+begin
+  Result:=LazFileUtils.CompareFilenames(Filename1,Filename2);
+end;
+
+function CompareFilenamesIgnoreCase(const Filename1, Filename2: string
+  ): integer;
+begin
+  Result:=LazFileUtils.CompareFilenamesIgnoreCase(Filename1,Filename2);
+end;
+
+function CompareFileExt(const Filename, Ext: string; CaseSensitive: boolean
+  ): integer;
+begin
+  Result:=LazFileUtils.CompareFileExt(Filename,Ext,CaseSensitive);
+end;
+
+function CompareFilenameStarts(const Filename1, Filename2: string): integer;
+begin
+  Result:=LazFileUtils.CompareFilenameStarts(Filename1,Filename2);
+end;
+
+function CompareFilenames(Filename1: PChar; Len1: integer; Filename2: PChar;
+  Len2: integer): integer;
+begin
+  Result:=LazFileUtils.CompareFilenames(Filename1,Len1,Filename2,Len2);
+end;
+
+function DirPathExists(DirectoryName: string): boolean;
+begin
+  Result:=LazFileUtils.DirPathExists(DirectoryName);
+end;
+
+function DirectoryIsWritable(const DirectoryName: string): boolean;
+begin
+  Result:=LazFileUtils.DirectoryIsWritable(DirectoryName);
+end;
+
+function ExtractFileNameOnly(const AFilename: string): string;
+begin
+  Result:=LazFileUtils.ExtractFileNameOnly(AFilename);
+end;
+
+function FilenameIsAbsolute(const TheFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FilenameIsAbsolute(TheFilename);
+end;
+
+function FilenameIsWinAbsolute(const TheFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FilenameIsWinAbsolute(TheFilename);
+end;
+
+function FilenameIsUnixAbsolute(const TheFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FilenameIsUnixAbsolute(TheFilename);
+end;
+
+function ForceDirectory(DirectoryName: string): boolean;
+begin
+  Result:=LazFileUtils.ForceDirectory(DirectoryName);
+end;
+
+procedure CheckIfFileIsExecutable(const AFilename: string);
+begin
+  LazFileUtils.CheckIfFileIsExecutable(AFilename);
+end;
+
+function FileIsExecutable(const AFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FileIsExecutable(AFilename);
+end;
+
+function FileIsReadable(const AFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FileIsReadable(AFilename);
+end;
+
+function FileIsWritable(const AFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FileIsWritable(AFilename);
+end;
+
+function FileIsText(const AFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FileIsText(AFilename);
+end;
+
+function FileIsText(const AFilename: string; out FileReadable: boolean
+  ): boolean;
+begin
+  Result:=LazFileUtils.FileIsText(AFilename,FileReadable);
+end;
+
+function FilenameIsTrimmed(const TheFilename: string): boolean;
+begin
+  Result:=LazFileUtils.FilenameIsTrimmed(TheFilename);
+end;
+
+function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
+begin
+  Result:=LazFileUtils.FilenameIsTrimmed(StartPos,NameLen);
+end;
+
+function TrimFilename(const AFilename: string): string;
+begin
+  Result:=LazFileUtils.TrimFilename(AFilename);
+end;
+
+function CleanAndExpandFilename(const Filename: string): string;
+begin
+  Result:=LazFileUtils.CleanAndExpandFilename(Filename);
+end;
+
+function CleanAndExpandDirectory(const Filename: string): string;
+begin
+  Result:=LazFileUtils.CleanAndExpandDirectory(Filename);
+end;
+
+function TrimAndExpandFilename(const Filename: string): string;
+begin
+  Result:=LazFileUtils.TrimAndExpandFilename(Filename);
+end;
+
+function TrimAndExpandDirectory(const Filename: string): string;
+begin
+  Result:=LazFileUtils.TrimAndExpandDirectory(Filename);
+end;
+
+function CreateRelativePath(const Filename, BaseDirectory: string;
+  UsePointDirectory: boolean): string;
+begin
+  Result:=LazFileUtils.CreateRelativePath(Filename,BaseDirectory,UsePointDirectory);
+end;
+
+function FileIsInPath(const Filename, Path: string): boolean;
+begin
+  Result:=LazFileUtils.FileIsInPath(Filename,Path);
+end;
+
+function AppendPathDelim(const Path: string): string;
+begin
+  Result:=LazFileUtils.AppendPathDelim(Path);
+end;
+
+function ChompPathDelim(const Path: string): string;
+begin
+  Result:=LazFileUtils.ChompPathDelim(Path);
+end;
+
+function FileExistsUTF8(const Filename: string): boolean;
+begin
+  Result:=LazFileUtils.FileExistsUTF8(Filename);
+end;
+
+function FileAgeUTF8(const FileName: string): Longint;
+begin
+  Result:=LazFileUtils.FileAgeUTF8(Filename);
+end;
+
+function DirectoryExistsUTF8(const Directory: string): Boolean;
+begin
+  Result:=LazFileUtils.DirectoryExistsUTF8(Directory);
+end;
+
+function ExpandFileNameUTF8(const FileName: string): string;
+begin
+  Result:=LazFileUtils.ExpandFileNameUTF8(Filename);
+end;
+
+function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
+  ): Longint;
+begin
+  Result:=LazFileUtils.FindFirstUTF8(Path,Attr,Rslt);
+end;
+
+function FindNextUTF8(var Rslt: TSearchRec): Longint;
+begin
+  Result:=LazFileUtils.FindNextUTF8(Rslt);
+end;
+
+procedure FindCloseUTF8(var F: TSearchrec);
+begin
+  LazFileUtils.FindCloseUTF8(F);
+end;
+
+function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
+begin
+  Result:=LazFileUtils.FileSetDateUTF8(FileName,Age);
+end;
+
+function FileGetAttrUTF8(const FileName: String): Longint;
+begin
+  Result:=LazFileUtils.FileGetAttrUTF8(FileName);
+end;
+
+function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
+begin
+  Result:=LazFileUtils.FileSetAttrUTF8(FileName,Attr);
+end;
+
+function DeleteFileUTF8(const FileName: String): Boolean;
+begin
+  Result:=LazFileUtils.DeleteFileUTF8(FileName);
+end;
+
+function RenameFileUTF8(const OldName, NewName: String): Boolean;
+begin
+  Result:=LazFileUtils.RenameFileUTF8(OldName,NewName);
+end;
+
+function FileSearchUTF8(const Name, DirList: String): String;
+begin
+  Result:=LazFileUtils.FileSearchUTF8(Name,DirList);
+end;
+
+function FileIsReadOnlyUTF8(const FileName: String): Boolean;
+begin
+  Result:=LazFileUtils.FileIsReadOnlyUTF8(FileName);
+end;
+
+function GetCurrentDirUTF8: String;
+begin
+  Result:=LazFileUtils.GetCurrentDirUTF8;
+end;
+
+function SetCurrentDirUTF8(const NewDir: String): Boolean;
+begin
+  Result:=LazFileUtils.SetCurrentDirUTF8(NewDir);
+end;
+
+function CreateDirUTF8(const NewDir: String): Boolean;
+begin
+  Result:=LazFileUtils.CreateDirUTF8(NewDir);
+end;
+
+function RemoveDirUTF8(const Dir: String): Boolean;
+begin
+  Result:=LazFileUtils.RemoveDirUTF8(Dir);
+end;
+
+function ForceDirectoriesUTF8(const Dir: string): Boolean;
+begin
+  Result:=LazFileUtils.ForceDirectoriesUTF8(Dir);
 end;
 
 {-------------------------------------------------------------------------------
@@ -724,26 +668,6 @@ begin
     end;
   end;
   Result:=true;
-end;
-
-function DirectoryIsWritable(const DirectoryName: string): boolean;
-var
-  TempFilename: String;
-  fs: TFileStream;
-  s: String;
-begin
-  TempFilename:=GetTempFilename(AppendPathDelim(DirectoryName),'tstperm');
-  Result:=false;
-  try
-    fs:=TFileStream.Create(UTF8ToSys(TempFilename),fmCreate);
-    s:='WriteTest';
-    fs.Write(s[1],length(s));
-    fs.Free;
-    if not DeleteFileUTF8(TempFilename) then
-      InvalidateFileStateCache(TempFilename);
-    Result:=true;
-  except
-  end;
 end;
 
 function GetTempFilename(const Path, Prefix: string): string;
@@ -926,6 +850,61 @@ begin
 end;
 {$ENDIF}
 
+procedure CTIncreaseChangeStamp(var ChangeStamp: integer);
+begin
+  LazFileCache.LUIncreaseChangeStamp(ChangeStamp);
+end;
+
+procedure CTIncreaseChangeStamp64(var ChangeStamp: int64);
+begin
+  LazFileCache.LUIncreaseChangeStamp64(ChangeStamp);
+end;
+
+function FileExistsCached(const AFilename: string): boolean;
+begin
+  Result:=LazFileCache.FileExistsCached(AFilename);
+end;
+
+function DirPathExistsCached(const AFilename: string): boolean;
+begin
+  Result:=LazFileCache.DirPathExistsCached(AFilename);
+end;
+
+function DirectoryIsWritableCached(const ADirectoryName: string): boolean;
+begin
+  Result:=LazFileCache.DirectoryIsWritableCached(ADirectoryName);
+end;
+
+function FileIsExecutableCached(const AFilename: string): boolean;
+begin
+  Result:=LazFileCache.FileIsExecutableCached(AFilename);
+end;
+
+function FileIsReadableCached(const AFilename: string): boolean;
+begin
+  Result:=LazFileCache.FileIsReadableCached(AFilename);
+end;
+
+function FileIsWritableCached(const AFilename: string): boolean;
+begin
+  Result:=LazFileCache.FileIsWritableCached(AFilename);
+end;
+
+function FileIsTextCached(const AFilename: string): boolean;
+begin
+  Result:=LazFileCache.FileIsTextCached(AFilename);
+end;
+
+function FileAgeCached(const AFileName: string): Longint;
+begin
+  Result:=LazFileCache.FileAgeCached(AFileName);
+end;
+
+function GetFilenameOnDisk(const AFilename: string): string;
+begin
+  Result:=LazFileUtils.GetFilenameOnDisk(AFilename);
+end;
+
 function CompareAnsiStringFilenames(Data1, data2: Pointer): integer;
 var
   s1: String;
@@ -976,692 +955,6 @@ begin
     end;
   end;
   Result:=FilenameOnlyLen-NameOnlyLen;
-end;
-
-function CompareFilenames(const Filename1, Filename2: string): integer;
-{$IFDEF darwin}
-var
-  F1: CFStringRef;
-  F2: CFStringRef;
-{$ENDIF}
-begin
-  {$IFDEF darwin}
-  if Filename1=Filename2 then exit(0);
-  if (Filename1='') or (Filename2='') then
-    exit(length(Filename2)-length(Filename1));
-  F1:=CFStringCreateWithCString(nil,Pointer(Filename1),kCFStringEncodingUTF8);
-  F2:=CFStringCreateWithCString(nil,Pointer(Filename2),kCFStringEncodingUTF8);
-  Result:=CFStringCompare(F1,F2,kCFCompareNonliteral
-          {$IFDEF CaseInsensitiveFilenames}+kCFCompareCaseInsensitive{$ENDIF});
-  CFRelease(F1);
-  CFRelease(F2);
-  {$ELSE}
-    {$IFDEF CaseInsensitiveFilenames}
-    Result:=AnsiCompareText(Filename1, Filename2);
-    {$ELSE}
-    Result:=CompareStr(Filename1, Filename2);
-    {$ENDIF}
-  {$ENDIF}
-end;
-
-function CompareFilenamesIgnoreCase(const Filename1, Filename2: string
-  ): integer;
-{$IFDEF darwin}
-var
-  F1: CFStringRef;
-  F2: CFStringRef;
-{$ENDIF}
-begin
-  {$IFDEF darwin}
-  if Filename1=Filename2 then exit(0);
-  F1:=CFStringCreateWithCString(nil,Pointer(Filename1),kCFStringEncodingUTF8);
-  F2:=CFStringCreateWithCString(nil,Pointer(Filename2),kCFStringEncodingUTF8);
-  Result:=CFStringCompare(F1,F2,kCFCompareNonliteral+kCFCompareCaseInsensitive);
-  CFRelease(F1);
-  CFRelease(F2);
-  {$ELSE}
-  Result:=AnsiCompareText(Filename1, Filename2);
-  {$ENDIF}
-end;
-
-function FileIsExecutable(const AFilename: string): boolean;
-{$IFNDEF WINDOWS}
-var
-  Info : Stat;
-{$ENDIF}
-begin
-  {$IFDEF WINDOWS}
-  Result:=FileExistsUTF8(AFilename);
-  {$ELSE}
-  // first check AFilename is not a directory and then check if executable
-  Result:= (FpStat(AFilename,info)<>-1) and FPS_ISREG(info.st_mode) and
-           (BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0);
-  {$ENDIF}
-end;
-
-procedure CheckIfFileIsExecutable(const AFilename: string);
-{$IFNDEF Windows}
-var AText: string;
-{$ENDIF}
-begin
-  // TProcess does not report, if a program can not be executed
-  // to get good error messages consider the OS
-  if not FileExistsUTF8(AFilename) then begin
-    raise Exception.CreateFmt(ctsFileDoesNotExists,[AFilename]);
-  end;
-  {$IFNDEF Windows}
-  if not(BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0) then
-  begin
-    AText:='"'+AFilename+'"';
-    case fpGetErrno of
-    ESysEAcces:
-      AText:='read access denied for '+AText;
-    ESysENoEnt:
-      AText:='a directory component in '+AText
-                          +' does not exist or is a dangling symlink';
-    ESysENotDir:
-      AText:='a directory component in '+Atext+' is not a directory';
-    ESysENoMem:
-      AText:='insufficient memory';
-    ESysELoop:
-      AText:=AText+' has a circular symbolic link';
-    else
-      AText:=Format(ctsFileIsNotExecutable,[AText]);
-    end;
-    raise Exception.Create(AText);
-  end;
-  {$ENDIF}
-
-  // ToDo: windows and xxxbsd
-end;
-
-function ExtractFileNameOnly(const AFilename: string): string;
-var ExtLen: integer;
-begin
-  // beware: filename.ext1.ext2
-  Result:=ExtractFilename(AFilename);
-  ExtLen:=length(ExtractFileExt(Result));
-  Result:=copy(Result,1,length(Result)-ExtLen);
-end;
-
-function FilenameIsAbsolute(const TheFilename: string):boolean;
-begin
-  {$IFDEF Windows}
-  // windows
-  Result:=FilenameIsWinAbsolute(TheFilename);
-  {$ELSE}
-  // unix
-  Result:=FilenameIsUnixAbsolute(TheFilename);
-  {$ENDIF}
-end;
-
-function FilenameIsWinAbsolute(const TheFilename: string): boolean;
-begin
-  Result:=((length(TheFilename)>=2) and (TheFilename[1] in ['A'..'Z','a'..'z'])
-           and (TheFilename[2]=':'))
-     or ((length(TheFilename)>=2)
-         and (TheFilename[1]='\') and (TheFilename[2]='\'));
-end;
-
-function FilenameIsUnixAbsolute(const TheFilename: string): boolean;
-begin
-  Result:=(TheFilename<>'') and (TheFilename[1]='/');
-end;
-
-function GetFilenameOnDisk(const AFilename: string): string;
-begin
-  Result:=AFilename;
-  {$IFDEF darwin}
-  Result:=GetDarwinSystemFilename(Result);
-  {$ELSE}
-    {$IFDEF NotLiteralFilenames}
-    Result:=FindDiskFilename(Result);
-    {$ENDIF}
-  {$ENDIF}
-end;
-
-function CompareFilenameStarts(const Filename1, Filename2: string): integer;
-var
-  len1: Integer;
-  len2: Integer;
-begin
-  len1:=length(Filename1);
-  len2:=length(Filename2);
-  if len1=len2 then begin
-    Result:=CompareFilenames(Filename1,Filename2);
-    exit;
-  end else if len1>len2 then
-    Result:=CompareFilenames(copy(Filename1,1,len2),Filename2)
-  else
-    Result:=CompareFilenames(Filename1,copy(Filename2,1,len1));
-  if Result<>0 then exit;
-  if len1<len2 then
-    Result:=-1
-  else
-    Result:=1;
-end;
-
-function CompareFilenames(Filename1: PChar; Len1: integer; Filename2: PChar;
-  Len2: integer): integer;
-var
-  {$IFDEF NotLiteralFilenames}
-  File1: string;
-  File2: string;
-  {$ELSE}
-  i: Integer;
-  {$ENDIF}
-begin
-  if (Len1=0) or (Len2=0) then begin
-    Result:=Len1-Len2;
-    exit;
-  end;
-  {$IFDEF NotLiteralFilenames}
-  SetLength(File1,Len1);
-  System.Move(Filename1^,File1[1],Len1);
-  SetLength(File2,Len2);
-  System.Move(Filename2^,File2[1],Len2);
-  Result:=CompareFilenames(File1,File2);
-  {$ELSE}
-  Result:=0;
-  i:=0;
-  while (Result=0) and ((i<Len1) and (i<Len2)) do begin
-    Result:=Ord(Filename1[i])
-           -Ord(Filename2[i]);
-    Inc(i);
-  end;
-  if Result=0 Then
-    Result:=Len1-Len2;
-  {$ENDIF}
-end;
-
-function DirPathExists(DirectoryName: string): boolean;
-begin
-  Result:=DirectoryExistsUTF8(ChompPathDelim(DirectoryName));
-end;
-
-function ForceDirectory(DirectoryName: string): boolean;
-var i: integer;
-  Dir: string;
-begin
-  DoDirSeparators(DirectoryName);
-  DirectoryName:=AppendPathDelim(DirectoryName);
-  i:=1;
-  while i<=length(DirectoryName) do begin
-    if DirectoryName[i]=PathDelim then begin
-      Dir:=copy(DirectoryName,1,i-1);
-      if not DirPathExists(Dir) then begin
-        Result:=CreateDirUTF8(Dir);
-        if not Result then exit;
-      end;
-    end;
-    inc(i);
-  end;
-  Result:=true;
-end;
-
-function FileIsReadable(const AFilename: string): boolean;
-begin
-  {$IFDEF Windows}
-  Result:=true;
-  {$ELSE}
-  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.R_OK)=0;
-  {$ENDIF}
-end;
-
-function FileIsWritable(const AFilename: string): boolean;
-begin
-  {$IFDEF Windows}
-  Result:=((FileGetAttrUTF8(AFilename) and faReadOnly)=0);
-  {$ELSE}
-  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.W_OK)=0;
-  {$ENDIF}
-end;
-
-function FileIsText(const AFilename: string): boolean;
-var
-  FileReadable: Boolean;
-begin
-  Result:=FileIsText(AFilename,FileReadable);
-  if FileReadable then ;
-end;
-
-function FileIsText(const AFilename: string; out FileReadable: boolean): boolean;
-var
-  fs: TFileStream;
-  Buf: string;
-  Len: integer;
-  NewLine: boolean;
-  p: PChar;
-  ZeroAllowed: Boolean;
-begin
-  Result:=false;
-  FileReadable:=true;
-  try
-    fs := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead or fmShareDenyNone);
-    try
-      // read the first 1024 bytes
-      Len:=1024;
-      SetLength(Buf,Len+1);
-      Len:=fs.Read(Buf[1],Len);
-      if Len>0 then begin
-        Buf[Len+1]:=#0;
-        p:=PChar(Buf);
-        ZeroAllowed:=false;
-        if (p[0]=#$EF) and (p[1]=#$BB) and (p[2]=#$BF) then begin
-          // UTF-8 BOM (Byte Order Mark)
-          inc(p,3);
-        end else if (p[0]=#$FF) and (p[1]=#$FE) then begin
-          // ucs-2le BOM FF FE
-          inc(p,2);
-          ZeroAllowed:=true;
-        end else if (p[0]=#$FE) and (p[1]=#$FF) then begin
-          // ucs-2be BOM FE FF
-          inc(p,2);
-          ZeroAllowed:=true;
-        end;
-        NewLine:=false;
-        while true do begin
-          case p^ of
-          #0:
-            if p-PChar(Buf)>=Len then
-              break
-            else if not ZeroAllowed then
-              exit;
-          // #10,#13: new line
-          // #12: form feed
-          // #26: end of file
-          #1..#8,#11,#14..#25,#27..#31: exit;
-          #10,#13: NewLine:=true;
-          end;
-          inc(p);
-        end;
-        if NewLine or (Len<1024) then
-          Result:=true;
-      end else
-        Result:=true;
-    finally
-      fs.Free;
-    end;
-  except
-    on E: Exception do begin
-      FileReadable:=false;
-    end;
-  end;
-end;
-
-function FilenameIsTrimmed(const TheFilename: string): boolean;
-begin
-  Result:=FilenameIsTrimmed(PChar(Pointer(TheFilename)),// pointer type cast avoids #0 check
-                            length(TheFilename));
-end;
-
-function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
-var
-  i: Integer;
-begin
-  Result:=false;
-  if NameLen<=0 then begin
-    Result:=true;
-    exit;
-  end;
-  // check heading spaces
-  if StartPos[0]=' ' then exit;
-  // check trailing spaces
-  if StartPos[NameLen-1]=' ' then exit;
-  // check ./ at start
-  if (StartPos[0]='.') and (StartPos[1]=PathDelim) then exit;
-  i:=0;
-  while i<NameLen do begin
-    if StartPos[i]<>PathDelim then
-      inc(i)
-    else begin
-      inc(i);
-      if i=NameLen then break;
-
-      // check for double path delimiter
-      if (StartPos[i]=PathDelim) then exit;
-
-      if (StartPos[i]='.') and (i>0) then begin
-        inc(i);
-        // check /./ or /. at end
-        if (StartPos[i]=PathDelim) or (i=NameLen) then exit;
-        if StartPos[i]='.' then begin
-          inc(i);
-          // check /../ or /.. at end
-          if (StartPos[i]=PathDelim) or (i=NameLen) then exit;
-        end;
-      end;
-    end;
-  end;
-  Result:=true;
-end;
-
-function TrimFilename(const AFilename: string): string;
-// trim double path delims, heading and trailing spaces
-// and special dirs . and ..
-var SrcPos, DestPos, l, DirStart: integer;
-  c: char;
-  MacroPos: LongInt;
-begin
-  Result:=AFilename;
-  if FilenameIsTrimmed(Result) then exit;
-
-  l:=length(AFilename);
-  SrcPos:=1;
-  DestPos:=1;
-
-  // skip trailing spaces
-  while (l>=1) and (AFilename[l]=' ') do dec(l);
-
-  // skip heading spaces
-  while (SrcPos<=l) and (AFilename[SrcPos]=' ') do inc(SrcPos);
-
-  // trim double path delimiters and special dirs . and ..
-  while (SrcPos<=l) do begin
-    c:=AFilename[SrcPos];
-    // check for double path delims
-    if (c=PathDelim) then begin
-      inc(SrcPos);
-      {$IFDEF Windows}
-      if (DestPos>2)
-      {$ELSE}
-      if (DestPos>1)
-      {$ENDIF}
-      and (Result[DestPos-1]=PathDelim) then begin
-        // skip second PathDelim
-        continue;
-      end;
-      Result[DestPos]:=c;
-      inc(DestPos);
-      continue;
-    end;
-    // check for special dirs . and ..
-    if (c='.') then begin
-      if (SrcPos<l) then begin
-        if (AFilename[SrcPos+1]=PathDelim)
-        and ((DestPos=1) or (AFilename[SrcPos-1]=PathDelim)) then begin
-          // special dir ./
-          // -> skip
-          inc(SrcPos,2);
-          continue;
-        end else if (AFilename[SrcPos+1]='.')
-        and (SrcPos+1=l) or (AFilename[SrcPos+2]=PathDelim) then
-        begin
-          // special dir ..
-          //  1. ..      -> copy
-          //  2. /..     -> skip .., keep /
-          //  3. C:..    -> copy
-          //  4. C:\..   -> skip .., keep C:\
-          //  5. \\..    -> skip .., keep \\
-          //  6. xxx../..   -> copy
-          //  7. xxxdir/..  -> trim dir and skip ..
-          //  8. xxxdir/..  -> trim dir and skip ..
-          if DestPos=1 then begin
-            //  1. ..      -> copy
-          end else if (DestPos=2) and (Result[1]=PathDelim) then begin
-            //  2. /..     -> skip .., keep /
-            inc(SrcPos,2);
-            continue;
-          {$IFDEF Windows}
-          end else if (DestPos=3) and (Result[2]=':')
-          and (Result[1] in ['a'..'z','A'..'Z']) then begin
-            //  3. C:..    -> copy
-          end else if (DestPos=4) and (Result[2]=':') and (Result[3]=PathDelim)
-          and (Result[1] in ['a'..'z','A'..'Z']) then begin
-            //  4. C:\..   -> skip .., keep C:\
-            inc(SrcPos,2);
-            continue;
-          end else if (DestPos=3) and (Result[1]=PathDelim)
-          and (Result[2]=PathDelim) then begin
-            //  5. \\..    -> skip .., keep \\
-            inc(SrcPos,2);
-            continue;
-          {$ENDIF}
-          end else if (DestPos>1) and (Result[DestPos-1]=PathDelim) then begin
-            if (DestPos>3)
-            and (Result[DestPos-2]='.') and (Result[DestPos-3]='.')
-            and ((DestPos=4) or (Result[DestPos-4]=PathDelim)) then begin
-              //  6. ../..   -> copy
-            end else begin
-              //  7. xxxdir/..  -> trim dir and skip ..
-              DirStart:=DestPos-2;
-              while (DirStart>1) and (Result[DirStart-1]<>PathDelim) do
-                dec(DirStart);
-              MacroPos:=DirStart;
-              while MacroPos<DestPos do begin
-                if (Result[MacroPos]='$')
-                and (Result[MacroPos+1] in ['(','a'..'z','A'..'Z']) then begin
-                  // 8. directory contains a macro -> keep
-                  break;
-                end;
-                inc(MacroPos);
-              end;
-              if MacroPos=DestPos then begin
-                DestPos:=DirStart;
-                inc(SrcPos,2);
-                continue;
-              end;
-            end;
-          end;
-        end;
-      end else begin
-        // special dir . at end of filename
-        if DestPos=1 then begin
-          Result:='.';
-          exit;
-        end else begin
-          // skip
-          break;
-        end;
-      end;
-    end;
-    // copy directory
-    repeat
-      Result[DestPos]:=c;
-      inc(DestPos);
-      inc(SrcPos);
-      if (SrcPos>l) then break;
-      c:=AFilename[SrcPos];
-      if c=PathDelim then break;
-    until false;
-  end;
-  // trim result
-  if DestPos<=length(AFilename) then
-    SetLength(Result,DestPos-1);
-end;
-
-{------------------------------------------------------------------------------
-  function CleanAndExpandFilename(const Filename: string): string;
- ------------------------------------------------------------------------------}
-function CleanAndExpandFilename(const Filename: string): string;
-begin
-  Result:=ExpandFileNameUTF8(TrimFileName(Filename));
-end;
-
-{------------------------------------------------------------------------------
-  function CleanAndExpandDirectory(const Filename: string): string;
- ------------------------------------------------------------------------------}
-function CleanAndExpandDirectory(const Filename: string): string;
-begin
-  Result:=AppendPathDelim(CleanAndExpandFilename(Filename));
-end;
-
-function TrimAndExpandFilename(const Filename: string): string;
-begin
-  Result:=ChompPathDelim(TrimFilename(Filename));
-  if Result='' then exit;
-  Result:=TrimFilename(ExpandFileNameUTF8(Result));
-end;
-
-function TrimAndExpandDirectory(const Filename: string): string;
-begin
-  Result:=TrimFilename(Filename);
-  if Result='' then exit;
-  Result:=TrimFilename(AppendPathDelim(ExpandFileNameUTF8(Result)));
-end;
-
-function CreateRelativePath(const Filename, BaseDirectory: string;
-  UsePointDirectory: boolean): string;
-var
-  FileNameLength: Integer;
-  BaseDirLen: Integer;
-  SamePos: Integer;
-  UpDirCount: Integer;
-  BaseDirPos: Integer;
-  ResultPos: Integer;
-  i: Integer;
-  FileNameRestLen: Integer;
-  CmpBaseDirectory: String;
-  CmpFilename: String;
-  p: Integer;
-  DirCount: Integer;
-begin
-  Result:=Filename;
-  if (BaseDirectory='') or (Filename='') then exit;
-
-  {$IFDEF Windows}
-  // check for different windows file drives
-  if (CompareText(ExtractFileDrive(Filename),
-                  ExtractFileDrive(BaseDirectory))<>0)
-  then
-    exit;
-  {$ENDIF}
-  CmpBaseDirectory:=BaseDirectory;
-  CmpFilename:=Filename;
-  {$IFDEF darwin}
-  CmpBaseDirectory:=GetDarwinSystemFilename(CmpBaseDirectory);
-  CmpFilename:=GetDarwinSystemFilename(CmpFilename);
-  {$ENDIF}
-  {$IFDEF CaseInsensitiveFilenames}
-  CmpBaseDirectory:=AnsiUpperCaseFileName(CmpBaseDirectory);
-  CmpFilename:=AnsiUpperCaseFileName(CmpFilename);
-  {$ENDIF}
-
-  FileNameLength:=length(CmpFilename);
-  while (FileNameLength>0) and (CmpFilename[FileNameLength]=PathDelim) do
-    dec(FileNameLength);
-  BaseDirLen:=length(CmpBaseDirectory);
-  while (BaseDirLen>0) and (CmpBaseDirectory[BaseDirLen]=PathDelim) do
-    dec(BaseDirLen);
-  if BaseDirLen=0 then exit;
-
-  //WriteLn('CreateRelativePath START ',copy(CmpBaseDirectory,1,BaseDirLen),' ',copy(CmpFilename,1,FileNameLength));
-
-  // count shared directories
-  p:=1;
-  DirCount:=0;
-  BaseDirPos:=p;
-  while (p<=FileNameLength) and (BaseDirPos<=BaseDirLen)
-  and (CmpFileName[p]=CmpBaseDirectory[BaseDirPos]) do
-  begin
-    if CmpFilename[p]=PathDelim then
-    begin
-      inc(DirCount);
-      repeat
-        inc(p);
-      until (p>FileNameLength) or (CmpFilename[p]<>PathDelim);
-      repeat
-        inc(BaseDirPos);
-      until (BaseDirPos>BaseDirLen) or (CmpBaseDirectory[BaseDirPos]<>PathDelim);
-    end else begin
-      inc(p);
-      inc(BaseDirPos);
-    end;
-  end;
-  UpDirCount:=0;
-  if ((BaseDirPos>BaseDirLen) or (CmpBaseDirectory[BaseDirPos]=PathDelim))
-  and ((p>FileNameLength) or (CmpFilename[p]=PathDelim)) then
-  begin
-    // for example File=/a BaseDir=/a/b
-    inc(DirCount);
-  end else begin
-    // for example File=/aa BaseDir=/ab
-    inc(UpDirCount);
-  end;
-  if DirCount=0 then exit;
-  if FilenameIsAbsolute(BaseDirectory) and (DirCount=1) then exit;
-
-  // calculate needed up directories
-  while (BaseDirPos<=BaseDirLen) do begin
-    if (CmpBaseDirectory[BaseDirPos]=PathDelim) then
-    begin
-      inc(UpDirCount);
-      repeat
-        inc(BaseDirPos);
-      until (BaseDirPos>BaseDirLen) or (CmpBaseDirectory[BaseDirPos]<>PathDelim);
-    end else
-      inc(BaseDirPos);
-  end;
-
-  // create relative filename
-  SamePos:=1;
-  p:=0;
-  FileNameLength:=length(Filename);
-  while (SamePos<=FileNameLength) do begin
-    if (Filename[SamePos]=PathDelim) then begin
-      repeat
-        inc(SamePos);
-      until (SamePos>FileNameLength) or (Filename[SamePos]<>PathDelim);
-      inc(p);
-      if p>=DirCount then
-        break;
-    end else
-      inc(SamePos);
-  end;
-  FileNameRestLen:=FileNameLength-SamePos+1;
-  //writeln('DirCount=',DirCount,' UpDirCount=',UpDirCount,' FileNameRestLen=',FileNameRestLen,' SamePos=',SamePos);
-  SetLength(Result,3*UpDirCount+FileNameRestLen);
-  ResultPos:=1;
-  for i:=1 to UpDirCount do begin
-    Result[ResultPos]:='.';
-    Result[ResultPos+1]:='.';
-    Result[ResultPos+2]:=PathDelim;
-    inc(ResultPos,3);
-  end;
-  if FileNameRestLen>0 then
-    System.Move(Filename[SamePos],Result[ResultPos],FileNameRestLen);
-
-  if UsePointDirectory and (Result='') and (Filename<>'') then
-    Result:='.'; // Filename is the BaseDirectory
-end;
-
-{------------------------------------------------------------------------------
-  function FileIsInPath(const Filename, Path: string): boolean;
- ------------------------------------------------------------------------------}
-function FileIsInPath(const Filename, Path: string): boolean;
-var
-  ExpFile: String;
-  ExpPath: String;
-  l: integer;
-begin
-  if Path='' then begin
-    Result:=false;
-    exit;
-  end;
-  ExpFile:=TrimFilename(Filename);
-  ExpPath:=AppendPathDelim(TrimFilename(Path));
-  l:=length(ExpPath);
-  Result:=(l>0) and (length(ExpFile)>l) and (ExpFile[l]=PathDelim)
-          and (CompareFilenames(ExpPath,LeftStr(ExpFile,l))=0);
-end;
-
-function AppendPathDelim(const Path: string): string;
-begin
-  if (Path<>'') and (Path[length(Path)]<>PathDelim) then
-    Result:=Path+PathDelim
-  else
-    Result:=Path;
-end;
-
-function ChompPathDelim(const Path: string): string;
-var
-  Len: Integer;
-begin
-  Result:=Path;
-  Len:=length(Result);
-  while (Len>1) and (Result[Len]=PathDelim) do dec(Len);
-  if Len<length(Result) then
-    SetLength(Result,Len);
 end;
 
 function FilenameIsPascalUnit(const Filename: string;
@@ -2136,22 +1429,6 @@ begin
   Result:=StartPos<=length(CmdLine);
 end;
 
-procedure CTIncreaseChangeStamp(var ChangeStamp: integer);
-begin
-  if ChangeStamp<High(ChangeStamp) then
-    inc(ChangeStamp)
-  else
-    ChangeStamp:=CTInvalidChangeStamp+1;
-end;
-
-procedure CTIncreaseChangeStamp64(var ChangeStamp: int64);
-begin
-  if ChangeStamp<High(ChangeStamp) then
-    inc(ChangeStamp)
-  else
-    ChangeStamp:=CTInvalidChangeStamp64+1;
-end;
-
 function SearchFileInDir(const Filename, BaseDirectory: string;
   SearchCase: TCTSearchFileCase): string;
 
@@ -2491,62 +1768,9 @@ begin
   //debugl('  [FilenameIsMatching] Result=',Result,' ',DirStartMask,',',length(Mask),'  ',DirStartFile,',',length(Filename));
 end;
 
-function CompareFileExt(const Filename, Ext: string;
-  CaseSensitive: boolean): integer;
-var
-  FileLen, FilePos, ExtLen, ExtPos: integer;
-  FileChar, ExtChar: char;
+procedure InvalidateFileStateCache(const Filename: string = '');
 begin
-  FileLen:=length(Filename);
-  ExtLen:=length(Ext);
-  FilePos:=FileLen;
-  while (FilePos>=1) and (Filename[FilePos]<>'.') do dec(FilePos);
-  if FilePos<1 then begin
-    // no extension in filename
-    Result:=1;
-    exit;
-  end;
-  // skip point
-  inc(FilePos);
-  ExtPos:=1;
-  if (ExtPos<=ExtLen) and (Ext[1]='.') then inc(ExtPos);
-  // compare extensions
-  while true do begin
-    if FilePos<=FileLen then begin
-      if ExtPos<=ExtLen then begin
-        FileChar:=Filename[FilePos];
-        ExtChar:=Ext[ExtPos];
-        if not CaseSensitive then begin
-          FileChar:=FPUpChars[FileChar];
-          ExtChar:=FPUpChars[ExtChar];
-        end;
-        if FileChar=ExtChar then begin
-          inc(FilePos);
-          inc(ExtPos);
-        end else if FileChar>ExtChar then begin
-          Result:=1;
-          exit;
-        end else begin
-          Result:=-1;
-          exit;
-        end;
-      end else begin
-        // fileext longer than ext
-        Result:=1;
-        exit;
-      end;
-    end else begin
-      if ExtPos<=ExtLen then begin
-        // fileext shorter than ext
-        Result:=-1;
-        exit;
-      end else begin
-        // equal
-        Result:=0;
-        exit;
-      end;
-    end;
-  end;
+  LazFileCache.InvalidateFileStateCache(Filename);
 end;
 
 function ComparePointers(p1, p2: Pointer): integer;
@@ -3017,6 +2241,21 @@ begin
   Result:=dbgstr(copy(StringWithSpecialChars,StartPos,Len));
 end;
 
+function MemSizeString(const s: string): PtrUInt;
+begin
+  Result:=LazDbgLog.MemSizeString(s);
+end;
+
+function MemSizeFPList(const List: TFPList): PtrUInt;
+begin
+  Result:=LazDbgLog.MemSizeFPList(List);
+end;
+
+function GetStringRefCount(const s: string): PtrInt;
+begin
+  Result:=LazDbgLog.GetStringRefCount(s);
+end;
+
 function CompareCTMemStat(Stat1, Stat2: TCTMemStat): integer;
 begin
   Result:=SysUtils.CompareText(Stat1.Name,Stat2.Name);
@@ -3026,28 +2265,6 @@ function CompareNameWithCTMemStat(KeyAnsiString: Pointer; Stat: TCTMemStat
   ): integer;
 begin
   Result:=SysUtils.CompareText(AnsiString(KeyAnsiString),Stat.Name);
-end;
-
-function MemSizeString(const s: string): PtrUInt;
-begin
-  Result:=length(s);
-  if s<>'' then
-    inc(Result,SizeOf(Pointer)*4);
-end;
-
-function MemSizeFPList(const List: TFPList): PtrUInt;
-begin
-  if List=nil then exit(0);
-  Result:=PtrUInt(List.InstanceSize)
-    +PtrUInt(List.Capacity)*SizeOf(Pointer);
-end;
-
-function GetStringRefCount(const s: string): PtrInt;
-begin
-  if s='' then
-    Result:=-1
-  else
-    Result:=PPtrInt(s)[-2];
 end;
 
 function GetTicks: int64;
@@ -3163,361 +2380,12 @@ begin
   Result:=ComparePointers(Addr,PCTLineInfoCacheItem(Item)^.Addr);
 end;
 
-function FileExistsCached(const AFilename: string): boolean;
-begin
-  if OnFileExistsCached<>nil then
-    Result:=OnFileExistsCached(AFilename)
-  else
-    Result:=FileStateCache.FileExistsCached(AFilename);
-end;
-
-function DirPathExistsCached(const AFilename: string): boolean;
-begin
-  Result:=FileStateCache.DirPathExistsCached(AFilename);
-end;
-
-function DirectoryIsWritableCached(const ADirectoryName: string): boolean;
-begin
-  Result:=FileStateCache.DirectoryIsWritableCached(ADirectoryName);
-end;
-
-function FileIsExecutableCached(const AFilename: string): boolean;
-begin
-  Result:=FileStateCache.FileIsExecutableCached(AFilename);
-end;
-
-function FileIsReadableCached(const AFilename: string): boolean;
-begin
-  Result:=FileStateCache.FileIsReadableCached(AFilename);
-end;
-
-function FileIsWritableCached(const AFilename: string): boolean;
-begin
-  Result:=FileStateCache.FileIsWritableCached(AFilename);
-end;
-
-function FileIsTextCached(const AFilename: string): boolean;
-begin
-  Result:=FileStateCache.FileIsTextCached(AFilename);
-end;
-
-function FileAgeCached(const AFileName: string): Longint;
-begin
-  if OnFileAgeCached<>nil then
-    Result:=OnFileAgeCached(AFilename)
-  else
-    Result:=FileStateCache.FileAgeCached(AFilename);
-end;
-
 function FileAgeToStr(aFileAge: longint): string;
 begin
   Result:=DateTimeToStr(FileDateToDateTime(aFileAge));
 end;
 
-procedure InvalidateFileStateCache(const Filename: string);
-begin
-  FileStateCache.IncreaseTimeStamp(Filename);
-end;
-
-function CompareFileStateItems(Data1, Data2: Pointer): integer;
-begin
-  Result:=CompareFilenames(TFileStateCacheItem(Data1).FFilename,
-                           TFileStateCacheItem(Data2).FFilename);
-end;
-
-function CompareFilenameWithFileStateCacheItem(Key, Data: Pointer): integer;
-begin
-  Result:=CompareFilenames(AnsiString(Key),TFileStateCacheItem(Data).FFilename);
-  //debugln('CompareFilenameWithFileStateCacheItem Key=',AnsiString(Key),' Data=',TFileStateCacheItem(Data).FFilename,' Result=',dbgs(Result));
-end;
-
 //------------------------------------------------------------------------------
-procedure InternalInit;
-var
-  c: char;
-begin
-  FileStateCache:=TFileStateCache.Create;
-  for c:=Low(char) to High(char) do begin
-    FPUpChars[c]:=upcase(c);
-  end;
-end;
-
-{ TFileStateCacheItem }
-
-constructor TFileStateCacheItem.Create(const TheFilename: string;
-  NewTimeStamp: int64);
-begin
-  FFilename:=TheFilename;
-  FTimeStamp:=NewTimeStamp;
-end;
-
-function TFileStateCacheItem.CalcMemSize: PtrUint;
-begin
-  Result:=PtrUInt(InstanceSize)
-    +MemSizeString(FFilename);
-end;
-
-{ TFileStateCache }
-
-procedure TFileStateCache.SetFlag(AFile: TFileStateCacheItem;
-  AFlag: TFileStateCacheItemFlag; NewValue: boolean);
-begin
-  if AFile.FTimeStamp<>FTimeStamp then begin
-    AFile.FTestedFlags:=[];
-    AFile.FTimeStamp:=FTimeStamp;
-  end;
-  Include(AFile.FTestedFlags,AFlag);
-  if NewValue then
-    Include(AFile.FFlags,AFlag)
-  else
-    Exclude(AFile.FFlags,AFlag);
-  //debugln('TFileStateCache.SetFlag AFile.Filename=',AFile.Filename,' ',FileStateCacheItemFlagNames[AFlag],'=',dbgs(AFlag in AFile.FFlags),' Valid=',dbgs(AFlag in AFile.FTestedFlags));
-end;
-
-constructor TFileStateCache.Create;
-begin
-  FFiles:=TAVLTree.Create(@CompareFileStateItems);
-  CTIncreaseChangeStamp64(FTimeStamp); // one higher than default for new files
-end;
-
-destructor TFileStateCache.Destroy;
-begin
-  FFiles.FreeAndClear;
-  FFiles.Free;
-  SetLength(FChangeTimeStampHandler,0);
-  inherited Destroy;
-end;
-
-procedure TFileStateCache.Lock;
-begin
-  inc(FLockCount);
-end;
-
-procedure TFileStateCache.Unlock;
-
-  procedure RaiseTooManyUnlocks;
-  begin
-    raise Exception.Create('TFileStateCache.Unlock');
-  end;
-
-begin
-  if FLockCount<=0 then RaiseTooManyUnlocks;
-  dec(FLockCount);
-end;
-
-function TFileStateCache.Locked: boolean;
-begin
-  Result:=FLockCount>0;
-end;
-
-procedure TFileStateCache.IncreaseTimeStamp(const AFilename: string);
-var
-  i: Integer;
-  AFile: TFileStateCacheItem;
-begin
-  if Self=nil then exit;
-  if AFilename='' then begin
-    // invalidate all
-    CTIncreaseChangeStamp64(FTimeStamp);
-  end else begin
-    // invalidate single file
-    AFile:=FindFile(AFilename,false);
-    if AFile<>nil then
-      AFile.FTestedFlags:=[];
-  end;
-  for i:=0 to length(FChangeTimeStampHandler)-1 do
-    FChangeTimeStampHandler[i](Self,AFilename);
-  //debugln('TFileStateCache.IncreaseTimeStamp FTimeStamp=',dbgs(FTimeStamp));
-end;
-
-function TFileStateCache.FileExistsCached(const AFilename: string): boolean;
-var
-  AFile: TFileStateCacheItem;
-begin
-  Result := False;
-  if Check(AFilename,fsciExists,AFile,Result) then exit;
-  Result:=FileExistsUTF8(AFile.Filename);
-  SetFlag(AFile,fsciExists,Result);
-  {if not Check(Filename,fsciExists,AFile,Result) then begin
-    WriteDebugReport;
-    raise Exception.Create('');
-  end;}
-end;
-
-function TFileStateCache.DirPathExistsCached(const AFilename: string): boolean;
-var
-  AFile: TFileStateCacheItem;
-begin
-  Result := False;
-  if Check(AFilename,fsciDirectory,AFile,Result) then exit;
-  Result:=DirPathExists(AFile.Filename);
-  SetFlag(AFile,fsciDirectory,Result);
-end;
-
-function TFileStateCache.DirectoryIsWritableCached(const DirectoryName: string
-  ): boolean;
-var
-  AFile: TFileStateCacheItem;
-begin
-  Result := False;
-  if Check(DirectoryName,fsciDirectoryWritable,AFile,Result) then exit;
-  Result:=DirectoryIsWritable(AFile.Filename);
-  SetFlag(AFile,fsciDirectoryWritable,Result);
-end;
-
-function TFileStateCache.FileIsExecutableCached(
-  const AFilename: string): boolean;
-var
-  AFile: TFileStateCacheItem;
-begin
-  Result := False;
-  if Check(AFilename,fsciExecutable,AFile,Result) then exit;
-  Result:=FileIsExecutable(AFile.Filename);
-  SetFlag(AFile,fsciExecutable,Result);
-end;
-
-function TFileStateCache.FileIsReadableCached(const AFilename: string): boolean;
-var
-  AFile: TFileStateCacheItem;
-begin
-  Result := False;
-  if Check(AFilename,fsciReadable,AFile,Result) then exit;
-  Result:=FileIsReadable(AFile.Filename);
-  SetFlag(AFile,fsciReadable,Result);
-end;
-
-function TFileStateCache.FileIsWritableCached(const AFilename: string): boolean;
-var
-  AFile: TFileStateCacheItem;
-begin
-  Result := False;
-  if Check(AFilename,fsciWritable,AFile,Result) then exit;
-  Result:=FileIsWritable(AFile.Filename);
-  SetFlag(AFile,fsciWritable,Result);
-end;
-
-function TFileStateCache.FileIsTextCached(const AFilename: string): boolean;
-var
-  AFile: TFileStateCacheItem;
-begin
-  Result := False;
-  if Check(AFilename,fsciText,AFile,Result) then exit;
-  Result:=FileIsText(AFile.Filename);
-  SetFlag(AFile,fsciText,Result);
-end;
-
-function TFileStateCache.FileAgeCached(const AFileName: string): Longint;
-var
-  AFile: TFileStateCacheItem;
-  Dummy: Boolean;
-begin
-  Dummy := False;
-  if Check(AFilename,fsciAge,AFile,Dummy) then begin
-    Result:=AFile.Age;
-    exit;
-  end;
-  Result:=FileAge(AFile.Filename);
-  AFile.FAge:=Result;
-  Include(AFile.FTestedFlags,fsciAge);
-end;
-
-function TFileStateCache.FindFile(const Filename: string;
-  CreateIfNotExists: boolean): TFileStateCacheItem;
-var
-  TrimmedFilename: String;
-  ANode: TAVLTreeNode;
-begin
-  // make filename unique
-  TrimmedFilename:=ChompPathDelim(TrimFilename(Filename));
-  ANode:=FFiles.FindKey(Pointer(TrimmedFilename),
-                        @CompareFilenameWithFileStateCacheItem);
-  if ANode<>nil then
-    Result:=TFileStateCacheItem(ANode.Data)
-  else if CreateIfNotExists then begin
-    Result:=TFileStateCacheItem.Create(TrimmedFilename,FTimeStamp);
-    FFiles.Add(Result);
-    if FFiles.FindKey(Pointer(TrimmedFilename),
-                      @CompareFilenameWithFileStateCacheItem)=nil
-    then begin
-      DebugLn(format('FileStateCache.FindFile: "%s"',[FileName]));
-      WriteDebugReport;
-      raise Exception.Create('');
-    end;
-  end else
-    Result:=nil;
-end;
-
-function TFileStateCache.Check(const Filename: string;
-  AFlag: TFileStateCacheItemFlag; out AFile: TFileStateCacheItem;
-  var FlagIsSet: boolean): boolean;
-begin
-  AFile:=FindFile(Filename,true);
-  if FTimeStamp=AFile.FTimeStamp then begin
-    Result:=AFlag in AFile.FTestedFlags;
-    FlagIsSet:=AFlag in AFile.FFlags;
-  end else begin
-    AFile.FTestedFlags:=[];
-    AFile.FTimeStamp:=FTimeStamp;
-    Result:=false;
-    FlagIsSet:=false;
-  end;
-  //debugln('TFileStateCache.Check Filename=',Filename,' AFile.Filename=',AFile.Filename,' ',FileStateCacheItemFlagNames[AFlag],'=',dbgs(FlagIsSet),' Valid=',dbgs(Result));
-end;
-
-procedure TFileStateCache.WriteDebugReport;
-var
-  ANode: TAVLTreeNode;
-  AFile: TFileStateCacheItem;
-begin
-  debugln('TFileStateCache.WriteDebugReport FTimeStamp=',dbgs(FTimeStamp));
-  ANode:=FFiles.FindLowest;
-  while ANode<>nil do begin
-    AFile:=TFileStateCacheItem(ANode.Data);
-    debugln('  "',AFile.Filename,'" TimeStamp=',dbgs(AFile.TimeStamp));
-    ANode:=FFiles.FindSuccessor(ANode);
-  end;
-  debugln(' FFiles=',dbgs(FFiles.ConsistencyCheck));
-  debugln(FFiles.ReportAsString);
-end;
-
-procedure TFileStateCache.AddChangeTimeStampHandler(
-  const Handler: TOnChangeFileStateTimeStamp);
-begin
-  SetLength(FChangeTimeStampHandler,length(FChangeTimeStampHandler)+1);
-  FChangeTimeStampHandler[length(FChangeTimeStampHandler)-1]:=Handler;
-end;
-
-procedure TFileStateCache.RemoveChangeTimeStampHandler(
-  const Handler: TOnChangeFileStateTimeStamp);
-var
-  i: Integer;
-begin
-  for i:=length(FChangeTimeStampHandler)-1 downto 0 do begin
-    if Handler=FChangeTimeStampHandler[i] then begin
-      if i<length(FChangeTimeStampHandler)-1 then
-        System.Move(FChangeTimeStampHandler[i+1],FChangeTimeStampHandler[i],
-                    SizeOf(TNotifyEvent)*(length(FChangeTimeStampHandler)-i-1));
-      SetLength(FChangeTimeStampHandler,length(FChangeTimeStampHandler)-1);
-    end;
-  end;
-end;
-
-function TFileStateCache.CalcMemSize: PtrUint;
-var
-  Node: TAVLTreeNode;
-begin
-  Result:=PtrUInt(InstanceSize)
-    +PtrUInt(length(FChangeTimeStampHandler))*SizeOf(TNotifyEvent);
-  if FFiles<>nil then begin
-    inc(Result,PtrUInt(FFiles.InstanceSize)
-      +PtrUInt(FFiles.Count)*PtrUInt(TAVLTreeNode.InstanceSize));
-    Node:=FFiles.FindLowest;
-    while Node<>nil do begin
-      inc(Result,TFileStateCacheItem(Node.Data).CalcMemSize);
-      Node:=FFiles.FindSuccessor(Node);
-    end;
-  end;
-end;
 
 procedure FreeLineInfoCache;
 var
@@ -3632,7 +2500,7 @@ end;
 
 initialization
   {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('fileprocs.pas: initialization');{$ENDIF}
-  InternalInit;
+  FileStateCache:=TFileStateCache.Create;
 
 finalization
   FileStateCache.Free;

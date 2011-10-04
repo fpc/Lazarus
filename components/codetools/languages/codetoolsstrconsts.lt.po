@@ -357,17 +357,9 @@ msgstr "eksporto sakinys galimas tik bibliotekose"
 msgid "expression type must be class or record type"
 msgstr "išraiškos tipas turi būti klasė arba įrašas"
 
-#: codetoolsstrconsts.ctsfiledoesnotexists
-msgid "file \"%s\" does not exist"
-msgstr "failas „%s“ neegzistuoja"
-
 #: codetoolsstrconsts.ctsfilehascircularsymlink
 msgid "%s has a circular symbolic link"
 msgstr "%s turi uždarą simbolinį saitą"
-
-#: codetoolsstrconsts.ctsfileisnotexecutable
-msgid "%s is not executable"
-msgstr "%s nėra vykdomasis failas"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"

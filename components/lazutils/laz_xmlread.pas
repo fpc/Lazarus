@@ -26,7 +26,7 @@ interface
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
-  SysUtils, Classes, types, Laz_DOM, FileProcs;
+  SysUtils, Classes, types, LazUTF8, Laz_DOM;
 
 type
 

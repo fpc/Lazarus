@@ -353,17 +353,9 @@ msgstr "експортований оператор дозволяється л�
 msgid "expression type must be class or record type"
 msgstr "тип виразу має бути об'єктом або записом"
 
-#: codetoolsstrconsts.ctsfiledoesnotexists
-msgid "file \"%s\" does not exist"
-msgstr "файл \"%s\" не існує"
-
 #: codetoolsstrconsts.ctsfilehascircularsymlink
 msgid "%s has a circular symbolic link"
 msgstr "%s вміщує циклічне символічне посилання"
-
-#: codetoolsstrconsts.ctsfileisnotexecutable
-msgid "%s is not executable"
-msgstr "%s не є виконуваним файлом"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"

@@ -38,7 +38,8 @@
     #define macroname constant
                     -> const macroname = constant
     simplifies conditional directives (e.g. deletes #ifdef nonexisting)
-
+}
+(*
   ToDos:
     add comments for skipped items
     insert auto generated types in front of current node
@@ -57,7 +58,7 @@ The full name of this type is "struct structname". If you want to avoid typing t
 
 You can combine both statements into one:
 
-  typedef struct structname { <struct_definition> } aliasname; // (***)
+  typedef struct structname { <struct_definition> } aliasname;
 
 You can also create multiple type aliases using a single typedef statement:
 
@@ -81,9 +82,9 @@ It is also possible to define anonymous structs (without any identifier followin
 
 struct { <struct_definition> }; // no meaning: does not define a variable, and no name to refer to the type again in later declarations; gcc will warn
 struct { <struct_definition> } structvar; // same as "var structvar: record <struct_definition> end;"
-typedef struct { <struct_definition> } aliasname; // same as (***) above, except that you can only use "aliasname" to refer to this type, rather than also "struct structname"
+typedef struct { <struct_definition> } aliasname; // same as *** above, except that you can only use "aliasname" to refer to this type, rather than also "struct structname"
 
-}
+*)
 unit H2PasTool;
 
 {$mode objfpc}{$H+}

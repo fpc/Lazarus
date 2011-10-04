@@ -4216,7 +4216,7 @@ begin
       mtError,[mbCancel,mbAbort]);
     exit;
   end;
-  FileStateCache.IncreaseTimeStamp(StateFile);
+  InvalidateFileStateCache(StateFile);
   InvalidateStateFile(APackage);
 
   // create the package src directory

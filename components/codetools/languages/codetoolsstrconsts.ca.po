@@ -355,17 +355,9 @@ msgstr "la clausula exportada només es permet en biblioteques"
 msgid "expression type must be class or record type"
 msgstr "el tipus de l'expressió ha de ser CLASS o RECORD"
 
-#: codetoolsstrconsts.ctsfiledoesnotexists
-msgid "file \"%s\" does not exist"
-msgstr "no existeix el fitxer \"%s\""
-
 #: codetoolsstrconsts.ctsfilehascircularsymlink
 msgid "%s has a circular symbolic link"
 msgstr "%s té un enllaç simbòlic circular"
-
-#: codetoolsstrconsts.ctsfileisnotexecutable
-msgid "%s is not executable"
-msgstr "%s no és executable"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"

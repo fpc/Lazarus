@@ -13,14 +13,12 @@ uses
   CodeToolsStructs, CodeTree, CustomCodeTool, DefineTemplates, DirectivesTree, 
   DirectoryCacher, EventCodeTool, ExprEval, ExtractProcTool, FileProcs, 
   FindDeclarationCache, FindDeclarationTool, FindOverloads, H2PasTool, 
-  IdentCompletionTool, KeywordFuncLists, Laz_DOM, Laz_XMLCfg, Laz_XMLRead, 
-  Laz_XMLStreaming, Laz_XMLWrite, LFMTrees, LinkScanner, MethodJumpTool, 
-  MultiKeyWordListTool, NonPascalCodeTools, PascalParserTool, 
+  IdentCompletionTool, KeywordFuncLists, LFMTrees, LinkScanner, 
+  MethodJumpTool, MultiKeyWordListTool, NonPascalCodeTools, PascalParserTool, 
   PascalReaderTool, PPUCodeTools, PPUGraph, PPUParser, ResourceCodeTool, 
-  SourceChanger, SourceLog, StdCodeTools, OtherIdentifierTree, laz2_xmlutils, 
-  laz2_DOM, laz2_XMLWrite, laz2_XMLRead, CodeToolsCfgScript, CTXMLFixFragment, 
-  CTUnitGraph, ChangeDeclarationTool, CodeToolsFPCMsgs, Laz2_XMLCfg, 
-  LazarusPackageIntf;
+  SourceChanger, SourceLog, StdCodeTools, OtherIdentifierTree, 
+  CodeToolsCfgScript, CTXMLFixFragment, CTUnitGraph, ChangeDeclarationTool, 
+  CodeToolsFPCMsgs, LazarusPackageIntf;
 
 implementation
 

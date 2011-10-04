@@ -354,17 +354,9 @@ msgstr "выражение exports разрешается только в биб
 msgid "expression type must be class or record type"
 msgstr "тип выражения должен быть объектом или записью"
 
-#: codetoolsstrconsts.ctsfiledoesnotexists
-msgid "file \"%s\" does not exist"
-msgstr "файл \"%s\" не существует"
-
 #: codetoolsstrconsts.ctsfilehascircularsymlink
 msgid "%s has a circular symbolic link"
 msgstr "%s содержит циклическую символическую ссылку"
-
-#: codetoolsstrconsts.ctsfileisnotexecutable
-msgid "%s is not executable"
-msgstr "%s - не исполнимый файл"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"

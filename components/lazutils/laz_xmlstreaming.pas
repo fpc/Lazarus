@@ -22,8 +22,6 @@ unit Laz_XMLStreaming;
 {$MODE objfpc}
 {$H+}
 
-{$I codetools.inc}
-
 {$DEFINE HasReadWriteBuf}
 {$IF defined(VER2_2_0)}
 {$UNDEF HasReadWriteBuf}
@@ -36,7 +34,7 @@ unit Laz_XMLStreaming;
 interface
 
 uses
-  SysUtils, Classes, TypInfo, FileProcs,
+  SysUtils, Classes, TypInfo,
   {$IFNDEF OldXMLCfg}
   Laz2_DOM, Laz2_XMLWrite
   {$ELSE}
@@ -227,12 +225,12 @@ begin
     StackEl.Parent.AppendChild(StackEl.Element);
     StackEl.ElemType:=ElementType;
   end;
-  DebugLn('TXMLObjectWriter.StackPush Element="',Element,'" FStack.Count=',dbgs(FStack.Count),' ',DbgSName(StackEl.Parent));
+  //DebugLn('TXMLObjectWriter.StackPush Element="',Element,'" FStack.Count=',dbgs(FStack.Count),' ',DbgSName(StackEl.Parent));
 end;
 
 procedure TXMLObjectWriter.StackPop;
 begin
-  DebugLn('TXMLObjectWriter.StackPop ',dbgs(FStack.Count));
+  //DebugLn('TXMLObjectWriter.StackPop ',dbgs(FStack.Count));
   if FStack=nil then
     raise Exception.Create('TXMLObjectWriter.StackPop stack empty');
   StackEl.Free;
@@ -875,7 +873,7 @@ begin
   CompElement:=TDOMElement(ComponentNode);
 
   Result:=CompElement['class'];
-  DebugLn('TXMLObjectReader.GetRootClassName RootClassName="',Result,'"');
+  //DebugLn('TXMLObjectReader.GetRootClassName RootClassName="',Result,'"');
   
   // TODO: IsInherited
 end;
@@ -926,7 +924,7 @@ begin
   
   CompName:=FElement['name'];
   CompClassName:=FElement['class'];
-  DebugLn('TXMLObjectReader.BeginComponent CompName="',CompName,'" CompClassName="',CompClassName,'"');
+  //DebugLn('TXMLObjectReader.BeginComponent CompName="',CompName,'" CompClassName="',CompClassName,'"');
   
   PropertiesNode:=FElement.FindNode('properties');
   if PropertiesNode=nil then

@@ -546,7 +546,7 @@ begin
       mtError,ErrorButtons+[mbCancel],'');
     if Result<>mrRetry then exit;
   end;
-  FileStateCache.IncreaseTimeStamp('');
+  InvalidateFileStateCache;
   Result:=mrOk;
   {$ELSE}
   Result:=mrIgnore;
@@ -571,7 +571,7 @@ begin
             mtError,ErrorButtons+[mbCancel]);
           if Result<>mrRetry then exit;
         end;
-        FileStateCache.IncreaseTimeStamp('');
+        InvalidateFileStateCache;
       end;
     end;
     inc(i);

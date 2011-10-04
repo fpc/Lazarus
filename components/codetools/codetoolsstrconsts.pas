@@ -288,14 +288,12 @@ ResourceString
   ctsOldMethodNotFound = 'old method not found: %s';
   
   // fileprocs
-  ctsFileDoesNotExists = 'file "%s" does not exist';
   ctsExecuteAccessDeniedForFile = 'execute access denied for %s';
   ctsDirComponentDoesNotExistsOrIsDanglingSymLink =
     'a directory component in %s does not exist or is a dangling symlink';
   ctsDirComponentIsNotDir = 'a directory component in %s is not a directory';
   ctsInsufficientMemory = 'insufficient memory';
   ctsFileHasCircularSymLink = '%s has a circular symbolic link';
-  ctsFileIsNotExecutable = '%s is not executable';
 
   // misc
   ctsSrcPathForCompiledUnits = 'src path for compiled units';

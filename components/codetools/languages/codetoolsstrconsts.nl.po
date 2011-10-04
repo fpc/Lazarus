@@ -355,16 +355,8 @@ msgstr ""
 msgid "expression type must be class or record type"
 msgstr ""
 
-#: codetoolsstrconsts.ctsfiledoesnotexists
-msgid "file \"%s\" does not exist"
-msgstr ""
-
 #: codetoolsstrconsts.ctsfilehascircularsymlink
 msgid "%s has a circular symbolic link"
-msgstr ""
-
-#: codetoolsstrconsts.ctsfileisnotexecutable
-msgid "%s is not executable"
 msgstr ""
 
 #: codetoolsstrconsts.ctsfileisreadonly

@@ -358,17 +358,9 @@ msgstr "exports 语句只允许在 libraries 中使用"
 msgid "expression type must be class or record type"
 msgstr "表达类型必须是类或记录类型"
 
-#: codetoolsstrconsts.ctsfiledoesnotexists
-msgid "file \"%s\" does not exist"
-msgstr "文件 \"%s\" 不存在"
-
 #: codetoolsstrconsts.ctsfilehascircularsymlink
 msgid "%s has a circular symbolic link"
 msgstr "%s 有循环符号链接"
-
-#: codetoolsstrconsts.ctsfileisnotexecutable
-msgid "%s is not executable"
-msgstr "%s 不是可执行文件"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"

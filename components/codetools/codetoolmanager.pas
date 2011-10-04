@@ -42,6 +42,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, contnrs, TypInfo, FileProcs, BasicCodeTools,
   CodeToolsStrConsts,
+  LazFileCache,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, FindOverloads, CodeBeautifier,
   FindDeclarationCache, DirectoryCacher, AVL_Tree,

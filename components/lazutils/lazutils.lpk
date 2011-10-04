@@ -23,6 +23,72 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
+    <Files Count="16">
+      <Item1>
+        <Filename Value="laz2_dom.pas"/>
+        <UnitName Value="laz2_DOM"/>
+      </Item1>
+      <Item2>
+        <Filename Value="laz2_names.inc"/>
+        <Type Value="Include"/>
+      </Item2>
+      <Item3>
+        <Filename Value="laz2_xmlcfg.pas"/>
+        <UnitName Value="Laz2_XMLCfg"/>
+      </Item3>
+      <Item4>
+        <Filename Value="laz2_xmlread.pas"/>
+        <UnitName Value="laz2_XMLRead"/>
+      </Item4>
+      <Item5>
+        <Filename Value="laz2_xmlutils.pas"/>
+        <UnitName Value="laz2_xmlutils"/>
+      </Item5>
+      <Item6>
+        <Filename Value="laz2_xmlwrite.pas"/>
+        <UnitName Value="laz2_XMLWrite"/>
+      </Item6>
+      <Item7>
+        <Filename Value="laz_dom.pas"/>
+        <UnitName Value="Laz_DOM"/>
+      </Item7>
+      <Item8>
+        <Filename Value="laz_xmlcfg.pas"/>
+        <UnitName Value="Laz_XMLCfg"/>
+      </Item8>
+      <Item9>
+        <Filename Value="laz_xmlread.pas"/>
+        <UnitName Value="Laz_XMLRead"/>
+      </Item9>
+      <Item10>
+        <Filename Value="laz_xmlstreaming.pas"/>
+        <UnitName Value="Laz_XMLStreaming"/>
+      </Item10>
+      <Item11>
+        <Filename Value="laz_xmlwrite.pas"/>
+        <UnitName Value="Laz_XMLWrite"/>
+      </Item11>
+      <Item12>
+        <Filename Value="lazfileutils.pas"/>
+        <UnitName Value="LazFileUtils"/>
+      </Item12>
+      <Item13>
+        <Filename Value="lazfilecache.pas"/>
+        <UnitName Value="LazFileCache"/>
+      </Item13>
+      <Item14>
+        <Filename Value="luresstrings.pas"/>
+        <UnitName Value="LUResStrings"/>
+      </Item14>
+      <Item15>
+        <Filename Value="lazutf8.pas"/>
+        <UnitName Value="LazUTF8"/>
+      </Item15>
+      <Item16>
+        <Filename Value="lazdbglog.pas"/>
+        <UnitName Value="lazdbglog"/>
+      </Item16>
+    </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>

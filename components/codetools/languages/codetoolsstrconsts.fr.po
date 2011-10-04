@@ -356,17 +356,9 @@ msgstr "clause 'exports' autorisée seulement dans les librairies"
 msgid "expression type must be class or record type"
 msgstr "le type d'expression doit être class ou record"
 
-#: codetoolsstrconsts.ctsfiledoesnotexists
-msgid "file \"%s\" does not exist"
-msgstr "le fichier \"%s\" n'existe pas"
-
 #: codetoolsstrconsts.ctsfilehascircularsymlink
 msgid "%s has a circular symbolic link"
 msgstr "%s a un lien symbolique circulaire"
-
-#: codetoolsstrconsts.ctsfileisnotexecutable
-msgid "%s is not executable"
-msgstr "%s n'est pas un exécutable"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"

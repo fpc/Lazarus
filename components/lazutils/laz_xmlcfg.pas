@@ -12,8 +12,9 @@
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
- **********************************************************************
+ **********************************************************************}
 
+{
   TXMLConfig enables applications to use XML files for storing their
   configuration data
 }
@@ -21,21 +22,23 @@
 {$MODE objfpc}
 {$H+}
 
-unit Laz2_XMLCfg;
+unit Laz_XMLCfg;
 
 interface
 
 {off $DEFINE MEM_CHECK}
 
+{off $DEFINE OldXMLCfg}
+
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
-  Classes, sysutils,
+  Classes, sysutils, LazFileCache,
   {$IFNDEF OldXMLCfg}
   Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   {$ELSE}
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   {$ENDIF}
-  FileProcs, typinfo;
+  typinfo;
 
 type
 
@@ -74,6 +77,7 @@ type
                               CreateNodes: boolean = false): TDomNode;
     procedure InternalCleanNode(Node: TDomNode);
   public
+    constructor Create(AOwner: TComponent); override;
     constructor Create(const AFilename: String); overload; // create and load
     constructor CreateClean(const AFilename: String); // create new
     constructor CreateWithSource(const AFilename, Source: String); // create new and load from Source
@@ -135,15 +139,20 @@ type
 
 implementation
 
-constructor TXMLConfig.Create(const AFilename: String);
+constructor TXMLConfig.Create(AOwner: TComponent);
 begin
-  //DebugLn(['TXMLConfig.Create ',AFilename]);
   {$IFNDEF OldXMLCfg}
   // for compatibility with old TXMLConfig, which wrote #13 as #13, not as &xD;
   FReadFlags:=[xrfAllowLowerThanInAttributeValue,xrfAllowSpecialCharsInAttributeValue];
+  // for compatibility with old TXMLConfig, which can not read &xD;, but needs #13
   FWriteFlags:=[xwfSpecialCharsInAttributeValue];
   {$ENDIF}
-  inherited Create(nil);
+  inherited Create(AOwner);
+end;
+
+constructor TXMLConfig.Create(const AFilename: String);
+begin
+  Create(nil);
   SetFilename(AFilename);
 end;
 

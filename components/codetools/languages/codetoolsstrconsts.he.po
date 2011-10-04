@@ -355,17 +355,9 @@ msgstr "סעיף ייצוא מותר רק בספריות"
 msgid "expression type must be class or record type"
 msgstr "סוג הביטוי חייב להיות מחלקה מסוג רשומה"
 
-#: codetoolsstrconsts.ctsfiledoesnotexists
-msgid "file \"%s\" does not exist"
-msgstr "הקובץ  \"%s\"  לא קיים"
-
 #: codetoolsstrconsts.ctsfilehascircularsymlink
 msgid "%s has a circular symbolic link"
 msgstr "יש ל s% קישור סימבולי מעגלי"
-
-#: codetoolsstrconsts.ctsfileisnotexecutable
-msgid "%s is not executable"
-msgstr "אינו בר ריצה s%"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"

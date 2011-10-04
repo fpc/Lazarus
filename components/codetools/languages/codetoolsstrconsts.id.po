@@ -356,17 +356,9 @@ msgstr "klausul ekspor hanya dibolehkan dalam librari"
 msgid "expression type must be class or record type"
 msgstr "tipe ekspresi harus tipe class atau record"
 
-#: codetoolsstrconsts.ctsfiledoesnotexists
-msgid "file \"%s\" does not exist"
-msgstr "file \"%s\" tidak ada"
-
 #: codetoolsstrconsts.ctsfilehascircularsymlink
 msgid "%s has a circular symbolic link"
 msgstr "%s mempunyai link simbolik berputar"
-
-#: codetoolsstrconsts.ctsfileisnotexecutable
-msgid "%s is not executable"
-msgstr "%s bukan eksekutabel"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"

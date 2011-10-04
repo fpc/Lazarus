@@ -22,7 +22,7 @@ unit Laz_XMLWrite;
 
 interface
 
-uses Classes, Laz_DOM, FileProcs;
+uses Classes, LazUTF8, Laz_DOM;
 
 procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String); overload;
 procedure WriteXMLFile(doc: TXMLDocument; var AFile: Text); overload;
