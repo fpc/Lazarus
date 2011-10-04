@@ -17,6 +17,7 @@
         <CompilerMessages>
           <UseMsgFile Value="True"/>
         </CompilerMessages>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
@@ -89,6 +90,7 @@
         <UnitName Value="LazDbgLog"/>
       </Item16>
     </Files>
+    <LazDoc Paths="docs"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
