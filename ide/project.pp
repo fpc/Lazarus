@@ -3521,7 +3521,7 @@ var
 begin
   AnUnit:=ProjectFile as TUnitInfo;
   //debugln('TProject.AddFile A ',AnUnit.Filename,' AddToProjectFile=',dbgs(AddToProjectFile));
-  if UnitInfoWithFilename(AnUnit.Filename)<>nil then
+  if (UnitInfoWithFilename(AnUnit.Filename)<>nil) and (AnUnit.FileName <> '') then
     debugln(['TProject.AddFile WARNING: file already in unit list: ',AnUnit.Filename]);
   BeginUpdate(true);
   NewIndex:=UnitCount;
