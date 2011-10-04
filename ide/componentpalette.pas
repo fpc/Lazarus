@@ -510,20 +510,22 @@ var
   MaxBtnPerRow: Integer;
   ButtonTree: TAVLTree;
   Node: TAVLTreeNode;
+  ScrollBox: TScrollBox;
 begin
   //DebugLn(['TComponentPalette.ReAlignButtons ',Page.Caption,' ',Page.ClientWidth]);
   if FPageControl<>nil then
     PageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
   ButtonTree:=nil;
   try
+    if (Page.ComponentCount=0) or not (Page.Components[0] is TScrollBox) then exit;
     ButtonTree:=TAVLTree.Create(@CompareControlsWithTag);
 
+    ScrollBox := TScrollBox(Page.Components[0]);
     // skip the first control (this is the selection tool (TSpeedButton))
-    for j:= 1 to Page.ControlCount-1 do begin
-      CurButton:=TSpeedbutton(Page.Controls[j]);
-      if not (CurButton is TSpeedButton) then continue;
-      if not CurButton.Visible then continue;
-      ButtonTree.Add(CurButton);
+    for j:= 1 to ScrollBox.ControlCount-1 do begin
+      CurButton:=TSpeedbutton(ScrollBox.Controls[j]);
+      if (CurButton is TSpeedButton) and CurButton.Visible then
+        ButtonTree.Add(CurButton);
     end;
     if ButtonTree.Count=0 then exit;
 
@@ -565,6 +567,7 @@ var
   CurComponent: TPkgComponent;
   CurBtn: TSpeedButton;
   CurPageIndex: Integer;
+  CurScrollBox: TScrollBox;
   j: Integer;
   OldActivePage: TTabSheet;
   BtnIndex: Integer;
@@ -631,6 +634,15 @@ begin
         // insert a new PageControl page
         TCustomTabControl(FPageControl).Pages.Insert(PageIndex,CurPage.PageName);
         CurPage.PageComponent:=FPageControl.Page[PageIndex];
+        CurScrollBox := TScrollBox.Create(CurPage.PageComponent);
+        with CurScrollBox do begin
+          Align := alClient;
+          BorderStyle := bsNone;
+          BorderWidth := 0;
+          HorzScrollBar.Visible := false;
+          VertScrollBar.Increment := ComponentPaletteBtnHeight;
+          Parent := TTabSheet(CurPage.PageComponent);
+        end;
       end else begin
         // move to the right position
         CurPageIndex:=TTabSheet(CurPage.PageComponent).PageIndex;
@@ -644,18 +656,16 @@ begin
     for i:=0 to Count-1 do begin
       CurPage:=Pages[i];
       if not CurPage.Visible then continue;
-      CurNoteBookPage:=TTabSheet(CurPage.PageComponent);
-      if not (CurNoteBookPage is TTabSheet) then RaiseException('CurNoteBookPage');
+      CurNoteBookPage:=CurPage.PageComponent as TTabSheet;
       CurNoteBookPage.OnResize:=@OnPageResize;
+      CurScrollBox := CurNoteBookPage.Components[0] as TScrollBox;
       //DebugLn(['TComponentPalette.UpdateNoteBookButtons PAGE=',CurPage.PageName,' PageIndex=',CurNoteBookPage.PageIndex]);
 
       // create selection button
-      if CurPage.SelectButton=nil
-      then begin
+      if CurPage.SelectButton=nil then begin
         CurBtn:=TSpeedButton.Create(nil);
         CurPage.SelectButton:=CurBtn;
-        with CurBtn do
-        begin
+        with CurBtn do begin
           Name:='PaletteSelectBtn'+IntToStr(i);
           OnClick := @SelectionToolClick;
           LoadGlyphFromLazarusResource('tmouse');
@@ -664,7 +674,7 @@ begin
           Down := True;
           Hint := lisSelectionTool;
           SetBounds(0,0,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
-          Parent:=CurNoteBookPage;
+          Parent:=CurScrollBox;
         end;
       end;
 
@@ -691,8 +701,7 @@ begin
             CurBtn:=TSpeedButton.Create(nil);
             CurComponent.Button:=CurBtn;
             CreatePopupMenu;
-            with CurBtn do
-            begin
+            with CurBtn do begin
               Name:='PaletteBtnPage'+IntToStr(i)+'_'+IntToStr(j)
                     +'_'+CurComponent.ComponentClass.ClassName;
               // Left and Top will be set in ReAlignButtons.
@@ -706,16 +715,14 @@ begin
               ShowHint := true;
               Hint := CurComponent.ComponentClass.ClassName;
               CurBtn.PopupMenu:=Self.PopupMenu;
-              Parent := CurNoteBookPage;
-              Tag:=BtnIndex;
             end;
             //debugln(['TComponentPalette.UpdateNoteBookButtons Created Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name]);
           end else begin
             CurBtn:=TSpeedButton(CurComponent.Button);
-            CurBtn.Parent := CurNoteBookPage;
-            CurBtn.Tag:=BtnIndex;
             //DebugLn(['TComponentPalette.UpdateNoteBookButtons Keep Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name,' ',DbgSName(TControl(CurComponent.Button).Parent)]);
           end;
+          CurBtn.Parent := CurScrollBox;
+          CurBtn.Tag:=BtnIndex;
         end else if CurComponent.Button<>nil then begin
           //debugln(['TComponentPalette.UpdateNoteBookButtons Destroy Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name]);
           TControl(CurComponent.Button).Visible:=false;
