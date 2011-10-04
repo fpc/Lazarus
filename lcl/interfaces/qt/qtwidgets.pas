@@ -3065,11 +3065,7 @@ var
   ModifierState: PtrInt;
 begin
   Result := False;
-  if not CanSendLCLMessage then
-    exit;
-
-  if (LCLObject <> nil) and
-    (not (csDesigning in LCLObject.ComponentState) and not getEnabled) then
+  if not CanSendLCLMessage or (LCLObject = nil) then
     exit;
 
   FillChar(Msg, SizeOf(Msg), #0);
