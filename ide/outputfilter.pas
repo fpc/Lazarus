@@ -274,6 +274,7 @@ begin
   //Darwin linker features
   DarwinLinkerMultiline:=false;
   DarwinLinkerLine:='';
+  FreeAndNil(FAsyncOutput);
 end;
 
 procedure TOutputFilter.CleanUpExecute;
