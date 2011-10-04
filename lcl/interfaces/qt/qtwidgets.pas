@@ -6442,7 +6442,6 @@ begin
           end;
         end;
     end;
-
     QEventHide:
     begin
       if Assigned(FOwner) and (FOwner is TQtCustomControl) then
@@ -12253,7 +12252,15 @@ begin
         QEvent_ignore(Event);
       end;
 
-    QEventLayoutRequest: ; // nothing to do here
+    QEventLayoutRequest:
+    begin
+      with TQtCustomControl(FOwner) do
+      begin
+        if (ChildOfComplexWidget = ccwScrollingWinControl) and
+          Self.LCLObject.ClientRectNeedsInterfaceUpdate then
+            Self.LCLObject.DoAdjustClientRectChange(True);
+      end;
+    end;
   else
     Result := inherited EventFilter(Sender, Event);
   end;
