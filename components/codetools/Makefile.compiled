@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Makefile Value="True"/>
-  <Params Value=" -MObjFPC -Sci -O1 -gl -vewni -l -Fu../../packager/units/%(CPU_TARGET)-%(OS_TARGET);. codetools.pas"/>
+  <Params Value=" -MObjFPC -Sci -O1 -g -gl -vewni -l -Fu../lazutils/lib/%(CPU_TARGET)-%(OS_TARGET);../../packager/units/%(CPU_TARGET)-%(OS_TARGET);. codetools.pas"/>
 </CONFIG>

@@ -1,20 +1,20 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for CodeTools 1.0.1
+#   Makefile.fpc for LazUtils 1.0
 #
 #   This file was generated on 10/05/2011
 
 [package]
-name=codetools
-version=1.0.1
+name=lazutils
+version=1.0
 
 [compiler]
-unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
-options= -MObjFPC -Sci -O1 -g -gl -vewni -l
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+options= -MObjFPC -Scghi -O1 -vewnhi -l
 
 [target]
-units=codetools.pas
+units=lazutils.pas
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
@@ -47,9 +47,9 @@ export LCL_PLATFORM
 .PHONY: cleartarget compiled all
 
 cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/codetools$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/lazutils$(PPUEXT)
 
 compiled:
-        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/CodeTools.compiled
+        $(COPY) Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazUtils.compiled
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) codetools$(PPUEXT) compiled
+all: cleartarget $(COMPILER_UNITTARGETDIR) lazutils$(PPUEXT) compiled

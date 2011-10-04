@@ -264,190 +264,190 @@ UNITSDIR:=$(wildcard $(FPCDIR)/units/$(OS_TARGET))
 endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages $(FPCDIR)/packages/base $(FPCDIR)/packages/extra)
 ifeq ($(FULL_TARGET),i386-linux)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-haiku)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-nativent)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-iphonesim)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),x86_64-solaris)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),x86_64-darwin)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),arm-darwin)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),avr-embedded)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),armeb-linux)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),armeb-embedded)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),mipsel-linux)
-override TARGET_DIRS+=synedit codetools lazcontrols
+override TARGET_DIRS+=lazutils codetools synedit lazcontrols
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 override CLEAN_FILES+=$(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard ./units/$(CPU_TARGET)-$(OS_TARGET)/*$(OEXT)) $(wildcard ./units/$(CPU_TARGET)-$(OS_TARGET)/*$(PPUEXT)) $(wildcard ./units/$(CPU_TARGET)-$(OS_TARGET)/*$(RSTEXT)) $(wildcard ./custom/*$(OEXT)) $(wildcard ./custom/*$(PPUEXT)) $(wildcard ./custom/*$(RSTEXT))
@@ -1742,359 +1742,421 @@ fpc_makefile_sub2: $(addsuffix _makefile_dirs,$(TARGET_DIRS) $(TARGET_EXAMPLEDIR
 fpc_makefile_dirs: fpc_makefile_sub1 fpc_makefile_sub2
 fpc_makefiles: fpc_makefile fpc_makefile_dirs
 ifeq ($(FULL_TARGET),i386-linux)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-haiku)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-nativent)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),i386-iphonesim)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),x86_64-solaris)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),x86_64-darwin)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),arm-darwin)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),avr-embedded)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),armeb-linux)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),armeb-embedded)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
 ifeq ($(FULL_TARGET),mipsel-linux)
-TARGET_DIRS_SYNEDIT=1
+TARGET_DIRS_LAZUTILS=1
 TARGET_DIRS_CODETOOLS=1
+TARGET_DIRS_SYNEDIT=1
 TARGET_DIRS_LAZCONTROLS=1
 endif
-ifdef TARGET_DIRS_SYNEDIT
-synedit_all:
-	$(MAKE) -C synedit all
-synedit_debug:
-	$(MAKE) -C synedit debug
-synedit_smart:
-	$(MAKE) -C synedit smart
-synedit_release:
-	$(MAKE) -C synedit release
-synedit_units:
-	$(MAKE) -C synedit units
-synedit_examples:
-	$(MAKE) -C synedit examples
-synedit_shared:
-	$(MAKE) -C synedit shared
-synedit_install:
-	$(MAKE) -C synedit install
-synedit_sourceinstall:
-	$(MAKE) -C synedit sourceinstall
-synedit_exampleinstall:
-	$(MAKE) -C synedit exampleinstall
-synedit_distinstall:
-	$(MAKE) -C synedit distinstall
-synedit_zipinstall:
-	$(MAKE) -C synedit zipinstall
-synedit_zipsourceinstall:
-	$(MAKE) -C synedit zipsourceinstall
-synedit_zipexampleinstall:
-	$(MAKE) -C synedit zipexampleinstall
-synedit_zipdistinstall:
-	$(MAKE) -C synedit zipdistinstall
-synedit_clean:
-	$(MAKE) -C synedit clean
-synedit_distclean:
-	$(MAKE) -C synedit distclean
-synedit_cleanall:
-	$(MAKE) -C synedit cleanall
-synedit_info:
-	$(MAKE) -C synedit info
-synedit_makefiles:
-	$(MAKE) -C synedit makefiles
-synedit:
-	$(MAKE) -C synedit all
-.PHONY: synedit_all synedit_debug synedit_smart synedit_release synedit_units synedit_examples synedit_shared synedit_install synedit_sourceinstall synedit_exampleinstall synedit_distinstall synedit_zipinstall synedit_zipsourceinstall synedit_zipexampleinstall synedit_zipdistinstall synedit_clean synedit_distclean synedit_cleanall synedit_info synedit_makefiles synedit
+ifdef TARGET_DIRS_LAZUTILS
+lazutils_all:
+	$(MAKE) -C lazutils all
+lazutils_debug:
+	$(MAKE) -C lazutils debug
+lazutils_smart:
+	$(MAKE) -C lazutils smart
+lazutils_release:
+	$(MAKE) -C lazutils release
+lazutils_units:
+	$(MAKE) -C lazutils units
+lazutils_examples:
+	$(MAKE) -C lazutils examples
+lazutils_shared:
+	$(MAKE) -C lazutils shared
+lazutils_install:
+	$(MAKE) -C lazutils install
+lazutils_sourceinstall:
+	$(MAKE) -C lazutils sourceinstall
+lazutils_exampleinstall:
+	$(MAKE) -C lazutils exampleinstall
+lazutils_distinstall:
+	$(MAKE) -C lazutils distinstall
+lazutils_zipinstall:
+	$(MAKE) -C lazutils zipinstall
+lazutils_zipsourceinstall:
+	$(MAKE) -C lazutils zipsourceinstall
+lazutils_zipexampleinstall:
+	$(MAKE) -C lazutils zipexampleinstall
+lazutils_zipdistinstall:
+	$(MAKE) -C lazutils zipdistinstall
+lazutils_clean:
+	$(MAKE) -C lazutils clean
+lazutils_distclean:
+	$(MAKE) -C lazutils distclean
+lazutils_cleanall:
+	$(MAKE) -C lazutils cleanall
+lazutils_info:
+	$(MAKE) -C lazutils info
+lazutils_makefiles:
+	$(MAKE) -C lazutils makefiles
+lazutils:
+	$(MAKE) -C lazutils all
+.PHONY: lazutils_all lazutils_debug lazutils_smart lazutils_release lazutils_units lazutils_examples lazutils_shared lazutils_install lazutils_sourceinstall lazutils_exampleinstall lazutils_distinstall lazutils_zipinstall lazutils_zipsourceinstall lazutils_zipexampleinstall lazutils_zipdistinstall lazutils_clean lazutils_distclean lazutils_cleanall lazutils_info lazutils_makefiles lazutils
 endif
 ifdef TARGET_DIRS_CODETOOLS
 codetools_all:
@@ -2140,6 +2202,51 @@ codetools_makefiles:
 codetools:
 	$(MAKE) -C codetools all
 .PHONY: codetools_all codetools_debug codetools_smart codetools_release codetools_units codetools_examples codetools_shared codetools_install codetools_sourceinstall codetools_exampleinstall codetools_distinstall codetools_zipinstall codetools_zipsourceinstall codetools_zipexampleinstall codetools_zipdistinstall codetools_clean codetools_distclean codetools_cleanall codetools_info codetools_makefiles codetools
+endif
+ifdef TARGET_DIRS_SYNEDIT
+synedit_all:
+	$(MAKE) -C synedit all
+synedit_debug:
+	$(MAKE) -C synedit debug
+synedit_smart:
+	$(MAKE) -C synedit smart
+synedit_release:
+	$(MAKE) -C synedit release
+synedit_units:
+	$(MAKE) -C synedit units
+synedit_examples:
+	$(MAKE) -C synedit examples
+synedit_shared:
+	$(MAKE) -C synedit shared
+synedit_install:
+	$(MAKE) -C synedit install
+synedit_sourceinstall:
+	$(MAKE) -C synedit sourceinstall
+synedit_exampleinstall:
+	$(MAKE) -C synedit exampleinstall
+synedit_distinstall:
+	$(MAKE) -C synedit distinstall
+synedit_zipinstall:
+	$(MAKE) -C synedit zipinstall
+synedit_zipsourceinstall:
+	$(MAKE) -C synedit zipsourceinstall
+synedit_zipexampleinstall:
+	$(MAKE) -C synedit zipexampleinstall
+synedit_zipdistinstall:
+	$(MAKE) -C synedit zipdistinstall
+synedit_clean:
+	$(MAKE) -C synedit clean
+synedit_distclean:
+	$(MAKE) -C synedit distclean
+synedit_cleanall:
+	$(MAKE) -C synedit cleanall
+synedit_info:
+	$(MAKE) -C synedit info
+synedit_makefiles:
+	$(MAKE) -C synedit makefiles
+synedit:
+	$(MAKE) -C synedit all
+.PHONY: synedit_all synedit_debug synedit_smart synedit_release synedit_units synedit_examples synedit_shared synedit_install synedit_sourceinstall synedit_exampleinstall synedit_distinstall synedit_zipinstall synedit_zipsourceinstall synedit_zipexampleinstall synedit_zipdistinstall synedit_clean synedit_distclean synedit_cleanall synedit_info synedit_makefiles synedit
 endif
 ifdef TARGET_DIRS_LAZCONTROLS
 lazcontrols_all:

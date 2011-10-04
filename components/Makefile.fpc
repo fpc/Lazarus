@@ -4,7 +4,7 @@
 #
 
 [target]
-dirs=synedit codetools lazcontrols
+dirs=lazutils codetools synedit lazcontrols
 
 [clean]
 files=$(wildcard ./units/*$(OEXT)) \
