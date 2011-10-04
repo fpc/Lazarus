@@ -547,6 +547,9 @@ end;
 procedure TCustomChartSource.EndUpdate;
 begin
   Dec(FUpdateCount);
+  if FUpdateCount > 0 then exit;
+  // Values can be set directly between BeginUpdate and EndUpdate.
+  InvalidateCaches;
   Notify;
 end;
 
