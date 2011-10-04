@@ -19,6 +19,7 @@ unittargetdir=../units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
         ../components/codetools/units/$(CPU_TARGET)-$(OS_TARGET) \
+        ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
         ../components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../components/lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET) \
         ../components/custom \
