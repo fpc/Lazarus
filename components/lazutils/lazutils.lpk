@@ -86,9 +86,13 @@
       </Item15>
       <Item16>
         <Filename Value="lazdbglog.pas"/>
-        <UnitName Value="lazdbglog"/>
+        <UnitName Value="LazDbgLog"/>
       </Item16>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>

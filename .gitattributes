@@ -1692,6 +1692,7 @@ components/lazthread/reglazthread.pas svneol=native#text/plain
 components/lazthread/threadoptionsdialog.lfm svneol=native#text/plain
 components/lazthread/threadoptionsdialog.lrs svneol=native#text/pascal
 components/lazthread/threadoptionsdialog.pas svneol=native#text/plain
+components/lazutils/languages/luresstrings.po svneol=native#text/plain
 components/lazutils/laz2_dom.pas svneol=native#text/plain
 components/lazutils/laz2_names.inc svneol=native#text/plain
 components/lazutils/laz2_xmlcfg.pas svneol=native#text/plain
