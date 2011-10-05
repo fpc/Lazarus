@@ -270,6 +270,24 @@ begin
   Result:=(TheFilename<>'') and (TheFilename[1]='/');
 end;
 
+{$IFDEF darwin}
+function GetDarwinSystemFilename(Filename: string): string;
+var
+  s: CFStringRef;
+  l: CFIndex;
+begin
+  if Filename='' then exit('');
+  s:=CFStringCreateWithCString(nil,Pointer(Filename),kCFStringEncodingUTF8);
+  l:=CFStringGetMaximumSizeOfFileSystemRepresentation(s);
+  SetLength(Result,l);
+  if Result<>'' then begin
+    CFStringGetFileSystemRepresentation(s,@Result[1],length(Result));
+    SetLength(Result,StrLen(PChar(Result)));
+  end;
+  CFRelease(s);
+end;
+{$ENDIF}
+
 function GetFilenameOnDisk(const AFilename: string): string;
 begin
   Result:=AFilename;
