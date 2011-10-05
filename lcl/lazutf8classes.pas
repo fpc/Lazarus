@@ -5,7 +5,7 @@ unit lazutf8classes;
 interface
 
 uses
-  Classes, SysUtils, fileutil;
+  Classes, SysUtils, fileutil, lclproc;
 
 type
   TFileStreamUTF8 = class(THandleStream)
@@ -77,7 +77,10 @@ end;
 
 function TStringListUTF8.DoCompareText(const s1, s2: string): PtrInt;
 begin
-  Result := CompareText(s1, s2);
+  if CaseSensitive then
+    Result:= UTF8CompareStr(s1,s2)
+  else
+    Result:= UTF8CompareText(s1,s2);
 end;
 
 procedure TStringListUTF8.LoadFromFile(const FileName: string);
