@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 493
+  Left = 25
   Height = 519
-  Top = 232
+  Top = 199
   Width = 717
   Caption = 'Form1'
   ClientHeight = 519
@@ -217,6 +217,30 @@ object Form1: TForm1
       Width = 80
       BorderSpacing.Left = 4
       TabOrder = 9
+    end
+    object SpinHC: TSpinEdit
+      AnchorSideLeft.Control = Label6
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edBreakLine
+      Left = 470
+      Height = 23
+      Top = 58
+      Width = 50
+      BorderSpacing.Left = 6
+      TabOrder = 10
+    end
+    object Label6: TLabel
+      AnchorSideLeft.Control = edBreakLine
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edBreakLine
+      AnchorSideTop.Side = asrCenter
+      Left = 414
+      Height = 16
+      Top = 61
+      Width = 50
+      BorderSpacing.Around = 6
+      Caption = 'HitCount'
+      ParentColor = False
     end
   end
   object Panel2: TPanel

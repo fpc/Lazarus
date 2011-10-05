@@ -31,21 +31,25 @@ type
     (fnoDwrf,      // no dwarf at all
      fnoDwrfNoSet, // no dwarf2 (-gw) without set
      //fnoDwrfSet,   // no dwarf2 with set // no dwarf3
-     fnoDwrf2, fnoDwrf3,
-     fnoStabs, // no stabs
+     fTstSkip,
      fTpMtch
     );
   TWatchExpectationFlags = set of TWatchExpectationFlag;
+
+  PWatchExpectation= ^TWatchExpectation;
+  TWatchExpectationResult = record
+    ExpMatch: string;
+    ExpKind: TDBGSymbolKind;
+    ExpTypeName: string;
+    Flgs: TWatchExpectationFlags;
+  end;
 
   TWatchExpectation = record
     TestName: String;
     Expression:  string;
     DspFormat: TWatchDisplayFormat;
     StackFrame: Integer;
-    ExpMatch: string;
-    ExpKind: TDBGSymbolKind;
-    ExpTypeName: string;
-    Flgs: TWatchExpectationFlags;
+    Result: Array [TSymbolType] of TWatchExpectationResult;
   end;
   TWatchExpectationArray = array of TWatchExpectation;
 
@@ -67,17 +71,22 @@ type
     procedure DoDbgOutput(Sender: TObject; const AText: String); override;
     procedure ClearAllTestArrays;
     function  HasTestArraysData: Boolean;
-    procedure AddTo(var ExpArray: TWatchExpectationArray;
+    function AddTo(var ExpArray: TWatchExpectationArray;
       AnExpr:  string; AFmt: TWatchDisplayFormat;
       AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
       AFlgs: TWatchExpectationFlags = [];
       AStackFrame: Integer = 0
-    );
-    procedure AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
+    ): PWatchExpectation;
+    function AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
       AnExpr:  string; AFmt: TWatchDisplayFormat;
       AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
       AFlgs: TWatchExpectationFlags = [];
       AStackFrame: Integer = 0
+    ): PWatchExpectation;
+    procedure UpdRes(AWatchExp: PWatchExpectation;
+      ASymbolType: TSymbolType;
+      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+      AFlgs: TWatchExpectationFlags = []
     );
 
     procedure AddExpectBreakFooGdb;
@@ -154,45 +163,72 @@ begin
 
 end;
 
-procedure TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; AnExpr: string;
+function TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; AnExpr: string;
   AFmt: TWatchDisplayFormat; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
-  AFlgs: TWatchExpectationFlags; AStackFrame: Integer = 0);
+  AFlgs: TWatchExpectationFlags; AStackFrame: Integer = 0): PWatchExpectation;
+var
+  i: TSymbolType;
 begin
   SetLength(ExpArray, Length(ExpArray)+1);
   with ExpArray[Length(ExpArray)-1] do begin
     TestName     := AnExpr;
     Expression   := AnExpr;
     DspFormat    := AFmt;
-    ExpMatch     := AMtch;
-    ExpKind      := AKind;
-    ExpTypeName  := ATpNm;
-    Flgs         := AFlgs;
+    for i := low(TSymbolType) to high(TSymbolType) do begin
+      Result[i].ExpMatch     := AMtch;
+      Result[i].ExpKind      := AKind;
+      Result[i].ExpTypeName  := ATpNm;
+      Result[i].Flgs         := AFlgs;
+      if ( (fnoDwrf in AFlgs) and (i in [stDwarf, stDwarfSet, stDwarf3]) ) or
+         ( (fnoDwrfNoSet in AFlgs) and (i in [stDwarf]) )
+      then Result[i].Flgs := Result[i].Flgs + [fTstSkip];
+    end;
     StackFrame   := AStackFrame;
   end;
+  Result := @ExpArray[Length(ExpArray)-1];
 end;
 
-procedure TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
+function TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
   AnExpr: string; AFmt: TWatchDisplayFormat; AMtch: string; AKind: TDBGSymbolKind;
-  ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer);
+  ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer): PWatchExpectation;
+var
+  i: TSymbolType;
 begin
   SetLength(ExpArray, Length(ExpArray)+1);
   with ExpArray[Length(ExpArray)-1] do begin
     TestName     := ATestName;
     Expression   := AnExpr;
     DspFormat    := AFmt;
-    ExpMatch     := AMtch;
-    ExpKind      := AKind;
-    ExpTypeName  := ATpNm;
-    Flgs         := AFlgs;
+    for i := low(TSymbolType) to high(TSymbolType) do begin
+      Result[i].ExpMatch     := AMtch;
+      Result[i].ExpKind      := AKind;
+      Result[i].ExpTypeName  := ATpNm;
+      Result[i].Flgs         := AFlgs;
+      if ( (fnoDwrf in AFlgs) and (i in [stDwarf, stDwarfSet, stDwarf3]) ) or
+         ( (fnoDwrfNoSet in AFlgs) and (i in [stDwarf]) )
+      then Result[i].Flgs := Result[i].Flgs + [fTstSkip];
+    end;
     StackFrame   := AStackFrame;
+  end;
+  Result := @ExpArray[Length(ExpArray)-1];
+end;
+
+procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
+  AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags);
+begin
+  with AWatchExp^ do begin
+    Result[ASymbolType].ExpMatch     := AMtch;
+    Result[ASymbolType].ExpKind      := AKind;
+    Result[ASymbolType].ExpTypeName  := ATpNm;
+    Result[ASymbolType].Flgs         := AFlgs;
   end;
 end;
 
 procedure TTestWatches.AddExpectBreakFooGdb;
-  procedure Add(AnExpr:  string; AFmt: TWatchDisplayFormat;
-    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags);
+  function Add(AnExpr:  string; AFmt: TWatchDisplayFormat;
+    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
   begin
-    AddTo(ExpectBreakFooGdb,AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
+    Result := AddTo(ExpectBreakFooGdb,AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs );
   end;
 begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Gdb')] then exit;
@@ -209,11 +245,13 @@ begin
 end;
 
 procedure TTestWatches.AddExpectBreakFooAll;
-  procedure Add(AnExpr:  string; AFmt: TWatchDisplayFormat;
-    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags);
+  function Add(AnExpr:  string; AFmt: TWatchDisplayFormat;
+    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
   begin
-    AddTo(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
+    Result := AddTo(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
   end;
+var
+  r: PWatchExpectation;
 begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.All')] then exit;
 
@@ -345,22 +383,22 @@ begin
 
   { Compare Objects }
   // TODO: not working in Dwarf3
-  Add('ArgTFoo=ArgTFoo',      wdfDefault,  'True',         skSimple,      'bool', [fnoDwrf3]);
-  Add('not(ArgTFoo=ArgTFoo)', wdfDefault,  'False',        skSimple,      'bool', [fnoDwrf3]);
-  Add('VArgTFoo=VArgTFoo',    wdfDefault,  'True',         skSimple,      'bool', [fnoDwrf3]);
-  Add('ArgTFoo=VArgTFoo',     wdfDefault,  'True',         skSimple,      'bool', [fnoDwrf3]);
-  Add('ArgTFoo=ArgPFoo',      wdfDefault,  'False',        skSimple,      'bool', [fnoDwrf3]);
-  Add('ArgTFoo=ArgPFoo^',     wdfDefault,  'False',        skSimple,      'bool', [fnoDwrf3]);
-  Add('ArgPFoo=ArgPPFoo^',    wdfDefault,  'True',         skSimple,      'bool', [fnoDwrf3]);
+  Add('ArgTFoo=ArgTFoo',      wdfDefault,  'True',         skSimple,      'bool', []);
+  Add('not(ArgTFoo=ArgTFoo)', wdfDefault,  'False',        skSimple,      'bool', []);
+  Add('VArgTFoo=VArgTFoo',    wdfDefault,  'True',         skSimple,      'bool', []);
+  Add('ArgTFoo=VArgTFoo',     wdfDefault,  'True',         skSimple,      'bool', []);
+  Add('ArgTFoo=ArgPFoo',      wdfDefault,  'False',        skSimple,      'bool', []);
+  Add('ArgTFoo=ArgPFoo^',     wdfDefault,  'False',        skSimple,      'bool', []);
+  Add('ArgPFoo=ArgPPFoo^',    wdfDefault,  'True',         skSimple,      'bool', []);
 
-  Add('@ArgTFoo=PVarTFoo',    wdfDefault,  'True',         skSimple,      'bool', [fnoDwrf3]);
-  Add('@VArgTFoo=PVarTFoo',   wdfDefault,  'False',        skSimple,      'bool', [fnoDwrf3]);
+  Add('@ArgTFoo=PVarTFoo',    wdfDefault,  'True',         skSimple,      'bool', []);
+  Add('@VArgTFoo=PVarTFoo',   wdfDefault,  'False',        skSimple,      'bool', []);
 
-  //Add('ArgTFoo<>ArgTFoo',     wdfDefault,  'False',        skSimple,      'bool', [fnoDwrf3]);
-  //Add('ArgTFoo<>ArgPFoo^',    wdfDefault,  'True',         skSimple,      'bool', [fnoDwrf3]);
+  //Add('ArgTFoo<>ArgTFoo',     wdfDefault,  'False',        skSimple,      'bool', []);
+  //Add('ArgTFoo<>ArgPFoo^',    wdfDefault,  'True',         skSimple,      'bool', []);
 
-  Add('ArgTFoo=0',          wdfDefault,  'False',          skSimple,      'bool', [fnoDwrf3]);
-  Add('not(ArgTFoo=0)',     wdfDefault,  'True',           skSimple,      'bool', [fnoDwrf3]);
+  Add('ArgTFoo=0',          wdfDefault,  'False',          skSimple,      'bool', []);
+  Add('not(ArgTFoo=0)',     wdfDefault,  'True',           skSimple,      'bool', []);
   //Add('ArgTFoo<>0',         wdfDefault,  'True',           skSimple,      'bool', []);
 
   //Add('ArgTFoo=nil',          wdfDefault,  'False',        skSimple,      'bool', []);
@@ -371,25 +409,92 @@ begin
 
   {%region    * Strings * }
     { strings }
-  Add('ArgTMyAnsiString',      wdfDefault,  '''ansi''$',         skPointer,      '^(TMy)?AnsiString$', [fTpMtch]);
-  Add('VArgTMyAnsiString',     wdfDefault,  '''ansi''$',         skPointer,      '^(TMy)?AnsiString$', [fTpMtch]);
-  Add('ArgPMyAnsiString',      wdfDefault,  Match_Pointer,      skPointer,      'PMyAnsiString', []);
-  Add('VArgPMyAnsiString',     wdfDefault,  Match_Pointer,      skPointer,      'PMyAnsiString', []);
-  Add('ArgPMyAnsiString^',      wdfDefault,  '''ansi''$',         skPointer,      '^(TMy)?AnsiString$', [fTpMtch]);
-  Add('VArgPMyAnsiString^',     wdfDefault,  '''ansi''$',         skPointer,      '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf]);
-  Add('ArgPPMyAnsiString',     wdfDefault,  Match_Pointer,      skPointer,      'PPMyAnsiString', []);
-  Add('VArgPPMyAnsiString',    wdfDefault,  Match_Pointer,      skPointer,      'PPMyAnsiString', []);
-  Add('ArgPPMyAnsiString^',     wdfDefault,  Match_Pointer,      skPointer,      'PMyAnsiString', []);
-  Add('VArgPPMyAnsiString^',    wdfDefault,  Match_Pointer,      skPointer,      'PMyAnsiString', [fnoDwrf]);
-  Add('ArgPPMyAnsiString^^',    wdfDefault,  '''ansi''$',         skPointer,      '^(TMy)?AnsiString$', [fTpMtch]);
-  Add('VArgPPMyAnsiString^^',   wdfDefault,  '''ansi''$',         skPointer,      '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf]);
+    // todo: some skPOINTER should be skSimple
+  // ArgAnsiString
+  r:=Add('ArgAnsiString',         wdfDefault,  '''Ansi''$',        skPOINTER,   'AnsiString', []);
+                         UpdRes(r, stDwarf3,   '''Ansi''$',        skSimple,    'AnsiString', []);
+  r:=Add('VArgAnsiString',        wdfDefault,  '''Ansi 2''$',      skPOINTER,   'AnsiString', []);
+                         UpdRes(r, stDwarf3,   '''Ansi 2''$',      skSimple,    'AnsiString', []);
+  r:=Add('ArgTMyAnsiString',      wdfDefault,  '''MyAnsi''$',      skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
+                         UpdRes(r, stDwarf3,   '''MyAnsi''$',      skSimple,   '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=Add('VArgTMyAnsiString',     wdfDefault,  '''MyAnsi 2''$',    skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
+                         UpdRes(r, stDwarf3,   '''MyAnsi 2''$',    skSimple,   '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=Add('ArgPMyAnsiString',      wdfDefault,  Match_Pointer,      skPointer,   'PMyAnsiString', []);
+                         UpdRes(r, stStabs,    MatchPointer,       skPointer,   '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+  r:=Add('VArgPMyAnsiString',     wdfDefault,  Match_Pointer,      skPointer,   'PMyAnsiString', []);
+                         UpdRes(r, stStabs,    MatchPointer,       skPointer,   '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+  r:=Add('ArgPMyAnsiString^',     wdfDefault,  '''MyAnsi P''$',    skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
+                         UpdRes(r, stDwarf3,   '''MyAnsi P''$',    skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=Add('VArgPMyAnsiString^',    wdfDefault,  '''MyAnsi P2''$',   skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf]);
+                         UpdRes(r, stDwarf3,   '''MyAnsi P2''$',    skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=Add('ArgPPMyAnsiString',     wdfDefault,  Match_Pointer,      skPointer,   'PPMyAnsiString', []);
+  r:=Add('VArgPPMyAnsiString',    wdfDefault,  Match_Pointer,      skPointer,   'PPMyAnsiString', []);
+  r:=Add('ArgPPMyAnsiString^',    wdfDefault,  Match_Pointer,      skPointer,   'PMyAnsiString', []);
+                         UpdRes(r, stStabs,    MatchPointer,       skPointer,   '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+  r:=Add('VArgPPMyAnsiString^',   wdfDefault,  Match_Pointer,      skPointer,   'PMyAnsiString', [fnoDwrf]);
+                         UpdRes(r, stStabs,    MatchPointer,       skPointer,   '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+  r:=Add('ArgPPMyAnsiString^^',   wdfDefault,  '''MyAnsi P''$',    skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
+                         UpdRes(r, stDwarf3,   '''MyAnsi P''$',    skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=Add('VArgPPMyAnsiString^^',  wdfDefault,  '''MyAnsi P2''$',   skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf]);
+                         UpdRes(r, stDwarf3,   '''MyAnsi P2''$',   skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
 
-  (*
-  Add('ArgTNewAnsiString',      wdfDefault,  '',      sk,      'TNewAnsiString', []);
-  Add('VArgTNewAnsiString',     wdfDefault,  '',      sk,      'TNewAnsiString', []);
-  Add('ArgPNewAnsiString',      wdfDefault,  '',      sk,      'PNewAnsiString', []);
-  Add('VArgPNewAnsiString',     wdfDefault,  '',      sk,      'PNewAnsiString', []);
-  *)
+
+  r:=Add('ArgTNewAnsiString',     wdfDefault,  '''NewAnsi''$',     skPOINTER,   'TNewAnsiString', []);
+                         UpdRes(r, stStabs,    '''NewAnsi''$',     skPOINTER,   '(TNew)?AnsiString', [fTpMtch]);
+                         UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    'TNewAnsiString', []);
+  r:=Add('VArgTNewAnsiString',    wdfDefault,  '''NewAnsi 2''$',   skPOINTER,   'TNewAnsiString', []);
+                         UpdRes(r, stStabs,    '''NewAnsi 2''$',   skPOINTER,   '(TNew)?AnsiString', [fTpMtch]);
+                         UpdRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    'TNewAnsiString', []);
+  r:=Add('ArgPNewAnsiString',     wdfDefault,  MatchPointer,       skPointer,   'PNewAnsiString', []);
+                         UpdRes(r, stStabs,    MatchPointer,       skPointer,   '(\^|PNew|P)AnsiString|PPChar', [fTpMtch]);
+  r:=Add('VArgPNewAnsiString',    wdfDefault,  MatchPointer,       skPointer,   'PNewAnsiString', []);
+                         UpdRes(r, stStabs,    MatchPointer,       skPointer,   '(\^|PNew|P)AnsiString|PPChar', [fTpMtch]);
+  r:=Add('ArgPNewAnsiString^',    wdfDefault,  '''NewAnsi P''',    skPOINTER,   'TNewAnsiString', []);
+                         UpdRes(r, stStabs,    '''NewAnsi P''$',   skPOINTER,   '(TNew)?AnsiString', [fTpMtch]);
+                         UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    'TNewAnsiString', []);
+  r:=Add('VArgPNewAnsiString^',   wdfDefault,  '''NewAnsi P2''',   skPOINTER,   'TNewAnsiString', [fnoDwrf]);
+                         UpdRes(r, stStabs,    '''NewAnsi P2''$',  skPOINTER,   '(TNew)?AnsiString', [fTpMtch]);
+                         UpdRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    'TNewAnsiString', []);
+
+
+  // typecasts
+  r:=Add('AnsiString(ArgTMyAnsiString)',   wdfDefault,
+                                               '''MyAnsi''$',      skPOINTER,   'AnsiString|^char', []);
+                         UpdRes(r, stDwarf3,   '''MyAnsi''$',      skSimple,    'AnsiString', []);
+
+  r:=Add('PChar(ArgTMyAnsiString)',   wdfDefault,
+                                               '''MyAnsi''$',      skPOINTER,   '(\^|p)char', [fTpMtch]);
+                         UpdRes(r, stStabs,    '''MyAnsi''$',      skPOINTER,   'pchar|AnsiString', [fTpMtch]);
+                         //UpdRes(r, stDwarf3,   '''MyAnsi''$',      skSimple,    'AnsiString', []);
+
+  // accessing len/refcount
+  r:=Add('^longint(ArgTMyAnsiString)[-1]',   wdfDefault,
+                                               '6',      skSimple,   'longint', []);
+
+  // accessing char
+  // TODO: only works with dwarf 3
+  r:=Add('ArgTMyAnsiString[1]',    wdfDefault,  '.',      skSimple,   'char', []);
+                         UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+  r:=Add('VArgTMyAnsiString[1]',   wdfDefault,  '.',      skSimple,   'char', []);
+                         UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+  r:=Add('ArgPMyAnsiString^[1]',   wdfDefault,  '.',      skSimple,   'char', []);
+                         UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+  r:=Add('VArgPMyAnsiString^[1]',  wdfDefault,  '.',      skSimple,   'char', [fnoDwrf]);
+                         UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+
+
+  //r:=Add('ArgTNewAnsiString',     wdfDefault,  '''NewAnsi''$',     skPOINTER,   '(TNew)?AnsiString', []);
+  //                       UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    '(TNew)?AnsiString', [fTpMtch]);
+  //r:=Add('VArgTNewAnsiString',    wdfDefault,  '''NewAnsi 2''$',   skPOINTER,   '(TNew)?AnsiString', []);
+  //                       UpdRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    '(TNew)?AnsiString', [fTpMtch]);
+  //r:=Add('ArgPNewAnsiString',     wdfDefault,  MatchPointer,       skPointer,   '(\^|PNew|P)AnsiString', []);
+  //r:=Add('VArgPNewAnsiString',    wdfDefault,  MatchPointer,       skPointer,   '(\^|PNew|P)AnsiString', []);
+  //r:=Add('ArgPNewAnsiString^',    wdfDefault,  '''NewAnsi P''',    skPOINTER,   '(TNew)?AnsiString', []);
+  //                       UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    '(TNew)?AnsiString', [fTpMtch]);
+  //r:=Add('VArgPNewAnsiString^',   wdfDefault,  '''NewAnsi P2''',   skPOINTER,   '(TNew)?AnsiString', []);
+  //                       UpdRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    '(TNew)?AnsiString', [fTpMtch]);
+
+
 
   Add('ArgTMyShortString',      wdfDefault,  '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
   Add('VArgTMyShortString',     wdfDefault,  '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
@@ -430,7 +535,7 @@ begin
   *)
 
 
-  Add('ArgTMyAnsiString',      wdfMemDump,  ': 61 6E 73 69 00',         skPointer,      '^(TMy)?AnsiString$', [fTpMtch]);
+  Add('ArgTMyAnsiString',      wdfMemDump,  ': 4d 79 41 6e 73 69 00',      skPOINTER,      '^(TMy)?AnsiString$', [fTpMtch]);
 
   {%endregion    * Strings * }
 
@@ -764,17 +869,13 @@ end;
 procedure TTestWatches.RunTestWatches(NamePreFix: String; TestExeName, ExtraOpts: String;
   UsedUnits: array of TUsesDir);
 
+var
+  dbg: TGDBMIDebugger;
 
   function SkipTest(const Data: TWatchExpectation): Boolean;
   begin
     Result := True;
-    if (fnoDwrf in Data.Flgs)      and (SymbolType in [stDwarf, stDwarfSet, stDwarf3]) then exit;
-    if (fnoDwrfNoSet in Data.Flgs) and (SymbolType in [stDwarf]) then exit;
-    //if (fnoDwrfSet   in Data.Flgs) and (SymbolType in [stDwarfSet, stDwarf3]) then exit;
-    if (fnoDwrf2 in Data.Flgs)     and (SymbolType in [stDwarf, stDwarfSet]) then exit;
-    if (fnoDwrf3 in Data.Flgs)     and (SymbolType in [stDwarf3]) then exit;
-
-    if (fnoStabs in Data.Flgs) and (SymbolType = stStabs) then exit;
+    if fTstSkip in Data.Result[SymbolType].Flgs then exit;
     Result := False;
   end;
 
@@ -788,9 +889,12 @@ procedure TTestWatches.RunTestWatches(NamePreFix: String; TestExeName, ExtraOpts
     WV: TWatchValue;
     Stack: Integer;
     n: String;
+    DataRes: TWatchExpectationResult;
   begin
+    if not TestTrue('Dbg did NOT enter dsError', dbg.State <> dsError) then exit;
     rx := nil;
     Stack := Data.StackFrame;
+    DataRes := Data.Result[SymbolType];
 
     n := Data.TestName;
     if n = '' then n := Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ')';
@@ -805,40 +909,45 @@ procedure TTestWatches.RunTestWatches(NamePreFix: String; TestExeName, ExtraOpts
     else
       s := WatchValue;
 
+    if not TestTrue('Dbg did NOT enter dsError', dbg.State <> dsError) then exit;
+
     //if flag then begin
       rx := TRegExpr.Create;
       rx.ModifierI := true;
-      rx.Expression := Data.ExpMatch;
-      if Data.ExpMatch <> ''
-      then TestTrue(Name + ' Matches "'+Data.ExpMatch + '", but was "' + s + '"', rx.Exec(s));
+      rx.Expression := DataRes.ExpMatch;
+      if DataRes.ExpMatch <> ''
+      then TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but was "' + s + '"', rx.Exec(s));
     //end;
 
-    flag := (AWatch <> nil) and (Data.ExpTypeName <> '');
+    flag := (AWatch <> nil) and (DataRes.ExpTypeName <> '');
     if flag then flag := TestTrue(Name + ' has typeinfo',  WV.TypeInfo <> nil);
-    if flag then flag := TestEquals(Name + ' kind',  KindName[Data.ExpKind], KindName[WV.TypeInfo.Kind]);
+    if flag then flag := TestEquals(Name + ' kind',  KindName[DataRes.ExpKind], KindName[WV.TypeInfo.Kind]);
     if flag then begin
-      if fTpMtch  in Data.Flgs
+      if fTpMtch  in DataRes.Flgs
       then begin
         FreeAndNil(rx);
         s := WV.TypeInfo.TypeName;
         rx := TRegExpr.Create;
         rx.ModifierI := true;
-        rx.Expression := Data.ExpTypeName;
-        TestTrue(Name + ' TypeName matches '+Data.ExpTypeName+' but was '+WV.TypeInfo.TypeName,  rx.Exec(s))
+        rx.Expression := DataRes.ExpTypeName;
+        TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but was '+WV.TypeInfo.TypeName,  rx.Exec(s))
        end
-      else TestEquals(Name + ' TypeName',  LowerCase(Data.ExpTypeName), LowerCase(WV.TypeInfo.TypeName));
+      else TestEquals(Name + ' TypeName',  LowerCase(DataRes.ExpTypeName), LowerCase(WV.TypeInfo.TypeName));
     end;
     FreeAndNil(rx);
   end;
 
 var
-  dbg: TGDBMIDebugger;
-  i: Integer;
+  i, Only: Integer;
+  OnlyName: String;
   WList, WListSub: Array of TCurrentWatch;
 
 begin
   TestBaseName := NamePreFix;
   if not HasTestArraysData then exit;
+  Only := StrToIntDef(TestControlForm.EdOnlyWatch.Text, -1);
+  if Only < 0
+  then OnlyName := TestControlForm.EdOnlyWatch.Text;
 
 
   try
@@ -869,6 +978,7 @@ begin
     (* Create all watches *)
     SetLength(WList, length(ExpectBreakFoo));
     for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
+      if ((Only >=0) and (Only <> i)) or ((OnlyName<>'') and (OnlyName<>ExpectBreakFoo[i].TestName)) then continue;
       if not SkipTest(ExpectBreakFoo[i]) then begin
         WList[i] := TCurrentWatch.Create(FWatches);
         WList[i].Expression := ExpectBreakFoo[i].Expression;
@@ -878,6 +988,7 @@ begin
     end;
     SetLength(WListSub, length(ExpectBreakSubFoo));
     for i := low(ExpectBreakSubFoo) to high(ExpectBreakSubFoo) do begin
+      if ((Only >=0) and (Only <> i)) or ((OnlyName<>'') and (OnlyName<>ExpectBreakSubFoo[i].TestName)) then continue;
       if not SkipTest(ExpectBreakSubFoo[i]) then begin
         WListSub[i] := TCurrentWatch.Create(FWatches);
         WListSub[i].Expression := ExpectBreakSubFoo[i].Expression;
@@ -893,6 +1004,7 @@ begin
     then begin
       (* Hit first breakpoint: NESTED SubFoo -- (1st loop) Called with none nil data *)
       for i := low(ExpectBreakSubFoo) to high(ExpectBreakSubFoo) do begin
+        if ((Only >=0) and (Only <> i)) or ((OnlyName<>'') and (OnlyName<>ExpectBreakSubFoo[i].TestName)) then continue;
         if not SkipTest(ExpectBreakSubFoo[i]) then
           TestWatch('Brk1 '+IntToStr(i)+' ', WListSub[i], ExpectBreakSubFoo[i]);
       end;
@@ -906,6 +1018,7 @@ begin
 
       FDbgOutPutEnable := True;
       for i := low(ExpectBreakFooGdb) to high(ExpectBreakFooGdb) do begin
+        if (Only >=0) and (Only <> i) then continue;
         if not SkipTest(ExpectBreakFooGdb[i]) then begin
           FDbgOutPut := '';
           dbg.TestCmd(ExpectBreakFooGdb[i].Expression);
@@ -915,6 +1028,7 @@ begin
       FDbgOutPutEnable := False;
 
       for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
+        if ((Only >=0) and (Only <> i)) or ((OnlyName<>'') and (OnlyName<>ExpectBreakFoo[i].TestName)) then continue;
         if not SkipTest(ExpectBreakFoo[i]) then
           TestWatch('Brk1 '+IntToStr(i)+' ', WList[i], ExpectBreakFoo[i]);
       end;

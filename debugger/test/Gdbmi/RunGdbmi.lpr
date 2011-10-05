@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, RunGdbmiForm
+  Forms, fpcunittestrunner, RunGdbmiForm
   { you can add units after this };
 
 {$R *.res}

@@ -44,7 +44,7 @@ program WatchesPrg;
 {$H-}
 
 uses sysutils, variants, Classes {$IFDEF USE_W1} , unitw1 {$ENDIF};
-
+var i, j, k, l: integer;
 type
 {$DEFINE Global_Type}
 

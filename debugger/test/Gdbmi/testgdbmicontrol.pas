@@ -17,10 +17,13 @@ TTestControlForm = class(TForm)
     chkGDB: TCheckListBox;
     CheckWriteLogs: TCheckBox;
     chkFPC: TCheckListBox;
+    EdOnlyWatch: TEdit;
     EditLogDir: TEdit;
     Label1: TLabel;
     Panel1: TPanel;
     Panel2: TPanel;
+    Panel3: TPanel;
+    Panel4: TPanel;
     procedure CheckWriteLogsChange(Sender: TObject);
 procedure EditLogDirChange(Sender: TObject);
 procedure FormShow(Sender: TObject);

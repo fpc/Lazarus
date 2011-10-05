@@ -4,11 +4,11 @@
     <Version Value="9"/>
     <PathDelim Value="\"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
-      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <i18n>
       <EnableI18N LFM="False"/>
@@ -16,7 +16,7 @@
     <VersionInfo>
       <StringTable ProductVersion=""/>
     </VersionInfo>
-    <BuildModes Count="1" Active="Default">
+    <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
     </BuildModes>
     <PublishOptions>
@@ -27,22 +27,25 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
+        <CommandLineParams Value="--debug-log=-"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="ide"/>
+        <PackageName Value="FPCUnitTestRunner"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="ide"/>
       </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
     </RequiredPackages>
-    <Units Count="16">
+    <Units Count="3">
       <Unit0>
         <Filename Value="RunGdbmi.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RunGdbmi"/>
-        <UsageCount Value="23"/>
       </Unit0>
       <Unit1>
         <Filename Value="rungdbmiform.pas"/>
@@ -50,240 +53,15 @@
         <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="RunGdbmiForm"/>
-        <EditorIndex Value="0"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="99"/>
-        <CursorPos X="14" Y="156"/>
-        <UsageCount Value="23"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="testbase.pas"/>
-        <UnitName Value="TestBase"/>
-        <EditorIndex Value="7"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="610"/>
-        <CursorPos X="34" Y="677"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="testwatches.pas"/>
-        <UnitName Value="TestWatches"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="4"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="TestApps\WatchesPrg.pas"/>
-        <UnitName Value="WatchesPrg"/>
-        <EditorIndex Value="5"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="66"/>
-        <CursorPos X="16" Y="101"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="C:\FPC\SVN\trunc\packages\fcl-fpcunit\src\fpcunit.pp"/>
-        <UnitName Value="fpcunit"/>
-        <EditorIndex Value="8"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="244"/>
-        <CursorPos X="15" Y="279"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
-      </Unit5>
-      <Unit6>
         <Filename Value="C:\dbg_var_ptype_text2.txt"/>
         <IsPartOfProject Value="True"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="27"/>
-        <UsageCount Value="23"/>
-        <DefaultSyntaxHighlighter Value="None"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="A:\debugger\test\Gdbmi\run_gdbmi_cmds.txt"/>
-        <EditorIndex Value="4"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="None"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="A:\debugger\test\Gdbmi\dbg_var_ptype_text2.txt"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="27"/>
-        <UsageCount Value="10"/>
-        <DefaultSyntaxHighlighter Value="None"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="A:\debugger\test\Gdbmi\fpclist.txt"/>
-        <EditorIndex Value="2"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="13"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="None"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="A:\debugger\test\Gdbmi\gdblist.txt"/>
-        <EditorIndex Value="3"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="32" Y="22"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="None"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="..\..\gdbmidebugger.pp"/>
-        <UnitName Value="GDBMIDebugger"/>
-        <EditorIndex Value="1"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="8232"/>
-        <CursorPos X="1" Y="8281"/>
-        <UsageCount Value="11"/>
-        <Bookmarks Count="1">
-          <Item0 X="3" Y="8451" ID="1"/>
-        </Bookmarks>
-        <Loaded Value="True"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="..\..\..\lcl\lcltype.pp"/>
-        <UnitName Value="LCLType"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1979"/>
-        <CursorPos X="49" Y="2048"/>
-        <UsageCount Value="10"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="..\..\..\lcl\lclintf.pas"/>
-        <UnitName Value="LCLIntf"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="8"/>
-        <CursorPos X="17" Y="78"/>
-        <UsageCount Value="10"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="..\..\cmdlinedebugger.pp"/>
-        <UnitName Value="CmdLineDebugger"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="30"/>
-        <CursorPos X="15" Y="65"/>
-        <UsageCount Value="10"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="TestApps\WatchesPrgEnum.inc"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="6"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="31"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
-      </Unit15>
+      </Unit2>
     </Units>
-    <JumpHistory Count="22" HistoryIndex="21">
-      <Position1>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="72" Column="57" TopLine="37"/>
-      </Position1>
-      <Position2>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="116" Column="24" TopLine="47"/>
-      </Position2>
-      <Position3>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="135" Column="1" TopLine="74"/>
-      </Position3>
-      <Position4>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="155" Column="1" TopLine="85"/>
-      </Position4>
-      <Position5>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="156" Column="1" TopLine="86"/>
-      </Position5>
-      <Position6>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="70" Column="1" TopLine="56"/>
-      </Position6>
-      <Position7>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="100" Column="13" TopLine="56"/>
-      </Position7>
-      <Position8>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="9" Column="92" TopLine="1"/>
-      </Position8>
-      <Position9>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="9" Column="92" TopLine="1"/>
-      </Position9>
-      <Position10>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="109" Column="13" TopLine="74"/>
-      </Position10>
-      <Position11>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="115" Column="21" TopLine="74"/>
-      </Position11>
-      <Position12>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="105" Column="15" TopLine="80"/>
-      </Position12>
-      <Position13>
-        <Filename Value="..\..\gdbmidebugger.pp"/>
-        <Caret Line="259" Column="41" TopLine="243"/>
-      </Position13>
-      <Position14>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="65" Column="24" TopLine="46"/>
-      </Position14>
-      <Position15>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="117" Column="26" TopLine="80"/>
-      </Position15>
-      <Position16>
-        <Filename Value="..\..\gdbmidebugger.pp"/>
-        <Caret Line="259" Column="41" TopLine="243"/>
-      </Position16>
-      <Position17>
-        <Filename Value="..\..\gdbmidebugger.pp"/>
-        <Caret Line="270" Column="10" TopLine="201"/>
-      </Position17>
-      <Position18>
-        <Filename Value="rungdbmiform.pas"/>
-        <Caret Line="125" Column="7" TopLine="90"/>
-      </Position18>
-      <Position19>
-        <Filename Value="TestApps\WatchesPrg.pas"/>
-        <Caret Line="101" Column="16" TopLine="66"/>
-      </Position19>
-      <Position20>
-        <Filename Value="TestApps\WatchesPrgEnum.inc"/>
-        <Caret Line="31" Column="35" TopLine="1"/>
-      </Position20>
-      <Position21>
-        <Filename Value="testbase.pas"/>
-        <Caret Line="489" Column="6" TopLine="468"/>
-      </Position21>
-      <Position22>
-        <Filename Value="A:\debugger\test\Gdbmi\gdblist.txt"/>
-        <Caret Line="19" Column="22" TopLine="1"/>
-      </Position22>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="9"/>
+    <Version Value="10"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="RunGdbmi"/>
@@ -294,7 +72,8 @@
     </SearchPaths>
     <Linking>
       <Debugging>
-        <GenerateDwarf Value="True"/>
+        <GenerateDebugInfo Value="True"/>
+        <DebugInfoType Value="dsAuto"/>
         <UseHeaptrc Value="True"/>
       </Debugging>
     </Linking>
@@ -306,7 +85,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
+    <Exceptions Count="4">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -316,6 +95,9 @@
       <Item3>
         <Name Value="EFOpenError"/>
       </Item3>
+      <Item4>
+        <Name Value="EAssertionFailedError"/>
+      </Item4>
     </Exceptions>
   </Debugging>
 </CONFIG>

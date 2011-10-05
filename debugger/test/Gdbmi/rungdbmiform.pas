@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls, EditBtn, StdCtrls,
   Buttons, CompileHelpers, TestBase, testregistry, fpcunit, GDBMIDebugger, Debugger, LCLIntf,
-  CheckLst, CmdLineDebugger, strutils, math;
+  CheckLst, Spin, CmdLineDebugger, strutils, math;
 
 type
 
@@ -31,12 +31,14 @@ type
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
+    Label6: TLabel;
     Memo1: TMemo;
     Memo2: TMemo;
     OpenDialog1: TOpenDialog;
     Panel1: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
+    SpinHC: TSpinEdit;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
     Splitter3: TSplitter;
@@ -123,8 +125,7 @@ procedure TRunner.DoRun;
   var
     TestExeName: string;
     dbg: TGDBMIDebugger;
-    i: Integer;
-    j: Integer;
+    i, j , hc: Integer;
   begin
     ClearTestErrors;
     FTesting := False;
@@ -160,7 +161,13 @@ procedure TRunner.DoRun;
       //  exit;
       //end;
 
-      dbg.Run;
+      hc := Form1.SpinHC.Value;
+      if hc < 1 then hc := 1;
+
+      while hc > 0 do begin
+        dbg.Run;
+        dec(hc);
+      end;
 
       //t:= GetTickCount;
       if Form1.chkCSF.Checked then begin
