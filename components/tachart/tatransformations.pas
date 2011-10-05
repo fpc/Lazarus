@@ -33,7 +33,7 @@ type
   { TAxisTransform }
 
   TAxisTransform = class(TIndexedComponent)
-  private
+  strict private
     FEnabled: Boolean;
     FTransformations: TChartAxisTransformations;
     procedure SetEnabled(AValue: Boolean);
@@ -82,7 +82,7 @@ type
   { TChartAxisTransformations }
 
   TChartAxisTransformations = class(TComponent)
-  private
+  strict private
     FBroadcaster: TBroadcaster;
     FList: TAxisTransformList;
   protected
@@ -108,7 +108,7 @@ type
   { TLinearAxisTransform }
 
   TLinearAxisTransform = class(TAxisTransform)
-  private
+  strict private
     FOffset: Double;
     FScale: Double;
     function OffsetIsStored: Boolean;
@@ -130,7 +130,7 @@ type
   { TAutoScaleAxisTransform }
 
   TAutoScaleAxisTransform = class(TAxisTransform)
-  private
+  strict private
     FMaxValue: Double;
     FMinValue: Double;
     function MaxValueIsStored: Boolean;
@@ -158,7 +158,7 @@ type
   { TLogarithmAxisTransform }
 
   TLogarithmAxisTransform = class(TAxisTransform)
-  private
+  strict private
     FBase: Double;
     procedure SetBase(AValue: Double);
   public
@@ -170,6 +170,12 @@ type
     function GraphToAxis(AX: Double): Double; override;
   published
     property Base: Double read FBase write SetBase;
+  end;
+
+  TCumulNormDistrAxisTransform = class(TAxisTransform)
+  public
+    function AxisToGraph(AX: Double): Double; override;
+    function GraphToAxis(AX: Double): Double; override;
   end;
 
   TTransformEvent = procedure (AX: Double; out AT: Double) of object;
@@ -732,6 +738,18 @@ begin
     AMax := MaxValue;
 end;
 
+{ TCumulNormDistrAxisTransform }
+
+function TCumulNormDistrAxisTransform.AxisToGraph(AX: Double): Double;
+begin
+  Result := InvCumulNormDistr(AX);
+end;
+
+function TCumulNormDistrAxisTransform.GraphToAxis(AX: Double): Double;
+begin
+  Result := CumulNormDistr(AX);
+end;
+
 { TUserDefinedAxisTransform }
 
 procedure TUserDefinedAxisTransform.Assign(ASource: TPersistent);
@@ -778,6 +796,8 @@ initialization
 
   AxisTransformsClassRegistry := TStringList.Create;
   RegisterAxisTransformClass(TAutoScaleAxisTransform, 'Auto scale');
+  RegisterAxisTransformClass(
+    TCumulNormDistrAxisTransform, 'Cumulative normal distribution');
   RegisterAxisTransformClass(TLinearAxisTransform, 'Linear');
   RegisterAxisTransformClass(TLogarithmAxisTransform, 'Logarithmic');
   RegisterAxisTransformClass(TUserDefinedAxisTransform, 'User defined');

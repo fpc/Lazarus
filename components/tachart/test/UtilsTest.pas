@@ -37,6 +37,10 @@ type
     procedure Merge;
   end;
 
+  TMathTest = class(TTestCase)
+  published
+    procedure CumulNurmDistrTest;
+  end;
 
   TGeometryTest = class(TTestCase)
   strict private
@@ -78,7 +82,7 @@ type
 implementation
 
 uses
-  TAGeometry;
+  TAGeometry, TAMath;
 
 { TIntervalListTest }
 
@@ -145,6 +149,20 @@ procedure TIntervalListTest.TearDown;
 begin
   inherited TearDown;
   FreeAndNil(FIList);
+end;
+
+{ TMathTest }
+
+procedure TMathTest.CumulNurmDistrTest;
+const
+  INV_PTS: array [1..3] of Double = (-1.5, 0.33, 2.0);
+var
+  p: Double;
+begin
+  AssertEquals(0, CumulNormDistr(0));
+  AssertEquals(0.84134, CumulNormDistr(1.0));
+  for p in INV_PTS do
+    AssertEquals(p, InvCumulNormDistr(CumulNormDistr(p)));
 end;
 
 { TGeometryTest }
@@ -414,7 +432,7 @@ end;
 initialization
 
   RegisterTests([
-    TIntervalListTest, TGeometryTest, TColorTest, TRTTITest,
+    TIntervalListTest, TMathTest, TGeometryTest, TColorTest, TRTTITest,
     TPublishedIntegerSetTest]);
 
 end.
