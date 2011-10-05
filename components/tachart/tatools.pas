@@ -469,7 +469,7 @@ implementation
 
 uses
   Forms, GraphMath, InterfaceBase, Math, SysUtils,
-  TACustomSeries, TADrawerCanvas, TAEnumerators, TAGeometry;
+  TACustomSeries, TADrawerCanvas, TAEnumerators, TAGeometry, TAMath;
 
 function InitBuitlinTools(AChart: TChart): TBasicChartToolset;
 var

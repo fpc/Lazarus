@@ -29,6 +29,8 @@ function InvCumulNormDistr(AX: Double): Double;
 procedure EnsureOrder(var A, B: Integer); overload; inline;
 procedure EnsureOrder(var A, B: Double); overload; inline;
 
+procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double);
+
 function SafeInfinity: Double; inline;
 function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
 function SafeMin(A, B: Double): Double;
@@ -129,6 +131,15 @@ procedure EnsureOrder(var A, B: Double); overload; inline;
 begin
   if A > B then
     Exchange(A, B);
+end;
+
+procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double);
+var
+  d: Double;
+begin
+  d := AHi - ALo;
+  ALo -= d * ACoeff;
+  AHi += d * ACoeff;
 end;
 
 function SafeInfinity: Double;

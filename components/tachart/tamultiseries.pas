@@ -151,7 +151,7 @@ type
 implementation
 
 uses
-  Math, SysUtils, TAGeometry, TAGraph;
+  Math, SysUtils, TAGeometry, TAGraph, TAMath;
 
 type
 

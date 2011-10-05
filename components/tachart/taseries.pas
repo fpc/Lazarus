@@ -320,7 +320,7 @@ implementation
 
 uses
   GraphMath, LResources, Math, PropEdits, SysUtils,
-  TADrawerCanvas, TAGeometry, TAGraph;
+  TADrawerCanvas, TAGeometry, TAGraph, TAMath;
 
 { TLineSeries }
 

@@ -265,8 +265,6 @@ procedure Exchange(var A, B: Double); overload; inline;
 procedure Exchange(var A, B: TDoublePoint); overload; inline;
 procedure Exchange(var A, B: String); overload; inline;
 
-procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double); inline;
-
 function FormatIfNotEmpty(AFormat, AStr: String): String; inline;
 
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
@@ -357,15 +355,6 @@ begin
   t := A;
   A := B;
   B := t;
-end;
-
-procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double);
-var
-  d: Double;
-begin
-  d := AHi - ALo;
-  ALo -= d * ACoeff;
-  AHi += d * ACoeff;
 end;
 
 function FormatIfNotEmpty(AFormat, AStr: String): String;
