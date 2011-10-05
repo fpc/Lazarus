@@ -6436,8 +6436,12 @@ begin
       else
       if (QEvent_type(Event) = QEventWheel) and Assigned(FOwner) and
         (FOwner is TQtCustomControl) then
-        Result := inherited EventFilter(Sender, Event)
-      else
+      begin
+        Result := inherited EventFilter(Sender, Event);
+        // do not scroll when disabled
+        if not getEnabled then
+          Result := True;
+      end else
         Result := False;
       if (QEvent_type(Event) = QEventKeyRelease) and not
         (QKeyEvent_isAutoRepeat(QKeyEventH(event))) then
