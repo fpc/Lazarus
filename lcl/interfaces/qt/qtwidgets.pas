@@ -12233,6 +12233,9 @@ begin
         LCLObject.DoAdjustClientRectChange;
     end;
     QEventWheel:
+      if not getEnabled then
+        inherited EventFilter(Sender, Event)
+      else
       if (QtVersionMajor = 4) and (QtVersionMinor < 7) then
       begin
         Result := SlotMouseWheel(Sender, Event);
@@ -12653,6 +12656,9 @@ begin
   else
   if QEvent_type(Event) = QEventWheel then
   begin
+    if not getEnabled then
+     inherited EventFilter(Sender, Event)
+    else
     if not horizontalScrollBar.getVisible and
       not verticalScrollBar.getVisible then
       Result := inherited EventFilter(Sender, Event)
