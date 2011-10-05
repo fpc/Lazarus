@@ -7622,7 +7622,13 @@ begin
     {$ENDIF}
     QEventKeyPress,
     QEventKeyRelease: QEvent_ignore(Event);
-    QEventWheel: QEvent_ignore(Event);
+    QEventWheel:
+      begin
+        if not getEnabled then
+          inherited EventFilter(Sender, Event)
+        else
+          QEvent_ignore(Event);
+      end;
     else
       Result := inherited EventFilter(Sender, Event);
   end;
