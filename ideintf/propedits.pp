@@ -5316,8 +5316,7 @@ begin
     TPropHookComponentRenamed(FHandlers[htComponentRenamed][i])(AComponent);
 end;
 
-procedure TPropertyEditorHook.PersistentAdded(APersistent: TPersistent;
-  Select: boolean);
+procedure TPropertyEditorHook.PersistentAdded(APersistent: TPersistent; Select: boolean);
 var
   i: Integer;
 begin

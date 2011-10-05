@@ -17774,8 +17774,7 @@ begin
   end else begin
     DebugLn(['TMainIDE.OnPropHookShowMethod failed finding the method in code']);
     DoJumpToCodeToolBossError;
-    raise Exception.Create(lisUnableToShowMethod+' '+lisPleaseFixTheErrorInTheMessageWindow
-      );
+    raise Exception.Create(lisUnableToShowMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
   end;
 end;
 
@@ -17860,8 +17859,7 @@ end;
   This handler is called whenever a new component was added to a designed form
   and should be added to form source
 -------------------------------------------------------------------------------}
-procedure TMainIDE.OnPropHookPersistentAdded(APersistent: TPersistent;
-  Select: boolean);
+procedure TMainIDE.OnPropHookPersistentAdded(APersistent: TPersistent; Select: boolean);
 var
   RegComp: TRegisteredComponent;
   ADesigner: TDesigner;
