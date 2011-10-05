@@ -137,6 +137,7 @@ procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double);
 var
   d: Double;
 begin
+  if IsInfinite(ALo) or IsInfinite(AHi) then exit;
   d := AHi - ALo;
   ALo -= d * ACoeff;
   AHi += d * ACoeff;
