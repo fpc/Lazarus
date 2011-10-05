@@ -459,7 +459,7 @@ begin
 
   // typecasts
   r:=Add('AnsiString(ArgTMyAnsiString)',   wdfDefault,
-                                               '''MyAnsi''$',      skPOINTER,   'AnsiString|^char', []);
+                                               '''MyAnsi''$',      skPOINTER,   'AnsiString|^char', [fTpMtch]);
                          UpdRes(r, stDwarf3,   '''MyAnsi''$',      skSimple,    'AnsiString', []);
 
   r:=Add('PChar(ArgTMyAnsiString)',   wdfDefault,
