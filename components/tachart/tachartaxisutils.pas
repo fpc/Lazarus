@@ -86,8 +86,8 @@ type
 
   TCustomChartAxisMarks = class(TBasicChartAxisMarks)
   strict private
-    FDefaultSource: TIntervalChartSource;
     FDefaultListener: TListener;
+    FDefaultSource: TIntervalChartSource;
     FStripes: TChartStyles;
     procedure SetStripes(AValue: TChartStyles);
   strict protected
@@ -195,14 +195,16 @@ type
   { TAxisDrawHelper }
 
   TAxisDrawHelper = class
+  strict private
+    FPrevLabelPoly: TPointArray;
   strict protected
     procedure BarZ(AX1, AY1, AX2, AY2: Integer); inline;
-    procedure InternalAxisLine(
-      APen: TChartPen; const AStart, AEnd: TPoint; AAngle: Double);
     procedure DrawLabel(ALabelCenter: TPoint; const AText: String); inline;
     procedure DrawLabelAndTick(
       ACoord, AFixedCoord: Integer; const AText: String); virtual; abstract;
     procedure GridLine(ACoord: Integer); virtual; abstract;
+    procedure InternalAxisLine(
+      APen: TChartPen; const AStart, AEnd: TPoint; AAngle: Double);
     function IsInClipRange(ACoord: Integer): Boolean;
     procedure LineZ(AP1, AP2: TPoint); inline;
     function TryApplyStripes: Boolean; inline;
@@ -212,7 +214,6 @@ type
     FClipRect: ^TRect;
     FDrawer: IChartDrawer;
     FPrevCoord: Integer;
-    FPrevLabelPoly: TPointArray;
     FScaledTickLength: Integer;
     FStripeIndex: Cardinal;
     FTransf: ICoordTransformer;
@@ -237,7 +238,7 @@ type
   { TAxisDrawHelperX }
 
   TAxisDrawHelperX = class(TAxisDrawHelper)
-  protected
+  strict protected
     procedure DrawLabelAndTick(
       ACoord, AFixedCoord: Integer; const AText: String); override;
     procedure GridLine(ACoord: Integer); override;
@@ -252,7 +253,7 @@ type
   { TAxisDrawHelperY }
 
   TAxisDrawHelperY = class(TAxisDrawHelper)
-  protected
+  strict protected
     procedure DrawLabelAndTick(
       ACoord, AFixedCoord: Integer; const AText: String); override;
     procedure GridLine(ACoord: Integer); override;
@@ -307,7 +308,7 @@ end;
 
 constructor TAxisDrawHelper.Create;
 begin
-  inherited;
+  inherited; // Empty -- just to enforce a virtual constructor.
 end;
 
 procedure TAxisDrawHelper.DrawLabel(ALabelCenter: TPoint; const AText: String);
