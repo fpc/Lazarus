@@ -224,7 +224,7 @@ begin
   actAdd.Enabled := Collection <> nil;
   actDel.Enabled := I > -1;
   actMoveUp.Enabled := I > 0;
-  actMoveDown.Enabled := (I >= 0) and (I < Collection.Count - 1);
+  actMoveDown.Enabled := (I >= 0) and (I < CollectionListBox.Items.Count - 1);
 end;
 
 procedure TCollectionPropertyEditorForm.PersistentAdded(APersistent: TPersistent; Select: boolean);
