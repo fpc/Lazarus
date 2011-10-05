@@ -914,7 +914,7 @@ type
   TQtAbstractSpinBox = class(TQtWidget, IQtEdit)
   private
     {$ifdef CPU64 and not WIN64}
-    FParentShowPassed: Integer;
+    FParentShowPassed: PtrInt;
     {$endif}
     FEditingFinishedHook: QAbstractSpinBox_hookH;
     // parts
@@ -8694,7 +8694,9 @@ begin
     if QEvent_type(Event) <> QEventPaint then
     begin
       inc(FParentShowPassed);
+      BeginUpdate;
       setValue(getValue);
+      EndUpdate;
     end;
   end;
 
