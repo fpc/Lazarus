@@ -14,7 +14,7 @@ object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDefaultPosOnly
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object ToolBar1: TToolBar
     Left = 0
     Height = 42
@@ -40,22 +40,22 @@ object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
       ParentShowHint = False
       ShowHint = True
     end
-    object ToolButton3: TToolButton
+    object DividerToolButton: TToolButton
       Left = 89
       Top = 2
-      Width = 4
-      Caption = 'ToolButton3'
+      Width = 5
+      Caption = 'DividerToolButton'
       Style = tbsDivider
     end
     object MoveUpButton: TToolButton
-      Left = 93
+      Left = 94
       Top = 2
       Action = actMoveUp
       ParentShowHint = False
       ShowHint = True
     end
     object MoveDownButton: TToolButton
-      Left = 137
+      Left = 138
       Top = 2
       Action = actMoveDown
       ParentShowHint = False

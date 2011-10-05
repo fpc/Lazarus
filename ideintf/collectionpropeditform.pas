@@ -20,7 +20,7 @@ type
     ToolBar1: TToolBar;
     AddButton: TToolButton;
     DeleteButton: TToolButton;
-    ToolButton3: TToolButton;
+    DividerToolButton: TToolButton;
     MoveUpButton: TToolButton;
     MoveDownButton: TToolButton;
     procedure actAddExecute(Sender: TObject);
