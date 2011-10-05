@@ -909,8 +909,8 @@ type
     FSubject      : string;
     FKeyWords     : string;
     FComments     : TStringList;
-    
-    
+    FDFMStream    : TStream;
+
     function FormatValue(V: Variant; AFormat: Integer; const AFormatStr: String): String;
 //    function GetLRTitle: String;
 
@@ -927,6 +927,7 @@ type
     procedure SetPrinterTo(const PrnName: String);
     procedure SetVars(Value: TStrings);
     procedure ClearAttribs;
+    procedure Loaded; override;
   protected
     procedure DefineProperties(Filer: TFiler); override;
     procedure ReadBinaryData(Stream: TStream);
@@ -7744,17 +7745,14 @@ end;
 procedure TfrReport.ReadBinaryData(Stream: TStream);
 var
   n: Integer;
-  Stream1: TMemoryStream;
 begin
   Stream.Read(n, 4); // version
   if FStoreInDFM then
   begin
     Stream.Read(n, 4);
-    Stream1 := TMemoryStream.Create;
-    Stream1.CopyFrom(Stream, n);
-    Stream1.Position := 0;
-    LoadFromStream(Stream1);
-    Stream1.Free;
+    FDFMStream := TMemoryStream.Create;
+    FDFMStream.CopyFrom(Stream, n);
+    FDFMStream.Position := 0;
   end;
 end;
 
@@ -9182,6 +9180,16 @@ begin
   ReportVersionBuild := '';
   ReportCreateDate := Now;
   ReportLastChange := Now;
+end;
+
+procedure TfrReport.Loaded;
+begin
+  inherited Loaded;
+  if assigned(FDFMStream) then
+  begin
+    LoadFromStream(FDFMStream);
+    FreeAndNil(FDFMStream)
+  end;
 end;
 
 procedure TfrReport.GetVarList(CatNo: Integer; List: TStrings);
