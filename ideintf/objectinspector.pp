@@ -5187,6 +5187,7 @@ procedure TObjectInspectorDlg.DoCollectionAddItem(Sender: TObject);
 var
   Persistent: TPersistent;
   Collection: TCollection absolute Persistent;
+  ci: TCollectionItem;
 begin
   Persistent := GetSelectedPersistent;
   if Persistent = nil then
@@ -5195,7 +5196,8 @@ begin
     Persistent := TCollectionItem(Persistent).Collection;
   if not (Persistent is TCollection) then
     Exit;
-  Collection.Add;
+  ci:=Collection.Add;
+  GlobalDesignHook.PersistentAdded(ci,false);
   DoModified(Self);
   Selection.ForceUpdate := True;
   try

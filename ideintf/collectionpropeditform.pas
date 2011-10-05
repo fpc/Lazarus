@@ -37,6 +37,7 @@ type
   protected
     procedure UpdateCaption;
     procedure UpdateButtons;
+    procedure PersistentAdded(APersistent: TPersistent; Select: boolean);
     procedure ComponentRenamed(AComponent: TComponent);
     procedure PersistentDeleting(APersistent: TPersistent);
     procedure RefreshPropertyValues;
@@ -57,7 +58,8 @@ implementation
 {$R *.lfm}
 
 uses
-  Controls, Dialogs, IDEImagesIntf, ObjInspStrConsts, PropEdits, PropEditUtils;
+  Controls, Dialogs, LCLProc, IDEImagesIntf, ObjInspStrConsts, PropEdits,
+  PropEditUtils;
 
 procedure TCollectionPropertyEditorForm.FormCreate(Sender: TObject);
 begin
@@ -225,9 +227,17 @@ begin
   actMoveDown.Enabled := (I >= 0) and (I < Collection.Count - 1);
 end;
 
+procedure TCollectionPropertyEditorForm.PersistentAdded(APersistent: TPersistent; Select: boolean);
+begin
+  DebugLn('*** TCollectionPropertyEditorForm.PersistentAdded called ***');
+  FillCollectionListBox;
+end;
+
 procedure TCollectionPropertyEditorForm.ComponentRenamed(AComponent: TComponent);
 begin
-  if AComponent = OwnerPersistent then UpdateCaption;
+  DebugLn('*** TCollectionPropertyEditorForm.ComponentRenamed called ***');
+  if AComponent = OwnerPersistent then
+    UpdateCaption;
 end;
 
 procedure TCollectionPropertyEditorForm.PersistentDeleting(APersistent: TPersistent);
@@ -263,11 +273,13 @@ begin
   end;
   UpdateButtons;
   UpdateCaption;
+  DebugLn('*** TCollectionPropertyEditorForm.PersistentDeleting called ***');
 end;
 
 procedure TCollectionPropertyEditorForm.RefreshPropertyValues;
 begin
   FillCollectionListBox;
+  DebugLn('*** TCollectionPropertyEditorForm.RefreshPropertyValues called ***');
 end;
 
 procedure TCollectionPropertyEditorForm.FillCollectionListBox;
@@ -342,11 +354,12 @@ begin
   FCollection := NewCollection;
   FOwnerPersistent := NewOwnerPersistent;
   FPropertyName := NewPropName;
-  //debugln('TCollectionPropertyEditorForm.SetCollection A Collection=',dbgsName(FCollection),' OwnerPersistent=',dbgsName(OwnerPersistent),' PropName=',PropertyName);
+  debugln('TCollectionPropertyEditorForm.SetCollection A Collection=',dbgsName(FCollection),' OwnerPersistent=',dbgsName(OwnerPersistent),' PropName=',PropertyName);
   if GlobalDesignHook <> nil then
   begin
     if FOwnerPersistent <> nil then
     begin
+      GlobalDesignHook.AddHandlerPersistentAdded(@PersistentAdded);
       GlobalDesignHook.AddHandlerComponentRenamed(@ComponentRenamed);
       GlobalDesignHook.AddHandlerPersistentDeleting(@PersistentDeleting);
       GlobalDesignHook.AddHandlerRefreshPropertyValues(@RefreshPropertyValues);

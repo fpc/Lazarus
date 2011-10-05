@@ -17898,7 +17898,7 @@ begin
     ADesigner:=FindRootDesigner(AComponent) as TDesigner;
   end;
 
-  if (RegComp<>nil) or (ClassUnitInfo<>nil) then begin
+  if (ADesigner<>nil) and ((RegComp<>nil) or (ClassUnitInfo<>nil)) then begin
     if not BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,
       [ctfSwitchToFormSource])
     then exit;
