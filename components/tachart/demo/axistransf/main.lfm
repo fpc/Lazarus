@@ -1,30 +1,30 @@
 object Form1: TForm1
   Left = 1345
-  Height = 333
+  Height = 434
   Top = 166
   Width = 533
   Caption = 'TAChart axis transformation demo'
-  ClientHeight = 333
+  ClientHeight = 434
   ClientWidth = 533
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.31'
   object PageControl1: TPageControl
     Left = 0
-    Height = 333
+    Height = 434
     Top = 0
     Width = 533
-    ActivePage = lsLinear
+    ActivePage = tsLinear
     Align = alClient
     TabIndex = 0
     TabOrder = 0
-    object lsLinear: TTabSheet
+    object tsLinear: TTabSheet
       Caption = 'Linear'
-      ClientHeight = 307
+      ClientHeight = 408
       ClientWidth = 525
       object ChartT: TChart
         Left = 0
-        Height = 278
+        Height = 379
         Top = 0
         Width = 525
         AxisList = <        
@@ -94,7 +94,7 @@ object Form1: TForm1
       object pnlAutoControls: TPanel
         Left = 0
         Height = 29
-        Top = 278
+        Top = 379
         Width = 525
         Align = alBottom
         ClientHeight = 29
@@ -113,11 +113,11 @@ object Form1: TForm1
     end
     object tsIndependent: TTabSheet
       Caption = 'Independent scale'
-      ClientHeight = 307
+      ClientHeight = 408
       ClientWidth = 525
       object ChartIndependent: TChart
         Left = 0
-        Height = 269
+        Height = 370
         Top = 0
         Width = 525
         AxisList = <        
@@ -164,7 +164,7 @@ object Form1: TForm1
       object pnlIndependentControls: TPanel
         Left = 0
         Height = 38
-        Top = 269
+        Top = 370
         Width = 525
         Align = alBottom
         ClientHeight = 38
@@ -220,11 +220,11 @@ object Form1: TForm1
     end
     object tsLog: TTabSheet
       Caption = 'Logarithm'
-      ClientHeight = 307
+      ClientHeight = 408
       ClientWidth = 525
       object ChartLog: TChart
         Left = 0
-        Height = 278
+        Height = 379
         Top = 0
         Width = 525
         AxisList = <        
@@ -238,6 +238,7 @@ object Form1: TForm1
               item
                 Grid.Visible = False
                 Intervals.Count = 9
+                Intervals.MinLength = 5
                 Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
               end>
             Title.LabelFont.Orientation = 900
@@ -284,7 +285,6 @@ object Form1: TForm1
           ShowPoints = True
         end
         object cfsLog: TFuncSeries
-          Active = False
           Extent.UseXMax = True
           Extent.UseXMin = True
           Extent.XMax = 3
@@ -296,7 +296,7 @@ object Form1: TForm1
       object pnlLogControls: TPanel
         Left = 0
         Height = 29
-        Top = 278
+        Top = 379
         Width = 525
         Align = alBottom
         ClientHeight = 29
@@ -315,13 +315,149 @@ object Form1: TForm1
         end
       end
     end
+    object tsCumulNormDistr: TTabSheet
+      Caption = 'Normal distribution'
+      ClientHeight = 408
+      ClientWidth = 525
+      object ChartCumulNormDistr: TChart
+        Left = 0
+        Height = 342
+        Top = 66
+        Width = 525
+        AxisList = <        
+          item
+            Grid.Color = clSilver
+            Grid.Visible = False
+            Intervals.Count = 30
+            Intervals.Options = [aipUseCount, aipUseNiceSteps]
+            Marks.OverlapPolicy = opHideNeighbour
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.LabelFont.Style = [fsBold]
+            Title.Visible = True
+            Title.Caption = 'Cumulative probability'
+            Transformations = catCumulNormDistr
+          end        
+          item
+            Grid.Color = clSilver
+            Grid.Visible = False
+            Alignment = calBottom
+            Minors = <>
+            Title.LabelFont.Style = [fsBold]
+            Title.Visible = True
+            Title.Caption = 'Random number'
+          end>
+        BackColor = clWhite
+        Extent.XMax = 3
+        Extent.XMin = -3
+        Extent.YMax = 3
+        Extent.YMin = -3
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        MarginsExternal.Left = 8
+        MarginsExternal.Right = 12
+        MarginsExternal.Bottom = 8
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object ChartCumulNormDistrLineSeries1: TLineSeries
+          AxisIndexX = 1
+          AxisIndexY = 0
+          Pointer.Brush.Color = clBlue
+          Pointer.HorizSize = 2
+          Pointer.Pen.Color = clBlue
+          Pointer.Style = psCircle
+          Pointer.VertSize = 2
+          ShowPoints = True
+        end
+      end
+      object pnCumulNormDistr: TPanel
+        Left = 0
+        Height = 66
+        Top = 0
+        Width = 525
+        Align = alTop
+        BevelOuter = bvNone
+        ClientHeight = 66
+        ClientWidth = 525
+        TabOrder = 1
+        object rgRandDistr: TRadioGroup
+          Left = 0
+          Height = 66
+          Top = 0
+          Width = 185
+          Align = alLeft
+          AutoFill = True
+          Caption = ' Random number generation '
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 1
+          ClientHeight = 48
+          ClientWidth = 181
+          ItemIndex = 1
+          Items.Strings = (
+            'uniform distribution'
+            'normal distribution'
+          )
+          OnClick = rgRandDistrClick
+          ParentFont = False
+          TabOrder = 0
+        end
+        object cbPercent: TCheckBox
+          Left = 192
+          Height = 17
+          Top = 43
+          Width = 57
+          Caption = 'Percent'
+          OnChange = cbPercentChange
+          TabOrder = 1
+        end
+        object cbUseAxisTransform: TCheckBox
+          Left = 280
+          Height = 17
+          Top = 43
+          Width = 110
+          Caption = 'Use AxisTransform'
+          OnChange = cbUseAxisTransformChange
+          TabOrder = 2
+        end
+        object edDataCount: TSpinEdit
+          Left = 281
+          Height = 21
+          Top = 10
+          Width = 82
+          Increment = 50
+          MaxValue = 1000000
+          OnChange = edDataCountChange
+          TabOrder = 3
+          Value = 300
+        end
+        object lblDataCount: TLabel
+          Left = 194
+          Height = 14
+          Top = 14
+          Width = 58
+          Caption = 'Data count:'
+          ParentColor = False
+        end
+      end
+    end
     object tsUser: TTabSheet
       Caption = 'User defined'
-      ClientHeight = 307
+      ClientHeight = 408
       ClientWidth = 525
       object ChartUser: TChart
         Left = 0
-        Height = 307
+        Height = 408
         Top = 0
         Width = 525
         AxisList = <        
@@ -460,6 +596,21 @@ object Form1: TForm1
     left = 220
     top = 236
     object catIndependent2Zoom: TLinearAxisTransform
+    end
+  end
+  object AxLabelSource: TListChartSource
+    left = 311
+    top = 305
+  end
+  object catCumulNormDistr: TChartAxisTransformations
+    left = 310
+    top = 305
+    object catCumulNormDistrLinearAxisTransform1: TLinearAxisTransform
+      Enabled = False
+      Scale = 0.01
+    end
+    object catCumulNormDistrCumulNormDistrAxisTransform1: TCumulNormDistrAxisTransform
+      Enabled = False
     end
   end
 end
