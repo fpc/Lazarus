@@ -7610,6 +7610,7 @@ begin
     {$ENDIF}
     QEventKeyPress,
     QEventKeyRelease: QEvent_ignore(Event);
+    QEventWheel: QEvent_ignore(Event);
     else
       Result := inherited EventFilter(Sender, Event);
   end;
