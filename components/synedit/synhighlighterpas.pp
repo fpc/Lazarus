@@ -414,9 +414,11 @@ type
     function Func143: TtkTokenKind;
     function Func144: TtkTokenKind;
     function Func151: TtkTokenKind; // "unimplemented"
+    function Func158: TtkTokenKind; // "unicodestring"
     function Func166: TtkTokenKind;
     function Func167: TtkTokenKind;
     function Func168: TtkTokenKind;
+    function Func181: TtkTokenKind;
     function Func191: TtkTokenKind;
     function AltFunc: TtkTokenKind;
     procedure InitIdent;
@@ -650,14 +652,16 @@ var
 begin
   for I := #0 to #255 do
   begin
-    Case I of
+    case I of
       '_', '0'..'9', 'a'..'z', 'A'..'Z': Identifiers[I] := True;
     else Identifiers[I] := False;
     end;
     J := UpCase(I);
-    Case I of
+    case I of
       'a'..'z', 'A'..'Z', '_': mHashTable[I] := Ord(J) - 64;
-    else mHashTable[Char(I)] := 0;
+      '0'..'9': mHashTable[I] := Ord(J) - 48;
+    else
+      mHashTable[Char(I)] := 0;
     end;
     IsIntegerChar[I]:=(I in ['0'..'9', 'A'..'F', 'a'..'f']);
     IsNumberChar[I]:=(I in ['0'..'9', '.', 'e', 'E']);
@@ -763,9 +767,11 @@ begin
   fIdentFuncTable[143] := @Func143;
   fIdentFuncTable[144] := @Func144;
   fIdentFuncTable[151] := @Func151;
+  fIdentFuncTable[158] := @Func158;
   fIdentFuncTable[166] := @Func166;
   fIdentFuncTable[167] := @Func167;
   fIdentFuncTable[168] := @Func168;
+  fIdentFuncTable[181] := @Func181;
   fIdentFuncTable[191] := @Func191;
   {$ELSE}
   fIdentFuncTable[15] := Func15;
@@ -835,8 +841,10 @@ begin
   fIdentFuncTable[136] := Func136;
   fIdentFuncTable[141] := Func141;
   fIdentFuncTable[143] := Func143;
+  fIdentFuncTable[158] := Func158;
   fIdentFuncTable[166] := Func166;
   fIdentFuncTable[168] := Func168;
+  fIdentFuncTable[181] := Func181;
   fIdentFuncTable[191] := Func191;
   {$ENDIF}
 end;
@@ -850,9 +858,15 @@ begin
   if (fToIdent<fLineLen) then begin
     Start := fLine + fToIdent;
     ToHash := Start;
-    while (IsLetterChar[ToHash^]) do begin
+    if IsLetterChar[ToHash^] then
+    begin
       inc(Result, mHashTable[ToHash^]);
       inc(ToHash);
+      while (IsLetterChar[ToHash^] or IsUnderScoreOrNumberChar[ToHash^]) do
+      begin
+        inc(Result, mHashTable[ToHash^]);
+        inc(ToHash);
+      end;
     end;
     if IsUnderScoreOrNumberChar[ToHash^] then
       inc(ToHash);
@@ -1221,7 +1235,10 @@ end;
 
 function TSynPasSyn.Func47: TtkTokenKind;
 begin
-  if KeyComp('Then') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Then') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func49: TtkTokenKind;
@@ -2025,6 +2042,9 @@ function TSynPasSyn.Func142: TtkTokenKind;
 var
   tbf: TPascalCodeFoldBlockType;
 begin
+  if (FStringKeywordMode in [spsmDefault]) and KeyComp('UTF8String') then
+    Result := tkKey
+  else
   if KeyComp('Experimental') then begin
     tbf := TopPascalCodeFoldBlockType;
       if ( ( (tbf in [cfbtVarType, cfbtLocalVarType]) and (rsVarTypeInSpecification in fRange) ) or
@@ -2110,6 +2130,14 @@ begin
     Result := tkIdentifier;
 end;
 
+function TSynPasSyn.Func158: TtkTokenKind;
+begin
+  if (FStringKeywordMode in [spsmDefault]) and KeyComp('UnicodeString') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
 function TSynPasSyn.Func166: TtkTokenKind;
 var
   InClass: Boolean;
@@ -2167,6 +2195,14 @@ begin
     Result := tkKey;
   end
   else Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func181: TtkTokenKind;
+begin
+  if (FStringKeywordMode in [spsmDefault]) and KeyComp('RawByteString') then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func191: TtkTokenKind;
