@@ -1397,15 +1397,19 @@ var
     FProcessState := gtpsArray;
 
     PTypeResult := FReqResults[gptrPTypeExpr].Result;
+    // In DWARF, some Dynamic Array, are pointer to there base type
     if (ptprfPointer in PTypeResult.Flags) and (PTypeResult.Kind =ptprkSimple)
     then begin
       if not RequireRequests([gptrPTypeExprDeRef])
       then exit;
       if (not IsReqError(gptrPTypeExprDeRef)) then
-      PTypeResult := FReqResults[gptrPTypeExprDeRef].Result
+      PTypeResult := FReqResults[gptrPTypeExprDeRef].Result;
+      // This implies it is an internal pointer
+      if (ptprfDynArray in PTypeResult.Flags)
+      then include(FAttributes, saInternalPointer);
     end;
 
-    if (ptprfDynArray in PTypeResult.Flags)
+    if (PTypeResult.Flags * [ptprfDynArray, ptprfPointer] =  [ptprfDynArray, ptprfPointer])
     then include(FAttributes, saInternalPointer);
 
     if (saInternalPointer in FAttributes) then begin
