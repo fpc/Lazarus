@@ -260,9 +260,6 @@ function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 
 function DoubleInterval(AStart, AEnd: Double): TDoubleInterval; inline;
 
-procedure EnsureOrder(var A, B: Integer); overload; inline;
-procedure EnsureOrder(var A, B: Double); overload; inline;
-
 procedure Exchange(var A, B: Integer); overload; inline;
 procedure Exchange(var A, B: Double); overload; inline;
 procedure Exchange(var A, B: TDoublePoint); overload; inline;
@@ -283,11 +280,6 @@ function RadToDeg16(ARad: Double): Integer; inline;
 function RadToOrient(ARad: Double): Integer; inline;
 
 function RoundChecked(A: Double): Integer; inline;
-
-function SafeInfinity: Double; inline;
-function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
-function SafeMin(A, B: Double): Double;
-function SafeNan: Double; inline;
 
 procedure SetPropDefaults(AObject: TPersistent; APropNames: array of String);
 
@@ -329,18 +321,6 @@ function DoubleInterval(AStart, AEnd: Double): TDoubleInterval;
 begin
   Result.FStart := AStart;
   Result.FEnd := AEnd;
-end;
-
-procedure EnsureOrder(var A, B: Integer); overload; inline;
-begin
-  if A > B then
-    Exchange(A, B);
-end;
-
-procedure EnsureOrder(var A, B: Double); overload; inline;
-begin
-  if A > B then
-    Exchange(A, B);
 end;
 
 procedure Exchange(var A, B: Integer);
@@ -448,40 +428,6 @@ begin
   Result := Round(EnsureRange(A, -MaxInt, MaxInt));
 end;
 
-function SafeInfinity: Double;
-begin
-  {$PUSH}{$R-}{$Q-}
-  Result := Infinity;
-  {$POP}
-end;
-
-function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
-begin
-  EnsureOrder(ABound1, ABound2);
-  Result := InRange(AValue, ABound1, ABound2);
-end;
-
-function SafeMin(A, B: Double): Double;
-begin
-  if IsNan(A) then
-    Result := B
-  else if IsNan(B) then
-    Result := A
-  else if A < B then
-    Result := A
-  else
-    Result := B;
-end;
-
-function SafeNan: Double;
-begin
-  {$PUSH}{$R-}{$Q-}
-  Result := NaN;
-  {$POP}
-end;
-
-{$HINTS OFF}
-
 procedure SetPropDefaults(AObject: TPersistent; APropNames: array of String);
 var
   n: String;
@@ -505,6 +451,7 @@ begin
     Result := 0.0;
 end;
 
+{$HINTS OFF}
 procedure Unused(const A1);
 begin
 end;

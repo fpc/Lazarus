@@ -201,7 +201,7 @@ implementation
 
 uses
   ComponentEditors, Forms, Math, PropEdits,
-  TASubcomponentsEditor;
+  TAMath, TASubcomponentsEditor;
 
 type
   { TAxisTransformsComponentEditor }

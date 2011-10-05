@@ -205,7 +205,7 @@ procedure SetDataItemDefaults(var AItem: TChartDataItem);
 implementation
 
 uses
-  Math, StrUtils, SysUtils;
+  Math, StrUtils, SysUtils, TAMath;
 
 procedure SetDataItemDefaults(var AItem: TChartDataItem);
 var

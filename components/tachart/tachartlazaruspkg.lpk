@@ -17,6 +17,17 @@
           <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
+      <CodeGeneration>
+        <Checks>
+          <RangeChecks Value="True"/>
+        </Checks>
+      </CodeGeneration>
+      <Linking>
+        <Debugging>
+          <GenerateDebugInfo Value="True"/>
+          <DebugInfoType Value="dsAuto"/>
+        </Debugging>
+      </Linking>
       <Other>
         <CompilerMessages>
           <UseMsgFile Value="True"/>
@@ -30,7 +41,7 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="34">
+    <Files Count="35">
       <Item1>
         <Filename Value="tagraph.pas"/>
         <HasRegisterProc Value="True"/>
@@ -183,6 +194,10 @@
         <Filename Value="tagraph.lrs"/>
         <Type Value="LRS"/>
       </Item34>
+      <Item35>
+        <Filename Value="tamath.pas"/>
+        <UnitName Value="TAMath"/>
+      </Item35>
     </Files>
     <LazDoc Paths="$(LazarusDir)\components\tachart\fpdoc"/>
     <Type Value="RunAndDesignTime"/>

@@ -250,7 +250,7 @@ type
 implementation
 
 uses
-  ipf, Math, SysUtils, TAGeometry, TAGraph;
+  ipf, Math, SysUtils, TAGeometry, TAGraph, TAMath;
 
 type
   TMakeDoublePoint = function (AX, AY: Double): TDoublePoint;

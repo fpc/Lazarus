@@ -222,7 +222,7 @@ procedure Register;
 implementation
 
 uses
-  Math, StrUtils, SysUtils;
+  Math, StrUtils, SysUtils, TAMath;
 
 type
 

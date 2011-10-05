@@ -415,7 +415,7 @@ implementation
 
 uses
   Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, TADrawerCanvas,
-  TAGeometry, Types;
+  TAGeometry, TAMath, Types;
 
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin

@@ -240,7 +240,7 @@ type
 implementation
 
 uses
-  LResources, Math, PropEdits, TAGeometry;
+  LResources, Math, PropEdits, TAGeometry, TAMath;
 
 var
   VIdentityTransform: TChartAxisTransformations;

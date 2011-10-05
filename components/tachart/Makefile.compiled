@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Makefile Value="True"/>
-  <Params Value=" -MObjFPC -Scgi -O1 -g -gl -vewnhi -l -Funumlib_fix;editors;../../ideintf/units/%(CPU_TARGET)-%(OS_TARGET);../../lcl/units/%(CPU_TARGET)-%(OS_TARGET)/%(LCL_PLATFORM);../../lcl/units/%(CPU_TARGET)-%(OS_TARGET);../../packager/units/%(CPU_TARGET)-%(OS_TARGET);. -dLCL -dLCL%(LCL_PLATFORM) tachartlazaruspkg.pas"/>
+  <Params Value=" -MObjFPC -Scgi -Cr -O1 -g -gl -vewnhi -l -Funumlib_fix;editors;../../ideintf/units/%(CPU_TARGET)-%(OS_TARGET);../../lcl/units/%(CPU_TARGET)-%(OS_TARGET)/%(LCL_PLATFORM);../../lcl/units/%(CPU_TARGET)-%(OS_TARGET);../../packager/units/%(CPU_TARGET)-%(OS_TARGET);. -dLCL -dLCL%(LCL_PLATFORM) tachartlazaruspkg.pas"/>
 </CONFIG>

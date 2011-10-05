@@ -248,7 +248,7 @@ type
 implementation
 
 uses
-  Math, PropEdits, TAGeometry, Types;
+  Math, PropEdits, TAGeometry, TAMath, Types;
 
 { TCustomChartSeries }
 

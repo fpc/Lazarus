@@ -82,7 +82,7 @@ procedure Register;
 implementation
 
 uses
-  DateUtils, Math, StrUtils, SysUtils;
+  DateUtils, Math, StrUtils, SysUtils, TAMath;
 
 const
   YEAR = 365.25;

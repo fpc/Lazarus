@@ -80,7 +80,7 @@ operator :=(const ASize: TSize): TPoint; inline;
 implementation
 
 uses
-  Math;
+  Math, TAMath;
 
 function PointLineSide(AP, A1, A2: TPoint): TValueSign; forward;
 

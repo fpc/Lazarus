@@ -68,7 +68,7 @@ type
 implementation
 
 uses
-  Math, TAChartUtils, TACustomSource;
+  Math, TAChartUtils, TACustomSource, TAMath;
 
 { TCalculatedSourceTest }
 
