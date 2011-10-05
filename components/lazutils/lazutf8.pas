@@ -5,6 +5,9 @@ unit LazUTF8;
 interface
 
 uses
+{$ifdef windows}
+  Windows,
+{$endif}
   Classes, SysUtils; 
 
 // AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, MacOSX

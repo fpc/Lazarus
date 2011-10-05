@@ -365,7 +365,7 @@ var
   fs: TFileStream;
   s: String;
 begin
-  TempFilename:=GetTempFilename(AppendPathDelim(DirectoryName),'tstperm');
+  TempFilename:=SysUtils.GetTempFilename(AppendPathDelim(DirectoryName),'tstperm');
   Result:=false;
   try
     fs:=TFileStream.Create(UTF8ToSys(TempFilename),fmCreate);
