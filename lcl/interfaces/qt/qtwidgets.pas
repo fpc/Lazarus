@@ -2210,7 +2210,15 @@ begin
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: Result := SlotMouse(Sender, Event);
       QEventMouseMove: Result := SlotMouseMove(Sender, Event);
-      QEventWheel: Result := SlotMouseWheel(Sender, Event);
+      QEventWheel:
+        begin
+          if not getEnabled then
+          begin
+            QEvent_ignore(Event);
+            QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, False);
+          end else
+            Result := SlotMouseWheel(Sender, Event);
+        end;
       QEventMove: SlotMove(Event);
       QEventResize: SlotResize(Event);
       QEventContentsRectChange: LCLObject.DoAdjustClientRectChange(False);
@@ -12977,6 +12985,14 @@ begin
       QEventEnter,
       QEventLeave: Result := SlotMouseEnter(Sender, Event);
       QEventMouseButtonDblClick: FMouseDoubleClicked := True;
+      QEventWheel:
+        begin
+          if not getEnabled then
+          begin
+            QEvent_ignore(Event);
+            QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, False);
+          end;
+        end;
     end;
   end;
 end;
