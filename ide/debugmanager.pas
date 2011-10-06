@@ -1258,7 +1258,7 @@ begin
   then Editor := SourceEditorManager.SourceEditorIntfWithFilename(NewSource.Filename);
 
   // jump editor to execution line
-  Flags := [jfAddJumpPoint];
+  Flags := [jfAddJumpPoint, jfSearchVirtualFullPath];
   if (FCurrentBreakPoint = nil) or (FCurrentBreakPoint.AutoContinueTime = 0)
   then include(Flags, jfFocusEditor);
   i := SrcLine;

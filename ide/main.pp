@@ -64,6 +64,8 @@ uses
   LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages, ComCtrls,
   FileUtil, LResources, StdCtrls, Forms, Buttons, Menus, Controls, GraphType,
   HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process,
+  //
+  LazUTF8,
   // codetools
   FileProcs, CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools,
   Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
@@ -14990,6 +14992,7 @@ function TMainIDE.DoJumpToCodePosition(ActiveSrcEdit: TSourceEditorInterface;
 var
   SrcEdit, NewSrcEdit: TSourceEditor;
   AnEditorInfo: TUnitEditorInfo;
+  s: String;
 begin
   Result:=mrCancel;
   if NewSource=nil then begin
@@ -15020,6 +15023,14 @@ begin
     then begin
       // jump to other file -> open it
       ActiveUnitInfo := Project1.UnitInfoWithFilename(NewSource.Filename);
+      if (ActiveUnitInfo = nil) and (Project1.IsVirtual) and (jfSearchVirtualFullPath in Flags)
+      then begin
+        s := AppendPathDelim(GetTestBuildDirectory);
+        if LazUTF8.UTF8LowerCase(copy(NewSource.Filename, 1, length(s))) = LazUTF8.UTF8LowerCase(s)
+        then ActiveUnitInfo := Project1.UnitInfoWithFilename(copy(NewSource.Filename, 1 + length(s), length(NewSource.Filename)), [pfsfOnlyVirtualFiles]);
+      end;
+
+
       AnEditorInfo := nil;
       if ActiveUnitInfo <> nil then
         AnEditorInfo := GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
