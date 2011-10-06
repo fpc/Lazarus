@@ -66,7 +66,7 @@ implementation
 {$DEFINE UseFreeBSDKernProc}
 uses FreeBSD, BaseUnix;
 {$ENDIF}
-{$IFDEF Darwin}
+{$IFDEF LCLCarbon}
 {$DEFINE UseCarbonProc}
 uses MacOSAll, CarbonProc;
 {$ENDIF}
