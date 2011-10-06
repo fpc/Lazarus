@@ -316,11 +316,11 @@ begin
       ok := false;
       if FilenameIsAbsolute(Filename) then
         ok := MainIDEIntf.DoJumpToSourcePosition(Filename, 0, ALine, 0,
-                                             [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug]
+                                             [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug, jfSearchVirtualFullPath]
                                             ) = mrOK;
       if not ok then
         MainIDEIntf.DoJumpToSourcePosition(Filename, 0, ALine, 0,
-                                       [jfDoNotExpandFilename, jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug]);
+                                       [jfDoNotExpandFilename, jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug, jfSearchVirtualFullPath]);
     end;
   finally
     DebugBoss.UnLockCommandProcessing;

@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg, lclType, ActnList, MainBase,
-  IDEImagesIntf, SourceEditor;
+  IDEImagesIntf, SourceEditor, MainIntf;
 
 type
   TBreakPointsDlgState = (
@@ -801,7 +801,7 @@ begin
   if CurItem=nil then exit;
   CurBreakPoint:=TIDEBreakPoint(CurItem.Data);
   if CurBreakPoint.Kind = bpkSource then
-    MainIDE.DoJumpToSourcePosition(CurBreakPoint.Source, 0, CurBreakPoint.Line, 0, True);
+    MainIDE.DoJumpToSourcePosition(CurBreakPoint.Source, 0, CurBreakPoint.Line, 0, [jfAddJumpPoint, jfSearchVirtualFullPath]);
 end;
 
 procedure TBreakPointsDlg.ShowProperties;
