@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
-  Math, customdrawnutils, contnrs, componenteditors, LMessages, Messages,
+  Math, types, customdrawnutils, contnrs, componenteditors, LMessages, Messages,
   LCLProc, PropEdits, ExtCtrls, ImgList, Forms, Menus,
   // fpimage
   fpcanvas, fpimgcanv, fpimage
@@ -160,6 +160,30 @@ type
     property Options;
   end;
 
+  TCDControlDrawer = class;
+
+  { TCDControl }
+
+  TCDControl = class(TCustomControl)
+  protected
+    FDrawStyle: TCDDrawStyle;
+    FCurrentDrawer: TCDControlDrawer;
+    //constructor Create(AOwner: TComponent); override;
+    //destructor Destroy; override;
+    procedure PrepareCurrentDrawer(); virtual;
+    procedure SetDrawStyle(const AValue: TCDDrawStyle);
+    function GetClientRect: TRect; override;
+    procedure EraseBackground(DC: HDC); override;
+  public
+  end;
+
+  TCDControlDrawer = class
+  public
+    function GetClientRect(AControl: TCDControl): TRect; virtual; abstract;
+    //procedure DrawToIntfImage(ADest: TFPImageCanvas; AControl: TCDControl);
+    //  virtual; abstract;
+    //procedure DrawToCanvas(ADest: TCanvas; AControl: TCDControl); virtual; abstract;
+  end;
 
   TCDButtonDrawer = class;
   TCDButtonDrawerWinCE = class;
@@ -168,17 +192,17 @@ type
   TCDButtonDrawerGrad = class;
   TCDButtonDrawerWin2k = class;
 
-  TCDButton = class(TCustomControl)
+  { TCDButton }
+
+  TCDButton = class(TCDControl)
   private
-    FDrawStyle: TCDDrawStyle;
-    FCurrentDrawer: TCDButtonDrawer;
+    //FCurrentDrawer: TCDButtonDrawer;
     FDrawerWinCE: TCDButtonDrawerWinCE;
     FDrawerAndroid: TCDButtonDrawerAndroid;
     FDrawerXPTB: TCDButtonDrawerXPTB;
     FDrawerGrad: TCDButtonDrawerGrad;
     FDrawerWin2k: TCDButtonDrawerWin2k;
-    procedure PrepareCurrentDrawer();
-    procedure SetDrawStyle(const AValue: TCDDrawStyle);
+    procedure PrepareCurrentDrawer(); override;
   protected
     FState: TBitmappedButtonState;
     // keyboard
@@ -241,9 +265,9 @@ type
 
   { TCDButtonDrawer }
 
-  TCDButtonDrawer = class
+  TCDButtonDrawer = class(TCDControlDrawer)
   public
-    procedure SetClientRectPos(CDButton: TCDButton); virtual; abstract;
+    function GetClientRect(AControl: TCDControl): TRect; override;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton);
       virtual; abstract;
     procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
@@ -254,7 +278,6 @@ type
 
   TCDButtonDrawerWinCE = class(TCDButtonDrawer)
   public
-    procedure SetClientRectPos(CDButton: TCDButton); override;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
     procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
       FState: TBitmappedButtonState); override;
@@ -263,7 +286,6 @@ type
   { TCDButtonDrawerAndroid }
   TCDButtonDrawerAndroid = class(TCDButtonDrawer)
   public
-    procedure SetClientRectPos(CDButton: TCDButton); override;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
     procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
       FState: TBitmappedButtonState); override;
@@ -271,7 +293,6 @@ type
 
   TCDButtonDrawerXPTB = class(TCDButtonDrawer)
   public
-    procedure SetClientRectPos(CDButton: TCDButton); override;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
     procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
       FState: TBitmappedButtonState); override;
@@ -279,7 +300,6 @@ type
 
   TCDButtonDrawerGrad = class(TCDButtonDrawer)
   public
-    procedure SetClientRectPos(CDButton: TCDButton); override;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
     procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
       FState: TBitmappedButtonState); override;
@@ -287,7 +307,6 @@ type
 
   TCDButtonDrawerWin2k = class(TCDButtonDrawer)
   public
-    procedure SetClientRectPos(CDButton: TCDButton); override;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
     procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
       FState: TBitmappedButtonState); override;
@@ -583,63 +602,45 @@ type
     function PControl: TCDPageControl; virtual;
   end;
 
-  TCDPageControl = class(TCustomControl)
+  TCDPageControl = class(TCDControl)
   private
-    FDrawStyle: TCDDrawStyle;
-    FCaptionHeight: integer;
     FActivePage: TCDTabSheet;
-    FCurrentDrawer: TCDPageControlDrawer;
+    //FCurrentDrawer: TCDPageControlDrawer;
     FDrawerWinCE: TCDPageControlDrawerWinCE;
-    FStartIndex: integer;       //FEndIndex
-    RButtHeight: integer;
     FPages: TTabItemList;
     FMDownL, FMDownR: boolean;
     FMEnterL, FMEnterR: boolean;
     FPageIndex: integer;  //FPageCount
-    MaskHeadBmp: TBitmap;
     function GetPageCount: integer;
     procedure SetMouseUP;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
-    procedure MouseEnter; override;
-    procedure MouseLeave; override;
-    //procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
-    procedure PrepareCurrentDrawer();
-    procedure SetDrawStyle(const AValue: TCDDrawStyle);
-    procedure SetCaptionHeight(Value: integer);
-    procedure DrawCaptionBar(ADest: TCanvas; lRect: TRect; CL: TColor);
+    //procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
+    //procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+    //procedure MouseEnter; override;
+    //procedure MouseLeave; override;
+    procedure PrepareCurrentDrawer(); override;
     procedure SetActivePage(Value: TCDTabSheet);
     procedure SetPageIndex(Value: integer);
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
-    procedure SetStartIndex(Value: integer);
-    //procedure SetEndIndex(Value: integer);
   protected
-    CustomDrawer: TCDPageControlDrawer; // Fill the field to use the dsCustom draw mode
-    procedure Loaded; override;
-    function GetPageIndexFromXY(x, y: integer): integer;
-    procedure DoLeftButtonDown;
-    procedure DoRightButtonDown;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
-    procedure DoOnResize; override;
     function FindNextPage(CurPage: TCDTabSheet;
       GoForward, CheckTabVisible: boolean): TCDTabSheet;
     procedure SelectNextPage(GoForward: boolean; CheckTabVisible: boolean = True);
     procedure SetCDPages(Value: TTabItemList);
+  public
+    CustomDrawer: TCDPageControlDrawer; // Fill the field to use the dsCustom draw mode
     procedure InsertPage(aIndex: integer; S: string);
     procedure RemovePage(aIndex: integer);
-  public
     procedure AddPage(S: string);
   published
     property ActivePage: TCDTabSheet read FActivePage write SetActivePage;
     property DrawStyle: TCDDrawStyle read FDrawStyle write SetDrawStyle;
     property Caption;
-    property CaptionHeight: integer read FCaptionHeight write SetCaptionHeight;
     property Color;
     property Font;
     //property PageCount: integer read FPageCount;
@@ -648,28 +649,40 @@ type
     property PageCount: integer read GetPageCount;
     property ParentColor;
     property ParentFont;
-    property StartIndex: integer read FStartIndex write SetStartIndex;
-    //property EndIndex: integer read FEndIndex write SetEndIndex;
     property TabStop default True;
   end;
 
   { TCDTrackBarDrawer }
 
-  TCDPageControlDrawer = class
+  TCDPageControlDrawer = class(TCDControlDrawer)
   public
-    procedure SetClientRectPos(CDPageControl: TCDPageControl); virtual; abstract;
+    function GetPageIndexFromXY(x, y: integer): integer; virtual; abstract;
+    function GetTabHeight(AIndex: Integer; CDPageControl: TCDPageControl): Integer;  virtual; abstract;
+    function GetTabWidth(AIndex: Integer; CDPageControl: TCDPageControl): Integer;  virtual; abstract;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage;
       CDPageControl: TCDPageControl); virtual; abstract;
     procedure DrawToCanvas(ADest: TCanvas; CDPageControl: TCDPageControl);
       virtual; abstract;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer); virtual; abstract;
   end;
 
+  { TCDPageControlDrawerWinCE }
+
   TCDPageControlDrawerWinCE = class(TCDPageControlDrawer)
+  private
+    StartIndex: integer;       //FEndIndex
+    procedure DrawCaptionBar(ADest: TCanvas; lRect: TRect; CL: TColor; CDPageControl: TCDPageControl);
   public
-    procedure SetClientRectPos(CDPageControl: TCDPageControl); override;
+    function GetPageIndexFromXY(x, y: integer): integer; override;
+    function GetTabHeight(AIndex: Integer; CDPageControl: TCDPageControl): Integer; override;
+    function GetTabWidth(AIndex: Integer; CDPageControl: TCDPageControl): Integer; override;
+    function GetClientRect(AControl: TCDControl): TRect; override;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage;
       CDPageControl: TCDPageControl); override;
     procedure DrawToCanvas(ADest: TCanvas; CDPageControl: TCDPageControl); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer); override;
   end;
 
 procedure Register;
@@ -691,12 +704,8 @@ resourcestring
 
 procedure Register;
 begin
-  RegisterComponents('Common Controls', [TCDButton]);
-  RegisterComponents('Common Controls', [TCDTrackBar]);
-  RegisterComponents('Common Controls', [TCDTabControl]);
-  RegisterComponents('Common Controls', [TCDPageControl]);
-  RegisterComponents('Common Controls', [TCDGroupBox]);
-  //RegisterComponents('Common Controls', [TUntabbedNotebook]);
+  RegisterComponents('Common Controls', [TCDButton, TCDTrackBar, TCDTabControl,
+    TCDPageControl, TCDGroupBox]);
   RegisterComponentEditor(TCDPageControl, TCDPageControlEditor);
   RegisterComponentEditor(TCDTabSheet, TCDPageControlEditor);
   RegisterNoIcon([TCDTabSheet]);
@@ -719,7 +728,6 @@ begin
     end;
   end;
 end;
-
 
 { TCustomBitmappedButton }
 
@@ -932,6 +940,45 @@ begin
   end;
 end;
 
+{ TCDControl }
+
+procedure TCDControl.PrepareCurrentDrawer;
+begin
+
+end;
+
+procedure TCDControl.SetDrawStyle(const AValue: TCDDrawStyle);
+begin
+  if FDrawStyle = AValue then exit;
+  FDrawStyle := AValue;
+  Invalidate;
+  PrepareCurrentDrawer();
+
+  //FCurrentDrawer.SetClientRectPos(Self);
+end;
+
+function TCDControl.GetClientRect: TRect;
+begin
+  if FCurrentDrawer = nil then
+    Result := Bounds(0, 0, Width, Height)
+  else
+    Result := FCurrentDrawer.GetClientRect(Self);
+end;
+
+procedure TCDControl.EraseBackground(DC: HDC);
+begin
+
+end;
+
+{ TCDButtonDrawer }
+
+function TCDButtonDrawer.GetClientRect(AControl: TCDControl): TRect;
+var
+  CDButton: TCDButton absolute AControl;
+begin
+  Result := Rect(1, 1, CDButton.Width - 1, CDButton.Height - 1);
+end;
+
 procedure TCDButton.DoEnter;
 begin
   DoButtonUp();
@@ -1020,7 +1067,7 @@ begin
   end;
 end;
 
-procedure TCDButton.PrepareCurrentDrawer();
+procedure TCDButton.PrepareCurrentDrawer;
 begin
   case DrawStyle of
     dsWince: FCurrentDrawer := FDrawerWinCE;
@@ -1030,18 +1077,6 @@ begin
     dsGrad: FCurrentDrawer := FDrawerGrad;
     dsWin2000: FCurrentDrawer := FDrawerWin2k;
   end;
-end;
-
-procedure TCDButton.SetDrawStyle(const AValue: TCDDrawStyle);
-begin
-  if FDrawStyle = AValue then
-    exit;
-  FDrawStyle := AValue;
-
-  Invalidate;
-
-  PrepareCurrentDrawer();
-  //  FCurrentDrawer.SetClientRectPos(Self); the button shouldn't receive controls inside it
 end;
 
 procedure TCDButton.RealSetText(const Value: TCaption);
@@ -1111,10 +1146,10 @@ begin
     AImage := ABmp.CreateIntfImage;
     lCanvas := TFPImageCanvas.Create(AImage);
     // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
-    FCurrentDrawer.DrawToIntfImage(lCanvas, Self);
+    TCDButtonDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, Self);
     ABmp.LoadFromIntfImage(AImage);
     // Second step of the drawing: LCL TCustomCanvas for easy font access
-    FCurrentDrawer.DrawToCanvas(ABmp.Canvas, Self, FState);
+    TCDButtonDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas, Self, FState);
 
     Canvas.Draw(0, 0, ABmp);
   finally
@@ -1127,14 +1162,6 @@ begin
 end;
 
 { TCDButtonDrawerGrad }
-
-procedure TCDButtonDrawerGrad.SetClientRectPos(CDButton: TCDButton);
-var
-  lRect: TRect;
-begin
-  lRect := Rect(1, 1, CDButton.Width - 1, CDButton.Height - 1);
-  CDButton.AdjustClientRect(lRect);
-end;
 
 procedure TCDButtonDrawerGrad.DrawToIntfImage(ADest: TFPImageCanvas;
   CDButton: TCDButton);
@@ -1197,14 +1224,6 @@ begin
 end;
 
 { TCDButtonDrawerWinCE }
-
-procedure TCDButtonDrawerWinCE.SetClientRectPos(CDButton: TCDButton);
-var
-  lRect: TRect;
-begin
-  lRect := Rect(1, 1, CDButton.Width - 1, CDButton.Height - 1);
-  CDButton.AdjustClientRect(lRect);
-end;
 
 procedure TCDButtonDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
   CDButton: TCDButton);
@@ -1274,14 +1293,6 @@ begin
   ADest.TextOut((CDButton.Width - ADest.TextWidth(Str)) div 2,
     (CDButton.Height - ADest.TextHeight(Str)) div 2, Str);
   {$endif}
-end;
-
-procedure TCDButtonDrawerWin2k.SetClientRectPos(CDButton: TCDButton);
-var
-  lRect: TRect;
-begin
-  lRect := Rect(1, 1, CDButton.Width - 1, CDButton.Height - 1);
-  CDButton.AdjustClientRect(lRect);
 end;
 
 procedure TCDButtonDrawerWin2k.DrawToIntfImage(ADest: TFPImageCanvas;
@@ -1377,14 +1388,6 @@ begin
   {$endif}
 end;
 
-procedure TCDButtonDrawerAndroid.SetClientRectPos(CDButton: TCDButton);
-var
-  lRect: TRect;
-begin
-  lRect := Rect(1, 1, CDButton.Width - 1, CDButton.Height - 1);
-  CDButton.AdjustClientRect(lRect);
-end;
-
 procedure TCDButtonDrawerAndroid.DrawToIntfImage(ADest: TFPImageCanvas;
   CDButton: TCDButton);
 begin
@@ -1434,14 +1437,6 @@ begin
   ADest.TextOut((CDButton.Width - ADest.TextWidth(Str)) div 2,
     (CDButton.Height - ADest.TextHeight(Str)) div 2, Str);
   {$endif}
-end;
-
-procedure TCDButtonDrawerXPTB.SetClientRectPos(CDButton: TCDButton);
-var
-  lRect: TRect;
-begin
-  lRect := Rect(1, 1, CDButton.Width - 1, CDButton.Height - 1);
-  CDButton.AdjustClientRect(lRect);
 end;
 
 procedure TCDButtonDrawerXPTB.DrawToIntfImage(ADest: TFPImageCanvas;
@@ -2082,13 +2077,15 @@ begin
   aRect.Bottom := lRect.Bottom;
   aRect.Right := lRect.Right;
   ADest.RecTangle(lRect);
-  MaskHeadBmp.Width := lRect.Right - lRect.Left;
+
+  {MaskHeadBmp.Width := lRect.Right - lRect.Left;
   MaskHeadBmp.Height := lRect.Bottom - lRect.Top;
   MaskHeadBmp.Canvas.Brush.Style := bsSolid;
   MaskHeadBmp.Canvas.Pen.Style := psSolid;
   MaskHeadBmp.Canvas.Pen.Color := clWhite;
   MaskHeadBmp.Canvas.Brush.Color := MaskHeadBmp.Canvas.Pen.Color;
-  MaskHeadBmp.Canvas.Rectangle(lRect);
+  MaskHeadBmp.Canvas.Rectangle(lRect);}
+
   if FTabs.Count = 0 then
   begin
     ADest.RecTangle(aRect);
@@ -2605,34 +2602,8 @@ end;
 { TCDPageControl }
 
 procedure TCDPageControl.AddPage(S: string);
-var
-  NewPage: TCDTabSheet;
 begin
-  NewPage := TCDTabSheet.Create(Owner);
-  NewPage.Parent := Self;
-  //Name := Designer.CreateUniqueComponentName(ClassName);
-  NewPage.Name := GetUniqueName(sTABSHEET_DEFAULT_NAME, Self.Owner);
-  if S = '' then
-    NewPage.Caption := NewPage.Name
-  else
-    NewPage.Caption := S;
-  NewPage.SetBounds(1, CaptionHeight + 1, Width - 3, Height - CaptionHeight - 4);
-  NewPage.BorderSpacing.Top := CaptionHeight + 2;
-  NewPage.BorderSpacing.Left := 2;
-  NewPage.BorderSpacing.Right := 3;
-  NewPage.BorderSpacing.Bottom := 3;
-  NewPage.Align := alClient;
-  if ActivePage <> nil then
-    ActivePage.Hide;
-  ActivePage := NewPage;
-  NewPage.Show;
-  //FPages.AddObject(NewPage.Name, NewPage);
-  FPages.Insert(FPages.Count);
-  FPages.Items[FPages.Count - 1].DisplayName := NewPage.Name;
-  FPages.Items[FPages.Count - 1].TabPage := NewPage;
-  NewPage.Index := FPages.Count - 1;
-  FPageIndex := FPages.Count - 1;
-  //FPageCount := PageCount + 1;
+  InsertPage(FPages.Count, S);
 end;
 
 procedure TCDPageControl.InsertPage(aIndex: integer; S: string);
@@ -2647,12 +2618,9 @@ begin
     NewPage.Caption := NewPage.Name
   else
     NewPage.Caption := S;
-  NewPage.SetBounds(1, CaptionHeight + 1, Width - 3, Height - CaptionHeight - 4);
-  NewPage.BorderSpacing.Top := CaptionHeight + 2;
-  NewPage.BorderSpacing.Left := 2;
-  NewPage.BorderSpacing.Right := 3;
-  NewPage.BorderSpacing.Bottom := 3;
+
   NewPage.Align := alClient;
+
   if ActivePage <> nil then
     ActivePage.Hide;
   ActivePage := NewPage;
@@ -2693,16 +2661,6 @@ begin
     dsWince: FCurrentDrawer := FDrawerWinCE;
     dsCustom: FCurrentDrawer := CustomDrawer;
   end;
-end;
-
-procedure TCDPageControl.SetDrawStyle(const AValue: TCDDrawStyle);
-begin
-  if FDrawStyle = AValue then
-    exit;
-  FDrawStyle := AValue;
-  Invalidate;
-  PrepareCurrentDrawer();
-  FCurrentDrawer.SetClientRectPos(Self);
 end;
 
 function TCDPageControl.FindNextPage(CurPage: TCDTabSheet;
@@ -2754,35 +2712,25 @@ end;
 constructor TCDPageControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
   Width := 232;
   Height := 184;
-  TabStop := False;
+  TabStop := True;
+
   FDrawerWinCE := TCDPageControlDrawerWinCE.Create;
   CustomDrawer := FDrawerWinCE; // Dummy to avoid designer crashes
-  FCaptionHeight := 28;
+
   ParentColor := True;
-  parentFont := True;
+  ParentFont := True;
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks,
     csDesignInteractive];
   FPages := TTabItemList.Create(TTabItem);
-  //FPageCount := 0;
-  RButtHeight := CaptionHeight - 4;
-  FStartIndex := 0;
-  MaskHeadBmp := TBitmap.Create;
 end;
 
 destructor TCDPageControl.Destroy;
 begin
-  MaskHeadBmp.Free;
   FPages.Free;
   inherited Destroy;
-end;
-
-procedure TCDPageControl.SetStartIndex(Value: integer);
-begin
-  if (Value < -1) or (Value >= FPages.Count) then
-    Exit;
-  FStartIndex := Value;
 end;
 
 procedure TCDPageControl.SetActivePage(Value: TCDTabSheet);
@@ -2796,7 +2744,6 @@ begin
       Value.Show;
 
       // Check first, Tab is Visible?
-      StartIndex := i;
       FPageIndex := i;
     end
     else
@@ -2817,28 +2764,13 @@ begin
   end;
 end;
 
-procedure TCDPageControl.EraseBackground(DC: HDC);
-begin
-
-end;
-
-function TCDPageControl.GetPageIndexFromXY(x, y: integer): integer;
-begin
-  if MaskHeadBmp.Canvas.Pixels[x, y] = clWhite then
-    Result := -1
-  else
-    Result := MaskHeadBmp.Canvas.Pixels[x, y] - MaskBaseColor + StartIndex;
-  if (PageIndex <> Result) and (PageIndex > -1) then
-    PageIndex := Result;
-end;
-
 procedure TCDPageControl.Paint;
 var
   AImage: TLazIntfImage = nil;
   ABmp: TBitmap = nil;
   lCanvas: TFPImageCanvas = nil;
 begin
-  inherited Paint;
+//  inherited Paint;
 
   PrepareCurrentDrawer();
 
@@ -2849,11 +2781,11 @@ begin
     AImage := ABmp.CreateIntfImage;
     lCanvas := TFPImageCanvas.Create(AImage);
     // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
-    FCurrentDrawer.DrawToIntfImage(lCanvas, AImage, Self);
+    TCDPageControlDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, AImage, Self);
     ABmp.LoadFromIntfImage(AImage);
     ABmp.Canvas.Font.Assign(Font);
     // Second step of the drawing: LCL TCustomCanvas for easy font access
-    FCurrentDrawer.DrawToCanvas(ABmp.Canvas, Self);
+    TCDPageControlDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas, Self);
     Canvas.Draw(0, 0, ABmp);
   finally
     if lCanvas <> nil then
@@ -2864,14 +2796,51 @@ begin
   end;
 end;
 
-procedure TCDPageControl.SetCaptionHeight(Value: integer);
+procedure TCDPageControl.SetCDPages(Value: TTabItemList);
 begin
-  FCaptionHeight := Value;
-  RButtHeight := Value - 4;
-  invalidate;
+  FPages.Assign(Value);
 end;
 
-procedure TCDPageControl.DrawCaptionBar(ADest: TCanvas; lRect: TRect; CL: TColor);
+procedure TCDPageControl.UpdateAllDesignerFlags;
+var
+  i: integer;
+begin
+  for i := 0 to FPages.Count - 1 do
+    UpdateDesignerFlags(i);
+end;
+
+procedure TCDPageControl.UpdateDesignerFlags(APageIndex: integer);
+begin
+  if APageIndex <> fPageIndex then
+    FPages[APageIndex].TabPage.ControlStyle :=
+      FPages[APageIndex].TabPage.ControlStyle + [csNoDesignVisible]
+  else
+    FPages[APageIndex].TabPage.ControlStyle :=
+      FPages[APageIndex].TabPage.ControlStyle - [csNoDesignVisible];
+end;
+
+procedure TCDPageControl.SetMouseUP;
+begin
+  FMDownL := False;
+  FMDownR := False;
+end;
+
+function TCDPageControl.GetPageCount: integer;
+begin
+  Result := FPages.Count;
+end;
+
+procedure TCDPageControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: integer);
+begin
+  TCDPageControlDrawer(FCurrentDrawer).MouseDown(Button, Shift, X, Y);
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
+{ TCDPageControlDrawerWinCE }
+
+procedure TCDPageControlDrawerWinCE.DrawCaptionBar(ADest: TCanvas;
+  lRect: TRect; CL: TColor; CDPageControl: TCDPageControl);
 var
   aRect, bRect, cRect: TRect;
   i: integer;
@@ -2879,7 +2848,11 @@ var
   aText, bText: string;
   CornerColor: TFPColor;
   MaskColor: TColor;
+  CaptionHeight: Integer;
+  RButtHeight: integer;
 begin
+  CaptionHeight := GetTabHeight(CDPageControl.PageIndex, CDPageControl) - 4;
+  RButtHeight := GetTabHeight(CDPageControl.PageIndex, CDPageControl);
   aRect := lRect;
   ADest.Pen.Style := psSolid;
   ADest.Brush.Style := bsSolid;
@@ -2891,14 +2864,7 @@ begin
   aRect.Bottom := lRect.Bottom;
   aRect.Right := lRect.Right;
   ADest.RecTangle(lRect);
-  MaskHeadBmp.Width := lRect.Right - lRect.Left;
-  MaskHeadBmp.Height := lRect.Bottom - lRect.Top;
-  MaskHeadBmp.Canvas.Brush.Style := bsSolid;
-  MaskHeadBmp.Canvas.Pen.Style := psSolid;
-  MaskHeadBmp.Canvas.Pen.Color := clWhite;
-  MaskHeadBmp.Canvas.Brush.Color := MaskHeadBmp.Canvas.Pen.Color;
-  MaskHeadBmp.Canvas.Rectangle(lRect);
-  if FPages.Count = 0 then
+  if CDPageControl.FPages.Count = 0 then
   begin
     ADest.Brush.Color := clWhite;
     ADest.Pen.Color := $009C9B91;
@@ -2911,20 +2877,21 @@ begin
   aRect.Top := lRect.Top + 3;
   //ADest.TextStyle.Opaque :=false;
   //SetBkMode(ADest.Handle, TRANSPARENT);
-  if Brush.Style = bsSolid then
+  if ADest.Brush.Style = bsSolid then
     SetBkMode(ADest.Handle, OPAQUE)
   else
     SetBkMode(ADest.Handle, TRANSPARENT);
-  for i := StartIndex to FPages.Count - 1 do
+
+  for i := StartIndex to CDPageControl.FPages.Count - 1 do
   begin
-    aText := FPages[i].TabPage.Caption;
+    aText := CDPageControl.FPages[i].TabPage.Caption;
     rWidth := (CaptionHeight - ADest.TextHeight(aText)) + ADest.TextWidth(aText);
-    FPages[i].Width := rWidth;
+    CDPageControl.FPages[i].Width := rWidth;
     if aRect.Left + rWidth > lRect.Right - 6 then
       Break
     else
       aRect.Right := aRect.Left + rWidth;
-    if PageIndex = i then
+    if CDPageControl.PageIndex = i then
     begin
       cRect := aRect;
       if i = StartIndex then
@@ -2933,40 +2900,38 @@ begin
         cRect.Left := aRect.Left - 4;
       cRect.Right := aRect.Right + 4;
       cRect.Top := cRect.Top - 2;
-      bText := FPages[i].TabPage.Caption;
+      bText := CDPageControl.FPages[i].TabPage.Caption;
     end
     else
-      DrawTabHead(aDest, aRect, Color, False);
+      DrawTabHead(aDest, aRect, CDPageControl.Color, False);
     MaskColor := MaskBaseColor + i - StartIndex;
-    DrawTabHeadMask(MaskHeadBmp.Canvas, aRect, MaskColor, False);
+    //DrawTabHeadMask(MaskHeadBmp.Canvas, aRect, MaskColor, False);
     ADest.TextOut(aRect.Left + (aRect.Right - aRect.Left - ADest.TextWidth(aText)) div 2,
       aRect.Top + (aRect.Bottom - aRect.Top - ADest.TextHeight(aText)) div 2, aText);
     aRect.Left := aRect.Right + 3;
   end;
-  //ADest.Draw(0,0,MaskHeadBmp);           Exit;
   ADest.Line(lRect.Left, lRect.Bottom - 1, cRect.Left, lRect.Bottom - 1);
   ADest.Line(cRect.Right, lRect.Bottom - 1, lRect.Right, lRect.Bottom - 1);
   DrawTabHead(aDest, cRect, clWhite, True);
   ADest.TextOut(cRect.Left + (cRect.Right - cRect.Left - ADest.TextWidth(bText)) div 2,
     cRect.Top + (cRect.Bottom - cRect.Top - ADest.TextHeight(bText)) div 2, bText);
-  if not CheckTabButton(lRect.Right - lRect.Left, FPages) then
+  if not CheckTabButton(lRect.Right - lRect.Left, CDPageControl.FPages) then
     Exit;
   aRect.Left := lRect.Right - RButtHeight * 2 - 3;
   aRect.Top := 1;
   aRect.Bottom := RButtHeight + 1;
   aRect.Right := lRect.Right - RButtHeight;
-  if FMDownL then
-    GradFill(ADest, aRect, $00F1A079, $00EFAF9B)
-  else
+  //if FMDownL then
+  //  GradFill(ADest, aRect, $00F1A079, $00EFAF9B)
+  //else
     GradFill(ADest, aRect, $00FDD9CB, $00F2C9B8);
   aRect.Left := lRect.Right - RButtHeight - 1;
   aRect.Top := 1;
   aRect.Bottom := RButtHeight + 1;
   aRect.Right := lRect.Right;
-  if FMDownR then
-    GradFill(ADest, aRect, $00F1A079, $00EFAF9B)
-  else
-    GradFill(ADest, aRect, $00FDD9CB, $00F2C9B8);
+
+  GradFill(ADest, aRect, $00FDD9CB, $00F2C9B8);
+
   ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($0085614D));
   bRect.Top := 1;
   bRect.Left := lRect.Right - RButtHeight * 2 - 3;
@@ -2996,190 +2961,95 @@ begin
   ADest.Line(lRect.Right, 25, lRect.Right - 51, 25);
   ADest.Line(lRect.Right - 51, 25, lRect.Right - 51, 1);
   ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($00FFFFFF));
-  //ADest.Line();
 end;
 
-procedure TCDPageControl.SetCDPages(Value: TTabItemList);
+function TCDPageControlDrawerWinCE.GetPageIndexFromXY(x, y: integer): integer;
 begin
-  FPages.Assign(Value);
+  Result := 1;
+  //if MaskHeadBmp.Canvas.Pixels[x, y] = clWhite then
+  //  Result := -1
+  //else
+  //  Result := MaskHeadBmp.Canvas.Pixels[x, y] - MaskBaseColor + StartIndex;
+  //if (PageIndex <> Result) and (PageIndex > -1) then
+  //  PageIndex := Result;
 end;
 
-procedure TCDPageControl.DoOnResize;
+function TCDPageControlDrawerWinCE.GetTabHeight(AIndex: Integer; CDPageControl: TCDPageControl): Integer;
 begin
-  if ActivePage <> nil then
-  begin
-    ActivePage.Left := 1;
-    ActivePage.Top := CaptionHeight + 1;
-    ActivePage.Width := Width - 3;
-    ActivePage.Height := Height - CaptionHeight - 4;
-    RButtHeight := CaptionHeight - 4;
-  end;
-  inherited;
+  if CDPageControl.Font.Size = 0 then
+    Result := 32
+  else
+    Result := CDPageControl.Font.Size + 22;
 end;
 
-procedure TCDPageControl.UpdateAllDesignerFlags;
+function TCDPageControlDrawerWinCE.GetTabWidth(AIndex: Integer; CDPageControl: TCDPageControl): Integer;
+begin
+
+end;
+
+function TCDPageControlDrawerWinCE.GetClientRect(AControl: TCDControl): TRect;
 var
-  i: integer;
+  CDPageControl: TCDPageControl absolute AControl;
+  lCaptionHeight: Integer;
 begin
-  for i := 0 to FPages.Count - 1 do
-    UpdateDesignerFlags(i);
-end;
+  lCaptionHeight := GetTabHeight(CDPageControl.PageIndex, CDPageControl) - 4;
 
-procedure TCDPageControl.DoLeftButtonDown;
-begin
-  if StartIndex > 0 then
-    StartIndex := StartIndex - 1;
-  invalidate;
-end;
-
-procedure TCDPageControl.DoRightButtonDown;
-begin
-  if StartIndex < FPages.Count - 1 then
-    StartIndex := StartIndex + 1;
-  invalidate;
-end;
-
-procedure TCDPageControl.UpdateDesignerFlags(APageIndex: integer);
-begin
-  if APageIndex <> fPageIndex then
-    FPages[APageIndex].TabPage.ControlStyle :=
-      FPages[APageIndex].TabPage.ControlStyle + [csNoDesignVisible]
-  else
-    FPages[APageIndex].TabPage.ControlStyle :=
-      FPages[APageIndex].TabPage.ControlStyle - [csNoDesignVisible];
-end;
-
-procedure TCDPageControl.SetMouseUP;
-begin
-  FMDownL := False;
-  FMDownR := False;
-end;
-
-function TCDPageControl.GetPageCount: integer;
-begin
-  Result := FPages.Count;
-end;
-
-procedure TCDPageControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: integer);
-begin
-  if (X > Width - RButtHeight * 2 - 2) and (X < Width - RButtHeight) then
-  begin
-    FMDownL := True;
-    DoLeftButtonDown;
-  end
-  else
-  if (X > Width - RButtHeight - 1) and (X < Width - 1) then
-  begin
-    FMDownR := True;
-    DoRightButtonDown;
-  end
-  else
-    SetMouseUP;
-  if (Y < 3) or (Y > RButtHeight + 1) then
-    SetMouseUP;
-  if (Y < CaptionHeight) and (Y > 0) and (X > 0) and (X < Width) then
-    GetPageIndexFromXY(X, Y);
-  invalidate;
-  inherited MouseDown(Button, Shift, X, Y);
-end;
-
-procedure TCDPageControl.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: integer);
-begin
-  SetMouseUP;
-  invalidate;
-  inherited MouseUp(Button, Shift, X, Y);
-end;
-
-procedure TCDPageControl.MouseMove(Shift: TShiftState; X, Y: integer);
-begin
-  if (X > Width - RButtHeight * 2 - 2) and (X < Width - RButtHeight) then
-    FMEnterL := True
-  else
-  if (X > Width - RButtHeight - 1) and (X < Width - 1) then
-    FMEnterR := True
-  else
-  begin
-    FMEnterR := False;
-    FMEnterL := False;
-  end;
-  if (Y < 3) or (Y > 18) then
-  begin
-    FMEnterR := False;
-    FMEnterL := False;
-  end;
-  if FMEnterR or FMENterL then
-    invalidate;
-  inherited MouseMove(Shift, X, Y);
-end;
-
-procedure TCDPageControl.Loaded;
-begin
-  inherited;
-end;
-
-procedure TCDPageControl.MouseEnter;
-begin
-  inherited MouseEnter;
-end;
-
-procedure TCDPageControl.MouseLeave;
-begin
-  inherited MouseLeave;
-  SetMouseUP;
-  invalidate;
-end;
-
-{ TCDPageControlDrawerWinCE }
-
-procedure TCDPageControlDrawerWinCE.SetClientRectPos(CDPageControl: TCDPageControl);
-var
-  lRect: TRect;
-  lCaptionHeight: integer;
-begin
-  lCaptionHeight := CDPageControl.CaptionHeight;
-  lRect := Rect(10, lCaptionHeight + 1, CDPageControl.Width - 10,
-    CDPageControl.Height - 1);
-  CDPageControl.AdjustClientRect(lRect);
+  Result := Rect(5, lCaptionHeight + 1, CDPageControl.Width - 10,
+    CDPageControl.Height - lCaptionHeight - 5);
 end;
 
 procedure TCDPageControlDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
   FPImg: TLazIntfImage; CDPageControl: TCDPageControl);
 begin
-  ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CDPageControl.Color));
-  ADest.Brush.Style := bsSolid;
-  ADest.Pen.Style := psClear;
-  ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CDPageControl.Color));
-  ADest.Rectangle(0, 0, CDPageControl.Width, CDPageControl.Height);
-  ADest.Font.Name := CDPageControl.Font.Name;
-  ADest.Font.Size := CDPageControl.Font.Size;
-  ADest.Rectangle(0, CDPageControl.CaptionHeight, CDPageControl.Width,
-    CDPageControl.Height);
-  ADest.Colors[CDPageControl.Width - 1, CDPageControl.CaptionHeight] :=
-    TColorToFPColor(ColorToRGB(CDPageControl.Color));
-  // frame
-  //ADest.Pen.FPColor := colBlack;
-  ADest.Pen.Style := psSolid;
-  ADest.Brush.Style := bsClear;
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($009C9B91));
-  if CDPageControl.Pages.Count = 0 then
-    ADest.Rectangle(0, 0, CDPageControl.Width - 2, CDPageControl.Height - 2)
-  else
-    ADest.Rectangle(0, CDPageControl.CaptionHeight, CDPageControl.Width -
-      2, CDPageControl.Height - 2);
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($00BFCED0));
-  ADest.Line(CDPageControl.Width - 1, CDPageControl.CaptionHeight + 1,
-    CDPageControl.Width - 1, CDPageControl.Height - 1);
-  ADest.Line(CDPageControl.Width - 1, CDPageControl.Height - 1, 1,
-    CDPageControl.Height - 1);
 end;
 
 procedure TCDPageControlDrawerWinCE.DrawToCanvas(ADest: TCanvas;
   CDPageControl: TCDPageControl);
+var
+  CaptionHeight: Integer;
+  lColor: TColor;
 begin
-  CDPageControl.DrawCaptionBar(ADest, Rect(0, 0, CDPageControl.Width -
-    2, CDPageControl.CaptionHeight + 1), CDPageControl.Color);
+  CaptionHeight := GetTabHeight(CDPageControl.PageIndex, CDPageControl) - 4;
+
+  if CDPageControl.Color = clDefault then lColor := clSilver
+  else lColor := ColorToRGB(CDPageControl.Color);
+
+  // Background
+  ADest.Brush.Color := lColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psClear;
+  ADest.Rectangle(0, 0, CDPageControl.Width, CDPageControl.Height);
+
+  // Frame detail
+  ADest.Pixels[CDPageControl.Width - 1, CaptionHeight] := lColor;
+
+  // frame
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Color := ColorToRGB($009C9B91);
+
+  if CDPageControl.Pages.Count = 0 then
+    ADest.Rectangle(0, 0, CDPageControl.Width - 2, CDPageControl.Height - 2)
+  else
+    ADest.Rectangle(0, CaptionHeight, CDPageControl.Width -  2, CDPageControl.Height - 2);
+
+  ADest.Pen.Color := ColorToRGB($00BFCED0);
+  ADest.Line(CDPageControl.Width - 1, CaptionHeight + 1,
+    CDPageControl.Width - 1, CDPageControl.Height - 1);
+  ADest.Line(CDPageControl.Width - 1, CDPageControl.Height - 1, 1,
+    CDPageControl.Height - 1);
+
+  // Tabs
+  ADest.Font.Name := CDPageControl.Font.Name;
+  ADest.Font.Size := CDPageControl.Font.Size;
+  DrawCaptionBar(ADest, Rect(0, 0, CDPageControl.Width -
+    2, CaptionHeight + 1), CDPageControl.Color, CDPageControl);
+end;
+
+procedure TCDPageControlDrawerWinCE.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: integer);
+begin
+
 end;
 
 end.
