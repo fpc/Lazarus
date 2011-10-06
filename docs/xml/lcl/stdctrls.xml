@@ -1400,12 +1400,11 @@
         <short>Event handler for user changed text in the edit box.</short>
         <descr>
           <p>
-            This event covers only changes made by the user, not by code.
-            It also covers a selection from the list.
-          </p><p>
-            [from Delphi docs - matches LCL?]
+            This event covers only changes made by the user, not by code. Note that this differs from how other OnChange events work, for example TEdit.OnChange is triggered by code text changes.
+            This event is also triggered when the selection is changed by using the combo box list.
           </p>
         </descr>
+        <seealso><link id="TCustomEdit.OnChange"/></seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.OnCloseUp">
@@ -2760,6 +2759,8 @@
       <!-- property Visibility: public -->
       <element name="TCustomEdit.OnChange">
         <short>Event handler for any change in text.</short>
+        <descr>Text changes which trigger OnChange include changing the text programatically and also changing it by the user, for example using the keyboard or a virtual keyboard. Note that some OnChange events in other classes might not be trigerred on programatical changes, for example TComboBox.OnChange. This event should not happen when only starting up a form, without any extra code.</descr>
+        <seealso><link id="TCustomComboBox.OnChange"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
