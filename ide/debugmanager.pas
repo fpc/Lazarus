@@ -868,6 +868,7 @@ var
   msg, SrcText: String;
   Ignore: Boolean;
   Editor: TSourceEditor;
+  i: Integer;
 begin
   if Destroying then
   begin
@@ -898,7 +899,9 @@ begin
         Editor := SourceEditorManager.SourceEditorIntfWithFilename(AExceptionLocation.SrcFullName);
         if Editor <> nil then begin
           try
-            SrcText := Trim(Editor.Lines[Editor.DebugToSourceLine(AExceptionLocation.SrcLine)]);
+            i := Editor.DebugToSourceLine(AExceptionLocation.SrcLine);
+            if i > 0
+            then SrcText := Trim(Editor.Lines[i-1]);
           except
           end;
     	end;
@@ -1235,7 +1238,7 @@ begin
   else
     SrcLine := -1;
 
-  ReleaseAndNil(CurrentSourceUnitInfo);
+  ReleaseRefAndNil(CurrentSourceUnitInfo);
 
   // clear old error and execution lines
   if SourceEditorManager <> nil

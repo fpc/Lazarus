@@ -208,9 +208,21 @@ type
     property DlgWatchesConfig: TDebuggerWatchesDlgConfig read FTDebuggerWatchesDlgConfig;
   end;
 
+  { TFreeNotifyingObject }
+
+  TFreeNotifyingObject = class
+  private
+    FFreeNotificationList: TMethodList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddFreeeNotification(ANotification: TNotifyEvent);
+    procedure RemoveFreeeNotification(ANotification: TNotifyEvent);
+  end;
+
   { TRefCountedObject }
 
-  TRefCountedObject = class(TObject)
+  TRefCountedObject = class(TFreeNotifyingObject)
   private
     FRefCount: Integer;
   protected
@@ -230,7 +242,7 @@ type
     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
   end;
 
-procedure ReleaseAndNil(var ARefCountedObject);
+procedure ReleaseRefAndNil(var ARefCountedObject);
 
 type
 
@@ -1030,7 +1042,7 @@ type
 
   { TWatchValue }
 
-  TWatchValue = class
+  TWatchValue = class(TFreeNotifyingObject)
   private
     FDisplayFormat: TWatchDisplayFormat;
     FStackFrame: Integer;
@@ -1172,14 +1184,9 @@ type
     FSnapShot: TWatchValue;
     procedure SetSnapShot(const AValue: TWatchValue);
   protected
-    FFreeNotificationList: TMethodList;
     procedure RequestData; override;
     procedure ValidityChanged; override;
   public
-    constructor Create; override; overload;
-    destructor Destroy; override;
-    procedure AddFreeeNotification(ANotification: TNotifyEvent);
-    procedure RemoveFreeeNotification(ANotification: TNotifyEvent);
     property SnapShot: TWatchValue read FSnapShot write SetSnapShot;
   public
     procedure SetTypeInfo(const AValue: TDBGType);
@@ -1682,7 +1689,7 @@ type
 
   { TCallStack }
 
-  TCallStack = class(TObject)
+  TCallStack = class(TFreeNotifyingObject)
   private
     FThreadId: Integer;
     FCurrent: Integer;
@@ -2922,9 +2929,9 @@ begin
   {$ENDIF}
 end;
 
-procedure ReleaseAndNil(var ARefCountedObject);
+procedure ReleaseRefAndNil(var ARefCountedObject);
 begin
-  Assert((Pointer(ARefCountedObject) = nil) or (TObject(ARefCountedObject) is TRefCountedObject), 'ReleaseAndNil requires TRefCountedObject');
+  Assert((Pointer(ARefCountedObject) = nil) or (TObject(ARefCountedObject) is TRefCountedObject), 'ReleaseRefAndNil requires TRefCountedObject');
   if Pointer(ARefCountedObject) <> nil
   then TRefCountedObject(ARefCountedObject).ReleaseReference;
   Pointer(ARefCountedObject) := nil;
@@ -2949,6 +2956,31 @@ begin
   for Result:=Low(TIDEBreakPointAction) to High(TIDEBreakPointAction) do
     if AnsiCompareText(s,DBGBreakPointActionNames[Result])=0 then exit;
   Result:=bpaStop;
+end;
+
+{ TFreeNotifyingObject }
+
+constructor TFreeNotifyingObject.Create;
+begin
+  FFreeNotificationList := TMethodList.Create;
+  inherited Create;
+end;
+
+destructor TFreeNotifyingObject.Destroy;
+begin
+  FFreeNotificationList.CallNotifyEvents(Self);
+  inherited Destroy;
+  FreeAndNil(FFreeNotificationList);
+end;
+
+procedure TFreeNotifyingObject.AddFreeeNotification(ANotification: TNotifyEvent);
+begin
+  FFreeNotificationList.Add(TMethod(ANotification));
+end;
+
+procedure TFreeNotifyingObject.RemoveFreeeNotification(ANotification: TNotifyEvent);
+begin
+  FFreeNotificationList.Remove(TMethod(ANotification));
 end;
 
 { TDebuggerWatchesDlgConfig }
@@ -3601,7 +3633,7 @@ procedure TSnapshotManager.CreateHistoryEntry;
 var
   t: LongInt;
 begin
-  ReleaseAndNil(FCurrentSnapshot); // should be nil already
+  ReleaseRefAndNil(FCurrentSnapshot); // should be nil already
   FCurrentSnapshot := TSnapshot.Create(Self);
   FCurrentSnapshot.Location := Debugger.GetLocation;
 
@@ -3691,7 +3723,7 @@ end;
 destructor TSnapshotManager.Destroy;
 begin
   FNotificationList.Clear;
-  ReleaseAndNil(FCurrentSnapshot);
+  ReleaseRefAndNil(FCurrentSnapshot);
   Clear;
   inherited Destroy;
   FreeAndNil(FHistoryList);
@@ -3727,7 +3759,7 @@ begin
     else begin
       if (FCurrentSnapshot <> nil) and (FActive or (AOldState = dsInternalPause)) then begin
         HistoryIndex := FHistoryList.Add(FCurrentSnapshot);
-        ReleaseAndNil(FCurrentSnapshot);
+        ReleaseRefAndNil(FCurrentSnapshot);
         while FHistoryList.Count > HistoryCapacity do RemoveHistoryEntry(0);
         DoChanged;
       end;
@@ -4228,29 +4260,6 @@ begin
   TCurrentWatches(TCurrentWatch(FWatch).Collection).Update(FWatch);
   if FSnapShot <> nil
   then FSnapShot.Assign(self);
-end;
-
-constructor TCurrentWatchValue.Create;
-begin
-  FFreeNotificationList := TMethodList.Create;
-  inherited Create;
-end;
-
-destructor TCurrentWatchValue.Destroy;
-begin
-  FFreeNotificationList.CallNotifyEvents(Self);
-  inherited Destroy;
-  FreeAndNil(FFreeNotificationList);
-end;
-
-procedure TCurrentWatchValue.AddFreeeNotification(ANotification: TNotifyEvent);
-begin
-  FFreeNotificationList.Add(TMethod(ANotification));
-end;
-
-procedure TCurrentWatchValue.RemoveFreeeNotification(ANotification: TNotifyEvent);
-begin
-  FFreeNotificationList.Remove(TMethod(ANotification));
 end;
 
 { TCurrentWatchValueList }
@@ -5555,7 +5564,7 @@ procedure TRefCountedObject.ReleaseReference;
 begin
   Assert(FRefCount > 0, 'TRefCountedObject.ReleaseReference  RefCount > 0');
   Dec(FRefCount);
-  if FRefCount = 0 then Free;
+  if FRefCount = 0 then DoFree;
 end;
 
 (******************************************************************************)

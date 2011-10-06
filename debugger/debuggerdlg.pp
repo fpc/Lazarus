@@ -344,27 +344,27 @@ begin
     FSnapshotNotification.OnCurrent := nil;
   end;
   SetSnapshotManager(nil);
-  ReleaseAndNil(FSnapshotNotification);
+  ReleaseRefAndNil(FSnapshotNotification);
 
   if FThreadsNotification <> nil then begin;
     FThreadsNotification.OnChange := nil;
     FThreadsNotification.OnCurrent := nil;
   end;
   SetThreadsMonitor(nil);
-  ReleaseAndNil(FThreadsNotification);
+  ReleaseRefAndNil(FThreadsNotification);
 
   if FCallStackNotification <> nil then begin;
     FCallStackNotification.OnChange := nil;
     FCallStackNotification.OnCurrent := nil;
   end;
   SetCallStackMonitor(nil);
-  ReleaseAndNil(FCallStackNotification);
+  ReleaseRefAndNil(FCallStackNotification);
 
   if FLocalsNotification <> nil then begin;
     FLocalsNotification.OnChange := nil;
   end;
   SetLocalsMonitor(nil);
-  ReleaseAndNil(FLocalsNotification);
+  ReleaseRefAndNil(FLocalsNotification);
 
   if FWatchesNotification <> nil then begin;
     FWatchesNotification.OnAdd := nil;
@@ -372,7 +372,7 @@ begin
     FWatchesNotification.OnUpdate := nil;
   end;
   SetWatchesMonitor(nil);
-  ReleaseAndNil(FWatchesNotification);
+  ReleaseRefAndNil(FWatchesNotification);
 
   if FBreakpointsNotification <> nil then begin;
     FBreakpointsNotification.OnAdd := nil;
@@ -380,7 +380,7 @@ begin
     FBreakpointsNotification.OnUpdate := nil;
   end;
   SetBreakPoints(nil);
-  ReleaseAndNil(FBreakpointsNotification);
+  ReleaseRefAndNil(FBreakpointsNotification);
 
   inherited Destroy;
 end;

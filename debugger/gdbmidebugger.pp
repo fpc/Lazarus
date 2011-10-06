@@ -1031,6 +1031,8 @@ type
   { TGDBMIDebuggerCommandStack }
 
   TGDBMIDebuggerCommandStack = class(TGDBMIDebuggerCommand)
+  private
+    procedure DoCallstackFreed(Sender: TObject);
   protected
     FCallstack: TCurrentCallStack;
     FThreadChanged: Boolean;
@@ -1038,6 +1040,7 @@ type
     procedure UnSelectThread;
   public
     constructor Create(AOwner: TGDBMIDebugger; ACallstack: TCurrentCallStack);
+    destructor Destroy; override;
     property Callstack: TCurrentCallStack read FCallstack;
   end;
 
@@ -1675,16 +1678,28 @@ begin
   Result := Format('%s: NewCurrent=%d', [ClassName, FNewCurrent]);
 end;
 
+procedure TGDBMIDebuggerCommandStack.DoCallstackFreed(Sender: TObject);
+begin
+  {$IFDEF DBGMI_QUEUE_DEBUG}
+  debugln(['DoCallstackFreed: ', DebugText]);
+  {$ENDIF}
+  FCallstack := nil;
+  Cancel;
+end;
+
 function TGDBMIDebuggerCommandStack.SelectThread: Boolean;
 var
   R: TGDBMIExecResult;
+  t: Integer;
 begin
   Result := True;
   FThreadChanged := False;
-  if FCallstack.ThreadId = FTheDebugger.FCurrentThreadId then exit;
+  if (FCallstack = nil) or (dcsCanceled in SeenStates) then exit;
+  t := FCallstack.ThreadId;
+  if t = FTheDebugger.FCurrentThreadId then exit;
   FThreadChanged := True;
-  Result := ExecuteCommand('-thread-select %d', [FCallstack.ThreadId], R);
-  FTheDebugger.FInternalThreadId := FCallstack.ThreadId;
+  Result := ExecuteCommand('-thread-select %d', [t], R);
+  FTheDebugger.FInternalThreadId := t;
   Result := Result and (R.State <> dsError);
 end;
 
@@ -1702,6 +1717,14 @@ constructor TGDBMIDebuggerCommandStack.Create(AOwner: TGDBMIDebugger;
 begin
   inherited Create(AOwner);
   FCallstack := ACallstack;
+  FCallstack.AddFreeeNotification(@DoCallstackFreed);
+end;
+
+destructor TGDBMIDebuggerCommandStack.Destroy;
+begin
+  if FCallstack <> nil
+  then FCallstack.RemoveFreeeNotification(@DoCallstackFreed);
+  inherited Destroy;
 end;
 
 { TGDBMIBreakPoints }
@@ -1783,6 +1806,7 @@ var
 begin
   if Monitor = nil then exit;
   Cmd := TGDBMIDebuggerCommandThreads(Sender);
+  if CurrentThreads = nil then exit;
 
   if not Cmd.Success then begin
     CurrentThreads.SetValidity(ddsInvalid);
@@ -1790,16 +1814,13 @@ begin
     exit;
   end;
 
-  if CurrentThreads <> nil
-  then begin
-    CurrentThreads.Clear;
-    for i := 0 to Cmd.Count - 1 do
-      CurrentThreads.Add(Cmd.Threads[i]);
+  CurrentThreads.Clear;
+  for i := 0 to Cmd.Count - 1 do
+    CurrentThreads.Add(Cmd.Threads[i]);
 
-    CurrentThreads.SetValidity(ddsValid);
-    CurrentThreads.CurrentThreadId := Cmd.CurrentThreadId;
-    Debugger.FCurrentThreadId := CurrentThreads.CurrentThreadId;
-  end;
+  CurrentThreads.SetValidity(ddsValid);
+  CurrentThreads.CurrentThreadId := Cmd.CurrentThreadId;
+  Debugger.FCurrentThreadId := CurrentThreads.CurrentThreadId;
 end;
 
 procedure TGDBMIThreads.DoChangeThreadsDestroyed(Sender: TObject);
@@ -3809,6 +3830,12 @@ begin
       Exit;
     end;
 
+    {$IFDEF DBGMI_QUEUE_DEBUG}
+    // results may be prefixed by "verbose" info, so IDE gets confused
+    //ExecuteCommand('set verbose on', []);
+    //ExecuteCommand('set complaints 99', []);
+    {$ENDIF}
+
     DebugLn(['TGDBMIDebugger.StartDebugging WorkingDir="', FTheDebugger.WorkingDir,'"']);
     if FTheDebugger.WorkingDir <> ''
     then begin
@@ -4027,7 +4054,7 @@ begin
     if DebuggerState = dsPause
     then ProcessFrame;
   finally
-    ReleaseAndNil(FContinueCommand);
+    ReleaseRefAndNil(FContinueCommand);
   end;
 
   FSuccess := True;
@@ -4045,7 +4072,7 @@ end;
 
 destructor TGDBMIDebuggerCommandStartDebugging.Destroy;
 begin
-  ReleaseAndNil(FContinueCommand);
+  ReleaseRefAndNil(FContinueCommand);
   inherited Destroy;
 end;
 
@@ -5429,37 +5456,45 @@ var
     Frames: TGDBMINameValueListArray;
     e: TCallStackEntry;
   begin
-    CurStartIdx := AStartIdx;
-    SetLength(Args, AEndIdx-AStartIdx+1);
-    PrepareArgs(Args, AStartIdx, AEndIdx, '-stack-list-arguments 1 %d %d', 'stack-args', 'args');
+    try
+      CurStartIdx := AStartIdx;
+      SetLength(Args, AEndIdx-AStartIdx+1);
+      PrepareArgs(Args, AStartIdx, AEndIdx, '-stack-list-arguments 1 %d %d', 'stack-args', 'args');
+      if (FCallstack = nil) or (dcsCanceled in SeenStates) then exit;
 
-    SetLength(Frames, AEndIdx-AStartIdx+1);
-    PrepareArgs(Frames, AStartIdx, AEndIdx, '-stack-list-frames %d %d', 'stack', '');
+      SetLength(Frames, AEndIdx-AStartIdx+1);
+      PrepareArgs(Frames, AStartIdx, AEndIdx, '-stack-list-frames %d %d', 'stack', '');
+      if (FCallstack = nil) or (dcsCanceled in SeenStates) then exit;
 
-    if not It.Locate(AStartIdx)
-    then if not It.EOM
-    then IT.Next;
-    while it.Valid and (not It.EOM) do begin
-      e := TCallStackEntry(It.DataPtr^);
-      if e.Index > AEndIdx then break;
-      UpdateEntry(e, Args[e.Index-AStartIdx], Frames[e.Index-AStartIdx]);
-      It.Next;
+      if not It.Locate(AStartIdx)
+      then if not It.EOM
+      then IT.Next;
+      while it.Valid and (not It.EOM) do begin
+        e := TCallStackEntry(It.DataPtr^);
+        if e.Index > AEndIdx then break;
+        UpdateEntry(e, Args[e.Index-AStartIdx], Frames[e.Index-AStartIdx]);
+        It.Next;
+      end;
+
+    finally
+      FreeList(Args);
+      FreeList(Frames);
     end;
-
-    FreeList(Args);
-    FreeList(Frames);
   end;
 
 var
   StartIdx, EndIdx: Integer;
 begin
   Result := True;
+  if (FCallstack = nil) or (dcsCanceled in SeenStates) then exit;
+
   It := TMapIterator.Create(FCallstack.RawEntries);
   try
     //if It.Locate(AIndex)
     StartIdx := Max(FCallstack.LowestUnknown, 0);
     EndIdx   := FCallstack.HighestUnknown;
     while EndIdx >= StartIdx do begin
+      if (FCallstack = nil) or (dcsCanceled in SeenStates) then break;
       {$IFDEF DBG_VERBOSE}
       debugln(['Callstach.Frames A StartIdx=',StartIdx, ' EndIdx=',EndIdx]);
       {$ENDIF}
@@ -5479,6 +5514,7 @@ begin
       debugln(['Callstach.Frames B StartIdx=',StartIdx, ' EndIdx=',EndIdx]);
       {$ENDIF}
       ExecForRange(StartIdx, EndIdx);
+      if (FCallstack = nil) or (dcsCanceled in SeenStates) then break;
 
       if FCallstack.LowestUnknown < StartIdx
       then StartIdx := FCallstack.LowestUnknown
@@ -5488,7 +5524,8 @@ begin
     end;
   finally
     IT.Free;
-    FCallstack.DoEntriesUpdated;
+    if FCallstack <> nil
+    then FCallstack.DoEntriesUpdated;
   end;
 end;
 
@@ -7955,7 +7992,7 @@ end;
 
 destructor TGDBMIDebuggerCommandLocals.Destroy;
 begin
-  ReleaseAndNil(FLocals);
+  ReleaseRefAndNil(FLocals);
   inherited Destroy;
 end;
 
@@ -8415,6 +8452,7 @@ var
 begin
   FCommandList.Remove(Sender);
   Cmd := TGDBMIDebuggerCommandStackDepth(Sender);
+  if Cmd.Callstack = nil then exit;
   if Cmd.Depth < 0 then begin
     Cmd.Callstack.SetCountValidity(ddsInvalid);
   end else begin
@@ -8489,9 +8527,13 @@ begin
 end;
 
 procedure TGDBMICallStack.DoSetIndexCommandExecuted(Sender: TObject);
+var
+  Cmd: TGDBMIDebuggerCommandStackSetCurrent;
 begin
-  TGDBMIDebugger(Debugger).FCurrentStackFrame := TGDBMIDebuggerCommandStackSetCurrent(Sender).NewCurrent;
-  TGDBMIDebuggerCommandStackSetCurrent(Sender).Callstack.CurrentIndex := TGDBMIDebuggerCommandStackSetCurrent(Sender).NewCurrent;
+  Cmd := TGDBMIDebuggerCommandStackSetCurrent(Sender);
+  TGDBMIDebugger(Debugger).FCurrentStackFrame := Cmd.NewCurrent;
+  if Cmd.Callstack = nil then exit;
+  Cmd.Callstack.CurrentIndex := Cmd.NewCurrent;
 end;
 
 procedure TGDBMICallStack.UpdateCurrentIndex;
