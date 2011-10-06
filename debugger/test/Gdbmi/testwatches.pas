@@ -1046,8 +1046,9 @@ begin
       exit;
     end;
   end;
-  dbg.Free;
+  dbg.Done;
   CleanGdb;
+  dbg.Free;
 end;
 
 procedure TTestWatches.TestWatches;

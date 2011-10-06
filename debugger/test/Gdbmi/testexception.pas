@@ -79,8 +79,9 @@ begin
     TestEquals(TstName+' Got msg',   'abc', FGotExceptMsg, 050300);
     dbg.Stop;
   finally
-    dbg.Free;
+    dbg.Done;
     CleanGdb;
+    dbg.Free;
   end;
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype',
@@ -98,8 +99,9 @@ begin
     TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
     dbg.Stop;
   finally
-    dbg.Free;
+    dbg.Done;
     CleanGdb;
+    dbg.Free;
   end;
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr',
@@ -117,8 +119,9 @@ begin
     TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
     dbg.Stop;
   finally
-    dbg.Free;
+    dbg.Done;
     CleanGdb;
+    dbg.Free;
   end;
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_str',
@@ -136,8 +139,9 @@ begin
     TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
     dbg.Stop;
   finally
-    dbg.Free;
+    dbg.Done;
     CleanGdb;
+    dbg.Free;
   end;
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr_str',
@@ -155,8 +159,9 @@ begin
     TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
     dbg.Stop;
   finally
-    dbg.Free;
+    dbg.Done;
     CleanGdb;
+    dbg.Free;
   end;
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr_str_var',
@@ -174,8 +179,9 @@ begin
     TestEquals(TstName+' Got no more exception', 1, FGotExceptCount);
     dbg.Stop;
   finally
-    dbg.Free;
+    dbg.Done;
     CleanGdb;
+    dbg.Free;
   end;
 
 
@@ -198,8 +204,9 @@ begin
     TestEquals(TstName+' Got msg',   'abc', FGotExceptMsg, 050300);
     dbg.Stop;
   finally
-    dbg.Free;
+    dbg.Done;
     CleanGdb;
+    dbg.Free;
   end;
 
 
