@@ -224,7 +224,6 @@ type
     CustomDrawer: TCDButtonDrawer;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
   published
     property Action;
@@ -1106,11 +1105,6 @@ end;
 destructor TCDButton.Destroy;
 begin
   inherited Destroy;
-end;
-
-procedure TCDButton.EraseBackground(DC: HDC);
-begin
-
 end;
 
 procedure DrawCDButtonDown(Canvas: TCanvas; CDButton: TCDButton);
@@ -2719,11 +2713,11 @@ begin
 
   FDrawerWinCE := TCDPageControlDrawerWinCE.Create;
   CustomDrawer := FDrawerWinCE; // Dummy to avoid designer crashes
+  FDrawStyle := dsWinCE;
 
   ParentColor := True;
   ParentFont := True;
-  ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks,
-    csDesignInteractive];
+  ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csDesignInteractive];
   FPages := TTabItemList.Create(TTabItem);
 end;
 
