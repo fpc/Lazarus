@@ -379,7 +379,7 @@ begin
           
         FileDialog.FileName := FileDialog.Files.Strings[0];
 
-        if FileDialog is TSaveDialog then
+        if FileDialog.FCompStyle=csSaveFileDialog then
           FileDialog.FileName := FileDialog.FileName + PathDelim +
             CFStringToStr(NavDialogGetSaveFileName(DialogRef));
             {Note: Not at all clear from Apple docs that NavReplyRecord.Selection
