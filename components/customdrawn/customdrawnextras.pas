@@ -959,7 +959,7 @@ end;
 function TCDControl.GetClientRect: TRect;
 begin
   if FCurrentDrawer = nil then
-    Result := Bounds(0, 0, Width, Height)
+    Result := inherited GetClientRect()
   else
     Result := FCurrentDrawer.GetClientRect(Self);
 end;
@@ -2596,9 +2596,36 @@ end;
 { TCDPageControl }
 
 procedure TCDPageControl.AddPage(S: string);
+//  InsertPage(FPages.Count, S);
+var
+  NewPage: TCDTabSheet;
 begin
-  InsertPage(FPages.Count, S);
-end;
+  NewPage := TCDTabSheet.Create(Owner);
+  NewPage.Parent := Self;
+  //Name := Designer.CreateUniqueComponentName(ClassName);
+  NewPage.Name := GetUniqueName(sTABSHEET_DEFAULT_NAME, Self.Owner);
+  if S = '' then
+    NewPage.Caption := NewPage.Name
+  else
+    NewPage.Caption := S;
+  NewPage.SetBounds(1, 32 + 1, Width - 3, Height - 32 - 4);
+  NewPage.BorderSpacing.Top := 32 + 2;
+  NewPage.BorderSpacing.Left := 2;
+  NewPage.BorderSpacing.Right := 3;
+  NewPage.BorderSpacing.Bottom := 3;
+  NewPage.Align := alClient;
+  if ActivePage <> nil then
+    ActivePage.Hide;
+  ActivePage := NewPage;
+  NewPage.Show;
+  //FPages.AddObject(NewPage.Name, NewPage);
+  FPages.Insert(FPages.Count);
+  FPages.Items[FPages.Count - 1].DisplayName := NewPage.Name;
+  FPages.Items[FPages.Count - 1].TabPage := NewPage;
+  NewPage.Index := FPages.Count - 1;
+  FPageIndex := FPages.Count - 1;
+  //FPageCount := PageCount + 1;
+enD;
 
 procedure TCDPageControl.InsertPage(aIndex: integer; S: string);
 var
@@ -2613,6 +2640,11 @@ begin
   else
     NewPage.Caption := S;
 
+  NewPage.SetBounds(1, 32 + 1, Width - 3, Height - 32 - 4);
+  NewPage.BorderSpacing.Top := 32 + 2;
+  NewPage.BorderSpacing.Left := 2;
+  NewPage.BorderSpacing.Right := 3;
+  NewPage.BorderSpacing.Bottom := 3;
   NewPage.Align := alClient;
 
   if ActivePage <> nil then
