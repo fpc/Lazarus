@@ -40,6 +40,11 @@ begin
   AssertStringOperation(AMsg, AStr1, UTF8UpperCase(AStr1, ALocale), AStrExpected2);
 end;
 
+procedure AssertStringOperationUTF8LowerCase(AMsg, ALocale, AStr1, AStrExpected2: utf8string);
+begin
+  AssertStringOperation(AMsg, AStr1, UTF8LowerCase(AStr1, ALocale), AStrExpected2);
+end;
+
 procedure TestUTF8UpperCase;
 begin
   // ASCII
@@ -50,6 +55,15 @@ begin
   // Turkish
   AssertStringOperationUTF8UpperCase('Turkish UTF8UpperCase 1', 'tu', 'abcçdefgğhıijklmnoöprsştuüvyz', 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ');
   AssertStringOperationUTF8UpperCase('Turkish UTF8UpperCase 2', 'tu', 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ', 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ');
+
+  // ASCII
+  AssertStringOperationUTF8LowerCase('ASCII UTF8LowerCase', '', 'ABCDEFGHIJKLMNOPQRSTUWVXYZ', 'abcdefghijklmnopqrstuwvxyz');
+  // Latin
+  AssertStringOperationUTF8LowerCase('Polish UTF8UpperCase 1', '', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+  AssertStringOperationUTF8LowerCase('Polish UTF8UpperCase 2', '', 'AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+  // Turkish
+  AssertStringOperationUTF8LowerCase('Turkish UTF8UpperCase 1', 'tu', 'abcçdefgğhıijklmnoöprsştuüvyz', 'abcçdefgğhıijklmnoöprsştuüvyz');
+  AssertStringOperationUTF8LowerCase('Turkish UTF8UpperCase 2', 'tu', 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ', 'abcçdefgğhıijklmnoöprsştuüvyz');
 end;
 
 begin
