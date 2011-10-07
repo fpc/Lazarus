@@ -299,7 +299,7 @@ type
     {$I gtk2lclintfh.inc}
   public
     {$IFDEF HASX}
-    function X11Raise(AHandle: HWND): boolean;
+    //function X11Raise(AHandle: HWND): boolean; currently not used
     function X11GetActiveWindow: HWND;
     {$ENDIF}
     procedure StartFocusTimer;

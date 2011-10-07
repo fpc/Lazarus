@@ -8323,7 +8323,6 @@ var
   GdkWindow: PGdkWindow;
   AForm: TCustomForm;
 begin
-  try
   {$IFDEF VerboseFocus}
   DbgOut('TGtk2WidgetSet.SetForegroundWindow hWnd=',DbgS(hWnd));
   LCLObject:=TControl(GetLCLObject(Pointer(hWnd)));
@@ -8369,11 +8368,6 @@ begin
       // this currently will bring the window to the current desktop and focus it
       gtk_window_present(PGtkWindow(hWnd));
     end;
-  end;
-  except
-  {$IFDEF HASX}
-    Result:=X11Raise(hWnd);
-  {$ENDIF}
   end;
 end;
 

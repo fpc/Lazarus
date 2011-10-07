@@ -4254,7 +4254,7 @@ begin
 end;
 
 {$IFDEF HASX}
-function TGtk2WidgetSet.X11Raise(AHandle: HWND): boolean;
+{function TGtk2WidgetSet.X11Raise(AHandle: HWND): boolean;
 var
    Display: PDisplay;
    RootWin: TWindow;
@@ -4283,12 +4283,12 @@ begin
   Result:=XSendEvent (Display, RootWin, False,
 	      SubstructureRedirectMask or SubstructureNotifyMask,
 	      @XClient)<>0;
-end;
+end;}
 
 function TGtk2WidgetSet.X11GetActivewindow: HWND;
 var
   Display: PDisplay;
-  RootWin: TWindow;
+  RootWin, ResultWindow: TWindow;
   ScreenNum: Integer;
   WMAtom: TAtom;
   ActualTypeReturn: TAtom;
@@ -4298,11 +4298,13 @@ var
   screen: PGdkScreen;
   Valid: Boolean;
 begin
+  Result := 0;
+
   screen:=gdk_screen_get_default;
   Display := gdk_x11_get_default_xdisplay;
 
-  if Display = nil then
-    exit;
+  if Display = nil then Exit;
+
   ScreenNum := gdk_screen_get_number(screen);
   RootWin := gdk_x11_get_default_root_xwindow;
   WMAtom := XInternAtom(Display,'_NET_ACTIVE_WINDOW', False);
@@ -4314,11 +4316,12 @@ begin
   try
     if (ActualTypeReturn = None) or (ActualFormatReturn <> 32) or not Assigned(Ptr) then
       Valid := False;
-    if Valid then Result := PCardinal(Ptr)^;
+    if Valid then ResultWindow := PWindow(Ptr)^;
   finally
-    if Assigned(Ptr) then
-    XFree(Ptr);
+    if Assigned(Ptr) then XFree(Ptr);
   end;
+
+  if Valid then Result := HWND(gdk_window_foreign_new(ResultWindow));
 end;
 {$ENDIF}
 {------------------------------------------------------------------------------
