@@ -1213,9 +1213,19 @@ begin
 
         // Major processing
         case OldChar of
+        // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
         $C380..$C39E: NewChar := OldChar + $20;
         // $C39F: ß already lowercase
-        $C481..$C4B6: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
+        $C481..$C4A9: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
+        // Turkish capital dotted i to small dotted i
+        $C4B0:
+        begin
+          Result[OutCounter]:='i';
+          NewCharLen := 1;
+          CharProcessed := True;
+        end;
+        // $C4B1 turkish lowercase undotted ı
+        $C4B2..$C4B6: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
         //$C4B7: ĸ => K ?
         $C4B8..$C588: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
         //$C589 ŉ => ?
@@ -1233,15 +1243,6 @@ begin
         begin
           Result[OutCounter]  := Chr(Hi(NewChar));
           Result[OutCounter+1]:= Chr(Lo(NewChar));
-          CharProcessed := True;
-        end;
-
-        // Special turkish handling
-        // capital dotted i to small dotted i
-        if IsTurkish and (AInStr[InCounter] = #$C4) and (AInStr[InCounter+1] = #$B1) then
-        begin
-          Result[OutCounter]:='i';
-          NewCharLen := 1;
           CharProcessed := True;
         end;
       end;
