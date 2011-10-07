@@ -1293,6 +1293,7 @@ end;
 function UTF8UpperCase(const AInStr, ALocale: utf8string): utf8string;
 var
   i, InCounter, OutCounter: PtrInt;
+  OutStr: PChar;
   CharLen: integer;
   CharProcessed: Boolean;
   NewCharLen: integer;
@@ -1302,12 +1303,14 @@ var
 begin
   // Start with the same string, and progressively modify
   Result:=AInStr;
+  UniqueString(Result);
+  OutStr := PChar(Result);
 
   // Language identification
   IsTurkish := ALocale = 'tu';
 
   InCounter:=1; // for AInStr
-  OutCounter := 1; // for Result
+  OutCounter := 0; // for Result
   while InCounter<=length(AInStr) do
   begin
     { First ASCII chars }
@@ -1318,14 +1321,15 @@ begin
       if IsTurkish and (AInStr[InCounter] = 'i') then
       begin
         SetLength(Result,Length(Result)+1);// Increase the buffer
-        Result[OutCounter]:=#$C4;
-        Result[OutCounter+1]:=#$B0;
+        OutStr := PChar(Result);
+        OutStr[OutCounter]:=#$C4;
+        OutStr[OutCounter+1]:=#$B0;
         inc(InCounter);
         inc(OutCounter,2);
       end
       else
       begin
-        Result[OutCounter]:=chr(ord(AInStr[InCounter])-32);
+        OutStr[OutCounter]:=chr(ord(AInStr[InCounter])-32);
         inc(InCounter);
         inc(OutCounter);
       end;
@@ -1352,7 +1356,7 @@ begin
         // turkish small undotted i to capital undotted i
         $C4B1:
         begin
-          Result[OutCounter]:='I';
+          OutStr[OutCounter]:='I';
           NewCharLen := 1;
           CharProcessed := True;
         end;
@@ -1368,12 +1372,13 @@ begin
         $CF80..$CF89: NewChar := OldChar - $E0; // Greek Characters
         $D0B0..$D0BF: NewChar := OldChar - $20; // Cyrillic alphabet
         $D180..$D18F: NewChar := OldChar - $E0; // Cyrillic alphabet
+        $D190..$D19F: NewChar := OldChar - $110; // Cyrillic alphabet
         end;
 
         if NewChar <> 0 then
         begin
-          Result[OutCounter]  := Chr(Hi(NewChar));
-          Result[OutCounter+1]:= Chr(Lo(NewChar));
+          OutStr[OutCounter]  := Chr(Hi(NewChar));
+          OutStr[OutCounter+1]:= Chr(Lo(NewChar));
           CharProcessed := True;
         end;
       end
@@ -1384,10 +1389,10 @@ begin
 
       // Copy the character if the string was disaligned by previous changed
       // and no processing was done in this character
-      if (InCounter <> OutCounter) and (not CharProcessed) then
+      if (InCounter <> OutCounter+1) and (not CharProcessed) then
       begin
         for i := 0 to CharLen-1 do
-          Result[OutCounter+i]  :=AInStr[InCounter+i];
+          OutStr[OutCounter+i]  :=AInStr[InCounter+i];
       end;
 
       inc(InCounter, CharLen);
@@ -1396,7 +1401,7 @@ begin
   end; // while
 
   // Final correction of the buffer size
-  SetLength(Result,OutCounter-1);
+  SetLength(Result,OutCounter);
 end;
 
 {------------------------------------------------------------------------------
