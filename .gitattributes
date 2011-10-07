@@ -3185,6 +3185,7 @@ docs/xml/lcl/toolwin.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/translations.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/utf8process.xml svneol=native#text/plain
 docs/xml/lcl/utrace.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/valedit.xml svneol=native#text/plain
 docs/xml/lcl/wscontrols.xml svneol=native#text/plain
 docs/xml/lcl/xmlpropstorage.xml svneol=LF#text/xml eol=lf
 docs/xml/mkhtml.bat svneol=native#text/plain
