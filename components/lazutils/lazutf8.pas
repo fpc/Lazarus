@@ -1113,40 +1113,56 @@ var
   OldCode: LongWord;
   NewCode: LongWord;
   NewCharLen: integer;
+  Changed: Boolean;
+  p: PChar;
 begin
   Result:=s;
-  i:=1;
-  while i<=length(Result) do begin
-    case Result[i] of
-    { First ASCII chars }
-    'A'..'Z':
+  if Result='' then exit;
+  Changed:=false;
+  p:=PChar(Result);
+  repeat
+    case p^ of
+    #0:
+      if p-PChar(Result)=length(Result) then
+        exit
+      else
+        inc(p);
+    'A'..'Z': // First ASCII chars
       begin
-        Result[i]:=chr(ord(Result[i])+32);
-        inc(i);
-      end;
-    { Now chars with multiple bytes }
-    #192..#240:
-      begin
-        OldCode:=UTF8CharacterToUnicode(@Result[i],CharLen);
-        NewCode:=UnicodeLowercase(OldCode);
-        if NewCode=OldCode then begin
-          inc(i,CharLen);
-        end else begin
+        if not Changed then begin
+          i:=p-PChar(Result)+1;
           UniqueString(Result);
-          NewCharLen:=UnicodeToUTF8(NewCode,@Result[i]);
-          if CharLen=NewCharLen then begin
-            inc(i,NewCharLen);
-          end else begin
+          Changed:=true;
+          p:=@Result[i];
+        end;
+        p^:=chr(ord(p^)+32);
+        inc(p);
+      end;
+
+    #192..#240: // Now chars with multiple bytes
+      begin
+        OldCode:=UTF8CharacterToUnicode(p,CharLen);
+        NewCode:=UnicodeLowercase(OldCode);
+        if NewCode<>OldCode then begin
+          if not Changed then begin
+            i:=p-PChar(Result)+1;
+            UniqueString(Result);
+            Changed:=true;
+            p:=@Result[i];
+          end;
+          NewCharLen:=UnicodeToUTF8(NewCode,p);
+          if CharLen<>NewCharLen then begin
             // string size changed => use slower function
             Result:=UTF8LowercaseDynLength(s);
             exit;
           end;
         end;
+        inc(p,CharLen);
       end;
     else
-      inc(i);
+      inc(p);
     end;
-  end;
+  until false;
 end;
 {$endif}
 
@@ -1242,9 +1258,9 @@ begin
         end;
         // $C4B1 turkish lowercase undotted ı
         $C4B2..$C4B6: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
-        //$C4B7: ĸ => K ?
+        // $C4B7: ĸ => K ?
         $C4B8..$C588: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
-        //$C589 ŉ => ?
+        // $C589 ŉ => ?
         $C58A..$C5B7: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
         $C5B8:        NewChar := $C3BF; // Ÿ
         $C5B9..$C8B3: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
@@ -1361,11 +1377,11 @@ begin
           CharProcessed := True;
         end;
         $C4B2..$C4B6: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
-        //$C4B7: ĸ => K ?
+        // $C4B7: ĸ => K ?
         $C4B8..$C588: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
-        //$C589 ŉ => ?
+        // $C589 ŉ => ?
         $C58A..$C5B7: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
-        //$C5B8: // Ÿ already uppercase
+        // $C5B8: // Ÿ already uppercase
         $C5B9..$C8B3: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
         //
         $CEB1..$CEBF: NewChar := OldChar - $20; // Greek Characters
