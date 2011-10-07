@@ -45,7 +45,21 @@ begin
   AssertStringOperation(AMsg, AStr1, UTF8LowerCase(AStr1, ALocale), AStrExpected2);
 end;
 
+function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
+var
+  TimeStamp: TTimeStamp;
+begin
+  {Call DateTimeToTimeStamp to convert DateTime to TimeStamp:}
+  TimeStamp:= DateTimeToTimeStamp (aDateTime);
+  {Multiply and add to complete the conversion:}
+  Result:= TimeStamp.Time;
+end;
+
 procedure TestUTF8UpperCase;
+var
+  lStartTime, lTimeDiff: TDateTime;
+  Str: UTF8String;
+  i: Integer;
 begin
   // ASCII
   AssertStringOperationUTF8UpperCase('ASCII UTF8UpperCase', '', 'abcdefghijklmnopqrstuwvxyz', 'ABCDEFGHIJKLMNOPQRSTUWVXYZ');
@@ -56,6 +70,23 @@ begin
   AssertStringOperationUTF8UpperCase('Turkish UTF8UpperCase 1', 'tu', 'abcçdefgğhıijklmnoöprsştuüvyz', 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ');
   AssertStringOperationUTF8UpperCase('Turkish UTF8UpperCase 2', 'tu', 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ', 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ');
 
+  // Performance test
+  lStartTime := Now;
+  for i := 0 to 9999 do
+  begin
+    Str := UTF8UpperCase('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+    Str := Str + UTF8UpperCase('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
+  end;
+  lTimeDiff := Now - lStartTime;
+  WriteLn('UpperCase Performance test took: ', DateTimeToMilliseconds(lTimeDiff), ' ms');
+end;
+
+procedure TestUTF8LowerCase;
+var
+  i: Integer;
+  lStartTime, lTimeDiff: TDateTime;
+  Str: UTF8String;
+begin
   // ASCII
   AssertStringOperationUTF8LowerCase('ASCII UTF8LowerCase', '', 'ABCDEFGHIJKLMNOPQRSTUWVXYZ', 'abcdefghijklmnopqrstuwvxyz');
   // Latin
@@ -64,9 +95,20 @@ begin
   // Turkish
   AssertStringOperationUTF8LowerCase('Turkish UTF8UpperCase 1', 'tu', 'abcçdefgğhıijklmnoöprsştuüvyz', 'abcçdefgğhıijklmnoöprsştuüvyz');
   AssertStringOperationUTF8LowerCase('Turkish UTF8UpperCase 2', 'tu', 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ', 'abcçdefgğhıijklmnoöprsştuüvyz');
+
+  // Performance test
+  lStartTime := Now;
+  for i := 0 to 9999 do
+  begin
+    Str := UTF8LowerCase('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+    Str := Str + UTF8LowerCase('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
+  end;
+  lTimeDiff := Now - lStartTime;
+  WriteLn('LowerCase Performance test took: ', DateTimeToMilliseconds(lTimeDiff), ' ms');
 end;
 
 begin
   TestUTF8UpperCase();
+  TestUTF8LowerCase();
 end.
 
