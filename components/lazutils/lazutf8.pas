@@ -1190,6 +1190,7 @@ begin
       if IsTurkish and (AInStr[InCounter] = 'I') then
       begin
         SetLength(Result,Length(Result)+1);// Increase the buffer
+        OutStr := PChar(Result);
         OutStr[OutCounter]:=#$C4;
         OutStr[OutCounter+1]:=#$B1;
         inc(InCounter);
