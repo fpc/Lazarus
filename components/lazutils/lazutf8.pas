@@ -1171,6 +1171,7 @@ var
 begin
   // Start with the same string, and progressively modify
   Result:=AInStr;
+  UniqueString(Result);
 
   // Language identification
   IsTurkish := ALocale = 'tu';
@@ -1187,14 +1188,14 @@ begin
       if IsTurkish and (AInStr[InCounter] = 'I') then
       begin
         SetLength(Result,Length(Result)+1);// Increase the buffer
-        Result[OutCounter]:=#$C4;
-        Result[OutCounter+1]:=#$B1;
+        PChar(Result)[OutCounter]:=#$C4;
+        PChar(Result)[OutCounter+1]:=#$B1;
         inc(InCounter);
         inc(OutCounter,2);
       end
       else
       begin
-        Result[OutCounter]:=chr(ord(AInStr[InCounter])+32);
+        PChar(Result)[OutCounter]:=chr(ord(AInStr[InCounter])+32);
         inc(InCounter);
         inc(OutCounter);
       end;
@@ -1220,7 +1221,7 @@ begin
         // Turkish capital dotted i to small dotted i
         $C4B0:
         begin
-          Result[OutCounter]:='i';
+          PChar(Result)[OutCounter]:='i';
           NewCharLen := 1;
           CharProcessed := True;
         end;
@@ -1241,8 +1242,8 @@ begin
 
         if NewChar <> 0 then
         begin
-          Result[OutCounter]  := Chr(Hi(NewChar));
-          Result[OutCounter+1]:= Chr(Lo(NewChar));
+          PChar(Result)[OutCounter]  := Chr(Hi(NewChar));
+          PChar(Result)[OutCounter+1]:= Chr(Lo(NewChar));
           CharProcessed := True;
         end;
       end;
@@ -1252,7 +1253,7 @@ begin
       if (InCounter <> OutCounter) and (not CharProcessed) then
       begin
         for i := 0 to CharLen-1 do
-          Result[OutCounter+i]  :=AInStr[InCounter+i];
+          PChar(Result)[OutCounter+i]  :=AInStr[InCounter+i];
       end;
 
       inc(InCounter, CharLen);
