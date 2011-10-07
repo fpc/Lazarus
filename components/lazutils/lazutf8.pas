@@ -61,7 +61,7 @@ function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string;
 procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
 procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt);}
 
-function UnicodeLowercase(u: cardinal): cardinal;
+//function UnicodeLowercase(u: cardinal): cardinal;
 function UTF8LowerCase(const AInStr: utf8string): utf8string;
 function UTF8LowerCase(const AInStr, ALocale: utf8string): utf8string;
 function UTF8UpperCase(const AInStr: utf8string): utf8string;
@@ -92,7 +92,7 @@ var
   FNeedRTLAnsi: boolean = false;
   FNeedRTLAnsiValid: boolean = false;
 
-var
+{var
   UnicodeLower00C0_00DE: array[$00C0..$00DE] of word;
   UnicodeLower0100_024E: array[$0100..$024E] of word;
   UnicodeLower0386_03AB: array[$0386..$03AB] of word;
@@ -781,7 +781,7 @@ begin
   UnicodeLower2C60_2CE2[$2CDE]:=$2CDF;
   UnicodeLower2C60_2CE2[$2CE0]:=$2CE1;
   UnicodeLower2C60_2CE2[$2CE2]:=$2CE3;
-end;
+end;     }
 
 function NeedRTLAnsi: boolean;
 {$IFDEF WinCE}
@@ -1012,7 +1012,7 @@ begin
   end;
 end;
 
-function UnicodeLowercase(u: cardinal): cardinal;
+{function UnicodeLowercase(u: cardinal): cardinal;
 begin
   if u<$00C0 then begin
     // most common
@@ -1037,7 +1037,7 @@ begin
     $FF21..$FF3A: Result:=u+32;
     else          Result:=u;
   end;
-end;
+end;    }
 
 function UTF8LowerCase(const AInStr: utf8string): utf8string;
 begin
@@ -1102,6 +1102,16 @@ begin
 
         // Major processing
         case OldChar of
+        $C380..$C39E: NewChar := OldChar + $20;
+        // $C39F: ß already lowercase
+        $C481..$C4B6: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
+        //$C4B7: ĸ => K ?
+        $C4B8..$C588: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
+        //$C589 ŉ => ?
+        $C58A..$C5B7: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
+        $C5B8:        NewChar := $C3BF; // Ÿ
+        $C5B9..$C8B3: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
+        //
         $CE91..$CE9F: NewChar := OldChar + $20; // Greek Characters
         $CEA0..$CEA9: NewChar := OldChar + $E0; // Greek Characters
         $D090..$D09F: NewChar := OldChar + $20; // Cyrillic alphabet
@@ -1139,7 +1149,7 @@ begin
   end; // while
 
   // Final correction of the buffer size
-  SetLength(Result,OutCounter);
+  SetLength(Result,OutCounter-1);
 end;
 
 function UTF8UpperCase(const AInStr: utf8string): utf8string;
@@ -1207,14 +1217,14 @@ begin
         case OldChar of
         // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
         $C39F:        NewChar := $5353; // ß => SS
-        $C3A0..$C3BD: NewChar := OldChar - $20;
-        $C3BE:        NewChar := $C5B8; // ÿ
-        $C481..$C4B7: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        $C3A0..$C3BE: NewChar := OldChar - $20;
+        $C3BF:        NewChar := $C5B8; // ÿ
+        $C481..$C4B6: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
         //$C4B7: ĸ => K ?
         $C4B8..$C588: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
         //$C589 ŉ => ?
         $C58A..$C5B7: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
-        $C5B8:        NewChar := $C3BE; // Ÿ
+        //$C5B8: // Ÿ already uppercase
         $C5B9..$C8B3: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
         //
         $CEB1..$CEBF: NewChar := OldChar - $20; // Greek Characters
@@ -1303,7 +1313,7 @@ end;
 
 initialization
   InternalInit;
-  InitUnicodeTables;
+//  InitUnicodeTables;
 
 end.
 
