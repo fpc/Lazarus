@@ -328,11 +328,15 @@ begin
       Result := 'audio/riff';
     CF_SYLK:
       Result := 'application/x-ms-shortcut';
+    CF_LOCALE:
+      Result := 'application/x-ms-locale';
+    CF_OEMTEXT:
+      Result := 'application/x-ms-oemtext';
   else
     SetLength(Result,1000);
     FormatLength:= Windows.GetClipboardFormatName(FormatID, PChar(Result), 1000);
     if FormatLength = 0 then
-      raise Exception.Create('Unknown clipboard format');
+      raise Exception.CreateFmt('Unknown clipboard format: %d', [FormatID]);
     SetLength(Result,FormatLength);
     {$IFDEF VerboseWin32Clipbrd}
     debugln('TWin32WidgetSet.ClipboardFormatToMimeType FormatID=',dbgs(FormatID),' ',Result);
