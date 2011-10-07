@@ -1331,7 +1331,15 @@ begin
         $C39F:        NewChar := $5353; // ß => SS
         $C3A0..$C3BE: NewChar := OldChar - $20;
         $C3BF:        NewChar := $C5B8; // ÿ
-        $C481..$C4B6: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        $C481..$C4B0: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        // turkish small undotted i to capital undotted i
+        $C4B1:
+        begin
+          Result[OutCounter]:='I';
+          NewCharLen := 1;
+          CharProcessed := True;
+        end;
+        $C4B2..$C4B6: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
         //$C4B7: ĸ => K ?
         $C4B8..$C588: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
         //$C589 ŉ => ?
@@ -1351,16 +1359,6 @@ begin
           Result[OutCounter+1]:= Chr(Lo(NewChar));
           CharProcessed := True;
         end;
-
-        // Special turkish handling
-        // small undotted i to capital undotted i
-        if IsTurkish and (AInStr[InCounter] = #$C4) and (AInStr[InCounter+1] = #$B1) then
-        begin
-          Result[OutCounter]:='I';
-          inc(InCounter,2);
-          inc(OutCounter);
-          CharProcessed := True;
-        end
       end
       else if CharLen = 3 then
       begin
