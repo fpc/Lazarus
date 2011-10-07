@@ -7349,9 +7349,8 @@ var
       debugln(['  FindExpressionTypeOfTerm ResolveRoundBracketOpen skip typecast/paramlist="',dbgstr(Src,CurAtom.StartPos,CurAtomBracketEndPos-CurAtom.StartPos),'"']);
       {$ENDIF}
       if fdfExtractOperand in Params.Flags then begin
-        Assert(Assigned(ExprType.Context.Node),
-          'ExprType.Context.Node is not assigned in TFindDeclarationTool.FindExpressionTypeOfTerm -> ResolveRoundBracketOpen!');
-        if ExprType.Context.Node.Desc=ctnTypeDefinition then begin
+        if (ExprType.Context.Node<>nil)
+        and (ExprType.Context.Node.Desc=ctnTypeDefinition) then begin
           // typecast
           with ExprType.Context do
             Params.AddOperandPart(GetIdentifier(@Tool.Src[Node.StartPos]));
