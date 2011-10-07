@@ -1205,6 +1205,17 @@ begin
 
         // Major processing
         case OldChar of
+        // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
+        $C3A0..$C3BD: NewChar := OldChar - $20;
+        $C3BE:        NewChar := $C5B8; // ÿ
+        $C481..$C4B7: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        //$C4B7: ĸ => K ?
+        $C4B8..$C588: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
+        //$C589 ŉ => ?
+        $C58A..$C5B7: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        $C5B8:        NewChar := $C3BE; // Ÿ
+        $C5B9..$C8B3: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
+        //
         $CEB1..$CEBF: NewChar := OldChar - $20; // Greek Characters
         $CF80..$CF89: NewChar := OldChar - $E0; // Greek Characters
         $D0B0..$D0BF: NewChar := OldChar - $20; // Cyrillic alphabet
@@ -1247,7 +1258,7 @@ begin
   end; // while
 
   // Final correction of the buffer size
-  SetLength(Result,OutCounter);
+  SetLength(Result,OutCounter-1);
 end;
 
 {------------------------------------------------------------------------------
