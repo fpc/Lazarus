@@ -63,8 +63,9 @@ procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt
 
 function UnicodeLowercase(u: cardinal): cardinal;
 function UTF8LowerCase(const s: utf8string): utf8string;
-//function UTF8UpperCase(const s: String): String;
-//function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
+function UTF8UpperCase(const AInStr: utf8string): utf8string;
+function UTF8UpperCase(const AInStr, ALocale: utf8string): utf8string;
+{function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
 //                                  StopOnNonASCII: Boolean = false): PtrInt;
 //function ValidUTF8String(const s: String): String;
 
@@ -74,7 +75,7 @@ function UTF8LowerCase(const s: utf8string): utf8string;
 //function UTF16Length(const s: widestring): PtrInt;
 //function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
 //function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
-//function UnicodeToUTF16(u: cardinal): widestring;
+//function UnicodeToUTF16(u: cardinal): widestring;}
 
 //compare functions
 
@@ -1135,6 +1136,98 @@ begin
       inc(i);
     end;
   end;
+end;
+
+function UTF8UpperCase(const AInStr: utf8string): utf8string;
+begin
+  Result := UTF8UpperCase(AInStr, '');
+end;
+
+{
+  AInStr - The input string
+  ALocale - The locale. Use '' for maximum speed if one desires to ignore the locale
+}
+function UTF8UpperCase(const AInStr, ALocale: utf8string): utf8string;
+var
+  i, InCounter, OutCounter: PtrInt;
+  CharLen: integer;
+  CharProcessed: Boolean;
+//  NewCode: LongWord;
+  NewCharLen: integer;
+  // Language identification
+  IsTurkish: Boolean;
+begin
+  // Start with the same string, and progressively modify
+  Result:=AInStr;
+
+  // Language identification
+  IsTurkish := ALocale = 'tu';
+
+  InCounter:=1; // for AInStr
+  OutCounter := 1; // for Result
+  while InCounter<=length(AInStr) do
+  begin
+    case AInStr[InCounter] of
+    { First ASCII chars }
+    'a'..'z':
+    begin
+      // Special turkish handling
+      // small dotted i to capital dotted i
+      if IsTurkish and (AInStr[InCounter] = 'i') then
+      begin
+        Result[OutCounter]:=#$C4;
+        Result[OutCounter+1]:=#$B0;
+        inc(InCounter);
+        inc(OutCounter,2);
+      end
+      else
+      begin
+        Result[OutCounter]:=chr(ord(AInStr[InCounter])-32);
+        inc(InCounter);
+        inc(OutCounter);
+      end;
+    end;
+    { Now chars with multiple bytes }
+    #192..#240:
+    begin
+      CharLen := UTF8CharacterLength(@AInStr[InCounter]);
+      CharProcessed := False;
+      NewCharLen := CharLen;
+
+      if CharLen = 2 then
+      begin
+        // Process Latin characters
+
+        // Special turkish handling
+        // small undotted i to capital undotted i
+        if IsTurkish and (AInStr[InCounter] = #$C4) and (AInStr[InCounter] = #$B1) then
+        begin
+          Result[OutCounter]:='I';
+          inc(InCounter,2);
+          inc(OutCounter);
+        end
+      end
+      else if CharLen = 3 then
+      begin
+        //
+      end;
+
+      // Copy the character if the string was disaligned by previous changed
+      // and no processing was done in this character
+      if (InCounter <> OutCounter) and (not CharProcessed) then
+      begin
+        for i := 0 to CharLen-1 do
+          Result[OutCounter+i]  :=AInStr[InCounter+i];
+      end;
+
+      inc(InCounter, CharLen);
+      inc(OutCounter, NewCharLen);
+    end;
+    else
+      inc(InCounter);
+      inc(OutCounter);
+    end; // case
+  end; // while
 end;
 
 {------------------------------------------------------------------------------
