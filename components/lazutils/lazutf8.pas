@@ -1206,6 +1206,7 @@ begin
         // Major processing
         case OldChar of
         // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
+        $C39F:        NewChar := $5353; // ß => SS
         $C3A0..$C3BD: NewChar := OldChar - $20;
         $C3BE:        NewChar := $C5B8; // ÿ
         $C481..$C4B7: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
