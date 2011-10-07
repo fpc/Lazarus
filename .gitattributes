@@ -3140,6 +3140,7 @@ docs/xml/lcl/lazconfigstorage.xml svneol=native#text/plain
 docs/xml/lcl/lazhelphtml.xml svneol=native#text/plain
 docs/xml/lcl/lazhelpintf.xml svneol=native#text/plain
 docs/xml/lcl/lazlinkedlist.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/lazutf8classes.xml svneol=native#text/plain
 docs/xml/lcl/lcl.xml svneol=LF#text/plain eol=lf
 docs/xml/lcl/lclbase.xml svneol=native#text/plain
 docs/xml/lcl/lclclasses.xml svneol=LF#text/xml eol=lf

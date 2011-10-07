@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    lazutf8classes
+  ====================================================================
+-->
+
+<module name="lazutf8classes">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TFileStreamUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFileStreamUTF8.FFileName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TFileStreamUTF8.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStreamUTF8.Create.AFileName">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStreamUTF8.Create.Mode">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFileStreamUTF8.Create.Rights">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TFileStreamUTF8.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TFileStreamUTF8.FileName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TStringListUTF8">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TStringListUTF8.DoCompareText">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TStringListUTF8.DoCompareText.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringListUTF8.DoCompareText.s1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringListUTF8.DoCompareText.s2">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TStringListUTF8.LoadFromFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringListUTF8.LoadFromFile.FileName">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TStringListUTF8.SaveToFile">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TStringListUTF8.SaveToFile.FileName">
+<short></short>
+</element>
+
+</module> <!-- lazutf8classes -->
+
+</package>
+</fpdoc-descriptions>
