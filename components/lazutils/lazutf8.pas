@@ -22,6 +22,8 @@ unit LazUTF8;
 
 {$mode objfpc}{$H+}
 
+{$define LAZUTF8_USE_TABLES}
+
 interface
 
 uses
@@ -61,7 +63,10 @@ function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string;
 procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
 procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt);}
 
-//function UnicodeLowercase(u: cardinal): cardinal;
+{$ifdef LAZUTF8_USE_TABLES}
+function UnicodeLowercase(u: cardinal): cardinal;
+function UTF8LowerCaseMattias(const s: utf8string): utf8string;
+{$endif}
 function UTF8LowerCase(const AInStr: utf8string): utf8string;
 function UTF8LowerCase(const AInStr, ALocale: utf8string): utf8string;
 function UTF8UpperCase(const AInStr: utf8string): utf8string;
@@ -92,7 +97,8 @@ var
   FNeedRTLAnsi: boolean = false;
   FNeedRTLAnsiValid: boolean = false;
 
-{var
+{$ifdef LAZUTF8_USE_TABLES}
+var
   UnicodeLower00C0_00DE: array[$00C0..$00DE] of word;
   UnicodeLower0100_024E: array[$0100..$024E] of word;
   UnicodeLower0386_03AB: array[$0386..$03AB] of word;
@@ -781,7 +787,8 @@ begin
   UnicodeLower2C60_2CE2[$2CDE]:=$2CDF;
   UnicodeLower2C60_2CE2[$2CE0]:=$2CE1;
   UnicodeLower2C60_2CE2[$2CE2]:=$2CE3;
-end;     }
+end;
+{$endif}
 
 function NeedRTLAnsi: boolean;
 {$IFDEF WinCE}
@@ -1012,7 +1019,8 @@ begin
   end;
 end;
 
-{function UnicodeLowercase(u: cardinal): cardinal;
+{$ifdef LAZUTF8_USE_TABLES}
+function UnicodeLowercase(u: cardinal): cardinal;
 begin
   if u<$00C0 then begin
     // most common
@@ -1037,7 +1045,110 @@ begin
     $FF21..$FF3A: Result:=u+32;
     else          Result:=u;
   end;
-end;    }
+end;
+
+
+
+function UTF8LowercaseDynLength(const s: string): string;
+var
+  Buf: shortstring;
+  SrcPos: PtrInt;
+  DstPos: PtrInt;
+  CharLen: integer;
+  OldCode: LongWord;
+  NewCode: LongWord;
+begin
+  // first compute needed length
+  SrcPos:=1;
+  DstPos:=1;
+  while SrcPos<=length(s) do begin
+    case s[SrcPos] of
+    #192..#240:
+      begin
+        OldCode:=UTF8CharacterToUnicode(@s[SrcPos],CharLen);
+        NewCode:=UnicodeLowercase(OldCode);
+        if NewCode=OldCode then begin
+          inc(DstPos,CharLen);
+        end else begin
+          inc(DstPos,UnicodeToUTF8(NewCode,@Buf[1]));
+        end;
+        inc(SrcPos,CharLen);
+      end;
+    else
+      inc(SrcPos);
+      inc(DstPos);
+    end;
+  end;
+  SetLength(Result,DstPos-1);
+  if Result='' then exit;
+  // create the new string
+  SrcPos:=1;
+  DstPos:=1;
+  while SrcPos<=length(s) do begin
+    case s[SrcPos] of
+    #192..#240:
+      begin
+        OldCode:=UTF8CharacterToUnicode(@s[SrcPos],CharLen);
+        NewCode:=UnicodeLowercase(OldCode);
+        if NewCode=OldCode then begin
+          System.Move(s[SrcPos],Result[DstPos],CharLen);
+          inc(DstPos,CharLen);
+        end else begin
+          inc(DstPos,UnicodeToUTF8(NewCode,@Result[DstPos]));
+        end;
+        inc(SrcPos,CharLen);
+      end;
+    else
+      Result[DstPos]:=s[SrcPos];
+      inc(SrcPos);
+      inc(DstPos);
+    end;
+  end;
+end;
+
+function UTF8LowerCaseMattias(const s: utf8string): utf8string;
+var
+  i: PtrInt;
+  CharLen: integer;
+  OldCode: LongWord;
+  NewCode: LongWord;
+  NewCharLen: integer;
+begin
+  Result:=s;
+  i:=1;
+  while i<=length(Result) do begin
+    case Result[i] of
+    { First ASCII chars }
+    'A'..'Z':
+      begin
+        Result[i]:=chr(ord(Result[i])+32);
+        inc(i);
+      end;
+    { Now chars with multiple bytes }
+    #192..#240:
+      begin
+        OldCode:=UTF8CharacterToUnicode(@Result[i],CharLen);
+        NewCode:=UnicodeLowercase(OldCode);
+        if NewCode=OldCode then begin
+          inc(i,CharLen);
+        end else begin
+          UniqueString(Result);
+          NewCharLen:=UnicodeToUTF8(NewCode,@Result[i]);
+          if CharLen=NewCharLen then begin
+            inc(i,NewCharLen);
+          end else begin
+            // string size changed => use slower function
+            Result:=UTF8LowercaseDynLength(s);
+            exit;
+          end;
+        end;
+      end;
+    else
+      inc(i);
+    end;
+  end;
+end;
+{$endif}
 
 function UTF8LowerCase(const AInStr: utf8string): utf8string;
 begin
@@ -1313,7 +1424,9 @@ end;
 
 initialization
   InternalInit;
-//  InitUnicodeTables;
+  {$ifdef LAZUTF8_USE_TABLES}
+  InitUnicodeTables;
+  {$endif}
 
 end.
 
