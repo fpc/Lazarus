@@ -1178,18 +1178,29 @@ end;
 function UTF8LowerCase(const AInStr, ALocale: utf8string): utf8string;
 var
   i, InCounter, OutCounter: PtrInt;
-  OutStr: PChar;
+  OutStr: PChar = nil;
   CharLen: integer;
   CharProcessed: Boolean;
   NewCharLen: integer;
   NewChar, OldChar: Word;
+  TheStringIsUnique: Boolean = False;
   // Language identification
   IsTurkish: Boolean;
+
+  // This is an optimization for strings which are already fully lowercase in ASCII
+  procedure MakeUnique(); inline;
+  begin
+    if not TheStringIsUnique then
+    begin
+      UniqueString(Result);
+      OutStr := PChar(Result);
+      TheStringIsUnique := True;
+    end;
+  end;
+
 begin
   // Start with the same string, and progressively modify
   Result:=AInStr;
-  UniqueString(Result);
-  OutStr := PChar(Result);
 
   // Language identification
   IsTurkish := ALocale = 'tu';
@@ -1206,6 +1217,7 @@ begin
       if IsTurkish and (AInStr[InCounter] = 'I') then
       begin
         SetLength(Result,Length(Result)+1);// Increase the buffer
+        TheStringIsUnique := True;
         OutStr := PChar(Result);
         OutStr[OutCounter]:=#$C4;
         OutStr[OutCounter+1]:=#$B1;
@@ -1214,6 +1226,7 @@ begin
       end
       else
       begin
+        MakeUnique();
         OutStr[OutCounter]:=chr(ord(AInStr[InCounter])+32);
         inc(InCounter);
         inc(OutCounter);
@@ -1222,9 +1235,10 @@ begin
     { Now fast ASCII }
     else if AInStr[InCounter] <= #$7F then
     begin
-      // Copy the character if the string was disaligned by previous changed
+      // Copy the character if the string was disaligned by previous changes
       if (InCounter <> OutCounter+1) then
       begin
+        MakeUnique();
         OutStr[OutCounter]:=AInStr[InCounter];
       end;
 
@@ -1252,6 +1266,7 @@ begin
         // Turkish capital dotted i to small dotted i
         $C4B0:
         begin
+          MakeUnique();
           OutStr[OutCounter]:='i';
           NewCharLen := 1;
           CharProcessed := True;
@@ -1274,6 +1289,7 @@ begin
 
         if NewChar <> 0 then
         begin
+          MakeUnique();
           OutStr[OutCounter]  := Chr(Hi(NewChar));
           OutStr[OutCounter+1]:= Chr(Lo(NewChar));
           CharProcessed := True;
@@ -1284,6 +1300,7 @@ begin
       // and no processing was done in this character
       if (InCounter <> OutCounter+1) and (not CharProcessed) then
       begin
+        MakeUnique();
         for i := 0 to CharLen-1 do
           OutStr[OutCounter+i]  :=AInStr[InCounter+i];
       end;
@@ -1397,10 +1414,6 @@ begin
           OutStr[OutCounter+1]:= Chr(Lo(NewChar));
           CharProcessed := True;
         end;
-      end
-      else if CharLen = 3 then
-      begin
-        //
       end;
 
       // Copy the character if the string was disaligned by previous changed
