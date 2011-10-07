@@ -91,17 +91,18 @@ begin
   // ASCII
   AssertStringOperationUTF8LowerCase('ASCII UTF8LowerCase', '', 'ABCDEFGHIJKLMNOPQRSTUWVXYZ', 'abcdefghijklmnopqrstuwvxyz');
   // Latin
-  AssertStringOperationUTF8LowerCase('Polish UTF8UpperCase 1', '', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
-  AssertStringOperationUTF8LowerCase('Polish UTF8UpperCase 2', '', 'AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+  AssertStringOperationUTF8LowerCase('Polish UTF8LowerCase 1', '', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+  AssertStringOperationUTF8LowerCase('Polish UTF8LowerCase 2', '', 'AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+  AssertStringOperationUTF8LowerCase('German UTF8LowerCase 1', '', 'Ä/ä,Ö/ö,Ü/ü,ß', 'ä/ä,ö/ö,ü/ü,ß');
   // Turkish
-  AssertStringOperationUTF8LowerCase('Turkish UTF8UpperCase 1', 'tu', 'abcçdefgğhıijklmnoöprsştuüvyz', 'abcçdefgğhıijklmnoöprsştuüvyz');
-  AssertStringOperationUTF8LowerCase('Turkish UTF8UpperCase 2', 'tu', 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ', 'abcçdefgğhıijklmnoöprsştuüvyz');
+  AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 1', 'tu', 'abcçdefgğhıijklmnoöprsştuüvyz', 'abcçdefgğhıijklmnoöprsştuüvyz');
+  AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 2', 'tu', 'ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ', 'abcçdefgğhıijklmnoöprsştuüvyz');
 
   // Performance test
   lStartTime := Now;
   for i := 0 to 9999 do
   begin
-    //Str := UTF8LowerCase('abcdefghijklmnopqrstuwvxyz');
+    Str := UTF8LowerCase('abcdefghijklmnopqrstuwvxyz');
     //Str := Str + UTF8LowerCase('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
     //Str := Str + UTF8LowerCase('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
     Str := UTF8LowerCase('名字叫嘉英，嘉陵江的嘉，英國的英');
@@ -111,9 +112,10 @@ begin
   lStartTime := Now;
   for i := 0 to 9999 do
   begin
+    Str := UTF8LowerCase('abcdefghijklmnopqrstuwvxyz');
     //Str := UTF8LowerCaseMattias('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
     //Str := Str + UTF8LowerCaseMattias('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
-    Str := UTF8LowerCaseMattias('名字叫嘉英，嘉陵江的嘉，英國的英');
+    //Str := UTF8LowerCaseMattias('名字叫嘉英，嘉陵江的嘉，英國的英');
   end;
   lTimeDiff := Now - lStartTime;
   WriteLn('Mattias LowerCase Performance test took: ', DateTimeToMilliseconds(lTimeDiff), ' ms');
