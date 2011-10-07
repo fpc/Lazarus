@@ -43,6 +43,8 @@ end;
 procedure AssertStringOperationUTF8LowerCase(AMsg, ALocale, AStr1, AStrExpected2: utf8string);
 begin
   AssertStringOperation(AMsg, AStr1, UTF8LowerCase(AStr1, ALocale), AStrExpected2);
+  AssertStringOperation('MARTIN:'+AMsg, AStr1, UTF8LowerCaseMartin(AStr1, ALocale), AStrExpected2);
+  AssertStringOperation('MARTIN2:'+AMsg, AStr1, UTF8LowerCaseMartin2(AStr1, ALocale), AStrExpected2);
 end;
 
 function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
@@ -92,9 +94,11 @@ end;
 
 procedure TestUTF8LowerCase;
 var
-  i: Integer;
+  k, j, i: Integer;
   lStartTime, lTimeDiff: TDateTime;
   Str: UTF8String;
+const
+  TimerLoop = 5999999;
 begin
   // ASCII
   AssertStringOperationUTF8LowerCase('ASCII UTF8LowerCase', '', 'ABCDEFGHIJKLMNOPQRSTUWVXYZ', 'abcdefghijklmnopqrstuwvxyz');
@@ -114,31 +118,71 @@ begin
   AssertStringOperationUTF8LowerCase('Chinese UTF8LowerCase 1', '', '名字叫嘉英，嘉陵江的嘉，英國的英', '名字叫嘉英，嘉陵江的嘉，英國的英');
 
   // Performance test
-  lStartTime := Now;
-  for i := 0 to 99999 do
-  begin
-    //Str := UTF8LowerCaseMattias('abcdefghijklmnopqrstuwvxyz');
-    //Str := UTF8LowerCaseMattias('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
-    //Str := UTF8LowerCaseMattias('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
-    //Str := UTF8LowerCaseMattias('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
-    //Str := UTF8LowerCaseMattias('АБВЕЁЖЗКЛМНОПРДЙГ');
-    Str := UTF8LowerCaseMattias('名字叫嘉英，嘉陵江的嘉，英國的英');
+  Write('Martin LowerCase- Performance test took:    ');
+  for j := 0 to 5 do begin
+    lStartTime := Now;
+    for i := 0 to TimerLoop do
+    begin
+      if j = 0 then Str := UTF8LowerCaseMartin('abcdefghijklmnopqrstuwvxyz');
+      if j = 1 then Str := UTF8LowerCaseMartin('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
+      if j = 2 then Str := UTF8LowerCaseMartin('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+      if j = 3 then Str := UTF8LowerCaseMartin('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
+      if j = 4 then Str := UTF8LowerCaseMartin('АБВЕЁЖЗКЛМНОПРДЙГ');
+      if j = 5 then Str := UTF8LowerCaseMartin('名字叫嘉英，嘉陵江的嘉，英國的英');
+    end;
+    lTimeDiff := Now - lStartTime;
+    Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
   end;
-  lTimeDiff := Now - lStartTime;
-  WriteLn('Mattias LowerCase Performance test took: ', DateTimeToMilliseconds(lTimeDiff), ' ms');
-
-  lStartTime := Now;
-  for i := 0 to 99999 do
-  begin
-    //Str := UTF8LowerCase('abcdefghijklmnopqrstuwvxyz');
-    //Str := UTF8LowerCase('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
-    //Str := UTF8LowerCase('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
-    //Str := UTF8LowerCase('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
-    //Str := UTF8LowerCase('АБВЕЁЖЗКЛМНОПРДЙГ');
-    Str := UTF8LowerCase('名字叫嘉英，嘉陵江的嘉，英國的英');
+  writeln;
+  Write('Martin LowerCase2 Performance test took:    ');
+  for j := 0 to 5 do begin
+    lStartTime := Now;
+    for i := 0 to TimerLoop do
+    begin
+      if j = 0 then Str := UTF8LowerCaseMartin2('abcdefghijklmnopqrstuwvxyz');
+      if j = 1 then Str := UTF8LowerCaseMartin2('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
+      if j = 2 then Str := UTF8LowerCaseMartin2('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+      if j = 3 then Str := UTF8LowerCaseMartin2('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
+      if j = 4 then Str := UTF8LowerCaseMartin2('АБВЕЁЖЗКЛМНОПРДЙГ');
+      if j = 5 then Str := UTF8LowerCaseMartin2('名字叫嘉英，嘉陵江的嘉，英國的英');
+    end;
+    lTimeDiff := Now - lStartTime;
+    Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
   end;
-  lTimeDiff := Now - lStartTime;
-  WriteLn('LowerCase Performance test took: ', DateTimeToMilliseconds(lTimeDiff), ' ms');
+  writeln;
+  // Performance test
+  Write('Mattias LowerCase- Performance test took:    ');
+  for j := 0 to 5 do begin
+    lStartTime := Now;
+    for i := 0 to TimerLoop do
+    begin
+      if j = 0 then Str := UTF8LowerCaseMattias('abcdefghijklmnopqrstuwvxyz');
+      if j = 1 then Str := UTF8LowerCaseMattias('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
+      if j = 2 then Str := UTF8LowerCaseMattias('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+      if j = 3 then Str := UTF8LowerCaseMattias('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
+      if j = 4 then Str := UTF8LowerCaseMattias('АБВЕЁЖЗКЛМНОПРДЙГ');
+      if j = 5 then Str := UTF8LowerCaseMattias('名字叫嘉英，嘉陵江的嘉，英國的英');
+    end;
+    lTimeDiff := Now - lStartTime;
+    Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
+  end;
+  writeln;
+  Write('       LowerCase-- Performance test took:    ');
+  for j := 0 to 5 do begin
+    lStartTime := Now;
+    for i := 0 to TimerLoop do
+    begin
+      if j = 0 then Str := UTF8LowerCase('abcdefghijklmnopqrstuwvxyz');
+      if j = 1 then Str := UTF8LowerCase('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
+      if j = 2 then Str := UTF8LowerCase('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+      if j = 3 then Str := UTF8LowerCase('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
+      if j = 4 then Str := UTF8LowerCase('АБВЕЁЖЗКЛМНОПРДЙГ');
+      if j = 5 then Str := UTF8LowerCase('名字叫嘉英，嘉陵江的嘉，英國的英');
+    end;
+    lTimeDiff := Now - lStartTime;
+    Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
+  end;
+  writeln;
 end;
 
 begin
@@ -146,5 +190,6 @@ begin
   TestUTF8UpperCase();
   WriteLn('======= LowerCase =======');
   TestUTF8LowerCase();
+  readln;
 end.
 
