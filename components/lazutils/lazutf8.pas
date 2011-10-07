@@ -1177,7 +1177,7 @@ begin
   IsTurkish := ALocale = 'tu';
 
   InCounter:=1; // for AInStr
-  OutCounter := 1; // for Result
+  OutCounter := 0; // for Result
   while InCounter<=length(AInStr) do
   begin
     { First ASCII chars }
@@ -1262,7 +1262,7 @@ begin
   end; // while
 
   // Final correction of the buffer size
-  SetLength(Result,OutCounter-1);
+  SetLength(Result,OutCounter);
 end;
 
 function UTF8UpperCase(const AInStr: utf8string): utf8string;
