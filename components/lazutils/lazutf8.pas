@@ -1123,10 +1123,6 @@ begin
           NewCharLen := 1;
           CharProcessed := True;
         end;
-      end
-      else if CharLen = 3 then
-      begin
-        //
       end;
 
       // Copy the character if the string was disaligned by previous changed
@@ -1264,7 +1260,7 @@ end;
  ------------------------------------------------------------------------------}
 function UTF8CompareStr(const S1, S2: utf8string): Integer;
 begin
-  //Result := WideCompareStr(UTF8ToUTF16(S1), UTF8ToUTF16(S2));
+  Result := SysUtils.CompareStr(S1, S2);
 end;
 
 {------------------------------------------------------------------------------
@@ -1276,8 +1272,12 @@ end;
   This function guarantees proper collation on all supported platforms.
  ------------------------------------------------------------------------------}
 function UTF8CompareText(const S1, S2: utf8string): Integer;
+var
+  S1Lower, S2Lower: utf8string;
 begin
-  //Result := WideCompareText(UTF8ToUTF16(S1), UTF8ToUTF16(S2));
+  S1Lower := UTF8LowerCase(S1);
+  S2Lower := UTF8LowerCase(S2);
+  Result := UTF8CompareStr(S1Lower, S2Lower);
 end;
 
 procedure InternalInit;
