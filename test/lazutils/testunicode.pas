@@ -73,8 +73,8 @@ begin
   AssertStringOperationUTF8UpperCase('Turkish UTF8UpperCase 1', 'tu', 'abcçdefgğhııijklmnoöprsştuüvyz', 'ABCÇDEFGĞHIIİJKLMNOÖPRSŞTUÜVYZ');
   AssertStringOperationUTF8UpperCase('Turkish UTF8UpperCase 2', 'tu', 'ABCÇDEFGĞHIIİJKLMNOÖPRSŞTUÜVYZ', 'ABCÇDEFGĞHIIİJKLMNOÖPRSŞTUÜVYZ');
   // Cyrillic
-  AssertStringOperationUTF8UpperCase('Russian UTF8UpperCase 1', 'tu', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ');
-  AssertStringOperationUTF8UpperCase('Russian UTF8UpperCase 2', 'tu', 'абвеёжзклмнопрдйг суфхцчшщъыьэюяит', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ');
+  AssertStringOperationUTF8UpperCase('Russian UTF8UpperCase 1', '', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ');
+  AssertStringOperationUTF8UpperCase('Russian UTF8UpperCase 2', '', 'абвеёжзклмнопрдйг суфхцчшщъыьэюяит', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ');
   // What shouldnt change
   AssertStringOperationUTF8UpperCase('Chinese UTF8UpperCase 1', '', '名字叫嘉英，嘉陵江的嘉，英國的英', '名字叫嘉英，嘉陵江的嘉，英國的英');
 
@@ -108,8 +108,8 @@ begin
   AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 1', 'tu', 'abcçdefgğhııijklmnoöprsştuüvyz', 'abcçdefgğhııijklmnoöprsştuüvyz');
   AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 2', 'tu', 'ABCÇDEFGĞHIIİJKLMNOÖPRSŞTUÜVYZ', 'abcçdefgğhııijklmnoöprsştuüvyz');
   // Cyrillic
-  AssertStringOperationUTF8LowerCase('Russian UTF8LowerCase 1', 'tu', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ', 'абвеёжзклмнопрдйг суфхцчшщъыьэюяит');
-  AssertStringOperationUTF8LowerCase('Russian UTF8LowerCase 2', 'tu', 'абвеёжзклмнопрдйг суфхцчшщъыьэюяит', 'абвеёжзклмнопрдйг суфхцчшщъыьэюяит');
+  AssertStringOperationUTF8LowerCase('Russian UTF8LowerCase 1', '', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ', 'абвеёжзклмнопрдйг суфхцчшщъыьэюяит');
+  AssertStringOperationUTF8LowerCase('Russian UTF8LowerCase 2', '', 'абвеёжзклмнопрдйг суфхцчшщъыьэюяит', 'абвеёжзклмнопрдйг суфхцчшщъыьэюяит');
   // What shouldnt change
   AssertStringOperationUTF8LowerCase('Chinese UTF8LowerCase 1', '', '名字叫嘉英，嘉陵江的嘉，英國的英', '名字叫嘉英，嘉陵江的嘉，英國的英');
 
@@ -118,11 +118,11 @@ begin
   for i := 0 to 99999 do
   begin
     //Str := UTF8LowerCaseMattias('abcdefghijklmnopqrstuwvxyz');
-    Str := UTF8LowerCaseMattias('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
+    //Str := UTF8LowerCaseMattias('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
     //Str := UTF8LowerCaseMattias('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
-    //Str := Str + UTF8LowerCaseMattias('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
-    Str := Str + UTF8LowerCase('АБВЕЁЖЗКЛМНОПРДЙГ');
-    //Str := UTF8LowerCaseMattias('名字叫嘉英，嘉陵江的嘉，英國的英');
+    //Str := UTF8LowerCaseMattias('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
+    //Str := UTF8LowerCaseMattias('АБВЕЁЖЗКЛМНОПРДЙГ');
+    Str := UTF8LowerCaseMattias('名字叫嘉英，嘉陵江的嘉，英國的英');
   end;
   lTimeDiff := Now - lStartTime;
   WriteLn('Mattias LowerCase Performance test took: ', DateTimeToMilliseconds(lTimeDiff), ' ms');
@@ -131,11 +131,11 @@ begin
   for i := 0 to 99999 do
   begin
     //Str := UTF8LowerCase('abcdefghijklmnopqrstuwvxyz');
-    Str := UTF8LowerCase('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
-    //Str := Str + UTF8LowerCase('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
-    //Str := Str + UTF8LowerCase('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
-    Str := Str + UTF8LowerCase('АБВЕЁЖЗКЛМНОПРДЙГ');
-    //Str := UTF8LowerCase('名字叫嘉英，嘉陵江的嘉，英國的英');
+    //Str := UTF8LowerCase('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
+    //Str := UTF8LowerCase('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+    //Str := UTF8LowerCase('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
+    //Str := UTF8LowerCase('АБВЕЁЖЗКЛМНОПРДЙГ');
+    Str := UTF8LowerCase('名字叫嘉英，嘉陵江的嘉，英國的英');
   end;
   lTimeDiff := Now - lStartTime;
   WriteLn('LowerCase Performance test took: ', DateTimeToMilliseconds(lTimeDiff), ' ms');
