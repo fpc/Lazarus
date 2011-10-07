@@ -6,10 +6,11 @@
     <CompilerOptions>
       <Version Value="10"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Linking>
         <Debugging>
+          <GenerateDebugInfo Value="True"/>
           <DebugInfoType Value="dsAuto"/>
         </Debugging>
       </Linking>

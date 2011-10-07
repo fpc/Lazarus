@@ -62,7 +62,8 @@ procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
 procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt);}
 
 function UnicodeLowercase(u: cardinal): cardinal;
-function UTF8LowerCase(const s: utf8string): utf8string;
+function UTF8LowerCase(const AInStr: utf8string): utf8string;
+function UTF8LowerCase(const AInStr, ALocale: utf8string): utf8string;
 function UTF8UpperCase(const AInStr: utf8string): utf8string;
 function UTF8UpperCase(const AInStr, ALocale: utf8string): utf8string;
 {function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
@@ -1038,104 +1039,111 @@ begin
   end;
 end;
 
-function UTF8LowercaseDynLength(const s: string): string;
-var
-  Buf: shortstring;
-  SrcPos: PtrInt;
-  DstPos: PtrInt;
-  CharLen: integer;
-  OldCode: LongWord;
-  NewCode: LongWord;
+function UTF8LowerCase(const AInStr: utf8string): utf8string;
 begin
-  // first compute needed length
-  SrcPos:=1;
-  DstPos:=1;
-  while SrcPos<=length(s) do begin
-    case s[SrcPos] of
-    #192..#240:
-      begin
-        OldCode:=UTF8CharacterToUnicode(@s[SrcPos],CharLen);
-        NewCode:=UnicodeLowercase(OldCode);
-        if NewCode=OldCode then begin
-          inc(DstPos,CharLen);
-        end else begin
-          inc(DstPos,UnicodeToUTF8(NewCode,@Buf[1]));
-        end;
-        inc(SrcPos,CharLen);
-      end;
-    else
-      inc(SrcPos);
-      inc(DstPos);
-    end;
-  end;
-  SetLength(Result,DstPos-1);
-  if Result='' then exit;
-  // create the new string
-  SrcPos:=1;
-  DstPos:=1;
-  while SrcPos<=length(s) do begin
-    case s[SrcPos] of
-    #192..#240:
-      begin
-        OldCode:=UTF8CharacterToUnicode(@s[SrcPos],CharLen);
-        NewCode:=UnicodeLowercase(OldCode);
-        if NewCode=OldCode then begin
-          System.Move(s[SrcPos],Result[DstPos],CharLen);
-          inc(DstPos,CharLen);
-        end else begin
-          inc(DstPos,UnicodeToUTF8(NewCode,@Result[DstPos]));
-        end;
-        inc(SrcPos,CharLen);
-      end;
-    else
-      Result[DstPos]:=s[SrcPos];
-      inc(SrcPos);
-      inc(DstPos);
-    end;
-  end;
+  Result := UTF8LowerCase(AInStr, '');
 end;
 
-function UTF8LowerCase(const s: utf8string): utf8string;
+{
+  AInStr - The input string
+  ALocale - The locale. Use '' for maximum speed if one desires to ignore the locale
+}
+function UTF8LowerCase(const AInStr, ALocale: utf8string): utf8string;
 var
-  i: PtrInt;
+  i, InCounter, OutCounter: PtrInt;
   CharLen: integer;
-  OldCode: LongWord;
-  NewCode: LongWord;
+  CharProcessed: Boolean;
   NewCharLen: integer;
+  NewChar, OldChar: Word;
+  // Language identification
+  IsTurkish: Boolean;
 begin
-  Result:=s;
-  i:=1;
-  while i<=length(Result) do begin
-    case Result[i] of
+  // Start with the same string, and progressively modify
+  Result:=AInStr;
+
+  // Language identification
+  IsTurkish := ALocale = 'tu';
+
+  InCounter:=1; // for AInStr
+  OutCounter := 1; // for Result
+  while InCounter<=length(AInStr) do
+  begin
     { First ASCII chars }
-    'A'..'Z':
+    if (AInStr[InCounter] <= 'Z') and (AInStr[InCounter] >= 'A') then
+    begin
+      // Special turkish handling
+      // capital undotted I to small undotted i
+      if IsTurkish and (AInStr[InCounter] = 'I') then
       begin
-        Result[i]:=chr(ord(Result[i])+32);
-        inc(i);
-      end;
-    { Now chars with multiple bytes }
-    #192..#240:
+        SetLength(Result,Length(Result)+1);// Increase the buffer
+        Result[OutCounter]:=#$C4;
+        Result[OutCounter+1]:=#$B1;
+        inc(InCounter);
+        inc(OutCounter,2);
+      end
+      else
       begin
-        OldCode:=UTF8CharacterToUnicode(@Result[i],CharLen);
-        NewCode:=UnicodeLowercase(OldCode);
-        if NewCode=OldCode then begin
-          inc(i,CharLen);
-        end else begin
-          UniqueString(Result);
-          NewCharLen:=UnicodeToUTF8(NewCode,@Result[i]);
-          if CharLen=NewCharLen then begin
-            inc(i,NewCharLen);
-          end else begin
-            // string size changed => use slower function
-            Result:=UTF8LowercaseDynLength(s);
-            exit;
-          end;
-        end;
+        Result[OutCounter]:=chr(ord(AInStr[InCounter])+32);
+        inc(InCounter);
+        inc(OutCounter);
       end;
+    end
+    { Now everything else }
     else
-      inc(i);
-    end;
-  end;
+    begin
+      CharLen := UTF8CharacterLength(@AInStr[InCounter]);
+      CharProcessed := False;
+      NewCharLen := CharLen;
+
+      if CharLen = 2 then
+      begin
+        OldChar := (Ord(AInStr[InCounter]) shl 8) or Ord(AInStr[InCounter+1]);
+        NewChar := 0;
+
+        // Major processing
+        case OldChar of
+        $CE91..$CE9F: NewChar := OldChar + $20; // Greek Characters
+        $CEA0..$CEA9: NewChar := OldChar + $E0; // Greek Characters
+        $D090..$D09F: NewChar := OldChar + $20; // Cyrillic alphabet
+        $D0A0..$D0AF: NewChar := OldChar + $E0; // Cyrillic alphabet
+        end;
+
+        if NewChar <> 0 then
+        begin
+          Result[OutCounter]  := Chr(Hi(NewChar));
+          Result[OutCounter+1]:= Chr(Lo(NewChar));
+          CharProcessed := True;
+        end;
+
+        // Special turkish handling
+        // capital dotted i to small dotted i
+        if IsTurkish and (AInStr[InCounter] = #$C4) and (AInStr[InCounter+1] = #$B1) then
+        begin
+          Result[OutCounter]:='i';
+          NewCharLen := 1;
+          CharProcessed := True;
+        end;
+      end
+      else if CharLen = 3 then
+      begin
+        //
+      end;
+
+      // Copy the character if the string was disaligned by previous changed
+      // and no processing was done in this character
+      if (InCounter <> OutCounter) and (not CharProcessed) then
+      begin
+        for i := 0 to CharLen-1 do
+          Result[OutCounter+i]  :=AInStr[InCounter+i];
+      end;
+
+      inc(InCounter, CharLen);
+      inc(OutCounter, NewCharLen);
+    end; // case
+  end; // while
+
+  // Final correction of the buffer size
+  SetLength(Result,OutCounter);
 end;
 
 function UTF8UpperCase(const AInStr: utf8string): utf8string;
@@ -1152,8 +1160,8 @@ var
   i, InCounter, OutCounter: PtrInt;
   CharLen: integer;
   CharProcessed: Boolean;
-//  NewCode: LongWord;
   NewCharLen: integer;
+  NewChar, OldChar: Word;
   // Language identification
   IsTurkish: Boolean;
 begin
@@ -1167,14 +1175,14 @@ begin
   OutCounter := 1; // for Result
   while InCounter<=length(AInStr) do
   begin
-    case AInStr[InCounter] of
     { First ASCII chars }
-    'a'..'z':
+    if (AInStr[InCounter] <= 'z') and (AInStr[InCounter] >= 'a') then
     begin
       // Special turkish handling
       // small dotted i to capital dotted i
       if IsTurkish and (AInStr[InCounter] = 'i') then
       begin
+        SetLength(Result,Length(Result)+1);// Increase the buffer
         Result[OutCounter]:=#$C4;
         Result[OutCounter+1]:=#$B0;
         inc(InCounter);
@@ -1186,9 +1194,9 @@ begin
         inc(InCounter);
         inc(OutCounter);
       end;
-    end;
-    { Now chars with multiple bytes }
-    #192..#240:
+    end
+    { Now everything else }
+    else
     begin
       CharLen := UTF8CharacterLength(@AInStr[InCounter]);
       CharProcessed := False;
@@ -1196,15 +1204,32 @@ begin
 
       if CharLen = 2 then
       begin
-        // Process Latin characters
+        OldChar := (Ord(AInStr[InCounter]) shl 8) or Ord(AInStr[InCounter+1]);
+        NewChar := 0;
+
+        // Major processing
+        case OldChar of
+        $CEB1..$CEBF: NewChar := OldChar - $20; // Greek Characters
+        $CF80..$CF89: NewChar := OldChar - $E0; // Greek Characters
+        $D0B0..$D0BF: NewChar := OldChar - $20; // Cyrillic alphabet
+        $D180..$D18F: NewChar := OldChar - $E0; // Cyrillic alphabet
+        end;
+
+        if NewChar <> 0 then
+        begin
+          Result[OutCounter]  := Chr(Hi(NewChar));
+          Result[OutCounter+1]:= Chr(Lo(NewChar));
+          CharProcessed := True;
+        end;
 
         // Special turkish handling
         // small undotted i to capital undotted i
-        if IsTurkish and (AInStr[InCounter] = #$C4) and (AInStr[InCounter] = #$B1) then
+        if IsTurkish and (AInStr[InCounter] = #$C4) and (AInStr[InCounter+1] = #$B1) then
         begin
           Result[OutCounter]:='I';
           inc(InCounter,2);
           inc(OutCounter);
+          CharProcessed := True;
         end
       end
       else if CharLen = 3 then
@@ -1223,11 +1248,10 @@ begin
       inc(InCounter, CharLen);
       inc(OutCounter, NewCharLen);
     end;
-    else
-      inc(InCounter);
-      inc(OutCounter);
-    end; // case
   end; // while
+
+  // Final correction of the buffer size
+  SetLength(Result,OutCounter);
 end;
 
 {------------------------------------------------------------------------------
