@@ -21,14 +21,16 @@ end;
 procedure AssertStringOperation(AMsg, AStr1, AStr2, AStrExpected2: utf8string);
 begin
   Write(AMsg, ' ', AStr1, ' => ', AStr2);
-  if UTF8CompareStr(AStr1, AStr2) <> 0 then
+  if UTF8CompareStr(AStr2, AStrExpected2) <> 0 then
   begin
     Write(' Expected ', AStrExpected2, ' !Error!');
     WriteLn();
+    Write('Got      Len=', Length(AStr2),' ');
     WriteStringHex(AStr2);
     WriteLn('');
-    WriteLn('Expected');
-    WriteStringHex(AStr2);
+    Write('Expected Len=', Length(AStrExpected2),' ');
+    WriteStringHex(AStrExpected2);
+    WriteLn();
   end;
   WriteLn();
 end;
