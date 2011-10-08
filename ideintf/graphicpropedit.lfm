@@ -38,6 +38,8 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       ClientWidth = 318
       Color = clWindow
       ParentColor = False
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       object ImagePreview: TImage
         Left = 0
@@ -63,10 +65,9 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
         Height = 25
         Top = 6
         Width = 74
+        Action = FileOpenAction
         Align = alTop
         BorderSpacing.Around = 6
-        Caption = 'Load'
-        OnClick = LoadButtonClick
         TabOrder = 0
       end
       object SaveButton: TButton
@@ -74,10 +75,9 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
         Height = 25
         Top = 37
         Width = 74
+        Action = FileSaveAction
         Align = alTop
         BorderSpacing.Around = 6
-        Caption = 'Save'
-        OnClick = SaveButtonClick
         TabOrder = 1
       end
       object ClearButton: TButton
@@ -85,10 +85,9 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
         Height = 25
         Top = 68
         Width = 74
+        Action = ClearAction
         Align = alTop
         BorderSpacing.Around = 6
-        Caption = 'Clear'
-        OnClick = ClearButtonClick
         TabOrder = 2
       end
       object CopyButton: TButton
@@ -148,6 +147,26 @@ object GraphicPropertyEditorForm: TGraphicPropertyEditorForm
       OnExecute = PasteActionExecute
       OnUpdate = PasteActionUpdate
       ShortCut = 16470
+    end
+    object FileOpenAction: TAction
+      Category = 'File'
+      Caption = 'Load'
+      OnExecute = FileOpenActionExecute
+      ShortCut = 16463
+    end
+    object FileSaveAction: TAction
+      Category = 'File'
+      Caption = 'Save'
+      OnExecute = FileSaveActionExecute
+      OnUpdate = FileSaveActionUpdate
+      ShortCut = 16467
+    end
+    object ClearAction: TEditDelete
+      Category = 'Edit'
+      Caption = 'Clear'
+      Hint = 'Delete'
+      OnExecute = ClearActionExecute
+      ShortCut = 46
     end
   end
 end

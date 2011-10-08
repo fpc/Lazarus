@@ -173,37 +173,40 @@ begin
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   FreeGraphic:=false;
   try
+    TheDialog.CaptionDetail := GetComponent(0).GetNamePath + '.' + GetName();
     if (AGraphic <> nil) then
-      TheDialog.Preview.Picture.Assign(AGraphic)
-    else
-      AGraphic := nil;
+      TheDialog.Graphic := AGraphic;
 
-    if (TheDialog.ShowModal = mrOK) then
+    if (TheDialog.ShowModal = mrOK) and TheDialog.Modified then
     begin
-      if TheDialog.Preview.Picture.Graphic <> nil then
+      if (TheDialog.Graphic <> nil) and (not TheDialog.Graphic.Empty) then
       begin
-        if TheDialog.Modified and FileExistsUTF8(TheDialog.FileName) then
+        if AGraphic = nil then
         begin
-          FreeGraphic := AGraphic = nil;
-
-          if FreeGraphic then 
-            AGraphic := TGraphicClass(GetTypeData(GetPropType)^.ClassType).Create;
-
-          if AGraphic.ClassType = TheDialog.Preview.Picture.Graphic.ClassType then
-            AGraphic.LoadFromFile(TheDialog.FileName)
-          else
-            AGraphic.Assign(TheDialog.Preview.Picture.Graphic);
-
-          SetPtrValue(AGraphic);
-          Modified;
+          AGraphic := TGraphicClass(GetTypeData(GetPropType)^.ClassType).Create;
+          FreeGraphic := True;
         end;
+
+        AGraphic.Assign(TheDialog.Graphic);
+
+        if (AGraphic.ClassType = TheDialog.Graphic.ClassType)
+          and not AGraphic.Equals(TheDialog.Graphic) then
+        begin
+          if (TheDialog.FileName <> '') and FileExistsUTF8(TheDialog.FileName) then
+          begin
+            AGraphic.LoadFromFile(TheDialog.FileName);
+            //MessageDlg('Differences detected, file reloaded', mtInformation, [mbOK], 0);
+          end
+          else
+            //MessageDlg('Image may be different', mtWarning, [mbOK], 0);
+        end;
+
+        SetPtrValue(AGraphic);
       end
       else
       if AGraphic <> nil then
-      begin
         AGraphic.Clear;
-        Modified;
-      end;
+      Modified;
     end;
   finally
     if FreeGraphic then
@@ -234,19 +237,26 @@ var
 begin
   Picture := TPicture(GetObjectValue(TPicture));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
-  if (Picture.Graphic <> nil) then
-    TheDialog.Preview.Picture.Graphic := Picture.Graphic;
   try
-    if (TheDialog.ShowModal = mrOK) then
+    TheDialog.CaptionDetail := GetComponent(0).GetNamePath + '.' + GetName();
+    if (Picture.Graphic <> nil) then
+      TheDialog.Graphic := Picture.Graphic;
+    if (TheDialog.ShowModal = mrOK) and TheDialog.Modified then
     begin
-      if TheDialog.Preview.Picture.Graphic <> nil then
+      if TheDialog.Graphic <> nil then
       begin
-        if TheDialog.FileName <> '' then
-          if FileExistsUTF8(TheDialog.FileName) then
+        Picture.Graphic := TheDialog.Graphic;
+        if not Picture.Graphic.Equals(TheDialog.Graphic) then
+        begin
+          if (TheDialog.FileName <> '') and FileExistsUTF8(TheDialog.FileName) then
           begin
             Picture.LoadFromFile(TheDialog.FileName);
-            AddPackage(Picture);
-          end;
+            //MessageDlg('Differences detected, file reloaded', mtInformation, [mbOK], 0);
+          end
+          else
+            //MessageDlg('Image may be different', mtWarning, [mbOK], 0);
+        end;
+        AddPackage(Picture);
       end
       else
         Picture.Graphic := nil;
@@ -267,15 +277,13 @@ begin
   ABitmap := TBitmap(GetObjectValue(TBitmap));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try
+    TheDialog.CaptionDetail := GetComponent(0).GetNamePath + '.' + GetName();
     if not ABitmap.Empty then
-      TheDialog.Preview.Picture.Assign(ABitmap);
-    if (TheDialog.ShowModal = mrOK) then
+      TheDialog.Graphic := ABitmap;
+    if (TheDialog.ShowModal = mrOK) and TheDialog.Modified then
     begin
-      if TheDialog.Modified then
-      begin
-        ABitmap.Assign(TheDialog.Preview.Picture.Graphic);
-        Modified;
-      end;
+      ABitmap.Assign(TheDialog.Graphic);
+      Modified;
     end;
   finally
     TheDialog.Free;

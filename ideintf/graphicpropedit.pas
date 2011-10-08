@@ -32,6 +32,9 @@ type
   { TGraphicPropertyEditorForm }
 
   TGraphicPropertyEditorForm = class(TForm)
+    FileOpenAction: TAction;
+    FileSaveAction: TAction;
+    ClearAction: TEditDelete;
     ActionList: TActionList;
     CopyButton: TButton;
     PasteButton: TButton;
@@ -51,22 +54,24 @@ type
     procedure CopyActionUpdate(Sender: TObject);
     procedure PasteActionExecute(Sender: TObject);
     procedure PasteActionUpdate(Sender: TObject);
-    procedure ClearButtonClick(Sender: TObject);
+    procedure ClearActionExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure LoadButtonClick(Sender: TObject);
-    procedure SaveButtonClick(Sender: TObject);
+    procedure FileOpenActionExecute(Sender: TObject);
+    procedure FileSaveActionExecute(Sender: TObject);
+    procedure FileSaveActionUpdate(Sender: TObject);
+    procedure PictureChanged(Sender: TObject);
   private
+    FFileName: String;
     FModified: Boolean;
-    procedure SetModified(const AValue: Boolean);
-    { private declarations }
+    function GetGraphic: TGraphic;
+    procedure SetGraphic(Value: TGraphic);
+    procedure SetCaptionDetail(Value: String);
   public
-    FileName: String;
-    property Modified: Boolean read FModified write SetModified;
-    property Preview: TImage read ImagePreview write ImagePreview;
+    property CaptionDetail: String write SetCaptionDetail;
+    property FileName: String read FFileName;
+    property Modified: Boolean read FModified;
+    property Graphic: TGraphic read GetGraphic write SetGraphic;
   end;
-
-var
-  GraphicPropertyEditorForm: TGraphicPropertyEditorForm;
 
 implementation
 
@@ -76,28 +81,21 @@ implementation
 
 procedure TGraphicPropertyEditorForm.FormCreate(Sender: TObject);
 begin
-  FileName := '';
   Caption := oisLoadImageDialog;
   GroupBox1.Caption:=oisPEPicture;
   OkCancelButtonPanel.OKButton.Caption := oisOK;
   OkCancelButtonPanel.CancelButton.Caption := oisCancel;
-  LoadButton.Caption := oisLoad;
-  SaveButton.Caption := oisSave;
-  ClearButton.Caption := oisClear;
+  FileOpenAction.Caption := oisLoad;
+  FileSaveAction.Caption := oisSave;
+  ClearAction.Caption := oisClear;
   OpenDialog.Title:=oisPEOpenImageFile;
   SaveDialog.Title:=oisPESaveImageAs;
+  ImagePreview.OnPictureChanged:=@PictureChanged;
 end;
 
-procedure TGraphicPropertyEditorForm.ClearButtonClick(Sender: TObject);
+procedure TGraphicPropertyEditorForm.ClearActionExecute(Sender: TObject);
 begin
-  with Preview do
-  begin
-    Picture.Clear;
-  end;
-  
-  ScrollBox.Invalidate;
-  SaveButton.Enabled := False;
-  Modified := True;
+  ImagePreview.Picture.Clear;
 end;
 
 procedure TGraphicPropertyEditorForm.CopyActionExecute(Sender: TObject);
@@ -110,6 +108,11 @@ begin
   CopyAction.Enabled := ImagePreview.Picture.Graphic <> nil;
 end;
 
+procedure TGraphicPropertyEditorForm.FileSaveActionUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled := (Graphic <> nil) and (not Graphic.Empty);
+end;
+
 procedure TGraphicPropertyEditorForm.PasteActionExecute(Sender: TObject);
 begin
   ImagePreview.Picture.Assign(Clipboard);
@@ -120,15 +123,14 @@ begin
   PasteAction.Enabled := Clipboard.HasPictureFormat;
 end;
 
-procedure TGraphicPropertyEditorForm.LoadButtonClick(Sender: TObject);
+procedure TGraphicPropertyEditorForm.FileOpenActionExecute(Sender: TObject);
 begin
   InitIDEFileDialog(OpenDialog);
   if OpenDialog.Execute then
   begin
-    FileName := OpenDialog.FileName;
     try
-      Preview.Picture.LoadFromFile(FileName);
-      Modified := True;
+      ImagePreview.Picture.LoadFromFile(OpenDialog.FileName);
+      FFileName := OpenDialog.FileName; // OnPictureChange clears the field.
     except
       on E: Exception do begin
         MessageDlg(oisErrorLoadingImage,
@@ -139,29 +141,44 @@ begin
     end;
   end;
   StoreIDEFileDialog(OpenDialog);
-  
-  SaveButton.Enabled := False;
-  if Assigned(Preview.Picture.Graphic) then
-    if not Preview.Picture.Graphic.Empty then
-      SaveButton.Enabled := True;
 end;
 
-procedure TGraphicPropertyEditorForm.SaveButtonClick(Sender: TObject);
+procedure TGraphicPropertyEditorForm.PictureChanged(Sender: TObject);
+begin
+  FModified := True;
+  FFileName := '';
+  if Graphic <> nil then
+    ScrollBox.Hint := Graphic.ClassName
+  else
+    ScrollBox.Hint := '';
+end;
+
+procedure TGraphicPropertyEditorForm.FileSaveActionExecute(Sender: TObject);
 begin
   InitIDEFileDialog(SaveDialog);
   if SaveDialog.Execute then
     if SaveDialog.FilterIndex > 1 then
-      Preview.Picture.SaveToFile(SaveDialog.FileName, SaveDialog.GetFilterExt)
+      ImagePreview.Picture.SaveToFile(SaveDialog.FileName, SaveDialog.GetFilterExt)
     else
-      Preview.Picture.SaveToFile(SaveDialog.FileName);
+      ImagePreview.Picture.SaveToFile(SaveDialog.FileName);
       
   StoreIDEFileDialog(SaveDialog);
 end;
 
-procedure TGraphicPropertyEditorForm.SetModified(const AValue: Boolean);
+function TGraphicPropertyEditorForm.GetGraphic: TGraphic;
 begin
-  if FModified = AValue then Exit;
-  FModified := AValue;
+  Result := ImagePreview.Picture.Graphic;
+end;
+
+procedure TGraphicPropertyEditorForm.SetGraphic(Value: TGraphic);
+begin
+  ImagePreview.Picture.Assign(Value);
+  FModified := False;
+end;
+
+procedure TGraphicPropertyEditorForm.SetCaptionDetail(Value: String);
+begin
+  Caption := oisLoadImageDialog + ' - ' + Value;
 end;
 
 end.
