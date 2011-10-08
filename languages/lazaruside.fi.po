@@ -413,7 +413,7 @@ msgstr "Free Pascal kääntäjän viestit (*.msg)|*.msg|Kaikki tiedostot (*.*)|*
 
 #: lazarusidestrconsts.dlgbutapply
 msgid "Apply"
-msgstr "Toteuta"
+msgstr "Käytä"
 
 #: lazarusidestrconsts.dlgcancel
 msgctxt "lazarusidestrconsts.dlgcancel"
@@ -3667,7 +3667,7 @@ msgstr "Tiedosto %s%s%s on jo olemassa.%skorvataanko se? "
 
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
-msgstr "Sijoita"
+msgstr "Kohdistus"
 
 #: lazarusidestrconsts.lisallblockslooksok
 msgid "All blocks look ok."
@@ -3783,11 +3783,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
-msgstr ""
+msgstr "Käytä käännöslippuja myös riippuvuuksiin"
 
 #: lazarusidestrconsts.lisapplyconventions
 msgid "Apply conventions"
-msgstr ""
+msgstr "Käytännöt"
 
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
@@ -3819,11 +3819,11 @@ msgstr "Kysy komponentin nimi sitä luodessa"
 
 #: lazarusidestrconsts.lisautocompletionoff
 msgid "Auto completion: off"
-msgstr ""
+msgstr "Automaattinen täydennys: pois"
 
 #: lazarusidestrconsts.lisautocompletionon
 msgid "Auto completion: on"
-msgstr ""
+msgstr "Automaattinen täydennys: päällä"
 
 #: lazarusidestrconsts.lisautocontinue
 msgid "Auto Continue"
@@ -3864,7 +3864,7 @@ msgstr "sanan loppu"
 
 #: lazarusidestrconsts.lisautomaticallyremovecharacter
 msgid "do not add character"
-msgstr ""
+msgstr "älä lisää merkkiä"
 
 #: lazarusidestrconsts.lisautomaticfeatures
 msgid "Completion and Hints"
@@ -3872,11 +3872,11 @@ msgstr "Koodin täydennys ja vihjeet"
 
 #: lazarusidestrconsts.lisautoshowobjectinspector
 msgid "Auto show"
-msgstr "Näytetään automaattisesti komponenttimuokkain"
+msgstr "Näytä automaattisesti"
 
 #: lazarusidestrconsts.lisavailablepackages
 msgid "Available packages"
-msgstr "Käytettävissä olevat komponenttipaketit"
+msgstr "Tarjolla olevat paketit"
 
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
@@ -3946,15 +3946,13 @@ msgstr ""
 
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath2
 msgid "Working Directory (Leave empty for file path)"
-msgstr ""
+msgstr "Työhakemisto (tyhjä = tiedoston polku)"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
-msgstr "Lihavoi muutetut arvot (muut kuin oletusarvot)"
+msgstr "Lihavoi muutetut arvot"
 
 #: lazarusidestrconsts.lisborderspace
-#, fuzzy
-#| msgid "BorderSpace"
 msgid "Border space"
 msgstr "Reuna-alue"
 
@@ -4379,7 +4377,7 @@ msgstr ""
 #: lazarusidestrconsts.lisceomodecategory
 msgctxt "lazarusidestrconsts.lisceomodecategory"
 msgid "Category"
-msgstr ""
+msgstr "Luokka"
 
 #: lazarusidestrconsts.lisceomodesource
 msgctxt "lazarusidestrconsts.lisceomodesource"
@@ -4392,11 +4390,11 @@ msgstr "Ei koskaan automaattisesti. Ainoastaan erikseen käskettäessä."
 
 #: lazarusidestrconsts.lisceonlyusedincategorymode
 msgid "Only used in category mode"
-msgstr ""
+msgstr "Käytetään vain luokka-tilassa"
 
 #: lazarusidestrconsts.lisceoonidle
 msgid "On idle"
-msgstr ""
+msgstr "Tyhjäkäynnillä"
 
 #: lazarusidestrconsts.lisceorefreshautomatically
 msgid "Refresh automatically"
@@ -9614,15 +9612,15 @@ msgstr "Siivoa + käännä kaikki"
 
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL Widget Type"
-msgstr ""
+msgstr "LCL käyttöliittymäkirjasto"
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
 msgid "Add link to inherited"
-msgstr ""
+msgstr "Lisää linkki perittyyn"
 
 #: lazarusidestrconsts.lisldcopyfrominherited
 msgid "Copy from inherited"
-msgstr ""
+msgstr "Kopioi peritystä"
 
 #: lazarusidestrconsts.lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
 msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
@@ -9630,11 +9628,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
-msgstr ""
+msgstr "Siirrä kohdat perittyyn"
 
 #: lazarusidestrconsts.lisldnovalidlazdocpath
 msgid "No valid LazDoc path"
-msgstr ""
+msgstr "Ei kelvollista LazDoc polkua"
 
 #: lazarusidestrconsts.lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
@@ -9642,7 +9640,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisleaveemptyfo
 msgid "Leave empty for default .po file"
-msgstr ""
+msgstr "Jätä tyhjäksi oletus .po tiedostoa varten"
 
 #: lazarusidestrconsts.lisleft
 msgctxt "lazarusidestrconsts.lisleft"
@@ -13724,7 +13722,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisselectanotherlclwidgetsetmacrolclwidgettype
 msgid "Select another LCL widget set (macro LCLWidgetType)"
-msgstr ""
+msgstr "Valitse toinen LCL käyttöliittymäkirjasto (makro LCLWidgetType)"
 
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
