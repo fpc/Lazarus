@@ -1605,116 +1605,115 @@ begin
     SaveRaiseException(ctsSemicolonNotFound);
   repeat
     if CurPos.StartPos<=SrcLen then begin
-      if (pphIsMethod in ParseAttr) then
+      if pphIsMethod in ParseAttr then
         IsSpecifier:=IsKeyWordMethodSpecifier.DoIdentifier(@Src[CurPos.StartPos])
       else if pphIsType in ParseAttr then
         IsSpecifier:=IsKeyWordProcedureTypeSpecifier.DoIdentifier(@Src[CurPos.StartPos])
       else
-        IsSpecifier:=IsKeyWordProcedureSpecifier.DoItCaseInsensitive(Src,
-                                 CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
+        IsSpecifier:=IsKeyWordProcedureSpecifier.DoItCaseInsensitive(
+                             Src,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
     end else
       IsSpecifier:=false;
-    if IsSpecifier then begin
-      // read specifier
-      if UpAtomIs('MESSAGE') or UpAtomIs('DISPID') or UpAtomIs('ENUMERATOR')
-      or UpAtomIs('DEPRECATED')
-      then begin
-        ReadNextAtom;
-        if not (CurPos.Flag in [cafSemicolon,cafEND]) then
-          ReadConstant(true,false,[]);
-      end else if UpAtomIs('IS') then begin
-        ReadNextAtom;
-        if not UpAtomIs('NESTED') then
-          RaiseStringExpectedButAtomFound('nested');
-        ReadNextAtom;
-      end else if UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL') or UpAtomIs('PUBLIC') then begin
-        HasForwardModifier:=UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL');
-        ReadNextAtom;
-        if CurPos.Flag<>cafSemicolon then begin
-          if not UpAtomIs('NAME') then
-            ReadConstant(true,false,[]);
-          if UpAtomIs('NAME') or UpAtomIs('INDEX') then begin
-            ReadNextAtom;
-            ReadConstant(true,false,[]);
-          end;
-          if UpAtomIs('DELAYED') then
-            ReadNextAtom;
-        end;
-      end else if UpAtomIs('ALIAS') then begin
-        if not ReadNextAtomIsChar(':') then
-          RaiseCharExpectedButAtomFound(':');
-        ReadNextAtom;
-        ReadConstant(true,false,[]);
-      end else if CurPos.Flag=cafEdgedBracketOpen then begin
-        // read assembler alias   [public,alias: 'alternative name'],
-        // internproc, internconst, external
-        repeat
-          ReadNextAtom;
-          if not (CurPos.Flag in AllCommonAtomWords) then
-            RaiseStringExpectedButAtomFound(ctsKeyword);
-          if not IsKeyWordProcedureBracketSpecifier.DoIdentifier(@Src[CurPos.StartPos])
-          then
-            RaiseKeyWordExampleExpected;
-          if UpAtomIs('INTERNPROC') then
-            HasForwardModifier:=true;
-            
-          if UpAtomIs('INTERNCONST') then begin
-            ReadNextAtom;
-            if AtomIsChar(':') then begin
-              ReadNextAtom;
-              AtomIsIdentifier(true);
-              ReadNextAtom;
-            end;
-          end else if UpAtomIs('EXTERNAL') then begin
-            HasForwardModifier:=true;
-            ReadNextAtom;
-            if not (CurPos.Flag in [cafComma,cafEdgedBracketClose]) then begin
-              if not UpAtomIs('NAME') then
-                ReadConstant(true,false,[]);
-              if UpAtomIs('NAME') or UpAtomIs('INDEX') then begin
-                ReadNextAtom;
-                ReadConstant(true,false,[]);
-              end;
-            end;
-          end else
-            ReadNextAtom;
-          if CurPos.Flag in [cafColon,cafEdgedBracketClose] then
-            break;
-          if CurPos.Flag<>cafComma then
-            RaiseCharExpectedButAtomFound(']');
-        until false;
-        if CurPos.Flag=cafColon then begin
-          ReadNextAtom;
-          if (not AtomIsStringConstant) and (not AtomIsIdentifier(false)) then
-            RaiseStringExpectedButAtomFound(ctsStringConstant);
-          ReadConstant(true,false,[]);
-        end;
-        if CurPos.Flag<>cafEdgedBracketClose then
-          RaiseCharExpectedButAtomFound(']');
-        ReadNextAtom;
-        if CurPos.Flag=cafEND then begin
-          UndoReadNextAtom;
-          exit;
-        end;
-      end else begin
-        // read specifier without parameters
-        if UpAtomIs('FORWARD') then HasForwardModifier:=true;
-        ReadNextAtom;
-        if CurPos.Flag=cafEND then begin
-          UndoReadNextAtom;
-          exit;
-        end;
-      end;
-      // check semicolon
-      if CurPos.Flag=cafSemicolon then begin
-        ReadNextAtom;
-      end else begin
-        // Delphi/FPC allow procs without ending semicolon
-      end;
-    end else begin
+    if not IsSpecifier then begin
       // current atom does not belong to procedure/method declaration
       UndoReadNextAtom; // unread unknown atom
       break;
+    end;
+    // read specifier
+    if UpAtomIs('MESSAGE') or UpAtomIs('DISPID') or UpAtomIs('ENUMERATOR')
+    or UpAtomIs('DEPRECATED')
+    then begin
+      ReadNextAtom;
+      if not (CurPos.Flag in [cafSemicolon,cafEND]) then
+        ReadConstant(true,false,[]);
+    end else if UpAtomIs('IS') then begin
+      ReadNextAtom;
+      if not UpAtomIs('NESTED') then
+        RaiseStringExpectedButAtomFound('nested');
+      ReadNextAtom;
+    end else if UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL') or UpAtomIs('PUBLIC') then begin
+      HasForwardModifier:=UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL');
+      ReadNextAtom;
+      if CurPos.Flag<>cafSemicolon then begin
+        if not UpAtomIs('NAME') then
+          ReadConstant(true,false,[]);
+        if UpAtomIs('NAME') or UpAtomIs('INDEX') then begin
+          ReadNextAtom;
+          ReadConstant(true,false,[]);
+        end;
+        if UpAtomIs('DELAYED') then
+          ReadNextAtom;
+      end;
+    end else if UpAtomIs('ALIAS') then begin
+      if not ReadNextAtomIsChar(':') then
+        RaiseCharExpectedButAtomFound(':');
+      ReadNextAtom;
+      ReadConstant(true,false,[]);
+    end else if CurPos.Flag=cafEdgedBracketOpen then begin
+      // read assembler alias   [public,alias: 'alternative name'],
+      // internproc, internconst, external
+      repeat
+        ReadNextAtom;
+        if not (CurPos.Flag in AllCommonAtomWords) then
+          RaiseStringExpectedButAtomFound(ctsKeyword);
+        if not IsKeyWordProcedureBracketSpecifier.DoIdentifier(@Src[CurPos.StartPos])
+        then
+          RaiseKeyWordExampleExpected;
+        if UpAtomIs('INTERNPROC') then
+          HasForwardModifier:=true;
+
+        if UpAtomIs('INTERNCONST') then begin
+          ReadNextAtom;
+          if AtomIsChar(':') then begin
+            ReadNextAtom;
+            AtomIsIdentifier(true);
+            ReadNextAtom;
+          end;
+        end else if UpAtomIs('EXTERNAL') then begin
+          HasForwardModifier:=true;
+          ReadNextAtom;
+          if not (CurPos.Flag in [cafComma,cafEdgedBracketClose]) then begin
+            if not UpAtomIs('NAME') then
+              ReadConstant(true,false,[]);
+            if UpAtomIs('NAME') or UpAtomIs('INDEX') then begin
+              ReadNextAtom;
+              ReadConstant(true,false,[]);
+            end;
+          end;
+        end else
+          ReadNextAtom;
+        if CurPos.Flag in [cafColon,cafEdgedBracketClose] then
+          break;
+        if CurPos.Flag<>cafComma then
+          RaiseCharExpectedButAtomFound(']');
+      until false;
+      if CurPos.Flag=cafColon then begin
+        ReadNextAtom;
+        if (not AtomIsStringConstant) and (not AtomIsIdentifier(false)) then
+          RaiseStringExpectedButAtomFound(ctsStringConstant);
+        ReadConstant(true,false,[]);
+      end;
+      if CurPos.Flag<>cafEdgedBracketClose then
+        RaiseCharExpectedButAtomFound(']');
+      ReadNextAtom;
+      if CurPos.Flag=cafEND then begin
+        UndoReadNextAtom;
+        exit;
+      end;
+    end else begin
+      // read specifier without parameters
+      if UpAtomIs('FORWARD') then HasForwardModifier:=true;
+      ReadNextAtom;
+      if CurPos.Flag=cafEND then begin
+        UndoReadNextAtom;
+        exit;
+      end;
+    end;
+    // check semicolon
+    if CurPos.Flag=cafSemicolon then begin
+      ReadNextAtom;
+    end else begin
+      // Delphi/FPC allow procs without ending semicolon
     end;
   until false;
 end;

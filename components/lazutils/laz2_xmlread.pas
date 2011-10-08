@@ -3425,12 +3425,19 @@ procedure TXMLReader.ParseEndTag;     // [42]
 var
   ErrOffset: Integer;
   ElName: PHashItem;
+
+  procedure UnmatchingEndTag;
+  begin
+
+    FatalError('Unmatching element end tag (expected "</%s>")', [ElName^.Key], FName.Length);
+  end;
+
 begin
   ElName := FValidator[FNesting].FElement.NSI.QName;
 
   CheckName;
   if not BufEquals(FName, ElName^.Key) then
-    FatalError('Unmatching element end tag (expected "</%s>")', [ElName^.Key], FName.Length);
+    UnmatchingEndTag;
   if FSource.FBuf^ = '>' then    // this handles majority of cases
   begin
     ErrOffset := FName.Length+1;

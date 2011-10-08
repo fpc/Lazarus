@@ -70,7 +70,7 @@ const
     'IgnoreSpaceChars',
     'IgnoreTrailingSpaces'
     );
-    
+
 
 implementation
 

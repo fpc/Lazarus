@@ -849,8 +849,9 @@ begin
   KeyWordLists.Add(IsKeyWordMethodSpecifier);
   with IsKeyWordMethodSpecifier do begin
     Add('ABSTRACT'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASSEMBLER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
+    Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // often used for macros
     ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NOSTACKFRAME' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
