@@ -1189,12 +1189,23 @@ begin
 end;
 
 function UTF8LowerCaseMartin(const AInStr, ALocale: utf8string): utf8string;
+const
+  ResultSizeIncr = 10;
 var
-  i, CounterDiff: PtrInt;
+  i, CounterDiff, ExtraResultBytes: PtrInt;
   InStr, InStrEnd, OutStr: PChar;
   // Language identification
   IsTurkish: Boolean;
   c: Char;
+
+  procedure IncreaseResult;
+  begin
+    if -CounterDiff < ExtraResultBytes - 1 then exit;
+    OutStr := PChar(OutStr - PChar(Result));
+    SetLength(Result,Length(Result)+ResultSizeIncr);// Increase the buffer
+    OutStr := PtrInt(OutStr) + PChar(Result);
+    inc(ExtraResultBytes, ResultSizeIncr);
+  end;
 
 begin
   Result:=AInStr;
@@ -1213,7 +1224,8 @@ begin
   // Language identification
   IsTurkish := ALocale = 'tu';
 
-  UniqueString(Result);
+  ExtraResultBytes := ResultSizeIncr;
+  SetLength(Result, length(Result) + ExtraResultBytes); // also make result UniqueString
   OutStr := PChar(Result) + (InStr - PChar(AInStr));
   CounterDiff := 0;
 
@@ -1226,6 +1238,7 @@ begin
          The loop will be exited via break, if InStr and OutStr are increased in different steps
       *)
       c := OutStr^;
+      inc(InStr);
       case c of  // if NOT TABLE
         #0:
           begin
@@ -1233,7 +1246,6 @@ begin
               SetLength(Result,OutStr - PChar(Result));
               exit;
             end else begin
-              inc(InStr);
               inc(OutStr);
             end;
         end;
@@ -1244,13 +1256,11 @@ begin
             // capital undotted I to small undotted i
             if IsTurkish and (c = 'I') then
             begin
-              OutStr := PChar(OutStr - PChar(Result));
-              SetLength(Result,Length(Result)+1);// Increase the buffer
-              OutStr := PtrInt(OutStr) + PChar(Result);
+              IncreaseResult;
               OutStr^ := #$C4;
               inc(OutStr);
               OutStr^ := #$B1;
-              inc(InStr);
+              //inc(InStr);
               inc(OutStr);
               dec(CounterDiff);
               break; // InSTr and OutStr are pointing to different indexes
@@ -1258,81 +1268,71 @@ begin
             else
             begin
               OutStr^ := chr(ord(c)+32);
-              inc(InStr);
               inc(OutStr);
             end;
           end;
         #$C3:
           begin
-            //c := InStr[1];
             c := OutStr[1];
             if c in [#$80..#$9E] then
               OutStr[1]  := chr(ord(c) + $20);
-            inc(InStr, 2);
+            inc(InStr);
             inc(OutStr, 2);
           end;
         #$C4:
           begin
             c := OutStr[1];
+            inc(InStr);
+            inc(OutStr, 2);
             case c of
               #$81..#$A9, #$B2..#$B6: //0
                 begin
                   if ord(c) mod 2 = 0 then
-                    OutStr[1]  := chr(ord(c) + 1);
-                    inc(InStr, 2);
-                    inc(OutStr, 2);
+                    OutStr[-1]  := chr(ord(c) + 1);
                 end;
               #$B8..#$FF: //1
                 begin
                   if ord(c) mod 2 = 1 then
-                    OutStr[1]  := chr(ord(c) + 1);
-                    inc(InStr, 2);
-                    inc(OutStr, 2);
+                    OutStr[-1]  := chr(ord(c) + 1);
                 end;
               #$B0:            // Turkish capital dotted i to small dotted i
                 begin
-                  OutStr^ := 'i';
-                  inc(InStr, 2);
-                  inc(OutStr, 1);
+                  dec(OutStr, 1);
+                  OutStr[-1] := 'i';
                   inc(CounterDiff, 1);
                   break; // InSTr and OutStr are pointing to different indexes
-                end;
-              else
-                begin
-                  inc(InStr, 2);
-                  inc(OutStr, 2);
                 end;
             end;
           end;
         #$C5:
           begin
-            c := OutStr[1];
+            inc(InStr);
+            inc(OutStr, 2);
+            c := OutStr[-1];
             case c of
               #$8A..#$B7: //0
                 begin
                   if ord(c) mod 2 = 0 then
-                    OutStr[1]  := chr(ord(c) + 1);
+                    OutStr[-1]  := chr(ord(c) + 1);
                 end;
               #$00..#$88, #$B9..#$FF: //1
                 begin
                   if ord(c) mod 2 = 1 then
-                    OutStr[1]  := chr(ord(c) + 1);
+                    OutStr[-1]  := chr(ord(c) + 1);
                 end;
               #$B8:  // Ÿ
               begin
-                OutStr[0] := #$C3;
-                OutStr[1] := #$BF;
+                OutStr[-2] := #$C3;
+                OutStr[-1] := #$BF;
               end;
             end;
-            inc(InStr, 2);
-            inc(OutStr, 2);
           end;
         #$C6..#$C7:
           begin
             c := OutStr[1];
             if ord(c) mod 2 = 1 then
               OutStr[1]  := chr(ord(c) + 1);
-            inc(InStr, 2);
+            inc(InStr);
             inc(OutStr, 2);
           end;
         #$C8:
@@ -1340,48 +1340,47 @@ begin
             c := OutStr[1];
             if (c in [#$00..#$B3]) and (ord(c) mod 2 = 1) then
               OutStr[1]  := chr(ord(c) + 1);
-            inc(InStr, 2);
+            inc(InStr);
             inc(OutStr, 2);
           end;
         #$CE:   // Greek Characters
           begin
-            c := OutStr[1];
+            inc(InStr);
+            inc(OutStr, 2);
+            c := OutStr[-1];
             case c of
               #$91..#$9F:
                 begin
-                  OutStr[1]  := chr(ord(c) + $20);
+                  OutStr[-1]  := chr(ord(c) + $20);
                 end;
               #$A0..#$A9:
                 begin
-                  OutStr^  := chr(ord(OutStr[0])+1);
-                  OutStr[1]  := chr(ord(c) - $10);
+                  OutStr[-2]  := chr(ord(OutStr[-2])+1);
+                  OutStr[-1]  := chr(ord(c) - $10);
                 end;
             end;
-            inc(InStr, 2);
-            inc(OutStr, 2);
           end;
         #$D0:   // Cyrillic alphabet
           begin
-            c := OutStr[1];
-            //c := InStr[1];
+            inc(InStr);
+            inc(OutStr, 2);
+            c := OutStr[-1];
             case c of
               #$80..#$8F:
                 begin
-                  OutStr^  := chr(ord(OutStr[0])+1);
-                  OutStr[1]  := chr(ord(c) + $10);
+                  OutStr[-2]  := chr(ord(OutStr[-2])+1);
+                  OutStr[-1]  := chr(ord(c) + $10);
                 end;
               #$90..#$9F:
                 begin
-                  OutStr[1]  := chr(ord(c) + $20);
+                  OutStr[-1]  := chr(ord(c) + $20);
                 end;
               #$A0..#$AF:
                 begin
-                  OutStr^  := chr(ord(OutStr[0])+1);
-                  OutStr[1]  := chr(ord(c) - $10);
+                  OutStr[-2]  := chr(ord(OutStr[-2])+1);
+                  OutStr[-1]  := chr(ord(c) - $10);
                 end;
             end;
-            inc(InStr, 2);
-            inc(OutStr, 2);
           end;
         else
           begin
@@ -1415,9 +1414,7 @@ begin
             // capital undotted I to small undotted i
             if IsTurkish and (c = 'I') then
             begin
-              OutStr := PChar(OutStr - PChar(Result));
-              SetLength(Result,Length(Result)+1);// Increase the buffer
-              OutStr := PtrInt(OutStr) + PChar(Result);
+              IncreaseResult;
               OutStr^ := #$C4;
               inc(OutStr);
               OutStr^ := #$B1;
