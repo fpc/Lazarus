@@ -3175,7 +3175,8 @@ begin
           inc(FBuf);
         end;
       end else begin
-        nonws:=wc>' ';
+        if wc>' ' then
+          nonws:=true;
         inc(FBuf);
       end;
       {$ENDIF}
