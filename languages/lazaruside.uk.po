@@ -3254,17 +3254,17 @@ msgstr "Створити новий файл"
 msgid "Dependency"
 msgstr "Залежність"
 
-#: lazarusidestrconsts.lisa2pexistingfile
-msgid "%sExisting file: %s%s%s"
-msgstr "%sІснуючий файл: %s%s%s"
+#: lazarusidestrconsts.lisa2pexistingfile2
+msgid "Existing file: %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyexists
 msgid "File already exists"
 msgstr "Файл вже існує"
 
-#: lazarusidestrconsts.lisa2pfilealreadyexistsintheproject
-msgid "File %s%s%s already exists in the project."
-msgstr "Файл %s%s%s вже є в проекті."
+#: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
+msgid "File %s%s%s already exists in the package."
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyinpackage
 msgid "File already in package"
@@ -8641,6 +8641,10 @@ msgstr "Неправильна тека кодів FPC"
 msgid "Invalid line, column in message%s%s"
 msgstr "Неприпустимий рядок, стовпець в повідомленні%s%s"
 
+#: lazarusidestrconsts.lisinvalidmask
+msgid "Invalid Mask"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidmode
 msgid "Invalid mode %s"
 msgstr "Невірний режим %s"
@@ -11633,6 +11637,10 @@ msgstr "Шляхи пошуку:"
 msgid "Select directory"
 msgstr "Вибрати теку"
 
+#: lazarusidestrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr ""
+
 #: lazarusidestrconsts.lispathofthemakeutility
 msgid "Path of the make utility"
 msgstr ""
@@ -11845,10 +11853,6 @@ msgstr "Видалити вибраний елемент"
 #: lazarusidestrconsts.lispckeditrequiredpackages
 msgid "Required Packages"
 msgstr "Необхідні пакунки"
-
-#: lazarusidestrconsts.lispckeditsavechanges
-msgid "Save Changes?"
-msgstr "Зберегти зміни?"
 
 #: lazarusidestrconsts.lispckeditsavepackage
 msgid "Save package"
@@ -12432,10 +12436,6 @@ msgstr "Новий пакунок"
 msgid "Package: %s"
 msgstr "Пакунок: %s"
 
-#: lazarusidestrconsts.lispkgmangpackagechangedsave
-msgid "Package %s%s%s changed. Save?"
-msgstr "Пакунок %s%s%s змінено. Записати?"
-
 #: lazarusidestrconsts.lispkgmangpackageconflicts
 msgid "Package conflicts"
 msgstr "Конфлікти в пакунку"
@@ -12488,10 +12488,6 @@ msgstr "Проект: %s"
 msgid "Rebuild Lazarus?"
 msgstr "Перебудувати Lazarus?"
 
-#: lazarusidestrconsts.lispkgmangrenamefileinpackage
-msgid "Rename file in package?"
-msgstr "Перейменувати файл в пакунку?"
-
 #: lazarusidestrconsts.lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
 msgstr "Перейменувати файл в нижній регістр?"
@@ -12505,10 +12501,8 @@ msgid "Replace File"
 msgstr "Замінити файл"
 
 #: lazarusidestrconsts.lispkgmangsavepackage
-msgid "Save Package?"
-msgstr "Зберегти пакунок?"
-
-#: lazarusidestrconsts.lispkgmangsavepackage2
+#, fuzzy
+#| msgid "Save Package?"
 msgid "Save package?"
 msgstr "Зберегти пакунок?"
 
@@ -12604,10 +12598,6 @@ msgstr "Назва пакунку %s%s%s є некоректною.%sВибер�
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
 msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgstr "Назва пакунку %s%s%s %sфайлу %s%s%s є некоректною."
-
-#: lazarusidestrconsts.lispkgmangthepackageownsthefileshouldthefileberenamed
-msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
-msgstr "Пакунок %s має файл%s%s%s%s.%sЧи змінити назву файла в пакунку як правило?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
@@ -14349,6 +14339,14 @@ msgstr "Файл %s%s%s є символьним посиланням.%s%sВід�
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
 msgstr "Файл %s%s%s не є проектом Lazarus.%sСтворити новий прокт для цього %s?"
 
+#: lazarusidestrconsts.listhefilemaskisinvalid
+msgid "The file mask \"%s\" is invalid."
+msgstr ""
+
+#: lazarusidestrconsts.listhefilemaskisnotavalidregularexpression
+msgid "The file mask \"%s\" is not a valid regular expression."
+msgstr ""
+
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "Файл %s%s%s%sсхожий на програму. Закрити поточний проект і створити новий проект lazarus для цієї програми?%s\"Ні\" відкриє файл як звичайний код."
@@ -14371,11 +14369,6 @@ msgstr "Файл %s%s%s%sне знайдено.%sПропуск продовжи
 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "Перший режим збирання є режимом за замовчуванням і повинен зберігатися в проекті, а не в сесії."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
 msgstr "Перший режим збирання є режимом за замовчуванням і повинен зберігатися в проекті, а не в сесії."
 
@@ -17151,6 +17144,10 @@ msgstr "Заблоковано"
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "Додати спостереження біля курсора"
+
+#: lazarusidestrconsts.uemaddwatchpointatcursor
+msgid "Add Watch&Point At Cursor"
+msgstr ""
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"

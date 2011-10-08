@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-09-29 02:53+0300\n"
+"PO-Revision-Date: 2011-10-08 20:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3301,17 +3301,17 @@ msgstr "Создать новый файл"
 msgid "Dependency"
 msgstr "Зависимость"
 
-#: lazarusidestrconsts.lisa2pexistingfile
-msgid "%sExisting file: %s%s%s"
-msgstr "%sСуществующий файл: %s%s%s"
+#: lazarusidestrconsts.lisa2pexistingfile2
+msgid "Existing file: %s%s%s"
+msgstr "Существующий файл: %s%s%s"
 
 #: lazarusidestrconsts.lisa2pfilealreadyexists
 msgid "File already exists"
 msgstr "Файл уже существует"
 
-#: lazarusidestrconsts.lisa2pfilealreadyexistsintheproject
-msgid "File %s%s%s already exists in the project."
-msgstr "Файл %s%s%s уже есть в проекте."
+#: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
+msgid "File %s%s%s already exists in the package."
+msgstr "Файл %s%s%s уже имеется в пакете."
 
 #: lazarusidestrconsts.lisa2pfilealreadyinpackage
 msgid "File already in package"
@@ -8726,6 +8726,10 @@ msgstr "Неверный каталог исходого кода Free Pascal"
 msgid "Invalid line, column in message%s%s"
 msgstr "Неверные строка, столбец в сообщении%s%s"
 
+#: lazarusidestrconsts.lisinvalidmask
+msgid "Invalid Mask"
+msgstr "Некорректная маска"
+
 #: lazarusidestrconsts.lisinvalidmode
 msgid "Invalid mode %s"
 msgstr "Режим %s некорректен"
@@ -11781,6 +11785,10 @@ msgstr "Пути поиска"
 msgid "Select directory"
 msgstr "Выбрать каталог"
 
+#: lazarusidestrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr "Путь к кэшу InstantFPC"
+
 #: lazarusidestrconsts.lispathofthemakeutility
 msgid "Path of the make utility"
 msgstr "Путь к утилите Make"
@@ -11994,10 +12002,6 @@ msgstr "Удалить выбранный элемент"
 #: lazarusidestrconsts.lispckeditrequiredpackages
 msgid "Required Packages"
 msgstr "Требуемые пакеты"
-
-#: lazarusidestrconsts.lispckeditsavechanges
-msgid "Save Changes?"
-msgstr "Сохранить изменения?"
 
 #: lazarusidestrconsts.lispckeditsavepackage
 msgid "Save package"
@@ -12586,10 +12590,6 @@ msgstr "NewPackage"
 msgid "Package: %s"
 msgstr "Пакет: %s"
 
-#: lazarusidestrconsts.lispkgmangpackagechangedsave
-msgid "Package %s%s%s changed. Save?"
-msgstr "Пакет %s%s%s изменён. Сохранить?"
-
 #: lazarusidestrconsts.lispkgmangpackageconflicts
 msgid "Package conflicts"
 msgstr "Конфликты пакетов"
@@ -12642,10 +12642,6 @@ msgstr "Проект: %s"
 msgid "Rebuild Lazarus?"
 msgstr "Пересобрать Lazarus?"
 
-#: lazarusidestrconsts.lispkgmangrenamefileinpackage
-msgid "Rename file in package?"
-msgstr "Переименовать файл в пакете?"
-
 #: lazarusidestrconsts.lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
 msgstr "Переименовать файл в нижний регистр?"
@@ -12659,10 +12655,7 @@ msgid "Replace File"
 msgstr "Заменить файл"
 
 #: lazarusidestrconsts.lispkgmangsavepackage
-msgid "Save Package?"
-msgstr "Сохранить пакет?"
-
-#: lazarusidestrconsts.lispkgmangsavepackage2
+#| msgid "Save Package?"
 msgid "Save package?"
 msgstr "Сохранить пакет?"
 
@@ -12758,10 +12751,6 @@ msgstr "Имя пакета %s%s%s некорректно.%sВыберите д�
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
 msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgstr "Имя пакета %s%s%s %sфайла %s%s%s некорректно."
-
-#: lazarusidestrconsts.lispkgmangthepackageownsthefileshouldthefileberenamed
-msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
-msgstr "Пакет %s имеет файл%s%s%s%s.%sДолжен ли файл быть переименован, как и пакет?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
@@ -14525,6 +14514,14 @@ msgstr "Файл %s%s%s является символической ссылко
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
 msgstr "Файл %s%s%s не является проектом Lazarus.%sСоздать новый проект для этого %s?"
 
+#: lazarusidestrconsts.listhefilemaskisinvalid
+msgid "The file mask \"%s\" is invalid."
+msgstr "Файловая маска \"%s\" некорректна."
+
+#: lazarusidestrconsts.listhefilemaskisnotavalidregularexpression
+msgid "The file mask \"%s\" is not a valid regular expression."
+msgstr "Файловая маска \"%s\" не является корректным регулярным выражением."
+
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "Файл %s%s%s%sвыглядит как программа. Закрыть текущий проект и создать новый проект Lazarus для этой программы?%s\"Нет\" откроет файл как обычный исходный код."
@@ -14547,11 +14544,6 @@ msgstr "Файл %s%s%s%sне найден.%sПропуск продолжит �
 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "Первый режим сборки является режимом сборки по умолчанию и должен храниться в проекте, а не в сессии."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
 msgstr "Первый режим сборки является режимом сборки по умолчанию и должен храниться в проекте, а не в сессии."
 
@@ -17343,6 +17335,10 @@ msgstr "Зафиксирован"
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "Добавить &наблюдение у курсора"
+
+#: lazarusidestrconsts.uemaddwatchpointatcursor
+msgid "Add Watch&Point At Cursor"
+msgstr "Добавить точку останова с наблюдением у &курсора"
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"

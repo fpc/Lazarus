@@ -3279,17 +3279,17 @@ msgstr "צור קובץ חדש"
 msgid "Dependency"
 msgstr "תלות"
 
-#: lazarusidestrconsts.lisa2pexistingfile
-msgid "%sExisting file: %s%s%s"
-msgstr "קובץ קיים: %s%s%s"
+#: lazarusidestrconsts.lisa2pexistingfile2
+msgid "Existing file: %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyexists
 msgid "File already exists"
 msgstr "הקובץ כבר קיים"
 
-#: lazarusidestrconsts.lisa2pfilealreadyexistsintheproject
-msgid "File %s%s%s already exists in the project."
-msgstr "קובץ s%s%s% כבר קיים בפרוייקט.  "
+#: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
+msgid "File %s%s%s already exists in the package."
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyinpackage
 msgid "File already in package"
@@ -8722,6 +8722,10 @@ msgstr "תיקיית קוד מקור לא חוקית של Free Pascal "
 msgid "Invalid line, column in message%s%s"
 msgstr "שורה לא חוקית, עמודה בהודעה s%s%"
 
+#: lazarusidestrconsts.lisinvalidmask
+msgid "Invalid Mask"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidmode
 msgid "Invalid mode %s"
 msgstr "אופן לא חוקי %s"
@@ -11811,6 +11815,10 @@ msgstr "נתיב חיפוש:"
 msgid "Select directory"
 msgstr "בחר ספרייה"
 
+#: lazarusidestrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr ""
+
 #: lazarusidestrconsts.lispathofthemakeutility
 msgid "Path of the make utility"
 msgstr "נתיב של שרותי make"
@@ -12025,10 +12033,6 @@ msgstr "הסר את הפריט הנבחר"
 #: lazarusidestrconsts.lispckeditrequiredpackages
 msgid "Required Packages"
 msgstr "חבילות דרושות"
-
-#: lazarusidestrconsts.lispckeditsavechanges
-msgid "Save Changes?"
-msgstr "לשמור שינויים?"
 
 #: lazarusidestrconsts.lispckeditsavepackage
 msgid "Save package"
@@ -12614,10 +12618,6 @@ msgstr "חבילה חדשה"
 msgid "Package: %s"
 msgstr "חבילה: %s"
 
-#: lazarusidestrconsts.lispkgmangpackagechangedsave
-msgid "Package %s%s%s changed. Save?"
-msgstr "החבילה %s%s%s שונתה. האם לשמור?"
-
 #: lazarusidestrconsts.lispkgmangpackageconflicts
 msgid "Package conflicts"
 msgstr "התנגשויות בחבילה"
@@ -12670,10 +12670,6 @@ msgstr "פרויקט: %s"
 msgid "Rebuild Lazarus?"
 msgstr "לבנות מחדש את לזרוס?"
 
-#: lazarusidestrconsts.lispkgmangrenamefileinpackage
-msgid "Rename file in package?"
-msgstr "לשנות שם הקובץ בחבילה?"
-
 #: lazarusidestrconsts.lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
 msgstr "לשנות שם קובץ לאותיות קטנות?"
@@ -12687,10 +12683,8 @@ msgid "Replace File"
 msgstr "החלף קובץ"
 
 #: lazarusidestrconsts.lispkgmangsavepackage
-msgid "Save Package?"
-msgstr "לשמור חבילה?"
-
-#: lazarusidestrconsts.lispkgmangsavepackage2
+#, fuzzy
+#| msgid "Save Package?"
 msgid "Save package?"
 msgstr "לשמור חבילה?"
 
@@ -12786,10 +12780,6 @@ msgstr "שם החבילה %s%s%s ב %s%s%s%s אינו שם חוקי, בחר שם
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
 msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgstr "שם החבילה %s%s%s של הקובץ %s%s%s%s אינו  חוקי."
-
-#: lazarusidestrconsts.lispkgmangthepackageownsthefileshouldthefileberenamed
-msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
-msgstr "החבילה s% היא בעלת הקובץ %s%s%s%s. האם לשנות גם את שם החבילה?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
@@ -14566,6 +14556,14 @@ msgstr "הקובץ %s%s%s הוא קישור סימבולי. לפתוח את %s%s
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
 msgstr "הקובץ %s%s%s אינו פרוייקט של לזארוס. האם ליצור פרוייקט חדש בשבילו?"
 
+#: lazarusidestrconsts.listhefilemaskisinvalid
+msgid "The file mask \"%s\" is invalid."
+msgstr ""
+
+#: lazarusidestrconsts.listhefilemaskisnotavalidregularexpression
+msgid "The file mask \"%s\" is not a valid regular expression."
+msgstr ""
+
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "הקובץ %s%s%s נראה כתוכנית. לסגור את הפרוייקט הנוכחי וליצור פרוייקט לזארוס חדש? No יגרום לטעינת הקובץ כקובץ קוד רגיל."
@@ -14588,11 +14586,6 @@ msgstr "הקובץ %s%s%s%s לא נמצא. \"התעלם\" יגרום להמשך 
 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "אופן הבנייה הראשון הוא אופן ברירת המחדל וחייב להשמר בפרוייקט ולא ב session."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
 msgstr "אופן הבנייה הראשון הוא אופן ברירת המחדל וחייב להשמר בפרוייקט ולא ב session."
 
@@ -17387,6 +17380,10 @@ msgstr "נעול"
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "הוסף משגיח במיקום הסמן"
+
+#: lazarusidestrconsts.uemaddwatchpointatcursor
+msgid "Add Watch&Point At Cursor"
+msgstr ""
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"

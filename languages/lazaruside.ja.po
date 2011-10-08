@@ -3303,17 +3303,17 @@ msgstr "新しいファイルを作成"
 msgid "Dependency"
 msgstr "依存性"
 
-#: lazarusidestrconsts.lisa2pexistingfile
-msgid "%sExisting file: %s%s%s"
-msgstr "%s存在するファイル: %s%s%s"
+#: lazarusidestrconsts.lisa2pexistingfile2
+msgid "Existing file: %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyexists
 msgid "File already exists"
 msgstr "ファイルはすでに存在します。"
 
-#: lazarusidestrconsts.lisa2pfilealreadyexistsintheproject
-msgid "File %s%s%s already exists in the project."
-msgstr "ファイル %s%s%s はすでにプロジェクトに存在します"
+#: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
+msgid "File %s%s%s already exists in the package."
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyinpackage
 msgid "File already in package"
@@ -8754,6 +8754,10 @@ msgstr "無効なFree Pascalソースディレクトリ"
 msgid "Invalid line, column in message%s%s"
 msgstr "メッセージ%s%sに無効な列、行があります"
 
+#: lazarusidestrconsts.lisinvalidmask
+msgid "Invalid Mask"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidmode
 msgid "Invalid mode %s"
 msgstr "無効なモード %s"
@@ -11853,6 +11857,10 @@ msgstr "検索パス:"
 msgid "Select directory"
 msgstr "ディレクトリを選択"
 
+#: lazarusidestrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr ""
+
 #: lazarusidestrconsts.lispathofthemakeutility
 msgid "Path of the make utility"
 msgstr "makeユーティリティのパス"
@@ -12067,10 +12075,6 @@ msgstr "選択されたアイテムを削除"
 #: lazarusidestrconsts.lispckeditrequiredpackages
 msgid "Required Packages"
 msgstr "要求されたパッケージ"
-
-#: lazarusidestrconsts.lispckeditsavechanges
-msgid "Save Changes?"
-msgstr "変更を保存しますか？"
 
 #: lazarusidestrconsts.lispckeditsavepackage
 msgid "Save package"
@@ -12656,10 +12660,6 @@ msgstr "新規パッケージ"
 msgid "Package: %s"
 msgstr "パッケージ: %s"
 
-#: lazarusidestrconsts.lispkgmangpackagechangedsave
-msgid "Package %s%s%s changed. Save?"
-msgstr "パッケージ %s%s%sは変更されました. 保存しますか?"
-
 #: lazarusidestrconsts.lispkgmangpackageconflicts
 msgid "Package conflicts"
 msgstr "パッケージが競合しています"
@@ -12712,10 +12712,6 @@ msgstr "プロジェクト: %s"
 msgid "Rebuild Lazarus?"
 msgstr "Lazarusを再構築しますか？"
 
-#: lazarusidestrconsts.lispkgmangrenamefileinpackage
-msgid "Rename file in package?"
-msgstr "パッケージのファイル名を変更"
-
 #: lazarusidestrconsts.lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
 msgstr "ファイル名を小文字に変更しますか？"
@@ -12729,10 +12725,8 @@ msgid "Replace File"
 msgstr "ファイルを置換"
 
 #: lazarusidestrconsts.lispkgmangsavepackage
-msgid "Save Package?"
-msgstr "パッケージを保存しますか？"
-
-#: lazarusidestrconsts.lispkgmangsavepackage2
+#, fuzzy
+#| msgid "Save Package?"
 msgid "Save package?"
 msgstr "パッケージを保存しますか？"
 
@@ -12828,10 +12822,6 @@ msgstr "パッケージ名 %s%s%sは有効なパッケージ名ではありま�
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
 msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgstr "パッケージ名%s%s%s %s（ファイル%s%s%sの）は無効です。 "
-
-#: lazarusidestrconsts.lispkgmangthepackageownsthefileshouldthefileberenamed
-msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
-msgstr "パッケージ %s は%s%s%s%sファイルを所有しています。%sパッケージ内のファイル名も変更しますか？"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
@@ -14605,6 +14595,14 @@ msgstr "ファイル%s%s%sはシンボリックリンクです。%s%s　%s%s%s�
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
 msgstr "ファイル %s%s%s は、lazarusプロジェクトではありません。%sこの %s のための新しいプロジェクトを作成しますか?"
 
+#: lazarusidestrconsts.listhefilemaskisinvalid
+msgid "The file mask \"%s\" is invalid."
+msgstr ""
+
+#: lazarusidestrconsts.listhefilemaskisnotavalidregularexpression
+msgid "The file mask \"%s\" is not a valid regular expression."
+msgstr ""
+
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "ファイル %s%s%sはプログラムのようです。現在のプロジェクトを閉じ、このプログラムについての新しいlazarusプロジェクトを作成しますか？%s\"いいえ\"を選択するとファイルを通常のソースとして読み込みます。"
@@ -14627,11 +14625,6 @@ msgstr "ファイル %s%s%sは見つかりませんでした。%s[無視]を選�
 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "第一構築モードは既定のモードで、セッションでなくプロジェクトに保管されなければなりません。"
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
 msgstr "第一構築モードは既定のモードで、セッションでなくプロジェクトに保管されなければなりません。"
 
@@ -17429,6 +17422,10 @@ msgstr "ロック済み"
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "カーソル位置の変数を監視に追加(&W)"
+
+#: lazarusidestrconsts.uemaddwatchpointatcursor
+msgid "Add Watch&Point At Cursor"
+msgstr ""
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"

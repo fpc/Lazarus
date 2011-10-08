@@ -3244,16 +3244,16 @@ msgstr ""
 msgid "Dependency"
 msgstr ""
 
-#: lazarusidestrconsts.lisa2pexistingfile
-msgid "%sExisting file: %s%s%s"
+#: lazarusidestrconsts.lisa2pexistingfile2
+msgid "Existing file: %s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyexists
 msgid "File already exists"
 msgstr ""
 
-#: lazarusidestrconsts.lisa2pfilealreadyexistsintheproject
-msgid "File %s%s%s already exists in the project."
+#: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
+msgid "File %s%s%s already exists in the package."
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyinpackage
@@ -8638,6 +8638,10 @@ msgstr "Virheellinen Free Pascalin lähdekoodikansio"
 msgid "Invalid line, column in message%s%s"
 msgstr "Kelvoton rivi, sarake viestissä%s%s"
 
+#: lazarusidestrconsts.lisinvalidmask
+msgid "Invalid Mask"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidmode
 msgid "Invalid mode %s"
 msgstr "Kelvoton moodi %s"
@@ -11631,6 +11635,10 @@ msgstr "Hakupolut:"
 msgid "Select directory"
 msgstr "Valitse hakemisto"
 
+#: lazarusidestrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr ""
+
 #: lazarusidestrconsts.lispathofthemakeutility
 msgid "Path of the make utility"
 msgstr "Polku make-työkaluun"
@@ -11843,10 +11851,6 @@ msgstr ""
 #: lazarusidestrconsts.lispckeditrequiredpackages
 msgid "Required Packages"
 msgstr "Tarvittavat komponenttipaketit"
-
-#: lazarusidestrconsts.lispckeditsavechanges
-msgid "Save Changes?"
-msgstr "Talletetaanko muutokset?"
 
 #: lazarusidestrconsts.lispckeditsavepackage
 msgid "Save package"
@@ -12430,10 +12434,6 @@ msgstr ""
 msgid "Package: %s"
 msgstr "Paketti: %s"
 
-#: lazarusidestrconsts.lispkgmangpackagechangedsave
-msgid "Package %s%s%s changed. Save?"
-msgstr "Paketti %s%s%s on muuttunut. Talletetaanko?"
-
 #: lazarusidestrconsts.lispkgmangpackageconflicts
 msgid "Package conflicts"
 msgstr ""
@@ -12486,10 +12486,6 @@ msgstr "Projekti: %s"
 msgid "Rebuild Lazarus?"
 msgstr "Käännetäänkö Lazarus uudelleen?"
 
-#: lazarusidestrconsts.lispkgmangrenamefileinpackage
-msgid "Rename file in package?"
-msgstr "Vaihdetaanko tiedoston nimeä komponenttipaketissa?"
-
 #: lazarusidestrconsts.lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
 msgstr ""
@@ -12503,10 +12499,8 @@ msgid "Replace File"
 msgstr "Korvaa tiedosto"
 
 #: lazarusidestrconsts.lispkgmangsavepackage
-msgid "Save Package?"
-msgstr "Tallenna paketti?"
-
-#: lazarusidestrconsts.lispkgmangsavepackage2
+#, fuzzy
+#| msgid "Save Package?"
 msgid "Save package?"
 msgstr "Tallenna paketti?"
 
@@ -12602,10 +12596,6 @@ msgstr ""
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
 msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgstr ""
-
-#: lazarusidestrconsts.lispkgmangthepackageownsthefileshouldthefileberenamed
-msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
-msgstr "Komponenttipaketti %s omistaa tiedoston%s%s%s%s.%sPitäisikö tuota komponenttipaketin nimeäkin myöskin muuttaa?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
@@ -14347,6 +14337,14 @@ msgstr ""
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
 msgstr ""
 
+#: lazarusidestrconsts.listhefilemaskisinvalid
+msgid "The file mask \"%s\" is invalid."
+msgstr ""
+
+#: lazarusidestrconsts.listhefilemaskisnotavalidregularexpression
+msgid "The file mask \"%s\" is not a valid regular expression."
+msgstr ""
+
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "Tiedosto %s%s%s%s näyttää olevan Pascal-ohjelma. Suljetaanko nykyinen projekti ja avataan tämä uutena projektina?%s\"Ei\"-näppäin avaa sen vain lähdekoodina."
@@ -14369,11 +14367,6 @@ msgstr "Tiedostoa %s%s%s%sei löytynyt.%sOhita-näppäimen nainallus jatkaa proj
 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr ""
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
 msgstr ""
 
@@ -17151,6 +17144,10 @@ msgstr "Lukittu"
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "Lisää vahti kursorin kohdalta"
+
+#: lazarusidestrconsts.uemaddwatchpointatcursor
+msgid "Add Watch&Point At Cursor"
+msgstr ""
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"

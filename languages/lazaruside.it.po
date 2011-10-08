@@ -3313,17 +3313,17 @@ msgstr "Crea un nuovo file"
 msgid "Dependency"
 msgstr "Dipendenza"
 
-#: lazarusidestrconsts.lisa2pexistingfile
-msgid "%sExisting file: %s%s%s"
-msgstr "%sFile esistente: %s%s%s"
+#: lazarusidestrconsts.lisa2pexistingfile2
+msgid "Existing file: %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyexists
 msgid "File already exists"
 msgstr "Il file esiste già"
 
-#: lazarusidestrconsts.lisa2pfilealreadyexistsintheproject
-msgid "File %s%s%s already exists in the project."
-msgstr "Il file %s%s%s esiste già nel progetto."
+#: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
+msgid "File %s%s%s already exists in the package."
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyinpackage
 msgid "File already in package"
@@ -8760,6 +8760,10 @@ msgstr "Cartella sorgenti compilatore Free Pascal non valida"
 msgid "Invalid line, column in message%s%s"
 msgstr "Riga non valida, colonna nel messaggio%s%s"
 
+#: lazarusidestrconsts.lisinvalidmask
+msgid "Invalid Mask"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidmode
 msgid "Invalid mode %s"
 msgstr "Modo %s non valido"
@@ -11853,6 +11857,10 @@ msgstr "Percorsi di ricerca:"
 msgid "Select directory"
 msgstr "Seleziona cartella"
 
+#: lazarusidestrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr ""
+
 #: lazarusidestrconsts.lispathofthemakeutility
 msgid "Path of the make utility"
 msgstr "Cartella dell'utility make"
@@ -12067,10 +12075,6 @@ msgstr "Rimuovi voce selezionata"
 #: lazarusidestrconsts.lispckeditrequiredpackages
 msgid "Required Packages"
 msgstr "Pacchetto richiesto"
-
-#: lazarusidestrconsts.lispckeditsavechanges
-msgid "Save Changes?"
-msgstr "Salvare i cambiamenti?"
 
 #: lazarusidestrconsts.lispckeditsavepackage
 msgid "Save package"
@@ -12655,10 +12659,6 @@ msgstr "Nuovo pacchetto"
 msgid "Package: %s"
 msgstr "Pacchetto: %s"
 
-#: lazarusidestrconsts.lispkgmangpackagechangedsave
-msgid "Package %s%s%s changed. Save?"
-msgstr "Il pacchetto %s%s%s è cambiato. Salvarlo?"
-
 #: lazarusidestrconsts.lispkgmangpackageconflicts
 msgid "Package conflicts"
 msgstr "Conflitti di pacchetto"
@@ -12711,10 +12711,6 @@ msgstr "Progetto: %s"
 msgid "Rebuild Lazarus?"
 msgstr "Ricostruire Lazarus?"
 
-#: lazarusidestrconsts.lispkgmangrenamefileinpackage
-msgid "Rename file in package?"
-msgstr "Rinomina il file nel pacchetto?"
-
 #: lazarusidestrconsts.lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
 msgstr "Rinominare il file in minuscolo?"
@@ -12728,10 +12724,8 @@ msgid "Replace File"
 msgstr "Sostituisci file"
 
 #: lazarusidestrconsts.lispkgmangsavepackage
-msgid "Save Package?"
-msgstr "Salvare il pacchetto?"
-
-#: lazarusidestrconsts.lispkgmangsavepackage2
+#, fuzzy
+#| msgid "Save Package?"
 msgid "Save package?"
 msgstr "Salvare il pacchetto?"
 
@@ -12827,10 +12821,6 @@ msgstr "Il nome del package %s%s%s non è valido.%sScegliere un altro nome (es. 
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
 msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgstr "Il nome del pacchetto %s%s%s del%sfile %s%s%s%s non è valido."
-
-#: lazarusidestrconsts.lispkgmangthepackageownsthefileshouldthefileberenamed
-msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
-msgstr "Il pacchetto %s contiene il file%s%s%s%s.%sRinomino il file anche nel pacchetto?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
@@ -14607,6 +14597,14 @@ msgstr "Il file %s%s%s è un symlink.%s%sApro %s%s%s al suo posto?"
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
 msgstr "Il file %s%s%s non è un progetto Lazarus.%sCreo un nuovo progetto per questo %s?"
 
+#: lazarusidestrconsts.listhefilemaskisinvalid
+msgid "The file mask \"%s\" is invalid."
+msgstr ""
+
+#: lazarusidestrconsts.listhefilemaskisnotavalidregularexpression
+msgid "The file mask \"%s\" is not a valid regular expression."
+msgstr ""
+
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "Il file %s%s%s%ssembra essere un programma. Chiudere il progetto corrente e creare un nuovo progetto Lazarus per questo programma?%s\"No\" caricherà il file come sorgente normale."
@@ -14629,11 +14627,6 @@ msgstr "Il file %s%s%s%snon è stato trovato.%sIgnora continuerà a caricare il 
 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr "Il primo modo di costruzione è il default e deve essere salvato nel progetto, non nella sessione."
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
 msgstr "Il primo modo di costruzione è il default e deve essere salvato nel progetto, non nella sessione."
 
@@ -17430,6 +17423,10 @@ msgstr "Bloccato"
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "Aggiungi &watch al cursore"
+
+#: lazarusidestrconsts.uemaddwatchpointatcursor
+msgid "Add Watch&Point At Cursor"
+msgstr ""
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"

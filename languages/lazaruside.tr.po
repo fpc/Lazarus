@@ -3244,16 +3244,16 @@ msgstr ""
 msgid "Dependency"
 msgstr ""
 
-#: lazarusidestrconsts.lisa2pexistingfile
-msgid "%sExisting file: %s%s%s"
-msgstr "%sVar olan dosya: %s%s%s"
+#: lazarusidestrconsts.lisa2pexistingfile2
+msgid "Existing file: %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyexists
 msgid "File already exists"
 msgstr ""
 
-#: lazarusidestrconsts.lisa2pfilealreadyexistsintheproject
-msgid "File %s%s%s already exists in the project."
+#: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
+msgid "File %s%s%s already exists in the package."
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyinpackage
@@ -8646,6 +8646,10 @@ msgstr ""
 msgid "Invalid line, column in message%s%s"
 msgstr ""
 
+#: lazarusidestrconsts.lisinvalidmask
+msgid "Invalid Mask"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidmode
 msgid "Invalid mode %s"
 msgstr ""
@@ -11715,6 +11719,10 @@ msgstr ""
 msgid "Select directory"
 msgstr ""
 
+#: lazarusidestrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr ""
+
 #: lazarusidestrconsts.lispathofthemakeutility
 msgid "Path of the make utility"
 msgstr ""
@@ -11926,10 +11934,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lispckeditrequiredpackages
 msgid "Required Packages"
-msgstr ""
-
-#: lazarusidestrconsts.lispckeditsavechanges
-msgid "Save Changes?"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditsavepackage
@@ -12514,10 +12518,6 @@ msgstr ""
 msgid "Package: %s"
 msgstr ""
 
-#: lazarusidestrconsts.lispkgmangpackagechangedsave
-msgid "Package %s%s%s changed. Save?"
-msgstr ""
-
 #: lazarusidestrconsts.lispkgmangpackageconflicts
 msgid "Package conflicts"
 msgstr ""
@@ -12570,10 +12570,6 @@ msgstr ""
 msgid "Rebuild Lazarus?"
 msgstr ""
 
-#: lazarusidestrconsts.lispkgmangrenamefileinpackage
-msgid "Rename file in package?"
-msgstr ""
-
 #: lazarusidestrconsts.lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
 msgstr ""
@@ -12587,10 +12583,6 @@ msgid "Replace File"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangsavepackage
-msgid "Save Package?"
-msgstr ""
-
-#: lazarusidestrconsts.lispkgmangsavepackage2
 msgid "Save package?"
 msgstr ""
 
@@ -12685,10 +12677,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
 msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
-msgstr ""
-
-#: lazarusidestrconsts.lispkgmangthepackageownsthefileshouldthefileberenamed
-msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
@@ -14439,6 +14427,14 @@ msgstr ""
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
 msgstr ""
 
+#: lazarusidestrconsts.listhefilemaskisinvalid
+msgid "The file mask \"%s\" is invalid."
+msgstr ""
+
+#: lazarusidestrconsts.listhefilemaskisnotavalidregularexpression
+msgid "The file mask \"%s\" is not a valid regular expression."
+msgstr ""
+
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "%s%s%s%sprogram dosyası gibi görünüyor. Bu program için, şu anki proje kapatılıp ve yeni bir lazarus projesi oluşturulsun mu?%s\"Hayır\" seçeneği dosyayı normal bir kaynak kodu dosyası olarak yükleyecek."
@@ -14461,11 +14457,6 @@ msgstr "%s%s%s%s adlı dosya bulunamadı.%sYoksayarsan projenin yüklenmesine de
 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr ""
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
 msgstr ""
 
@@ -17245,6 +17236,10 @@ msgstr ""
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "İmlecin Olduğu Yere İzleyici Ekle"
+
+#: lazarusidestrconsts.uemaddwatchpointatcursor
+msgid "Add Watch&Point At Cursor"
+msgstr ""
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"

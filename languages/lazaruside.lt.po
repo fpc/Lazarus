@@ -3296,17 +3296,17 @@ msgstr "Kurti naują failą"
 msgid "Dependency"
 msgstr "Priklausomybės"
 
-#: lazarusidestrconsts.lisa2pexistingfile
-msgid "%sExisting file: %s%s%s"
-msgstr "%sEgzistuojantis failas: %s%s%s"
+#: lazarusidestrconsts.lisa2pexistingfile2
+msgid "Existing file: %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyexists
 msgid "File already exists"
 msgstr "Failas jau egzistuoja"
 
-#: lazarusidestrconsts.lisa2pfilealreadyexistsintheproject
-msgid "File %s%s%s already exists in the project."
-msgstr "Failas %s%s%s projekte jau yra."
+#: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
+msgid "File %s%s%s already exists in the package."
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyinpackage
 msgid "File already in package"
@@ -8741,6 +8741,10 @@ msgstr "Klaidingas Free Pascal pirminio kodo aplankas"
 msgid "Invalid line, column in message%s%s"
 msgstr ""
 
+#: lazarusidestrconsts.lisinvalidmask
+msgid "Invalid Mask"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidmode
 msgid "Invalid mode %s"
 msgstr ""
@@ -11831,6 +11835,10 @@ msgstr "Ieškos keliai:"
 msgid "Select directory"
 msgstr "Rinkitės aplanką"
 
+#: lazarusidestrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr ""
+
 #: lazarusidestrconsts.lispathofthemakeutility
 msgid "Path of the make utility"
 msgstr "Kelias iki programos „make“"
@@ -12045,10 +12053,6 @@ msgstr "Pašalinti pažymėtą elementą"
 #: lazarusidestrconsts.lispckeditrequiredpackages
 msgid "Required Packages"
 msgstr "Būtini paketai"
-
-#: lazarusidestrconsts.lispckeditsavechanges
-msgid "Save Changes?"
-msgstr "Įrašyti pakeitimus?"
 
 #: lazarusidestrconsts.lispckeditsavepackage
 msgid "Save package"
@@ -12634,10 +12638,6 @@ msgstr "Naujas paketas"
 msgid "Package: %s"
 msgstr "Paketui: %s"
 
-#: lazarusidestrconsts.lispkgmangpackagechangedsave
-msgid "Package %s%s%s changed. Save?"
-msgstr "Paketas %s%s%s pakeistas. Įrašyti pakeitimus?"
-
 #: lazarusidestrconsts.lispkgmangpackageconflicts
 msgid "Package conflicts"
 msgstr "Paketų konfliktas"
@@ -12690,10 +12690,6 @@ msgstr "Projektui: %s"
 msgid "Rebuild Lazarus?"
 msgstr "Ar Lazarus daryti iš naujo?"
 
-#: lazarusidestrconsts.lispkgmangrenamefileinpackage
-msgid "Rename file in package?"
-msgstr "Pervadinti failą pakete?"
-
 #: lazarusidestrconsts.lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
 msgstr "Failą pervadinti vien mažosiomis raidėmis?"
@@ -12707,10 +12703,8 @@ msgid "Replace File"
 msgstr "Pakeisti failą"
 
 #: lazarusidestrconsts.lispkgmangsavepackage
-msgid "Save Package?"
-msgstr "Įrašyti paketą?"
-
-#: lazarusidestrconsts.lispkgmangsavepackage2
+#, fuzzy
+#| msgid "Save Package?"
 msgid "Save package?"
 msgstr "Įrašyti paketą?"
 
@@ -12806,10 +12800,6 @@ msgstr "Paketo pavadinimas %s%s%s yra klaidingas.%sParinkite kitokį pavadinimą
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
 msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgstr "Paketo pavadinimas %s%s%s, įrašytas%sfaile %s%s%s, yra klaidingas."
-
-#: lazarusidestrconsts.lispkgmangthepackageownsthefileshouldthefileberenamed
-msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
-msgstr "Paketui %s priklauso failas%s%s%s%s.%sFailą pervadinti ir pakete?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
@@ -14589,6 +14579,14 @@ msgstr "Failas %s%s%s yra simbolinė nuoroda.%s%sAr vietoj jo atverti %s%s%s?"
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
 msgstr "Failas %s%s%s nėra Lazarus projektas.%Šiam %s sukurti naują projektą?"
 
+#: lazarusidestrconsts.listhefilemaskisinvalid
+msgid "The file mask \"%s\" is invalid."
+msgstr ""
+
+#: lazarusidestrconsts.listhefilemaskisnotavalidregularexpression
+msgid "The file mask \"%s\" is not a valid regular expression."
+msgstr ""
+
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "Panašu kad failas %s%s%s%s yra programa. Užverti šį projektą ir tai programai sukurti naują Lazarus projektą?%sPaspaudus „Ne“ failas bus įkeltas kaip įprastas pirminis kodas."
@@ -14611,11 +14609,6 @@ msgstr "Failas %s%s%s%s nerastas.%sPaspaudus „Tęsti“ projektas bus įkeliam
 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr ""
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
 msgstr ""
 
@@ -17414,6 +17407,10 @@ msgstr "Užrakinta"
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "&Stebėti esantį ties žymekliu"
+
+#: lazarusidestrconsts.uemaddwatchpointatcursor
+msgid "Add Watch&Point At Cursor"
+msgstr ""
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"

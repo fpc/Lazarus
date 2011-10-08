@@ -3301,17 +3301,17 @@ msgstr "Vytvoriť nový súbor"
 msgid "Dependency"
 msgstr "Závislosť"
 
-#: lazarusidestrconsts.lisa2pexistingfile
-msgid "%sExisting file: %s%s%s"
-msgstr "%sExistujúci súbor: %s%s%s"
+#: lazarusidestrconsts.lisa2pexistingfile2
+msgid "Existing file: %s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyexists
 msgid "File already exists"
 msgstr "Súbor už existuje"
 
-#: lazarusidestrconsts.lisa2pfilealreadyexistsintheproject
-msgid "File %s%s%s already exists in the project."
-msgstr "Súbor %s%s%s už v projekte existuje."
+#: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
+msgid "File %s%s%s already exists in the package."
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pfilealreadyinpackage
 msgid "File already in package"
@@ -8743,6 +8743,10 @@ msgstr "Neplatný adresár zdrojových kódov FreePascal"
 msgid "Invalid line, column in message%s%s"
 msgstr ""
 
+#: lazarusidestrconsts.lisinvalidmask
+msgid "Invalid Mask"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidmode
 msgid "Invalid mode %s"
 msgstr ""
@@ -11834,6 +11838,10 @@ msgstr "Prehľadávať cesty:"
 msgid "Select directory"
 msgstr "Vyberte adresár"
 
+#: lazarusidestrconsts.lispathoftheinstantfpccache
+msgid "path of the instantfpc cache"
+msgstr ""
+
 #: lazarusidestrconsts.lispathofthemakeutility
 msgid "Path of the make utility"
 msgstr ""
@@ -12048,10 +12056,6 @@ msgstr "Odstrániť zvolenú položku"
 #: lazarusidestrconsts.lispckeditrequiredpackages
 msgid "Required Packages"
 msgstr "Vyžadované balíčky"
-
-#: lazarusidestrconsts.lispckeditsavechanges
-msgid "Save Changes?"
-msgstr "Uložiť zmeny?"
 
 #: lazarusidestrconsts.lispckeditsavepackage
 msgid "Save package"
@@ -12637,10 +12641,6 @@ msgstr "Nový balíček"
 msgid "Package: %s"
 msgstr "Balíček: %s"
 
-#: lazarusidestrconsts.lispkgmangpackagechangedsave
-msgid "Package %s%s%s changed. Save?"
-msgstr "Balíček %s%s%s zmenený. Uložiť?"
-
 #: lazarusidestrconsts.lispkgmangpackageconflicts
 msgid "Package conflicts"
 msgstr "Konflikty balíčka"
@@ -12693,10 +12693,6 @@ msgstr "Projekt: %s"
 msgid "Rebuild Lazarus?"
 msgstr "Prebudovať Lazarus?"
 
-#: lazarusidestrconsts.lispkgmangrenamefileinpackage
-msgid "Rename file in package?"
-msgstr "Premenovať súbor v balíčku?"
-
 #: lazarusidestrconsts.lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
 msgstr ""
@@ -12710,10 +12706,8 @@ msgid "Replace File"
 msgstr "Nahradiť súbor"
 
 #: lazarusidestrconsts.lispkgmangsavepackage
-msgid "Save Package?"
-msgstr "Uložiť balíček?"
-
-#: lazarusidestrconsts.lispkgmangsavepackage2
+#, fuzzy
+#| msgid "Save Package?"
 msgid "Save package?"
 msgstr "Uložiť balíček?"
 
@@ -12809,10 +12803,6 @@ msgstr "Meno balíčka %s%s%s nie je platným menom balíčka%sProsím zvoľte i
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
 msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgstr "Meno balíčka %s%s%s %ssúboru %s%s%s je neplatné."
-
-#: lazarusidestrconsts.lispkgmangthepackageownsthefileshouldthefileberenamed
-msgid "The package %s owns the file%s%s%s%s.%sShould the file be renamed in the package as well?"
-msgstr "Balíček %s vlastní súbor %s%s%s%s.%sMá byť súbor premenovaný aj v balíčku?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
@@ -14586,6 +14576,14 @@ msgstr "Súbor %s%s%s je symbolický odkaz. %s%sOtvoriť %s%s%s namiesto neho?"
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
 msgstr ""
 
+#: lazarusidestrconsts.listhefilemaskisinvalid
+msgid "The file mask \"%s\" is invalid."
+msgstr ""
+
+#: lazarusidestrconsts.listhefilemaskisnotavalidregularexpression
+msgid "The file mask \"%s\" is not a valid regular expression."
+msgstr ""
+
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "Súbor %s%s%s%svyzerá byť programom. Zatvoriť aktuálny projekt a vytvoriť nový projekt Lazarus z tohoto programu?%s\"Nie\" načíta súbor ako bežný zdrojový kód."
@@ -14608,11 +14606,6 @@ msgstr "Súbor %s%s%s%snebol nájdený.%sZvoľte Ignorovať pre pokračovanie v 
 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin"
-msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr ""
-
-#: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2
-msgctxt "lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin2"
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
 msgstr ""
 
@@ -17408,6 +17401,10 @@ msgstr ""
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "&Pridať pozorovanie v mieste kurzora"
+
+#: lazarusidestrconsts.uemaddwatchpointatcursor
+msgid "Add Watch&Point At Cursor"
+msgstr ""
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"

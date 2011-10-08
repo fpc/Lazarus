@@ -1696,6 +1696,7 @@ components/lazutils/Makefile svneol=native#text/plain
 components/lazutils/Makefile.compiled svneol=native#text/plain
 components/lazutils/Makefile.fpc svneol=native#text/plain
 components/lazutils/languages/luresstrings.po svneol=native#text/plain
+components/lazutils/languages/luresstrings.ru.po svneol=native#text/plain
 components/lazutils/laz2_dom.pas svneol=native#text/plain
 components/lazutils/laz2_names.inc svneol=native#text/plain
 components/lazutils/laz2_xmlcfg.pas svneol=native#text/plain
