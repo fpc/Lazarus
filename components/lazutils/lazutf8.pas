@@ -1217,13 +1217,26 @@ begin
   OutStr := PChar(Result) + (InStr - PChar(AInStr));
   CounterDiff := 0;
 
-  while InStr < InStrEnd do begin
+  while(true) do begin
     // Alternate between 2 loops, depnding on CounterDiff, less IF inside the loops
 
-    while CounterDiff = 0 do begin
-      if InStr >= InStrEnd then break;
-      c := InStr^;
+    while(true) do begin
+      (* InStr and OutStr pointing to te same relative position.
+         Result at/after OutStr is a copy of AInStr. Using OutStr as Source
+         The loop will be exited via break, if InStr and OutStr are increased in different steps
+      *)
+      c := OutStr^;
       case c of  // if NOT TABLE
+        #0:
+          begin
+            if InStr >= InStrEnd then begin
+              SetLength(Result,OutStr - PChar(Result));
+              exit;
+            end else begin
+              inc(InStr);
+              inc(OutStr);
+            end;
+        end;
         'A'..'Z':
           begin
             { First ASCII chars }
@@ -1237,9 +1250,10 @@ begin
               OutStr^ := #$C4;
               inc(OutStr);
               OutStr^ := #$B1;
-              dec(CounterDiff);
               inc(InStr);
               inc(OutStr);
+              dec(CounterDiff);
+              break; // InSTr and OutStr are pointing to different indexes
             end
             else
             begin
@@ -1250,38 +1264,49 @@ begin
           end;
         #$C3:
           begin
-            if InStr[1] in [#$80..#$9E] then
-              OutStr[1]  := chr(ord(InStr[1]) + $20);
+            //c := InStr[1];
+            c := OutStr[1];
+            if c in [#$80..#$9E] then
+              OutStr[1]  := chr(ord(c) + $20);
             inc(InStr, 2);
             inc(OutStr, 2);
           end;
         #$C4:
           begin
-            c := InStr[1];
+            c := OutStr[1];
             case c of
               #$81..#$A9, #$B2..#$B6: //0
                 begin
                   if ord(c) mod 2 = 0 then
                     OutStr[1]  := chr(ord(c) + 1);
+                    inc(InStr, 2);
+                    inc(OutStr, 2);
                 end;
               #$B8..#$FF: //1
                 begin
                   if ord(c) mod 2 = 1 then
                     OutStr[1]  := chr(ord(c) + 1);
+                    inc(InStr, 2);
+                    inc(OutStr, 2);
                 end;
-              #$B0:
+              #$B0:            // Turkish capital dotted i to small dotted i
                 begin
                   OutStr^ := 'i';
-                  dec(OutStr);
+                  inc(InStr, 2);
+                  inc(OutStr, 1);
                   inc(CounterDiff, 1);
+                  break; // InSTr and OutStr are pointing to different indexes
+                end;
+              else
+                begin
+                  inc(InStr, 2);
+                  inc(OutStr, 2);
                 end;
             end;
-            inc(InStr, 2);
-            inc(OutStr, 2);
           end;
         #$C5:
           begin
-            c := InStr[1];
+            c := OutStr[1];
             case c of
               #$8A..#$B7: //0
                 begin
@@ -1304,7 +1329,7 @@ begin
           end;
         #$C6..#$C7:
           begin
-            c := InStr[1];
+            c := OutStr[1];
             if ord(c) mod 2 = 1 then
               OutStr[1]  := chr(ord(c) + 1);
             inc(InStr, 2);
@@ -1312,15 +1337,15 @@ begin
           end;
         #$C8:
           begin
-            c := InStr[1];
+            c := OutStr[1];
             if (c in [#$00..#$B3]) and (ord(c) mod 2 = 1) then
               OutStr[1]  := chr(ord(c) + 1);
             inc(InStr, 2);
             inc(OutStr, 2);
           end;
-        #$CE:
+        #$CE:   // Greek Characters
           begin
-            c := InStr[1];
+            c := OutStr[1];
             case c of
               #$91..#$9F:
                 begin
@@ -1328,20 +1353,21 @@ begin
                 end;
               #$A0..#$A9:
                 begin
-                  OutStr^  := chr(ord(InStr[0])+1);
+                  OutStr^  := chr(ord(OutStr[0])+1);
                   OutStr[1]  := chr(ord(c) - $10);
                 end;
             end;
             inc(InStr, 2);
             inc(OutStr, 2);
           end;
-        #$D0:
+        #$D0:   // Cyrillic alphabet
           begin
-            c := InStr[1];
+            c := OutStr[1];
+            //c := InStr[1];
             case c of
               #$80..#$8F:
                 begin
-                  OutStr^  := chr(ord(InStr[0])+1);
+                  OutStr^  := chr(ord(OutStr[0])+1);
                   OutStr[1]  := chr(ord(c) + $10);
                 end;
               #$90..#$9F:
@@ -1350,7 +1376,7 @@ begin
                 end;
               #$A0..#$AF:
                 begin
-                  OutStr^  := chr(ord(InStr[0])+1);
+                  OutStr^  := chr(ord(OutStr[0])+1);
                   OutStr[1]  := chr(ord(c) - $10);
                 end;
             end;
@@ -1363,12 +1389,25 @@ begin
             inc(OutStr);
           end;
       end; // Case InStr^
-    end; // while CounterDiff = 0 do begin
+    end;
 
-    while CounterDiff <> 0 do begin
-      if InStr >= InStrEnd then break;
+    while (true) do begin
+      (* InStr and OutStr pointing to te different relative position.
+         All chars from AInStr must be copied to their new pos in Result
+         The loop will be exited via break, if InStr and OutStr are syncronized again
+      *)
       c := InStr^;
       case c of  // if NOT TABLE
+        #0:
+          begin
+            if InStr >= InStrEnd then begin
+              SetLength(Result,OutStr - PChar(Result));
+              exit;
+            end;
+            OutStr^:=c;
+            inc(InStr);
+            inc(OutStr);
+          end;
         'A'..'Z':
           begin
             { First ASCII chars }
@@ -1382,9 +1421,10 @@ begin
               OutStr^ := #$C4;
               inc(OutStr);
               OutStr^ := #$B1;
-              dec(CounterDiff);
               inc(InStr);
               inc(OutStr);
+              dec(CounterDiff);
+              if CounterDiff = 0 then break;
             end
             else
             begin
@@ -1414,6 +1454,8 @@ begin
                     OutStr[1]  := chr(ord(c) + 1)
                   else
                     OutStr[1]  :=c;
+                  inc(InStr, 2);
+                  inc(OutStr, 2);
                 end;
               #$B8..#$FF: //1
                 begin
@@ -1422,16 +1464,23 @@ begin
                     OutStr[1]  := chr(ord(c) + 1)
                   else
                     OutStr[1]  :=c;
+                  inc(InStr, 2);
+                  inc(OutStr, 2);
                 end;
-              #$B0:
+              #$B0:            // Turkish capital dotted i to small dotted i
                 begin
                   OutStr^ := 'i';
-                  dec(OutStr);
+                  inc(InStr, 2);
+                  inc(OutStr, 1);
                   inc(CounterDiff, 1);
+                  if CounterDiff = 0 then break;
+                end;
+              else
+                begin
+                  inc(InStr, 2);
+                  inc(OutStr, 2);
                 end;
             end;
-            inc(InStr, 2);
-            inc(OutStr, 2);
           end;
         #$C5:
           begin
@@ -1486,7 +1535,7 @@ begin
             inc(OutStr, 2);
           end;
         #$CE:
-          begin
+          begin   // Greek Characters
             c := InStr[1];
             case c of
               #$91..#$9F:
@@ -1503,7 +1552,7 @@ begin
             inc(InStr, 2);
             inc(OutStr, 2);
           end;
-        #$D0:
+        #$D0:   // Cyrillic alphabet
           begin
             c := InStr[1];
             case c of
@@ -1534,12 +1583,9 @@ begin
             inc(OutStr);
           end;
       end; // Case InStr^
-    end; // while CounterDiff = 0 do begin
+    end;
 
-  end; // while
-
-  // Final correction of the buffer size
-  SetLength(Result,OutStr - PChar(Result));
+  end;
 end;
 
 function UTF8LowerCaseMartin2(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
@@ -1608,16 +1654,16 @@ begin
           // $C39F: ß already lowercase
           if InStr[1] in [#$80..#$9E] then begin
             if (CounterDiff <> 0) then begin
-              OutStr^  :=InStr[0];
-              OutStr[1]  := chr(ord(InStr[1]) + $20);
-            end else begin
+            OutStr^  :=InStr[0];
+            OutStr[1]  := chr(ord(InStr[1]) + $20);
+          end else begin
               OutStr[1]  := chr(ord(InStr[1]) + $20);
             end;
           end else begin
             if (CounterDiff <> 0) then begin
-              OutStr^  :=InStr[0];
-              OutStr[1]  :=InStr[1];
-            end;
+            OutStr^  :=InStr[0];
+            OutStr[1]  :=InStr[1];
+          end;
           end;
           inc(InStr, 2);
           inc(OutStr, 2);
@@ -1632,15 +1678,15 @@ begin
                   if (CounterDiff <> 0) then begin
                     OutStr^  := InStr[0];
                     OutStr[1]  := chr(ord(c) + 1);
-                  end else begin
+                end else begin
                     OutStr[1]  := chr(ord(c) + 1);
                   end;
                 end else begin
                   if (CounterDiff <> 0) then begin
                     OutStr^  :=InStr[0];
                     OutStr[1]  :=c;
-                  end;
                 end;
+              end;
               end;
             #$B8..#$FF: //1
               begin
@@ -1648,15 +1694,15 @@ begin
                   if (CounterDiff <> 0) then begin
                     OutStr^  := InStr[0];
                     OutStr[1]  := chr(ord(c) + 1);
-                  end else begin
+                end else begin
                     OutStr[1]  := chr(ord(c) + 1);
                   end;
                 end else begin
                   if (CounterDiff <> 0) then begin
                     OutStr^  :=InStr[0];
                     OutStr[1]  :=c;
-                  end;
                 end;
+              end;
               end;
             #$B0:
               begin
@@ -1678,15 +1724,15 @@ begin
                   if (CounterDiff <> 0) then begin
                     OutStr^  := InStr[0];
                     OutStr[1]  := chr(ord(c) + 1);
-                  end else begin
+                end else begin
                     OutStr[1]  := chr(ord(c) + 1);
                   end;
                 end else begin
                   if (CounterDiff <> 0) then begin
                     OutStr^  :=InStr[0];
                     OutStr[1]  :=c;
-                  end;
                 end;
+              end;
               end;
             #$00..#$88, #$B9..#$FF: //1
               begin
@@ -1694,15 +1740,15 @@ begin
                   if (CounterDiff <> 0) then begin
                     OutStr^  := InStr[0];
                     OutStr[1]  := chr(ord(c) + 1);
-                  end else begin
+                end else begin
                     OutStr[1]  := chr(ord(c) + 1);
                   end;
                 end else begin
                   if (CounterDiff <> 0) then begin
                     OutStr^  :=InStr[0];
                     OutStr[1]  :=c;
-                  end;
                 end;
+              end;
               end;
             #$B8:  // Ÿ
             begin
@@ -1720,14 +1766,14 @@ begin
             if (CounterDiff <> 0) then begin
               OutStr^  := InStr[0];
               OutStr[1]  := chr(ord(c) + 1);
-            end else begin
+          end else begin
               OutStr[1]  := chr(ord(c) + 1);
             end;
           end else begin
             if (CounterDiff <> 0) then begin
               OutStr^  :=InStr[0];
               OutStr[1]  :=c;
-            end;
+          end;
           end;
           inc(InStr, 2);
           inc(OutStr, 2);
@@ -1737,14 +1783,14 @@ begin
           c := InStr[1];
           if (c in [#$00..#$B3]) and (ord(c) mod 2 = 1) then begin
             if (CounterDiff <> 0) then begin
-              OutStr^  := InStr[0];
+            OutStr^  := InStr[0];
             end;
             OutStr[1]  := chr(ord(c) + 1);
           end else begin
             if (CounterDiff <> 0) then begin
               OutStr^  :=InStr[0];
               OutStr[1]  :=c;
-            end;
+          end;
           end;
           inc(InStr, 2);
           inc(OutStr, 2);
@@ -1756,7 +1802,7 @@ begin
             #$91..#$9F:
               begin
                 if (CounterDiff <> 0) then begin
-                  OutStr^  := InStr[0];
+                OutStr^  := InStr[0];
                 end;
                 OutStr[1]  := chr(ord(c) + $20);
               end;
@@ -1781,7 +1827,7 @@ begin
             #$90..#$9F:
               begin
                 if (CounterDiff <> 0) then begin
-                  OutStr^  := InStr[0];
+                OutStr^  := InStr[0];
                 end;
                 OutStr[1]  := chr(ord(c) + $20);
               end;
@@ -1798,8 +1844,7 @@ begin
         begin
           // Copy the character if the string was disaligned by previous changes
           if (CounterDiff <> 0) then
-            OutStr^:=c;
-
+          OutStr^:=c;
           inc(InStr);
           inc(OutStr);
         end;
