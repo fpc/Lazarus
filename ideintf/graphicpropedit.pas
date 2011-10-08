@@ -85,6 +85,8 @@ begin
   GroupBox1.Caption:=oisPEPicture;
   OkCancelButtonPanel.OKButton.Caption := oisOK;
   OkCancelButtonPanel.CancelButton.Caption := oisCancel;
+  CopyAction.Caption := oiStdActEditCopyHeadLine;
+  PasteAction.Caption := oiStdActEditPasteHeadLine;
   FileOpenAction.Caption := oisLoad;
   FileSaveAction.Caption := oisSave;
   ClearAction.Caption := oisClear;
