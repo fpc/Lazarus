@@ -1198,11 +1198,15 @@ var
   PkgFile1,PkgFile2: TPkgFile;
   ConflictPkg: TLazPackage;
   s: String;
+  Btns: TMsgDlgButtons;
 begin
   {$IFDEF VerbosePkgCompile}
   debugln('TPkgManager.CheckPackageGraphForCompilation A');
   {$ENDIF}
   PathList:=nil;
+  if ShowAbort
+  then Btns := [mbCancel] // will be replaced to Ignore
+  else Btns := [mbOK];
   try
     // check for unsaved packages
     PathList:=PackageGraph.FindUnsavedDependencyPath(APackage,FirstDependency);
@@ -1226,7 +1230,9 @@ begin
             Result:=IDEMessageDialogAb(lisPkgMangBrokenDependency,
               Format(lisPkgMangTheProjectRequiresThePackageButItWasNotFound, [
                 '"', Dependency.AsString, '"', #13]),
-              mtError,[mbCancel],ShowAbort);
+              mtError,Btns,ShowAbort);
+            if not ShowAbort then
+              Result := mrCancel; // User confirmed error, implicitly cancel the action
             exit;
           end;
         end;
@@ -1234,7 +1240,9 @@ begin
       DoShowPackageGraphPathList(PathList);
       Result:=IDEMessageDialogAb(lisPkgMangBrokenDependency,
         lisPkgMangARequiredPackagesWasNotFound,
-        mtError,[mbCancel],ShowAbort);
+        mtError,Btns,ShowAbort);
+      if not ShowAbort then
+        Result := mrCancel; // User confirmed error, implicitly cancel the action
       exit;
     end;
 
@@ -1244,7 +1252,9 @@ begin
       DoShowPackageGraphPathList(PathList);
       Result:=IDEMessageDialogAb(lisPkgMangCircleInPackageDependencies,
         lisPkgMangThereIsACircleInTheRequiredPackages,
-        mtError,[mbCancel],ShowAbort);
+        mtError,Btns,ShowAbort);
+      if not ShowAbort then
+        Result := mrCancel; // User confirmed error, implicitly cancel the action
       exit;
     end;
 
@@ -1257,7 +1267,9 @@ begin
         Format(lisPkgMangThePackageIsCompiledAutomaticallyAndItsOutputDirec, [
           ConflictPkg.Name, ConflictPkg.GetOutputDirectory, #13#13, #13, #13,
           #13]),
-        mtError,[mbCancel],ShowAbort);
+        mtError,Btns,ShowAbort);
+      if not ShowAbort then
+        Result := mrCancel; // User confirmed error, implicitly cancel the action
       exit;
     end;
 
@@ -1279,7 +1291,9 @@ begin
           +'Please report this bug and how you got here.'#13;
       Result:=IDEMessageDialogAb(lisPkgMangAmbiguousUnitsFound, Format(
         lisPkgMangBothPackagesAreConnectedThisMeansEitherOnePackageU, [s]),
-          mtError,[mbCancel],ShowAbort);
+          mtError,Btns,ShowAbort);
+      if not ShowAbort then
+        Result := mrCancel; // User confirmed error, implicitly cancel the action
       exit;
     end;
 
@@ -1297,7 +1311,9 @@ begin
         s:='Internal inconsistency FindFPCConflictUnits: '
           +'Please report this bug and how you got here.'#13;
       Result:=IDEMessageDialogAb(lisPkgMangAmbiguousUnitsFound, s,
-          mtError,[mbCancel],ShowAbort);
+          mtError,Btns,ShowAbort);
+      if not ShowAbort then
+        Result := mrCancel; // User confirmed error, implicitly cancel the action
       exit;
     end;
 
