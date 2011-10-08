@@ -1224,8 +1224,8 @@ begin
   // Language identification
   IsTurkish := ALocale = 'tu';
 
-  ExtraResultBytes := ResultSizeIncr;
-  SetLength(Result, length(Result) + ExtraResultBytes); // also make result UniqueString
+  ExtraResultBytes := 0;
+  UniqueString(Result);
   OutStr := PChar(Result) + (InStr - PChar(AInStr));
   CounterDiff := 0;
 
@@ -1243,7 +1243,8 @@ begin
         #0:
           begin
             if InStr >= InStrEnd then begin
-              SetLength(Result,OutStr - PChar(Result));
+              if ExtraResultBytes <> 0 then
+                SetLength(Result,OutStr - PChar(Result));
               exit;
             end else begin
               inc(OutStr);
@@ -1267,8 +1268,8 @@ begin
             end
             else
             begin
-              OutStr^ := chr(ord(c)+32);
-              inc(OutStr);
+                OutStr^ := chr(ord(c)+32);
+                inc(OutStr);
             end;
           end;
         #$C3:
