@@ -3860,6 +3860,7 @@ begin
     // new lines like in large functions or procedures
     ExecuteCommand('set width 50000', []);
     {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
+      isConsole := False;
       // Make sure consule output will ot be mixed with gbd output
       {$IFDEF DBG_ENABLE_TERMINAL}
         {$IFDEF UNIX}
