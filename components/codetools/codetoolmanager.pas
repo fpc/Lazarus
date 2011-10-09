@@ -1698,6 +1698,8 @@ begin
   fErrorTopLine:=0;
   if (AnException is ELinkScannerError) then begin
     // link scanner error
+    if AnException is ELinkScannerConsistency then
+      DumpExceptionBackTrace;
     DirtyPos:=0;
     if AnException is ELinkScannerEditError then begin
       fErrorCode:=TCodeBuffer(ELinkScannerEditError(AnException).Buffer);

@@ -244,9 +244,9 @@ type
   
   TLinkScannerProgress = function(Sender: TLinkScanner): boolean of object;
   
-  ELinkScannerAbort = class(ELinkScannerError)
-  end;
-  
+  ELinkScannerAbort = class(ELinkScannerError);
+  ELinkScannerConsistency = class(ELinkScannerError);
+
   ELinkScannerEditError = class(ELinkScannerError)
     Buffer: Pointer;
     BufferPos: integer;
@@ -419,6 +419,7 @@ type
       ExceptionClass: ELinkScannerErrors);
     procedure RaiseEditException(const AMessage: string; ABuffer: Pointer;
       ABufferPos: integer);
+    procedure RaiseConsistencyException(const AMessage: string);
     procedure ClearLastError;
     procedure RaiseLastError;
     procedure DoCheckAbort;
@@ -806,7 +807,7 @@ function TLinkScanner.LinkSize(Index: integer): integer;
 
   procedure IndexOutOfBounds;
   begin
-    RaiseException('TLinkScanner.LinkSize  index '
+    RaiseConsistencyException('TLinkScanner.LinkSize  index '
        +IntToStr(Index)+' out of bounds: 0-'+IntToStr(LinkCount));
   end;
 
@@ -982,7 +983,7 @@ procedure TLinkScanner.SetSource(ACode: pointer);
 
   procedure RaiseUnableToGetCode;
   begin
-    RaiseException('unable to get source with Code='+DbgS(Code));
+    RaiseConsistencyException('unable to get source with Code='+DbgS(Code));
   end;
 
 var SrcLog: TSourceLog;
@@ -1515,7 +1516,7 @@ procedure TLinkScanner.UpdateCleanedSource(NewCopiedSrcPos: integer);
   procedure RaiseInvalid;
   begin
     debugln(['TLinkScanner.UpdateCleanedSource inconsistency found: Srclen=',SrcLen,'=',length(Src),' FCleanedSrc=',CleanedLen,'/',length(FCleanedSrc),' CopiedSrcPos=',CopiedSrcPos,' NewCopiedSrcPos=',NewCopiedSrcPos,' AddLen=',NewCopiedSrcPos-CopiedSrcPos]);
-    RaiseException('TLinkScanner.UpdateCleanedSource inconsistency found AddLen='+dbgs(NewCopiedSrcPos-CopiedSrcPos));
+    RaiseConsistencyException('TLinkScanner.UpdateCleanedSource inconsistency found AddLen='+dbgs(NewCopiedSrcPos-CopiedSrcPos));
   end;
 
 var AddLen: integer;
@@ -1543,7 +1544,7 @@ procedure TLinkScanner.AddSourceChangeStep(ACode: pointer; AChangeStep: integer)
 
   procedure RaiseCodeNil;
   begin
-    RaiseException('TLinkScanner.AddSourceChangeStep ACode=nil');
+    RaiseConsistencyException('TLinkScanner.AddSourceChangeStep ACode=nil');
   end;
 
 var l,r,m: integer;
@@ -3888,6 +3889,11 @@ procedure TLinkScanner.RaiseEditException(const AMessage: string;
   ABuffer: Pointer; ABufferPos: integer);
 begin
   raise ELinkScannerEditError.Create(Self,AMessage,ABuffer,ABufferPos);
+end;
+
+procedure TLinkScanner.RaiseConsistencyException(const AMessage: string);
+begin
+  RaiseExceptionClass(AMessage,ELinkScannerConsistency);
 end;
 
 procedure TLinkScanner.ClearLastError;

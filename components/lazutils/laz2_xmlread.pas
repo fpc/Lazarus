@@ -197,7 +197,7 @@ type
     FCharCount: Cardinal;
   end;
 
-  DOMPCharBuf = ^TDOMCharBuf;
+  DOMPCharBuf = {%H-}^TDOMCharBuf;
   TDOMCharBuf = record
     Buffer: DOMPChar;
     Length: Integer;
@@ -456,7 +456,7 @@ type
     procedure ExpectChoiceOrSeq(CP: TContentParticle);
     procedure ParseElementDecl;
     procedure ParseNotationDecl;
-    function ResolveEntity(const SystemID, PublicID, BaseURI: DOMString; out Source: TXMLCharSource): Boolean;
+    function ResolveEntity(const SystemID, {%H-}PublicID, BaseURI: DOMString; out Source: TXMLCharSource): Boolean;
     procedure ProcessDefaultAttributes(Element: TDOMElement; Map: TDOMNamedNodeMap);
     procedure ProcessNamespaceAtts(Element: TDOMElement);
     procedure AddBinding(Attr: TDOMAttr; PrefixPtr: DOMPChar; PrefixLen: Integer);
@@ -574,7 +574,7 @@ begin
 end;
 {$ENDIF}
 
-function Decode_UCS2(Context: Pointer; InBuf: PChar; var InCnt: Cardinal; OutBuf: DOMPChar; var OutCnt: Cardinal): Integer; stdcall;
+function Decode_UCS2({%H-}Context: Pointer; InBuf: PChar; var InCnt: Cardinal; OutBuf: DOMPChar; var OutCnt: Cardinal): Integer; stdcall;
 {$IFDEF UseUTF8}
 var
   u: cardinal;
@@ -605,7 +605,7 @@ begin
 end;
 {$ENDIF UseWideString}
 
-function Decode_UCS2_Swapped(Context: Pointer; InBuf: PChar; var InCnt: Cardinal; OutBuf: DOMPChar; var OutCnt: Cardinal): Integer; stdcall;
+function Decode_UCS2_Swapped({%H-}Context: Pointer; InBuf: PChar; var InCnt: Cardinal; OutBuf: DOMPChar; var OutCnt: Cardinal): Integer; stdcall;
 {$IFDEF UseUTF8}
 var
   u: cardinal;
@@ -643,7 +643,7 @@ begin
 end;
 {$ENDIF UseWideString}
 
-function Decode_88591(Context: Pointer; InBuf: PChar; var InCnt: Cardinal; OutBuf: DOMPChar; var OutCnt: Cardinal): Integer; stdcall;
+function Decode_88591({%H-}Context: Pointer; InBuf: PChar; var InCnt: Cardinal; OutBuf: DOMPChar; var OutCnt: Cardinal): Integer; stdcall;
 {$IFDEF UseUTF8}
 // convert ISO-8859-1 to UTF-8
 var
@@ -694,7 +694,7 @@ begin
 end;
 {$ENDIF}
 
-function Decode_UTF8(Context: Pointer; InBuf: PChar; var InCnt: Cardinal; OutBuf: DOMPChar; var OutCnt: Cardinal): Integer; stdcall;
+function Decode_UTF8({%H-}Context: Pointer; InBuf: PChar; var InCnt: Cardinal; OutBuf: DOMPChar; var OutCnt: Cardinal): Integer; stdcall;
 {$IFDEF UseUTF8}
 var
   cnt: Cardinal;
@@ -1224,7 +1224,7 @@ begin
   if SameText(AEncoding, 'UTF-8') then
     Exit;
   {$ENDIF}
-  FillChar(NewDecoder, sizeof(TDecoder), 0);
+  FillChar(NewDecoder{%H-}, sizeof(TDecoder), 0);
   if Is_8859_1(AEncoding) then
     FDecoder.Decode := @Decode_88591
   else if FindDecoder(AEncoding, NewDecoder) then
