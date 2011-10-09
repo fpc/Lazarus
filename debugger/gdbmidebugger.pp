@@ -319,6 +319,7 @@ type
     FDebuggerFlags: TGDBMIDebuggerFlags;
     FSourceNames: TStringList; // Objects[] -> TMap[Integer|Integer] -> TDbgPtr
     FReleaseLock: Integer;
+    FInProcessStopped: Boolean; // paused, but maybe state run
 
     // Internal Current values
     FCurrentStackFrame, FCurrentThreadId: Integer; // User set values
@@ -4607,6 +4608,8 @@ begin
      Therefore all calls to ExecuteCommand (gdb cmd) must be wrapped in QueueExecuteLock
   *)
   Result := False;
+  FTheDebugger.FInProcessStopped := True;  // paused, but maybe state run
+
   List := TGDBMINameValueList.Create(AParams);
   List2 := nil;
 
@@ -4733,6 +4736,7 @@ begin
       ProcessFrame(List.Values['frame']);
     end;
   finally
+    FTheDebugger.FInProcessStopped := False;
     List.Free;
     list2.Free;
   end;
@@ -5834,6 +5838,7 @@ begin
   FThreadGroups := TStringList.Create;
   FTypeRequestCache := TGDBPTypeRequestCache.Create;
   FMaxLineForUnitCache := TStringList.Create;
+  FInProcessStopped := False;
 
 
 {$IFdef MSWindows}
@@ -6585,6 +6590,8 @@ end;
 
 function TGDBMIDebugger.GDBPause(const AInternal: Boolean): Boolean;
 begin
+  if FInProcessStopped then exit;
+
   // Check if we already issued a break
   if FPauseWaitState = pwsNone
   then InterruptTarget;

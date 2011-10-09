@@ -197,9 +197,7 @@ type
   private
     FDebuggerClass: String;
     FTDebuggerWatchesDlgConfig: TDebuggerWatchesDlgConfig;
-    FWarnedAboutBreakGroup: Boolean;
   public
-    procedure Init; override;
     procedure Load; override;
     procedure Save; override;
   public
@@ -208,9 +206,6 @@ type
     property DebuggerClass: String read FDebuggerClass write FDebuggerClass;
     property DlgWatchesConfig: TDebuggerWatchesDlgConfig read FTDebuggerWatchesDlgConfig;
   published
-    {$IFdef MSWindows}
-    property WarnedAboutBreakGroup: Boolean read FWarnedAboutBreakGroup write FWarnedAboutBreakGroup;
-    {$ENDIF}
   end;
 
   { TFreeNotifyingObject }
@@ -3102,14 +3097,6 @@ begin
 end;
 
 { TDebuggerConfigStore }
-
-procedure TDebuggerConfigStore.Init;
-begin
-  inherited Init;
-  {$IFdef MSWindows}
-  WarnedAboutBreakGroup := False;
-  {$ENDIF}
-end;
 
 procedure TDebuggerConfigStore.Load;
 const
@@ -6699,8 +6686,6 @@ begin
   if bpaLogCallStack in Actions
   then FMaster.DoLogCallStack(FLogCallStackLimit);
   // SnapShot is taken in TDebugManager.DebuggerChangeState
-  if Actions * [bpaDisableGroup, bpaEnableGroup] <> []
-  then sleep(2500);
   if bpaEnableGroup in Actions
   then EnableGroups;
   if bpaDisableGroup in Actions

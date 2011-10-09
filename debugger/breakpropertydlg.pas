@@ -93,41 +93,11 @@ end;
 
 procedure TBreakPropertyDlg.chkDisableGroupsChange(Sender: TObject);
 begin
-  {$IFdef MSWindows}
-  if (not FUpdatingInfo) and (not EnvironmentOptions.DebuggerConfig.WarnedAboutBreakGroup)
-  then begin
-    if MessageDlg('Beta Feature', 'This feature requires special setup, See DEBUG-README.TXT. Continue?',
-                  mtConfirmation, mbYesNo, 0)
-       <> mrYes
-    then begin
-      FUpdatingInfo := True;
-      chkDisableGroups.Checked := False;
-      FUpdatingInfo := False;
-      exit;
-    end;
-    EnvironmentOptions.DebuggerConfig.WarnedAboutBreakGroup := True;
-  end;
-  {$ENDIF}
   edtDisableGroups.Enabled := chkDisableGroups.Checked;
 end;
 
 procedure TBreakPropertyDlg.chkEnableGroupsChange(Sender: TObject);
 begin
-  {$IFdef MSWindows}
-  if (not FUpdatingInfo) and (not EnvironmentOptions.DebuggerConfig.WarnedAboutBreakGroup)
-  then begin
-    if MessageDlg('Beta Feature', 'This feature requires special setup, See DEBUG-README.TXT. Continue?',
-                  mtConfirmation, mbYesNo, 0)
-       <> mrYes
-    then begin
-      FUpdatingInfo := True;
-      chkEnableGroups.Checked := False;
-      FUpdatingInfo := False;
-      exit;
-    end;
-    EnvironmentOptions.DebuggerConfig.WarnedAboutBreakGroup := True;
-  end;
-  {$ENDIF}
   edtEnableGroups.Enabled := chkEnableGroups.Checked;
 end;
 
