@@ -672,7 +672,8 @@ var
   PropCount,i : integer;
   PropList  : PPropList;
 begin
-  Path := ExtendPath(Path);
+  // Do Not extebd the path, individual SetValue will be called, and Extend it
+  //Path := ExtendPath(Path);
   PropCount:=GetPropList(Obj,PropList);
   if PropCount>0 then begin
     try
@@ -690,7 +691,8 @@ var
   PropCount,i : integer;
   PropList  : PPropList;
 begin
-  Path := ExtendPath(Path);
+  // Do Not extebd the path, individual SetValue will be called, and Extend it
+  //Path := ExtendPath(Path);
   PropCount:=GetPropList(Obj,PropList);
   if PropCount>0 then begin
     try
