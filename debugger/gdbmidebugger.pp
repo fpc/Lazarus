@@ -4461,9 +4461,21 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     {$ELSE}
     SigInt := S = 'SIGINT';
     {$ENDIF}
-    if not AIgnoreSigIntState
+
+    {$IFdef MSWindows}
+    if SigInt and (FTheDebugger.PauseWaitState = pwsNone) and
+       (pos('DbgUiConvertStateChangeStructure', FTheDebugger.FCurrentLocation.FuncName) > 0)
+    then begin
+      Result := True;
+      exit;
+    end;
+    {$ENDIF}
+
+    if not AIgnoreSigIntState  // not pwsInternal
     or not SigInt
     then begin
+      // user-requested pause OR other signal (not sigint)
+      // TODO: if SigInt, check that it was issued by IDE
       {$IFdef MSWindows}
       FTheDebugger.QueueExecuteLock;
       try
