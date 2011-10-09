@@ -1162,8 +1162,7 @@ resourcestring
   dlgAutoDel = 'Auto delete file';
   dlgAutoRen = 'Auto rename file lowercase';
   dlgnoAutomaticRenaming = 'No automatic renaming';
-  lisWhenAUnitIsRenamedUpdateReferences = 'When a unit is renamed, update '
-    +'references ...';
+  lisWhenAUnitIsRenamedUpdateReferences = 'When a unit is renamed, update references';
   lisAlways = 'Always';
   dlgAmbigWarn = 'Warn on compile';
   dlgIgnoreVerb = 'Ignore';
@@ -1260,12 +1259,12 @@ resourcestring
   lisLazarusPackage = 'Lazarus package';
   lisLazarusProjectSource = 'Lazarus project source';
 
-  dlgUndoGroupOptions = 'Undo / Redo:';
-  dlgScrollGroupOptions = 'Scrolling:';
-  dlgIndentsTabsGroupOptions = 'Indent and Tabs:';
+  dlgUndoGroupOptions = 'Undo / Redo';
+  dlgScrollGroupOptions = 'Scrolling';
+  dlgIndentsTabsGroupOptions = 'Indent and Tabs';
   dlgMouseGroupOptions = 'Mouse:';
-  dlgCursorGroupOptions = 'Cursor:';
-  dlgBlockGroupOptions = 'Selection:';
+  dlgCursorGroupOptions = 'Cursor';
+  dlgBlockGroupOptions = 'Selection';
   dlgAlwaysVisibleCursor = 'Always visible cursor';
   dlgAutoIndent = 'Auto indent';
   dlgAutoIndentLink = '(Setup smart indent)';
@@ -1507,8 +1506,8 @@ resourcestring
   lisAutoMarkup = 'Markup and Matches';
 
   dlgMultiWinOptions = 'Pages and Windows';
-  dlgMultiWinTabGroup = 'Notebook Tabs:';
-  dlgMultiWinAccessGroup = 'Find editor for jump targets:';
+  dlgMultiWinTabGroup = 'Notebook Tabs';
+  dlgMultiWinAccessGroup = 'Find editor for jump targets';
   dlgMultiWinAccessOrder     = 'Order to use for editors matching the same criteria';
   dlgMultiWinAccessOrderEdit = 'Most recent focused editor for this file';
   dlgMultiWinAccessOrderWin  = 'Editor (for file) in most recent focused window';
