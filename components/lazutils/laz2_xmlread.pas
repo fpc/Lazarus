@@ -159,7 +159,7 @@ procedure RegisterDecoder(Proc: TGetDecoderProc);
 implementation
 
 uses
-  UriParser, laz2_xmlutils;
+  UriParser, laz2_xmlutils, LazUTF8;
 
 const
   PubidChars: TSetOfChar = [' ', #13, #10, 'a'..'z', 'A'..'Z', '0'..'9',
@@ -4136,7 +4136,7 @@ var
   FileStream: TStream;
 begin
   ADoc := nil;
-  FileStream := TFileStream.Create(AFilename, fmOpenRead+fmShareDenyWrite);
+  FileStream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead+fmShareDenyWrite);
   try
     ReadXMLFile(ADoc, FileStream, FilenameToURI(AFilename), Flags);
   finally
@@ -4188,7 +4188,7 @@ procedure ReadXMLFragment(AParentNode: TDOMNode; const AFilename: String;
 var
   Stream: TStream;
 begin
-  Stream := TFileStream.Create(AFilename, fmOpenRead+fmShareDenyWrite);
+  Stream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead+fmShareDenyWrite);
   try
     ReadXMLFragment(AParentNode, Stream, FilenameToURI(AFilename), Flags);
   finally
@@ -4240,7 +4240,7 @@ var
   Stream: TStream;
 begin
   ADoc := nil;
-  Stream := TFileStream.Create(AFilename, fmOpenRead+fmShareDenyWrite);
+  Stream := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead+fmShareDenyWrite);
   try
     ReadDTDFile(ADoc, Stream, FilenameToURI(AFilename));
   finally
