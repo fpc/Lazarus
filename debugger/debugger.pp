@@ -3106,7 +3106,9 @@ end;
 procedure TDebuggerConfigStore.Init;
 begin
   inherited Init;
+  {$IFdef MSWindows}
   WarnedAboutBreakGroup := False;
+  {$ENDIF}
 end;
 
 procedure TDebuggerConfigStore.Load;
