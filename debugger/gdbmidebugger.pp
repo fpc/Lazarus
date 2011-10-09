@@ -5988,7 +5988,9 @@ begin
     ClearSourceInfo;
     FPauseWaitState := pwsNone;
     // clear un-needed commands
-    CancelAfterStop;
+    if State = dsError
+    then CancelAllQueued
+    else CancelAfterStop;
   end;
   if (State = dsError) and (DebugProcessRunning) then begin
     SendCmdLn('kill'); // try to kill the debugged process. bypass all queues.
@@ -10527,7 +10529,7 @@ function TGDBMIDebuggerCommand.Execute: Boolean;
 var
   I: Integer;
   Frames: PPointer;
-  Report: string;
+  Report, Report2: string;
 begin
   // Set the state first, so DoExecute can set an error-state
   SetCommandState(dcsExecuting);
@@ -10541,16 +10543,19 @@ begin
       try
       debugln(['ERROR: Exception occured in DoExecute '+e.ClassName + ' Msg="'+ e.Message + '" Addr=', dbgs(ExceptAddr)]);
       Report :=  BackTraceStrFunc(ExceptAddr);
+      Report2 := Report;
       Frames := ExceptFrames;
       for I := 0 to ExceptFrameCount - 1 do
         Report := Report + LineEnding + BackTraceStrFunc(Frames[I]);
+        if i < 5
+        then Report2 := Report;
       except end;
       debugln(Report);
 
       if MessageDlg('The debugger experienced an unknown condition.',
-        Format('Press "Ignore" to continue debugging. This may NOT be save. Press "Abort to stop the debugger. %s'
-          +'Exception: %s.with message "%s"',
-        [LineEnding, e.ClassName, e.Message]),
+        Format('Press "Ignore" to continue debugging. This may NOT be save. Press "Abort to stop the debugger. %0:s'
+          +'Exception: %1:s.with message "%2:s"%0:s%0:s%3:s',
+        [LineEnding, e.ClassName, e.Message, Report2]),
         mtWarning, [mbIgnore, mbAbort], 0, mbAbort) = mrAbort
       then begin
         try
