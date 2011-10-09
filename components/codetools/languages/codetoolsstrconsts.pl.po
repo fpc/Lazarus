@@ -653,10 +653,6 @@ msgstr "nie ma żadnego kontekstowego elementu przy kursorze"
 msgid "nodefault specifier defined twice"
 msgstr "specyfikator nodefault zdefiniowany dwukrotnie"
 
-#: codetoolsstrconsts.ctsnonodefoundatcursor
-msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "nie znaleziono elementu pacala przy kursorze (np. w niezanalizowanym kodzie)"
-
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
 msgstr "nie znaleziono źródła w pascalu (pierwszy token: %s)"

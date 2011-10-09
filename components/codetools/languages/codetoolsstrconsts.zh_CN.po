@@ -652,10 +652,6 @@ msgstr "光标处未找到关联节点"
 msgid "nodefault specifier defined twice"
 msgstr "nodefault specifier defined twice"
 
-#: codetoolsstrconsts.ctsnonodefoundatcursor
-msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "在光标处未找到pascal节点(也就是在未解析的代码中)"
-
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
 msgstr "未找到pascal代码 (第一个象征是 %s)"

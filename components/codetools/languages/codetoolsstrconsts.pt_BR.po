@@ -648,10 +648,6 @@ msgstr "nenhum nó de contexto encontrada sob o cursor"
 msgid "nodefault specifier defined twice"
 msgstr "especificador \"nodefault\" duplicado"
 
-#: codetoolsstrconsts.ctsnonodefoundatcursor
-msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "nenhum nó pascal encontrado sob o cursor (ex. em código não analisado)"
-
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
 msgstr "nenhum código pascal encontrado (primeira sílaba é %s)"

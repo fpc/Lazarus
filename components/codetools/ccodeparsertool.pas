@@ -1646,9 +1646,46 @@ function TCCodeParserTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
   P: integer; ExceptionOnNotFound: boolean): TCodeTreeNode;
 
   procedure RaiseNoNodeFoundAtCursor;
+  var
+    Msg: String;
+    Node: TCodeTreeNode;
+    LastPos: Integer;
   begin
     //DebugLn('RaiseNoNodeFoundAtCursor ',MainFilename);
-    RaiseException(ctsNoNodeFoundAtCursor);
+    MoveCursorToPos(P);
+    // check if p is in parsed code
+    if (Tree=nil) or (Tree.Root=nil) then begin
+      RaiseException('no pascal code or not yet parsed');
+    end;
+    if p<Tree.Root.StartPos then begin
+      Msg:='In front of code.';
+      if Tree.Root.StartPos<=SrcLen then begin
+        MoveCursorToPos(Tree.Root.StartPos);
+        ReadNextAtom;
+        Msg:=Msg+' The pascal code starts with "'+GetAtom+'" at '
+                +CleanPosToStr(Tree.Root.StartPos)+'. No code';
+      end;
+      MoveCursorToPos(P);
+      RaiseException(Msg);
+    end;
+    Node:=Tree.Root;
+    while Node.NextBrother<>nil do Node:=Node.NextBrother;
+    if (Node.EndPos>0) and (p>Node.EndPos) then
+      LastPos:=Node.EndPos
+    else
+      LastPos:=Node.StartPos;
+    if p>LastPos then begin
+      Msg:='Behind code. The last valid pascal code is at '+CleanPosToStr(LastPos)+'. No code';
+      RaiseException(Msg);
+    end;
+
+    // p is in parsed code, the StartNode is wrong
+    CTDumpStack;
+    if (StartNode<>nil) then
+      RaiseException('Invalid search. The search for pascal started at '
+                     +CleanPosToStr(StartNode.StartPos)+'. Invalid search')
+    else
+      RaiseException('Inconsistency error in TCustomCodeTool.FindDeepestNodeAtPos');
   end;
 
 var

@@ -650,10 +650,6 @@ msgstr "tidak ada node konteks ditemukan pada kursor"
 msgid "nodefault specifier defined twice"
 msgstr "pemisah non default didefinisikan dua kali"
 
-#: codetoolsstrconsts.ctsnonodefoundatcursor
-msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "tidak ada kode pascal ditemukan pada kursor (contoh. dalam kode yang tidak dipindai)"
-
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
 msgstr "Tidak ada kode pascal ditemukan (token pertama adalah %s)"

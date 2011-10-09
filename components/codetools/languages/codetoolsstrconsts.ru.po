@@ -648,10 +648,6 @@ msgstr "не найдено контекстного узла у курсора"
 msgid "nodefault specifier defined twice"
 msgstr "модификатор nodefault определён дважды"
 
-#: codetoolsstrconsts.ctsnonodefoundatcursor
-msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "не найдено конструкций Паскаля у курсора (т.е. необрабатываемый код)"
-
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
 msgstr "не найдено кода Паскаля (первый элемент - %s)"

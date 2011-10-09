@@ -649,10 +649,6 @@ msgstr "s'ha trobat un node sense context al cursor"
 msgid "nodefault specifier defined twice"
 msgstr "l'especificador no predeterminat s'ha definit dues vegades"
 
-#: codetoolsstrconsts.ctsnonodefoundatcursor
-msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "s'ha trobat un node no Pascal al cursor. (p.ex. en codi no analitzat)"
-
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
 msgstr "no s'ha trobat el codi Pascal (el primer testimoni és %s)"

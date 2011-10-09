@@ -652,10 +652,6 @@ msgstr "kein Kontext-Knoten an der Cursorposition gefunden"
 msgid "nodefault specifier defined twice"
 msgstr "Nicht-Default-Bezeichner doppelt definiert"
 
-#: codetoolsstrconsts.ctsnonodefoundatcursor
-msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "kein Pascal-Knoten an der Cursorposition gefunden (z.B. in ungeparstem Code) "
-
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
 msgstr "kein Pascal-Quelltext gefunden (erster Token ist %s)"

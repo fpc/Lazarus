@@ -651,10 +651,6 @@ msgstr "ties žymekliu nerastas kontekstinis mazgas"
 msgid "nodefault specifier defined twice"
 msgstr "nenumatytas specifikatorius apibrėžtas dukart"
 
-#: codetoolsstrconsts.ctsnonodefoundatcursor
-msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "ties žymekliu (t.y. neišanalizuotame kode) nerastas paskalio mazgas"
-
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
 msgstr "paskalio kodas nerastas (pirmoji leksema - %s)"

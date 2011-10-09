@@ -650,10 +650,6 @@ msgstr "noeud trouvé sous le curseur hors contexte"
 msgid "nodefault specifier defined twice"
 msgstr "défaut déclaré deux fois"
 
-#: codetoolsstrconsts.ctsnonodefoundatcursor
-msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "pas de noeud Pascal trouvé au curseur (c.-à-d. non analysées dans le code)"
-
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
 msgstr "Pas de code Pascal trouvé (le premier mot est %s)"

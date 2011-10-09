@@ -650,10 +650,6 @@ msgstr "nenalezen kontext na pozici ukazatele"
 msgid "nodefault specifier defined twice"
 msgstr "specifikátor nodefault definován dvakrát"
 
-#: codetoolsstrconsts.ctsnonodefoundatcursor
-msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "na pozici ukazatele nenalezen pascalovský kód (např. nezanalyzovaný kód)"
-
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
 msgstr "nenalezen pascalovský kód (první symbol je %s)"
