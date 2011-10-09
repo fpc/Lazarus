@@ -2193,6 +2193,7 @@ function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
 var
   WideStr: WideString;
   QtDC: TQtDeviceContext absolute DC;
+  B: Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ExtTextOut]');
@@ -2215,7 +2216,19 @@ begin
     else
       WideStr := GetUtf8String(Str);
 
-    QtDC.drawText(X, Y, @WideStr);
+    if (Options and ETO_CLIPPED <> 0) then
+    begin
+      B := QtDC.getClipping;
+      if not B then
+      begin
+        QtDC.save;
+        QtDC.setClipRect(Rect^);
+      end;
+      QtDC.drawText(X, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top, 0, @WideStr);
+      if not B then
+        QtDC.restore;
+    end else
+      QtDC.drawText(X, Y, @WideStr);
   end;
 
   Result := True;
