@@ -417,12 +417,21 @@ type
 
   TDebuggerDataSupplier = class
   private
+    FNotifiedState, FOldState: TDBGState;
     FDebugger: TDebugger;
     FMonitor: TDebuggerDataMonitor;
     procedure SetMonitor(const AValue: TDebuggerDataMonitor);
   protected
-    property Debugger: TDebugger read FDebugger write FDebugger;
-    property Monitor: TDebuggerDataMonitor read FMonitor write SetMonitor;
+    property  Debugger: TDebugger read FDebugger write FDebugger;
+    property  Monitor: TDebuggerDataMonitor read FMonitor write SetMonitor;
+
+    procedure DoStateEnterPause; virtual;
+    procedure DoStateLeavePause; virtual;
+    procedure DoStateLeavePauseClean; virtual;
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
+
+    property  NotifiedState: TDBGState read FNotifiedState;                     // The last state seen by DoStateChange
+    property  OldState: TDBGState read FOldState;                               // The state before last DoStateChange
   public
     constructor Create(const ADebugger: TDebugger);
     destructor  Destroy; override;
@@ -1308,14 +1317,15 @@ type
 
   TWatchesSupplier = class(TDebuggerDataSupplier)
   private
-    FNotifiedState: TDBGState;
     function GetCurrentWatches: TCurrentWatches;
     function GetMonitor: TWatchesMonitor;
     procedure SetMonitor(const AValue: TWatchesMonitor);
   protected
     procedure RequestData(AWatchValue: TCurrentWatchValue);
     procedure InternalRequestData(AWatchValue: TCurrentWatchValue); virtual;
-    procedure DoStateChange(const AOldState: TDBGState); virtual;
+    procedure DoStateEnterPause; override;
+    procedure DoStateLeavePause; override;
+    procedure DoStateLeavePauseClean; override;
   public
     constructor Create(const ADebugger: TDebugger);
     property Monitor: TWatchesMonitor read GetMonitor write SetMonitor;
@@ -1456,8 +1466,10 @@ type
     procedure SetMonitor(const AValue: TLocalsMonitor);
   protected
     procedure RequestData(ALocals: TCurrentLocals); virtual;
+    procedure DoStateEnterPause; override;
+    procedure DoStateLeavePause; override;
+    procedure DoStateLeavePauseClean; override;
   public
-    procedure DoStateChange(const AOldState: TDBGState); virtual;
     property  CurrentLocalsList: TCurrentLocalsList read GetCurrentLocalsList;
     property  Monitor: TLocalsMonitor read GetMonitor write SetMonitor;
   end;
@@ -1870,7 +1882,9 @@ type
     procedure RequestEntries(ACallstack: TCurrentCallStack); virtual;
     procedure CurrentChanged;
     procedure Changed;
-    procedure DoStateChange(const AOldState: TDBGState); virtual;
+    procedure DoStateEnterPause; override;
+    procedure DoStateLeavePause; override;
+    procedure DoStateLeavePauseClean; override;
     procedure UpdateCurrentIndex; virtual;
   public
     property Monitor: TCallStackMonitor read GetMonitor write SetMonitor;
@@ -2201,8 +2215,10 @@ type
   protected
     procedure ChangeCurrentThread(ANewId: Integer); virtual;
     procedure RequestMasterData; virtual;
+    procedure DoStateEnterPause; override;
+    procedure DoStateLeavePause; override;
+    procedure DoStateLeavePauseClean; override;
   public
-    procedure DoStateChange(const AOldState: TDBGState); virtual;
     property  CurrentThreads: TCurrentThreads read GetCurrentThreads;
     property  Monitor: TThreadsMonitor read GetMonitor write SetMonitor;
   end;
@@ -4211,26 +4227,25 @@ begin
   ALocals.SetDataValidity(ddsInvalid)
 end;
 
-procedure TLocalsSupplier.DoStateChange(const AOldState: TDBGState);
+procedure TLocalsSupplier.DoStateEnterPause;
 begin
-  if (Debugger = nil) or (CurrentLocalsList = nil) then Exit;
-  {$IFDEF DBG_DATA_MONITORS} DebugLnEnter(['DebugDataMonitor: >>ENTER: TLocalsSupplier.DoStateChange  New-State=', DBGStateNames[Debugger.State ]]); {$ENDIF}
+  if (CurrentLocalsList = nil) then Exit;
+  if Monitor<> nil
+  then Monitor.Clear;
+end;
 
-  if FDebugger.State in [dsPause, dsInternalPause]
-  then begin
-    if Monitor<> nil
-    then Monitor.Clear;
-  end
-  else begin
-    CurrentLocalsList.SnapShot := nil;
+procedure TLocalsSupplier.DoStateLeavePause;
+begin
+  if (CurrentLocalsList = nil) then Exit;
+  CurrentLocalsList.SnapShot := nil;
+end;
 
-    if (AOldState in [dsPause, dsInternalPause]) or (AOldState = dsNone) { Force clear on initialisation }
-    then begin
-      if Monitor<> nil
-      then Monitor.Clear;
-    end;
-  end;
-  {$IFDEF DBG_DATA_MONITORS} DebugLnExit(['DebugDataMonitor: <<EXIT: TLocalsSupplier.DoStateChange']); {$ENDIF}
+procedure TLocalsSupplier.DoStateLeavePauseClean;
+begin
+  if (CurrentLocalsList = nil) then Exit;
+  CurrentLocalsList.SnapShot := nil;
+  if Monitor<> nil
+  then Monitor.Clear;
 end;
 
 { TLocalsMonitor }
@@ -4651,27 +4666,25 @@ begin
   AWatchValue.SetValidity(ddsInvalid);
 end;
 
-procedure TWatchesSupplier.DoStateChange(const AOldState: TDBGState);
+procedure TWatchesSupplier.DoStateEnterPause;
 begin
-  if (Debugger = nil) or (CurrentWatches = nil) then Exit;
-  FNotifiedState := Debugger.State;
-  {$IFDEF DBG_DATA_MONITORS} DebugLnEnter(['DebugDataMonitor: >>ENTER: TWatchesSupplier.DoStateChange  New-State=', DBGStateNames[FNotifiedState]]); {$ENDIF}
+  if (CurrentWatches = nil) then Exit;
+  CurrentWatches.ClearValues;
+  Monitor.NotifyUpdate(CurrentWatches, nil);
+end;
 
-  if FDebugger.State  in [dsPause, dsInternalPause]
-  then begin
-    CurrentWatches.ClearValues;
-    Monitor.NotifyUpdate(CurrentWatches, nil);
-  end
-  else begin
-    CurrentWatches.SnapShot := nil;
+procedure TWatchesSupplier.DoStateLeavePause;
+begin
+  if (CurrentWatches = nil) then Exit;
+  CurrentWatches.SnapShot := nil;
+end;
 
-    if (AOldState  in [dsPause, dsInternalPause]) or (AOldState = dsNone) { Force clear on initialisation }
-    then begin
-      CurrentWatches.ClearValues;  // TODO: block the update calls, update will be done for all on next line
-      Monitor.NotifyUpdate(CurrentWatches, nil);
-    end;
-  end;
-  {$IFDEF DBG_DATA_MONITORS} DebugLnExit(['DebugDataMonitor: <<EXIT: TWatchesSupplier.DoStateChange']); {$ENDIF}
+procedure TWatchesSupplier.DoStateLeavePauseClean;
+begin
+  if (CurrentWatches = nil) then Exit;
+  CurrentWatches.SnapShot := nil;
+  CurrentWatches.ClearValues;  // TODO: block the update calls, update will be done for all on next line
+  Monitor.NotifyUpdate(CurrentWatches, nil);
 end;
 
 constructor TWatchesSupplier.Create(const ADebugger: TDebugger);
@@ -5166,6 +5179,53 @@ begin
   FMonitor := AValue;
 end;
 
+procedure TDebuggerDataSupplier.DoStateEnterPause;
+begin
+  //
+end;
+
+procedure TDebuggerDataSupplier.DoStateLeavePause;
+begin
+  //
+end;
+
+procedure TDebuggerDataSupplier.DoStateLeavePauseClean;
+begin
+  DoStateLeavePause;
+end;
+
+procedure TDebuggerDataSupplier.DoStateChange(const AOldState: TDBGState);
+begin
+  if (Debugger = nil) then Exit;
+  FNotifiedState := Debugger.State;
+  FOldState := AOldState;
+  {$IFDEF DBG_DATA_MONITORS} DebugLnEnter(['DebugDataMonitor: >>ENTER: ', ClassName, '.DoStateChange  New-State=', DBGStateNames[FNotifiedState]]); {$ENDIF}
+
+  if FNotifiedState in [dsPause, dsInternalPause]
+  then begin
+    // typical: Clear and reload data
+    if not(AOldState  in [dsPause, dsInternalPause] )
+    then DoStateEnterPause;
+  end
+  else
+  if (AOldState  in [dsPause, dsInternalPause, dsNone] )
+  then begin
+    if (FNotifiedState  in [dsRun, dsStop]) or (AOldState = dsNone)
+    then begin
+      // typical: finalize snapshot and clear data.
+      // TODO: Need stop notification, only if run has exited, maybe dsIdle again ?
+      // dsStop can be nested
+      DoStateLeavePauseClean;
+    end
+    else begin
+      // typical: finalize snapshot
+      //          Do *not* clear data. Objects may be in use (e.g. dsError)
+      DoStateLeavePause;
+    end;
+  end;
+  {$IFDEF DBG_DATA_MONITORS} DebugLnExit(['DebugDataMonitor: <<EXIT: ', ClassName, '.DoStateChange']); {$ENDIF}
+end;
+
 constructor TDebuggerDataSupplier.Create(const ADebugger: TDebugger);
 begin
   FDebugger := ADebugger;
@@ -5293,25 +5353,24 @@ begin
   //
 end;
 
-procedure TThreadsSupplier.DoStateChange(const AOldState: TDBGState);
+procedure TThreadsSupplier.DoStateEnterPause;
 begin
-  if (Debugger = nil) or (CurrentThreads = nil) then Exit;
-  {$IFDEF DBG_DATA_MONITORS} DebugLnEnter(['DebugDataMonitor: >>ENTER: TThreadsSupplier.DoStateChange  New-State=', DBGStateNames[Debugger.State ]]); {$ENDIF}
+  if (CurrentThreads = nil) then Exit;
+  CurrentThreads.SetValidity(ddsUnknown);
+end;
 
-  if Debugger.State in [dsPause, dsInternalPause]
-  then begin
-    CurrentThreads.SetValidity(ddsUnknown);
-  end
-  else begin
-    CurrentThreads.SnapShot := nil;
+procedure TThreadsSupplier.DoStateLeavePause;
+begin
+  if (CurrentThreads = nil) then Exit;
+  CurrentThreads.SnapShot := nil;
+end;
 
-    if (AOldState in [dsPause, dsInternalPause]) or (AOldState = dsNone) { Force clear on initialisation }
-    then begin
-      if Monitor <> nil
-      then Monitor.Clear;
-    end;
-  end;
-  {$IFDEF DBG_DATA_MONITORS} DebugLnExit(['DebugDataMonitor: <<EXIT: TThreadsSupplier.DoStateChange']); {$ENDIF}
+procedure TThreadsSupplier.DoStateLeavePauseClean;
+begin
+  if (CurrentThreads = nil) then Exit;
+  CurrentThreads.SnapShot := nil;
+  if Monitor <> nil
+  then Monitor.Clear;
 end;
 
 { TThreadsMonitor }
@@ -9062,6 +9121,27 @@ begin
   Monitor.NotifyChange;
 end;
 
+procedure TCallStackSupplier.DoStateEnterPause;
+begin
+  if (CurrentCallStackList = nil) then Exit;
+  CurrentCallStackList.Clear;
+  Changed;
+end;
+
+procedure TCallStackSupplier.DoStateLeavePause;
+begin
+  if (CurrentCallStackList = nil) then Exit;
+  CurrentCallStackList.SnapShot := nil;
+end;
+
+procedure TCallStackSupplier.DoStateLeavePauseClean;
+begin
+  if (CurrentCallStackList = nil) then Exit;
+  CurrentCallStackList.SnapShot := nil;
+  CurrentCallStackList.Clear;
+  Monitor.CallStackClear(Self);
+end;
+
 function TCallStackSupplier.GetMonitor: TCallStackMonitor;
 begin
   Result := TCallStackMonitor(inherited Monitor);
@@ -9118,28 +9198,6 @@ begin
   {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataMonitor: TCallStackSupplier.CurrentChanged']); {$ENDIF}
   if Monitor <> nil
   then Monitor.NotifyCurrent;
-end;
-
-procedure TCallStackSupplier.DoStateChange(const AOldState: TDBGState);
-begin
-  if (Debugger = nil) or (CurrentCallStackList = nil) then Exit;
-  {$IFDEF DBG_DATA_MONITORS} DebugLnEnter(['DebugDataMonitor: >>ENTER: TCallStackSupplier.DoStateChange  New-State=', DBGStateNames[Debugger.State ]]); {$ENDIF}
-
-  if FDebugger.State in [dsPause, dsInternalPause]
-  then begin
-    CurrentCallStackList.Clear;
-    Changed;
-  end
-  else begin
-    CurrentCallStackList.SnapShot := nil;
-
-    if (AOldState in [dsPause, dsInternalPause]) or (AOldState = dsNone) { Force clear on initialisation }
-    then begin
-      CurrentCallStackList.Clear;
-      Monitor.CallStackClear(Self);
-    end;
-  end;
-  {$IFDEF DBG_DATA_MONITORS} DebugLnExit(['DebugDataMonitor: <<EXIT: TCallStackSupplier.DoStateChange']); {$ENDIF}
 end;
 
 procedure TCallStackSupplier.UpdateCurrentIndex;
