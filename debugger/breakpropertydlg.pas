@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, LCLProc,
   ExtCtrls, StdCtrls, Buttons, ButtonPanel, EditBtn, Spin,
-  IDEHelpIntf,
+  IDEHelpIntf, BreakPropertyDlgGroups, EnvironmentOpts,
   DebuggerDlg, Debugger, BaseDebugManager, LazarusIDEStrConsts, InputHistory;
 
 type
@@ -59,11 +59,18 @@ type
       const ABreakpoint: TIDEBreakPoint);
     procedure BreakPointUpdate(const ASender: TIDEBreakPoints;
       const ABreakpoint: TIDEBreakPoint);
+    procedure chkDisableGroupsChange(Sender: TObject);
+    procedure chkEnableGroupsChange(Sender: TObject);
+    procedure chkEvalExpressionChange(Sender: TObject);
     procedure chkLogCallStackChange(Sender: TObject);
     procedure chkLogMessageChange(Sender: TObject);
+    procedure cmbGroupKeyPress(Sender: TObject; var Key: char);
+    procedure edtDisableGroupsButtonClick(Sender: TObject);
+    procedure edtEnableGroupsButtonClick(Sender: TObject);
   private
     FBreakpointsNotification : TIDEBreakPointsNotification;
     FBreakpoint: TIDEBreakPoint;
+    FUpdatingInfo: Boolean;
   protected
     procedure DoEndUpdate; override;
     procedure UpdateInfo;
@@ -84,6 +91,51 @@ begin
   UpdateInfo;
 end;
 
+procedure TBreakPropertyDlg.chkDisableGroupsChange(Sender: TObject);
+begin
+  {$IFdef MSWindows}
+  if (not FUpdatingInfo) and (not EnvironmentOptions.DebuggerConfig.WarnedAboutBreakGroup)
+  then begin
+    if MessageDlg('Beta Feature', 'This feature requires special setup, See DEBUG-README.TXT. Continue?',
+                  mtConfirmation, mbYesNo, 0)
+       <> mrYes
+    then begin
+      FUpdatingInfo := True;
+      chkDisableGroups.Checked := False;
+      FUpdatingInfo := False;
+      exit;
+    end;
+    EnvironmentOptions.DebuggerConfig.WarnedAboutBreakGroup := True;
+  end;
+  {$ENDIF}
+  edtDisableGroups.Enabled := chkDisableGroups.Checked;
+end;
+
+procedure TBreakPropertyDlg.chkEnableGroupsChange(Sender: TObject);
+begin
+  {$IFdef MSWindows}
+  if (not FUpdatingInfo) and (not EnvironmentOptions.DebuggerConfig.WarnedAboutBreakGroup)
+  then begin
+    if MessageDlg('Beta Feature', 'This feature requires special setup, See DEBUG-README.TXT. Continue?',
+                  mtConfirmation, mbYesNo, 0)
+       <> mrYes
+    then begin
+      FUpdatingInfo := True;
+      chkEnableGroups.Checked := False;
+      FUpdatingInfo := False;
+      exit;
+    end;
+    EnvironmentOptions.DebuggerConfig.WarnedAboutBreakGroup := True;
+  end;
+  {$ENDIF}
+  edtEnableGroups.Enabled := chkEnableGroups.Checked;
+end;
+
+procedure TBreakPropertyDlg.chkEvalExpressionChange(Sender: TObject);
+begin
+  edtEvalExpression.Enabled := chkEvalExpression.Checked;
+end;
+
 procedure TBreakPropertyDlg.chkLogCallStackChange(Sender: TObject);
 begin
   edtLogCallStack.Enabled := chkLogCallStack.Checked;
@@ -92,6 +144,31 @@ end;
 procedure TBreakPropertyDlg.chkLogMessageChange(Sender: TObject);
 begin
   edtLogMessage.Enabled := chkLogMessage.Checked;
+end;
+
+procedure TBreakPropertyDlg.cmbGroupKeyPress(Sender: TObject; var Key: char);
+begin
+  if Key = ';' then Key := #0;
+end;
+
+procedure TBreakPropertyDlg.edtDisableGroupsButtonClick(Sender: TObject);
+var
+  s: TCaption;
+begin
+  if FBreakpoint = nil then Exit;
+  s := edtDisableGroups.Text;
+  if ExecuteBreakPointGroupDlg(FBreakpoint, s, DebugBoss.BreakPointGroups, bgaDisable) = mrok
+  then edtDisableGroups.Text := s;
+end;
+
+procedure TBreakPropertyDlg.edtEnableGroupsButtonClick(Sender: TObject);
+var
+  s: TCaption;
+begin
+  if FBreakpoint = nil then Exit;
+  s := edtEnableGroups.Text;
+  if ExecuteBreakPointGroupDlg(FBreakpoint, s, DebugBoss.BreakPointGroups, bgaEnable) = mrok
+  then edtEnableGroups.Text := s;
 end;
 
 procedure TBreakPropertyDlg.btnHelpClick(Sender: TObject);
@@ -107,69 +184,134 @@ begin
 end;
 
 procedure TBreakPropertyDlg.btnOKClick(Sender: TObject);
+  function CheckGroupList(Alist: TStringList): Boolean;
+  var
+    i: Integer;
+    r: TModalResult;
+    s: String;
+    NewGroup: TIDEBreakPointGroup;
+  begin
+    Result := True;
+    s := '';
+  for i := 0 to Alist.Count-1 do begin
+      if Alist[i] = '' then continue;
+      if DebugBoss.BreakPointGroups.GetGroupByName(Alist[i]) = nil then
+        s := s + ', ' + Alist[i];
+    end;
+    if s = '' then exit;
+    delete(s, 1, 2);
+    r := MessageDlg(Format(dbgBreakPropertyGroupNotFound, [LineEnding, s]),
+                    mtConfirmation, [mbYes, mbIgnore, mbCancel], 0);
+    if r = mrCancel then exit(False);
+    if r = mrYes then begin
+      for i := 0 to Alist.Count-1 do begin
+        if Alist[i] = '' then continue;
+        if DebugBoss.BreakPointGroups.GetGroupByName(Alist[i]) = nil then begin
+          NewGroup := TIDEBreakPointGroup(DebugBoss.BreakPointGroups.Add);
+          NewGroup.Name := Alist[i];
+        end;
+      end;
+    end;
+  end;
 var
   Actions: TIDEBreakPointActions;
   GroupName: String;
   NewGroup: TIDEBreakPointGroup;
   ws: TDBGWatchPointScope;
   wk: TDBGWatchPointKind;
+  i: SizeInt;
+  EnableGroupList, DisableGroupList: TStringList;
 begin
   if FBreakpoint = nil then Exit;
 
-  FBreakpointsNotification.OnUpdate := nil;
-  case FBreakpoint.Kind of
-    bpkSource:
-      begin
-        // filename + line
-        FBreakpoint.SetLocation(edtFilename.Text, edtLine.Value);
-      end;
-    bpkAddress:
-      begin
-        FBreakpoint.SetAddress(StrToQWordDef(edtFilename.Text, 0));
-      end;
-    bpkData:
-      begin
-        if rbGlobal.Checked
-        then ws := wpsGlobal
-        else ws := wpsLocal;
-        wk := wpkWrite;
-        if rbRead.Checked
-        then wk := wpkRead;
-        if rbReadWrite.Checked
-        then wk := wpkReadWrite;
-        FBreakpoint.SetWatch(edtFilename.Text, ws, wk);
-      end;
-  end;
-  // expression
-  FBreakpoint.Expression := edtCondition.Text;
-  // hitcount
-  FBreakpoint.BreakHitCount := StrToIntDef(edtCounter.Text, FBreakpoint.HitCount);
-  //auto continue
-  FBreakpoint.AutoContinueTime := StrToIntDef(edtAutocontinueMS.Text, FBreakpoint.AutoContinueTime);
-  // group
-  GroupName := cmbGroup.Text;
-  NewGroup := DebugBoss.BreakPointGroups.GetGroupByName(GroupName);
-  if not Assigned(NewGroup) and (GroupName <> '') then
-  begin
-    NewGroup := TIDEBreakPointGroup(DebugBoss.BreakPointGroups.Add);
-    NewGroup.Name := GroupName;
-  end;
-  FBreakpoint.Group := NewGroup;
-  // actions
-  Actions := [];
-  if chkActionBreak.Checked then Include(Actions, bpaStop);
-  if chkDisableGroups.Checked then Include(Actions, bpaDisableGroup);
-  if chkEnableGroups.Checked then Include(Actions, bpaEnableGroup);
-  if chkEvalExpression.Checked then Include(Actions, bpaEValExpression);
-  if chkLogMessage.Checked then Include(Actions, bpaLogMessage);
-  if chkLogCallStack.Checked then Include(Actions, bpaLogCallStack);
-  if chkTakeSnap.Checked then include(Actions, bpaTakeSnapshot);
-  FBreakpoint.Actions := Actions;
-  FBreakpoint.LogEvalExpression := edtEvalExpression.Text;
-  FBreakpoint.LogMessage := edtLogMessage.Text;
-  FBreakpoint.LogCallStackLimit := edtLogCallStack.Value;
+  EnableGroupList := TStringList.Create;
+  DisableGroupList := TStringList.Create;
 
-  InputHistories.HistoryLists.GetList('BreakPointExpression', True).Add(edtCondition.Text);
+  try
+    EnableGroupList.Delimiter := ';';
+    DisableGroupList.Delimiter := ';';
+
+    EnableGroupList.DelimitedText := edtEnableGroups.Text+';'+edtDisableGroups.Text;
+    if not CheckGroupList(EnableGroupList) then begin
+      ModalResult :=  mrNone;
+      exit;
+    end;
+
+    EnableGroupList.DelimitedText := edtEnableGroups.Text;
+    DisableGroupList.DelimitedText := edtDisableGroups.Text;
+
+    FBreakpointsNotification.OnUpdate := nil;
+    case FBreakpoint.Kind of
+      bpkSource:
+        begin
+          // filename + line
+          FBreakpoint.SetLocation(edtFilename.Text, edtLine.Value);
+        end;
+      bpkAddress:
+        begin
+          FBreakpoint.SetAddress(StrToQWordDef(edtFilename.Text, 0));
+        end;
+      bpkData:
+        begin
+          if rbGlobal.Checked
+          then ws := wpsGlobal
+          else ws := wpsLocal;
+          wk := wpkWrite;
+          if rbRead.Checked
+          then wk := wpkRead;
+          if rbReadWrite.Checked
+          then wk := wpkReadWrite;
+          FBreakpoint.SetWatch(edtFilename.Text, ws, wk);
+        end;
+    end;
+    // expression
+    FBreakpoint.Expression := edtCondition.Text;
+    // hitcount
+    FBreakpoint.BreakHitCount := StrToIntDef(edtCounter.Text, FBreakpoint.HitCount);
+    //auto continue
+    FBreakpoint.AutoContinueTime := StrToIntDef(edtAutocontinueMS.Text, FBreakpoint.AutoContinueTime);
+    // group
+    GroupName := cmbGroup.Text;
+    NewGroup := DebugBoss.BreakPointGroups.GetGroupByName(GroupName);
+    if not Assigned(NewGroup) and (GroupName <> '') then
+    begin
+      NewGroup := TIDEBreakPointGroup(DebugBoss.BreakPointGroups.Add);
+      NewGroup.Name := GroupName;
+    end;
+    FBreakpoint.Group := NewGroup;
+    // enable groups
+    for i := 0 to DebugBoss.BreakPointGroups.Count-1 do begin
+      NewGroup := DebugBoss.BreakPointGroups[i];
+      if EnableGroupList.IndexOf(NewGroup.Name) >= 0
+      then FBreakpoint.EnableGroupList.Add(NewGroup)
+      else FBreakpoint.EnableGroupList.Remove(NewGroup);
+    end;
+    // disable groups
+    for i := 0 to DebugBoss.BreakPointGroups.Count-1 do begin
+      NewGroup := DebugBoss.BreakPointGroups[i];
+      if DisableGroupList.IndexOf(NewGroup.Name) >= 0
+      then FBreakpoint.DisableGroupList.Add(NewGroup)
+      else FBreakpoint.DisableGroupList.Remove(NewGroup);
+    end;
+    // actions
+    Actions := [];
+    if chkActionBreak.Checked then Include(Actions, bpaStop);
+    if chkDisableGroups.Checked then Include(Actions, bpaDisableGroup);
+    if chkEnableGroups.Checked then Include(Actions, bpaEnableGroup);
+    if chkEvalExpression.Checked then Include(Actions, bpaEValExpression);
+    if chkLogMessage.Checked then Include(Actions, bpaLogMessage);
+    if chkLogCallStack.Checked then Include(Actions, bpaLogCallStack);
+    if chkTakeSnap.Checked then include(Actions, bpaTakeSnapshot);
+    FBreakpoint.Actions := Actions;
+    FBreakpoint.LogEvalExpression := edtEvalExpression.Text;
+    FBreakpoint.LogMessage := edtLogMessage.Text;
+    FBreakpoint.LogCallStackLimit := edtLogCallStack.Value;
+
+    InputHistories.HistoryLists.GetList('BreakPointExpression', True).Add(edtCondition.Text);
+  finally
+    EnableGroupList.Free;
+    DisableGroupList.Free;
+  end;
 end;
 
 procedure TBreakPropertyDlg.DoEndUpdate;
@@ -182,7 +324,9 @@ procedure TBreakPropertyDlg.UpdateInfo;
 var
   Actions: TIDEBreakPointActions;
   I: Integer;
+  s: String;
 begin
+  FUpdatingInfo := True;
   if FBreakpoint = nil then Exit;
   case FBreakpoint.Kind of
     bpkSource:
@@ -220,6 +364,20 @@ begin
   if FBreakpoint.Group = nil
   then cmbGroup.Text := ''
   else cmbGroup.Text := FBreakpoint.Group.Name;
+  // enable groups
+  s := '';
+  for i := 0 to FBreakpoint.EnableGroupList.Count - 1 do begin
+    if s <> '' then s := s + ';';
+    s := s + FBreakpoint.EnableGroupList[i].Name;
+  end;
+  edtEnableGroups.Text := s;
+  // disable groups
+  s := '';
+  for i := 0 to FBreakpoint.DisableGroupList.Count - 1 do begin
+    if s <> '' then s := s + ';';
+    s := s + FBreakpoint.DisableGroupList[i].Name;
+  end;
+  edtDisableGroups.Text := s;
 
   // actions
   Actions := FBreakpoint.Actions;
@@ -233,6 +391,7 @@ begin
   chkLogCallStack.Checked := bpaLogCallStack in Actions;
   edtLogCallStack.Value := FBreakpoint.LogCallStackLimit;
   chkTakeSnap.Checked := bpaTakeSnapshot in Actions;
+  FUpdatingInfo := False;
 end;
 
 constructor TBreakPropertyDlg.Create(AOwner: TComponent; ABreakPoint: TIDEBreakPoint);

@@ -171,6 +171,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     BorderSpacing.Left = 24
     BorderSpacing.Around = 6
     ItemHeight = 15
+    OnKeyPress = cmbGroupKeyPress
     TabOrder = 3
     Text = 'cmbGroup'
   end
@@ -213,6 +214,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'Enable goups'
+      OnChange = chkEnableGroupsChange
       TabOrder = 1
     end
     object chkDisableGroups: TCheckBox
@@ -226,6 +228,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'Disable groups'
+      OnChange = chkDisableGroupsChange
       TabOrder = 3
     end
     object edtEnableGroups: TEditButton
@@ -247,6 +250,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       Enabled = False
       MaxLength = 0
       NumGlyphs = 1
+      OnButtonClick = edtEnableGroupsButtonClick
       TabOrder = 2
     end
     object edtDisableGroups: TEditButton
@@ -268,6 +272,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       Enabled = False
       MaxLength = 0
       NumGlyphs = 1
+      OnButtonClick = edtDisableGroupsButtonClick
       TabOrder = 4
     end
     object chkEvalExpression: TCheckBox
@@ -281,6 +286,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       Caption = 'Eval expression'
+      OnChange = chkEvalExpressionChange
       TabOrder = 5
     end
     object chkLogMessage: TCheckBox
@@ -313,6 +319,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
+      Enabled = False
       TabOrder = 6
     end
     object edtLogMessage: TEdit
@@ -399,12 +406,16 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
     Width = 438
     Anchors = [akTop, akLeft, akRight, akBottom]
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     OKButton.OnClick = btnOKClick
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.OnClick = btnHelpClick
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 5
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
@@ -478,7 +489,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       TabStop = True
     end
     object rbRead: TRadioButton
-      Left = 65
+      Left = 68
       Height = 19
       Top = 0
       Width = 57
@@ -487,7 +498,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       TabOrder = 0
     end
     object rbReadWrite: TRadioButton
-      Left = 122
+      Left = 128
       Height = 19
       Top = 0
       Width = 85
@@ -530,7 +541,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       TabOrder = 0
     end
     object rbLocal: TRadioButton
-      Left = 71
+      Left = 74
       Height = 19
       Top = 0
       Width = 59
@@ -539,7 +550,7 @@ inherited BreakPropertyDlg: TBreakPropertyDlg
       TabOrder = 1
     end
     object Label1: TLabel
-      Left = 130
+      Left = 133
       Height = 19
       Top = 0
       Width = 4

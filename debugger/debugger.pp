@@ -174,6 +174,7 @@ type
     FConfigStore: TConfigStorage;
   public
     property ConfigStore: TConfigStorage read FConfigStore write FConfigStore;
+    procedure Init; virtual;
     procedure Load; virtual;
     procedure Save; virtual;
   end;
@@ -186,9 +187,7 @@ type
     FColumnValueWidth: Integer;
   public
     constructor Create;
-    procedure Init;
-    procedure Load; override;
-    procedure Save; override;
+    procedure Init; override;
   published
     property ColumnNameWidth: Integer read FColumnNameWidth write FColumnNameWidth;
     property ColumnValueWidth: Integer read FColumnValueWidth write FColumnValueWidth;
@@ -198,7 +197,9 @@ type
   private
     FDebuggerClass: String;
     FTDebuggerWatchesDlgConfig: TDebuggerWatchesDlgConfig;
+    FWarnedAboutBreakGroup: Boolean;
   public
+    procedure Init; override;
     procedure Load; override;
     procedure Save; override;
   public
@@ -206,6 +207,10 @@ type
     destructor Destroy; override;
     property DebuggerClass: String read FDebuggerClass write FDebuggerClass;
     property DlgWatchesConfig: TDebuggerWatchesDlgConfig read FTDebuggerWatchesDlgConfig;
+  published
+    {$IFdef MSWindows}
+    property WarnedAboutBreakGroup: Boolean read FWarnedAboutBreakGroup write FWarnedAboutBreakGroup;
+    {$ENDIF}
   end;
 
   { TFreeNotifyingObject }
@@ -512,6 +517,28 @@ type
     wpkReadWrite
   );
 
+  TBaseBreakPoint = class;
+  TDBGBreakPoint = class;
+
+  { TIDEBreakPointGroupList }
+
+  TIDEBreakPointGroupList = class
+  private
+    FList: TFPList;
+    FOwner: TBaseBreakPoint;
+    function GetItem(AIndex: Integer): TIDEBreakPointGroup;
+  public
+    constructor Create(AOwner: TBaseBreakPoint);
+    destructor Destroy; override;
+    procedure Assign(ASrc: TIDEBreakPointGroupList);
+    procedure Clear;
+    function  Add(const AGroup: TIDEBreakPointGroup): Integer;
+    procedure Remove(const AGroup: TIDEBreakPointGroup);
+    function  IndexOf(const AGroup: TIDEBreakPointGroup): Integer;
+    function  Count: Integer;
+    property Items[AIndex: Integer]: TIDEBreakPointGroup read GetItem; default;
+  end;
+
   { TBaseBreakPoint }
 
   TBaseBreakPoint = class(TDelayedUdateItem)
@@ -588,16 +615,14 @@ type
   end;
   TBaseBreakPointClass = class of TBaseBreakPoint;
 
-  TDBGBreakPoint = class;
-
   TIDEBreakPoint = class(TBaseBreakPoint)
   private
     FLogEvalExpression: String;
     FMaster: TDBGBreakPoint;
     FAutoContinueTime: Cardinal;
     FActions: TIDEBreakPointActions;
-    FDisableGroupList: TList;
-    FEnableGroupList: TList;
+    FDisableGroupList: TIDEBreakPointGroupList;
+    FEnableGroupList: TIDEBreakPointGroupList;
     FGroup: TIDEBreakPointGroup;
     FLoading: Boolean;
     FLogMessage: String;
@@ -618,10 +643,10 @@ type
     procedure DoActionChange; virtual;
     procedure DoHit(const ACount: Integer; var AContinue: Boolean); override;
     procedure EnableGroups;
-    procedure RemoveFromGroupList(const AGroup: TIDEBreakPointGroup;
-                                  const AGroupList: TList);
-    procedure ClearGroupList(const AGroupList: TList);
     procedure ClearAllGroupLists;
+    {$IFDEF DBG_BREAKPOINT}
+    function  DebugText: string;
+    {$ENDIF}
   protected
     // virtual properties
     function GetActions: TIDEBreakPointActions; virtual;
@@ -638,10 +663,6 @@ type
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
-    procedure AddDisableGroup(const AGroup: TIDEBreakPointGroup);
-    procedure AddEnableGroup(const AGroup: TIDEBreakPointGroup);
-    procedure RemoveDisableGroup(const AGroup: TIDEBreakPointGroup);
-    procedure RemoveEnableGroup(const AGroup: TIDEBreakPointGroup);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                       const OnLoadFilename: TOnLoadFilenameFromConfig;
                       const OnGetGroup: TOnGetGroupByName); virtual;
@@ -656,6 +677,8 @@ type
     property Actions: TIDEBreakPointActions read GetActions write SetActions;
     property AutoContinueTime: Cardinal read GetAutoContinueTime write SetAutoContinueTime;
     property Group: TIDEBreakPointGroup read GetGroup write SetGroup;
+    property DisableGroupList: TIDEBreakPointGroupList read FDisableGroupList;
+    property EnableGroupList: TIDEBreakPointGroupList read FEnableGroupList;
     property LogEvalExpression: String read FLogEvalExpression write SetLogEvalExpression;
     property Loading: Boolean read FLoading;
     property LogMessage: String read GetLogMessage write SetLogMessage;
@@ -810,8 +833,8 @@ type
     procedure SetName(const AValue: String);
   protected
     procedure AssignTo(Dest: TPersistent); override;
-    procedure AddReference(const ABreakPoint: TIDEBreakPoint);
-    procedure RemoveReference(const ABreakPoint: TIDEBreakPoint);
+    procedure AddReference(const ABreakPointList: TIDEBreakPointGroupList);
+    procedure RemoveReference(const ABreakPointList: TIDEBreakPointGroupList);
   public
     function Add(const ABreakPoint: TIDEBreakPoint): Integer;
     function Count: Integer;
@@ -826,7 +849,7 @@ type
   public
     property Breakpoints[const AIndex: Integer]: TIDEBreakPoint read GetBreakpoint;
     property Enabled: Boolean read FEnabled write SetEnabled;
-    property InitialEnabled: Boolean read FInitialEnabled write SetInitialEnabled;
+    //property InitialEnabled: Boolean read FInitialEnabled write SetInitialEnabled;
     property Name: String read FName write SetName;
   end;
 
@@ -2958,6 +2981,70 @@ begin
   Result:=bpaStop;
 end;
 
+{ TIDEBreakPointGroupList }
+
+function TIDEBreakPointGroupList.GetItem(AIndex: Integer): TIDEBreakPointGroup;
+begin
+  Result := TIDEBreakPointGroup(FList[AIndex]);
+end;
+
+constructor TIDEBreakPointGroupList.Create(AOwner: TBaseBreakPoint);
+begin
+  FList := TFPList.Create;
+  FOwner := AOwner;
+end;
+
+destructor TIDEBreakPointGroupList.Destroy;
+begin
+  inherited Destroy;
+  FList.Free;
+end;
+
+procedure TIDEBreakPointGroupList.Assign(ASrc: TIDEBreakPointGroupList);
+var
+  i: Integer;
+begin
+  Clear;
+  for i := 0 to ASrc.Count - 1 do
+    Add(ASrc[i]);
+end;
+
+procedure TIDEBreakPointGroupList.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do
+    Items[i].RemoveReference(Self);
+  FList.Clear;
+end;
+
+function TIDEBreakPointGroupList.Add(const AGroup: TIDEBreakPointGroup): Integer;
+begin
+  if (AGroup = nil) or (IndexOf(AGroup) >= 0) then exit;
+  Result := FList.Add(AGroup);
+  AGroup.AddReference(Self);
+  FOwner.DoChanged;
+end;
+
+procedure TIDEBreakPointGroupList.Remove(const AGroup: TIDEBreakPointGroup);
+begin
+  if (AGroup = nil) then exit;
+  AGroup.RemoveReference(Self);
+  if (IndexOf(AGroup) < 0) then exit;
+  FList.Remove(AGroup);
+  FOwner.DoChanged;
+end;
+
+function TIDEBreakPointGroupList.IndexOf(const AGroup: TIDEBreakPointGroup): Integer;
+begin
+  Result := FList.IndexOf(AGroup);
+end;
+
+function TIDEBreakPointGroupList.Count: Integer;
+begin
+  Result := FList.Count;
+end;
+
 { TFreeNotifyingObject }
 
 constructor TFreeNotifyingObject.Create;
@@ -2996,30 +3083,31 @@ begin
   FColumnValueWidth := -1;
 end;
 
-procedure TDebuggerWatchesDlgConfig.Load;
+{ TDebuggerConfigStoreBase }
+
+procedure TDebuggerConfigStoreBase.Init;
+begin
+  //
+end;
+
+procedure TDebuggerConfigStoreBase.Load;
 begin
   Init;
   ConfigStore.ReadObject('', self);
 end;
 
-procedure TDebuggerWatchesDlgConfig.Save;
+procedure TDebuggerConfigStoreBase.Save;
 begin
   ConfigStore.WriteObject('', self);
 end;
 
-{ TDebuggerConfigStoreBase }
-
-procedure TDebuggerConfigStoreBase.Load;
-begin
-  //
-end;
-
-procedure TDebuggerConfigStoreBase.Save;
-begin
-  //
-end;
-
 { TDebuggerConfigStore }
+
+procedure TDebuggerConfigStore.Init;
+begin
+  inherited Init;
+  WarnedAboutBreakGroup := False;
+end;
 
 procedure TDebuggerConfigStore.Load;
 const
@@ -3028,6 +3116,7 @@ const
 var
   s: String;
 begin
+  inherited;
   FDebuggerClass := ConfigStore.GetValue('Class', '');
   if FDebuggerClass='' then begin
     // try old format
@@ -3046,6 +3135,7 @@ end;
 
 procedure TDebuggerConfigStore.Save;
 begin
+  inherited;
   ConfigStore.SetDeleteValue('Class', FDebuggerClass, '');
   ConfigStore.DeletePath('Type');
   ConfigStore.AppendBasePath('WatchesDlg/');
@@ -6389,22 +6479,6 @@ end;
 { TIDEBreakPoint }
 { =========================================================================== }
 
-procedure TIDEBreakPoint.AddDisableGroup(const AGroup: TIDEBreakPointGroup);
-begin
-  if AGroup = nil then Exit;
-  FDisableGroupList.Add(AGroup);
-  AGroup.AddReference(Self);
-  Changed;
-end;
-
-procedure TIDEBreakPoint.AddEnableGroup(const AGroup: TIDEBreakPointGroup);
-begin
-  if AGroup = nil then Exit;
-  FEnableGroupList.Add(AGroup);
-  AGroup.AddReference(Self);
-  Changed;
-end;
-
 function TIDEBreakPoint.GetAutoContinueTime: Cardinal;
 begin
   Result := FAutoContinueTime;
@@ -6475,6 +6549,8 @@ begin
     TIDEBreakPoint(Dest).LogEvalExpression := FLogEvalExpression;
     TIDEBreakPoint(Dest).LogMessage := FLogMessage;
     TIDEBreakPoint(Dest).LogCallStackLimit := FLogCallStackLimit;
+    TIDEBreakPoint(Dest).EnableGroupList.Assign(FEnableGroupList);
+    TIDEBreakPoint(Dest).DisableGroupList.Assign(FDisableGroupList);
   end;
 
   if (Collection <> nil) and (TIDEBreakPoints(Collection).FMaster <> nil)
@@ -6546,29 +6622,27 @@ end;
 
 procedure TIDEBreakPoint.ClearAllGroupLists;
 begin
-  ClearGroupList(FDisableGroupList);
-  ClearGroupList(FEnableGroupList);
+  FDisableGroupList.Clear;
+  FEnableGroupList.Clear;
 end;
 
-procedure TIDEBreakPoint.ClearGroupList(const AGroupList: TList);
+{$IFDEF DBG_BREAKPOINT}
+function TIDEBreakPoint.DebugText: string;
 var
-  i: Integer;
-  AGroup: TIDEBreakPointGroup;
+  s: String;
 begin
-  for i:=0 to AGroupList.Count-1 do begin
-    AGroup:=TIDEBreakPointGroup(AGroupList[i]);
-    AGroup.RemoveReference(Self);
-  end;
-  AGroupList.Clear;
+  WriteStr(s, FKind);
+  Result := dbgs(self) + ' ' + s + ' at ' + Source +':' + IntToStr(Line);
 end;
+{$ENDIF}
 
 constructor TIDEBreakPoint.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FGroup := nil;
   FActions := [bpaStop];
-  FDisableGroupList := TList.Create;
-  FEnableGroupList := TList.Create;
+  FDisableGroupList := TIDEBreakPointGroupList.Create(Self);
+  FEnableGroupList := TIDEBreakPointGroupList.Create(Self);
 end;
 
 destructor TIDEBreakPoint.Destroy;
@@ -6600,8 +6674,11 @@ procedure TIDEBreakPoint.DisableGroups;
 var
   n: Integer;
 begin
+  {$IFDEF DBG_BREAKPOINT}
+  DebugLn(['DisableGroups: ', DebugText, ' Cnt=',  FDisableGroupList.Count]);
+  {$ENDIF}
   for n := 0 to FDisableGroupList.Count - 1 do
-    TIDEBreakPointGroup(FDisableGroupList[n]).Enabled := False;
+    FDisableGroupList[n].Enabled := False;
 end;
 
 procedure TIDEBreakPoint.DoActionChange;
@@ -6620,6 +6697,8 @@ begin
   if bpaLogCallStack in Actions
   then FMaster.DoLogCallStack(FLogCallStackLimit);
   // SnapShot is taken in TDebugManager.DebuggerChangeState
+  if Actions * [bpaDisableGroup, bpaEnableGroup] <> []
+  then sleep(2500);
   if bpaEnableGroup in Actions
   then EnableGroups;
   if bpaDisableGroup in Actions
@@ -6630,8 +6709,12 @@ procedure TIDEBreakPoint.EnableGroups;
 var
   n: Integer;
 begin
-  for n := 0 to FDisableGroupList.Count - 1 do
-    TIDEBreakPointGroup(FDisableGroupList[n]).Enabled := True;
+  {$IFDEF DBG_BREAKPOINT}
+  DebugLn(['EnableGroups: ', DebugText, ' Cnt=',  FEnableGroupList.Count]);
+  {$ENDIF}
+
+  for n := 0 to FEnableGroupList.Count - 1 do
+    FEnableGroupList[n].Enabled := True;
 end;
 
 function TIDEBreakPoint.GetActions: TIDEBreakPointActions;
@@ -6648,24 +6731,21 @@ procedure TIDEBreakPoint.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; const OnLoadFilename: TOnLoadFilenameFromConfig;
   const OnGetGroup: TOnGetGroupByName);
 
-  procedure LoadGroupList(GroupList: TList; const ListPath: string);
+  procedure LoadGroupList(GroupList: TIDEBreakPointGroupList; const ListPath: string);
   var
     i: Integer;
     CurGroup: TIDEBreakPointGroup;
     NewCount: Integer;
     GroupName: String;
   begin
-    ClearGroupList(GroupList);
+    GroupList.Clear;
     NewCount:=XMLConfig.GetValue(ListPath+'Count',0);
     for i:=0 to NewCount-1 do begin
       GroupName:=XMLConfig.GetValue(ListPath+'Group'+IntToStr(i+1)+'/Name','');
       if GroupName='' then continue;
       CurGroup:=OnGetGroup(GroupName);
       if CurGroup=nil then continue;
-      if GroupList=FDisableGroupList then
-        AddDisableGroup(CurGroup)
-      else if GroupList=FEnableGroupList then
-        AddEnableGroup(CurGroup);
+      GroupList.Add(CurGroup);
     end;
   end;
 
@@ -6716,28 +6796,10 @@ begin
   end;
 end;
 
-procedure TIDEBreakPoint.RemoveDisableGroup(const AGroup: TIDEBreakPointGroup);
-begin
-  RemoveFromGroupList(AGroup,FDisableGroupList);
-end;
-
-procedure TIDEBreakPoint.RemoveEnableGroup(const AGroup: TIDEBreakPointGroup);
-begin
-  RemoveFromGroupList(AGroup,FEnableGroupList);
-end;
-
-procedure TIDEBreakPoint.RemoveFromGroupList(const AGroup: TIDEBreakPointGroup;
-  const AGroupList: TList);
-begin
-  if (AGroup = nil) then Exit;
-  AGroupList.Remove(AGroup);
-  AGroup.RemoveReference(Self);
-end;
-
 procedure TIDEBreakPoint.SaveToXMLConfig(const AConfig: TXMLConfig;
   const APath: string; const OnSaveFilename: TOnSaveFilenameToConfig);
 
-  procedure SaveGroupList(const AList: TList; const AListPath: string);
+  procedure SaveGroupList(const AList: TIDEBreakPointGroupList; const AListPath: string);
   var
     i: Integer;
     CurGroup: TIDEBreakPointGroup;
@@ -6745,9 +6807,8 @@ procedure TIDEBreakPoint.SaveToXMLConfig(const AConfig: TXMLConfig;
     AConfig.SetDeleteValue(AListPath + 'Count', AList.Count,0);
     for i := 0 to AList.Count - 1 do
     begin
-      CurGroup := TIDEBreakPointGroup(AList[i]);
-      AConfig.SetDeleteValue(Format('$%sGroup%d/Name', [AListPath, i+1]),
-        CurGroup.Name, '');
+      CurGroup := AList[i];
+      AConfig.SetDeleteValue(AListPath+'Group'+IntToStr(i+1)+'/Name', CurGroup.Name, '');
     end;
   end;
 
@@ -6849,14 +6910,14 @@ begin
 end;
 
 (*
-procedure TIDEBreakPoint.CopyGroupList(SrcGroupList, DestGroupList: TList;
+procedure TIDEBreakPoint.CopyGroupList(SrcGroupList, DestGroupList: TIDEBreakPointGroupList;
   DestGroups: TIDEBreakPointGroups);
 var
   i: Integer;
   CurGroup: TIDEBreakPointGroup;
   NewGroup: TIDEBreakPointGroup;
 begin
-  ClearGroupList(DestGroupList);
+  DestGroupList.clear;
   for i:=0 to SrcGroupList.Count-1 do begin
     CurGroup:=TIDEBreakPointGroup(SrcGroupList[i]);
     NewGroup:=DestGroups.GetGroupByName(CurGroup.Name);
@@ -7412,9 +7473,9 @@ begin
   end;
 end;
 
-procedure TIDEBreakPointGroup.AddReference(const ABreakPoint: TIDEBreakPoint);
+procedure TIDEBreakPointGroup.AddReference(const ABreakPointList: TIDEBreakPointGroupList);
 begin
-  FReferences.Add(ABreakPoint);
+  FReferences.Add(ABreakPointList);
 end;
 
 function TIDEBreakPointGroup.Count: Integer;
@@ -7442,9 +7503,7 @@ begin
   for n := FBreakpoints.Count - 1 downto 0 do
     TIDEBreakPoint(FBreakpoints[n]).Group := nil;
   for n := FReferences.Count - 1 downto 0 do
-    TIDEBreakPoint(FReferences[n]).RemoveDisableGroup(Self);
-  for n := FReferences.Count - 1 downto 0 do
-    TIDEBreakPoint(FReferences[n]).RemoveEnableGroup(Self);
+    TIDEBreakPointGroupList(FReferences[n]).Remove(Self);
 
   inherited Destroy;
   FreeAndNil(FBreakpoints);
@@ -7469,8 +7528,8 @@ begin
   Name:=XMLConfig.GetValue(Path+'Name/Value','');
   // the breakpoints of this group are not loaded here.
   // They are loaded by the TIDEBreakPoints object.
-  InitialEnabled:=XMLConfig.GetValue(Path+'InitialEnabled/Value',true);
-  FEnabled:=InitialEnabled;
+  FInitialEnabled:=XMLConfig.GetValue(Path+'InitialEnabled/Value',true);
+  FEnabled:=FInitialEnabled;
 end;
 
 procedure TIDEBreakPointGroup.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -7479,24 +7538,20 @@ begin
   XMLConfig.SetDeleteValue(Path+'Name/Value',Name,'');
   // the breakpoints of this group are not saved here.
   // They are saved by the TIDEBreakPoints object.
-  XMLConfig.SetDeleteValue(Path+'InitialEnabled/Value',InitialEnabled,true);
+  XMLConfig.SetDeleteValue(Path+'InitialEnabled/Value',FInitialEnabled,true);
 end;
 
-procedure TIDEBreakPointGroup.RemoveReference(const ABreakPoint: TIDEBreakPoint);
+procedure TIDEBreakPointGroup.RemoveReference(const ABreakPointList: TIDEBreakPointGroupList);
 begin
-  FReferences.Remove(ABreakPoint);
+  FReferences.Remove(ABreakPointList);
 end;
 
 procedure TIDEBreakPointGroup.SetEnabled(const AValue: Boolean);
 var
   n: Integer;
 begin
-  if FEnabled <> AValue
-  then begin
-    FEnabled := AValue;
-    for n := 0 to FBreakPoints.Count - 1 do
-      TIDEBreakPoint(FBreakPoints[n]).Enabled := FEnabled;
-  end;
+  for n := 0 to FBreakPoints.Count - 1 do
+    TIDEBreakPoint(FBreakPoints[n]).Enabled := AValue;
 end;
 
 procedure TIDEBreakPointGroup.SetInitialEnabled(const AValue: Boolean);
@@ -7517,7 +7572,7 @@ begin
   if Dest is TIDEBreakPointGroup then begin
     DestGroup:=TIDEBreakPointGroup(Dest);
     DestGroup.Name:=Name;
-    DestGroup.InitialEnabled:=InitialEnabled;
+    //DestGroup.InitialEnabled:=InitialEnabled;
     DestGroup.Enabled:=Enabled;
   end else
     inherited AssignTo(Dest);
@@ -7607,7 +7662,7 @@ var
   i: Integer;
 begin
   for i:=0 to Count-1 do
-    Items[i].Enabled:=Items[i].InitialEnabled;
+    Items[i].Enabled:=Items[i].fInitialEnabled;
 end;
 
 function TIDEBreakPointGroups.GetItem(const AnIndex: Integer

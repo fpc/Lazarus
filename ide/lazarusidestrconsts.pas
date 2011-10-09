@@ -5319,6 +5319,12 @@ resourcestring
   lisDebuggerFeedbackMore = 'More';
   lisDebuggerFeedbackOk = 'OK';
 
+  // breakpointgroups
+  dbgBreakGroupDlgCaptionEnable = 'Select Groups';
+  dbgBreakGroupDlgHeaderEnable = 'Select groups to enable when breakpoint is hit';
+  dbgBreakGroupDlgCaptionDisable = 'Select Groups';
+  dbgBreakGroupDlgHeaderDisable = 'Select groups to disable when breakpoint is hit';
+
   //Registers dialog
   regdlgDisplayTypeForSelectedRegisters = 'Display type for selected Registers';
   regdlgHex = 'Hex';
@@ -5351,6 +5357,8 @@ resourcestring
   lisDiscardChangesCreateNewProject = 'Discard changes, create new project';
   lisDoYouStillWantToQuit = 'Do you still want to quit?';
   lisDiscardChangesAndQuit = 'Discard changes and quit';
+  dbgBreakPropertyGroupNotFound = 'Some groups in the Enable/Disable list do not exist.%0:s'
+    +'Create them?%0:s%0:s%1:s';
 
 implementation
 
