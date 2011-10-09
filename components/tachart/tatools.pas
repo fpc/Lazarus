@@ -234,7 +234,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property FixedPoint: Boolean read FFixedPoint write FFixedPoint default false;
+    property FixedPoint: Boolean read FFixedPoint write FFixedPoint default true;
     property ZoomFactor: Double
       read FZoomFactor write FZoomFactor stored ZoomFactorIsStored;
     property ZoomRatio: Double
@@ -1048,6 +1048,7 @@ end;
 constructor TBasicZoomStepTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FFixedPoint := true;
   FZoomFactor := 1.0;
   FZoomRatio := 1.0;
 end;
