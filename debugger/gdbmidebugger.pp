@@ -386,6 +386,7 @@ type
 
   protected
     FErrorHandlingFlags: set of (ehfDeferReadWriteError, ehfGotReadError, ehfGotWriteError);
+    FNeedStateToIdle: Boolean;
     {$IFDEF MSWindows}
     FPauseRequestInThreadID: Cardinal;
     {$ENDIF}
@@ -407,12 +408,14 @@ type
     function  CreateWatches: TWatchesSupplier; override;
     function  CreateThreads: TThreadsSupplier; override;
     function  GetSupportedCommands: TDBGCommands; override;
+    function  GetCommands: TDBGCommands; override;
     function  GetTargetWidth: Byte; override;
     procedure InterruptTarget; virtual;
     function  ParseInitialization: Boolean; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
     procedure ClearCommandQueue;
     function  GetIsIdle: Boolean; override;
+    procedure ResetStateToIdle; override;
     procedure DoState(const OldState: TDBGState); override;
     procedure DoBeforeState(const OldState: TDBGState); override;
     procedure DoReadError; override;
@@ -5839,6 +5842,7 @@ begin
   FTypeRequestCache := TGDBPTypeRequestCache.Create;
   FMaxLineForUnitCache := TStringList.Create;
   FInProcessStopped := False;
+  FNeedStateToIdle := False;
 
 
 {$IFdef MSWindows}
@@ -6284,6 +6288,8 @@ begin
   if (FCommandQueue.Count = 0) and assigned(OnIdle)
   then OnIdle(Self);
 
+  if FNeedStateToIdle and (FInExecuteCount = 0)
+  then ResetStateToIdle;
 end;
 
 procedure TGDBMIDebugger.QueueCommand(const ACommand: TGDBMIDebuggerCommand; ForceQueue: Boolean = False);
@@ -6853,6 +6859,13 @@ begin
             ];
 end;
 
+function TGDBMIDebugger.GetCommands: TDBGCommands;
+begin
+  if FNeedStateToIdle
+  then Result := []
+  else Result := inherited GetCommands;
+end;
+
 function TGDBMIDebugger.GetTargetWidth: Byte;
 begin
   Result := FTargetInfo.TargetPtrSize*8;
@@ -6882,6 +6895,7 @@ begin
     FPauseWaitState := pwsNone;
     FErrorHandlingFlags := [];
     FInExecuteCount := 0;
+    FNeedStateToIdle := False;
     Options := '-silent -i mi -nx';
 
     if Length(TGDBMIDebuggerProperties(GetProperties).Debugger_Startup_Options) > 0
@@ -7070,6 +7084,19 @@ end;
 function TGDBMIDebugger.GetIsIdle: Boolean;
 begin
   Result := (FCommandQueue.Count = 0) and (State in [dsPause, dsInternalPause]);
+end;
+
+procedure TGDBMIDebugger.ResetStateToIdle;
+begin
+  {$IFDEF DBGMI_QUEUE_DEBUG}
+  debugln(['Defer dsIdle:  Recurse-Count=', FInExecuteCount]);
+  {$ENDIF}
+  if FInExecuteCount > 0 then begin
+    FNeedStateToIdle := True;
+    exit;
+  end;
+  FNeedStateToIdle := False;
+  inherited ResetStateToIdle;
 end;
 
 procedure TGDBMIDebugger.ClearSourceInfo;

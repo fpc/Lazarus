@@ -2725,6 +2725,7 @@ type
     procedure SetEnvironment(const AValue: TStrings);
     procedure SetFileName(const AValue: String);
   protected
+    procedure ResetStateToIdle; virtual;
     function  CreateBreakPoints: TDBGBreakPoints; virtual;
     function  CreateLocals: TLocalsSupplier; virtual;
     function  CreateLineInfo: TDBGLineInfo; virtual;
@@ -2748,7 +2749,7 @@ type
     procedure DoBeforeState(const OldState: TDBGState); virtual;
     procedure DoState(const OldState: TDBGState); virtual;
     function  ChangeFileName: Boolean; virtual;
-    function  GetCommands: TDBGCommands;
+    function  GetCommands: TDBGCommands; virtual;
     function  GetSupportedCommands: TDBGCommands; virtual;
     function  GetTargetWidth: Byte; virtual;
     function  GetWaiting: Boolean; virtual;
@@ -5210,11 +5211,10 @@ begin
   else
   if (AOldState  in [dsPause, dsInternalPause, dsNone] )
   then begin
-    if (FNotifiedState  in [dsRun, dsStop]) or (AOldState = dsNone)
+    // dsIdle happens after dsStop
+    if (FNotifiedState  in [dsRun, dsInit, dsIdle]) or (AOldState = dsNone)
     then begin
       // typical: finalize snapshot and clear data.
-      // TODO: Need stop notification, only if run has exited, maybe dsIdle again ?
-      // dsStop can be nested
       DoStateLeavePauseClean;
     end
     else begin
@@ -5222,6 +5222,12 @@ begin
       //          Do *not* clear data. Objects may be in use (e.g. dsError)
       DoStateLeavePause;
     end;
+  end
+  else
+  if (AOldState  in [dsStop]) and (FNotifiedState = dsIdle)
+  then begin
+    // stopped // typical: finalize snapshot and clear data.
+    DoStateLeavePauseClean;
   end;
   {$IFDEF DBG_DATA_MONITORS} DebugLnExit(['DebugDataMonitor: <<EXIT: ', ClassName, '.DoStateChange']); {$ENDIF}
 end;
@@ -6180,7 +6186,7 @@ begin
     then begin
       // Reset state
       FFileName := '';
-      SetState(dsIdle);
+      ResetStateToIdle;
       ChangeFileName;
     end;
 
@@ -6188,6 +6194,11 @@ begin
     if  (FFilename <> '') and (FState = dsIdle) and ChangeFileName
     then SetState(dsStop);
   end;
+end;
+
+procedure TDebugger.ResetStateToIdle;
+begin
+  SetState(dsIdle);
 end;
 
 class procedure TDebugger.SetProperties(const AProperties: TDebuggerProperties);
