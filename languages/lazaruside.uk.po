@@ -377,7 +377,9 @@ msgid "Behind methods"
 msgstr "Після методів"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-msgid "Selection:"
+#, fuzzy
+#| msgid "Selection:"
+msgid "Selection"
 msgstr "Виділення:"
 
 #: lazarusidestrconsts.dlgblockindent
@@ -879,7 +881,9 @@ msgid "Cursor beyond EOL"
 msgstr "Курсор за межею рядка"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor:"
+#, fuzzy
+#| msgid "Cursor:"
+msgid "Cursor"
 msgstr "Курсор:"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
@@ -1657,7 +1661,9 @@ msgid "Indent code to"
 msgstr "Зсунути вправо код за"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Indent and Tabs:"
+#, fuzzy
+#| msgid "Indent and Tabs:"
+msgid "Indent and Tabs"
 msgstr "Відступи і Табуляція:"
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -2213,7 +2219,9 @@ msgid "Multi Select"
 msgstr "Множинний Вибір"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find editor for jump targets:"
+#, fuzzy
+#| msgid "Find editor for jump targets:"
+msgid "Find editor for jump targets"
 msgstr "Знайти редактор для цілей переходу:"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -2237,7 +2245,9 @@ msgid "Pages and Windows"
 msgstr "Сторінки та Вікна"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
-msgid "Notebook Tabs:"
+#, fuzzy
+#| msgid "Notebook Tabs:"
+msgid "Notebook Tabs"
 msgstr "Вкладки Блокноту:"
 
 #: lazarusidestrconsts.dlgnaming
@@ -2614,7 +2624,9 @@ msgid "Scroll by one less"
 msgstr "Прокрутити на один вниз"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-msgid "Scrolling:"
+#, fuzzy
+#| msgid "Scrolling:"
+msgid "Scrolling"
 msgstr "Прокрутка:"
 
 #: lazarusidestrconsts.dlgscrollhint
@@ -2917,7 +2929,9 @@ msgid "Undo after save"
 msgstr "Скасування після збереження"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-msgid "Undo / Redo:"
+#, fuzzy
+#| msgid "Undo / Redo:"
+msgid "Undo / Redo"
 msgstr "Повернути / Повторити:"
 
 #: lazarusidestrconsts.dlgundolimit
@@ -15514,7 +15528,9 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr "Вітаємо в Lazarus IDE %s"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
-msgid "When a unit is renamed, update references ..."
+#, fuzzy
+#| msgid "When a unit is renamed, update references ..."
+msgid "When a unit is renamed, update references"
 msgstr "Коли модуль перейменований оновити залежності ..."
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew

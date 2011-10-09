@@ -385,7 +385,9 @@ msgid "Behind methods"
 msgstr "Derrière les méthodes"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-msgid "Selection:"
+#, fuzzy
+#| msgid "Selection:"
+msgid "Selection"
 msgstr "Sélection :"
 
 #: lazarusidestrconsts.dlgblockindent
@@ -891,8 +893,9 @@ msgid "Cursor beyond EOL"
 msgstr "Curseur au-delà de la fin de ligne"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-#| msgid "Cursor options:"
-msgid "Cursor:"
+#, fuzzy
+#| msgid "Cursor:"
+msgid "Cursor"
 msgstr "Curseur :"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
@@ -1681,8 +1684,9 @@ msgid "Indent code to"
 msgstr "Indenter jusqu'à"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-#| msgid "Indents/Tabs options:"
-msgid "Indent and Tabs:"
+#, fuzzy
+#| msgid "Indent and Tabs:"
+msgid "Indent and Tabs"
 msgstr "Indentations et tabulations :"
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -2246,7 +2250,9 @@ msgid "Multi Select"
 msgstr "Multi sélection"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find editor for jump targets:"
+#, fuzzy
+#| msgid "Find editor for jump targets:"
+msgid "Find editor for jump targets"
 msgstr "trouver"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -2270,7 +2276,9 @@ msgid "Pages and Windows"
 msgstr "Pages et fenêtres"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
-msgid "Notebook Tabs:"
+#, fuzzy
+#| msgid "Notebook Tabs:"
+msgid "Notebook Tabs"
 msgstr "position des onglets de l'éditeur de source"
 
 #: lazarusidestrconsts.dlgnaming
@@ -2657,8 +2665,9 @@ msgid "Scroll by one less"
 msgstr "faire défiler d'un de moins"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-#| msgid "Scroll options:"
-msgid "Scrolling:"
+#, fuzzy
+#| msgid "Scrolling:"
+msgid "Scrolling"
 msgstr "Défilement :"
 
 #: lazarusidestrconsts.dlgscrollhint
@@ -2965,8 +2974,8 @@ msgstr "Défaire après enregistrement"
 
 #: lazarusidestrconsts.dlgundogroupoptions
 #, fuzzy
-#| msgid "Undo options:"
-msgid "Undo / Redo:"
+#| msgid "Undo / Redo:"
+msgid "Undo / Redo"
 msgstr "Défaire / Refaire :"
 
 #: lazarusidestrconsts.dlgundolimit
@@ -15769,7 +15778,9 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
-msgid "When a unit is renamed, update references ..."
+#, fuzzy
+#| msgid "When a unit is renamed, update references ..."
+msgid "When a unit is renamed, update references"
 msgstr "Mettre à jour les références si une unité est renommée ..."
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew

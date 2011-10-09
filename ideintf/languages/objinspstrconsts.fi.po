@@ -475,6 +475,7 @@ msgid "Create new field and add it at current position"
 msgstr "Luo uusi kenttä ja lisää se nykyiseen kohtaan"
 
 #: objinspstrconsts.oiscutcomponents
+msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
 msgstr "Leikkaa"
 
@@ -484,6 +485,7 @@ msgid "Delete"
 msgstr "Poista"
 
 #: objinspstrconsts.oisdeletecomponents
+msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
 msgstr "Poista"
 
@@ -680,6 +682,7 @@ msgid "Move to Front"
 msgstr "Siirrä eteen"
 
 #: objinspstrconsts.oispastecomponents
+msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
 msgstr "Liitä"
 
@@ -1391,7 +1394,7 @@ msgstr ""
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
 msgid "Open"
-msgstr ""
+msgstr "Avaa"
 
 #: objinspstrconsts.sccssgedtsave
 msgctxt "objinspstrconsts.sccssgedtsave"
@@ -1404,6 +1407,7 @@ msgid "Save"
 msgstr "Tallenna"
 
 #: objinspstrconsts.sccstredt
+msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items..."
 msgstr "Muokkaa kohtia"
 

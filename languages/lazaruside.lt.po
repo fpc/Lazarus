@@ -382,7 +382,9 @@ msgid "Behind methods"
 msgstr "Po metodų"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-msgid "Selection:"
+#, fuzzy
+#| msgid "Selection:"
+msgid "Selection"
 msgstr "Pažymėjimas:"
 
 #: lazarusidestrconsts.dlgblockindent
@@ -887,8 +889,9 @@ msgid "Cursor beyond EOL"
 msgstr "Žymeklis peržengia EOL"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-#| msgid "Cursor options:"
-msgid "Cursor:"
+#, fuzzy
+#| msgid "Cursor:"
+msgid "Cursor"
 msgstr "Žymeklis:"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
@@ -1673,8 +1676,9 @@ msgid "Indent code to"
 msgstr "Įtraukti kodą pagal"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-#| msgid "Indents/Tabs options:"
-msgid "Indent and Tabs:"
+#, fuzzy
+#| msgid "Indent and Tabs:"
+msgid "Indent and Tabs"
 msgstr "Lygiavimas ir tabuliavimas:"
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -2235,7 +2239,9 @@ msgid "Multi Select"
 msgstr "Pažymėti kelis"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find editor for jump targets:"
+#, fuzzy
+#| msgid "Find editor for jump targets:"
+msgid "Find editor for jump targets"
 msgstr "Peršokimo paskirčiai skirtos rengyklės paieška:"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -2259,7 +2265,9 @@ msgid "Pages and Windows"
 msgstr "Lapai ir langai"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
-msgid "Notebook Tabs:"
+#, fuzzy
+#| msgid "Notebook Tabs:"
+msgid "Notebook Tabs"
 msgstr "Rengyklės kortelės:"
 
 #: lazarusidestrconsts.dlgnaming
@@ -2643,8 +2651,9 @@ msgid "Scroll by one less"
 msgstr "Slenkant per lapą slinkti viena eilute mažiau"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-#| msgid "Scroll options:"
-msgid "Scrolling:"
+#, fuzzy
+#| msgid "Scrolling:"
+msgid "Scrolling"
 msgstr "Slinktis:"
 
 #: lazarusidestrconsts.dlgscrollhint
@@ -2950,8 +2959,9 @@ msgid "Undo after save"
 msgstr "Išsaugojus grąžinimas neišvalomas"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-#| msgid "Undo options:"
-msgid "Undo / Redo:"
+#, fuzzy
+#| msgid "Undo / Redo:"
+msgid "Undo / Redo"
 msgstr "Atšaukti / grąžinti:"
 
 #: lazarusidestrconsts.dlgundolimit
@@ -15772,7 +15782,9 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
-msgid "When a unit is renamed, update references ..."
+#, fuzzy
+#| msgid "When a unit is renamed, update references ..."
+msgid "When a unit is renamed, update references"
 msgstr "Pakeitus modulio pavadinimą, naujinti nuorodas..."
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew

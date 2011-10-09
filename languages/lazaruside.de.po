@@ -382,7 +382,9 @@ msgid "Behind methods"
 msgstr "Nach Methoden"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-msgid "Selection:"
+#, fuzzy
+#| msgid "Selection:"
+msgid "Selection"
 msgstr "Auswahl:"
 
 #: lazarusidestrconsts.dlgblockindent
@@ -886,8 +888,9 @@ msgid "Cursor beyond EOL"
 msgstr "Cursor hinter dem Zeilenende"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-#| msgid "Cursor options:"
-msgid "Cursor:"
+#, fuzzy
+#| msgid "Cursor:"
+msgid "Cursor"
 msgstr "Cursoreinstellungen:"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
@@ -1679,8 +1682,9 @@ msgid "Indent code to"
 msgstr "Code einrücken auf"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-#| msgid "Indents/Tabs options:"
-msgid "Indent and Tabs:"
+#, fuzzy
+#| msgid "Indent and Tabs:"
+msgid "Indent and Tabs"
 msgstr "Einstellungen für Einrück./Tabs:"
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -2246,7 +2250,9 @@ msgid "Multi Select"
 msgstr "Mehrfachauswahl"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find editor for jump targets:"
+#, fuzzy
+#| msgid "Find editor for jump targets:"
+msgid "Find editor for jump targets"
 msgstr "Editorauswahl für Sprungziele:"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -2270,7 +2276,9 @@ msgid "Pages and Windows"
 msgstr "Seiten und Fenster"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
-msgid "Notebook Tabs:"
+#, fuzzy
+#| msgid "Notebook Tabs:"
+msgid "Notebook Tabs"
 msgstr "Notebook-Reiter:"
 
 #: lazarusidestrconsts.dlgnaming
@@ -2656,8 +2664,9 @@ msgid "Scroll by one less"
 msgstr "Eine Zeile weniger scrollen"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-#| msgid "Scroll options:"
-msgid "Scrolling:"
+#, fuzzy
+#| msgid "Scrolling:"
+msgid "Scrolling"
 msgstr "Scrolleinstellungen:"
 
 #: lazarusidestrconsts.dlgscrollhint
@@ -2963,8 +2972,9 @@ msgid "Undo after save"
 msgstr "Rücknahme auch nach dem Speichern"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-#| msgid "Undo options:"
-msgid "Undo / Redo:"
+#, fuzzy
+#| msgid "Undo / Redo:"
+msgid "Undo / Redo"
 msgstr "Einstellungen für Rücknahme"
 
 #: lazarusidestrconsts.dlgundolimit
@@ -15771,7 +15781,9 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr "Willkommen zur Lazarus IDE %s"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
-msgid "When a unit is renamed, update references ..."
+#, fuzzy
+#| msgid "When a unit is renamed, update references ..."
+msgid "When a unit is renamed, update references"
 msgstr "Wenn eine Unit umbenannt wird, Referenzen aktualisieren ..."
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew

@@ -377,7 +377,7 @@ msgid "Behind methods"
 msgstr "Achter methoden"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-msgid "Selection:"
+msgid "Selection"
 msgstr ""
 
 #: lazarusidestrconsts.dlgblockindent
@@ -883,7 +883,7 @@ msgid "Cursor beyond EOL"
 msgstr "Cursor voorbij EOL"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor:"
+msgid "Cursor"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcursorskipsselection
@@ -1665,7 +1665,7 @@ msgid "Indent code to"
 msgstr "Laat code inspringen tot"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Indent and Tabs:"
+msgid "Indent and Tabs"
 msgstr ""
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -2225,7 +2225,7 @@ msgid "Multi Select"
 msgstr "Meervoudige selectie"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find editor for jump targets:"
+msgid "Find editor for jump targets"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -2249,7 +2249,7 @@ msgid "Pages and Windows"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
-msgid "Notebook Tabs:"
+msgid "Notebook Tabs"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnaming
@@ -2633,7 +2633,7 @@ msgid "Scroll by one less"
 msgstr "Scroll met een minder"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-msgid "Scrolling:"
+msgid "Scrolling"
 msgstr ""
 
 #: lazarusidestrconsts.dlgscrollhint
@@ -2940,7 +2940,7 @@ msgid "Undo after save"
 msgstr "Ongedaan maken na Opslaan"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-msgid "Undo / Redo:"
+msgid "Undo / Redo"
 msgstr ""
 
 #: lazarusidestrconsts.dlgundolimit
@@ -15716,7 +15716,7 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
-msgid "When a unit is renamed, update references ..."
+msgid "When a unit is renamed, update references"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew

@@ -372,7 +372,9 @@ msgid "Behind methods"
 msgstr "Metodien takana"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-msgid "Selection:"
+#, fuzzy
+#| msgid "Selection:"
+msgid "Selection"
 msgstr "Valinta"
 
 #: lazarusidestrconsts.dlgblockindent
@@ -860,7 +862,9 @@ msgid "Cursor beyond EOL"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor:"
+#, fuzzy
+#| msgid "Cursor:"
+msgid "Cursor"
 msgstr "Kursori"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
@@ -1144,6 +1148,7 @@ msgid "Editor font size"
 msgstr ""
 
 #: lazarusidestrconsts.dlgeditoroptions
+msgctxt "lazarusidestrconsts.dlgeditoroptions"
 msgid "Editor options"
 msgstr "Editorin asetukset"
 
@@ -1637,7 +1642,9 @@ msgid "Indent code to"
 msgstr "Sisennä koodi"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Indent and Tabs:"
+#, fuzzy
+#| msgid "Indent and Tabs:"
+msgid "Indent and Tabs"
 msgstr "Sisennys ja tabulaattorit"
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -2191,7 +2198,9 @@ msgid "Multi Select"
 msgstr "Monivalinta"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find editor for jump targets:"
+#, fuzzy
+#| msgid "Find editor for jump targets:"
+msgid "Find editor for jump targets"
 msgstr "Etsi hyppykohteen editori"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -2215,7 +2224,9 @@ msgid "Pages and Windows"
 msgstr "Välilehdet ja ikkunat"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
-msgid "Notebook Tabs:"
+#, fuzzy
+#| msgid "Notebook Tabs:"
+msgid "Notebook Tabs"
 msgstr "Editorin välilehdet"
 
 #: lazarusidestrconsts.dlgnaming
@@ -2588,7 +2599,9 @@ msgid "Scroll by one less"
 msgstr "Vieritä yksi vähemmän"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-msgid "Scrolling:"
+#, fuzzy
+#| msgid "Scrolling:"
+msgid "Scrolling"
 msgstr "Vieritys"
 
 #: lazarusidestrconsts.dlgscrollhint
@@ -2889,7 +2902,9 @@ msgid "Undo after save"
 msgstr "Kumoa talletuksen jälkeen"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-msgid "Undo / Redo:"
+#, fuzzy
+#| msgid "Undo / Redo:"
+msgid "Undo / Redo"
 msgstr "Kumoa / Palauta uudelleen"
 
 #: lazarusidestrconsts.dlgundolimit
@@ -4382,7 +4397,7 @@ msgstr "Automaattinen päivitys"
 #: lazarusidestrconsts.lisceothergroup
 msgctxt "lazarusidestrconsts.lisceothergroup"
 msgid "Other"
-msgstr ""
+msgstr "Muu"
 
 #: lazarusidestrconsts.lisceoupdate
 msgid "Update"
@@ -10202,7 +10217,7 @@ msgstr "Etsi &Edellinen"
 #: lazarusidestrconsts.lismenufpdoceditor
 msgctxt "lazarusidestrconsts.lismenufpdoceditor"
 msgid "FPDoc Editor"
-msgstr ""
+msgstr "FPDoc muokkain"
 
 #: lazarusidestrconsts.lismenugeneraloptions
 msgid "Options ..."
@@ -10478,6 +10493,7 @@ msgid "&Replace ..."
 msgstr "Etsi ja korvaa ..."
 
 #: lazarusidestrconsts.lismenureportingbug
+msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a bug"
 msgstr "Virheen raportointi"
 
@@ -11936,7 +11952,7 @@ msgstr ""
 #: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
 msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
 msgid "FPDoc files path"
-msgstr ""
+msgstr "FPDoc tiedostojen polku"
 
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
@@ -15478,7 +15494,9 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr "Tervetuloa lazarus IDE:en %s"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
-msgid "When a unit is renamed, update references ..."
+#, fuzzy
+#| msgid "When a unit is renamed, update references ..."
+msgid "When a unit is renamed, update references"
 msgstr "Käännösyksikön nimeä muutettaessa päivitetään viittaukset"
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew

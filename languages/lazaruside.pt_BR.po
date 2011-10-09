@@ -391,7 +391,9 @@ msgid "Behind methods"
 msgstr "Antes de métodos"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-msgid "Selection:"
+#, fuzzy
+#| msgid "Selection:"
+msgid "Selection"
 msgstr "Seleção:"
 
 #: lazarusidestrconsts.dlgblockindent
@@ -896,7 +898,9 @@ msgid "Cursor beyond EOL"
 msgstr "Cursor além fim de linha (EOL)"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor:"
+#, fuzzy
+#| msgid "Cursor:"
+msgid "Cursor"
 msgstr "Cursor:"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
@@ -1683,7 +1687,9 @@ msgid "Indent code to"
 msgstr "Identar código para"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Indent and Tabs:"
+#, fuzzy
+#| msgid "Indent and Tabs:"
+msgid "Indent and Tabs"
 msgstr "Identações e Tabulações:"
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -2245,7 +2251,9 @@ msgid "Multi Select"
 msgstr "Seleção múltipla"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find editor for jump targets:"
+#, fuzzy
+#| msgid "Find editor for jump targets:"
+msgid "Find editor for jump targets"
 msgstr "Localizar editor para os alvos do salto:"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -2269,7 +2277,9 @@ msgid "Pages and Windows"
 msgstr "Páginas e Janelas"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
-msgid "Notebook Tabs:"
+#, fuzzy
+#| msgid "Notebook Tabs:"
+msgid "Notebook Tabs"
 msgstr "Abas \"Notebook\":"
 
 #: lazarusidestrconsts.dlgnaming
@@ -2651,7 +2661,9 @@ msgid "Scroll by one less"
 msgstr "Rolar por um à menos"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-msgid "Scrolling:"
+#, fuzzy
+#| msgid "Scrolling:"
+msgid "Scrolling"
 msgstr "Rolagem:"
 
 #: lazarusidestrconsts.dlgscrollhint
@@ -2956,7 +2968,9 @@ msgid "Undo after save"
 msgstr "Desfazer após salvar"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-msgid "Undo / Redo:"
+#, fuzzy
+#| msgid "Undo / Redo:"
+msgid "Undo / Redo"
 msgstr "Desfazer / Refazer:"
 
 #: lazarusidestrconsts.dlgundolimit
@@ -15687,7 +15701,9 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr "Bem-Vindo ao IDE Lazarus %s"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
-msgid "When a unit is renamed, update references ..."
+#, fuzzy
+#| msgid "When a unit is renamed, update references ..."
+msgid "When a unit is renamed, update references"
 msgstr "Quando uma unidade for renomeada, atualizar referências ..."
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew

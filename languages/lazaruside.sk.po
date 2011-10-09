@@ -382,7 +382,7 @@ msgid "Behind methods"
 msgstr "Za metódy"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-msgid "Selection:"
+msgid "Selection"
 msgstr ""
 
 #: lazarusidestrconsts.dlgblockindent
@@ -888,7 +888,7 @@ msgid "Cursor beyond EOL"
 msgstr "Kurzor za EOL"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor:"
+msgid "Cursor"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcursorskipsselection
@@ -1670,7 +1670,7 @@ msgid "Indent code to"
 msgstr "Odsadiť kód na"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Indent and Tabs:"
+msgid "Indent and Tabs"
 msgstr ""
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -2230,7 +2230,7 @@ msgid "Multi Select"
 msgstr "Viacnásobný výber"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find editor for jump targets:"
+msgid "Find editor for jump targets"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -2254,7 +2254,7 @@ msgid "Pages and Windows"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
-msgid "Notebook Tabs:"
+msgid "Notebook Tabs"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnaming
@@ -2642,7 +2642,7 @@ msgid "Scroll by one less"
 msgstr "Posunúť o jedno"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-msgid "Scrolling:"
+msgid "Scrolling"
 msgstr ""
 
 #: lazarusidestrconsts.dlgscrollhint
@@ -2949,7 +2949,7 @@ msgid "Undo after save"
 msgstr "Späť po uložení"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-msgid "Undo / Redo:"
+msgid "Undo / Redo"
 msgstr ""
 
 #: lazarusidestrconsts.dlgundolimit
@@ -15765,7 +15765,7 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
-msgid "When a unit is renamed, update references ..."
+msgid "When a unit is renamed, update references"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew

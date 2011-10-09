@@ -381,7 +381,9 @@ msgid "Behind methods"
 msgstr "מאחרי המתודות"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-msgid "Selection:"
+#, fuzzy
+#| msgid "Selection:"
+msgid "Selection"
 msgstr "בחירה:"
 
 #: lazarusidestrconsts.dlgblockindent
@@ -884,7 +886,9 @@ msgid "Cursor beyond EOL"
 msgstr "סמן לאחר סיום השורה"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor:"
+#, fuzzy
+#| msgid "Cursor:"
+msgid "Cursor"
 msgstr "סמן:"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
@@ -1668,7 +1672,9 @@ msgid "Indent code to"
 msgstr "זהה קוד ל"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Indent and Tabs:"
+#, fuzzy
+#| msgid "Indent and Tabs:"
+msgid "Indent and Tabs"
 msgstr "זיהוי ולשוניות:"
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -2228,7 +2234,9 @@ msgid "Multi Select"
 msgstr "בחירה מרובה"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find editor for jump targets:"
+#, fuzzy
+#| msgid "Find editor for jump targets:"
+msgid "Find editor for jump targets"
 msgstr "מצא עורך למטרות הקפיצה:"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -2252,7 +2260,9 @@ msgid "Pages and Windows"
 msgstr "עמודים וחלונות"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
-msgid "Notebook Tabs:"
+#, fuzzy
+#| msgid "Notebook Tabs:"
+msgid "Notebook Tabs"
 msgstr "לשוניות פנקס:"
 
 #: lazarusidestrconsts.dlgnaming
@@ -2634,7 +2644,9 @@ msgid "Scroll by one less"
 msgstr "גלול אחד פחות"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-msgid "Scrolling:"
+#, fuzzy
+#| msgid "Scrolling:"
+msgid "Scrolling"
 msgstr "גלילה:"
 
 #: lazarusidestrconsts.dlgscrollhint
@@ -2939,7 +2951,9 @@ msgid "Undo after save"
 msgstr "בטל שינויים אחרי שמירה"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-msgid "Undo / Redo:"
+#, fuzzy
+#| msgid "Undo / Redo:"
+msgid "Undo / Redo"
 msgstr "בטל/בצע מחדש:"
 
 #: lazarusidestrconsts.dlgundolimit
@@ -15745,7 +15759,9 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
-msgid "When a unit is renamed, update references ..."
+#, fuzzy
+#| msgid "When a unit is renamed, update references ..."
+msgid "When a unit is renamed, update references"
 msgstr "כששם היחידה משתנה, עדכן את המקורות"
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew

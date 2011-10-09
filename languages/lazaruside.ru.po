@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-10-08 20:17+0300\n"
+"PO-Revision-Date: 2011-10-09 18:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -392,8 +392,9 @@ msgid "Behind methods"
 msgstr "После методов"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-msgid "Selection:"
-msgstr "Выделение:"
+#| msgid "Selection:"
+msgid "Selection"
+msgstr "Выделение"
 
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent"
@@ -891,8 +892,9 @@ msgid "Cursor beyond EOL"
 msgstr "Допускать установку курсора вне конца строки"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor:"
-msgstr "Параметры курсора:"
+#| msgid "Cursor:"
+msgid "Cursor"
+msgstr "Курсор"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
@@ -1683,8 +1685,9 @@ msgid "Indent code to"
 msgstr "Выровнять код по"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Indent and Tabs:"
-msgstr "Параметры отступа/табуляции:"
+#| msgid "Indent and Tabs:"
+msgid "Indent and Tabs"
+msgstr "Отступ и табуляция"
 
 #: lazarusidestrconsts.dlginfrontofmethods
 msgid "In front of methods"
@@ -2244,9 +2247,9 @@ msgid "Multi Select"
 msgstr "Множественное выделение"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-#| msgid "Find jump target editor:"
-msgid "Find editor for jump targets:"
-msgstr "Выбор редактора для перехода:"
+#| msgid "Find editor for jump targets:"
+msgid "Find editor for jump targets"
+msgstr "Выбор редактора для перехода"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
 msgid "Order to use for editors matching the same criteria"
@@ -2270,9 +2273,9 @@ msgid "Pages and Windows"
 msgstr "Вкладки и окна"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
-#| msgid "Tabs:"
-msgid "Notebook Tabs:"
-msgstr "Вкладки редакторов:"
+#| msgid "Notebook Tabs:"
+msgid "Notebook Tabs"
+msgstr "Вкладки редакторов"
 
 #: lazarusidestrconsts.dlgnaming
 msgid "Naming"
@@ -2653,8 +2656,9 @@ msgid "Scroll by one less"
 msgstr "Прокручивать на строку меньше"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-msgid "Scrolling:"
-msgstr "Параметры прокрутки:"
+#| msgid "Scrolling:"
+msgid "Scrolling"
+msgstr "Прокрутка"
 
 #: lazarusidestrconsts.dlgscrollhint
 msgctxt "lazarusidestrconsts.dlgscrollhint"
@@ -2956,8 +2960,9 @@ msgid "Undo after save"
 msgstr "Список отмен после сохранения"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-msgid "Undo / Redo:"
-msgstr "Параметры отмены:"
+#| msgid "Undo / Redo:"
+msgid "Undo / Redo"
+msgstr "Отмена и возврат"
 
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
@@ -15700,8 +15705,9 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr "Добро пожаловать в Lazarus версии %s"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
-msgid "When a unit is renamed, update references ..."
-msgstr "Обновление ссылок при переименовании модуля"
+#| msgid "When a unit is renamed, update references ..."
+msgid "When a unit is renamed, update references"
+msgstr "Обновление ссылок на модуль при его переименовании"
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"

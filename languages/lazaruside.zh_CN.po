@@ -380,7 +380,7 @@ msgid "Behind methods"
 msgstr "在方法后"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-msgid "Selection:"
+msgid "Selection"
 msgstr ""
 
 #: lazarusidestrconsts.dlgblockindent
@@ -886,7 +886,9 @@ msgid "Cursor beyond EOL"
 msgstr "允许光标超过行末"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor:"
+#, fuzzy
+#| msgid "Cursor:"
+msgid "Cursor"
 msgstr "光标:"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
@@ -1670,7 +1672,9 @@ msgid "Indent code to"
 msgstr "代码缩进到"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-msgid "Indent and Tabs:"
+#, fuzzy
+#| msgid "Indent and Tabs:"
+msgid "Indent and Tabs"
 msgstr "缩进和制表符:"
 
 #: lazarusidestrconsts.dlginfrontofmethods
@@ -2234,7 +2238,7 @@ msgid "Multi Select"
 msgstr "多选"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find editor for jump targets:"
+msgid "Find editor for jump targets"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -2258,7 +2262,7 @@ msgid "Pages and Windows"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
-msgid "Notebook Tabs:"
+msgid "Notebook Tabs"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnaming
@@ -2646,7 +2650,9 @@ msgid "Scroll by one less"
 msgstr "滚动量减少"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-msgid "Scrolling:"
+#, fuzzy
+#| msgid "Scrolling:"
+msgid "Scrolling"
 msgstr "滚动:"
 
 #: lazarusidestrconsts.dlgscrollhint
@@ -2953,7 +2959,9 @@ msgid "Undo after save"
 msgstr "撤销保存后的"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-msgid "Undo / Redo:"
+#, fuzzy
+#| msgid "Undo / Redo:"
+msgid "Undo / Redo"
 msgstr "撤销/重做:"
 
 #: lazarusidestrconsts.dlgundolimit
@@ -15765,7 +15773,9 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
-msgid "When a unit is renamed, update references ..."
+#, fuzzy
+#| msgid "When a unit is renamed, update references ..."
+msgid "When a unit is renamed, update references"
 msgstr "当单元被重命名, 更新引用..."
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
