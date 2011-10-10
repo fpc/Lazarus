@@ -193,4 +193,10 @@ inherited AssemblerDlg: TAssemblerDlg
     left = 24
     top = 32
   end
+  object Timer1: TTimer[7]
+    Interval = 50
+    OnTimer = Timer1Timer
+    left = 96
+    top = 113
+  end
 end

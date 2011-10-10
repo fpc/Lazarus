@@ -48,6 +48,7 @@ type
     PopupMenu1: TPopupMenu;
     sbHorizontal: TScrollBar;
     sbVertical: TScrollBar;
+    Timer1: TTimer;
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButtonCopy: TToolButton;
@@ -76,6 +77,7 @@ type
     procedure sbHorizontalChange(Sender: TObject);
     procedure sbVerticalChange(Sender: TObject);
     procedure sbVerticalScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
+    procedure Timer1Timer(Sender: TObject);
     procedure ToolButtonPowerClick(Sender: TObject);
   private
     FDebugger: TDebugger;
@@ -84,6 +86,8 @@ type
     FDisassemblerNotification: TIDEDisassemblerNotification;
     FCurrentLocation, FLocation: TDBGPtr;
     FMouseIsDown: Boolean;
+    FIsVScrollTrack: Boolean;
+    FVScrollCounter, FVScrollPos: Integer;
 
     FTopLine: Integer;
     FLastTopLine: Integer;
@@ -210,6 +214,8 @@ begin
   FDisassemblerNotification := TIDEDisassemblerNotification.Create;
   FDisassemblerNotification.AddReference;
   FDisassemblerNotification.OnChange  := @DisassemblerChanged;
+  FIsVScrollTrack := False;
+  FVScrollCounter := 0;
 
   inherited Create(AOwner);
 //  DoubleBuffered := True;
@@ -585,12 +591,13 @@ procedure TAssemblerDlg.sbVerticalChange(Sender: TObject);
 begin
   ToolButtonPower.Down := True;
   ToolButtonPowerClick(nil);
-  sbVertical.Position := 475;
   pbAsm.Invalidate;
+  Timer1.Enabled := True;
 end;
 
 procedure TAssemblerDlg.sbVerticalScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
 begin
+  FIsVScrollTrack := False;
   case ScrollCode of
     scLineUp: begin
       SetTopline(FTopLine - 1);
@@ -608,19 +615,39 @@ begin
       // doesn't work on gtk
     end;
     scTrack: begin
-      // --- remove when scPosition works
-      ScrollPos := 475;
-      Exit;
-      // ---
-
-      if ScrollPos = 475 then Exit;
-      if ScrollPos < 475
-      then SetTopline(FTopLine - 1)
-      else SetTopline(FTopLine + 1);
+      FVScrollPos := ScrollPos;
+      FIsVScrollTrack := True;
     end;
 //    scTop,      // = SB_TOP
 //    scBottom,   // = SB_BOTTOM
 //    scEndScroll // = SB_ENDSCROLL
+  end;
+  Timer1.Enabled := True;
+end;
+
+procedure TAssemblerDlg.Timer1Timer(Sender: TObject);
+var
+  i: Integer;
+begin
+  if (GetCaptureControl <> sbVertical) then begin
+debugln('----------------');
+    sbVertical.Position := 475;
+    pbAsm.Invalidate;
+    FIsVScrollTrack := False;
+    Timer1.Enabled := False;
+    FVScrollCounter := 0;
+  end else
+  if FIsVScrollTrack then begin
+    i := (FVScrollPos - 475);
+    if i < 0 then dec(i, 35);
+    if i > 0 then inc(i, 35);
+    FVScrollCounter := FVScrollCounter + (i div 35);
+    if (FVScrollCounter <= -10) or (FVScrollCounter >= 10) then begin
+      i := FVScrollCounter div 10;
+      SetTopline(FTopLine + i);
+      FVScrollCounter := FVScrollCounter -(10 * i);
+      pbAsm.Invalidate;
+    end;
   end;
 end;
 
