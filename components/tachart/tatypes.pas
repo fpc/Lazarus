@@ -320,6 +320,7 @@ type
   public
     procedure Assign(ASource: TPersistent); override;
     procedure CheckBoundsOrder;
+    procedure Intersect(var AMin, AMax: Double);
   published
     property Max: Double index 2 read GetBounds write SetBounds stored IsBoundsStored;
     property Min: Double index 1 read GetBounds write SetBounds stored IsBoundsStored;
@@ -1062,6 +1063,14 @@ end;
 function TChartRange.GetUseBounds(AIndex: integer): Boolean;
 begin
   Result := FUseBounds[AIndex];
+end;
+
+procedure TChartRange.Intersect(var AMin, AMax: Double);
+begin
+  if UseMin and (Min > AMin) then
+    AMin := Min;
+  if UseMax and (Max < AMax)then
+    AMax := Max;
 end;
 
 function TChartRange.IsBoundsStored(AIndex: Integer): Boolean;

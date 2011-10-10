@@ -540,12 +540,7 @@ begin
     FValueMin := GetTransform.GraphToAxis(FValueMin);
     FValueMax := GetTransform.GraphToAxis(FValueMax);
     EnsureOrder(FValueMin, FValueMax);
-    with Marks.Range do begin
-      if UseMin then
-        FValueMin := Math.Max(Min, FValueMin);
-      if UseMax then
-        FValueMax := Math.Min(Max, FValueMax);
-    end;
+    Marks.Range.Intersect(FValueMin, FValueMax);
     d := MakeValuesInRangeParams(FValueMin, FValueMax);
     FValueMin := GetTransform.AxisToGraph(FValueMin);
     FValueMax := GetTransform.AxisToGraph(FValueMax);
