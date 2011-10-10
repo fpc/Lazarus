@@ -68,13 +68,13 @@ type
 
   TChartElement = class(TPersistent)
   strict protected
-    FVisible: Boolean;
-    procedure SetVisible(AValue: Boolean);
-  protected
     FOwner: TCustomChart;
-    function GetOwner: TPersistent; override;
+    FVisible: Boolean;
     procedure InitHelper(var AResult; AClass: TFPCanvasHelperClass);
-    procedure StyleChanged(Sender: TObject);
+    procedure SetVisible(AValue: Boolean);
+    procedure StyleChanged(Sender: TObject); virtual;
+  protected
+    function GetOwner: TPersistent; override;
   public
     constructor Create(AOwner: TCustomChart);
   public

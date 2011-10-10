@@ -350,6 +350,15 @@ type
       out AResults: TNearestPointResults): Boolean;
   end;
 
+  TFitSeriesRange = class(TChartRange)
+  strict private
+    FSeries: TFitSeries;
+  strict protected
+    procedure StyleChanged(ASender: TObject); override;
+  public
+    constructor Create(ASeries: TFitSeries);
+  end;
+
 function DoublePointRotated(AX, AY: Double): TDoublePoint;
 begin
   Result.X := AY;
@@ -383,6 +392,20 @@ begin
       fePower:
         Result += Format(' * %s^' + ANumFormat, [AXText, AParams[1]]);
     end;
+end;
+
+{ TFitSeriesRange }
+
+constructor TFitSeriesRange.Create(ASeries: TFitSeries);
+begin
+  inherited Create(ASeries.ParentChart);
+  FSeries := ASeries;
+end;
+
+procedure TFitSeriesRange.StyleChanged(ASender: TObject);
+begin
+  FSeries.ExecFit;
+  inherited;
 end;
 
 { TDrawFuncHelper }
@@ -1100,7 +1123,7 @@ constructor TFitSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FFitEquation := fePolynomial;
-  FFitRange := TChartRange.Create(ParentChart);
+  FFitRange := TFitSeriesRange.Create(Self);
   FDrawFitRangeOnly := true;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
