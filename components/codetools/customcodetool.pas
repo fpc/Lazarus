@@ -2465,6 +2465,7 @@ function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
     MoveCursorToCleanPos(P);
     // check if p is in parsed code
     if (Tree=nil) or (Tree.Root=nil) then begin
+      CTDumpStack;
       RaiseException('no pascal code or not yet parsed');
     end;
     if p<Tree.Root.StartPos then begin
