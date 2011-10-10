@@ -243,24 +243,28 @@ end;
 
 function LineIntersectsRect(
   var AA, AB: TDoublePoint; const ARect: TDoubleRect): Boolean;
-var
-  dx, dy: Double;
 
   procedure AdjustX(var AP: TDoublePoint; ANewX: Double); inline;
+  var
+    dx: Double;
   begin
-    AP.Y += dy / dx * (ANewX - AP.X);
+    dx := AB.X - AA.X;
+    if not IsInfinite(dx) then
+      AP.Y += (AB.Y - AA.Y) / dx * (ANewX - AP.X);
     AP.X := ANewX;
   end;
 
   procedure AdjustY(var AP: TDoublePoint; ANewY: Double); inline;
+  var
+    dy: Double;
   begin
-    AP.X += dx / dy * (ANewY - AP.Y);
+    dy := AB.Y - AA.Y;
+    if not IsInfinite(dy) then
+      AP.X += (AB.X - AA.X) / dy * (ANewY - AP.Y);
     AP.Y := ANewY;
   end;
 
 begin
-  dx := AB.X - AA.X;
-  dy := AB.Y - AA.Y;
   case CASE_OF_TWO[AA.X < ARect.a.X, AB.X < ARect.a.X] of
     cotFirst: AdjustX(AA, ARect.a.X);
     cotSecond: AdjustX(AB, ARect.a.X);

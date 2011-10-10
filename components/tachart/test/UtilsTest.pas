@@ -82,7 +82,7 @@ type
 implementation
 
 uses
-  TAGeometry, TAMath;
+  Math, TAGeometry, TAMath;
 
 { TIntervalListTest }
 
@@ -252,6 +252,12 @@ begin
   p1 := DoublePoint(10, 20);
   p2 := DoublePoint(15, -10);
   Check(p1, p2, DoublePoint(11.6667, 10), DoublePoint(13.3333, 0));
+
+  p1 := DoublePoint(10, 5);
+  p2 := DoublePoint(SafeInfinity, 5);
+  Check(p1, p2, p1, DoublePoint(20, 5));
+  p2 := DoublePoint(10, NegInfinity);
+  Check(p1, p2, p1, DoublePoint(10, 0));
 end;
 
 procedure TGeometryTest.TestPointInPolygon;
