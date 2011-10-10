@@ -10541,15 +10541,17 @@ begin
   except
     on e: Exception do begin
       try
-      debugln(['ERROR: Exception occured in DoExecute '+e.ClassName + ' Msg="'+ e.Message + '" Addr=', dbgs(ExceptAddr)]);
-      Report :=  BackTraceStrFunc(ExceptAddr);
-      Report2 := Report;
-      Frames := ExceptFrames;
-      for I := 0 to ExceptFrameCount - 1 do
-        Report := Report + LineEnding + BackTraceStrFunc(Frames[I]);
-        if i < 5
-        then Report2 := Report;
-      except end;
+        debugln(['ERROR: Exception occured in DoExecute '+e.ClassName + ' Msg="'+ e.Message + '" Addr=', dbgs(ExceptAddr)]);
+        Report :=  BackTraceStrFunc(ExceptAddr);
+        Report2 := Report;
+        Frames := ExceptFrames;
+        for I := 0 to ExceptFrameCount - 1 do begin
+          Report := Report + LineEnding + BackTraceStrFunc(Frames[I]);
+          if i < 5
+          then Report2 := Report;
+        end;
+      except
+      end;
       debugln(Report);
 
       if MessageDlg('The debugger experienced an unknown condition.',

@@ -169,7 +169,11 @@ begin
       Step:=0;
       Application.Idle(false);
     end;
-    Application.ProcessMessages;
+    try
+      Application.ProcessMessages;
+    except
+      Application.HandleException(Application);
+    end;
     if Application.Terminated then Break;
   until R <> 0;
 
@@ -244,7 +248,11 @@ begin
       Step:=0;
       Application.Idle(false);
     end;
-    Application.ProcessMessages;
+    try
+      Application.ProcessMessages;
+    except
+      Application.HandleException(Application);
+    end;
     if Application.Terminated then Break;
     // sleep a bit
     Sleep(10);
