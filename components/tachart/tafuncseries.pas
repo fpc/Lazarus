@@ -23,13 +23,15 @@ unit TAFuncSeries;
 interface
 
 uses
-  Classes, Graphics, typ,
+  Classes, Graphics, typ, Types,
   TAChartUtils, TACustomSeries, TACustomSource, TADrawUtils, TALegend, TATypes;
 
 const
   DEF_FUNC_STEP = 2;
   DEF_SPLINE_DEGREE = 3;
   DEF_SPLINE_STEP = 4;
+  DEF_FIT_STEP = 4;
+  DEF_FIT_PARAM_COUNT = 3;
   DEF_COLORMAP_STEP = 4;
 
 type
@@ -199,6 +201,68 @@ type
       read FStep write SetStep default DEF_SPLINE_STEP;
   end;
 
+  TFitEquation = (
+    fePolynomial, // y = b0 + b1*x + b2*x^2 + ... bn*x^n
+    feLinear,     // y = a + b*x
+    feExp,        // y = a * exp(b * x)
+    fePower       // y = a * x^b
+  );
+
+  TFitSeries = class(TBasicPointSeries)
+  strict private
+    FDrawFitRangeOnly: Boolean;
+    FFitEquation: TFitEquation;
+    FFitParams: TDoubleDynArray;
+    FFitRange: TChartRange;
+    FOnFitComplete: TNotifyEvent;
+    FPen: TChartPen;
+    FStep: TFuncSeriesStep;
+    FValidFitParams: Boolean;
+    function GetParam(AIndex: Integer): Double;
+    function GetParamCount: Integer;
+    function PrepareIntervals: TIntervalList;
+    procedure SetDrawFitRangeOnly(AValue: Boolean);
+    procedure SetFitEquation(AValue: TFitEquation);
+    procedure SetFitRange(AValue: TChartRange);
+    procedure SetParam(AIndex: Integer; AValue: Double);
+    procedure SetParamCount(AValue: Integer);
+    procedure SetPen(AValue: TChartPen);
+    procedure SetStep(AValue: TFuncSeriesStep);
+  strict protected
+    procedure CalcXRange(out AXMin, AXMax: Double);
+    procedure Transform(AX, AY: Double; out ANewX, ANewY: Extended);
+  protected
+    procedure AfterAdd; override;
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
+    procedure SourceChanged(ASender: TObject); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  public
+    function Calculate(AX: Double): Double; virtual;
+    procedure Draw(ADrawer: IChartDrawer); override;
+    procedure ExecFit; virtual;
+    function GetFitEquationString(
+      ANumFormat: String; AXText: String = 'x'; AYText: String = 'y'): String; virtual;
+    function GetNearestPoint(
+      const AParams: TNearestPointParams;
+      out AResults: TNearestPointResults): Boolean; override;
+    property Param[AIndex: Integer]: Double read GetParam write SetParam;
+  published
+    property AxisIndexX;
+    property AxisIndexY;
+    property DrawFitRangeOnly: Boolean
+      read FDrawFitRangeOnly write SetDrawFitRangeOnly default true;
+    property FitEquation: TFitEquation read FFitEquation write SetFitEquation default fePolynomial;
+    property FitRange: TChartRange read FFitRange write SetFitRange;
+    property OnFitComplete: TNotifyEvent read FOnFitComplete write FOnFitComplete;
+    property ParamCount: Integer
+      read GetParamCount write SetParamCount default DEF_FIT_PARAM_COUNT;
+    property Pen: TChartPen read FPen write SetPen;
+    property Source;
+    property Step: TFuncSeriesStep read FStep write SetStep default DEF_FIT_STEP;
+  end;
+
   TFuncCalculate3DEvent =
     procedure (const AX, AY: Double; out AZ: Double) of object;
 
@@ -247,10 +311,14 @@ type
       read FStepY write SetStepY default DEF_COLORMAP_STEP;
   end;
 
+  function ParamsToEquation(
+    AEquation: TFitEquation; const AParams: array of Double;
+    ANumFormat: String; AXText: String = 'x'; AYText: String = 'y'): String;
+
 implementation
 
 uses
-  ipf, Math, SysUtils, TAGeometry, TAGraph, TAMath;
+  ipf, Math, StrUtils, SysUtils, TAGeometry, TAGraph, TAMath;
 
 type
   TMakeDoublePoint = function (AX, AY: Double): TDoublePoint;
@@ -286,6 +354,35 @@ function DoublePointRotated(AX, AY: Double): TDoublePoint;
 begin
   Result.X := AY;
   Result.Y := AX;
+end;
+
+// Builds an equation string based on the parameters and the type of equation.
+// AXText and AYText are placeholders for the x and y variables, respectively.
+// Parameters are formatted by passing ANumFormat to the "Format" function.
+function ParamsToEquation(
+  AEquation: TFitEquation; const AParams: array of Double;
+  ANumFormat, AXText, AYText: String): String;
+var
+  ps: String = '';
+  i: Integer;
+begin
+  if Length(AParams) = 0 then exit('');
+  Result := Format('%s = ' + ANumFormat, [AYText, AParams[0]]);
+  if AEquation in [fePolynomial, feLinear] then
+    for i := 1 to High(AParams) do begin
+      if AParams[i] = 0 then continue;
+      if i > 1 then ps := Format('^%d', [i]);
+      Result += Format(
+        ' %s ' + ANumFormat + '*%s%s',
+        [IfThen(AParams[i] > 0, '+', '-'), Abs(AParams[i]), AXText, ps]);
+    end
+  else if (Length(AParams) >= 2) and (AParams[0] <> 0) and (AParams[1] <> 0) then
+    case AEquation of
+      feExp:
+        Result += Format(' * exp(' + ANumFormat +' * %s)', [AParams[1], AXText]);
+      fePower:
+        Result += Format(' * %s^' + ANumFormat, [AXText, AParams[1]]);
+    end;
 end;
 
 { TDrawFuncHelper }
@@ -951,6 +1048,283 @@ begin
   FCoeff := nil;
 end;
 
+{ TFitSeries }
+
+procedure TFitSeries.AfterAdd;
+begin
+  inherited AfterAdd;
+  FFitRange.SetOwner(ParentChart);
+end;
+
+function TFitSeries.Calculate(AX: Double): Double;
+var
+  i: Integer;
+begin
+  if IsInfinite(AX) then exit(AX);
+  Result := SafeNaN;
+  if IsNaN(AX) or not FValidFitParams then exit;
+
+  case FFitEquation of
+    fePolynomial, feLinear:
+      begin
+        Result := 0;
+        for i := High(FFitParams) downto 0 do
+          Result := Result * AX + FFitParams[i];
+      end;
+    feExp:
+      Result := FFitParams[0] * Exp(FFitParams[1] * AX);
+    fePower:
+      if AX < 0 then
+        Result := SafeNaN
+      else
+        Result := FFitParams[0] * Power(AX, FFitParams[1]);
+  end;
+end;
+
+procedure TFitSeries.CalcXRange(out AXMin, AXMax: Double);
+var
+  ext: TDoubleRect;
+begin
+  with Extent do begin
+    ext.a := AxisToGraph(a);
+    ext.b := AxisToGraph(b);
+  end;
+  NormalizeRect(ext);
+  AXMin := GraphToAxisX(ext.a.X);
+  AXMax := GraphToAxisX(ext.b.X);
+  EnsureOrder(AXMin, AXMax);
+  FFitRange.Intersect(AXMin, AXMax);
+end;
+
+constructor TFitSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FFitEquation := fePolynomial;
+  FFitRange := TChartRange.Create(ParentChart);
+  FDrawFitRangeOnly := true;
+  FPen := TChartPen.Create;
+  FPen.OnChange := @StyleChanged;
+  FStep := DEF_FIT_STEP;
+  ParamCount := DEF_FIT_PARAM_COUNT; // Parabolic fit as default.
+end;
+
+destructor TFitSeries.Destroy;
+begin
+  FreeAndNil(FPen);
+  FreeAndNil(FFitRange);
+  inherited;
+end;
+
+procedure TFitSeries.Draw(ADrawer: IChartDrawer);
+var
+  de : TIntervalList;
+begin
+  if IsEmpty then exit;
+  ADrawer.Pen := Pen;
+  de := PrepareIntervals;
+  try
+    with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
+      try
+        DrawFunction(ADrawer);
+      finally
+        Free;
+      end;
+  finally
+    de.Free;
+  end;
+end;
+
+procedure TFitSeries.ExecFit;
+var
+  i, j, term, ns, np, n: Integer;
+  xmin, xmax: Double;
+  xv, yv, fp: array of ArbFloat;
+
+  function IsValidPoint(AX, AY: Double): Boolean; inline;
+  begin
+    Result := not IsNaN(AX) and not IsNaN(AY) and InRange(AX, xmin, xmax);
+  end;
+
+begin
+  FValidFitParams := false;
+
+  np := ParamCount;
+  ns := Source.Count;
+  if (np <= 0) or (ns = 0) or (ns < np) then exit;
+  CalcXRange(xmin, xmax);
+
+  n := 0;
+  for i := 0 to ns - 1 do
+    with Source.Item[i]^ do
+      n += Ord(IsValidPoint(X, Y));
+  if n < np then exit;
+
+  // Copy data in fit range to temporary arrays.
+  SetLength(xv, n);
+  SetLength(yv, n);
+  j := 0;
+  for i := 0 to ns - 1 do
+    with Source.Item[i]^ do
+      if IsValidPoint(X, Y) then begin
+        Transform(X, Y, xv[j], yv[j]);
+        j += 1;
+      end;
+
+  // Execute the polynomial fit; the degree of the polynomial is np - 1.
+  SetLength(fp, np);
+  term := 0;
+  ipfpol(n, np - 1, xv[0], yv[0], fp[0], term);
+  if term <> 1 then exit;
+  for i := 0 to High(FFitParams) do
+    FFitParams[i] := fp[i];
+
+  // See comment for "Transform": for exponential and power fit equations, the
+  // first fitted parameter is the logarithm of the "real" parameter. It needs
+  // to be transformed back to real units by exp function.
+  if FFitEquation in [feExp, fePower] then
+    FFitParams[0] := Exp(FFitParams[0]);
+  UpdateParentChart;
+  if Assigned(FOnFitComplete) then
+    FOnFitComplete(Self);
+  FValidFitParams := true;
+end;
+
+function TFitSeries.GetFitEquationString(
+  ANumFormat, AXText, AYText: String): String;
+begin
+  Result := ParamsToEquation(FFitEquation, FFitParams, ANumFormat, AXText, AYText);
+end;
+
+procedure TFitSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemLine.Create(Pen, Title));
+end;
+
+function TFitSeries.GetNearestPoint(
+  const AParams: TNearestPointParams; out AResults: TNearestPointResults): Boolean;
+var
+  de : TIntervalList;
+begin
+  Result := false;
+  AResults.FIndex := -1;
+  de := PrepareIntervals;
+  try
+    with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
+      try
+        Result := GetNearestPoint(AParams, AResults);
+      finally
+        Free;
+      end;
+  finally
+    de.Free;
+  end;
+end;
+
+function TFitSeries.GetParam(AIndex: Integer): Double;
+begin
+  if not InRange(AIndex, 0, ParamCount - 1) then
+    raise EChartError.Create('TFitSeries.GetParam index out of range');
+  Result := FFitParams[AIndex]
+end;
+
+function TFitSeries.GetParamCount: Integer;
+begin
+  Result := Length(FFitParams);
+end;
+
+function TFitSeries.PrepareIntervals: TIntervalList;
+var
+  xmin, xmax: Double;
+begin
+  Result := TIntervalList.Create;
+  try
+    CalcXRange(xmin, xmax);
+    if DrawFitRangeOnly then begin
+      Result.AddRange(NegInfinity, xmin);
+      Result.AddRange(xmax, SafeInfinity);
+    end;
+  except
+    Result.Free;
+    raise;
+  end;
+end;
+
+procedure TFitSeries.SetDrawFitRangeOnly(AValue: Boolean);
+begin
+  if FDrawFitRangeOnly = AValue then exit;
+  FDrawFitRangeOnly := AValue;
+  UpdateParentChart;
+end;
+
+procedure TFitSeries.SetFitEquation(AValue: TFitEquation);
+begin
+  if FFitEquation = AValue then exit;
+  FFitEquation := AValue;
+  SetLength(
+    FFitParams, IfThen(FFitEquation = fePolynomial, DEF_FIT_PARAM_COUNT, 2));
+  ExecFit;
+end;
+
+procedure TFitSeries.SetFitRange(AValue: TChartRange);
+begin
+  if FFitRange = AValue then exit;
+  FFitRange := AValue;
+  ExecFit;
+end;
+
+procedure TFitSeries.SetParam(AIndex: Integer; AValue: Double);
+begin
+  if not InRange(AIndex, 0, ParamCount - 1) then
+    raise EChartError.Create('TFitSeries.SetParam index out of range');
+  FFitParams[AIndex] := AValue;
+  UpdateParentChart;
+end;
+
+procedure TFitSeries.SetParamCount(AValue: Integer);
+begin
+  if (AValue = ParamCount) or (FFitEquation <> fePolynomial) then exit;
+  SetLength(FFitParams, AValue);
+  ExecFit;
+end;
+
+procedure TFitSeries.SetPen(AValue: TChartPen);
+begin
+  if FPen = AValue then exit;
+  FPen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TFitSeries.SetStep(AValue: TFuncSeriesStep);
+begin
+  if FStep = AValue then exit;
+  FStep := AValue;
+  UpdateParentChart;
+end;
+
+procedure TFitSeries.SourceChanged(ASender: TObject);
+begin
+  inherited;
+  ExecFit;
+end;
+
+procedure TFitSeries.Transform(AX, AY: Double; out ANewX, ANewY: Extended);
+begin
+  // The exponential and power fitting equations can be transformed to a
+  // polynomial by taking the logarithm:
+  // feExp:   y = a exp(b*x) ==> ln(y) = ln(a) + b*x
+  // fePower: y = a*x^b      ==> ln(y) = ln(a) + b*ln(x)
+  // In each case, the first parameter (a) needs to be transformed back
+  // after the fitting -- see "ExecFit".
+  if FitEquation in [fePower] then
+    ANewX := Ln(AX)
+  else
+    ANewX := AX;
+  if FitEquation in [feExp, fePower] then
+    ANewY := Ln(AY)
+  else
+    ANewY := AY;
+end;
+
 { TColorMapSeries }
 
 procedure TColorMapSeries.Assign(ASource: TPersistent);
@@ -1155,6 +1529,7 @@ initialization
   RegisterSeriesClass(TFuncSeries, 'Function series');
   RegisterSeriesClass(TBSplineSeries, 'B-Spline series');
   RegisterSeriesClass(TCubicSplineSeries, 'Cubic spline series');
+  RegisterSeriesClass(TFitSeries, 'Least-squares fit series');
   RegisterSeriesClass(TColorMapSeries, 'Color map series');
 
 end.
