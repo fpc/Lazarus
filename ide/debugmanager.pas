@@ -215,6 +215,9 @@ type
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean;
                                 out ABrkPoint: TIDEBreakPoint): TModalResult; override;
+    function DoCreateBreakPoint(const AnAddr: TDBGPtr;
+                                WarnIfNoDebugger: boolean;
+                                out ABrkPoint: TIDEBreakPoint): TModalResult; override;
 
     function DoDeleteBreakPoint(const AFilename: string;
                                 ALine: integer): TModalResult; override;
@@ -1466,6 +1469,7 @@ var
   TheDialog: TAssemblerDlg;
 begin
   TheDialog := TAssemblerDlg(FDialogs[ddtAssembler]);
+  TheDialog.BreakPoints := FBreakPoints;
   TheDialog.Disassembler := FDisassembler;
   TheDialog.DebugManager := Self;
   TheDialog.SetLocation(FDebugger, FCurrentLocation.Address);
@@ -2462,6 +2466,26 @@ begin
   end;
 
   ABrkPoint := FBreakPoints.Add(AFilename, ALine);
+  Result := mrOK
+end;
+
+function TDebugManager.DoCreateBreakPoint(const AnAddr: TDBGPtr; WarnIfNoDebugger: boolean;
+  out ABrkPoint: TIDEBreakPoint): TModalResult;
+begin
+  ABrkPoint := nil;
+  if WarnIfNoDebugger
+  and ((FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass)=nil)
+    or (not FileIsExecutable(EnvironmentOptions.DebuggerFilename)))
+  then begin
+    if QuestionDlg(lisDbgMangNoDebuggerSpecified,
+      Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo, [#13]),
+      mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway], 0)
+      <>mrIgnore
+    then
+      exit;
+  end;
+
+  ABrkPoint := FBreakPoints.Add(AnAddr);
   Result := mrOK
 end;
 

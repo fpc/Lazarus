@@ -98,6 +98,8 @@ type
     procedure actSetAsCurrentClick(Sender : TObject);
     procedure actShowClick(Sender: TObject);
   private
+    FImgBreakPointDisabled: Integer;
+    FImgCurrentLineAtBreakPointDisabled: Integer;
     FViewCount: Integer;
     FViewLimit: Integer;
     FViewStart: Integer;
@@ -191,24 +193,31 @@ end;
 
 function TCallStackDlg.GetImageIndex(Entry: TCallStackEntry): Integer;
 
-  function HasBreakPoint(Entry: TCallStackEntry): Boolean; inline;
+  function GetBreakPoint(Entry: TCallStackEntry): TIDEBreakPoint; inline;
   var
     FileName: String;
   begin
-    if BreakPoints = nil then
-      Exit(False);
-    Result := DebugBoss.GetFullFilename(Entry.UnitInfo, FileName, False);
-    if Result then
-      Result := BreakPoints.Find(FileName, Entry.Line) <> nil;
+    Result := nil;
+    if BreakPoints = nil then Exit;
+    if DebugBoss.GetFullFilename(Entry.UnitInfo, FileName, False)
+    then Result := BreakPoints.Find(FileName, Entry.Line);
   end;
 
+var
+  b: TIDEBreakPoint;
 begin
-  if HasBreakPoint(Entry) then
+  b := GetBreakPoint(Entry);
+  if b <> nil then
   begin
-    if Entry.IsCurrent then
-      Result := imgCurrentLineAtBreakPoint
-    else
-      Result := imgBreakPoint;
+    if b.Enabled then begin;
+      if Entry.IsCurrent
+      then Result := imgCurrentLineAtBreakPoint
+      else Result := imgBreakPoint;
+    end else begin
+      if Entry.IsCurrent
+      then Result := FImgCurrentLineAtBreakPointDisabled
+      else Result := FImgBreakPointDisabled;
+    end
   end
   else
   begin
@@ -466,7 +475,10 @@ var
   Entry: TCallStackEntry;
   BreakPoint: TIDEBreakPoint;
   FileName: String;
+  Ctrl: Boolean;
 begin
+  Ctrl := ssCtrl in GetKeyShiftState;
+
   try
     DisableAllActions;
     if (Item <> nil) and (BreakPoints <> nil) then
@@ -477,10 +489,20 @@ begin
       if not DebugBoss.GetFullFilename(Entry.UnitInfo, FileName, False) then
         Exit;
       BreakPoint := BreakPoints.Find(FileName, Entry.Line);
-      if BreakPoint <> nil then
-        DebugBoss.DoDeleteBreakPoint(BreakPoint.Source, BreakPoint.Line)
-      else
-        DebugBoss.DoCreateBreakPoint(FileName, Entry.Line, False);
+      if BreakPoint <> nil then begin
+        if Ctrl
+        then BreakPoint.Enabled := not BreakPoint.Enabled
+        else DebugBoss.DoDeleteBreakPoint(BreakPoint.Source, BreakPoint.Line)
+      end else begin
+        DebugBoss.LockCommandProcessing;
+        try
+          DebugBoss.DoCreateBreakPoint(FileName, Entry.Line, False, BreakPoint);
+          if Ctrl and (BreakPoint <> nil)
+          then BreakPoint.Enabled := False;
+        finally
+          DebugBoss.UnLockCommandProcessing;
+        end;
+      end;
     end;
   finally
     EnableAllActions;
@@ -668,6 +690,9 @@ begin
   imgNoSourceLine := IDEImages.LoadImage(16, 'debugger_nosource_line');
   imgBreakPoint := IDEImages.LoadImage(16, 'ActiveBreakPoint');
   imgCurrentLineAtBreakPoint := IDEImages.LoadImage(16, 'debugger_current_line_breakpoint');
+  FImgBreakPointDisabled := IDEImages.LoadImage(16, 'InactiveBreakPoint');
+  FImgCurrentLineAtBreakPointDisabled := IDEImages.LoadImage(16, 'debugger_current_line_disabled_breakpoint');
+
 end;
 
 procedure TCallStackDlg.lvCallStackClick(Sender: TObject);

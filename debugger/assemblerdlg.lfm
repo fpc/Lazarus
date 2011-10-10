@@ -26,6 +26,7 @@ inherited AssemblerDlg: TAssemblerDlg
     Width = 706
     Anchors = [akTop, akLeft, akRight, akBottom]
     PopupMenu = PopupMenu1
+    OnClick = pbAsmClick
     OnMouseDown = pbAsmMouseDown
     OnMouseMove = pbAsmMouseMove
     OnMouseUp = pbAsmMouseUp

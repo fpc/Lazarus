@@ -160,6 +160,9 @@ type
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean;
                                 out ABrkPoint: TIDEBreakPoint): TModalResult; virtual; abstract;
+    function DoCreateBreakPoint(const AnAddr: TDBGPtr;
+                                WarnIfNoDebugger: boolean;
+                                out ABrkPoint: TIDEBreakPoint): TModalResult; virtual; abstract;
     function DoDeleteBreakPoint(const AFilename: string; ALine: integer
                                 ): TModalResult; virtual; abstract;
     function DoDeleteBreakPointAtMark(const ASourceMark: TSourceMark

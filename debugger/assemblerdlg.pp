@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ComCtrls, StdCtrls, Grids, ExtCtrls, LclType, LCLIntf, DebuggerDlg, Debugger,
-  BaseDebugManager, EditorOptions, Maps, Math, LCLProc, Menus, Clipbrd, ActnList,
+  BaseDebugManager, EditorOptions, Maps, Math, types, LCLProc, Menus, Clipbrd, ActnList,
   IDECommands, IDEImagesIntf, CodeToolManager, CodeCache, SourceEditor;
 
 type
@@ -30,6 +30,7 @@ type
     PasCode: String;
     FileName: String;
     SourceLine: Integer;
+    ImageIndex: Integer;
   end;
   TAsmDlgLineEntries = Array of TAsmDlgLineEntry;
 
@@ -68,6 +69,7 @@ type
     procedure EditGotoAddrKeyPress(Sender: TObject; var Key: char);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormResize(Sender: TObject);
+    procedure pbAsmClick(Sender: TObject);
     procedure pbAsmMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure pbAsmMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure pbAsmMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
@@ -108,9 +110,21 @@ type
 
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FCurLineImgIdx: Integer;
+    FImgSourceLine: Integer;
+    FImgNoSourceLine: Integer;
+    FImgBreakPoint: Integer;
+    FImgBreakPointDisabled: Integer;
+    FImgBreakPointInval: Integer;
+    FImgCurrentLineAtBreakPoint: Integer;
+    FImgCurrentLineAtBreakPointDisabled: Integer;
 
+    procedure BreakPointChanged(const ASender: TIDEBreakPoints;
+      const ABreakpoint: TIDEBreakPoint);
+    function  GetBreakpointFor(AnAsmDlgLineEntry: TAsmDlgLineEntry): TIDEBreakPoint;
+    procedure CheckImageIndexFor(var AnAsmDlgLineEntry: TAsmDlgLineEntry);
     procedure DoDebuggerDestroyed(Sender: TObject);
     procedure ClearLineMap(AState: TAsmDlgLineMapState = lmsUnknown);
+    procedure ClearImageIdx;
     procedure DisassemblerChanged(Sender: TObject);
     procedure SetDisassembler(const AValue: TIDEDisassembler);
     procedure SetDebugger(const AValue: TDebugger);
@@ -141,6 +155,7 @@ type
     procedure SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr);
     property Disassembler: TIDEDisassembler read FDisassembler write SetDisassembler;
     property DebugManager: TBaseDebugManager read FDebugManager write FDebugManager;
+    property BreakPoints;
   end;
 
 implementation
@@ -162,8 +177,20 @@ begin
     FLineMap[n].State := AState;
     FLineMap[n].Dump := '';
     FLineMap[n].Statement := '';
+    FLineMap[n].ImageIndex := -1;
     if AState = lmsUnknown
     then FLineMap[n].Addr := 0;
+  end;
+end;
+
+procedure TAssemblerDlg.ClearImageIdx;
+var
+  n: Integer;
+begin
+  FLastTopLineValid := False;
+  for n := Low(FLineMap) to High(FLineMap) do
+  begin
+    FLineMap[n].ImageIndex := -1;
   end;
 end;
 
@@ -214,6 +241,9 @@ begin
   FDisassemblerNotification := TIDEDisassemblerNotification.Create;
   FDisassemblerNotification.AddReference;
   FDisassemblerNotification.OnChange  := @DisassemblerChanged;
+  BreakpointsNotification.OnAdd    := @BreakPointChanged;
+  BreakpointsNotification.OnUpdate := @BreakPointChanged;
+  BreakpointsNotification.OnRemove  := @BreakPointChanged;
   FIsVScrollTrack := False;
   FVScrollCounter := 0;
 
@@ -258,6 +288,15 @@ begin
   ToolButtonPower.ImageIndex := FPowerImgIdx;
 
   FCurLineImgIdx := IDEImages.LoadImage(16, 'debugger_current_line');
+  //
+
+  FImgSourceLine := IDEImages.LoadImage(16, 'debugger_source_line');
+  FImgNoSourceLine := IDEImages.LoadImage(16, 'debugger_nosource_line');
+  FImgBreakPoint := IDEImages.LoadImage(16, 'ActiveBreakPoint');
+  FImgBreakPointDisabled := IDEImages.LoadImage(16, 'InactiveBreakPoint');
+  FImgBreakPointInval := IDEImages.LoadImage(16, 'InvalidBreakPoint');
+  FImgCurrentLineAtBreakPoint := IDEImages.LoadImage(16, 'debugger_current_line_breakpoint');
+  FImgCurrentLineAtBreakPointDisabled := IDEImages.LoadImage(16, 'debugger_current_line_disabled_breakpoint');
 end;
 
 destructor TAssemblerDlg.Destroy;
@@ -374,6 +413,65 @@ begin
   then OnProcessCommand(Self, ecStepOverInstr, Handled);
 end;
 
+procedure TAssemblerDlg.BreakPointChanged(const ASender: TIDEBreakPoints;
+  const ABreakpoint: TIDEBreakPoint);
+begin
+  ClearImageIdx;
+  pbAsm.Invalidate;
+end;
+
+function TAssemblerDlg.GetBreakpointFor(AnAsmDlgLineEntry: TAsmDlgLineEntry): TIDEBreakPoint;
+begin
+  if BreakPoints = nil then exit;
+  Result := nil;
+  case AnAsmDlgLineEntry.State of
+    lmsStatement: Result := BreakPoints.Find(AnAsmDlgLineEntry.Addr);
+    lmsSource:    Result := BreakPoints.Find(AnAsmDlgLineEntry.FileName, AnAsmDlgLineEntry.SourceLine);
+  end;
+end;
+
+procedure TAssemblerDlg.CheckImageIndexFor(var AnAsmDlgLineEntry: TAsmDlgLineEntry);
+var
+  b: TIDEBreakPoint;
+  c: Boolean;
+begin
+  if BreakPoints = nil then exit;
+  if AnAsmDlgLineEntry.ImageIndex > 0 then exit;
+
+  b := GetBreakpointFor(AnAsmDlgLineEntry);
+  case AnAsmDlgLineEntry.State of
+    lmsStatement:
+      begin
+        c := (AnAsmDlgLineEntry.Addr = FLocation);
+        if b <> nil then begin
+          if b.Enabled then begin
+            if c
+            then AnAsmDlgLineEntry.ImageIndex := FImgCurrentLineAtBreakPoint
+            else AnAsmDlgLineEntry.ImageIndex := FImgBreakPoint;
+          end else begin
+            if c
+            then AnAsmDlgLineEntry.ImageIndex := FImgCurrentLineAtBreakPointDisabled
+            else AnAsmDlgLineEntry.ImageIndex := FImgBreakPointDisabled;
+          end;
+        end else begin
+          if c
+          then AnAsmDlgLineEntry.ImageIndex := FCurLineImgIdx
+          else AnAsmDlgLineEntry.ImageIndex := FImgNoSourceLine;
+        end;
+      end;
+    lmsSource:
+      begin
+        if b <> nil then begin
+          if b.Enabled
+          then AnAsmDlgLineEntry.ImageIndex := FImgBreakPoint
+          else AnAsmDlgLineEntry.ImageIndex := FImgBreakPointDisabled;
+        end else begin
+          AnAsmDlgLineEntry.ImageIndex := FImgSourceLine;
+        end;
+      end;
+  end;
+end;
+
 procedure TAssemblerDlg.actStepIntoInstrExecute(Sender: TObject);
 var
   Handled: Boolean;
@@ -427,6 +525,41 @@ begin
 
   if FLineHeight <> 0
   then SetLineCount(pbAsm.Height div FLineHeight);
+end;
+
+procedure TAssemblerDlg.pbAsmClick(Sender: TObject);
+var
+  P: TPoint;
+  Line: Integer;
+  b: TIDEBreakPoint;
+  Ctrl: Boolean;
+begin
+  P := pbAsm.ScreenToClient(Mouse.CursorPos);
+  if P.x > FGutterWidth then exit;
+  Line := P.Y div FLineHeight;
+
+  if not (FLineMap[Line].State in [lmsStatement, lmsSource])
+  then exit;
+
+  b := GetBreakpointFor(FLineMap[Line]);
+  Ctrl := ssCtrl in GetKeyShiftState;
+
+  if b = nil then begin
+    DebugBoss.LockCommandProcessing;
+    try
+      if (FLineMap[Line].State = lmsStatement)
+      then DebugBoss.DoCreateBreakPoint(FLineMap[Line].Addr, True, b)
+      else DebugBoss.DoCreateBreakPoint(FLineMap[Line].FileName, FLineMap[Line].SourceLine, True, b);
+      if Ctrl and (b <> nil)
+      then b.Enabled := False;
+    finally
+      DebugBoss.UnLockCommandProcessing;
+    end;
+  end else begin
+    if Ctrl
+    then b.Enabled := not b.Enabled
+    else b.Free;
+  end;
 end;
 
 procedure TAssemblerDlg.InitializeWnd;
@@ -524,8 +657,9 @@ begin
     end;
     pbAsm.Canvas.Font.Bold := (FLineMap[n].State in [lmsSource, lmsFuncName]);
 
-    if (FLineMap[n].State = lmsStatement) and (FLineMap[n].Addr = FLocation)
-    then IDEImages.Images_16.Draw(pbAsm.Canvas, FGutterWidth - 16, Y, FCurLineImgIdx, True);
+    CheckImageIndexFor(FLineMap[n]);
+    if (FLineMap[n].ImageIndex >= 0)
+    then IDEImages.Images_16.Draw(pbAsm.Canvas, FGutterWidth - 16, Y, FLineMap[n].ImageIndex, True);
 
     S := FormatLine(FLineMap[n], W);
     pbAsm.Canvas.TextRect(R, X, Y, S);
@@ -879,6 +1013,7 @@ var
   Line, Idx: Integer;
   Itm, NextItm, PrevItm: PDisassemblerEntry;
   LineIsSrc, HasLineOutOfRange: Boolean;
+  s: String;
 begin
   if (FDebugger = nil) or (FDisassembler = nil) or (FDebugger.State <> dsPause)
   then begin
@@ -983,6 +1118,7 @@ begin
       PrevItm := Itm;
       Itm := NextItm;
       NextItm := GetItem(Idx+1);
+      ALineMap[Line].ImageIndex := -1;
 
       if Itm = nil
       then begin
@@ -1000,9 +1136,12 @@ begin
         ALineMap[Line].Statement  := '';
         if Itm^.SrcFileName <> ''
         then begin
+          s := Itm^.SrcFileName;
+		  if not FDebugManager.GetFullFilename(s, False)
+          then s := Itm^.SrcFileName;
           ALineMap[Line].State := lmsSource;
           ALineMap[Line].SourceLine := Itm^.SrcFileLine;
-          ALineMap[Line].FileName   := Itm^.SrcFileName;
+          ALineMap[Line].FileName   := s;
           ALineMap[Line].PasCode := GetSourceCodeLine(Itm^.SrcFileName, Itm^.SrcFileLine);
         end
         else begin
@@ -1022,9 +1161,12 @@ begin
         ALineMap[Line].Statement  := '';
         if Itm^.SrcFileName <> ''
         then begin
+          s := Itm^.SrcFileName;
+		  if not FDebugManager.GetFullFilename(s, False)
+          then s := Itm^.SrcFileName;
           ALineMap[Line].State := lmsSource;
           ALineMap[Line].SourceLine := Itm^.SrcFileLine;
-          ALineMap[Line].FileName   := Itm^.SrcFileName;
+          ALineMap[Line].FileName   := s;
           if NextItm <> nil
           then ALineMap[Line].Statement  := Format('(%d of %d)', [NextItm^.SrcStatementIndex, NextItm^.SrcStatementCount])
           else ALineMap[Line].Statement  := Format('(??? of %d)', [Itm^.SrcStatementCount]);
@@ -1055,6 +1197,7 @@ begin
       ALineMap[Line].Dump       := Itm^.Dump;
       ALineMap[Line].Statement  := Itm^.Statement;
       ALineMap[Line].SourceLine := Itm^.SrcFileLine;
+      ALineMap[Line].ImageIndex := -1;
 
       inc(Line);
       inc(idx);
