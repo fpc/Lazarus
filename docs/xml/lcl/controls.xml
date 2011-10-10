@@ -3532,15 +3532,7 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.FColor" link="TControl.Color"/>
       <!-- variable Visibility: public -->
       <element name="TControl.FCompStyle">
-        <short>
-          <var>FCompStyle</var> - deprecated</short>
-        <descr>
-          <pre>// DEPRECATED. Enables (valid) use of 'IN' operator (this
-      // is a hack for speed. It will be replaced by the use of the widgetset
-      // classes.
-      // So, don't use it anymore.
-</pre>
-        </descr>
+        <short>Deprecated, don't use it.</short>
       </element>
       <element name="TControl.FConstraints" link="TControl.Constraints"/>
       <element name="TControl.FControlFlags" link="TControlFlag"/>
@@ -3774,10 +3766,13 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: private -->
       <element name="TControl.DoConstrainedResize">
-        <short>[?]</short>
+        <short>Adjust the intended (given) Bounds, according to Constraints.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TControl.Constraints"/>
+          <link id="TControl.ConstrainedResize"/>
+        </seealso>
       </element>
       <element name="TControl.DoConstrainedResize.NewLeft">
         <short/>
@@ -3798,7 +3793,11 @@ dmFindTarget: find child control under the mouse
         </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TControl.DoMouseUp"/>
+          <link id="TControl.MouseDown"/>
+          <link id="TControl.OnMouseDown"/>
+        </seealso>
       </element>
       <element name="TControl.DoMouseDown.Message">
         <short/>
@@ -3816,7 +3815,11 @@ dmFindTarget: find child control under the mouse
         </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TControl.DoMouseDown"/>
+          <link id="TControl.MouseUp"/>
+          <link id="TControl.OnMouseUp"/>
+        </seealso>
       </element>
       <element name="TControl.DoMouseUp.Message">
         <short/>
@@ -3971,7 +3974,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoOnParentHandleDestruction">
         <short>[?]</short>
-        <descr>implement in descendatns [what?]
+        <descr>implement in descendants [what?]
         </descr>
         <errors>
         </errors>
@@ -4008,18 +4011,18 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.EndAutoSizing">
-        <short>End the autosizing process, reset AutoSizing to False.</short>
+        <short>End of the autosizing process, resets AutoSizing to False.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.AnchorSideChanged">
-        <short>Procedure invoked when the anchor side is changed</short>
+        <short>Request further processing after an anchor side was changed.</short>
       </element>
       <element name="TControl.AnchorSideChanged.TheAnchorSide">
-        <short/>
+        <short>Ignored.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ForeignAnchorSideChanged">
-        <short>Procedure invoked when the anchor side of a different control (not the current) is changed</short>
+        <short>Request further processing after an anchor side has changed, that anchors another control to this one.</short>
       </element>
       <element name="TControl.ForeignAnchorSideChanged.TheAnchorSide">
         <short/>
@@ -4044,26 +4047,27 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.BoundsChanged">
-        <short>Procedure invoked when the bounds of the control have been changed.</short>
+        <short>Invoked when the Bounds of the control have been changed. Override as required.</short>
       </element>
       <element name="TControl.CreateControlBorderSpacing">
-        <short>Creates the default ControlBorderSpacing. Allows descendant controls to override this.</short>
+        <short>Creates the default ControlBorderSpacing object.
+          Allow descendant controls to override this default.</short>
         <seealso>
-          <link id="TControlBorderSpacing.Create">TControlBorderSpacing.Create</link>
+          <link id="TControlBorderSpacing"/>
         </seealso>
       </element>
       <element name="TControl.CreateControlBorderSpacing.Result">
-        <short>ControlBorderSpacing instance</short>
+        <short>The created ControlBorderSpacing instance.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoConstraintsChange">
-        <short>Procedure to execute a change in the control's constraints</short>
+        <short>Reacts on a change in the control's constraints. Calls AdjustSize by default.</short>
       <element name="TControl.DoConstraintsChange.Sender">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoBorderSpacingChange">
-        <short>Procedure to execute a change in the control's border spacing</short>
+        <short>Reacts on a change in the control's border spacing.</short>
       </element>
       <element name="TControl.DoBorderSpacingChange.Sender">
         <short/>
@@ -4073,14 +4077,22 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.IsBorderSpacingInnerBorderStored">
-        <short>Checks for BorderSpacing.InnerBorder not zero.</short>
+        <short>Checks for a defined (non-zero) BorderSpacing.InnerBorder.</short>
       </element>
       <element name="TControl.IsBorderSpacingInnerBorderStored.Result">
-        <short/>
+        <short>True when InnerBorder has to be taken into account.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.SendMoveSizeMessages">
-        <short>Send a message to the system if the size and/or position of the control change</short>
+        <short>Sends Move and Size messages through the LCL message paths.
+        </short>
+        <descr>
+          <p>
+            Overridden in TWinControl, in TControl it's a NOP.
+          </p><p>
+            This method simulates the VCL behaviour and has no real effect[?].
+          </p>
+        </descr>
       </element>
       <element name="TControl.SendMoveSizeMessages.SizeChanged">
         <short/>
@@ -4089,7 +4101,8 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <element name="TControl.ConstrainedResize">
-        <short>Procedure for performing a resize within defined boundaries (constraints)</short>
+        <short>Invokes the <link id="TControl.OnConstrainedResize"/> handler, allowing to modify the suggested Constraints.
+        </short>
       </element>
       <element name="TControl.ConstrainedResize.MinWidth">
         <short/>
@@ -4105,62 +4118,82 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CalculatePreferredSize">
-        <short>Returns the preferred height and width.</short>
+        <short>Override this method to return the preferred height and width.
+        </short>
         <descr>
-          <p>Calculates the preferred width and height for a control, which is used
-  by the LCL autosizing algorithms as default size. Negative or 0 are treated as undefined and the LCL uses other sizes
-  instead.</p>
           <p>
-            <var>TWinControl</var>
- overrides this and asks the interface for theme dependent values.
-  See
-            <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
-          <p>WithThemeSpace: If true, adds space for stacking.</p>
-          <p>For example: <var>TRadioButton</var> has a minimum size. But for stacking multiple TRadioButtons there should be
-  some space around. This space is theme dependent, so the parameter is passed to the widgetset.</p>
+            Calculates the preferred width and height for a control,
+            which is used by the LCL autosizing algorithms as the default size.
+            Negative or 0 are treated as undefined and the LCL uses other sizes instead.
+          </p><p>
+            <var>TWinControl</var> overrides this and asks the interface for theme dependent values.
+            See <link id="TWinControl.CalculatePreferredSize"/> for more information.
+          </p><p>
+            WithThemeSpace: If true, adds space for stacking.
+          </p><p>
+            For example: <var>TRadioButton</var> has a minimum size.
+            But for stacking multiple TRadioButtons there should be some space around.
+            This space is theme dependent, so the parameter is passed to the widgetset.
+          </p>
         </descr>
       </element>
       <element name="TControl.CalculatePreferredSize.PreferredWidth">
-        <short/>
+        <short>Set this argument to the preferred width.</short>
       </element>
       <element name="TControl.CalculatePreferredSize.PreferredHeight">
-        <short/>
+        <short>Set this argument to the preferred height.</short>
       </element>
       <element name="TControl.CalculatePreferredSize.WithThemeSpace">
-        <short/>
+        <short>True when space around stacked controls should be added.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoOnResize">
-        <short>Invokes the <var>OnResize</var> event handler.
+        <short>Invokes the <link id="TControl.OnResize">OnResize</link> notification handler.
         </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoOnChangeBounds">
-        <short>Invokes the <var>OnChangeBounds</var> event handler</short>
+        <short>Invokes the <link id="TControl.OnChangeBounds">OnChangeBounds</link> event handler</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CheckOnChangeBounds">
-        <short>Checks for changes and calls <var>DoOnChangeBounds</var>
+        <short>Checks for changes and calls <link id="TControl.DoOnChangeBounds">DoOnChangeBounds</link> if needed.
         </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.Resize">
-        <short>Checks for changes and calls <var>DoOnResize</var>
+        <short>Checks for changes and calls <link id="TControl.DoOnResize">DoOnResize</link> if needed.
         </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.RequestAlign">
-        <short>Smart calling <var>Parent.AlignControls</var>
+        <short>Smart calling of <var>Parent.AlignControls</var> (very indirectly).
         </short>
+        <seealso>
+          <link id="TWinControl.AlignControls"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.UpdateAnchorRules">
-        <short>Update the rules for anchoring the control</short>
+        <short>Update the rules for anchoring the control [or of anchored controls?]</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ChangeBounds">
         <short>Sets the bounds (left, top, height, width) optionally the BaseBounds of the control.</short>
-        <descr>ChangeBounds is called whenever the position or size of the control is set, either via the properties or by the layouter of the LCL. SetBounds calls internally ChangeBounds with KeepBase=false, while the LCL layouter calls it with KeepBase=true. Override this for code that might change the preferred size or resizes other controls. Keep in mind that the given aLeft, aTop, aWidth, aHeight might not be valid and will be changed by the LCL before applied. You can call this function in your custom controls. </descr>
+        <descr>
+          <p>
+            ChangeBounds is called whenever the position or size of the control is set,
+            either via the properties or by the layouter of the LCL.
+          </p><p>
+            SetBounds calls internally ChangeBounds with KeepBase=false,
+            while the LCL layouter calls it with KeepBase=true.
+          </p><p>
+            Override this for code that might change the preferred size or resizes other controls.
+          </p><p>
+            You can call this function in your custom controls.
+            Keep in mind that the given aLeft, aTop, aWidth, aHeight might not be valid and will be changed by the LCL before applied.
+          </p>
+        </descr>
       </element>
       <element name="TControl.ChangeBounds.ALeft">
         <short/>
@@ -4175,17 +4208,24 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <element name="TControl.ChangeBounds.KeepBase">
-        <short>[?]</short>
+        <short>True when the BaseBounds should not be modified.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoSetBounds">
-        <short>Sets the bounds (Left, Top, Height, Width).</short>
-        <descr>[This description doesn't look correct?]
-          DoSetBounds is a low level function to set the private variables FLeft, FTop, FWidth, FHeight.
-          Do not call this function, only the LCL calls it.
-          It also updates FClientWidth and FClientHeight accordingly.
-          Override this to update the content layout of the control, for example scroll bars.
-          As always: do not paint here, but call Invalidate and paint in OnPaint or override Paint. </descr>
+        <short>Internal function to set the control's bounds (Left, Top, Height, Width).</short>
+        <descr>
+          <p>
+            DoSetBounds is a low level function to set the private variables FLeft, FTop, FWidth, FHeight.
+            Do not call this function, only the LCL calls it.
+          </p><p>
+            [The following doesn't look correct?]
+          </p><p>
+            It also updates FClientWidth and FClientHeight accordingly.
+          </p><p>
+            Override this to update the content layout of the control, for example scroll bars.
+            As always: do not paint here, but call Invalidate and paint in OnPaint or override Paint.
+          </p>
+        </descr>
       </element>
       <element name="TControl.DoSetBounds.ALeft">
         <short/>
@@ -4203,6 +4243,7 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.ScaleConstraints">
         <short>Scale the minimum and maximum Width and Height.</short>
         <descr>
+          ScaleConstraints is called during ChangeScale, you never will call it directly.
         </descr>
         <errors>
         </errors>
@@ -4217,7 +4258,9 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ChangeScale">
-        <short>Apply scaling (multiplier and divider) to the control coordinates.</short>
+        <short>Apply scaling (multiplier and divider) to the control's coordinates and Font.</short>
+        <descr>
+        </descr>
       </element>
       <element name="TControl.ChangeScale.Multiplier">
         <short/>
@@ -4227,25 +4270,30 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.CanAutoSize">
-        <short>Function to determine if autosizing is possible, and if so, gets the new width and height</short>
+        <short>Function to determine if autosizing is possible, and if so,
+          gets the new width and height</short>
+        <descr>
+           Override this to return different values.
+        </descr>
       </element>
       <element name="TControl.CanAutoSize.Result">
-        <short/>
+        <short>TControl returns True.</short>
       </element>
       <element name="TControl.CanAutoSize.NewWidth">
-        <short/>
+        <short>Suggested width, can be adjusted in an overridden version.</short>
       </element>
       <element name="TControl.CanAutoSize.NewHeight">
-        <short/>
+        <short>Suggested height, can be adjusted in an overridden version.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.UpdateAlignIndex">
-        <short>[?]</short>
+        <short>Move this control to position 0 of Parent.FAlignOrder.</short>
         <descr>
+          Affects the order in which client controls with the same alignment are positioned[?]
         </descr>
         <errors>
         </errors>
-        <seealso>
+        <seealso>[?]
         </seealso>
       </element>
       <!-- procedure Visibility: private -->
@@ -4280,7 +4328,7 @@ dmFindTarget: find child control under the mouse
       <!-- function Visibility: protected -->
       <element name="TControl.GetLogicalClientRect">
         <short>Logical client area, can be bigger than the visible client area.</short>
-        <descr>A TScrollingWinControl has a logical client area, of which only a portion can be visible.
+        <descr>A <link id="Forms.TScrollingWinControl"/> has a logical client area, of which only a portion can be visible.
           The origin always is (0,0), regardless of an ScrollOffset.</descr>
         <seealso>
           <link id="TControl.BoundsRect"/>
@@ -4289,33 +4337,44 @@ dmFindTarget: find child control under the mouse
         </seealso>
       </element>
       <element name="TControl.GetLogicalClientRect.Result">
-        <short/>
+        <short>TControl returns the ClientRect.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetScrolledClientRect">
         <short>Get the visible part of the logical client area.</short>
         <descr>
           <p>Includes the ScrollOffset in a TScrollingWinControl Parent.</p>
-          <p>TControl: When the Parent is a TScrollingWinControl, the ClientRect is offset by it's ScrollOffset.
+          <p>TControl: When the Parent is a TScrollingWinControl, the ClientRect is offset by its ScrollOffset.
             This Rect can be intersected with the visible ClientArea of the Parent, to get the really visible part of the control.
           </p>
           <p>TWinControl: The visible ClientRect is offset by ScrollOffset, to reflect the visible part of the logical ClientRect.
           </p>
         </descr>
+        <seealso>
+          <link id="TControl.ClientRect"/>
+          <link id="TControl.GetScrolledClientRect"/>
+        </seealso>
       </element>
       <element name="TControl.GetScrolledClientRect.Result">
-        <short/>
+        <short>The scrolled ClientRect (TopLeft, BottomRight).
+        </short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetClientScrollOffset">
         <short>Returns the offset of the scrolled client area (in a scrolling TWinControl).</short>
+        <descr>The overridden method may fail when the TScrollingWinControl has only one scrollbar[!?]
+        </descr>
+        <seealso>
+          <link id="TControl.GetScrolledClientRect"/>
+          <link id="#lcl.Forms.TScrollingWinControl.GetClientScrollOffset"/>
+        </seealso>
       </element>
       <element name="TControl.GetClientScrollOffset.Result">
-        <short/>
+        <short>The X and Y offsets of the visible client area, equal to the scrollbar positions.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetControlOrigin" link="TControl.ControlOrigin">
-        <short>Returns the origin (top left pixel) of the control in screen coordinates.</short>
+        <short>Returns the origin (top left pixel) of the control, in screen coordinates.</short>
       </element>
       <element name="TControl.GetControlOrigin.Result">
         <short/>
@@ -4332,7 +4391,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.WidthIsAnchored">
-        <short>[?]</short>
+        <short>True when both the control's left and right side are anchored.</short>
         <descr>
         </descr>
         <errors>
@@ -4341,11 +4400,11 @@ dmFindTarget: find child control under the mouse
         </seealso>
       </element>
       <element name="TControl.WidthIsAnchored.Result">
-        <short></short>
+        <short>True if the Width varies with the Parent.Width.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.HeightIsAnchored">
-        <short>[?]</short>
+        <short>True when both the control's top and bottom side are anchored.</short>
         <descr>
         </descr>
         <errors>
@@ -4354,7 +4413,7 @@ dmFindTarget: find child control under the mouse
         </seealso>
       </element>
       <element name="TControl.HeightIsAnchored.Result">
-        <short></short>
+        <short>True if the Height varies with the Parent.Height.</short>
       </element>
       <element name="TControl.WMCancelMode">
         <short>Message handler for
@@ -4366,7 +4425,9 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.WMContextMenu">
-        <short>[?]</short>
+        <short>Message handler for
+          context menu popup request.
+        </short>
       </element>
       <element name="TControl.WMContextMenu.Message">
         <short/>
@@ -4730,7 +4791,8 @@ dmFindTarget: find child control under the mouse
         <short>Message handler for
           hit test.
         </short>
-        <descr/>
+        <descr>The hit test handler determines the specific part of a control (caption, border...) at the given mouse position.
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -4797,7 +4859,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TControl.CMParentColorChanged">
         <short>Message handler for
-          changed Color.
+          changed parent Color.
         </short>
         <descr/>
         <errors/>
@@ -4809,7 +4871,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TControl.CMParentShowHintChanged">
         <short>Message handler for
-          changed ShowHint.
+          changed parent ShowHint.
         </short>
         <descr/>
         <errors/>
@@ -4867,19 +4929,23 @@ dmFindTarget: find child control under the mouse
           <p>In floating state sets UndockWidth/Height to the current Width/Height.</p>
           <p>In docked state sets LRDockWidth/TBDockHeight to the current Width/Height.</p>
           <remark>[Note: should save both in any case, independent from DockOrientation or host Align.
-Rationale: a DockManager will either ignore these values, or use them according to the *new* alignment.
-Without a DockManager both extents are required, because no (valid) alignment information applies.]</remark>
+            <br/>Rationale: a DockManager will either ignore these values, or use them according to the *new* alignment.
+            <br/>Without a DockManager both extents are required, because no (valid) alignment information applies.]
+          </remark>
         </descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.CreateFloatingDockSite">
-        <short>Create a floating dock site within the Bounds specified as an argument</short>
+        <short>Create a floating dock site with a client area equal to the given screen coordinates.
+        </short>
+        <descr>The new dock site is owned by the control [Delphi: by Application!?].
+        </descr>
       </element>
       <element name="TControl.CreateFloatingDockSite.Result">
-        <short/>
+        <short>The dock site, can be Nil for a TWinControl that can float by itself.</short>
       </element>
       <element name="TControl.CreateFloatingDockSite.Bounds">
-        <short/>
+        <short>The bounds of the client area of the floating window.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetDockEdge">
@@ -4908,13 +4974,26 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetFloatingDockSiteClass">
-        <short>Returns the class for a floating host dock site</short>
-        <descr/>
+        <short>Returns the class for a floating host dock site.</short>
+        <descr>
+          <p>
+            An instance of this class is created whenever a control shall float,
+            but can not (or shall not) float by itself.
+          </p><p>
+            Only TWinControls can float on the screen (with Parent=Nil), but not ordinary TControls.
+          </p><p>
+            Since dockable forms are not supported by every platform,
+            also a dockable TWinControl may need an floating host,
+            which presents a docking handle to the user (e.g. a dock caption).
+          </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TControl.CreateFloatingDockSite"/>
+        </seealso>
       </element>
       <element name="TControl.GetFloatingDockSiteClass.Result">
-        <short/>
+        <short>The class of a floating host dock site for this control.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.BeginAutoDrag">
@@ -4924,23 +5003,24 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.DoFloatMsg">
         <short>Handler called when the control starts floating.</short>
         <descr>
-          <p>Since TControls cannot float for themselves, a FloatHost site is created and the control is docked into it.</p>
+          <p>Since TControls cannot float for themselves,
+            a FloatHost site is created and the control is docked into it.</p>
           <p>When the control already has a Parent (FloatHost site),
-            the Parent's position and extent is adjusted to fit the DockRect as its ClientRect</p>
+            the Parent's position and extent is adjusted to fit the DockRect as its ClientRect.</p>
         </descr>
       </element>
       <element name="TControl.DoFloatMsg.ADockSource">
-        <short/>
+        <short>The DockObject of the current drag-dock operation.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DockTrackNoTarget">
-        <short>Adjust the DockRect for floating state (not over a DockSite).</short>
+        <short>Adjust the DockRect for floating state (no drop target under the mouse).</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TControl.DockTrackNoTarget.Source">
-        <short/>
+        <short>The dragged DockObject, containing the DockRect to adjust.</short>
       </element>
       <element name="TControl.DockTrackNoTarget.X">
         <short>The mouse position, in screen coordinates.</short>
@@ -4950,24 +5030,28 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoDock">
-        <short>Adjust the control's position and extent for the new docksite.</short>
+        <short>Internal method, called by Dock. Adjusts the control's position and extent for the new docksite.</short>
         <descr>
-          <p>If NewDockSite=Nil, Parent is set to Nil (in preparation of floating the control).</p>
-          <p>Otherwise ARect is adjusted to fit into the logical ClientRect of the NewDockSite.
-            The origin is adjusted according to Align[??? should be DropAlign!],
-            so that the control sits at the according side of the NewDockSite.</p>
-          <p>Finally the computed coordinates are stored, in BoundsRectForNewParent when the NewDockSite differs from Parent, else in BoundsRect.</p>
-          <p>ARect is the perfect BoundsRect for the control, in screen coordinates when it becomes floating,
-            or in client coordinates of the target docksite.</p>
+          <p>
+            If NewDockSite=Nil, Parent is set to Nil (in preparation of floating the control).
+          </p><p>
+            Otherwise ARect is ignored (bug?), and recomputed to fit approximately into the ClientRect of the NewDockSite.
+          </p><p>
+            Finally the computed coordinates are stored, in BoundsRectForNewParent when the NewDockSite differs from Parent, else in BoundsRect.
+          </p>
         </descr>
-        <errors/>
+        <errors>
+          A correct implementation should allow for computations in a derived class,
+          and accept and handle the changed bounds without any further adjustments.
+        </errors>
         <seealso/>
       </element>
       <element name="TControl.DoDock.NewDockSite">
-        <short/>
+        <short>The site where the control will be docked, or Nil when it becomes floating.</short>
       </element>
       <element name="TControl.DoDock.ARect">
-        <short/>
+        <short>The control's new Bounds, in screen coordinates when NewDockSite is Nil, else in client coordinates of NewDockSite.
+        </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoDragMsg">
@@ -4986,7 +5070,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
             <li>On dmDragDrop: The dragged object has been dropped onto this control.
               <br/>Invokes DragDrop, or DockDrop if docking.</li>
           </ul>
-          <p>The Source argument of the invoked methods is the DragDockObject when docking.
+          <p>The <var>Source</var> argument of the invoked methods is the DragDockObject when docking.
             Else if the DragObject has been AutoCreated, the dragged control is passed as the Source;
             otherwise the DragObject itself is passed as Source.
           </p>
@@ -5019,9 +5103,6 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoEndDock">
         <short>Invokes the <link id="TControl.OnEndDock">OnEndDock</link> handler.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <element name="TControl.DoEndDock.Target">
         <short/>
@@ -5034,10 +5115,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoEndDrag">
-        <short>Invokes the OnEndDrag handler</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Invokes the <link id="TControl.OnEndDrag">OnEndDrag</link> handler.</short>
       </element>
       <element name="TControl.DoEndDrag.Target">
         <short/>
@@ -5050,20 +5128,14 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoStartDock">
-        <short>Invokes the OnStartDock handler</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Invokes the <link id="TControl.OnStartDock">OnStartDock</link> handler</short>
       </element>
       <element name="TControl.DoStartDock.DragObject">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoStartDrag">
-        <short>Invokes the OnStartDrag handler</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Invokes the <link id="TControl.OnStartDrag">OnStartDrag</link> handler</short>
       </element>
       <element name="TControl.DoStartDrag.DragObject">
         <short/>
@@ -5110,7 +5182,8 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <short>Get the DockRect for an possible drop.</short>
         <descr>Either calls the DockManager.PositionDockRect of the target site,
           or DragDockObject.AdjustDockRect after moving the undocked control rectangle to the DragPos.
-          AdjustDockRect takes the hotspot of the DockRect into account.</descr>
+          AdjustDockRect takes the hotspot of the DockRect into account.
+        </descr>
         <errors/>
         <seealso>
           <link id="TDragDockObject.AdjustDockRect"/>
@@ -5137,26 +5210,26 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- procedure Visibility: protected -->
       <element name="TControl.Click">
         <short>Invokes the
-          <link id="#lcl.Controls.TControl.OnClick">OnClick</link>
+          <link id="TControl.OnClick">OnClick</link>
           and ActionLink.Execute
           handlers.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DblClick">
         <short>Invokes the
-          <link id="#lcl.Controls.TControl.OnDblClick">OnDblClick</link>
+          <link id="TControl.OnDblClick">OnDblClick</link>
           handler.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.TripleClick">
         <short>Invokes the
-          <link id="#lcl.Controls.TControl.OnTripleClick">OnTripleClick</link>
+          <link id="TControl.OnTripleClick">OnTripleClick</link>
           handler.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.QuadClick">
         <short>Invokes the
-          <link id="#lcl.Controls.TControl.OnQuadClick">OnQuadClick</link>
+          <link id="TControl.OnQuadClick">OnQuadClick</link>
           handler.</short>
       </element>
       <!-- procedure Visibility: protected -->
@@ -5240,26 +5313,26 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.DialogChar">
-        <short>[?]</short>
+        <short>Do something useful with accelerators etc.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TControl.DialogChar.Result">
-        <short/>
+        <short>[?]</short>
       </element>
       <element name="TControl.DialogChar.Message">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.UpdateMouseCursor">
-        <short>[?]</short>
+        <short>Show the Cursor shape, unless it's crDefault.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TControl.UpdateMouseCursor.X">
-        <short/>
+        <short>[?]</short>
       </element>
       <element name="TControl.UpdateMouseCursor.Y">
         <short/>
@@ -5273,14 +5346,14 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetPalette">
-        <short>
-          <var>GetPalette</var> - returns a handle to the palette for this control</short>
+        <short>Override
+          <var>GetPalette</var> to return the handle of a color palette.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TControl.GetPalette.Result">
-        <short/>
+        <short>The Palette handle, zero (no Palette) by default.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.ChildClassAllowed">
@@ -5290,10 +5363,10 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <seealso/>
       </element>
       <element name="TControl.ChildClassAllowed.Result">
-        <short/>
+        <short>True when the class is acceptable.</short>
       </element>
       <element name="TControl.ChildClassAllowed.ChildClass">
-        <short/>
+        <short>The class type of the child control.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ReadState" link="#rtl.Classes.TComponent.ReadState"/>
@@ -5350,8 +5423,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.FormEndUpdated">
-        <short>
-          <var>FormEndUpdated</var> - the update for the Form has ended</short>
+        <short>Called when the update of the containing Form has ended.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5374,8 +5446,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.FontChanged">
-        <short>
-          <var>FontChanged</var> - handles an change of the Font property.</short>
+        <short>Handles changes of the Font property.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5424,7 +5495,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.TextChanged">
-        <short>Procedure to deal with changes in text</short>
+        <short>Handles changes of the Text property.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5474,7 +5545,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.SetParentComponent">
-        <short>Sets the Parent property, if NewParentCompnent is a TWinControl.</short>
+        <short>Sets the Parent property, if NewParentComponent is a TWinControl.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5534,8 +5605,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.CanTab">
-        <short>
-          <var>CanTab</var> - if True, the Tab key can be used to navigate to this control.</short>
+        <short>If True, the Tab key can be used to navigate to this control.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5639,33 +5709,18 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- procedure Visibility: protected -->
       <element name="TControl.VisibleChanging">
         <short>Notifies all <var>OnVisibleChanging</var> handlers.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.VisibleChanged">
-        <short>Notifies all OnVisibleChanged handlers.
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Notifies all OnVisibleChanged handlers.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.EnabledChanging">
-        <short>Notifies all OnEnabledChanging handlers.
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Notifies all OnEnabledChanging handlers.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.EnabledChanged">
-        <short>Notifies all OnEnabledChanged handlers.
-        </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Notifies all OnEnabledChanged handlers.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.AddHandler">
@@ -5686,9 +5741,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- procedure Visibility: protected -->
       <element name="TControl.RemoveHandler">
         <short>Removes the given notification handler.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TControl.AddHandler"/>
+        </seealso>
       </element>
       <element name="TControl.RemoveHandler.HandlerType">
         <short>Type of the notification.</short>
@@ -5698,22 +5753,17 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoCallNotifyHandler">
-        <short>
-          <var>DoCallNotifyHandler</var> - calls a Notify Handler of the specified type</short>
+        <short>Invokes all notification handlers of the specified type.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TControl.DoCallNotifyHandler.HandlerType">
-        <short/>
+        <short>The event that has occured.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoContextPopup">
         <short>Invokes the OnContextPopup handler.</short>
-        <descr>The handler can show and handle the menu selection itself.
-          If so, it should set Handled to True.
-          [to be moved into OnContextPopup]
-        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -5725,14 +5775,13 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetZOrder">
-        <short>
-          <var>SetZOrder</var> - specify this control's place in the Z-order (ie front-to-back) of controls</short>
+        <short>Moves the control in front or back of all sibling controls.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TControl.SetZOrder.TopMost">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetControlClassDefaultSize">
@@ -5742,16 +5791,14 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TControl.ColorIsStored">
-        <short>Returns True if color is stored</short>
-      </element>
+      <element name="TControl.ColorIsStored" link="TControl.Color"/>
       <element name="TControl.ColorIsStored.Result">
-        <short>True if a Color has been stored.</short>
+        <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetActionLinkClass">
         <short>The default ActionLink class (TControlActionLink).</short>
-        <descr/>
+        <descr>Used when the control is linked to an Action.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -5789,7 +5836,8 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.Dock">
         <short>Moves the control into a new docksite.</short>
         <descr>
-          <p>Calls <link id="TControl.DoDock">DoDock</link> to calculate the new position the control, when docked into an unmanaged or floating docksite.</p>
+          <p>Calls <link id="TControl.DoDock">DoDock</link> to prepare for the new position of the control,
+            when docked into an unmanaged or floating docksite.</p>
           <p>When the old and new docksites are different,
             the control is removed from the DockClients of the old docksite, and added to the DockClients of the new docksite;
             afterwards the docksites are notified by calling their DoAddDockClient and DoRemoveDockClient methods, to adjust the control's Parent.</p>
@@ -5797,84 +5845,96 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <errors>An exception is raised if there is already a docking process in progress for this control</errors>
       </element>
       <element name="TControl.Dock.NewDockSite">
-        <short>The host control to which which the control is to be docked</short>
+        <short>The host site into which which the control is to be docked, Nil for floating.</short>
       </element>
       <element name="TControl.Dock.ARect">
-        <short>The position at which the control is to be docked.</short>
+        <short>The control's new Bounds, in screen coordinates when NewDockSite is Nil, else in client coordinates of NewDockSite.
+        </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ManualDock">
         <short>Docks a control programmatically.</short>
         <descr>
-          <p>Docks this control into NewDockSite, relative to DropControl. When NewDockSite is Nil, the control becomes floating.</p>
-          <p>When the new docksite uses an DockManager, and DropControl is not Nil, the control will be docked relative to DropControl, as specified by ControlSide.
-            The interpretation of ControlSide depends on the DockManager of NewDockSite, or on the OnDockDrop handler in an unmanaged  docksite.
-            A tree docking manager (TDockTree) should interpret alCustom as NoteBook docking, i.e. a tabbed notebook is created in place of DropControl, and both DropControl and this control are docked into pages of this notebook.</p>
+          <p>
+            Docks this control into NewDockSite, relative to DropControl.
+            When NewDockSite is Nil, the control becomes floating.
+          </p><p>
+            When the new docksite uses an DockManager, and DropControl is not Nil,
+            the control will be docked relative to DropControl,
+            as specified by ControlSide.
+          </p><p>
+            The interpretation of ControlSide depends on the DockManager of NewDockSite,
+            or on the OnDockDrop handler in an unmanaged  docksite.
+          </p><p>
+            A tree docking manager (TDockTree) should interpret alCustom as NoteBook docking,
+            i.e. a tabbed notebook is created in place of DropControl,
+            and both DropControl and this control are docked into pages of this notebook.
+          </p>
         </descr>
       </element>
       <element name="TControl.ManualDock.Result">
-        <short>The function returns True if a manual dock has been successfully performed.</short>
+        <short>True if successfully docked.</short>
       </element>
       <element name="TControl.ManualDock.NewDockSite">
-        <short>The new site to which the control is docked, if DropControl is <b>nil</b>.</short>
+        <short>The site into which the control is docked; Nil to make it float.</short>
       </element>
       <element name="TControl.ManualDock.DropControl">
-        <short>If <b>nil</b> (default) then ignored, else used as the control for docking, on side specified by ControlSide</short>
+        <short>The sibling relative to which the control is inserted; can be Nil.
+        </short>
       </element>
       <element name="TControl.ManualDock.ControlSide">
         <short>The side of DropControl on which the control is to be docked.
         </short>
       </element>
       <element name="TControl.ManualDock.KeepDockSiteSize">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ManualFloat">
         <short>Undocks the control into floating state.</short>
-        <descr>TWinControls float for themselves, for TControls a floating host dock site is created, and the control is docked into it.
+        <descr>TWinControls float for themselves,
+          for TControls a floating host dock site is created, and the control is docked into it.
         </descr>
       </element>
       <element name="TControl.ManualFloat.Result">
-        <short>The function returns True if a manual float has been succesfully performed.</short>
+        <short>True if succesfully floated.</short>
       </element>
       <element name="TControl.ManualFloat.TheScreenRect">
-        <short>The screen area where the floating control is moved.</short>
-        <descr>The rectangle within which the floating control is located
-          <br/>(ie the location of the floating dock site to which the control is docked) [site or client coordinates?]
-        </descr>
+        <short>The screen area where the floating control is moved; the client area of a float host site.</short>
       </element>
       <element name="TControl.ManualFloat.KeepDockSiteSize">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ReplaceDockedControl">
-        <short>Replaces a previously docked control by another one.</short>
+        <short>Replaces a previously docked control.</short>
         <descr>
-          <p>This method works only when the control to replace resides in a managed docksite (using an DockManager), or is not docked at all.
-            Even then exist situations where it won't work as expected, depending on the used DockManager and other subtle conditions.</p>
-          <p>When the control to replace is docked, then it's replaced by this control; otherwise this control becomes floating (seems to be a design flaw).</p>
-          <p>Finally the control to replace is docked into NewDockSite, according to DropControl and ControlSide (see <link id="TControl.ManualDock"/>).</p>
-          <p>This method primarily exists for use by the DockManager itself, for NoteBook docking. It should not be used in application code.</p>
+          <p>This method exists for use by an DockManager, for NoteBook docking.
+            It should not be used in application code.
+          </p><p>
+            Delphi has introduced another method DockReplaceDockClient,
+            which is used when the replaced Control is in an unmanaged docksite.
+          </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.ManualDock"/>
+          <link id="TControl.ManualDock"/>
         </seealso>
       </element>
       <element name="TControl.ReplaceDockedControl.Result">
-        <short>Returns True if a docked control has been successfully replaced with a new one</short>
+        <short>True if the docked control has been successfully replaced.</short>
       </element>
       <element name="TControl.ReplaceDockedControl.Control">
-        <short>The old control that was previously docked at this site</short>
+        <short>The control to be replaced, will be docked into NewDockSite.</short>
       </element>
       <element name="TControl.ReplaceDockedControl.NewDockSite">
-        <short>The new site for docking; used if DropControl is <b>nil</b>
+        <short>The new dock site for Control, typically a docking Notebook.
         </short>
       </element>
       <element name="TControl.ReplaceDockedControl.DropControl">
-        <short>The control site to be used for docking, unless it is <b>nil</b> when it is igored. Passed straight through as an argument to ManualDock</short>
+        <short>The control to which Control is docked.</short>
       </element>
       <element name="TControl.ReplaceDockedControl.ControlSide">
-        <short>The side to which the new control is to be aligned; passed straight through as an argument to ManualDock</short>
+        <short>The side of DropControl, to which Control is docked.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.Dragging">
@@ -5912,10 +5972,10 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.AutoSizeDelayed">
-        <short>Auto-sizing has been delayed until some other process is complete</short>
+        <short>Returns true if auto-sizing must be has been delayed, until some other process is complete.</short>
       </element>
       <element name="TControl.AutoSizeDelayed.Result">
-        <short>Returns True if auto-sizing has been delayed</short>
+        <short>True if auto-sizing has been delayed.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.AutoSizeCheckParent">
@@ -5932,86 +5992,89 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorToNeighbour">
-        <short>
-          <var>AnchorToNeighbour</var> - anchoring instructions</short>
+        <short>Anchor to Sibling at Side.
+        </short>
         <descr>
           <p>Setup AnchorSide to anchor a side to the side of a neighbour sibling.
             For example Right side to Left side, or Top side to Bottom.</p>
         </descr>
       </element>
       <element name="TControl.AnchorToNeighbour.Side">
-        <short>The side on which we should anchor</short>
+        <short>The side to be anchored to Sibling.</short>
       </element>
       <element name="TControl.AnchorToNeighbour.Space">
-        <short>The minimum space to be left around the control when anchoring</short>
+        <short>The minimum space to Sibling.</short>
       </element>
       <element name="TControl.AnchorToNeighbour.Sibling">
-        <short>The sibling control to which we should anchor</short>
+        <short>The sibling control to which we should anchor.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorParallel">
-        <short>
-          <var>AnchorParallel </var> - instructions for anchoring beside another control</short>
+        <short>Anchor parallel to Sibling, at Side.
+        [?]</short>
         <descr/>
       </element>
       <element name="TControl.AnchorParallel.Side">
-        <short>The side which we should anchor to the sibling</short>
+        <short>The side to anchor to the sibling.</short>
       </element>
       <element name="TControl.AnchorParallel.Space">
-        <short>The size of the space to be left around the control when anchoring</short>
+        <short>The minimum space to Sibling.</short>
       </element>
       <element name="TControl.AnchorParallel.Sibling">
-        <short>The sibling control to which we should anchor in a parallel manner</short>
+        <short>The sibling control to which we should anchor.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorHorizontalCenterTo">
-        <short></short>
+        <short>Setup AnchorSide to center the control horizontally relative to a sibling.
+        </short>
       </element>
       <element name="TControl.AnchorHorizontalCenterTo.Sibling">
-        <short>Another control to which the current control is to be anchored, centred horizontally</short>
+        <short>The sibling control to which we should anchor.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorVerticalCenterTo">
-        <short>
-          <var>AnchorVertical </var> - instructions for anchoring</short>
+        <short>Setup AnchorSide to center the control vertically relative to Sibling.
+        </short>
       </element>
       <element name="TControl.AnchorVerticalCenterTo.Sibling">
-        <short>Another control to which the current control is to be anchored, centered vertically</short>
+        <short>The sibling control to which we should anchor.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorToCompanion">
-        <short>
-          <var>AnchorToCompanion</var> - anchor to another control, not necessarily an immediate neighbour</short>
+        <short>Anchor to Sibling at Side, with the same extent.
+        [?]</short>
+        <descr>Table or tree style anchoring, into a neighbour cell of Sibling.
+          Obtain the row height (or column width) from Sibling.
+        [?]</descr>
       </element>
       <element name="TControl.AnchorToCompanion.Side">
-        <short/>
+        <short>The side to anchor to the sibling.</short>
       </element>
       <element name="TControl.AnchorToCompanion.Space">
-        <short/>
+        <short>The minimum space to Sibling.</short>
       </element>
       <element name="TControl.AnchorToCompanion.Sibling">
-        <short/>
+        <short>The sibling control to which we should anchor.</short>
       </element>
       <element name="TControl.AnchorToCompanion.FreeCompositeSide">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorSame">
-        <short>Anchor on the same side as a sibling</short>
+        <short>Copy Sibling's anchoring for Side.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TControl.AnchorSame.Side">
-        <short/>
+        <short>The side to anchor like the sibling does.</short>
       </element>
       <element name="TControl.AnchorSame.Sibling">
-        <short/>
+        <short>The sibling control from which to inherit anchoring.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorAsAlign">
-        <short>
-          <var>AnchorAsAlign</var> - Anchor following same rules as Align</short>
+        <short>Anchor to Parent, following same rules as for Align.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6024,17 +6087,17 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorClient">
-        <short>Anchor to the client space</short>
+        <short>Anchor to Parent's full client area.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TControl.AnchorClient.Space">
-        <short/>
+        <short>The around space.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.AnchoredControlCount">
-        <short>The number of controls anchored to this one</short>
+        <short>The number of controls anchored to this one.</short>
       </element>
       <element name="TControl.AnchoredControlCount.Result">
         <short/>
@@ -6042,43 +6105,52 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- procedure Visibility: public -->
       <element name="TControl.SetBounds">
         <short>Sets the bounds (left, top, height, width) of the control.</short>
-        <descr>SetBounds can be used to change the left, top, width, height all at once, reducing some overhead.
-          Use DisableAutoSize/EnableAutoSize to reduce recomputing/moving/resizing further.
-          SetBounds is called when the properties Left, Top, Width, Height, BoundsRect is set.
-          SetBounds updates the BaseBounds and BaseParentClientSize, which are used by anchoring to keep the distance.
-          For example loading a Form with TMemo and the lfm contains TMemo's Left and Width, then SetBounds is called two times for the memo.
-          When the user maximizes a window, SetBounds is called for the form, but not for the Memo, keeping the BaseBounds of the Memo.
-          If the Memo is anchored to the right, the Width of the Memo is changed based on the BaseBounds and BaseParentClientSize.[?]
-          Keep in mind that the given aLeft, aTop, aWidth, aHeight might not be valid and will be changed by the LCL before applied.
-          Delphi calls SetBounds more often. SetBounds calls ChangeBounds with KeepBase=false.[format this]
+        <descr>
+          <p>
+            SetBounds can be used to change the left, top, width, height all at once, reducing some overhead.
+          </p><p>
+            Use DisableAutoSize/EnableAutoSize to reduce recomputing/moving/resizing further.
+          </p><p>
+            SetBounds is called when the properties Left, Top, Width, Height, or BoundsRect is set.
+          </p><p>
+            SetBounds updates the BaseBounds and BaseParentClientSize, which are used by anchoring to keep the distance.
+            For example loading a Form with TMemo and the lfm contains TMemo's Left and Width, then SetBounds is called two times for the memo.
+          </p><p>
+            When the user maximizes a window, SetBounds is called for the form, but not for the Memo, keeping the BaseBounds of the Memo.
+            If the Memo is anchored to the right, the Width of the Memo is changed based on the BaseBounds and BaseParentClientSize.
+          </p><p>
+            Keep in mind that the given aLeft, aTop, aWidth, aHeight might not be valid and will be changed by the LCL before applied.
+          </p><p>
+            Delphi calls SetBounds more often. SetBounds calls ChangeBounds with KeepBase=false.
+          </p>
         </descr>
       </element>
       <element name="TControl.SetBounds.aLeft">
-        <short>The X co-ordinate of the top left pixel of the control</short>
+        <short>The X coordinate of the left side of the control.</short>
       </element>
       <element name="TControl.SetBounds.aTop">
-        <short>The Y co-ordinate of the top left pixel of the control</short>
+        <short>The Y coordinate of the top of the control</short>
       </element>
       <element name="TControl.SetBounds.aWidth">
-        <short>The width of the control</short>
+        <short>The width of the control.</short>
       </element>
       <element name="TControl.SetBounds.aHeight">
-        <short>The height of the control</short>
+        <short>The height of the control.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetInitialBounds">
-        <short>Sets the bounds of the control initially, when it is created</short>
-        <descr>Checks that this is a new control, then calls SetBounds to set up coordinates defining its position
+        <short>Sets the bounds of the control initially, when it is created.</short>
+        <descr>Does nothing while the control is loaded.
         </descr>
         <seealso>
           <link id="#lcl.Controls.TControl.SetBounds">SetBounds</link>
         </seealso>
       </element>
       <element name="TControl.SetInitialBounds.aLeft">
-        <short>X co-ordinate of top left pixel</short>
+        <short>X coordinate of top left pixel</short>
       </element>
       <element name="TControl.SetInitialBounds.aTop">
-        <short>Y co-ordinate of top left pixel</short>
+        <short>Y coordinate of top left pixel</short>
       </element>
       <element name="TControl.SetInitialBounds.aWidth">
         <short>Width of control</short>
@@ -6088,7 +6160,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetBoundsKeepBase">
-        <short>Set the bounds, keeping the base values</short>
+        <short>Set the bounds, keeping the base values[?]</short>
       </element>
       <element name="TControl.SetBoundsKeepBase.aLeft">
         <short/>
@@ -6107,16 +6179,15 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.GetPreferredSize">
-        <short>Returns default/preferred height and width, to be used in autosizing.</short>
+        <short>Returns default/preferred height and width, for use in autosizing.</short>
         <descr>
           <p>Called during AutoSize [link?] calculations. Only positive values are valid. Negative or 0 are treated as undefined and the LCL uses other sizes instead.</p>
-          <p>WithThemeSpace: If true, adds space for stacking. [add to arguments]</p>
+          <p>WithThemeSpace: If true, adds space for stacking.</p>
           <p>For example: <var>TRadioButton</var> has a minimum size. But for stacking multiple TRadioButtons there should be
             some space around. This space is theme dependent, so the parameter is passed to the widgetset</p>
           <p>
             <var>TWinControl</var> overrides this and asks the interface for theme dependent values. See
-
-            <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
+            <link id="TWinControl.CalculatePreferredSize"/> for more information.</p>
         </descr>
       </element>
       <element name="TControl.GetPreferredSize.PreferredWidth">
@@ -6126,28 +6197,34 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <short/>
       </element>
       <element name="TControl.GetPreferredSize.Raw">
-        <short/>
+        <short>If False then the values will be adjusted by the constraints,
+          and undefined values will be replaced by GetDefaultWidth/GetDefaultHeight.
+        </short>
       </element>
       <element name="TControl.GetPreferredSize.WithThemeSpace">
-        <short/>
+        <short>If true, adds space for stacking.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetDefaultWidth">
-        <short>Find default width (by reference to ancestor)</short>
+        <short>The default width for this control,
+          independent of any calculated values like Width and GetPreferredSize.
+        </short>
       </element>
       <element name="TControl.GetDefaultWidth.Result">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetDefaultHeight">
-        <short>Find the default height (by reference to ancestor)</short>
+        <short>The default height for this control,
+          independent of any calculated values like Height and GetPreferredSize.
+        </short>
       </element>
       <element name="TControl.GetDefaultHeight.Result">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetDefaultColor">
-        <short>[?]</short>
+        <short>Get the default color for this widget, from Parent or color type.</short>
         <descr>
         </descr>
         <errors>
@@ -6159,11 +6236,11 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <short></short>
       </element>
       <element name="TControl.GetDefaultColor.DefaultColorType">
-        <short></short>
+        <short>The color type to use, as the last resort.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetSidePosition">
-        <short>[?]</short>
+        <short>The client coordinate of the given side.</short>
       </element>
       <element name="TControl.GetSidePosition.Result">
         <short/>
@@ -6181,13 +6258,13 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetAnchorsDependingOnParent">
-        <short>Find out the required anchor settings by reference to the parents</short>
+        <short>Returns the sides which are anchored to the Parent.</short>
       </element>
       <element name="TControl.GetAnchorsDependingOnParent.Result">
         <short/>
       </element>
       <element name="TControl.GetAnchorsDependingOnParent.WithNormalAnchors">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.DisableAutoSizing">
@@ -6202,7 +6279,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.UpdateBaseBounds">
-        <short>Update the basic boundaries of the control - essential if there has been a lot of re-sizing</short>
+        <short>Update the basic boundaries of the control - essential if there has been a lot of re-sizing.</short>
       </element>
       <element name="TControl.UpdateBaseBounds.StoreBounds">
         <short/>
@@ -6211,27 +6288,17 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <short/>
       </element>
       <element name="TControl.UpdateBaseBounds.UseLoadedValues">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.WriteLayoutDebugReport">
-        <short>Used for debugging</short>
+        <short>Used for debugging.</short>
       </element>
       <element name="TControl.WriteLayoutDebugReport.Prefix">
         <short/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TControl.Create">
-        <short/>
-        <descr>
-          <p>[todo: remove properties set to all zeroes - this has no special effect]</p>
-          <p>Defaults set by the Constructor include ControlStyle, Constraints, BorderSpacing, Anchoring, alignment, CaptureMouseBottons, Color, Visibility, Hinting, Cursor, Font, the WindowProcedure to be used, the Help type, the FloatingDockSite and Enabled properties</p>
-        </descr>
-        <seealso>
-          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.LCLClasses.TLCLComponent.Create">TLCLComponent.Create</link>
-        </seealso>
-      </element>
+      <element name="TControl.Create"/>
       <element name="TControl.Create.TheOwner">
         <short>The owning component.</short>
       </element>
@@ -6253,8 +6320,8 @@ Without a DockManager both extents are required, because no (valid) alignment in
           <p>Called when user has finished editing. This procedure can be used by data links to commit the changes.</p>
           <p>For example:</p>
           <ul>
-            <li>When focus switches to another control (default)</li>
-            <li>When user selected another item</li>
+            <li>When focus switches to another control (default).</li>
+            <li>When user selected another item.</li>
           </ul>
           <p>It's totally up to the control, what events will commit.</p>
         </descr>
@@ -6275,16 +6342,16 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.BeginDrag">
-        <short>Starts dragging the control.</short>
+        <short>Starts dragging the control (programmatically).</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TControl.BeginDrag.Immediate">
-        <short>If False, start drag only after the cursor has moved.</short>
+        <short>If False, start dragging only after the mouse has moved.</short>
       </element>
       <element name="TControl.BeginDrag.Threshold">
-        <short>Minimum movement of cursor before delayed dragging starts (in pixels); -1 means DragManager default; ignored if Immediate=True.</short>
+        <short>Minimum mouse movement before delayed dragging starts (in pixels); -1 means DragManager default; ignored if Immediate=True.</short>
       </element>
         <!-- procedure Visibility: public -->
       <element name="TControl.BringToFront">
@@ -6306,23 +6373,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- function Visibility: public -->
       <element name="TControl.GetParentComponent">
         <short>Returns Parent (implements TComponent.GetParentComponent).</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
       </element>
       <element name="TControl.GetParentComponent.Result">
         <short>The Parent property.</short>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TControl.NeedParentForAutoSize">
-        <short>
-          <var>NeedParentForAutoSize</var>:  True - need to know parent's properties to do autosize. False - can autosize independently</short>
-      </element>
-      <element name="TControl.NeedParentForAutoSize.Result">
-        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.IsParentOf">
@@ -6331,14 +6384,14 @@ Without a DockManager both extents are required, because no (valid) alignment in
         </descr>
       </element>
       <element name="TControl.IsParentOf.Result">
-        <short>Function returns True if this control is a parent of AControl.</short>
+        <short>True if this control is a parent of AControl.</short>
       </element>
       <element name="TControl.IsParentOf.AControl">
         <short>The control of which this control may be a parent.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetTopParent">
-        <short>Find which control is the top parent (ie ultimate ancestor)</short>
+        <short>Find which control is the top parent (which has no further parent itself).</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6358,7 +6411,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.IsControlVisible">
         <short>True if the control is Visible, or is in design mode.</short>
         <descr>
-          <p>Does not check for invisible parents</p>
+          <p>Does not check for invisible parents.</p>
         </descr>
         <errors/>
         <seealso><link id="TControl.Visible"/></seealso>
@@ -6385,7 +6438,11 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.IsProcessingPaintMsg">
-        <short>True while painting the control[?]</short>
+        <short>True while painting the control.</short>
+        <descr>As the name says,
+          the cfProcessingWMPaint flag in FControlFlags is set while a LM_PAINT message is processed,
+          and IsProcessingPaintMsg checks this flag.
+        </descr>
       </element>
       <element name="TControl.IsProcessingPaintMsg.Result">
         <short></short>
@@ -6411,6 +6468,12 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- function Visibility: public -->
       <element name="TControl.CheckChildClassAllowed">
         <short>Returns True if the class is allowed for child controls.</short>
+        <descr>Only few controls restrict the class of acceptable child controls.
+          E.g. a PageControl only accepts TTabSheet descendants as children.
+        </descr>
+        <errors>
+          An EInvalidOperation can be generated (see ExceptionOnInvalid).
+        </errors>
       </element>
       <element name="TControl.CheckChildClassAllowed.Result">
         <short>True if the class is allowed for child controls.</short>
@@ -6423,52 +6486,72 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.CheckNewParent">
-        <short>Checks a new parent for this control[?]</short>
+        <short>Checks if this control can become a child of AParent.</short>
+        <descr>This check is performed during SetParent.
+          It calls CheckChildClassAllowed and whether AParent=Self.
+        </descr>
+        <errors>
+          An EInvalidOperation occurs when any test fails.
+        </errors>
       </element>
       <element name="TControl.CheckNewParent.AParent">
         <short>The new Parent for this control.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SendToBack">
-        <short>Send to back, ie behind all other controls in the Parent; it will not be visible unless the controls in front are transparent</short>
+        <short>Moves all sibling controls in front of this control.
+        </short>
+        <descr>
+          <p>
+            Use SendToBack to supply an specific background (image) for the Parent control.
+          </p><p>
+            Only those portions of the control will be visible,
+            which are not covered by other controls.
+          </p>
+        </descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetTempCursor">
-        <short>
-          <var>SetTempCursor</var> - set a temporary cursor [purpose?]</short>
+        <short>Change the cursor shape temporarily,
+          preserving the stored <link id="TControl.Cursor"/>.
+        </short>
       </element>
       <element name="TControl.SetTempCursor.Value">
-        <short>The temporary cursor which has been set</short>
+        <short>The temporary cursor shape to use.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.UpdateRolesForForm">
-        <short>Update the roles for this form; see whether there have been any changes in its role</short>
+        <short>Internal method, called by a Form when its DefaultControl or CancelControl has changed.
+        </short>
+        <descr>This method is overridden in TCustomButton,
+          where it updates the button's Cancel and Default properties.
+        </descr>
+        <seealso>
+          <link id="TControl.ActiveDefaultControlChanged"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.ActiveDefaultControlChanged">
-        <short>The active default control [what's this?] has changed to <var>NewControl</var>.</short>
+        <short>Notification of a changed
+          active DefaultControl of a form.</short>
+        <descr>
+          When the user pressed ENTER in a form, its DefaultControl will receive a Click event.
+        </descr>
+        <errors>
+          Currently NewControl can be Nil, even if it should not be.
+        </errors>
       </element>
       <element name="TControl.ActiveDefaultControlChanged.NewControl">
-        <short/>
+        <short>The new DefaultControl.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetTextBuf">
-        <short>Gets text associated with the control from the widget.</short>
+        <short>Copy the <link id="TControl.Text">Text</link> property into Buffer.</short>
         <descr>
-          <remark>See SetTextBuf [document in one place?]</remark>
-          <pre>* The VCL implementation relies on the virtual Get/SetTextBuf to
- * exchange text between widgets and VCL. This means a lot of
- * (unnecesary) text copies.
- * The LCL uses strings for exchanging text (more efficient).
- * To maintain VCL compatibility, the virtual RealGet/SetText is
- * introduced. These functions interface with the LCLInterface. The
- * default Get/SetTextbuf implementation calls the RealGet/SetText.
- * As long as the Get/SetTextBuf isn't overridden Get/SetText
- * calls RealGet/SetText to avoid PChar copying.
- * To keep things optimal, LCL implementations should always
- * override RealGet/SetText. Get/SetTextBuf is only kept for
- * compatibility.
-</pre>
+          <p>This method only exists for Delphi compatibility.
+          </p><p>
+            Don't use or override it, unless really necessary.
+          </p>
         </descr>
         <seealso>
           <link id="#lcl.Controls.TControl.RealGetText">RealGetText</link>
@@ -6476,17 +6559,17 @@ Without a DockManager both extents are required, because no (valid) alignment in
         </seealso>
       </element>
       <element name="TControl.GetTextBuf.Result">
-        <short>Pointer to the buffer containing the text</short>
+        <short>Length of the copied text.</short>
       </element>
       <element name="TControl.GetTextBuf.Buffer">
-        <short>Pointer to the buffer containing the string</short>
+        <short>Pointer to the buffer receiving the string.</short>
       </element>
       <element name="TControl.GetTextBuf.BufSize">
-        <short>Length of the buffer</short>
+        <short>Length of the buffer.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetTextLen">
-        <short>Get the length of the specified text</short>
+        <short>The length of Text, here: of Caption.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6496,32 +6579,12 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetTextBuf">
-        <short>Sends text associated with the control to the widget.</short>
+        <short>Updates the <link id="TControl.Text">Text</link> property from a PChar buffer.</short>
         <descr>
-          <p>This method exists only for VCL compatibility.
-            The VCL sends text from the Text or Caption properties immediately to the widget,
-            using WM_SETTEXT. The LCL instead transfers an string to the widget interface,
-            and leaves eventual string/PChar conversions to the interface.
+          <p>This method only exists for Delphi compatibility.
+          </p><p>
+            Don't use or override it, unless really necessary.
           </p>
-          <remark>
-            <b>Do not override this method</b>, because this will only cause overhead in the communication between LCL and widgetsets.
-            The LCL SetText method bypasses SetTextBuf, if not overridden, and calls the fast RealSetText method.
-            Instead override RealSetText, if ever required.
-          </remark>
-          <pre>[todo: remove?]
- * The VCL implementation relies on the virtual Get/SetTextBuf to
- * exchange text between widgets and VCL. This means a lot of
- * (unnecesary) text copies.
- * The LCL uses strings for exchanging text (more efficient).
- * To maintain VCL compatibility, the virtual RealGet/SetText is
- * introduced. These functions interface with the LCLInterface. The
- * default Get/SetTextbuf implementation calls the RealGet/SetText.
- * As long as the Get/SetTextBuf isn't overridden Get/SetText
- * calls RealGet/SetText to avoid PChar copying.
- * To keep things optimal, LCL implementations should always
- * override RealGet/SetText. Get/SetTextBuf is only kept for
- * compatibility.
-</pre>
         </descr>
         <seealso>
           <link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
@@ -6529,12 +6592,13 @@ Without a DockManager both extents are required, because no (valid) alignment in
         </seealso>
       </element>
       <element name="TControl.SetTextBuf.Buffer">
-        <short>Pointer to the buffer where the text is to be stored</short>
+        <short>Pointer to the buffer containing the zero-terminated text.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.Perform">
         <short>Direct call of an message handler, bypassing the message queue.</short>
-        <descr/>
+        <descr>The parameters and result depend on the concret message.
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -6553,6 +6617,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- function Visibility: public -->
       <element name="TControl.ScreenToClient">
         <short>Convert absolute screen coordinates into client-relative coordinates</short>
+        <seealso>
+          <link id="TControl.ClientToScreen"/>
+        </seealso>
       </element>
       <element name="TControl.ScreenToClient.Result">
         <short/>
@@ -6563,6 +6630,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- function Visibility: public -->
       <element name="TControl.ClientToScreen">
         <short>Convert client-relative coordinates into absolute screen coordinates.</short>
+        <seealso>
+          <link id="TControl.ScreenToClient"/>
+        </seealso>
       </element>
       <element name="TControl.ClientToScreen.Result">
         <short/>
@@ -6573,6 +6643,11 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- function Visibility: public -->
       <element name="TControl.ScreenToControl">
         <short>Convert absolute screen coordinates into control-relative coordinates.</short>
+        <seealso>
+          <link id="TControl.ControlToScreen"/>
+          <link id="TControl.ScreenToClient"/>
+          <link id="TControl.ClientToScreen"/>
+        </seealso>
       </element>
       <element name="TControl.ScreenToControl.Result">
         <short/>
@@ -6583,6 +6658,11 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- function Visibility: public -->
       <element name="TControl.ControlToScreen">
         <short>Convert control-relative coordinates into absolute screen coordinates.</short>
+        <seealso>
+          <link id="TControl.ScreenToControl"/>
+          <link id="TControl.ScreenToClient"/>
+          <link id="TControl.ClientToScreen"/>
+        </seealso>
       </element>
       <element name="TControl.ControlToScreen.Result">
         <short/>
@@ -6593,7 +6673,8 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- function Visibility: protected -->
       <element name="TControl.GetChildsRect">
         <short>Get the visible part of a possibly scrolled client area.</short>
-        <descr>If <var>Scrolled</var> is False, the ScrollOffset is ignored, so that the ClientRect is returned.
+        <descr>If <var>Scrolled</var> is False, the ScrollOffset is ignored,
+          so that the ClientRect is returned.
         </descr>
       </element>
       <element name="TControl.GetChildsRect.Result">
@@ -6604,12 +6685,13 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Show">
-        <short>Makes the control visible.</short>
+        <short>Makes the control visible, by setting Visible to True.</short>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#lcl.Controls.TControl.Visible"/>
-          <link id="#lcl.Controls.TControl.Hide"/>
+          <link id="TControl.ShowControl"/>
+          <link id="TControl.Visible"/>
+          <link id="TControl.Hide"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -6618,19 +6700,19 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.HandleObjectShouldBeVisible">
-        <short>
-          <var>HandleObjectShouldBeVisible</var> - returns True if the Handle Object is required to be visible</short>
+        <short>True if the control shall be visible, unless it's being destroyed.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TControl.IsVisible"/>
+        </seealso>
       </element>
       <element name="TControl.HandleObjectShouldBeVisible.Result">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ParentDestroyingHandle">
-        <short>
-          <var>ParentDestroyingHandle</var> - returns True if the parent control is destroying the Handle</short>
+        <short>Returns True if any parent is destroying its Handle (and its childrens').</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6640,8 +6722,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ParentHandlesAllocated">
-        <short>
-          <var>ParentHandlesAllocated</var> - returns True if the parent handles have been allocated</short>
+        <short>Returns True if all Parents have handles allocated, and are not being destroyed.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6651,22 +6732,21 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.InitiateAction">
-        <short>
-          <var>InitiateAction</var> - method to start[?] the action associated with this control</short>
-        <descr/>
+        <short>Update the action associated with this control.</short>
+        <descr>[?]</descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.ShowHelp">
-        <short>Procedure for displaying the Help associated with this control</short>
+        <short>Show the Help associated with this control.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.HasHelp">
-        <short>Indicates that this control has an entry in the Help-file</short>
+        <short>True when a HelpKeyword or HelpContext ID is assigned.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6805,9 +6885,8 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.UseRightToLeftAlignment">
-        <short>
-          <var>UseRightToLeftAlignment</var> - as opposed to usual left to right</short>
-        <descr>Needs <var>BiDiMode</var> enabled
+        <short>True when BiDiMode is bdRightToLeft.</short>
+        <descr>
         </descr>
         <errors/>
         <seealso/>
@@ -6817,9 +6896,8 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.UseRightToLeftReading">
-        <short>
-          <var>UseRightToLeftReading </var>- as opposed to usual left to right</short>
-        <descr>Needs <var>BiDiMode</var> enabled</descr>
+        <short>True when BiDiMode is not bdLeftToRight.</short>
+        <descr/>
         <errors/>
         <seealso/>
       </element>
@@ -6828,9 +6906,8 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.UseRightToLeftScrollBar">
-        <short>
-          <var>UseRightToLeftScrollBar</var> - as opposed to usual left to right</short>
-        <descr>Needs <var>BiDiMode</var> enabled</descr>
+        <short>True when scrollbars appear at the left side of the control.</short>
+        <descr/>
         <errors/>
         <seealso/>
       </element>
@@ -6839,9 +6916,8 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.IsRightToLeft">
-        <short>
-          <var>IsRightToLeft</var> - as opposed to usual left to right</short>
-        <descr>Needs <var>BiDiMode</var> enabled</descr>
+        <short>True when BiDiMode is not bdLeftToRight.</short>
+        <descr/>
         <errors/>
         <seealso/>
       </element>
@@ -6854,6 +6930,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
         <descr>The Action property is a shortcut to ActionLink.Action.
         </descr>
         <seealso>
+          <link id="TControl.ActionLink"/>
           <link id="#rtl.Classes.TBasicAction"/>
         </seealso>
       </element>
@@ -6865,7 +6942,8 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.Align">
         <short>Specifies the placement of the control inside its Parent.</short>
         <descr>
-          <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right[more precisely?]</p>
+          <p>A control can stick to one side of its Parent control.
+          </p>
         </descr>
         <seealso>
           <link id="#lcl.Controls.TAlign">TAlign</link>
@@ -6880,11 +6958,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Anchors">
-        <short>The set of anchor definitions, which are valid for this control.</short>
+        <short>The set of anchor definitions for this control.</short>
         <descr>
-          <p>Determines how the control is anchored to other controls.</p>
-          <p>
-            <var>IsAnchorsStored</var> is True if anchors have been defined.</p>
+          <p>Determines which sides of the control are anchored to other controls.</p>
         </descr>
         <seealso>
           <link id="#lcl.Controls.TAnchors"/>
@@ -6901,9 +6977,6 @@ Without a DockManager both extents are required, because no (valid) alignment in
           </p><p>
             Various AnchorAs and AnchorTo methods simplify the establishment of anchors.
           </p>
-          <p>For complex relationships, use the <var>Side</var> property of the parent class <link id="#lcl.Controls.TAnchorSide">TAnchorSide</link>,
-            and make a reference eg using <var>asrCenter</var>
-          </p>
         </descr>
         <seealso>
           <link id="#lcl.Controls.TAnchorSide"/>
@@ -6912,7 +6985,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
         </seealso>
       </element>
       <element name="TControl.AnchorSide.Kind">
-        <short>The anchored side of the control.</short>
+        <short>The [possibly?] anchored side of the control.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.AutoSize">
@@ -6966,11 +7039,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.BaseParentClientSize">
-        <short>The Parent's client size, from which BaseBounds have been determined.</short>
+        <short>The Parent's client size, for which the BaseBounds are valid.</short>
         <descr>
           <p>
-            The Parent.ClientRect size valid for the FBaseBounds.
-          </p><p>
             BaseBounds and BaseParentClientSize determine the distance to keep from Parent's sides,
             when a side is anchored to the Parent (akLeft...), and the Parent is resized.
           </p>
@@ -7000,6 +7071,12 @@ Without a DockManager both extents are required, because no (valid) alignment in
             RTL reading is not supported on all (Windows) platforms.
           </p>
         </descr>
+        <seealso>
+          <link id="TControl.UseRightToLeftAlignment"/>
+          <link id="TControl.UseRightToLeftReading"/>
+          <link id="TControl.UseRightToLeftScrollBar"/>
+          <link id="TControl.IsRightToLeft"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.BorderSpacing">
@@ -7053,7 +7130,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <element name="TControl.CaptureMouseButtons">
         <short>Which mouse button(s) to be used for capture? Default is the left button.
         </short>
-        <descr/>
+        <descr>[?]</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -7096,7 +7173,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Constraints">
-        <short>The minimal and maximal Height and Width of this control.</short>
+        <short>The minimal and maximal Width and Height of this control.</short>
         <descr/>
         <seealso>
           <link id="#lcl.Controls.TSizeConstraints"/>
@@ -7181,7 +7258,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Floating">
-        <short>Tries to find out whether the control is floating.</short>
+        <short>Tries to find out whether the control is floating (not part of a form).</short>
         <descr/>
         <seealso>
           <link id="TControl.FloatingDockSiteClass"/>
@@ -7275,7 +7352,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
           <p>Applications should capture mouse events only for special purposes,
             and release the capture as soon as a the target position has been determined.
             Limited user feedback is possible while the mouse is captured,
-            but not all application controls will work properly so long.</p>
+            not all application controls will work properly so long.</p>
         </descr>
         <seealso/>
       </element>
@@ -7318,8 +7395,11 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnContextPopup">
-        <short>Event handler to supply information when a context-sensitive pop-up menu is requested.</short>
-        <descr>[?]</descr>
+        <short>Invoked when a context-sensitive pop-up menu is requested.</short>
+        <descr>The handler can show and handle the menu selection itself.
+          If so, it should set Handled to True.
+          Otherwise the installed PopupMenu is shown.
+        </descr>
         <seealso>
           <link id="TContextPopupEvent"/>
           <link id="TControl.PopupMenu"/>
@@ -7338,7 +7418,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnDragDrop">
-        <short>This handler determines the action on an drop, in a drag-drop operation.
+        <short>This handler determines the action on an drop onto this control, in a drag-drop operation.
         </short>
         <descr>
           <p>
@@ -7364,7 +7444,9 @@ Without a DockManager both extents are required, because no (valid) alignment in
       <!-- property Visibility: protected -->
       <element name="TControl.OnEditingDone">
         <short>Event handler when editing is done.</short>
-        <descr>[usage?]</descr>
+        <descr>The user definitely has finished editing,
+          the resulting text e.g. can be validated.
+        </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnEndDock">
@@ -7539,7 +7621,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentShowHint">
-        <short>Allows to use the same hinting behaviour as its parent. Default is true.</short>
+        <short>Allows to use the hinting behaviour of Parent. Default is true.</short>
         <seealso>
           <link id="TControl.Hint"/>
           <link id="TControl.ShowHint"/>
@@ -7604,7 +7686,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
           </p><p>
             To maintain VCL compatibility,
             the virtual <var>RealGet/SetText</var> methods have been introduced,
-            which read or write the Caption string immediately.
+            which read or write the Caption string directly.
           </p><p>
             The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var> methods,
             resulting in a string-to-PCHAR and another PCHAR-to-string conversion.
@@ -7618,16 +7700,18 @@ Without a DockManager both extents are required, because no (valid) alignment in
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TControl.Top"/>
+      <element name="TControl.Top">
+        <short>The client coordinate of the top edge of the control.</short>
+      </element>
       <!-- property Visibility: public -->
       <element name="TControl.UndockHeight">
-        <short>The height of the undocked control.</short>
+        <short>The height of the control in floating state.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.UndockWidth">
-        <short>The width of the undocked control.</short>
+        <short>The width of the control in floating state.</short>
         <descr/>
         <seealso/>
       </element>
@@ -7671,16 +7755,18 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- range type Visibility: default -->
       <element name="TBorderWidth">
-        <short>Integer type defining width of the border of a control</short>
+        <short>Integer type for <link id="TWinControl.BorderWidth"/>.</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TGetChildProc">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Type of a callback method, to be called for all children of a control.</short>
+        <descr></descr>
+        <seealso>
+          <link id="TWinControl.GetChildren"/>
+        </seealso>
       </element>
       <element name="TGetChildProc.Child">
-        <short/>
+        <short>The child control.</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TControlChildSizing">
