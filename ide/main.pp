@@ -12163,7 +12163,7 @@ end;
 
 function TMainIDE.DoManageExamples: TModalResult;
 begin
-  ShowManageExamplesDlg;
+  Result:=ShowManageExamplesDlg;
 end;
 
 function TMainIDE.DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;

@@ -42,7 +42,7 @@ type
     procedure SetIdleConnected(const AValue: boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
   public
-    constructor Create(AnOwner: TComponent);
+    constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
     property IdleConnected: boolean read fIdleConnected write SetIdleConnected;
   end;
@@ -93,8 +93,6 @@ type
 { TListFileSearcher }
 
 procedure TListFileSearcher.DoFileFound;
-var
-  ShortName, FilePath: String;
 begin
   fForm.ProjectsListBox.Items.Add(FileName)
 end;
