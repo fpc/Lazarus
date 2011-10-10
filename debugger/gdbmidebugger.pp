@@ -6254,6 +6254,13 @@ begin
       // Do not add code with callbacks outside "FInExecuteCount"
       // Otherwhise "LockCommandProcessing" will fail to continue the queue
 
+      // TODO: if the debugger can accept them into a separate queue, the set stae here
+      // TODO: For now do not allow new session, before old session is finished
+      // There may already be commands for the next run queued,
+      // which will then set a new state.
+      //if FNeedStateToIdle and (FInExecuteCount = 0)
+      //then ResetStateToIdle;
+
       if State in [dsError, dsDestroying]
       then begin
         //DebugLn('[WARNING] TGDBMIDebugger:  ExecuteCommand "',Cmd,'" failed.');
@@ -7090,10 +7097,10 @@ end;
 
 procedure TGDBMIDebugger.ResetStateToIdle;
 begin
-  {$IFDEF DBGMI_QUEUE_DEBUG}
-  debugln(['Defer dsIdle:  Recurse-Count=', FInExecuteCount]);
-  {$ENDIF}
   if FInExecuteCount > 0 then begin
+    {$IFDEF DBGMI_QUEUE_DEBUG}
+    debugln(['Defer dsIdle:  Recurse-Count=', FInExecuteCount]);
+    {$ENDIF}
     FNeedStateToIdle := True;
     exit;
   end;
