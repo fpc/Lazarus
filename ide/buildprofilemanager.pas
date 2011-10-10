@@ -80,7 +80,6 @@ type
   TMakeModeDefs = class(TObjectList)
   private
     fItemIDE: TMakeModeDef;
-    fItemExamples: TMakeModeDef;
     fItemIDEIndex: integer;
     function GetItems(Index: integer): TMakeModeDef;
   public
@@ -92,7 +91,6 @@ type
     function FindName(const Name: string): TMakeModeDef;
   public
     property ItemIDE: TMakeModeDef read fItemIDE;
-    property ItemExamples: TMakeModeDef read fItemExamples;
     property Items[Index: integer]: TMakeModeDef read GetItems; default;
   end;
 
@@ -226,7 +224,7 @@ implementation
 {$R *.lfm}
 
 uses
-  AddProfileDialog; // , BuildLazDialog
+  AddProfileDialog;
 
 const
   DefaultTargetDirectory = ''; // empty will be replaced by '$(ConfDir)/bin';
@@ -307,15 +305,11 @@ end;
 constructor TMakeModeDefs.Create;
 begin
   inherited Create;
-  // Hard-coded build values.
-  // IDE
+  // Hard-coded build values = IDE
   FItemIDE:=TMakeModeDef.Create('IDE',lisIDE,'',mmBuild);
   FItemIDE.Commands[mmBuild]:='ide';
   FItemIDE.Commands[mmCleanBuild]:='cleanide ide';
   fItemIDEIndex:=Add(FItemIDE);
-  // Examples
-  FItemExamples:=TMakeModeDef.Create('Examples',lisExamples,'examples',mmBuild);
-  Add(FItemExamples);
 end;
 
 destructor TMakeModeDefs.Destroy;
@@ -326,7 +320,6 @@ end;
 procedure TMakeModeDefs.Clear;
 begin
   FItemIDE:=nil;
-  FItemExamples:=nil;
   inherited Clear;          // Items are freed here, too.
 end;
 
@@ -342,8 +335,7 @@ begin
     NewItem.Assign(SrcItem);
     Add(NewItem);
   end;
-  fItemIDE     :=FindName('IDE');
-  fItemExamples:=FindName('Examples');
+  fItemIDE:=FindName('IDE');
   fItemIDEIndex:=Source.fItemIDEIndex;
 end;
 

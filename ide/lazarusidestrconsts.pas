@@ -1955,8 +1955,7 @@ resourcestring
   dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
-  lisCompilerDoesNotSupportTarget = 'Compiler "%s" does not support target %'
-    +'s-%s';
+  lisCompilerDoesNotSupportTarget = 'Compiler "%s" does not support target %s-%s';
   lisInvalidMode = 'Invalid mode %s';
   lisTheProjectCompilerOptionsAndTheDirectivesInTheMain = 'The project '
     +'compiler options and the directives in the main source differ. For the '
@@ -2014,8 +2013,7 @@ resourcestring
   lisTheOutputDirectoryOfIsListedInTheUnitSearchPathOf = 'The output '
     +'directory of %s is listed in the unit search path of %s.';
   lisTheOutputDirectoryShouldBeASeparateDirectoryAndNot = ' The output '
-    +'directory should be a separate directory and not contain any source '
-    +'files.';
+    +'directory should be a separate directory and not contain any source files.';
   lisTheOutputDirectoryOfIsListedInTheIncludeSearchPath = 'The output '
     +'directory of %s is listed in the include search path of %s.';
   lisTheOutputDirectoryOfIsListedInTheInheritedUnitSear = 'The output '
@@ -2842,7 +2840,6 @@ resourcestring
   lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa = 'The program %smake%'
     +'s was not found.%sThis tool is needed to build lazarus.%s';
   lisIDE = 'IDE';
-  lisExamples = 'Examples';
   lisConfigureBuildLazarus = 'Configure %sBuild Lazarus%s';
   lisLazBuildCleanAll = 'Clean all';
   lisLazBuildBuildComponentsSynEditCodeTools = 'Build components (SynEdit, CodeTools)';

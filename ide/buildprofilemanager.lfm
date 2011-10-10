@@ -9,7 +9,7 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object ProfilesPanel: TPanel
     Left = 0
     Height = 459
@@ -41,21 +41,21 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
         OnClick = MoveDownButtonClick
       end
       object MoveUpButton: TToolButton
-        Left = 201
+        Left = 252
         Top = 0
         Caption = 'MoveUpButton'
         ImageIndex = 3
         OnClick = MoveUpButtonClick
       end
       object EditButton: TToolButton
-        Left = 139
+        Left = 173
         Top = 0
         Caption = 'EditButton'
         ImageIndex = 2
         OnClick = EditButtonClick
       end
       object RemoveButton: TToolButton
-        Left = 60
+        Left = 75
         Top = 0
         Caption = 'RemoveButton'
         ImageIndex = 1
@@ -69,9 +69,9 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
         OnClick = AddButtonClick
       end
       object tbSeparator: TToolButton
-        Left = 197
+        Left = 247
         Top = 0
-        Width = 4
+        Width = 5
         Caption = 'tbSeparator'
         Style = tbsDivider
       end
@@ -84,7 +84,9 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
       Align = alClient
       ItemHeight = 0
       OnClick = ProfilesListboxClick
+      ScrollWidth = 354
       TabOrder = 0
+      TopIndex = -1
     end
     object ButtonPanel: TButtonPanel
       Left = 7
@@ -92,11 +94,15 @@ object BuildProfileManagerForm: TBuildProfileManagerForm
       Top = 426
       Width = 346
       OKButton.Name = 'OKButton'
+      OKButton.DefaultCaption = True
       HelpButton.Name = 'HelpButton'
+      HelpButton.DefaultCaption = True
       HelpButton.OnClick = HelpButtonClick
       CloseButton.Name = 'CloseButton'
+      CloseButton.DefaultCaption = True
       CloseButton.Enabled = False
       CancelButton.Name = 'CancelButton'
+      CancelButton.DefaultCaption = True
       TabOrder = 2
       ShowButtons = [pbOK, pbCancel, pbHelp]
       ShowBevel = False
