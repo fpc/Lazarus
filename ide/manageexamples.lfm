@@ -1,0 +1,163 @@
+object ManageExamplesForm: TManageExamplesForm
+  Left = 389
+  Height = 416
+  Top = 162
+  Width = 768
+  Caption = 'ManageExamplesForm'
+  ClientHeight = 416
+  ClientWidth = 768
+  Position = poDesktopCenter
+  LCLVersion = '0.9.31'
+  object SettingsGroupBox: TGroupBox
+    Left = 0
+    Height = 80
+    Top = 0
+    Width = 768
+    Align = alTop
+    Caption = 'Settings'
+    ClientHeight = 63
+    ClientWidth = 764
+    TabOrder = 0
+    object RootDirectoryEdit: TDirectoryEdit
+      AnchorSideLeft.Control = RootDirectoryLabel
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = RootDirectoryLabel
+      AnchorSideTop.Side = asrCenter
+      Left = 101
+      Height = 23
+      Top = 9
+      Width = 480
+      ShowHidden = False
+      ButtonWidth = 23
+      NumGlyphs = 0
+      BorderSpacing.Left = 7
+      MaxLength = 0
+      TabOrder = 0
+      OnChange = RootDirectoryEditChange
+    end
+    object RootDirectoryLabel: TLabel
+      Left = 6
+      Height = 16
+      Top = 12
+      Width = 88
+      Caption = 'Root directory'
+      ParentColor = False
+    end
+  end
+  object ProjectsGroupBox: TGroupBox
+    AnchorSideLeft.Control = SettingsGroupBox
+    AnchorSideTop.Control = SettingsGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = ActionGroupBox
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 0
+    Height = 290
+    Top = 80
+    Width = 549
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = 'Projects'
+    ClientHeight = 273
+    ClientWidth = 545
+    TabOrder = 1
+    object ProjectsListBox: TListBox
+      Left = 0
+      Height = 273
+      Top = 0
+      Width = 545
+      Align = alClient
+      ItemHeight = 0
+      MultiSelect = True
+      OnSelectionChange = ProjectsListBoxSelectionChange
+      ScrollWidth = 541
+      TabOrder = 0
+      TopIndex = -1
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 376
+    Width = 756
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbClose, pbHelp]
+  end
+  object ActionGroupBox: TGroupBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = SettingsGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = SettingsGroupBox
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ProjectsGroupBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 552
+    Height = 290
+    Top = 80
+    Width = 216
+    Anchors = [akTop, akRight, akBottom]
+    BorderSpacing.Left = 3
+    Caption = 'Action'
+    ClientHeight = 273
+    ClientWidth = 212
+    TabOrder = 3
+    object Label1: TLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 66
+      Height = 16
+      Top = 61
+      Width = 131
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 7
+      Caption = '(under construction)'
+      ParentColor = False
+    end
+    object OpenSelectedButton: TBitBtn
+      Left = 9
+      Height = 25
+      Top = 8
+      Width = 195
+      BorderSpacing.Top = 4
+      Caption = 'Open First Selected'
+      Enabled = False
+      OnClick = OpenSelectedButtonClick
+      TabOrder = 0
+    end
+    object BuildAllSelectedButton: TBitBtn
+      Left = 9
+      Height = 25
+      Top = 36
+      Width = 195
+      Caption = 'Build All Selected'
+      Enabled = False
+      OnClick = BuildAllSelectedButtonClick
+      TabOrder = 1
+    end
+    object SelectAllButton: TBitBtn
+      Left = 9
+      Height = 25
+      Top = 88
+      Width = 195
+      Caption = 'Select All'
+      OnClick = SelectAllButtonClick
+      TabOrder = 2
+    end
+    object SelectNoneButton: TBitBtn
+      Left = 9
+      Height = 25
+      Top = 116
+      Width = 195
+      Caption = 'Select None'
+      Enabled = False
+      OnClick = SelectNoneButtonClick
+      TabOrder = 3
+    end
+  end
+end
