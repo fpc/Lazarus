@@ -775,6 +775,7 @@ begin
 
     CreateMenuSeparatorSection(mnuTools,itmBuildingLazarus,'itmBuildingLazarus');
     ParentMI:=itmBuildingLazarus;
+    CreateMenuItem(ParentMI,itmToolManageExamples,'itmToolManageExamples',lisMenuExampleProjects, 'camera');
     CreateMenuItem(ParentMI,itmToolBuildLazarus,'itmToolBuildLazarus',lisMenuBuildLazarus,'menu_build_lazarus');
     CreateMenuItem(ParentMI,itmToolConfigureBuildLazarus,'itmToolConfigureBuildLazarus',
                    lisMenuConfigureBuildLazarus, 'menu_configure_build_lazarus');
@@ -1020,6 +1021,7 @@ begin
     itmToolConvertDelphiProject.Command:=GetCommand(ecConvertDelphiProject);
     itmToolConvertDelphiPackage.Command:=GetCommand(ecConvertDelphiPackage);
     itmToolConvertEncoding.Command:=GetCommand(ecConvertEncoding);
+    itmToolManageExamples.Command:=GetCommand(ecManageExamples);
     itmToolBuildLazarus.Command:=GetCommand(ecBuildLazarus);
     itmToolConfigureBuildLazarus.Command:=GetCommand(ecConfigBuildLazarus);
 

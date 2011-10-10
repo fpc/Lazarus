@@ -230,7 +230,7 @@ const
   ecPrevBookmark            = ecFirstLazarus + 382;
   ecNextBookmark            = ecFirstLazarus + 383;
 
-  // compile menu
+  // run menu
   ecCompile                 = ecFirstLazarus + 400;
   ecBuild                   = ecFirstLazarus + 401;
   ecQuickCompile            = ecFirstLazarus + 402;
@@ -243,8 +243,7 @@ const
   ecRunToCursor             = ecFirstLazarus + 414;
   ecStopProgram             = ecFirstLazarus + 415;
   ecResetDebugger           = ecFirstLazarus + 416;
-  ecBuildLazarus            = ecFirstLazarus + 420;
-  ecBuildAdvancedLazarus    = ecFirstLazarus + 421;
+  ecRunParameters           = ecFirstLazarus + 417;
   ecBuildFile               = ecFirstLazarus + 431;
   ecRunFile                 = ecFirstLazarus + 432;
   ecConfigBuildFile         = ecFirstLazarus + 433;
@@ -279,12 +278,12 @@ const
   ecViewProjectSource       = ecFirstLazarus + 512;
   ecProjectOptions          = ecFirstLazarus + 513;
 
-  // components menu
+  // package menu
   ecOpenPackage             = ecFirstLazarus + 600;
   ecOpenPackageFile         = ecFirstLazarus + 601;
   ecOpenPackageOfCurUnit    = ecFirstLazarus + 602;
   ecAddCurFileToPkg         = ecFirstLazarus + 603;
-  ecAddCurUnitToPkg         = ecAddCurFileToPkg deprecated;
+//  ecAddCurUnitToPkg         = ecAddCurFileToPkg deprecated;
   ecPackageGraph            = ecFirstLazarus + 604;
   ecEditInstallPkgs         = ecFirstLazarus + 605;
   ecConfigCustomComps       = ecFirstLazarus + 606;
@@ -294,22 +293,20 @@ const
   ecExtToolFirst            = ecFirstLazarus + 700;
   ecExtToolLast             = ecFirstLazarus + 799;
 
-  // option commmands
-  ecRunParameters           = ecFirstLazarus + 800;
-  ecReserved0               = ecFirstLazarus + 801; // reserved
-  ecExtToolSettings         = ecFirstLazarus + 802;
-  ecConfigBuildLazarus      = ecFirstLazarus + 803;
-  ecEnvironmentOptions      = ecFirstLazarus + 804;
-  ecReserved1               = ecFirstLazarus + 805; // reserved
-  ecEditCodeTemplates       = ecFirstLazarus + 806;
-  ecReserved2               = ecFirstLazarus + 807; // reserved
-  ecCodeToolsDefinesEd      = ecFirstLazarus + 808;
-  ecRescanFPCSrcDir         = ecFirstLazarus + 809;
+  // tools menu
+  ecExtToolSettings         = ecFirstLazarus + 820;
+  ecEnvironmentOptions      = ecFirstLazarus + 821;
+  ecEditCodeTemplates       = ecFirstLazarus + 822;
+  ecCodeToolsDefinesEd      = ecFirstLazarus + 823;
+  ecRescanFPCSrcDir         = ecFirstLazarus + 824;
+  ecManageExamples          = ecFirstLazarus + 825;
+  ecConfigBuildLazarus      = ecFirstLazarus + 830;
+  ecBuildLazarus            = ecFirstLazarus + 831;
+  ecBuildAdvancedLazarus    = ecFirstLazarus + 832;
 
   // help menu
   ecAboutLazarus            = ecFirstLazarus + 900;
   ecOnlineHelp              = ecFirstLazarus + 901;
-  ecReserved3               = ecFirstLazarus + 902; // reserved
   ecContextHelp             = ecFirstLazarus + 903;
   ecEditContextHelp         = ecFirstLazarus + 904;
   ecReportingBug            = ecFirstLazarus + 905;

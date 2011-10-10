@@ -414,10 +414,12 @@ resourcestring
   lisMenuConvertDelphiProject = 'Convert Delphi project to Lazarus project ...';
   lisMenuConvertDelphiPackage = 'Convert Delphi package to Lazarus package ...';
   lisMenuConvertEncoding = 'Convert encoding of projects/packages ...';
+  lisMenuExampleProjects = 'Example Projects ...';
+  lisKMExampleProjects = 'Example Projects';
   lisMenuBuildLazarus = 'Build Lazarus with current profile';
   lisMenuBuildLazarusProf = 'Build Lazarus with profile: %s';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
-  
+
   lisMenuGeneralOptions = 'Options ...';
   lisMenuEditCodeTemplates = 'Code Templates ...';
   lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor ...';
@@ -2913,6 +2915,9 @@ resourcestring
   lisLazBuildAreYouSureYouWantToDeleteThisBuildProfile = 'Are you sure you '
     +'want to delete this build profile?';
   lisLazBuildSelectProfilesToBuild = 'Select profiles to build';
+
+  lisExamplesOpenFirstSelected = 'Open first selected';
+  lisExamplesBuildAllSelected = 'Build all selected';
 
   // compiler
   lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';

@@ -593,6 +593,7 @@ begin
 
   // tools menu
   ecExtToolSettings: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecManageExamples: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBuildLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigBuildLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecMakeResourceString: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1045,6 +1046,7 @@ begin
 
   // tools menu
   ecExtToolSettings: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecManageExamples: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBuildLazarus: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigBuildLazarus: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecMakeResourceString: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1680,6 +1682,7 @@ begin
 
   // tools menu
   ecExtToolSettings: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecManageExamples: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBuildLazarus: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigBuildLazarus: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecMakeResourceString: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -2229,6 +2232,7 @@ begin
 
     // tools menu
     ecExtToolSettings         : Result:= srkmecExtToolSettings;
+    ecManageExamples          : Result:= lisMenuExampleProjects;
     ecConfigBuildLazarus      : Result:= lismenuconfigurebuildlazarus;
     ecBuildLazarus            : Result:= srkmecBuildLazarus;
     ecExtToolFirst
@@ -2887,6 +2891,7 @@ begin
   // tools menu
   C:=Categories[AddCategory(CommandCategoryToolMenuName,srkmCatToolMenu,nil)];
   AddDefault(C, 'External Tools settings', lisKMExternalToolsSettings, ecExtToolSettings);
+  AddDefault(C, 'Example Projects', lisKMExampleProjects, ecManageExamples);
   AddDefault(C, 'Build Lazarus', lisMenuBuildLazarus, ecBuildLazarus);
   AddDefault(C, 'Configure "Build Lazarus"',
     Format(lisConfigureBuildLazarus, ['"', '"']), ecConfigBuildLazarus);

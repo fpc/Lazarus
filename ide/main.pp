@@ -140,7 +140,7 @@ uses
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
   IdeOptionsDlg, EditDefineTree, PublishModule, EnvironmentOpts, TransferMacros,
   KeyMapping, IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg,
-  OutputFilter, JumpHistoryView,
+  OutputFilter, JumpHistoryView, ManageExamples,
   BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
   MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   IDEFPCInfo, IDEInfoDlg, ProcessList, InitialSetupDlgs, NewDialog,
@@ -355,6 +355,7 @@ type
     procedure mnuToolConvertDelphiProjectClicked(Sender: TObject);
     procedure mnuToolConvertDelphiPackageClicked(Sender: TObject);
     procedure mnuToolConvertEncodingClicked(Sender: TObject);
+    procedure mnuToolManageExamplesClicked(Sender: TObject);
     procedure mnuToolBuildLazarusClicked(Sender: TObject);
     procedure mnuToolBuildAdvancedLazarusClicked(Sender: TObject);
     procedure mnuToolConfigBuildLazClicked(Sender: TObject);
@@ -921,6 +922,7 @@ type
     function OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
     function DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
+    function DoManageExamples(): TModalResult; override;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoBuildAdvancedLazarus(ProfileNames: TStringList): TModalResult;
     function DoBuildFile(ShowAbort: Boolean): TModalResult;
@@ -2666,6 +2668,7 @@ begin
     itmToolConvertDelphiProject.OnClick := @mnuToolConvertDelphiProjectClicked;
     itmToolConvertDelphiPackage.OnClick := @mnuToolConvertDelphiPackageClicked;
     itmToolConvertEncoding.OnClick := @mnuToolConvertEncodingClicked;
+    itmToolManageExamples.OnClick := @mnuToolManageExamplesClicked;
     itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
     itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
     // Set initial caption for Build Lazarus item. Will be changed in BuildLazDialog.
@@ -3374,6 +3377,9 @@ begin
 
   ecConvertDFM2LFM:
     DoConvertDFMtoLFM;
+
+  ecManageExamples:
+    mnuToolManageExamplesClicked(Self);
 
   ecBuildLazarus:
     mnuToolBuildLazarusClicked(Self);
@@ -4662,6 +4668,11 @@ end;
 procedure TMainIDE.mnuToolConvertEncodingClicked(Sender: TObject);
 begin
   ShowConvertEncodingDlg;
+end;
+
+procedure TMainIDE.mnuToolManageExamplesClicked(Sender: TObject);
+begin
+  DoManageExamples();
 end;
 
 procedure TMainIDE.mnuToolBuildLazarusClicked(Sender: TObject);
@@ -12148,6 +12159,11 @@ begin
   Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
                              GlobalMacroList,PkgOptions,IDEBuildFlags);
   if Result<>mrOk then exit;
+end;
+
+function TMainIDE.DoManageExamples: TModalResult;
+begin
+  ShowManageExamplesDlg;
 end;
 
 function TMainIDE.DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;

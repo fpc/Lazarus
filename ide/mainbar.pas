@@ -340,6 +340,7 @@ type
         itmToolConvertDFMtoLFM: TIDEMenuCommand;
         itmToolConvertEncoding: TIDEMenuCommand;
       //itmBuildingLazarus: TIDEMenuSection;
+        itmToolManageExamples: TIDEMenuCommand;
         itmToolBuildLazarus: TIDEMenuCommand;
         itmToolConfigureBuildLazarus: TIDEMenuCommand;
 
