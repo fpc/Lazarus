@@ -8002,7 +8002,6 @@ dmFindTarget: find child control under the mouse
       <element name="TControlChildSizing.LeftRightSpacing">
         <short>Minimum distance between children and client border.
         </short>
-        </short>
         <descr/>
         <seealso/>
       </element>
