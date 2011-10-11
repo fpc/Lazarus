@@ -169,8 +169,12 @@ begin
   else
     Exit;
   end;
-    
-  Result := List.AddLazarusResource(ImageName);
+  try
+    Result := List.AddLazarusResource(ImageName);
+  except
+    on E: Exception do
+      DebugLn('While loading IDEImages: ' + e.Message);
+  end;
   Names.AddObject(ImageName, TObject(PtrInt(Result)));
 end;
 
