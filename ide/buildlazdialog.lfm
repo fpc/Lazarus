@@ -376,12 +376,15 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       AnchorSideLeft.Control = TargetCPUComboBox
       AnchorSideTop.Control = TargetCPUComboBox
       AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = DefinesListBox
       Left = 142
       Height = 70
       Top = 226
-      Width = 245
+      Width = 234
+      Anchors = [akTop, akLeft, akRight]
       AutoFill = True
       BorderSpacing.Top = 6
+      BorderSpacing.Right = 13
       Caption = 'Building IDE'
       ChildSizing.LeftRightSpacing = 6
       ChildSizing.TopBottomSpacing = 6
