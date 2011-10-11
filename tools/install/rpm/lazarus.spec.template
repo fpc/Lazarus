@@ -66,7 +66,7 @@ cat lazarus/install/man/man1/lazbuild.1 | gzip > %{buildroot}%{_mandir}/man1/laz
 cat lazarus/install/man/man1/lazarus-ide.1 | gzip > %{buildroot}%{_mandir}/man1/lazarus-ide.1.gz
 cat lazarus/install/man/man1/startlazarus.1 | gzip > %{buildroot}%{_mandir}/man1/startlazarus.1.gz
   install lazarus/tools/install/linux/editoroptions.xml %{buildroot}%{_sysconfdir}/lazarus/editoroptions.xml
-cat lazarus/tools/install/linux/environmentoptions.xml | sed -e "s#/usr/lib/lazarus/#$LAZARUSDIR/#" > %{buildroot}%{_sysconfdir}/lazarus/environmentoptions.xml
+cat lazarus/tools/install/linux/environmentoptions.xml | sed -e "s#__LAZARUSDIR__#$LAZARUSDIR/#" -e "s#__FPCSRCDIR__#%{_datadir}/fpcsrc/#" > %{buildroot}%{_sysconfdir}/lazarus/environmentoptions.xml
 
 
 %clean
