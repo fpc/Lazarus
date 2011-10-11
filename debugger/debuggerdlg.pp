@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, Forms, Controls, IDEProcs, FileUtil, Debugger, EnvironmentOpts, IDEOptionDefs,
-  MainIntf, EditorOptions, IDECommands, BaseDebugManager;
+  IDEImagesIntf, MainIntf, EditorOptions, IDECommands, BaseDebugManager;
 
 type
 
@@ -86,6 +86,7 @@ type
     procedure JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer);
     procedure DoWatchesChanged; virtual; // called if the WatchesMonitor object was changed
     procedure DoBreakPointsChanged; virtual; // called if the BreakPoint(Monitor) object was changed
+    function GetBreakPointImageIndex(ABreakPoint: TIDEBreakPoint; AIsCurLine: Boolean = False): Integer;
     property SnapshotNotification:    TSnapshotNotification  read GetSnapshotNotification;
     property ThreadsNotification:     TThreadsNotification   read GetThreadsNotification;
     property CallStackNotification:   TCallStackNotification read GetCallStackNotification;
@@ -109,6 +110,10 @@ var
   OnProcessCommand: procedure(Sender: TObject; Command: word; var Handled: boolean) of object;
 
 implementation
+
+var
+  BrkImgIdxInitialized: Boolean;
+  ImgBreakPoints: Array [0..8] of Integer;
 
 { TDebuggerDlg }
 
@@ -335,6 +340,52 @@ end;
 procedure TDebuggerDlg.DoBreakPointsChanged;
 begin
   //
+end;
+
+function TDebuggerDlg.GetBreakPointImageIndex(ABreakPoint: TIDEBreakPoint;
+  AIsCurLine: Boolean = False): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+
+  if not BrkImgIdxInitialized then begin
+    ImgBreakPoints[0] := IDEImages.LoadImage(16, 'ActiveBreakPoint');  // red dot
+    ImgBreakPoints[1] := IDEImages.LoadImage(16, 'InvalidBreakPoint'); // red dot "X"
+    ImgBreakPoints[2] := IDEImages.LoadImage(16, 'UnknownBreakPoint'); // red dot "?"
+
+    ImgBreakPoints[3] := IDEImages.LoadImage(16, 'InactiveBreakPoint');// green dot
+    ImgBreakPoints[4] := IDEImages.LoadImage(16, 'InvalidDisabledBreakPoint');// green dot "X"
+    ImgBreakPoints[5] := IDEImages.LoadImage(16, 'UnknownDisabledBreakPoint');// green dot "?"
+
+    ImgBreakPoints[6] := IDEImages.LoadImage(16, 'debugger_current_line');
+    ImgBreakPoints[7] := IDEImages.LoadImage(16, 'debugger_current_line_breakpoint');
+    ImgBreakPoints[8] := IDEImages.LoadImage(16, 'debugger_current_line_disabled_breakpoint');
+
+    BrkImgIdxInitialized := True;
+  end;
+
+  if AIsCurLine
+  then begin
+    if ABreakPoint = nil
+    then Result := ImgBreakPoints[6]
+    else if ABreakPoint.Enabled
+    then Result := ImgBreakPoints[7]
+    else Result := ImgBreakPoints[8];
+  end
+  else
+  if (ABreakPoint <> nil)
+  then begin
+    if ABreakPoint.Enabled
+    then i := 0
+    else i := 3;
+    case ABreakPoint.Valid of
+      vsValid:   i := i + 0;
+      vsInvalid: i := i + 1;
+      vsUnknown: i := i + 2;
+    end;
+    Result := ImgBreakPoints[i];
+  end;
 end;
 
 destructor TDebuggerDlg.Destroy;

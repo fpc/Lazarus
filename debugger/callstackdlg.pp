@@ -98,8 +98,6 @@ type
     procedure actSetAsCurrentClick(Sender : TObject);
     procedure actShowClick(Sender: TObject);
   private
-    FImgBreakPointDisabled: Integer;
-    FImgCurrentLineAtBreakPointDisabled: Integer;
     FViewCount: Integer;
     FViewLimit: Integer;
     FViewStart: Integer;
@@ -147,11 +145,8 @@ uses
   BaseDebugManager, LCLProc, LazarusIDEStrConsts;
 
 var
-  imgCurrentLine: Integer;
   imgSourceLine: Integer;
   imgNoSourceLine: Integer;
-  imgBreakPoint: Integer;
-  imgCurrentLineAtBreakPoint: Integer;
 
 { TCallStackDlg }
 
@@ -203,32 +198,14 @@ function TCallStackDlg.GetImageIndex(Entry: TCallStackEntry): Integer;
     then Result := BreakPoints.Find(FileName, Entry.Line);
   end;
 
-var
-  b: TIDEBreakPoint;
 begin
-  b := GetBreakPoint(Entry);
-  if b <> nil then
-  begin
-    if b.Enabled then begin;
-      if Entry.IsCurrent
-      then Result := imgCurrentLineAtBreakPoint
-      else Result := imgBreakPoint;
-    end else begin
-      if Entry.IsCurrent
-      then Result := FImgCurrentLineAtBreakPointDisabled
-      else Result := FImgBreakPointDisabled;
-    end
-  end
-  else
-  begin
-    if Entry.IsCurrent then
-      Result := imgCurrentLine
-    else
-    if Entry.Source = '' then
-      Result := imgNoSourceLine
-    else
-      Result := imgSourceLine;
-  end;
+  Result := GetBreakPointImageIndex(GetBreakPoint(Entry), Entry.IsCurrent);
+  if Result >= 0
+  then exit;
+
+  if Entry.Source = ''
+  then Result := imgNoSourceLine
+  else Result := imgSourceLine;
 end;
 
 procedure TCallStackDlg.UpdateView;
@@ -685,13 +662,8 @@ begin
   ToolButtonPower.ImageIndex := FPowerImgIdx;
 
   lvCallStack.SmallImages := IDEImages.Images_16;
-  imgCurrentLine := IDEImages.LoadImage(16, 'debugger_current_line');
   imgSourceLine := IDEImages.LoadImage(16, 'debugger_source_line');
   imgNoSourceLine := IDEImages.LoadImage(16, 'debugger_nosource_line');
-  imgBreakPoint := IDEImages.LoadImage(16, 'ActiveBreakPoint');
-  imgCurrentLineAtBreakPoint := IDEImages.LoadImage(16, 'debugger_current_line_breakpoint');
-  FImgBreakPointDisabled := IDEImages.LoadImage(16, 'InactiveBreakPoint');
-  FImgCurrentLineAtBreakPointDisabled := IDEImages.LoadImage(16, 'debugger_current_line_disabled_breakpoint');
 
 end;
 

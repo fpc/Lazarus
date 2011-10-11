@@ -113,11 +113,6 @@ type
     FCurLineImgIdx: Integer;
     FImgSourceLine: Integer;
     FImgNoSourceLine: Integer;
-    FImgBreakPoint: Integer;
-    FImgBreakPointDisabled: Integer;
-    FImgBreakPointInval: Integer;
-    FImgCurrentLineAtBreakPoint: Integer;
-    FImgCurrentLineAtBreakPointDisabled: Integer;
 
     procedure BreakPointChanged(const ASender: TIDEBreakPoints;
       const ABreakpoint: TIDEBreakPoint);
@@ -294,11 +289,6 @@ begin
 
   FImgSourceLine := IDEImages.LoadImage(16, 'debugger_source_line');
   FImgNoSourceLine := IDEImages.LoadImage(16, 'debugger_nosource_line');
-  FImgBreakPoint := IDEImages.LoadImage(16, 'ActiveBreakPoint');
-  FImgBreakPointDisabled := IDEImages.LoadImage(16, 'InactiveBreakPoint');
-  FImgBreakPointInval := IDEImages.LoadImage(16, 'InvalidBreakPoint');
-  FImgCurrentLineAtBreakPoint := IDEImages.LoadImage(16, 'debugger_current_line_breakpoint');
-  FImgCurrentLineAtBreakPointDisabled := IDEImages.LoadImage(16, 'debugger_current_line_disabled_breakpoint');
 end;
 
 destructor TAssemblerDlg.Destroy;
@@ -433,45 +423,18 @@ begin
 end;
 
 procedure TAssemblerDlg.CheckImageIndexFor(var AnAsmDlgLineEntry: TAsmDlgLineEntry);
-var
-  b: TIDEBreakPoint;
-  c: Boolean;
 begin
   if BreakPoints = nil then exit;
   if AnAsmDlgLineEntry.ImageIndex > 0 then exit;
+  if not (AnAsmDlgLineEntry.State  in [lmsStatement, lmsSource]) then exit;
 
-  b := GetBreakpointFor(AnAsmDlgLineEntry);
-  case AnAsmDlgLineEntry.State of
-    lmsStatement:
-      begin
-        c := (AnAsmDlgLineEntry.Addr = FLocation);
-        if b <> nil then begin
-          if b.Enabled then begin
-            if c
-            then AnAsmDlgLineEntry.ImageIndex := FImgCurrentLineAtBreakPoint
-            else AnAsmDlgLineEntry.ImageIndex := FImgBreakPoint;
-          end else begin
-            if c
-            then AnAsmDlgLineEntry.ImageIndex := FImgCurrentLineAtBreakPointDisabled
-            else AnAsmDlgLineEntry.ImageIndex := FImgBreakPointDisabled;
-          end;
-        end else begin
-          if c
-          then AnAsmDlgLineEntry.ImageIndex := FCurLineImgIdx
-          else AnAsmDlgLineEntry.ImageIndex := FImgNoSourceLine;
-        end;
-      end;
-    lmsSource:
-      begin
-        if b <> nil then begin
-          if b.Enabled
-          then AnAsmDlgLineEntry.ImageIndex := FImgBreakPoint
-          else AnAsmDlgLineEntry.ImageIndex := FImgBreakPointDisabled;
-        end else begin
-          AnAsmDlgLineEntry.ImageIndex := FImgSourceLine;
-        end;
-      end;
-  end;
+  AnAsmDlgLineEntry.ImageIndex := GetBreakPointImageIndex(GetBreakpointFor(AnAsmDlgLineEntry), AnAsmDlgLineEntry.Addr = FLocation);
+  if AnAsmDlgLineEntry.ImageIndex >= 0
+  then exit;
+
+  if AnAsmDlgLineEntry.State = lmsStatement
+  then AnAsmDlgLineEntry.ImageIndex := FImgNoSourceLine
+  else AnAsmDlgLineEntry.ImageIndex := FImgSourceLine;
 end;
 
 procedure TAssemblerDlg.actStepIntoInstrExecute(Sender: TObject);

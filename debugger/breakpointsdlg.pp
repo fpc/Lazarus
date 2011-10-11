@@ -251,6 +251,7 @@ begin
   ActionList1.Images := IDEImages.Images_16;
   ToolBar1.Images := IDEImages.Images_16;
   mnuPopup.Images := IDEImages.Images_16;
+  lvBreakPoints.SmallImages := IDEImages.Images_16;
 
   actEnableSelected.Caption := lisDbgItemEnable;
   actEnableSelected.Hint    := lisDbgItemEnableHint;
@@ -672,6 +673,7 @@ begin
 
   // state
   AnItem.Caption := GetBreakPointStateDescription(ABreakpoint);
+  AnItem.ImageIndex := GetBreakPointImageIndex(ABreakpoint);
   
   // filename/address
   case ABreakpoint.Kind of
