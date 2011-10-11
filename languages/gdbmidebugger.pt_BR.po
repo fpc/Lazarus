@@ -10,19 +10,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: gdbmidebugger.gdbmibreakpointerroronruncommand
-#, fuzzy
 #| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
-msgstr "O depurador encontrou um erro ao tentar executar/passo a passo a aplicação:%0:s%0:s%1:s%0:s%0:sPressione \"Ok\" para remover os pontos de parada e continuar depurando (pausado), e corrigir o problema, ou escolha um comando alternativo para executar%0:sPressione \"Parar\" para encerrar a sessão de depuração"
+msgstr "O depurador encontrou um erro ao tentar executar/passo a passo a aplicação:%0:s%0:s%1:s%0:s%0:sPressione \"Ok\" para remover os pontos de parada e continuar depurando (pausado), e corrigir o problema, ou escolha um comando alternativo para executar%0:sPressione \"Parar\" para encerrar a sessão de depuração."
 
 #: gdbmidebugger.gdbmierroronruncommand
-#, fuzzy
 #| msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command%0:sPress \"Stop\" to end the debug session"
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
-msgstr "O depurador encontrou um erro ao tentar executar/passo a passo a aplicação:%0:s%0:s%1:s%0:s%0:sPressione \"Ok\" para continuar a depuração (pausada), e corrigir o problema, ou escolha um comando alternativo para executar%0:sPressione \"Parar\" para encerrar a sessão de depuração"
+msgstr "O depurador encontrou um erro ao tentar executar/passo a passo a aplicação:%0:s%0:s%1:s%0:s%0:sPressione \"Ok\" para continuar depurando (pausado), e corrigir o problema, ou escolha um comando alternativo para executar%0:sPressione \"Parar\" para encerrar a sessão de depuração."
 
 #: gdbmidebugger.gdbmierroronruncommandwithwarning
-#, fuzzy
 #| msgid "%0:s%0:sIn addition to the Error the following warning was encountered:%0:s%0:s%1:s"
 msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
 msgstr "%0:s%0:sAlém do Erro, o seguinte aviso foi encontrado:%0:s%0:s%1:s"
@@ -36,10 +33,9 @@ msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
 msgstr "%0:sO comando GDB:%0:s\"%1:s\"%0:sretornou o erro:%0:s\"%2:s\"%0:s"
 
 #: gdbmidebugger.gdbmierrorstateinfocommandnoresult
-#, fuzzy
 #| msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result%0:s"
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
-msgstr "%0:sO comando GDB:%0:s\"%1:s\"%0:snão retornou nenhum resultado%0:s"
+msgstr "%0:sO comando GDB:%0:s\"%1:s\"%0:snão retornou nenhum resultado.%0:s"
 
 #: gdbmidebugger.gdbmierrorstateinfofailedread
 msgid "%0:sCould not read output from GDB.%0:s"
@@ -54,7 +50,6 @@ msgid "%0:sThe GDB process is no longer running.%0:s"
 msgstr "%0:sO processo GDB não está em execução.%0:s"
 
 #: gdbmidebugger.gdbmifatalerroroccured
-#, fuzzy
 #| msgid "Unrecoverable Error: \"%s\""
 msgid "Unrecoverable error: \"%s\""
 msgstr "Erro irrecuperável: \"%s\""
@@ -65,5 +60,5 @@ msgstr "Tempo expirado para o comando: \"%s\""
 
 #: gdbmidebugger.gdbmiwarningunknowbreakpoint
 msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
-msgstr ""
+msgstr "O depurador encontrou um inesperado %1:s%0:s%0:sPressione \"Ok\" para continuar depurando (pausado).%0:sPressione \"Parar\" para encerrar a sessão de depuração."
 

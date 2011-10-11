@@ -283,7 +283,7 @@ msgstr "Palavra entre Parênteses"
 
 #: lazarusidestrconsts.dlgaddhispecialvisiblechars
 msgid "Visualized Special Chars"
-msgstr ""
+msgstr "Caracteres especiais visualizados"
 
 #: lazarusidestrconsts.dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
@@ -391,10 +391,9 @@ msgid "Behind methods"
 msgstr "Antes de métodos"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-#, fuzzy
 #| msgid "Selection:"
 msgid "Selection"
-msgstr "Seleção:"
+msgstr "Seleção"
 
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent"
@@ -581,10 +580,9 @@ msgid "Messages"
 msgstr "Mensagens"
 
 #: lazarusidestrconsts.dlgcochecks
-#, fuzzy
 #| msgid "Checks:"
 msgid "Checks"
-msgstr "Verificações:"
+msgstr "Verificações"
 
 #: lazarusidestrconsts.dlgcocompilation
 msgid "Compilation"
@@ -620,18 +618,16 @@ msgid "Generate Debugging Info For DBX (Slows Compiling)"
 msgstr "Gerar Informações de Depuração para DBX (Retarda a compilação)"
 
 #: lazarusidestrconsts.dlgcodebugging
-#, fuzzy
 #| msgid "Debugging Info:"
 msgctxt "lazarusidestrconsts.dlgcodebugging"
 msgid "Debugging Info"
-msgstr "Depuração:"
+msgstr "Informação Depuração"
 
 #: lazarusidestrconsts.dlgcodebugging2
-#, fuzzy
 #| msgid "Debugging:"
 msgctxt "lazarusidestrconsts.dlgcodebugging2"
 msgid "Debugging"
-msgstr "Depuração:"
+msgstr "Depurando"
 
 #: lazarusidestrconsts.dlgcodebugpath
 msgid "Debugger path addition (none):"
@@ -676,16 +672,14 @@ msgid "Faster Code"
 msgstr "Código mais rápido"
 
 #: lazarusidestrconsts.dlgcogdb
-#, fuzzy
 #| msgid "Generate Debugging Info For GDB (Slows Compiling)"
 msgid "Generate Debugging Info For GDB (Slower / Increases exe-size)"
-msgstr "Gerar Informações de depuração para GDB (Retarda a compilação)"
+msgstr "Gerar Informações de depuração para GDB (mais lento / aumenta o tamanho do .exe)"
 
 #: lazarusidestrconsts.dlgcoheaptrc
-#, fuzzy
 #| msgid "Use Heaptrc Unit"
 msgid "Use Heaptrc Unit (check for mem-leaks)"
-msgstr "Usar a unidade Heaptrc"
+msgstr "Usar a unidade Heaptrc (verifica vazamentos de memória)"
 
 #: lazarusidestrconsts.dlgcoincfiles
 msgid "Include Files (-Fi):"
@@ -843,7 +837,7 @@ msgstr "Remover símbolos do executável (STRIP)"
 
 #: lazarusidestrconsts.dlgcosymboltype
 msgid "Chose type of debug info"
-msgstr ""
+msgstr "Escolha o tipo de informação de depuração"
 
 #: lazarusidestrconsts.dlgcosymboltypeauto
 msgctxt "lazarusidestrconsts.dlgcosymboltypeauto"
@@ -852,25 +846,24 @@ msgstr "Automático"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2
 msgid "Dwarf2"
-msgstr ""
+msgstr "Dwarf2"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2set
 msgid "Dwarf with Sets"
-msgstr ""
+msgstr "Dwarf com Sets"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf3
 msgid "Dwarf3 (beta)"
-msgstr ""
+msgstr "Dwarf3 (beta)"
 
 #: lazarusidestrconsts.dlgcosymboltypestabs
 msgid "Stabs"
-msgstr ""
+msgstr "Stabs"
 
 #: lazarusidestrconsts.dlgcounitstyle
-#, fuzzy
 #| msgid "Unit Style:"
 msgid "Unit Style"
-msgstr "Estilo de unidade:"
+msgstr "Estilo de unidade"
 
 #: lazarusidestrconsts.dlgcouseasdefault
 #| msgid "Use these settings as default for new projects"
@@ -898,10 +891,9 @@ msgid "Cursor beyond EOL"
 msgstr "Cursor além fim de linha (EOL)"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-#, fuzzy
 #| msgid "Cursor:"
 msgid "Cursor"
-msgstr "Cursor:"
+msgstr "Cursor"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Cursor skips selection"
@@ -1687,10 +1679,9 @@ msgid "Indent code to"
 msgstr "Identar código para"
 
 #: lazarusidestrconsts.dlgindentstabsgroupoptions
-#, fuzzy
 #| msgid "Indent and Tabs:"
 msgid "Indent and Tabs"
-msgstr "Identações e Tabulações:"
+msgstr "Identações e Tabulações"
 
 #: lazarusidestrconsts.dlginfrontofmethods
 msgid "In front of methods"
@@ -1796,10 +1787,9 @@ msgid "Line Splitting"
 msgstr "Separação de Linha"
 
 #: lazarusidestrconsts.dlglinklibraries
-#, fuzzy
 #| msgid "Link Style:"
 msgid "Link Style"
-msgstr "Estilo de Vínculo:"
+msgstr "Estilo de Vínculo"
 
 #: lazarusidestrconsts.dlglinksmart
 msgid "Link Smart"
@@ -2251,10 +2241,9 @@ msgid "Multi Select"
 msgstr "Seleção múltipla"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-#, fuzzy
 #| msgid "Find editor for jump targets:"
 msgid "Find editor for jump targets"
-msgstr "Localizar editor para os alvos do salto:"
+msgstr "Localizar editor para os alvos do salto"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
 msgid "Order to use for editors matching the same criteria"
@@ -2277,10 +2266,9 @@ msgid "Pages and Windows"
 msgstr "Páginas e Janelas"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
-#, fuzzy
 #| msgid "Notebook Tabs:"
 msgid "Notebook Tabs"
-msgstr "Abas \"Notebook\":"
+msgstr "Abas \"Notebook\""
 
 #: lazarusidestrconsts.dlgnaming
 msgid "Naming"
@@ -2359,7 +2347,6 @@ msgid "Use default Lazarus settings"
 msgstr "Usar configurações Lazarus padrão"
 
 #: lazarusidestrconsts.dlgoptimiz
-#, fuzzy
 #| msgid "Optimizations:"
 msgid "Optimizations"
 msgstr "Otimizações"
@@ -2661,10 +2648,9 @@ msgid "Scroll by one less"
 msgstr "Rolar por um à menos"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-#, fuzzy
 #| msgid "Scrolling:"
 msgid "Scrolling"
-msgstr "Rolagem:"
+msgstr "Rolagem"
 
 #: lazarusidestrconsts.dlgscrollhint
 msgctxt "lazarusidestrconsts.dlgscrollhint"
@@ -2893,10 +2879,9 @@ msgid "Target OS"
 msgstr "SO Alvo"
 
 #: lazarusidestrconsts.dlgtargetplatform
-#, fuzzy
 #| msgid "Target Platform:"
 msgid "Target Platform"
-msgstr "Plataforma Alvo:"
+msgstr "Plataforma Alvo"
 
 #: lazarusidestrconsts.dlgtargetproc
 msgid "Target processor"
@@ -2968,10 +2953,9 @@ msgid "Undo after save"
 msgstr "Desfazer após salvar"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-#, fuzzy
 #| msgid "Undo / Redo:"
 msgid "Undo / Redo"
-msgstr "Desfazer / Refazer:"
+msgstr "Desfazer / Refazer"
 
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
@@ -3318,7 +3302,7 @@ msgstr "Dependência"
 
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: %s%s%s"
-msgstr ""
+msgstr "Arquivo existente: %s%s%s"
 
 #: lazarusidestrconsts.lisa2pfilealreadyexists
 msgid "File already exists"
@@ -3326,7 +3310,7 @@ msgstr "Arquivo já existe"
 
 #: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
 msgid "File %s%s%s already exists in the package."
-msgstr ""
+msgstr "Arquivo %s%s%s já existe no pacote."
 
 #: lazarusidestrconsts.lisa2pfilealreadyinpackage
 msgid "File already in package"
@@ -6533,7 +6517,7 @@ msgstr "Erro do Depurador"
 
 #: lazarusidestrconsts.lisdebuggerfeedbackinformation
 msgid "Debugger Information"
-msgstr ""
+msgstr "Informação Depurador"
 
 #: lazarusidestrconsts.lisdebuggerfeedbackless
 msgid "Less"
@@ -6767,7 +6751,7 @@ msgstr "Excluir ponto de parada para o endereço %s?"
 
 #: lazarusidestrconsts.lisdeletebreakpointforwatch
 msgid "Delete watchpoint for \"%s\"?"
-msgstr ""
+msgstr "Excluir ponto de observação para \"%s\"?"
 
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
@@ -8738,7 +8722,7 @@ msgstr "Linha, coluna inválida na mensagem%s%s"
 
 #: lazarusidestrconsts.lisinvalidmask
 msgid "Invalid Mask"
-msgstr ""
+msgstr "Máscara inválida"
 
 #: lazarusidestrconsts.lisinvalidmode
 msgid "Invalid mode %s"
@@ -8883,7 +8867,7 @@ msgstr "Adicionar ponto de parada no fonte"
 
 #: lazarusidestrconsts.liskmaddbpwatchpoint
 msgid "Add data/watchPoint"
-msgstr ""
+msgstr "Adicionar dado/ponto de observação"
 
 #: lazarusidestrconsts.liskmaddwatch
 msgid "Add watch"
@@ -11793,7 +11777,7 @@ msgstr "Selecione o diretório"
 
 #: lazarusidestrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
-msgstr ""
+msgstr "caminho do cache instantfpc"
 
 #: lazarusidestrconsts.lispathofthemakeutility
 msgid "Path of the make utility"
@@ -12657,7 +12641,6 @@ msgid "Replace File"
 msgstr "Substituir Arquivo"
 
 #: lazarusidestrconsts.lispkgmangsavepackage
-#, fuzzy
 #| msgid "Save Package?"
 msgid "Save package?"
 msgstr "Salvar Pacote?"
@@ -13306,7 +13289,7 @@ msgstr "Diretórios fontes do projeto"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionataddress
 msgid "%0:s%0:s At address %1:x"
-msgstr ""
+msgstr "%0:s%0:s No endereço %1:x"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
@@ -13318,15 +13301,15 @@ msgstr "Projeto %s elevou classe exceção '%s' com a mensagem:%s%s"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptioninfileaddress
 msgid "%0:s%0:s In file '%1:s' at address %2:x"
-msgstr ""
+msgstr "%0:s%0:s No arquivo '%1:s' no endereço %2:x"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptioninfileline
 msgid "%0:s%0:s In file '%1:s' at line %2:d"
-msgstr ""
+msgstr "%0:s%0:s No arquivo '%1:s' na linha %2:d"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptioninfilelinesrc
 msgid "%0:s%0:s In file '%1:s' at line %2:d:%0:s%3:s"
-msgstr ""
+msgstr "%0:s%0:s No arquivo '%1:s' na linha %2:d:%0:s%3:s"
 
 #: lazarusidestrconsts.lisprojectsrcpath
 msgid "Project Src Path"
@@ -14519,11 +14502,11 @@ msgstr "O arquivo %s%s%s não é um projeto lazarus.%sCriar um novo projeto para
 
 #: lazarusidestrconsts.listhefilemaskisinvalid
 msgid "The file mask \"%s\" is invalid."
-msgstr ""
+msgstr "Máscara de arquivo \"%s\" inválida."
 
 #: lazarusidestrconsts.listhefilemaskisnotavalidregularexpression
 msgid "The file mask \"%s\" is not a valid regular expression."
-msgstr ""
+msgstr "A máscara de arquivo \"%s\" não é uma expressão regular válida."
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
@@ -15649,31 +15632,31 @@ msgstr "&Observar"
 
 #: lazarusidestrconsts.liswatchdata
 msgid "Watch:"
-msgstr ""
+msgstr "Observador:"
 
 #: lazarusidestrconsts.liswatchkind
 msgid "Watch action"
-msgstr ""
+msgstr "Ação observador"
 
 #: lazarusidestrconsts.liswatchkindread
 msgid "Read"
-msgstr ""
+msgstr "Ler"
 
 #: lazarusidestrconsts.liswatchkindreadwrite
 msgid "Read/Write"
-msgstr ""
+msgstr "Ler/Gravar"
 
 #: lazarusidestrconsts.liswatchkindwrite
 msgid "Write"
-msgstr ""
+msgstr "Gravar"
 
 #: lazarusidestrconsts.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."
-msgstr ""
+msgstr "&Dado/Observar ponto de parada ..."
 
 #: lazarusidestrconsts.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
-msgstr ""
+msgstr "&Dado/observar ponto de parada ..."
 
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
@@ -15681,7 +15664,7 @@ msgstr "Propriedades Observador"
 
 #: lazarusidestrconsts.liswatchscope
 msgid "Watch scope"
-msgstr ""
+msgstr "Escopo observador"
 
 #: lazarusidestrconsts.liswatchscopeglobal
 msgctxt "lazarusidestrconsts.liswatchscopeglobal"
@@ -15690,21 +15673,20 @@ msgstr "Global"
 
 #: lazarusidestrconsts.liswatchscopelocal
 msgid "Declaration"
-msgstr ""
+msgstr "Declaração"
 
 #: lazarusidestrconsts.liswatchtowatchpoint
 msgid "Create &Data/Watch Breakpoint ..."
-msgstr ""
+msgstr "Criar &Dado/Observar ponto de parada ..."
 
 #: lazarusidestrconsts.liswelcometolazaruside
 msgid "Welcome to Lazarus IDE %s"
 msgstr "Bem-Vindo ao IDE Lazarus %s"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
-#, fuzzy
 #| msgid "When a unit is renamed, update references ..."
 msgid "When a unit is renamed, update references"
-msgstr "Quando uma unidade for renomeada, atualizar referências ..."
+msgstr "Quando uma unidade for renomeada, atualizar referências"
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
@@ -16262,7 +16244,7 @@ msgstr "adicionar ponto de parada ao fonte"
 
 #: lazarusidestrconsts.srkmecaddbpwatchpoint
 msgid "add data/watchpoint"
-msgstr ""
+msgstr "adicionar dado/ponto de observação"
 
 #: lazarusidestrconsts.srkmecaddjumppoint
 msgid "Add jump point"
@@ -17338,7 +17320,7 @@ msgstr "Adicionar &Observador sob o Cursor"
 
 #: lazarusidestrconsts.uemaddwatchpointatcursor
 msgid "Add Watch&Point At Cursor"
-msgstr ""
+msgstr "Adicionar &Ponto de observação no Cursor"
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"
