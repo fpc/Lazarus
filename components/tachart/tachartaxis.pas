@@ -749,7 +749,7 @@ begin
   FTransformations := AValue;
   if FTransformations <> nil then
     Transformations.Broadcaster.Subscribe(FListener);
-  StyleChanged(Self);
+  StyleChanged(AValue);
 end;
 
 procedure TChartAxis.SetVisible(const AValue: Boolean);
@@ -771,7 +771,7 @@ begin
   with Collection.Owner as TCustomChart do begin
     // Transformation change could have invalidated the current extent,
     // so revert to full extent for now.
-    if ASender is TAxisTransform then
+    if (ASender is TAxisTransform) or (ASender is TChartAxisTransformations) then
       ZoomFull;
     Invalidate;
   end;
