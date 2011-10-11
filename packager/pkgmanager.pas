@@ -3604,7 +3604,7 @@ begin
   end;
 
   // save IDE build configs, so user can build IDE on command line
-  BuildIDEFlags:=[blfDontCleanAll,blfOnlyIDE];
+  BuildIDEFlags:=[blfDontCleanAll];
   Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
   if Result<>mrOk then exit;
 
@@ -3685,7 +3685,7 @@ begin
     end;
 
     // save IDE build configs, so user can build IDE on command line
-    BuildIDEFlags:=[blfDontCleanAll,blfOnlyIDE];
+    BuildIDEFlags:=[blfDontCleanAll];
     Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
     if Result<>mrOk then exit;
 
@@ -3920,14 +3920,11 @@ begin
     SaveAutoInstallDependencies;
 
     // save IDE build configs, so user can build IDE on command line
-    BuildIDEFlags:=[blfDontCleanAll,blfOnlyIDE];
+    BuildIDEFlags:=[blfDontCleanAll];
     if MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags)<>mrOk then exit(mrCancel);
 
-    if piiifRebuildIDE in Flags then
-    begin
-      // rebuild Lazarus
+    if piiifRebuildIDE in Flags then       // rebuild Lazarus
       if MainIDE.DoBuildLazarus(BuildIDEFlags)<>mrOk then exit(mrCancel);
-    end;
 
   finally
     FreeDependencyList(NewFirstAutoInstallDependency,pdlRequires);
