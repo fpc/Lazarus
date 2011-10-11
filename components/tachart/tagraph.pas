@@ -205,7 +205,7 @@ type
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(
-      Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+      AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer); override;
     {$IFDEF LCLGtk2}
     procedure DoOnResize; override;
     {$ENDIF}
@@ -929,9 +929,15 @@ begin
   inherited;
 end;
 
-procedure TChart.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TChart.MouseUp(
+  AButton: TMouseButton; AShift: TShiftState; AX, AY: Integer);
+const
+  MOUSE_BUTTON_TO_SHIFT: array [TMouseButton] of TShiftStateEnum = (
+    ssLeft, ssRight, ssMiddle, ssExtra1, ssExtra2);
 begin
-  if GetToolset.Dispatch(Self, evidMouseUp, Shift, Point(X, Y)) then exit;
+  // To find a tool, toolset must see the shift state with the button still down.
+  Include(AShift, MOUSE_BUTTON_TO_SHIFT[AButton]);
+  if GetToolset.Dispatch(Self, evidMouseUp, AShift, Point(AX, AY)) then exit;
   inherited;
 end;
 
