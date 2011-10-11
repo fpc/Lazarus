@@ -18,26 +18,27 @@ type
     OpenSelectedButton: TBitBtn;
     Label1: TLabel;
     ProjectsListBox: TListBox;
+    RootRadioGroup: TRadioGroup;
     SelectAllButton: TBitBtn;
     ButtonPanel1: TButtonPanel;
     RootDirectoryEdit: TDirectoryEdit;
     ActionGroupBox: TGroupBox;
-    RootDirectoryLabel: TLabel;
     SelectNoneButton: TBitBtn;
-    SettingsGroupBox: TGroupBox;
     ProjectsGroupBox: TGroupBox;
     procedure BuildAllSelectedButtonClick(Sender: TObject);
     procedure OpenSelectedButtonClick(Sender: TObject);
     procedure ProjectsListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure RootDirectoryEditChange(Sender: TObject);
+    procedure RootRadioGroupClick(Sender: TObject);
     procedure SelectAllButtonClick(Sender: TObject);
     procedure SelectNoneButtonClick(Sender: TObject);
     procedure ShowPathCheckBoxChange(Sender: TObject);
   private
+    fOtherPathIndex: Integer;
+    fSelectedFilename: string;
     fChangingSelections: Boolean;
     fUpdating: Boolean;
     fIdleConnected: boolean;
-    fSelectedFilename: string;
     procedure FillProjectList(Immediately: boolean);
     procedure SetIdleConnected(const AValue: boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
@@ -57,16 +58,10 @@ implementation
 function ShowManageExamplesDlg: TModalResult;
 var
   theForm: TManageExamplesForm;
-  path: String;
 begin
   Result:=mrCancel;
   theForm:=TManageExamplesForm.Create(Nil);
   try
-    path:=EnvironmentOptions.LazarusDirectory+'examples';
-    if DirectoryExistsUTF8(path) then begin
-      theForm.RootDirectoryEdit.Text:=path;
-      theForm.FillProjectList(False);
-    end;
     Result:=theForm.ShowModal;
     if Result=mrYes then
       MainIDEInterface.DoOpenProjectFile(theForm.fSelectedFilename,
@@ -105,10 +100,30 @@ end;
 { TManageExamplesForm }
 
 constructor TManageExamplesForm.Create(AnOwner: TComponent);
+var
+  path: String;
 begin
   inherited Create(AnOwner);
   fChangingSelections:=False;
   fUpdating:=False;
+  Caption:=lisKMExampleProjects;
+  RootRadioGroup.Caption:=lisRootDirectoryForProjects;
+
+  // Add some paths for example projects
+  RootRadioGroup.Items.Add(EnvironmentOptions.LazarusDirectory); // Lazarus root
+
+  path:=EnvironmentOptions.LazarusDirectory+'examples';
+  if DirectoryExistsUTF8(path) then             // Select this one
+    RootRadioGroup.ItemIndex:=RootRadioGroup.Items.Add(path);
+
+  path:=EnvironmentOptions.LazarusDirectory+'components/codetools/examples/';
+  if DirectoryExistsUTF8(path) then
+    RootRadioGroup.Items.Add(path);
+
+  fOtherPathIndex:=RootRadioGroup.Items.Add('Other');
+
+  RootDirectoryEdit.Text:=RootRadioGroup.Items[RootRadioGroup.ItemIndex];
+  FillProjectList(False);
 
   OpenSelectedButton.Caption:=lisExamplesOpenFirstSelected;
   BuildAllSelectedButton.Caption:=lisExamplesBuildAllSelected;
@@ -159,7 +174,6 @@ end;
 
 procedure TManageExamplesForm.OnIdle(Sender: TObject; var Done: Boolean);
 begin
-  if Done then ;
   IdleConnected:=false;
   FillProjectList(true);
 end;
@@ -167,6 +181,16 @@ end;
 procedure TManageExamplesForm.RootDirectoryEditChange(Sender: TObject);
 begin
   FillProjectList(False);
+end;
+
+procedure TManageExamplesForm.RootRadioGroupClick(Sender: TObject);
+begin
+  if RootRadioGroup.ItemIndex=fOtherPathIndex then
+    RootDirectoryEdit.Enabled:=True
+  else begin
+    RootDirectoryEdit.Enabled:=False;
+    RootDirectoryEdit.Text:=RootRadioGroup.Items[RootRadioGroup.ItemIndex];
+  end;
 end;
 
 procedure TManageExamplesForm.ShowPathCheckBoxChange(Sender: TObject);

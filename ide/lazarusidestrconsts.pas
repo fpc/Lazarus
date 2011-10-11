@@ -420,6 +420,7 @@ resourcestring
   lisMenuBuildLazarusProf = 'Build Lazarus with profile: %s';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
 
+  lisRootDirectoryForProjects = 'Root directory for projects';
   lisMenuGeneralOptions = 'Options ...';
   lisMenuEditCodeTemplates = 'Code Templates ...';
   lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor ...';
@@ -2846,7 +2847,6 @@ resourcestring
   lisLazBuildBuildSynEdit = 'Build SynEdit';
   lisLazBuildBuildCodeTools = 'Build CodeTools';
   lisLazBuildBuildIDE = 'Build IDE';
-  lisLazBuildBuildExamples = 'Build examples';
   lisLazBuildOptions = 'Options:';
   lisLazBuildTargetOS = 'Target OS:';
   lisLazBuildTargetCPU = 'Target CPU:';

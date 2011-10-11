@@ -1,74 +1,39 @@
 object ManageExamplesForm: TManageExamplesForm
-  Left = 389
+  Left = 378
   Height = 416
-  Top = 162
-  Width = 768
+  Top = 161
+  Width = 790
   Caption = 'ManageExamplesForm'
   ClientHeight = 416
-  ClientWidth = 768
+  ClientWidth = 790
   Position = poDesktopCenter
   LCLVersion = '0.9.31'
-  object SettingsGroupBox: TGroupBox
-    Left = 0
-    Height = 80
-    Top = 0
-    Width = 768
-    Align = alTop
-    Caption = 'Settings'
-    ClientHeight = 63
-    ClientWidth = 764
-    TabOrder = 0
-    object RootDirectoryEdit: TDirectoryEdit
-      AnchorSideLeft.Control = RootDirectoryLabel
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = RootDirectoryLabel
-      AnchorSideTop.Side = asrCenter
-      Left = 101
-      Height = 23
-      Top = 9
-      Width = 480
-      ShowHidden = False
-      ButtonWidth = 23
-      NumGlyphs = 0
-      BorderSpacing.Left = 7
-      MaxLength = 0
-      TabOrder = 0
-      OnChange = RootDirectoryEditChange
-    end
-    object RootDirectoryLabel: TLabel
-      Left = 6
-      Height = 16
-      Top = 12
-      Width = 88
-      Caption = 'Root directory'
-      ParentColor = False
-    end
-  end
   object ProjectsGroupBox: TGroupBox
-    AnchorSideLeft.Control = SettingsGroupBox
-    AnchorSideTop.Control = SettingsGroupBox
+    AnchorSideLeft.Control = RootRadioGroup
+    AnchorSideTop.Control = RootDirectoryEdit
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ActionGroupBox
     AnchorSideBottom.Control = ButtonPanel1
-    Left = 0
-    Height = 290
-    Top = 80
-    Width = 549
+    Left = 1
+    Height = 227
+    Top = 143
+    Width = 564
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 13
     Caption = 'Projects'
-    ClientHeight = 273
-    ClientWidth = 545
-    TabOrder = 1
+    ClientHeight = 210
+    ClientWidth = 560
+    TabOrder = 0
     object ProjectsListBox: TListBox
       Left = 0
-      Height = 273
+      Height = 210
       Top = 0
-      Width = 545
+      Width = 560
       Align = alClient
       ItemHeight = 0
       MultiSelect = True
       OnSelectionChange = ProjectsListBoxSelectionChange
-      ScrollWidth = 541
+      ScrollWidth = 556
       TabOrder = 0
       TopIndex = -1
     end
@@ -77,7 +42,7 @@ object ManageExamplesForm: TManageExamplesForm
     Left = 6
     Height = 34
     Top = 376
-    Width = 756
+    Width = 778
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -86,27 +51,26 @@ object ManageExamplesForm: TManageExamplesForm
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 2
+    TabOrder = 1
     ShowButtons = [pbClose, pbHelp]
   end
   object ActionGroupBox: TGroupBox
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = SettingsGroupBox
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = SettingsGroupBox
+    AnchorSideTop.Control = ProjectsGroupBox
+    AnchorSideRight.Control = RootRadioGroup
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ProjectsGroupBox
     AnchorSideBottom.Side = asrBottom
-    Left = 552
-    Height = 290
-    Top = 80
+    Left = 568
+    Height = 227
+    Top = 143
     Width = 216
     Anchors = [akTop, akRight, akBottom]
     BorderSpacing.Left = 3
     Caption = 'Action'
-    ClientHeight = 273
+    ClientHeight = 210
     ClientWidth = 212
-    TabOrder = 3
+    TabOrder = 2
     object Label1: TLabel
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
@@ -159,5 +123,45 @@ object ManageExamplesForm: TManageExamplesForm
       OnClick = SelectNoneButtonClick
       TabOrder = 3
     end
+  end
+  object RootRadioGroup: TRadioGroup
+    Left = 1
+    Height = 97
+    Top = 5
+    Width = 783
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    BorderSpacing.Top = 5
+    Caption = 'Root directory for projects'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    Columns = 2
+    OnClick = RootRadioGroupClick
+    TabOrder = 3
+  end
+  object RootDirectoryEdit: TDirectoryEdit
+    AnchorSideLeft.Control = RootRadioGroup
+    AnchorSideTop.Control = RootRadioGroup
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 4
+    Height = 23
+    Top = 107
+    Width = 743
+    ShowHidden = False
+    ButtonWidth = 23
+    NumGlyphs = 0
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 3
+    BorderSpacing.Top = 5
+    MaxLength = 0
+    TabOrder = 4
+    OnChange = RootDirectoryEditChange
   end
 end
