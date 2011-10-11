@@ -925,12 +925,12 @@ var
 begin
   i := 0;
   while (i <= High(FIntervals)) and (FIntervals[i].FEnd < AStart) do
-    Inc(i);
+    i += 1;
   if i <= High(FIntervals) then
     AStart := Min(AStart, FIntervals[i].FStart);
   j := High(FIntervals);
   while (j >= 0) and (FIntervals[j].FStart > AEnd) do
-    Dec(j);
+    j -= 1;
   if j >= 0 then
     AEnd := Max(AEnd, FIntervals[j].FEnd);
   if i < j then begin
@@ -940,7 +940,7 @@ begin
   end
   else if i > j then begin
     SetLength(FIntervals, Length(FIntervals) + 1);
-    for k := High(FIntervals) downto i do
+    for k := High(FIntervals) downto i + 1 do
       FIntervals[k] := FIntervals[k - 1];
   end;
   FIntervals[i] := DoubleInterval(AStart, AEnd);
