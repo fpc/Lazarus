@@ -430,13 +430,13 @@ end;
 procedure TFileStateCache.WriteDebugReport;
 var
   ANode: TAVLTreeNode;
-  AFile: TFileStateCacheItem;
+  //AFile: TFileStateCacheItem;
 begin
   {$NOTE ToDo}
   //debugln('TFileStateCache.WriteDebugReport FTimeStamp=',dbgs(FTimeStamp));
   ANode:=FFiles.FindLowest;
   while ANode<>nil do begin
-    AFile:=TFileStateCacheItem(ANode.Data);
+    //AFile:=TFileStateCacheItem(ANode.Data);
     //debugln('  "',AFile.Filename,'" TimeStamp=',dbgs(AFile.TimeStamp));
     ANode:=FFiles.FindSuccessor(ANode);
   end;
