@@ -275,7 +275,7 @@ begin
   if not ChildrenListBox.SelCount = 0 then exit;
   i := AStart - ADir;
   with ChildrenListBox do
-    while InRange(i + ADir, 0, Count - 1) do begin
+    while InRange(i, 0, Count - 1) and InRange(i + ADir, 0, Count - 1) do begin
       if Selected[i] and not Selected[i + ADir] then begin
         with TIndexedComponent(Items.Objects[i]) do
           Index := Index + ADir;
