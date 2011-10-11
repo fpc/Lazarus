@@ -25,10 +25,11 @@ type
   TAsmDlgLineEntry = record
     State: TAsmDlgLineMapState;
     Addr: TDbgPtr;
+    Offset: Integer;
     Dump: String;
     Statement: String;
     PasCode: String;
-    FileName: String;
+    FileName, FullFileName: String;
     SourceLine: Integer;
     ImageIndex: Integer;
   end;
@@ -178,6 +179,7 @@ begin
     FLineMap[n].Dump := '';
     FLineMap[n].Statement := '';
     FLineMap[n].ImageIndex := -1;
+    FLineMap[n].Offset := 0;
     if AState = lmsUnknown
     then FLineMap[n].Addr := 0;
   end;
@@ -426,7 +428,7 @@ begin
   Result := nil;
   case AnAsmDlgLineEntry.State of
     lmsStatement: Result := BreakPoints.Find(AnAsmDlgLineEntry.Addr);
-    lmsSource:    Result := BreakPoints.Find(AnAsmDlgLineEntry.FileName, AnAsmDlgLineEntry.SourceLine);
+    lmsSource:    Result := BreakPoints.Find(AnAsmDlgLineEntry.FullFileName, AnAsmDlgLineEntry.SourceLine);
   end;
 end;
 
@@ -549,7 +551,7 @@ begin
     try
       if (FLineMap[Line].State = lmsStatement)
       then DebugBoss.DoCreateBreakPoint(FLineMap[Line].Addr, True, b)
-      else DebugBoss.DoCreateBreakPoint(FLineMap[Line].FileName, FLineMap[Line].SourceLine, True, b);
+      else DebugBoss.DoCreateBreakPoint(FLineMap[Line].FullFileName, FLineMap[Line].SourceLine, True, b);
       if Ctrl and (b <> nil)
       then b.Enabled := False;
     finally
@@ -1119,6 +1121,7 @@ begin
       Itm := NextItm;
       NextItm := GetItem(Idx+1);
       ALineMap[Line].ImageIndex := -1;
+      ALineMap[Line].Offset     := 0;
 
       if Itm = nil
       then begin
@@ -1141,7 +1144,8 @@ begin
           then s := Itm^.SrcFileName;
           ALineMap[Line].State := lmsSource;
           ALineMap[Line].SourceLine := Itm^.SrcFileLine;
-          ALineMap[Line].FileName   := s;
+          ALineMap[Line].FileName   := Itm^.SrcFileName;
+          ALineMap[Line].FullFileName   := s;
           ALineMap[Line].PasCode := GetSourceCodeLine(Itm^.SrcFileName, Itm^.SrcFileLine);
         end
         else begin
@@ -1166,7 +1170,8 @@ begin
           then s := Itm^.SrcFileName;
           ALineMap[Line].State := lmsSource;
           ALineMap[Line].SourceLine := Itm^.SrcFileLine;
-          ALineMap[Line].FileName   := s;
+          ALineMap[Line].FileName   := Itm^.SrcFileName;
+          ALineMap[Line].FullFileName   := s;
           if NextItm <> nil
           then ALineMap[Line].Statement  := Format('(%d of %d)', [NextItm^.SrcStatementIndex, NextItm^.SrcStatementCount])
           else ALineMap[Line].Statement  := Format('(??? of %d)', [Itm^.SrcStatementCount]);
@@ -1193,6 +1198,7 @@ begin
       then break;
 
       ALineMap[Line].Addr       := Itm^.Addr;
+      ALineMap[Line].Offset     := Itm^.Offset;
       ALineMap[Line].State      := lmsStatement;
       ALineMap[Line].Dump       := Itm^.Dump;
       ALineMap[Line].Statement  := Itm^.Statement;
