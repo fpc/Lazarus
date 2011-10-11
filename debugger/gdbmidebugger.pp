@@ -4788,27 +4788,41 @@ function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
 
   function HandleBreakPointError(var ARes: TGDBMIExecResult; AError: String): Boolean;
   const
-    BreaKErrMsg = 'Cannot insert breakpoint ';
+    BreaKErrMsg = 'not insert breakpoint ';
+    WatchErrMsg = 'not insert hardware watchpoint ';
+
+  function ErrPos(s: string): integer;
+  var
+    i: SizeInt;
+  begin
+    Result := pos(BreaKErrMsg, s);
+    if Result > 0
+    then Result := Result + length(BreaKErrMsg);
+    i := pos(WatchErrMsg, s);
+    if (i > 0) and ( (i < Result) or (Result < 1) )
+    then Result := i + length(WatchErrMsg);
+  end;
+
   var
     c, i: Integer;
-    bp: Array of Integer;
+    bp, bp2: Array of Integer;
     s, s2: string;
     b: TGDBMIBreakPoint;
   begin
     Result := False;
     s := AError;
     c := 0;
-    i := pos(BreaKErrMsg, s);
+    i := ErrPos(s);
     while i > 0 do begin
-      s := copy(s, i+length(BreaKErrMsg), length(s));
+      s := copy(s, i, length(s));
       i := 1;
       while (i <= length(s)) and (s[i] in ['0'..'9']) do inc(i);
-      if i = 1 then exit;
-      SetLength(bp, c+1);
-      bp[c] := StrToIntDef(copy(s, 1, i-1), -1);
-      if bp[c] = -1 then exit;
-      inc(c);
-      i := pos(BreaKErrMsg, s);
+      if i > 1 then begin
+        SetLength(bp, c+1);
+        bp[c] := StrToIntDef(copy(s, 1, i-1), -1);
+        if bp[c] >= 0 then inc(c);
+      end;
+      i := ErrPos(s);
     end;
     if c = 0 then exit;
 
@@ -4833,11 +4847,20 @@ function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
       frOk: begin
           ARes.State := dsPause;
           ProcessFrame;
-          for i := 0 to length(bp)-1 do begin
-            b := TGDBMIBreakPoints(FTheDebugger.BreakPoints).FindById(bp[i]);
-            if b <> nil
-            then b.MakeInvalid
-            else ExecuteCommand('-break-delete %d', [bp[i]], []);
+          FTheDebugger.FInProcessStopped := True;  // paused, but maybe state run
+          try
+            for i := 0 to length(bp)-1 do begin
+              b := TGDBMIBreakPoints(FTheDebugger.BreakPoints).FindById(bp[i]);
+              if b <> nil
+              then begin
+                if b.Kind = bpkData
+                then b.Enabled := False
+                else b.MakeInvalid;
+              end
+              else ExecuteCommand('-break-delete %d', [bp[i]], []);
+            end;
+          finally
+          FTheDebugger.FInProcessStopped := False;  // paused, but maybe state run
           end;
         end;
       frStop: begin
