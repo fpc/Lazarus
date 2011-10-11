@@ -4785,11 +4785,11 @@ end;
 {$ENDIF}
 
 function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
+const
+  BreaKErrMsg = 'not insert breakpoint ';
+  WatchErrMsg = 'not insert hardware watchpoint ';
 
   function HandleBreakPointError(var ARes: TGDBMIExecResult; AError: String): Boolean;
-  const
-    BreaKErrMsg = 'not insert breakpoint ';
-    WatchErrMsg = 'not insert hardware watchpoint ';
 
   function ErrPos(s: string): integer;
   var
@@ -4882,8 +4882,10 @@ function TGDBMIDebuggerCommandExecute.DoExecute: Boolean;
       SetDebuggerState(dsError);
       exit;
     end;
-    if (Pos('Cannot insert breakpoint', ARes.Values) > 0) or
-       (Pos('Cannot insert breakpoint', FLogWarnings) > 0)
+    if (Pos(BreaKErrMsg, ARes.Values) > 0) or
+       (Pos(BreaKErrMsg, FLogWarnings) > 0) or
+       (Pos(WatchErrMsg, ARes.Values) > 0) or
+       (Pos(WatchErrMsg, FLogWarnings) > 0)
     then begin
       Result := HandleBreakPointError(ARes, ARes.Values + FLogWarnings);
       if Result then exit;
