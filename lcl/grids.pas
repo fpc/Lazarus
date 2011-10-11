@@ -899,7 +899,7 @@ type
     function  GetDefaultColumnLayout(Column: Integer): TTextLayout; virtual;
     function  GetDefaultColumnReadOnly(Column: Integer): boolean; virtual;
     function  GetDefaultColumnTitle(Column: Integer): string; virtual;
-    function  GetDefaultEditor(Column: Integer): TWinControl;
+    function  GetDefaultEditor(Column: Integer): TWinControl; virtual;
     function  GetDefaultRowHeight: integer; virtual;
     function  GetImageForCheckBox(const aCol,aRow: Integer;
                                   CheckBoxView: TCheckBoxState): TBitmap; virtual;
