@@ -9923,9 +9923,9 @@ begin
     Params.Flags:=[fdfSearchInAncestors];
     if ExceptionOnNotFound then
       Include(Params.Flags,fdfExceptionOnNotFound);
-    Params.SetIdentifier(Self,'Current',nil);
+    Params.SetIdentifier(EnumeratorContext.Tool,'Current',nil);
     //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass search current ...']);
-    if not FindIdentifierInContext(Params) then exit;
+    if not EnumeratorContext.Tool.FindIdentifierInContext(Params) then exit;
     PropTool:=Params.NewCodeTool;
     PropNode:=Params.NewNode;
     //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass PropNode=',PropNode.DescAsString]);
