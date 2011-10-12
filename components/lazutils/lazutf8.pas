@@ -1560,7 +1560,7 @@ var
   InStr, InStrEnd, OutStr: PChar;
   // Language identification
   IsTurkish: Boolean;
-  c1, c2, c3, new_c1: Char;
+  c1, c2, c3, new_c1, new_c2: Char;
 begin
   Result:=AInStr;
   InStr := PChar(AInStr);
@@ -1620,6 +1620,7 @@ begin
       #$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2:
       begin
         c2 := InStr[1];
+        new_c2 := c2;
         case c1 of
         // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
         // $C380..$C39E: NewChar := OldChar + $20;
@@ -1627,7 +1628,7 @@ begin
         #$C3:
         begin
           if c2 in [#$80..#$9E] then
-            c2 := chr(ord(c2) + $20);
+            new_c2 := chr(ord(c2) + $20);
         end;
         // $C481..$C4A9: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
         // Turkish capital dotted i to small dotted i
@@ -1642,12 +1643,12 @@ begin
             #$81..#$A9, #$B2..#$B6: //0
             begin
               if ord(c2) mod 2 = 0 then
-                c2 := chr(ord(c2) + 1);
+                new_c2 := chr(ord(c2) + 1);
             end;
             #$B8..#$FF: //1
             begin
               if ord(c2) mod 2 = 1 then
-                c2 := chr(ord(c2) + 1);
+                new_c2 := chr(ord(c2) + 1);
             end;
             #$B0:
             begin
@@ -1669,29 +1670,29 @@ begin
             #$8A..#$B7: //0
             begin
               if ord(c2) mod 2 = 0 then
-                c2 := chr(ord(c2) + 1);
+                new_c2 := chr(ord(c2) + 1);
             end;
             #$00..#$88, #$B9..#$FF: //1
             begin
               if ord(c2) mod 2 = 1 then
-                c2 := chr(ord(c2) + 1);
+                new_c2 := chr(ord(c2) + 1);
             end;
             #$B8:  // Ÿ
             begin
               new_c1 := #$C3;
-              c2 := #$BF;
+              new_c2 := #$BF;
             end;
           end;
         end;
         #$C6..#$C7:
         begin
           if ord(c2) mod 2 = 1 then
-            c2 := chr(ord(c2) + 1);
+            new_c2 := chr(ord(c2) + 1);
         end;
         #$C8:
         begin
           if (c2 in [#$00..#$B3]) and (ord(c2) mod 2 = 1) then
-            c2 := chr(ord(c2) + 1);
+            new_c2 := chr(ord(c2) + 1);
         end;
         // $CE91..$CE9F: NewChar := OldChar + $20; // Greek Characters
         // $CEA0..$CEA9: NewChar := OldChar + $E0; // Greek Characters
@@ -1700,11 +1701,11 @@ begin
           case c2 of
             #$91..#$9F:
             begin
-              c2 := chr(ord(c2) + $20);
+              new_c2 := chr(ord(c2) + $20);
             end;
             #$A0..#$A9:
             begin
-              c2 := chr(ord(c2) - $10);
+              new_c2 := chr(ord(c2) - $10);
             end;
           end;
         end;
@@ -1718,16 +1719,16 @@ begin
             #$80..#$8F:
             begin
               new_c1 := chr(ord(c1)+1);
-              c2  := chr(ord(c2) + $10);
+              new_c2  := chr(ord(c2) + $10);
             end;
             #$90..#$9F:
             begin
-              c2 := chr(ord(c2) + $20);
+              new_c2 := chr(ord(c2) + $20);
             end;
             #$A0..#$AF:
             begin
               new_c1 := chr(ord(c1)+1);
-              c2 := chr(ord(c2) - $20);
+              new_c2 := chr(ord(c2) - $20);
             end;
           end;
         end;
@@ -1736,7 +1737,7 @@ begin
         #$D1:
         begin
           if (c2 in [#$A0..#$BF]) and (ord(c2) mod 2 = 0) then
-            c2 := chr(ord(c2) + 1);
+            new_c2 := chr(ord(c2) + 1);
         end;
         // Archaic and non-slavic cyrillic 480-4BF = D280-D2BF
         // These mostly require just adding 1 to get the lowercase
@@ -1745,25 +1746,29 @@ begin
           case c2 of
             #$80:
             begin
-              c2 := chr(ord(c2) + 1);
+              new_c2 := chr(ord(c2) + 1);
             end;
             // #$81 is already lowercase
             // #$82-#$89 ???
             #$8A..#$BF:
             begin
               if ord(c2) mod 2 = 0 then
-                c2 := chr(ord(c2) + 1);
+                new_c2 := chr(ord(c2) + 1);
             end;
           end;
         end;
         end;
         // Common code 2-byte modifiable chars
-        //if (CounterDiff <> 0) then
-        //begin
-        if (new_c1 <> c1) or (CounterDiff <> 0) then
+        if (CounterDiff <> 0) then
+        begin
           OutStr^ := new_c1;
-        OutStr[1] := c2;
-        //end;
+          OutStr[1] := new_c2;
+        end
+        else
+        begin
+          if (new_c1 <> c1) then OutStr^ := new_c1;
+          if (new_c2 <> c2) then OutStr[1] := new_c2;
+        end;
         inc(InStr, 2);
         inc(OutStr, 2);
       end;
