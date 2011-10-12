@@ -485,7 +485,7 @@ end;
 }
 function TSvn2RevisionApplication.GetGitBranchPoint: string;
 const
-  cBufSize = 400;  // this can hold 10 SHA1 values at a time
+  cBufSize = 16000;  // this can hold many SHA1 values at a time
 var
   p: TProcessUTF8;
   Buffer: string;
