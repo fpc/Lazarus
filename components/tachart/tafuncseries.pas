@@ -1206,10 +1206,10 @@ begin
   // to be transformed back to real units by exp function.
   if FFitEquation in [feExp, fePower] then
     FFitParams[0] := Exp(FFitParams[0]);
-  UpdateParentChart;
+  FValidFitParams := true;
   if Assigned(FOnFitComplete) then
     FOnFitComplete(Self);
-  FValidFitParams := true;
+  UpdateParentChart;
 end;
 
 function TFitSeries.GetFitEquationString(
