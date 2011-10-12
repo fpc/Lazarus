@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, AvgLvlTree, TypInfo, LCLProc, LResources, Forms, Controls,
   LCLMemManager, LCLIntf, Dialogs,
-  PropEditUtils, IDEProcs,
+  PropEditUtils, PropEdits, IDEProcs,
   BasePkgManager;
 
 type
@@ -785,8 +785,7 @@ begin
   ComponentPrefix:=ComponentClassName;
   if ComponentPrefix='' then
     ComponentPrefix:='Component';
-  if ComponentPrefix[1] in ['t','T'] then
-    ComponentPrefix:=copy(ComponentPrefix,2,length(ComponentPrefix));
+  ComponentPrefix:=ClassNameToComponentName(ComponentPrefix);
   repeat
     ComponentName:=ComponentPrefix+IntToStr(a);
     ComponentClassName:='T'+ComponentName;
@@ -912,7 +911,7 @@ begin
     if FCurReadJITComponent.Name = '' then
     begin
       NewName := FCurReadJITComponent.ClassName;
-      if NewName[1] in ['T', 't'] then
+      if NewName[1]='T' then
         System.Delete(NewName, 1, 1);
       if FCurReadJITComponent is TControl then
         AControl:=TControl(FCurReadJITComponent)

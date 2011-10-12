@@ -5815,16 +5815,16 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('components path addition',
     Format(ctsAddsDirToSourcePath,['synedit']),
     SrcPathMacroName,
-      d('../components/lazutils;'
-       +'../components/codetools;'
-       +'../lcl'
+      d('../components/lazutils'
+       +';../components/codetools'
+       +';../lcl'
        +';../lcl/interfaces'
        +';../lcl/interfaces/'+WidgetType
-       +'../ideintf;'
-       +'../components/synedit;'
-       +'../components/codetools;'
-       +'../components/lazcontrols;'
-       +'../components/custom;')
+       +';../ideintf'
+       +';../components/synedit'
+       +';../components/codetools'
+       +';../components/lazcontrols'
+       +';../components/custom')
        +';'+SrcPath
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('main path addition',

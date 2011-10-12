@@ -1527,6 +1527,7 @@ var
 function ClassTypeInfo(Value: TClass): PTypeInfo;
 function GetClassUnitName(Value: TClass): string;
 procedure CreateComponentEvent(AComponent: TComponent; const EventName: string);
+function ClassNameToComponentName(const AClassName: string): string;
 
 procedure LazSetMethodProp(Instance : TObject;PropInfo : PPropInfo; Value : TMethod);
 procedure WritePublishedProperties(Instance: TPersistent);
@@ -3886,10 +3887,8 @@ begin
     if Root is TFrame then
       Result := 'Frame'
     else 
-    begin;
-      Result := PropertyHook.GetRootClassName;
-      if (Result <> '') and (Result[1] = 'T') then
-        System.Delete(Result, 1, 1);
+    begin
+      Result := ClassNameToComponentName(PropertyHook.GetRootClassName);
     end;
   end else begin
     Result := PropertyHook.GetObjectName(GetComponent(0));
@@ -3937,9 +3936,7 @@ begin
       Result := 'Frame'
     else 
     begin
-      Result := RootClassName;
-      if (Result <> '') and (Result[1] = 'T') then
-        System.Delete(Result, 1, 1);
+      Result := ClassNameToComponentName(RootClassName);
     end;
   end else begin
     Result := ComponentName;
@@ -6168,6 +6165,14 @@ begin
     MethodPropEditor.Free;
     PersistentList.Free;
   end;
+end;
+
+function ClassNameToComponentName(const AClassName: string): string;
+begin
+  Result:=AClassName;
+  if (length(Result)>2) and (Result[1] in ['T','t'])
+  and (not (Result[2] in ['0'..'9'])) then
+    System.Delete(Result,1,1);
 end;
 
 Function ClassTypeInfo(Value: TClass): PTypeInfo;

@@ -54,7 +54,7 @@ uses
   Laz_XMLCfg, CodeToolsConfig, ExprEval, FileProcs, DefineTemplates,
   CodeToolsCfgScript, CodeToolManager, CodeCache,
   // IDEIntf
-  CompOptsIntf, ProjectIntf, MacroIntf, LazIDEIntf,
+  PropEdits, CompOptsIntf, ProjectIntf, MacroIntf, LazIDEIntf,
   // IDE
   CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
   LazarusIDEStrConsts, CompilerOptions,
@@ -3931,13 +3931,15 @@ function TProject.NewUniqueComponentName(const AComponentPrefix: string): string
 
   function FormComponentExists(const AComponentName: string): boolean;
   var i: integer;
+    ComponentClassName: string;
   begin
     Result:=true;
     if GetClass(AComponentName)<>nil then exit;
+    ComponentClassName:=ClassNameToComponentName(AComponentName);
     for i:=0 to UnitCount-1 do begin
       if (Units[i].Component<>nil) then begin
         if CompareText(Units[i].Component.Name,AComponentName)=0 then exit;
-        if CompareText(Units[i].Component.ClassName,'T'+AComponentName)=0
+        if CompareText(Units[i].Component.ClassName,ComponentClassName)=0
         then exit;
       end else if (Units[i].ComponentName<>'')
       and ((Units[i].IsPartOfProject) or (Units[i].Loaded)) then begin

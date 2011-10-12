@@ -2089,9 +2089,7 @@ begin
   i:=1;
   while true do begin
     j:=OwnerComponent.ComponentCount-1;
-    Result:=AClassName;
-    if (length(Result)>1) and (Result[1]='T') then
-      Result:=RightStr(Result,length(Result)-1);
+    Result:=ClassNameToComponentName(AClassName);
     if Result[length(Result)] in ['0'..'9'] then
       Result:=Result+'_';
     Result:=Result+IntToStr(i);
