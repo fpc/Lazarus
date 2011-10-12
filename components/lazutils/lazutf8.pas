@@ -1398,7 +1398,7 @@ begin
               #$A0..#$AF:
                 begin
                   OutStr[-2]  := chr(ord(OutStr[-2])+1);
-                  OutStr[-1]  := chr(ord(c) - $10);
+                  OutStr[-1]  := chr(ord(c) - $20);
                 end;
             end;
           end;
