@@ -46,6 +46,7 @@ end;
 procedure AssertStringOperationUTF8LowerCase(AMsg, ALocale, AStr1, AStrExpected2: utf8string);
 begin
   AssertStringOperation(AMsg, AStr1, UTF8LowerCase(AStr1, ALocale), AStrExpected2);
+  AssertStringOperation('2'+AMsg, AStr1, UTF8LowerCase2(AStr1, ALocale), AStrExpected2);
 end;
 
 function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
@@ -146,8 +147,8 @@ begin
   // What shouldnt change
   AssertStringOperationUTF8LowerCase('Offset Chinese UTF8LowerCase 1', 'tu', 'I名字叫嘉英，嘉陵江的嘉，英國的英', 'ı名字叫嘉英，嘉陵江的嘉，英國的英');
   // Georgian
-  AssertStringOperationUTF8LowerCase('Offset Georgian UTF8LowerCase 1', 'tu', 'IႠⴀ Ⴁⴁ Ⴂⴂ Ⴃⴃ Ⴄⴄ Ⴅⴅ Ⴆⴆ Ⴇⴇ Ⴈⴈ Ⴉⴉ Ⴊⴊ Ⴋⴋ Ⴌⴌ Ⴍⴍ Ⴎⴎ Ⴏⴏ Ⴐⴐ Ⴑⴑ', 'ⴀⴀ ⴁⴁ ⴂⴂ ⴃⴃ ⴄⴄ ⴅⴅ ⴆⴆ ⴇⴇ ⴈⴈ ⴉⴉ ⴊⴊ ⴋⴋ ⴌⴌ ⴍⴍ ⴎⴎ ⴏⴏ ⴐⴐ ⴑⴑ');
-  AssertStringOperationUTF8LowerCase('Offset Georgian UTF8LowerCase 2', 'tu', 'IႲⴒ Ⴓⴓ Ⴔⴔ Ⴕⴕ Ⴖⴖ Ⴗⴗ Ⴘⴘ Ⴙⴙ Ⴚⴚ Ⴛⴛ Ⴜⴜ Ⴝⴝ Ⴞⴞ Ⴟⴟ Ⴠⴠ Ⴡⴡ Ⴢⴢ Ⴣⴣ Ⴤⴤ Ⴥⴥ', 'ⴒⴒ ⴓⴓ ⴔⴔ ⴕⴕ ⴖⴖ ⴗⴗ ⴘⴘ ⴙⴙ ⴚⴚ ⴛⴛ ⴜⴜ ⴝⴝ ⴞⴞ ⴟⴟ ⴠⴠ ⴡⴡ ⴢⴢ ⴣⴣ ⴤⴤ ⴥⴥ');
+  AssertStringOperationUTF8LowerCase('Offset Georgian UTF8LowerCase 1', 'tu', 'IႠⴀ Ⴁⴁ Ⴂⴂ Ⴃⴃ Ⴄⴄ Ⴅⴅ Ⴆⴆ Ⴇⴇ Ⴈⴈ Ⴉⴉ Ⴊⴊ Ⴋⴋ Ⴌⴌ Ⴍⴍ Ⴎⴎ Ⴏⴏ Ⴐⴐ Ⴑⴑ', 'ıⴀⴀ ⴁⴁ ⴂⴂ ⴃⴃ ⴄⴄ ⴅⴅ ⴆⴆ ⴇⴇ ⴈⴈ ⴉⴉ ⴊⴊ ⴋⴋ ⴌⴌ ⴍⴍ ⴎⴎ ⴏⴏ ⴐⴐ ⴑⴑ');
+  AssertStringOperationUTF8LowerCase('Offset Georgian UTF8LowerCase 2', 'tu', 'IႲⴒ Ⴓⴓ Ⴔⴔ Ⴕⴕ Ⴖⴖ Ⴗⴗ Ⴘⴘ Ⴙⴙ Ⴚⴚ Ⴛⴛ Ⴜⴜ Ⴝⴝ Ⴞⴞ Ⴟⴟ Ⴠⴠ Ⴡⴡ Ⴢⴢ Ⴣⴣ Ⴤⴤ Ⴥⴥ', 'ıⴒⴒ ⴓⴓ ⴔⴔ ⴕⴕ ⴖⴖ ⴗⴗ ⴘⴘ ⴙⴙ ⴚⴚ ⴛⴛ ⴜⴜ ⴝⴝ ⴞⴞ ⴟⴟ ⴠⴠ ⴡⴡ ⴢⴢ ⴣⴣ ⴤⴤ ⴥⴥ');
 
   // Performance test
   Write('Mattias LowerCase- Performance test took:    ');
@@ -185,6 +186,66 @@ begin
       if j = 7 then Str := UTF8LowerCase('AAaaBBbbCCccDDddEEeeFFffGGggHHhhIIiiJJjjKKkkLLllMMmm');
       if j = 8 then Str := UTF8LowerCase('abcDefgHijkLmnoPqrsTuwvXyz');
       if j = 9 then Str := UTF8LowerCase('ABCdEFGhIJKlMNOpQRStUWVxYZ');
+    end;
+    lTimeDiff := Now - lStartTime;
+    Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
+  end;
+  writeln;
+  Write('       LowerCase-- Performance test took:    ');
+  for j := 0 to 9 do begin
+    lStartTime := Now;
+    for i := 0 to TimerLoop do
+    begin
+      if j = 0 then Str := UTF8LowerCase2('abcdefghijklmnopqrstuwvxyz');
+      if j = 1 then Str := UTF8LowerCase2('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
+      if j = 2 then Str := UTF8LowerCase2('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+      if j = 3 then Str := UTF8LowerCase2('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
+      if j = 4 then Str := UTF8LowerCase2('АБВЕЁЖЗКЛМНОПРДЙГ');
+      if j = 5 then Str := UTF8LowerCase2('名字叫嘉英，嘉陵江的嘉，英國的英');
+      if j = 6 then Str := UTF8LowerCase2('AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuWvVwXxYyZz');
+      if j = 7 then Str := UTF8LowerCase2('AAaaBBbbCCccDDddEEeeFFffGGggHHhhIIiiJJjjKKkkLLllMMmm');
+      if j = 8 then Str := UTF8LowerCase2('abcDefgHijkLmnoPqrsTuwvXyz');
+      if j = 9 then Str := UTF8LowerCase2('ABCdEFGhIJKlMNOpQRStUWVxYZ');
+    end;
+    lTimeDiff := Now - lStartTime;
+    Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
+  end;
+  writeln;
+  Write('       LowerCase-- Performance test took:    ');
+  for j := 0 to 9 do begin
+    lStartTime := Now;
+    for i := 0 to TimerLoop do
+    begin
+      if j = 0 then Str := UTF8LowerCase('Iabcdefghijklmnopqrstuwvxyz', 'tu');
+      if j = 1 then Str := UTF8LowerCase('IABCDEFGHIJKLMNOPQRSTUWVXYZ', 'tu');
+      if j = 2 then Str := UTF8LowerCase('Iaąbcćdeęfghijklłmnńoóprsśtuwyzźż', 'tu');
+      if j = 3 then Str := UTF8LowerCase('IAĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ', 'tu');
+      if j = 4 then Str := UTF8LowerCase('IАБВЕЁЖЗКЛМНОПРДЙГ', 'tu');
+      if j = 5 then Str := UTF8LowerCase('I名字叫嘉英，嘉陵江的嘉，英國的英', 'tu');
+      if j = 6 then Str := UTF8LowerCase('IAaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuWvVwXxYyZz', 'tu');
+      if j = 7 then Str := UTF8LowerCase('IAAaaBBbbCCccDDddEEeeFFffGGggHHhhIIiiJJjjKKkkLLllMMmm', 'tu');
+      if j = 8 then Str := UTF8LowerCase('IabcDefgHijkLmnoPqrsTuwvXyz', 'tu');
+      if j = 9 then Str := UTF8LowerCase('IABCdEFGhIJKlMNOpQRStUWVxYZ', 'tu');
+    end;
+    lTimeDiff := Now - lStartTime;
+    Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
+  end;
+  writeln;
+  Write('       LowerCase-- Performance test took:    ');
+  for j := 0 to 9 do begin
+    lStartTime := Now;
+    for i := 0 to TimerLoop do
+    begin
+      if j = 0 then Str := UTF8LowerCase2('Iabcdefghijklmnopqrstuwvxyz', 'tu');
+      if j = 1 then Str := UTF8LowerCase2('IABCDEFGHIJKLMNOPQRSTUWVXYZ', 'tu');
+      if j = 2 then Str := UTF8LowerCase2('Iaąbcćdeęfghijklłmnńoóprsśtuwyzźż', 'tu');
+      if j = 3 then Str := UTF8LowerCase2('IAĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ', 'tu');
+      if j = 4 then Str := UTF8LowerCase2('IАБВЕЁЖЗКЛМНОПРДЙГ', 'tu');
+      if j = 5 then Str := UTF8LowerCase2('I名字叫嘉英，嘉陵江的嘉，英國的英', 'tu');
+      if j = 6 then Str := UTF8LowerCase2('IAaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuWvVwXxYyZz', 'tu');
+      if j = 7 then Str := UTF8LowerCase2('IAAaaBBbbCCccDDddEEeeFFffGGggHHhhIIiiJJjjKKkkLLllMMmm', 'tu');
+      if j = 8 then Str := UTF8LowerCase2('IabcDefgHijkLmnoPqrsTuwvXyz', 'tu');
+      if j = 9 then Str := UTF8LowerCase2('IABCdEFGhIJKlMNOpQRStUWVxYZ', 'tu');
     end;
     lTimeDiff := Now - lStartTime;
     Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
