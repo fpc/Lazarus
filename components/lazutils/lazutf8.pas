@@ -1471,6 +1471,24 @@ end;
 {
   AInStr - The input string
   ALocale - The locale. Use '' for maximum speed if one desires to ignore the locale
+
+  Data from here: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt
+
+  List of ranges which have lowercase:
+  $0041..$0061  ASCII
+  $00C0..$00DE: Result:=UnicodeLower00C0_00DE[u];
+  $0100..$024E: Result:=UnicodeLower0100_024E[u];
+  $0386..$03AB: Result:=UnicodeLower0386_03AB[u];
+  $03D8..$042F: Result:=UnicodeLower03D8_042F[u];
+  $0460..$0512: Result:=UnicodeLower0460_0512[u];
+  $0531..$0556: Result:=u+48;
+  $10A0..$10C5  Georgian
+  $1E00..$1FFC: Result:=UnicodeLower1E00_1FFC[u];
+  $2126..$2183: Result:=UnicodeLower2126_2183[u];
+  $24B6..$24CF: Result:=u+26;
+  $2C00..$2C2E: Result:=u+48;
+  $2C60..$2CE2: Result:=UnicodeLower2C60_2CE2[u];
+  $FF21..$FF3A: Result:=u+32;
 }
 function UTF8LowerCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
 var
@@ -1478,7 +1496,7 @@ var
   InStr, InStrEnd, OutStr: PChar;
   // Language identification
   IsTurkish: Boolean;
-  c: Char;
+  c, c2: Char;
 begin
   Result:=AInStr;
   InStr := PChar(AInStr);
@@ -1490,7 +1508,7 @@ begin
   begin
     c := InStr^;
     case c of
-    'A'..'Z',#$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2: Break;
+    'A'..'Z',#$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2, #$E1: Break;
     // already lower, or otherwhise not affected
     else
       inc(InStr);
@@ -1777,7 +1795,38 @@ begin
         inc(InStr, 2);
         inc(OutStr, 2);
       end;
-    else
+      // Georgian codepoints 10A0-10C5 => 2D00-2D25
+      // In UTF-8 this is:
+      // E1 82 A0 - E1 82 BF => E2 B4 80 - E2 B4 9F
+      // E1 83 80 - E1 83 85 => E2 B4 A0 - E2 B4 A5
+      #$E1:
+      begin
+        c := InStr[1];
+        c2 := InStr[2];
+        if (c = #$82) and (c2 in [#$A0..#$BF]) then
+        begin
+          OutStr^ := #$E2;
+          OutStr[1] := #$B4;
+          OutStr[2] := chr(ord(c2) - $20);
+        end
+        else if (c = #$83) and (c2 in [#$80..#$85]) then
+        begin
+          OutStr^ := #$E2;
+          OutStr[1] := #$B4;
+          OutStr[2] := chr(ord(c2) + $20);
+        end
+        else
+        begin
+          if (CounterDiff <> 0) then
+          begin
+            OutStr^ := InStr[0];
+            OutStr[1] := InStr[1];
+            OutStr[2] := InStr[2];
+          end;
+        end;
+        inc(InStr, 3);
+        inc(OutStr, 3);
+      end;    else
       // Copy the character if the string was disaligned by previous changes
       if (CounterDiff <> 0) then OutStr^:=c;
       inc(InStr);
