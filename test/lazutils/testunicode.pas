@@ -151,7 +151,7 @@ begin
   AssertStringOperationUTF8LowerCase('Offset Georgian UTF8LowerCase 2', 'tu', 'IႲⴒ Ⴓⴓ Ⴔⴔ Ⴕⴕ Ⴖⴖ Ⴗⴗ Ⴘⴘ Ⴙⴙ Ⴚⴚ Ⴛⴛ Ⴜⴜ Ⴝⴝ Ⴞⴞ Ⴟⴟ Ⴠⴠ Ⴡⴡ Ⴢⴢ Ⴣⴣ Ⴤⴤ Ⴥⴥ', 'ıⴒⴒ ⴓⴓ ⴔⴔ ⴕⴕ ⴖⴖ ⴗⴗ ⴘⴘ ⴙⴙ ⴚⴚ ⴛⴛ ⴜⴜ ⴝⴝ ⴞⴞ ⴟⴟ ⴠⴠ ⴡⴡ ⴢⴢ ⴣⴣ ⴤⴤ ⴥⴥ');
 
   // Performance test
-  Write('Mattias LowerCase- Performance test took:    ');
+{  Write('Mattias LowerCase- Performance test took:    ');
   for j := 0 to 9 do begin
     lStartTime := Now;
     for i := 0 to TimerLoop do
@@ -170,7 +170,7 @@ begin
     lTimeDiff := Now - lStartTime;
     Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
   end;
-  writeln;
+  writeln;       }
   Write('       LowerCase-- Performance test took:    ');
   for j := 0 to 9 do begin
     lStartTime := Now;
@@ -191,7 +191,7 @@ begin
     Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
   end;
   writeln;
-  Write('       LowerCase-- Performance test took:    ');
+  Write('       LowerCase2-- Performance test took:    ');
   for j := 0 to 9 do begin
     lStartTime := Now;
     for i := 0 to TimerLoop do
@@ -211,7 +211,7 @@ begin
     Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
   end;
   writeln;
-  Write('       LowerCase-- Performance test took:    ');
+  Write('   Turk LowerCase-- Performance test took:    ');
   for j := 0 to 9 do begin
     lStartTime := Now;
     for i := 0 to TimerLoop do
@@ -231,7 +231,7 @@ begin
     Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
   end;
   writeln;
-  Write('       LowerCase-- Performance test took:    ');
+  Write('   Turk LowerCase2-- Performance test took:    ');
   for j := 0 to 9 do begin
     lStartTime := Now;
     for i := 0 to TimerLoop do

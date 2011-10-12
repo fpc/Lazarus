@@ -69,8 +69,7 @@ function UTF8LowerCaseMattias(const s: utf8string): utf8string;
 {$endif}
 function UTF8LowerCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
 function UTF8LowerCase2(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
-function UTF8UpperCase(const AInStr: utf8string): utf8string;
-function UTF8UpperCase(const AInStr, ALocale: utf8string): utf8string;
+function UTF8UpperCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
 {function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
 //                                  StopOnNonASCII: Boolean = false): PtrInt;
 //function ValidUTF8String(const s: String): String;
@@ -1460,15 +1459,16 @@ begin
       c := InStr^;
       case c of  // if NOT TABLE
         #0:
+        begin
+          if InStr >= InStrEnd then
           begin
-            if InStr >= InStrEnd then begin
-              SetLength(Result,OutStr - PChar(Result));
-              exit;
-            end;
-            OutStr^:=c;
-            inc(InStr);
-            inc(OutStr);
+            SetLength(Result,OutStr - PChar(Result));
+            exit;
           end;
+          OutStr^:=c;
+          inc(InStr);
+          inc(OutStr);
+        end;
         'A'..'Z':
           begin
             { First ASCII chars }
@@ -1526,7 +1526,6 @@ begin
           end;
       end; // Case InStr^
     end;
-
   end;
 end;
 
@@ -1537,14 +1536,17 @@ end;
   Data from here: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt
 
   List of ranges which have lowercase:
-  $0041..$0061  ASCII
+
+  codepoints    UTF-8 range           Description
+  $0041..$0061  $41..$61              ASCII
   $00C0..$00DE: Result:=UnicodeLower00C0_00DE[u];
   $0100..$024E: Result:=UnicodeLower0100_024E[u];
   $0386..$03AB: Result:=UnicodeLower0386_03AB[u];
   $03D8..$042F: Result:=UnicodeLower03D8_042F[u];
   $0460..$0512: Result:=UnicodeLower0460_0512[u];
   $0531..$0556: Result:=u+48;
-  $10A0..$10C5  Georgian
+  $10A0..$10C5  E1 82 A0..E1 82 BF
+                E1 83 80..E1 83 85    Georgian
   $1E00..$1FFC: Result:=UnicodeLower1E00_1FFC[u];
   $2126..$2183: Result:=UnicodeLower2126_2183[u];
   $24B6..$24CF: Result:=u+26;
@@ -1558,7 +1560,7 @@ var
   InStr, InStrEnd, OutStr: PChar;
   // Language identification
   IsTurkish: Boolean;
-  c, c2: Char;
+  c1, c2, c3, new_c1: Char;
 begin
   Result:=AInStr;
   InStr := PChar(AInStr);
@@ -1568,8 +1570,8 @@ begin
   // UniqueString if the resulting string will be identical
   while (InStr < InStrEnd) do
   begin
-    c := InStr^;
-    case c of
+    c1 := InStr^;
+    case c1 of
     'A'..'Z',#$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2, #$E1: Break;
     // already lower, or otherwhise not affected
     else
@@ -1588,14 +1590,15 @@ begin
 
   while InStr < InStrEnd do
   begin
-    c := InStr^;
-    case c of  // if NOT TABLE
+    c1 := InStr^;
+    new_c1 := c1;
+    case c1 of
       'A'..'Z':
       begin
         { First ASCII chars }
         // Special turkish handling
         // capital undotted I to small undotted i
-        if IsTurkish and (c = 'I') then
+        if IsTurkish and (c1 = 'I') then
         begin
           OutStr := PChar(OutStr - PChar(Result));
           SetLength(Result,Length(Result)+1);// Increase the buffer
@@ -1604,256 +1607,163 @@ begin
           inc(OutStr);
           OutStr^ := #$B1;
           dec(CounterDiff);
-          inc(InStr);
-          inc(OutStr);
         end
         else
         begin
-          OutStr^ := chr(ord(c)+32);
-          inc(InStr);
-          inc(OutStr);
+          OutStr^ := chr(ord(c1)+32);
         end;
+        inc(InStr);
+        inc(OutStr);
       end;
 
-      // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
-      // $C380..$C39E: NewChar := OldChar + $20;
-      // $C39F: ß already lowercase
-      #$C3:
+      // Chars with 2-bytes which might be modified
+      #$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2:
       begin
-        if InStr[1] in [#$80..#$9E] then
+        c2 := InStr[1];
+        case c1 of
+        // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
+        // $C380..$C39E: NewChar := OldChar + $20;
+        // $C39F: ß already lowercase
+        #$C3:
         begin
-          if (CounterDiff <> 0) then OutStr^ := InStr[0];
-          OutStr[1]  := chr(ord(InStr[1]) + $20);
-        end
-        else if (CounterDiff <> 0) then
-        begin
-          OutStr^  :=InStr[0];
-          OutStr[1]  :=InStr[1];
+          if c2 in [#$80..#$9E] then
+            c2 := chr(ord(c2) + $20);
         end;
-        inc(InStr, 2);
-        inc(OutStr, 2);
-      end;
-      // $C481..$C4A9: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
-      // Turkish capital dotted i to small dotted i
-      // $C4B0 -> 'i'
-      // $C4B1 turkish lowercase undotted ı
-      // $C4B2..$C4B6: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
-      // $C4B7: ĸ => K ?
-      // $C4B8..$C588: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
-      #$C4:
-      begin
-        c := InStr[1];
-        case c of
-          #$81..#$A9, #$B2..#$B6: //0
-          begin
-            if ord(c) mod 2 = 0 then
+        // $C481..$C4A9: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
+        // Turkish capital dotted i to small dotted i
+        // $C4B0 -> 'i'
+        // $C4B1 turkish lowercase undotted ı
+        // $C4B2..$C4B6: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
+        // $C4B7: ĸ => K ?
+        // $C4B8..$C588: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
+        #$C4:
+        begin
+          case c2 of
+            #$81..#$A9, #$B2..#$B6: //0
             begin
-              if (CounterDiff <> 0) then OutStr^  := InStr[0];
-              OutStr[1]  := chr(ord(c) + 1);
-            end
-            else if (CounterDiff <> 0) then
-            begin
-              OutStr^  :=InStr[0];
-              OutStr[1]  :=c;
+              if ord(c2) mod 2 = 0 then
+                c2 := chr(ord(c2) + 1);
             end;
-          end;
-          #$B8..#$FF: //1
-          begin
-            if ord(c) mod 2 = 1 then
+            #$B8..#$FF: //1
             begin
-              if (CounterDiff <> 0) then OutStr^  := InStr[0];
-              OutStr[1]  := chr(ord(c) + 1);
-            end
-            else if (CounterDiff <> 0) then
-            begin
-              OutStr^  :=InStr[0];
-              OutStr[1]  :=c;
+              if ord(c2) mod 2 = 1 then
+                c2 := chr(ord(c2) + 1);
             end;
-          end;
-          #$B0:
-          begin
-            OutStr^ := 'i';
-            dec(OutStr);
-            inc(CounterDiff, 1);
-          end;
-        end;
-        inc(InStr, 2);
-        inc(OutStr, 2);
-      end;
-      // $C589 ŉ => ?
-      // $C58A..$C5B7: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
-      // $C5B8:        NewChar := $C3BF; // Ÿ
-      // $C5B9..$C8B3: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
-      #$C5:
-      begin
-        c := InStr[1];
-        case c of
-          #$8A..#$B7: //0
-          begin
-            if ord(c) mod 2 = 0 then
+            #$B0:
             begin
-              if (CounterDiff <> 0) then OutStr^  := InStr[0];
-              OutStr[1]  := chr(ord(c) + 1);
-            end
-            else if (CounterDiff <> 0) then
-            begin
-              OutStr^ := InStr[0];
-              OutStr[1] :=c;
-            end;
-          end;
-          #$00..#$88, #$B9..#$FF: //1
-          begin
-            if ord(c) mod 2 = 1 then
-            begin
-              if (CounterDiff <> 0) then OutStr^  := InStr[0];
-              OutStr[1]  := chr(ord(c) + 1);
-            end
-            else if (CounterDiff <> 0) then
-            begin
-              OutStr^ := InStr[0];
-              OutStr[1] :=c;
-            end;
-          end;
-          #$B8:  // Ÿ
-          begin
-            OutStr[0] := #$C3;
-            OutStr[1] := #$BF;
-          end;
-        end;
-        inc(InStr, 2);
-        inc(OutStr, 2);
-      end;
-      #$C6..#$C7:
-      begin
-        c := InStr[1];
-        if ord(c) mod 2 = 1 then
-        begin
-          if (CounterDiff <> 0) then OutStr^  := InStr[0];
-          OutStr[1]  := chr(ord(c) + 1);
-        end
-        else if (CounterDiff <> 0) then
-        begin
-          OutStr^ := InStr[0];
-          OutStr[1] :=c;
-        end;
-        inc(InStr, 2);
-        inc(OutStr, 2);
-      end;
-      #$C8:
-      begin
-        c := InStr[1];
-        if (c in [#$00..#$B3]) and (ord(c) mod 2 = 1) then
-        begin
-          if (CounterDiff <> 0) then OutStr^  := InStr[0];
-          OutStr[1] := chr(ord(c) + 1);
-        end
-        else if (CounterDiff <> 0) then
-        begin
-          OutStr^ := InStr[0];
-          OutStr[1] :=c;
-        end;
-        inc(InStr, 2);
-        inc(OutStr, 2);
-      end;
-      // $CE91..$CE9F: NewChar := OldChar + $20; // Greek Characters
-      // $CEA0..$CEA9: NewChar := OldChar + $E0; // Greek Characters
-      #$CE:
-      begin
-        c := InStr[1];
-        case c of
-          #$91..#$9F:
-          begin
-            if (CounterDiff <> 0) then OutStr^  := InStr[0];
-            OutStr[1]  := chr(ord(c) + $20);
-          end;
-          #$A0..#$A9:
-          begin
-            OutStr^ := chr(ord(InStr[0])+1);
-            OutStr[1]  := chr(ord(c) - $10);
-          end;
-        end;
-        inc(InStr, 2);
-        inc(OutStr, 2);
-      end;
-      // $D080..$D08F: NewChar := OldChar + $110; // Cyrillic alphabet
-      // $D090..$D09F: NewChar := OldChar + $20; // Cyrillic alphabet
-      // $D0A0..$D0AF: NewChar := OldChar + $E0; // Cyrillic alphabet
-      #$D0:
-      begin
-        c := InStr[1];
-        case c of
-          #$80..#$8F:
-          begin
-            OutStr^  := chr(ord(InStr[0])+1);
-            OutStr[1]  := chr(ord(c) + $10);
-          end;
-          #$90..#$9F:
-          begin
-            if (CounterDiff <> 0) then OutStr^  := InStr[0];
-            OutStr[1]  := chr(ord(c) + $20);
-          end;
-          #$A0..#$AF:
-          begin
-            OutStr^  := chr(ord(InStr[0])+1);
-            OutStr[1]  := chr(ord(c) - $20);
-          end;
-        end;
-        inc(InStr, 2);
-        inc(OutStr, 2);
-      end;
-      // Archaic and non-slavic cyrillic 460-47F = D1A0-D1BF
-      // These require just adding 1 to get the lowercase
-      #$D1:
-      begin
-        c := InStr[1];
-        if (c in [#$A0..#$BF]) and (ord(c) mod 2 = 0) then
-        begin
-          if (CounterDiff <> 0) then OutStr^ := InStr[0];
-          OutStr[1] := chr(ord(c) + 1);
-        end
-        else if (CounterDiff <> 0) then
-        begin
-          OutStr^ := InStr[0];
-          OutStr[1] := c;
-        end;
-        inc(InStr, 2);
-        inc(OutStr, 2);
-      end;
-      // Archaic and non-slavic cyrillic 480-4BF = D280-D2BF
-      // These mostly require just adding 1 to get the lowercase
-      #$D2:
-      begin
-        c := InStr[1];
-        case c of
-          #$80:
-          begin
-            if (CounterDiff <> 0) then OutStr^  := InStr[0];
-            OutStr[1] := chr(ord(c) + 1);
-          end;
-          // #$81 is already lowercase
-          // #$82-#$89 ???
-          #$81..#$89:
-          begin
-            if (CounterDiff <> 0) then
-            begin
-              OutStr^ := InStr[0];
-              OutStr[1] := c;
-            end;
-          end;
-          #$8A..#$BF:
-          begin
-            if ord(c) mod 2 = 0 then
-            begin
-              if (CounterDiff <> 0) then OutStr^  := InStr[0];
-              OutStr[1] := chr(ord(c) + 1);
-            end
-            else if (CounterDiff <> 0) then
-            begin
-              OutStr^ := InStr[0];
-              OutStr[1] := c;
+              OutStr^ := 'i';
+              inc(InStr, 2);
+              inc(OutStr);
+              inc(CounterDiff, 1);
+              Continue;
             end;
           end;
         end;
+        // $C589 ŉ => ?
+        // $C58A..$C5B7: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
+        // $C5B8:        NewChar := $C3BF; // Ÿ
+        // $C5B9..$C8B3: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
+        #$C5:
+        begin
+          case c2 of
+            #$8A..#$B7: //0
+            begin
+              if ord(c2) mod 2 = 0 then
+                c2 := chr(ord(c2) + 1);
+            end;
+            #$00..#$88, #$B9..#$FF: //1
+            begin
+              if ord(c2) mod 2 = 1 then
+                c2 := chr(ord(c2) + 1);
+            end;
+            #$B8:  // Ÿ
+            begin
+              new_c1 := #$C3;
+              c2 := #$BF;
+            end;
+          end;
+        end;
+        #$C6..#$C7:
+        begin
+          if ord(c2) mod 2 = 1 then
+            c2 := chr(ord(c2) + 1);
+        end;
+        #$C8:
+        begin
+          if (c2 in [#$00..#$B3]) and (ord(c2) mod 2 = 1) then
+            c2 := chr(ord(c2) + 1);
+        end;
+        // $CE91..$CE9F: NewChar := OldChar + $20; // Greek Characters
+        // $CEA0..$CEA9: NewChar := OldChar + $E0; // Greek Characters
+        #$CE:
+        begin
+          case c2 of
+            #$91..#$9F:
+            begin
+              c2 := chr(ord(c2) + $20);
+            end;
+            #$A0..#$A9:
+            begin
+              c2 := chr(ord(c2) - $10);
+            end;
+          end;
+        end;
+        // $D080..$D08F: NewChar := OldChar + $110; // Cyrillic alphabet
+        // $D090..$D09F: NewChar := OldChar + $20; // Cyrillic alphabet
+        // $D0A0..$D0AF: NewChar := OldChar + $E0; // Cyrillic alphabet
+        #$D0:
+        begin
+          c2 := InStr[1];
+          case c2 of
+            #$80..#$8F:
+            begin
+              new_c1 := chr(ord(c1)+1);
+              c2  := chr(ord(c2) + $10);
+            end;
+            #$90..#$9F:
+            begin
+              c2 := chr(ord(c2) + $20);
+            end;
+            #$A0..#$AF:
+            begin
+              new_c1 := chr(ord(c1)+1);
+              c2 := chr(ord(c2) - $20);
+            end;
+          end;
+        end;
+        // Archaic and non-slavic cyrillic 460-47F = D1A0-D1BF
+        // These require just adding 1 to get the lowercase
+        #$D1:
+        begin
+          if (c2 in [#$A0..#$BF]) and (ord(c2) mod 2 = 0) then
+            c2 := chr(ord(c2) + 1);
+        end;
+        // Archaic and non-slavic cyrillic 480-4BF = D280-D2BF
+        // These mostly require just adding 1 to get the lowercase
+        #$D2:
+        begin
+          case c2 of
+            #$80:
+            begin
+              c2 := chr(ord(c2) + 1);
+            end;
+            // #$81 is already lowercase
+            // #$82-#$89 ???
+            #$8A..#$BF:
+            begin
+              if ord(c2) mod 2 = 0 then
+                c2 := chr(ord(c2) + 1);
+            end;
+          end;
+        end;
+        end;
+        // Common code 2-byte modifiable chars
+        //if (CounterDiff <> 0) then
+        //begin
+        if (new_c1 <> c1) or (CounterDiff <> 0) then
+          OutStr^ := new_c1;
+        OutStr[1] := c2;
+        //end;
         inc(InStr, 2);
         inc(OutStr, 2);
       end;
@@ -1863,19 +1773,19 @@ begin
       // E1 83 80 - E1 83 85 => E2 B4 A0 - E2 B4 A5
       #$E1:
       begin
-        c := InStr[1];
-        c2 := InStr[2];
-        if (c = #$82) and (c2 in [#$A0..#$BF]) then
+        c2 := InStr[1];
+        c3 := InStr[2];
+        if (c2 = #$82) and (c3 in [#$A0..#$BF]) then
         begin
           OutStr^ := #$E2;
           OutStr[1] := #$B4;
-          OutStr[2] := chr(ord(c2) - $20);
+          OutStr[2] := chr(ord(c3) - $20);
         end
-        else if (c = #$83) and (c2 in [#$80..#$85]) then
+        else if (c2 = #$83) and (c3 in [#$80..#$85]) then
         begin
           OutStr^ := #$E2;
           OutStr[1] := #$B4;
-          OutStr[2] := chr(ord(c2) + $20);
+          OutStr[2] := chr(ord(c3) + $20);
         end
         else
         begin
@@ -1889,9 +1799,9 @@ begin
         inc(InStr, 3);
         inc(OutStr, 3);
       end;
-      else
+    else
       // Copy the character if the string was disaligned by previous changes
-      if (CounterDiff <> 0) then OutStr^:=c;
+      if (CounterDiff <> 0) then OutStr^:= c1;
       inc(InStr);
       inc(OutStr);
     end; // Case InStr^
@@ -1901,16 +1811,11 @@ begin
   SetLength(Result,OutStr - PChar(Result));
 end;
 
-function UTF8UpperCase(const AInStr: utf8string): utf8string;
-begin
-  Result := UTF8UpperCase(AInStr, '');
-end;
-
 {
   AInStr - The input string
   ALocale - The locale. Use '' for maximum speed if one desires to ignore the locale
 }
-function UTF8UpperCase(const AInStr, ALocale: utf8string): utf8string;
+function UTF8UpperCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
 var
   i, InCounter, OutCounter: PtrInt;
   OutStr: PChar;
