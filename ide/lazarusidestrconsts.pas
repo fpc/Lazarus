@@ -4585,6 +4585,7 @@ resourcestring
   // Call Stack Dialog
   lisCurrent = 'Current';
   lisViewSource = 'View Source';
+  lisViewSourceDisass = 'View Assembler';
   lisMaxS = 'Max %d';
   lisMore = 'More';
   lisTop = 'Top';

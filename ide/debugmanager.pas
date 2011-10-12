@@ -228,6 +228,9 @@ type
     function ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''): TModalresult; override;
 
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType; BringToFront: Boolean = true; Show: Boolean = true; DoDisableAutoSizing: boolean = false); override;
+    procedure ViewDisassembler(AnAddr: TDBGPtr;
+                              BringToFront: Boolean = True; Show: Boolean = true;
+                              DoDisableAutoSizing: boolean = false); override;
   end;
 
 implementation
@@ -1374,6 +1377,14 @@ begin
     IDEWindowCreators.ShowForm(CurDialog,BringToFront);
     CurDialog.EndUpdate;
   end;
+end;
+
+procedure TDebugManager.ViewDisassembler(AnAddr: TDBGPtr; BringToFront: Boolean;
+  Show: Boolean; DoDisableAutoSizing: boolean);
+begin
+  ViewDebugDialog(ddtAssembler, BringToFront, Show, DoDisableAutoSizing);
+  if FDialogs[ddtAssembler] <> nil
+  then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(FDebugger, FCurrentLocation.Address, AnAddr);
 end;
 
 procedure TDebugManager.DestroyDebugDialog(const ADialogType: TDebugDialogType);

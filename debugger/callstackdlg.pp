@@ -47,6 +47,7 @@ type
   TCallStackDlg = class(TDebuggerDlg)
     aclActions: TActionList;
     actCopyAll: TAction;
+    actShowDisass: TAction;
     actToggleBreakPoint: TAction;
     actViewBottom: TAction;
     actViewTop: TAction;
@@ -55,6 +56,7 @@ type
     actViewMore: TAction;
     actSetCurrent: TAction;
     actShow: TAction;
+    popShowDisass: TMenuItem;
     popToggle: TMenuItem;
     ToolButtonPower: TToolButton;
     ToolButton2: TToolButton;
@@ -82,6 +84,7 @@ type
     ToolButtonMore: TToolButton;
     ToolButtonMax: TToolButton;
     ToolButtonGoto: TToolButton;
+    procedure actShowDisassExecute(Sender: TObject);
     procedure actToggleBreakPointExecute(Sender: TObject);
     procedure actViewBottomExecute(Sender: TObject);
     procedure actViewGotoExecute(Sender: TObject);
@@ -568,6 +571,15 @@ begin
   ToggleBreakpoint(lvCallStack.Selected);
 end;
 
+procedure TCallStackDlg.actShowDisassExecute(Sender: TObject);
+var
+  Entry: TCallStackEntry;
+begin
+  Entry := GetCurrentEntry;
+  if (Entry = nil) or (Entry.Address = 0) then Exit;
+  DebugBoss.ViewDisassembler(Entry.Address);
+end;
+
 procedure TCallStackDlg.actViewGotoExecute(Sender: TObject);
 begin
   try
@@ -641,6 +653,7 @@ begin
   actViewBottom.Caption := lisBottom;
   actViewGoto.Caption := lisGotoSelectedSourceLine;
   actShow.Caption := lisViewSource;
+  actShowDisass.Caption := lisViewSourceDisass;
   actToggleBreakPoint.Caption := uemToggleBreakpoint;
   actSetCurrent.Caption := lisCurrent;
   actCopyAll.Caption := lisCopyAll;

@@ -174,6 +174,9 @@ type
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType;
                               BringToFront: Boolean = True; Show: Boolean = true;
                               DoDisableAutoSizing: boolean = false); virtual; abstract;
+    procedure ViewDisassembler(AnAddr: TDBGPtr;
+                              BringToFront: Boolean = True; Show: Boolean = true;
+                              DoDisableAutoSizing: boolean = false); virtual; abstract;
   public
     property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger
     property Debuggers[const AIndex: Integer]: TDebuggerClass read GetDebuggerClass;

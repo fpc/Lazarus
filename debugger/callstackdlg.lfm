@@ -173,6 +173,9 @@ inherited CallStackDlg: TCallStackDlg
       Default = True
       OnClick = actShowClick
     end
+    object popShowDisass: TMenuItem
+      Action = actShowDisass
+    end
     object popToggle: TMenuItem
       Action = actToggleBreakPoint
       OnClick = actToggleBreakPointExecute
@@ -237,6 +240,10 @@ inherited CallStackDlg: TCallStackDlg
       Caption = 'Toggle Breakpoint'
       OnExecute = actToggleBreakPointExecute
       ShortCut = 116
+    end
+    object actShowDisass: TAction
+      Caption = 'actShowDisass'
+      OnExecute = actShowDisassExecute
     end
   end
   object mnuLimit: TPopupMenu[4]

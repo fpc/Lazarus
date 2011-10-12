@@ -87,7 +87,8 @@ type
     FDebugManager: TBaseDebugManager;
     FDisassembler: TIDEDisassembler;
     FDisassemblerNotification: TIDEDisassemblerNotification;
-    FCurrentLocation, FLocation: TDBGPtr;
+    FCurrentLocation: TDBGPtr; // current view location (lines are relative to this location)
+    FLocation: TDBGPtr;  // the actual PC, green "=>" execution mark
     FMouseIsDown: Boolean;
     FIsVScrollTrack: Boolean;
     FVScrollCounter, FVScrollPos: Integer;
@@ -148,7 +149,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr);
+    procedure SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr; const ADispAddr: TDBGPtr = 0);
     property Disassembler: TIDEDisassembler read FDisassembler write SetDisassembler;
     property DebugManager: TBaseDebugManager read FDebugManager write FDebugManager;
     property BreakPoints;
@@ -428,7 +429,9 @@ begin
   if AnAsmDlgLineEntry.ImageIndex > 0 then exit;
   if not (AnAsmDlgLineEntry.State  in [lmsStatement, lmsSource]) then exit;
 
-  AnAsmDlgLineEntry.ImageIndex := GetBreakPointImageIndex(GetBreakpointFor(AnAsmDlgLineEntry), AnAsmDlgLineEntry.Addr = FLocation);
+  AnAsmDlgLineEntry.ImageIndex := GetBreakPointImageIndex(GetBreakpointFor(AnAsmDlgLineEntry),
+                                  (AnAsmDlgLineEntry.State = lmsStatement) and
+                                  (AnAsmDlgLineEntry.Addr = FLocation));
   if AnAsmDlgLineEntry.ImageIndex >= 0
   then exit;
 
@@ -819,13 +822,15 @@ begin
   SetLineCount(pbAsm.Height div FLineHeight);
 end;
 
-procedure TAssemblerDlg.SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr);
+procedure TAssemblerDlg.SetLocation(ADebugger: TDebugger; const AAddr: TDBGPtr; const ADispAddr: TDBGPtr = 0);
 var
   i: Integer;
 begin
   SetDebugger(ADebugger);
 
-  FCurrentLocation := AAddr;
+  if ADispAddr <> 0
+  then FCurrentLocation := ADispAddr
+  else FCurrentLocation := AAddr;
   FLocation := AAddr;
   FLastTopLineValid := False;
 
