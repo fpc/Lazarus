@@ -167,7 +167,7 @@ install-arch-stamp:
 	sed -e 's/Lazarus.*/& (${DEB_UPSTREAM_MAIN_VERSION})/' -e 's/Exec=startlazarus/&-${DEB_UPSTREAM_MAIN_VERSION}/' $(CURDIR)/install/lazarus.desktop > $(INSTALL_DIR)/usr/share/applications/lazarus-${DEB_UPSTREAM_MAIN_VERSION}.desktop
 	# Install configuration files
 	${MKDIR} $(INSTALL_DIR)/etc/lazarus-${DEB_UPSTREAM_MAIN_VERSION}
-	sed -e "s#__LAZARUSDIR__#/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/#" -e "s#__FPCSRCDIR__#/usr/share/fpcsrc/\$(FPCVER)/#" ${CURDIR}/tools/install/linux/environmentoptions.xml > $(INSTALL_DIR)/etc/lazarus-${DEB_UPSTREAM_MAIN_VERSION}/environmentoptions.xml
+	sed -e "s#__LAZARUSDIR__#/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/#" -e "s#__FPCSRCDIR__#/usr/share/fpcsrc/$$(FPCVER)/#" ${CURDIR}/tools/install/linux/environmentoptions.xml > $(INSTALL_DIR)/etc/lazarus-${DEB_UPSTREAM_MAIN_VERSION}/environmentoptions.xml
 	fpcsubst -d LazarusVersion=${DEB_UPSTREAM_MAIN_VERSION} -i ${CURDIR}/tools/install/linux/helpoptions.xml -o $(INSTALL_DIR)/etc/lazarus-${DEB_UPSTREAM_MAIN_VERSION}/helpoptions.xml
 	# Install contributer list
 	${MKDIR} ${LIB_DIR}/docs
