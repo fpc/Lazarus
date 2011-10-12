@@ -138,6 +138,7 @@ begin
   try
     // read image
     ImgReader := GetReaderClass.Create;
+    ImgReader.OnProgress := Self.OnProgress;
     IntfImg := TLazIntfImage.Create(0,0,[]);
     InitializeReader(IntfImg, ImgReader);
     if Supports(ImgReader, ILazImageReader, LazReader)
