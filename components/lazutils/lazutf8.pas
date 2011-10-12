@@ -1205,7 +1205,7 @@ begin
   begin
     c := InStr^;
     case c of
-    'A'..'Z',#$C3, #$C4, #$C5..#$C8, #$CE, #$D0: Break;
+    'A'..'Z',#$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2: Break;
     // already lower, or otherwhise not affected
     else
       inc(InStr);
@@ -1394,6 +1394,39 @@ begin
                   OutStr[-2]  := chr(ord(OutStr[-2])+1);
                   OutStr[-1]  := chr(ord(c) - $20);
                 end;
+            end;
+          end;
+          // Archaic and non-slavic cyrillic 460-47F = D1A0-D1BF
+          // These require just adding 1 to get the lowercase
+          #$D1:
+          begin
+            c := OutStr[1];
+            inc(InStr);
+            inc(OutStr, 2);
+            case c of
+              #$A0..#$BF:
+              begin
+                if ord(c) mod 2 = 0 then
+                  OutStr[-1]  := chr(ord(c) + 1);
+              end;
+            end;
+          end;
+          // Archaic and non-slavic cyrillic 480-4BF = D280-D2BF
+          // These mostly require just adding 1 to get the lowercase
+          #$D2:
+          begin
+            c := OutStr[1];
+            inc(InStr);
+            inc(OutStr, 2);
+            case c of
+              #$80: OutStr[-1]  := chr(ord(c) + 1);
+              // #$81 is already lowercase
+              // #$82-#$89 ???
+              #$8A..#$BF:
+              begin
+                if ord(c) mod 2 = 0 then
+                  OutStr[-1]  := chr(ord(c) + 1);
+              end;
             end;
           end;
         else
