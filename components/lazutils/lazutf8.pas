@@ -1431,7 +1431,6 @@ begin
           end;
         else
           begin
-            inc(InStr);
             inc(OutStr);
           end;
       end; // Case InStr^
