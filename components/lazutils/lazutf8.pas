@@ -1297,31 +1297,65 @@ var
         // Archaic and non-slavic cyrillic 460-47F = D1A0-D1BF
         // These require just adding 1 to get the lowercase
         #$D1:
-        begin
-          case d of
-            #$A0..#$BF:
-            begin
-              if ord(d) mod 2 = 0 then
-                OutStr[-1]  := chr(ord(d) + 1);
+          begin
+            case d of
+              #$A0..#$BF:
+              begin
+                if ord(d) mod 2 = 0 then
+                  OutStr[-1]  := chr(ord(d) + 1);
+              end;
             end;
           end;
-        end;
         // Archaic and non-slavic cyrillic 480-4BF = D280-D2BF
         // These mostly require just adding 1 to get the lowercase
         #$D2:
-        begin
-          case d of
-            #$80: OutStr[-1]  := chr(ord(d) + 1);
-            // #$81 is already lowercase
-            // #$82-#$89 ???
-            #$8A..#$BF:
-            begin
-              if ord(d) mod 2 = 0 then
-                OutStr[-1]  := chr(ord(d) + 1);
+          begin
+            case d of
+              #$80: OutStr[-1]  := chr(ord(d) + 1);
+              // #$81 is already lowercase
+              // #$82-#$89 ???
+              #$8A..#$BF:
+              begin
+                if ord(d) mod 2 = 0 then
+                  OutStr[-1]  := chr(ord(d) + 1);
+              end;
             end;
           end;
-        end;
-      end;
+    end;
+  end;
+
+  procedure HandleTripplByte; inline;
+  begin
+    //case c of
+      // Georgian codepoints 10A0-10C5 => 2D00-2D25
+      // In UTF-8 this is:
+      // E1 82 A0 - E1 82 BF => E2 B4 80 - E2 B4 9F
+      // E1 83 80 - E1 83 85 => E2 B4 A0 - E2 B4 A5
+      //#$E1:
+      //  begin
+          c := InStr[-1];
+          case d of
+            #$82:
+              begin
+                if (c in [#$A0..#$BF]) then
+                begin
+                  OutStr[-3] := #$E2;
+                  OutStr[-2] := #$B4;
+                  OutStr[-1] := chr(ord(c) - $20);
+                end
+              end;
+            #$83:
+              begin
+                if (c in [#$80..#$85]) then
+                begin
+                  OutStr[-3] := #$E2;
+                  OutStr[-2] := #$B4;
+                  OutStr[-1] := chr(ord(c) + $20);
+                end;
+              end;
+          end;
+    //    end;
+    //end;
   end;
 
 begin
@@ -1335,7 +1369,7 @@ begin
   begin
     c := InStr^;
     case c of
-    'A'..'Z',#$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2: Break;
+    'A'..'Z',#$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2, #$E1: Break;
     // already lower, or otherwhise not affected
     else
       inc(InStr);
@@ -1403,6 +1437,13 @@ begin
             HandleDualByte;
             if CounterDiff <> 0 then break;
           end; //c3..d2
+        #$e1:
+          begin
+            d := OutStr[0]; // 2nd char in 2 byte utf8
+            inc(InStr, 2);
+            inc(OutStr, 2);
+            HandleTripplByte;
+          end;
       end; // Case InStr^
     end;
 
@@ -1446,15 +1487,26 @@ begin
               inc(OutStr);
             end;
           end;
-        #$c3..#$D2: begin
-          OutStr^  := c;
-          d := InStr[1]; // 2nd char in 2 byte utf8
-          OutStr[1]  := d;
-          inc(InStr, 2);
-          inc(OutStr, 2);
-          HandleDualByte;
-          if CounterDiff = 0 then break;
-        end; // c3..d2
+        #$c3..#$D2:
+          begin
+            OutStr^  := c;
+            d := InStr[1]; // 2nd char in 2 byte utf8
+            OutStr[1]  := d;
+            inc(InStr, 2);
+            inc(OutStr, 2);
+            HandleDualByte;
+            if CounterDiff = 0 then break;
+          end; // c3..d2
+        #$e1:
+          begin
+            OutStr^  := c;
+            d := InStr[1]; // 2nd char in 2 byte utf8
+            OutStr[1]  := d;
+            OutStr[2]  := InStr[2];
+            inc(InStr, 3);
+            inc(OutStr, 3);
+            HandleTripplByte;
+          end;
         else
           begin
             // Copy the character if the string was disaligned by previous changes
@@ -1826,7 +1878,8 @@ begin
         end;
         inc(InStr, 3);
         inc(OutStr, 3);
-      end;    else
+      end;
+      else
       // Copy the character if the string was disaligned by previous changes
       if (CounterDiff <> 0) then OutStr^:=c;
       inc(InStr);
