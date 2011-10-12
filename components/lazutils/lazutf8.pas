@@ -1492,31 +1492,26 @@ begin
               inc(OutStr);
             end;
           end;
-        #$c3..#$E1:
-          begin
-            case c of
-              #$c3..#$D2:
-                begin
-                  OutStr^  := c;
-                  d := InStr[1]; // 2nd char in 2 byte utf8
-                  OutStr[1]  := d;
-                  inc(InStr, 2);
-                  inc(OutStr, 2);
-                  HandleDualByte;
-                  if CounterDiff = 0 then break;
-                end; // c3..d2
-              #$e1:
-                begin
-                  OutStr^  := c;
-                  d := InStr[1]; // 2nd char in 2 byte utf8
-                  OutStr[1]  := d;
-                  OutStr[2]  := InStr[2];
-                  inc(InStr, 3);
-                  inc(OutStr, 3);
-                  HandleTripplByte;
-                end;
+         #$c3..#$D2:
+            begin
+              OutStr^  := c;
+              d := InStr[1]; // 2nd char in 2 byte utf8
+              OutStr[1]  := d;
+              inc(InStr, 2);
+              inc(OutStr, 2);
+              HandleDualByte;
+              if CounterDiff = 0 then break;
+            end; // c3..d2
+          #$e1:
+            begin
+              OutStr^  := c;
+              d := InStr[1]; // 2nd char in 2 byte utf8
+              OutStr[1]  := d;
+              OutStr[2]  := InStr[2];
+              inc(InStr, 3);
+              inc(OutStr, 3);
+              HandleTripplByte;
             end;
-          end;
         else
           begin
             // Copy the character if the string was disaligned by previous changes
