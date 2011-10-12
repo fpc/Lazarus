@@ -1272,6 +1272,9 @@ begin
                 inc(OutStr);
             end;
           end;
+        // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
+        // $C380..$C39E: NewChar := OldChar + $20;
+        // $C39F: ß already lowercase
         #$C3:
           begin
             c := OutStr[1];
@@ -1280,6 +1283,13 @@ begin
             inc(InStr);
             inc(OutStr, 2);
           end;
+        // $C481..$C4A9: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
+        // Turkish capital dotted i to small dotted i
+        // $C4B0 -> 'i'
+        // $C4B1 turkish lowercase undotted ı
+        // $C4B2..$C4B6: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
+        // $C4B7: ĸ => K ?
+        // $C4B8..$C588: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
         #$C4:
           begin
             c := OutStr[1];
@@ -1305,6 +1315,10 @@ begin
                 end;
             end;
           end;
+        // $C589 ŉ => ?
+        // $C58A..$C5B7: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
+        // $C5B8:        NewChar := $C3BF; // Ÿ
+        // $C5B9..$C8B3: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
         #$C5:
           begin
             inc(InStr);
@@ -1344,6 +1358,8 @@ begin
             inc(InStr);
             inc(OutStr, 2);
           end;
+        // $CE91..$CE9F: NewChar := OldChar + $20; // Greek Characters
+        // $CEA0..$CEA9: NewChar := OldChar + $E0; // Greek Characters
         #$CE:   // Greek Characters
           begin
             inc(InStr);
@@ -1361,6 +1377,9 @@ begin
                 end;
             end;
           end;
+        // $D080..$D08F: NewChar := OldChar + $110; // Cyrillic alphabet
+        // $D090..$D09F: NewChar := OldChar + $20; // Cyrillic alphabet
+        // $D0A0..$D0AF: NewChar := OldChar + $E0; // Cyrillic alphabet
         #$D0:   // Cyrillic alphabet
           begin
             inc(InStr);
