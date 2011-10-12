@@ -1426,25 +1426,30 @@ begin
                 OutStr[-1] := chr(ord(c)+32);
             end;
           end;
-        // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
-        // $C380..$C39E: NewChar := OldChar + $20;
-        // $C39F: ß already lowercase
-        #$c3..#$D2:
+        #$c3..#$E1:
           begin
-            d := OutStr[0]; // 2nd char in 2 byte utf8
-            inc(InStr);
-            inc(OutStr);
-            HandleDualByte;
-            if CounterDiff <> 0 then break;
-          end; //c3..d2
-        #$e1:
-          begin
-            d := OutStr[0]; // 2nd char in 2 byte utf8
-            inc(InStr, 2);
-            inc(OutStr, 2);
-            HandleTripplByte;
+            case c of
+              // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
+              // $C380..$C39E: NewChar := OldChar + $20;
+              // $C39F: ß already lowercase
+              #$c3..#$D2:
+                begin
+                  d := OutStr[0]; // 2nd char in 2 byte utf8
+                  inc(InStr);
+                  inc(OutStr);
+                  HandleDualByte;
+                  if CounterDiff <> 0 then break;
+                end; //c3..d2
+              #$e1:
+                begin
+                  d := OutStr[0]; // 2nd char in 2 byte utf8
+                  inc(InStr, 2);
+                  inc(OutStr, 2);
+                  HandleTripplByte;
+                end;
+            end;
           end;
-      end; // Case InStr^
+      end; // Case c
     end;
 
     while (true) do begin
@@ -1487,25 +1492,30 @@ begin
               inc(OutStr);
             end;
           end;
-        #$c3..#$D2:
+        #$c3..#$E1:
           begin
-            OutStr^  := c;
-            d := InStr[1]; // 2nd char in 2 byte utf8
-            OutStr[1]  := d;
-            inc(InStr, 2);
-            inc(OutStr, 2);
-            HandleDualByte;
-            if CounterDiff = 0 then break;
-          end; // c3..d2
-        #$e1:
-          begin
-            OutStr^  := c;
-            d := InStr[1]; // 2nd char in 2 byte utf8
-            OutStr[1]  := d;
-            OutStr[2]  := InStr[2];
-            inc(InStr, 3);
-            inc(OutStr, 3);
-            HandleTripplByte;
+            case c of
+              #$c3..#$D2:
+                begin
+                  OutStr^  := c;
+                  d := InStr[1]; // 2nd char in 2 byte utf8
+                  OutStr[1]  := d;
+                  inc(InStr, 2);
+                  inc(OutStr, 2);
+                  HandleDualByte;
+                  if CounterDiff = 0 then break;
+                end; // c3..d2
+              #$e1:
+                begin
+                  OutStr^  := c;
+                  d := InStr[1]; // 2nd char in 2 byte utf8
+                  OutStr[1]  := d;
+                  OutStr[2]  := InStr[2];
+                  inc(InStr, 3);
+                  inc(OutStr, 3);
+                  HandleTripplByte;
+                end;
+            end;
           end;
         else
           begin
