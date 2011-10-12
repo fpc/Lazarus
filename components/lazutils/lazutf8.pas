@@ -66,8 +66,6 @@ procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt
 {$ifdef LAZUTF8_USE_TABLES}
 function UnicodeLowercase(u: cardinal): cardinal;
 function UTF8LowerCaseMattias(const s: utf8string): utf8string;
-function UTF8LowerCaseMartin(const AInStr: utf8string): utf8string;
-function UTF8LowerCaseMartin(const AInStr, ALocale: utf8string): utf8string;
 {$endif}
 function UTF8LowerCase(const AInStr: utf8string): utf8string;
 function UTF8LowerCase(const AInStr, ALocale: utf8string): utf8string;
@@ -1168,12 +1166,16 @@ begin
 end;
 {$endif}
 
-function UTF8LowerCaseMartin(const AInStr: utf8string): utf8string;
+function UTF8LowerCase(const AInStr: utf8string): utf8string;
 begin
-  Result := UTF8LowerCaseMartin(AInStr, '');
+  Result := UTF8LowerCase(AInStr, '');
 end;
 
-function UTF8LowerCaseMartin(const AInStr, ALocale: utf8string): utf8string;
+{
+  AInStr - The input string
+  ALocale - The locale. Use '' for maximum speed if one desires to ignore the locale
+}
+function UTF8LowerCase(const AInStr, ALocale: utf8string): utf8string;
 const
   ResultSizeIncr = 10;
 var
@@ -1595,154 +1597,6 @@ begin
     end;
 
   end;
-end;
-
-function UTF8LowerCase(const AInStr: utf8string): utf8string;
-begin
-  Result := UTF8LowerCase(AInStr, '');
-end;
-
-{
-  AInStr - The input string
-  ALocale - The locale. Use '' for maximum speed if one desires to ignore the locale
-}
-function UTF8LowerCase(const AInStr, ALocale: utf8string): utf8string;
-var
-  i, InCounter, OutCounter: PtrInt;
-  OutStr: PChar = nil;
-  CharLen: integer;
-  CharProcessed: Boolean;
-  NewCharLen: integer;
-  NewChar, OldChar: Word;
-  TheStringIsUnique: Boolean = False;
-  // Language identification
-  IsTurkish: Boolean;
-
-  // This is an optimization for strings which are already fully lowercase in ASCII
-  procedure MakeUnique(); inline;
-  begin
-    if not TheStringIsUnique then
-    begin
-      UniqueString(Result);
-      OutStr := PChar(Result);
-      TheStringIsUnique := True;
-    end;
-  end;
-
-begin
-  // Start with the same string, and progressively modify
-  Result:=AInStr;
-
-  // Language identification
-  IsTurkish := ALocale = 'tu';
-
-  InCounter:=1; // for AInStr
-  OutCounter := 0; // for Result
-  while InCounter<=length(AInStr) do
-  begin
-    { First ASCII chars }
-    if (AInStr[InCounter] <= 'Z') and (AInStr[InCounter] >= 'A') then
-    begin
-      // Special turkish handling
-      // capital undotted I to small undotted i
-      if IsTurkish and (AInStr[InCounter] = 'I') then
-      begin
-        SetLength(Result,Length(Result)+1);// Increase the buffer
-        TheStringIsUnique := True;
-        OutStr := PChar(Result);
-        OutStr[OutCounter]:=#$C4;
-        OutStr[OutCounter+1]:=#$B1;
-        inc(InCounter);
-        inc(OutCounter,2);
-      end
-      else
-      begin
-        MakeUnique();
-        OutStr[OutCounter]:=chr(ord(AInStr[InCounter])+32);
-        inc(InCounter);
-        inc(OutCounter);
-      end;
-    end
-    { Now fast ASCII }
-    else if AInStr[InCounter] <= #$7F then
-    begin
-      // Copy the character if the string was disaligned by previous changes
-      if (InCounter <> OutCounter+1) then
-      begin
-        MakeUnique();
-        OutStr[OutCounter]:=AInStr[InCounter];
-      end;
-
-      inc(InCounter);
-      inc(OutCounter);
-    end
-    { Now everything else }
-    else
-    begin
-      CharLen := UTF8CharacterLength(@AInStr[InCounter]);
-      CharProcessed := False;
-      NewCharLen := CharLen;
-
-      if CharLen = 2 then
-      begin
-        OldChar := (Ord(AInStr[InCounter]) shl 8) or Ord(AInStr[InCounter+1]);
-        NewChar := 0;
-
-        // Major processing
-        case OldChar of
-        // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
-        $C380..$C39E: NewChar := OldChar + $20;
-        // $C39F: ß already lowercase
-        $C481..$C4A9: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
-        // Turkish capital dotted i to small dotted i
-        $C4B0:
-        begin
-          MakeUnique();
-          OutStr[OutCounter]:='i';
-          NewCharLen := 1;
-          CharProcessed := True;
-        end;
-        // $C4B1 turkish lowercase undotted ı
-        $C4B2..$C4B6: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
-        // $C4B7: ĸ => K ?
-        $C4B8..$C588: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
-        // $C589 ŉ => ?
-        $C58A..$C5B7: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
-        $C5B8:        NewChar := $C3BF; // Ÿ
-        $C5B9..$C8B3: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
-        //
-        $CE91..$CE9F: NewChar := OldChar + $20; // Greek Characters
-        $CEA0..$CEA9: NewChar := OldChar + $E0; // Greek Characters
-        $D080..$D08F: NewChar := OldChar + $110; // Cyrillic alphabet
-        $D090..$D09F: NewChar := OldChar + $20; // Cyrillic alphabet
-        $D0A0..$D0AF: NewChar := OldChar + $E0; // Cyrillic alphabet
-        end;
-
-        if NewChar <> 0 then
-        begin
-          MakeUnique();
-          OutStr[OutCounter]  := Chr(Hi(NewChar));
-          OutStr[OutCounter+1]:= Chr(Lo(NewChar));
-          CharProcessed := True;
-        end;
-      end;
-
-      // Copy the character if the string was disaligned by previous changed
-      // and no processing was done in this character
-      if (InCounter <> OutCounter+1) and (not CharProcessed) then
-      begin
-        MakeUnique();
-        for i := 0 to CharLen-1 do
-          OutStr[OutCounter+i]  :=AInStr[InCounter+i];
-      end;
-
-      inc(InCounter, CharLen);
-      inc(OutCounter, NewCharLen);
-    end; // case
-  end; // while
-
-  // Final correction of the buffer size
-  SetLength(Result,OutCounter);
 end;
 
 function UTF8UpperCase(const AInStr: utf8string): utf8string;

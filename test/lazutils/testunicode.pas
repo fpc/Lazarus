@@ -43,7 +43,6 @@ end;
 procedure AssertStringOperationUTF8LowerCase(AMsg, ALocale, AStr1, AStrExpected2: utf8string);
 begin
   AssertStringOperation(AMsg, AStr1, UTF8LowerCase(AStr1, ALocale), AStrExpected2);
-  AssertStringOperation('MARTIN:'+AMsg, AStr1, UTF8LowerCaseMartin(AStr1, ALocale), AStrExpected2);
 end;
 
 function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
@@ -119,23 +118,6 @@ begin
   // What shouldnt change
   AssertStringOperationUTF8LowerCase('Chinese UTF8LowerCase 1', '', '名字叫嘉英，嘉陵江的嘉，英國的英', '名字叫嘉英，嘉陵江的嘉，英國的英');
 
-  // Performance test
-  Write('Martin LowerCase- Performance test took:    ');
-  for j := 0 to 5 do begin
-    lStartTime := Now;
-    for i := 0 to TimerLoop do
-    begin
-      if j = 0 then Str := UTF8LowerCaseMartin('abcdefghijklmnopqrstuwvxyz');
-      if j = 1 then Str := UTF8LowerCaseMartin('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
-      if j = 2 then Str := UTF8LowerCaseMartin('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
-      if j = 3 then Str := UTF8LowerCaseMartin('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
-      if j = 4 then Str := UTF8LowerCaseMartin('АБВЕЁЖЗКЛМНОПРДЙГ');
-      if j = 5 then Str := UTF8LowerCaseMartin('名字叫嘉英，嘉陵江的嘉，英國的英');
-    end;
-    lTimeDiff := Now - lStartTime;
-    Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
-  end;
-  writeln;
   // Performance test
   Write('Mattias LowerCase- Performance test took:    ');
   for j := 0 to 5 do begin
