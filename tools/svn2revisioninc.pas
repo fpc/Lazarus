@@ -421,11 +421,12 @@ end;
 function TSvn2RevisionApplication.IsThisGitUpstreamBranch: boolean;
 const
   cBufSize = 1024;
+  MainBranchNames: array[0..1] of string = ('upstream', 'master');
 var
   p: TProcessUTF8;
   Buffer: string;
   s: string;
-  i: integer;
+  i, j: integer;
   n: LongInt;
   sl: TStringList;
 begin
@@ -447,21 +448,17 @@ begin
           s := s + Copy(Buffer, 1, n);
         until n < cBufSize;
         sl.Text := s;
-        // now search for the active branch marker '*' symbol
+        // Search for the active branch marker '*' symbol.
+        // Guess the main branch name. Support 'master' and 'upstream'.
         MainBranch := '';
-        for i := 0 to sl.Count-1 do
-        begin
-          s := sl[i];
-          // Guess the main branch name. 'master' takes precedence if both are defined.
-          if (MainBranch = '') then begin
-            if Pos('master', s) > 0 then
-              MainBranch := 'master'
-            else if Pos('upstream', s) > 0 then
-              MainBranch := 'upstream';
-            if (MainBranch <> '') and (s[1] = '*') then
-            begin
-              Result := True;
-              exit;
+        for i := 0 to sl.Count-1 do begin
+          for j := Low(MainBranchNames) to High(MainBranchNames) do begin
+            if Pos(MainBranchNames[j], sl[i]) > 0 then begin
+              MainBranch := MainBranchNames[j];
+              if sl[i][1] = '*' then begin
+                Result := True;
+                exit;
+              end;
             end;
           end;
         end;
