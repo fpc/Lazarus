@@ -113,11 +113,7 @@ begin
   // Turkish
   AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 1', 'tu', 'abcçdefgğhııijklmnoöprsştuüvyz', 'abcçdefgğhııijklmnoöprsştuüvyz');
   AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 2', 'tu', 'ABCÇDEFGĞHIIİJKLMNOÖPRSŞTUÜVYZ', 'abcçdefgğhııijklmnoöprsştuüvyz');
-
-  AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 1', 'tu',
-    'AhıIxXa',
-    'ahııxxa');
-
+  AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 3', 'tu', 'AhıIxXa', 'ahııxxa');
   // Cyrillic
   AssertStringOperationUTF8LowerCase('Russian UTF8LowerCase 1', '', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ', 'абвеёжзклмнопрдйг суфхцчшщъыьэюяит');
   AssertStringOperationUTF8LowerCase('Russian UTF8LowerCase 2', '', 'абвеёжзклмнопрдйг суфхцчшщъыьэюяит', 'абвеёжзклмнопрдйг суфхцчшщъыьэюяит');
@@ -125,31 +121,33 @@ begin
   AssertStringOperationUTF8LowerCase('Cyrillic UTF8UpperCase 2', '', 'Ҋҋ Ҍҍ Ҏҏ Ґґ Ғғ Ҕҕ Җҗ Ҙҙ Ққ Ҝҝ Ҟҟ Ҡҡ Ңң Ҥҥ Ҧҧ Ҩҩ Ҫҫ Ҭҭ Үү Ұұ Ҳҳ Ҵҵ Ҷҷ Ҹҹ Һһ Ҽҽ Ҿҿ', 'ҋҋ ҍҍ ҏҏ ґґ ғғ ҕҕ җҗ ҙҙ ққ ҝҝ ҟҟ ҡҡ ңң ҥҥ ҧҧ ҩҩ ҫҫ ҭҭ үү ұұ ҳҳ ҵҵ ҷҷ ҹҹ һһ ҽҽ ҿҿ');
   // What shouldnt change
   AssertStringOperationUTF8LowerCase('Chinese UTF8LowerCase 1', '', '名字叫嘉英，嘉陵江的嘉，英國的英', '名字叫嘉英，嘉陵江的嘉，英國的英');
+  // Georgian
+  AssertStringOperationUTF8LowerCase('Georgian UTF8LowerCase 1', '', 'Ⴀⴀ Ⴁⴁ Ⴂⴂ Ⴃⴃ Ⴄⴄ Ⴅⴅ Ⴆⴆ Ⴇⴇ Ⴈⴈ Ⴉⴉ Ⴊⴊ Ⴋⴋ Ⴌⴌ Ⴍⴍ Ⴎⴎ Ⴏⴏ Ⴐⴐ Ⴑⴑ', 'ⴀⴀ ⴁⴁ ⴂⴂ ⴃⴃ ⴄⴄ ⴅⴅ ⴆⴆ ⴇⴇ ⴈⴈ ⴉⴉ ⴊⴊ ⴋⴋ ⴌⴌ ⴍⴍ ⴎⴎ ⴏⴏ ⴐⴐ ⴑⴑ');
+  AssertStringOperationUTF8LowerCase('Georgian UTF8LowerCase 2', '', 'Ⴒⴒ Ⴓⴓ Ⴔⴔ Ⴕⴕ Ⴖⴖ Ⴗⴗ Ⴘⴘ Ⴙⴙ Ⴚⴚ Ⴛⴛ Ⴜⴜ Ⴝⴝ Ⴞⴞ Ⴟⴟ Ⴠⴠ Ⴡⴡ Ⴢⴢ Ⴣⴣ Ⴤⴤ Ⴥⴥ', 'ⴒⴒ ⴓⴓ ⴔⴔ ⴕⴕ ⴖⴖ ⴗⴗ ⴘⴘ ⴙⴙ ⴚⴚ ⴛⴛ ⴜⴜ ⴝⴝ ⴞⴞ ⴟⴟ ⴠⴠ ⴡⴡ ⴢⴢ ⴣⴣ ⴤⴤ ⴥⴥ');
 
-// repeat all tests with leading turkish i, to force offset
+  // repeat all tests with leading turkish i, to force offset
   // ASCII
-  AssertStringOperationUTF8LowerCase('X ASCII UTF8LowerCase', 'tu', 'IABCDEFGHIJKLMNOPQRSTUWVXYZ', 'ıabcdefghıjklmnopqrstuwvxyz');
+  AssertStringOperationUTF8LowerCase('Offset ASCII UTF8LowerCase', 'tu', 'IABCDEFGHIJKLMNOPQRSTUWVXYZ', 'ıabcdefghıjklmnopqrstuwvxyz');
   // Latin
-  AssertStringOperationUTF8LowerCase('X Portuguese UTF8LowerCase 1', 'tu', 'IÇ/ç Ã/ã Õ/õ Á/á É/é Í/í Ó/ó Ú/ú Ü/ü À/à Â/â Ê/ê Î/î Ô/ô Û/û', 'ıç/ç ã/ã õ/õ á/á é/é í/í ó/ó ú/ú ü/ü à/à â/â ê/ê î/î ô/ô û/û');
-  AssertStringOperationUTF8LowerCase('X French UTF8LowerCase 1', 'tu', 'IÀ/à Â/â æ Ç/ç É/é È/è Ê/ê Ë/ë Î/î Ï/ï Ô/ô œ Ù/ù Û/û Ü/ü Ÿ/ÿ', 'ıà/à â/â æ ç/ç é/é è/è ê/ê ë/ë î/î ï/ï ô/ô œ ù/ù û/û ü/ü ÿ/ÿ');
-  AssertStringOperationUTF8LowerCase('X Polish UTF8LowerCase 1', 'tu', 'Iaąbcćdeęfghijklłmnńoóprsśtuwyzźż', 'ıaąbcćdeęfghijklłmnńoóprsśtuwyzźż');
-  AssertStringOperationUTF8LowerCase('X Polish UTF8LowerCase 2', 'tu', 'IAĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ', 'ıaąbcćdeęfghıjklłmnńoóprsśtuwyzźż');
-  AssertStringOperationUTF8LowerCase('X German UTF8LowerCase 1', 'tu', 'IÄ/ä,Ö/ö,Ü/ü,ß', 'ıä/ä,ö/ö,ü/ü,ß');
+  AssertStringOperationUTF8LowerCase('Offset Portuguese UTF8LowerCase 1', 'tu', 'IÇ/ç Ã/ã Õ/õ Á/á É/é Í/í Ó/ó Ú/ú Ü/ü À/à Â/â Ê/ê Î/î Ô/ô Û/û', 'ıç/ç ã/ã õ/õ á/á é/é í/í ó/ó ú/ú ü/ü à/à â/â ê/ê î/î ô/ô û/û');
+  AssertStringOperationUTF8LowerCase('Offset French UTF8LowerCase 1', 'tu', 'IÀ/à Â/â æ Ç/ç É/é È/è Ê/ê Ë/ë Î/î Ï/ï Ô/ô œ Ù/ù Û/û Ü/ü Ÿ/ÿ', 'ıà/à â/â æ ç/ç é/é è/è ê/ê ë/ë î/î ï/ï ô/ô œ ù/ù û/û ü/ü ÿ/ÿ');
+  AssertStringOperationUTF8LowerCase('Offset Polish UTF8LowerCase 1', 'tu', 'Iaąbcćdeęfghijklłmnńoóprsśtuwyzźż', 'ıaąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+  AssertStringOperationUTF8LowerCase('Offset Polish UTF8LowerCase 2', 'tu', 'IAĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ', 'ıaąbcćdeęfghıjklłmnńoóprsśtuwyzźż');
+  AssertStringOperationUTF8LowerCase('Offset German UTF8LowerCase 1', 'tu', 'IÄ/ä,Ö/ö,Ü/ü,ß', 'ıä/ä,ö/ö,ü/ü,ß');
   // Turkish
-  AssertStringOperationUTF8LowerCase('X Turkish UTF8LowerCase 1', 'tu', 'Iabcçdefgğhııijklmnoöprsştuüvyz', 'ıabcçdefgğhııijklmnoöprsştuüvyz');
-  AssertStringOperationUTF8LowerCase('X Turkish UTF8LowerCase 2', 'tu', 'IABCÇDEFGĞHIIİJKLMNOÖPRSŞTUÜVYZ', 'ıabcçdefgğhııijklmnoöprsştuüvyz');
-
-  AssertStringOperationUTF8LowerCase('X Turkish UTF8LowerCase 1', 'tu',
-    'IAhıIxXa',
-    'ıahııxxa');
-
+  AssertStringOperationUTF8LowerCase('Offset Turkish UTF8LowerCase 1', 'tu', 'Iabcçdefgğhııijklmnoöprsştuüvyz', 'ıabcçdefgğhııijklmnoöprsştuüvyz');
+  AssertStringOperationUTF8LowerCase('Offset Turkish UTF8LowerCase 2', 'tu', 'IABCÇDEFGĞHIIİJKLMNOÖPRSŞTUÜVYZ', 'ıabcçdefgğhııijklmnoöprsştuüvyz');
+  AssertStringOperationUTF8LowerCase('Offset Turkish UTF8LowerCase 1', 'tu', 'IAhıIxXa', 'ıahııxxa');
   // Cyrillic
-  AssertStringOperationUTF8LowerCase('X Russian UTF8LowerCase 1', 'tu', 'IАБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ', 'ıабвеёжзклмнопрдйг суфхцчшщъыьэюяит');
-  AssertStringOperationUTF8LowerCase('X Russian UTF8LowerCase 2', 'tu', 'Iабвеёжзклмнопрдйг суфхцчшщъыьэюяит', 'ıабвеёжзклмнопрдйг суфхцчшщъыьэюяит');
-  AssertStringOperationUTF8LowerCase('X Cyrillic UTF8UpperCase 1', 'tu', 'IѠѡ Ѣѣ Ѥѥ Ѧѧ Ѩѩ Ѫѫ Ѭѭ Ѯѯ Ѱѱ Ѳѳ Ѵѵ Ѷѷ Ѹѹ Ѻѻ Ѽѽ Ѿѿ Ҁҁ', 'ıѡѡ ѣѣ ѥѥ ѧѧ ѩѩ ѫѫ ѭѭ ѯѯ ѱѱ ѳѳ ѵѵ ѷѷ ѹѹ ѻѻ ѽѽ ѿѿ ҁҁ');
-  AssertStringOperationUTF8LowerCase('X Cyrillic UTF8UpperCase 2', 'tu', 'IҊҋ Ҍҍ Ҏҏ Ґґ Ғғ Ҕҕ Җҗ Ҙҙ Ққ Ҝҝ Ҟҟ Ҡҡ Ңң Ҥҥ Ҧҧ Ҩҩ Ҫҫ Ҭҭ Үү Ұұ Ҳҳ Ҵҵ Ҷҷ Ҹҹ Һһ Ҽҽ Ҿҿ', 'ıҋҋ ҍҍ ҏҏ ґґ ғғ ҕҕ җҗ ҙҙ ққ ҝҝ ҟҟ ҡҡ ңң ҥҥ ҧҧ ҩҩ ҫҫ ҭҭ үү ұұ ҳҳ ҵҵ ҷҷ ҹҹ һһ ҽҽ ҿҿ');
+  AssertStringOperationUTF8LowerCase('Offset Russian UTF8LowerCase 1', 'tu', 'IАБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ', 'ıабвеёжзклмнопрдйг суфхцчшщъыьэюяит');
+  AssertStringOperationUTF8LowerCase('Offset Russian UTF8LowerCase 2', 'tu', 'Iабвеёжзклмнопрдйг суфхцчшщъыьэюяит', 'ıабвеёжзклмнопрдйг суфхцчшщъыьэюяит');
+  AssertStringOperationUTF8LowerCase('Offset Cyrillic UTF8UpperCase 1', 'tu', 'IѠѡ Ѣѣ Ѥѥ Ѧѧ Ѩѩ Ѫѫ Ѭѭ Ѯѯ Ѱѱ Ѳѳ Ѵѵ Ѷѷ Ѹѹ Ѻѻ Ѽѽ Ѿѿ Ҁҁ', 'ıѡѡ ѣѣ ѥѥ ѧѧ ѩѩ ѫѫ ѭѭ ѯѯ ѱѱ ѳѳ ѵѵ ѷѷ ѹѹ ѻѻ ѽѽ ѿѿ ҁҁ');
+  AssertStringOperationUTF8LowerCase('Offset Cyrillic UTF8UpperCase 2', 'tu', 'IҊҋ Ҍҍ Ҏҏ Ґґ Ғғ Ҕҕ Җҗ Ҙҙ Ққ Ҝҝ Ҟҟ Ҡҡ Ңң Ҥҥ Ҧҧ Ҩҩ Ҫҫ Ҭҭ Үү Ұұ Ҳҳ Ҵҵ Ҷҷ Ҹҹ Һһ Ҽҽ Ҿҿ', 'ıҋҋ ҍҍ ҏҏ ґґ ғғ ҕҕ җҗ ҙҙ ққ ҝҝ ҟҟ ҡҡ ңң ҥҥ ҧҧ ҩҩ ҫҫ ҭҭ үү ұұ ҳҳ ҵҵ ҷҷ ҹҹ һһ ҽҽ ҿҿ');
   // What shouldnt change
-  AssertStringOperationUTF8LowerCase('X Chinese UTF8LowerCase 1', 'tu', 'I名字叫嘉英，嘉陵江的嘉，英國的英', 'ı名字叫嘉英，嘉陵江的嘉，英國的英');
+  AssertStringOperationUTF8LowerCase('Offset Chinese UTF8LowerCase 1', 'tu', 'I名字叫嘉英，嘉陵江的嘉，英國的英', 'ı名字叫嘉英，嘉陵江的嘉，英國的英');
+  // Georgian
+  AssertStringOperationUTF8LowerCase('Offset Georgian UTF8LowerCase 1', 'tu', 'IႠⴀ Ⴁⴁ Ⴂⴂ Ⴃⴃ Ⴄⴄ Ⴅⴅ Ⴆⴆ Ⴇⴇ Ⴈⴈ Ⴉⴉ Ⴊⴊ Ⴋⴋ Ⴌⴌ Ⴍⴍ Ⴎⴎ Ⴏⴏ Ⴐⴐ Ⴑⴑ', 'ⴀⴀ ⴁⴁ ⴂⴂ ⴃⴃ ⴄⴄ ⴅⴅ ⴆⴆ ⴇⴇ ⴈⴈ ⴉⴉ ⴊⴊ ⴋⴋ ⴌⴌ ⴍⴍ ⴎⴎ ⴏⴏ ⴐⴐ ⴑⴑ');
+  AssertStringOperationUTF8LowerCase('Offset Georgian UTF8LowerCase 2', 'tu', 'IႲⴒ Ⴓⴓ Ⴔⴔ Ⴕⴕ Ⴖⴖ Ⴗⴗ Ⴘⴘ Ⴙⴙ Ⴚⴚ Ⴛⴛ Ⴜⴜ Ⴝⴝ Ⴞⴞ Ⴟⴟ Ⴠⴠ Ⴡⴡ Ⴢⴢ Ⴣⴣ Ⴤⴤ Ⴥⴥ', 'ⴒⴒ ⴓⴓ ⴔⴔ ⴕⴕ ⴖⴖ ⴗⴗ ⴘⴘ ⴙⴙ ⴚⴚ ⴛⴛ ⴜⴜ ⴝⴝ ⴞⴞ ⴟⴟ ⴠⴠ ⴡⴡ ⴢⴢ ⴣⴣ ⴤⴤ ⴥⴥ');
 
   // Performance test
   Write('Mattias LowerCase- Performance test took:    ');
