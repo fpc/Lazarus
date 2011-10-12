@@ -68,7 +68,9 @@ function UnicodeLowercase(u: cardinal): cardinal;
 function UTF8LowerCaseMattias(const s: utf8string): utf8string;
 {$endif}
 function UTF8LowerCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
-function UTF8UpperCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
+function UTF8LowerCase2(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
+function UTF8UpperCase(const AInStr: utf8string): utf8string;
+function UTF8UpperCase(const AInStr, ALocale: utf8string): utf8string;
 {function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
 //                                  StopOnNonASCII: Boolean = false): PtrInt;
 //function ValidUTF8String(const s: String): String;
@@ -1164,35 +1166,164 @@ begin
 end;
 {$endif}
 
-{
-  AInStr - The input string
-  ALocale - The locale. Use '' for maximum speed if one desires to ignore the locale
-
-  Data from here: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt
-
-  List of ranges which have lowercase:
-  $0041..$0061  ASCII
-  $00C0..$00DE: Result:=UnicodeLower00C0_00DE[u];
-  $0100..$024E: Result:=UnicodeLower0100_024E[u];
-  $0386..$03AB: Result:=UnicodeLower0386_03AB[u];
-  $03D8..$042F: Result:=UnicodeLower03D8_042F[u];
-  $0460..$0512: Result:=UnicodeLower0460_0512[u];
-  $0531..$0556: Result:=u+48;
-  $10A0..$10C5  Georgian
-  $1E00..$1FFC: Result:=UnicodeLower1E00_1FFC[u];
-  $2126..$2183: Result:=UnicodeLower2126_2183[u];
-  $24B6..$24CF: Result:=u+26;
-  $2C00..$2C2E: Result:=u+48;
-  $2C60..$2CE2: Result:=UnicodeLower2C60_2CE2[u];
-  $FF21..$FF3A: Result:=u+32;
-}
-function UTF8LowerCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
+function UTF8LowerCase2(const AInStr: utf8string; ALocale: utf8string =''): utf8string;
+const
+  ResultSizeIncr = 10;
 var
-  i, CounterDiff: PtrInt;
+  i, CounterDiff, ExtraResultBytes: PtrInt;
   InStr, InStrEnd, OutStr: PChar;
   // Language identification
   IsTurkish: Boolean;
-  c, c2: Char;
+  c, d: Char;
+
+  procedure IncreaseResult;
+  begin
+    if -CounterDiff < ExtraResultBytes - 1 then exit;
+    OutStr := PChar(OutStr - PChar(Result));
+    SetLength(Result,Length(Result)+ResultSizeIncr);// Increase the buffer
+    OutStr := PtrInt(OutStr) + PChar(Result);
+    inc(ExtraResultBytes, ResultSizeIncr);
+  end;
+
+  procedure HandleDualByte; inline;
+  begin
+    case c of
+      #$C3:
+        begin
+          if d in [#$80..#$9E] then
+            OutStr[-1]  := chr(ord(d) + $20);
+        end;
+      // $C481..$C4A9: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
+      // Turkish capital dotted i to small dotted i
+      // $C4B0 -> 'i'
+      // $C4B1 turkish lowercase undotted ı
+      // $C4B2..$C4B6: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
+      // $C4B7: ĸ => K ?
+      // $C4B8..$C588: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
+      #$C4:
+        begin
+          case d of
+            #$81..#$A9, #$B2..#$B6: //0
+              begin
+                if ord(d) mod 2 = 0 then
+                  OutStr[-1]  := chr(ord(d) + 1);
+              end;
+            #$B8..#$FF: //1
+              begin
+                if ord(d) mod 2 = 1 then
+                  OutStr[-1]  := chr(ord(d) + 1);
+              end;
+            #$B0:            // Turkish capital dotted i to small dotted i
+              begin
+                dec(OutStr, 1);
+                OutStr[-1] := 'i';
+                inc(CounterDiff, 1);
+                //break; // InSTr and OutStr are pointing to different indexes
+              end;
+          end;
+        end;
+      // $C589 ŉ => ?
+      // $C58A..$C5B7: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
+      // $C5B8:        NewChar := $C3BF; // Ÿ
+      // $C5B9..$C8B3: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
+      #$C5:
+        begin
+          case d of
+            #$8A..#$B7: //0
+              begin
+                if ord(d) mod 2 = 0 then
+                  OutStr[-1]  := chr(ord(d) + 1);
+              end;
+            #$00..#$88, #$B9..#$FF: //1
+              begin
+                if ord(d) mod 2 = 1 then
+                  OutStr[-1]  := chr(ord(d) + 1);
+              end;
+            #$B8:  // Ÿ
+            begin
+              OutStr[-2] := #$C3;
+              OutStr[-1] := #$BF;
+            end;
+          end;
+        end;
+      #$C6..#$C7:
+        begin
+          if ord(d) mod 2 = 1 then
+            OutStr[-1]  := chr(ord(d) + 1);
+        end;
+      #$C8:
+        begin
+          if (d in [#$00..#$B3]) and (ord(d) mod 2 = 1) then
+            OutStr[-1]  := chr(ord(d) + 1);
+        end;
+      // $CE91..$CE9F: NewChar := OldChar + $20; // Greek Characters
+      // $CEA0..$CEA9: NewChar := OldChar + $E0; // Greek Characters
+      #$CE:   // Greek Characters
+        begin
+          case d of
+            #$91..#$9F:
+              begin
+                OutStr[-1]  := chr(ord(d) + $20);
+              end;
+            #$A0..#$A9:
+              begin
+                OutStr[-2]  := chr(ord(c)+1);
+                OutStr[-1]  := chr(ord(d) - $10);
+              end;
+          end;
+        end;
+      // $D080..$D08F: NewChar := OldChar + $110; // Cyrillic alphabet
+      // $D090..$D09F: NewChar := OldChar + $20; // Cyrillic alphabet
+      // $D0A0..$D0AF: NewChar := OldChar + $E0; // Cyrillic alphabet
+      #$D0:   // Cyrillic alphabet
+        begin
+          case d of
+            #$80..#$8F:
+              begin
+                OutStr[-2]  := chr(ord(c)+1);
+                OutStr[-1]  := chr(ord(d) + $10);
+              end;
+            #$90..#$9F:
+              begin
+                OutStr[-1]  := chr(ord(d) + $20);
+              end;
+            #$A0..#$AF:
+              begin
+                OutStr[-2]  := chr(ord(c)+1);
+                OutStr[-1]  := chr(ord(d) - $20);
+              end;
+          end;
+        end;
+        // Archaic and non-slavic cyrillic 460-47F = D1A0-D1BF
+        // These require just adding 1 to get the lowercase
+        #$D1:
+        begin
+          case d of
+            #$A0..#$BF:
+            begin
+              if ord(d) mod 2 = 0 then
+                OutStr[-1]  := chr(ord(d) + 1);
+            end;
+          end;
+        end;
+        // Archaic and non-slavic cyrillic 480-4BF = D280-D2BF
+        // These mostly require just adding 1 to get the lowercase
+        #$D2:
+        begin
+          case d of
+            #$80: OutStr[-1]  := chr(ord(d) + 1);
+            // #$81 is already lowercase
+            // #$82-#$89 ???
+            #$8A..#$BF:
+            begin
+              if ord(d) mod 2 = 0 then
+                OutStr[-1]  := chr(ord(d) + 1);
+            end;
+          end;
+        end;
+      end;
+  end;
+
 begin
   Result:=AInStr;
   InStr := PChar(AInStr);
@@ -1204,7 +1335,162 @@ begin
   begin
     c := InStr^;
     case c of
-    'A'..'Z',#$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2,#$E1: Break;
+    'A'..'Z',#$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2: Break;
+    // already lower, or otherwhise not affected
+    else
+      inc(InStr);
+    end;
+  end;
+
+  if InStr >= InStrEnd then
+    exit;
+
+  // Language identification
+  IsTurkish := ALocale = 'tu';
+
+  ExtraResultBytes := 0;
+  UniqueString(Result);
+  OutStr := PChar(Result) + (InStr - PChar(AInStr));
+  CounterDiff := 0;
+
+  while(true) do begin
+    // Alternate between 2 loops, depnding on CounterDiff, less IF inside the loops
+
+    while(true) do begin
+      (* InStr and OutStr pointing to te same relative position.
+         Result at/after OutStr is a copy of AInStr. Using OutStr as Source
+         The loop will be exited via break, if InStr and OutStr are increased in different steps
+      *)
+      c := OutStr^;
+      inc(InStr);
+      inc(OutStr);
+      case c of  // if NOT TABLE
+        #0:
+          begin
+            if InStr >= InStrEnd then begin
+              if ExtraResultBytes <> 0 then
+                SetLength(Result,OutStr-1 - PChar(Result));
+              exit;
+            end;
+        end;
+        'A'..'Z':
+          begin
+            { First ASCII chars }
+            // Special turkish handling
+            // capital undotted I to small undotted i
+            if IsTurkish and (c = 'I') then
+            begin
+              IncreaseResult;
+              OutStr[-1] := #$C4;
+              OutStr^ := #$B1;
+              inc(OutStr);
+              dec(CounterDiff);
+              break; // InSTr and OutStr are pointing to different indexes
+            end
+            else
+            begin
+                OutStr[-1] := chr(ord(c)+32);
+            end;
+          end;
+        // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
+        // $C380..$C39E: NewChar := OldChar + $20;
+        // $C39F: ß already lowercase
+        #$c3..#$D2:
+          begin
+            d := OutStr[0]; // 2nd char in 2 byte utf8
+            inc(InStr);
+            inc(OutStr);
+            HandleDualByte;
+            if CounterDiff <> 0 then break;
+          end; //c3..d2
+      end; // Case InStr^
+    end;
+
+    while (true) do begin
+      (* InStr and OutStr pointing to te different relative position.
+         All chars from AInStr must be copied to their new pos in Result
+         The loop will be exited via break, if InStr and OutStr are syncronized again
+      *)
+      c := InStr^;
+      case c of  // if NOT TABLE
+        #0:
+          begin
+            if InStr >= InStrEnd then begin
+              SetLength(Result,OutStr - PChar(Result));
+              exit;
+            end;
+            OutStr^:=c;
+            inc(InStr);
+            inc(OutStr);
+          end;
+        'A'..'Z':
+          begin
+            { First ASCII chars }
+            // Special turkish handling
+            // capital undotted I to small undotted i
+            if IsTurkish and (c = 'I') then
+            begin
+              IncreaseResult;
+              OutStr^ := #$C4;
+              inc(OutStr);
+              OutStr^ := #$B1;
+              inc(InStr);
+              inc(OutStr);
+              dec(CounterDiff);
+              if CounterDiff = 0 then break;
+            end
+            else
+            begin
+              OutStr^ := chr(ord(c)+32);
+              inc(InStr);
+              inc(OutStr);
+            end;
+          end;
+        #$c3..#$D2: begin
+          OutStr^  := c;
+          d := InStr[1]; // 2nd char in 2 byte utf8
+          OutStr[1]  := d;
+          inc(InStr, 2);
+          inc(OutStr, 2);
+          HandleDualByte;
+          if CounterDiff = 0 then break;
+        end; // c3..d2
+        else
+          begin
+            // Copy the character if the string was disaligned by previous changes
+            OutStr^:=c;
+            inc(InStr);
+            inc(OutStr);
+          end;
+      end; // Case InStr^
+    end;
+
+  end;
+end;
+
+{
+  AInStr - The input string
+  ALocale - The locale. Use '' for maximum speed if one desires to ignore the locale
+}
+function UTF8LowerCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
+var
+  i, CounterDiff: PtrInt;
+  InStr, InStrEnd, OutStr: PChar;
+  // Language identification
+  IsTurkish: Boolean;
+  c: Char;
+begin
+  Result:=AInStr;
+  InStr := PChar(AInStr);
+  InStrEnd := InStr + length(AInStr); // points behind last char
+
+  // Does a fast initial parsing of the string to maybe avoid doing
+  // UniqueString if the resulting string will be identical
+  while (InStr < InStrEnd) do
+  begin
+    c := InStr^;
+    case c of
+    'A'..'Z',#$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2: Break;
     // already lower, or otherwhise not affected
     else
       inc(InStr);
@@ -1491,38 +1777,6 @@ begin
         inc(InStr, 2);
         inc(OutStr, 2);
       end;
-      // Georgian codepoints 10A0-10C5 => 2D00-2D25
-      // In UTF-8 this is:
-      // E1 82 A0 - E1 82 BF => E2 B4 80 - E2 B4 9F
-      // E1 83 80 - E1 83 85 => E2 B4 A0 - E2 B4 A5
-      #$E1:
-      begin
-        c := InStr[1];
-        c2 := InStr[2];
-        if (c = #$82) and (c2 in [#$A0..#$BF]) then
-        begin
-          OutStr^ := #$E2;
-          OutStr[1] := #$B4;
-          OutStr[2] := chr(ord(c2) - $20);
-        end
-        else if (c = #$83) and (c2 in [#$80..#$85]) then
-        begin
-          OutStr^ := #$E2;
-          OutStr[1] := #$B4;
-          OutStr[2] := chr(ord(c2) + $20);
-        end
-        else
-        begin
-          if (CounterDiff <> 0) then
-          begin
-            OutStr^ := InStr[0];
-            OutStr[1] := InStr[1];
-            OutStr[2] := InStr[2];
-          end;
-        end;
-        inc(InStr, 3);
-        inc(OutStr, 3);
-      end;
     else
       // Copy the character if the string was disaligned by previous changes
       if (CounterDiff <> 0) then OutStr^:=c;
@@ -1535,11 +1789,16 @@ begin
   SetLength(Result,OutStr - PChar(Result));
 end;
 
+function UTF8UpperCase(const AInStr: utf8string): utf8string;
+begin
+  Result := UTF8UpperCase(AInStr, '');
+end;
+
 {
   AInStr - The input string
   ALocale - The locale. Use '' for maximum speed if one desires to ignore the locale
 }
-function UTF8UpperCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
+function UTF8UpperCase(const AInStr, ALocale: utf8string): utf8string;
 var
   i, InCounter, OutCounter: PtrInt;
   OutStr: PChar;
@@ -1684,7 +1943,7 @@ var
   c: Char;
 begin
   for c:=Low(char) to High(char) do begin
-    FPUpChars[c]:=(c);
+    FPUpChars[c]:=upcase(c);
   end;
 end;
 
