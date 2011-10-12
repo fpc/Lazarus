@@ -68,7 +68,6 @@ function UnicodeLowercase(u: cardinal): cardinal;
 function UTF8LowerCaseMattias(const s: utf8string): utf8string;
 function UTF8LowerCaseMartin(const AInStr: utf8string): utf8string;
 function UTF8LowerCaseMartin(const AInStr, ALocale: utf8string): utf8string;
-function UTF8LowerCaseMartin2(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
 {$endif}
 function UTF8LowerCase(const AInStr: utf8string): utf8string;
 function UTF8LowerCase(const AInStr, ALocale: utf8string): utf8string;
@@ -1174,20 +1173,6 @@ begin
   Result := UTF8LowerCaseMartin(AInStr, '');
 end;
 
-var
-  UTF8LowerCaseMartinTable: array [char] of integer;
-
-procedure InitUTF8LowerCaseMartinTable;
-var
-  c: Char;
-begin
-  for c := #0 to #255 do begin
-    UTF8LowerCaseMartinTable[c] := 0;
-    if c in ['A'..'Z'] then UTF8LowerCaseMartinTable[c] := 1;
-    if c in [#$C3, #$C4, #$C5..#$C8, #$CE, #$D0] then UTF8LowerCaseMartinTable[c] := 2;
-  end;
-end;
-
 function UTF8LowerCaseMartin(const AInStr, ALocale: utf8string): utf8string;
 const
   ResultSizeIncr = 10;
@@ -1212,10 +1197,17 @@ begin
   InStr := PChar(AInStr);
   InStrEnd := InStr + length(AInStr); // points behind last char
 
-  while (InStr < InStrEnd) and (UTF8LowerCaseMartinTable[InStr^] = 0)
-  do begin
+  // Does a fast initial parsing of the string to maybe avoid doing
+  // UniqueString if the resulting string will be identical
+  while (InStr < InStrEnd) do
+  begin
+    c := InStr^;
+    case c of
+    'A'..'Z',#$C3, #$C4, #$C5..#$C8, #$CE, #$D0: Break;
     // already lower, or otherwhise not affected
-    inc(InStr);
+    else
+      inc(InStr);
+    end;
   end;
 
   if InStr >= InStrEnd then
@@ -1605,273 +1597,6 @@ begin
   end;
 end;
 
-function UTF8LowerCaseMartin2(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
-var
-  i, CounterDiff: PtrInt;
-  InStr, InStrEnd, OutStr: PChar;
-  // Language identification
-  IsTurkish: Boolean;
-  c: Char;
-
-begin
-  Result:=AInStr;
-  InStr := PChar(AInStr);
-  InStrEnd := InStr + length(AInStr); // points behind last char
-
-
-  // TODO: can be extended for some unicode chars too
-  // use a pre-initialized (global): array [char] of boolean;
-  while (InStr < InStrEnd) and (UTF8LowerCaseMartinTable[InStr^] = 0)
-  do begin
-    // already lower, or otherwhise not affected
-    inc(InStr);
-  end;
-
-  if InStr >= InStrEnd then
-    exit;
-
-  // Language identification
-  IsTurkish := ALocale = 'tu';
-
-  UniqueString(Result);
-  OutStr := PChar(Result) + (InStr - PChar(AInStr));
-  CounterDiff := 0;
-
-  while InStr < InStrEnd do
-  begin
-    c := InStr^;
-    case c of  // if NOT TABLE
-      'A'..'Z':
-        begin
-          { First ASCII chars }
-          // Special turkish handling
-          // capital undotted I to small undotted i
-          if IsTurkish and (c = 'I') then
-          begin
-            OutStr := PChar(OutStr - PChar(Result));
-            SetLength(Result,Length(Result)+1);// Increase the buffer
-            OutStr := PtrInt(OutStr) + PChar(Result);
-            OutStr^ := #$C4;
-            inc(OutStr);
-            OutStr^ := #$B1;
-            dec(CounterDiff);
-            inc(InStr);
-            inc(OutStr);
-          end
-          else
-          begin
-            OutStr^ := chr(ord(c)+32);
-            inc(InStr);
-            inc(OutStr);
-          end;
-        end;
-
-      #$C3:
-        begin
-          // $C39F: ß already lowercase
-          if InStr[1] in [#$80..#$9E] then begin
-            if (CounterDiff <> 0) then begin
-            OutStr^  :=InStr[0];
-            OutStr[1]  := chr(ord(InStr[1]) + $20);
-          end else begin
-              OutStr[1]  := chr(ord(InStr[1]) + $20);
-            end;
-          end else begin
-            if (CounterDiff <> 0) then begin
-            OutStr^  :=InStr[0];
-            OutStr[1]  :=InStr[1];
-          end;
-          end;
-          inc(InStr, 2);
-          inc(OutStr, 2);
-        end;
-      #$C4:
-        begin
-          c := InStr[1];
-          case c of
-            #$81..#$A9, #$B2..#$B6: //0
-              begin
-                if ord(c) mod 2 = 0 then begin
-                  if (CounterDiff <> 0) then begin
-                    OutStr^  := InStr[0];
-                    OutStr[1]  := chr(ord(c) + 1);
-                end else begin
-                    OutStr[1]  := chr(ord(c) + 1);
-                  end;
-                end else begin
-                  if (CounterDiff <> 0) then begin
-                    OutStr^  :=InStr[0];
-                    OutStr[1]  :=c;
-                end;
-              end;
-              end;
-            #$B8..#$FF: //1
-              begin
-                if ord(c) mod 2 = 1 then begin
-                  if (CounterDiff <> 0) then begin
-                    OutStr^  := InStr[0];
-                    OutStr[1]  := chr(ord(c) + 1);
-                end else begin
-                    OutStr[1]  := chr(ord(c) + 1);
-                  end;
-                end else begin
-                  if (CounterDiff <> 0) then begin
-                    OutStr^  :=InStr[0];
-                    OutStr[1]  :=c;
-                end;
-              end;
-              end;
-            #$B0:
-              begin
-                OutStr^ := 'i';
-                dec(OutStr);
-                inc(CounterDiff, 1);
-              end;
-          end;
-          inc(InStr, 2);
-          inc(OutStr, 2);
-        end;
-      #$C5:
-        begin
-          c := InStr[1];
-          case c of
-            #$8A..#$B7: //0
-              begin
-                if ord(c) mod 2 = 0 then begin
-                  if (CounterDiff <> 0) then begin
-                    OutStr^  := InStr[0];
-                    OutStr[1]  := chr(ord(c) + 1);
-                end else begin
-                    OutStr[1]  := chr(ord(c) + 1);
-                  end;
-                end else begin
-                  if (CounterDiff <> 0) then begin
-                    OutStr^  :=InStr[0];
-                    OutStr[1]  :=c;
-                end;
-              end;
-              end;
-            #$00..#$88, #$B9..#$FF: //1
-              begin
-                if ord(c) mod 2 = 1 then begin
-                  if (CounterDiff <> 0) then begin
-                    OutStr^  := InStr[0];
-                    OutStr[1]  := chr(ord(c) + 1);
-                end else begin
-                    OutStr[1]  := chr(ord(c) + 1);
-                  end;
-                end else begin
-                  if (CounterDiff <> 0) then begin
-                    OutStr^  :=InStr[0];
-                    OutStr[1]  :=c;
-                end;
-              end;
-              end;
-            #$B8:  // Ÿ
-            begin
-              OutStr[0] := #$C3;
-              OutStr[1] := #$BF;
-            end;
-          end;
-          inc(InStr, 2);
-          inc(OutStr, 2);
-        end;
-      #$C6..#$C7:
-        begin
-          c := InStr[1];
-          if ord(c) mod 2 = 1 then begin
-            if (CounterDiff <> 0) then begin
-              OutStr^  := InStr[0];
-              OutStr[1]  := chr(ord(c) + 1);
-          end else begin
-              OutStr[1]  := chr(ord(c) + 1);
-            end;
-          end else begin
-            if (CounterDiff <> 0) then begin
-              OutStr^  :=InStr[0];
-              OutStr[1]  :=c;
-          end;
-          end;
-          inc(InStr, 2);
-          inc(OutStr, 2);
-        end;
-      #$C8:
-        begin
-          c := InStr[1];
-          if (c in [#$00..#$B3]) and (ord(c) mod 2 = 1) then begin
-            if (CounterDiff <> 0) then begin
-            OutStr^  := InStr[0];
-            end;
-            OutStr[1]  := chr(ord(c) + 1);
-          end else begin
-            if (CounterDiff <> 0) then begin
-              OutStr^  :=InStr[0];
-              OutStr[1]  :=c;
-          end;
-          end;
-          inc(InStr, 2);
-          inc(OutStr, 2);
-        end;
-      #$CE:
-        begin
-          c := InStr[1];
-          case c of
-            #$91..#$9F:
-              begin
-                if (CounterDiff <> 0) then begin
-                OutStr^  := InStr[0];
-                end;
-                OutStr[1]  := chr(ord(c) + $20);
-              end;
-            #$A0..#$A9:
-              begin
-                OutStr^  := chr(ord(InStr[0])+1);
-                OutStr[1]  := chr(ord(c) - $10);
-              end;
-          end;
-          inc(InStr, 2);
-          inc(OutStr, 2);
-        end;
-      #$D0:
-        begin
-          c := InStr[1];
-          case c of
-            #$80..#$8F:
-              begin
-                OutStr^  := chr(ord(InStr[0])+1);
-                OutStr[1]  := chr(ord(c) + $10);
-              end;
-            #$90..#$9F:
-              begin
-                if (CounterDiff <> 0) then begin
-                OutStr^  := InStr[0];
-                end;
-                OutStr[1]  := chr(ord(c) + $20);
-              end;
-            #$A0..#$AF:
-              begin
-                OutStr^  := chr(ord(InStr[0])+1);
-                OutStr[1]  := chr(ord(c) - $10);
-              end;
-          end;
-          inc(InStr, 2);
-          inc(OutStr, 2);
-        end;
-      else
-        begin
-          // Copy the character if the string was disaligned by previous changes
-          if (CounterDiff <> 0) then
-          OutStr^:=c;
-          inc(InStr);
-          inc(OutStr);
-        end;
-    end; // Case InStr^
-  end; // while
-
-  // Final correction of the buffer size
-  SetLength(Result,OutStr - PChar(Result));
-end;
-
 function UTF8LowerCase(const AInStr: utf8string): utf8string;
 begin
   Result := UTF8LowerCase(AInStr, '');
@@ -2182,7 +1907,6 @@ initialization
   InternalInit;
   {$ifdef LAZUTF8_USE_TABLES}
   InitUnicodeTables;
-  InitUTF8LowerCaseMartinTable
   {$endif}
 
 end.

@@ -44,7 +44,6 @@ procedure AssertStringOperationUTF8LowerCase(AMsg, ALocale, AStr1, AStrExpected2
 begin
   AssertStringOperation(AMsg, AStr1, UTF8LowerCase(AStr1, ALocale), AStrExpected2);
   AssertStringOperation('MARTIN:'+AMsg, AStr1, UTF8LowerCaseMartin(AStr1, ALocale), AStrExpected2);
-  AssertStringOperation('MARTIN2:'+AMsg, AStr1, UTF8LowerCaseMartin2(AStr1, ALocale), AStrExpected2);
 end;
 
 function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
@@ -77,6 +76,9 @@ begin
   // Cyrillic
   AssertStringOperationUTF8UpperCase('Russian UTF8UpperCase 1', '', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ');
   AssertStringOperationUTF8UpperCase('Russian UTF8UpperCase 2', '', 'абвеёжзклмнопрдйг суфхцчшщъыьэюяит', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ');
+  AssertStringOperationUTF8UpperCase('Cyrillic UTF8UpperCase 1', '', 'Ѡѡ Ѣѣ Ѥѥ Ѧѧ Ѩѩ Ѫѫ Ѭѭ Ѯѯ Ѱѱ Ѳѳ Ѵѵ Ѷѷ Ѹѹ Ѻѻ Ѽѽ Ѿѿ Ҁҁ ', 'ѡѡ ѣѣ ѥѥ ѧѧ ѩѩ ѫѫ ѭѭ ѯѯ ѱѱ ѳѳ ѵѵ ѷѷ ѹѹ ѻѻ ѽѽ ѿѿ ҁҁ');
+  AssertStringOperationUTF8UpperCase('Cyrillic UTF8UpperCase 2', '', 'Ҋҋ Ҍҍ Ҏҏ Ґґ Ғғ Ҕҕ Җҗ Ҙҙ Ққ Ҝҝ Ҟҟ Ҡҡ Ңң Ҥҥ Ҧҧ Ҩҩ Ҫҫ Ҭҭ Үү Ұұ Ҳҳ Ҵҵ Ҷҷ Ҹҹ Һһ Ҽҽ Ҿҿ', 'ҋҋ ҍҍ ҏҏ ґґ ғғ ҕҕ җҗ ҙҙ ққ ҝҝ ҟҟ ҡҡ ңң ҥҥ ҧҧ ҩҩ ҫҫ ҭҭ үү ұұ ҳҳ ҵҵ ҷҷ ҹҹ һһ ҽҽ ҿҿ');
+
   // What shouldnt change
   AssertStringOperationUTF8UpperCase('Chinese UTF8UpperCase 1', '', '名字叫嘉英，嘉陵江的嘉，英國的英', '名字叫嘉英，嘉陵江的嘉，英國的英');
 
@@ -134,22 +136,6 @@ begin
     Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
   end;
   writeln;
-  Write('Martin LowerCase2 Performance test took:    ');
-  for j := 0 to 5 do begin
-    lStartTime := Now;
-    for i := 0 to TimerLoop do
-    begin
-      if j = 0 then Str := UTF8LowerCaseMartin2('abcdefghijklmnopqrstuwvxyz');
-      if j = 1 then Str := UTF8LowerCaseMartin2('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
-      if j = 2 then Str := UTF8LowerCaseMartin2('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
-      if j = 3 then Str := UTF8LowerCaseMartin2('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
-      if j = 4 then Str := UTF8LowerCaseMartin2('АБВЕЁЖЗКЛМНОПРДЙГ');
-      if j = 5 then Str := UTF8LowerCaseMartin2('名字叫嘉英，嘉陵江的嘉，英國的英');
-    end;
-    lTimeDiff := Now - lStartTime;
-    Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
-  end;
-  writeln;
   // Performance test
   Write('Mattias LowerCase- Performance test took:    ');
   for j := 0 to 5 do begin
@@ -190,6 +176,7 @@ begin
   TestUTF8UpperCase();
   WriteLn('======= LowerCase =======');
   TestUTF8LowerCase();
+  WriteLn('Please press enter to continue');
   readln;
 end.
 
