@@ -125,7 +125,7 @@ begin
 
   // Performance test
   Write('Mattias LowerCase- Performance test took:    ');
-  for j := 0 to 5 do begin
+  for j := 0 to 7 do begin
     lStartTime := Now;
     for i := 0 to TimerLoop do
     begin
@@ -135,13 +135,15 @@ begin
       if j = 3 then Str := UTF8LowerCaseMattias('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
       if j = 4 then Str := UTF8LowerCaseMattias('АБВЕЁЖЗКЛМНОПРДЙГ');
       if j = 5 then Str := UTF8LowerCaseMattias('名字叫嘉英，嘉陵江的嘉，英國的英');
+      if j = 6 then Str := UTF8LowerCaseMattias('AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuWvVwXxYyZz');
+      if j = 7 then Str := UTF8LowerCaseMattias('AAaaBBbbCCccDDddEEeeFFffGGggHHhhIIiiJJjjKKkkLLllMMmm');
     end;
     lTimeDiff := Now - lStartTime;
     Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
   end;
   writeln;
   Write('       LowerCase-- Performance test took:    ');
-  for j := 0 to 5 do begin
+  for j := 0 to 7 do begin
     lStartTime := Now;
     for i := 0 to TimerLoop do
     begin
@@ -151,6 +153,8 @@ begin
       if j = 3 then Str := UTF8LowerCase('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
       if j = 4 then Str := UTF8LowerCase('АБВЕЁЖЗКЛМНОПРДЙГ');
       if j = 5 then Str := UTF8LowerCase('名字叫嘉英，嘉陵江的嘉，英國的英');
+      if j = 6 then Str := UTF8LowerCase('AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuWvVwXxYyZz');
+      if j = 7 then Str := UTF8LowerCase('AAaaBBbbCCccDDddEEeeFFffGGggHHhhIIiiJJjjKKkkLLllMMmm');
     end;
     lTimeDiff := Now - lStartTime;
     Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
