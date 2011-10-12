@@ -3,7 +3,6 @@
 /COPYING.LGPL.txt svneol=native#text/plain
 /COPYING.modifiedLGPL.txt -text svneol=unset#application/octet-stream
 /COPYING.txt svneol=native#text/plain
-/DEBUG-README.TXT svneol=native#text/plain
 /README.txt svneol=native#text/plain
 components/IdeInspector/ideinspectkeygrapper.lfm svneol=native#text/plain
 components/IdeInspector/ideinspectkeygrapper.pas svneol=native#text/pascal
