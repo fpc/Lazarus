@@ -1176,7 +1176,6 @@ var
   // Language identification
   IsTurkish: Boolean;
   c: Char;
-
 begin
   Result:=AInStr;
   InStr := PChar(AInStr);
@@ -1238,7 +1237,6 @@ begin
       // $C39F: ß already lowercase
       #$C3:
       begin
-        // $C39F: ß already lowercase
         if InStr[1] in [#$80..#$9E] then
         begin
           if (CounterDiff <> 0) then OutStr^ := InStr[0];
@@ -1366,13 +1364,10 @@ begin
           if (CounterDiff <> 0) then OutStr^  := InStr[0];
           OutStr[1] := chr(ord(c) + 1);
         end
-        else
+        else if (CounterDiff <> 0) then
         begin
-          if (CounterDiff <> 0) then
-          begin
-            OutStr^ := InStr[0];
-            OutStr[1] :=c;
-          end;
+          OutStr^ := InStr[0];
+          OutStr[1] :=c;
         end;
         inc(InStr, 2);
         inc(OutStr, 2);
@@ -1428,20 +1423,15 @@ begin
       #$D1:
       begin
         c := InStr[1];
-        case c of
-          #$A0..#$BF:
-          begin
-            if ord(c) mod 2 = 0 then
-            begin
-              if (CounterDiff <> 0) then OutStr^  := InStr[0];
-              OutStr[1] := chr(ord(c) + 1);
-            end
-            else if (CounterDiff <> 0) then
-            begin
-              OutStr^ := InStr[0];
-              OutStr[1] := c;
-            end;
-          end;
+        if (c in [#$A0..#$BF]) and (ord(c) mod 2 = 0) then
+        begin
+          if (CounterDiff <> 0) then OutStr^ := InStr[0];
+          OutStr[1] := chr(ord(c) + 1);
+        end
+        else if (CounterDiff <> 0) then
+        begin
+          OutStr^ := InStr[0];
+          OutStr[1] := c;
         end;
         inc(InStr, 2);
         inc(OutStr, 2);
@@ -1458,7 +1448,8 @@ begin
             OutStr[1] := chr(ord(c) + 1);
           end;
           // #$81 is already lowercase
-          #$81:
+          // #$82-#$89 ???
+          #$81..#$89:
           begin
             if (CounterDiff <> 0) then
             begin
@@ -1466,7 +1457,6 @@ begin
               OutStr[1] := c;
             end;
           end;
-          // #$82-#$89 ???
           #$8A..#$BF:
           begin
             if ord(c) mod 2 = 0 then
@@ -1485,11 +1475,10 @@ begin
         inc(OutStr, 2);
       end;
     else
-        // Copy the character if the string was disaligned by previous changes
-        if (CounterDiff <> 0) then
-        OutStr^:=c;
-        inc(InStr);
-        inc(OutStr);
+      // Copy the character if the string was disaligned by previous changes
+      if (CounterDiff <> 0) then OutStr^:=c;
+      inc(InStr);
+      inc(OutStr);
     end; // Case InStr^
   end; // while
 
