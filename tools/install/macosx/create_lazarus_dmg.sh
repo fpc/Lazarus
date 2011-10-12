@@ -124,6 +124,7 @@ make LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$COMPILER lcl
 # cross compile units?
 if [ -n "$CROSSCOMPILER" ]; then
   make -C packager/registration CPU_TARGET=powerpc PP=$CROSSCOMPILER
+  make -C components/lazutils CPU_TARGET=powerpc PP=$CROSSCOMPILER
   make lcl CPU_TARGET=powerpc PP=$CROSSCOMPILER
   make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk PP=$CROSSCOMPILER
   make lcl CPU_TARGET=powerpc LCL_PLATFORM=gtk2 OPT="-dUseX" PP=$CROSSCOMPILER
