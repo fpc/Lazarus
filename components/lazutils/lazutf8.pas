@@ -1567,11 +1567,34 @@ begin
   begin
     c1 := InStr^;
     case c1 of
-    'A'..'Z',#$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2, #$E1: Break;
-    // already lower, or otherwhise not affected
-    else
-      inc(InStr);
+    'A'..'Z': Break;
+    #$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2, #$E1:
+    begin
+      c2 := InStr[1];
+      case c1 of
+      #$C3: if c2 in [#$80..#$9E] then Break;
+      #$C4:
+      begin
+        case c2 of
+        #$81..#$A9, #$B2..#$B6: if ord(c2) mod 2 = 0 then Break;
+        #$B8..#$FF: if ord(c2) mod 2 = 1 then Break;
+        #$B0: Break;
+        end;
+      end;
+      #$C5:
+      begin
+        case c2 of
+          #$8A..#$B7: if ord(c2) mod 2 = 0 then Break;
+          #$00..#$88, #$B9..#$FF: if ord(c2) mod 2 = 1 then Break;
+          #$B8: Break;
+        end;
+      end;
+      #$C6..#$C8,#$CE, #$D0..#$D2, #$E1: Break;
+      // already lower, or otherwhise not affected
+      end;
     end;
+    end;
+    inc(InStr);
   end;
 
   if InStr >= InStrEnd then Exit;
