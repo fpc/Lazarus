@@ -1169,7 +1169,7 @@ function UTF8LowerCase2(const AInStr: utf8string; ALocale: utf8string =''): utf8
 const
   ResultSizeIncr = 10;
 var
-  i, CounterDiff, ExtraResultBytes: PtrInt;
+  CounterDiff, ExtraResultBytes: PtrInt;
   InStr, InStrEnd, OutStr: PChar;
   // Language identification
   IsTurkish: Boolean;
@@ -1551,7 +1551,7 @@ end;
 }
 function UTF8LowerCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
 var
-  i, CounterDiff: PtrInt;
+  CounterDiff: PtrInt;
   InStr, InStrEnd, OutStr: PChar;
   // Language identification
   IsTurkish: Boolean;
