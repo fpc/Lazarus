@@ -65,10 +65,10 @@ type
                                          var {%H-}Abort: boolean);
 
     // codetools
-    procedure OnCodeBufferDecodeLoaded(Code: TCodeBuffer;
-         const Filename: string; var Source, DiskEncoding, MemEncoding: string);
+    procedure OnCodeBufferDecodeLoaded({%H-}Code: TCodeBuffer;
+         const {%H-}Filename: string; var Source, DiskEncoding, MemEncoding: string);
     procedure OnCodeBufferEncodeSaving(Code: TCodeBuffer;
-                                    const Filename: string; var Source: string);
+                                    const {%H-}Filename: string; var Source: string);
 
     // global package functions
     procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
@@ -402,7 +402,6 @@ var
   PkgOptions: String;
   InheritedOptionStrings: TInheritedCompOptsStrings;
   TargetDir: String;
-  i: Integer;
 begin
   Result:=false;
   Init;

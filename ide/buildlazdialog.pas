@@ -64,8 +64,8 @@ type
 
   TBuildLazarusFlag = (
     blfDontBuild,           // skip all building, only cleaning
-    blfOnlyIDE,             // skip all but IDE (for example build IDE, but not examples)
-    blfDontCleanAll,        // ignore clean up
+    blfOnlyIDE,             // skip all but IDE (for example build IDE, but not packages, not lazbuild, ...)
+    blfDontCleanAll,        // ignore clean up option in profile
     blfUseMakeIDECfg,       // append @idemake.cfg
     blfReplaceExe           // ignore OSLocksExecutables and do not create lazarus.new.exe
     );
