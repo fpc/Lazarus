@@ -5272,8 +5272,11 @@ begin
       // begin to count Cols from 0 but ...
       if Fisical and (Offset>FixedWidth-1) then begin
         Index := FTopLeft.X;  // In scrolled view, then begin from FTopLeft col
-        if (Index>=0) and (Index<ColCount) then
-          Offset:=Offset-FixedWidth+integer(PtrUInt(AccumWidth[Index]))+TLColOff;
+        if (Index>=0) and (Index<ColCount) then begin
+          Offset:=Offset-FixedWidth+integer(PtrUInt(AccumWidth[Index]));
+          if goSmoothScroll in Options then
+            Offset:=Offset+TLColOff;
+        end;
         if (Index<0) or (Index>=ColCount) or (Offset>GridWidth-1) then begin
           if AllowOutboundEvents then
             Index := ColCount-1
