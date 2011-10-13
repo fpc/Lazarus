@@ -1529,25 +1529,6 @@ end;
   ALocale - The locale. Use '' for maximum speed if one desires to ignore the locale
 
   Data from here: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt
-
-  List of ranges which have lowercase:
-
-  codepoints    UTF-8 range           Description
-  $0041..$0061  $41..$61              ASCII
-  $00C0..$00DE: Result:=UnicodeLower00C0_00DE[u];
-  $0100..$024E: Result:=UnicodeLower0100_024E[u];
-  $0386..$03AB: Result:=UnicodeLower0386_03AB[u];
-  $03D8..$042F: Result:=UnicodeLower03D8_042F[u];
-  $0460..$0512: Result:=UnicodeLower0460_0512[u];
-  $0531..$0556: Result:=u+48;
-  $10A0..$10C5  E1 82 A0..E1 82 BF
-                E1 83 80..E1 83 85    Georgian
-  $1E00..$1FFC: Result:=UnicodeLower1E00_1FFC[u];
-  $2126..$2183: Result:=UnicodeLower2126_2183[u];
-  $24B6..$24CF: Result:=u+26;
-  $2C00..$2C2E: Result:=u+48;
-  $2C60..$2CE2: Result:=UnicodeLower2C60_2CE2[u];
-  $FF21..$FF3A: Result:=u+32;
 }
 function UTF8LowerCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
 var
@@ -1576,7 +1557,7 @@ begin
       #$C4:
       begin
         case c2 of
-        #$81..#$A9, #$B2..#$B6: if ord(c2) mod 2 = 0 then Break;
+        #$80..#$AF, #$B2..#$B6: if ord(c2) mod 2 = 0 then Break;
         #$B8..#$FF: if ord(c2) mod 2 = 1 then Break;
         #$B0: Break;
         end;
@@ -1610,6 +1591,8 @@ begin
   begin
     c1 := InStr^;
     case c1 of
+      // codepoints      UTF-8 range           Description                Case change
+      // $0041..$005A    $41..$5A              Capital ASCII              X+$20
       'A'..'Z':
       begin
         { First ASCII chars }
@@ -1642,34 +1625,29 @@ begin
         new_c2 := c2;
         case c1 of
         // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
-        // $C380..$C39E: NewChar := OldChar + $20;
-        // $C39F: ß already lowercase
+        // codepoints      UTF-8 range           Description                Case change
+        // $00C0..$00D6    C3 80..C3 96          Capital Latin with accents X+$20
+        // $D7             C3 97                 Multiplication Sign        N/A
+        // $00D8..$00DE    C3 98..C3 9E          Capital Latin with accents X+$20
+        // $DF             C3 9F                 German beta ß              already lowercase
         #$C3:
         begin
-          if c2 in [#$80..#$9E] then
-            new_c2 := chr(ord(c2) + $20);
+          case c2 of
+          #$80..#$96, #$98..#$9E: new_c2 := chr(ord(c2) + $20)
+          end;
         end;
-        // $C481..$C4A9: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
-        // Turkish capital dotted i to small dotted i
-        // $C4B0 -> 'i'
-        // $C4B1 turkish lowercase undotted ı
-        // $C4B2..$C4B6: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
-        // $C4B7: ĸ => K ?
-        // $C4B8..$C588: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
+        // $0100..$012F    C4 80..C4 AF        Capital/Small Latin accents  if mod 2 = 0 then X+1
+        // $0130..$0131    C4 B0..C4 B1        Turkish
+        //  C4 B0 turkish uppercase dotted i -> 'i'
+        //  C4 B1 turkish lowercase undotted ı
+        // $0132..$0137    C4 B2..C4 B7        Capital/Small Latin accents  if mod 2 = 0 then X+1
+        // $0138           C4 B8               ĸ                            N/A
+        // $0139..$024F    C4 B9..C5 88        Capital/Small Latin accents  if mod 2 = 1 then X+1
         #$C4:
         begin
           case c2 of
-            #$81..#$A9, #$B2..#$B6: //0
-            begin
-              if ord(c2) mod 2 = 0 then
-                new_c2 := chr(ord(c2) + 1);
-            end;
-            #$B8..#$FF: //1
-            begin
-              if ord(c2) mod 2 = 1 then
-                new_c2 := chr(ord(c2) + 1);
-            end;
-            #$B0:
+            #$80..#$AF, #$B2..#$B7: if ord(c2) mod 2 = 0 then new_c2 := chr(ord(c2) + 1);
+            #$B0: // Turkish
             begin
               OutStr^ := 'i';
               inc(InStr, 2);
@@ -1677,9 +1655,10 @@ begin
               inc(CounterDiff, 1);
               Continue;
             end;
+            #$B9..#$BF: if ord(c2) mod 2 = 1 then new_c2 := chr(ord(c2) + 1);
           end;
         end;
-        // $C589 ŉ => ?
+        // $C589 ŉ
         // $C58A..$C5B7: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
         // $C5B8:        NewChar := $C3BF; // Ÿ
         // $C5B9..$C8B3: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
@@ -1703,15 +1682,295 @@ begin
             end;
           end;
         end;
-        #$C6..#$C7:
+        {A convoluted part: C6 80..C6 8F
+
+        0180;LATIN SMALL LETTER B WITH STROKE;Ll;0;L;;;;;N;LATIN SMALL LETTER B BAR;;0243;;0243
+        0181;LATIN CAPITAL LETTER B WITH HOOK;Lu;0;L;;;;;N;LATIN CAPITAL LETTER B HOOK;;;0253; => C6 81=>C9 93
+        0182;LATIN CAPITAL LETTER B WITH TOPBAR;Lu;0;L;;;;;N;LATIN CAPITAL LETTER B TOPBAR;;;0183;
+        0183;LATIN SMALL LETTER B WITH TOPBAR;Ll;0;L;;;;;N;LATIN SMALL LETTER B TOPBAR;;0182;;0182
+        0184;LATIN CAPITAL LETTER TONE SIX;Lu;0;L;;;;;N;;;;0185;
+        0185;LATIN SMALL LETTER TONE SIX;Ll;0;L;;;;;N;;;0184;;0184
+        0186;LATIN CAPITAL LETTER OPEN O;Lu;0;L;;;;;N;;;;0254; ==> C9 94
+        0187;LATIN CAPITAL LETTER C WITH HOOK;Lu;0;L;;;;;N;LATIN CAPITAL LETTER C HOOK;;;0188;
+        0188;LATIN SMALL LETTER C WITH HOOK;Ll;0;L;;;;;N;LATIN SMALL LETTER C HOOK;;0187;;0187
+        0189;LATIN CAPITAL LETTER AFRICAN D;Lu;0;L;;;;;N;;;;0256; => C9 96
+        018A;LATIN CAPITAL LETTER D WITH HOOK;Lu;0;L;;;;;N;LATIN CAPITAL LETTER D HOOK;;;0257; => C9 97
+        018B;LATIN CAPITAL LETTER D WITH TOPBAR;Lu;0;L;;;;;N;LATIN CAPITAL LETTER D TOPBAR;;;018C;
+        018C;LATIN SMALL LETTER D WITH TOPBAR;Ll;0;L;;;;;N;LATIN SMALL LETTER D TOPBAR;;018B;;018B
+        018D;LATIN SMALL LETTER TURNED DELTA;Ll;0;L;;;;;N;;;;;
+        018E;LATIN CAPITAL LETTER REVERSED E;Lu;0;L;;;;;N;LATIN CAPITAL LETTER TURNED E;;;01DD; => C7 9D
+        018F;LATIN CAPITAL LETTER SCHWA;Lu;0;L;;;;;N;;;;0259; => C9 99
+        }
+        #$C6:
         begin
-          if ord(c2) mod 2 = 1 then
-            new_c2 := chr(ord(c2) + 1);
+          case c2 of
+            #$81:
+            begin
+              new_c1 := #$C9;
+              new_c2 := #$93;
+            end;
+            #$82..#$85:
+            begin
+              if ord(c2) mod 2 = 0 then
+                new_c2 := chr(ord(c2) + 1);
+            end;
+            #$87..#$88,#$8B..#$8C:
+            begin
+              if ord(c2) mod 2 = 1 then
+                new_c2 := chr(ord(c2) + 1);
+            end;
+            #$86:
+            begin
+              new_c1 := #$C9;
+              new_c2 := #$94;
+            end;
+            #$89:
+            begin
+              new_c1 := #$C9;
+              new_c2 := #$96;
+            end;
+            #$8A:
+            begin
+              new_c1 := #$C9;
+              new_c2 := #$97;
+            end;
+            #$8E:
+            begin
+              new_c1 := #$C7;
+              new_c2 := #$9D;
+            end;
+            #$8F:
+            begin
+              new_c1 := #$C9;
+              new_c2 := #$99;
+            end;
+          {
+          And also C6 90..C6 9F
+
+          0190;LATIN CAPITAL LETTER OPEN E;Lu;0;L;;;;;N;LATIN CAPITAL LETTER EPSILON;;;025B; => C9 9B
+          0191;LATIN CAPITAL LETTER F WITH HOOK;Lu;0;L;;;;;N;LATIN CAPITAL LETTER F HOOK;;;0192; => +1
+          0192;LATIN SMALL LETTER F WITH HOOK;Ll;0;L;;;;;N;LATIN SMALL LETTER SCRIPT F;;0191;;0191 <=
+          0193;LATIN CAPITAL LETTER G WITH HOOK;Lu;0;L;;;;;N;LATIN CAPITAL LETTER G HOOK;;;0260; => C9 A0
+          0194;LATIN CAPITAL LETTER GAMMA;Lu;0;L;;;;;N;;;;0263; => C9 A3
+          0195;LATIN SMALL LETTER HV;Ll;0;L;;;;;N;LATIN SMALL LETTER H V;;01F6;;01F6 <=
+          0196;LATIN CAPITAL LETTER IOTA;Lu;0;L;;;;;N;;;;0269; => C9 A9
+          0197;LATIN CAPITAL LETTER I WITH STROKE;Lu;0;L;;;;;N;LATIN CAPITAL LETTER BARRED I;;;0268; => C9 A8
+          0198;LATIN CAPITAL LETTER K WITH HOOK;Lu;0;L;;;;;N;LATIN CAPITAL LETTER K HOOK;;;0199; => +1
+          0199;LATIN SMALL LETTER K WITH HOOK;Ll;0;L;;;;;N;LATIN SMALL LETTER K HOOK;;0198;;0198 <=
+          019A;LATIN SMALL LETTER L WITH BAR;Ll;0;L;;;;;N;LATIN SMALL LETTER BARRED L;;023D;;023D <=
+          019B;LATIN SMALL LETTER LAMBDA WITH STROKE;Ll;0;L;;;;;N;LATIN SMALL LETTER BARRED LAMBDA;;;; <=
+          019C;LATIN CAPITAL LETTER TURNED M;Lu;0;L;;;;;N;;;;026F; => C9 AF
+          019D;LATIN CAPITAL LETTER N WITH LEFT HOOK;Lu;0;L;;;;;N;LATIN CAPITAL LETTER N HOOK;;;0272; => C9 B2
+          019E;LATIN SMALL LETTER N WITH LONG RIGHT LEG;Ll;0;L;;;;;N;;;0220;;0220 <=
+          019F;LATIN CAPITAL LETTER O WITH MIDDLE TILDE;Lu;0;L;;;;;N;LATIN CAPITAL LETTER BARRED O;;;0275; => C9 B5
+          }
+          #$90:
+          begin
+            new_c1 := #$C9;
+            new_c2 := #$9B;
+          end;
+          #$91, #$98: new_c2 := chr(ord(c2)+1);
+          #$93:
+          begin
+            new_c1 := #$C9;
+            new_c2 := #$A0;
+          end;
+          #$94:
+          begin
+            new_c1 := #$C9;
+            new_c2 := #$A3;
+          end;
+          #$96:
+          begin
+            new_c1 := #$C9;
+            new_c2 := #$A9;
+          end;
+          #$97:
+          begin
+            new_c1 := #$C9;
+            new_c2 := #$A8;
+          end;
+          #$9C:
+          begin
+            new_c1 := #$C9;
+            new_c2 := #$AF;
+          end;
+          #$9D:
+          begin
+            new_c1 := #$C9;
+            new_c2 := #$B2;
+          end;
+          #$9F:
+          begin
+            new_c1 := #$C9;
+            new_c2 := #$B5;
+          end;
+          {
+          And also C6 A0..C6 AF
+
+          01A0;LATIN CAPITAL LETTER O WITH HORN;Lu;0;L;004F 031B;;;;N;LATIN CAPITAL LETTER O HORN;;;01A1; => +1
+          01A1;LATIN SMALL LETTER O WITH HORN;Ll;0;L;006F 031B;;;;N;LATIN SMALL LETTER O HORN;;01A0;;01A0 <=
+          01A2;LATIN CAPITAL LETTER OI;Lu;0;L;;;;;N;LATIN CAPITAL LETTER O I;;;01A3; => +1
+          01A3;LATIN SMALL LETTER OI;Ll;0;L;;;;;N;LATIN SMALL LETTER O I;;01A2;;01A2 <=
+          01A4;LATIN CAPITAL LETTER P WITH HOOK;Lu;0;L;;;;;N;LATIN CAPITAL LETTER P HOOK;;;01A5; => +1
+          01A5;LATIN SMALL LETTER P WITH HOOK;Ll;0;L;;;;;N;LATIN SMALL LETTER P HOOK;;01A4;;01A4 <=
+          01A6;LATIN LETTER YR;Lu;0;L;;;;;N;LATIN LETTER Y R;;;0280; <=
+          01A7;LATIN CAPITAL LETTER TONE TWO;Lu;0;L;;;;;N;;;;01A8; => +1
+          01A8;LATIN SMALL LETTER TONE TWO;Ll;0;L;;;;;N;;;01A7;;01A7 <=
+          01A9;LATIN CAPITAL LETTER ESH;Lu;0;L;;;;;N;;;;0283; => CA 83
+          01AA;LATIN LETTER REVERSED ESH LOOP;Ll;0;L;;;;;N;;;;;
+          01AB;LATIN SMALL LETTER T WITH PALATAL HOOK;Ll;0;L;;;;;N;LATIN SMALL LETTER T PALATAL HOOK;;;; <=
+          01AC;LATIN CAPITAL LETTER T WITH HOOK;Lu;0;L;;;;;N;LATIN CAPITAL LETTER T HOOK;;;01AD; => +1
+          01AD;LATIN SMALL LETTER T WITH HOOK;Ll;0;L;;;;;N;LATIN SMALL LETTER T HOOK;;01AC;;01AC <=
+          01AE;LATIN CAPITAL LETTER T WITH RETROFLEX HOOK;Lu;0;L;;;;;N;LATIN CAPITAL LETTER T RETROFLEX HOOK;;;0288; => CA 88
+          01AF;LATIN CAPITAL LETTER U WITH HORN;Lu;0;L;0055 031B;;;;N;LATIN CAPITAL LETTER U HORN;;;01B0; => +1
+          }
+          #$A0..#$A5,#$AC:
+          begin
+            if ord(c2) mod 2 = 0 then
+              new_c2 := chr(ord(c2) + 1);
+          end;
+          #$A7,#$AF:
+          begin
+            if ord(c2) mod 2 = 1 then
+              new_c2 := chr(ord(c2) + 1);
+          end;
+          #$A9:
+          begin
+            new_c1 := #$CA;
+            new_c2 := #$83;
+          end;
+          #$AE:
+          begin
+            new_c1 := #$CA;
+            new_c2 := #$88;
+          end;
+          {
+          And also C6 B0..C6 BF
+
+          01B0;LATIN SMALL LETTER U WITH HORN;Ll;0;L;0075 031B;;;;N;LATIN SMALL LETTER U HORN;;01AF;;01AF <= -1
+          01B1;LATIN CAPITAL LETTER UPSILON;Lu;0;L;;;;;N;;;;028A; => CA 8A
+          01B2;LATIN CAPITAL LETTER V WITH HOOK;Lu;0;L;;;;;N;LATIN CAPITAL LETTER SCRIPT V;;;028B; => CA 8B
+          01B3;LATIN CAPITAL LETTER Y WITH HOOK;Lu;0;L;;;;;N;LATIN CAPITAL LETTER Y HOOK;;;01B4; => +1
+          01B4;LATIN SMALL LETTER Y WITH HOOK;Ll;0;L;;;;;N;LATIN SMALL LETTER Y HOOK;;01B3;;01B3 <=
+          01B5;LATIN CAPITAL LETTER Z WITH STROKE;Lu;0;L;;;;;N;LATIN CAPITAL LETTER Z BAR;;;01B6; => +1
+          01B6;LATIN SMALL LETTER Z WITH STROKE;Ll;0;L;;;;;N;LATIN SMALL LETTER Z BAR;;01B5;;01B5 <=
+          01B7;LATIN CAPITAL LETTER EZH;Lu;0;L;;;;;N;LATIN CAPITAL LETTER YOGH;;;0292; => CA 92
+          01B8;LATIN CAPITAL LETTER EZH REVERSED;Lu;0;L;;;;;N;LATIN CAPITAL LETTER REVERSED YOGH;;;01B9; => +1
+          01B9;LATIN SMALL LETTER EZH REVERSED;Ll;0;L;;;;;N;LATIN SMALL LETTER REVERSED YOGH;;01B8;;01B8 <=
+          01BA;LATIN SMALL LETTER EZH WITH TAIL;Ll;0;L;;;;;N;LATIN SMALL LETTER YOGH WITH TAIL;;;; <=
+          01BB;LATIN LETTER TWO WITH STROKE;Lo;0;L;;;;;N;LATIN LETTER TWO BAR;;;; X
+          01BC;LATIN CAPITAL LETTER TONE FIVE;Lu;0;L;;;;;N;;;;01BD; => +1
+          01BD;LATIN SMALL LETTER TONE FIVE;Ll;0;L;;;;;N;;;01BC;;01BC <=
+          01BE;LATIN LETTER INVERTED GLOTTAL STOP WITH STROKE;Ll;0;L;;;;;N;LATIN LETTER INVERTED GLOTTAL STOP BAR;;;; X
+          01BF;LATIN LETTER WYNN;Ll;0;L;;;;;N;;;01F7;;01F7  <=
+          }
+          #$B8,#$BC:
+          begin
+            if ord(c2) mod 2 = 0 then
+              new_c2 := chr(ord(c2) + 1);
+          end;
+          #$B3..#$B6:
+          begin
+            if ord(c2) mod 2 = 1 then
+              new_c2 := chr(ord(c2) + 1);
+          end;
+          #$B1:
+          begin
+            new_c1 := #$CA;
+            new_c2 := #$8A;
+          end;
+          #$B2:
+          begin
+            new_c1 := #$CA;
+            new_c2 := #$8B;
+          end;
+          #$B7:
+          begin
+            new_c1 := #$CA;
+            new_c2 := #$92;
+          end;
+          end;
         end;
+        #$C7:
+        begin
+          case c2 of
+          #$84..#$8C,#$B1..#$B3:
+          begin
+            if (ord(c2) and $F) mod 3 = 1 then new_c2 := chr(ord(c2) + 2)
+            else if (ord(c2) and $F) mod 3 = 2 then new_c2 := chr(ord(c2) + 1);
+          end;
+          #$8D..#$9C:
+          begin
+            if ord(c2) mod 2 = 1 then
+              new_c2 := chr(ord(c2) + 1);
+          end;
+          #$9E..#$AF,#$B4..#$B5,#$B8..#$BF:
+          begin
+            if ord(c2) mod 2 = 0 then
+              new_c2 := chr(ord(c2) + 1);
+          end;
+          {
+          01F6;LATIN CAPITAL LETTER HWAIR;Lu;0;L;;;;;N;;;;0195;
+          01F7;LATIN CAPITAL LETTER WYNN;Lu;0;L;;;;;N;;;;01BF;
+          }
+          #$B6:
+          begin
+            new_c1 := #$C6;
+            new_c2 := #$95;
+          end;
+          #$B7:
+          begin
+            new_c1 := #$C6;
+            new_c2 := #$BF;
+          end;
+          end;
+        end;
+        {
+        Codepoints 0200 to 024F
+        }
         #$C8:
         begin
-          if (c2 in [#$00..#$B3]) and (ord(c2) mod 2 = 1) then
-            new_c2 := chr(ord(c2) + 1);
+          // For this one we can simply start with a default and override for some specifics
+          if (c2 in [#$80..#$A3,#$AB,#$B1..#$BF]) and (ord(c2) mod 2 = 0) then new_c2 := chr(ord(c2) + 1);
+
+          case c2 of
+          #$A0:
+          begin
+            new_c1 := #$C6;
+            new_c2 := #$9E;
+          end;
+          #$A1: new_c2 := c2;
+          {
+          023A;LATIN CAPITAL LETTER A WITH STROKE;Lu;0;L;;;;;N;;;;2C65; => E2 B1 A5
+          023B;LATIN CAPITAL LETTER C WITH STROKE;Lu;0;L;;;;;N;;;;023C; => +1
+          023C;LATIN SMALL LETTER C WITH STROKE;Ll;0;L;;;;;N;;;023B;;023B <=
+          023D;LATIN CAPITAL LETTER L WITH BAR;Lu;0;L;;;;;N;;;;019A; => C6 9A
+          023E;LATIN CAPITAL LETTER T WITH DIAGONAL STROKE;Lu;0;L;;;;;N;;;;2C66; => E2 B1 A6
+          023F;LATIN SMALL LETTER S WITH SWASH TAIL;Ll;0;L;;;;;N;;;2C7E;;2C7E <=
+          0240;LATIN SMALL LETTER Z WITH SWASH TAIL;Ll;0;L;;;;;N;;;2C7F;;2C7F <=
+          }
+          #$AA,#$AE:
+          begin
+            OutStr := PChar(OutStr - PChar(Result));
+            SetLength(Result,Length(Result)+1);// Increase the buffer
+            OutStr := PtrInt(OutStr) + PChar(Result);
+            OutStr^ := #$E2;
+            inc(OutStr);
+            OutStr^ := #$B1;
+            inc(OutStr);
+            if c2 = #$AA then OutStr^ := #$A5
+            else OutStr^ := #$A6;
+            dec(CounterDiff);
+            inc(InStr, 2);
+            Continue;
+          end;
+          #$AD:
+          begin
+            new_c1 := #$C6;
+            new_c2 := #$9A;
+          end;
+          end;
         end;
         // $CE91..$CE9F: NewChar := OldChar + $20; // Greek Characters
         // $CEA0..$CEA9: NewChar := OldChar + $E0; // Greek Characters

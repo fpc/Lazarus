@@ -46,7 +46,8 @@ end;
 procedure AssertStringOperationUTF8LowerCase(AMsg, ALocale, AStr1, AStrExpected2: utf8string);
 begin
   AssertStringOperation(AMsg, AStr1, UTF8LowerCase(AStr1, ALocale), AStrExpected2);
-  AssertStringOperation('2'+AMsg, AStr1, UTF8LowerCase2(AStr1, ALocale), AStrExpected2);
+//  AssertStringOperation('2'+AMsg, AStr1, UTF8LowerCase2(AStr1, ALocale), AStrExpected2);
+//  AssertStringOperation('M'+AMsg, AStr1, UTF8LowerCaseMattias(AStr1), AStrExpected2);
 end;
 
 function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
@@ -111,6 +112,15 @@ begin
   AssertStringOperationUTF8LowerCase('Polish UTF8LowerCase 1', '', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
   AssertStringOperationUTF8LowerCase('Polish UTF8LowerCase 2', '', 'AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
   AssertStringOperationUTF8LowerCase('German UTF8LowerCase 1', '', 'Ä/ä,Ö/ö,Ü/ü,ß', 'ä/ä,ö/ö,ü/ü,ß');
+  AssertStringOperationUTF8LowerCase('Latin 0100 UTF8LowerCase', '', 'Āā Ăă Ąą Ćć Ĉĉ Ċċ Čč Ďď', 'āā ăă ąą ćć ĉĉ ċċ čč ďď');
+  AssertStringOperationUTF8LowerCase('Latin 0180 UTF8LowerCase', '', 'ƀ Ɓ Ƃƃ Ƅƅ Ɔ Ƈƈ Ɖ Ɗ Ƌƌ ƍ Ǝ Ə', 'ƀ ɓ ƃƃ ƅƅ ɔ ƈƈ ɖ ɗ ƌƌ ƍ ǝ ə');
+  AssertStringOperationUTF8LowerCase('Latin 0190 UTF8LowerCase', '', 'ƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟ', 'ɛƒƒɠɣƕɩɨƙƙƚƛɯɲƞɵ');
+  AssertStringOperationUTF8LowerCase('Latin 01A0 UTF8LowerCase', '', 'ƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯ', 'ơơƣƣƥƥƦƨƨʃƪƫƭƭʈư');
+  AssertStringOperationUTF8LowerCase('Latin 01B0 UTF8LowerCase', '', 'ưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿ', 'ưʊʋƴƴƶƶʒƹƹƺƻƽƽƾƿ');
+  AssertStringOperationUTF8LowerCase('Latin 01C0 UTF8LowerCase', '', 'ǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏ', 'ǀǁǂǃǆǆǆǉǉǉǌǌǌǎǎǐ');
+  AssertStringOperationUTF8LowerCase('Latin 0200 UTF8LowerCase', '', 'ȀȁȂȃȄȅȆȇȈȉȊȋȌȍȎȏ', 'ȁȁȃȃȅȅȇȇȉȉȋȋȍȍȏȏ');
+  AssertStringOperationUTF8LowerCase('Latin 0210 UTF8LowerCase', '', 'ȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟ', 'ȑȑȓȓȕȕȗȗșșțțȝȝȟȟ');
+  AssertStringOperationUTF8LowerCase('Latin 0210 UTF8LowerCase', '', 'ȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟ', 'ȑȑȓȓȕȕȗȗșșțțȝȝȟȟ');
   // Turkish
   AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 1', 'tu', 'abcçdefgğhııijklmnoöprsştuüvyz', 'abcçdefgğhııijklmnoöprsştuüvyz');
   AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 2', 'tu', 'ABCÇDEFGĞHIIİJKLMNOÖPRSŞTUÜVYZ', 'abcçdefgğhııijklmnoöprsştuüvyz');
@@ -170,7 +180,7 @@ begin
     lTimeDiff := Now - lStartTime;
     Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
   end;
-  writeln;       }
+  writeln;}
   Write('       LowerCase-- Performance test took:    ');
   for j := 0 to 9 do begin
     lStartTime := Now;
