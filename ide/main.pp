@@ -12154,7 +12154,7 @@ begin
 
   // save extra options
   Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
-                             GlobalMacroList,PkgOptions,Flags);
+                             GlobalMacroList,PkgOptions,Flags+[blfOnlyIDE]);
   if Result<>mrOk then exit;
 end;
 
@@ -12222,9 +12222,8 @@ begin
                 PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
 
     // check ambiguous units
-    CodeToolBoss.GetFPCVersionForDirectory(
-                               EnvironmentOptions.LazarusDirectory,
-                               FPCVersion,FPCRelease,FPCPatch);
+    CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.LazarusDirectory,
+                                           FPCVersion,FPCRelease,FPCPatch);
     if FPCPatch=0 then ;
     CompiledUnitExt:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
     Result:=MainBuildBoss.CheckUnitPathForAmbiguousPascalFiles(

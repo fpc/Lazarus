@@ -64,6 +64,7 @@ type
 
   TBuildLazarusFlag = (
     blfDontBuild,           // skip all building, only cleaning
+    blfOnlyIDE,             // skip all but IDE (for example build IDE, but not examples)
     blfDontCleanAll,        // ignore clean up
     blfUseMakeIDECfg,       // append @idemake.cfg
     blfReplaceExe           // ignore OSLocksExecutables and do not create lazarus.new.exe
@@ -235,8 +236,7 @@ begin
     Tool.ScanOutputForMakeMessages:=true;
 
     // clean up
-    if Options.CleanAll
-    and ([blfDontCleanAll]*Flags=[]) then begin
+    if Options.CleanAll and ([blfDontCleanAll,blfOnlyIDE]*Flags=[]) then begin
       WorkingDirectory:=EnvironmentOptions.LazarusDirectory;
       if not CheckDirectoryWritable(WorkingDirectory) then exit(mrCancel);
 
@@ -256,7 +256,7 @@ begin
 
     // build every item
     if not (blfDontBuild in Flags) then begin
-      WorkingDirectory:=TrimFilename(EnvironmentOptions.LazarusDirectory+PathDelim);
+      WorkingDirectory:=EnvironmentOptions.LazarusDirectory;
       if (blfDontCleanAll in Flags) and (Options.IdeBuildMode=bmCleanBuild) then
         Options.IdeBuildMode:=bmBuild;
       Tool.Title:=lisIDE;
