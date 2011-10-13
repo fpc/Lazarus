@@ -120,7 +120,8 @@ begin
   AssertStringOperationUTF8LowerCase('Latin 01C0 UTF8LowerCase', '', 'ǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏ', 'ǀǁǂǃǆǆǆǉǉǉǌǌǌǎǎǐ');
   AssertStringOperationUTF8LowerCase('Latin 0200 UTF8LowerCase', '', 'ȀȁȂȃȄȅȆȇȈȉȊȋȌȍȎȏ', 'ȁȁȃȃȅȅȇȇȉȉȋȋȍȍȏȏ');
   AssertStringOperationUTF8LowerCase('Latin 0210 UTF8LowerCase', '', 'ȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟ', 'ȑȑȓȓȕȕȗȗșșțțȝȝȟȟ');
-  AssertStringOperationUTF8LowerCase('Latin 0210 UTF8LowerCase', '', 'ȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟ', 'ȑȑȓȓȕȕȗȗșșțțȝȝȟȟ');
+  AssertStringOperationUTF8LowerCase('Latin 0220 UTF8LowerCase', '', 'ȠȡȢȣȤȥȦȧȨȩȪȫȬȭȮȯ', 'ƞȡȣȣȥȥȧȧȩȩȫȫȭȭȯȯ');
+  AssertStringOperationUTF8LowerCase('Latin 0230 UTF8LowerCase', '', 'ȰȱȲȳȴȵȶȷȸȹȺȻȼȽȾȿ', 'ȱȱȳȳȴȵȶȷȸȹⱥȼȼƚⱦȿ');
   // Turkish
   AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 1', 'tu', 'abcçdefgğhııijklmnoöprsştuüvyz', 'abcçdefgğhııijklmnoöprsştuüvyz');
   AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 2', 'tu', 'ABCÇDEFGĞHIIİJKLMNOÖPRSŞTUÜVYZ', 'abcçdefgğhııijklmnoöprsştuüvyz');

@@ -1927,12 +1927,12 @@ begin
           end;
         end;
         {
-        Codepoints 0200 to 024F
+        Codepoints 0200 to 023F
         }
         #$C8:
         begin
           // For this one we can simply start with a default and override for some specifics
-          if (c2 in [#$80..#$A3,#$AB,#$B1..#$BF]) and (ord(c2) mod 2 = 0) then new_c2 := chr(ord(c2) + 1);
+          if (c2 in [#$80..#$B3]) and (ord(c2) mod 2 = 0) then new_c2 := chr(ord(c2) + 1);
 
           case c2 of
           #$A0:
@@ -1950,7 +1950,7 @@ begin
           023F;LATIN SMALL LETTER S WITH SWASH TAIL;Ll;0;L;;;;;N;;;2C7E;;2C7E <=
           0240;LATIN SMALL LETTER Z WITH SWASH TAIL;Ll;0;L;;;;;N;;;2C7F;;2C7F <=
           }
-          #$AA,#$AE:
+          #$BA,#$BE:
           begin
             OutStr := PChar(OutStr - PChar(Result));
             SetLength(Result,Length(Result)+1);// Increase the buffer
@@ -1959,17 +1959,19 @@ begin
             inc(OutStr);
             OutStr^ := #$B1;
             inc(OutStr);
-            if c2 = #$AA then OutStr^ := #$A5
+            if c2 = #$BA then OutStr^ := #$A5
             else OutStr^ := #$A6;
             dec(CounterDiff);
+            inc(OutStr);
             inc(InStr, 2);
             Continue;
           end;
-          #$AD:
+          #$BD:
           begin
             new_c1 := #$C6;
             new_c2 := #$9A;
           end;
+          #$BB: new_c2 := chr(ord(c2) + 1);
           end;
         end;
         // $CE91..$CE9F: NewChar := OldChar + $20; // Greek Characters
