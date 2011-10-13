@@ -18,6 +18,16 @@
 
 { TDBComboBox }
 
+procedure TDBComboBox.Select;
+begin
+  //avoid reseting text when calling select
+  FDataLink.OnDataChange := nil;
+  FDataLink.Edit;
+  FDataLink.Modified;
+  FDataLink.OnDataChange := @DataChange;
+  inherited Select;
+end;
+
 procedure TDBComboBox.UpdateData(Sender: TObject);
 begin
   FDataLink.Field.Text := Text;

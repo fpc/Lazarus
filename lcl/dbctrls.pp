@@ -675,8 +675,9 @@ Type
 
   TDBComboBox = class(TCustomDBComboBox)
   protected
-    procedure UpdateData(Sender: TObject); override;
     procedure DataChange(Sender: TObject); override;
+    procedure Select; override;
+    procedure UpdateData(Sender: TObject); override;
   published
     property Anchors;
     property ArrowKeysTraverseList;
