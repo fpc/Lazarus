@@ -399,6 +399,9 @@ var
   CurResult: TModalResult;
   BuildLazProfiles: TBuildLazarusProfiles;
   CurProf: TBuildLazarusProfile;
+  MMDefs: TMakeModeDefs;
+  MMDef: TMakeModeDef;
+  MakeMode: TMakeMode;
   PkgOptions: String;
   InheritedOptionStrings: TInheritedCompOptsStrings;
   TargetDir: String;
@@ -408,6 +411,7 @@ begin
 
   LoadMiscellaneousOptions;
   BuildLazProfiles:=MiscellaneousOptions.BuildLazProfiles;
+  MMDefs:=BuildLazProfiles.MakeModeDefs;
   CurProf:=BuildLazProfiles.Current;
   if (Length(OSOverride) <> 0) then
     CurProf.TargetOS:=OSOverride;
@@ -419,8 +423,25 @@ begin
   else
     CurProf.TargetPlatform:=GetDefaultLCLWidgetType;
   CurProf.ExtraOptions:=BuildIDEOptions;
-  if BuildAll then
+  MakeMode:=mmNone;
+  if BuildAll then begin
     CurProf.CleanAll:=true;
+    MakeMode:=mmBuild;
+  end;
+  for i:=0 to MMDefs.Count-1 do begin
+    MMDef:=MMDefs[i];
+    if (MMDefs.IndexOf(MMDef) < MMDefs.IndexOf(MMDefs.ItemIDE))
+    then
+      // these items are needed for the IDE
+      CurProf.MakeModes[i]:=MakeMode
+    else if MMDef=MMDefs.ItemIDE then
+      // always build the IDE
+      CurProf.MakeModes[i]:=mmBuild
+    else
+      // these are goodies (examples)
+      CurProf.MakeModes[i]:=mmNone;
+  end;
+
   MainBuildBoss.SetBuildTargetIDE;
   Flags:=[];
 
@@ -453,7 +474,8 @@ begin
            PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings{%H-});
 
   // save
-  CurResult:=SaveIDEMakeOptions(BuildLazProfiles,GlobalMacroList,PkgOptions,Flags);
+  CurResult:=SaveIDEMakeOptions(BuildLazProfiles,
+                                GlobalMacroList,PkgOptions,Flags+[blfOnlyIDE]);
   if CurResult<>mrOk then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving idemake.cfg');
     exit;
@@ -464,7 +486,8 @@ begin
                           EnvironmentOptions.ExternalTools,GlobalMacroList,
                           PkgOptions,EnvironmentOptions.CompilerFilename,
                           EnvironmentOptions.MakeFilename,
-                          Flags+[blfUseMakeIDECfg,blfReplaceExe]);
+                          Flags+[blfUseMakeIDECfg,blfOnlyIDE,blfReplaceExe]
+                          );
   if CurResult<>mrOk then begin
     DebugLn('TLazBuildApplication.BuildLazarusIDE: Building IDE failed.');
     exit;

@@ -2873,6 +2873,7 @@ resourcestring
   lisCTDTemplates = 'Templates';
   lisSaveSettings = 'Save Settings';
   lisLazBuildCancel = 'Cancel';
+  lisLazBuildNone = 'None';
   lisLazBuildBuild = 'Build';
   lisLazBuildBuildAdvanced = 'Build Advanced';
   lisLazBuildCleanBuild = 'Clean+Build';
@@ -2887,6 +2888,7 @@ resourcestring
   lisLazCleanUpBuildAll = 'Clean Up + Build all';
 
   lisLazBuildAdvancedBuildOptions = 'Advanced Build Options';
+  lisLazBuildABOPart = 'Part';
   lisLazBuildABOAction = 'Action';
   lisLazBuildABOChooseOutputDir = 'Choose output directory of the IDE executable ';
   lisLazBuildDefines = 'Defines';
