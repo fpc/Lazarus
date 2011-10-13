@@ -1609,7 +1609,6 @@ begin
   while InStr < InStrEnd do
   begin
     c1 := InStr^;
-    new_c1 := c1;
     case c1 of
       'A'..'Z':
       begin
@@ -1635,9 +1634,11 @@ begin
       end;
 
       // Chars with 2-bytes which might be modified
-      #$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2:
+      //#$C3..#$C8, #$CE, #$D0..#$D2:
+      #$C3..#$D2:
       begin
         c2 := InStr[1];
+        new_c1 := c1;
         new_c2 := c2;
         case c1 of
         // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
@@ -1796,6 +1797,7 @@ begin
       // E1 83 80 - E1 83 85 => E2 B4 A0 - E2 B4 A5
       #$E1:
       begin
+        new_c1 := c1;
         c2 := InStr[1];
         c3 := InStr[2];
         if (c2 = #$82) and (c3 in [#$A0..#$BF]) then
