@@ -156,7 +156,8 @@ cat $LazDestDir/install/man/man1/startlazarus.1 | gzip > $LazBuildDir/usr/share/
 mkdir -p $LazBuildDir/etc/lazarus
 cp $EtcSrcDir/editoroptions.xml $LazBuildDir/etc/lazarus/
 cat $EtcSrcDir/environmentoptions.xml | \
-  sed -e "s#/usr/lib/lazarus/%LazarusVersion%#$LazDestDirInstalled/#" \
+  sed -e "s#__LAZARUSDIR__#$LazDestDirInstalled/#" \
+      -e "s#__FPCSRCDIR__#/usr/share/fpcsrc/\$(FPCVER)/#" \
   > $LazBuildDir/etc/lazarus/environmentoptions.xml
 chmod 644 $LazBuildDir/etc/lazarus/*.xml
 

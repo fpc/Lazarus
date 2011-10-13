@@ -5,7 +5,7 @@
     <Debugger Class="TGDBMIDebugger"/>
     <DebuggerFilename Value="/usr/bin/gdb">
     </DebuggerFilename>
-    <LazarusDirectory Value="/usr/lib/lazarus/%LazarusVersion%">
+    <LazarusDirectory Value="__LAZARUSDIR__">
       <History Count="1">
         <Item1 Value="/usr/lib/lazarus/"/>
       </History>
@@ -17,7 +17,7 @@
         <Item3 Value="/opt/fpc/fpc"/>
       </History>
     </CompilerFilename>
-    <FPCSourceDirectory Value="/usr/share/fpcsrc/$(FPCVER)/">
+    <FPCSourceDirectory Value="__FPCSRCDIR__">
       <History Count="2">
         <Item1 Value="/usr/share/fpcsrc/"/>
         <Item2 Value="/usr/share/fpcsrc/$(FPCVER)/"/>
