@@ -882,21 +882,23 @@ begin
   IsKeyWordProcedureSpecifier:=TKeyWordFunctionList.Create('IsKeyWordProcedureSpecifier');
   KeyWordLists.Add(IsKeyWordProcedureSpecifier);
   with IsKeyWordProcedureSpecifier do begin
+    Add('ALIAS'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ASSEMBLER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
-    ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMPILERPROC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('RTLPROC'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXPERIMENTAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXPORT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
     Add('EXTERNAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PUBLIC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FAR'          ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FORWARD'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INLINE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IOCHECK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LOCAL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NEAR'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NOSTACKFRAME' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OLDFPCCALL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -904,18 +906,17 @@ begin
     Add('PASCAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PLATFORM'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('POPSTACK'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PUBLIC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REGISTER'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RTLPROC'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RTLPROC'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SAFECALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SAVEREGISTERS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('STDCALL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('SAFECALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // kylix
     Add('UNIMPLEMENTED',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('['            ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('ALIAS'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('EXPERIMENTAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // kylix
     Add('WEAKEXTERNAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('['            ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   IsKeyWordProcedureTypeSpecifier:=TKeyWordFunctionList.Create('IsKeyWordProcedureTypeSpecifier');
