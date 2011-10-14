@@ -263,7 +263,8 @@ type
 const
   DefaultProjectCleanOutputFileMask = '*';
   DefaultProjectCleanSourcesFileMask = '*.ppu;*.ppl;*.o;*.or';
-  DefaultProjectSessionStorage = pssInProjectInfo;
+  DefaultProjectSessionStorage = pssInProjectInfo; // this value is not saved to the lpi file
+  DefaultNewProjectSessionStorage = pssInProjectDir; // value used for new projects
 
 type
   TLazProject = class;
@@ -1088,7 +1089,7 @@ end;
 constructor TLazProject.Create(ProjectDescription: TProjectDescriptor);
 begin
   inherited Create;
-  FSessionStorage:=DefaultProjectSessionStorage;
+  FSessionStorage:=DefaultNewProjectSessionStorage;
   FCleanOutputFileMask:=DefaultProjectCleanOutputFileMask;
   FCleanSourcesFileMask:=DefaultProjectCleanSourcesFileMask;
   FCustomData:=TStringToStringTree.Create(true);
@@ -1110,7 +1111,7 @@ begin
   FCustomSessionData.Clear;
   FExecutableType:=petNone;
   FTitle:='';
-  FSessionStorage:=DefaultProjectSessionStorage;
+  FSessionStorage:=DefaultNewProjectSessionStorage;
   FLazDocPaths:='';
 end;
 
