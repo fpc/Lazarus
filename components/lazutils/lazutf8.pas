@@ -1549,7 +1549,7 @@ begin
     c1 := InStr^;
     case c1 of
     'A'..'Z': Break;
-    #$C3..#$C9, #$CE, #$D0..#$D5, #$E1:
+    #$C3..#$C9, #$CE, #$D0..#$D5, #$E1..#$E2,#$E5:
     begin
       c2 := InStr[1];
       case c1 of
@@ -1570,6 +1570,9 @@ begin
           #$B8: Break;
         end;
       end;
+      // Process E5 to avoid stopping on chinese chars
+      #$E5: if (c2 = #$BC) and (c3 in [#$A1..#$BA]) then Break;
+      // Others are too complex, better not to pre-inspect them
       else
         Break;
       end;
@@ -2312,6 +2315,253 @@ begin
           if c1 <> new_c1 then OutStr^ := new_c1;
           if c2 <> new_c2 then OutStr[1] := new_c2;
           if c3 <> new_c3 then OutStr[2] := new_c3;
+        end;
+
+        inc(InStr, 3);
+        inc(OutStr, 3);
+      end;
+      {
+      More Characters with 3 bytes, so exotic stuff between:
+      $2126..$2183                    E2 84 A6..E2 86 83
+      $24B6..$24CF    Result:=u+26;   E2 92 B6..E2 93 8F
+      $2C00..$2C2E    Result:=u+48;   E2 B0 80..E2 B0 AE
+      $2C60..$2CE2                    E2 B1 A0..E2 B3 A2
+      }
+      #$E2:
+      begin
+        new_c1 := c1;
+        c2 := InStr[1];
+        c3 := InStr[2];
+        new_c2 := c2;
+        new_c3 := c3;
+        // 2126;OHM SIGN;Lu;0;L;03A9;;;;N;OHM;;;03C9; E2 84 A6 => CF 89
+        if (c2 = #$84) and (c3 = #$A6) then
+        begin
+          inc(InStr, 3);
+          OutStr^ := #$CF;
+          inc(OutStr);
+          OutStr^ := #$89;
+          inc(OutStr);
+          inc(CounterDiff, 1);
+          Continue;
+        end
+        {
+        212A;KELVIN SIGN;Lu;0;L;004B;;;;N;DEGREES KELVIN;;;006B; E2 84 AA => 6B
+        }
+        else if (c2 = #$84) and (c3 = #$AA) then
+        begin
+          inc(InStr, 3);
+          if c3 = #$AA then OutStr^ := #$6B
+          else OutStr^ := #$E5;
+          inc(OutStr);
+          inc(CounterDiff, 2);
+          Continue;
+        end
+        {
+        212B;ANGSTROM SIGN;Lu;0;L;00C5;;;;N;ANGSTROM UNIT;;;00E5; E2 84 AB => C3 A5
+        }
+        else if (c2 = #$84) and (c3 = #$AB) then
+        begin
+          inc(InStr, 3);
+          OutStr^ := #$C3;
+          inc(OutStr);
+          OutStr^ := #$A5;
+          inc(OutStr);
+          inc(CounterDiff, 1);
+          Continue;
+        end
+        {
+        2160;ROMAN NUMERAL ONE;Nl;0;L;<compat> 0049;;;1;N;;;;2170; E2 85 A0 => E2 85 B0
+        2161;ROMAN NUMERAL TWO;Nl;0;L;<compat> 0049 0049;;;2;N;;;;2171;
+        2162;ROMAN NUMERAL THREE;Nl;0;L;<compat> 0049 0049 0049;;;3;N;;;;2172;
+        2163;ROMAN NUMERAL FOUR;Nl;0;L;<compat> 0049 0056;;;4;N;;;;2173;
+        2164;ROMAN NUMERAL FIVE;Nl;0;L;<compat> 0056;;;5;N;;;;2174;
+        2165;ROMAN NUMERAL SIX;Nl;0;L;<compat> 0056 0049;;;6;N;;;;2175;
+        2166;ROMAN NUMERAL SEVEN;Nl;0;L;<compat> 0056 0049 0049;;;7;N;;;;2176;
+        2167;ROMAN NUMERAL EIGHT;Nl;0;L;<compat> 0056 0049 0049 0049;;;8;N;;;;2177;
+        2168;ROMAN NUMERAL NINE;Nl;0;L;<compat> 0049 0058;;;9;N;;;;2178;
+        2169;ROMAN NUMERAL TEN;Nl;0;L;<compat> 0058;;;10;N;;;;2179;
+        216A;ROMAN NUMERAL ELEVEN;Nl;0;L;<compat> 0058 0049;;;11;N;;;;217A;
+        216B;ROMAN NUMERAL TWELVE;Nl;0;L;<compat> 0058 0049 0049;;;12;N;;;;217B;
+        216C;ROMAN NUMERAL FIFTY;Nl;0;L;<compat> 004C;;;50;N;;;;217C;
+        216D;ROMAN NUMERAL ONE HUNDRED;Nl;0;L;<compat> 0043;;;100;N;;;;217D;
+        216E;ROMAN NUMERAL FIVE HUNDRED;Nl;0;L;<compat> 0044;;;500;N;;;;217E;
+        216F;ROMAN NUMERAL ONE THOUSAND;Nl;0;L;<compat> 004D;;;1000;N;;;;217F;
+        }
+        else if (c2 = #$85) and (c3 in [#$A0..#$AF]) then new_c3 := chr(ord(c3) + $10)
+        {
+        2183;ROMAN NUMERAL REVERSED ONE HUNDRED;Lu;0;L;;;;;N;;;;2184; E2 86 83 => E2 86 84
+        }
+        else if (c2 = #$86) and (c3 = #$83) then new_c3 := chr(ord(c3) + 1)
+        {
+        $24B6..$24CF    Result:=u+26;   E2 92 B6..E2 93 8F
+
+        Ex: 24B6;CIRCLED LATIN CAPITAL LETTER A;So;0;L;<circle> 0041;;;;N;;;;24D0; E2 92 B6 => E2 93 90
+        }
+        else if (c2 = #$92) and (c3 in [#$B6..#$BF]) then
+        begin
+          new_c3 := #$93;
+          new_c3 := chr(ord(c3) - $26);
+        end
+        else if (c2 = #$93) and (c3 in [#$80..#$8F]) then new_c3 := chr(ord(c3) + 26)
+        {
+        $2C00..$2C2E    Result:=u+48;   E2 B0 80..E2 B0 AE
+
+        2C00;GLAGOLITIC CAPITAL LETTER AZU;Lu;0;L;;;;;N;;;;2C30; E2 B0 80 => E2 B0 B0
+
+        2C10;GLAGOLITIC CAPITAL LETTER NASHI;Lu;0;L;;;;;N;;;;2C40; E2 B0 90 => E2 B1 80
+        }
+        else if (c2 = #$B0) and (c3 in [#$80..#$8F]) then new_c3 := chr(ord(c3) + $30)
+        else if (c2 = #$B0) and (c3 in [#$90..#$AE]) then
+        begin
+          new_c2 := #$B1;
+          new_c3 := chr(ord(c3) - $10);
+        end
+        {
+        $2C60..$2CE2                    E2 B1 A0..E2 B3 A2
+
+        2C60;LATIN CAPITAL LETTER L WITH DOUBLE BAR;Lu;0;L;;;;;N;;;;2C61; E2 B1 A0 => +1
+        2C61;LATIN SMALL LETTER L WITH DOUBLE BAR;Ll;0;L;;;;;N;;;2C60;;2C60
+        2C62;LATIN CAPITAL LETTER L WITH MIDDLE TILDE;Lu;0;L;;;;;N;;;;026B; => 	C9 AB
+        2C63;LATIN CAPITAL LETTER P WITH STROKE;Lu;0;L;;;;;N;;;;1D7D; => E1 B5 BD
+        2C64;LATIN CAPITAL LETTER R WITH TAIL;Lu;0;L;;;;;N;;;;027D; => 	C9 BD
+        2C65;LATIN SMALL LETTER A WITH STROKE;Ll;0;L;;;;;N;;;023A;;023A
+        2C66;LATIN SMALL LETTER T WITH DIAGONAL STROKE;Ll;0;L;;;;;N;;;023E;;023E
+        2C67;LATIN CAPITAL LETTER H WITH DESCENDER;Lu;0;L;;;;;N;;;;2C68; => E2 B1 A8
+        2C68;LATIN SMALL LETTER H WITH DESCENDER;Ll;0;L;;;;;N;;;2C67;;2C67
+        2C69;LATIN CAPITAL LETTER K WITH DESCENDER;Lu;0;L;;;;;N;;;;2C6A; => E2 B1 AA
+        2C6A;LATIN SMALL LETTER K WITH DESCENDER;Ll;0;L;;;;;N;;;2C69;;2C69
+        2C6B;LATIN CAPITAL LETTER Z WITH DESCENDER;Lu;0;L;;;;;N;;;;2C6C; => E2 B1 AC
+        2C6C;LATIN SMALL LETTER Z WITH DESCENDER;Ll;0;L;;;;;N;;;2C6B;;2C6B
+        2C6D;LATIN CAPITAL LETTER ALPHA;Lu;0;L;;;;;N;;;;0251; => C9 91
+        2C6E;LATIN CAPITAL LETTER M WITH HOOK;Lu;0;L;;;;;N;;;;0271; => C9 B1
+        2C6F;LATIN CAPITAL LETTER TURNED A;Lu;0;L;;;;;N;;;;0250; => C9 90
+
+        2C70;LATIN CAPITAL LETTER TURNED ALPHA;Lu;0;L;;;;;N;;;;0252; => C9 92
+        }
+        else if (c2 = #$B1) then
+        begin
+          case c3 of
+          #$A0: new_c3 := chr(ord(c3)+1);
+          #$A2,#$A4,#$AD..#$AF,#$B0:
+          begin
+            inc(InStr, 3);
+            OutStr^ := #$C9;
+            inc(OutStr);
+            case c3 of
+            #$A2: OutStr^ := #$AB;
+            #$A4: OutStr^ := #$BD;
+            #$AD: OutStr^ := #$90;
+            #$AE: OutStr^ := #$B1;
+            #$AF: OutStr^ := #$90;
+            #$B0: OutStr^ := #$92;
+            end;
+            inc(OutStr);
+            inc(CounterDiff, 1);
+            Continue;
+          end;
+          #$A3:
+          begin
+            new_c2 := #$B5;
+            new_c3 := #$BD;
+          end;
+          #$A7,#$A9,#$AB: new_c3 := chr(ord(c3)+1);
+          {
+          2C71;LATIN SMALL LETTER V WITH RIGHT HOOK;Ll;0;L;;;;;N;;;;;
+          2C72;LATIN CAPITAL LETTER W WITH HOOK;Lu;0;L;;;;;N;;;;2C73;
+          2C73;LATIN SMALL LETTER W WITH HOOK;Ll;0;L;;;;;N;;;2C72;;2C72
+          2C74;LATIN SMALL LETTER V WITH CURL;Ll;0;L;;;;;N;;;;;
+          2C75;LATIN CAPITAL LETTER HALF H;Lu;0;L;;;;;N;;;;2C76;
+          2C76;LATIN SMALL LETTER HALF H;Ll;0;L;;;;;N;;;2C75;;2C75
+          2C77;LATIN SMALL LETTER TAILLESS PHI;Ll;0;L;;;;;N;;;;;
+          2C78;LATIN SMALL LETTER E WITH NOTCH;Ll;0;L;;;;;N;;;;;
+          2C79;LATIN SMALL LETTER TURNED R WITH TAIL;Ll;0;L;;;;;N;;;;;
+          2C7A;LATIN SMALL LETTER O WITH LOW RING INSIDE;Ll;0;L;;;;;N;;;;;
+          2C7B;LATIN LETTER SMALL CAPITAL TURNED E;Ll;0;L;;;;;N;;;;;
+          2C7C;LATIN SUBSCRIPT SMALL LETTER J;Ll;0;L;<sub> 006A;;;;N;;;;;
+          2C7D;MODIFIER LETTER CAPITAL V;Lm;0;L;<super> 0056;;;;N;;;;;
+          2C7E;LATIN CAPITAL LETTER S WITH SWASH TAIL;Lu;0;L;;;;;N;;;;023F; => C8 BF
+          2C7F;LATIN CAPITAL LETTER Z WITH SWASH TAIL;Lu;0;L;;;;;N;;;;0240; => C9 80
+          }
+          #$B2,#$B5: new_c3 := chr(ord(c3)+1);
+          #$BE,#$BF:
+          begin
+            inc(InStr, 3);
+            case c3 of
+            #$BE: OutStr^ := #$C8;
+            #$BF: OutStr^ := #$C9;
+            end;
+            OutStr^ := #$C8;
+            inc(OutStr);
+            case c3 of
+            #$BE: OutStr^ := #$BF;
+            #$BF: OutStr^ := #$80;
+            end;
+            inc(OutStr);
+            inc(CounterDiff, 1);
+            Continue;
+          end;
+          end;
+        end
+        {
+        2C80;COPTIC CAPITAL LETTER ALFA;Lu;0;L;;;;;N;;;;2C81; E2 B2 80 => E2 B2 81
+        ...
+        2CBE;COPTIC CAPITAL LETTER OLD COPTIC OOU;Lu;0;L;;;;;N;;;;2CBF; E2 B2 BE => E2 B2 BF
+        2CBF;COPTIC SMALL LETTER OLD COPTIC OOU;Ll;0;L;;;;;N;;;2CBE;;2CBE
+        ...
+        2CC0;COPTIC CAPITAL LETTER SAMPI;Lu;0;L;;;;;N;;;;2CC1; E2 B3 80 => E2 B2 81
+        2CC1;COPTIC SMALL LETTER SAMPI;Ll;0;L;;;;;N;;;2CC0;;2CC0
+        ...
+        2CE2;COPTIC CAPITAL LETTER OLD NUBIAN WAU;Lu;0;L;;;;;N;;;;2CE3; E2 B3 A2 => E2 B3 A3
+        2CE3;COPTIC SMALL LETTER OLD NUBIAN WAU;Ll;0;L;;;;;N;;;2CE2;;2CE2 <=
+        }
+        else if (c2 = #$B2) then
+        begin
+          if ord(c3) mod 2 = 0 then new_c3 := chr(ord(c3) + 1);
+        end
+        else if (c2 = #$B3) and (c3 in [#$80..#$A3]) then
+        begin
+          if ord(c3) mod 2 = 0 then new_c3 := chr(ord(c3) + 1);
+        end;
+
+        if (CounterDiff <> 0) then
+        begin
+          OutStr^ := new_c1;
+          OutStr[1] := new_c2;
+          OutStr[2] := new_c3;
+        end
+        else
+        begin
+          if c1 <> new_c1 then OutStr^ := new_c1;
+          if c2 <> new_c2 then OutStr[1] := new_c2;
+          if c3 <> new_c3 then OutStr[2] := new_c3;
+        end;
+
+        inc(InStr, 3);
+        inc(OutStr, 3);
+      end;
+      {
+      FF21;FULLWIDTH LATIN CAPITAL LETTER A;Lu;0;L;<wide> 0041;;;;N;;;;FF41; EF BC A1 => EF BD 81
+      ...
+      FF3A;FULLWIDTH LATIN CAPITAL LETTER Z;Lu;0;L;<wide> 005A;;;;N;;;;FF5A; EF BC BA => EF BD 9A
+      }
+      #$EF:
+      begin
+        c2 := InStr[1];
+        c3 := InStr[2];
+
+        if (c2 = #$BC) and (c3 in [#$A1..#$BA]) then
+        begin
+          OutStr^ := c1;
+          OutStr[1] := #$BD;
+          OutStr[2] := chr(ord(c3) - $20);
+        end;
+
+        if (CounterDiff <> 0) then
+        begin
+          OutStr^ := c1;
+          OutStr[1] := c2;
+          OutStr[2] := c3;
         end;
 
         inc(InStr, 3);
