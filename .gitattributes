@@ -5693,7 +5693,6 @@ lcl/menus.pp svneol=native#text/pascal
 lcl/nonwin32/README.txt svneol=native#text/plain
 lcl/nonwin32/messages.pp svneol=native#text/pascal
 lcl/pairsplitter.pas svneol=native#text/pascal
-lcl/paswstring.pas svneol=native#text/pascal
 lcl/popupnotifier.pas svneol=native#text/pascal
 lcl/postscriptcanvas.pas svneol=native#text/pascal
 lcl/postscriptprinter.pas svneol=native#text/pascal

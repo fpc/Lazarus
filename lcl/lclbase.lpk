@@ -37,7 +37,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="295">
+    <Files Count="294">
       <Item1>
         <Filename Value="barchart.pp"/>
         <UnitName Value="BarChart"/>
@@ -1212,19 +1212,14 @@
         <Type Value="Include"/>
       </Item292>
       <Item293>
-        <Filename Value="paswstring.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="paswstring"/>
-      </Item293>
-      <Item294>
         <Filename Value="valedit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="ValEdit"/>
-      </Item294>
-      <Item295>
+      </Item293>
+      <Item294>
         <Filename Value="lazutf8classes.pas"/>
         <UnitName Value="lazutf8classes"/>
-      </Item295>
+      </Item294>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
