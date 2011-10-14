@@ -80,6 +80,24 @@ begin
   // Cyrillic
   AssertStringOperationUTF8UpperCase('Russian UTF8UpperCase 1', '', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ');
   AssertStringOperationUTF8UpperCase('Russian UTF8UpperCase 2', '', 'абвеёжзклмнопрдйг суфхцчшщъыьэюяит', 'АБВЕЁЖЗКЛМНОПРДЙГ СУФХЦЧШЩЪЫЬЭЮЯИТ');
+  // Unicode table
+  AssertStringOperationUTF8UpperCase('Latin 00C0 UTF8UpperCase', '', 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏ', 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏ');
+  AssertStringOperationUTF8UpperCase('Latin 00D0 UTF8UpperCase', '', 'ÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß', 'ÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞSS');
+  AssertStringOperationUTF8UpperCase('Latin 00E0 UTF8UpperCase', '', 'àáâãäåæçèéêëìíîï', 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏ');
+  AssertStringOperationUTF8UpperCase('Latin 00F0 UTF8UpperCase', '', 'ðñòóôõö÷øùúûüýþÿ', 'ÐÑÒÓÔÕÖ÷ØÙÚÛÜÝÞŸ');
+  AssertStringOperationUTF8UpperCase('Latin 0100 UTF8UpperCase', '', 'ĀāĂăĄąĆćĈĉĊċČčĎď', 'ĀĀĂĂĄĄĆĆĈĈĊĊČČĎĎ');
+  AssertStringOperationUTF8UpperCase('Latin 0110 UTF8UpperCase', '', 'ĐđĒēĔĕĖėĘęĚěĜĝĞğ', 'ĐĐĒĒĔĔĖĖĘĘĚĚĜĜĞĞ');
+  AssertStringOperationUTF8UpperCase('Latin 0120 UTF8LowerCase', '', 'ĠġĢģĤĥĦħĨĩĪīĬĭĮį', 'ĠĠĢĢĤĤĦĦĨĨĪĪĬĬĮĮ');
+  AssertStringOperationUTF8UpperCase('Latin 0130 UTF8LowerCase', '', 'İıĲĳĴĵĶķĸĹĺĻļĽľĿ', 'İİĲĲĴĴĶĶĸĹĹĻĻĽĽĿ');
+{  AssertStringOperationUTF8UpperCase('Latin 0140 UTF8LowerCase', '', 'ŀŁłŃńŅņŇňŉŊŋŌōŎŏ', 'ĿŁŁŃŃŅŅŇŇŉŊŋŌōŎŏ');
+  AssertStringOperationUTF8UpperCase('Latin 0150 UTF8LowerCase', '', 'ŐőŒœŔŕŖŗŘřŚśŜŝŞş', 'őőœœŕŕŗŗřřśśŝŝşş');
+  AssertStringOperationUTF8UpperCase('Latin 0160 UTF8LowerCase', '', 'ŠšŢţŤťŦŧŨũŪūŬŭŮů', 'ššţţťťŧŧũũūūŭŭůů');
+  AssertStringOperationUTF8UpperCase('Latin 0170 UTF8LowerCase', '', 'ŰűŲųŴŵŶŷŸŹźŻżŽžſ', 'űűųųŵŵŷŷÿźźżżžžſ');
+  AssertStringOperationUTF8UpperCase('Latin 0180 UTF8LowerCase', '', 'ƀ Ɓ Ƃƃ Ƅƅ Ɔ Ƈƈ Ɖ Ɗ Ƌƌ ƍ Ǝ Ə', 'ƀ ɓ ƃƃ ƅƅ ɔ ƈƈ ɖ ɗ ƌƌ ƍ ǝ ə');
+  AssertStringOperationUTF8UpperCase('Latin 0190 UTF8LowerCase', '', 'ƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟ', 'ɛƒƒɠɣƕɩɨƙƙƚƛɯɲƞɵ');
+  AssertStringOperationUTF8UpperCase('Latin 01A0 UTF8LowerCase', '', 'ƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯ', 'ơơƣƣƥƥʀƨƨʃƪƫƭƭʈư');
+  AssertStringOperationUTF8UpperCase('Latin 01B0 UTF8LowerCase', '', 'ưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿ', 'ưʊʋƴƴƶƶʒƹƹƺƻƽƽƾƿ');
+  AssertStringOperationUTF8UpperCase('Latin 01C0 UTF8LowerCase', '', 'ǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏ', 'ǀǁǂǃǆǆǆǉǉǉǌǌǌǎǎǐ');}
 
   // What shouldnt change
   AssertStringOperationUTF8UpperCase('Chinese UTF8UpperCase 1', '', '名字叫嘉英，嘉陵江的嘉，英國的英', '名字叫嘉英，嘉陵江的嘉，英國的英');
