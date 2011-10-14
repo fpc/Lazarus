@@ -120,7 +120,7 @@ begin
     Count:=Count2
   else
     Count:=Count1;
-  result := System.CompareMemRange(Pointer(S1),Pointer(S2), Count*2);
+  result := SysUtils.CompareMemRange(Pointer(S1),Pointer(S2), Count*2);
   if result=0 then
     result:=Count1-Count2;
 end;
@@ -141,7 +141,7 @@ end;
 
 function AnsiCompareStr(const s1, s2: ansistring): PtrInt;
 begin
-  Result := System.CompareStr(s1, s2);
+  Result := SysUtils.CompareStr(s1, s2);
 end;
 
 // Similar to AnsiCompareStr, but with PChar
@@ -151,7 +151,7 @@ var
 begin
   ansi1 := StrPas(S1);
   ansi2 := StrPas(S2);
-  Result := System.CompareStr(ansi1, ansi2);
+  Result := SysUtils.CompareStr(ansi1, ansi2);
 end;
 
 

@@ -106,10 +106,19 @@ function ConvertUTF16ToUTF8(Dest: PChar; DestCharCount: SizeUInt;
 function UTF8ToUTF16(const S: AnsiString): UnicodeString;
 function UTF16ToUTF8(const S: UnicodeString): AnsiString;
 
+// locale
+procedure LazGetLanguageIDs(var Lang, FallbackLang: String);
+procedure LazGetShortLanguageID(var Lang: String);
+
 var
   FPUpChars: array[char] of char;
 
 implementation
+
+uses
+  gettext
+{$IFDEF Darwin}, MacOSAll{$ENDIF}
+  ;
 
 var
   FNeedRTLAnsi: boolean = false;
@@ -3156,6 +3165,70 @@ begin
     SetLength(R, L - 1);
     Result := R;
   end;
+end;
+
+procedure LazGetLanguageIDs(var Lang, FallbackLang: String);
+
+  {$IFDEF DARWIN}
+  function GetLanguage: boolean;
+  var
+    Ref: CFStringRef;
+    LangArray: CFMutableArrayRef;
+    StrSize: CFIndex;
+    StrRange: CFRange;
+    Locals: CFArrayRef;
+    Bundle: CFBundleRef;
+  begin
+    Result := false;
+    Bundle:=CFBundleGetMainBundle;
+    if Bundle=nil then exit;
+    Locals:=CFBundleCopyBundleLocalizations(Bundle);
+    if Locals=nil then exit;
+    LangArray := CFBundleCopyLocalizationsForPreferences(Locals, nil);
+    try
+      if CFArrayGetCount(LangArray) > 0 then
+      begin
+        Ref := CFArrayGetValueAtIndex(LangArray, 0);
+        StrRange.location := 0;
+        StrRange.length := CFStringGetLength(Ref);
+
+        CFStringGetBytes(Ref, StrRange, kCFStringEncodingUTF8,
+          Ord('?'), False, nil, 0, StrSize);
+        SetLength(Lang, StrSize);
+
+        if StrSize > 0 then
+        begin
+          CFStringGetBytes(Ref, StrRange, kCFStringEncodingUTF8,
+            Ord('?'), False, @Lang[1], StrSize, StrSize);
+          Result:=true;
+          FallbackLang := Copy(Lang, 1, 2);
+        end;
+      end;
+    finally
+      CFRelease(LangArray);
+      CFRelease(Locals);
+    end;
+  end;
+  {$ENDIF}
+begin
+{$IFDEF DARWIN}
+  if not GetLanguage then
+    GetLanguageIDs(Lang, FallbackLang);
+{$ELSE}
+  GetLanguageIDs(Lang, FallbackLang);
+{$ENDIF}
+end;
+
+// This routine will strip country information from the language ID
+// making it more simple
+procedure LazGetShortLanguageID(var Lang: String);
+var
+  FallbackLang: String;
+begin
+  LazGetLanguageIDs(Lang, FallbackLang);
+
+  // Simply making sure its length is at most 2 should be enough
+  if Length(Lang) > 2 then Lang := Lang[1] + Lang[2];
 end;
 
 procedure InternalInit;
