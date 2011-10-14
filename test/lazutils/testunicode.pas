@@ -25,13 +25,13 @@ begin
   begin
     Write(' Expected ', AStrExpected2, ' !Error!');
     WriteLn();
-    Write('Got      Len=', Length(AStr2),' ');
+    Write('Got      Len=', Length(AStr2), ' Str=');
     WriteStringHex(AStr2);
     WriteLn('');
-    Write('Expected Len=', Length(AStrExpected2),' ');
+    Write('Expected Len=', Length(AStrExpected2), ' Str=');
     WriteStringHex(AStrExpected2);
     WriteLn();
-    Write('Orig     Len=', Length(AStr1),' ');
+    Write('Orig     Len=', Length(AStr1), ' Str=');
     WriteStringHex(AStr1);
     WriteLn('');
   end;
@@ -112,21 +112,58 @@ begin
   AssertStringOperationUTF8LowerCase('Polish UTF8LowerCase 1', '', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
   AssertStringOperationUTF8LowerCase('Polish UTF8LowerCase 2', '', 'AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ', 'aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
   AssertStringOperationUTF8LowerCase('German UTF8LowerCase 1', '', 'Ä/ä,Ö/ö,Ü/ü,ß', 'ä/ä,ö/ö,ü/ü,ß');
+  // Unicode table
   AssertStringOperationUTF8LowerCase('Latin 00C0 UTF8LowerCase', '', 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏ', 'àáâãäåæçèéêëìíîï');
   AssertStringOperationUTF8LowerCase('Latin 00D0 UTF8LowerCase', '', 'ÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß', 'ðñòóôõö×øùúûüýþß');
+  AssertStringOperationUTF8LowerCase('Latin 00E0 UTF8LowerCase', '', 'àáâãäåæçèéêëìíîï', 'àáâãäåæçèéêëìíîï');
+  AssertStringOperationUTF8LowerCase('Latin 00F0 UTF8LowerCase', '', 'ðñòóôõö÷øùúûüýþÿ', 'ðñòóôõö÷øùúûüýþÿ');
   AssertStringOperationUTF8LowerCase('Latin 0100 UTF8LowerCase', '', 'Āā Ăă Ąą Ćć Ĉĉ Ċċ Čč Ďď', 'āā ăă ąą ćć ĉĉ ċċ čč ďď');
+  AssertStringOperationUTF8LowerCase('Latin 0110 UTF8LowerCase', '', 'ĐđĒēĔĕĖėĘęĚěĜĝĞğ', 'đđēēĕĕėėęęěěĝĝğğ');
   AssertStringOperationUTF8LowerCase('Latin 0120 UTF8LowerCase', '', 'ĠġĢģĤĥĦħĨĩĪīĬĭĮį', 'ġġģģĥĥħħĩĩīīĭĭįį');
+  AssertStringOperationUTF8LowerCase('Latin 0130 UTF8LowerCase', '', 'İıĲĳĴĵĶķĸĹĺĻļĽľĿ', 'iıĳĳĵĵķķĸĺĺļļľľŀ');
   AssertStringOperationUTF8LowerCase('Latin 0140 UTF8LowerCase', '', 'ŀŁłŃńŅņŇňŉŊŋŌōŎŏ', 'ŀłłńńņņňňŉŋŋōōŏŏ');
+  AssertStringOperationUTF8LowerCase('Latin 0150 UTF8LowerCase', '', 'ŐőŒœŔŕŖŗŘřŚśŜŝŞş', 'őőœœŕŕŗŗřřśśŝŝşş');
   AssertStringOperationUTF8LowerCase('Latin 0160 UTF8LowerCase', '', 'ŠšŢţŤťŦŧŨũŪūŬŭŮů', 'ššţţťťŧŧũũūūŭŭůů');
+  AssertStringOperationUTF8LowerCase('Latin 0170 UTF8LowerCase', '', 'ŰűŲųŴŵŶŷŸŹźŻżŽžſ', 'űűųųŵŵŷŷÿźźżżžžſ');
   AssertStringOperationUTF8LowerCase('Latin 0180 UTF8LowerCase', '', 'ƀ Ɓ Ƃƃ Ƅƅ Ɔ Ƈƈ Ɖ Ɗ Ƌƌ ƍ Ǝ Ə', 'ƀ ɓ ƃƃ ƅƅ ɔ ƈƈ ɖ ɗ ƌƌ ƍ ǝ ə');
   AssertStringOperationUTF8LowerCase('Latin 0190 UTF8LowerCase', '', 'ƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟ', 'ɛƒƒɠɣƕɩɨƙƙƚƛɯɲƞɵ');
-  AssertStringOperationUTF8LowerCase('Latin 01A0 UTF8LowerCase', '', 'ƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯ', 'ơơƣƣƥƥƦƨƨʃƪƫƭƭʈư');
+  AssertStringOperationUTF8LowerCase('Latin 01A0 UTF8LowerCase', '', 'ƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯ', 'ơơƣƣƥƥʀƨƨʃƪƫƭƭʈư');
   AssertStringOperationUTF8LowerCase('Latin 01B0 UTF8LowerCase', '', 'ưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿ', 'ưʊʋƴƴƶƶʒƹƹƺƻƽƽƾƿ');
   AssertStringOperationUTF8LowerCase('Latin 01C0 UTF8LowerCase', '', 'ǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏ', 'ǀǁǂǃǆǆǆǉǉǉǌǌǌǎǎǐ');
   AssertStringOperationUTF8LowerCase('Latin 0200 UTF8LowerCase', '', 'ȀȁȂȃȄȅȆȇȈȉȊȋȌȍȎȏ', 'ȁȁȃȃȅȅȇȇȉȉȋȋȍȍȏȏ');
   AssertStringOperationUTF8LowerCase('Latin 0210 UTF8LowerCase', '', 'ȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟ', 'ȑȑȓȓȕȕȗȗșșțțȝȝȟȟ');
   AssertStringOperationUTF8LowerCase('Latin 0220 UTF8LowerCase', '', 'ȠȡȢȣȤȥȦȧȨȩȪȫȬȭȮȯ', 'ƞȡȣȣȥȥȧȧȩȩȫȫȭȭȯȯ');
   AssertStringOperationUTF8LowerCase('Latin 0230 UTF8LowerCase', '', 'ȰȱȲȳȴȵȶȷȸȹȺȻȼȽȾȿ', 'ȱȱȳȳȴȵȶȷȸȹⱥȼȼƚⱦȿ');
+  AssertStringOperationUTF8LowerCase('Latin 0240 UTF8LowerCase', '', 'ɀɁɂɃɄɅɆɇɈɉɊɋɌɍɎɏ', 'ɀɂɂƀʉʌɇɇɉɉɋɋɍɍɏɏ');
+  AssertStringOperationUTF8LowerCase('Latin 0250 UTF8LowerCase', '', 'ɐɑɒɓɔɕɖɗɘəɚɛɜɝɞɟ', 'ɐɑɒɓɔɕɖɗɘəɚɛɜɝɞɟ');
+  AssertStringOperationUTF8LowerCase('Unicode 0400 UTF8LowerCase', '', 'ЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏ', 'ѐёђѓєѕіїјљњћќѝўџ');
+  AssertStringOperationUTF8LowerCase('Unicode 0410 UTF8LowerCase', '', 'АБВГДЕЖЗИЙКЛМНОП', 'абвгдежзийклмноп');
+  AssertStringOperationUTF8LowerCase('Unicode 0420 UTF8LowerCase', '', 'РСТУФХЦЧШЩЪЫЬЭЮЯ', 'рстуфхцчшщъыьэюя');
+  AssertStringOperationUTF8LowerCase('Unicode 0430 UTF8LowerCase', '', 'абвгдежзийклмноп', 'абвгдежзийклмноп');
+  AssertStringOperationUTF8LowerCase('Unicode 0440 UTF8LowerCase', '', 'рстуфхцчшщъыьэюя', 'рстуфхцчшщъыьэюя');
+  AssertStringOperationUTF8LowerCase('Unicode 0450 UTF8LowerCase', '', 'ѐёђѓєѕіїјљњћќѝўџ', 'ѐёђѓєѕіїјљњћќѝўџ');
+  AssertStringOperationUTF8LowerCase('Unicode 0460 UTF8LowerCase', '', 'ѠѡѢѣѤѥѦѧѨѩѪѫѬѭѮѯ', 'ѡѡѣѣѥѥѧѧѩѩѫѫѭѭѯѯ');
+  AssertStringOperationUTF8LowerCase('Unicode 0470 UTF8LowerCase', '', 'ѰѱѲѳѴѵѶѷѸѹѺѻѼѽѾѿ', 'ѱѱѳѳѵѵѷѷѹѹѻѻѽѽѿѿ');
+  AssertStringOperationUTF8LowerCase('Unicode 0480 UTF8LowerCase', '', 'Ҁҁ҂ ҃ ҄ ҅ ҆ ҇ ҈ ҉ҊҋҌҍҎҏ', 'ҁҁ҂ ҃ ҄ ҅ ҆ ҇ ҈ ҉ҋҋҍҍҏҏ');
+  AssertStringOperationUTF8LowerCase('Unicode 0490 UTF8LowerCase', '', 'ҐґҒғҔҕҖҗҘҙҚқҜҝҞҟ', 'ґґғғҕҕҗҗҙҙққҝҝҟҟ');
+  AssertStringOperationUTF8LowerCase('Unicode 04A0 UTF8LowerCase', '', 'ҠҡҢңҤҥҦҧҨҩҪҫҬҭҮү', 'ҡҡңңҥҥҧҧҩҩҫҫҭҭүү');
+  AssertStringOperationUTF8LowerCase('Unicode 04B0 UTF8LowerCase', '', 'ҰұҲҳҴҵҶҷҸҹҺһҼҽҾҿ', 'ұұҳҳҵҵҷҷҹҹһһҽҽҿҿ');
+  AssertStringOperationUTF8LowerCase('Unicode 04C0 UTF8LowerCase', '', 'ӀӁӂӃӄӅӆӇӈӉӊӋӌӍӎӏ', 'ӏӂӂӄӄӆӆӈӈӊӊӌӌӎӎӏ');
+  AssertStringOperationUTF8LowerCase('Unicode 04D0 UTF8LowerCase', '', 'ӐӑӒӓӔӕӖӗӘәӚӛӜӝӞӟ', 'ӑӑӓӓӕӕӗӗәәӛӛӝӝӟӟ');
+  AssertStringOperationUTF8LowerCase('Unicode 04E0 UTF8LowerCase', '', 'ӠӡӢӣӤӥӦӧӨөӪӫӬӭӮӯ', 'ӡӡӣӣӥӥӧӧөөӫӫӭӭӯӯ');
+  AssertStringOperationUTF8LowerCase('Unicode 04F0 UTF8LowerCase', '', 'ӰӱӲӳӴӵӶӷӸӹӺӻӼӽӾӿ', 'ӱӱӳӳӵӵӷӷӹӹӻӻӽӽӿӿ');
+  AssertStringOperationUTF8LowerCase('Unicode 0500 UTF8LowerCase', '', 'ԀԁԂԃԄԅԆԇԈԉԊԋԌԍԎԏ', 'ԁԁԃԃԅԅԇԇԉԉԋԋԍԍԏԏ');
+  AssertStringOperationUTF8LowerCase('Unicode 0510 UTF8LowerCase', '', 'ԐԑԒԓԔԕԖԗԘԙԚԛԜԝԞԟ', 'ԑԑԓԓԕԕԗԗԙԙԛԛԝԝԟԟ');
+  AssertStringOperationUTF8LowerCase('Unicode 0520 UTF8LowerCase', '', 'ԠԡԢԣԤԥԦԧ', 'ԡԡԣԣԥԥԧԧ');
+  // Armenian Unicode Table
+  AssertStringOperationUTF8LowerCase('Unicode 0530 UTF8LowerCase', '', 'ԱԲԳԴԵԶԷԸԹԺԻԼԽԾԿ', 'աբգդեզէըթժիլխծկ');
+  AssertStringOperationUTF8LowerCase('Unicode 0540 UTF8LowerCase', '', 'ՀՁՂՃՄՅՆՇՈՉՊՋՌՍՎՏ', 'հձղճմյնշոչպջռսվտ');
+  AssertStringOperationUTF8LowerCase('Unicode 0550 UTF8LowerCase', '', 'ՐՑՒՓՔՕՖ', 'րցւփքօֆ');
+  AssertStringOperationUTF8LowerCase('Unicode 0560 UTF8LowerCase', '', 'աբգդեզէըթժիլխծկ', 'աբգդեզէըթժիլխծկ');
+  AssertStringOperationUTF8LowerCase('Unicode 0570 UTF8LowerCase', '', 'հձղճմյնշոչպջռսվտ', 'հձղճմյնշոչպջռսվտ');
+  AssertStringOperationUTF8LowerCase('Unicode 0580 UTF8LowerCase', '', 'րցւփքօֆ', 'րցւփքօֆ');
+  // Higher Unicode Table
+  AssertStringOperationUTF8LowerCase('Unicode 1E00 UTF8LowerCase', '', 'ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏ', 'ḁḁḃḃḅḅḇḇḉḉḋḋḍḍḏḏ');
   // Turkish
   AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 1', 'tu', 'abcçdefgğhııijklmnoöprsştuüvyz', 'abcçdefgğhııijklmnoöprsştuüvyz');
   AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 2', 'tu', 'ABCÇDEFGĞHIIİJKLMNOÖPRSŞTUÜVYZ', 'abcçdefgğhııijklmnoöprsştuüvyz');

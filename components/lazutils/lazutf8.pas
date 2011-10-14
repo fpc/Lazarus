@@ -1536,7 +1536,7 @@ var
   InStr, InStrEnd, OutStr: PChar;
   // Language identification
   IsTurkish: Boolean;
-  c1, c2, c3, new_c1, new_c2: Char;
+  c1, c2, c3, new_c1, new_c2, new_c3: Char;
 begin
   Result:=AInStr;
   InStr := PChar(AInStr);
@@ -1549,7 +1549,7 @@ begin
     c1 := InStr^;
     case c1 of
     'A'..'Z': Break;
-    #$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2, #$E1:
+    #$C3..#$C9, #$CE, #$D0..#$D5, #$E1:
     begin
       c2 := InStr[1];
       case c1 of
@@ -1570,9 +1570,10 @@ begin
           #$B8: Break;
         end;
       end;
-      #$C6..#$C8,#$CE, #$D0..#$D2, #$E1: Break;
-      // already lower, or otherwhise not affected
+      else
+        Break;
       end;
+      // already lower, or otherwhise not affected
     end;
     end;
     inc(InStr);
@@ -1617,8 +1618,7 @@ begin
       end;
 
       // Chars with 2-bytes which might be modified
-      //#$C3..#$C8, #$CE, #$D0..#$D2:
-      #$C3..#$D2:
+      #$C3..#$D5:
       begin
         c2 := InStr[1];
         new_c1 := c1;
@@ -1655,7 +1655,12 @@ begin
               inc(CounterDiff, 1);
               Continue;
             end;
-            #$B9..#$BF: if ord(c2) mod 2 = 1 then new_c2 := chr(ord(c2) + 1);
+            #$B9..#$BE: if ord(c2) mod 2 = 1 then new_c2 := chr(ord(c2) + 1);
+            #$BF: // This crosses the borders between the first byte of the UTF-8 char
+            begin
+              new_c1 := #$C5;
+              new_c2 := #$80;
+            end;
           end;
         end;
         // $C589 ŉ
@@ -1670,7 +1675,7 @@ begin
               if ord(c2) mod 2 = 0 then
                 new_c2 := chr(ord(c2) + 1);
             end;
-            #$00..#$88, #$B9..#$FF: //1
+            #$00..#$88, #$B9..#$BE: //1
             begin
               if ord(c2) mod 2 = 1 then
                 new_c2 := chr(ord(c2) + 1);
@@ -1814,7 +1819,7 @@ begin
           01A3;LATIN SMALL LETTER OI;Ll;0;L;;;;;N;LATIN SMALL LETTER O I;;01A2;;01A2 <=
           01A4;LATIN CAPITAL LETTER P WITH HOOK;Lu;0;L;;;;;N;LATIN CAPITAL LETTER P HOOK;;;01A5; => +1
           01A5;LATIN SMALL LETTER P WITH HOOK;Ll;0;L;;;;;N;LATIN SMALL LETTER P HOOK;;01A4;;01A4 <=
-          01A6;LATIN LETTER YR;Lu;0;L;;;;;N;LATIN LETTER Y R;;;0280; <=
+          01A6;LATIN LETTER YR;Lu;0;L;;;;;N;LATIN LETTER Y R;;;0280; => CA 80
           01A7;LATIN CAPITAL LETTER TONE TWO;Lu;0;L;;;;;N;;;;01A8; => +1
           01A8;LATIN SMALL LETTER TONE TWO;Ll;0;L;;;;;N;;;01A7;;01A7 <=
           01A9;LATIN CAPITAL LETTER ESH;Lu;0;L;;;;;N;;;;0283; => CA 83
@@ -1834,6 +1839,11 @@ begin
           begin
             if ord(c2) mod 2 = 1 then
               new_c2 := chr(ord(c2) + 1);
+          end;
+          #$A6:
+          begin
+            new_c1 := #$CA;
+            new_c2 := #$80;
           end;
           #$A9:
           begin
@@ -1974,6 +1984,41 @@ begin
           #$BB: new_c2 := chr(ord(c2) + 1);
           end;
         end;
+        {
+        Codepoints 0240 to 027F
+
+        Here only 0240..024F needs lowercase
+        }
+        #$C9:
+        begin
+          case c2 of
+          #$81..#$82:
+          begin
+            if ord(c2) mod 2 = 1 then
+              new_c2 := chr(ord(c2) + 1);
+          end;
+          #$86..#$8F:
+          begin
+            if ord(c2) mod 2 = 0 then
+              new_c2 := chr(ord(c2) + 1);
+          end;
+          #$83:
+          begin
+            new_c1 := #$C6;
+            new_c2 := #$80;
+          end;
+          #$84:
+          begin
+            new_c1 := #$CA;
+            new_c2 := #$89;
+          end;
+          #$85:
+          begin
+            new_c1 := #$CA;
+            new_c2 := #$8C;
+          end;
+          end;
+        end;
         // $CE91..$CE9F: NewChar := OldChar + $20; // Greek Characters
         // $CEA0..$CEA9: NewChar := OldChar + $E0; // Greek Characters
         #$CE:
@@ -2037,6 +2082,61 @@ begin
             end;
           end;
         end;
+        {
+        Codepoints  04C0..04FF
+        }
+        #$D3:
+        begin
+          case c2 of
+            #$80: new_c2 := #$8F;
+            #$81..#$8E:
+            begin
+              if ord(c2) mod 2 = 1 then
+                new_c2 := chr(ord(c2) + 1);
+            end;
+            #$90..#$BF:
+            begin
+              if ord(c2) mod 2 = 0 then
+                new_c2 := chr(ord(c2) + 1);
+            end;
+          end;
+        end;
+        {
+        Codepoints  0500..053F
+
+        Armenian starts in 0531
+        }
+        #$D4:
+        begin
+          if ord(c2) mod 2 = 0 then
+            new_c2 := chr(ord(c2) + 1);
+
+          // Armenian
+          if c2 in [#$B1..#$BF] then
+          begin
+            new_c1 := #$D5;
+            new_c2 := chr(ord(c2) - $10);
+          end;
+        end;
+        {
+        Codepoints  0540..057F
+
+        Armenian
+        }
+        #$D5:
+        begin
+          case c2 of
+            #$80..#$8F:
+            begin
+              new_c2 := chr(ord(c2) + $30);
+            end;
+            #$90..#$96:
+            begin
+              new_c1 := #$D6;
+              new_c2 := chr(ord(c2) - $10);
+            end;
+          end;
+        end;
         end;
         // Common code 2-byte modifiable chars
         if (CounterDiff <> 0) then
@@ -2052,36 +2152,90 @@ begin
         inc(InStr, 2);
         inc(OutStr, 2);
       end;
-      // Georgian codepoints 10A0-10C5 => 2D00-2D25
-      // In UTF-8 this is:
-      // E1 82 A0 - E1 82 BF => E2 B4 80 - E2 B4 9F
-      // E1 83 80 - E1 83 85 => E2 B4 A0 - E2 B4 A5
+      {
+      Characters with 3 bytes
+      }
       #$E1:
       begin
         new_c1 := c1;
         c2 := InStr[1];
         c3 := InStr[2];
+        new_c2 := c2;
+        new_c3 := c3;
+        {
+        Georgian codepoints 10A0-10C5 => 2D00-2D25
+
+        In UTF-8 this is:
+        E1 82 A0 - E1 82 BF => E2 B4 80 - E2 B4 9F
+        E1 83 80 - E1 83 85 => E2 B4 A0 - E2 B4 A5
+        }
         if (c2 = #$82) and (c3 in [#$A0..#$BF]) then
         begin
-          OutStr^ := #$E2;
-          OutStr[1] := #$B4;
-          OutStr[2] := chr(ord(c3) - $20);
+          new_c1 := #$E2;
+          new_c2 := #$B4;
+          new_c3 := chr(ord(c3) - $20);
         end
         else if (c2 = #$83) and (c3 in [#$80..#$85]) then
         begin
-          OutStr^ := #$E2;
-          OutStr[1] := #$B4;
-          OutStr[2] := chr(ord(c3) + $20);
+          new_c1 := #$E2;
+          new_c2 := #$B4;
+          new_c3 := chr(ord(c3) + $20);
+        end
+        {
+        Extra chars between 1E00..1EFF
+
+        Blocks of chars:
+          1E00..1E3F    E1 B8 80..E1 B8 BF
+          1E40..1E7F    E1 B9 80..E1 B9 BF
+          1E80..1EBF    E1 BA 80..E1 BA BF
+          1EC0..1EFF    E1 BB 80..E1 BB BF
+        }
+        else if c2 in [#$B8..#$BB] then
+        begin
+          // Start with a default and change for some particular chars
+          if ord(c3) mod 2 = 0 then
+            new_c3 := chr(ord(c3) + 1);
+
+          { Only 1E96..1E9F are different E1 BA 96..E1 BA 9F
+
+          1E96;LATIN SMALL LETTER H WITH LINE BELOW;Ll;0;L;0068 0331;;;;N;;;;;
+          1E97;LATIN SMALL LETTER T WITH DIAERESIS;Ll;0;L;0074 0308;;;;N;;;;;
+          1E98;LATIN SMALL LETTER W WITH RING ABOVE;Ll;0;L;0077 030A;;;;N;;;;;
+          1E99;LATIN SMALL LETTER Y WITH RING ABOVE;Ll;0;L;0079 030A;;;;N;;;;;
+          1E9A;LATIN SMALL LETTER A WITH RIGHT HALF RING;Ll;0;L;<compat> 0061 02BE;;;;N;;;;;
+          1E9B;LATIN SMALL LETTER LONG S WITH DOT ABOVE;Ll;0;L;017F 0307;;;;N;;;1E60;;1E60
+          1E9C;LATIN SMALL LETTER LONG S WITH DIAGONAL STROKE;Ll;0;L;;;;;N;;;;;
+          1E9D;LATIN SMALL LETTER LONG S WITH HIGH STROKE;Ll;0;L;;;;;N;;;;;
+          1E9E;LATIN CAPITAL LETTER SHARP S;Lu;0;L;;;;;N;;;;00DF; => C3 9F
+          1E9F;LATIN SMALL LETTER DELTA;Ll;0;L;;;;;N;;;;;
+          }
+          if (c2 = #$BA) and (c3 in [#$96..#$9F]) then new_c3 := c3;
+          // LATIN CAPITAL LETTER SHARP S => to german Beta
+          if (c2 = #$BA) and (c3 = #$9E) then
+          begin
+            inc(InStr, 3);
+            OutStr^ := #$C3;
+            inc(OutStr);
+            OutStr^ := #$9F;
+            inc(OutStr);
+            inc(CounterDiff, 1);
+            Continue;
+          end;
+        end;
+
+        if (CounterDiff <> 0) then
+        begin
+          OutStr^ := new_c1;
+          OutStr[1] := new_c2;
+          OutStr[2] := new_c3;
         end
         else
         begin
-          if (CounterDiff <> 0) then
-          begin
-            OutStr^ := InStr[0];
-            OutStr[1] := InStr[1];
-            OutStr[2] := InStr[2];
-          end;
+          if c1 <> new_c1 then OutStr^ := new_c1;
+          if c2 <> new_c2 then OutStr[1] := new_c2;
+          if c3 <> new_c3 then OutStr[2] := new_c3;
         end;
+
         inc(InStr, 3);
         inc(OutStr, 3);
       end;
