@@ -164,6 +164,17 @@ begin
   AssertStringOperationUTF8LowerCase('Unicode 0580 UTF8LowerCase', '', 'րցւփքօֆ', 'րցւփքօֆ');
   // Higher Unicode Table
   AssertStringOperationUTF8LowerCase('Unicode 1E00 UTF8LowerCase', '', 'ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏ', 'ḁḁḃḃḅḅḇḇḉḉḋḋḍḍḏḏ');
+  AssertStringOperationUTF8LowerCase('Unicode 1F00 UTF8LowerCase', '', 'ἀἁἂἃἄἅἆἇἈἉἊἋἌἍἎἏ', 'ἀἁἂἃἄἅἆἇἀἁἂἃἄἅἆἇ');
+  AssertStringOperationUTF8LowerCase('Unicode 1F10 UTF8LowerCase', '', 'ἐἑἒἓἔἕἘἙἚἛἜἝ', 'ἐἑἒἓἔἕἐἑἒἓἔἕ');
+  AssertStringOperationUTF8LowerCase('Unicode 1F20 UTF8LowerCase', '', 'ἠἡἢἣἤἥἦἧἨἩἪἫἬἭἮἯ', 'ἠἡἢἣἤἥἦἧἠἡἢἣἤἥἦἧ');
+  AssertStringOperationUTF8LowerCase('Unicode 1F30 UTF8LowerCase', '', 'ἰἱἲἳἴἵἶἷἸἹἺἻἼἽἾἿ', 'ἰἱἲἳἴἵἶἷἰἱἲἳἴἵἶἷ');
+  AssertStringOperationUTF8LowerCase('Unicode 1F40 UTF8LowerCase', '', 'ὀὁὂὃὄὅὈὉὊὋὌὍ', 'ὀὁὂὃὄὅὀὁὂὃὄὅ');
+  AssertStringOperationUTF8LowerCase('Unicode 1F50 UTF8LowerCase', '', 'ὐὑὒὓὔὕὖὗὙὛὝὟ', 'ὐὑὒὓὔὕὖὗὑὓὕὗ');
+  AssertStringOperationUTF8LowerCase('Unicode 1F60 UTF8LowerCase', '', 'ὠὡὢὣὤὥὦὧὨὩὪὫὬὭὮὯ', 'ὠὡὢὣὤὥὦὧὠὡὢὣὤὥὦὧ');
+  AssertStringOperationUTF8LowerCase('Unicode 1F70 UTF8LowerCase', '', 'ὰάὲέὴήὶίὸόὺύὼώ', 'ὰάὲέὴήὶίὸόὺύὼώ');
+  AssertStringOperationUTF8LowerCase('Unicode 1F80 UTF8LowerCase', '', 'ᾀᾁᾂᾃᾄᾅᾆᾇᾈᾉᾊᾋᾌᾍᾎᾏ', 'ᾀᾁᾂᾃᾄᾅᾆᾇᾀᾁᾂᾃᾄᾅᾆᾇ');
+  AssertStringOperationUTF8LowerCase('Unicode 1F90 UTF8LowerCase', '', 'ᾐᾑᾒᾓᾔᾕᾖᾗᾘᾙᾚᾛᾜᾝᾞᾟ', 'ᾐᾑᾒᾓᾔᾕᾖᾗᾐᾑᾒᾓᾔᾕᾖᾗ');
+  AssertStringOperationUTF8LowerCase('Unicode 1FA0 UTF8LowerCase', '', 'ᾠᾡᾢᾣᾤᾥᾦᾧᾨᾩᾪᾫᾬᾭᾮᾯ', 'ᾠᾡᾢᾣᾤᾥᾦᾧᾠᾡᾢᾣᾤᾥᾦᾧ');
   // Turkish
   AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 1', 'tu', 'abcçdefgğhııijklmnoöprsştuüvyz', 'abcçdefgğhııijklmnoöprsştuüvyz');
   AssertStringOperationUTF8LowerCase('Turkish UTF8LowerCase 2', 'tu', 'ABCÇDEFGĞHIIİJKLMNOÖPRSŞTUÜVYZ', 'abcçdefgğhııijklmnoöprsştuüvyz');

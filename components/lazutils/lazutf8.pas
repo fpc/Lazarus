@@ -2169,18 +2169,21 @@ begin
         E1 82 A0 - E1 82 BF => E2 B4 80 - E2 B4 9F
         E1 83 80 - E1 83 85 => E2 B4 A0 - E2 B4 A5
         }
-        if (c2 = #$82) and (c3 in [#$A0..#$BF]) then
+        case c2 of
+        #$82:
+        if (c3 in [#$A0..#$BF]) then
         begin
           new_c1 := #$E2;
           new_c2 := #$B4;
           new_c3 := chr(ord(c3) - $20);
-        end
-        else if (c2 = #$83) and (c3 in [#$80..#$85]) then
+        end;
+        #$83:
+        if (c3 in [#$80..#$85]) then
         begin
           new_c1 := #$E2;
           new_c2 := #$B4;
           new_c3 := chr(ord(c3) + $20);
-        end
+        end;
         {
         Extra chars between 1E00..1EFF
 
@@ -2190,7 +2193,7 @@ begin
           1E80..1EBF    E1 BA 80..E1 BA BF
           1EC0..1EFF    E1 BB 80..E1 BB BF
         }
-        else if c2 in [#$B8..#$BB] then
+        #$B8..#$BB:
         begin
           // Start with a default and change for some particular chars
           if ord(c3) mod 2 = 0 then
@@ -2221,6 +2224,81 @@ begin
             inc(CounterDiff, 1);
             Continue;
           end;
+        end;
+        {
+        Extra chars between 1F00..1FFF
+
+        Blocks of chars:
+          1E00..1E3F    E1 BC 80..E1 BC BF
+          1E40..1E7F    E1 BD 80..E1 BD BF
+          1E80..1EBF    E1 BE 80..E1 BE BF
+          1EC0..1EFF    E1 BF 80..E1 BF BF
+        }
+        #$BC:
+        begin
+          // Start with a default and change for some particular chars
+          if (ord(c3) mod $10) div 8 = 1 then
+            new_c3 := chr(ord(c3) - 8);
+        end;
+        #$BD:
+        begin
+          // Start with a default and change for some particular chars
+          case c3 of
+          #$80..#$8F, #$A0..#$AF: if (ord(c3) mod $10) div 8 = 1 then
+                        new_c3 := chr(ord(c3) - 8);
+          {
+          1F50;GREEK SMALL LETTER UPSILON WITH PSILI;Ll;0;L;03C5 0313;;;;N;;;;;
+          1F51;GREEK SMALL LETTER UPSILON WITH DASIA;Ll;0;L;03C5 0314;;;;N;;;1F59;;1F59
+          1F52;GREEK SMALL LETTER UPSILON WITH PSILI AND VARIA;Ll;0;L;1F50 0300;;;;N;;;;;
+          1F53;GREEK SMALL LETTER UPSILON WITH DASIA AND VARIA;Ll;0;L;1F51 0300;;;;N;;;1F5B;;1F5B
+          1F54;GREEK SMALL LETTER UPSILON WITH PSILI AND OXIA;Ll;0;L;1F50 0301;;;;N;;;;;
+          1F55;GREEK SMALL LETTER UPSILON WITH DASIA AND OXIA;Ll;0;L;1F51 0301;;;;N;;;1F5D;;1F5D
+          1F56;GREEK SMALL LETTER UPSILON WITH PSILI AND PERISPOMENI;Ll;0;L;1F50 0342;;;;N;;;;;
+          1F57;GREEK SMALL LETTER UPSILON WITH DASIA AND PERISPOMENI;Ll;0;L;1F51 0342;;;;N;;;1F5F;;1F5F
+          1F59;GREEK CAPITAL LETTER UPSILON WITH DASIA;Lu;0;L;03A5 0314;;;;N;;;;1F51;
+          1F5B;GREEK CAPITAL LETTER UPSILON WITH DASIA AND VARIA;Lu;0;L;1F59 0300;;;;N;;;;1F53;
+          1F5D;GREEK CAPITAL LETTER UPSILON WITH DASIA AND OXIA;Lu;0;L;1F59 0301;;;;N;;;;1F55;
+          1F5F;GREEK CAPITAL LETTER UPSILON WITH DASIA AND PERISPOMENI;Lu;0;L;1F59 0342;;;;N;;;;1F57;
+          }
+          #$99,#$9B,#$9D,#$9F: new_c3 := chr(ord(c3) - 8);
+          end;
+        end;
+        #$BE:
+        begin
+          // Start with a default and change for some particular chars
+          case c3 of
+          #$80..#$B9: if (ord(c3) mod $10) div 8 = 1 then
+                        new_c3 := chr(ord(c3) - 8);
+          {
+          1FB0;GREEK SMALL LETTER ALPHA WITH VRACHY;Ll;0;L;03B1 0306;;;;N;;;1FB8;;1FB8
+          1FB1;GREEK SMALL LETTER ALPHA WITH MACRON;Ll;0;L;03B1 0304;;;;N;;;1FB9;;1FB9
+          1FB2;GREEK SMALL LETTER ALPHA WITH VARIA AND YPOGEGRAMMENI;Ll;0;L;1F70 0345;;;;N;;;;;
+          1FB3;GREEK SMALL LETTER ALPHA WITH YPOGEGRAMMENI;Ll;0;L;03B1 0345;;;;N;;;1FBC;;1FBC
+          1FB4;GREEK SMALL LETTER ALPHA WITH OXIA AND YPOGEGRAMMENI;Ll;0;L;03AC 0345;;;;N;;;;;
+          1FB6;GREEK SMALL LETTER ALPHA WITH PERISPOMENI;Ll;0;L;03B1 0342;;;;N;;;;;
+          1FB7;GREEK SMALL LETTER ALPHA WITH PERISPOMENI AND YPOGEGRAMMENI;Ll;0;L;1FB6 0345;;;;N;;;;;
+          1FB8;GREEK CAPITAL LETTER ALPHA WITH VRACHY;Lu;0;L;0391 0306;;;;N;;;;1FB0;
+          1FB9;GREEK CAPITAL LETTER ALPHA WITH MACRON;Lu;0;L;0391 0304;;;;N;;;;1FB1;
+          1FBA;GREEK CAPITAL LETTER ALPHA WITH VARIA;Lu;0;L;0391 0300;;;;N;;;;1F70;
+          1FBB;GREEK CAPITAL LETTER ALPHA WITH OXIA;Lu;0;L;0386;;;;N;;;;1F71;
+          1FBC;GREEK CAPITAL LETTER ALPHA WITH PROSGEGRAMMENI;Lt;0;L;0391 0345;;;;N;;;;1FB3;
+          1FBD;GREEK KORONIS;Sk;0;ON;<compat> 0020 0313;;;;N;;;;;
+          1FBE;GREEK PROSGEGRAMMENI;Ll;0;L;03B9;;;;N;;;0399;;0399
+          1FBF;GREEK PSILI;Sk;0;ON;<compat> 0020 0313;;;;N;;;;;
+          }
+          #$BA:
+          begin
+            new_c2 := #$BD;
+            new_c3 := #$B0;
+          end;
+          #$BB:
+          begin
+            new_c2 := #$BD;
+            new_c3 := #$B1;
+          end;
+          #$BC: new_c3 := #$B3;
+          end;
+        end;
         end;
 
         if (CounterDiff <> 0) then
