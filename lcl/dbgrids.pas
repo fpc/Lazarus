@@ -2318,6 +2318,10 @@ begin
   {$endif}
   if (FDatalink<>nil) and FDatalink.Active then begin
     inherited SelectEditor;
+
+    if (Editor is TCustomEdit) and (SelectedField is TStringField) then
+      TCustomEdit(Editor).MaxLength := SelectedField.Size;
+
     if Assigned(OnSelectEditor) then begin
       aEditor:=Editor;
       OnSelectEditor(Self, SelectedColumn, aEditor);
