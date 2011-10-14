@@ -9,8 +9,8 @@ Index: components/Makefile.fpc
  #
  
  [target]
--dirs=lazutils codetools synedit lazcontrols
-+dirs=lazutils codetools synedit lazcontrols printers printers/design fpcunit fpcunit/ide memds projecttemplates rtticontrols sdf sqldb tachart tdbf turbopower_ipro jcf2/IdePlugin/lazarus todolist chmhelp/packages/help chmhelp/packages/idehelp instantfpc
+-dirs=synedit codetools lazcontrols
++dirs=synedit codetools lazcontrols printers printers/design fpcunit fpcunit/ide memds projecttemplates rtticontrols sdf sqldb tachart tdbf turbopower_ipro jcf2/IdePlugin/lazarus todolist chmhelp/packages/help chmhelp/packages/idehelp
  
  [clean]
  files=$(wildcard ./units/*$(OEXT)) \
@@ -18,7 +18,7 @@ Index: components/turbopower_ipro/Makefile.fpc
 ===================================================================
 --- lazarus~/components/turbopower_ipro/Makefile.fpc	(révision 17880)
 +++ lazarus/components/turbopower_ipro/Makefile.fpc	(copie de travail)
-@@ -15,6 +15,7 @@
+@@ -16,6 +16,7 @@
  
  [target]
  units=turbopoweripro.pas
