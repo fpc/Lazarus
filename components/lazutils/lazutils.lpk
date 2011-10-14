@@ -25,7 +25,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="16">
+    <Files Count="17">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="laz2_DOM"/>
@@ -90,6 +90,11 @@
         <Filename Value="lazdbglog.pas"/>
         <UnitName Value="LazDbgLog"/>
       </Item16>
+      <Item17>
+        <Filename Value="paswstring.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="paswstring"/>
+      </Item17>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>
