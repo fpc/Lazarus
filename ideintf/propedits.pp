@@ -1427,7 +1427,7 @@ type
     procedure SetShiftButtons(const AValue: TShiftState);
     procedure SetShiftState(const AValue: TShiftState);
     procedure OnGrabButtonClick(Sender: TObject);
-    procedure OnShitCheckBoxClick(Sender: TObject);
+    procedure OnShiftCheckBoxClick(Sender: TObject);
     procedure OnGrabFormKeyDown(Sender: TObject; var AKey: Word;
       AShift: TShiftState);
     procedure OnKeyComboboxEditingDone(Sender: TObject);
@@ -6405,7 +6405,7 @@ begin
   FreeAndNil(FGrabForm);
 end;
 
-procedure TCustomShortCutGrabBox.OnShitCheckBoxClick(Sender: TObject);
+procedure TCustomShortCutGrabBox.OnShiftCheckBoxClick(Sender: TObject);
 var
   s: TShiftStateEnum;
 begin
@@ -6510,7 +6510,7 @@ begin
             AnchorParallel(akTop,0,Self);
             AnchorParallel(akBottom,0,Self);
             Parent:=Self;
-            OnClick:=@OnShitCheckBoxClick;
+            OnClick:=@OnShiftCheckBoxClick;
           end;
         end;
         LastCheckBox:=FCheckBoxes[s];
