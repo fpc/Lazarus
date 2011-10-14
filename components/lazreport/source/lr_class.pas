@@ -812,6 +812,7 @@ type
     procedure Insert(Index: Integer; APage: TfrPage);
     procedure Delete(Index: Integer);
     procedure LoadFromStream(AStream: TStream);
+    procedure AddPagesFromStream(AStream: TStream; AReadHeader: boolean=true);
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String);
     procedure SaveToStream(AStream: TStream);
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String);
@@ -7414,6 +7415,25 @@ begin
     ReadVersion22;
     Exit;
   end;
+  AddPagesFromStream(AStream, false);
+end;
+
+procedure TfrEMFPages.AddPagesFromStream(AStream: TStream;
+  AReadHeader: boolean=true);
+var
+  i, o, c: Integer;
+  b, compr: Byte;
+  p: PfrPageInfo;
+  s: TMemoryStream;
+
+begin
+  if AReadHeader then begin
+    AStream.Read(compr, 1);
+    if not (compr in [0, 1, 255]) then
+    begin
+      Exit;
+    end;
+  end;
   Parent.SetPrinterTo(frReadString(AStream));
   AStream.Read(c, 4);
   i := 0;
@@ -9287,6 +9307,7 @@ begin
       if (TfrReport(Reports[i + 1]).Pages.Count > 0) and
         TfrReport(Reports[i + 1]).Pages[0].PrintToPrevPage then
         CompositeMode := True;
+    CurReport := Doc;
     if Assigned(Doc.FOnBeginDoc) and FirstTime then
       Doc.FOnBeginDoc;
     ParamOk := True;
