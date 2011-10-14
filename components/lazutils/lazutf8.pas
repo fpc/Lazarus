@@ -1529,6 +1529,9 @@ end;
   ALocale - The locale. Use '' for maximum speed if one desires to ignore the locale
 
   Data from here: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt
+
+  The columns in the file UnicodeData.txt are explained here:
+  http://www.ksu.ru/eng/departments/ktk/test/perl/lib/unicode/UCDFF301.html#Case Mappings
 }
 function UTF8LowerCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
 var
