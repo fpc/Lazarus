@@ -2677,6 +2677,7 @@ begin
         $C3A0..$C3B6,$C3B8..$C3BE: NewChar := OldChar - $20;
         $C3BF:        NewChar := $C5B8; // ÿ
         $C481..$C4B0: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        // 0130 = C4 B0
         // turkish small undotted i to capital undotted i
         $C4B1:
         begin
@@ -2684,13 +2685,23 @@ begin
           NewCharLen := 1;
           CharProcessed := True;
         end;
-        $C4B2..$C4B6: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
-        // $C4B7: ĸ => K ?
-        $C4B8..$C588: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
+        $C4B2..$C4B7: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        // $C4B8: ĸ without upper/lower
+        $C4B9..$C4BF: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
+        $C580: NewChar := $C4BF; // border between bytes
+        $C581..$C588: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
         // $C589 ŉ => ?
         $C58A..$C5B7: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
         // $C5B8: // Ÿ already uppercase
-        $C5B9..$C8B3: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
+        $C5B9..$C5BE: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
+        $C5BF: // 017F
+        begin
+          OutStr[OutCounter]:='S';
+          NewCharLen := 1;
+          CharProcessed := True;
+        end;
+        // 0180 = C6 80
+        $C680..$C8B3: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
         //
         $CEB1..$CEBF: NewChar := OldChar - $20; // Greek Characters
         $CF80..$CF89: NewChar := OldChar - $E0; // Greek Characters
