@@ -8259,7 +8259,7 @@ procedure TWinControl.RealizeBoundsRecursive;
 var
   i: Integer;
   OldRealizing: boolean;
-  AWinControl: TWinControl;
+  AControl: TControl;
 begin
   if not HandleAllocated then exit;
   OldRealizing:=wcfRealizingBounds in FWinControlFlags;
@@ -8267,9 +8267,9 @@ begin
   try
     if FControls<>nil then begin
       for i:=0 to FControls.Count-1 do begin
-        AWinControl:=TWinControl(FControls[i]);
-        if (AWinControl is TWinControl) then
-          TWinControl(FControls[i]).RealizeBoundsRecursive;
+        AControl:=FControls[i];
+        if (AControl is TWinControl) then
+          TWinControl(AControl).RealizeBoundsRecursive;
       end;
     end;
     RealizeBounds;
