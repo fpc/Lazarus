@@ -8064,7 +8064,8 @@ dmFindTarget: find child control under the mouse
         <short>Set during DoAllAutosize.</short>
       </element>
       <element name="TWinControlFlag.wcfAligningControls">
-        <short>[?]</short>
+        <short>Set during <link id="TWinControl.AlignControls"/>
+        </short>
       </element>
       <element name="TWinControlFlag.wcfEraseBackground">
         <short>[?]</short>
@@ -8082,7 +8083,9 @@ dmFindTarget: find child control under the mouse
         <short>Set inside RealizeBoundsRecursive.</short>
       </element>
       <element name="TWinControlFlag.wcfBoundsRealized">
-        <short>Set when bounds were sent to the interface.</short>
+        <short>Set before bounds are sent to the widget.
+          Used to suppress consequential size messages, sent by the widget.
+        </short>
       </element>
       <element name="TWinControlFlag.wcfUpdateShowing">
         <short>[?]</short>
@@ -8091,7 +8094,10 @@ dmFindTarget: find child control under the mouse
         <short>[?]</short>
       </element>
       <element name="TWinControlFlag.wcfAdjustedLogicalClientRectValid">
-        <short>[?]</short>
+        <short>Set when the adjusted ClientRect is valid.</short>
+        <seealso>
+          <link id="TWinControl.GetAdjustedLogicalClientRect"/>
+        </seealso>
       </element>
       <element name="TWinControlFlag.wcfKillIntfSetBounds">
         <short>[?]</short>
@@ -8104,9 +8110,11 @@ dmFindTarget: find child control under the mouse
       <element name="TAlignInfo">
         <short>Used in custom alignment (alCustom).</short>
         <descr>This record was added only after D7.
-          It may affect the CustomInsertBefore and CustomAlignPosition methods (dropped, overload?).
+          It's used in CustomInsertBefore and CustomAlignPosition methods and handlers.
         </descr>
         <seealso>
+          <link id="TWinControl.CustomAlignPosition"/>
+          <link id="TWinControl.CustomAlignInsertBefore"/>
         </seealso>
       </element>
       <element name="TAlignInfo.AlignList">
@@ -8139,17 +8147,18 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function type Visibility: default -->
       <element name="TAlignInsertBeforeEvent">
-        <short>[?]</short>
-        <descr>
+        <short>Type of an OnAlignInsertBefore handler.</short>
+        <descr>The handler determines the order, in which both controls are aligned later.
         </descr>
         <seealso>
+          <link id="TWinControl.CustomAlignInsertBefore"/>
         </seealso>
       </element>
       <element name="TAlignInsertBeforeEvent.Result">
-        <short></short>
+        <short>True if Control2 shall be placed before Control1 is placed.</short>
       </element>
       <element name="TAlignInsertBeforeEvent.Sender">
-        <short></short>
+        <short>The Parent control[?]</short>
       </element>
       <element name="TAlignInsertBeforeEvent.Control1">
         <short></short>
@@ -8159,17 +8168,18 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TAlignPositionEvent">
-        <short>[?]</short>
-        <descr>
+        <short>Type of an OnAlignPosition handler.</short>
+        <descr>The handler positions Control by changing the given coordinates.
         </descr>
         <seealso>
+          <link id="TWinControl.CustomAlignPosition"/>
         </seealso>
       </element>
       <element name="TAlignPositionEvent.Sender">
-        <short></short>
+        <short>The Parent control[?]</short>
       </element>
       <element name="TAlignPositionEvent.Control">
-        <short></short>
+        <short>The control to place.</short>
       </element>
       <element name="TAlignPositionEvent.NewLeft">
         <short></short>
@@ -8184,21 +8194,21 @@ dmFindTarget: find child control under the mouse
         <short></short>
       </element>
       <element name="TAlignPositionEvent.AlignRect">
-        <short></short>
+        <short>The remaining ClientRect[?]</short>
       </element>
       <element name="TAlignPositionEvent.AlignInfo">
-        <short></short>
+        <short>Information about the current align process[?]</short>
       </element>
 <!-- object Visibility: default -->
       <element name="TWinControl">
         <short>The base class for controls which can contain other (child) controls.</short>
-        <descr>The name reflects the fact that (on Windows) these controls are based on OS provided widgets, which have window handles.
+        <descr>The name reflects the fact that (on Windows) these controls are based on OS provided widgets, which have window Handles.
         </descr>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TWinControl.FAdjustClientRect">
-        <short>valid if wcfAdjustClientRectValid</short>
+        <short>[what?] - valid if wcfAdjustClientRectValid</short>
         <descr>
         </descr>
         <seealso>
@@ -8222,7 +8232,11 @@ dmFindTarget: find child control under the mouse
       <element name="TWinControl.FBorderStyle" link="TWinControl.BorderStyle"/>
       <element name="TWinControl.FBorderWidth" link="TWinControl.BorderWidth"/>
       <element name="TWinControl.FBoundsLockCount" link="TWinControl.BoundsLockCount"/>
-      <element name="TWinControl.FBoundsRealized" link="TControl.BoundsRealized"/>
+      <element name="TWinControl.FBoundsRealized">
+        <short>The bounds as sent to the widget.
+          Used to suppress according feedback messages from the widget.
+        </short>
+      </element>
       <element name="TWinControl.FBrush" link="TWinControl.Brush"/>
       <element name="TWinControl.FChildSizing" link="TWinControl.ChildSizing"/>
       <element name="TWinControl.FClientWidth" link="TWinControl.ClientWidth"/>
@@ -8441,23 +8455,30 @@ dmFindTarget: find child control under the mouse
       <element name="TWinControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.AdjustClientRect">
-        <short>
-          <var>AdjustClientRect</var> - method for adjusting the size and position of the client control</short>
-        <descr/>
+        <short>Override this method when the ClientRect of a control differs from the default value.
+        </short>
+        <descr>
+        </descr>It's called often, so don't put expensive code here, or cache the result.
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.GetAdjustedLogicalClientRect"/>
+        </seealso>
       </element>
       <element name="TWinControl.AdjustClientRect.ARect">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.GetAdjustedLogicalClientRect">
-        <short></short>
+        <short>Returns the adjusted ClientRect, chached value if available.
+        </short>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
+          <link id="TControl.ClientRect"/>
+          <link id="TWinControl.AdjustClientRect"/>
+          <link id="TWinControlFlag.wcfAdjustedLogicalClientRectValid"/>
         </seealso>
       </element>
       <element name="TWinControl.GetAdjustedLogicalClientRect.ARect">
@@ -8465,14 +8486,18 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CreateControlAlignList">
-        <short>
-          <var>CreateControlAlignList</var> - creates a list of the controls that are aligned with the present window control</short>
-        <descr/>
+        <short>Fills the list with the controls which must be realigned.
+        </short>
+        <descr>The list is initialized with all child controls,
+          which have the given alignment and are visible.
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.AlignControls"/>
+        </seealso>
       </element>
       <element name="TWinControl.CreateControlAlignList.TheAlign">
-        <short/>
+        <short>List all controls with this alignment.</short>
       </element>
       <element name="TWinControl.CreateControlAlignList.AlignList">
         <short/>
@@ -8482,23 +8507,28 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.AlignControls">
-        <short>
-          <var>AlignControls</var> - align a control within the given client rectangle.</short>
+        <short>Aligns all child controls.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControlFlag.wcfAligningControls"/>
+        </seealso>
       </element>
       <element name="TWinControl.AlignControls.AControl">
-        <short/>
+        <short>[?]</short>
       </element>
       <element name="TWinControl.AlignControls.RemainingClientRect">
-        <short/>
+        <short>The available space, becomes remaining space on exit.</short>
       </element>
       <element name="TWinControl.CustomAlignInsertBefore">
-        <short>Invokes the <var>OnAlignInsertBefore</var> event handler.</short>
+        <short>Returns the placement order of custom-aligned child controls, using
+          the <var>OnAlignInsertBefore</var> handler.</short>
+        <seealso>
+          <link id="TAlignInsertBeforeEvent"/>
+        </seealso>
       </element>
       <element name="TWinControl.CustomAlignInsertBefore.Result">
-        <short></short>
+        <short>True if Control2 shall be placed before Control1 is placed.</short>
       </element>
       <element name="TWinControl.CustomAlignInsertBefore.AControl1">
         <short></short>
@@ -8507,10 +8537,20 @@ dmFindTarget: find child control under the mouse
         <short></short>
       </element>
       <element name="TWinControl.CustomAlignPosition">
-        <short>Invokes the <var>OnAlignPosition</var> handler.</short>
+        <short>Returns the aligned position of a custom-aligned child control,
+          using the <var>OnAlignPosition</var> handler.</short>
+        <descr>
+          <p>The given coordinates take into account the anchoring of AControl.
+          </p><p>
+            The handler updates the coordinates as required.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TAlignInsertBeforeEvent"/>
+        </seealso>
       </element>
       <element name="TWinControl.CustomAlignPosition.AControl">
-        <short></short>
+        <short>The control to be placed.</short>
       </element>
       <element name="TWinControl.CustomAlignPosition.ANewLeft">
         <short></short>
@@ -8525,38 +8565,40 @@ dmFindTarget: find child control under the mouse
         <short></short>
       </element>
       <element name="TWinControl.CustomAlignPosition.AlignRect">
-        <short></short>
+        <short>The remaining[?] client area, within which the control can be placed[?].</short>
       </element>
       <element name="TWinControl.CustomAlignPosition.AlignInfo">
-        <short></short>
+        <short>Information about the current align process[?]</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoAlignChildControls">
-        <short>
-          <var>DoAlignChildControls</var> - method for aligning child controls from a list; returns True if successful</short>
+        <short>Override this method to place all given controls.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.AlignControls"/>
+        </seealso>
       </element>
       <element name="TWinControl.DoAlignChildControls.Result">
-        <short/>
+        <short>True when all controls have been placed.</short>
       </element>
       <element name="TWinControl.DoAlignChildControls.TheAlign">
-        <short/>
+        <short>The alignment of all given controls.</short>
       </element>
       <element name="TWinControl.DoAlignChildControls.AControl">
         <short/>
       </element>
       <element name="TWinControl.DoAlignChildControls.AControlList">
-        <short/>
+        <short>The controls to be placed.</short>
       </element>
       <element name="TWinControl.DoAlignChildControls.ARect">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoChildSizingChange">
-        <short>
-          <var>DoChildSizingChange</var> - method for changing size of a child component</short>
+        <short>Call this after a change in the ChildSizing information, to trigger further processing.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8565,8 +8607,12 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <element name="TWinControl.InvalidatePreferredChildSizes">
-        <short>
-          <var>InvalidatePreferredChildSizes</var> - renders the preferred child sizes invalid</short>
+        <short>Flags the preferred sizes of all child controls as invalid (recursively).</short>
+        <seealso>
+          <link id="TControlFlag.cfPreferredSizeValid"/>
+          <link id="TControlFlag.cfPreferredMinSizeValid"/>
+          <link id="TWinControlFlag.wcfAdjustedLogicalClientRectValid"/>
+        </seealso>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.CanTab" link="#LCL.Controls.TControl.CanTab"/>
@@ -8585,44 +8631,47 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoSendShowHideToInterface">
-        <descr/>
+        <short>Sends the new Visible state to the widgetset.</short>
+        <descr>Called by TWinControl.CMShowingChanged.</descr>
         <errors/>
         <seealso/>
-        <short>
-          <var>DoSendShowHideToInterface</var> - send the Show/Hide status to the interface</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ControlsAligned">
-        <short>
-          <var>ControlsAligned</var> - called by AlignControls after aligning controls</short>
-        <descr/>
+        <short>Override this [to do what?]
+        </short>
+        <descr>Called by AlignControls after aligning controls.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoSendBoundsToInterface">
-        <short>
-          <var>DoSendBoundsToInterface</var> - sends information about the control's bounds to the interface</short>
-        <descr/>
+        <short>Sends the control's new bounds to the widget.</short>
+        <descr>Called by RealizeBounds.
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControlFlag.wcfBoundsRealized"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.RealizeBounds">
-        <short>
-          <var>RealizeBounds</var> - checks for changes and calls DoSendBoundsToInterface</short>
+        <short>Checks for BoundsRect changes and sends changed bounds to the widget, using DoSendBoundsToInterface.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.RealizeBoundsRecursive">
-        <short>
-          <var>RealizeBoundsRecursive</var> - perform
-          <var>RealizeBounds</var> in a recursive manner</short>
+        <short>Sends eventually changed BoundsRects to the widgets, for this and all child controls.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.RealizeBounds"/>
+          <link id="TWinControlFlag.wcfRealizingBounds"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CreateSubClass">
