@@ -13,9 +13,8 @@ type
   { TTestBrkGDBMIDebugger }
 
   TTestBrkGDBMIDebugger = class(TGDBMIDebugger)
-  protected
-    FReplaceBreak: Boolean;
-    procedure SendCmdLn(const ACommand: String); override;
+  public
+    procedure TestInterruptTarget;
   end;
 
 
@@ -34,19 +33,17 @@ type
   published
     // Due to a linker error breakpoints can point to invalid addresses
     procedure TestBadAddrBreakpoint;
+    procedure TestInteruptWhilePaused;
   end;
 
 implementation
 
-{ TTestBrkGDBMIDebugger }
-
-procedure TTestBrkGDBMIDebugger.SendCmdLn(const ACommand: String);
+procedure TTestBrkGDBMIDebugger.TestInterruptTarget;
 begin
-  if FReplaceBreak and (copy(ACommand,1,13) = '-break-insert')
-  then inherited SendCmdLn('-break-insert *200')
-  else inherited SendCmdLn(ACommand);
+  InterruptTarget;
 end;
 
+{ TTestBrkGDBMIDebugger }
 
 
 { TTestBreakPoint }
@@ -77,13 +74,13 @@ var
 begin
   if SkipTest then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint.BadAddr')] then exit;
   ClearTestErrors;
   FBrkErr := nil;
 
   TestCompile(AppDir + 'WatchesPrg.pas', TestExeName);
   try
     dbg := TTestBrkGDBMIDebugger(StartGDB(AppDir, TestExeName));
-    dbg.FReplaceBreak := False;
     dbg.OnCurrent  := @DoCurrent;
     with dbg.BreakPoints.Add('WatchesPrg.pas', BREAK_LINE_FOOFUNC) do begin
       InitialEnabled := True;
@@ -94,7 +91,6 @@ begin
 
     dbg.Run;
     // hit breakpoint
-    dbg.FReplaceBreak := True;
     FBrkErr := dbg.BreakPoints.Add(TDBGPtr(200));
     with FBrkErr do begin
       InitialEnabled := True;
@@ -124,6 +120,288 @@ begin
   end;
   AssertTestErrors;
 
+end;
+
+procedure TTestBreakPoint.TestInteruptWhilePaused;
+var
+  TestExeName, Err: string;
+  dbg: TTestBrkGDBMIDebugger;
+  i: LongInt;
+begin
+  if SkipTest then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint.BadInterrupt')] then exit;
+
+  (* Trigger a InterruptTarget while paused.
+     Test if the app can continue, and reach it normal exit somehow (even if multiply interupts must be skipped)
+  *)
+
+  ClearTestErrors;
+  FBrkErr := nil;
+
+  TestCompile(AppDir + 'WatchesPrg.pas', TestExeName, '_wsleep', ' -dWITH_SLEEP ');
+
+  try
+    LogToFile(LineEnding+'######################  with pause -- 1 break  ########################'+LineEnding+LineEnding);
+    Err := '';
+    dbg := TTestBrkGDBMIDebugger(StartGDB(AppDir, TestExeName));
+    dbg.OnCurrent  := @DoCurrent;
+    with dbg.BreakPoints.Add('WatchesPrg.pas', BREAK_LINE_FOOFUNC) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
+
+    dbg.OnFeedback  := @DoGetFeedBack;
+
+    dbg.Run;
+    // at main break
+    if dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC
+    then Err := Err + 'Never reached breakpoint to start with';
+    if dbg.State <> dsPause
+    then Err := Err + 'Never entered dsPause to start with';
+    //dbg.StepOver;
+    //dbg.StepOver;
+
+    LogToFile('##### INTERRUPT #####');
+    dbg.TestInterruptTarget;
+    dbg.Run;
+    // at main break
+    if dbg.State = dsError
+    then Err := Err + 'Enterred dsError after 1st exec-continue';
+    if dbg.State = dsStop
+    then Err := Err + 'Enterred dsStop after 1st exec-continue';
+
+    // try to skip to next break
+    if (dbg.State = dsPause) and (dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC)
+    then dbg.Run;
+    if (dbg.State = dsPause) and (dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC)
+    then dbg.Run;
+
+    if dbg.State = dsError
+    then Err := Err + 'Enterred dsError before reaching break the 2nd time';
+    if dbg.State = dsStop
+    then Err := Err + 'Enterred dsStop before reaching break the 2nd time';
+    if dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC
+    then Err := Err + 'Did not reached breakpoint for the 2nd time';
+
+
+    dbg.Run;
+    if (dbg.State = dsPause)
+    then dbg.Run; // got the break really late
+    if (dbg.State = dsPause)
+    then dbg.Run; // got the break really late
+
+    if dbg.State <> dsStop
+    then Err := Err + 'Never reached final stop';
+  finally
+    TestEquals('Passed pause run', '', Err);
+    dbg.Done;
+    CleanGdb;
+    dbg.Free;
+  end;
+
+
+  try
+    LogToFile(LineEnding+'######################  with pause -- 2 breaks  ########################'+LineEnding+LineEnding);
+    Err := '';
+    dbg := TTestBrkGDBMIDebugger(StartGDB(AppDir, TestExeName));
+    dbg.OnCurrent  := @DoCurrent;
+    with dbg.BreakPoints.Add('WatchesPrg.pas', BREAK_LINE_FOOFUNC) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
+    with dbg.BreakPoints.Add('WatchesPrg.pas', BREAK_LINE_FOOFUNC_NEST) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
+
+    dbg.OnFeedback  := @DoGetFeedBack;
+
+    dbg.Run;
+    // at nested break
+    dbg.Run;
+    // at main break
+    if dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC
+    then Err := Err + 'Never reached breakpoint to start with';
+    if dbg.State <> dsPause
+    then Err := Err + 'Never entered dsPause to start with';
+    //dbg.StepOver;
+    //dbg.StepOver;
+
+    LogToFile('##### INTERRUPT #####');
+    dbg.TestInterruptTarget;
+    dbg.Run;
+    // at main break
+    if dbg.State = dsError
+    then Err := Err + 'Enterred dsError after 1st exec-continue';
+    if dbg.State = dsStop
+    then Err := Err + 'Enterred dsStop after 1st exec-continue';
+
+    // try to skip to next break
+    if (dbg.State = dsPause) and (dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC_NEST)
+    then dbg.Run;
+    if (dbg.State = dsPause) and (dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC_NEST)
+    then dbg.Run;
+
+    if dbg.State = dsError
+    then Err := Err + 'Enterred dsError before reaching nest break the 2nd time';
+    if dbg.State = dsStop
+    then Err := Err + 'Enterred dsStop before reaching nest break the 2nd time';
+    if dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC_NEST
+    then Err := Err + 'Did not reached best breakpoint for the 2nd time';
+
+
+    dbg.Run;
+    // try to skip to next break
+    if (dbg.State = dsPause) and (dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC)
+    then dbg.Run;
+    if (dbg.State = dsPause) and (dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC)
+    then dbg.Run;
+
+    if dbg.State = dsError
+    then Err := Err + 'Enterred dsError before reaching break the 2nd time';
+    if dbg.State = dsStop
+    then Err := Err + 'Enterred dsStop before reaching break the 2nd time';
+    if dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC
+    then Err := Err + 'Did not reached breakpoint for the 2nd time';
+
+
+    dbg.Run;
+    if (dbg.State = dsPause)
+    then dbg.Run; // got the break really late
+    if (dbg.State = dsPause)
+    then dbg.Run; // got the break really late
+
+    if dbg.State <> dsStop
+    then Err := Err + 'Never reached final stop';
+  finally
+    TestEquals('Passed pause run 2 breaks', '', Err);
+    dbg.Done;
+    CleanGdb;
+    dbg.Free;
+  end;
+
+  TestCompile(AppDir + 'WatchesPrg.pas', TestExeName);
+
+  try
+    LogToFile(LineEnding+'######################  withOUT pause -- NO stepping  ########################'+LineEnding+LineEnding);
+    Err := '';
+    dbg := TTestBrkGDBMIDebugger(StartGDB(AppDir, TestExeName));
+    dbg.OnCurrent  := @DoCurrent;
+    with dbg.BreakPoints.Add('WatchesPrg.pas', BREAK_LINE_FOOFUNC) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
+
+    dbg.OnFeedback  := @DoGetFeedBack;
+
+    dbg.Run;
+    // at main break
+    if dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC
+    then Err := Err + 'Never reached breakpoint to start with';
+    if dbg.State <> dsPause
+    then Err := Err + 'Never entered dsPause to start with';
+    //dbg.StepOver;
+    //dbg.StepOver;
+
+    LogToFile('##### INTERRUPT #####');
+    dbg.TestInterruptTarget;
+    dbg.Run;
+    // at main break
+    if dbg.State = dsError
+    then Err := Err + 'Enterred dsError after 1st exec-continue';
+    if dbg.State = dsStop
+    then Err := Err + 'Enterred dsStop after 1st exec-continue';
+
+    // try to skip to next break
+    if (dbg.State = dsPause) and (dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC)
+    then dbg.Run;
+    if (dbg.State = dsPause) and (dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC)
+    then dbg.Run;
+
+    if dbg.State = dsError
+    then Err := Err + 'Enterred dsError before reaching break the 2nd time';
+    if dbg.State = dsStop
+    then Err := Err + 'Enterred dsStop before reaching break the 2nd time';
+    if dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC
+    then Err := Err + 'Did not reached breakpoint for the 2nd time';
+
+
+    dbg.Run;
+    if (dbg.State = dsPause)
+    then dbg.Run; // got the break really late
+    if (dbg.State = dsPause)
+    then dbg.Run; // got the break really late
+
+    if dbg.State <> dsStop
+    then Err := Err + 'Never reached final stop';
+  finally
+    TestEquals('Passed none-pause run', '', Err);
+    dbg.Done;
+    CleanGdb;
+    dbg.Free;
+  end;
+
+  try
+    LogToFile(LineEnding+'######################  withOUT pause -- with stepping  ########################'+LineEnding+LineEnding);
+    Err := '';
+    dbg := TTestBrkGDBMIDebugger(StartGDB(AppDir, TestExeName));
+    dbg.OnCurrent  := @DoCurrent;
+    with dbg.BreakPoints.Add('WatchesPrg.pas', BREAK_LINE_FOOFUNC) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
+
+    dbg.OnFeedback  := @DoGetFeedBack;
+
+    dbg.Run;
+    // at main break
+    if dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC
+    then Err := Err + 'Never reached breakpoint to start with';
+    if dbg.State <> dsPause
+    then Err := Err + 'Never entered dsPause to start with';
+    dbg.StepOver;
+    dbg.StepOver;
+
+    LogToFile('##### INTERRUPT #####');
+    dbg.TestInterruptTarget;
+    dbg.Run;
+    // at main break
+    if dbg.State = dsError
+    then Err := Err + 'Enterred dsError after 1st exec-continue';
+    if dbg.State = dsStop
+    then Err := Err + 'Enterred dsStop after 1st exec-continue';
+
+    // try to skip to next break
+    if (dbg.State = dsPause) and (dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC)
+    then dbg.Run;
+    if (dbg.State = dsPause) and (dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC)
+    then dbg.Run;
+
+    if dbg.State = dsError
+    then Err := Err + 'Enterred dsError before reaching break the 2nd time';
+    if dbg.State = dsStop
+    then Err := Err + 'Enterred dsStop before reaching break the 2nd time';
+    if dbg.GetLocation.SrcLine <> BREAK_LINE_FOOFUNC
+    then Err := Err + 'Did not reached breakpoint for the 2nd time';
+
+
+    dbg.Run;
+    if (dbg.State = dsPause)
+    then dbg.Run; // got the break really late
+    if (dbg.State = dsPause)
+    then dbg.Run; // got the break really late
+
+    if dbg.State <> dsStop
+    then Err := Err + 'Never reached final stop';
+  finally
+    TestEquals('Passed none-pause run with steps', '', Err);
+    dbg.Done;
+    CleanGdb;
+    dbg.Free;
+  end;
+
+  AssertTestErrors;
 end;
 
 initialization

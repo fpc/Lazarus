@@ -228,6 +228,7 @@ begin
   SubFoo(VarInt, ArgInt);
   // break on next line
   writeln(1);
+  {$IFDEF WITH_SLEEP} sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50); {$ENDIF};
 end;
 
 
