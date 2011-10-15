@@ -1,5 +1,4 @@
 {%MainUnit ../controls.pp}
-{  $Id$  }
 
 {******************************************************************************
                                   TWinControl
@@ -8274,7 +8273,7 @@ begin
     end;
     RealizeBounds;
   finally
-    if OldRealizing then
+    if not OldRealizing then
       Exclude(FWinControlFlags,wcfRealizingBounds);
   end;
 end;
