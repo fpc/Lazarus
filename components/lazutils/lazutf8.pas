@@ -2752,8 +2752,114 @@ begin
         $C7B2..$C7B3: NewChar := $C7B1;
         $C7B5: NewChar := $C7B4;
         $C7B8..$C7BF: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
-        //
-        $C880..$C8B3: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
+        // 0200 = C8 80
+        // 0210 = C8 90
+        $C880..$C89F: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        // 0220 = C8 A0
+        // 0230 = C8 B0
+        $C8A2..$C8B3: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        $C8BC: NewChar := $C8BB;
+        $C8BF:
+        begin
+          OutStr[OutCounter]  := #$E2;
+          OutStr[OutCounter+1]:= #$B1;
+          OutStr[OutCounter+2]:= #$BE;
+          NewCharLen := 3;
+          CharProcessed := True;
+        end;
+        // 0240 = C9 80
+        $C980:
+        begin
+          OutStr[OutCounter]  := #$E2;
+          OutStr[OutCounter+1]:= #$B1;
+          OutStr[OutCounter+2]:= #$BF;
+          NewCharLen := 3;
+          CharProcessed := True;
+        end;
+        $C982: NewChar := $C981;
+        $C986..$C98F: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        // 0250 = C9 90
+        $C990:
+        begin
+          OutStr[OutCounter]  := #$E2;
+          OutStr[OutCounter+1]:= #$B1;
+          OutStr[OutCounter+2]:= #$AF;
+          NewCharLen := 3;
+          CharProcessed := True;
+        end;
+        $C991:
+        begin
+          OutStr[OutCounter]  := #$E2;
+          OutStr[OutCounter+1]:= #$B1;
+          OutStr[OutCounter+2]:= #$AD;
+          NewCharLen := 3;
+          CharProcessed := True;
+        end;
+        $C992:
+        begin
+          OutStr[OutCounter]  := #$E2;
+          OutStr[OutCounter+1]:= #$B1;
+          OutStr[OutCounter+2]:= #$B0;
+          NewCharLen := 3;
+          CharProcessed := True;
+        end;
+        $C993: NewChar := $C681;
+        $C994: NewChar := $C686;
+        $C996: NewChar := $C689;
+        $C997: NewChar := $C68A;
+        $C999: NewChar := $C68F;
+        $C99B: NewChar := $C690;
+        // 0260 = C9 A0
+        $C9A0: NewChar := $C693;
+        $C9A3: NewChar := $C694;
+        $C9A5:
+        begin
+          OutStr[OutCounter]  := #$EA;
+          OutStr[OutCounter+1]:= #$9E;
+          OutStr[OutCounter+2]:= #$8D;
+          NewCharLen := 3;
+          CharProcessed := True;
+        end;
+        $C9A8: NewChar := $C697;
+        $C9A9: NewChar := $C696;
+        $C9AB:
+        begin
+          OutStr[OutCounter]  := #$E2;
+          OutStr[OutCounter+1]:= #$B1;
+          OutStr[OutCounter+2]:= #$A2;
+          NewCharLen := 3;
+          CharProcessed := True;
+        end;
+        $C9AF: NewChar := $C69C;
+        // 0270 = C9 B0
+        $C9B1:
+        begin
+          OutStr[OutCounter]  := #$E2;
+          OutStr[OutCounter+1]:= #$B1;
+          OutStr[OutCounter+2]:= #$AE;
+          NewCharLen := 3;
+          CharProcessed := True;
+        end;
+        $C9B2: NewChar := $C69D;
+        $C9B5: NewChar := $C69F;
+        $C9BD:
+        begin
+          OutStr[OutCounter]  := #$E2;
+          OutStr[OutCounter+1]:= #$B1;
+          OutStr[OutCounter+2]:= #$A4;
+          NewCharLen := 3;
+          CharProcessed := True;
+        end;
+        // 0280 = CA 80
+        $CA80: NewChar := $C6A6;
+        $CA83: NewChar := $C6A9;
+        $CA88: NewChar := $C6AE;
+        $CA89: NewChar := $C984;
+        $CA8A: NewChar := $C6B1;
+        $CA8B: NewChar := $C6B2;
+        $CA8C: NewChar := $C985;
+        // 0290 = CA 90
+        $CA92: NewChar := $C6B7;
         //
         $CEB1..$CEBF: NewChar := OldChar - $20; // Greek Characters
         $CF80..$CF89: NewChar := OldChar - $E0; // Greek Characters

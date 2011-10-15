@@ -101,6 +101,17 @@ begin
   AssertStringOperationUTF8UpperCase('Latin 01D0 UTF8UpperCase', '', 'ǐǑǒǓǔǕǖǗǘǙǚǛǜǝǞǟ', 'ǏǑǑǓǓǕǕǗǗǙǙǛǛƎǞǞ');
   AssertStringOperationUTF8UpperCase('Latin 01E0 UTF8UpperCase', '', 'ǠǡǢǣǤǥǦǧǨǩǪǫǬǭǮǯ', 'ǠǠǢǢǤǤǦǦǨǨǪǪǬǬǮǮ');
   AssertStringOperationUTF8UpperCase('Latin 01F0 UTF8UpperCase', '', 'ǰǱǲǳǴǵǶǷǸǹǺǻǼǽǾǿ', 'ǰǱǱǱǴǴǶǷǸǸǺǺǼǼǾǾ');
+  AssertStringOperationUTF8UpperCase('Latin 0200 UTF8UpperCase', '', 'ȀȁȂȃȄȅȆȇȈȉȊȋȌȍȎȏ', 'ȀȀȂȂȄȄȆȆȈȈȊȊȌȌȎȎ');
+  AssertStringOperationUTF8UpperCase('Latin 0210 UTF8UpperCase', '', 'ȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟ', 'ȐȐȒȒȔȔȖȖȘȘȚȚȜȜȞȞ');
+  AssertStringOperationUTF8UpperCase('Latin 0220 UTF8UpperCase', '', 'ȠȡȢȣȤȥȦȧȨȩȪȫȬȭȮȯ', 'ȠȡȢȢȤȤȦȦȨȨȪȪȬȬȮȮ');
+  AssertStringOperationUTF8UpperCase('Latin 0230 UTF8UpperCase', '', 'ȰȱȲȳȴȵȶȷȸȹȺȻȼȽȾȿ', 'ȰȰȲȲȴȵȶȷȸȹȺȻȻȽȾⱾ');
+  AssertStringOperationUTF8UpperCase('Latin 0240 UTF8UpperCase', '', 'ɀɁɂɃɄɅɆɇɈɉɊɋɌɍɎɏ', 'ⱿɁɁɃɄɅɆɆɈɈɊɊɌɌɎɎ');
+  AssertStringOperationUTF8UpperCase('Latin 0250 UTF8UpperCase', '', 'ɐɑɒɓɔɕɖɗɘəɚɛɜɝɞɟ', 'ⱯⱭⱰƁƆɕƉƊɘƏɚƐɜɝɞɟ');
+  AssertStringOperationUTF8UpperCase('Latin 0260 UTF8UpperCase', '', 'ɠɡɢɣɤɥɦɧɨɩɪɫɬɭɮɯ', 'ƓɡɢƔɤꞍɦɧƗƖɪⱢɬɭɮƜ');
+  AssertStringOperationUTF8UpperCase('Latin 0270 UTF8UpperCase', '', 'ɰɱɲɳɴɵɶɷɸɹɺɻɼɽɾɿ', 'ɰⱮƝɳɴƟɶɷɸɹɺɻɼⱤɾɿ');
+  AssertStringOperationUTF8UpperCase('Latin 0280 UTF8UpperCase', '', 'ʀʁʂʃʄʅʆʇʈʉʊʋʌʍʎʏ', 'ƦʁʂƩʄʅʆʇƮɄƱƲɅʍʎʏ');
+  AssertStringOperationUTF8UpperCase('Latin 0290 UTF8UpperCase', '', 'ʐʑʒʓʔʕʖʗʘʙʚʛʜʝʞʟ', 'ʐʑƷʓʔʕʖʗʘʙʚʛʜʝʞʟ');
+  AssertStringOperationUTF8UpperCase('Latin 02A0 UTF8UpperCase', '', 'ʠʡʢʣʤʥʦʧʨʩʪʫʬʭʮʯ', 'ʠʡʢʣʤʥʦʧʨʩʪʫʬʭʮʯ');
 
   // What shouldnt change
   AssertStringOperationUTF8UpperCase('Chinese UTF8UpperCase 1', '', '名字叫嘉英，嘉陵江的嘉，英國的英', '名字叫嘉英，嘉陵江的嘉，英國的英');
@@ -160,6 +171,11 @@ begin
   AssertStringOperationUTF8LowerCase('Latin 0230 UTF8LowerCase', '', 'ȰȱȲȳȴȵȶȷȸȹȺȻȼȽȾȿ', 'ȱȱȳȳȴȵȶȷȸȹⱥȼȼƚⱦȿ');
   AssertStringOperationUTF8LowerCase('Latin 0240 UTF8LowerCase', '', 'ɀɁɂɃɄɅɆɇɈɉɊɋɌɍɎɏ', 'ɀɂɂƀʉʌɇɇɉɉɋɋɍɍɏɏ');
   AssertStringOperationUTF8LowerCase('Latin 0250 UTF8LowerCase', '', 'ɐɑɒɓɔɕɖɗɘəɚɛɜɝɞɟ', 'ɐɑɒɓɔɕɖɗɘəɚɛɜɝɞɟ');
+  AssertStringOperationUTF8LowerCase('Latin 0260 UTF8LowerCase', '', 'ɠɡɢɣɤɥɦɧɨɩɪɫɬɭɮɯ', 'ɠɡɢɣɤɥɦɧɨɩɪɫɬɭɮɯ');
+  AssertStringOperationUTF8LowerCase('Latin 0270 UTF8LowerCase', '', 'ɰɱɲɳɴɵɶɷɸɹɺɻɼɽɾɿ', 'ɰɱɲɳɴɵɶɷɸɹɺɻɼɽɾɿ');
+  AssertStringOperationUTF8LowerCase('Latin 0280 UTF8LowerCase', '', 'ʀʁʂʃʄʅʆʇʈʉʊʋʌʍʎʏ', 'ʀʁʂʃʄʅʆʇʈʉʊʋʌʍʎʏ');
+  AssertStringOperationUTF8LowerCase('Latin 0290 UTF8LowerCase', '', 'ʐʑʒʓʔʕʖʗʘʙʚʛʜʝʞʟ', 'ʐʑʒʓʔʕʖʗʘʙʚʛʜʝʞʟ');
+  AssertStringOperationUTF8LowerCase('Latin 02A0 UTF8LowerCase', '', 'ʠʡʢʣʤʥʦʧʨʩʪʫʬʭʮʯ', 'ʠʡʢʣʤʥʦʧʨʩʪʫʬʭʮʯ');
   AssertStringOperationUTF8LowerCase('Unicode 0400 UTF8LowerCase', '', 'ЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏ', 'ѐёђѓєѕіїјљњћќѝўџ');
   AssertStringOperationUTF8LowerCase('Unicode 0410 UTF8LowerCase', '', 'АБВГДЕЖЗИЙКЛМНОП', 'абвгдежзийклмноп');
   AssertStringOperationUTF8LowerCase('Unicode 0420 UTF8LowerCase', '', 'РСТУФХЦЧШЩЪЫЬЭЮЯ', 'рстуфхцчшщъыьэюя');
