@@ -5560,6 +5560,9 @@ begin
   // check unitname
   if FilenameIsPascalUnit(NewFilename) then begin
     NewUnitName:=ExtractFileNameOnly(NewFilename);
+    // do not rename the unit if new filename differs from its name only in case
+    if LowerCase(OldUnitName)=NewUnitName then
+      NewUnitName:=OldUnitName;
     if NewUnitName='' then begin
       Result:=mrCancel;
       exit;
