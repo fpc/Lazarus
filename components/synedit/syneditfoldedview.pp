@@ -2928,10 +2928,11 @@ begin
     then node := node.Prev
     else node := fFoldTree.FindLastFold;
     while LineOffset < 0 do begin
-      if Result <= boundary then exit(boundary);
       dec(Result);
-      if node.IsInFold and (Result+1 < node.StartLine + node.MergedLineCount) then begin
+      if Result <= boundary then exit(boundary);
+      while node.IsInFold and (Result+1 < node.StartLine + node.MergedLineCount) do begin
         Result := Result - node.MergedLineCount;
+        if Result <= boundary then exit(boundary);
         node := node.Prev;
       end;
       inc(LineOffset);
@@ -2941,8 +2942,9 @@ begin
     while LineOffset > 0 do begin
       if Result >= boundary then exit(boundary);
       inc(Result);
-      if node.IsInFold and (Result+1 >= node.StartLine) then begin
+      while node.IsInFold and (Result+1 >= node.StartLine) do begin
         Result := Result + node.MergedLineCount;
+        if Result >= boundary then exit(boundary);
         if Result >= boundary then exit(boundary-node.MergedLineCount-1);
         node := node.Next;
       end;
