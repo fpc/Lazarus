@@ -13,11 +13,13 @@ type
 
   TCompileHelper = class
   private
+    FCommandLine: string;
     FLastError: String;
   public
     function TestCompile(const PrgName, FpcOpts, ExeName, FpcExe: string): String;
     function TestCompileUnits(const FpcExe, FpcOpts, SrcDirName, OutLibName: string): Boolean;
     property LastError: String read FLastError;
+    property CommandLine: string read FCommandLine;
   end;
 
 var CompileHelper: TCompileHelper;
@@ -95,6 +97,7 @@ begin
     CmdLine := FpcExe + ' -MObjFPC  -FUlib -o'+ ExeName + ' ' + FpcOpts + ' ' + PrgName;
     debugln(['**** running compiler: ', CmdLine]);
     FpcBuild.CommandLine := CmdLine;
+    FCommandLine := CmdLine;
 
     FpcBuild.CurrentDirectory := ExtractFileDir(PrgName);
 
@@ -134,6 +137,7 @@ begin
     CmdLine := FpcExe + ' -MObjFPC  -FU' + OutLibName + ' ' + FpcOpts + ' ' + SrcDirName;
     debugln(['**** running compiler: ', CmdLine]);
     FpcBuild.CommandLine := CmdLine;
+    FCommandLine := CmdLine;
 
     FpcBuild.CurrentDirectory := ExtractFileDir(SrcDirName);
 

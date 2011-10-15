@@ -113,11 +113,12 @@ type
 
   TCompilerSuite = class(TTestSuite)
   private
+    FCompileCommandLine: String;
     FCompilerInfo: TCompilerInfo;
     FSymbolSwitch: String;
     FSymbolType: TSymbolType;
     FFileNameExt: String;
-    FCompiledList, FCompiledUsesList, FCompiledUsesListID: TStringList;
+    FCompiledList, FCompiledListCmdLines, FCompiledUsesList, FCompiledUsesListID: TStringList;
     FInRun: Boolean;
   protected
     procedure Clear;
@@ -137,6 +138,7 @@ type
                           UsesDirs: array of TUsesDir;
                           NamePostFix: String=''; ExtraArgs: String=''
                          ); overload;
+    property CompileCommandLine: String read FCompileCommandLine;
   public
     property SymbolType: TSymbolType read FSymbolType;
     property SymbolSwitch: String read FSymbolSwitch;
@@ -149,12 +151,14 @@ type
   private
     FDebuggerInfo: TDebuggerInfo;
     FParent: TCompilerSuite;
+    function GetCompileCommandLine: String;
     function GetCompilerInfo: TCompilerInfo;
     function GetSymbolType: TSymbolType;
   public
     constructor Create(AParent: TCompilerSuite; ADebuggerInfo: TDebuggerInfo);
     procedure RegisterDbgTest(ATestClass: TTestCaseClass);
     Procedure TestCompile(const PrgName: string; out ExeName: string; UsesDirs: array of TUsesDir; NamePostFix: String=''; ExtraArgs: String='');
+    property CompileCommandLine: String read GetCompileCommandLine;
   public
     property Parent: TCompilerSuite read FParent;
     property DebuggerInfo: TDebuggerInfo read FDebuggerInfo;
@@ -167,6 +171,7 @@ type
   TGDBTestsuite = class(TTestSuite)
   private
     FParent: TDebuggerSuite;
+    function GetCompileCommandLine: String;
     function GetCompilerInfo: TCompilerInfo;
     function GetDebuggerInfo: TDebuggerInfo;
     function GetSymbolType: TSymbolType;
@@ -174,6 +179,7 @@ type
     constructor Create(AParent: TDebuggerSuite; AClass: TClass);
     procedure AddTest(ATest: TTest); overload; override;
     Procedure TestCompile(const PrgName: string; out ExeName: string; UsesDirs: array of TUsesDir; NamePostFix: String=''; ExtraArgs: String='');
+    property CompileCommandLine: String read GetCompileCommandLine;
   public
     property Parent: TDebuggerSuite read FParent;
     property DebuggerInfo: TDebuggerInfo read GetDebuggerInfo;
@@ -209,6 +215,7 @@ type
     FCurrentPrgName, FCurrentExename: String;
     FLogFile: TextFile;
     FLogFileCreated: Boolean;
+    FLogFileName, FFinalLogFileName: String;
     function GetCompilerInfo: TCompilerInfo;
     function GetDebuggerInfo: TDebuggerInfo;
     function GetSymbolType: TSymbolType;
@@ -239,6 +246,7 @@ type
     Procedure TestCompile(const PrgName: string; out ExeName: string; UsesDirs: array of TUsesDir;
                           NamePostFix: String=''; ExtraArgs: String=''); overload;
     function SkipTest: Boolean;
+    procedure LogToFile(const s: string);
   public
     property Parent: TGDBTestsuite read FParent write FParent;
     property DebuggerInfo: TDebuggerInfo read GetDebuggerInfo;
@@ -408,6 +416,8 @@ begin
     for i := 1 to length(name) do
       if name[i] in ['/', '\', '*', '?', ':'] then
         name[i] := '_';
+    FLogFileName := dir + name;
+    FFinalLogFileName := dir + name;
     AssignFile(FLogFile, Dir +  name);
     Rewrite(FLogFile);
     FLogFileCreated := True;
@@ -425,6 +435,8 @@ begin
   inherited TearDown;
   if FLogFileCreated then begin
     CloseFile(FLogFile);
+    if FFinalLogFileName <> FLogFileName
+    then RenameFileUTF8(FLogFileName, FFinalLogFileName);
   end;
 end;
 
@@ -605,6 +617,12 @@ begin
     writeln(FLogFile, '================= Unexpected Success'+LineEnding);
     writeln(FLogFile, FUnexpectedSuccess);
     writeln(FLogFile, '================='+LineEnding);
+    if (FTestErrorCnt > 0) and (pos('failed', FFinalLogFileName) < 1)
+    then FFinalLogFileName := FFinalLogFileName + '.failed';
+    if (FIgnoredErrorCnt > 0) and (pos('ignored', FFinalLogFileName) < 1)
+    then FFinalLogFileName := FFinalLogFileName + '.ignored';
+    if (FUnexpectedSuccessCnt > 0) and (pos('unexpected', FFinalLogFileName) < 1)
+    then FFinalLogFileName := FFinalLogFileName + '.unexpected';
   end;
   if s <> '' then begin
     Fail(s1+ LineEnding + s);
@@ -620,11 +638,9 @@ end;
 procedure TGDBTestCase.TestCompile(const PrgName: string; out ExeName: string;
   UsesDirs: array of TUsesDir; NamePostFix: String; ExtraArgs: String);
 begin
-  if GetLogActive then begin
-    CreateLog;
-    writeln(FLogFile, LineEnding+LineEnding+'******************* compile '+PrgName + ' ' + ExtraArgs +LineEnding);
-  end;
+  LogToFile(LineEnding+LineEnding + '******************* compile '+PrgName + ' ' + ExtraArgs +LineEnding );
   Parent.TestCompile(PrgName, ExeName, UsesDirs, NamePostFix, ExtraArgs);
+  LogToFile(Parent.CompileCommandLine+LineEnding + '*******************' +LineEnding+LineEnding );
   FCurrentPrgName := PrgName;
   FCurrentExename := ExeName;
 end;
@@ -634,6 +650,14 @@ begin
   Result := not TestControlForm.chkGDB.Checked[TestControlForm.chkGDB.Items.IndexOf(DebuggerInfo.Name)];
   Result := Result or
             not TestControlForm.chkFPC.Checked[TestControlForm.chkFPC.Items.IndexOf(CompilerInfo.Name)];
+end;
+
+procedure TGDBTestCase.LogToFile(const s: string);
+begin
+  if GetLogActive then begin
+    CreateLog;
+    writeln(FLogFile, s);
+  end;
 end;
 
 { TBaseList }
@@ -792,6 +816,7 @@ begin
   for i := 0 to FCompiledUsesList.Count - 1 do
     DeleteDirectory(FCompiledUsesList[i], False);
   FCompiledList.Clear;
+  FCompiledListCmdLines.Clear;
   FCompiledUsesList.Clear;
   FCompiledUsesListID.Clear;
 end;
@@ -807,6 +832,7 @@ begin
   FSymbolType := ASymbolType;
 
   FCompiledList := TStringList.Create;
+  FCompiledListCmdLines := TStringList.Create;
   FCompiledUsesList := TStringList.Create;
   FCompiledUsesListID := TStringList.Create;
   FSymbolSwitch := SymbolTypeSwitches[FSymbolType];
@@ -827,6 +853,7 @@ begin
   inherited Destroy;
   Clear;
   FreeAndNil(FCompiledList);
+  FreeAndNil(FCompiledListCmdLines);
   FreeAndNil(FCompiledUsesList);
   FreeAndNil(FCompiledUsesListID);
 end;
@@ -905,6 +932,7 @@ var
   i: Integer;
   NewLibDir, NewExeID: string;
 begin
+  FCompileCommandLine := '';
   ExePath := ExtractFileNameWithoutExt(PrgName);
   ExeName := ExtractFileNameOnly(ExePath);
   ExePath := AppendPathDelim(copy(ExePath, 1, length(ExePath) - length(ExeName)));
@@ -922,19 +950,24 @@ begin
 
   if ExtraArgs <> '' then
     ExtraArgs := ' '+ExtraArgs;
-  if FCompiledList.IndexOf(ExeName) < 0 then begin
+  i :=  FCompiledList.IndexOf(ExeName);
+  if i < 0 then begin
     if FileExists(ExeName) then
       raise EAssertionFailedError.Create('Found existing file before compiling: ' + ExeName);
-    FCompiledList.Add(ExeName);
+    i := FCompiledList.Add(ExeName);
     ErrMsg := CompileHelper.TestCompile(PrgName,
         FSymbolSwitch + ' ' + ExtraFUPath + ' ' + FCompilerInfo.ExtraOpts + ExtraArgs,
         ExeName,
         CompilerInfo.ExeName);
+    FCompileCommandLine := CompileHelper.CommandLine;
+    FCompiledListCmdLines.Add(FCompileCommandLine);
     if ErrMsg <> '' then begin
       debugln(ErrMsg);
       raise EAssertionFailedError.Create('Compilation Failed: ' + ExeName + LineEnding + ErrMsg);
     end;
-  end;
+  end
+  else
+    FCompileCommandLine := FCompiledListCmdLines[i];
 
   if not FileExists(ExeName) then
     raise EAssertionFailedError.Create('Missing compiled exe ' + ExeName);
@@ -945,6 +978,11 @@ end;
 function TDebuggerSuite.GetCompilerInfo: TCompilerInfo;
 begin
   Result := Parent.CompilerInfo;
+end;
+
+function TDebuggerSuite.GetCompileCommandLine: String;
+begin
+  Result := Parent.CompileCommandLine;
 end;
 
 function TDebuggerSuite.GetSymbolType: TSymbolType;
@@ -979,6 +1017,11 @@ end;
 function TGDBTestsuite.GetCompilerInfo: TCompilerInfo;
 begin
   Result := Parent.CompilerInfo;
+end;
+
+function TGDBTestsuite.GetCompileCommandLine: String;
+begin
+  Result := Parent.CompileCommandLine;
 end;
 
 function TGDBTestsuite.GetDebuggerInfo: TDebuggerInfo;

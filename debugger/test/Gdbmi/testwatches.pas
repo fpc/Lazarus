@@ -510,17 +510,17 @@ begin
   r:=AddStringFmtDef('AnsiString(VArgTMyAnsiString)',  '''MyAnsi 2''$',    'AnsiString|\^char', [fTpMtch]);
      UpdRes(r, stDwarf3,                                                   'AnsiString', []);
 
-  r:=AddFmtDef('PMyAnsiString(ArgPMyAnsiString)',     MatchPointer, skPointer,   'PMyAnsiString', []);
+  r:=AddFmtDef('PMyAnsiString(ArgPMyAnsiString)',     MatchPointer, skPointer,   '^(\^|PMy)AnsiString$', [fTpMtch]);
      UpdRes(r, stStabs,                                                          '^(PMyAnsiString|PPChar)$', [fTpMtch]);
-  r:=AddFmtDef('PMyAnsiString(VArgPMyAnsiString)',    MatchPointer,  skPointer,  'PMyAnsiString', []);
+  r:=AddFmtDef('PMyAnsiString(VArgPMyAnsiString)',    MatchPointer,  skPointer,  '^(\^|PMy)AnsiString$', [fTpMtch]);
      UpdRes(r, stStabs,                                                          '^(PMyAnsiString|PPChar)$', [fTpMtch]);
 // TODO,, IDE derefs with dwarf3
-  r:=AddFmtDef('^AnsiString(ArgPMyAnsiString)',       MatchPointer, skPointer,   '^AnsiString', [fnoDwrf3]);
+  r:=AddFmtDef('^AnsiString(ArgPMyAnsiString)',       MatchPointer, skPointer,   '^(\^AnsiString|\^\^char)', [fnoDwrf3, fTpMtch]);
      UpdRes(r, stStabs,                                                          '^(\^AnsiString|PPChar)$', [fTpMtch]);
-  r:=AddFmtDef('^AnsiString(VArgPMyAnsiString)',      MatchPointer,  skPointer,  '^AnsiString', [fnoDwrf3]);
+  r:=AddFmtDef('^AnsiString(VArgPMyAnsiString)',      MatchPointer,  skPointer,  '^(\^AnsiString|\^\^char)', [fnoDwrf3, fTpMtch]);
      UpdRes(r, stStabs,                                                          '^(\^AnsiString|PPChar)$', [fTpMtch]);
 
-  r:=AddStringFmtDef('AnsiString(ArgPMyAnsiString^)',  '''MyAnsi P''$',     '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=AddStringFmtDef('AnsiString(ArgPMyAnsiString^)',  '''MyAnsi P''$',     '^((TMy)?AnsiString|\^char)$', [fTpMtch]);
   r:=AddStringFmtDef('AnsiString(VArgPMyAnsiString^)', '''MyAnsi P2''$',    '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf2]);
   r:=AddStringFmtDef('PMyAnsiString(ArgPMyAnsiString)^',  '''MyAnsi P''$',  '^(TMy)?AnsiString$', [fTpMtch]);
   r:=AddStringFmtDef('PMyAnsiString(VArgPMyAnsiString)^', '''MyAnsi P2''$', '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf2]);
@@ -1037,6 +1037,7 @@ var
     DataRes := Data.Result[SymbolType];
 
     n := Data.TestName;
+    LogToFile('###### ' + n + '######' +LineEnding);
     if n = '' then n := Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ')';
     Name := Name + ' ' + n;
     flag := AWatch <> nil;
