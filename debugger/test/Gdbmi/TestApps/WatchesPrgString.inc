@@ -587,7 +587,7 @@
       GlobTMyAnsiStringDArray[0] := 'DArray1 Str0';
       GlobTMyAnsiStringDArray[1] := 'DArray1 Str1';
       GlobTMyAnsiStringDArray2[0] := 'DArray2 Str0';
-      GlobTMyAnsiStringDArray2[0] := 'DArray2 Str1';
+      GlobTMyAnsiStringDArray2[1] := 'DArray2 Str1';
 
       GlobTMyAnsiStringSArray[3] := 'SArray1 Str3';
       GlobTMyAnsiStringSArray[4] := 'SArray1 Str4';
