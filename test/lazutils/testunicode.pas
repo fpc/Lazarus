@@ -93,10 +93,10 @@ begin
   AssertStringOperationUTF8UpperCase('Latin 0150 UTF8UpperCase', '', 'ŐőŒœŔŕŖŗŘřŚśŜŝŞş', 'ŐŐŒŒŔŔŖŖŘŘŚŚŜŜŞŞ');
   AssertStringOperationUTF8UpperCase('Latin 0160 UTF8UpperCase', '', 'ŠšŢţŤťŦŧŨũŪūŬŭŮů', 'ŠŠŢŢŤŤŦŦŨŨŪŪŬŬŮŮ');
   AssertStringOperationUTF8UpperCase('Latin 0170 UTF8UpperCase', '', 'ŰűŲųŴŵŶŷŸŹźŻżŽžſ', 'ŰŰŲŲŴŴŶŶŸŹŹŻŻŽŽS');
-{  AssertStringOperationUTF8UpperCase('Latin 0180 UTF8UpperCase', '', 'ƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏ', 'ƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏ');
-  AssertStringOperationUTF8UpperCase('Latin 0190 UTF8UpperCase', '', 'ƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟ', 'ƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟ');
-  AssertStringOperationUTF8UpperCase('Latin 01A0 UTF8UpperCase', '', 'ƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯ', 'ƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯ');
-  AssertStringOperationUTF8UpperCase('Latin 01B0 UTF8UpperCase', '', 'ưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿ', 'ưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿ');
+  AssertStringOperationUTF8UpperCase('Latin 0180 UTF8UpperCase', '', 'ƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏ', 'ɃƁƂƂƄƄƆƇƇƉƊƋƋƍƎƏ');
+  AssertStringOperationUTF8UpperCase('Latin 0190 UTF8UpperCase', '', 'ƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟ', 'ƐƑƑƓƔǶƖƗƘƘȽƛƜƝȠƟ');
+  AssertStringOperationUTF8UpperCase('Latin 01A0 UTF8UpperCase', '', 'ƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯ', 'ƠƠƢƢƤƤƦƧƧƩƪƫƬƬƮƯ');
+{  AssertStringOperationUTF8UpperCase('Latin 01B0 UTF8UpperCase', '', 'ưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿ', 'ưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿ');
   AssertStringOperationUTF8UpperCase('Latin 01C0 UTF8UpperCase', '', 'ǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏ', 'ǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏ');}
 
   // What shouldnt change
