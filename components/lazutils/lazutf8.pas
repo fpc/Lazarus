@@ -2700,8 +2700,24 @@ begin
           NewCharLen := 1;
           CharProcessed := True;
         end;
-        // 0180 = C6 80
-        $C680..$C8B3: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
+        // 0180 = C6 80 -> A convoluted part
+        $C680: NewChar := $C983;
+        $C682..$C685: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        $C688: NewChar := $C687;
+        $C68C: NewChar := $C68B;
+        // 0190 = C6 90 -> A convoluted part
+        $C692: NewChar := $C691;
+        $C695: NewChar := $C7B6;
+        $C699: NewChar := $C698;
+        $C69A: NewChar := $C8BD;
+        $C69E: NewChar := $C8A0;
+        // 01A0 = C6 A0 -> A convoluted part
+        $C6A0..$C6A5: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        $C6A8: NewChar := $C6A7;
+        $C6AD: NewChar := $C6AC;
+        // 01B0 = C6 B0
+        $C6B0: NewChar := $C6AF;
+        $C6B1..$C8B3: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
         //
         $CEB1..$CEBF: NewChar := OldChar - $20; // Greek Characters
         $CF80..$CF89: NewChar := OldChar - $E0; // Greek Characters
