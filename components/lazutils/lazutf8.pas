@@ -1585,7 +1585,7 @@ begin
     c1 := InStr^;
     case c1 of
     'A'..'Z': Break;
-    #$C3..#$C9, #$CE, #$D0..#$D5, #$E1..#$E2,#$E5:
+    #$C3..#$C9, #$CE, #$CF, #$D0..#$D5, #$E1..#$E2,#$E5:
     begin
       c2 := InStr[1];
       case c1 of
@@ -2063,13 +2063,92 @@ begin
         #$CE:
         begin
           case c2 of
+            // 0380 = CE 80
+            #$86: new_c2 := #$AC;
+            #$88: new_c2 := #$AD;
+            #$89: new_c2 := #$AE;
+            #$8A: new_c2 := #$AF;
+            #$8C: new_c1 := #$CF; // By coincidence new_c2 remains the same
+            #$8E:
+            begin
+              new_c1 := #$CF;
+              new_c2 := #$8D;
+            end;
+            #$8F:
+            begin
+              new_c1 := #$CF;
+              new_c2 := #$8E;
+            end;
+            // 0390 = CE 90
             #$91..#$9F:
             begin
               new_c2 := chr(ord(c2) + $20);
             end;
-            #$A0..#$A9:
+            // 03A0 = CE A0
+            #$A0..#$AB:
             begin
-              new_c2 := chr(ord(c2) - $10);
+              new_c1 := #$CF;
+              new_c2 := chr(ord(c2) - $20);
+            end;
+          end;
+        end;
+        // 03C0 = CF 80
+        // 03D0 = CF 90
+        // 03E0 = CF A0
+        // 03F0 = CF B0
+        #$CF:
+        begin
+          case c2 of
+            // 03CF;GREEK CAPITAL KAI SYMBOL;Lu;0;L;;;;;N;;;;03D7; CF 8F => CF 97
+            #$8F: new_c2 := #$97;
+            // 03D8;GREEK LETTER ARCHAIC KOPPA;Lu;0;L;;;;;N;;;;03D9;
+            #$98: new_c2 := #$99;
+            // 03DA;GREEK LETTER STIGMA;Lu;0;L;;;;;N;GREEK CAPITAL LETTER STIGMA;;;03DB;
+            #$9A: new_c2 := #$9B;
+            // 03DC;GREEK LETTER DIGAMMA;Lu;0;L;;;;;N;GREEK CAPITAL LETTER DIGAMMA;;;03DD;
+            #$9C: new_c2 := #$9D;
+            // 03DE;GREEK LETTER KOPPA;Lu;0;L;;;;;N;GREEK CAPITAL LETTER KOPPA;;;03DF;
+            #$9E: new_c2 := #$9F;
+            {
+            03E0;GREEK LETTER SAMPI;Lu;0;L;;;;;N;GREEK CAPITAL LETTER SAMPI;;;03E1;
+            03E1;GREEK SMALL LETTER SAMPI;Ll;0;L;;;;;N;;;03E0;;03E0
+            03E2;COPTIC CAPITAL LETTER SHEI;Lu;0;L;;;;;N;GREEK CAPITAL LETTER SHEI;;;03E3;
+            03E3;COPTIC SMALL LETTER SHEI;Ll;0;L;;;;;N;GREEK SMALL LETTER SHEI;;03E2;;03E2
+            ...
+            03EE;COPTIC CAPITAL LETTER DEI;Lu;0;L;;;;;N;GREEK CAPITAL LETTER DEI;;;03EF;
+            03EF;COPTIC SMALL LETTER DEI;Ll;0;L;;;;;N;GREEK SMALL LETTER DEI;;03EE;;03EE
+            }
+            #$A0..#$AF: if ord(c2) mod 2 = 0 then
+                          new_c2 := chr(ord(c2) + 1);
+            // 03F4;GREEK CAPITAL THETA SYMBOL;Lu;0;L;<compat> 0398;;;;N;;;;03B8;
+            #$B4:
+            begin
+              new_c1 := #$CE;
+              new_c2 := #$B8;
+            end;
+            // 03F7;GREEK CAPITAL LETTER SHO;Lu;0;L;;;;;N;;;;03F8;
+            #$B7: new_c2 := #$B8;
+            // 03F9;GREEK CAPITAL LUNATE SIGMA SYMBOL;Lu;0;L;<compat> 03A3;;;;N;;;;03F2;
+            #$B9: new_c2 := #$B2;
+            // 03FA;GREEK CAPITAL LETTER SAN;Lu;0;L;;;;;N;;;;03FB;
+            #$BA: new_c2 := #$BB;
+            // 03FD;GREEK CAPITAL REVERSED LUNATE SIGMA SYMBOL;Lu;0;L;;;;;N;;;;037B;
+            #$BD:
+            begin
+              new_c1 := #$CD;
+              new_c2 := #$BB;
+            end;
+            // 03FE;GREEK CAPITAL DOTTED LUNATE SIGMA SYMBOL;Lu;0;L;;;;;N;;;;037C;
+            #$BE:
+            begin
+              new_c1 := #$CD;
+              new_c2 := #$BC;
+            end;
+            // 03FF;GREEK CAPITAL REVERSED DOTTED LUNATE SIGMA SYMBOL;Lu;0;L;;;;;N;;;;037D;
+            #$BF:
+            begin
+              new_c1 := #$CD;
+              new_c2 := #$BD;
             end;
           end;
         end;
@@ -2860,6 +2939,18 @@ begin
         $CA8C: NewChar := $C985;
         // 0290 = CA 90
         $CA92: NewChar := $C6B7;
+        {
+        03A0 = CE A0
+
+        03AC;GREEK SMALL LETTER ALPHA WITH TONOS;Ll;0;L;03B1 0301;;;;N;GREEK SMALL LETTER ALPHA TONOS;;0386;;0386
+        03AD;GREEK SMALL LETTER EPSILON WITH TONOS;Ll;0;L;03B5 0301;;;;N;GREEK SMALL LETTER EPSILON TONOS;;0388;;0388
+        03AE;GREEK SMALL LETTER ETA WITH TONOS;Ll;0;L;03B7 0301;;;;N;GREEK SMALL LETTER ETA TONOS;;0389;;0389
+        03AF;GREEK SMALL LETTER IOTA WITH TONOS;Ll;0;L;03B9 0301;;;;N;GREEK SMALL LETTER IOTA TONOS;;038A;;038A
+        }
+        $CEAC: NewChar := $CE86;
+        $CEAD: NewChar := $CE88;
+        $CEAE: NewChar := $CE89;
+        $CEAF: NewChar := $CE8A;
         //
         $CEB1..$CEBF: NewChar := OldChar - $20; // Greek Characters
         $CF80..$CF89: NewChar := OldChar - $E0; // Greek Characters
