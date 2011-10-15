@@ -67,9 +67,9 @@ procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt
 function UnicodeLowercase(u: cardinal): cardinal;
 function UTF8LowerCaseMattias(const s: utf8string): utf8string;
 {$endif}
-function UTF8LowerCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
+function UTF8LowerCase(const AInStr: utf8string; ALanguage: utf8string=''): utf8string;
 function UTF8LowerCase2(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
-function UTF8UpperCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
+function UTF8UpperCase(const AInStr: utf8string; ALanguage: utf8string=''): utf8string;
 {function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
 //                                  StopOnNonASCII: Boolean = false): PtrInt;
 //function ValidUTF8String(const s: String): String;
@@ -1554,14 +1554,19 @@ end;
 
 {
   AInStr - The input string
-  ALocale - The locale. Use '' for maximum speed if one desires to ignore the locale
+  ALanguage - The language. Use '' for maximum speed if one desires to ignore the language
+              The language should be specified in the format from ISO 639-1,
+              which uses 2 characters to represent each language.
+              If the language has no code in ISO 639-1, then the 3-chars code
+              from ISO 639-2 should be used.
+              Example: "tr" - Turkish language locale
 
   Data from here: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt
 
   The columns in the file UnicodeData.txt are explained here:
   http://www.ksu.ru/eng/departments/ktk/test/perl/lib/unicode/UCDFF301.html#Case Mappings
 }
-function UTF8LowerCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
+function UTF8LowerCase(const AInStr: utf8string; ALanguage: utf8string=''): utf8string;
 var
   CounterDiff: PtrInt;
   InStr, InStrEnd, OutStr: PChar;
@@ -1616,7 +1621,7 @@ begin
   if InStr >= InStrEnd then Exit;
 
   // Language identification
-  IsTurkish := ALocale = 'tu';
+  IsTurkish := (ALanguage = 'tr') or (ALanguage = 'az'); // Turkish and Azeri have a special handling
 
   UniqueString(Result);
   OutStr := PChar(Result) + (InStr - PChar(AInStr));
@@ -2612,9 +2617,19 @@ end;
 
 {
   AInStr - The input string
-  ALocale - The locale. Use '' for maximum speed if one desires to ignore the locale
+  ALanguage - The language. Use '' for maximum speed if one desires to ignore the language
+              The language should be specified in the format from ISO 639-1,
+              which uses 2 characters to represent each language.
+              If the language has no code in ISO 639-1, then the 3-chars code
+              from ISO 639-2 should be used.
+              Example: "tr" - Turkish language locale
+
+  Data from here: ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt
+
+  The columns in the file UnicodeData.txt are explained here:
+  http://www.ksu.ru/eng/departments/ktk/test/perl/lib/unicode/UCDFF301.html#Case Mappings
 }
-function UTF8UpperCase(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
+function UTF8UpperCase(const AInStr: utf8string; ALanguage: utf8string=''): utf8string;
 var
   i, InCounter, OutCounter: PtrInt;
   OutStr: PChar;
@@ -2631,7 +2646,7 @@ begin
   OutStr := PChar(Result);
 
   // Language identification
-  IsTurkish := ALocale = 'tu';
+  IsTurkish := (ALanguage = 'tr') or (ALanguage = 'az'); // Turkish and Azeri have a special handling
 
   InCounter:=1; // for AInStr
   OutCounter := 0; // for Result
@@ -2717,7 +2732,28 @@ begin
         $C6AD: NewChar := $C6AC;
         // 01B0 = C6 B0
         $C6B0: NewChar := $C6AF;
-        $C6B1..$C8B3: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
+        $C6B3..$C6B6: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
+        $C6B9: NewChar := $C6B8;
+        $C6BD: NewChar := $C6BC;
+        $C6BF: NewChar := $C7B7;
+        // 01C0 = C7 80
+        $C784..$C786: NewChar := $C784;
+        $C787..$C789: NewChar := $C787;
+        $C78A..$C78C: NewChar := $C78A;
+        $C78E: NewChar := $C78D;
+        // 01D0 = C7 90
+        $C790: NewChar := $C78F;
+        $C791..$C79C: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
+        $C79D: NewChar := $C68E;
+        $C79F: NewChar := $C79E;
+        // 01E0 = C7 A0
+        $C7A0..$C7AF: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        // 01F0 = C7 B0
+        $C7B2..$C7B3: NewChar := $C7B1;
+        $C7B5: NewChar := $C7B4;
+        $C7B8..$C7BF: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        //
+        $C880..$C8B3: if OldChar mod 2 = 0 then NewChar := OldChar - 1;
         //
         $CEB1..$CEBF: NewChar := OldChar - $20; // Greek Characters
         $CF80..$CF89: NewChar := OldChar - $E0; // Greek Characters
@@ -3246,15 +3282,20 @@ begin
 {$ENDIF}
 end;
 
-// This routine will strip country information from the language ID
-// making it more simple
+{
+This routine will strip country information from the language ID
+making it more simple
+
+Ideally the resulting ID from here should conform to ISO 639-1
+or ISO 639-2, if the language has no code in ISO 639-1
+}
 procedure LazGetShortLanguageID(var Lang: String);
 var
   FallbackLang: String;
 begin
   LazGetLanguageIDs(Lang, FallbackLang);
 
-  // Simply making sure its length is at most 2 should be enough
+  // Simply making sure its length is at most 2 should be enough for most languages
   if Length(Lang) > 2 then Lang := Lang[1] + Lang[2];
 end;
 
