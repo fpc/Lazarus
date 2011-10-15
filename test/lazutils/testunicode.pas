@@ -87,17 +87,17 @@ begin
   AssertStringOperationUTF8UpperCase('Latin 00F0 UTF8UpperCase', '', 'ðñòóôõö÷øùúûüýþÿ', 'ÐÑÒÓÔÕÖ÷ØÙÚÛÜÝÞŸ');
   AssertStringOperationUTF8UpperCase('Latin 0100 UTF8UpperCase', '', 'ĀāĂăĄąĆćĈĉĊċČčĎď', 'ĀĀĂĂĄĄĆĆĈĈĊĊČČĎĎ');
   AssertStringOperationUTF8UpperCase('Latin 0110 UTF8UpperCase', '', 'ĐđĒēĔĕĖėĘęĚěĜĝĞğ', 'ĐĐĒĒĔĔĖĖĘĘĚĚĜĜĞĞ');
-  AssertStringOperationUTF8UpperCase('Latin 0120 UTF8LowerCase', '', 'ĠġĢģĤĥĦħĨĩĪīĬĭĮį', 'ĠĠĢĢĤĤĦĦĨĨĪĪĬĬĮĮ');
-  AssertStringOperationUTF8UpperCase('Latin 0130 UTF8LowerCase', '', 'İıĲĳĴĵĶķĸĹĺĻļĽľĿ', 'İİĲĲĴĴĶĶĸĹĹĻĻĽĽĿ');
-{  AssertStringOperationUTF8UpperCase('Latin 0140 UTF8LowerCase', '', 'ŀŁłŃńŅņŇňŉŊŋŌōŎŏ', 'ĿŁŁŃŃŅŅŇŇŉŊŋŌōŎŏ');
-  AssertStringOperationUTF8UpperCase('Latin 0150 UTF8LowerCase', '', 'ŐőŒœŔŕŖŗŘřŚśŜŝŞş', 'őőœœŕŕŗŗřřśśŝŝşş');
-  AssertStringOperationUTF8UpperCase('Latin 0160 UTF8LowerCase', '', 'ŠšŢţŤťŦŧŨũŪūŬŭŮů', 'ššţţťťŧŧũũūūŭŭůů');
-  AssertStringOperationUTF8UpperCase('Latin 0170 UTF8LowerCase', '', 'ŰűŲųŴŵŶŷŸŹźŻżŽžſ', 'űűųųŵŵŷŷÿźźżżžžſ');
-  AssertStringOperationUTF8UpperCase('Latin 0180 UTF8LowerCase', '', 'ƀ Ɓ Ƃƃ Ƅƅ Ɔ Ƈƈ Ɖ Ɗ Ƌƌ ƍ Ǝ Ə', 'ƀ ɓ ƃƃ ƅƅ ɔ ƈƈ ɖ ɗ ƌƌ ƍ ǝ ə');
-  AssertStringOperationUTF8UpperCase('Latin 0190 UTF8LowerCase', '', 'ƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟ', 'ɛƒƒɠɣƕɩɨƙƙƚƛɯɲƞɵ');
-  AssertStringOperationUTF8UpperCase('Latin 01A0 UTF8LowerCase', '', 'ƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯ', 'ơơƣƣƥƥʀƨƨʃƪƫƭƭʈư');
-  AssertStringOperationUTF8UpperCase('Latin 01B0 UTF8LowerCase', '', 'ưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿ', 'ưʊʋƴƴƶƶʒƹƹƺƻƽƽƾƿ');
-  AssertStringOperationUTF8UpperCase('Latin 01C0 UTF8LowerCase', '', 'ǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏ', 'ǀǁǂǃǆǆǆǉǉǉǌǌǌǎǎǐ');}
+  AssertStringOperationUTF8UpperCase('Latin 0120 UTF8UpperCase', '', 'ĠġĢģĤĥĦħĨĩĪīĬĭĮį', 'ĠĠĢĢĤĤĦĦĨĨĪĪĬĬĮĮ');
+  AssertStringOperationUTF8UpperCase('Latin 0130 UTF8UpperCase', '', 'İıĲĳĴĵĶķĸĹĺĻļĽľĿ', 'İIĲĲĴĴĶĶĸĹĹĻĻĽĽĿ');
+  AssertStringOperationUTF8UpperCase('Latin 0140 UTF8UpperCase', '', 'ŀŁłŃńŅņŇňŉŊŋŌōŎŏ', 'ĿŁŁŃŃŅŅŇŇŉŊŊŌŌŎŎ');
+  AssertStringOperationUTF8UpperCase('Latin 0150 UTF8UpperCase', '', 'ŐőŒœŔŕŖŗŘřŚśŜŝŞş', 'ŐŐŒŒŔŔŖŖŘŘŚŚŜŜŞŞ');
+  AssertStringOperationUTF8UpperCase('Latin 0160 UTF8UpperCase', '', 'ŠšŢţŤťŦŧŨũŪūŬŭŮů', 'ŠŠŢŢŤŤŦŦŨŨŪŪŬŬŮŮ');
+  AssertStringOperationUTF8UpperCase('Latin 0170 UTF8UpperCase', '', 'ŰűŲųŴŵŶŷŸŹźŻżŽžſ', 'ŰŰŲŲŴŴŶŶŸŹŹŻŻŽŽS');
+{  AssertStringOperationUTF8UpperCase('Latin 0180 UTF8UpperCase', '', 'ƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏ', 'ƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏ');
+  AssertStringOperationUTF8UpperCase('Latin 0190 UTF8UpperCase', '', 'ƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟ', 'ƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟ');
+  AssertStringOperationUTF8UpperCase('Latin 01A0 UTF8UpperCase', '', 'ƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯ', 'ƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯ');
+  AssertStringOperationUTF8UpperCase('Latin 01B0 UTF8UpperCase', '', 'ưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿ', 'ưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿ');
+  AssertStringOperationUTF8UpperCase('Latin 01C0 UTF8UpperCase', '', 'ǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏ', 'ǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏ');}
 
   // What shouldnt change
   AssertStringOperationUTF8UpperCase('Chinese UTF8UpperCase 1', '', '名字叫嘉英，嘉陵江的嘉，英國的英', '名字叫嘉英，嘉陵江的嘉，英國的英');
@@ -233,7 +233,7 @@ begin
   AssertStringOperationUTF8LowerCase('Offset Georgian UTF8LowerCase 2', 'tu', 'IႲⴒ Ⴓⴓ Ⴔⴔ Ⴕⴕ Ⴖⴖ Ⴗⴗ Ⴘⴘ Ⴙⴙ Ⴚⴚ Ⴛⴛ Ⴜⴜ Ⴝⴝ Ⴞⴞ Ⴟⴟ Ⴠⴠ Ⴡⴡ Ⴢⴢ Ⴣⴣ Ⴤⴤ Ⴥⴥ', 'ıⴒⴒ ⴓⴓ ⴔⴔ ⴕⴕ ⴖⴖ ⴗⴗ ⴘⴘ ⴙⴙ ⴚⴚ ⴛⴛ ⴜⴜ ⴝⴝ ⴞⴞ ⴟⴟ ⴠⴠ ⴡⴡ ⴢⴢ ⴣⴣ ⴤⴤ ⴥⴥ');
 
   // Performance test
-{  Write('Mattias LowerCase- Performance test took:    ');
+  Write('Mattias LowerCase- Performance test took:    ');
   for j := 0 to 9 do begin
     lStartTime := Now;
     for i := 0 to TimerLoop do
@@ -252,7 +252,7 @@ begin
     lTimeDiff := Now - lStartTime;
     Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
   end;
-  writeln;}
+  writeln;
   Write('       LowerCase-- Performance test took:    ');
   for j := 0 to 9 do begin
     lStartTime := Now;
