@@ -231,14 +231,14 @@ type
     function StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
     procedure CleanGdb;
     procedure ClearTestErrors;
-    procedure AddTestError(s: string; MinGdbVers: Integer = 0);
-    procedure AddTestSuccess(s: string; MinGdbVers: Integer = 0);
+    procedure AddTestError(s: string; MinGdbVers: Integer = 0; AIgnoreReason: String = '');
+    procedure AddTestSuccess(s: string; MinGdbVers: Integer = 0; AIgnoreReason: String = '');
     function TestEquals(Expected, Got: string): Boolean;
-    function TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0): Boolean;
+    function TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
     function TestEquals(Expected, Got: integer): Boolean;
-    function TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer = 0): Boolean;
-    function TestTrue(Name: string; Got: Boolean; MinGdbVers: Integer = 0): Boolean;
-    function TestFalse(Name: string; Got: Boolean; MinGdbVers: Integer = 0): Boolean;
+    function TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
+    function TestTrue(Name: string; Got: Boolean; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
+    function TestFalse(Name: string; Got: Boolean; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
     procedure AssertTestErrors;
     property TestErrors: string read FTestErrors;
   public
@@ -517,7 +517,7 @@ begin
   FTestBaseName := '';
 end;
 
-procedure TGDBTestCase.AddTestError(s: string; MinGdbVers: Integer = 0);
+procedure TGDBTestCase.AddTestError(s: string; MinGdbVers: Integer = 0; AIgnoreReason: String = '');
 var
   IgnoreReason: String;
   i: Integer;
@@ -530,6 +530,7 @@ begin
     if (i > 0) and (i < MinGdbVers) then
       IgnoreReason := 'GDB ('+IntToStr(i)+') to old, required:'+IntToStr(MinGdbVers);
   end;
+  IgnoreReason := IgnoreReason + AIgnoreReason;
   if IgnoreReason <> '' then begin
     FIgnoredErrors := FIgnoredErrors + IntToStr(FTestCnt) + ': ' + '### '+IgnoreReason +' >>> '+s+LineEnding;
     inc(FIgnoredErrorCnt);
@@ -539,19 +540,22 @@ begin
   end;
 end;
 
-procedure TGDBTestCase.AddTestSuccess(s: string; MinGdbVers: Integer);
+procedure TGDBTestCase.AddTestSuccess(s: string; MinGdbVers: Integer; AIgnoreReason: String = '');
 var
   i: Integer;
 begin
   s := FTestBaseName + s;
   inc(FTestCnt);
-  if MinGdbVers > 0 then begin
+  if (MinGdbVers > 0) or (AIgnoreReason <> '') then begin
     i := GetDebuggerInfo.Version;
     if (i > 0) and (i < MinGdbVers) then
-      FUnexpectedSuccess := FUnexpectedSuccess + IntToStr(FTestCnt) + ': ' + s
+      AIgnoreReason := AIgnoreReason + IntToStr(FTestCnt) + ': ' + s
         + 'GDB ('+IntToStr(i)+') to old, required:'+IntToStr(MinGdbVers)
         + LineEnding;
-    inc(FUnexpectedSuccessCnt);
+    if AIgnoreReason <> '' then begin;
+      FUnexpectedSuccess := FUnexpectedSuccess + AIgnoreReason;
+      inc(FUnexpectedSuccessCnt);
+    end;
   end
   else
     inc(FSucessCnt);
@@ -562,12 +566,12 @@ begin
   Result := TestEquals('', Expected, Got);
 end;
 
-function TGDBTestCase.TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0): Boolean;
+function TGDBTestCase.TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
 begin
   Result :=  Got = Expected;
   if Result
-  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "'+Got+'"', MinGdbVers)
-  else AddTestError(Name + ': Expected "'+Expected+'", Got "'+Got+'"', MinGdbVers);
+  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "'+Got+'"', MinGdbVers, AIgnoreReason)
+  else AddTestError(Name + ': Expected "'+Expected+'", Got "'+Got+'"', MinGdbVers, AIgnoreReason);
 end;
 
 function TGDBTestCase.TestEquals(Expected, Got: integer): Boolean;
@@ -575,28 +579,28 @@ begin
   Result := TestEquals('', Expected, Got);
 end;
 
-function TGDBTestCase.TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer = 0): Boolean;
+function TGDBTestCase.TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
 begin
   Result :=  Got = Expected;
   if Result
-  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "'+IntToStr(Got)+'"', MinGdbVers)
-  else AddTestError(Name + ': Expected "'+IntToStr(Expected)+'", Got "'+IntToStr(Got)+'"', MinGdbVers);
+  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "'+IntToStr(Got)+'"', MinGdbVers, AIgnoreReason)
+  else AddTestError(Name + ': Expected "'+IntToStr(Expected)+'", Got "'+IntToStr(Got)+'"', MinGdbVers, AIgnoreReason);
 end;
 
-function TGDBTestCase.TestTrue(Name: string; Got: Boolean; MinGdbVers: Integer): Boolean;
+function TGDBTestCase.TestTrue(Name: string; Got: Boolean; MinGdbVers: Integer; AIgnoreReason: String = ''): Boolean;
 begin
   Result := Got;
   if Result
-  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "True"', MinGdbVers)
-  else AddTestError(Name + ': Expected "True", Got "False"', MinGdbVers);
+  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "True"', MinGdbVers, AIgnoreReason)
+  else AddTestError(Name + ': Expected "True", Got "False"', MinGdbVers, AIgnoreReason);
 end;
 
-function TGDBTestCase.TestFalse(Name: string; Got: Boolean; MinGdbVers: Integer): Boolean;
+function TGDBTestCase.TestFalse(Name: string; Got: Boolean; MinGdbVers: Integer; AIgnoreReason: String = ''): Boolean;
 begin
   Result := not Got;
   if Result
-  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "False"', MinGdbVers)
-  else AddTestError(Name + ': Expected "False", Got "True"', MinGdbVers);
+  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "False"', MinGdbVers, AIgnoreReason)
+  else AddTestError(Name + ': Expected "False", Got "True"', MinGdbVers, AIgnoreReason);
 end;
 
 procedure TGDBTestCase.AssertTestErrors;
