@@ -3923,8 +3923,11 @@ begin
     BuildIDEFlags:=[blfDontCleanAll,blfOnlyIDE];
     if MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags)<>mrOk then exit(mrCancel);
 
-    if piiifRebuildIDE in Flags then       // rebuild Lazarus
+    if piiifRebuildIDE in Flags then
+    begin
+      // rebuild Lazarus
       if MainIDE.DoBuildLazarus(BuildIDEFlags)<>mrOk then exit(mrCancel);
+    end;
 
   finally
     FreeDependencyList(NewFirstAutoInstallDependency,pdlRequires);

@@ -12123,7 +12123,8 @@ end;
 
 //-----------------------------------------------------------------------------
 
-function TMainIDE.DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalResult;
+function TMainIDE.DoRunExternalTool(Index: integer; ShowAbort: Boolean
+  ): TModalResult;
 begin
   SourceEditorManager.ClearErrorLines;
   Result:=ExternalTools.Run(Index,GlobalMacroList,ShowAbort);
@@ -12135,6 +12136,7 @@ var
   PkgOptions: string;
   InheritedOptionStrings: TInheritedCompOptsStrings;
   FPCVersion, FPCRelease, FPCPatch: integer;
+  IDEBuildFlags: TBuildLazarusFlags;
 begin
   // create uses section addition for lazarus.pp
   Result:=PkgBoss.DoSaveAutoInstallConfig;
@@ -12153,8 +12155,9 @@ begin
   if (FPCVersion=0) or (FPCRelease=0) or (FPCPatch=0) then ;
 
   // save extra options
+  IDEBuildFlags:=Flags+[blfOnlyIDE];
   Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
-                             GlobalMacroList,PkgOptions,Flags+[blfOnlyIDE]);
+                             GlobalMacroList,PkgOptions,IDEBuildFlags);
   if Result<>mrOk then exit;
 end;
 
@@ -12189,6 +12192,14 @@ begin
   try
     MainBuildBoss.SetBuildTargetIDE;
 
+    if (blfOnlyIDE in Flags)
+    and (MiscellaneousOptions.BuildLazProfiles.CurrentIdeMode=mmNone) then begin
+      debugln(['TMainIDE.DoBuildLazarusSub ignore because blfOnlyIDE and CurrentIdeMode=mmNone']);
+      CompileProgress.Ready;
+      Result:=mrIgnore;
+      exit;
+    end;
+
     // clean up
     if (not (blfDontCleanAll in Flags))
     and MiscellaneousOptions.BuildLazProfiles.Current.CleanAll then begin
@@ -12196,7 +12207,8 @@ begin
       Result:=BuildLazarus(MiscellaneousOptions.BuildLazProfiles,
                            ExternalTools,GlobalMacroList,
                            '',EnvironmentOptions.GetCompilerFilename,
-                           EnvironmentOptions.MakeFilename, [blfDontBuild]);
+                           EnvironmentOptions.MakeFilename,
+                           [blfDontBuild]);
       if Result<>mrOk then begin
         DebugLn('TMainIDE.DoBuildLazarus: Clean up failed.');
         exit;
@@ -12222,8 +12234,9 @@ begin
                 PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
 
     // check ambiguous units
-    CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.LazarusDirectory,
-                                           FPCVersion,FPCRelease,FPCPatch);
+    CodeToolBoss.GetFPCVersionForDirectory(
+                               EnvironmentOptions.LazarusDirectory,
+                               FPCVersion,FPCRelease,FPCPatch);
     if FPCPatch=0 then ;
     CompiledUnitExt:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
     Result:=MainBuildBoss.CheckUnitPathForAmbiguousPascalFiles(
@@ -12239,13 +12252,15 @@ begin
     IDEBuildFlags:=Flags;
     if MiscellaneousOptions.BuildLazProfiles.Current.CleanAll then
       Include(IDEBuildFlags,blfDontCleanAll);
-    Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
-                 GlobalMacroList,PkgOptions,IDEBuildFlags-[blfUseMakeIDECfg]);
-    if Result<>mrOk then begin
-      DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
-      exit;
+    if MiscellaneousOptions.BuildLazProfiles.CurrentIdeMode<>mmNone then begin
+      Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
+                   GlobalMacroList,PkgOptions,IDEBuildFlags-[blfUseMakeIDECfg]);
+      if Result<>mrOk then begin
+        DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
+        exit;
+      end;
+      IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg];
     end;
-    IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg];
 
     // make lazarus ide and/or examples
     SourceEditorManager.ClearErrorLines;

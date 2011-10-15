@@ -1726,7 +1726,8 @@ begin
 end;
 
 function TBuildManager.OnRunCompilerWithOptions(
-  ExtTool: TIDEExternalToolOptions; CompOptions: TBaseCompilerOptions): TModalResult;
+  ExtTool: TIDEExternalToolOptions; CompOptions: TBaseCompilerOptions
+  ): TModalResult;
 begin
   if SourceEditorManagerIntf<>nil then
     SourceEditorManagerIntf.ClearErrorLines;
@@ -2078,16 +2079,18 @@ var
   NewTargetOS: String;
   NewTargetCPU: String;
   NewLCLWidgetSet: TLCLPlatform;
+  BuildIDE: Boolean;
 begin
   with MiscellaneousOptions do begin
     NewTargetOS:=LowerCase(BuildLazOpts.TargetOS);
     NewTargetCPU:=LowerCase(BuildLazOpts.TargetCPU);
     NewLCLWidgetSet:=BuildLazOpts.TargetPlatform;
+    BuildIDE:=BuildLazProfiles.CurrentIdeMode in [mmBuild,mmCleanBuild];
   end;
   //debugln(['TBuildManager.BuildTargetIDEIsDefault NewTargetOS=',NewTargetOS,' Default=',GetDefaultTargetOS,' NewTargetCPU=',NewTargetCPU,' default=',GetDefaultTargetCPU,' ws=',LCLPlatformDisplayNames[NewLCLWidgetSet],' default=',LCLPlatformDisplayNames[GetDefaultLCLWidgetType]]);
-  Result:=((NewTargetOS='') or (NewTargetOS=GetDefaultTargetOS))
-      and ((NewTargetCPU='') or (NewTargetCPU=GetDefaultTargetCPU))
-      and (NewLCLWidgetSet<>lpNoGUI);
+  Result:=BuildIDE and ((NewTargetOS='') or (NewTargetOS=GetDefaultTargetOS))
+                   and ((NewTargetCPU='') or (NewTargetCPU=GetDefaultTargetCPU))
+                   and (NewLCLWidgetSet<>lpNoGUI);
 end;
 
 end.

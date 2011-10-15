@@ -40,10 +40,59 @@ uses
 
 type
 
-  TIdeBuildMode = (
-    bmBuild,
-    bmCleanBuild
+  TMakeMode = (
+    mmNone,
+    mmBuild,
+    mmCleanBuild
   );
+  TMakeModes = set of TMakeMode;
+  // Used for the actual mode settings in profiles.
+  TMakeModeSettings = array of TMakeMode;
+
+  { TMakeModeDef }
+
+  TMakeModeDef = class
+  private
+    fName: string;
+    fDescription: string;
+    fDirectory: string;
+    fDefaultMakeMode: TMakeMode;
+    fCommands: array[TMakeMode] of string;
+    function GetCommands(Mode: TMakeMode): string;
+    procedure SetCommands(Mode: TMakeMode; const AValue: string);
+  public
+    constructor Create;
+    constructor Create(const NewName, NewDescription, NewDirectory: string;
+                       const NewMakeMode: TMakeMode);
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Assign(Source: TMakeModeDef);
+  public
+    property Name: string read fName write fName;
+    property Description: string read fDescription write fDescription;
+    property Directory: string read fDirectory write fDirectory;
+    property DefaultMakeMode: TMakeMode read fDefaultMakeMode write fDefaultMakeMode;
+    property Commands[Mode: TMakeMode]: string read GetCommands write SetCommands;
+  end;
+
+  { TMakeModeDefs }
+
+  TMakeModeDefs = class(TObjectList)
+  private
+    fItemIDE: TMakeModeDef;
+    fItemIDEIndex: integer;
+    function GetItems(Index: integer): TMakeModeDef;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear; override;
+    procedure Assign(Source: TMakeModeDefs);
+    // Show the permanent description part in ListBox
+    function FindName(const Name: string): TMakeModeDef;
+  public
+    property ItemIDE: TMakeModeDef read fItemIDE;
+    property Items[Index: integer]: TMakeModeDef read GetItems; default;
+  end;
 
   TBuildLazarusProfiles = class;
 
@@ -53,18 +102,25 @@ type
   private
     fOwnerCnt: TBuildLazarusProfiles;
     fName: string;
+    fCleanAll: boolean;
     fTargetOS: string;
     fTargetDirectory: string;
     fTargetCPU: string;
     fTargetPlatform: TLCLPlatform;
-    fIdeBuildMode: TIdeBuildMode;
-    fCleanAll: boolean;
     fUpdateRevisionInc: boolean;
-    fOptions: TStringList;      // User defined options.
-    fDefines: TStringList;      // Defines selected for this profile.
+    // User defined options.
+    fOptions: TStringList;
+    // Defines selected for this profile.
+    fDefines: TStringList;
+    // MakeModeSettings is Synchronised with TMakeModeDefs, same indexes.
+    fMakeModes: TMakeModeSettings;
 
     function GetExtraOptions: string;
+    function GetTargetPlatform: TLCLPlatform;
     procedure SetExtraOptions(const AValue: string);
+    procedure SetTargetCPU(const AValue: string);
+    procedure SetTargetOS(const AValue: string);
+    procedure SetTargetPlatform(const AValue: TLCLPlatform);
   public
     constructor Create(AOwnerCnt: TBuildLazarusProfiles; AName: string);
     destructor Destroy; override;
@@ -76,27 +132,29 @@ type
   public
     property Name: string read fName;
     property ExtraOptions: string read GetExtraOptions write SetExtraOptions;
-    property TargetOS: string read fTargetOS write fTargetOS;
-    property TargetDirectory: string read fTargetDirectory write fTargetDirectory;
-    property TargetCPU: string read fTargetCPU write fTargetCPU;
-    property TargetPlatform: TLCLPlatform read fTargetPlatform write fTargetPlatform;
-    property IdeBuildMode: TIdeBuildMode read fIdeBuildMode write fIdeBuildMode;
     property CleanAll: boolean read fCleanAll write fCleanAll;
+    property TargetOS: string read fTargetOS write SetTargetOS;
+    property TargetDirectory: string read fTargetDirectory write fTargetDirectory;
+    property TargetCPU: string read fTargetCPU write SetTargetCPU;
+    property TargetPlatform: TLCLPlatform read GetTargetPlatform write SetTargetPlatform;
     property UpdateRevisionInc: boolean read fUpdateRevisionInc write fUpdateRevisionInc;
     property OptionsLines: TStringList read fOptions;
     property Defines: TStringList read fDefines;
+    property MakeModes: TMakeModeSettings read fMakeModes;
   end;
 
   { TBuildLazarusProfiles }
 
   TBuildLazarusProfiles = class(TObjectList)
   private
+    fMakeModeDefs: TMakeModeDefs;
     fRestartAfterBuild: boolean;
     fConfirmBuild: boolean;
     fAllDefines: TStringList;
     fSelected: TStringList;
     fStaticAutoInstallPackages: TStringList;
     fCurrentIndex: integer;
+    function GetCurrentIdeMode: TMakeMode;
     function GetCurrentProfile: TBuildLazarusProfile;
     function GetItems(Index: integer): TBuildLazarusProfile;
   public
@@ -110,6 +168,7 @@ type
     procedure Save(XMLConfig: TXMLConfig; const Path: string);
     procedure Move(CurIndex, NewIndex: Integer); // Replaces TList.Move
   public
+    property MakeModeDefs: TMakeModeDefs read fMakeModeDefs;
     property RestartAfterBuild: boolean read fRestartAfterBuild write fRestartAfterBuild;
     property ConfirmBuild: boolean read fConfirmBuild write fConfirmBuild;
     property AllDefines: TStringList read fAllDefines;
@@ -117,6 +176,7 @@ type
     property StaticAutoInstallPackages: TStringList read fStaticAutoInstallPackages;
     property CurrentIndex: integer read fCurrentIndex write fCurrentIndex;
     property Current: TBuildLazarusProfile read GetCurrentProfile;
+    property CurrentIdeMode: TMakeMode read GetCurrentIdeMode;
     property Items[Index: integer]: TBuildLazarusProfile read GetItems; default;
   end;
 
@@ -152,6 +212,9 @@ type
 
   end; 
 
+const
+  MakeModeNames: array[TMakeMode] of string = ('None', 'Build', 'Clean+Build' );
+
 var
   BuildProfileManagerForm: TBuildProfileManagerForm;
 
@@ -167,21 +230,126 @@ const
   DefaultTargetDirectory = ''; // empty will be replaced by '$(ConfDir)/bin';
 
 
-function IdeBuildModeToStr(BuildMode: TIdeBuildMode): string;
+function StrToMakeMode(const s: string): TMakeMode;
 begin
-  case BuildMode of
-    bmBuild:      Result:='Build';
-    bmCleanBuild: Result:='Clean+Build';
+  for Result:=Succ(mmNone) to High(TMakeMode) do
+    if CompareText(s,MakeModeNames[Result])=0 then exit;
+  Result:=mmNone;
+end;
+
+
+{ TMakeModeDef }
+
+function TMakeModeDef.GetCommands(Mode: TMakeMode): string;
+begin
+  Result:=fCommands[Mode];
+end;
+
+procedure TMakeModeDef.SetCommands(Mode: TMakeMode; const AValue: string);
+begin
+  fCommands[Mode]:=AValue;
+end;
+
+constructor TMakeModeDef.Create;
+begin
+  inherited Create;
+  Clear;
+end;
+
+constructor TMakeModeDef.Create(const NewName, NewDescription,
+  NewDirectory: string; const NewMakeMode: TMakeMode);
+begin
+  inherited Create;
+  Clear;
+  Name:=NewName;
+  Description:=NewDescription;
+  Directory:=NewDirectory;
+  DefaultMakeMode:=NewMakeMode;
+end;
+
+destructor TMakeModeDef.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TMakeModeDef.Clear;
+begin
+  FCommands[mmNone]:='';
+  FCommands[mmBuild]:='all';
+  FCommands[mmCleanBuild]:='clean all';
+  FDirectory:='';
+  FName:='';
+end;
+
+procedure TMakeModeDef.Assign(Source: TMakeModeDef);
+var
+  mm: TMakeMode;
+begin
+  if (Source=nil) or (Source=Self) then exit;
+  Name:=Source.Name;
+  Description:=Source.Description;
+  Directory:=Source.Directory;
+  DefaultMakeMode:=Source.DefaultMakeMode;
+  for mm:=Low(TMakeMode) to High(TMakeMode) do
+    Commands[mm]:=Source.Commands[mm];
+end;
+
+{ TMakeModeDefs }
+
+function TMakeModeDefs.GetItems(Index: integer): TMakeModeDef;
+begin
+  Result:=TMakeModeDef(inherited Items[Index]);
+end;
+
+constructor TMakeModeDefs.Create;
+begin
+  inherited Create;
+  // Hard-coded build values = IDE
+  FItemIDE:=TMakeModeDef.Create('IDE',lisIDE,'',mmBuild);
+  FItemIDE.Commands[mmBuild]:='ide';
+  FItemIDE.Commands[mmCleanBuild]:='cleanide ide';
+  fItemIDEIndex:=Add(FItemIDE);
+end;
+
+destructor TMakeModeDefs.Destroy;
+begin
+  inherited Destroy;        // Items are owned by ObjectList and are freed here.
+end;
+
+procedure TMakeModeDefs.Clear;
+begin
+  FItemIDE:=nil;
+  inherited Clear;          // Items are freed here, too.
+end;
+
+procedure TMakeModeDefs.Assign(Source: TMakeModeDefs);
+var
+  i: Integer;
+  SrcItem, NewItem: TMakeModeDef;
+begin
+  Clear;
+  for i:=0 to Source.Count-1 do begin
+    SrcItem:=Source.Items[i];
+    NewItem:=TMakeModeDef.Create;
+    NewItem.Assign(SrcItem);
+    Add(NewItem);
   end;
+  fItemIDE:=FindName('IDE');
+  fItemIDEIndex:=Source.fItemIDEIndex;
 end;
 
-function StrToIdeBuildMode(const s: string): TIdeBuildMode;
+function TMakeModeDefs.FindName(const Name: string): TMakeModeDef;
+var
+  i: Integer;
 begin
-  Result:=bmBuild;
-  if s='Clean+Build' then
-    Result:=bmCleanBuild;
+  Result:=nil;
+  for i:=0 to Count-1 do
+    if CompareText(Name,Items[i].Name)=0 then begin
+      Result:=Items[i];
+      exit;
+    end;
 end;
-
 
 { TBuildLazarusProfile }
 
@@ -195,6 +363,10 @@ begin
   fName:=AName;
   fOptions:=TStringList.Create;
   fDefines:=TStringList.Create;
+  // Set default values for MakeModes.
+  SetLength(fMakeModes, fOwnerCnt.fMakeModeDefs.Count);
+  for i:=0 to fOwnerCnt.fMakeModeDefs.Count-1 do
+    fMakeModes[i]:=fOwnerCnt.fMakeModeDefs[i].DefaultMakeMode;
 end;
 
 destructor TBuildLazarusProfile.Destroy;
@@ -209,6 +381,12 @@ var
   i: Integer;
   LCLPlatformStr: string;
 begin
+  // fBuildItems and fMakeModes are synchronized, can use the same index.
+  with fOwnerCnt do
+    for i:=0 to fMakeModeDefs.Count-1 do
+      fMakeModes[i]:=StrToMakeMode(XMLConfig.GetValue(
+          Path+'Build'+fMakeModeDefs[i].Name+'/Value',
+          MakeModeNames[fMakeModeDefs[i].DefaultMakeMode]));
   FCleanAll          :=XMLConfig.GetValue(Path+'CleanAll/Value',false);
   TargetOS           :=XMLConfig.GetValue(Path+'TargetOS/Value','');
   TargetCPU          :=XMLConfig.GetValue(Path+'TargetCPU/Value','');
@@ -219,7 +397,6 @@ begin
     fTargetPlatform  :=DirNameToLCLPlatform(LCLPlatformStr);
   FTargetDirectory:=AppendPathDelim(SetDirSeparators(
       XMLConfig.GetValue(Path+'TargetDirectory/Value', DefaultTargetDirectory)));
-  IdeBuildMode:=StrToIdeBuildMode(XMLConfig.GetValue(Path+'IdeBuildMode/Value',''));
   FUpdateRevisionInc :=XMLConfig.GetValue(Path+'UpdateRevisionInc/Value',true);
   LoadStringList(XMLConfig,fOptions,Path+'Options/');
   if fOptions.Count=0 then     // Support a syntax used earlier by profiles.
@@ -231,6 +408,12 @@ procedure TBuildLazarusProfile.Save(XMLConfig: TXMLConfig; const Path: string);
 var
   i: Integer;
 begin
+  with fOwnerCnt do
+    for i:=0 to fMakeModeDefs.Count-1 do begin
+      XMLConfig.SetDeleteValue(Path+'Build'+fMakeModeDefs[i].Name+'/Value',
+                               MakeModeNames[fMakeModes[i]],
+                               MakeModeNames[fMakeModeDefs[i].DefaultMakeMode]);
+  end;
   XMLConfig.SetDeleteValue(Path+'CleanAll/Value',FCleanAll,false);
   XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'TargetCPU/Value',TargetCPU,'');
@@ -239,7 +422,6 @@ begin
                            ''); //LCLPlatformDirNames[GetDefaultLCLWidgetType]
   XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
                            FTargetDirectory,DefaultTargetDirectory);
-  XMLConfig.SetDeleteValue(Path+'IdeBuildMode/Value',IdeBuildModeToStr(IdeBuildMode),'');
   XMLConfig.SetDeleteValue(Path+'UpdateRevisionInc/Value',FUpdateRevisionInc,true);
   SaveStringList(XMLConfig,fOptions,Path+'Options/');
   SaveStringList(XMLConfig,fDefines,Path+'Defines/');
@@ -257,10 +439,11 @@ begin
   TargetDirectory   :=Source.TargetDirectory;
   TargetCPU         :=Source.TargetCPU;
   TargetPlatform    :=Source.TargetPlatform;
-  IdeBuildMode      :=Source.IdeBuildMode;
   UpdateRevisionInc :=Source.UpdateRevisionInc;
   fOptions.Assign(Source.fOptions);
   fDefines.Assign(Source.fDefines);
+  for i:=0 to Length(fMakeModes)-1 do
+    fMakeModes[i]:=Source.MakeModes[i];
 end;
 
 function TBuildLazarusProfile.FPCTargetOS: string;
@@ -271,6 +454,30 @@ end;
 function TBuildLazarusProfile.FPCTargetCPU: string;
 begin
   Result:=GetFPCTargetCPU(TargetCPU);
+end;
+
+procedure TBuildLazarusProfile.SetTargetCPU(const AValue: string);
+begin
+  if FTargetCPU=AValue then exit;
+  FTargetCPU:=AValue;
+end;
+
+procedure TBuildLazarusProfile.SetTargetOS(const AValue: string);
+begin
+  if fTargetOS=AValue then exit;
+  fTargetOS:=AValue;
+end;
+
+function TBuildLazarusProfile.GetTargetPlatform: TLCLPlatform;
+begin
+  Result:=fTargetPlatform;
+//  if Result=lpDefault then
+//    Result:=GetDefaultLCLWidgetType;
+end;
+
+procedure TBuildLazarusProfile.SetTargetPlatform(const AValue: TLCLPlatform);
+begin
+  fTargetPlatform:=AValue;
 end;
 
 function TBuildLazarusProfile.GetExtraOptions: string;
@@ -297,6 +504,7 @@ end;
 constructor TBuildLazarusProfiles.Create;
 begin
   inherited Create;
+  fMakeModeDefs:=TMakeModeDefs.Create;
   fRestartAfterBuild:=True;
   fConfirmBuild:=True;
   fAllDefines:=TStringList.Create;
@@ -306,6 +514,7 @@ end;
 
 destructor TBuildLazarusProfiles.Destroy;
 begin
+  fMakeModeDefs.Free;
   inherited Destroy;
   // Clear is called by inherited Destroy. Must be freed later.
   fStaticAutoInstallPackages.Free;
@@ -327,6 +536,7 @@ var
   SrcItem, NewItem: TBuildLazarusProfile;
 begin
   Clear;
+  fMakeModeDefs.Assign(Source.MakeModeDefs);
   RestartAfterBuild :=Source.RestartAfterBuild;
   ConfirmBuild:=Source.ConfirmBuild;
   fAllDefines.Assign(Source.fAllDefines);
@@ -363,12 +573,24 @@ var
 begin
   Platfrm:=GetDefaultLCLWidgetType;
 
+  // Build IDE without Packages
+  Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildIDEwithoutPackages);
+  with Profile, fOwnerCnt do begin
+    fCleanAll:=False;
+    fTargetPlatform:=Platfrm;
+    for i:=0 to fMakeModeDefs.Count-1 do
+      if fMakeModeDefs[i].Description=lisIDE then
+        fMakeModes[i]:=mmBuild
+      else
+        fMakeModes[i]:=mmNone;
+  end;
+  Add(Profile);
+
   // Build Debug IDE
   Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildDebugIDE);
   with Profile, fOwnerCnt do begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
-    fIdeBuildMode:=bmBuild;
     fUpdateRevisionInc:=True;
     {$IFDEF Darwin}
     // FPC on darwin has a bug with -Cr
@@ -376,6 +598,11 @@ begin
     {$ELSE}
     fOptions.Add('-gw -gl -godwarfsets -gh -gt -Co -Cr -Ci -Sa');
     {$ENDIF}
+    for i:=0 to fMakeModeDefs.Count-1 do
+      if fMakeModeDefs[i].Description=lisIDE then
+        fMakeModes[i]:=mmBuild
+      else
+        fMakeModes[i]:=mmNone;
   end;
   // Return this one as default. Needed when building packages without saved profiles.
   Result:=Add(Profile);
@@ -385,9 +612,13 @@ begin
   with Profile, fOwnerCnt do begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
-    fIdeBuildMode:=bmBuild;
     fUpdateRevisionInc:=True;
     fOptions.Add('-O2 -g- -Xs');
+    for i:=0 to fMakeModeDefs.Count-1 do
+      if fMakeModeDefs[i].Description=lisIDE then
+        fMakeModes[i]:=mmBuild
+      else
+        fMakeModes[i]:=mmNone;
   end;
   Add(Profile);
 
@@ -396,8 +627,9 @@ begin
   with Profile, fOwnerCnt do begin
     fCleanAll:=False;
     fTargetPlatform:=Platfrm;
-    fIdeBuildMode:=bmCleanBuild;
     fUpdateRevisionInc:=True;
+    for i:=0 to fMakeModeDefs.Count-1 do
+      fMakeModes[i]:=mmCleanBuild;
   end;
   Add(Profile);
 
@@ -498,6 +730,11 @@ end;
 function TBuildLazarusProfiles.GetCurrentProfile: TBuildLazarusProfile;
 begin
   Result:=Items[fCurrentIndex];
+end;
+
+function TBuildLazarusProfiles.GetCurrentIdeMode: TMakeMode;
+begin
+  Result:=Current.fMakeModes[fMakeModeDefs.fItemIDEIndex]
 end;
 
 function TBuildLazarusProfiles.GetItems(Index: integer): TBuildLazarusProfile;
@@ -640,7 +877,9 @@ var
 begin
   i:=ProfilesListbox.ItemIndex;
   if i<1 then exit;
+  // Update ProfsToManage collection.
   fProfsToManage.Move(i,i-1);
+  // Update ListBox
   ProfilesListbox.Items.Move(i,i-1);
   ProfilesListbox.ItemIndex:=i-1;
   EnableButtons;
@@ -652,7 +891,9 @@ var
 begin
   i:=ProfilesListbox.ItemIndex;
   if (i<0) or (i>=ProfilesListbox.Items.Count-1) then exit;
+  // Update ProfsToManage collection.
   fProfsToManage.Move(i,i+1);
+  // Update ListBox
   ProfilesListbox.Items.Move(i,i+1);
   ProfilesListbox.ItemIndex:=i+1;
   EnableButtons;
