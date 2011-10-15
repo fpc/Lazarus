@@ -12,6 +12,28 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
+msgid "Select Groups"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+msgid "Select Groups"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgheaderdisable
+msgid "Select groups to disable when breakpoint is hit"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgheaderenable
+msgid "Select groups to enable when breakpoint is hit"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakpropertygroupnotfound
+msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
 msgstr ""
@@ -380,6 +402,7 @@ msgid "Behind methods"
 msgstr "在方法后"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
+msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
 msgstr ""
 
@@ -7658,12 +7681,16 @@ msgstr ""
 msgid "Example file:"
 msgstr ""
 
-#: lazarusidestrconsts.lisexamples
-msgid "Examples"
-msgstr "样例"
+#: lazarusidestrconsts.lisexamplesbuildallselected
+msgid "Build all selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr ""
+
+#: lazarusidestrconsts.lisexamplesopenfirstselected
+msgid "Open first selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisexceptiondialog
@@ -9017,6 +9044,10 @@ msgstr "装入选择区"
 msgid "Evaluate/Modify"
 msgstr "赋值/更改"
 
+#: lazarusidestrconsts.liskmexampleprojects
+msgid "Example Projects"
+msgstr ""
+
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "外部工具设置"
@@ -9527,10 +9558,6 @@ msgstr "构建代码工具"
 #: lazarusidestrconsts.lislazbuildbuildcomponentssyneditcodetools
 msgid "Build components (SynEdit, CodeTools)"
 msgstr "构建组件 (SynEdit, CodeTools)"
-
-#: lazarusidestrconsts.lislazbuildbuildexamples
-msgid "Build examples"
-msgstr "构建例子"
 
 #: lazarusidestrconsts.lislazbuildbuildide
 msgid "Build IDE"
@@ -10331,6 +10358,10 @@ msgstr "封装所选 ..."
 #| msgid "Evaluate/Modify ..."
 msgid "E&valuate/Modify ..."
 msgstr "赋值/更改 ..."
+
+#: lazarusidestrconsts.lismenuexampleprojects
+msgid "Example Projects ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract procedure ..."
@@ -13787,6 +13818,10 @@ msgstr "相等的隔开右边"
 msgid "Root"
 msgstr ""
 
+#: lazarusidestrconsts.lisrootdirectoryforprojects
+msgid "Root directory for projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr ""
@@ -15689,6 +15724,10 @@ msgstr "查看工程单元"
 
 #: lazarusidestrconsts.lisviewsource
 msgid "View Source"
+msgstr ""
+
+#: lazarusidestrconsts.lisviewsourcedisass
+msgid "View Assembler"
 msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcelfm

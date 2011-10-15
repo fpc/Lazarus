@@ -12,6 +12,28 @@ msgstr ""
 "X-Poedit-Country: POLAND\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
+msgid "Select Groups"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+msgid "Select Groups"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgheaderdisable
+msgid "Select groups to disable when breakpoint is hit"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgheaderenable
+msgid "Select groups to enable when breakpoint is hit"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakpropertygroupnotfound
+msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
 msgstr ""
@@ -7647,12 +7669,16 @@ msgstr "Każdy n-ty numer linii:"
 msgid "Example file:"
 msgstr ""
 
-#: lazarusidestrconsts.lisexamples
-msgid "Examples"
+#: lazarusidestrconsts.lisexamplesbuildallselected
+msgid "Build all selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
+msgstr ""
+
+#: lazarusidestrconsts.lisexamplesopenfirstselected
+msgid "Open first selected"
 msgstr ""
 
 #: lazarusidestrconsts.lisexceptiondialog
@@ -9000,6 +9026,10 @@ msgstr ""
 msgid "Evaluate/Modify"
 msgstr ""
 
+#: lazarusidestrconsts.liskmexampleprojects
+msgid "Example Projects"
+msgstr ""
+
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr ""
@@ -9508,10 +9538,6 @@ msgstr "Buduj CodeTools"
 #: lazarusidestrconsts.lislazbuildbuildcomponentssyneditcodetools
 msgid "Build components (SynEdit, CodeTools)"
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildbuildexamples
-msgid "Build examples"
-msgstr "Buduj przykłady"
 
 #: lazarusidestrconsts.lislazbuildbuildide
 msgid "Build IDE"
@@ -10307,6 +10333,10 @@ msgstr "Otocz zaznaczenie ..."
 #| msgid "Evaluate/Modify ..."
 msgid "E&valuate/Modify ..."
 msgstr "Sprawdź/Modyfikuj ..."
+
+#: lazarusidestrconsts.lismenuexampleprojects
+msgid "Example Projects ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract procedure ..."
@@ -13755,6 +13785,10 @@ msgstr ""
 msgid "Root"
 msgstr ""
 
+#: lazarusidestrconsts.lisrootdirectoryforprojects
+msgid "Root directory for projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr ""
@@ -15635,6 +15669,10 @@ msgstr "Pokaż moduły projektu"
 
 #: lazarusidestrconsts.lisviewsource
 msgid "View Source"
+msgstr ""
+
+#: lazarusidestrconsts.lisviewsourcedisass
+msgid "View Assembler"
 msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcelfm

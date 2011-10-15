@@ -13,6 +13,28 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "POT-Creation-Date: \n"
 
+#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
+msgid "Select Groups"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+msgid "Select Groups"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgheaderdisable
+msgid "Select groups to disable when breakpoint is hit"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgheaderenable
+msgid "Select groups to enable when breakpoint is hit"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakpropertygroupnotfound
+msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
 msgstr ""
@@ -384,6 +406,7 @@ msgstr "Po metodų"
 #: lazarusidestrconsts.dlgblockgroupoptions
 #, fuzzy
 #| msgid "Selection:"
+msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
 msgstr "Pažymėjimas:"
 
@@ -7653,13 +7676,17 @@ msgstr "Numeris kas kelintoje eilutėje:"
 msgid "Example file:"
 msgstr "Pavyzdžio failas:"
 
-#: lazarusidestrconsts.lisexamples
-msgid "Examples"
-msgstr "Pavyzdžiai"
+#: lazarusidestrconsts.lisexamplesbuildallselected
+msgid "Build all selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
 msgstr "Pavyzdžiai:%sIdentifikatorius%sTManoEnum.Enum%sModulioPavadinimas.Identifikatorius%s#PaketoPavadinimas.ModulioPavadinimas.Identifikatorius"
+
+#: lazarusidestrconsts.lisexamplesopenfirstselected
+msgid "Open first selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisexceptiondialog
 msgid "Debugger Exception Notification"
@@ -9013,6 +9040,10 @@ msgstr "Apgaubti pažymėtąjį"
 msgid "Evaluate/Modify"
 msgstr "Įvertinti/Modifikuoti"
 
+#: lazarusidestrconsts.liskmexampleprojects
+msgid "Example Projects"
+msgstr ""
+
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Išorinių įrankių nuostatos"
@@ -9523,10 +9554,6 @@ msgstr "Daryti CodeTools"
 #: lazarusidestrconsts.lislazbuildbuildcomponentssyneditcodetools
 msgid "Build components (SynEdit, CodeTools)"
 msgstr "Daryti komponentus (SynEdit, CodeTools)"
-
-#: lazarusidestrconsts.lislazbuildbuildexamples
-msgid "Build examples"
-msgstr "Daryti pavyzdžius"
 
 #: lazarusidestrconsts.lislazbuildbuildide
 msgid "Build IDE"
@@ -10333,6 +10360,10 @@ msgstr "Apgaubti pažymėtąjį…"
 #| msgid "Evaluate/Modify ..."
 msgid "E&valuate/Modify ..."
 msgstr "Įvertinti/Modifikuoti…"
+
+#: lazarusidestrconsts.lismenuexampleprojects
+msgid "Example Projects ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract procedure ..."
@@ -13785,6 +13816,10 @@ msgstr "Tolygiai rikiuoti pagal dešiniuosius kraštus"
 msgid "Root"
 msgstr "Šakninis"
 
+#: lazarusidestrconsts.lisrootdirectoryforprojects
+msgid "Root directory for projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr ""
@@ -15698,6 +15733,10 @@ msgstr "Projekto moduliai"
 
 #: lazarusidestrconsts.lisviewsource
 msgid "View Source"
+msgstr ""
+
+#: lazarusidestrconsts.lisviewsourcedisass
+msgid "View Assembler"
 msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcelfm

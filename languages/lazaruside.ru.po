@@ -5,9 +5,31 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-10-09 18:21+0300\n"
+"PO-Revision-Date: 2011-10-15 20:14+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
+
+#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
+msgid "Select Groups"
+msgstr "Выбор групп"
+
+#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+msgid "Select Groups"
+msgstr "Выбор групп"
+
+#: lazarusidestrconsts.dbgbreakgroupdlgheaderdisable
+msgid "Select groups to disable when breakpoint is hit"
+msgstr "Выберите группы для отключения при достижении точки останова"
+
+#: lazarusidestrconsts.dbgbreakgroupdlgheaderenable
+msgid "Select groups to enable when breakpoint is hit"
+msgstr "Выберите группы для включения при достижении точки останова"
+
+#: lazarusidestrconsts.dbgbreakpropertygroupnotfound
+msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
+msgstr "Некоторые группы в списке включения/отключения не существуют.%0:sСоздать их?%0:s%0:s%1:s"
 
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
@@ -393,6 +415,7 @@ msgstr "После методов"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
 #| msgid "Selection:"
+msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
 msgstr "Выделение"
 
@@ -7641,13 +7664,17 @@ msgstr "Каждый n-ный номер строки:"
 msgid "Example file:"
 msgstr "Файл с образцами:"
 
-#: lazarusidestrconsts.lisexamples
-msgid "Examples"
-msgstr "Примеры"
+#: lazarusidestrconsts.lisexamplesbuildallselected
+msgid "Build all selected"
+msgstr "Собрать все выделенные"
 
 #: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
 msgstr "Примеры:%s<Идентификатор>%sTMyEnum.<Перечисление>%s<Имя модуля>.<Идентификатор>%s#<Имя пакета>.<Имя модуля>.<Идентификатор>"
+
+#: lazarusidestrconsts.lisexamplesopenfirstselected
+msgid "Open first selected"
+msgstr "Открыть первый выделенный"
 
 #: lazarusidestrconsts.lisexceptiondialog
 msgid "Debugger Exception Notification"
@@ -8994,6 +9021,10 @@ msgstr "Заключить выделенное"
 msgid "Evaluate/Modify"
 msgstr "Вычислить/Изменить"
 
+#: lazarusidestrconsts.liskmexampleprojects
+msgid "Example Projects"
+msgstr "Примеры проектов"
+
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Настройка внешних средств"
@@ -9505,10 +9536,6 @@ msgstr "Собрать CodeTools"
 #: lazarusidestrconsts.lislazbuildbuildcomponentssyneditcodetools
 msgid "Build components (SynEdit, CodeTools)"
 msgstr "Собрать компоненты (SynEdit, CodeTools)"
-
-#: lazarusidestrconsts.lislazbuildbuildexamples
-msgid "Build examples"
-msgstr "Собрать примеры"
 
 #: lazarusidestrconsts.lislazbuildbuildide
 msgid "Build IDE"
@@ -10297,6 +10324,10 @@ msgstr "Заключить выделенное в ..."
 #| msgid "Evaluate/Modify ..."
 msgid "E&valuate/Modify ..."
 msgstr "&Вычислить/Изменить ..."
+
+#: lazarusidestrconsts.lismenuexampleprojects
+msgid "Example Projects ..."
+msgstr "Примеры проектов ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract procedure ..."
@@ -13725,6 +13756,10 @@ msgstr "Равномерно по правым краям"
 msgid "Root"
 msgstr "Корневой элемент"
 
+#: lazarusidestrconsts.lisrootdirectoryforprojects
+msgid "Root directory for projects"
+msgstr "Корневой каталог поиска проектов"
+
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr "%s (идёт исполнение ...)"
@@ -15622,6 +15657,10 @@ msgstr "Показать модули проекта"
 #: lazarusidestrconsts.lisviewsource
 msgid "View Source"
 msgstr "Просмотреть исходный код"
+
+#: lazarusidestrconsts.lisviewsourcedisass
+msgid "View Assembler"
+msgstr "Просмотреть код ассемблера"
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"

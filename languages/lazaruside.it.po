@@ -12,6 +12,28 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Virtaal 0.5.1\n"
 
+#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
+msgid "Select Groups"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+msgid "Select Groups"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgheaderdisable
+msgid "Select groups to disable when breakpoint is hit"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgheaderenable
+msgid "Select groups to enable when breakpoint is hit"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakpropertygroupnotfound
+msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
 msgstr "Usa schema predefinito"
@@ -382,6 +404,7 @@ msgstr "Dietro ai metodi"
 #: lazarusidestrconsts.dlgblockgroupoptions
 #, fuzzy
 #| msgid "Selection:"
+msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
 msgstr "Selezione"
 
@@ -7667,13 +7690,17 @@ msgstr "Ogni N numeri di riga:"
 msgid "Example file:"
 msgstr "File di esempio:"
 
-#: lazarusidestrconsts.lisexamples
-msgid "Examples"
-msgstr "Esempi"
+#: lazarusidestrconsts.lisexamplesbuildallselected
+msgid "Build all selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
 msgstr "Esempi:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#Packagename.UnitName.Identifier"
+
+#: lazarusidestrconsts.lisexamplesopenfirstselected
+msgid "Open first selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisexceptiondialog
 msgid "Debugger Exception Notification"
@@ -9028,6 +9055,10 @@ msgstr "Includi la selezione"
 msgid "Evaluate/Modify"
 msgstr "Valuta/Modifica"
 
+#: lazarusidestrconsts.liskmexampleprojects
+msgid "Example Projects"
+msgstr ""
+
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Impostazioni Strumenti esterni"
@@ -9538,10 +9569,6 @@ msgstr "Costruisci i CodeTools"
 #: lazarusidestrconsts.lislazbuildbuildcomponentssyneditcodetools
 msgid "Build components (SynEdit, CodeTools)"
 msgstr "Costruisci i componenti (SynEdit, CodeTools)"
-
-#: lazarusidestrconsts.lislazbuildbuildexamples
-msgid "Build examples"
-msgstr "Esempi di costruzione"
 
 #: lazarusidestrconsts.lislazbuildbuildide
 msgid "Build IDE"
@@ -10342,6 +10369,10 @@ msgstr "Chiusura selezione ..."
 #| msgid "Evaluate/Modify ..."
 msgid "E&valuate/Modify ..."
 msgstr "Valuta/modifica..."
+
+#: lazarusidestrconsts.lismenuexampleprojects
+msgid "Example Projects ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract procedure ..."
@@ -13799,6 +13830,10 @@ msgstr "Spazia a destra equidistante"
 msgid "Root"
 msgstr "Radice"
 
+#: lazarusidestrconsts.lisrootdirectoryforprojects
+msgid "Root directory for projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr "%s (in esecuzione...)"
@@ -15712,6 +15747,10 @@ msgstr "Mostra unit del progetto"
 
 #: lazarusidestrconsts.lisviewsource
 msgid "View Source"
+msgstr ""
+
+#: lazarusidestrconsts.lisviewsourcedisass
+msgid "View Assembler"
 msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcelfm

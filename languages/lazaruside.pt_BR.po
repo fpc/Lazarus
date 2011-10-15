@@ -11,6 +11,28 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: BRAZIL\n"
 
+#: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
+msgid "Select Groups"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
+msgid "Select Groups"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgheaderdisable
+msgid "Select groups to disable when breakpoint is hit"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakgroupdlgheaderenable
+msgid "Select groups to enable when breakpoint is hit"
+msgstr ""
+
+#: lazarusidestrconsts.dbgbreakpropertygroupnotfound
+msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
 msgstr "Usar esquema predefinido"
@@ -392,6 +414,7 @@ msgstr "Antes de métodos"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
 #| msgid "Selection:"
+msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
 msgstr "Seleção"
 
@@ -7629,13 +7652,17 @@ msgstr "Todo enésimo número linha:"
 msgid "Example file:"
 msgstr "Arquivo exemplo:"
 
-#: lazarusidestrconsts.lisexamples
-msgid "Examples"
-msgstr "Exemplos"
+#: lazarusidestrconsts.lisexamplesbuildallselected
+msgid "Build all selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
 msgstr "Exemplos:%sIdentificador%sTMyEnum.Enum%sNomeUnidade.Identificador%s#NomePacote.NomeUnidade.Identificador"
+
+#: lazarusidestrconsts.lisexamplesopenfirstselected
+msgid "Open first selected"
+msgstr ""
 
 #: lazarusidestrconsts.lisexceptiondialog
 msgid "Debugger Exception Notification"
@@ -8982,6 +9009,10 @@ msgstr "Circundar seleção"
 msgid "Evaluate/Modify"
 msgstr "Avaliar/Modificar"
 
+#: lazarusidestrconsts.liskmexampleprojects
+msgid "Example Projects"
+msgstr ""
+
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Configurações Ferramentas Externas"
@@ -9491,10 +9522,6 @@ msgstr "Construir Ferramentas de Código"
 #: lazarusidestrconsts.lislazbuildbuildcomponentssyneditcodetools
 msgid "Build components (SynEdit, CodeTools)"
 msgstr "Construir componentes (SynEdit, Ferramentas de Código)"
-
-#: lazarusidestrconsts.lislazbuildbuildexamples
-msgid "Build examples"
-msgstr "Construir exemplos"
 
 #: lazarusidestrconsts.lislazbuildbuildide
 msgid "Build IDE"
@@ -10283,6 +10310,10 @@ msgstr "Circundar seleção ..."
 #| msgid "Evaluate/Modify ..."
 msgid "E&valuate/Modify ..."
 msgstr "A&valiar/Modificar ..."
+
+#: lazarusidestrconsts.lismenuexampleprojects
+msgid "Example Projects ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract procedure ..."
@@ -13706,6 +13737,10 @@ msgstr "Justificar à direita"
 msgid "Root"
 msgstr "Raiz"
 
+#: lazarusidestrconsts.lisrootdirectoryforprojects
+msgid "Root directory for projects"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr "%s (executando ...)"
@@ -15601,6 +15636,10 @@ msgstr "Exibir Unidades do Projeto"
 #: lazarusidestrconsts.lisviewsource
 msgid "View Source"
 msgstr "Exibir Fonte"
+
+#: lazarusidestrconsts.lisviewsourcedisass
+msgid "View Assembler"
+msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"
