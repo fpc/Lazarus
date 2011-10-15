@@ -84,6 +84,8 @@
       TMyAnsiStringDArray = Array of AnsiString;
       TMyAnsiStringSArray = Array [3..5] of AnsiString;
 
+// TODO array of ShortString
+
       // strings in object
       TStringHolderObj = class
       public
@@ -319,10 +321,10 @@
       GlobPPCharArray10B0,        GlobPPCharArray10B0,
       GlobPPCharArray10B1,        GlobPPCharArray10B1,
 
-      GlobTMyAnsiStringDArray,    GlobTMyAnsiStringDArray,
-      GlobTMyAnsiStringSArray,    GlobTMyAnsiStringSArray,
-      GlobTStringHolderObj,       GlobTStringHolderObj,
-      GlobTStringHolderRec,       GlobTStringHolderRec,
+      GlobTMyAnsiStringDArray,    GlobTMyAnsiStringDArray2,
+      GlobTMyAnsiStringSArray,    GlobTMyAnsiStringSArray2,
+      GlobTStringHolderObj,       GlobTStringHolderObj2,
+      GlobTStringHolderRec,       GlobTStringHolderRec2,
     {$ENDIF}
 
     {$IFDEF FooFunc_LocalVar}
@@ -499,6 +501,12 @@
       VarRWideString := @ArgTMyWideString;
 
       VarString15 := 'T15' +#10#13 + 'L2' + #13 + 'L3' +#10 +'L4';
+
+/////
+      setlength(VarACharArray,2);
+      VarACharArray10B0[1] := 'a';
+      VarACharArray10B1[1] := 'b';
+
     {$ENDIF}
 
     {$IFDEF Global_Body}
@@ -567,17 +575,41 @@
       //GlobRCharArray10B0,  GlobRCharArray10B02: ^TCharArray10B0;
       //GlobRCharArray10B1,  GlobRCharArray10B12: ^TCharArray10B1;
       //
+
       //GlobPPCharArray,  GlobPPCharArray2: PPCharArray;
       //GlobPPCharArray10B0,  GlobPPCharArray10B02: PPCharArray10B0;
       //GlobPPCharArray10B1,  GlobPPCharArray10B12: PPCharArray10B1;
       //
-      //GlobTMyAnsiStringDArray,  GlobTMyAnsiStringDArray2: TMyAnsiStringDArray;
-      //GlobTMyAnsiStringSArray,  GlobTMyAnsiStringSArray2: TMyAnsiStringSArray;
+
+
+      SetLength(GlobTMyAnsiStringDArray, 3);
+      SetLength(GlobTMyAnsiStringDArray2, 3);
+      GlobTMyAnsiStringDArray[0] := 'DArray1 Str0';
+      GlobTMyAnsiStringDArray[1] := 'DArray1 Str1';
+      GlobTMyAnsiStringDArray2[0] := 'DArray2 Str0';
+      GlobTMyAnsiStringDArray2[0] := 'DArray2 Str1';
+
+      GlobTMyAnsiStringSArray[3] := 'SArray1 Str3';
+      GlobTMyAnsiStringSArray[4] := 'SArray1 Str4';
+      GlobTMyAnsiStringSArray2[3] := 'SArray2 Str3';
+      GlobTMyAnsiStringSArray2[4] := 'SArray2 Str4';
+
       //GlobAMyAnsiStringDArray,  GlobAMyAnsiStringDArray2: Array of AnsiString;
       //GlobAMyAnsiStringSArray,  GlobAMyAnsiStringSArray2: Array [3..5] of AnsiString;
       //
-      //GlobTStringHolderObj,  GlobTStringHolderObj2: TStringHolderObj;
-      //GlobTStringHolderRec,  GlobTStringHolderRec2: TStringHolderRec;
+
+      GlobTStringHolderObj := TStringHolderObj.Create;
+      GlobTStringHolderObj.FTMyAnsiString := 'Obj1 MyAnsi';
+      GlobTStringHolderObj.FTMyShortString := 'Obj1 Short';
+
+      GlobTStringHolderObj2 := TStringHolderObj.Create;
+      GlobTStringHolderObj2.FTMyAnsiString := 'Obj2 MyAnsi';
+      GlobTStringHolderObj2.FTMyShortString := 'Obj2 Short';
+
+      GlobTStringHolderRec.FTMyAnsiString := 'Rec1 MyAnsi';
+      GlobTStringHolderRec.FTMyShortString := 'Rec1 Short';
+      GlobTStringHolderRec2.FTMyAnsiString := 'Rec2 MyAnsi';
+      GlobTStringHolderRec2.FTMyShortString := 'Rec2 Short';
 
 
 

@@ -29,7 +29,10 @@ type
 
   TWatchExpectationFlag =
     (fnoDwrf,      // no dwarf at all
+     fnoDwrf2,      // no dwarf 2
+     fnoDwrf3,      // no dwarf 3
      fnoDwrfNoSet, // no dwarf2 (-gw) without set
+     fnoStabs,
      //fnoDwrfSet,   // no dwarf2 with set // no dwarf3
      fTstSkip,
      fTpMtch
@@ -83,10 +86,17 @@ type
       AFlgs: TWatchExpectationFlags = [];
       AStackFrame: Integer = 0
     ): PWatchExpectation;
-    procedure UpdRes(AWatchExp: PWatchExpectation;
-      ASymbolType: TSymbolType;
-      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
-      AFlgs: TWatchExpectationFlags = []
+    procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
+      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags = []
+    );
+    procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
+      AMtch: string; AKind: TDBGSymbolKind
+    );
+    procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
+      AKind: TDBGSymbolKind
+    );
+    procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
+      ATpNm: string; AFlgs: TWatchExpectationFlags
     );
 
     procedure AddExpectBreakFooGdb;
@@ -180,7 +190,10 @@ begin
       Result[i].ExpTypeName  := ATpNm;
       Result[i].Flgs         := AFlgs;
       if ( (fnoDwrf in AFlgs) and (i in [stDwarf, stDwarfSet, stDwarf3]) ) or
-         ( (fnoDwrfNoSet in AFlgs) and (i in [stDwarf]) )
+         ( (fnoDwrfNoSet in AFlgs) and (i in [stDwarf]) ) or
+         ( (fnoDwrf2 in AFlgs) and (i in [stDwarf, stDwarfSet]) ) or
+         ( (fnoDwrf3 in AFlgs) and (i in [stDwarf3]) ) or
+         ( (fnoStabs in AFlgs) and (i in [stStabs]) )
       then Result[i].Flgs := Result[i].Flgs + [fTstSkip];
     end;
     StackFrame   := AStackFrame;
@@ -224,6 +237,32 @@ begin
   end;
 end;
 
+procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
+  AMtch: string; AKind: TDBGSymbolKind);
+begin
+  with AWatchExp^ do begin
+    Result[ASymbolType].ExpMatch     := AMtch;
+    Result[ASymbolType].ExpKind      := AKind;
+  end;
+end;
+
+procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
+  AKind: TDBGSymbolKind);
+begin
+  with AWatchExp^ do begin
+    Result[ASymbolType].ExpKind      := AKind;
+  end;
+end;
+
+procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
+  ATpNm: string; AFlgs: TWatchExpectationFlags);
+begin
+  with AWatchExp^ do begin
+    Result[ASymbolType].ExpTypeName  := ATpNm;
+    Result[ASymbolType].Flgs         := AFlgs;
+  end;
+end;
+
 procedure TTestWatches.AddExpectBreakFooGdb;
   function Add(AnExpr:  string; AFmt: TWatchDisplayFormat;
     AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
@@ -245,11 +284,28 @@ begin
 end;
 
 procedure TTestWatches.AddExpectBreakFooAll;
+
   function Add(AnExpr:  string; AFmt: TWatchDisplayFormat;
     AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
   begin
-    Result := AddTo(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
+    Result := AddTo(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs );
   end;
+
+  function AddFmtDef(AnExpr:  string;
+    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
+  begin
+    Result := Add(AnExpr, wdfDefault, AMtch, AKind, ATpNm, AFlgs );
+  end;
+
+  function AddStringFmtDef(AnExpr:  string;
+    AMtch: string; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
+  begin
+    // String should be skSimple
+    // but the IDE only gets that with Dwarf-3
+    Result := AddFmtDef(AnExpr, AMtch, skPOINTER, ATpNm, AFlgs );
+    UpdRes(Result, stDwarf3,           skSimple);
+  end;
+
 var
   r: PWatchExpectation;
 begin
@@ -259,96 +315,96 @@ begin
   // Foo(var XXX: PRecord); DWARF has problems with the implicit pointer for "var"
 
   // param to FooFunc
-  Add('ArgTRec',         wdfDefault,  MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,    'TRec', []);
-  Add('ArgPRec',         wdfDefault,  MatchPointer('^PRec'),                  skPointer,   'PRec', []);
-  Add('ArgPRec^',         wdfDefault, MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
-  Add('ArgPPRec',        wdfDefault,  MatchPointer('^PPRec'),                 skPointer,   'PPRec', []);
-  Add('ArgPPRec^',        wdfDefault, MatchPointer('^PRec'),                  skPointer,   'PRec', []);
-  Add('ArgPPRec^^',       wdfDefault, MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
-  Add('ArgTNewRec',      wdfDefault,  MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,    'T(New)?Rec', [fTpMtch]);
-  Add('ArgTRec.ValInt',  wdfDefault,  '-1',                                   skSimple,    M_Int, [fTpMtch]);
-  Add('ArgPRec^.ValInt', wdfDefault,  '1',                                    skSimple,    M_Int, [fTpMtch]);
-  Add('ArgPPRec^^.ValInt',wdfDefault, '1',                                    skSimple,    M_Int, [fTpMtch]);
-  Add('ArgPRec^.ValFoo',  wdfDefault, '<TFoo> = \{',                          skClass,     'TFoo', []);
+  AddFmtDef('ArgTRec',           MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,    'TRec', []);
+  AddFmtDef('ArgPRec',           MatchPointer('^PRec'),                  skPointer,   'PRec', []);
+  AddFmtDef('ArgPRec^',          MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
+  AddFmtDef('ArgPPRec',          MatchPointer('^PPRec'),                 skPointer,   'PPRec', []);
+  AddFmtDef('ArgPPRec^',         MatchPointer('^PRec'),                  skPointer,   'PRec', []);
+  AddFmtDef('ArgPPRec^^',        MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
+  AddFmtDef('ArgTNewRec',        MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,    'T(New)?Rec', [fTpMtch]);
+  AddFmtDef('ArgTRec.ValInt',    '-1',                                   skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgPRec^.ValInt',   '1',                                    skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgPPRec^^.ValInt', '1',                                    skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgPRec^.ValFoo',   '<TFoo> = \{',                          skClass,     'TFoo', []);
 
   // VAR param to FooFunc
-  Add('VArgTRec',         wdfDefault,  MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,    'TRec', []);
-  Add('VArgPRec',         wdfDefault,  MatchPointer('^PRec'),                  skPointer,   'PRec', []);
-  Add('VArgPRec^',         wdfDefault, MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', [fnoDwrf]);
-  Add('VArgPPRec',        wdfDefault,  MatchPointer('^PPRec'),                 skPointer,   'PPRec', []);
-  Add('VArgPPRec^',        wdfDefault, MatchPointer('^PRec'),                  skPointer,   'PRec', [fnoDwrf]);
-  Add('VArgPPRec^^',       wdfDefault, MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', [fnoDwrf]);
-  Add('VArgTNewRec',      wdfDefault,  MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,    'T(New)?Rec', [fTpMtch]);
-  Add('VArgTRec.ValInt',  wdfDefault,  '-1',                                   skSimple,    M_Int, [fTpMtch]);
-  Add('VArgPRec^.ValInt', wdfDefault,  '1',                                    skSimple,    M_Int, [fTpMtch]);
-  Add('VArgPPRec^^.ValInt',wdfDefault, '1',                                    skSimple,    M_Int, [fTpMtch]);
-  Add('VArgPRec^.ValFoo',  wdfDefault, '<TFoo> = \{',                          skClass,     'TFoo', []);
+  AddFmtDef('VArgTRec',           MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,    'TRec', []);
+  AddFmtDef('VArgPRec',           MatchPointer('^PRec'),                  skPointer,   'PRec', []);
+  AddFmtDef('VArgPRec^',          MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', [fnoDwrf]);
+  AddFmtDef('VArgPPRec',          MatchPointer('^PPRec'),                 skPointer,   'PPRec', []);
+  AddFmtDef('VArgPPRec^',         MatchPointer('^PRec'),                  skPointer,   'PRec', [fnoDwrf]);
+  AddFmtDef('VArgPPRec^^',        MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', [fnoDwrf]);
+  AddFmtDef('VArgTNewRec',        MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,    'T(New)?Rec', [fTpMtch]);
+  AddFmtDef('VArgTRec.ValInt',    '-1',                                   skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgPRec^.ValInt',   '1',                                    skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgPPRec^^.ValInt', '1',                                    skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgPRec^.ValFoo',   '<TFoo> = \{',                          skClass,     'TFoo', []);
 
   // LOCAL var (global type)
-  Add('VarTRec',         wdfDefault,  MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,    'TRec', []);
-  Add('VarPRec',         wdfDefault,  MatchPointer('^PRec'),                  skPointer,   'PRec', []);
-  Add('VarPRec^',         wdfDefault, MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
-  Add('VarPPRec',        wdfDefault,  MatchPointer('^PPRec'),                 skPointer,   'PPRec', []);
-  Add('VarPPRec^',        wdfDefault, MatchPointer('^PRec'),                  skPointer,   'PRec', []);
-  Add('VarPPRec^^',       wdfDefault, MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
-  Add('VarTNewRec',      wdfDefault,  MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,    'T(New)?Rec', [fTpMtch]);
-  Add('VarTRec.ValInt',  wdfDefault,  '-1',                                   skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VarTRec',           MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,    'TRec', []);
+  AddFmtDef('VarPRec',           MatchPointer('^PRec'),                  skPointer,   'PRec', []);
+  AddFmtDef('VarPRec^',          MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
+  AddFmtDef('VarPPRec',          MatchPointer('^PPRec'),                 skPointer,   'PPRec', []);
+  AddFmtDef('VarPPRec^',         MatchPointer('^PRec'),                  skPointer,   'PRec', []);
+  AddFmtDef('VarPPRec^^',        MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
+  AddFmtDef('VarTNewRec',        MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,    'T(New)?Rec', [fTpMtch]);
+  AddFmtDef('VarTRec.ValInt',    '-1',                                   skSimple,    M_Int, [fTpMtch]);
 
   // LOCAL var (reference (^) to global type)
-  Add('PVarTRec',      wdfDefault,  MatchPointer('^(\^T|P)Rec'),            skPointer,  '^(\^T|P)Rec$', [fTpMtch]); // TODO: stabs returns PRec
-  Add('PVarTRec^',     wdfDefault,  MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,   'TRec', []);
-  Add('PVarTNewRec',   wdfDefault,  MatchPointer('^\^TNewRec'),             skPointer,  '\^T(New)?Rec', [fTpMtch]);
-  Add('PVarTNewRec^',  wdfDefault,  MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,   'T(New)?Rec',   [fTpMtch]);
+  AddFmtDef('PVarTRec',        MatchPointer('^(\^T|P)Rec'),            skPointer,  '^(\^T|P)Rec$', [fTpMtch]); // TODO: stabs returns PRec
+  AddFmtDef('PVarTRec^',       MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,   'TRec', []);
+  AddFmtDef('PVarTNewRec',     MatchPointer('^\^TNewRec'),             skPointer,  '\^T(New)?Rec', [fTpMtch]);
+  AddFmtDef('PVarTNewRec^',    MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,   'T(New)?Rec',   [fTpMtch]);
 
   // LOCAL var (local type)
-  Add('VarRecA',       wdfDefault,  MatchRecord('', 'val = 1'),             skRecord,    '', []);
+  AddFmtDef('VarRecA',         MatchRecord('', 'val = 1'),             skRecord,    '', []);
   {%endregion    * records * }
 
   // @ArgTRec @VArgTRec  @ArgTRec^ @VArgTRec^
 
   {%region    * Classes * }
 
-  Add('ArgTFoo',    wdfDefault,  Match_ArgTFoo,                 skClass,   'TFoo',  []);
-  Add('@ArgTFoo',   wdfDefault,  '(P|\^T)Foo\('+Match_Pointer,  skPointer, '(P|\^T)Foo',  [fTpMtch]);
+  AddFmtDef('ArgTFoo',      Match_ArgTFoo,                 skClass,   'TFoo',  []);
+  AddFmtDef('@ArgTFoo',     '(P|\^T)Foo\('+Match_Pointer,  skPointer, '(P|\^T)Foo',  [fTpMtch]);
   // Only with brackets...
-  Add('(@ArgTFoo)^', wdfDefault,  Match_ArgTFoo,                skClass,   'TFoo',  []);
+  AddFmtDef('(@ArgTFoo)^',   Match_ArgTFoo,                skClass,   'TFoo',  []);
 
-  Add('ArgPFoo',    wdfDefault,  'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  []);
-  Add('ArgPFoo^',   wdfDefault,  Match_ArgTFoo1,                skClass,   'TFoo',  []);
-  Add('@ArgPFoo',   wdfDefault,  '(P|\^)PFoo\('+Match_Pointer,  skPointer, '(P|\^)PFoo',  [fTpMtch]);
+  AddFmtDef('ArgPFoo',      'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  []);
+  AddFmtDef('ArgPFoo^',     Match_ArgTFoo1,                skClass,   'TFoo',  []);
+  AddFmtDef('@ArgPFoo',     '(P|\^)PFoo\('+Match_Pointer,  skPointer, '(P|\^)PFoo',  [fTpMtch]);
 
-  Add('ArgPPFoo',   wdfDefault,  'PPFoo\('+Match_Pointer,       skPointer, 'PPFoo', []);
-  Add('ArgPPFoo^',  wdfDefault,  'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  []);
-  Add('@ArgPPFoo',  wdfDefault,  '\^PPFoo\('+Match_Pointer,      skPointer, '^PPFoo', []);
-  Add('ArgPPFoo^^', wdfDefault,  Match_ArgTFoo1,                skClass,   'TFoo',  []);
-
-
-  Add('VArgTFoo',   wdfDefault,  Match_ArgTFoo,                 skClass,   'TFoo',  []);
-  Add('@VArgTFoo',  wdfDefault,  '(P|\^T)Foo\('+Match_Pointer,  skPointer, '(P|\^T)Foo',  [fTpMtch]);
-  Add('(@VArgTFoo)^', wdfDefault,  Match_ArgTFoo,                 skClass,   'TFoo',  []);
-
-  Add('VArgPFoo',   wdfDefault,  'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  []);
-  Add('VArgPFoo^' , wdfDefault,  Match_ArgTFoo1,                skClass,   'TFoo',  [fnoDwrf]);
-  Add('@VArgPFoo',  wdfDefault,  '(P|\^)PFoo\('+Match_Pointer,  skPointer, '(P|\^)PFoo',  [fTpMtch]);
-
-  Add('VArgPPFoo',  wdfDefault,  'PPFoo\('+Match_Pointer,       skPointer, 'PPFoo', []);
-  Add('VArgPPFoo^', wdfDefault,  'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  [fnoDwrf]);
-  Add('@VArgPPFoo', wdfDefault,  '\^PPFoo\('+Match_Pointer,      skPointer, '^PPFoo', []);
-  Add('VArgPPFoo^^', wdfDefault,  Match_ArgTFoo1,               skClass,   'TFoo',  [fnoDwrf]);
+  AddFmtDef('ArgPPFoo',     'PPFoo\('+Match_Pointer,       skPointer, 'PPFoo', []);
+  AddFmtDef('ArgPPFoo^',    'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  []);
+  AddFmtDef('@ArgPPFoo',    '\^PPFoo\('+Match_Pointer,      skPointer, '^PPFoo', []);
+  AddFmtDef('ArgPPFoo^^',   Match_ArgTFoo1,                skClass,   'TFoo',  []);
 
 
-  Add('ArgTFoo.ValueInt',     wdfDefault,  '^-11$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
-  Add('ArgPFoo^.ValueInt',    wdfDefault,  '^31$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
+  AddFmtDef('VArgTFoo',     Match_ArgTFoo,                 skClass,   'TFoo',  []);
+  AddFmtDef('@VArgTFoo',    '(P|\^T)Foo\('+Match_Pointer,  skPointer, '(P|\^T)Foo',  [fTpMtch]);
+  AddFmtDef('(@VArgTFoo)^',   Match_ArgTFoo,                 skClass,   'TFoo',  []);
+
+  AddFmtDef('VArgPFoo',     'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  []);
+  AddFmtDef('VArgPFoo^' ,   Match_ArgTFoo1,                skClass,   'TFoo',  [fnoDwrf]);
+  AddFmtDef('@VArgPFoo',    '(P|\^)PFoo\('+Match_Pointer,  skPointer, '(P|\^)PFoo',  [fTpMtch]);
+
+  AddFmtDef('VArgPPFoo',    'PPFoo\('+Match_Pointer,       skPointer, 'PPFoo', []);
+  AddFmtDef('VArgPPFoo^',   'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  [fnoDwrf]);
+  AddFmtDef('@VArgPPFoo',   '\^PPFoo\('+Match_Pointer,      skPointer, '^PPFoo', []);
+  AddFmtDef('VArgPPFoo^^',   Match_ArgTFoo1,               skClass,   'TFoo',  [fnoDwrf]);
+
+
+  AddFmtDef('ArgTFoo.ValueInt',       '^-11$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
+  AddFmtDef('ArgPFoo^.ValueInt',      '^31$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
   // GDB automatically derefs the pointer
-  //Add('ArgPFoo.ValueInt',     wdfDefault,  'error',            skSimple,   '',  []);
-  Add('ArgPPFoo^^.ValueInt',  wdfDefault,  '^31$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
-  //Add('ArgPPFoo.ValueInt',     wdfDefault,  'error',            skSimple,   '',  []);
+  //AddFmtDef('ArgPFoo.ValueInt',       'error',            skSimple,   '',  []);
+  AddFmtDef('ArgPPFoo^^.ValueInt',    '^31$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
+  //AddFmtDef('ArgPPFoo.ValueInt',       'error',            skSimple,   '',  []);
 
-  Add('VArgTFoo.ValueInt',    wdfDefault,  '^-11$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
-  Add('VArgPFoo^.ValueInt',   wdfDefault,  '^31$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
-  //Add('VArgPFoo.ValueInt',    wdfDefault,  'error',            skSimple,   '',  []);
-  Add('VArgPPFoo^^.ValueInt', wdfDefault,  '^31$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
-  //Add('VArgPPFoo.ValueInt',    wdfDefault,  'error',            skSimple,   '',  []);
+  AddFmtDef('VArgTFoo.ValueInt',      '^-11$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
+  AddFmtDef('VArgPFoo^.ValueInt',     '^31$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
+  //AddFmtDef('VArgPFoo.ValueInt',      'error',            skSimple,   '',  []);
+  AddFmtDef('VArgPPFoo^^.ValueInt',   '^31$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
+  //AddFmtDef('VArgPPFoo.ValueInt',      'error',            skSimple,   '',  []);
 
 
   Add('ArgTFoo',    wdfPointer,  Match_Pointer,                           skClass,   'TFoo',  []);
@@ -356,54 +412,54 @@ begin
 
   (*
 
-  Add('ArgTSamePFoo',      wdfDefault,  '',      sk,      'TSamePFoo', []);
-  Add('VArgTSamePFoo',      wdfDefault,  '',      sk,      'TSamePFoo', []);
-  Add('ArgTNewPFoo',      wdfDefault,  '',      sk,      'TNewPFoo', []);
-  Add('VArgTNewPFoo',      wdfDefault,  '',      sk,      'TNewPFoo', []);
+  AddFmtDef('ArgTSamePFoo',        '',      sk,      'TSamePFoo', []);
+  AddFmtDef('VArgTSamePFoo',        '',      sk,      'TSamePFoo', []);
+  AddFmtDef('ArgTNewPFoo',        '',      sk,      'TNewPFoo', []);
+  AddFmtDef('VArgTNewPFoo',        '',      sk,      'TNewPFoo', []);
 
-  Add('ArgTSameFoo',      wdfDefault,  '',      sk,      'TSameFoo', []);
-  Add('VArgTSameFoo',      wdfDefault,  '',      sk,      'TSameFoo', []);
-  Add('ArgTNewFoo',      wdfDefault,  '',      sk,      'TNewFoo', []);
-  Add('VArgTNewFoo',      wdfDefault,  '',      sk,      'TNewFoo', []);
-  Add('ArgPNewFoo',      wdfDefault,  '',      sk,      'PNewFoo', []);
-  Add('VArgPNewFoo',      wdfDefault,  '',      sk,      'PNewFoo', []);
+  AddFmtDef('ArgTSameFoo',        '',      sk,      'TSameFoo', []);
+  AddFmtDef('VArgTSameFoo',        '',      sk,      'TSameFoo', []);
+  AddFmtDef('ArgTNewFoo',        '',      sk,      'TNewFoo', []);
+  AddFmtDef('VArgTNewFoo',        '',      sk,      'TNewFoo', []);
+  AddFmtDef('ArgPNewFoo',        '',      sk,      'PNewFoo', []);
+  AddFmtDef('VArgPNewFoo',        '',      sk,      'PNewFoo', []);
 
     { ClassesTyps }
-  Add('ArgTFooClass',      wdfDefault,  '',      sk,      'TFooClass', []);
-  Add('VArgTFooClass',      wdfDefault,  '',      sk,      'TFooClass', []);
-  Add('ArgPFooClass',      wdfDefault,  '',      sk,      'PFooClass', []);
-  Add('VArgPFooClass',      wdfDefault,  '',      sk,      'PFooClass', []);
-  Add('ArgPPFooClass',      wdfDefault,  '',      sk,      'PPFooClass', []);
-  Add('VArgPPFooClass',      wdfDefault,  '',      sk,      'PPFooClass', []);
-  Add('ArgTNewFooClass',      wdfDefault,  '',      sk,      'TNewFooClass', []);
-  Add('VArgTNewFooClass',      wdfDefault,  '',      sk,      'TNewFooClass', []);
-  Add('ArgPNewFooClass',      wdfDefault,  '',      sk,      'PNewFooClass', []);
-  Add('VArgPNewFooClass',      wdfDefault,  '',      sk,      'PNewFooClass', []);
+  AddFmtDef('ArgTFooClass',        '',      sk,      'TFooClass', []);
+  AddFmtDef('VArgTFooClass',        '',      sk,      'TFooClass', []);
+  AddFmtDef('ArgPFooClass',        '',      sk,      'PFooClass', []);
+  AddFmtDef('VArgPFooClass',        '',      sk,      'PFooClass', []);
+  AddFmtDef('ArgPPFooClass',        '',      sk,      'PPFooClass', []);
+  AddFmtDef('VArgPPFooClass',        '',      sk,      'PPFooClass', []);
+  AddFmtDef('ArgTNewFooClass',        '',      sk,      'TNewFooClass', []);
+  AddFmtDef('VArgTNewFooClass',        '',      sk,      'TNewFooClass', []);
+  AddFmtDef('ArgPNewFooClass',        '',      sk,      'PNewFooClass', []);
+  AddFmtDef('VArgPNewFooClass',        '',      sk,      'PNewFooClass', []);
   *)
 
   { Compare Objects }
   // TODO: not working in Dwarf3
-  Add('ArgTFoo=ArgTFoo',      wdfDefault,  'True',         skSimple,      'bool', []);
-  Add('not(ArgTFoo=ArgTFoo)', wdfDefault,  'False',        skSimple,      'bool', []);
-  Add('VArgTFoo=VArgTFoo',    wdfDefault,  'True',         skSimple,      'bool', []);
-  Add('ArgTFoo=VArgTFoo',     wdfDefault,  'True',         skSimple,      'bool', []);
-  Add('ArgTFoo=ArgPFoo',      wdfDefault,  'False',        skSimple,      'bool', []);
-  Add('ArgTFoo=ArgPFoo^',     wdfDefault,  'False',        skSimple,      'bool', []);
-  Add('ArgPFoo=ArgPPFoo^',    wdfDefault,  'True',         skSimple,      'bool', []);
+  AddFmtDef('ArgTFoo=ArgTFoo',        'True',         skSimple,      'bool', []);
+  AddFmtDef('not(ArgTFoo=ArgTFoo)',   'False',        skSimple,      'bool', []);
+  AddFmtDef('VArgTFoo=VArgTFoo',      'True',         skSimple,      'bool', []);
+  AddFmtDef('ArgTFoo=VArgTFoo',       'True',         skSimple,      'bool', []);
+  AddFmtDef('ArgTFoo=ArgPFoo',        'False',        skSimple,      'bool', []);
+  AddFmtDef('ArgTFoo=ArgPFoo^',       'False',        skSimple,      'bool', []);
+  AddFmtDef('ArgPFoo=ArgPPFoo^',      'True',         skSimple,      'bool', []);
 
-  Add('@ArgTFoo=PVarTFoo',    wdfDefault,  'True',         skSimple,      'bool', []);
-  Add('@VArgTFoo=PVarTFoo',   wdfDefault,  'False',        skSimple,      'bool', []);
+  AddFmtDef('@ArgTFoo=PVarTFoo',      'True',         skSimple,      'bool', []);
+  AddFmtDef('@VArgTFoo=PVarTFoo',     'False',        skSimple,      'bool', []);
 
-  //Add('ArgTFoo<>ArgTFoo',     wdfDefault,  'False',        skSimple,      'bool', []);
-  //Add('ArgTFoo<>ArgPFoo^',    wdfDefault,  'True',         skSimple,      'bool', []);
+  //AddFmtDef('ArgTFoo<>ArgTFoo',       'False',        skSimple,      'bool', []);
+  //AddFmtDef('ArgTFoo<>ArgPFoo^',      'True',         skSimple,      'bool', []);
 
-  Add('ArgTFoo=0',          wdfDefault,  'False',          skSimple,      'bool', []);
-  Add('not(ArgTFoo=0)',     wdfDefault,  'True',           skSimple,      'bool', []);
-  //Add('ArgTFoo<>0',         wdfDefault,  'True',           skSimple,      'bool', []);
+  AddFmtDef('ArgTFoo=0',            'False',          skSimple,      'bool', []);
+  AddFmtDef('not(ArgTFoo=0)',       'True',           skSimple,      'bool', []);
+  //AddFmtDef('ArgTFoo<>0',           'True',           skSimple,      'bool', []);
 
-  //Add('ArgTFoo=nil',          wdfDefault,  'False',        skSimple,      'bool', []);
-  //Add('not(ArgTFoo=nil)',     wdfDefault,  'True',         skSimple,      'bool', []);
-  //Add('ArgTFoo<>nil',         wdfDefault,  'True',         skSimple,      'bool', []);
+  //AddFmtDef('ArgTFoo=nil',            'False',        skSimple,      'bool', []);
+  //AddFmtDef('not(ArgTFoo=nil)',       'True',         skSimple,      'bool', []);
+  //AddFmtDef('ArgTFoo<>nil',           'True',         skSimple,      'bool', []);
 
   {%endregion    * Classes * }
 
@@ -411,127 +467,211 @@ begin
     { strings }
     // todo: some skPOINTER should be skSimple
   // ArgAnsiString
-  r:=Add('ArgAnsiString',         wdfDefault,  '''Ansi''$',        skPOINTER,   'AnsiString', []);
-                         UpdRes(r, stDwarf3,   '''Ansi''$',        skSimple,    'AnsiString', []);
-  r:=Add('VArgAnsiString',        wdfDefault,  '''Ansi 2''$',      skPOINTER,   'AnsiString', []);
-                         UpdRes(r, stDwarf3,   '''Ansi 2''$',      skSimple,    'AnsiString', []);
-  r:=Add('ArgTMyAnsiString',      wdfDefault,  '''MyAnsi''$',      skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
-                         UpdRes(r, stDwarf3,   '''MyAnsi''$',      skSimple,   '^(TMy)?AnsiString$', [fTpMtch]);
-  r:=Add('VArgTMyAnsiString',     wdfDefault,  '''MyAnsi 2''$',    skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
-                         UpdRes(r, stDwarf3,   '''MyAnsi 2''$',    skSimple,   '^(TMy)?AnsiString$', [fTpMtch]);
-  r:=Add('ArgPMyAnsiString',      wdfDefault,  Match_Pointer,      skPointer,   'PMyAnsiString', []);
-                         UpdRes(r, stStabs,    MatchPointer,       skPointer,   '^(PMyAnsiString|PPChar)$', [fTpMtch]);
-  r:=Add('VArgPMyAnsiString',     wdfDefault,  Match_Pointer,      skPointer,   'PMyAnsiString', []);
-                         UpdRes(r, stStabs,    MatchPointer,       skPointer,   '^(PMyAnsiString|PPChar)$', [fTpMtch]);
-  r:=Add('ArgPMyAnsiString^',     wdfDefault,  '''MyAnsi P''$',    skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
-                         UpdRes(r, stDwarf3,   '''MyAnsi P''$',    skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
-  r:=Add('VArgPMyAnsiString^',    wdfDefault,  '''MyAnsi P2''$',   skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf]);
-                         UpdRes(r, stDwarf3,   '''MyAnsi P2''$',    skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
-  r:=Add('ArgPPMyAnsiString',     wdfDefault,  Match_Pointer,      skPointer,   'PPMyAnsiString', []);
-  r:=Add('VArgPPMyAnsiString',    wdfDefault,  Match_Pointer,      skPointer,   'PPMyAnsiString', []);
-  r:=Add('ArgPPMyAnsiString^',    wdfDefault,  Match_Pointer,      skPointer,   'PMyAnsiString', []);
-                         UpdRes(r, stStabs,    MatchPointer,       skPointer,   '^(PMyAnsiString|PPChar)$', [fTpMtch]);
-  r:=Add('VArgPPMyAnsiString^',   wdfDefault,  Match_Pointer,      skPointer,   'PMyAnsiString', [fnoDwrf]);
-                         UpdRes(r, stStabs,    MatchPointer,       skPointer,   '^(PMyAnsiString|PPChar)$', [fTpMtch]);
-  r:=Add('ArgPPMyAnsiString^^',   wdfDefault,  '''MyAnsi P''$',    skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
-                         UpdRes(r, stDwarf3,   '''MyAnsi P''$',    skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
-  r:=Add('VArgPPMyAnsiString^^',  wdfDefault,  '''MyAnsi P2''$',   skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf]);
-                         UpdRes(r, stDwarf3,   '''MyAnsi P2''$',   skPOINTER,   '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=AddStringFmtDef('ArgAnsiString',          '''Ansi''$',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgAnsiString',         '''Ansi 2''$',       'AnsiString', []);
+  r:=AddStringFmtDef('ArgTMyAnsiString',       '''MyAnsi''$',       '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=AddStringFmtDef('VArgTMyAnsiString',      '''MyAnsi 2''$',     '^(TMy)?AnsiString$', [fTpMtch]);
+
+  r:=AddFmtDef('ArgPMyAnsiString',     MatchPointer, skPointer,     'PMyAnsiString', []);
+     UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+  r:=AddFmtDef('VArgPMyAnsiString',    MatchPointer,  skPointer,    'PMyAnsiString', []);
+     UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+  r:=AddStringFmtDef('ArgPMyAnsiString^',      '''MyAnsi P''$',     '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=AddStringFmtDef('VArgPMyAnsiString^',     '''MyAnsi P2''$',    '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf2]);
+
+  r:=AddFmtDef('ArgPPMyAnsiString',    MatchPointer,  skPointer,    'PPMyAnsiString', []);
+  r:=AddFmtDef('VArgPPMyAnsiString',   MatchPointer,  skPointer,    'PPMyAnsiString', []);
+  r:=AddFmtDef('ArgPPMyAnsiString^',   MatchPointer,  skPointer,    'PMyAnsiString', []);
+     UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+  r:=AddFmtDef('VArgPPMyAnsiString^',  MatchPointer,  skPointer,    'PMyAnsiString', [fnoDwrf2]);
+     UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+  r:=AddStringFmtDef('ArgPPMyAnsiString^^',    '''MyAnsi P''$',     '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=AddStringFmtDef('VArgPPMyAnsiString^^',   '''MyAnsi P2''$',    '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf2]);
 
 
-  r:=Add('ArgTNewAnsiString',     wdfDefault,  '''NewAnsi''$',     skPOINTER,   'TNewAnsiString', []);
-                         UpdRes(r, stStabs,    '''NewAnsi''$',     skPOINTER,   '(TNew)?AnsiString', [fTpMtch]);
-                         UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    'TNewAnsiString', []);
-  r:=Add('VArgTNewAnsiString',    wdfDefault,  '''NewAnsi 2''$',   skPOINTER,   'TNewAnsiString', []);
-                         UpdRes(r, stStabs,    '''NewAnsi 2''$',   skPOINTER,   '(TNew)?AnsiString', [fTpMtch]);
-                         UpdRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    'TNewAnsiString', []);
-  r:=Add('ArgPNewAnsiString',     wdfDefault,  MatchPointer,       skPointer,   'PNewAnsiString', []);
-                         UpdRes(r, stStabs,    MatchPointer,       skPointer,   '(\^|PNew|P)AnsiString|PPChar', [fTpMtch]);
-  r:=Add('VArgPNewAnsiString',    wdfDefault,  MatchPointer,       skPointer,   'PNewAnsiString', []);
-                         UpdRes(r, stStabs,    MatchPointer,       skPointer,   '(\^|PNew|P)AnsiString|PPChar', [fTpMtch]);
-  r:=Add('ArgPNewAnsiString^',    wdfDefault,  '''NewAnsi P''',    skPOINTER,   'TNewAnsiString', []);
-                         UpdRes(r, stStabs,    '''NewAnsi P''$',   skPOINTER,   '(TNew)?AnsiString', [fTpMtch]);
-                         UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    'TNewAnsiString', []);
-  r:=Add('VArgPNewAnsiString^',   wdfDefault,  '''NewAnsi P2''',   skPOINTER,   'TNewAnsiString', [fnoDwrf]);
-                         UpdRes(r, stStabs,    '''NewAnsi P2''$',  skPOINTER,   '(TNew)?AnsiString', [fTpMtch]);
-                         UpdRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    'TNewAnsiString', []);
+  r:=AddStringFmtDef('ArgTNewAnsiString',      '''NewAnsi''$',      'TNewAnsiString', []);
+     UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
+  r:=AddStringFmtDef('VArgTNewAnsiString',     '''NewAnsi 2''$',    'TNewAnsiString', []);
+     UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
+
+  r:=AddFmtDef('ArgPNewAnsiString',    MatchPointer,  skPointer,    'PNewAnsiString', []);
+                    UpdRes(r, stStabs,                              '(\^|PNew|P)AnsiString|PPChar', [fTpMtch]);
+  r:=AddFmtDef('VArgPNewAnsiString',   MatchPointer,  skPointer,    'PNewAnsiString', []);
+                    UpdRes(r, stStabs,                              '(\^|PNew|P)AnsiString|PPChar', [fTpMtch]);
+  r:=AddStringFmtDef('ArgPNewAnsiString^',      '''NewAnsi P''$',   'TNewAnsiString', []);
+     UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
+  r:=AddStringFmtDef('VArgPNewAnsiString^',     '''NewAnsi P2''$',  'TNewAnsiString', [fnoDwrf]);
+     UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
 
 
   // typecasts
-  r:=Add('AnsiString(ArgTMyAnsiString)',   wdfDefault,
-                                               '''MyAnsi''$',      skPOINTER,   'AnsiString|\^char', [fTpMtch]);
-                         UpdRes(r, stDwarf3,   '''MyAnsi''$',      skSimple,    'AnsiString', []);
+  r:=AddStringFmtDef('AnsiString(ArgTMyAnsiString)',   '''MyAnsi''$',      'AnsiString|\^char', [fTpMtch]);
+     UpdRes(r, stDwarf3,                                                   'AnsiString', []);
+  r:=AddStringFmtDef('AnsiString(VArgTMyAnsiString)',  '''MyAnsi 2''$',    'AnsiString|\^char', [fTpMtch]);
+     UpdRes(r, stDwarf3,                                                   'AnsiString', []);
 
-  r:=Add('PChar(ArgTMyAnsiString)',   wdfDefault,
+  r:=AddFmtDef('PMyAnsiString(ArgPMyAnsiString)',     MatchPointer, skPointer,   'PMyAnsiString', []);
+     UpdRes(r, stStabs,                                                          '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+  r:=AddFmtDef('PMyAnsiString(VArgPMyAnsiString)',    MatchPointer,  skPointer,  'PMyAnsiString', []);
+     UpdRes(r, stStabs,                                                          '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+// TODO,, IDE derefs with dwarf3
+  r:=AddFmtDef('^AnsiString(ArgPMyAnsiString)',       MatchPointer, skPointer,   '^AnsiString', [fnoDwrf3]);
+     UpdRes(r, stStabs,                                                          '^(\^AnsiString|PPChar)$', [fTpMtch]);
+  r:=AddFmtDef('^AnsiString(VArgPMyAnsiString)',      MatchPointer,  skPointer,  '^AnsiString', [fnoDwrf3]);
+     UpdRes(r, stStabs,                                                          '^(\^AnsiString|PPChar)$', [fTpMtch]);
+
+  r:=AddStringFmtDef('AnsiString(ArgPMyAnsiString^)',  '''MyAnsi P''$',     '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=AddStringFmtDef('AnsiString(VArgPMyAnsiString^)', '''MyAnsi P2''$',    '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf2]);
+  r:=AddStringFmtDef('PMyAnsiString(ArgPMyAnsiString)^',  '''MyAnsi P''$',  '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=AddStringFmtDef('PMyAnsiString(VArgPMyAnsiString)^', '''MyAnsi P2''$', '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf2]);
+
+
+  r:=AddFmtDef('PChar(ArgTMyAnsiString)',
                                                '''MyAnsi''$',      skPOINTER,   '(\^|p)char', [fTpMtch]);
-                         UpdRes(r, stStabs,    '''MyAnsi''$',      skPOINTER,   'pchar|AnsiString', [fTpMtch]);
+                    UpdRes(r, stStabs,    '''MyAnsi''$',      skPOINTER,   'pchar|AnsiString', [fTpMtch]);
                          //UpdRes(r, stDwarf3,   '''MyAnsi''$',      skSimple,    'AnsiString', []);
 
   // accessing len/refcount
-  r:=Add('^longint(ArgTMyAnsiString)[-1]',   wdfDefault,
+  r:=AddFmtDef('^longint(ArgTMyAnsiString)[-1]',
                                                '6',      skSimple,   'longint', []);
+  r:=AddFmtDef('^longint(VArgTMyAnsiString)[-1]',
+                                               '8',      skSimple,   'longint', []);
 
   // accessing char
   // TODO: only works with dwarf 3
-  r:=Add('ArgTMyAnsiString[1]',    wdfDefault,  '.',      skSimple,   'char', []);
-                         UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
-  r:=Add('VArgTMyAnsiString[1]',   wdfDefault,  '.',      skSimple,   'char', []);
-                         UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
-  r:=Add('ArgPMyAnsiString^[1]',   wdfDefault,  '.',      skSimple,   'char', []);
-                         UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
-  r:=Add('VArgPMyAnsiString^[1]',  wdfDefault,  '.',      skSimple,   'char', [fnoDwrf]);
-                         UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+  r:=AddFmtDef('ArgTMyAnsiString[1]',      '.',      skSimple,   'char', []);
+                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+  r:=AddFmtDef('VArgTMyAnsiString[1]',     '.',      skSimple,   'char', []);
+                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+  r:=AddFmtDef('ArgPMyAnsiString^[1]',     '.',      skSimple,   'char', []);
+                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+  r:=AddFmtDef('VArgPMyAnsiString^[1]',    '.',      skSimple,   'char', [fnoDwrf]);
+                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+  r:=AddFmtDef('AnsiString(ArgTMyAnsiString)[1]',      '.',      skSimple,   'char', []);
+                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+  r:=AddFmtDef('AnsiString(VArgTMyAnsiString)[1]',     '.',      skSimple,   'char', []);
+                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+
+  // accessing char, after typecast
+  r:=AddFmtDef('AnsiString(ArgTMyAnsiString)[1]',      '.',      skSimple,   'char', []);
+                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
 
 
-  //r:=Add('ArgTNewAnsiString',     wdfDefault,  '''NewAnsi''$',     skPOINTER,   '(TNew)?AnsiString', []);
-  //                       UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    '(TNew)?AnsiString', [fTpMtch]);
-  //r:=Add('VArgTNewAnsiString',    wdfDefault,  '''NewAnsi 2''$',   skPOINTER,   '(TNew)?AnsiString', []);
-  //                       UpdRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    '(TNew)?AnsiString', [fTpMtch]);
-  //r:=Add('ArgPNewAnsiString',     wdfDefault,  MatchPointer,       skPointer,   '(\^|PNew|P)AnsiString', []);
-  //r:=Add('VArgPNewAnsiString',    wdfDefault,  MatchPointer,       skPointer,   '(\^|PNew|P)AnsiString', []);
-  //r:=Add('ArgPNewAnsiString^',    wdfDefault,  '''NewAnsi P''',    skPOINTER,   '(TNew)?AnsiString', []);
-  //                       UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    '(TNew)?AnsiString', [fTpMtch]);
-  //r:=Add('VArgPNewAnsiString^',   wdfDefault,  '''NewAnsi P2''',   skPOINTER,   '(TNew)?AnsiString', []);
-  //                       UpdRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    '(TNew)?AnsiString', [fTpMtch]);
+  // string in array
+  r:=AddStringFmtDef('ArgTMyAnsiStringDArray[0]',   '''DArray1 Str0''$',         'AnsiString', []);
+  r:=AddStringFmtDef('ArgTMyAnsiStringDArray[1]',   '''DArray1 Str1''$',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTMyAnsiStringDArray[0]',  '''DArray2 Str0''$',         'AnsiString', [fnoDwrf2, fnoStabs]);
+  r:=AddStringFmtDef('VArgTMyAnsiStringDArray[1]',  '''DArray2 Str1''$',         'AnsiString', [fnoDwrf2, fnoStabs]);
+
+  r:=AddFmtDef('ArgTMyAnsiStringDArray[0][1]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
+     UpdRes(r, stDwarf3,                         '''D''$', skSimple);
+  r:=AddFmtDef('ArgTMyAnsiStringDArray[0][12]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
+     UpdRes(r, stDwarf3,                         '''0''$', skSimple);
+  r:=AddFmtDef('ArgTMyAnsiStringDArray[1][1]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
+     UpdRes(r, stDwarf3,                         '''D''$', skSimple);
+  r:=AddFmtDef('ArgTMyAnsiStringDArray[1][12]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
+     UpdRes(r, stDwarf3,                         '''1''$', skSimple);
+
+  r:=AddFmtDef('VArgTMyAnsiStringDArray[0][1]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
+     UpdRes(r, stDwarf3,                         '''D''$', skSimple);
+  r:=AddFmtDef('VArgTMyAnsiStringDArray[0][12]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
+     UpdRes(r, stDwarf3,                         '''0''$', skSimple);
+  r:=AddFmtDef('VArgTMyAnsiStringDArray[1][1]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
+     UpdRes(r, stDwarf3,                         '''D''$', skSimple);
+  r:=AddFmtDef('VArgTMyAnsiStringDArray[1][12]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
+     UpdRes(r, stDwarf3,                         '''1''$', skSimple);
+
+  r:=AddStringFmtDef('ArgTMyAnsiStringSArray[3]',   '''SArray1 Str3''$',         'AnsiString', []);
+  r:=AddStringFmtDef('ArgTMyAnsiStringSArray[4]',   '''SArray1 Str4''$',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTMyAnsiStringSArray[3]',  '''SArray2 Str3''$',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTMyAnsiStringSArray[4]',  '''SArray2 Str4''$',         'AnsiString', []);
+
+  r:=AddFmtDef('ArgTMyAnsiStringSArray[3][1]',   '.$',  skSimple,    'char', []);
+     UpdRes(r, stDwarf3,                         '''S''$', skSimple);
+  r:=AddFmtDef('ArgTMyAnsiStringSArray[3][12]',   '.$',  skSimple,    'char', []);
+     UpdRes(r, stDwarf3,                         '''0''$', skSimple);
+  r:=AddFmtDef('ArgTMyAnsiStringSArray[4][1]',   '.$',  skSimple,    'char', []);
+     UpdRes(r, stDwarf3,                         '''S''$', skSimple);
+  r:=AddFmtDef('ArgTMyAnsiStringSArray[4][12]',   '.$',  skSimple,    'char', []);
+     UpdRes(r, stDwarf3,                         '''1''$', skSimple);
+
+
+  // string in obj
+  r:=AddStringFmtDef('ArgTStringHolderObj.FTMyAnsiString',   '''Obj1 MyAnsi''$',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTStringHolderObj.FTMyAnsiString',  '''Obj2 MyAnsi''$',         'AnsiString', []);
+
+  r:=AddFmtDef('ArgTStringHolderObj.FTMyAnsiString[1]',   '.$',  skSimple,    'char', []);
+     UpdRes(r, stDwarf3,                         '''O''$', skSimple);
+  r:=AddFmtDef('VArgTStringHolderObj.FTMyAnsiString[1]',   '.$',  skSimple,    'char', []);
+     UpdRes(r, stDwarf3,                         '''O''$', skSimple);
+
+  // string in rec
+  r:=AddStringFmtDef('ArgTStringHolderRec.FTMyAnsiString',   '''Rec1 MyAnsi''$',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTStringHolderRec.FTMyAnsiString',  '''Rec2 MyAnsi''$',         'AnsiString', []);
+
+  r:=AddFmtDef('ArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skSimple,    'char', []);
+     UpdRes(r, stDwarf3,                         '''R''$', skSimple);
+  r:=AddFmtDef('VArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skSimple,    'char', []);
+     UpdRes(r, stDwarf3,                         '''R''$', skSimple);
+
+  //r:=AddFmtDef('ArgTNewAnsiString',       '''NewAnsi''$',     skPOINTER,   '(TNew)?AnsiString', []);
+  //                  UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    '(TNew)?AnsiString', [fTpMtch]);
+  //r:=AddFmtDef('VArgTNewAnsiString',      '''NewAnsi 2''$',   skPOINTER,   '(TNew)?AnsiString', []);
+  //                  UpdRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    '(TNew)?AnsiString', [fTpMtch]);
+  //r:=AddFmtDef('ArgPNewAnsiString',       MatchPointer,       skPointer,   '(\^|PNew|P)AnsiString', []);
+  //r:=AddFmtDef('VArgPNewAnsiString',      MatchPointer,       skPointer,   '(\^|PNew|P)AnsiString', []);
+  //r:=AddFmtDef('ArgPNewAnsiString^',      '''NewAnsi P''',    skPOINTER,   '(TNew)?AnsiString', []);
+  //                  UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    '(TNew)?AnsiString', [fTpMtch]);
+  //r:=AddFmtDef('VArgPNewAnsiString^',     '''NewAnsi P2''',   skPOINTER,   '(TNew)?AnsiString', []);
+  //                  UpdRes(r, stDwarf3,   '''NewAnsi 2''$',   skSimple,    '(TNew)?AnsiString', [fTpMtch]);
 
 
 
-  Add('ArgTMyShortString',      wdfDefault,  '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
-  Add('VArgTMyShortString',     wdfDefault,  '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
-  Add('ArgPMyShortString',      wdfDefault,  Match_Pointer,      skPointer,     'P(My)?ShortString', [fTpMtch]);
-  Add('VArgPMyShortString',     wdfDefault,  Match_Pointer,      skPointer,     'P(My)?ShortString', [fTpMtch]);
-  Add('ArgPMyShortString^',      wdfDefault,  '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
-  Add('VArgPMyShortString^',     wdfDefault,  '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch, fnoDwrf]);
+  AddFmtDef('ArgTMyShortString',        '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
+  AddFmtDef('VArgTMyShortString',       '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
+  AddFmtDef('ArgPMyShortString',        Match_Pointer,      skPointer,     'P(My)?ShortString', [fTpMtch]);
+  AddFmtDef('VArgPMyShortString',       Match_Pointer,      skPointer,     'P(My)?ShortString', [fTpMtch]);
+  AddFmtDef('ArgPMyShortString^',        '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
+  AddFmtDef('VArgPMyShortString^',       '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch, fnoDwrf]);
+
+  // string in obj
+  r:=AddFmtDef('ArgTStringHolderObj.FTMyShortString',   '''Obj1 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch]);
+  r:=AddFmtDef('VArgTStringHolderObj.FTMyShortString',  '''Obj2 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch]);
+
+  // string in rec
+  r:=AddFmtDef('ArgTStringHolderRec.FTMyShortString',   '''Rec1 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch]);
+  r:=AddFmtDef('VArgTStringHolderRec.FTMyShortString',  '''Rec2 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch]);
+
 
   (*
-  Add('ArgPPMyShortString',      wdfDefault,  '',      sk,      'PPMyShortString', []);
-  Add('VArgPPMyShortString',      wdfDefault,  '',      sk,      'PPMyShortString', []);
-  Add('ArgTNewhortString',      wdfDefault,  '',      sk,      'TNewhortString', []);
-  Add('VArgTNewhortString',      wdfDefault,  '',      sk,      'TNewhortString', []);
-  Add('ArgPNewhortString',      wdfDefault,  '',      sk,      'PNewhortString', []);
-  Add('VArgPNewhortString',      wdfDefault,  '',      sk,      'PNewhortString', []);
+  AddFmtDef('ArgPPMyShortString',        '',      sk,      'PPMyShortString', []);
+  AddFmtDef('VArgPPMyShortString',        '',      sk,      'PPMyShortString', []);
+  AddFmtDef('ArgTNewhortString',        '',      sk,      'TNewhortString', []);
+  AddFmtDef('VArgTNewhortString',        '',      sk,      'TNewhortString', []);
+  AddFmtDef('ArgPNewhortString',        '',      sk,      'PNewhortString', []);
+  AddFmtDef('VArgPNewhortString',        '',      sk,      'PNewhortString', []);
   *)
 
   // gdb 6.7.5 does not show the text
-  Add('ArgTMyWideString',      wdfDefault,  '(''wide''$)|(widestring\(\$.*\))',      skPointer,      '^(TMy)?WideString$', [fTpMtch]);
-  Add('VArgTMyWideString',     wdfDefault,  '(''wide''$)|(widestring\(\$.*\))',      skPointer,      '^(TMy)?WideString$', [fTpMtch]);
+  AddFmtDef('ArgTMyWideString',        '(''wide''$)|(widestring\(\$.*\))',      skPointer,      '^(TMy)?WideString$', [fTpMtch]);
+  AddFmtDef('VArgTMyWideString',       '(''wide''$)|(widestring\(\$.*\))',      skPointer,      '^(TMy)?WideString$', [fTpMtch]);
   (*
-  Add('ArgPMyWideString',      wdfDefault,  '',      sk,      'PMyWideString', []);
-  Add('VArgPMyWideString',      wdfDefault,  '',      sk,      'PMyWideString', []);
-  Add('ArgPPMyWideString',      wdfDefault,  '',      sk,      'PPMyWideString', []);
-  Add('VArgPPMyWideString',      wdfDefault,  '',      sk,      'PPMyWideString', []);
+  AddFmtDef('ArgPMyWideString',        '',      sk,      'PMyWideString', []);
+  AddFmtDef('VArgPMyWideString',        '',      sk,      'PMyWideString', []);
+  AddFmtDef('ArgPPMyWideString',        '',      sk,      'PPMyWideString', []);
+  AddFmtDef('VArgPPMyWideString',        '',      sk,      'PPMyWideString', []);
 
-  Add('ArgTNewWideString',      wdfDefault,  '',      sk,      'TNewWideString', []);
-  Add('VArgTNewWideString',      wdfDefault,  '',      sk,      'TNewWideString', []);
-  Add('ArgPNewWideString',      wdfDefault,  '',      sk,      'PNewWideString', []);
-  Add('VArgPNewWideString',      wdfDefault,  '',      sk,      'PNewWideString', []);
+  AddFmtDef('ArgTNewWideString',        '',      sk,      'TNewWideString', []);
+  AddFmtDef('VArgTNewWideString',        '',      sk,      'TNewWideString', []);
+  AddFmtDef('ArgPNewWideString',        '',      sk,      'PNewWideString', []);
+  AddFmtDef('VArgPNewWideString',        '',      sk,      'PNewWideString', []);
 
-  Add('ArgTMyString10',      wdfDefault,  '',      sk,      'TMyString10', []);
-  Add('VArgTMyString10',      wdfDefault,  '',      sk,      'TMyString10', []);
-  Add('ArgPMyString10',      wdfDefault,  '',      sk,      'PMyString10', []);
-  Add('VArgPMyString10',      wdfDefault,  '',      sk,      'PMyString10', []);
-  Add('ArgPPMyString10',      wdfDefault,  '',      sk,      'PPMyString10', []);
-  Add('VArgPPMyString10',      wdfDefault,  '',      sk,      'PPMyString10', []);
+  AddFmtDef('ArgTMyString10',        '',      sk,      'TMyString10', []);
+  AddFmtDef('VArgTMyString10',        '',      sk,      'TMyString10', []);
+  AddFmtDef('ArgPMyString10',        '',      sk,      'PMyString10', []);
+  AddFmtDef('VArgPMyString10',        '',      sk,      'PMyString10', []);
+  AddFmtDef('ArgPPMyString10',        '',      sk,      'PPMyString10', []);
+  AddFmtDef('VArgPPMyString10',        '',      sk,      'PPMyString10', []);
   *)
 
 
@@ -541,151 +681,151 @@ begin
 
   {%region    * Simple * }
 
-  Add('ArgByte',      wdfDefault,  '^25$',      skSimple,      'Byte', []);
-  Add('VArgByte',     wdfDefault,  '^25$',      skSimple,      'Byte', []);
-  Add('ArgWord',      wdfDefault,  '^26$',      skSimple,      'Word', []);
-  Add('VArgWord',     wdfDefault,  '^26$',      skSimple,      'Word', []);
-  Add('ArgLongWord',  wdfDefault,  '^27$',      skSimple,      'LongWord', []);
-  Add('VArgLongWord', wdfDefault,  '^27$',      skSimple,      'LongWord', []);
-  Add('ArgQWord',     wdfDefault,  '^28$',      skSimple,      'QWord', []);
-  Add('VArgQWord',    wdfDefault,  '^28$',      skSimple,      'QWord', []);
+  AddFmtDef('ArgByte',        '^25$',      skSimple,      'Byte', []);
+  AddFmtDef('VArgByte',       '^25$',      skSimple,      'Byte', []);
+  AddFmtDef('ArgWord',        '^26$',      skSimple,      'Word', []);
+  AddFmtDef('VArgWord',       '^26$',      skSimple,      'Word', []);
+  AddFmtDef('ArgLongWord',    '^27$',      skSimple,      'LongWord', []);
+  AddFmtDef('VArgLongWord',   '^27$',      skSimple,      'LongWord', []);
+  AddFmtDef('ArgQWord',       '^28$',      skSimple,      'QWord', []);
+  AddFmtDef('VArgQWord',      '^28$',      skSimple,      'QWord', []);
 
-  Add('ArgShortInt',  wdfDefault,  '^35$',      skSimple,      'ShortInt', []);
-  Add('VArgShortInt', wdfDefault,  '^35$',      skSimple,      'ShortInt', []);
-  Add('ArgSmallInt',  wdfDefault,  '^36$',      skSimple,      'SmallInt', []);
-  Add('VArgSmallInt', wdfDefault,  '^36$',      skSimple,      'SmallInt', []);
-  Add('ArgInt',       wdfDefault,  '^37$',      skSimple,      'Integer|LongInt', [fTpMtch]);
-  Add('VArgInt',      wdfDefault,  '^37$',      skSimple,      'Integer|LongInt', [fTpMtch]);
-  Add('ArgInt64',     wdfDefault,  '^38$',      skSimple,      'Int64', []);
-  Add('VArgInt64',    wdfDefault,  '^38$',      skSimple,      'Int64', []);
+  AddFmtDef('ArgShortInt',    '^35$',      skSimple,      'ShortInt', []);
+  AddFmtDef('VArgShortInt',   '^35$',      skSimple,      'ShortInt', []);
+  AddFmtDef('ArgSmallInt',    '^36$',      skSimple,      'SmallInt', []);
+  AddFmtDef('VArgSmallInt',   '^36$',      skSimple,      'SmallInt', []);
+  AddFmtDef('ArgInt',         '^37$',      skSimple,      'Integer|LongInt', [fTpMtch]);
+  AddFmtDef('VArgInt',        '^37$',      skSimple,      'Integer|LongInt', [fTpMtch]);
+  AddFmtDef('ArgInt64',       '^38$',      skSimple,      'Int64', []);
+  AddFmtDef('VArgInt64',      '^38$',      skSimple,      'Int64', []);
 
-  Add('ArgPointer',      wdfDefault,  Match_Pointer,      skPointer,      'Pointer', []);
-  Add('VArgPointer',     wdfDefault,  Match_Pointer,      skPointer,      'Pointer', []);
+  AddFmtDef('ArgPointer',        Match_Pointer,      skPointer,      'Pointer', []);
+  AddFmtDef('VArgPointer',       Match_Pointer,      skPointer,      'Pointer', []);
   (*
-  Add('ArgPPointer',      wdfDefault,  '',      sk,      'PPointer', []);
-  Add('VArgPPointer',      wdfDefault,  '',      sk,      'PPointer', []);
+  AddFmtDef('ArgPPointer',        '',      sk,      'PPointer', []);
+  AddFmtDef('VArgPPointer',        '',      sk,      'PPointer', []);
   *)
 
-  Add('ArgDouble',       wdfDefault,  '1\.123',      skSimple,      'Double', []);
-  Add('VArgDouble',      wdfDefault,  '1\.123',      skSimple,      'Double', []);
-  Add('ArgExtended',     wdfDefault,  '2\.345',      skSimple,      'Extended|double', [fTpMtch]);
-  Add('VArgExtended',    wdfDefault,  '2\.345',      skSimple,      'Extended|double', [fTpMtch]);
+  AddFmtDef('ArgDouble',         '1\.123',      skSimple,      'Double', []);
+  AddFmtDef('VArgDouble',        '1\.123',      skSimple,      'Double', []);
+  AddFmtDef('ArgExtended',       '2\.345',      skSimple,      'Extended|double', [fTpMtch]);
+  AddFmtDef('VArgExtended',      '2\.345',      skSimple,      'Extended|double', [fTpMtch]);
 
   (*
-  Add('ArgPByte',      wdfDefault,  '',      sk,      'PByte', []);
-  Add('VArgPByte',      wdfDefault,  '',      sk,      'PByte', []);
-  Add('ArgPWord',      wdfDefault,  '',      sk,      'PWord', []);
-  Add('VArgPWord',      wdfDefault,  '',      sk,      'PWord', []);
-  Add('ArgPLongWord',      wdfDefault,  '',      sk,      'PLongWord', []);
-  Add('VArgPLongWord',      wdfDefault,  '',      sk,      'PLongWord', []);
-  Add('ArgPQWord',      wdfDefault,  '',      sk,      'PQWord', []);
-  Add('VArgPQWord',      wdfDefault,  '',      sk,      'PQWord', []);
+  AddFmtDef('ArgPByte',        '',      sk,      'PByte', []);
+  AddFmtDef('VArgPByte',        '',      sk,      'PByte', []);
+  AddFmtDef('ArgPWord',        '',      sk,      'PWord', []);
+  AddFmtDef('VArgPWord',        '',      sk,      'PWord', []);
+  AddFmtDef('ArgPLongWord',        '',      sk,      'PLongWord', []);
+  AddFmtDef('VArgPLongWord',        '',      sk,      'PLongWord', []);
+  AddFmtDef('ArgPQWord',        '',      sk,      'PQWord', []);
+  AddFmtDef('VArgPQWord',        '',      sk,      'PQWord', []);
 
-  Add('ArgPShortInt',      wdfDefault,  '',      sk,      'PShortInt', []);
-  Add('VArgPShortInt',      wdfDefault,  '',      sk,      'PShortInt', []);
-  Add('ArgPSmallInt',      wdfDefault,  '',      sk,      'PSmallInt', []);
-  Add('VArgPSmallInt',      wdfDefault,  '',      sk,      'PSmallInt', []);
-  Add('ArgPInt',      wdfDefault,  '',      sk,      'PInteger', []);
-  Add('VArgPInt',      wdfDefault,  '',      sk,      'PInteger', []);
-  Add('ArgPInt64',      wdfDefault,  '',      sk,      'PInt64', []);
-  Add('VArgPInt64',      wdfDefault,  '',      sk,      'PInt64', []);
+  AddFmtDef('ArgPShortInt',        '',      sk,      'PShortInt', []);
+  AddFmtDef('VArgPShortInt',        '',      sk,      'PShortInt', []);
+  AddFmtDef('ArgPSmallInt',        '',      sk,      'PSmallInt', []);
+  AddFmtDef('VArgPSmallInt',        '',      sk,      'PSmallInt', []);
+  AddFmtDef('ArgPInt',        '',      sk,      'PInteger', []);
+  AddFmtDef('VArgPInt',        '',      sk,      'PInteger', []);
+  AddFmtDef('ArgPInt64',        '',      sk,      'PInt64', []);
+  AddFmtDef('VArgPInt64',        '',      sk,      'PInt64', []);
   *)
   {%endregion    * Simple * }
 
   {%region    * Enum/Set * }
 
-  Add('ArgEnum',       wdfDefault,  '^Two$',                      skEnum,       'TEnum', []);
-  Add('ArgEnumSet',    wdfDefault,  '^\[Two(, ?|\.\.)Three\]$',   skSet,        'TEnumSet', [fnoDwrfNoSet]);
-  Add('ArgSet',        wdfDefault,  '^\[Alpha(, ?|\.\.)Beta\]$',  skSet,        'TSet', [fnoDwrfNoSet]);
+  AddFmtDef('ArgEnum',         '^Two$',                      skEnum,       'TEnum', []);
+  AddFmtDef('ArgEnumSet',      '^\[Two(, ?|\.\.)Three\]$',   skSet,        'TEnumSet', [fnoDwrfNoSet]);
+  AddFmtDef('ArgSet',          '^\[Alpha(, ?|\.\.)Beta\]$',  skSet,        'TSet', [fnoDwrfNoSet]);
 
-  Add('VarEnumA',      wdfDefault,  '^e3$',                       skEnum,       '', []);
+  AddFmtDef('VarEnumA',        '^e3$',                       skEnum,       '', []);
   // maybe typename = "set of TEnum"
-  Add('VarEnumSetA',   wdfDefault,  '^\[Three\]$',                skSet,        '', [fnoDwrfNoSet]);
-  Add('VarSetA',       wdfDefault,  '^\[s2\]$',                   skSet,        '', [fnoDwrfNoSet]);
+  AddFmtDef('VarEnumSetA',     '^\[Three\]$',                skSet,        '', [fnoDwrfNoSet]);
+  AddFmtDef('VarSetA',         '^\[s2\]$',                   skSet,        '', [fnoDwrfNoSet]);
   {%endregion    * Enum/Set * }
 
   {%region    * Array * }
   //TODO: DynArray, decide what to display
   // TODO {} fixup array => replace with []
-  Add('VarDynIntArray',       wdfDefault,      Match_Pointer+'|\{\}|0,[\s\r\n]+2',
+  AddFmtDef('VarDynIntArray',             Match_Pointer+'|\{\}|0,[\s\r\n]+2',
                                 skSimple,       'TDynIntArray',
                                 []);
   //TODO add () around list
   if FDoStatIntArray then
-  Add('VarStatIntArray',      wdfDefault,      '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
+  AddFmtDef('VarStatIntArray',            '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
                                 skSimple,       'TStatIntArray',
                                 []);
-  Add('VarPDynIntArray',      wdfDefault,      Match_Pointer,
+  AddFmtDef('VarPDynIntArray',            Match_Pointer,
                                 skPointer,      'PDynIntArray',
                                 []);
-  Add('VarPStatIntArray',     wdfDefault,      Match_Pointer,
+  AddFmtDef('VarPStatIntArray',           Match_Pointer,
                                 skPointer,      'PStatIntArray',
                                 []);
-  Add('VarDynIntArrayA',      wdfDefault,      Match_Pointer+'|\{\}|0,[\s\r\n]+2',
+  AddFmtDef('VarDynIntArrayA',            Match_Pointer+'|\{\}|0,[\s\r\n]+2',
                                 skSimple,       '',
                                 []);
   if FDoStatIntArray then
-  Add('VarStatIntArrayA',     wdfDefault,      '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
+  AddFmtDef('VarStatIntArrayA',           '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
                                 skSimple,       '',
                                 []);
 
-  Add('VarDynIntArray[1]',    wdfDefault,      '2',
+  AddFmtDef('VarDynIntArray[1]',          '2',
                                 skSimple,       'Integer|LongInt',
                                 [fTpMtch]);
-  Add('VarStatIntArray[6]',   wdfDefault,      '12',
+  AddFmtDef('VarStatIntArray[6]',         '12',
                                 skSimple,       'Integer|LongInt',
                                 [fTpMtch]);
-  Add('VarPDynIntArray^[1]',  wdfDefault,      '2',
+  AddFmtDef('VarPDynIntArray^[1]',        '2',
                                 skSimple,       'Integer|LongInt',
                                 [fTpMtch]);
-  Add('VarPStatIntArray^[6]', wdfDefault,      '12',
+  AddFmtDef('VarPStatIntArray^[6]',       '12',
                                 skSimple,       'Integer|LongInt',
                                 [fTpMtch]);
-  Add('VarDynIntArrayA[1]',   wdfDefault,      '2',
+  AddFmtDef('VarDynIntArrayA[1]',         '2',
                                 skSimple,       'Integer|LongInt',
                                 [fTpMtch]);
-  Add('VarStatIntArrayA[6]',  wdfDefault,      '12',
+  AddFmtDef('VarStatIntArrayA[6]',        '12',
                                 skSimple,       'Integer|LongInt',
                                 [fTpMtch]);
   {%endregion    * Array * }
 
   {%region    * Variant * }
 
-  Add('ArgVariantInt',       wdfDefault,  '^5$',         skVariant,       'Variant', []);
-  Add('ArgVariantString',    wdfDefault,  '^''v''$',     skVariant,       'Variant', []);
+  AddFmtDef('ArgVariantInt',         '^5$',         skVariant,       'Variant', []);
+  AddFmtDef('ArgVariantString',      '^''v''$',     skVariant,       'Variant', []);
 
-  Add('VArgVariantInt',       wdfDefault,  '^5$',         skVariant,       'Variant', []);
-  Add('VArgVariantString',    wdfDefault,  '^''v''$',     skVariant,       'Variant', []);
+  AddFmtDef('VArgVariantInt',         '^5$',         skVariant,       'Variant', []);
+  AddFmtDef('VArgVariantString',      '^''v''$',     skVariant,       'Variant', []);
   {%endregion    * Variant * }
 
   {%region    * procedure/function/method * }
 
-  Add('ArgProcedure',       wdfDefault,  'procedure',           skProcedure,       'TProcedure', []);
-  Add('ArgFunction',        wdfDefault,  'function',            skFunction,        'TFunction',  []);
+  AddFmtDef('ArgProcedure',         'procedure',           skProcedure,       'TProcedure', []);
+  AddFmtDef('ArgFunction',          'function',            skFunction,        'TFunction',  []);
   (*
   // normal procedure on stabs / recodr on dwarf => maybe the data itself may reveal some ?
-  Add('ArgObjProcedure',    wdfDefault,  'procedure.*of object|record.*procedure.*self =',
+  AddFmtDef('ArgObjProcedure',      'procedure.*of object|record.*procedure.*self =',
                                                            skRecord,          'TObjProcedure', []);
-  Add('ArgObjFunction',     wdfDefault,  'function.*of object|record.*function.*self =',
+  AddFmtDef('ArgObjFunction',       'function.*of object|record.*function.*self =',
                                                            skRecord,          'TObjFunction',  []);
 
   *)
   // doesn't work, ptype returns empty in dwarf => maybe via whatis
-  //    Add('VArgProcedure',       wdfDefault,  'procedure',           skProcedure,       'TProcedure', []);
-  //    Add('VArgFunction',        wdfDefault,  'function',            skFunction,        'TFunction',  []);
+  //    AddFmtDef('VArgProcedure',         'procedure',           skProcedure,       'TProcedure', []);
+  //    AddFmtDef('VArgFunction',          'function',            skFunction,        'TFunction',  []);
   (*
-  Add('VArgObjProcedure',    wdfDefault,  'procedure.*of object|record.*procedure.*self =',
+  AddFmtDef('VArgObjProcedure',      'procedure.*of object|record.*procedure.*self =',
                                                             skRecord,          'TObjProcedure', []);
-  Add('VArgObjFunction',     wdfDefault,  'function.*of object|record.*function.*self =',
+  AddFmtDef('VArgObjFunction',       'function.*of object|record.*function.*self =',
                                                             skRecord,          'TObjFunction',  []);
   *)
 
-  Add('VarProcedureA',       wdfDefault,  'procedure',           skProcedure,       'Procedure', []);
-  Add('VarFunctionA',        wdfDefault,  'function',            skFunction,        'Function',  []);
+  AddFmtDef('VarProcedureA',         'procedure',           skProcedure,       'Procedure', []);
+  AddFmtDef('VarFunctionA',          'function',            skFunction,        'Function',  []);
   (*
-  Add('VarObjProcedureA',    wdfDefault,  'procedure.*of object|record.*procedure.*self =',
+  AddFmtDef('VarObjProcedureA',      'procedure.*of object|record.*procedure.*self =',
                                                             skRecord,          'Procedure', []);
-  Add('VarObjFunctionA',     wdfDefault,  'function.*of object|record.*function.*self =',
+  AddFmtDef('VarObjFunctionA',       'function.*of object|record.*function.*self =',
                                                             skRecord,          'Function',  []);
   *)
   {%endregion    * procedure/function/method * }
