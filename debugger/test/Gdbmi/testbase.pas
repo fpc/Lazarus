@@ -41,6 +41,7 @@ type
         ExeName: string;
         SymbolTypes: TSymbolTypes;
         ExtraOpts: string;
+        Version: Integer;
       end;
 
   TDebuggerInfo = record
@@ -231,14 +232,25 @@ type
     function StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
     procedure CleanGdb;
     procedure ClearTestErrors;
+
     procedure AddTestError(s: string; MinGdbVers: Integer = 0; AIgnoreReason: String = '');
+    procedure AddTestError(s: string; MinGdbVers: Integer; MinFpcVers: Integer;AIgnoreReason: String = '');
     procedure AddTestSuccess(s: string; MinGdbVers: Integer = 0; AIgnoreReason: String = '');
+    procedure AddTestSuccess(s: string; MinGdbVers: Integer; MinFpcVers: Integer;AIgnoreReason: String = '');
+
     function TestEquals(Expected, Got: string): Boolean;
     function TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
+    function TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
+
     function TestEquals(Expected, Got: integer): Boolean;
     function TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
+    function TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
+
     function TestTrue(Name: string; Got: Boolean; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
+    function TestTrue(Name: string; Got: Boolean; MinGdbVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
     function TestFalse(Name: string; Got: Boolean; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
+    function TestFalse(Name: string; Got: Boolean; MinGdbVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
+
     procedure AssertTestErrors;
     property TestErrors: string read FTestErrors;
   public
@@ -518,6 +530,12 @@ begin
 end;
 
 procedure TGDBTestCase.AddTestError(s: string; MinGdbVers: Integer = 0; AIgnoreReason: String = '');
+begin
+  AddTestError(s, MinGdbVers, 0, AIgnoreReason);
+end;
+
+procedure TGDBTestCase.AddTestError(s: string; MinGdbVers: Integer; MinFpcVers: Integer;
+  AIgnoreReason: String);
 var
   IgnoreReason: String;
   i: Integer;
@@ -530,7 +548,13 @@ begin
     if (i > 0) and (i < MinGdbVers) then
       IgnoreReason := 'GDB ('+IntToStr(i)+') to old, required:'+IntToStr(MinGdbVers);
   end;
+  if MinFpcVers > 0 then begin
+    i := GetCompilerInfo.Version;
+    if (i > 0) and (i < MinFpcVers) then
+      IgnoreReason := 'FPC ('+IntToStr(i)+') to old, required:'+IntToStr(MinFpcVers);
+  end;
   IgnoreReason := IgnoreReason + AIgnoreReason;
+
   if IgnoreReason <> '' then begin
     FIgnoredErrors := FIgnoredErrors + IntToStr(FTestCnt) + ': ' + '### '+IgnoreReason +' >>> '+s+LineEnding;
     inc(FIgnoredErrorCnt);
@@ -541,21 +565,35 @@ begin
 end;
 
 procedure TGDBTestCase.AddTestSuccess(s: string; MinGdbVers: Integer; AIgnoreReason: String = '');
+begin
+  AddTestSuccess(s, MinGdbVers, 0, AIgnoreReason);
+end;
+
+procedure TGDBTestCase.AddTestSuccess(s: string; MinGdbVers: Integer; MinFpcVers: Integer;
+  AIgnoreReason: String);
 var
   i: Integer;
 begin
   s := FTestBaseName + s;
   inc(FTestCnt);
-  if (MinGdbVers > 0) or (AIgnoreReason <> '') then begin
+  if (MinGdbVers > 0) then begin
     i := GetDebuggerInfo.Version;
     if (i > 0) and (i < MinGdbVers) then
       AIgnoreReason := AIgnoreReason + IntToStr(FTestCnt) + ': ' + s
         + 'GDB ('+IntToStr(i)+') to old, required:'+IntToStr(MinGdbVers)
         + LineEnding;
-    if AIgnoreReason <> '' then begin;
-      FUnexpectedSuccess := FUnexpectedSuccess + AIgnoreReason;
-      inc(FUnexpectedSuccessCnt);
-    end;
+  end;
+  if (MinFpcVers > 0) then begin
+    i := GetCompilerInfo.Version;
+    if (i > 0) and (i < MinFpcVers) then
+      AIgnoreReason := AIgnoreReason + IntToStr(FTestCnt) + ': ' + s
+        + 'FPC ('+IntToStr(i)+') to old, required:'+IntToStr(MinFpcVers)
+        + LineEnding;
+  end;
+
+  if AIgnoreReason <> '' then begin
+    FUnexpectedSuccess := FUnexpectedSuccess + AIgnoreReason;
+    inc(FUnexpectedSuccessCnt);
   end
   else
     inc(FSucessCnt);
@@ -568,10 +606,16 @@ end;
 
 function TGDBTestCase.TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
 begin
+  TestEquals(Name, Expected, Got, MinGdbVers, 0, AIgnoreReason);
+end;
+
+function TGDBTestCase.TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer;
+  MinFpcVers: Integer; AIgnoreReason: String): Boolean;
+begin
   Result :=  Got = Expected;
   if Result
-  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "'+Got+'"', MinGdbVers, AIgnoreReason)
-  else AddTestError(Name + ': Expected "'+Expected+'", Got "'+Got+'"', MinGdbVers, AIgnoreReason);
+  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "'+Got+'"', MinGdbVers, MinFpcVers, AIgnoreReason)
+  else AddTestError(Name + ': Expected "'+Expected+'", Got "'+Got+'"', MinGdbVers, MinFpcVers, AIgnoreReason);
 end;
 
 function TGDBTestCase.TestEquals(Expected, Got: integer): Boolean;
@@ -581,26 +625,44 @@ end;
 
 function TGDBTestCase.TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
 begin
+  TestEquals(Name, Expected, Got, MinGdbVers, 0, AIgnoreReason);
+end;
+
+function TGDBTestCase.TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer;
+  MinFpcVers: Integer; AIgnoreReason: String): Boolean;
+begin
   Result :=  Got = Expected;
   if Result
-  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "'+IntToStr(Got)+'"', MinGdbVers, AIgnoreReason)
-  else AddTestError(Name + ': Expected "'+IntToStr(Expected)+'", Got "'+IntToStr(Got)+'"', MinGdbVers, AIgnoreReason);
+  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "'+IntToStr(Got)+'"', MinGdbVers, MinFpcVers, AIgnoreReason)
+  else AddTestError(Name + ': Expected "'+IntToStr(Expected)+'", Got "'+IntToStr(Got)+'"', MinGdbVers, MinFpcVers, AIgnoreReason);
 end;
 
 function TGDBTestCase.TestTrue(Name: string; Got: Boolean; MinGdbVers: Integer; AIgnoreReason: String = ''): Boolean;
 begin
+  TestTrue(Name, Got, MinGdbVers, 0, AIgnoreReason);
+end;
+
+function TGDBTestCase.TestTrue(Name: string; Got: Boolean; MinGdbVers: Integer;
+  MinFpcVers: Integer; AIgnoreReason: String): Boolean;
+begin
   Result := Got;
   if Result
-  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "True"', MinGdbVers, AIgnoreReason)
-  else AddTestError(Name + ': Expected "True", Got "False"', MinGdbVers, AIgnoreReason);
+  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "True"', MinGdbVers, MinFpcVers, AIgnoreReason)
+  else AddTestError(Name + ': Expected "True", Got "False"', MinGdbVers, MinFpcVers, AIgnoreReason);
 end;
 
 function TGDBTestCase.TestFalse(Name: string; Got: Boolean; MinGdbVers: Integer; AIgnoreReason: String = ''): Boolean;
 begin
+  TestFalse(Name, Got, MinGdbVers, 0, AIgnoreReason);
+end;
+
+function TGDBTestCase.TestFalse(Name: string; Got: Boolean; MinGdbVers: Integer;
+  MinFpcVers: Integer; AIgnoreReason: String): Boolean;
+begin
   Result := not Got;
   if Result
-  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "False"', MinGdbVers, AIgnoreReason)
-  else AddTestError(Name + ': Expected "False", Got "True"', MinGdbVers, AIgnoreReason);
+  then AddTestSuccess(Name + ': Expected to fail with, but succeded, Got "False"', MinGdbVers, MinFpcVers, AIgnoreReason)
+  else AddTestError(Name + ': Expected "False", Got "True"', MinGdbVers, MinFpcVers, AIgnoreReason);
 end;
 
 procedure TGDBTestCase.AssertTestErrors;
@@ -722,7 +784,7 @@ end;
 
 procedure TCompilerList.SetAttribute(AIndex: Integer; const AAttr, AValue: string);
 begin
-  case StringCase(AAttr, ['exe', 'symbols', 'opts'], True, False) of
+  case StringCase(AAttr, ['exe', 'symbols', 'opts', 'vers', 'version'], True, False) of
     0: begin // exe
         FList[AIndex].ExeName := AValue;
       end;
@@ -731,6 +793,9 @@ begin
       end;
     2: begin //opts
         FList[AIndex].ExtraOpts := AValue;
+      end;
+    3,4: begin
+        FList[AIndex].Version := StrToIntDef(AValue,-1);
       end;
   end;
 end;

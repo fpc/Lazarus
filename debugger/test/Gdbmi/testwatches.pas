@@ -45,6 +45,7 @@ type
     ExpKind: TDBGSymbolKind;
     ExpTypeName: string;
     Flgs: TWatchExpectationFlags;
+    MinGdb, MinFpc: Integer;
   end;
 
   TWatchExpectation = record
@@ -78,14 +79,20 @@ type
       AnExpr:  string; AFmt: TWatchDisplayFormat;
       AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
       AFlgs: TWatchExpectationFlags = [];
-      AStackFrame: Integer = 0
+      AStackFrame: Integer = 0;
+      AMinGdb: Integer = 0; AMinFpc: Integer = 0
     ): PWatchExpectation;
     function AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
       AnExpr:  string; AFmt: TWatchDisplayFormat;
       AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
       AFlgs: TWatchExpectationFlags = [];
-      AStackFrame: Integer = 0
+      AStackFrame: Integer = 0;
+      AMinGdb: Integer = 0; AMinFpc: Integer = 0
     ): PWatchExpectation;
+    procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
+      AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags;
+      AMinGdb: Integer; AMinFpc: Integer
+    );
     procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
       AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags = []
     );
@@ -98,6 +105,8 @@ type
     procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
       ATpNm: string; AFlgs: TWatchExpectationFlags
     );
+    procedure UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType; AMinGdb: Integer);
+    procedure UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType; AMinFpc: Integer);
 
     procedure AddExpectBreakFooGdb;
     procedure AddExpectBreakFooAll;
@@ -175,7 +184,8 @@ end;
 
 function TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; AnExpr: string;
   AFmt: TWatchDisplayFormat; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
-  AFlgs: TWatchExpectationFlags; AStackFrame: Integer = 0): PWatchExpectation;
+  AFlgs: TWatchExpectationFlags; AStackFrame: Integer = 0; AMinGdb: Integer = 0;
+  AMinFpc: Integer = 0): PWatchExpectation;
 var
   i: TSymbolType;
 begin
@@ -195,6 +205,8 @@ begin
          ( (fnoDwrf3 in AFlgs) and (i in [stDwarf3]) ) or
          ( (fnoStabs in AFlgs) and (i in [stStabs]) )
       then Result[i].Flgs := Result[i].Flgs + [fTstSkip];
+      Result[i].MinGdb := AMinGdb;
+      Result[i].MinFpc := AMinFpc;
     end;
     StackFrame   := AStackFrame;
   end;
@@ -203,7 +215,8 @@ end;
 
 function TTestWatches.AddTo(var ExpArray: TWatchExpectationArray; ATestName: String;
   AnExpr: string; AFmt: TWatchDisplayFormat; AMtch: string; AKind: TDBGSymbolKind;
-  ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer): PWatchExpectation;
+  ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer; AMinGdb: Integer = 0;
+  AMinFpc: Integer = 0): PWatchExpectation;
 var
   i: TSymbolType;
 begin
@@ -220,10 +233,26 @@ begin
       if ( (fnoDwrf in AFlgs) and (i in [stDwarf, stDwarfSet, stDwarf3]) ) or
          ( (fnoDwrfNoSet in AFlgs) and (i in [stDwarf]) )
       then Result[i].Flgs := Result[i].Flgs + [fTstSkip];
+      Result[i].MinGdb := AMinGdb;
+      Result[i].MinFpc := AMinFpc;
     end;
     StackFrame   := AStackFrame;
   end;
   Result := @ExpArray[Length(ExpArray)-1];
+end;
+
+procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
+  AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags;
+  AMinGdb: Integer; AMinFpc: Integer);
+begin
+  with AWatchExp^ do begin
+    Result[ASymbolType].ExpMatch     := AMtch;
+    Result[ASymbolType].ExpKind      := AKind;
+    Result[ASymbolType].ExpTypeName  := ATpNm;
+    Result[ASymbolType].Flgs         := AFlgs;
+    Result[ASymbolType].MinGdb := AMinGdb;
+    Result[ASymbolType].MinFpc := AMinFpc;
+  end;
 end;
 
 procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
@@ -260,6 +289,22 @@ begin
   with AWatchExp^ do begin
     Result[ASymbolType].ExpTypeName  := ATpNm;
     Result[ASymbolType].Flgs         := AFlgs;
+  end;
+end;
+
+procedure TTestWatches.UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
+  AMinGdb: Integer);
+begin
+  with AWatchExp^ do begin
+    Result[ASymbolType].MinGdb := AMinGdb;
+  end;
+end;
+
+procedure TTestWatches.UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
+  AMinFpc: Integer);
+begin
+  with AWatchExp^ do begin
+    Result[ASymbolType].MinFpc := AMinFpc;
   end;
 end;
 
@@ -560,8 +605,13 @@ begin
   // string in array
   r:=AddStringFmtDef('ArgTMyAnsiStringDArray[0]',   '''DArray1 Str0''$',         'AnsiString', []);
   r:=AddStringFmtDef('ArgTMyAnsiStringDArray[1]',   '''DArray1 Str1''$',         'AnsiString', []);
-  r:=AddStringFmtDef('VArgTMyAnsiStringDArray[0]',  '''DArray2 Str0''$',         'AnsiString', [fnoDwrf2, fnoStabs]);
-  r:=AddStringFmtDef('VArgTMyAnsiStringDArray[1]',  '''DArray2 Str1''$',         'AnsiString', [fnoDwrf2, fnoStabs]);
+  r:=AddStringFmtDef('VArgTMyAnsiStringDArray[0]',  '''DArray2 Str0''$',         'AnsiString', []);
+     UpdResMinFpc(r, stDwarf, 020600);
+     UpdResMinFpc(r, stDwarfSet, 020600);
+  r:=AddStringFmtDef('VArgTMyAnsiStringDArray[1]',  '''DArray2 Str1''$',         'AnsiString', []);
+     UpdResMinFpc(r, stDwarf, 020600);
+     UpdResMinFpc(r, stDwarfSet, 020600);
+
 
   r:=AddFmtDef('ArgTMyAnsiStringDArray[0][1]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
      UpdRes(r, stDwarf3,                         '''D''$', skSimple);
@@ -1044,8 +1094,8 @@ var
     if flag then begin;
       WV := AWatch.Values[1, Stack];// trigger read
       s := WV.Value;
-      flag := flag and TestTrue  (Name+ ' (HasValue)',   WV.Validity = ddsValid);
-      //flag := flag and TestFalse (Name+ ' (One Value)',  AWatch.HasMultiValue);
+      flag := flag and TestTrue  (Name+ ' (HasValue)',   WV.Validity = ddsValid, DataRes.MinGdb, DataRes.MinFpc);
+      //flag := flag and TestFalse (Name+ ' (One Value)',  AWatch.HasMultiValue, DataRes.MinGdb, DataRes.MinFpc);
     end
     else
       s := WatchValue;
@@ -1057,12 +1107,12 @@ var
       rx.ModifierI := true;
       rx.Expression := DataRes.ExpMatch;
       if DataRes.ExpMatch <> ''
-      then TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but was "' + s + '"', rx.Exec(s));
+      then TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but was "' + s + '"', rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc);
     //end;
 
     flag := (AWatch <> nil) and (DataRes.ExpTypeName <> '');
-    if flag then flag := TestTrue(Name + ' has typeinfo',  WV.TypeInfo <> nil);
-    if flag then flag := TestEquals(Name + ' kind',  KindName[DataRes.ExpKind], KindName[WV.TypeInfo.Kind]);
+    if flag then flag := TestTrue(Name + ' has typeinfo',  WV.TypeInfo <> nil, DataRes.MinGdb, DataRes.MinFpc);
+    if flag then flag := TestEquals(Name + ' kind',  KindName[DataRes.ExpKind], KindName[WV.TypeInfo.Kind], DataRes.MinGdb, DataRes.MinFpc);
     if flag then begin
       if fTpMtch  in DataRes.Flgs
       then begin
@@ -1071,16 +1121,16 @@ var
         rx := TRegExpr.Create;
         rx.ModifierI := true;
         rx.Expression := DataRes.ExpTypeName;
-        TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but was '+WV.TypeInfo.TypeName,  rx.Exec(s))
+        TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but was '+WV.TypeInfo.TypeName,  rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc)
        end
-      else TestEquals(Name + ' TypeName',  LowerCase(DataRes.ExpTypeName), LowerCase(WV.TypeInfo.TypeName));
+      else TestEquals(Name + ' TypeName',  LowerCase(DataRes.ExpTypeName), LowerCase(WV.TypeInfo.TypeName), DataRes.MinGdb, DataRes.MinFpc);
     end;
     FreeAndNil(rx);
   end;
 
 var
   i, Only: Integer;
-  OnlyName: String;
+  OnlyName, OnlyNamePart: String;
   WList, WListSub: Array of TCurrentWatch;
 
 begin
@@ -1088,7 +1138,13 @@ begin
   if not HasTestArraysData then exit;
   Only := StrToIntDef(TestControlForm.EdOnlyWatch.Text, -1);
   if Only < 0
-  then OnlyName := TestControlForm.EdOnlyWatch.Text;
+  then begin
+    OnlyName := TestControlForm.EdOnlyWatch.Text;
+    if (OnlyName <> '') and (OnlyName[1]='*') then begin
+      OnlyNamePart := copy(OnlyName, 2, length(OnlyName));
+      OnlyName := '';
+    end;
+  end;
 
 
   try
@@ -1119,7 +1175,10 @@ begin
     (* Create all watches *)
     SetLength(WList, length(ExpectBreakFoo));
     for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
-      if ((Only >=0) and (Only <> i)) or ((OnlyName<>'') and (OnlyName<>ExpectBreakFoo[i].TestName)) then continue;
+      if ((Only >=0) and (Only <> i)) or
+         ((OnlyName<>'') and (OnlyName<>ExpectBreakFoo[i].TestName)) or
+         ((OnlyNamePart<>'') and (pos(OnlyNamePart, ExpectBreakFoo[i].TestName)<1))
+      then continue;
       if not SkipTest(ExpectBreakFoo[i]) then begin
         WList[i] := TCurrentWatch.Create(FWatches);
         WList[i].Expression := ExpectBreakFoo[i].Expression;
@@ -1129,7 +1188,10 @@ begin
     end;
     SetLength(WListSub, length(ExpectBreakSubFoo));
     for i := low(ExpectBreakSubFoo) to high(ExpectBreakSubFoo) do begin
-      if ((Only >=0) and (Only <> i)) or ((OnlyName<>'') and (OnlyName<>ExpectBreakSubFoo[i].TestName)) then continue;
+      if ((Only >=0) and (Only <> i)) or
+         ((OnlyName<>'') and (OnlyName<>ExpectBreakFoo[i].TestName)) or
+         ((OnlyNamePart<>'') and (pos(OnlyNamePart, ExpectBreakFoo[i].TestName)<1))
+      then continue;
       if not SkipTest(ExpectBreakSubFoo[i]) then begin
         WListSub[i] := TCurrentWatch.Create(FWatches);
         WListSub[i].Expression := ExpectBreakSubFoo[i].Expression;
@@ -1145,7 +1207,10 @@ begin
     then begin
       (* Hit first breakpoint: NESTED SubFoo -- (1st loop) Called with none nil data *)
       for i := low(ExpectBreakSubFoo) to high(ExpectBreakSubFoo) do begin
-        if ((Only >=0) and (Only <> i)) or ((OnlyName<>'') and (OnlyName<>ExpectBreakSubFoo[i].TestName)) then continue;
+        if ((Only >=0) and (Only <> i)) or
+           ((OnlyName<>'') and (OnlyName<>ExpectBreakFoo[i].TestName)) or
+           ((OnlyNamePart<>'') and (pos(OnlyNamePart, ExpectBreakFoo[i].TestName)<1))
+        then continue;
         if not SkipTest(ExpectBreakSubFoo[i]) then
           TestWatch('Brk1 '+IntToStr(i)+' ', WListSub[i], ExpectBreakSubFoo[i]);
       end;
@@ -1169,7 +1234,10 @@ begin
       FDbgOutPutEnable := False;
 
       for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
-        if ((Only >=0) and (Only <> i)) or ((OnlyName<>'') and (OnlyName<>ExpectBreakFoo[i].TestName)) then continue;
+        if ((Only >=0) and (Only <> i)) or
+           ((OnlyName<>'') and (OnlyName<>ExpectBreakFoo[i].TestName)) or
+           ((OnlyNamePart<>'') and (pos(OnlyNamePart, ExpectBreakFoo[i].TestName)<1))
+        then continue;
         if not SkipTest(ExpectBreakFoo[i]) then
           TestWatch('Brk1 '+IntToStr(i)+' ', WList[i], ExpectBreakFoo[i]);
       end;
