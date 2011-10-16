@@ -1536,7 +1536,7 @@ begin
     frReadMemo22(Stream, Memo);
 end;
 
-procedure CreateDS(Desc: String; var DataSet: TfrDataSet; var IsVirtualDS: Boolean);
+procedure CreateDS(const Desc: String; var DataSet: TfrDataSet; var IsVirtualDS: Boolean);
 begin
   if (Desc <> '') and (Desc[1] in ['1'..'9']) then
   begin

@@ -41,7 +41,7 @@ procedure frGetDataSetAndField(ComplexName: String;
 function frGetFontStyle(Style: TFontStyles): Integer;
 function frSetFontStyle(Style: Integer): TFontStyles;
 procedure frInitFont(aFont : TFont; aColor : TColor; aSize : Integer; aStyle : TFontStyles);
-function frFindComponent(Owner: TComponent; Name: String): TComponent;
+function frFindComponent(Owner: TComponent; const Name: String): TComponent;
 procedure frGetComponents(Owner: TComponent; ClassRef: TClass;
   List: TStrings; Skip: TComponent);
 
@@ -377,7 +377,7 @@ begin
   end;
 end;
 
-function frFindComponent(Owner: TComponent; Name: String): TComponent;
+function frFindComponent(Owner: TComponent; const Name: String): TComponent;
 var
   n: Integer;
   s1, s2, s3: String;
