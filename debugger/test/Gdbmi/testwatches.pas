@@ -318,7 +318,7 @@ procedure TTestWatches.AddExpectBreakFooGdb;
     Result := AddTo(ExpectBreakFooGdb,AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs );
   end;
 begin
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Gdb')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.Gdb')] then exit;
   Add('ptype ArgTFoo',  wdfDefault, 'type = \^TFoo = class : PUBLIC TObject', skClass, '', []);
   Add('ptype ArgTFoo^', wdfDefault, 'type = TFoo = class : PUBLIC TObject',   skClass, '', []);
 
@@ -357,7 +357,7 @@ procedure TTestWatches.AddExpectBreakFooAll;
 var
   r: PWatchExpectation;
 begin
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.All')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.All')] then exit;
 
   {%region    * records * }
   // Foo(var XXX: PRecord); DWARF has problems with the implicit pointer for "var"
@@ -368,12 +368,64 @@ begin
   AddFmtDef('ArgPRec^',          MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
   AddFmtDef('ArgPPRec',          MatchPointer('^PPRec'),                 skPointer,   'PPRec', []);
   AddFmtDef('ArgPPRec^',         MatchPointer('^PRec'),                  skPointer,   'PRec', []);
-  AddFmtDef('ArgPPRec^^',        MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
+  AddFmtDef('ArgPPRec^^',        MatchRecord('TREC', 2, '.'),            skRecord,    'TRec', []);
   AddFmtDef('ArgTNewRec',        MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,    'T(New)?Rec', [fTpMtch]);
   AddFmtDef('ArgTRec.ValInt',    '-1',                                   skSimple,    M_Int, [fTpMtch]);
   AddFmtDef('ArgPRec^.ValInt',   '1',                                    skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('ArgPPRec^^.ValInt', '1',                                    skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('ArgPRec^.ValFoo',   '<TFoo> = \{',                          skClass,     'TFoo', []);
+  AddFmtDef('ArgPPRec^^.ValInt', '2',                                    skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgPRec^.ValFoo',   MatchClass('TFoo'),                     skClass,     'TFoo', []);
+
+  AddFmtDef('ArgTRecSelf',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
+  AddFmtDef('ArgTRecSelf.ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelf.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelf.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('ArgTRecSelf.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  //AddFmtDef('ArgTRecSelf',       MatchRecord('TRecSelf', 'valint = 100'),skSimple,    'TRecSelf', []);
+  //AddFmtDef('ArgTRecSelf',       MatchRecord('TRecSelf', 'valint = 100'),skSimple,    'TRecSelf', []);
+
+  AddFmtDef('ArgTRecSelfDArray',  '.',                                   skSimple,    'TRecSelfDArray', []);
+  //ArgTRecSelf
+  AddFmtDef('ArgTRecSelfDArray[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
+  AddFmtDef('ArgTRecSelfDArray[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfDArray[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfDArray[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('ArgTRecSelfDArray[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  //VArgTRecSelf
+  AddFmtDef('ArgTRecSelfDArray[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
+  AddFmtDef('ArgTRecSelfDArray[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfDArray[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfDArray[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('ArgTRecSelfDArray[1].ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+
+  AddFmtDef('ArgTRecSelfS0Array',  '.',                                   skSimple,    'TRecSelfS0Array', []);
+  //ArgTRecSelf
+  AddFmtDef('ArgTRecSelfS0Array[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
+  AddFmtDef('ArgTRecSelfS0Array[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  //VArgTRecSelf
+  AddFmtDef('ArgTRecSelfS0Array[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
+  AddFmtDef('ArgTRecSelfS0Array[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+
+  AddFmtDef('ArgTRecSelfS3Array',  '.',                                   skSimple,    'TRecSelfS3Array', []);
+  //ArgTRecSelf
+  AddFmtDef('ArgTRecSelfS3Array[3]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  //VArgTRecSelf
+  AddFmtDef('ArgTRecSelfS3Array[4]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^', MatchRecord('TRec', 2),              skRecord,    'TRec', []);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+
+
 
   // VAR param to FooFunc
   AddFmtDef('VArgTRec',           MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,    'TRec', []);
@@ -381,12 +433,62 @@ begin
   AddFmtDef('VArgPRec^',          MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', [fnoDwrf]);
   AddFmtDef('VArgPPRec',          MatchPointer('^PPRec'),                 skPointer,   'PPRec', []);
   AddFmtDef('VArgPPRec^',         MatchPointer('^PRec'),                  skPointer,   'PRec', [fnoDwrf]);
-  AddFmtDef('VArgPPRec^^',        MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', [fnoDwrf]);
+  AddFmtDef('VArgPPRec^^',        MatchRecord('TREC', 2, '.'),            skRecord,    'TRec', [fnoDwrf]);
   AddFmtDef('VArgTNewRec',        MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,    'T(New)?Rec', [fTpMtch]);
   AddFmtDef('VArgTRec.ValInt',    '-1',                                   skSimple,    M_Int, [fTpMtch]);
   AddFmtDef('VArgPRec^.ValInt',   '1',                                    skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('VArgPPRec^^.ValInt', '1',                                    skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('VArgPRec^.ValFoo',   '<TFoo> = \{',                          skClass,     'TFoo', []);
+  AddFmtDef('VArgPPRec^^.ValInt', '2',                                    skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgPRec^.ValFoo',   MatchClass('TFoo'),                      skClass,     'TFoo', []);
+
+  AddFmtDef('VArgTRecSelf',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
+  AddFmtDef('VArgTRecSelf.ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelf.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelf.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('VArgTRecSelf.ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+
+  AddFmtDef('VArgTRecSelfDArray',  '.',                                   skSimple,    'TRecSelfDArray', []);
+  //ArgTRecSelf
+  AddFmtDef('VArgTRecSelfDArray[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
+  AddFmtDef('VArgTRecSelfDArray[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfDArray[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfDArray[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('VArgTRecSelfDArray[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  //VArgTRecSelf
+  AddFmtDef('VArgTRecSelfDArray[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
+  AddFmtDef('VArgTRecSelfDArray[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfDArray[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfDArray[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('VArgTRecSelfDArray[1].ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+
+  AddFmtDef('VArgTRecSelfS0Array',  '.',                                   skSimple,    'TRecSelfS0Array', []);
+  //ArgTRecSelf
+  AddFmtDef('VArgTRecSelfS0Array[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
+  AddFmtDef('VArgTRecSelfS0Array[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  //VArgTRecSelf
+  AddFmtDef('VArgTRecSelfS0Array[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
+  AddFmtDef('VArgTRecSelfS0Array[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+
+  AddFmtDef('VArgTRecSelfS3Array',  '.',                                   skSimple,    'TRecSelfS3Array', []);
+  //ArgTRecSelf
+  AddFmtDef('VArgTRecSelfS3Array[3]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  //VArgTRecSelf
+  AddFmtDef('VArgTRecSelfS3Array[4]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+
+
 
   // LOCAL var (global type)
   AddFmtDef('VarTRec',           MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,    'TRec', []);
@@ -660,12 +762,14 @@ begin
 
   // string in rec
   r:=AddStringFmtDef('ArgTStringHolderRec.FTMyAnsiString',   '''Rec1 MyAnsi''$',         'AnsiString', []);
+//(* joost crash
   r:=AddStringFmtDef('VArgTStringHolderRec.FTMyAnsiString',  '''Rec2 MyAnsi''$',         'AnsiString', []);
 
   r:=AddFmtDef('ArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skSimple,    'char', []);
      UpdRes(r, stDwarf3,                         '''R''$', skSimple);
   r:=AddFmtDef('VArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skSimple,    'char', []);
      UpdRes(r, stDwarf3,                         '''R''$', skSimple);
+//*)
 
   //r:=AddFmtDef('ArgTNewAnsiString',       '''NewAnsi''$',     skPOINTER,   '(TNew)?AnsiString', []);
   //                  UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    '(TNew)?AnsiString', [fTpMtch]);
@@ -687,6 +791,7 @@ begin
   AddFmtDef('ArgPMyShortString^',        '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
   AddFmtDef('VArgPMyShortString^',       '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch, fnoDwrf]);
 
+(* joost crash
   // string in obj
   r:=AddFmtDef('ArgTStringHolderObj.FTMyShortString',   '''Obj1 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch]);
   r:=AddFmtDef('VArgTStringHolderObj.FTMyShortString',  '''Obj2 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch]);
@@ -694,6 +799,7 @@ begin
   // string in rec
   r:=AddFmtDef('ArgTStringHolderRec.FTMyShortString',   '''Rec1 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch]);
   r:=AddFmtDef('VArgTStringHolderRec.FTMyShortString',  '''Rec2 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch]);
+*)
 
 
   (*
@@ -913,7 +1019,7 @@ procedure TTestWatches.AddExpectBreakFooMixInfo;
     else Add('',AVar,                wdfDefault, MatchClassNil(AExpClass), skClass, AExpClass, AFlgs);
   end;
 begin
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Mix')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.Mix')] then exit;
 
   // Type Casting objects with mixed symbol type
   AddTC('VarOTestTCast', '', 'TObject');
@@ -1032,7 +1138,7 @@ procedure TTestWatches.AddExpectBreakFooAndSubFoo;
     AddTo(ExpectBreakSubFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs, AStackFrame)
   end;
 begin
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Cache')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.Cache')] then exit;
   AddS('VarCacheTest1', wdfDefault, MatchRecord('TCacheTest', 'CTVal = 101'),
        skRecord, 'TCacheTest',  []);
   AddF('VarCacheTest1', wdfDefault, '<TCacheTest(Type)?> = \{.*(<|vptr\$)TObject>?.+CTVal = 201',
@@ -1272,7 +1378,7 @@ begin
   if SkipTest then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch')] then exit;
 
-  FDoStatIntArray := TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Unstable')];
+  FDoStatIntArray := TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.Unstable')];
   // GDB 7.0 with fpc 2.4.x has issues with "array of int"
   FDoStatIntArray := FDoStatIntArray and
                      not ((pos('2.4.', CompilerInfo.Name) > 0) and (DebuggerInfo.Version = 70000));
@@ -1286,7 +1392,7 @@ begin
   AddExpectBreakFooAndSubFoo;
   RunTestWatches('', TestExeName,  '', []);
 
-  if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Mix')]
+  if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.Mix')]
   then begin
 
     ClearAllTestArrays;
@@ -1300,7 +1406,7 @@ begin
     end;
     RunTestWatches('unitw1=none', TestExeName,  '-dUSE_W1', [UsedUnits]);
 
-    if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatch.Mix.All')]
+    if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('    TTestWatch.Mix.All')]
     then begin
       if (stStabs in CompilerInfo.SymbolTypes) and (stStabs in DebuggerInfo.SymbolTypes)
       then begin
