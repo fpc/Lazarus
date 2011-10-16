@@ -48,6 +48,9 @@ procedure WriteXML(Element: TDOMNode; AStream: TStream); overload;
 
 implementation
 
+uses
+  LazUTF8;
+
 type
   TXMLWriter = class;
   TSpecialCharCallback = procedure(Sender: TXMLWriter; const s: DOMString;
@@ -859,7 +862,7 @@ procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String;
 var
   fs: TFileStream;
 begin
-  fs := TFileStream.Create(AFileName, fmCreate);
+  fs := TFileStream.Create(UTF8ToSys(AFileName), fmCreate);
   try
     WriteXMLFile(doc, fs, Flags);
   finally
