@@ -437,8 +437,8 @@ Type
   protected
     procedure DataChange(Sender: TObject); override;
     procedure DoSelectionChange(User: Boolean); override;
+    procedure InitializeWnd; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -755,8 +755,8 @@ Type
     procedure SetNullValueKey(const AValue: TShortCut);
     procedure UpdateLookup;
   protected
+    procedure InitializeWnd; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
     procedure DataChange(Sender: TObject); override;
   public

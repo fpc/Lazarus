@@ -59,6 +59,13 @@ begin
   inherited DoSelectionChange(User);
 end;
 
+procedure TDBLookupListBox.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  if FDataLink.Active then
+    UpdateLookup;
+end;
+
 procedure TDBLookupListBox.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if FLookup.HandleNullKey(Key, Shift) then
@@ -69,13 +76,6 @@ begin
     ItemIndex := -1;
   end;
   inherited KeyDown(Key, Shift);
-end;
-
-procedure TDBLookupListBox.Loaded;
-begin
-  inherited Loaded;
-  if FDataLink.Active then
-    UpdateLookup;
 end;
 
 function TDBLookupListBox.GetKeyField: string;

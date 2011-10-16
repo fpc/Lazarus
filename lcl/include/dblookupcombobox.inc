@@ -56,9 +56,9 @@ begin
   inherited KeyDown(Key, Shift);
 end;
 
-procedure TDBLookupComboBox.Loaded;
+procedure TDBLookupComboBox.InitializeWnd;
 begin
-  inherited Loaded;
+  inherited InitializeWnd;
   if FDataLink.Active then
     UpdateLookup;
 end;
