@@ -9396,15 +9396,6 @@ end;
 
 procedure TCustomDrawGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
   aState: TGridDrawState);
-
-  procedure DrawText;
-  begin
-    if GetIsCellTitle(aCol, aRow) then
-      DrawColumnText(aCol, aRow, aRect, aState)
-    else
-      DrawTextInCell(aCol,aRow, aRect,aState);
-  end;
-
 begin
   if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
 
@@ -9416,18 +9407,21 @@ begin
   if CellNeedsCheckboxBitmaps(aCol,aRow) then
     DrawCellCheckboxBitmaps(aCol,aRow,aRect)
   else
-  if IsCellButtonColumn(Point(aCol,aRow)) then begin
-    DrawButtonCell(aCol,aRow,aRect,aState);
-    DrawText;
-  end
-  else begin
-
-    if (goFixedRowNumbering in Options) and (ARow>=FixedRows) and (aCol=0) and
-       (FixedCols>0)
-    then
-      DrawCellAutonumbering(aCol, aRow, aRect, IntToStr(aRow-FixedRows+1));
-
-    DrawText;
+  begin
+    if IsCellButtonColumn(Point(aCol,aRow)) then begin
+      DrawButtonCell(aCol,aRow,aRect,aState);
+    end
+    else begin
+      if (goFixedRowNumbering in Options) and (ARow>=FixedRows) and (aCol=0) and
+         (FixedCols>0)
+      then
+        DrawCellAutonumbering(aCol, aRow, aRect, IntToStr(aRow-FixedRows+1));
+    end;
+    //draw text
+    if GetIsCellTitle(aCol, aRow) then
+      DrawColumnText(aCol, aRow, aRect, aState)
+    else
+      DrawTextInCell(aCol,aRow, aRect,aState);
   end;
 end;
 
