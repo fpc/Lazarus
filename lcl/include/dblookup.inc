@@ -361,7 +361,7 @@ var
   I: Integer;
   Key: Variant;
 begin
-  if AListFieldValue = FControlLink.Field.AsString then
+  if not FControlLink.Active or (AListFieldValue = FControlLink.Field.AsString) then
     Exit;
   if FLookupCache and not FLookupFieldIsCached then
   begin
