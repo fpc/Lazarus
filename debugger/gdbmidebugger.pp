@@ -11304,20 +11304,21 @@ var
   var
     s: String;
   begin
+    Result := AString;
+    if not IsHexC(AString)
+    then exit;
+
     // there may be data after the pointer
     s := GetPart([], [' '], AString, False, True);
-    if IsHexC(s)
+    if s = '0x0'
     then begin
-      if s = '0x0'
-      then begin
-        Result := 'nil';
-      end
-      else begin
-        // 0xabc0 => $0000ABC0
-        Result := UpperCase(HexCToHexPascal(s, FTheDebugger.TargetWidth div 4));
-      end;
+      Result := 'nil';
     end
-    else Result := s;
+    else begin
+      // 0xabc0 => $0000ABC0
+      Result := UpperCase(HexCToHexPascal(s, FTheDebugger.TargetWidth div 4));
+    end;
+
     if TypeCast <> '' then
       Result := TypeCast + '(' + Result + ')';
     if AString <> '' then
@@ -11613,7 +11614,7 @@ var
         if (ResultInfo.TypeName = '&ShortString') then
           FTextValue := GetStrValue('ShortString(%s)', [AnExpression]) // we have an address here, so we need to typecast
         else
-        if saDynArray in ResultInfo.Attributes then
+        if saDynArray in ResultInfo.Attributes then  // may also be a string
           FTextValue := PascalizePointer(FTextValue)
         else
           FTextValue := FTextValue;
