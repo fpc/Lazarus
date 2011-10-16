@@ -82,6 +82,7 @@ type
     function GetParentComponent: TComponent; override;
     function HasParent: Boolean; override;
   public
+    procedure AfterDraw(AChart: TChart; ADrawer: IChartDrawer); virtual;
     procedure Assign(Source: TPersistent); override;
     procedure Dispatch(
       AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint); overload;
@@ -508,6 +509,13 @@ begin
   SetCursor;
 end;
 
+procedure TChartTool.AfterDraw(AChart: TChart; ADrawer: IChartDrawer);
+begin
+  Unused(AChart, ADrawer);
+  if not IsActive then
+    FChart := nil;
+end;
+
 procedure TChartTool.Assign(Source: TPersistent);
 begin
   if Source is TChartTool then
@@ -562,6 +570,8 @@ begin
   ev := FEventsAfter[AEventId];
   if Assigned(ev) then
     ev(Self, APoint);
+  if not IsActive then
+    FChart := nil;
 end;
 
 procedure TChartTool.Draw(AChart: TChart; ADrawer: IChartDrawer);
@@ -783,8 +793,10 @@ procedure TChartToolset.Draw(AChart: TChart; ADrawer: IChartDrawer);
 var
   t: TChartTool;
 begin
-  for t in Tools do
+  for t in Tools do begin
     t.Draw(AChart, ADrawer);
+    t.AfterDraw(AChart, ADrawer);
+  end;
 end;
 
 procedure TChartToolset.GetChildren(Proc: TGetChildProc; Root: TComponent);
