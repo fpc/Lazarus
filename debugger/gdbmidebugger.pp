@@ -184,6 +184,7 @@ type
   TGDBMIDebuggerCommand = class(TRefCountedObject)
   private
     FDefaultTimeOut: Integer;
+    FLastExecwasTimeOut: Boolean;
     FOnCancel: TNotifyEvent;
     FOnDestroy: TNotifyEvent;
     FOnExecuted: TNotifyEvent;
@@ -239,6 +240,7 @@ type
                              AFlags: TGDBMICommandFlags = [];
                              ATimeOut: Integer = -1
                             ): Boolean; overload;
+    procedure DoTimeoutFeedback;
     function  ProcessResult(var AResult: TGDBMIExecResult; ATimeOut: Integer = -1): Boolean;
     function  ProcessGDBResultText(S: String): String;
     function  GetStackDepth(MaxDepth: integer): Integer;
@@ -269,7 +271,8 @@ type
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
     property  LastExecResult: TGDBMIExecResult read FLastExecResult;
     property  DefaultTimeOut: Integer read FDefaultTimeOut write FDefaultTimeOut;
-    property  ProcessResultTimedOut: Boolean read FProcessResultTimedOut;
+    property  ProcessResultTimedOut: Boolean read FProcessResultTimedOut;       // single gdb command, took to long.Used to trigger timeout detection
+    property  LastExecwasTimeOut: Boolean read FLastExecwasTimeOut;             // timeout, was confirmed (additional commands send and returned)
   public
     constructor Create(AOwner: TGDBMIDebugger);
     destructor Destroy; override;
@@ -3816,7 +3819,7 @@ var
   FileType, EntryPoint: String;
   List: TGDBMINameValueList;
   TargetPIDPart: String;
-  TempInstalled, CanContinue: Boolean;
+  TempInstalled, CanContinue, HadTimeout: Boolean;
   CommandObj: TGDBMIDebuggerCommandExecute;
   {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
   s: String;
@@ -3910,24 +3913,35 @@ begin
       TempInstalled := False;
     end;
 
+    // collect timeouts
+    HadTimeout := False;
     // check whether we need class cast dereference
     R := CheckHasType('TObject', tfFlagHasTypeObject);
+    HadTimeout := HadTimeout and LastExecwasTimeOut;
     if R.State <> dsError
     then begin
       if UpperCase(LeftStr(R.Values, 15)) = UpperCase('type = ^TOBJECT')
       then include(TargetInfo^.TargetFlags, tfClassIsPointer);
     end;
     R := CheckHasType('Exception', tfFlagHasTypeException);
+    HadTimeout := HadTimeout and LastExecwasTimeOut;
     if R.State <> dsError
     then begin
       if UpperCase(LeftStr(R.Values, 17)) = UpperCase('type = ^EXCEPTION')
       then include(TargetInfo^.TargetFlags, tfExceptionIsPointer);
     end;
     CheckHasType('Shortstring', tfFlagHasTypeShortstring);
+    HadTimeout := HadTimeout and LastExecwasTimeOut;
     //CheckHasType('PShortstring', tfFlagHasTypePShortString);
+    //HadTimeout := HadTimeout and LastExecwasTimeOut;
     CheckHasType('pointer', tfFlagHasTypePointer);
+    HadTimeout := HadTimeout and LastExecwasTimeOut;
     CheckHasType('byte', tfFlagHasTypeByte);
+    HadTimeout := HadTimeout and LastExecwasTimeOut;
     //CheckHasType('char', tfFlagHasTypeChar);
+    //HadTimeout := HadTimeout and LastExecwasTimeOut;
+
+    if HadTimeout then DoTimeoutFeedback;
 
     // try Insert Break breakpoint
     // we might have rtl symbols
@@ -5772,7 +5786,7 @@ procedure TGDBMIDebuggerProperties.SetTimeoutForEval(const AValue: Integer);
 begin
   if FTimeoutForEval = AValue then exit;
   FTimeoutForEval := AValue;
-  if (FTimeoutForEval <> -1) and (FTimeoutForEval < 100)
+  if (FTimeoutForEval <> -1) and (FTimeoutForEval < 50)
   then FTimeoutForEval := -1;
 end;
 
@@ -5788,7 +5802,7 @@ begin
   FConsoleTty := '';
   {$ENDIF}
   {$IFDEF darwin}
-  FTimeoutForEval := 500;
+  FTimeoutForEval := 250;
   {$ELSE darwin}
   FTimeoutForEval := -1;
   {$ENDIF}
@@ -9664,9 +9678,8 @@ function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
         Result := True;
         DoDbgEvent(ecDebugger, etDefault, Format(gdbmiTimeOutForCmd, [ACommand]));
         // TODO: use feedback dialog
-        if DebuggerProperties.WarnOnTimeOut then
-          MessageDlg('Warning', 'A timeout occured, the debugger will try to continue, but further error may occur later',
-                     mtWarning, [mbOK], 0);
+        FLastExecwasTimeOut := True;
+        DoTimeoutFeedback;
       end
       else
       if List.Values['value'] = '7'
@@ -9691,6 +9704,7 @@ begin
   AResult.State := dsNone;
   AResult.Flags := [];
   FLastExecCommand := ACommand;
+  FLastExecwasTimeOut := False;
 
   if (ATimeOut = -1) and (DefaultTimeOut > 0)
   then ATimeOut := DefaultTimeOut;
@@ -9745,6 +9759,13 @@ function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
   AFlags: TGDBMICommandFlags = []; ATimeOut: Integer = -1): Boolean;
 begin
   Result := ExecuteCommand(Format(ACommand, AValues), AResult, AFlags, ATimeOut);
+end;
+
+procedure TGDBMIDebuggerCommand.DoTimeoutFeedback;
+begin
+  if DebuggerProperties.WarnOnTimeOut
+  then MessageDlg('Warning', 'A timeout occured, the debugger will try to continue, but further error may occur later',
+                  mtWarning, [mbOK], 0);
 end;
 
 function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult;ATimeOut: Integer = -1): Boolean;
