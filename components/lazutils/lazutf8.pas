@@ -68,7 +68,6 @@ function UnicodeLowercase(u: cardinal): cardinal;
 function UTF8LowerCaseMattias(const s: utf8string): utf8string;
 {$endif}
 function UTF8LowerCase(const AInStr: utf8string; ALanguage: utf8string=''): utf8string;
-function UTF8LowerCase2(const AInStr: utf8string; ALocale: utf8string=''): utf8string;
 function UTF8UpperCase(const AInStr: utf8string; ALanguage: utf8string=''): utf8string;
 {function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
 //                                  StopOnNonASCII: Boolean = false): PtrInt;
@@ -1192,365 +1191,6 @@ begin
   until false;
 end;
 {$endif}
-
-function UTF8LowerCase2(const AInStr: utf8string; ALocale: utf8string =''): utf8string;
-const
-  ResultSizeIncr = 10;
-var
-  CounterDiff, ExtraResultBytes: PtrInt;
-  InStr, InStrEnd, OutStr: PChar;
-  // Language identification
-  IsTurkish: Boolean;
-  c, d: Char;
-
-  procedure IncreaseResult;
-  begin
-    if -CounterDiff < ExtraResultBytes - 1 then exit;
-    OutStr := PChar(OutStr - PChar(Result));
-    SetLength(Result,Length(Result)+ResultSizeIncr);// Increase the buffer
-    OutStr := PtrInt(OutStr) + PChar(Result);
-    inc(ExtraResultBytes, ResultSizeIncr);
-  end;
-
-  procedure HandleDualByte; inline;
-  begin
-    case c of
-      #$C3:
-        begin
-          if d in [#$80..#$9E] then
-            OutStr[-1]  := chr(ord(d) + $20);
-        end;
-      // $C481..$C4A9: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
-      // Turkish capital dotted i to small dotted i
-      // $C4B0 -> 'i'
-      // $C4B1 turkish lowercase undotted ı
-      // $C4B2..$C4B6: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
-      // $C4B7: ĸ => K ?
-      // $C4B8..$C588: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
-      #$C4:
-        begin
-          case d of
-            #$81..#$A9, #$B2..#$B6: //0
-              begin
-                if ord(d) mod 2 = 0 then
-                  OutStr[-1]  := chr(ord(d) + 1);
-              end;
-            #$B8..#$FF: //1
-              begin
-                if ord(d) mod 2 = 1 then
-                  OutStr[-1]  := chr(ord(d) + 1);
-              end;
-            #$B0:            // Turkish capital dotted i to small dotted i
-              begin
-                dec(OutStr, 1);
-                OutStr[-1] := 'i';
-                inc(CounterDiff, 1);
-                //break; // InSTr and OutStr are pointing to different indexes
-              end;
-          end;
-        end;
-      // $C589 ŉ => ?
-      // $C58A..$C5B7: if OldChar mod 2 = 0 then NewChar := OldChar + 1;
-      // $C5B8:        NewChar := $C3BF; // Ÿ
-      // $C5B9..$C8B3: if OldChar mod 2 = 1 then NewChar := OldChar + 1;
-      #$C5:
-        begin
-          case d of
-            #$8A..#$B7: //0
-              begin
-                if ord(d) mod 2 = 0 then
-                  OutStr[-1]  := chr(ord(d) + 1);
-              end;
-            #$00..#$88, #$B9..#$FF: //1
-              begin
-                if ord(d) mod 2 = 1 then
-                  OutStr[-1]  := chr(ord(d) + 1);
-              end;
-            #$B8:  // Ÿ
-            begin
-              OutStr[-2] := #$C3;
-              OutStr[-1] := #$BF;
-            end;
-          end;
-        end;
-      #$C6..#$C7:
-        begin
-          if ord(d) mod 2 = 1 then
-            OutStr[-1]  := chr(ord(d) + 1);
-        end;
-      #$C8:
-        begin
-          if (d in [#$00..#$B3]) and (ord(d) mod 2 = 1) then
-            OutStr[-1]  := chr(ord(d) + 1);
-        end;
-      // $CE91..$CE9F: NewChar := OldChar + $20; // Greek Characters
-      // $CEA0..$CEA9: NewChar := OldChar + $E0; // Greek Characters
-      #$CE:   // Greek Characters
-        begin
-          case d of
-            #$91..#$9F:
-              begin
-                OutStr[-1]  := chr(ord(d) + $20);
-              end;
-            #$A0..#$A9:
-              begin
-                OutStr[-2]  := chr(ord(c)+1);
-                OutStr[-1]  := chr(ord(d) - $10);
-              end;
-          end;
-        end;
-      // $D080..$D08F: NewChar := OldChar + $110; // Cyrillic alphabet
-      // $D090..$D09F: NewChar := OldChar + $20; // Cyrillic alphabet
-      // $D0A0..$D0AF: NewChar := OldChar + $E0; // Cyrillic alphabet
-      #$D0:   // Cyrillic alphabet
-        begin
-          case d of
-            #$80..#$8F:
-              begin
-                OutStr[-2]  := chr(ord(c)+1);
-                OutStr[-1]  := chr(ord(d) + $10);
-              end;
-            #$90..#$9F:
-              begin
-                OutStr[-1]  := chr(ord(d) + $20);
-              end;
-            #$A0..#$AF:
-              begin
-                OutStr[-2]  := chr(ord(c)+1);
-                OutStr[-1]  := chr(ord(d) - $20);
-              end;
-          end;
-        end;
-        // Archaic and non-slavic cyrillic 460-47F = D1A0-D1BF
-        // These require just adding 1 to get the lowercase
-        #$D1:
-          begin
-            case d of
-              #$A0..#$BF:
-              begin
-                if ord(d) mod 2 = 0 then
-                  OutStr[-1]  := chr(ord(d) + 1);
-              end;
-            end;
-          end;
-        // Archaic and non-slavic cyrillic 480-4BF = D280-D2BF
-        // These mostly require just adding 1 to get the lowercase
-        #$D2:
-          begin
-            case d of
-              #$80: OutStr[-1]  := chr(ord(d) + 1);
-              // #$81 is already lowercase
-              // #$82-#$89 ???
-              #$8A..#$BF:
-              begin
-                if ord(d) mod 2 = 0 then
-                  OutStr[-1]  := chr(ord(d) + 1);
-              end;
-            end;
-          end;
-    end;
-  end;
-
-  procedure HandleTripplByte; inline;
-  begin
-    //case c of
-      // Georgian codepoints 10A0-10C5 => 2D00-2D25
-      // In UTF-8 this is:
-      // E1 82 A0 - E1 82 BF => E2 B4 80 - E2 B4 9F
-      // E1 83 80 - E1 83 85 => E2 B4 A0 - E2 B4 A5
-      //#$E1:
-      //  begin
-          c := InStr[-1];
-          case d of
-            #$82:
-              begin
-                if (c in [#$A0..#$BF]) then
-                begin
-                  OutStr[-3] := #$E2;
-                  OutStr[-2] := #$B4;
-                  OutStr[-1] := chr(ord(c) - $20);
-                end
-              end;
-            #$83:
-              begin
-                if (c in [#$80..#$85]) then
-                begin
-                  OutStr[-3] := #$E2;
-                  OutStr[-2] := #$B4;
-                  OutStr[-1] := chr(ord(c) + $20);
-                end;
-              end;
-          end;
-    //    end;
-    //end;
-  end;
-
-begin
-  Result:=AInStr;
-  InStr := PChar(AInStr);
-  InStrEnd := InStr + length(AInStr); // points behind last char
-
-  // Does a fast initial parsing of the string to maybe avoid doing
-  // UniqueString if the resulting string will be identical
-  while (InStr < InStrEnd) do
-  begin
-    c := InStr^;
-    case c of
-    'A'..'Z',#$C3, #$C4, #$C5..#$C8, #$CE, #$D0..#$D2, #$E1: Break;
-    // already lower, or otherwhise not affected
-    else
-      inc(InStr);
-    end;
-  end;
-
-  if InStr >= InStrEnd then
-    exit;
-
-  // Language identification
-  IsTurkish := ALocale = 'tu';
-
-  ExtraResultBytes := 0;
-  UniqueString(Result);
-  OutStr := PChar(Result) + (InStr - PChar(AInStr));
-  CounterDiff := 0;
-
-  while(true) do begin
-    // Alternate between 2 loops, depnding on CounterDiff, less IF inside the loops
-
-    while(true) do begin
-      (* InStr and OutStr pointing to te same relative position.
-         Result at/after OutStr is a copy of AInStr. Using OutStr as Source
-         The loop will be exited via break, if InStr and OutStr are increased in different steps
-      *)
-      c := OutStr^;
-      inc(InStr);
-      inc(OutStr);
-      case c of  // if NOT TABLE
-        #0:
-          begin
-            if InStr >= InStrEnd then begin
-              if ExtraResultBytes <> 0 then
-                SetLength(Result,OutStr-1 - PChar(Result));
-              exit;
-            end;
-        end;
-        'A'..'Z':
-          begin
-            { First ASCII chars }
-            // Special turkish handling
-            // capital undotted I to small undotted i
-            if IsTurkish and (c = 'I') then
-            begin
-              IncreaseResult;
-              OutStr[-1] := #$C4;
-              OutStr^ := #$B1;
-              inc(OutStr);
-              dec(CounterDiff);
-              break; // InSTr and OutStr are pointing to different indexes
-            end
-            else
-            begin
-                OutStr[-1] := chr(ord(c)+32);
-            end;
-          end;
-        #$c3..#$E1:
-          begin
-            case c of
-              // Latin Characters 0000–0FFF http://en.wikibooks.org/wiki/Unicode/Character_reference/0000-0FFF
-              // $C380..$C39E: NewChar := OldChar + $20;
-              // $C39F: ß already lowercase
-              #$c3..#$D2:
-                begin
-                  d := OutStr[0]; // 2nd char in 2 byte utf8
-                  inc(InStr);
-                  inc(OutStr);
-                  HandleDualByte;
-                  if CounterDiff <> 0 then break;
-                end; //c3..d2
-              #$e1:
-                begin
-                  d := OutStr[0]; // 2nd char in 2 byte utf8
-                  inc(InStr, 2);
-                  inc(OutStr, 2);
-                  HandleTripplByte;
-                end;
-            end;
-          end;
-      end; // Case c
-    end;
-
-    while (true) do begin
-      (* InStr and OutStr pointing to te different relative position.
-         All chars from AInStr must be copied to their new pos in Result
-         The loop will be exited via break, if InStr and OutStr are syncronized again
-      *)
-      c := InStr^;
-      case c of  // if NOT TABLE
-        #0:
-        begin
-          if InStr >= InStrEnd then
-          begin
-            SetLength(Result,OutStr - PChar(Result));
-            exit;
-          end;
-          OutStr^:=c;
-          inc(InStr);
-          inc(OutStr);
-        end;
-        'A'..'Z':
-          begin
-            { First ASCII chars }
-            // Special turkish handling
-            // capital undotted I to small undotted i
-            if IsTurkish and (c = 'I') then
-            begin
-              IncreaseResult;
-              OutStr^ := #$C4;
-              inc(OutStr);
-              OutStr^ := #$B1;
-              inc(InStr);
-              inc(OutStr);
-              dec(CounterDiff);
-              if CounterDiff = 0 then break;
-            end
-            else
-            begin
-              OutStr^ := chr(ord(c)+32);
-              inc(InStr);
-              inc(OutStr);
-            end;
-          end;
-         #$c3..#$D2:
-            begin
-              OutStr^  := c;
-              d := InStr[1]; // 2nd char in 2 byte utf8
-              OutStr[1]  := d;
-              inc(InStr, 2);
-              inc(OutStr, 2);
-              HandleDualByte;
-              if CounterDiff = 0 then break;
-            end; // c3..d2
-          #$e1:
-            begin
-              OutStr^  := c;
-              d := InStr[1]; // 2nd char in 2 byte utf8
-              OutStr[1]  := d;
-              OutStr[2]  := InStr[2];
-              inc(InStr, 3);
-              inc(OutStr, 3);
-              HandleTripplByte;
-            end;
-        else
-          begin
-            // Copy the character if the string was disaligned by previous changes
-            OutStr^:=c;
-            inc(InStr);
-            inc(OutStr);
-          end;
-      end; // Case InStr^
-    end;
-  end;
-end;
 
 {
   AInStr - The input string
@@ -2951,11 +2591,78 @@ begin
         $CEAD: NewChar := $CE88;
         $CEAE: NewChar := $CE89;
         $CEAF: NewChar := $CE8A;
-        //
+        {
+        03B0 = CE B0
+
+        03B0;GREEK SMALL LETTER UPSILON WITH DIALYTIKA AND TONOS;Ll;0;L;03CB 0301;;;;N;GREEK SMALL LETTER UPSILON DIAERESIS TONOS;;;;
+        03B1;GREEK SMALL LETTER ALPHA;Ll;0;L;;;;;N;;;0391;;0391
+        ...
+        03BF;GREEK SMALL LETTER OMICRON;Ll;0;L;;;;;N;;;039F;;039F
+        }
         $CEB1..$CEBF: NewChar := OldChar - $20; // Greek Characters
-        $CF80..$CF89: NewChar := OldChar - $E0; // Greek Characters
+        {
+        03C0 = CF 80
+
+        03C0;GREEK SMALL LETTER PI;Ll;0;L;;;;;N;;;03A0;;03A0 CF 80 => CE A0
+        03C1;GREEK SMALL LETTER RHO;Ll;0;L;;;;;N;;;03A1;;03A1
+        03C2;GREEK SMALL LETTER FINAL SIGMA;Ll;0;L;;;;;N;;;03A3;;03A3
+        03C3;GREEK SMALL LETTER SIGMA;Ll;0;L;;;;;N;;;03A3;;03A3
+        03C4;GREEK SMALL LETTER TAU;Ll;0;L;;;;;N;;;03A4;;03A4
+        ....
+        03CB;GREEK SMALL LETTER UPSILON WITH DIALYTIKA;Ll;0;L;03C5 0308;;;;N;GREEK SMALL LETTER UPSILON DIAERESIS;;03AB;;03AB
+        03CC;GREEK SMALL LETTER OMICRON WITH TONOS;Ll;0;L;03BF 0301;;;;N;GREEK SMALL LETTER OMICRON TONOS;;038C;;038C
+        03CD;GREEK SMALL LETTER UPSILON WITH TONOS;Ll;0;L;03C5 0301;;;;N;GREEK SMALL LETTER UPSILON TONOS;;038E;;038E
+        03CE;GREEK SMALL LETTER OMEGA WITH TONOS;Ll;0;L;03C9 0301;;;;N;GREEK SMALL LETTER OMEGA TONOS;;038F;;038F
+        03CF;GREEK CAPITAL KAI SYMBOL;Lu;0;L;;;;;N;;;;03D7;
+        }
+        $CF80,$CF81,$CF83..$CF8B: NewChar := OldChar - $E0; // Greek Characters
+        $CF82: NewChar := $CEA3;
+        $CF8C: NewChar := $CE8C;
+        $CF8D: NewChar := $CE8E;
+        $CF8E: NewChar := $CE8F;
+        {
+        03D0 = CF 90
+
+        03D0;GREEK BETA SYMBOL;Ll;0;L;<compat> 03B2;;;;N;GREEK SMALL LETTER CURLED BETA;;0392;;0392 CF 90 => CE 92
+        03D1;GREEK THETA SYMBOL;Ll;0;L;<compat> 03B8;;;;N;GREEK SMALL LETTER SCRIPT THETA;;0398;;0398 => CE 98
+        03D5;GREEK PHI SYMBOL;Ll;0;L;<compat> 03C6;;;;N;GREEK SMALL LETTER SCRIPT PHI;;03A6;;03A6 => CE A6
+        03D6;GREEK PI SYMBOL;Ll;0;L;<compat> 03C0;;;;N;GREEK SMALL LETTER OMEGA PI;;03A0;;03A0 => CE A0
+        03D7;GREEK KAI SYMBOL;Ll;0;L;;;;;N;;;03CF;;03CF => CF 8F
+        03D9;GREEK SMALL LETTER ARCHAIC KOPPA;Ll;0;L;;;;;N;;;03D8;;03D8
+        03DB;GREEK SMALL LETTER STIGMA;Ll;0;L;;;;;N;;;03DA;;03DA
+        03DD;GREEK SMALL LETTER DIGAMMA;Ll;0;L;;;;;N;;;03DC;;03DC
+        03DF;GREEK SMALL LETTER KOPPA;Ll;0;L;;;;;N;;;03DE;;03DE
+        }
+        $CF90: NewChar := $CE92;
+        $CF91: NewChar := $CE98;
+        $CF95: NewChar := $CEA6;
+        $CF96: NewChar := $CEA0;
+        $CF97: NewChar := $CF8F;
+        $CF99..$CF9F: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        // 03E0 = CF A0
+        $CFA0..$CFAF: if OldChar mod 2 = 1 then NewChar := OldChar - 1;
+        {
+        03F0 = CF B0
+
+        03F0;GREEK KAPPA SYMBOL;Ll;0;L;<compat> 03BA;;;;N;GREEK SMALL LETTER SCRIPT KAPPA;;039A;;039A => CE 9A
+        03F1;GREEK RHO SYMBOL;Ll;0;L;<compat> 03C1;;;;N;GREEK SMALL LETTER TAILED RHO;;03A1;;03A1 => CE A1
+        03F2;GREEK LUNATE SIGMA SYMBOL;Ll;0;L;<compat> 03C2;;;;N;GREEK SMALL LETTER LUNATE SIGMA;;03F9;;03F9
+        03F5;GREEK LUNATE EPSILON SYMBOL;Ll;0;L;<compat> 03B5;;;;N;;;0395;;0395 => CE 95
+        03F8;GREEK SMALL LETTER SHO;Ll;0;L;;;;;N;;;03F7;;03F7
+        03FB;GREEK SMALL LETTER SAN;Ll;0;L;;;;;N;;;03FA;;03FA
+        }
+        $CFB0: NewChar := $CE9A;
+        $CFB1: NewChar := $CEA1;
+        $CFB2: NewChar := $CFB9;
+        $CFB5: NewChar := $CE95;
+        $CFB8: NewChar := $CFB7;
+        $CFBB: NewChar := $CFBA;
+        // 0400 = D0 80 ... 042F everything already uppercase
+        // 0430 = D0 B0
         $D0B0..$D0BF: NewChar := OldChar - $20; // Cyrillic alphabet
+        // 0440 = D1 80
         $D180..$D18F: NewChar := OldChar - $E0; // Cyrillic alphabet
+        // 0450 = D1 90
         $D190..$D19F: NewChar := OldChar - $110; // Cyrillic alphabet
         end;
 
