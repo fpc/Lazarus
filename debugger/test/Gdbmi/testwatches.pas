@@ -231,7 +231,10 @@ begin
       Result[i].ExpTypeName  := ATpNm;
       Result[i].Flgs         := AFlgs;
       if ( (fnoDwrf in AFlgs) and (i in [stDwarf, stDwarfSet, stDwarf3]) ) or
-         ( (fnoDwrfNoSet in AFlgs) and (i in [stDwarf]) )
+         ( (fnoDwrfNoSet in AFlgs) and (i in [stDwarf]) ) or
+         ( (fnoDwrf2 in AFlgs) and (i in [stDwarf, stDwarfSet]) ) or
+         ( (fnoDwrf3 in AFlgs) and (i in [stDwarf3]) ) or
+         ( (fnoStabs in AFlgs) and (i in [stStabs]) )
       then Result[i].Flgs := Result[i].Flgs + [fTstSkip];
       Result[i].MinGdb := AMinGdb;
       Result[i].MinFpc := AMinFpc;
@@ -560,9 +563,9 @@ begin
   r:=AddFmtDef('PMyAnsiString(VArgPMyAnsiString)',    MatchPointer,  skPointer,  '^(\^|PMy)AnsiString$', [fTpMtch]);
      UpdRes(r, stStabs,                                                          '^(PMyAnsiString|PPChar)$', [fTpMtch]);
 // TODO,, IDE derefs with dwarf3
-  r:=AddFmtDef('^AnsiString(ArgPMyAnsiString)',       MatchPointer, skPointer,   '^(\^AnsiString|\^\^char)', [fnoDwrf3, fTpMtch]);
+  r:=AddFmtDef('^AnsiString(ArgPMyAnsiString)',       MatchPointer, skPointer,   '^(\^AnsiString|\^\^char)', [fTpMtch]);
      UpdRes(r, stStabs,                                                          '^(\^AnsiString|PPChar)$', [fTpMtch]);
-  r:=AddFmtDef('^AnsiString(VArgPMyAnsiString)',      MatchPointer,  skPointer,  '^(\^AnsiString|\^\^char)', [fnoDwrf3, fTpMtch]);
+  r:=AddFmtDef('^AnsiString(VArgPMyAnsiString)',      MatchPointer,  skPointer,  '^(\^AnsiString|\^\^char)', [fTpMtch]);
      UpdRes(r, stStabs,                                                          '^(\^AnsiString|PPChar)$', [fTpMtch]);
 
   r:=AddStringFmtDef('AnsiString(ArgPMyAnsiString^)',  '''MyAnsi P''$',     '^((TMy)?AnsiString|\^char)$', [fTpMtch]);
@@ -1137,6 +1140,7 @@ begin
   TestBaseName := NamePreFix;
   if not HasTestArraysData then exit;
   Only := StrToIntDef(TestControlForm.EdOnlyWatch.Text, -1);
+  OnlyNamePart := '';OnlyName := '';
   if Only < 0
   then begin
     OnlyName := TestControlForm.EdOnlyWatch.Text;

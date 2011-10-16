@@ -606,7 +606,7 @@ end;
 
 function TGDBTestCase.TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
 begin
-  TestEquals(Name, Expected, Got, MinGdbVers, 0, AIgnoreReason);
+  Result := TestEquals(Name, Expected, Got, MinGdbVers, 0, AIgnoreReason);
 end;
 
 function TGDBTestCase.TestEquals(Name: string; Expected, Got: string; MinGdbVers: Integer;
@@ -625,7 +625,7 @@ end;
 
 function TGDBTestCase.TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
 begin
-  TestEquals(Name, Expected, Got, MinGdbVers, 0, AIgnoreReason);
+  Result := TestEquals(Name, Expected, Got, MinGdbVers, 0, AIgnoreReason);
 end;
 
 function TGDBTestCase.TestEquals(Name: string; Expected, Got: integer; MinGdbVers: Integer;
@@ -639,7 +639,7 @@ end;
 
 function TGDBTestCase.TestTrue(Name: string; Got: Boolean; MinGdbVers: Integer; AIgnoreReason: String = ''): Boolean;
 begin
-  TestTrue(Name, Got, MinGdbVers, 0, AIgnoreReason);
+  Result := TestTrue(Name, Got, MinGdbVers, 0, AIgnoreReason);
 end;
 
 function TGDBTestCase.TestTrue(Name: string; Got: Boolean; MinGdbVers: Integer;
@@ -653,7 +653,7 @@ end;
 
 function TGDBTestCase.TestFalse(Name: string; Got: Boolean; MinGdbVers: Integer; AIgnoreReason: String = ''): Boolean;
 begin
-  TestFalse(Name, Got, MinGdbVers, 0, AIgnoreReason);
+  Result := TestFalse(Name, Got, MinGdbVers, 0, AIgnoreReason);
 end;
 
 function TGDBTestCase.TestFalse(Name: string; Got: Boolean; MinGdbVers: Integer;
