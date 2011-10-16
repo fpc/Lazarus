@@ -62,8 +62,7 @@ end;
 procedure TDBLookupListBox.InitializeWnd;
 begin
   inherited InitializeWnd;
-  if FDataLink.Active then
-    UpdateLookup;
+  UpdateLookup;
 end;
 
 procedure TDBLookupListBox.KeyDown(var Key: Word; Shift: TShiftState);

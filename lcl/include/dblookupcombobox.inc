@@ -59,8 +59,7 @@ end;
 procedure TDBLookupComboBox.InitializeWnd;
 begin
   inherited InitializeWnd;
-  if FDataLink.Active then
-    UpdateLookup;
+  UpdateLookup;
 end;
 
 function TDBLookupComboBox.GetKeyField: string;
