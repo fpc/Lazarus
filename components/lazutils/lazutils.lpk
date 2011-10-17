@@ -25,7 +25,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="24">
+    <Files Count="27">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="laz2_DOM"/>
@@ -121,8 +121,20 @@
       </Item23>
       <Item24>
         <Filename Value="lazutilsstrconsts.pas"/>
-        <UnitName Value="LCLStrConsts"/>
+        <UnitName Value="LazUtilsStrConsts"/>
       </Item24>
+      <Item25>
+        <Filename Value="lconvencoding.pas"/>
+        <UnitName Value="LConvEncoding"/>
+      </Item25>
+      <Item26>
+        <Filename Value="asiancodepages.inc"/>
+        <Type Value="Include"/>
+      </Item26>
+      <Item27>
+        <Filename Value="asiancodepagefunctions.inc"/>
+        <Type Value="Include"/>
+      </Item27>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

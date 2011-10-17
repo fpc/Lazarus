@@ -10,7 +10,7 @@ uses
   laz2_DOM, Laz2_XMLCfg, laz2_XMLRead, laz2_xmlutils, laz2_XMLWrite, Laz_DOM, 
   Laz_XMLCfg, Laz_XMLRead, Laz_XMLStreaming, Laz_XMLWrite, LazFileUtils, 
   LazFileCache, LUResStrings, LazUTF8, LazDbgLog, FileUtil, lazutf8classes, 
-  Masks, LazUtilsStrConsts, LazarusPackageIntf;
+  Masks, LazUtilsStrConsts, LConvEncoding, LazarusPackageIntf;
 
 implementation
 

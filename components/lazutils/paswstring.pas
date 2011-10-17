@@ -19,7 +19,7 @@ unit paswstring;
 
 interface
 
-uses SysUtils, lazutf8;
+uses SysUtils, lazutf8, lconvencoding;
 
 procedure SetPasWidestringManager;
 
@@ -53,6 +53,19 @@ begin
   dest := UTF8ToUTF16(ansistr);
 end;
 
+procedure Ansi2UnicodeMove(source:pchar;var dest:UnicodeString;len:SizeInt);
+var
+  ansistr: ansistring;
+begin
+  // Copy the originating string taking into account the specified length
+  SetLength(ansistr, len+1);
+  System.Move(source^, ansistr, len);
+  ansistr[len+1] := #0;
+
+  // Now convert it, using UTF-16 -> UTF-8
+  dest := UTF8ToUTF16(ansistr);
+end;
+
 function LowerWideString(const s : WideString) : WideString;
 var
   str: utf8string;
@@ -71,6 +84,23 @@ begin
   Result := UTF8ToUTF16(str);
 end;
 
+function LowerUnicodeString(const s : UnicodeString) : UnicodeString;
+var
+  str: utf8string;
+begin
+  str := UTF16ToUTF8(s);
+  str := UTF8LowerCase(str);
+  Result := UTF8ToUTF16(str);
+end;
+
+function UpperUnicodeString(const s : UnicodeString) : UnicodeString;
+var
+  str: utf8string;
+begin
+  str := UTF16ToUTF8(s);
+  str := UTF8UpperCase(str);
+  Result := UTF8ToUTF16(str);
+end;
 
 procedure EnsureAnsiLen(var S: AnsiString; const len: SizeInt); inline;
 begin
@@ -289,9 +319,9 @@ begin
 
   { Unicode }
   PasWideStringManager.Unicode2AnsiMoveProc:=@Wide2AnsiMove;
-  PasWideStringManager.Ansi2UnicodeMoveProc:=@Ansi2WideMove;
-  PasWideStringManager.UpperUnicodeStringProc:=@UpperWideString;
-  PasWideStringManager.LowerUnicodeStringProc:=@LowerWideString;
+  PasWideStringManager.Ansi2UnicodeMoveProc:=@Ansi2UnicodeMove;
+  PasWideStringManager.UpperUnicodeStringProc:=@UpperUnicodeString;
+  PasWideStringManager.LowerUnicodeStringProc:=@LowerUnicodeString;
 
   SetUnicodeStringManager(PasWideStringManager);
 end;

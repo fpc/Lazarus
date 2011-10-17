@@ -46,8 +46,8 @@ function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt;
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF8(u: cardinal; Buf: PChar): integer; inline;
 function UnicodeToUTF8SkipErrors(u: cardinal; Buf: PChar): integer;
-{function UnicodeToUTF8(u: cardinal): shortstring; inline;
-function UTF8ToDoubleByteString(const s: string): string;
+function UnicodeToUTF8(u: cardinal): shortstring; inline;
+{function UTF8ToDoubleByteString(const s: string): string;
 function UTF8ToDoubleByte(UTF8Str: PChar; Len: PtrInt; DBStr: PByte): PtrInt;
 function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
                                   BytePos: integer): integer;
@@ -55,9 +55,9 @@ function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
 function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar;
 // find the byte index of the n-th UTF8 character, ignoring BIDI (byte len of substr)
 function UTF8CharToByteIndex(UTF8Str: PChar; Len, CharIndex: PtrInt): PtrInt;
-procedure UTF8FixBroken(P: PChar);
+procedure UTF8FixBroken(P: PChar);}
 function UTF8CharacterStrictLength(P: PChar): integer;
-function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: PtrInt) : string;
+{function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: PtrInt) : string;
 function UTF8Pos(const SearchForText, SearchInText: string): PtrInt;
 function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string;
 procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
@@ -1043,6 +1043,49 @@ begin
   else
     Result:=0;
   end;
+end;
+
+function UnicodeToUTF8(u: cardinal): shortstring;
+begin
+  Result[0]:=chr(UnicodeToUTF8(u,@Result[1]));
+end;
+
+function UTF8CharacterStrictLength(P: PChar): integer;
+begin
+  if p=nil then exit(0);
+  if ord(p^)<%10000000 then begin
+    // regular single byte character
+    exit(1);
+  end
+  else if ord(p^)<%11000000 then begin
+    // invalid single byte character
+    exit(0);
+  end
+  else if ((ord(p^) and %11100000) = %11000000) then begin
+    // should be 2 byte character
+    if (ord(p[1]) and %11000000) = %10000000 then
+      exit(2)
+    else
+      exit(0);
+  end
+  else if ((ord(p^) and %11110000) = %11100000) then begin
+    // should be 3 byte character
+    if ((ord(p[1]) and %11000000) = %10000000)
+    and ((ord(p[2]) and %11000000) = %10000000) then
+      exit(3)
+    else
+      exit(0);
+  end
+  else if ((ord(p^) and %11111000) = %11110000) then begin
+    // should be 4 byte character
+    if ((ord(p[1]) and %11000000) = %10000000)
+    and ((ord(p[2]) and %11000000) = %10000000)
+    and ((ord(p[3]) and %11000000) = %10000000) then
+      exit(4)
+    else
+      exit(0);
+  end else
+    exit(0);
 end;
 
 {$ifdef LAZUTF8_USE_TABLES}

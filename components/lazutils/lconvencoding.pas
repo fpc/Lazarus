@@ -15,16 +15,17 @@
 unit LConvEncoding;
 
 {$mode objfpc}{$H+}
-{$include include/lcl_defines.inc}
 
 interface
+
+{$DEFINE DisableIconv}
 
 {$IFNDEF DisableIconv}
 {$IFDEF UNIX}{$IF not defined(VER2_2_0) and not defined(VER2_2_2)}{$DEFINE HasIconvEnc}{$ENDIF}{$ENDIF}
 {$ENDIF}
 
 uses
-  SysUtils, Classes, dos, LCLProc
+  SysUtils, Classes, dos, LazUTF8
   {$IFDEF HasIconvEnc},iconvenc{$ENDIF};
 const
   EncodingUTF8 = 'utf8';
@@ -127,8 +128,8 @@ uses Windows;
 var EncodingValid: boolean = false;
     DefaultTextEncoding: string = EncodingAnsi;
 
-{$include include/asiancodepages.inc}
-{$include include/asiancodepagefunctions.inc}
+{$include asiancodepages.inc}
+{$include asiancodepagefunctions.inc}
 
 {$IFDEF Windows}
 function GetWindowsEncoding: string;
@@ -4766,7 +4767,7 @@ begin
   end;
   len:=PtrUInt(Dest)-PtrUInt(Result);
   if len>length(Result) then
-    RaiseGDBException('');
+    raise Exception.Create('');
   SetLength(Result,len);
 end;
 
@@ -4798,7 +4799,7 @@ begin
   end;
   len:=PtrUInt(Dest)-PtrUInt(Result);
   if len>length(Result) then
-    RaiseGDBException('');
+    raise Exception.Create('');
   SetLength(Result,len);
 end;
 
@@ -6121,7 +6122,7 @@ begin
   end;
   len:=PtrUInt(Dest)-PtrUInt(Result);
   if len>length(Result) then
-    RaiseGDBException('');
+    raise Exception.Create('');
   SetLength(Result,len);
 end;
 
@@ -6161,7 +6162,7 @@ begin
   end;
   len:=PtrUInt(Dest)-PtrUInt(Result);
   if len>length(Result) then
-    RaiseGDBException('');
+    raise Exception.Create('');
   SetLength(Result,len);
 end;
 
