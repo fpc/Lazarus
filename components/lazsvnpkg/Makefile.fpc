@@ -10,7 +10,7 @@ version=0.0.1
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) lib/$(CPU_TARGET)-$(OS_TARGET) ../../units/$(CPU_TARGET)-$(OS_TARGET) ../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../synedit/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) lib/$(CPU_TARGET)-$(OS_TARGET) ../../units/$(CPU_TARGET)-$(OS_TARGET) ../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../synedit/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Sgi -O1 -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]

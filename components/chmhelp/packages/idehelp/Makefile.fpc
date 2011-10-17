@@ -10,7 +10,7 @@ version=0.1
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../help/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../help/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Scgi -O1 -gl -vewnhi -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]

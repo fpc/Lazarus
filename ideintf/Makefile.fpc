@@ -10,7 +10,7 @@ version=1.0
 
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Scghi -O1 -gl -vew -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]

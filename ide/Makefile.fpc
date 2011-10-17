@@ -22,6 +22,7 @@ unitdir=../lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
         ../components/synedit/units/$(CPU_TARGET)-$(OS_TARGET) \
         ../components/lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET) \
+		../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
         ../components/custom \
         ../components/mpaslex \
         ../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) \

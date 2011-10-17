@@ -10,7 +10,7 @@ version=1.0
 
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Scghi -O1 -gl -vew -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]

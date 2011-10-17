@@ -10,7 +10,7 @@ version=0.5
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=unix win32 carbon qt ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=unix win32 carbon qt ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
 includedir=unix win32 carbon qt
 options= -MObjFPC -Scgi -O1 -g -gl -vewnhi -l -dUseCache -dNativePrint -dLCL -dLCL$(LCL_PLATFORM)
 
