@@ -1,4 +1,4 @@
-unit breakpropertydlggroups;
+unit BreakPropertyDlgGroups;
 
 {$mode objfpc}{$H+}
 
@@ -28,7 +28,7 @@ type
                        AGroupList: String;
                        AAvailableGroups: TIDEBreakPointGroups;
                        AAction: TBreakPointGroupAction
-                      );
+                      ); reintroduce;
     destructor Destroy; override;
     function ShowModal: Integer; override;
   end; 
