@@ -1,4 +1,4 @@
-{  $Id$  }
+{  $Id: fileutil.pas 32656 2011-10-03 15:09:04Z sekelsenmat $  }
 {
  /***************************************************************************
                                fileutil.pas
@@ -27,7 +27,7 @@ interface
 
 uses
   // For Smart Linking: Do not use the LCL!
-  SysConst, Classes, SysUtils, LCLStrConsts, Masks;
+  SysConst, Classes, SysUtils, Masks, LazUtilsStrConsts;
   
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}

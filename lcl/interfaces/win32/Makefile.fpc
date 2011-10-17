@@ -10,7 +10,7 @@ implicitunits=winext win32def win32proc win32int
 
 [compiler]
 options=-gl
-unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/win32
 
 [clean]

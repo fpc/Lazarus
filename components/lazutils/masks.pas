@@ -26,7 +26,7 @@ interface
 
 uses
   // For Smart Linking: Do not use the LCL!
-  Classes, SysUtils, Contnrs, LCLStrConsts;
+  Classes, SysUtils, Contnrs, LazUtilsStrConsts;
 
 type
   TMaskCharType = (mcChar, mcCharSet, mcAnyChar, mcAnyText);

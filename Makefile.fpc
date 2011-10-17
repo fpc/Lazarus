@@ -52,11 +52,16 @@ ide:
 	$(MAKE) -C ide ide
 
 #-----------------------------------------------------------------------------
+lazutils: 
+	$(MAKE) -C packager/registration
+	$(MAKE) -C components/lazutils
+
+#-----------------------------------------------------------------------------
 idepkg:
 	$(MAKE) -C ide idepkg
 
 #-----------------------------------------------------------------------------
-bigide: packager/registration lcl ideintf bigidecomponents idebig starter lazbuilder
+bigide: packager/registration lazutils lcl ideintf bigidecomponents idebig starter lazbuilder
 
 #-----------------------------------------------------------------------------
 idebig:

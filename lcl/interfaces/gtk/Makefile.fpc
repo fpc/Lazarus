@@ -10,7 +10,7 @@ implicitunits=gtkdef gtkglobals gtkint gtkmsgqueue gtkproc gtkwinapiwindow
 
 [compiler]
 options=-gl -dgtk1
-unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/gtk
 
 [clean]

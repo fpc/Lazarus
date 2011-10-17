@@ -10,7 +10,7 @@ implicitunits=cocoaint
 
 [compiler]
 options=-gl -dcocoa
-unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/cocoa
 
 [clean]

@@ -25,7 +25,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="17">
+    <Files Count="24">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="laz2_DOM"/>
@@ -95,6 +95,34 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="paswstring"/>
       </Item17>
+      <Item18>
+        <Filename Value="fileutil.pas"/>
+        <UnitName Value="FileUtil"/>
+      </Item18>
+      <Item19>
+        <Filename Value="lazutf8classes.pas"/>
+        <UnitName Value="lazutf8classes"/>
+      </Item19>
+      <Item20>
+        <Filename Value="masks.pas"/>
+        <UnitName Value="Masks"/>
+      </Item20>
+      <Item21>
+        <Filename Value="unixfileutil.inc"/>
+        <Type Value="Include"/>
+      </Item21>
+      <Item22>
+        <Filename Value="winfileutil.inc"/>
+        <Type Value="Include"/>
+      </Item22>
+      <Item23>
+        <Filename Value="fileutil.inc"/>
+        <Type Value="Include"/>
+      </Item23>
+      <Item24>
+        <Filename Value="lazutilsstrconsts.pas"/>
+        <UnitName Value="LCLStrConsts"/>
+      </Item24>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

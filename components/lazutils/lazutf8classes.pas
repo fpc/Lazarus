@@ -5,7 +5,7 @@ unit lazutf8classes;
 interface
 
 uses
-  Classes, SysUtils, fileutil, lclproc;
+  Classes, SysUtils, fileutil, lazutf8;
 
 type
   TFileStreamUTF8 = class(THandleStream)

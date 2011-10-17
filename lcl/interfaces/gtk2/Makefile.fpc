@@ -10,7 +10,7 @@ implicitunits=gtk2int
 
 [compiler]
 options=-gl -dgtk2 
-unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/gtk2
 includedir=.
 

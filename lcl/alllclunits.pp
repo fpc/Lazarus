@@ -10,13 +10,13 @@ uses
   BarChart, CheckLst, Clipbrd, ColorBox, ComCtrls, Controls, CustomTimer, 
   DBActns, DbCtrls, DBGrids, DefaultTranslator, Dialogs, DynamicArray, 
   DynHashArray, DynQueue, EditBtn, ExtCtrls, ExtDlgs, ExtendedStrings, 
-  extgraphics, FileCtrl, FileUtil, Forms, FPCAdds, Graphics, GraphMath, 
-  GraphType, GraphUtil, Grids, HelpIntfs, IcnsTypes, ImageListCache, ImgList, 
+  extgraphics, FileCtrl, Forms, FPCAdds, Graphics, GraphMath, GraphType, 
+  GraphUtil, Grids, HelpIntfs, IcnsTypes, ImageListCache, ImgList, 
   IniPropStorage, InterfaceBase, IntfGraphics, LazConfigStorage, LazHelpHTML, 
   LazHelpIntf, LazLinkedList, LCLClasses, LCLIntf, LCLMemManager, 
   LCLMessageGlue, LCLProc, LCLResCache, LCLStrConsts, LCLType, Menus, 
   LCLUnicodeData, LCLVersion, LConvEncoding, LDockCtrl, LDockCtrlEdit, 
-  LDockTree, LMessages, LResources, maps, MaskEdit, Masks, PairSplitter, 
+  LDockTree, LMessages, LResources, maps, MaskEdit, PairSplitter, 
   PopupNotifier, PostScriptCanvas, PostScriptPrinter, postscriptunicode, 
   Printers, PropertyStorage, RubberBand, ShellCtrls, Spin, StdActns, StdCtrls, 
   StringHashList, TextStrings, Themes, TmSchema, Toolwin, Translations, 
@@ -25,7 +25,7 @@ uses
   WSExtCtrls, WSExtDlgs, WSFactory, WSForms, WSGrids, WSImgList, WSLCLClasses, 
   WSMenus, WSPairSplitter, WSProc, WSReferences, WSSpin, WSStdCtrls, 
   WSToolwin, ActnList, Arrow, AsyncProcess, AvgLvlTree, ButtonPanel, Buttons, 
-  Calendar, RegisterLCL, ValEdit, lazutf8classes, LazarusPackageIntf;
+  Calendar, RegisterLCL, ValEdit, LazarusPackageIntf;
 
 implementation
 
