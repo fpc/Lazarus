@@ -3059,6 +3059,7 @@ docs/xml/fcl/pscanvas.xml svneol=native#text/xml
 docs/xml/fcl/targacmn.xml svneol=native#text/xml
 docs/xml/fcl/xwdfile.xml svneol=native#text/xml
 docs/xml/ide/aboutfrm.xml svneol=native#text/plain
+docs/xml/lazutils/fileutil.xml svneol=native#text/plain
 docs/xml/lazutils/masks.xml svneol=native#text/plain
 docs/xml/lcl/actnlist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/alllclunits.xml svneol=LF#text/xml eol=lf
@@ -3104,7 +3105,6 @@ docs/xml/lcl/extdlgs.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extendedstrings.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extgraphics.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/filectrl.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/fileutil.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/forms.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/forms/tapplication_queueasynccall.pas svneol=native#text/plain
 docs/xml/lcl/fpcadds.xml svneol=LF#text/xml eol=lf
