@@ -3059,6 +3059,7 @@ docs/xml/fcl/pscanvas.xml svneol=native#text/xml
 docs/xml/fcl/targacmn.xml svneol=native#text/xml
 docs/xml/fcl/xwdfile.xml svneol=native#text/xml
 docs/xml/ide/aboutfrm.xml svneol=native#text/plain
+docs/xml/lazutils/masks.xml svneol=native#text/plain
 docs/xml/lcl/actnlist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/alllclunits.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/arrow.xml svneol=LF#text/xml eol=lf
@@ -3177,7 +3178,6 @@ docs/xml/lcl/lmessages.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lresources.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/maps.xml svneol=native#text/plain
 docs/xml/lcl/maskedit.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/masks.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/menus.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/pairsplitter.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/popupnotifier.xml svneol=native#text/plain
