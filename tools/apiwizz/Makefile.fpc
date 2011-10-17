@@ -19,6 +19,7 @@ files=*.or
 [compiler]
 options=-gl $(LAZARUS_LIBPATHS)
 unitdir=. $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET) \
+          $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
           $(LAZDIR)/lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unittargetdir=.
 targetdir=.

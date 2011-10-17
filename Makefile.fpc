@@ -93,7 +93,7 @@ tools: lcl
 examples: lcl components
 
 #-----------------------------------------------------------------------------
-all: packager/registration lcl ideintf components ide starter lazbuilder
+all: packager/registration lazutils lcl ideintf components ide starter lazbuilder
 
 #-----------------------------------------------------------------------------
 cleannogui:

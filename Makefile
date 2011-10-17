@@ -3448,7 +3448,7 @@ lazbuilder:
 tools: lcl
 	$(MAKE) -C tools
 examples: lcl components
-all: packager/registration lcl ideintf components ide starter lazbuilder
+all: packager/registration lazutils lcl ideintf components ide starter lazbuilder
 cleannogui:
 	$(MAKE) -C lcl/interfaces/nogui clean LCL_PLATFORM=nogui
 cleanide:
