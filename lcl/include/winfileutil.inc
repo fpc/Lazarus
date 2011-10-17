@@ -263,7 +263,7 @@ end;
 procedure FindWideToAnsi(const wide: TWIN32FINDDATAW; var ansi: TWIN32FINDDATA);
 var
   ws : WideString;
-  an : AnsiString;
+  an : utf8string;
 begin
   {$ifdef WinCE}
   ansi := wide;
