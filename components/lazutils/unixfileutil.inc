@@ -1,4 +1,4 @@
-{%MainUnit ../fileutil.pas}
+{%MainUnit fileutil.pas}
 {------------------------------------------------------------------------------
   procedure CheckIfFileIsExecutable(const AFilename: string);
  ------------------------------------------------------------------------------}

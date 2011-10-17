@@ -30,6 +30,7 @@ interface
 resourceString
   rsModified = '  modified ';
   sInvalidCharSet = 'The char set in mask "%s" is not valid!';
+  rsSize = '  size ';
 
 implementation
 
