@@ -77,7 +77,7 @@ type
     FAppLoop: TApplicationMainLoop;
     FAppStdEvents: Boolean;
     fMenuEnabled: Boolean;
-
+    FAEventHandlerRef: array[0..10] of EventHandlerRef;
     {$ifdef CarbonUseCocoa}
       pool: NSAutoreleasePool;
     {$endif}

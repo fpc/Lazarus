@@ -1027,23 +1027,23 @@ begin
   //DebugLn('TCarbonWidgetSet.RegisterEvents');
   TmpSpec := MakeEventSpec(kEventClassCommand, kEventCommandProcess);
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_CommandProcess),
-    1, @TmpSpec, nil, nil);
+    1, @TmpSpec, nil, @FAEventHandlerRef[0]);
     
   TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppShown);
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Shown),
-    1, @TmpSpec, nil, nil);
+    1, @TmpSpec, nil, @FAEventHandlerRef[1]);
     
   TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppHidden);
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Hidden),
-    1, @TmpSpec, nil, nil);
+    1, @TmpSpec, nil, @FAEventHandlerRef[2]);
 
   TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppDeactivated);
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Deactivated),
-    1, @TmpSpec, nil, nil);
+    1, @TmpSpec, nil, @FAEventHandlerRef[3]);
 
   TmpSpec := MakeEventSpec(kEventClassApplication, kEventAppActivated);
   InstallApplicationEventHandler(RegisterEventHandler(@CarbonApp_Activated),
-    1, @TmpSpec, nil, nil);
+    1, @TmpSpec, nil, @FAEventHandlerRef[4]);
 
   FOpenEventHandlerUPP := NewAEEventHandlerUPP(AEEventHandlerProcPtr(@CarbonApp_Open));
   FQuitEventHandlerUPP := NewAEEventHandlerUPP(AEEventHandlerProcPtr(@CarbonApp_Quit));
@@ -1065,6 +1065,9 @@ end;
   Tells Carbon to halt the application
  ------------------------------------------------------------------------------}
 procedure TCarbonWidgetSet.AppTerminate;
+var i:integer;
+const
+  SName = 'AppTerminate';
 begin
   if FTerminating then Exit;
   {$IFDEF VerboseObject}
@@ -1072,6 +1075,9 @@ begin
   {$ENDIF}
   FUserTerm:=True;
   QuitApplicationEventLoop;
+  for i:=0 to 4 do
+    OSError(MacOSALL.RemoveEventHandler(FAEventHandlerRef[i]),
+    TClass(Self), SName, 'RemoveEventHandler');
 end;
 
 {------------------------------------------------------------------------------
