@@ -499,6 +499,8 @@ begin
   inherited Create;
   FCurrent := -1;
   FRequestedSize := Size(0, 0);
+  // per definition an icon is masked, but maybe we should make it settable for alpha images
+  FMasked := True;
 end;
 
 procedure TCustomIcon.Delete(Aindex: Integer);
@@ -554,12 +556,6 @@ end;
 function TCustomIcon.GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
 begin
   Result := TSharedIcon(FSharedImage).GetIndex(AFormat, AHeight, AWidth);
-end;
-
-function TCustomIcon.GetMasked: Boolean;
-begin
-  // per definition an icon is masked, but maybe we should make it settable for alpha images
-  Result := True;
 end;
 
 function TCustomIcon.GetMaskHandle: HBITMAP;

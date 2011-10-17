@@ -1615,7 +1615,6 @@ type
     function GetIndex(AFormat: TPixelFormat; AHeight, AWidth: Word): Integer;
     function GetBitmapHandle: HBITMAP; override;
     class function GetDefaultSize: TSize; virtual;
-    function GetMasked: Boolean; override;
     function GetMaskHandle: HBITMAP; override;
     function GetPalette: HPALETTE; override;
     function GetPixelFormat: TPixelFormat; override;
