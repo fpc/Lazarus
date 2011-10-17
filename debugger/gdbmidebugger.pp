@@ -4819,7 +4819,7 @@ const
 
   var
     c, i: Integer;
-    bp, bp2: Array of Integer;
+    bp: Array of Integer;
     s, s2: string;
     b: TGDBMIBreakPoint;
   begin
@@ -7491,26 +7491,30 @@ function TGDBMIDebuggerCommandBreakInsert.DoExecute: Boolean;
 begin
   Result := True;
   FValid := False;
+  DefaultTimeOut := DebuggerProperties.TimeoutForEval;
+  try
+    if FReplaceId <> 0
+    then ExecBreakDelete(FReplaceId);
 
-  if FReplaceId <> 0
-  then ExecBreakDelete(FReplaceId);
+    FValid := ExecBreakInsert(FBreakID, FHitCnt, FAddr);
+    if not FValid then Exit;
 
-  FValid := ExecBreakInsert(FBreakID, FHitCnt, FAddr);
-  if not FValid then Exit;
+    if (FExpression <> '') and not (dcsCanceled in SeenStates)
+    then ExecBreakCondition(FBreakID, FExpression);
 
-  if (FExpression <> '') and not (dcsCanceled in SeenStates)
-  then ExecBreakCondition(FBreakID, FExpression);
+    if not (dcsCanceled in SeenStates)
+    then ExecBreakEnabled(FBreakID, FEnabled);
 
-  if not (dcsCanceled in SeenStates)
-  then ExecBreakEnabled(FBreakID, FEnabled);
-
-  if dcsCanceled in SeenStates
-  then begin
-    ExecBreakDelete(FBreakID);
-    FBreakID := 0;
-    FValid := False;
-    FAddr := 0;
-    FHitCnt := 0;
+    if dcsCanceled in SeenStates
+    then begin
+      ExecBreakDelete(FBreakID);
+      FBreakID := 0;
+      FValid := False;
+      FAddr := 0;
+      FHitCnt := 0;
+    end;
+  finally
+    DefaultTimeOut := -1;
   end;
 end;
 
@@ -7569,7 +7573,12 @@ end;
 function TGDBMIDebuggerCommandBreakRemove.DoExecute: Boolean;
 begin
   Result := True;
+  DefaultTimeOut := DebuggerProperties.TimeoutForEval;
+  try
   ExecBreakDelete(FBreakId);
+  finally
+    DefaultTimeOut := -1;
+  end;
 end;
 
 constructor TGDBMIDebuggerCommandBreakRemove.Create(AOwner: TGDBMIDebugger;
@@ -7589,10 +7598,15 @@ end;
 function TGDBMIDebuggerCommandBreakUpdate.DoExecute: Boolean;
 begin
   Result := True;
+  DefaultTimeOut := DebuggerProperties.TimeoutForEval;
+  try
   if FUpdateExpression
   then ExecBreakCondition(FBreakID, FExpression);
   if FUpdateEnabled
   then ExecBreakEnabled(FBreakID, FEnabled);
+  finally
+    DefaultTimeOut := -1;
+  end;
 end;
 
 constructor TGDBMIDebuggerCommandBreakUpdate.Create(AOwner: TGDBMIDebugger; ABreakId: Integer);
