@@ -77,6 +77,7 @@ type
   strict protected
     function GetIndex: Integer; override;
     procedure SetIndex(AValue: Integer); override;
+    function TitleIsStored: Boolean; virtual;
 
   public
     function AxisToGraph(const APoint: TDoublePoint): TDoublePoint;
@@ -104,7 +105,7 @@ type
       read FAxisIndexX write SetAxisIndexX default DEF_AXIS_INDEX;
     property AxisIndexY: Integer
       read FAxisIndexY write SetAxisIndexY default DEF_AXIS_INDEX;
-    property Title: String read FTitle write SetTitle;
+    property Title: String read FTitle write SetTitle stored TitleIsStored;
 
   published
     property Legend: TChartSeriesLegend read FLegend write SetLegend;
@@ -499,6 +500,11 @@ procedure TCustomChartSeries.StyleChanged(Sender: TObject);
 begin
   if ParentChart <> nil then
     ParentChart.StyleChanged(Sender);
+end;
+
+function TCustomChartSeries.TitleIsStored: Boolean;
+begin
+  Result := Title <> '';
 end;
 
 procedure TCustomChartSeries.UpdateParentChart;

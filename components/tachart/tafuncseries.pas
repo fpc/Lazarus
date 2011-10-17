@@ -32,6 +32,7 @@ const
   DEF_SPLINE_STEP = 4;
   DEF_FIT_STEP = 4;
   DEF_FIT_PARAM_COUNT = 3;
+  DEF_FIT_TITLE = '%s';
   DEF_COLORMAP_STEP = 4;
 
 type
@@ -231,6 +232,7 @@ type
   strict protected
     procedure CalcXRange(out AXMin, AXMax: Double);
     procedure Transform(AX, AY: Double; out ANewX, ANewY: Extended);
+    function TitleIsStored: Boolean; override;
   protected
     procedure AfterAdd; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
@@ -1128,6 +1130,7 @@ begin
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FStep := DEF_FIT_STEP;
+  Title := DEF_FIT_TITLE;
   ParamCount := DEF_FIT_PARAM_COUNT; // Parabolic fit as default.
 end;
 
@@ -1219,8 +1222,13 @@ begin
 end;
 
 procedure TFitSeries.GetLegendItems(AItems: TChartLegendItems);
+var
+  t: String;
 begin
-  AItems.Add(TLegendItemLine.Create(Pen, Title));
+  t := Title;
+  if Pos(DEF_FIT_TITLE, t) > 0 then
+    t := Format(t, [GetFitEquationString('%f')]);
+  AItems.Add(TLegendItemLine.Create(Pen, t));
 end;
 
 function TFitSeries.GetNearestPoint(
@@ -1328,6 +1336,11 @@ procedure TFitSeries.SourceChanged(ASender: TObject);
 begin
   inherited;
   ExecFit;
+end;
+
+function TFitSeries.TitleIsStored: Boolean;
+begin
+  Result := Title <> DEF_FIT_TITLE;
 end;
 
 procedure TFitSeries.Transform(AX, AY: Double; out ANewX, ANewY: Extended);
