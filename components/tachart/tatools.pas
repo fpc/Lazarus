@@ -1414,7 +1414,8 @@ procedure TDataPointHintTool.MouseMove(APoint: TPoint);
       if Series is TChartSeries then
         Result := (Series as TChartSeries).FormattedMark(PointIndex)
       else
-        Result := Format('%s: %d', [Series.Title, PointIndex]);
+        Result := Format(
+          '%s: %d', [(Series as TCustomChartSeries).Title, PointIndex]);
     end;
     if Assigned(OnHint) then
       OnHint(Self, APoint, Result);

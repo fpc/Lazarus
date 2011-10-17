@@ -51,6 +51,7 @@ type
     FAxisIndexX: Integer;
     FAxisIndexY: Integer;
     FLegend: TChartSeriesLegend;
+    FTitle: String;
     procedure SetAxisIndexX(AValue: Integer);
     procedure SetAxisIndexY(AValue: Integer);
     procedure SetLegend(AValue: TChartSeriesLegend);
@@ -64,7 +65,7 @@ type
     function GetShowInLegend: Boolean; override;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartDistance); override;
-    procedure SetTitle(const AValue: String); override;
+    procedure SetTitle(AValue: String); virtual;
     procedure SetZPosition(AValue: TChartDistance); override;
     procedure StyleChanged(Sender: TObject);
     procedure UpdateParentChart;
@@ -89,7 +90,7 @@ type
     function IsRotated: Boolean;
 
   public
-    procedure Assign(Source: TPersistent); override;
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetNearestPoint(
@@ -103,6 +104,7 @@ type
       read FAxisIndexX write SetAxisIndexX default DEF_AXIS_INDEX;
     property AxisIndexY: Integer
       read FAxisIndexY write SetAxisIndexY default DEF_AXIS_INDEX;
+    property Title: String read FTitle write SetTitle;
 
   published
     property Legend: TChartSeriesLegend read FLegend write SetLegend;
@@ -222,9 +224,9 @@ type
     procedure DrawLabels(ADrawer: IChartDrawer);
     procedure DrawPointers(ADrawer: IChartDrawer);
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
-    function NearestXNumber(var AIndex: Integer; ADir: Integer): Double;
     function GetXRange(AX: Double; AIndex: Integer): Double;
     function GetZeroLevel: Double; virtual;
+    function NearestXNumber(var AIndex: Integer; ADir: Integer): Double;
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
@@ -257,15 +259,16 @@ begin
   Legend.SetOwner(FChart);
 end;
 
-procedure TCustomChartSeries.Assign(Source: TPersistent);
+procedure TCustomChartSeries.Assign(ASource: TPersistent);
 begin
-  if Source is TCustomChartSeries then
-    with TCustomChartSeries(Source) do begin
+  if ASource is TCustomChartSeries then
+    with TCustomChartSeries(ASource) do begin
       Self.FAxisIndexX := FAxisIndexX;
       Self.FAxisIndexY := FAxisIndexY;
       Self.Legend := FLegend;
+      Self.FTitle := FTitle;
     end;
-  inherited Assign(Source);
+  inherited Assign(ASource);
 end;
 
 function TCustomChartSeries.AxisToGraph(
@@ -478,7 +481,7 @@ begin
   Legend.Visible := AValue;
 end;
 
-procedure TCustomChartSeries.SetTitle(const AValue: String);
+procedure TCustomChartSeries.SetTitle(AValue: String);
 begin
   if FTitle = AValue then exit;
   FTitle := AValue;

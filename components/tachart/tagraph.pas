@@ -47,7 +47,6 @@ type
     FActive: Boolean;
     FChart: TChart;
     FDepth: TChartDistance;
-    FTitle: String;
     FZPosition: TChartDistance;
 
     procedure AfterAdd; virtual; abstract;
@@ -61,7 +60,6 @@ type
     function GetShowInLegend: Boolean; virtual; abstract;
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
-    procedure SetTitle(const AValue: String); virtual; abstract;
     procedure SetZPosition(AValue: TChartDistance); virtual; abstract;
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); virtual;
     procedure VisitSources(
@@ -85,7 +83,6 @@ type
     property Active: Boolean read FActive write SetActive default true;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
     property ParentChart: TChart read FChart;
-    property Title: String read FTitle write SetTitle;
     property ZPosition: TChartDistance read FZPosition write SetZPosition default 0;
   end;
 
@@ -1506,7 +1503,6 @@ begin
     with TBasicChartSeries(Source) do begin
       Self.FActive := FActive;
       Self.FDepth := FDepth;
-      Self.FTitle := FTitle;
       Self.FZPosition := FZPosition;
     end;
 end;
