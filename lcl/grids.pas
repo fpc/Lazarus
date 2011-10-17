@@ -7575,6 +7575,7 @@ end;
 
 procedure TCustomGrid.GridMouseWheel(shift: TShiftState; Delta: Integer);
 begin
+  FSelectActive := false;
   if ssCtrl in Shift then
     MoveNextSelectable(true, Delta, 0)
   else
