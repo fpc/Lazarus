@@ -21,9 +21,9 @@ type
   TStringListUTF8 = class(TStringList)
   protected
     function DoCompareText(const s1,s2 : string) : PtrInt; override;
+  public
     procedure LoadFromFile(const FileName: string); override;
     procedure SaveToFile(const FileName: string); override;
-  public
   end;
 
 implementation
