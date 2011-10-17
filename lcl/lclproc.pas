@@ -33,7 +33,7 @@ interface
 uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
   Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
-  LCLStrConsts, LCLType, WSReferences
+  LCLStrConsts, LCLType, WSReferences, LazUTF8
   {$IFNDEF DisableCWString}{$ifdef unix}{$ifndef DisableIconv}, cwstring{$endif}{$endif}{$ENDIF}
   ;
 
@@ -303,10 +303,10 @@ function ClassCase(const AClass: TClass; const ACase: array of TClass {; const A
 function ClassCase(const AClass: TClass; const ACase: array of TClass; const ADecendant: Boolean): Integer; overload;
 
 
-// UTF utility functions
-// MG: Should be moved to the RTL  
+// UTF-8 Routines in LCLProc are provided only for backwards compatibility,
+// use the routines from LazUTF8 instead
 
-// MWE: define (missing) UTF16string similar to UTF8 
+// MWE: define (missing) UTF16string similar to UTF8
 //      strictly spoken, a widestring <> utf16string
 // todo: use it in existing functions
 type
@@ -2634,39 +2634,7 @@ end;
 
 function UTF8CharacterLength(p: PChar): integer;
 begin
-  if p<>nil then begin
-    if ord(p^)<%11000000 then begin
-      // regular single byte character (#0 is a character, this is pascal ;)
-      Result:=1;
-    end
-    else if ((ord(p^) and %11100000) = %11000000) then begin
-      // could be 2 byte character
-      if (ord(p[1]) and %11000000) = %10000000 then
-        Result:=2
-      else
-        Result:=1;
-    end
-    else if ((ord(p^) and %11110000) = %11100000) then begin
-      // could be 3 byte character
-      if ((ord(p[1]) and %11000000) = %10000000)
-      and ((ord(p[2]) and %11000000) = %10000000) then
-        Result:=3
-      else
-        Result:=1;
-    end
-    else if ((ord(p^) and %11111000) = %11110000) then begin
-      // could be 4 byte character
-      if ((ord(p[1]) and %11000000) = %10000000)
-      and ((ord(p[2]) and %11000000) = %10000000)
-      and ((ord(p[3]) and %11000000) = %10000000) then
-        Result:=4
-      else
-        Result:=1;
-    end
-    else
-      Result:=1
-  end else
-    Result:=0;
+  Result := LazUTF8.UTF8CharacterLength(p);
 end;
 
 function UTF8Length(const s: string): PtrInt;
@@ -2675,16 +2643,8 @@ begin
 end;
 
 function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt;
-var
-  CharLen: LongInt;
 begin
-  Result:=0;
-  while (ByteCount>0) do begin
-    inc(Result);
-    CharLen:=UTF8CharacterLength(p);
-    inc(p,CharLen);
-    dec(ByteCount,CharLen);
-  end;
+  Result := LazUTF8.UTF8Length(p, ByteCount);
 end;
 
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
