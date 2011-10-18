@@ -462,10 +462,10 @@ begin
 
   // param to FooFunc
   AddFmtDef('ArgTRec',           MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,    'TRec', []);
-  AddFmtDef('ArgPRec',           MatchPointer('^PRec'),                  skPointer,   'PRec', []);
+  AddFmtDef('ArgPRec',           MatchPointer('PRec'),                   skPointer,   'PRec', []);
   AddFmtDef('ArgPRec^',          MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
-  AddFmtDef('ArgPPRec',          MatchPointer('^PPRec'),                 skPointer,   'PPRec', []);
-  AddFmtDef('ArgPPRec^',         MatchPointer('^PRec'),                  skPointer,   'PRec', []);
+  AddFmtDef('ArgPPRec',          MatchPointer('PPRec'),                  skPointer,   'PPRec', []);
+  AddFmtDef('ArgPPRec^',         MatchPointer('PRec'),                   skPointer,   'PRec', []);
   AddFmtDef('ArgPPRec^^',        MatchRecord('TREC', 2, '.'),            skRecord,    'TRec', []);
   AddFmtDef('ArgTNewRec',        MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,    'T(New)?Rec', [fTpMtch]);
   AddFmtDef('ArgTRec.ValInt',    '-1',                                   skSimple,    M_Int, [fTpMtch]);
@@ -540,12 +540,15 @@ begin
 
 
   // VAR param to FooFunc
-  AddFmtDef('VArgTRec',           MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,    'TRec', []);
-  AddFmtDef('VArgPRec',           MatchPointer('^PRec'),                  skPointer,   'PRec', []);
-  AddFmtDef('VArgPRec^',          MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', [IgnDwrf]);
-  AddFmtDef('VArgPPRec',          MatchPointer('^PPRec'),                 skPointer,   'PPRec', []);
-  AddFmtDef('VArgPPRec^',         MatchPointer('^PRec'),                  skPointer,   'PRec', [IgnDwrf]);
-  AddFmtDef('VArgPPRec^^',        MatchRecord('TREC', 2, '.'),            skRecord,    'TRec', [IgnDwrf]);
+  r := AddFmtDef('VArgTRec',           MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,    'TRec', []);
+  r := AddFmtDef('VArgPRec',           MatchPointer('PRec'),                   skPointer,   'PRec', []);
+  r := AddFmtDef('VArgPRec^',          MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
+  r := AddFmtDef('VArgPPRec',          MatchPointer('PPRec'),                  skPointer,   'PPRec', []);
+  r := AddFmtDef('VArgPPRec^',         MatchPointer('PRec'),                   skPointer,   'PRec', []);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
+  r := AddFmtDef('VArgPPRec^^',        MatchRecord('TREC', 2, '.'),            skRecord,    'TRec', []);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
   AddFmtDef('VArgTNewRec',        MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,    'T(New)?Rec', [fTpMtch]);
   AddFmtDef('VArgTRec.ValInt',    '-1',                                   skSimple,    M_Int, [fTpMtch]);
   AddFmtDef('VArgPRec^.ValInt',   '1',                                    skSimple,    M_Int, [fTpMtch]);
@@ -662,14 +665,17 @@ begin
   AddFmtDef('@VArgTFoo',    '(P|\^T)Foo\('+Match_Pointer,  skPointer, '(P|\^T)Foo',  [fTpMtch]);
   AddFmtDef('(@VArgTFoo)^',   Match_ArgTFoo,                 skClass,   'TFoo',  []);
 
-  AddFmtDef('VArgPFoo',     'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  []);
-  AddFmtDef('VArgPFoo^' ,   Match_ArgTFoo1,                skClass,   'TFoo',  [IgnDwrf]);
-  AddFmtDef('@VArgPFoo',    '(P|\^)PFoo\('+Match_Pointer,  skPointer, '(P|\^)PFoo',  [fTpMtch]);
+  r := AddFmtDef('VArgPFoo',     'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  []);
+  r := AddFmtDef('VArgPFoo^' ,   Match_ArgTFoo1,                skClass,   'TFoo',  []);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
+  r := AddFmtDef('@VArgPFoo',    '(P|\^)PFoo\('+Match_Pointer,  skPointer, '(P|\^)PFoo',  [fTpMtch]);
 
-  AddFmtDef('VArgPPFoo',    'PPFoo\('+Match_Pointer,       skPointer, 'PPFoo', []);
-  AddFmtDef('VArgPPFoo^',   'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  [IgnDwrf]);
-  AddFmtDef('@VArgPPFoo',   '\^PPFoo\('+Match_Pointer,      skPointer, '^PPFoo', []);
-  AddFmtDef('VArgPPFoo^^',   Match_ArgTFoo1,               skClass,   'TFoo',  [IgnDwrf]);
+  r := AddFmtDef('VArgPPFoo',    'PPFoo\('+Match_Pointer,       skPointer, 'PPFoo', []);
+  r := AddFmtDef('VArgPPFoo^',   'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  []);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
+  r := AddFmtDef('@VArgPPFoo',   '\^PPFoo\('+Match_Pointer,      skPointer, '^PPFoo', []);
+  r := AddFmtDef('VArgPPFoo^^',   Match_ArgTFoo1,               skClass,   'TFoo',  []);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
 
 
   AddFmtDef('ArgTFoo.ValueInt',       '^-11$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
@@ -756,16 +762,19 @@ begin
   r:=AddFmtDef('VArgPMyAnsiString',    MatchPointer,  skPointer,    'PMyAnsiString', []);
      UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
   r:=AddStringFmtDef('ArgPMyAnsiString^',      'MyAnsi P',     '^(TMy)?AnsiString$', [fTpMtch]);
-  r:=AddStringFmtDef('VArgPMyAnsiString^',     'MyAnsi P2',    '^(TMy)?AnsiString$', [fTpMtch, IgnDwrf2]);
+  r:=AddStringFmtDef('VArgPMyAnsiString^',     'MyAnsi P2',    '^(TMy)?AnsiString$', [fTpMtch]);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
 
   r:=AddFmtDef('ArgPPMyAnsiString',    MatchPointer,  skPointer,    'PPMyAnsiString', []);
   r:=AddFmtDef('VArgPPMyAnsiString',   MatchPointer,  skPointer,    'PPMyAnsiString', []);
   r:=AddFmtDef('ArgPPMyAnsiString^',   MatchPointer,  skPointer,    'PMyAnsiString', []);
      UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
-  r:=AddFmtDef('VArgPPMyAnsiString^',  MatchPointer,  skPointer,    'PMyAnsiString', [IgnDwrf2]);
+  r:=AddFmtDef('VArgPPMyAnsiString^',  MatchPointer,  skPointer,    'PMyAnsiString', []);
      UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
   r:=AddStringFmtDef('ArgPPMyAnsiString^^',    'MyAnsi P',     '^(TMy)?AnsiString$', [fTpMtch]);
-  r:=AddStringFmtDef('VArgPPMyAnsiString^^',   'MyAnsi P2',    '^(TMy)?AnsiString$', [fTpMtch, IgnDwrf2]);
+  r:=AddStringFmtDef('VArgPPMyAnsiString^^',   'MyAnsi P2',    '^(TMy)?AnsiString$', [fTpMtch]);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
 
 
   r:=AddStringFmtDef('ArgTNewAnsiString',      'NewAnsi',      'TNewAnsiString', []);
@@ -779,7 +788,8 @@ begin
                     UpdRes(r, stStabs,                              '(\^|PNew|P)AnsiString|PPChar', [fTpMtch]);
   r:=AddStringFmtDef('ArgPNewAnsiString^',      'NewAnsi P',   'TNewAnsiString', []);
      UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
-  r:=AddStringFmtDef('VArgPNewAnsiString^',     'NewAnsi P2',  'TNewAnsiString', [IgnDwrf]);
+  r:=AddStringFmtDef('VArgPNewAnsiString^',     'NewAnsi P2',  'TNewAnsiString', []);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
      UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
 
 
@@ -800,9 +810,11 @@ begin
      UpdRes(r, stStabs,                                                          '^(\^AnsiString|PPChar)$', [fTpMtch]);
 
   r:=AddStringFmtDef('AnsiString(ArgPMyAnsiString^)',  'MyAnsi P',     '^((TMy)?AnsiString|\^char)$', [fTpMtch]);
-  r:=AddStringFmtDef('AnsiString(VArgPMyAnsiString^)', 'MyAnsi P2',    '^(TMy)?AnsiString$', [fTpMtch, IgnDwrf2]);
+  r:=AddStringFmtDef('AnsiString(VArgPMyAnsiString^)', 'MyAnsi P2',    '^((TMy)?AnsiString|\^char)$', [fTpMtch]);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);  // ^char => gdb 6.7.5 with dwarf
   r:=AddStringFmtDef('PMyAnsiString(ArgPMyAnsiString)^',  'MyAnsi P',  '^(TMy)?AnsiString$', [fTpMtch]);
-  r:=AddStringFmtDef('PMyAnsiString(VArgPMyAnsiString)^', 'MyAnsi P2', '^(TMy)?AnsiString$', [fTpMtch, IgnDwrf2]);
+  r:=AddStringFmtDef('PMyAnsiString(VArgPMyAnsiString)^', 'MyAnsi P2', '^(TMy)?AnsiString$', [fTpMtch]);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
 
 
   r:=AddFmtDef('PChar(ArgTMyAnsiString)',
@@ -824,8 +836,9 @@ begin
                     UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
   r:=AddFmtDef('ArgPMyAnsiString^[1]',     '.',      skSimple,   'char', []);
                     UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
-  r:=AddFmtDef('VArgPMyAnsiString^[1]',    '.',      skSimple,   'char', [IgnDwrf]);
-                    UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
+  r:=AddFmtDef('VArgPMyAnsiString^[1]',    '.',      skSimple,   'char', []);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
+     UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
   r:=AddFmtDef('AnsiString(ArgTMyAnsiString)[1]',      '.',      skSimple,   'char', []);
                     UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
   r:=AddFmtDef('AnsiString(VArgTMyAnsiString)[1]',     '.',      skSimple,   'char', []);
@@ -943,7 +956,8 @@ begin
   AddFmtDef('ArgPMyShortString',        Match_Pointer,      skPointer,     'P(My)?ShortString', [fTpMtch]);
   AddFmtDef('VArgPMyShortString',       Match_Pointer,      skPointer,     'P(My)?ShortString', [fTpMtch]);
   AddFmtDef('ArgPMyShortString^',        '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
-  AddFmtDef('VArgPMyShortString^',       '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch, IgnDwrf]);
+  r := AddFmtDef('VArgPMyShortString^',       '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
 
   // string in array
   r:=AddShortStrFmtDef('ArgTMyShortStringDArray[0]',   'DArray1 Short0',         'ShortString', []);
@@ -971,10 +985,10 @@ begin
   r:=AddShortStrFmtDef('VArgTMyShortStringSArray[3]',  'SArray2 Short3',         'ShortString', []);
   r:=AddShortStrFmtDef('VArgTMyShortStringSArray[4]',  'SArray2 Short4',         'ShortString', []);
 
-  r:=AddCharFmtDef('ArgTMyShortStringSArray[3][1]',   'S',      'char', [IgnDwrf2, IgnDataSt]);
-  r:=AddCharFmtDef('ArgTMyShortStringSArray[3][14]',  '0',      'char', [IgnDwrf2, IgnDataSt]);
-  r:=AddCharFmtDef('ArgTMyShortStringSArray[4][1]',   'S',      'char', [IgnDwrf2, IgnDataSt]);
-  r:=AddCharFmtDef('ArgTMyShortStringSArray[4][14]',  '1',      'char', [IgnDwrf2, IgnDataSt]);
+  r:=AddCharFmtDef('ArgTMyShortStringSArray[3][1]',   'S',      'char', [IgnDwrf2]);
+  r:=AddCharFmtDef('ArgTMyShortStringSArray[3][14]',  '3',      'char', [IgnDwrf2]);
+  r:=AddCharFmtDef('ArgTMyShortStringSArray[4][1]',   'S',      'char', [IgnDwrf2]);
+  r:=AddCharFmtDef('ArgTMyShortStringSArray[4][14]',  '4',      'char', [IgnDwrf2]);
 
   // string in obj
   r:=AddFmtDef('ArgTStringHolderObj.FTMyShortString',   '''Obj1 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch, IgnDwrf3]);
@@ -1385,7 +1399,7 @@ var
   var
     rx: TRegExpr;
     s: String;
-    flag, f2: Boolean;
+    flag, IsValid, HasTpInfo, f2: Boolean;
     WV: TWatchValue;
     Stack: Integer;
     n: String;
@@ -1410,52 +1424,72 @@ var
     LogToFile('###### ' + n + '######' +LineEnding);
     if n = '' then n := Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ')';
     Name := Name + ' ' + n;
-    flag := AWatch <> nil;
+    flag := AWatch <> nil; // test for typeinfo/kind  // Awatch=nil > direct gdb command
+    IsValid := True;
+    HasTpInfo := True;
     if flag then begin;
       WV := AWatch.Values[1, Stack];// trigger read
       s := WV.Value;
-      IgnoreText := '';    if IgnoreData and IgnoreKind and IgnoreTpName and not(WV.Validity = ddsValid) then IgnoreText := 'Ignored by flag';
-      flag := flag and TestTrue  (Name+ ' (HasValue)',   WV.Validity = ddsValid, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-      if not flag then s := ''; // no data / not valid // TODO test error msg
-      if (not flag) and IgnoreAll then exit; // failed Data, do not list others as potential unexpected success
+      IsValid := WV.Validity = ddsValid;
+      HasTpInfo := IsValid and (WV.TypeInfo <> nil);
+//      flag := flag and IsValid;
     end
     else
       s := WatchValue;
 
     if not TestTrue('Dbg did NOT enter dsError', dbg.State <> dsError) then exit;
 
+    // Check Data
     f2 := True;
     IgnoreText := '';    if IgnoreData then IgnoreText := 'Ignored by flag';
-    // Check Data
-    rx := TRegExpr.Create;
-    rx.ModifierI := true;
-    rx.Expression := DataRes.ExpMatch;
-    if DataRes.ExpMatch <> ''
-    then f2 := TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but was "' + s + '"', rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+    if IsValid then begin
+      rx := TRegExpr.Create;
+      rx.ModifierI := true;
+      rx.Expression := DataRes.ExpMatch;
+      if DataRes.ExpMatch <> ''
+      then f2 := TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but was "' + s + '"', rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+      FreeAndNil(rx);
+    end else begin
+       f2 := TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but STATE was <'+dbgs(WV.Validity)+'> Val="'+s+'"', False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+       //exit; // failed Data, do not list others as potential unexpected success
+    end;
 
     if (not f2) and IgnoreAll then exit; // failed Data, do not list others as potential unexpected success
 
+    // TypeInfo checks ?
+    if (not flag) or (DataRes.ExpTypeName = '') then exit;
+
     // Check TypeInfo
-    flag := (AWatch <> nil) and (DataRes.ExpTypeName <> '');
-    IgnoreText := '';    if IgnoreKind AND IgnoreTpName then IgnoreText := 'Ignored by flag';
-    if flag then flag := TestTrue(Name + ' has typeinfo',  WV.TypeInfo <> nil, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+    s:='';
+    if HasTpInfo then s := KindName[WV.TypeInfo.Kind];
     IgnoreText := '';    if IgnoreKind then IgnoreText := 'Ignored by flag';
-    if (not IgnoreKind) and IgnoreKindPtr and (WV.TypeInfo.Kind = skPointer) then IgnoreText := 'Ignored by flag (Kind may be Ptr)';
-    if flag then flag := TestEquals(Name + ' kind',  KindName[DataRes.ExpKind], KindName[WV.TypeInfo.Kind], DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-    if flag then begin
-      IgnoreText := '';    if IgnoreTpName then IgnoreText := 'Ignored by flag';
+    if IsValid and HasTpInfo then begin
+      if (not IgnoreKind) and IgnoreKindPtr and (WV.TypeInfo.Kind = skPointer) then IgnoreText := 'Ignored by flag (Kind may be Ptr)';
+      f2 := TestEquals(Name + ' Kind',  KindName[DataRes.ExpKind], KindName[WV.TypeInfo.Kind], DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+    end else begin
+      f2 := TestTrue(Name + ' Kind is "'+KindName[DataRes.ExpKind]+'", failed: STATE was <'+dbgs(WV.Validity)+'>, HasTypeInfo='+dbgs(HasTpInfo)+' Val="'+s+'"', False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+    end;
+
+    if (not f2) and IgnoreAll then exit; // failed Data, do not list others as potential unexpected success
+
+    // Check TypeName
+    IgnoreText := '';    if IgnoreTpName then IgnoreText := 'Ignored by flag';
+    if IsValid and HasTpInfo then begin
+      s:='';
+      if HasTpInfo then s := WV.TypeInfo.TypeName;
       if fTpMtch  in DataRes.Flgs
       then begin
-        FreeAndNil(rx);
-        s := WV.TypeInfo.TypeName;
         rx := TRegExpr.Create;
         rx.ModifierI := true;
         rx.Expression := DataRes.ExpTypeName;
-        TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but was '+WV.TypeInfo.TypeName,  rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText)
+        TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but was '+s,  rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+        FreeAndNil(rx);
        end
-      else TestEquals(Name + ' TypeName',  LowerCase(DataRes.ExpTypeName), LowerCase(WV.TypeInfo.TypeName), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+       else TestEquals(Name + ' TypeName',  LowerCase(DataRes.ExpTypeName), LowerCase(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+    end else begin
+        TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but STATE was <'+dbgs(WV.Validity)+'> HasTypeInfo='+dbgs(HasTpInfo)+' Val="'+s+'"',  False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
     end;
-    FreeAndNil(rx);
+
   end;
 
 var
