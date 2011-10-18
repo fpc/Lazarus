@@ -3211,6 +3211,7 @@ docs/xml/rtl/classes.xml svneol=native#text/xml
 docs/xml/rtl/system.xml svneol=native#text/xml
 docs/xml/rtl/sysutils.xml svneol=native#text/xml
 docs/xml/updateXML.bat svneol=native#text/plain
+examples/SynEdit/Completion/README.txt svneol=native#text/plain
 examples/SynEdit/Completion/SynCompletionSample.ico -text
 examples/SynEdit/Completion/SynCompletionSample.lpi svneol=native#text/plain
 examples/SynEdit/Completion/SynCompletionSample.lpr svneol=native#text/pascal
