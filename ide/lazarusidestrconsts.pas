@@ -420,7 +420,9 @@ resourcestring
   lisMenuBuildLazarusProf = 'Build Lazarus with profile: %s';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
 
-  lisRootDirectoryForProjects = 'Root directory for projects';
+  lisSearchProjectsFrom = 'Search projects from';
+  lisIncludeExamples = 'Include Examples';
+  lisIncludeTestcases = 'Include Testcases';
   lisMenuGeneralOptions = 'Options ...';
   lisMenuEditCodeTemplates = 'Code Templates ...';
   lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor ...';
@@ -2837,6 +2839,7 @@ resourcestring
   lisConfirmBuildAllProfiles = 'Lazarus will be rebuilt with the following profiles:%sContinue?';
   lisNoBuildProfilesSelected = 'No profiles are selected to be built.';
   lisCleanLazarusSource = 'Clean Lazarus Source';
+  lisLazarusSource = 'Lazarus Source';
   lisMakeNotFound = 'Make not found';
   lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa = 'The program %smake%'
     +'s was not found.%sThis tool is needed to build lazarus.%s';
