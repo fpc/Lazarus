@@ -96,8 +96,8 @@ procedure FooFunc(
     {$I WatchesPrgSimple.inc}
     { enum/set }
     {$I WatchesPrgEnum.inc}
-    { Array }
-    {$I WatchesPrgArray.inc}
+
+
     { variants }
     {$I WatchesPrgVariant.inc}
     { procedure/function/method }
@@ -117,8 +117,8 @@ type
     {$I WatchesPrgSimple.inc}
     { enum/set }
     {$I WatchesPrgEnum.inc}
-    { Array }
-    {$I WatchesPrgArray.inc}
+
+
     { variants }
     {$I WatchesPrgVariant.inc}
     { procedure/function/method }
@@ -137,8 +137,8 @@ var
     {$I WatchesPrgSimple.inc}
     { enum/set }
     {$I WatchesPrgEnum.inc}
-    { Array }
-    {$I WatchesPrgArray.inc}
+
+
     { variants }
     {$I WatchesPrgVariant.inc}
     { procedure/function/method }
@@ -158,8 +158,8 @@ var
       {$I WatchesPrgSimple.inc}
       { enum/set }
       {$I WatchesPrgEnum.inc}
-      { Array }
-      {$I WatchesPrgArray.inc}
+
+
       { variants }
       {$I WatchesPrgVariant.inc}
       { procedure/function/method }
@@ -178,8 +178,8 @@ var
       {$I WatchesPrgSimple.inc}
       { enum/set }
       {$I WatchesPrgEnum.inc}
-      { Array }
-      {$I WatchesPrgArray.inc}
+
+
       { variants }
       {$I WatchesPrgVariant.inc}
       { procedure/function/method }
@@ -196,8 +196,8 @@ var
       {$I WatchesPrgSimple.inc}
       { enum/set }
       {$I WatchesPrgEnum.inc}
-      { Array }
-      {$I WatchesPrgArray.inc}
+
+
       { variants }
       {$I WatchesPrgVariant.inc}
       { procedure/function/method }
@@ -216,8 +216,8 @@ begin
     {$I WatchesPrgSimple.inc}
     { enum/set }
     {$I WatchesPrgEnum.inc}
-    { Array }
-    {$I WatchesPrgArray.inc}
+
+
     { variants }
     {$I WatchesPrgVariant.inc}
     { procedure/function/method }
@@ -229,6 +229,29 @@ begin
   // break on next line
   writeln(1);
   {$IFDEF WITH_SLEEP} sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50); {$ENDIF};
+end;
+
+
+
+
+procedure FooFuncArray(
+  (***  parameter and var-param  ***)
+  {$DEFINE FooFunc_Param}
+    {$I WatchesPrgArray.inc}    { Array }
+    Dummy: Integer
+  {$UNDEF FooFunc_Param}
+);
+  (***  local var/type  ***)
+  {$DEFINE FooFunc_Local}
+    {$I WatchesPrgArray.inc}    { Array }
+  {$UNDEF FooFunc_Local}
+begin
+  {$DEFINE FooFunc_Body}
+    {$I WatchesPrgArray.inc}    { Array }
+  {$UNDEF FooFunc_Body}
+
+  // break on next line
+  writeln(1);
 end;
 
 
@@ -271,8 +294,8 @@ begin
 
   {$UNDEF Global_Body}
 
-  FooFunc(
-    {$DEFINE Global_Call_FooFunc}
+  {$DEFINE Global_Call_FooFunc}
+    FooFunc(
       { class/record/object }
       {$I WatchesPrgStruct.inc}
       { strings }
@@ -281,16 +304,20 @@ begin
       {$I WatchesPrgSimple.inc}
       { enum/set }
       {$I WatchesPrgEnum.inc}
-      { Array }
-      {$I WatchesPrgArray.inc}
       { variants }
       {$I WatchesPrgVariant.inc}
       { procedure/function/method }
       {$I WatchesPrgProc.inc}
 
       0
-    {$UNDEF Global_Call_FooFunc}
-  );
+    );
+
+    FooFuncArray(
+      { Array }
+      {$I WatchesPrgArray.inc}
+      0
+    );
+  {$UNDEF Global_Call_FooFunc}
 
 
   // same with nil
@@ -312,8 +339,8 @@ begin
 
   {$UNDEF Global_Body_NIL}
 
-  FooFunc(
-    {$DEFINE Global_Call_FooFunc}
+  {$DEFINE Global_Call_FooFunc}
+    FooFunc(
       { class/record/object }
       {$I WatchesPrgStruct.inc}
       { strings }
@@ -322,16 +349,20 @@ begin
       {$I WatchesPrgSimple.inc}
       { enum/set }
       {$I WatchesPrgEnum.inc}
-      { Array }
-      {$I WatchesPrgArray.inc}
       { variants }
       {$I WatchesPrgVariant.inc}
       { procedure/function/method }
       {$I WatchesPrgProc.inc}
 
       0
-    {$UNDEF Global_Call_FooFunc}
-  );
+    );
+
+    FooFuncArray(
+      { Array }
+      {$I WatchesPrgArray.inc}
+      0
+    );
+  {$UNDEF Global_Call_FooFunc}
 
   // not bother to free mem
 end.

@@ -48,25 +48,25 @@ end;
 
 { TTestBreakPoint }
 
-procedure TTestBreakPoint.DoCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
+procedure   TTestBreakPoint.DoCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
 begin
   FCurFile := ALocation.SrcFile;
   FCurLine := ALocation.SrcLine;
 end;
 
-function TTestBreakPoint.DoGetFeedBack(Sender: TObject; const AText, AInfo: String;
+function   TTestBreakPoint.DoGetFeedBack(Sender: TObject; const AText, AInfo: String;
   AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
 begin
   Result := frOk;
   FreeAndNil(FBrkErr);
 end;
 
-function TTestBreakPoint.GdbClass: TGDBMIDebuggerClass;
+function   TTestBreakPoint.GdbClass: TGDBMIDebuggerClass;
 begin
   Result := TTestBrkGDBMIDebugger;
 end;
 
-procedure TTestBreakPoint.TestBadAddrBreakpoint;
+procedure   TTestBreakPoint.TestBadAddrBreakpoint;
 var
   TestExeName: string;
   dbg: TTestBrkGDBMIDebugger;
@@ -74,7 +74,7 @@ var
 begin
   if SkipTest then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint.BadAddr')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestBreakPoint.BadAddr')] then exit;
   ClearTestErrors;
   FBrkErr := nil;
 
@@ -122,7 +122,7 @@ begin
 
 end;
 
-procedure TTestBreakPoint.TestInteruptWhilePaused;
+procedure   TTestBreakPoint.TestInteruptWhilePaused;
 var
   TestExeName, Err, IgnoreRes: string;
   dbg: TTestBrkGDBMIDebugger;
@@ -130,7 +130,7 @@ var
 begin
   if SkipTest then exit;
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint.BadInterrupt')] then exit;
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestBreakPoint.BadInterrupt')] then exit;
 
   (* Trigger a InterruptTarget while paused.
      Test if the app can continue, and reach it normal exit somehow (even if multiply interupts must be skipped)
@@ -201,7 +201,7 @@ begin
   end;
 
 
-  if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint.BadInterrupt.All')] then begin
+  if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('    TTestBreakPoint.BadInterrupt.All')] then begin
     try
       LogToFile(LineEnding+'######################  with pause -- 2 breaks  ########################'+LineEnding+LineEnding);
       Err := '';
@@ -287,7 +287,7 @@ begin
 
 
   m := 1;
-  if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint.BadInterrupt.All')]
+  if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('    TTestBreakPoint.BadInterrupt.All')]
   then m := 5;  // run extra tests of Passed none-pause run
 
   Err := '';
@@ -361,7 +361,7 @@ begin
   TestEquals('Passed none-pause run', '', Err, 0, IgnoreRes);
 
 
-  if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint.BadInterrupt.All')] then begin
+  if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('    TTestBreakPoint.BadInterrupt.All')] then begin
 
     try
       LogToFile(LineEnding+'######################  withOUT pause -- with stepping  ########################'+LineEnding+LineEnding);

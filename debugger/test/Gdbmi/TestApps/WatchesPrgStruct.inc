@@ -45,18 +45,31 @@
         ValInt: Integer;
         ValFoo: TFoo;
       end;
+      TNewRec = type TRec;
 
-      PRec2 = ^TRec2;
-      PPRec2 = ^PRec2;
-      TRec2 = record
+      PRecSelf = ^TRecSelf;
+      PPRecSelf = ^PRecSelf;
+      TRecSelf = record
         ValInt:    Integer;
         ValPRec:   PRec;
         ValPPRec:  PPRec;
-        ValPRec2:  PRec2;
-        ValPPRec2: PPRec2;
+        ValPRec2:  PRecSelf;
+        ValPPRec2: PPRecSelf;
+        ValRecSelfDArray: Array of PRecSelf;
+        ValRecSelfS0Array: Array [0..2] of PRecSelf;
+        ValRecSelfS1Array: Array [1..3] of PRecSelf;
+        ValRecSelfS3Array: Array [3..6] of PRecSelf;
       end;
 
-      TNewRec = type TRec;
+      TRecSelfDArray = Array of TRecSelf;
+      TRecSelfS0Array = Array [0..2] of TRecSelf;
+      TRecSelfS1Array = Array [1..3] of TRecSelf;
+      TRecSelfS3Array = Array [3..6] of TRecSelf;
+
+      TPRecSelfDArray = Array of PRecSelf;
+      TPRecSelfS0Array = Array [0..2] of PRecSelf;
+      TPRecSelfS1Array = Array [1..3] of PRecSelf;
+      TPRecSelfS3Array = Array [3..6] of PRecSelf;
     {$ENDIF}
 
     {$IFDEF FooFunc_LocalType}
@@ -79,14 +92,42 @@
       ArgPRec: PRec;                         var VArgPRec: PRec;
       ArgPPRec: PPRec;                       var VArgPPRec: PPRec;
       ArgTNewRec: TNewRec;                   var VArgTNewRec: TNewRec;
+
+      ArgTRecSelf: TRecSelf;                 var VArgTRecSelf: TRecSelf;
+      ArgPRecSelf: PRecSelf;                 var VArgPRecSelf: PRecSelf;
+      ArgPPRecSelf: PPRecSelf;               var VArgPPRecSelf: PPRecSelf;
+
+      ArgTRecSelfDArray: TRecSelfDArray;     var VArgTRecSelfDArray: TRecSelfDArray;
+      ArgTRecSelfS0Array: TRecSelfS0Array;   var VArgTRecSelfS0Array: TRecSelfS0Array;
+      ArgTRecSelfS1Array: TRecSelfS1Array;   var VArgTRecSelfS1Array: TRecSelfS1Array;
+      ArgTRecSelfS3Array: TRecSelfS3Array;   var VArgTRecSelfS3Array: TRecSelfS3Array;
+
+      ArgTPRecSelfDArray: TPRecSelfDArray;     var VArgTPRecSelfDArray: TPRecSelfDArray;
+      ArgTPRecSelfS0Array: TPRecSelfS0Array;   var VArgTPRecSelfS0Array: TPRecSelfS0Array;
+      ArgTPRecSelfS1Array: TPRecSelfS1Array;   var VArgTPRecSelfS1Array: TPRecSelfS1Array;
+      ArgTPRecSelfS3Array: TPRecSelfS3Array;   var VArgTPRecSelfS3Array: TPRecSelfS3Array;
     {$ENDIF}
     {$IFDEF Global_Call_FooFunc}
     //FooFunc(
       { records }
-      GlobTRec,                         GlobTRec,
-      GlobPRec,                         GlobPRec,
-      GlobPPRec,                       GlobPPRec,
-      GlobTNewRec,                   GlobTNewRec,
+      GlobTRec,                    GlobTRec,
+      GlobPRec,                    GlobPRec,
+      GlobPPRec,                   GlobPPRec,
+      GlobTNewRec,                 GlobTNewRec,
+
+      GlobTRecSelf,                GlobTRecSelf2,
+      GlobPRecSelf,                GlobPRecSelf2,
+      GlobPPRecSelf,               GlobPPRecSelf2,
+
+      GlobTRecSelfDArray,          GlobTRecSelfDArray2,
+      GlobTRecSelfS0Array,         GlobTRecSelfS0Array2,
+      GlobTRecSelfS1Array,         GlobTRecSelfS1Array2,
+      GlobTRecSelfS3Array,         GlobTRecSelfS3Array2,
+
+      GlobTPRecSelfDArray,          GlobTPRecSelfDArray2,
+      GlobTPRecSelfS0Array,         GlobTPRecSelfS0Array2,
+      GlobTPRecSelfS1Array,         GlobTPRecSelfS1Array2,
+      GlobTPRecSelfS3Array,         GlobTPRecSelfS3Array2,
     {$ENDIF}
 
     {$IFDEF FooFunc_LocalVar}
@@ -107,14 +148,28 @@
     //var
       { records }
       GlobTRec, GlobTRec1, GlobTRec2: TRec;
-      GlobPRec: PRec;
+      GlobPRec, GlobPRec2: PRec;
       GlobPPRec: PPRec;
       GlobTNewRec: TNewRec;
 
       PGlobTRec: ^TRec;
       PGlobTNewRec: ^TNewRec;
-    {$ENDIF}
 
+      GlobTRecSelf, GlobTRecSelf2: TRecSelf;
+      GlobPRecSelf, GlobPRecSelf2: PRecSelf;
+      GlobPPRecSelf, GlobPPRecSelf2: PPRecSelf;
+
+      GlobTRecSelfDArray, GlobTRecSelfDArray2: TRecSelfDArray;
+      GlobTRecSelfS0Array, GlobTRecSelfS0Array2: TRecSelfS0Array;
+      GlobTRecSelfS1Array, GlobTRecSelfS1Array2: TRecSelfS1Array;
+      GlobTRecSelfS3Array, GlobTRecSelfS3Array2: TRecSelfS3Array;
+
+      GlobTPRecSelfDArray, GlobTPRecSelfDArray2: TPRecSelfDArray;
+      GlobTPRecSelfS0Array, GlobTPRecSelfS0Array2: TPRecSelfS0Array;
+      GlobTPRecSelfS1Array, GlobTPRecSelfS1Array2: TPRecSelfS1Array;
+      GlobTPRecSelfS3Array, GlobTPRecSelfS3Array2: TPRecSelfS3Array;
+
+    {$ENDIF}
   {%endregion VARIABLES}
 
   {%region CODE (initilization)}
@@ -135,31 +190,104 @@
     {$IFDEF Global_Body}
     //begin
       { records }
-      with GlobTRec do begin
-        ValInt := -1;
-        ValFoo := nil;
-      end;
-      with GlobTRec1 do begin
-        ValInt := 1;
-        ValFoo := TFoo.Create;
-        ValFoo.ValueInt := 11;
-      end;
-      with GlobTRec2 do begin
-        ValInt := 2;
-        ValFoo := TFoo.Create;
-        ValFoo.ValueInt := 22;
-      end;
+      GlobTRec.ValInt := -1;
+      GlobTRec.ValFoo := nil;
+
+      GlobTRec1.ValInt := 1;
+      GlobTRec1.ValFoo := TFoo.Create;
+      GlobTRec1.ValFoo.ValueInt := 11;
+
+      GlobTRec2.ValInt := 2;
+      GlobTRec2.ValFoo := TFoo.Create;
+      GlobTRec2.ValFoo.ValueInt := 22;
 
       GlobPRec  := @GlobTRec1;
-      GlobPPRec := @GlobPRec;
+      GlobPRec2 := @GlobTRec2;
+      GlobPPRec := @GlobPRec2;
 
-      with GlobTNewRec do begin
-        ValInt := 3;
-        ValFoo := nil;
-      end;
+      GlobTNewRec.ValInt := 3;
+      GlobTNewRec.ValFoo := nil;
 
       PGlobTRec    := @GlobTNewRec;
       PGlobTNewRec := @GlobTNewRec;
+
+      //GlobTRecSelf, GlobTRecSelf2: TRecSelf;
+      GlobTRecSelf.ValInt    := 100;
+      GlobTRecSelf.ValPRec   := @GlobTRec1;    // Valint=1
+      GlobTRecSelf.ValPPRec  := @GlobPRec2;    // Valint=2
+      GlobTRecSelf.ValPRec2  := @GlobTRecSelf; // self
+      GlobTRecSelf.ValPPRec2 := @GlobTRecSelf.ValPRec2;
+
+      GlobTRecSelf2.ValInt    := 102;
+      GlobTRecSelf2.ValPRec   := @GlobTRec1;   // Valint=1
+      GlobTRecSelf2.ValPPRec  := @GlobPRec2;   // Valint=2
+      GlobTRecSelf2.ValPRec2  := @GlobTRecSelf2;
+      GlobTRecSelf2.ValPPRec2 := @GlobTRecSelf2.ValPRec2;
+
+      SetLength(GlobTRecSelf.ValRecSelfDArray, 2);
+      GlobTRecSelf.ValRecSelfDArray[0] := @GlobTRecSelf2;
+      GlobTRecSelf.ValRecSelfDArray[1] := @GlobTRecSelf;
+      GlobTRecSelf.ValRecSelfS0Array[0] := @GlobTRecSelf2;
+      GlobTRecSelf.ValRecSelfS0Array[1] := @GlobTRecSelf;
+      GlobTRecSelf.ValRecSelfS1Array[1] := @GlobTRecSelf2;
+      GlobTRecSelf.ValRecSelfS1Array[2] := @GlobTRecSelf;
+      GlobTRecSelf.ValRecSelfS3Array[3] := @GlobTRecSelf2;
+      GlobTRecSelf.ValRecSelfS3Array[4] := @GlobTRecSelf;
+
+      SetLength(GlobTRecSelf2.ValRecSelfDArray, 2);
+      GlobTRecSelf2.ValRecSelfDArray[0] := @GlobTRecSelf;
+      GlobTRecSelf2.ValRecSelfDArray[1] := @GlobTRecSelf2;
+      GlobTRecSelf2.ValRecSelfS0Array[0] := @GlobTRecSelf;
+      GlobTRecSelf2.ValRecSelfS0Array[1] := @GlobTRecSelf2;
+      GlobTRecSelf2.ValRecSelfS1Array[1] := @GlobTRecSelf;
+      GlobTRecSelf2.ValRecSelfS1Array[2] := @GlobTRecSelf2;
+      GlobTRecSelf2.ValRecSelfS3Array[3] := @GlobTRecSelf;
+      GlobTRecSelf2.ValRecSelfS3Array[4] := @GlobTRecSelf2;
+
+      //GlobPRecSelf, GlobPRecSelf2: PRecSelf;
+      GlobPRecSelf := @GlobTRecSelf;
+      GlobPRecSelf2 := @GlobTRecSelf2;
+
+      //GlobPPRecSelf, GlobPPRecSelf2: PPRecSelf;
+      GlobPPRecSelf := @GlobPRecSelf;
+      GlobPPRecSelf2 := @GlobPRecSelf2;
+
+      //GlobTRecSelfDArray, GlobTRecSelfDArray2: TRecSelfDArray;
+      SetLength(GlobTRecSelfDArray, 2);
+      SetLength(GlobTRecSelfDArray2, 2);
+      GlobTRecSelfDArray[0] := GlobTRecSelf;
+      GlobTRecSelfDArray[1] := GlobTRecSelf2;
+      GlobTRecSelfDArray2[0] := GlobTRecSelf;
+      GlobTRecSelfDArray2[1] := GlobTRecSelf2;
+
+      //GlobTRecSelfS0Array, GlobTRecSelfS0Array2: TRecSelfS0Array;
+      GlobTRecSelfS0Array[0] := GlobTRecSelf;
+      GlobTRecSelfS0Array[1] := GlobTRecSelf2;
+      GlobTRecSelfS0Array2[0] := GlobTRecSelf;
+      GlobTRecSelfS0Array2[1] := GlobTRecSelf2;
+      //GlobTRecSelfS1Array, GlobTRecSelfS1Array2: TRecSelfS1Array;
+      GlobTRecSelfS1Array[1] := GlobTRecSelf;
+      GlobTRecSelfS1Array[2] := GlobTRecSelf2;
+      GlobTRecSelfS1Array2[1] := GlobTRecSelf;
+      GlobTRecSelfS1Array2[2] := GlobTRecSelf2;
+      //GlobTRecSelfS3Array, GlobTRecSelfS3Array2: TRecSelfS3Array;
+      GlobTRecSelfS3Array[3] := GlobTRecSelf;
+      GlobTRecSelfS3Array[4] := GlobTRecSelf2;
+      GlobTRecSelfS3Array2[3] := GlobTRecSelf;
+      GlobTRecSelfS3Array2[4] := GlobTRecSelf2;
+
+      //GlobTPRecSelfDArray, GlobTPRecSelfDArray2: TPRecSelfDArray;
+      SetLength(GlobTPRecSelfDArray, 2);
+      SetLength(GlobTPRecSelfDArray2, 2);
+      GlobTPRecSelfDArray[0] :=  @GlobTRecSelfDArray[0];
+      GlobTPRecSelfDArray[1] :=  @GlobTRecSelfDArray[1];
+      GlobTPRecSelfDArray2[0] := @GlobTRecSelfDArray2[0];
+      GlobTPRecSelfDArray2[1] := @GlobTRecSelfDArray2[1];
+
+
+      //GlobTPRecSelfS0Array, GlobTPRecSelfS0Array2: TPRecSelfS0Array;
+      //GlobTPRecSelfS1Array, GlobTPRecSelfS1Array2: TPRecSelfS1Array;
+      //GlobTPRecSelfS3Array, GlobTPRecSelfS3Array2: TPRecSelfS3Array;
     {$ENDIF}
 
     {$IFDEF Global_Body_NIL}

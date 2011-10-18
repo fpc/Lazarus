@@ -370,10 +370,7 @@ end;
 
 procedure TGDBTestCase.InternalDbgOutPut(Sender: TObject; const AText: String);
 begin
-  if GetLogActive then begin
-    CreateLog;
-    writeln(FLogFile, AText);
-  end;
+  LogToFile(AText);
   DoDbgOutPut(Sender, AText);
 end;
 
@@ -579,20 +576,18 @@ begin
   if (MinGdbVers > 0) then begin
     i := GetDebuggerInfo.Version;
     if (i > 0) and (i < MinGdbVers) then
-      AIgnoreReason := AIgnoreReason + IntToStr(FTestCnt) + ': ' + s
-        + 'GDB ('+IntToStr(i)+') to old, required:'+IntToStr(MinGdbVers)
-        + LineEnding;
+      AIgnoreReason := AIgnoreReason
+        + 'GDB ('+IntToStr(i)+') to old, required:'+IntToStr(MinGdbVers);
   end;
   if (MinFpcVers > 0) then begin
     i := GetCompilerInfo.Version;
     if (i > 0) and (i < MinFpcVers) then
-      AIgnoreReason := AIgnoreReason + IntToStr(FTestCnt) + ': ' + s
-        + 'FPC ('+IntToStr(i)+') to old, required:'+IntToStr(MinFpcVers)
-        + LineEnding;
+      AIgnoreReason := AIgnoreReason
+        + 'FPC ('+IntToStr(i)+') to old, required:'+IntToStr(MinFpcVers);
   end;
 
   if AIgnoreReason <> '' then begin
-    FUnexpectedSuccess := FUnexpectedSuccess + AIgnoreReason;
+    FUnexpectedSuccess:= FUnexpectedSuccess + IntToStr(FTestCnt) + ': ' + '### '+AIgnoreReason +' >>> '+s+LineEnding;
     inc(FUnexpectedSuccessCnt);
   end
   else
@@ -683,12 +678,12 @@ begin
     writeln(FLogFile, '================= Unexpected Success'+LineEnding);
     writeln(FLogFile, FUnexpectedSuccess);
     writeln(FLogFile, '================='+LineEnding);
-    if (FTestErrorCnt > 0) and (pos('failed', FFinalLogFileName) < 1)
-    then FFinalLogFileName := FFinalLogFileName + '.failed';
     if (FIgnoredErrorCnt > 0) and (pos('ignored', FFinalLogFileName) < 1)
     then FFinalLogFileName := FFinalLogFileName + '.ignored';
     if (FUnexpectedSuccessCnt > 0) and (pos('unexpected', FFinalLogFileName) < 1)
     then FFinalLogFileName := FFinalLogFileName + '.unexpected';
+    if (FTestErrorCnt > 0) and (pos('failed', FFinalLogFileName) < 1)
+    then FFinalLogFileName := FFinalLogFileName + '.failed';
   end;
   if s <> '' then begin
     Fail(s1+ LineEnding + s);
@@ -719,6 +714,9 @@ begin
 end;
 
 procedure TGDBTestCase.LogToFile(const s: string);
+var
+  buf: array[0..5000] of char;
+  i: Integer;
 begin
   if GetLogActive then begin
     CreateLog;

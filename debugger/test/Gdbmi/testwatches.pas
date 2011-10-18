@@ -9,8 +9,9 @@ uses
   TestBase, Debugger, GDBMIDebugger, LCLProc, SynRegExpr, Forms, StdCtrls, Controls;
 
 const
-  BREAK_LINE_FOOFUNC      = 230;
-  BREAK_LINE_FOOFUNC_NEST = 206;
+  BREAK_LINE_FOOFUNC_NEST  = 206;
+  BREAK_LINE_FOOFUNC       = 230;
+  BREAK_LINE_FOOFUNC_ARRAY = 254;
   RUN_GDB_TEST_ONLY = -1; // -1 run all
   RUN_TEST_ONLY = -1; // -1 run all
 
@@ -28,16 +29,79 @@ const
 type
 
   TWatchExpectationFlag =
-    (fnoDwrf,      // no dwarf at all
-     fnoDwrf2,      // no dwarf 2
-     fnoDwrf3,      // no dwarf 3
-     fnoDwrfNoSet, // no dwarf2 (-gw) without set
-     fnoStabs,
-     //fnoDwrfSet,   // no dwarf2 with set // no dwarf3
-     fTstSkip,
+    (IgnDwrf,            // ignore error for dwarf at all
+     IgnDwrf2,           // ignore error for dwarf 2
+     IgnDwrf2IfNoSet,    // ignore error for dwarf2 (-gw) without set
+     IgnDwrf3,           // ignore error for dwarf 3
+     IgnStabs,
+     //IgnDwrfSet,   // no dwarf2 with set // no dwarf3
+
+     IgnData,           // Ignore the data part
+     IgnDataDw,         // Ignore the data part, if dwarf
+     IgnDataDw2,        // Ignore the data part, if dwarf 2
+     IgnDataDw3,        // Ignore the data part, if dwarf 3
+     IgnDataSt,         // Ignore the data part, if Stabs
+
+     IgnKind,           // Ignore skSimple, ....
+     IgnKindDw,
+     IgnKindDw2,
+     IgnKindDw3,
+     IgnKindSt,
+
+     IgnKindPtr,           // Ignore skSimple, ONLY if got kind=skPointer
+     IgnKindPtrDw,
+     IgnKindPtrDw2,
+     IgnKindPtrDw3,
+     IgnKindPtrSt,
+
+     IgnTpName,           // Ignore the typename
+     IgnTpNameDw,
+     IgnTpNameDw2,
+     IgnTpNameDw3,
+     IgnTpNameSt,
+
+     fTstSkip,       // Do not run test
+     fTstSkipDwarf3,
      fTpMtch
     );
   TWatchExpectationFlags = set of TWatchExpectationFlag;
+
+const
+  WatchExpFlagMask: array[TSymbolType] of TWatchExpectationFlags
+  = ( {stNone}     [],
+      {stStabs}    [IgnStabs,
+                    IgnData,    IgnDataSt,
+                    IgnKind,    IgnKindSt,
+                    IgnKindPtr, IgnKindPtrSt,
+                    IgnTpName,  IgnTpNameSt
+                   ],
+      {stDwarf}    [IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet,
+                    IgnData,    IgnDataDw, IgnDataDw2,
+                    IgnKind,    IgnKindDw, IgnKindDw2,
+                    IgnKindPtr, IgnKindPtrDw, IgnKindPtrDw2,
+                    IgnTpName,  IgnTpNameDw, IgnTpNameDw2
+                   ],
+      {stDwarfSet} [IgnDwrf, IgnDwrf2,
+                    IgnData,    IgnDataDw, IgnDataDw2,
+                    IgnKind,    IgnKindDw, IgnKindDw2,
+                    IgnKindPtr, IgnKindPtrDw, IgnKindPtrDw2,
+                    IgnTpName,  IgnTpNameDw, IgnTpNameDw2
+                   ],
+      {stDwarf3}   [IgnDwrf, IgnDwrf3,
+                    IgnData,    IgnDataDw, IgnDataDw3,
+                    IgnKind,    IgnKindDw, IgnKindDw3,
+                    IgnKindPtr, IgnKindPtrDw, IgnKindPtrDw3,
+                    IgnTpName,  IgnTpNameDw, IgnTpNameDw3
+                   ]
+    );
+
+  WatchExpFlagSIgnAll     = [IgnStabs, IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet, IgnDwrf3];
+  WatchExpFlagSIgnData    = [IgnStabs, IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet, IgnDwrf3,  IgnData,    IgnDataDw, IgnDataDw2, IgnDataDw3, IgnDataSt];
+  WatchExpFlagSIgnKind    = [IgnStabs, IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet, IgnDwrf3,  IgnKind,    IgnKindDw, IgnKindDw2, IgnKindDw3, IgnKindSt];
+  WatchExpFlagSIgnKindPtr = [IgnStabs, IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet, IgnDwrf3,  IgnKindPtr, IgnKindPtrDw, IgnKindPtrDw2, IgnKindPtrDw3, IgnKindPtrSt];
+  WatchExpFlagSIgnTpName  = [IgnStabs, IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet, IgnDwrf3,  IgnTpName,  IgnTpNameDw, IgnTpNameDw2, IgnTpNameDw3, IgnTpNameSt];
+
+type
 
   PWatchExpectation= ^TWatchExpectation;
   TWatchExpectationResult = record
@@ -67,6 +131,9 @@ type
     ExpectBreakFooGdb: TWatchExpectationArray;    // direct commands to gdb, to check assumptions  // only Exp and Mtch
     ExpectBreakSubFoo: TWatchExpectationArray;    // Watches, evaluated in SubFoo (nested)
     ExpectBreakFoo: TWatchExpectationArray;       // Watches, evaluated in Foo
+    ExpectBreakFooArray: TWatchExpectationArray;       // Watches, evaluated in Foo_Array
+
+    FCurrentExpArray: ^TWatchExpectationArray; // currently added to
 
     FDbgOutPut: String;
     FDbgOutPutEnable: Boolean;
@@ -89,6 +156,18 @@ type
       AStackFrame: Integer = 0;
       AMinGdb: Integer = 0; AMinFpc: Integer = 0
     ): PWatchExpectation;
+
+    // using FCurrentExpArray
+    function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AMtch: string;
+                 AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
+    function AddFmtDef        (AnExpr, AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+    function AddStringFmtDef  (AnExpr, AMtch, ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+    function AddShortStrFmtDef(AnExpr, AMtch: string; ATpNm: string = 'ShortString'; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+    function AddCharFmtDef    (AnExpr, AMtch: string; ATpNm: string = 'Char'; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+    function AddPointerFmtDef (AnExpr,        ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+    function AddPointerFmtDef (AnExpr, AMtch, ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+
+
     procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
       AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags;
       AMinGdb: Integer; AMinFpc: Integer
@@ -110,6 +189,7 @@ type
 
     procedure AddExpectBreakFooGdb;
     procedure AddExpectBreakFooAll;
+    procedure AddExpectBreakFooArray;
     procedure AddExpectBreakFooMixInfo;
     //procedure AddExpectBreakSubFoo;
     procedure AddExpectBreakFooAndSubFoo;  // check for caching issues
@@ -172,13 +252,15 @@ begin
   SetLength(ExpectBreakFooGdb, 0);
   SetLength(ExpectBreakSubFoo, 0);
   SetLength(ExpectBreakFoo, 0);
+  SetLength(ExpectBreakFooArray, 0);
 end;
 
 function TTestWatches.HasTestArraysData: Boolean;
 begin
   Result := (Length(ExpectBreakFooGdb) > 0) or
             (Length(ExpectBreakSubFoo) > 0) or
-            (Length(ExpectBreakFoo) >0 );
+            (Length(ExpectBreakFoo) > 0) or
+            (Length(ExpectBreakFooArray) >0 );
 
 end;
 
@@ -199,12 +281,6 @@ begin
       Result[i].ExpKind      := AKind;
       Result[i].ExpTypeName  := ATpNm;
       Result[i].Flgs         := AFlgs;
-      if ( (fnoDwrf in AFlgs) and (i in [stDwarf, stDwarfSet, stDwarf3]) ) or
-         ( (fnoDwrfNoSet in AFlgs) and (i in [stDwarf]) ) or
-         ( (fnoDwrf2 in AFlgs) and (i in [stDwarf, stDwarfSet]) ) or
-         ( (fnoDwrf3 in AFlgs) and (i in [stDwarf3]) ) or
-         ( (fnoStabs in AFlgs) and (i in [stStabs]) )
-      then Result[i].Flgs := Result[i].Flgs + [fTstSkip];
       Result[i].MinGdb := AMinGdb;
       Result[i].MinFpc := AMinFpc;
     end;
@@ -230,18 +306,64 @@ begin
       Result[i].ExpKind      := AKind;
       Result[i].ExpTypeName  := ATpNm;
       Result[i].Flgs         := AFlgs;
-      if ( (fnoDwrf in AFlgs) and (i in [stDwarf, stDwarfSet, stDwarf3]) ) or
-         ( (fnoDwrfNoSet in AFlgs) and (i in [stDwarf]) ) or
-         ( (fnoDwrf2 in AFlgs) and (i in [stDwarf, stDwarfSet]) ) or
-         ( (fnoDwrf3 in AFlgs) and (i in [stDwarf3]) ) or
-         ( (fnoStabs in AFlgs) and (i in [stStabs]) )
-      then Result[i].Flgs := Result[i].Flgs + [fTstSkip];
       Result[i].MinGdb := AMinGdb;
       Result[i].MinFpc := AMinFpc;
     end;
     StackFrame   := AStackFrame;
   end;
   Result := @ExpArray[Length(ExpArray)-1];
+end;
+
+function TTestWatches.Add(AnExpr: string; AFmt: TWatchDisplayFormat; AMtch: string;
+  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
+begin
+  Result := AddTo(FCurrentExpArray^, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs );
+end;
+
+function TTestWatches.AddFmtDef(AnExpr, AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+  AFlgs: TWatchExpectationFlags): PWatchExpectation;
+begin
+  Result := Add(AnExpr, wdfDefault, AMtch, AKind, ATpNm, AFlgs );
+end;
+
+function TTestWatches.AddStringFmtDef(AnExpr, AMtch, ATpNm: string;
+  AFlgs: TWatchExpectationFlags): PWatchExpectation;
+begin
+  // TODO, encoding of special chars
+  // String should be skSimple
+  // but the IDE only gets that with Dwarf-3
+  // might be prefixed, with address
+  Result := AddFmtDef(AnExpr, '''' + AMtch + '''$', skPOINTER, ATpNm, AFlgs );
+  UpdRes(Result, stDwarf3,           skSimple);
+end;
+
+function TTestWatches.AddShortStrFmtDef(AnExpr, AMtch: string; ATpNm: string;
+  AFlgs: TWatchExpectationFlags): PWatchExpectation;
+begin
+  // TODO, encoding of special chars
+  // shortstring
+  // might be prefixed, with address
+  Result := AddFmtDef(AnExpr, '''' + AMtch + '''$', skSimple, ATpNm, AFlgs );
+end;
+
+function TTestWatches.AddCharFmtDef(AnExpr, AMtch: string; ATpNm: string;
+  AFlgs: TWatchExpectationFlags): PWatchExpectation;
+begin
+  // TODO, encoding of special chars
+  // might be prefixed, with address
+  Result := AddFmtDef(AnExpr, '''' + AMtch + '''$', skSimple, ATpNm, AFlgs );
+end;
+
+function TTestWatches.AddPointerFmtDef(AnExpr, ATpNm: string;
+  AFlgs: TWatchExpectationFlags): PWatchExpectation;
+begin
+  Result := AddFmtDef(AnExpr, MatchPointer(ATpNm), skPointer, ATpNm, AFlgs );
+end;
+
+function TTestWatches.AddPointerFmtDef(AnExpr, AMtch, ATpNm: string;
+  AFlgs: TWatchExpectationFlags): PWatchExpectation;
+begin
+  Result := AddFmtDef(AnExpr, AMtch, skPointer, ATpNm, AFlgs );
 end;
 
 procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
@@ -312,13 +434,10 @@ begin
 end;
 
 procedure TTestWatches.AddExpectBreakFooGdb;
-  function Add(AnExpr:  string; AFmt: TWatchDisplayFormat;
-    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
-  begin
-    Result := AddTo(ExpectBreakFooGdb,AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs );
-  end;
 begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.Gdb')] then exit;
+  FCurrentExpArray := @ExpectBreakFooGdb;
+
   Add('ptype ArgTFoo',  wdfDefault, 'type = \^TFoo = class : PUBLIC TObject', skClass, '', []);
   Add('ptype ArgTFoo^', wdfDefault, 'type = TFoo = class : PUBLIC TObject',   skClass, '', []);
 
@@ -332,32 +451,11 @@ begin
 end;
 
 procedure TTestWatches.AddExpectBreakFooAll;
-
-  function Add(AnExpr:  string; AFmt: TWatchDisplayFormat;
-    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
-  begin
-    Result := AddTo(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs );
-  end;
-
-  function AddFmtDef(AnExpr:  string;
-    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
-  begin
-    Result := Add(AnExpr, wdfDefault, AMtch, AKind, ATpNm, AFlgs );
-  end;
-
-  function AddStringFmtDef(AnExpr:  string;
-    AMtch: string; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
-  begin
-    // String should be skSimple
-    // but the IDE only gets that with Dwarf-3
-    Result := AddFmtDef(AnExpr, AMtch, skPOINTER, ATpNm, AFlgs );
-    UpdRes(Result, stDwarf3,           skSimple);
-  end;
-
 var
   r: PWatchExpectation;
 begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.All')] then exit;
+  FCurrentExpArray := @ExpectBreakFoo;
 
   {%region    * records * }
   // Foo(var XXX: PRecord); DWARF has problems with the implicit pointer for "var"
@@ -386,54 +484,68 @@ begin
   AddFmtDef('ArgTRecSelfDArray',  '.',                                   skSimple,    'TRecSelfDArray', []);
   //ArgTRecSelf
   AddFmtDef('ArgTRecSelfDArray[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfDArray[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('ArgTRecSelfDArray[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
-  AddFmtDef('ArgTRecSelfDArray[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
-  AddFmtDef('ArgTRecSelfDArray[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfDArray[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch, IgnStabs, IgnDwrf]);
+  AddFmtDef('ArgTRecSelfDArray[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs, IgnDwrf]);
+  AddFmtDef('ArgTRecSelfDArray[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs, IgnDwrf]);
+  AddFmtDef('ArgTRecSelfDArray[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch, IgnStabs, IgnDwrf]);
   //VArgTRecSelf
   AddFmtDef('ArgTRecSelfDArray[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfDArray[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('ArgTRecSelfDArray[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
-  AddFmtDef('ArgTRecSelfDArray[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
-  AddFmtDef('ArgTRecSelfDArray[1].ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfDArray[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch,IgnStabs, IgnDwrf]);
+  AddFmtDef('ArgTRecSelfDArray[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs, IgnDwrf]);
+  AddFmtDef('ArgTRecSelfDArray[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs, IgnDwrf]);
+  AddFmtDef('ArgTRecSelfDArray[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnStabs, IgnDwrf]);
 
   AddFmtDef('ArgTRecSelfS0Array',  '.',                                   skSimple,    'TRecSelfS0Array', []);
   //ArgTRecSelf
   AddFmtDef('ArgTRecSelfS0Array[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfS0Array[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
-  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
-  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS0Array[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
   //VArgTRecSelf
   AddFmtDef('ArgTRecSelfS0Array[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfS0Array[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
-  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
-  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS0Array[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
 
   AddFmtDef('ArgTRecSelfS3Array',  '.',                                   skSimple,    'TRecSelfS3Array', []);
   //ArgTRecSelf
   AddFmtDef('ArgTRecSelfS3Array[3]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
-  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
-  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
   //VArgTRecSelf
   AddFmtDef('ArgTRecSelfS3Array[4]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
-  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^', MatchRecord('TRec', 2),              skRecord,    'TRec', []);
-  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+
+  AddFmtDef('ArgTPRecSelfDArray',  '.',                                   skSimple,    'TPRecSelfDArray', []);
+  //ArgTRecSelf
+  AddFmtDef('ArgTPRecSelfDArray[0]^',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', [IgnStabs,IgnDwrf]);
+  AddFmtDef('ArgTPRecSelfDArray[0]^.ValInt',   '100',                               skSimple,    M_Int, [fTpMtch, IgnStabs,IgnDwrf]);
+  AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs,IgnDwrf]);
+  AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs,IgnDwrf]);
+  AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch, IgnStabs,IgnDwrf]);
+  //VArgTRecSelf
+  AddFmtDef('ArgTPRecSelfDArray[1]^',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', [IgnStabs,IgnDwrf]);
+  AddFmtDef('ArgTPRecSelfDArray[1]^.ValInt',   '102',                               skSimple,    M_Int, [fTpMtch, IgnStabs,IgnDwrf]);
+  AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs,IgnDwrf]);
+  AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs,IgnDwrf]);
+  AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch, IgnStabs,IgnDwrf]);
 
 
 
   // VAR param to FooFunc
   AddFmtDef('VArgTRec',           MatchRecord('TREC', -1, '(\$0|nil)'),   skRecord,    'TRec', []);
   AddFmtDef('VArgPRec',           MatchPointer('^PRec'),                  skPointer,   'PRec', []);
-  AddFmtDef('VArgPRec^',          MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', [fnoDwrf]);
+  AddFmtDef('VArgPRec^',          MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', [IgnDwrf]);
   AddFmtDef('VArgPPRec',          MatchPointer('^PPRec'),                 skPointer,   'PPRec', []);
-  AddFmtDef('VArgPPRec^',         MatchPointer('^PRec'),                  skPointer,   'PRec', [fnoDwrf]);
-  AddFmtDef('VArgPPRec^^',        MatchRecord('TREC', 2, '.'),            skRecord,    'TRec', [fnoDwrf]);
+  AddFmtDef('VArgPPRec^',         MatchPointer('^PRec'),                  skPointer,   'PRec', [IgnDwrf]);
+  AddFmtDef('VArgPPRec^^',        MatchRecord('TREC', 2, '.'),            skRecord,    'TRec', [IgnDwrf]);
   AddFmtDef('VArgTNewRec',        MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,    'T(New)?Rec', [fTpMtch]);
   AddFmtDef('VArgTRec.ValInt',    '-1',                                   skSimple,    M_Int, [fTpMtch]);
   AddFmtDef('VArgPRec^.ValInt',   '1',                                    skSimple,    M_Int, [fTpMtch]);
@@ -444,50 +556,67 @@ begin
   AddFmtDef('VArgTRecSelf.ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
   AddFmtDef('VArgTRecSelf.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
   AddFmtDef('VArgTRecSelf.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
-  AddFmtDef('VArgTRecSelf.ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelf.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
 
-  AddFmtDef('VArgTRecSelfDArray',  '.',                                   skSimple,    'TRecSelfDArray', []);
+  r := AddFmtDef('VArgTRecSelfDArray',  '.',                                   skSimple,    'TRecSelfDArray', []);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
   //ArgTRecSelf
-  AddFmtDef('VArgTRecSelfDArray[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('VArgTRecSelfDArray[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('VArgTRecSelfDArray[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
-  AddFmtDef('VArgTRecSelfDArray[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
-  AddFmtDef('VArgTRecSelfDArray[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  r := AddFmtDef('VArgTRecSelfDArray[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
+  AddFmtDef('VArgTRecSelfDArray[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch, IgnStabs, IgnDwrf]);
+  AddFmtDef('VArgTRecSelfDArray[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs, IgnDwrf]);
+  AddFmtDef('VArgTRecSelfDArray[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs, IgnDwrf]);
+  AddFmtDef('VArgTRecSelfDArray[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch, IgnStabs, IgnDwrf]);
   //VArgTRecSelf
-  AddFmtDef('VArgTRecSelfDArray[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('VArgTRecSelfDArray[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('VArgTRecSelfDArray[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
-  AddFmtDef('VArgTRecSelfDArray[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
-  AddFmtDef('VArgTRecSelfDArray[1].ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+  r := AddFmtDef('VArgTRecSelfDArray[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
+  AddFmtDef('VArgTRecSelfDArray[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch, IgnStabs, IgnDwrf]);
+  AddFmtDef('VArgTRecSelfDArray[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs, IgnDwrf]);
+  AddFmtDef('VArgTRecSelfDArray[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs, IgnDwrf]);
+  AddFmtDef('VArgTRecSelfDArray[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch, IgnStabs, IgnDwrf]);
 
   AddFmtDef('VArgTRecSelfS0Array',  '.',                                   skSimple,    'TRecSelfS0Array', []);
   //ArgTRecSelf
   AddFmtDef('VArgTRecSelfS0Array[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('VArgTRecSelfS0Array[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
-  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
-  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS0Array[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
   //VArgTRecSelf
   AddFmtDef('VArgTRecSelfS0Array[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('VArgTRecSelfS0Array[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
-  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
-  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS0Array[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
 
   AddFmtDef('VArgTRecSelfS3Array',  '.',                                   skSimple,    'TRecSelfS3Array', []);
   //ArgTRecSelf
   AddFmtDef('VArgTRecSelfS3Array[3]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('VArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
-  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
-  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
   //VArgTRecSelf
   AddFmtDef('VArgTRecSelfS3Array[4]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('VArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
-  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
-  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
-  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec^.ValInt',  '2',                         skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
 
+  r := AddFmtDef('VArgTPRecSelfDArray',  '.',                                   skSimple,    'TPRecSelfDArray', []);
+     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
+  //ArgTRecSelf
+  AddFmtDef('VArgTPRecSelfDArray[0]^',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', [IgnStabs,IgnDwrf]);
+  AddFmtDef('VArgTPRecSelfDArray[0]^.ValInt',   '100',                               skSimple,    M_Int, [fTpMtch,IgnStabs,IgnDwrf]);
+  AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs,IgnDwrf]);
+  AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs,IgnDwrf]);
+  AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnStabs,IgnDwrf]);
+  //VArgTRecSelf
+  AddFmtDef('VArgTPRecSelfDArray[1]^',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', [IgnStabs,IgnDwrf]);
+  AddFmtDef('VArgTPRecSelfDArray[1]^.ValInt',   '102',                               skSimple,    M_Int, [fTpMtch,IgnStabs,IgnDwrf]);
+  AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs,IgnDwrf]);
+  AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs,IgnDwrf]);
+  AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnStabs,IgnDwrf]);
 
 
   // LOCAL var (global type)
@@ -496,7 +625,7 @@ begin
   AddFmtDef('VarPRec^',          MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
   AddFmtDef('VarPPRec',          MatchPointer('^PPRec'),                 skPointer,   'PPRec', []);
   AddFmtDef('VarPPRec^',         MatchPointer('^PRec'),                  skPointer,   'PRec', []);
-  AddFmtDef('VarPPRec^^',        MatchRecord('TREC', 1, '.'),            skRecord,    'TRec', []);
+  AddFmtDef('VarPPRec^^',        MatchRecord('TREC', 2, '.'),            skRecord,    'TRec', []);
   AddFmtDef('VarTNewRec',        MatchRecord('T(NEW)?REC', 3, '.'),      skRecord,    'T(New)?Rec', [fTpMtch]);
   AddFmtDef('VarTRec.ValInt',    '-1',                                   skSimple,    M_Int, [fTpMtch]);
 
@@ -534,13 +663,13 @@ begin
   AddFmtDef('(@VArgTFoo)^',   Match_ArgTFoo,                 skClass,   'TFoo',  []);
 
   AddFmtDef('VArgPFoo',     'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  []);
-  AddFmtDef('VArgPFoo^' ,   Match_ArgTFoo1,                skClass,   'TFoo',  [fnoDwrf]);
+  AddFmtDef('VArgPFoo^' ,   Match_ArgTFoo1,                skClass,   'TFoo',  [IgnDwrf]);
   AddFmtDef('@VArgPFoo',    '(P|\^)PFoo\('+Match_Pointer,  skPointer, '(P|\^)PFoo',  [fTpMtch]);
 
   AddFmtDef('VArgPPFoo',    'PPFoo\('+Match_Pointer,       skPointer, 'PPFoo', []);
-  AddFmtDef('VArgPPFoo^',   'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  [fnoDwrf]);
+  AddFmtDef('VArgPPFoo^',   'PFoo\('+Match_Pointer,        skPointer, 'PFoo',  [IgnDwrf]);
   AddFmtDef('@VArgPPFoo',   '\^PPFoo\('+Match_Pointer,      skPointer, '^PPFoo', []);
-  AddFmtDef('VArgPPFoo^^',   Match_ArgTFoo1,               skClass,   'TFoo',  [fnoDwrf]);
+  AddFmtDef('VArgPPFoo^^',   Match_ArgTFoo1,               skClass,   'TFoo',  [IgnDwrf]);
 
 
   AddFmtDef('ArgTFoo.ValueInt',       '^-11$',             skSimple,   'Integer|LongInt',  [fTpMtch]);
@@ -617,47 +746,47 @@ begin
     { strings }
     // todo: some skPOINTER should be skSimple
   // ArgAnsiString
-  r:=AddStringFmtDef('ArgAnsiString',          '''Ansi''$',         'AnsiString', []);
-  r:=AddStringFmtDef('VArgAnsiString',         '''Ansi 2''$',       'AnsiString', []);
-  r:=AddStringFmtDef('ArgTMyAnsiString',       '''MyAnsi''$',       '^(TMy)?AnsiString$', [fTpMtch]);
-  r:=AddStringFmtDef('VArgTMyAnsiString',      '''MyAnsi 2''$',     '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=AddStringFmtDef('ArgAnsiString',          'Ansi',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgAnsiString',         'Ansi 2',       'AnsiString', []);
+  r:=AddStringFmtDef('ArgTMyAnsiString',       'MyAnsi',       '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=AddStringFmtDef('VArgTMyAnsiString',      'MyAnsi 2',     '^(TMy)?AnsiString$', [fTpMtch]);
 
   r:=AddFmtDef('ArgPMyAnsiString',     MatchPointer, skPointer,     'PMyAnsiString', []);
      UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
   r:=AddFmtDef('VArgPMyAnsiString',    MatchPointer,  skPointer,    'PMyAnsiString', []);
      UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
-  r:=AddStringFmtDef('ArgPMyAnsiString^',      '''MyAnsi P''$',     '^(TMy)?AnsiString$', [fTpMtch]);
-  r:=AddStringFmtDef('VArgPMyAnsiString^',     '''MyAnsi P2''$',    '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf2]);
+  r:=AddStringFmtDef('ArgPMyAnsiString^',      'MyAnsi P',     '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=AddStringFmtDef('VArgPMyAnsiString^',     'MyAnsi P2',    '^(TMy)?AnsiString$', [fTpMtch, IgnDwrf2]);
 
   r:=AddFmtDef('ArgPPMyAnsiString',    MatchPointer,  skPointer,    'PPMyAnsiString', []);
   r:=AddFmtDef('VArgPPMyAnsiString',   MatchPointer,  skPointer,    'PPMyAnsiString', []);
   r:=AddFmtDef('ArgPPMyAnsiString^',   MatchPointer,  skPointer,    'PMyAnsiString', []);
      UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
-  r:=AddFmtDef('VArgPPMyAnsiString^',  MatchPointer,  skPointer,    'PMyAnsiString', [fnoDwrf2]);
+  r:=AddFmtDef('VArgPPMyAnsiString^',  MatchPointer,  skPointer,    'PMyAnsiString', [IgnDwrf2]);
      UpdRes(r, stStabs,                                             '^(PMyAnsiString|PPChar)$', [fTpMtch]);
-  r:=AddStringFmtDef('ArgPPMyAnsiString^^',    '''MyAnsi P''$',     '^(TMy)?AnsiString$', [fTpMtch]);
-  r:=AddStringFmtDef('VArgPPMyAnsiString^^',   '''MyAnsi P2''$',    '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf2]);
+  r:=AddStringFmtDef('ArgPPMyAnsiString^^',    'MyAnsi P',     '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=AddStringFmtDef('VArgPPMyAnsiString^^',   'MyAnsi P2',    '^(TMy)?AnsiString$', [fTpMtch, IgnDwrf2]);
 
 
-  r:=AddStringFmtDef('ArgTNewAnsiString',      '''NewAnsi''$',      'TNewAnsiString', []);
+  r:=AddStringFmtDef('ArgTNewAnsiString',      'NewAnsi',      'TNewAnsiString', []);
      UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
-  r:=AddStringFmtDef('VArgTNewAnsiString',     '''NewAnsi 2''$',    'TNewAnsiString', []);
+  r:=AddStringFmtDef('VArgTNewAnsiString',     'NewAnsi 2',    'TNewAnsiString', []);
      UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
 
   r:=AddFmtDef('ArgPNewAnsiString',    MatchPointer,  skPointer,    'PNewAnsiString', []);
                     UpdRes(r, stStabs,                              '(\^|PNew|P)AnsiString|PPChar', [fTpMtch]);
   r:=AddFmtDef('VArgPNewAnsiString',   MatchPointer,  skPointer,    'PNewAnsiString', []);
                     UpdRes(r, stStabs,                              '(\^|PNew|P)AnsiString|PPChar', [fTpMtch]);
-  r:=AddStringFmtDef('ArgPNewAnsiString^',      '''NewAnsi P''$',   'TNewAnsiString', []);
+  r:=AddStringFmtDef('ArgPNewAnsiString^',      'NewAnsi P',   'TNewAnsiString', []);
      UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
-  r:=AddStringFmtDef('VArgPNewAnsiString^',     '''NewAnsi P2''$',  'TNewAnsiString', [fnoDwrf]);
+  r:=AddStringFmtDef('VArgPNewAnsiString^',     'NewAnsi P2',  'TNewAnsiString', [IgnDwrf]);
      UpdRes(r, stStabs,                                             '(TNew)?AnsiString', [fTpMtch]);
 
 
   // typecasts
-  r:=AddStringFmtDef('AnsiString(ArgTMyAnsiString)',   '''MyAnsi''$',      'AnsiString|\^char', [fTpMtch]);
+  r:=AddStringFmtDef('AnsiString(ArgTMyAnsiString)',   'MyAnsi',      'AnsiString|\^char', [fTpMtch]);
      UpdRes(r, stDwarf3,                                                   'AnsiString', []);
-  r:=AddStringFmtDef('AnsiString(VArgTMyAnsiString)',  '''MyAnsi 2''$',    'AnsiString|\^char', [fTpMtch]);
+  r:=AddStringFmtDef('AnsiString(VArgTMyAnsiString)',  'MyAnsi 2',    'AnsiString|\^char', [fTpMtch]);
      UpdRes(r, stDwarf3,                                                   'AnsiString', []);
 
   r:=AddFmtDef('PMyAnsiString(ArgPMyAnsiString)',     MatchPointer, skPointer,   '^(\^|PMy)AnsiString$', [fTpMtch]);
@@ -670,10 +799,10 @@ begin
   r:=AddFmtDef('^AnsiString(VArgPMyAnsiString)',      MatchPointer,  skPointer,  '^(\^AnsiString|\^\^char)', [fTpMtch]);
      UpdRes(r, stStabs,                                                          '^(\^AnsiString|PPChar)$', [fTpMtch]);
 
-  r:=AddStringFmtDef('AnsiString(ArgPMyAnsiString^)',  '''MyAnsi P''$',     '^((TMy)?AnsiString|\^char)$', [fTpMtch]);
-  r:=AddStringFmtDef('AnsiString(VArgPMyAnsiString^)', '''MyAnsi P2''$',    '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf2]);
-  r:=AddStringFmtDef('PMyAnsiString(ArgPMyAnsiString)^',  '''MyAnsi P''$',  '^(TMy)?AnsiString$', [fTpMtch]);
-  r:=AddStringFmtDef('PMyAnsiString(VArgPMyAnsiString)^', '''MyAnsi P2''$', '^(TMy)?AnsiString$', [fTpMtch, fnoDwrf2]);
+  r:=AddStringFmtDef('AnsiString(ArgPMyAnsiString^)',  'MyAnsi P',     '^((TMy)?AnsiString|\^char)$', [fTpMtch]);
+  r:=AddStringFmtDef('AnsiString(VArgPMyAnsiString^)', 'MyAnsi P2',    '^(TMy)?AnsiString$', [fTpMtch, IgnDwrf2]);
+  r:=AddStringFmtDef('PMyAnsiString(ArgPMyAnsiString)^',  'MyAnsi P',  '^(TMy)?AnsiString$', [fTpMtch]);
+  r:=AddStringFmtDef('PMyAnsiString(VArgPMyAnsiString)^', 'MyAnsi P2', '^(TMy)?AnsiString$', [fTpMtch, IgnDwrf2]);
 
 
   r:=AddFmtDef('PChar(ArgTMyAnsiString)',
@@ -695,7 +824,7 @@ begin
                     UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
   r:=AddFmtDef('ArgPMyAnsiString^[1]',     '.',      skSimple,   'char', []);
                     UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
-  r:=AddFmtDef('VArgPMyAnsiString^[1]',    '.',      skSimple,   'char', [fnoDwrf]);
+  r:=AddFmtDef('VArgPMyAnsiString^[1]',    '.',      skSimple,   'char', [IgnDwrf]);
                     UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
   r:=AddFmtDef('AnsiString(ArgTMyAnsiString)[1]',      '.',      skSimple,   'char', []);
                     UpdRes(r, stDwarf3,    '''M''$', skSimple,   'char', []);
@@ -708,52 +837,78 @@ begin
 
 
   // string in array
-  r:=AddStringFmtDef('ArgTMyAnsiStringDArray[0]',   '''DArray1 Str0''$',         'AnsiString', []);
-  r:=AddStringFmtDef('ArgTMyAnsiStringDArray[1]',   '''DArray1 Str1''$',         'AnsiString', []);
-  r:=AddStringFmtDef('VArgTMyAnsiStringDArray[0]',  '''DArray2 Str0''$',         'AnsiString', []);
+  r:=AddStringFmtDef('ArgTMyAnsiStringDArray[0]',   'DArray1 Str0',         'AnsiString', []);
+  r:=AddStringFmtDef('ArgTMyAnsiStringDArray[1]',   'DArray1 Str1',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTMyAnsiStringDArray[0]',  'DArray2 Str0',         'AnsiString', []);
      UpdResMinFpc(r, stDwarf, 020600);
      UpdResMinFpc(r, stDwarfSet, 020600);
-  r:=AddStringFmtDef('VArgTMyAnsiStringDArray[1]',  '''DArray2 Str1''$',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTMyAnsiStringDArray[1]',  'DArray2 Str1',         'AnsiString', []);
      UpdResMinFpc(r, stDwarf, 020600);
      UpdResMinFpc(r, stDwarfSet, 020600);
 
 
-  r:=AddFmtDef('ArgTMyAnsiStringDArray[0][1]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
-     UpdRes(r, stDwarf3,                         '''D''$', skSimple);
-  r:=AddFmtDef('ArgTMyAnsiStringDArray[0][12]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
-     UpdRes(r, stDwarf3,                         '''0''$', skSimple);
-  r:=AddFmtDef('ArgTMyAnsiStringDArray[1][1]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
-     UpdRes(r, stDwarf3,                         '''D''$', skSimple);
-  r:=AddFmtDef('ArgTMyAnsiStringDArray[1][12]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
-     UpdRes(r, stDwarf3,                         '''1''$', skSimple);
+  r:=AddCharFmtDef('ArgTMyAnsiStringDArray[0][1]',  'D', 'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyAnsiStringDArray[0][12]', '0',   'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyAnsiStringDArray[1][1]',  'D',    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyAnsiStringDArray[1][12]', '1',    'char', [IgnDwrf2, IgnStabs]);
 
-  r:=AddFmtDef('VArgTMyAnsiStringDArray[0][1]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
-     UpdRes(r, stDwarf3,                         '''D''$', skSimple);
-  r:=AddFmtDef('VArgTMyAnsiStringDArray[0][12]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
-     UpdRes(r, stDwarf3,                         '''0''$', skSimple);
-  r:=AddFmtDef('VArgTMyAnsiStringDArray[1][1]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
-     UpdRes(r, stDwarf3,                         '''D''$', skSimple);
-  r:=AddFmtDef('VArgTMyAnsiStringDArray[1][12]',   '.$',  skSimple,    'char', [fnoDwrf2, fnoStabs]);
-     UpdRes(r, stDwarf3,                         '''1''$', skSimple);
+  r:=AddCharFmtDef('VArgTMyAnsiStringDArray[0][1]',   'D',    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('VArgTMyAnsiStringDArray[0][12]',  '0',    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('VArgTMyAnsiStringDArray[1][1]',   'D',    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('VArgTMyAnsiStringDArray[1][12]',  '1',    'char', [IgnDwrf2, IgnStabs]);
 
-  r:=AddStringFmtDef('ArgTMyAnsiStringSArray[3]',   '''SArray1 Str3''$',         'AnsiString', []);
-  r:=AddStringFmtDef('ArgTMyAnsiStringSArray[4]',   '''SArray1 Str4''$',         'AnsiString', []);
-  r:=AddStringFmtDef('VArgTMyAnsiStringSArray[3]',  '''SArray2 Str3''$',         'AnsiString', []);
-  r:=AddStringFmtDef('VArgTMyAnsiStringSArray[4]',  '''SArray2 Str4''$',         'AnsiString', []);
+  r:=AddStringFmtDef('ArgTMyAnsiStringSArray[3]',   'SArray1 Str3',         'AnsiString', []);
+  r:=AddStringFmtDef('ArgTMyAnsiStringSArray[4]',   'SArray1 Str4',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTMyAnsiStringSArray[3]',  'SArray2 Str3',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTMyAnsiStringSArray[4]',  'SArray2 Str4',         'AnsiString', []);
 
-  r:=AddFmtDef('ArgTMyAnsiStringSArray[3][1]',   '.$',  skSimple,    'char', []);
-     UpdRes(r, stDwarf3,                         '''S''$', skSimple);
-  r:=AddFmtDef('ArgTMyAnsiStringSArray[3][12]',   '.$',  skSimple,    'char', []);
-     UpdRes(r, stDwarf3,                         '''0''$', skSimple);
-  r:=AddFmtDef('ArgTMyAnsiStringSArray[4][1]',   '.$',  skSimple,    'char', []);
-     UpdRes(r, stDwarf3,                         '''S''$', skSimple);
-  r:=AddFmtDef('ArgTMyAnsiStringSArray[4][12]',   '.$',  skSimple,    'char', []);
-     UpdRes(r, stDwarf3,                         '''1''$', skSimple);
+  r:=AddCharFmtDef('ArgTMyAnsiStringSArray[3][1]',   'S',    'char', [IgnDataDw, IgnDataSt]);
+  r:=AddCharFmtDef('ArgTMyAnsiStringSArray[3][12]',  '0',    'char', [IgnDataDw, IgnDataSt]);
+  r:=AddCharFmtDef('ArgTMyAnsiStringSArray[4][1]',   'S',    'char', [IgnDataDw, IgnDataSt]);
+  r:=AddCharFmtDef('ArgTMyAnsiStringSArray[4][12]',  '1',    'char', [IgnDataDw, IgnDataSt]);
+
+  // string in array // no typename for array
+  r:=AddStringFmtDef('GlobAMyAnsiStringDArray[0]',   'ADArray1 Str0',         'AnsiString', []);
+  r:=AddStringFmtDef('GlobAMyAnsiStringDArray[1]',   'ADArray1 Str1',         'AnsiString', []);
+
+  r:=AddCharFmtDef('GlobAMyAnsiStringDArray[0][1]',   'A',    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('GlobAMyAnsiStringDArray[0][13]',  '0',    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('GlobAMyAnsiStringDArray[1][1]',   'A',    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('GlobAMyAnsiStringDArray[1][13]',  '1',    'char', [IgnDwrf2, IgnStabs]);
+
+  // PAnsiString in array
+  r:=AddPointerFmtDef('ArgTMyPAnsiStringDArray[0]',   MatchPointer(),     '^(\^|P)(AnsiString|PChar)$', [fTpMtch]);
+  r:=AddPointerFmtDef('ArgTMyPAnsiStringDArray[1]',   MatchPointer(),     '^(\^|P)(AnsiString|PChar)$', [fTpMtch]);
+  r:=AddStringFmtDef('ArgTMyPAnsiStringDArray[0]^',   'DArray1 Str0',         'AnsiString', [IgnDwrf2, IgnStabs]);
+  r:=AddStringFmtDef('ArgTMyPAnsiStringDArray[1]^',   'DArray1 Str1',         'AnsiString', [IgnDwrf2, IgnStabs]);
+  r:=AddStringFmtDef('VArgTMyPAnsiStringDArray[0]^',  'DArray2 Str0',         'AnsiString', [IgnStabs, IgnDwrf2]);
+  r:=AddStringFmtDef('VArgTMyPAnsiStringDArray[1]^',  'DArray2 Str1',         'AnsiString', [IgnStabs, IgnDwrf2]);
+
+
+  r:=AddCharFmtDef('ArgTMyPAnsiStringDArray[0][1]^',   'D'  ,    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyPAnsiStringDArray[0][12]^',  '0'  ,    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyPAnsiStringDArray[1][1]^',   'D'  ,    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyPAnsiStringDArray[1][12]^',  '1'  ,    'char', [IgnDwrf2, IgnStabs]);
+
+  r:=AddCharFmtDef('VArgTMyPAnsiStringDArray[0]^[1]',  'D'  ,    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('VArgTMyPAnsiStringDArray[0]^[12]', '0'  ,    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('VArgTMyPAnsiStringDArray[1]^[1]',  'D'  ,    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('VArgTMyPAnsiStringDArray[1]^[12]', '1'  ,    'char', [IgnDwrf2, IgnStabs]);
+
+  r:=AddStringFmtDef('ArgTMyPAnsiStringSArray[3]^',   'SArray1 Str3',         'AnsiString', []);
+  r:=AddStringFmtDef('ArgTMyPAnsiStringSArray[4]^',   'SArray1 Str4',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTMyPAnsiStringSArray[3]^',  'SArray2 Str3',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTMyPAnsiStringSArray[4]^',  'SArray2 Str4',         'AnsiString', []);
+
+  r:=AddCharFmtDef('ArgTMyPAnsiStringSArray[3]^[1]',   'S',    'char', [IgnDataDw, IgnDataSt]);
+  r:=AddCharFmtDef('ArgTMyPAnsiStringSArray[3]^[12]',  '0',    'char', [IgnDataDw, IgnDataSt]);
+  r:=AddCharFmtDef('ArgTMyPAnsiStringSArray[4]^[1]',   'S',    'char', [IgnDataDw, IgnDataSt]);
+  r:=AddCharFmtDef('ArgTMyPAnsiStringSArray[4]^[12]',  '1',    'char', [IgnDataDw, IgnDataSt]);
 
 
   // string in obj
-  r:=AddStringFmtDef('ArgTStringHolderObj.FTMyAnsiString',   '''Obj1 MyAnsi''$',         'AnsiString', []);
-  r:=AddStringFmtDef('VArgTStringHolderObj.FTMyAnsiString',  '''Obj2 MyAnsi''$',         'AnsiString', []);
+  r:=AddStringFmtDef('ArgTStringHolderObj.FTMyAnsiString',   'Obj1 MyAnsi',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTStringHolderObj.FTMyAnsiString',  'Obj2 MyAnsi',         'AnsiString', []);
 
   r:=AddFmtDef('ArgTStringHolderObj.FTMyAnsiString[1]',   '.$',  skSimple,    'char', []);
      UpdRes(r, stDwarf3,                         '''O''$', skSimple);
@@ -761,15 +916,14 @@ begin
      UpdRes(r, stDwarf3,                         '''O''$', skSimple);
 
   // string in rec
-  r:=AddStringFmtDef('ArgTStringHolderRec.FTMyAnsiString',   '''Rec1 MyAnsi''$',         'AnsiString', []);
-//(* joost crash
-  r:=AddStringFmtDef('VArgTStringHolderRec.FTMyAnsiString',  '''Rec2 MyAnsi''$',         'AnsiString', []);
+  r:=AddStringFmtDef('ArgTStringHolderRec.FTMyAnsiString',   'Rec1 MyAnsi',         'AnsiString', [fTstSkipDwarf3]);
+  r:=AddStringFmtDef('VArgTStringHolderRec.FTMyAnsiString',  'Rec2 MyAnsi',         'AnsiString', [fTstSkipDwarf3]);
 
-  r:=AddFmtDef('ArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skSimple,    'char', []);
+  r:=AddFmtDef('ArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skSimple,    'char', [fTstSkipDwarf3]);
      UpdRes(r, stDwarf3,                         '''R''$', skSimple);
-  r:=AddFmtDef('VArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skSimple,    'char', []);
+  r:=AddFmtDef('VArgTStringHolderRec.FTMyAnsiString[1]',   '.$',  skSimple,    'char', [fTstSkipDwarf3]);
      UpdRes(r, stDwarf3,                         '''R''$', skSimple);
-//*)
+
 
   //r:=AddFmtDef('ArgTNewAnsiString',       '''NewAnsi''$',     skPOINTER,   '(TNew)?AnsiString', []);
   //                  UpdRes(r, stDwarf3,   '''NewAnsi''$',     skSimple,    '(TNew)?AnsiString', [fTpMtch]);
@@ -789,17 +943,46 @@ begin
   AddFmtDef('ArgPMyShortString',        Match_Pointer,      skPointer,     'P(My)?ShortString', [fTpMtch]);
   AddFmtDef('VArgPMyShortString',       Match_Pointer,      skPointer,     'P(My)?ShortString', [fTpMtch]);
   AddFmtDef('ArgPMyShortString^',        '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch]);
-  AddFmtDef('VArgPMyShortString^',       '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch, fnoDwrf]);
+  AddFmtDef('VArgPMyShortString^',       '''short''$',        skSimple,      '^(TMy)?ShortString$', [fTpMtch, IgnDwrf]);
 
-(* joost crash
+  // string in array
+  r:=AddShortStrFmtDef('ArgTMyShortStringDArray[0]',   'DArray1 Short0',         'ShortString', []);
+  r:=AddShortStrFmtDef('ArgTMyShortStringDArray[1]',   'DArray1 Short1',         'ShortString', []);
+  r:=AddShortStrFmtDef('VArgTMyShortStringDArray[0]',  'DArray2 Short0',         'ShortString', []);
+     UpdResMinFpc(r, stDwarf, 020600);
+     UpdResMinFpc(r, stDwarfSet, 020600);
+  r:=AddShortStrFmtDef('VArgTMyShortStringDArray[1]',  'DArray2 Short1',         'ShortString', []);
+     UpdResMinFpc(r, stDwarf, 020600);
+     UpdResMinFpc(r, stDwarfSet, 020600);
+
+
+  r:=AddCharFmtDef('ArgTMyShortStringDArray[0][1]',   'D',      'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyShortStringDArray[0][14]',  '0',      'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyShortStringDArray[1][1]',   'D',      'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyShortStringDArray[1][14]',  '1',      'char', [IgnDwrf2, IgnStabs]);
+
+  r:=AddCharFmtDef('VArgTMyShortStringDArray[0][1]',   'D',      'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('VArgTMyShortStringDArray[0][14]',  '0',      'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('VArgTMyShortStringDArray[1][1]',   'D',      'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('VArgTMyShortStringDArray[1][14]',  '1',      'char', [IgnDwrf2, IgnStabs]);
+
+  r:=AddShortStrFmtDef('ArgTMyShortStringSArray[3]',   'SArray1 Short3',         'ShortString', []);
+  r:=AddShortStrFmtDef('ArgTMyShortStringSArray[4]',   'SArray1 Short4',         'ShortString', []);
+  r:=AddShortStrFmtDef('VArgTMyShortStringSArray[3]',  'SArray2 Short3',         'ShortString', []);
+  r:=AddShortStrFmtDef('VArgTMyShortStringSArray[4]',  'SArray2 Short4',         'ShortString', []);
+
+  r:=AddCharFmtDef('ArgTMyShortStringSArray[3][1]',   'S',      'char', [IgnDwrf2, IgnDataSt]);
+  r:=AddCharFmtDef('ArgTMyShortStringSArray[3][14]',  '0',      'char', [IgnDwrf2, IgnDataSt]);
+  r:=AddCharFmtDef('ArgTMyShortStringSArray[4][1]',   'S',      'char', [IgnDwrf2, IgnDataSt]);
+  r:=AddCharFmtDef('ArgTMyShortStringSArray[4][14]',  '1',      'char', [IgnDwrf2, IgnDataSt]);
+
   // string in obj
-  r:=AddFmtDef('ArgTStringHolderObj.FTMyShortString',   '''Obj1 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch]);
-  r:=AddFmtDef('VArgTStringHolderObj.FTMyShortString',  '''Obj2 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch]);
+  r:=AddFmtDef('ArgTStringHolderObj.FTMyShortString',   '''Obj1 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch, IgnDwrf3]);
+  r:=AddFmtDef('VArgTStringHolderObj.FTMyShortString',  '''Obj2 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch, IgnDwrf3]);
 
   // string in rec
-  r:=AddFmtDef('ArgTStringHolderRec.FTMyShortString',   '''Rec1 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch]);
-  r:=AddFmtDef('VArgTStringHolderRec.FTMyShortString',  '''Rec2 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch]);
-*)
+  r:=AddFmtDef('ArgTStringHolderRec.FTMyShortString',   '''Rec1 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch, IgnDwrf3]);
+  r:=AddFmtDef('VArgTStringHolderRec.FTMyShortString',  '''Rec2 Short''$',  skSimple,     '^(TMy)?ShortString$', [fTpMtch, IgnDwrf3]);
 
 
   (*
@@ -894,59 +1077,14 @@ begin
   {%region    * Enum/Set * }
 
   AddFmtDef('ArgEnum',         '^Two$',                      skEnum,       'TEnum', []);
-  AddFmtDef('ArgEnumSet',      '^\[Two(, ?|\.\.)Three\]$',   skSet,        'TEnumSet', [fnoDwrfNoSet]);
-  AddFmtDef('ArgSet',          '^\[Alpha(, ?|\.\.)Beta\]$',  skSet,        'TSet', [fnoDwrfNoSet]);
+  AddFmtDef('ArgEnumSet',      '^\[Two(, ?|\.\.)Three\]$',   skSet,        'TEnumSet', [IgnDwrf2IfNoSet]);
+  AddFmtDef('ArgSet',          '^\[Alpha(, ?|\.\.)Beta\]$',  skSet,        'TSet', [IgnDwrf2IfNoSet]);
 
   AddFmtDef('VarEnumA',        '^e3$',                       skEnum,       '', []);
   // maybe typename = "set of TEnum"
-  AddFmtDef('VarEnumSetA',     '^\[Three\]$',                skSet,        '', [fnoDwrfNoSet]);
-  AddFmtDef('VarSetA',         '^\[s2\]$',                   skSet,        '', [fnoDwrfNoSet]);
+  AddFmtDef('VarEnumSetA',     '^\[Three\]$',                skSet,        '', [IgnDwrf2IfNoSet]);
+  AddFmtDef('VarSetA',         '^\[s2\]$',                   skSet,        '', [IgnDwrf2IfNoSet]);
   {%endregion    * Enum/Set * }
-
-  {%region    * Array * }
-  //TODO: DynArray, decide what to display
-  // TODO {} fixup array => replace with []
-  AddFmtDef('VarDynIntArray',             Match_Pointer+'|\{\}|0,[\s\r\n]+2',
-                                skSimple,       'TDynIntArray',
-                                []);
-  //TODO add () around list
-  if FDoStatIntArray then
-  AddFmtDef('VarStatIntArray',            '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
-                                skSimple,       'TStatIntArray',
-                                []);
-  AddFmtDef('VarPDynIntArray',            Match_Pointer,
-                                skPointer,      'PDynIntArray',
-                                []);
-  AddFmtDef('VarPStatIntArray',           Match_Pointer,
-                                skPointer,      'PStatIntArray',
-                                []);
-  AddFmtDef('VarDynIntArrayA',            Match_Pointer+'|\{\}|0,[\s\r\n]+2',
-                                skSimple,       '',
-                                []);
-  if FDoStatIntArray then
-  AddFmtDef('VarStatIntArrayA',           '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
-                                skSimple,       '',
-                                []);
-
-  AddFmtDef('VarDynIntArray[1]',          '2',
-                                skSimple,       'Integer|LongInt',
-                                [fTpMtch]);
-  AddFmtDef('VarStatIntArray[6]',         '12',
-                                skSimple,       'Integer|LongInt',
-                                [fTpMtch]);
-  AddFmtDef('VarPDynIntArray^[1]',        '2',
-                                skSimple,       'Integer|LongInt',
-                                [fTpMtch]);
-  AddFmtDef('VarPStatIntArray^[6]',       '12',
-                                skSimple,       'Integer|LongInt',
-                                [fTpMtch]);
-  AddFmtDef('VarDynIntArrayA[1]',         '2',
-                                skSimple,       'Integer|LongInt',
-                                [fTpMtch]);
-  AddFmtDef('VarStatIntArrayA[6]',        '12',
-                                skSimple,       'Integer|LongInt',
-                                [fTpMtch]);
-  {%endregion    * Array * }
 
   {%region    * Variant * }
 
@@ -995,31 +1133,79 @@ begin
   end;
 end;
 
+procedure TTestWatches.AddExpectBreakFooArray;
+begin
+  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.All')] then exit;
+  FCurrentExpArray := @ExpectBreakFooArray;
+
+  {%region    * Array * }
+  //TODO: DynArray, decide what to display
+  // TODO {} fixup array => replace with []
+  AddFmtDef('VarDynIntArray',             Match_Pointer+'|\{\}|0,[\s\r\n]+2',
+                                skSimple,       'TDynIntArray',
+                                []);
+  //TODO add () around list
+  if FDoStatIntArray then
+  AddFmtDef('VarStatIntArray',            '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
+                                skSimple,       'TStatIntArray',
+                                []);
+  AddFmtDef('VarPDynIntArray',            Match_Pointer,
+                                skPointer,      'PDynIntArray',
+                                []);
+  AddFmtDef('VarPStatIntArray',           Match_Pointer,
+                                skPointer,      'PStatIntArray',
+                                []);
+  AddFmtDef('VarDynIntArrayA',            Match_Pointer+'|\{\}|0,[\s\r\n]+2',
+                                skSimple,       '',
+                                []);
+  if FDoStatIntArray then
+  AddFmtDef('VarStatIntArrayA',           '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
+                                skSimple,       '',
+                                []);
+
+  AddFmtDef('VarDynIntArray[1]',          '2',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  AddFmtDef('VarStatIntArray[6]',         '12',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  AddFmtDef('VarPDynIntArray^[1]',        '2',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  AddFmtDef('VarPStatIntArray^[6]',       '12',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  AddFmtDef('VarDynIntArrayA[1]',         '2',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  AddFmtDef('VarStatIntArrayA[6]',        '12',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  {%endregion    * Array * }
+
+end;
+
 procedure TTestWatches.AddExpectBreakFooMixInfo;
-  procedure Add(AName, AnExpr:  string; AFmt: TWatchDisplayFormat;
-    AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags);
-  begin
-    AddTo(ExpectBreakFoo, AName, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs )
-  end;
   procedure AddTC(AVar, ATCast:  string; AExpClass: String = ''; AFlgs: TWatchExpectationFlags = [];
                   AIntMember: String = ''; AIntValue: integer = 0);
   begin
     if AExpClass = '' then AExpClass := ATCast;
     If ATCast <> ''
-    then Add('',ATCast+'('+AVar+')', wdfDefault, MatchClass(AExpClass, ''), skClass, AExpClass, AFlgs)
-    else Add('',AVar,                wdfDefault, MatchClass(AExpClass, ''), skClass, AExpClass, AFlgs);
+    then Add(ATCast+'('+AVar+')', wdfDefault, MatchClass(AExpClass, ''), skClass, AExpClass, AFlgs)
+    else Add(AVar,                wdfDefault, MatchClass(AExpClass, ''), skClass, AExpClass, AFlgs);
     if AIntMember <> '' then
-      Add('', ATCast+'('+AVar+').'+AIntMember,  wdfDefault, IntToStr(AIntValue), skSimple, M_Int, [fTpMtch]);
+      Add(ATCast+'('+AVar+').'+AIntMember,  wdfDefault, IntToStr(AIntValue), skSimple, M_Int, [fTpMtch]);
   end;
   procedure AddTCN(AVar, ATCast:  string; AExpClass: String = ''; AFlgs: TWatchExpectationFlags = []);
   begin
     if AExpClass = '' then AExpClass := ATCast;
     If ATCast <> ''
-    then Add('',ATCast+'('+AVar+')', wdfDefault, MatchClassNil(AExpClass), skClass, AExpClass, AFlgs)
-    else Add('',AVar,                wdfDefault, MatchClassNil(AExpClass), skClass, AExpClass, AFlgs);
+    then Add(ATCast+'('+AVar+')', wdfDefault, MatchClassNil(AExpClass), skClass, AExpClass, AFlgs)
+    else Add(AVar,                wdfDefault, MatchClassNil(AExpClass), skClass, AExpClass, AFlgs);
   end;
 begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.Mix')] then exit;
+  FCurrentExpArray := @ExpectBreakFoo;
 
   // Type Casting objects with mixed symbol type
   AddTC('VarOTestTCast', '', 'TObject');
@@ -1119,7 +1305,7 @@ begin
 
   // MIXED symbol info types
   if FDoStatIntArray then
-  Add('', 'VarStatIntArray',  wdfDefault,     '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
+  Add('VarStatIntArray',  wdfDefault,     '10,[\s\r\n]+12,[\s\r\n]+14,[\s\r\n]+16,[\s\r\n]+18',
                                 skSimple,       'TStatIntArray',
                                 []);
 end;
@@ -1129,16 +1315,20 @@ procedure TTestWatches.AddExpectBreakFooAndSubFoo;
     AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags;
     AStackFrame: Integer=0);
   begin
+    FCurrentExpArray := @ExpectBreakFoo;
     AddTo(ExpectBreakFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs, AStackFrame)
   end;
   procedure AddS(AnExpr:  string; AFmt: TWatchDisplayFormat;
     AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags;
     AStackFrame: Integer=0);
   begin
+    FCurrentExpArray := @ExpectBreakSubFoo;
     AddTo(ExpectBreakSubFoo, AnExpr, AFmt, AMtch, AKind, ATpNm, AFlgs, AStackFrame)
   end;
 begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.Cache')] then exit;
+//  FCurrentExpArray := @ExpectBreakSubFoo;
+
   AddS('VarCacheTest1', wdfDefault, MatchRecord('TCacheTest', 'CTVal = 101'),
        skRecord, 'TCacheTest',  []);
   AddF('VarCacheTest1', wdfDefault, '<TCacheTest(Type)?> = \{.*(<|vptr\$)TObject>?.+CTVal = 201',
@@ -1170,12 +1360,23 @@ procedure TTestWatches.RunTestWatches(NamePreFix: String; TestExeName, ExtraOpts
 
 var
   dbg: TGDBMIDebugger;
+  Only: Integer;
+  OnlyName, OnlyNamePart: String;
 
   function SkipTest(const Data: TWatchExpectation): Boolean;
   begin
     Result := True;
-    if fTstSkip in Data.Result[SymbolType].Flgs then exit;
+    if Data.Result[SymbolType].Flgs * [fTstSkip, fTstSkipDwarf3] <> [] then exit;
     Result := False;
+  end;
+
+  function MatchOnly(const Data: TWatchExpectation; Idx: Integer): Boolean;
+  begin
+    Result := True;
+    if ((Only >=0) and (Only <> Idx)) or
+       ((OnlyName<>'') and (OnlyName <> Data.TestName)) or
+       ((OnlyNamePart<>'') and (pos(OnlyNamePart, Data.TestName)<1))
+    then Result := False;
   end;
 
   procedure TestWatch(Name: String; AWatch: TCurrentWatch; Data: TWatchExpectation; WatchValue: String = '');
@@ -1184,17 +1385,27 @@ var
   var
     rx: TRegExpr;
     s: String;
-    flag: Boolean;
+    flag, f2: Boolean;
     WV: TWatchValue;
     Stack: Integer;
     n: String;
     DataRes: TWatchExpectationResult;
+    IgnoreFlags: TWatchExpectationFlags;
+    IgnoreAll, IgnoreData, IgnoreKind, IgnoreKindPtr, IgnoreTpName: boolean;
+    IgnoreText: String;
   begin
     if not TestTrue('Dbg did NOT enter dsError', dbg.State <> dsError) then exit;
     rx := nil;
     Stack := Data.StackFrame;
     DataRes := Data.Result[SymbolType];
+    IgnoreFlags := DataRes.Flgs * WatchExpFlagMask[SymbolType];
+    IgnoreAll     := IgnoreFlags * WatchExpFlagSIgnAll <> [];
+    IgnoreData    := IgnoreFlags * WatchExpFlagSIgnData <> [];
+    IgnoreKind    := IgnoreFlags * WatchExpFlagSIgnKind <> [];
+    IgnoreKindPtr := IgnoreFlags * WatchExpFlagSIgnKindPtr <> [];
+    IgnoreTpName  := IgnoreFlags * WatchExpFlagSIgnTpName <> [];
 
+    // Get Value
     n := Data.TestName;
     LogToFile('###### ' + n + '######' +LineEnding);
     if n = '' then n := Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ')';
@@ -1203,26 +1414,36 @@ var
     if flag then begin;
       WV := AWatch.Values[1, Stack];// trigger read
       s := WV.Value;
-      flag := flag and TestTrue  (Name+ ' (HasValue)',   WV.Validity = ddsValid, DataRes.MinGdb, DataRes.MinFpc);
-      //flag := flag and TestFalse (Name+ ' (One Value)',  AWatch.HasMultiValue, DataRes.MinGdb, DataRes.MinFpc);
+      IgnoreText := '';    if IgnoreData and IgnoreKind and IgnoreTpName and not(WV.Validity = ddsValid) then IgnoreText := 'Ignored by flag';
+      flag := flag and TestTrue  (Name+ ' (HasValue)',   WV.Validity = ddsValid, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+      if not flag then s := ''; // no data / not valid // TODO test error msg
+      if (not flag) and IgnoreAll then exit; // failed Data, do not list others as potential unexpected success
     end
     else
       s := WatchValue;
 
     if not TestTrue('Dbg did NOT enter dsError', dbg.State <> dsError) then exit;
 
-    //if flag then begin
-      rx := TRegExpr.Create;
-      rx.ModifierI := true;
-      rx.Expression := DataRes.ExpMatch;
-      if DataRes.ExpMatch <> ''
-      then TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but was "' + s + '"', rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc);
-    //end;
+    f2 := True;
+    IgnoreText := '';    if IgnoreData then IgnoreText := 'Ignored by flag';
+    // Check Data
+    rx := TRegExpr.Create;
+    rx.ModifierI := true;
+    rx.Expression := DataRes.ExpMatch;
+    if DataRes.ExpMatch <> ''
+    then f2 := TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but was "' + s + '"', rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
 
+    if (not f2) and IgnoreAll then exit; // failed Data, do not list others as potential unexpected success
+
+    // Check TypeInfo
     flag := (AWatch <> nil) and (DataRes.ExpTypeName <> '');
-    if flag then flag := TestTrue(Name + ' has typeinfo',  WV.TypeInfo <> nil, DataRes.MinGdb, DataRes.MinFpc);
-    if flag then flag := TestEquals(Name + ' kind',  KindName[DataRes.ExpKind], KindName[WV.TypeInfo.Kind], DataRes.MinGdb, DataRes.MinFpc);
+    IgnoreText := '';    if IgnoreKind AND IgnoreTpName then IgnoreText := 'Ignored by flag';
+    if flag then flag := TestTrue(Name + ' has typeinfo',  WV.TypeInfo <> nil, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+    IgnoreText := '';    if IgnoreKind then IgnoreText := 'Ignored by flag';
+    if (not IgnoreKind) and IgnoreKindPtr and (WV.TypeInfo.Kind = skPointer) then IgnoreText := 'Ignored by flag (Kind may be Ptr)';
+    if flag then flag := TestEquals(Name + ' kind',  KindName[DataRes.ExpKind], KindName[WV.TypeInfo.Kind], DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
     if flag then begin
+      IgnoreText := '';    if IgnoreTpName then IgnoreText := 'Ignored by flag';
       if fTpMtch  in DataRes.Flgs
       then begin
         FreeAndNil(rx);
@@ -1230,17 +1451,16 @@ var
         rx := TRegExpr.Create;
         rx.ModifierI := true;
         rx.Expression := DataRes.ExpTypeName;
-        TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but was '+WV.TypeInfo.TypeName,  rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc)
+        TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but was '+WV.TypeInfo.TypeName,  rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText)
        end
-      else TestEquals(Name + ' TypeName',  LowerCase(DataRes.ExpTypeName), LowerCase(WV.TypeInfo.TypeName), DataRes.MinGdb, DataRes.MinFpc);
+      else TestEquals(Name + ' TypeName',  LowerCase(DataRes.ExpTypeName), LowerCase(WV.TypeInfo.TypeName), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
     end;
     FreeAndNil(rx);
   end;
 
 var
-  i, Only: Integer;
-  OnlyName, OnlyNamePart: String;
-  WList, WListSub: Array of TCurrentWatch;
+  i: Integer;
+  WList, WListSub, WListArray: Array of TCurrentWatch;
 
 begin
   TestBaseName := NamePreFix;
@@ -1278,6 +1498,10 @@ begin
       InitialEnabled := True;
       Enabled := True;
     end;
+    with dbg.BreakPoints.Add('WatchesPrg.pas', BREAK_LINE_FOOFUNC_ARRAY) do begin
+      InitialEnabled := True;
+      Enabled := True;
+    end;
 
     if dbg.State = dsError then
       Fail(' Failed Init');
@@ -1285,10 +1509,7 @@ begin
     (* Create all watches *)
     SetLength(WList, length(ExpectBreakFoo));
     for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
-      if ((Only >=0) and (Only <> i)) or
-         ((OnlyName<>'') and (OnlyName<>ExpectBreakFoo[i].TestName)) or
-         ((OnlyNamePart<>'') and (pos(OnlyNamePart, ExpectBreakFoo[i].TestName)<1))
-      then continue;
+      if not MatchOnly(ExpectBreakFoo[i], i) then continue;
       if not SkipTest(ExpectBreakFoo[i]) then begin
         WList[i] := TCurrentWatch.Create(FWatches);
         WList[i].Expression := ExpectBreakFoo[i].Expression;
@@ -1296,12 +1517,10 @@ begin
         WList[i].enabled := True;
       end;
     end;
+
     SetLength(WListSub, length(ExpectBreakSubFoo));
     for i := low(ExpectBreakSubFoo) to high(ExpectBreakSubFoo) do begin
-      if ((Only >=0) and (Only <> i)) or
-         ((OnlyName<>'') and (OnlyName<>ExpectBreakFoo[i].TestName)) or
-         ((OnlyNamePart<>'') and (pos(OnlyNamePart, ExpectBreakFoo[i].TestName)<1))
-      then continue;
+      if not MatchOnly(ExpectBreakSubFoo[i], i) then continue;
       if not SkipTest(ExpectBreakSubFoo[i]) then begin
         WListSub[i] := TCurrentWatch.Create(FWatches);
         WListSub[i].Expression := ExpectBreakSubFoo[i].Expression;
@@ -1310,31 +1529,42 @@ begin
       end;
     end;
 
+    SetLength(WListArray, length(ExpectBreakFooArray));
+    for i := low(ExpectBreakFooArray) to high(ExpectBreakFooArray) do begin
+      if not MatchOnly(ExpectBreakFooArray[i], i) then continue;
+      if not SkipTest(ExpectBreakFooArray[i]) then begin
+        WListArray[i] := TCurrentWatch.Create(FWatches);
+        WListArray[i].Expression := ExpectBreakFooArray[i].Expression;
+        WListArray[i].DisplayFormat := ExpectBreakFooArray[i].DspFormat;
+        WListArray[i].enabled := True;
+      end;
+    end;
+
     (* Start debugging *)
     dbg.ShowConsole := True;
     dbg.Run;
+
     if TestTrue('State=Pause', dbg.State = dsPause)
     then begin
-      (* Hit first breakpoint: NESTED SubFoo -- (1st loop) Called with none nil data *)
+      (* Hit first breakpoint: BREAK_LINE_FOOFUNC_NEST SubFoo -- (1st loop) Called with none nil data *)
+
       for i := low(ExpectBreakSubFoo) to high(ExpectBreakSubFoo) do begin
-        if ((Only >=0) and (Only <> i)) or
-           ((OnlyName<>'') and (OnlyName<>ExpectBreakFoo[i].TestName)) or
-           ((OnlyNamePart<>'') and (pos(OnlyNamePart, ExpectBreakFoo[i].TestName)<1))
-        then continue;
+        if not MatchOnly(ExpectBreakSubFoo[i], i) then continue;
         if not SkipTest(ExpectBreakSubFoo[i]) then
           TestWatch('Brk1 '+IntToStr(i)+' ', WListSub[i], ExpectBreakSubFoo[i]);
       end;
 
       dbg.Run;
-    end;
+    end
+    else TestTrue('Hit BREAK_LINE_FOOFUNC_NEST', False);
 
     if TestTrue('State=Pause', dbg.State = dsPause)
     then begin
-      (* Hit 2nd breakpoint: Foo -- (1st loop) Called with none nil data *)
+      (* Hit 2nd breakpoint: BREAK_LINE_FOOFUNC Foo -- (1st loop) Called with none nil data *)
 
       FDbgOutPutEnable := True;
       for i := low(ExpectBreakFooGdb) to high(ExpectBreakFooGdb) do begin
-        if (Only >=0) and (Only <> i) then continue;
+        if not MatchOnly(ExpectBreakFooGdb[i], i) then continue;
         if not SkipTest(ExpectBreakFooGdb[i]) then begin
           FDbgOutPut := '';
           dbg.TestCmd(ExpectBreakFooGdb[i].Expression);
@@ -1344,16 +1574,29 @@ begin
       FDbgOutPutEnable := False;
 
       for i := low(ExpectBreakFoo) to high(ExpectBreakFoo) do begin
-        if ((Only >=0) and (Only <> i)) or
-           ((OnlyName<>'') and (OnlyName<>ExpectBreakFoo[i].TestName)) or
-           ((OnlyNamePart<>'') and (pos(OnlyNamePart, ExpectBreakFoo[i].TestName)<1))
-        then continue;
+        if not MatchOnly(ExpectBreakFoo[i], i) then continue;
         if not SkipTest(ExpectBreakFoo[i]) then
           TestWatch('Brk1 '+IntToStr(i)+' ', WList[i], ExpectBreakFoo[i]);
       end;
 
       dbg.Run;
-    end;
+    end
+    else TestTrue('Hit BREAK_LINE_FOOFUNC', False);
+
+    if TestTrue('State=Pause', dbg.State = dsPause)
+    then begin
+      (* Hit 2nd breakpoint: BREAK_LINE_FOOFUNC_ARRAY SubFoo_Watches -- (1st loop) Called with none nil data *)
+
+      for i := low(ExpectBreakFooArray) to high(ExpectBreakFooArray) do begin
+        if not MatchOnly(ExpectBreakFooArray[i], i) then continue;
+        if not SkipTest(ExpectBreakFooArray[i]) then
+          TestWatch('Brk1 '+IntToStr(i)+' ', WListArray[i], ExpectBreakFooArray[i]);
+      end;
+
+      dbg.Run;
+    end
+    else TestTrue('Hit BREAK_LINE_FOOFUNC_ARRAY', False);
+
 
     // TODO: 2nd round, with NIL data
 	//DebugInteract(dbg);
@@ -1388,6 +1631,7 @@ begin
   ClearAllTestArrays;
   AddExpectBreakFooGdb;
   AddExpectBreakFooAll;
+  AddExpectBreakFooArray;
   //AddExpectBreakFooMixInfo;
   AddExpectBreakFooAndSubFoo;
   RunTestWatches('', TestExeName,  '', []);
