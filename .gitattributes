@@ -3223,6 +3223,7 @@ examples/SynEdit/SynAnyHighlighter/synanysynhighlighter.lpr svneol=native#text/p
 examples/SynEdit/SynAnyHighlighter/unit1.lfm svneol=native#text/plain
 examples/SynEdit/SynAnyHighlighter/unit1.lrs svneol=native#text/pascal
 examples/SynEdit/SynAnyHighlighter/unit1.pas svneol=native#text/plain
+examples/SynEdit/SynGutterMarks/README.txt svneol=native#text/plain
 examples/SynEdit/SynGutterMarks/SynGutterMarkExample.ico -text
 examples/SynEdit/SynGutterMarks/SynGutterMarkExample.lpi svneol=native#text/xml
 examples/SynEdit/SynGutterMarks/SynGutterMarkExample.lpr svneol=native#text/pascal
