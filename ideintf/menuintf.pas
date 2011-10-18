@@ -359,9 +359,9 @@ var
 
     // tools menu
     mnuTools: TIDEMenuSection;
+      itmOptionsDialogs: TIDEMenuSection;
       itmCustomTools: TIDEMenuSection;
       itmSecondaryTools: TIDEMenuSection;
-      itmOptionsDialogs: TIDEMenuSection;
       itmDelphiConversion: TIDEMenuSection;
       itmBuildingLazarus: TIDEMenuSection;
 
