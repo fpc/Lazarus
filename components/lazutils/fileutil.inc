@@ -1334,7 +1334,7 @@ begin
   Result := TStringList.Create;
   Searcher := TListDirectoriesSearcher.Create(Result);
   try
-    Searcher.Search(SearchPath, AllFilesMask, False);
+    Searcher.Search(SearchPath, AllFilesMask);
   finally
     Searcher.Free;
   end;
