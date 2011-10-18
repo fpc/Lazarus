@@ -166,6 +166,7 @@ type
     function AddCharFmtDef    (AnExpr, AMtch: string; ATpNm: string = 'Char'; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
     function AddPointerFmtDef (AnExpr,        ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
     function AddPointerFmtDef (AnExpr, AMtch, ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+    function AddPointerFmtDefRaw(AnExpr, AMtch, ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
 
 
     procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
@@ -361,6 +362,12 @@ begin
 end;
 
 function TTestWatches.AddPointerFmtDef(AnExpr, AMtch, ATpNm: string;
+  AFlgs: TWatchExpectationFlags): PWatchExpectation;
+begin
+  Result := AddFmtDef(AnExpr, MatchPointer(AMtch), skPointer, ATpNm, AFlgs );
+end;
+
+function TTestWatches.AddPointerFmtDefRaw(AnExpr, AMtch, ATpNm: string;
   AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
   Result := AddFmtDef(AnExpr, AMtch, skPointer, ATpNm, AFlgs );
@@ -890,8 +897,8 @@ begin
   r:=AddCharFmtDef('GlobAMyAnsiStringDArray[1][13]',  '1',    'char', [IgnDwrf2, IgnStabs]);
 
   // PAnsiString in array
-  r:=AddPointerFmtDef('ArgTMyPAnsiStringDArray[0]',   MatchPointer(),     '^(\^|P)(AnsiString|PChar)$', [fTpMtch]);
-  r:=AddPointerFmtDef('ArgTMyPAnsiStringDArray[1]',   MatchPointer(),     '^(\^|P)(AnsiString|PChar)$', [fTpMtch]);
+  r:=AddPointerFmtDefRaw('ArgTMyPAnsiStringDArray[0]',   MatchPointer(),     '^(\^|P)(AnsiString|PChar)$', [fTpMtch]);
+  r:=AddPointerFmtDefRaw('ArgTMyPAnsiStringDArray[1]',   MatchPointer(),     '^(\^|P)(AnsiString|PChar)$', [fTpMtch]);
   r:=AddStringFmtDef('ArgTMyPAnsiStringDArray[0]^',   'DArray1 Str0',         'AnsiString', [IgnDwrf2, IgnStabs]);
   r:=AddStringFmtDef('ArgTMyPAnsiStringDArray[1]^',   'DArray1 Str1',         'AnsiString', [IgnDwrf2, IgnStabs]);
   r:=AddStringFmtDef('VArgTMyPAnsiStringDArray[0]^',  'DArray2 Str0',         'AnsiString', [IgnStabs, IgnDwrf2]);
@@ -1148,6 +1155,24 @@ begin
 end;
 
 procedure TTestWatches.AddExpectBreakFooArray;
+
+  function AddRecForArrFmtDef  (AnExpr: string; ARecSuffix, AValue: Integer;  AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+  begin
+    case ARecSuffix of
+      1: Result := Add(AnExpr, wdfDefault, MatchRecord('TRecForArray1', ' a = '+IntToStr(AValue)), skRecord, 'TRecForArray1', AFlgs );
+      2: Result := Add(AnExpr, wdfDefault, MatchRecord('TRecForArray2', ' c = '+IntToStr(AValue)), skRecord, 'TRecForArray2', AFlgs );
+      3: Result := Add(AnExpr, wdfDefault, MatchRecord('TRecForArray3', ' a = '+IntToStr(AValue)), skRecord, 'TRecForArray3', AFlgs );
+      4: Result := Add(AnExpr, wdfDefault, MatchRecord('TRecForArray4', ' c = '+IntToStr(AValue)), skRecord, 'TRecForArray4', AFlgs );
+    end;
+  end;
+
+  function AddArrayFmtDef  (AnExpr, AMtch, ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+  begin
+    Result := Add(AnExpr, wdfDefault, AMtch, skSimple, ATpNm, AFlgs );
+  end;
+
+var
+  r: PWatchExpectation;
 begin
   if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestWatch.All')] then exit;
   FCurrentExpArray := @ExpectBreakFooArray;
@@ -1197,6 +1222,34 @@ begin
                                 [fTpMtch]);
   {%endregion    * Array * }
 
+  r := AddArrayFmtDef('ArgTDynArrayTRec1', '.', 'TDynArrayTRec1', []);
+  r := AddRecForArrFmtDef('ArgTDynArrayTRec1[0]', 3, 90, []);
+  r := AddRecForArrFmtDef('ArgTDynArrayTRec1[1]', 3, 91, []);
+
+  r := AddArrayFmtDef('ArgTDynArrayPRec1', '.', 'TDynArrayPRec1', []);
+  r := AddPointerFmtDef  ('ArgTDynArrayPRec1[0]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('ArgTDynArrayPRec1[0]^', 3, 90, [IgnDwrf, IgnStabs]);
+  r := AddPointerFmtDef  ('ArgTDynArrayPRec1[1]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('ArgTDynArrayPRec1[1]^', 3, 91, [IgnDwrf, IgnStabs]);
+
+  r := AddArrayFmtDef('ArgTDynDynArrayTRec1', '.', 'TDynDynArrayTRec1', []);
+  r := AddArrayFmtDef('ArgTDynDynArrayTRec1[0]', '.', 'xxx', [IgnDwrf, IgnStabs]);
+  r := AddRecForArrFmtDef('ArgTDynArrayTRec1[0][0]', 1, 80, [IgnDwrf, IgnStabs]);
+  r := AddRecForArrFmtDef('ArgTDynArrayTRec1[0][1]', 1, 81, [IgnDwrf, IgnStabs]);
+  r := AddArrayFmtDef('ArgTDynDynArrayTRec1[1]', '.', 'xxx', [IgnDwrf, IgnStabs]);
+  r := AddRecForArrFmtDef('ArgTDynArrayTRec1[1][0]', 1, 85, [IgnDwrf, IgnStabs]);
+  r := AddRecForArrFmtDef('ArgTDynArrayTRec1[1][1]', 1, 86, [IgnDwrf, IgnStabs]);
+
+
+  r := AddArrayFmtDef('VArgTDynArrayTRec1', '.', 'TDynArrayTRec1', []);
+  r := AddRecForArrFmtDef('VArgTDynArrayTRec1[0]', 3, 90, []);
+  r := AddRecForArrFmtDef('VArgTDynArrayTRec1[1]', 3, 91, []);
+
+  r := AddArrayFmtDef('VArgTDynArrayPRec1', '.', 'TDynArrayPRec1', []);
+  r := AddPointerFmtDef  ('VArgTDynArrayPRec1[0]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('VArgTDynArrayPRec1[0]^', 3, 90, [IgnDwrf, IgnStabs]);
+  r := AddPointerFmtDef  ('VArgTDynArrayPRec1[1]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('VArgTDynArrayPRec1[1]^', 3, 91, [IgnDwrf, IgnStabs]);
 end;
 
 procedure TTestWatches.AddExpectBreakFooMixInfo;

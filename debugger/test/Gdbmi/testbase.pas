@@ -213,6 +213,7 @@ type
     FTestResult: TGDBTestResult;
     FTestErrors, FIgnoredErrors, FUnexpectedSuccess: String;
     FTestCnt, FTestErrorCnt, FIgnoredErrorCnt, FUnexpectedSuccessCnt, FSucessCnt: Integer;
+    FTotalErrorCnt, FTotalIgnoredErrorCnt, FTotalUnexpectedSuccessCnt: Integer;
     FCurrentPrgName, FCurrentExename: String;
     FLogFile: TextFile;
     FLogFileCreated: Boolean;
@@ -417,7 +418,8 @@ begin
       + '_' + NameToFileName(GetCompilerInfo.Name)
       + '_' + SymbolTypeNames[GetSymbolType]
       + '_' + NameToFileName(GetDebuggerInfo.Name)
-      + '.log';
+      ;
+
     dir := ConfDir;
     if DirectoryExistsUTF8(Logdir) then
       dir := Logdir;
@@ -425,9 +427,11 @@ begin
     for i := 1 to length(name) do
       if name[i] in ['/', '\', '*', '?', ':'] then
         name[i] := '_';
-    FLogFileName := dir + name;
+
     FFinalLogFileName := dir + name;
-    AssignFile(FLogFile, Dir +  name);
+    FLogFileName := dir + name + '.log.running';
+
+    AssignFile(FLogFile, FLogFileName);
     Rewrite(FLogFile);
     FLogFileCreated := True;
   //end;
@@ -436,6 +440,10 @@ end;
 procedure TGDBTestCase.SetUp;
 begin
   FLogFileCreated := False;
+  ClearTestErrors;
+  FTotalErrorCnt := 0;
+  FTotalIgnoredErrorCnt := 0;
+  FTotalUnexpectedSuccessCnt := 0;
   inherited SetUp;
 end;
 
@@ -444,8 +452,19 @@ begin
   inherited TearDown;
   if FLogFileCreated then begin
     CloseFile(FLogFile);
-    if FFinalLogFileName <> FLogFileName
-    then RenameFileUTF8(FLogFileName, FFinalLogFileName);
+
+    FTotalErrorCnt := FTotalErrorCnt + FTestErrorCnt;
+    FTotalIgnoredErrorCnt := FTotalIgnoredErrorCnt + FIgnoredErrorCnt;
+    FTotalUnexpectedSuccessCnt := FTotalUnexpectedSuccessCnt + FUnexpectedSuccessCnt;
+    if (FTotalIgnoredErrorCnt > 0)
+    then FFinalLogFileName := FFinalLogFileName + '.ignored_'+IntToStr(FTotalIgnoredErrorCnt);
+    if (FTotalUnexpectedSuccessCnt > 0)
+    then FFinalLogFileName := FFinalLogFileName + '.unexpected_'+IntToStr(FTotalUnexpectedSuccessCnt);
+    if (FTotalErrorCnt > 0)
+    then FFinalLogFileName := FFinalLogFileName + '.failed_'+IntToStr(FTotalErrorCnt);
+
+    FFinalLogFileName := FFinalLogFileName + '.log';
+    RenameFileUTF8(FLogFileName, FFinalLogFileName);
   end;
 end;
 
@@ -515,6 +534,10 @@ end;
 
 procedure TGDBTestCase.ClearTestErrors;
 begin
+  FTotalErrorCnt := FTotalErrorCnt + FTestErrorCnt;
+  FTotalIgnoredErrorCnt := FTotalIgnoredErrorCnt + FIgnoredErrorCnt;
+  FTotalUnexpectedSuccessCnt := FTotalUnexpectedSuccessCnt + FUnexpectedSuccessCnt;
+
   FTestErrors := '';
   FIgnoredErrors := '';
   FUnexpectedSuccess := '';
@@ -678,12 +701,6 @@ begin
     writeln(FLogFile, '================= Unexpected Success'+LineEnding);
     writeln(FLogFile, FUnexpectedSuccess);
     writeln(FLogFile, '================='+LineEnding);
-    if (FIgnoredErrorCnt > 0) and (pos('ignored', FFinalLogFileName) < 1)
-    then FFinalLogFileName := FFinalLogFileName + '.ignored';
-    if (FUnexpectedSuccessCnt > 0) and (pos('unexpected', FFinalLogFileName) < 1)
-    then FFinalLogFileName := FFinalLogFileName + '.unexpected';
-    if (FTestErrorCnt > 0) and (pos('failed', FFinalLogFileName) < 1)
-    then FFinalLogFileName := FFinalLogFileName + '.failed';
   end;
   if s <> '' then begin
     Fail(s1+ LineEnding + s);
