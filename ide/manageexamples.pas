@@ -185,6 +185,8 @@ begin
   if fUpdating then Exit;
   fUpdating:=True;
   if fNeedsFindDirectories then begin
+    Screen.Cursor:=crHourGlass;
+    Application.ProcessMessages;
     DirectoryComboBox.Items.Clear;
     DirectoryComboBox.Text:='';
     RootDirectoryEdit.Text:='';
@@ -204,10 +206,13 @@ begin
     finally
       AllDirs.Free;
       fNeedsFindDirectories:=False;
+      Screen.Cursor:=crDefault;
     end;
   end;
   if fNeedsFindProjects and (RootDirectoryEdit.Text<>'') then
   try
+    Screen.Cursor:=crHourGlass;
+    Application.ProcessMessages;
     ProjectFilter.Data.Clear; //  ProjectsListBox.Items.Clear;
     Searcher:=TListFileSearcher.Create(Self);
     Searcher.Search(RootDirectoryEdit.Text, '*.lpi');
@@ -215,14 +220,20 @@ begin
   finally
     Searcher.Free;
     fNeedsFindProjects:=False;
+    Screen.Cursor:=crDefault;
   end;
   fUpdating:=False;
 end;
 
 procedure TManageExamplesForm.RootRadioGroupClick(Sender: TObject);
+var
+  LazSrc: Boolean;
 begin
-  DirectoryComboBox.Enabled:=RootRadioGroup.ItemIndex=0;
-  RootDirectoryEdit.Enabled:=RootRadioGroup.ItemIndex=1;
+  LazSrc:=RootRadioGroup.ItemIndex=0;
+  ExamplesCheckBox.Enabled:=LazSrc;
+  TestCaseCheckBox.Enabled:=LazSrc;
+  DirectoryComboBox.Enabled:=LazSrc;
+  RootDirectoryEdit.Enabled:=not LazSrc;
 end;
 
 procedure TManageExamplesForm.DirectoryComboBoxChange(Sender: TObject);
