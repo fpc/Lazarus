@@ -4,7 +4,7 @@ SET OLDCURDIR=%CD%
 %BUILDDRIVE%
 cd %BUILDDIR%
 %MAKEEXE% clean PP=%COMPILER% >> %LOGFILE%
-%MAKEEXE% packager/registration OPT="-gl -Ur" PP=%COMPILER% >> %LOGFILE% 
+%MAKEEXE% lazutils OPT="-gl -Ur" PP=%COMPILER% >> %LOGFILE% 
 %MAKEEXE% lcl OPT="-gl -Ur" PP=%COMPILER% >> %LOGFILE%
 
 IF NOT "%FPCTARGETOS%"=="win32" GOTO BUILDIDE
