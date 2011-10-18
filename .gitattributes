@@ -3231,6 +3231,7 @@ examples/SynEdit/SynGutterMarks/SynGutterMarkExample.lpr svneol=native#text/pasc
 examples/SynEdit/SynGutterMarks/SynGutterMarkExample.res -text
 examples/SynEdit/SynGutterMarks/unit1.lfm svneol=native#text/plain
 examples/SynEdit/SynGutterMarks/unit1.pas svneol=native#text/pascal
+examples/SynEdit/SynPositionHighlighter/README.txt -text svneol=native#Text/Plain
 examples/SynEdit/SynPositionHighlighter/synpositionhighlighterexample1.lpi svneol=native#text/plain
 examples/SynEdit/SynPositionHighlighter/synpositionhighlighterexample1.lpr svneol=native#text/plain
 examples/SynEdit/SynPositionHighlighter/unit1.lfm svneol=native#text/plain
