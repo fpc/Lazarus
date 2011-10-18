@@ -10608,7 +10608,9 @@ begin
   except
     on e: Exception do begin
       try
-        debugln(['ERROR: Exception occured in DoExecute '+e.ClassName + ' Msg="'+ e.Message + '" Addr=', dbgs(ExceptAddr)]);
+        debugln(['ERROR: Exception occured in ',ClassName+'.DoExecute ',
+                  e.ClassName, ' Msg="', e.Message, '" Addr=', dbgs(ExceptAddr),
+                  ' Dbg.State=', dbgs(FTheDebugger.State)]);
         Report :=  BackTraceStrFunc(ExceptAddr);
         Report2 := Report;
         Frames := ExceptFrames;
@@ -10623,8 +10625,10 @@ begin
 
       if MessageDlg('The debugger experienced an unknown condition.',
         Format('Press "Ignore" to continue debugging. This may NOT be save. Press "Abort to stop the debugger. %0:s'
-          +'Exception: %1:s.with message "%2:s"%0:s%0:s%3:s',
-        [LineEnding, e.ClassName, e.Message, Report2]),
+          +'Exception: %1:s.with message "%2:s"%0:s'
+          +'Context: %4:s State: %5:s %0:s'
+          +'%0:s%3:s',
+        [LineEnding, e.ClassName, e.Message, Report2, ClassName, dbgs(FTheDebugger.State)]),
         mtWarning, [mbIgnore, mbAbort], 0, mbAbort) = mrAbort
       then begin
         try
