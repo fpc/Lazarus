@@ -2897,6 +2897,9 @@ function DBGBreakPointActionNameToAction(const s: string): TIDEBreakPointAction;
 function dbgs(AState: TDBGState): String; overload;
 function dbgs(ADisassRange: TDBGDisassemblerEntryRange): String; overload;
 function dbgs(ADataState: TDebuggerDataState): String; overload;
+function dbgs(AKind: TDBGSymbolKind): String; overload;
+function dbgs(AnAttribute: TDBGSymbolAttribute): String; overload;
+function dbgs(AnAttributes: TDBGSymbolAttributes): String; overload;
 
 function HasConsoleSupport: Boolean;
 (******************************************************************************)
@@ -2935,6 +2938,28 @@ end;
 function dbgs(ADataState: TDebuggerDataState): String;
 begin
   writestr(Result, ADataState);
+end;
+
+function dbgs(AKind: TDBGSymbolKind): String;
+begin
+  writestr(Result, AKind);
+end;
+
+function dbgs(AnAttribute: TDBGSymbolAttribute): String;
+begin
+  writestr(Result, AnAttribute);
+end;
+
+function dbgs(AnAttributes: TDBGSymbolAttributes): String;
+var
+  i: TDBGSymbolAttribute;
+begin
+  for i := low(TDBGSymbolAttributes) to high(TDBGSymbolAttributes) do
+    if i in AnAttributes then begin
+      if Result <> '' then Result := Result + ', ';
+      Result := Result + dbgs(i);
+    end;
+  if Result <> '' then Result := '[' + Result + ']';
 end;
 
 function dbgs(ADisassRange: TDBGDisassemblerEntryRange): String; overload;

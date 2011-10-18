@@ -292,6 +292,10 @@ type
 function CreatePTypeValueList(AResultValues: String): TStringList;
 function ParseTypeFromGdb(const ATypeText: string): TGDBPTypeResult;
 
+function dbgs(AFlag: TGDBPTypeResultFlag): string; overload;
+function dbgs(AFlags: TGDBPTypeResultFlags): string; overload;
+function dbgs(AKind: TGDBPTypeResultKind): string; overload;
+
 implementation
 
 (*
@@ -551,6 +555,9 @@ var
   end;
 
 begin
+  {$IFDEF DBGMI_TYPE_INFO}
+  try
+  {$ENDIF}
   Result.GdbDescription := ATypeText;
   Result.Flags := [];
   Result.Kind := ptprkError;
@@ -827,6 +834,33 @@ begin
         Result.Declaration.Len := EndPtr - DeclPtr + 1;
       end;
   end;
+  {$IFDEF DBGMI_TYPE_INFO}
+  finally
+    DebugLn(['ParseTypeFromGdb: Flags=', dbgs(Result.Flags), ' Kind=', dbgs(Result.Kind), ' Name="', PCLenToString(Result.Name),'"' ]);
+  end;
+  {$ENDIF}
+end;
+
+function dbgs(AFlag: TGDBPTypeResultFlag): string;
+begin
+  writestr(Result, AFlag);
+end;
+
+function dbgs(AFlags: TGDBPTypeResultFlags): string;
+var
+  i: TGDBPTypeResultFlag;
+begin
+  for i := low(TGDBPTypeResultFlags) to high(TGDBPTypeResultFlags) do
+    if i in AFlags then begin
+      if Result <> '' then Result := Result + ', ';
+      Result := Result + dbgs(i);
+    end;
+  if Result <> '' then Result := '[' + Result + ']';
+end;
+
+function dbgs(AKind: TGDBPTypeResultKind): string;
+begin
+  writestr(Result, AKind);
 end;
 
 { TGDBPTypeRequestCache }
@@ -1814,11 +1848,20 @@ var
 var
   OldProcessState: TGDBTypeProcessState;
   OldReqMade: TGDBTypeProcessRequests;
+  {$IFDEF DBGMI_TYPE_INFO}
+  s: string;
+  {$ENDIF}
 begin
   Result := False;
   FEvalRequest := nil;
   FLastEvalRequest := nil;
   Lines := nil;
+  {$IFDEF DBGMI_TYPE_INFO}
+  WriteStr(s, FProcessState);
+  DebugLnEnter(['>>Enter: TGDBType.ProcessExpression: state = ', s, '   Expression="', FExpression, '"']);
+  try
+  {$ENDIF}
+
 
   if FFirstProcessingSubType <> nil then begin
     if not ProcessSubProcessRequests then begin
@@ -1863,6 +1906,13 @@ begin
     debugln('ERROR: detected state loop in ProcessExpression');
     Result := True;
   end;
+  {$IFDEF DBGMI_TYPE_INFO}
+  finally
+    WriteStr(s, FProcessState);
+    DebugLnExit(['<<Exit:  TGDBType.ProcessExpression: state = ', s, '  Result=', dbgs(Result),
+                 ' Kind=', dbgs(Kind), ' Attr=', dbgs(Attributes), ' Typename="', TypeName, '" InternTpName="', FInternalTypeName,'"']);
+  end;
+  {$ENDIF}
 end;
 
 { TGDBPTypes }
