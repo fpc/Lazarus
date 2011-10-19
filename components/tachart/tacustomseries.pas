@@ -173,8 +173,7 @@ type
   public
     function Add(AValue: Double; XLabel: String; Color: TColor): Integer; inline;
     function AddXY(
-      X, Y: Double; XLabel: String; Color: TColor): Integer; virtual; overload;
-    function AddXY(X, Y: Double): Integer; overload; inline;
+      AX, AY: Double; AXLabel: String = ''; AColor: TColor = clTAColor): Integer; overload;
     procedure Clear; inline;
     function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
@@ -520,14 +519,10 @@ begin
   Result := AddXY(GetXMaxVal + 1, AValue, XLabel, Color);
 end;
 
-function TChartSeries.AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer;
+function TChartSeries.AddXY(
+  AX, AY: Double; AXLabel: String; AColor: TColor): Integer;
 begin
-  Result := ListSource.Add(X, Y, XLabel, Color);
-end;
-
-function TChartSeries.AddXY(X, Y: Double): Integer;
-begin
-  Result := AddXY(X, Y, '', clTAColor);
+  Result := ListSource.Add(AX, AY, AXLabel, AColor);
 end;
 
 procedure TChartSeries.AfterAdd;
