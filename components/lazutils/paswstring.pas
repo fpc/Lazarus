@@ -34,10 +34,9 @@ var
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('Wide2AnsiMove START');{$endif}
   // Copy the originating string taking into account the specified length
-  SetLength(widestr, len+1);
+  SetLength(widestr, len);
   System.Move(source^, widestr[1], len);
-  PWideChar(@widestr)[len] := #0; // Avoid UniqueString by using PWideChar
-  SetLength(widestr, len); // Avoid a length missmatch
+  //PWideChar(@widestr)[len] := #0; // This corrupts the stack
 
   // Now convert it, using UTF-8 -> UTF-16
   dest := UTF16ToUTF8(widestr);
@@ -287,10 +286,9 @@ var
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('Unicode2AnsiMove START');{$endif}
   // Copy the originating string taking into account the specified length
-  SetLength(widestr, len+1);
-  System.Move(source^, widestr[1], len);
-  PWideChar(@widestr)[len] := #0; // Avoid UniqueString
   SetLength(widestr, len);
+  System.Move(source^, widestr[1], len*2);
+  //PWideChar(@widestr)[len] := #0; // This corrupts the stack, even with SetLength(widestr, len+1)
 
   // Now convert it, using UTF-8 -> UTF-16
   dest := UTF16ToUTF8(widestr);
