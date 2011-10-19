@@ -37,8 +37,10 @@ begin
   SetLength(widestr, len);
   System.Move(source^, widestr[1], len);
 
-  // Now convert it, using UTF-8 -> UTF-16
+  // Now convert it, using UTF-16 -> UTF-8
   dest := UTF16ToUTF8(widestr);
+  // And correct to the real Ansi encoding
+  dest := ConvertEncoding(dest, EncodingUTF8, GetDefaultTextEncoding());
 end;
 
 procedure Ansi2WideMove(source:pchar;var dest:widestring;len:SizeInt);
@@ -50,7 +52,9 @@ begin
   SetLength(ansistr, len);
   System.Move(source^, ansistr[1], len);
 
-  // Now convert it, using UTF-16 -> UTF-8
+  // Convert to UTF-8
+  ansistr := ConvertEncoding(ansistr, GetDefaultTextEncoding(), EncodingUTF8);
+  // Now convert it, using UTF-8 -> UTF-16
   dest := UTF8ToUTF16(ansistr);
 end;
 
@@ -286,8 +290,10 @@ begin
   SetLength(widestr, len);
   System.Move(source^, widestr[1], len*2);
 
-  // Now convert it, using UTF-8 -> UTF-16
+  // Now convert it, using UTF-16 -> UTF-8
   dest := UTF16ToUTF8(widestr);
+  // And correct to the real Ansi encoding
+  dest := ConvertEncoding(dest, EncodingUTF8, GetDefaultTextEncoding());
 end;
 
 procedure Ansi2UnicodeMove(source:pchar;var dest:UnicodeString;len:SizeInt);
@@ -299,7 +305,9 @@ begin
   SetLength(ansistr, len);
   System.Move(source^, ansistr[1], len);
 
-  // Now convert it, using UTF-16 -> UTF-8
+  // Convert to UTF-8
+  ansistr := ConvertEncoding(ansistr, GetDefaultTextEncoding(), EncodingUTF8);
+  // Now convert it, using UTF-8 -> UTF-16
   dest := UTF8ToUTF16(ansistr);
 end;
 
