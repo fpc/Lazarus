@@ -286,6 +286,10 @@ begin
   UnicodeStr := AnsiStr;
   UnicodeStr2 := UTF8ToUTF16(AnsiStr);
   AssertUnicodeStringCompareOperation('UnicodeStr := AnsiStr 1', UnicodeStr, UnicodeStr2, SysUtils.UnicodeCompareStr(UnicodeStr, UnicodeStr2), True);
+  AnsiStr := 'abcdefghijklmnopqrstuwvxyz';
+  UnicodeStr := UTF8ToUTF16(ansistr);
+  AnsiStr2 := UnicodeStr;
+  AssertUnicodeStringCompareOperation('AnsiStr := UnicodeStr 1', UnicodeStr, UnicodeStr2, SysUtils.AnsiCompareStr(AnsiStr, AnsiStr2), True);
 end;
 
 procedure TestCompareUpperCase();
