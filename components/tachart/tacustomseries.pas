@@ -171,7 +171,8 @@ type
     procedure SetXValue(AIndex: Integer; AValue: Double); inline;
     procedure SetYValue(AIndex: Integer; AValue: Double); inline;
   public
-    function Add(AValue: Double; XLabel: String; Color: TColor): Integer; inline;
+    function Add(
+      AValue: Double; AXLabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
     function AddXY(
       AX, AY: Double; AXLabel: String = ''; AColor: TColor = clTAColor): Integer; overload;
     procedure Clear; inline;
@@ -514,9 +515,9 @@ end;
 
 { TChartSeries }
 
-function TChartSeries.Add(AValue: Double; XLabel: String; Color: TColor): Integer;
+function TChartSeries.Add(AValue: Double; AXLabel: String; AColor: TColor): Integer;
 begin
-  Result := AddXY(GetXMaxVal + 1, AValue, XLabel, Color);
+  Result := AddXY(GetXMaxVal + 1, AValue, AXLabel, AColor);
 end;
 
 function TChartSeries.AddXY(
