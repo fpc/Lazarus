@@ -732,7 +732,6 @@ begin
       end;
     end;
   end;
-  sl.Sort;
   if HasSelectedSiblings then
     for Kind:=akTop to akBottom do
       sl.add(AnchorDesignerNeighbourText(Kind));
@@ -748,8 +747,7 @@ begin
   Result:='(nil)';
 end;
 
-function TAnchorDesigner.AnchorDesignerNeighbourText(direction: TAnchorKind
-  ): string;
+function TAnchorDesigner.AnchorDesignerNeighbourText(direction: TAnchorKind): string;
 begin
   //todo: add translations
   case direction of
