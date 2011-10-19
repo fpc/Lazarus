@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Makefile Value="True"/>
-  <Params Value=" -MObjFPC -Scgi -O1 -g -gl -vewnhi -l -Fuunix;win32;carbon;qt;../../lcl/units/%(CPU_TARGET)-%(OS_TARGET)/%(LCL_PLATFORM);../../lcl/units/%(CPU_TARGET)-%(OS_TARGET);../../packager/units/%(CPU_TARGET)-%(OS_TARGET);. -Fiunix;win32;carbon;qt -dUseCache -dNativePrint -dLCL -dLCL%(LCL_PLATFORM) printer4lazarus.pas"/>
+  <Params Value=" -MObjFPC -Scgi -O1 -g -gl -vewnhi -l -Fuunix;win32;carbon;qt;../../lcl/units/%(CPU_TARGET)-%(OS_TARGET)/%(LCL_PLATFORM);../../lcl/units/%(CPU_TARGET)-%(OS_TARGET);../lazutils/lib/%(CPU_TARGET)-%(OS_TARGET);../../packager/units/%(CPU_TARGET)-%(OS_TARGET);. -Fiunix;win32;carbon;qt -dUseCache -dNativePrint -dLCL -dLCL%(LCL_PLATFORM) printer4lazarus.pas"/>
 </CONFIG>
