@@ -92,7 +92,6 @@
       </Item16>
       <Item17>
         <Filename Value="paswstring.pas"/>
-        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="paswstring"/>
       </Item17>
       <Item18>

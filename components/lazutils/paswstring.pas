@@ -16,6 +16,7 @@ unit paswstring;
 
 {$mode objfpc}
 {$inline on}
+//{$define PASWSTRING_VERBOSE}
 
 interface
 
@@ -31,32 +32,22 @@ procedure Wide2AnsiMove(source:pwidechar;var dest:ansistring;len:SizeInt);
 var
   widestr: widestring;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('Wide2AnsiMove START');{$endif}
   // Copy the originating string taking into account the specified length
   SetLength(widestr, len+1);
   System.Move(source^, widestr, len);
-  widestr[len+1] := #0;
+  PWideChar(@widestr)[len] := #0; // Avoid UniqueString by using PWideChar
 
   // Now convert it, using UTF-8 -> UTF-16
   dest := UTF16ToUTF8(widestr);
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('Wide2AnsiMove END');{$endif}
 end;
 
 procedure Ansi2WideMove(source:pchar;var dest:widestring;len:SizeInt);
 var
   ansistr: ansistring;
 begin
-  // Copy the originating string taking into account the specified length
-  SetLength(ansistr, len+1);
-  System.Move(source^, ansistr, len);
-  ansistr[len+1] := #0;
-
-  // Now convert it, using UTF-16 -> UTF-8
-  dest := UTF8ToUTF16(ansistr);
-end;
-
-procedure Ansi2UnicodeMove(source:pchar;var dest:UnicodeString;len:SizeInt);
-var
-  ansistr: ansistring;
-begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('Ansi2WideMove START');{$endif}
   // Copy the originating string taking into account the specified length
   SetLength(ansistr, len+1);
   System.Move(source^, ansistr, len);
@@ -70,6 +61,7 @@ function LowerWideString(const s : WideString) : WideString;
 var
   str: utf8string;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('LowerWideString START');{$endif}
   str := UTF16ToUTF8(s);
   str := UTF8LowerCase(str);
   Result := UTF8ToUTF16(str);
@@ -79,24 +71,7 @@ function UpperWideString(const s : WideString) : WideString;
 var
   str: utf8string;
 begin
-  str := UTF16ToUTF8(s);
-  str := UTF8UpperCase(str);
-  Result := UTF8ToUTF16(str);
-end;
-
-function LowerUnicodeString(const s : UnicodeString) : UnicodeString;
-var
-  str: utf8string;
-begin
-  str := UTF16ToUTF8(s);
-  str := UTF8LowerCase(str);
-  Result := UTF8ToUTF16(str);
-end;
-
-function UpperUnicodeString(const s : UnicodeString) : UnicodeString;
-var
-  str: utf8string;
-begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('UpperWideString START');{$endif}
   str := UTF16ToUTF8(s);
   str := UTF8UpperCase(str);
   Result := UTF8ToUTF16(str);
@@ -104,6 +79,7 @@ end;
 
 procedure EnsureAnsiLen(var S: AnsiString; const len: SizeInt); inline;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('EnsureAnsiLen START');{$endif}
   if (len>length(s)) then
     if (length(s) < 10*256) then
       setlength(s,length(s)+10)
@@ -114,6 +90,7 @@ end;
 
 procedure ConcatCharToAnsiStr(const c: char; var S: AnsiString; var index: SizeInt);
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('ConcatCharToAnsiStr START');{$endif}
   EnsureAnsiLen(s,index);
   pchar(@s[index])^:=c;
   inc(index);
@@ -123,6 +100,7 @@ function LowerAnsiString(const s : AnsiString) : AnsiString;
 var
   Str: utf8string;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('LowerAnsiString START');{$endif}
   Str := SysToUTF8(s);
   Str := UTF8LowerCase(Str);
   Result := UTF8ToSys(Str);
@@ -132,6 +110,7 @@ function UpperAnsiString(const s : AnsiString) : AnsiString;
 var
   Str: utf8string;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('UpperAnsiString START');{$endif}
   Str := SysToUTF8(s);
   Str := UTF8UpperCase(Str);
   Result := UTF8ToSys(Str);
@@ -157,7 +136,7 @@ end;
 
 function WideCompareText(const s1, s2 : WideString): PtrInt;
 var
-  a, b: AnsiString;
+  a, b: WideString;
 begin
   a:=LowerWidestring(s1);
   b:=LowerWidestring(s2);
@@ -287,6 +266,78 @@ procedure FiniThread;
 begin
 end;
 
+{ Unicode }
+
+procedure Unicode2AnsiMove(source:pwidechar;var dest:ansistring;len:SizeInt);
+var
+  widestr: unicodestring;
+begin
+  // Copy the originating string taking into account the specified length
+  SetLength(widestr, len+1);
+  System.Move(source^, widestr, len);
+  widestr[len+1] := #0;
+
+  // Now convert it, using UTF-8 -> UTF-16
+  dest := UTF16ToUTF8(widestr);
+end;
+
+procedure Ansi2UnicodeMove(source:pchar;var dest:UnicodeString;len:SizeInt);
+var
+  ansistr: ansistring;
+begin
+  // Copy the originating string taking into account the specified length
+  SetLength(ansistr, len+1);
+  System.Move(source^, ansistr, len);
+  ansistr[len+1] := #0;
+
+  // Now convert it, using UTF-16 -> UTF-8
+  dest := UTF8ToUTF16(ansistr);
+end;
+
+function UpperUnicodeString(const s : UnicodeString) : UnicodeString;
+var
+  str: utf8string;
+begin
+  str := UTF16ToUTF8(s);
+  str := UTF8UpperCase(str);
+  Result := UTF8ToUTF16(str);
+end;
+
+function LowerUnicodeString(const s : UnicodeString) : UnicodeString;
+var
+  str: utf8string;
+begin
+  str := UTF16ToUTF8(s);
+  str := UTF8LowerCase(str);
+  Result := UTF8ToUTF16(str);
+end;
+
+// Just do a simple byte comparison
+// A more complex analysis would require normalization
+function PasUnicodeCompareStr(const s1, s2 : unicodestring) : PtrInt;
+var
+  count, count1, count2: integer;
+begin
+  result := 0;
+  Count1 := Length(S1);
+  Count2 := Length(S2);
+  if Count1>Count2 then
+    Count:=Count2
+  else
+    Count:=Count1;
+  result := SysUtils.CompareMemRange(Pointer(S1),Pointer(S2), Count*2);
+  if result=0 then
+    result:=Count1-Count2;
+end;
+
+function PasUnicodeCompareText(const s1, s2 : unicodestring): PtrInt;
+var
+  a, b: unicodestring;
+begin
+  a:=LowerWidestring(s1);
+  b:=LowerWidestring(s2);
+  result := WideCompareStr(a,b);
+end;
 
 Procedure SetPasWideStringManager;
 Var
@@ -296,14 +347,28 @@ begin
   PasWideStringManager.Wide2AnsiMoveProc:=@Wide2AnsiMove;
   PasWideStringManager.Ansi2WideMoveProc:=@Ansi2WideMove;
 
+  //    UpperUTF8 : procedure(p:PUTF8String);
   PasWideStringManager.UpperWideStringProc:=@UpperWideString;
+  //    UpperUCS4 : procedure(p:PUCS4Char);
+  //    LowerUTF8 : procedure(p:PUTF8String);
   PasWideStringManager.LowerWideStringProc:=@LowerWideString;
+  //    LowerUCS4 : procedure(p:PUCS4Char);
 
+  {
+    CompUTF8 : function(p1,p2:PUTF8String) : shortint;
+    CompUCS2 : function(p1,p2:PUCS2Char) : shortint;
+    CompUCS4 : function(p1,p2:PUC42Char) : shortint;
+  }
   PasWideStringManager.CompareWideStringProc:=@WideCompareStr;
   PasWideStringManager.CompareTextWideStringProc:=@WideCompareText;
 
+  { return value: number of code points in the string. Whenever an invalid
+    code point is encountered, all characters part of this invalid code point
+    are considered to form one "character" and the next character is
+    considered to be the start of a new (possibly also invalid) code point }
   PasWideStringManager.CharLengthPCharProc:=@CharLengthPChar;
 
+  { Ansi }
   PasWideStringManager.UpperAnsiStringProc:=@UpperAnsiString;
   PasWideStringManager.LowerAnsiStringProc:=@LowerAnsiString;
   PasWideStringManager.CompareStrAnsiStringProc:=@AnsiCompareStr;
@@ -318,10 +383,12 @@ begin
   PasWideStringManager.ThreadFiniProc:=@FiniThread;
 
   { Unicode }
-  PasWideStringManager.Unicode2AnsiMoveProc:=@Wide2AnsiMove;
+  PasWideStringManager.Unicode2AnsiMoveProc:=@Unicode2AnsiMove;
   PasWideStringManager.Ansi2UnicodeMoveProc:=@Ansi2UnicodeMove;
   PasWideStringManager.UpperUnicodeStringProc:=@UpperUnicodeString;
   PasWideStringManager.LowerUnicodeStringProc:=@LowerUnicodeString;
+  PasWideStringManager.CompareUnicodeStringProc:=@PasUnicodeCompareStr;
+  PasWideStringManager.CompareTextUnicodeStringProc:=@PasUnicodeCompareText;
 
   SetUnicodeStringManager(PasWideStringManager);
 end;
