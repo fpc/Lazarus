@@ -1327,14 +1327,15 @@ begin
   FDirectoriesList.Add(FileName);
 end;
 
-function FindAllDirectories(const SearchPath : string): TStringList;
+function FindAllDirectories(const SearchPath : string;
+  SearchSubDirs: Boolean = True): TStringList;
 var
   Searcher :TFileSearcher;
 begin
   Result := TStringList.Create;
   Searcher := TListDirectoriesSearcher.Create(Result);
   try
-    Searcher.Search(SearchPath, AllFilesMask);
+    Searcher.Search(SearchPath, AllFilesMask, SearchSubDirs);
   finally
     Searcher.Free;
   end;
