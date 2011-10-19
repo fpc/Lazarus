@@ -343,6 +343,8 @@ function ValidUTF8String(const s: String): String;
 
 procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
 
+// Felipe: Don't substitute with calls to lazutf16 because lazutf16 includes
+// some initialization code and tables, which are not necessary for the LCL
 function UTF16CharacterLength(p: PWideChar): integer;
 function UTF16Length(const s: widestring): PtrInt;
 function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
@@ -355,12 +357,10 @@ function UTF8CompareStr(const S1, S2: String): Integer;
 function UTF8CompareText(const S1, S2: String): Integer;
 
 type
-  TConvertResult = (trNoError, trNullSrc, trNullDest, trDestExhausted,
-    trInvalidChar, trUnfinishedChar);
+  TConvertResult = LazUTF8.TConvertResult;
 
-  TConvertOption = (toInvalidCharError, toInvalidCharToSymbol,
-    toUnfinishedCharError, toUnfinishedCharToSymbol);
-  TConvertOptions = set of TConvertOption;
+  TConvertOption = LazUTF8.TConvertOption;
+  TConvertOptions = LazUTF8.TConvertOptions;
 
 function ConvertUTF8ToUTF16(Dest: PWideChar; DestWideCharCount: SizeUInt;
   Src: PChar; SrcCharCount: SizeUInt; Options: TConvertOptions;
@@ -2649,107 +2649,17 @@ end;
 
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
 begin
-  if p<>nil then begin
-    if ord(p^)<%11000000 then begin
-      // regular single byte character (#0 is a normal char, this is pascal ;)
-      Result:=ord(p^);
-      CharLen:=1;
-    end
-    else if ((ord(p^) and %11100000) = %11000000) then begin
-      // could be double byte character
-      if (ord(p[1]) and %11000000) = %10000000 then begin
-        Result:=((ord(p^) and %00011111) shl 6)
-                or (ord(p[1]) and %00111111);
-        CharLen:=2;
-      end else begin
-        Result:=ord(p^);
-        CharLen:=1;
-      end;
-    end
-    else if ((ord(p^) and %11110000) = %11100000) then begin
-      // could be triple byte character
-      if ((ord(p[1]) and %11000000) = %10000000)
-      and ((ord(p[2]) and %11000000) = %10000000) then begin
-        Result:=((ord(p^) and %00011111) shl 12)
-                or ((ord(p[1]) and %00111111) shl 6)
-                or (ord(p[2]) and %00111111);
-        CharLen:=3;
-      end else begin
-        Result:=ord(p^);
-        CharLen:=1;
-      end;
-    end
-    else if ((ord(p^) and %11111000) = %11110000) then begin
-      // could be 4 byte character
-      if ((ord(p[1]) and %11000000) = %10000000)
-      and ((ord(p[2]) and %11000000) = %10000000)
-      and ((ord(p[3]) and %11000000) = %10000000) then begin
-        Result:=((ord(p^) and %00001111) shl 18)
-                or ((ord(p[1]) and %00111111) shl 12)
-                or ((ord(p[2]) and %00111111) shl 6)
-                or (ord(p[3]) and %00111111);
-        CharLen:=4;
-      end else begin
-        Result:=ord(p^);
-        CharLen:=1;
-      end;
-    end
-    else begin
-      // invalid character
-      Result:=ord(p^);
-      CharLen:=1;
-    end;
-  end else begin
-    Result:=0;
-    CharLen:=0;
-  end;
+  Result := LazUTF8.UTF8CharacterToUnicode(p, CharLen);
 end;
 
 function UnicodeToUTF8(u: cardinal; Buf: PChar): integer;
-
-  procedure RaiseInvalidUnicode;
-  begin
-    raise Exception.Create('UnicodeToUTF8: invalid unicode: '+IntToStr(u));
-  end;
-
 begin
-  Result:=UnicodeToUTF8SkipErrors(u,Buf);
-  if Result=0 then
-    RaiseInvalidUnicode;
+  Result := LazUTF8.UnicodeToUTF8(u, Buf);
 end;
 
 function UnicodeToUTF8SkipErrors(u: cardinal; Buf: PChar): integer;
 begin
-  case u of
-    0..$7f:
-      begin
-        Result:=1;
-        Buf[0]:=char(byte(u));
-      end;
-    $80..$7ff:
-      begin
-        Result:=2;
-        Buf[0]:=char(byte($c0 or (u shr 6)));
-        Buf[1]:=char(byte($80 or (u and $3f)));
-      end;
-    $800..$ffff:
-      begin
-        Result:=3;
-        Buf[0]:=char(byte($e0 or (u shr 12)));
-        Buf[1]:=char(byte((u shr 6) and $3f) or $80);
-        Buf[2]:=char(byte(u and $3f) or $80);
-      end;
-    $10000..$10ffff:
-      begin
-        Result:=4;
-        Buf[0]:=char(byte($f0 or (u shr 18)));
-        Buf[1]:=char(byte((u shr 12) and $3f) or $80);
-        Buf[2]:=char(byte((u shr 6) and $3f) or $80);
-        Buf[3]:=char(byte(u and $3f) or $80);
-      end;
-  else
-    Result:=0;
-  end;
+  Result := LazUTF8.UnicodeToUTF8SkipErrors(u, Buf);
 end;
 
 function UnicodeToUTF8(u: cardinal): shortstring;
@@ -2758,36 +2668,14 @@ begin
 end;
 
 function UTF8ToDoubleByteString(const s: string): string;
-var
-  Len: Integer;
 begin
-  Len:=UTF8Length(s);
-  SetLength(Result,Len*2);
-  if Len=0 then exit;
-  UTF8ToDoubleByte(PChar(s),length(s),PByte(Result));
+  Result := LazUTF8.UTF8ToDoubleByteString(s);
 end;
 
 { returns number of double bytes }
 function UTF8ToDoubleByte(UTF8Str: PChar; Len: PtrInt; DBStr: PByte): PtrInt;
-var
-  SrcPos: PChar;
-  CharLen: LongInt;
-  DestPos: PByte;
-  u: Cardinal;
 begin
-  SrcPos:=UTF8Str;
-  DestPos:=DBStr;
-  Result:=0;
-  while Len>0 do begin
-    u:=UTF8CharacterToUnicode(SrcPos,CharLen);
-    DestPos^:=byte((u shr 8) and $ff);
-    inc(DestPos);
-    DestPos^:=byte(u and $ff);
-    inc(DestPos);
-    inc(SrcPos,CharLen);
-    dec(Len,CharLen);
-    inc(Result);
-  end;
+  Result := LazUTF8.UTF8ToDoubleByte(UTF8Str, Len, DBStr);
 end;
 
 { Find the start of the UTF8 character which contains BytePos,
@@ -2795,39 +2683,7 @@ end;
 function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
   BytePos: integer): integer;
 begin
-  Result:=0;
-  if (UTF8Str<>nil) and (Len>0) and (BytePos>=0) then begin
-    Result:=BytePos;
-    if Result>Len then Result:=Len-1;
-    if (Result>0) and (ord(UTF8Str[Result]) and %11000000=%10000000) then begin
-      dec(Result);
-      if (Result>0) and (ord(UTF8Str[Result]) and %11000000=%10000000) then begin
-        dec(Result);
-        if (Result>0) and (ord(UTF8Str[Result]) and %11000000=%10000000) then begin
-          dec(Result);
-          // should be four byte character
-          if (ord(UTF8Str[Result]) and %11111000<>%11110000) then begin
-            // broken UTF8 character
-            inc(Result,3);
-          end else begin
-            // is four byte character
-          end;
-        end else if (ord(UTF8Str[Result]) and %11110000<>%11100000) then begin
-          // broken UTF8 character, should be three byte
-          inc(Result,2);
-        end else
-        begin
-          // is three byte character
-        end;
-      end else if (ord(UTF8Str[Result]) and %11100000<>%11000000) then begin
-        // broken UTF8 character, should be two byte
-        inc(Result);
-      end else
-      begin
-        // is two byte character
-      end;
-    end;
-  end;
+  Result := LazUTF8.UTF8FindNearestCharStart(UTF8Str, Len, BytePos);
 end;
 
 { Len is the length in bytes of UTF8Str
@@ -2836,234 +2692,49 @@ end;
   This function is similar to UTF8FindNearestCharStart
 }
 function UTF8CharStart(UTF8Str: PChar; Len, CharIndex: PtrInt): PChar;
-var
-  CharLen: LongInt;
 begin
-  Result:=UTF8Str;
-  if Result<>nil then begin
-    while (CharIndex>0) and (Len>0) do begin
-      CharLen:=UTF8CharacterLength(Result);
-      dec(Len,CharLen);
-      dec(CharIndex);
-      inc(Result,CharLen);
-    end;
-    if (CharIndex>0) or (Len<0) then
-      Result:=nil;
-  end;
+  Result := LazUTF8.UTF8CharStart(UTF8Str, Len, CharIndex);
 end;
 
 function UTF8CharToByteIndex(UTF8Str: PChar; Len, CharIndex: PtrInt): PtrInt;
-var
-  p: PChar;
 begin
-  p := UTF8CharStart(UTF8Str, Len, CharIndex);
-  if p = nil
-  then Result := -1
-  else Result := p - UTF8Str;
+  Result := LazUTF8.UTF8CharToByteIndex(UTF8Str, Len, CharIndex);
 end;
 
 { fix any broken UTF8 sequences with spaces }
 procedure UTF8FixBroken(P: PChar);
 begin
-  if p=nil then exit;
-  while p^<>#0 do begin
-    if ord(p^)<%10000000 then begin
-      // regular single byte character
-      inc(p);
-    end
-    else if ord(p^)<%11000000 then begin
-      // invalid
-      p^:=' ';
-      inc(p);
-    end
-    else if ((ord(p^) and %11100000) = %11000000) then begin
-      // should be 2 byte character
-      if (ord(p[1]) and %11000000) = %10000000 then
-        inc(p,2)
-      else if p[1]<>#0 then
-        p^:=' ';
-    end
-    else if ((ord(p^) and %11110000) = %11100000) then begin
-      // should be 3 byte character
-      if ((ord(p[1]) and %11000000) = %10000000)
-      and ((ord(p[2]) and %11000000) = %10000000) then
-        inc(p,3)
-      else
-        p^:=' ';
-    end
-    else if ((ord(p^) and %11111000) = %11110000) then begin
-      // should be 4 byte character
-      if ((ord(p[1]) and %11000000) = %10000000)
-      and ((ord(p[2]) and %11000000) = %10000000)
-      and ((ord(p[3]) and %11000000) = %10000000) then
-        inc(p,4)
-      else
-        p^:=' ';
-    end
-    else begin
-      p^:=' ';
-      inc(p);
-    end;
-  end;
+  LazUTF8.UTF8FixBroken(P);
 end;
 
 function UTF8CharacterStrictLength(P: PChar): integer;
 begin
-  if p=nil then exit(0);
-  if ord(p^)<%10000000 then begin
-    // regular single byte character
-    exit(1);
-  end
-  else if ord(p^)<%11000000 then begin
-    // invalid single byte character
-    exit(0);
-  end
-  else if ((ord(p^) and %11100000) = %11000000) then begin
-    // should be 2 byte character
-    if (ord(p[1]) and %11000000) = %10000000 then
-      exit(2)
-    else
-      exit(0);
-  end
-  else if ((ord(p^) and %11110000) = %11100000) then begin
-    // should be 3 byte character
-    if ((ord(p[1]) and %11000000) = %10000000)
-    and ((ord(p[2]) and %11000000) = %10000000) then
-      exit(3)
-    else
-      exit(0);
-  end
-  else if ((ord(p^) and %11111000) = %11110000) then begin
-    // should be 4 byte character
-    if ((ord(p[1]) and %11000000) = %10000000)
-    and ((ord(p[2]) and %11000000) = %10000000)
-    and ((ord(p[3]) and %11000000) = %10000000) then
-      exit(4)
-    else
-      exit(0);
-  end else
-    exit(0);
+  Result := LazUTF8.UTF8CharacterStrictLength(P);
 end;
 
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: PtrInt) : string;
-var
-  Source: PChar;
-  Dest: PChar;
-  SourceEnd: PChar;
-  CharLen: integer;
-  SourceCopied: PChar;
-
-  // Copies from SourceStart till Source to Dest and updates Dest
-  procedure CopyPart; inline;
-  var
-    CopyLength: SizeInt;
-  begin
-    CopyLength := Source - SourceCopied;
-    if CopyLength=0 then exit;
-    System.move(SourceCopied^ , Dest^, CopyLength);
-    SourceCopied:=Source;
-    inc(Dest, CopyLength);
-  end;
-
 begin
-  SetLength(Result, SourceLen);
-  if SourceLen=0 then exit;
-  SourceCopied:=SourceStart;
-  Source:=SourceStart;
-  Dest:=PChar(Result);
-  SourceEnd := Source + SourceLen;
-  while Source<SourceEnd do begin
-    CharLen := UTF8CharacterLength(Source);
-    if (CharLen=1) and (Source^='\') then begin
-      CopyPart;
-      inc(Source);
-      if Source^ in ['t', 'n', '"', '\'] then begin
-        case Source^ of
-         't' : Dest^ := #9;
-         '"' : Dest^ := '"';
-         '\' : Dest^ := '\';
-         'n' :
-         // fpc 2.1.1 stores string constants as array of char so maybe this
-         // will work for without ifdef (once available in 2.0.x too):
-         // move(lineending, dest^, sizeof(LineEnding));
-{$IFDEF WINDOWS}
-               begin
-                 move(lineending[1], dest^, length(LineEnding));
-                 inc(dest, length(LineEnding)-1);
-               end;
-{$ELSE}
-               Dest^ := LineEnding;
-{$ENDIF}
-        end;
-        inc(Source);
-        inc(Dest);
-      end;
-      SourceCopied := Source;
-    end
-    else
-      Inc(Source, CharLen);
-  end;
-  CopyPart;
-  SetLength(Result, Dest - PChar(Result));
+  Result := LazUTF8.UTF8CStringToUTF8String(SourceStart, SourceLen);
 end;
 
 function UTF8Pos(const SearchForText, SearchInText: string): PtrInt;
-// returns the character index, where the SearchForText starts in SearchInText
-var
-  p: LongInt;
 begin
-  p:=System.Pos(SearchForText,SearchInText);
-  if p>0 then
-    Result:=UTF8Length(PChar(SearchInText),p-1)+1
-  else
-    Result:=0;
+  Result := LazUTF8.UTF8Pos(SearchForText, SearchInText);
 end;
 
 function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string;
-// returns substring
-var
-  StartBytePos: PChar;
-  EndBytePos: PChar;
-  MaxBytes: PtrInt;
 begin
-  StartBytePos:=UTF8CharStart(PChar(s),length(s),StartCharIndex-1);
-  if StartBytePos=nil then
-    Result:=''
-  else begin
-    MaxBytes:=PtrInt(PChar(s)+length(s)-StartBytePos);
-    EndBytePos:=UTF8CharStart(StartBytePos,MaxBytes,CharCount);
-    if EndBytePos=nil then
-      Result:=copy(s,StartBytePos-PChar(s)+1,MaxBytes)
-    else
-      Result:=copy(s,StartBytePos-PChar(s)+1,EndBytePos-StartBytePos);
-  end;
+  Result := LazUTF8.UTF8Copy(s, StartCharIndex, CharCount);
 end;
 
 procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
-var
-  StartBytePos: PChar;
-  EndBytePos: PChar;
-  MaxBytes: PtrInt;
 begin
-  StartBytePos:=UTF8CharStart(PChar(s),length(s),StartCharIndex-1);
-  if StartBytePos <> nil then
-  begin
-    MaxBytes:=PtrInt(PChar(s)+length(s)-StartBytePos);
-    EndBytePos:=UTF8CharStart(StartBytePos,MaxBytes,CharCount);
-    if EndBytePos=nil then
-      Delete(s,StartBytePos-PChar(s)+1,MaxBytes)
-    else
-      Delete(s,StartBytePos-PChar(s)+1,EndBytePos-StartBytePos);
-  end;
+  LazUTF8.UTF8Delete(s, StartCharIndex, CharCount);
 end;
 
 procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt);
-var
-  StartBytePos: PChar;
 begin
-  StartBytePos:=UTF8CharStart(PChar(s),length(s),StartCharIndex-1);
-  if StartBytePos <> nil then
-    Insert(source, s, StartBytePos-PChar(s)+1);
+  LazUTF8.UTF8Insert(source, s, StartCharIndex);
 end;
 
 function UTF8LowerCase(const s: String): String;
@@ -3079,110 +2750,18 @@ end;
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
   StopOnNonASCII: Boolean): PtrInt;
 // return -1 if ok
-var
-  CharLen: Integer;
 begin
-  if (p<>nil) then begin
-    Result:=0;
-    while Result<Count do begin
-      if ord(p^)<128 then begin
-        // regular single byte ASCII character (#0 is a character, this is pascal ;)
-        CharLen:=1;
-      end
-      else if ord(p^)<%11000000 then begin
-        // regular single byte character
-        if StopOnNonASCII then
-          exit;
-        CharLen:=1;
-      end
-      else if ((ord(p^) and %11100000) = %11000000) then begin
-        // could be 2 byte character
-        if (Result<Count-1) and ((ord(p[1]) and %11000000) = %10000000) then
-          CharLen:=2
-        else
-          exit; // missing following bytes
-      end
-      else if ((ord(p^) and %11110000) = %11100000) then begin
-        // could be 3 byte character
-        if (Result<Count-2) and ((ord(p[1]) and %11000000) = %10000000)
-        and ((ord(p[2]) and %11000000) = %10000000) then
-          CharLen:=3
-        else
-          exit; // missing following bytes
-      end
-      else if ((ord(p^) and %11111000) = %11110000) then begin
-        // could be 4 byte character
-        if (Result<Count-3) and ((ord(p[1]) and %11000000) = %10000000)
-        and ((ord(p[2]) and %11000000) = %10000000)
-        and ((ord(p[3]) and %11000000) = %10000000) then
-          CharLen:=4
-        else
-          exit; // missing following bytes
-      end
-      else begin
-        if StopOnNonASCII then
-          exit;
-        CharLen:=1;
-      end;
-      inc(Result,CharLen);
-      inc(p,CharLen);
-      if Result>Count then begin
-        dec(Result,CharLen);
-        exit; // missing following bytes
-      end;
-    end;
-  end;
-  // ok
-  Result:=-1;
+  Result := LazUTF8.FindInvalidUTF8Character(p, Count, StopOnNonASCII);
 end;
 
 function ValidUTF8String(const s: String): String;
-var
-  p, cur: PChar;
-  l, lr: integer;
-  NeedFree: Boolean;
 begin
-  if FindInvalidUTF8Character(PChar(s), Length(s)) <> -1 then
-  begin
-    NeedFree := True;
-    GetMem(p, Length(s) + 1);
-    StrPCopy(p, s);
-    UTF8FixBroken(p);
-  end
-  else
-  begin
-    p := PChar(s);
-    NeedFree := False;
-  end;
-
-  Result := '';
-  cur := p;
-  while cur^ <> #0 do
-  begin
-    l := UTF8CharacterLength(cur);
-    if (l = 1) and (cur^ < #32) then
-      Result := Result + '#' + IntToStr(Ord(cur^))
-    else
-    begin
-      lr := Length(Result);
-      SetLength(Result, lr + l);
-      System.Move(cur^, Result[lr + 1], l);
-    end;
-    inc(cur, l)
-  end;
-
-  if NeedFree then
-    FreeMem(p);
+  Result := LazUTF8.ValidUTF8String(s);
 end;
 
 procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
-var
-  i: Integer;
 begin
-  AnsiList.Clear;
-  if UTF8List=nil then exit;
-  for i:=0 to UTF8List.Count-1 do
-    AnsiList.Add(UTF8ToSys(UTF8List[i]));
+  LazUTF8.AssignUTF8ListToAnsi(UTF8List, AnsiList);
 end;
 
 function UTF16CharacterLength(p: PWideChar): integer;
@@ -3324,168 +2903,9 @@ end;
 function ConvertUTF8ToUTF16(Dest: PWideChar; DestWideCharCount: SizeUInt;
   Src: PChar; SrcCharCount: SizeUInt; Options: TConvertOptions;
   out ActualWideCharCount: SizeUInt): TConvertResult;
-var
-  DestI, SrcI: SizeUInt;
-  B1, B2, B3, B4: Byte;
-  W: Word;
-  C: Cardinal;
-
-  function UnfinishedCharError: Boolean;
-  begin
-    if toUnfinishedCharToSymbol in Options then
-    begin
-      Dest[DestI] := System.WideChar('?');
-      Inc(DestI);
-      Result := False;
-    end
-    else
-      if toUnfinishedCharError in Options then
-      begin
-        ConvertUTF8ToUTF16 := trUnfinishedChar;
-        Result := True;
-      end
-      else Result := False;
-  end;
-
-  function InvalidCharError(Count: SizeUInt): Boolean; inline;
-  begin
-    if not (toInvalidCharError in Options) then
-    begin
-      if toInvalidCharToSymbol in Options then
-      begin
-        Dest[DestI] := System.WideChar('?');
-        Inc(DestI);
-      end;
-
-      Dec(SrcI, Count);
-
-      // skip trailing UTF-8 char bytes
-      while (Count > 0) do
-      begin
-        if (Byte(Src[SrcI]) and %11000000) <> %10000000 then Break;
-        Inc(SrcI);
-        Dec(Count);
-      end;
-
-      Result := False;
-    end
-    else
-      if toInvalidCharError in Options then
-      begin
-        ConvertUTF8ToUTF16 := trUnfinishedChar;
-        Result := True;
-      end;
-  end;
-
 begin
-  ActualWideCharCount := 0;
-
-  if not Assigned(Src) then
-  begin
-    Result := trNullSrc;
-    Exit;
-  end;
-
-  if not Assigned(Dest) then
-  begin
-    Result := trNullDest;
-    Exit;
-  end;
-  SrcI := 0;
-  DestI := 0;
-
-  while (DestI < DestWideCharCount) and (SrcI < SrcCharCount) do
-  begin
-    B1 := Byte(Src[SrcI]);
-    Inc(SrcI);
-
-    if B1 < 128 then // single byte UTF-8 char
-    begin
-      Dest[DestI] := System.WideChar(B1);
-      Inc(DestI);
-    end
-    else
-    begin
-      if SrcI >= SrcCharCount then
-        if UnfinishedCharError then Exit(trInvalidChar)
-        else Break;
-
-      B2 := Byte(Src[SrcI]);
-      Inc(SrcI);
-
-      if (B1 and %11100000) = %11000000 then // double byte UTF-8 char
-      begin
-        if (B2 and %11000000) = %10000000 then
-        begin
-          Dest[DestI] := System.WideChar(((B1 and %00011111) shl 6) or (B2 and %00111111));
-          Inc(DestI);
-        end
-        else // invalid character, assume single byte UTF-8 char
-          if InvalidCharError(1) then Exit(trInvalidChar);
-      end
-      else
-      begin
-        if SrcI >= SrcCharCount then
-          if UnfinishedCharError then Exit(trInvalidChar)
-          else Break;
-
-        B3 := Byte(Src[SrcI]);
-        Inc(SrcI);
-
-        if (B1 and %11110000) = %11100000 then // triple byte UTF-8 char
-        begin
-          if ((B2 and %11000000) = %10000000) and ((B3 and %11000000) = %10000000) then
-          begin
-            W := ((B1 and %00011111) shl 12) or ((B2 and %00111111) shl 6) or (B3 and %00111111);
-            if (W < $D800) or (W > $DFFF) then // to single wide char UTF-16 char
-            begin
-              Dest[DestI] := System.WideChar(W);
-              Inc(DestI);
-            end
-            else // invalid UTF-16 character, assume double byte UTF-8 char
-              if InvalidCharError(2) then Exit(trInvalidChar);
-          end
-          else // invalid character, assume double byte UTF-8 char
-            if InvalidCharError(2) then Exit(trInvalidChar);
-        end
-        else
-        begin
-          if SrcI >= SrcCharCount then
-            if UnfinishedCharError then Exit(trInvalidChar)
-            else Break;
-
-          B4 := Byte(Src[SrcI]);
-          Inc(SrcI);
-
-          if ((B1 and %11111000) = %11110000) and ((B2 and %11000000) = %10000000)
-            and ((B3 and %11000000) = %10000000) and ((B4 and %11000000) = %10000000) then
-          begin // 4 byte UTF-8 char
-            C := ((B1 and %00011111) shl 18) or ((B2 and %00111111) shl 12)
-              or ((B3 and %00111111) shl 6)  or (B4 and %00111111);
-            // to double wide char UTF-16 char
-            Dest[DestI] := System.WideChar($D800 or ((C - $10000) shr 10));
-            Inc(DestI);
-            if DestI >= DestWideCharCount then Break;
-            Dest[DestI] := System.WideChar($DC00 or ((C - $10000) and %0000001111111111));
-            Inc(DestI);
-          end
-          else // invalid character, assume triple byte UTF-8 char
-            if InvalidCharError(3) then Exit(trInvalidChar);
-        end;
-      end;
-    end;
-  end;
-
-  if DestI >= DestWideCharCount then
-  begin
-    DestI := DestWideCharCount - 1;
-    Result := trDestExhausted;
-  end
-  else
-    Result := trNoError;
-
-  Dest[DestI] := #0;
-  ActualWideCharCount := DestI + 1;
+  Result := LazUTF8.ConvertUTF8ToUTF16(Dest, DestWideCharCount,
+    Src, SrcCharCount, Options, ActualWideCharCount);
 end;
 
 {------------------------------------------------------------------------------
@@ -3507,148 +2927,9 @@ end;
 function ConvertUTF16ToUTF8(Dest: PChar; DestCharCount: SizeUInt;
   Src: PWideChar; SrcWideCharCount: SizeUInt; Options: TConvertOptions;
   out ActualCharCount: SizeUInt): TConvertResult;
-var
-  DestI, SrcI: SizeUInt;
-  W1, W2: Word;
-  C: Cardinal;
-
-  function UnfinishedCharError: Boolean;
-  begin
-    if toUnfinishedCharToSymbol in Options then
-    begin
-      Dest[DestI] := Char('?');
-      Inc(DestI);
-      Result := False;
-    end
-    else
-      if toUnfinishedCharError in Options then
-      begin
-        ConvertUTF16ToUTF8 := trUnfinishedChar;
-        Result := True;
-      end
-      else Result := False;
-  end;
-
-  function InvalidCharError(Count: SizeUInt): Boolean; inline;
-  begin
-    if not (toInvalidCharError in Options) then
-    begin
-      if toInvalidCharToSymbol in Options then
-      begin
-        Dest[DestI] := Char('?');
-        Inc(DestI);
-      end;
-
-      Dec(SrcI, Count);
-      // skip trailing UTF-16 wide char
-      if (Word(Src[SrcI]) and $FC00) = $DC00 then Inc(SrcI);
-
-      Result := False;
-    end
-    else
-      if toInvalidCharError in Options then
-      begin
-        ConvertUTF16ToUTF8 := trUnfinishedChar;
-        Result := True;
-      end;
-  end;
-
 begin
-  ActualCharCount := 0;
-
-  if not Assigned(Src) then
-  begin
-    Result := trNullSrc;
-    Exit;
-  end;
-
-  if not Assigned(Dest) then
-  begin
-    Result := trNullDest;
-    Exit;
-  end;
-  SrcI := 0;
-  DestI := 0;
-
-  while (DestI < DestCharCount) and (SrcI < SrcWideCharCount) do
-  begin
-    W1 := Word(Src[SrcI]);
-    Inc(SrcI);
-
-    if (W1 < $D800) or (W1 > $DFFF) then // single wide char UTF-16 char
-    begin
-      if W1 < $0080 then // to single byte UTF-8 char
-      begin
-        Dest[DestI] := Char(W1);
-        Inc(DestI);
-      end
-      else
-        if W1 < $0800 then // to double byte UTF-8 char
-        begin
-          Dest[DestI] := Char(%11000000 or ((W1 and %11111000000) shr 6));
-          Inc(DestI);
-          if DestI >= DestCharCount then Break;
-          Dest[DestI] := Char(%10000000 or (W1 and %111111));
-          Inc(DestI);
-        end
-        else
-        begin // to triple byte UTF-8 char
-          Dest[DestI] := Char(%11100000 or ((W1 and %1111000000000000) shr 12));
-          Inc(DestI);
-          if DestI >= DestCharCount then Break;
-          Dest[DestI] := Char(%10000000 or ((W1 and %111111000000) shr 6));
-          Inc(DestI);
-          if DestI >= DestCharCount then Break;
-          Dest[DestI] := Char(%10000000 or (W1 and %111111));
-          Inc(DestI);
-        end;
-    end
-    else
-    begin
-      if SrcI >= SrcWideCharCount then
-        if UnfinishedCharError then Exit(trInvalidChar)
-        else Break;
-
-      W2 := Word(Src[SrcI]);
-      Inc(SrcI);
-
-      if (W1 and $F800) = $D800 then // double wide char UTF-16 char
-      begin
-        if (W2 and $FC00) = $DC00 then
-        begin
-          C := (W1 - $D800) shl 10 + (W2 - $DC00) + $10000;
-
-          // to 4 byte UTF-8 char
-          Dest[DestI] := Char(%11110000 or (C shr 18));
-          Inc(DestI);
-          if DestI >= DestCharCount then Break;
-          Dest[DestI] := Char(%10000000 or ((C and $3F000) shr 12));
-          Inc(DestI);
-          if DestI >= DestCharCount then Break;
-          Dest[DestI] := Char(%10000000 or ((C and %111111000000) shr 6));
-          Inc(DestI);
-          if DestI >= DestCharCount then Break;
-          Dest[DestI] := Char(%10000000 or (C and %111111));
-          Inc(DestI);
-        end
-        else // invalid character, assume single wide char UTF-16 char
-          if InvalidCharError(1) then Exit(trInvalidChar);
-      end
-      else // invalid character, assume single wide char UTF-16 char
-        if InvalidCharError(1) then Exit(trInvalidChar);
-    end;
-  end;
-
-  if DestI >= DestCharCount then
-  begin
-    DestI := DestCharCount - 1;
-    Result := trDestExhausted;
-  end
-  else
-    Result := trNoError;
-
-  Dest[DestI] := #0;
-  ActualCharCount := DestI + 1;
+  Result := LazUTF8.ConvertUTF16ToUTF8(Dest, DestCharCount,
+    Src, SrcWideCharCount, Options, ActualCharCount);
 end;
 
 {------------------------------------------------------------------------------
@@ -3661,21 +2942,8 @@ end;
   copy
  ------------------------------------------------------------------------------}
 function UTF8ToUTF16(const S: AnsiString): UTF16String;
-var
-  L: SizeUInt;
 begin
-  if S = '' 
-  then begin
-    Result := '';
-    Exit;
-  end;
-
-  SetLength(Result, Length(S));
-  // wide chars of UTF-16 <= bytes of UTF-8 string
-  if ConvertUTF8ToUTF16(PWideChar(Result), Length(Result) + 1, PChar(S), Length(S),
-    [toInvalidCharToSymbol], L) = trNoError 
-  then SetLength(Result, L - 1)
-  else Result := '';
+  Result := LazUTF8.UTF8ToUTF16(S);
 end;
 
 {------------------------------------------------------------------------------
@@ -3686,74 +2954,13 @@ end;
   Converts the specified UTF-16 encoded string (system endian) to UTF-8 encoded
  ------------------------------------------------------------------------------}
 function UTF16ToUTF8(const S: UTF16String): AnsiString;
-var
-  L: SizeUInt;
-  R: AnsiString;
 begin
-  Result := '';
-  if S = '' then Exit;
-
-  SetLength(R, Length(S) * 3);
-  // bytes of UTF-8 <= 3 * wide chars of UTF-16 string
-  // e.g. %11100000 10100000 10000000 (UTF-8) is $0800 (UTF-16)
-  if ConvertUTF16ToUTF8(PChar(R), Length(R) + 1, PWideChar(S), Length(S),
-    [toInvalidCharToSymbol], L) = trNoError then
-  begin
-    SetLength(R, L - 1);
-    Result := R;
-  end;
+  Result := LazUTF8.UTF16ToUTF8(S);
 end;
 
 procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
-
-  {$IFDEF DARWIN}
-  function GetLanguage: boolean;
-  var
-    Ref: CFStringRef;
-    LangArray: CFMutableArrayRef;
-    StrSize: CFIndex;
-    StrRange: CFRange;
-    Locals: CFArrayRef;
-    Bundle: CFBundleRef;
-  begin
-    Result := false;
-    Bundle:=CFBundleGetMainBundle;
-    if Bundle=nil then exit;
-    Locals:=CFBundleCopyBundleLocalizations(Bundle);
-    if Locals=nil then exit;
-    LangArray := CFBundleCopyLocalizationsForPreferences(Locals, nil);
-    try
-      if CFArrayGetCount(LangArray) > 0 then
-      begin
-        Ref := CFArrayGetValueAtIndex(LangArray, 0);
-        StrRange.location := 0;
-        StrRange.length := CFStringGetLength(Ref);
-
-        CFStringGetBytes(Ref, StrRange, kCFStringEncodingUTF8,
-          Ord('?'), False, nil, 0, StrSize);
-        SetLength(Lang, StrSize);
-
-        if StrSize > 0 then
-        begin
-          CFStringGetBytes(Ref, StrRange, kCFStringEncodingUTF8,
-            Ord('?'), False, @Lang[1], StrSize, StrSize);
-          Result:=true;
-          FallbackLang := Copy(Lang, 1, 2);
-        end;
-      end;
-    finally
-      CFRelease(LangArray);
-      CFRelease(Locals);
-    end;
-  end;
-  {$ENDIF}
 begin
-{$IFDEF DARWIN}
-  if not GetLanguage then
-    GetLanguageIDs(Lang, FallbackLang);
-{$ELSE}
-  GetLanguageIDs(Lang, FallbackLang);
-{$ENDIF}
+  LazUTF8.LazGetLanguageIDs(Lang, FallbackLang);
 end;
 
 function CreateFirstIdentifier(const Identifier: string): string;
