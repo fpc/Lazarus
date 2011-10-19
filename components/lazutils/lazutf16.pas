@@ -34,16 +34,89 @@ interface
 uses
   Classes, SysUtils, lazutf8;
 
-//function UTF16CharacterLength(p: PWideChar): integer;
-//function UTF16Length(const s: widestring): PtrInt;
-//function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
-//function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
-//function UnicodeToUTF16(u: cardinal): widestring;
+function UTF16CharacterLength(p: PWideChar): integer;
+function UTF16Length(const s: widestring): PtrInt;
+function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
+function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
+function UnicodeToUTF16(u: cardinal): widestring;
 
 function UnicodeLowercase(u: cardinal): cardinal;
 function UTF8LowerCaseViaTables(const s: utf8string): utf8string;
 
 implementation
+
+function UTF16CharacterLength(p: PWideChar): integer;
+// returns length of UTF16 character in number of words
+// The endianess of the machine will be taken.
+begin
+  if p<>nil then begin
+    if (ord(p[0]) < $D800) or (ord(p[0]) > $DFFF) then
+      Result:=1
+    else
+      Result:=2;
+  end else begin
+    Result:=0;
+  end;
+end;
+
+function UTF16Length(const s: widestring): PtrInt;
+begin
+  Result:=UTF16Length(PWideChar(s),length(s));
+end;
+
+function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
+var
+  CharLen: LongInt;
+begin
+  Result:=0;
+  while (WordCount>0) do begin
+    inc(Result);
+    CharLen:=UTF16CharacterLength(p);
+    inc(p,CharLen);
+    dec(WordCount,CharLen);
+  end;
+end;
+
+function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
+var
+  w1: cardinal;
+  w2: Cardinal;
+begin
+  if p<>nil then begin
+    w1:=ord(p[0]);
+    if (w1 < $D800) or (w1 > $DFFF) then begin
+      // is 1 word character
+      Result:=w1;
+      CharLen:=1;
+    end else begin
+      // could be 2 word character
+      w2:=ord(p[1]);
+      if (w2>=$DC00) then begin
+        // is 2 word character
+        Result:=(w1-$D800) shl 10 + (w2-$DC00) + $10000;
+        CharLen:=2;
+      end else begin
+        // invalid character
+        Result:=w1;
+        CharLen:=1;
+      end;
+    end;
+  end else begin
+    Result:=0;
+    CharLen:=0;
+  end;
+end;
+
+function UnicodeToUTF16(u: cardinal): widestring;
+begin
+  // u should be <= $10FFFF to fit into UTF-16
+
+  if u < $10000 then
+    // Note: codepoints $D800 - $DFFF are reserved
+    Result:=system.widechar(u)
+  else
+    Result:=system.widechar($D800+((u - $10000) shr 10))+system.widechar($DC00+((u - $10000) and $3ff));
+end;
 
 // Lowercase Unicode Tables which match UTF-16 but also UTF-32
 var
