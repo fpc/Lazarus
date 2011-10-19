@@ -25,7 +25,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="27">
+    <Files Count="28">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="laz2_DOM"/>
@@ -134,6 +134,10 @@
         <Filename Value="asiancodepagefunctions.inc"/>
         <Type Value="Include"/>
       </Item27>
+      <Item28>
+        <Filename Value="lazutf16.pas"/>
+        <UnitName Value="lazutf16"/>
+      </Item28>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

@@ -1716,6 +1716,7 @@ components/lazutils/laz_xmlwrite.pas svneol=native#text/pascal
 components/lazutils/lazdbglog.pas svneol=native#text/plain
 components/lazutils/lazfilecache.pas svneol=native#text/plain
 components/lazutils/lazfileutils.pas svneol=native#text/plain
+components/lazutils/lazutf16.pas svneol=native#text/pascal
 components/lazutils/lazutf8.pas svneol=native#text/plain
 components/lazutils/lazutf8classes.pas svneol=native#text/pascal
 components/lazutils/lazutils.lpk svneol=native#text/plain

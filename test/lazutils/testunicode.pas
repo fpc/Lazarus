@@ -3,7 +3,7 @@ program TestUnicode;
 {$mode objfpc}{$H+}
 
 uses
-  sysutils, lazutf8;
+  sysutils, lazutf8, lazutf16;
 
 procedure WriteStringHex(Str: utf8string);
 var
@@ -282,16 +282,16 @@ begin
     lStartTime := Now;
     for i := 0 to TimerLoop do
     begin
-      if j = 0 then Str := UTF8LowerCaseMattias('abcdefghijklmnopqrstuwvxyz');
-      if j = 1 then Str := UTF8LowerCaseMattias('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
-      if j = 2 then Str := UTF8LowerCaseMattias('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
-      if j = 3 then Str := UTF8LowerCaseMattias('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
-      if j = 4 then Str := UTF8LowerCaseMattias('АБВЕЁЖЗКЛМНОПРДЙГ');
-      if j = 5 then Str := UTF8LowerCaseMattias('名字叫嘉英，嘉陵江的嘉，英國的英');
-      if j = 6 then Str := UTF8LowerCaseMattias('AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuWvVwXxYyZz');
-      if j = 7 then Str := UTF8LowerCaseMattias('AAaaBBbbCCccDDddEEeeFFffGGggHHhhIIiiJJjjKKkkLLllMMmm');
-      if j = 8 then Str := UTF8LowerCaseMattias('abcDefgHijkLmnoPqrsTuwvXyz');
-      if j = 9 then Str := UTF8LowerCaseMattias('ABCdEFGhIJKlMNOpQRStUWVxYZ');
+      if j = 0 then Str := UTF8LowerCaseViaTables('abcdefghijklmnopqrstuwvxyz');
+      if j = 1 then Str := UTF8LowerCaseViaTables('ABCDEFGHIJKLMNOPQRSTUWVXYZ');
+      if j = 2 then Str := UTF8LowerCaseViaTables('aąbcćdeęfghijklłmnńoóprsśtuwyzźż');
+      if j = 3 then Str := UTF8LowerCaseViaTables('AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ');
+      if j = 4 then Str := UTF8LowerCaseViaTables('АБВЕЁЖЗКЛМНОПРДЙГ');
+      if j = 5 then Str := UTF8LowerCaseViaTables('名字叫嘉英，嘉陵江的嘉，英國的英');
+      if j = 6 then Str := UTF8LowerCaseViaTables('AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuWvVwXxYyZz');
+      if j = 7 then Str := UTF8LowerCaseViaTables('AAaaBBbbCCccDDddEEeeFFffGGggHHhhIIiiJJjjKKkkLLllMMmm');
+      if j = 8 then Str := UTF8LowerCaseViaTables('abcDefgHijkLmnoPqrsTuwvXyz');
+      if j = 9 then Str := UTF8LowerCaseViaTables('ABCdEFGhIJKlMNOpQRStUWVxYZ');
     end;
     lTimeDiff := Now - lStartTime;
     Write(Format(' %7d ms ', [DateTimeToMilliseconds(lTimeDiff)]));
