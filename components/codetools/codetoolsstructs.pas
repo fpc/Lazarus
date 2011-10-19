@@ -133,12 +133,12 @@ type
   public
     constructor Create(TheCaseSensitive: boolean);
     destructor Destroy; override;
-    procedure Clear;
+    procedure Clear; virtual;
     function Contains(const s: string): boolean;
     function ContainsIdentifier(P: PChar): boolean;
     function FindNodeWithIdentifierAsPrefix(P: PChar): TAVLTreeNode;
     procedure GetNames(List: TStrings);
-    procedure Remove(const Name: string);
+    procedure Remove(const Name: string); virtual;
     property CaseSensitive: boolean read FCaseSensitive;
     property Tree: TAVLTree read FTree; // tree of PStringMapItem
     function Equals(OtherTree: TStringMap): boolean; reintroduce;
@@ -180,7 +180,7 @@ type
     procedure AssignItem(Src, Dest: Pointer); override;
   public
     function GetString(const Name: string; out Value: string): boolean;
-    procedure Add(const Name, Value: string);
+    procedure Add(const Name, Value: string); virtual;
     property Strings[const s: string]: string read GetStrings write SetStrings; default;
     function AsText: string;
     procedure Assign(Source: TStringMap); override;
@@ -210,6 +210,7 @@ type
 
   TStringToPointerTree = class(TStringMap)
   private
+    FFreeValues: boolean;
     function GetItems(const s: string): Pointer;
     procedure SetItems(const s: string; AValue: Pointer);
   protected
@@ -218,15 +219,23 @@ type
     procedure AssignItem(Src, Dest: Pointer); override;
   public
     function GetItem(const Name: string; out Value: Pointer): boolean;
-    procedure Add(const Name: string; const Value: Pointer);
+    procedure Add(const Name: string; const Value: Pointer); virtual;
     property Items[const s: string]: Pointer read GetItems write SetItems; default;
     procedure Assign(Source: TStringMap); override;
     function GetEnumerator: TStringToPointerTreeEnumerator;
+    property FreeValues: boolean read FFreeValues write FFreeValues;
   end;
 
   { TFilenameToStringTree }
 
   TFilenameToStringTree = class(TStringToStringTree)
+  public
+    constructor Create(CaseInsensitive: boolean); // false = system default
+  end;
+
+  { TFilenameToPointerTree }
+
+  TFilenameToPointerTree = class(TStringToPointerTree)
   public
     constructor Create(CaseInsensitive: boolean); // false = system default
   end;
@@ -412,6 +421,19 @@ begin
   Result:=CompareStr(AnsiString(Data1),AnsiString(Data2));
 end;
 
+{ TFilenameToPointerTree }
+
+constructor TFilenameToPointerTree.Create(CaseInsensitive: boolean);
+begin
+  inherited Create(true);
+  if CaseInsensitive then
+    SetCompareFuncs(@CompareFilenameToStringItemsI,
+                    @CompareFilenameAndFilenameToStringTreeItemI)
+  else
+    SetCompareFuncs(@CompareFilenameToStringItems,
+                    @CompareFilenameAndFilenameToStringTreeItem);
+end;
+
 { TStringToPointerTree }
 
 function TStringToPointerTree.GetItems(const s: string): Pointer;
@@ -432,7 +454,10 @@ var
 begin
   Node:=FindNode(s);
   if Node<>nil then begin
-    PStringToPointerTreeItem(Node.Data)^.Value:=AValue;
+    NewItem:=PStringToPointerTreeItem(Node.Data);
+    if FreeValues then
+      TObject(NewItem^.Value).Free;
+    NewItem^.Value:=AValue;
   end else begin
     New(NewItem);
     NewItem^.Name:=s;
@@ -445,6 +470,8 @@ procedure TStringToPointerTree.DisposeItem(p: Pointer);
 var
   Item: PStringToPointerTreeItem absolute p;
 begin
+  if FreeValues then
+    TObject(Item^.Value).Free;
   Dispose(Item);
 end;
 
