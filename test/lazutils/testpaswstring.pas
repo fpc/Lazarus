@@ -3,7 +3,7 @@ program testpaswstring;
 {$mode objfpc}{$H+}
 
 uses
-  sysutils, Classes, paswstring, cwstring;
+  sysutils, Classes, paswstring, lazutf8;
 
 procedure WriteStringHex(Str: utf8string);
 var
@@ -20,23 +20,23 @@ end;
 
 procedure AssertAnsiStringCompareOperation(AMsg, AStr1, AStr2: ansistring; AResult: PtrInt; AExpects: Boolean);
 begin
-  Write(AMsg, ' ', AStr1, ' <=> ', AStr2);
+  Write(AMsg, ' '{, AStr1, ' <=> ', AStr2});
 
-  if (AResult = 0) then Write(' Result: Equal')
+  if (AResult = 0) then Write(' Result:     Equal')
   else Write(' Result: Not Equal');
 
   if (AResult <> 0) xor AExpects then WriteLn(' Correct')
   else WriteLn(' !Error!');
 end;
 
-procedure AssertWideStringCompareOperation(AMsg, AStr1, AStr2: widestring; AResult: PtrInt; AExpects: Boolean);
+procedure AssertWideStringCompareOperation(AMsg: ansistring; AStr1, AStr2: widestring; AResult: PtrInt; AExpects: Boolean);
 begin
-  AssertAnsiStringCompareOperation(AMsg, AStr1, AStr2, AResult, AExpects);
+  AssertAnsiStringCompareOperation(AMsg, '', '', AResult, AExpects);
 end;
 
-procedure AssertUnicodeStringCompareOperation(AMsg, AStr1, AStr2: unicodestring; AResult: PtrInt; AExpects: Boolean);
+procedure AssertUnicodeStringCompareOperation(AMsg: ansistring; AStr1, AStr2: unicodestring; AResult: PtrInt; AExpects: Boolean);
 begin
-  AssertAnsiStringCompareOperation(AMsg, AStr1, AStr2, AResult, AExpects);
+  AssertAnsiStringCompareOperation(AMsg, '', '', AResult, AExpects);
 end;
 
 procedure AssertAnsiStringOperation(AMsg, AStr1, AStr2, AStrExpected2: ansistring);
@@ -80,16 +80,11 @@ begin
 end;
 
 procedure AssertWideStringOperation(AMsg: ansistring; AStr1, AStr2, AStrExpected2: widestring);
-var
-  AnsiStr1, AnsiStr2, AnsiExpected2: ansistring;
 begin
-  AnsiStr1 := AStr1;
-  AnsiStr2 := AStr2;
-  AnsiExpected2 := AStrExpected2;
-  Write(AMsg, ' ', AnsiStr1, ' => ', AnsiStr2);
+  Write(AMsg, ' '{, AnsiStr1, ' => ', AnsiStr2});
   if SysUtils.WideCompareStr(AStr2, AStrExpected2) <> 0 then
   begin
-    Write(' Expected ', AnsiExpected2, ' !Error!');
+    Write(' !Error!');
     WriteLn();
 //    Write('Got      Len=', Length(AStr2), ' Str=');
 //    WriteStringHex(AStr2);
@@ -106,7 +101,7 @@ end;
 
 procedure AssertUnicodeStringOperation(AMsg, AStr1, AStr2, AStrExpected2: unicodestring);
 begin
-  Write(AMsg, ' ', AStr1, ' => ', AStr2);
+  Write(AMsg, ' '{, AStr1, ' => ', AStr2});
   if SysUtils.UnicodeCompareStr(AStr2, AStrExpected2) <> 0 then
   begin
     Write(' Expected ', AStrExpected2, ' !Error!');
@@ -156,8 +151,12 @@ var
   UTF8Str, UTF8Str2: utf8string;
   WideStr, WideStr2: widestring;
   UnicodeStr, UnicodeStr2: unicodestring;
+
+procedure TestCompareStr;
 begin
   WriteLn('======= CompareStr =======');
+
+  // For AnsiString we can only compare ASCII reliably
 
   AnsiStr := 'abcdefghijklmnopqrstuwvxyz';
   AnsiStr2 := AnsiStr;
@@ -168,20 +167,129 @@ begin
   //
   AnsiStr2 := 'ABCDEFGHIJKLMNOPQRSTUWVXYZ';
   AssertAnsiStringCompareOperation('SysUtils.AnsiCompareStr 3', AnsiStr, AnsiStr2, SysUtils.AnsiCompareStr(AnsiStr, AnsiStr2), False);
-  //
+
+  // No UTF-8 routines in the RTL yet
+
+  // Now WideString
+
   WideStr := 'abcdefghijklmnopqrstuwvxyz';
   WideStr2 := WideStr;
   AssertWideStringCompareOperation('SysUtils.WideCompareStr 1', WideStr, WideStr2, SysUtils.WideCompareStr(WideStr, WideStr2), True);
   //
   UniqueString(AnsiStr2);
-  AssertWideStringCompareOperation('SysUtils.WideCompareStr 1', WideStr, WideStr2, SysUtils.WideCompareStr(WideStr, WideStr2), True);
+  AssertWideStringCompareOperation('SysUtils.WideCompareStr 2', WideStr, WideStr2, SysUtils.WideCompareStr(WideStr, WideStr2), True);
   //
   WideStr2 := 'ABCDEFGHIJKLMNOPQRSTUWVXYZ';
-  AssertWideStringCompareOperation('SysUtils.WideCompareStr 1', WideStr, WideStr2, SysUtils.WideCompareStr(WideStr, WideStr2), False);
+  AssertWideStringCompareOperation('SysUtils.WideCompareStr 3', WideStr, WideStr2, SysUtils.WideCompareStr(WideStr, WideStr2), False);
   //
-  //UnicodeStr := 'abcdefghijklmnopqrstuwvxyz';
-  //AssertUnicodeStringCompareOperation('SysUtils.UnicodeCompareStr', UnicodeStr, SysUtils.UnicodeCompareStr(UnicodeStr), 'ABCDEFGHIJKLMNOPQRSTUWVXYZ');
+  WideStr := 'АБВГДЕЖЗИЙКЛМНОП';
+  WideStr2 := WideStr;
+  UniqueString(AnsiStr2);
+  AssertWideStringCompareOperation('SysUtils.WideCompareStr 4', WideStr, WideStr2, SysUtils.WideCompareStr(WideStr, WideStr2), True);
+  //
+  WideStr2 := 'абвгдежзийклмноп';
+  AssertWideStringCompareOperation('SysUtils.WideCompareStr 5', WideStr, WideStr2, SysUtils.WideCompareStr(WideStr, WideStr2), False);
+
+  // UnicodeString
+
+  UnicodeStr := 'abcdefghijklmnopqrstuwvxyz';
+  UnicodeStr2 := UnicodeStr;
+  AssertUnicodeStringCompareOperation('SysUtils.UnicodeCompareStr 1', UnicodeStr, UnicodeStr2, SysUtils.UnicodeCompareStr(UnicodeStr, UnicodeStr2), True);
+  //
+  UniqueString(UnicodeStr2);
+  AssertUnicodeStringCompareOperation('SysUtils.UnicodeCompareStr 2', UnicodeStr, UnicodeStr2, SysUtils.UnicodeCompareStr(UnicodeStr, UnicodeStr2), True);
+  //
+  UnicodeStr2 := 'ABCDEFGHIJKLMNOPQRSTUWVXYZ';
+  AssertUnicodeStringCompareOperation('SysUtils.UnicodeCompareStr 3', UnicodeStr, UnicodeStr2, SysUtils.UnicodeCompareStr(UnicodeStr, UnicodeStr2), False);
+  //
+  UnicodeStr := 'АБВГДЕЖЗИЙКЛМНОП';
+  UnicodeStr2 := UnicodeStr;
+  UniqueString(UnicodeStr2);
+  AssertWideStringCompareOperation('SysUtils.UnicodeCompareStr 4', UnicodeStr, UnicodeStr2, SysUtils.UnicodeCompareStr(UnicodeStr, UnicodeStr2), True);
+  //
+  UnicodeStr2 := 'абвгдежзийклмноп';
+  AssertWideStringCompareOperation('SysUtils.UnicodeCompareStr 5', UnicodeStr, UnicodeStr2, SysUtils.UnicodeCompareStr(UnicodeStr, UnicodeStr2), False);
+end;
+
+procedure TestCompareText;
+begin
   WriteLn('======= CompareText =======');
+
+  // For AnsiString we can only compare ASCII reliably
+
+  AnsiStr := 'abcdefghijklmnopqrstuwvxyz';
+  AnsiStr2 := AnsiStr;
+  AssertAnsiStringCompareOperation('SysUtils.AnsiCompareText 1', AnsiStr, AnsiStr2, SysUtils.AnsiCompareText(AnsiStr, AnsiStr2), True);
+  //
+  UniqueString(AnsiStr2);
+  AssertAnsiStringCompareOperation('SysUtils.AnsiCompareText 2', AnsiStr, AnsiStr2, SysUtils.AnsiCompareText(AnsiStr, AnsiStr2), True);
+  //
+  AnsiStr2 := 'ABCDEFGHIJKLMNOPQRSTUWVXYZ';
+  AssertAnsiStringCompareOperation('SysUtils.AnsiCompareText 3', AnsiStr, AnsiStr2, SysUtils.AnsiCompareText(AnsiStr, AnsiStr2), True);
+  //
+  AnsiStr2 := 'ZZZZZ';
+  AssertAnsiStringCompareOperation('SysUtils.AnsiCompareText 4', AnsiStr, AnsiStr2, SysUtils.AnsiCompareText(AnsiStr, AnsiStr2), False);
+
+  // No UTF-8 routines in the RTL yet
+
+  // Now WideString
+
+  WideStr := 'abcdefghijklmnopqrstuwvxyz';
+  WideStr2 := WideStr;
+  AssertWideStringCompareOperation('SysUtils.WideCompareText 1', WideStr, WideStr2, SysUtils.WideCompareText(WideStr, WideStr2), True);
+  //
+  UniqueString(AnsiStr2);
+  AssertWideStringCompareOperation('SysUtils.WideCompareText 2', WideStr, WideStr2, SysUtils.WideCompareText(WideStr, WideStr2), True);
+  //
+  WideStr2 := 'ABCDEFGHIJKLMNOPQRSTUWVXYZ';
+  AssertWideStringCompareOperation('SysUtils.WideCompareText 3', WideStr, WideStr2, SysUtils.WideCompareText(WideStr, WideStr2), True);
+  //
+  WideStr2 := 'абвгдежзийклмноп';
+  AssertWideStringCompareOperation('SysUtils.WideCompareText 4', WideStr, WideStr2, SysUtils.WideCompareText(WideStr, WideStr2), False);
+  //
+  WideStr := UTF8ToUTF16('АБВГДЕЖЗИЙКЛМНОП');
+  WideStr2 := WideStr;
+  UniqueString(AnsiStr2);
+  AssertWideStringCompareOperation('SysUtils.WideCompareText 5', WideStr, WideStr2, SysUtils.WideCompareText(WideStr, WideStr2), True);
+  //
+  WideStr2 := UTF8ToUTF16('абвгдежзийклмноп');
+  AssertWideStringCompareOperation('SysUtils.WideCompareText 6', WideStr, WideStr2, SysUtils.WideCompareText(WideStr, WideStr2), True);
+
+  // UnicodeString
+
+  UnicodeStr := 'abcdefghijklmnopqrstuwvxyz';
+  UnicodeStr2 := UnicodeStr;
+  AssertUnicodeStringCompareOperation('SysUtils.UnicodeCompareText 1', UnicodeStr, UnicodeStr2, SysUtils.UnicodeCompareText(UnicodeStr, UnicodeStr2), True);
+  //
+  UniqueString(UnicodeStr2);
+  AssertUnicodeStringCompareOperation('SysUtils.UnicodeCompareText 2', UnicodeStr, UnicodeStr2, SysUtils.UnicodeCompareText(UnicodeStr, UnicodeStr2), True);
+  //
+  UnicodeStr2 := 'ABCDEFGHIJKLMNOPQRSTUWVXYZ';
+  AssertUnicodeStringCompareOperation('SysUtils.UnicodeCompareText 3', UnicodeStr, UnicodeStr2, SysUtils.UnicodeCompareText(UnicodeStr, UnicodeStr2), True);
+  //
+  UnicodeStr2 := 'абвгдежзийклмноп';
+  AssertWideStringCompareOperation('SysUtils.UnicodeCompareText 4', UnicodeStr, UnicodeStr2, SysUtils.UnicodeCompareText(UnicodeStr, UnicodeStr2), False);
+  //
+  UnicodeStr := UTF8ToUTF16('АБВГДЕЖЗИЙКЛМНОП');
+  UnicodeStr2 := UnicodeStr;
+  UniqueString(UnicodeStr2);
+  AssertWideStringCompareOperation('SysUtils.UnicodeCompareText 5', UnicodeStr, UnicodeStr2, SysUtils.UnicodeCompareText(UnicodeStr, UnicodeStr2), True);
+  //
+  UnicodeStr2 := UTF8ToUTF16('абвгдежзийклмноп');
+  AssertWideStringCompareOperation('SysUtils.UnicodeCompareText 6', UnicodeStr, UnicodeStr2, SysUtils.UnicodeCompareText(UnicodeStr, UnicodeStr2), True);
+end;
+
+procedure TestAssignment();
+begin
+  WriteLn('======= String Assignment =======');
+  AnsiStr := 'abcdefghijklmnopqrstuwvxyz';
+  UnicodeStr := AnsiStr;
+  UnicodeStr2 := UTF8ToUTF16(AnsiStr);
+  AssertUnicodeStringCompareOperation('UnicodeStr := AnsiStr 1', UnicodeStr, UnicodeStr2, SysUtils.UnicodeCompareStr(UnicodeStr, UnicodeStr2), True);
+end;
+
+procedure TestCompareUpperCase();
+begin
   WriteLn('======= UpperCase =======');
   AnsiStr := 'abcdefghijklmnopqrstuwvxyz';
   AssertAnsiStringOperation('SysUtils.AnsiUpperCase', AnsiStr, SysUtils.AnsiUpperCase(AnsiStr), 'ABCDEFGHIJKLMNOPQRSTUWVXYZ');
@@ -189,8 +297,13 @@ begin
   AssertWideStringOperation('SysUtils.WideUpperCase', WideStr, SysUtils.WideUpperCase(WideStr), 'ABCDEFGHIJKLMNOPQRSTUWVXYZ');
   UnicodeStr := 'abcdefghijklmnopqrstuwvxyz';
   AssertUnicodeStringOperation('SysUtils.UnicodeUpperCase', UnicodeStr, SysUtils.UnicodeUpperCase(UnicodeStr), 'ABCDEFGHIJKLMNOPQRSTUWVXYZ');
-  WriteLn('======= LowerCase =======');
-  //TestUTF8LowerCase();
+end;
+
+begin
+  TestCompareStr();
+  TestCompareText();
+  TestAssignment();
+  TestCompareUpperCase();
   {$ifdef Windows}
   WriteLn('Please press enter to continue');
   readln;
