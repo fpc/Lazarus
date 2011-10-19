@@ -69,11 +69,7 @@ function UTF8UpperCase(const AInStr: utf8string; ALanguage: utf8string=''): utf8
 
 //procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
 
-//function UTF16CharacterLength(p: PWideChar): integer;
-//function UTF16Length(const s: widestring): PtrInt;
-//function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
-//function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
-//function UnicodeToUTF16(u: cardinal): widestring;}
+}
 
 //compare functions
 

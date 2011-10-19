@@ -34,6 +34,12 @@ interface
 uses
   Classes, SysUtils, lazutf8;
 
+//function UTF16CharacterLength(p: PWideChar): integer;
+//function UTF16Length(const s: widestring): PtrInt;
+//function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
+//function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
+//function UnicodeToUTF16(u: cardinal): widestring;
+
 function UnicodeLowercase(u: cardinal): cardinal;
 function UTF8LowerCaseViaTables(const s: utf8string): utf8string;
 

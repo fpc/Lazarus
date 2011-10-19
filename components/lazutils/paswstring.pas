@@ -22,10 +22,13 @@ interface
 
 uses SysUtils, lazutf8, lconvencoding;
 
+{$IFNDEF VER2_7}
 procedure SetPasWidestringManager;
+{$ENDIF}
 
 implementation
 
+{$IFNDEF VER2_7}
 procedure fpc_rangeerror; [external name 'FPC_RANGEERROR'];
 
 procedure Wide2AnsiMove(source:pwidechar;var dest:ansistring;len:SizeInt);
@@ -417,4 +420,5 @@ end;
 
 initialization
   SetPasWideStringManager;
+{$ENDIF}
 end.
