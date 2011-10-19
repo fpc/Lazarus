@@ -9,6 +9,7 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
+      <Title Value="testpaswstring"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -29,7 +30,6 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="1">
@@ -39,16 +39,16 @@
     </RequiredPackages>
     <Units Count="1">
       <Unit0>
-        <Filename Value="testunicode.pas"/>
+        <Filename Value="testpaswstring.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestUnicode"/>
+        <UnitName Value="testpaswstring"/>
       </Unit0>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="10"/>
     <Target>
-      <Filename Value="testunicode"/>
+      <Filename Value="testpaswstring"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
