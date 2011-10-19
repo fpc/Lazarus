@@ -4226,6 +4226,8 @@ begin
               AddRecentProjectFileToEnvironment(ARecentProject);
           end;
         end;
+    tpws_examples:
+      mnuToolManageExamplesClicked(Sender);
     tpws_convert:
       mnuToolConvertDelphiProjectClicked(Sender);
     tpws_closeIDE:

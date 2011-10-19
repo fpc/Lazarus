@@ -36,6 +36,7 @@ type
     tpws_new,
     tpws_open,
     tpws_openRecent,
+    tpws_examples,
     tpws_convert,
     tpws_closeIDE
   );
@@ -43,6 +44,7 @@ type
   { TProjectWizardDialog }
 
   TProjectWizardDialog = class(TForm)
+    btnExamples: TBitBtn;
     btnNewProject: TBitBtn;
     btnConvertProject: TBitBtn;
     btnCloseIDE: TBitBtn;
@@ -51,6 +53,7 @@ type
     gbRecent: TGroupBox;
     procedure btnCloseIDEClick(Sender: TObject);
     procedure btnConvertProjectClick(Sender: TObject);
+    procedure btnExamplesClick(Sender: TObject);
     procedure btnNewProjectClick(Sender: TObject);
     procedure btnOpenProjectClick(Sender: TObject);
     procedure cbRecentProjectsSelect(Sender: TObject);
@@ -83,6 +86,7 @@ begin
     btnCloseIDE.caption:=lisQuitLazarus;
     btnNewProject.LoadGlyphFromLazarusResource('item_project');
     btnOpenProject.LoadGlyphFromLazarusResource('menu_project_open');
+    btnExamples.LoadGlyphFromLazarusResource('camera');
     btnConvertProject.LoadGlyphFromLazarusResource('laz_wand');
     btnCloseIDE.LoadGlyphFromLazarusResource('menu_exit');
     cbRecentProjects.Items.AddStrings(EnvironmentOptions.RecentProjectFiles);
@@ -108,6 +112,11 @@ end;
 procedure TProjectWizardDialog.btnConvertProjectClick(Sender: TObject);
 begin
   FResult := tpws_convert;
+end;
+
+procedure TProjectWizardDialog.btnExamplesClick(Sender: TObject);
+begin
+  FResult := tpws_examples;
 end;
 
 procedure TProjectWizardDialog.btnCloseIDEClick(Sender: TObject);
