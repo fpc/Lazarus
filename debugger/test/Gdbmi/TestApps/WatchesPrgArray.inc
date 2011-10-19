@@ -707,6 +707,10 @@
       GlobAStatStatPRec2Array  : array of TStatArrayPRec2;
       GlobAStatStatPPRec2Array : array of TStatArrayPPRec2; // double pointer
 
+      GlobADynDynDynArrayTRec1      : array of array of array of TRecForArray1;
+      GlobADynDynDynDynArrayTRec1   : array of array of array of array of TRecForArray1;
+      GlobADynArrayTRec5            : array of record a: byte; c:integer; end;
+      GlobAStatArrayTRec5           : array [3..5] of record a: byte; c:integer; end;
 
 
     {$ENDIF}
@@ -1469,7 +1473,24 @@
       GlobAStatStatPPRec2Array[1][3] := @GlobAStatStatPRec2Array[1][3];
       GlobAStatStatPPRec2Array[1][4] := @GlobAStatStatPRec2Array[1][4];
 
+      SetLength(GlobADynDynDynArrayTRec1,3);
+      GlobADynDynDynArrayTRec1[0] := GlobADynDynArrayTRec1;
+      GlobADynDynDynArrayTRec1[1] := GlobADynDynArrayTRec1;
 
+      SetLength(GlobADynDynDynDynArrayTRec1,3);
+      GlobADynDynDynDynArrayTRec1[0] := GlobADynDynDynArrayTRec1;
+      GlobADynDynDynDynArrayTRec1[1] := GlobADynDynDynArrayTRec1;
+
+      SetLength(GlobADynArrayTRec5, 3);
+      GlobADynArrayTRec5[0].a := 10;
+      GlobADynArrayTRec5[0].c := 12;
+      GlobADynArrayTRec5[1].a := 11;
+      GlobADynArrayTRec5[1].c := 13;
+
+      GlobAStatArrayTRec5[3].a := 15;
+      GlobAStatArrayTRec5[3].c := 17;
+      GlobAStatArrayTRec5[4].a := 16;
+      GlobAStatArrayTRec5[4].c := 18;
 
     {$ENDIF}
 
