@@ -1090,7 +1090,8 @@ resourcestring
   dlgDesktopMenus = 'Menus - ';
 
   dlgDesktopMisc = 'Misc Options';
-
+  lisSavedSuccessfully = 'Saved successfully';
+  lisLoadedSuccessfully = 'Loaded successfully';
   lisCheckChangesOnDiskWithLoading = 'Check changes on disk with loading';
 
   lisEnvJumpFromMessageToSrcOnDblClickOtherwiseSingleClick = 'Jump from '

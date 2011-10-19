@@ -1611,14 +1611,21 @@ begin
   RemoveFromRecentList(AFilename,FRecentProjectFiles);
 end;
 
+procedure InitLayoutHelper(const FormID: string);
+begin
+  with IDEWindowCreators.SimpleLayoutStorage do
+    if not Assigned(ItemByFormID(FormID)) then
+      CreateWindowLayout(FormID);
+end;
+
 procedure TEnvironmentOptions.InitLayoutList;
 var
   l: TNonModalIDEWindow;
 begin
   for l:=Low(TNonModalIDEWindow) to High(TNonModalIDEWindow) do
     if l<>nmiwNone then
-      IDEWindowCreators.SimpleLayoutStorage.CreateWindowLayout(NonModalIDEWindowNames[l]);
-  IDEWindowCreators.SimpleLayoutStorage.CreateWindowLayout(DefaultObjectInspectorName);
+      InitLayoutHelper(NonModalIDEWindowNames[l]);
+  InitLayoutHelper(DefaultObjectInspectorName);
 end;
 
 function TEnvironmentOptions.GetTestBuildDirectory: string;
