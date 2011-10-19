@@ -502,7 +502,6 @@ type
     property ParentBidiMode;
     property ParentFont;
     property ParentShowHint;
-    property PasswordChar;
     property PopupMenu;
     property ShowHint;
     property TabStop;
