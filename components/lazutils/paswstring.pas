@@ -35,12 +35,12 @@ begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('Wide2AnsiMove START');{$endif}
   // Copy the originating string taking into account the specified length
   SetLength(widestr, len+1);
-  System.Move(source^, widestr, len);
+  System.Move(source^, widestr[1], len);
   PWideChar(@widestr)[len] := #0; // Avoid UniqueString by using PWideChar
+  SetLength(widestr, len); // Avoid a length missmatch
 
   // Now convert it, using UTF-8 -> UTF-16
   dest := UTF16ToUTF8(widestr);
-  {$ifdef PASWSTRING_VERBOSE}WriteLn('Wide2AnsiMove END');{$endif}
 end;
 
 procedure Ansi2WideMove(source:pchar;var dest:widestring;len:SizeInt);
@@ -50,8 +50,9 @@ begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('Ansi2WideMove START');{$endif}
   // Copy the originating string taking into account the specified length
   SetLength(ansistr, len+1);
-  System.Move(source^, ansistr, len);
+  System.Move(source^, ansistr[1], len);
   ansistr[len+1] := #0;
+  SetLength(ansistr, len);
 
   // Now convert it, using UTF-16 -> UTF-8
   dest := UTF8ToUTF16(ansistr);
@@ -122,6 +123,7 @@ function WideCompareStr(const s1, s2 : WideString) : PtrInt;
 var
   count, count1, count2: integer;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('WideCompareStr START');{$endif}
   result := 0;
   Count1 := Length(S1);
   Count2 := Length(S2);
@@ -138,6 +140,7 @@ function WideCompareText(const s1, s2 : WideString): PtrInt;
 var
   a, b: WideString;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('WideCompareText START');{$endif}
   a:=LowerWidestring(s1);
   b:=LowerWidestring(s2);
   result := WideCompareStr(a,b);
@@ -145,11 +148,13 @@ end;
 
 function CharLengthPChar(const Str: PChar): PtrInt;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('CharLengthPChar START');{$endif}
   Result := UTF8CharacterLength(Str);
 end;
 
 function AnsiCompareStr(const s1, s2: ansistring): PtrInt;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('AnsiCompareStr START');{$endif}
   Result := SysUtils.CompareStr(s1, s2);
 end;
 
@@ -158,6 +163,7 @@ function StrCompAnsi(s1,s2 : PChar): PtrInt;
 var
   ansi1, ansi2: ansistring;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('StrCompAnsi START');{$endif}
   ansi1 := StrPas(S1);
   ansi2 := StrPas(S2);
   Result := SysUtils.CompareStr(ansi1, ansi2);
@@ -168,6 +174,7 @@ function AnsiCompareText(const S1, S2: ansistring): PtrInt;
 var
   str1, str2: utf8string;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('AnsiCompareText START');{$endif}
   str1 := SysToUTF8(S1);
   str2 := SysToUTF8(S2);
   Result := UTF8CompareText(str1, str2);
@@ -176,6 +183,7 @@ end;
 
 function AnsiStrIComp(S1, S2: PChar): PtrInt;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('AnsiStrIComp START');{$endif}
   Result := AnsiCompareText(StrPas(s1),StrPas(s2));
 end;
 
@@ -184,6 +192,7 @@ function AnsiStrLComp(S1, S2: PChar; MaxLen: PtrUInt): PtrInt;
   var
     a, b: pchar;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('AnsiStrLComp START');{$endif}
   Result := 0;
   if (maxlen=0) then
     exit(0);
@@ -215,6 +224,7 @@ function AnsiStrLIComp(S1, S2: PChar; MaxLen: PtrUInt): PtrInt;
   var
     a, b: ansistring;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('AnsiStrLIComp START');{$endif}
   if (maxlen=0) then
     exit(0);
   setlength(a,maxlen);
@@ -229,6 +239,7 @@ procedure ansi2pchar(const s: ansistring; const orgp: pchar; out p: pchar);
 var
   newlen: sizeint;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('ansi2pchar START');{$endif}
   newlen:=length(s);
   if newlen>strlen(orgp) then
     fpc_rangeerror;
@@ -243,6 +254,7 @@ function AnsiStrLower(Str: PChar): PChar;
 var
   temp: ansistring;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('AnsiStrLower START');{$endif}
   temp:=loweransistring(str);
   ansi2pchar(temp,str,result);
 end;
@@ -252,6 +264,7 @@ function AnsiStrUpper(Str: PChar): PChar;
 var
   temp: ansistring;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('AnsiStrUpper START');{$endif}
   temp:=upperansistring(str);
   ansi2pchar(temp,str,result);
 end;
@@ -272,10 +285,12 @@ procedure Unicode2AnsiMove(source:pwidechar;var dest:ansistring;len:SizeInt);
 var
   widestr: unicodestring;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('Unicode2AnsiMove START');{$endif}
   // Copy the originating string taking into account the specified length
   SetLength(widestr, len+1);
-  System.Move(source^, widestr, len);
-  widestr[len+1] := #0;
+  System.Move(source^, widestr[1], len);
+  PWideChar(@widestr)[len] := #0; // Avoid UniqueString
+  SetLength(widestr, len);
 
   // Now convert it, using UTF-8 -> UTF-16
   dest := UTF16ToUTF8(widestr);
@@ -285,10 +300,12 @@ procedure Ansi2UnicodeMove(source:pchar;var dest:UnicodeString;len:SizeInt);
 var
   ansistr: ansistring;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('Ansi2UnicodeMove START');{$endif}
   // Copy the originating string taking into account the specified length
   SetLength(ansistr, len+1);
-  System.Move(source^, ansistr, len);
+  System.Move(source^, ansistr[1], len);
   ansistr[len+1] := #0;
+  SetLength(ansistr, len);
 
   // Now convert it, using UTF-16 -> UTF-8
   dest := UTF8ToUTF16(ansistr);
@@ -298,6 +315,7 @@ function UpperUnicodeString(const s : UnicodeString) : UnicodeString;
 var
   str: utf8string;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('UpperUnicodeString START');{$endif}
   str := UTF16ToUTF8(s);
   str := UTF8UpperCase(str);
   Result := UTF8ToUTF16(str);
@@ -307,6 +325,7 @@ function LowerUnicodeString(const s : UnicodeString) : UnicodeString;
 var
   str: utf8string;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('LowerUnicodeString START');{$endif}
   str := UTF16ToUTF8(s);
   str := UTF8LowerCase(str);
   Result := UTF8ToUTF16(str);
@@ -318,6 +337,7 @@ function PasUnicodeCompareStr(const s1, s2 : unicodestring) : PtrInt;
 var
   count, count1, count2: integer;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('PasUnicodeCompareStr START');{$endif}
   result := 0;
   Count1 := Length(S1);
   Count2 := Length(S2);
@@ -334,6 +354,7 @@ function PasUnicodeCompareText(const s1, s2 : unicodestring): PtrInt;
 var
   a, b: unicodestring;
 begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('PasUnicodeCompareText START');{$endif}
   a:=LowerWidestring(s1);
   b:=LowerWidestring(s2);
   result := WideCompareStr(a,b);
