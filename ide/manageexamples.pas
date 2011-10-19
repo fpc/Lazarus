@@ -6,9 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, ListFilterEdit, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ExtCtrls, ButtonPanel, //FileUtil,
-  LCLProc, Buttons, EditBtn, LazIDEIntf, MainIntf, EnvironmentOpts, //AvgLvlTree,
-  LazarusIDEStrConsts;
+  Dialogs, StdCtrls, ExtCtrls, ButtonPanel, Buttons, EditBtn, LCLProc,
+  IDEWindowIntf, LazIDEIntf, MainIntf, EnvironmentOpts, LazarusIDEStrConsts;
 
 type
 
@@ -32,6 +31,8 @@ type
     ActionGroupBox: TGroupBox;
     SelectNoneButton: TBitBtn;
     ProjectsGroupBox: TGroupBox;
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure BuildAllSelectedButtonClick(Sender: TObject);
     procedure OpenSelectedButtonClick(Sender: TObject);
     procedure ProjectsListBoxSelectionChange(Sender: TObject; User: boolean);
@@ -112,8 +113,6 @@ end;
 { TManageExamplesForm }
 
 constructor TManageExamplesForm.Create(AnOwner: TComponent);
-var
-  path: String;
 begin
   inherited Create(AnOwner);
   fFirstSelectedIndex:=-1;
@@ -150,6 +149,16 @@ end;
 destructor TManageExamplesForm.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TManageExamplesForm.FormCreate(Sender: TObject);
+begin
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TManageExamplesForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TManageExamplesForm.FillDirectoriesBending;
@@ -217,6 +226,7 @@ begin
     Searcher:=TListFileSearcher.Create(Self);
     Searcher.Search(RootDirectoryEdit.Text, '*.lpi');
     ProjectFilter.InvalidateFilter;
+    DescriptionMemo.Clear;
   finally
     Searcher.Free;
     fNeedsFindProjects:=False;

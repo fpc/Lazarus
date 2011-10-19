@@ -6,6 +6,8 @@ object ManageExamplesForm: TManageExamplesForm
   Caption = 'ManageExamplesForm'
   ClientHeight = 490
   ClientWidth = 798
+  OnClose = FormClose
+  OnCreate = FormCreate
   Position = poDesktopCenter
   LCLVersion = '0.9.31'
   object ProjectsGroupBox: TGroupBox
@@ -20,7 +22,7 @@ object ManageExamplesForm: TManageExamplesForm
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 5
     Caption = 'Projects'
-    ClientHeight = 333
+    ClientHeight = 334
     ClientWidth = 440
     TabOrder = 0
     object ProjectsListBox: TListBox
@@ -32,7 +34,7 @@ object ManageExamplesForm: TManageExamplesForm
       AnchorSideBottom.Control = ProjectsGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 304
+      Height = 305
       Top = 29
       Width = 440
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -42,6 +44,7 @@ object ManageExamplesForm: TManageExamplesForm
       OnSelectionChange = ProjectsListBoxSelectionChange
       ScrollWidth = 436
       TabOrder = 0
+      TopIndex = -1
     end
     object ProjectFilter: TListFilterEdit
       AnchorSideLeft.Control = ProjectsListBox
@@ -61,9 +64,9 @@ object ManageExamplesForm: TManageExamplesForm
       AnchorSideTop.Control = ProjectFilter
       AnchorSideTop.Side = asrCenter
       Left = 270
-      Height = 19
-      Top = 3
-      Width = 93
+      Height = 26
+      Top = -1
+      Width = 116
       BorderSpacing.Left = 73
       Caption = 'Relative paths'
       OnClick = RelativeCheckBoxClick
@@ -100,7 +103,7 @@ object ManageExamplesForm: TManageExamplesForm
     Anchors = [akTop, akRight, akBottom]
     BorderSpacing.Left = 3
     Caption = 'Action'
-    ClientHeight = 333
+    ClientHeight = 334
     ClientWidth = 340
     TabOrder = 2
     object Label1: TLabel
@@ -108,10 +111,10 @@ object ManageExamplesForm: TManageExamplesForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BuildAllSelectedButton
       AnchorSideRight.Side = asrBottom
-      Left = 216
+      Left = 195
       Height = 16
       Top = 55
-      Width = 110
+      Width = 131
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 7
       Caption = '(under construction)'
@@ -194,7 +197,7 @@ object ManageExamplesForm: TManageExamplesForm
       AnchorSideBottom.Control = ActionGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 2
-      Height = 201
+      Height = 202
       Top = 130
       Width = 336
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -212,13 +215,13 @@ object ManageExamplesForm: TManageExamplesForm
     AnchorSideRight.Side = asrBottom
     Left = 237
     Height = 23
-    Top = 62
+    Top = 65
     Width = 520
     ShowHidden = False
     ButtonWidth = 23
     NumGlyphs = 0
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 3
+    BorderSpacing.Top = 10
     MaxLength = 0
     TabOrder = 3
     OnChange = RootDirectoryEditChange
@@ -251,12 +254,12 @@ object ManageExamplesForm: TManageExamplesForm
     AnchorSideRight.Side = asrBottom
     Left = 237
     Height = 23
-    Top = 36
+    Top = 32
     Width = 520
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 5
-    BorderSpacing.Top = 3
-    ItemHeight = 15
+    BorderSpacing.Top = 1
+    ItemHeight = 0
     OnChange = DirectoryComboBoxChange
     TabOrder = 5
   end
@@ -264,10 +267,9 @@ object ManageExamplesForm: TManageExamplesForm
     AnchorSideLeft.Control = DirectoryComboBox
     AnchorSideTop.Side = asrBottom
     Left = 237
-    Height = 19
-    Top = 14
-    Width = 111
-    Anchors = [akLeft]
+    Height = 26
+    Top = 5
+    Width = 136
     BorderSpacing.Top = 3
     Caption = 'Include Examples'
     Checked = True
@@ -280,10 +282,10 @@ object ManageExamplesForm: TManageExamplesForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ExamplesCheckBox
     AnchorSideTop.Side = asrCenter
-    Left = 381
-    Height = 19
-    Top = 14
-    Width = 112
+    Left = 406
+    Height = 26
+    Top = 5
+    Width = 139
     BorderSpacing.Left = 33
     Caption = 'Include Testcases'
     OnChange = ExamplesCheckBoxChange
