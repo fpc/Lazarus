@@ -370,6 +370,7 @@ begin
   if Fits('Inspect',lisInspectDialog) then exit;
   if Fits('SearchResults',lisMenuViewSearchResults) then exit;
   if Fits('AnchorEditor',lisMenuViewAnchorEditor) then exit;
+  if Fits('TabOrderEditor',lisMenuViewTabOrder) then exit;
   if Fits('CodeBrowser',lisCodeBrowser) then exit;
   if Fits('IssueBrowser',lisMenuViewRestrictionBrowser) then exit;
   if Fits('JumpHistory',lisJHJumpHistory) then exit;
