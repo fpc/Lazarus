@@ -36,7 +36,6 @@ begin
   // Copy the originating string taking into account the specified length
   SetLength(widestr, len);
   System.Move(source^, widestr[1], len);
-  //PWideChar(@widestr)[len] := #0; // This corrupts the stack
 
   // Now convert it, using UTF-8 -> UTF-16
   dest := UTF16ToUTF8(widestr);
@@ -48,10 +47,8 @@ var
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('Ansi2WideMove START');{$endif}
   // Copy the originating string taking into account the specified length
-  SetLength(ansistr, len+1);
-  System.Move(source^, ansistr[1], len);
-  ansistr[len+1] := #0;
   SetLength(ansistr, len);
+  System.Move(source^, ansistr[1], len);
 
   // Now convert it, using UTF-16 -> UTF-8
   dest := UTF8ToUTF16(ansistr);
@@ -288,7 +285,6 @@ begin
   // Copy the originating string taking into account the specified length
   SetLength(widestr, len);
   System.Move(source^, widestr[1], len*2);
-  //PWideChar(@widestr)[len] := #0; // This corrupts the stack, even with SetLength(widestr, len+1)
 
   // Now convert it, using UTF-8 -> UTF-16
   dest := UTF16ToUTF8(widestr);
@@ -300,10 +296,8 @@ var
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('Ansi2UnicodeMove START');{$endif}
   // Copy the originating string taking into account the specified length
-  SetLength(ansistr, len+1);
-  System.Move(source^, ansistr[1], len);
-  ansistr[len+1] := #0;
   SetLength(ansistr, len);
+  System.Move(source^, ansistr[1], len);
 
   // Now convert it, using UTF-16 -> UTF-8
   dest := UTF8ToUTF16(ansistr);
