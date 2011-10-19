@@ -2312,12 +2312,11 @@ end;
 procedure TMainIDE.SetupIDEWindowsLayout;
 begin
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwMessagesViewName],
-    nil,@CreateIDEWindow,
-    '250','75%','+70%','+100',NonModalIDEWindowNames[nmiwSourceNoteBookName],alBottom,
-    false,@OnGetLayout);
+    nil,@CreateIDEWindow,'250','75%','+70%','+100',
+    NonModalIDEWindowNames[nmiwSourceNoteBookName],alBottom,false,@OnGetLayout);
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeExplorerName],
-    nil,@CreateIDEWindow,
-    '72%','120','+170','-200',NonModalIDEWindowNames[nmiwSourceNoteBookName],alRight);
+    nil,@CreateIDEWindow,'72%','120','+170','-200',
+    NonModalIDEWindowNames[nmiwSourceNoteBookName],alRight);
 
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwUnitDependenciesName],
     nil,@CreateIDEWindow,'200','200','','');
