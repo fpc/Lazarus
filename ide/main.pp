@@ -785,8 +785,7 @@ type
     function DoCompleteLoadingProjectInfo: TModalResult;
 
     // methods for publish project
-    procedure OnCopyFile(const Filename: string; var Copy: boolean;
-        Data: TObject);
+    procedure OnCopyFile(const Filename: string; var Copy: boolean; Data: TObject);
     procedure OnCopyError(const ErrorData: TCopyErrorData;
         var Handled: boolean; Data: TObject);
   public
@@ -4765,8 +4764,7 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TMainIDE.SaveDesktopSettings(
-  TheEnvironmentOptions: TEnvironmentOptions);
+procedure TMainIDE.SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
 begin
   IDEWindowCreators.SimpleLayoutStorage.StoreWindowPositions;
   // do not auto show the search results view
@@ -4778,8 +4776,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.LoadDesktopSettings(
-  TheEnvironmentOptions: TEnvironmentOptions);
+procedure TMainIDE.LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
 begin
   with TheEnvironmentOptions do begin
     ObjectInspectorOptions.AssignTo(ObjectInspector1);
@@ -8375,8 +8372,7 @@ begin
   Result:=mrOk;
 end;
 
-procedure TMainIDE.OnCopyFile(const Filename: string; var Copy: boolean;
-  Data: TObject);
+procedure TMainIDE.OnCopyFile(const Filename: string; var Copy: boolean; Data: TObject);
 begin
   if Data=nil then exit;
   if Data is TPublishModuleOptions then begin

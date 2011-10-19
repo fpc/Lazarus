@@ -262,7 +262,6 @@ begin
           AnEnvironmentOptions.Filename := AFilename;
           DoSaveSettings(AnEnvironmentOptions);
           AnEnvironmentOptions.Save(true);
-          ShowMessage(lisSavedSuccessfully);
         finally
           AnEnvironmentOptions.Free;
         end;
@@ -300,7 +299,6 @@ begin
           AnEnvironmentOptions.Filename := OpenDialog.Filename;
           AnEnvironmentOptions.Load(true);
           DoLoadSettings(AnEnvironmentOptions);
-          ShowMessage(lisLoadedSuccessfully);
         finally
           AnEnvironmentOptions.Free;
         end;
