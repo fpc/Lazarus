@@ -429,6 +429,68 @@ type
 
   {TCDTabControl}
 
+  { TCDCustomTabControl }
+
+  TCDCustomTabControlDrawer = class;
+  TCDCustomTabControlDrawerWinCE = class;
+
+  TCDCustomTabControl = class(TCDControl)
+  private
+    FTabIndex: Integer;
+    FTabs: TStringList;
+    FDrawerWinCE: TCDCustomTabControlDrawerWinCE;
+    procedure HandleTabsChange(Sender: TObject);
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer); override;
+    //procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
+    //procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+    //procedure MouseEnter; override;
+    //procedure MouseLeave; override;
+    procedure PrepareCurrentDrawer(); override;
+  protected
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Paint; override;
+  public
+    CustomDrawer: TCDCustomTabControlDrawer; // Fill the field to use the dsCustom draw mode
+    property Tabs: TStringList read FTabs;
+  end;
+
+  { TCDCustomTabControlDrawer }
+
+  TCDCustomTabControlDrawer = class(TCDControlDrawer)
+  public
+    CDTabControl: TCDCustomTabControl;
+    function GetPageIndexFromXY(x, y: integer): integer; virtual; abstract;
+    function GetTabHeight(AIndex: Integer): Integer;  virtual; abstract;
+    function GetTabWidth(ADest: TCanvas; AIndex: Integer): Integer; virtual; abstract;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage); virtual; abstract;
+    procedure DrawToCanvas(ADest: TCanvas); virtual; abstract;
+    procedure DrawTabSheet(ADest: TCanvas); virtual; abstract;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer); virtual; abstract;
+  end;
+
+  { TCDCustomTabControlDrawerWinCE }
+
+  TCDCustomTabControlDrawerWinCE = class(TCDCustomTabControlDrawer)
+  private
+    StartIndex: integer;       //FEndIndex
+    LeftmostTabVisibleIndex: Integer;
+    procedure DrawTabs(ADest: TCanvas);
+    procedure DrawTab(ADest: TCanvas; AIndex: Integer; ACurStartLeftPos: Integer);
+  public
+    function GetPageIndexFromXY(x, y: integer): integer; override;
+    function GetTabHeight(AIndex: Integer): Integer; override;
+    function GetTabWidth(ADest: TCanvas; AIndex: Integer): Integer; override;
+    function GetClientRect(AControl: TCDControl): TRect; override;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage); override;
+    procedure DrawToCanvas(ADest: TCanvas); override;
+    procedure DrawTabSheet(ADest: TCanvas); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer); override;
+  end;
+
   TCDTabSheet = class;
 
   TTabItem = class(TCollectionItem)
@@ -717,6 +779,310 @@ begin
       Result := True;
       break;
     end;
+  end;
+end;
+
+{ TCDCustomTabControlDrawerWinCE }
+
+procedure TCDCustomTabControlDrawerWinCE.DrawTabs(ADest: TCanvas);
+var
+  CurVisibleIndex: Integer = 0;
+  IsPainting: Boolean = False;
+  CurPage: TCDTabSheet;
+  CurStartLeftPos: Integer = 0;
+  i: Integer;
+begin
+  for i := 0 to CDTabControl.Tabs.Count - 1 do
+  begin
+{    CurPage := CDPageControl.GetPage(i);
+    if CurPage.Visible then
+    begin}
+      if CurVisibleIndex = LeftmostTabVisibleIndex then
+        IsPainting := True;
+
+      if IsPainting then
+      begin
+        DrawTab(ADest, i, CurStartLeftPos);
+        CurStartLeftPos := CurStartLeftPos + GetTabWidth(ADest, i);
+      end;
+
+      Inc(CurVisibleIndex);
+//    end;
+  end;
+end;
+
+procedure TCDCustomTabControlDrawerWinCE.DrawTab(ADest: TCanvas;
+  AIndex: Integer; ACurStartLeftPos: Integer);
+var
+  IsSelected: Boolean;
+  lTabWidth, lTabHeight, lTabTopPos: Integer;
+  Points: array of TPoint;
+  lCaption: String;
+begin
+  IsSelected := CDTabControl.FTabIndex = AIndex;
+
+  if IsSelected then
+  begin
+    lTabTopPos := 0;
+    lTabHeight := GetTabHeight(AIndex);
+  end
+  else
+  begin
+    lTabTopPos := 5;
+    lTabHeight := GetTabHeight(AIndex)-5;
+  end;
+
+  lTabWidth := GetTabWidth(ADest, AIndex);
+
+  // Fill the area inside the outer border
+  ADest.Pen.Style := psClear;
+  ADest.Brush.Style := bsSolid;
+  ADest.Brush.Color := clWhite;
+  SetLength(Points, 5);
+  Points[0] := Point(ACurStartLeftPos, lTabTopPos);
+  Points[1] := Point(ACurStartLeftPos+lTabWidth-5, lTabTopPos);
+  Points[2] := Point(ACurStartLeftPos+lTabWidth, lTabTopPos+5);
+  Points[3] := Point(ACurStartLeftPos+lTabWidth, lTabTopPos+lTabHeight);
+  Points[4] := Point(ACurStartLeftPos, lTabTopPos+lTabHeight);
+  ADest.Polygon(Points);
+
+  // Draw the outer border only in the top and right sides,
+  // and bottom if unselected
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Color := ColorToRGB($009C9B91);
+  ADest.MoveTo(ACurStartLeftPos+1, lTabTopPos);
+  ADest.LineTo(ACurStartLeftPos+lTabWidth-5, lTabTopPos);
+  ADest.LineTo(ACurStartLeftPos+lTabWidth, lTabTopPos+5);
+  ADest.LineTo(ACurStartLeftPos+lTabWidth, lTabTopPos+lTabHeight);
+
+  // If it is selected, add a selection frame
+  if IsSelected then
+  begin
+    ADest.Pen.Color := ColorToRGB($00D6C731);
+    ADest.Pen.Style := psSolid;
+    ADest.Brush.Style := bsClear;
+    ADest.Rectangle(
+      ACurStartLeftPos+3, lTabTopPos+3,
+      ACurStartLeftPos+lTabWidth-5, lTabTopPos+lTabHeight-5
+      );
+  end;
+
+  // Now the text
+  lCaption := CDTabControl.Tabs.Strings[CDTabControl.FTabIndex];
+  ADest.TextOut(ACurStartLeftPos+5, lTabTopPos+5, lCaption);
+end;
+
+function TCDCustomTabControlDrawerWinCE.GetPageIndexFromXY(x, y: integer
+  ): integer;
+begin
+  Result := 1;
+end;
+
+function TCDCustomTabControlDrawerWinCE.GetTabHeight(AIndex: Integer): Integer;
+begin
+  if CDTabControl.Font.Size = 0 then
+    Result := 32
+  else
+    Result := CDTabControl.Font.Size + 22;
+end;
+
+function TCDCustomTabControlDrawerWinCE.GetTabWidth(ADest: TCanvas;
+  AIndex: Integer): Integer;
+const
+  TCDTabControl_WinCE_TabCaptionExtraWidth = 20;
+var
+  lCaption: string;
+begin
+  lCaption := CDTabControl.Tabs.Strings[CDTabControl.FTabIndex];
+  if ADest <> nil then
+  begin
+    Result := ADest.TextWidth(lCaption) + TCDTabControl_WinCE_TabCaptionExtraWidth;
+    //lTabInfo := TTabSheet(CDTabControl.Tabs.Objects[AIndex]);
+    //lTabInfo.StoredWidth := Result;
+  end
+//  else
+//    Result := CurPage.StoredWidth;
+end;
+
+function TCDCustomTabControlDrawerWinCE.GetClientRect(AControl: TCDControl
+  ): TRect;
+var
+  lCaptionHeight: Integer;
+begin
+  lCaptionHeight := GetTabHeight(CDTabControl.FTabIndex) - 4;
+
+  Result := Rect(5, lCaptionHeight + 1, CDTabControl.Width - 10,
+    CDTabControl.Height - lCaptionHeight - 5);
+end;
+
+procedure TCDCustomTabControlDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
+  FPImg: TLazIntfImage);
+begin
+
+end;
+
+procedure TCDCustomTabControlDrawerWinCE.DrawToCanvas(ADest: TCanvas);
+var
+  CaptionHeight: Integer;
+  lColor: TColor;
+begin
+  CaptionHeight := GetTabHeight(CDTabControl.FTabIndex);
+
+  if CDTabControl.Color = clDefault then lColor := clSilver
+  else lColor := ColorToRGB(CDTabControl.Color);
+
+  // Background
+  ADest.Brush.Color := lColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psClear;
+  ADest.Rectangle(0, 0, CDTabControl.Width, CDTabControl.Height);
+
+  // Frame detail
+  ADest.Pixels[CDTabControl.Width - 1, CaptionHeight] := lColor;
+
+  // frame
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Color := ColorToRGB($009C9B91);
+
+  if CDTabControl.Tabs.Count = 0 then
+    ADest.Rectangle(0, 0, CDTabControl.Width - 2, CDTabControl.Height - 2)
+  else
+    ADest.Rectangle(0, CaptionHeight, CDTabControl.Width -  2, CDTabControl.Height - 2);
+
+  ADest.Pen.Color := ColorToRGB($00BFCED0);
+  ADest.Line(CDTabControl.Width - 1, CaptionHeight + 1,
+    CDTabControl.Width - 1, CDTabControl.Height - 1);
+  ADest.Line(CDTabControl.Width - 1, CDTabControl.Height - 1, 1,
+    CDTabControl.Height - 1);
+
+  // Tabs
+  ADest.Font.Name := CDTabControl.Font.Name;
+  ADest.Font.Size := CDTabControl.Font.Size;
+//  DrawCaptionBar(ADest, Rect(0, 0, CDPageControl.Width -
+//    2, CaptionHeight + 1), CDPageControl.Color, CDPageControl);
+  DrawTabs(ADest);
+end;
+
+procedure TCDCustomTabControlDrawerWinCE.DrawTabSheet(ADest: TCanvas);
+begin
+  ADest.Brush.Color := CDTabControl.Color;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psClear;
+  ADest.Rectangle(0, 0, CDTabControl.Width, CDTabControl.Height);
+end;
+
+procedure TCDCustomTabControlDrawerWinCE.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: integer);
+var
+  i: Integer;
+  CurPage: TCDTabSheet;
+  CurVisibleIndex: Integer = 0;
+  CurStartLeftPos: Integer = 0;
+  VisiblePagesStarted: Boolean = False;
+begin
+  for i := 0 to CDTabControl.Tabs.Count - 1 do
+  begin
+//    CurPage := CDPageControl.GetPage(i);
+//    if CurPage.Visible then
+//    begin
+      if CurVisibleIndex = LeftmostTabVisibleIndex then
+        VisiblePagesStarted := True;
+
+      if VisiblePagesStarted then
+      begin
+        if (X > CurStartLeftPos) and
+          (X < CurStartLeftPos + GetTabWidth(nil, i)) and
+          (Y < GetTabHeight(i)) then
+        begin
+          //CDPageControl.ActivePage := CurPage;
+          Exit;
+        end;
+        CurStartLeftPos := CurStartLeftPos + GetTabWidth(nil, i);
+      end;
+
+      Inc(CurVisibleIndex);
+//    end;
+  end;
+end;
+
+{ TCDCustomTabControl }
+
+procedure TCDCustomTabControl.HandleTabsChange(Sender: TObject);
+begin
+  Invalidate;
+end;
+
+procedure TCDCustomTabControl.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: integer);
+begin
+  TCDPageControlDrawer(FCurrentDrawer).MouseDown(Button, Shift, X, Y);
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TCDCustomTabControl.PrepareCurrentDrawer;
+begin
+  case FDrawStyle of
+    dsWince: FCurrentDrawer := FDrawerWinCE;
+    dsCustom: FCurrentDrawer := CustomDrawer;
+  end;
+end;
+
+constructor TCDCustomTabControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  Width := 232;
+  Height := 184;
+  TabStop := True;
+
+  FDrawerWinCE := TCDCustomTabControlDrawerWinCE.Create;
+  TCDCustomTabControlDrawerWinCE(FDrawerWinCE).CDTabControl := Self;
+  CustomDrawer := FDrawerWinCE; // Dummy to avoid designer crashes
+  FCurrentDrawer := FDrawerWinCE;
+  FDrawStyle := dsWinCE;
+
+  ParentColor := True;
+  ParentFont := True;
+  ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csDesignInteractive];
+
+  FTabs := TStringList.Create;
+  FTabs.OnChange :=@HandleTabsChange;
+end;
+
+destructor TCDCustomTabControl.Destroy;
+begin
+  FTabs.Free;
+
+  inherited Destroy;
+end;
+
+procedure TCDCustomTabControl.Paint;
+var
+  AImage: TLazIntfImage = nil;
+  ABmp: TBitmap = nil;
+  lCanvas: TFPImageCanvas = nil;
+begin
+  inherited Paint;
+
+  ABmp := TBitmap.Create;
+  try
+    ABmp.Width := Width;
+    ABmp.Height := Height;
+    AImage := ABmp.CreateIntfImage;
+    lCanvas := TFPImageCanvas.Create(AImage);
+    TCDCustomTabControlDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, AImage);
+    ABmp.LoadFromIntfImage(AImage);
+    ABmp.Canvas.Font.Assign(Font);
+    TCDCustomTabControlDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas);
+    Canvas.Draw(0, 0, ABmp);
+  finally
+    if lCanvas <> nil then
+      lCanvas.Free;
+    if AImage <> nil then
+      AImage.Free;
+    ABmp.Free;
   end;
 end;
 
