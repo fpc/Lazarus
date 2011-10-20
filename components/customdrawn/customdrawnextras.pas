@@ -431,15 +431,21 @@ type
 
   { TCDCustomTabControl }
 
+  TCDCustomTabControl = class;
   TCDCustomTabControlDrawer = class;
   TCDCustomTabControlDrawerWinCE = class;
+
+  TCDCustomTabSheet = class(TCustomControl)
+  private
+    FIndex: integer;
+    CDTabControl: TCDCustomTabControl;
+  end;
 
   TCDCustomTabControl = class(TCDControl)
   private
     FTabIndex: Integer;
     FTabs: TStringList;
     FDrawerWinCE: TCDCustomTabControlDrawerWinCE;
-    procedure HandleTabsChange(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: integer); override;
     //procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
@@ -447,6 +453,7 @@ type
     //procedure MouseEnter; override;
     //procedure MouseLeave; override;
     procedure PrepareCurrentDrawer(); override;
+    procedure SetTabIndex(AValue: Integer); virtual;
   protected
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -477,6 +484,7 @@ type
   private
     StartIndex: integer;       //FEndIndex
     LeftmostTabVisibleIndex: Integer;
+    procedure DrawCaptionBar(ADest: TCanvas; lRect: TRect; CL: TColor);
     procedure DrawTabs(ADest: TCanvas);
     procedure DrawTab(ADest: TCanvas; AIndex: Integer; ACurStartLeftPos: Integer);
   public
@@ -536,78 +544,16 @@ type
     property Items[Index: integer]: TTabItem read GetItem write SetItem; default;
   end;
 
-  TCDTabControlDrawer = class;
-  TCDTabControlDrawerGraph = class;
-
   TTabSelectedEvent = procedure(Sender: TObject; ATab: TTabItem;
     ASelected: boolean) of object;
 
-  TCDTabControl = class(TCustomControl)
-  private
-    FCurrentDrawer: TCDTabControlDrawerGraph;
-    FTabIndex: integer;
-    FTabs: TTabItemList;
-    FOnTabSelected: TTabSelectedEvent;
-    FMDownL, FMDownR: boolean;
-    FMEnterL, FMEnterR: boolean;
-    RButtHeight: integer;
-    FStartIndex: integer;
-    //FEndIndex: integer;
-    MaskHeadBmp: TBitmap;
-    procedure SetMouseUP;
-    procedure SetTabIndex(Value: integer);
-    procedure SetStartIndex(Value: integer);
-    //procedure SetEndIndex(Value: integer);
-  protected
-    procedure Changed; virtual;
-    procedure DoEnter; override;
-    procedure DoExit; override;
-    procedure KeyDown(var Key: word; Shift: TShiftState); override;
-    procedure KeyUp(var Key: word; Shift: TShiftState); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
-    procedure MouseEnter; override;
-    procedure MouseLeave; override;
-    procedure TabSelected(ATab: TTabItem; ASelected: boolean); dynamic;
-    procedure GetThisTab(ATab: TTabItem);
-    procedure ClearSelection;
-    procedure DrawCaptionBar(ADest: TCanvas; lRect: TRect; CL: TColor);
-    procedure Loaded; override;
-    procedure DoOnResize; override;
-    procedure DoLeftButtonDown;
-    procedure DoRightButtonDown;
-    function GetPageIndexFromXY(x, y: integer): integer;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure EraseBackground(DC: HDC); override;
-    procedure Paint; override;
+  TCDTabControl = class(TCDCustomTabControl)
   published
-    property Caption;
     property Color;
     property Font;
-    property StartIndex: integer read FStartIndex write SetStartIndex;
-    //property EndIndex: integer read FEndIndex write SetEndIndex;
-    property TabIndex: integer read fTabIndex write SetTabIndex;
-    property Tabs: TTabItemList read FTabs write FTabs;
-    property OnTabSelected: TTabSelectedEvent read fOnTabSelected write fOnTabSelected;
-  end;
-
-  TCDTabControlDrawer = class
-  public
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage;
-      CDTabControl: TCDTabControl); virtual; abstract;
-    procedure DrawToCanvas(ADest: TCanvas; CDTabControl: TCDTabControl);
-      virtual; abstract;
-  end;
-
-  TCDTabControlDrawerGraph = class(TCDTabControlDrawer)
-  public
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage;
-      CDTabControl: TCDTabControl); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDTabControl: TCDTabControl); override;
+    property TabIndex: integer read FTabIndex write SetTabIndex;
+    property Tabs: TStringList read FTabs;
+//    property OnTabSelected: TTabSelectedEvent read fOnTabSelected write fOnTabSelected;
   end;
 
   { TCDTabSheet }
@@ -723,7 +669,6 @@ type
   private
     StartIndex: integer;       //FEndIndex
     LeftmostTabVisibleIndex: Integer;
-    procedure DrawCaptionBar(ADest: TCanvas; lRect: TRect; CL: TColor);
     procedure DrawTabs(ADest: TCanvas);
     procedure DrawTab(ADest: TCanvas; AIndex: Integer; ACurStartLeftPos: Integer; ACurPage: TCDTabSheet);
   public
@@ -784,30 +729,137 @@ end;
 
 { TCDCustomTabControlDrawerWinCE }
 
+procedure TCDCustomTabControlDrawerWinCE.DrawCaptionBar(ADest: TCanvas;
+  lRect: TRect; CL: TColor);
+begin
+  {  CaptionHeight := GetTabHeight(CDPageControl.PageIndex, CDPageControl) - 4;
+    RButtHeight := GetTabHeight(CDPageControl.PageIndex, CDPageControl);
+    aRect := lRect;
+    ADest.Pen.Style := psSolid;
+    ADest.Brush.Style := bsSolid;
+    ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(CL));
+    //TColorToFPColor(ColorToRGB($009C9B91));
+    ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CL));
+    aRect.Left := lRect.Left;
+    aRect.Top := lRect.Top;
+    aRect.Bottom := lRect.Bottom;
+    aRect.Right := lRect.Right;
+    ADest.RecTangle(lRect);
+    if CDPageControl.FPages.Count = 0 then
+    begin
+      ADest.Brush.Color := clWhite;
+      ADest.Pen.Color := $009C9B91;
+      ADest.RecTangle(Rect(aRect.Left, aRect.Top, aRect.Right + 1, aRect.Bottom + 2));
+      ADest.Pen.Color := clWhite;
+      ADest.Line(aRect.Left + 1, aRect.Bottom + 1, aRect.Right, aRect.Bottom + 1);
+      Exit;
+    end;
+    aRect.Left := lRect.Left + 2;
+    aRect.Top := lRect.Top + 3;
+    //ADest.TextStyle.Opaque :=false;
+    //SetBkMode(ADest.Handle, TRANSPARENT);
+    if ADest.Brush.Style = bsSolid then
+      SetBkMode(ADest.Handle, OPAQUE)
+    else
+      SetBkMode(ADest.Handle, TRANSPARENT);
+
+    for i := StartIndex to CDPageControl.FPages.Count - 1 do
+    begin
+      aText := CDPageControl.FPages[i].TabPage.Caption;
+      rWidth := (CaptionHeight - ADest.TextHeight(aText)) + ADest.TextWidth(aText);
+      CDPageControl.FPages[i].Width := rWidth;
+      if aRect.Left + rWidth > lRect.Right - 6 then
+        Break
+      else
+        aRect.Right := aRect.Left + rWidth;
+      if CDPageControl.PageIndex = i then
+      begin
+        cRect := aRect;
+        if i = StartIndex then
+          cRect.Left := aRect.Left - 2
+        else
+          cRect.Left := aRect.Left - 4;
+        cRect.Right := aRect.Right + 4;
+        cRect.Top := cRect.Top - 2;
+        bText := CDPageControl.FPages[i].TabPage.Caption;
+      end
+      else
+        DrawTabHead(aDest, aRect, CDPageControl.Color, False);
+      MaskColor := MaskBaseColor + i - StartIndex;
+      //DrawTabHeadMask(MaskHeadBmp.Canvas, aRect, MaskColor, False);
+      ADest.TextOut(aRect.Left + (aRect.Right - aRect.Left - ADest.TextWidth(aText)) div 2,
+        aRect.Top + (aRect.Bottom - aRect.Top - ADest.TextHeight(aText)) div 2, aText);
+      aRect.Left := aRect.Right + 3;
+    end;
+    ADest.Line(lRect.Left, lRect.Bottom - 1, cRect.Left, lRect.Bottom - 1);
+    ADest.Line(cRect.Right, lRect.Bottom - 1, lRect.Right, lRect.Bottom - 1);
+    DrawTabHead(aDest, cRect, clWhite, True);
+    ADest.TextOut(cRect.Left + (cRect.Right - cRect.Left - ADest.TextWidth(bText)) div 2,
+      cRect.Top + (cRect.Bottom - cRect.Top - ADest.TextHeight(bText)) div 2, bText);
+    if not CheckTabButton(lRect.Right - lRect.Left, CDPageControl.FPages) then
+      Exit;
+    aRect.Left := lRect.Right - RButtHeight * 2 - 3;
+    aRect.Top := 1;
+    aRect.Bottom := RButtHeight + 1;
+    aRect.Right := lRect.Right - RButtHeight;
+    //if FMDownL then
+    //  GradFill(ADest, aRect, $00F1A079, $00EFAF9B)
+    //else
+      GradFill(ADest, aRect, $00FDD9CB, $00F2C9B8);
+    aRect.Left := lRect.Right - RButtHeight - 1;
+    aRect.Top := 1;
+    aRect.Bottom := RButtHeight + 1;
+    aRect.Right := lRect.Right;
+
+    GradFill(ADest, aRect, $00FDD9CB, $00F2C9B8);
+
+    ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($0085614D));
+    bRect.Top := 1;
+    bRect.Left := lRect.Right - RButtHeight * 2 - 3;
+    bRect.Right := lRect.Right;
+    bRect.Bottom := RButtHeight + 1;
+    DrawArrow(ADest, bRect, True);
+    DrawArrow(ADest, bRect, False);
+    ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(clWhite));
+    ADest.Line(lRect.Right - RButtHeight * 2 - 3, 1, lRect.Right, 1);
+    ADest.Line(lRect.Right, 1, lRect.Right, RButtHeight + 1);
+    ADest.Line(lRect.Right, RButtHeight + 1, lRect.Right - RButtHeight *
+      2 - 3, RButtHeight + 1);
+    ADest.Line(lRect.Right - RButtHeight * 2 - 3, RButtHeight + 1,
+      lRect.Right - RButtHeight * 2 - 3, 1);
+    ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($00E5BAA7));
+    ADest.Brush.Style := bsClear;
+    ADest.Rectangle(lRect.Right - RButtHeight * 2 - 2, 2, lRect.Right -
+      1, RButtHeight + 1);
+    CornerColor := TColorToFPColor(ColorToRGB($00F6E3D9));
+    ADest.Colors[lRect.Right - RButtHeight * 2 - 2, 2] := CornerColor;
+    ADest.Colors[lRect.Right - RButtHeight * 2 - 2, RButtHeight] := CornerColor;
+    ADest.Colors[lRect.Right - 1, 2] := CornerColor;
+    ADest.Colors[lRect.Right - 1, RButtHeight] := CornerColor;
+    ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(clWhite));
+    ADest.Line(lRect.Right - 51, 1, lRect.Right, 1);
+    ADest.Line(lRect.Right, 1, lRect.Right, 25);
+    ADest.Line(lRect.Right, 25, lRect.Right - 51, 25);
+    ADest.Line(lRect.Right - 51, 25, lRect.Right - 51, 1);
+    ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($00FFFFFF));}
+end;
+
 procedure TCDCustomTabControlDrawerWinCE.DrawTabs(ADest: TCanvas);
 var
-  CurVisibleIndex: Integer = 0;
   IsPainting: Boolean = False;
-  CurPage: TCDTabSheet;
   CurStartLeftPos: Integer = 0;
   i: Integer;
 begin
   for i := 0 to CDTabControl.Tabs.Count - 1 do
   begin
-{    CurPage := CDPageControl.GetPage(i);
-    if CurPage.Visible then
-    begin}
-      if CurVisibleIndex = LeftmostTabVisibleIndex then
-        IsPainting := True;
+    if i = LeftmostTabVisibleIndex then
+      IsPainting := True;
 
-      if IsPainting then
-      begin
-        DrawTab(ADest, i, CurStartLeftPos);
-        CurStartLeftPos := CurStartLeftPos + GetTabWidth(ADest, i);
-      end;
-
-      Inc(CurVisibleIndex);
-//    end;
+    if IsPainting then
+    begin
+      DrawTab(ADest, i, CurStartLeftPos);
+      CurStartLeftPos := CurStartLeftPos + GetTabWidth(ADest, i);
+    end;
   end;
 end;
 
@@ -869,7 +921,7 @@ begin
   end;
 
   // Now the text
-  lCaption := CDTabControl.Tabs.Strings[CDTabControl.FTabIndex];
+  lCaption := CDTabControl.Tabs.Strings[AIndex];
   ADest.TextOut(ACurStartLeftPos+5, lTabTopPos+5, lCaption);
 end;
 
@@ -894,15 +946,9 @@ const
 var
   lCaption: string;
 begin
-  lCaption := CDTabControl.Tabs.Strings[CDTabControl.FTabIndex];
-  if ADest <> nil then
-  begin
-    Result := ADest.TextWidth(lCaption) + TCDTabControl_WinCE_TabCaptionExtraWidth;
-    //lTabInfo := TTabSheet(CDTabControl.Tabs.Objects[AIndex]);
-    //lTabInfo.StoredWidth := Result;
-  end
-//  else
-//    Result := CurPage.StoredWidth;
+  lCaption := CDTabControl.Tabs.Strings[AIndex];
+
+  Result := ADest.TextWidth(lCaption) + TCDTabControl_WinCE_TabCaptionExtraWidth;
 end;
 
 function TCDCustomTabControlDrawerWinCE.GetClientRect(AControl: TCDControl
@@ -978,41 +1024,31 @@ procedure TCDCustomTabControlDrawerWinCE.MouseDown(Button: TMouseButton;
 var
   i: Integer;
   CurPage: TCDTabSheet;
-  CurVisibleIndex: Integer = 0;
   CurStartLeftPos: Integer = 0;
   VisiblePagesStarted: Boolean = False;
+  lTabWidth: Integer;
 begin
   for i := 0 to CDTabControl.Tabs.Count - 1 do
   begin
-//    CurPage := CDPageControl.GetPage(i);
-//    if CurPage.Visible then
-//    begin
-      if CurVisibleIndex = LeftmostTabVisibleIndex then
-        VisiblePagesStarted := True;
+    if i = LeftmostTabVisibleIndex then
+      VisiblePagesStarted := True;
 
-      if VisiblePagesStarted then
+    if VisiblePagesStarted then
+    begin
+      lTabWidth := GetTabWidth(CDTabControl.Canvas, i);
+      if (X > CurStartLeftPos) and
+        (X < CurStartLeftPos + lTabWidth) and
+        (Y < GetTabHeight(i)) then
       begin
-        if (X > CurStartLeftPos) and
-          (X < CurStartLeftPos + GetTabWidth(nil, i)) and
-          (Y < GetTabHeight(i)) then
-        begin
-          //CDPageControl.ActivePage := CurPage;
-          Exit;
-        end;
-        CurStartLeftPos := CurStartLeftPos + GetTabWidth(nil, i);
+        CDTabControl.SetTabIndex(i);
+        Exit;
       end;
-
-      Inc(CurVisibleIndex);
-//    end;
+      CurStartLeftPos := CurStartLeftPos + lTabWidth;
+    end;
   end;
 end;
 
 { TCDCustomTabControl }
-
-procedure TCDCustomTabControl.HandleTabsChange(Sender: TObject);
-begin
-  Invalidate;
-end;
 
 procedure TCDCustomTabControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: integer);
@@ -1027,6 +1063,13 @@ begin
     dsWince: FCurrentDrawer := FDrawerWinCE;
     dsCustom: FCurrentDrawer := CustomDrawer;
   end;
+end;
+
+procedure TCDCustomTabControl.SetTabIndex(AValue: Integer);
+begin
+  if FTabIndex = AValue then Exit;
+  FTabIndex := AValue;
+  Invalidate;
 end;
 
 constructor TCDCustomTabControl.Create(AOwner: TComponent);
@@ -1045,10 +1088,10 @@ begin
 
   ParentColor := True;
   ParentFont := True;
-  ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csDesignInteractive];
+  ControlStyle := ControlStyle + [csDesignInteractive];
 
+  // FTabs should hold only visible tabs
   FTabs := TStringList.Create;
-  FTabs.OnChange :=@HandleTabsChange;
 end;
 
 destructor TCDCustomTabControl.Destroy;
@@ -1064,8 +1107,6 @@ var
   ABmp: TBitmap = nil;
   lCanvas: TFPImageCanvas = nil;
 begin
-  inherited Paint;
-
   ABmp := TBitmap.Create;
   try
     ABmp.Width := Width;
@@ -2346,12 +2387,12 @@ end;
 
 procedure TTabItemList.DoSelected(ATab: TTabItem; ASelected: boolean);
 begin
-  (GetOwner as TCDTabControl).TabSelected(ATab, ASelected);
+//  (GetOwner as TCDPageControl).TabSelected(ATab, ASelected);
 end;
 
 procedure TTabItemList.DoChanged(ATab: TTabItem);
 begin
-  (GetOwner as TCDTabControl).Invalidate;
+  (GetOwner as TCDPageControl).Invalidate;
 end;
 
 procedure TTabItemList.SetItem(Index: integer; Value: TTabItem);
@@ -2382,390 +2423,6 @@ function TTabItemList.Add: TTabItem;
 begin
   Result := TTabItem(inherited add);
   Result.Title := 'Title' + IntToStr(Count - 1);
-end;
-
-{TCDTabControl}
-
-constructor TCDTabControl.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  TabStop := False;
-  ParentColor := True;
-  ParentFont := True;
-  ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks,
-    csDesignInteractive, csReplicatable];
-  FCurrentDrawer := TCDTabControlDrawerGraph.Create;
-  FTabs := TTabItemList.Create(TTabItem);
-  Width := 200;
-  Height := 28;
-  FStartIndex := 0;
-  MaskHeadBmp := TBitmap.Create;
-end;
-
-destructor TCDTabControl.Destroy;
-begin
-  MaskHeadBmp.Free;
-  FCurrentDrawer.Free;
-  inherited Destroy;
-end;
-
-procedure TCDTabControl.DrawCaptionBar(ADest: TCanvas; lRect: TRect; CL: TColor);
-var
-  aRect, bRect, cRect: TRect;
-  i: integer;
-  rWidth: integer;
-  aText, bText: string;
-  CornerColor: TFPColor;
-  MaskColor: TColor;
-begin
-  aRect := lRect;
-  ADest.Pen.Style := psSolid;
-  ADest.Brush.Style := bsSolid;
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(CL));
-  //TColorToFPColor(ColorToRGB($009C9B91));
-  ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CL));
-  aRect.Left := lRect.Left;
-  aRect.Top := lRect.Top;
-  aRect.Bottom := lRect.Bottom;
-  aRect.Right := lRect.Right;
-  ADest.RecTangle(lRect);
-
-  {MaskHeadBmp.Width := lRect.Right - lRect.Left;
-  MaskHeadBmp.Height := lRect.Bottom - lRect.Top;
-  MaskHeadBmp.Canvas.Brush.Style := bsSolid;
-  MaskHeadBmp.Canvas.Pen.Style := psSolid;
-  MaskHeadBmp.Canvas.Pen.Color := clWhite;
-  MaskHeadBmp.Canvas.Brush.Color := MaskHeadBmp.Canvas.Pen.Color;
-  MaskHeadBmp.Canvas.Rectangle(lRect);}
-
-  if FTabs.Count = 0 then
-  begin
-    ADest.RecTangle(aRect);
-    Exit;
-  end;
-  aRect.Left := lRect.Left + 2;
-  aRect.Top := lRect.Top + 3;
-  //ADest.TextStyle.Opaque :=false;
-  //SetBkMode(ADest.Handle, TRANSPARENT);
-  if Brush.Style = bsSolid then
-    SetBkMode(ADest.Handle, OPAQUE)
-  else
-    SetBkMode(ADest.Handle, TRANSPARENT);
-  for i := StartIndex to FTabs.Count - 1 do
-  begin
-    aText := FTabs[i].Title;
-    rWidth := (Height - ADest.TextHeight(aText)) + ADest.TextWidth(aText);
-    FTabs[i].Width := rWidth;
-    if aRect.Left + rWidth > lRect.Right - 6 then
-      Break
-    else
-      aRect.Right := aRect.Left + rWidth;
-    if TabIndex = i then
-    begin
-      cRect := aRect;
-      if i = StartIndex then
-        cRect.Left := aRect.Left - 2
-      else
-        cRect.Left := aRect.Left - 4;
-      cRect.Right := aRect.Right + 4;
-      cRect.Top := cRect.Top - 2;
-      bText := FTabs[i].Title;
-    end
-    else
-      DrawTabHead(aDest, aRect, Color, False);
-    MaskColor := MaskBaseColor + i - StartIndex;
-    DrawTabHeadMask(MaskHeadBmp.Canvas, aRect, MaskColor, False);
-    ADest.TextOut(aRect.Left + (aRect.Right - aRect.Left - ADest.TextWidth(aText)) div 2,
-      aRect.Top + (aRect.Bottom - aRect.Top - ADest.TextHeight(aText)) div 2, aText);
-    aRect.Left := aRect.Right + 3;
-  end;
-  //ADest.Draw(0,0,MaskHeadBmp);           Exit;
-  ADest.Line(lRect.Left, lRect.Bottom - 1, cRect.Left, lRect.Bottom - 1);
-  ADest.Line(cRect.Right, lRect.Bottom - 1, lRect.Right, lRect.Bottom - 1);
-  DrawTabHead(aDest, cRect, clWhite, True);
-  ADest.TextOut(cRect.Left + (cRect.Right - cRect.Left - ADest.TextWidth(bText)) div 2,
-    cRect.Top + (cRect.Bottom - cRect.Top - ADest.TextHeight(bText)) div 2, bText);
-  if not CheckTabButton(lRect.Right - lRect.Left, FTabs) then
-    Exit;
-  aRect.Left := lRect.Right - RButtHeight * 2 - 3;
-  aRect.Top := 1;
-  aRect.Bottom := RButtHeight + 1;
-  aRect.Right := lRect.Right - RButtHeight;
-  if FMDownL then
-    GradFill(ADest, aRect, $00F1A079, $00EFAF9B)
-  else
-    GradFill(ADest, aRect, $00FDD9CB, $00F2C9B8);
-  aRect.Left := lRect.Right - RButtHeight - 1;
-  aRect.Top := 1;
-  aRect.Bottom := RButtHeight + 1;
-  aRect.Right := lRect.Right;
-  if FMDownR then
-    GradFill(ADest, aRect, $00F1A079, $00EFAF9B)
-  else
-    GradFill(ADest, aRect, $00FDD9CB, $00F2C9B8);
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($0085614D));
-  bRect.Top := 1;
-  bRect.Left := lRect.Right - RButtHeight * 2 - 3;
-  bRect.Right := lRect.Right;
-  bRect.Bottom := RButtHeight + 1;
-  DrawArrow(ADest, bRect, True);
-  DrawArrow(ADest, bRect, False);
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(clWhite));
-  ADest.Line(lRect.Right - RButtHeight * 2 - 3, 1, lRect.Right, 1);
-  ADest.Line(lRect.Right, 1, lRect.Right, RButtHeight + 1);
-  ADest.Line(lRect.Right, RButtHeight + 1, lRect.Right - RButtHeight *
-    2 - 3, RButtHeight + 1);
-  ADest.Line(lRect.Right - RButtHeight * 2 - 3, RButtHeight + 1,
-    lRect.Right - RButtHeight * 2 - 3, 1);
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($00E5BAA7));
-  ADest.Brush.Style := bsClear;
-  ADest.Rectangle(lRect.Right - RButtHeight * 2 - 2, 2, lRect.Right -
-    1, RButtHeight + 1);
-  CornerColor := TColorToFPColor(ColorToRGB($00F6E3D9));
-  ADest.Colors[lRect.Right - RButtHeight * 2 - 2, 2] := CornerColor;
-  ADest.Colors[lRect.Right - RButtHeight * 2 - 2, RButtHeight] := CornerColor;
-  ADest.Colors[lRect.Right - 1, 2] := CornerColor;
-  ADest.Colors[lRect.Right - 1, RButtHeight] := CornerColor;
-end;
-
-procedure TCDTabControl.GetThisTab(ATab: TTabItem);
-var
-  Start, Stop: integer;
-begin
-{  if Assigned(ATab) then
-  begin
-    Start := 0;
-    Stop := Width - Height * 2;
-    if FShowNewTab then
-      Dec(Stop,  fEdgeWidth + 10);
-    CalcTabPositions(Start, Stop, Canvas, ATab);
-    Invalidate;
-  end;    }
-end;
-
-procedure TCDTabControl.TabSelected(ATab: TTabItem; ASelected: boolean);
-begin
-  if ASelected then
-  begin
-    GetThisTab(ATab);
-    fTabIndex := ATab.Index;
-  end;
-  if Assigned(fOnTabSelected) then
-    fOnTabSelected(Self, ATab, ASelected);
-end;
-
-procedure TCDTabControl.SetStartIndex(Value: integer);
-begin
-  if (Value < -1) or (Value >= FTabs.Count) then
-    Exit;
-  FStartIndex := Value;
-end;
-
-procedure TCDTabControl.SetTabIndex(Value: integer);
-var
-  t: TTabItem;
-begin
-  if (Value < -1) or (Value >= FTabs.Count) then
-    Exit;
-  {if Value <> -1 then
-  begin
-    t := FTabs.Items[Value];
-    t.Selected := True;
-  end
-  else
-    ClearSelection;    }
-  if Value > -1 then
-    FTabIndex := Value;
-end;
-
-procedure TCDTabControl.ClearSelection;
-var
-  I: integer;
-begin
-  for I := 0 to FTabs.Count - 1 do
-    FTabs[I].Selected := False;
-end;
-
-procedure TCDTabControl.Changed;
-begin
-
-end;
-
-procedure TCDTabControl.DoEnter;
-begin
-  inherited DoEnter;
-end;
-
-procedure TCDTabControl.DoExit;
-begin
-  inherited DoExit;
-end;
-
-procedure TCDTabControl.KeyDown(var Key: word; Shift: TShiftState);
-begin
-  inherited KeyDown(Key, Shift);
-end;
-
-procedure TCDTabControl.KeyUp(var Key: word; Shift: TShiftState);
-begin
-  inherited KeyUp(Key, Shift);
-end;
-
-procedure TCDTabControl.SetMouseUP;
-begin
-  FMDownL := False;
-  FMDownR := False;
-end;
-
-procedure TCDTabControl.DoLeftButtonDown;
-begin
-  if StartIndex > 0 then
-    StartIndex := StartIndex - 1;
-  invalidate;
-end;
-
-procedure TCDTabControl.DoRightButtonDown;
-begin
-  if StartIndex < FTabs.Count - 1 then
-    StartIndex := StartIndex + 1;
-  invalidate;
-end;
-
-procedure TCDTabControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: integer);
-begin
-  if (X > Width - RButtHeight * 2 - 2) and (X < Width - RButtHeight) then
-  begin
-    FMDownL := True;
-    DoLeftButtonDown;
-  end
-  else
-  if (X > Width - RButtHeight - 1) and (X < Width - 1) then
-  begin
-    FMDownR := True;
-    DoRightButtonDown;
-  end
-  else
-    SetMouseUP;
-  if (Y < 3) or (Y > RButtHeight + 1) then
-    SetMouseUP;
-  if (Y < Height) and (Y > 0) and (X > 0) and (X < Width) then
-    GetPageIndexFromXY(X, Y);
-  invalidate;
-  inherited MouseDown(Button, Shift, X, Y);
-end;
-
-procedure TCDTabControl.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: integer);
-begin
-  SetMouseUP;
-  invalidate;
-  inherited MouseUp(Button, Shift, X, Y);
-end;
-
-function TCDTabControl.GetPageIndexFromXY(x, y: integer): integer;
-begin
-  if MaskHeadBmp.Canvas.Pixels[x, y] = clWhite then
-    Result := -1
-  else
-    Result := MaskHeadBmp.Canvas.Pixels[x, y] - MaskBaseColor + StartIndex;
-  if (TabIndex <> Result) and (TabIndex > -1) then
-    TabIndex := Result;
-end;
-
-procedure TCDTabControl.MouseMove(Shift: TShiftState; X, Y: integer);
-begin
-  if (X > Width - RButtHeight * 2 - 2) and (X < Width - RButtHeight) then
-    FMEnterL := True
-  else
-  if (X > Width - RButtHeight - 1) and (X < Width - 1) then
-    FMEnterR := True
-  else
-  begin
-    FMEnterR := False;
-    FMEnterL := False;
-  end;
-  if (Y < 3) or (Y > 18) then
-  begin
-    FMEnterR := False;
-    FMEnterL := False;
-  end;
-  if FMEnterR or FMENterL then
-    invalidate;
-  inherited MouseMove(Shift, X, Y);
-end;
-
-procedure TCDTabControl.Loaded;
-begin
-  inherited;
-end;
-
-procedure TCDTabControl.DoOnResize;
-begin
-  RButtHeight := Height - 4;
-  inherited;
-end;
-
-procedure TCDTabControl.MouseEnter;
-begin
-  inherited MouseEnter;
-end;
-
-procedure TCDTabControl.MouseLeave;
-begin
-  inherited MouseLeave;
-  SetMouseUP;
-  invalidate;
-end;
-
-procedure TCDTabControl.EraseBackground(DC: HDC);
-begin
-
-end;
-
-procedure TCDTabControl.Paint;
-var
-  AImage: TLazIntfImage = nil;
-  ABmp: TBitmap = nil;
-  lCanvas: TFPImageCanvas = nil;
-begin
-  inherited Paint;
-
-  ABmp := TBitmap.Create;
-  try
-    ABmp.Width := Width;
-    ABmp.Height := Height;
-    AImage := ABmp.CreateIntfImage;
-    lCanvas := TFPImageCanvas.Create(AImage);
-    FCurrentDrawer.DrawToIntfImage(lCanvas, AImage, Self);
-    ABmp.LoadFromIntfImage(AImage);
-    ABmp.Canvas.Font.Assign(Font);
-    FCurrentDrawer.DrawToCanvas(ABmp.Canvas, Self);
-    Canvas.Draw(0, 0, ABmp);
-  finally
-    if lCanvas <> nil then
-      lCanvas.Free;
-    if AImage <> nil then
-      AImage.Free;
-    ABmp.Free;
-  end;
-end;
-
-procedure TCDTabControlDrawerGraph.DrawToIntfImage(ADest: TFPImageCanvas;
-  FPImg: TLazIntfImage; CDTabControl: TCDTabControl);
-begin
-  ADest.Rectangle(0, 0, CDTabControl.Width - 1, CDTabControl.Height - 1);
-end;
-
-procedure TCDTabControlDrawerGraph.DrawToCanvas(ADest: TCanvas;
-  CDTabControl: TCDTabControl);
-begin
-  //CDTabControl.DrawCaptionBar(ADest, Rect(0, 0, CDTabControl.Width -
-  //  2, CDTabControl.Height + 1));
-  //  ADest.Brush.Color := clRed;
-  ADest.Rectangle(0, 0, CDTabControl.Width, CDTabControl.Height);
-  CDTabControl.DrawCaptionBar(ADest, Rect(0, 0, CDTabControl.Width,
-    CDTabControl.Height), CDTabControl.Color);
 end;
 
 { TCDTabSheet }
@@ -3213,121 +2870,6 @@ begin
 end;
 
 { TCDPageControlDrawerWinCE }
-
-procedure TCDPageControlDrawerWinCE.DrawCaptionBar(ADest: TCanvas;
-  lRect: TRect; CL: TColor);
-begin
-{  CaptionHeight := GetTabHeight(CDPageControl.PageIndex, CDPageControl) - 4;
-  RButtHeight := GetTabHeight(CDPageControl.PageIndex, CDPageControl);
-  aRect := lRect;
-  ADest.Pen.Style := psSolid;
-  ADest.Brush.Style := bsSolid;
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(CL));
-  //TColorToFPColor(ColorToRGB($009C9B91));
-  ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CL));
-  aRect.Left := lRect.Left;
-  aRect.Top := lRect.Top;
-  aRect.Bottom := lRect.Bottom;
-  aRect.Right := lRect.Right;
-  ADest.RecTangle(lRect);
-  if CDPageControl.FPages.Count = 0 then
-  begin
-    ADest.Brush.Color := clWhite;
-    ADest.Pen.Color := $009C9B91;
-    ADest.RecTangle(Rect(aRect.Left, aRect.Top, aRect.Right + 1, aRect.Bottom + 2));
-    ADest.Pen.Color := clWhite;
-    ADest.Line(aRect.Left + 1, aRect.Bottom + 1, aRect.Right, aRect.Bottom + 1);
-    Exit;
-  end;
-  aRect.Left := lRect.Left + 2;
-  aRect.Top := lRect.Top + 3;
-  //ADest.TextStyle.Opaque :=false;
-  //SetBkMode(ADest.Handle, TRANSPARENT);
-  if ADest.Brush.Style = bsSolid then
-    SetBkMode(ADest.Handle, OPAQUE)
-  else
-    SetBkMode(ADest.Handle, TRANSPARENT);
-
-  for i := StartIndex to CDPageControl.FPages.Count - 1 do
-  begin
-    aText := CDPageControl.FPages[i].TabPage.Caption;
-    rWidth := (CaptionHeight - ADest.TextHeight(aText)) + ADest.TextWidth(aText);
-    CDPageControl.FPages[i].Width := rWidth;
-    if aRect.Left + rWidth > lRect.Right - 6 then
-      Break
-    else
-      aRect.Right := aRect.Left + rWidth;
-    if CDPageControl.PageIndex = i then
-    begin
-      cRect := aRect;
-      if i = StartIndex then
-        cRect.Left := aRect.Left - 2
-      else
-        cRect.Left := aRect.Left - 4;
-      cRect.Right := aRect.Right + 4;
-      cRect.Top := cRect.Top - 2;
-      bText := CDPageControl.FPages[i].TabPage.Caption;
-    end
-    else
-      DrawTabHead(aDest, aRect, CDPageControl.Color, False);
-    MaskColor := MaskBaseColor + i - StartIndex;
-    //DrawTabHeadMask(MaskHeadBmp.Canvas, aRect, MaskColor, False);
-    ADest.TextOut(aRect.Left + (aRect.Right - aRect.Left - ADest.TextWidth(aText)) div 2,
-      aRect.Top + (aRect.Bottom - aRect.Top - ADest.TextHeight(aText)) div 2, aText);
-    aRect.Left := aRect.Right + 3;
-  end;
-  ADest.Line(lRect.Left, lRect.Bottom - 1, cRect.Left, lRect.Bottom - 1);
-  ADest.Line(cRect.Right, lRect.Bottom - 1, lRect.Right, lRect.Bottom - 1);
-  DrawTabHead(aDest, cRect, clWhite, True);
-  ADest.TextOut(cRect.Left + (cRect.Right - cRect.Left - ADest.TextWidth(bText)) div 2,
-    cRect.Top + (cRect.Bottom - cRect.Top - ADest.TextHeight(bText)) div 2, bText);
-  if not CheckTabButton(lRect.Right - lRect.Left, CDPageControl.FPages) then
-    Exit;
-  aRect.Left := lRect.Right - RButtHeight * 2 - 3;
-  aRect.Top := 1;
-  aRect.Bottom := RButtHeight + 1;
-  aRect.Right := lRect.Right - RButtHeight;
-  //if FMDownL then
-  //  GradFill(ADest, aRect, $00F1A079, $00EFAF9B)
-  //else
-    GradFill(ADest, aRect, $00FDD9CB, $00F2C9B8);
-  aRect.Left := lRect.Right - RButtHeight - 1;
-  aRect.Top := 1;
-  aRect.Bottom := RButtHeight + 1;
-  aRect.Right := lRect.Right;
-
-  GradFill(ADest, aRect, $00FDD9CB, $00F2C9B8);
-
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($0085614D));
-  bRect.Top := 1;
-  bRect.Left := lRect.Right - RButtHeight * 2 - 3;
-  bRect.Right := lRect.Right;
-  bRect.Bottom := RButtHeight + 1;
-  DrawArrow(ADest, bRect, True);
-  DrawArrow(ADest, bRect, False);
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(clWhite));
-  ADest.Line(lRect.Right - RButtHeight * 2 - 3, 1, lRect.Right, 1);
-  ADest.Line(lRect.Right, 1, lRect.Right, RButtHeight + 1);
-  ADest.Line(lRect.Right, RButtHeight + 1, lRect.Right - RButtHeight *
-    2 - 3, RButtHeight + 1);
-  ADest.Line(lRect.Right - RButtHeight * 2 - 3, RButtHeight + 1,
-    lRect.Right - RButtHeight * 2 - 3, 1);
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($00E5BAA7));
-  ADest.Brush.Style := bsClear;
-  ADest.Rectangle(lRect.Right - RButtHeight * 2 - 2, 2, lRect.Right -
-    1, RButtHeight + 1);
-  CornerColor := TColorToFPColor(ColorToRGB($00F6E3D9));
-  ADest.Colors[lRect.Right - RButtHeight * 2 - 2, 2] := CornerColor;
-  ADest.Colors[lRect.Right - RButtHeight * 2 - 2, RButtHeight] := CornerColor;
-  ADest.Colors[lRect.Right - 1, 2] := CornerColor;
-  ADest.Colors[lRect.Right - 1, RButtHeight] := CornerColor;
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(clWhite));
-  ADest.Line(lRect.Right - 51, 1, lRect.Right, 1);
-  ADest.Line(lRect.Right, 1, lRect.Right, 25);
-  ADest.Line(lRect.Right, 25, lRect.Right - 51, 25);
-  ADest.Line(lRect.Right - 51, 25, lRect.Right - 51, 1);
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($00FFFFFF));}
-end;
 
 procedure TCDPageControlDrawerWinCE.DrawTabs(ADest: TCanvas);
 var
