@@ -110,7 +110,7 @@ $SVN export $LAZSOURCEDIR $LAZBUILDDIR
 
 cd $LAZBUILDDIR
 if [ ! -e tools/svn2revisioninc ]; then
-  make -C packager/registration PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
+  make lazutils PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
   make tools PP=$COMPILER OPT="$MACOSX104LINKEROPTS"
 fi
 ./tools/svn2revisioninc $LAZSOURCEDIR ide/revision.inc
