@@ -438,7 +438,6 @@ type
 
   TCDCustomTabSheet = class(TCustomControl)
   private
-    FIndex: integer;
     CDTabControl: TCDCustomTabControl;
     FTabVisible: Boolean;
   public
@@ -530,7 +529,6 @@ type
     property Caption;
     property Color;
     property Font;
-    property Index: integer read FIndex write FIndex;
     property TabVisible: Boolean;
   end;
 
@@ -2269,9 +2267,12 @@ begin
     end;
     2:
     begin  //  Delete Page
+      //WriteLn('Delete 1');
       NewPage := PControl.ActivePage;
       if NewPage = nil then Exit;
-      PControl.RemovePage(NewPage.Index);
+      //WriteLn('Delete 2');
+      PControl.RemovePage(PControl.PageIndex);
+      Hook.PersistentDeleting(NewPage);
     end;
     3:
     begin  //  Next Page
@@ -2326,7 +2327,7 @@ begin
   ParentMenuItem.Enabled := PControl.PageCount > 0;
   for i := 0 to PControl.PageCount - 1 do
   begin
-    TabPage := TCDTabSheet(PControl.Tabs.Objects[i]);
+    TabPage := PControl.GetPage(i);
     NewMenuItem := TMenuItem.Create(ParentMenuItem);
     NewMenuItem.Name := 'ShowPage' + IntToStr(i);
     NewMenuItem.Caption := TabPage.Name + ' "' + TabPage.Caption + '"';
@@ -2363,16 +2364,18 @@ begin
   PositionTabSheet(NewPage);
 
   FTabs.AddObject(S, NewPage);
-  NewPage.FIndex := FTabs.Count - 1;
 
   SetActivePage(NewPage);
 
   Result := NewPage;
 end;
 
-function TCDPageControl.GetPage(aIndex: integer): TCDTabSheet;
+function TCDPageControl.GetPage(AIndex: integer): TCDTabSheet;
 begin
-  Result := TCDTabSheet(FTabs.Objects[AIndex]);
+  if (AIndex >= 0) and (AIndex < FTabs.Count) then
+    Result := TCDTabSheet(FTabs.Objects[AIndex])
+  else
+    Result := nil;
 end;
 
 function TCDPageControl.InsertPage(aIndex: integer; S: string): TCDTabSheet;
@@ -2391,7 +2394,6 @@ begin
   PositionTabSheet(NewPage);
 
   FTabs.InsertObject(AIndex, S, NewPage);
-  NewPage.Index := AIndex;
 
   SetActivePage(NewPage);
   Result := NewPage;
@@ -2399,13 +2401,14 @@ end;
 
 procedure TCDPageControl.RemovePage(aIndex: integer);
 begin
-  if AIndex < 0 then Exit;
-  if FTabIndex = AIndex then Inc(FTabIndex);
-  if FTabIndex >= FTabs.Count then Dec(FTabIndex, 2);
+  if (AIndex < 0) or (AIndex >= FTabs.Count) then Exit;
 
   Application.ReleaseComponent(TComponent(FTabs.Objects[AIndex]));
 
   FTabs.Delete(aIndex);
+  if FTabIndex >= FTabs.Count then Dec(FTabIndex);
+
+  Invalidate;
 end;
 
 function TCDPageControl.FindNextPage(CurPage: TCDTabSheet;
@@ -2416,7 +2419,7 @@ begin
   if FTabs.Count <> 0 then
   begin
     //StartIndex := FPages.IndexOfObject(CurPage);
-    TempStartIndex := CurPage.Index;
+    TempStartIndex := FTabs.IndexOfObject(CurPage);
     if TempStartIndex = -1 then
       if GoForward then
         TempStartIndex := FTabs.Count - 1
@@ -2524,10 +2527,11 @@ end;
 
 procedure TCDPageControl.PositionTabSheet(ATabSheet: TCDTabSheet);
 var
-  lTabHeight: Integer;
+  lTabHeight, lIndex: Integer;
 begin
 //  ATabSheet.SetBounds(1, 32 + 1, Width - 3, Height - 32 - 4);
-  lTabHeight := TCDCustomTabControlDrawer(FCurrentDrawer).GetTabHeight(ATabSheet.Index);
+  lIndex := FTabs.IndexOfObject(ATabSheet);;
+  lTabHeight := TCDCustomTabControlDrawer(FCurrentDrawer).GetTabHeight(lIndex);
   ATabSheet.BorderSpacing.Top := lTabHeight;
   ATabSheet.BorderSpacing.Left := 2;
   ATabSheet.BorderSpacing.Right := 3;
@@ -2537,10 +2541,7 @@ end;
 
 function TCDPageControl.GetActivePage: TCDTabSheet;
 begin
-  if (FTabIndex > 0) then
-    Result := TCDTabSheet(FTabs.Objects[FTabIndex])
-  else
-    Result := nil;
+  Result := GetPage(FTabIndex);
 end;
 
 function TCDPageControl.GetPageCount: integer;
