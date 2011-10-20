@@ -619,6 +619,27 @@ begin
                        0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 end;
 
+function ExtractShortPathNameUTF8(const FileName: String): String;
+var
+  lPathSize: DWORD;
+  WideFileName, WideResult: UnicodeString;
+begin
+  {$ifndef WinCE}
+  if Win32MajorVersion >= 5 then
+  begin
+  {$endif}
+    WideFileName := UTF8ToUTF16(FileName);
+    SetLength(WideResult,Max_Path);
+    lPathSize := GetShortPathNameW(PWideChar(WideFileName), PWideChar(WideResult), Length(WideResult));
+    SetLength(WideResult,lPathSize);
+    Result := UTF16ToUTF8(WideResult);
+  {$ifndef WinCE}
+  end
+  else
+    Result:=SysToUTF8(SysUtils.ExtractShortPathName(UTF8ToSys(FileName)));
+  {$endif}
+end;
+
 procedure InitFileUtils;
 begin
   {$ifndef WinCE}

@@ -27,7 +27,7 @@ interface
 
 uses
   // For Smart Linking: Do not use the LCL!
-  SysConst, Classes, SysUtils, Masks, LazUtilsStrConsts;
+  SysConst, Classes, SysUtils, Masks, LazUtilsStrConsts, lazutf8;
   
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}

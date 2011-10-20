@@ -75,23 +75,23 @@ begin
   Result:=SysUtils.FileAge(UTF8ToSys(Filename));
 end;
 
+// For ExpandFileNameUTF8 and ExpandUNCFileNameUTF8
+//
+// Don't convert to and from Sys, because this RTL routines
+// simply work in simple string operations, without calling native
+// APIs which would really require Ansi
+//
+// The Ansi conversion just ruins Unicode strings
+//
+// See bug http://bugs.freepascal.org/view.php?id=20229
 function ExpandFileNameUTF8(const FileName: string): string;
 begin
-  Result:=SysToUTF8(SysUtils.ExpandFileName(UTF8ToSys(Filename)));
+  Result:=SysUtils.ExpandFileName(Filename);
 end;
 
 function ExpandUNCFileNameUTF8(const FileName: string): string;
 begin
-  Result:=SysToUTF8(SysUtils.ExpandUNCFileName(UTF8ToSys(Filename)));
-end;
-
-function ExtractShortPathNameUTF8(const FileName: String): String;
-begin
-  {$ifdef ver2_2_0}
-  Result := '';
-  {$else}
-  Result:=SysToUTF8(SysUtils.ExtractShortPathName(UTF8ToSys(FileName)));
-  {$endif}
+  Result:=SysUtils.ExpandUNCFileName(Filename);
 end;
 
 function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;

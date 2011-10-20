@@ -392,6 +392,15 @@ begin
   Result := SysUtils.FileCreate(FileName, Rights);
 end;
 
+function ExtractShortPathNameUTF8(const FileName: String): String;
+begin
+  {$ifdef ver2_2_0}
+  Result := '';
+  {$else}
+  Result:=SysToUTF8(SysUtils.ExtractShortPathName(UTF8ToSys(FileName)));
+  {$endif}
+end;
+
 procedure InitFileUtils;
 begin
 end;
