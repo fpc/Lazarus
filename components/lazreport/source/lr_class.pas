@@ -4299,21 +4299,21 @@ begin
   end;
 
   Picture.Graphic := Graphic;
-  if Graphic <> nil then
-  begin
-    Graphic.Free;
-    if M=nil then
-      GetPictureStream;
-    try
+  try
+    if Graphic <> nil then
+    begin
+      Graphic.Free;
+      if M=nil then
+        GetPictureStream;
       try
         M.Position := 0;
         Picture.Graphic.LoadFromStream(M);
       except
         ShowMessage('Unknown Image Format!');
       end;
-    finally
-      M.Free;
     end;
+  finally
+    M.Free;
   end;
 end;
 
