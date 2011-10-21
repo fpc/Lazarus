@@ -7,10 +7,10 @@ object TabOrderDialog: TTabOrderDialog
   Caption = 'TabOrderDialog'
   ClientHeight = 374
   ClientWidth = 310
-  OnClose = FormClose
   OnCreate = TabOrderDialogCREATE
   OnShow = FormShow
   LCLVersion = '0.9.31'
+  Visible = True
   object ArrowUp: TSpeedButton
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom

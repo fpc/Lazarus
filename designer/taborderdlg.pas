@@ -45,7 +45,6 @@ type
     ItemTreeview: TTreeView;
     SortByPositionButton: TBitBtn;
     procedure SortByPositionButtonClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure ItemTreeviewClick(Sender: TObject);
     procedure TabOrderDialogCREATE(Sender: TObject);
@@ -136,8 +135,6 @@ begin
   ArrowDown.Hint:=lisTabOrderDownHint;
   ArrowUp.Hint:=lisTabOrderUpHint;
   SortByPositionButton.Hint:=lisTabOrderSortHint;
-
-  IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
 procedure TTabOrderDialog.FormShow(Sender: TObject);
@@ -153,11 +150,6 @@ begin
     Sel.Free;
   end;
   CheckButtonsEnabled;
-end;
-
-procedure TTabOrderDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
-begin
-  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TTabOrderDialog.SortByPositionButtonClick(Sender: TObject);

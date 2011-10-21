@@ -136,7 +136,6 @@ type
     procedure AnchorDesignerShow(Sender: TObject);
     procedure AnchorEnabledCheckBoxChange(Sender: TObject);
     procedure BorderSpaceSpinEditChange(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure SiblingComboBoxChange(Sender: TObject);
     procedure ReferenceSideButtonClicked(Sender: TObject);
   private
@@ -262,8 +261,6 @@ begin
 
   GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
   GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
-
-  IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
 procedure TAnchorDesigner.AnchorDesignerDestroy(Sender: TObject);
@@ -277,11 +274,6 @@ end;
 procedure TAnchorDesigner.AnchorDesignerShow(Sender: TObject);
 begin
   Refresh(true);
-end;
-
-procedure TAnchorDesigner.FormClose(Sender: TObject; var CloseAction: TCloseAction);
-begin
-  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TAnchorDesigner.AnchorEnabledCheckBoxChange(Sender: TObject);

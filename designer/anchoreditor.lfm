@@ -9,7 +9,6 @@ object AnchorDesigner: TAnchorDesigner
   ClientWidth = 596
   Constraints.MinHeight = 282
   Constraints.MinWidth = 476
-  OnClose = FormClose
   OnCreate = AnchorDesignerCreate
   OnDestroy = AnchorDesignerDestroy
   OnShow = AnchorDesignerShow
