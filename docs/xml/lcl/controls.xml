@@ -3540,9 +3540,15 @@ dmFindTarget: find child control under the mouse
         <short>Array of the installable notification handlers.
         </short>
       </element>
-      <element name="TControl.FControlState" link="TControl.ControlState"/>
+      <element name="TControl.FControlState" link="TControl.ControlState">
+        <short>State flags.
+        </short>
+      </element>
       <element name="TControl.FControlStyle" link="TControl.ControlStyle"/>
-      <element name="TControl.FCursor" link="TControl.Cursor"/>
+      <element name="TControl.FCursor" link="TControl.Cursor">
+        <short>The cursor shape for this control.
+        </short>
+      </element>
       <element name="TControl.FDesktopFont" link="TControl.DesktopFont"/>
       <element name="TControl.FDockOrientation" link="TControl.DockOrientation"/>
       <element name="TControl.FDragCursor" link="TControl.DragCursor"/>
@@ -4061,7 +4067,10 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoConstraintsChange">
-        <short>Reacts on a change in the control's constraints. Calls AdjustSize by default.</short>
+        <short>Reacts on a change in the control's constraints.
+          Calls AdjustSize by default.
+        </short>
+      </element>
       <element name="TControl.DoConstraintsChange.Sender">
         <short/>
       </element>
@@ -4320,8 +4329,6 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetClientRect" link="TControl.ClientRect"/>
-        <short>Visual size of the client area.</short>
-      </element>
       <element name="TControl.GetClientRect.Result">
         <short/>
       </element>
@@ -5398,10 +5405,9 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.AssignTo">
-        <short/>
+        <short>Implements the assignment to an Action object, otherwise calls the inherited method.
+        </short>
         <descr>
-          <p>Implements the assignment to an Action object, otherwise calls the inherited method.
-          </p>
           <p>The copied properties are:</p>
           <ul>
             <li>Enabled</li>
@@ -5588,7 +5594,7 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.Notification">
         <short>Notification handler for insertion or deletion of components.</short>
         <descr>
-          <p>First the inherited <link id="TComponent.Notification"/> is invoked,
+          <p>First the inherited <link id="#rtl.Classes.TComponent.Notification"/> is invoked,
             to notify all attached notification handlers.</p>
           <p>If Operation is removal, additional actions are performed, depending on AComponent:<br/>
             PopupMenu, Action, or anchors to the removed control are detached.</p>
@@ -5950,7 +5956,8 @@ dmFindTarget: find child control under the mouse
         <descr>
           <p>This method does the same as Delphi <var>TWinControl.DoAutoSize</var>.
             But since <var>DoAutoSize</var> is commonly overriden by descendant components, it is not useful to perform all tests, which can result in too much overhead.[?]
-            To reduce this the LCL calls <var>AdjustSize</var> instead.</p>
+            To reduce this the LCL calls <var>AdjustSize</var> instead.
+          </p>
           <p>During loading and handle creation the calls are delayed.</p>
         </descr>
         <seealso>
@@ -6852,8 +6859,34 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.RemoveHandlerOnVisibleChanged.OnVisibleChangedEvent">
         <short/>
       </element>
-<!-- missing AddHandlerOnEnabledChanged -->
-<!-- missing RemoveHandlerOnEnableChanging -->
+      <!-- procedure Visibility: public -->
+      <element name="TControl.AddHandlerOnEnabledChanged">
+        <short>Adds an
+          <var>OnEnabledChanged</var> handler.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TControl.AddHandlerOnEnabledChanged.OnEnabledChangedEvent">
+        <short/>
+      </element>
+      <element name="TControl.AddHandlerOnEnabledChanged.AsFirst">
+        <short/>
+      </element>
+<!-- missing RemoveHandlerOnEnableChanging[?] -->
+      <!-- procedure Visibility: public -->
+      <element name="TControl.RemoveHandlerOnEnableChanging">
+        <short>Removes an <var>OnEnabledChanged</var> handler.</short>
+        <descr>
+          [The name doesn't look correct, should read RemoveHandlerOnEnabledChanged?]
+        </descr>
+        <errors>
+        </errors>
+        <seealso/>
+      </element>
+      <element name="TControl.RemoveHandlerOnEnableChanging.OnEnableChangingEvent">
+        <short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AddHandlerOnKeyDown">
         <short>Adds an handler for the <var>OnKeyDown</var> event.</short>
@@ -6987,6 +7020,11 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.AnchorSide.Kind">
         <short>The [possibly?] anchored side of the control.</short>
       </element>
+      <!-- property Visibility: public -->
+      <element name="TControl.AnchorSideBottom" link="TControl.AnchorSide"/>
+      <element name="TControl.AnchorSideLeft" link="TControl.AnchorSide"/>
+      <element name="TControl.AnchorSideRight" link="TControl.AnchorSide"/>
+      <element name="TControl.AnchorSideTop" link="TControl.AnchorSide"/>
       <!-- property Visibility: protected -->
       <element name="TControl.AutoSize">
         <short>Allows to automatically adjust the size of the control, according to its content.</short>
@@ -7186,7 +7224,6 @@ dmFindTarget: find child control under the mouse
         <seealso>
           <link id="TControl.ClientOrigin"/>
           <link id="TControl.BoundsRect"/>
-          <link id="#rtl.Classes.TPoint"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -8469,7 +8506,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.GetAdjustedLogicalClientRect">
-        <short>Returns the adjusted ClientRect, chached value if available.
+        <short>Returns the adjusted ClientRect, cached value if available.
         </short>
         <descr>
         </descr>
@@ -8620,12 +8657,12 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TWinControl.IsClientHeightStored" link="#LCL.Controls.TControl.IsClientHeightStored"/>
+      <element name="TWinControl.IsClientHeightStored" link="TControl.ClientHeight"/>
       <element name="TWinControl.IsClientHeightStored.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TWinControl.IsClientWidthStored" link="#LCL.Controls.TControl.IsClientWidthStored"/>
+      <element name="TWinControl.IsClientWidthStored" link="TControl.ClientWidth"/>
       <element name="TWinControl.IsClientWidthStored.Result">
         <short/>
       </element>
@@ -8675,8 +8712,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CreateSubClass">
-        <short>
-          <var>CreateSubClass</var> - creates a sub-class using the supplied parameters</short>
+        <short>TODO: Check if we need this method[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8688,18 +8725,24 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.DoConstraintsChange" link="#LCL.Controls.TControl.DoConstraintsChange"/>
+      <element name="TWinControl.DoConstraintsChange" link="TControl.DoConstraintsChange"/>
       <element name="TWinControl.DoConstraintsChange.Sender">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoSetBounds">
-        <short>
-          <var>DoSetBounds</var> - anticipate the new clientwidth/height and call inherited method</short>
+        <short>Updates the size and extent of the control and ClientRect.
+        </short>
         <descr>
-          <p>Anticipate the new clientwidth/height and call inherited method</p>
-          <p>Normally the clientwidth/clientheight is adjusted automatically by the interface. But it is up to interface when this will be done. The gtk for example just puts resize requests into a queue. The LCL would resize the child components just after this procedure due to the clientrect. On complex forms with lots of nested controls, this would result in thousands of resizes.</p>
-          <p>Changing the clientrect in the LCL to the most probable size reduces unneccessary resizes.</p>
+          <p>
+            Changing the ClientRect here, to the most probable size, reduces unneccessary resizes.
+          </p><p>
+            Normally the clientwidth/clientheight is adjusted automatically by the widget,
+            but it is up to widget when this will be done.
+            The gtk for example just puts resize requests into a queue.
+            The LCL would resize the child components just after this procedure due to the clientrect.
+            On complex forms with lots of nested controls, this would result in thousands of resizes.
+          </p>
         </descr>
         <seealso>
           <link id="#LCL.Controls.TControl.DoSetBounds"/>
@@ -8719,11 +8762,14 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoAutoSize">
-        <short>
-          <var>DoAutoSize</var> - performs a lot of calculations and adjustments of child components in the window before automatically adjusting the size of the window itself</short>
+        <short>Shrink or enlarge the control to fit children.
+        </short>
         <descr>
-          <p>
-            <printshort id="TWinControl.DoAutoSize"/>
+          <p>Because this method is frequently overridden,
+            the LCL calls the added <link id="TControl.AdjustSize"/> instead,
+            which checks whether DoAutoSize really should be called right now.
+          </p><p>
+            DoAutoSize does roughly this:
           </p>
           <ul>
             <li>Checks whether Autosize is in fact permitted</li>
@@ -8732,31 +8778,24 @@ dmFindTarget: find child control under the mouse
             <li>Adjusts the size of the client rectangle</li>
             <li>Adjusts the bounds of the whole control</li>
           </ul>
-          <p>Because this method involves so much overhead, the simpler <link id="#lcl.Controls.TControl.AdjustSize">TControl.AdjustSize</link> is often called instead.</p>
         </descr>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TControl.DoAutoSize">TControl.DoAutoSize</link>
+          <link id="TControl.DoAutoSize"/>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoAllAutoSize" link="TControl.DoAllAutoSize"/>
       <!-- function Visibility: protected -->
       <element name="TWinControl.AutoSizeCanStart">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Deprecated, don't use it.</short>
       </element>
       <element name="TWinControl.AutoSizeCanStart.Result">
         <short></short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.AllAutoSized">
-        <short>called by DoAllAutoSize after all bounds are computed</short>
+        <short>Called by DoAllAutoSize after all bounds are computed.</short>
         <descr>
         </descr>
         <errors>
@@ -8767,8 +8806,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CalculatePreferredSize">
-        <short>
-          <var>CalculatePreferredSize</var> returns the default/preferred width and height for a TWinControl, for use by LCL autosizing.</short>
+        <short>Override this method to return a different preferred height and width for autosizing.
+        </short>
         <descr>
           <p>Calls the inherited method to calculate the default/preferred width and height for a <var>TWinControl</var>, which is used by the LCL autosizing algorithms as default size.
             Only positive values are valid. Negative or 0 are treated as undefined and the LCL uses other sizes instead.</p>
@@ -8789,7 +8828,7 @@ dmFindTarget: find child control under the mouse
         </descr>
         <errors/>
         <seealso>
-          <link id="#LCL.Controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>
+          <link id="TControl.CalculatePreferredSize"/>
         </seealso>
       </element>
       <element name="TWinControl.CalculatePreferredSize.PreferredWidth">
@@ -8803,8 +8842,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.GetChildren">
-        <short>
-          <var>GetChildren</var> - makes a list of all the child components for this control</short>
+        <short>Calls Proc with every child control, owned by Root.
+        </short>
         <descr/>
         <errors/>
         <seealso>
@@ -8812,15 +8851,14 @@ dmFindTarget: find child control under the mouse
         </seealso>
       </element>
       <element name="TWinControl.GetChildren.Proc">
-        <short/>
+        <short>The callback procedure.</short>
       </element>
       <element name="TWinControl.GetChildren.Root">
-        <short/>
+        <short>The Owner of the reported controls.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.ChildClassAllowed">
-        <short>
-          <var>ChildClassAllowed</var> - returns True if the given child class is permitted</short>
+        <short>Returns True if the given class is allowed for child controls.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8833,22 +8871,26 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.PaintControls">
-        <short>
-          <var>PaintControls</var> - method for painting a series of controls</short>
-        <descr/>
+        <short>Paint all child controls which don't have a Handle.
+        </short>
+        <descr>
+          Controls that are not TWinControl, have no handle of their own,
+          and so they are repainted as part of the parent.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.PaintControls.DC">
-        <short/>
+        <short>The device context usable for painting child controls.</short>
       </element>
       <element name="TWinControl.PaintControls.First">
-        <short/>
+        <short>First of the controls in Controls[], which remain to paint.
+        </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.PaintHandler">
-        <short>
-          <var>PaintHandler</var> - message handler for painting</short>
+        <short>Handler for TLMPaint, manages the painting of child controls.
+         </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8858,31 +8900,32 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.PaintWindow">
-        <short>
-          <var>PaintWindow</var> - method for painting a window</short>
+        <short>Paints an clipped part (child control) of the DC.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.PaintWindow.DC">
-        <short/>
+        <short></short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CreateBrush">
-        <short>
-          <var>CreateBrush</var> - method to create a brush for painting</short>
+        <short>Creates the <link id="TWinControl.Brush">Brush</link>, if not already created.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ScaleControls">
-        <short>Change the scale of all child controls.</short>
+        <short>Scales (resizes) all child controls.</short>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
+          <link id="TWinControl.ChangeScale"/>
         </seealso>
       </element>
       <element name="TWinControl.ScaleControls.Multiplier">
@@ -8893,7 +8936,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ChangeScale" link="TControl.ChangeScale">
-        <short>Overridden to also change the scale of all child controls.</short>
+        <short>Scales (resizes) the control and all child controls.
+        </short>
         <descr>
         </descr>
         <errors>
@@ -8909,8 +8953,10 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMBiDiModeChanged">
-        <short>Message handler for
-          changed <var>BiDiMode</var> property
+        <short>Handler for
+          changed <link id="TWinControl.BiDiMode">BiDiMode</link>
+          message.
+          Notifies the widget and all child controls.
         </short>
         <descr/>
         <errors/>
@@ -8922,15 +8968,21 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMBorderChanged">
         <short>Handler for
-          changed <var>Border</var>
-          message.</short>
+          changed <link id="TWinControl.Border">Border</link>
+          message.
+          Adjusts and invalidates the control.
+        </short>
       </element>
       <element name="TWinControl.CMBorderChanged.Message">
         <short></short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMEnabledChanged">
-        <short>Message handler for a change in the <var>Enabled</var> property.</short>
+        <short>Handler for
+          changed <link id="TWinControl.Enabled">Enabled</link>
+          message.
+          Notifies the widgetset.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8940,8 +8992,11 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMShowingChanged">
-        <short>
-          <var>CMShowingChanged</var> - control message when Showing property is changed</short>
+        <short>Handler for
+          changed <link id="TWinControl.Showing">Showing</link>
+          message.
+          Notifies the widgetset.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8951,7 +9006,11 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMShowHintChanged">
-        <short>Message handler, notifies child controls of a change in the <var>ShowHint</var> property.</short>
+        <short>Handler for
+          changed <link id="TWinControl.ShowHint">ShowHint</link>
+          message.
+          Notifies all child controls.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8961,21 +9020,21 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMVisibleChanged">
-        <short>
-          <var>CMVisibleChanged</var> - control message when Visible property is changed</short>
+        <short>Handler for
+          changed <link id="TWinControl.Visible">Visible</link>
+          message.
+          Handles Focus, forces UpdateControlState.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
-      </element>
-      <element name="TWinControl.CMVisibleChanged.TheMessage">
-        <short/>
       </element>
       <element name="TWinControl.CMVisibleChanged.Message">
         <short></short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMEnter">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <errors>
@@ -8988,7 +9047,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMExit">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <errors>
@@ -9001,7 +9060,10 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMContextMenu">
-        <short></short>
+        <short>Handler for an
+          <link id="TControl.PopupMenu">ContextMenu</link> event.
+          Eventually delegates handling to the affected child control.
+        </short>
         <descr>
         </descr>
         <errors>
@@ -9014,8 +9076,9 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMEraseBkgnd">
-        <short>
-          <var>WMEraseBkgnd</var> - LCL message for erasing background</short>
+        <short>Erases the background,
+          if <link id="TWinControlFlag.wcfEraseBackground">required</link>.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9025,8 +9088,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMNotify">
-        <short>
-          <var>WMNotify</var> - LCL Notify message</short>
+        <short>Handles (dispatches) notification messages.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9036,8 +9099,11 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMSetFocus">
-        <short>
-          <var>WMSetFocus</var> - LCL Message to set focus</short>
+        <short>Handler for
+          receiving Focus
+          event.
+          Override it to [do what?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9047,8 +9113,11 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMKillFocus">
-        <short>
-          <var>WMKillFocus</var> - LCL Message to kill focus</short>
+        <short>Handler for
+          loosing Focus
+          event.
+          Eventually triggers <link id="TControl.EditingDone"/>.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9058,8 +9127,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMShowWindow">
-        <short>
-          <var>WMShowWindow</var> - LCL Message to show window</short>
+        <short>Handler for changed visibility notification[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9069,8 +9138,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMEnter">
-        <short>
-          <var>WMEnter</var> - LCL Message for entry to the control</short>
+        <short>[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9080,8 +9149,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMExit">
-        <short>
-          <var>WMExit</var> - LCL Message for exit from control</short>
+        <short>[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9091,8 +9160,10 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMKeyDown">
-        <short>
-          <var>WMKeyDown</var> - LCL Message for a key down</short>
+        <short>Event handler for
+          key pressed, not handled by the widget.
+          Tries <link id="TWinControl.DoRemainingKeyDown"/>.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9102,8 +9173,10 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMSysKeyDown">
-        <short>
-          <var>WMSysKeyDown</var> - LCL Message for a system key down</short>
+        <short>Event handler for
+          sys key [what's this?] pressed, not handled by the widget.
+          Tries <link id="TWinControl.DoRemainingKeyDown"/>.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9113,8 +9186,10 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMKeyUp">
-        <short>
-          <var>WMKeyUp</var> - LCL Message for a key up</short>
+        <short>Event handler for
+          key released, not handled by the widget.
+          Tries <link id="TWinControl.DoRemainingKeyUp"/>.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9124,8 +9199,10 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMSysKeyUp">
-        <short>
-          <var>WMSysKeyUp</var> - LCL Message for a system key up</short>
+        <short>Event handler for
+          system key released, not handled by the widget.
+          Tries <link id="TWinControl.DoRemainingKeyUp"/>.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9135,8 +9212,9 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMChar">
-        <short>
-          <var>WMChar</var> - LCL Message signifying a character</short>
+        <short>Handler for
+          message sent by the widget, after it has handled the keypress itself.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9146,8 +9224,9 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMSysChar">
-        <short>
-          <var>WMSysChar</var> - LCL Message signifying a system character</short>
+        <short>Handler for
+          message sent by the widget, after it has handled the keypress itself.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9157,8 +9236,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMPaint">
-        <short>
-          <var>WMPaint</var> - LCL Message for Paint</short>
+        <short>Manages paint requests, handles double buffering.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9168,8 +9247,9 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMDestroy">
-        <short>
-          <var>WMDestroy</var> - LCL Message for control destruction</short>
+        <short>Handler for
+          widget destroyed message. Clears the Handle.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9179,8 +9259,9 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMMove">
-        <short>
-          <var>WMMove</var> - LCL Message for movement</short>
+        <short>Handler for
+          widget moved message. Updates the Bounds.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9190,9 +9271,16 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMSize">
-        <short>
-          <var>WMSize</var> - LCL Message for sizing control</short>
-        <descr/>
+        <short>Event handler for size messages.
+        </short>
+        <descr>
+          <p>
+            This method is called whenever width, height, clientwidth or clientheight have changed.
+          </p><p>
+            If the source of the message is the interface, the new size is stored
+            in FBoundsRealized to avoid sending a size message back to the interface.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -9201,8 +9289,15 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMWindowPosChanged">
-        <short></short>
+        <short>Event handler for size/move messages.
+        </short>
         <descr>
+          <p>
+            This method is called whenever left, top, width, height, clientwidth or clientheight have changed.
+          </p><p>
+            If the source of the message is the interface, the new size is stored
+            in FBoundsRealized to avoid sending a size message back to the interface.
+          </p>
         </descr>
         <errors>
         </errors>
@@ -9214,8 +9309,10 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CNKeyDown">
-        <short>
-          <var>CNKeyDown</var> - control message for key down</short>
+        <short>Handler for
+          a key pushed notification.
+          The message is handled by DoKeyDownBeforeInterface by default.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9225,8 +9322,10 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CNSysKeyDown">
-        <short>
-          <var>CNSysKeyDown</var> - control message for system key down</short>
+        <short>Handler for
+          a system key pushed notification.
+          The message is handled by DoKeyDownBeforeInterface by default.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9236,8 +9335,10 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CNKeyUp">
-        <short>
-          <var>CNKeyUp</var> - control message for key up</short>
+        <short>Handler for
+          a key released notification.
+          The message is handled by DoKeyUpBeforeInterface by default.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9247,8 +9348,10 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CNSysKeyUp">
-        <short>
-          <var>CNSysKeyUp</var> - control message for system key up</short>
+        <short>Handler for
+          a system key released notification.
+          The message is handled by DoKeyUpBeforeInterface by default.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9258,8 +9361,10 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CNChar">
-        <short>
-          <var>CNChar</var> - control message specifying a character</short>
+        <short>Handler for
+          a key pressed notification.
+          CNChar is sent by the widget before it has handled the keypress itself.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9269,13 +9374,15 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoDragMsg">
-        <short>Dispatch a drag message, sent by the DragManager</short>
+        <short>Dispatches a drag message, sent by the DragManager.</short>
         <descr>
-          <p>On dmFindTarget a TWinControl returns the child control under the mouse, or Self if none is found.</p>
-          <p>All other messages are handled by inherited <link id="TControl.DoDragMsg"/>.</p>
+          <p>On dmFindTarget a TWinControl returns the child control under the mouse, or Self if none is found.
+          </p><p>
+            All other messages are handled by inherited <link id="TControl.DoDragMsg"/>.
+          </p>
         </descr>
         <seealso>
-          <link id="#LCL.Controls.TControl.DoDragMsg"/>
+          <link id="TControl.DoDragMsg"/>
         </seealso>
       </element>
       <element name="TWinControl.DoDragMsg.Result">
@@ -9298,13 +9405,19 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoDockClientMsg">
-        <short>Handles dmDragDock message, when a control has been docked to this site.</short>
+        <short>Handles a dmDragDock message, when a control has been docked to this site.</short>
         <descr>
-          <p>Called when a control is dropped for docking.</p>
-          <p>Asks the dropped control to Dock itself into this control (adjust HostDockSite etc.).<br/>
-            Calls an installed DockManager to adjust the coordinates of the docked control.</p>
-          <p>The Result is always True (unless overridden).</p>
+          <p>Called when a control is dropped for docking.
+          </p><p>
+            Asks the dropped control to Dock itself into this control (adjust HostDockSite etc.).
+            <br/>
+            Calls an installed DockManager to adjust the coordinates of the docked control.
+          </p><p>
+            The Result is always True (unless overridden).
+          </p>
         </descr>
+        <seealso>
+        </seealso>
       </element>
       <element name="TWinControl.DoDockClientMsg.Result">
         <short/>
@@ -9317,7 +9430,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoUndockClientMsg">
-        <short>Notifies the DockManager of the undock of a client control; always returns True.</short>
+        <short>Notifies the DockManager of the undock of a client control.
+        </short>
         <descr/>
         <errors/>
         <seealso>
@@ -9325,7 +9439,7 @@ dmFindTarget: find child control under the mouse
         </seealso>
       </element>
       <element name="TWinControl.DoUndockClientMsg.Result">
-        <short/>
+        <short>Always True.</short>
       </element>
       <element name="TWinControl.DoUndockClientMsg.NewTarget">
         <short/>
@@ -9335,8 +9449,9 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoAddDockClient">
-        <short>Adjust the Parent of the docked Client.</short>
-        <descr>The default action is to set the Parent to the new docksite (this control), so that the client is displayed within the new site.</descr>
+        <short>Adjust the Parent of a newly docked Client.</short>
+        <descr>The default action is to set the Parent to the new docksite (this control),
+          so that the client is displayed within the new site.</descr>
       </element>
       <element name="TWinControl.DoAddDockClient.Client">
         <short/>
@@ -9346,14 +9461,20 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DockOver">
-        <short>Position DockRect, invoke OnDockOver (via DoDockOver)</short>
+        <short>Called to check whether this control allows docking and where.
+        </short>
         <descr>
-          <p>Called on dragmanager messages dmEnter/Leave/Move, to get the DockRect to show.</p>
-          <p>Accept has been set to True, to signal acceptance.</p>
-          <p>Everything can be overridden by the OnDockOver handler, if installed.</p>
+          <p>
+            Called on dragmanager messages dmEnter/Leave/Move, to get the DockRect to show.
+          </p><p>
+            Positions the DockRect, invokes OnDockOver (via DoDockOver)
+          </p><p>
+            Everything can be overridden by the OnDockOver handler, if installed.
+          </p>
         </descr>
         <seealso>
           <link id="TControl.PositionDockRect"/>
+          <link id="TControl.OnDockOver"/>
         </seealso>
       </element>
       <element name="TWinControl.DockOver.Source">
@@ -9369,7 +9490,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <element name="TWinControl.DockOver.Accept">
-        <short/>
+        <short>Initially True, set to False to reject an drop.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoDockOver">
@@ -9392,7 +9513,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoRemoveDockClient">
-        <short>Perform special actions on removal of an docked client.</short>
+        <short>Override this method to take special actions on removal of an docked client.</short>
         <descr>The default implementation does nothing.</descr>
       </element>
       <element name="TWinControl.DoRemoveDockClient.Client">
@@ -9400,57 +9521,67 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoUnDock">
-        <short>Notifies an <var>OnUnDock</var> handler and DockManager of the undocked client control.</short>
-        <descr>The OnUnDock handler can deny to undock the control.</descr>
+        <short>Notifies an <var>OnUnDock</var> handler and DockManager of an undocked client control.</short>
+        <descr>The OnUnDock handler can deny to undock the control.
+          This can cause trouble, the control better should not be draggable instead.
+        </descr>
         <errors/>
         <seealso>
           <link id="TWinControl.DoUndockClientMsg"/>
+          <link id="TWinControl.OnUnDock"/>
         </seealso>
       </element>
       <element name="TWinControl.DoUnDock.Result">
-        <short/>
+        <short>Set to False to deny undocking.</short>
       </element>
       <element name="TWinControl.DoUnDock.NewTarget">
-        <short/>
+        <short>The new docksite, Nil for floating.</short>
       </element>
       <element name="TWinControl.DoUnDock.Client">
-        <short/>
+        <short>The control being undocked.</short>
       </element>
       <element name="TWinControl.DoUnDock.KeepDockSiteSize">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.GetSiteInfo">
         <short>Return information about this dock site (InfluenceRect).</short>
-        <descr>The InfluenceRect determines the screen coordinates, within which a drop is accepted.<br/>
-          The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustable in an OnGetSiteInfo handler.
+        <descr>The InfluenceRect determines the screen coordinates,
+          within which a drop is accepted.<br/>
+          The InfluenceRect is the slightly inflated WindowRect of the dock site,
+          adjustable in an OnGetSiteInfo handler.
         </descr>
       </element>
       <element name="TWinControl.GetSiteInfo.Client">
-        <short/>
+        <short>The dragged control[?]</short>
       </element>
       <element name="TWinControl.GetSiteInfo.InfluenceRect">
-        <short/>
+        <short>The screen rectangle within which a drop is allowed.</short>
       </element>
       <element name="TWinControl.GetSiteInfo.MousePos">
-        <short/>
+        <short>The current mouse position.</short>
       </element>
       <element name="TWinControl.GetSiteInfo.CanDock">
-        <short/>
+        <short>Can be set to False to reject an drop.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ReloadDockedControl">
         <short>Returns the docked control of the specified name.</short>
         <descr>
-          <p>The control is searched in the controls owned by the owner of this control.</p>
-          <p>Override to search other places, or to create a control of the requested name.</p>
+          <p>
+            This method is used during the restore of the layout of a docksite.
+          </p><p>
+            The control is searched in the controls owned by the owner of the docksite.
+          </p><p>
+            Override to search other places, or to create a control of the requested name.
+          </p>
         </descr>
       </element>
       <element name="TWinControl.ReloadDockedControl.AControlName">
-        <short/>
+        <short>The name of the control to be docked.</short>
       </element>
       <element name="TWinControl.ReloadDockedControl.AControl">
-        <short/>
+        <short>The matching control.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.CreateDockManager">
@@ -9460,7 +9591,7 @@ dmFindTarget: find child control under the mouse
         <seealso/>
       </element>
       <element name="TWinControl.CreateDockManager.Result">
-        <short/>
+        <short>The dockmanager for this site, can be Nil for an unmanaged site.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.SetDockManager" link="TWinControl.DockManager"/>
@@ -9468,11 +9599,12 @@ dmFindTarget: find child control under the mouse
         <short></short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.DoFloatMsg" link="#LCL.Controls.TControl.DoFloatMsg">
+      <element name="TWinControl.DoFloatMsg" link="TControl.DoFloatMsg">
         <short>Handler called when the control starts floating.</short>
         <descr>TWinControls can float for themselves, unless they request a special FloatingDockSiteClass.
-[Bug: when no FloatingDockSiteClass was assigned, a default floating site is created?]
-</descr>
+          [Bug: when no FloatingDockSiteClass was assigned,
+          a default floating site is created?]
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -9481,136 +9613,158 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoGetDockCaption">
-        <short>Calls an OnGetDockCaption handler, to adjust the dock-caption for the docked control.</short>
-        <descr/>
+        <short>Returns the dock caption of AControl.
+        </short>
+        <descr>
+          <p>
+            Asks the control for its default dock caption,
+            then allows the OnGetDockCaption handler to adjust this string.
+          </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TControl.GetDockCaption"/>
+          <link id="TWinControl.OnGetDockCaption"/>
+        </seealso>
       </element>
       <element name="TWinControl.DoGetDockCaption.AControl">
-        <short/>
+        <short>The control whose dock caption string is requested.</short>
       </element>
       <element name="TWinControl.DoGetDockCaption.ACaption">
-        <short/>
+        <short>The dock caption to use.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoEnter">
-        <short>Invoke the <var>OnEnter</var> event handler.</short>
+        <short>Invokes the <link id="TWinControl.OnEnter">OnEnter</link> event handler.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoExit">
-        <short>Invoke the <var>OnExit</var> event handler.</short>
+        <short>Invoke the <link id="TWinControl.OnExit">OnExit</link> event handler.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoKeyDownBeforeInterface">
-        <short>
-          <var>DoKeyDownBeforeInterface</var> - issues a message to the interface and returns True if a key was already down</short>
-        <descr/>
+        <short>Handles a KeyDown event before the widget processes the key.
+        </short>
+        <descr>
+          <p>
+            A number of handlers is invoked, until one handles the key.
+          </p><p>
+            First all application wide handlers are invoked (<link id="#lcl.Forms.TApplication.NotifyKeyDownBeforeHandler"/>).
+          </p><p>
+            Then the form's handler is invoked, when KeyPreview is requested.
+          </p><p>
+            Then the DragManager is asked, when dragging.
+            It interprets ESC to cancel dragging, and CTRL to ignore drag targets.
+          </p><p>
+            Finally the <link id="TWinControl.OnKeyDown"/> user handler is invoked.
+          </p><p>
+            If no handler accepts the key, the widget continues to interpret it itself.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.DoKeyDownBeforeInterface.Result">
-        <short/>
+        <short>Set to True when the key was handled.</short>
       </element>
       <element name="TWinControl.DoKeyDownBeforeInterface.Message">
         <short/>
       </element>
       <element name="TWinControl.DoKeyDownBeforeInterface.IsRecurseCall">
-        <short></short>
+        <short>[?]</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoRemainingKeyDown">
-        <short>
-          <var>DoRemainingKeyDown</var> - issues a LCL message and returns True if a key remains down</short>
+        <short>Handles keys which are not handled by the widget.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.DoRemainingKeyDown.Result">
-        <short/>
+        <short>True if the key was handled.</short>
       </element>
       <element name="TWinControl.DoRemainingKeyDown.Message">
         <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoRemainingKeyUp">
-        <short>
-          <var>DoRemainingKeyUp</var> - issues a LCL message and returns True if a key remains up</short>
+        <short>[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.DoRemainingKeyUp.Result">
-        <short/>
+        <short>True if the key was handled.</short>
       </element>
       <element name="TWinControl.DoRemainingKeyUp.Message">
         <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoKeyPress">
-        <short>
-          <var>DoKeyPress</var> - issues a LCL message and returns True if a key is pressed</short>
-        <descr/>
+        <short>Tries all <link id="TWinControl.OnKeyPress">OnKeyPress</link> handlers, of Parents first.
+        </short>
+        <descr>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.OnUTF8KeyPress"/>
+        </seealso>
       </element>
       <element name="TWinControl.DoKeyPress.Result">
-        <short/>
+        <short>True if the key was handled.</short>
       </element>
       <element name="TWinControl.DoKeyPress.Message">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TWinControl.DoUTF8KeyPress">
-        <short>
-          <var>DoUTF8KeyPress</var> - issues a LCL message and returns True if there has been a UTF8 key press</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TWinControl.DoUTF8KeyPress" link="TWinControl.DoKeyPress"/>
       <element name="TWinControl.DoUTF8KeyPress.Result">
-        <short/>
+        <short>True if the key was handled.</short>
       </element>
       <element name="TWinControl.DoUTF8KeyPress.UTF8Key">
         <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoKeyUpBeforeInterface">
-        <short>
-          <var>DoKeyUpBeforeInterface</var> - issues an interface message and returns True if a key was already up</short>
-        <descr/>
+        <short>Handles a KeyUp event before the widget processes the key.
+        </short>
+        <descr>For details see the equivalent method <link id="TWinControl.DoKeyDownBeforeInterface"/>.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.DoKeyUpBeforeInterface.Result">
-        <short/>
+        <short>True if the key was handled.</short>
       </element>
       <element name="TWinControl.DoKeyUpBeforeInterface.Message">
         <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.ChildKey">
-        <short>
-          <var>ChildKey</var> - LCL message: returns True if this is a child key</short>
+        <short>[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.ChildKey.Result">
-        <short/>
+        <short>True if the key was handled.</short>
       </element>
       <element name="TWinControl.ChildKey.Message">
         <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.SendDialogChar">
-        <short>
-          <var>SendDialogChar</var> - LCL key message: returns True if a dialog character has been sent</short>
+        <short>[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.SendDialogChar.Result">
-        <short/>
+        <short>True if the key was handled.</short>
       </element>
       <element name="TWinControl.SendDialogChar.Message">
         <short/>
@@ -9618,15 +9772,15 @@ dmFindTarget: find child control under the mouse
       <!-- function Visibility: protected -->
       <element name="TWinControl.DialogChar" link="#LCL.Controls.TControl.DialogChar"/>
       <element name="TWinControl.DialogChar.Result">
-        <short/>
+        <short>True if the key was handled.</short>
       </element>
       <element name="TWinControl.DialogChar.Message">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ControlKeyDown">
-        <short>
-          <var>ControlKeyDown</var> - contains the set of special keys (shift, control, alt, meta) that are pressed</short>
+        <short>Lets the Application handle an navigation key.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9639,8 +9793,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ControlKeyUp">
-        <short>
-          <var>ControlKeyUp</var> - contains the set of special keys (shift, control, alt, meta) that are not pressed ('up')</short>
+        <short>Lets the Application handle an navigation key.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9653,7 +9807,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyDown">
-        <short>The <var>KeyDown</var> message handler, calls <var>OnKeyDown</var>.</short>
+        <short>Invokes the <link id="TWinControl.OnKeyDown">OnKeyDown</link> handler.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9666,8 +9821,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyDownBeforeInterface">
-        <short>
-          <var>KeyDownBeforeInterface</var> - informs interface that the specified key (with defined shift state) was already pressed</short>
+        <short>Invokes the <link id="TWinControl.OnKeyDown">OnKeyDown</link> handler.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9680,8 +9835,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyDownAfterInterface">
-        <short>
-          <var>KeyDownAfterInterface</var> - informs interface that the specified key (with defined shift state) was pressed after an event</short>
+        <short>[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9694,7 +9849,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyPress">
-        <short>The <var>KeyPress</var> message handler.</short>
+        <short>Invokes the <link id="TWinControl.OnKeyPress">OnKeyPress</link> handler.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9704,7 +9860,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyUp">
-        <short>The KeyUp message handler, calls <var>OnKeyUp</var>.</short>
+        <short>Invokes the <link id="TWinControl.OnKeyUp">OnKeyUp</link> handler.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9717,8 +9874,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyUpBeforeInterface">
-        <short>
-          <var>KeyUpBeforeInterface</var> - informs interface that the specified key (with defined shift state) was already up</short>
+        <short>Invokes the <link id="TWinControl.OnKeyUp">OnKeyUp</link> handler.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9731,8 +9888,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyUpAfterInterface">
-        <short>
-          <var>KeyUpAfterInterface</var> - informs interface that the specified key (with defined shift state) was released (up) after an event</short>
+        <short>[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9745,8 +9902,8 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.UTF8KeyPress">
-        <short>
-          <var>UTF8KeyPress</var> - simulates the action of pressing the specified (UTF8) key</short>
+        <short>Invokes the <link id="TWinControl.OnUTF8KeyPress">OnUTF8KeyPress</link> handler.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9756,31 +9913,29 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.FindNextControl">
-        <short>
-          <var>FindNextControl</var> - returns the next control on the list; optionally checks if it is a TabStop or a parent control</short>
+        <short>Returns the preceding or next control in tab order.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.FindNextControl.Result">
-        <short/>
+        <short>The (next) control.</short>
       </element>
       <element name="TWinControl.FindNextControl.CurrentControl">
-        <short/>
+        <short>The control which has the focus [can be Nil!?].</short>
       </element>
       <element name="TWinControl.FindNextControl.GoForward">
-        <short/>
+        <short>False to find the preceding control.</short>
       </element>
       <element name="TWinControl.FindNextControl.CheckTabStop">
-        <short/>
+        <short>When True: only find controls with TabStop=True.</short>
       </element>
       <element name="TWinControl.FindNextControl.CheckParent">
-        <short/>
+        <short>When True: only find controls with Parent=Self.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.SelectFirst">
-        <short>
-          <var>SelectFirst</var> - select the first control on the list</short>
+        <short>Returns the first control in tab order.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9791,13 +9946,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TWinControl.GetBorderStyle">
-        <short>
-          <var>GetBorderStyle</var> - returns the style of the border</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TWinControl.GetBorderStyle" link="TWinControl.BorderStyle"/>
       <element name="TWinControl.GetBorderStyle.Result">
         <short/>
       </element>
@@ -9835,30 +9984,30 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.IsControlMouseMsg">
-        <short>
-          <var>IsControlMouseMsg</var> - returns True if the specified message is a control mouse message</short>
+        <short>Sends the mouse message to a child control.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.IsControlMouseMsg.Result">
-        <short/>
+        <short>True if a child control was found at the mouse coordinates.</short>
       </element>
       <element name="TWinControl.IsControlMouseMsg.TheMessage">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CreateHandle">
-        <short>
-          <var>CreateHandle</var> - generates an operating system handle</short>
+        <short>Creates the Handle ( = widget) if not already done.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CreateParams">
-        <short>
-          <var>CreateParams</var> - create parameters for this windowed class</short>
+        <short>Initializes the window creation parameter record with the settings of the control.
+        </short>
         <descr>
           <p>Definition of parameters:</p>
           <pre>TCreateParams = record
@@ -9882,58 +10031,54 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CreateWnd">
-        <short>
-          <var>CreateWnd</var> - Creates the Window</short>
+        <short>Creates the interface object (widget) and assigns it to Handle.
+        </short>
         <descr>
-          <p>
-            <printshort id="TWinControl.CreateWnd"/>
-          </p>
-          <p>Creates the interface object, sets parameters and assigns the handle</p>
         </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DestroyHandle">
-        <short>
-          <var>DestroyHandle</var> - removes the handle for this window</short>
+        <short>Destroys this and all child widgets.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DestroyWnd">
-        <short>
-          <var>DestroyWnd</var> - destroy the window for this control</short>
+        <short> Destroys the interface object (widget).
+        </short>
         <descr>
-          <p>
-            <printshort id="TWinControl.DestroyWnd"/>
-          </p>
-          <p>Removes handles and restores color and font flags</p>
         </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoFlipChildren">
-        <short>
-          <var>DoFlipChildren</var> - reverses the order of the children</short>
-        <descr/>
+        <short>Flip children horizontally. That means mirroring the Left position.
+        </short>
+        <descr>Child controls arranged in left-to-right order appear in right-to-left order after flipping.
+          All anchors are adjusted accordingly.
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.FlipChildren"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.FinalizeWnd">
-        <short>
-          <var>FinalizeWnd</var> -  getting ready to remove window (gets called before the Handle is destroyed)</short>
+        <short>Prepare to remove the window (gets called before the Handle is destroyed).
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.FixupTabList">
-        <short>
-          <var>FixupTabList</var> - renders the Tab list into a suitable state</short>
+        <short>Assigns strictly sequential TabOrder values to all child windows.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9945,24 +10090,19 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.InitializeWnd">
-        <short>
-          <var>InitializeWnd</var> - initialise the window for this control</short>
+        <short>Copies cached control properties to the just created widget.</short>
         <descr>
-          <p>
-            <var>InitializeWnd</var> - initialise the window for this control</p>
-          <p>Gets called after the Handle is created and before the child handles are created</p>
-          <p>Works out the correct bounds, sets style, fonts and colours, performs any pending resize operations</p>
+          <p>Gets called after the Handle is created and before the child handles are created.
+          </p>
         </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.Loaded">
-        <short>Called when the control has been loaded from a resource.
+        <short>Called when the control has been loaded from a resource, transfers the loaded property values to the widget.
         </short>
         <descr>
-          <var>Loaded</var> makes a number of checks, using client size if specified, and copying appropriate flags, fonts, text etc, makes list of child controls to notify them of any changes, then calls inherited
-          <var>Loaded</var>
         </descr>
         <errors/>
         <seealso>
@@ -9971,9 +10111,8 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.FormEndUpdated">
-        <short>
-          <var>FormEndUpdated</var> - calls inherited
-          <var>FormEndUpdated</var> then informs each child control</short>
+        <short>Realizes all cached changes after a bulk update of the form. Calls inherited
+          <var>FormEndUpdated</var>, then informs each child control.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -9982,9 +10121,9 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.MainWndProc">
-        <short>
-          <var>MainWndProc</var> - issus a LCL message that this is the main window procedure</short>
-        <descr/>
+        <short>[?]</short>
+        <descr>[This method does nothing, and cannot be overridden???]
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -9993,7 +10132,9 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ParentFormHandleInitialized">
-        <short>Called after all children handles of the ParentForm are created. Tells all wincontrols about the final end of the handle creation phase</short>
+        <short>Called after all children handles of the ParentForm are created.
+          Notifies all children of the end of the handle creation phase.
+        </short>
         <descr/>
         <errors/>
         <seealso>
@@ -10002,8 +10143,8 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ChildHandlesCreated">
-        <short>
-          <var>ChildHandlesCreated</var> - called after a child's handles are created</short>
+        <short>Called after all child handles have been created. Resets wcfCreatingChildHandles.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10015,8 +10156,8 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.RemoveFocus">
-        <short>
-          <var>RemoveFocus</var> from this WinContro</short>
+        <short>Notifies the parent form of the focus loss.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10033,13 +10174,7 @@ End;
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.SetBorderStyle">
-        <short>
-          <var>SetBorderStyle</var> - specify the style for the border</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TWinControl.SetBorderStyle" link="TWinControl.BorderStyle"/>
       <element name="TWinControl.SetBorderStyle.NewStyle">
         <short/>
       </element>
@@ -10050,8 +10185,8 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.SetChildZPosition">
-        <short>
-          <var>SetChildZPosition</var> - specify the position of the child control in the Z plane (ie front-to-back)</short>
+        <short>Updates the position of the child control in the Z plane (ie front-to-back).
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10064,43 +10199,40 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ShowControl">
-        <short>
-          <var>ShowControl</var> - method for showing the specified control</short>
+        <short>Asks the parent to show ourself.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.ShowControl.AControl">
-        <short/>
+        <short>The control to show, here: ignored!</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.UpdateControlState">
-        <short>
-          <var>UpdateControlState</var> - update the state of the control</short>
+        <short>Essentially updates the visible state of the control, and of the widget if already created.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.UpdateShowing">
-        <short>
-          <var>UpdateShowing</var> - update the value of the
-          <var>Showing</var> property</short>
+        <short>When the widget should be visible and has not yet been created, it's created along with all children.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WndProc">
-        <short>
-          <var>WndProc</var> - makes specific reactions according to the message passed, then calls inherited
-          <var>WndProc</var>
+        <short>Adds special handling for focus and input messages, notifies an DockManager.
         </short>
         <descr>
           <p>LM_SETFOCUS: gets parent form and show this control as focused</p>
           <p>LM_KILLFOCUS: removes focus fromthis control</p>
           <p>LM_NCHITTEST: check transparency etc</p>
-          <p>Mouse and Button messages: process any docking instructions</p>
+          <p>Mouse messages: send to DockManager.</p>
         </descr>
         <errors/>
         <seealso>
@@ -10112,18 +10244,18 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WSSetText">
-        <short>
-          <var>WSSetText</var> - writes the name of the current widget set to a local variable</short>
+        <short>Sends text to the widget (from WM_SETTEXT?).
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.WSSetText.AText">
-        <short/>
+        <short>The text to send.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.AutoSizePhases">
-        <short></short>
+        <short>Translates state flags into AutoSizePhases[?]</short>
         <descr>
         </descr>
         <errors>
@@ -10141,7 +10273,7 @@ End;
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.AutoSizeCheckParent">
-        <short></short>
+        <short>Checks for a parent control or widget.</short>
         <descr>
         </descr>
         <errors>
@@ -10150,88 +10282,93 @@ End;
         </seealso>
       </element>
       <element name="TWinControl.AutoSizeCheckParent.Result">
-        <short></short>
+        <short>True when a parent exists.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.BeginUpdateBounds">
-        <short>
-          <var>BeginUpdateBounds</var> - start updating the bounds of the current WinControl</short>
+        <short>Start of Bounds updates. Disables SetBounds by incrementing BoundsLockCount.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.EndUpdateBounds"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.EndUpdateBounds">
-        <short>
-          <var>EndUpdateBounds</var> - finishes updating the bounds setting</short>
+        <short>End of Bounds update. Decrements BoundsLockCount and eventually calls SetBounds.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.BeginUpdateBounds"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.LockRealizeBounds">
-        <short>
-          <var>LockRealizeBounds</var> - make the realized bounds unaccessible</short>
+        <short>Disables sending bounds to the widget, by incrementing FRealizeBoundsLockCount.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.UnlockRealizeBounds"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.UnlockRealizeBounds">
-        <short>
-          <var>UnlockRealizeBounds</var> - unlock the previously locked realized bounds</short>
+        <short>Enables sending bounds to the widget again, eventually updates the widget.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.LockRealizeBounds"/>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.ControlAtPos">
         <short>Get the child control at the given client position.</short>
         <descr>
-          <p>[this applies to what?]</p>
-          <ul>
-            <li>capfHasScrollOffset: Take into account scroll offset of scrollable wincontrol. [when not???]</li>
-            <li>capfWinControls: skip wincontrols if False (when???)</li>
-            <li>capfRecursive: search nested children</li>
-          </ul>
           <p>WinControls are found before Controls (if overlapping).</p>
         </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.ControlAtPos.Result">
-        <short/>
+        <short>The found control, Nil if none found.</short>
       </element>
-      <element name="TWinControl.ControlAtPos.Pos"/>
+      <element name="TWinControl.ControlAtPos.Pos">
+        <short>The client coordinates.</short>
+      </element>
       <element name="TWinControl.ControlAtPos.AllowDisabled">
-        <short/>
+        <short>Allow finding disabled controls.</short>
       </element>
       <element name="TWinControl.ControlAtPos.AllowWinControls">
-        <short/>
-      </element>
-      <element name="TWinControl.ControlAtPos.Flags">
-        <short/>
+        <short>Allow finding TWinControls, in addition to TControls.</short>
       </element>
       <element name="TWinControl.ControlAtPos.OnlyClientAreas">
-        <short/>
+        <short>Only search in client areas.</short>
+      </element>
+      <element name="TWinControl.ControlAtPos.Flags">
+        <short>Encoded Allow... conditions.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.ContainsControl">
-        <short>This component contains a specified control</short>
+        <short>Returns True if this is a parent of the given control.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.ContainsControl.Result">
-        <short/>
+        <short>True when we are a parent of Control.</short>
       </element>
       <element name="TWinControl.ContainsControl.Control">
-        <short/>
+        <short>The (possible) child control.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.DoAdjustClientRectChange">
-        <short>
-          <var>DoAdjustClientRectChange</var> - perform any adjustments needed when the client rectangle changes</short>
+        <short>Asks the widget if clientrect has changed since last AlignControl,
+          and calls AdjustSize on change.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10241,19 +10378,20 @@ End;
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.InvalidateClientRectCache">
-        <short>
-          <var>InvalidateClientRectCache</var> - render invalid any information in the client rectangle cache</short>
+        <short>The ClientRect is cached.
+          Call this procedure to invalidate the cache,
+          so that next time the ClientRect is fetched from the widget.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.InvalidateClientRectCache.WithChildControls">
-        <short/>
+        <short>Also invalidate all child controls, if True.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.ClientRectNeedsInterfaceUpdate">
-        <short>
-          <var>ClientRectNeedsInterfaceUpdate</var> - True if update needed
+        <short>The ClientRect is cached - check if the cache is valid.
         </short>
         <descr/>
         <errors/>
@@ -10287,30 +10425,14 @@ End;
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TWinControl.DisableAlign">
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TWinControl.DisableAlign" link="TWinControl.DisableAutoSizing"/>
       <!-- procedure Visibility: public -->
-      <element name="TWinControl.EnableAlign">
-        <short>
-          <var>EnableAlign</var> - turn on the alignment process</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TWinControl.EnableAlign" link="TWinControl.EnableAutoSizing"/>
       <!-- procedure Visibility: protected -->
-      <element name="TWinControl.ReAlign">
-        <short>
-          <var>ReAlign</var> - realign all children</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TWinControl.ReAlign" link="TControl.AdjustSize"/>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.ScrollBy">
-        <short></short>
+        <short>Move all child controls.</short>
         <descr>
         </descr>
         <errors>
@@ -10319,10 +10441,10 @@ End;
         </seealso>
       </element>
       <element name="TWinControl.ScrollBy.DeltaX">
-        <short></short>
+        <short>Increment for Left.</short>
       </element>
       <element name="TWinControl.ScrollBy.DeltaY">
-        <short></short>
+        <short>Increment for Top</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.WriteLayoutDebugReport" link="#LCL.Controls.TControl.WriteLayoutDebugReport"/>
@@ -10336,8 +10458,7 @@ End;
       </element>
       <!-- constructor Visibility: public -->
       <element name="TWinControl.CreateParented">
-        <short>
-          <var>CreateParented</var> - constructor for a window that is the child of a specified parent</short>
+        <short>Constructor for a control that is the child of the given widget.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10346,13 +10467,7 @@ End;
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWinControl.CreateParentedControl">
-        <short>
-          <var>CreateParentedControl</var> - returns a newly created window control that has a specified window as its parent</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TWinControl.CreateParentedControl" link="TWinControl.CreateParented"/>
       <element name="TWinControl.CreateParentedControl.Result">
         <short/>
       </element>
@@ -10360,22 +10475,23 @@ End;
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TWinControl.Destroy">
-        <short/>
-        <descr>
-          <p>Destroys any allocated handles, removes any docking links, and frees the resources used by the control.</p>
-        </descr>
-        <seealso>
-          <link id="#LCL.Controls.TControl.Destroy">TControl.Destroy</link>
-        </seealso>
-      </element>
+      <element name="TWinControl.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.DockDrop">
-        <short>A dragged control has been dropped onto this docksite</short>
+        <short>Handler for a DragManager dmDragDrop message,
+          sent when a dragged control has been dropped onto this docksite.
+        </short>
         <descr>
-          <p>Asks the dropped control to dock itself into the target control, updating its Parent, HostDockSite and the DockClients of the old and new DockSite.</p>
-          <p>When a DockManager is installed, asks the DockManager to position the docked control (InsertControl).</p>
-          <p>Finally creates an OnDockDrop event.</p>
+          <p>
+            Asks the dropped control to dock itself into this docksite,
+            updating its Parent, HostDockSite,
+            and the DockClients of the old and new DockSite.
+          </p><p>
+            When a DockManager is installed,
+            asks the DockManager to position the docked control (InsertControl).
+          </p><p>
+            Finally creates an OnDockDrop event.
+          </p>
         </descr>
         <seealso>
           <link id="TWinControl.DoDockClientMsg"/>
@@ -10394,9 +10510,10 @@ End;
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.CanFocus">
-        <short>
-          <var>CanFocus</var> -  is the current window allowed to receive focus?</short>
-        <descr/>
+        <short>Is this control allowed to receive the focus?</short>
+        <descr>A control can get the focus only when all of its Parents
+          are Visible and Enabled.
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -10405,26 +10522,21 @@ End;
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.GetControlIndex">
-        <short>
-          <var>GetControlIndex</var> - find the index value for the given control</short>
+        <short>Finds the index value for the given control,
+          in <link id="TWinControl.Controls">Controls[]</link>.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.GetControlIndex.Result">
-        <short/>
+        <short>The index in Controls, -1 if not found.</short>
       </element>
       <element name="TWinControl.GetControlIndex.AControl">
-        <short/>
+        <short>The (possible) child control.</short>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TWinControl.SetControlIndex">
-        <short>
-          <var>SetControlIndex</var> - set a new index value for the given control</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TWinControl.SetControlIndex" link="TWinControl.SetChildZPosition"/>
       <element name="TWinControl.SetControlIndex.AControl">
         <short/>
       </element>
@@ -10433,59 +10545,67 @@ End;
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.Focused">
-        <short>
-          <var>Focused</var> - is the current window receiving focus?</short>
+        <short>Checks whether the control has the focus.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.Focused.Result">
-        <short/>
+        <short>True when we have the focus.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.PerformTab">
-        <short>
-          <var>PerformTab</var> - perform a tab - is it in the forward direction?</short>
+        <short>Sets the focus to the next (or preceding) control.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.PerformTab.Result">
-        <short/>
+        <short>True when the focus has been transferred.</short>
       </element>
       <element name="TWinControl.PerformTab.ForwardTab">
-        <short/>
+        <short>The direction of transfer: True for the next control in the TabOrder, False for the preceding control.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.FindChildControl">
-        <short>
-          <var>FindChildControl</var> - find what controls are descended from the current one</short>
+        <short>Finds a child control by name.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.FindChildControl.Result">
-        <short/>
+        <short>True when the control has been found.</short>
       </element>
       <element name="TWinControl.FindChildControl.ControlName">
-        <short/>
+        <short>The Name of the control to find.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.SelectNext">
-        <short>
-          <var>SelectNext</var> - move to the next windowed control and give it focus</short>
-        <descr/>
+        <short>Transfers the focus to the next child control.
+        </short>
+        <descr>
+          <p>
+            The search wraps around on the boundaries of the TabOrder array.
+          </p><p>
+            When no next control can be found, the focus remains unchanged.
+          </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.FindNextControl"/>
+        </seealso>
       </element>
       <element name="TWinControl.SelectNext.CurControl">
-        <short/>
+        <short>The control which is assumed to have the focus.</short>
       </element>
       <element name="TWinControl.SelectNext.GoForward">
-        <short/>
+        <short>False when the control preceding CurControl shall be found.</short>
       </element>
       <element name="TWinControl.SelectNext.CheckTabStop">
-        <short/>
+        <short>When True, only select a control that can receive the focus.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.SetTempCursor" link="#LCL.Controls.TControl.SetTempCursor"/>
@@ -10494,38 +10614,49 @@ End;
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.BroadCast">
-        <short>
-          <var>BroadCast</var> - send
-          <var>ToAllMessage</var> to all recipients</short>
+        <short>Sends a message to all child controls.
+        </short>
+        <seealso>
+          <link id="TWinControl.NotifyControls"/>
+        </seealso>
       </element>
       <element name="TWinControl.BroadCast.ToAllMessage">
-        <short/>
+        <short>The message to send.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.NotifyControls">
-        <short>
-          <var>NotifyControls</var> - send
-          <var>Msg </var>(a message) to all controls</short>
+        <short>Sends a message to all child controls.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.BroadCast"/>
+        </seealso>
       </element>
       <element name="TWinControl.NotifyControls.Msg">
-        <short/>
+        <short>The message ID.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.DefaultHandler">
-        <short>
-          <var>DefaultHandler</var> handles all messages that the control doesn't fully handle itself.
+        <short>Handles all messages that the control doesn't fully handle itself.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            This implementation sends the message to the widget's message handler.
+          </p><p>
+            Override this method to implement your own message handling.
+            If the message Result is nonzero, the message already has been handled;
+            otherwise set the Result to nonzero (depending on the message ID),
+            when the message has been handled.
+          </p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#rtl.System.TObject.DefaultHandler">TObject.DefaultHandler</link>
         </seealso>
       </element>
       <element name="TWinControl.DefaultHandler.AMessage">
-        <short/>
+        <short>The message to process.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.GetTextLen" link="#LCL.Controls.TControl.GetTextLen"/>
@@ -10534,50 +10665,41 @@ End;
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.Invalidate">
-        <short/>
-        <descr/>
+        <short>Schedule an repaint request.
+        </short>
+        <descr>This implementation invokes the Invalidate method of the widget.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.AddControl">
-        <short>
-          <var>AddControl</var> - add this control to the list of controls</short>
+        <short>Tell widgetset to add Handle object to parent's Handle object.[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.InsertControl">
-        <short>
-          <var>InsertControl</var> - insert the specified control into the list, optionally with the specified index</short>
+        <short>Insert control into Controls[].
+        </short>
       </element>
       <element name="TWinControl.InsertControl.AControl">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TWinControl.InsertControl">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.InsertControl.AControl">
-        <short/>
+        <short>The control to insert.</short>
       </element>
       <element name="TWinControl.InsertControl.Index">
-        <short/>
+        <short>Insert at index (optional).</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.RemoveControl">
-        <short>
-          <var>RemoveControl</var> - remove the specified control from the list</short>
+        <short>Remove control from Controls[].</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.RemoveControl.AControl">
-        <short/>
+        <short>The control to remove.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.Repaint" link="#LCL.Controls.TControl.Repaint"/>
@@ -10591,25 +10713,21 @@ End;
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.FlipChildren">
-        <short>
-          <var>FlipChildren</var> - reverse the order of the child components</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.FlipChildren.AllLevels">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TWinControl.ScaleBy">
-        <short></short>
-        <descr>
+        <short>Flip children horizontally. That means mirroring the Left position and anchoring.
+        </short>
+        <descr>Child controls arranged in left-to-right order appear in right-to-left order after flipping.
+          All anchors are adjusted accordingly.
         </descr>
-        <errors>
-        </errors>
+        <errors/>
         <seealso>
+          <link id="TWinControl.DoFlipChildren"/>
         </seealso>
       </element>
+      <element name="TWinControl.FlipChildren.AllLevels">
+        <short>Flip recursive?</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWinControl.ScaleBy" link="TWinControl.ChangeScale"/>
       <element name="TWinControl.ScaleBy.Multiplier">
         <short></short>
       </element>
@@ -10639,29 +10757,28 @@ End;
         </seealso>
       </element>
       <element name="TWinControl.UpdateDockCaption.Exclude">
-        <short>Control to be excluded from the DockCaption.</short>
+        <short>Control to exclude from the DockCaption.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.GetTabOrderList">
-        <short>
-          <var>GetTabOrderList</var> - find the list with the Tab Order</short>
+        <short>Fill the list with all TabStop controls, recursing into child controls.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.GetTabOrderList.List">
-        <short/>
+        <short>The list to which the controls shall be added.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.HandleAllocated">
-        <short>
-          <var>HandleAllocated</var> - find if the operating system has allocated a handle to this control</short>
+        <short>Check whether a widget has been assigned to this control.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.HandleAllocated.Result">
-        <short/>
+        <short>True when a widget exists (Handle is not Nil).</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.ParentHandlesAllocated" link="#LCL.Controls.TControl.ParentHandlesAllocated"/>
@@ -10670,58 +10787,70 @@ End;
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.HandleNeeded">
-        <short>
-          <var>HandleNeeded</var> - tell the Operating System that this control requires a handle</short>
-        <descr/>
+        <short>Call this method when your code requires a valid Handle for this control.
+        </short>
+        <descr>
+          <p>An attempt is made to create a widget, when not already done.</p>
+          <remark>In certain situations it may be impossible to create a widget right now!</remark>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.BrushCreated">
-        <short>
-          <var>BrushCreated</var> - has a brush been created for this control?</short>
+        <short>Has a <link id="TWinControl.Brush">Brush</link>
+          been created for this control?</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.BrushCreated.Result">
-        <short/>
+        <short>True when a Brush has been created.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.EraseBackground">
-        <short>
-          <var>EraseBackground</var> - remove all material from the background</short>
-        <descr/>
+        <short>Fills the entire control with the designed background color and pattern.
+        </short>
+        <descr>
+          <p>
+            This method can be called during Paint requests only, which provide an valid DC.
+          </p><p>
+            The background may be transparent or non-rectangular as well![?]
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.EraseBackground.DC">
-        <short/>
+        <short>The device context to use; may be clipped to a certain shape.[?]</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.IntfUTF8KeyPress">
-        <short>
-          <var>IntfUTF8KeyPress</var> - returns the UTF8 value of the pressed key from the interface</short>
-        <descr/>
+        <short>Called by the interface after the navigation and specials keys are handled;
+          i.e. after KeyDown but before KeyPress.
+        </short>
+        <descr>Essentially expands an repeat count into multiple keystrokes[?],
+          but not for SysKeys.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.IntfUTF8KeyPress.Result">
-        <short/>
+        <short>True when multiple keystrokes have been processed.</short>
       </element>
       <element name="TWinControl.IntfUTF8KeyPress.UTF8Key">
-        <short/>
+        <short>The UTF-8 encoding of the character.</short>
       </element>
       <element name="TWinControl.IntfUTF8KeyPress.RepeatCount">
-        <short/>
+        <short>Must be greater than zero[?], the exact value is ignored[?]</short>
       </element>
       <element name="TWinControl.IntfUTF8KeyPress.SystemKey">
-        <short/>
+        <short>Must be False, else nothing happens.[?]</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.PaintTo">
-        <short>
-          <var>PaintTo</var> - Paint to a specified position on the canvas</short>
+        <short>Paints [what?] only when a widget exists.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10740,132 +10869,14 @@ End;
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.SetShape">
-        <short>
-          <var>SetShape</var> - make the specified shape appear on the Window</short>
-        <descr/>
+        <short>Specifies the (non-rectangular) shape of the widget.
+        </short>
+        <descr>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWinControl.SetShape.AShape">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.AssignTo"/>
-      <element name="TWinControl.AssignTo.Dest">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.ActionChange">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.ActionChange.Sender">
-        <short/>
-      </element>
-      <element name="TWinControl.ActionChange.CheckDefaults">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TWinControl.GetActionLinkClass">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.GetActionLinkClass.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.ResizeDelayedAutoSizeChildren">
-        <short>
-          <var>ResizeDelayedAutoSizeChildren</var> - method for re-sizing children, using autosize delayed</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.CMDrag">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.CMDrag.Message">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.DestroyComponent">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.GetChildBounds">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.GetChildBounds.ChildBounds">
-        <short/>
-      </element>
-      <element name="TWinControl.GetChildBounds.WithBorderSpace">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.WMMouseWheel">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.WMMouseWheel.Message">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.CNSysChar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.CNSysChar.Message">
-        <short/>
-      </element>
-      <!-- function Visibility: protected -->
-      <element name="TWinControl.DoRemainingKeyPress">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.DoRemainingKeyPress.Result">
-        <short/>
-      </element>
-      <element name="TWinControl.DoRemainingKeyPress.Message">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.SetZOrder">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.SetZOrder.Topmost">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TWinControl.SetZOrderPosition">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.SetZOrderPosition.NewPosition">
         <short/>
       </element>
       <!-- property Visibility: protected -->
@@ -13070,39 +13081,39 @@ and that description should be read to understand their definitions more fully.
 <!-- enumeration type Visibility: default -->
       <element name="TControlAtPosFlag">
         <short>Flags for finding a control at given (client) position.</short>
-        <descr>capfAllowDisabled: include disabled controls?
-capfAllowWinControls: do not find WinControls if False.
-capfOnlyClientAreas: hit client areas only.
-capfRecursive: search into child controls.
-capfHasScrollOffset: crap, ScrollOffset is taken into account only for the first (top level) WinControl.</descr>
-        <seealso/>
+        <descr>
+          capfAllowDisabled: include disabled controls.
+          capfAllowWinControls: do not find WinControls if False.
+          capfOnlyClientAreas: hit client areas only.
+          capfRecursive: search into child controls.
+          capfHasScrollOffset: scroll offset is already included in the coordinates.
+        </descr>
+        <seealso>
+          <link id="TWinControl.ControlAtPos"/>
+        </seealso>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlAtPosFlag.capfAllowDisabled">
-        <short/>
+        <short>If set: include disabled controls.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlAtPosFlag.capfAllowWinControls">
-        <short/>
+        <short>If set: include TWinControls, in addition to TControls.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlAtPosFlag.capfOnlyClientAreas">
-        <short/>
+        <short>If set: hit client areas only.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlAtPosFlag.capfRecursive">
-        <short/>
+        <short>If set: recurse into grand children.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlAtPosFlag.capfHasScrollOffset">
-        <short/>
+        <short>If set: scroll offset is already included in the coordinates.</short>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TControlAtPosFlags">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TControlAtPosFlags" link="TControlAtPosFlag"/>
       <!-- variable Visibility: default -->
       <element name="DockSplitterClass">
         <short/>
