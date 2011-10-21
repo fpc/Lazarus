@@ -819,13 +819,12 @@ type
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property Font;
     property PopupMenu;
     property ShowAccelChar;
     property ShowHint;
-    property Top;
     property Layout;
     property WordWrap;
-    property Width;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
