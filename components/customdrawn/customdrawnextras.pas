@@ -607,7 +607,7 @@ resourcestring
 
 procedure Register;
 begin
-  RegisterComponents('Common Controls', [TCDButton, TCDTrackBar, TCDTabControl,
+  RegisterComponents('Custom Drawn', [TCDButton, TCDTrackBar, TCDTabControl,
     TCDPageControl, TCDGroupBox]);
   RegisterComponentEditor(TCDPageControl, TCDPageControlEditor);
   RegisterComponentEditor(TCDTabSheet, TCDPageControlEditor);
