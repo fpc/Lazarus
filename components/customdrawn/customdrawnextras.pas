@@ -444,6 +444,8 @@ type
   private
     CDTabControl: TCDCustomTabControl;
     FTabVisible: Boolean;
+  protected
+    procedure RealSetText(const Value: TCaption); override; // to update on caption changes
   public
     destructor Destroy; override;
     property TabVisible: Boolean read FTabVisible write FTabVisible;
@@ -454,6 +456,8 @@ type
     FTabIndex: Integer;
     FTabs: TStringList;
     FDrawerWinCE: TCDCustomTabControlDrawerWinCE;
+    FOnChanging: TNotifyEvent;
+    FOnChange: TNotifyEvent;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: integer); override;
     //procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
@@ -472,6 +476,9 @@ type
   public
     CustomDrawer: TCDCustomTabControlDrawer; // Fill the field to use the dsCustom draw mode
     property Tabs: TStringList read FTabs write SetTabs;
+    property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property TabIndex: integer read FTabIndex write SetTabIndex;
   end;
 
   { TCDCustomTabControlDrawer }
@@ -517,9 +524,10 @@ type
   published
     property Color;
     property Font;
-    property TabIndex: integer read FTabIndex write SetTabIndex;
     property Tabs;
-//    property OnTabSelected: TTabSelectedEvent read fOnTabSelected write fOnTabSelected;
+    property TabIndex;
+    property OnChanging;
+    property OnChange;
   end;
 
   { TCDTabSheet }
@@ -587,6 +595,9 @@ type
     property ParentColor;
     property ParentFont;
     property TabStop default True;
+    property TabIndex;
+    property OnChanging;
+    property OnChange;
   end;
 
 procedure Register;
@@ -616,6 +627,17 @@ begin
 end;
 
 { TCDCustomTabSheet }
+
+procedure TCDCustomTabSheet.RealSetText(const Value: TCaption);
+var
+  lIndex: Integer;
+begin
+  inherited RealSetText(Value);
+  lIndex := CDTabControl.Tabs.IndexOfObject(Self);
+  if lIndex >= 0 then
+    CDTabControl.Tabs.Strings[lIndex] := Value;
+  CDTabControl.Invalidate;
+end;
 
 destructor TCDCustomTabSheet.Destroy;
 var
@@ -979,7 +1001,9 @@ end;
 procedure TCDCustomTabControl.SetTabIndex(AValue: Integer);
 begin
   if FTabIndex = AValue then Exit;
+  if Assigned(OnChanging) then OnChanging(Self);
   FTabIndex := AValue;
+  if Assigned(OnChange) then OnChange(Self);
   Invalidate;
 end;
 
@@ -1054,7 +1078,7 @@ end;
 
 procedure TCDCustomTabControl.CorrectTabIndex;
 begin
-  if FTabIndex >= FTabs.Count then FTabIndex := FTabs.Count - 1;
+  if FTabIndex >= FTabs.Count then SetTabIndex(FTabs.Count - 1);
 end;
 
 { TCustomBitmappedButton }
@@ -2456,7 +2480,7 @@ begin
   Application.ReleaseComponent(TComponent(FTabs.Objects[AIndex]));
 
   FTabs.Delete(aIndex);
-  if FTabIndex >= FTabs.Count then Dec(FTabIndex);
+  if FTabIndex >= FTabs.Count then SetTabIndex(FTabIndex-1);
 
   Invalidate;
 end;
@@ -2534,7 +2558,7 @@ begin
       CurPage.Visible := True;
 
       // Check first, Tab is Visible?
-      FTabIndex := i;
+      SetTabIndex(i);
     end
     else if CurPage <> nil then
     begin
@@ -2551,7 +2575,7 @@ procedure TCDPageControl.SetPageIndex(Value: integer);
 begin
   if (Value > -1) and (Value < FTabs.Count) then
   begin
-    FTabIndex := Value;
+    SetTabIndex(Value);
     ActivePage := GetPage(Value);
   end;
 end;
