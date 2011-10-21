@@ -137,8 +137,7 @@ begin
     LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-procedure TIDEOptionsDialog.IDEOptionsDialogKeyPress(Sender: TObject;
-  var Key: char);
+procedure TIDEOptionsDialog.IDEOptionsDialogKeyPress(Sender: TObject; var Key: char);
 begin
   debugln(['TIDEOptionsDialog.IDEOptionsDialogKeyPress ',ord(Key)]);
 end;
@@ -263,19 +262,15 @@ end;
 
 procedure TIDEOptionsDialog.ReadAll;
 type
-  TStage = (
-    sBefore,
-    sRead,
-    sAfter
-    );
+  TStage = (sBefore, sRead, sAfter);
 var
   i: integer;
   Rec: PIDEOptionsGroupRec;
   Instance: TAbstractIDEOptions;
   InstanceList: TFPList;
-  s: TStage;
+  stag: TStage;
 begin
-  for s:=low(TStage) to High(TStage) do
+  for stag:=low(TStage) to High(TStage) do
   begin
     InstanceList:=TFPList.Create;
     for i := 0 to IDEEditorGroups.Count - 1 do
@@ -283,27 +278,24 @@ begin
       Rec := IDEEditorGroups[i];
       if not PassesFilter(Rec) then
         Continue;
-      if Rec^.Items <> nil then
+      if Assigned(Rec^.Items) and Assigned(Rec^.GroupClass) then
       begin
-        if Rec^.GroupClass <> nil then
+        Instance := Rec^.GroupClass.GetInstance;
+        if (InstanceList.IndexOf(Instance)<0) and Assigned(Instance) then
         begin
-          Instance := Rec^.GroupClass.GetInstance;
-          if (InstanceList.IndexOf(Instance)<0) and (Instance <> nil) then
-          begin
-            InstanceList.Add(Instance);
-            case s of
-            sBefore:
-              Instance.DoBeforeRead;
-            sRead:
-              TraverseSettings(Instance,iodaRead);
-            sAfter:
-              Instance.DoAfterRead;
-            end;
+          InstanceList.Add(Instance);
+          case stag of
+          sBefore:
+            Instance.DoBeforeRead;
+          sRead:
+            TraverseSettings(Instance,iodaRead);
+          sAfter:
+            Instance.DoAfterRead;
           end;
         end;
       end;
     end;
-    if s=sRead then
+    if stag=sRead then
       TraverseSettings(nil,iodaRead); // load settings that does not belong to any group
     InstanceList.Free;
   end;
@@ -311,48 +303,41 @@ end;
 
 procedure TIDEOptionsDialog.WriteAll(Restore: boolean);
 type
-  TStage = (
-    sBefore,
-    sWrite,
-    sAfter
-    );
+  TStage = (sBefore, sWrite, sAfter);
 var
   i: integer;
   Rec: PIDEOptionsGroupRec;
   Instance: TAbstractIDEOptions;
-  s: TStage;
+  stag: TStage;
 begin
-  for s:=low(TStage) to High(TStage) do
+  for stag:=low(TStage) to High(TStage) do
   begin
     for i := 0 to IDEEditorGroups.Count - 1 do
     begin
       Rec := IDEEditorGroups[i];
       if not PassesFilter(Rec) then
         Continue;
-      if Rec^.Items <> nil then
+      if Assigned(Rec^.Items) and Assigned(Rec^.GroupClass) then
       begin
-        if Rec^.GroupClass <> nil then
+        Instance := Rec^.GroupClass.GetInstance;
+        if Assigned(Instance) then
         begin
-          Instance := Rec^.GroupClass.GetInstance;
-          if Instance <> nil then
-          begin
-            case s of
-            sBefore:
-              Instance.DoBeforeWrite(Restore);
-            sWrite:
-              if Restore then
-                TraverseSettings(Instance,iodaRestore)
-              else
-                TraverseSettings(Instance,iodaWrite);
-            sAfter:
-              Instance.DoAfterWrite(Restore);
-            end;
+          case stag of
+          sBefore:
+            Instance.DoBeforeWrite(Restore);
+          sWrite:
+            if Restore then
+              TraverseSettings(Instance,iodaRestore)
+            else
+              TraverseSettings(Instance,iodaWrite);
+          sAfter:
+            Instance.DoAfterWrite(Restore);
           end;
         end;
       end;
     end;
 
-    if s=sWrite then
+    if stag=sWrite then
       TraverseSettings(nil,iodaWrite); // save settings that does not belong to any group
   end;
 end;
@@ -401,13 +386,10 @@ procedure TIDEOptionsDialog.CreateEditors;
     Result := nil;
     if Node =  nil then
       Exit;
-
     if (Node.Data <> nil) and (TAbstractIDEOptionsEditor(Node.Data).Tag = Index) then
       Result := Node;
-
     if Result <> nil then
       Exit;
-
     Result := SearchNode(Node.GetFirstChild, Index);
     if Result <> nil then
       Exit;

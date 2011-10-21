@@ -279,8 +279,7 @@ begin
   end;
 end;
 
-procedure TDesktopOptionsFrame.LoadDesktopSettingsFromFileButtonClick(
-  Sender: TObject);
+procedure TDesktopOptionsFrame.LoadDesktopSettingsFromFileButtonClick(Sender: TObject);
 var
   AnEnvironmentOptions: TEnvironmentOptions;
   OpenDialog: TOpenDialog;

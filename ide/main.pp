@@ -4765,22 +4765,19 @@ end;
 //------------------------------------------------------------------------------
 
 procedure TMainIDE.SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
+// Called also before reading EnvironmentOptions
 begin
   IDEWindowCreators.SimpleLayoutStorage.StoreWindowPositions;
   // do not auto show the search results view
   IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(
     NonModalIDEWindowNames[nmiwSearchResultsViewName]).Visible:=false;
 
-  with TheEnvironmentOptions do begin
-    ObjectInspectorOptions.Assign(ObjectInspector1);
-  end;
+  TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
 end;
 
 procedure TMainIDE.LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
 begin
-  with TheEnvironmentOptions do begin
-    ObjectInspectorOptions.AssignTo(ObjectInspector1);
-  end;
+  TheEnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
 end;
 
 procedure TMainIDE.UpdateDefaultPascalFileExtensions;
@@ -4827,7 +4824,6 @@ var
   i: Integer;
 begin
   IDEOptionsDialog := TIDEOptionsDialog.Create(nil);
-
   try
     if ACaption <> '' then
       IDEOptionsDialog.Caption := ACaption;
@@ -4848,13 +4844,9 @@ begin
     IDEOptionsDialog.OptionsFilter := OptionsFilter;
     IDEOptionsDialog.Settings := ASettings;
     IDEOptionsDialog.OpenEditor(AEditor);
-
-    with IDEOptionsDialog do
-    begin
-      OnLoadIDEOptions:=@Self.OnLoadIDEOptions;
-      OnSaveIDEOptions:=@Self.OnSaveIDEOptions;
-      ReadAll;
-    end;
+    IDEOptionsDialog.OnLoadIDEOptions:=@Self.OnLoadIDEOptions;
+    IDEOptionsDialog.OnSaveIDEOptions:=@Self.OnSaveIDEOptions;
+    IDEOptionsDialog.ReadAll;
     if IDEOptionsDialog.ShowModal = mrOk then begin
       IDEOptionsDialog.WriteAll(false);
       UpdateHighlighters(True);
@@ -4864,8 +4856,7 @@ begin
       else
         Application.TaskBarBehavior := tbDefault;
     end else begin
-      // restore
-      IDEOptionsDialog.WriteAll(true);
+      IDEOptionsDialog.WriteAll(true);           // restore
     end;
   finally
     IDEOptionsDialog.Free;
@@ -4878,16 +4869,14 @@ begin
   SaveDesktopSettings(EnvironmentOptions);
 end;
 
-procedure TMainIDE.DoEnvironmentOptionsBeforeWrite(Sender: TObject;
-  Restore: boolean);
+procedure TMainIDE.DoEnvironmentOptionsBeforeWrite(Sender: TObject; Restore: boolean);
 begin
   if Restore then exit;
   OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
   OldLanguage:=EnvironmentOptions.LanguageID;
 end;
 
-procedure TMainIDE.DoEnvironmentOptionsAfterWrite(Sender: TObject;
-  Restore: boolean);
+procedure TMainIDE.DoEnvironmentOptionsAfterWrite(Sender: TObject; Restore: boolean);
 var
   MacroValueChanged,
   FPCSrcDirChanged, FPCCompilerChanged,
@@ -4998,8 +4987,7 @@ begin
   CodeToolsOpts.AssignTo(CodeToolBoss);
 end;
 
-procedure TMainIDE.DoCodeExplorerOptionsAfterWrite(Sender: TObject;
-  Restore: boolean);
+procedure TMainIDE.DoCodeExplorerOptionsAfterWrite(Sender: TObject; Restore: boolean);
 begin
   if Restore then exit;
   if CodeExplorerView<>nil then

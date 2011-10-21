@@ -1441,8 +1441,7 @@ begin
     dec(Result);
 end;
 
-function TIDEWindowCreatorList.FindWithName(FormName: string
-  ): TIDEWindowCreator;
+function TIDEWindowCreatorList.FindWithName(FormName: string): TIDEWindowCreator;
 var
   i: LongInt;
 begin
@@ -1485,15 +1484,14 @@ begin
   end;
 end;
 
-procedure TIDEWindowCreatorList.ShowForm(AForm: TCustomForm;
-  BringToFront: boolean);
+procedure TIDEWindowCreatorList.ShowForm(AForm: TCustomForm; BringToFront: boolean);
 var
   Layout: TSimpleWindowLayout;
 begin
   if (AForm.Name='') or (not IsValidIdent(AForm.Name)) then
     raise Exception.Create('TIDEWindowCreatorList.ShowForm invalid form name '+AForm.Name);
 
-  // auto create a storage for every shown form
+  // auto create a layput storage for every shown form
   Layout:=SimpleLayoutStorage.ItemByFormID(AForm.Name);
   if Layout=nil then begin
     if not (csDesigning in AForm.ComponentState) then
