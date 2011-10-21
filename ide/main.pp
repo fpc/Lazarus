@@ -9940,6 +9940,11 @@ begin
     DoViewAnchorEditor(false);
     AForm:=AnchorDesigner;
   end
+  else if ItIs(NonModalIDEWindowNames[nmiwTabOrderEditor]) then
+  begin
+    DoViewTabOrderEditor(false);
+    AForm:=TabOrderDialog;
+  end
   else if ItIs(NonModalIDEWindowNames[nmiwCodeBrowser]) then
   begin
     DoShowCodeBrowser(false);
