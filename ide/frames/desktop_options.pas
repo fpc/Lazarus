@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, StdCtrls, Dialogs, LCLProc,
   ExtCtrls, EnvironmentOpts, LazarusIDEStrConsts, IDETranslations, InputHistory,
-  IDEProcs, IDEOptionsIntf;
+  IDEProcs, IDEOptionsIntf, IDEWindowIntf;
 
 type
 
@@ -299,6 +299,8 @@ begin
           AnEnvironmentOptions.Filename := OpenDialog.Filename;
           AnEnvironmentOptions.Load(true);
           DoLoadSettings(AnEnvironmentOptions);
+          if IDEDockMaster=nil then
+            IDEWindowCreators.RestoreSimpleLayout;
           ShowMessage(lisLoadedSuccessfully);
         finally
           AnEnvironmentOptions.Free;
