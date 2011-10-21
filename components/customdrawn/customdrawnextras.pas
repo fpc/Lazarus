@@ -328,6 +328,8 @@ type
     FDrawerWinCE: TCDGroupBoxDrawerWinCE;
     procedure PrepareCurrentDrawer();
     procedure SetDrawStyle(const AValue: TCDDrawStyle);
+  protected
+    procedure RealSetText(const Value: TCaption); override; // to update on caption changes
   public
     CustomDrawer: TCDGroupBoxDrawer; // Fill the field to use the dsCustom draw mode
     constructor Create(AOwner: TComponent); override;
@@ -436,11 +438,14 @@ type
   TCDCustomTabControlDrawer = class;
   TCDCustomTabControlDrawerWinCE = class;
 
+  { TCDCustomTabSheet }
+
   TCDCustomTabSheet = class(TCustomControl)
   private
     CDTabControl: TCDCustomTabControl;
     FTabVisible: Boolean;
   public
+    destructor Destroy; override;
     property TabVisible: Boolean read FTabVisible write FTabVisible;
   end;
 
@@ -457,14 +462,16 @@ type
     //procedure MouseLeave; override;
     procedure PrepareCurrentDrawer(); override;
     procedure SetTabIndex(AValue: Integer); virtual;
+    procedure SetTabs(AValue: TStringList);
   protected
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
     function GetTabCount: Integer;
+    procedure CorrectTabIndex();
   public
     CustomDrawer: TCDCustomTabControlDrawer; // Fill the field to use the dsCustom draw mode
-    property Tabs: TStringList read FTabs;
+    property Tabs: TStringList read FTabs write SetTabs;
   end;
 
   { TCDCustomTabControlDrawer }
@@ -511,7 +518,7 @@ type
     property Color;
     property Font;
     property TabIndex: integer read FTabIndex write SetTabIndex;
-    property Tabs: TStringList read FTabs write FTabs;
+    property Tabs;
 //    property OnTabSelected: TTabSelectedEvent read fOnTabSelected write fOnTabSelected;
   end;
 
@@ -606,6 +613,28 @@ begin
   RegisterComponentEditor(TCDTabSheet, TCDPageControlEditor);
   RegisterNoIcon([TCDTabSheet]);
   RegisterClasses([TCDTabSheet]);
+end;
+
+{ TCDCustomTabSheet }
+
+destructor TCDCustomTabSheet.Destroy;
+var
+  lIndex: Integer;
+begin
+  // We should support deleting the tabsheet directly too,
+  // and then it should update the tabcontrol
+  // This is important mostly for the designer
+  if CDTabControl <> nil then
+  begin
+    lIndex := CDTabControl.FTabs.IndexOfObject(Self);
+    if lIndex >= 0 then
+    begin
+      CDTabControl.FTabs.Delete(lIndex);
+      CDTabControl.CorrectTabIndex();
+    end;
+  end;
+
+  inherited Destroy;
 end;
 
 { TCDCustomTabControlDrawerWinCE }
@@ -851,7 +880,7 @@ var
   x, y: Integer;
 begin
   if CDTabControl.Color = clDefault then
-    lColor := ColorToRGB(clBtnFace)
+    lColor := ColorToRGB(CDTabControl.GetDefaultColor(dctBrush))
   else lColor := ColorToRGB(CDTabControl.Color);
 
   // Background
@@ -954,6 +983,14 @@ begin
   Invalidate;
 end;
 
+procedure TCDCustomTabControl.SetTabs(AValue: TStringList);
+begin
+  if FTabs=AValue then Exit;
+  FTabs.Assign(AValue);
+  CorrectTabIndex();
+  Invalidate;
+end;
+
 constructor TCDCustomTabControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -970,7 +1007,7 @@ begin
 
   ParentColor := True;
   ParentFont := True;
-  ControlStyle := ControlStyle + [csDesignInteractive];
+  ControlStyle := ControlStyle + [csAcceptsControls, csDesignInteractive];
 
   // FTabs should hold only visible tabs
   FTabs := TStringList.Create;
@@ -1013,6 +1050,11 @@ function TCDCustomTabControl.GetTabCount: Integer;
 begin
   Result := 0;
   if FTabs <> nil then Result := FTabs.Count;
+end;
+
+procedure TCDCustomTabControl.CorrectTabIndex;
+begin
+  if FTabIndex >= FTabs.Count then FTabIndex := FTabs.Count - 1;
 end;
 
 { TCustomBitmappedButton }
@@ -1778,6 +1820,12 @@ begin
   FCurrentDrawer.SetClientRectPos(Self);
 end;
 
+procedure TCDGroupBox.RealSetText(const Value: TCaption);
+begin
+  inherited RealSetText(Value);
+  Invalidate;
+end;
+
 constructor TCDGroupBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1851,6 +1899,8 @@ var
 {$endif}
 begin
   FCaptionMiddle := CDGroupBox.Canvas.TextHeight('Ź') div 2;
+  if FCaptionMiddle = 0 then FCaptionMiddle := CDGroupBox.Canvas.Font.Size div 2;
+  if FCaptionMiddle = 0 then FCaptionMiddle := 5;
 
   // Background
   if CDGroupBox.Parent = nil then

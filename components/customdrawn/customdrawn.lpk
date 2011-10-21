@@ -13,7 +13,7 @@
       <Linking>
         <Debugging>
           <GenerateDebugInfo Value="True"/>
-          <GenerateDwarf Value="True"/>
+          <DebugInfoType Value="dsAuto"/>
         </Debugging>
       </Linking>
       <Other>
