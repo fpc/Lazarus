@@ -1057,21 +1057,30 @@ begin
               NewBounds.Right:=NewBounds.Left+60;
             if NewBounds.Bottom-NewBounds.Top<60 then
               NewBounds.Bottom:=NewBounds.Top+60;
-            // move to visible area
+
+            // Move to visible area :
+            // window is out at left side of screen
             if NewBounds.Right<Screen.DesktopLeft+60 then
               OffsetRect(NewBounds,Screen.DesktopLeft+60-NewBounds.Right,0);
+
+            // window is out above the screen
             if NewBounds.Bottom<Screen.DesktopTop+60 then
               OffsetRect(NewBounds,0,Screen.DesktopTop+60-NewBounds.Bottom);
-            if NewBounds.Left>Screen.DesktopWidth+Screen.DesktopLeft-60 then begin
-              i:=(Screen.DesktopWidth+Screen.DesktopLeft-60)-NewBounds.Left;
-              NewBounds.Left := Screen.DesktopWidth+Screen.DesktopLeft-60;
-              NewBounds.Right := NewBounds.Right + i;
+
+            // window is out at right side of screen, i = right edge of screen - 60
+            i:=Screen.DesktopWidth+Screen.DesktopLeft-60;
+            if NewBounds.Left > i then begin
+              NewBounds.Left := i;
+              NewBounds.Right := NewBounds.Right + i - NewBounds.Left;
             end;
-            if NewBounds.Top>Screen.DesktopHeight+Screen.DesktopTop-60 then begin
-              i:=(Screen.DesktopHeight+Screen.DesktopLeft-60)-NewBounds.Top;
-              NewBounds.Top := Screen.DesktopHeight+Screen.DesktopTop-60;
-              NewBounds.Bottom := NewBounds.Bottom + i;
+
+            // window is out below the screen, i = bottom edge of screen - 60
+            i:=Screen.DesktopHeight+Screen.DesktopTop-60;
+            if NewBounds.Top > i then begin
+              NewBounds.Top := i;
+              NewBounds.Bottom := NewBounds.Bottom + i - NewBounds.Top;
             end;
+
             // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
             AForm.SetBounds(NewBounds.Left,NewBounds.Top,
                             NewBounds.Right-NewBounds.Left,
