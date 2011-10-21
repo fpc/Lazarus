@@ -996,8 +996,7 @@ begin
          Path+'AutoCloseCompileDialog/Value',false);
 
       IDEWindowCreators.SimpleLayoutStorage.LoadFromConfig(Cfg,Path+'Desktop/');
-      FIDEDialogLayoutList.LoadFromConfig(FConfigStore,
-        Path+'Desktop/Dialogs/');
+      FIDEDialogLayoutList.LoadFromConfig(FConfigStore, Path+'Desktop/Dialogs/');
       FSingleTaskBarButton := XMLConfig.GetValue(
         Path+'Desktop/SingleTaskBarButton/Value', False);
       FHideIDEOnRun:=XMLConfig.GetValue(

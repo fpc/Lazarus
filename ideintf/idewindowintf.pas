@@ -36,15 +36,15 @@ type
 
   TIDEDialogLayout = class
   private
-    FHeight: integer;
     FList: TIDEDialogLayoutList;
     FModified: boolean;
     FName: string;
     FWidth: integer;
-    procedure SetHeight(const AValue: integer);
+    FHeight: integer;
     procedure SetList(const AValue: TIDEDialogLayoutList);
     procedure SetModified(const AValue: boolean);
     procedure SetWidth(const AValue: integer);
+    procedure SetHeight(const AValue: integer);
   public
     constructor Create(const TheName: string; TheList: TIDEDialogLayoutList);
     function SizeValid: boolean;
@@ -105,7 +105,7 @@ var
   IDEDialogLayoutList: TIDEDialogLayoutList = nil;// set by the IDE
 
 type
-  { TIDEWindowLayout stores information about the position, min/maximized state
+  { TSimpleWindowLayout stores information about the position, min/maximized state
     and similar things for an IDE window or dialog, like the source editor,
     the object inspector, the main bar or the message view.
   }
@@ -433,13 +433,6 @@ end;
 
 { TIDEDialogLayout }
 
-procedure TIDEDialogLayout.SetHeight(const AValue: integer);
-begin
-  if FHeight=AValue then exit;
-  FHeight:=AValue;
-  Modified:=true;
-end;
-
 procedure TIDEDialogLayout.SetList(const AValue: TIDEDialogLayoutList);
 begin
   if FList=AValue then exit;
@@ -457,6 +450,13 @@ procedure TIDEDialogLayout.SetWidth(const AValue: integer);
 begin
   if FWidth=AValue then exit;
   FWidth:=AValue;
+  Modified:=true;
+end;
+
+procedure TIDEDialogLayout.SetHeight(const AValue: integer);
+begin
+  if FHeight=AValue then exit;
+  FHeight:=AValue;
   Modified:=true;
 end;
 
@@ -602,8 +602,7 @@ begin
     dec(Result);
 end;
 
-procedure TIDEDialogLayoutList.LoadFromConfig(Config: TConfigStorage;
-  const Path: string);
+procedure TIDEDialogLayoutList.LoadFromConfig(Config: TConfigStorage; const Path: string);
 var
   NewCount, i: integer;
   NewDialogLayout: TIDEDialogLayout;
@@ -618,8 +617,7 @@ begin
   Modified:=false;
 end;
 
-procedure TIDEDialogLayoutList.SaveToConfig(Config: TConfigStorage;
-  const Path: string);
+procedure TIDEDialogLayoutList.SaveToConfig(Config: TConfigStorage; const Path: string);
 var i: integer;
 begin
   Config.SetDeleteValue(Path+'Count',Count,0);
@@ -682,8 +680,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TSimpleWindowLayout.LoadFromConfig(Config: TConfigStorage;
-  const Path: string);
+procedure TSimpleWindowLayout.LoadFromConfig(Config: TConfigStorage; const Path: string);
 var
   P: string;
 begin
@@ -923,14 +920,12 @@ begin
   while (Result>=0) and (FormID<>Items[Result].GetFormID) do dec(Result);
 end;
 
-procedure TSimpleWindowLayoutList.LoadFromConfig(Config: TConfigStorage;
-  const Path: string);
+procedure TSimpleWindowLayoutList.LoadFromConfig(Config: TConfigStorage; const Path: string);
+// do not clear, just add/replace the values from the config
 var
   i: integer;
   ID: String;
 begin
-  // do not clear, just add/replace the values from the config
-
   // create new windows
   i := Config.GetValue(Path+'Desktop/FormIdCount', 0);
   //debugln(['TSimpleWindowLayoutList.LoadFromConfig ',i]);

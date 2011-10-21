@@ -635,8 +635,7 @@ begin
   fHandlers[iohBeforeRead].Add(TMethod(Handler),AsFirst);
 end;
 
-procedure TAbstractIDEOptions.RemoveHandlerBeforeRead(
-  const Handler: TNotifyEvent);
+procedure TAbstractIDEOptions.RemoveHandlerBeforeRead(const Handler: TNotifyEvent);
 begin
   fHandlers[iohBeforeRead].Remove(TMethod(Handler));
 end;
