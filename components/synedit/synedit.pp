@@ -7235,7 +7235,7 @@ begin
   IncPaintLock;
   try
     //DebugLn(['TCustomSynEdit.SearchReplace ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ASearch="',dbgstr(ASearch),'" AReplace="',dbgstr(AReplace),'"']);
-    while fTSearch.FindNextOne(FTheLinesView,ptStart,ptEnd,ptFoundStart,ptFoundEnd) do
+    while fTSearch.FindNextOne(FTheLinesView,ptStart,ptEnd,ptFoundStart,ptFoundEnd, True) do
     begin
       //DebugLn(['TCustomSynEdit.SearchReplace FOUND ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ptFoundStart=',dbgs(ptFoundStart),' ptFoundEnd=',dbgs(ptFoundEnd)]);
       // check if found place is entirely in range

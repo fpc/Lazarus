@@ -109,7 +109,7 @@ type
     function Next: Integer;
     {$IFDEF SYN_LAZARUS}
     function FindNextOne(Lines: TStrings; StartPos, EndPos: TPoint;
-                         out FoundStartPos, FoundEndPos: TPoint): boolean;
+                         out FoundStartPos, FoundEndPos: TPoint; ASupportUnicodeCase: Boolean=False): boolean;
     {$ENDIF}
     property Count: Integer read fCount write fCount;
     property Finished: Boolean read GetFinished;
@@ -408,8 +408,10 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
+// ASupportUnicodeCase -> If we will support Unicode lowercase/uppercase
+//   by default this is off to increase the speed of the routine
 function TSynEditSearch.FindNextOne(Lines: TStrings; StartPos, EndPos: TPoint;
-  out FoundStartPos, FoundEndPos: TPoint): boolean;
+  out FoundStartPos, FoundEndPos: TPoint; ASupportUnicodeCase: Boolean=False): boolean;
 // Note: all points are 1 based
 // only local variables are 0 based
 var
@@ -799,6 +801,8 @@ var
 
 var
   i: integer;
+  SearchForStr: string;
+  FCondition: Boolean;
 begin
   Result:=false;
   if Pattern='' then exit;
@@ -841,8 +845,18 @@ begin
     end else
       FirstPattern:=copy(Pat,1,SearchLineEndPos-1);
   end;
-  SearchFor:=PChar(FirstPattern);
-  SearchLen:=length(FirstPattern);
+  if ASupportUnicodeCase then
+  begin
+    SearchForStr := FirstPattern;
+    if not fSensitive then SearchForStr := UTF8LowerCase(SearchForStr);
+    SearchFor:=PChar(SearchForStr);
+    SearchLen:=Length(SearchForStr);
+  end
+  else
+  begin
+    SearchFor:=PChar(FirstPattern);
+    SearchLen:=length(FirstPattern);
+  end;
 
   if fRegExpr then begin
     RegExprEngine.ModifierI:=not fSensitive;
@@ -865,6 +879,7 @@ begin
   //          regex multi line whole word
   repeat
     LineStr:=Lines[y];
+    if ASupportUnicodeCase and (not fSensitive) then LineStr := UTF8LowerCase(LineStr);
     LineLen:=length(LineStr);
     Line:=PChar(LineStr);
     if not IsFirstLine then begin
@@ -906,7 +921,8 @@ begin
     end else begin
       // normal search
       MaxPos:=LineLen-SearchLen;
-      if (SearchLen=0) and ((LineLen=0) or IsMultiLinePattern) then begin
+      if (SearchLen=0) and ((LineLen=0) or IsMultiLinePattern) then
+      begin
         // first (last if backwards) line of pattern is empty line
         if FBackwards then
           FoundStartPos:=Point(LineLen,y+1)
@@ -919,14 +935,26 @@ begin
         //DebugLn(['TSynEditSearch.FindNextOne x=',x,' MaxPos=',MaxPos,' Line="',Line,'"']);
         while (x>=0) and (x<=MaxPos) do begin
           //DebugLn(['TSynEditSearch.FindNextOne x=',x]);
-          if (SearchLen=0) or (CompTable[Line[x]]=CompTable[SearchFor^]) then begin
+          if ASupportUnicodeCase then FCondition := (SearchLen=0) or (Line[x]=SearchFor^)
+          else FCondition := (SearchLen=0) or (CompTable[Line[x]]=CompTable[SearchFor^]);
+          if FCondition then
+          begin
             //DebugLn(['TSynEditSearch.FindNextOne First character found x=',x,' Line[x]=',Line[x]]);
-            if (not fWhole)
-            or (x=0) or (not (Line[x-1] in FIdentChars)) then begin
+            if (not fWhole) or (x=0) or (not (Line[x-1] in FIdentChars)) then
+            begin
               i:=1;
-              while (i<SearchLen) and (CompTable[Line[x+i]]=CompTable[SearchFor[i]])
-              do
-                inc(i);
+
+              if ASupportUnicodeCase then
+              begin
+                while (i<SearchLen) and (Line[x+i]=SearchFor[i]) do
+                  inc(i);
+              end
+              else
+              begin
+                while (i<SearchLen) and (CompTable[Line[x+i]]=CompTable[SearchFor[i]]) do
+                  inc(i);
+              end;
+
               //DebugLn(['TSynEditSearch.FindNextOne x=',x,' SearchLen=',SearchLen,' i=',i]);
               if i=SearchLen then begin
                 // the pattern fits to this position
