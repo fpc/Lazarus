@@ -2846,7 +2846,6 @@ resourcestring
     +'s was not found.%sThis tool is needed to build lazarus.%s';
   lisIDE = 'IDE';
   lisConfigureBuildLazarus = 'Configure %sBuild Lazarus%s';
-  lisLazBuildCleanAll = 'Clean all';
   lisLazBuildBuildComponentsSynEditCodeTools = 'Build components (SynEdit, CodeTools)';
   lisLazBuildBuildSynEdit = 'Build SynEdit';
   lisLazBuildBuildCodeTools = 'Build CodeTools';
@@ -2877,10 +2876,10 @@ resourcestring
   lisCTDTemplates = 'Templates';
   lisSaveSettings = 'Save Settings';
   lisLazBuildCancel = 'Cancel';
-  lisLazBuildNone = 'None';
   lisLazBuildBuild = 'Build';
   lisLazBuildBuildAdvanced = 'Build Advanced';
-  lisLazBuildCleanBuild = 'Clean+Build';
+  lisLazBuildCleanBuild = 'Clean + Build';
+  lisLazBuildCleanAllBuild = 'Clean All + Build';
   lisLazBuildManageProfiles ='Manage Build Profiles';
   lisLazBuildProfile ='Profile to Build';
   lisLazBuildRefresh ='Refresh';
@@ -2892,7 +2891,6 @@ resourcestring
   lisLazCleanUpBuildAll = 'Clean Up + Build all';
 
   lisLazBuildAdvancedBuildOptions = 'Advanced Build Options';
-  lisLazBuildABOPart = 'Part';
   lisLazBuildABOAction = 'Action';
   lisLazBuildABOChooseOutputDir = 'Choose output directory of the IDE executable ';
   lisLazBuildDefines = 'Defines';
@@ -2900,16 +2898,17 @@ resourcestring
   lisLazBuildEditDefinesDialogCaption = 'Edit Defines';
   lisLazBuildNameOfTheActiveProfile = 'Name of the active profile';
   lisLazBuildManageProfiles2 = 'Manage profiles';
+  lisLazBuildIdeBuildHint = 'Build = "make ide", %s'+
+                            'Clean + Build = "make cleanide ide", %s' +
+                            'Clean All + Build = "make cleanlaz ide", ';
   lisLazBuildDefinesWithoutD = 'Defines without -d';
   lisLazBuildOptionsPassedToCompiler = 'Options passed to compiler';
-  lisLazBuildLikeMakeCleanOnCmdLine = 'Like "make clean" on cmd line';
   lisLazBuildUpdateRevisionInfoInAboutLazarusDialog = 'Update revision info '
     +'in "About Lazarus" dialog';
-  lisLazBuildRestartLazarusAutomaticallyAfterBuildingTheIDEHasN = 'Restart '
-    +'Lazarus automatically after building the IDE (has no effect when '
-    +'building other parts)';
-  lisLazBuildShowConfirmationDialogWhenBuildingDirectlyFromTool = 'Show confirm'
-    +'ation dialog when building directly from Tools menu';
+  lisLazBuildRestartLazarusAutomatically = 'Restart Lazarus automatically after '+
+    'building the IDE (has no effect when building other parts)';
+  lisLazBuildShowConfirmationDialogWhenBuilding = 'Show confirmation dialog when '+
+    'building directly from Tools menu';
   lisLazBuildEditListOfDefinesWhichCanBeUsedByAnyProfile = 'Edit list of '
     +'defines which can be used by any profile';
   lisLazBuildConfirmDeletion = 'Confirm deletion';

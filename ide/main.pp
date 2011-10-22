@@ -12116,8 +12116,7 @@ end;
 
 //-----------------------------------------------------------------------------
 
-function TMainIDE.DoRunExternalTool(Index: integer; ShowAbort: Boolean
-  ): TModalResult;
+function TMainIDE.DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalResult;
 begin
   SourceEditorManager.ClearErrorLines;
   Result:=ExternalTools.Run(Index,GlobalMacroList,ShowAbort);
@@ -12129,7 +12128,6 @@ var
   PkgOptions: string;
   InheritedOptionStrings: TInheritedCompOptsStrings;
   FPCVersion, FPCRelease, FPCPatch: integer;
-  IDEBuildFlags: TBuildLazarusFlags;
 begin
   // create uses section addition for lazarus.pp
   Result:=PkgBoss.DoSaveAutoInstallConfig;
@@ -12148,9 +12146,8 @@ begin
   if (FPCVersion=0) or (FPCRelease=0) or (FPCPatch=0) then ;
 
   // save extra options
-  IDEBuildFlags:=Flags+[blfOnlyIDE];
   Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
-                             GlobalMacroList,PkgOptions,IDEBuildFlags);
+                             GlobalMacroList,PkgOptions,Flags+[blfOnlyIDE]);
   if Result<>mrOk then exit;
 end;
 
@@ -12182,26 +12179,17 @@ begin
   end;
 
   MessagesView.BeginBlock;
+  with MiscellaneousOptions do
   try
     MainBuildBoss.SetBuildTargetIDE;
 
-    if (blfOnlyIDE in Flags)
-    and (MiscellaneousOptions.BuildLazProfiles.CurrentIdeMode=mmNone) then begin
-      debugln(['TMainIDE.DoBuildLazarusSub ignore because blfOnlyIDE and CurrentIdeMode=mmNone']);
-      CompileProgress.Ready;
-      Result:=mrIgnore;
-      exit;
-    end;
-
     // clean up
     if (not (blfDontCleanAll in Flags))
-    and MiscellaneousOptions.BuildLazProfiles.Current.CleanAll then begin
+    and (BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild) then begin
       SourceEditorManager.ClearErrorLines;
-      Result:=BuildLazarus(MiscellaneousOptions.BuildLazProfiles,
-                           ExternalTools,GlobalMacroList,
+      Result:=BuildLazarus(BuildLazProfiles,ExternalTools,GlobalMacroList,
                            '',EnvironmentOptions.GetCompilerFilename,
-                           EnvironmentOptions.MakeFilename,
-                           [blfDontBuild]);
+                           EnvironmentOptions.MakeFilename, [blfDontBuild]);
       if Result<>mrOk then begin
         DebugLn('TMainIDE.DoBuildLazarus: Clean up failed.');
         exit;
@@ -12227,9 +12215,8 @@ begin
                 PackageGraph.FirstAutoInstallDependency,InheritedOptionStrings);
 
     // check ambiguous units
-    CodeToolBoss.GetFPCVersionForDirectory(
-                               EnvironmentOptions.LazarusDirectory,
-                               FPCVersion,FPCRelease,FPCPatch);
+    CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.LazarusDirectory,
+                                           FPCVersion,FPCRelease,FPCPatch);
     if FPCPatch=0 then ;
     CompiledUnitExt:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
     Result:=MainBuildBoss.CheckUnitPathForAmbiguousPascalFiles(
@@ -12243,25 +12230,21 @@ begin
 
     // save extra options
     IDEBuildFlags:=Flags;
-    if MiscellaneousOptions.BuildLazProfiles.Current.CleanAll then
+    if BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild then
       Include(IDEBuildFlags,blfDontCleanAll);
-    if MiscellaneousOptions.BuildLazProfiles.CurrentIdeMode<>mmNone then begin
-      Result:=SaveIDEMakeOptions(MiscellaneousOptions.BuildLazProfiles,
-                   GlobalMacroList,PkgOptions,IDEBuildFlags-[blfUseMakeIDECfg]);
-      if Result<>mrOk then begin
-        DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
-        exit;
-      end;
-      IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg];
+    Result:=SaveIDEMakeOptions(BuildLazProfiles,GlobalMacroList,PkgOptions,
+                               IDEBuildFlags-[blfUseMakeIDECfg]);
+    if Result<>mrOk then begin
+      DebugLn('TMainIDE.DoBuildLazarus: Save IDEMake options failed.');
+      exit;
     end;
+    IDEBuildFlags:=IDEBuildFlags+[blfUseMakeIDECfg];
 
     // make lazarus ide and/or examples
     SourceEditorManager.ClearErrorLines;
-    Result:=BuildLazarus(MiscellaneousOptions.BuildLazProfiles,
-                         ExternalTools,GlobalMacroList,
+    Result:=BuildLazarus(BuildLazProfiles,ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.GetCompilerFilename,
-                         EnvironmentOptions.MakeFilename,
-                         IDEBuildFlags);
+                         EnvironmentOptions.MakeFilename,IDEBuildFlags);
     if Result<>mrOk then exit;
 
   finally
