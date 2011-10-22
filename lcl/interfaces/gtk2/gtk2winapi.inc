@@ -1534,6 +1534,9 @@ begin
     begin
       // add to cache
       CachedFont := FontCache.Add(GdiObject^.GDIFontObject, LogFont, ALongFontName);
+      //decrement refcount for GdiObject^.GDIFontObject so that object gets
+      //released when removing from FontCache.
+      g_object_unref(GdiObject^.GDIFontObject);
       if CachedFont <> nil then
       begin
         CachedFont.PangoFontDescription := PangoDesc;
