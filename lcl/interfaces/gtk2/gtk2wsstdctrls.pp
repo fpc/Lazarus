@@ -84,8 +84,10 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class procedure SetLabel(AFrame: PGtkFrame; AText: String);
+    class function GetFrameWidget(AEventBox: PGtkEventBox): PGtkFrame;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
     class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
@@ -2091,6 +2093,14 @@ begin
   end;
 end;
 
+class function TGtk2WSCustomGroupBox.GetFrameWidget(AEventBox: PGtkEventBox): PGtkFrame;
+var
+  GBWidget: PGTKWidget;
+begin
+  GBWidget := PGTKWidget(AEventBox);
+  Result:=PGtkFrame(PGtkBin(GBWidget)^.child);
+end;
+
 class function TGtk2WSCustomGroupBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
   ): TLCLIntfHandle;
@@ -2098,6 +2108,7 @@ var
 {$if not defined(GtkFixedWithWindow)}
   EventBox: PGtkWidget;
 {$endif}
+  FrameBox: PGTKWidget;
   TempWidget: PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
   p : pointer;          // ptr to the newly created GtkWidget
   Allocation: TGTKAllocation;
@@ -2124,19 +2135,42 @@ begin
   gtk_object_set_data(PGtkObject(TempWidget), 'widgetinfo', WidgetInfo);
   gtk_object_set_data(PGtkObject(EventBox), 'widgetinfo', WidgetInfo);
   {$endif}
+  FrameBox := gtk_event_box_new;
+  gtk_event_box_set_visible_window(PGtkEventBox(FrameBox), True);
+  gtk_container_add(GTK_CONTAINER(FrameBox), p);
+  gtk_object_set_data(PGtkObject(FrameBox), 'widgetinfo', WidgetInfo);
   gtk_widget_show(TempWidget);
   gtk_widget_show(P);
+  gtk_widget_show(FrameBox);
 
-  Result := TLCLIntfHandle(PtrUInt(P));
+  Result := TLCLIntfHandle(PtrUInt(FrameBox));
 
   Allocation.X := AParams.X;
   Allocation.Y := AParams.Y;
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
-  gtk_widget_size_allocate(P, @Allocation);
+  gtk_widget_size_allocate(FrameBox, @Allocation);
 
-  Set_RC_Name(AWinControl, P);
-  SetCallbacks(P, WidgetInfo);
+  Set_RC_Name(AWinControl, FrameBox);
+  SetCallbacks(FrameBox, WidgetInfo);
+end;
+
+class procedure TGtk2WSCustomGroupBox.SetColor(const AWinControl: TWinControl);
+var
+  GBWidget: PGTKWidget;
+  Frame: PGTKFrame;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
+    Exit;
+  GBWidget:=PGTKWidget(AWinControl.Handle);
+  Frame:=GetFrameWidget(PGTKEventBox(AWinControl.Handle));
+
+  {$if defined(GtkFixedWithWindow)}
+    Gtk2WidgetSet.SetWidgetColor(GetFixedWidget(GBWidget), clNone, AWinControl.Color,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+  {$endif}
+    Gtk2WidgetSet.SetWidgetColor(GBWidget, clNone, AWinControl.Color,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 end;
 
 class function TGtk2WSCustomGroupBox.GetDefaultClientRect(
@@ -2174,7 +2208,7 @@ var
   Widget: PGtkWidget;
   border_width: Integer;
 begin
-  Widget := PGtkWidget(AWinControl.Handle);
+  Widget := PGtkWidget(GetFrameWidget(PGTKEventBox(AWinControl.Handle)));
 
   if Assigned(PGtkFrame(Widget)^.label_widget) then
   begin
@@ -2204,7 +2238,7 @@ var
   Frame: PGtkFrame;
   Lbl: PGtkWidget;
 begin
-  Frame := PGtkFrame(Pointer(AWinControl.Handle));
+  Frame := GetFrameWidget(PGTKEventBox(AWinControl.Handle));
   Lbl := gtk_frame_get_label_widget(Frame);
 
   if Lbl <> nil then
@@ -2220,7 +2254,7 @@ class procedure TGtk2WSCustomGroupBox.SetText(const AWinControl: TWinControl;
   const AText: string);
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetText') then Exit;
-  SetLabel(PGtkFrame(AWinControl.Handle), AText);
+  SetLabel(GetFrameWidget(PGtkEventBox(AWinControl.Handle)), AText);
 end;
 
 function Gtk2WSButton_Clicked(AWidget: PGtkWidget; AInfo: PWidgetInfo): GBoolean; cdecl;
