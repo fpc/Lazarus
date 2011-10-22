@@ -263,10 +263,10 @@ begin
   Assert(IsInfinite(FSource.Extent.a.X) and IsInfinite(FSource.Extent.a.Y));
   Assert(IsInfinite(FSource.Extent.b.X) and IsInfinite(FSource.Extent.b.Y));
 
-  FSource.Add(1, 2, '', 0);
+  FSource.Add(1, 2);
   AssertExtent(1, 2, 1, 2);
 
-  FSource.Add(3, 4, '', 0);
+  FSource.Add(3, 4);
   AssertExtent(1, 2, 3, 4);
 
   FSource.SetXValue(0, -1);
@@ -287,6 +287,18 @@ begin
 
   FSource.SetYValue(1, SafeNaN);
   AssertExtent(-2, 4.5, -1, 4.5);
+
+  FSource.Delete(1);
+  AssertExtent(-1, 4.5, -1, 4.5);
+
+  FSource.Clear;
+  FSource.Add(1, 1);
+  FSource.Add(2, 2);
+  FSource.Add(3, 3);
+  FSource.Add(4, 4);
+  FSource.Delete(0);
+  FSource.Delete(1);
+  AssertExtent(2, 2, 4, 4);
 end;
 
 procedure TListSourceTest.Multi;
