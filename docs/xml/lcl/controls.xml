@@ -978,8 +978,7 @@ More cursors
       </element>
       <!-- object Visibility: default -->
       <element name="TDragImageList">
-        <short>
-          <var>TDragImageList</var> - a list of Images for dragging.</short>
+        <short>A list of Images used in dragging.</short>
         <descr>
           <p>A drag image is shown when a DragImageList is supplied at all, 
             <b>and</b> when no accepting target is under the mouse, or the source control style includes csDisplayDragImage, or AlwaysShowDragImage is set in the DragObject.</p>
@@ -1000,14 +999,15 @@ EndDrag stops dragging, the image is removed from the screen.
       <element name="TDragImageList.FDragCursor" link="TDragImageList.DragCursor"/>
       <element name="TDragImageList.FDragging" link="TDragImageList.Dragging"/>
       <element name="TDragImageList.FDragHotspot" link="TDragImageList.DragHotspot"/>
-      <element name="TDragImageList.FOldCursor"/>
       <element name="TDragImageList.FImageIndex"/>
       <element name="TDragImageList.FLastDragPos">
         <short>Remember position where the image was painted.</short>
       </element>
       <element name="TDragImageList.FLockedWindow">
-        <short>window where drag started and locked via DragLock, invalid=NoLockedWindow=High(PtrInt)</short>
+        <short>The window whose updates are locked while dragging.
+        </short>
       </element>
+      <element name="TDragImageList.FOldCursor"/>
       <!-- procedure Visibility: private -->
       <element name="TDragImageList.SetDragCursor" link="TDragImageList.DragCursor"/>
       <element name="TDragImageList.SetDragCursor.AValue">
@@ -10881,72 +10881,75 @@ End;
       </element>
       <!-- property Visibility: protected -->
       <element name="TWinControl.BorderStyle">
-        <short>
-          <var>BorderStyle</var>
- - none, or single</short>
-      </element>
-      <element name="TWinControl.OnAlignInsertBefore">
-        <short>
-          <var>OnAlignInsertBefore</var> - event handler for an aligned insertion before action</short>
-      </element>
-      <element name="TWinControl.OnAlignPosition">
-        <short>
-          <var>OnAlignPosition</var> - event handler for supplying align position</short>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TWinControl.OnGetSiteInfo">
-        <short>
-          <var>OnGetSiteInfo</var> - event handler for finding out information about the (docking) site</short>
-        <descr/>
-        <seealso/>
+        <short>Allows to show a border (line) around the control,
+        </short>
+        <seealso>
+          <link id="TWinControl.BorderWidth"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.BorderWidth">
-        <short>Property to determine width of the window's border</short>
-        <descr>Default is zero.</descr>
+        <short>Width of the Border around the control; default is zero.
+        </short>
+        <seealso>
+          <link id="TWinControl.BorderStyle"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.BoundsLockCount">
-        <short>Finds how many of the Bounds are locked</short>
-        <descr>// properties which are supported by all descendants</descr>
+        <short>For internal use: When greater zero, updates of the BoundsRect are blocked.
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.Brush">
-        <short>Find which type of brush to use for drawing the control</short>
+        <short>The Brush used to paint the background of the control.
+        </short>
         <seealso>
           <link id="#lcl.graphics.TBrush"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.CachedClientHeight">
-        <short>Stored value of client height (read-only).</short>
+        <short>The intended ClientHeight, as sent to the widget.
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.CachedClientWidth">
-        <short>Stored value of Client Width (read-only).</short>
+        <short>The intended ClientWidth, as sent to the widget.
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.ChildSizing">
-        <short>Definitions how any child control is to be sized (read/write).</short>
+        <short>Parameters for child control arrangement and spacing.
+        </short>
         <seealso>
           <link id="#lcl.Controls.TControlChildSizing"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.ControlCount">
-        <short>The number of controls associated with this window (read-only).</short>
+        <short>The number of immediate child controls.
+        </short>
+        <seealso>
+          <link id="TWinControl.Controls"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.Controls">
-        <short>The indexed list of child controls in this window (read-only).</short>
+        <short>The indexed list of immediate child controls.</short>
+        <descr>The index also indicates the Z-order of the children, zero for topmost[?]
+        </descr>
+        <seealso>
+          <link id="TWinControl.ControlCount"/>
+        </seealso>
       </element>
       <element name="TWinControl.Controls.Index">
-        <short>Numerical value to identify the control within the window</short>
+        <short>Index of the requested control.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DefWndProc">
-        <short>The default procedure to be associated with the window</short>
-        <descr>[? properties which are supported by all descendants<br/>reads or writes a flag to define what is the default procedure]</descr>
+        <short>The default WndProc on Windows widgetset and platforms. [Usage?]
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DockClientCount">
@@ -10954,7 +10957,7 @@ End;
         <descr>
           <p>The docked controls can be accessed in<link id="TWinControl.DockClients">DockClients[]</link>.</p>
           <p>
-            <var>DockClientCount</var> is equivalent to DockClients.Count, but handles also the special case when DockClients is Nil.</p>
+            <var>DockClientCount</var> is equivalent to DockClients.Count, but handles the special case when DockClients is Nil.</p>
         </descr>
         <seealso>
           <link id="TWinControl.DockClients"/>
@@ -10962,20 +10965,26 @@ End;
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DockClients">
-        <short>The indexed list of controls docked into this control</short>
+        <short>The indexed list of controls docked into this control.</short>
+        <seealso>
+          <link id="TWinControl.DockClientCount"/>
+        </seealso>
       </element>
       <element name="TWinControl.DockClients.Index">
-        <short>Index of the docked client.</short>
+        <short>Index of the requested docked client.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DockManager">
         <short>The docking layout manager for this control.</short>
         <descr>
           <p>A docksite can be managed (using an DockManager) or unmanaged (positioning docked controls in the event handlers).
-            The DockManager determines the placement of docked controls, by setting DropOnControl and DropAlign before the drop, and by resizing and positioning the control when it's dropped.</p>
+            The DockManager determines the placement of docked controls,
+            by setting DropOnControl and DropAlign before the drop,
+            and by resizing and positioning the control when it's dropped.</p>
           <p>A DockManager is used only when UseDockManager also is True.
             Setting UseDockManager to True creates an DockManager of the DefaultDockManagerClass for this docksite, if none was previously installed.</p>
-          <p>An unmanaged docksite, without an DockManager, can handle the placement of dropped controls in the OnDockOver and OnDockDrop event handlers.</p>
+          <p>An unmanaged docksite, without an DockManager,
+            can handle the placement of dropped controls in the OnDockOver and OnDockDrop event handlers.</p>
         </descr>
         <seealso>
           <link id="TWinControl.UseDockManager"/>
@@ -10987,133 +10996,208 @@ End;
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DockSite">
-        <short>Is this a dock site? (read/write, default is False)</short>
-        <descr>Enable this to use the DockManager automatically. For example to call DockManager.ResetBounds when the control resizes.</descr>
+        <short>Allows to drag-dock other controls into this control.
+        </short>
+        <descr>
+          <p>
+            A DockSite reacts on controls dragged over this control,
+            signals acceptance and where a dragged control would be dropped.
+          </p>
+          <remark>A DockSite should initially be empty, not containing any child controls.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TWinControl.DockManager"/>
+          <link id="TWinControl.UseDockManager"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DoubleBuffered">
-        <short>Is painting of this window double buffered? (read/write)</short>
+        <short>Allows to reduce flicker in the painting of the control.</short>
+        <descr>
+          <p>
+            Paint requests typically are buffered in the message queue.
+            When a paint message arrives, all elements of the control are drawn onto the screen,
+            according to their type, style, state and content.
+          </p><p>
+            This can cause flicker, when stacked controls wipe out preceding paintings,
+            e.g. when unchanged text is erased from the screen before it is painted again,
+            when it takes some time to retrieve the text of list entries,
+            or wrapping long text at the current control boundaries.
+            Owner-drawing also can cause noticeable flicker.
+          </p><p>
+            To reduce such flicker, DoubleBuffered controls use a buffer bitmap
+            into which all painting is redirected.
+            When the bitmap has been updated, a paint request is queued for the control.
+            When that paint request is received again,
+            the prepared bitmap is output in one fast BitBlt transfer, eliminating any flicker.
+          </p><p>
+            All this happens automatically, when DoubleBuffered is set to True,
+            no further changes are required in application or custom control code.
+          </p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.Handle">
-        <short>Widget handle for identifying and manipulating this window (read/write).</short>
+        <short>A reference to the widget, associated with this control.
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.IsResizing">
-        <short>Is the window being re-sized?</short>
-        <descr>Reads or writes flag to indicate re-sizing</descr>
+        <short>Check IsResizing and drop or delay changes to the control,
+          until the new size has been determined.
+        </short>
       </element>
-      <!-- property Visibility: public -->
-      <element name="TWinControl.TabOrder">
-        <short>The place this control occupies in the list of tabs</short>
-        <descr>Reads or writes information in flag; default is -1</descr>
+      <element name="TWinControl.OnAlignInsertBefore">
+        <short>Handler for custom-aligned child controls,
+          determines the order of control placement.
+        </short>
       </element>
-      <!-- property Visibility: public -->
-      <element name="TWinControl.TabStop">
-        <short>Is the control in the sequence of controls accessed by successive presses of the Tab key?</short>
-        <descr>
-          <p>Use the TabStop to allow or disallow access to the control using the Tab key.
-</p>
-          <p>If the TabStop is True, the control is in the tab order. If TabStop is False, the control is not in the tab order and the user can't press the Tab key to move to the control.</p>
-        </descr>
+      <element name="TWinControl.OnAlignPosition">
+        <short>Handler for custom-aligned child controls,
+          determines the position of the child control.
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnDockDrop">
-        <short>Event handler for the drop of a control to be docked.</short>
+        <short>Notification handler for the drop of a control to be docked.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnDockOver">
-        <short>Event handler for moves of a control over this docksite.</short>
+        <short>Event handler for moves of a control over this docksite.
+          Determines acceptance or rejection of an possible drop.
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnEnter">
-        <short>
-          <var>OnEnter</var>
- - event handler for when the mouse enters the control, and the control receives focus</short>
+        <short>Handler for control receiving the focus.
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnExit">
-        <short>
-          <var>OnExit</var>
- - event handler for when the mouse leaves the control and it loses focus</short>
+        <short>Handler for control loosing the focus.
+          This is a good place for checking the finished user input.
+        </short>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TWinControl.OnGetDockCaption">
+        <short>This handler can provide a special DockCaption,
+          different from the Caption default.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TWinControl.OnGetSiteInfo">
+        <short>Provides information about the DockSite.
+        </short>
+        <descr>
+          <p>
+            The handler can adjust the InfluenceRect,
+            within which mouse moves are recognized by this control.
+          </p><p>
+            The handler also can deny any drops, depending on the type of the dragged control.
+          </p><p>
+            This event occurs before OnDockOver.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.OnDockOver"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnKeyDown">
-        <short>
-          <var>OnKeyDown</var>
- - event handler for instance when key is down while control has focus</short>
+        <short>Handler for
+          keyboard key pressed.
+        </short>
         <descr>
           <p>
-            <var>OnKeyDown</var>
- - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
+            This handler can filter keys, for special use in e.g. non-textual controls.
+          </p><p>
+            The handler receives all keystrokes, including control and other non-visual keys.
+            Keys are encoded as <b>virtual</b> keys, with separate active modifier keys.
+          </p><p>
+            Text input instead should be checked in an OnKeyPress handler.
+          </p>
         </descr>
+        <seealso>
+          <link id="TWinControl.OnKeyUp"/>
+          <link id="TWinControl.OnKeyPress"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnKeyPress">
-        <short>OnKeyPress - event controller for a key being pressed while the control has focus. To properly handle national chars use UTF8KeyPress instead.</short>
+        <short>Handler for a character entered by the user.
+        </short>
         <descr>
           <p>
-            <var>OnKeyPress</var>
- - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
-          <p>Note: we recommend you to use OnUTF8KeyPress to prevent data lost. National chars are converted from UTF8 to the system encoding in OnKeyPressEvent. This can cause a data lost if symbol cannot be converted, which means OnKeyPress is not called or with Char=#0. OnUTF8KeyPress does not perform this conversion.</p>
+            This handler only receives characters, not control or other special keycodes.
+            Control keys should be handled by an OnKeyDown handler instead.
+          </p><p>
+            The handler can convert the character into a different one.
+          </p>
+          <remark>
+            We recommend you to use OnUTF8KeyPress to prevent data loss.
+            Characters are converted from UTF8 to the system encoding in OnKeyPressEvent,
+            with possible loss of characters outside the Ansi codepage.
+          </remark>
         </descr>
+        <seealso>
+          <link id="TWinControl.OnKeyDown"/>
+          <link id="TWinControl.OnUTF8KeyPress"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnKeyUp">
-        <short>
-          <var>OnKeyUp</var>
-  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+        <short>Handler for
+          keyboard key released.
+        </short>
         <descr>
           <p>
-            <var>OnKeyUp</var>
-  - event handler for instance when a key is up (not pressed) while the control has focus</p>
-          <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
+            Unlike OnKeyDown, this event occurs only once for auto-repeated keys.
+          </p><p>
+            For details see <link id="TWinControl.OnKeyDown"/>.
+          </p>
         </descr>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TWinControl.OnMouseWheel">
-        <short>Event handler for any movement of the mouse wheel</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TWinControl.OnMouseWheelDown">
-        <short>Event handler for downward movement of the mouse wheel</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TWinControl.OnMouseWheelUp">
-        <short>Event handler for upward movement of the mouse wheel</short>
-        <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.OnKeyDown"/>
+          <link id="TWinControl.OnKeyPress"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnUnDock">
-        <short>Event handler for control becoming disconnected (undocked) from parent.</short>
+        <short>Event handler for control being undocked from this DockSite.</short>
+        <descr>
+          <p>
+            The handler can disallow undocking.
+          </p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnUTF8KeyPress">
-        <short>UTF8KeyPress - event controller for a key being pressed while the control has focus.</short>
+        <short>Handler for a character entered by the user.
+        </short>
         <descr>
           <p>
-            <var>OnUTF8KeyPress</var> - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyDown</link> in that the char does not converts to the system encoding</p>
+            This handler only receives characters, not control or other special keycodes.
+            Control keys should be handled by an OnKeyDown handler instead.
+          </p><p>
+            The handler can convert the character into a different one.
+          </p><p>
+            While <link id="TWinControl.OnKeyPress">OnKeyPress</link>
+            only receives Ansi characters,
+            with possible loss of characters outside the Ansi codepage,
+            the OnUTF8KeyPress handler receives the UTF-8 character code.
+          </p>
         </descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TWinControl.ParentCtl3D">
-        <short>
-          <var>ParentCtl3D</var> - does it inherit Ctl3D properties from parents? (Deprecated)</short>
-        <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TWinControl.OnKeyDown"/>
+          <link id="TWinControl.OnKeyPress"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.ParentWindow">
-        <short></short>
+        <short>The Handle of the parent widget. [Usage?]</short>
         <descr>
         </descr>
         <seealso>
@@ -11121,123 +11205,126 @@ End;
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.Showing">
-        <short>Is the window showing? (similar to Visible in other contexts)</short>
+        <short>Cached widget visibility, not necessarily in sync with the widget.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
+      <element name="TWinControl.TabOrder">
+        <short>Determines the sequence of controls, reachable when the user presses the Tab key.
+        </short>
+        <descr></descr>
+        <seealso>
+          <link id="TWinControl.TabStop"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TWinControl.TabStop">
+        <short>Allows the user to navigate to this control, by pressing the Tab key.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+          <link id="TWinControl.TabOrder"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
       <element name="TWinControl.UseDockManager">
-        <short>Create DockManager for docking (read/write)</short>
-        <descr>The DockManager is created via a call to CreateDockManager.</descr>
+        <short>Determines whether a DockManager is used for this DockSite.
+        </short>
+        <descr>
+          <p>
+            When this property becomes True, and DockSite also is True,
+            a DockManager is created automatically.
+          </p><p>
+            When False an eventually existing DockManager is ignored.
+          </p><p>
+            If you want to use an special DockManager,
+            install it before setting UseDockManager to True.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.DockSite"/>
+          <link id="TWinControl.DockManager"/>
+          <link id="TWinControl.CreateDockManager"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.VisibleDockClientCount">
         <short>The number of visible docked controls.</short>
+        <seealso>
+          <link id="TWinControl.DockClientCount"/>
+          <link id="TWinControl.DockClients"/>
+        </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TWinControl.WindowHandle">
-        <short></short>
+        <short>For internal use: allows direct access to Handle, bypassing any getter/setter methods.
+        </short>
         <descr>
         </descr>
         <seealso>
         </seealso>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TWinControl.AdjustSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TWinControl.ControlByName">
-        <short>
-          <var>ControlByName</var> - returns the identity of a control whose name is given as an argument</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.ControlByName.Result">
-        <short/>
-      </element>
-      <element name="TWinControl.ControlByName.ControlName">
-        <short/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TWinControl.OnGetDockCaption">
-        <short>
-          <var>OnGetDockCaption</var> - event handler to find the caption for the docked control</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
+<!-- object Visibility: default -->
       <element name="TGraphicControl">
         <short>
           <var>TGraphicControl</var> is the base class for all lightweight controls.</short>
         <descr>
           <p>
-            <var>TGraphicControl</var> supports simple lightweight controls that do not need the ability to accept keyboard input or contain other controls. </p>
-          <p>Since lightweight controls do not wrap GUI screen objects, they are faster and use fewer resources than controls based on <var>TWinControl</var>.</p>
-          <p>
+            <var>TGraphicControl</var> supports simple lightweight controls
+            that do not need the ability to accept keyboard input or contain other controls.
+          </p><p>
+            If you want to accept keyboard input, or need to support child controls,
+            use a <var>TCustomControl</var> instead.
+          </p><p>
+            Since lightweight controls do not wrap GUI widgets,
+            they use fewer resources than controls based on
+            <var>TWinControl</var>.
+          </p><p>
             <var>TGraphicControl</var> provides a
-            
-            <var>Canvas</var> property for access to the control's drawing surface and a virtual
-            
-            <var>Paint</var> method called in response to paint requests received by the parent control.</p>
+            <var>Canvas</var> property for access to the control's drawing surface
+            and a virtual <var>Paint</var> method and an <var>OnPaint</var> handler,
+            called in response to paint requests received by the parent control.
+          </p><p>
+            Override the Paint method or supply your own OnPaint handler,
+            to do the actual drawing of the control.
+          </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TWinControl"/>
+          <link id="#lcl.Controls.TCustomControl"/>
+          <link id="TGraphicControl.Paint"/>
+          <link id="TGraphicControl.OnPaint"/>
           <link id="#lcl.Graphics.TCanvas"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TGraphicControl.FCanvas" link="TGraphicControl.Canvas"/>
       <element name="TGraphicControl.FOnPaint" link="TGraphicControl.OnPaint"/>
-      <element name="TGraphicControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <!-- procedure Visibility: private -->
       <element name="TGraphicControl.WMPaint">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Event handler for paint messages.</short>
       </element>
       <element name="TGraphicControl.WMPaint.Message">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TGraphicControl.Paint">
-        <short>Virtual <var>Paint</var> method called in response to paint requests.</short>
-        <descr>Virtual <var>Paint</var> method called in response to paint requests received by the parent control.</descr>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TGraphicControl.Create"/>
-      <element name="TGraphicControl.Create.AOwner">
-        <short/>
-      </element>
-      <!-- destructor Visibility: public -->
-      <element name="TGraphicControl.Destroy"/>
-      <!-- property Visibility: public -->
-      <element name="TGraphicControl.Canvas">
-        <short>A clipping window to the parent canvas.</short>
-        <descr>
-          <p>
-            <var>The TGraphicsControl.Canvas</var> is a clipped window in the parent canvas.</p>
-          <p>If you ask for the <var>Canvas.Width</var> or <var>Canvas.Height</var>, you are actually getting the parent control's Canvas dimensions.</p>
-          <p>To get the dimensions of the <var>TGraphicControl,</var> you must query the <var>ClientRect</var>.</p>
-        </descr>
-        <seealso>
-          <link id="#lcl.Graphics.TCanvas">TCanvas</link>
-        </seealso>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TGraphicControl.OnPaint">
-        <short>
-          <var>OnPaint</var> - event handler for request to paint canvas</short>
-      </element>
-      <!-- procedure Visibility: protected -->
+      <element name="TGraphicControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TGraphicControl.FontChanged" link="#LCL.Controls.TControl.FontChanged"/>
       <element name="TGraphicControl.FontChanged.Sender">
         <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TGraphicControl.Paint">
+        <short>Override this method with your own painting code.
+        </short>
+        <descr>
+          The default implementation invokes the OnPaint handler.
+        </descr>
+        <seealso>
+          <link id="TGraphicControl.OnPaint"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphicControl.DoOnChangeBounds" link="#LCL.Controls.TControl.DoOnChangeBounds"/>
@@ -11245,22 +11332,86 @@ End;
       <element name="TGraphicControl.DoOnParentHandleDestruction"/>
       <!-- procedure Visibility: public -->
       <element name="TGraphicControl.Update"/>
-      <!-- object Visibility: default -->
-      <element name="TCustomControl">
-        <short>
-          <var>TCustomControl </var>- a base class for many window controls</short>
+      <!-- constructor Visibility: public -->
+      <element name="TGraphicControl.Create"/>
+      <element name="TGraphicControl.Create.AOwner"/>
+      <!-- destructor Visibility: public -->
+      <element name="TGraphicControl.Destroy"/>
+      <!-- property Visibility: public -->
+      <element name="TGraphicControl.Canvas">
+        <short>A clipped window into the parent Canvas.</short>
         <descr>
-          <p>Contains simple basic definitions to create, destroy and paint window controls and set basic properties like canvas and border</p>
+          <p>
+            Don't paint on the entire Canvas!
+            Instead use the dimensions of the <var>TGraphicControl</var>
+            stored in the <var>ClientRect</var>.
+          </p><p>
+            If you ask for the <var>Canvas.Width</var> or <var>Canvas.Height</var>,
+            you are actually getting the Parent control's Canvas dimensions.
+          </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TWinControl">TWinControl</link>
-          <link id="#lcl.Controls.TControl">TControl</link>
+          <link id="TControl.ClientRect"/>
+          <link id="TControl.ClientWidth"/>
+          <link id="TControl.ClientHeight"/>
+          <link id="#lcl.Graphics.TCanvas">TCanvas</link>
+          <link id="TControl.BoundsRect"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TGraphicControl.OnPaint">
+        <short>Supply your own OnPaint handler for painting the control.
+        </short>
+        <seealso>
+          <link id="TGraphicControl.Paint"/>
+        </seealso>
+      </element>
+<!-- object Visibility: default -->
+      <element name="TCustomControl">
+        <short>The base class for windowed controls which paint themselves.
+        </short>
+        <descr>
+          <p>
+            In contrast to TGraphicControl,
+            a TCustomControl can accept keyboard input (get the Focus)
+            and can have child controls.
+          </p><p>
+            Override the Paint method or supply your own OnPaint handler,
+            to do the actual drawing of the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl"/>
+          <link id="TGraphicControl"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomControl.FCanvas" link="TCustomControl.Canvas"/>
-      <!-- variable Visibility: private -->
       <element name="TCustomControl.FOnPaint" link="TCustomControl.OnPaint"/>
+      <element name="TCustomControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomControl.WMPaint">
+        <short>Event handler for paint messages.</short>
+      </element>
+      <element name="TCustomControl.WMPaint.Message">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomControl.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd"/>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomControl.PaintWindow" link="#LCL.Controls.TWinControl.PaintWindow">
+        <short>The Paint handler plug-in, intercepting paint requests.</short>
+        <descr>
+          PaintWindow prepares the Canvas for painting,
+          and invokes the Paint method to do the actual painting.
+        </descr>
+        <seealso>
+          <link id="TWinControl.PaintWindow"/>
+        </seealso>
+      </element>
+      <element name="TCustomControl.PaintWindow.DC">
+        <short>The Device Context in which to paint.</short>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomControl.FontChanged" link="#LCL.Controls.TControl.FontChanged"/>
       <element name="TCustomControl.FontChanged.Sender">
@@ -11271,77 +11422,38 @@ End;
       <element name="TCustomControl.SetColor.Value">
         <short/>
       </element>
-      <element name="TCustomControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomControl.WMPaint">
-        <short>
-          <var>WMPaint</var> - LCL message for painting</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TCustomControl.WMPaint.Message">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomControl.PaintWindow" link="#LCL.Controls.TWinControl.PaintWindow">
-        <short>Paint handler plug-in</short>
-        <descr>This is a plug-in in TWinControl to get the DC, <br/>
-assign it to our canvas and call the paint method for <br/>
-descendants to do the actual painting
-</descr>
-        <seealso>
-          <link id="#lcl.Controls.TWinControl.PaintWindow">TWinControl.PaintWindow</link>
-        </seealso>
-      </element>
-      <element name="TCustomControl.PaintWindow.DC">
-        <short>The Device Context in which to paint</short>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomControl.Paint">
+        <short>Override this method in your derived class with your own paint handler.
+        </short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomControl.Create"/>
-      <element name="TCustomControl.Create.AOwner">
-        <short>Owner, ie the component that called this control</short>
-      </element>
+      <element name="TCustomControl.Create.AOwner"/>
       <!-- destructor Visibility: public -->
       <element name="TCustomControl.Destroy"/>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomControl.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd"/>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomControl.DestroyComponent">
-        <short>If the custom control has been destroyed, free its handle as well</short>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomControl.Paint">
-        <short>The virtual paint handler for the class.</short>
-        <descr>Override this method in your derived class with your own paint handler.</descr>
-      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomControl.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
       <!-- property Visibility: public -->
       <element name="TCustomControl.Canvas">
-        <short>The area of a control on which its components are drawn or painted</short>
-        <descr>The Canvas is the area of screen on which the various components are drawn. <br/>
-This inherits its properties from TCanvas, <br/>
-and that description should be read to understand their definitions more fully.
-</descr>
+        <short>The drawing surface for the control,
+          see <link id="#lcl.Graphics.TCanvas">TCanvas</link> for details.
+        </short>
+        <descr/>
         <seealso>
           <link id="#lcl.Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomControl.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
-        <descr>Only a restricted series of options is available: none or a single border.
-        </descr>
+      <element name="TCustomControl.OnPaint">
+        <short>Supply your own OnPaint handler for painting the control.
+        </short>
         <seealso>
-          <link id="#lcl.Controls.TBorderStyle"/>
+          <link id="TCustomControl.Paint"/>
         </seealso>
       </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomControl.OnPaint">
-        <short>Event handler for painting</short>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TImageList">
-        <short>A list of images, as used for dragging.</short>
-      </element>
+<!-- object Visibility: default -->
+      <element name="TImageList" link="TDragImageList"/>
       <!-- property Visibility: published -->
       <element name="TImageList.AllocBy">
         <short>
@@ -13166,6 +13278,7 @@ and that description should be read to understand their definitions more fully.
           <var>AutoSize</var> - boolean property that permits the size of a control to be adjusted automatically</short>
         <descr>
           <p>
+            [deverses an review!!!]
             <var>AutoSize</var> is a boolean property found in many classes; it permits the size of a control to be adjusted automatically to accommodate differences in the text or graphic contained therein, and allows most efficient use of available space</p>
           <p>Many controls call  <link id="#lcl.Controls.TControl.DoAutoSize">TControl.DoAutoSize</link> to perform the actual auto-sizing. </p>
           <p>IMPORTANT: Many Delphi controls override this method and many call this method directly after setting some properties.</p>
