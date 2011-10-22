@@ -1183,7 +1183,11 @@ begin
     end;
     inc(Result);
   end;
-  if Result>=MaxPos+1 then Result:=NotFoundPos;
+  if Result>MaxPos then
+    if NotFoundPos>=1 then
+      Result:=NotFoundPos
+    else
+      Result:=MaxPos+1;
 end;
 
 procedure FindCommentsInRange(const Src: string; StartPos, EndPos: integer;
