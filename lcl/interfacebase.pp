@@ -81,7 +81,8 @@ type
     lcDragDockStartOnTitleClick,// ability to start drag/dock events on title bar click
     lcAntialiasingEnabledByDefault,
                                 // is amDontCare = amOn for the widgetset
-    lcLMHelpSupport             // support for LM_HELP command
+    lcLMHelpSupport,            // support for LM_HELP command
+    lcReceivesLMClearCutCopyPasteReliably // In Carbon we do not receive LM_CLEAR, CUT, COPY, PASTE, etc reliably, and this affects DB controls. See bug http://bugs.freepascal.org/view.php?id=20394
   );
 
   { TDialogButton }

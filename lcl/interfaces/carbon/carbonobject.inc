@@ -1168,7 +1168,8 @@ begin
     lcCanDrawOutsideOnPaint,
     lcNeedMininimizeAppWithMainForm,
     lcApplicationTitle,
-    lcFormIcon:
+    lcFormIcon,
+    lcReceivesLMClearCutCopyPasteReliably:
       Result := LCL_CAPABILITY_NO;
     lcAntialiasingEnabledByDefault:
       Result := LCL_CAPABILITY_YES;

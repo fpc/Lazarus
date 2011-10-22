@@ -93,7 +93,8 @@ begin
     lcNeedMininimizeAppWithMainForm,
     lcApplicationTitle,
     lcFormIcon,
-    lcModalWindow:
+    lcModalWindow,
+    lcReceivesLMClearCutCopyPasteReliably:
       Result := LCL_CAPABILITY_YES;
   else
     Result := LCL_CAPABILITY_NO;
