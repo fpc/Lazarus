@@ -32,7 +32,7 @@ uses
   GLib2, Gtk2, Gdk2, Gdk2pixbuf,
   // RTL, FCL, LCL
   ComCtrls, Classes, FPCAdds, LCLType, LMessages, Controls, Graphics,
-  StdCtrls, LCLProc, ImgList, Math, Sysutils, InterfaceBase,
+  StdCtrls, Forms, LCLProc, ImgList, Math, Sysutils, InterfaceBase,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // GtkWidgetset

@@ -442,9 +442,13 @@ type
     wwiDeactivating,                  // during gtk deactivate
     wwiActivating,                    // during gtk activate
     wwiNoEraseBkgnd,                  // erase background is disabled for widget
-    wwiInvalidEvent                   // special mark for widgetinfo
+    wwiInvalidEvent,                  // special mark for widgetinfo
                                       // see gtkchanged_editbox and
                                       // gtkchanged_editbox_backspace in gtkcallback.inc
+    wwiTabWidgetFocusCheck            // TabWidget have nasty behaviour when clicked
+                                      // by mouse: switches focus here and there, so
+                                      // focused control triggers OnExit and it looks
+                                      // like it triggered OnEnter.issue #20493
     );
   TWidgetInfoFlags = set of TWidgetInfoFlag;
   tGtkStateEnumRange = 0..31;

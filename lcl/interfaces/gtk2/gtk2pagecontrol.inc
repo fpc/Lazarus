@@ -66,10 +66,27 @@ begin
   end;
 end;
 
+function GtkRestoreFocusFix(AGtkWidget: Pointer): gboolean; cdecl;
+begin
+  Result := AGtkWidget <> nil;
+  if AGtkWidget <> nil then
+  begin
+    GTK_WIDGET_SET_FLAGS(PGtkWidget(AGtkWidget), GTK_CAN_FOCUS);
+    g_idle_remove_by_data(AGtkWidget);
+  end;
+end;
+
 function GtkWSNotebook_AfterSwitchPage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer; data: gPointer): GBoolean; cdecl;
 var
   Mess: TLMNotify;
   NMHdr: tagNMHDR;
+  Info: PWidgetInfo;
+  ACtl: TWinControl;
+  AParentForm: TCustomForm;
+  i: Integer;
+  LCLPageIndex: Integer;
+  Pg: TCustomPage;
+  ChildWidget: PGtkWidget;
 begin
   Result := CallBackDefaultReturn;
   // then send the new page
@@ -78,9 +95,64 @@ begin
   FillChar(NMHdr, SizeOf(NMHdr), 0);
   NMHdr.code := TCN_SELCHANGE;
   NMHdr.hwndFrom := PtrUInt(widget);
-  NMHdr.idFrom := NotebookPageRealToLCLIndex(TCustomTabControl(Data), pagenum);  //use this to set pageindex to the correct page.
+  LCLPageIndex := NotebookPageRealToLCLIndex(TCustomTabControl(Data), pagenum);  //use this to set pageindex to the correct page.
+  NMHdr.idFrom := LCLPageIndex;
   Mess.NMHdr := @NMHdr;
   DeliverMessage(Data, Mess);
+
+  // code below is fix for issue #20493
+  Info := GetWidgetInfo(Widget);
+  if wwiTabWidgetFocusCheck in Info^.Flags then
+  begin
+    Exclude(Info^.Flags, wwiTabWidgetFocusCheck);
+
+    if LCLPageIndex = -1 then
+      exit;
+
+    ACtl := TWinControl(Data);
+    AParentForm := GetParentForm(ACtl);
+    if Assigned(AParentForm) then
+    begin
+      // 1st we must find focused control (if any)
+      ACtl := nil;
+      Pg := TCustomTabControl(Data).Page[LCLPageIndex];
+      for i := 0 to Pg.ControlCount - 1 do
+      begin
+        if (pg.Controls[i] is TWinControl) and
+          (TWinControl(pg.Controls[i]).Focused) then
+        begin
+          ACtl := TWinControl(pg.Controls[i]);
+          break;
+        end;
+      end;
+      if ACtl = nil then
+        ACtl := AParentForm.ActiveControl;
+    end else
+      ACtl := nil;
+
+    if (ACtl <> nil) and (ACtl <> TWinControl(Data)) then
+    begin
+      // DebugLn('ActiveCtl is ',ACtl.ClassName,':',ACtl.Name);
+      // do not focus tab by mouse click if we already have active control
+      GTK_WIDGET_UNSET_FLAGS(Widget, GTK_CAN_FOCUS);
+      Pg := TCustomTabControl(Data).Page[LCLPageIndex];
+      for i := 0 to Pg.ControlCount - 1 do
+      begin
+        // we must prevent gtkWidget to acquire focus by gtk (eg. GtkButton)
+        if (Pg.Controls[i] is TWinControl) and (Pg.Controls[i] <> ACtl) then
+        begin
+          Info := GetWidgetInfo(PGtkWidget(TWinControl(Pg.Controls[i]).Handle));
+          if Info^.CoreWidget <> nil then
+            ChildWidget := Info^.CoreWidget
+          else
+            ChildWidget := Info^.ClientWidget;
+          GTK_WIDGET_UNSET_FLAGS(ChildWidget, GTK_CAN_FOCUS);
+          g_idle_add(@GtkRestoreFocusFix, ChildWidget);
+        end;
+      end;
+      g_idle_add(@GtkRestoreFocusFix, Widget);
+    end;
+  end;
 end;
 
 function GtkWSNotebook_SwitchPage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer; data: gPointer): GBoolean; cdecl;

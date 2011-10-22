@@ -1502,6 +1502,19 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton; data: gPoi
     gtk_list_item_select(PGtkListItem(List^.Data));
   end;
 
+  procedure FixTabControlFocusBehaviour;
+  var
+    Info: PWidgetInfo;
+  begin
+    {gtk_notebook have weird behaviour when clicked.
+     if there's active control on page it'll loose it's
+     focus and trigger OnExit (tab is taking focus).
+     issue #20493}
+    Info := GetWidgetInfo(Widget);
+    if not gtk_widget_is_focus(Widget) then
+      Include(Info^.Flags, wwiTabWidgetFocusCheck);
+  end;
+
 var
   DesignOnlySignal: boolean;
   Msg: TLMContextMenu;
@@ -1558,6 +1571,9 @@ begin
     if Event^.button = 1 then
     begin
       //CaptureMouseForWidget(CaptureWidget,mctGTKIntf);
+      if (TControl(Data) is TCustomTabControl) and
+        not (csDesigning in TControl(Data).ComponentState) then
+          FixTabControlFocusBehaviour;
     end
     else
     // if LCL process LM_CONTEXTMENU then stop the event propagation
