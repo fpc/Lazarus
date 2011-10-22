@@ -58,30 +58,29 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   ylist: array [1..4] of Double;
   i, j: Integer;
-  y: Double;
+  y, y0: Double;
 begin
   chWhiskersBoxAndWhiskerSeries1.ListSource.YCount := 5;
   for i := 1 to 6 do begin
     y := Random(80) + 10;
-    chWhiskersBoxAndWhiskerSeries1.AddXY(i, y);
+    y0 := y;
     for j := 1 to 4 do begin
       y += Random(20) + 5;
       ylist[j] := y;
     end;
-    chWhiskersBoxAndWhiskerSeries1.ListSource.SetYList(i - 1, ylist);
+    chWhiskersBoxAndWhiskerSeries1.AddXY(i, y0, ylist);
   end;
 
   chOHLCOpenHighLowCloseSeries1.ListSource.YCount := 4;
   y := 50;
   for i := 1 to 50 do begin
     y += Random(80) / 10 - 4;
-    chOHLCOpenHighLowCloseSeries1.AddXY(i, y);
     ylist[1] := y;
     for j := 1 to 3 do begin
       ylist[j] += Random(20) / 10 + 1;
       ylist[j + 1] := ylist[j];
     end;
-    chOHLCOpenHighLowCloseSeries1.ListSource.SetYList(i - 1, ylist);
+    chOHLCOpenHighLowCloseSeries1.AddXY(i, y, ylist);
   end;
 end;
 

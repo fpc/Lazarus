@@ -29,14 +29,16 @@ object Form1: TForm1
         Width = 521
         AxisList = <        
           item
+            Minors = <>
             Title.LabelFont.Orientation = 900
           end        
           item
+            TickLength = 0
             Alignment = calBottom
             Marks.Attachment = maCenter
             Marks.Distance = 0
             Marks.LabelBrush.Style = bsSolid
-            TickLength = 0
+            Minors = <>
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -70,10 +72,12 @@ object Form1: TForm1
         Width = 521
         AxisList = <        
           item
+            Minors = <>
             Title.LabelFont.Orientation = 900
           end        
           item
             Alignment = calBottom
+            Minors = <>
           end>
         Depth = 10
         Foot.Brush.Color = clBtnFace
@@ -87,10 +91,10 @@ object Form1: TForm1
         ParentColor = False
         object chStackedBarSeries1: TBarSeries
           Active = False
-          Marks.YIndex = -1
           Marks.Format = '%0:.2g'
           Marks.LinkPen.Visible = False
           Marks.Style = smsCustom
+          Marks.YIndex = -1
           ZPosition = 5
           BarBrush.Color = clRed
           Depth = 10
@@ -100,20 +104,20 @@ object Form1: TForm1
         end
         object chStackedLineSeries1: TLineSeries
           Active = False
-          Marks.YIndex = -1
           Marks.Format = '%0:.2g'
           Marks.LinkPen.Visible = False
           Marks.Style = smsCustom
+          Marks.YIndex = -1
           Depth = 10
           MarkPositions = lmpInside
           Source = ccsStacked
           Styles = ChartStyles1
         end
         object chStackedAreaSeries1: TAreaSeries
-          Marks.YIndex = -1
           Marks.Format = '%0:.2g'
           Marks.LinkPen.Visible = False
           Marks.Style = smsCustom
+          Marks.YIndex = -1
           ZPosition = 5
           AreaContourPen.Color = clGreen
           AreaContourPen.EndCap = pecSquare
@@ -188,10 +192,12 @@ object Form1: TForm1
         AxisList = <        
           item
             Grid.Visible = False
+            Minors = <>
             Title.LabelFont.Orientation = 900
           end        
           item
             Alignment = calBottom
+            Minors = <>
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -223,11 +229,13 @@ object Form1: TForm1
           item
             Grid.Color = clGray
             TickLength = 0
+            Minors = <>
             Title.LabelFont.Orientation = 900
           end        
           item
-            Alignment = calBottom
             Grid.Visible = False
+            Alignment = calBottom
+            Minors = <>
           end>
         ExpandPercentage = 5
         Foot.Brush.Color = clBtnFace

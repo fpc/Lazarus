@@ -172,9 +172,14 @@ type
     procedure SetYValue(AIndex: Integer; AValue: Double); inline;
   public
     function Add(
-      AValue: Double; AXLabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
+      AValue: Double;
+      AXLabel: String = ''; AColor: TColor = clTAColor): Integer; inline;
     function AddXY(
-      AX, AY: Double; AXLabel: String = ''; AColor: TColor = clTAColor): Integer; overload;
+      AX, AY: Double;
+      AXLabel: String = ''; AColor: TColor = clTAColor): Integer; overload; inline;
+    function AddXY(
+      AX, AY: Double; const AYList: array of Double;
+      AXLabel: String = ''; AColor: TColor = clTAColor): Integer; overload;
     procedure Clear; inline;
     function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
@@ -518,6 +523,14 @@ end;
 function TChartSeries.Add(AValue: Double; AXLabel: String; AColor: TColor): Integer;
 begin
   Result := AddXY(GetXMaxVal + 1, AValue, AXLabel, AColor);
+end;
+
+function TChartSeries.AddXY(
+  AX, AY: Double; const AYList: array of Double;
+  AXLabel: String; AColor: TColor): Integer;
+begin
+  Result := ListSource.Add(AX, AY, AXLabel, AColor);
+  ListSource.SetYList(Result, AYList);
 end;
 
 function TChartSeries.AddXY(
