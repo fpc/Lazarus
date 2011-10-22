@@ -53,7 +53,7 @@ type
       AColor: TChartColor = clTAColor): Integer;
     procedure Clear;
     procedure CopyForm(ASource: TCustomChartSource);
-    procedure Delete(AIndex: Integer); inline;
+    procedure Delete(AIndex: Integer);
     function IsSorted: Boolean; override;
     function SetXValue(AIndex: Integer; AValue: Double): Integer;
     procedure SetYList(AIndex: Integer; const AYList: array of Double);
@@ -429,7 +429,7 @@ end;
 procedure TListChartSource.Delete(AIndex: Integer);
 begin
   with Item[AIndex]^ do begin
-    FExtentIsValid :=
+    FExtentIsValid := FExtentIsValid and
       (FExtent.a.X < X) and (X < FExtent.b.X) and
       (FExtent.a.Y < Y) and (Y < FExtent.b.Y);
     if FValuesTotalIsValid then
