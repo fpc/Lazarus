@@ -357,7 +357,7 @@ var
   i: integer;
   QtFileDialog: TQtFileDialog;
   {$ifdef QT_NATIVE_DIALOGS}
-  selectedFilter, saveFileName, saveFilter, saveTitle: WideString;
+  selectedFilter, saveFileName, saveFilter, saveTitle, sDir: WideString;
   Flags: Cardinal;
   {$endif}
   ActiveWin: HWND;
@@ -389,7 +389,14 @@ begin
   begin
     {$ifdef QT_NATIVE_DIALOGS}
     saveFilter := GetQtFilterString(TSaveDialog(ACommonDialog), selectedFilter);
-    saveFileName := GetUtf8String(FileDialog.InitialDir+FileDialog.Filename);
+    sDir := FileDialog.InitialDir;
+    if (SDir <> '') and (SDir[length(SDir)] <> PathDelim) then
+      SDir := SDir + PathDelim;
+    if (FileDialog.FileName <> '') and
+      (ExtractFileName(FileDialog.FileName) <> FileDialog.FileName) then
+        saveFileName := GetUtf8String(FileDialog.Filename)
+    else
+      saveFileName := GetUtf8String(SDir+FileDialog.Filename);
     saveTitle := GetUTF8String(FileDialog.Title);
 
     Flags := 0;
@@ -441,7 +448,15 @@ begin
   begin
     {$ifdef QT_NATIVE_DIALOGS}
     saveFilter := GetQtFilterString(TOpenDialog(ACommonDialog), selectedFilter);
-    saveFileName := GetUtf8String(FileDialog.InitialDir+FileDialog.Filename);
+
+    sDir := FileDialog.InitialDir;
+    if (SDir <> '') and (SDir[length(SDir)] <> PathDelim) then
+      SDir := SDir + PathDelim;
+    if (FileDialog.FileName <> '') and
+      (ExtractFileName(FileDialog.FileName) <> FileDialog.FileName) then
+        saveFileName := GetUtf8String(FileDialog.Filename)
+    else
+      saveFileName := GetUtf8String(SDir+FileDialog.Filename);
     saveTitle := GetUTF8String(FileDialog.Title);
 
     Flags := 0;
