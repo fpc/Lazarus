@@ -675,6 +675,22 @@ begin
   until (TheControl = nil) or (not Result);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TControl.IsParentShowHint
+  Params:   none
+  Returns:  Boolean
+
+  Used at places where we need to check ParentShowHint from TControl.
+  Property is protected, so this function avoids hacking to get
+  protected property value.
+  Example of usage is GetHintControl()
+  from application.inc (issue #20518) .
+ ------------------------------------------------------------------------------}
+function TControl.IsParentShowHint: Boolean;
+begin
+  Result := FParentShowHint;
+end;
+
 function TControl.FormIsUpdating: boolean;
 begin
   Result := Assigned(Parent) and Parent.FormIsUpdating;
