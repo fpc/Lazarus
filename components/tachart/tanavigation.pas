@@ -160,6 +160,8 @@ begin
   if Chart = nil then exit;
   fe := Chart.GetFullExtent;
   le := Chart.LogicalExtent;
+  if le = EmptyExtent then
+    le := fe;
   case Kind of
     sbHorizontal: begin
       fw := fe.b.X - fe.a.X;
@@ -206,6 +208,8 @@ begin
   if w = 0 then exit;
   fe := Chart.GetFullExtent;
   le := Chart.LogicalExtent;
+  if le = EmptyExtent then
+    le := fe;
   case Kind of
     sbHorizontal: begin
       d := WeightedAverage(fe.a.X, fe.b.X, Position / w);
@@ -338,6 +342,8 @@ begin
   if Chart = nil then exit;
   fe := Chart.GetFullExtent;
   le := Chart.LogicalExtent;
+  if le = EmptyExtent then
+    le := fe;
   ext := fe;
   ExpandRect(ext, le.a);
   ExpandRect(ext, le.b);
