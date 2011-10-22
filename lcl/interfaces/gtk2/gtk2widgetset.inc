@@ -3860,15 +3860,16 @@ var
     MskBitmap: PGdkBitmap;
     ClipMask: PGdkBitmap;
     SrcGDIBitmap: PGdiObject;
+    B: Boolean;
   begin
     Result:=true;
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('SrcDevBitmapToDrawable Start');
     {$ENDIF}
-
+    B := False;
     SrcGDIBitmap := SrcDevContext.CurrentBitmap;
-    if SrcGDIBitmap = nil
-    then begin
+    if SrcGDIBitmap = nil then
+    begin
       SrcDrawable := SrcDevContext.Drawable;
       MskBitmap := nil;
       if SrcDrawable = nil then
@@ -3876,8 +3877,8 @@ var
         DebugLn('SrcDevBitmapToDrawable NOTE: SrcDevContext.CurrentBitmap=nil, SrcDevContext.Drawable = nil');
         exit;
       end;
-    end
-    else begin
+    end else
+    begin
       SrcDrawable := SrcGDIBitmap^.GDIPixmapObject.Image;
       MskBitmap := CreateGdkMaskBitmap(HBITMAP(PtrUInt(SrcGDIBitmap)), Mask);
     end;
@@ -3887,8 +3888,8 @@ var
       ' MaskPixmap=[',GetWindowDebugReport(MskBitmap),']');
     {$ENDIF}
 
-    if (MskBitmap = nil) and (not SizeChange) and (ROP=SRCCOPY)
-    then begin
+    if (MskBitmap = nil) and (not SizeChange) and (ROP=SRCCOPY) then
+    begin
       // simply copy the area
       {$IFDEF VerboseStretchCopyArea}
       DebugLn('SrcDevBitmapToDrawable Simple copy');
@@ -3903,8 +3904,10 @@ var
 
     // perform raster operation and scaling into Scale and fGC
     DstDevContext.SelectedColors := dcscCustom;
-    if not ScaleAndROP(DstDevContext.GC, SrcDevContext.Drawable, SrcDrawable, MskBitmap)
-    then begin
+    if not ScaleAndROP(DstDevContext.GC, SrcDevContext.Drawable, SrcDrawable, MskBitmap) then
+    begin
+      if MskBitmap <> nil then
+        gdk_bitmap_unref(MskBitmap);
       DebugLn('WARNING: SrcDevBitmapToDrawable: ScaleAndROP failed');
       Exit;
     end;
@@ -3912,16 +3915,21 @@ var
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('SrcDevBitmapToDrawable TempPixmap=',DbgS(TempPixmap),' TempMaskPixmap=',DbgS(TempMaskBitmap));
     {$ENDIF}
-    if TempPixmap <> nil
-    then begin
+    if TempPixmap <> nil then
+    begin
       SrcDrawable := TempPixmap;
       XSrc := 0;
       YSrc := 0;
       SrcWidth := Width;
       SrcHeight := Height;
     end;
-    if TempMaskBitmap <> nil
-    then begin
+    if TempMaskBitmap <> nil then
+    begin
+      if MskBitmap <> nil then
+      begin
+        gdk_bitmap_unref(MskBitmap);
+        B := True;
+      end;
       MskBitmap := TempMaskBitmap;
       XMask := 0;
       YMask := 0;
@@ -3953,8 +3961,11 @@ var
 
     // unset clipping mask for transparency
     DstDevContext.ResetGCClipping;
-    if ClipMask <> nil
-    then gdk_bitmap_unref(ClipMask);
+    if ClipMask <> nil then
+      gdk_bitmap_unref(ClipMask);
+
+    if not B and (MskBitmap <> nil) then
+      gdk_bitmap_unref(MskBitmap);
 
     // restore raster operation to SRCCOPY
     gdk_gc_set_function(DstDevContext.GC, GDK_Copy);
