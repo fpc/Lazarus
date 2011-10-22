@@ -522,7 +522,7 @@ type
     procedure SetFPColor(const AValue: TFPColor); override;
     procedure SetHeight(Avalue: Integer);
     procedure SetName(AValue: string); override;
-    procedure SetOrientation(AValue: Integer);{$IFNDEF VER2_4}override;{$ENDIF}
+    procedure SetOrientation(AValue: Integer);{$IFNDEF VER2_4}{$IFNDEF VER2_5}override;{$ENDIF}{$ENDIF}// This was introduced in 2.5 quite late, and the Android pre-compiled compiler was before this, so I prefer to let it only for 2.6
     procedure SetPitch(Value: TFontPitch);
     procedure SetSize(AValue: integer); override;
     procedure SetStyle(Value: TFontStyles);
