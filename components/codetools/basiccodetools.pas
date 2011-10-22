@@ -1150,7 +1150,10 @@ end;
 function FindNextComment(const ASource: string; StartPos: integer;
   MaxPos: integer): integer;
 // if not found: Result=MaxPos+1
+var
+  NotFoundPos: Integer;
 begin
+  NotFoundPos:=MaxPos+1;
   if (MaxPos>length(ASource)) or (MaxPos<1) then
     MaxPos:=length(ASource);
   Result:=StartPos;
@@ -1160,11 +1163,9 @@ begin
       begin
         inc(Result);
         while (Result<=MaxPos) do begin
-          if (ASource[Result]<>'''') then
-            inc(Result)
-          else begin
+          if (ASource[Result] in ['''',#10,#13]) then
             break;
-          end;
+          inc(Result);
         end;
       end;
 
@@ -1182,7 +1183,7 @@ begin
     end;
     inc(Result);
   end;
-  if Result>MaxPos+1 then Result:=MaxPos+1;
+  if Result>=MaxPos+1 then Result:=NotFoundPos;
 end;
 
 procedure FindCommentsInRange(const Src: string; StartPos, EndPos: integer;

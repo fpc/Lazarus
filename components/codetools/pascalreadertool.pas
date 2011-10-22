@@ -2994,6 +2994,7 @@ function TPascalReaderTool.GetPasDocComments(Node: TCodeTreeNode;
   begin
     // read comments (start in front of node)
     //DebugLn(['TPascalReaderTool.GetPasDocComments Scan Src=',copy(Src,StartPos,EndPos-StartPos)]);
+    if EndPos>SrcLen then EndPos:=SrcLen+1;
     p:=FindLineEndOrCodeInFrontOfPosition(StartPos,true);
     while p<EndPos do begin
       p:=FindNextComment(Src,p,EndPos);
