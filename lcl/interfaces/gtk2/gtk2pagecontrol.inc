@@ -349,24 +349,6 @@ begin
   UpdateNoteBookClientWidget(ATabControl);
 end;
 
-class procedure TGtk2WSCustomTabControl.RemovePage(const ATabControl: TCustomTabControl;
-  const AIndex: integer);
-var
-  PageWidget: PGtkWidget;
-  Page: TCustomPage;
-begin
-  // The gtk does not provide a function to remove a page without destroying it.
-  // Luckily the LCL destroys the Handle, when a page is removed, so this
-  // function is not needed.
-  {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn(['TGtkWSCustomTabControl.RemovePage AIndex=',AIndex,' ',DbgSName(ATabControl.Page[AIndex])]);
-  {$ENDIF}
-  Page:=ATabControl.Page[AIndex];
-  if not Page.HandleAllocated then exit;
-  PageWidget := PGtkWidget(Page.Handle);
-  gtk_widget_hide(PageWidget);
-end;
-
 class function TGtk2WSCustomTabControl.GetCapabilities: TNoteBookCapabilities;
 begin
   Result:=[nbcPageListPopup, nbcShowCloseButtons];

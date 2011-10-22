@@ -88,8 +88,6 @@ type
       const AChild: TCustomPage; const AIndex: integer); override;
     class procedure MovePage(const ATabControl: TCustomTabControl;
       const AChild: TCustomPage; const NewIndex: integer); override;
-    class procedure RemovePage(const ATabControl: TCustomTabControl;
-      const AIndex: integer); override;
 
     class function GetCapabilities: TNoteBookCapabilities; override;
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
