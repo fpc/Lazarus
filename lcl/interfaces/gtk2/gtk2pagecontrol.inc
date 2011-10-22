@@ -71,6 +71,7 @@ var
   Mess: TLMNotify;
   NMHdr: tagNMHDR;
 begin
+  Result := CallBackDefaultReturn;
   // then send the new page
   FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_NOTIFY;

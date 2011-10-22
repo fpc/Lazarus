@@ -1538,8 +1538,9 @@ begin
 
   //debugln('[gtkMouseBtnPress] calling DeliverMouseDownMessage Result=',dbgs(Result));
   {$IFDEF Gtk2CallMouseDownBeforeContext}
-  if DeliverMouseDownMessage(Widget, Event, TWinControl(Data))<>0 then begin
-    //debugln(['[gtkMouseBtnPress] DeliverMouseDownMessage handled, stopping event']);
+  if DeliverMouseDownMessage(Widget, Event, TWinControl(Data))<>0 then
+  begin
+    // Debugln(['[gtkMouseBtnPress] DeliverMouseDownMessage handled, stopping event']);
     g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
     exit(false);
   end;
