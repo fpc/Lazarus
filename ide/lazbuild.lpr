@@ -421,7 +421,7 @@ begin
     CurProf.TargetPlatform:=GetDefaultLCLWidgetType;
   CurProf.ExtraOptions:=BuildIDEOptions;
   if BuildAll then
-    CurProf.CleanAll:=true;
+    CurProf.IdeBuildMode:=bmCleanAllBuild;
   MainBuildBoss.SetBuildTargetIDE;
   Flags:=[];
 
