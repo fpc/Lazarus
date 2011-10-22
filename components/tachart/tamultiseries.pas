@@ -83,6 +83,9 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
   public
+    function AddXY(
+      AX, AYLoWhisker, AYLoBox, AY, AYHiBox, AYHiWhisker: Double;
+      AXLabel: String = ''; AColor: TColor = clTAColor): Integer; overload;
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -271,6 +274,14 @@ begin
 end;
 
 { TBoxAndWhiskerSeries }
+
+function TBoxAndWhiskerSeries.AddXY(
+  AX, AYLoWhisker, AYLoBox, AY, AYHiBox, AYHiWhisker: Double; AXLabel: String;
+  AColor: TColor): Integer;
+begin
+  Result := AddXY(
+    AX, AYLoWhisker, [AYLoBox, AY, AYHiBox, AYHiWhisker], AXLabel, AColor);
+end;
 
 procedure TBoxAndWhiskerSeries.Assign(ASource: TPersistent);
 begin
