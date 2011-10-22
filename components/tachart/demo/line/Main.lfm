@@ -1,32 +1,33 @@
 object Form1: TForm1
-  Left = 647
+  Left = 605
   Height = 479
   Top = 364
-  Width = 645
+  Width = 691
   Caption = 'Form1'
   ClientHeight = 479
-  ClientWidth = 645
+  ClientWidth = 691
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.31'
-  object PageControl2: TPageControl
+  object PageControl1: TPageControl
     Left = 0
     Height = 479
     Top = 0
-    Width = 645
+    Width = 691
     ActivePage = tsFast
     Align = alClient
     TabIndex = 0
     TabOrder = 0
+    OnChange = PageControl1Change
     object tsFast: TTabSheet
       Caption = 'Fast drawing'
       ClientHeight = 453
-      ClientWidth = 637
+      ClientWidth = 683
       object chFast: TChart
         Left = 0
         Height = 415
         Top = 38
-        Width = 637
+        Width = 683
         AxisList = <        
           item
             Minors = <>
@@ -64,10 +65,10 @@ object Form1: TForm1
         Left = 0
         Height = 38
         Top = 0
-        Width = 637
+        Width = 683
         Align = alTop
         ClientHeight = 38
-        ClientWidth = 637
+        ClientWidth = 683
         TabOrder = 1
         object cbLineType: TComboBox
           Left = 8
@@ -153,12 +154,12 @@ object Form1: TForm1
     object tsPointers: TTabSheet
       Caption = 'Pointers'
       ClientHeight = 453
-      ClientWidth = 637
+      ClientWidth = 683
       object chPointers: TChart
         Left = 0
         Height = 453
         Top = 0
-        Width = 467
+        Width = 513
         AxisList = <        
           item
             Minors = <>
@@ -181,7 +182,7 @@ object Form1: TForm1
         ParentColor = False
       end
       object pnlPointers: TPanel
-        Left = 467
+        Left = 513
         Height = 453
         Top = 0
         Width = 170
@@ -205,6 +206,51 @@ object Form1: TForm1
           Width = 20
           Caption = 'Size'
           ParentColor = False
+        end
+      end
+    end
+    object tsOscilloscope: TTabSheet
+      Caption = 'Oscilloscope'
+      ClientHeight = 453
+      ClientWidth = 683
+      object chOscillator: TChart
+        Left = 0
+        Height = 453
+        Top = 0
+        Width = 683
+        AxisList = <        
+          item
+            Grid.Color = clMedGray
+            Minors = <>
+            Range.Max = 2
+            Range.Min = -2
+            Range.UseMax = True
+            Range.UseMin = True
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Grid.Color = clMedGray
+            Alignment = calBottom
+            Minors = <>
+            Transformations = catOscillator
+          end>
+        BackColor = clBlack
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        DoubleBuffered = True
+        ParentColor = False
+        object chOscillatorLineSeries1: TLineSeries
+          AxisIndexX = 1
+          LinePen.Color = clLime
+          LinePen.Width = 2
+          LineType = ltStepXY
+          Source = lcsOscillator
         end
       end
     end
@@ -253,5 +299,25 @@ object Form1: TForm1
     Origin = RandomChartSource1
     left = 464
     top = 160
+  end
+  object lcsOscillator: TListChartSource
+    DataPoints.Strings = (
+      '0|0|?|'
+    )
+    left = 464
+    top = 316
+  end
+  object timOscilloscope: TTimer
+    Enabled = False
+    Interval = 150
+    OnTimer = timOscilloscopeTimer
+    left = 408
+    top = 376
+  end
+  object catOscillator: TChartAxisTransformations
+    left = 464
+    top = 376
+    object catOscillatorLinearAxisTransform1: TLinearAxisTransform
+    end
   end
 end

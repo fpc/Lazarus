@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, ComCtrls, ExtCtrls, Spin, StdCtrls, SysUtils, FileUtil, Forms,
-  Controls, Graphics, Dialogs, TAGraph, TASeries, TASources, TATools;
+  Controls, Graphics, Dialogs, TAGraph, TASeries, TASources, TATools,
+  TATransformations, TACustomSeries;
 
 type
 
@@ -15,6 +16,7 @@ type
   TForm1 = class(TForm)
     btnAddSeries: TButton;
     btnRefresh: TButton;
+    catOscillatorLinearAxisTransform1: TLinearAxisTransform;
     cb3D: TCheckBox;
     cbLineType: TComboBox;
     cbRotated: TCheckBox;
@@ -22,6 +24,9 @@ type
     ccsAvg: TCalculatedChartSource;
     ccsDerivative: TCalculatedChartSource;
     ccsSum: TCalculatedChartSource;
+    catOscillator: TChartAxisTransformations;
+    chOscillator: TChart;
+    chOscillatorLineSeries1: TLineSeries;
     chPointers: TChart;
     chFast: TChart;
     chFastConstantLine1: TConstantLine;
@@ -33,11 +38,14 @@ type
     edTime: TEdit;
     lblPointerSize: TLabel;
     lblPointsCount: TLabel;
-    PageControl2: TPageControl;
+    lcsOscillator: TListChartSource;
+    PageControl1: TPageControl;
     Panel1: TPanel;
     pnlPointers: TPanel;
     RandomChartSource1: TRandomChartSource;
     sePointerSize: TSpinEdit;
+    timOscilloscope: TTimer;
+    tsOscilloscope: TTabSheet;
     tsPointers: TTabSheet;
     tsFast: TTabSheet;
     procedure btnAddSeriesClick(Sender: TObject);
@@ -47,7 +55,9 @@ type
     procedure cbRotatedChange(Sender: TObject);
     procedure cbSortedChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure PageControl1Change(Sender: TObject);
     procedure sePointerSizeChange(Sender: TObject);
+    procedure timOscilloscopeTimer(Sender: TObject);
   end;
 
 var
@@ -151,6 +161,11 @@ begin
   end;
 end;
 
+procedure TForm1.PageControl1Change(Sender: TObject);
+begin
+  timOscilloscope.Enabled := PageControl1.ActivePage = tsOscilloscope;
+end;
+
 procedure TForm1.sePointerSizeChange(Sender: TObject);
 var
   ls: TLineSeries;
@@ -160,6 +175,24 @@ begin
       HorizSize := sePointerSize.Value;
       VertSize := sePointerSize.Value;
     end;
+end;
+
+procedure TForm1.timOscilloscopeTimer(Sender: TObject);
+var
+  rp: TChartRenderingParams;
+begin
+  rp := chOscillator.RenderingParams;
+  with chOscillatorLineSeries1 do begin
+    Add(Sin(GetXMax / 20) + Random - 0.5);
+    if Count > 20 then
+      ListSource.Delete(0);
+    // Allow to zoom into various parts of the chart
+    // while preserving "oscilloscope" behaviour.
+    catOscillatorLinearAxisTransform1.Offset := -GetXMin;
+  end;
+  // Transformation change resets logical extent.
+  // We know the old extent is safe to keep, so restore it.
+  chOscillator.RenderingParams := rp;
 end;
 
 end.
