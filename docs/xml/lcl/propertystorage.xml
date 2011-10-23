@@ -41,20 +41,20 @@
       </element>
 <!-- alias type Visibility: default -->
       <element name="TStoredType">
-        <short>[?]</short>
+        <short>An AnsiString or Variant, holding the property values.[?]</short>
         <descr/>
         <seealso/>
       </element>
 <!-- procedure type Visibility: default -->
       <element name="TStoredValueEvent">
-        <short>Type of an TStoredValue.OnRestore notification handler.</short>
-        <descr>Called after a property has been restored.
+        <short>Type of an TStoredValue.OnSave and OnRestore notification handler.</short>
+        <descr>Called before a property is saved, after a it has been restored.
         </descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TStoredValueEvent.Sender">
-        <short>The value object.</short>
+        <short>[?]</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TStoredValueEvent.Value">
@@ -62,7 +62,7 @@
       </element>
 <!-- object Visibility: default -->
       <element name="TStoredValue">
-        <short>[?]</short>
+        <short>A key/value pair, representing an property value, with added Save/Restore features.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -81,12 +81,11 @@
       <element name="TStoredValue.GetStoredValues.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TStoredValue.GetDisplayName">
-        <short>[?]</short>
+        <short>Overridden to return FName/Name.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TStoredValue.GetDisplayName.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TStoredValue.SetDisplayName" link="TStoredValue.Name"/>
@@ -99,64 +98,73 @@
       <element name="TStoredValue.Assign.Source"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TStoredValue.Clear">
-        <short>[?]</short>
+        <short>Sets Value to the empty string.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TStoredValue.Save">
-        <short>[?]</short>
+        <short>Saves the value, after invocation of the OnSave handler.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TStoredValue.OnSave"/>
+          <link id="TStoredValue.StoredValues"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TStoredValue.Restore">
-        <short>[?]</short>
+        <short>Reads the value and notifies the OnRestore handler.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TStoredValue.OnRestore"/>
+          <link id="TStoredValue.StoredValues"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TStoredValue.StoredValues">
-        <short>[?]</short>
-        <descr/>
+        <short>The Collection containing this object.</short>
+        <descr>The collection has a Storage property,
+          used to Save and Restore the value.
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TStoredValue.Name">
-        <short>[?]</short>
+        <short>The name of the property.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TStoredValue.Value">
-        <short>[?]</short>
+        <short>The value of the property (as String or Variant).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TStoredValue.KeyString">
-        <short>[?]</short>
+        <short>Encryption key, empty for no encryption.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TStoredValue.OnSave">
-        <short>[?]</short>
+        <short>This handler is invoked before the value is stored.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TStoredValue.OnRestore">
-        <short>[?]</short>
+        <short>This handler is invoked after the value has been loaded.</short>
         <descr/>
         <seealso/>
       </element>
 <!-- object Visibility: default -->
       <element name="TStoredValues">
-        <short>[?]</short>
+        <short>A collection of property name/value pairs.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -192,58 +200,71 @@
       <element name="TStoredValues.Create.AOwner"><short/></element>
       <!-- function Visibility: public -->
       <element name="TStoredValues.IndexOf">
-        <short>[?]</short>
+        <short>Given the name of a property, returns the index of the Item object.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+        </seealso>
       </element>
       <element name="TStoredValues.IndexOf.Result"><short/></element>
       <element name="TStoredValues.IndexOf.AName"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TStoredValues.SaveValues">
-        <short>[?]</short>
+        <short>Saves all Items into Storage.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TStoredValues.Storage"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TStoredValues.RestoreValues">
-        <short>[?]</short>
-        <descr/>
+        <short>Loads all existing Items from Storage.
+        </short>
+        <descr>The named Items objects must have been created already.
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TStoredValues.Storage"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TStoredValues.Storage">
-        <short>[?]</short>
+        <short>The virtual storage object, used to Save and Restore the Values.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TStoredValues.Items">
-        <short>[?]</short>
+        <short>The indexed list of all key/value pairs.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TStoredValues.Items.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TStoredValues.Values">
-        <short>[?]</short>
+        <short>The list of key/value pairs, accessible by their key names.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TStoredValues.Values.Name"><short/></element>
       <!-- property Visibility: public -->
       <element name="TStoredValues.StoredValue">
-        <short>[?]</short>
+        <short>Retrieves the value for an given key name.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TStoredValues.StoredValue.Name"><short/></element>
 <!-- object Visibility: default -->
       <element name="TPropertyStorageLink">
-        <short>[?]</short>
-        <descr/>
+        <short>Links a storage object to a property collection.
+        </short>
+        <descr>Not very useful by itself, Load/Save depends on installed handlers.
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -259,14 +280,16 @@
       <element name="TPropertyStorageLink.SetStorage.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TPropertyStorageLink.SaveProperties">
-        <short>[?]</short>
+        <short>Invokes the OnSave handler.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPropertyStorageLink.LoadProperties">
-        <short>[?]</short>
+        <short>Invokes the OnLoad handler.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -275,32 +298,45 @@
       <element name="TPropertyStorageLink.Destroy"/>
       <!-- property Visibility: public -->
       <element name="TPropertyStorageLink.Storage">
-        <short>[?]</short>
+        <short>Refers to the concrete Storage object.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TPropertyStorageLink.RootSection">
-        <short>[?]</short>
+        <short>The path to the root of the Storage object.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TPropertyStorageLink.OnSave">
-        <short>[?]</short>
+        <short>Supply your handler for saving all properties. [almost unused?]
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TPropertyStorageLink.SaveProperties"/>
+          <link id="TPropertyStorageLink.OnLoad"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TPropertyStorageLink.OnLoad">
-        <short>[?]</short>
+        <short>Supply your handler for loading all properties. [almost unused?]
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TPropertyStorageLink.LoadProperties"/>
+          <link id="TPropertyStorageLink.OnSave"/>
+        </seealso>
       </element>
 <!-- object Visibility: default -->
       <element name="TCustomPropertyStorage">
-        <short>[?]</short>
-        <descr/>
+        <short>Provides abstract means to Save/Restore properties.
+        </short>
+        <descr>[...?]
+          There seem to exist multiple ways to implement a concrete storage[describe?]
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -311,19 +347,19 @@
       <element name="TCustomPropertyStorage.FActive" link="TCustomPropertyStorage.Active"/>
       <!-- variable Visibility: private -->
       <element name="TCustomPropertyStorage.FLinks">
-        <short>[?]</short>
+        <short>The list of linked property collections[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomPropertyStorage.FSaved">
-        <short>[?]</short>
+        <short>True when everything has been saved[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomPropertyStorage.FRestored">
-        <short>[?]</short>
+        <short>True when everything has been restored[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -332,7 +368,8 @@
       <element name="TCustomPropertyStorage.FOnRestoreProperties" link="TCustomPropertyStorage.OnRestoreProperties"/>
       <!-- procedure Visibility: private -->
       <element name="TCustomPropertyStorage.AddLink">
-        <short>[?]</short>
+        <short>Establish a connection to a property collection.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -340,7 +377,8 @@
       <element name="TCustomPropertyStorage.AddLink.ALink"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomPropertyStorage.RemoveLink">
-        <short>[?]</short>
+        <short>Drop the connection to a property collection.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -348,49 +386,31 @@
       <element name="TCustomPropertyStorage.RemoveLink.ALink"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomPropertyStorage.NotifyLinks">
-        <short>[?]</short>
-        <descr/>
+        <short>Notifies all connected property collections.</short>
+        <descr>[purpose?]
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TCustomPropertyStorage.NotifyLinks.Operation"><short/></element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomPropertyStorage.SetStoredValues">
-        <short>[?]</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomPropertyStorage.SetStoredValues" link="TCustomPropertyStorage.StoredValues"/>
       <element name="TCustomPropertyStorage.SetStoredValues.Value"><short/></element>
       <!-- function Visibility: private -->
-      <element name="TCustomPropertyStorage.GetStoredValue">
-        <short>[?]</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomPropertyStorage.GetStoredValue" link="TCustomPropertyStorage.StoredValue"/>
       <element name="TCustomPropertyStorage.GetStoredValue.Result"><short/></element>
       <element name="TCustomPropertyStorage.GetStoredValue.AName"><short/></element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomPropertyStorage.SetStoredValue">
-        <short>[?]</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomPropertyStorage.SetStoredValue" link="TCustomPropertyStorage.StoredValue"/>
       <element name="TCustomPropertyStorage.SetStoredValue.AName"><short/></element>
       <element name="TCustomPropertyStorage.SetStoredValue.Value"><short/></element>
       <!-- function Visibility: protected -->
-      <element name="TCustomPropertyStorage.GetRoot">
-        <short>[?]</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomPropertyStorage.GetRoot" link="TCustomPropertyStorage.Root"/>
       <element name="TCustomPropertyStorage.GetRoot.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomPropertyStorage.RootSection">
-        <short>[?]</short>
+        <short>Constructs the path name to this section, from the Owners of the Root object.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -398,21 +418,21 @@
       <element name="TCustomPropertyStorage.RootSection.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.SaveProperties">
-        <short>[?]</short>
+        <short>Saves all linked property collections[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.RestoreProperties">
-        <short>[?]</short>
+        <short>Restores all linked property collections[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.GetPropertyList">
-        <short>[?]</short>
+        <short>Builds a list of all linked propery collections[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -420,15 +440,18 @@
       <element name="TCustomPropertyStorage.GetPropertyList.List"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.FinishPropertyList">
-        <short>[?]</short>
-        <descr/>
+        <short>set Objects (i.e. the component of each property)[?]</short>
+        <descr>[?]Reads the Strings[] in the list,
+          retrieves and stores the associated Root or Component object in Objects[].
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TCustomPropertyStorage.FinishPropertyList.List"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomPropertyStorage.DoReadInteger">
-        <short>[?]</short>
+        <short>Reads an integer value, stored as a string.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -439,28 +462,49 @@
       <element name="TCustomPropertyStorage.DoReadInteger.DefaultValue"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomPropertyStorage.DoReadString">
-        <short>[?]</short>
-        <descr/>
+        <short>Default OnReadString handler, must be overridden!
+        </short>
+        <descr>[How to implement an OnReadString handler?]
+          [template where?]
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <element name="TCustomPropertyStorage.DoReadString.Result"><short/></element>
-      <element name="TCustomPropertyStorage.DoReadString.Section"><short/></element>
-      <element name="TCustomPropertyStorage.DoReadString.Ident"><short/></element>
-      <element name="TCustomPropertyStorage.DoReadString.DefaultValue"><short/></element>
+      <element name="TCustomPropertyStorage.DoReadString.Result">
+        <short>The previously stored string.</short>
+      </element>
+      <element name="TCustomPropertyStorage.DoReadString.Section">
+        <short>[?]</short>
+      </element>
+      <element name="TCustomPropertyStorage.DoReadString.Ident">
+        <short>[?]</short>
+      </element>
+      <element name="TCustomPropertyStorage.DoReadString.DefaultValue">
+        <short>The default value, when no string was stored.</short>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.DoWriteString">
-        <short>[?]</short>
-        <descr/>
+        <short>Default OnWriteString handler, must be overridden!
+        </short>
+        <descr>[How to implement an OnWriteString handler?]
+          [template where?]
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <element name="TCustomPropertyStorage.DoWriteString.Section"><short/></element>
-      <element name="TCustomPropertyStorage.DoWriteString.Ident"><short/></element>
-      <element name="TCustomPropertyStorage.DoWriteString.Value"><short/></element>
+      <element name="TCustomPropertyStorage.DoWriteString.Section">
+        <short>The name of the section.</short>
+      </element>
+      <element name="TCustomPropertyStorage.DoWriteString.Ident">
+        <short>The name (key) of the property.</short>
+      </element>
+      <element name="TCustomPropertyStorage.DoWriteString.Value">
+        <short>The value string to store.</short>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.DoWriteInteger">
-        <short>[?]</short>
+        <short>Writes an Integer value as a String.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -471,7 +515,8 @@
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.DoEraseSections">
         <short>[?]</short>
-        <descr/>
+        <descr>Must be overridden [how?]
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -483,21 +528,55 @@
       <element name="TCustomPropertyStorage.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TCustomPropertyStorage.Save">
-        <short>[?]</short>
-        <descr/>
+        <short>Saves all linked property collections[?]</short>
+        <descr>
+          <p>
+            Uses SaveProperties and [or?] StoredValues.SaveValues to do the actual work.
+            At least one of these should be implemented. [supply links?]
+          </p><p>
+            All linked property collections are notified,
+            when everything has been stored, or to actually store their values[???].
+          </p><p>
+            The OnSavingProperties handler is invoked before the properties are stored,
+            OnSaveProperties afterwards.
+          </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomPropertyStorage.SaveProperties"/>
+          <link id="TCustomPropertyStorage.OnSaveProperties"/>
+          <link id="TCustomPropertyStorage.OnSavingProperties"/>
+          <link id="TCustomPropertyStorage.StoredValues"/>
+          <link id="TCustomPropertyStorage.NotifyLinks"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomPropertyStorage.Restore">
-        <short>[?]</short>
-        <descr/>
+        <short>Restores all linked property collections[?]</short>
+        <descr>
+          <p>
+            Uses RestoreProperties and [or?] StoredValues.RestoreValues to do the actual work.
+            At least one of these should be implemented. [supply links?]
+          </p><p>
+            All linked property collections are notified,
+            when everything has been restored, or to actually restore the values[???].
+          </p><p>
+            The OnRestoringProperties handler is invoked before the properties are restored,
+            OnRestoreProperties afterwards.
+          </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomPropertyStorage.RestoreProperties"/>
+          <link id="TCustomPropertyStorage.OnRestoreProperties"/>
+          <link id="TCustomPropertyStorage.OnRestoringProperties"/>
+          <link id="TCustomPropertyStorage.StoredValues"/>
+          <link id="TCustomPropertyStorage.NotifyLinks"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.StorageNeeded">
-        <short>[?]</short>
+        <short>Override this to provied a storage object[???]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -505,14 +584,15 @@
       <element name="TCustomPropertyStorage.StorageNeeded.ReadOnly"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.FreeStorage">
-        <short>[?]</short>
+        <short>Override this method to release your storage.[???]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomPropertyStorage.ReadBoolean">
-        <short>[?]</short>
+        <short>Reads an Boolean value, stored as a string.
+        </short>
         <descr>
         </descr>
         <errors>
@@ -531,7 +611,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomPropertyStorage.ReadString">
-        <short>[?]</short>
+        <short>Reads an String value from the RootSection.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -542,7 +623,8 @@
       <element name="TCustomPropertyStorage.ReadString.DefaultValue"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomPropertyStorage.ReadInteger">
-        <short>[?]</short>
+        <short>Reads an integer value, stored as a string, from the RootSection.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -552,7 +634,8 @@
       <element name="TCustomPropertyStorage.ReadInteger.DefaultValue"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomPropertyStorage.ReadRect">
-        <short>[?]</short>
+        <short>Reads an TRect record, stored as a string.
+        </short>
         <descr>
         </descr>
         <errors>
@@ -571,7 +654,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomPropertyStorage.ReadStrings">
-        <short>[?]</short>
+        <short>Reads a list of strings, stored with a Count value.
+        </short>
         <descr>
         </descr>
         <errors>
@@ -580,17 +664,20 @@
         </seealso>
       </element>
       <element name="TCustomPropertyStorage.ReadStrings.Ident">
-        <short></short>
+        <short>The name of the list property.
+        </short>
       </element>
       <element name="TCustomPropertyStorage.ReadStrings.List">
-        <short></short>
+        <short>The list to which the strings are added.
+        </short>
       </element>
       <element name="TCustomPropertyStorage.ReadStrings.DefaultList">
-        <short></short>
+        <short>A list of default values, used when nothing was stored yet.
+        </short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomPropertyStorage.WriteString">
-        <short>[?]</short>
+        <short>Writes an string into the RootSection.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -599,7 +686,7 @@
       <element name="TCustomPropertyStorage.WriteString.Value"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomPropertyStorage.WriteInteger">
-        <short>[?]</short>
+        <short>Writes an integer into the RootSection.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -608,7 +695,7 @@
       <element name="TCustomPropertyStorage.WriteInteger.Value"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomPropertyStorage.WriteBoolean">
-        <short>[?]</short>
+        <short>Writes an boolean value into the RootSection.</short>
         <descr>
         </descr>
         <errors>
@@ -624,7 +711,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomPropertyStorage.WriteRect">
-        <short>[?]</short>
+        <short>Writes an TRect record into the RootSection.</short>
         <descr>
         </descr>
         <errors>
@@ -640,7 +727,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomPropertyStorage.WriteStrings">
-        <short>[?]</short>
+        <short>Writes a list of strings into the RootSection.</short>
         <descr>
         </descr>
         <errors>
@@ -659,7 +746,9 @@
         <short>[?]</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomPropertyStorage.DoEraseSections"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.StoredValue">
@@ -670,7 +759,7 @@
       <element name="TCustomPropertyStorage.StoredValue.AName"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.Root">
-        <short>[?]</short>
+        <short>[the Owner ?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -688,7 +777,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.OnSavingProperties">
-        <short>[?]</short>
+        <short>Handler called at the begin of Save. [purpose?]</short>
         <descr>
         </descr>
         <seealso>
@@ -696,13 +785,13 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.OnSaveProperties">
-        <short>[?]</short>
+        <short>Handler called at the end of Save. [purpose?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.OnRestoringProperties">
-        <short>[?]</short>
+        <short>Handler called at the begin of Restore. [purpose?]</short>
         <descr>
         </descr>
         <seealso>
@@ -710,7 +799,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.OnRestoreProperties">
-        <short>[?]</short>
+        <short>Handler called at the end of Restore. [purpose?]</short>
         <descr/>
         <seealso/>
       </element>
