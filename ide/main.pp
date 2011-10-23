@@ -17539,10 +17539,11 @@ var
 begin
   if FOIHelpProvider = nil then
   begin
-    HelpControl := CreateIDEHTMLControl(ObjectInspector1, FOIHelpProvider);
+    HelpControl := CreateIDEHTMLControl(ObjectInspector1, FOIHelpProvider, [ihcScrollable]);
     HelpControl.Parent := ObjectInspector1.InfoPanel;
     HelpControl.Align := alClient;
     HelpControl.BorderSpacing.Around := 2;
+    HelpControl.Color := clForm;
   end;
   Result := FOIHelpProvider;
 end;

@@ -123,7 +123,6 @@ type
     FProvider: TAbstractIDEHTMLProvider;
     FURL: string;
     procedure SetProvider(const AValue: TAbstractIDEHTMLProvider);
-    function HTMLToCaption(const s: string; MaxLines: integer): string;
   public
     constructor Create(AOwner: TComponent); override;
     function GetURL: string;
@@ -132,6 +131,23 @@ type
     procedure SetHTMLContent(Stream: TStream; const NewURL: string);
     procedure GetPreferredControlSize(out AWidth, AHeight: integer);
     property MaxLineCount: integer read FMaxLineCount write FMaxLineCount;
+  end;
+
+  { TScrollableHTMLControl
+    At the moment it is a TMemo that simply strips all tags }
+
+  TScrollableHTMLControl = class(TMemo,TIDEHTMLControlIntf)
+  private
+    FProvider: TAbstractIDEHTMLProvider;
+    FURL: string;
+    procedure SetProvider(const AValue: TAbstractIDEHTMLProvider);
+  public
+    constructor Create(AOwner: TComponent); override;
+    function GetURL: string;
+    procedure SetURL(const AValue: string);
+    property Provider: TAbstractIDEHTMLProvider read FProvider write SetProvider;
+    procedure SetHTMLContent(Stream: TStream; const NewURL: string);
+    procedure GetPreferredControlSize(out AWidth, AHeight: integer);
   end;
 
   { TIDEHelpDatabases }
@@ -246,16 +262,25 @@ implementation
 {$R *.lfm}
 
 function LazCreateIDEHTMLControl(Owner: TComponent;
-  var Provider: TAbstractIDEHTMLProvider): TControl;
-var
-  HTMLControl: TSimpleHTMLControl;
+  var Provider: TAbstractIDEHTMLProvider;
+  Flags: TIDEHTMLControlFlags): TControl;
 begin
-  HTMLControl:=TSimpleHTMLControl.Create(Owner);
-  Result:=HTMLControl;
+  if ihcScrollable in Flags then
+    Result:=TScrollableHTMLControl.Create(Owner)
+  else
+    Result:=TSimpleHTMLControl.Create(Owner);
   if Provider=nil then
-    Provider:=CreateIDEHTMLProvider(HTMLControl);
-  Provider.ControlIntf:=HTMLControl;
-  HTMLControl.Provider:=Provider;
+    Provider:=CreateIDEHTMLProvider(Result);
+  if ihcScrollable in Flags then
+  begin
+    Provider.ControlIntf:=TScrollableHTMLControl(Result);
+    TScrollableHTMLControl(Result).Provider:=Provider;
+  end
+  else
+  begin
+    Provider.ControlIntf:=TSimpleHTMLControl(Result);
+    TSimpleHTMLControl(Result).Provider:=Provider;
+  end;
 end;
 
 function LazCreateIDEHTMLProvider(Owner: TComponent): TAbstractIDEHTMLProvider;
@@ -316,16 +341,7 @@ begin
   debugln(['TSimpleFPCKeywordHelpDatabase.ShowHelp Keyword=',Keyword]);
 end;
 
-{ TSimpleHTMLControl }
-
-procedure TSimpleHTMLControl.SetProvider(const AValue: TAbstractIDEHTMLProvider);
-begin
-  if FProvider=AValue then exit;
-  FProvider:=AValue;
-end;
-
-function TSimpleHTMLControl.HTMLToCaption(const s: string; MaxLines: integer
-  ): string;
+function HTMLToCaption(const s: string; MaxLines: integer): string;
 var
   p: Integer;
   EndPos: Integer;
@@ -336,7 +352,7 @@ var
   CurTagName: String;
 begin
   Result:=s;
-  //debugln(['TSimpleHTMLControl.HTMLToCaption HTML="',Result,'"']);
+  //debugln(['HTMLToCaption HTML="',Result,'"']);
   Line:=1;
   p:=1;
   // remove UTF8 BOM
@@ -366,7 +382,7 @@ begin
         end;
         inc(EndPos);
       end;
-      //debugln(['TSimpleHTMLControl.HTMLToCaption CurTagName=',CurTagName,' Tag="',copy(Result,p,EndPos-p),'"']);
+      //debugln(['HTMLToCaption CurTagName=',CurTagName,' Tag="',copy(Result,p,EndPos-p),'"']);
 
       if CurTagName='HTML' then
       begin
@@ -416,7 +432,7 @@ begin
       else
         NewTag:='';
       if NewTag='' then begin
-        //debugln(['TSimpleHTMLControl.HTMLToCaption deleting tag ',copy(Result,p,EndPos-p)]);
+        //debugln(['HTMLToCaption deleting tag ',copy(Result,p,EndPos-p)]);
         System.Delete(Result,p,EndPos-p);
       end
       else begin
@@ -465,7 +481,25 @@ begin
   while (p>0) and (Result[p] in [' ',#9,#10,#13]) do dec(p);
   SetLength(Result,p);
 
-  //DebugLn(['TSimpleHTMLControl.HTMLToCaption Caption="',dbgstr(Result),'"']);
+  //DebugLn(['HTMLToCaption Caption="',dbgstr(Result),'"']);
+end;
+
+function HTMLToCaption(Stream: TStream; MaxLines: integer): string;
+var
+  s: string;
+begin
+  SetLength(s,Stream.Size);
+  if s<>'' then
+    Stream.Read(s[1],length(s));
+  Result:=HTMLToCaption(s,MaxLines);
+end;
+
+{ TSimpleHTMLControl }
+
+procedure TSimpleHTMLControl.SetProvider(const AValue: TAbstractIDEHTMLProvider);
+begin
+  if FProvider=AValue then exit;
+  FProvider:=AValue;
 end;
 
 constructor TSimpleHTMLControl.Create(AOwner: TComponent);
@@ -487,7 +521,6 @@ end;
 procedure TSimpleHTMLControl.SetURL(const AValue: string);
 var
   Stream: TStream;
-  s: string;
   NewURL: String;
 begin
   if Provider=nil then raise Exception.Create('TSimpleHTMLControl.SetURL missing Provider');
@@ -498,10 +531,7 @@ begin
   try
     Stream:=Provider.GetStream(FURL,true);
     try
-      SetLength(s,Stream.Size);
-      if s<>'' then
-        Stream.Read(s[1],length(s));
-      Caption:=HTMLToCaption(s,MaxLineCount);
+      Caption:=HTMLToCaption(Stream, MaxLineCount);
     finally
       Provider.ReleaseStream(FURL);
     end;
@@ -514,14 +544,9 @@ end;
 
 procedure TSimpleHTMLControl.SetHTMLContent(Stream: TStream;
   const NewURL: string);
-var
-  s: string;
 begin
   FURL:=NewURL;
-  SetLength(s,Stream.Size);
-  if s<>'' then
-    Stream.Read(s[1],length(s));
-  Caption:=HTMLToCaption(s,MaxLineCount);
+  Caption:=HTMLToCaption(Stream,MaxLineCount);
   //debugln(['TSimpleHTMLControl.SetHTMLContent ',Caption]);
 end;
 
@@ -550,6 +575,68 @@ begin
     ReleaseDC(Parent.Handle, DC);
   end;
   //DebugLn(['TSimpleHTMLControl.GetPreferredControlSize Caption="',Caption,'" ',AWidth,'x',AHeight]);
+end;
+
+{ TScrollableHTMLControl }
+
+procedure TScrollableHTMLControl.SetProvider(const AValue: TAbstractIDEHTMLProvider);
+begin
+  if FProvider=AValue then exit;
+  FProvider:=AValue;
+end;
+
+constructor TScrollableHTMLControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  BorderSpacing.Around := 4;
+  BorderStyle := bsNone;
+  ReadOnly := True;
+  ScrollBars := ssAutoVertical;
+end;
+
+function TScrollableHTMLControl.GetURL: string;
+begin
+  Result:=FURL;
+end;
+
+procedure TScrollableHTMLControl.SetURL(const AValue: string);
+var
+  Stream: TStream;
+  s: string;
+  NewURL: String;
+begin
+  if Provider=nil then raise Exception.Create('TScrollableHTMLControl.SetURL missing Provider');
+  if FURL=AValue then exit;
+  NewURL:=Provider.MakeURLAbsolute(Provider.BaseURL,AValue);
+  if FURL=NewURL then exit;
+  FURL:=NewURL;
+  try
+    Stream:=Provider.GetStream(FURL,true);
+    try
+      Caption:=HTMLToCaption(Stream, MaxInt);
+    finally
+      Provider.ReleaseStream(FURL);
+    end;
+  except
+    on E: Exception do begin
+      Caption:=E.Message;
+    end;
+  end;
+end;
+
+procedure TScrollableHTMLControl.SetHTMLContent(Stream: TStream;
+  const NewURL: string);
+begin
+  FURL:=NewURL;
+  Caption:=HTMLToCaption(Stream,MaxInt);
+  //debugln(['TScrollableHTMLControl.SetHTMLContent ',Caption]);
+end;
+
+procedure TScrollableHTMLControl.GetPreferredControlSize(out AWidth, AHeight: integer);
+begin
+  AWidth:=0;
+  AHeight:=0;
+  GetPreferredSize(AWidth, AHeight);
 end;
 
 { TLazIDEHTMLProvider }

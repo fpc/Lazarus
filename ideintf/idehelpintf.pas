@@ -129,8 +129,15 @@ type
     property ControlIntf: TIDEHTMLControlIntf read FControlIntf write FControlIntf;
   end;
 
+  TIDEHTMLControlFlag = (
+    ihcScrollable
+  );
+
+  TIDEHTMLControlFlags = set of TIDEHTMLControlFlag;
+
   TCreateIDEHTMLControlEvent =
-    function(Owner: TComponent; var Provider: TAbstractIDEHTMLProvider): TControl;
+    function(Owner: TComponent; var Provider: TAbstractIDEHTMLProvider;
+             Flags: TIDEHTMLControlFlags = []): TControl;
   TCreateIDEHTMLProviderEvent =
     function(Owner: TComponent): TAbstractIDEHTMLProvider;
 
