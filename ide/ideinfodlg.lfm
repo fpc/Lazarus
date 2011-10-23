@@ -17,6 +17,7 @@ object IDEInfoDialog: TIDEInfoDialog
     Lines.Strings = (
       'Memo1'
     )
+    ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 0
   end

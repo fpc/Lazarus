@@ -14,9 +14,13 @@ object CodyNodeInfoDialog: TCodyNodeInfoDialog
     Top = 419
     Width = 569
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 0
     ShowButtons = [pbClose]
   end
@@ -42,6 +46,7 @@ object CodyNodeInfoDialog: TCodyNodeInfoDialog
         Lines.Strings = (
           'ReportMemo'
         )
+        ReadOnly = True
         TabOrder = 0
       end
     end

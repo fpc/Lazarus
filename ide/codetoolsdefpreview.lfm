@@ -852,8 +852,10 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
           Align = alTop
           BorderSpacing.Around = 6
           DefaultItemHeight = 19
+          ReadOnly = True
           TabOrder = 0
           OnSelectionChanged = ParsedTemplatesTreeViewSelectionChanged
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
         end
         object TemplatesSplitter: TSplitter
           Cursor = crVSplit
@@ -879,6 +881,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
             ''
             ''
           )
+          ReadOnly = True
           TabOrder = 1
         end
       end
@@ -907,6 +910,7 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
           ''
           ''
         )
+        ReadOnly = True
         ScrollBars = ssBoth
         TabOrder = 0
       end
@@ -918,10 +922,14 @@ object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
     Top = 541
     Width = 580
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     CancelButton.Enabled = False
     TabOrder = 1
     ShowButtons = [pbOK, pbHelp]

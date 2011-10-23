@@ -32,6 +32,7 @@ object IDEFPCInfoDialog: TIDEFPCInfoDialog
           'ValuesMemo'
           ''
         )
+        ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
       end
@@ -49,6 +50,7 @@ object IDEFPCInfoDialog: TIDEFPCInfoDialog
         Lines.Strings = (
           'CmdLineOutputMemo'
         )
+        ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
       end
