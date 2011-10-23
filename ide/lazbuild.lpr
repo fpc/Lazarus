@@ -402,7 +402,6 @@ var
   PkgOptions: String;
   InheritedOptionStrings: TInheritedCompOptsStrings;
   TargetDir: String;
-  i: Integer;
 begin
   Result:=false;
   Init;
