@@ -234,6 +234,7 @@ begin
   RootWin := XRootWindow(Display, ScreenNum);
 
   // _NET_WM_STATE_SKIP_TASKBAR
+  XClient.format := 0; // shutup compiler
   FillChar(XClient, SizeOf(XClient), 0);
   XClient._type := ClientMessage;
   XClient.window := QWidget_winId(Widget);

@@ -257,12 +257,6 @@ uses
   // Bindings
   qtprivate, qtwidgets, qtobjects;
 
-
-const
-  KEYMAP_VKUNKNOWN = $10000;
-  KEYMAP_TOGGLE    = $20000;
-  KEYMAP_EXTENDED  = $40000;
-
 function DTFlagsToQtFlags(const Flags: Cardinal): Integer;
 const
   QtTextSingleLine            = $0100;

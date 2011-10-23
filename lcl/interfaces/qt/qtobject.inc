@@ -577,6 +577,7 @@ begin
      (OldWidget.LCLObject = NewWidget.LCLObject) then
     exit;
 
+  Msg.Msg := 0; // shutup compiler
   FillChar(Msg, SizeOf(Msg), 0);
   if OldWidget <> nil then
   begin

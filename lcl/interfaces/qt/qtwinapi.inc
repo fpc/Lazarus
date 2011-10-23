@@ -1775,10 +1775,8 @@ var
     const AFamilyName: String;
     const AWritingSystem: QFontDatabaseWritingSystem = QFontDatabaseAny): Integer;
   var
-    Font: QFontH;
     StrLst: QStringlistH;
     NewList: QStringListH;
-    ASubList: QStringListH;
     WStr: WideString;
     j: integer;
   begin
@@ -1871,7 +1869,6 @@ var
   var
     Font: QFontH;
     WStr: WideString;
-    j: Integer;
   begin
     WStr := UTF8ToUTF16(AFontName);
     Font := QFont_create(@WStr);
@@ -1908,6 +1905,7 @@ begin
   ' face ',lpLogFont^.lfFaceName,' pitchAndFamily=',lpLogFont^.lfPitchAndFamily);
   {$endif}
   Result := 0;
+  Metric.ntmentm.ntmAvgWidth := 0; // just to shutup compiler
   FontDB := QFontDatabase_create();
   try
     if (lpLogFont^.lfCharSet = DEFAULT_CHARSET) and
@@ -2867,16 +2865,13 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetFocus: HWND;
 var
-  WidgetH: QWidgetH;
-  Obj: TQtWidget;
+  W: QWidgetH;
 begin
-  result:=0;
-  WidgetH:=QApplication_FocusWidget();
-  if WidgetH<>nil then
+  Result := 0;
+  W := QApplication_FocusWidget();
+  if W <> nil then
   begin
-    Obj := QtObjectFromWidgetH(WidgetH);
-    if Obj<>nil then
-      result:=Hwnd(Obj);
+    Result := HwndFromWidgetH(W);
     {$ifdef VerboseFocus}
     Write('TQtWidgetSet.GetFocus: WidgetH=',dbghex(ptrint(WidgetH)), ' QtWidget=', dbgsname(Obj));
     if Obj<>nil then
@@ -2953,11 +2948,11 @@ begin
   if not Result then Exit;
   Desktop := QApplication_desktop();
   Dec(Monitor);
-  Result := (Monitor >= 0) and (Monitor < QDesktopWidget_numScreens(Desktop));
+  Result := (Monitor >= 0) and (Monitor < PtrUInt(QDesktopWidget_numScreens(Desktop)));
   if not Result then Exit;
   QDesktopWidget_screenGeometry(Desktop, @lpmi^.rcMonitor, Monitor);
   QDesktopWidget_availableGeometry(Desktop, @lpmi^.rcWork, Monitor);
-  if QDesktopWidget_primaryScreen(Desktop) = Monitor then
+  if PtrUInt(QDesktopWidget_primaryScreen(Desktop)) = Monitor then
     lpmi^.dwFlags := MONITORINFOF_PRIMARY
   else
     lpmi^.dwFlags := 0;
@@ -3200,6 +3195,7 @@ begin
       Result := SizeOf(TDIBSECTION)
     else
     begin
+      BitmapSection.dsOffset := 0;
       FillChar(BitmapSection, SizeOf(TDIBSECTION), 0);
 
       with TQtImage(aObject) do
@@ -3261,7 +3257,7 @@ begin
 
   QtWidget := TQtWidget(Handle);
 
-  Result := HWND(QtObjectFromWidgetH(QtWidget.getParent));
+  Result := HwndFromWidgetH(QtWidget.GetParent);
 
   {$ifdef VerboseQtWinAPI}
   writeln('Trace:< [WinAPI GetParent] : ' + dbghex(Result));
@@ -4397,9 +4393,9 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
     with Mesh do
     begin
       Result :=
-        (Vertex1 < NumVertices) and (Vertex2 >= 0) and
-        (Vertex2 < NumVertices) and (Vertex2 >= 0) and
-        (Vertex3 < NumVertices) and (Vertex3 >= 0);
+        (Vertex1 < Cardinal(NumVertices)) and (Vertex2 >= 0) and
+        (Vertex2 < Cardinal(NumVertices)) and (Vertex2 >= 0) and
+        (Vertex3 < Cardinal(NumVertices)) and (Vertex3 >= 0);
 
       if (Vertex1 = Vertex2) or
         (Vertex1 = Vertex3) or
@@ -4470,8 +4466,8 @@ function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
     with Mesh do
     begin
       Result :=
-        (UpperLeft < NumVertices) and (UpperLeft >= 0) and
-        (LowerRight < NumVertices) and (LowerRight >= 0);
+        (UpperLeft < Cardinal(NumVertices)) and (UpperLeft >= 0) and
+        (LowerRight < Cardinal(NumVertices)) and (LowerRight >= 0);
       if (LowerRight = UpperLeft) or not Result then
         Exit;
 
@@ -5443,6 +5439,7 @@ begin
     {$endif}
     if Result <> 0 then
     begin
+      Message.Msg := 0;
       FillChar(Message, SizeOf(Message), 0);
       Message.msg := LM_CAPTURECHANGED;
       Message.wParam := 0;
@@ -6474,7 +6471,7 @@ begin
       exit;
   end;
 
-  Result := HWND(QtObjectFromWidgetH(Widget));
+  Result := HwndFromWidgetH(Widget);
 
   // return from cache if we are same TQtWidget, just update point
   if IsValidWidgetAtCachePointer and (Result = FLastWFPResult) then
@@ -6492,7 +6489,7 @@ begin
       begin
         Widget := QWidget_parentWidget(Widget);
         if Widget <> nil then
-          Result := HWND(QtObjectFromWidgetH(Widget));
+          Result := HwndFromWidgetH(Widget);
         if Result <> 0 then
           break;
       end;
@@ -6508,7 +6505,7 @@ begin
   begin
     Widget := QApplication_topLevelAt(APoint.x, APoint.y);
     if (Widget <> nil) and QWidget_isEnabled(Widget) then
-      Result := HWND(QtObjectFromWidgetH(Widget))
+      Result := HwndFromWidgetH(Widget)
     else
       Result := 0;
   end;
