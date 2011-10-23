@@ -684,8 +684,7 @@ begin
 end;
 
 class function TGtk2WSScrollingWinControl.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   Scrolled: PGtkScrolledWindow;
   Layout: PGtkWidget;
@@ -725,7 +724,6 @@ begin
   SetFixedWidget(Scrolled, Layout);
   SetMainWidget(Scrolled, Layout);
 
-
   Result := TLCLIntfHandle(PtrUInt(Scrolled));
 
   Set_RC_Name(AWinControl, PGtkWidget(Scrolled));
@@ -733,19 +731,19 @@ begin
   if (gtk_major_version >= 2) and (gtk_minor_version > 8) then
   begin
     g_signal_connect(Scrolled^.hscrollbar, 'change-value',
-      TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+                     TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
     g_signal_connect(Scrolled^.vscrollbar, 'change-value',
-      TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+                     TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
     g_signal_connect(Scrolled^.hscrollbar, 'button-press-event',
-    TGCallback(@Gtk2RangeScrollPressCB), WidgetInfo);
-  g_signal_connect(Scrolled^.hscrollbar, 'button-release-event',
-    TGCallback(@Gtk2RangeScrollReleaseCB), WidgetInfo);
+                     TGCallback(@Gtk2RangeScrollPressCB), WidgetInfo);
+    g_signal_connect(Scrolled^.hscrollbar, 'button-release-event',
+                     TGCallback(@Gtk2RangeScrollReleaseCB), WidgetInfo);
     g_signal_connect(Scrolled^.vscrollbar, 'button-press-event',
-    TGCallback(@Gtk2RangeScrollPressCB), WidgetInfo);
-  g_signal_connect(Scrolled^.vscrollbar, 'button-release-event',
-    TGCallback(@Gtk2RangeScrollReleaseCB), WidgetInfo);
-    g_signal_connect(Scrolled, 'scroll-event',
-      TGCallback(@Gtk2ScrolledWindowScrollCB), WidgetInfo);
+                     TGCallback(@Gtk2RangeScrollPressCB), WidgetInfo);
+    g_signal_connect(Scrolled^.vscrollbar, 'button-release-event',
+                     TGCallback(@Gtk2RangeScrollReleaseCB), WidgetInfo);
+      g_signal_connect(Scrolled, 'scroll-event',
+                       TGCallback(@Gtk2ScrolledWindowScrollCB), WidgetInfo);
   end;
 end;
 
