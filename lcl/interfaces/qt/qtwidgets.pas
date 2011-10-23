@@ -2570,7 +2570,7 @@ begin
 
   {$note TQtWidget.SlotKey: this is workaround for Qt bug which reports
    wrong keys with Shift+Ctrl pressed. Fixes #13450.
-   LAST REVISION: Qt-4.7.0-8 20101129. zeljko}
+   LAST REVISION: Qt-4.7.4 20111023 fc14. zeljko}
   {$IFDEF UNIX}
   if (Modifiers = QtShiftModifier or QtControlModifier) or
     (Modifiers = QtShiftModifier) then
@@ -13452,8 +13452,9 @@ begin
   else
   if ((not AValue) and (FNewDelegate <> nil)) then
   begin
-    {$note TQtAbstractItemView.SetOwnerDrawn: this call avoid sporadic AVs with QLCLItemDelegate_destroy(FNewDelegate).}
-    {howto reproduce: comment next code line, recompile laz, and then in oi click
+    {TQtAbstractItemView.SetOwnerDrawn: this call avoid sporadic AVs with
+     QLCLItemDelegate_destroy(FNewDelegate).
+     howto reproduce: comment next code line, recompile laz, and then in oi click
      in first field eg. Action (TForm), now push kbd down arrow let it pass all properties,
      you'll have crash at Constraints property.}
     FNewDelegate := QLCLItemDelegateH(QAbstractItemView_itemDelegate(QAbstractItemViewH(Widget)));
