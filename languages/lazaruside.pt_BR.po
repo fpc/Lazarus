@@ -14,24 +14,24 @@ msgstr ""
 #: lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptiondisable"
 msgid "Select Groups"
-msgstr ""
+msgstr "Selecionar Grupos"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaptionenable
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaptionenable"
 msgid "Select Groups"
-msgstr ""
+msgstr "Selecionar Grupos"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgheaderdisable
 msgid "Select groups to disable when breakpoint is hit"
-msgstr ""
+msgstr "Selecionar grupos à desabilitar quando o ponto de parada for atingido"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgheaderenable
 msgid "Select groups to enable when breakpoint is hit"
-msgstr ""
+msgstr "Selecionar grupos à habilitar quando o ponto de parada for atingido"
 
 #: lazarusidestrconsts.dbgbreakpropertygroupnotfound
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
-msgstr ""
+msgstr "Alguns grupos na lista Habilitar/Desabilitar não existem.%0:sCriá-los?%0:s%0:s%1:s"
 
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
@@ -684,7 +684,7 @@ msgstr "Inverter ordem-retração no \"Popup\""
 #: lazarusidestrconsts.dlgcodegeneration
 #| msgid "Code"
 msgid "Code generation"
-msgstr "Geração código"
+msgstr "Geração de código"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
@@ -723,7 +723,7 @@ msgstr "Bibliotecas (-Fl):"
 
 #: lazarusidestrconsts.dlgcolinking
 msgid "Linking"
-msgstr "Vinculando"
+msgstr "Vinculação"
 
 #: lazarusidestrconsts.dlgcoloadsave
 msgid "Load/Save"
@@ -815,7 +815,7 @@ msgstr "Transbordamento (Overflow)"
 
 #: lazarusidestrconsts.dlgcoparsing
 msgid "Parsing"
-msgstr "Analisando sintaxe"
+msgstr "Análise"
 
 #: lazarusidestrconsts.dlgcopypastekeepfolds
 msgid "Copy/Paste with fold info"
@@ -4110,7 +4110,7 @@ msgstr "Construção Lazarus falhou"
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
-msgstr "Macros Construção"
+msgstr "Macros de construção"
 
 #: lazarusidestrconsts.lisbuildmacros2
 msgid "Build macros:"
@@ -4122,11 +4122,11 @@ msgstr "Modo construção"
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencesbetweenbuildmodes
 msgid "Differences between build modes"
-msgstr "Diferenças entre modos construção"
+msgstr "Diferenças entre modos de construção"
 
 #: lazarusidestrconsts.lisbuildmodediffdifferencestootherbuildmodes
 msgid "Differences to other build modes"
-msgstr "Diferenças para outros modos construção"
+msgstr "Diferenças para outros modos de construção"
 
 #: lazarusidestrconsts.lisbuildmodediffmode
 msgid "Mode:"
@@ -4134,7 +4134,7 @@ msgstr "Modo:"
 
 #: lazarusidestrconsts.lisbuildmodes
 msgid "Build modes"
-msgstr "Modos construção"
+msgstr "Modos de construção"
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
@@ -5004,7 +5004,7 @@ msgstr "padrão (%s)"
 
 #: lazarusidestrconsts.liscodegenerationoptions
 msgid "Code generation options"
-msgstr "Opções geração código"
+msgstr "Opções geração de código"
 
 #: lazarusidestrconsts.liscodehelpaddlinkbutton
 msgid "Add link"
@@ -7508,7 +7508,7 @@ msgstr "Erro nas opções customizadas do compilador (Outro):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
 msgid "Error in the custom linker options (Linking / Pass options to linker):"
-msgstr "Erro nas opções customizadas do vinculador (Vinculando / Passar opções ao vinculador):"
+msgstr "Erro nas opções customizadas do vinculador (Vinculação / Passar opções ao vinculador):"
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
 msgid "Error in the \"Debugger path addition\":"
@@ -7654,7 +7654,7 @@ msgstr "Arquivo exemplo:"
 
 #: lazarusidestrconsts.lisexamplesbuildallselected
 msgid "Build all selected"
-msgstr ""
+msgstr "Construir todos os selecionados"
 
 #: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
@@ -7662,7 +7662,7 @@ msgstr "Exemplos:%sIdentificador%sTMyEnum.Enum%sNomeUnidade.Identificador%s#Nome
 
 #: lazarusidestrconsts.lisexamplesopenfirstselected
 msgid "Open first selected"
-msgstr ""
+msgstr "Abrir o primeiro selecionado"
 
 #: lazarusidestrconsts.lisexceptiondialog
 msgid "Debugger Exception Notification"
@@ -8307,7 +8307,7 @@ msgstr "Exibir Unidades"
 
 #: lazarusidestrconsts.lishitcount
 msgid "Hitcount"
-msgstr "Conta acertos"
+msgstr "Contagem acertos"
 
 #: lazarusidestrconsts.lishlpoptsdatabases
 msgid "Databases"
@@ -9011,7 +9011,7 @@ msgstr "Avaliar/Modificar"
 
 #: lazarusidestrconsts.liskmexampleprojects
 msgid "Example Projects"
-msgstr ""
+msgstr "Projetos Exemplo"
 
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
@@ -10313,7 +10313,7 @@ msgstr "A&valiar/Modificar ..."
 
 #: lazarusidestrconsts.lismenuexampleprojects
 msgid "Example Projects ..."
-msgstr ""
+msgstr "Projetos Exemplo ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract procedure ..."
@@ -13739,7 +13739,7 @@ msgstr "Raiz"
 
 #: lazarusidestrconsts.lisrootdirectoryforprojects
 msgid "Root directory for projects"
-msgstr ""
+msgstr "Diretório raiz para projetos"
 
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
@@ -15639,7 +15639,7 @@ msgstr "Exibir Fonte"
 
 #: lazarusidestrconsts.lisviewsourcedisass
 msgid "View Assembler"
-msgstr ""
+msgstr "Exibir Assembler"
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"
@@ -17574,5 +17574,5 @@ msgstr "Somente Leitura"
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
-msgstr "Informações versão"
+msgstr "Informações de versão"
 
