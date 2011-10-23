@@ -632,13 +632,8 @@ begin
   
   if (TQtDeviceContext(CanvasHandle).vImage <> nil) then
   begin
-    // This code results in ARGB values, but TColor uses ABGR
-    // Result := TColor(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
-
     Color := QColor_create(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
-
     Result := RGBToColor(QColor_red(Color), QColor_green(Color), QColor_blue(Color));
-
     QColor_destroy(Color);
   end;
 end;
