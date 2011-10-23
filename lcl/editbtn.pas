@@ -912,9 +912,6 @@ begin
 end;
 
 procedure TCustomControlFilterEdit.ApplyFilter(Immediately: Boolean);
-var
-  i: Integer;
-  FileN: string;
 begin
   if Immediately then begin
     fNeedUpdate := False;

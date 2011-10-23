@@ -335,7 +335,6 @@ end;
 procedure TValueListEditor.SetValue(const Key, Value: string);
 var
   I: Integer;
-  Line: string;
 begin
   I := Strings.IndexOfName(Key);
   if Row > -1 then begin

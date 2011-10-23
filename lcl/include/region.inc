@@ -106,9 +106,9 @@ begin
 end;
 
 procedure TRegion.ReferenceNeeded;
-var
-  i: Integer;
-  lSource1, lSource2, lDest: HRGN;
+// var
+//  i: Integer;
+//  lSource1, lSource2, lDest: HRGN;
 begin
   if FReference.Allocated then Exit;
 
