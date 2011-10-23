@@ -686,6 +686,8 @@ type
   TQtLineEdit = class(TQtWidget, IQtEdit)
   private
     FTextChanged: QLineEdit_hookH;
+    function getTextMargins: TRect;
+    procedure setTextMargins(ARect: TRect);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -721,6 +723,7 @@ type
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
       WithThemeSpace: Boolean); override;
     procedure SignalTextChanged(p1: PWideString); cdecl;
+    property TextMargins: TRect read GetTextMargins write SetTextMargins;
   end;
 
   { TQtTextEdit }
@@ -6672,6 +6675,15 @@ begin
   QLineEdit_text(QLineEditH(Widget), @Result);
 end;
 
+function TQtLineEdit.getTextMargins: TRect;
+var
+  L, T, R, B: Integer;
+begin
+  QLineEdit_getTextMargins(QLineEditH(Widget),
+    @L, @T, @R, @B);
+  Result := Rect(L, T, R, B);
+end;
+
 function TQtLineEdit.getTextStatic: Boolean;
 begin
   Result := False;
@@ -6797,6 +6809,12 @@ end;
 procedure TQtLineEdit.setText(const AText: WideString);
 begin
   QLineEdit_setText(QLineEditH(Widget), @AText);
+end;
+
+procedure TQtLineEdit.setTextMargins(ARect: TRect);
+begin
+  with ARect do
+    QLineEdit_setTextMargins(QLineEditH(Widget), Left, Top, Right, Bottom);
 end;
 
 procedure TQtLineEdit.Cut;
