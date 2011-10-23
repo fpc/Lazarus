@@ -651,8 +651,6 @@ Type
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure DataChange(Sender: TObject); virtual; abstract;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure KeyPress(var Key: char); override;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure Change; override;
@@ -676,6 +674,8 @@ Type
   TDBComboBox = class(TCustomDBComboBox)
   protected
     procedure DataChange(Sender: TObject); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: char); override;
     procedure Select; override;
     procedure UpdateData(Sender: TObject); override;
   published
