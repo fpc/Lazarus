@@ -1606,16 +1606,18 @@ end;
 
 function TQtBrush.GetLBStyle(out AStyle: LongWord; out AHatch: PtrUInt
   ): Boolean;
-var
-  BrushStyle: QtBrushStyle;
 begin
+  Result := Widget <> nil;
+  if not Result then
+    exit;
+
   AStyle := BS_SOLID;
-  if BrushStyle in [QtHorPattern, QtVerPattern, QtCrossPattern,
+  if Style in [QtHorPattern, QtVerPattern, QtCrossPattern,
                     QtBDiagPattern, QtFDiagPattern, QtDiagCrossPattern] then
     AStyle := BS_HATCHED
   else
     AHatch := 0;
-  case BrushStyle of
+  case Style of
     QtNoBrush: AStyle := BS_NULL;
     QtHorPattern: AHatch := HS_HORIZONTAL;
     QtVerPattern: AHatch := HS_VERTICAL;
