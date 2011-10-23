@@ -3161,8 +3161,16 @@ begin
     Brush
    ------------------------------------------------------------------------------}
   else
+  if aObject is TQtRegion then
+  begin
+    {TODO: implement Region}
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Region';
+    {$endif}
+  end else
   if aObject is TQtBrush then
   begin
+    {TODO: implement Brush}
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Brush';
     {$endif}
@@ -6391,8 +6399,12 @@ begin
  {$ifdef VerboseQtWinAPI}
    WriteLn('[WinAPI UpdateWindow]');
  {$endif}
-  TQtWidget(Handle).Update;
-  Result := True;
+  Result := False;
+  if Handle <> 0 then
+  begin
+    TQtWidget(Handle).Update;
+    Result := True;
+  end;
 end;
 
 {------------------------------------------------------------------------------
