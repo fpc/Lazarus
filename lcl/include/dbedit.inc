@@ -208,7 +208,11 @@ end;
 procedure TDBEdit.WMSetFocus(var Message: TLMSetFocus);
 begin
   inherited WMSetFocus(Message);
-  FDataLink.Reset;
+  // some widgetsets do not notify clipboard actions properly. Put at edit state at entry
+  if WidgetSet.GetLCLCapability(lcReceivesLMClearCutCopyPasteReliably) = LCL_CAPABILITY_YES then
+    FDataLink.Reset
+  else
+    FDataLink.Edit;
 end;
 
 procedure TDBEdit.WMKillFocus(var Message: TLMKillFocus);

@@ -1289,6 +1289,9 @@ procedure Register;
 
 implementation
 
+uses
+  InterfaceBase;
+
 var
   FieldClasses: TFpList;
 
