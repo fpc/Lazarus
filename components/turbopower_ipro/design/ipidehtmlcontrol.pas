@@ -72,7 +72,8 @@ type
   end;
 
 function IPCreateLazIDEHTMLControl(Owner: TComponent;
-  var Provider: TAbstractIDEHTMLProvider): TControl;
+  var Provider: TAbstractIDEHTMLProvider;
+  Flags: TIDEHTMLControlFlags = []): TControl;
 
 procedure Register;
 
@@ -84,7 +85,8 @@ begin
 end;
 
 function IPCreateLazIDEHTMLControl(Owner: TComponent;
-  var Provider: TAbstractIDEHTMLProvider): TControl;
+  var Provider: TAbstractIDEHTMLProvider;
+  Flags: TIDEHTMLControlFlags = []): TControl;
 var
   HTMLControl: TLazIPHtmlControl;
 begin
