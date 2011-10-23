@@ -2087,21 +2087,29 @@ end;
 
 procedure TCustomGrid.InternalSetColWidths(aCol, aValue: Integer);
 var
+  OldSize,NewSize: Integer;
   R: TRect;
   Bigger: boolean;
 begin
-  if AValue<0 then
-    Avalue:=-1;
+  NewSize := AValue;
+  if NewSize<0 then begin
+    AValue:=-1;
+    NewSize := FDefColWidth;
+  end;
 
-  if Avalue<>integer(PtrUInt(FCols[ACol])) then begin
-    Bigger := AValue>integer(PtrUInt(FCols[ACol]));
-    SetRawColWidths(ACol, Avalue);
+  OldSize := integer(PtrUInt(FCols[ACol]));
+  if NewSize<>OldSize then begin
+
+    if OldSize<0 then
+      OldSize := fDefColWidth;
+
+    Bigger := NewSize>OldSize;
+    SetRawColWidths(ACol, AValue);
 
     if not (csLoading in ComponentState) and HandleAllocated then begin
 
       if FUpdateCount=0 then begin
         UpdateSizes;
-
         R := CellRect(aCol, 0);
         R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1;
         if UseRightToLeftAlignment then begin
@@ -2518,15 +2526,24 @@ end;
 
 procedure TCustomGrid.Setrowheights(Arow: Integer; Avalue: Integer);
 var
+  OldSize,NewSize: Integer;
   R: TRect;
   Bigger: boolean;
 begin
-  if AValue<0 then
+
+  NewSize := AValue;
+  if NewSize<0 then begin
     AValue:=-1;
+    NewSize := FDefRowHeight;
+  end;
 
-  if AValue<>integer(PtrUInt(FRows[ARow])) then begin
+  OldSize := integer(PtrUInt(FRows[ARow]));
+  if AValue<>OldSize then begin
 
-    bigger := aValue > RowHeights[aRow];
+    if OldSize<0 then
+      OldSize := FDefRowHeight;
+
+    bigger := NewSize > OldSize;
 
     FRows[ARow]:=Pointer(PtrInt(AValue));
 
