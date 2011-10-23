@@ -742,6 +742,7 @@ begin
                      TGCallback(@Gtk2RangeScrollPressCB), WidgetInfo);
     g_signal_connect(Scrolled^.vscrollbar, 'button-release-event',
                      TGCallback(@Gtk2RangeScrollReleaseCB), WidgetInfo);
+    if (AWinControl is TScrollBox) then
       g_signal_connect(Scrolled, 'scroll-event',
                        TGCallback(@Gtk2ScrolledWindowScrollCB), WidgetInfo);
   end;
