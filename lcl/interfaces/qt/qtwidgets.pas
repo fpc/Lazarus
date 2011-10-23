@@ -13272,13 +13272,14 @@ var
   W,H: integer;
 begin
   // must use ClassType comparision here since qt is buggy about hints.#16551
-  if AVisible and (LCLObject.ClassType = THintWindow) then
+  if AVisible and
+    ((LCLObject.ClassType = THintWindow) or
+      (LCLObject.InheritsFrom(THintWindow))) then
   begin
     R := getGeometry;
     W := R.Right - R.Left;
     H := R.Bottom - R.Top;
     LCLIntf.GetCursorPos(P);
-
     {we must make proper positioning of our hint if
      hint geometry intersects current cursor pos - issue #15882}
     if PtInRect(R, P) then
@@ -13314,7 +13315,6 @@ begin
         P.Y := D.Bottom - D.Top - H;
 
       Pt := getPos;
-
       if (P.X >= Pt.X) and (P.X <= Pt.X + W) then
         move(P.X + ToolTipOffset, P.Y)
       else
