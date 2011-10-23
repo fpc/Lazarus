@@ -3740,13 +3740,11 @@ begin
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CMOUSEBUTTONS    ');
       end;
-    SM_CXBORDER:
+    SM_CXBORDER, SM_CYBORDER:
       begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXBORDER         ');
-      end;
-    SM_CYBORDER:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYBORDER         ');
+        // size of frame around controls
+        Result := QStyle_pixelMetric(QApplication_style(),
+                    QStylePM_DefaultFrameWidth, nil, nil);
       end;
     SM_CXCURSOR:
       begin
