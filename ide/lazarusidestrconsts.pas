@@ -104,8 +104,7 @@ resourcestring
   lisProjectIncPath = 'Project Include Path';
   lisProjectSrcPath = 'Project Src Path';
   lisProjectOutDir = 'Project Output directory (e.g. the ppu directory)';
-  lisEnvironmentVariableNameAsParameter = 'Environment variable, name as '
-    +'parameter';
+  lisEnvironmentVariableNameAsParameter = 'Environment variable, name as parameter';
   lisUserSHomeDirectory = 'User''s home directory';
   lisMakeExe = 'Make Executable';
   lisPathOfTheMakeUtility = 'Path of the make utility';
@@ -523,8 +522,7 @@ resourcestring
 
   lisUnableToLoadOldResourceFileTheResourceFileIs = 'Unable to load old '
     +'resource file.%sThe resource file is the first include file in the%'
-    +'sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax '
-    +'error.';
+    +'sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error.';
   lisResourceLoadError = 'Resource load error';
   lisIgnoreMissingFile = 'Ignore missing file';
   lisnoname = 'noname';
@@ -794,8 +792,7 @@ resourcestring
 
   // file dialogs
   lisOpenFile = 'Open file';
-  lisProjectSRaisedExceptionClassS =
-    'Project %s raised exception class ''%s''.';
+  lisProjectSRaisedExceptionClassS = 'Project %s raised exception class ''%s''.';
   lisProjectSRaisedExceptionClassSWithMessageSS = 'Project %s raised '
     +'exception class ''%s'' with message:%s%s';
   lisProjectSRaisedExceptionInFileLineSrc = '%0:s%0:s In file ''%1:s'' at line %2:d:%0:s%3:s';
@@ -882,8 +879,7 @@ resourcestring
   lisCancelRenaming = 'Cancel renaming';
   lisAbortAll = 'Abort all';
   lisInvalidPascalIdentifierCap = 'Invalid Pascal Identifier';
-  lisInvalidPascalIdentifierText =
-    'The name "%s" is not a valid pascal identifier.';
+  lisInvalidPascalIdentifierText = 'The name "%s" is not a valid pascal identifier.';
   lisCopyError = 'Copy Error';
 
   lisCloseAllTabsTitle = 'Close Source Editor Window';
@@ -1745,8 +1741,7 @@ resourcestring
     +'new projects';
   lisPkgEdOnlineHelpNotYetImplemented = 'Online Help not yet implemented';
   lisPkgEdRightClickOnTheItemsTreeToGetThePopupmenuWithAllAv = 'Right click '
-    +'on the items tree to get the popupmenu with all available package '
-    +'functions.';
+    +'on the items tree to get the popupmenu with all available package functions.';
   dlgSearchPaths = 'Paths';
   lisIWonderHowYouDidThatErrorInTheBaseDirectory = 'I wonder how you did '
     +'that: Error in the base directory:';
@@ -1767,8 +1762,7 @@ resourcestring
   lisErrorInTheUnitOutputDirectory = 'Error in the "unit output directory":';
   lisErrorInTheCompilerFileName = 'Error in the compiler file name:';
   lisErrorInTheDebuggerPathAddition = 'Error in the "Debugger path addition":';
-  lisIWonderHowYouDidThatErrorInThe = 'I wonder how you did that. Error in '
-    +'the %s:';
+  lisIWonderHowYouDidThatErrorInThe = 'I wonder how you did that. Error in the %s:';
   lisValue3 = 'Value: ';
   dlgCOParsing = 'Parsing';
   dlgCodeGeneration = 'Code generation';
@@ -1933,8 +1927,7 @@ resourcestring
   dlgCCOTestCheckingCompiler = 'Test: Checking compiler ...';
   lisDoesNotExists = '%s does not exists: %s';
   lisCCOInvalidCompiler = 'Invalid compiler';
-  lisCCOCompilerNotAnExe = 'The compiler "%s" is not an executable file.%s'
-    +'Details: %s';
+  lisCCOCompilerNotAnExe = 'The compiler "%s" is not an executable file.%sDetails: %s';
   lisCCOAmbiguousCompiler = 'Ambiguous compiler';
   lisCCOSeveralCompilers = 'There are several Free Pascal Compilers in your path.%s%s%s'
     +'Maybe you forgot to delete an old compiler?';
@@ -2083,9 +2076,8 @@ resourcestring
     +'star * character.%sLazarus uses this as normal character and does not '
     +'expand this as file mask.';
   lisDuplicateSearchPath = 'Duplicate search path';
-  lisTheOtherSourcesContainsADirectoryWhichIsAlreadyInT = 'The "Other '
-    +'sources" contains a directory which is already in the "Other unit '
-    +'files".%s%s';
+  lisTheOtherSourcesContainsADirectoryWhichIsAlreadyInT = 'The "Other sources" '
+    +'contains a directory which is already in the "Other unit files".%s%s';
   lisRemoveThePathsFromOtherSources = 'Remove the paths from "Other sources"';
   lisTargetFileNameO = 'Target file name (-o):';
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging (darwin only)';
@@ -3355,17 +3347,14 @@ resourcestring
     +'any valid LazDoc path.%sUnable to create the fpdoc file for %s';
   lisErrorReadingXML = 'Error reading XML';
   lisErrorReadingXmlFile = 'Error reading xml file %s%s%s%s%s';
-  lisPkgThisFileIsNotInAnyLoadedPackage = 'This file is not in any loaded '
-    +'package.';
+  lisPkgThisFileIsNotInAnyLoadedPackage = 'This file is not in any loaded package.';
   lisProjAddTheDependencyWasNotFound = 'The dependency %s%s%s was not found.%'
     +'sPlease choose an existing package.';
   lisProjAddInvalidVersion = 'Invalid version';
   lisProjAddTheMinimumVersionIsInvalid = 'The Minimum Version %s%s%s is '
-    +'invalid.%sPlease use the format major.minor.release.build%sFor '
-    +'exmaple: 1.0.20.10';
+    +'invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10';
   lisProjAddTheMaximumVersionIsInvalid = 'The Maximum Version %s%s%s is '
-    +'invalid.%sPlease use the format major.minor.release.build%sFor '
-    +'exmaple: 1.0.20.10';
+    +'invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10';
   lisProjAddInvalidPascalUnitName = 'Invalid pascal unit name';
   lisProjAddTheUnitNameIsNotAValidPascalIdentifier = 'The unit name %s%s%s is '
     +'not a valid pascal identifier.';
@@ -4778,9 +4767,8 @@ resourcestring
   lisMissingIdentifiers = 'Missing identifiers';
   lisChooseAFPDocLink = 'Choose a FPDoc link';
   lisLinkTarget = 'Link target';
-  lisExamplesIdentifierTMyEnumEnumUnitnameIdentifierPac = 'Examples:%'
-    +'sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.'
-    +'Identifier';
+  lisExamplesIdentifierTMyEnumEnumUnitnameIdentifierPac = 'Examples:%sIdentifier%s'
+    +'TMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier';
   lisTitleLeaveEmptyForDefault = 'Title (leave empty for default)';
   lisPackageUnit = 'package unit';
   lisPackage2 = 'package %s';
@@ -5203,8 +5191,7 @@ resourcestring
     +'the ppu file are from the same installation.';
   lisInASourceDirectoryOfTheProjectCheckForDuplicates = 'In a source '
     +'directory of the project. Check for duplicates.';
-  lisInASourceDirectoryOfThePackage = 'In a source directory of the package "%'
-    +'s".';
+  lisInASourceDirectoryOfThePackage = 'In a source directory of the package "%s".';
   lisCheckTheTargetOSCPULCLWidgetTypeMaybeYouHaveToReco = '%s Check the '
     +'target (OS, CPU, LCL widget type). Maybe you have to recompile the '
     +'package for this target or set another target for the project.';
