@@ -233,15 +233,18 @@ type
 
   TQtBrush = class(TQtResource)
   private
+    function getStyle: QtBrushStyle;
+    procedure setStyle(style: QtBrushStyle);
   public
     Widget: QBrushH;
     constructor Create(CreateHandle: Boolean); virtual;
     destructor Destroy; override;
     function getColor: PQColor;
+    function GetLBStyle(out AStyle: LongWord; out AHatch: PtrUInt): Boolean;
     procedure setColor(AColor: PQColor);
-    procedure setStyle(style: QtBrushStyle);
     procedure setTexture(pixmap: QPixmapH);
     procedure setTextureImage(image: QImageH);
+    property Style: QtBrushStyle read getStyle write setStyle;
   end;
 
   { TQtPen }
@@ -1601,9 +1604,37 @@ begin
   Result := QBrush_Color(Widget);
 end;
 
+function TQtBrush.GetLBStyle(out AStyle: LongWord; out AHatch: PtrUInt
+  ): Boolean;
+var
+  BrushStyle: QtBrushStyle;
+begin
+  AStyle := BS_SOLID;
+  if BrushStyle in [QtHorPattern, QtVerPattern, QtCrossPattern,
+                    QtBDiagPattern, QtFDiagPattern, QtDiagCrossPattern] then
+    AStyle := BS_HATCHED
+  else
+    AHatch := 0;
+  case BrushStyle of
+    QtNoBrush: AStyle := BS_NULL;
+    QtHorPattern: AHatch := HS_HORIZONTAL;
+    QtVerPattern: AHatch := HS_VERTICAL;
+    QtCrossPattern: AHatch := HS_CROSS;
+    QtBDiagPattern: AHatch := HS_BDIAGONAL;
+    QtFDiagPattern: AHatch := HS_FDIAGONAL;
+    QtDiagCrossPattern: AHatch := HS_DIAGCROSS;
+    QtTexturePattern: AStyle := BS_PATTERN;
+  end;
+end;
+
 procedure TQtBrush.setColor(AColor: PQColor);
 begin
   QBrush_setColor(Widget, AColor);
+end;
+
+function TQtBrush.getStyle: QtBrushStyle;
+begin
+  Result := QBrush_style(Widget);
 end;
 
 {------------------------------------------------------------------------------

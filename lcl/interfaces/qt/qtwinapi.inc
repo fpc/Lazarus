@@ -415,25 +415,25 @@ begin
 //      BS_HOLLOW,         // Hollow brush.
       BS_NULL:           // Same as BS_HOLLOW.
       begin
-        QtBrush.setStyle(QtNoBrush);
+        QtBrush.Style := QtNoBrush;
       end;
 
       BS_SOLID:          // Solid brush.
       begin
-        QtBrush.setStyle(QtSolidPattern);
+        QtBrush.Style := QtSolidPattern;
       end;
 
       BS_HATCHED:        // Hatched brush.
       begin
         case LogBrush.lbHatch of
-          HS_BDIAGONAL: QtBrush.setStyle(QtBDiagPattern);
-          HS_CROSS: QtBrush.setStyle(QtCrossPattern);
-          HS_DIAGCROSS: QtBrush.setStyle(QtDiagCrossPattern);
-          HS_FDIAGONAL: QtBrush.setStyle(QtFDiagPattern);
-          HS_HORIZONTAL: QtBrush.setStyle(QtHorPattern);
-          HS_VERTICAL: QtBrush.setStyle(QtVerPattern);
+          HS_BDIAGONAL: QtBrush.Style := QtBDiagPattern;
+          HS_CROSS: QtBrush.Style := QtCrossPattern;
+          HS_DIAGCROSS: QtBrush.Style := QtDiagCrossPattern;
+          HS_FDIAGONAL: QtBrush.Style := QtFDiagPattern;
+          HS_HORIZONTAL: QtBrush.Style := QtHorPattern;
+          HS_VERTICAL: QtBrush.Style := QtVerPattern;
         else
-          QtBrush.setStyle(QtSolidPattern);
+          QtBrush.Style := QtSolidPattern;
         end;
       end;
 
@@ -451,6 +451,7 @@ begin
       BS_PATTERN8X8:     // Same as BS_PATTERN.
       begin
         QtBrush.setTextureImage(TQtImage(LogBrush.lbHatch).Handle);
+        QtBrush.Style := QtTexturePattern;
       end;
     else
       DebugLn(Format('Unsupported Style %d',[LogBrush.lbStyle]));
@@ -473,7 +474,7 @@ begin
     // set brush color
     Color := QBrush_Color(QtBrush.Widget)^;
     ColorRefToTQColor(ColorToRGB(TColor(logBrush.lbColor)), Color);
-    QBrush_setColor(QtBrush.Widget, @Color);
+    QtBrush.setColor(@Color);
   except
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI CreateBrushIndirect] Failed');
@@ -3011,10 +3012,12 @@ var
   aObject: TObject;
   AFont: TQtFont absolute aObject;
   APen: TQtPen absolute aObject;
+  ABrush: TQtBrush absolute aObject;
   BitmapSection : TDIBSECTION;
   ALogFont: PLogFont absolute Buf;
   ALogPen: PLogPen absolute Buf;
   AExtLogPen: PExtLogPen absolute Buf;
+  ALogBrush: PLogBrush absolute Buf;
   Dashes: TQRealArray;
   i: integer;
   {$ifdef VerboseQtWinAPI}
@@ -3158,7 +3161,7 @@ begin
     end;
   end
   {------------------------------------------------------------------------------
-    Brush
+    Region
    ------------------------------------------------------------------------------}
   else
   if aObject is TQtRegion then
@@ -3168,12 +3171,20 @@ begin
       ObjType := 'Region';
     {$endif}
   end else
+  {------------------------------------------------------------------------------
+    Brush
+   ------------------------------------------------------------------------------}
   if aObject is TQtBrush then
   begin
-    {TODO: implement Brush}
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Brush';
-    {$endif}
+    if Buf = nil then
+      Result := SizeOf(TLogBrush)
+    else
+    if BufSize >= SizeOf(TLogBrush) then
+    begin
+      Result := SizeOf(TLogBrush);
+      TQColorToColorRef(ABrush.getColor^, ALogBrush^.lbColor);
+      ABrush.GetLbStyle(ALogBrush^.lbStyle, ALogBrush^.lbHatch);
+    end;
   end
   {------------------------------------------------------------------------------
     Image
