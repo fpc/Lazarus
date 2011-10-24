@@ -1620,7 +1620,7 @@ type
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getIcon: QIconH;
-    function getIndex: Integer;
+    function getIndex(const ATextChanging: Boolean = False): Integer;
     function getTabWidget: QTabWidgetH;
     procedure setIcon(const AIcon: QIconH);
     procedure setText(const W: WideString); override;
@@ -13371,7 +13371,7 @@ begin
   Result := FIcon;
 end;
 
-function TQtPage.getIndex: Integer;
+function TQtPage.getIndex(const ATextChanging: Boolean = False): Integer;
 var
   AParent: QTabWidgetH;
 
@@ -13386,7 +13386,7 @@ var
 
 begin
   AParent := getTabWidget;
-  if CanReturnIndex then
+  if CanReturnIndex or ATextChanging then
     Result := QTabWidget_indexOf(AParent, Widget)
   else
     Result := -1;
@@ -13431,7 +13431,7 @@ begin
   AParent := getTabWidget;
   if (AParent <> nil) then
   begin
-    Index := getIndex;
+    Index := getIndex(True);
     if Index <> -1 then
       QTabWidget_setTabText(AParent, Index, @W);
   end;
