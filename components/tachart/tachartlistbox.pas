@@ -188,7 +188,7 @@ procedure Register;
 implementation
 
 uses
-  Math, LCLIntf, LCLType, SysUtils, Themes,
+  Graphics, Math, LCLIntf, LCLType, SysUtils, Themes,
   TACustomSource, TADrawerCanvas, TADrawUtils, TAEnumerators, TAGeometry;
 
 procedure Register;
@@ -326,6 +326,7 @@ begin
   else
     x := ARect.Left;
 
+  Canvas.Brush.Style := bsClear;
   if cloShowIcons in Options then begin
     id := TCanvasDrawer.Create(Canvas);
     id.Pen := Chart.Legend.SymbolFrame;
