@@ -66,8 +66,9 @@ type
     dgHeaderHotTracking,
     dgHeaderPushedLook,
     dgPersistentMultiSelect,
-    dgAutoSizeColumns
-
+    dgAutoSizeColumns,
+    dgCanSelectAnyButton                // Any mouse button (not just left)
+                                         // moves the selection to clicked cell
   );
   TDbGridOptions = set of TDbGridOption;
 
@@ -1013,6 +1014,11 @@ begin
       Include(OldOptions, goHeaderPushedLook)
     else
       Exclude(OldOptions, goHeaderPushedLook);
+
+    if dgCanSelectAnyButton in FOptions then
+      Include(OldOptions, goCanSelectAnyButton)
+    else
+      Exclude(OldOptions, goCanSelectAnyButton);
 
     if (dgIndicator in ChangedOptions) then begin
       if (dgIndicator in FOptions) then
@@ -2226,7 +2232,7 @@ begin
     exit;
   end;
 
-  if button<>mbLeft then begin
+  if (button<>mbLeft) and not (dgCanSelectAnyButton in FOptions) then begin
     doInherited;
     exit;
   end;
