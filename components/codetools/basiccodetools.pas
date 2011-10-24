@@ -1153,7 +1153,7 @@ function FindNextComment(const ASource: string; StartPos: integer;
 var
   NotFoundPos: Integer;
 begin
-  NotFoundPos:=MaxPos+1;
+  NotFoundPos:=MaxPos;
   if (MaxPos>length(ASource)) or (MaxPos<1) then
     MaxPos:=length(ASource);
   Result:=StartPos;
@@ -1185,7 +1185,7 @@ begin
   end;
   if Result>MaxPos then
     if NotFoundPos>=1 then
-      Result:=NotFoundPos
+      Result:=NotFoundPos+1
     else
       Result:=MaxPos+1;
 end;
