@@ -1393,7 +1393,7 @@ end;
 procedure TCustomForm.GetPreferredSize(var PreferredWidth,
   PreferredHeight: integer; Raw: boolean; WithThemeSpace: boolean);
 begin
-  if fsDisableAutoSize in FFormState then begin
+  if (fsDisableAutoSize in FFormState) and not Raw then begin
     PreferredWidth:=Width;
     PreferredHeight:=Height;
   end else begin
