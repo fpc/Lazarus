@@ -236,12 +236,12 @@ type
     csFixedHeight,           // control cannot change it height (for example combobox)
     csNoDesignVisible,       // control is invisible in the designer
     csReplicatable,
-    csNoStdEvents,
+    csNoStdEvents,           // standard events such as mouse, key, and click events are ignored.
     csDisplayDragImage,      // display images from dragimagelist during drag operation over control
     csReflector,
     csActionClient,
     csMenuEvents,
-    csNoFocus,
+    csNoFocus,               // control will not take focus when clicked with mouse.
     csNeedsBorderPaint,      // not implemented
     csParentBackground,      // not implemented
     csDesignNoSmoothResize,  // no WYSIWYG resizing in designer
