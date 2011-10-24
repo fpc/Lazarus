@@ -4721,6 +4721,7 @@ begin
   DlgResult:=ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
   if DlgResult in [mrOk,mrYes,mrAll] then begin
     MiscellaneousOptions.Save;
+    IncreaseCompilerParseStamp;
     if DlgResult=mrAll then
       DoBuildAdvancedLazarus(MiscellaneousOptions.BuildLazProfiles.Selected)
     else if DlgResult=mrYes then begin
