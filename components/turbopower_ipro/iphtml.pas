@@ -14861,6 +14861,21 @@ begin
   hpsCITE :
     Props.FontStyle := Props.FontStyle + [fsItalic];
   end;
+  
+  {$IFDEF IP_LAZARUS}
+  case Style of
+    hpsEM      : FElementName := 'em';
+    hpsSTRONG  : FElementName := 'strong';
+    hpsDFN     : FElementName := 'dfn';
+    hpsCODE    : FElementName := 'code';
+    hpsSAMP    : FElementName := 'samp';
+    hpsKBD     : FElementName := 'kbd';
+    hpsVAR     : FElementName := 'var';
+    hpsCITE    : FElementName := 'cite';
+    hpsABBR    : FElementName := 'abbr';
+    hpsACRONYM : FElementName := 'acronym';
+  end;
+  {$ENDIF}
 end;
 
 { TIpHtmlNodeAPPLET }
