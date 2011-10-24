@@ -44,19 +44,15 @@ var
   NM: TNMListView;
   path: PGtkTreePath;
   column: PGtkTreeViewColumn;
-{$IFDEF GTK_2_8}
   cell: PGtkCellRenderer;
-{$ENDIF}
 begin
   //DebugLn('Gtk2_ItemFocusChanged');
   // the defocus of the oldrow isn't send
   if GTK_IS_TREE_VIEW(Widget) then
     gtk_tree_view_get_cursor(PGtkTreeView(Widget), path, column)
- {$IFDEF GTK_2_8}
   else
   if GTK_IS_ICON_VIEW(Widget) then
     gtk_icon_view_get_cursor(PGtkIconView(Widget), path, cell)
-  {$ENDIF}
   else
     path := nil;
 
@@ -1078,11 +1074,9 @@ begin
       begin
         if GTK_IS_TREE_VIEW(MainView) then
           gtk_tree_view_get_cursor(PGtkTreeView(MainView), Path, Column)
-       {$IFDEF GTK_2_8}
         else
         if GTK_IS_ICON_VIEW(MainView) then
           gtk_icon_view_get_cursor(PGtkIconView(MainView), Path, Cell)
-       {$ENDIF}
         else
           Path := nil;
         AIsSet := (Path <> nil) and (StrToInt(gtk_tree_path_to_string(path)) = AIndex);
@@ -1295,16 +1289,9 @@ begin
                 gtk_tree_view_set_cursor(PGtkTreeView(MainView), Path, nil, False);
             end;
           end
-        {$IFDEF GTK_2_8}
           else
           if GTK_IS_ICON_VIEW(MainView) then
-          begin
-            if AIsSet then
-              gtk_icon_view_set_cursor(PGtkIconView(MainView), Path, nil, False)
-            else
-              gtk_icon_view_set_cursor(PGtkIconView(MainView), Path, nil, False);
-          end
-        {$ENDIF};
+            gtk_icon_view_set_cursor(PGtkIconView(MainView), Path, nil, False);
           gtk_tree_path_free(Path);
         end;
 
@@ -1388,11 +1375,9 @@ begin
     Path := gtk_tree_path_new_from_string(PChar(StrIndex));
     if GTK_IS_TREE_VIEW(MainView) then
       gtk_tree_view_scroll_to_cell(PGtkTreeView(MainView), Path, nil, False, 0, 0)
-{$IFDEF GTK_2_8}
     else
     if GTK_IS_ICON_VIEW(MainView) then
-      gtk_icon_view_scroll_to_path(PGtkIconView(MainView), Path, False, 0, 0)
-{$ENDIF};
+      gtk_icon_view_scroll_to_path(PGtkIconView(MainView), Path, False, 0, 0);
     gtk_tree_path_free(Path);
   end;
 end;
@@ -1617,9 +1602,7 @@ var
   Widgets: PTVWidgets;
   Path: PGtkTreePath;
   Column: PGtkTreeViewColumn;
-{$IFDEF GTK_2_8}
   Cell: PGtkCellRenderer;
-{$ENDIF}
 begin
   Result := -1;
   
@@ -1632,11 +1615,9 @@ begin
   begin
     if GTK_IS_TREE_VIEW(MainView) then
       gtk_tree_view_get_cursor(PGtkTreeView(MainView), Path, Column)
-{$IFDEF GTK_2_8}
     else
     if GTK_IS_ICON_VIEW(MainView) then
       gtk_icon_view_get_cursor(PGtkIconView(MainView), Path, Cell)
-{$ENDIF}
     else
       Path := nil;
     if Path <> nil then
@@ -1775,18 +1756,15 @@ begin
 end;
 
 class function TGtk2WSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
-{$ifdef GTK_2_8}
 var
   Res: Boolean;
   s, e: PGtkTreePath;
   Widgets: PTVWidgets;
   Num: Pgint;
-{$endif}
 begin
   Result := -1;
-  if not WSCheckHandleAllocated(ALV, 'GetTopItem')
-  then Exit;
-  {$ifdef GTK_2_8}
+  if not WSCheckHandleAllocated(ALV, 'GetTopItem') then
+    exit;
   Res := false;
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
   with Widgets^ do
@@ -1806,7 +1784,6 @@ begin
     gtk_tree_path_free(s);
     gtk_tree_path_free(e);
   end;
-  {$endif}
 end;
 
 class function TGtk2WSCustomListView.GetViewOrigin(const ALV: TCustomListView): TPoint;
@@ -1826,19 +1803,17 @@ begin
 end;
 
 class function TGtk2WSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
-{$ifdef GTK_2_8}
 var
   Res: Boolean;
   s, e: PGtkTreePath;
   Widgets: PTVWidgets;
   Num1,Num2: Pgint;
-{$endif}
 begin
   Result := -1;
 
-  if not WSCheckHandleAllocated(ALV, 'GetVisibleRowCount')
-  then Exit;
-  {$ifdef GTK_2_8}
+  if not WSCheckHandleAllocated(ALV, 'GetVisibleRowCount') then
+    exit;
+
    Result := 0;
    Res := false;
    GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
@@ -1860,8 +1835,6 @@ begin
      gtk_tree_path_free(s);
      gtk_tree_path_free(e);
    end;
-   {$endif}
-
 end;
 
 class procedure TGtk2WSCustomListView.SetAllocBy(const ALV: TCustomListView;
