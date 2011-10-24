@@ -3441,7 +3441,7 @@ end;
 procedure TCustomGrid.ResetHotCell;
 begin
   with FGCache do begin
-    if HotCellPainted then
+    if HotCellPainted and (HotCell.x < ColCount) and (HotCell.y < RowCount) then
       InvalidateCell(HotCell.X, HotCell.Y);
     HotCell := Point(-1,-1);
     HotCellPainted := False;
