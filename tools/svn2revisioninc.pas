@@ -420,7 +420,7 @@ end;
 }
 function TSvn2RevisionApplication.IsThisGitUpstreamBranch: boolean;
 const
-  cBufSize = 1024;
+  cBufSize = 2048;
   MainBranchNames: array[0..1] of string = ('upstream', 'master');
 var
   p: TProcessUTF8;
@@ -434,36 +434,29 @@ begin
   p := TProcessUTF8.Create(nil);
   try
     sl := TStringList.Create;
-    with p do
-    begin
-      CommandLine := 'git branch';
-      Options := [poUsePipes, poWaitOnExit];
-      try
-        Execute;
-        // Now lets process the output
-        SetLength(Buffer, cBufSize);
-        s := '';
-        repeat
-          n := OutPut.Read(Buffer[1], cBufSize);
-          s := s + Copy(Buffer, 1, n);
-        until n < cBufSize;
-        sl.Text := s;
-        // Search for the active branch marker '*' symbol.
-        // Guess the main branch name. Support 'master' and 'upstream'.
-        MainBranch := '';
-        for i := 0 to sl.Count-1 do begin
-          for j := Low(MainBranchNames) to High(MainBranchNames) do begin
-            if Pos(MainBranchNames[j], sl[i]) > 0 then begin
-              MainBranch := MainBranchNames[j];
-              if sl[i][1] = '*' then begin
-                Result := True;
-                exit;
-              end;
-            end;
+    p.CommandLine := 'git branch';
+    p.Options := [poUsePipes, poWaitOnExit];
+    p.Execute;
+    // Now lets process the output
+    SetLength(Buffer, cBufSize);
+    s := '';
+    repeat
+      n := p.Output.Read(Buffer[1], cBufSize);
+      s := s + Copy(Buffer, 1, n);
+    until n < cBufSize;
+    sl.Text := s;
+    // Search for the active branch marker '*' symbol.
+    // Guess the main branch name. Support 'master' and 'upstream'.
+    MainBranch := '';
+    for i := 0 to sl.Count-1 do begin
+      for j := Low(MainBranchNames) to High(MainBranchNames) do begin
+        if Pos(MainBranchNames[j], sl[i]) > 0 then begin
+          MainBranch := MainBranchNames[j];
+          if sl[i][1] = '*' then begin
+            Result := True;
+            exit;
           end;
         end;
-      except
-        // ignore error, default result is false
       end;
     end;
   finally
@@ -485,52 +478,57 @@ end;
 }
 function TSvn2RevisionApplication.GetGitBranchPoint: string;
 const
-  cBufSize = 16000;  // this can hold many SHA1 values at a time
+  READ_BYTES = 2048;
 var
   p: TProcessUTF8;
-  Buffer: string;
+  MemStream: TMemoryStream;
+  n, i, NumBytes, BytesRead: integer;
   s: string;
-  i: integer;
-  n: LongInt;
   sl: TStringList;
 begin
   Result := '';
+  BytesRead := 0;
+  sl := Nil;
+  MemStream := TMemoryStream.Create;
   p := TProcessUTF8.Create(nil);
   try
+    p.CommandLine := 'git rev-list --boundary HEAD...' + MainBranch;
+    p.Options := [poUsePipes];
+    p.Execute;
+    // read while the process is running
+    while p.Running do begin
+      MemStream.SetSize(BytesRead + READ_BYTES); // make sure we have room
+      // try reading it
+      NumBytes := p.Output.Read((MemStream.Memory + BytesRead)^, READ_BYTES);
+      if NumBytes > 0 then
+        Inc(BytesRead, NumBytes)
+      else                                       // no data, wait 100 ms
+        Sleep(100);
+    end;
+    // read last part
+    repeat
+      MemStream.SetSize(BytesRead + READ_BYTES);
+      NumBytes := p.Output.Read((MemStream.Memory + BytesRead)^, READ_BYTES);
+      if NumBytes > 0 then
+        Inc(BytesRead, NumBytes);
+    until NumBytes <= 0;
+    MemStream.SetSize(BytesRead);
     sl := TStringList.Create;
-    with p do
+    sl.LoadFromStream(MemStream);
+    { now search for the '-' marker. Should be the last one, so search in reverse. }
+    for i := sl.Count-1 downto 0 do
     begin
-      CommandLine := 'git rev-list --boundary HEAD...' + MainBranch;
-      Options := [poUsePipes, poWaitOnExit];
-      try
-        Execute;
-        s := '';
-        { now process the output }
-        SetLength(Buffer, cBufSize);
-        repeat
-          n := OutPut.Read(Buffer[1], cBufSize);
-          if n > 0 then
-            s := s + Copy(Buffer, 1, n);
-        until n < cBufSize;
-        sl.Text := s;
-        { now search for the '-' marker. Should be the last one, so search in reverse. }
-        for i := sl.Count-1 downto 0 do
-        begin
-          s := sl[i];
-          n := Pos('-', s);
-          if n > 0 then
-          begin
-            Result := Copy(s, 2, Length(s));
-            exit;
-          end;
-        end;
-      except
-        // ignore error, default result is false
+      s := sl[i];
+      n := Pos('-', s);
+      if n > 0 then begin
+        Result := Copy(s, 2, Length(s));
+        exit;
       end;
     end;
   finally
     sl.Free;
     p.Free;
+    MemStream.Free;
   end;
 end;
 
