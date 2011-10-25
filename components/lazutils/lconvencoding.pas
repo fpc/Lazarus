@@ -43,6 +43,7 @@ function GuessEncoding(const s: string): string;
 
 function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
 
+// This routine should obtain the encoding utilized by ansistring in the RTL
 function GetDefaultTextEncoding: string;
 function NormalizeEncoding(const Encoding: string): string;
 
