@@ -37,16 +37,25 @@ begin
 end;
 
 function GetHintControl(Control: TControl): TControl;
+var
+  ParentC: TControl;
 begin
-  Result := Control;
-  while (Result <> nil) and not Result.ShowHint do begin
-    // if both ShowHint and ParentShowHint are false -> leave
-    if not Result.IsParentShowHint then
-      exit(Nil);
-    Result := Result.Parent;
+  Result := Control; // Will return the original control to get the correct hint text.
+
+  // Show hint only when program is running normally
+  if (Control <> nil) and
+     ([csDesigning, csDestroying, csLoading] * Control.ComponentState <> []) then
+    exit(nil);
+
+  // Iterate parents. If control and its parents don't have ShowHint=True -> no hint
+  ParentC := Control;
+  while (ParentC <> nil) and not ParentC.ShowHint do begin
+    // if both ShowHint and ParentShowHint are false -> no hint
+    if not ParentC.IsParentShowHint then
+      exit(nil);
+    ParentC := ParentC.Parent;
   end;
-  if (Result <> nil) and
-     ([csDesigning, csDestroying, csLoading] * Result.ComponentState <> []) then
+  if (ParentC = nil) then
     Result := nil;
 end;
 
@@ -55,7 +64,7 @@ begin
   Result.MousePos := CursorPos;
   Result.Control := GetHintControl(FindControlAtPosition(Result.MousePos, True));
   Result.ControlHasHint := Assigned(Result.Control) and Assigned(Application) and
-    Application.ShowHint and  (GetCapture = 0) and
+    Application.ShowHint and (GetCapture = 0) and
    ((GetKeyState(VK_LBUTTON) and $80) = 0) and
    ((GetKeyState(VK_MBUTTON) and $80) = 0) and
    ((GetKeyState(VK_RBUTTON) and $80) = 0);
@@ -179,8 +188,7 @@ begin
   OnGetApplicationName := nil;
 end;
 
-procedure TApplication.ActivateHint(CursorPos: TPoint;
-  CheckHintControlChange: Boolean);
+procedure TApplication.ActivateHint(CursorPos: TPoint; CheckHintControlChange: Boolean);
 var
   Info: THintInfoAtMouse;
   HintControlChanged: Boolean;
