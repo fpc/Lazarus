@@ -45,6 +45,10 @@ function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
 
 // This routine should obtain the encoding utilized by ansistring in the RTL
 function GetDefaultTextEncoding: string;
+// This routine returns the console text encoding, which might be different
+// from the normal system encoding in some Windows systems
+// see http://mantis.freepascal.org/view.php?id=20552
+function GetConsoleTextEncoding: string;
 function NormalizeEncoding(const Encoding: string): string;
 
 type
@@ -195,6 +199,16 @@ begin
 
   DefaultTextEncoding:=Result;
   EncodingValid:=true;
+end;
+
+function GetConsoleTextEncoding: string;
+begin
+  {$ifdef Windows}
+  // ToDo
+  Result := GetDefaultTextEncoding;
+  {$else}
+  Result := GetDefaultTextEncoding;
+  {$endif}
 end;
 
 function NormalizeEncoding(const Encoding: string): string;
