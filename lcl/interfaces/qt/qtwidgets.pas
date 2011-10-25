@@ -1804,7 +1804,12 @@ begin
 
   // set focus policy
   if (LCLObject <> nil) and not (Self is TQtMainWindow) then
-    setFocusPolicy(QtClickFocus);
+  begin
+    if csNoFocus in LCLObject.ControlStyle then
+      setFocusPolicy(QtNoFocus)
+    else
+      setFocusPolicy(QtClickFocus);
+  end;
 
   if (csDesigning in LCLObject.ComponentState) and not
      (Self is TQtMainWindow) and
