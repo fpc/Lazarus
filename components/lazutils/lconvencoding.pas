@@ -137,7 +137,9 @@ var EncodingValid: boolean = false;
 {$include asiancodepagefunctions.inc}
 
 {$IFDEF Windows}
-function GetWindowsEncoding: string;
+// AConsole - If false, it is the general system encoding,
+//            if true, it is the console encoding
+function GetWindowsEncoding(AConsole: Boolean = False): string;
 var
   cp : UINT;
 {$IFDEF WinCE}
@@ -146,7 +148,9 @@ const
   CP_UTF8 = 65001;
 {$ENDIF}
 begin
-  cp := GetACP;
+  if AConsole then cp := GetOEMCP
+  else cp := GetACP;
+
   case cp of
     CP_UTF8: Result := EncodingUTF8;
   else
@@ -204,8 +208,8 @@ end;
 function GetConsoleTextEncoding: string;
 begin
   {$ifdef Windows}
-  // ToDo
-  Result := GetDefaultTextEncoding;
+  Result:=GetWindowsEncoding(True);
+  Result:=NormalizeEncoding(Result);
   {$else}
   Result := GetDefaultTextEncoding;
   {$endif}
