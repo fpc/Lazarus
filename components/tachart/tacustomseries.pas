@@ -934,14 +934,17 @@ function TBasicPointSeries.GetNearestPoint(
 var
   dist, i: Integer;
   pt: TPoint;
+  sp: TDoublePoint;
 begin
   Result := Count > 0;
   AResults.FDist := MaxInt;
   for i := 0 to Count - 1 do begin
+    sp := Source[i]^.Point;
+    if IsNan(sp) then continue;
     // Since axis transformation may be non-linear, the distance should be
     // measured in screen coordinates. With high zoom ratios this may lead to
     // an integer overflow, so ADistFunc should use saturation arithmetics.
-    pt := ParentChart.GraphToImage(AxisToGraph(Source[i]^.Point));
+    pt := ParentChart.GraphToImage(AxisToGraph(sp));
     dist := AParams.FDistFunc(AParams.FPoint, pt);
     if (dist >= AResults.FDist) or (dist > Sqr(AParams.FRadius)) then continue;
     AResults.FDist := dist;
