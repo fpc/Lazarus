@@ -3031,7 +3031,7 @@ begin
   fTargetOS := '';
     
   // linking
-  fGenDebugInfo := false;
+  fGenDebugInfo := True;
   fDebugInfoType := dsAuto;
   fUseLineInfoUnit := true;
   fUseHeaptrc := false;
