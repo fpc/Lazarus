@@ -39,16 +39,12 @@ end;
 function GetHintControl(Control: TControl): TControl;
 begin
   Result := Control;
-
-  if (Result <> nil) and not Result.ShowHint and
-    not Result.IsParentShowHint then
-  begin
-    Result := nil;
-    exit;
-  end;
-
-  while (Result <> nil) and (not Result.ShowHint) do
+  while (Result <> nil) and not Result.ShowHint do begin
+    // if both ShowHint and ParentShowHint are false -> leave
+    if not Result.IsParentShowHint then
+      exit(Nil);
     Result := Result.Parent;
+  end;
   if (Result <> nil) and
      ([csDesigning, csDestroying, csLoading] * Result.ComponentState <> []) then
     Result := nil;

@@ -841,7 +841,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-       TControl.CMShowHintChanged
+       TControl.CMParentShowHintChanged
 
        assumes: FParent <> nil
 ------------------------------------------------------------------------------}
@@ -851,7 +851,7 @@ begin
 
   if FParentShowHint then
   begin
-    ShowHint := FParent.ShowHint;
+    ShowHint := False;
     FParentShowHint := True;
   end;
 end;
@@ -1484,8 +1484,7 @@ var
 begin
   if Sender is TCustomAction then begin
     NewAction:=TCustomAction(Sender);
-    if (not CheckDefaults)
-    or (Caption = '') or (Caption = Name) then
+    if (not CheckDefaults) or (Caption = '') or (Caption = Name) then
       Caption := NewAction.Caption;
     if not CheckDefaults or Enabled then
       Enabled := NewAction.Enabled;
@@ -2743,7 +2742,6 @@ procedure TControl.SetHint(const Value: TTranslateString);
 begin
   if FHint = Value then exit;
   FHint := Value;
-
 end;
 
 {------------------------------------------------------------------------------
@@ -3171,7 +3169,7 @@ begin
 
     if ParentShowHint then
     begin
-      ShowHint := Parent.ShowHint;
+      ShowHint := False;
       FParentShowHint := True;
     end;
   end;
@@ -3728,7 +3726,8 @@ begin
   if FShowHint <> Value then
   begin
     FShowHint := Value;
-    FParentShowHint := False;
+    if FShowHint then
+      FParentShowHint := False;
     Perform(CM_SHOWHINTCHANGED, 0, 0);
   end;
 end;
