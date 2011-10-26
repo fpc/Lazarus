@@ -32,9 +32,8 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, FileUtil, LCLProc, Laz_XMLCfg, SynRegExpr, ButtonPanel,
-  IDEHelpIntf,
-  LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros, InputHistory,
-  ShowDeletingFilesDlg;
+  IDEWindowIntf, IDEHelpIntf, LazarusIDEStrConsts, LazConf, IDEProcs,
+  TransferMacros, InputHistory, ShowDeletingFilesDlg;
 
 type
 
@@ -53,8 +52,9 @@ type
     DirCombobox: TCOMBOBOX;
     DirGroupbox: TGROUPBOX;
     RemoveGroupbox: TGROUPBOX;
-    procedure HelpButtonClick(Sender: TObject);
     procedure CleanDirectoryDialogCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure HelpButtonClick(Sender: TObject);
     procedure DirBrowseButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private
@@ -66,7 +66,6 @@ type
     function GetConfigFilename: string;
     function SearchFilesToDelete(var List: TStrings): boolean;
     function DeleteFiles(List: TStrings): boolean;
-    procedure AddDirectory(const Directory: string);
     property Macros: TTransferMacroList read FMacros write SetMacros;
   end;
   
@@ -89,7 +88,8 @@ begin
   CleanDirectoryDialog:=TCleanDirectoryDialog.Create(nil);
   CleanDirectoryDialog.Macros:=Macros;
   CleanDirectoryDialog.LoadSettings;
-  CleanDirectoryDialog.AddDirectory(DefaultDirectory);
+  AddToRecentList(DefaultDirectory,CleanDirectoryDialog.DirCombobox.Items,20);
+  CleanDirectoryDialog.DirComboBox.ItemIndex:=0;
   Result:=CleanDirectoryDialog.ShowModal;
   CleanDirectoryDialog.Free;
 end;
@@ -128,12 +128,19 @@ begin
   SimpleSyntaxKeepCheckbox.Caption:=lisClDirSimpleSyntaxEGInsteadOf;
   KeepTextFilesCheckbox.Caption:=lisClDirKeepAllTextFiles;
 
-  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.OKButton.Caption:=lisClDirClean;
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=dlgCancel;
 
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+
+  IDEDialogLayoutList.ApplyLayout(Self);
+end;
+
+procedure TCleanDirectoryDialog.FormDestroy(Sender: TObject);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TCleanDirectoryDialog.HelpButtonClick(Sender: TObject);
@@ -226,9 +233,9 @@ var
   Filename: String;
   Path: String;
 begin
-  AddToRecentList(DirCombobox.Text, DirCombobox.Items, 20);
-  AddToRecentList(RemoveCombobox.Text, RemoveCombobox.Items, 20);
-  AddToRecentList(KeepCombobox.Text, KeepCombobox.Items, 20);
+  AddComboTextToRecentList(DirCombobox, 20);
+  AddComboTextToRecentList(RemoveCombobox, 20);
+  AddComboTextToRecentList(KeepCombobox, 20);
   try
     InvalidateFileStateCache;
     Filename:=GetConfigFilename;
@@ -439,11 +446,6 @@ begin
   end;
 
   Result:=true;
-end;
-
-procedure TCleanDirectoryDialog.AddDirectory(const Directory: string);
-begin
-  AddToRecentList(Directory,DirCombobox.Items,20);
 end;
 
 end.

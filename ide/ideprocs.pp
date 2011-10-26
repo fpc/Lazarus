@@ -273,20 +273,40 @@ uses
   Unix, BaseUnix;
 {$EndIf}
 
-function AddToRecentList(const s: string; RecentList: TStrings;
-  Max: integer): boolean;
+function AddToRecentList(const s: string; RecentList: TStrings; Max: integer): boolean;
 begin
-  if (RecentList.Count>0) and (RecentList[0]=s) then begin
-    Result:=false;
-    exit;
-  end else begin
+  if (RecentList.Count>0) and (RecentList[0]=s) then
+    exit(false)
+  else
     Result:=true;
-  end;
   RemoveFromRecentList(s,RecentList);
   RecentList.Insert(0,s);
   if Max>0 then
     while RecentList.Count>Max do
       RecentList.Delete(RecentList.Count-1);
+end;
+
+function AddComboTextToRecentList(cb: TCombobox; Max: integer): boolean;
+var
+  List: TStringList;
+begin
+  List := TStringList.Create;
+  try
+    List.Assign(cb.Items);
+    if (List.Count>0) and (List[0]=cb.Text) then
+      exit(false)
+    else
+      Result:=true;
+    RemoveFromRecentList(cb.Text,List);
+    List.Insert(0,cb.Text);
+    if Max>0 then
+      while List.Count>Max do
+        List.Delete(List.Count-1);
+    cb.Items.Assign(List);
+    cb.ItemIndex:=0;
+  finally
+    List.Free;
+  end;
 end;
 
 procedure RemoveFromRecentList(const s: string; RecentList: TStrings);

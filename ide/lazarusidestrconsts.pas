@@ -4169,6 +4169,7 @@ resourcestring
   lisClDirKeepAllTextFiles = 'Keep all text files';
   lisClDirKeepFilesMatchingFilter = 'Keep files matching filter';
   lisClDirCleanDirectory = 'Clean Directory';
+  lisClDirClean = 'Clean';
   
   // LFM repair wizard
   lisTheLFMLazarusFormFileContainsInvalidPropertiesThis = 'The LFM (Lazarus '

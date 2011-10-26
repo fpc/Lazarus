@@ -2,37 +2,36 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
   Left = 307
   Height = 309
   Top = 209
-  Width = 450
-  AutoSize = True
+  Width = 353
   BorderIcons = [biSystemMenu]
   Caption = 'Clean Directory'
   ClientHeight = 309
-  ClientWidth = 450
+  ClientWidth = 353
   OnCreate = CleanDirectoryDialogCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object DirGroupbox: TGroupBox
     Left = 6
-    Height = 74
+    Height = 84
     Top = 6
-    Width = 438
+    Width = 341
     Align = alTop
-    AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Directory'
-    ClientHeight = 56
-    ClientWidth = 434
+    ClientHeight = 67
+    ClientWidth = 337
     TabOrder = 0
     object DirCombobox: TComboBox
       AnchorSideRight.Control = DirBrowseButton
       Left = 6
-      Height = 21
+      Height = 23
       Top = 6
-      Width = 394
+      Width = 297
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactSearchAscending]
       BorderSpacing.Around = 6
-      ItemHeight = 13
+      ItemHeight = 0
       TabOrder = 0
       Text = 'DirCombobox'
     end
@@ -40,9 +39,9 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       AnchorSideTop.Control = DirCombobox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 33
-      Width = 422
+      Height = 26
+      Top = 35
+      Width = 325
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
@@ -56,9 +55,9 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = DirGroupbox
       AnchorSideRight.Side = asrBottom
-      Left = 406
+      Left = 309
       Height = 21
-      Top = 6
+      Top = 7
       Width = 23
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 5
@@ -69,33 +68,32 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
   end
   object RemoveGroupbox: TGroupBox
     Left = 6
-    Height = 74
-    Top = 86
-    Width = 438
+    Height = 84
+    Top = 96
+    Width = 341
     Align = alTop
-    AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Remove files matching filter:'
-    ClientHeight = 56
-    ClientWidth = 434
+    ClientHeight = 67
+    ClientWidth = 337
     TabOrder = 1
     object RemoveCombobox: TComboBox
       Left = 6
-      Height = 21
+      Height = 23
       Top = 6
-      Width = 422
+      Width = 325
       Align = alTop
       AutoCompleteText = [cbactSearchAscending]
       BorderSpacing.Around = 6
-      ItemHeight = 13
+      ItemHeight = 0
       TabOrder = 0
       Text = 'RemoveCombobox'
     end
     object SimpleSyntaxRemoveCheckbox: TCheckBox
       Left = 6
-      Height = 17
-      Top = 33
-      Width = 422
+      Height = 26
+      Top = 35
+      Width = 325
       Align = alTop
       BorderSpacing.Around = 6
       Caption = 'Simple syntax (e.g. * instead of .*)'
@@ -104,33 +102,32 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
   end
   object KeepGroupbox: TGroupBox
     Left = 6
-    Height = 105
-    Top = 166
-    Width = 438
+    Height = 85
+    Top = 186
+    Width = 341
     Align = alClient
-    AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Keep files matching filter:'
-    ClientHeight = 87
-    ClientWidth = 434
+    ClientHeight = 68
+    ClientWidth = 337
     TabOrder = 2
     object KeepCombobox: TComboBox
       Left = 6
-      Height = 21
+      Height = 23
       Top = 6
-      Width = 422
+      Width = 325
       Align = alTop
       AutoCompleteText = [cbactSearchAscending]
       BorderSpacing.Around = 6
-      ItemHeight = 13
+      ItemHeight = 0
       TabOrder = 0
       Text = 'KeepCombobox'
     end
     object SimpleSyntaxKeepCheckbox: TCheckBox
       Left = 6
-      Height = 17
-      Top = 33
-      Width = 422
+      Height = 26
+      Top = 35
+      Width = 325
       Align = alTop
       BorderSpacing.Around = 6
       Caption = 'Simple syntax (e.g. * instead of .*)'
@@ -138,9 +135,9 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     end
     object KeepTextFilesCheckbox: TCheckBox
       Left = 6
-      Height = 17
-      Top = 56
-      Width = 422
+      Height = 26
+      Top = 64
+      Width = 325
       Align = alTop
       BorderSpacing.Around = 6
       Caption = 'Keep Text Files'
@@ -151,12 +148,16 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Left = 6
     Height = 26
     Top = 277
-    Width = 438
+    Width = 341
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
