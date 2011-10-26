@@ -31,6 +31,7 @@ procedure DrawTabHead(aDest: TFPCustomCanvas; aRect: TRect; HeadColor: TColor;
 procedure DrawTabHeadMask(aDest: TFPCustomCanvas; aRect: TRect;
   HeadColor: TColor; IsActive: boolean);
 procedure DrawArrow(aDest: TFPCustomCanvas; aRect: TRect; R: boolean);
+procedure DrawCDButtonDown(Canvas: TCanvas; ABackgroundColor: TColor);
 
 type
   PRGBTripleArray = ^TRGBTripleArray;
@@ -547,6 +548,21 @@ begin
   IntfImg1.Free;
   IntfImg2.Free;
   TmpBmp.Free;
+end;
+
+procedure DrawCDButtonDown(Canvas: TCanvas; ABackgroundColor: TColor);
+begin
+  with Canvas do
+  begin
+    Brush.Style := bsSolid;
+    Brush.Color := ABackgroundColor;
+    Pen.Color := Brush.Color;
+    Rectangle(0, 0, Width, Height);
+    FillRect(0, 0, Width, Height);
+    Brush.Color := GetAColor(ABackgroundColor, 93);
+    Pen.Color := GetAColor(Brush.Color, 76);
+    RoundRect(0, 0, Width, Height, 8, 8);
+  end;
 end;
 
 end.
