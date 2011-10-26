@@ -43,34 +43,36 @@ implementation
 
 function GetIndent(ALine: String):Integer;
 begin
-  Result :=Length(Aline) - Length(TrimLeft(ALine));
+  Result := Length(Aline) - Length(TrimLeft(ALine));
 end;
 
 procedure DivideLines(Lines: TStrings; var PreList, AList, BList, PostList: TStrings);
 var
-X: Integer;
-ALine: String;
-EqPos: Integer;
-SemiPos: Integer;
-WordBeforeEqPos: Integer;
-TrueFalse: String;
-        function FindWordBeforeEquals(ALine: String): Integer;
-        var
-        X: Integer;
-        fPos: Integer;
-        begin
-          Result := 0;
-          fPos := Pos(':=', ALine);
-          if fPos > 0 then begin
-            ALine := Trim(Copy(ALine,1,fPos-1));
-            for X := Length(ALine) downto 1 do begin
-              if ALine[X] = ' ' then begin
-                Result := X+1;
-                Exit;
-              end;
-            end;
-          end;
+  X: Integer;
+  ALine: String;
+  EqPos: Integer;
+  SemiPos: Integer;
+  WordBeforeEqPos: Integer;
+  TrueFalse: String;
+
+  function FindWordBeforeEquals(ALine: String): Integer;
+  var
+    X: Integer;
+    fPos: Integer;
+  begin
+    Result := 0;
+    fPos := Pos(':=', ALine);
+    if fPos > 0 then begin
+      ALine := Trim(Copy(ALine,1,fPos-1));
+      for X := Length(ALine) downto 1 do begin
+        if ALine[X] = ' ' then begin
+          Result := X+1;
+          Exit;
         end;
+      end;
+    end;
+  end;
+
 begin
   AList.Clear;
   BList.Clear;
@@ -107,35 +109,26 @@ begin
       BList.Strings[X] := TrueFalse;
     end;
   end;
-
 end;
 
 function InvertLine(PreVar, VarA, VarB, PostVar: String; LineStart, EqualPosition: Integer): String;
 var
-fLength: Integer;
-X: Integer;
-
+  fLength: Integer;
+  X: Integer;
 begin
   Result := '';
-
-  for X := 1 to LineStart do begin
+  for X := 1 to LineStart do
     Result := Result + ' ';
+  if Length(Trim(VarB)) = 0 then   // is not a line with a ':='
+    Result := Result + VarA
+  else begin
+    Result := Result + PreVar + VarB;
+    fLength := Length(Trim(Result));
+    if fLength < EqualPosition then
+      for X := fLength+1 to EqualPosition do
+        Result := Result + ' ';
+    Result := Result + ' := ' + VarA + PostVar;
   end;
-
-  if Length(Trim(VarB)) = 0 then begin // is not a line with a ':='
-    Result := Result + VarA;
-    Exit;
-  end;
-
-  Result := Result + PreVar + VarB;
-
-  fLength := Length(Trim(Result));
-  if fLength < EqualPosition then begin
-    for X := fLength+1 to EqualPosition do begin
-      Result := Result + ' ';
-    end;
-  end;
-  Result := Result + ' := ' + VarA + PostVar;
 end;
 
 function IsAWholeLine(ALine: String): Boolean;
@@ -174,23 +167,22 @@ end;
 // or valuea := False; to valuea := True;
 function InvertAssignment(ALines:TStrings):TStrings;
 var
-Lines: TStringList;
-PreList,
-AList,
-BList,
-PostList: TStrings;
-Indents: PInteger;
-X, Y: Integer;
-EqPos: Integer;
-ALine: String;
+  Lines: TStringList;
+  PreList,
+  AList,
+  BList,
+  PostList: TStrings;
+  Indents: PInteger;
+  X, Y: Integer;
+  EqPos: Integer;
+  ALine: String;
 begin
   if ALines.Count = 0 then begin
     Result := ALines;
     Exit;
   end;
-  
-  Lines := TStringList.Create;
 
+  Lines := TStringList.Create;
   GetMem(Indents,SizeOf(Integer)*ALines.Count);
 
   // Put a line on multiple lines, on one line
@@ -210,15 +202,14 @@ begin
   end;
   
   ALines.Clear;
-  
   PreList := TStringList.Create;
   AList := TStringList.Create;
   BList := TStringList.Create;
   PostList := TStringList.Create;
-  
+
   DivideLines(Lines, PreList, AList, BList, PostList);
   Lines.Free;
-  
+
   //Find where the ':=' should be
   EqPos := 0;
   for X := 0 to BList.Count-1 do begin
@@ -231,8 +222,8 @@ begin
                             Alist.Strings[X],
                             BList.Strings[X],
                          PostList.Strings[X],
-                                 Indents[X],
-                                     EqPos));
+                                  Indents[X],
+                                      EqPos));
   end;
   PreList.Free;
   AList.Free;
@@ -243,8 +234,6 @@ begin
   Result := ALines;
   // TODO: How do you stop this from adding a new line at the end of the last item
 end;
-//////////////////////////////////////////////////////////////////////
-
 
 end.
 
