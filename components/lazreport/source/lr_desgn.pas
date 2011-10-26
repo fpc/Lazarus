@@ -1097,6 +1097,9 @@ begin
 
   DeleteObject(R);
   DeleteObject(AClipRgn);
+  if AClipRgn=ClipRgn then
+    ClipRgn := 0;
+
   SelectClipRgn(Canvas.Handle, 0);
 
   if not Down then
