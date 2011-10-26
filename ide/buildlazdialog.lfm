@@ -51,7 +51,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       Hint = 'Name of the active profile.'
       Top = 6
       Width = 523
-      Anchors = [akLeft, akRight]
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 30
       BorderSpacing.Right = 6
       ItemHeight = 0
@@ -138,11 +138,11 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 392
-      Height = 174
+      Height = 179
       Hint = 'Defines without -d'
       Top = 189
       Width = 301
-      Anchors = [akTop, akLeft, akRight]
+      Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 2
       ItemHeight = 0
       ParentShowHint = False
@@ -267,7 +267,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       Width = 668
       Caption = 'CommonsDividerBevel'
       Autosize = True
-      Anchors = [akLeft, akRight]
+      Anchors = [akLeft, akRight, akBottom]
       BorderSpacing.Left = 7
       BorderSpacing.Bottom = 6
       Font.Style = [fsBold]
