@@ -37,25 +37,28 @@ begin
 end;
 
 function GetHintControl(Control: TControl): TControl;
+// Returns control that provides hint text for the specified Control, or nil if no hint.
+// Hint is shown if one control in parent chain has ShowHint (and others ParentShowHint).
+// Hint text comes from the closest parent that has hint text.
 var
   ParentC: TControl;
 begin
-  Result := Control; // Will return the original control to get the correct hint text.
-
-  // Show hint only when program is running normally
-  if (Control <> nil) and
-     ([csDesigning, csDestroying, csLoading] * Control.ComponentState <> []) then
-    exit(nil);
-
-  // Iterate parents. If control and its parents don't have ShowHint=True -> no hint
+  Result := Control; // Will return original control or the nearest parent with hint.
+  // Iterate parents. No hint if control and its parents don't have ShowHint=True
   ParentC := Control;
   while (ParentC <> nil) and not ParentC.ShowHint do begin
-    // if both ShowHint and ParentShowHint are false -> no hint
+    // No hint if both ShowHint and ParentShowHint are false
     if not ParentC.IsParentShowHint then
       exit(nil);
-    ParentC := ParentC.Parent;
+    ParentC := ParentC.Parent; // A level up in parent tree.
+    if Result.Hint = '' then   // Will return the first control to have a hint text.
+      Result := ParentC;
   end;
-  if (ParentC = nil) then
+  if (ParentC = nil) then      // No hint if none of parents had ShowHint=True
+    Result := nil;
+  // Show hint only when program is running normally
+  if (Result <> nil) and
+     ([csDesigning, csDestroying, csLoading] * Result.ComponentState <> []) then
     Result := nil;
 end;
 
