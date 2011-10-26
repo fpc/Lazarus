@@ -7,7 +7,7 @@ unit customdrawn;
 interface
 
 uses
-  customdrawnextras, customdrawnutils, LazarusPackageIntf;
+  customdrawnextras, customdrawnutils, customdrawncontrols, LazarusPackageIntf;
 
 implementation
 
