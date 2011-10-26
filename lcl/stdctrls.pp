@@ -366,7 +366,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure IntfGetItems;
-    procedure AddItem(const Item: String; AnObject: TObject); //override;
+    procedure AddItem(const Item: String; AnObject: TObject); virtual;
     procedure AddHistoryItem(const Item: string; MaxHistoryCount: integer;
                              SetAsText, CaseSensitive: boolean);
     procedure AddHistoryItem(const Item: string; AnObject: TObject;
