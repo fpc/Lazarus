@@ -851,7 +851,7 @@ begin
 
   if FParentShowHint then
   begin
-    ShowHint := False;
+    ShowHint := FParent.ShowHint;
     FParentShowHint := True;
   end;
 end;
@@ -3169,7 +3169,7 @@ begin
 
     if ParentShowHint then
     begin
-      ShowHint := False;
+      ShowHint := Parent.ShowHint;
       FParentShowHint := True;
     end;
   end;
@@ -3726,8 +3726,7 @@ begin
   if FShowHint <> Value then
   begin
     FShowHint := Value;
-    if FShowHint then
-      FParentShowHint := False;
+    FParentShowHint := False;
     Perform(CM_SHOWHINTCHANGED, 0, 0);
   end;
 end;
