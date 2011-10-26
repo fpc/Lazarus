@@ -538,12 +538,21 @@ function TDebugManager.GetFullFilename(const AUnitinfo: TDebuggerUnitInfo;
   begin
     Filename := AUnitinfo.DbgFullName;
     Result := Filename <> '';
+    {$IFDEF DBG_LOCATION_INFO}
+    debugln(['ResolveFromDbg Init Filename=', Filename]);
+    {$ENDIF}
     if Result then
       Result := GetFullFilename(Filename, False);
     if not Result then begin
       Filename := AUnitinfo.FileName;
+      {$IFDEF DBG_LOCATION_INFO}
+      debugln(['ResolveFromDbg 2nd Filename=', Filename]);
+      {$ENDIF}
       Result := GetFullFilename(Filename, AskUserIfNotFound);
     end;
+    {$IFDEF DBG_LOCATION_INFO}
+    debugln(['ResolveFromDbg Final Filename=', Filename]);
+    {$ENDIF}
   end;
 
 begin
@@ -565,6 +574,9 @@ begin
         Filename:= MainIDE.FindSourceFile(Filename, Project1.ProjectDirectory,
                       [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
                        fsfMapTempToVirtualFiles, fsfSkipPackages]);
+        {$IFDEF DBG_LOCATION_INFO}
+        debugln(['GetFullFilename From-MainIDE Filename=', Filename]);
+        {$ENDIF}
         Result := Filename <> '';
         if not Result then
           ResolveFromDbg;

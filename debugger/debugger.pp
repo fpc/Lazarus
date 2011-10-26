@@ -251,8 +251,9 @@ type
                            dltProject,
                            dltPackage
                           );
-  TDebuggerLocationFlags = set of (dlfLoadError  // resolved but failed to load
-                                  );
+  TDebuggerLocationFlag =  (dlfLoadError  // resolved but failed to load
+                           );
+  TDebuggerLocationFlags = set of TDebuggerLocationFlag;
 
   { TDebuggerUnitInfo }
 
@@ -272,6 +273,7 @@ type
     procedure SetLocationType(AValue: TDebuggerLocationType);
   public
     constructor Create(const AFileName: String; const AFullFileName: String);
+    function DebugText: String;
     function IsEqual(const AFileName: String; const AFullFileName: String): boolean;
     function IsEqual(AnOther: TDebuggerUnitInfo): boolean;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
@@ -2900,6 +2902,8 @@ function dbgs(ADataState: TDebuggerDataState): String; overload;
 function dbgs(AKind: TDBGSymbolKind): String; overload;
 function dbgs(AnAttribute: TDBGSymbolAttribute): String; overload;
 function dbgs(AnAttributes: TDBGSymbolAttributes): String; overload;
+function dbgs(AFlag: TDebuggerLocationFlag): String; overload;
+function dbgs(AFlags: TDebuggerLocationFlags): String; overload;
 
 function HasConsoleSupport: Boolean;
 (******************************************************************************)
@@ -2956,6 +2960,23 @@ var
 begin
   for i := low(TDBGSymbolAttributes) to high(TDBGSymbolAttributes) do
     if i in AnAttributes then begin
+      if Result <> '' then Result := Result + ', ';
+      Result := Result + dbgs(i);
+    end;
+  if Result <> '' then Result := '[' + Result + ']';
+end;
+
+function dbgs(AFlag: TDebuggerLocationFlag): String;
+begin
+  writestr(Result, AFlag);
+end;
+
+function dbgs(AFlags: TDebuggerLocationFlags): String;
+var
+  i: TDebuggerLocationFlag;
+begin
+  for i := low(TDebuggerLocationFlags) to high(TDebuggerLocationFlags) do
+    if i in AFlags then begin
       if Result <> '' then Result := Result + ', ';
       Result := Result + dbgs(i);
     end;
@@ -3339,6 +3360,20 @@ begin
   FFileName := AFileName;
   FDbgFullName := TrimFilename(AFullFileName);
   FLocationType := dltUnknown;
+end;
+
+function TDebuggerUnitInfo.DebugText: String;
+var s: String;
+begin
+  writestr(s, FLocationType);
+  Result
+    := ' FileName="'+FFileName+'" '
+    +  'DbgFullName="' + FDbgFullName+'" '
+    +  'Flags="' + dbgs(FFlags)+'" '
+    +  'LocationName="' + FLocationName+'" '
+    +  'LocationOwnerName="' + FLocationOwnerName+'" '
+    +  'LocationFullFile="' + FLocationFullFile+'" '
+    +  'LocationType="' + s+'"';
 end;
 
 function TDebuggerUnitInfo.IsEqual(const AFileName: String;

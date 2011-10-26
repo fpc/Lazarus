@@ -37,7 +37,7 @@ unit DebuggerDlg;
 interface
 
 uses
-  Classes, Forms, Controls, IDEProcs, FileUtil, Debugger, EnvironmentOpts, IDEOptionDefs,
+  Classes, Forms, Controls, IDEProcs, FileUtil, LCLProc, Debugger, EnvironmentOpts, IDEOptionDefs,
   IDEImagesIntf, MainIntf, EditorOptions, IDECommands, BaseDebugManager;
 
 type
@@ -310,6 +310,9 @@ var
   Filename: String;
   ok: Boolean;
 begin
+  {$IFDEF DBG_LOCATION_INFO}
+  debugln(['JumpToUnitSource AnUnitInfo=', AnUnitInfo.DebugText ]);
+  {$ENDIF}
   // avoid any process-messages, so this proc can not be re-entered (avoid opening one files many times)
   DebugBoss.LockCommandProcessing;
   try
@@ -318,6 +321,9 @@ begin
   *)
   // TODO: better detcion of unsaved project files
     if DebugBoss.GetFullFilename(AnUnitInfo, Filename, False) then begin
+      {$IFDEF DBG_LOCATION_INFO}
+      debugln(['JumpToUnitSource Filename=', Filename]);
+      {$ENDIF}
       ok := false;
       if FilenameIsAbsolute(Filename) then
         ok := MainIDEIntf.DoJumpToSourcePosition(Filename, 0, ALine, 0,
