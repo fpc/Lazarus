@@ -430,6 +430,7 @@ begin
   Mess.X := XPos;
   Mess.Y := YPos;
   Mess.WheelDelta := WheelDelta;
+  Mess.Button := ShiftStateToKeys(ShiftState);
 
   Result := DeliverMessage(Target, Mess);
 end;

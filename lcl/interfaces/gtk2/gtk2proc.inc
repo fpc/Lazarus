@@ -2323,7 +2323,7 @@ begin
     KCInfo := MKeyCodeInfo[KeyCode];
 
     if (KCInfo.Flags and KCINFO_FLAG_SHIFT_XOR_NUM <> 0)
-    and ((ssShift in ShiftState) xor (ssNum in ShiftState))
+    and (ssShift in ShiftState)
     then VKey := KCInfo.VKey2
     else VKey := KCInfo.VKey1;
 
@@ -3124,8 +3124,8 @@ type
   const
     STATE_NAME: array[TShiftStateEnum] of String = ('ssShift', 'ssAlt', 'ssCtrl',
       'ssLeft', 'ssRight', 'ssMiddle', 'ssDouble',
-      'ssMeta', 'ssSuper', 'ssHyper', 'ssAltGr', 'ssCaps', 'ssNum',
-      'ssScroll', 'ssTriple', 'ssQuad', 'ssExtra1', 'ssExtra2');
+      'ssMeta', 'ssSuper', 'ssHyper', 'ssAltGr',
+      'ssTriple', 'ssQuad', 'ssExtra1', 'ssExtra2');
   {$endif}
   var
     ShiftState: TShiftStateEnum;
@@ -3133,10 +3133,6 @@ type
     if AModMap[AKeyCode] = 0 then Exit;
 
     case AKeySym of
-      GDK_KEY_Caps_Lock,
-      GDK_KEY_Shift_Lock: ShiftState := ssCaps;
-      GDK_KEY_Num_Lock: ShiftState := ssNum;
-      GDK_KEY_Scroll_Lock: ShiftState := ssScroll;
       GDK_Key_Shift_L,
       GDK_Key_Shift_R: ShiftState := ssShift;
       GDK_KEY_Control_L,

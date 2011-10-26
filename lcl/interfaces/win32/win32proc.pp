@@ -76,7 +76,6 @@ Type
 
 function WM_To_String(WM_Message: Integer): string;
 function WindowPosFlagsToString(Flags: UINT): string;
-function GetShiftState: TShiftState;
 function ObjectToHWND(const AObject: TObject): HWND;
 function LCLControlSizeNeedsUpdate(Sender: TWinControl; SendSizeMsgOnDiff: boolean): boolean;
 function GetLCLClientBoundsOffset(Sender: TObject; out ORect: TRect): boolean;
@@ -519,43 +518,6 @@ begin
   if Length(FlagsStr) > 0 then
     FlagsStr := Copy(FlagsStr, 2, Length(FlagsStr)-1);
   Result := FlagsStr;
-end;
-
-{------------------------------------------------------------------------------
-  function: GetShiftState
-  Params: None
-  Returns: A shift state
-
-  Creates a TShiftState set based on the status when the function was called.
- ------------------------------------------------------------------------------}
-function GetShiftState: TShiftState;
-begin
-  Result := [];
-  // NOTE: it may be better to use GetAsyncKeyState
-  // if GetKeyState AND $8000 <> 0 then down (e.g. shift)
-  // if GetKeyState AND 1 <> 0, then toggled on (e.g. num lock)
-  if (GetKeyState(VK_SHIFT) and $8000) <> 0 then
-    Result := Result + [ssShift];
-  if (GetKeyState(VK_CAPITAL) and 1) <> 0 then
-    Result := Result + [ssCaps];
-  if (GetKeyState(VK_CONTROL) and $8000) <> 0 then
-    Result := Result + [ssCtrl];
-  if (GetKeyState(VK_MENU) and $8000) <> 0 then
-    Result := Result + [ssAlt];
-  if (GetKeyState(VK_NUMLOCK) and 1) <> 0 then
-    Result := Result + [ssNum];
-  //TODO: ssSuper
-  if (GetKeyState(VK_SCROLL) and 1) <> 0 then
-    Result := Result + [ssScroll];
-  // GetKeyState takes mouse button swap into account (GetAsyncKeyState doesn't),
-  // so no need to test GetSystemMetrics(SM_SWAPBUTTON)
-  if (GetKeyState(VK_LBUTTON) and $8000) <> 0 then
-    Result := Result + [ssLeft];
-  if (GetKeyState(VK_MBUTTON) and $8000) <> 0 then
-    Result := Result + [ssMiddle];
-  if (GetKeyState(VK_RBUTTON) and $8000) <> 0 then
-    Result := Result + [ssRight];
-  //TODO: ssAltGr
 end;
 
 {------------------------------------------------------------------------------

@@ -2684,7 +2684,7 @@ begin
   ShiftState := GTKEventStateToShiftState(Event^.State);
   
   if (KCInfo.Flags and KCINFO_FLAG_SHIFT_XOR_NUM <> 0)
-  and ((ssShift in ShiftState) xor (ssNum in ShiftState))
+  and (ssShift in ShiftState)
   then VKey := KCInfo.VKey2
   else VKey := KCInfo.VKey1;
 

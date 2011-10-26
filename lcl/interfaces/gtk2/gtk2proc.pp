@@ -940,9 +940,6 @@ begin
   // fill initial modifier list
   FillByte(MModifiers, SizeOf(MModifiers), 0);
   // keyboard
-  MModifiers[ssCaps].Mask     := GDK_LOCK_MASK;
-  MModifiers[ssNum].Mask      := GDK_MOD3_MASK; //todo: check this I've 2 here,but 3 was the original code
-  MModifiers[ssScroll].Mask   := GDK_MOD5_MASK; //todo: check this I've ssAltGr here, but ssScroll was the original code
   {$ifndef UseOwnShiftState}
   MModifiers[ssShift].Mask    := GDK_SHIFT_MASK;
   MModifiers[ssCtrl].Mask     := GDK_CONTROL_MASK;

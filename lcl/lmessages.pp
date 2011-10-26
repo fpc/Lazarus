@@ -698,6 +698,7 @@ type
     Result: LRESULT;
   end;
 
+  // This is the event for the mouse whell
   PLMMouseEvent = ^TLMMouseEvent;
   TLMMouseEvent = record
     Msg: Cardinal;
@@ -705,11 +706,11 @@ type
     UnusedMsg: Cardinal;
 {$endif}
 {$IFDEF FPC_LITTLE_ENDIAN}
-    Button: Word;         // 1=left, 2=right, 3=middle
+    Button: Word;         // 1=left, 2=right, 3=middle, it should also contain the ShiftState via the or operator, see for example MK_CONTROL
     WheelDelta: SmallInt; // -1 for up, 1 for down
 {$ELSE}
     WheelDelta: SmallInt; // -1 for up, 1 for down
-    Button: Word;         // 1=left, 2=right, 3=middle
+    Button: Word;         // 1=left, 2=right, 3=middle, it should also contain the ShiftState via the or operator, see for example MK_CONTROL
 {$ENDIF}
 {$ifdef cpu64}
     Unused1 : Longint;
@@ -721,7 +722,6 @@ type
 {$endif cpu64}
     Result: LRESULT;      // to fit std message size
     UserData: pointer;    // used under gtk
-    State: TShiftState;   // in win is the equivalent of button
   end;
 
   TLMLButtonDown = TLMMouse;

@@ -57,7 +57,6 @@ procedure AssertEx(const Message: String; const PassErr: Boolean;
   const Severity: Byte);
 procedure AssertEx(const PassErr: Boolean; const Message: String);
 procedure AssertEx(const Message: String);
-function GetShiftState: TShiftState;
 function ObjectToHWND(Const AObject: TObject): HWND;
 
 function BytesPerLine(nWidth, nBitsPerPixel: Integer): PtrUInt;
@@ -430,45 +429,6 @@ End;
 procedure AssertEx(Const Message: String);
 Begin
   AssertEx(Message, False, 0);
-End;
-
-{------------------------------------------------------------------------------
-  Function: GetShiftState
-  Params: None
-  Returns: A shift state
-
-  Creates a TShiftState set based on the status when the function was called.
- ------------------------------------------------------------------------------}
-function GetShiftState: TShiftState;
-Begin
-//roozbeh todo:remove the unecessary ones
-  Result := [];
-  If Hi(GetKeyState(VK_SHIFT)) = 1 Then
-    Result := Result + [ssShift];
-  If Hi(GetKeyState(VK_CAPITAL)) = 1 Then
-    Result := Result + [ssCaps];
-  If Hi(GetKeyState(VK_CONTROL)) = 1 Then
-    Result := Result + [ssCtrl];
-  If Hi(GetKeyState(VK_MENU)) = 1 Then
-    Result := Result + [ssAlt];
-  If Hi(GetKeyState(VK_SHIFT)) = 1 Then
-    Result := Result + [ssShift];
-  If Hi(GetKeyState(VK_CAPITAL)) = 1 Then
-    Result := Result + [ssCaps];
-  If Hi(GetKeyState(VK_CONTROL)) = 1 Then
-    Result := Result + [ssCtrl];
-  If Hi(GetKeyState(VK_NUMLOCK)) = 1 Then
-    Result := Result + [ssNum];
-  //TODO: ssSuper
-  If Hi(GetKeyState(VK_SCROLL)) = 1 Then
-    Result := Result + [ssScroll];
-  If ((Hi(GetKeyState(VK_LBUTTON)) = 1) And (GetSystemMetrics(SM_SWAPBUTTON) = 0)) Or ((Hi(GetKeyState(VK_RBUTTON)) = 1) And (GetSystemMetrics(SM_SWAPBUTTON) <> 0)) Then
-    Result := Result + [ssLeft];
-  If Hi(GetKeyState(VK_MBUTTON)) = 1 Then
-    Result := Result + [ssMiddle];
-  If ((Hi(GetKeyState(VK_RBUTTON)) = 1) And (GetSystemMetrics(SM_SWAPBUTTON) = 0)) Or ((Hi(GetKeyState(VK_LBUTTON)) = 1) And (GetSystemMetrics(SM_SWAPBUTTON) <> 0)) Then
-    Result := Result + [ssRight];
-  //TODO: ssAltGr
 End;
 
 {------------------------------------------------------------------------------

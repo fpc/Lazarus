@@ -244,10 +244,9 @@ const
     MousePoint := GetMousePoint;
 
     Msg^.Msg := LM_MOUSEWHEEL;
-    Msg^.Button := GetCarbonMouseButton(AEvent);
+    Msg^.Button := GetCarbonMouseButton(AEvent) or ShiftStateToKeys(GetCarbonShiftState);
     Msg^.X := MousePoint.X;
     Msg^.Y := MousePoint.Y;
-    Msg^.State := GetCarbonShiftState;
     Msg^.WheelDelta := GetMouseWheelDelta;
   end;
   

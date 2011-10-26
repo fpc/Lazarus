@@ -2309,7 +2309,7 @@ begin
   MousePos.X := Message.X;
   MousePos.Y := Message.Y;
 
-  if DoMouseWheel(Message.State, Message.WheelDelta, MousePos) then
+  if DoMouseWheel(KeysToShiftState(Message.Button), Message.WheelDelta, MousePos) then
     Message.Result := 1 // handled, skip further handling by interface
   else
     inherited;

@@ -1794,9 +1794,8 @@ begin
     MessE.WheelDelta := WHEEL_DELTA[event^.Button = 4];
     MessE.X := MappedXY.X;
     MessE.Y := MappedXY.Y;
-    MessE.State := ShiftState;
     MessE.UserData := AWinControl;
-    MessE.Button := 0;
+    MessE.Button := ShiftStateToKeys(ShiftState);
 
     // send the message directly to the LCL
     NotifyApplicationUserInput(MessE.Msg);
@@ -2071,9 +2070,8 @@ begin
   end;
   MessE.X := MappedXY.X;
   MessE.Y := MappedXY.Y;
-  MessE.State := ShiftState;
   MessE.UserData := AWinControl;
-  MessE.Button := 0;
+  MessE.Button := ShiftStateToKeys(ShiftState);
 
   // send the message directly to the LCL
   NotifyApplicationUserInput(MessE.Msg);
@@ -2900,7 +2898,7 @@ begin
   ShiftState := GTKEventStateToShiftState(Event^.State);
   
   if (KCInfo.Flags and KCINFO_FLAG_SHIFT_XOR_NUM <> 0)
-  and ((ssShift in ShiftState) xor (ssNum in ShiftState))
+  and (ssShift in ShiftState)
   then VKey := KCInfo.VKey2
   else VKey := KCInfo.VKey1;
 
