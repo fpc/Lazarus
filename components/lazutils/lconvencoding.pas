@@ -154,7 +154,7 @@ begin
   case cp of
     CP_UTF8: Result := EncodingUTF8;
   else
-    Result:='cp'+IntToStr(GetACP);
+    Result:='cp'+IntToStr(cp);
   end;
 end;
 {$ELSE}
