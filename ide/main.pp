@@ -14056,6 +14056,7 @@ begin
   {$IFDEF VerboseFindSourceFile}
   debugln(['TMainIDE.FindSourceFile Filename="',AFilename,'" BaseDirectory="',BaseDirectory,'"']);
   {$ENDIF}
+  if AFilename='' then exit('');
 
   if fsfMapTempToVirtualFiles in Flags then
   begin
@@ -14072,7 +14073,7 @@ begin
   if FilenameIsAbsolute(AFilename) then
   begin
     Result := AFilename;
-    if not FileExistsUTF8(Result) then
+    if not FileExistsCached(Result) then
       Result := '';
     Exit;
   end;
@@ -14087,7 +14088,7 @@ begin
   {$IFDEF VerboseFindSourceFile}
   debugln(['TMainIDE.FindSourceFile trying Base "',Result,'"']);
   {$ENDIF}
-  if FileExistsUTF8(Result) then exit;
+  if FileExistsCached(Result) then exit;
   MarkPathAsSearched(BaseDir);
 
   // search file in debug path
@@ -14147,7 +14148,7 @@ end;
 function TMainIDE.FileExistsInIDE(const Filename: string;
   SearchFlags: TProjectFileSearchFlags): boolean;
 begin
-  Result:=FileExistsUTF8(Filename)
+  Result:=FileExistsCached(Filename)
           or (Project1.UnitInfoWithFilename(Filename,SearchFlags)<>nil);
 end;
 
