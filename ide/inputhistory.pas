@@ -483,8 +483,7 @@ begin
   FIgnores.Clear;
 end;
 
-procedure TInputHistories.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+procedure TInputHistories.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 var
   DiffFlag: TTextDiffFlag;
   FIFOption: TLazFindInFileSearchOption;
@@ -566,8 +565,7 @@ begin
   Ignores.LoadFromXMLConfig(XMLConfig,Path+'Ignores/');
 end;
 
-procedure TInputHistories.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+procedure TInputHistories.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 var
   DiffFlag: TTextDiffFlag;
   FIFOption: TLazFindInFileSearchOption;
@@ -645,8 +643,7 @@ procedure TInputHistories.SetLazarusDefaultFilename;
 var
   ConfFileName: string;
 begin
-  ConfFileName:=SetDirSeparators(
-                             GetPrimaryConfigPath+'/'+DefaultHistoryFile);
+  ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+DefaultHistoryFile);
   CopySecondaryConfigFile(DefaultHistoryFile);
   FFilename:=ConfFilename;
 end;
@@ -706,11 +703,10 @@ function TInputHistories.AddToFindInFilesMaskHistory(const AMaskStr: String): bo
 begin
   Result:= AddToRecentList(AMaskStr,FFindInFilesMaskHistory,FMaxFindHistory);
 end;
-function TInputHistories.AddToUnitDependenciesHistory(
-  const ARootFilename: String): boolean;
+
+function TInputHistories.AddToUnitDependenciesHistory(const ARootFilename: String): boolean;
 begin
-  Result:=AddToRecentList(ARootFilename,FUnitDependenciesHistory,
-                  FMaxUnitDependenciesHistory);
+  Result:=AddToRecentList(ARootFilename,FUnitDependenciesHistory,FMaxUnitDependenciesHistory);
 end;
 
 function TInputHistories.LastFPCUnitLinksValid: boolean;
@@ -748,8 +744,7 @@ begin
   FFileDialogSettings.Height:=SourceDialog.Height;
   s:=ExtractFilePath(FFileDialogSettings.InitialDir);
   if s<>'' then
-    AddToRecentList(s,FFileDialogSettings.HistoryList,
-                    FFileDialogSettings.MaxHistory);
+    AddToRecentList(s,FFileDialogSettings.HistoryList,FFileDialogSettings.MaxHistory);
 end;
 
 procedure TInputHistories.SetFileDialogSettingsInitialDir(const InitialDir: string);
@@ -758,8 +753,7 @@ begin
 end;
 
 function TInputHistories.SelectDirectory(const Title: string;
-  MustExist: boolean; const InitialDir: string;
-  const Directory: string): string;
+  MustExist: boolean; const InitialDir: string; const Directory: string): string;
 var
   WorkDirectoryDialog: TSelectDirectoryDialog;
 begin
@@ -871,8 +865,7 @@ begin
   Result:=FItems.Count;
 end;
 
-procedure THistoryLists.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+procedure THistoryLists.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 var
   MergeCount, i: integer;
   CurList: THistoryList;
@@ -888,8 +881,7 @@ begin
   end;
 end;
 
-procedure THistoryLists.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+procedure THistoryLists.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 var
   i, CurID: integer;
 begin
@@ -986,8 +978,7 @@ begin
   while (Result>=0) and (Options<>Items[Result].Options) do dec(Result);
 end;
 
-procedure TFPCConfigCache.SetItem(const Options, SearchPath, FPCSrcDir,
-  UnitLinks: string);
+procedure TFPCConfigCache.SetItem(const Options, SearchPath, FPCSrcDir, UnitLinks: string);
 var
   i: Integer;
   CurItem: TFPCConfigCacheItem;
@@ -1004,8 +995,7 @@ begin
   CurItem.UnitLinks:=UnitLinks;
 end;
 
-procedure TFPCConfigCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+procedure TFPCConfigCache.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 var
   NewCount: Integer;
   i: Integer;
@@ -1026,8 +1016,7 @@ begin
   end;
 end;
 
-procedure TFPCConfigCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+procedure TFPCConfigCache.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 var
   i: Integer;
 begin
@@ -1090,8 +1079,7 @@ procedure TFPCConfigCacheItem.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
   Options:=XMLConfig.GetValue(Path+'Options/Value','');
-  SearchPath:=LineBreaksToDelimiter(
-                            XMLConfig.GetValue(Path+'SearchPath/Value',''),';');
+  SearchPath:=LineBreaksToDelimiter(XMLConfig.GetValue(Path+'SearchPath/Value',''),';');
   FPCSrcDir:=XMLConfig.GetValue(Path+'FPCSrcDir/Value','');
   UnitLinks:=XMLConfig.GetValue(Path+'UnitLinks/Value','');
 end;

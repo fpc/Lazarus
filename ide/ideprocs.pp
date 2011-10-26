@@ -159,12 +159,10 @@ function SearchDirectoryInSearchPath(SearchPath: TStrings;
                     const Directory: string; DirStartPos: integer = 0): integer;
 
 // XMLConfig
-procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings;
-                         const Path: string);
-procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings;
-                         const Path: string);
-function AddToRecentList(const s: string; RecentList: TStrings;
-                         Max: integer): boolean;
+procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
+procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
+function AddToRecentList(const s: string; RecentList: TStrings; Max: integer): boolean;
+function AddComboTextToRecentList(cb: TCombobox; Max: integer): boolean;
 procedure RemoveFromRecentList(const s: string; RecentList: TStrings);
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string;
                    var ARect:TRect);
@@ -301,8 +299,7 @@ begin
   end;
 end;
 
-procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings;
-  const Path: string);
+procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
 begin
   SaveStringList(XMLConfig,List,Path);
 end;
