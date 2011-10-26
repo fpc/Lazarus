@@ -1019,8 +1019,7 @@ EndDrag stops dragging, the image is removed from the screen.
       <element name="TDragImageList.Initialize" link="#LCL.ImgList.TCustomImageList.Initialize"/>
       <!-- function Visibility: public -->
       <element name="TDragImageList.BeginDrag">
-        <short>
-          <var>BeginDrag</var> - start the drag process; returns True if successful.</short>
+        <short>Start dragging an image; returns True if successful.</short>
         <descr>
           Locks window updates[?], remembers the current cursor shape and sets the new shape.
         </descr>
@@ -1031,7 +1030,7 @@ EndDrag stops dragging, the image is removed from the screen.
         <short>True if successful.</short>
       </element>
       <element name="TDragImageList.BeginDrag.Window">
-        <short>The associated (locked) window.</short>
+        <short>The associated window.</short>
       </element>
       <element name="TDragImageList.BeginDrag.X">
         <short>The mouse[?] position.</short>
@@ -1041,7 +1040,7 @@ EndDrag stops dragging, the image is removed from the screen.
       </element>
       <!-- function Visibility: public -->
       <element name="TDragImageList.DragLock">
-        <short>Show drag image and lock updates of Window during drag operation.</short>
+        <short>Show drag image [and lock updates of Window?] during drag operation.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1060,9 +1059,10 @@ EndDrag stops dragging, the image is removed from the screen.
       </element>
       <!-- function Visibility: public -->
       <element name="TDragImageList.DragMove">
-        <short>
-          <var>DragMove</var> - move the dragged image to specified location and return True if successful</short>
-        <descr>The image at the old position is erased.</descr>
+        <short>Show the image at a new location.
+        </short>
+        <descr>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -1077,20 +1077,20 @@ EndDrag stops dragging, the image is removed from the screen.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDragImageList.DragUnlock">
-        <short>Hide drag image and unlock window updates.</short>
+        <short>Hide the drag image [and unlock window updates?].</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TDragImageList.EndDrag">
-        <short>Finish dragging of the image.</short>
+        <short>Finish dragging of the image, restore the old cursor shape.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TDragImageList.EndDrag.Result">
-        <short>[?]</short>
+        <short>True when dragging was started before.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TDragImageList.GetHotSpot" link="#LCL.ImgList.TCustomImageList.GetHotSpot"/>
@@ -1099,14 +1099,14 @@ EndDrag stops dragging, the image is removed from the screen.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDragImageList.HideDragImage">
-        <short>Hide dragging image without unlocking the window.</short>
+        <short>Hide the dragged image without unlocking the window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TDragImageList.SetDragImage">
-        <short>Set index of dragging image and hotspot.</short>
+        <short>Set index of dragged image and hotspot.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1948,7 +1948,7 @@ dmFindTarget: find child control under the mouse
       <element name="TGetSiteInfoEvent.CanDock">
         <short>Set CanDock to False to reject docking.</short>
       </element>
-      <!-- object Visibility: default -->
+<!-- object Visibility: default -->
       <element name="TDragDockObject">
         <short>A drag object for drag-dock.</short>
         <descr>
@@ -2100,6 +2100,10 @@ dmFindTarget: find child control under the mouse
         <short>[Delphi compatible - dropped!]</short>
         <descr/>
         <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDragDockObject.DockOffset">
+        <short>The hotspot offset of the dragged DockRect.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragDockObject.DockRect">
@@ -3058,6 +3062,8 @@ dmFindTarget: find child control under the mouse
       <element name="TAnchorSide.Create.TheKind">
         <short/>
       </element>
+      <!-- destructor Visibility: public -->
+      <element name="TAnchorSide.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TAnchorSide.GetSidePosition">
         <short>Get information about the target control, side and side position.</short>
@@ -3482,7 +3488,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- set type Visibility: default -->
       <element name="TControlFlags" link="TControlFlag"/>
-      <!-- enumeration type Visibility: default -->
+<!-- enumeration type Visibility: default -->
       <element name="TControlHandlerType">
         <short>Notification handler types.</short>
         <descr>Notification handlers only receive an Sender, and must know themselves why they have been invoked.</descr>
@@ -3499,6 +3505,12 @@ dmFindTarget: find child control under the mouse
       </element>
       <element name="TControlHandlerType.chtOnVisibleChanged">
         <short>Notification request for OnVisibleChanged.</short>
+      </element>
+      <element name="TControlHandlerType.chtOnEnabledChanging">
+        <short>Notification request for OnEnabledChanging.</short>
+      </element>
+      <element name="TControlHandlerType.chtOnEnabledChanged">
+        <short>Notification request for OnEnabledChanged.</short>
       </element>
       <element name="TControlHandlerType.chtOnKeyDown">
         <short>Notification request for OnKeyDown.</short>
@@ -3566,6 +3578,7 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.FIsControl" link="TControl.IsControl"/>
       <element name="TControl.FLastDoChangeBounds"/>
       <element name="TControl.FLastDoChangeClientSize"/>
+      <element name="TControl.FLastResizeClientHeight"/>
       <element name="TControl.FLastResizeClientWidth"/>
       <element name="TControl.FLastResizeHeight"/>
       <element name="TControl.FLastResizeWidth"/>
@@ -3832,6 +3845,22 @@ dmFindTarget: find child control under the mouse
       </element>
       <element name="TControl.DoMouseUp.Button">
         <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TControl.SetAnchorSide">
+        <short>Setter for AnchorSideLeft...</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TControl.SetAnchorSide.Kind">
+        <short></short>
+      </element>
+      <element name="TControl.SetAnchorSide.AValue">
+        <short></short>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TControl.SetBorderSpacing" link="TControl.BorderSpacing"/>
@@ -6432,6 +6461,19 @@ dmFindTarget: find child control under the mouse
       </element>
       <element name="TControl.IsEnabled.Result">
         <short>True only if all Parents also are enabled.</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TControl.IsParentShowHint">
+        <short>Checks protected ParentShowHint prop.</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TControl.IsParentShowHint.Result">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.FormIsUpdating">
@@ -11455,45 +11497,28 @@ End;
 <!-- object Visibility: default -->
       <element name="TImageList" link="TDragImageList"/>
       <!-- property Visibility: published -->
-      <element name="TImageList.AllocBy">
-        <short>
-          <var>AllocBy</var> - for allocation</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TImageList.BlendColor">
-        <short>
-          <var>BlendColor</var> - the color for blending</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TImageList.DrawingStyle" link="#LCL.ImgList.TCustomImageList.DrawingStyle"/>
-      <!-- property Visibility: published -->
-      <element name="TImageList.ImageType" link="#LCL.ImgList.TCustomImageList.ImageType"/>
-      <!-- property Visibility: published -->
-      <element name="TImageList.ShareImages" link="#LCL.ImgList.TCustomImageList.ShareImages"/>
-      <!-- property Visibility: published -->
+      <element name="TImageList.AllocBy" link="#lcl.ImgList.TCustomImageList.AllocBy"/>
       <element name="TImageList.BkColor" link="#LCL.ImgList.TCustomImageList.BkColor"/>
-      <!-- property Visibility: published -->
+      <element name="TImageList.BlendColor" link="#lcl.ImgList.TCustomImageList.BlendColor"/>
+      <element name="TImageList.DrawingStyle" link="#LCL.ImgList.TCustomImageList.DrawingStyle"/>
       <element name="TImageList.Height" link="#LCL.ImgList.TCustomImageList.Height"/>
-      <!-- property Visibility: published -->
+      <element name="TImageList.ImageType" link="#LCL.ImgList.TCustomImageList.ImageType"/>
       <element name="TImageList.Masked" link="#LCL.ImgList.TCustomImageList.Masked"/>
-      <!-- property Visibility: published -->
-      <element name="TImageList.Width" link="#LCL.ImgList.TCustomImageList.Width"/>
-      <!-- property Visibility: published -->
       <element name="TImageList.OnChange" link="#LCL.ImgList.TCustomImageList.OnChange"/>
-      <!-- object Visibility: default -->
+      <element name="TImageList.ShareImages" link="#LCL.ImgList.TCustomImageList.ShareImages"/>
+      <element name="TImageList.Width" link="#LCL.ImgList.TCustomImageList.Width"/>
+<!-- object Visibility: default -->
       <element name="TControlPropertyStorage">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlPropertyStorage.GetPropertyList">
-        <short/>
+        <short>Parses the <link id="TControl.SessionProperties"/> string
+          into the given list.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11516,11 +11541,11 @@ End;
       <element name="TDockZone.FChildControl" link="TDockZone.ChildControl"/>
       <element name="TDockZone.FChildCount" link="TDockZone.ChildCount"/>
       <element name="TDockZone.FFirstChildZone" link="TDockZone.FirstChild"/>
-      <element name="TDockZone.FTree" link="TDockZone.Tree"/>
-      <element name="TDockZone.FParentZone" link="TDockZone.Parent"/>
-      <element name="TDockZone.FOrientation" link="TDockZone.Orientation"/>
       <element name="TDockZone.FNextSibling" link="TDockZone.NextSibling"/>
+      <element name="TDockZone.FOrientation" link="TDockZone.Orientation"/>
+      <element name="TDockZone.FParentZone" link="TDockZone.Parent"/>
       <element name="TDockZone.FPrevSibling" link="TDockZone.PrevSibling"/>
+      <element name="TDockZone.FTree" link="TDockZone.Tree"/>
       <!-- function Visibility: private -->
       <element name="TDockZone.GetHeight" link="TDockZone.Height"/>
       <element name="TDockZone.GetHeight.Result">
@@ -11553,11 +11578,12 @@ End;
       </element>
       <!-- function Visibility: private -->
       <element name="TDockZone.GetVisibleChildCount">
-        <short>
-          <var>GetVisibleChildCount</var> - returns the number of visible children</short>
+        <short>The number of visible children.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TDockZone.Visible"/>
+        </seealso>
       </element>
       <element name="TDockZone.GetVisibleChildCount.Result">
         <short/>
@@ -11569,14 +11595,15 @@ End;
       </element>
       <!-- function Visibility: private -->
       <element name="TDockZone.GetNextVisibleZone">
-        <short>
-          <var>GetNextVisibleZone</var> - returns the next visible zone</short>
+        <short>The next visible zone.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TDockZone.Visible"/>
+        </seealso>
       </element>
       <element name="TDockZone.GetNextVisibleZone.Result">
-        <short/>
+        <short>The zone, or Nil if none found.</short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDockZone.Create"/>
@@ -11588,61 +11615,56 @@ End;
       </element>
       <!-- function Visibility: public -->
       <element name="TDockZone.FindZone">
-        <short>
-          <var>FindZone</var> - returns the Dockzone for the nominated control</short>
+        <short>Returns the Dockzone containing the given control.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TDockZone.FindZone.Result">
-        <short/>
+        <short>The zone containing AControl as ChildControl.</short>
       </element>
       <element name="TDockZone.FindZone.AControl">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDockZone.AddAsFirstChild">
-        <short>
-          <var>AddAsFirstChild</var> - add a new zone as the first child</short>
+        <short>Adds the given zone as the first child.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TDockZone.AddAsFirstChild.NewChildZone">
-        <short/>
+        <short>The zone to add.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDockZone.AddAsLastChild">
-        <short>
-          <var>AddAsLastChild</var> - add an new zone as the last child</short>
+        <short>Adds the given zone as the last child.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TDockZone.AddAsLastChild.NewChildZone">
-        <short/>
+        <short>The zone to add.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDockZone.ReplaceChild">
-        <short>
-          <var>ReplaceChild</var> - replace the
+        <short>Replace the
           <var>OldChild</var> zone by
-          <var>NewChild</var>
+          <var>NewChild</var>.
         </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TDockZone.ReplaceChild.OldChild">
-        <short/>
+        <short>The zone to unlink.</short>
       </element>
       <element name="TDockZone.ReplaceChild.NewChild">
-        <short/>
+        <short>The zone to link in place of OldChild.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TDockZone.GetLastChild">
-        <short>
-          <var>GetLastChild</var> - returns the last child zone.</short>
+        <short>The last child zone.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11652,8 +11674,7 @@ End;
       </element>
       <!-- function Visibility: public -->
       <element name="TDockZone.GetIndex">
-        <short>
-          <var>GetIndex</var> - returns the index of the current zone</short>
+        <short>Calculates the index of the zone within its parent zone.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11663,8 +11684,7 @@ End;
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDockZone.Remove">
-        <short>
-          <var>Remove</var> the nominated child zone</short>
+        <short>Unlinks the given child zone.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11673,9 +11693,8 @@ End;
         <short/>
       </element>
       <element name="TDockZone.AddSibling">
-        <short>
-          <var>AddSibling</var> - inserts a new sibling zone.</short>
-        <descr>The new zone is inserted immediately before or after this zone.</descr>
+        <short>Inserts NewZone as preceding or following sibling.</short>
+        <descr/>
       </element>
       <element name="TDockZone.AddSibling.NewZone">
         <short>The zone to add.</short>
@@ -11697,33 +11716,36 @@ End;
       </element>
       <!-- function Visibility: public -->
       <element name="TDockZone.FirstVisibleChild">
-        <short>
-          <var>FirstVisibleChild</var> - returns the first visible child zone</short>
+        <short>The first visible child zone.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TDockZone.Visible"/>
+        </seealso>
       </element>
       <element name="TDockZone.FirstVisibleChild.Result">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TDockZone.NextVisible">
-        <short>
-          <var>NextVisible</var> - returns next visible zone.</short>
+        <short>The next visible zone.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TDockZone.Visible"/>
+        </seealso>
       </element>
       <element name="TDockZone.NextVisible.Result">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TDockZone.PrevVisible">
-        <short>
-          <var>PrevVisible</var> - returns the preceding visible zone.</short>
+        <short>The preceding visible zone.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TDockZone.Visible"/>
+        </seealso>
       </element>
       <element name="TDockZone.PrevVisible.Result">
         <short/>
@@ -11736,8 +11758,9 @@ End;
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.ChildControl">
-        <short>The child control to be docked here</short>
-        <descr/>
+        <short>The control docked in this zone.</short>
+        <descr>A zone can contain nothing, a control, or child zones.
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -11796,16 +11819,18 @@ End;
       <element name="TDockZone.Orientation" link="TDockOrientation">
         <short>Whether docking is oriented vertically, horizontally, in pages, or not at all</short>
         <descr>
-          <p>doNoOrient   : zone contains a TControl and no child zones.</p>
-          <p>doHorizontal : zone's children are stacked top-to-bottom.</p>
-          <p>doVertical     : zone's children are arranged left-to-right.</p>
-          <p>doPages       : zone's children are pages arranged left-to-right.</p>
+          <ul>
+            <li>doNoOrient: zone contains a TControl and no child zones.</li>
+            <li>doHorizontal: zone's children are stacked top-to-bottom.</li>
+            <li>doVertical: zone's children are arranged left-to-right.</li>
+            <li>doPages: zone's children are pages arranged left-to-right.</li>
+          </ul>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.Parent">
-        <short>The parent dock zone to which this control is docked</short>
+        <short>The parent zone in the DockTree.</short>
         <descr/>
         <seealso/>
       </element>
@@ -11821,14 +11846,16 @@ End;
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.Visible">
-        <short>Is the zone visible?</short>
-        <descr>A zone is visible if it contains a visible control, or if any chilc zone is visible.</descr>
+        <short>
+          A zone is visible if it contains a visible control, or if any child zone is visible.
+        </short>
+        <descr>
+        </descr>
         <seealso><link id="TDockZone.VisibleChildCount"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.VisibleChildCount">
-        <short>
-          <var>VisibleChildCount</var> - the number of visible child zones.</short>
+        <short>The number of visible child zones.</short>
         <descr/>
         <seealso/>
       </element>
@@ -11848,38 +11875,46 @@ End;
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TForEachZoneProc">
-        <short/>
+        <short>The type of an ForEachZone callback procedure. [unused?]
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TForEachZoneProc.Zone">
-        <short/>
+        <short>The iterated zone.
+        </short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDockTreeFlag">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TDockTreeFlag.dtfUpdateAllNeeded">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TDockTreeFlags">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
+      <element name="TDockTreeFlags" link="TDockTreeFlag"/>
+<!-- object Visibility: default -->
       <element name="TDockTree">
         <short>A docking manager for tree-style layouts.</short>
         <descr>
-          <p>A tree-style layout is organized in layers of a specific (horizontal or vertical) orientation. Every node in the tree is either a container for other nodes, or represents a zone with a single docked control. All child zones of an node have the same DockOrientation.</p>
-          <p>The following documentation is copied from the Controls unit. It is of historical interest only, since it effectively describes the AnchorDocking, implemented in TCustomAnchoredDockManager. AnchorDocking is not related to visual drag-dock procedures, it merely is an attempt to implement just an layout manager.
+          <p>
+            A tree-style layout is organized in layers of a specific (horizontal or vertical) orientation.
+            Every node in the tree is either a container for other nodes,
+            or represents a zone with a single docked control.
+            All child zones of an node have the same DockOrientation.
+          </p><p>
+            The following documentation is copied from the Controls unit.
+            It is of historical interest only, since it effectively describes the AnchorDocking,
+            implemented in TCustomAnchoredDockManager.
+            AnchorDocking is not related to visual drag-dock procedures,
+            it merely is an attempt to implement just an layout manager.
           <br/>[todo: make this description an topic]
           </p>
-          <remark>The TLazDockTree implementation never was finished, due to problems with the anchor "docking" mechanism.
+          <remark>The TLazDockTree implementation never was finished,
+            due to problems with the anchor "docking" mechanism.
             Use the EasyDockManager (examples/dockmanager) instead.</remark>
           <pre>This is an abstract class. A real implementation is e.g. in ldocktree.pas.
 
@@ -11970,7 +12005,7 @@ End;
       </element>
       <!-- variable Visibility: private -->
       <element name="TDockTree.FBorderWidth">
-        <short/>
+        <short>The width of the border around a dock zone.</short>
         <descr/>
         <seealso/>
       </element>
@@ -11979,17 +12014,12 @@ End;
       <element name="TDockTree.FDockZoneClass" link="TDockTree.DockZoneClass"/>
       <!-- variable Visibility: private -->
       <element name="TDockTree.FFlags">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TDockTree.FRootZone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
+      <element name="TDockTree.FRootZone" link="TDockTree.RootZone"/>
       <element name="TDockTree.FUpdateCount" link="TDockTree.BeginUpdate"/>
       <!-- procedure Visibility: private -->
       <element name="TDockTree.SetDockSite" link="TDockTree.DockSite"/>
@@ -11998,15 +12028,14 @@ End;
       </element>
       <!-- property Visibility: public -->
       <element name="TDockTree.RootZone">
-        <short>
-          <var>RootZone</var> - the zone that forms the root of the current Dock Tree</short>
+        <short>The root zone of the DockTree.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TDockTree.MouseMessage" link="#LCL.Controls.TDockManager.MouseMessage"/>
       <!-- procedure Visibility: private -->
       <element name="TDockTree.DeleteZone">
-        <short/>
+        <short>Destroys the zone and its child zones.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12016,8 +12045,7 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDockTree.AdjustDockRect">
-        <short>
-          <var>AdjustDockRect</var> - adjust the docking rectangle for AControl.</short>
+        <short>Adjusts the zone rectangle for AControl.</short>
         <descr>
           <p>ARect initially describes the dockzone into which the control is docked.
             From that area the zone decoration is excluded, so that ARect describes the area reserved for the docked control.</p>
@@ -12048,25 +12076,24 @@ End;
       </element>
       <!-- function Visibility: protected -->
       <element name="TDockTree.HitTest">
-        <short>
-          <var>HitTest</var> - performs a Hit test at the specified mouse position, and returns the Control present there </short>
+        <short>Returns the control and the part of the dockzone, at the given coordinates.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TDockTree.HitTest.Result">
-        <short/>
+        <short>The docked control.</short>
       </element>
       <element name="TDockTree.HitTest.MousePos">
-        <short/>
+        <short>The client[?] coordinates.</short>
       </element>
       <element name="TDockTree.HitTest.HTFlag">
-        <short/>
+        <short>Returns the zone part at MousePos.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDockTree.InsertControl">
-        <short>
-          <var>InsertControl</var> - position <var>DropCtl</var> relative <var>Control</var>, using the alignment specified by <var>InsertAt.</var>
+        <short>Positions <var>DropCtl</var> relative <var>Control</var>, using the alignment specified by <var>InsertAt.</var>
         </short>
         <descr>
           <p>InsertControl determines the layout and appearance of the just docked control, forcing a repaint of the container control if necessary.</p>
@@ -12086,36 +12113,27 @@ End;
         </seealso>
       </element>
       <element name="TDockTree.InsertControl.AControl">
-        <short/>
+        <short>The control beneath which to place DropControl.</short>
       </element>
       <element name="TDockTree.InsertControl.InsertAt">
-        <short/>
+        <short>How to insert DropControl.</short>
       </element>
       <element name="TDockTree.InsertControl.DropControl">
-        <short/>
+        <short>The control to add.</short>
       </element>
       <element name="TDockTree.DumpLayout">
-        <short>
-          <var>DumpLayout</var> - stores layout in a file</short>
+        <short>Stores the layout in an file.</short>
       </element>
       <element name="TDockTree.DumpLayout.FileName">
         <short></short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDockTree.LoadFromStream" link="#LCL.Controls.TDockManager.LoadFromStream"/>
+      <element name="TDockTree.LoadFromStream" link="TDockManager.LoadFromStream"/>
       <element name="TDockTree.LoadFromStream.SrcStream">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TDockTree.MessageHandler">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TDockTree.MessageHandler" link="TDockManager.MessageHandler"/>
       <element name="TDockTree.MessageHandler.Sender">
         <short></short>
       </element>
@@ -12124,7 +12142,7 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDockTree.PaintDockFrame">
-        <short></short>
+        <short>Paints the dock header of the zone containing AControl.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12139,7 +12157,7 @@ End;
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDockTree.PositionDockRect" link="#LCL.Controls.TDockManager.PositionDockRect"/>
+      <element name="TDockTree.PositionDockRect" link="TDockManager.PositionDockRect"/>
       <element name="TDockTree.PositionDockRect.AClient">
         <short/>
       </element>
@@ -12153,37 +12171,37 @@ End;
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDockTree.RemoveControl" link="#LCL.Controls.TDockManager.RemoveControl"/>
+      <element name="TDockTree.RemoveControl" link="TDockManager.RemoveControl"/>
       <element name="TDockTree.RemoveControl.AControl">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDockTree.SaveToStream" link="#LCL.Controls.TDockManager.SaveToStream"/>
+      <element name="TDockTree.SaveToStream" link="TDockManager.SaveToStream"/>
       <element name="TDockTree.SaveToStream.DestStream">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDockTree.SetReplacingControl" link="#LCL.Controls.TDockManager.SetReplacingControl"/>
+      <element name="TDockTree.SetReplacingControl" link="TDockManager.SetReplacingControl"/>
       <element name="TDockTree.SetReplacingControl.AControl">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TDockTree.ResetBounds" link="#LCL.Controls.TDockManager.ResetBounds"/>
+      <element name="TDockTree.ResetBounds" link="TDockManager.ResetBounds"/>
       <element name="TDockTree.ResetBounds.Force">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDockTree.UpdateAll">
-        <short>
-          <var>UpdateAll</var> - bring all data up to date</short>
+        <short>Override this method [to do what?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TDockTree.DockSite">
-        <short>
-          <var>DockSite</var> - the site for docking</short>
+        <short>The parent control whose docked clients are managed.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -12211,10 +12229,13 @@ End;
       <element name="TDockTree.SetDockZoneClass.AValue">
         <short/>
       </element>
-      <!-- object Visibility: default -->
+<!-- object Visibility: default -->
       <element name="TMouse">
         <short>Some properties of the Mouse.</short>
-        <descr>Contains information about current mouse position, whether messages are captured by an object, whether it is dragging an object, and how far the mouse must move before a control starts dragging.</descr>
+        <descr>Contains information about current mouse position,
+          whether messages are captured by a window,
+          whether it is dragging an object,
+          and how far the mouse must move before a control starts dragging.</descr>
       </element>
       <!-- variable Visibility: default -->
       <element name="TMouse.FCapture" link="TMouse.Capture"/>
@@ -12297,59 +12318,62 @@ End;
       </element>
       <!-- property Visibility: public -->
       <element name="TMouse.IsDragging">
-        <short>Is the mouse being used to drag an object?</short>
+        <short>True while dragging an object.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TMouse.WheelScrollLines">
-        <short>
-          <var>WheelScrollLines</var> - the number of lines the the scroll wheel has traversed</short>
+        <short>The number of lines to scroll with every notch of the mouse wheel.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- function Visibility: default -->
-      <element name="FindDragTarget">
+      <element name="FindDragTarget" link="FindControlAtPosition">
         <short>Get control at screen position.</short>
         <descr>Disabled controls <b>should</b> be excluded, but are not due to an bug in FindControlAtPosition.</descr>
         <errors/>
         <seealso/>
       </element>
       <element name="FindDragTarget.Result">
-        <short/>
+        <short>The control at Position; Nil if none.</short>
       </element>
       <element name="FindDragTarget.Position">
-        <short/>
+        <short>The screen position.</short>
       </element>
       <element name="FindDragTarget.AllowDisabled">
-        <short/>
+        <short>Also find disabled controls, if True.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FindControlAtPosition">
         <short>Get control at screen position.</short>
         <descr>When AllowDisabled is True, also a disabled control will be found. In the current implementation AllowDisabled is ignored (assumed to be True).
-          First a window at the given screen position is searched, then a control within it.</descr>
+          First a window at the given screen position is searched,
+          then a control within it.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="FindControlAtPosition.Result">
-        <short/>
+        <short>The control at Position; Nil if none.</short>
       </element>
       <element name="FindControlAtPosition.Position">
-        <short/>
+        <short>The screen position.</short>
       </element>
       <element name="FindControlAtPosition.AllowDisabled">
-        <short/>
+        <short>Also find disabled controls, if True.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="FindLCLWindow">
-        <short/>
+        <short>Find the window and its owning control at the given screen coordinates.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="FindLCLWindow.Result">
-        <short/>
+        <short>The control at the ScreenPos; Nil if none was found.</short>
       </element>
       <element name="FindLCLWindow.ScreenPos">
         <short/>
@@ -12386,8 +12410,10 @@ End;
       </element>
       <!-- function Visibility: default -->
       <element name="FindLCLControl">
-        <short/>
-        <descr/>
+        <short>Returns the TControl that currently is visible at a screen position.
+        </short>
+        <descr>The result is not reliable during resizing.
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -12398,12 +12424,7 @@ End;
         <short/>
       </element>
       <!-- function Visibility: default -->
-      <element name="SendAppMessage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="SendAppMessage" link="#LCL.LCLProc.SendApplicationMessage"/>
       <element name="SendAppMessage.Result">
         <short/>
       </element>
@@ -12418,7 +12439,7 @@ End;
       </element>
       <!-- procedure Visibility: default -->
       <element name="MoveWindowOrg">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12434,8 +12455,18 @@ End;
       </element>
       <!-- procedure Visibility: default -->
       <element name="RecreateWnd">
-        <short/>
-        <descr/>
+        <short>Create the widget for a TWinControl[?]</short>
+        <descr>
+          <p>
+            This function was originally member of TWincontrol.
+          </p><p>
+            From a VCL point of view that made perfectly sense
+            since the VCL knows when a win32 widget has to be recreated when properties have changed.
+          </p><p>
+            The LCL however doesn't know, the widgetset does.
+            To avoid old VCL behaviour and to provide a central function to the widgetset, it is moved here.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -12444,10 +12475,12 @@ End;
       </element>
       <!-- procedure Visibility: default -->
       <element name="SetCaptureControl">
-        <short/>
+        <short>Set the mouse capture to AWinControl or its child at the given coordinates[?]</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="CaptureControl"/>
+        </seealso>
       </element>
       <element name="SetCaptureControl.Control">
         <short/>
@@ -12460,10 +12493,15 @@ End;
       </element>
       <!-- function Visibility: default -->
       <element name="GetCaptureControl">
-        <short/>
-        <descr/>
+        <short>Returns the current capturing TControl.
+        </short>
+        <descr>Note: For the interface only a Handle = TWinControl can capture.
+          The LCL extends this to allow TControl capture the mouse.
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="CaptureControl"/>
+        </seealso>
       </element>
       <element name="GetCaptureControl.Result">
         <short/>
@@ -12484,18 +12522,6 @@ End;
       </element>
       <element name="DragDone.Drop">
         <short/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="NewStyleControls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="Mouse">
-        <short/>
-        <descr/>
-        <seealso/>
       </element>
       <!-- function Visibility: default -->
       <element name="CursorToString">
@@ -12845,11 +12871,8 @@ End;
       <element name="TGetDockCaptionEvent.ACaption">
         <short/>
       </element>
-      <element name="TDragManagerDefault">
-        <short>[dropped!] The default DragManager class.</short>
-        <seealso>
-          <link id="TDragManager"/>
-        </seealso>
+      <element name="TDragManagerDefault" link="TDragManager">
+        <short>Implementation of TDragManager.</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TDragManager">
@@ -12977,9 +13000,6 @@ End;
           <remark>A docking operation never should start immediately.</remark>
         </descr>
         <errors/>
-        <seealso>
-          <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-        </seealso>
       </element>
       <element name="TDragManager.Create.TheOwner">
         <short/>
@@ -13009,7 +13029,7 @@ End;
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDragManager.RegisterDockSite">
-        <short>Adds or removes the control to the list or register of docking sites.</short>
+        <short>Adds the control to the list of registered docking sites.</short>
         <descr>
           <remark>This should become a class method, maintaining the list of registered docking sites outside any DragManager instance.</remark>
         </descr>
@@ -13017,14 +13037,14 @@ End;
         <seealso/>
       </element>
       <element name="TDragManager.RegisterDockSite.Site">
-        <short/>
+        <short>The DockSite to register.</short>
       </element>
       <element name="TDragManager.RegisterDockSite.DoRegister">
-        <short/>
+        <short>True for adding, False for removing the site.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDragManager.DragStart">
-        <short>Starts dragging.</short>
+        <short>Starts dragging a control.</short>
         <descr>
           A DragObject must be created, depending on the Control.DragKind.
           The mouse has to be captured, and visual feedback must be initialized.</descr>
@@ -13072,22 +13092,11 @@ End;
       </element>
       <!-- property Visibility: public -->
       <element name="TDragManager.DragThreshold">
-        <short>The threshold amount by which the mouse must move before non-immediate dragging starts. (default 5 pixels)</short>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="DragManager" link="TDragManager">
-        <short>The current DragManager (always TDragManagerDefault).</short>
-        <descr>
-          A DragManager can be implemented only in the Controls unit,
-          because it must access private elements of the other classes,
-          declared in this unit.
-        </descr>
+        <short>The threshold amount by which the mouse must move before delayed dragging starts. (default 5 pixels)</short>
         <seealso/>
       </element>
       <element name="TDragDockCommon.SendDragMessage">
-        <short>
-          <var>SendDragMsg</var> - sends to AControl a drag message at specified position for nominated object; returns an integer Result for success</short>
+        <short>sends to AControl a drag message at specified position for nominated object; returns an integer Result for success</short>
       </element>
       <element name="TDragDockCommon.SendCmDragMsg">
         <short>
@@ -13111,84 +13120,76 @@ End;
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TControlCellAlign">
-        <short/>
+        <short>Modes for aligning a control in a table cell.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlCellAlign.ccaFill">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlCellAlign.ccaLeftTop">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlCellAlign.ccaRightBottom">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TControlCellAlign.ccaCenter">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- set type Visibility: default -->
       <element name="TControlCellAligns" link="TControlCellAlign"/>
       <!-- enumeration type Visibility: default -->
       <element name="TAnchorSideChangeOperation">
-        <short/>
+        <short>Operations in <link id="TControl.ForeignAnchorSideChanged"/>.</short>
         <descr/>
-        <seealso/>
-      </element>
-      <element name="TAnchorSideChangeOperation.ascoAdd">
-        <short/>
-      </element>
-      <element name="TAnchorSideChangeOperation.ascoRemove">
-        <short/>
-      </element>
-      <element name="TAnchorSideChangeOperation.ascoChangeSide">
-        <short/>
-      </element>
-      <!-- destructor Visibility: public -->
-      <element name="TAnchorSide.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
         <seealso>
-          <link id="#rtl.Classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
-      <!-- enumeration type Visibility: default -->
+      <element name="TAnchorSideChangeOperation.ascoAdd">
+        <short>AnchorSide added.</short>
+      </element>
+      <element name="TAnchorSideChangeOperation.ascoRemove">
+        <short>AnchorSide removed.</short>
+      </element>
+      <element name="TAnchorSideChangeOperation.ascoChangeSide">
+        <short>AnchorSide changed.</short>
+      </element>
+<!-- enumeration type Visibility: default -->
       <element name="TChildControlResizeStyle">
-        <short/>
+        <short>Modes for resizing child controls.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TChildControlResizeStyle.crsAnchorAligning">
-        <short/>
+        <short>Using <link id="TControl.Anchors"/> (Delphi compatible).</short>
       </element>
       <element name="TChildControlResizeStyle.crsScaleChilds">
-        <short/>
+        <short>Scale children, keep space between children fixed.</short>
       </element>
       <element name="TChildControlResizeStyle.crsHomogenousChildResize">
-        <short/>
+        <short>Enlarge children equally, i.e. by the same amount of pixels.</short>
       </element>
       <element name="TChildControlResizeStyle.crsHomogenousSpaceResize">
-        <short/>
+        <short>Enlarge space between children equally.</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TControlChildrenLayout">
-        <short/>
+        <short>Modes for wrapping controls.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TControlChildrenLayout.cclNone">
-        <short/>
+        <short>No wrapping[?]</short>
       </element>
       <element name="TControlChildrenLayout.cclLeftToRightThenTopToBottom">
-        <short/>
+        <short>Arrange in rows[?] If BiDiMode not bdLeftToRight then it becomes RightToLeft.</short>
       </element>
       <element name="TControlChildrenLayout.cclTopToBottomThenLeftToRight">
-        <short/>
+        <short>Arrange in columns[?]</short>
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TControlAtPosFlag">
@@ -13226,12 +13227,6 @@ End;
       </element>
       <!-- set type Visibility: default -->
       <element name="TControlAtPosFlags" link="TControlAtPosFlag"/>
-      <!-- variable Visibility: default -->
-      <element name="DockSplitterClass">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
       <!-- function Visibility: default -->
       <element name="DbgS">
         <short>Converts items of several data types into strings, for debug output.</short>
@@ -13259,7 +13254,7 @@ End;
       </element>
       <!-- function Visibility: default -->
       <element name="operator :=(Variant): TCaption">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <errors>
@@ -13268,11 +13263,55 @@ End;
         </seealso>
       </element>
       <element name="operator :=(Variant): TCaption.Result">
-        <short></short>
+        <short>[?]</short>
       </element>
       <element name="operator :=(Variant): TCaption.AVariant">
-        <short></short>
+        <short>[?]</short>
       </element>
+<!-- Variables go here -->
+      <!-- variable Visibility: default -->
+      <element name="CaptureControl">
+        <short>Hidden reference to the currently capturing control.</short>
+        <descr>The interface knows, which TWinControl has the capture.
+          This stores what child control of this TWinControl has actually the capture.
+        </descr>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="DefaultDockManagerClass">
+        <short>The default DockManager to create for a DockSite.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="DockSplitterClass">
+        <short>[?]</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="DragManager" link="TDragManager">
+        <short>The current DragManager (always TDragManagerDefault).</short>
+        <descr>
+          A DragManager can be implemented only in the Controls unit,
+          because it must access private elements of the other classes,
+          declared in this unit.
+        </descr>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="Mouse">
+        <short>The global Mouse object.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="NewStyleControls">
+        <short>[?]</short>
+        <descr/>
+        <seealso/>
+      </element>
+<!-- Topics go here -->
       <topic name="AutoSize">
         <short>
           <var>AutoSize</var> - boolean property that permits the size of a control to be adjusted automatically</short>

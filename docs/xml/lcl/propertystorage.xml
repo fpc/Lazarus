@@ -576,7 +576,7 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.StorageNeeded">
-        <short>Override this to provied a storage object[???]</short>
+        <short>Override this to provide a storage object[???]</short>
         <descr/>
         <errors/>
         <seealso/>
