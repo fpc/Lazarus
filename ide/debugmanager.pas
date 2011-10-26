@@ -605,7 +605,7 @@ var
   AnUnitInfo: TLazProjectFile;
 begin
   Result := False;
-  if Destroying then exit;
+  if Destroying or (Filename = '') then exit;
   (* The below currently does not work for unsaved projects *)
   //Result := FilenameIsAbsolute(Filename);
   //if Result then exit;
