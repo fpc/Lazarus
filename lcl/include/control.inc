@@ -992,7 +992,7 @@ begin
     Result := Color;
 end;
 
-function TControl.GetRGBColor: TColor;
+function TControl.GetRGBBackgroundColor: TColor;
 begin
   Result := ColorToRGB(GetColorResolvingParent());
 end;

@@ -748,7 +748,7 @@ var
   lFPColor: TFPColor;
   x, y: Integer;
 begin
-  lColor := CDTabControl.GetRGBColor();
+  lColor := CDTabControl.GetRGBBackgroundColor();
 
   // Background
   lFPColor := TColorToFPColor(lColor);
