@@ -1218,15 +1218,16 @@ begin
   DebugLnEnter('TfrDesignerPage.MDown(X=%d,Y=%d) INIT',[x,y]);
   DebugLn('Down=%s RFlag=%s',[dbgs(Down),dbgs(RFlag)]);
   {$ENDIF}
-  if DFlag then
-  begin
+
+  // In Lazarus there is no mousedown after doubleclick so
+  // just ignore mousedown when doubleclick is coming.
+  if ssDouble in Shift then begin
     {$IFDEF DebugLR}
-    DebugLnExit('TfrDesignerPage.MDown DONE: DFlag is true (doubleclick)');
+    DebugLnExit('TfrDesignerPage.MDown DONE: doubleclick expected');
     {$ENDIF}
-    DFlag := False;
-    Exit;
+    exit;
   end;
-  
+
   if (Button = mbRight) and Down and RFlag then
     DrawFocusRect(OldRect);
   
