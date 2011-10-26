@@ -14,8 +14,11 @@ unit customdrawncontrols;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
-  Math, types, customdrawnutils, contnrs, componenteditors, LMessages, Messages,
+  // FPC
+  Classes, SysUtils, contnrs, Math, types,
+  // LCL
+  Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
+  customdrawnutils, LMessages, Messages,
   LCLProc, PropEdits, ExtCtrls, ImgList, Forms, Menus,
   // fpimage
   fpcanvas, fpimgcanv, fpimage
