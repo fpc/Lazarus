@@ -19,7 +19,7 @@
  ***************************************************************************
 
   Author: Sérgio Marcelo S. Gomes <smace at smace.com.br>
-  Modified by Andrew Haines
+  Modified by Andrew Haines and Juha Manninen
 
   Abstract: Invert Assignment Code.
 
@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils;
 
-function InvertAssignment(ALines:TStrings):TStrings;
+function InvertAssignment(InText: string): string;
 
 implementation
 
@@ -48,48 +48,29 @@ end;
 
 procedure DivideLines(Lines: TStrings; var PreList, AList, BList, PostList: TStrings);
 var
-  X: Integer;
-  ALine: String;
-  EqPos: Integer;
-  SemiPos: Integer;
-  WordBeforeEqPos: Integer;
-  TrueFalse: String;
-
-  function FindWordBeforeEquals(ALine: String): Integer;
-  var
-    X: Integer;
-    fPos: Integer;
-  begin
-    Result := 0;
-    fPos := Pos(':=', ALine);
-    if fPos > 0 then begin
-      ALine := Trim(Copy(ALine,1,fPos-1));
-      for X := Length(ALine) downto 1 do begin
-        if ALine[X] = ' ' then begin
-          Result := X+1;
-          Exit;
-        end;
-      end;
-    end;
-  end;
-
+  ALine, TrueFalse: String;
+  X, I, EqPos, SemiPos, WordBeforeEqPos: Integer;
 begin
-  AList.Clear;
-  BList.Clear;
   for X := 0 to Lines.Count-1 do begin
-    ALine := Trim(Lines.Strings[X]);
-
+    ALine := Trim(Lines[X]);
     EqPos := Pos(':=', ALine);
-    SemiPos := Pos(';', ALine);
-    WordBeforeEqPos := FindWordBeforeEquals(ALine);
-    
-    if (EqPos > 0) and (SemiPos > 0) then begin
+    if EqPos > 0 then begin
+      SemiPos := Pos(';', ALine);
+      if SemiPos = 0 then
+        SemiPos:=Length(ALine)+1;
+      WordBeforeEqPos := 0;
+      I := EqPos-1;
+      while (I > 0) and (ALine[I] = ' ') do      // Skip initial spaces
+        Dec(I);
+      while (I > 0) and (ALine[I] <> ' ') do     // The word before :=
+        Dec(I);
+      WordBeforeEqPos := I+1;
       Alist.Add(Trim(Copy(ALine, WordBeforeEqPos+Ord(WordBeforeEqPos=0), EqPos - (WordBeforeEqPos+Ord(WordBeforeEqPos=0)))));
       BList.Add(Trim(Copy(ALine, EqPos + 2, (SemiPos-1) -(EqPos+1))));
       PreList.Add(Trim(Copy(ALine,1, WordBeforeEqPos-1)));
       PostList.Add(Trim(Copy(ALine, SemiPos, Length(ALine)-(SemiPos-1))));
-      if Length(PreList.Strings[X]) > 0 then
-        PreList.Strings[X] := PreList.Strings[X] + ' ';
+      if Length(PreList[X]) > 0 then
+        PreList[X] := PreList[X] + ' ';
     end
     else begin  // not a valid line
       PreList.Add('');
@@ -98,15 +79,15 @@ begin
       PostList.Add('');
     end;
     // Check if is being assigned true or false
-    if CompareText(BList.Strings[X], 'True') = 0 then begin
-      TrueFalse := AList.Strings[X];
-      AList.Strings[X] := 'False';
-      BList.Strings[X] := TrueFalse;
+    if CompareText(BList[X], 'True') = 0 then begin
+      TrueFalse := AList[X];
+      AList[X] := 'False';
+      BList[X] := TrueFalse;
     end;
-    if CompareText(BList.Strings[X], 'False') = 0 then begin
-      TrueFalse := AList.Strings[X];
-      AList.Strings[X] := 'True';
-      BList.Strings[X] := TrueFalse;
+    if CompareText(BList[X], 'False') = 0 then begin
+      TrueFalse := AList[X];
+      AList[X] := 'True';
+      BList[X] := TrueFalse;
     end;
   end;
 end;
@@ -165,74 +146,64 @@ end;
 // This function inverts all Assignments operation.
 // like valuea := valueb; to valueb := valuea;
 // or valuea := False; to valuea := True;
-function InvertAssignment(ALines:TStrings):TStrings;
+function InvertAssignment(InText: string): string;
 var
-  Lines: TStringList;
-  PreList,
-  AList,
-  BList,
-  PostList: TStrings;
-  Indents: PInteger;
-  X, Y: Integer;
-  EqPos: Integer;
+  InLines, TempLines: TStringList;
+  PreList, AList, BList, PostList: TStrings;
   ALine: String;
+  Indents: array of integer;
+  X, Y, EqPos: Integer;
+  HasLinefeed: Boolean;
 begin
-  if ALines.Count = 0 then begin
-    Result := ALines;
+  if InText = '' then
     Exit;
-  end;
+  HasLinefeed := InText[Length(InText)] in [#10,#13];
+  InLines := TStringList.Create;
+  InLines.Text := InText;
+  SetLength(Indents, InLines.Count);
+  TempLines := TStringList.Create;
 
-  Lines := TStringList.Create;
-  GetMem(Indents,SizeOf(Integer)*ALines.Count);
-
-  // Put a line on multiple lines, on one line
+  // Join many lines to one
   ALine := '';
-  for X := 0 to ALines.Count-1 do begin
-    ALine := ALine + ALines.Strings[X];
+  for X := 0 to InLines.Count-1 do begin
+    ALine := ALine + InLines[X];
     if IsAWholeLine(ALine) then begin
-      Indents[Lines.Add(ALine)] := GetIndent(ALine);
+      Indents[TempLines.Add(ALine)] := GetIndent(ALine);
       ALine := '';
     end;
   end;
-  
-  // exited the loop without finding the end of a line
-  if Length(ALine) > 0 then begin
-    X := Lines.Add(ALine);
-    Indents[X] := GetIndent(ALine);
-  end;
-  
-  ALines.Clear;
+  if Length(ALine) > 0 then
+    Indents[TempLines.Add(ALine)] := GetIndent(ALine);
+
+  InLines.Clear;
   PreList := TStringList.Create;
   AList := TStringList.Create;
   BList := TStringList.Create;
   PostList := TStringList.Create;
 
-  DivideLines(Lines, PreList, AList, BList, PostList);
-  Lines.Free;
+  DivideLines(TempLines, PreList, AList, BList, PostList);
+  TempLines.Free;
 
-  //Find where the ':=' should be
+  // Find where the ':=' should be
   EqPos := 0;
   for X := 0 to BList.Count-1 do begin
-    Y := Length(BList.Strings[X]);
-    if Y > EqPos then EqPos := Y;
+    Y := Length(BList[X]);
+    if Y > EqPos then
+      EqPos := Y;
   end;
 
-  for X := 0 to AList.Count-1 do begin
-    ALines.Add(InvertLine(PreList.Strings[X],
-                            Alist.Strings[X],
-                            BList.Strings[X],
-                         PostList.Strings[X],
-                                  Indents[X],
-                                      EqPos));
-  end;
+  for X := 0 to AList.Count-1 do
+    InLines.Add(InvertLine(PreList[X],Alist[X],BList[X],PostList[X],Indents[X],EqPos));
   PreList.Free;
   AList.Free;
   BList.Free;
   PostList.Free;
-  ReAllocMem(Indents,0);
-
-  Result := ALines;
-  // TODO: How do you stop this from adding a new line at the end of the last item
+  Result := InLines.Text;
+  InLines.Free;
+  if not HasLinefeed then begin
+    while Result[Length(Result)] in [#10,#13] do
+      SetLength(Result, Length(Result)-1);
+  end;
 end;
 
 end.

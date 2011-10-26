@@ -3484,21 +3484,13 @@ begin
 end;
 
 procedure TSourceEditor.InvertAssignment;
-var
-  codelines: TStringList;
 begin
   if ReadOnly then exit;
   if not EditorComponent.SelAvail then exit;
   FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
   // ToDo: replace step by step to keep bookmarks and breakpoints
-  codelines := TStringList.Create;
-  try
-    codelines.Text := FEditor.SelText;
-    FEditor.SelText := InvertAssignTool.InvertAssignment( codelines ).Text;
-  finally
-    codelines.Free;
-  end;
+  FEditor.SelText := InvertAssignTool.InvertAssignment(FEditor.SelText);
   FEditor.EndUndoBlock;
   FEditor.EndUpdate;
 end;
