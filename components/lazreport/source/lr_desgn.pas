@@ -608,7 +608,6 @@ var
   GridBitmap         : TBitmap;     // for drawing grid in design time
   ColorLocked        : Boolean;     // true to avoid unwished color change
 
-
 {----------------------------------------------------------------------------}
 procedure AddRgn(var HR: HRGN; T: TfrView);
 var
@@ -1036,16 +1035,15 @@ begin
     Exit;
   end;
 
+  {$IFDEF DebugLR}
+  DebugLnEnter('TfrDesignerPage.Draw INIT N=%d AClipRgn=%d',[N,AClipRgn]);
+  {$ENDIF}
+
   if AClipRgn = 0 then
   begin
     with Canvas.ClipRect do
       AClipRgn := CreateRectRgn(Left, Top, Right, Bottom);
   end;
-
-
-  {$IFDEF DebugLR}
-  DebugLn('------------- Begin Draw() -------------');
-  {$ENDIF}
 
   R:=CreateRectRgn(0, 0, Width, Height);
   for i:=Objects.Count-1 downto 0 do
@@ -1087,10 +1085,6 @@ begin
     SelectClipRgn(Canvas.Handle, R);
   end;
 
-  {$IFDEF DebugLR}
-  DebugLn('------------- End Draw() -------------');
-  {$ENDIF}
-
   CombineRgn(R, R, AClipRgn, RGN_AND);
 
   DrawBackground;
@@ -1105,6 +1099,9 @@ begin
   if not Down then
     DrawPage(dmSelection);
 
+  {$IFDEF DebugLR}
+  DebugLnExit('TfrDesignerPage.Draw DONE');
+  {$ENDIF}
 end;
 
 procedure TfrDesignerPage.DrawPage(DrawMode: TfrDesignerDrawMode);
@@ -1218,11 +1215,14 @@ var
   p: TPoint;
 begin
   {$IFDEF DebugLR}
-  DebugLn('TfrDesignerPage.MDown(X=',dbgs(x),',Y=',dbgs(y),'  INIT');
-  DebugLn('  Down=', dbgs(Down),' FFlag=', dbgs(RFlag));
+  DebugLnEnter('TfrDesignerPage.MDown(X=%d,Y=%d) INIT',[x,y]);
+  DebugLn('Down=%s RFlag=%s',[dbgs(Down),dbgs(RFlag)]);
   {$ENDIF}
   if DFlag then
   begin
+    {$IFDEF DebugLR}
+    DebugLnExit('TfrDesignerPage.MDown DONE: DFlag is true (doubleclick)');
+    {$ENDIF}
     DFlag := False;
     Exit;
   end;
@@ -1251,6 +1251,9 @@ begin
       RightBottom := -1;
       MRFlag := False;
       FirstSelected := nil;
+      {$IFDEF DebugLR}
+      DebugLnExit('TfrDesignerPage.MDown DONE: Ctrl+Left o cursor=crCross');
+      {$ENDIF}
       Exit;
     end
     else if Cursor = crPencil then
@@ -1274,6 +1277,9 @@ begin
             FirstSelected := nil;
             LastX := x;
             LastY := y;
+            {$IFDEF DebugLR}
+            DebugLnExit('TfrDesignerPage.MDown DONE: Left + cursor=crPencil');
+            {$ENDIF}
             Exit;
          end;
   end;
@@ -1330,6 +1336,9 @@ begin
       begin
         RFlag := True;
         OldRect := Rect(x, y, x, y);
+        {$IFDEF DebugLR}
+        DebugLnExit('TfrDesignerPage.MDown DONE: Deselection o no selection');
+        {$ENDIF}
         Exit;
       end;
     end;
@@ -1368,7 +1377,7 @@ begin
            DrawPage(dmShape);
            
   {$IFDEF DebugLR}
-  DebugLn('TfrDesignerPage.MDown END');
+  DebugLnExit('TfrDesignerPage.MDown DONE');
   {$ENDIF}
 end;
 
@@ -1417,18 +1426,17 @@ var
   end;
 
 begin
+  {$IFDEF DebugLR}
+  DebugLnEnter('TfrDesignerPage.MUp INIT Button=%d Cursor=%d RFlag=%s',
+    [ord(Button),Cursor,dbgs(RFlag)]);
+  {$ENDIF}
   if Button <> mbLeft then
   begin
     {$IFDEF DebugLR}
-    DebugLn('MUp "Button <> mbLeft" cursor=',IntToStr(Cursor),' RFlag=',BoolToStr(RFlag));
+    DebugLnExit('TfrDesignerPage.MUp DONE: Button<>mbLeft');
     {$ENDIF}
     Exit;
-  {$IFDEF DebugLR}
-  end
-  else DebugLn('MUp "Button = mbLeft" cursor=',IntToStr(Cursor),' RFlag=',BoolToStr(RFlag));
-  {$ELSE}
   end;
-  {$ENDIF}
 
   {$IFDEF LCLCarbon}Invalidate;{$endif}
   Down := False;
@@ -1439,7 +1447,7 @@ begin
   if Cursor = crCross then
   begin
     {$IFDEF DebugLR}
-    DebugLn('inserting a new object');
+    DebugLnEnter('Inserting a New Object INIT');
     {$ENDIF}
     Mode := mdSelect;
     DrawFocusRect(OldRect);
@@ -1463,8 +1471,13 @@ begin
               begin
                 if GetUnusedBand <> btNone then
                   CreateSection
-                else
+                else begin
+                  {$IFDEF DebugLR}
+                  DebugLnExit('Inserting a new object DONE: GetUnusedBand=btNone');
+                  DebugLnExit('TfrDesignerPage.MUp DONE: Inserting..');
+                  {$ENDIF}
                   Exit;
+                end;
               end
               else if Tag = gtSubReport then
                        CreateSubReport
@@ -1555,14 +1568,20 @@ begin
         if EditAfterInsert then
           ShowEditor;
       end;
+
+      {$IFDEF DebugLR}
+      DebugLn('Object inserted end');
+      {$ENDIF}
     end;
+
     if not ObjRepeat then
       FDesigner.OB1.Down := True
     else
       DrawFocusRect(OldRect);
 
     {$IFDEF DebugLR}
-    DebugLn('Object inserted end');
+    DebugLnExit('Inserting a New Object DONE');
+    DebugLnExit('TfrDesignerPage.MUp DONE: Inserting ...');
     {$ENDIF}
     Exit;
   end;
@@ -1591,6 +1610,9 @@ begin
     DrawSelection(t);
     FDesigner.SelectionChanged;
     FDesigner.AddUndoAction(acInsert);
+    {$IFDEF DebugLR}
+    DebugLnExit('TfrDesignerPage.MUp DONE: Line Drawing');
+    {$ENDIF}
     Exit;
   end;
 
@@ -1620,7 +1642,7 @@ begin
     FDesigner.SelectionChanged;
     DrawPage(dmSelection);
     {$IFDEF DebugLR}
-    DebugLn('calculating which objects contains in frame (if user select it with mouse+Ctrl key)');
+    DebugLnExit('TfrDesignerPage.MUp DONE: objects contained in frame');
     {$ENDIF}
     Exit;
   end;
@@ -1641,7 +1663,7 @@ begin
     GetMultipleSelected;
     Draw(TopSelected, ClipRgn);
     {$IFDEF DebugLR}
-    DebugLn('splitting');
+    DebugLnExit('TfrDesignerPage.MUp DONE: Splitting');
     {$ENDIF}
     Exit;
   end;
@@ -1651,7 +1673,7 @@ begin
   begin
     Draw(TopSelected, ClipRgn);
     {$IFDEF DebugLR}
-    DebugLn('resizing several objects');
+    DebugLnExit('TfrDesignerPage.MUp DONE: resizing several objects');
     {$ENDIF}
     Exit;
   end;
@@ -1687,6 +1709,9 @@ begin
 
   Moved := False;
   CT := ctNone;
+  {$IFDEF DebugLR}
+  DebugLnExit('TfrDesignerPage.MUp DONE');
+  {$ENDIF}
 end;
 
 procedure TfrDesignerPage.MMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -1717,7 +1742,7 @@ var
   end;
 begin
   {$IFDEF DebugLR}
-  DebugLn('TfrDesignerPage.MMove(X=',dbgs(x),',Y=',dbgs(y),'  INIT');
+  DebugLnEnter('TfrDesignerPage.MMove(X=%d,Y=%d)  INIT',[x,y]);
   {$ENDIF}
   Moved := True;
   w := 2;
@@ -1764,10 +1789,7 @@ begin
   end;
 
   {$IFDEF DebugLR}
-  if mode=mdInsert then
-    DebugLn('  Mode=mdInsert Down=', dbgs(down))
-  else
-    DebugLn('  Mode=mdSelect Down=', dbgs(down));
+  DebugLn('Mode Insert=%s Down=%s',[dbgs(Mode=mdInsert),dbgs(Down)]);
   {$ENDIF}
 
   if (Mode = mdInsert) and not Down then
@@ -1779,6 +1801,9 @@ begin
     ShowSizes := True;
     FDesigner.UpdateStatus;
     ShowSizes := False;
+    {$IFDEF DebugLR}
+    DebugLnExit('TfrDesignerPage.MMove DONE: Mode Insert and not Down');
+    {$ENDIF}
     Exit;
   end;
 
@@ -1811,6 +1836,9 @@ begin
     if Cursor = crCross then
       FDesigner.UpdateStatus;
     ShowSizes := False;
+    {$IFDEF DebugLR}
+    DebugLnExit('TfrDesignerPage.MMove DONE: DOWN and RFLag (sel alot of objs)');
+    {$ENDIF}
     Exit;
   end;
   
@@ -1819,12 +1847,20 @@ begin
   begin
     kx := x - LastX;
     ky := y - LastY;
-    if FDesigner.GridAlign and not GridCheck then Exit;
+    if FDesigner.GridAlign and not GridCheck then begin
+      {$IFDEF DebugLR}
+      DebugLnExit('TfrDesignerPage.MMove DONE: not gridcheck and gridalign');
+      {$ENDIF}
+      Exit;
+    end;
     DrawRectLine(OldRect);
     OldRect := Rect(OldRect.Left, OldRect.Top, OldRect.Right + kx, OldRect.Bottom + ky);
     DrawRectLine(OldRect);
     Inc(LastX, kx);
     Inc(LastY, ky);
+    {$IFDEF DebugLR}
+    DebugLnExit('TfrDesignerPage.MMove DONE: Line drawing');
+    {$ENDIF}
     Exit;
   end;
 
@@ -1882,7 +1918,12 @@ begin
   begin
     kx := x - LastX;
     ky := 0;
-    if FDesigner.GridAlign and not GridCheck then Exit;
+    if FDesigner.GridAlign and not GridCheck then begin
+      {$IFDEF DebugLR}
+      DebugLnExit('TfrDesignerPage.MMove DONE: Splitting not grid check');
+      {$ENDIF}
+      Exit;
+    end;
     with SplitInfo do
     begin
       DrawHSplitter(SplRect);
@@ -1890,6 +1931,9 @@ begin
       DrawHSplitter(SplRect);
     end;
     Inc(LastX, kx);
+    {$IFDEF DebugLR}
+    DebugLnExit('TfrDesignerPage.MMove DONE: Splitting');
+    {$ENDIF}
     Exit;
   end;
   
@@ -1898,7 +1942,12 @@ begin
   begin
     kx := x - LastX;
     ky := y - LastY;
-    if FDesigner.GridAlign and not GridCheck then Exit;
+    if FDesigner.GridAlign and not GridCheck then begin
+      {$IFDEF DebugLR}
+      DebugLnExit('TfrDesignerPage.MMove DONE: sizing seveal, not gridcheck');
+      {$ENDIF}
+      Exit;
+    end;
 
     if FDesigner.ShapeMode = smFrame then
       DrawPage(dmShape)
@@ -1943,6 +1992,9 @@ begin
     Inc(LastX, kx);
     Inc(LastY, ky);
     FDesigner.UpdateStatus;
+    {$IFDEF DebugLR}
+    DebugLnExit('TfrDesignerPage.MMove DONE: Sizing several objects');
+    {$ENDIF}
     Exit;
   end;
   
@@ -1951,7 +2003,12 @@ begin
   begin
     kx := x - LastX;
     ky := y - LastY;
-    if FDesigner.GridAlign and not GridCheck then Exit;
+    if FDesigner.GridAlign and not GridCheck then begin
+      {$IFDEF DebugLR}
+      DebugLnExit('TfrDesignerPage.MMove DONE: moving');
+      {$ENDIF}
+      Exit;
+    end;
     if FirstBandMove and (SelNum = 1) and ((kx <> 0) or (ky <> 0)) and
       not (ssAlt in Shift) then
     begin
@@ -1996,7 +2053,12 @@ begin
   begin
     kx := x - LastX;
     ky := y - LastY;
-    if FDesigner.GridAlign and not GridCheck then Exit;
+    if FDesigner.GridAlign and not GridCheck then begin
+      {$IFDEF DebugLR}
+      DebugLnExit('TfrDesignerPage.MMove DONE: resizing');
+      {$ENDIF}
+      Exit;
+    end;
     
     t := TfrView(Objects[TopSelected]);
     if FDesigner.ShapeMode = smFrame then
@@ -2095,12 +2157,15 @@ begin
     Inc(LastY, ky);
   end;
   {$IFDEF DebugLR}
-  DebugLn('TfrDesignerPage.MMove END');
+  DebugLnExit('TfrDesignerPage.MMove END');
   {$ENDIF}
 end;
 
 procedure TfrDesignerPage.DClick(Sender: TObject);
 begin
+  {$IFDEF DebugLR}
+  DebugLnEnter('TfrDesignerPage.DClick INIT DFlag=%s',[dbgs(DFlag)]);
+  {$ENDIF}
   Down := False;
   if SelNum = 0 then
   begin
@@ -2111,8 +2176,10 @@ begin
   begin
     DFlag := True;
     FDesigner.ShowEditor;
-  end
-  else Exit;
+  end;
+  {$IFDEF DebugLR}
+  DebugLnExit('TfrDesignerPage.DClick DONE DFlag=%s',[dbgs(DFlag)]);
+  {$ENDIF}
 end;
 
 procedure TfrDesignerPage.MoveResize(Kx, Ky: Integer; UseFrames,AResize: boolean);
@@ -3606,7 +3673,7 @@ var
   t: TfrView;
 begin
   {$IFDEF DebugLR}
-  debugLn('TfrDesignerForm.SelectionChanged INIT, SelNum=',dbgs(SelNum));
+  debugLnEnter('TfrDesignerForm.SelectionChanged INIT, SelNum=%d',[SelNum]);
   {$ENDIF}
   Busy := True;
   ColorSelector.Hide;
@@ -3619,7 +3686,7 @@ begin
     with t do
     begin
       {$IFDEF DebugLR}
-      DebugLn('selectionchanged 1');
+      DebugLn('Not a band');
       {$ENDIF}
       FrB1.Down := (frbTop in Frames);
       FrB2.Down := (frbLeft in Frames);
@@ -3658,7 +3725,7 @@ begin
   else if SelNum > 1 then
   begin
     {$IFDEF DebugLR}
-    DebugLn('selectionchanged 2');
+    DebugLn('Multiple selection');
     {$ENDIF}
 
     BUp(FrB1);
@@ -3683,7 +3750,7 @@ begin
   ShowContent;
   ActiveControl := nil;
   {$IFDEF DebugLR}
-  debugLn('TfrDesignerForm.SelectionChanged END, SelNum=',dbgs(SelNum));
+  debugLnExit('TfrDesignerForm.SelectionChanged END, SelNum=%d',[SelNum]);
   {$ENDIF}
 end;
 
@@ -5910,8 +5977,8 @@ var
   i : Integer;
 begin
   {$IFDEF DebugLR}
-  DebugLn('frSetGlyph(',colortostring(acolor),',',sb.name,',',IntToStr(n),')');
-  DebugLn('ColorLocked=', dbgs(ColorLocked),' sb.tag=', dbgs(sb.tag));
+  DebugLn('frSetGlyph(%s,%s,%d)',[colortostring(acolor),sb.Name,n]);
+  DebugLn('ColorLocked=%s sb.tag=%s',[dbgs(ColorLocked),dbgs(sb.tag)]);
   {$ENDIF}
   B:=sb.Glyph;
   b.Width := 32;
@@ -5950,7 +6017,7 @@ begin
   begin
     t := TfrView(Objects[i]);
     {$IFDEF DebugLR}
-    DebugLn('frSetGlyph: TopSelected=', t.Name);
+    DebugLn('frSetGlyph: TopSelected=%s', [t.Name]);
     {$ENDIF}
 
     Case Sb.Tag of
@@ -6296,7 +6363,7 @@ begin
     Select(Objects);
   end;
   {$IFDEF DebugLR}
-  debugLn('TfrObjectInspector.CMVisibleChanged: ', BooLTOStr(Visible));
+  debugLn('TfrObjectInspector.CMVisibleChanged: %s', [dbgs(Visible)]);
   {$ENDIF}
 end;
 
