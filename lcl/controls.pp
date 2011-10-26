@@ -1327,6 +1327,10 @@ type
     function GetDefaultWidth: integer;
     function GetDefaultHeight: integer;
     function GetDefaultColor(const DefaultColorType: TDefaultColorType): TColor; virtual;
+    // These two are helper routines to help obtain the background color of a control
+    function GetColorResolvingParent: TColor;
+    function GetRGBColor: TColor;
+    //
     function GetSidePosition(Side: TAnchorKind): integer;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;

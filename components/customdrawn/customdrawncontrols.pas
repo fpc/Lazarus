@@ -748,9 +748,7 @@ var
   lFPColor: TFPColor;
   x, y: Integer;
 begin
-  if CDTabControl.Color = clDefault then
-    lColor := ColorToRGB(CDTabControl.GetDefaultColor(dctBrush))
-  else lColor := ColorToRGB(CDTabControl.Color);
+  lColor := CDTabControl.GetRGBColor();
 
   // Background
   lFPColor := TColorToFPColor(lColor);

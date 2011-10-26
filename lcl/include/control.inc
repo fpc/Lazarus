@@ -984,6 +984,19 @@ begin
       Result := DefColors[DefaultColorType];
 end;
 
+function TControl.GetColorResolvingParent: TColor;
+begin
+  if Color = clDefault then
+    Result := GetDefaultColor(dctBrush) // GetDefaultColor resolves the parent
+  else
+    Result := Color;
+end;
+
+function TControl.GetRGBColor: TColor;
+begin
+  Result := ColorToRGB(GetColorResolvingParent());
+end;
+
 {------------------------------------------------------------------------------
        TControl.DoConstrainedResize
 ------------------------------------------------------------------------------}
