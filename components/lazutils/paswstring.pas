@@ -17,10 +17,15 @@ unit paswstring;
 {$mode objfpc}
 {$inline on}
 //{$define PASWSTRING_VERBOSE}
+//{.$define PASWSTRING_SUPPORT_NONUTF8_ANSISTRING} disabled by default because
+// non utf-8 ansistring is rare in UNIXes and lconvencoding makes the executable big
 
 interface
 
-uses SysUtils, lazutf8, lconvencoding;
+uses
+  SysUtils, lazutf8
+  {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}, lconvencoding{$endif}
+  ;
 
 {$IFNDEF VER2_7}
 procedure SetPasWidestringManager;
@@ -42,8 +47,10 @@ begin
 
   // Now convert it, using UTF-16 -> UTF-8
   dest := UTF16ToUTF8(widestr);
+  {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
   // And correct to the real Ansi encoding
   dest := ConvertEncoding(dest, EncodingUTF8, GetDefaultTextEncoding());
+  {$endif}
 end;
 
 procedure Ansi2WideMove(source:pchar;var dest:widestring;len:SizeInt);
@@ -55,8 +62,10 @@ begin
   SetLength(ansistr, len);
   System.Move(source^, ansistr[1], len);
 
+  {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
   // Convert to UTF-8
   ansistr := ConvertEncoding(ansistr, GetDefaultTextEncoding(), EncodingUTF8);
+  {$endif}
   // Now convert it, using UTF-8 -> UTF-16
   dest := UTF8ToUTF16(ansistr);
 end;
@@ -295,8 +304,10 @@ begin
 
   // Now convert it, using UTF-16 -> UTF-8
   dest := UTF16ToUTF8(widestr);
+  {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
   // And correct to the real Ansi encoding
   dest := ConvertEncoding(dest, EncodingUTF8, GetDefaultTextEncoding());
+  {$endif}
 end;
 
 procedure Ansi2UnicodeMove(source:pchar;var dest:UnicodeString;len:SizeInt);
@@ -308,8 +319,10 @@ begin
   SetLength(ansistr, len);
   System.Move(source^, ansistr[1], len);
 
+  {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
   // Convert to UTF-8
   ansistr := ConvertEncoding(ansistr, GetDefaultTextEncoding(), EncodingUTF8);
+  {$endif}
   // Now convert it, using UTF-8 -> UTF-16
   dest := UTF8ToUTF16(ansistr);
 end;
