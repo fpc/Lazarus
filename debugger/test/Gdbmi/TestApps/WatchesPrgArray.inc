@@ -202,6 +202,14 @@
       PStatStatPRec2Array  = ^TStatStatPRec2Array;
       PStatStatPPRec2Array = ^TStatStatPPRec2Array;
 
+      TEnunForArray = (eaOne, eaTwo, eaThree);
+      TEnumArrayTRec1     = array [TEnunForArray] of TRecForArray3;
+      TSubEnumArrayTRec1  = array [eaTwo..eaThree] of TRecForArray3;
+      PEnumArrayTRec1     = ^TEnumArrayTRec1;
+      PSubEnumArrayTRec1  = ^TSubEnumArrayTRec1;
+
+      TStatDualArrayTRec2 = array [3..5, 3..5] of TRecForArray2;
+
 
     {$ENDIF}
   {%endregion}
@@ -578,6 +586,12 @@
       GlobTStatStatPPRec2Array: TStatStatPPRec2Array;
 
 
+      GlobTEnumArrayTRec1:     TEnumArrayTRec1;      // = array [TEnunForArray] of TRecForArray3;
+      GlobTSubEnumArrayTRec1:  TSubEnumArrayTRec1;   //  = array [eaTwo..eaThree] of TRecForArray3;
+
+      GlobTStatDualArrayTRec2: TStatDualArrayTRec2;  // = array [3..5, 3..5] of TRecForArray2;
+
+// POINTER
 
       // dyn arrays
       GlobPDynArrayTRec1: PDynArrayTRec1;
@@ -641,6 +655,9 @@
       GlobPStatStatTRec2Array: PStatStatTRec2Array;
       GlobPStatStatPRec2Array: PStatStatPRec2Array;
       GlobPStatStatPPRec2Array: PStatStatPPRec2Array;
+
+      GlobPEnumArrayTRec1:     PEnumArrayTRec1;      // = ^TEnumArrayTRec1;
+      GlobPSubEnumArrayTRec1:  PSubEnumArrayTRec1;   // = ^TSubEnumArrayTRec1;
 
 // UN-NAMED types
       // dyn arrays
@@ -711,6 +728,11 @@
       GlobADynDynDynDynArrayTRec1   : array of array of array of array of TRecForArray1;
       GlobADynArrayTRec5            : array of record a: byte; c:integer; end;
       GlobAStatArrayTRec5           : array [3..5] of record a: byte; c:integer; end;
+
+      GlobAEnumArrayTRec1:     array [TEnunForArray] of TRecForArray3;
+      GlobASubEnumArrayTRec1:  array [eaTwo..eaThree] of TRecForArray3;
+
+      GlobAStatDualArrayTRec2: array [3..5, 3..5] of TRecForArray2;
 
 
     {$ENDIF}
@@ -1098,6 +1120,16 @@
       GlobTStatStatPPRec2Array[1][4] := @GlobTStatStatPRec2Array[1][4];
 
 
+      GlobTEnumArrayTRec1[eaOne].a      := 200;
+      GlobTEnumArrayTRec1[eaTwo].a      := 201;
+      GlobTSubEnumArrayTRec1[eaTwo].a   := 205;
+      GlobTSubEnumArrayTRec1[eaThree].a := 205;
+
+      GlobTStatDualArrayTRec2[3,3].c := 300;
+      GlobTStatDualArrayTRec2[3,4].c := 301;
+      GlobTStatDualArrayTRec2[4,5].c := 302;
+
+
 // POINTER
 
       // dyn arrays
@@ -1163,6 +1195,10 @@
       GlobPStatStatTRec2Array := @GlobTStatStatTRec2Array;
       GlobPStatStatPRec2Array := @GlobTStatStatPRec2Array;
       GlobPStatStatPPRec2Array := @GlobTStatStatPPRec2Array;
+
+      GlobPEnumArrayTRec1    := @GlobTEnumArrayTRec1;
+      GlobPSubEnumArrayTRec1 := @GlobTSubEnumArrayTRec1;
+
 
 // UN-NAMED types
 
@@ -1492,6 +1528,14 @@
       GlobAStatArrayTRec5[4].a := 16;
       GlobAStatArrayTRec5[4].c := 18;
 
+      GlobAEnumArrayTRec1[eaOne].a      := 200;
+      GlobAEnumArrayTRec1[eaTwo].a      := 201;
+      GlobASubEnumArrayTRec1[eaTwo].a   := 205;
+      GlobASubEnumArrayTRec1[eaThree].a := 205;
+
+      GlobAStatDualArrayTRec2[3,3].c := 300;
+      GlobAStatDualArrayTRec2[3,4].c := 301;
+      GlobAStatDualArrayTRec2[4,3].c := 302;
     {$ENDIF}
 
     {$IFDEF Global_Body_NIL}

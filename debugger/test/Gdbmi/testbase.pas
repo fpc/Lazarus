@@ -32,6 +32,9 @@ const
   SymbolTypeNames: Array [TSymbolType] of String = ('No_Dbg', 'Stabs', 'Dwarf', 'Dwarf+Sets', 'Dwarf3');
   SymbolTypeSwitches: Array [TSymbolType] of String = ('', '-gs', '-gw', '-gw -godwarfsets', '-gw3');
 
+  stDwarf2All = [stDwarf, stDwarfSet];
+  stDwarfAll  = [stDwarf, stDwarfSet, stDwarf3];
+
 type
 
   TGDBMIDebuggerClass = class of TGDBMIDebugger;

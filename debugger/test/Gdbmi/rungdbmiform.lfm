@@ -269,6 +269,7 @@ object Form1: TForm1
       Align = alClient
       ScrollBars = ssAutoBoth
       TabOrder = 1
+      WordWrap = False
     end
     object Splitter1: TSplitter
       Cursor = crVSplit

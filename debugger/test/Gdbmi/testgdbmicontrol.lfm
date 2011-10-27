@@ -1,11 +1,11 @@
 object TestControlForm: TTestControlForm
   Left = 1197
-  Height = 353
+  Height = 350
   Top = 104
   Width = 456
   BorderIcons = []
   Caption = 'Test Control'
-  ClientHeight = 353
+  ClientHeight = 350
   ClientWidth = 456
   OnShow = FormShow
   LCLVersion = '0.9.31'
@@ -65,7 +65,7 @@ object TestControlForm: TTestControlForm
   end
   object Panel2: TPanel
     Left = 0
-    Height = 309
+    Height = 306
     Top = 44
     Width = 456
     Align = alClient
@@ -76,21 +76,21 @@ object TestControlForm: TTestControlForm
     ChildSizing.ShrinkVertical = crsHomogenousChildResize
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 3
-    ClientHeight = 309
+    ClientHeight = 306
     ClientWidth = 456
     TabOrder = 1
     object Panel3: TPanel
       Left = 0
-      Height = 309
+      Height = 306
       Top = 0
       Width = 154
       Caption = 'Panel3'
-      ClientHeight = 309
+      ClientHeight = 306
       ClientWidth = 154
       TabOrder = 0
       object CheckListBox1: TCheckListBox
         Left = 1
-        Height = 282
+        Height = 279
         Top = 1
         Width = 152
         Align = alClient
@@ -100,7 +100,7 @@ object TestControlForm: TTestControlForm
       object Panel4: TPanel
         Left = 1
         Height = 25
-        Top = 283
+        Top = 280
         Width = 152
         Align = alBottom
         AutoSize = True
@@ -120,7 +120,7 @@ object TestControlForm: TTestControlForm
     end
     object chkFPC: TCheckListBox
       Left = 154
-      Height = 309
+      Height = 306
       Top = 0
       Width = 152
       ItemHeight = 0
@@ -128,7 +128,7 @@ object TestControlForm: TTestControlForm
     end
     object chkGDB: TCheckListBox
       Left = 306
-      Height = 309
+      Height = 306
       Top = 0
       Width = 150
       ItemHeight = 0

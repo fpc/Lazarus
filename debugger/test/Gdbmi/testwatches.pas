@@ -185,6 +185,10 @@ type
     procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
       ATpNm: string; AFlgs: TWatchExpectationFlags
     );
+
+    procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes;
+      ATpNm: string; AFlgs: TWatchExpectationFlags
+    );
     procedure UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType; AMinGdb: Integer);
     procedure UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType; AMinFpc: Integer);
 
@@ -424,6 +428,16 @@ begin
   end;
 end;
 
+procedure TTestWatches.UpdRes(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes;
+  ATpNm: string; AFlgs: TWatchExpectationFlags);
+var
+  i: TSymbolType;
+begin
+  for i := low(TSymbolType) to high(TSymbolType) do
+    if i in ASymbolTypes then
+      UpdRes(AWatchExp, i, ATpNm, AFlgs);
+end;
+
 procedure TTestWatches.UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
   AMinGdb: Integer);
 begin
@@ -491,58 +505,58 @@ begin
   AddFmtDef('ArgTRecSelfDArray',  '.',                                   skSimple,    'TRecSelfDArray', []);
   //ArgTRecSelf
   AddFmtDef('ArgTRecSelfDArray[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfDArray[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch, IgnStabs, IgnDwrf]);
-  AddFmtDef('ArgTRecSelfDArray[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs, IgnDwrf]);
-  AddFmtDef('ArgTRecSelfDArray[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs, IgnDwrf]);
-  AddFmtDef('ArgTRecSelfDArray[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch, IgnStabs, IgnDwrf]);
+  AddFmtDef('ArgTRecSelfDArray[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfDArray[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfDArray[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('ArgTRecSelfDArray[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
   //VArgTRecSelf
   AddFmtDef('ArgTRecSelfDArray[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfDArray[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch,IgnStabs, IgnDwrf]);
-  AddFmtDef('ArgTRecSelfDArray[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs, IgnDwrf]);
-  AddFmtDef('ArgTRecSelfDArray[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs, IgnDwrf]);
-  AddFmtDef('ArgTRecSelfDArray[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnStabs, IgnDwrf]);
+  AddFmtDef('ArgTRecSelfDArray[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfDArray[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfDArray[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('ArgTRecSelfDArray[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
 
   AddFmtDef('ArgTRecSelfS0Array',  '.',                                   skSimple,    'TRecSelfS0Array', []);
   //ArgTRecSelf
   AddFmtDef('ArgTRecSelfS0Array[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfS0Array[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
-  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
-  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
-  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS0Array[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('ArgTRecSelfS0Array[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
   //VArgTRecSelf
   AddFmtDef('ArgTRecSelfS0Array[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfS0Array[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
-  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
-  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
-  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS0Array[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('ArgTRecSelfS0Array[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
 
   AddFmtDef('ArgTRecSelfS3Array',  '.',                                   skSimple,    'TRecSelfS3Array', []);
   //ArgTRecSelf
   AddFmtDef('ArgTRecSelfS3Array[3]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
-  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
-  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
-  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('ArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
   //VArgTRecSelf
   AddFmtDef('ArgTRecSelfS3Array[4]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('ArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
-  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
-  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
-  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf3]);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', []);
+  AddFmtDef('ArgTRecSelfS3Array[4].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
 
   AddFmtDef('ArgTPRecSelfDArray',  '.',                                   skSimple,    'TPRecSelfDArray', []);
   //ArgTRecSelf
-  AddFmtDef('ArgTPRecSelfDArray[0]^',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', [IgnStabs,IgnDwrf]);
-  AddFmtDef('ArgTPRecSelfDArray[0]^.ValInt',   '100',                               skSimple,    M_Int, [fTpMtch, IgnStabs,IgnDwrf]);
-  AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs,IgnDwrf]);
-  AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs,IgnDwrf]);
-  AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch, IgnStabs,IgnDwrf]);
+  AddFmtDef('ArgTPRecSelfDArray[0]^',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', [IgnDwrf3]);
+  AddFmtDef('ArgTPRecSelfDArray[0]^.ValInt',   '100',                               skSimple,    M_Int, [fTpMtch, IgnDwrf3]);
+  AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('ArgTPRecSelfDArray[0]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
   //VArgTRecSelf
-  AddFmtDef('ArgTPRecSelfDArray[1]^',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', [IgnStabs,IgnDwrf]);
-  AddFmtDef('ArgTPRecSelfDArray[1]^.ValInt',   '102',                               skSimple,    M_Int, [fTpMtch, IgnStabs,IgnDwrf]);
-  AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs,IgnDwrf]);
-  AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs,IgnDwrf]);
-  AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch, IgnStabs,IgnDwrf]);
+  AddFmtDef('ArgTPRecSelfDArray[1]^',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', [IgnDwrf3]);
+  AddFmtDef('ArgTPRecSelfDArray[1]^.ValInt',   '102',                               skSimple,    M_Int, [fTpMtch, IgnDwrf3]);
+  AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('ArgTPRecSelfDArray[1]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
 
 
 
@@ -572,61 +586,59 @@ begin
      UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
   //ArgTRecSelf
   r := AddFmtDef('VArgTRecSelfDArray[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
-  AddFmtDef('VArgTRecSelfDArray[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch, IgnStabs, IgnDwrf]);
-  AddFmtDef('VArgTRecSelfDArray[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs, IgnDwrf]);
-  AddFmtDef('VArgTRecSelfDArray[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs, IgnDwrf]);
-  AddFmtDef('VArgTRecSelfDArray[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch, IgnStabs, IgnDwrf]);
+  AddFmtDef('VArgTRecSelfDArray[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfDArray[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfDArray[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('VArgTRecSelfDArray[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
   //VArgTRecSelf
   r := AddFmtDef('VArgTRecSelfDArray[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-     UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
-  AddFmtDef('VArgTRecSelfDArray[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch, IgnStabs, IgnDwrf]);
-  AddFmtDef('VArgTRecSelfDArray[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs, IgnDwrf]);
-  AddFmtDef('VArgTRecSelfDArray[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs, IgnDwrf]);
-  AddFmtDef('VArgTRecSelfDArray[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch, IgnStabs, IgnDwrf]);
+  AddFmtDef('VArgTRecSelfDArray[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfDArray[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfDArray[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('VArgTRecSelfDArray[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
 
   AddFmtDef('VArgTRecSelfS0Array',  '.',                                   skSimple,    'TRecSelfS0Array', []);
   //ArgTRecSelf
   AddFmtDef('VArgTRecSelfS0Array[0]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('VArgTRecSelfS0Array[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
-  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
-  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
-  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS0Array[0].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('VArgTRecSelfS0Array[0].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
   //VArgTRecSelf
   AddFmtDef('VArgTRecSelfS0Array[1]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('VArgTRecSelfS0Array[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
-  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
-  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
-  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS0Array[1].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('VArgTRecSelfS0Array[1].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
 
   AddFmtDef('VArgTRecSelfS3Array',  '.',                                   skSimple,    'TRecSelfS3Array', []);
   //ArgTRecSelf
   AddFmtDef('VArgTRecSelfS3Array[3]',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', []);
-  AddFmtDef('VArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
-  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
-  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
-  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('VArgTRecSelfS3Array[3].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
   //VArgTRecSelf
   AddFmtDef('VArgTRecSelfS3Array[4]',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', []);
-  AddFmtDef('VArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch,IgnDwrf]);
-  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnDwrf]);
-  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf]);
-  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnDwrf]);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('VArgTRecSelfS3Array[4].ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
 
   r := AddFmtDef('VArgTPRecSelfDArray',  '.',                                   skSimple,    'TPRecSelfDArray', []);
      UpdResMinFpc(r, stDwarf, 020600); UpdResMinFpc(r, stDwarfSet, 020600);
   //ArgTRecSelf
-  AddFmtDef('VArgTPRecSelfDArray[0]^',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', [IgnStabs,IgnDwrf]);
-  AddFmtDef('VArgTPRecSelfDArray[0]^.ValInt',   '100',                               skSimple,    M_Int, [fTpMtch,IgnStabs,IgnDwrf]);
-  AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs,IgnDwrf]);
-  AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs,IgnDwrf]);
-  AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnStabs,IgnDwrf]);
+  AddFmtDef('VArgTPRecSelfDArray[0]^',       MatchRecord('TRecSelf', 'valint = 100'),skRecord,    'TRecSelf', [IgnDwrf3]);
+  AddFmtDef('VArgTPRecSelfDArray[0]^.ValInt',   '100',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('VArgTPRecSelfDArray[0]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
   //VArgTRecSelf
-  AddFmtDef('VArgTPRecSelfDArray[1]^',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', [IgnStabs,IgnDwrf]);
-  AddFmtDef('VArgTPRecSelfDArray[1]^.ValInt',   '102',                               skSimple,    M_Int, [fTpMtch,IgnStabs,IgnDwrf]);
-  AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', [IgnStabs,IgnDwrf]);
-  AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnStabs,IgnDwrf]);
-  AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch,IgnStabs,IgnDwrf]);
+  AddFmtDef('VArgTPRecSelfDArray[1]^',       MatchRecord('TRecSelf', 'valint = 102'),skRecord,    'TRecSelf', [IgnDwrf3]);
+  AddFmtDef('VArgTPRecSelfDArray[1]^.ValInt',   '102',                               skSimple,    M_Int, [fTpMtch]);
+  AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec',  MatchPointer('PRec'),                skPointer,   'PRec', []);
+  AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec^', MatchRecord('TRec', 1),              skRecord,    'TRec', [IgnDwrf3]);
+  AddFmtDef('VArgTPRecSelfDArray[1]^.ValPrec^.ValInt',  '1',                         skSimple,    M_Int, [fTpMtch]);
 
 
   // LOCAL var (global type)
@@ -860,11 +872,9 @@ begin
   r:=AddStringFmtDef('ArgTMyAnsiStringDArray[0]',   'DArray1 Str0',         'AnsiString', []);
   r:=AddStringFmtDef('ArgTMyAnsiStringDArray[1]',   'DArray1 Str1',         'AnsiString', []);
   r:=AddStringFmtDef('VArgTMyAnsiStringDArray[0]',  'DArray2 Str0',         'AnsiString', []);
-     UpdResMinFpc(r, stDwarf, 020600);
-     UpdResMinFpc(r, stDwarfSet, 020600);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdRes(r, stDwarf2All, '^(\^Char|AnsiString)$', [fTpMtch]);
   r:=AddStringFmtDef('VArgTMyAnsiStringDArray[1]',  'DArray2 Str1',         'AnsiString', []);
-     UpdResMinFpc(r, stDwarf, 020600);
-     UpdResMinFpc(r, stDwarfSet, 020600);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdRes(r, stDwarf2All, '^(\^Char|AnsiString)$', [fTpMtch]);
 
 
   r:=AddCharFmtDef('ArgTMyAnsiStringDArray[0][1]',  'D', 'char', [IgnDwrf2, IgnStabs]);
@@ -899,10 +909,10 @@ begin
   // PAnsiString in array
   r:=AddPointerFmtDefRaw('ArgTMyPAnsiStringDArray[0]',   MatchPointer(),     '^(\^|P)(AnsiString|PChar)$', [fTpMtch]);
   r:=AddPointerFmtDefRaw('ArgTMyPAnsiStringDArray[1]',   MatchPointer(),     '^(\^|P)(AnsiString|PChar)$', [fTpMtch]);
-  r:=AddStringFmtDef('ArgTMyPAnsiStringDArray[0]^',   'DArray1 Str0',         'AnsiString', [IgnDwrf2, IgnStabs]);
-  r:=AddStringFmtDef('ArgTMyPAnsiStringDArray[1]^',   'DArray1 Str1',         'AnsiString', [IgnDwrf2, IgnStabs]);
-  r:=AddStringFmtDef('VArgTMyPAnsiStringDArray[0]^',  'DArray2 Str0',         'AnsiString', [IgnStabs, IgnDwrf2]);
-  r:=AddStringFmtDef('VArgTMyPAnsiStringDArray[1]^',  'DArray2 Str1',         'AnsiString', [IgnStabs, IgnDwrf2]);
+  r:=AddStringFmtDef('ArgTMyPAnsiStringDArray[0]^',   'DArray1 Str0',         'AnsiString', []);
+  r:=AddStringFmtDef('ArgTMyPAnsiStringDArray[1]^',   'DArray1 Str1',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTMyPAnsiStringDArray[0]^',  'DArray2 Str0',         'AnsiString', []);
+  r:=AddStringFmtDef('VArgTMyPAnsiStringDArray[1]^',  'DArray2 Str1',         'AnsiString', []);
 
 
   r:=AddCharFmtDef('ArgTMyPAnsiStringDArray[0][1]^',   'D'  ,    'char', [IgnDwrf2, IgnStabs]);
