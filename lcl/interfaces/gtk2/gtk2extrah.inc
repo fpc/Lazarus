@@ -33,16 +33,14 @@ const
 const
    GTK_CELL_RENDERER_FOCUSED = 1 shl 4;
 
-// this is required for compilation under windows
-
-{$IFNDEF MSWINDOWS}
-{.$if defined(HasX) and not defined(HasGdk2X)}
+{$IFNDEF MSWINDOWS} // this is required for compilation under windows
+{$if defined(HasX)} // This is required for compilation under Mac OS X
 var
   gdk_display: PDisplay; external gdklib name 'gdk_display';
 
 function gdk_window_xwindow(win : PGdkDrawable): TXID; cdecl; external gdklib name 'gdk_x11_drawable_get_xid';
 function gdk_x11_image_get_ximage(image:PGdkImage):PXImage;cdecl;external gdklib name 'gdk_x11_image_get_ximage';
-{.$endif}
+{$endif}
 {$ENDIF}
 
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
