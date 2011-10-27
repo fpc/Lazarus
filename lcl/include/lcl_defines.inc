@@ -2,7 +2,8 @@
 {$define UseCLDefault}
 
 // For Android, otherwise the LCL will dependent on libc
-{$IFDEF Android}
+{$IF defined(Android)}//defined(CPUARM) and defined(LINUX)}
   {$DEFINE DisableCWString}
   {$DEFINE DisableIconv}
+  {$DEFINE EnablePasWString}
 {$ENDIF}
