@@ -6463,14 +6463,8 @@ dmFindTarget: find child control under the mouse
         <short>True only if all Parents also are enabled.</short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TControl.IsParentShowHint">
-        <short>Checks protected ParentShowHint prop.</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+      <element name="TControl.IsParentShowHint" link="TControl.ParentShowHint">
+        <short>Public read access to the protected ParentShowHint property.</short>
       </element>
       <element name="TControl.IsParentShowHint.Result">
         <short></short>

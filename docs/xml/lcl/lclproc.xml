@@ -41,17 +41,13 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TMethodList">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TMethodList.FItems">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TMethodList.FItems" link="TMethodList.Items"/>
       <!-- variable Visibility: private -->
       <element name="TMethodList.FCount">
         <short/>
@@ -59,2402 +55,2530 @@
         <seealso/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMethodList.GetItems">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
+      <element name="TMethodList.GetItems" link="TMethodList.Items"/>
       <element name="TMethodList.GetItems.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.GetItems.Index">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TMethodList.SetItems">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TMethodList.SetItems" link="TMethodList.Items"/>
       <element name="TMethodList.SetItems.Index">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.SetItems.AValue">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TMethodList.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TMethodList.Destroy"/>
       <!-- function Visibility: public -->
       <element name="TMethodList.Count">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Checked number of Items, can be called with a non-existent object.</short>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TMethodList.Count.Result">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TMethodList.NextDownIndex">
-        <short/>
-        <descr/>
+        <short>Checked decrement of Index, can be called with a non-existent object.</short>
+        <descr>The resulting Index is lower than Count.
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TMethodList.NextDownIndex.Result">
-        <short/>
+        <short>True when the Index is valid.
+        </short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.NextDownIndex.Index">
-        <short/>
+        <short>The decremented Index, or -1 if the object doesn't exist.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TMethodList.IndexOf">
-        <short/>
+        <short>Returns the list index of AMethod.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TMethodList.IndexOf.Result">
-        <short/>
+        <short>The list index, or -1 if not found or the list doesn't exist.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.IndexOf.AMethod">
-        <short/>
+        <short>The method to find.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TMethodList.Delete">
-        <short/>
+        <short>Removes the indexed Item.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.Delete.Index">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TMethodList.Remove">
-        <short/>
+        <short>Removes the first occurence of AMethod from the list.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.Remove.AMethod">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TMethodList.Add">
-        <short/>
+        <short>Adds AMethod to the list, as the first or last member.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.Add.AMethod">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TMethodList.Add">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TMethodList.Add.AMethod">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.Add.AsLast">
-        <short/>
+        <short>Add as first (False) or last (True) member.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TMethodList.Insert">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.Insert.Index">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.Insert.AMethod">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TMethodList.Move">
-        <short/>
+        <short>Moves an Item within the list.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.Move.OldIndex">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.Move.NewIndex">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TMethodList.RemoveAllMethodsOfObject">
-        <short/>
+        <short>Deletes all occurences of methods of AnObject from the list.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.RemoveAllMethodsOfObject.AnObject">
-        <short/>
+        <short>The object whose methods shall be removed.</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TMethodList.CallNotifyEvents">
+        <short>Invokes all methods in the list, as notification handlers.</short>
+        <descr>All listed methods <b>must</b> take exactly one argument of type TObject!
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TMethodList.CallNotifyEvents.Sender">
+        <short>The reference to pass as the argument to all methods.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TMethodList.Items">
-        <short/>
+        <short>Indexed access to the methods in the list.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMethodList.Items.Index">
         <short/>
       </element>
+<!-- array type Visibility: default -->
+      <element name="TStackTracePointers">
+      <short>A dynamic pointer array type.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+<!-- class Visibility: default -->
+      <element name="TDebugLCLItemInfo">
+        <short>A node in TDebugLCLItems, holding information about a heap[?] object.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+          <link id="TDebugLCLItems"/>
+        </seealso>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TDebugLCLItemInfo.Item">
+        <short>The address of the item.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TDebugLCLItemInfo.IsDestroyed">
+        <short>True when the item has been destroyed.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TDebugLCLItemInfo.Info">
+        <short>A descriptive string[?]
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TDebugLCLItemInfo.CreationStack">
+        <short>Stack trace at creation of the object[?]
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: public -->
+      <element name="TDebugLCLItemInfo.DestructionStack">
+        <short>Stack trace at destruction of the object[?]
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDebugLCLItemInfo.AsString">
+        <short>All information about the object.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDebugLCLItemInfo.AsString.Result">
+        <short></short>
+      </element>
+      <element name="TDebugLCLItemInfo.AsString.WithStackTraces">
+        <short>True means include stack traces.</short>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TDebugLCLItemInfo.Destroy"/>
+<!-- class Visibility: default -->
+      <element name="TDebugLCLItems">
+        <short>A list describing dynamically allocated (and destroyed) memory objects.
+        </short>
+        <descr>The list holds descriptive information about the object,
+          and stack traces of its creation and destruction.
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDebugLCLItems.FItems">
+        <short>The list entries, organized as an AVL tree.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDebugLCLItems.FName" link="TDebugLCLItems.Name"/>
+      <!-- constructor Visibility: public -->
+      <element name="TDebugLCLItems.Create">
+        <short>Assigns TheName to the list.</short>
+      </element>
+      <element name="TDebugLCLItems.Create.TheName">
+        <short>The descriptive name of the list.</short>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TDebugLCLItems.Destroy"/>
+      <!-- function Visibility: public -->
+      <element name="TDebugLCLItems.FindInfo">
+        <short>Returns information about an item, optionally creating an entry if not found.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDebugLCLItems.FindInfo.Result">
+        <short>The item information, or Nil if none was found or created.</short>
+      </element>
+      <element name="TDebugLCLItems.FindInfo.p">
+        <short>The address of the item to find.</short>
+      </element>
+      <element name="TDebugLCLItems.FindInfo.CreateIfNotExists">
+        <short>True means create an according list entry, if none existed yet.</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDebugLCLItems.IsDestroyed">
+        <short>True when the item has been created and destroyed.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDebugLCLItems.IsDestroyed.Result">
+        <short>True when destroyed, False when alive or not listed.
+        </short>
+      </element>
+      <element name="TDebugLCLItems.IsDestroyed.p">
+        <short>The address to find.</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDebugLCLItems.IsCreated">
+        <short>True when the item is alive.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDebugLCLItems.IsCreated.Result">
+        <short>True when the item is listed and has not yet been destroyed.</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDebugLCLItems.IsCreated.p">
+        <short>The address to find.</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDebugLCLItems.MarkCreated">
+        <short>Checked insert of an item.</short>
+        <descr>
+        </descr>
+        <errors>
+          GDB exception 'RaiseDoubleCreated' when the address is already in use.
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDebugLCLItems.MarkCreated.Result">
+        <short>The info object describing the address.</short>
+      </element>
+      <element name="TDebugLCLItems.MarkCreated.p">
+        <short>The address to add.</short>
+      </element>
+      <element name="TDebugLCLItems.MarkCreated.InfoText">
+        <short>Descriptive text about the item.</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TDebugLCLItems.MarkDestroyed">
+        <short>Checked destruction notification.</short>
+        <descr>
+        </descr>
+        <errors>
+          <ul>
+            <li>GDB exception 'TDebugLCLItems.MarkDestroyed' when the item was not yet created.</li>
+            <li>GDB exception 'RaiseDoubleDestroyed' when the item was already destroyed.</li>
+          </ul>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDebugLCLItems.MarkDestroyed.p">
+        <short>The address to mark as destroyed.</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDebugLCLItems.GetInfo">
+        <short>Returns textual information about an object.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDebugLCLItems.GetInfo.Result">
+        <short>The descriptive string.</short>
+      </element>
+      <element name="TDebugLCLItems.GetInfo.p">
+        <short>The address to find.</short>
+      </element>
+      <element name="TDebugLCLItems.GetInfo.WithStackTraces">
+        <short>True means include stack traces.</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDebugLCLItems.Name">
+        <short>The descriptive name of the list.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+<!-- record type Visibility: default -->
+      <element name="TLineInfoCacheItem">
+        <short>A record containing an address/description pair.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TLineInfoCacheItem.Addr">
+        <short>The address to describe.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TLineInfoCacheItem.Info">
+        <short>The descriptive text.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PLineInfoCacheItem" link="TLineInfoCacheItem"/>
       <!-- function Visibility: default -->
+      <element name="CompareDebugLCLItemInfos">
+        <short>Compare function for the TDebugLCLItems AVL tree[?]
+        </short>
+        <descr>Compares the Item addresses.
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CompareDebugLCLItemInfos.Result">
+        <short></short>
+      </element>
+      <element name="CompareDebugLCLItemInfos.Data1">
+        <short></short>
+      </element>
+      <element name="CompareDebugLCLItemInfos.Data2">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareItemWithDebugLCLItemInfo">
+        <short>Compare function for <link id="TDebugLCLItems.FindInfo"/>.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CompareItemWithDebugLCLItemInfo.Result">
+        <short></short>
+      </element>
+      <element name="CompareItemWithDebugLCLItemInfo.Item">
+        <short></short>
+      </element>
+      <element name="CompareItemWithDebugLCLItemInfo.DebugItemInfo">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareLineInfoCacheItems">
+        <short>Compare function for <link id="GetLineInfo"/>
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CompareLineInfoCacheItems.Result">
+        <short></short>
+      </element>
+      <element name="CompareLineInfoCacheItems.Data1">
+        <short></short>
+      </element>
+      <element name="CompareLineInfoCacheItems.Data2">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareAddrWithLineInfoCacheItem">
+        <short>Compare function for <link id="GetLineInfo"/>
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CompareAddrWithLineInfoCacheItem.Result">
+        <short></short>
+      </element>
+      <element name="CompareAddrWithLineInfoCacheItem.Addr">
+        <short></short>
+      </element>
+      <element name="CompareAddrWithLineInfoCacheItem.Item">
+        <short></short>
+      </element>
+      <!-- function type Visibility: default -->
+      <element name="TStringsSortCompare">
+        <short>Compare function type for TStrings Strings[].</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TStringsSortCompare.Result">
+        <short></short>
+      </element>
+      <element name="TStringsSortCompare.Item1">
+        <short></short>
+      </element>
+      <element name="TStringsSortCompare.Item2">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="MergeSort">
+        <short>Sorting TStrings or TFPList.</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="MergeSort.List">
+        <short>The list to sort (overloaded type).</short>
+      </element>
+      <element name="MergeSort.OnCompare">
+        <short>The sort compare function.</short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetEnumValueDef">
+        <short>Finds an enum member by name[?]
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetEnumValueDef.Result">
+        <short>The member ordinal[?]</short>
+      </element>
+      <element name="GetEnumValueDef.TypeInfo">
+        <short>The enum TypeInfo.</short>
+      </element>
+      <element name="GetEnumValueDef.Name">
+        <short>The member name.</short>
+      </element>
+      <element name="GetEnumValueDef.DefaultValue">
+        <short>The value returned when the element was not found.</short>
+      </element>
+<!-- function Visibility: default -->
       <element name="ShortCutToText">
-        <short/>
+        <short>Returns the textual representation of an shortcut[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ShortCutToText.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ShortCutToText.ShortCut">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="TextToShortCut">
-        <short/>
+        <short>Converts the textual representation of an shortcut into an shortcut[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TextToShortCut.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TextToShortCut.ShortCutText">
         <short/>
       </element>
+      <!-- function Visibility: default -->
+      <element name="GetCompleteText">
+        <short>Find an string in a list, given its first few characters.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetCompleteText.Result">
+        <short>The found string.</short>
+      </element>
+      <element name="GetCompleteText.sText">
+        <short>The begin of the string to find.</short>
+      </element>
+      <element name="GetCompleteText.iSelStart">
+        <short>The list index where the search should start.</short>
+      </element>
+      <element name="GetCompleteText.bCaseSensitive">
+        <short>True means case-sensitive comparison[?]
+        </short>
+      </element>
+      <element name="GetCompleteText.bSearchAscending">
+        <short>True means search ascending from iSelStart[?]
+        </short>
+      </element>
+      <element name="GetCompleteText.slTextList">
+        <short>The list to search.
+        </short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="IsEditableTextKey">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="IsEditableTextKey.Result">
+        <short></short>
+      </element>
+      <element name="IsEditableTextKey.Key">
+        <short>The virtual key code.</short>
+      </element>
       <!-- function type Visibility: default -->
       <element name="TSendApplicationMessageFunction">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TSendApplicationMessageFunction.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TSendApplicationMessageFunction.Msg">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TSendApplicationMessageFunction.WParam">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TSendApplicationMessageFunction.LParam">
         <short/>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TOwnerFormDesignerModifiedProc">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TOwnerFormDesignerModifiedProc.AComponent">
-        <short/>
-      </element>
-      <!-- function type Visibility: default -->
-      <element name="TSendMessageToInterfaceFunction">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TSendMessageToInterfaceFunction.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TSendMessageToInterfaceFunction.LM_Message">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TSendMessageToInterfaceFunction.Sender">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TSendMessageToInterfaceFunction.data">
         <short/>
       </element>
       <!-- variable Visibility: default -->
       <element name="SendApplicationMessageFunction">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="OwnerFormDesignerModifiedProc">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- function Visibility: default -->
       <element name="SendApplicationMessage">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SendApplicationMessage.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SendApplicationMessage.Msg">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SendApplicationMessage.WParam">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SendApplicationMessage.LParam">
         <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="OwnerFormDesignerModified">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="OwnerFormDesignerModified.AComponent">
         <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="FreeThenNil">
-        <short/>
+        <short>Free the TObject, before setting the reference to Nil.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="FreeThenNil.AnObject">
-        <short/>
+      <element name="FreeThenNil.obj">
+        <short>The object reference (variable).</short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="RegisterInterfaceInitializationHandler">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="RegisterInterfaceInitializationHandler.p">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="CallInterfaceInitializationHandlers">
+        <short>Invokes the registered handlers.</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
       <!-- procedure Visibility: default -->
       <element name="RegisterInterfaceFinalizationHandler">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RegisterInterfaceFinalizationHandler.p">
         <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="CallInterfaceFinalizationHandlers">
-        <short/>
+        <short>Invokes the registered handlers.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: default -->
       <element name="OffsetRect">
-        <short/>
+        <short>Increments the TopLeft and BottomRight coordinates of the rectangle.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="OffsetRect.Result">
-        <short/>
+        <short>True when the TopLeft coordinates are all positive.
+        </short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="OffsetRect.ARect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="OffsetRect.dx">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="OffsetRect.dy">
         <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="MoveRect">
-        <short/>
+        <short>Makes the rectangle originate at the given coordinates.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MoveRect.ARect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MoveRect.x">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MoveRect.y">
         <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="MoveRectToFit">
-        <short/>
+        <short>Adjusts an rectangle to fit entirely into another one.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MoveRectToFit.ARect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MoveRectToFit.MaxRect">
-        <short/>
+        <short>The bounding rectangle.</short>
       </element>
       <!-- procedure Visibility: default -->
       <element name="MakeMinMax">
-        <short/>
+        <short>Eventually swaps the variable contents,
+          so that i1 is not higher than i2.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MakeMinMax.i1">
-        <short/>
+        <short>Receives the minimum value of both variables.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MakeMinMax.i2">
-        <short/>
+        <short>Receives the maximum value of both variables.</short>
       </element>
       <!-- procedure Visibility: default -->
       <element name="CalculateLeftTopWidthHeight">
-        <short/>
+        <short>Converts coordinates into kind of a rectangle with positive Width and Height.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CalculateLeftTopWidthHeight.X1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CalculateLeftTopWidthHeight.Y1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CalculateLeftTopWidthHeight.X2">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CalculateLeftTopWidthHeight.Y2">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CalculateLeftTopWidthHeight.Left">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CalculateLeftTopWidthHeight.Top">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CalculateLeftTopWidthHeight.Width">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CalculateLeftTopWidthHeight.Height">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="DeleteAmpersands">
-        <short/>
+        <short>Replaces all '&amp;x' with 'x',
+          and returns the position of the first adjusted letter in the resulting string.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="DeleteAmpersands.Result">
-        <short/>
+        <short>Position of the first adjusted non-ampersand letter.
+        </short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DeleteAmpersands.Str">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="BreakString">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="BreakString.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="BreakString.s">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="BreakString.MaxLineLength">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="BreakString.Indent">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ComparePointers">
-        <short/>
+        <short>Compares two pointers, returning the Sign of the difference.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ComparePointers.Result">
-        <short/>
+        <short>+1 if p1 is higher than p2, -1 if p2 is higher than p1, 0 if both are equal.
+        </short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ComparePointers.p1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ComparePointers.p2">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="CompareHandles">
-        <short/>
+        <short>Compares two Handles, returning the Sign of the difference.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CompareHandles.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CompareHandles.h1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CompareHandles.h2">
         <short/>
       </element>
+     <!-- function Visibility: default -->
+      <element name="CompareLCLHandles">
+        <short>Compares two LCLHandles, returning the Sign of the difference.</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CompareLCLHandles.Result">
+        <short></short>
+      </element>
+      <element name="CompareLCLHandles.h1">
+        <short></short>
+      </element>
+      <element name="CompareLCLHandles.h2">
+        <short></short>
+      </element>
       <!-- function Visibility: default -->
       <element name="CompareRect">
-        <short/>
+        <short>Returns True when the two rectangles are equal.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CompareRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CompareRect.R1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CompareRect.R2">
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="ComparePoints">
+        <short>Compares the coordinates (y first) and returns the Sign of the difference.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="ComparePoints.Result">
+        <short></short>
+      </element>
+      <element name="ComparePoints.p1">
+        <short></short>
+      </element>
+      <element name="ComparePoints.p2">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CompareMethods">
+        <short>Returns true when both method references are equal.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CompareMethods.Result">
+        <short></short>
+      </element>
+      <element name="CompareMethods.m1">
+        <short></short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CompareMethods.m2">
+      <short></short>
+      </element>
+      <!-- function Visibility: default -->
       <element name="RoundToInt">
-        <short/>
+        <short>Returns the rounded value as an Integer.</short>
         <descr/>
-        <errors/>
+        <errors>[What if the result exceeds the Integer range?]
+        </errors>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="RoundToInt.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RoundToInt.e">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="RoundToCardinal">
-        <short/>
+        <short>Returns the rounded value as an Cardinal.</short>
         <descr/>
-        <errors/>
+        <errors>[What if the result exceeds the Cardinal range?]
+        </errors>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="RoundToCardinal.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RoundToCardinal.e">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="TruncToInt">
-        <short/>
+        <short>Returns the truncated value as an Integer.</short>
         <descr/>
-        <errors/>
+        <errors>[What if the result exceeds the Integer range?]
+        </errors>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TruncToInt.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TruncToInt.e">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="TruncToCardinal">
-        <short/>
+        <short>Returns the rounded value as an Cardinal.</short>
         <descr/>
-        <errors/>
+        <errors>[What if the result exceeds the Cardinal range?]
+        </errors>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TruncToCardinal.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TruncToCardinal.e">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="StrToDouble">
-        <short/>
+        <short>Converts an numeric string into an Double value.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="StrToDouble.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StrToDouble.s">
         <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="RaiseGDBException">
         <short>Raises an exception.</short>
-        <descr>Normally, GDB does not catch fpc Exception objects, therefore this procedure raises a standard divide by zero exception which is catched by GDB. 
-</descr>
+        <descr>Normally, GDB does not catch fpc Exception objects,
+          therefore this procedure raises a standard divide by zero exception
+          which is catched by GDB.
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RaiseGDBException.Msg">
         <short/>
       </element>
       <!-- procedure Visibility: default -->
+      <element name="RaiseAndCatchException">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DumpExceptionBackTrace">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DumpStack">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetStackTrace">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetStackTrace.Result">
+        <short></short>
+      </element>
+      <element name="GetStackTrace.UseCache">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="GetStackTracePointers">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetStackTracePointers.AStack">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="StackTraceAsString">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="StackTraceAsString.Result">
+        <short></short>
+      </element>
+      <element name="StackTraceAsString.AStack">
+        <short></short>
+      </element>
+      <element name="StackTraceAsString.UseCache">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetLineInfo">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetLineInfo.Result">
+        <short></short>
+      </element>
+      <element name="GetLineInfo.Addr">
+        <short></short>
+      </element>
+      <element name="GetLineInfo.UseCache">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
       <element name="DebugLn">
+        <short>Writes a number of strings (heavily overloaded) to the debug output[?]</short>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.S">
-        <short/>
+        <short>A single string, or a Format string when followed by an argument list.
+        </short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.Args">
-        <short/>
+        <short>Writes the formatted dump of the typed arguments.</short>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s2">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s3">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s4">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s5">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s6">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s7">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s8">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s8">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s9">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s8">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s9">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s10">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s8">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s9">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s10">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s11">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s8">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s9">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s10">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s11">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s12">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s8">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s9">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s10">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s11">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s12">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s13">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s8">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s9">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s10">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s11">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s12">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s13">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s14">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s8">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s9">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s10">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s11">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s12">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s13">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s14">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s15">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="DebugLn">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s8">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s9">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s10">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s11">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s12">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s13">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s14">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DebugLn.s15">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DebugLn.s16">
         <short/>
       </element>
       <!-- procedure Visibility: default -->
+      <element name="DebugLnEnter">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DebugLnEnter.s">
+        <short></short>
+      </element>
+      <element name="DebugLnEnter.Args">
+        <short></short>
+      </element>
+      <element name="DebugLnEnter.s1"/>
+      <element name="DebugLnEnter.s2"/>
+      <element name="DebugLnEnter.s3"/>
+      <element name="DebugLnEnter.s4"/>
+      <element name="DebugLnEnter.s5"/>
+      <element name="DebugLnEnter.s6"/>
+      <element name="DebugLnEnter.s7"/>
+      <element name="DebugLnEnter.s8"/>
+      <element name="DebugLnEnter.s9"/>
+      <element name="DebugLnEnter.s10"/>
+      <element name="DebugLnEnter.s11"/>
+      <element name="DebugLnEnter.s12"/>
+      <element name="DebugLnEnter.s13"/>
+      <element name="DebugLnEnter.s14"/>
+      <element name="DebugLnEnter.s15"/>
+      <element name="DebugLnEnter.s16"/>
+      <element name="DebugLnEnter.s17"/>
+      <element name="DebugLnEnter.s18"/>
+      <!-- procedure Visibility: default -->
+      <element name="DebugLnExit">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DebugLnExit.s">
+        <short></short>
+      </element>
+      <element name="DebugLnExit.Args">
+        <short></short>
+      </element>
+      <element name="DebugLnExit.s1"/>
+      <element name="DebugLnExit.s2"/>
+      <element name="DebugLnExit.s3"/>
+      <element name="DebugLnExit.s4"/>
+      <element name="DebugLnExit.s5"/>
+      <element name="DebugLnExit.s6"/>
+      <element name="DebugLnExit.s7"/>
+      <element name="DebugLnExit.s8"/>
+      <element name="DebugLnExit.s9"/>
+      <element name="DebugLnExit.s10"/>
+      <element name="DebugLnExit.s11"/>
+      <element name="DebugLnExit.s12"/>
+      <element name="DebugLnExit.s13"/>
+      <element name="DebugLnExit.s14"/>
+      <element name="DebugLnExit.s15"/>
+      <element name="DebugLnExit.s16"/>
+      <element name="DebugLnExit.s17"/>
+      <element name="DebugLnExit.s18"/>
+      <!-- function Visibility: default -->
+      <element name="ConvertLineEndings">
+        <short>Converts all line endings in a string into platform LineEnding.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="ConvertLineEndings.Result">
+        <short></short>
+      </element>
+      <element name="ConvertLineEndings.s">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
       <element name="DbgOut">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DbgOut.s">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DbgOut">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s2">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DbgOut">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s3">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DbgOut">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s4">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DbgOut">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s5">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DbgOut">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s6">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DbgOut">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s7">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DbgOut">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s8">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DbgOut">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s8">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s9">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DbgOut">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s8">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s9">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s10">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DbgOut">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s8">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s9">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s10">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s11">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="DbgOut">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s2">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s3">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s4">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s5">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s6">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s7">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s8">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s9">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s10">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s11">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgOut.s12">
-        <short/>
-      </element>
+        <short>[?]</short>
+      </element>
+      <element name="DbgOut.Args">
+        <short>[?]</short>
+      </element>
+      <element name="DbgOut.s1"/>
+      <element name="DbgOut.s2"/>
+      <element name="DbgOut.s3"/>
+      <element name="DbgOut.s4"/>
+      <element name="DbgOut.s5"/>
+      <element name="DbgOut.s6"/>
+      <element name="DbgOut.s7"/>
+      <element name="DbgOut.s8"/>
+      <element name="DbgOut.s9"/>
+      <element name="DbgOut.s10"/>
+      <element name="DbgOut.s11"/>
+      <element name="DbgOut.s12"/>
       <!-- function Visibility: default -->
       <element name="DbgS">
-        <short>Formats debug output for various variable types (overloaded).</short>
-        <descr>boolean: "True" or "False".
-[format as DefinitionList!]
-pointer: hexidecimal address.
-TRect, TPoint: shows the x/y coordinates.
-TComponentState: set.
-TObject: Name:ClassName.
-TClass: ClassName.
-string, WideString: chars &gt; #126 are translated into #nn (#nnnn) format.
-</descr>
-        <errors>""</errors>
+        <short>Formats debug output for various argument types (overloaded).</short>
+        <descr>
+          <ul>
+            <li>boolean: "True" or "False".
+            </li><li>pointer: hexidecimal address.
+            </li><li>TRect, TPoint: shows the x/y coordinates.
+            </li><li>TComponentState: set.
+            </li><li>TObject: Name:ClassName.
+            </li><li>TClass: ClassName.
+            </li><li>string, WideString: chars &gt; #126 are translated into #nn (#nnnn) format.
+            </li>
+          </ul>
+        </descr>
+        <errors>""[?]
+        </errors>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="DbgS.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
+      <element name="DbgS.q">
+        <short>[?]</short>
+      </element>
+      <element name="DbgS.MaxDecimals">
+        <short>[?]</short>
+      </element>
+      <element name="DbgS.m">
+        <short>[?]</short>
+      </element>
       <element name="DbgS.c">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="DbgS">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="DbgS.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DbgS.i">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="DbgS">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="DbgS.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DbgS.r">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="DbgS">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="DbgS.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DbgS.p">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="DbgS">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="DbgS.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgS.p">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="DbgS">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="DbgS.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DbgS.e">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="DbgS">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="DbgS.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="DbgS.b">
-        <short/>
+        <short>[?]</short>
+      </element>
+      <element name="DbgS.Shift">
+        <short>[?]</short>
+      </element>
+      <element name="DbgS.i1">
+        <short>[?]</short>
+      </element>
+      <element name="DbgS.i2">
+        <short>[?]</short>
+      </element>
+      <element name="DbgS.i3">
+        <short>[?]</short>
+      </element>
+      <element name="DbgS.i4">
+        <short>[?]</short>
+      </element>
+      <element name="DbgS.ASize">
+        <short>[?]</short>
+      </element>
+      <element name="DbgS.ATM">
+        <short>[?]</short>
+      </element>
+      <element name="DbgS.AScrollInfo">
+        <short>[?]</short>
       </element>
       <!-- function Visibility: default -->
       <element name="DbgSName">
-        <short/>
+        <short>Returns the component or class name.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="DbgSName.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DbgSName.p">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="DbgStr">
-        <short/>
+        <short>Converts control characters or above #126 into #hex format.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="DbgStr.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DbgStr.StringWithSpecialChars">
         <short/>
       </element>
       <!-- function Visibility: default -->
-      <element name="DbgS">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="DbgWideStr">
+        <short>Converts control characters or above #126 into #hex format.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="DbgS.Result">
-        <short/>
+      <element name="DbgWideStr.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgS.i1">
-        <short/>
+      <element name="DbgWideStr.StringWithSpecialChars">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgS.i2">
-        <short/>
+      <!-- function Visibility: default -->
+      <element name="dbgMemRange">
+        <short>Provides an hex dump of a memory section.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgS.i3">
-        <short/>
+      <element name="dbgMemRange.Result">
+        <short>The formatted dump.</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="DbgS.i4">
-        <short/>
+      <element name="dbgMemRange.P">
+        <short>The start address.</short>
+      </element>
+      <element name="dbgMemRange.Count">
+        <short>The number of bytes to dump.</short>
+      </element>
+      <element name="dbgMemRange.Width">
+        <short>The number of bytes per line, zero for no line breaks.</short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="dbgMemStream">
+        <short>Provides an hex dump of an memory stream.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+          <p>
+            The dump starts at the <b>current</b> stream position,
+            the position moves to the end of the dumped range.
+          </p>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="dbgMemStream.Result">
+        <short></short>
+      </element>
+      <element name="dbgMemStream.MemStream">
+        <short></short>
+      </element>
+      <element name="dbgMemStream.Count">
+        <short>The maximum number of bytes to dump.</short>
+      </element>
+
+      <!-- function Visibility: default -->
+      <element name="dbgObjMem">
+        <short>Provides an hex dump of an TObject.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="dbgObjMem.Result">
+        <short></short>
+      </element>
+      <element name="dbgObjMem.AnObject">
+        <short></short>
+      </element>
+
+      <!-- function Visibility: default -->
+      <element name="dbghex">
+        <short>Provides an hex dump of an Int64, (sign + absolute value).
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="dbghex.Result">
+        <short></short>
+      </element>
+      <element name="dbghex.i">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DbgSWindowPosFlags">
+        <short>Provides an dump of SetWindowPosition flags.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DbgSWindowPosFlags.Result">
+        <short></short>
+      </element>
+      <element name="DbgSWindowPosFlags.Flags">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DbgsVKCode">
+        <short>Translates an virtual key code into its VK_... name.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DbgsVKCode.Result">
+        <short></short>
+      </element>
+      <element name="DbgsVKCode.c">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DbgOutThreadLog">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DbgOutThreadLog.Msg">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DebuglnThreadLog">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DebuglnThreadLog.Msg">
+        <short></short>
+      </element>
+      <element name="DebuglnThreadLog.Args">
+        <short>[?]</short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DbgSaveData">
+        <short>Writes data into an file[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DbgSaveData.FileName">
+        <short></short>
+      </element>
+      <element name="DbgSaveData.AData">
+        <short></short>
+      </element>
+      <element name="DbgSaveData.ADataSize">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DbgAppendToFile">
+        <short>Appends a line to the given file[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DbgAppendToFile.FileName">
+        <short></short>
+      </element>
+      <element name="DbgAppendToFile.S">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DbgAppendToFileWithoutLn">
+        <short>Appends (preformatted) text to an file[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DbgAppendToFileWithoutLn.FileName">
+        <short></short>
+      </element>
+      <element name="DbgAppendToFileWithoutLn.S">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="CloseDebugOutput">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="StripLN">
+        <short>Strips everything after (and including) an CR or LF.[???]
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="StripLN.Result">
+        <short></short>
+      </element>
+      <element name="StripLN.ALine">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetPart">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetPart.Result">
+        <short></short>
+      </element>
+      <element name="GetPart.ASkipTo">
+        <short></short>
+      </element>
+      <element name="GetPart.AnEnd">
+        <short></short>
+      </element>
+      <element name="GetPart.ASource">
+        <short></short>
+      </element>
+      <element name="GetPart.AnIgnoreCase">
+        <short></short>
+      </element>
+      <element name="GetPart.AnUpdateSource">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="TextToSingleLine">
+        <short>Compresses multi-line text into a single line.
+        </short>
+        <descr>
+          <pre>
+  Ensures the covenient look of multiline string
+  when displaying it in the single line
+  * Replaces CR and LF with spaces
+  * Removes duplicate spaces
+          </pre>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TextToSingleLine.Result">
+        <short></short>
+      </element>
+      <element name="TextToSingleLine.AText">
+        <short></short>
+      </element>
+      <element name="SwapCase">
+        <short>Toggles the case of all ASCII characters in an string.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SwapCase.Result">
+        <short></short>
+      </element>
+      <element name="SwapCase.S">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="StringCase">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="StringCase.Result">
+        <short></short>
+      </element>
+      <element name="StringCase.AString">
+        <short></short>
+      </element>
+      <element name="StringCase.ACase">
+        <short></short>
+      </element>
+      <element name="StringCase.AIgnoreCase">
+        <short></short>
+      </element>
+      <element name="StringCase.APartial">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ClassCase">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="ClassCase.Result">
+        <short></short>
+      </element>
+      <element name="ClassCase.AClass">
+        <short></short>
+      </element>
+      <element name="ClassCase.ACase">
+        <short></short>
+      </element>
+      <element name="ClassCase.ADecendant">
+        <short></short>
+      </element>
+      <!-- "type" alias type Visibility: default -->
+      <element name="UTF16String">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PUTF16String" link="UTF16String">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharacterLength">
-        <short/>
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="UTF8CharacterLength.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8CharacterLength.p">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8Length">
-        <short/>
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="UTF8Length.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8Length.s">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="UTF8Length">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="UTF8Length.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8Length.p">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="UTF8Length.Count">
-        <short/>
+      <element name="UTF8Length.ByteCount">
+        <short>[?]</short>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharacterToUnicode">
-        <short/>
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="UTF8CharacterToUnicode.Result">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8CharacterToUnicode.p">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8CharacterToUnicode.CharLen">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UnicodeToUTF8">
-        <short/>
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="UnicodeToUTF8.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="UnicodeToUTF8.u">
+      <element name="UnicodeToUTF8.Buf">
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="UnicodeToUTF8SkipErrors">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="UnicodeToUTF8SkipErrors.Result">
+        <short></short>
+      </element>
+      <element name="UnicodeToUTF8SkipErrors.u">
+        <short></short>
+      </element>
+      <element name="UnicodeToUTF8SkipErrors.Buf">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
       <element name="UTF8ToDoubleByteString">
-        <short/>
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="UTF8ToDoubleByteString.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8ToDoubleByteString.s">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8ToDoubleByte">
-        <short/>
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="UTF8ToDoubleByte.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8ToDoubleByte.UTF8Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8ToDoubleByte.Len">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8ToDoubleByte.DBStr">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8FindNearestCharStart">
-        <short/>
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="UTF8FindNearestCharStart.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8FindNearestCharStart.UTF8Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8FindNearestCharStart.Len">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8FindNearestCharStart.BytePos">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharStart">
-        <short/>
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="UTF8CharStart.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8CharStart.UTF8Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UTF8CharStart.Len">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="UTF8CharStart.Index">
+      <element name="UTF8CharStart.CharIndex">
         <short/>
       </element>
       <!-- function Visibility: default -->
-      <element name="BEtoN">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="UTF8CharToByteIndex">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="BEtoN.Result">
-        <short/>
+      <element name="UTF8CharToByteIndex.Result">
+       <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="BEtoN.AValue">
-        <short/>
+      <element name="UTF8CharToByteIndex.UTF8Str">
+        <short></short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="BEtoN">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="UTF8CharToByteIndex.Len">
+        <short></short>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="BEtoN.Result">
-        <short/>
+      <element name="UTF8CharToByteIndex.CharIndex">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="BEtoN.AValue">
-        <short/>
+      <!-- procedure Visibility: default -->
+      <element name="UTF8FixBroken">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function Visibility: default -->
-      <element name="BEtoN">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="BEtoN.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="BEtoN.AValue">
-        <short/>
+      <element name="UTF8FixBroken.P">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
-      <element name="BEtoN">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="UTF8CharacterStrictLength">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="BEtoN.Result">
-        <short/>
+      <element name="UTF8CharacterStrictLength.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="BEtoN.AValue">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="BEtoN">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="BEtoN.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="BEtoN.AValue">
-        <short/>
+      <element name="UTF8CharacterStrictLength.P">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
-      <element name="BEtoN">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="UTF8CStringToUTF8String">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="BEtoN.Result">
-        <short/>
+      <element name="UTF8CStringToUTF8String.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="BEtoN.AValue">
-        <short/>
+      <element name="UTF8CStringToUTF8String.SourceStart">
+        <short></short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="LEtoN">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="LEtoN.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="LEtoN.AValue">
-        <short/>
+      <element name="UTF8CStringToUTF8String.SourceLen">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
-      <element name="LEtoN">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="UTF8Pos">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="LEtoN.Result">
-        <short/>
+      <element name="UTF8Pos.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="LEtoN.AValue">
-        <short/>
+      <element name="UTF8Pos.SearchForText">
+        <short></short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="LEtoN">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="LEtoN.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="LEtoN.AValue">
-        <short/>
+      <element name="UTF8Pos.SearchInText">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
-      <element name="LEtoN">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="UTF8Copy">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="LEtoN.Result">
-        <short/>
+      <element name="UTF8Copy.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="LEtoN.AValue">
-        <short/>
+      <element name="UTF8Copy.s">
+        <short></short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="LEtoN">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="UTF8Copy.StartCharIndex">
+        <short></short>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="LEtoN.Result">
-        <short/>
+      <element name="UTF8Copy.CharCount">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="LEtoN.AValue">
-        <short/>
+      <!-- procedure Visibility: default -->
+      <element name="UTF8Delete">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function Visibility: default -->
-      <element name="LEtoN">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="UTF8Delete.s">
+        <short></short>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="LEtoN.Result">
-        <short/>
+      <element name="UTF8Delete.StartCharIndex">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="LEtoN.AValue">
-        <short/>
+      <element name="UTF8Delete.CharCount">
+        <short></short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="NtoBE">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <!-- procedure Visibility: default -->
+      <element name="UTF8Insert">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="NtoBE.Result">
-        <short/>
+      <element name="UTF8Insert.source">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="NtoBE.AValue">
-        <short/>
+      <element name="UTF8Insert.s">
+        <short></short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="NtoBE">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="NtoBE.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="NtoBE.AValue">
-        <short/>
+      <element name="UTF8Insert.StartCharIndex">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
-      <element name="NtoBE">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="UTF8LowerCase">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="NtoBE.Result">
-        <short/>
+      <element name="UTF8LowerCase.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="NtoBE.AValue">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="NtoBE">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="NtoBE.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="NtoBE.AValue">
-        <short/>
+      <element name="UTF8LowerCase.s">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
-      <element name="NtoBE">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="UTF8UpperCase">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="NtoBE.Result">
-        <short/>
+      <element name="UTF8UpperCase.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="NtoBE.AValue">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="NtoBE">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="NtoBE.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="NtoBE.AValue">
-        <short/>
+      <element name="UTF8UpperCase.s">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
-      <element name="NtoLE">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="FindInvalidUTF8Character">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="NtoLE.Result">
-        <short/>
+      <element name="FindInvalidUTF8Character.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="NtoLE.AValue">
-        <short/>
+      <element name="FindInvalidUTF8Character.p">
+        <short></short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="NtoLE">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="FindInvalidUTF8Character.Count">
+        <short></short>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="NtoLE.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="NtoLE.AValue">
-        <short/>
+      <element name="FindInvalidUTF8Character.StopOnNonASCII">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
-      <element name="NtoLE">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="ValidUTF8String">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="NtoLE.Result">
-        <short/>
+      <element name="ValidUTF8String.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="NtoLE.AValue">
-        <short/>
+      <element name="ValidUTF8String.s">
+        <short></short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="NtoLE">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <!-- procedure Visibility: default -->
+      <element name="AssignUTF8ListToAnsi">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="NtoLE.Result">
-        <short/>
+      <element name="AssignUTF8ListToAnsi.UTF8List">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="NtoLE.AValue">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="NtoLE">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="NtoLE.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="NtoLE.AValue">
-        <short/>
+      <element name="AssignUTF8ListToAnsi.AnsiList">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
-      <element name="NtoLE">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="UTF16CharacterLength">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="NtoLE.Result">
-        <short/>
+      <element name="UTF16CharacterLength.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="NtoLE.AValue">
-        <short/>
+      <element name="UTF16CharacterLength.p">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF16Length">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="UTF16Length.Result">
+        <short></short>
+      </element>
+      <element name="UTF16Length.s">
+        <short></short>
+      </element>
+      <element name="UTF16Length.p">
+        <short></short>
+      </element>
+      <element name="UTF16Length.WordCount">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF16CharacterToUnicode">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="UTF16CharacterToUnicode.Result">
+        <short></short>
+      </element>
+      <element name="UTF16CharacterToUnicode.p">
+        <short></short>
+      </element>
+      <element name="UTF16CharacterToUnicode.CharLen">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UnicodeToUTF16">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="UnicodeToUTF16.Result">
+        <short></short>
+      </element>
+      <element name="UnicodeToUTF16.u">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8CompareStr">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="UTF8CompareStr.Result">
+        <short></short>
+      </element>
+      <element name="UTF8CompareStr.S1">
+        <short></short>
+      </element>
+      <element name="UTF8CompareStr.S2">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8CompareText">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="UTF8CompareText.Result">
+        <short></short>
+      </element>
+      <element name="UTF8CompareText.S1">
+        <short></short>
+      </element>
+      <element name="UTF8CompareText.S2">
+        <short></short>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TConvertResult">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TConvertOption">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- alias type Visibility: default -->
+      <element name="TConvertOptions">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ConvertUTF8ToUTF16">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="ConvertUTF8ToUTF16.Result">
+        <short></short>
+      </element>
+      <element name="ConvertUTF8ToUTF16.Dest">
+        <short></short>
+      </element>
+      <element name="ConvertUTF8ToUTF16.DestWideCharCount">
+        <short></short>
+      </element>
+      <element name="ConvertUTF8ToUTF16.Src">
+        <short></short>
+      </element>
+      <element name="ConvertUTF8ToUTF16.SrcCharCount">
+        <short></short>
+      </element>
+      <element name="ConvertUTF8ToUTF16.Options">
+        <short></short>
+      </element>
+      <element name="ConvertUTF8ToUTF16.ActualWideCharCount">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ConvertUTF16ToUTF8">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="ConvertUTF16ToUTF8.Result">
+        <short></short>
+      </element>
+      <element name="ConvertUTF16ToUTF8.Dest">
+        <short></short>
+      </element>
+      <element name="ConvertUTF16ToUTF8.DestCharCount">
+        <short></short>
+      </element>
+      <element name="ConvertUTF16ToUTF8.Src">
+        <short></short>
+      </element>
+      <element name="ConvertUTF16ToUTF8.SrcWideCharCount">
+        <short></short>
+      </element>
+      <element name="ConvertUTF16ToUTF8.Options">
+        <short></short>
+      </element>
+      <element name="ConvertUTF16ToUTF8.ActualCharCount">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF8ToUTF16">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="UTF8ToUTF16.Result">
+        <short></short>
+      </element>
+      <element name="UTF8ToUTF16.S">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="UTF16ToUTF8">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="UTF16ToUTF8.Result">
+        <short></short>
+      </element>
+      <element name="UTF16ToUTF8.S">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="LCLGetLanguageIDs">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="LCLGetLanguageIDs.Lang">
+        <short></short>
+      </element>
+      <element name="LCLGetLanguageIDs.FallbackLang">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CreateFirstIdentifier">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CreateFirstIdentifier.Result">
+        <short></short>
+      </element>
+      <element name="CreateFirstIdentifier.Identifier">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CreateNextIdentifier">
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CreateNextIdentifier.Result">
+        <short></short>
+      </element>
+      <element name="CreateNextIdentifier.Identifier">
+        <short></short>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="DebugLnMaxNestPrefixLen">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="DebugLnNestLvlIndent">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="DebugText">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
     </module>
     <!-- LCLProc -->
