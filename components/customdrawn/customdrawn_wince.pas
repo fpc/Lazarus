@@ -11,6 +11,8 @@ uses
   fpcanvas, fpimgcanv, fpimage,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
   Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
+  // Others only for types
+  StdCtrls,
   //
   customdrawncontrols, customdrawnutils;
 
@@ -35,9 +37,9 @@ type
   TCDCheckBoxDrawerWinCE = class(TCDCheckBoxDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDCheckBox: TCDCheckBox;
-      FState: TCDButtonState; FCheckedState: TCDButtonCheckState); override;
+      FState: TCDButtonState); override;
     procedure DrawToCanvas(ADest: TCanvas; CDCheckBox: TCDCheckBox;
-      FState: TCDButtonState; FCheckedState: TCDButtonCheckState); override;
+      FState: TCDButtonState); override;
   end;
 
   TCDCustomTabControlDrawerWinCE = class(TCDCustomTabControlDrawer)
@@ -66,38 +68,72 @@ implementation
 { TCDCheckBoxDrawerWinCE }
 
 procedure TCDCheckBoxDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
-  CDCheckBox: TCDCheckBox; FState: TCDButtonState; FCheckedState: TCDButtonCheckState);
+  CDCheckBox: TCDCheckBox; FState: TCDButtonState);
 begin
 
 end;
 
 procedure TCDCheckBoxDrawerWinCE.DrawToCanvas(ADest: TCanvas;
-  CDCheckBox: TCDCheckBox; FState: TCDButtonState; FCheckedState: TCDButtonCheckState);
+  CDCheckBox: TCDCheckBox; FState: TCDButtonState);
 const
   CDCheckBoxWinCE_Half_Height = 7;
   CDCheckBoxWinCE_Height = 15;
 var
   lHalf: Integer;
+  lColor: TColor;
+  i: Integer;
 begin
   lHalf := CDCheckBox.Height div 2;
 
+  // Background
+  lColor := CDCheckBox.GetRGBBackgroundColor();
+  ADest.Brush.Color := lColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psClear;
+  ADest.FillRect(0, 0, CDCheckBox.Width, CDCheckBox.Height);
+
   // The checkbox item itself
+  ADest.Brush.Color := clWhite;
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := clBlack;
   ADest.Rectangle(
-    lHalf - CDCheckBoxWinCE_Half_Height,
     1,
-    lHalf + CDCheckBoxWinCE_Half_Height,
-    CDCheckBoxWinCE_Height+1);
+    lHalf - CDCheckBoxWinCE_Half_Height,
+    CDCheckBoxWinCE_Height+1,
+    lHalf + CDCheckBoxWinCE_Half_Height);
+
+  // The Tickmark
+  if CDCheckBox.State = cbChecked then
+  begin
+    // 4 lines going down and to the right
+    for i := 0 to 3 do
+      ADest.Line(5+i, lHalf - CDCheckBoxWinCE_Half_Height+6+i, 5+i, lHalf - CDCheckBoxWinCE_Half_Height+9+i);
+    // Now 5 lines going up and to the right
+    for i := 4 to 8 do
+      ADest.Line(5+i, lHalf - CDCheckBoxWinCE_Half_Height+6+6-i, 5+i, lHalf - CDCheckBoxWinCE_Half_Height+9+6-i);
+  end;
 
   // The selection
-  if FState = bbsFocused then
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Color := RGBToColor($31, $C6, $D6);
+  ADest.Pen.Style := psSolid;
+  if CDCheckBox.Focused then
+  begin
+    // The selection inside the square
     ADest.Rectangle(
       lHalf - CDCheckBoxWinCE_Half_Height+1,
       2,
       lHalf + CDCheckBoxWinCE_Half_Height-1,
       CDCheckBoxWinCE_Height);
 
-    //, bbsCheckedDown, bbsCheckedMouseOver, bbsCheckedFocused] then
-//  bbsNormal, bbsDown, bbsMouseOver, bbsFocused
+    // Selection around the text
+    ADest.Rectangle(
+      CDCheckBoxWinCE_Height+5, 0,
+      CDCheckBox.Width, CDCheckBox.Height);
+  end;
+
+  // Now the text
+  ADest.TextOut(CDCheckBoxWinCE_Height+5, 0, CDCheckBox.Caption);
 end;
 
 { TCDButtonDrawerWinCE }
@@ -124,20 +160,17 @@ begin
   //  CDButton.SetShape(TmpB);
 
   // Button image
-  case FState of
-    bbsDown:
-    begin
-      with TmpB.Canvas do
-      begin
-        Brush.Style := bsSolid;
-        Brush.Color := GetAColor(CDButton.Color, 90);
-        Pen.Color := clBlack;
-        Pen.Style := psSolid;
-        Rectangle(0, 0, Width, Height);
-      end;
-    end;
-    bbsFocused:
-      with TmpB.Canvas do
+  if FState.IsDown then
+  begin
+    TmpB.Canvas.Brush.Style := bsSolid;
+    TmpB.Canvas.Brush.Color := GetAColor(CDButton.Color, 90);
+    TmpB.Canvas.Pen.Color := clBlack;
+    TmpB.Canvas.Pen.Style := psSolid;
+    TmpB.Canvas.Rectangle(0, 0, TmpB.Canvas.Width, TmpB.Canvas.Height);
+  end
+  else if CDButton.Focused then
+  begin
+    with TmpB.Canvas do
       begin
         Brush.Style := bsSolid;
         Brush.Color := GetAColor(CDButton.Color, 99);
@@ -146,8 +179,10 @@ begin
         Rectangle(0, 0, Width, Height);
         Rectangle(1, 1, Width - 1, Height - 1); // The border is thicken when focused
       end;
-    else
-      with TmpB.Canvas do
+  end
+  else
+  begin
+    with TmpB.Canvas do
       begin
         Brush.Style := bsSolid;
         Brush.Color := CDButton.Color;

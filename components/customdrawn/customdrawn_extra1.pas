@@ -63,18 +63,14 @@ begin
   end;
 
   // Button image
-  case FState of
-    bbsDown:
-    begin
-      DrawCDButtonDown(TmpB.Canvas, CDButton.GetRGBBackgroundColor);
-    end;
-    bbsFocused:
-      //GradientFill(GetUColor(CDButton.Color, 50), GetAColor(CDButton.Color, 60), TmpB.Canvas);
-      GradientFill(clWhite, GetAColor(CDButton.Color, 96), TmpB.Canvas);
-    else
-      //GradientFill(GetUColor(CDButton.Color, 10), GetAColor(CDButton.Color, 20), TmpB.Canvas);
-      GradientFill(clWhite, CDButton.Color, TmpB.Canvas);
-  end;
+  if FState.IsDown then
+    DrawCDButtonDown(TmpB.Canvas, CDButton.GetRGBBackgroundColor)
+  else if CDButton.Focused then
+    //GradientFill(GetUColor(CDButton.Color, 50), GetAColor(CDButton.Color, 60), TmpB.Canvas);
+    GradientFill(clWhite, GetAColor(CDButton.Color, 96), TmpB.Canvas)
+  else
+    //GradientFill(GetUColor(CDButton.Color, 10), GetAColor(CDButton.Color, 20), TmpB.Canvas);
+    GradientFill(clWhite, CDButton.Color, TmpB.Canvas);
 
   ADest.Draw(0, 0, TmpB);
 

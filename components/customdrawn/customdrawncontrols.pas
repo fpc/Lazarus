@@ -20,7 +20,7 @@ uses
   fpcanvas, fpimgcanv, fpimage,
   // LCL
   Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
-  LMessages, Messages, LCLProc, Forms,
+  LMessages, Messages, LCLProc, Forms, StdCtrls,
   //
   customdrawnutils;
 
@@ -35,8 +35,10 @@ type
     dsExtra1, dsExtra2, dsExtra3, dsExtra4
     );
 
-  TCDButtonState = (bbsNormal, bbsDown, bbsMouseOver, bbsFocused, bbsFocusedMouseOver);
-  TCDButtonCheckState = (bbcNormal, bbcGrey, bbcChecked);
+  TCDButtonState = record
+    IsDown, IsMouseOver: Boolean;
+    // IsFocused -> Don't declare here, just use TWinControl.Focused
+  end;
 
   TCDControlDrawer = class;
 
@@ -69,13 +71,9 @@ type
   // Standard Tab
   // ===================================
 
-  { TCDButton }
-
-  TCDButton = class(TCDControl)
-  private
-    procedure PrepareCurrentDrawer(); override;
+  TCDButtonControl = class(TCDControl)
   protected
-    FState: TCDButtonState;
+    FButtonState: TCDButtonState;
     // keyboard
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -88,9 +86,17 @@ type
     procedure MouseEnter; override;
     procedure MouseLeave; override;
     // button state change
-    procedure DoButtonDown();
-    procedure DoButtonUp();
+    procedure DoButtonDown(); virtual;
+    procedure DoButtonUp(); virtual;
     procedure RealSetText(const Value: TCaption); override;
+  end;
+
+  { TCDButton }
+
+  TCDButton = class(TCDButtonControl)
+  private
+    procedure PrepareCurrentDrawer(); override;
+  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -177,22 +183,24 @@ type
 
   { TCDCheckBox }
 
-  TCDCheckBox = class(TCDControl)
+  TCDCheckBox = class(TCDButtonControl)
   private
+    FAllowGrayed: Boolean;
+    FCheckedState: TCheckBoxState;
     procedure PrepareCurrentDrawer(); override;
   protected
-    FState: TCDButtonState;
-    FCheckedState: TCDButtonCheckState;
-    procedure RealSetText(const Value: TCaption); override; // to update on caption changes
+    procedure DoButtonUp(); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
   published
+    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default False;
     property DrawStyle;
     property Caption;
     property TabStop default True;
+    property State: TCheckBoxState read FCheckedState write FCheckedState default cbUnchecked;
   end;
 
   { TCDCheckBoxDrawer }
@@ -200,9 +208,9 @@ type
   TCDCheckBoxDrawer = class(TCDControlDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDCheckBox: TCDCheckBox;
-      FState: TCDButtonState; FCheckedState: TCDButtonCheckState); virtual; abstract;
+      FState: TCDButtonState); virtual; abstract;
     procedure DrawToCanvas(ADest: TCanvas; CDCheckBox: TCDCheckBox;
-      FState: TCDButtonState; FCheckedState: TCDButtonCheckState); virtual; abstract;
+      FState: TCDButtonState); virtual; abstract;
   end;
 
   // ===================================
@@ -303,11 +311,11 @@ type
     procedure SetTabIndex(AValue: Integer); virtual;
     procedure SetTabs(AValue: TStringList);
   protected
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure Paint; override;
     procedure CorrectTabIndex();
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     function GetTabCount: Integer;
     property Tabs: TStringList read FTabs write SetTabs;
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
@@ -372,10 +380,9 @@ type
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
     procedure PositionTabSheet(ATabSheet: TCDTabSheet);
-  protected
+  public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  public
     function InsertPage(aIndex: integer; S: string): TCDTabSheet;
     procedure RemovePage(aIndex: integer);
     function AddPage(S: string): TCDTabSheet;
@@ -466,9 +473,25 @@ begin
   if FCurrentDrawer = nil then raise Exception.Create('No registered check box drawers were found');
 end;
 
-procedure TCDCheckBox.RealSetText(const Value: TCaption);
+procedure TCDCheckBox.DoButtonUp;
 begin
-  inherited RealSetText(Value);
+  inherited DoButtonUp;
+
+  if AllowGrayed then
+  begin
+    case FCheckedState of
+    cbUnchecked: FCheckedState := cbGrayed;
+    cbGrayed: FCheckedState := cbChecked;
+    else
+      FCheckedState := cbUnchecked;
+    end;
+  end
+  else
+  begin
+    if FCheckedState in [cbUnchecked, cbGrayed] then FCheckedState := cbChecked
+    else FCheckedState := cbUnchecked;
+  end;
+
   Invalidate;
 end;
 
@@ -511,10 +534,10 @@ begin
     AImage := ABmp.CreateIntfImage;
     lCanvas := TFPImageCanvas.Create(AImage);
     // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
-    TCDCheckBoxDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, Self, FState, FCheckedState);
+    TCDCheckBoxDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, Self, FButtonState);
     ABmp.LoadFromIntfImage(AImage);
     // Second step of the drawing: LCL TCustomCanvas for easy font access
-    TCDCheckBoxDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas, Self, FState, FCheckedState);
+    TCDCheckBoxDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas, Self, FButtonState);
     Canvas.Draw(0, 0, ABmp);
   finally
     if lCanvas <> nil then
@@ -694,21 +717,23 @@ begin
   Result := Rect(1, 1, CDButton.Width - 1, CDButton.Height - 1);
 end;
 
-procedure TCDButton.DoEnter;
+procedure TCDButtonControl.DoEnter;
 begin
   DoButtonUp();
+  Invalidate;
 
   inherited DoEnter;
 end;
 
-procedure TCDButton.DoExit;
+procedure TCDButtonControl.DoExit;
 begin
   DoButtonUp();
+  Invalidate;
 
   inherited DoExit;
 end;
 
-procedure TCDButton.KeyDown(var Key: word; Shift: TShiftState);
+procedure TCDButtonControl.KeyDown(var Key: word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
 
@@ -716,14 +741,14 @@ begin
     DoButtonDown();
 end;
 
-procedure TCDButton.KeyUp(var Key: word; Shift: TShiftState);
+procedure TCDButtonControl.KeyUp(var Key: word; Shift: TShiftState);
 begin
   DoButtonUp();
 
   inherited KeyUp(Key, Shift);
 end;
 
-procedure TCDButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+procedure TCDButtonControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   if not Focused then
     SetFocus;
@@ -732,54 +757,49 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 end;
 
-procedure TCDButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+procedure TCDButtonControl.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   DoButtonUp();
 
   inherited MouseUp(Button, Shift, X, Y);
 end;
 
-procedure TCDButton.MouseEnter;
+procedure TCDButtonControl.MouseEnter;
 begin
+  FButtonState.IsMouseOver := True;
+  Invalidate;
   inherited MouseEnter;
 end;
 
-procedure TCDButton.MouseLeave;
+procedure TCDButtonControl.MouseLeave;
 begin
+  FButtonState.IsMouseOver := False;
+  Invalidate;
   inherited MouseLeave;
 end;
 
-procedure TCDButton.DoButtonDown();
-var
-  NewState: TCDButtonState;
+procedure TCDButtonControl.DoButtonDown();
 begin
-  NewState := bbsDown;
-
-  case FState of
-    bbsNormal, bbsFocused: NewState := bbsDown;
-  end;
-
-  if NewState <> FState then
+  if not FButtonState.IsDown then
   begin
-    FState := NewState;
+    FButtonState.IsDown := True;
     Invalidate;
   end;
 end;
 
-procedure TCDButton.DoButtonUp();
-var
-  NewState: TCDButtonState;
+procedure TCDButtonControl.DoButtonUp();
 begin
-  if Focused then
-    NewState := bbsFocused
-  else
-    NewState := bbsNormal;
-
-  if NewState <> FState then
+  if FButtonState.IsDown then
   begin
-    FState := NewState;
+    FButtonState.IsDown := False;
     Invalidate;
   end;
+end;
+
+procedure TCDButtonControl.RealSetText(const Value: TCaption);
+begin
+  inherited RealSetText(Value);
+  Invalidate;
 end;
 
 procedure TCDButton.PrepareCurrentDrawer;
@@ -787,12 +807,6 @@ begin
   FCurrentDrawer := RegisteredButtonDrawers[DrawStyle];
   if FCurrentDrawer = nil then FCurrentDrawer := RegisteredButtonDrawers[dsWince];
   if FCurrentDrawer = nil then raise Exception.Create('No registered button drawers were found');
-end;
-
-procedure TCDButton.RealSetText(const Value: TCaption);
-begin
-  inherited RealSetText(Value);
-  Invalidate;
 end;
 
 constructor TCDButton.Create(AOwner: TComponent);
@@ -835,7 +849,7 @@ begin
     TCDButtonDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, Self);
     ABmp.LoadFromIntfImage(AImage);
     // Second step of the drawing: LCL TCustomCanvas for easy font access
-    TCDButtonDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas, Self, FState);
+    TCDButtonDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas, Self, FButtonState);
 
     Canvas.Draw(0, 0, ABmp);
   finally

@@ -34,6 +34,8 @@ type
 
   TBitmappedButtonOptions = set of TBitmappedButtonOption;
 
+  TBitmappedButtonState = (bbsNormal, bbsDown, bbsFocused, bbsMouseOver);
+
   { TCustomBitmappedButton }
 
   TCustomBitmappedButton = class(TCustomControl)
@@ -48,7 +50,7 @@ type
     FImageBtnFocused: TPicture;
     FImageBtnChecked: TPicture;
     FOptions: TBitmappedButtonOptions;
-    FState: TCDButtonState;
+    FState: TBitmappedButtonState;
     // keyboard
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -247,7 +249,7 @@ end;
 
 procedure TCustomBitmappedButton.DoButtonDown();
 var
-  NewState: TCDButtonState;
+  NewState: TBitmappedButtonState;
 begin
   NewState := bbsDown;
 
@@ -265,7 +267,7 @@ end;
 
 procedure TCustomBitmappedButton.DoButtonUp();
 var
-  NewState: TCDButtonState;
+  NewState: TBitmappedButtonState;
 begin
   if Focused then
     NewState := bbsFocused

@@ -66,9 +66,8 @@ begin
   end;
 
   // Button image
-  case FState of
-    bbsDown:
-    begin
+  if FState.IsDown then
+  begin
       with TmpB.Canvas do
       begin
         Brush.Style := bsSolid;
@@ -89,13 +88,11 @@ begin
         Line(1, 1, Width - 2, 1);
         Line(1, 1, 1, Height - 2);
       end;
-    end;
-    bbsFocused:
+    end
+  else if CDButton.Focused then
+  begin
       with TmpB.Canvas do
         DrawFocusRect(Rect(3, 3, Width - 4, Height - 4))
-    else
-    begin
-    end;
   end;
 
   ADest.Draw(0, 0, TmpB);
@@ -107,7 +104,7 @@ begin
   ADest.Brush.Style := bsClear;
   ADest.Pen.Style := psSolid;
   Str := CDButton.Caption;
-  if FState = bbsDown then
+  if FState.IsDown then
     ADest.TextOut((CDButton.Width - ADest.TextWidth(Str)) div 2 + 1,
       (CDButton.Height - ADest.TextHeight(Str)) div 2 + 1, Str)
   else

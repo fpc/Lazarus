@@ -35,18 +35,12 @@ procedure TCDButtonDrawerXPTB.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
 var
   Str: string;
 begin
-  case FState of
-    bbsDown:
-    begin
-      DrawCDButtonDown(ADest, CDButton.GetRGBBackgroundColor);
-    end;
-    bbsFocused:
-    begin
-      DrawXPTaskbarButton(ADest, GetAColor(CDButton.Color, 98));
-    end;
-    else
-      DrawXPTaskbarButton(ADest, CDButton.Color);
-  end;
+  if FState.IsDown then
+    DrawCDButtonDown(ADest, CDButton.GetRGBBackgroundColor)
+  else if CDButton.Focused then
+    DrawXPTaskbarButton(ADest, GetAColor(CDButton.Color, 98))
+  else
+    DrawXPTaskbarButton(ADest, CDButton.Color);
 
   // Button text
   ADest.Font.Assign(CDButton.Font);

@@ -51,18 +51,12 @@ begin
   ADest.RecTangle(0, 0, CDButton.Width, CDButton.Height);
 
   // Button image
-  case FState of
-    bbsDown:
-    begin
-      DrawCDButtonDown(ADest, CDButton.GetRGBBackgroundColor);
-    end;
-    bbsFocused:
-    begin
-      DrawAndroidButton(ADest, GetAColor(CDButton.Color, 98));
-    end;
-    else
-      DrawAndroidButton(ADest, GetAColor(CDButton.Color, 96));
-  end;
+  if FState.IsDown then
+    DrawCDButtonDown(ADest, CDButton.GetRGBBackgroundColor)
+  else if CDButton.Focused then
+    DrawAndroidButton(ADest, GetAColor(CDButton.Color, 98))
+  else
+    DrawAndroidButton(ADest, GetAColor(CDButton.Color, 96));
 
   // Button text
   ADest.Font.Assign(CDButton.Font);
