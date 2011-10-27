@@ -143,14 +143,15 @@ type
     (ptprfParamByRef,
      ptprfPointer,
      ptprfNoStructure,     // for Class or Record: no full class declaration, type ends after class keyword; DWARF "whatis TFoo"
-                         // includes "record {...}"
+                           // includes "record {...}"
      ptprfDynArray,
-     ptprfNoBounds, // no bounds for array found
-     ptprfEmpty
+     ptprfNoBounds,        // no bounds for array found
+     ptprfEmpty,
+     ptprfDeclarationInBrackets  // e.g ^(array ...) / "&^()" is/are not included in BaseDeclaration
     );
   TGDBPTypeResultFlags = set of TGDBPTypeResultFlag;
   TGDBPTypeResultKind =
-    (ptprkError, ptprkSimple, ptprkClass, ptprkRecord,
+    (ptprkNotEvaluated, ptprkError, ptprkSimple, ptprkClass, ptprkRecord,
      ptprkEnum, ptprkSet, ptprkArray, ptprkProcedure, ptprkFunction);
 
   TGDBPTypeResult = record
@@ -158,9 +159,18 @@ type
     Flags: TGDBPTypeResultFlags;
     Kind: TGDBPTypeResultKind;
     Name, BaseName: TPCharWithLen; // BaseName is without ^&
-    SubName, BaseSubName: TPCharWithLen; // type of array entry, or set-enum
     BoundLow, BoundHigh: TPCharWithLen;
-    Declaration, BaseDeclaration: TPCharWithLen; // BaseDeclaration only for Array and Set types
+    Declaration, BaseDeclaration: TPCharWithLen; // BaseDeclaration only for Array and Set types, see note on ptprfDeclarationInBrackets
+    // type of array entry, or set-enum
+    SubName, BaseSubName: TPCharWithLen;
+    SubFlags: TGDBPTypeResultFlags;
+    SubKind: TGDBPTypeResultKind;
+    // multi-dim array
+    NestArrayCount: Integer;
+    NestArray: array of record  // reverse order, last entry is first nest level
+      Flags: TGDBPTypeResultFlags;
+      BoundLow, BoundHigh: TPCharWithLen;
+    end;
   end;
 
   TGDBCommandRequestType = (gcrtPType, gcrtEvalExpr);
@@ -173,6 +183,103 @@ type
     Error: string;
     Next: PGDBPTypeRequest;
   end;
+
+
+  (* List:      "ACount", "+", "1"
+     Array:     "Item[1][2]"
+     Cast/Call: "Foo(Bar)"
+  *)
+
+  { TGDBExpressionPart }
+
+  TGDBExpressionPart = class
+  protected
+    FText: TPCharWithLen;
+    function GetParts(Index: Integer): TGDBExpressionPart; virtual;
+    function GetText: String; virtual;
+    function ParseExpression(AText: PChar; ATextLen: Integer): TGDBExpressionPart;
+  public
+    function NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean; virtual;
+  public
+    function PartCount: Integer; virtual;
+    property Parts[Index: Integer]: TGDBExpressionPart read GetParts;
+    property Text: String read GetText;
+  end;
+
+  { TGDBExpressionPartListBase }
+
+  TGDBExpressionPartListBase = class(TGDBExpressionPart)
+  private
+    FList: TFPList;
+  protected
+    function GetParts(Index: Integer): TGDBExpressionPart; override;
+    function GetText: String; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure ClearShared;
+    function Add(APart: TGDBExpressionPart):Integer;
+    function PartCount: Integer; override;
+  end;
+
+  TGDBExpressionPartList = class(TGDBExpressionPartListBase)
+  public
+    function AddList(APartList: TGDBExpressionPartList):Integer;
+  end;
+
+  { TGDBExpressionPartArray }
+
+  TGDBExpressionPartArray = class(TGDBExpressionPartListBase)
+  private
+    FNeedTypeCast: Boolean;
+    FVarParam: Boolean;
+    FPTypeReq: TGDBPTypeRequest;
+    FPTypeDeRefReq: TGDBPTypeRequest;
+  protected
+    function GetText: String; override;
+  public
+    constructor Create(ALeadExpresion: TGDBExpressionPart);
+    function AddIndex(APart: TGDBExpressionPart):Integer;
+    function NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean; override;
+    property NeedTypeCast: Boolean read FNeedTypeCast write FNeedTypeCast;
+  end;
+
+  { TGDBExpressionPartCastCall }
+
+  TGDBExpressionPartCastCall = class(TGDBExpressionPartListBase)
+  private
+  public
+    constructor Create(ALeadExpresion: TGDBExpressionPart);
+    function AddBrackets(APart: TGDBExpressionPart):Integer;
+  end;
+
+  { TGDBExpression }
+
+  TGDBExpression = class(TGDBExpressionPart)
+  private
+    FTextStr: String;
+  protected
+    FExpressionPart: TGDBExpressionPart;
+    function GetText: String; override;
+    function GetParts(Index: Integer): TGDBExpressionPart; override;
+  public
+    constructor CreateSimple(AText: PChar; ATextLen: Integer);
+    constructor Create(AText: PChar; ATextLen: Integer);
+    constructor Create(ATextStr: String);
+    destructor Destroy; override;
+    function PartCount: Integer; override;
+  end;
+
+  { TGDBExpressionPartBracketed }
+
+  TGDBExpressionPartBracketed = class(TGDBExpression)
+  protected
+    function GetText: String; override;
+  public
+    constructor Create(AText: PChar; ATextLen: Integer);
+  end;
+
 
   { TGDBPTypeRequestCacheEntry }
 
@@ -222,7 +329,7 @@ type
     (gtpsInitial, gtpsInitialSimple, gtpsInitFixTypeCast,
      gtpsSimplePointer,
      gtpsClass, gtpsClassAutoCast, gtpsClassPointer, gtpsClassAncestor,
-     gtpsArray, gtpsArrayEntry,
+     gtpsArray,
      gtpsEvalExpr,
      gtpsFinished
     );
@@ -261,6 +368,8 @@ type
     FReqResults: Array [TGDBTypeProcessRequest] of TGDBPTypeRequest;
 
     FArrayEntryIndexExpr: String;
+    FParsedExpression: TGDBExpression;
+
     FHasTypeCastFix, FHasAutoTypeCastFix: Boolean;
     FAutoTypeCastName: String;
 
@@ -295,60 +404,10 @@ function ParseTypeFromGdb(const ATypeText: string): TGDBPTypeResult;
 function dbgs(AFlag: TGDBPTypeResultFlag): string; overload;
 function dbgs(AFlags: TGDBPTypeResultFlags): string; overload;
 function dbgs(AKind: TGDBPTypeResultKind): string; overload;
+function dbgs(AReqType: TGDBCommandRequestType): string; overload;
+function dbgs(AReq: TGDBPTypeRequest): string; overload;
 
 implementation
-
-(*
-function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String): String;
-var
-  n, i, idx, SkipLen: Integer;
-begin
-  idx := 0;
-  SkipLen := 0;
-  if High(ASkipTo) <> -1
-  then begin
-    for n := Low(ASkipTo) to High(ASkipTo) do
-    begin
-      if ASkipTo[n] <> ''
-      then begin
-        i := Pos(ASkipTo[n], ASource);
-        if (i > 0) and ((idx = 0) or (i < idx))
-        then begin
-          idx := i;
-          SkipLen := Length(ASkipTo[n]);
-        end;
-      end;
-    end;
-    if idx = 0
-    then begin
-      Result := '';
-      Exit;
-    end;
-    Delete(ASource, 1, idx + SkipLen - 1);
-  end;
-
-  idx := 0;
-  for n := Low(AnEnd) to High(AnEnd) do
-  begin
-    if AnEnd[n] <> ''
-    then begin
-      i := Pos(AnEnd[n], ASource);
-      if (i > 0) and ((idx = 0) or (i < idx))
-      then idx := i;
-    end;
-  end;
-
-  if idx = 0
-  then begin
-    Result := ASource;
-    ASource := '';
-  end
-  else begin
-    Result := Copy(ASource, 1, idx - 1);
-    Delete(ASource, 1, idx - 1);
-  end;
-end;
-*)
 
 function CreatePTypeValueList(AResultValues: String): TStringList;
 var
@@ -476,10 +535,12 @@ begin
   end;
 end;
 
-function ParseTypeFromGdb(const ATypeText: string): TGDBPTypeResult;
+function ParseTypeFromGdb(const ATypeText: PChar; const ATypeTextLen: Integer): TGDBPTypeResult;
 var
-  i, StartIdx, EndIdx: Integer;
-  CurPtr, HelpPtr, HelpPtr2, EndPtr, DeclPtr: PChar;
+  i: Integer;
+  CurPtr, LineEndPtr, EndPtr, BaseDeclPtr, DeclPtr, DeclEndPtr: PChar;
+  HelpPtr, HelpPtr2: PChar;
+  SubRes: TGDBPTypeResult;
 
   procedure SkipSpaces(var p: PChar); inline;
   begin
@@ -492,48 +553,48 @@ var
     // Might be: "set of ", "class", "record =", "array [", '<invalid unnamed"...,
     case CurPtr^ of
       's', 'S': begin
-          if (EndPtr - CurPtr >= 6 )
+          if (LineEndPtr - CurPtr >= 6 )
           and  (UpperCase(copy(CurPtr, 1, 7)) = 'SET OF ')
           then
             Result := ptprkSet;
         end;
       'r', 'R': begin
-          if (EndPtr - CurPtr >= 6 )
+          if (LineEndPtr - CurPtr >= 5 )
           and (UpperCase(copy(CurPtr, 1, 6)) = 'RECORD')
-          and ((CurPtr+6)^ in [' ', ')', #13])
+          and ((CurPtr+6)^ in [' ', ')', #13, #0])
           then
             Result := ptprkRecord;
         end;
       'c', 'C': begin
-          if (EndPtr - CurPtr >= 5 )
+          if (LineEndPtr - CurPtr >= 4 )
           and (UpperCase(copy(CurPtr, 1, 5)) = 'CLASS')
-          and ((CurPtr+5)^ in [' ', ')', #13])
+          and ((CurPtr+5)^ in [' ', ')', #13, #0])
           then
             Result := ptprkClass;
         end;
       'a', 'A': begin
-          if (EndPtr - CurPtr >= 5 )
+          if (LineEndPtr - CurPtr >= 5 )
           and (UpperCase(copy(CurPtr, 1, 6)) = 'ARRAY ')
           then
             Result := ptprkArray;
         end;
       '<': begin
-          if (EndPtr - CurPtr >= 35 )
+          if (LineEndPtr - CurPtr >= 35 )
           and (copy(CurPtr, 1, 36) = '<invalid unnamed pascal type code 8>')
           then
             Result := ptprkSet;
         end;
       'p', 'P': begin
-          if (EndPtr - CurPtr >= 9 )
+          if (LineEndPtr - CurPtr >= 8 )
           and (UpperCase(copy(CurPtr, 1, 9)) = 'PROCEDURE')
-          and ((CurPtr+9)^ in [' ', '(', ')', #13])
+          and ((CurPtr+9)^ in [' ', '(', ')', #13, #0])
           then
             Result := ptprkProcedure;
         end;
       'f', 'F': begin
-          if (EndPtr - CurPtr >= 8 )
+          if (LineEndPtr - CurPtr >= 7 )
           and (UpperCase(copy(CurPtr, 1, 8)) = 'FUNCTION')
-          and ((CurPtr+8)^ in [' ', '(', ')', #13])
+          and ((CurPtr+8)^ in [' ', '(', ')', #13, #0])
           then
             Result := ptprkFunction;
         end;
@@ -550,25 +611,26 @@ var
 
     p := CurPtr;
     while not(p^ in [')', #0]) do inc(p);
-    if (p <= EndPtr) and (p^ = ')') then
+    if (p <= LineEndPtr) and (p^ = ')') then
       Result := p - CurPtr + 1;
+  end;
+
+  procedure SetPCharLen(var ATarget: TPCharWithLen; AStartPtr, AEndPtr: PChar);
+  begin
+    ATarget.Ptr := AStartPtr;
+    ATarget.Len := AEndPtr - AStartPtr + 1;
   end;
 
 begin
   {$IFDEF DBGMI_TYPE_INFO}
   try
   {$ENDIF}
-  Result.GdbDescription := ATypeText;
   Result.Flags := [];
   Result.Kind := ptprkError;
   Result.Name.Ptr := nil;
   Result.Name.Len := 0;
   Result.BaseName.Ptr := nil;
   Result.BaseName.Len := 0;
-  Result.SubName.Ptr := nil;
-  Result.SubName.Len := 0;
-  Result.BaseSubName.Ptr := nil;
-  Result.BaseSubName.Len := 0;
   Result.Declaration.Ptr := nil;
   Result.Declaration.Len := 0;
   Result.BaseDeclaration.Ptr := nil;
@@ -577,61 +639,50 @@ begin
   Result.BoundLow.Len := 0;
   Result.BoundHigh.Ptr := nil;
   Result.BoundHigh.Len := 0;
-  If ATypeText = '' then exit;
+  Result.SubName.Ptr := nil;
+  Result.SubName.Len := 0;
+  Result.BaseSubName.Ptr := nil;
+  Result.BaseSubName.Len := 0;
+  Result.SubFlags := [];
+  Result.SubKind := ptprkError;
+  Result.NestArrayCount := 0;
+  If (ATypeText = nil) or (ATypeTextLen = 0) then exit;
 
-(*  // Clean the gdb outpu, remove   ~"...."; replace \n by #13
-  if (length(ATypeText) >= 2) and (ATypeText[1] = '~') and (ATypeText[2] = '"') then
-    UniqueString(Result.GdbDescription);
-  CurPtr := @Result.GdbDescription[1];
-  EndPtr := CurPtr;
-  while (EndPtr^ <> #0) do begin
-    if (EndPtr^ = '~') and ((EndPtr+1)^ = '"') then begin
-      inc(EndPtr, 2);
-      while not (EndPtr^ in [#0..#31]) do begin
-        if (EndPtr^ = '\') then begin
-          inc(EndPtr);
-          if (EndPtr^ = 'n')
-          then CurPtr^ := #13 // internal marker only, no need for OS specific
-          else CurPtr^ := EndPtr^;
-        end
-        else
-          CurPtr^ := EndPtr^;
-        inc(EndPtr);
-        inc(CurPtr);
-      end;
-      dec(CurPtr);
-      if CurPtr^ <> '"' then begin
-        // something wrong
-        debugln('** WARNING: ptype info format error (end-quote): ' + ATypeText);
-        Result.GdbDescription := ATypeText;
-        CurPtr := @Result.GdbDescription[length(Result.GdbDescription)] + 1;
-        break;
-      end;
-    end
-    else begin
-      // something wrong
-      debugln('** WARNING: ptype info format error (start-quote): ' + ATypeText);
-      Result.GdbDescription := ATypeText;
-      CurPtr := @Result.GdbDescription[length(Result.GdbDescription)] + 1;
+  (* type = [&^][name]
+     type = [&^][name] = class|record : public
+     type = [&^][name] = (a,b,c)
+     type = [&^]array ...
+     type = [&^]set of [name] = (a,b)
+     type = [&^](.....)
+  *)
+
+
+
+  CurPtr := ATypeText;
+  EndPtr := ATypeText + ATypeTextLen-1;
+
+  while (EndPtr > CurPtr) and (EndPtr^ in [#10, #13, ' ']) do dec (EndPtr);
+
+  LineEndPtr := EndPtr;
+  //limit LineEndPtr to first \n
+  HelpPtr := CurPtr;
+  while (true) do begin
+    if HelpPtr > LineEndPtr - 1 then break;
+    if (HelpPtr[0] in [#10, #13])
+    then begin
+      LineEndPtr := HelpPtr-1;
+      while (LineEndPtr > CurPtr) and (LineEndPtr^ in [#10, #13, ' ']) do dec (LineEndPtr);
       break;
     end;
-    while (EndPtr^ in [#10, #13]) do inc(EndPtr);
+    inc(HelpPtr);
   end;
-  SetLength(Result.GdbDescription, CurPtr - @Result.GdbDescription[1]);
-*)
-
-  StartIdx := pos('type = ', Result.GdbDescription);
-  if StartIdx <= 0 then exit;
-  inc(StartIdx, 7);
-  CurPtr := @Result.GdbDescription[StartIdx];
-
-  EndIdx := pos(LineEnding, Result.GdbDescription); // the first \n, even if not on the first line
-  if EndIdx <= 0 then EndIdx := length(Result.GdbDescription)+1;
-  EndPtr := @Result.GdbDescription[EndIdx-1];
 
 
-  // Pointer indicators
-  DeclPtr := CurPtr;
+  BaseDeclPtr := CurPtr;
+  DeclPtr := BaseDeclPtr;
+  DeclEndPtr := LineEndPtr;
+
+  // Leading ^&
   while True do begin
     case CurPtr^ of
       '^': include(Result.Flags, ptprfPointer);
@@ -641,167 +692,138 @@ begin
     inc(CurPtr);
   end;
   SkipSpaces(CurPtr); // shouldn'tever happen
+  BaseDeclPtr := CurPtr;
 
-  if CurPtr > EndPtr then begin
+  if CurPtr > LineEndPtr then begin
     include(Result.Flags, ptprfEmpty);
     exit;
   end;
 
+  // entite type in brackest (), eg ^(array...)
+  if CurPtr^ = '(' then begin
+    Include(Result.Flags, ptprfDeclarationInBrackets);
+    inc(CurPtr);
+    SkipSpaces(CurPtr); // shouldn'tever happen
+    BaseDeclPtr := CurPtr;
+    DeclPtr := CurPtr; // not possible to capture with one line, as closing bracket may be on other line
+    if DeclEndPtr^ = ')' then dec(DeclEndPtr);
+    if LineEndPtr^ = ')' then dec(LineEndPtr);
+    if EndPtr^ = ')' then dec(EndPtr);
+  end;
+
+  SetPCharLen(Result.BaseDeclaration, BaseDeclPtr, DeclEndPtr);
+  SetPCharLen(Result.Declaration,     DeclPtr,     DeclEndPtr);
 
   if CurPtr^ = '=' then begin
-    // type = |= ...
-    // un-named type
+    // skip ' = '
     inc(CurPtr);
     SkipSpaces(CurPtr);
-
-    i := CheckIsEnum;
-    if i > 0 then begin
-      // un-named enum // type =  = (e1, e2, e3)
-      Result.Kind := ptprkEnum;
-      Result.Declaration.Ptr := CurPtr;
-      Result.Declaration.Len := i;
-      Result.BaseDeclaration.Ptr := CurPtr;
-      Result.BaseDeclaration.Len := i;
-      exit;
-    end;
-
-    // Unexpected, see if we have a keyword
-    Result.Kind := CheckKeyword;
-    if Result.Kind = ptprkSimple then begin
-      Result.Kind := ptprkError;
-      debugln('** WARNING: ptype info format error: ' + ATypeText);
-      exit;
-    end;
   end
-
-  else
-  begin
-    HelpPtr2 := EndPtr;
-    if CurPtr^ = '(' then begin
-      // type in brackets, eg ^(array...)
-      inc(CurPtr);
-      if HelpPtr2^ = ')' then dec(HelpPtr2)
-    end;
-    SkipSpaces(CurPtr); // shouldn'tever happen
-
-    HelpPtr := CurPtr;
-    while HelpPtr^ in ['&', '^'] do inc(DeclPtr); // shouldn't happen
-    Result.BaseDeclaration.Ptr := HelpPtr;
-    Result.BaseDeclaration.Len := HelpPtr2 - HelpPtr + 1;
-
+  else begin
+    // process part before ' = '
     Result.Kind := CheckKeyword;
-    if Result.Kind = ptprkSimple then begin
+    if Result.Kind = ptprkSimple
+    then begin
       // we may have   type = NAME = ....
       HelpPtr := CurPtr;
-      while not (HelpPtr^ in [#0..#31, ' ']) do inc(HelpPtr);
-      HelpPtr2 := HelpPtr;
+      while (HelpPtr <= LineEndPtr) and  not (HelpPtr^ in [#0..#31, ' ']) do inc(HelpPtr);
+      HelpPtr2 := HelpPtr;  // HelpPtr2 = after [name]
       SkipSpaces(HelpPtr2);
-      if ((HelpPtr^ = ' ') and ((HelpPtr2)^ = '='))
-      or (HelpPtr^ in [#0, #10, #13])
+
+      if (HelpPtr2^ = '=') or // TYPE WITH = (EQUAL)
+         ((HelpPtr^ in [#0, #10, #13]) or (HelpPtr > LineEndPtr))
       then begin
         // Type without space, use as name
-        Result.Name.Ptr := DeclPtr; //CurPtr;
-        Result.Name.Len := HelpPtr - DeclPtr; // CurPtr;
-        while DeclPtr^ in ['&', '^'] do inc(DeclPtr);
-        Result.BaseName.Ptr := DeclPtr; //CurPtr;
-        Result.BaseName.Len := HelpPtr - DeclPtr; // CurPtr;
-        if (HelpPtr^ in [#0, #10, #13]) then exit;
+        SetPCharLen(Result.Name,     DeclPtr, HelpPtr-1);
+        SetPCharLen(Result.BaseName, BaseDeclPtr, HelpPtr-1);
 
-        // now there must be a keyword or set
-        CurPtr := HelpPtr2 + 1;
-        // Todo: in this case the declaration doe not include the pointer, if any => maybe add flag?
+        if (HelpPtr^ in [#0, #10, #13]) or (HelpPtr > LineEndPtr) then exit;
+
+        CurPtr := HelpPtr2 + 1; // after ' = '
         SkipSpaces(CurPtr);
+        BaseDeclPtr := CurPtr;  // Declaration after ' = '
         DeclPtr := CurPtr;
-        i := CheckIsEnum;
-        if i > 0 then begin
-          Result.Kind := ptprkEnum;
-          Result.Declaration.Ptr := CurPtr;
-          Result.Declaration.Len := i;
-          Result.BaseDeclaration.Ptr := CurPtr;
-          Result.BaseDeclaration.Len := i;
-          exit;
-        end;
-
-        Result.Kind := CheckKeyword;
-        if Result.Kind = ptprkSimple then begin
-          Result.Kind := ptprkError;
-          debugln('** WARNING: ptype info format error: ' + ATypeText);
-          exit;
-        end;
       end
       else begin
         // Type is a declaration with spaces
-        while EndPtr^ = ' ' do dec(EndPtr);
-        Result.Declaration.Ptr := CurPtr;
-        Result.Declaration.Len := EndPtr - CurPtr + 1;
-        Result.BaseDeclaration.Ptr := CurPtr;
-        Result.BaseDeclaration.Len := EndPtr - CurPtr + 1;
+        // (base)declaration is already set
         exit;
       end;
     end;
   end;
 
+  // after ' = '
+
+  i := CheckIsEnum;
+  if i > 0 then begin
+    Result.Kind := ptprkEnum;
+    SetPCharLen(Result.BaseDeclaration, CurPtr, CurPtr+i-1);
+    SetPCharLen(Result.Declaration,     CurPtr, CurPtr+i-1);
+    exit;
+  end;
+
+  Result.Kind := CheckKeyword;
+  if Result.Kind = ptprkSimple then begin
+    Result.Kind := ptprkError;
+    debugln('** WARNING: ptype info format error: ' + ATypeText);
+    exit;
+  end;
+
   // now we should be AT a keyword, we may have a name set already // Enum are handled already too
-  while EndPtr^ = ' ' do dec(EndPtr);
+  while LineEndPtr^ = ' ' do dec(LineEndPtr);
   case Result.Kind of
     ptprkClass: begin
         HelpPtr := CurPtr + 5;
         SkipSpaces(HelpPtr);
         if HelpPtr^ in [#10, #13] then include(Result.Flags, ptprfNoStructure);
-        Result.Declaration.Ptr := DeclPtr;
-        Result.Declaration.Len := EndPtr - DeclPtr + 1;
+        SetPCharLen(Result.Declaration, DeclPtr, LineEndPtr);
       end;
     ptprkRecord: begin
         HelpPtr := CurPtr + 6;
         SkipSpaces(HelpPtr);
-        Result.Declaration.Ptr := DeclPtr;
         if HelpPtr^ in ['{'] then begin
           include(Result.Flags, ptprfNoStructure);
-          Result.Declaration.Len := CurPtr + 6 - DeclPtr;
+          SetPCharLen(Result.Declaration, DeclPtr, CurPtr + 5);
         end
         else
-          Result.Declaration.Len := EndPtr - DeclPtr + 1;
+          SetPCharLen(Result.Declaration, DeclPtr, LineEndPtr);
       end;
     ptprkSet: begin
         if CurPtr^ <> '<' then begin;
-          Result.Declaration.Ptr := DeclPtr;
-          Result.Declaration.Len := EndPtr - DeclPtr + 1;
-          CurPtr := Result.BaseDeclaration.Ptr + 3;
+          SetPCharLen(Result.Declaration, DeclPtr, LineEndPtr);
+          //CurPtr := Result.BaseDeclaration.Ptr + 3;
+          CurPtr := CurPtr + 6;
           SkipSpaces(CurPtr);
-          if (CurPtr^ in ['o', 'O']) and ((CurPtr+1)^ in ['f', 'F']) then begin
-            CurPtr := CurPtr + 2;
+          if (CurPtr^ = '=') then begin  // has enum, no name,
+            CurPtr := CurPtr + 1;
             SkipSpaces(CurPtr);
-            if (CurPtr^ = '=') then begin
-              CurPtr := CurPtr + 1;
-              SkipSpaces(CurPtr);
-            end;
-            HelpPtr2 := Result.BaseDeclaration.Ptr + Result.BaseDeclaration.Len;
-            Result.BaseSubName.Ptr := CurPtr;
-            Result.BaseSubName.Len := HelpPtr2 - CurPtr;
-            while (CurPtr^ in ['^', '&']) and (CurPtr < EndPtr) do inc(CurPtr);
-            Result.SubName.Ptr := CurPtr;
-            Result.SubName.Len := HelpPtr2 - CurPtr;
           end;
+          SetPCharLen(Result.SubName, CurPtr, LineEndPtr);
+          while (CurPtr^ in ['^', '&']) and (CurPtr < LineEndPtr) do inc(CurPtr); // should not happen
+          SetPCharLen(Result.BaseSubName, CurPtr, LineEndPtr);
+          Result.SubKind := ptprkSimple;
         end
         else begin
+          Result.Declaration.Ptr := nil;
+          Result.Declaration.Len := 0;
           Result.BaseDeclaration.Ptr := nil;
           Result.BaseDeclaration.Len := 0;
         end;
       end;
     ptprkArray: begin
-        Result.Declaration.Ptr := DeclPtr;
-        Result.Declaration.Len := EndPtr - DeclPtr + 1;
-        CurPtr := Result.BaseDeclaration.Ptr + 5;
+        SetPCharLen(Result.Declaration, DeclPtr, LineEndPtr);
+        SetPCharLen(Result.BaseDeclaration, BaseDeclPtr, LineEndPtr);
+        CurPtr := CurPtr + 5;
         SkipSpaces(CurPtr);
         include(Result.Flags, ptprfNoBounds);
         include(Result.Flags, ptprfDynArray);
         if CurPtr^ = '[' then begin
           inc(CurPtr);
           HelpPtr := CurPtr;
-          while (HelpPtr^ in ['-', '0'..'9']) and (HelpPtr < EndPtr - 3) do inc (HelpPtr);
+          while (HelpPtr^ in ['-', '0'..'9']) and (HelpPtr < LineEndPtr - 3) do inc (HelpPtr);
           if (HelpPtr > CurPtr) and (HelpPtr^ = '.') and  ((HelpPtr+1)^ = '.') then begin
             HelpPtr2 := HelpPtr + 2;
-            while (HelpPtr2^ in ['-', '0'..'9']) and (HelpPtr2 < EndPtr - 1) do inc (HelpPtr2);
+            while (HelpPtr2^ in ['-', '0'..'9']) and (HelpPtr2 < LineEndPtr - 1) do inc (HelpPtr2);
             if (HelpPtr2 > HelpPtr) and (HelpPtr2^ = ']') then begin
               exclude(Result.Flags, ptprfNoBounds);
               Result.BoundLow.Ptr := CurPtr;
@@ -819,19 +841,35 @@ begin
         if (CurPtr^ in ['o', 'O']) and ((CurPtr+1)^ in ['f', 'F']) then begin
           CurPtr := CurPtr + 2;
           SkipSpaces(CurPtr);
-          //HelpPtr := CurPtr;
-          //while (not (HelpPtr^ in [#0..#31, ' '])) and (HelpPtr < EndPtr) do inc(HelpPtr);
-          HelpPtr2 := Result.BaseDeclaration.Ptr + Result.BaseDeclaration.Len;
-          Result.BaseSubName.Ptr := CurPtr;
-          Result.BaseSubName.Len := HelpPtr2 - CurPtr;
-          while (CurPtr^ in ['^', '&']) and (CurPtr < EndPtr) do inc(CurPtr);
-          Result.SubName.Ptr := CurPtr;
-          Result.SubName.Len := HelpPtr2 - CurPtr;
+
+          SubRes := ParseTypeFromGdb(CurPtr, EndPtr - CurPtr + 1);
+          if SubRes.Kind = ptprkArray then begin
+            Result.SubName        := SubRes.SubName;
+            Result.BaseSubName    := SubRes.BaseSubName;
+            Result.SubFlags       := SubRes.SubFlags;
+            Result.SubKind        := SubRes.SubKind;
+            Result.NestArrayCount := SubRes.NestArrayCount + 1;
+            Result.NestArray      := SubRes.NestArray;
+            if length(Result.NestArray) < Result.NestArrayCount
+            then SetLength(Result.NestArray, Result.NestArrayCount + 3);
+            Result.NestArray[SubRes.NestArrayCount].Flags     := SubRes.Flags;
+            Result.NestArray[SubRes.NestArrayCount].BoundLow  := SubRes.BoundLow;
+            Result.NestArray[SubRes.NestArrayCount].BoundHigh := SubRes.BoundHigh;
+          end else begin
+            Result.SubName        := SubRes.Name;
+            Result.BaseSubName    := SubRes.BaseName;
+            Result.SubFlags       := SubRes.Flags;
+            Result.SubKind        := SubRes.Kind;
+          end;
+
+
+          //SetPCharLen(Result.SubName, CurPtr, LineEndPtr);
+          //while (CurPtr^ in ['^', '&']) and (CurPtr < LineEndPtr) do inc(CurPtr);
+          //SetPCharLen(Result.BaseSubName, CurPtr, LineEndPtr);
         end;
       end;
     ptprkProcedure, ptprkFunction: begin
-        Result.Declaration.Ptr := DeclPtr;
-        Result.Declaration.Len := EndPtr - DeclPtr + 1;
+        SetPCharLen(Result.Declaration, DeclPtr, LineEndPtr);
       end;
   end;
   {$IFDEF DBGMI_TYPE_INFO}
@@ -839,6 +877,17 @@ begin
     DebugLn(['ParseTypeFromGdb: Flags=', dbgs(Result.Flags), ' Kind=', dbgs(Result.Kind), ' Name="', PCLenToString(Result.Name),'"' ]);
   end;
   {$ENDIF}
+end;
+
+function ParseTypeFromGdb(const ATypeText: string): TGDBPTypeResult;
+var
+  i: SizeInt;
+begin
+  i := pos('type = ', ATypeText);
+  if i < 1
+  then Result := ParseTypeFromGdb(PChar(ATypeText), length(ATypeText))
+  else Result := ParseTypeFromGdb((@ATypeText[i])+7, length(ATypeText)-6-i);
+  Result.GdbDescription := ATypeText;
 end;
 
 function dbgs(AFlag: TGDBPTypeResultFlag): string;
@@ -861,6 +910,505 @@ end;
 function dbgs(AKind: TGDBPTypeResultKind): string;
 begin
   writestr(Result, AKind);
+end;
+
+function dbgs(AReqType: TGDBCommandRequestType): string;
+begin
+  WriteStr(Result, AReqType);
+end;
+
+function dbgs(AReq: TGDBPTypeRequest): string;
+begin
+  Result := 'Req="'+AReq.Request+'" type='+dbgs(AReq.ReqType)
+    +' HasNext='+dbgs(AReq.Next <> nil)
+    ;
+end;
+
+{ TGDBExpressionPartList }
+
+function TGDBExpressionPartList.AddList(APartList: TGDBExpressionPartList): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  if APartList.PartCount = 0 then exit;
+  Result := FList.add(APartList.Parts[0]);
+  for i := 1 to APartList.PartCount - 1 do
+    FList.add(APartList.Parts[i]);
+end;
+
+{ TGDBExpressionPartArray }
+
+function TGDBExpressionPartArray.GetText: String;
+var
+  i: Integer;
+  s: String;
+begin
+  if not (
+     (FPTypeReq.Result.Kind = ptprkArray) or
+     ( (FPTypeDeRefReq.Result.Kind = ptprkArray) and
+       (ptprfDynArray in FPTypeDeRefReq.Result.Flags) )
+    )
+  then begin
+    // maybe pointer with index access
+    Result := inherited GetText;
+    exit;
+  end;
+
+  Result := Parts[0].Text;
+
+  if FPTypeReq.Result.NestArrayCount > 0 then  // not yet supported
+  begin
+    if (ptprfPointer in FPTypeReq.Result.Flags)
+    then Result := Result + '^';
+    for i := 1 to PartCount - 1 do
+      Result := Result + Parts[i].Text;
+  end;
+
+
+  s := '';
+  if (FVarParam or FNeedTypeCast) and (FPTypeDeRefReq.Result.SubName.Len > 0)
+  then begin
+    s := PCLenToString(FPTypeDeRefReq.Result.SubName);
+  end
+  else
+  if (FVarParam or FNeedTypeCast) and (FPTypeReq.Result.SubName.Len > 0)
+  then begin
+    s := PCLenToString(FPTypeReq.Result.SubName);
+  end;
+
+  if (ptprfPointer in FPTypeReq.Result.Flags) or
+     (ptprfDynArray in FPTypeDeRefReq.Result.Flags)
+  then begin
+    // dyn array
+    if FVarParam and (s <> '')
+    then Result := '^' + s + '(' + Result + ')'
+    else Result := Result + '^';
+  end
+  else begin
+    // stat array
+    FVarParam := False;
+  end;
+
+  Result := Result + Parts[1].Text;
+
+  if (FNeedTypeCast and not FVarParam) and (s <> '')
+  then begin
+    Result := s + '(' + Result + ')';
+  end;
+
+  for i := 2 to PartCount - 1 do
+    Result := Result + Parts[i].Text;
+end;
+
+constructor TGDBExpressionPartArray.Create(ALeadExpresion: TGDBExpressionPart);
+begin
+  inherited Create;
+  FPTypeReq.Result.Kind := ptprkNotEvaluated;
+  FPTypeDeRefReq.Result.Kind := ptprkNotEvaluated;
+  FNeedTypeCast := False;
+  Add(ALeadExpresion);
+end;
+
+function TGDBExpressionPartArray.AddIndex(APart: TGDBExpressionPart): Integer;
+begin
+  Result := Add(APart);
+end;
+
+function TGDBExpressionPartArray.NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  for i := 1 to PartCount - 1 do
+    if Parts[i].NeedValidation(AReqPtr) then
+      Result := True;
+
+  if Parts[0].NeedValidation(AReqPtr)
+  then begin
+    Result := True;
+    exit;
+  end;
+
+  if FPTypeReq.Result.Kind = ptprkNotEvaluated
+  then begin
+    FVarParam := False;
+    FPTypeReq.Request := 'ptype ' + Parts[0].Text;
+    FPTypeReq.Error := '';
+    FPTypeReq.ReqType := gcrtPType;
+    FPTypeReq.Next := AReqPtr;
+    AReqPtr := @FPTypeReq;
+    Result := True;
+    exit;
+  end
+  else
+  if (FPTypeReq.Result.Kind <> ptprkError) and (ptprfParamByRef in FPTypeReq.Result.Flags)
+  then begin
+    // FPC 2.2.4 encoded "var param" in a special way, and we need an extra deref)
+    FVarParam := True;
+    FPTypeReq.Request := 'ptype ' + Parts[0].Text + '^';
+    FPTypeReq.Error := '';
+    FPTypeReq.ReqType := gcrtPType;
+    FPTypeReq.Next := AReqPtr;
+    AReqPtr := @FPTypeReq;
+    Result := True;
+    exit;
+  end;
+
+  (* With Dwarf gdb may return "type = ^TFoo" for an array
+     And the for the derefferenced expr "type = array of TFoo"
+  *)
+  if (not (FPTypeReq.Result.Kind in [ptprkNotEvaluated, ptprkError, ptprkArray])) and
+     (ptprfPointer in FPTypeReq.Result.Flags) and
+     (FPTypeDeRefReq.Result.Kind = ptprkNotEvaluated)
+  then begin
+    if FVarParam
+    then FPTypeDeRefReq.Request := 'ptype ' + Parts[0].Text + '^^'
+    else FPTypeDeRefReq.Request := 'ptype ' + Parts[0].Text + '^';
+    FPTypeDeRefReq.Error := '';
+    FPTypeDeRefReq.ReqType := gcrtPType;
+    FPTypeDeRefReq.Next := AReqPtr;
+    AReqPtr := @FPTypeDeRefReq;
+    Result := True;
+    exit;
+  end;
+
+  // TODO ptypes for nest array
+end;
+
+{ TGDBExpressionPartCastCall }
+
+constructor TGDBExpressionPartCastCall.Create(ALeadExpresion: TGDBExpressionPart);
+begin
+  inherited Create;
+  Add(ALeadExpresion);
+end;
+
+function TGDBExpressionPartCastCall.AddBrackets(APart: TGDBExpressionPart): Integer;
+begin
+  Result := Add(APart);
+end;
+
+{ TGDBExpressionPartBracketed }
+
+function TGDBExpressionPartBracketed.GetText: String;
+begin
+  if FExpressionPart = nil
+  then Result := inherited GetText
+  else Result := FText.Ptr^ + FExpressionPart.Text + (FText.Ptr + FText.Len-1)^;
+end;
+
+constructor TGDBExpressionPartBracketed.Create(AText: PChar; ATextLen: Integer);
+begin
+  CreateSimple(AText, ATextLen);
+  FExpressionPart := ParseExpression(FText.Ptr+1, FText.Len-2);
+end;
+
+{ TGDBExpressionPart }
+
+function TGDBExpressionPart.GetText: String;
+begin
+  Result := PCLenToString(FText);
+end;
+
+function TGDBExpressionPart.ParseExpression(AText: PChar; ATextLen: Integer): TGDBExpressionPart;
+const
+  // include "." (dots). currently there is no need to break expressions like "foo.bar"
+  // Include "^" (deref)
+  // do NOT include "@", it is applied after []() resolution
+  WordChar = [' ', #9, 'a'..'z', 'A'..'Z', '0'..'9', '_', '.', '^'];
+var
+  CurPtr, EndPtr: PChar;
+  CurPartPtr: PChar;
+
+  procedure SkipSpaces;
+  begin
+    while (CurPtr < EndPtr) and (CurPtr^ in [#9, ' ']) do inc(CurPtr);
+  end;
+
+  procedure ScanToWordEnd;
+  begin
+    // include "." (dots). currently there is no need to break expressions like "foo.bar"
+    // Include "^" (deref)
+    while (CurPtr < EndPtr) and (CurPtr^ in WordChar)
+    do inc(CurPtr);
+  end;
+
+  procedure ScanToWordStart;
+  begin
+    while (CurPtr < EndPtr) and not (CurPtr^ in WordChar)
+    do inc(CurPtr);
+  end;
+
+  function ScanToCallCastEnd: Boolean;
+  var
+    i: Integer;
+  begin
+    i := 0;
+    while (CurPtr < EndPtr) do begin
+      case CurPtr^ of
+        '(': inc(i);
+        ')': begin
+            dec(i);
+            inc(CurPtr);
+            if i = 0
+            then break
+            else continue;
+          end;
+      end;
+      inc(CurPtr);
+    end;
+    Result := i = 0;
+  end;
+
+  function ScanToIndexEnd: Boolean;
+  var
+    i: Integer;
+  begin
+    i := 0;
+    while (CurPtr < EndPtr) do begin
+      case CurPtr^ of
+        '[': inc(i);
+        ']': begin
+            dec(i);
+            inc(CurPtr);
+            if i = 0
+            then break
+            else continue;
+          end;
+      end;
+      inc(CurPtr);
+    end;
+    Result := i = 0;
+  end;
+
+  procedure AddExpPart(aList: TGDBExpressionPartList);
+  var
+    NewList: TGDBExpressionPartList;
+  begin
+    if aList.PartCount = 0 then exit;
+    if (aList.PartCount = 1) and (Result = nil) then begin
+      Result := aList.Parts[0];
+      exit;
+    end;
+
+    If Result = nil
+    then Result := TGDBExpressionPartList.Create
+    else
+    if not (Result is TGDBExpressionPartList)
+    then begin
+      NewList := TGDBExpressionPartList.Create;
+      NewList.Add(Result);
+      Result := NewList;
+    end;
+
+    TGDBExpressionPartList(Result).AddList(aList);
+  end;
+
+  function MoveListToCopy(aList: TGDBExpressionPartList): TGDBExpressionPart;
+  begin
+    if aList.PartCount = 1
+    then begin
+      Result := aList.Parts[0];
+    end
+    else begin
+      Result := TGDBExpressionPartList.Create;
+      TGDBExpressionPartList(Result).AddList(aList);
+    end;
+    aList.ClearShared;
+  end;
+
+var
+  CurList: TGDBExpressionPartList;
+  CurArray: TGDBExpressionPartArray;
+  CurCast: TGDBExpressionPartCastCall;
+begin
+  Result := nil;
+  CurPtr := AText;
+  EndPtr := AText + ATextLen;
+
+  while (CurPtr < EndPtr) and not(CurPtr^ in ['[', '(']) do inc(CurPtr);
+  if CurPtr = EndPtr then exit; // no fixup needed
+
+  CurPtr := AText;
+  CurArray := nil;
+  CurList:= TGDBExpressionPartList.Create;
+
+  while CurPtr < EndPtr do begin
+
+    if CurPtr^ in WordChar
+    then begin
+      if CurArray <> nil then CurArray.NeedTypeCast := True;
+      CurArray := nil;
+      CurPartPtr := CurPtr;
+      ScanToWordEnd;
+      CurList.Add(TGDBExpression.CreateSimple(CurPartPtr, CurPtr - CurPartPtr));
+    end
+    else
+    if (CurList.PartCount > 0) and (CurPtr^ = '[')
+    then begin
+      if CurArray <> nil then CurArray.NeedTypeCast := True;
+      CurArray := TGDBExpressionPartArray.Create(MoveListToCopy(CurList));
+      CurList.Add(CurArray);
+      while (CurPtr^ = '[') do begin
+        CurPartPtr := CurPtr;
+        if not ScanToIndexEnd then break; // broken expression, do not attempt to do anything
+        CurArray.AddIndex(TGDBExpressionPartBracketed.Create(CurPartPtr, CurPtr - CurPartPtr));
+        SkipSpaces;
+      end;
+    end
+    else
+    if (CurList.PartCount > 0) and (CurPtr^ = '(')
+    then begin
+      if CurArray <> nil then CurArray.NeedTypeCast := True;
+      CurArray := nil;
+      CurCast := TGDBExpressionPartCastCall.Create(MoveListToCopy(CurList));
+      CurList.Add(CurCast);
+      CurPartPtr := CurPtr;
+      if not ScanToCallCastEnd then break; // broken expression, do not attempt to do anything
+      CurCast.AddBrackets(TGDBExpressionPartBracketed.Create(CurPartPtr, CurPtr - CurPartPtr));
+    end
+    else begin
+      CurArray := nil;
+      CurPartPtr := CurPtr;
+      ScanToWordStart;
+      CurList.Add(TGDBExpression.CreateSimple(CurPartPtr, CurPtr - CurPartPtr));
+      AddExpPart(CurList);
+      CurList.ClearShared;
+    end;
+
+  end;
+
+  AddExpPart(CurList);
+  CurList.ClearShared;
+  CurList.Free;
+
+  if CurPtr < EndPtr then debugln(['Scan aborted: ', PCLenToString(FText)]);
+  if CurPtr < EndPtr then FreeAndNil(Result);
+end;
+
+function TGDBExpressionPart.NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  for i := 0 to PartCount - 1 do
+    if Parts[i].NeedValidation(AReqPtr) then
+      Result := True;
+end;
+
+function TGDBExpressionPart.GetParts(Index: Integer): TGDBExpressionPart;
+begin
+  Result := nil;
+end;
+
+function TGDBExpressionPart.PartCount: Integer;
+begin
+  Result := 0;
+end;
+
+{ TGDBExpressionPartListBase }
+
+function TGDBExpressionPartListBase.GetParts(Index: Integer): TGDBExpressionPart;
+begin
+  Result := TGDBExpressionPart(FList[Index]);
+end;
+
+function TGDBExpressionPartListBase.GetText: String;
+var
+  i: Integer;
+  x: TGDBExpressionPart;
+begin
+  Result := '';
+  for i := 0 to PartCount - 1 do
+    Result := Result + Parts[i].Text;
+end;
+
+constructor TGDBExpressionPartListBase.Create;
+begin
+  FList := TFPList.Create;
+end;
+
+destructor TGDBExpressionPartListBase.Destroy;
+begin
+  FreeAndNil(FList);
+  inherited Destroy;
+end;
+
+procedure TGDBExpressionPartListBase.Clear;
+begin
+  while FList.Count > 0 do begin
+    TGDBExpressionPart(Flist[0]).Free;
+    FList.Delete(0);
+  end;
+end;
+
+procedure TGDBExpressionPartListBase.ClearShared;
+begin
+  FList.Clear;
+end;
+
+function TGDBExpressionPartListBase.Add(APart: TGDBExpressionPart): Integer;
+begin
+  Result := FList.Add(APart);
+end;
+
+function TGDBExpressionPartListBase.PartCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+{ TGDBExpression }
+
+function TGDBExpression.GetText: String;
+begin
+  if FExpressionPart = nil
+  then Result := inherited GetText
+  else Result := FExpressionPart.Text;
+end;
+
+function TGDBExpression.GetParts(Index: Integer): TGDBExpressionPart;
+begin
+  Result := nil;
+  if FExpressionPart = nil then exit;
+  if FExpressionPart is TGDBExpressionPartList
+  then Result := FExpressionPart.Parts[Index]
+  else Result := FExpressionPart;
+end;
+
+constructor TGDBExpression.CreateSimple(AText: PChar; ATextLen: Integer);
+begin
+  // not to be parsed
+  FExpressionPart := nil;
+  FText.Ptr := AText;
+  FText.Len := ATextLen;
+end;
+
+constructor TGDBExpression.Create(AText: PChar; ATextLen: Integer);
+begin
+  CreateSimple(AText, ATextLen);
+  FExpressionPart := ParseExpression(FText.Ptr, FText.Len);
+end;
+
+constructor TGDBExpression.Create(ATextStr: String);
+begin
+  FTextStr := ATextStr;
+  Create(PChar(FTextStr), length(FTextStr));
+end;
+
+destructor TGDBExpression.Destroy;
+begin
+  FreeAndNil(FExpressionPart);
+  inherited Destroy;
+end;
+
+function TGDBExpression.PartCount: Integer;
+begin
+  Result := 0;
+  if FExpressionPart = nil then exit;
+  if FExpressionPart is TGDBExpressionPartList
+  then Result := FExpressionPart.PartCount
+  else Result := 1;
 end;
 
 { TGDBPTypeRequestCache }
@@ -1014,6 +1562,7 @@ procedure TGDBType.Init;
 begin
   inherited Init;
   FProcessState := gtpsFinished;
+  FParsedExpression := nil;
 end;
 
 constructor TGDBType.CreateForExpression(const AnExpression: string;
@@ -1478,31 +2027,6 @@ var
   end;
   {%endregion    * Array * }
 
-  {%region    * ArrayEntry * }
-  procedure ProcessArrayEntryInit(PosIndexStart, PosIndexEnd: Integer);
-  begin
-    FProcessState := gtpsArrayEntry;
-    FTypeInfoArrayExpression := TGDBType.CreateForExpression
-      (copy(FExpression, 1, PosIndexStart-1),
-       FCreationFlags * [gtcfClassIsPointer] + [gtcfSkipTypeName]);
-    AddSubType(FTypeInfoArrayExpression);
-    // include []
-    FArrayEntryIndexExpr := Copy(FExpression, PosIndexStart, PosIndexEnd - PosIndexStart + 1);
-  end;
-
-  procedure ProcessArrayEntry;
-  begin
-    FProcessState := gtpsArrayEntry;
-    if not FTypeInfoArrayExpression.IsFinished then exit;
-
-    if saInternalPointer in FTypeInfoArrayExpression.FAttributes
-    then begin
-      FExpression := FTypeInfoArrayExpression.FExpression + '^' + FArrayEntryIndexExpr;
-    end;
-    ProcessInitialSimple;
-  end;
-  {%endregion    * ArrayEntry * }
-
   {%region    * Simple * }
   procedure ProcessSimplePointer;
   begin
@@ -1778,24 +2302,22 @@ var
       ProcessInitialSimple;
       exit;
     end;
-    // parse expression
 
-    // Array entry ? (May need a deref of array Foo^[x])
-    p := @FExpression[length(FExpression)];
-    while (p^ in [#9, #32]) and (p > @FExpression[1]) do dec(p);
-    if p^ = ']' then begin
-      p1 := p;
-      while (not (p1^ = '[')) and (p1 > @FExpression[1]) do dec(p1);
-      ProcessArrayEntryInit(p1 - @FExpression[1]+1, p - @FExpression[1]+1);
-      exit;
-    end;
+    if FParsedExpression = nil
+    then FParsedExpression := TGDBExpression.Create(FExpression);
+    // Does not set FLastEvalRequest, so there can be no MergeSubProcessRequests
+    if FParsedExpression.NeedValidation(FEvalRequest)
+    then exit;
 
+    FExpression := FParsedExpression.Text;
 
     ProcessInitialSimple;
   end;
 
   procedure ProcessInitFixTypeCast;
   begin
+    // Some GDB can not process: "TFoo(SomeFoo).Bar"
+    // Because TFoo Is actually ^TFoo, therefore they need "^TFoo(SomeFoo).Bar"
     if FHasTypeCastFix or IsReqError(gptrPtypeCustomFixCast) or
        not(FReqResults[gptrPtypeCustomFixCast].Result.Kind = ptprkClass)
     then begin
@@ -1883,7 +2405,6 @@ begin
     gtpsClassPointer:    ProcessClassPointer;
     gtpsClassAncestor:   ProcessClassAncestor;
     gtpsArray:           ProcessArray;
-    gtpsArrayEntry:      ProcessArrayEntry;
     gtpsEvalExpr:        EvaluateExpression;
   end;
 
