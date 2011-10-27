@@ -41,7 +41,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TMethodList">
-        <short>[?]</short>
+        <short>A list for method references.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -142,7 +142,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TMethodList.Insert">
-        <short>[?]</short>
+        <short>Inserts AMethod at Index.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1405,6 +1405,9 @@
       <element name="DbgS.Result">
         <short/>
       </element>
+      <element name="DbgS.s">
+        <short>[?]</short>
+      </element>
       <element name="DbgS.q">
         <short>[?]</short>
       </element>
@@ -1840,7 +1843,7 @@
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="UTF16String">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -1849,7 +1852,7 @@
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PUTF16String" link="UTF16String">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -1858,7 +1861,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharacterLength">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -1872,7 +1875,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8Length">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -1892,7 +1895,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharacterToUnicode">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -1909,7 +1912,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UnicodeToUTF8">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -1918,12 +1921,15 @@
       <element name="UnicodeToUTF8.Result">
         <short/>
       </element>
+      <element name="UnicodeToUTF8.u">
+        <short></short>
+      </element>
       <element name="UnicodeToUTF8.Buf">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="UnicodeToUTF8SkipErrors">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -1943,7 +1949,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8ToDoubleByteString">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -1957,7 +1963,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8ToDoubleByte">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -1977,7 +1983,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8FindNearestCharStart">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -1997,7 +2003,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharStart">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -2017,7 +2023,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharToByteIndex">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
       <descr>
       </descr>
@@ -2040,7 +2046,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="UTF8FixBroken">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2054,7 +2060,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharacterStrictLength">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2071,7 +2077,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CStringToUTF8String">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2091,7 +2097,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8Pos">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2111,7 +2117,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8Copy">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2134,7 +2140,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="UTF8Delete">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2154,7 +2160,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="UTF8Insert">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2174,7 +2180,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8LowerCase">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2191,7 +2197,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8UpperCase">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2208,7 +2214,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="FindInvalidUTF8Character">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2231,7 +2237,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ValidUTF8String">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2248,7 +2254,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="AssignUTF8ListToAnsi">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2265,7 +2271,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF16CharacterLength">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2282,7 +2288,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF16Length">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2305,7 +2311,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF16CharacterToUnicode">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2325,7 +2331,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UnicodeToUTF16">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2342,7 +2348,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CompareStr">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2362,7 +2368,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CompareText">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2382,7 +2388,7 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="TConvertResult">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2391,7 +2397,7 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="TConvertOption">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2400,7 +2406,7 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="TConvertOptions">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2409,7 +2415,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ConvertUTF8ToUTF16">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2441,7 +2447,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ConvertUTF16ToUTF8">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2473,7 +2479,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8ToUTF16">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2490,7 +2496,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF16ToUTF8">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2507,7 +2513,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="LCLGetLanguageIDs">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2524,7 +2530,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="CreateFirstIdentifier">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2541,7 +2547,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="CreateNextIdentifier">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacments.
+        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
