@@ -30,6 +30,16 @@ type
     procedure DrawToCanvas(ADest: TCanvas; CDGroupBox: TCDGroupBox); override;
   end;
 
+  { TCDCheckBoxDrawerWinCE }
+
+  TCDCheckBoxDrawerWinCE = class(TCDCheckBoxDrawer)
+  public
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDCheckBox: TCDCheckBox;
+      FState: TCDButtonState; FCheckedState: TCDButtonCheckState); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDCheckBox: TCDCheckBox;
+      FState: TCDButtonState; FCheckedState: TCDButtonCheckState); override;
+  end;
+
   TCDCustomTabControlDrawerWinCE = class(TCDCustomTabControlDrawer)
   private
     StartIndex: integer;       //FEndIndex
@@ -52,6 +62,43 @@ type
   end;
 
 implementation
+
+{ TCDCheckBoxDrawerWinCE }
+
+procedure TCDCheckBoxDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
+  CDCheckBox: TCDCheckBox; FState: TCDButtonState; FCheckedState: TCDButtonCheckState);
+begin
+
+end;
+
+procedure TCDCheckBoxDrawerWinCE.DrawToCanvas(ADest: TCanvas;
+  CDCheckBox: TCDCheckBox; FState: TCDButtonState; FCheckedState: TCDButtonCheckState);
+const
+  CDCheckBoxWinCE_Half_Height = 7;
+  CDCheckBoxWinCE_Height = 15;
+var
+  lHalf: Integer;
+begin
+  lHalf := CDCheckBox.Height div 2;
+
+  // The checkbox item itself
+  ADest.Rectangle(
+    lHalf - CDCheckBoxWinCE_Half_Height,
+    1,
+    lHalf + CDCheckBoxWinCE_Half_Height,
+    CDCheckBoxWinCE_Height+1);
+
+  // The selection
+  if FState = bbsFocused then
+    ADest.Rectangle(
+      lHalf - CDCheckBoxWinCE_Half_Height+1,
+      2,
+      lHalf + CDCheckBoxWinCE_Half_Height-1,
+      CDCheckBoxWinCE_Height);
+
+    //, bbsCheckedDown, bbsCheckedMouseOver, bbsCheckedFocused] then
+//  bbsNormal, bbsDown, bbsMouseOver, bbsFocused
+end;
 
 { TCDButtonDrawerWinCE }
 
@@ -529,6 +576,7 @@ end;
 initialization
   RegisterButtonDrawer(TCDButtonDrawerWinCE.Create, dsWinCE);
   RegisterGroupBoxDrawer(TCDGroupBoxDrawerWinCE.Create, dsWinCE);
+  RegisterCheckBoxDrawer(TCDCheckBoxDrawerWinCE.Create, dsWinCE);
   RegisterCustomTabControlDrawer(TCDCustomTabControlDrawerWinCE.Create, dsWinCE);
 end.
 

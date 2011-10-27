@@ -35,9 +35,8 @@ type
     dsExtra1, dsExtra2, dsExtra3, dsExtra4
     );
 
-  // commented items are not yet supported
-  TCDButtonState = (bbsNormal, bbsDown, bbsMouseOver, bbsFocused
-    (* bbsChecked, bbsCheckedSelected, bbsCheckedDown { is going to be unchecked }*));
+  TCDButtonState = (bbsNormal, bbsDown, bbsMouseOver, bbsFocused, bbsFocusedMouseOver);
+  TCDButtonCheckState = (bbcNormal, bbcGrey, bbcChecked);
 
   TCDControlDrawer = class;
 
@@ -66,7 +65,9 @@ type
     //procedure DrawToCanvas(ADest: TCanvas; AControl: TCDControl); virtual; abstract;
   end;
 
-  TCDButtonDrawer = class;
+  // ===================================
+  // Standard Tab
+  // ===================================
 
   { TCDButton }
 
@@ -146,8 +147,6 @@ type
     TCDGroupBox is a custom-drawn group box control
   }
 
-  TCDGroupBoxDrawer = class;
-
   { TCDGroupBox }
 
   TCDGroupBox = class(TCDControl)
@@ -172,10 +171,43 @@ type
   TCDGroupBoxDrawer = class(TCDControlDrawer)
   public
     procedure SetClientRectPos(CDGroupBox: TCDGroupBox); virtual; abstract;
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDGroupBox: TCDGroupBox);
-      virtual; abstract;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDGroupBox: TCDGroupBox); virtual; abstract;
     procedure DrawToCanvas(ADest: TCanvas; CDGroupBox: TCDGroupBox); virtual; abstract;
   end;
+
+  { TCDCheckBox }
+
+  TCDCheckBox = class(TCDControl)
+  private
+    procedure PrepareCurrentDrawer(); override;
+  protected
+    FState: TCDButtonState;
+    FCheckedState: TCDButtonCheckState;
+    procedure RealSetText(const Value: TCaption); override; // to update on caption changes
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure EraseBackground(DC: HDC); override;
+    procedure Paint; override;
+  published
+    property DrawStyle;
+    property Caption;
+    property TabStop default True;
+  end;
+
+  { TCDCheckBoxDrawer }
+
+  TCDCheckBoxDrawer = class(TCDControlDrawer)
+  public
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDCheckBox: TCDCheckBox;
+      FState: TCDButtonState; FCheckedState: TCDButtonCheckState); virtual; abstract;
+    procedure DrawToCanvas(ADest: TCanvas; CDCheckBox: TCDCheckBox;
+      FState: TCDButtonState; FCheckedState: TCDButtonCheckState); virtual; abstract;
+  end;
+
+  // ===================================
+  // Common Controls Tab
+  // ===================================
 
   {@@
     TCDTrackBar is a custom-drawn trackbar control
@@ -368,8 +400,11 @@ type
     property OnChange;
   end;
 
+// Standard Tab
 procedure RegisterButtonDrawer(ADrawer: TCDButtonDrawer; AStyle: TCDDrawStyle);
 procedure RegisterGroupBoxDrawer(ADrawer: TCDGroupBoxDrawer; AStyle: TCDDrawStyle);
+procedure RegisterCheckBoxDrawer(ADrawer: TCDCheckBoxDrawer; AStyle: TCDDrawStyle);
+// Common Controls Tab
 procedure RegisterTrackBarDrawer(ADrawer: TCDTrackBarDrawer; AStyle: TCDDrawStyle);
 procedure RegisterCustomTabControlDrawer(ADrawer: TCDCustomTabControlDrawer; AStyle: TCDDrawStyle);
 
@@ -379,10 +414,14 @@ resourcestring
   sTABSHEET_DEFAULT_NAME = 'CTabSheet';
 
 var
+  // Standard Tab
   RegisteredButtonDrawers: array[TCDDrawStyle] of TCDButtonDrawer
     = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   RegisteredGroupBoxDrawers: array[TCDDrawStyle] of TCDGroupBoxDrawer
     = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+  RegisteredCheckBoxDrawers: array[TCDDrawStyle] of TCDCheckBoxDrawer
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+  // Common Controls Tab
   RegisteredTrackBarDrawers: array[TCDDrawStyle] of TCDTrackBarDrawer
     = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   RegisteredCustomTabControlDrawers: array[TCDDrawStyle] of TCDCustomTabControlDrawer
@@ -400,6 +439,12 @@ begin
   RegisteredGroupBoxDrawers[AStyle] := ADrawer;
 end;
 
+procedure RegisterCheckBoxDrawer(ADrawer: TCDCheckBoxDrawer; AStyle: TCDDrawStyle);
+begin
+  if RegisteredCheckBoxDrawers[AStyle] <> nil then RegisteredCheckBoxDrawers[AStyle].Free;
+  RegisteredCheckBoxDrawers[AStyle] := ADrawer;
+end;
+
 procedure RegisterTrackBarDrawer(ADrawer: TCDTrackBarDrawer; AStyle: TCDDrawStyle);
 begin
   if RegisteredTrackBarDrawers[AStyle] <> nil then RegisteredTrackBarDrawers[AStyle].Free;
@@ -410,6 +455,74 @@ procedure RegisterCustomTabControlDrawer(ADrawer: TCDCustomTabControlDrawer; ASt
 begin
   if RegisteredCustomTabControlDrawers[AStyle] <> nil then RegisteredCustomTabControlDrawers[AStyle].Free;
   RegisteredCustomTabControlDrawers[AStyle] := ADrawer;
+end;
+
+{ TCDCheckBox }
+
+procedure TCDCheckBox.PrepareCurrentDrawer;
+begin
+  FCurrentDrawer := RegisteredCheckBoxDrawers[DrawStyle];
+  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredCheckBoxDrawers[dsWince];
+  if FCurrentDrawer = nil then raise Exception.Create('No registered check box drawers were found');
+end;
+
+procedure TCDCheckBox.RealSetText(const Value: TCaption);
+begin
+  inherited RealSetText(Value);
+  Invalidate;
+end;
+
+constructor TCDCheckBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 75;
+  Height := 17;
+  TabStop := True;
+  ControlStyle := [csCaptureMouse, csClickEvents,
+    csDoubleClicks, csReplicatable];
+
+  DrawStyle := dsWinXP;
+  PrepareCurrentDrawer();
+end;
+
+destructor TCDCheckBox.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCDCheckBox.EraseBackground(DC: HDC);
+begin
+end;
+
+procedure TCDCheckBox.Paint;
+var
+  AImage: TLazIntfImage = nil;
+  ABmp: TBitmap = nil;
+  lCanvas: TFPImageCanvas = nil;
+begin
+  inherited Paint;
+
+  PrepareCurrentDrawer();
+
+  ABmp := TBitmap.Create;
+  try
+    ABmp.Width := Width;
+    ABmp.Height := Height;
+    AImage := ABmp.CreateIntfImage;
+    lCanvas := TFPImageCanvas.Create(AImage);
+    // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
+    TCDCheckBoxDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, Self, FState, FCheckedState);
+    ABmp.LoadFromIntfImage(AImage);
+    // Second step of the drawing: LCL TCustomCanvas for easy font access
+    TCDCheckBoxDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas, Self, FState, FCheckedState);
+    Canvas.Draw(0, 0, ABmp);
+  finally
+    if lCanvas <> nil then
+      lCanvas.Free;
+    if AImage <> nil then
+      AImage.Free;
+    ABmp.Free;
+  end;
 end;
 
 { TCDCustomTabSheet }
