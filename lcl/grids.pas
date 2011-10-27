@@ -104,9 +104,7 @@ type
     goHeaderPushedLook,   // Header cells looks pushed when clicked
     goSelectionActive,    // Setting grid.Selection moves also cell cursor
     goFixedColSizing,     // Allow to resize fixed columns
-    goDontScrollPartCell, // clicking partially visible cells will not scroll
-    goCanSelectAnyButton  // Not only left mouse button, but also right and
-                               // middle buttons move selection to clicked cell
+    goDontScrollPartCell  // clicking partially visible cells will not scroll
   );
   TGridOptions = set of TGridOption;
 
@@ -5720,8 +5718,7 @@ var
 begin
   inherited MouseDown(Button, Shift, X, Y);
 
-  if (csDesigning in componentState) or
-          not ((goCanSelectAnyButton in FOptions) or (ssLeft in Shift)) then
+  if (csDesigning in componentState) or not (ssLeft in Shift) then
     Exit;
 
   {$IfDef dbgGrid} DebugLn('MouseDown INIT'); {$Endif}
