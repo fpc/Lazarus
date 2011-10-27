@@ -24,14 +24,6 @@ type
       FState: TCDButtonState); override;
   end;
 
-  TCDGroupBoxDrawerWinCE = class(TCDGroupBoxDrawer)
-  public
-    FCaptionMiddle: integer;
-    procedure SetClientRectPos(CDGroupBox: TCDGroupBox); override;
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDGroupBox: TCDGroupBox); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDGroupBox: TCDGroupBox); override;
-  end;
-
   { TCDCheckBoxDrawerWinCE }
 
   TCDCheckBoxDrawerWinCE = class(TCDCheckBoxDrawer)
@@ -40,6 +32,14 @@ type
       FState: TCDButtonState); override;
     procedure DrawToCanvas(ADest: TCanvas; CDCheckBox: TCDCheckBox;
       FState: TCDButtonState); override;
+  end;
+
+  TCDGroupBoxDrawerWinCE = class(TCDGroupBoxDrawer)
+  public
+    FCaptionMiddle: integer;
+    procedure SetClientRectPos(CDGroupBox: TCDGroupBox); override;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDGroupBox: TCDGroupBox); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDGroupBox: TCDGroupBox); override;
   end;
 
   TCDCustomTabControlDrawerWinCE = class(TCDCustomTabControlDrawer)
@@ -95,7 +95,8 @@ begin
   // The checkbox item itself
   ADest.Brush.Color := clWhite;
   ADest.Pen.Style := psSolid;
-  ADest.Pen.Color := clBlack;
+  if FState.IsDown then ADest.Pen.Color := clGray
+  else ADest.Pen.Color := clBlack;
   ADest.Rectangle(
     1,
     lHalf - CDCheckBoxWinCE_Half_Height,
@@ -107,10 +108,10 @@ begin
   begin
     // 4 lines going down and to the right
     for i := 0 to 3 do
-      ADest.Line(5+i, lHalf - CDCheckBoxWinCE_Half_Height+6+i, 5+i, lHalf - CDCheckBoxWinCE_Half_Height+9+i);
+      ADest.Line(5+i, lHalf - CDCheckBoxWinCE_Half_Height+5+i, 5+i, lHalf - CDCheckBoxWinCE_Half_Height+8+i);
     // Now 5 lines going up and to the right
     for i := 4 to 8 do
-      ADest.Line(5+i, lHalf - CDCheckBoxWinCE_Half_Height+6+6-i, 5+i, lHalf - CDCheckBoxWinCE_Half_Height+9+6-i);
+      ADest.Line(5+i, lHalf - CDCheckBoxWinCE_Half_Height+5+6-i, 5+i, lHalf - CDCheckBoxWinCE_Half_Height+8+6-i);
   end;
 
   // The selection
@@ -121,10 +122,10 @@ begin
   begin
     // The selection inside the square
     ADest.Rectangle(
-      lHalf - CDCheckBoxWinCE_Half_Height+1,
       2,
-      lHalf + CDCheckBoxWinCE_Half_Height-1,
-      CDCheckBoxWinCE_Height);
+      lHalf - CDCheckBoxWinCE_Half_Height+1,
+      CDCheckBoxWinCE_Height,
+      lHalf + CDCheckBoxWinCE_Half_Height-1);
 
     // Selection around the text
     ADest.Rectangle(
