@@ -1827,6 +1827,7 @@ begin
         Y := P.Y;
         Button := LOWORD(Integer(WParam));
         WheelDelta := SmallInt(HIWORD(Integer(WParam)));
+        State := KeysToShiftState(Button);
         Result := 0;
         UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
         WinProcess := false;

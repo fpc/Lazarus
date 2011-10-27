@@ -1699,6 +1699,7 @@ begin
           Msg := LM_MOUSEWHEEL;
           Button := Lo(WParam);
           WheelDelta := SmallInt(Hi(WParam));
+          State := KeysToShiftState(Button);
           UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
           WinProcess := false;
         end;

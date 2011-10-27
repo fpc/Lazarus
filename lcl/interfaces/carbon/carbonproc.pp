@@ -465,6 +465,7 @@ begin
   if (cmdKey      and Modifiers) > 0 then Include(Result, ssMeta);
   if (controlKey  and Modifiers) > 0 then Include(Result, ssCtrl);
   if (optionKey   and Modifiers) > 0 then Include(Result, ssAlt);
+  if (alphaLock   and Modifiers) > 0 then Include(Result, ssCaps);
 
   //DebugLn('GetCarbonShiftState Result=',dbgs(Result),' Modifiers=',hexstr(Modifiers,8),' ButtonState=',hexstr(ButtonState,8));
 end;

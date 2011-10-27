@@ -1794,8 +1794,9 @@ begin
     MessE.WheelDelta := WHEEL_DELTA[event^.Button = 4];
     MessE.X := MappedXY.X;
     MessE.Y := MappedXY.Y;
+    MessE.State := ShiftState;
     MessE.UserData := AWinControl;
-    MessE.Button := ShiftStateToKeys(ShiftState);
+    MessE.Button := 0;
 
     // send the message directly to the LCL
     NotifyApplicationUserInput(MessE.Msg);
@@ -2070,8 +2071,9 @@ begin
   end;
   MessE.X := MappedXY.X;
   MessE.Y := MappedXY.Y;
+  MessE.State := ShiftState;
   MessE.UserData := AWinControl;
-  MessE.Button := ShiftStateToKeys(ShiftState);
+  MessE.Button := 0;
 
   // send the message directly to the LCL
   NotifyApplicationUserInput(MessE.Msg);

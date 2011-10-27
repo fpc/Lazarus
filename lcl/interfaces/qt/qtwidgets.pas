@@ -3079,7 +3079,6 @@ var
   MousePos: TQtPoint;
   Modifiers: QtKeyboardModifiers;
   ModifierState: PtrInt;
-  ShiftState: TShiftState;
 begin
   Result := False;
   if not CanSendLCLMessage or (LCLObject = nil) then
@@ -3091,15 +3090,14 @@ begin
   OffsetMousePos(@MousePos);
 
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
-  ShiftState := [];
+  Msg.State := [];
   ModifierState := QtKeyModifiersToKeyState(Modifiers);
   if (ModifierState and MK_SHIFT) <> 0 then
-    ShiftState := [ssShift];
+    Msg.State := [ssShift];
   if (ModifierState and MK_CONTROL) <> 0 then
-    ShiftState := [ssCtrl] + ShiftState;
+    Msg.State := [ssCtrl] + Msg.State;
   if (ModifierState and $20000000) <> 0 then
-    ShiftState := [ssAlt] + ShiftState;
-  Msg.Button := ShiftStateToKeys(ShiftState);
+    Msg.State := [ssAlt] + Msg.State;
 
   LastMouse.Widget := Sender;
   LastMouse.MousePos := MousePos;

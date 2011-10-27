@@ -6562,6 +6562,9 @@ begin
            Result:='Hyper';
            {$ENDIF}
   ssAltGr: Result:='AltGr';
+  ssCaps: Result:='Caps';
+  ssNum: Result:='Numlock';
+  ssScroll: Result:='Scroll';
   else Result:='Modifier'+IntToStr(ord(s));
   end;
 end;
@@ -6574,7 +6577,8 @@ begin
   inherited Create(TheOwner);
 
   FAllowedShifts:=[ssShift, ssAlt, ssCtrl,
-    ssMeta, ssSuper, ssHyper, ssAltGr];
+    ssMeta, ssSuper, ssHyper, ssAltGr,
+    ssCaps, ssNum, ssScroll];
 
   FGrabButton:=TButton.Create(Self);
   with FGrabButton do begin

@@ -2318,11 +2318,13 @@ end;
 procedure TControl.WMMouseWheel(var Message: TLMMouseEvent);
 var
   MousePos: TPoint;
+  lState: TShiftState;
 begin
   MousePos.X := Message.X;
   MousePos.Y := Message.Y;
 
-  if DoMouseWheel(KeysToShiftState(Message.Button), Message.WheelDelta, MousePos) then
+  lState := Message.State - [ssCaps, ssNum, ssScroll]; // Remove unreliable states, see http://bugs.freepascal.org/view.php?id=20065
+  if DoMouseWheel(lState, Message.WheelDelta, MousePos) then
     Message.Result := 1 // handled, skip further handling by interface
   else
     inherited;

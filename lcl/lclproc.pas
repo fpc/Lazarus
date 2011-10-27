@@ -2108,6 +2108,9 @@ begin
   if ssSuper in Shift then Add('ssSuper');
   if ssHyper in Shift then Add('ssHyper');
   if ssAltGr in Shift then Add('ssAltGr');
+  if ssCaps in Shift then Add('ssCaps');
+  if ssNum in Shift then Add('ssNum');
+  if ssScroll in Shift then Add('ssScroll');
   if ssTriple in Shift then Add('ssTriple');
   if ssQuad in Shift then Add('ssQuad');
   Result:='['+Result+']';
