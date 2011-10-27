@@ -387,7 +387,7 @@ type
     procedure SelectNextPage(GoForward: boolean; CheckTabVisible: boolean = True);
   published
     property ActivePage: TCDTabSheet read GetActivePage write SetActivePage;
-    property DrawStyle: TCDDrawStyle;
+    property DrawStyle;
     property Caption;
     property Color;
     property Font;
