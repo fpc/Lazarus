@@ -66,8 +66,8 @@ type
     dgHeaderHotTracking,
     dgHeaderPushedLook,
     dgPersistentMultiSelect,
-    dgAutoSizeColumns
-
+    dgAutoSizeColumns,
+    dgAnyButtonCanSelect                // any mouse button can move selection
   );
   TDbGridOptions = set of TDbGridOption;
 
@@ -426,6 +426,7 @@ type
     procedure LayoutChanged; virtual;
     procedure Loaded; override;
     procedure MoveSelection; override;
+    function  MouseButtonAllowed(Button: TMouseButton): boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); override;
@@ -2226,7 +2227,7 @@ begin
     exit;
   end;
 
-  if button<>mbLeft then begin
+  if not MouseButtonAllowed(Button) then begin
     doInherited;
     exit;
   end;
@@ -2255,7 +2256,8 @@ begin
             ToggleSelectedRow;
           end
           else begin
-            ClearSelection(true);
+            if Button=mbLeft then
+              ClearSelection(true);
             if gz=gzFixedRows then
               doMouseDown
             else
@@ -2272,7 +2274,8 @@ begin
           if ssCtrl in Shift then
             ToggleSelectedRow
           else begin
-            ClearSelection(true);
+            if Button=mbLeft then
+              ClearSelection(true);
             doMoveToColumn;
           end;
         end;
@@ -2585,6 +2588,11 @@ begin
   FColEnterPending:=False;
   UpdateActive;
   {$ifdef dbgDBGrid}DebugLn('DBGrid.MoveSelection FIN');{$Endif}
+end;
+
+function TCustomDBGrid.MouseButtonAllowed(Button: TMouseButton): boolean;
+begin
+  Result:= (Button=mbLeft) or (dgAnyButtonCanSelect in Options);
 end;
 
 procedure TCustomDBGrid.DrawAllRows;

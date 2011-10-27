@@ -963,6 +963,7 @@ type
     procedure LoadContent(cfg: TXMLConfig; Version: Integer); virtual;
     procedure Loaded; override;
     procedure LockEditor;
+    function  MouseButtonAllowed(Button: TMouseButton): boolean; virtual;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer);override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
@@ -2253,6 +2254,11 @@ begin
     C.Free;
   end else
     Result:=nil;
+end;
+
+function TCustomGrid.MouseButtonAllowed(Button: TMouseButton): boolean;
+begin
+  result := (Button=mbLeft);
 end;
 
 function TCustomGrid.IsTitleImageListStored: boolean;
@@ -5718,7 +5724,7 @@ var
 begin
   inherited MouseDown(Button, Shift, X, Y);
 
-  if (csDesigning in componentState) or not (ssLeft in Shift) then
+  if (csDesigning in componentState) or not MouseButtonAllowed(Button) then
     Exit;
 
   {$IfDef dbgGrid} DebugLn('MouseDown INIT'); {$Endif}
