@@ -21,7 +21,8 @@ unit SourcesTest;
 interface
 
 uses
-  Classes, SysUtils, FPCUnit, TestRegistry, TASources;
+  Classes, SysUtils, FPCUnit, TestRegistry,
+  TAChartUtils, TACustomSource, TASources;
 
 type
 
@@ -30,6 +31,10 @@ type
   TListSourceTest = class(TTestCase)
   private
     FSource: TListChartSource;
+
+    procedure AssertItemEquals(
+      const AItem: TChartDataItem; AX, AY: Double; AText: String = '';
+      AColor: TChartColor = clTAColor);
   protected
     procedure SetUp; override;
     procedure TearDown; override;
@@ -68,7 +73,7 @@ type
 implementation
 
 uses
-  Math, TAChartUtils, TACustomSource, TAMath;
+  Math, TAMath;
 
 { TCalculatedSourceTest }
 
@@ -183,6 +188,16 @@ end;
 
 { TListSourceTest }
 
+procedure TListSourceTest.AssertItemEquals(
+  const AItem: TChartDataItem; AX, AY: Double; AText: String;
+  AColor: TChartColor);
+begin
+  AssertEquals('X', AX, AItem.X);
+  AssertEquals('Y', AY, AItem.Y);
+  AssertEquals('Text', AText, AItem.Text);
+  AssertEquals('Color', AColor, AItem.Color);
+end;
+
 procedure TListSourceTest.Basic;
 begin
   FSource.Clear;
@@ -199,14 +214,8 @@ begin
   FSource.DataPoints.Add('3|4|?|text1');
   FSource.DataPoints.Add('5|6|$FF0000|');
   AssertEquals(2, FSource.Count);
-  AssertEquals(3, FSource[0]^.X);
-  AssertEquals(4, FSource[0]^.Y);
-  AssertEquals('text1', FSource[0]^.Text);
-  AssertEquals(clTAColor, FSource[0]^.Color);
-  AssertEquals(5, FSource[1]^.X);
-  AssertEquals(6, FSource[1]^.Y);
-  AssertEquals('', FSource[1]^.Text);
-  AssertEquals($FF0000, FSource[1]^.Color);
+  AssertItemEquals(FSource[0]^, 3, 4, 'text1');
+  AssertItemEquals(FSource[1]^, 5, 6, '', $FF0000);
   FSource[0]^.Color := 0;
   AssertEquals('3|4|$000000|text1', FSource.DataPoints[0]);
   FSource.DataPoints.Add('7|8|0|two words');
