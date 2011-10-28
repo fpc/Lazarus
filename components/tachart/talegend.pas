@@ -558,7 +558,7 @@ var
 begin
   with AData do begin
     FColCount := Max(Min(ColumnCount, FItems.Count), 1);
-    FRowCount := FItems.Count div FColCount;
+    FRowCount := (FItems.Count - 1) div FColCount + 1;
     FItemSize := MeasureItem(FDrawer, FItems);
     legendSize.X := (FItemSize.X + Spacing) * FColCount + Spacing;
     legendSize.Y := (FItemSize.Y + Spacing) * FRowCount + Spacing;
