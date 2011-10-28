@@ -149,6 +149,7 @@ type
   end;
 
   TLegendColumnCount = 1..MaxInt;
+  TLegendItemFillOrder = (lfoColRow, lfoRowCol);
 
   { TChartLegend }
 
@@ -161,6 +162,7 @@ type
     FFrame: TChartPen;
     FGroupFont: TFont;
     FGroupTitles: TStrings;
+    FItemFillOrder: TLegendItemFillOrder;
     FMarginX: TChartDistance;
     FMarginY: TChartDistance;
     FSpacing: TChartDistance;
@@ -175,6 +177,7 @@ type
     procedure SetFrame(AValue: TChartPen);
     procedure SetGroupFont(AValue: TFont);
     procedure SetGroupTitles(AValue: TStrings);
+    procedure SetItemFillOrder(AValue: TLegendItemFillOrder);
     procedure SetMargin(AValue: TChartDistance);
     procedure SetMarginX(AValue: TChartDistance);
     procedure SetMarginY(AValue: TChartDistance);
@@ -206,6 +209,8 @@ type
     property Frame: TChartPen read FFrame write SetFrame;
     property GroupFont: TFont read FGroupFont write SetGroupFont;
     property GroupTitles: TStrings read FGroupTitles write SetGroupTitles;
+    property ItemFillOrder: TLegendItemFillOrder
+      read FItemFillOrder write SetItemFillOrder default lfoColRow;
     property Margin: TChartDistance
       read FMarginX write SetMargin stored false; deprecated;
     property MarginX: TChartDistance
@@ -493,7 +498,7 @@ end;
 
 procedure TChartLegend.Draw(var AData: TChartLegendDrawingData);
 var
-  i: Integer;
+  i, x, y: Integer;
   r: TRect;
   prevFont: TFont = nil;
   drawer: IChartDrawer;
@@ -520,10 +525,15 @@ begin
         drawer.Pen := SymbolFrame
       else
         drawer.SetPenParams(psClear, clTAColor);
-
+      x := 0;
+      y := 0;
+      case ItemFillOrder of
+        lfoColRow: DivMod(i, FRowCount, x, y);
+        lfoRowCol: DivMod(i, FColCount, y, x);
+      end;
       r := Bounds(
-        FBounds.Left + Spacing + i div FRowCount * (FItemSize.X + Spacing),
-        FBounds.Top + Spacing + i mod FRowCount * (FItemSize.Y + Spacing),
+        FBounds.Left + Spacing + x * (FItemSize.X + Spacing),
+        FBounds.Top + Spacing + y * (FItemSize.Y + Spacing),
         SymbolWidth, FItemSize.Y);
       FItems[i].Draw(drawer, r);
       OffsetRect(r, 0, FItemSize.Y + Spacing);
@@ -646,6 +656,13 @@ end;
 procedure TChartLegend.SetGroupTitles(AValue: TStrings);
 begin
   FGroupTitles.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartLegend.SetItemFillOrder(AValue: TLegendItemFillOrder);
+begin
+  if FItemFillOrder = AValue then exit;
+  FItemFillOrder := AValue;
   StyleChanged(Self);
 end;
 
