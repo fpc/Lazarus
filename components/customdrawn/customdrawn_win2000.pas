@@ -18,8 +18,7 @@ type
   TCDButtonDrawerWin2k = class(TCDButtonDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
-      FState: TCDButtonState); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton); override;
   end;
 
 implementation
@@ -30,8 +29,7 @@ begin
 
 end;
 
-procedure TCDButtonDrawerWin2k.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
-  FState: TCDButtonState);
+procedure TCDButtonDrawerWin2k.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton);
 var
   TmpB: TBitmap;
   Str: string;
@@ -66,7 +64,7 @@ begin
   end;
 
   // Button image
-  if FState.IsDown then
+  if CDButton.IsDown then
   begin
       with TmpB.Canvas do
       begin
@@ -104,7 +102,7 @@ begin
   ADest.Brush.Style := bsClear;
   ADest.Pen.Style := psSolid;
   Str := CDButton.Caption;
-  if FState.IsDown then
+  if CDButton.IsDown then
     ADest.TextOut((CDButton.Width - ADest.TextWidth(Str)) div 2 + 1,
       (CDButton.Height - ADest.TextHeight(Str)) div 2 + 1, Str)
   else

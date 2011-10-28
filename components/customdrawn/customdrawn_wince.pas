@@ -20,8 +20,7 @@ type
   TCDButtonDrawerWinCE = class(TCDButtonDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
-      FState: TCDButtonState); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton); override;
   end;
 
   { TCDEditDrawerWinCE }
@@ -40,10 +39,8 @@ type
     function GetCaptionHeight(CDCheckBox: TCDCheckBox): Integer;
     procedure CalculatePreferredSize(CDCheckBox: TCDCheckBox; var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDCheckBox: TCDCheckBox;
-      FState: TCDButtonState); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDCheckBox: TCDCheckBox;
-      FState: TCDButtonState); override;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDCheckBox: TCDCheckBox); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDCheckBox: TCDCheckBox); override;
   end;
 
   TCDGroupBoxDrawerWinCE = class(TCDGroupBoxDrawer)
@@ -52,6 +49,18 @@ type
     procedure SetClientRectPos(CDGroupBox: TCDGroupBox); override;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDGroupBox: TCDGroupBox); override;
     procedure DrawToCanvas(ADest: TCanvas; CDGroupBox: TCDGroupBox); override;
+  end;
+
+  // ===================================
+  // Common Controls Tab
+  // ===================================
+
+  { TCDListViewDrawerWinCE }
+
+  TCDListViewDrawerWinCE = class(TCDListViewDrawer)
+  public
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDListView: TCDListView); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDListView: TCDListView); override;
   end;
 
   TCDCustomTabControlDrawerWinCE = class(TCDCustomTabControlDrawer)
@@ -76,6 +85,20 @@ type
   end;
 
 implementation
+
+{ TCDListViewDrawerWinCE }
+
+procedure TCDListViewDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
+  CDListView: TCDListView);
+begin
+
+end;
+
+procedure TCDListViewDrawerWinCE.DrawToCanvas(ADest: TCanvas;
+  CDListView: TCDListView);
+begin
+
+end;
 
 { TCDEditDrawerWinCE }
 
@@ -119,13 +142,13 @@ begin
 end;
 
 procedure TCDCheckBoxDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
-  CDCheckBox: TCDCheckBox; FState: TCDButtonState);
+  CDCheckBox: TCDCheckBox);
 begin
 
 end;
 
 procedure TCDCheckBoxDrawerWinCE.DrawToCanvas(ADest: TCanvas;
-  CDCheckBox: TCDCheckBox; FState: TCDButtonState);
+  CDCheckBox: TCDCheckBox);
 const
   CDCheckBoxWinCE_Half_Height = 7;
   CDCheckBoxWinCE_Height = 15;
@@ -146,7 +169,7 @@ begin
   // The checkbox item itself
   ADest.Brush.Color := clWhite;
   ADest.Pen.Style := psSolid;
-  if FState.IsDown then ADest.Pen.Color := clGray
+  if CDCheckBox.IsDown then ADest.Pen.Color := clGray
   else ADest.Pen.Color := clBlack;
   ADest.Rectangle(
     1,
@@ -197,8 +220,7 @@ begin
 
 end;
 
-procedure TCDButtonDrawerWinCE.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
-  FState: TCDButtonState);
+procedure TCDButtonDrawerWinCE.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton);
 var
   TmpB: TBitmap;
   Str: string;
@@ -213,7 +235,7 @@ begin
   //  CDButton.SetShape(TmpB);
 
   // Button image
-  if FState.IsDown then
+  if CDButton.IsDown then
   begin
     TmpB.Canvas.Brush.Style := bsSolid;
     TmpB.Canvas.Brush.Color := GetAColor(CDButton.Color, 90);

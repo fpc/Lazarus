@@ -18,8 +18,7 @@ type
   TCDButtonDrawerXPTB = class(TCDButtonDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
-      FState: TCDButtonState); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton); override;
   end;
 
 implementation
@@ -30,12 +29,11 @@ begin
 
 end;
 
-procedure TCDButtonDrawerXPTB.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
-  FState: TCDButtonState);
+procedure TCDButtonDrawerXPTB.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton);
 var
   Str: string;
 begin
-  if FState.IsDown then
+  if CDButton.IsDown then
     DrawCDButtonDown(ADest, CDButton.GetRGBBackgroundColor)
   else if CDButton.Focused then
     DrawXPTaskbarButton(ADest, GetAColor(CDButton.Color, 98))

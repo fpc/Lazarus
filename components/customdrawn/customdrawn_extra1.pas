@@ -18,8 +18,7 @@ type
   TCDButtonDrawerGrad = class(TCDButtonDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
-      FState: TCDButtonState); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton); override;
   end;
 
   TCDTrackBarDrawerGraph = class(TCDTrackBarDrawer)
@@ -37,8 +36,7 @@ begin
 
 end;
 
-procedure TCDButtonDrawerGrad.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
-  FState: TCDButtonState);
+procedure TCDButtonDrawerGrad.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton);
 var
   TmpB: TBitmap;
   Str: string;
@@ -63,7 +61,7 @@ begin
   end;
 
   // Button image
-  if FState.IsDown then
+  if CDButton.IsDown then
     DrawCDButtonDown(TmpB.Canvas, CDButton.GetRGBBackgroundColor)
   else if CDButton.Focused then
     //GradientFill(GetUColor(CDButton.Color, 50), GetAColor(CDButton.Color, 60), TmpB.Canvas);

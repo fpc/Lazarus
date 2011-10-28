@@ -18,8 +18,7 @@ type
   TCDButtonDrawerAndroid = class(TCDButtonDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton;
-      FState: TCDButtonState); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton); override;
   end;
 
 implementation
@@ -30,8 +29,7 @@ begin
 
 end;
 
-procedure TCDButtonDrawerAndroid.DrawToCanvas(ADest: TCanvas;
-  CDButton: TCDButton; FState: TCDButtonState);
+procedure TCDButtonDrawerAndroid.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton);
 var
   //TmpB: TBitmap;
   Str: string;
@@ -51,7 +49,7 @@ begin
   ADest.RecTangle(0, 0, CDButton.Width, CDButton.Height);
 
   // Button image
-  if FState.IsDown then
+  if CDButton.IsDown then
     DrawCDButtonDown(ADest, CDButton.GetRGBBackgroundColor)
   else if CDButton.Focused then
     DrawAndroidButton(ADest, GetAColor(CDButton.Color, 98))
