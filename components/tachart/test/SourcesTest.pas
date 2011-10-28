@@ -199,6 +199,9 @@ begin
 end;
 
 procedure TListSourceTest.Basic;
+var
+  i: Integer;
+  srcDest: TListChartSource;
 begin
   FSource.Clear;
   AssertEquals(0, FSource.Count);
@@ -206,6 +209,18 @@ begin
   AssertEquals(1, FSource.Count);
   FSource.Delete(0);
   AssertEquals(0, FSource.Count);
+  for i := 1 to 10 do
+    FSource.Add(i, i * 2, IntToStr(i));
+  srcDest := TListChartSource.Create(nil);
+  try
+    srcDest.CopyFrom(FSource);
+    AssertEquals(FSource.Count, srcDest.Count);
+    for i := 0 to FSource.Count - 1 do
+      with FSource[i]^ do
+        AssertItemEquals(srcDest[i]^, X, Y, Text, Color);
+  finally
+    srcDest.Free;
+  end;
 end;
 
 procedure TListSourceTest.DataPoint;
