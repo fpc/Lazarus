@@ -10,14 +10,15 @@ object CalendarPopupForm: TCalendarPopupForm
   ClientHeight = 192
   ClientWidth = 233
   OnClose = FormClose
+  OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   PopupMode = pmAuto
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Calendar: TCalendar
     Left = 1
-    Height = 153
+    Height = 176
     Top = 1
-    Width = 162
+    Width = 177
     AutoSize = True
     BorderSpacing.Around = 1
     DateTime = 38823
