@@ -1167,7 +1167,11 @@ begin
     if (AForm.WindowState in [wsNormal,wsMaximized]) and BringToFront then
       AForm.ShowOnTop
     else
+    begin
       AForm.Visible:=true;
+      if BringToFront and (AForm.WindowState in [wsMinimized]) then
+        AForm.WindowState := wsNormal;
+    end;
   end;
 end;
 
