@@ -35,7 +35,7 @@ implementation
 
 procedure TForm1.tbCopyClick(Sender: TObject);
 begin
-  Chart1BarSeries1.ListSource.CopyForm(DbChartSource1);
+  Chart1BarSeries1.ListSource.CopyFrom(DbChartSource1);
 end;
 
 end.

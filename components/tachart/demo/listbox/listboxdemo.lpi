@@ -66,6 +66,8 @@
     </SearchPaths>
     <Linking>
       <Debugging>
+        <GenerateDebugInfo Value="True"/>
+        <DebugInfoType Value="dsAuto"/>
         <StripSymbols Value="True"/>
       </Debugging>
       <Options>

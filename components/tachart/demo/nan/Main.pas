@@ -56,7 +56,7 @@ begin
     lcs1.Add(i, Random(100) / 50);
     clbNans.Items.Add(IntToStr(i));
   end;
-  lcs2.CopyForm(lcs1);
+  lcs2.CopyFrom(lcs1);
 end;
 
 procedure TForm1.rgSeriesTypeClick(Sender: TObject);
@@ -71,7 +71,7 @@ procedure TForm1.rgXYClick(Sender: TObject);
 var
   i: Integer;
 begin
-  lcs1.CopyForm(lcs2);
+  lcs1.CopyFrom(lcs2);
   for i := 0 to lcs1.Count - 1 do
     clbNansItemClick(nil, i);
 end;

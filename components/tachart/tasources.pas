@@ -52,7 +52,7 @@ type
       AX, AY: Double; const ALabel: String = '';
       AColor: TChartColor = clTAColor): Integer;
     procedure Clear;
-    procedure CopyForm(ASource: TCustomChartSource);
+    procedure CopyFrom(ASource: TCustomChartSource);
     procedure Delete(AIndex: Integer);
     function IsSorted: Boolean; override;
     function SetXValue(AIndex: Integer; AValue: Double): Integer;
@@ -398,7 +398,7 @@ begin
   FValuesTotalIsValid := true;
 end;
 
-procedure TListChartSource.CopyForm(ASource: TCustomChartSource);
+procedure TListChartSource.CopyFrom(ASource: TCustomChartSource);
 var
   i: Integer;
 begin
