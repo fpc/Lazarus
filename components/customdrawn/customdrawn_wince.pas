@@ -28,6 +28,10 @@ type
 
   TCDCheckBoxDrawerWinCE = class(TCDCheckBoxDrawer)
   public
+    function GetCaptionWidth(CDCheckBox: TCDCheckBox): Integer;
+    function GetCaptionHeight(CDCheckBox: TCDCheckBox): Integer;
+    procedure CalculatePreferredSize(CDCheckBox: TCDCheckBox; var PreferredWidth,
+      PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDCheckBox: TCDCheckBox;
       FState: TCDButtonState); override;
     procedure DrawToCanvas(ADest: TCanvas; CDCheckBox: TCDCheckBox;
@@ -66,6 +70,32 @@ type
 implementation
 
 { TCDCheckBoxDrawerWinCE }
+
+function TCDCheckBoxDrawerWinCE.GetCaptionWidth(CDCheckBox: TCDCheckBox
+  ): Integer;
+begin
+  CDCheckBox.Canvas.Font.Assign(CDCheckBox.Font);
+  Result := CDCheckBox.Canvas.TextWidth(CDCheckBox.Caption);
+end;
+
+function TCDCheckBoxDrawerWinCE.GetCaptionHeight(CDCheckBox: TCDCheckBox
+  ): Integer;
+begin
+  CDCheckBox.Canvas.Font.Assign(CDCheckBox.Font);
+  Result := CDCheckBox.Canvas.TextHeight('ŹÇ')+3;
+end;
+
+procedure TCDCheckBoxDrawerWinCE.CalculatePreferredSize(
+  CDCheckBox: TCDCheckBox; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  PreferredWidth := 0;
+
+  if CDCheckBox.AutoSize then
+    PreferredWidth := 21 + GetCaptionWidth(CDCheckBox);
+
+  PreferredHeight := GetCaptionHeight(CDCheckBox);
+end;
 
 procedure TCDCheckBoxDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
   CDCheckBox: TCDCheckBox; FState: TCDButtonState);
@@ -129,11 +159,12 @@ begin
 
     // Selection around the text
     ADest.Rectangle(
-      CDCheckBoxWinCE_Height+5, 0,
+      CDCheckBoxWinCE_Height+4, 0,
       CDCheckBox.Width, CDCheckBox.Height);
   end;
 
   // Now the text
+  ADest.Font.Assign(CDCheckBox.Font);
   ADest.TextOut(CDCheckBoxWinCE_Height+5, 0, CDCheckBox.Caption);
 end;
 

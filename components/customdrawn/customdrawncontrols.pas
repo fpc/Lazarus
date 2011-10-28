@@ -18,9 +18,11 @@ uses
   Classes, SysUtils, contnrs, Math, types,
   // fpimage
   fpcanvas, fpimgcanv, fpimage,
-  // LCL
+  // LCL -> Use only TForm, TWinControl, TCanvas, TLazIntfImage
   Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
-  LMessages, Messages, LCLProc, Forms, StdCtrls,
+  LMessages, Messages, LCLProc, Forms,
+  // Other LCL units are only for types
+  StdCtrls,
   //
   customdrawnutils;
 
@@ -190,6 +192,8 @@ type
     procedure PrepareCurrentDrawer(); override;
   protected
     procedure DoButtonUp(); override;
+    procedure CalculatePreferredSize(var PreferredWidth,
+      PreferredHeight: integer; WithThemeSpace: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -207,6 +211,8 @@ type
 
   TCDCheckBoxDrawer = class(TCDControlDrawer)
   public
+    procedure CalculatePreferredSize(CDCheckBox: TCDCheckBox; var PreferredWidth,
+      PreferredHeight: integer; WithThemeSpace: Boolean); virtual; abstract;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDCheckBox: TCDCheckBox;
       FState: TCDButtonState); virtual; abstract;
     procedure DrawToCanvas(ADest: TCanvas; CDCheckBox: TCDCheckBox;
@@ -221,7 +227,41 @@ type
     TCDTrackBar is a custom-drawn trackbar control
   }
 
-  TCDTrackBarDrawer = class;
+  { TCDListView }
+
+(*  TCDListView = class(TCDControl)
+  private
+    DragDropStarted: boolean;
+    // fields
+    procedure PrepareCurrentDrawer(); override;
+  protected
+    // keyboard
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure KeyDown(var Key: word; Shift: TShiftState); override;
+    procedure KeyUp(var Key: word; Shift: TShiftState); override;
+    // mouse
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure EraseBackground(DC: HDC); override;
+    procedure Paint; override;
+  published
+    property Color;
+    property TabStop default True;
+  end;
+
+  TCDListViewDrawer = class(TCDControlDrawer)
+  public
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDListView: TCDListView); virtual; abstract;
+    procedure DrawToCanvas(ADest: TCanvas; CDListView: TCDListView); virtual; abstract;
+  end;*)
 
   { TCDTrackBar }
 
@@ -495,6 +535,13 @@ begin
   Invalidate;
 end;
 
+procedure TCDCheckBox.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  TCDCheckBoxDrawer(FCurrentDrawer).CalculatePreferredSize(
+    Self, PreferredWidth, PreferredHeight, WithThemeSpace)
+end;
+
 constructor TCDCheckBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -503,6 +550,7 @@ begin
   TabStop := True;
   ControlStyle := [csCaptureMouse, csClickEvents,
     csDoubleClicks, csReplicatable];
+  AutoSize := True;
 
   DrawStyle := dsWinXP;
   PrepareCurrentDrawer();
@@ -719,7 +767,6 @@ end;
 
 procedure TCDButtonControl.DoEnter;
 begin
-  DoButtonUp();
   Invalidate;
 
   inherited DoEnter;
@@ -727,7 +774,6 @@ end;
 
 procedure TCDButtonControl.DoExit;
 begin
-  DoButtonUp();
   Invalidate;
 
   inherited DoExit;
@@ -743,7 +789,8 @@ end;
 
 procedure TCDButtonControl.KeyUp(var Key: word; Shift: TShiftState);
 begin
-  DoButtonUp();
+  if (Key = VK_SPACE) or (Key = VK_RETURN) then
+    DoButtonUp();
 
   inherited KeyUp(Key, Shift);
 end;
@@ -789,7 +836,7 @@ end;
 
 procedure TCDButtonControl.DoButtonUp();
 begin
-  if FButtonState.IsDown then
+       if FButtonState.IsDown then
   begin
     FButtonState.IsDown := False;
     Invalidate;
