@@ -974,8 +974,12 @@ function TCustomListView.GetSelection: TListItem;
 var
   i: Integer;
 begin
-  if not OwnerData then begin
-    if not (lffSelectedValid in FFlags) then
+  if not OwnerData then
+  begin
+    {according to Delphi docs
+     we always must return first selected item, not the last selected one
+     see issue #16773}
+    if not (lffSelectedValid in FFlags) or MultiSelect then
     begin
       FSelected := nil;
       for i := 0 to Items.Count - 1 do
