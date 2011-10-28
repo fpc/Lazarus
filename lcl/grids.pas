@@ -149,6 +149,9 @@ type
 
   TPrefixOption = (poNone, poHeaderClick);
 
+  TMouseWheelOption = (mwCursor, mwGrid);
+
+
 const
   soAll: TSaveOptions = [soDesign, soAttributes, soContent, soPosition];
   constRubberSpace: byte = 2;
@@ -715,6 +718,7 @@ type
     FSavedCursor: TCursor;
     FSizing: TSizingRec;
     FRowAutoInserted: Boolean;
+    FMouseWheelOption: TMouseWheelOption;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CancelSelection;
@@ -869,6 +873,7 @@ type
     procedure DoEditorShow; virtual;
     procedure DoExit; override;
     procedure DoEnter; override;
+    function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DoOnChangeBounds; override;
@@ -1064,6 +1069,7 @@ type
     property InplaceEditor: TWinControl read FEditor;
     property IsCellSelected[aCol,aRow: Integer]: boolean read GetIsCellSelected;
     property LeftCol:Integer read GetLeftCol write SetLeftCol;
+    property MouseWheelOption: TMouseWheelOption read FMouseWheelOption write FMouseWheelOption default mwCursor;
     property Options: TGridOptions read FOptions write SetOptions default
       [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
        goSmoothScroll ];
@@ -1147,8 +1153,6 @@ type
   TSetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; const Value: string) of object;
   TGetCheckboxStateEvent = procedure (Sender: TObject; ACol, ARow: Integer; var Value: TCheckboxState) of object;
   TSetCheckboxStateEvent = procedure (Sender: TObject; ACol, ARow: Integer; const Value: TCheckboxState) of object;
-  TMouseWheelOption = (mwCursor, mwGrid);
-
 
   { TCustomDrawGrid }
 
@@ -1166,7 +1170,6 @@ type
     FOnSelectCell: TOnSelectcellEvent;
     FOnSetCheckboxState: TSetCheckboxStateEvent;
     FOnSetEditText: TSetEditEvent;
-    FMouseWheelOption: TMouseWheelOption;
     function CellNeedsCheckboxBitmaps(const aCol,aRow: Integer): boolean;
     procedure DrawCellCheckboxBitmaps(const aCol,aRow: Integer; const aRect: TRect);
   protected
@@ -1197,8 +1200,6 @@ type
     procedure SizeChanged(OldColCount, OldRowCount: Integer); override;
     procedure ToggleCheckbox; virtual;
 
-    property MouseWheelOption: TMouseWheelOption read FMouseWheelOption
-                              write FMouseWheelOption default mwCursor;
     property OnGetCheckboxState: TGetCheckboxStateEvent
                               read FOnGetCheckboxState write FOnGetCheckboxState;
     property OnSetCheckboxState: TSetCheckboxStateEvent
@@ -6311,6 +6312,14 @@ begin
   {$IfDef dbgGrid}DebugLn('DoEnter - END');{$Endif}
 end;
 
+function TCustomGrid.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+  MousePos: TPoint): Boolean;
+begin
+  if FMouseWheelOption=mwCursor then
+    FSelectActive := false;
+  Result:=inherited DoMouseWheel(Shift, WheelDelta, MousePos);
+end;
+
 function TCustomGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint
   ): Boolean;
 begin
@@ -7598,7 +7607,6 @@ end;
 
 procedure TCustomGrid.GridMouseWheel(shift: TShiftState; Delta: Integer);
 begin
-  FSelectActive := false;
   if ssCtrl in Shift then
     MoveNextSelectable(true, Delta, 0)
   else
@@ -9246,7 +9254,7 @@ var
   end;
 
 begin
-  if FMouseWheelOption=mwCursor then
+  if MouseWheelOption=mwCursor then
     inherited GridMouseWheel(shift, Delta)
   else
   if Delta<>0 then begin
