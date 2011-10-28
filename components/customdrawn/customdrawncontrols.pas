@@ -153,6 +153,42 @@ type
       FState: TCDButtonState); virtual; abstract;
   end;
 
+  { TCDEdit }
+
+  TCDEdit = class(TCDControl)
+  private
+    DragDropStarted: boolean;
+    // fields
+    procedure PrepareCurrentDrawer(); override;
+  protected
+    // keyboard
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure KeyDown(var Key: word; Shift: TShiftState); override;
+    procedure KeyUp(var Key: word; Shift: TShiftState); override;
+    // mouse
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure EraseBackground(DC: HDC); override;
+    procedure Paint; override;
+  published
+    property Color;
+    property TabStop default True;
+  end;
+
+  TCDEditDrawer = class(TCDControlDrawer)
+  public
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDEdit: TCDEdit); virtual; abstract;
+    procedure DrawToCanvas(ADest: TCanvas; CDEdit: TCDEdit); virtual; abstract;
+  end;
+
   {@@
     TCDGroupBox is a custom-drawn group box control
   }
@@ -451,6 +487,7 @@ type
 
 // Standard Tab
 procedure RegisterButtonDrawer(ADrawer: TCDButtonDrawer; AStyle: TCDDrawStyle);
+procedure RegisterEditDrawer(ADrawer: TCDEditDrawer; AStyle: TCDDrawStyle);
 procedure RegisterGroupBoxDrawer(ADrawer: TCDGroupBoxDrawer; AStyle: TCDDrawStyle);
 procedure RegisterCheckBoxDrawer(ADrawer: TCDCheckBoxDrawer; AStyle: TCDDrawStyle);
 // Common Controls Tab
@@ -469,6 +506,8 @@ var
   // Standard Tab
   RegisteredButtonDrawers: array[TCDDrawStyle] of TCDButtonDrawer
     = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+  RegisteredEditDrawers: array[TCDDrawStyle] of TCDEditDrawer
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   RegisteredGroupBoxDrawers: array[TCDDrawStyle] of TCDGroupBoxDrawer
     = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   RegisteredCheckBoxDrawers: array[TCDDrawStyle] of TCDCheckBoxDrawer
@@ -483,6 +522,12 @@ procedure RegisterButtonDrawer(ADrawer: TCDButtonDrawer; AStyle: TCDDrawStyle);
 begin
   if RegisteredButtonDrawers[AStyle] <> nil then RegisteredButtonDrawers[AStyle].Free;
   RegisteredButtonDrawers[AStyle] := ADrawer;
+end;
+
+procedure RegisterEditDrawer(ADrawer: TCDEditDrawer; AStyle: TCDDrawStyle);
+begin
+  if RegisteredEditDrawers[AStyle] <> nil then RegisteredEditDrawers[AStyle].Free;
+  RegisteredEditDrawers[AStyle] := ADrawer;
 end;
 
 procedure RegisterGroupBoxDrawer(ADrawer: TCDGroupBoxDrawer; AStyle: TCDDrawStyle);
@@ -507,6 +552,86 @@ procedure RegisterCustomTabControlDrawer(ADrawer: TCDCustomTabControlDrawer; ASt
 begin
   if RegisteredCustomTabControlDrawers[AStyle] <> nil then RegisteredCustomTabControlDrawers[AStyle].Free;
   RegisteredCustomTabControlDrawers[AStyle] := ADrawer;
+end;
+
+{ TCDEdit }
+
+procedure TCDEdit.PrepareCurrentDrawer;
+var
+  lDrawStyle: TCDDrawStyle;
+begin
+  if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
+  else lDrawStyle := DrawStyle;
+  FCurrentDrawer := RegisteredEditDrawers[lDrawStyle];
+  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredEditDrawers[dsWince];
+  if FCurrentDrawer = nil then raise Exception.Create('No registered edit drawers were found');
+end;
+
+procedure TCDEdit.DoEnter;
+begin
+  inherited DoEnter;
+end;
+
+procedure TCDEdit.DoExit;
+begin
+  inherited DoExit;
+end;
+
+procedure TCDEdit.KeyDown(var Key: word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+end;
+
+procedure TCDEdit.KeyUp(var Key: word; Shift: TShiftState);
+begin
+  inherited KeyUp(Key, Shift);
+end;
+
+procedure TCDEdit.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TCDEdit.MouseMove(Shift: TShiftState; X, Y: integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+end;
+
+procedure TCDEdit.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+end;
+
+procedure TCDEdit.MouseEnter;
+begin
+  inherited MouseEnter;
+end;
+
+procedure TCDEdit.MouseLeave;
+begin
+  inherited MouseLeave;
+end;
+
+constructor TCDEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
+destructor TCDEdit.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TCDEdit.EraseBackground(DC: HDC);
+begin
+  inherited EraseBackground(DC);
+end;
+
+procedure TCDEdit.Paint;
+begin
+  inherited Paint;
 end;
 
 { TCDCheckBox }
@@ -849,7 +974,7 @@ end;
 
 procedure TCDButtonControl.DoButtonUp();
 begin
-       if FButtonState.IsDown then
+  if FButtonState.IsDown then
   begin
     FButtonState.IsDown := False;
     Invalidate;

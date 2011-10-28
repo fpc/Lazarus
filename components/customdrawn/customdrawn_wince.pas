@@ -24,6 +24,14 @@ type
       FState: TCDButtonState); override;
   end;
 
+  { TCDEditDrawerWinCE }
+
+  TCDEditDrawerWinCE = class(TCDEditDrawer)
+  public
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDEdit: TCDEdit); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDEdit: TCDEdit); override;
+  end;
+
   { TCDCheckBoxDrawerWinCE }
 
   TCDCheckBoxDrawerWinCE = class(TCDCheckBoxDrawer)
@@ -68,6 +76,19 @@ type
   end;
 
 implementation
+
+{ TCDEditDrawerWinCE }
+
+procedure TCDEditDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
+  CDEdit: TCDEdit);
+begin
+
+end;
+
+procedure TCDEditDrawerWinCE.DrawToCanvas(ADest: TCanvas; CDEdit: TCDEdit);
+begin
+
+end;
 
 { TCDCheckBoxDrawerWinCE }
 
@@ -642,6 +663,7 @@ end;
 
 initialization
   RegisterButtonDrawer(TCDButtonDrawerWinCE.Create, dsWinCE);
+  RegisterEditDrawer(TCDEditDrawerWinCE.Create, dsWinCE);
   RegisterGroupBoxDrawer(TCDGroupBoxDrawerWinCE.Create, dsWinCE);
   RegisterCheckBoxDrawer(TCDCheckBoxDrawerWinCE.Create, dsWinCE);
   RegisterCustomTabControlDrawer(TCDCustomTabControlDrawerWinCE.Create, dsWinCE);
