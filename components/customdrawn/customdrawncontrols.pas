@@ -29,6 +29,8 @@ uses
 type
 
   TCDDrawStyle = (
+    // The default is given by the DefaultStyle global variable
+    dsDefault,
     // Operating system styles
     dsWinCE, dsWin2000, dsWinXP,
     dsKDE, dsGNOME, dsMacOSX,
@@ -455,6 +457,9 @@ procedure RegisterCheckBoxDrawer(ADrawer: TCDCheckBoxDrawer; AStyle: TCDDrawStyl
 procedure RegisterTrackBarDrawer(ADrawer: TCDTrackBarDrawer; AStyle: TCDDrawStyle);
 procedure RegisterCustomTabControlDrawer(ADrawer: TCDCustomTabControlDrawer; AStyle: TCDDrawStyle);
 
+var
+  DefaultStyle: TCDDrawStyle = dsWinCE; // For now default to the most complete one, later per platform
+
 implementation
 
 resourcestring
@@ -463,16 +468,16 @@ resourcestring
 var
   // Standard Tab
   RegisteredButtonDrawers: array[TCDDrawStyle] of TCDButtonDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   RegisteredGroupBoxDrawers: array[TCDDrawStyle] of TCDGroupBoxDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   RegisteredCheckBoxDrawers: array[TCDDrawStyle] of TCDCheckBoxDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   // Common Controls Tab
   RegisteredTrackBarDrawers: array[TCDDrawStyle] of TCDTrackBarDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   RegisteredCustomTabControlDrawers: array[TCDDrawStyle] of TCDCustomTabControlDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
 
 procedure RegisterButtonDrawer(ADrawer: TCDButtonDrawer; AStyle: TCDDrawStyle);
 begin
@@ -507,8 +512,12 @@ end;
 { TCDCheckBox }
 
 procedure TCDCheckBox.PrepareCurrentDrawer;
+var
+  lDrawStyle: TCDDrawStyle;
 begin
-  FCurrentDrawer := RegisteredCheckBoxDrawers[DrawStyle];
+  if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
+  else lDrawStyle := DrawStyle;
+  FCurrentDrawer := RegisteredCheckBoxDrawers[lDrawStyle];
   if FCurrentDrawer = nil then FCurrentDrawer := RegisteredCheckBoxDrawers[dsWince];
   if FCurrentDrawer = nil then raise Exception.Create('No registered check box drawers were found');
 end;
@@ -639,8 +648,12 @@ begin
 end;
 
 procedure TCDCustomTabControl.PrepareCurrentDrawer;
+var
+  lDrawStyle: TCDDrawStyle;
 begin
-  FCurrentDrawer := RegisteredCustomTabControlDrawers[DrawStyle];
+  if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
+  else lDrawStyle := DrawStyle;
+  FCurrentDrawer := RegisteredCustomTabControlDrawers[lDrawStyle];
   if FCurrentDrawer = nil then FCurrentDrawer := RegisteredCustomTabControlDrawers[dsWince];
   if FCurrentDrawer = nil then raise Exception.Create('No registered custom tab control drawers were found');
 end;
@@ -850,8 +863,12 @@ begin
 end;
 
 procedure TCDButton.PrepareCurrentDrawer;
+var
+  lDrawStyle: TCDDrawStyle;
 begin
-  FCurrentDrawer := RegisteredButtonDrawers[DrawStyle];
+  if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
+  else lDrawStyle := DrawStyle;
+  FCurrentDrawer := RegisteredButtonDrawers[lDrawStyle];
   if FCurrentDrawer = nil then FCurrentDrawer := RegisteredButtonDrawers[dsWince];
   if FCurrentDrawer = nil then raise Exception.Create('No registered button drawers were found');
 end;
@@ -912,8 +929,12 @@ end;
 { TCDGroupBox }
 
 procedure TCDGroupBox.PrepareCurrentDrawer();
+var
+  lDrawStyle: TCDDrawStyle;
 begin
-  FCurrentDrawer := RegisteredGroupBoxDrawers[DrawStyle];
+  if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
+  else lDrawStyle := DrawStyle;
+  FCurrentDrawer := RegisteredGroupBoxDrawers[lDrawStyle];
   if FCurrentDrawer = nil then FCurrentDrawer := RegisteredGroupBoxDrawers[dsWince];
   if FCurrentDrawer = nil then raise Exception.Create('No registered group box drawers were found');
 end;
@@ -993,8 +1014,12 @@ end;
 { TCDTrackBar }
 
 procedure TCDTrackBar.PrepareCurrentDrawer;
+var
+  lDrawStyle: TCDDrawStyle;
 begin
-  FCurrentDrawer := RegisteredTrackBarDrawers[DrawStyle];
+  if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
+  else lDrawStyle := DrawStyle;
+  FCurrentDrawer := RegisteredTrackBarDrawers[lDrawStyle];
   if FCurrentDrawer = nil then FCurrentDrawer := RegisteredTrackBarDrawers[dsWince];
   if FCurrentDrawer = nil then raise Exception.Create('No registered track bar drawers were found');
 end;
