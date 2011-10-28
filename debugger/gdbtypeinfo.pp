@@ -1590,6 +1590,7 @@ begin
   inherited Destroy;
   FreeAndNil(FTypeInfoAncestor);
   FreeAndNil(FTypeInfoArrayExpression);
+  FreeAndNil(FParsedExpression);
 end;
 
 function TGDBType.ProcessExpression: Boolean;
