@@ -17846,6 +17846,7 @@ begin
         VScroll.Update(False, False);
         HScroll.Update(True, False);
       end;
+      GetPageRect();
     finally
       FUpdatingScrollBars := False;
     end;
