@@ -49,7 +49,7 @@ end;
 procedure DivideLines(Lines: TStrings; var PreList, AList, BList, PostList: TStrings);
 var
   ALine, TrueFalse: String;
-  X, I, EqPos, SemiPos, WordBeforeEqPos: Integer;
+  X, I, EqPos, SemiPos, WordEndPos: Integer;
 begin
   for X := 0 to Lines.Count-1 do begin
     ALine := Trim(Lines[X]);
@@ -58,16 +58,16 @@ begin
       SemiPos := Pos(';', ALine);
       if SemiPos = 0 then
         SemiPos:=Length(ALine)+1;
-      WordBeforeEqPos := 0;
       I := EqPos-1;
       while (I > 0) and (ALine[I] = ' ') do      // Skip initial spaces
         Dec(I);
+      WordEndPos := I+1;
       while (I > 0) and (ALine[I] <> ' ') do     // The word before :=
         Dec(I);
-      WordBeforeEqPos := I+1;
-      Alist.Add(Trim(Copy(ALine, WordBeforeEqPos+Ord(WordBeforeEqPos=0), EqPos - (WordBeforeEqPos+Ord(WordBeforeEqPos=0)))));
-      BList.Add(Trim(Copy(ALine, EqPos + 2, (SemiPos-1) -(EqPos+1))));
-      PreList.Add(Trim(Copy(ALine,1, WordBeforeEqPos-1)));
+      // I points now at beginning of word - 1
+      Alist.Add(Copy(ALine, I+1, WordEndPos-(I+1)));
+      BList.Add(Trim(Copy(ALine, EqPos+2, SemiPos-EqPos-2)));
+      PreList.Add(Trim(Copy(ALine,1, I)));
       PostList.Add(Trim(Copy(ALine, SemiPos, Length(ALine)-(SemiPos-1))));
       if Length(PreList[X]) > 0 then
         PreList[X] := PreList[X] + ' ';
