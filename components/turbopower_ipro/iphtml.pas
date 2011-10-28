@@ -11443,13 +11443,12 @@ begin
         end;
       end;
 
-      if SoftBreak and (LastBreakPoint > 0) then
+      if SoftBreak and (LastBreakPoint > 0) then begin
         LastWord := LastBreakPoint;
+        i := LastBreakPoint + 1;
+      end;
 
       OutputLine;
-
-      {if SoftBreak and (LastBreakPoint > 0) then} {!!}
-        {i := LastBreakPoint + 1;}                 {!!}
 
       if TempCenter then begin
         Al := SaveAl;
