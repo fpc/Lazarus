@@ -51,8 +51,8 @@ type
     fNeedsFindProjects: Boolean;
     fUpdating: Boolean;
     fIdleConnected: boolean;
-    procedure FillDirectoriesBending;
-    procedure FillProjectsBending;
+    procedure FillDirectoriesPending;
+    procedure FillProjectsPending;
     procedure SetIdleConnected(const AValue: boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
   public
@@ -142,8 +142,8 @@ begin
   SelectAllButton.LoadGlyphFromLazarusResource('menu_select_all');
   SelectNoneButton.LoadGlyphFromLazarusResource('ce_default');
 
-  FillDirectoriesBending;
-  FillProjectsBending;
+  FillDirectoriesPending;
+  FillProjectsPending;
 end;
 
 destructor TManageExamplesForm.Destroy;
@@ -161,13 +161,13 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TManageExamplesForm.FillDirectoriesBending;
+procedure TManageExamplesForm.FillDirectoriesPending;
 begin
   fNeedsFindDirectories:=True;
   IdleConnected:=True;
 end;
 
-procedure TManageExamplesForm.FillProjectsBending;
+procedure TManageExamplesForm.FillProjectsPending;
 begin
   fNeedsFindProjects:=True;
   IdleConnected:=True;
@@ -250,18 +250,18 @@ procedure TManageExamplesForm.DirectoryComboBoxChange(Sender: TObject);
 begin
   if DirectoryExists(DirectoryComboBox.Text) then begin
     RootDirectoryEdit.Text:=DirectoryComboBox.Text;
-    FillProjectsBending;
+    FillProjectsPending;
   end;
 end;
 
 procedure TManageExamplesForm.RootDirectoryEditChange(Sender: TObject);
 begin
-  FillProjectsBending;
+  FillProjectsPending;
 end;
 
 procedure TManageExamplesForm.ExamplesCheckBoxChange(Sender: TObject);
 begin
-  FillDirectoriesBending;
+  FillDirectoriesPending;
 end;
 
 procedure TManageExamplesForm.OpenSelectedButtonClick(Sender: TObject);
