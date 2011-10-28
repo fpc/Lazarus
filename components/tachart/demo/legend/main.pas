@@ -13,6 +13,7 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    cbByRows: TCheckBox;
     Chart1: TChart;
     Chart1AreaSeries1: TAreaSeries;
     Chart1FuncSeries1: TFuncSeries;
@@ -35,6 +36,7 @@ type
     seColumnCount: TSpinEdit;
     seSymbolWidth: TSpinEdit;
     seMarginY: TSpinEdit;
+    procedure cbByRowsChange(Sender: TObject);
     procedure cbSeriesDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure cbUseSidebarChange(Sender: TObject);
@@ -66,6 +68,15 @@ uses
   SysUtils, TADrawerCanvas, TADrawUtils;
 
 { TForm1 }
+
+procedure TForm1.cbByRowsChange(Sender: TObject);
+begin
+  with Chart1.Legend do
+    if cbByRows.Checked then
+      ItemFillOrder := lfoRowCol
+    else
+      ItemFillOrder := lfoColRow;
+end;
 
 procedure TForm1.cbSeriesDrawItem(
   Control: TWinControl; Index: Integer; ARect: TRect; State: TOwnerDrawState);
