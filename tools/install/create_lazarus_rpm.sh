@@ -15,7 +15,7 @@ if [ "x$FPCRPM" = "x" ]; then
   echo ERROR: fpc rpm not installed
   exit
 fi
-FPCRPMVersion=$(echo $FPCRPM | sed -e 's/fpc-//g' -e 's/\.i386\|\.x86_64//g')
+FPCRPMVersion=$(echo $FPCRPM | sed -e 's/fpc-//g' -e 's/\.i386\|\.i686\|\.x86_64//g')
 echo "installed fpc version: $FPCRPMVersion"
 FPCSRCRPMVersion=$(echo $FPCRPMVersion | cut -d- -f1)
 

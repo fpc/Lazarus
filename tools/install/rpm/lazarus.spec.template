@@ -29,6 +29,9 @@ is included in this package.
 
 %build
 cd lazarus
+for package in $(find . -name '*.lpk'); do
+  sed -i -e 's@^\(\W*\)\(<CompilerOptions>.*\)@\1<AutoUpdate Value="Manually"/>\n\1\2@' "$package"
+done
 MAKEOPTS="-Fl/opt/gnome/lib"
 if [ -n "$FPCCfg" ]; then
   MAKEOPTS="$MAKEOPTS -n @$FPCCfg"
