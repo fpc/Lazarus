@@ -5292,14 +5292,17 @@ end;
 
 procedure TSourceNotebook.SrcPopUpMenuPopup(Sender: TObject);
 var
-  CurFilename, FileName: String;
+  CurFilename, ShortFileName: String;
   ASrcEdit: TSourceEditor;
 
-  procedure MaybeAddPopup(const ASuffix: String; const ANewOnClick: TNotifyEvent);
+  procedure MaybeAddPopup(const ASuffix: String; const ANewOnClick: TNotifyEvent;
+    Filename: string = '');
   begin
-    if FileExistsCached(ChangeFileExt(CurFilename,ASuffix)) then
-      AddContextPopupMenuItem(Format(lisOpenLfm,
-          [ChangeFileExt(FileName,ASuffix)]), true, ANewOnClick);
+    if Filename='' then Filename:=CurFilename;
+    Filename:=ChangeFileExt(Filename,ASuffix);
+    if not FileExistsCached(Filename) then exit;
+    Filename:=CreateRelativePath(Filename,ExtractFilePath(ASrcEdit.FileName));
+    AddContextPopupMenuItem(Format(lisOpenLfm,[Filename]), true, ANewOnClick);
   end;
 
   {$IFnDEF SingleSrcWindow}
@@ -5339,6 +5342,7 @@ var
   SelAvail, SelAvailAndWritable: Boolean;
   CurWordAtCursor: String;
   AtIdentifier: Boolean;
+  MainCodeBuf: TCodeBuffer;
 begin
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
   SourceEditorMenuRoot.BeginUpdate;
@@ -5436,13 +5440,19 @@ begin
 
     // add context specific menu items
     CurFilename:=ASrcEdit.FileName;
-    FileName:=ExtractFileName(CurFilename);
+    ShortFileName:=ExtractFileName(CurFilename);
     if (FilenameIsAbsolute(CurFilename)) then begin
       if FilenameIsPascalUnit(CurFilename) then begin
         MaybeAddPopup('.lfm', @OnPopupMenuOpenLFMFile);
         MaybeAddPopup('.dfm', @OnPopupMenuOpenDFMFile);
         MaybeAddPopup('.lrs', @OnPopupMenuOpenLRSFile);
         MaybeAddPopup('.s', @OnPopupMenuOpenSFile);
+      end else if CompareFileExt(CurFilename,'.inc',false)=0 then begin
+        // include file => check unit
+        MainCodeBuf:=CodeToolBoss.GetMainCode(ASrcEdit.CodeBuffer);
+        if (MainCodeBuf<>nil) then begin
+          MaybeAddPopup('.lfm', @OnPopupMenuOpenFile,MainCodeBuf.Filename);
+        end;
       end;
       if (CompareFileExt(CurFilename,'.lfm',true)=0)
       or (CompareFileExt(CurFilename,'.dfm',true)=0) then begin
@@ -5452,7 +5462,7 @@ begin
       end;
       if (CompareFileExt(CurFilename,'.lpi',true)=0)
       or (CompareFileExt(CurFilename,'.lpk',true)=0) then
-        AddContextPopupMenuItem(Format(lisOpenLfm,[FileName]),true,@OnPopupMenuOpenFile);
+        AddContextPopupMenuItem(Format(lisOpenLfm,[ShortFileName]),true,@OnPopupMenuOpenFile);
     end;
 
     {$IFnDEF SingleSrcWindow}
@@ -6473,14 +6483,29 @@ end;
 
 procedure TSourceNotebook.OnPopupMenuOpenFile(Sender: TObject);
 var
-  AFilename: String;
+  ResStr: String;
+  p: SizeInt;
+  aFilename: TTranslateString;
 begin
-  AFilename:=GetActiveSE.Filename;
-  if CompareFileExt(AFilename,'.lpi')=0 then
-    MainIDEInterface.DoOpenProjectFile(AFilename,
+  // open the filename of the caption
+  // the caption was created by the resourcestring lisOpenLFM, with the
+  // placeholder %s
+  // => cut the surrounding caption to the get the filename
+  aFilename:=(Sender as TIDEMenuItem).Caption;
+  ResStr:=lisOpenLfm;
+  p:=System.Pos('%s',ResStr);
+  aFilename:=copy(aFilename,p,length(aFilename)-(length(ResStr)-2));
+  if not FilenameIsAbsolute(aFilename) then
+    aFilename:=TrimFilename(ExtractFilePath(GetActiveSE.Filename)+aFilename);
+  if CompareFileExt(aFilename,'.lpi')=0 then
+    MainIDEInterface.DoOpenProjectFile(aFilename,
       [ofOnlyIfExists,ofAddToRecent,ofUseCache])
-  else if CompareFileExt(AFilename,'.lpk')=0 then
-    PackageEditingInterface.DoOpenPackageFile(AFilename,[pofAddToRecent],false);
+  else if CompareFileExt(aFilename,'.lpk')=0 then
+    PackageEditingInterface.DoOpenPackageFile(aFilename,[pofAddToRecent],false)
+  else
+    MainIDEInterface.DoOpenEditorFile(aFilename,
+      PageIndex+1, Manager.IndexOfSourceWindow(self),
+      [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
 end;
 
 Procedure TSourceNotebook.OpenAtCursorClicked(Sender: TObject);

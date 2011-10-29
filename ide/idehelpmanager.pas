@@ -602,7 +602,6 @@ end;
 procedure TScrollableHTMLControl.SetURL(const AValue: string);
 var
   Stream: TStream;
-  s: string;
   NewURL: String;
 begin
   if Provider=nil then raise Exception.Create('TScrollableHTMLControl.SetURL missing Provider');
