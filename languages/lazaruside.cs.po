@@ -4838,6 +4838,10 @@ msgstr "Třída nenalezena"
 msgid "Class %s%s%s of method %s%s%s not found."
 msgstr "Třída %s%s%s metody %s%s%s nenalezena."
 
+#: lazarusidestrconsts.liscldirclean
+msgid "Clean"
+msgstr ""
+
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
 msgstr "Vyčistit adresář"
@@ -8475,6 +8479,10 @@ msgstr "Ve zdrojovém adresáři balíčku \"%s\"."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "Ve zdrojovém adresáři projektu. Ověřte duplicity."
 
+#: lazarusidestrconsts.lisincludeexamples
+msgid "Include Examples"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
 msgstr "Filtr zahrnutí"
@@ -8486,6 +8494,10 @@ msgstr "Cesta zahrnutí"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "Cesty pro začleněné soubory"
+
+#: lazarusidestrconsts.lisincludetestcases
+msgid "Include Testcases"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -9471,6 +9483,10 @@ msgstr "Informační soubor projektu Lazarusu"
 msgid "Lazarus project source"
 msgstr "Zdrojový soubor Lazarusu"
 
+#: lazarusidestrconsts.lislazarussource
+msgid "Lazarus Source"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
 msgstr "Jednotka Lazarusu"
@@ -9483,10 +9499,6 @@ msgstr "Akce"
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr "Vybrat výstupní adresář spustitelných souborů IDE "
-
-#: lazarusidestrconsts.lislazbuildabopart
-msgid "Part"
-msgstr "Část"
 
 #: lazarusidestrconsts.lislazbuildadd
 msgctxt "lazarusidestrconsts.lislazbuildadd"
@@ -9523,6 +9535,10 @@ msgstr "Sestavit komponenty (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Sestavit IDE"
 
+#: lazarusidestrconsts.lislazbuildbuildingide
+msgid "Building IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Sestavit JITForm"
@@ -9536,12 +9552,14 @@ msgctxt "lazarusidestrconsts.lislazbuildcancel"
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: lazarusidestrconsts.lislazbuildcleanall
-msgid "Clean all"
-msgstr "Vyčistit vše"
+#: lazarusidestrconsts.lislazbuildcleanallbuild
+msgid "Clean All + Build"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildcleanbuild
-msgid "Clean+Build"
+#, fuzzy
+#| msgid "Clean+Build"
+msgid "Clean + Build"
 msgstr "Vyčistit + Sestavit"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
@@ -9587,6 +9605,10 @@ msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Chyba zapisování souboru"
 
+#: lazarusidestrconsts.lislazbuildidebuildhint
+msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
 msgstr "IDE bez balíčků"
@@ -9594,10 +9616,6 @@ msgstr "IDE bez balíčků"
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "%s%s%s%slazbuild není interaktivní, nyní přerušuji."
-
-#: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
-msgid "Like \"make clean\" on cmd line"
-msgstr "Jako \"make clean\" na příkazovém řádku"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -9618,11 +9636,6 @@ msgstr "Přidat nový profil"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "Současné sestavovací volby budou spojeny s:"
-
-#: lazarusidestrconsts.lislazbuildnone
-msgctxt "lazarusidestrconsts.lislazbuildnone"
-msgid "None"
-msgstr "Žádné"
 
 #: lazarusidestrconsts.lislazbuildok
 #, fuzzy
@@ -9674,7 +9687,8 @@ msgstr "Nové jméno profilu:"
 msgid "Restart after building IDE"
 msgstr "Restartovat po sestavení IDE"
 
-#: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
+#: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
+msgctxt "lazarusidestrconsts.lislazbuildrestartlazarusautomatically"
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
 msgstr "Automaticky restartovat Lazarus po sestavení IDE (nemá vliv na sestavení jiných částí)"
 
@@ -9686,7 +9700,8 @@ msgstr "Uložit nastavení"
 msgid "Select profiles to build"
 msgstr "Vybrat profily k sestavení"
 
-#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
+#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding
+msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr "Zobrazit potvrzovací dialog při sestavování přímo z menu Nástroje"
 
@@ -9828,6 +9843,10 @@ msgstr "Cíl odkazu"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "seznam všech případných hodnot"
+
+#: lazarusidestrconsts.lisloadedsuccessfully
+msgid "Loaded successfully"
+msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -10018,6 +10037,11 @@ msgstr "Max %d"
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr "%s Možná musíte znovu přeložit balíček."
+
+#: lazarusidestrconsts.lismeaction
+msgctxt "lazarusidestrconsts.lismeaction"
+msgid "Action"
+msgstr "Akce"
 
 #: lazarusidestrconsts.lismemorydump
 msgid "Memory Dump"
@@ -11107,6 +11131,15 @@ msgstr "Sledování"
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "&Okno"
+
+#: lazarusidestrconsts.lismeother
+msgctxt "lazarusidestrconsts.lismeother"
+msgid "Other"
+msgstr "Jiné"
+
+#: lazarusidestrconsts.lismeprojects
+msgid "Projects"
+msgstr ""
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
 msgid "Message contains no file position information:%s%s"
@@ -13723,10 +13756,6 @@ msgstr "Stejná pravá vzdálenost"
 msgid "Root"
 msgstr "Kořen"
 
-#: lazarusidestrconsts.lisrootdirectoryforprojects
-msgid "Root directory for projects"
-msgstr ""
-
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr "%s (běžící ...)"
@@ -13831,6 +13860,10 @@ msgstr "Uložit změny projektu %s?"
 msgid "Save current editor file"
 msgstr "uložit aktuální editovaný soubor"
 
+#: lazarusidestrconsts.lissavedsuccessfully
+msgid "Saved successfully"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "Uložit informace editoru neprojektových souborů"
@@ -13866,6 +13899,10 @@ msgstr "Činitel zvětšení:"
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "Hledat pro "
+
+#: lazarusidestrconsts.lissearchprojectsfrom
+msgid "Search projects from"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

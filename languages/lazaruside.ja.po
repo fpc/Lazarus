@@ -4878,6 +4878,10 @@ msgstr "クラスが見つかりません"
 msgid "Class %s%s%s of method %s%s%s not found."
 msgstr "クラス %s%s%sのメソッド%s%s%sが見つかりません"
 
+#: lazarusidestrconsts.liscldirclean
+msgid "Clean"
+msgstr ""
+
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
 msgstr "ディレクトリの中身を消去"
@@ -8526,6 +8530,10 @@ msgstr ""
 msgid "In a source directory of the project. Check for duplicates."
 msgstr ""
 
+#: lazarusidestrconsts.lisincludeexamples
+msgid "Include Examples"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
 msgstr "インクルードフィルタ"
@@ -8537,6 +8545,10 @@ msgstr "インクルードパス"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "インクルードパス"
+
+#: lazarusidestrconsts.lisincludetestcases
+msgid "Include Testcases"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -9524,6 +9536,10 @@ msgstr "Lazarusプロジェクト情報ファイル"
 msgid "Lazarus project source"
 msgstr "Lazarusプロジェクトソース"
 
+#: lazarusidestrconsts.lislazarussource
+msgid "Lazarus Source"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
 msgstr "Lazarusユニット"
@@ -9536,10 +9552,6 @@ msgstr "アクション"
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr "IDE実行ファイルの出力ディレクトリを選択してください。"
-
-#: lazarusidestrconsts.lislazbuildabopart
-msgid "Part"
-msgstr "部分"
 
 #: lazarusidestrconsts.lislazbuildadd
 msgctxt "lazarusidestrconsts.lislazbuildadd"
@@ -9576,6 +9588,10 @@ msgstr "コンポーネントを構築 (SynEdit, コードツール)"
 msgid "Build IDE"
 msgstr "IDEを構築"
 
+#: lazarusidestrconsts.lislazbuildbuildingide
+msgid "Building IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "JITFormを構築"
@@ -9589,12 +9605,14 @@ msgctxt "lazarusidestrconsts.lislazbuildcancel"
 msgid "Cancel"
 msgstr "取消"
 
-#: lazarusidestrconsts.lislazbuildcleanall
-msgid "Clean all"
-msgstr "すべて消去"
+#: lazarusidestrconsts.lislazbuildcleanallbuild
+msgid "Clean All + Build"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildcleanbuild
-msgid "Clean+Build"
+#, fuzzy
+#| msgid "Clean+Build"
+msgid "Clean + Build"
 msgstr "消去＋構築"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
@@ -9642,6 +9660,10 @@ msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "ファイルへの書き込み中にエラー"
 
+#: lazarusidestrconsts.lislazbuildidebuildhint
+msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
 msgstr ""
@@ -9649,10 +9671,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "%s%s%s%slazbuildは非反復、今中断します。"
-
-#: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
-msgid "Like \"make clean\" on cmd line"
-msgstr "コマンドラインで\"make clean\"するように"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -9673,11 +9691,6 @@ msgstr "新しいプロファイルを追加"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "現在の構築オプションは右と関連します："
-
-#: lazarusidestrconsts.lislazbuildnone
-msgctxt "lazarusidestrconsts.lislazbuildnone"
-msgid "None"
-msgstr "なし"
 
 #: lazarusidestrconsts.lislazbuildok
 #, fuzzy
@@ -9731,7 +9744,8 @@ msgstr "プロファイルの新しい名称"
 msgid "Restart after building IDE"
 msgstr "IDEを構築した後に再起動"
 
-#: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
+#: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
+msgctxt "lazarusidestrconsts.lislazbuildrestartlazarusautomatically"
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
 msgstr "IDEを構築した後にLazarusを自動的に再起動（他のパーツを構築する時には影響なし）"
 
@@ -9743,7 +9757,8 @@ msgstr "設定を保存"
 msgid "Select profiles to build"
 msgstr "構築プロファイルを選択"
 
-#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
+#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding
+msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr "ツールメニューから直接構築する際に確認ダイアログを表示"
 
@@ -9887,6 +9902,10 @@ msgstr "リンクターゲット"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "すべてのcase値のリスト"
+
+#: lazarusidestrconsts.lisloadedsuccessfully
+msgid "Loaded successfully"
+msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -10077,6 +10096,11 @@ msgstr "最大 %d"
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr ""
+
+#: lazarusidestrconsts.lismeaction
+msgctxt "lazarusidestrconsts.lismeaction"
+msgid "Action"
+msgstr "アクション"
 
 #: lazarusidestrconsts.lismemorydump
 msgid "Memory Dump"
@@ -11201,6 +11225,15 @@ msgstr "監視"
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "ウィンドウ(&W)"
+
+#: lazarusidestrconsts.lismeother
+msgctxt "lazarusidestrconsts.lismeother"
+msgid "Other"
+msgstr "その他"
+
+#: lazarusidestrconsts.lismeprojects
+msgid "Projects"
+msgstr ""
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
 msgid "Message contains no file position information:%s%s"
@@ -13839,10 +13872,6 @@ msgstr "右側の間隔を均等に"
 msgid "Root"
 msgstr "Root"
 
-#: lazarusidestrconsts.lisrootdirectoryforprojects
-msgid "Root directory for projects"
-msgstr ""
-
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr "%s (実行中)"
@@ -13947,6 +13976,10 @@ msgstr "プロジェクトの変更を保存しますか?"
 msgid "Save current editor file"
 msgstr "現在のエディタファイルを保存"
 
+#: lazarusidestrconsts.lissavedsuccessfully
+msgid "Saved successfully"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "非プロジェクトファイルのエディタ情報を保存"
@@ -13982,6 +14015,10 @@ msgstr "スケーリング係数："
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "次を検索"
+
+#: lazarusidestrconsts.lissearchprojectsfrom
+msgid "Search projects from"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

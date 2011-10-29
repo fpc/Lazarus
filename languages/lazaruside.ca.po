@@ -4839,6 +4839,10 @@ msgstr "No s'ha trobat la classe"
 msgid "Class %s%s%s of method %s%s%s not found."
 msgstr ""
 
+#: lazarusidestrconsts.liscldirclean
+msgid "Clean"
+msgstr ""
+
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
 msgstr "Neteja el directori"
@@ -8468,6 +8472,10 @@ msgstr ""
 msgid "In a source directory of the project. Check for duplicates."
 msgstr ""
 
+#: lazarusidestrconsts.lisincludeexamples
+msgid "Include Examples"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
 msgstr ""
@@ -8478,6 +8486,10 @@ msgstr "trajectòria dels fitxers inclosos"
 
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
+msgstr ""
+
+#: lazarusidestrconsts.lisincludetestcases
+msgid "Include Testcases"
 msgstr ""
 
 #: lazarusidestrconsts.lisindentation
@@ -9458,6 +9470,10 @@ msgstr ""
 msgid "Lazarus project source"
 msgstr "Font de projecte Lazarus"
 
+#: lazarusidestrconsts.lislazarussource
+msgid "Lazarus Source"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
 msgstr "Unitat Lazarus"
@@ -9469,10 +9485,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildabopart
-msgid "Part"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildadd
@@ -9510,6 +9522,10 @@ msgstr ""
 msgid "Build IDE"
 msgstr "Munta l'IDE"
 
+#: lazarusidestrconsts.lislazbuildbuildingide
+msgid "Building IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Munta la forma JIT"
@@ -9523,12 +9539,14 @@ msgctxt "lazarusidestrconsts.lislazbuildcancel"
 msgid "Cancel"
 msgstr "Cancel·la"
 
-#: lazarusidestrconsts.lislazbuildcleanall
-msgid "Clean all"
-msgstr "Neteja-ho tot"
+#: lazarusidestrconsts.lislazbuildcleanallbuild
+msgid "Clean All + Build"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildcleanbuild
-msgid "Clean+Build"
+#, fuzzy
+#| msgid "Clean+Build"
+msgid "Clean + Build"
 msgstr "Neteja i munta"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
@@ -9574,16 +9592,16 @@ msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "S'ha produït un error mentre s'escrivia el fitxer"
 
+#: lazarusidestrconsts.lislazbuildidebuildhint
+msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
-msgid "Like \"make clean\" on cmd line"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
@@ -9605,11 +9623,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildnone
-msgctxt "lazarusidestrconsts.lislazbuildnone"
-msgid "None"
-msgstr "Cap"
 
 #: lazarusidestrconsts.lislazbuildok
 #, fuzzy
@@ -9661,7 +9674,8 @@ msgstr ""
 msgid "Restart after building IDE"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
+#: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
+msgctxt "lazarusidestrconsts.lislazbuildrestartlazarusautomatically"
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
 msgstr ""
 
@@ -9673,7 +9687,8 @@ msgstr ""
 msgid "Select profiles to build"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
+#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding
+msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr ""
 
@@ -9816,6 +9831,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
+msgstr ""
+
+#: lazarusidestrconsts.lisloadedsuccessfully
+msgid "Loaded successfully"
 msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
@@ -10004,6 +10023,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
+msgstr ""
+
+#: lazarusidestrconsts.lismeaction
+msgctxt "lazarusidestrconsts.lismeaction"
+msgid "Action"
 msgstr ""
 
 #: lazarusidestrconsts.lismemorydump
@@ -11116,6 +11140,15 @@ msgstr "Controls"
 
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
+msgstr ""
+
+#: lazarusidestrconsts.lismeother
+msgctxt "lazarusidestrconsts.lismeother"
+msgid "Other"
+msgstr "Altres"
+
+#: lazarusidestrconsts.lismeprojects
+msgid "Projects"
 msgstr ""
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
@@ -13749,10 +13782,6 @@ msgstr "Iguala l'espai dret"
 msgid "Root"
 msgstr ""
 
-#: lazarusidestrconsts.lisrootdirectoryforprojects
-msgid "Root directory for projects"
-msgstr ""
-
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr ""
@@ -13857,6 +13886,10 @@ msgstr "Voleu desar els canvis del projecte %s?"
 msgid "Save current editor file"
 msgstr "desa el fitxer editor actual"
 
+#: lazarusidestrconsts.lissavedsuccessfully
+msgid "Saved successfully"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr ""
@@ -13892,6 +13925,10 @@ msgstr "Factor d'escalat:"
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "Cerca"
+
+#: lazarusidestrconsts.lissearchprojectsfrom
+msgid "Search projects from"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

@@ -4851,6 +4851,10 @@ msgstr "המחלקה לא נמצאה"
 msgid "Class %s%s%s of method %s%s%s not found."
 msgstr "המחלקה s%s%s% של מתודה s%s%s% לא נמצאה."
 
+#: lazarusidestrconsts.liscldirclean
+msgid "Clean"
+msgstr ""
+
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
 msgstr "נקה ספרייה"
@@ -8494,6 +8498,10 @@ msgstr "בתיקיית המקור של החבילה  \"%s\""
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "בתיקיית המקור של הפרוייקט. בדוק כפילויות."
 
+#: lazarusidestrconsts.lisincludeexamples
+msgid "Include Examples"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
 msgstr "כלול מסנן"
@@ -8505,6 +8513,10 @@ msgstr "כלול נתיב"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "כלול נתיבים"
+
+#: lazarusidestrconsts.lisincludetestcases
+msgid "Include Testcases"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -9494,6 +9506,10 @@ msgstr "קובץ מידע של פרוייקט לזארוס"
 msgid "Lazarus project source"
 msgstr "קובץ קוד של פרוייקט לזארוס"
 
+#: lazarusidestrconsts.lislazarussource
+msgid "Lazarus Source"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
 msgstr "יחידת לזארוס"
@@ -9506,10 +9522,6 @@ msgstr "פעולה"
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr "בחר בתיקיית הפלט לקבצי הריצה של הIDE"
-
-#: lazarusidestrconsts.lislazbuildabopart
-msgid "Part"
-msgstr "חלק"
 
 #: lazarusidestrconsts.lislazbuildadd
 msgctxt "lazarusidestrconsts.lislazbuildadd"
@@ -9546,6 +9558,10 @@ msgstr "רכיבי בניה (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "בנה את ה IDE"
 
+#: lazarusidestrconsts.lislazbuildbuildingide
+msgid "Building IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "בנה JITForm"
@@ -9559,12 +9575,14 @@ msgctxt "lazarusidestrconsts.lislazbuildcancel"
 msgid "Cancel"
 msgstr "בטל"
 
-#: lazarusidestrconsts.lislazbuildcleanall
-msgid "Clean all"
-msgstr "נקה הכל"
+#: lazarusidestrconsts.lislazbuildcleanallbuild
+msgid "Clean All + Build"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildcleanbuild
-msgid "Clean+Build"
+#, fuzzy
+#| msgid "Clean+Build"
+msgid "Clean + Build"
 msgstr "נקה ובנה"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
@@ -9612,6 +9630,10 @@ msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "שגיאה בכתיבת קובץ"
 
+#: lazarusidestrconsts.lislazbuildidebuildhint
+msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
 msgstr "ללא חבילות IDE"
@@ -9619,10 +9641,6 @@ msgstr "ללא חבילות IDE"
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "בונה לזארוס אינו אינטראקטיבי, יוצא עכשיו."
-
-#: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
-msgid "Like \"make clean\" on cmd line"
-msgstr "כמו \"make clean\" בשורת הפקודה"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -9643,11 +9661,6 @@ msgstr "הוסף פרופיל חדש"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "אפשרויות הבנייה הנוכחיות יקושרו עם:"
-
-#: lazarusidestrconsts.lislazbuildnone
-msgctxt "lazarusidestrconsts.lislazbuildnone"
-msgid "None"
-msgstr "ללא"
 
 #: lazarusidestrconsts.lislazbuildok
 #, fuzzy
@@ -9703,7 +9716,8 @@ msgstr "שם חדש לפרופיל:"
 msgid "Restart after building IDE"
 msgstr "אתחל אחרי בנייה מוצלחת"
 
-#: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
+#: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
+msgctxt "lazarusidestrconsts.lislazbuildrestartlazarusautomatically"
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
 msgstr "אתחל את לזארוס אוטומטית אחרי בניית ה IDE. (אין לזה השפעה בזמן בניית חלקים אחרים)"
 
@@ -9715,7 +9729,8 @@ msgstr "שמור הגדרות"
 msgid "Select profiles to build"
 msgstr "בחר פרופילים לבנייה"
 
-#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
+#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding
+msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr "הראה דיאלוג אישרור כשאתה בונה ישירות מתפריט \"כלים\""
 
@@ -9857,6 +9872,10 @@ msgstr "קשר יעד"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "רשימה של כל ערכי case"
+
+#: lazarusidestrconsts.lisloadedsuccessfully
+msgid "Loaded successfully"
+msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -10047,6 +10066,11 @@ msgstr "מקסימום d%"
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr "יתכן שתצטרך להדר מחדש את החבילה."
+
+#: lazarusidestrconsts.lismeaction
+msgctxt "lazarusidestrconsts.lismeaction"
+msgid "Action"
+msgstr "פעולה"
 
 #: lazarusidestrconsts.lismemorydump
 msgid "Memory Dump"
@@ -11163,6 +11187,15 @@ msgstr "משגיחים"
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "חל&ון"
+
+#: lazarusidestrconsts.lismeother
+msgctxt "lazarusidestrconsts.lismeother"
+msgid "Other"
+msgstr "אחר"
+
+#: lazarusidestrconsts.lismeprojects
+msgid "Projects"
+msgstr ""
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
 msgid "Message contains no file position information:%s%s"
@@ -13797,10 +13830,6 @@ msgstr "רווח מימין במידה שווה"
 msgid "Root"
 msgstr "Root"
 
-#: lazarusidestrconsts.lisrootdirectoryforprojects
-msgid "Root directory for projects"
-msgstr ""
-
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr "(רץ ...) %s"
@@ -13905,6 +13934,10 @@ msgstr "לשמור שינויים לפרויקט %s?"
 msgid "Save current editor file"
 msgstr "שמור את הקובץ הנוכחי שבעורך"
 
+#: lazarusidestrconsts.lissavedsuccessfully
+msgid "Saved successfully"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "שמור מידע עורך על קבצים שאינם של הפרוייקט"
@@ -13940,6 +13973,10 @@ msgstr "קנה מידה:"
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "חפש את"
+
+#: lazarusidestrconsts.lissearchprojectsfrom
+msgid "Search projects from"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

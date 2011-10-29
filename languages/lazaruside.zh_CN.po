@@ -4874,6 +4874,10 @@ msgstr "未找到类"
 msgid "Class %s%s%s of method %s%s%s not found."
 msgstr "类%s%s%s的方法%s%s%s未找到."
 
+#: lazarusidestrconsts.liscldirclean
+msgid "Clean"
+msgstr ""
+
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
 msgstr "清除目录"
@@ -8513,6 +8517,10 @@ msgstr ""
 msgid "In a source directory of the project. Check for duplicates."
 msgstr ""
 
+#: lazarusidestrconsts.lisincludeexamples
+msgid "Include Examples"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
 msgstr "包含过滤器"
@@ -8524,6 +8532,10 @@ msgstr "包含路径"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "包含路径"
+
+#: lazarusidestrconsts.lisincludetestcases
+msgid "Include Testcases"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -9511,6 +9523,10 @@ msgstr "Lazarus 工程信息文件"
 msgid "Lazarus project source"
 msgstr "Lazarus 工程文件"
 
+#: lazarusidestrconsts.lislazarussource
+msgid "Lazarus Source"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
 msgstr "Lazarus 单元"
@@ -9523,10 +9539,6 @@ msgstr "动作"
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr "选择IDE执行文件的输出目录 "
-
-#: lazarusidestrconsts.lislazbuildabopart
-msgid "Part"
-msgstr "部分"
 
 #: lazarusidestrconsts.lislazbuildadd
 msgctxt "lazarusidestrconsts.lislazbuildadd"
@@ -9563,6 +9575,10 @@ msgstr "构建组件 (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "构建 IDE"
 
+#: lazarusidestrconsts.lislazbuildbuildingide
+msgid "Building IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "构建 JITForm"
@@ -9576,12 +9592,14 @@ msgctxt "lazarusidestrconsts.lislazbuildcancel"
 msgid "Cancel"
 msgstr "取消"
 
-#: lazarusidestrconsts.lislazbuildcleanall
-msgid "Clean all"
-msgstr "清除所有"
+#: lazarusidestrconsts.lislazbuildcleanallbuild
+msgid "Clean All + Build"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildcleanbuild
-msgid "Clean+Build"
+#, fuzzy
+#| msgid "Clean+Build"
+msgid "Clean + Build"
 msgstr "清除 + 构建"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
@@ -9629,6 +9647,10 @@ msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "写文件错误"
 
+#: lazarusidestrconsts.lislazbuildidebuildhint
+msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
 msgstr ""
@@ -9636,10 +9658,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "%s%s%s%s构建不能交互，现在中止."
-
-#: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
-msgid "Like \"make clean\" on cmd line"
-msgstr ""
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -9660,11 +9678,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildnone
-msgctxt "lazarusidestrconsts.lislazbuildnone"
-msgid "None"
-msgstr "无"
 
 #: lazarusidestrconsts.lislazbuildok
 #, fuzzy
@@ -9718,7 +9731,8 @@ msgstr ""
 msgid "Restart after building IDE"
 msgstr "构建成功后重新开始"
 
-#: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
+#: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
+msgctxt "lazarusidestrconsts.lislazbuildrestartlazarusautomatically"
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
 msgstr ""
 
@@ -9730,7 +9744,8 @@ msgstr "保存设置"
 msgid "Select profiles to build"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
+#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding
+msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr ""
 
@@ -9873,6 +9888,10 @@ msgstr "连接目标"
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
+msgstr ""
+
+#: lazarusidestrconsts.lisloadedsuccessfully
+msgid "Loaded successfully"
 msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
@@ -10062,6 +10081,11 @@ msgstr ""
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr ""
+
+#: lazarusidestrconsts.lismeaction
+msgctxt "lazarusidestrconsts.lismeaction"
+msgid "Action"
+msgstr "动作"
 
 #: lazarusidestrconsts.lismemorydump
 msgid "Memory Dump"
@@ -11178,6 +11202,15 @@ msgstr "查看"
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "窗口(&W)"
+
+#: lazarusidestrconsts.lismeother
+msgctxt "lazarusidestrconsts.lismeother"
+msgid "Other"
+msgstr "其余的"
+
+#: lazarusidestrconsts.lismeprojects
+msgid "Projects"
+msgstr ""
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
 msgid "Message contains no file position information:%s%s"
@@ -13818,10 +13851,6 @@ msgstr "相等的隔开右边"
 msgid "Root"
 msgstr ""
 
-#: lazarusidestrconsts.lisrootdirectoryforprojects
-msgid "Root directory for projects"
-msgstr ""
-
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr ""
@@ -13926,6 +13955,10 @@ msgstr "保存更改到工程 %s?"
 msgid "Save current editor file"
 msgstr "保存当前编辑器的文件"
 
+#: lazarusidestrconsts.lissavedsuccessfully
+msgid "Saved successfully"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "保存空工程的代码编辑器信息"
@@ -13961,6 +13994,10 @@ msgstr "缩放比例:"
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "查找"
+
+#: lazarusidestrconsts.lissearchprojectsfrom
+msgid "Search projects from"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

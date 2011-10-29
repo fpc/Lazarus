@@ -4764,6 +4764,10 @@ msgstr "Luokkaa ei löydy"
 msgid "Class %s%s%s of method %s%s%s not found."
 msgstr ""
 
+#: lazarusidestrconsts.liscldirclean
+msgid "Clean"
+msgstr ""
+
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
 msgstr "Siivoa hakemisto"
@@ -8359,6 +8363,10 @@ msgstr "Paketin \"%s\". lähdekoodihakemistossa."
 msgid "In a source directory of the project. Check for duplicates."
 msgstr "Projektin \"%s\". lähdekoodihakemistossa. Tarkista kaksoiskappaleet."
 
+#: lazarusidestrconsts.lisincludeexamples
+msgid "Include Examples"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
 msgstr "Lisää suodatin"
@@ -8369,6 +8377,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
+msgstr ""
+
+#: lazarusidestrconsts.lisincludetestcases
+msgid "Include Testcases"
 msgstr ""
 
 #: lazarusidestrconsts.lisindentation
@@ -9345,6 +9357,10 @@ msgstr "Lazarus projektin tietoja"
 msgid "Lazarus project source"
 msgstr "Lazarus projektin lähdekoodi"
 
+#: lazarusidestrconsts.lislazarussource
+msgid "Lazarus Source"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
 msgstr "Lazarus käännösyksikkö"
@@ -9357,10 +9373,6 @@ msgstr "Toiminta"
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildabopart
-msgid "Part"
-msgstr "Osa"
 
 #: lazarusidestrconsts.lislazbuildadd
 msgctxt "lazarusidestrconsts.lislazbuildadd"
@@ -9396,6 +9408,10 @@ msgstr "Käännä komponentit (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Käännä IDE"
 
+#: lazarusidestrconsts.lislazbuildbuildingide
+msgid "Building IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Käännä JITForm"
@@ -9409,12 +9425,14 @@ msgctxt "lazarusidestrconsts.lislazbuildcancel"
 msgid "Cancel"
 msgstr "Peru"
 
-#: lazarusidestrconsts.lislazbuildcleanall
-msgid "Clean all"
-msgstr "Siivoa kaikki"
+#: lazarusidestrconsts.lislazbuildcleanallbuild
+msgid "Clean All + Build"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildcleanbuild
-msgid "Clean+Build"
+#, fuzzy
+#| msgid "Clean+Build"
+msgid "Clean + Build"
 msgstr "Siivoa + käännä"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
@@ -9460,6 +9478,10 @@ msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Virhe kirjoitettaessa tiedostoa"
 
+#: lazarusidestrconsts.lislazbuildidebuildhint
+msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
 msgstr "IDE ilman paketteja"
@@ -9467,10 +9489,6 @@ msgstr "IDE ilman paketteja"
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
-msgid "Like \"make clean\" on cmd line"
-msgstr "Kuten \"make clean\" komentorivillä"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -9491,11 +9509,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildnone
-msgctxt "lazarusidestrconsts.lislazbuildnone"
-msgid "None"
-msgstr "Ei yhtään"
 
 #: lazarusidestrconsts.lislazbuildok
 msgctxt "lazarusidestrconsts.lislazbuildok"
@@ -9545,7 +9558,8 @@ msgstr "Profiilin uusi nimi:"
 msgid "Restart after building IDE"
 msgstr "Käynnistä uudelleen kääntämisen jälkeen"
 
-#: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
+#: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
+msgctxt "lazarusidestrconsts.lislazbuildrestartlazarusautomatically"
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
 msgstr ""
 
@@ -9557,7 +9571,8 @@ msgstr "Tallenna asetukset"
 msgid "Select profiles to build"
 msgstr "Valitse käännettävät profiilit"
 
-#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
+#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding
+msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr "Kysy varmistusta kun käännös tehdään suoraan Työkalut-valikosta"
 
@@ -9696,6 +9711,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
+msgstr ""
+
+#: lazarusidestrconsts.lisloadedsuccessfully
+msgid "Loaded successfully"
 msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
@@ -9885,6 +9904,11 @@ msgstr ""
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr ""
+
+#: lazarusidestrconsts.lismeaction
+msgctxt "lazarusidestrconsts.lismeaction"
+msgid "Action"
+msgstr "Toiminta"
 
 #: lazarusidestrconsts.lismemorydump
 msgid "Memory Dump"
@@ -10916,6 +10940,15 @@ msgstr "Vahdit"
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "Ikkunat"
+
+#: lazarusidestrconsts.lismeother
+msgctxt "lazarusidestrconsts.lismeother"
+msgid "Other"
+msgstr "Muu"
+
+#: lazarusidestrconsts.lismeprojects
+msgid "Projects"
+msgstr ""
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
 msgid "Message contains no file position information:%s%s"
@@ -13522,10 +13555,6 @@ msgstr ""
 msgid "Root"
 msgstr "Juuri"
 
-#: lazarusidestrconsts.lisrootdirectoryforprojects
-msgid "Root directory for projects"
-msgstr ""
-
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr "%s (suorittaa ...)"
@@ -13626,6 +13655,10 @@ msgstr "Tallennetaanko %s -projektiin tehdyt muutokset?"
 msgid "Save current editor file"
 msgstr "Tallenna nykyinen editorin tiedosto"
 
+#: lazarusidestrconsts.lissavedsuccessfully
+msgid "Saved successfully"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "Tallenna editorin tiedot projektiin kuulumattomista tiedostoista"
@@ -13661,6 +13694,10 @@ msgstr "Skaalauskerroin:"
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "Viittaukset tunnisteeseen: "
+
+#: lazarusidestrconsts.lissearchprojectsfrom
+msgid "Search projects from"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

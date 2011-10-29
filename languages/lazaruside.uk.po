@@ -4814,6 +4814,10 @@ msgstr "Клас не знайдено"
 msgid "Class %s%s%s of method %s%s%s not found."
 msgstr "Клас %s%s%s методу %s%s%s не знайдено."
 
+#: lazarusidestrconsts.liscldirclean
+msgid "Clean"
+msgstr ""
+
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
 msgstr "Очистити теку"
@@ -8421,6 +8425,10 @@ msgstr ""
 msgid "In a source directory of the project. Check for duplicates."
 msgstr ""
 
+#: lazarusidestrconsts.lisincludeexamples
+msgid "Include Examples"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
 msgstr "Фільтр для вибору"
@@ -8432,6 +8440,10 @@ msgstr "шлях доданих файлів"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "Шляхи до під'єднуваних файлів"
+
+#: lazarusidestrconsts.lisincludetestcases
+msgid "Include Testcases"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -9409,6 +9421,10 @@ msgstr "Файл Info проекту Lazarus"
 msgid "Lazarus project source"
 msgstr "Текст проекту Lazarus"
 
+#: lazarusidestrconsts.lislazarussource
+msgid "Lazarus Source"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
 msgstr "Модуль Lazarus"
@@ -9421,10 +9437,6 @@ msgstr "Дія"
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildabopart
-msgid "Part"
-msgstr "Частина"
 
 #: lazarusidestrconsts.lislazbuildadd
 msgctxt "lazarusidestrconsts.lislazbuildadd"
@@ -9461,6 +9473,10 @@ msgstr ""
 msgid "Build IDE"
 msgstr "Побудувати IDE"
 
+#: lazarusidestrconsts.lislazbuildbuildingide
+msgid "Building IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Побудувати JITForm"
@@ -9474,12 +9490,14 @@ msgctxt "lazarusidestrconsts.lislazbuildcancel"
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: lazarusidestrconsts.lislazbuildcleanall
-msgid "Clean all"
-msgstr "Очистити всі"
+#: lazarusidestrconsts.lislazbuildcleanallbuild
+msgid "Clean All + Build"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildcleanbuild
-msgid "Clean+Build"
+#, fuzzy
+#| msgid "Clean+Build"
+msgid "Clean + Build"
 msgstr "Очистити+Побудувати"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
@@ -9525,16 +9543,16 @@ msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Помилка запису файлу"
 
+#: lazarusidestrconsts.lislazbuildidebuildhint
+msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
 msgstr "IDE без Пакунків"
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
-msgid "Like \"make clean\" on cmd line"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
@@ -9556,11 +9574,6 @@ msgstr "Додати Новий Профіль"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildnone
-msgctxt "lazarusidestrconsts.lislazbuildnone"
-msgid "None"
-msgstr "Відсутнє"
 
 #: lazarusidestrconsts.lislazbuildok
 msgctxt "lazarusidestrconsts.lislazbuildok"
@@ -9610,7 +9623,8 @@ msgstr "Нове ім'я для профілю:"
 msgid "Restart after building IDE"
 msgstr "Перезапустити після побудови IDE"
 
-#: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
+#: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
+msgctxt "lazarusidestrconsts.lislazbuildrestartlazarusautomatically"
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
 msgstr "Перезапустити Lazarus автоматично після побудови IDE (не впливає на побудову інших частин)"
 
@@ -9622,7 +9636,8 @@ msgstr "Зберегти налаштування"
 msgid "Select profiles to build"
 msgstr "Виберіть профілі для побудови"
 
-#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
+#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding
+msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr ""
 
@@ -9763,6 +9778,10 @@ msgstr "Ціль посилання"
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
+msgstr ""
+
+#: lazarusidestrconsts.lisloadedsuccessfully
+msgid "Loaded successfully"
 msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
@@ -9952,6 +9971,11 @@ msgstr "Макс %d"
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr ""
+
+#: lazarusidestrconsts.lismeaction
+msgctxt "lazarusidestrconsts.lismeaction"
+msgid "Action"
+msgstr "Дія"
 
 #: lazarusidestrconsts.lismemorydump
 msgid "Memory Dump"
@@ -10993,6 +11017,15 @@ msgstr "Вікно спостережень"
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "&Вікно"
+
+#: lazarusidestrconsts.lismeother
+msgctxt "lazarusidestrconsts.lismeother"
+msgid "Other"
+msgstr "Інше"
+
+#: lazarusidestrconsts.lismeprojects
+msgid "Projects"
+msgstr ""
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
 msgid "Message contains no file position information:%s%s"
@@ -13605,10 +13638,6 @@ msgstr "По правому краю"
 msgid "Root"
 msgstr "Корінь"
 
-#: lazarusidestrconsts.lisrootdirectoryforprojects
-msgid "Root directory for projects"
-msgstr ""
-
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr "%s (виконується ...)"
@@ -13709,6 +13738,10 @@ msgstr "Зберегти зміни в проект %s?"
 msgid "Save current editor file"
 msgstr "Зберегти поточний файл редактора"
 
+#: lazarusidestrconsts.lissavedsuccessfully
+msgid "Saved successfully"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "Зберегти інформацію редактора про файли, що не відносяться до проекту"
@@ -13744,6 +13777,10 @@ msgstr "Масштабний фактор:"
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "Шукати "
+
+#: lazarusidestrconsts.lissearchprojectsfrom
+msgid "Search projects from"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

@@ -4878,6 +4878,10 @@ msgstr "Classe non trovata"
 msgid "Class %s%s%s of method %s%s%s not found."
 msgstr "Classe %s%s%s del metodo %s%s%s non trovata."
 
+#: lazarusidestrconsts.liscldirclean
+msgid "Clean"
+msgstr ""
+
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
 msgstr "Pulisci la cartella"
@@ -8524,6 +8528,10 @@ msgstr ""
 msgid "In a source directory of the project. Check for duplicates."
 msgstr ""
 
+#: lazarusidestrconsts.lisincludeexamples
+msgid "Include Examples"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
 msgstr "Includi Filtro"
@@ -8535,6 +8543,10 @@ msgstr "cammino di inclusione"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "Includi i percorsi"
+
+#: lazarusidestrconsts.lisincludetestcases
+msgid "Include Testcases"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -9522,6 +9534,10 @@ msgstr "File di informazione di progetto Lazarus"
 msgid "Lazarus project source"
 msgstr "Sorgente del progetto Lazarus"
 
+#: lazarusidestrconsts.lislazarussource
+msgid "Lazarus Source"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
 msgstr "Unit di Lazarus"
@@ -9534,10 +9550,6 @@ msgstr "Azione"
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr "Scegli la cartella di output dell'eseguibile dell'IDE"
-
-#: lazarusidestrconsts.lislazbuildabopart
-msgid "Part"
-msgstr "Parte"
 
 #: lazarusidestrconsts.lislazbuildadd
 msgctxt "lazarusidestrconsts.lislazbuildadd"
@@ -9574,6 +9586,10 @@ msgstr "Costruisci i componenti (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Costruisci l'IDE"
 
+#: lazarusidestrconsts.lislazbuildbuildingide
+msgid "Building IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Costruisci la form JIT"
@@ -9587,12 +9603,14 @@ msgctxt "lazarusidestrconsts.lislazbuildcancel"
 msgid "Cancel"
 msgstr "Annulla"
 
-#: lazarusidestrconsts.lislazbuildcleanall
-msgid "Clean all"
-msgstr "Pulisci tutto"
+#: lazarusidestrconsts.lislazbuildcleanallbuild
+msgid "Clean All + Build"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildcleanbuild
-msgid "Clean+Build"
+#, fuzzy
+#| msgid "Clean+Build"
+msgid "Clean + Build"
 msgstr "Pulisci e costruisci"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
@@ -9638,6 +9656,10 @@ msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Errore nella scrittura del file"
 
+#: lazarusidestrconsts.lislazbuildidebuildhint
+msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
 msgstr ""
@@ -9645,10 +9667,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "%s%s%s%slazbuild non è interattivo, sto terminando."
-
-#: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
-msgid "Like \"make clean\" on cmd line"
-msgstr "Come \"make clean\" su linea di comando"
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -9669,11 +9687,6 @@ msgstr "Aggiungi nuovo profilo"
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr "Le opzioni di costruzione attuali saranno associate a:"
-
-#: lazarusidestrconsts.lislazbuildnone
-msgctxt "lazarusidestrconsts.lislazbuildnone"
-msgid "None"
-msgstr "Niente"
 
 #: lazarusidestrconsts.lislazbuildok
 #, fuzzy
@@ -9725,7 +9738,8 @@ msgstr "Nuovo nome per il profilo:"
 msgid "Restart after building IDE"
 msgstr "Rilancia l'IDE dopo averla costruita"
 
-#: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
+#: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
+msgctxt "lazarusidestrconsts.lislazbuildrestartlazarusautomatically"
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
 msgstr "Rilancia automaticamente Lazarus dopo aver costruito l'IDE (non ha effetto se si costruiscono altre parti)"
 
@@ -9737,7 +9751,8 @@ msgstr "Salva le impostazioni"
 msgid "Select profiles to build"
 msgstr "Seleziona profilo da costruire"
 
-#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
+#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding
+msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr "Chiedi conferma quando si costruisce direttamente dal menu Strumenti"
 
@@ -9881,6 +9896,10 @@ msgstr "Destinazione di link"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "elenco di tutti i valori CASE"
+
+#: lazarusidestrconsts.lisloadedsuccessfully
+msgid "Loaded successfully"
+msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -10071,6 +10090,11 @@ msgstr "Massimo %d"
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr ""
+
+#: lazarusidestrconsts.lismeaction
+msgctxt "lazarusidestrconsts.lismeaction"
+msgid "Action"
+msgstr "Azione"
 
 #: lazarusidestrconsts.lismemorydump
 msgid "Memory Dump"
@@ -11195,6 +11219,15 @@ msgstr "Viste di watch"
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "&Finestre"
+
+#: lazarusidestrconsts.lismeother
+msgctxt "lazarusidestrconsts.lismeother"
+msgid "Other"
+msgstr "Varie"
+
+#: lazarusidestrconsts.lismeprojects
+msgid "Projects"
+msgstr ""
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
 msgid "Message contains no file position information:%s%s"
@@ -13830,10 +13863,6 @@ msgstr "Spazia a destra equidistante"
 msgid "Root"
 msgstr "Radice"
 
-#: lazarusidestrconsts.lisrootdirectoryforprojects
-msgid "Root directory for projects"
-msgstr ""
-
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr "%s (in esecuzione...)"
@@ -13938,6 +13967,10 @@ msgstr "Salva i cambiamenti al progetto %s?"
 msgid "Save current editor file"
 msgstr "salva file dell'editor corrente"
 
+#: lazarusidestrconsts.lissavedsuccessfully
+msgid "Saved successfully"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "Salva le informazioni dell'editor per i file non di progetto"
@@ -13973,6 +14006,10 @@ msgstr "Fattore di scala:"
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "Cerca "
+
+#: lazarusidestrconsts.lissearchprojectsfrom
+msgid "Search projects from"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

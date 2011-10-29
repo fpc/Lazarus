@@ -4872,6 +4872,10 @@ msgstr "Klasė nerasta"
 msgid "Class %s%s%s of method %s%s%s not found."
 msgstr "%s%s%s klasė (%s%s%s metodo) nerasta."
 
+#: lazarusidestrconsts.liscldirclean
+msgid "Clean"
+msgstr ""
+
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
 msgstr "Valyti aplanką"
@@ -8509,6 +8513,10 @@ msgstr ""
 msgid "In a source directory of the project. Check for duplicates."
 msgstr ""
 
+#: lazarusidestrconsts.lisincludeexamples
+msgid "Include Examples"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
 msgstr "Įterpimo filtras"
@@ -8520,6 +8528,10 @@ msgstr "kelias iki įterpinių"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "Įterpimo keliai"
+
+#: lazarusidestrconsts.lisincludetestcases
+msgid "Include Testcases"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -9507,6 +9519,10 @@ msgstr "Lazarus projekto informacinis failas"
 msgid "Lazarus project source"
 msgstr "Lazarus projekto pirminis kodas"
 
+#: lazarusidestrconsts.lislazarussource
+msgid "Lazarus Source"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
 msgstr "Lazarus modulis"
@@ -9519,10 +9535,6 @@ msgstr "Veiksmas"
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
 msgstr "Nurodykite kuriame aplanke dėti IKA vykdomąjį failą "
-
-#: lazarusidestrconsts.lislazbuildabopart
-msgid "Part"
-msgstr "Dalis"
 
 #: lazarusidestrconsts.lislazbuildadd
 msgctxt "lazarusidestrconsts.lislazbuildadd"
@@ -9559,6 +9571,10 @@ msgstr "Daryti komponentus (SynEdit, CodeTools)"
 msgid "Build IDE"
 msgstr "Daryti IKA"
 
+#: lazarusidestrconsts.lislazbuildbuildingide
+msgid "Building IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Daryti JITForm"
@@ -9572,12 +9588,14 @@ msgctxt "lazarusidestrconsts.lislazbuildcancel"
 msgid "Cancel"
 msgstr "Atsisakyti"
 
-#: lazarusidestrconsts.lislazbuildcleanall
-msgid "Clean all"
-msgstr "Visiškas apvalymas"
+#: lazarusidestrconsts.lislazbuildcleanallbuild
+msgid "Clean All + Build"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildcleanbuild
-msgid "Clean+Build"
+#, fuzzy
+#| msgid "Clean+Build"
+msgid "Clean + Build"
 msgstr "Apvalyti ir daryti"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
@@ -9625,6 +9643,10 @@ msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Klaida rašant į failą"
 
+#: lazarusidestrconsts.lislazbuildidebuildhint
+msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
 msgstr ""
@@ -9632,10 +9654,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
 msgstr "%s%s%s%s„lazbuild“ neinteraktyvus, darbas nutraukiamas."
-
-#: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
-msgid "Like \"make clean\" on cmd line"
-msgstr ""
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
 msgid "Manage Build Profiles"
@@ -9656,11 +9674,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildnone
-msgctxt "lazarusidestrconsts.lislazbuildnone"
-msgid "None"
-msgstr "Joks"
 
 #: lazarusidestrconsts.lislazbuildok
 #, fuzzy
@@ -9714,7 +9727,8 @@ msgstr ""
 msgid "Restart after building IDE"
 msgstr "Sėkmingai padarius, startuoti iš naujo"
 
-#: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
+#: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
+msgctxt "lazarusidestrconsts.lislazbuildrestartlazarusautomatically"
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
 msgstr ""
 
@@ -9726,7 +9740,8 @@ msgstr "Įrašyti nuostatas"
 msgid "Select profiles to build"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
+#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding
+msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr ""
 
@@ -9873,6 +9888,10 @@ msgstr "Saito paskirtis"
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
 msgstr "Visų „case“ verčių sąrašas"
+
+#: lazarusidestrconsts.lisloadedsuccessfully
+msgid "Loaded successfully"
+msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -10063,6 +10082,11 @@ msgstr "Maksimaliai %d"
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr ""
+
+#: lazarusidestrconsts.lismeaction
+msgctxt "lazarusidestrconsts.lismeaction"
+msgid "Action"
+msgstr "Veiksmas"
 
 #: lazarusidestrconsts.lismemorydump
 msgid "Memory Dump"
@@ -11178,6 +11202,15 @@ msgstr "Stebimieji"
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "&Langai"
+
+#: lazarusidestrconsts.lismeother
+msgctxt "lazarusidestrconsts.lismeother"
+msgid "Other"
+msgstr "Kiti"
+
+#: lazarusidestrconsts.lismeprojects
+msgid "Projects"
+msgstr ""
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
 msgid "Message contains no file position information:%s%s"
@@ -13816,10 +13849,6 @@ msgstr "Tolygiai rikiuoti pagal dešiniuosius kraštus"
 msgid "Root"
 msgstr "Šakninis"
 
-#: lazarusidestrconsts.lisrootdirectoryforprojects
-msgid "Root directory for projects"
-msgstr ""
-
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr ""
@@ -13924,6 +13953,10 @@ msgstr "Įrašyti projekto pakeitimus %s?"
 msgid "Save current editor file"
 msgstr "Įrašyti dabartinį rengyklės failą"
 
+#: lazarusidestrconsts.lissavedsuccessfully
+msgid "Saved successfully"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "Įrašyti rengyklės informaciją apie projektui nepriklausančius failus"
@@ -13959,6 +13992,10 @@ msgstr "Santykinis mastelis:"
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "Ko ieškoti"
+
+#: lazarusidestrconsts.lissearchprojectsfrom
+msgid "Search projects from"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"

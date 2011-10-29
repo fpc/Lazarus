@@ -4851,6 +4851,10 @@ msgstr "Class tidak ditemukan"
 msgid "Class %s%s%s of method %s%s%s not found."
 msgstr ""
 
+#: lazarusidestrconsts.liscldirclean
+msgid "Clean"
+msgstr ""
+
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
 msgstr "Bersihkan Direktori"
@@ -8490,6 +8494,10 @@ msgstr ""
 msgid "In a source directory of the project. Check for duplicates."
 msgstr ""
 
+#: lazarusidestrconsts.lisincludeexamples
+msgid "Include Examples"
+msgstr ""
+
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
 msgstr "Filter Include"
@@ -8501,6 +8509,10 @@ msgstr "path include"
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
 msgstr "Sertakan path"
+
+#: lazarusidestrconsts.lisincludetestcases
+msgid "Include Testcases"
+msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -9480,6 +9492,10 @@ msgstr "File Info Proyek Lazarus"
 msgid "Lazarus project source"
 msgstr "Sumber proyek Lazarus"
 
+#: lazarusidestrconsts.lislazarussource
+msgid "Lazarus Source"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
 msgstr "Unit Lazarus"
@@ -9491,10 +9507,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildabopart
-msgid "Part"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildadd
@@ -9532,6 +9544,10 @@ msgstr ""
 msgid "Build IDE"
 msgstr "Bangun IDE"
 
+#: lazarusidestrconsts.lislazbuildbuildingide
+msgid "Building IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Bangun JITForm"
@@ -9545,12 +9561,14 @@ msgctxt "lazarusidestrconsts.lislazbuildcancel"
 msgid "Cancel"
 msgstr "Batal"
 
-#: lazarusidestrconsts.lislazbuildcleanall
-msgid "Clean all"
-msgstr "Bersihkan semua"
+#: lazarusidestrconsts.lislazbuildcleanallbuild
+msgid "Clean All + Build"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildcleanbuild
-msgid "Clean+Build"
+#, fuzzy
+#| msgid "Clean+Build"
+msgid "Clean + Build"
 msgstr "Bersihkan+Bangun"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
@@ -9596,16 +9614,16 @@ msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Kesalahan penulisan file"
 
+#: lazarusidestrconsts.lislazbuildidebuildhint
+msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildisnoninteractiveabortingnow
 msgid "%s%s%s%slazbuild is non interactive, aborting now."
-msgstr ""
-
-#: lazarusidestrconsts.lislazbuildlikemakecleanoncmdline
-msgid "Like \"make clean\" on cmd line"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildmanageprofiles
@@ -9627,11 +9645,6 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildnone
-msgctxt "lazarusidestrconsts.lislazbuildnone"
-msgid "None"
-msgstr "Tidak ada"
 
 #: lazarusidestrconsts.lislazbuildok
 #, fuzzy
@@ -9683,7 +9696,8 @@ msgstr ""
 msgid "Restart after building IDE"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildrestartlazarusautomaticallyafterbuildingtheidehasn
+#: lazarusidestrconsts.lislazbuildrestartlazarusautomatically
+msgctxt "lazarusidestrconsts.lislazbuildrestartlazarusautomatically"
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
 msgstr ""
 
@@ -9695,7 +9709,8 @@ msgstr "Simpan seting"
 msgid "Select profiles to build"
 msgstr ""
 
-#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuildingdirectlyfromtool
+#: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding
+msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
 msgstr ""
 
@@ -9838,6 +9853,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
+msgstr ""
+
+#: lazarusidestrconsts.lisloadedsuccessfully
+msgid "Loaded successfully"
 msgstr ""
 
 #: lazarusidestrconsts.lisloadingfailed
@@ -10026,6 +10045,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
+msgstr ""
+
+#: lazarusidestrconsts.lismeaction
+msgctxt "lazarusidestrconsts.lismeaction"
+msgid "Action"
 msgstr ""
 
 #: lazarusidestrconsts.lismemorydump
@@ -11142,6 +11166,15 @@ msgstr "Pengawasan"
 
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
+msgstr ""
+
+#: lazarusidestrconsts.lismeother
+msgctxt "lazarusidestrconsts.lismeother"
+msgid "Other"
+msgstr "Lainnya"
+
+#: lazarusidestrconsts.lismeprojects
+msgid "Projects"
 msgstr ""
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
@@ -13777,10 +13810,6 @@ msgstr "Kanan spasi secara sama"
 msgid "Root"
 msgstr ""
 
-#: lazarusidestrconsts.lisrootdirectoryforprojects
-msgid "Root directory for projects"
-msgstr ""
-
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
 msgstr ""
@@ -13885,6 +13914,10 @@ msgstr "Simpan perubahan ke proyek %s?"
 msgid "Save current editor file"
 msgstr "simpan file editor saat ini"
 
+#: lazarusidestrconsts.lissavedsuccessfully
+msgid "Saved successfully"
+msgstr ""
+
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
 msgstr "Simpan info editor dari file non proyek"
@@ -13920,6 +13953,10 @@ msgstr "Faktor Skala:"
 #: lazarusidestrconsts.lissearchfor
 msgid "Search For "
 msgstr "Mencari"
+
+#: lazarusidestrconsts.lissearchprojectsfrom
+msgid "Search projects from"
+msgstr ""
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"
