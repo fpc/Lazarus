@@ -185,12 +185,14 @@ type
     procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
       ATpNm: string; AFlgs: TWatchExpectationFlags
     );
+    procedure UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType; AMinGdb: Integer);
+    procedure UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType; AMinFpc: Integer);
 
     procedure UpdRes(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes;
       ATpNm: string; AFlgs: TWatchExpectationFlags
     );
-    procedure UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType; AMinGdb: Integer);
-    procedure UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType; AMinFpc: Integer);
+    procedure UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes; AMinGdb: Integer);
+    procedure UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes; AMinFpc: Integer);
 
     procedure AddExpectBreakFooGdb;
     procedure AddExpectBreakFooAll;
@@ -436,6 +438,26 @@ begin
   for i := low(TSymbolType) to high(TSymbolType) do
     if i in ASymbolTypes then
       UpdRes(AWatchExp, i, ATpNm, AFlgs);
+end;
+
+procedure TTestWatches.UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes;
+  AMinGdb: Integer);
+var
+  i: TSymbolType;
+begin
+  for i := low(TSymbolType) to high(TSymbolType) do
+    if i in ASymbolTypes then
+      UpdResMinGdb(AWatchExp, i, AMinGdb);
+end;
+
+procedure TTestWatches.UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes;
+  AMinFpc: Integer);
+var
+  i: TSymbolType;
+begin
+  for i := low(TSymbolType) to high(TSymbolType) do
+    if i in ASymbolTypes then
+      UpdResMinFpc(AWatchExp, i, AMinFpc);
 end;
 
 procedure TTestWatches.UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
@@ -915,10 +937,10 @@ begin
   r:=AddStringFmtDef('VArgTMyPAnsiStringDArray[1]^',  'DArray2 Str1',         'AnsiString', []);
 
 
-  r:=AddCharFmtDef('ArgTMyPAnsiStringDArray[0][1]^',   'D'  ,    'char', [IgnDwrf2, IgnStabs]);
-  r:=AddCharFmtDef('ArgTMyPAnsiStringDArray[0][12]^',  '0'  ,    'char', [IgnDwrf2, IgnStabs]);
-  r:=AddCharFmtDef('ArgTMyPAnsiStringDArray[1][1]^',   'D'  ,    'char', [IgnDwrf2, IgnStabs]);
-  r:=AddCharFmtDef('ArgTMyPAnsiStringDArray[1][12]^',  '1'  ,    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyPAnsiStringDArray[0]^[1]',   'D'  ,    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyPAnsiStringDArray[0]^[12]',  '0'  ,    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyPAnsiStringDArray[1]^[1]',   'D'  ,    'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyPAnsiStringDArray[1]^[12]',  '1'  ,    'char', [IgnDwrf2, IgnStabs]);
 
   r:=AddCharFmtDef('VArgTMyPAnsiStringDArray[0]^[1]',  'D'  ,    'char', [IgnDwrf2, IgnStabs]);
   r:=AddCharFmtDef('VArgTMyPAnsiStringDArray[0]^[12]', '0'  ,    'char', [IgnDwrf2, IgnStabs]);
@@ -980,22 +1002,18 @@ begin
   r:=AddShortStrFmtDef('ArgTMyShortStringDArray[0]',   'DArray1 Short0',         'ShortString', []);
   r:=AddShortStrFmtDef('ArgTMyShortStringDArray[1]',   'DArray1 Short1',         'ShortString', []);
   r:=AddShortStrFmtDef('VArgTMyShortStringDArray[0]',  'DArray2 Short0',         'ShortString', []);
-     UpdResMinFpc(r, stDwarf, 020600);
-     UpdResMinFpc(r, stDwarfSet, 020600);
   r:=AddShortStrFmtDef('VArgTMyShortStringDArray[1]',  'DArray2 Short1',         'ShortString', []);
-     UpdResMinFpc(r, stDwarf, 020600);
-     UpdResMinFpc(r, stDwarfSet, 020600);
 
 
-  r:=AddCharFmtDef('ArgTMyShortStringDArray[0][1]',   'D',      'char', [IgnDwrf2, IgnStabs]);
-  r:=AddCharFmtDef('ArgTMyShortStringDArray[0][14]',  '0',      'char', [IgnDwrf2, IgnStabs]);
-  r:=AddCharFmtDef('ArgTMyShortStringDArray[1][1]',   'D',      'char', [IgnDwrf2, IgnStabs]);
-  r:=AddCharFmtDef('ArgTMyShortStringDArray[1][14]',  '1',      'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('ArgTMyShortStringDArray[0][1]',   'D',      'char', [IgnDwrf2]);
+  r:=AddCharFmtDef('ArgTMyShortStringDArray[0][14]',  '0',      'char', [IgnDwrf2]);
+  r:=AddCharFmtDef('ArgTMyShortStringDArray[1][1]',   'D',      'char', [IgnDwrf2]);
+  r:=AddCharFmtDef('ArgTMyShortStringDArray[1][14]',  '1',      'char', [IgnDwrf2]);
 
-  r:=AddCharFmtDef('VArgTMyShortStringDArray[0][1]',   'D',      'char', [IgnDwrf2, IgnStabs]);
-  r:=AddCharFmtDef('VArgTMyShortStringDArray[0][14]',  '0',      'char', [IgnDwrf2, IgnStabs]);
-  r:=AddCharFmtDef('VArgTMyShortStringDArray[1][1]',   'D',      'char', [IgnDwrf2, IgnStabs]);
-  r:=AddCharFmtDef('VArgTMyShortStringDArray[1][14]',  '1',      'char', [IgnDwrf2, IgnStabs]);
+  r:=AddCharFmtDef('VArgTMyShortStringDArray[0][1]',   'D',      'char', [IgnDwrf2]);
+  r:=AddCharFmtDef('VArgTMyShortStringDArray[0][14]',  '0',      'char', [IgnDwrf2]);
+  r:=AddCharFmtDef('VArgTMyShortStringDArray[1][1]',   'D',      'char', [IgnDwrf2]);
+  r:=AddCharFmtDef('VArgTMyShortStringDArray[1][14]',  '1',      'char', [IgnDwrf2]);
 
   r:=AddShortStrFmtDef('ArgTMyShortStringSArray[3]',   'SArray1 Short3',         'ShortString', []);
   r:=AddShortStrFmtDef('ArgTMyShortStringSArray[4]',   'SArray1 Short4',         'ShortString', []);
@@ -1232,34 +1250,355 @@ begin
                                 [fTpMtch]);
   {%endregion    * Array * }
 
+  {%region DYN ARRAY}
+    {%region DYN ARRAY (norm)}
+    //TDynArrayTRec1      = array of TRecForArray3;
   r := AddArrayFmtDef('ArgTDynArrayTRec1', '.', 'TDynArrayTRec1', []);
   r := AddRecForArrFmtDef('ArgTDynArrayTRec1[0]', 3, 90, []);
   r := AddRecForArrFmtDef('ArgTDynArrayTRec1[1]', 3, 91, []);
-
+    //TDynArrayPRec1      = array of ^TRecForArray3;
   r := AddArrayFmtDef('ArgTDynArrayPRec1', '.', 'TDynArrayPRec1', []);
   r := AddPointerFmtDef  ('ArgTDynArrayPRec1[0]', '\^TRecForArray3', '^TRecForArray3', []);
-  r := AddRecForArrFmtDef('ArgTDynArrayPRec1[0]^', 3, 90, [IgnDwrf, IgnStabs]);
+  r := AddRecForArrFmtDef('ArgTDynArrayPRec1[0]^', 3, 90, []);
   r := AddPointerFmtDef  ('ArgTDynArrayPRec1[1]', '\^TRecForArray3', '^TRecForArray3', []);
-  r := AddRecForArrFmtDef('ArgTDynArrayPRec1[1]^', 3, 91, [IgnDwrf, IgnStabs]);
-
+  r := AddRecForArrFmtDef('ArgTDynArrayPRec1[1]^', 3, 91, []);
+    //TDynDynArrayTRec1   = array of array of TRecForArray1;
   r := AddArrayFmtDef('ArgTDynDynArrayTRec1', '.', 'TDynDynArrayTRec1', []);
-  r := AddArrayFmtDef('ArgTDynDynArrayTRec1[0]', '.', 'xxx', [IgnDwrf, IgnStabs]);
-  r := AddRecForArrFmtDef('ArgTDynArrayTRec1[0][0]', 1, 80, [IgnDwrf, IgnStabs]);
-  r := AddRecForArrFmtDef('ArgTDynArrayTRec1[0][1]', 1, 81, [IgnDwrf, IgnStabs]);
-  r := AddArrayFmtDef('ArgTDynDynArrayTRec1[1]', '.', 'xxx', [IgnDwrf, IgnStabs]);
-  r := AddRecForArrFmtDef('ArgTDynArrayTRec1[1][0]', 1, 85, [IgnDwrf, IgnStabs]);
-  r := AddRecForArrFmtDef('ArgTDynArrayTRec1[1][1]', 1, 86, [IgnDwrf, IgnStabs]);
+  r := AddArrayFmtDef('ArgTDynDynArrayTRec1[0]', '.', '', []); // TODO? typename = array of ...
+  r := AddRecForArrFmtDef('ArgTDynDynArrayTRec1[0][0]', 1, 80, []);
+  r := AddRecForArrFmtDef('ArgTDynDynArrayTRec1[0][1]', 1, 81, []);
+  r := AddArrayFmtDef('ArgTDynDynArrayTRec1[1]', '.', '', []); // TODO? typename = array of ...
+  r := AddRecForArrFmtDef('ArgTDynDynArrayTRec1[1][0]', 1, 85, []);
+  r := AddRecForArrFmtDef('ArgTDynDynArrayTRec1[1][1]', 1, 86, []);
+    //TDynDynArrayPRec1   = array of array of ^TRecForArray1;
+    //TDynStatArrayTRec1  = array of array [3..5] of TRecForArray1;
+    //TDynStatArrayPRec1  = array of array [3..5] of ^TRecForArray1;
+    //
+    //TDynArrayTRec2      = array of TRecForArray4;
+    //TDynArrayPRec2      = array of ^TRecForArray4;
+    //TDynArrayPPRec2     = array of ^PRecForArray4; // double pointer
+    //TDynDynArrayTRec2   = array of array of TRecForArray2;
+    //TDynDynArrayPRec2   = array of array of ^TRecForArray2;
+    //TDynStatArrayTRec2  = array of array [3..5] of TRecForArray2;
+    //TDynStatArrayPRec2  = array of array [3..5] of ^TRecForArray2;
+    {%endregion DYN ARRAY (norm)}
 
-
+    {%region DYN ARRAY (VAR)}
+        // dyn arrays VAR
+    //TDynArrayTRec1      = array of TRecForArray3;
   r := AddArrayFmtDef('VArgTDynArrayTRec1', '.', 'TDynArrayTRec1', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
   r := AddRecForArrFmtDef('VArgTDynArrayTRec1[0]', 3, 90, []);
   r := AddRecForArrFmtDef('VArgTDynArrayTRec1[1]', 3, 91, []);
-
+    //TDynArrayPRec1      = array of ^TRecForArray3;
   r := AddArrayFmtDef('VArgTDynArrayPRec1', '.', 'TDynArrayPRec1', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
   r := AddPointerFmtDef  ('VArgTDynArrayPRec1[0]', '\^TRecForArray3', '^TRecForArray3', []);
-  r := AddRecForArrFmtDef('VArgTDynArrayPRec1[0]^', 3, 90, [IgnDwrf, IgnStabs]);
+  r := AddRecForArrFmtDef('VArgTDynArrayPRec1[0]^', 3, 90, []);
   r := AddPointerFmtDef  ('VArgTDynArrayPRec1[1]', '\^TRecForArray3', '^TRecForArray3', []);
-  r := AddRecForArrFmtDef('VArgTDynArrayPRec1[1]^', 3, 91, [IgnDwrf, IgnStabs]);
+  r := AddRecForArrFmtDef('VArgTDynArrayPRec1[1]^', 3, 91, []);
+    //TDynDynArrayTRec1   = array of array of TRecForArray1;
+  r := AddArrayFmtDef('VArgTDynDynArrayTRec1', '.', 'TDynDynArrayTRec1', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddArrayFmtDef('VArgTDynDynArrayTRec1[0]', '.', '', []); // TODO? typename = array of ...
+  r := AddRecForArrFmtDef('VArgTDynDynArrayTRec1[0][0]', 1, 80, []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddRecForArrFmtDef('VArgTDynDynArrayTRec1[0][1]', 1, 81, []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddArrayFmtDef('VArgTDynDynArrayTRec1[1]', '.', '', []); // TODO? typename = array of ...
+  r := AddRecForArrFmtDef('VArgTDynDynArrayTRec1[1][0]', 1, 85, []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddRecForArrFmtDef('VArgTDynDynArrayTRec1[1][1]', 1, 86, []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+    //TDynDynArrayPRec1   = array of array of ^TRecForArray1;
+    //TDynStatArrayTRec1  = array of array [3..5] of TRecForArray1;
+    //TDynStatArrayPRec1  = array of array [3..5] of ^TRecForArray1;
+    //
+    //TDynArrayTRec2      = array of TRecForArray4;
+    //TDynArrayPRec2      = array of ^TRecForArray4;
+    //TDynArrayPPRec2     = array of ^PRecForArray4; // double pointer
+    //TDynDynArrayTRec2   = array of array of TRecForArray2;
+    //TDynDynArrayPRec2   = array of array of ^TRecForArray2;
+    //TDynStatArrayTRec2  = array of array [3..5] of TRecForArray2;
+    //TDynStatArrayPRec2  = array of array [3..5] of ^TRecForArray2;
+    {%endregion DYN ARRAY (VAR)}
+  {%endregion DYN ARRAY}
+
+
+  {%region STAT ARRAY}
+    {%region STAT ARRAY (norm)}
+    //TStatArrayTRec1     = array [3..5] of TRecForArray3;
+  r := AddArrayFmtDef('ArgTStatArrayTRec1', '.', 'TStatArrayTRec1', []);
+  r := AddRecForArrFmtDef('ArgTStatArrayTRec1[3]', 3, 50, []);
+  r := AddRecForArrFmtDef('ArgTStatArrayTRec1[4]', 3, 51, []);
+    //TStatArrayPRec1     = array [3..5] of ^TRecForArray3;
+  r := AddArrayFmtDef('ArgTStatArrayPRec1', '.', 'TStatArrayPRec1', []);
+  r := AddPointerFmtDef  ('ArgTStatArrayPRec1[3]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('ArgTStatArrayPRec1[3]^', 3, 50, []);
+  r := AddPointerFmtDef  ('ArgTStatArrayPRec1[4]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('ArgTStatArrayPRec1[4]^', 3, 51, []);
+    //TStatDynArrayTRec1  = array [3..5] of array of TRecForArray1;
+  r := AddArrayFmtDef('ArgTStatDynArrayTRec1', '.', 'TStatDynArrayTRec1', []);
+  r := AddArrayFmtDef('ArgTStatDynArrayTRec1[3]', '.', '', []); // TODO? typename = array of ...
+  r := AddRecForArrFmtDef('ArgTStatDynArrayTRec1[3][0]', 1, 40, []);
+  r := AddRecForArrFmtDef('ArgTStatDynArrayTRec1[3][1]', 1, 41, []);
+  r := AddArrayFmtDef('ArgTStatDynArrayTRec1[4]', '.', '', []); // TODO? typename = array of ...
+  r := AddRecForArrFmtDef('ArgTStatDynArrayTRec1[4][0]', 1, 45, []);
+  r := AddRecForArrFmtDef('ArgTStatDynArrayTRec1[4][1]', 1, 46, []);
+    //TStatDynArrayPRec1  = array [3..5] of array of ^TRecForArray1;
+    //TStatStatArrayTRec1 = array [3..5] of array [3..5] of TRecForArray1;
+    //TStatStatArrayPRec1 = array [3..5] of array [3..5] of ^TRecForArray1;
+    //
+    //TStatArrayTRec2     = array [3..5] of TRecForArray4;
+    //TStatArrayPRec2     = array [3..5] of ^TRecForArray4;
+    //TStatArrayPPRec2    = array [3..5] of ^PRecForArray4; // double pointer
+    //TStatDynArrayTRec2  = array [3..5] of array of TRecForArray2;
+    //TStatDynArrayPRec2  = array [3..5] of array of ^TRecForArray2;
+    //TStatStatArrayTRec2 = array [3..5] of array [3..5] of TRecForArray2;
+    //TStatStatArrayPRec2 = array [3..5] of array [3..5] of ^TRecForArray2;
+    {%endregion STAT ARRAY (norm)}
+
+    {%region STAT ARRAY (VAR)}
+    //TStatArrayTRec1     = array [3..5] of TRecForArray3;
+  r := AddArrayFmtDef('VArgTStatArrayTRec1', '.', 'TStatArrayTRec1', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddRecForArrFmtDef('VArgTStatArrayTRec1[3]', 3, 50, []);
+  r := AddRecForArrFmtDef('VArgTStatArrayTRec1[4]', 3, 51, []);
+    //TStatArrayPRec1     = array [3..5] of ^TRecForArray3;
+  r := AddArrayFmtDef('VArgTStatArrayPRec1', '.', 'TStatArrayPRec1', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddPointerFmtDef  ('VArgTStatArrayPRec1[3]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('VArgTStatArrayPRec1[3]^', 3, 50, []);
+  r := AddPointerFmtDef  ('VArgTStatArrayPRec1[4]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('VArgTStatArrayPRec1[4]^', 3, 51, []);
+    //TStatDynArrayTRec1  = array [3..5] of array of TRecForArray1;
+  r := AddArrayFmtDef('VArgTStatDynArrayTRec1', '.', 'TStatDynArrayTRec1', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddArrayFmtDef('VArgTStatDynArrayTRec1[3]', '.', '', []); // TODO? typename = array of ...
+  r := AddRecForArrFmtDef('VArgTStatDynArrayTRec1[3][0]', 1, 40, []);
+  r := AddRecForArrFmtDef('VArgTStatDynArrayTRec1[3][1]', 1, 41, []);
+  r := AddArrayFmtDef('VArgTStatDynArrayTRec1[4]', '.', '', []); // TODO? typename = array of ...
+  r := AddRecForArrFmtDef('VArgTStatDynArrayTRec1[4][0]', 1, 45, []);
+  r := AddRecForArrFmtDef('VArgTStatDynArrayTRec1[4][1]', 1, 46, []);
+    //TStatDynArrayPRec1  = array [3..5] of array of ^TRecForArray1;
+    //TStatStatArrayTRec1 = array [3..5] of array [3..5] of TRecForArray1;
+    //TStatStatArrayPRec1 = array [3..5] of array [3..5] of ^TRecForArray1;
+    //
+    //TStatArrayTRec2     = array [3..5] of TRecForArray4;
+    //TStatArrayPRec2     = array [3..5] of ^TRecForArray4;
+    //TStatArrayPPRec2    = array [3..5] of ^PRecForArray4; // double pointer
+    //TStatDynArrayTRec2  = array [3..5] of array of TRecForArray2;
+    //TStatDynArrayPRec2  = array [3..5] of array of ^TRecForArray2;
+    //TStatStatArrayTRec2 = array [3..5] of array [3..5] of TRecForArray2;
+    //TStatStatArrayPRec2 = array [3..5] of array [3..5] of ^TRecForArray2;
+    {%endregion STAT ARRAY (VAR)}
+  {%endregion STAT ARRAY}
+
+
+  {%region DYN ARRAY of named arrays}
+    {%region DYN ARRAY of named arrays (norm)}
+    //TDynDynTRec1Array   = array of TDynArrayTRec1;
+  r := AddArrayFmtDef('ArgTDynDynTRec1Array', '.', 'TDynDynTRec1Array', []);
+  r := AddArrayFmtDef('ArgTDynDynTRec1Array[0]', '.', 'TDynArrayTRec1', []);
+  r := AddRecForArrFmtDef('ArgTDynDynTRec1Array[0][0]', 3, 80, []);
+  r := AddRecForArrFmtDef('ArgTDynDynTRec1Array[0][1]', 3, 81, []);
+  r := AddArrayFmtDef('ArgTDynDynTRec1Array[1]', '.', 'TDynArrayTRec1', []);
+  r := AddRecForArrFmtDef('ArgTDynDynTRec1Array[1][0]', 3, 85, []);
+  r := AddRecForArrFmtDef('ArgTDynDynTRec1Array[1][1]', 3, 86, []);
+    //TDynDynPRec1Array   = array of TDynArrayPRec1;
+  r := AddArrayFmtDef('ArgTDynDynPRec1Array', '.', 'TDynDynPRec1Array', []);
+  r := AddArrayFmtDef('ArgTDynDynPRec1Array[0]', '.', 'TDynArrayPRec1', []);
+  r := AddPointerFmtDef  ('ArgTDynDynPRec1Array[0][0]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('ArgTDynDynPRec1Array[0][0]^', 3, 80, []);
+  r := AddPointerFmtDef  ('ArgTDynDynPRec1Array[0][1]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('ArgTDynDynPRec1Array[0][1]^', 3, 81, []);
+  r := AddArrayFmtDef('ArgTDynDynPRec1Array[1]', '.', 'TDynArrayPRec1', []);
+  r := AddPointerFmtDef  ('ArgTDynDynPRec1Array[1][0]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('ArgTDynDynPRec1Array[1][0]^', 3, 85, []);
+  r := AddPointerFmtDef  ('ArgTDynDynPRec1Array[1][1]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('ArgTDynDynPRec1Array[1][1]^', 3, 86, []);
+    //TDynStatTRec1Array  = array of TStatArrayTRec1;
+  r := AddArrayFmtDef('ArgTDynStatTRec1Array', '.', 'TDynStatTRec1Array', []);
+  r := AddArrayFmtDef('ArgTDynStatTRec1Array[0]', '.', 'TStatArrayTRec1', []);
+  r := AddRecForArrFmtDef('ArgTDynStatTRec1Array[0][3]', 3, 70, []);
+  r := AddRecForArrFmtDef('ArgTDynStatTRec1Array[0][4]', 3, 71, []);
+  r := AddArrayFmtDef('ArgTDynStatTRec1Array[1]', '.', 'TStatArrayTRec1', []);
+  r := AddRecForArrFmtDef('ArgTDynStatTRec1Array[1][3]', 3, 75, []);
+  r := AddRecForArrFmtDef('ArgTDynStatTRec1Array[1][4]', 3, 76, []);
+    //TDynStatPRec1Array  = array of TStatArrayPRec1;
+  r := AddArrayFmtDef('ArgTDynStatPRec1Array', '.', 'TDynStatPRec1Array', []);
+  r := AddArrayFmtDef('ArgTDynStatPRec1Array[0]', '.', 'TStatArrayPRec1', []);
+  r := AddPointerFmtDef  ('ArgTDynStatPRec1Array[0][3]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('ArgTDynStatPRec1Array[0][3]^', 3, 70, []);
+  r := AddPointerFmtDef  ('ArgTDynStatPRec1Array[0][4]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('ArgTDynStatPRec1Array[0][4]^', 3, 71, []);
+  r := AddArrayFmtDef('ArgTDynStatPRec1Array[1]', '.', 'TStatArrayPRec1', []);
+  r := AddPointerFmtDef  ('ArgTDynStatPRec1Array[1][3]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('ArgTDynStatPRec1Array[1][3]^', 3, 75, []);
+  r := AddPointerFmtDef  ('ArgTDynStatPRec1Array[1][4]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('ArgTDynStatPRec1Array[1][4]^', 3, 76, []);
+    //TDynPDynTRec1Array   = array of ^TDynArrayTRec1;
+  r := AddArrayFmtDef('ArgTDynPDynTRec1Array', '.', 'TDynPDynTRec1Array', []);
+  r := AddPointerFmtDef  ('ArgTDynPDynTRec1Array[0]', '(\^T|P)DynArrayTRec1', '^(\^T|P)DynArrayTRec1$', [fTpMtch]);
+  r := AddArrayFmtDef('ArgTDynPDynTRec1Array[0]^', '.', 'TDynArrayTRec1', []);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1Array[0]^[0]', 3, 80, []);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1Array[0]^[1]', 3, 81, []);
+  r := AddPointerFmtDef  ('ArgTDynPDynTRec1Array[1]', '(\^T|P)DynArrayTRec1', '^(\^T|P)DynArrayTRec1$', [fTpMtch]);
+  r := AddArrayFmtDef('ArgTDynPDynTRec1Array[1]^', '.', 'TDynArrayTRec1', []);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1Array[1]^[0]', 3, 85, []);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1Array[1]^[1]', 3, 86, []);
+    //TDynPStatTRec1Array  = array of ^TStatArrayTRec1;
+  r := AddArrayFmtDef('ArgTDynPStatTRec1Array', '.', 'TDynPStatTRec1Array', []);
+  r := AddPointerFmtDef  ('ArgTDynPStatTRec1Array[0]', '(\^T|P)StatArrayTRec1', '(\^T|P)StatArrayTRec1$', [fTpMtch]);
+  r := AddArrayFmtDef('ArgTDynPStatTRec1Array[0]^', '.', 'TStatArrayTRec1', []);
+  r := AddRecForArrFmtDef('ArgTDynPStatTRec1Array[0]^[3]', 3, 70, []);
+  r := AddRecForArrFmtDef('ArgTDynPStatTRec1Array[0]^[4]', 3, 71, []);
+  r := AddPointerFmtDef  ('ArgTDynPStatTRec1Array[1]', '(\^T|P)StatArrayTRec1', '(\^T|P)StatArrayTRec1$', [fTpMtch]);
+  r := AddArrayFmtDef('ArgTDynPStatTRec1Array[1]^', '.', 'TStatArrayTRec1', []);
+  r := AddRecForArrFmtDef('ArgTDynPStatTRec1Array[1]^[3]', 3, 75, []);
+  r := AddRecForArrFmtDef('ArgTDynPStatTRec1Array[1]^[4]', 3, 76, []);
+    //TDynPDynTRec1NPArray = array of ^TDynArrayTRec1NP;
+  r := AddArrayFmtDef('ArgTDynPDynTRec1NPArray', '.', 'TDynPDynTRec1NPArray', []);
+  r := AddPointerFmtDef  ('ArgTDynPDynTRec1NPArray[0]', '\^TDynArrayTRec1NP', '^TDynArrayTRec1NP', []);
+  r := AddArrayFmtDef('ArgTDynPDynTRec1NPArray[0]^', '.', 'TDynArrayTRec1NP', []);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1NPArray[0]^[0]', 3, 500, []);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1NPArray[0]^[1]', 3, 501, []);
+  r := AddPointerFmtDef  ('ArgTDynPDynTRec1NPArray[1]', '\^TDynArrayTRec1NP', '^TDynArrayTRec1NP', []);
+  r := AddArrayFmtDef('ArgTDynPDynTRec1NPArray[1]^', '.', 'TDynArrayTRec1NP', []);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1NPArray[1]^[0]', 3, 505, []);
+  r := AddRecForArrFmtDef('ArgTDynPDynTRec1NPArray[1]^[1]', 3, 506, []);
+    //TDynPStatTRec1NPArray= array of ^TStatArrayTRec1NP;
+  r := AddArrayFmtDef('ArgTDynPStatTRec1NPArray', '.', 'TDynPStatTRec1NPArray', []);
+  r := AddPointerFmtDef  ('ArgTDynPStatTRec1NPArray[0]', '\^TStatArrayTRec1NP', '^TStatArrayTRec1NP', []);
+  r := AddArrayFmtDef('ArgTDynPStatTRec1NPArray[0]^', '.', 'TStatArrayTRec1NP', []);
+  r := AddRecForArrFmtDef('ArgTDynPStatTRec1NPArray[0]^[3]', 3, 510, []);
+  r := AddRecForArrFmtDef('ArgTDynPStatTRec1NPArray[0]^[4]', 3, 511, []);
+  r := AddPointerFmtDef  ('ArgTDynPStatTRec1NPArray[1]', '\^TStatArrayTRec1NP', '^TStatArrayTRec1NP', []);
+  r := AddArrayFmtDef('ArgTDynPStatTRec1NPArray[1]^', '.', 'TStatArrayTRec1NP', []);
+  r := AddRecForArrFmtDef('ArgTDynPStatTRec1NPArray[1]^[3]', 3, 515, []);
+  r := AddRecForArrFmtDef('ArgTDynPStatTRec1NPArray[1]^[4]', 3, 516, []);
+    //
+    //TDynDynTRec2Array   = array of TDynArrayTRec2;
+    //TDynDynPrec2Array   = array of TDynArrayPRec2;
+    //TDynDynPPrec2Array  = array of TDynArrayPPRec2; // double pointer
+    //TDynStatTRec2Array  = array of TStatArrayTRec2;
+    //TDynStatPRec2Array  = array of TStatArrayPRec2;
+    //TDynStatPPRec2Array = array of TStatArrayPPRec2; // double pointer
+    {%endregion DYN ARRAY of named arrays (norm)}
+
+    {%region DYN ARRAY of named arrays (VAR)}
+      // dyn arrays of named arrays  (VAR)
+    //TDynDynTRec1Array   = array of TDynArrayTRec1;
+  r := AddArrayFmtDef('VArgTDynDynTRec1Array', '.', 'TDynDynTRec1Array', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddArrayFmtDef('VArgTDynDynTRec1Array[0]', '.', 'TDynArrayTRec1', []);
+  r := AddRecForArrFmtDef('VArgTDynDynTRec1Array[0][0]', 3, 80, []);
+  r := AddRecForArrFmtDef('VArgTDynDynTRec1Array[0][1]', 3, 81, []);
+  r := AddArrayFmtDef('VArgTDynDynTRec1Array[1]', '.', 'TDynArrayTRec1', []);
+  r := AddRecForArrFmtDef('VArgTDynDynTRec1Array[1][0]', 3, 85, []);
+  r := AddRecForArrFmtDef('VArgTDynDynTRec1Array[1][1]', 3, 86, []);
+    //TDynDynPRec1Array   = array of TDynArrayPRec1;
+  r := AddArrayFmtDef('VArgTDynDynPRec1Array', '.', 'TDynDynPRec1Array', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddArrayFmtDef('VArgTDynDynPRec1Array[0]', '.', 'TDynArrayPRec1', []);
+  r := AddPointerFmtDef  ('VArgTDynDynPRec1Array[0][0]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('VArgTDynDynPRec1Array[0][0]^', 3, 80, []);
+  r := AddPointerFmtDef  ('VArgTDynDynPRec1Array[0][1]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('VArgTDynDynPRec1Array[0][1]^', 3, 81, []);
+  r := AddArrayFmtDef('VArgTDynDynPRec1Array[1]', '.', 'TDynArrayPRec1', []);
+  r := AddPointerFmtDef  ('VArgTDynDynPRec1Array[1][0]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('VArgTDynDynPRec1Array[1][0]^', 3, 85, []);
+  r := AddPointerFmtDef  ('VArgTDynDynPRec1Array[1][1]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('VArgTDynDynPRec1Array[1][1]^', 3, 86, []);
+    //TDynStatTRec1Array  = array of TStatArrayTRec1;
+  r := AddArrayFmtDef('VArgTDynStatTRec1Array', '.', 'TDynStatTRec1Array', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddArrayFmtDef('VArgTDynStatTRec1Array[0]', '.', 'TStatArrayTRec1', []);
+  r := AddRecForArrFmtDef('VArgTDynStatTRec1Array[0][3]', 3, 70, []);
+  r := AddRecForArrFmtDef('VArgTDynStatTRec1Array[0][4]', 3, 71, []);
+  r := AddArrayFmtDef('VArgTDynStatTRec1Array[1]', '.', 'TStatArrayTRec1', []);
+  r := AddRecForArrFmtDef('VArgTDynStatTRec1Array[1][3]', 3, 75, []);
+  r := AddRecForArrFmtDef('VArgTDynStatTRec1Array[1][4]', 3, 76, []);
+    //TDynStatPRec1Array  = array of TStatArrayPRec1;
+  r := AddArrayFmtDef('VArgTDynStatPRec1Array', '.', 'TDynStatPRec1Array', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddArrayFmtDef('VArgTDynStatPRec1Array[0]', '.', 'TStatArrayPRec1', []);
+  r := AddPointerFmtDef  ('VArgTDynStatPRec1Array[0][3]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('VArgTDynStatPRec1Array[0][3]^', 3, 70, []);
+  r := AddPointerFmtDef  ('VArgTDynStatPRec1Array[0][4]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('VArgTDynStatPRec1Array[0][4]^', 3, 71, []);
+  r := AddArrayFmtDef('VArgTDynStatPRec1Array[1]', '.', 'TStatArrayPRec1', []);
+  r := AddPointerFmtDef  ('VArgTDynStatPRec1Array[1][3]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('VArgTDynStatPRec1Array[1][3]^', 3, 75, []);
+  r := AddPointerFmtDef  ('VArgTDynStatPRec1Array[1][4]', '\^TRecForArray3', '^TRecForArray3', []);
+  r := AddRecForArrFmtDef('VArgTDynStatPRec1Array[1][4]^', 3, 76, []);
+    //TDynPDynTRec1Array   = array of ^TDynArrayTRec1;
+  r := AddArrayFmtDef('VArgTDynPDynTRec1Array', '.', 'TDynPDynTRec1Array', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddPointerFmtDef  ('VArgTDynPDynTRec1Array[0]', '(\^T|P)DynArrayTRec1', '^(\^T|P)DynArrayTRec1$', [fTpMtch]);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddArrayFmtDef('VArgTDynPDynTRec1Array[0]^', '.', 'TDynArrayTRec1', []);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1Array[0]^[0]', 3, 80, []);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1Array[0]^[1]', 3, 81, []);
+  r := AddPointerFmtDef  ('VArgTDynPDynTRec1Array[1]', '(\^T|P)DynArrayTRec1', '^(\^T|P)DynArrayTRec1$', [fTpMtch]);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddArrayFmtDef('VArgTDynPDynTRec1Array[1]^', '.', 'TDynArrayTRec1', []);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1Array[1]^[0]', 3, 85, []);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1Array[1]^[1]', 3, 86, []);
+    //TDynPStatTRec1Array  = array of ^TStatArrayTRec1;
+  r := AddArrayFmtDef('VArgTDynPStatTRec1Array', '.', 'TDynPStatTRec1Array', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddPointerFmtDef  ('VArgTDynPStatTRec1Array[0]', '(\^T|P)StatArrayTRec1', '(\^T|P)StatArrayTRec1$', [fTpMtch]);
+  r := AddArrayFmtDef('VArgTDynPStatTRec1Array[0]^', '.', 'TStatArrayTRec1', []);
+  r := AddRecForArrFmtDef('VArgTDynPStatTRec1Array[0]^[3]', 3, 70, []);
+  r := AddRecForArrFmtDef('VArgTDynPStatTRec1Array[0]^[4]', 3, 71, []);
+  r := AddPointerFmtDef  ('VArgTDynPStatTRec1Array[1]', '(\^T|P)StatArrayTRec1', '(\^T|P)StatArrayTRec1$', [fTpMtch]);
+  r := AddArrayFmtDef('VArgTDynPStatTRec1Array[1]^', '.', 'TStatArrayTRec1', []);
+  r := AddRecForArrFmtDef('VArgTDynPStatTRec1Array[1]^[3]', 3, 75, []);
+  r := AddRecForArrFmtDef('VArgTDynPStatTRec1Array[1]^[4]', 3, 76, []);
+    //TDynPDynTRec1NPArray = array of ^TDynArrayTRec1NP;
+  r := AddArrayFmtDef('VArgTDynPDynTRec1NPArray', '.', 'TDynPDynTRec1NPArray', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddPointerFmtDef  ('VArgTDynPDynTRec1NPArray[0]', '\^TDynArrayTRec1NP', '^TDynArrayTRec1NP', []);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddArrayFmtDef('VArgTDynPDynTRec1NPArray[0]^', '.', 'TDynArrayTRec1NP', []);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1NPArray[0]^[0]', 3, 500, []);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1NPArray[0]^[1]', 3, 501, []);
+  r := AddPointerFmtDef  ('VArgTDynPDynTRec1NPArray[1]', '\^TDynArrayTRec1NP', '^TDynArrayTRec1NP', []);
+  if (DebuggerInfo.Version > 0) and (DebuggerInfo.Version < 070000) then UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddArrayFmtDef('VArgTDynPDynTRec1NPArray[1]^', '.', 'TDynArrayTRec1NP', []);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1NPArray[1]^[0]', 3, 505, []);
+  r := AddRecForArrFmtDef('VArgTDynPDynTRec1NPArray[1]^[1]', 3, 506, []);
+    //TDynPStatTRec1NPArray= array of ^TStatArrayTRec1NP;
+  r := AddArrayFmtDef('VArgTDynPStatTRec1NPArray', '.', 'TDynPStatTRec1NPArray', []);
+     UpdResMinFpc(r, stDwarf2All, 020600);
+  r := AddPointerFmtDef  ('VArgTDynPStatTRec1NPArray[0]', '\^TStatArrayTRec1NP', '^TStatArrayTRec1NP', []);
+  r := AddArrayFmtDef('VArgTDynPStatTRec1NPArray[0]^', '.', 'TStatArrayTRec1NP', []);
+  r := AddRecForArrFmtDef('VArgTDynPStatTRec1NPArray[0]^[3]', 3, 510, []);
+  r := AddRecForArrFmtDef('VArgTDynPStatTRec1NPArray[0]^[4]', 3, 511, []);
+  r := AddPointerFmtDef  ('VArgTDynPStatTRec1NPArray[1]', '\^TStatArrayTRec1NP', '^TStatArrayTRec1NP', []);
+  r := AddArrayFmtDef('VArgTDynPStatTRec1NPArray[1]^', '.', 'TStatArrayTRec1NP', []);
+  r := AddRecForArrFmtDef('VArgTDynPStatTRec1NPArray[1]^[3]', 3, 515, []);
+  r := AddRecForArrFmtDef('VArgTDynPStatTRec1NPArray[1]^[4]', 3, 516, []);
+    //
+    //TDynDynTRec2Array   = array of TDynArrayTRec2;
+    //TDynDynPrec2Array   = array of TDynArrayPRec2;
+    //TDynDynPPrec2Array  = array of TDynArrayPPRec2; // double pointer
+    //TDynStatTRec2Array  = array of TStatArrayTRec2;
+    //TDynStatPRec2Array  = array of TStatArrayPRec2;
+    //TDynStatPPRec2Array = array of TStatArrayPPRec2; // double pointer
+    {%endregion DYN ARRAY of named arrays (VAR)}
+  {%endregion DYN ARRAY of named arrays}
+
+
+
+
+  //r := AddArrayFmtDef('Arg', '.', 'T', []);
+  //r := AddRecForArrFmtDef('Arg [0]', 3, 90, []);
+
+
+      // stat arrays of named arrays
+
 end;
 
 procedure TTestWatches.AddExpectBreakFooMixInfo;

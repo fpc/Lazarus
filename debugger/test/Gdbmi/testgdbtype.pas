@@ -671,6 +671,48 @@ begin
   AssertTrue(n + ' Needexp after dyn array', not v);
   AssertEquals(n + ' text after dyn array', 'abc^[123]+1', b.Text);
 
+  // multi index
+
+  n := 'abc[123][456]';
+  InitExpr(n, b, r, v);
+  AssertTrue(n + ' ptype 1', (r <> nil) and (r^.Request = 'ptype abc'));
+  r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFooA)');
+  ContinueExpr(b, r, v);
+  AssertTrue(n + ' Needexp after dyn array 1', v);
+  //AssertTrue(n + ' ptype 2', (r <> nil) and (r^.Request = 'ptype TFooA(abc^[123])'));
+  AssertTrue(n + ' ptype 2', (r <> nil) and (r^.Request = 'ptype abc^[123]'));
+  r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFoo)');
+  ContinueExpr(b, r, v);
+  AssertTrue(n + ' Needexp after dyn array 2', not v);
+  //AssertEquals(n + ' text after dyn array 2', 'TFooA(abc^[123])^[456]', b.Text);
+  AssertEquals(n + ' text after dyn array 2', 'abc^[123]^[456]', b.Text);
+
+  n := 'abc[123][456]';
+  InitExpr(n, b, r, v);
+  r^.Result := ParseTypeFromGdb('type = array [0..1000] of TFooA');
+  ContinueExpr(b, r, v);
+  AssertTrue(n + ' Needexp after stat array 1', v);
+  //AssertTrue(n + ' ptype 2a', (r <> nil) and (r^.Request = 'ptype TFooA(abc[123])'));
+  AssertTrue(n + ' ptype 2a', (r <> nil) and (r^.Request = 'ptype abc[123]'));
+  r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFoo)');
+  ContinueExpr(b, r, v);
+  AssertTrue(n + ' Needexp after stat,dyn array 2', not v);
+  //AssertEquals(n + ' text after dyn array 2', 'TFooA(abc[123])^[456]', b.Text);
+  AssertEquals(n + ' text after dyn array 2', 'abc[123]^[456]', b.Text);
+
+  n := 'abc[123][456]';
+  InitExpr(n, b, r, v);
+  r^.Result := ParseTypeFromGdb('type = ^(array [0..-1] of TFooA)');
+  ContinueExpr(b, r, v);
+  AssertTrue(n + ' Needexp after dyn array 1', v);
+  //AssertTrue(n + ' ptype 2b', (r <> nil) and (r^.Request = 'ptype TFooA(abc^[123])'));
+  AssertTrue(n + ' ptype 2b', (r <> nil) and (r^.Request = 'ptype abc^[123]'));
+  r^.Result := ParseTypeFromGdb('type = array [0..1000] of TFoo');
+  ContinueExpr(b, r, v);
+  AssertTrue(n + ' Needexp after dyn,stat array 2', not v);
+  //AssertEquals(n + ' text after dyn array 2', 'TFooA(abc^[123])[456]', b.Text);
+  AssertEquals(n + ' text after dyn array 2', 'abc^[123][456]', b.Text);
+
 
 
 

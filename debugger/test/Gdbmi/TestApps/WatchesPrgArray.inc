@@ -73,6 +73,7 @@
 
       // dyn arrays
       TDynArrayTRec1      = array of TRecForArray3;
+        TDynArrayTRec1NP  = array of TRecForArray3; // for use as name-less pointer to this
       TDynArrayPRec1      = array of ^TRecForArray3;
       TDynDynArrayTRec1   = array of array of TRecForArray1;
       TDynDynArrayPRec1   = array of array of ^TRecForArray1;
@@ -90,6 +91,7 @@
 
       // stat arrays
       TStatArrayTRec1     = array [3..5] of TRecForArray3;
+        TStatArrayTRec1NP = array [3..5] of TRecForArray3; // for use as name-less pointer to this
       TStatArrayPRec1     = array [3..5] of ^TRecForArray3;
       TStatDynArrayTRec1  = array [3..5] of array of TRecForArray1;
       TStatDynArrayPRec1  = array [3..5] of array of ^TRecForArray1;
@@ -107,11 +109,13 @@
 
       // dyn arrays of named arrays
       TDynDynTRec1Array   = array of TDynArrayTRec1;
-      TDynDynPrec1Array   = array of TDynArrayPRec1;
+      TDynDynPRec1Array   = array of TDynArrayPRec1;
       TDynStatTRec1Array  = array of TStatArrayTRec1;
       TDynStatPRec1Array  = array of TStatArrayPRec1;
       TDynPDynTRec1Array   = array of ^TDynArrayTRec1;
       TDynPStatTRec1Array  = array of ^TStatArrayTRec1;
+      TDynPDynTRec1NPArray = array of ^TDynArrayTRec1NP;
+      TDynPStatTRec1NPArray= array of ^TStatArrayTRec1NP;
 
       TDynDynTRec2Array   = array of TDynArrayTRec2;
       TDynDynPrec2Array   = array of TDynArrayPRec2;
@@ -121,19 +125,19 @@
       TDynStatPPRec2Array = array of TStatArrayPPRec2; // double pointer
 
       // stat arrays of named arrays
-      TStatDynTRec1Array   = array of TDynArrayTRec1;
-      TStatDynPrec1Array   = array of TDynArrayPRec1;
-      TStatStatTRec1Array  = array of TStatArrayTRec1;
-      TStatStatPRec1Array  = array of TStatArrayPRec1;
-      TStatPDynTRec1Array   = array of ^TDynArrayTRec1;
-      TStatPStatTRec1Array  = array of ^TStatArrayTRec1;
+      TStatDynTRec1Array   = array [3..5] of TDynArrayTRec1;
+      TStatDynPrec1Array   = array [3..5] of TDynArrayPRec1;
+      TStatStatTRec1Array  = array [3..5] of TStatArrayTRec1;
+      TStatStatPRec1Array  = array [3..5] of TStatArrayPRec1;
+      TStatPDynTRec1Array   = array [3..5] of ^TDynArrayTRec1;// TODO name-less pointer to an array [3..5]
+      TStatPStatTRec1Array  = array [3..5] of ^TStatArrayTRec1;
 
-      TStatDynTRec2Array   = array of TDynArrayTRec2;
-      TStatDynPrec2Array   = array of TDynArrayPRec2;
-      TStatDynPPrec2Array  = array of TDynArrayPPRec2; // double pointer
-      TStatStatTRec2Array  = array of TStatArrayTRec2;
-      TStatStatPRec2Array  = array of TStatArrayPRec2;
-      TStatStatPPRec2Array = array of TStatArrayPPRec2; // double pointer
+      TStatDynTRec2Array   = array [3..5] of TDynArrayTRec2;
+      TStatDynPrec2Array   = array [3..5] of TDynArrayPRec2;
+      TStatDynPPrec2Array  = array [3..5] of TDynArrayPPRec2; // double pointer
+      TStatStatTRec2Array  = array [3..5] of TStatArrayTRec2;
+      TStatStatPRec2Array  = array [3..5] of TStatArrayPRec2;
+      TStatStatPPRec2Array = array [3..5] of TStatArrayPPRec2; // double pointer
 
 
 // POINTER
@@ -179,6 +183,8 @@
       PDynStatPRec1Array  = ^TDynStatPRec1Array;
       PDynPDynTRec1Array  = ^TDynPDynTRec1Array;
       PDynPStatTRec1Array = ^TDynPStatTRec1Array;
+      PDynPDynTRec1NPArray = ^TDynPDynTRec1NPArray;
+      PDynPStatTRec1NPArray= ^TDynPStatTRec1NPArray;
 
       PDynDynTRec2Array   = ^TDynDynTRec2Array;
       PDynDynPrec2Array   = ^TDynDynPrec2Array;
@@ -219,134 +225,138 @@
     //procedure FooFunc(
 
       // dyn arrays
-      ArgTDynArrayTRec1: TDynArrayTRec1;            VArgTDynArrayTRec1: TDynArrayTRec1;
-      ArgTDynArrayPRec1: TDynArrayPRec1;            VArgTDynArrayPRec1: TDynArrayPRec1;
-      ArgTDynDynArrayTRec1: TDynDynArrayTRec1;      VArgTDynDynArrayTRec1: TDynDynArrayTRec1;
-      ArgTDynDynArrayPRec1: TDynDynArrayPRec1;      VArgTDynDynArrayPRec1: TDynDynArrayPRec1;
-      ArgTDynStatArrayTRec1: TDynStatArrayTRec1;    VArgTDynStatArrayTRec1: TDynStatArrayTRec1;
-      ArgTDynStatArrayPRec1: TDynStatArrayPRec1;    VArgTDynStatArrayPRec1: TDynStatArrayPRec1;
+      ArgTDynArrayTRec1: TDynArrayTRec1;            var VArgTDynArrayTRec1: TDynArrayTRec1;
+      ArgTDynArrayPRec1: TDynArrayPRec1;            var VArgTDynArrayPRec1: TDynArrayPRec1;
+      ArgTDynDynArrayTRec1: TDynDynArrayTRec1;      var VArgTDynDynArrayTRec1: TDynDynArrayTRec1;
+      ArgTDynDynArrayPRec1: TDynDynArrayPRec1;      var VArgTDynDynArrayPRec1: TDynDynArrayPRec1;
+      ArgTDynStatArrayTRec1: TDynStatArrayTRec1;    var VArgTDynStatArrayTRec1: TDynStatArrayTRec1;
+      ArgTDynStatArrayPRec1: TDynStatArrayPRec1;    var VArgTDynStatArrayPRec1: TDynStatArrayPRec1;
 
-      ArgTDynArrayTRec2: TDynArrayTRec2;            VArgTDynArrayTRec2: TDynArrayTRec2;
-      ArgTDynArrayPRec2: TDynArrayPRec2;            VArgTDynArrayPRec2: TDynArrayPRec2;
-      ArgTDynArrayPPRec2: TDynArrayPPRec2;          VArgTDynArrayPPRec2: TDynArrayPPRec2;
-      ArgTDynDynArrayTRec2: TDynDynArrayTRec2;      VArgTDynDynArrayTRec2: TDynDynArrayTRec2;
-      ArgTDynDynArrayPRec2: TDynDynArrayPRec2;      VArgTDynDynArrayPRec2: TDynDynArrayPRec2;
-      ArgTDynStatArrayTRec2: TDynStatArrayTRec2;    VArgTDynStatArrayTRec2: TDynStatArrayTRec2;
-      ArgTDynStatArrayPRec2: TDynStatArrayPRec2;    VArgTDynStatArrayPRec2: TDynStatArrayPRec2;
+      ArgTDynArrayTRec2: TDynArrayTRec2;            var VArgTDynArrayTRec2: TDynArrayTRec2;
+      ArgTDynArrayPRec2: TDynArrayPRec2;            var VArgTDynArrayPRec2: TDynArrayPRec2;
+      ArgTDynArrayPPRec2: TDynArrayPPRec2;          var VArgTDynArrayPPRec2: TDynArrayPPRec2;
+      ArgTDynDynArrayTRec2: TDynDynArrayTRec2;      var VArgTDynDynArrayTRec2: TDynDynArrayTRec2;
+      ArgTDynDynArrayPRec2: TDynDynArrayPRec2;      var VArgTDynDynArrayPRec2: TDynDynArrayPRec2;
+      ArgTDynStatArrayTRec2: TDynStatArrayTRec2;    var VArgTDynStatArrayTRec2: TDynStatArrayTRec2;
+      ArgTDynStatArrayPRec2: TDynStatArrayPRec2;    var VArgTDynStatArrayPRec2: TDynStatArrayPRec2;
 
 
       // stat arrays
-      ArgTStatArrayTRec1: TStatArrayTRec1;          VArgTStatArrayTRec1: TStatArrayTRec1;
-      ArgTStatArrayPRec1: TStatArrayPRec1;          VArgTStatArrayPRec1: TStatArrayPRec1;
-      ArgTStatDynArrayTRec1: TStatDynArrayTRec1;    VArgTStatDynArrayTRec1: TStatDynArrayTRec1;
-      ArgTStatDynArrayPRec1: TStatDynArrayPRec1;    VArgTStatDynArrayPRec1: TStatDynArrayPRec1;
-      ArgTStatStatArrayTRec1: TStatStatArrayTRec1;  VArgTStatStatArrayTRec1: TStatStatArrayTRec1;
-      ArgTStatStatArrayPRec1: TStatStatArrayPRec1;  VArgTStatStatArrayPRec1: TStatStatArrayPRec1;
+      ArgTStatArrayTRec1: TStatArrayTRec1;          var VArgTStatArrayTRec1: TStatArrayTRec1;
+      ArgTStatArrayPRec1: TStatArrayPRec1;          var VArgTStatArrayPRec1: TStatArrayPRec1;
+      ArgTStatDynArrayTRec1: TStatDynArrayTRec1;    var VArgTStatDynArrayTRec1: TStatDynArrayTRec1;
+      ArgTStatDynArrayPRec1: TStatDynArrayPRec1;    var VArgTStatDynArrayPRec1: TStatDynArrayPRec1;
+      ArgTStatStatArrayTRec1: TStatStatArrayTRec1;  var VArgTStatStatArrayTRec1: TStatStatArrayTRec1;
+      ArgTStatStatArrayPRec1: TStatStatArrayPRec1;  var VArgTStatStatArrayPRec1: TStatStatArrayPRec1;
 
-      ArgTStatArrayTRec2: TStatArrayTRec2;          VArgTStatArrayTRec2: TStatArrayTRec2;
-      ArgTStatArrayPRec2: TStatArrayPRec2;          VArgTStatArrayPRec2: TStatArrayPRec2;
-      ArgTStatArrayPPRec2: TStatArrayPPRec2;        VArgTStatArrayPPRec2: TStatArrayPPRec2;
-      ArgTStatDynArrayTRec2: TStatDynArrayTRec2;    VArgTStatDynArrayTRec2: TStatDynArrayTRec2;
-      ArgTStatDynArrayPRec2: TStatDynArrayPRec2;    VArgTStatDynArrayPRec2: TStatDynArrayPRec2;
-      ArgTStatStatArrayTRec2: TStatStatArrayTRec2;  VArgTStatStatArrayTRec2: TStatStatArrayTRec2;
-      ArgTStatStatArrayPRec2: TStatStatArrayPRec2;  VArgTStatStatArrayPRec2: TStatStatArrayPRec2;
+      ArgTStatArrayTRec2: TStatArrayTRec2;          var VArgTStatArrayTRec2: TStatArrayTRec2;
+      ArgTStatArrayPRec2: TStatArrayPRec2;          var VArgTStatArrayPRec2: TStatArrayPRec2;
+      ArgTStatArrayPPRec2: TStatArrayPPRec2;        var VArgTStatArrayPPRec2: TStatArrayPPRec2;
+      ArgTStatDynArrayTRec2: TStatDynArrayTRec2;    var VArgTStatDynArrayTRec2: TStatDynArrayTRec2;
+      ArgTStatDynArrayPRec2: TStatDynArrayPRec2;    var VArgTStatDynArrayPRec2: TStatDynArrayPRec2;
+      ArgTStatStatArrayTRec2: TStatStatArrayTRec2;  var VArgTStatStatArrayTRec2: TStatStatArrayTRec2;
+      ArgTStatStatArrayPRec2: TStatStatArrayPRec2;  var VArgTStatStatArrayPRec2: TStatStatArrayPRec2;
 
 
       // dyn arrays of named arrays
-      ArgTDynDynTRec1Array: TDynDynTRec1Array;      VArgTDynDynTRec1Array: TDynDynTRec1Array;
-      ArgTDynDynPrec1Array: TDynDynPrec1Array;      VArgTDynDynPrec1Array: TDynDynPrec1Array;
-      ArgTDynStatTRec1Array: TDynStatTRec1Array;    VArgTDynStatTRec1Array: TDynStatTRec1Array;
-      ArgTDynStatPRec1Array: TDynStatPRec1Array;    VArgTDynStatPRec1Array: TDynStatPRec1Array;
-      ArgTDynPDynTRec1Array: TDynPDynTRec1Array;     VArgTDynPDynTRec1Array: TDynPDynTRec1Array;
-      ArgTDynPStatTRec1Array: TDynPStatTRec1Array;   VArgTDynPStatTRec1Array: TDynPStatTRec1Array;
+      ArgTDynDynTRec1Array: TDynDynTRec1Array;      var VArgTDynDynTRec1Array: TDynDynTRec1Array;
+      ArgTDynDynPrec1Array: TDynDynPrec1Array;      var VArgTDynDynPrec1Array: TDynDynPrec1Array;
+      ArgTDynStatTRec1Array: TDynStatTRec1Array;    var VArgTDynStatTRec1Array: TDynStatTRec1Array;
+      ArgTDynStatPRec1Array: TDynStatPRec1Array;    var VArgTDynStatPRec1Array: TDynStatPRec1Array;
+      ArgTDynPDynTRec1Array: TDynPDynTRec1Array;     var VArgTDynPDynTRec1Array: TDynPDynTRec1Array;
+      ArgTDynPStatTRec1Array: TDynPStatTRec1Array;   var VArgTDynPStatTRec1Array: TDynPStatTRec1Array;
+      ArgTDynPDynTRec1NPArray: TDynPDynTRec1NPArray; var VArgTDynPDynTRec1NPArray: TDynPDynTRec1NPArray;
+      ArgTDynPStatTRec1NPArray: TDynPStatTRec1NPArray;var VArgTDynPStatTRec1NPArray: TDynPStatTRec1NPArray;
 
-      ArgTDynDynTRec2Array: TDynDynTRec2Array;      VArgTDynDynTRec2Array: TDynDynTRec2Array;
-      ArgTDynDynPrec2Array: TDynDynPrec2Array;      VArgTDynDynPrec2Array: TDynDynPrec2Array;
-      ArgTDynDynPPrec2Array: TDynDynPPrec2Array;    VArgTDynDynPPrec2Array: TDynDynPPrec2Array;
-      ArgTDynStatTRec2Array: TDynStatTRec2Array;    VArgTDynStatTRec2Array: TDynStatTRec2Array;
-      ArgTDynStatPRec2Array: TDynStatPRec2Array;    VArgTDynStatPRec2Array: TDynStatPRec2Array;
-      ArgTDynStatPPRec2Array: TDynStatPPRec2Array;  VArgTDynStatPPRec2Array: TDynStatPPRec2Array;
+      ArgTDynDynTRec2Array: TDynDynTRec2Array;      var VArgTDynDynTRec2Array: TDynDynTRec2Array;
+      ArgTDynDynPrec2Array: TDynDynPrec2Array;      var VArgTDynDynPrec2Array: TDynDynPrec2Array;
+      ArgTDynDynPPrec2Array: TDynDynPPrec2Array;    var VArgTDynDynPPrec2Array: TDynDynPPrec2Array;
+      ArgTDynStatTRec2Array: TDynStatTRec2Array;    var VArgTDynStatTRec2Array: TDynStatTRec2Array;
+      ArgTDynStatPRec2Array: TDynStatPRec2Array;    var VArgTDynStatPRec2Array: TDynStatPRec2Array;
+      ArgTDynStatPPRec2Array: TDynStatPPRec2Array;  var VArgTDynStatPPRec2Array: TDynStatPPRec2Array;
 
       // stat arrays of named arrays
-      ArgTStatDynTRec1Array: TStatDynTRec1Array;      VArgTStatDynTRec1Array: TStatDynTRec1Array;
-      ArgTStatDynPrec1Array: TStatDynPrec1Array;      VArgTStatDynPrec1Array: TStatDynPrec1Array;
-      ArgTStatStatTRec1Array: TStatStatTRec1Array;    VArgTStatStatTRec1Array: TStatStatTRec1Array;
-      ArgTStatStatPRec1Array: TStatStatPRec1Array;    VArgTStatStatPRec1Array: TStatStatPRec1Array;
-      ArgTStatPDynTRec1Array: TStatPDynTRec1Array;     VArgTStatPDynTRec1Array: TStatPDynTRec1Array;
-      ArgTStatPStatTRec1Array: TStatPStatTRec1Array;   VArgTStatPStatTRec1Array: TStatPStatTRec1Array;
+      ArgTStatDynTRec1Array: TStatDynTRec1Array;      var VArgTStatDynTRec1Array: TStatDynTRec1Array;
+      ArgTStatDynPrec1Array: TStatDynPrec1Array;      var VArgTStatDynPrec1Array: TStatDynPrec1Array;
+      ArgTStatStatTRec1Array: TStatStatTRec1Array;    var VArgTStatStatTRec1Array: TStatStatTRec1Array;
+      ArgTStatStatPRec1Array: TStatStatPRec1Array;    var VArgTStatStatPRec1Array: TStatStatPRec1Array;
+      ArgTStatPDynTRec1Array: TStatPDynTRec1Array;     var VArgTStatPDynTRec1Array: TStatPDynTRec1Array;
+      ArgTStatPStatTRec1Array: TStatPStatTRec1Array;   var VArgTStatPStatTRec1Array: TStatPStatTRec1Array;
 
-      ArgTStatDynTRec2Array: TStatDynTRec2Array;      VArgTStatDynTRec2Array: TStatDynTRec2Array;
-      ArgTStatDynPrec2Array: TStatDynPrec2Array;      VArgTStatDynPrec2Array: TStatDynPrec2Array;
-      ArgTStatDynPPrec2Array: TStatDynPPrec2Array;    VArgTStatDynPPrec2Array: TStatDynPPrec2Array;
-      ArgTStatStatTRec2Array: TStatStatTRec2Array;    VArgTStatStatTRec2Array: TStatStatTRec2Array;
-      ArgTStatStatPRec2Array: TStatStatPRec2Array;    VArgTStatStatPRec2Array: TStatStatPRec2Array;
-      ArgTStatStatPPRec2Array: TStatStatPPRec2Array;  VArgTStatStatPPRec2Array: TStatStatPPRec2Array;
+      ArgTStatDynTRec2Array: TStatDynTRec2Array;      var VArgTStatDynTRec2Array: TStatDynTRec2Array;
+      ArgTStatDynPrec2Array: TStatDynPrec2Array;      var VArgTStatDynPrec2Array: TStatDynPrec2Array;
+      ArgTStatDynPPrec2Array: TStatDynPPrec2Array;    var VArgTStatDynPPrec2Array: TStatDynPPrec2Array;
+      ArgTStatStatTRec2Array: TStatStatTRec2Array;    var VArgTStatStatTRec2Array: TStatStatTRec2Array;
+      ArgTStatStatPRec2Array: TStatStatPRec2Array;    var VArgTStatStatPRec2Array: TStatStatPRec2Array;
+      ArgTStatStatPPRec2Array: TStatStatPPRec2Array;  var VArgTStatStatPPRec2Array: TStatStatPPRec2Array;
 
 // POINTER
 
       // dyn arrays
-      ArgPDynArrayTRec1: PDynArrayTRec1;            VArgPDynArrayTRec1: PDynArrayTRec1;
-      ArgPDynArrayPRec1: PDynArrayPRec1;            VArgPDynArrayPRec1: PDynArrayPRec1;
-      ArgPDynDynArrayTRec1: PDynDynArrayTRec1;      VArgPDynDynArrayTRec1: PDynDynArrayTRec1;
-      ArgPDynDynArrayPRec1: PDynDynArrayPRec1;      VArgPDynDynArrayPRec1: PDynDynArrayPRec1;
-      ArgPDynStatArrayTRec1: PDynStatArrayTRec1;    VArgPDynStatArrayTRec1: PDynStatArrayTRec1;
-      ArgPDynStatArrayPRec1: PDynStatArrayPRec1;    VArgPDynStatArrayPRec1: PDynStatArrayPRec1;
+      ArgPDynArrayTRec1: PDynArrayTRec1;            var VArgPDynArrayTRec1: PDynArrayTRec1;
+      ArgPDynArrayPRec1: PDynArrayPRec1;            var VArgPDynArrayPRec1: PDynArrayPRec1;
+      ArgPDynDynArrayTRec1: PDynDynArrayTRec1;      var VArgPDynDynArrayTRec1: PDynDynArrayTRec1;
+      ArgPDynDynArrayPRec1: PDynDynArrayPRec1;      var VArgPDynDynArrayPRec1: PDynDynArrayPRec1;
+      ArgPDynStatArrayTRec1: PDynStatArrayTRec1;    var VArgPDynStatArrayTRec1: PDynStatArrayTRec1;
+      ArgPDynStatArrayPRec1: PDynStatArrayPRec1;    var VArgPDynStatArrayPRec1: PDynStatArrayPRec1;
 
-      ArgPDynArrayTRec2: PDynArrayTRec2;            VArgPDynArrayTRec2: PDynArrayTRec2;
-      ArgPDynArrayPRec2: PDynArrayPRec2;            VArgPDynArrayPRec2: PDynArrayPRec2;
-      ArgPDynArrayPPRec2: PDynArrayPPRec2;          VArgPDynArrayPPRec2: PDynArrayPPRec2;
-      ArgPDynDynArrayTRec2: PDynDynArrayTRec2;      VArgPDynDynArrayTRec2: PDynDynArrayTRec2;
-      ArgPDynDynArrayPRec2: PDynDynArrayPRec2;      VArgPDynDynArrayPRec2: PDynDynArrayPRec2;
-      ArgPDynStatArrayTRec2: PDynStatArrayTRec2;    VArgPDynStatArrayTRec2: PDynStatArrayTRec2;
-      ArgPDynStatArrayPRec2: PDynStatArrayPRec2;    VArgPDynStatArrayPRec2: PDynStatArrayPRec2;
+      ArgPDynArrayTRec2: PDynArrayTRec2;            var VArgPDynArrayTRec2: PDynArrayTRec2;
+      ArgPDynArrayPRec2: PDynArrayPRec2;            var VArgPDynArrayPRec2: PDynArrayPRec2;
+      ArgPDynArrayPPRec2: PDynArrayPPRec2;          var VArgPDynArrayPPRec2: PDynArrayPPRec2;
+      ArgPDynDynArrayTRec2: PDynDynArrayTRec2;      var VArgPDynDynArrayTRec2: PDynDynArrayTRec2;
+      ArgPDynDynArrayPRec2: PDynDynArrayPRec2;      var VArgPDynDynArrayPRec2: PDynDynArrayPRec2;
+      ArgPDynStatArrayTRec2: PDynStatArrayTRec2;    var VArgPDynStatArrayTRec2: PDynStatArrayTRec2;
+      ArgPDynStatArrayPRec2: PDynStatArrayPRec2;    var VArgPDynStatArrayPRec2: PDynStatArrayPRec2;
 
 
       // stat arrays
-      ArgPStatArrayTRec1: PStatArrayTRec1;          VArgPStatArrayTRec1: PStatArrayTRec1;
-      ArgPStatArrayPRec1: PStatArrayPRec1;          VArgPStatArrayPRec1: PStatArrayPRec1;
-      ArgPStatDynArrayTRec1: PStatDynArrayTRec1;    VArgPStatDynArrayTRec1: PStatDynArrayTRec1;
-      ArgPStatDynArrayPRec1: PStatDynArrayPRec1;    VArgPStatDynArrayPRec1: PStatDynArrayPRec1;
-      ArgPStatStatArrayTRec1: PStatStatArrayTRec1;  VArgPStatStatArrayTRec1: PStatStatArrayTRec1;
-      ArgPStatStatArrayPRec1: PStatStatArrayPRec1;  VArgPStatStatArrayPRec1: PStatStatArrayPRec1;
+      ArgPStatArrayTRec1: PStatArrayTRec1;          var VArgPStatArrayTRec1: PStatArrayTRec1;
+      ArgPStatArrayPRec1: PStatArrayPRec1;          var VArgPStatArrayPRec1: PStatArrayPRec1;
+      ArgPStatDynArrayTRec1: PStatDynArrayTRec1;    var VArgPStatDynArrayTRec1: PStatDynArrayTRec1;
+      ArgPStatDynArrayPRec1: PStatDynArrayPRec1;    var VArgPStatDynArrayPRec1: PStatDynArrayPRec1;
+      ArgPStatStatArrayTRec1: PStatStatArrayTRec1;  var VArgPStatStatArrayTRec1: PStatStatArrayTRec1;
+      ArgPStatStatArrayPRec1: PStatStatArrayPRec1;  var VArgPStatStatArrayPRec1: PStatStatArrayPRec1;
 
-      ArgPStatArrayTRec2: PStatArrayTRec2;          VArgPStatArrayTRec2: PStatArrayTRec2;
-      ArgPStatArrayPRec2: PStatArrayPRec2;          VArgPStatArrayPRec2: PStatArrayPRec2;
-      ArgPStatArrayPPRec2: PStatArrayPPRec2;        VArgPStatArrayPPRec2: PStatArrayPPRec2;
-      ArgPStatDynArrayTRec2: PStatDynArrayTRec2;    VArgPStatDynArrayTRec2: PStatDynArrayTRec2;
-      ArgPStatDynArrayPRec2: PStatDynArrayPRec2;    VArgPStatDynArrayPRec2: PStatDynArrayPRec2;
-      ArgPStatStatArrayTRec2: PStatStatArrayTRec2;  VArgPStatStatArrayTRec2: PStatStatArrayTRec2;
-      ArgPStatStatArrayPRec2: PStatStatArrayPRec2;  VArgPStatStatArrayPRec2: PStatStatArrayPRec2;
+      ArgPStatArrayTRec2: PStatArrayTRec2;          var VArgPStatArrayTRec2: PStatArrayTRec2;
+      ArgPStatArrayPRec2: PStatArrayPRec2;          var VArgPStatArrayPRec2: PStatArrayPRec2;
+      ArgPStatArrayPPRec2: PStatArrayPPRec2;        var VArgPStatArrayPPRec2: PStatArrayPPRec2;
+      ArgPStatDynArrayTRec2: PStatDynArrayTRec2;    var VArgPStatDynArrayTRec2: PStatDynArrayTRec2;
+      ArgPStatDynArrayPRec2: PStatDynArrayPRec2;    var VArgPStatDynArrayPRec2: PStatDynArrayPRec2;
+      ArgPStatStatArrayTRec2: PStatStatArrayTRec2;  var VArgPStatStatArrayTRec2: PStatStatArrayTRec2;
+      ArgPStatStatArrayPRec2: PStatStatArrayPRec2;  var VArgPStatStatArrayPRec2: PStatStatArrayPRec2;
 
 
       // dyn arrays of named arrays
-      ArgPDynDynTRec1Array: PDynDynTRec1Array;      VArgPDynDynTRec1Array: PDynDynTRec1Array;
-      ArgPDynDynPrec1Array: PDynDynPrec1Array;      VArgPDynDynPrec1Array: PDynDynPrec1Array;
-      ArgPDynStatTRec1Array: PDynStatTRec1Array;    VArgPDynStatTRec1Array: PDynStatTRec1Array;
-      ArgPDynStatPRec1Array: PDynStatPRec1Array;    VArgPDynStatPRec1Array: PDynStatPRec1Array;
-      ArgPDynPDynTRec1Array: PDynPDynTRec1Array;     VArgPDynPDynTRec1Array: PDynPDynTRec1Array;
-      ArgPDynPStatTRec1Array: PDynPStatTRec1Array;   VArgPDynPStatTRec1Array: PDynPStatTRec1Array;
+      ArgPDynDynTRec1Array: PDynDynTRec1Array;      var VArgPDynDynTRec1Array: PDynDynTRec1Array;
+      ArgPDynDynPrec1Array: PDynDynPrec1Array;      var VArgPDynDynPrec1Array: PDynDynPrec1Array;
+      ArgPDynStatTRec1Array: PDynStatTRec1Array;    var VArgPDynStatTRec1Array: PDynStatTRec1Array;
+      ArgPDynStatPRec1Array: PDynStatPRec1Array;    var VArgPDynStatPRec1Array: PDynStatPRec1Array;
+      ArgPDynPDynTRec1Array: PDynPDynTRec1Array;     var VArgPDynPDynTRec1Array: PDynPDynTRec1Array;
+      ArgPDynPStatTRec1Array: PDynPStatTRec1Array;   var VArgPDynPStatTRec1Array: PDynPStatTRec1Array;
+      ArgPDynPDynTRec1NPArray: PDynPDynTRec1NPArray;  var VArgPDynPDynTRec1NPArray: PDynPDynTRec1NPArray;
+      ArgPDynPStatTRec1NPArray: PDynPStatTRec1NPArray;var VArgPDynPStatTRec1NPArray: PDynPStatTRec1NPArray;
 
-      ArgPDynDynTRec2Array: PDynDynTRec2Array;      VArgPDynDynTRec2Array: PDynDynTRec2Array;
-      ArgPDynDynPrec2Array: PDynDynPrec2Array;      VArgPDynDynPrec2Array: PDynDynPrec2Array;
-      ArgPDynDynPPrec2Array: PDynDynPPrec2Array;    VArgPDynDynPPrec2Array: PDynDynPPrec2Array;
-      ArgPDynStatTRec2Array: PDynStatTRec2Array;    VArgPDynStatTRec2Array: PDynStatTRec2Array;
-      ArgPDynStatPRec2Array: PDynStatPRec2Array;    VArgPDynStatPRec2Array: PDynStatPRec2Array;
-      ArgPDynStatPPRec2Array: PDynStatPPRec2Array;  VArgPDynStatPPRec2Array: PDynStatPPRec2Array;
+      ArgPDynDynTRec2Array: PDynDynTRec2Array;      var VArgPDynDynTRec2Array: PDynDynTRec2Array;
+      ArgPDynDynPrec2Array: PDynDynPrec2Array;      var VArgPDynDynPrec2Array: PDynDynPrec2Array;
+      ArgPDynDynPPrec2Array: PDynDynPPrec2Array;    var VArgPDynDynPPrec2Array: PDynDynPPrec2Array;
+      ArgPDynStatTRec2Array: PDynStatTRec2Array;    var VArgPDynStatTRec2Array: PDynStatTRec2Array;
+      ArgPDynStatPRec2Array: PDynStatPRec2Array;    var VArgPDynStatPRec2Array: PDynStatPRec2Array;
+      ArgPDynStatPPRec2Array: PDynStatPPRec2Array;  var VArgPDynStatPPRec2Array: PDynStatPPRec2Array;
 
       // stat arrays of named arrays
-      ArgPStatDynTRec1Array: PStatDynTRec1Array;      VArgPStatDynTRec1Array: PStatDynTRec1Array;
-      ArgPStatDynPrec1Array: PStatDynPrec1Array;      VArgPStatDynPrec1Array: PStatDynPrec1Array;
-      ArgPStatStatTRec1Array: PStatStatTRec1Array;    VArgPStatStatTRec1Array: PStatStatTRec1Array;
-      ArgPStatStatPRec1Array: PStatStatPRec1Array;    VArgPStatStatPRec1Array: PStatStatPRec1Array;
-      ArgPStatPDynTRec1Array: PStatPDynTRec1Array;     VArgPStatPDynTRec1Array: PStatPDynTRec1Array;
-      ArgPStatPStatTRec1Array: PStatPStatTRec1Array;   VArgPStatPStatTRec1Array: PStatPStatTRec1Array;
+      ArgPStatDynTRec1Array: PStatDynTRec1Array;      var VArgPStatDynTRec1Array: PStatDynTRec1Array;
+      ArgPStatDynPrec1Array: PStatDynPrec1Array;      var VArgPStatDynPrec1Array: PStatDynPrec1Array;
+      ArgPStatStatTRec1Array: PStatStatTRec1Array;    var VArgPStatStatTRec1Array: PStatStatTRec1Array;
+      ArgPStatStatPRec1Array: PStatStatPRec1Array;    var VArgPStatStatPRec1Array: PStatStatPRec1Array;
+      ArgPStatPDynTRec1Array: PStatPDynTRec1Array;     var VArgPStatPDynTRec1Array: PStatPDynTRec1Array;
+      ArgPStatPStatTRec1Array: PStatPStatTRec1Array;   var VArgPStatPStatTRec1Array: PStatPStatTRec1Array;
 
-      ArgPStatDynTRec2Array: PStatDynTRec2Array;      VArgPStatDynTRec2Array: PStatDynTRec2Array;
-      ArgPStatDynPrec2Array: PStatDynPrec2Array;      VArgPStatDynPrec2Array: PStatDynPrec2Array;
-      ArgPStatDynPPrec2Array: PStatDynPPrec2Array;    VArgPStatDynPPrec2Array: PStatDynPPrec2Array;
-      ArgPStatStatTRec2Array: PStatStatTRec2Array;    VArgPStatStatTRec2Array: PStatStatTRec2Array;
-      ArgPStatStatPRec2Array: PStatStatPRec2Array;    VArgPStatStatPRec2Array: PStatStatPRec2Array;
-      ArgPStatStatPPRec2Array: PStatStatPPRec2Array;  VArgPStatStatPPRec2Array: PStatStatPPRec2Array;
+      ArgPStatDynTRec2Array: PStatDynTRec2Array;      var VArgPStatDynTRec2Array: PStatDynTRec2Array;
+      ArgPStatDynPrec2Array: PStatDynPrec2Array;      var VArgPStatDynPrec2Array: PStatDynPrec2Array;
+      ArgPStatDynPPrec2Array: PStatDynPPrec2Array;    var VArgPStatDynPPrec2Array: PStatDynPPrec2Array;
+      ArgPStatStatTRec2Array: PStatStatTRec2Array;    var VArgPStatStatTRec2Array: PStatStatTRec2Array;
+      ArgPStatStatPRec2Array: PStatStatPRec2Array;    var VArgPStatStatPRec2Array: PStatStatPRec2Array;
+      ArgPStatStatPPRec2Array: PStatStatPPRec2Array;  var VArgPStatStatPPRec2Array: PStatStatPPRec2Array;
 
     {$ENDIF}
     {$IFDEF Global_Call_FooFunc}
@@ -392,6 +402,8 @@
       GlobTDynStatPRec1Array,  GlobTDynStatPRec1Array,
       GlobTDynPDynTRec1Array,  GlobTDynPDynTRec1Array,
       GlobTDynPStatTRec1Array,  GlobTDynPStatTRec1Array,
+      GlobTDynPDynTRec1NPArray, GlobTDynPDynTRec1NPArray,
+      GlobTDynPStatTRec1NPArray, GlobTDynPStatTRec1NPArray,
 
       GlobTDynDynTRec2Array,  GlobTDynDynTRec2Array,
       GlobTDynDynPrec2Array,  GlobTDynDynPrec2Array,
@@ -416,6 +428,7 @@
       GlobTStatStatPPRec2Array,  GlobTStatStatPPRec2Array,
 
 
+      // POINTER
 
       // dyn arrays
       GlobPDynArrayTRec1,  GlobPDynArrayTRec1,
@@ -457,6 +470,8 @@
       GlobPDynStatPRec1Array,  GlobPDynStatPRec1Array,
       GlobPDynPDynTRec1Array,  GlobPDynPDynTRec1Array,
       GlobPDynPStatTRec1Array,  GlobPDynPStatTRec1Array,
+      GlobPDynPDynTRec1NPArray, GlobPDynPDynTRec1NPArray,
+      GlobPDynPStatTRec1NPArray, GlobPDynPStatTRec1NPArray,
 
       GlobPDynDynTRec2Array,  GlobPDynDynTRec2Array,
       GlobPDynDynPrec2Array,  GlobPDynDynPrec2Array,
@@ -522,6 +537,10 @@
   // dyn array with record
     myRec2 : PRecForArray2;
 
+      // target for pointer
+      GlobTDynArrayTRec1NP, GlobTDynArrayTRec1NP2: TDynArrayTRec1NP;
+      GlobTStatArrayTRec1NP, GlobTStatArrayTRec1NP2: TStatArrayTRec1NP;
+
       // dyn arrays
       GlobTDynArrayTRec1: TDynArrayTRec1;
       GlobTDynArrayPRec1: TDynArrayPRec1;
@@ -562,6 +581,8 @@
       GlobTDynStatPRec1Array: TDynStatPRec1Array;
       GlobTDynPDynTRec1Array: TDynPDynTRec1Array;
       GlobTDynPStatTRec1Array: TDynPStatTRec1Array;
+      GlobTDynPDynTRec1NPArray: TDynPDynTRec1NPArray;
+      GlobTDynPStatTRec1NPArray: TDynPStatTRec1NPArray;
 
       GlobTDynDynTRec2Array: TDynDynTRec2Array;
       GlobTDynDynPrec2Array: TDynDynPrec2Array;
@@ -633,6 +654,8 @@
       GlobPDynStatPRec1Array: PDynStatPRec1Array;
       GlobPDynPDynTRec1Array: PDynPDynTRec1Array;
       GlobPDynPStatTRec1Array: PDynPStatTRec1Array;
+      GlobPDynPDynTRec1NPArray: PDynPDynTRec1NPArray;
+      GlobPDynPStatTRec1NPArray: PDynPStatTRec1NPArray;
 
       GlobPDynDynTRec2Array: PDynDynTRec2Array;
       GlobPDynDynPrec2Array: PDynDynPrec2Array;
@@ -810,6 +833,21 @@
       myRec2^.recs[0].b := 20;
       myRec2^.recs[1].a := 11;
       myRec2^.recs[1].b := 21;
+
+
+    // target for pointer
+    //GlobTDynArrayTRec1NP, GlobTDynArrayTRec1NP2: TDynArrayTRec1NP;
+    SetLength(GlobTDynArrayTRec1NP, 3);
+    GlobTDynArrayTRec1NP[0].a := 500;
+    GlobTDynArrayTRec1NP[1].a := 501;
+    SetLength(GlobTDynArrayTRec1NP2, 3);
+    GlobTDynArrayTRec1NP2[0].a := 505;
+    GlobTDynArrayTRec1NP2[1].a := 506;
+    //GlobTStatArrayTRec1NP, GlobTStatArrayTRec1NP2: TStatArrayTRec1NP;
+    GlobTStatArrayTRec1NP[3].a := 510;
+    GlobTStatArrayTRec1NP[4].a := 511;
+    GlobTStatArrayTRec1NP2[3].a := 515;
+    GlobTStatArrayTRec1NP2[4].a := 516;
 
 
   // dyn arrays
@@ -990,6 +1028,14 @@
       SetLength(GlobTDynPStatTRec1Array, 3);
       GlobTDynPStatTRec1Array[0] := @GlobTDynStatTRec1Array[0];
       GlobTDynPStatTRec1Array[1] := @GlobTDynStatTRec1Array[1];
+      //TDynPDynTRec1NPArray = array of ^TDynArrayTRec1NP;
+      SetLength(GlobTDynPDynTRec1NPArray, 3);
+      GlobTDynPDynTRec1NPArray[0] := @GlobTDynArrayTRec1NP;  // 500, 501
+      GlobTDynPDynTRec1NPArray[1] := @GlobTDynArrayTRec1NP2; // 505, 506;
+      //TDynPStatTRec1NPArray= array of ^TStatArrayTRec1NP;
+      SetLength(GlobTDynPStatTRec1NPArray, 3);
+      GlobTDynPStatTRec1NPArray[0] := @GlobTStatArrayTRec1NP;  // 510, 511
+      GlobTDynPStatTRec1NPArray[1] := @GlobTStatArrayTRec1NP2; // 515, 516
 
 
       //GlobTDynDynTRec2Array: TDynDynTRec2Array;
@@ -1039,85 +1085,73 @@
 
   // stat arrays of named arrays
       //GlobTStatDynTRec1Array: TStatDynTRec1Array;
-      SetLength(GlobTStatDynTRec1Array, 3);
-      SetLength(GlobTStatDynTRec1Array[0], 3);
-      GlobTStatDynTRec1Array[0][0].a := 80;
-      GlobTStatDynTRec1Array[0][1].a := 81;
-      SetLength(GlobTStatDynTRec1Array[1], 3);
-      GlobTStatDynTRec1Array[1][0].a := 85;
-      GlobTStatDynTRec1Array[1][1].a := 86;
+      SetLength(GlobTStatDynTRec1Array[3], 3);
+      GlobTStatDynTRec1Array[3][0].a := 80;
+      GlobTStatDynTRec1Array[3][1].a := 81;
+      SetLength(GlobTStatDynTRec1Array[4], 3);
+      GlobTStatDynTRec1Array[4][0].a := 85;
+      GlobTStatDynTRec1Array[4][1].a := 86;
       //GlobTStatDynPrec1Array: TStatDynPrec1Array;
-      SetLength(GlobTStatDynPrec1Array, 3);
-      SetLength(GlobTStatDynPrec1Array[0], 3);
-      GlobTStatDynPrec1Array[0][0] := @GlobTStatDynTRec1Array[0][0];
-      GlobTStatDynPrec1Array[0][1] := @GlobTStatDynTRec1Array[0][1];
-      SetLength(GlobTStatDynPrec1Array[1], 3);
-      GlobTStatDynPrec1Array[1][0] := @GlobTStatDynTRec1Array[1][0];
-      GlobTStatDynPrec1Array[1][1] := @GlobTStatDynTRec1Array[1][1];
+      SetLength(GlobTStatDynPrec1Array[3], 3);
+      GlobTStatDynPrec1Array[3][0] := @GlobTStatDynTRec1Array[3][0];
+      GlobTStatDynPrec1Array[3][1] := @GlobTStatDynTRec1Array[3][1];
+      SetLength(GlobTStatDynPrec1Array[4], 3);
+      GlobTStatDynPrec1Array[4][0] := @GlobTStatDynTRec1Array[4][0];
+      GlobTStatDynPrec1Array[4][1] := @GlobTStatDynTRec1Array[4][1];
       //GlobTStatStatTRec1Array: TStatStatTRec1Array;
-      SetLength(GlobTStatStatTRec1Array, 3);
-      GlobTStatStatTRec1Array[0][3].a := 70;
-      GlobTStatStatTRec1Array[0][4].a := 71;
-      GlobTStatStatTRec1Array[1][3].a := 75;
-      GlobTStatStatTRec1Array[1][4].a := 76;
+      GlobTStatStatTRec1Array[3][3].a := 70;
+      GlobTStatStatTRec1Array[3][4].a := 71;
+      GlobTStatStatTRec1Array[4][3].a := 75;
+      GlobTStatStatTRec1Array[4][4].a := 76;
       //GlobTStatStatPRec1Array: TStatStatPRec1Array;
-      SetLength(GlobTStatStatPRec1Array, 3);
-      GlobTStatStatPRec1Array[0][3] := @GlobTStatStatTRec1Array[0][3];
-      GlobTStatStatPRec1Array[0][4] := @GlobTStatStatTRec1Array[0][4];
-      GlobTStatStatPRec1Array[1][3] := @GlobTStatStatTRec1Array[1][3];
-      GlobTStatStatPRec1Array[1][4] := @GlobTStatStatTRec1Array[1][4];
+      GlobTStatStatPRec1Array[3][3] := @GlobTStatStatTRec1Array[3][3];
+      GlobTStatStatPRec1Array[3][4] := @GlobTStatStatTRec1Array[3][4];
+      GlobTStatStatPRec1Array[4][3] := @GlobTStatStatTRec1Array[4][3];
+      GlobTStatStatPRec1Array[4][4] := @GlobTStatStatTRec1Array[4][4];
       //GlobTStatPDynTRec1Array: TStatPDynTRec1Array;
-      SetLength(GlobTStatPDynTRec1Array, 3);
-      GlobTStatPDynTRec1Array[0] := @GlobTStatDynTRec1Array[0];
-      GlobTStatPDynTRec1Array[1] := @GlobTStatDynTRec1Array[1];
+      GlobTStatPDynTRec1Array[3] := @GlobTStatDynTRec1Array[3];
+      GlobTStatPDynTRec1Array[4] := @GlobTStatDynTRec1Array[4];
       //GlobTStatPStatTRec1Array: TStatPStatTRec1Array;
-      SetLength(GlobTStatPStatTRec1Array, 3);
-      GlobTStatPStatTRec1Array[0] := @GlobTStatStatTRec1Array[0];
-      GlobTStatPStatTRec1Array[1] := @GlobTStatStatTRec1Array[1];
+      GlobTStatPStatTRec1Array[3] := @GlobTStatStatTRec1Array[3];
+      GlobTStatPStatTRec1Array[4] := @GlobTStatStatTRec1Array[4];
 
 
       //GlobTStatDynTRec2Array: TStatDynTRec2Array;
-      SetLength(GlobTStatDynTRec2Array, 3);
-      SetLength(GlobTStatDynTRec2Array[0], 3);
-      GlobTStatDynTRec2Array[0][0].c := 80;
-      GlobTStatDynTRec2Array[0][1].c := 81;
-      SetLength(GlobTStatDynTRec2Array[1], 3);
-      GlobTStatDynTRec2Array[1][0].c := 85;
-      GlobTStatDynTRec2Array[1][1].c := 86;
+      SetLength(GlobTStatDynTRec2Array[3], 3);
+      GlobTStatDynTRec2Array[3][0].c := 80;
+      GlobTStatDynTRec2Array[3][1].c := 81;
+      SetLength(GlobTStatDynTRec2Array[4], 3);
+      GlobTStatDynTRec2Array[4][0].c := 85;
+      GlobTStatDynTRec2Array[4][1].c := 86;
       //GlobTStatDynPRec2Array: TStatDynPRec2Array;
-      SetLength(GlobTStatDynPRec2Array, 3);
-      SetLength(GlobTStatDynPRec2Array[0], 3);
-      GlobTStatDynPRec2Array[0][0] := @GlobTStatDynTRec2Array[0][0];
-      GlobTStatDynPRec2Array[0][1] := @GlobTStatDynTRec2Array[0][1];
-      SetLength(GlobTStatDynPRec2Array[1], 3);
-      GlobTStatDynPRec2Array[1][0] := @GlobTStatDynTRec2Array[1][0];
-      GlobTStatDynPRec2Array[1][1] := @GlobTStatDynTRec2Array[1][1];
+      SetLength(GlobTStatDynPRec2Array[3], 3);
+      GlobTStatDynPRec2Array[3][0] := @GlobTStatDynTRec2Array[3][0];
+      GlobTStatDynPRec2Array[3][1] := @GlobTStatDynTRec2Array[3][1];
+      SetLength(GlobTStatDynPRec2Array[4], 3);
+      GlobTStatDynPRec2Array[4][0] := @GlobTStatDynTRec2Array[4][0];
+      GlobTStatDynPRec2Array[4][1] := @GlobTStatDynTRec2Array[4][1];
       //GlobTStatDynPPrec2Array: TStatDynPPrec2Array;
-      SetLength(GlobTStatDynPPrec2Array, 3);
-      SetLength(GlobTStatDynPPrec2Array[0], 3);
-      GlobTStatDynPPrec2Array[0][0] := @GlobTStatDynPRec2Array[0][0];
-      GlobTStatDynPPrec2Array[0][1] := @GlobTStatDynPRec2Array[0][1];
-      SetLength(GlobTStatDynPPrec2Array[1], 3);
-      GlobTStatDynPPrec2Array[1][0] := @GlobTStatDynPRec2Array[1][0];
-      GlobTStatDynPPrec2Array[1][1] := @GlobTStatDynPRec2Array[1][1];
+      SetLength(GlobTStatDynPPrec2Array[3], 3);
+      GlobTStatDynPPrec2Array[3][0] := @GlobTStatDynPRec2Array[3][0];
+      GlobTStatDynPPrec2Array[3][1] := @GlobTStatDynPRec2Array[3][1];
+      SetLength(GlobTStatDynPPrec2Array[4], 3);
+      GlobTStatDynPPrec2Array[4][0] := @GlobTStatDynPRec2Array[4][0];
+      GlobTStatDynPPrec2Array[4][1] := @GlobTStatDynPRec2Array[4][1];
       //GlobTStatStatTRec2Array: TStatStatTRec2Array;
-      SetLength(GlobTStatStatTRec2Array, 3);
-      GlobTStatStatTRec2Array[0][3].c := 70;
-      GlobTStatStatTRec2Array[0][4].c := 71;
-      GlobTStatStatTRec2Array[1][3].c := 75;
-      GlobTStatStatTRec2Array[1][4].c := 76;
+      GlobTStatStatTRec2Array[3][3].c := 70;
+      GlobTStatStatTRec2Array[3][4].c := 71;
+      GlobTStatStatTRec2Array[4][3].c := 75;
+      GlobTStatStatTRec2Array[4][4].c := 76;
       //GlobTStatStatPRec2Array: TStatStatPRec2Array;
-      SetLength(GlobTStatStatPRec2Array, 3);
-      GlobTStatStatPRec2Array[0][3] := @GlobTStatStatTRec2Array[0][3];
-      GlobTStatStatPRec2Array[0][4] := @GlobTStatStatTRec2Array[0][4];
-      GlobTStatStatPRec2Array[1][3] := @GlobTStatStatTRec2Array[1][3];
-      GlobTStatStatPRec2Array[1][4] := @GlobTStatStatTRec2Array[1][4];
+      GlobTStatStatPRec2Array[3][3] := @GlobTStatStatTRec2Array[3][3];
+      GlobTStatStatPRec2Array[3][4] := @GlobTStatStatTRec2Array[3][4];
+      GlobTStatStatPRec2Array[4][3] := @GlobTStatStatTRec2Array[4][3];
+      GlobTStatStatPRec2Array[4][4] := @GlobTStatStatTRec2Array[4][4];
       //GlobTStatStatPPRec2Array: TStatStatPPRec2Array;
-      SetLength(GlobTStatStatPPRec2Array, 3);
-      GlobTStatStatPPRec2Array[0][3] := @GlobTStatStatPRec2Array[0][3];
-      GlobTStatStatPPRec2Array[0][4] := @GlobTStatStatPRec2Array[0][4];
-      GlobTStatStatPPRec2Array[1][3] := @GlobTStatStatPRec2Array[1][3];
-      GlobTStatStatPPRec2Array[1][4] := @GlobTStatStatPRec2Array[1][4];
+      GlobTStatStatPPRec2Array[3][3] := @GlobTStatStatPRec2Array[3][3];
+      GlobTStatStatPPRec2Array[3][4] := @GlobTStatStatPRec2Array[3][4];
+      GlobTStatStatPPRec2Array[4][3] := @GlobTStatStatPRec2Array[4][3];
+      GlobTStatStatPPRec2Array[4][4] := @GlobTStatStatPRec2Array[4][4];
 
 
       GlobTEnumArrayTRec1[eaOne].a      := 200;
@@ -1380,6 +1414,10 @@
       SetLength(GlobADynPStatTRec1Array, 3);
       GlobADynPStatTRec1Array[0] := @GlobADynStatTRec1Array[0];
       GlobADynPStatTRec1Array[1] := @GlobADynStatTRec1Array[1];
+      //TDynPDynTRec1NPArray = array of ^TDynArrayTRec1NP;
+      GlobPDynPDynTRec1NPArray := @GlobTDynPDynTRec1NPArray;
+      //TDynPStatTRec1NPArray= array of ^TStatArrayTRec1NP;
+      GlobPDynPStatTRec1NPArray := @GlobTDynPStatTRec1NPArray;
 
 
       //GlobADynDynTRec2Array: TDynDynTRec2Array;
