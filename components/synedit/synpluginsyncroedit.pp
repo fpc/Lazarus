@@ -219,7 +219,8 @@ type
     procedure DoSelectionChanged(Sender: TObject);
     procedure DoScanSelection(Data: PtrInt);
     procedure DoOnDeactivate; override;
-    procedure DoBeforeEdit(aX, aY, aCount, aLineBrkCnt: Integer; aUndoRedo: Boolean); override;
+    procedure DoPreActiveEdit(aX, aY, aCount, aLineBrkCnt: Integer; aUndoRedo: Boolean);
+      override;
 
     function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                          HandleActionProc: TSynEditMouseActionHandler): Boolean;
@@ -1023,6 +1024,7 @@ begin
   if FWordIndex.MultiWordCount = 0 then exit;
 
   Mode :=  spseEditing;
+  Active := True;
   AreaMarkupEnabled := True;
   SetUndoStart;
 
@@ -1100,7 +1102,7 @@ begin
   If (not SelectionObj.SelAvail) or (SelectionObj.ActiveSelectionMode = smColumn) then begin
     FLastSelStart := Point(-1,-1);
     FLastSelEnd := Point(-1,-1);
-    if Active then begin
+    if Active or PreActive then begin
       FWordIndex.Clear;
       Editor.Invalidate;
       Active := False;
@@ -1116,7 +1118,7 @@ begin
     Cells.Clear;
     AreaMarkupEnabled := False;
     MarkupEnabled := False;
-    Active := True;
+    PreActive := True;
   end;
   Mode := spseSelecting;
   Markup.GlyphAtLine := -1;
@@ -1237,15 +1239,12 @@ begin
   inherited DoOnDeactivate;
 end;
 
-procedure TSynPluginSyncroEdit.DoBeforeEdit(aX, aY, aCount, aLineBrkCnt: Integer; aUndoRedo: Boolean);
+procedure TSynPluginSyncroEdit.DoPreActiveEdit(aX, aY, aCount, aLineBrkCnt: Integer;
+  aUndoRedo: Boolean);
 begin
-  if (Mode = spseSelecting) then begin
     FWordIndex.Clear;
     Active := False;
     Mode := spseInvalid;
-  end
-  else
-    inherited DoBeforeEdit(aX, aY, aCount, aLineBrkCnt, aUndoRedo);
 end;
 
 function TSynPluginSyncroEdit.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
@@ -1253,7 +1252,7 @@ function TSynPluginSyncroEdit.MaybeHandleMouseAction(var AnInfo: TSynEditMouseAc
 var
   r: TRect;
 begin
-  Result := Active and
+  Result := (Active or PreActive) and
             ( ((Mode = spseSelecting) and (MarkupEnabled = True)) or
               (Mode = spseEditing) );
   if not Result then exit;
@@ -1323,7 +1322,7 @@ procedure TSynPluginSyncroEdit.TranslateKey(Sender: TObject; Code: word; SState:
 var
   keys: TSynEditKeyStrokes;
 begin
-  if (not Active) or Handled then
+  if (not (Active or  PreActive)) or Handled then
     exit;
 
   keys := nil;
@@ -1367,7 +1366,7 @@ procedure TSynPluginSyncroEdit.ProcessSynCommand(Sender: TObject; AfterProcessin
 var
   Cmd: TSynEditorCommand;
 begin
-  if Handled or AfterProcessing or not Active then exit;
+  if Handled or AfterProcessing or not (Active or PreActive) then exit;
 
   if Mode = spseSelecting then begin
     // todo: finish word-hash calculations / check if any cells exist
