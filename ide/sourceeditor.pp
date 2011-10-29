@@ -5288,16 +5288,17 @@ var
   CurFilename, ShortFileName: String;
   ASrcEdit: TSourceEditor;
 
-  procedure MaybeAddPopup(const ASuffix: String; ANewOnClick: TNotifyEvent = nil;
-    Filename: string = '');
+  function MaybeAddPopup(const ASuffix: String; ANewOnClick: TNotifyEvent = nil;
+    Filename: string = ''): TIDEMenuItem;
   begin
+    Result:=nil;
     if ANewOnClick=nil then
       ANewOnClick:=@OnPopupMenuOpenFile;
     if Filename='' then Filename:=CurFilename;
     Filename:=ChangeFileExt(Filename,ASuffix);
     if not FileExistsCached(Filename) then exit;
     Filename:=CreateRelativePath(Filename,ExtractFilePath(ASrcEdit.FileName));
-    AddContextPopupMenuItem(Format(lisOpenLfm,[Filename]), true, ANewOnClick);
+    Result:=AddContextPopupMenuItem(Format(lisOpenLfm,[Filename]), true, ANewOnClick);
   end;
 
   {$IFnDEF SingleSrcWindow}

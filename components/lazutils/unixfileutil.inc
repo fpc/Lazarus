@@ -91,7 +91,7 @@ var
   Info : Stat;
 begin
   // first check AFilename is not a directory and then check if executable
-  Result:= (FpStat(AFilename,info)<>-1) and FPS_ISREG(info.st_mode) and
+  Result:= (FpStat(AFilename,info{%H-})<>-1) and FPS_ISREG(info.st_mode) and
            (BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0);
 end;
 
@@ -111,7 +111,7 @@ function FileSize(const Filename: string): int64;
 var
   st: baseunix.stat;
 begin
-  if not fpstat(pointer(Filename),st)>=0 then
+  if not fpstat(pointer(Filename),st{%H-})>=0 then
     exit(-1);
   Result:=st.st_size;
 end;
@@ -131,7 +131,7 @@ var
   mode: mode_t;
 begin
   Result:='';
-  if not (FpStat(AFilename,info)=0) then exit;
+  if not (FpStat(AFilename,info{%H-})=0) then exit;
 
   // permissions
   // file type

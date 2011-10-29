@@ -17578,8 +17578,21 @@ end;
 
 function TMainIDE.GetDesignerFormOfSource(AnUnitInfo: TUnitInfo; LoadForm: boolean
   ): TCustomForm;
+var
+  UnitCodeBuf: TCodeBuffer;
 begin
   Result:=nil;
+  if (AnUnitInfo.Component=nil)
+  and (AnUnitInfo.Source<>nil)
+  and (CompareFileExt(AnUnitInfo.Filename,'.inc',false)=0) then begin
+    // include file => get unit
+    UnitCodeBuf:=CodeToolBoss.GetMainCode(AnUnitInfo.Source);
+    if UnitCodeBuf<>nil then begin
+      AnUnitInfo:=Project1.ProjectUnitWithFilename(UnitCodeBuf.Filename);
+      if AnUnitInfo=nil then exit;
+    end;
+  end;
+
   if AnUnitInfo.Component<>nil then
     Result:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
   if ((Result=nil) or (Result.Designer=nil)) and LoadForm

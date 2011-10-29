@@ -80,8 +80,8 @@ const
 function ExtractFileNameOnly(const AFilename: string): string;
 function ExtractFileNameWithoutExt(const AFilename: string): string;
 function CompareFileExt(const Filename, Ext: string;
-                        CaseSensitive: boolean): integer;
-function CompareFileExt(const Filename, Ext: string): integer;
+                        CaseSensitive: boolean): integer; overload;
+function CompareFileExt(const Filename, Ext: string): integer; overload;
 function FilenameIsPascalUnit(const Filename: string): boolean;
 function AppendPathDelim(const Path: string): string;
 function ChompPathDelim(const Path: string): string;
