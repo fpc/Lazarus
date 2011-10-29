@@ -203,6 +203,8 @@ begin
 end;
 
 procedure TDBLookup.FetchLookupData;
+var
+  s: String;
 begin
   if not Assigned(FControlItems) then
     Exit;
@@ -219,7 +221,8 @@ begin
       if (FLookupCache and not FLookUpFieldIsCached) then
         FLookupList.Add(FListLink.DataSet.FieldValues[FKeyFieldNames],
           FListField.Value);
-      FControlItems.Add(FListField.AsString);
+      s:=FListField.AsString;
+      FControlItems.Add(s);
       FListLink.DataSet.Next;
     end;
   finally
