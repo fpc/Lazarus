@@ -23,6 +23,7 @@ type
       ExpFound: Boolean; ExpStartX, ExpStartY, ExpEndX, ExpEndY: Integer);
   published
     procedure TestSearchSimple;
+    procedure TestSearchSimpleUtf8;
   end;
 
 implementation
@@ -37,6 +38,10 @@ begin
        'Text and more Text, texting',
        'text and more text, texting',
        'Text',
+       '',
+       'utf8: äöü äää äöü ÄÖÜ ÄÄÄ ÄÖÜ  äÖü ÄäÄ äääää äöüäöüä ä Ä',
+       '',
+       '',
        '',
        'Test or Dest or Destination. Test.',
        'test or dest or destination. test.',
@@ -123,6 +128,31 @@ begin
   fTSearch.Sensitive := False;
   fTSearch.Whole     := true;
   TestFindNext('Back whole',           'text',   1,1,   1,3,  true,  15,2, 19,2);
+
+  fTSearch.Free;
+end;
+
+procedure TTestSynSearch.TestSearchSimpleUtf8;
+begin
+  ReCreateEditWithLinesSimple;
+
+  fTSearch := TSynEditSearch.Create;
+  fTSearch.Sensitive := False;
+  fTSearch.Whole     := False;
+  fTSearch.Backwards := False;
+  fTSearch.RegularExpressions := False;
+  fTSearch.RegExprMultiLine   := False;
+  fTSearch.Replacement := '';
+
+  fTSearch.Sensitive := True;
+  TestFindNext('Case',                'äöü',   1,1,  1,8,  true,   7,6, 13,6);
+  TestFindNext('Case',                'ÄÖÜ',   1,1,  1,8,  true,  28,6, 34,6); // in BYTES
+  TestFindNext('Case',                'äää',   1,1,  1,8,  true,  14,6, 20,6);
+  TestFindNext('Case',                'ÄÄÄ',   1,1,  1,8,  true,  35,6, 41,6);
+
+  //fTSearch.Sensitive := False;
+  //TestFindNext('none Case',           'ÄÖÜ',   1,1,  1,8,  true,   7,6, 13,6); // in BYTES
+  //TestFindNext('none Case',           'ÄÄÄ',   1,1,  1,8,  true,  14,6, 20,6);
 
   fTSearch.Free;
 end;
