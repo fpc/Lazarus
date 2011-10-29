@@ -2873,6 +2873,7 @@ resourcestring
   lisLazBuildCancel = 'Cancel';
   lisLazBuildBuild = 'Build';
   lisLazBuildBuildAdvanced = 'Build Advanced';
+  lisLazBuildBuildingIDE = 'Building IDE';
   lisLazBuildCleanBuild = 'Clean + Build';
   lisLazBuildCleanAllBuild = 'Clean All + Build';
   lisLazBuildManageProfiles ='Manage Build Profiles';
@@ -2895,7 +2896,7 @@ resourcestring
   lisLazBuildManageProfiles2 = 'Manage profiles';
   lisLazBuildIdeBuildHint = 'Build = "make ide", %s'+
                             'Clean + Build = "make cleanide ide", %s' +
-                            'Clean All + Build = "make cleanlaz ide", ';
+                            'Clean All + Build = "make cleanlaz ide"';
   lisLazBuildDefinesWithoutD = 'Defines without -d';
   lisLazBuildOptionsPassedToCompiler = 'Options passed to compiler';
   lisLazBuildUpdateRevisionInfoInAboutLazarusDialog = 'Update revision info '

@@ -114,6 +114,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure ShowOptsMenuItemClick(Sender: TObject);
@@ -642,6 +643,7 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,700,480);
 
   Caption := Format(lisConfigureBuildLazarus, ['"', '"']);
+  BuildIdeRadioGroup.Caption:=lisLazBuildBuildingIDE;
   BuildIdeRadioGroup.Items.Add(lisLazBuildBuild);
   BuildIdeRadioGroup.Items.Add(lisLazBuildCleanBuild);
   BuildIdeRadioGroup.Items.Add(lisLazBuildCleanAllBuild);
@@ -742,6 +744,13 @@ end;
 procedure TConfigureBuildLazarusDlg.FormDestroy(Sender: TObject);
 begin
   ;
+end;
+
+procedure TConfigureBuildLazarusDlg.FormResize(Sender: TObject);
+begin
+  LCLWidgetTypeComboBox.Width:=(OptionsMemo.Width - 12) div 3;
+  TargetOSComboBox.Width:=LCLWidgetTypeComboBox.Width;
+  DefinesListBox.Width:=(OptionsMemo.Width - 6) div 2;
 end;
 
 procedure TConfigureBuildLazarusDlg.FormShow(Sender: TObject);
