@@ -2128,9 +2128,21 @@ begin
   //DebugLn(['TCustomForm.ShowOnTop ',Name,':',ClassName,' ',Visible,' ',HandleAllocated,' ',csDesigning in ComponentState]);
 end;
 
-function TCustomForm.AutoSizeCheckParent: Boolean;
+{------------------------------------------------------------------------------
+  TCustomForm AutoSizeDelayedHandle
+
+  Returns true if AutoSize should be skipped / delayed because of its handle.
+------------------------------------------------------------------------------}
+function TCustomForm.AutoSizeDelayedHandle: Boolean;
 begin
-  Result := True;
+  if WindowState=wsMinimized then
+    exit(true);
+  if (Parent<>nil) or (ParentWindow<>0) then
+    // this form is inlined / embedded it works like a normal TWinControl
+    Result:=inherited AutoSizeDelayedHandle
+  else
+    // this form is on a screen => no delay
+    Result:=false;
 end;
 
 {------------------------------------------------------------------------------}

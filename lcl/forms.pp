@@ -594,7 +594,7 @@ type
     procedure IntfHelp(AComponent: TComponent);
     function IsShortcut(var Message: TLMKey): boolean; virtual;
     procedure MakeFullyVisible(AMonitor: TMonitor = nil; UseWorkarea: Boolean = False);
-    function AutoSizeCheckParent: Boolean; override;
+    function AutoSizeDelayedHandle: Boolean; override;
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
                                Raw: boolean = false;
                                WithThemeSpace: boolean = true); override;

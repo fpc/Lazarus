@@ -2387,9 +2387,15 @@ begin
   {$ENDIF}
 end;
 
-function TWinControl.AutoSizeCheckParent: Boolean;
+{------------------------------------------------------------------------------
+  TWinControl AutoSizeDelayedHandle
+
+  Returns true if AutoSize should be skipped / delayed because of its handle.
+  A TWinControl needs a parent handle.
+------------------------------------------------------------------------------}
+function TWinControl.AutoSizeDelayedHandle: Boolean;
 begin
-  Result := (Parent <> nil) or (ParentWindow <> 0);
+  Result := (Parent = nil) and (ParentWindow = 0);
 end;
 
 {------------------------------------------------------------------------------

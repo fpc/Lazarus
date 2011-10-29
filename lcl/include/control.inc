@@ -2585,8 +2585,8 @@ begin
           // no autosize for invisible controls
           or (not IsControlVisible)
           // if there is no parent, then this control is not visible
-          //  (TCustomForm will override this)
-          or not AutoSizeCheckParent
+          //  (TWinControl and TCustomForm override this)
+          or AutoSizeDelayedHandle
           // if there is a parent, ask it
           or ((Parent<>nil) and Parent.AutoSizeDelayed);
   {$IFDEF VerboseCanAutoSize}
@@ -2597,20 +2597,26 @@ begin
     else if csDestroying in ComponentState then debugln('csDestroying')
     else if cfLoading in FControlFlags then debugln('cfLoading')
     else if not IsControlVisible then debugln('not IsControlVisible')
-    else if not AutoSizeCheckParent then debugln('not AutoSizeCheckParent')
+    else if AutoSizeDelayedHandle then debugln('AutoSizeDelayedHandle')
     else if ((Parent<>nil) and Parent.AutoSizeDelayed) then debugln('Parent.AutoSizeDelayed')
     else debugln('?');
   end;
   {$ENDIF}
 end;
 
-function TControl.AutoSizeCheckParent: Boolean;
+{------------------------------------------------------------------------------
+  TControl AutoSizeDelayedHandle
+
+  Returns true if AutoSize should be skipped / delayed because of its handle.
+  A TControl does not have a handle, so it needs a parent.
+------------------------------------------------------------------------------}
+function TControl.AutoSizeDelayedHandle: Boolean;
 begin
-  Result := Parent <> nil;
+  Result := Parent = nil;
 end;
 
 {------------------------------------------------------------------------------
-       TControl SetBoundsRect
+  TControl SetBoundsRect
 ------------------------------------------------------------------------------}
 procedure TControl.SetBoundsRect(const ARect: TRect);
 begin
