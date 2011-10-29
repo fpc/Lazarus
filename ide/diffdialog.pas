@@ -40,10 +40,9 @@ interface
 
 uses
   Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls, FileUtil,
-  LazarusIDEStrConsts, EditorOptions, LCLType,
-  IDEWindowIntf, IDEHelpIntf,
-  InputHistory, DiffPatch, ExtCtrls, Dialogs, SynEdit, SynHighlighterDiff,
-  SourceEditor;
+  LazarusIDEStrConsts, EditorOptions, LCLType, IDEWindowIntf, IDEHelpIntf,
+  InputHistory, DiffPatch, ExtCtrls, Dialogs, ComCtrls, SynEdit,
+  SynHighlighterDiff, SourceEditor;
 
 type
 
@@ -81,9 +80,11 @@ type
     CloseButton: TBitBtn;
     DiffSynEdit: TSynEdit;
     OpenInEditorButton: TBitBtn;
+    ProgressBar1: TProgressBar;
     SaveDiffButton: TBitBtn;
     SynDiffSyn1: TSynDiffSyn;
     Text1FileOpenButton: TButton;
+    CancelScanningButton: TBitBtn;
     dlgSave: TSaveDialog;
     dlgOpen: TOpenDialog;
 
@@ -102,6 +103,7 @@ type
     // options
     OptionsGroupBox: TCheckGroup;
 
+    procedure CancelScanningButtonClick(Sender: TObject);
     procedure FileOpenClick(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OnChangeFlag(Sender: TObject);
@@ -109,10 +111,13 @@ type
     procedure Text1ComboboxChange(Sender: TObject);
     procedure Text2ComboboxChange(Sender: TObject);
   private
-    fDiffNeedsUpdate: boolean;
-    FLockCount: integer;
+    fUpdating: Boolean;
+    fIdleConnected: boolean;
+    fCancelled: boolean;
     procedure SetupComponents;
     procedure UpdateDiff;
+    procedure SetIdleConnected(const AValue: boolean);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
   public
     Files: TDiffFiles;
     Text1: TDiffFile;
@@ -126,8 +131,8 @@ type
     procedure SaveSettings;
     procedure SetDiffOptions(NewOptions: TTextDiffFlags);
     function GetDiffOptions: TTextDiffFlags;
-    procedure BeginUpdate;
-    procedure EndUpdate;
+
+    property IdleConnected: boolean read fIdleConnected write SetIdleConnected;
   end;
   
 function ShowDiffDialog(Text1Index: integer;
@@ -162,11 +167,9 @@ begin
 
   OpenDiffInEditor:=false;
   DiffDlg:=TDiffDlg.Create(nil);
-  DiffDlg.BeginUpdate;
   DiffDlg.Files:=Files;
   DiffDlg.SetText1Index(Text1Index);
   DiffDlg.Init;
-  DiffDlg.EndUpdate;
   Result:=DiffDlg.ShowModal;
   DiffDlg.SaveSettings;
 
@@ -213,6 +216,11 @@ begin
       SetText2Index(Items.IndexOf(dlgOpen.FileName));
     end;
   end;
+end;
+
+procedure TDiffDlg.CancelScanningButtonClick(Sender: TObject);
+begin
+  fCancelled := True;
 end;
 
 procedure TDiffDlg.HelpButtonClick(Sender: TObject);
@@ -262,6 +270,7 @@ begin
   end;
 
   // buttons
+  CancelScanningButton.LoadGlyphFromLazarusResource('btn_cancel');
   CloseButton.Caption:=lisMenuClose;
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
   SaveDiffButton.Caption:=lisSave;
@@ -291,19 +300,31 @@ begin
 end;
 
 procedure TDiffDlg.UpdateDiff;
+begin
+  IdleConnected:=True;
+end;
+
+procedure TDiffDlg.SetIdleConnected(const AValue: boolean);
+begin
+  if fIdleConnected=AValue then exit;
+  fIdleConnected:=AValue;
+  if fIdleConnected then
+    Application.AddOnIdleHandler(@OnIdle)
+  else
+    Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
+procedure TDiffDlg.OnIdle(Sender: TObject; var Done: Boolean);
 var
   Text1Src, Text2Src: string;
   DiffTxt: String;
   dat : TStrings;
 begin
-  if FLockCount>0 then begin
-    fDiffNeedsUpdate:=true;
-    exit;
-  end;
-  fDiffNeedsUpdate:=false;
-  if (Text1=nil) or (Text2=nil) then begin
-    DiffSynEdit.Lines.Text:='';
-  end else begin
+  IdleConnected := false;
+  if fUpdating then Exit;
+  fUpdating := True;
+  DiffSynEdit.Lines.Text := '';
+  if (Text1 <> nil) and (Text2 <> nil) then begin
     if Text1.Editor = nil then
       begin
         dat := TStringList.Create;
@@ -332,15 +353,33 @@ begin
         Text2Src := Text2.Editor.EditorComponent.Lines.Text;
     end;
 
-    DiffTxt:=CreateTextDiff(Text1Src,Text2Src,GetDiffOptions,tdoContext);
-    
+    ProgressBar1.Max := Length(Text1Src);
+    ProgressBar1.Step := Length(Text1Src);
+    ProgressBar1.Position := 0;
+    Text1GroupBox.Enabled := False;
+    Text2GroupBox.Enabled := False;
+    OpenInEditorButton.Enabled := False;
+    SaveDiffButton.Enabled := False;
+    //CancelScanningButton.Enabled := True;
+
+    DiffTxt:=CreateTextDiff(Text1Src,Text2Src,GetDiffOptions,tdoContext,ProgressBar1);
     DiffSynEdit.Lines.Text:=DiffTxt;
+
+    //CancelScanningButton.Enabled := False;
+    SaveDiffButton.Enabled := True;
+    OpenInEditorButton.Enabled := True;
+    Text2GroupBox.Enabled := True;
+    Text1GroupBox.Enabled := True;
+    ProgressBar1.Position := 0;
   end;
+  fUpdating:=False;
 end;
 
 constructor TDiffDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  fUpdating := False;
+  fCancelled := False;
   Caption := lisCaptionDiff;
   IDEDialogLayoutList.ApplyLayout(Self,600,500);
   SetupComponents;
@@ -468,17 +507,6 @@ begin
     Include(Result,tdfIgnoreSpaceChars);
   if OptionsGroupBox.Checked[IgnoreTrailingSpacesCheckBox] then
     Include(Result,tdfIgnoreTrailingSpaces);
-end;
-
-procedure TDiffDlg.BeginUpdate;
-begin
-  inc(FLockCount);
-end;
-
-procedure TDiffDlg.EndUpdate;
-begin
-  dec(FLockCount);
-  if (FLockCount=0) and fDiffNeedsUpdate then UpdateDiff;
 end;
 
 { TDiffFile }

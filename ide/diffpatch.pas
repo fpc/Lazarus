@@ -37,7 +37,7 @@ unit DiffPatch;
 interface
 
 uses
-  Classes, SysUtils, LCLProc;
+  Classes, SysUtils, LCLProc, Forms, ComCtrls;
 
 type
   TTextDiffFlag = (
@@ -58,7 +58,7 @@ type
     );
 
 function CreateTextDiff(const Text1, Text2: string; Flags: TTextDiffFlags;
-  OutputType: TTextDiffOutputType): string;
+  OutputType: TTextDiffOutputType; ProgressBar: TProgressBar): string;
 
 const
   TextDiffFlagNames: array[TTextDiffFlag] of string = (
@@ -455,25 +455,18 @@ procedure FindNextEqualLine(
   const Text1: string; const Start1: TLineExtends;
   const Text2: string; const Start2: TLineExtends;
   Flags: TTextDiffFlags;
-  out EqualLine1, EqualLine2: TLineExtends
-  );
+  out EqualLine1, EqualLine2: TLineExtends; ProgressBar: TProgressBar);
 var
   Max1, Max2, Cur1, Cur2: TLineExtends;
 begin
-  //writeln('FindNextEqualLine A ');
   Max1:=Start1;
   Max2:=Start2;
-
   Cur1:=Start1;
   Cur2:=Start2;
   try
     if LinesAreEqual(Text1,Cur1,Text2,Cur2,Flags)
-    and (not IsEmptyLine(Text1,Cur1.LineStart,Cur1.LineEnd,Flags)) then begin
-      //writeln('FindNextEqualLine B :');
-      //writeln('  1 ',LineExtendsToStr(Cur1,Text1));
-      //writeln('  2 ',LineExtendsToStr(Cur2,Text2));
+    and (not IsEmptyLine(Text1,Cur1.LineStart,Cur1.LineEnd,Flags)) then
       exit;
-    end;
     repeat
       // increase Max1
       if GotoNextLine(Max1) then begin
@@ -491,6 +484,10 @@ begin
             inc(Cur2.LineNumber);
             GetLineExtends(Text2,Cur2);
           until false;
+        end;
+        if Assigned(ProgressBar) then begin
+          ProgressBar.Position := Max1.LineStart;
+          Application.ProcessMessages;
         end;
       end;
       // increase Max2
@@ -528,7 +525,7 @@ begin
 end;
 
 function CreateTextDiff(const Text1, Text2: string; Flags: TTextDiffFlags;
-  OutputType: TTextDiffOutputType): string;
+  OutputType: TTextDiffOutputType; ProgressBar: TProgressBar): string;
 var
   Line1, Line2, EqualLine1, EqualLine2: TLineExtends;
   Len1, Len2: integer;
@@ -555,8 +552,7 @@ begin
           GetNextLineExtends(Text2,Line2,Flags);
           // skip equal lines ...
           if (Line1.LineStart<=Len1) and (Line2.LineStart<=Len2) then begin
-            if not LinesAreEqual(Text1,Line1,Text2,Line2,Flags)
-            then
+            if not LinesAreEqual(Text1,Line1,Text2,Line2,Flags) then
               break;
             Line1.LineStart:=Line1.NextLineStart;
             inc(Line1.LineNumber);
@@ -571,15 +567,23 @@ begin
             end;
             exit;
           end;
+          if Assigned(ProgressBar) then begin
+            ProgressBar.Position := Line1.LineStart;
+            Application.ProcessMessages;
+          end;
         until false;
         // difference line found -> search next equal line
-        FindNextEqualLine(Text1,Line1, Text2,Line2, Flags, EqualLine1,EqualLine2);
+        FindNextEqualLine(Text1,Line1, Text2,Line2, Flags, EqualLine1,EqualLine2, ProgressBar);
         DiffOutput.AddDiff(Line1,EqualLine1, Line2,EqualLine2);
         // continue the search ...
         Line1:=EqualLine1;
         GotoNextLine(Line1);
         Line2:=EqualLine2;
         GotoNextLine(Line2);
+        if Assigned(ProgressBar) then begin
+          ProgressBar.Position := Line1.LineStart;
+          Application.ProcessMessages;
+        end;
       until false;
     except
       on E: Exception do begin
