@@ -172,7 +172,8 @@ type
   TCustomMaskEdit = Class(TCustomEdit)
   private
     FRealMask     : String;            // Real mask inserted
-    FMask         : ShortString;       // Acrtual internal mask
+    FMask         : ShortString;       // Actual internal mask
+    FFirstFreePos : Integer;           // First position where user can enter text
     FMaskSave     : Boolean;           // Save mask as part of the data
     FTrimType     : TMaskEditTrimType; // Trim leading or trailing spaces in GetText
     FSpaceChar    : Char;              // Char for space (default '_')
@@ -641,6 +642,9 @@ begin
         end;
       end;
     end;
+    FFirstFreePos := 1;
+    //Determine first position where text can be entered (needed for DeleteChars()
+    while (FFirstFreePos <= Length(FMask)) and IsLiteral(FMask[FFirstFreePos])  do Inc(FFirstFreePos);
     if (Length(FMask) > 0) then SetCharCase(ecNormal);
     //SetMaxLegth must be before Clear, otherwise Clear uses old MaxLength value!
     SetMaxLength(Length(FMask));
@@ -1131,8 +1135,8 @@ begin
     if HasExtSelection then DeleteSelected
     else
     begin
-      //cannot backspace if we are at beginning of string
-      if FCursorPos > 0 then
+      //cannot backspace if we are at beginning of string, or if all chars in front are MaskLiterals
+      if FCursorPos > FFirstFreePos - 1 then
       begin
         Dec(FCursorPos);
         //This will select the appropriate char in the control
