@@ -420,8 +420,11 @@ resourcestring
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';
 
   lisSearchProjectsFrom = 'Search projects from';
+  lisMEOther = 'Other';
   lisIncludeExamples = 'Include Examples';
   lisIncludeTestcases = 'Include Testcases';
+  lisMEProjects = 'Projects';
+  lisMEAction = 'Action';
   lisMenuGeneralOptions = 'Options ...';
   lisMenuEditCodeTemplates = 'Code Templates ...';
   lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor ...';
@@ -5353,6 +5356,7 @@ resourcestring
   lisDiscardChangesAndQuit = 'Discard changes and quit';
   dbgBreakPropertyGroupNotFound = 'Some groups in the Enable/Disable list do not exist.%0:s'
     +'Create them?%0:s%0:s%1:s';
+
 
 implementation
 

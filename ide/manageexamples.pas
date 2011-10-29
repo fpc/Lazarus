@@ -127,9 +127,12 @@ begin
 
   RootRadioGroup.Caption:=lisSearchProjectsFrom;
   RootRadioGroup.Items.Add(lisLazarusSource);
-  RootRadioGroup.Items.Add(dlgCOOther);  // could use lisCEOtherGroup
+  RootRadioGroup.Items.Add(lisMEOther);  // could use lisCEOtherGroup
   RootRadioGroup.ItemIndex:=0;
   RootRadioGroupClick(RootRadioGroup);
+
+  ProjectsGroupBox.Caption:=lisMEProjects;
+  ActionGroupBox.Caption:=lisMEAction;
 
   RelativeCheckBox.Caption:=lisRelativePaths;
   OpenSelectedButton.Caption:=lisExamplesOpenFirstSelected;
