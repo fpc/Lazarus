@@ -759,460 +759,513 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="DT_RIGHT">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           text justified to the right of the rectangle.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DT_VCENTER">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           text centered vertically within the rectangle.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DT_BOTTOM">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           text justified to the bottom of the rectangle.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DT_WORDBREAK">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           text can wrap into multiple lines.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DT_SINGLELINE">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           text is drawn in a single line, regardless of embedded line endings.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DT_EXPANDTABS">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           expand tab characters.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DT_NOCLIP">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           text is drawn without clipping.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DT_CALCRECT">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           returns the required rectangle, without actually drawing.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DT_NOPREFIX">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           show embedded '&amp;' characters.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DT_INTERNAL">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           uses the system font for calculations.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DT_EDITCONTROL">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           emulate behaviour of a multiline EDIT control.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DT_END_ELLIPSIS">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           appends an ellipsis when the text is truncated.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DT_MODIFYSTRING">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           update the string to match the displayed text (possibly truncated).
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DT_RTLREADING">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawText</var> formatting:
+           use right-to-left reading layout for bidirectional text.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFC_CAPTION">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> control type:
+          title bar.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFC_MENU">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> control type:
+          menu bar.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFC_SCROLL">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> control type:
+          scroll bar.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFC_BUTTON">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> control type:
+          button.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
+      <!-- constant Visibility: default -->
+      <element name="DFC_POPUPMENU">
+        <short><var>DrawFrameControl</var> control type:
+          menu item.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
       <!-- constant Visibility: default -->
       <element name="DFCS_BUTTONCHECK">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> button control style:
+          checkbox.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_BUTTONRADIOIMAGE">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> button control style:
+          radio button image.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_BUTTONRADIOMASK">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> button control style:
+          radio button mask.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_BUTTONRADIO">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> button control style:
+          radio button.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_BUTTON3STATE">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> button control style:
+          three-state button.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_BUTTONPUSH">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> button control style:
+          push button.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_CAPTIONCLOSE">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> caption control style:
+          Close button.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_CAPTIONMIN">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> caption control style:
+          Minimize button.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_CAPTIONMAX">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> caption control style:
+          Maximize button.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_CAPTIONRESTORE">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> caption control style:
+          Restore button.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_CAPTIONHELP">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> caption control style:
+          Help button.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_MENUARROW">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> menubar control style:
+          submenu arrow.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_MENUCHECK">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> menubar control style:
+          check mark.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_MENUBULLET">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> menubar control style:
+          bullet.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_SCROLLDOWN">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> scrollbar control style:
+          down arrow.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_SCROLLLEFT">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> scrollbar control style:
+          left arrow.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_SCROLLRIGHT">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> scrollbar control style:
+          right arrow.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_SCROLLCOMBOBOX">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> scrollbar control style:
+          combobox scrollbar.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_SCROLLSIZEGRIP">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> scrollbar control style:
+          size grip in the bottom-right window corner.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_SCROLLUP">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> scrollbar control style:
+          up arrow.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_INACTIVE">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> control state:
+          inactive (grayed).
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_PUSHED">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> button control state:
+          button pushed.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_CHECKED">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> button control state:
+          button checked.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
-<!-- constant Visibility: default -->
-<element name="DFCS_TRANSPARENT">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="DFCS_HOT">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- constant Visibility: default -->
+      <element name="DFCS_TRANSPARENT">
+        <short><var>DrawFrameControl</var> control style:
+          transparent (title bar...).
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="DFCS_HOT">
+        <short><var>DrawFrameControl</var> scrollbar control state:
+          button hot-tracked.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
       <!-- constant Visibility: default -->
       <element name="DFCS_ADJUSTRECT">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> button control style:
+          exclude frame.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_FLAT">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> button control style:
+          flat.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="DFCS_MONO">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>DrawFrameControl</var> button control style:
+          monochrome border.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="HTERROR">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Hit test: [what?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="HTTRANSPARENT">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Hit test: transparent area[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="HTNOWHERE">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Hit test: outside control.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="HTCLIENT">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Hit test: client area.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="HTCAPTION">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Hit test: caption background.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
 
       <!-- constant Visibility: default -->
@@ -1223,7 +1276,6 @@
       <seealso>
       </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="MSGF_MESSAGEBOX">
       <short></short>
@@ -1232,7 +1284,6 @@
       <seealso>
       </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="MSGF_MENU">
       <short></short>
@@ -1241,7 +1292,6 @@
       <seealso>
       </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="MSGF_MOVE">
       <short></short>
@@ -1250,7 +1300,6 @@
       <seealso>
       </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="MSGF_SIZE">
       <short></short>
@@ -1259,7 +1308,6 @@
       <seealso>
       </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="MSGF_SCROLLBAR">
       <short></short>
@@ -1268,7 +1316,6 @@
       <seealso>
       </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="MSGF_NEXTWINDOW">
       <short></short>
@@ -1280,57 +1327,56 @@
 
       <!-- constant Visibility: default -->
       <element name="PM_Noremove">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>PeekMessage</var> flag:
+          don't remove peeked message.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="PM_Remove">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short><var>PeekMessage</var> flag:
+          remove peeked message.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="MF_BYCOMMAND">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Find menu item by command ID.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="MF_BYPOSITION">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Find menu item by position number.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="MF_BYHANDLE">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
       <!-- constant Visibility: default -->
       <element name="MF_SEPARATOR">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
-      </element>
+        <short></short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+        </element>
 
       <!-- constant Visibility: default -->
       <element name="MF_ENABLED">
