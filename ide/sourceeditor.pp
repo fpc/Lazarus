@@ -570,13 +570,6 @@ type
     procedure NotebookPageChanged(Sender: TObject);
     procedure NotebookShowTabHint(Sender: TObject; HintInfo: PHintInfo);
     procedure OpenAtCursorClicked(Sender: TObject);
-    procedure OnPopupMenuOpenPasFile(Sender: TObject);
-    procedure OnPopupMenuOpenPPFile(Sender: TObject);
-    procedure OnPopupMenuOpenPFile(Sender: TObject);
-    procedure OnPopupMenuOpenLFMFile(Sender: TObject);
-    procedure OnPopupMenuOpenDFMFile(Sender: TObject);
-    procedure OnPopupMenuOpenLRSFile(Sender: TObject);
-    procedure OnPopupMenuOpenSFile(Sender: TObject);
     procedure OnPopupMenuOpenFile(Sender: TObject);
     procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure InsertCharacter(const C: TUTF8Char);
@@ -5295,9 +5288,11 @@ var
   CurFilename, ShortFileName: String;
   ASrcEdit: TSourceEditor;
 
-  procedure MaybeAddPopup(const ASuffix: String; const ANewOnClick: TNotifyEvent;
+  procedure MaybeAddPopup(const ASuffix: String; ANewOnClick: TNotifyEvent = nil;
     Filename: string = '');
   begin
+    if ANewOnClick=nil then
+      ANewOnClick:=@OnPopupMenuOpenFile;
     if Filename='' then Filename:=CurFilename;
     Filename:=ChangeFileExt(Filename,ASuffix);
     if not FileExistsCached(Filename) then exit;
@@ -5443,22 +5438,22 @@ begin
     ShortFileName:=ExtractFileName(CurFilename);
     if (FilenameIsAbsolute(CurFilename)) then begin
       if FilenameIsPascalUnit(CurFilename) then begin
-        MaybeAddPopup('.lfm', @OnPopupMenuOpenLFMFile);
-        MaybeAddPopup('.dfm', @OnPopupMenuOpenDFMFile);
-        MaybeAddPopup('.lrs', @OnPopupMenuOpenLRSFile);
-        MaybeAddPopup('.s', @OnPopupMenuOpenSFile);
+        MaybeAddPopup('.lfm');
+        MaybeAddPopup('.dfm');
+        MaybeAddPopup('.lrs');
+        MaybeAddPopup('.s');
       end else if CompareFileExt(CurFilename,'.inc',false)=0 then begin
         // include file => check unit
         MainCodeBuf:=CodeToolBoss.GetMainCode(ASrcEdit.CodeBuffer);
         if (MainCodeBuf<>nil) then begin
-          MaybeAddPopup('.lfm', @OnPopupMenuOpenFile,MainCodeBuf.Filename);
+          MaybeAddPopup('.lfm', nil,MainCodeBuf.Filename);
         end;
       end;
       if (CompareFileExt(CurFilename,'.lfm',true)=0)
       or (CompareFileExt(CurFilename,'.dfm',true)=0) then begin
-        MaybeAddPopup('.pas', @OnPopupMenuOpenPasFile);
-        MaybeAddPopup('.pp', @OnPopupMenuOpenPPFile);
-        MaybeAddPopup('.p', @OnPopupMenuOpenPFile);
+        MaybeAddPopup('.pas');
+        MaybeAddPopup('.pp');
+        MaybeAddPopup('.p');
       end;
       if (CompareFileExt(CurFilename,'.lpi',true)=0)
       or (CompareFileExt(CurFilename,'.lpk',true)=0) then
@@ -6430,55 +6425,6 @@ begin
     Manager.OnShowCodeContext(JumpToError,Abort);
     if Abort then ;
   end;
-end;
-
-procedure TSourceNotebook.OnPopupMenuOpenPasFile(Sender: TObject);
-begin
-  MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.pas'),
-    PageIndex+1, Manager.IndexOfSourceWindow(self),
-    [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
-end;
-
-procedure TSourceNotebook.OnPopupMenuOpenPPFile(Sender: TObject);
-begin
-  MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.pp'),
-    PageIndex+1, Manager.IndexOfSourceWindow(self),
-    [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
-end;
-
-procedure TSourceNotebook.OnPopupMenuOpenPFile(Sender: TObject);
-begin
-  MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.p'),
-    PageIndex+1, Manager.IndexOfSourceWindow(self),
-    [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
-end;
-
-procedure TSourceNotebook.OnPopupMenuOpenLFMFile(Sender: TObject);
-begin
-  MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.lfm'),
-    PageIndex+1, Manager.IndexOfSourceWindow(self),
-    [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
-end;
-
-procedure TSourceNotebook.OnPopupMenuOpenDFMFile(Sender: TObject);
-begin
-  MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.dfm'),
-    PageIndex+1, Manager.IndexOfSourceWindow(self),
-    [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
-end;
-
-procedure TSourceNotebook.OnPopupMenuOpenLRSFile(Sender: TObject);
-begin
-  MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.lrs'),
-    PageIndex+1, Manager.IndexOfSourceWindow(self),
-    [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
-end;
-
-procedure TSourceNotebook.OnPopupMenuOpenSFile(Sender: TObject);
-begin
-  MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.s'),
-    PageIndex+1, Manager.IndexOfSourceWindow(self),
-    [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
 end;
 
 procedure TSourceNotebook.OnPopupMenuOpenFile(Sender: TObject);
