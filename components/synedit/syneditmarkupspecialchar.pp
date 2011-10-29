@@ -129,6 +129,7 @@ begin
   if (LogCol = Length(FCurLine)) then begin
     if IsSpecial(LogCol) then
       Result := LogicalToPhysicalPos(Point(Length(FCurLine)+1, aRow)).x;
+      FCurEnd := Result;
     exit;
   end;
 
