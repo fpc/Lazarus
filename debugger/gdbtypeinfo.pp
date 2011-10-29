@@ -198,60 +198,14 @@ type
     function GetParts(Index: Integer): TGDBExpressionPart; virtual;
     function GetText: String; virtual;
     function ParseExpression(AText: PChar; ATextLen: Integer): TGDBExpressionPart;
+    procedure Init; virtual;
   public
     function NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean; virtual;
   public
+    constructor Create;
     function PartCount: Integer; virtual;
     property Parts[Index: Integer]: TGDBExpressionPart read GetParts;
     property Text: String read GetText;
-  end;
-
-  { TGDBExpressionPartListBase }
-
-  TGDBExpressionPartListBase = class(TGDBExpressionPart)
-  private
-    FList: TFPList;
-  protected
-    function GetParts(Index: Integer): TGDBExpressionPart; override;
-    function GetText: String; override;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Clear;
-    procedure ClearShared;
-    function Add(APart: TGDBExpressionPart):Integer;
-    function PartCount: Integer; override;
-  end;
-
-  TGDBExpressionPartList = class(TGDBExpressionPartListBase)
-  public
-    function AddList(APartList: TGDBExpressionPartList):Integer;
-  end;
-
-  { TGDBExpressionPartArray }
-
-  TGDBExpressionPartArray = class(TGDBExpressionPartListBase)
-  private
-    FNeedTypeCast: Boolean;
-    FVarParam: Boolean;
-    FPTypeReq: TGDBPTypeRequest;
-    FPTypeDeRefReq: TGDBPTypeRequest;
-  protected
-    function GetText: String; override;
-  public
-    constructor Create(ALeadExpresion: TGDBExpressionPart);
-    function AddIndex(APart: TGDBExpressionPart):Integer;
-    function NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean; override;
-    property NeedTypeCast: Boolean read FNeedTypeCast write FNeedTypeCast;
-  end;
-
-  { TGDBExpressionPartCastCall }
-
-  TGDBExpressionPartCastCall = class(TGDBExpressionPartListBase)
-  private
-  public
-    constructor Create(ALeadExpresion: TGDBExpressionPart);
-    function AddBrackets(APart: TGDBExpressionPart):Integer;
   end;
 
   { TGDBExpression }
@@ -278,6 +232,71 @@ type
     function GetText: String; override;
   public
     constructor Create(AText: PChar; ATextLen: Integer);
+  end;
+
+  { TGDBExpressionPartListBase }
+
+  TGDBExpressionPartListBase = class(TGDBExpressionPart)
+  private
+    FList: TFPList;
+  protected
+    function GetParts(Index: Integer): TGDBExpressionPart; override;
+    function GetText: String; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure ClearShared;
+    function Add(APart: TGDBExpressionPart):Integer;
+    function PartCount: Integer; override;
+  end;
+
+  TGDBExpressionPartList = class(TGDBExpressionPartListBase)
+  public
+    function AddList(APartList: TGDBExpressionPartList):Integer;
+  end;
+
+  { TGDBExpressionPartArrayIdx }
+
+  TGDBExpressionPartArrayIdx = class(TGDBExpressionPartBracketed)
+  private
+    FVarParam: Boolean;
+    FPTypeReq: TGDBPTypeRequest;
+    FPTypeDeRefReq: TGDBPTypeRequest;
+  protected
+    procedure Init; override;
+    procedure InitReq(var AReqPtr: PGDBPTypeRequest; AReqText: String);
+    procedure InitDeRefReq(var AReqPtr: PGDBPTypeRequest; AReqText: String);
+    property VarParam: Boolean read FVarParam write FVarParam;
+    property PTypeReq: TGDBPTypeRequest read FPTypeReq write FPTypeReq;
+    property PTypeDeRefReq: TGDBPTypeRequest read FPTypeDeRefReq write FPTypeDeRefReq;
+  end;
+
+  { TGDBExpressionPartArray }
+
+  TGDBExpressionPartArray = class(TGDBExpressionPartListBase)
+  private
+    FNeedTypeCast: Boolean;
+    function GetIndexParts(Index: Integer): TGDBExpressionPartArrayIdx;
+  protected
+    function GetText: String; override;
+    function GetTextToIdx(AIdx: Integer): String;
+    function IndexCount: Integer;
+    property IndexPart[Index: Integer]: TGDBExpressionPartArrayIdx read GetIndexParts;
+  public
+    constructor Create(ALeadExpresion: TGDBExpressionPart);
+    function AddIndex(APart: TGDBExpressionPartArrayIdx):Integer;
+    function NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean; override;
+    property NeedTypeCast: Boolean read FNeedTypeCast write FNeedTypeCast;
+  end;
+
+  { TGDBExpressionPartCastCall }
+
+  TGDBExpressionPartCastCall = class(TGDBExpressionPartListBase)
+  private
+  public
+    constructor Create(ALeadExpresion: TGDBExpressionPart);
+    function AddBrackets(APart: TGDBExpressionPart):Integer;
   end;
 
 
@@ -367,7 +386,6 @@ type
     FProccesReuestsMade: TGDBTypeProcessRequests;
     FReqResults: Array [TGDBTypeProcessRequest] of TGDBPTypeRequest;
 
-    FArrayEntryIndexExpr: String;
     FParsedExpression: TGDBExpression;
 
     FHasTypeCastFix, FHasAutoTypeCastFix: Boolean;
@@ -924,6 +942,37 @@ begin
     ;
 end;
 
+{ TGDBExpressionPartArrayIdx }
+
+procedure TGDBExpressionPartArrayIdx.Init;
+begin
+  inherited Init;
+  FPTypeReq.Result.Kind := ptprkNotEvaluated;
+  FPTypeDeRefReq.Result.Kind := ptprkNotEvaluated;
+  FVarParam := False;
+end;
+
+procedure TGDBExpressionPartArrayIdx.InitReq(var AReqPtr: PGDBPTypeRequest; AReqText: String);
+begin
+  FPTypeReq.Request := AReqText;
+  FPTypeReq.Error := '';
+  FPTypeReq.ReqType := gcrtPType;
+  FPTypeReq.Next := AReqPtr;
+  FPTypeReq.Result.Kind := ptprkError;
+  AReqPtr := @FPTypeReq;
+end;
+
+procedure TGDBExpressionPartArrayIdx.InitDeRefReq(var AReqPtr: PGDBPTypeRequest;
+  AReqText: String);
+begin
+  FPTypeDeRefReq.Request := AReqText;
+  FPTypeDeRefReq.Error := '';
+  FPTypeDeRefReq.ReqType := gcrtPType;
+  FPTypeDeRefReq.Next := AReqPtr;
+  FPTypeDeRefReq.Result.Kind := ptprkError;
+  AReqPtr := @FPTypeDeRefReq;
+end;
+
 { TGDBExpressionPartList }
 
 function TGDBExpressionPartList.AddList(APartList: TGDBExpressionPartList): Integer;
@@ -939,78 +988,100 @@ end;
 
 { TGDBExpressionPartArray }
 
+function TGDBExpressionPartArray.GetIndexParts(Index: Integer): TGDBExpressionPartArrayIdx;
+begin
+  Result := TGDBExpressionPartArrayIdx(Parts[Index+1]);
+end;
+
 function TGDBExpressionPartArray.GetText: String;
+begin
+  Result := GetTextToIdx(IndexCount-1);
+end;
+
+function TGDBExpressionPartArray.GetTextToIdx(AIdx: Integer): String;
 var
   i: Integer;
-  s: String;
+  IdxPart: TGDBExpressionPartArrayIdx;
+  PTReqRes, PTDeRefReqRes, PTResult: TGDBPTypeResult;
+  IsPointer, NeedTCast: Boolean;
 begin
-  if not (
-     (FPTypeReq.Result.Kind = ptprkArray) or
-     ( (FPTypeDeRefReq.Result.Kind = ptprkArray) and
-       (ptprfDynArray in FPTypeDeRefReq.Result.Flags) )
-    )
-  then begin
-    // maybe pointer with index access
-    Result := inherited GetText;
-    exit;
-  end;
-
   Result := Parts[0].Text;
 
-  if FPTypeReq.Result.NestArrayCount > 0 then  // not yet supported
-  begin
-    if (ptprfPointer in FPTypeReq.Result.Flags)
-    then Result := Result + '^';
-    for i := 1 to PartCount - 1 do
-      Result := Result + Parts[i].Text;
+  if AIdx < 0 then exit;
+
+  for i := 0 to AIdx do begin
+    IdxPart := IndexPart[i];
+    PTReqRes := IdxPart.PTypeReq.Result;
+    PTDeRefReqRes := IdxPart.PTypeDeRefReq.Result; // only evaluated, if PTReqRes is pointer and not array
+
+
+    PTResult := PTReqRes;
+    if (PTReqRes.Kind <> ptprkArray) and
+       (PTDeRefReqRes.Kind = ptprkArray) and (ptprfDynArray in PTDeRefReqRes.Flags)
+    then begin
+      PTResult := PTDeRefReqRes;
+      IsPointer := True;
+    end
+    else
+      IsPointer := ptprfPointer in PTResult.Flags;
+
+
+    if not (PTResult.Kind = ptprkArray)
+    then begin
+      // maybe pointer with index access
+      Result := Result + IdxPart.Text;
+      continue;
+    end;
+
+
+    if PTResult.NestArrayCount > 0 then  // not yet supported
+    begin
+      if IsPointer
+      then Result := Result + '^';
+      Result := Result + IdxPart.Text;
+      continue;
+    end;
+
+
+    NeedTCast := FNeedTypeCast and (i = IndexCount-1);
+
+    if IsPointer
+    then begin
+      // dyn array
+      if IdxPart.VarParam and (PTResult.SubName.Len > 0)
+      //and
+      //   (  NeedTCast or (i < IndexCount-1)  )
+      then begin
+        Result := '^' + PCLenToString(PTResult.SubName) + '(' + Result + ')';
+        NeedTCast := False;
+      end
+      else
+        Result := Result + '^';
+    end;
+
+    Result := Result + IdxPart.Text;
+
+    if NeedTCast and (PTResult.SubName.Len > 0)
+    then
+      Result := PCLenToString(PTResult.SubName) + '(' + Result + ')';
+
   end;
 
+end;
 
-  s := '';
-  if (FVarParam or FNeedTypeCast) and (FPTypeDeRefReq.Result.SubName.Len > 0)
-  then begin
-    s := PCLenToString(FPTypeDeRefReq.Result.SubName);
-  end
-  else
-  if (FVarParam or FNeedTypeCast) and (FPTypeReq.Result.SubName.Len > 0)
-  then begin
-    s := PCLenToString(FPTypeReq.Result.SubName);
-  end;
-
-  if (ptprfPointer in FPTypeReq.Result.Flags) or
-     (ptprfDynArray in FPTypeDeRefReq.Result.Flags)
-  then begin
-    // dyn array
-    if FVarParam and (s <> '')
-    then Result := '^' + s + '(' + Result + ')'
-    else Result := Result + '^';
-  end
-  else begin
-    // stat array
-    FVarParam := False;
-  end;
-
-  Result := Result + Parts[1].Text;
-
-  if (FNeedTypeCast and not FVarParam) and (s <> '')
-  then begin
-    Result := s + '(' + Result + ')';
-  end;
-
-  for i := 2 to PartCount - 1 do
-    Result := Result + Parts[i].Text;
+function TGDBExpressionPartArray.IndexCount: Integer;
+begin
+  Result := PartCount - 1;
 end;
 
 constructor TGDBExpressionPartArray.Create(ALeadExpresion: TGDBExpressionPart);
 begin
   inherited Create;
-  FPTypeReq.Result.Kind := ptprkNotEvaluated;
-  FPTypeDeRefReq.Result.Kind := ptprkNotEvaluated;
   FNeedTypeCast := False;
   Add(ALeadExpresion);
 end;
 
-function TGDBExpressionPartArray.AddIndex(APart: TGDBExpressionPart): Integer;
+function TGDBExpressionPartArray.AddIndex(APart: TGDBExpressionPartArrayIdx): Integer;
 begin
   Result := Add(APart);
 end;
@@ -1018,6 +1089,8 @@ end;
 function TGDBExpressionPartArray.NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean;
 var
   i: Integer;
+  IdxPart: TGDBExpressionPartArrayIdx;
+  PTReq, PTDeRefReq: TGDBPTypeRequest;
 begin
   Result := False;
   for i := 1 to PartCount - 1 do
@@ -1030,50 +1103,48 @@ begin
     exit;
   end;
 
-  if FPTypeReq.Result.Kind = ptprkNotEvaluated
-  then begin
-    FVarParam := False;
-    FPTypeReq.Request := 'ptype ' + Parts[0].Text;
-    FPTypeReq.Error := '';
-    FPTypeReq.ReqType := gcrtPType;
-    FPTypeReq.Next := AReqPtr;
-    AReqPtr := @FPTypeReq;
-    Result := True;
-    exit;
-  end
-  else
-  if (FPTypeReq.Result.Kind <> ptprkError) and (ptprfParamByRef in FPTypeReq.Result.Flags)
-  then begin
-    // FPC 2.2.4 encoded "var param" in a special way, and we need an extra deref)
-    FVarParam := True;
-    FPTypeReq.Request := 'ptype ' + Parts[0].Text + '^';
-    FPTypeReq.Error := '';
-    FPTypeReq.ReqType := gcrtPType;
-    FPTypeReq.Next := AReqPtr;
-    AReqPtr := @FPTypeReq;
-    Result := True;
-    exit;
-  end;
+  i := 0;
+  while i < IndexCount do begin
+    IdxPart := IndexPart[i];
+    PTReq := IdxPart.PTypeReq;
 
-  (* With Dwarf gdb may return "type = ^TFoo" for an array
-     And the for the derefferenced expr "type = array of TFoo"
-  *)
-  if (not (FPTypeReq.Result.Kind in [ptprkNotEvaluated, ptprkError, ptprkArray])) and
-     (ptprfPointer in FPTypeReq.Result.Flags) and
-     (FPTypeDeRefReq.Result.Kind = ptprkNotEvaluated)
-  then begin
-    if FVarParam
-    then FPTypeDeRefReq.Request := 'ptype ' + Parts[0].Text + '^^'
-    else FPTypeDeRefReq.Request := 'ptype ' + Parts[0].Text + '^';
-    FPTypeDeRefReq.Error := '';
-    FPTypeDeRefReq.ReqType := gcrtPType;
-    FPTypeDeRefReq.Next := AReqPtr;
-    AReqPtr := @FPTypeDeRefReq;
-    Result := True;
-    exit;
-  end;
+    if PTReq.Result.Kind = ptprkError
+    then exit; // no way to find more info
 
-  // TODO ptypes for nest array
+    if PTReq.Result.Kind = ptprkNotEvaluated
+    then begin
+      IdxPart.VarParam := False;
+      IdxPart.InitReq(AReqPtr, 'ptype ' + GetTextToIdx(i-1));
+      Result := True;
+      exit;
+    end
+    else
+    if (not IdxPart.VarParam) and (ptprfParamByRef in PTReq.Result.Flags)
+    then begin
+      // FPC 2.2.4 encoded "var param" in a special way, and we need an extra deref)
+      IdxPart.VarParam := True;
+      IdxPart.InitReq(AReqPtr, 'ptype ' + GetTextToIdx(i-1) + '^');
+      Result := True;
+      exit;
+    end;
+
+    (* With Dwarf gdb may return "type = ^TFoo" for an array
+       And the for the derefferenced expr "type = array of TFoo"
+    *)
+    PTDeRefReq := IdxPart.PTypeDeRefReq;
+    if (PTReq.Result.Kind <> ptprkArray) and
+       (ptprfPointer in PTReq.Result.Flags) and
+       (PTDeRefReq.Result.Kind = ptprkNotEvaluated)
+    then begin
+      if IdxPart.VarParam
+      then IdxPart.InitDeRefReq(AReqPtr, 'ptype ' + GetTextToIdx(i-1) + '^^')
+      else IdxPart.InitDeRefReq(AReqPtr, 'ptype ' + GetTextToIdx(i-1) + '^');
+      Result := True;
+      exit;
+    end;
+
+    inc(i);
+  end;
 end;
 
 { TGDBExpressionPartCastCall }
@@ -1253,7 +1324,7 @@ begin
       while (CurPtr^ = '[') do begin
         CurPartPtr := CurPtr;
         if not ScanToIndexEnd then break; // broken expression, do not attempt to do anything
-        CurArray.AddIndex(TGDBExpressionPartBracketed.Create(CurPartPtr, CurPtr - CurPartPtr));
+        CurArray.AddIndex(TGDBExpressionPartArrayIdx.Create(CurPartPtr, CurPtr - CurPartPtr));
         SkipSpaces;
       end;
     end
@@ -1287,6 +1358,11 @@ begin
   if CurPtr < EndPtr then FreeAndNil(Result);
 end;
 
+procedure TGDBExpressionPart.Init;
+begin
+  //
+end;
+
 function TGDBExpressionPart.NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean;
 var
   i: Integer;
@@ -1295,6 +1371,11 @@ begin
   for i := 0 to PartCount - 1 do
     if Parts[i].NeedValidation(AReqPtr) then
       Result := True;
+end;
+
+constructor TGDBExpressionPart.Create;
+begin
+  Init;
 end;
 
 function TGDBExpressionPart.GetParts(Index: Integer): TGDBExpressionPart;
@@ -1317,7 +1398,6 @@ end;
 function TGDBExpressionPartListBase.GetText: String;
 var
   i: Integer;
-  x: TGDBExpressionPart;
 begin
   Result := '';
   for i := 0 to PartCount - 1 do
@@ -1326,6 +1406,7 @@ end;
 
 constructor TGDBExpressionPartListBase.Create;
 begin
+  inherited Create;
   FList := TFPList.Create;
 end;
 
@@ -1378,6 +1459,7 @@ end;
 
 constructor TGDBExpression.CreateSimple(AText: PChar; ATextLen: Integer);
 begin
+  inherited Create;
   // not to be parsed
   FExpressionPart := nil;
   FText.Ptr := AText;
@@ -2296,8 +2378,6 @@ var
   end;
 
   procedure ProcessInitial;
-  var
-    p, p1: PChar;
   begin
     if FExpression = '' then begin;
       ProcessInitialSimple;
