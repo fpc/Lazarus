@@ -1986,7 +1986,7 @@ begin
   Result := False;
 end;
 
-{$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
+{$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents) OR DEFINED(VerboseQtKeys)}
 function EventTypeToStr(Event:QEventH):string;
 // Qt 3 events
 const
@@ -2534,6 +2534,11 @@ var
   AChar: Char;
   AKeyEvent: QKeyEventH;
   GlobalAction: Integer;
+  {$IFDEF VerboseQtKeys}
+  s: String;
+  s1: String;
+  NativeModifiers: LongWord;
+  {$ENDIF}
 begin
   {$ifdef VerboseQt}
     DebugLn('TQtWidget.SlotKey ', dbgsname(LCLObject));
@@ -2564,6 +2569,73 @@ begin
 
   // Loads the UTF-8 character associated with the keypress, if any
   QKeyEvent_text(QKeyEventH(Event), @Text);
+
+  {$IFDEF VerboseQtKeys}
+  writeln('> TQtWidget.SlotKey dump begin event=',EventTypeToStr(Event));
+
+  S := '';
+  if Modifiers and QtShiftModifier <> 0 then
+    S := 'SHIFT,';
+  if Modifiers and QtControlModifier <> 0 then
+    S := S + 'CONTROL,';
+
+  if Modifiers and QtAltModifier <> 0 then
+    S := S + 'ALT,';
+
+  if Modifiers and QtMetaModifier <> 0 then
+    S := S + 'META,';
+
+  if Modifiers and QtKeypadModifier <> 0 then
+    S := S + 'KEYPAD,';
+
+  if Modifiers and QtGroupSwitchModifier <> 0 then
+    S := S + 'GROUPSWITCH,';
+
+  if Modifiers and QtKeyboardModifierMask <> 0 then
+    S := S + 'KEYBOARDMODIFIERMASK,';
+
+  if S <> '' then
+    Delete(S, length(S), 1)
+  else
+    S := 'NONE';
+
+
+  NativeModifiers := QKeyEvent_NativeModifiers(QKeyEventH(Event));
+  S1 := '';
+
+  if NativeModifiers and QtShiftModifier <> 0 then
+    S1 := 'SHIFT,';
+  if NativeModifiers and QtControlModifier <> 0 then
+    S1 := S1 + 'CONTROL,';
+
+  if NativeModifiers and QtAltModifier <> 0 then
+    S1 := S1 + 'ALT,';
+
+  if NativeModifiers and QtMetaModifier <> 0 then
+    S1 := S1 + 'META,';
+
+  if NativeModifiers and QtKeypadModifier <> 0 then
+    S1 := S1 + 'KEYPAD,';
+
+  if NativeModifiers and QtGroupSwitchModifier <> 0 then
+    S1 := S1 + 'GROUPSWITCH,';
+
+  if NativeModifiers and QtKeyboardModifierMask <> 0 then
+    S1 := S1 + 'KEYBOARDMODIFIERMASK,';
+
+  if S1 <> '' then
+    Delete(S1, length(S1), 1)
+  else
+    S1 := 'NONE';
+
+  writeln(' KEY=',QKeyEvent_key(QKeyEventH(Event)),' COUNT=',QKeyEvent_count(QKeyEventH(Event)),' TEXT=',Text);
+  writeln(' LCLKEY=',QtKeyToLCLKey(QKeyEvent_key(QKeyEventH(Event)), Text));
+  writeln(' MODIFIERS: ',S,' NATIVEMODIFIERS: ',S1);
+  writeln(' HASEXTENDEDINFO: ',QKeyEvent_hasExtendedInfo(QKeyEventH(Event)));
+  writeln(' NATIVESCANCODE: ',QKeyEvent_nativeScanCode(QKeyEventH(Event)),
+    ' NATIVEVIRTUALKEY: ',QKeyEvent_nativeVirtualKey(QKeyEventH(Event)));
+  writeln('< TQtWidget.SlotKey dump end event=',EventTypeToStr(Event));
+  {$ENDIF}
 
   {we must intercept modifiers for main form menu (if any). issue #18709}
   if (Modifiers = QtAltModifier) then
