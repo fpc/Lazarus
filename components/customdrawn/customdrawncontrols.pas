@@ -825,8 +825,6 @@ var
   ABmp: TBitmap = nil;
   lCanvas: TFPImageCanvas = nil;
 begin
-  inherited Paint;
-
   PrepareCurrentDrawer();
 
   ABmp := TBitmap.Create;
@@ -1462,7 +1460,6 @@ var
   ABmp: TBitmap = nil;
   lCanvas: TFPImageCanvas = nil;
 begin
-  inherited Paint;
   ABmp := TBitmap.Create;
   try
     ABmp.Width := Width;
@@ -1732,39 +1729,60 @@ finalization
   // Standard Tab
   for i := 0 to CDDRAWSTYLE_COUNT-1 do
   begin
-    RegisteredButtonDrawers[TCDDrawStyle(i)].Free;
-    RegisteredButtonDrawers[TCDDrawStyle(i)] := nil;
+    if RegisteredButtonDrawers[TCDDrawStyle(i)] <> nil then
+    begin
+      RegisteredButtonDrawers[TCDDrawStyle(i)].Free;
+      RegisteredButtonDrawers[TCDDrawStyle(i)] := nil;
+    end;
   end;
   for i := 0 to CDDRAWSTYLE_COUNT-1 do
   begin
-    RegisteredEditDrawers[TCDDrawStyle(i)].Free;
-    RegisteredEditDrawers[TCDDrawStyle(i)] := nil;
+    if RegisteredEditDrawers[TCDDrawStyle(i)] <> nil then
+    begin
+      RegisteredEditDrawers[TCDDrawStyle(i)].Free;
+      RegisteredEditDrawers[TCDDrawStyle(i)] := nil;
+    end;
   end;
   for i := 0 to CDDRAWSTYLE_COUNT-1 do
   begin
-    RegisteredGroupBoxDrawers[TCDDrawStyle(i)].Free;
-    RegisteredGroupBoxDrawers[TCDDrawStyle(i)] := nil;
+    if RegisteredGroupBoxDrawers[TCDDrawStyle(i)] <> nil then
+    begin
+      RegisteredGroupBoxDrawers[TCDDrawStyle(i)].Free;
+      RegisteredGroupBoxDrawers[TCDDrawStyle(i)] := nil;
+    end;
   end;
   for i := 0 to CDDRAWSTYLE_COUNT-1 do
   begin
-    RegisteredCheckBoxDrawers[TCDDrawStyle(i)].Free;
-    RegisteredCheckBoxDrawers[TCDDrawStyle(i)] := nil;
+    if RegisteredCheckBoxDrawers[TCDDrawStyle(i)] <> nil then
+    begin
+      RegisteredCheckBoxDrawers[TCDDrawStyle(i)].Free;
+      RegisteredCheckBoxDrawers[TCDDrawStyle(i)] := nil;
+    end;
   end;
   // Common Controls Tab
   for i := 0 to CDDRAWSTYLE_COUNT-1 do
   begin
-    RegisteredTrackBarDrawers[TCDDrawStyle(i)].Free;
-    RegisteredTrackBarDrawers[TCDDrawStyle(i)] := nil;
+    if RegisteredTrackBarDrawers[TCDDrawStyle(i)] <> nil then
+    begin
+      RegisteredTrackBarDrawers[TCDDrawStyle(i)].Free;
+      RegisteredTrackBarDrawers[TCDDrawStyle(i)] := nil;
+    end;
   end;
   for i := 0 to CDDRAWSTYLE_COUNT-1 do
   begin
-    RegisteredListViewDrawers[TCDDrawStyle(i)].Free;
-    RegisteredListViewDrawers[TCDDrawStyle(i)] := nil;
+    if RegisteredListViewDrawers[TCDDrawStyle(i)] <> nil then
+    begin
+      RegisteredListViewDrawers[TCDDrawStyle(i)].Free;
+      RegisteredListViewDrawers[TCDDrawStyle(i)] := nil;
+    end;
   end;
   for i := 0 to CDDRAWSTYLE_COUNT-1 do
   begin
-    RegisteredCustomTabControlDrawers[TCDDrawStyle(i)].Free;
-    RegisteredCustomTabControlDrawers[TCDDrawStyle(i)] := nil;
+    if RegisteredCustomTabControlDrawers[TCDDrawStyle(i)] <> nil then
+    begin
+      RegisteredCustomTabControlDrawers[TCDDrawStyle(i)].Free;
+      RegisteredCustomTabControlDrawers[TCDDrawStyle(i)] := nil;
+    end;
   end;
 end.
 
