@@ -317,8 +317,8 @@ end;
 procedure TDiffDlg.OnIdle(Sender: TObject; var Done: Boolean);
 var
   Text1Src, Text2Src: string;
-  DiffTxt: String;
-  dat : TStrings;
+  dat: TStrings;
+  DiffOutput: TDiffOutput;
 begin
   IdleConnected := false;
   if fUpdating then Exit;
@@ -353,24 +353,24 @@ begin
         Text2Src := Text2.Editor.EditorComponent.Lines.Text;
     end;
 
-    ProgressBar1.Max := Length(Text1Src);
-    ProgressBar1.Step := Length(Text1Src);
-    ProgressBar1.Position := 0;
     Text1GroupBox.Enabled := False;
     Text2GroupBox.Enabled := False;
     OpenInEditorButton.Enabled := False;
     SaveDiffButton.Enabled := False;
     //CancelScanningButton.Enabled := True;
 
-    DiffTxt:=CreateTextDiff(Text1Src,Text2Src,GetDiffOptions,tdoContext,ProgressBar1);
-    DiffSynEdit.Lines.Text:=DiffTxt;
+    DiffOutput:=TDiffOutput.Create(Text1Src, Text2Src, GetDiffOptions, ProgressBar1);
+    try
+      DiffSynEdit.Lines.Text:=DiffOutput.CreateTextDiff;
+    finally
+      DiffOutput.Free;
+    end;
 
     //CancelScanningButton.Enabled := False;
     SaveDiffButton.Enabled := True;
     OpenInEditorButton.Enabled := True;
     Text2GroupBox.Enabled := True;
     Text1GroupBox.Enabled := True;
-    ProgressBar1.Position := 0;
   end;
   fUpdating:=False;
 end;

@@ -277,6 +277,7 @@ var
   AnUnitInfo: TUnitInfo;
   APackage: TLazPackage;
   Source: String;
+  DiffOutput: TDiffOutput;
 begin
   if FCachedDiffs=nil then
     FCachedDiffs:=TFPList.Create;
@@ -309,8 +310,13 @@ begin
     if Result^.TxtOnDisk<>'' then
       fs.Read(Result^.TxtOnDisk[1],length(Result^.TxtOnDisk));
     fs.Free;
-    Result^.Diff:=CreateTextDiff(Source,Result^.TxtOnDisk,[],
-                                 tdoContext, nil);
+
+    DiffOutput:=TDiffOutput.Create(Source,Result^.TxtOnDisk, [], nil);
+    try
+      Result^.Diff:=DiffOutput.CreateTextDiff;
+    finally
+      DiffOutput.Free;
+    end;
   except
     On E: Exception do
       Result^.Diff:='\ '+Format(lisDiskDiffErrorReadingFile, [E.Message]);
