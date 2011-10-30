@@ -144,6 +144,29 @@ begin
   DeliverMessage(WidgetInfo^.LCLObject, msg);
 end;
 
+procedure BroadcastListSelection(Target : Pointer; AHandle : HWND; AIndex : Integer;
+  AState : Boolean);
+var
+  msg: TLMNotify;
+  NM: TNMListView;
+begin
+  msg.Msg := CN_NOTIFY;
+
+  FillChar(NM, SizeOf(NM), 0);
+  NM.hdr.hwndfrom := AHandle;
+  NM.hdr.code := LVN_ITEMCHANGED;
+  NM.iItem := AIndex;
+  NM.iSubItem := 0;
+  if AState then
+    NM.uOldState := LVIS_SELECTED
+  else
+    NM.uNewState := LVIS_SELECTED;
+  NM.uChanged := LVIF_STATE;
+  msg.NMHdr := @NM.hdr;
+
+  DeliverMessage(Target, msg);
+end;
+
 procedure Gtk2_ItemSelectionChanged(selection: PGtkTreeSelection; WidgetInfo: PWidgetInfo); cdecl;
 var
   msg: TLMNotify;
@@ -155,32 +178,24 @@ begin
   //DebugLn('Gtk2_ItemSelectionChanged');
   Widgets := PTVWidgets(WidgetInfo^.UserData);
   msg.Msg := CN_NOTIFY;
-  if (widgets=nil) or (Widgets^.ItemCache=nil) or (Widgets^.ItemCache.Count=0) then
+  if (widgets = nil) or (Widgets^.ItemCache = nil) or (Widgets^.ItemCache.Count=0) then
   begin
     //debugln(' Gtk2_ItemSelectionChanged  ItemCache=nil ',tComponent(widgetInfo^.lclObject).name);
     Exit;
   end;
 
+  // DebugLn('Gtk2_ItemSelectionChanged Trigger OnSelectItem ? ', dbgs(not (wwiInvalidEvent in Widgets^.WidgetInfo^.Flags)));
   // LCL sent selection !
   if wwiInvalidEvent in Widgets^.WidgetInfo^.Flags then
     exit;
 
   for i := 0 to Widgets^.ItemCache.Count -1 do
   begin
-    FillChar(NM, SizeOf(NM), 0);
-    NM.hdr.hwndfrom := PtrUInt(Widgets^.MainView);
-    NM.hdr.code := LVN_ITEMCHANGED;
     AIndex := Widgets^.ItemCache.Strings[i];
-    NM.iItem := StrToInt(AIndex);
-    NM.iSubItem := 0;//AColumn;
-    if Widgets^.ItemCache.Objects[i] <> nil then
-      NM.uOldState := LVIS_SELECTED
-    else
-      NM.uNewState := LVIS_SELECTED;
-    NM.uChanged := LVIF_STATE;
-    msg.NMHdr := @NM.hdr;
-    DeliverMessage(WidgetInfo^.LCLObject, msg);
+    BroadcastListSelection(WidgetInfo^.LCLObject, PtrUInt(Widgets^.MainView),
+      StrToInt(AIndex), Widgets^.ItemCache.Objects[i] <> nil);
   end;
+
   Widgets^.ItemCache.Clear;
 end;
 
@@ -218,19 +233,9 @@ begin
 
   for i := 0 to Widgets^.ItemCache.Count -1 do
   begin
-    FillChar(NM, SizeOf(NM), 0);
-    NM.hdr.hwndfrom := PtrUInt(Widgets^.MainView);
-    NM.hdr.code := LVN_ITEMCHANGED;
     AIndex := Widgets^.ItemCache.Strings[i];
-    NM.iItem := StrToInt(AIndex);
-    NM.iSubItem := 0;//AColumn;
-    if Widgets^.ItemCache.Objects[i] <> nil then
-      NM.uOldState := LVIS_SELECTED
-    else
-      NM.uNewState := LVIS_SELECTED;
-    NM.uChanged := LVIF_STATE;
-    msg.NMHdr := @NM.hdr;
-    DeliverMessage(WidgetInfo^.LCLObject, msg);
+    BroadcastListSelection(WidgetInfo^.LCLObject, PtrUInt(Widgets^.MainView),
+      StrToInt(AIndex), Widgets^.ItemCache.Objects[i] <> nil);
   end;
   Widgets^.ItemCache.Clear;
 end;
@@ -242,23 +247,18 @@ var
   i: Integer;
   Item: integer;
 begin
-  //DebugLn('Gtk2_ItemSelected');
+  // DebugLn('Gtk2_ItemSelected ');
   // this function is called *before* the item is selected
   // The result should be True to allow the Item to change selection
   Result := True;
 
   Widgets := PTVWidgets(WidgetInfo^.UserData);
   Item := gtk_tree_path_get_indices(path)^;
-  if gtk_tree_selection_get_mode(selection) = GTK_SELECTION_MULTIPLE then
-  begin
-    for i := 0 to Widgets^.ItemCache.Count-1 do
-    begin
-      if (Widgets^.ItemCache.Strings[i] = IntToStr(Item)) and
-        (Widgets^.ItemCache.Objects[i] = TObject(ptrint(Ord(path_is_currently_selected)))) then
-        Exit;
-    end;
-  end;
-  Widgets^.ItemCache.AddObject(IntToStr(Item),TObject(ptrint(Ord(path_is_currently_selected))));
+  i := Widgets^.ItemCache.IndexOf(IntToStr(Item));
+  if i = -1 Then
+    Widgets^.ItemCache.AddObject(IntToStr(Item), TObject(PtrInt(Ord(path_is_currently_selected))))
+  else
+    Widgets^.ItemCache.Objects[i] := TObject(PtrInt(Ord(path_is_currently_selected)));
 end;
 
 procedure Gtk2WSLV_ListViewGetCheckedDataFunc(tree_column: PGtkTreeViewColumn;
@@ -1251,6 +1251,7 @@ class procedure TGtk2WSCustomListView.ItemSetState(const ALV: TCustomListView;
 var
   Widgets: PTVWidgets;
   Path: PGtkTreePath;
+  BroadcastMsg: Boolean;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetState')
   then Exit;
@@ -1262,6 +1263,7 @@ begin
   // fixes #16399
   Include(Widgets^.WidgetInfo^.Flags, wwiInvalidEvent);
   try
+    BroadcastMsg := False;
     with Widgets^ do
     begin
       if GetViewModel(MainView) = nil then
@@ -1301,21 +1303,33 @@ begin
           if GTK_IS_TREE_VIEW(MainView) then
           begin
             if AIsSet and not gtk_tree_selection_path_is_selected(TreeSelection, Path) then
-              gtk_tree_selection_select_path(TreeSelection, Path)
-            else
+            begin
+              gtk_tree_selection_select_path(TreeSelection, Path);
+              BroadcastMsg := True;
+            end else
             if not AIsSet and gtk_tree_selection_path_is_selected(TreeSelection, Path) then
+            begin
               gtk_tree_selection_unselect_path(TreeSelection, Path);
+              BroadcastMsg := True;
+            end;
           end
           else
           if GTK_IS_ICON_VIEW(MainView) then
           begin
             if AIsSet and not gtk_icon_view_path_is_selected(PGtkIconView(MainView), Path) then
-              gtk_icon_view_select_path(PGtkIconView(MainView), Path)
-            else
+            begin
+              gtk_icon_view_select_path(PGtkIconView(MainView), Path);
+              BroadCastMsg := True;
+            end else
             if not AIsSet and gtk_icon_view_path_is_selected(PGtkIconView(MainView), Path) then
+            begin
               gtk_icon_view_unselect_path(PGtkIconView(MainView), Path);
+              BroadCastMsg := True;
+            end;
           end;
           gtk_tree_path_free(Path);
+          if BroadcastMsg then
+            BroadCastListSelection(ALV, PtrUInt(MainView), AIndex, not AIsSet);
         end;
       end;
     end;
