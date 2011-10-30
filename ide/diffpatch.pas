@@ -64,13 +64,37 @@ type
     NextLineStart: integer;
   end;
 
+  TDiffOutput = class;
+
+  { TDiffPart }
+
   TDiffPart = class
+  private
+    fOwner: TDiffOutput;
+    fSource: string;
+    fStartLine: integer; // starting at 1
+    fEndLine: integer;   // starting at 1
+    fPosition: TLineExtends;
+    fStream: TStream;
   public
-    StartLine: integer; // starting at 1
-    EndLine: integer;   // starting at 1
-    Position: TLineExtends;
-    Stream: TStream;
+    constructor Create(aOwner: TDiffOutput; const aSource: string);
     destructor Destroy; override;
+    procedure Init(StartExt: TLineExtends);
+    procedure Write(const HeaderPrefix, HeaderSuffix: string);
+    procedure Write2(const StartExt, EndExt: TLineExtends;
+      OtherPartHasChangedLines: boolean; CharForInsertDeletion: char);
+    procedure WriteLinesOfText(aStream: TStream; const aPrefix: string;
+                               const aStartLine: TLineExtends; aEndPos: integer);
+    function LineExtendsToStr(const LineExtends: TLineExtends): string;
+    procedure GetLineExtends(LineStart: integer; var LineEnd, NextLineStart: integer);
+    procedure GetLineExtends(var LineExtends: TLineExtends);
+    procedure GetPrevLineExtends(LineStart: integer; var PrevLineStart, PrevLineEnd: integer);
+    procedure GetPrevLineExtends(var LineExtends: TLineExtends);
+    function CountLineEnds(StartPos, EndPos: integer): integer;
+    function CountLinesTillEnd(StartPos: integer): integer;
+    function IsEmptyLine(LineStart, LineEnd: integer): boolean;
+    procedure GetNextLineExtends(var LineStart, LineEnd, NextLineStart, LineNumber: integer);
+    procedure GetNextLineExtends(var LineExtends: TLineExtends);
   end;
 
   { TDiffOutput }
@@ -88,23 +112,16 @@ type
     function LinesAreEqual(Line1Start, Line1End, NextLine1Start: integer;
                            Line2Start, Line2End, NextLine2Start: integer): boolean;
     function LinesAreEqual(const Line1Extends, Line2Extends: TLineExtends): boolean;
-    procedure GetNextLineExtends(const s: string;
-      var LineStart, LineEnd, NextLineStart, LineNumber: integer);
-    procedure GetNextLineExtends(const s: string; var LineExtends: TLineExtends);
     procedure AddDefaultDiff(const Start1, End1, Start2, End2: TLineExtends);
     procedure AddContextDiff(const Start1, End1, Start2, End2: TLineExtends);
-    procedure WriteLinesOfText(Stream: TStream; const s, Prefix: string;
-                               const StartLine: TLineExtends; EndPos: integer);
-    procedure StartContextBlock(const Start1, Start2: TLineExtends);
     procedure FinishOldContextBlock;
     procedure FinishDiff;
     procedure AddRestDiff(const Start1, Start2: TLineExtends);
     procedure AddDiff(const Start1, End1, Start2, End2: TLineExtends);
-    procedure SaveToString(var s: string);
     procedure UpdateProgressBar(const Line: TLineExtends);
   public
-    constructor Create(const AText1, AText2: string;
-      AFlags: TTextDiffFlags; AProgressBar: TProgressBar);
+    constructor Create(const aText1, aText2: string;
+      aFlags: TTextDiffFlags; aProgressBar: TProgressBar);
     destructor Destroy; override;
     function CreateTextDiff: string;
   public
@@ -130,14 +147,6 @@ const
   LineBreak = #10;
   ContextLineCount = 3;
 
-{ TDiffPart }
-
-destructor TDiffPart.Destroy;
-begin
-  Stream.Free;
-  inherited Destroy;
-end;
-
 var
   IsSpaceChars: array[char] of boolean;
   UpperCaseChars: array[char] of char;
@@ -159,28 +168,144 @@ begin
   end;
 end;
   
-function LineExtendsToStr(const LineExtends: TLineExtends;
-  const s: string): string;
+function GotoNextLine(var LineExtends: TLineExtends): boolean;
+begin
+  with LineExtends do begin
+    if LineStart<NextLineStart then begin
+      inc(LineNumber);
+      LineStart:=NextLineStart;
+      Result:=true;
+    end else
+      Result:=false;
+  end;
+end;
+
+procedure WriteStrToStream(Stream: TStream; const s: string);
+begin
+  if s='' then exit;
+  Stream.Write(s[1],length(s));
+end;
+
+{ TDiffPart }
+
+constructor TDiffPart.Create(aOwner: TDiffOutput; const aSource: string);
+begin
+  fOwner:=aOwner;
+  fSource:=aSource;
+end;
+
+destructor TDiffPart.Destroy;
+begin
+  fStream.Free;
+  inherited Destroy;
+end;
+
+procedure TDiffPart.Init(StartExt: TLineExtends);
+begin
+  if fStream=nil then
+    fStream:=TMemoryStream.Create
+  else
+    fStream.Size:=0;
+  fStartLine:=StartExt.LineNumber-ContextLineCount;
+  if fStartLine<1 then fStartLine:=1;
+  fPosition:=StartExt;
+  while fPosition.LineNumber>fStartLine do
+    GetPrevLineExtends(fPosition);
+end;
+
+procedure TDiffPart.Write(const HeaderPrefix, HeaderSuffix: string);
+begin
+  // check if part contains any changed lines
+  if fPosition.LineNumber > fStartLine then begin
+    // part contains changed lines -> append end context
+    while (fPosition.LineNumber <= fEndLine)
+    and (fPosition.LineStart < length(fSource)) do begin
+      WriteLinesOfText(fStream, '  ', fPosition, fPosition.NextLineStart);
+      if not GotoNextLine(fPosition) then
+        break;
+      GetLineExtends(fPosition);
+    end;
+  end else begin
+    // part does not contain changed lines -> skip
+  end;
+  fStream.Position:=0;
+  // write part
+  WriteStrToStream(fOwner.fDiffStream, HeaderPrefix +
+       IntToStr(fStartLine) + ',' + IntToStr(fEndLine) + HeaderSuffix + LineBreak);
+  if fStream.Size<>0 then
+    fOwner.fDiffStream.CopyFrom(fStream, fStream.Size);
+end;
+
+procedure TDiffPart.Write2(const StartExt, EndExt: TLineExtends;
+  OtherPartHasChangedLines: boolean; CharForInsertDeletion: char);
+begin
+  // check if there are changed lines
+  if StartExt.LineStart < EndExt.LineStart then begin
+    // write lines
+    while fPosition.LineStart < EndExt.LineStart do begin
+      if fPosition.LineStart < StartExt.LineStart then
+        // this is an unchanged line in front of the changed lines
+        WriteStrToStream(fStream, '  ')
+      else begin
+        // this is a changed line
+        if OtherPartHasChangedLines then
+          WriteStrToStream(fStream, '! ')
+        else
+          WriteStrToStream(fStream, CharForInsertDeletion+' ');
+      end;
+      if fPosition.LineStart <> fPosition.NextLineStart then
+        fStream.Write(fSource[fPosition.LineStart], fPosition.NextLineStart-fPosition.LineStart);
+      if not GotoNextLine(fPosition) then
+        break;
+      GetLineExtends(fPosition);
+    end;
+  end;
+end;
+
+procedure TDiffPart.WriteLinesOfText(aStream: TStream;
+  const aPrefix: string; const aStartLine: TLineExtends; aEndPos: integer);
+{ Write all lines in front of EndLine, starting with StartLine }
+var
+  Line: TLineExtends;
+begin
+  Line:=aStartLine;
+  while (Line.LineStart<aEndPos) do begin
+    WriteStrToStream(aStream,aPrefix);
+    if (Line.LineEnd>Line.LineStart) then
+      aStream.Write(fSource[Line.LineStart],Line.LineEnd-Line.LineStart);
+    if (Line.NextLineStart>Line.LineEnd) then
+      aStream.Write(fSource[Line.LineEnd],Line.NextLineStart-Line.LineEnd)
+    else begin
+      WriteStrToStream(aStream,LineBreak);
+      WriteStrToStream(aStream,'\ No newline at end');
+      WriteStrToStream(aStream,LineBreak);
+    end;
+    if not GotoNextLine(Line) then break;
+    GetLineExtends(Line);
+  end;
+end;
+
+function TDiffPart.LineExtendsToStr(const LineExtends: TLineExtends): string;
 begin
   with LineExtends do
     Result:='(Start='+IntToStr(LineStart)+' End='+IntToStr(LineEnd)
       +' Next='+IntToStr(NextLineStart)+' Number='+IntToStr(LineNumber)
-      +' Text="'+TextToLine(copy(s,LineStart,NextLineStart-LineStart))+'")';
+      +' Text="'+TextToLine(copy(fSource,LineStart,NextLineStart-LineStart))+'")';
 end;
 
-procedure GetLineExtends(const s: string; LineStart: integer;
-  var LineEnd, NextLineStart: integer);
-var Len: integer;
+procedure TDiffPart.GetLineExtends(LineStart: integer; var LineEnd, NextLineStart: integer);
+var
+  Len: integer;
 begin
-  Len:=length(s);
+  Len:=length(fSource);
   LineEnd:=LineStart;
-  while (LineEnd<=Len) do begin
-    if (not (s[LineEnd] in [#10,#13])) then begin
+  while LineEnd<=Len do begin
+    if (not (fSource[LineEnd] in [#10,#13])) then begin
       inc(LineEnd);
     end else begin
       NextLineStart:=LineEnd+1;
-      if (NextLineStart<=Len) and (s[NextLineStart] in [#10,#13])
-      and (s[LineEnd]<>s[NextLineStart]) then
+      if (NextLineStart<=Len) and (fSource[NextLineStart] in [#10,#13])
+      and (fSource[LineEnd]<>fSource[NextLineStart]) then
         inc(NextLineStart);
       exit;
     end;
@@ -189,74 +314,72 @@ begin
   NextLineStart:=LineEnd;
 end;
 
-procedure GetLineExtends(const s: string; var LineExtends: TLineExtends);
+procedure TDiffPart.GetLineExtends(var LineExtends: TLineExtends);
 begin
-  GetLineExtends(s,LineExtends.LineStart,LineExtends.LineEnd,
-                 LineExtends.NextLineStart);
+  GetLineExtends(LineExtends.LineStart, LineExtends.LineEnd, LineExtends.NextLineStart);
 end;
 
-procedure GetPrevLineExtends(const s: string; LineStart: integer;
+procedure TDiffPart.GetPrevLineExtends(LineStart: integer;
   var PrevLineStart, PrevLineEnd: integer);
 begin
   // read line end
   PrevLineEnd:=LineStart;
-  if (PrevLineEnd>1) and (s[PrevLineEnd-1] in [#10,#13]) then
+  if (PrevLineEnd>1) and (fSource[PrevLineEnd-1] in [#10,#13]) then
     dec(PrevLineEnd);
-  if (PrevLineEnd>1) and (s[PrevLineEnd-1] in [#10,#13])
-  and (s[PrevLineEnd]<>s[PrevLineEnd-1]) then
+  if (PrevLineEnd>1) and (fSource[PrevLineEnd-1] in [#10,#13])
+  and (fSource[PrevLineEnd]<>fSource[PrevLineEnd-1]) then
     dec(PrevLineEnd);
   // read line content
   PrevLineStart:=PrevLineEnd;
-  while (PrevLineStart>1) and (not (s[PrevLineStart-1] in [#10,#13])) do
+  while (PrevLineStart>1) and (not (fSource[PrevLineStart-1] in [#10,#13])) do
     dec(PrevLineStart);
 end;
 
-procedure GetPrevLineExtends(const s: string; var LineExtends: TLineExtends);
+procedure TDiffPart.GetPrevLineExtends(var LineExtends: TLineExtends);
 begin
   if LineExtends.LineStart<1 then exit;
   LineExtends.NextLineStart:=LineExtends.LineStart;
-  GetPrevLineExtends(s,LineExtends.LineStart,LineExtends.LineStart,
-                     LineExtends.LineEnd);
+  GetPrevLineExtends(LineExtends.LineStart,LineExtends.LineStart,LineExtends.LineEnd);
   dec(LineExtends.LineNumber);
 end;
 
-function CountLineEnds(const s: string; StartPos, EndPos: integer): integer;
+function TDiffPart.CountLineEnds(StartPos, EndPos: integer): integer;
 begin
   Result:=0;
   while (StartPos<EndPos) do begin
-    if not (s[StartPos] in [#10,#13]) then begin
+    if not (fSource[StartPos] in [#10,#13]) then begin
       inc(StartPos);
     end else begin
       inc(Result);
       inc(StartPos);
-      if (StartPos<EndPos) and (s[StartPos] in [#10,#13])
-      and (s[StartPos]<>s[StartPos-1]) then
+      if (StartPos<EndPos) and (fSource[StartPos] in [#10,#13])
+      and (fSource[StartPos]<>fSource[StartPos-1]) then
         inc(StartPos);
     end;
   end;
 end;
 
-function CountLinesTillEnd(const s: string; StartPos: integer): integer;
-var Len: integer;
+function TDiffPart.CountLinesTillEnd(StartPos: integer): integer;
+var
+  Len: integer;
 begin
-  Len:=length(s);
-  Result:=CountLineEnds(s,StartPos,Len+1);
-  if (StartPos<=Len) and (not (s[Len] in [#10,#13])) then
+  Len:=length(fSource);
+  Result:=CountLineEnds(StartPos,Len+1);
+  if (StartPos<=Len) and (not (fSource[Len] in [#10,#13])) then
     inc(Result);
 end;
 
-function IsEmptyLine(const s: string; LineStart, LineEnd: integer;
-  Flags: TTextDiffFlags): boolean;
+function TDiffPart.IsEmptyLine(LineStart, LineEnd: integer): boolean;
 var
   i: integer;
 begin
-  if LineStart<=length(s) then begin
+  if LineStart<=length(fSource) then begin
     if ([tdfIgnoreSpaceCharAmount,tdfIgnoreSpaceChars,tdfIgnoreHeadingSpaces,
-      tdfIgnoreTrailingSpaces]*Flags)<>[] then
+      tdfIgnoreTrailingSpaces]*fOwner.fFlags)<>[] then
     begin
       Result:=true;
       for i:=LineStart to LineEnd-1 do begin
-        if not IsSpaceChars[s[i]] then begin
+        if not IsSpaceChars[fSource[i]] then begin
           Result:=false;
           exit;
         end;
@@ -270,17 +393,30 @@ begin
   end;
 end;
 
-function GotoNextLine(var LineExtends: TLineExtends): boolean;
+procedure TDiffPart.GetNextLineExtends(var LineStart, LineEnd, NextLineStart, LineNumber: integer);
+var
+  Len: integer;
 begin
-  with LineExtends do begin
-    if LineStart<NextLineStart then begin
-      inc(LineNumber);
-      LineStart:=NextLineStart;
-      Result:=true;
-    end else
-      Result:=false;
-  end;
+  Len:=length(fSource);
+  repeat
+    GetLineExtends(LineStart,LineEnd,NextLineStart);
+    if (LineStart>Len)
+    or (not (tdfIgnoreEmptyLineChanges in fOwner.fFlags))
+    or (not IsEmptyLine(LineStart,LineEnd)) then
+      break;
+    LineStart:=NextLineStart;
+    inc(LineNumber);
+  until false;
 end;
+
+procedure TDiffPart.GetNextLineExtends(var LineExtends: TLineExtends);
+begin
+  GetNextLineExtends(LineExtends.LineStart, LineExtends.LineEnd,
+                     LineExtends.NextLineStart, LineExtends.LineNumber);
+end;
+
+
+{ TDiffOutput }
 
 function TDiffOutput.LinesAreEqual(
   Line1Start, Line1End, NextLine1Start: integer;
@@ -407,49 +543,12 @@ begin
   end;
 end;
 
-function TDiffOutput.LinesAreEqual(
-  const Line1Extends, Line2Extends: TLineExtends): boolean;
+function TDiffOutput.LinesAreEqual(const Line1Extends, Line2Extends: TLineExtends): boolean;
 begin
   Result:=LinesAreEqual(Line1Extends.LineStart, Line1Extends.LineEnd,
                         Line1Extends.NextLineStart,
                         Line2Extends.LineStart, Line2Extends.LineEnd,
                         Line2Extends.NextLineStart);
-end;
-
-procedure TDiffOutput.GetNextLineExtends(const s: string;
-  var LineStart, LineEnd, NextLineStart, LineNumber: integer);
-var
-  Len: integer;
-begin
-  Len:=length(s);
-  repeat
-    GetLineExtends(s,LineStart,LineEnd,NextLineStart);
-    if (LineStart>Len)
-    or (not (tdfIgnoreEmptyLineChanges in fFlags))
-    or (not IsEmptyLine(s,LineStart,LineEnd,fFlags)) then
-      break;
-    LineStart:=NextLineStart;
-    inc(LineNumber);
-  until false;
-end;
-
-procedure TDiffOutput.GetNextLineExtends(const s: string; var LineExtends: TLineExtends);
-begin
-  GetNextLineExtends(s,LineExtends.LineStart,LineExtends.LineEnd,
-                     LineExtends.NextLineStart,LineExtends.LineNumber);
-end;
-
-procedure WriteStrToStream(Stream: TStream; const s: string);
-begin
-  if s='' then exit;
-  Stream.Write(s[1],length(s));
-end;
-
-procedure WriteLineToStream(Stream: TStream; const Source: string;
-  const Line: TLineExtends);
-begin
-  if (Source='') or (Line.LineStart=Line.NextLineStart) then exit;
-  Stream.Write(Source[Line.LineStart],Line.NextLineStart-Line.LineStart);
 end;
 
 procedure TDiffOutput.FindNextEqualLine(const Start1, Start2: TLineExtends;
@@ -463,43 +562,43 @@ begin
   Cur2:=Start2;
   try
     if LinesAreEqual(Cur1,Cur2)
-    and (not IsEmptyLine(fText1,Cur1.LineStart,Cur1.LineEnd,fFlags)) then
+    and (not fPart1.IsEmptyLine(Cur1.LineStart, Cur1.LineEnd)) then
       exit;
     repeat
       // increase Max1
       if GotoNextLine(Max1) then begin
-        GetLineExtends(fText1,Max1);
+        fPart1.GetLineExtends(Max1);
         // search Max1 Line in fText2
         if Max1.LineStart<Max1.NextLineStart then begin
           Cur1:=Max1;
           Cur2:=Start2;
           repeat
             if LinesAreEqual(Cur1,Cur2)
-            and (not IsEmptyLine(fText1,Cur1.LineStart,Cur1.LineEnd,fFlags)) then
+            and (not fPart1.IsEmptyLine(Cur1.LineStart, Cur1.LineEnd)) then
               exit;
             if Cur2.LineStart>=Max2.LineStart then break;
             Cur2.LineStart:=Cur2.NextLineStart;
             inc(Cur2.LineNumber);
-            GetLineExtends(fText2,Cur2);
+            fPart2.GetLineExtends(Cur2);
           until false;
         end;
         UpdateProgressBar(Max1);
       end;
       // increase Max2
       if GotoNextLine(Max2) then begin
-        GetLineExtends(fText2,Max2);
+        fPart2.GetLineExtends(Max2);
         // search Max2 Line in fText1
         if Max2.LineStart<Max2.NextLineStart then begin
           Cur1:=Start1;
           Cur2:=Max2;
           repeat
             if LinesAreEqual(Cur1,Cur2)
-            and (not IsEmptyLine(fText1,Cur1.LineStart,Cur1.LineEnd,fFlags)) then
+            and (not fPart1.IsEmptyLine(Cur1.LineStart,Cur1.LineEnd)) then
               exit;
             if Cur1.LineStart>=Max1.LineStart then break;
             Cur1.LineStart:=Cur1.NextLineStart;
             inc(Cur1.LineNumber);
-            GetLineExtends(fText1,Cur1);
+            fPart1.GetLineExtends(Cur1);
           until false;
         end;
       end;
@@ -513,13 +612,11 @@ begin
       EqualLine1:=Cur1;
       EqualLine2:=Cur2;
       // chomp empty lines at end
-      GetPrevLineExtends(fText1,Cur1);
-      GetPrevLineExtends(fText2,Cur2);
+      fPart1.GetPrevLineExtends(Cur1);
+      fPart2.GetPrevLineExtends(Cur2);
     until not LinesAreEqual(Cur1,Cur2);
   end;
 end;
-
-{ TDiffOutput }
 
 function TDiffOutput.CreateTextDiff: string;
 var
@@ -539,9 +636,9 @@ begin
       // search for a difference line ...
       repeat
         // skip empty lines in fText1 and get line1 extends ...
-        GetNextLineExtends(fText1,Line1);
+        fPart1.GetNextLineExtends(Line1);
         // skip empty lines in fText2 and get line2 extends ...
-        GetNextLineExtends(fText2,Line2);
+        fPart2.GetNextLineExtends(Line2);
         // skip equal lines ...
         if (Line1.LineStart<=Len1) and (Line2.LineStart<=Len2) then begin
           if not LinesAreEqual(Line1,Line2) then
@@ -577,7 +674,11 @@ begin
     end;
   end;
   finally
-    SaveToString(Result);
+    FinishDiff;
+    SetLength(Result,fDiffStream.Size);
+    fDiffStream.Position:=0;
+    if Result<>'' then
+      fDiffStream.Read(Result[1],length(Result));
   end;
 end;
 
@@ -588,11 +689,11 @@ begin
   End1.LineStart:=length(fText1)+1;
   End1.LineEnd:=End1.LineStart;
   End1.NextLineStart:=End1.LineStart;
-  End1.LineNumber:=Start1.LineNumber+CountLinesTillEnd(fText1,Start1.LineStart);
+  End1.LineNumber:=Start1.LineNumber+fPart1.CountLinesTillEnd(Start1.LineStart);
   End2.LineStart:=length(fText2)+1;
   End2.LineEnd:=End2.LineStart;
   End2.NextLineStart:=End2.LineStart;
-  End2.LineNumber:=Start2.LineNumber+CountLinesTillEnd(fText2,Start2.LineStart);
+  End2.LineNumber:=Start2.LineNumber+fPart2.CountLinesTillEnd(Start2.LineStart);
   AddDiff(Start1,End1,  Start2,End2);
 end;
 
@@ -608,15 +709,6 @@ begin
   end;
 end;
 
-procedure TDiffOutput.SaveToString(var s: string);
-begin
-  FinishDiff;
-  SetLength(s,fDiffStream.Size);
-  fDiffStream.Position:=0;
-  if s<>'' then
-    fDiffStream.Read(s[1],length(s));
-end;
-
 procedure TDiffOutput.UpdateProgressBar(const Line: TLineExtends);
 begin
   if Assigned(fProgressBar) then begin
@@ -625,87 +717,11 @@ begin
   end;
 end;
 
-procedure TDiffOutput.WriteLinesOfText(Stream: TStream;
-  const s, Prefix: string;
-  const StartLine: TLineExtends; EndPos: integer);
-{ Write all lines in front of EndLine, starting with StartLine }
-var
-  Line: TLineExtends;
-begin
-  Line:=StartLine;
-  while (Line.LineStart<EndPos) do begin
-    WriteStrToStream(Stream,Prefix);
-    if (Line.LineEnd>Line.LineStart) then
-      Stream.Write(s[Line.LineStart],Line.LineEnd-Line.LineStart);
-    if (Line.NextLineStart>Line.LineEnd) then
-      Stream.Write(s[Line.LineEnd],Line.NextLineStart-Line.LineEnd)
-    else begin
-      WriteStrToStream(Stream,LineBreak);
-      WriteStrToStream(Stream,'\ No newline at end');
-      WriteStrToStream(Stream,LineBreak);
-    end;
-    if not GotoNextLine(Line) then break;
-    GetLineExtends(s,Line);
-  end;
-end;
-
-procedure TDiffOutput.StartContextBlock(const Start1, Start2: TLineExtends);
-
-  procedure InitPart(const Part: TDiffPart; const Source: string;
-    StartExt: TLineExtends);
-  begin
-    if Part.Stream=nil then
-      Part.Stream:=TMemoryStream.Create
-    else
-      Part.Stream.Size:=0;
-    Part.StartLine:=StartExt.LineNumber-ContextLineCount;
-    if Part.StartLine<1 then Part.StartLine:=1;
-    Part.Position:=StartExt;
-    while Part.Position.LineNumber>Part.StartLine do
-      GetPrevLineExtends(Source,Part.Position);
-  end;
-
-begin
-  FinishOldContextBlock;
-  WriteStrToStream(fDiffStream,'***************'+LineBreak);
-  InitPart(fPart1,fText1,Start1);
-  InitPart(fPart2,fText2,Start2);
-end;
-
 procedure TDiffOutput.FinishOldContextBlock;
-
-  procedure WritePart(const Part: TDiffPart;
-    const Source, HeaderPrefix, HeaderSuffix: string);
-  begin
-    // check if part contains any changed lines
-    if Part.Position.LineNumber>Part.StartLine then begin
-      // part contains changed lines -> append end context
-      while (Part.Position.LineNumber<=Part.EndLine)
-      and (Part.Position.LineStart<length(Source)) do begin
-        WriteLinesOfText(Part.Stream,Source,'  ',Part.Position,
-                         Part.Position.NextLineStart);
-        if not GotoNextLine(Part.Position) then break;
-        GetLineExtends(Source,Part.Position);
-      end;
-    end else begin
-      // part does not contain changed lines -> skip
-    end;
-
-    Part.Stream.Position:=0;
-
-    // write part
-    WriteStrToStream(fDiffStream,
-            HeaderPrefix
-            +IntToStr(Part.StartLine)+','+IntToStr(Part.EndLine)
-            +HeaderSuffix+LineBreak);
-    if Part.Stream.Size<>0 then
-      fDiffStream.CopyFrom(Part.Stream,Part.Stream.Size);
-  end;
-
 begin
-  if fPart1.Stream<>nil then begin
-    WritePart(fPart1,fText1,'*** ',' ****');
-    WritePart(fPart2,fText2,'--- ',' ----');
+  if fPart1.fStream <> nil then begin
+    fPart1.Write('*** ',' ****');
+    fPart2.Write('--- ',' ----');
   end;
 end;
 
@@ -789,12 +805,12 @@ begin
   if DiffStartLine2>DiffEndLine2 then
     DiffStartLine2:=DiffEndLine2;
   WriteActionLine;
-  WriteLinesOfText(fDiffStream,fText1,'< ',Start1,End1.LineStart);
+  fPart1.WriteLinesOfText(fDiffStream,'< ',Start1,End1.LineStart);
   if ActionChar='c' then begin
     WriteStrToStream(fDiffStream,'---');
     WriteStrToStream(fDiffStream,LineBreak);
   end;
-  WriteLinesOfText(fDiffStream,fText2,'> ',Start2,End2.LineStart);
+  fPart2.WriteLinesOfText(fDiffStream,'> ',Start2,End2.LineStart);
 end;
 
 procedure TDiffOutput.AddContextDiff(const Start1, End1, Start2, End2: TLineExtends);
@@ -819,86 +835,65 @@ procedure TDiffOutput.AddContextDiff(const Start1, End1, Start2, End2: TLineExte
     - If a part contains no changed lines, its lines can be left out
 }
 
-  procedure WritePart(Part: TDiffPart; const Source: string;
-    const StartExt, EndExt: TLineExtends; OtherPartHasChangedLines: boolean;
-    CharForInsertDeletion: char);
-  begin
-    // check if there are changed lines
-    if StartExt.LineStart<EndExt.LineStart then begin
-      // write lines
-      while Part.Position.LineStart<EndExt.LineStart do begin
-        if Part.Position.LineStart<StartExt.LineStart then
-          // this is an unchanged line in front of the changed lines
-          WriteStrToStream(Part.Stream,'  ')
-        else begin
-          // this is a changed line
-          if OtherPartHasChangedLines then
-            WriteStrToStream(Part.Stream,'! ')
-          else
-            WriteStrToStream(Part.Stream,CharForInsertDeletion+' ');
-        end;
-        WriteLineToStream(Part.Stream,Source,Part.Position);
-        if not GotoNextLine(Part.Position) then break;
-        GetLineExtends(Source,Part.Position);
-      end;
-    end;
-  end;
-
 var
   Part1HasChangedLines: boolean;
   Part2HasChangedLines: boolean;
 begin
-  if (fPart1.Stream<>nil)
-  and (Start1.LineNumber-ContextLineCount<=fPart1.EndLine-1)
-  and (Start2.LineNumber-ContextLineCount<=fPart2.EndLine-1) then begin
+  if (fPart1.fStream<>nil)
+  and (Start1.LineNumber-ContextLineCount<=fPart1.fEndLine-1)
+  and (Start2.LineNumber-ContextLineCount<=fPart2.fEndLine-1) then begin
     // append the new difference
   end else begin
-    // start a new block
-    StartContextBlock(Start1,Start2);
+    // start a new block    // StartContextBlock(Start1,Start2);
+    FinishOldContextBlock;
+    WriteStrToStream(fDiffStream,'***************'+LineBreak);
+    fPart1.Init(Start1);
+    fPart2.Init(Start2);
   end;
-  fPart1.EndLine:=End1.LineNumber+ContextLineCount-1;
-  fPart2.EndLine:=End2.LineNumber+ContextLineCount-1;
+  fPart1.fEndLine:=End1.LineNumber+ContextLineCount-1;
+  fPart2.fEndLine:=End2.LineNumber+ContextLineCount-1;
   Part1HasChangedLines:=End1.LineStart>Start1.LineStart;
   Part2HasChangedLines:=End2.LineStart>Start2.LineStart;
-  WritePart(fPart1,fText1,Start1,End1,Part2HasChangedLines,'-');
-  WritePart(fPart2,fText2,Start2,End2,Part1HasChangedLines,'+');
+  fPart1.Write2(Start1,End1,Part2HasChangedLines,'-');
+  fPart2.Write2(Start2,End2,Part1HasChangedLines,'+');
 end;
 
-constructor TDiffOutput.Create(const AText1, AText2: string;
-  AFlags: TTextDiffFlags; AProgressBar: TProgressBar);
+constructor TDiffOutput.Create(const aText1, aText2: string;
+  aFlags: TTextDiffFlags; aProgressBar: TProgressBar);
 var
   i: Integer;
 begin
-  fText1:=AText1;
-  fText2:=AText2;
-  fFlags:=AFlags;
-  fProgressBar:=AProgressBar;
+  fText1:=aText1;
+  fText2:=aText2;
+  fFlags:=aFlags;
+  fProgressBar:=aProgressBar;
   if Assigned(fProgressBar) then begin
-    i := Length(AText1); // + Length(AText2);
+    i := Length(aText1); // + Length(aText2);
     fProgressBar.Max := i;
     fProgressBar.Step := i;
     fProgressBar.Position := 0;
   end;
   fOutputType:=tdoContext;          // Default OutputType, can be changed later
   fDiffStream:=TMemoryStream.Create;
-  fPart1:=TDiffPart.Create;
-  fPart2:=TDiffPart.Create;
+  fPart1:=TDiffPart.Create(Self, fText1);
+  fPart2:=TDiffPart.Create(Self, fText2);
 end;
 
 destructor TDiffOutput.Destroy;
 begin
   if Assigned(fProgressBar) then
     fProgressBar.Position := 0;
-  fDiffStream.Free;
-  fPart1.Free;
   fPart2.Free;
+  fPart1.Free;
+  fDiffStream.Free;
   inherited Destroy;
 end;
 
 
 //-----------------------------------------------------------------------------
 procedure InternalInit;
-var c: char;
+var
+  c: char;
 begin
   for c:=Low(char) to High(char) do begin
     IsSpaceChars[c]:=c in [' ',#9];
