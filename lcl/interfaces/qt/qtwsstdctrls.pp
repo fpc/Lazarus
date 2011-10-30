@@ -582,14 +582,11 @@ class procedure TQtWSCustomListBox.SelectItem(const ACustomListBox: TCustomListB
   AIndex: integer; ASelected: boolean);
 var
   QtListWidget: TQtListWidget;
-  ListItem: QListWidgetItemH;
 begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SelectItem') then
     Exit;
   QtListWidget := TQtListWidget(ACustomListBox.Handle);
-  ListItem := QtListWidget.getItem(AIndex);
-  if ListItem <> nil then
-    QtListWidget.setItemSelected(ListItem, ASelected);
+  QtListWidget.Selected[AIndex] := ASelected;
 end;
 
 {------------------------------------------------------------------------------
