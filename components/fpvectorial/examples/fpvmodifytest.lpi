@@ -1,0 +1,239 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="9"/>
+    <General>
+      <Flags>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+      </Flags>
+      <MainUnit Value="0"/>
+      <Title Value="fpvmodifytest"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <i18n>
+      <EnableI18N LFM="False"/>
+    </i18n>
+    <VersionInfo>
+      <StringTable ProductVersion=""/>
+    </VersionInfo>
+    <BuildModes Count="1" Active="Default">
+      <Item1 Name="Default" Default="True"/>
+    </BuildModes>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="5">
+      <Unit0>
+        <Filename Value="fpvmodifytest.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="fpvmodifytest"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="19"/>
+        <CursorPos X="1" Y="44"/>
+        <UsageCount Value="23"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="fpvectorial.pas"/>
+        <UnitName Value="fpvectorial"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1267"/>
+        <CursorPos X="16" Y="1275"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <UnitName Value="svgvectorialwriter"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="228"/>
+        <CursorPos X="19" Y="245"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="svgvectorialreader.pas"/>
+        <UnitName Value="svgvectorialreader"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="319"/>
+        <CursorPos X="17" Y="352"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="fpvutils.pas"/>
+        <UnitName Value="fpvutils"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2"/>
+        <CursorPos X="3" Y="14"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit4>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="fpvmodifytest.pas"/>
+        <Caret Line="40" Column="1" TopLine="19"/>
+      </Position1>
+      <Position2>
+        <Filename Value="fpvmodifytest.pas"/>
+        <Caret Line="42" Column="1" TopLine="19"/>
+      </Position2>
+      <Position3>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="217" Column="9" TopLine="188"/>
+      </Position3>
+      <Position4>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="260" Column="3" TopLine="226"/>
+      </Position4>
+      <Position5>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="258" Column="1" TopLine="226"/>
+      </Position5>
+      <Position6>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="261" Column="1" TopLine="226"/>
+      </Position6>
+      <Position7>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="263" Column="1" TopLine="226"/>
+      </Position7>
+      <Position8>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="93" Column="1" TopLine="69"/>
+      </Position8>
+      <Position9>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="94" Column="1" TopLine="69"/>
+      </Position9>
+      <Position10>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="95" Column="1" TopLine="69"/>
+      </Position10>
+      <Position11>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="96" Column="1" TopLine="69"/>
+      </Position11>
+      <Position12>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="98" Column="1" TopLine="69"/>
+      </Position12>
+      <Position13>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="100" Column="1" TopLine="69"/>
+      </Position13>
+      <Position14>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="102" Column="1" TopLine="69"/>
+      </Position14>
+      <Position15>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="104" Column="1" TopLine="69"/>
+      </Position15>
+      <Position16>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="105" Column="1" TopLine="69"/>
+      </Position16>
+      <Position17>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="111" Column="1" TopLine="71"/>
+      </Position17>
+      <Position18>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="112" Column="1" TopLine="72"/>
+      </Position18>
+      <Position19>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="113" Column="1" TopLine="73"/>
+      </Position19>
+      <Position20>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="115" Column="1" TopLine="75"/>
+      </Position20>
+      <Position21>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="119" Column="1" TopLine="79"/>
+      </Position21>
+      <Position22>
+        <Filename Value="fpvectorial.pas"/>
+        <Caret Line="1224" Column="24" TopLine="1206"/>
+      </Position22>
+      <Position23>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="183" Column="31" TopLine="180"/>
+      </Position23>
+      <Position24>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="55" Column="3" TopLine="131"/>
+      </Position24>
+      <Position25>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="26" Column="74" TopLine="2"/>
+      </Position25>
+      <Position26>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="27" Column="15" TopLine="2"/>
+      </Position26>
+      <Position27>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="259" Column="3" TopLine="227"/>
+      </Position27>
+      <Position28>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="28" Column="98" TopLine="27"/>
+      </Position28>
+      <Position29>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="217" Column="38" TopLine="193"/>
+      </Position29>
+      <Position30>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <Caret Line="220" Column="39" TopLine="188"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="10"/>
+    <Target>
+      <Filename Value="fpvmodifytest"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

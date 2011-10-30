@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="fpvectorialpkg"/>
+    <AddToProjectUsesSection Value="True"/>
+    <CompilerOptions>
+      <Version Value="10"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Files Count="12">
+      <Item1>
+        <Filename Value="svgvectorialwriter.pas"/>
+        <UnitName Value="svgvectorialwriter"/>
+      </Item1>
+      <Item2>
+        <Filename Value="fpvtocanvas.pas"/>
+        <UnitName Value="fpvtocanvas"/>
+      </Item2>
+      <Item3>
+        <Filename Value="fpvectorial.pas"/>
+        <UnitName Value="fpvectorial"/>
+      </Item3>
+      <Item4>
+        <Filename Value="fpvectbuildunit.pas"/>
+        <UnitName Value="fpvectbuildunit"/>
+      </Item4>
+      <Item5>
+        <Filename Value="dxfvectorialreader.pas"/>
+        <UnitName Value="dxfvectorialreader"/>
+      </Item5>
+      <Item6>
+        <Filename Value="cdrvectorialreader.pas"/>
+        <UnitName Value="cdrvectorialreader"/>
+      </Item6>
+      <Item7>
+        <Filename Value="avisozlib.pas"/>
+        <UnitName Value="avisozlib"/>
+      </Item7>
+      <Item8>
+        <Filename Value="avisocncgcodewriter.pas"/>
+        <UnitName Value="avisocncgcodewriter"/>
+      </Item8>
+      <Item9>
+        <Filename Value="avisocncgcodereader.pas"/>
+        <UnitName Value="avisocncgcodereader"/>
+      </Item9>
+      <Item10>
+        <Filename Value="svgvectorialreader.pas"/>
+        <UnitName Value="svgvectorialreader"/>
+      </Item10>
+      <Item11>
+        <Filename Value="epsvectorialreader.pas"/>
+        <UnitName Value="epsvectorialreader"/>
+      </Item11>
+      <Item12>
+        <Filename Value="fpvutils.pas"/>
+        <UnitName Value="fpvutils"/>
+      </Item12>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Release="1" Valid="True"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
