@@ -540,7 +540,9 @@ begin
     ADest.TextOut(CoordToCanvasX(CurDim.DimensionRight.X), CoordToCanvasY(CurDim.DimensionRight.Y), 'DR');
     ADest.TextOut(CoordToCanvasX(CurDim.DimensionLeft.X), CoordToCanvasY(CurDim.DimensionLeft.Y), 'DL');
     ADest.TextOut(CoordToCanvasX(CurDim.BaseLeft.X), CoordToCanvasY(CurDim.BaseLeft.Y), 'BL');}
-  end;
+  end
+  else
+    CurEntity.Render(ADest, ADestX, ADestY, AMulX, AMulY);
 end;
 
 procedure DrawFPVTextToCanvas(ASource: TvVectorialPage; CurText: TvText;

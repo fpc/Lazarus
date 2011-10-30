@@ -162,13 +162,18 @@ type
     constructor Create; virtual;
     procedure CalculateBoundingBox(var ALeft, ATop, ARight, ABottom: Double); virtual;
     procedure ExpandBoundingBox(var ALeft, ATop, ARight, ABottom: Double);
-    function TryToSelect(APos: TPoint): TvFindEntityResult; virtual;
+    {@@ ASubpart is only valid if this routine returns vfrSubpartFound }
+    function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; virtual;
     procedure Translate(ADeltaX, ADeltaY: Integer); virtual;
+    procedure TransladeSubpart(ADeltaX, ADeltaY: Integer; ASubpart: Cardinal); virtual;
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
   end;
 
   TvClipMode = (vcmNonzeroWindingRule, vcmEvenOddRule);
 
   TPath = class(TvEntity)
+  public
     Len: Integer;
     Points: TPathSegment;   // Beginning of the double-linked list
     PointsEnd: TPathSegment;// End of the double-linked list
@@ -194,7 +199,7 @@ type
     Font: TvFont;
     constructor Create; override;
     destructor Destroy; override;
-    function TryToSelect(APos: TPoint): TvFindEntityResult; override;
+    function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
   end;
 
   {@@
@@ -577,6 +582,7 @@ function TvVectorialPage.FindAndSelectEntity(Pos: TPoint): TvFindEntityResult;
 var
   lEntity: TvEntity;
   i: Integer;
+  lSubpart: Cardinal;
 begin
   Result := vfrNotFound;
 
@@ -584,7 +590,7 @@ begin
   begin
     lEntity := GetEntity(i);
 
-    Result := lEntity.TryToSelect(Pos);
+    Result := lEntity.TryToSelect(Pos, lSubpart);
 
     if Result <> vfrNotFound then
     begin
@@ -900,7 +906,7 @@ begin
   inherited Destroy;
 end;
 
-function TvText.TryToSelect(APos: TPoint): TvFindEntityResult;
+function TvText.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
 var
   lProximityFactor: Integer;
 begin
@@ -940,7 +946,7 @@ begin
   if lBottom > ABottom then ABottom := lBottom;
 end;
 
-function TvEntity.TryToSelect(APos: TPoint): TvFindEntityResult;
+function TvEntity.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
 begin
   Result := vfrNotFound;
 end;
@@ -949,6 +955,18 @@ procedure TvEntity.Translate(ADeltaX, ADeltaY: Integer);
 begin
   X := X + ADeltaX;
   Y := Y + ADeltaY;
+end;
+
+procedure TvEntity.TransladeSubpart(ADeltaX, ADeltaY: Integer;
+  ASubpart: Cardinal);
+begin
+
+end;
+
+procedure TvEntity.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+begin
+
 end;
 
 { TvEllipse }
