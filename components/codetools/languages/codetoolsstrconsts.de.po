@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-09-05 13:47+0100\n"
+"PO-Revision-Date: 2011-10-30 10:18+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -14,15 +14,15 @@ msgstr ""
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
-msgstr ""
+msgstr "Klammer ) nicht gefunden"
 
 #: codetoolsstrconsts.crsbracketnotfound2
 msgid "bracket ] not found"
-msgstr ""
+msgstr "Klammer ] nicht gefunden"
 
 #: codetoolsstrconsts.crsclosingbracketnotfound
 msgid "closing bracket not found"
-msgstr ""
+msgstr "schließende Klammer nicht gefunden"
 
 #: codetoolsstrconsts.crsfoundunexpectedat
 msgid "%s, found unexpected %s at %s"
@@ -30,7 +30,7 @@ msgstr ""
 
 #: codetoolsstrconsts.crsrecordendnotfound
 msgid "record end not found"
-msgstr ""
+msgstr "Record-Ende nicht gefunden"
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
@@ -286,14 +286,13 @@ msgstr "End-Anweisung des Records nicht gefunden"
 
 #: codetoolsstrconsts.ctsendoffile
 msgid "end of file"
-msgstr ""
+msgstr "Dateiende"
 
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
 msgstr "\"End.\" erwartet aber %s gefunden"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-#, fuzzy
 #| msgid "End of source not found"
 msgid "End of source not found."
 msgstr "Ende des Quelltexts nicht gefunden"
@@ -328,27 +327,27 @@ msgstr "ausführbarer Zugriff auf %s abgelehnt"
 
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
-msgstr ""
+msgstr "\"%s\" erwartet"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
-msgstr ""
+msgstr "( erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctsexpectedbutfound2
 msgid "expected ), but found %s"
-msgstr ""
+msgstr ") erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctsexpectedbutfound3
 msgid "expected :=, but %s found"
-msgstr ""
+msgstr ":= erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
 msgid "expected identifier, but found %s"
-msgstr ""
+msgstr "Bezeichner erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctsexpectedstatementbutfound
 msgid "expected statement, but found %s"
-msgstr ""
+msgstr "Anweisung erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
@@ -558,7 +557,7 @@ msgstr "Ungültiger Modus-Schalter \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidoperator
 msgid "invalid operator %s"
-msgstr ""
+msgstr "ungültger Operator %s"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
@@ -606,7 +605,7 @@ msgstr "Methodenname"
 
 #: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
 msgid "Method signature %s not found in class"
-msgstr ""
+msgstr "Methodensignatur nicht in Klasse gefunden"
 
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
@@ -614,7 +613,7 @@ msgstr "Methodentypdefinition nicht gefunden"
 
 #: codetoolsstrconsts.ctsmissing
 msgid "missing :="
-msgstr ""
+msgstr "fehlendes :="
 
 #: codetoolsstrconsts.ctsmissingenumlist
 msgid "missing enum list"
@@ -682,11 +681,11 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
-msgstr ""
+msgstr "Operator erwartet aber %s gefunden"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
 msgid "operator expected, but %s found"
-msgstr ""
+msgstr "Operator erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -758,7 +757,7 @@ msgstr "Laufzeitbibliothek"
 
 #: codetoolsstrconsts.ctsscannedfiles
 msgid "Scanned files: %s"
-msgstr ""
+msgstr "Gescannte Dateien: 5s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
@@ -822,7 +821,7 @@ msgstr "Term besitzt keinen einfachen Typ"
 
 #: codetoolsstrconsts.ctsthenexpectedbutfound
 msgid "then expected, but %s found"
-msgstr ""
+msgstr "then erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
@@ -866,7 +865,7 @@ msgstr "unerwartetes Schlüsselwort \"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
 msgid "unexpected keyword %s"
-msgstr ""
+msgstr "unerwartetes Schlüsselwort %s"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"
