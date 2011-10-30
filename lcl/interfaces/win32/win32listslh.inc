@@ -128,6 +128,7 @@ Type
     class procedure DeleteItemRecord(const List: HWND; const Index: integer);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
+    procedure Move(CurIndex, NewIndex: Integer); override;
     property Enabled[Index: Integer]: Boolean read GetEnabled write SetEnabled;
     property State[Index: Integer]: TCheckBoxState read GetState write SetState;
   end;

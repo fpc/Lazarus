@@ -67,6 +67,7 @@ type
     constructor Create(AOwner: TCarbonListBox);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
+    procedure Move(CurIndex, NewIndex: Integer); override;
     procedure Sort; override;
     procedure Exchange(Index1, Index2: Integer); override;
   public
@@ -96,7 +97,7 @@ type
 implementation
 
 uses
-  CarbonProc;
+  CarbonProc, CarbonWSCheckLst, CheckLst;
 
 { TCarbonComboBoxStrings }
 
@@ -286,6 +287,20 @@ begin
   inherited Delete(Index);
 
   FOwner.DeleteItem(Index);
+end;
+
+procedure TCarbonListBoxStrings.Move(CurIndex, NewIndex: Integer);
+var
+  AState: TCheckBoxState;
+begin
+  if Owner is TCustomCheckListBox then
+    AState := TCarbonWSCustomCheckListBox.GetState(TCustomCheckListBox(Owner), CurIndex);
+
+  inherited Move(CurIndex, NewIndex);
+
+  if Owner is TCustomCheckListBox then
+    TCarbonWSCustomCheckListBox.SetState(TCustomCheckListBox(Owner), NewIndex, AState);
+
 end;
 
 {------------------------------------------------------------------------------

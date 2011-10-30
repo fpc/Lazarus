@@ -113,6 +113,7 @@ type
     class procedure DeleteItemRecord(const List: HWND; const Index: integer);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
+    procedure Move(CurIndex, NewIndex: Integer); override;
     property State[AIndex: Integer]: TCheckBoxState read GetState write SetState;
   end;
 

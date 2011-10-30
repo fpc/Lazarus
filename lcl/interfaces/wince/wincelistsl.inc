@@ -454,6 +454,15 @@ begin
   inherited Delete(Index);
 end;
 
+procedure TWinCECheckListBoxStrings.Move(CurIndex, NewIndex: Integer);
+var
+  AState: TCheckBoxState;
+begin
+  AState := State[CurIndex];
+  inherited Move(CurIndex, NewIndex);
+  State[NewIndex] := AState;
+end;
+
 function TWinCECheckListBoxStrings.GetObject(Index: Integer): TObject;
 begin
   Result:= GetItemRecord(Index, false)^.TheObject;
