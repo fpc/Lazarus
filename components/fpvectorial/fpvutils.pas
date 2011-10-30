@@ -11,7 +11,7 @@ AUTHORS: Felipe Monteiro de Carvalho
 }
 unit fpvutils;
 
-{.$define USE_LCL_CANVAS}
+{$define USE_LCL_CANVAS}
 {.$define FPVECTORIAL_BEZIERTOPOINTS_DEBUG}
 
 {$ifdef fpc}

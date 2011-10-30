@@ -915,7 +915,7 @@ begin
   PosY := PosY - DOC_OFFSET.Y;
 
   //
-  AData.AddText(PosX, PosY, '', Round(FontSize), Str);
+  AData.AddText(PosX, PosY, 0, '', Round(FontSize), Str);
 end;
 
 {.$define FPVECTORIALDEBUG_LWPOLYLINE}
@@ -1140,7 +1140,7 @@ begin
   PosY := PosY - DOC_OFFSET.Y;
 
   //
-  AData.AddText(PosX, PosY, '', Round(FontSize), Str);
+  AData.AddText(PosX, PosY, 0, '', Round(FontSize), Str);
 end;
 
 procedure TvDXFVectorialReader.ReadENTITIES_POINT(ATokens: TDXFTokens;
