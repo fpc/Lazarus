@@ -1365,7 +1365,8 @@ begin
   if not (csDesigning in ACtl.ComponentState) and
      not (csCaptureMouse in ACtl.ControlStyle) and
     ([ssLeft,ssRight,ssMiddle]*ShiftState <> []) and
-    not (ACtl is TCustomForm) and not DragManager.IsDragging then
+    not (ACtl is TCustomForm) and not (ACtl is TScrollBar)
+    and not DragManager.IsDragging then
   begin
     if (Event^.x < 0) or (Event^.y < 0) or
       (Event^.x > ACtl.Width) or (Event^.y > ACtl.Height) then
