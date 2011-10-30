@@ -11262,7 +11262,7 @@ begin
       else
       if (getSelectionMode in [QAbstractItemViewMultiSelection,
                                QAbstractItemViewExtendedSelection]) and
-        (ItemsList.Count > 1) and (FSelection.Count <> ItemsList.Count) then
+        (ItemsList.Count >= 1) then // and (FSelection.Count <> ItemsList.Count) then
       begin
         RemoveUnSelectedItems;
         for i := 0 to FSelection.Count - 1 do
