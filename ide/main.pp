@@ -13444,9 +13444,28 @@ var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   AForm: TCustomForm;
+  UnitCodeBuf: TCodeBuffer;
 begin
   GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
   if (ActiveUnitInfo = nil) then exit;
+
+  if (ActiveUnitInfo.Component=nil)
+  and (ActiveUnitInfo.Source<>nil)
+  and (CompareFileExt(ActiveUnitInfo.Filename,'.inc',false)=0) then begin
+    // include file => get unit
+    UnitCodeBuf:=CodeToolBoss.GetMainCode(ActiveUnitInfo.Source);
+    if (UnitCodeBuf<>nil) and (UnitCodeBuf<>ActiveUnitInfo.Source) then begin
+      // unit found
+      ActiveUnitInfo:=Project1.ProjectUnitWithFilename(UnitCodeBuf.Filename);
+      if (ActiveUnitInfo=nil) or (ActiveUnitInfo.OpenEditorInfoCount=0) then begin
+        // open unit in source editor and load form
+        DoOpenEditorFile(UnitCodeBuf.Filename,-1,-1,
+          [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoLoadResource]);
+        exit;
+      end;
+    end;
+  end;
+
   // load the form, if not already done
   AForm:=GetDesignerFormOfSource(ActiveUnitInfo,true);
   if AForm=nil then exit;
@@ -17578,20 +17597,8 @@ end;
 
 function TMainIDE.GetDesignerFormOfSource(AnUnitInfo: TUnitInfo; LoadForm: boolean
   ): TCustomForm;
-var
-  UnitCodeBuf: TCodeBuffer;
 begin
   Result:=nil;
-  if (AnUnitInfo.Component=nil)
-  and (AnUnitInfo.Source<>nil)
-  and (CompareFileExt(AnUnitInfo.Filename,'.inc',false)=0) then begin
-    // include file => get unit
-    UnitCodeBuf:=CodeToolBoss.GetMainCode(AnUnitInfo.Source);
-    if UnitCodeBuf<>nil then begin
-      AnUnitInfo:=Project1.ProjectUnitWithFilename(UnitCodeBuf.Filename);
-      if AnUnitInfo=nil then exit;
-    end;
-  end;
 
   if AnUnitInfo.Component<>nil then
     Result:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
