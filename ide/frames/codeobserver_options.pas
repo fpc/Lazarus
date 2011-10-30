@@ -33,11 +33,10 @@ type
   { TCodeObserverOptionsFrame }
 
   TCodeObserverOptionsFrame = class(TAbstractIDEOptionsEditor)
-    CodeObsCharConstCheckBox: TCheckBox;
+    UnnamedCharConstCheckBox: TCheckBox;
     CodeObsCategoriesCheckGroup: TCheckGroup;
     CodeObsIgnoreConstantsLabel: TLabel;
     COIgnoreConstInFuncsLabel: TLabel;
-    Label1: TLabel;
     LongProcLineCountLabel: TLabel;
     LongParamListCountLabel: TLabel;
     CodeObsIgnoreConstantsMemo: TMemo;
@@ -47,6 +46,7 @@ type
     LongParamListCountSpinEdit: TSpinEdit;
     NestedProcCountSpinEdit: TSpinEdit;
     CodeObsLeftPanel: TPanel;
+    UnnamedCharConstLabel: TLabel;
     procedure CodeObsCategoriesCheckGroupItemClick(Sender: TObject;
       Index: integer);
   private
@@ -154,7 +154,8 @@ begin
   LongProcLineCountLabel.Caption := lisCELongProcLineCount;
   LongParamListCountLabel.Caption := lisCELongParamListCount;
   NestedProcCountLabel.Caption := lisCENestedProcCount;
-  CodeObsCharConstCheckBox.Caption := lisCodeObsCharConst;
+  UnnamedCharConstLabel.Caption := lisCodeObsCharConst;
+  UnnamedCharConstCheckBox.Caption := lisShow;
   CodeObsIgnoreConstantsLabel.Caption := lisCodeObsIgnoreeConstants;
   COIgnoreConstInFuncsLabel.Caption := lisCodeObIgnoreConstInFuncs;
 end;
@@ -174,7 +175,7 @@ begin
     LongProcLineCountSpinEdit.Value := LongProcLineCount;
     LongParamListCountSpinEdit.Value := LongParamListCount;
     NestedProcCountSpinEdit.Value := NestedProcCount;
-    CodeObsCharConstCheckBox.Checked := ObserveCharConst;
+    UnnamedCharConstCheckBox.Checked := ObserveCharConst;
     Tmp := CreateListOfCOIgnoreConstants;
     CodeObsIgnoreConstantsMemo.Lines.Assign(Tmp);
     Tmp.Free;
@@ -200,7 +201,7 @@ begin
     LongProcLineCount := LongProcLineCountSpinEdit.Value;
     LongParamListCount := LongParamListCountSpinEdit.Value;
     NestedProcCount := NestedProcCountSpinEdit.Value;
-    ObserveCharConst := CodeObsCharConstCheckBox.Checked;
+    ObserveCharConst := UnnamedCharConstCheckBox.Checked;
     SetListOf_COIgnoreConstants(CodeObsIgnoreConstantsMemo.Lines, False);
     SetListOf_COIgnoreConstInFuncs(COIgnoreConstInFuncsMemo.Lines, False);
   end;

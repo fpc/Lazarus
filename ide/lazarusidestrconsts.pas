@@ -4921,6 +4921,7 @@ resourcestring
   lisCENestedProcCount = 'Nested procedures count treating as "many"';
   lisCodeObsCharConst = 'Search for unnamed char constants';
   lisCodeObsIgnoreeConstants = 'Ignore next unnamed constants';
+  lisShow = 'Show';
   lisCodeObIgnoreConstInFuncs = 'Ignore constants in next functions';
   lisCEEmptyBlocks = 'Empty blocks';
   lisCEComplexityGroup = 'Complexity';

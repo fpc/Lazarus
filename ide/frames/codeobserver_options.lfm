@@ -1,19 +1,19 @@
 inherited CodeObserverOptionsFrame: TCodeObserverOptionsFrame
-  Height = 428
-  Width = 531
-  ClientHeight = 428
-  ClientWidth = 531
+  Height = 466
+  Width = 557
+  ClientHeight = 466
+  ClientWidth = 557
   TabOrder = 0
-  DesignLeft = 220
-  DesignTop = 220
+  DesignLeft = 250
+  DesignTop = 214
   object CodeObsIgnoreConstantsLabel: TLabel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = CodeObsCategoriesCheckGroup
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 16
-    Top = 196
-    Width = 165
+    Height = 18
+    Top = 226
+    Width = 212
     BorderSpacing.Top = 6
     Caption = 'CodeObsIgnoreConstantsLabel'
     ParentColor = False
@@ -22,33 +22,23 @@ inherited CodeObserverOptionsFrame: TCodeObserverOptionsFrame
     AnchorSideLeft.Control = CodeObsLeftPanel
     AnchorSideTop.Control = CodeObsCategoriesCheckGroup
     AnchorSideTop.Side = asrBottom
-    Left = 269
-    Height = 16
-    Top = 196
-    Width = 152
+    Left = 291
+    Height = 18
+    Top = 226
+    Width = 191
     BorderSpacing.Top = 6
     Caption = 'COIgnoreConstInFuncsLabel'
     ParentColor = False
   end
-  object Label1: TLabel[2]
-    AnchorSideLeft.Control = Owner
-    AnchorSideLeft.Side = asrCenter
-    Left = 265
-    Height = 1
-    Top = 40
-    Width = 1
-    ParentColor = False
-  end
-  object CodeObsCategoriesCheckGroup: TCheckGroup[3]
+  object CodeObsCategoriesCheckGroup: TCheckGroup[2]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Label1
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 190
+    Height = 220
     Top = 0
-    Width = 262
+    Width = 288
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     AutoSize = True
@@ -62,11 +52,11 @@ inherited CodeObserverOptionsFrame: TCodeObserverOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    Constraints.MinHeight = 190
+    Constraints.MinHeight = 220
     OnItemClick = CodeObsCategoriesCheckGroupItemClick
     TabOrder = 0
   end
-  object CodeObsIgnoreConstantsMemo: TMemo[4]
+  object CodeObsIgnoreConstantsMemo: TMemo[3]
     AnchorSideLeft.Control = CodeObsIgnoreConstantsLabel
     AnchorSideTop.Control = CodeObsIgnoreConstantsLabel
     AnchorSideTop.Side = asrBottom
@@ -75,9 +65,9 @@ inherited CodeObserverOptionsFrame: TCodeObserverOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 213
-    Top = 215
-    Width = 262
+    Height = 219
+    Top = 247
+    Width = 288
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Lines.Strings = (
@@ -85,74 +75,93 @@ inherited CodeObserverOptionsFrame: TCodeObserverOptionsFrame
     )
     TabOrder = 1
   end
-  object CodeObsLeftPanel: TPanel[5]
-    AnchorSideLeft.Control = Label1
+  object CodeObsLeftPanel: TPanel[4]
+    AnchorSideLeft.Control = CodeObsCategoriesCheckGroup
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
-    Left = 269
-    Height = 169
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 291
+    Height = 211
     Top = 0
-    Width = 177
+    Width = 266
+    Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Left = 3
     BevelOuter = bvNone
-    ClientHeight = 169
-    ClientWidth = 177
+    ClientHeight = 211
+    ClientWidth = 266
     TabOrder = 2
     object NestedProcCountLabel: TLabel
       AnchorSideLeft.Control = CodeObsLeftPanel
       AnchorSideTop.Control = LongParamListCountSpinEdit
       AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CodeObsLeftPanel
+      AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 16
-      Top = 102
-      Width = 123
+      Height = 18
+      Top = 114
+      Width = 266
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       Caption = 'NestedProcCountLabel'
       ParentColor = False
+      WordWrap = True
     end
     object LongParamListCountLabel: TLabel
       AnchorSideLeft.Control = CodeObsLeftPanel
       AnchorSideTop.Control = LongProcLineCountSpinEdit
       AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CodeObsLeftPanel
+      AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 16
-      Top = 54
-      Width = 141
+      Height = 18
+      Top = 60
+      Width = 266
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       Caption = 'LongParamListCountLabel'
       ParentColor = False
+      WordWrap = True
     end
     object LongProcLineCountLabel: TLabel
       AnchorSideLeft.Control = CodeObsLeftPanel
       AnchorSideTop.Control = CodeObsLeftPanel
+      AnchorSideRight.Control = CodeObsLeftPanel
+      AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 16
+      Height = 18
       Top = 6
-      Width = 135
+      Width = 266
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       Caption = 'LongProcLineCountLabel'
       ParentColor = False
+      WordWrap = True
     end
-    object CodeObsCharConstCheckBox: TCheckBox
+    object UnnamedCharConstCheckBox: TCheckBox
       AnchorSideLeft.Control = CodeObsLeftPanel
-      AnchorSideTop.Control = NestedProcCountSpinEdit
+      AnchorSideTop.Control = UnnamedCharConstLabel
       AnchorSideTop.Side = asrBottom
-      Left = 0
-      Height = 19
-      Top = 150
-      Width = 177
-      BorderSpacing.Top = 6
-      Caption = 'CodeObsCharConstCheckBox'
+      AnchorSideRight.Control = CodeObsLeftPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 22
+      Top = 189
+      Width = 260
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      Caption = 'UnnamedCharConstCheckBox'
       TabOrder = 0
     end
     object NestedProcCountSpinEdit: TSpinEdit
-      AnchorSideLeft.Control = CodeObsCharConstCheckBox
+      AnchorSideLeft.Control = UnnamedCharConstCheckBox
       AnchorSideTop.Control = NestedProcCountLabel
       AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 23
-      Top = 121
+      Left = 12
+      Height = 27
+      Top = 135
       Width = 60
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
@@ -163,8 +172,8 @@ inherited CodeObserverOptionsFrame: TCodeObserverOptionsFrame
       AnchorSideTop.Control = LongParamListCountLabel
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 73
+      Height = 27
+      Top = 81
       Width = 60
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
@@ -175,15 +184,31 @@ inherited CodeObserverOptionsFrame: TCodeObserverOptionsFrame
       AnchorSideTop.Control = LongProcLineCountLabel
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 23
-      Top = 25
+      Height = 27
+      Top = 27
       Width = 60
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       TabOrder = 3
     end
+    object UnnamedCharConstLabel: TLabel
+      AnchorSideLeft.Control = CodeObsLeftPanel
+      AnchorSideTop.Control = NestedProcCountSpinEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = CodeObsLeftPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 18
+      Top = 168
+      Width = 266
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      Caption = 'UnnamedCharConstLabel'
+      ParentColor = False
+      WordWrap = True
+    end
   end
-  object COIgnoreConstInFuncsMemo: TMemo[6]
+  object COIgnoreConstInFuncsMemo: TMemo[5]
     AnchorSideLeft.Control = CodeObsLeftPanel
     AnchorSideTop.Control = COIgnoreConstInFuncsLabel
     AnchorSideTop.Side = asrBottom
@@ -191,10 +216,10 @@ inherited CodeObserverOptionsFrame: TCodeObserverOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 269
-    Height = 213
-    Top = 215
-    Width = 262
+    Left = 291
+    Height = 219
+    Top = 247
+    Width = 266
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Lines.Strings = (
