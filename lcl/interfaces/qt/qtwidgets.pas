@@ -1109,8 +1109,10 @@ type
     FItemTextChangedHook: QListWidget_hookH;
     FDontPassSelChange: Boolean;
     function getItemCount: Integer;
+    function GetItemEnabled(AIndex: Integer): Boolean;
     function GetSelected(AIndex: Integer): Boolean;
     procedure setItemCount(const AValue: Integer);
+    procedure SetItemEnabled(AIndex: Integer; AValue: Boolean);
     procedure SetSelected(AIndex: Integer; AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
@@ -1159,6 +1161,7 @@ type
     procedure ExchangeItems(const AIndex1, AIndex2: Integer);
     procedure MoveItem(const AFromIndex, AToIndex: Integer);
     property ItemCount: Integer read getItemCount write setItemCount;
+    property Enabled[AIndex: Integer]: Boolean read GetItemEnabled write SetItemEnabled;
     property Selected[AIndex: Integer]: Boolean read GetSelected write SetSelected;
   end;
 
@@ -9064,6 +9067,16 @@ begin
   Result := QListWidget_count(QListWidgetH(Widget));
 end;
 
+function TQtListWidget.GetItemEnabled(AIndex: Integer): Boolean;
+var
+  AItem: QListWidgetItemH;
+begin
+  Result := False;
+  AItem := getItem(AIndex);
+  if Assigned(AItem) then
+    Result := QListWidgetItem_flags(AItem) and QtItemIsEnabled <> 0;
+end;
+
 function TQtListWidget.GetSelected(AIndex: Integer): Boolean;
 var
   AItem: QListWidgetItemH;
@@ -9093,6 +9106,23 @@ begin
     QStringList_destroy(AList);
   finally
     EndUpdate;
+  end;
+end;
+
+procedure TQtListWidget.SetItemEnabled(AIndex: Integer; AValue: Boolean);
+var
+  AItem: QListWidgetItemH;
+  Flags: QtItemFlags;
+begin
+  AItem := getItem(AIndex);
+  if Assigned(AItem) then
+  begin
+    Flags := QListWidgetItem_flags(AItem);
+    if AValue then
+      Flags := Flags or QtItemIsEnabled
+    else
+      Flags := Flags and not QtItemIsEnabled;
+    QListWidgetItem_setFlags(AItem, Flags);
   end;
 end;
 

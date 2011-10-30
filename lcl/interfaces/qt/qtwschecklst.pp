@@ -59,6 +59,7 @@ type
 
 
 implementation
+uses WSProc;
 
 const
   LCLCheckStateToQtCheckStateMap: array[TCheckBoxState] of QtCheckState =
@@ -110,13 +111,11 @@ class function TQtWSCustomCheckListBox.GetItemEnabled(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer): Boolean;
 var
   QtListWidget: TQtCheckListBox;
-  AListWidget: QListWidgetH;
-  AItem: QListWidgetItemH;
 begin
+  if not WSCheckHandleAllocated(ACheckListBox, 'GetItemEnabled') then
+    Exit;
   QtListWidget := TQtCheckListBox(ACheckListBox.Handle);
-  AListWidget := QListWidgetH(QtListWidget.Widget);
-  AItem := QListWidget_item(AListWidget, AIndex);
-  Result := (QListWidgetItem_flags(AItem) and QtItemIsEnabled) <> 0;
+  Result := QtListWidget.Enabled[AIndex];
 end;
 
 class function TQtWSCustomCheckListBox.GetState(
@@ -124,13 +123,11 @@ class function TQtWSCustomCheckListBox.GetState(
   ): TCheckBoxState;
 var
   QtListWidget: TQtCheckListBox;
-  AListWidget: QListWidgetH;
-  AItem: QListWidgetItemH;
 begin
+  if not WSCheckHandleAllocated(ACheckListBox, 'GetState') then
+    Exit;
   QtListWidget := TQtCheckListBox(ACheckListBox.Handle);
-  AListWidget := QListWidgetH(QtListWidget.Widget);
-  AItem := QListWidget_item(AListWidget, AIndex);
-  Result := QtCheckStateToLCLCheckStateMap[QListWidgetItem_checkState(AItem)];
+  Result := QtCheckStateToLCLCheckStateMap[QtListWidget.ItemCheckState[AIndex]];
 end;
 
 class procedure TQtWSCustomCheckListBox.SetItemEnabled(
@@ -138,19 +135,11 @@ class procedure TQtWSCustomCheckListBox.SetItemEnabled(
   const AEnabled: Boolean);
 var
   QtListWidget: TQtCheckListBox;
-  AListWidget: QListWidgetH;
-  AItem: QListWidgetItemH;
-  Flags: QtItemFlags;
 begin
+  if not WSCheckHandleAllocated(ACheckListBox, 'SetItemEnabled') then
+    Exit;
   QtListWidget := TQtCheckListBox(ACheckListBox.Handle);
-  AListWidget := QListWidgetH(QtListWidget.Widget);
-  AItem := QListWidget_item(AListWidget, AIndex);
-  Flags := QListWidgetItem_flags(AItem);
-  if AEnabled then
-    Flags := Flags or QtItemIsEnabled
-  else
-    Flags := Flags and not QtItemIsEnabled;
-  QListWidgetItem_setFlags(AItem, Flags);
+  QtListWidget.Enabled[AIndex] := AEnabled;
 end;
 
 class procedure TQtWSCustomCheckListBox.SetState(
@@ -158,14 +147,12 @@ class procedure TQtWSCustomCheckListBox.SetState(
   const AState: TCheckBoxState);
 var
   QtListWidget: TQtCheckListBox;
-  AListWidget: QListWidgetH;
-  AItem: QListWidgetItemH;
 begin
+  if not WSCheckHandleAllocated(ACheckListBox, 'SetState') then
+    Exit;
   QtListWidget := TQtCheckListBox(ACheckListBox.Handle);
-  AListWidget := QListWidgetH(QtListWidget.Widget);
-  AItem := QListWidget_item(AListWidget, AIndex);
   QtListWidget.BeginUpdate;
-  QListWidgetItem_setCheckState(AItem, LCLCheckStateToQtCheckStateMap[AState]);
+  QtListWidget.ItemCheckState[AIndex] := LCLCheckStateToQtCheckStateMap[AState];
   QtListWidget.EndUpdate;
 end;
 
