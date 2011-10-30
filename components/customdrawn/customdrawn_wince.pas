@@ -27,8 +27,8 @@ type
 
   TCDEditDrawerWinCE = class(TCDEditDrawer)
   public
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDEdit: TCDEdit); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDEdit: TCDEdit); override;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDControl: TCDControl); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDControl: TCDControl); override;
   end;
 
   { TCDCheckBoxDrawerWinCE }
@@ -103,12 +103,12 @@ end;
 { TCDEditDrawerWinCE }
 
 procedure TCDEditDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
-  CDEdit: TCDEdit);
+  CDControl: TCDControl);
 begin
 
 end;
 
-procedure TCDEditDrawerWinCE.DrawToCanvas(ADest: TCanvas; CDEdit: TCDEdit);
+procedure TCDEditDrawerWinCE.DrawToCanvas(ADest: TCanvas; CDControl: TCDControl);
 begin
 
 end;

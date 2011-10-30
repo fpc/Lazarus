@@ -26,10 +26,6 @@ procedure DrawAndroidButton(Canvas: TCanvas; Color: TColor);
 procedure DrawXPTaskbarButton(Canvas: TCanvas; Color: TColor);
 procedure FPImgCloneRect(IntfImg1, IntfImg2: TLazIntfImage; lRect: TRect; Fast: boolean);
 function GetUniqueName(const Name: string; PControl: TComponent): string;
-procedure DrawTabHead(aDest: TFPCustomCanvas; aRect: TRect; HeadColor: TColor;
-  IsActive: boolean);
-procedure DrawTabHeadMask(aDest: TFPCustomCanvas; aRect: TRect;
-  HeadColor: TColor; IsActive: boolean);
 procedure DrawArrow(aDest: TFPCustomCanvas; aRect: TRect; R: boolean);
 procedure DrawCDButtonDown(Canvas: TCanvas; ABackgroundColor: TColor);
 
@@ -76,112 +72,6 @@ begin
       aRect.Left + 3 * lWidth div 4 - 1, aRect.Top + lHeight div 2 + 4);
     //aDest.Colors[aRect.Left + 3 * lWidth div 4, aRect.Top + lHeight div 2] := aDest.Brush.FPColor;
   end;
-end;
-
-procedure DrawTabHead(aDest: TFPCustomCanvas; aRect: TRect; HeadColor: TColor;
-  IsActive: boolean);
-var
-  lRect: TRect;
-  CC: TFPColor;
-begin
-  lRect.Bottom := aRect.Bottom;
-  lRect.Right := aRect.Right;
-  lRect.Left := aRect.Left;
-  lRect.Top := aRect.Top + 3;
-  if not IsActive then
-    GradientFillRect(clWhite, HeadColor, aDest, lREct)
-  else
-  begin
-    aDest.Brush.FPColor := TColorToFPColor(ColorToRGB(HeadColor));
-    aDest.Pen.FPColor := aDest.Brush.FPColor;
-    aDest.Rectangle(lRect);
-  end;
-  aDest.Pen.FPColor := TColorToFPColor(ColorToRGB(clWhite));
-  aDest.Line(lRect.Left + 2, aRect.Top + 1, lRect.Right - 2, aRect.Top + 1);
-  aDest.Line(lRect.Left + 1, aRect.Top + 2, lRect.Right - 1, aRect.Top + 2);
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($009C9B91));
-  aDest.Line(lRect.Left, lRect.Top, lRect.Left, lRect.Bottom);
-  //aDest.Line(lRect.Left + 3, aRect.Top, lRect.Right - 3, aRect.Top);
-  aDest.Line(lRect.Left + 3, aRect.Top, lRect.Right - 2, aRect.Top);
-  aDest.Line(lRect.Right, lRect.Top, lRect.Right, lRect.Bottom);
-  if not IsActive then
-    aDest.Line(aRect.Left, aRect.Bottom - 1, aRect.Right, aRect.Bottom - 1);
-  //aDest.Line();
-{  aDest.Colors[aRect.Left + 1, aRect.Top + 2] := aDest.Pen.FPColor;
-  aDest.Colors[aRect.Left + 2, aRect.Top + 1] := aDest.Pen.FPColor;
-  aDest.Colors[aRect.Right - 1, aRect.Top + 2] := aDest.Pen.FPColor;
-  aDest.Colors[aRect.Right - 2, aRect.Top + 1] := aDest.Pen.FPColor;    }
-  if IsActive then
-  begin
-    aDest.Pen.FPColor := TColorToFPColor(ColorToRGB($003CC7FF));
-    aDest.Line(lRect.Left, aRect.Top + 2, lRect.Right, aRect.Top + 2);
-    aDest.Line(lRect.Left + 1, aRect.Top + 1, lRect.Right - 1, aRect.Top + 1);
-    aDest.Pen.FPColor := TColorToFPColor(ColorToRGB($001CA7DF));
-    aDest.Line(lRect.Left + 2, aRect.Top, lRect.Right - 2, aRect.Top);
-    CC := TColorToFPColor(ColorToRGB($001CA7DF));
-    aDest.Colors[aRect.Left + 1, aRect.Top + 1] := CC;
-    aDest.Colors[aRect.Left, aRect.Top + 2] := CC;
-    aDest.Colors[aRect.Left + 2, aRect.Top] := CC;
-    aDest.Colors[aRect.Right - 1, aRect.Top + 1] := CC;
-    aDest.Colors[aRect.Right, aRect.Top + 2] := CC;
-    aDest.Colors[aRect.Right - 2, aRect.Top] := CC;
-   { CC := TColorToFPColor(ColorToRGB($005CE7FF));
-    aDest.Colors[aRect.Left, aRect.Top + 1] := CC;
-    aDest.Colors[aRect.Left + 1, aRect.Top] := CC;
-    aDest.Colors[aRect.Left + 2, aRect.Top + 1] := CC;
-    aDest.Colors[aRect.Left + 1, aRect.Top + 2] := CC;
-    aDest.Colors[aRect.Right, aRect.Top + 1] := CC;
-    aDest.Colors[aRect.Right - 1, aRect.Top] := CC;
-    aDest.Colors[aRect.Right - 1, aRect.Top + 2] := CC;
-    aDest.Colors[aRect.Right - 2, aRect.Top + 1] := CC; }
-  end
-  else
-  begin
-    CC := TColorToFPColor(ColorToRGB($00BCBBB1));
-    aDest.Colors[aRect.Left + 1, aRect.Top + 1] := CC;
-    aDest.Colors[aRect.Left, aRect.Top + 2] := CC;
-    aDest.Colors[aRect.Left + 2, aRect.Top] := CC;
-    aDest.Colors[aRect.Right - 1, aRect.Top + 1] := CC;
-    aDest.Colors[aRect.Right, aRect.Top + 2] := CC;
-    aDest.Colors[aRect.Right - 2, aRect.Top] := CC;
-    CC := TColorToFPColor(ColorToRGB($00DCDBD1));
-    aDest.Colors[aRect.Left, aRect.Top + 1] := CC;
-    aDest.Colors[aRect.Left + 1, aRect.Top] := CC;
-    aDest.Colors[aRect.Left + 2, aRect.Top + 1] := CC;
-    aDest.Colors[aRect.Left + 1, aRect.Top + 2] := CC;
-    aDest.Colors[aRect.Right, aRect.Top + 1] := CC;
-    aDest.Colors[aRect.Right - 1, aRect.Top] := CC;
-    aDest.Colors[aRect.Right - 1, aRect.Top + 2] := CC;
-    aDest.Colors[aRect.Right - 2, aRect.Top + 1] := CC;
-  end;
-end;
-
-procedure DrawTabHeadMask(aDest: TFPCustomCanvas; aRect: TRect;
-  HeadColor: TColor; IsActive: boolean);
-var
-  lRect: TRect;
-  CC: TFPColor;
-begin
-  lRect.Bottom := aRect.Bottom;
-  lRect.Right := aRect.Right;
-  lRect.Left := aRect.Left;
-  lRect.Top := aRect.Top + 3;
-  CC := TColorToFPColor(ColorToRGB(HeadColor));
-  aDest.Pen.FPColor := CC;
-  aDest.Brush.FPColor := CC;
-  aDest.Rectangle(lRect);
-  aDest.Line(lRect.Left, lRect.Top, lRect.Left, lRect.Bottom);
-  aDest.Line(lRect.Left + 3, aRect.Top, lRect.Right - 2, aRect.Top);
-  aDest.Line(lRect.Right, lRect.Top, lRect.Right, lRect.Bottom);
-  aDest.Line(aRect.Left, aRect.Bottom - 1, aRect.Right, aRect.Bottom - 1);
-  aDest.Line(lRect.Left + 1, lRect.Top - 1, lRect.Right, lRect.Top - 1);
-  aDest.Line(lRect.Left + 2, lRect.Top - 2, lRect.Right - 1, lRect.Top - 2);
-  aDest.Colors[aRect.Left + 1, aRect.Top + 1] := CC;
-  aDest.Colors[aRect.Left, aRect.Top + 2] := CC;
-  aDest.Colors[aRect.Left + 2, aRect.Top] := CC;
-  aDest.Colors[aRect.Right - 1, aRect.Top + 1] := CC;
-  aDest.Colors[aRect.Right, aRect.Top + 2] := CC;
-  aDest.Colors[aRect.Right - 2, aRect.Top] := CC;
 end;
 
 function GetUniqueName(const Name: string; PControl: TComponent): string;

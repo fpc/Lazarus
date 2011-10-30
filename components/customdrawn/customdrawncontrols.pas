@@ -26,11 +26,14 @@ uses
   //
   customdrawnutils;
 
+const
+  CDDRAWSTYLE_COUNT = 12;
+
 type
 
   TCDDrawStyle = (
     // The default is given by the DefaultStyle global variable
-    dsDefault,
+    dsDefault = 0,
     // Operating system styles
     dsWinCE, dsWin2000, dsWinXP,
     dsKDE, dsGNOME, dsMacOSX,
@@ -44,8 +47,6 @@ type
   { TCDControl }
 
   TCDControl = class(TCustomControl)
-  private
-    FIsMouseOver: Boolean;
   protected
     FDrawStyle: TCDDrawStyle;
     FCurrentDrawer: TCDControlDrawer;
@@ -54,23 +55,26 @@ type
     procedure PrepareCurrentDrawer(); virtual;
     procedure SetDrawStyle(const AValue: TCDDrawStyle); virtual;
     function GetClientRect: TRect; override;
-    procedure EraseBackground(DC: HDC); override;
     // mouse
     procedure MouseEnter; override;
     procedure MouseLeave; override;
     //
     property DrawStyle: TCDDrawStyle read FDrawStyle write SetDrawStyle;
   public
-    property IsMouseOver: Boolean read FIsMouseOver write FIsMouseOver;
+    // state information
+    IsMouseOver: Boolean;
+    //
+    procedure EraseBackground(DC: HDC); override;
+    procedure Paint; override;
   end;
   TCDControlClass = class of TCDControl;
 
   TCDControlDrawer = class
   public
     function GetClientRect(AControl: TCDControl): TRect; virtual; abstract;
-    //procedure DrawToIntfImage(ADest: TFPImageCanvas; AControl: TCDControl);
-    //  virtual; abstract;
-    //procedure DrawToCanvas(ADest: TCanvas; AControl: TCDControl); virtual; abstract;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; AControl: TCDControl);
+      virtual; abstract;
+    procedure DrawToCanvas(ADest: TCanvas; AControl: TCDControl); virtual; abstract;
   end;
 
   // ===================================
@@ -187,7 +191,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
   published
     property Color;
@@ -196,8 +199,6 @@ type
 
   TCDEditDrawer = class(TCDControlDrawer)
   public
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDEdit: TCDEdit); virtual; abstract;
-    procedure DrawToCanvas(ADest: TCanvas; CDEdit: TCDEdit); virtual; abstract;
   end;
 
   {@@
@@ -722,14 +723,35 @@ begin
   inherited Destroy;
 end;
 
-procedure TCDEdit.EraseBackground(DC: HDC);
-begin
-  inherited EraseBackground(DC);
-end;
-
 procedure TCDEdit.Paint;
+var
+  AImage: TLazIntfImage = nil;
+  ABmp: TBitmap = nil;
+  lCanvas: TFPImageCanvas = nil;
 begin
   inherited Paint;
+
+  PrepareCurrentDrawer();
+
+  ABmp := TBitmap.Create;
+  try
+    ABmp.Width := Width;
+    ABmp.Height := Height;
+    AImage := ABmp.CreateIntfImage;
+    lCanvas := TFPImageCanvas.Create(AImage);
+    // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
+    TCDEditDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, Self);
+    ABmp.LoadFromIntfImage(AImage);
+    // Second step of the drawing: LCL TCustomCanvas for easy font access
+    TCDEditDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas, Self);
+    Canvas.Draw(0, 0, ABmp);
+  finally
+    if lCanvas <> nil then
+      lCanvas.Free;
+    if AImage <> nil then
+      AImage.Free;
+    ABmp.Free;
+  end;
 end;
 
 { TCDCheckBox }
@@ -992,15 +1014,46 @@ begin
 
 end;
 
+procedure TCDControl.Paint;
+var
+  AImage: TLazIntfImage = nil;
+  ABmp: TBitmap = nil;
+  lCanvas: TFPImageCanvas = nil;
+begin
+  inherited Paint;
+
+  PrepareCurrentDrawer();
+
+  ABmp := TBitmap.Create;
+  try
+    ABmp.Width := Width;
+    ABmp.Height := Height;
+    AImage := ABmp.CreateIntfImage;
+    lCanvas := TFPImageCanvas.Create(AImage);
+    // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
+    FCurrentDrawer.DrawToIntfImage(lCanvas, Self);
+    ABmp.LoadFromIntfImage(AImage);
+    // Second step of the drawing: LCL TCustomCanvas for easy font access
+    FCurrentDrawer.DrawToCanvas(ABmp.Canvas, Self);
+    Canvas.Draw(0, 0, ABmp);
+  finally
+    if lCanvas <> nil then
+      lCanvas.Free;
+    if AImage <> nil then
+      AImage.Free;
+    ABmp.Free;
+  end;
+end;
+
 procedure TCDControl.MouseEnter;
 begin
-  FIsMouseOver := True;
+  IsMouseOver := True;
   inherited MouseEnter;
 end;
 
 procedure TCDControl.MouseLeave;
 begin
-  FIsMouseOver := True;
+  IsMouseOver := True;
   inherited MouseLeave;
 end;
 
@@ -1672,5 +1725,46 @@ begin
   Result := FTabIndex;
 end;
 
+var
+  i: Integer;
+finalization
+  // Free all drawers
+  // Standard Tab
+  for i := 0 to CDDRAWSTYLE_COUNT-1 do
+  begin
+    RegisteredButtonDrawers[TCDDrawStyle(i)].Free;
+    RegisteredButtonDrawers[TCDDrawStyle(i)] := nil;
+  end;
+  for i := 0 to CDDRAWSTYLE_COUNT-1 do
+  begin
+    RegisteredEditDrawers[TCDDrawStyle(i)].Free;
+    RegisteredEditDrawers[TCDDrawStyle(i)] := nil;
+  end;
+  for i := 0 to CDDRAWSTYLE_COUNT-1 do
+  begin
+    RegisteredGroupBoxDrawers[TCDDrawStyle(i)].Free;
+    RegisteredGroupBoxDrawers[TCDDrawStyle(i)] := nil;
+  end;
+  for i := 0 to CDDRAWSTYLE_COUNT-1 do
+  begin
+    RegisteredCheckBoxDrawers[TCDDrawStyle(i)].Free;
+    RegisteredCheckBoxDrawers[TCDDrawStyle(i)] := nil;
+  end;
+  // Common Controls Tab
+  for i := 0 to CDDRAWSTYLE_COUNT-1 do
+  begin
+    RegisteredTrackBarDrawers[TCDDrawStyle(i)].Free;
+    RegisteredTrackBarDrawers[TCDDrawStyle(i)] := nil;
+  end;
+  for i := 0 to CDDRAWSTYLE_COUNT-1 do
+  begin
+    RegisteredListViewDrawers[TCDDrawStyle(i)].Free;
+    RegisteredListViewDrawers[TCDDrawStyle(i)] := nil;
+  end;
+  for i := 0 to CDDRAWSTYLE_COUNT-1 do
+  begin
+    RegisteredCustomTabControlDrawers[TCDDrawStyle(i)].Free;
+    RegisteredCustomTabControlDrawers[TCDDrawStyle(i)] := nil;
+  end;
 end.
 
