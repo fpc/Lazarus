@@ -195,8 +195,6 @@ type
     function CreateUniqueUnitName(const Prefix: string): string;
     function DependencyExists(Dependency: TPkgDependency;
                               Flags: TFindPackageFlags): boolean;
-    function FindAPackageWithName(const PkgName: string;
-                                  IgnorePackage: TLazPackage): TLazPackage;
     function FindBrokenDependencyPath(APackage: TLazPackage;
                                       FirstDependency: TPkgDependency): TFPList;
     function FindAllBrokenDependencies(APackage: TLazPackage;
@@ -230,6 +228,8 @@ type
                                   Flags: TFindPackageFlags): TAVLTreeNode;
     function FindOpenPackage(Dependency: TPkgDependency;
                              Flags: TFindPackageFlags): TLazPackage;
+    function FindPackageWithName(const PkgName: string;
+                                 IgnorePackage: TLazPackage): TLazPackage;
     function FindPackageWithFilename(const TheFilename: string): TLazPackage;
     function FindPackageWithID(PkgID: TLazPackageID): TLazPackage;
     function FindPackageWithIDMask(PkgIDMask: TLazPackageID): TLazPackage;
@@ -600,7 +600,7 @@ begin
     Result:=mrOk;
     Dependency.RequiredPackage:=NewPackage;
     Dependency.LoadPackageResult:=lprSuccess;
-    OldPackage:=FindAPackageWithName(NewPackage.Name,NewPackage);
+    OldPackage:=FindPackageWithName(NewPackage.Name,NewPackage);
     if OldPackage=nil then
       AddPackage(NewPackage)
     else
@@ -963,7 +963,7 @@ begin
     Result:=nil;
 end;
 
-function TLazPackageGraph.FindAPackageWithName(const PkgName: string;
+function TLazPackageGraph.FindPackageWithName(const PkgName: string;
   IgnorePackage: TLazPackage): TLazPackage;
 var
   ANode: TAVLTreeNode;
@@ -1251,7 +1251,7 @@ function TLazPackageGraph.DependencyExists(Dependency: TPkgDependency;
 begin
   Result:=true;
   if FindNodeOfDependency(Dependency,Flags)<>nil then exit;
-  if FindAPackageWithName(Dependency.PackageName,nil)=nil then begin
+  if FindPackageWithName(Dependency.PackageName,nil)=nil then begin
     // no package with same name open
     // -> try package links
     if fpfSearchInPkgLinks in Flags then
@@ -4941,7 +4941,7 @@ begin
       // no compatible package yet open
       Dependency.RequiredPackage:=nil;
       Dependency.LoadPackageResult:=lprNotFound;
-      APackage:=FindAPackageWithName(Dependency.PackageName,nil);
+      APackage:=FindPackageWithName(Dependency.PackageName,nil);
       if APackage=nil then begin
         // no package with same name open
         // -> try package links

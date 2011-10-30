@@ -1551,7 +1551,7 @@ begin
   end;
   // search package in graph
   PkgName:=ExtractFileNameOnly(fLazPFilename);
-  LazPackage:=PackageGraph.FindAPackageWithName(PkgName,nil);
+  LazPackage:=PackageGraph.FindPackageWithName(PkgName,nil);
   if LazPackage<>nil then begin
     // there is already a package loaded with this name ...
     if CompareFilenames(LazPackage.Filename,fLazPFilename)<>0 then begin

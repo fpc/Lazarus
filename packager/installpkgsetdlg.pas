@@ -407,7 +407,7 @@ begin
   sl:=TStringList.Create;
   for i:=0 to FNewInstalledPackages.Count-1 do begin
     NewPackageID:=TLazPackageID(FNewInstalledPackages[i]);
-    APackage:=PackageGraph.FindAPackageWithName(NewPackageID.Name,nil);
+    APackage:=PackageGraph.FindPackageWithName(NewPackageID.Name,nil);
     if APackage<>nil then
       NewPackageID:=APackage;
     s:=NewPackageID.IDAsString;

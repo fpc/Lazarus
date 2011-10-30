@@ -158,6 +158,7 @@ type
     procedure RemoveOldUserLinks;
     procedure BeginUpdate;
     procedure EndUpdate;
+    function IsUpdating: boolean;
     procedure SaveUserLinks;
     function NeedSaveUserLinks(const ConfigFilename: string): boolean;
     procedure WriteLinkTree(LinkTree: TAVLTree);
@@ -425,7 +426,6 @@ begin
   
   FGlobalLinks.FreeAndClear;
   GlobalLinksDir:=GetGlobalLinkDirectory;
-  //debugln('UpdateGlobalLinks A ',GlobalLinksDir);
   if FindFirstUTF8(GlobalLinksDir+'*.lpl', faAnyFile, FileInfo)=0 then begin
     PkgVersion:=TPkgVersion.Create;
     repeat
@@ -453,13 +453,15 @@ begin
       end;
       sl.Free;
       if NewFilename='' then continue;
-      
+      //debugln(['TPackageLinks.UpdateGlobalLinks NewFilename="',NewFilename,'"']);
+
       NewPkgLink:=TPackageLink.Create;
       NewPkgLink.Reference;
       NewPkgLink.Origin:=ploGlobal;
       NewPkgLink.Name:=NewPkgName;
       NewPkgLink.Version.Assign(PkgVersion);
       IDEMacros.SubstituteMacros(NewFilename);
+      //debugln(['TPackageLinks.UpdateGlobalLinks EnvironmentOptions.LazarusDirectory=',EnvironmentOptions.LazarusDirectory]);
       NewFilename:=TrimFilename(NewFilename);
       if (EnvironmentOptions.LazarusDirectory<>'')
       and (FileIsInDirectory(NewFilename,EnvironmentOptions.LazarusDirectory)) then
@@ -620,6 +622,11 @@ begin
   dec(fUpdateLock);
   if (plsGlobalLinksNeedUpdate in FStates) then UpdateGlobalLinks;
   if (plsUserLinksNeedUpdate in FStates) then UpdateUserLinks;
+end;
+
+function TPackageLinks.IsUpdating: boolean;
+begin
+  Result:=fUpdateLock>0;
 end;
 
 procedure TPackageLinks.SaveUserLinks;
@@ -850,34 +857,37 @@ var
   NewLink: TPackageLink;
 begin
   BeginUpdate;
-  // check if link already exists
-  OldLink:=FindLinkWithPackageID(APackage);
-  if (OldLink<>nil) then begin
-    // link exists -> check if it is already the right value
-    if (OldLink.Compare(APackage)=0)
-    and (OldLink.GetEffectiveFilename=APackage.Filename) then begin
-      Result:=OldLink;
-      Result.LastUsed:=Now;
-      exit;
+  try
+    // check if link already exists
+    OldLink:=FindLinkWithPackageID(APackage);
+    if (OldLink<>nil) then begin
+      // link exists -> check if it is already the right value
+      if (OldLink.Compare(APackage)=0)
+      and (OldLink.GetEffectiveFilename=APackage.Filename) then begin
+        Result:=OldLink;
+        Result.LastUsed:=Now;
+        exit;
+      end;
+      RemoveLink(APackage);
     end;
-    RemoveLink(APackage);
+    // add user link
+    NewLink:=TPackageLink.Create;
+    NewLink.Reference;
+    NewLink.AssignID(APackage);
+    NewLink.Filename:=APackage.Filename;
+    if NewLink.MakeSense then begin
+      FUserLinksSortID.Add(NewLink);
+      FUserLinksSortFile.Add(NewLink);
+      Modified:=true;
+    end else begin
+      NewLink.Release;
+      NewLink:=nil;
+    end;
+    Result:=NewLink;
+    Result.LastUsed:=Now;
+  finally
+    EndUpdate;
   end;
-  // add user link
-  NewLink:=TPackageLink.Create;
-  NewLink.Reference;
-  NewLink.AssignID(APackage);
-  NewLink.Filename:=APackage.Filename;
-  if NewLink.MakeSense then begin
-    FUserLinksSortID.Add(NewLink);
-    FUserLinksSortFile.Add(NewLink);
-    Modified:=true;
-  end else begin
-    NewLink.Release;
-    NewLink:=nil;
-  end;
-  EndUpdate;
-  Result:=NewLink;
-  Result.LastUsed:=Now;
 end;
 
 function TPackageLinks.AddUserLink(const PkgFilename, PkgName: string
@@ -888,9 +898,9 @@ var
   LPK: TXMLConfig;
   PkgVersion: TPkgVersion;
 begin
-  BeginUpdate;
   PkgVersion:=TPkgVersion.Create;
   LPK:=nil;
+  BeginUpdate;
   try
     // load version
     LPK:=LoadXMLConfigViaCodeBuffer(PkgFilename);
@@ -924,11 +934,11 @@ begin
       NewLink.Release;
       NewLink:=nil;
     end;
-    EndUpdate;
     Result:=NewLink;
     if Result<>nil then
       Result.LastUsed:=Now;
   finally
+    EndUpdate;
     PkgVersion.Free;
     LPK.Free;
   end;
@@ -940,26 +950,28 @@ var
   OldLink: TPackageLink;
 begin
   BeginUpdate;
-  // remove from user links
-  ANode:=FUserLinksSortID.FindKey(APackageID,@ComparePackageIDAndLink);
-  if ANode<>nil then begin
-    OldLink:=TPackageLink(ANode.Data);
-    FUserLinksSortID.Delete(ANode);
-    FUserLinksSortFile.RemovePointer(OldLink);
-    OldLink.Release;
-    Modified:=true;
+  try
+    // remove from user links
+    ANode:=FUserLinksSortID.FindKey(APackageID,@ComparePackageIDAndLink);
+    if ANode<>nil then begin
+      OldLink:=TPackageLink(ANode.Data);
+      FUserLinksSortID.Delete(ANode);
+      FUserLinksSortFile.RemovePointer(OldLink);
+      OldLink.Release;
+      Modified:=true;
+    end;
+    // remove from global links
+    ANode:=FGlobalLinks.FindKey(APackageID,@ComparePackageIDAndLink);
+    if ANode<>nil then begin
+      OldLink:=TPackageLink(ANode.Data);
+      FGlobalLinks.Delete(ANode);
+      OldLink.Release;
+      Modified:=true;
+    end;
+  finally
+    EndUpdate;
   end;
-  // remove from global links
-  ANode:=FGlobalLinks.FindKey(APackageID,@ComparePackageIDAndLink);
-  if ANode<>nil then begin
-    OldLink:=TPackageLink(ANode.Data);
-    FGlobalLinks.Delete(ANode);
-    OldLink.Release;
-    Modified:=true;
-  end;
-  EndUpdate;
 end;
-
 
 initialization
   PkgLinks:=nil;

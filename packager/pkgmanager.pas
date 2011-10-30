@@ -48,7 +48,7 @@ uses
   contnrs, InterfaceBase, StringHashList, Translations, LResources,
   // codetools
   CodeToolsCfgScript, CodeToolsConfig, CodeToolManager, CodeCache,
-  BasicCodeTools, FileProcs, Laz_XMLCfg,
+  CodeToolsStructs, BasicCodeTools, FileProcs, Laz_XMLCfg,
   // IDE Interface
   SrcEditorIntf, NewItemIntf, ProjectIntf, PackageIntf, CompOptsIntf,
   MenuIntf, IDEWindowIntf, PropEdits, MacroIntf, LazIDEIntf,
@@ -545,7 +545,7 @@ begin
     finally
       NewDependency.Free;
     end;
-    APackage:=PackageGraph.FindAPackageWithName(APackageName,nil);
+    APackage:=PackageGraph.FindPackageWithName(APackageName,nil);
     if APackage=nil then exit;
     AForm:=PackageEditors.OpenEditor(APackage);
   end;
@@ -1077,7 +1077,7 @@ begin
       end;
 
       // check package name conflict
-      ConflictPkg:=PackageGraph.FindAPackageWithName(NewPkgName,APackage);
+      ConflictPkg:=PackageGraph.FindPackageWithName(NewPkgName,APackage);
       if ConflictPkg<>nil then begin
         Result:=IDEMessageDialog(lisPkgMangPackageNameAlreadyExists,
           Format(lisPkgMangThereIsAlreadyAnotherPackageWithTheName, ['"',
@@ -1836,7 +1836,7 @@ begin
   end;
 
   // check if Package with same name is already loaded
-  ConflictPkg:=PackageGraph.FindAPackageWithName(APackage.Name,nil);
+  ConflictPkg:=PackageGraph.FindPackageWithName(APackage.Name,nil);
   if ConflictPkg<>nil then begin
     if not PackageGraph.PackageCanBeReplaced(ConflictPkg,APackage) then begin
       Result:=IDEMessageDialog(lisPkgMangPackageConflicts,
@@ -1986,7 +1986,7 @@ begin
   for i:=0 to RequiredPackages.Count-1 do begin
     PkgName:=Trim(RequiredPackages[i]);
     if (PkgName='') or (not IsValidIdent(PkgName)) then continue;
-    APackage:=PackageGraph.FindAPackageWithName(PkgName,nil);
+    APackage:=PackageGraph.FindPackageWithName(PkgName,nil);
     if APackage=nil then begin
       DebugLn(['TPkgManager.AddProjectDependencies package not found: ',PkgName]);
       continue;
@@ -2126,7 +2126,7 @@ begin
   finally
     NewDependency.Free;
   end;
-  APackage:=PackageGraph.FindAPackageWithName(APackageName,nil);
+  APackage:=PackageGraph.FindPackageWithName(APackageName,nil);
   if APackage=nil then exit;
   Result:=DoOpenPackage(APackage,Flags,ShowAbort);
 end;
@@ -2441,44 +2441,88 @@ const
 var
   NewLazarusSrcDir: String;
   OldLazarusSrcDir: String;
-  APackage: TLazPackage;
+  VisitedPkgs: TStringToStringTree;
+  ReloadPkgs: TStringList;
+
+  function PkgInOldLazarusDir(APackage: TLazPackage): boolean;
+  begin
+    Result:=FileIsInPath(APackage.Filename,OldLazarusSrcDir)
+      or PackageGraph.IsStaticBasePackage(APackage.Name)
+      or (SysUtils.CompareText(copy(APackage.Filename,1,length(LazDirMacro)),LazDirMacro)=0)
+  end;
+
+  procedure GatherLazarusSrcPackages(APackage: TLazPackage);
+  var
+    ADependency: TPkgDependency;
+  begin
+    if APackage=nil then exit;
+    if VisitedPkgs.Contains(APackage.Name) then exit;
+    VisitedPkgs[APackage.Name]:='1';
+    // search the dependencies first
+    ADependency:=APackage.FirstRequiredDependency;
+    while ADependency<>nil do begin
+      GatherLazarusSrcPackages(ADependency.RequiredPackage);
+      ADependency:=ADependency.NextRequiresDependency;
+    end;
+    if PkgInOldLazarusDir(APackage) then begin
+      // this package was from the old lazarus source directory
+      ReloadPkgs.Add(APackage.Name);
+    end;
+  end;
+
+  function ReloadPkg(APackage: TLazPackage): boolean;
+  var
+    Link: TPackageLink;
+    MsgResult: TModalResult;
+    Filename: String;
+    ADependency: TPkgDependency;
+  begin
+    Result:=true;
+    if APackage=nil then exit;
+    if not PkgInOldLazarusDir(APackage) then exit;
+    // this package was from the old lazarus source directory
+    // check if there is a package in the new version
+    Link:=PkgLinks.FindLinkWithPkgName(APackage.Name);
+    if Link<>nil then begin
+      Filename:=TrimFilename(Link.Filename);
+      if not FilenameIsAbsolute(Filename) then
+        Filename:=AppendPathDelim(NewLazarusSrcDir)+Filename;
+      if FileIsInPath(Filename,NewLazarusSrcDir)
+      and FileExistsUTF8(Filename) then
+      begin
+        DebugLn(['TPkgManager.LazarusSrcDirChanged load: ',Filename]);
+        // open package in new lazarus source directory
+        MsgResult:=DoOpenPackageFile(Filename,[pofDoNotOpenEditor,pofRevert],true);
+        if MsgResult=mrAbort then exit(false);
+      end;
+    end;
+  end;
+
+var
   i: Integer;
-  Link: TPackageLink;
-  MsgResult: TModalResult;
-  Filename: String;
 begin
   if PackageGraph=nil then exit;
   OldLazarusSrcDir:=FLastLazarusSrcDir;
   NewLazarusSrcDir:=EnvironmentOptions.LazarusDirectory;
   FLastLazarusSrcDir:=NewLazarusSrcDir;
   if CompareFilenames(OldLazarusSrcDir,NewLazarusSrcDir)=0 then exit;
+  debugln(['TPkgManager.LazarusSrcDirChanged loading new lpl files from ',PkgLinks.GetGlobalLinkDirectory]);
+  if PkgLinks.IsUpdating then
+    debugln(['TPkgManager.LazarusSrcDirChanged inconsistency: pkglinks are locked']);
   PkgLinks.UpdateGlobalLinks;
 
-  i:=0;
-  while i<PackageGraph.Count do begin
-    APackage:=PackageGraph.Packages[i];
-    if (SysUtils.CompareText(copy(APackage.Filename,1,length(LazDirMacro)),LazDirMacro)=0)
-    or FileIsInPath(APackage.Filename,OldLazarusSrcDir)
-    or (PackageGraph.IsStaticBasePackage(APackage.Name) and (not APackage.AutoCreated))
-    then begin
-      // this package was from the old lazarus source directory
-      // check if there is a package in the new version
-      Link:=PkgLinks.FindLinkWithPkgName(APackage.Name);
-      if Link<>nil then begin
-        Filename:=TrimFilename(Link.Filename);
-        if not FilenameIsAbsolute(Filename) then
-          Filename:=AppendPathDelim(NewLazarusSrcDir)+Filename;
-        if FileIsInPath(Filename,NewLazarusSrcDir)
-        and FileExistsUTF8(Filename) then
-        begin
-          DebugLn(['TPkgManager.LazarusSrcDirChanged load: ',Filename]);
-          // open package in new lazarus source directory
-          MsgResult:=DoOpenPackageFile(Filename,[pofDoNotOpenEditor,pofRevert],true);
-          if MsgResult=mrAbort then break;
-        end;
-      end;
-    end;
-    inc(i);
+  VisitedPkgs:=TStringToStringTree.Create(false);
+  ReloadPkgs:=TStringList.Create;
+  try
+    // collect candidates
+    for i:=0 to PackageGraph.Count-1 do
+      GatherLazarusSrcPackages(PackageGraph.Packages[i]);
+    // reload
+    for i:=0 to ReloadPkgs.Count-1 do
+      ReloadPkg(PackageGraph.FindPackageWithName(ReloadPkgs[i],nil));
+  finally
+    ReloadPkgs.Free;
+    VisitedPkgs.Free;
   end;
 end;
 

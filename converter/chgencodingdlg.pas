@@ -249,7 +249,7 @@ begin
   if OwnerComboBox.Text=lisEdtDefCurrentProject then
     CurOwner:=Project1
   else
-    CurOwner:=PackageGraph.FindAPackageWithName(OwnerComboBox.Text,nil);
+    CurOwner:=PackageGraph.FindPackageWithName(OwnerComboBox.Text,nil);
   if CurOwner=nil then begin
     DebugLn(['TChgEncodingDialog.UpdatePreview package not found: ',OwnerComboBox.Text]);
     exit;

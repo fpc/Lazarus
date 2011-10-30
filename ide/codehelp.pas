@@ -1743,7 +1743,7 @@ begin
     exit;
   end;
   // check package
-  Result:=PackageGraph.FindAPackageWithName(Modulename,nil);
+  Result:=PackageGraph.FindPackageWithName(Modulename,nil);
   if Result<>nil then exit;
   // check IDE as project
   if SysUtils.CompareText(IDEProjectName,Modulename)=0 then begin
@@ -1816,7 +1816,7 @@ begin
   // check the packagename in the fpdoc file
   PkgName:=FPDocFile.GetPackageName;
   if PkgName<>'' then begin
-    Pkg:=PackageGraph.FindAPackageWithName(PkgName,nil);
+    Pkg:=PackageGraph.FindPackageWithName(PkgName,nil);
     if InPackage(Pkg) then exit;
   end;
 
@@ -2061,7 +2061,7 @@ begin
     PkgName:=copy(Path,2,p-2);
     //DebugLn(['TCodeHelpManager.GetLinkedFPDocNode PkgName=',PkgName]);
     if PkgName='' then exit;
-    Pkg:=PackageGraph.FindAPackageWithName(PkgName,nil);
+    Pkg:=PackageGraph.FindPackageWithName(PkgName,nil);
     if Pkg=nil then exit;
     InvalidPath:=p;
     ModuleOwner:=Pkg;

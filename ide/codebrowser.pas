@@ -586,7 +586,7 @@ begin
         // nothing
       end else begin
         // package
-        APackage:=PackageGraph.FindAPackageWithName(UnitList.Owner,nil);
+        APackage:=PackageGraph.FindPackageWithName(UnitList.Owner,nil);
         if APackage<>nil then begin
           // check if package can be added to project
           if Project1.FindDependencyByName(APackage.Name)=nil then begin
@@ -969,7 +969,7 @@ begin
     exit;
   end else begin
     // package
-    APackage:=PackageGraph.FindAPackageWithName(SelectedUnit.UnitList.Owner,nil);
+    APackage:=PackageGraph.FindPackageWithName(SelectedUnit.UnitList.Owner,nil);
     if APackage=nil then begin
       DebugLn(['TCodeBrowserView.UseUnitInSrcEditor package not '
         +'found: ', SelectedUnit.UnitList.Owner]);
@@ -1159,7 +1159,7 @@ begin
   end else if Options.Scope=ProjectDescription then begin
     RootOwner:=CodeBrowserProjectName;
   end else begin
-    APackage:=PackageGraph.FindAPackageWithName(Options.Scope,nil);
+    APackage:=PackageGraph.FindPackageWithName(Options.Scope,nil);
     if APackage<>nil then
       RootOwner:=APackage.Name;
   end;
@@ -1176,7 +1176,7 @@ begin
     then begin
       AddPackages(Project1.FirstRequiredDependency);
     end else if FWorkingParserRoot.Owner<>'' then begin
-      APackage:=PackageGraph.FindAPackageWithName(FWorkingParserRoot.Owner,nil);
+      APackage:=PackageGraph.FindPackageWithName(FWorkingParserRoot.Owner,nil);
       if APackage<>nil then
         AddPackages(APackage.FirstRequiredDependency);
     end;
@@ -1536,7 +1536,7 @@ begin
     end else if List.Owner=CodeBrowserProjectName then begin
       AddFilesOfProject(Project1);
     end else begin
-      APackage:=PackageGraph.FindAPackageWithName(List.Owner,nil);
+      APackage:=PackageGraph.FindPackageWithName(List.Owner,nil);
       AddFilesOfPackage(APackage);
     end;
     
@@ -2638,7 +2638,7 @@ begin
   if Node=nil then exit;
   if not (Node is TCodeBrowserUnitList) then exit;
   UnitList:=TCodeBrowserUnitList(Node);
-  Result:=PackageGraph.FindAPackageWithName(UnitList.Owner,nil);
+  Result:=PackageGraph.FindPackageWithName(UnitList.Owner,nil);
 end;
 
 function TCodeBrowserView.GetCurUnitInSrcEditor(out FileOwner: TObject; out
@@ -2713,7 +2713,7 @@ begin
       // nothing
     end else begin
       // open package
-      APackage:=PackageGraph.FindAPackageWithName(List.Owner,nil);
+      APackage:=PackageGraph.FindPackageWithName(List.Owner,nil);
       if APackage<>nil then begin
         PackageEditingInterface.DoOpenPackageWithName(List.Owner,[],false);
       end;
