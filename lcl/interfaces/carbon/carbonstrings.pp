@@ -59,12 +59,13 @@ type
   TCarbonListBoxStrings = class(TStringList)
   private
     FOwner: TCarbonListBox;  // Carbon list box control owning strings
+    FWinControl: TWinControl;
   protected
     procedure Put(Index: Integer; const S: string); override;
     procedure InsertItem(Index: Integer; const S: string); override;
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
-    constructor Create(AOwner: TCarbonListBox);
+    constructor Create(AOwner: TCarbonListBox; AWinControl: TWinControl);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Move(CurIndex, NewIndex: Integer); override;
@@ -258,10 +259,11 @@ end;
 
   Creates new strings for Carbon list box items
  ------------------------------------------------------------------------------}
-constructor TCarbonListBoxStrings.Create(AOwner: TCarbonListBox);
+constructor TCarbonListBoxStrings.Create(AOwner: TCarbonListBox; AWinControl: TWinControl);
 begin
   inherited Create;
   FOwner := AOwner;
+  FWinControl := AWinControl;
 end;
 
 {------------------------------------------------------------------------------
@@ -293,13 +295,13 @@ procedure TCarbonListBoxStrings.Move(CurIndex, NewIndex: Integer);
 var
   AState: TCheckBoxState;
 begin
-  if Owner is TCustomCheckListBox then
-    AState := TCarbonWSCustomCheckListBox.GetState(TCustomCheckListBox(Owner), CurIndex);
+  if FWinControl is TCustomCheckListBox then
+    AState := TCarbonWSCustomCheckListBox.GetState(TCustomCheckListBox(FWinControl), CurIndex);
 
   inherited Move(CurIndex, NewIndex);
 
-  if Owner is TCustomCheckListBox then
-    TCarbonWSCustomCheckListBox.SetState(TCustomCheckListBox(Owner), NewIndex, AState);
+  if FWinControl is TCustomCheckListBox then
+    TCarbonWSCustomCheckListBox.SetState(TCustomCheckListBox(FWinControl), NewIndex, AState);
 
 end;
 

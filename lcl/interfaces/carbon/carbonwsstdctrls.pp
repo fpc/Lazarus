@@ -593,7 +593,7 @@ begin
   Result := nil;
   if not CheckHandle(ACustomListBox, Self, 'GetStrings') then Exit;
   
-  Result := TCarbonListBoxStrings.Create(TCarbonListBox(ACustomListBox.Handle));
+  Result := TCarbonListBoxStrings.Create(TCarbonListBox(ACustomListBox.Handle), ACustomListBox);
 end;
 
 {------------------------------------------------------------------------------
