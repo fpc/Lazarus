@@ -12,316 +12,928 @@
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- unresolved type reference Visibility: default -->
       <element name="SysUtils">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- unresolved type reference Visibility: default -->
       <element name="Math">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="FPCAdds">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
       <element name="LCLStrConsts">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- unresolved type reference Visibility: default -->
       <element name="LCLType">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- unresolved type reference Visibility: default -->
       <element name="LCLProc">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- unresolved type reference Visibility: default -->
       <element name="LMessages">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- unresolved type reference Visibility: default -->
       <element name="GraphType">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- unresolved type reference Visibility: default -->
       <element name="GraphMath">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
-      <!-- object Visibility: default -->
+<!-- "type" alias type Visibility: default -->
+      <element name="PEventHandler">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- "type" alias type Visibility: default -->
+      <element name="PProcessEventHandler">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- "type" alias type Visibility: default -->
+      <element name="PPipeEventHandler">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- "type" alias type Visibility: default -->
+      <element name="PSocketEventHandler">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TChildExitReason">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TChildExitReason.cerExit">
+        <short></short>
+      </element>
+      <element name="TChildExitReason.cerSignal">
+        <short></short>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TPipeReason">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TPipeReason.prDataAvailable">
+        <short></short>
+      </element>
+      <element name="TPipeReason.prBroken">
+        <short></short>
+      </element>
+      <element name="TPipeReason.prCanWrite">
+        <short></short>
+      </element>
+      <!-- set type Visibility: default -->
+      <element name="TPipeReasons" link="TPipeReason"/>
+      <!-- procedure type Visibility: default -->
+      <element name="TApplicationMainLoop">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TWaitHandleEvent">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWaitHandleEvent.AData">
+        <short></short>
+      </element>
+      <element name="TWaitHandleEvent.AFlags">
+        <short></short>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TChildExitEvent">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TChildExitEvent.AData">
+        <short></short>
+      </element>
+      <element name="TChildExitEvent.AReason">
+        <short></short>
+      </element>
+      <element name="TChildExitEvent.AInfo">
+        <short></short>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TPipeEvent">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TPipeEvent.AData">
+        <short></short>
+      </element>
+      <element name="TPipeEvent.AReasons">
+        <short></short>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TSocketEvent">
+        <short>[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TSocketEvent.AData">
+        <short></short>
+      </element>
+      <element name="TSocketEvent.AFlags">
+        <short></short>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TLCLWndMethod">
+        <short>The type of all LCL message handlers.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TLCLWndMethod.TheMessage">
+        <short></short>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TLCLPlatform">
+        <short>The supported platforms.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TLCLPlatform.lpGtk">
+        <short></short>
+      </element>
+      <element name="TLCLPlatform.lpGtk2">
+        <short></short>
+      </element>
+      <element name="TLCLPlatform.lpWin32">
+        <short></short>
+      </element>
+      <element name="TLCLPlatform.lpWinCE">
+        <short></short>
+      </element>
+      <element name="TLCLPlatform.lpCarbon">
+        <short></short>
+      </element>
+      <element name="TLCLPlatform.lpQT">
+        <short></short>
+      </element>
+      <element name="TLCLPlatform.lpfpGUI">
+        <short></short>
+      </element>
+      <element name="TLCLPlatform.lpNoGUI">
+        <short></short>
+      </element>
+      <element name="TLCLPlatform.lpCocoa">
+        <short></short>
+      </element>
+      <element name="TLCLPlatform.lpAndroid">
+        <short></short>
+      </element>
+      <!-- set type Visibility: default -->
+      <element name="TLCLPlatforms" link="TLCLPlatform"/>
+      <!-- enumeration type Visibility: default -->
+      <element name="TLCLCapability">
+        <short>Capabilities of the (current) platform.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TLCLCapability.lcAsyncProcess">
+        <short>Supports async process.</short>
+      </element>
+      <element name="TLCLCapability.lcCanDrawOutsideOnPaint">
+        <short>Supports drawing outside OnPaint event of an control.</short>
+      </element>
+      <element name="TLCLCapability.lcNeedMininimizeAppWithMainForm">
+        <short>When main form is minimized, then minimize also app [all forms?].
+        </short>
+      </element>
+      <element name="TLCLCapability.lcApplicationTitle">
+        <short>Can change application title at runtime.</short>
+      </element>
+      <element name="TLCLCapability.lcApplicationWindow">
+        <short>Application has a special root window.</short>
+      </element>
+      <element name="TLCLCapability.lcFormIcon">
+        <short>Forms have icon.</short>
+      </element>
+      <element name="TLCLCapability.lcModalWindow">
+        <short>Native modal window support.</short>
+      </element>
+      <element name="TLCLCapability.lcDragDockStartOnTitleClick">
+        <short>Can drag-dock forms from the title bar.</short>
+      </element>
+      <element name="TLCLCapability.lcAntialiasingEnabledByDefault">
+        <short>Is amDontCare = amOn for the widgetset.[?]
+        </short>
+      </element>
+      <element name="TLCLCapability.lcLMHelpSupport">
+        <short>Support for LM_HELP command.</short>
+      </element>
+      <element name="TLCLCapability.lcReceivesLMClearCutCopyPasteReliably">
+        <short>In Carbon we do not receive LM_CLEAR, CUT, COPY, PASTE etc. reliably,
+          and this affects DB controls.
+        </short>
+      </element>
+<!-- class Visibility: default -->
+      <element name="TDialogButton">
+        <short>Description of standard dialog buttons.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDialogButton.FCaption" link="TDialogButton.Caption"/>
+      <element name="TDialogButton.FModalResult" link="TDialogButton.ModalResult"/>
+      <!-- function Visibility: private -->
+      <element name="TDialogButton.GetCancel" link="TDialogButton.Cancel"/>
+      <element name="TDialogButton.GetCancel.Result">
+        <short></short>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TDialogButton.GetDefault" link="TDialogButton.Default"/>
+      <element name="TDialogButton.GetDefault.Result">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDialogButton.SetCancel" link="TDialogButton.Cancel"/>
+      <element name="TDialogButton.SetCancel.AValue">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDialogButton.SetDefault" link="TDialogButton.Default"/>
+      <element name="TDialogButton.SetDefault.AValue">
+        <short></short>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TDialogButton.GetDisplayName">
+        <short>Here: returns Caption.
+        </short>
+      </element>
+      <element name="TDialogButton.GetDisplayName.Result">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDialogButton.SetCaption" link="TDialogButton.Caption"/>
+      <element name="TDialogButton.SetCaption.AValue">
+        <short></short>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TDialogButton.Create"/>
+      <element name="TDialogButton.Create.ACollection">
+        <short></short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDialogButton.Caption">
+        <short>The button title.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDialogButton.Cancel">
+        <short>True for Cancel button(s) only.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDialogButton.Default">
+        <short>True for Default button(s) only.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDialogButton.ModalResult">
+        <short>The modal result, returned when the button is clicked.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+<!-- class Visibility: default -->
+      <element name="TDialogButtons">
+        <short>Collection of TDialogButton descriptions.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TDialogButtons.FCancelButton" link="TDialogButtons.CancelButton"/>
+      <element name="TDialogButtons.FDefaultButton" link="TDialogButtons.DefaultButton"/>
+      <!-- function Visibility: protected -->
+      <element name="TDialogButtons.GetItem" link="TDialogButtons.Items"/>
+      <element name="TDialogButtons.GetItem.Result">
+        <short></short>
+      </element>
+      <element name="TDialogButtons.GetItem.Index">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDialogButtons.SetCancelButton" link="TDialogButtons.CancelButton"/>
+      <element name="TDialogButtons.SetCancelButton.AValue">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDialogButtons.SetDefaultButton" link="TDialogButtons.DefaultButton"/>
+      <element name="TDialogButtons.SetDefaultButton.Value">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDialogButtons.SetItem" link="TDialogButtons.Items"/>
+      <element name="TDialogButtons.SetItem.Index">
+        <short></short>
+      </element>
+      <element name="TDialogButtons.SetItem.Value">
+        <short></short>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TDialogButtons.Destroy"/>
+      <!-- function Visibility: public -->
+      <element name="TDialogButtons.Add">
+        <short>Adds a new button description.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDialogButtons.Add.Result">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDialogButtons.FindButton">
+        <short>Find the button associated with (one of) the given modal result.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDialogButtons.FindButton.Result">
+        <short></short>
+      </element>
+      <element name="TDialogButtons.FindButton.AModalResult">
+        <short>The modal result to find.</short>
+      </element>
+      <element name="TDialogButtons.FindButton.Order">
+        <short>List of modal results to find.</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDialogButtons.DefaultButton">
+        <short>The Default button for this dialog kind.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDialogButtons.CancelButton">
+        <short>The Cancel button for this dialog kind.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDialogButtons.Items">
+        <short>Indexed access to the button descriptions.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TDialogButtons.Items.Index">
+        <short></short>
+      </element>
+<!-- procedure type Visibility: default -->
+      <element name="TWSTimerProc">
+        <short>Type of a timer callback procedure[?]
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+
+<!-- object Visibility: default -->
       <element name="TWidgetSet">
-        <short>
-          <var>TWidgetSet</var> - a set of images and graphic tools for application programming, selected according to the operating system platform</short>
+        <short>Application helper class (platform and drawing interface).
+        </short>
         <descr>
           <p>
-            <var>TWidgetSet</var> - a set of images and graphic tools for application programming, selected according to the operating system platform
-</p>
-          <p>The appropriate set of widgets will be selected according to the operating system, either WinAPI for Microsoft Windows or LCL for most other systems</p>
-          <p>
-            <var>The declaration contains very few properties, but large numbers of very specific methods for interfacing with the operating system</var>
+            The declaration contains a number of specific methods for interfacing with the operating system.
           </p>
         </descr>
         <errors/>
         <seealso/>
       </element>
+      <!-- variable Visibility: protected -->
+      <element name="TWidgetSet.FThemeServices" link="TWidgetSet.ThemeServices"/>
       <!-- procedure Visibility: protected -->
       <element name="TWidgetSet.PassCmdLineOptions">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TWidgetSet.CreateThemeServices">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.CreateThemeServices.Result">
+        <short></short>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TWidgetSet.GetAppHandle">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetAppHandle.Result">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWidgetSet.SetAppHandle">
+      <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.SetAppHandle.AValue">
+        <short></short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TWidgetSet.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- destructor Visibility: public -->
-      <element name="TWidgetSet.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TWidgetSet.Create"/>
       <!-- procedure Visibility: public -->
-      <element name="TWidgetSet.HandleEvents">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TWidgetSet.WaitMessage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TWidgetSet.BeforeDestruction">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppInit">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.AppInit.ScreenInfo">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.AppRun">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.AppRun.ALoop">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.AppWaitMessage">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.AppProcessMessages">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppTerminate">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppMinimize">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.AppRestore">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppBringToFront">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.AppSetIcon">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.AppSetIcon.Small">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AppSetIcon.Big">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.AppSetTitle">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.AppSetTitle.ATitle">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.AppSetVisible">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.AppSetVisible.AVisible">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.AppRemoveStayOnTopFlags">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.AppRemoveStayOnTopFlags.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AppRemoveStayOnTopFlags.ASystemTopAlso">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.AppRestoreStayOnTopFlags">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.AppRestoreStayOnTopFlags.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AppRestoreStayOnTopFlags.ASystemTopAlso">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.AppSetMainFormOnTaskBar">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.AppSetMainFormOnTaskBar.DoSet">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.LCLPlatform">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.LCLPlatform.Result">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetLCLCapability">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetLCLCapability.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetLCLCapability.ACapability">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.DebugLogLn">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.DebugLogLn.s">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.DebugLog">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.DebugLog.s">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DCGetPixel">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.DCGetPixel.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DCGetPixel.CanvasHandle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DCGetPixel.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DCGetPixel.Y">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DCSetPixel">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DCSetPixel.CanvasHandle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DCSetPixel.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DCSetPixel.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DCSetPixel.AColor">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DCRedraw">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DCRedraw.CanvasHandle">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.DCSetAntialiasing">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.DCSetAntialiasing.CanvasHandle">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.DCSetAntialiasing.AEnabled">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: public -->
       <element name="TWidgetSet.SetDesigning">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetDesigning.AComponent">
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.InitHintFont">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TWidgetSet.InitStockFont">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.InitHintFont.Result">
-        <short/>
+      <element name="TWidgetSet.InitStockFont.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.InitHintFont.HintFont">
-        <short/>
+      <element name="TWidgetSet.InitStockFont.AFont">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.InitStockFont.AStockFont">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.CreateComponent">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TWidgetSet.IsHelpKey">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.CreateComponent.Result">
-        <short/>
+      <element name="TWidgetSet.IsHelpKey.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.CreateComponent.Sender">
-        <short/>
+      <element name="TWidgetSet.IsHelpKey.Key">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.IsHelpKey.Shift">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateTimer">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreateTimer.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateTimer.Interval">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.CreateTimer.TimerFunc">
-        <short/>
+      <element name="TWidgetSet.CreateTimer.TimerProc">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DestroyTimer">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.DestroyTimer.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DestroyTimer.TimerHandle">
         <short/>
       </element>
-      <!-- function Visibility: public -->
+      <!-- property Visibility: public -->
+      <element name="TWidgetSet.AppHandle">
+        <short></short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+<!-- function Visibility: public -->
       <element name="TWidgetSet.Arc">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.Arc.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Arc.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Arc.x">
-        <short/>
+      <element name="TWidgetSet.Arc.Left">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Arc.y">
-        <short/>
+      <element name="TWidgetSet.Arc.Top">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Arc.width">
-        <short/>
+      <element name="TWidgetSet.Arc.Right">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Arc.height">
-        <short/>
+      <element name="TWidgetSet.Arc.Bottom">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Arc.angle1">
-        <short/>
+      <element name="TWidgetSet.Arc.Angle16Deg">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Arc.angle2">
-        <short/>
+      <element name="TWidgetSet.Arc.Angle16DegLength">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AngleChord">
@@ -334,31 +946,24 @@
       <element name="TWidgetSet.AngleChord.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.AngleChord.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.AngleChord.x">
-        <short/>
+      <element name="TWidgetSet.AngleChord.x1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.AngleChord.y">
-        <short/>
+      <element name="TWidgetSet.AngleChord.y1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.AngleChord.width">
-        <short/>
+      <element name="TWidgetSet.AngleChord.x2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.AngleChord.height">
-        <short/>
+      <element name="TWidgetSet.AngleChord.y2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.AngleChord.angle1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.AngleChord.angle2">
         <short/>
       </element>
@@ -369,15 +974,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.BeginPaint.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.BeginPaint.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.BeginPaint.PS">
         <short/>
       </element>
@@ -388,59 +990,34 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.BitBlt.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.BitBlt.DestDC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.BitBlt.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.BitBlt.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.BitBlt.Width">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.BitBlt.Height">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.BitBlt.SrcDC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.BitBlt.XSrc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.BitBlt.YSrc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.BitBlt.Rop">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TWidgetSet.BringWindowToTop">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.BringWindowToTop.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.BringWindowToTop.hWnd">
         <short/>
       </element>
       <!-- function Visibility: public -->
@@ -739,21 +1316,17 @@
       <element name="TWidgetSet.CreateEllipticRgn.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.CreateEllipticRgn.p1">
-        <short/>
+      <element name="TWidgetSet.CreateEllipticRgn.X1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.CreateEllipticRgn.p2">
-        <short/>
+      <element name="TWidgetSet.CreateEllipticRgn.Y1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.CreateEllipticRgn.p3">
-        <short/>
+      <element name="TWidgetSet.CreateEllipticRgn.X2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.CreateEllipticRgn.p4">
-        <short/>
+      <element name="TWidgetSet.CreateEllipticRgn.Y2">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateFontIndirect">
@@ -766,7 +1339,6 @@
       <element name="TWidgetSet.CreateFontIndirect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateFontIndirect.LogFont">
         <short/>
       </element>
@@ -777,17 +1349,30 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreateFontIndirectEx.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateFontIndirectEx.LogFont">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateFontIndirectEx.LongFontName">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.CreateIconIndirect">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.CreateIconIndirect.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.CreateIconIndirect.IconInfo">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreatePalette">
@@ -796,13 +1381,27 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreatePalette.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreatePalette.LogPalette">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.CreatePatternBrush">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.CreatePatternBrush.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.CreatePatternBrush.ABitmap">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreatePenIndirect">
@@ -811,11 +1410,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreatePenIndirect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreatePenIndirect.LogPen">
         <short/>
       </element>
@@ -826,19 +1423,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreatePolygonRgn.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreatePolygonRgn.Points">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreatePolygonRgn.NumPts">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreatePolygonRgn.FillMode">
         <short/>
       </element>
@@ -849,25 +1442,51 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreateRectRgn.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateRectRgn.X1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateRectRgn.Y1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateRectRgn.X2">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateRectRgn.Y2">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.CreateRoundRectRgn">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.CreateRoundRectRgn.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.CreateRoundRectRgn.X1">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.CreateRoundRectRgn.Y1">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.CreateRoundRectRgn.X2">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.CreateRoundRectRgn.Y2">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.CreateRoundRectRgn.nWidthEllipse">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.CreateRoundRectRgn.nHeightEllipse">
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DeleteCriticalSection">
@@ -876,7 +1495,6 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DeleteCriticalSection.CritSection">
         <short/>
       </element>
@@ -887,11 +1505,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.DeleteDC.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DeleteDC.hDC">
         <short/>
       </element>
@@ -902,11 +1518,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.DeleteObject.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DeleteObject.GDIObject">
         <short/>
       </element>
@@ -917,13 +1531,43 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.DestroyCaret.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DestroyCaret.Handle">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.DestroyCursor">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.DestroyCursor.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.DestroyCursor.Handle">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.DestroyIcon">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.DestroyIcon.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.DestroyIcon.Handle">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DPtoLP">
@@ -932,19 +1576,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.DPtoLP.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DPtoLP.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DPtoLP.Points">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DPtoLP.Count">
         <short/>
       </element>
@@ -955,25 +1595,39 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.DrawFrameControl.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DrawFrameControl.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DrawFrameControl.Rect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DrawFrameControl.uType">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DrawFrameControl.uState">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.DrawFocusRect">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.DrawFocusRect.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.DrawFocusRect.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.DrawFocusRect.Rect">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DrawEdge">
@@ -982,23 +1636,18 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.DrawEdge.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DrawEdge.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DrawEdge.Rect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DrawEdge.edge">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DrawEdge.grfFlags">
         <short/>
       </element>
@@ -1013,23 +1662,18 @@
       <element name="TWidgetSet.DrawText.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DrawText.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DrawText.Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DrawText.Count">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DrawText.Rect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.DrawText.Flags">
         <short/>
       </element>
@@ -1040,19 +1684,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.EnableScrollBar.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.EnableScrollBar.Wnd">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.EnableScrollBar.wSBflags">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.EnableScrollBar.wArrows">
         <short/>
       </element>
@@ -1063,15 +1703,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.EnableWindow.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.EnableWindow.hWnd">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.EnableWindow.bEnable">
         <short/>
       </element>
@@ -1082,15 +1719,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.EndPaint.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.EndPaint.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.EndPaint.PS">
         <short/>
       </element>
@@ -1101,9 +1735,86 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.EnterCriticalSection.CritSection">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.EnumDisplayMonitors">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.EnumDisplayMonitors.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.EnumDisplayMonitors.hdc">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.EnumDisplayMonitors.lprcClip">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.EnumDisplayMonitors.lpfnEnum">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.EnumDisplayMonitors.dwData">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.EnumFontFamilies">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.EnumFontFamilies.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.EnumFontFamilies.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.EnumFontFamilies.Family">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.EnumFontFamilies.EnumFontFamProc">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.EnumFontFamilies.LParam">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.EnumFontFamiliesEx">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.EnumFontFamiliesEx.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.EnumFontFamiliesEx.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.EnumFontFamiliesEx.lpLogFont">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.EnumFontFamiliesEx.Callback">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.EnumFontFamiliesEx.Lparam">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.EnumFontFamiliesEx.Flags">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.Ellipse">
@@ -1112,27 +1823,21 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.Ellipse.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Ellipse.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Ellipse.x1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Ellipse.y1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Ellipse.x2">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Ellipse.y2">
         <short/>
       </element>
@@ -1143,29 +1848,51 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.ExcludeClipRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExcludeClipRect.dc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExcludeClipRect.Left">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExcludeClipRect.Top">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExcludeClipRect.Right">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExcludeClipRect.Bottom">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.ExtCreatePen">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.ExtCreatePen.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.ExtCreatePen.dwPenStyle">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.ExtCreatePen.dwWidth">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.ExtCreatePen.lplb">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.ExtCreatePen.dwStyleCount">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.ExtCreatePen.lpStyle">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ExtTextOut">
@@ -1174,39 +1901,30 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.ExtTextOut.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtTextOut.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtTextOut.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtTextOut.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtTextOut.Options">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtTextOut.Rect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtTextOut.Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtTextOut.Count">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtTextOut.Dx">
         <short/>
       </element>
@@ -1217,19 +1935,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.ExtSelectClipRGN.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtSelectClipRGN.dc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtSelectClipRGN.rgn">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtSelectClipRGN.Mode">
         <short/>
       </element>
@@ -1240,19 +1954,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.FillRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FillRect.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FillRect.Rect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FillRect.Brush">
         <short/>
       </element>
@@ -1263,19 +1973,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.FillRgn.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FillRgn.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FillRgn.RegionHnd">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FillRgn.hbr">
         <short/>
       </element>
@@ -1286,31 +1992,24 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.FloodFill.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FloodFill.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FloodFill.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FloodFill.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FloodFill.Color">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FloodFill.FillStyle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FloodFill.Brush">
         <short/>
       </element>
@@ -1325,15 +2024,12 @@
       <element name="TWidgetSet.FrameRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FrameRect.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FrameRect.ARect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FrameRect.hBr">
         <short/>
       </element>
@@ -1344,7 +2040,6 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetActiveWindow.Result">
         <short/>
       </element>
@@ -1355,21 +2050,33 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetBitmapBits.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetBitmapBits.Bitmap">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetBitmapBits.Count">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetBitmapBits.Bits">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetBkColor">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetBkColor.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetBkColor.DC">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetCapture">
@@ -1378,7 +2085,6 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetCapture.Result">
         <short/>
       </element>
@@ -1389,11 +2095,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetCaretPos.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetCaretPos.lpPoint">
         <short/>
       </element>
@@ -1404,15 +2108,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetClientRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetClientRect.handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetClientRect.Rect">
         <short/>
       </element>
@@ -1423,15 +2124,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetClipBox.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetClipBox.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetClipBox.lpRect">
         <short/>
       </element>
@@ -1442,17 +2140,33 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetClipRGN.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetClipRGN.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetClipRGN.RGN">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetCurrentObject">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetCurrentObject.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetCurrentObject.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetCurrentObject.uObjectType">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetCursorPos">
@@ -1461,11 +2175,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetCursorPos.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetCursorPos.lpPoint">
         <short/>
       </element>
@@ -1476,23 +2188,18 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetCharABCWidths.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetCharABCWidths.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetCharABCWidths.p2">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetCharABCWidths.p3">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetCharABCWidths.ABCStructs">
         <short/>
       </element>
@@ -1503,11 +2210,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetDC.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetDC.hWnd">
         <short/>
       </element>
@@ -1518,15 +2223,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetDeviceCaps.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetDeviceCaps.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetDeviceCaps.Index">
         <short/>
       </element>
@@ -1537,37 +2239,42 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetDIBits.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetDIBits.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetDIBits.Bitmap">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetDIBits.StartScan">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetDIBits.NumScans">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetDIBits.Bits">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetDIBits.BitInfo">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetDIBits.Usage">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetDoubleClickTime">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetDoubleClickTime.Result">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetFocus">
@@ -1576,7 +2283,6 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetFocus.Result">
         <short/>
       </element>
@@ -1587,13 +2293,43 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetFontLanguageInfo.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetFontLanguageInfo.DC">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetForegroundWindow">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetForegroundWindow.Result">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetIconInfo">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetIconInfo.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetIconInfo.AIcon">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetIconInfo.AIconInfo">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetKeyState">
@@ -1602,11 +2338,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetKeyState.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetKeyState.nVirtKey">
         <short/>
       </element>
@@ -1617,13 +2351,30 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetMapMode.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetMapMode.DC">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetMonitorInfo">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetMonitorInfo.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetMonitorInfo.hMonitor">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetMonitorInfo.lpmi">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetObject">
@@ -1632,19 +2383,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetObject.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetObject.GDIObject">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetObject.BufSize">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetObject.Buf">
         <short/>
       </element>
@@ -1655,23 +2402,18 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetPaletteEntries.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetPaletteEntries.Palette">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetPaletteEntries.StartIndex">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetPaletteEntries.NumEntries">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetPaletteEntries.PaletteEntries">
         <short/>
       </element>
@@ -1682,11 +2424,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetParent.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetParent.Handle">
         <short/>
       </element>
@@ -1697,15 +2437,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetProp.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetProp.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetProp.Str">
         <short/>
       </element>
@@ -1716,17 +2453,30 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetRgnBox.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetRgnBox.RGN">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetRgnBox.lpRect">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetROP2">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetROP2.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetROP2.DC">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetScrollInfo">
@@ -1735,19 +2485,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetScrollInfo.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetScrollInfo.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetScrollInfo.SBStyle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetScrollInfo.ScrollInfo">
         <short/>
       </element>
@@ -1758,11 +2504,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetStockObject.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetStockObject.Value">
         <short/>
       </element>
@@ -1773,13 +2517,27 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetSysColor.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetSysColor.nIndex">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetSysColorBrush">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetSysColorBrush.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetSysColorBrush.nIndex">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetSystemPaletteEntries">
@@ -1788,23 +2546,18 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetSystemPaletteEntries.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetSystemPaletteEntries.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetSystemPaletteEntries.StartIndex">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetSystemPaletteEntries.NumEntries">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetSystemPaletteEntries.PaletteEntries">
         <short/>
       </element>
@@ -1815,11 +2568,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetSystemMetrics.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetSystemMetrics.nIndex">
         <short/>
       </element>
@@ -1830,11 +2581,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetTextColor.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextColor.DC">
         <short/>
       </element>
@@ -1845,35 +2594,27 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetTextExtentExPoint.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentExPoint.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentExPoint.Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentExPoint.Count">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentExPoint.MaxWidth">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentExPoint.MaxCount">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentExPoint.PartialWidths">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentExPoint.Size">
         <short/>
       </element>
@@ -1884,23 +2625,18 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetTextExtentPoint.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentPoint.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentPoint.Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentPoint.Count">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentPoint.Size">
         <short/>
       </element>
@@ -1911,23 +2647,18 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetTextExtentPoint32.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentPoint32.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentPoint32.Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentPoint32.Count">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextExtentPoint32.Size">
         <short/>
       </element>
@@ -1938,17 +2669,71 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetTextMetrics.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextMetrics.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetTextMetrics.TM">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetViewPortExtEx">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetViewPortExtEx.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetViewPortExtEx.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetViewPortExtEx.Size">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetViewPortOrgEx">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetViewPortOrgEx.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetViewPortOrgEx.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetViewPortOrgEx.P">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetWindowExtEx">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetWindowExtEx.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetWindowExtEx.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetWindowExtEx.Size">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetWindowLong">
@@ -1957,15 +2742,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetWindowLong.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetWindowLong.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetWindowLong.int">
         <short/>
       </element>
@@ -1976,15 +2758,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetWindowRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetWindowRect.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetWindowRect.Rect">
         <short/>
       </element>
@@ -1995,19 +2774,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetWindowSize.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetWindowSize.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetWindowSize.Width">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetWindowSize.Height">
         <short/>
       </element>
@@ -2037,31 +2812,24 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GradientFill.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GradientFill.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GradientFill.Vertices">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GradientFill.NumVertices">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GradientFill.Meshes">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GradientFill.NumMeshes">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GradientFill.Mode">
         <short/>
       </element>
@@ -2072,11 +2840,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.HideCaret.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.HideCaret.hWnd">
         <short/>
       </element>
@@ -2087,7 +2853,6 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.InitializeCriticalSection.CritSection">
         <short/>
       </element>
@@ -2098,27 +2863,21 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.IntersectClipRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.IntersectClipRect.dc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.IntersectClipRect.Left">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.IntersectClipRect.Top">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.IntersectClipRect.Right">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.IntersectClipRect.Bottom">
         <short/>
       </element>
@@ -2129,21 +2888,39 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.InvalidateRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.InvalidateRect.aHandle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.InvalidateRect.ARect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.InvalidateRect.bErase">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.InvalidateRgn">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.InvalidateRgn.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.InvalidateRgn.Handle">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.InvalidateRgn.Rgn">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.InvalidateRgn.Erase">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsDBCSLeadByte">
@@ -2152,13 +2929,59 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.IsDBCSLeadByte.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.IsDBCSLeadByte.TestChar">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.IsIconic">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.IsIconic.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.IsIconic.handle">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.IsWindow">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.IsWindow.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.IsWindow.handle">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.IsWindowEnabled">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.IsWindowEnabled.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.IsWindowEnabled.handle">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsWindowVisible">
@@ -2167,13 +2990,27 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.IsWindowVisible.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.IsWindowVisible.handle">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.IsZoomed">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.IsZoomed.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.IsZoomed.handle">
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.LeaveCriticalSection">
@@ -2182,7 +3019,6 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.LeaveCriticalSection.CritSection">
         <short/>
       </element>
@@ -2193,80 +3029,39 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.LineTo.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.LineTo.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.LineTo.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.LineTo.Y">
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.MaskBlt">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TWidgetSet.LPtoDP">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.MaskBlt.Result">
-        <short/>
+      <element name="TWidgetSet.LPtoDP.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MaskBlt.DestDC">
-        <short/>
+      <element name="TWidgetSet.LPtoDP.DC">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MaskBlt.X">
-        <short/>
+      <element name="TWidgetSet.LPtoDP.Points">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MaskBlt.Y">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MaskBlt.Width">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MaskBlt.Height">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MaskBlt.SrcDC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MaskBlt.XSrc">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MaskBlt.YSrc">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MaskBlt.Mask">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MaskBlt.XMask">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MaskBlt.YMask">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MaskBlt.Rop">
-        <short/>
+      <element name="TWidgetSet.LPtoDP.Count">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MaskBlt">
@@ -2275,52 +3070,43 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.MaskBlt.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MaskBlt.DestDC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MaskBlt.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MaskBlt.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MaskBlt.Width">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MaskBlt.Height">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MaskBlt.SrcDC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MaskBlt.XSrc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MaskBlt.YSrc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MaskBlt.Mask">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MaskBlt.XMask">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MaskBlt.YMask">
+        <short/>
+      </element>
+      <element name="TWidgetSet.MaskBlt.Rop">
         <short/>
       </element>
       <!-- function Visibility: public -->
@@ -2330,25 +3116,77 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.MessageBox.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MessageBox.hWnd">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MessageBox.lpText">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MessageBox.lpCaption">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MessageBox.uType">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.MonitorFromPoint">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.MonitorFromPoint.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.MonitorFromPoint.ptScreenCoords">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.MonitorFromPoint.dwFlags">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.MonitorFromRect">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.MonitorFromRect.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.MonitorFromRect.lprcScreenCoords">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.MonitorFromRect.dwFlags">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.MonitorFromWindow">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.MonitorFromWindow.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.MonitorFromWindow.hWnd">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.MonitorFromWindow.dwFlags">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MoveToEx">
@@ -2357,25 +3195,42 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.MoveToEx.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MoveToEx.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MoveToEx.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MoveToEx.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.MoveToEx.OldPoint">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.OffsetRgn">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.OffsetRgn.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.OffsetRgn.RGN">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.OffsetRgn.nXOffset">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.OffsetRgn.nYOffset">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.PeekMessage">
@@ -2384,27 +3239,21 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.PeekMessage.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PeekMessage.lpMsg">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PeekMessage.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PeekMessage.wMsgFilterMin">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PeekMessage.wMsgFilterMax">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PeekMessage.wRemoveMsg">
         <short/>
       </element>
@@ -2419,41 +3268,32 @@
       <element name="TWidgetSet.Pie.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Pie.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Pie.EllipseX1">
-        <short/>
+      <element name="TWidgetSet.Pie.x1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Pie.EllipseY1">
-        <short/>
+      <element name="TWidgetSet.Pie.y1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Pie.EllipseX2">
-        <short/>
+      <element name="TWidgetSet.Pie.x2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Pie.EllipseY2">
-        <short/>
+      <element name="TWidgetSet.Pie.y2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Pie.StartX">
-        <short/>
+      <element name="TWidgetSet.Pie.sx">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Pie.StartY">
-        <short/>
+      <element name="TWidgetSet.Pie.sy">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Pie.EndX">
-        <short/>
+      <element name="TWidgetSet.Pie.ex">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.Pie.EndY">
-        <short/>
+      <element name="TWidgetSet.Pie.ey">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.PolyBezier">
@@ -2462,27 +3302,21 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.PolyBezier.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PolyBezier.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PolyBezier.Points">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PolyBezier.NumPts">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PolyBezier.Filled">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PolyBezier.Continuous">
         <short/>
       </element>
@@ -2493,23 +3327,18 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.Polygon.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Polygon.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Polygon.Points">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Polygon.NumPts">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Polygon.Winding">
         <short/>
       </element>
@@ -2520,19 +3349,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.Polyline.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Polyline.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Polyline.Points">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Polyline.NumPts">
         <short/>
       </element>
@@ -2543,23 +3368,18 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.PostMessage.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PostMessage.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PostMessage.Msg">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PostMessage.WParam">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PostMessage.LParam">
         <short/>
       </element>
@@ -2570,19 +3390,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.PtInRegion.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PtInRegion.RGN">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PtInRegion.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.PtInRegion.Y">
         <short/>
       </element>
@@ -2593,11 +3409,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.RealizePalette.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RealizePalette.DC">
         <short/>
       </element>
@@ -2608,27 +3422,21 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.Rectangle.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Rectangle.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Rectangle.X1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Rectangle.Y1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Rectangle.X2">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Rectangle.Y2">
         <short/>
       </element>
@@ -2639,17 +3447,39 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.RectVisible.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RectVisible.dc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RectVisible.ARect">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.RedrawWindow">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.RedrawWindow.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RedrawWindow.Wnd">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RedrawWindow.lprcUpdate">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RedrawWindow.hrgnUpdate">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RedrawWindow.flags">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ReleaseCapture">
@@ -2658,7 +3488,6 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.ReleaseCapture.Result">
         <short/>
       </element>
@@ -2669,17 +3498,33 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.ReleaseDC.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ReleaseDC.hWnd">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ReleaseDC.DC">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.RemoveProp">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.RemoveProp.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RemoveProp.Handle">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RemoveProp.Str">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RestoreDC">
@@ -2688,15 +3533,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.RestoreDC.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RestoreDC.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RestoreDC.SavedDC">
         <short/>
       </element>
@@ -2707,35 +3549,27 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.RoundRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RoundRect.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RoundRect.X1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RoundRect.Y1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RoundRect.X2">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RoundRect.Y2">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RoundRect.RX">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RoundRect.RY">
         <short/>
       </element>
@@ -2746,11 +3580,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SaveDC.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SaveDC.DC">
         <short/>
       </element>
@@ -2761,15 +3593,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.ScreenToClient.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ScreenToClient.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ScreenToClient.P">
         <short/>
       </element>
@@ -2780,39 +3609,30 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.ScrollWindowEx.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ScrollWindowEx.hWnd">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ScrollWindowEx.dx">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ScrollWindowEx.dy">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ScrollWindowEx.prcScroll">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ScrollWindowEx.prcClip">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ScrollWindowEx.hrgnUpdate">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ScrollWindowEx.prcUpdate">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ScrollWindowEx.flags">
         <short/>
       </element>
@@ -2823,15 +3643,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SelectClipRGN.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SelectClipRGN.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SelectClipRGN.RGN">
         <short/>
       </element>
@@ -2842,15 +3659,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SelectObject.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SelectObject.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SelectObject.GDIObj">
         <short/>
       </element>
@@ -2861,19 +3675,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SelectPalette.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SelectPalette.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SelectPalette.Palette">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SelectPalette.ForceBackground">
         <short/>
       </element>
@@ -2884,23 +3694,18 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SendMessage.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SendMessage.HandleWnd">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SendMessage.Msg">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SendMessage.WParam">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SendMessage.LParam">
         <short/>
       </element>
@@ -2911,11 +3716,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetActiveWindow.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetActiveWindow.Handle">
         <short/>
       </element>
@@ -2926,15 +3729,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetBkColor.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetBkColor.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetBkColor.Color">
         <short/>
       </element>
@@ -2945,15 +3745,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetBkMode.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetBkMode.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetBkMode.bkMode">
         <short/>
       </element>
@@ -2964,13 +3761,11 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetCapture.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.SetCapture.Value">
-        <short/>
+      <element name="TWidgetSet.SetCapture.AHandle">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetCaretPos">
@@ -2979,15 +3774,12 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetCaretPos.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetCaretPos.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetCaretPos.Y">
         <short/>
       </element>
@@ -2998,19 +3790,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetCaretPosEx.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetCaretPosEx.handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetCaretPosEx.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetCaretPosEx.Y">
         <short/>
       </element>
@@ -3021,13 +3809,30 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetCursor.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetCursor.hCursor">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.SetCursorPos">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.SetCursorPos.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetCursorPos.X">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetCursorPos.Y">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetFocus">
@@ -3036,13 +3841,27 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetFocus.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetFocus.hWnd">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.SetForegroundWindow">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.SetForegroundWindow.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetForegroundWindow.hWnd">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetMapMode">
@@ -3051,17 +3870,52 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetMapMode.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetMapMode.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.SetMapMode.MapMode">
+      <element name="TWidgetSet.SetMapMode.fnMapMode">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.SetMenu">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.SetMenu.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetMenu.AWindowHandle">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetMenu.AMenuHandle">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.SetParent">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.SetParent.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetParent.hWndChild">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetParent.hWndParent">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetProp">
@@ -3070,21 +3924,36 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetProp.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetProp.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetProp.Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetProp.Data">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.SetROP2">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.SetROP2.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetROP2.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetROP2.Mode">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetScrollInfo">
@@ -3093,23 +3962,18 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetScrollInfo.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetScrollInfo.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetScrollInfo.SBStyle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetScrollInfo.ScrollInfo">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetScrollInfo.Redraw">
         <short/>
       </element>
@@ -3212,6 +4076,82 @@
       <element name="TWidgetSet.SetTextColor.Color">
         <short/>
       </element>
+
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.SetViewPortExtEx">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.SetViewPortExtEx.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetViewPortExtEx.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetViewPortExtEx.XExtent">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetViewPortExtEx.YExtent">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetViewPortExtEx.OldSize">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.SetViewPortOrgEx">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.SetViewPortOrgEx.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetViewPortOrgEx.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetViewPortOrgEx.NewX">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetViewPortOrgEx.NewY">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetViewPortOrgEx.OldPoint">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.SetWindowExtEx">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.SetWindowExtEx.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetWindowExtEx.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetWindowExtEx.XExtent">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetWindowExtEx.YExtent">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetWindowExtEx.OldSize">
+        <short></short>
+      </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetWindowLong">
         <short/>
@@ -3219,19 +4159,15 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetWindowLong.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowLong.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowLong.Idx">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowLong.NewLong">
         <short/>
       </element>
@@ -3300,6 +4236,28 @@
       <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowPos.uFlags">
         <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.SetWindowRgn">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.SetWindowRgn.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetWindowRgn.hWnd">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetWindowRgn.hRgn">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetWindowRgn.bRedraw">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ShowCaret">
@@ -3488,6 +4446,31 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
+      <element name="TWidgetSet.SystemParametersInfo">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.SystemParametersInfo.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SystemParametersInfo.uiAction">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SystemParametersInfo.uiParam">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SystemParametersInfo.pvParam">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SystemParametersInfo.fWinIni">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
       <element name="TWidgetSet.TextOut">
         <short/>
         <descr/>
@@ -3534,21 +4517,6 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.VkKeyScan">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.VkKeyScan.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.VkKeyScan.AChar">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
       <element name="TWidgetSet.WindowFromPoint">
         <short/>
         <descr/>
@@ -3563,16 +4531,118 @@
       <element name="TWidgetSet.WindowFromPoint.Point">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TWidgetSet.AttachMenuToWindow">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.AddEventHandler">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.AttachMenuToWindow.AMenuObject">
-        <short/>
+      <element name="TWidgetSet.AddEventHandler.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AddEventHandler.AHandle">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AddEventHandler.AFlags">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AddEventHandler.AEventHandler">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AddEventHandler.AData">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.AddProcessEventHandler">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.AddProcessEventHandler.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AddProcessEventHandler.AHandle">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AddProcessEventHandler.AEventHandler">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AddProcessEventHandler.AData">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.AddPipeEventHandler">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.AddPipeEventHandler.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AddPipeEventHandler.AHandle">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AddPipeEventHandler.AEventHandler">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AddPipeEventHandler.AData">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AllocateHWnd">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.AllocateHWnd.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AllocateHWnd.Method">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.AskUser">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.AskUser.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AskUser.DialogCaption">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AskUser.DialogMessage">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AskUser.DialogType">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AskUser.Buttons">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.AskUser.HelpCtx">
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.CallDefaultWndHandler">
@@ -3784,6 +4854,41 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
+      <element name="TWidgetSet.CreateRubberBand">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.CreateRubberBand.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.CreateRubberBand.ARect">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.CreateRubberBand.ABrush">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.CreateStandardCursor">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.CreateStandardCursor.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.CreateStandardCursor.ACursor">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
       <element name="TWidgetSet.DCClipRegionValid">
         <short/>
         <descr/>
@@ -3799,19 +4904,71 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TWidgetSet.DrawArrow">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TWidgetSet.DeallocateHWnd">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.DrawArrow.Arrow">
-        <short/>
+      <element name="TWidgetSet.DeallocateHWnd.Wnd">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.DrawArrow.Canvas">
-        <short/>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.DestroyRubberBand">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.DestroyRubberBand.ARubberBand">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.DrawDefaultDockImage">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.DrawDefaultDockImage.AOldRect">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.DrawDefaultDockImage.ANewRect">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.DrawDefaultDockImage.AOperation">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.DrawGrid">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.DrawGrid.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.DrawGrid.R">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.DrawGrid.DX">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.DrawGrid.DY">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ExtUTF8Out">
@@ -3870,6 +5027,21 @@
       <!-- argument Visibility: default -->
       <element name="TWidgetSet.FontCanUTF8.Font">
         <short/>
+      </element>
+      <element name="TWidgetSet.FontIsMonoSpace">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.FontIsMonoSpace.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.FontIsMonoSpace.Font">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.Frame">
@@ -4321,49 +5493,23 @@
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.LoadStockPixmap">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TWidgetSet.IsDesignerDC">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.LoadStockPixmap.Result">
-        <short/>
+      <element name="TWidgetSet.IsDesignerDC.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.LoadStockPixmap.StockID">
-        <short/>
+      <element name="TWidgetSet.IsDesignerDC.WindowHandle">
+        <short></short>
       </element>
-      <!-- function Visibility: public -->
-      <element name="TWidgetSet.MenuItemSetCheck">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.MenuItemSetCheck.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MenuItemSetCheck.AMenuItem">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TWidgetSet.MenuItemSetEnable">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.MenuItemSetEnable.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.MenuItemSetEnable.AMenuItem">
-        <short/>
+      <element name="TWidgetSet.IsDesignerDC.DC">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MoveWindowOrgEx">
@@ -4386,82 +5532,6 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TWidgetSet.MoveWindowOrgEx.dY">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TWidgetSet.PairSplitterAddSide">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.PairSplitterAddSide.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.PairSplitterAddSide.SplitterHandle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.PairSplitterAddSide.SideHandle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.PairSplitterAddSide.Side">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TWidgetSet.PairSplitterGetInterfaceInfo">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.PairSplitterGetInterfaceInfo.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TWidgetSet.PairSplitterRemoveSide">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.PairSplitterRemoveSide.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.PairSplitterRemoveSide.SplitterHandle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.PairSplitterRemoveSide.SideHandle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.PairSplitterRemoveSide.Side">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TWidgetSet.PairSplitterSetPosition">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.PairSplitterSetPosition.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.PairSplitterSetPosition.SplitterHandle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.PairSplitterSetPosition.NewPosition">
         <short/>
       </element>
       <!-- function Visibility: public -->
@@ -4565,35 +5635,27 @@
       <element name="TWidgetSet.RadialArc.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialArc.x">
-        <short/>
+      <element name="TWidgetSet.RadialArc.left">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialArc.y">
-        <short/>
+      <element name="TWidgetSet.RadialArc.top">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialArc.width">
-        <short/>
+      <element name="TWidgetSet.RadialArc.right">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialArc.height">
-        <short/>
+      <element name="TWidgetSet.RadialArc.bottom">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RadialArc.sx">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RadialArc.sy">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RadialArc.ex">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RadialArc.ey">
         <short/>
       </element>
@@ -4613,34 +5675,27 @@
         <short/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialChord.x">
-        <short/>
+      <element name="TWidgetSet.RadialChord.x1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialChord.y">
-        <short/>
+      <element name="TWidgetSet.RadialChord.y1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialChord.width">
-        <short/>
+      <element name="TWidgetSet.RadialChord.x2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialChord.height">
-        <short/>
+      <element name="TWidgetSet.RadialChord.y2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RadialChord.sx">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RadialChord.sy">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RadialChord.ex">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.RadialChord.ey">
         <short/>
       </element>
@@ -4659,95 +5714,151 @@
       <element name="TWidgetSet.RadialPie.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPie.x">
-        <short/>
+      <element name="TWidgetSet.RadialPie.x1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPie.y">
-        <short/>
+      <element name="TWidgetSet.RadialPie.y1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPie.width">
-        <short/>
+      <element name="TWidgetSet.RadialPie.x2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPie.height">
-        <short/>
+      <element name="TWidgetSet.RadialPie.y2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPie.sx">
-        <short/>
+      <element name="TWidgetSet.RadialPie.Angle1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPie.sy">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPie.ex">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPie.ey">
-        <short/>
+      <element name="TWidgetSet.RadialPie.Angle2">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.RadialPieWithAngles">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TWidgetSet.RawImage_CreateBitmaps">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.RadialPieWithAngles.Result">
-        <short/>
+      <element name="TWidgetSet.RawImage_CreateBitmaps.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPieWithAngles.DC">
-        <short/>
+      <element name="TWidgetSet.RawImage_CreateBitmaps.ARawImage">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPieWithAngles.X">
-        <short/>
+      <element name="TWidgetSet.RawImage_CreateBitmaps.ABitmap">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPieWithAngles.Y">
-        <short/>
+      <element name="TWidgetSet.RawImage_CreateBitmaps.AMask">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPieWithAngles.Width">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPieWithAngles.Height">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPieWithAngles.Angle1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadialPieWithAngles.Angle2">
-        <short/>
+      <element name="TWidgetSet.RawImage_CreateBitmaps.ASkipMask">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.RadioMenuItemGroup">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TWidgetSet.RawImage_DescriptionFromBitmap">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.RadioMenuItemGroup.Result">
-        <short/>
+      <element name="TWidgetSet.RawImage_DescriptionFromBitmap.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadioMenuItemGroup.hndMenu">
-        <short/>
+      <element name="TWidgetSet.RawImage_DescriptionFromBitmap.ABitmap">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.RadioMenuItemGroup.bRadio">
-        <short/>
+      <element name="TWidgetSet.RawImage_DescriptionFromBitmap.ADesc">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.RawImage_DescriptionFromDevice">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.RawImage_DescriptionFromDevice.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RawImage_DescriptionFromDevice.ADC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RawImage_DescriptionFromDevice.ADesc">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.RawImage_FromBitmap">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.RawImage_FromBitmap.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RawImage_FromBitmap.ARawImage">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RawImage_FromBitmap.ABitmap">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RawImage_FromBitmap.AMask">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RawImage_FromBitmap.ARect">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.RawImage_FromDevice">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.RawImage_FromDevice.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RawImage_FromDevice.ARawImage">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RawImage_FromDevice.ADC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RawImage_FromDevice.ARect">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RawImage_QueryDescription">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.RawImage_QueryDescription.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RawImage_QueryDescription.AFlags">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.RawImage_QueryDescription.ADesc">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RegroupMenuItem">
@@ -4787,28 +5898,43 @@
       <element name="TWidgetSet.ReleaseDesignerDC.DC">
         <short/>
       </element>
-      <!-- function Visibility: public -->
-      <element name="TWidgetSet.ReplaceBitmapMask">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.RemoveEventHandler">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.ReplaceBitmapMask.Result">
-        <short/>
+      <element name="TWidgetSet.RemoveEventHandler.AHandler">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.ReplaceBitmapMask.Image">
-        <short/>
+      <element name="TWidgetSet.RemoveProcessEventHandler">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.ReplaceBitmapMask.Mask">
-        <short/>
+      <element name="TWidgetSet.RemoveProcessEventHandler.AHandler">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.ReplaceBitmapMask.NewMask">
-        <short/>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.RemovePipeEventHandler">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.RemovePipeEventHandler.AHandler">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RequestInput">
@@ -4864,29 +5990,6 @@
         <seealso/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.DrawSplitter">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.DrawSplitter.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.DrawSplitter.DC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.DrawSplitter.ARect">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.DrawSplitter.Horizontal">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
       <element name="TWidgetSet.SetCaretRespondToFocus">
         <short/>
         <descr/>
@@ -4931,6 +6034,39 @@
       <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetComboMinDropDownSize.MinItemCount">
         <short/>
+      </element>
+
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.SetEventHandlerFlags">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.SetEventHandlerFlags.AHandler">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetEventHandlerFlags.NewFlags">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TWidgetSet.SetRubberBandRect">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.SetRubberBandRect.ARubberBand">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.SetRubberBandRect.ARect">
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.StretchMaskBlt">
@@ -4999,6 +6135,68 @@
       <element name="TWidgetSet.StretchMaskBlt.Rop">
         <short/>
       </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.TextUTF8Out">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.TextUTF8Out.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.TextUTF8Out.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.TextUTF8Out.X">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.TextUTF8Out.Y">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.TextUTF8Out.Str">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.TextUTF8Out.Count">
+        <short></short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TWidgetSet.ThemeServices">
+        <short></short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+<!-- "class of" type Visibility: default -->
+      <element name="TWidgetSetClass" link="TWidgetSet"/>
+      <!-- constant Visibility: default -->
+      <element name="LCLPlatformDirNames">
+        <short></short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LCL_CAPABILITY_NO">
+        <short></short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="LCL_CAPABILITY_YES">
+        <short></short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
       <!-- object Visibility: default -->
       <element name="EInterfaceException">
         <short/>
@@ -5027,96 +6225,7 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- array type Visibility: default -->
-      <element name="PCharArray">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- array type Visibility: default -->
-      <element name="PCharArray22">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="IMGOK_Check">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="IMGCancel_X">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="IMGClose">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="IMGHELP">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="IMGALL_Check">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="IMG_NO">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="IMG_RETRY">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="IMG_IGNIORE">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- array type Visibility: default -->
-      <element name="PCharArray32x32">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="IMGWarning">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="IMGInfo">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="IMGError">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- constant Visibility: default -->
-      <element name="IMGConfirmation">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+
       <!-- function type Visibility: default -->
       <element name="TInputDialogFunction">
         <short/>
@@ -5205,11 +6314,47 @@
         <descr/>
         <seealso/>
       </element>
+      <!-- function type Visibility: default -->
+      <element name="TQuestionDialogFunction">
+        <short></short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TQuestionDialogFunction.Result">
+        <short></short>
+      </element>
+      <element name="TQuestionDialogFunction.aCaption">
+        <short></short>
+      </element>
+      <element name="TQuestionDialogFunction.aMsg">
+        <short></short>
+      </element>
+      <element name="TQuestionDialogFunction.DlgType">
+        <short></short>
+      </element>
+      <element name="TQuestionDialogFunction.Buttons">
+        <short></short>
+      </element>
+      <element name="TQuestionDialogFunction.HelpCtx">
+        <short></short>
+      </element>
+<!-- variable Visibility: default -->
+      <element name="QuestionDialogFunction">
+        <short></short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
       <!-- variable Visibility: default -->
-      <element name="InterfaceObject">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="WidgetSet">
+        <short></short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
     </module>
     <!-- InterfaceBase -->
