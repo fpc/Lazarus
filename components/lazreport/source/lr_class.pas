@@ -319,11 +319,11 @@ type
 
   TfrMemoView = class(TfrStretcheable)
   private
-    fAngle       : Byte;
     fFont        : TFont;
     fLastValue   : TStringList;
 
     function GetAlignment: TAlignment;
+    function GetAngle: Byte;
     function GetAutoSize: Boolean;
     function GetHideDuplicates: Boolean;
     function GetIsLastValueSet: boolean;
@@ -335,6 +335,7 @@ type
     procedure P4Click(Sender: TObject);
     procedure P5Click(Sender: TObject);
     procedure SetAlignment(const AValue: TAlignment);
+    procedure SetAngle(const AValue: Byte);
     procedure SetAutoSize(const AValue: Boolean);
     procedure SetFont(Value: TFont);
     procedure SetHideDuplicates(const AValue: Boolean);
@@ -385,7 +386,7 @@ type
     property Font      : TFont read fFont write SetFont;
     property Alignment : TAlignment read GetAlignment write SetAlignment;
     property Layout    : TTextLayout read GetLayout write SetLayout;
-    property Angle     : Byte read fAngle write fAngle;
+    property Angle     : Byte read GetAngle write SetAngle;
     property WordWrap  : Boolean read GetWordWrap write SetWordWrap;
     property AutoSize  : Boolean read GetAutoSize write SetAutoSize;
     property HideDuplicates: Boolean read GetHideDuplicates write SetHideDuplicates;
@@ -2362,7 +2363,6 @@ begin
   LineSpacing := 2;
   CharacterSpacing := 0;
   Adjust := 0;
-  fAngle    :=0;
 end;
 
 destructor TfrMemoView.Destroy;
@@ -2486,7 +2486,7 @@ begin
     aCanvas.Font.Name := 'default';
   //Font := Self.Font;
   if not IsPrinting and (ScaleY<>0) then
-    ACanvas.Font.Height := -Round(Self.Font.Size * 96 / 72 * ScaleY);
+    ACanvas.Font.Height := -Round(Self.Font.Size * ACanvas.Font.PixelsPerInch / 72 * ScaleY);
   {$IFDEF DebugLR}
   DebugLnExit('AssignFont (%s) DONE: Self.Font.Size=%d aCanvas.Font.Size=%d',
     [self.Font.Name,Self.Font.Size,ACanvas.Font.Size]);
@@ -2829,6 +2829,13 @@ var
     end;
 
   begin {OutMemo}
+    if Alignment in [Classes.taLeftJustify..Classes.taCenter] then
+    begin
+      if Layout=tlCenter then
+        y:=y+(dy-VHeight) div 2
+      else if Layout=tlBottom then
+        y:=y+dy-VHeight;
+    end;
     cury := y + gapy;
 
     th := -Canvas.Font.Height+Round(LineSpacing * ScaleY);
@@ -2845,7 +2852,8 @@ var
   procedure OutMemo90;
   var
     i, th, curx: Integer;
-    h, oldh: HFont;
+    oldFont: TFont;
+    rotatedFont: TFont;
 
     procedure OutLine(str: String);
     var
@@ -2861,47 +2869,42 @@ var
       else
         ParaEnd := False;
       cury := 0;
-      if Adjust = 4 then
-        cury:=y + dy-gapy
-      else if Adjust = 5 then
-        cury := y + gapy + Canvas.TextWidth(str)
-      else if Adjust = 6 then
-        cury := y + dy - 1 - gapy - (dy - gapy - gapy - Canvas.TextWidth(str)) div 2
-      else if not Exporting then
-      begin
-        cury := y + dy - gapy;
-        n := 0;
-        for i := 1 to Length(str) do
-          if str[i] = ' ' then Inc(n);
-        //**
-        {if (n <> 0) and not ParaEnd then
-          SetTextJustification(Canvas.Handle,
-            dy - gapy - gapy - Canvas.TextWidth(str), n);}
+      case Alignment of
+          Classes.taLeftJustify : CurY :=y + dy-gapy;
+          Classes.taRightJustify: CurY :=y - gapy + Canvas.TextWidth(str);
+          Classes.taCenter      : CurY :=y - gapy + (dy + Canvas.TextWidth(str)) div 2;
       end;
       if not Exporting then
-      begin
-       //**
-       { ExtTextOut(Canvas.Handle, curx, cury, ETO_CLIPPED, @DR,
-          PChar(str), Length(str), nil);
-        if Adjust <> 7 then
-          SetTextJustification(Canvas.Handle, 0, 0);
-        }
-      end;
-      if Exporting then
+         canvas.TextOut(curx,cury,str)
+      else
         CurReport.InternalOnExportText(curx, cury, str, Self);
       Inc(CurStrNo);
       curx := curx + th;
     end;
+
   begin {OutMemo90}
-    h := Create90Font(Canvas.Font);
-    oldh := SelectObject(Canvas.Handle,h);
-    curx := x + gapx;
-    th := -Canvas.Font.Height + Round(LineSpacing * ScaleY);
-    CurStrNo := 0;
-    for i := 0 to Memo1.Count - 1 do
-      OutLine(Memo1[i]);
-    SelectObject(Canvas.Handle, oldh);
-    DeleteObject(h);
+    rotatedFont := TFont.Create;
+    try
+      rotatedFont.assign(Canvas.Font);
+      rotatedFont.Orientation := 900;
+      oldFont := Canvas.Font;
+      Canvas.Font := rotatedFont;
+      if Alignment in [Classes.taLeftJustify..Classes.taCenter] then
+      begin
+        if Layout=tlCenter then
+          x := x +(dx-VHeight) div 2
+        else if Layout=tlBottom then
+          x:=x+dx-VHeight;
+      end;
+      curx := x + gapx;
+      th := -Canvas.Font.Height + Round(LineSpacing * ScaleY);
+      CurStrNo := 0;
+      for i := 0 to Memo1.Count - 1 do
+        OutLine(Memo1[i]);
+    finally
+      Canvas.Font := OldFont;
+      rotatedFont.Free
+    end;
   end;
 
 begin
@@ -2916,15 +2919,11 @@ begin
     SetTextCharacterExtra(Canvas.Handle, Round(CharacterSpacing * ScaleX));
     DR:=Rect(DRect.Left + 1, DRect.Top, DRect.Right - 2, DRect.Bottom - 1);
     VHeight:=Round(VHeight*ScaleY);
-    if Alignment in [Classes.taLeftJustify..Classes.taCenter] then
-    begin
-      if Layout=tlCenter then
-        y:=y+(dy-VHeight) div 2
-      else if Layout=tlBottom then
-              y:=y+dy-VHeight;
-    end;
-    
-    OutMemo;
+
+    if Angle <> 0 then
+      OutMemo90
+    else
+      OutMemo;
 
   finally
     X:=SavX;
@@ -3234,6 +3233,7 @@ var
   i: Integer;
   TmpAlign: TAlignment;
   TmpLayout: TTextLayout;
+  tmpAngle: Byte;
 begin
   {$IFDEF DebugLR}
   DebugLn('Stream.Position=%d Stream.Size=%d',[Stream.Position,Stream.Size]);
@@ -3262,11 +3262,12 @@ begin
 
     Read(TmpAlign,SizeOf(TmpAlign));
     Read(TmpLayout,SizeOf(TmpLayout));
-    Read(fAngle,SizeOf(fAngle));
+    Read(tmpAngle,SizeOf(tmpAngle));
 
     BeginUpdate;
     Alignment := tmpAlign;
     Layout := tmpLayout;
+    Angle := tmpAngle;
     EndUpdate;
   end;
 
@@ -3293,7 +3294,7 @@ begin
   
   RestoreProperty('Alignment',XML.GetValue(Path+'Alignment/Value',''));
   RestoreProperty('Layout',XML.GetValue(Path+'Layout/Value',''));
-  fAngle := XML.GetValue(Path+'Angle/Value', 0);
+  Angle := XML.GetValue(Path+'Angle/Value', 0);
 end;
 
 procedure TfrMemoView.SaveToStream(Stream: TStream);
@@ -3302,6 +3303,7 @@ var
   w: Word;
   tmpAlign: TAlignment;
   tmpLayout: TTextLayout;
+  tmpAngle: Byte;
 begin
   inherited SaveToStream(Stream);
   frWriteString(Stream, Font.Name);
@@ -3326,9 +3328,10 @@ begin
     else
       tmpAlign := Alignment;
     tmpLayout := Layout;
+    tmpAngle := Angle;
     Write(tmpAlign,SizeOf(tmpAlign));
     Write(tmpLayout,SizeOf(tmpLayout));
-    Write(fAngle,SizeOf(fAngle));
+    Write(tmpAngle,SizeOf(tmpAngle));
   end;
 end;
 
@@ -3350,7 +3353,7 @@ begin
   end;
   XML.SetValue(Path+'Alignment/Value',GetSaveProperty('Alignment'));
   XML.SetValue(Path+'Layout/Value', GetSaveProperty('Layout'));
-  XML.SetValue(Path+'Angle/Value', FAngle);
+  XML.SetValue(Path+'Angle/Value', Angle);
 end;
 
 procedure TfrMemoView.GetBlob(b: TfrTField);
@@ -3480,6 +3483,14 @@ begin
   Result:=Classes.TAlignment(Adjust and %11);
 end;
 
+function TfrMemoView.GetAngle: Byte;
+begin
+  if Adjust and 4 <> 0 then
+    Result := 90
+  else
+    Result := 0
+end;
+
 function TfrMemoView.GetWordWrap: Boolean;
 begin
   Result:=((Flags and flWordWrap)<>0);
@@ -3583,6 +3594,19 @@ begin
     BeforeChange;
     Adjust := (Adjust and not 3) or ord(AValue);
     AfterChange;
+  end;
+end;
+
+procedure TfrMemoView.SetAngle(const AValue: Byte);
+begin
+  if AValue <> Angle then
+  begin
+    BeforeChange;
+    if AValue <> 0 then
+      Adjust := Adjust or $04
+    else
+      Adjust := Adjust and $FB;
+    AfterChange
   end;
 end;
 
