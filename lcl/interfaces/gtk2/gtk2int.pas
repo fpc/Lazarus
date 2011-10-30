@@ -51,7 +51,7 @@ uses
   LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
   Graphics, Menus, Themes, WSLCLClasses,
 
-  Buttons, StdCtrls, PairSplitter,
+  Buttons, StdCtrls, CheckLst, PairSplitter,
   ComCtrls, Calendar, Arrow, Spin,
   ExtCtrls, FileCtrl, LResources,
 
@@ -349,6 +349,7 @@ type
     function Find(const S: String; var Index: Integer): Boolean;
     function IndexOf(const S: String): Integer; override;
     procedure Insert(Index: Integer; const S: String); override;
+    procedure Move(CurIndex, NewIndex: Integer); override;
     procedure Sort;
     function IsEqual(List: TStrings): Boolean;
     procedure BeginUpdate;
@@ -378,6 +379,7 @@ uses
   Gtk2WSFactory,
   Gtk2WSStdCtrls,
   Gtk2WSControls,
+  Gtk2WSCheckLst,
   Gtk2WSPrivate,
   Gtk2Themes,
 ////////////////////////////////////////////////////
@@ -902,6 +904,21 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+procedure TGtkListStoreStringList.Move(CurIndex, NewIndex: Integer);
+const
+  AState: Array[Boolean] of TCheckBoxState = (cbUnchecked, cbChecked);
+var
+  AItemChecked: Boolean;
+begin
+  if FOwner is TCheckListBox then
+    AItemChecked := TCheckListBox(FOwner).Checked[CurIndex];
+  inherited Move(CurIndex, NewIndex);
+  if FOwner is TCheckListBox then
+    TGtk2WSCustomCheckListBox.SetState(TCustomCheckListBox(FOwner),
+      NewIndex, AState[AItemChecked]);
+
 end;
 
 {$I gtk2listsl.inc}

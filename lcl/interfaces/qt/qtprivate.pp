@@ -76,6 +76,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
+    procedure Move(CurIndex, NewIndex: Integer); override;
     procedure Sort; override;
     procedure Exchange(AIndex1, AIndex2: Integer); override;
   public
@@ -614,6 +615,33 @@ begin
   inherited Delete(Index);
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
     FOwner.removeItem(Index);
+end;
+
+procedure TQtListStrings.Move(CurIndex, NewIndex: Integer);
+var
+  CheckState: QtCheckState;
+  Selected: Boolean;
+begin
+  {move is calling delete, and then insert.
+   we must save our item checkstate and selection}
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) and
+    (FOwner is TQtCheckListBox) then
+  begin
+    CheckState := TQtCheckListBox(FOwner).ItemCheckState[CurIndex];
+    Selected := TQtCheckListBox(FOwner).Selected[CurIndex];
+  end;
+
+  inherited Move(CurIndex, NewIndex);
+
+  {return check state to newindex}
+  if Assigned(FWinControl) and (FWinControl.HandleAllocated) and
+    (FOwner is TQtCheckListBox) then
+  begin
+    FOwner.BeginUpdate;
+    TQtCheckListBox(FOwner).ItemCheckState[NewIndex] := CheckState;
+    FOwner.Selected[NewIndex] := Selected;
+    FOwner.EndUpdate;
+  end;
 end;
 
 procedure TQtListStrings.Sort;

@@ -1109,7 +1109,9 @@ type
     FItemTextChangedHook: QListWidget_hookH;
     FDontPassSelChange: Boolean;
     function getItemCount: Integer;
+    function GetSelected(AIndex: Integer): Boolean;
     procedure setItemCount(const AValue: Integer);
+    procedure SetSelected(AIndex: Integer; AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     procedure OwnerDataNeeded(ARect: TRect); override;
@@ -1157,6 +1159,7 @@ type
     procedure ExchangeItems(const AIndex1, AIndex2: Integer);
     procedure MoveItem(const AFromIndex, AToIndex: Integer);
     property ItemCount: Integer read getItemCount write setItemCount;
+    property Selected[AIndex: Integer]: Boolean read GetSelected write SetSelected;
   end;
 
   { TQtCheckListBox }
@@ -1164,6 +1167,8 @@ type
   TQtCheckListBox = class (TQtListWidget)
   private
     FItemChangedHook: QListWidget_hookH;
+    function GetItemCheckState(AIndex: Integer): QtCheckState;
+    procedure SetItemCheckState(AIndex: Integer; AValue: QtCheckState);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -1176,6 +1181,7 @@ type
     procedure signalItemClicked(item: QListWidgetItemH); cdecl; override;
     procedure signalSelectionChanged(); cdecl; override;
     procedure signalItemChanged(item: QListWidgetItemH); cdecl;
+    property ItemCheckState[AIndex: Integer]: QtCheckState read GetItemCheckState write SetItemCheckState;
   end;
 
   { TQtHeaderView }
@@ -9058,6 +9064,16 @@ begin
   Result := QListWidget_count(QListWidgetH(Widget));
 end;
 
+function TQtListWidget.GetSelected(AIndex: Integer): Boolean;
+var
+  AItem: QListWidgetItemH;
+begin
+  Result := False;
+  AItem := getItem(AIndex);
+  if Assigned(AItem) then
+    Result := getItemSelected(AItem);
+end;
+
 procedure TQtListWidget.setItemCount(const AValue: Integer);
 var
   i: Integer;
@@ -9078,6 +9094,12 @@ begin
   finally
     EndUpdate;
   end;
+end;
+
+procedure TQtListWidget.SetSelected(AIndex: Integer; AValue: Boolean);
+begin
+  if (AIndex >= 0) and (AIndex < RowCount) then
+    setItemSelected(getItem(AIndex), AValue);
 end;
 
 function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -9663,7 +9685,10 @@ end;
 
 function TQtListWidget.getItem(AIndex: Integer): QListWidgetItemH;
 begin
-  Result := QListWidget_item(QListWidgetH(Widget), AIndex);
+  if (AIndex >= 0) and (AIndex < rowCount) then
+    Result := QListWidget_item(QListWidgetH(Widget), AIndex)
+  else
+    Result := nil;
 end;
 
 function TQtListWidget.getItemSelected(AItem: QListWidgetItemH): Boolean;
@@ -10014,6 +10039,30 @@ begin
   Msg.Msg := LM_CHANGED;
   Msg.WParam := QListWidget_row(QListWidgetH(Widget), Item);
   DeliverMessage(Msg);
+end;
+
+function TQtCheckListBox.GetItemCheckState(AIndex: Integer): QtCheckState;
+var
+  AItem: QListWidgetItemH;
+begin
+  Result := QtUnChecked;
+  if (AIndex >= 0) and (AIndex < rowCount) then
+  begin
+    AItem := QListWidget_item(QListWidgetH(Widget), AIndex);
+    Result := QListWidgetItem_checkState(AItem);
+  end;
+end;
+
+procedure TQtCheckListBox.SetItemCheckState(AIndex: Integer;
+  AValue: QtCheckState);
+var
+  AItem: QListWidgetItemH;
+begin
+  if (AIndex >= 0) and (AIndex < rowCount) then
+  begin
+    AItem := QListWidget_item(QListWidgetH(Widget), AIndex);
+    QListWidgetItem_setCheckState(AItem, AValue);
+  end;
 end;
 
 { TQtHeaderView }
