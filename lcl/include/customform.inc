@@ -2617,10 +2617,21 @@ end;
 function TCustomForm.ShowModal: Integer;
 
   procedure RaiseShowModalImpossible;
+  var
+    s: String;
   begin
     DebugLn('TCustomForm.ShowModal Visible=',dbgs(Visible),' Enabled=',dbgs(Enabled),
       ' fsModal=',dbgs(fsModal in FFormState),' MDIChild=',dbgs(FormStyle = fsMDIChild));
-    raise EInvalidOperation.Create('TCustomForm.ShowModal impossible ');
+    s:='TCustomForm.ShowModal for '+DbgSName(Self)+' impossible, because';
+    if Visible then
+      s:=s+' already visible (hint for designer forms: set Visible property to false)';
+    if not Enabled then
+      s:=s+' not enabled';
+    if fsModal in FFormState then
+      s:=s+' already modal';
+    if FormStyle = fsMDIChild then
+      s:=s+' FormStyle=fsMDIChild';
+    raise EInvalidOperation.Create(s);
   end;
 
   procedure RestoreFocusedForm;
@@ -2650,7 +2661,7 @@ begin
   // close popupmenus
   if ActivePopupMenu <> nil then
     ActivePopupMenu.Close;
-  if Visible or not Enabled or (fsModal in FFormState) or (FormStyle = fsMDIChild) then
+  if Visible or (not Enabled) or (fsModal in FFormState) or (FormStyle = fsMDIChild) then
     RaiseShowModalImpossible;
   // Kill capture when opening another dialog
   if GetCapture <> 0 then
