@@ -852,6 +852,7 @@ type
                                 const Path: string); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig;
                               const Path: string); virtual;
+    class function CheckName(const AName: String): Boolean;
   public
     property Breakpoints[const AIndex: Integer]: TIDEBreakPoint read GetBreakpoint;
     property Enabled: Boolean read FEnabled write SetEnabled;
@@ -7658,6 +7659,16 @@ begin
   XMLConfig.SetDeleteValue(Path+'InitialEnabled/Value',FInitialEnabled,true);
 end;
 
+class function TIDEBreakPointGroup.CheckName(const AName: String): Boolean;
+var
+  i: Integer;
+begin
+  for i := 1 to Length(AName) do
+    if not (AName[i] in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
+      Exit(False);
+  Result := True;
+end;
+
 procedure TIDEBreakPointGroup.RemoveReference(const ABreakPointList: TIDEBreakPointGroupList);
 begin
   FReferences.Remove(ABreakPointList);
@@ -7679,7 +7690,10 @@ end;
 
 procedure TIDEBreakPointGroup.SetName(const AValue: String);
 begin
+  if FName = AValue then Exit;
+
   FName := AValue;
+  Changed(False);
 end;
 
 procedure TIDEBreakPointGroup.AssignTo(Dest: TPersistent);

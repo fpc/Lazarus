@@ -54,6 +54,8 @@ type
     actAddSourceBP: TAction;
     actAddAddressBP: TAction;
     actAddWatchPoint: TAction;
+    actGroupSetNone: TAction;
+    actGroupSetNew: TAction;
     actShow: TAction;
     actProperties: TAction;
     actToggleCurrentEnable: TAction;
@@ -68,6 +70,10 @@ type
     actDisableAllInSrc: TAction;
     ActionList1: TActionList;
     lvBreakPoints: TListView;
+    popGroupSep: TMenuItem;
+    popGroupSetNew: TMenuItem;
+    popGroupSetNone: TMenuItem;
+    popGroup: TMenuItem;
     popAddWatchPoint: TMenuItem;
     popAddAddressBP: TMenuItem;
     N0: TMenuItem;
@@ -102,12 +108,15 @@ type
     procedure actAddWatchPointExecute(Sender: TObject);
     procedure actDisableSelectedExecute(Sender: TObject);
     procedure actEnableSelectedExecute(Sender: TObject);
+    procedure actGroupSetNoneExecute(Sender: TObject);
+    procedure actGroupSetNewExecute(Sender: TObject);
     procedure actShowExecute(Sender: TObject);
     procedure BreakpointsDlgCREATE(Sender: TObject);
     procedure lvBreakPointsClick(Sender: TObject);
     procedure lvBreakPointsColumnClick(Sender: TObject; Column: TListColumn);
     procedure lvBreakPointsDBLCLICK(Sender: TObject);
     procedure lvBreakPointsSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
+    procedure mnuPopupPopup(Sender: TObject);
     procedure popDeleteAllSameSourceCLICK(Sender: TObject);
     procedure popDisableAllSameSourceCLICK(Sender: TObject);
     procedure popEnableAllSameSourceCLICK(Sender: TObject);
@@ -128,6 +137,8 @@ type
     procedure BreakPointRemove(const ASender: TIDEBreakPoints;
                                const ABreakpoint: TIDEBreakPoint);
     procedure SetBaseDirectory(const AValue: string);
+    procedure popSetGroupItemClick(Sender: TObject);
+    procedure SetGroup(const NewGroup: TIDEBreakPointGroup);
 
     procedure UpdateItem(const AnItem: TListItem;
                          const ABreakpoint: TIDEBreakPoint);
@@ -240,6 +251,45 @@ begin
   UpdateAll;
 end;
 
+procedure TBreakPointsDlg.SetGroup(const NewGroup: TIDEBreakPointGroup);
+var
+  OldGroup: TIDEBreakPointGroup;
+  OldGroups: TList;
+  i: Integer;
+  PrevChoice: TModalResult;
+begin
+  PrevChoice := mrNone;
+  OldGroups := TList.Create;
+  try
+    for i := 0 to lvBreakPoints.Items.Count - 1 do
+      if lvBreakPoints.Items[i].Selected then
+      begin
+        OldGroup := TIDEBreakPoint(lvBreakPoints.Items[i].Data).Group;
+        TIDEBreakPoint(lvBreakPoints.Items[i].Data).Group := NewGroup;
+        if (OldGroup <> nil) and (OldGroup.Count = 0) and (OldGroups.IndexOf(OldGroup) < 0) then
+          OldGroups.Add(OldGroup);
+      end;
+  finally
+    while OldGroups.Count > 0 do begin
+      OldGroup := TIDEBreakPointGroup(OldGroups[0]);
+      OldGroups.Delete(0);
+      if not (PrevChoice in [mrYesToAll, mrNoToAll]) then
+      begin
+        if OldGroups.Count > 0 then
+          PrevChoice := MessageDlg(Caption, Format(lisGroupEmptyDelete + lisGroupEmptyDeleteMore,
+            [OldGroup.Name, LineEnding, OldGroups.Count]),
+            mtConfirmation, mbYesNo + [mbYesToAll, mbNoToAll], 0)
+        else
+          PrevChoice := MessageDlg(Caption, Format(lisGroupEmptyDelete,
+            [OldGroup.Name]), mtConfirmation, mbYesNo, 0);
+      end;
+      if PrevChoice in [mrYes, mrYesToAll] then
+        OldGroup.Free;
+    end;
+    OldGroups.Free;
+  end;
+end;
+
 constructor TBreakPointsDlg.Create(AOwner: TComponent);
 begin
   inherited;
@@ -312,6 +362,9 @@ begin
   actAddSourceBP.Caption := lisSourceBreakpoint;
   actAddAddressBP.Caption := lisAddressBreakpoint;
   actAddWatchPoint.Caption := lisWatchPoint;
+  popGroup.Caption := lisGroup;
+  actGroupSetNew.Caption := lisGroupSetNew;
+  actGroupSetNone.Caption := lisGroupSetNone;
 end;
 
 procedure TBreakPointsDlg.actEnableSelectedExecute(Sender: TObject);
@@ -330,6 +383,60 @@ begin
   finally
     lvBreakPointsSelectItem(nil, nil, False);
   end;
+end;
+
+procedure TBreakPointsDlg.actGroupSetNewExecute(Sender: TObject);
+var
+  GroupName: String;
+  NewGroup: TIDEBreakPointGroup;
+begin
+  GroupName := '';
+  if not InputQuery(Caption, lisGroupNameInput, GroupName) then Exit;
+  if GroupName = '' then
+  begin
+    if MessageDlg(Caption, lisGroupNameEmptyClearInstead,
+      mtConfirmation, mbYesNo, 0) = mrYes then Exit;
+    NewGroup := nil;
+  end
+  else begin
+    NewGroup := DebugBoss.BreakPointGroups.GetGroupByName(GroupName);
+    if NewGroup = nil then
+    begin
+      if not TIDEBreakPointGroup.CheckName(GroupName) then
+      begin
+        MessageDlg(Caption, lisGroupNameInvalid, mtError, [mbOk], 0);
+        Exit;
+      end;
+      NewGroup := TIDEBreakPointGroup(DebugBoss.BreakPointGroups.Add);
+      try
+        NewGroup.Name := GroupName;
+      except
+        NewGroup.Free;
+        raise;
+      end;
+    end
+    else if MessageDlg(Caption, Format(lisGroupAssignExisting,
+        [GroupName]), mtConfirmation, mbYesNo, 0) <> mrYes
+      then
+        Exit;
+  end;
+
+  SetGroup(NewGroup);
+end;
+
+procedure TBreakPointsDlg.actGroupSetNoneExecute(Sender: TObject);
+begin
+  SetGroup(nil);
+end;
+
+procedure TBreakPointsDlg.popSetGroupItemClick(Sender: TObject);
+var
+  Group: TIDEBreakPointGroup;
+begin
+  Group := DebugBoss.BreakPointGroups.GetGroupByName((Sender as TMenuItem).Caption);
+  if Group = nil then
+    raise Exception.CreateFmt('Group %s not found', [(Sender as TMenuItem).Caption]);
+  SetGroup(Group);
 end;
 
 procedure TBreakPointsDlg.actShowExecute(Sender: TObject);
@@ -452,6 +559,27 @@ begin
 
   actProperties.Enabled := ItemSelected;
   actShow.Enabled := ItemSelected;
+
+  popGroup.Enabled := ItemSelected;
+  actGroupSetNew.Enabled := ItemSelected;
+  actGroupSetNone.Enabled := ItemSelected;
+end;
+
+procedure TBreakPointsDlg.mnuPopupPopup(Sender: TObject);
+var
+  i: Integer;
+  MenuItem: TMenuItem;
+begin
+  for i := popGroup.Count - 1 downto popGroup.IndexOf(popGroupSep) +1 do
+    popGroup.Items[i].Free;
+  for i := 0 to DebugBoss.BreakPointGroups.Count - 1 do
+  begin
+    MenuItem := TMenuItem.Create(popGroup);
+    MenuItem.Caption := DebugBoss.BreakPointGroups[i].Name;
+    MenuItem.OnClick := @popSetGroupItemClick;
+    popGroup.Add(MenuItem);
+  end;
+  popGroupSep.Visible := DebugBoss.BreakPointGroups.Count <> 0;
 end;
 
 procedure TBreakPointsDlg.popDeleteAllSameSourceCLICK(Sender: TObject);

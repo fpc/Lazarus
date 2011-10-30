@@ -4616,6 +4616,14 @@ resourcestring
   lisDeleteBreakpointForWatch = 'Delete watchpoint for "%s"?';
   lisDeleteAllBreakpoints = 'Delete all breakpoints?';
   lisDeleteAllBreakpoints2 = 'Delete all breakpoints in file %s%s%s?';
+  lisGroupNameInput = 'Group name:';
+  lisGroupNameInvalid = 'BreakpointGroup name must be a valid Pascal identifier name.';
+  lisGroupNameEmptyClearInstead = 'The group name cannot be empty. Clear breakpoints'' group(s)?';
+  lisGroupAssignExisting = 'Assign to existing "%s" group?';
+  lisGroupSetNew = 'Set new group...';
+  lisGroupSetNone = 'Clear group(s)';
+  lisGroupEmptyDelete = 'No more breakpoints are assigned to group "%s", delete it?';
+  lisGroupEmptyDeleteMore = '%sThere are %d more empty groups, delete all?';
   lisBreak = 'Break';
   lisEnableGroups = 'Enable Groups';
   lisDisableGroups = 'Disable Groups';

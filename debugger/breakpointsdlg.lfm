@@ -121,6 +121,7 @@ inherited BreakpointsDlg: TBreakpointsDlg
     end
   end
   object mnuPopup: TPopupMenu[2]
+    OnPopup = mnuPopupPopup
     left = 24
     top = 40
     object popShow: TMenuItem
@@ -154,6 +155,19 @@ inherited BreakpointsDlg: TBreakpointsDlg
     end
     object popDelete: TMenuItem
       Action = actDeleteSelected
+    end
+    object popGroup: TMenuItem
+      Caption = 'popGroup'
+      object popGroupSetNone: TMenuItem
+        Action = actGroupSetNone
+      end
+      object popGroupSetNew: TMenuItem
+        Action = actGroupSetNew
+      end
+      object popGroupSep: TMenuItem
+        Caption = '-'
+        Visible = False
+      end
     end
     object N2: TMenuItem
       Caption = '-'
@@ -250,6 +264,14 @@ inherited BreakpointsDlg: TBreakpointsDlg
       Caption = 'actShow'
       OnExecute = actShowExecute
       ShortCut = 16470
+    end
+    object actGroupSetNew: TAction
+      Caption = 'actGroupSetNew'
+      OnExecute = actGroupSetNewExecute
+    end
+    object actGroupSetNone: TAction
+      Caption = 'actGroupSetNone'
+      OnExecute = actGroupSetNoneExecute
     end
   end
 end
