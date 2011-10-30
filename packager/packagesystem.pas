@@ -257,7 +257,7 @@ type
     function GetAutoCompilationOrder(APackage: TLazPackage;
                                      FirstDependency: TPkgDependency;
                                      SkipDesignTimePackages: boolean;
-                                     Policies: TPackageUpdatePolicies): TFPList;
+                                     Policy: TPackageUpdatePolicy): TFPList;
     function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
                          const NewName: string; NewVersion: TPkgVersion): TFPList;
     procedure GetPackagesChangedOnDisk(var ListOfPackages: TFPList);
@@ -312,7 +312,7 @@ type
     function CompileRequiredPackages(APackage: TLazPackage;
                                 FirstDependency: TPkgDependency;
                                 SkipDesignTimePackages: boolean;
-                                Policies: TPackageUpdatePolicies): TModalResult;
+                                Policy: TPackageUpdatePolicy): TModalResult;
     function CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
                             ShowAbort: boolean): TModalResult;
     function ConvertPackageRSTFiles(APackage: TLazPackage): TModalResult;
@@ -2949,10 +2949,10 @@ end;
 
 function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
   FirstDependency: TPkgDependency; SkipDesignTimePackages: boolean;
-  Policies: TPackageUpdatePolicies): TFPList;
+  Policy: TPackageUpdatePolicy): TFPList;
 // Returns all required auto update packages, including indirect requirements.
 // The packages will be in topological order, with the package that should be
-// compiled first at the end.
+// compiled first at 0.
 
   procedure GetTopologicalOrder(Dependency: TPkgDependency);
   var
@@ -2963,7 +2963,7 @@ function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
         RequiredPackage:=Dependency.RequiredPackage;
         if not (lpfVisited in RequiredPackage.Flags) then begin
           RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
-          if RequiredPackage.AutoUpdate in Policies then begin
+          if ord(RequiredPackage.AutoUpdate)>=ord(Policy) then begin
             // add first all needed packages
             GetTopologicalOrder(RequiredPackage.FirstRequiredDependency);
             // then add this package
@@ -3632,24 +3632,28 @@ end;
 
 function TLazPackageGraph.CompileRequiredPackages(APackage: TLazPackage;
   FirstDependency: TPkgDependency; SkipDesignTimePackages: boolean;
-  Policies: TPackageUpdatePolicies): TModalResult;
+  Policy: TPackageUpdatePolicy): TModalResult;
 var
   AutoPackages: TFPList;
   i: Integer;
+  Flags: TPkgCompileFlags;
 begin
   {$IFDEF VerbosePkgCompile}
-  debugln('TLazPackageGraph.CompileRequiredPackages A ');
+  debugln('TLazPackageGraph.CompileRequiredPackages A ',dbgs(Policy));
   {$ENDIF}
   AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,
-                               FirstDependency,SkipDesignTimePackages,Policies);
+                               FirstDependency,SkipDesignTimePackages,Policy);
   if AutoPackages<>nil then begin
     //DebugLn('TLazPackageGraph.CompileRequiredPackages B Count=',IntToStr(AutoPackages.Count));
     try
+      Flags:=[pcfDoNotCompileDependencies,pcfDoNotSaveEditorFiles];
+      if Policy=pupAsNeeded then
+        Flags:=Flags+[pcfOnlyIfNeeded]
+      else
+        Flags:=Flags+[pcfCleanCompile];
       i:=0;
       while i<AutoPackages.Count do begin
-        Result:=CompilePackage(TLazPackage(AutoPackages[i]),
-                               [pcfDoNotCompileDependencies,pcfOnlyIfNeeded,
-                                pcfDoNotSaveEditorFiles],false);
+        Result:=CompilePackage(TLazPackage(AutoPackages[i]),Flags,false);
         if Result<>mrOk then exit;
         inc(i);
       end;
@@ -3684,7 +3688,7 @@ var
   CompilerParams: String;
   SrcFilename: String;
   EffectiveCompilerParams: String;
-  CompilePolicies: TPackageUpdatePolicies;
+  CompilePolicy: TPackageUpdatePolicy;
   BlockBegan: Boolean;
   NeedBuildAllFlag: Boolean;
   CompileResult, MsgResult: TModalResult;
@@ -3704,11 +3708,12 @@ begin
   try
     // automatically compile required packages
     if not (pcfDoNotCompileDependencies in Flags) then begin
-      CompilePolicies:=[pupAsNeeded];
       if pcfCompileDependenciesClean in Flags then
-        Include(CompilePolicies,pupOnRebuildingAll);
+        CompilePolicy:=pupOnRebuildingAll
+      else
+        CompilePolicy:=pupAsNeeded;
       Result:=CompileRequiredPackages(APackage,nil,
-                            pcfSkipDesignTimePackages in Flags,CompilePolicies);
+                            pcfSkipDesignTimePackages in Flags,CompilePolicy);
       if Result<>mrOk then begin
         DebugLn(['TLazPackageGraph.CompilePackage CompileRequiredPackages failed: ',APackage.IDAsString]);
         exit;

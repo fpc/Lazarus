@@ -12164,6 +12164,7 @@ var
   InheritedOptionStrings: TInheritedCompOptsStrings;
   CompiledUnitExt: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
+  PkgCompileFlags: TPkgCompileFlags;
 begin
   if ToolStatus<>itNone then begin
     MessageDlg(lisNotNow,
@@ -12185,8 +12186,10 @@ begin
     MainBuildBoss.SetBuildTargetIDE;
 
     // clean up
+    PkgCompileFlags:=[];
     if (not (blfDontCleanAll in Flags))
     and (BuildLazProfiles.Current.IdeBuildMode=bmCleanAllBuild) then begin
+      PkgCompileFlags:=PkgCompileFlags+[pcfCompileDependenciesClean];
       SourceEditorManager.ClearErrorLines;
       Result:=BuildLazarus(BuildLazProfiles,ExternalTools,GlobalMacroList,
                            '',EnvironmentOptions.GetCompilerFilename,
@@ -12198,7 +12201,7 @@ begin
     end;
 
     // compile auto install static packages
-    Result:=PkgBoss.DoCompileAutoInstallPackages([],false);
+    Result:=PkgBoss.DoCompileAutoInstallPackages(PkgCompileFlags,false);
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Compile AutoInstall Packages failed.');
       exit;

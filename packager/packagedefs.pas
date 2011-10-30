@@ -44,8 +44,8 @@ unit PackageDefs;
 interface
 
 uses
-  Classes, SysUtils, contnrs, LCLProc, LCLType, LResources, Graphics, Forms,
-  FileProcs, FileUtil, AVL_Tree, LazConfigStorage,
+  Classes, SysUtils, contnrs, typinfo, LCLProc, LCLType, LResources, Graphics,
+  Forms, FileProcs, FileUtil, AVL_Tree, LazConfigStorage,
   CodeToolsCfgScript, DefineTemplates, CodeToolManager, Laz_XMLCfg, CodeCache,
   PropEdits, LazIDEIntf, MacroIntf, PackageIntf, IDEOptionsIntf,
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, 
@@ -863,9 +863,6 @@ const
     'lpfAutoIncrementVersionOnBuild', 'lpfModified',
     'lpfNeeded', 'lpfVisited', 'lpfDestroying', 'lpfLoading', 'lpfSkipSaving',
     'lpfCircle');
-  PackageUpdatePolicies: array[TPackageUpdatePolicy] of string = (
-    'pupManually', 'pupOnRebuildingAll', 'pupAsNeeded'
-    );
   AutoUpdateNames: array[TPackageUpdatePolicy] of string = (
     'Manually', 'OnRebuildingAll', 'AsNeeded'
     );
@@ -944,6 +941,8 @@ procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
 
 var
   Package1: TLazPackage; // don't use it - only for options dialog
+
+function dbgs(p: TPackageUpdatePolicy): string; overload;
 
 implementation
 
@@ -1410,6 +1409,11 @@ begin
   Path:='Package/';
   FileVersion:=XMLConfig.GetValue(Path+'Version',0);
   PkgVersionLoadFromXMLConfig(Version,XMLConfig,Path+'Version/',FileVersion);
+end;
+
+function dbgs(p: TPackageUpdatePolicy): string;
+begin
+  Result:=GetEnumName(TypeInfo(p),ord(p));
 end;
 
 function IndexOfDependencyInList(First: TPkgDependency;

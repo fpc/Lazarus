@@ -478,6 +478,7 @@ var
   Dependency: TPkgDependency;
   OldDependency: TPkgDependency;
   CurResult: TModalResult;
+  CompilePolicy: TPackageUpdatePolicy;
 begin
   Result:=false;
   PackageGraph.BeginUpdate(false);
@@ -498,8 +499,11 @@ begin
                       PackageGraph.FirstAutoInstallDependency);
 
     // compile all auto install dependencies
+    CompilePolicy:=pupAsNeeded;
+    if BuildRecursive and BuildAll then
+      CompilePolicy:=pupOnRebuildingAll;
     CurResult:=PackageGraph.CompileRequiredPackages(nil,
-                   PackageGraph.FirstAutoInstallDependency,false,[pupAsNeeded]);
+                   PackageGraph.FirstAutoInstallDependency,false,CompilePolicy);
     if CurResult<>mrOk then exit;
 
   finally
@@ -591,6 +595,7 @@ var
   TargetExeName: String;
   TargetExeDir: String;
   NewBuildMode: TProjectBuildMode;
+  CompilePolicy: TPackageUpdatePolicy;
 begin
   Result:=false;
   CloseProject(Project1);
@@ -626,10 +631,13 @@ begin
     PackageGraph.BeginUpdate(false);
     try
       // automatically compile required packages
+      CompilePolicy:=pupAsNeeded;
+      if BuildRecursive and BuildAll then
+        CompilePolicy:=pupOnRebuildingAll;
       if PackageGraph.CompileRequiredPackages(nil,
                                 Project1.FirstRequiredDependency,
                                 not (pfUseDesignTimePackages in Project1.Flags),
-                                [pupAsNeeded])<>mrOk
+                                CompilePolicy)<>mrOk
       then
         Error(ErrorBuildFailed,'Project dependencies of '+AFilename);
     finally

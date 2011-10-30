@@ -2517,6 +2517,8 @@ end;
 
 function TPkgManager.DoCompileProjectDependencies(AProject: TProject;
   Flags: TPkgCompileFlags): TModalResult;
+var
+  CompilePolicy: TPackageUpdatePolicy;
 begin
   // check graph for circles and broken dependencies
   if not (pcfDoNotCompileDependencies in Flags) then begin
@@ -2536,10 +2538,13 @@ begin
   try
     // automatically compile required packages
     if not (pcfDoNotCompileDependencies in Flags) then begin
+      CompilePolicy:=pupAsNeeded;
+      if pcfCompileDependenciesClean in Flags then
+        CompilePolicy:=pupOnRebuildingAll;
       Result:=PackageGraph.CompileRequiredPackages(nil,
                                 AProject.FirstRequiredDependency,
                                 not (pfUseDesignTimePackages in AProject.Flags),
-                                [pupAsNeeded]);
+                                CompilePolicy);
       if Result<>mrOk then exit;
     end;
   finally
@@ -3963,6 +3968,7 @@ var
   OldDependency: TPkgDependency;
   Dependencies: TPkgDependency;
   AutoRemove: Boolean;
+  CompilePolicy: TPackageUpdatePolicy;
 begin
   PackageGraph.BeginUpdate(false);
   Dependencies:=PackageGraph.FirstAutoInstallDependency;
@@ -4025,8 +4031,11 @@ begin
     end;
     
     // compile all auto install dependencies
+    CompilePolicy:=pupAsNeeded;
+    if pcfCompileDependenciesClean in Flags then
+      CompilePolicy:=pupOnRebuildingAll;
     Result:=PackageGraph.CompileRequiredPackages(nil,Dependencies,false,
-                                                 [pupAsNeeded]);
+                                                 CompilePolicy);
     if Result<>mrOk then exit;
     
   finally
