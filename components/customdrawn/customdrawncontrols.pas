@@ -22,7 +22,7 @@ uses
   Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
   LMessages, Messages, LCLProc, Forms,
   // Other LCL units are only for types
-  StdCtrls, ExtCtrls,
+  StdCtrls, ExtCtrls, ComCtrls,
   //
   customdrawnutils;
 
@@ -392,7 +392,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: integer); override;
     //procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
-    //procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
     //procedure MouseEnter; override;
     //procedure MouseLeave; override;
     procedure PrepareCurrentDrawer(); override;
@@ -423,6 +423,8 @@ type
     procedure DrawToCanvas(ADest: TCanvas; CDTabControl: TCDCustomTabControl); virtual; abstract;
     procedure DrawTabSheet(ADest: TCanvas; CDTabControl: TCDCustomTabControl); virtual; abstract;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer; CDTabControl: TCDCustomTabControl); virtual; abstract;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: integer; CDTabControl: TCDCustomTabControl); virtual; abstract;
   end;
 
@@ -460,10 +462,12 @@ type
 
   TCDPageControl = class(TCDCustomTabControl)
   private
+    FOptions: TNoteBookOptions;
     function GetActivePage: TCDTabSheet;
     function GetPageCount: integer;
     function GetPageIndex: integer;
     procedure SetActivePage(Value: TCDTabSheet);
+    procedure SetOptions(AValue: TNoteBookOptions);
     procedure SetPageIndex(Value: integer);
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
@@ -487,6 +491,7 @@ type
     property Color;
     property Font;
     property PageIndex: integer read GetPageIndex write SetPageIndex;
+    property Options: TNoteBookOptions read FOptions write SetOptions;
     property ParentColor;
     property ParentFont;
     property TabStop default True;
@@ -888,6 +893,13 @@ procedure TCDCustomTabControl.MouseDown(Button: TMouseButton;
 begin
   TCDCustomTabControlDrawer(FCurrentDrawer).MouseDown(Button, Shift, X, Y, Self);
   inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TCDCustomTabControl.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: integer);
+begin
+  TCDCustomTabControlDrawer(FCurrentDrawer).MouseUp(Button, Shift, X, Y, Self);
+  inherited MouseUp(Button, Shift, X, Y);
 end;
 
 procedure TCDCustomTabControl.PrepareCurrentDrawer;
@@ -1663,6 +1675,12 @@ begin
   end;
 
   Invalidate;
+end;
+
+procedure TCDPageControl.SetOptions(AValue: TNoteBookOptions);
+begin
+  if FOptions=AValue then Exit;
+  FOptions:=AValue;
 end;
 
 procedure TCDPageControl.SetPageIndex(Value: integer);

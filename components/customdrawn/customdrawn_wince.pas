@@ -63,6 +63,8 @@ type
     procedure DrawToCanvas(ADest: TCanvas; CDListView: TCDListView); override;
   end;
 
+  { TCDCustomTabControlDrawerWinCE }
+
   TCDCustomTabControlDrawerWinCE = class(TCDCustomTabControlDrawer)
   private
     StartIndex: integer;       //FEndIndex
@@ -81,6 +83,8 @@ type
     procedure DrawToCanvas(ADest: TCanvas; CDTabControl: TCDCustomTabControl); override;
     procedure DrawTabSheet(ADest: TCanvas; CDTabControl: TCDCustomTabControl); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer; CDTabControl: TCDCustomTabControl); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: integer; CDTabControl: TCDCustomTabControl); override;
   end;
 
@@ -600,6 +604,12 @@ begin
       CurStartLeftPos := CurStartLeftPos + lTabWidth;
     end;
   end;
+end;
+
+procedure TCDCustomTabControlDrawerWinCE.MouseUp(Button: TMouseButton;
+  Shift: TShiftState; X, Y: integer; CDTabControl: TCDCustomTabControl);
+begin
+
 end;
 
 procedure TCDGroupBoxDrawerWinCE.SetClientRectPos(CDGroupBox: TCDGroupBox);
