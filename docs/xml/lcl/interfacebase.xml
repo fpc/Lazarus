@@ -7,7 +7,8 @@
   ====================================================================
 -->
     <module name="InterfaceBase">
-      <short>Provides a widget set appropriate to the operating system platform in use</short>
+      <short>Provides an platform independent widgetset and helper functions.
+      </short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -71,17 +72,17 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TChildExitReason">
-        <short>[?]</short>
+        <short>Reasons for child process exit.</short>
         <descr>
         </descr>
         <seealso>
         </seealso>
       </element>
       <element name="TChildExitReason.cerExit">
-        <short></short>
+        <short>Normal exit[?]</short>
       </element>
       <element name="TChildExitReason.cerSignal">
-        <short></short>
+        <short>Killed[?]</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TPipeReason">
