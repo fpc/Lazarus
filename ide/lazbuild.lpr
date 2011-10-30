@@ -381,7 +381,7 @@ begin
            ['"', Result.Name,'"', #13, '"', Result.Filename, '"']));
   end;
   // check if Package with same name is already loaded
-  ConflictPkg:=PackageGraph.FindAPackageWithName(Result.Name,nil);
+  ConflictPkg:=PackageGraph.FindPackageWithName(Result.Name,nil);
   if ConflictPkg<>nil then begin
     // replace package
     PackageGraph.ReplacePackage(ConflictPkg,Result);
