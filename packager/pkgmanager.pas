@@ -2475,7 +2475,6 @@ var
     Link: TPackageLink;
     MsgResult: TModalResult;
     Filename: String;
-    ADependency: TPkgDependency;
   begin
     Result:=true;
     if APackage=nil then exit;

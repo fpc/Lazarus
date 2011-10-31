@@ -50,7 +50,7 @@ uses
   // codetools
   AVL_Tree, Laz_XMLCfg, DefineTemplates, CodeCache,
   BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,
-  CodeToolManager,
+  CodeToolManager, DirectoryCacher,
   // IDEIntf,
   SrcEditorIntf, IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
   CompOptsIntf, LazIDEIntf,
@@ -3726,6 +3726,7 @@ begin
     //DebugLn(['TLazPackageGraph.CompilePackage SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"']);
 
     // check if compilation is needed and if a clean build is needed
+    NeedBuildAllFlag:=false;
     Result:=CheckIfPackageNeedsCompilation(APackage,
                           CompilerFilename,CompilerParams,
                           SrcFilename,pcfSkipDesignTimePackages in Flags,
@@ -4236,11 +4237,15 @@ var
   CurFile: TPkgFile;
   OutputFileName: String;
   NewOutputDir: String;
+  DeleteAllFilesInOutputDir: Boolean;
+  DirCache: TCTDirectoryCache;
+  CleanFiles: TStrings;
 begin
   // get output directory
   OutputDir:=APackage.GetOutputDirectory;
   //debugln(['TLazPackageGraph.PreparePackageOutputDirectory OutputDir="',OutputDir,'"']);
 
+  DeleteAllFilesInOutputDir:=false;
   if not OutputDirectoryIsWritable(APackage,OutputDir,false) then
   begin
     // the normal output directory is not writable
@@ -4257,7 +4262,17 @@ begin
       debugln(['TLazPackageGraph.PreparePackageOutputDirectory failed to create writable directory: ',OutputDir]);
       Result:=mrCancel;
     end;
+    DeleteAllFilesInOutputDir:=true;
+  end else if APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride<>''
+  then
+    // package is already using the fallback directory
+    DeleteAllFilesInOutputDir:=true
+  else if CleanUp then begin
+    // package is not using the fallback directory
+    // check if the output directory contains sources
+    DeleteAllFilesInOutputDir:=APackage.HasSeparateOutputDirectory;
   end;
+  //debugln(['TLazPackageGraph.PreparePackageOutputDirectory ',APackage.Name,' DeleteAllFilesInOutputDir=',DeleteAllFilesInOutputDir]);
 
   StateFile:=APackage.GetStateFilename;
   PkgSrcDir:=ExtractFilePath(APackage.GetSrcFilename);
@@ -4284,13 +4299,36 @@ begin
 
   // clean up if wanted
   if CleanUp then begin
+    if DeleteAllFilesInOutputDir then begin
+      DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(OutputDir,true,false);
+      if DirCache<>nil then begin
+        CleanFiles:=TStringList.Create;
+        try
+          DirCache.GetFiles(CleanFiles,false);
+          for i:=0 to CleanFiles.Count-1 do begin
+            OutputFileName:=AppendPathDelim(OutputDir)+CleanFiles[i];
+            Result:=DeleteFileInteractive(OutputFileName,[mbIgnore,mbAbort]);
+            if Result in [mrCancel,mrAbort] then exit;
+          end;
+        finally
+          CleanFiles.Free;
+        end;
+      end;
+    end;
     for i:=0 to APackage.FileCount-1 do begin
       CurFile:=APackage.Files[i];
       if not (CurFile.FileType in PkgFileUnitTypes) then continue;
-      OutputFileName:=AppendPathDelim(OutputDir)+CurFile.Unit_Name+'.ppu';
-      Result:=DeleteFileInteractive(OutputFileName,[mbIgnore,mbAbort]);
-      if Result in [mrCancel,mrAbort] then exit;
+      if not DeleteAllFilesInOutputDir then begin
+        // delete .ppu/.o file of each registered unit
+        OutputFileName:=AppendPathDelim(OutputDir)+CurFile.Unit_Name+'.ppu';
+        Result:=DeleteFileInteractive(OutputFileName,[mbIgnore,mbAbort]);
+        if Result in [mrCancel,mrAbort] then exit;
+        OutputFileName:=ChangeFileExt(OutputFileName,'.o');
+        Result:=DeleteFileInteractive(OutputFileName,[mbIgnore,mbAbort]);
+        if Result in [mrCancel,mrAbort] then exit;
+      end;
     end;
+    InvalidateFileStateCache;
   end;
 
   Result:=mrOk;

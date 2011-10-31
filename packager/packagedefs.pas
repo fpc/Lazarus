@@ -684,6 +684,7 @@ type
     function GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean): string;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList);
     function GetOutputDirectory(UseOverride: boolean = true): string; // this can change before building, when default dir is readonly
+    function HasSeparateOutputDirectory: boolean;
     function GetStateFilename(UseOverride: boolean = true): string;
     function GetCompileSourceFilename: string;// as GetSrcFilename without directory
     function GetSrcFilename: string;
@@ -3549,6 +3550,20 @@ begin
     Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir,UseOverride);
   end else
     Result:='';
+end;
+
+function TLazPackage.HasSeparateOutputDirectory: boolean;
+var
+  Dir: String;
+  SrcPaths: String;
+begin
+  Result:=false;
+  if CompilerOptions.UnitOutputDirectory='' then exit;
+  Dir:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir,false);
+  if Dir='' then exit;
+  SrcPaths:=SourceDirectories.CreateSearchPathFromAllFiles;
+  if SrcPaths='' then exit(true);
+  Result:=FindPathInSearchPath(PChar(Dir),length(Dir),PChar(SrcPaths),length(SrcPaths))=nil;
 end;
 
 function TLazPackage.GetStateFilename(UseOverride: boolean): string;
