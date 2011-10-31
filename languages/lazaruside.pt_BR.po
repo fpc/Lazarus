@@ -753,11 +753,11 @@ msgstr "Cores"
 
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
-msgstr "Parâmetros linha de comando"
+msgstr "Parâmetros da linha de comando"
 
 #: lazarusidestrconsts.dlgcommandlineparams
 msgid "Command line parameters (without application name)"
-msgstr "Parâmetros linha de comando (sem nome da aplicação)"
+msgstr "Parâmetros da linha de comando (sem nome da aplicação)"
 
 #: lazarusidestrconsts.dlgcomovedown
 msgid "Move down"
@@ -3625,7 +3625,7 @@ msgstr "Opções adicionais do compilador herdadas dos pacotes"
 
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
-msgstr "Adiciona novo modo construção, copiando configuração de \"%s\""
+msgstr "Adiciona novo modo de construção, copiando configuração de \"%s\""
 
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
@@ -4854,7 +4854,7 @@ msgstr "Classe %s%s%s do método %s%s%s não encontrada."
 
 #: lazarusidestrconsts.liscldirclean
 msgid "Clean"
-msgstr ""
+msgstr "Limpar"
 
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
@@ -6782,7 +6782,7 @@ msgstr "Excluir ponto de observação para \"%s\"?"
 
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
-msgstr "Excluir construção macro %s%s%s?"
+msgstr "Excluir macro de construção %s%s%s?"
 
 #: lazarusidestrconsts.lisdeletebuildmode
 msgid "Delete build mode"
@@ -8488,7 +8488,7 @@ msgstr "No diretório fonte do projeto. Verificar duplicidades."
 
 #: lazarusidestrconsts.lisincludeexamples
 msgid "Include Examples"
-msgstr ""
+msgstr "Incluir exemplos"
 
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
@@ -8504,7 +8504,7 @@ msgstr "Caminhos de inclusão"
 
 #: lazarusidestrconsts.lisincludetestcases
 msgid "Include Testcases"
-msgstr ""
+msgstr "Incluir testes unitários"
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
@@ -8838,7 +8838,7 @@ msgstr "Quero saber como você fez isso: Erro no diretório base:"
 #: lazarusidestrconsts.lisjhjumphistory
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
-msgstr "Saltar para Histórico"
+msgstr "Histórico de Saltos"
 
 #: lazarusidestrconsts.liskeep
 msgid "keep"
@@ -8938,7 +8938,7 @@ msgstr "Fechar projeto"
 
 #: lazarusidestrconsts.liskmcodetoolsdefineseditor
 msgid "CodeTools defines editor"
-msgstr "Editor definições das Ferramentas de Código"
+msgstr "Editor de definições das Ferramentas de Código"
 
 #: lazarusidestrconsts.liskmcodetoolsoptions
 msgid "CodeTools options"
@@ -9489,7 +9489,7 @@ msgstr "Fonte de Projeto Lazarus"
 
 #: lazarusidestrconsts.lislazarussource
 msgid "Lazarus Source"
-msgstr ""
+msgstr "Fontes do Lazarus"
 
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
@@ -9541,7 +9541,7 @@ msgstr "Construir IDE"
 
 #: lazarusidestrconsts.lislazbuildbuildingide
 msgid "Building IDE"
-msgstr ""
+msgstr "Construção da IDE"
 
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
@@ -9558,13 +9558,12 @@ msgstr "Cancelar"
 
 #: lazarusidestrconsts.lislazbuildcleanallbuild
 msgid "Clean All + Build"
-msgstr ""
+msgstr "Limpar tudo + Construir"
 
 #: lazarusidestrconsts.lislazbuildcleanbuild
-#, fuzzy
 #| msgid "Clean+Build"
 msgid "Clean + Build"
-msgstr "Limpar+Construir"
+msgstr "Limpar + Construir"
 
 #: lazarusidestrconsts.lislazbuildcommonsettings
 msgid "Common Settings"
@@ -9612,7 +9611,7 @@ msgstr "Erro escrevendo arquivo"
 
 #: lazarusidestrconsts.lislazbuildidebuildhint
 msgid "Build = \"make ide\", %sClean + Build = \"make cleanide ide\", %sClean All + Build = \"make cleanlaz ide\""
-msgstr ""
+msgstr "Construir = \"make ide\",%sLimpar + Construir = \"make cleanide ide\",%sLimpar tudo + Construir = \"make cleanlaz ide\""
 
 #: lazarusidestrconsts.lislazbuildidewithoutpackages
 msgid "IDE without Packages"
@@ -9709,7 +9708,7 @@ msgstr "Selecione perfis à construir"
 #: lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding
 msgctxt "lazarusidestrconsts.lislazbuildshowconfirmationdialogwhenbuilding"
 msgid "Show confirmation dialog when building directly from Tools menu"
-msgstr "Exibir diálogo confirmação ao construir diretamente do menu Ferramentas"
+msgstr "Exibir diálogo de confirmação ao construir diretamente do menu Ferramentas"
 
 #: lazarusidestrconsts.lislazbuildtargetcpu
 msgid "Target CPU:"
@@ -9734,7 +9733,7 @@ msgstr "Atualizar \"revision.inc\""
 
 #: lazarusidestrconsts.lislazbuildupdaterevisioninfoinaboutlazarusdialog
 msgid "Update revision info in \"About Lazarus\" dialog"
-msgstr "Atualizar informação revisão no diálogo \"Sobre Lazarus\""
+msgstr "Atualizar informações de revisão no diálogo \"Sobre Lazarus\""
 
 #: lazarusidestrconsts.lislazcleanupbuildall
 msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
@@ -9853,7 +9852,7 @@ msgstr "lista de todos os valores \"case\""
 
 #: lazarusidestrconsts.lisloadedsuccessfully
 msgid "Loaded successfully"
-msgstr ""
+msgstr "Carregado com sucesso"
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -9861,7 +9860,7 @@ msgstr "Carga %s falhou."
 
 #: lazarusidestrconsts.lislocals
 msgid "Locals"
-msgstr "Locais"
+msgstr "Variáveis locais"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
 msgid "&Copy Name"
@@ -9883,7 +9882,7 @@ msgstr "Valor"
 
 #: lazarusidestrconsts.lislocalsnotevaluated
 msgid "Locals not evaluated"
-msgstr "Locais não avaliadas"
+msgstr "Variáveis locais não avaliadas"
 
 #: lazarusidestrconsts.lislogcallstack
 msgid "Log Call Stack"
@@ -10133,7 +10132,7 @@ msgstr "Fechar Projeto"
 
 #: lazarusidestrconsts.lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor ..."
-msgstr "Editor definições das ferramentas de código ..."
+msgstr "Editor de definições das ferramentas de código ..."
 
 #: lazarusidestrconsts.lismenucollectpofil
 msgid "Collect .po files"
@@ -11141,7 +11140,7 @@ msgstr "Outros"
 
 #: lazarusidestrconsts.lismeprojects
 msgid "Projects"
-msgstr ""
+msgstr "Projetos"
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
 msgid "Message contains no file position information:%s%s"
@@ -12279,7 +12278,7 @@ msgstr "Arquivo:"
 
 #: lazarusidestrconsts.lispefixfilescase
 msgid "Fix Files Case"
-msgstr "Corrigir Caixa Nome Arquivos"
+msgstr "Corrigir Nome de Arquivos"
 
 #: lazarusidestrconsts.lispeinvalidunitfilename
 msgid "Invalid unit filename"
@@ -12328,7 +12327,7 @@ msgstr "Salvar pacote como"
 
 #: lazarusidestrconsts.lispeshowdirectoryhierarchy
 msgid "Show directory hierarchy"
-msgstr "Exibir hierarquia diretório"
+msgstr "Exibir hierarquia de diretórios"
 
 #: lazarusidestrconsts.lispeshowmissingfiles
 msgid "Show missing files"
@@ -13874,7 +13873,7 @@ msgstr "Salvar o arquivo atual do editor"
 
 #: lazarusidestrconsts.lissavedsuccessfully
 msgid "Saved successfully"
-msgstr ""
+msgstr "Salvo com sucesso"
 
 #: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
 msgid "Save editor info of non project files"
@@ -13914,7 +13913,7 @@ msgstr "Localizar por"
 
 #: lazarusidestrconsts.lissearchprojectsfrom
 msgid "Search projects from"
-msgstr ""
+msgstr "Localizar projetos de"
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"
@@ -15512,11 +15511,11 @@ msgstr "Nome de unidade já existe no projeto"
 
 #: lazarusidestrconsts.lisunitnamebeginswith
 msgid "Unit name begins with ..."
-msgstr "Nome unidade começa com ..."
+msgstr "Nome da unidade começa com ..."
 
 #: lazarusidestrconsts.lisunitnamecontains
 msgid "Unit name contains ..."
-msgstr "Nome unidade contém ..."
+msgstr "Nome da unidade contém ..."
 
 #: lazarusidestrconsts.lisunitnotfoundinproject
 msgid "A unit not found in project %s"
@@ -15874,7 +15873,7 @@ msgstr "Erro análise XML no arquivo %s%sErro: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
-msgstr "Você pode desativar isto para formulários individuais através do menu de contexto no inspetor de projeto"
+msgstr "Você pode desativar esta opção para formulários individuais através do menu de contexto no inspetor de projeto"
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
@@ -16408,7 +16407,7 @@ msgstr "Excluir todo o texto"
 
 #: lazarusidestrconsts.srkmeccodetoolsdefinesed
 msgid "Codetools defines editor"
-msgstr "Editor Definições das Ferramentas de Código"
+msgstr "Editor de Definições das Ferramentas de Código"
 
 #: lazarusidestrconsts.srkmeccodetoolsoptions
 msgid "Codetools options"
