@@ -47,6 +47,7 @@ uses
   Classes, SysUtils, contnrs, typinfo, LCLProc, LCLType, LResources, Graphics,
   Forms, FileProcs, FileUtil, AVL_Tree, LazConfigStorage,
   CodeToolsCfgScript, DefineTemplates, CodeToolManager, Laz_XMLCfg, CodeCache,
+  CodeToolsStructs,
   PropEdits, LazIDEIntf, MacroIntf, PackageIntf, IDEOptionsIntf,
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, 
   LazarusIDEStrConsts, IDEProcs, ComponentReg,
@@ -3554,16 +3555,58 @@ end;
 
 function TLazPackage.HasSeparateOutputDirectory: boolean;
 var
-  Dir: String;
+  VisitedPackages: TStringToStringTree;
+  OutputDir: String;
+
+  function CheckDependency(ADependency: TPkgDependency): boolean;
+  var
+    aPkg: TLazPackage;
+    Dir: String;
+    SrcPaths: String;
+  begin
+    Result:=false;
+    while ADependency<>nil do begin
+      if ADependency.RequiredPackage<>nil then begin
+        aPkg:=ADependency.RequiredPackage;
+        if not VisitedPackages.Contains(aPkg.Name) then begin
+          VisitedPackages[aPkg.Name]:='1';
+          // check recursively
+          if not CheckDependency(aPkg.FirstRequiredDependency) then exit;
+          // check if required package has the same output directory
+          Dir:=aPkg.GetOutputDirectory;
+          if CompareFilenames(Dir,OutputDir)=0 then exit;
+          // check if output directory is a sour directory of a required package
+          SrcPaths:=aPkg.SourceDirectories.CreateSearchPathFromAllFiles;
+          if (SrcPaths<>'')
+          and (FindPathInSearchPath(PChar(OutputDir),length(OutputDir),
+                                    PChar(SrcPaths),length(SrcPaths))<>nil)
+          then exit;
+        end;
+      end;
+      ADependency:=ADependency.NextRequiresDependency;
+    end;
+    Result:=true;
+  end;
+
+var
   SrcPaths: String;
 begin
   Result:=false;
   if CompilerOptions.UnitOutputDirectory='' then exit;
-  Dir:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir,false);
-  if Dir='' then exit;
+  OutputDir:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir,false);
+  if OutputDir='' then exit;
   SrcPaths:=SourceDirectories.CreateSearchPathFromAllFiles;
   if SrcPaths='' then exit(true);
-  Result:=FindPathInSearchPath(PChar(Dir),length(Dir),PChar(SrcPaths),length(SrcPaths))=nil;
+  if FindPathInSearchPath(PChar(OutputDir),length(OutputDir),PChar(SrcPaths),length(SrcPaths))<>nil
+  then exit;
+  // check used packages
+  VisitedPackages:=TStringToStringTree.Create(false);
+  try
+    if not CheckDependency(FirstRequiredDependency) then exit;
+  finally
+    VisitedPackages.Free;
+  end;
+  Result:=true;
 end;
 
 function TLazPackage.GetStateFilename(UseOverride: boolean): string;
