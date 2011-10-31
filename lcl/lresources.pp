@@ -4283,10 +4283,15 @@ begin
       SkipBytes(10);
     vaString, vaIdent:
       ReadStr;
-    vaBinary, vaLString, vaWString{$IFNDEF VER2_2}, vaUString{$ENDIF}:
+    vaBinary, vaLString:
       begin
         Count:=ReadIntegerContent;
         SkipBytes(Count);
+      end;
+    vaWString{$IFNDEF VER2_2}, vaUString{$ENDIF}:
+      begin
+        Count:=ReadIntegerContent;
+        SkipBytes(Count*2);
       end;
     vaSet:
       SkipSetBody;
