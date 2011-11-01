@@ -98,7 +98,8 @@ end;
 
 procedure TFpDocOptionsFrame.LazDocDeletePathButtonClick(Sender: TObject);
 begin
-  LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
+  if LazDocListBox.ItemIndex >= 0 then
+    LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
 end;
 
 class function TFpDocOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
