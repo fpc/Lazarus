@@ -102,7 +102,7 @@ begin
   IncludeGroupBox.Caption:=lisFilter;
   IncludeRegExCheckBox.Caption:=lisRegularExpression;
   OnlyTextCheckBox.Caption:=lisFindFileOnlyTextFiles;
-  ExcludeGroupBox.Caption:=lisExcludeFilter2;
+  ExcludeGroupBox.Caption:=lisExcludeFilter;
   ExcludeRegExCheckBox.Caption:=lisRegularExpression;
   ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OkClick;
   ButtonPanel1.CancelButton.OnClick:=@ButtonPanel1CancelClick;

@@ -559,7 +559,7 @@ begin
 
   RunPage.Caption:=lisBFRun;
   AlwaysCompileFirstCheckbox.Caption:=lisBFAlwaysBuildBeforeRun;
-  RunWorkDirGroupbox.Caption:=lisBFWorkingDirectoryLeaveEmptyForFilePath2;
+  RunWorkDirGroupbox.Caption:=lisBFWorkingDirectoryLeaveEmptyForFilePath;
   RunCommandGroupbox.Caption:=lisBFRunCommand;
 
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;

@@ -667,7 +667,7 @@ begin
   ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
 
   CompileButton.Caption := lisLazBuildBuild;
-  CompileAdvancedButton.Caption := lisLazBuildBuildAdvanced;
+  CompileAdvancedButton.Caption := lisLazBuildBuildMany;
   SaveSettingsButton.Caption := lisLazBuildSaveSettings;
   CancelButton.Caption := lisLazBuildCancel;
   HelpButton.Caption := lisMenuHelp;

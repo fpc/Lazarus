@@ -328,8 +328,7 @@ resourcestring
   lisMenuCompile = 'Compile';
   lisBFBuild = 'Build';
   lisBFRun = 'Run';
-  lisBFWorkingDirectoryLeaveEmptyForFilePath = 'Working directory (Leave '
-    +'empty for file path)';
+  lisBFWorkingDirectoryLeaveEmptyForFilePath = 'Working directory (Leave empty for file path)';
   lisBFBuildCommand = 'Build Command';
   lisMenuBuild = 'Build';
   lisMenuQuickCompile = 'Quick compile';
@@ -337,9 +336,6 @@ resourcestring
   lisMenuAbortBuild = 'Abort Build';
   lisMenuProjectRun = '&Run';
   lisBFAlwaysBuildBeforeRun = 'Always Build before Run';
-  lisBFWorkingDirectoryLeaveEmptyForFilePath2 = 'Working Directory (Leave '
-    +'empty for file path)';
-
   lisDisAssGotoCurrentAddress = 'Goto current address';
   lisDisAssGotoCurrentAddressHint = 'Goto current address';
   lisDisAssGotoAddress = 'Goto address';
@@ -2168,7 +2164,6 @@ resourcestring
   lisRegularExpression = 'Regular expression';
   lisInvalidFilter = 'Invalid filter';
   lisInvalidExpression = 'Invalid expression:%s%s%s%s';
-  lisExcludeFilter2 = 'Exclude filter';
   lisPrivate = 'Private';
   lisProtected = 'Protected';
   lisEMDPublic = 'Public';
@@ -2877,7 +2872,7 @@ resourcestring
   lisSaveSettings = 'Save Settings';
   lisLazBuildCancel = 'Cancel';
   lisLazBuildBuild = 'Build';
-  lisLazBuildBuildAdvanced = 'Build Advanced';
+  lisLazBuildBuildMany = 'Build Many';
   lisLazBuildBuildingIDE = 'Building IDE';
   lisLazBuildCleanBuild = 'Clean + Build';
   lisLazBuildCleanAllBuild = 'Clean All + Build';
@@ -4384,8 +4379,7 @@ resourcestring
   lisCodeHelpSeeAlsoTag = 'See also';
   lisCodeHelpAddPathButton = 'Add path';
   lisCodeHelpDeletePathButton = 'Remove path';
-  lisEONOTEOnlyAbsolutePathsAreSupportedNow = 'NOTE: only absolute paths are '
-    +'supported now';
+  lisEONOTEOnlyAbsolutePathsAreSupportedNow = 'NOTE: only absolute paths are supported now';
   lisCodeHelpConfirmreplace = 'Confirm replace';
   lisCodeHelpReplaceButton = 'Replace';
   lisCodeHelpPathsGroupBox = 'FPDoc files path';
@@ -4922,8 +4916,8 @@ resourcestring
   lisCEToDos = 'ToDos';
   lisCEEmptyClassSections = 'Empty class sections';
   lisCELongProcLineCount = 'Line count of procedure treated as "long"';
-  lisCELongParamListCount = 'Parameters count treating as "many"';
-  lisCENestedProcCount = 'Nested procedures count treating as "many"';
+  lisCELongParamListCount = 'Parameters count treated as "many"';
+  lisCENestedProcCount = 'Nested procedures count treated as "many"';
   lisCodeObsCharConst = 'Search for unnamed char constants';
   lisCodeObsIgnoreeConstants = 'Ignore next unnamed constants';
   lisShow = 'Show';
