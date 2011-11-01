@@ -482,6 +482,7 @@ end;
 procedure TBuildParseTree.RecogniseGoal;
 var
   lc: TSourceToken;
+  s: string;
 begin
   // Goal -> (Program | Package  | Library  | Unit)
 
@@ -491,6 +492,7 @@ begin
   lc := fcTokenList.FirstSolidToken;
   Assert(lc <> nil);
 
+  WriteStr(s, lc.TokenType);
   case lc.TokenType of
     ttProgram:
       RecogniseProgram;
@@ -501,7 +503,8 @@ begin
     ttUnit:
       RecogniseUnit;
     else
-      raise TEParseError.Create('Expected program, package, library, unit', lc);
+      raise TEParseError.Create('Expected program, package, library, unit, got "'
+                                + s + '" ', lc);
   end
 end;
 
