@@ -71,6 +71,7 @@ type
   TfrBarCodeView = class(TfrView)
   private
     BarC: TBarCode;
+    FText: string;
     
     function GetBarType: TBarcodeType;
     function GetCheckSum: Boolean;
@@ -80,18 +81,21 @@ type
     procedure SetCheckSum(const AValue: Boolean);
     procedure SetShowText(const AValue: Boolean);
     procedure SetZoom(const AValue: Double);
+    function CreateBarcode: TBitmap;
+    function CreateLabelFont(aCanvas: TCanvas): TFont;
+    procedure DrawLabel(aCanvas: TCanvas; R: TRect);
   public
     Param: TfrBarCode;
     
     constructor Create; override;
     destructor Destroy; override;
     procedure Assign(From: TfrView); override;
+    function GenerateBitmap: TBitmap;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
     procedure Draw(aCanvas: TCanvas); override;
     procedure Print(Stream: TStream); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
-    function  GenerateBitmap: TBitmap;
     
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
@@ -145,7 +149,7 @@ implementation
 
 {$R *.lfm}
 
-uses LR_Var, LR_Flds, LR_Const, LR_Utils;
+uses LR_Var, LR_Flds, LR_Const, LR_Utils, InterfaceBase;
 
 
 var
@@ -182,6 +186,7 @@ const
       {$ENDIF}
       );
 
+   defaultFontSize = 10;
 
 {$HINTS OFF}
 function isNumeric(St: String): Boolean;
@@ -238,6 +243,187 @@ begin
   invalidate;
 end;
 
+function TfrBarCodeView.CreateBarcode: TBitmap;
+begin
+
+  Result := nil;
+  if Trim(Memo.Text) = '' then
+    Exit;
+
+  {Assign Barcode text}
+  Memo1.Assign(Memo);
+
+  if (Memo1.Text <> '') and (Memo1.Strings[0][1]<>'[') and
+    ((bcNames[Param.cBarType, 1] = 'A') or IsNumeric(Memo1.Strings[0]))  then
+  begin
+      BarC.Text := Memo1.Strings[0];
+      BarC.Checksum := Param.cCheckSum;
+  end
+  else
+  begin
+    BarC.Text := cbDefaultText;
+    BarC.Checksum := true;
+  end;
+
+  if Trim(BarC.Text)='0' then Exit;
+
+  {Barcode Properties}
+  BarC.Left:= 0;
+  BarC.Top := 0;
+  BarC.Typ := Param.cBarType;
+  BarC.Angle := Param.cAngle;
+  BarC.Ratio := 2.1; //Param.cRatio;
+  BarC.Modul := 1; //Param.cModul;
+  {$IFDEF BC_1_25}
+  BarC.ShowTextPosition:=stpBottomCenter;
+  BarC.ShowText := bcoNone;
+
+  if FillColor=clNone then
+    BarC.Color:=clWhite
+  else
+    BarC.Color:=FillColor;
+
+  {$ELSE}
+  BarC.ShowText:=False;
+  {$ENDIF}
+
+
+  {Barcode width is determined by type of barcode and text. Update
+   object dimensions to suit barcode}
+
+  if (Param.cAngle = 90) or (Param.cAngle = 270) then
+    dy := BarC.Width
+  else
+    dx := BarC.Width;
+
+
+  if (Param.cAngle = 90) or (Param.cAngle = 270) then
+       BarC.Height := dx
+  else
+       BarC.Height := dy;
+
+  if (BarC.Typ=bcCodePostNet) and (Param.cAngle=0) then
+  begin
+    BarC.Top:=BarC.Height;
+    BarC.Height:=-BarC.Height;
+  end;
+
+  if  Param.cAngle = 90 then
+    begin
+      BarC.Top:= Round(Height);
+      BarC.Left:=0;
+    end
+  else
+  if  Param.cAngle = 180 then
+    begin
+      BarC.Top:= dy;
+      BarC.Left:= dx;
+    end
+  else
+  if  Param.cAngle = 270 then
+    begin
+      BarC.Top:= 0;
+      BarC.Left:= dx;
+    end;
+
+  Result:=TBitMap.Create;
+
+  Result.Width:=dx;
+  Result.Height:=dy;
+  Result.Canvas.Brush.Style:=bsSolid;
+  Result.Canvas.Brush.Color:=clWhite;
+  Result.Canvas.FillRect(Rect(0,0,dx,dy));
+
+  try
+    BarC.DrawBarcode(Result.Canvas);
+    FText := BarC.Text;
+  except on E: Exception do
+    FText := E.Message
+  end;
+
+
+end;
+
+function TfrBarCodeView.CreateLabelFont(aCanvas: TCanvas) :TFont;
+begin
+  with aCanvas do
+  begin
+    Result := TFont.Create;
+    Result.Assign(aCanvas.Font);
+    Result.Color := clBlack;
+    Result.Name := 'Arial';
+    Result.Style := [];
+    Result.Size := -defaultFontSize;
+
+      if Param.cAngle = 90 then
+        Result.Orientation := 900
+      else
+        if Param.cAngle = 180 then
+          Result.Orientation := 1800
+        else
+        if Param.cAngle = 270 then
+          Result.Orientation := 2700;
+  end;
+
+end;
+
+
+procedure TfrBarCodeView.DrawLabel(aCanvas: TCanvas; R: TRect);
+var fs: integer;
+begin
+  if Param.cShowText then
+  begin
+    with aCanvas do
+    begin
+      fs := Font.Height;
+
+      if Param.cAngle = 0 then
+      begin
+        Brush.Color:=clWhite;
+        Brush.Style:=bsSolid;
+        FillRect(Rect(R.Left,R.Top + dy-fs ,R.Right, R.Bottom));
+        TextOut(R.Left + (dx - TextWidth(FText)) div 2, R.Top + dy - fs, FText);
+      end
+      else
+        if Param.cAngle = 90 then
+        begin
+          Brush.Color:=clWhite;
+          Brush.Style:=bsSolid;
+          FillRect(Rect(R.Left + dx - fs,R.Top,R.Right, R.Bottom));
+          Font.Orientation := 900;
+
+          if (WidgetSet.LCLPlatform = lpGtk2) and IsPrinting then
+            {GTK2 vertical printing correction}
+            TextOut(R.Right ,R.Bottom - fs - (dy - TextWidth(FText)) div 2, FText)
+          else
+            TextOut(R.Right - fs,R.Bottom - (dy - TextWidth(FText)) div 2, FText)
+        end
+        else
+          if Param.cAngle = 180 then
+          begin
+            Brush.Color:=clWhite;
+            Brush.Style:=bsSolid;
+            FillRect(Rect(R.Left,R.Top,R.Right,R.Top + fs));
+            Font.Orientation := 1800;
+            TextOut(R.left + (dx + TextWidth(FText)) div 2,  R.Top + fs, FText);
+          end
+          else
+          begin
+            Brush.Color:=clWhite;
+            Brush.Style:=bsSolid;
+            Font.Orientation := 2700;
+            FillRect(Rect(R.Left,R.Top,R.Left + fs,R.Bottom));
+            if (WidgetSet.LCLPlatform = lpGtk2) and IsPrinting then
+            {GTK2 vertical printing correction}
+              TextOut(R.Left, R.Top + fs + (dy -TextWidth(FText)) div 2, FText)
+            else
+              TextOut(R.Left + fs, R.Top + (dy -TextWidth(FText)) div 2, FText)
+          end;
+    end;
+  end;
+
+end;
+
 constructor TfrBarCodeView.Create;
 begin
   inherited Create;
@@ -267,6 +453,14 @@ begin
   Param := (From as TfrBarCodeView).Param;
 end;
 
+function TfrBarCodeView.GenerateBitmap: TBitmap;
+var R: TRect;
+begin
+  Result := CreateBarcode;
+  R := Rect(0,0, Result.Width,Result.Height);
+  DrawLabel(Result.Canvas,r)
+end;
+
 procedure TfrBarCodeView.LoadFromStream(Stream:TStream);
 begin
   inherited LoadFromStream(Stream);
@@ -279,165 +473,70 @@ begin
   Stream.Write(Param, SizeOf(Param));
 end;
 
-function TfrBarCodeView.GenerateBitmap: TBitmap;
-var
-  Txt: String;
-  hg: Integer;
-  h, oldh: HFont;
-  newdx,newdy : Integer;
-begin
-  Memo1.Assign(Memo);
-
-  if (Memo1.Count>0) and (Memo1[0][1]<>'[') then
-    Txt := Memo1.Strings[0]
-  else
-    Txt := cbDefaultText;
-
-  BarC.Typ := Param.cBarType;
-  BarC.Angle := Param.cAngle;
-  BarC.Ratio := 2; //Param.cRatio;
-  BarC.Modul := 1; //Param.cModul;
-  BarC.Checksum := Param.cCheckSum;
-  {$IFDEF BC_1_25}
-  BarC.ShowTextPosition:=stpBottomCenter;
-  BarC.ShowText := bcoNone;
-
-  if FillColor=clNone then
-    BarC.Color:=clWhite
-  else
-    BarC.Color:=FillColor;
-
-  {$ELSE}
-  BarC.ShowText:=False;
-  {$ENDIF}
-
-  if bcNames[Param.cBarType, 1] = 'A' then
-    BarC.Text := Txt
-  else
-    begin
-      if IsNumeric(Txt) then
-        BarC.Text := Txt
-      else
-        BarC.Text := cbDefaultText;
-    end;
-
-
-  newdx:=dx;
-  newdy:=dy;
-  if (Param.cAngle = 90) or (Param.cAngle = 270) then
-  begin
-    dy := BarC.Width;
-    newdy:=Round(dy*Param.cRatio);
-  end
-  else
-  begin
-    dx := BarC.Width;
-    newdx:=Round(dx*Param.cRatio);
-  end;
-
-  if Trim(BarC.Text)='0' then Exit;
-
-  if (Param.cAngle = 90) or (Param.cAngle = 270) then
-    if Param.cShowText then
-      hg := dx - 14
-    else
-      hg := dx
-  else
-    if Param.cShowText then
-      hg := dy - 14
-    else
-      hg := dy;
-
-  BarC.Left:=0;
-  BarC.Top :=0;
-  BarC.Height:=hg;
-
-  if (BarC.Typ=bcCodePostNet) and (Param.cAngle=0) then
-  begin
-    BarC.Top:=hg;
-    BarC.Height:=-hg;
-  end;
-
-  if Param.cAngle = 180 then
-    BarC.Top:=dy-hg
-  else
-  if Param.cAngle = 270 then
-    BarC.Left:=dx-hg;
-
-  Result:=TBitMap.Create;
-
-  Result.Width:=dx;
-  Result.Height:=dy;
-  Result.Canvas.Brush.Style:=bsSolid;
-  Result.Canvas.Brush.Color:=clWhite;
-  Result.Canvas.FillRect(Rect(0,0,Dx,Dy));
-
-  BarC.DrawBarcode(Result.Canvas);
-
-  if Param.cShowText then
-  begin
-    with Result.Canvas do
-    begin
-      Font.Color := clBlack;
-      Font.Name := 'Courier New';
-      Font.Height := -12;
-      Font.Style := [];
-
-      if Param.cAngle = 0 then
-      begin
-        Brush.Color:=clWhite;
-        Brush.Style:=bsSolid;
-        FillRect(Rect(0,dy-12,dx,dy));
-        TextOut((dx - TextWidth(Txt)) div 2, dy - 12, Txt);
-      end
-      else
-        if Param.cAngle = 90 then
-        begin
-          Brush.Color:=clWhite;
-          Brush.Style:=bsSolid;
-          FillRect(Rect(dx - 12,0,dx,dy));
-
-          TextOut(dx - 12, dy - (dy - TextWidth(Txt)) div 2, Txt);
-        end
-        else
-          if Param.cAngle = 180 then
-          begin
-            Brush.Color:=clWhite;
-            Brush.Style:=bsSolid;
-            FillRect(Rect(0,0,dx,12));
-
-            TextOut((dx - TextWidth(Txt)) div 2, 1, Txt);
-          end
-          else
-          begin
-            Brush.Color:=clWhite;
-            Brush.Style:=bsSolid;
-            FillRect(Rect(0,0,12,dy));
-
-            //here text it's write in barcode :o( TextOut(12, (dy - TextWidth(Txt)) div 2, Txt);
-          end;
-    end;
-  end;
-
-  dx:=newdx;
-  dy:=newdy;
-end;
-
 procedure TfrBarCodeView.Draw(aCanvas:TCanvas);
 var
   Bmp : TBitMap;
+  R: TRect;
+  fh: integer;
+  barcodeFont: TFont;
+  oldFont: TFont;
 begin
   BeginDraw(aCanvas);
 
-  Bmp := GenerateBitmap;
+  Bmp := CreateBarcode;
+  if Bmp <> nil then
   try
     CalcGaps;
     ShowBackground;
-    aCanvas.StretchDraw(DRect,Bmp);
+    if Param.cShowText then
+    begin
+      barcodeFont := CreateLabelFont(aCanvas);
+      try
+        oldFont := aCanvas.Font;
+        aCanvas.Font := barcodeFont;
+        if not IsPrinting then
+        begin
+          if (Param.cAngle = 90) or (Param.cAngle = 270) then
+            ACanvas.Font.Height := -Round(ACanvas.Font.Size * ACanvas.Font.PixelsPerInch / 72 * ScaleX)
+          else
+            ACanvas.Font.Height := -Round(ACanvas.Font.Size * ACanvas.Font.PixelsPerInch / 72 * ScaleY);
+          fh := Round(aCanvas.Font.Height);
+        end
+        else
+          fh := aCanvas.Font.Height;
+
+        if (Param.cAngle = 90)  then
+          R := Rect(DRect.Left,DRect.Top,
+                    DRect.Right - fh,
+                    DRect.Bottom)
+        else
+        if (Param.cAngle = 180)  then
+          R := Rect(DRect.Left,DRect.Top + fh,
+                    DRect.Right ,
+                    DRect.Bottom)
+        else
+        if (Param.cAngle = 270)  then
+          R := Rect(DRect.Left + fh,
+                  DRect.Top,
+                  DRect.Right,
+                  DRect.Bottom)
+        else
+          R := Rect(DRect.Left,DRect.Top,
+                  DRect.Right ,
+                  DRect.Bottom -  fh);
+      aCanvas.StretchDraw(R,Bmp);
+      DrawLabel(aCanvas, DRect);
+      finally
+        aCanvas.Font := oldFont;
+        barcodeFont.Free
+      end;
+    end
+    else
+      aCanvas.StretchDraw(DRect,Bmp);
   finally
-    Bmp.Free;
+    Bmp.Free
   end;
-  
+
   ShowFrame;
   RestoreCoord;
 end;
@@ -520,7 +619,7 @@ end;
 
 procedure TfrBarCodeForm.edZoomKeyPress(Sender: TObject; var Key: char);
 begin
-  If (Key>#31) and not (Key in ['0'..'9']) then
+  If (Key>#31) and not (Key in ['0'..'9','.']) then {AJW}
     Key:=#0;
 end;
 
@@ -541,7 +640,7 @@ begin
       RB3.Checked := True
     else
       RB4.Checked := True;
-    edZoom.Text:=SysUtils.Format('%.0f',[Param.cRatio]);
+    edZoom.Text:=SysUtils.Format('%.1f',[Param.cRatio]);
 
     if ShowModal = mrOk then
     begin
@@ -594,8 +693,17 @@ var
   Bmp: TBitmap;
 begin
   bc := TBarCode.Create(nil);
-  bc.Text := M1.Text;
-  bc.CheckSum  := ckCheckSum.Checked;
+  if Pos('[',M1.Text) = 1 then
+  begin
+    bc.Text := cbDefaultText;
+    bc.checksum := true
+  end
+  else
+  begin
+    bc.Text := M1.Text;
+    bc.CheckSum  := ckCheckSum.Checked;
+  end;
+  bc.Ratio := StrToFloatDef(edZoom.Text,1);
   bc.Typ := TBarcodeType(cbType.ItemIndex);
   Bmp := TBitmap.Create;
   Bmp.Width := 16; Bmp.Height := 16;
@@ -619,17 +727,23 @@ constructor TfrBarCodeObject.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   
+(*  if not assigned(frBarCodeForm) {and not (csDesigning in ComponentState)} then
+  begin
+    frBarCodeForm := TfrBarCodeForm.Create(nil);
+    frRegisterObject(TfrBarCodeView, frBarCodeForm.Image1.Picture.Bitmap,
+                           sInsBarcode, frBarCodeForm);
+  end;*)
+end;
+
+initialization
+
+//  frBarCodeForm:=nil;
   if not assigned(frBarCodeForm) {and not (csDesigning in ComponentState)} then
   begin
     frBarCodeForm := TfrBarCodeForm.Create(nil);
     frRegisterObject(TfrBarCodeView, frBarCodeForm.Image1.Picture.Bitmap,
                            sInsBarcode, frBarCodeForm);
   end;
-end;
-
-initialization
-
-  frBarCodeForm:=nil;
 finalization
   if Assigned(frBarCodeForm) then
     frBarCodeForm.Free;

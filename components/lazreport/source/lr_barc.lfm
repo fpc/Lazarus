@@ -16,14 +16,14 @@ object frBarCodeForm: TfrBarCodeForm
   OnCreate = FormCreate
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 16
+    Height = 14
     Top = 6
-    Width = 34
+    Width = 26
     BorderSpacing.Around = 6
     Caption = 'Code'
     ParentColor = False
@@ -33,9 +33,9 @@ object frBarCodeForm: TfrBarCodeForm
     AnchorSideTop.Control = M1
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 16
-    Top = 55
-    Width = 70
+    Height = 14
+    Top = 53
+    Width = 57
     BorderSpacing.Around = 6
     Caption = 'Type of bar'
     ParentColor = False
@@ -67,7 +67,7 @@ object frBarCodeForm: TfrBarCodeForm
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 21
-    Top = 28
+    Top = 26
     Width = 341
     HelpContext = 260
     Anchors = [akTop, akLeft, akRight]
@@ -81,20 +81,20 @@ object frBarCodeForm: TfrBarCodeForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 29
-    Top = 77
+    Height = 21
+    Top = 73
     Width = 341
     HelpContext = 261
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
-    ItemHeight = 0
+    ItemHeight = 13
     Style = csDropDownList
     TabOrder = 1
   end
   object Panel1: TPanel
-    Left = 251
+    Left = 310
     Height = 17
-    Top = 26
+    Top = 8
     Width = 34
     BevelOuter = bvNone
     ClientHeight = 17
@@ -102,12 +102,11 @@ object frBarCodeForm: TfrBarCodeForm
     FullRepaint = False
     TabOrder = 2
     object DBBtn: TSpeedButton
-      Left = -2
+      Left = 0
       Height = 17
       Top = 0
       Width = 17
       Caption = 'D'
-      Color = clBtnFace
       Margin = 4
       NumGlyphs = 0
       OnClick = DBBtnClick
@@ -118,7 +117,6 @@ object frBarCodeForm: TfrBarCodeForm
       Top = 0
       Width = 17
       Caption = 'V'
-      Color = clBtnFace
       NumGlyphs = 0
       OnClick = VarBtnClick
     end
@@ -130,24 +128,24 @@ object frBarCodeForm: TfrBarCodeForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 78
-    Top = 112
+    Height = 71
+    Top = 100
     Width = 341
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Options'
-    ClientHeight = 62
-    ClientWidth = 339
+    ClientHeight = 53
+    ClientWidth = 337
     TabOrder = 3
     object labZoom: TLabel
       AnchorSideLeft.Control = GroupBox1
       AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = GroupBox1
-      Left = 149
-      Height = 16
+      Left = 155
+      Height = 14
       Top = 6
-      Width = 40
+      Width = 27
       BorderSpacing.Around = 6
       Caption = 'Zoom'
       ParentColor = False
@@ -156,9 +154,9 @@ object frBarCodeForm: TfrBarCodeForm
       AnchorSideLeft.Control = GroupBox1
       AnchorSideTop.Control = GroupBox1
       Left = 6
-      Height = 22
+      Height = 17
       Top = 6
-      Width = 95
+      Width = 69
       HelpContext = 262
       BorderSpacing.Around = 6
       Caption = 'Checksum '
@@ -169,9 +167,9 @@ object frBarCodeForm: TfrBarCodeForm
       AnchorSideTop.Control = ckCheckSum
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 34
-      Width = 131
+      Height = 17
+      Top = 29
+      Width = 96
       HelpContext = 263
       BorderSpacing.Around = 6
       Caption = 'Human readable'
@@ -181,9 +179,9 @@ object frBarCodeForm: TfrBarCodeForm
       AnchorSideLeft.Control = labZoom
       AnchorSideTop.Control = labZoom
       AnchorSideTop.Side = asrBottom
-      Left = 155
+      Left = 161
       Height = 21
-      Top = 28
+      Top = 26
       Width = 77
       BorderSpacing.Around = 6
       OnKeyPress = edZoomKeyPress
@@ -199,66 +197,71 @@ object frBarCodeForm: TfrBarCodeForm
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 65
-    Top = 196
+    Top = 177
     Width = 341
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     Caption = 'Orientation'
-    ClientHeight = 49
-    ClientWidth = 339
+    ClientHeight = 47
+    ClientWidth = 337
     TabOrder = 4
     object RB1: TRadioButton
       Left = 8
-      Height = 22
+      Height = 17
       Top = 16
-      Width = 36
+      Width = 27
       HelpContext = 264
       Caption = '0 '
       Checked = True
-      State = cbChecked
       TabOrder = 0
+      TabStop = True
     end
     object RB2: TRadioButton
       Left = 72
-      Height = 22
+      Height = 17
       Top = 16
-      Width = 44
+      Width = 33
       HelpContext = 264
       Caption = '90 '
       TabOrder = 1
-      TabStop = False
     end
     object RB3: TRadioButton
       Left = 136
-      Height = 22
+      Height = 17
       Top = 16
-      Width = 52
+      Width = 39
       HelpContext = 264
       Caption = '180 '
       TabOrder = 2
-      TabStop = False
     end
     object RB4: TRadioButton
       Left = 200
-      Height = 22
+      Height = 17
       Top = 16
-      Width = 52
+      Width = 39
       HelpContext = 264
       Caption = '270 '
       TabOrder = 3
-      TabStop = False
     end
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 293
+    Height = 34
+    Top = 297
     Width = 341
     OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    OKButton.DefaultCaption = False
     HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.DefaultCaption = False
     CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.DefaultCaption = False
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    CancelButton.DefaultCaption = False
     TabOrder = 5
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
