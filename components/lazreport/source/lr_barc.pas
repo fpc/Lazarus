@@ -692,32 +692,37 @@ var
   bc: TBarCode;
   Bmp: TBitmap;
 begin
+  Bmp := nil;
   bc := TBarCode.Create(nil);
-  if Pos('[',M1.Text) = 1 then
-  begin
-    bc.Text := cbDefaultText;
-    bc.checksum := true
-  end
-  else
-  begin
-    bc.Text := M1.Text;
-    bc.CheckSum  := ckCheckSum.Checked;
-  end;
-  bc.Ratio := StrToFloatDef(edZoom.Text,1);
-  bc.Typ := TBarcodeType(cbType.ItemIndex);
-  Bmp := TBitmap.Create;
-  Bmp.Width := 16; Bmp.Height := 16;
   try
-   Bmp.Canvas.Brush.Style:=bsSolid;
-   Bmp.Canvas.Brush.Color:=clWhite;
-   Bmp.Canvas.FillRect(Rect(0,0,Bmp.Width,Bmp.Height));
+    if Pos('[',M1.Text) = 1 then
+    begin
+      bc.Text := cbDefaultText;
+      bc.checksum := true
+    end
+    else
+    begin
+      bc.Text := M1.Text;
+      bc.CheckSum  := ckCheckSum.Checked;
+    end;
+    bc.Ratio := StrToFloatDef(edZoom.Text,1);
+    bc.Typ := TBarcodeType(cbType.ItemIndex);
+    Bmp := TBitmap.Create;
+    Bmp.Width := 16; Bmp.Height := 16;
+    try
+     Bmp.Canvas.Brush.Style:=bsSolid;
+     Bmp.Canvas.Brush.Color:=clWhite;
+     Bmp.Canvas.FillRect(Rect(0,0,Bmp.Width,Bmp.Height));
 
-    bc.DrawBarcode(Bmp.Canvas);
-  except
-    MessageDlg(sBarcodeError,mtError,[mbOk],0);
-    ModalResult := 0;
+      bc.DrawBarcode(Bmp.Canvas);
+    except
+      MessageDlg(sBarcodeError,mtError,[mbOk],0);
+      ModalResult := 0;
+    end;
+  finally
+    Bmp.Free;
+    bc.Free;
   end;
-  Bmp.Free;
 end;
 
 
