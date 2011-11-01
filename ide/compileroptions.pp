@@ -711,7 +711,7 @@ var
 implementation
 
 const
-  CompilerOptionsVersion = 10;
+  CompilerOptionsVersion = 11;
 
 function ParseString(Options: TParsedCompilerOptions;
   const UnparsedValue: string; PlatformIndependent: boolean): string;
@@ -1419,12 +1419,12 @@ begin
 
   { Linking }
   p:=Path+'Linking/';
-  GenerateDebugInfo := aXMLConfig.GetValue(p+'Debugging/GenerateDebugInfo/Value', false);
+  GenerateDebugInfo := aXMLConfig.GetValue(p+'Debugging/GenerateDebugInfo/Value', FileVersion >= 11); // Default = True, since version 11 (was False before)
   UseLineInfoUnit := aXMLConfig.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
   UseHeaptrc := aXMLConfig.GetValue(p+'Debugging/UseHeaptrc/Value', false);
   UseValgrind := aXMLConfig.GetValue(p+'Debugging/UseValgrind/Value', false);
 
-  if aXMLConfig.GetValue(p+'Debugging/DebugInfoType/Value', '') = '' then begin
+  if (FileVersion < 11) and (aXMLConfig.GetValue(p+'Debugging/DebugInfoType/Value', '') = '') then begin
     // upgrading old setting
     DebugInfoType := dsAuto;
     if GenerateDebugInfo then
@@ -1439,7 +1439,7 @@ begin
   end
   else begin
     try
-      ReadStr(aXMLConfig.GetValue(p+'Debugging/DebugInfoType/Value', '-'), dit);
+      ReadStr(aXMLConfig.GetValue(p+'Debugging/DebugInfoType/Value', 'dsAuto'), dit);
       DebugInfoType := dit;
     except
       DebugInfoType := dsAuto;
@@ -1628,9 +1628,9 @@ begin
 
   { Linking }
   p:=Path+'Linking/';
-  aXMLConfig.SetDeleteValue(p+'Debugging/GenerateDebugInfo/Value', GenerateDebugInfo,false);
+  aXMLConfig.SetDeleteValue(p+'Debugging/GenerateDebugInfo/Value', GenerateDebugInfo, True); // Default = True, since version 11 (was False before)
   WriteStr(s, DebugInfoType);
-  aXMLConfig.SetDeleteValue(p+'Debugging/DebugInfoType/Value', s, '');
+  aXMLConfig.SetDeleteValue(p+'Debugging/DebugInfoType/Value', s, 'dsAuto');
   aXMLConfig.DeletePath(p+'Debugging/GenerateDwarf'); // old deprecated setting
   aXMLConfig.SetDeleteValue(p+'Debugging/UseLineInfoUnit/Value', UseLineInfoUnit,true);
   aXMLConfig.SetDeleteValue(p+'Debugging/UseHeaptrc/Value', UseHeaptrc,false);
