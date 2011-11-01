@@ -113,8 +113,40 @@ begin
 end;
 
 procedure TCDEditDrawerWinCE.DrawToCanvas(ADest: TCanvas; CDControl: TCDControl);
+var
+  CDEdit: TCDEdit absolute CDControl;
+  lVisibleText, lTmpText, lControlText: TCaption;
+  lCaretPixelPos: Integer;
+  lHeight: Integer;
 begin
+  // The background
+  ADest.Brush.Color := clWhite;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Color := clBlack;
+  ADest.Pen.Style := psSolid;
+  ADest.Rectangle(0, 0, CDControl.Width, CDControl.Height);
 
+  // The text
+  lControlText := CDEdit.Text;
+  lVisibleText := Copy(lControlText, CDEdit.FVisibleTextStart, Length(lControlText));
+  ADest.Font.Assign(CDControl.Font);
+  ADest.TextOut(4, 1, lVisibleText);
+
+  // Selection
+  if CDEdit.FSelLength > 0 then
+  begin
+    //FSelStart, : Integer;
+  end;
+
+  // And the caret
+  if CDEdit.FCaretIsVisible then
+  begin
+    lTmpText := Copy(lControlText, 1, CDEdit.FCaretPos-CDEdit.FVisibleTextStart);
+    lCaretPixelPos := ADest.TextWidth(lTmpText) + 3;
+    lHeight := CDControl.Height;
+    ADest.Line(lCaretPixelPos, 2, lCaretPixelPos, lHeight-2);
+    ADest.Line(lCaretPixelPos+1, 2, lCaretPixelPos+1, lHeight-2);
+  end;
 end;
 
 { TCDCheckBoxDrawerWinCE }

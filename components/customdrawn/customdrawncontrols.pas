@@ -167,20 +167,19 @@ type
 
   TCDEdit = class(TCDControl)
   private
-    // State information
-    FDragDropStarted: boolean;
     FCaretTimer: TTimer;
-    FCaretIsVisible: Boolean;
-    FSelStart, FSelLength: Integer;
-    FVisibleTextStart: Integer;
-    // fields
+    procedure HandleCaretTimer(Sender: TObject);
+    procedure DoDeleteSelection;
     procedure PrepareCurrentDrawer(); override;
+    function GetText: string;
+    procedure SetText(AValue: string);
   protected
     // keyboard
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
     procedure KeyUp(var Key: word; Shift: TShiftState); override;
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     // mouse
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: integer); override;
@@ -189,12 +188,18 @@ type
     procedure MouseEnter; override;
     procedure MouseLeave; override;
   public
+    // State information
+    FDragDropStarted: boolean;
+    FCaretIsVisible: Boolean;
+    FCaretPos: Integer; // zero-based position
+    FSelStart, FSelLength: Integer;
+    FVisibleTextStart: Integer; // 1-based
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Paint; override;
   published
     property Color;
     property TabStop default True;
+    property Text: string read GetText write SetText;
   end;
 
   TCDEditDrawer = class(TCDControlDrawer)
@@ -660,6 +665,22 @@ end;
 
 { TCDEdit }
 
+function TCDEdit.GetText: string;
+begin
+  Result := Caption;
+end;
+
+procedure TCDEdit.HandleCaretTimer(Sender: TObject);
+begin
+  FCaretIsVisible := not FCaretIsVisible;
+  Invalidate;
+end;
+
+procedure TCDEdit.DoDeleteSelection;
+begin
+
+end;
+
 procedure TCDEdit.PrepareCurrentDrawer;
 var
   lDrawStyle: TCDDrawStyle;
@@ -671,24 +692,114 @@ begin
   if FCurrentDrawer = nil then raise Exception.Create('No registered edit drawers were found');
 end;
 
+procedure TCDEdit.SetText(AValue: string);
+begin
+  Caption := AValue;
+end;
+
 procedure TCDEdit.DoEnter;
 begin
   inherited DoEnter;
+
+  FCaretTimer.Enabled := True;
+  FCaretIsVisible := True;
+  Invalidate;
 end;
 
 procedure TCDEdit.DoExit;
 begin
   inherited DoExit;
+
+  FCaretTimer.Enabled := False;
+  FCaretIsVisible := False;
+  Invalidate;
 end;
 
 procedure TCDEdit.KeyDown(var Key: word; Shift: TShiftState);
+var
+  lLeftText, lRightText, lOldText: String;
 begin
   inherited KeyDown(Key, Shift);
+
+  lOldText := Text;
+
+  case Key of
+  // Backspace
+  VK_BACK:
+  begin
+    // Selection backspace
+    if FSelLength > 0 then
+      DoDeleteSelection()
+    // Normal backspace
+    else if FCaretPos > 0 then
+    begin
+      lLeftText := Copy(lOldText, 1, FCaretPos-1);
+      lRightText := Copy(lOldText, FCaretPos+1, Length(lOldText));
+      Text := lLeftText + lRightText;
+      Dec(FCaretPos);
+      Invalidate;
+    end;
+  end;
+  // DEL
+  VK_DELETE:
+  begin
+    // Selection delete
+    if FSelLength > 0 then
+      DoDeleteSelection()
+    // Normal delete
+    else if FCaretPos < Length(lOldText) then
+    begin
+      lLeftText := Copy(lOldText, 1, FCaretPos);
+      lRightText := Copy(lOldText, FCaretPos+2, Length(lOldText));
+      Text := lLeftText + lRightText;
+      Invalidate;
+    end;
+  end;
+  VK_LEFT:
+  begin
+    if FCaretPos > 0 then
+    begin
+      Dec(FCaretPos);
+      FCaretIsVisible := True;
+      Invalidate;
+    end;
+  end;
+  VK_RIGHT:
+  begin
+    if FCaretPos < Length(lOldText) then
+    begin
+      Inc(FCaretPos);
+      FCaretIsVisible := True;
+      Invalidate;
+    end;
+  end;
+
+  end; // case
 end;
 
 procedure TCDEdit.KeyUp(var Key: word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
+end;
+
+procedure TCDEdit.UTF8KeyPress(var UTF8Key: TUTF8Char);
+var
+  lLeftText, lRightText, lOldText: String;
+begin
+  inherited UTF8KeyPress(UTF8Key);
+
+  // LCL Carbon sends Backspace as a UTF-8 Char
+  // Don't handle it here because it is already handled in KeyDown
+  if UTF8Key = #8 then Exit;
+
+  // Normal characters
+  lOldText := Text;
+  lLeftText := Copy(lOldText, 1, FCaretPos);
+  lRightText := Copy(lOldText, FCaretPos+1, Length(lOldText));
+  Text := lLeftText + UTF8Key + lRightText;
+  Inc(FCaretPos);
+  FCaretIsVisible := True;
+  Invalidate;
 end;
 
 procedure TCDEdit.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -721,42 +832,28 @@ end;
 constructor TCDEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  Width := 100;
+  Height := 30;
+  TabStop := True;
+  ControlStyle := [csCaptureMouse, csClickEvents,
+    csDoubleClicks, csReplicatable];
+
+  // State information
+  FVisibleTextStart := 1;
+
+  // Caret code
+  FCaretTimer := TTimer.Create(Self);
+  FCaretTimer.OnTimer := @HandleCaretTimer;
+  FCaretTimer.Interval := 500;
+  FCaretTimer.Enabled := False;
+
+  DrawStyle := dsWinCE;
+  PrepareCurrentDrawer();
 end;
 
 destructor TCDEdit.Destroy;
 begin
   inherited Destroy;
-end;
-
-procedure TCDEdit.Paint;
-var
-  AImage: TLazIntfImage = nil;
-  ABmp: TBitmap = nil;
-  lCanvas: TFPImageCanvas = nil;
-begin
-  inherited Paint;
-
-  PrepareCurrentDrawer();
-
-  ABmp := TBitmap.Create;
-  try
-    ABmp.Width := Width;
-    ABmp.Height := Height;
-    AImage := ABmp.CreateIntfImage;
-    lCanvas := TFPImageCanvas.Create(AImage);
-    // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
-    TCDEditDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, Self);
-    ABmp.LoadFromIntfImage(AImage);
-    // Second step of the drawing: LCL TCustomCanvas for easy font access
-    TCDEditDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas, Self);
-    Canvas.Draw(0, 0, ABmp);
-  finally
-    if lCanvas <> nil then
-      lCanvas.Free;
-    if AImage <> nil then
-      AImage.Free;
-    ABmp.Free;
-  end;
 end;
 
 { TCDCheckBox }
