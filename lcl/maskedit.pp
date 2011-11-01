@@ -28,11 +28,6 @@ ToDo List:
 - Better handling of cut/clear/paste messages
 
 Bugs:
-- If you place a TMaskEdit on a form and at designtime set the mask and leave
-  the text in the control "invalid" (as in: will not validate) and the TMaskEdit
-  is the ActiveControl of the form, then before the form is displayed an exception will
-  be raised, because somehow DoExit is executed (which calls ValidateEdit)
-  A bugreport on this behaviour is in Mantis: #0012877
 - The Delphi helpt text says that a '_' in EditMask will insert a blank in the text.
   However all versions of Delphi up to D2010 treat it as a literal '_' (unless
   specified in the 3rd field of a multifield EditMask), so I rewrote parts to make it behave like
@@ -50,7 +45,7 @@ Bugs:
 
 
 Different behaviour than Delphi, but by design (October 2009, BB)
- - In SetText in Delphi, when MasNoSave is in EditMask, it is possible to set text longer then the mask
+ - In SetText in Delphi, when MaskNoSave is in EditMask, it is possible to set text longer then the mask
    allowes for. I disallowed that, because it corrupts internal cursor placement etc.
  - SetEditText is not Delphi compatible. Delphi allows setting any text in the control, leaving the control
    in an unrecoverable state, where it is impossible to leave the control because the text can never be validated
@@ -1138,10 +1133,10 @@ begin
       //cannot backspace if we are at beginning of string, or if all chars in front are MaskLiterals
       if FCursorPos > FFirstFreePos - 1 then
       begin
-        Dec(FCursorPos);
-        //This will select the appropriate char in the control
-        SetCursorPos;
-        //then delete this char
+        //This will select the previous character
+        //If there are MaskLiterals just in front of the current position, they will be skipped
+        //and the character in front of them will be deleted (Delphi compatibility)
+        SelectPrevChar;
         DeleteSelected;
       end;
     end;
@@ -1781,6 +1776,13 @@ begin
     Exit;
   end;
   FCursorPos := GetSelStart;
+  //If the cursor is on a MaskLiteral then go to the next writable position if a key is pressed (Delphi compatibility)
+  if IsLiteral(FMask[FCursorPos + 1]) then
+  begin
+    SelectNextChar;
+    Key := #0;
+  end
+  else
   //Moved from KeyDown, which would only handle uppercase chars...
   // Insert a char
   if (Key In [#32..#255]) then
