@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="lazreport"/>
     <Author Value="Olivier Guilbaud, Jesus Reyes A. "/>
@@ -15,7 +15,16 @@
           <CStyleOperator Value="False"/>
         </SyntaxOptions>
       </Parsing>
+      <Linking>
+        <Debugging>
+          <GenerateDebugInfo Value="True"/>
+          <DebugInfoType Value="dsAuto"/>
+        </Debugging>
+      </Linking>
       <Other>
+        <CompilerMessages>
+          <UseMsgFile Value="True"/>
+        </CompilerMessages>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
@@ -27,7 +36,7 @@ Lazarus Port: Olivier Guilbaud, Jesus Reyes A.
 See license.txt and license-lazreport.txt for details.
 "/>
     <Version Minor="9" Release="8"/>
-    <Files Count="59">
+    <Files Count="60">
       <Item1>
         <Filename Value="lr_about.pas"/>
         <UnitName Value="LR_About"/>
@@ -265,6 +274,10 @@ See license.txt and license-lazreport.txt for details.
         <Filename Value="lr_newrp.pas"/>
         <UnitName Value="LR_Newrp"/>
       </Item59>
+      <Item60>
+        <Filename Value="barcode.pas"/>
+        <UnitName Value="Barcode"/>
+      </Item60>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
