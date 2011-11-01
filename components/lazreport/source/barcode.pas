@@ -523,7 +523,7 @@ begin
         if FCheckSum then
         begin
                 tmp := '0000000000000'+FText;
-                tmp := getEAN(copy(tmp,length(tmp)-11,12)+'0');
+                tmp := getEAN(copy(tmp,length(tmp)-12,12)+'0');
         end
         else
                 tmp := Ftext;
