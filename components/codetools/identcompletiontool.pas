@@ -2427,8 +2427,8 @@ var
   begin
     Result:=false;
     // check if in a begin..end block
-    if (CursorNode.Desc<>ctnBeginBlock)
-    and (not CursorNode.HasParentOfType(ctnBeginBlock)) then begin
+    if CursorNode.GetNodeOfTypes([ctnBeginBlock,ctnInitialization,ctnFinalization])=nil
+    then begin
       DebugLn(['TIdentCompletionTool.FindCodeContext.CheckContextIsParameter not in a begin block']);
       exit;
     end;
