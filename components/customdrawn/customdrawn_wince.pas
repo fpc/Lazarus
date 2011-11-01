@@ -118,6 +118,8 @@ var
   lVisibleText, lTmpText, lControlText: TCaption;
   lCaretPixelPos: Integer;
   lHeight: Integer;
+  lSelLeftPos, lSelLeftPixelPos, lSelLength, lSelRightPos: Integer;
+  lTextWidth: Integer;
 begin
   // The background
   ADest.Brush.Color := clWhite;
@@ -126,22 +128,55 @@ begin
   ADest.Pen.Style := psSolid;
   ADest.Rectangle(0, 0, CDControl.Width, CDControl.Height);
 
-  // The text
   lControlText := CDEdit.Text;
-  lVisibleText := Copy(lControlText, CDEdit.FVisibleTextStart, Length(lControlText));
+  ADest.Brush.Style := bsClear;
   ADest.Font.Assign(CDControl.Font);
-  ADest.TextOut(4, 1, lVisibleText);
 
-  // Selection
-  if CDEdit.FSelLength > 0 then
+  // The text without selection
+  if CDEdit.FSelLength = 0 then
   begin
-    //FSelStart, : Integer;
+    lVisibleText := Copy(lControlText, CDEdit.FVisibleTextStart, Length(lControlText));
+    ADest.TextOut(4, 1, lVisibleText);
+  end
+  // Text and Selection
+  else
+  begin
+    lSelLeftPos := CDEdit.FSelStart;
+    if CDEdit.FSelLength < 0 then lSelLeftPos := lSelLeftPos + CDEdit.FSelLength;
+    lSelRightPos := CDEdit.FSelStart;
+    if CDEdit.FSelLength > 0 then lSelRightPos := lSelRightPos + CDEdit.FSelLength;
+    lSelLength := CDEdit.FSelLength;
+    if lSelLength < 0 then lSelLength := lSelLength * -1;
+
+    // Text left of the selection
+    lVisibleText := Copy(lControlText, CDEdit.FVisibleTextStart, lSelLeftPos-CDEdit.FVisibleTextStart);
+    ADest.TextOut(4, 1, lVisibleText);
+    lSelLeftPixelPos := ADest.TextWidth(lVisibleText)+4;
+
+    // The selection background
+    lVisibleText := Copy(lControlText, lSelLeftPos, lSelLength);
+    lTextWidth := ADest.TextWidth(lVisibleText);
+    ADest.Brush.Color := clBlue;
+    ADest.Brush.Style := bsSolid;
+    ADest.Rectangle(lSelLeftPixelPos, 1, lSelLeftPixelPos+lTextWidth, lHeight-1);
+    ADest.Brush.Style := bsClear;
+
+    // The selection text
+    ADest.Font.Color := clWhite;
+    ADest.TextOut(lSelLeftPixelPos, 1, lVisibleText);
+    lSelLeftPixelPos := lSelLeftPixelPos + lTextWidth;
+
+    // Text right of the selection
+    ADest.Brush.Color := clWhite;
+    ADest.Font.Color := CDEdit.Font.Color;
+    lVisibleText := Copy(lControlText, lSelLeftPos+lSelLength+1, Length(lControlText));
+    ADest.TextOut(lSelLeftPixelPos, 1, lVisibleText);
   end;
 
   // And the caret
   if CDEdit.FCaretIsVisible then
   begin
-    lTmpText := Copy(lControlText, 1, CDEdit.FCaretPos-CDEdit.FVisibleTextStart);
+    lTmpText := Copy(lControlText, 1, CDEdit.FCaretPos-CDEdit.FVisibleTextStart+1);
     lCaretPixelPos := ADest.TextWidth(lTmpText) + 3;
     lHeight := CDControl.Height;
     ADest.Line(lCaretPixelPos, 2, lCaretPixelPos, lHeight-2);

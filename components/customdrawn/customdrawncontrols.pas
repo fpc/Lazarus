@@ -192,7 +192,8 @@ type
     FDragDropStarted: boolean;
     FCaretIsVisible: Boolean;
     FCaretPos: Integer; // zero-based position
-    FSelStart, FSelLength: Integer;
+    FSelStart: Integer; // zero-based position
+    FSelLength: Integer; // zero means no selection. Negative numbers selection to the left from the start and positive ones to the right
     FVisibleTextStart: Integer; // 1-based
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -678,7 +679,8 @@ end;
 
 procedure TCDEdit.DoDeleteSelection;
 begin
-
+  FSelStart := 1;
+  FSelLength := 0;
 end;
 
 procedure TCDEdit.PrepareCurrentDrawer;
@@ -757,8 +759,17 @@ begin
   end;
   VK_LEFT:
   begin
-    if FCaretPos > 0 then
+    if (FCaretPos > 0) then
     begin
+      // Selecting to the left
+      if ssShift in Shift then
+      begin
+        Dec(FSelLength);
+        if FSelStart < 0 then FSelStart := FCaretPos;
+      end
+      // Normal move to the left
+      else FSelLength := 0;
+
       Dec(FCaretPos);
       FCaretIsVisible := True;
       Invalidate;
@@ -768,6 +779,15 @@ begin
   begin
     if FCaretPos < Length(lOldText) then
     begin
+      // Selecting to the right
+      if ssShift in Shift then
+      begin
+        Inc(FSelLength);
+        if FSelStart < 0 then FSelStart := FCaretPos;
+      end
+      // Normal move to the right
+      else FSelLength := 0;
+
       Inc(FCaretPos);
       FCaretIsVisible := True;
       Invalidate;
@@ -791,6 +811,8 @@ begin
   // LCL Carbon sends Backspace as a UTF-8 Char
   // Don't handle it here because it is already handled in KeyDown
   if UTF8Key = #8 then Exit;
+
+  DoDeleteSelection;
 
   // Normal characters
   lOldText := Text;
@@ -840,6 +862,7 @@ begin
 
   // State information
   FVisibleTextStart := 1;
+  FSelStart := -1;
 
   // Caret code
   FCaretTimer := TTimer.Create(Self);
