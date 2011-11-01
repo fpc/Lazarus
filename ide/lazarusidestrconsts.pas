@@ -2230,6 +2230,11 @@ resourcestring
   rsiwpCustomPosition          = 'Custom position';
   rsiwpRestoreWindowSize       = 'Restore window size';
 
+  rsiwpSplitterFollowWindow            = 'Restore with window';
+  rsiwpSplitterDefault                 = 'Default Size';
+  rsiwpSplitterRestoreWindowGeometry   = 'Restore Size';
+  rsiwpSplitterCustomPosition          = 'Custom Size';
+
   // Code Explorer
   lisCodeExplorer = 'Code Explorer';
   lisCode = 'Code';
@@ -5366,6 +5371,8 @@ resourcestring
   lisDiscardChangesAndQuit = 'Discard changes and quit';
   dbgBreakPropertyGroupNotFound = 'Some groups in the Enable/Disable list do not exist.%0:s'
     +'Create them?%0:s%0:s%1:s';
+  dbgLCWatchExpression = 'Watch Expression';
+  dbgLCWatchValue = 'Watch Value';
 
 
 implementation

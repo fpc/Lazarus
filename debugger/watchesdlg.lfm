@@ -10,8 +10,6 @@ inherited WatchesDlg: TWatchesDlg
   Caption = 'Watch list'
   ClientHeight = 200
   ClientWidth = 500
-  OnClose = FormClose
-  OnCloseQuery = FormCloseQuery
   OnDestroy = FormDestroy
   OnShow = FormShow
   object lvWatches: TListView[0]

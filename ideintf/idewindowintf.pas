@@ -123,6 +123,77 @@ type
   TIDEWindowState = (iwsNormal, iwsMaximized, iwsMinimized, iwsHidden);
   TIDEWindowStates = set of TIDEWindowState;
 
+  TSimpleWindowLayoutDividerPosPlacement = (
+    iwpdDefault,      // set column/row/splitter to the default size
+    iwpdCustomSize,   // set column/row/splitter to the custom size
+    iwpdRestore,      // save column/row/splitter size on exit, and restore
+    iwpdUseWindowSetting
+  );
+
+  TSimpleWindowLayoutDividerPosSizeGetter =
+    function(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
+
+  TSimpleWindowLayoutDividerPosSizeSetter =
+    procedure(AForm: TCustomForm; AColId: Integer; ASize: Integer);
+
+  { TSimpleWindowLayoutDividerPos }
+
+  TSimpleWindowLayoutDividerPos = class
+  private
+    FDefaultSize: integer;
+    FDisplayName: String;
+    FId: Integer;
+    FIdString: String;
+    FPlacement: TSimpleWindowLayoutDividerPosPlacement;
+    FSize: integer;
+  protected
+    procedure SetDisplayName(ADisplayName: String);
+    procedure SetId(AnId: Integer);
+  public
+    constructor Create(AnIdString: String);
+    constructor Create(AnIdString: String; AnId: Integer; ADisplayName: String);
+    procedure Assign(ADividerPos: TSimpleWindowLayoutDividerPos); reintroduce;
+    procedure LoadFromConfig(Config: TConfigStorage; const Path: string);
+    procedure SaveToConfig(Config: TConfigStorage; const Path: string);
+    procedure Clear;
+    property IdString: String read FIdString;
+    property Id: Integer read FId;
+    property DisplayName: String read FDisplayName;
+    property Placement: TSimpleWindowLayoutDividerPosPlacement read FPlacement write FPlacement;
+    property Size: integer read FSize write FSize;
+    property DefaultSize: integer read FDefaultSize write FDefaultSize;
+  end;
+
+  { TSimpleWindowLayoutDividerPosList }
+
+  TSimpleWindowLayoutDividerPosList = class
+  private
+    FList: TList;
+    function GetItems(Index: Integer): TSimpleWindowLayoutDividerPos;
+    function GetNamedItems(Index: Integer): TSimpleWindowLayoutDividerPos;
+  protected
+    procedure Merge(AnItem: TSimpleWindowLayoutDividerPos);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(ADividerPosList: TSimpleWindowLayoutDividerPosList); reintroduce;
+    procedure LoadFromConfig(Config: TConfigStorage; const Path: string);
+    procedure SaveToConfig(Config: TConfigStorage; const Path: string);
+    procedure Clear;
+    procedure ClearItems;
+    function Add(AnIdString: String; AnId: Integer; ADisplayName: String): TSimpleWindowLayoutDividerPos;
+    function Add(AnIdString: String): TSimpleWindowLayoutDividerPos;
+    function Count: Integer;
+    function NamedCount: Integer;
+    function Find(AnId: Integer): TSimpleWindowLayoutDividerPos;
+    function Find(AnIdString: String): TSimpleWindowLayoutDividerPos;
+    function IndexOf(AnId: Integer): Integer;
+    function IndexOf(AnIdString: String): Integer;
+    function IndexOf(AnItem: TSimpleWindowLayoutDividerPos): Integer;
+    property Items[Index: Integer]: TSimpleWindowLayoutDividerPos read GetItems; default;
+    property NamedItems[Index: Integer]: TSimpleWindowLayoutDividerPos read GetNamedItems;
+  end;
+
   { TSimpleWindowLayout }
 
   TSimpleWindowLayout = class(TComponent)
@@ -139,6 +210,7 @@ type
     fForm: TCustomForm;
     fFormID: string;
     fDefaultWindowPlacement: TIDEWindowPlacement;
+    FDividers: TSimpleWindowLayoutDividerPosList;
     function GetFormCaption: string;
     function GetFormID: string;
     procedure SetForm(const AValue: TCustomForm);
@@ -148,9 +220,13 @@ type
   public
     constructor Create(AFormID: string); reintroduce;
     destructor Destroy; override;
+    function  CreateCopy: TSimpleWindowLayout;
     procedure Clear;
     procedure GetCurrentPosition;
+    function  Apply: Boolean;
+    procedure ApplyDivider(AForce: Boolean = False);
     procedure Assign(Layout: TSimpleWindowLayout); reintroduce;
+    procedure ReadCurrentDividers(AForce: Boolean = False);
     procedure ReadCurrentCoordinates;
     procedure ReadCurrentState;
     procedure LoadFromConfig(Config: TConfigStorage; const Path: string);
@@ -172,6 +248,7 @@ type
     property Form: TCustomForm read fForm write SetForm;
     property Visible: boolean read FVisible write FVisible;
     property Applied: boolean read FApplied write FApplied;
+    property Dividers: TSimpleWindowLayoutDividerPosList read FDividers;
   end;
 
   { TSimpleWindowLayoutList }
@@ -250,10 +327,14 @@ type
     FBottom: string;
     FLeft: string;
     FMulti: boolean;
+    FOnGetDividerSize: TSimpleWindowLayoutDividerPosSizeGetter;
     FOnGetLayout: TGetDefaultIDEWindowLayoutEvent;
+    FOnSetDividerSize: TSimpleWindowLayoutDividerPosSizeSetter;
     FState: TIWCState;
     FTop: string;
     FRight: string;
+    FDividerTemplate: TSimpleWindowLayoutDividerPosList;
+    function GetDividerTemplate: TSimpleWindowLayoutDividerPosList;
     procedure SetBottom(const AValue: string);
     procedure SetLeft(const AValue: string);
     procedure SetTop(const AValue: string);
@@ -268,6 +349,7 @@ type
                        aDockAlign: TAlign = alNone;
                        aMulti: boolean = false;
                GetLayoutEvent: TGetDefaultIDEWindowLayoutEvent = nil); overload;
+    destructor Destroy; override;
     property FormName: string read FFormName; // prefix for all forms
     property Multi: boolean read FMulti; // there can be more than one of this form, e.g. the source editors and the package editors
     property OnCreateFormMethod: TCreateIDEWindowMethod read FCreateFormMethod write FCreateFormMethod;
@@ -286,6 +368,13 @@ type
                                                           write FOnGetLayout;
     procedure CheckBoundValue(s: string);
     procedure GetDefaultBounds(AForm: TCustomForm; out DefBounds: TRect);
+
+    procedure InitSimpleLayout(ALayout: TSimpleWindowLayout);
+    // TODO: Need a WindowCreator factory, by class of TForm
+    // then this data can be stored per window class
+    property  DividerTemplate: TSimpleWindowLayoutDividerPosList read GetDividerTemplate;
+    property  OnGetDividerSize: TSimpleWindowLayoutDividerPosSizeGetter read FOnGetDividerSize write FOnGetDividerSize;
+    property  OnSetDividerSize: TSimpleWindowLayoutDividerPosSizeSetter read FOnSetDividerSize write FOnSetDividerSize;
   end;
 
   { TIDEWindowCreatorList }
@@ -429,6 +518,273 @@ end;
 procedure Register;
 begin
   RegisterComponents('Misc',[TIDEDialogLayoutStorage]);
+end;
+
+{ TSimpleWindowLayoutDividerPosList }
+
+function TSimpleWindowLayoutDividerPosList.GetItems(Index: Integer): TSimpleWindowLayoutDividerPos;
+begin
+  Result := TSimpleWindowLayoutDividerPos(FList[Index]);
+end;
+
+function TSimpleWindowLayoutDividerPosList.GetNamedItems(Index: Integer): TSimpleWindowLayoutDividerPos;
+var
+  i: Integer;
+begin
+  Result := nil;
+  i := 0;
+  while i < Count do begin
+    if Items[i].DisplayName <> '' then begin
+      if Index = 0 then begin
+        Result := Items[i];
+        exit;
+      end;
+      dec(Index);
+    end;
+    inc(i);
+  end;
+end;
+
+procedure TSimpleWindowLayoutDividerPosList.Merge(AnItem: TSimpleWindowLayoutDividerPos);
+var
+  i: Integer;
+  old: TSimpleWindowLayoutDividerPos;
+begin
+  i := IndexOf(AnItem.IdString);
+  FList.Add(AnItem);
+  if i < 0 then
+    exit;
+
+  old := Items[i];
+  if AnItem.Id < 0 then
+    AnItem.SetId(old.Id);
+  if AnItem.DisplayName = '' then
+    AnItem.SetDisplayName(old.DisplayName);
+  if AnItem.DefaultSize < 0 then
+    AnItem.DefaultSize := old.DefaultSize;
+
+  FList.Remove(old);
+  old.Free;
+end;
+
+constructor TSimpleWindowLayoutDividerPosList.Create;
+begin
+  FList := TList.Create;
+end;
+
+destructor TSimpleWindowLayoutDividerPosList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+  FreeAndNil(FList);
+end;
+
+procedure TSimpleWindowLayoutDividerPosList.Assign(ADividerPosList: TSimpleWindowLayoutDividerPosList);
+var
+  i: Integer;
+  tmp: TSimpleWindowLayoutDividerPos;
+begin
+  Clear;
+  for i := 0 to ADividerPosList.Count - 1 do begin
+    tmp := Add('');
+    tmp.Assign(ADividerPosList[i]);
+  end;
+end;
+
+procedure TSimpleWindowLayoutDividerPosList.LoadFromConfig(Config: TConfigStorage;
+  const Path: string);
+var
+  tmp: TSimpleWindowLayoutDividerPos;
+  c, i: Integer;
+begin
+  ClearItems;
+  c := Config.GetValue(Path+'Count', 0);
+  for i := 0 to c - 1 do begin
+    tmp := TSimpleWindowLayoutDividerPos.Create('');
+    tmp.LoadFromConfig(Config, Path + 'Item' + IntToStr(i) + '/');
+    Merge(tmp);
+  end;
+end;
+
+procedure TSimpleWindowLayoutDividerPosList.SaveToConfig(Config: TConfigStorage;
+  const Path: string);
+var
+  i: Integer;
+begin
+  Config.SetDeleteValue(Path+'Count', Count, 0);
+  for i := 0 to Count - 1 do
+    Items[i].SaveToConfig(Config, Path + 'Item' + IntToStr(i) + '/');
+end;
+
+procedure TSimpleWindowLayoutDividerPosList.Clear;
+begin
+  while FList.Count > 0 do begin
+    TObject(FList[0]).Free;
+    FList.Delete(0);
+  end;
+end;
+
+procedure TSimpleWindowLayoutDividerPosList.ClearItems;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    Items[i].Clear;
+end;
+
+function TSimpleWindowLayoutDividerPosList.Add(AnIdString: String;
+  AnId: Integer; ADisplayName: String): TSimpleWindowLayoutDividerPos;
+var
+  i: Integer;
+begin
+  i := IndexOf(AnId);
+  if i < 0
+  then begin
+    Result := TSimpleWindowLayoutDividerPos.Create(AnIdString, AnId, ADisplayName);
+    FList.Add(Result);
+  end
+  else begin
+    Result := Items[i];
+    if ADisplayName = '' then
+      Result.SetDisplayName(ADisplayName);
+  end
+end;
+
+function TSimpleWindowLayoutDividerPosList.Add(AnIdString: String): TSimpleWindowLayoutDividerPos;
+begin
+  Result := Add(AnIdString, -1, '');
+end;
+
+function TSimpleWindowLayoutDividerPosList.Count: Integer;
+begin
+  Result := FList.Count;
+end;
+
+function TSimpleWindowLayoutDividerPosList.NamedCount: Integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  i := Count - 1;
+  while i >= 0 do begin
+    if Items[i].DisplayName <> '' then inc(Result);
+    dec(i);
+  end;
+end;
+
+function TSimpleWindowLayoutDividerPosList.Find(AnId: Integer): TSimpleWindowLayoutDividerPos;
+var
+  i: Integer;
+begin
+  Result := nil;
+  i := IndexOf(AnId);
+  if i >= 0 then
+    Result := Items[i];
+end;
+
+function TSimpleWindowLayoutDividerPosList.Find(AnIdString: String): TSimpleWindowLayoutDividerPos;
+var
+  i: Integer;
+begin
+  Result := nil;
+  i := IndexOf(AnIdString);
+  if i >= 0 then
+    Result := Items[i];
+end;
+
+function TSimpleWindowLayoutDividerPosList.IndexOf(AnId: Integer): Integer;
+begin
+  Result := Flist.Count-1;
+  while Result >= 0 do begin
+    if Items[Result].Id = AnId then
+      exit;
+    dec(Result);
+  end;
+end;
+
+function TSimpleWindowLayoutDividerPosList.IndexOf(AnIdString: String): Integer;
+begin
+  Result := Flist.Count-1;
+  while Result >= 0 do begin
+    if Items[Result].IdString = AnIdString then
+      exit;
+    dec(Result);
+  end;
+end;
+
+function TSimpleWindowLayoutDividerPosList.IndexOf(AnItem: TSimpleWindowLayoutDividerPos): Integer;
+begin
+  Result := FList.IndexOf(AnItem);
+end;
+
+{ TSimpleWindowLayoutDividerPos }
+
+procedure TSimpleWindowLayoutDividerPos.SetDisplayName(ADisplayName: String);
+begin
+  FDisplayName := ADisplayName;
+end;
+
+procedure TSimpleWindowLayoutDividerPos.SetId(AnId: Integer);
+begin
+  FId := AnId;
+end;
+
+constructor TSimpleWindowLayoutDividerPos.Create(AnIdString: String);
+begin
+  Create(AnIdString, -1, '');
+end;
+
+constructor TSimpleWindowLayoutDividerPos.Create(AnIdString: String;
+  AnId: Integer; ADisplayName: String);
+begin
+  FDefaultSize := -1;
+  Clear;
+  FId := AnId;
+  FIdString := AnIdString;
+  FDisplayName := ADisplayName;
+end;
+
+procedure TSimpleWindowLayoutDividerPos.Assign(ADividerPos: TSimpleWindowLayoutDividerPos);
+begin
+  FDefaultSize := ADividerPos.FDefaultSize;
+  FDisplayName := ADividerPos.FDisplayName;
+  FId          := ADividerPos.FId;
+  FIdString    := ADividerPos.FIdString;
+  FPlacement   := ADividerPos.FPlacement;
+  FSize        := ADividerPos.FSize;
+end;
+
+procedure TSimpleWindowLayoutDividerPos.LoadFromConfig(Config: TConfigStorage;
+  const Path: string);
+var
+  s: String;
+begin
+  Clear;
+  FIdString := Config.GetValue(Path+'ID', '');
+  FSize := Config.GetValue(Path+'Size', -1);
+  s := Config.GetValue(Path+'Placement', 'iwpdUseWindowSetting');
+  try
+    ReadStr(s, FPlacement);
+  except
+    FPlacement := iwpdUseWindowSetting;
+  end;
+end;
+
+procedure TSimpleWindowLayoutDividerPos.SaveToConfig(Config: TConfigStorage;
+  const Path: string);
+var
+  s: String;
+begin
+  WriteStr(s, FPlacement);
+  Config.SetDeleteValue(Path+'ID', FIdString, '');
+  Config.SetDeleteValue(Path+'Size', FSize, -1);
+  Config.SetDeleteValue(Path+'Placement', s, 'iwpdUseWindowSetting');
+end;
+
+procedure TSimpleWindowLayoutDividerPos.Clear;
+begin
+  FSize := FDefaultSize;
+  FPlacement := iwpdUseWindowSetting;
 end;
 
 { TIDEDialogLayout }
@@ -667,17 +1023,30 @@ end;
 { TSimpleWindowLayout }
 
 constructor TSimpleWindowLayout.Create(AFormID: string);
+var
+  Creator: TIDEWindowCreator;
 begin
   inherited Create(nil);
+  FDividers := TSimpleWindowLayoutDividerPosList.Create;
   FormID:=AFormID;
   fDefaultWindowPlacement:=iwpRestoreWindowGeometry;
   Clear;
+  Creator := IDEWindowCreators.FindWithName(AFormID);
+  if Creator <> nil then
+    Creator.InitSimpleLayout(Self);
 end;
 
 destructor TSimpleWindowLayout.Destroy;
 begin
   Form:=nil;
   inherited Destroy;
+  FDividers.Free;
+end;
+
+function TSimpleWindowLayout.CreateCopy: TSimpleWindowLayout;
+begin
+  Result := TSimpleWindowLayout.Create(FFormID);
+  Result.Assign(Self);
 end;
 
 procedure TSimpleWindowLayout.LoadFromConfig(Config: TConfigStorage; const Path: string);
@@ -705,6 +1074,7 @@ begin
     P+'WindowState/Value',IDEWindowStateNames[fWindowState]));
   FVisible:=Config.GetValue(P+'Visible/Value',false);
   //debugln(['TSimpleWindowLayout.LoadFromConfig ',FormID,' ',Left,',',Top,',',Width,',',Height]);
+  FDividers.LoadFromConfig(Config, P + 'Divider/');
 end;
 
 procedure TSimpleWindowLayout.SaveToConfig(Config: TConfigStorage;
@@ -729,6 +1099,7 @@ begin
   // state
   Config.SetValue(P+'WindowState/Value',IDEWindowStateNames[fWindowState]);
   Config.SetDeleteValue(P+'Visible/Value',FVisible,false);
+  FDividers.SaveToConfig(Config, P + 'Divider/');
 end;
 
 procedure TSimpleWindowLayout.OnFormClose(Sender: TObject;
@@ -817,6 +1188,7 @@ begin
   fWidth:=0;
   fHeight:=0;
   fWindowState:=iwsNormal;
+  FDividers.ClearItems;
 end;
 
 procedure TSimpleWindowLayout.ReadCurrentCoordinates;
@@ -861,6 +1233,31 @@ begin
   fWindowState:=Layout.fWindowState;
   fFormID:=Layout.fFormID;
   fDefaultWindowPlacement:=Layout.fDefaultWindowPlacement;
+  FDividers.Assign(Layout.FDividers);
+end;
+
+procedure TSimpleWindowLayout.ReadCurrentDividers(AForce: Boolean = False);
+var
+  i, j: Integer;
+  f: Boolean;
+  Creator: TIDEWindowCreator;
+begin
+  Creator:=IDEWindowCreators.FindWithName(FormID);
+  if (Creator = nil) or (Creator.OnGetDividerSize = nil) then exit;
+  if fForm = nil then exit;;
+  for i := 0 to FDividers.Count - 1 do begin
+    if FDividers[i].FId < 0 then continue;
+    f := AForce;
+    case FDividers[i].Placement of
+      iwpdRestore:
+        f := true;
+      iwpdUseWindowSetting:
+        f := WindowPlacement in [iwpRestoreWindowGeometry, iwpRestoreWindowSize];
+    end;
+    if f then
+      if Creator.OnGetDividerSize(fForm, FDividers[i].Id, j) then
+        FDividers[i].Size := j;
+  end;
 end;
 
 procedure TSimpleWindowLayout.GetCurrentPosition;
@@ -870,8 +1267,105 @@ begin
   iwpRestoreWindowGeometry, iwpRestoreWindowSize:
     ReadCurrentCoordinates;
   end;
+  ReadCurrentDividers;
   ReadCurrentState;
   //debugln('TSimpleWindowLayout.GetCurrentPosition ',DbgSName(Self),' ',FormID,' Width=',dbgs(Width));
+end;
+
+function TSimpleWindowLayout.Apply: Boolean;
+var
+  NewBounds: TRect;
+  i: Integer;
+begin
+  Result := False;
+  if fForm = nil then exit;
+  Applied:=true;
+  {$IFDEF VerboseIDEDocking}
+  debugln(['TSimpleWindowLayoutList.ApplyAndShow restore ',
+          FormID,' ',IDEWindowPlacementNames[WindowPlacement],
+          ' Valid=',CustomCoordinatesAreValid,' ',Left,',',
+          Top,',',Width,',',Height]);
+  {$ENDIF}
+
+  case WindowPlacement of
+  iwpCustomPosition,iwpRestoreWindowGeometry:
+    begin
+      //DebugLn(['TMainIDE.OnApplyWindowLayout ',IDEWindowStateNames[WindowState]]);
+      case WindowState of
+        iwsMinimized: FForm.WindowState:=wsMinimized;
+        iwsMaximized: FForm.WindowState:=wsMaximized;
+      end;
+
+      if (CustomCoordinatesAreValid) then begin
+        // explicit position
+        NewBounds:=Bounds(Left,Top,Width,Height);
+        // set minimum size
+        if NewBounds.Right-NewBounds.Left<60 then
+          NewBounds.Right:=NewBounds.Left+60;
+        if NewBounds.Bottom-NewBounds.Top<60 then
+          NewBounds.Bottom:=NewBounds.Top+60;
+
+        // Move to visible area :
+        // window is out at left side of screen
+        if NewBounds.Right<Screen.DesktopLeft+60 then
+          OffsetRect(NewBounds,Screen.DesktopLeft+60-NewBounds.Right,0);
+
+        // window is out above the screen
+        if NewBounds.Bottom<Screen.DesktopTop+60 then
+          OffsetRect(NewBounds,0,Screen.DesktopTop+60-NewBounds.Bottom);
+
+        // window is out at right side of screen, i = right edge of screen - 60
+        i:=Screen.DesktopWidth+Screen.DesktopLeft-60;
+        if NewBounds.Left > i then begin
+          NewBounds.Left := i;
+          NewBounds.Right := NewBounds.Right + i - NewBounds.Left;
+        end;
+
+        // window is out below the screen, i = bottom edge of screen - 60
+        i:=Screen.DesktopHeight+Screen.DesktopTop-60;
+        if NewBounds.Top > i then begin
+          NewBounds.Top := i;
+          NewBounds.Bottom := NewBounds.Bottom + i - NewBounds.Top;
+        end;
+
+        // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
+        FForm.SetBounds(NewBounds.Left,NewBounds.Top,
+                        NewBounds.Right-NewBounds.Left,
+                        NewBounds.Bottom-NewBounds.Top);
+        Result := True;
+      end;
+
+      if WindowState in [iwsMinimized, iwsMaximized] then
+        Result := True;
+    end;
+  iwpUseWindowManagerSetting:
+    Result := True;
+  end;
+
+  ApplyDivider;
+end;
+
+procedure TSimpleWindowLayout.ApplyDivider(AForce: Boolean = False);
+var
+  i: Integer;
+  f: Boolean;
+  Creator: TIDEWindowCreator;
+begin
+  Creator:=IDEWindowCreators.FindWithName(FormID);
+  if (Creator <> nil) and (Creator.OnSetDividerSize <> nil) then begin
+    for i := 0 to FDividers.Count - 1 do begin
+      if (FDividers[i].FId < 0) or (FDividers[i].Size < 0) then continue;
+      f := AForce;
+      case FDividers[i].Placement of
+        iwpdRestore, iwpdCustomSize:
+          f := true;
+        iwpdUseWindowSetting:
+          f := WindowPlacement in [iwpRestoreWindowGeometry, iwpRestoreWindowSize];
+      end;
+      if f then
+        Creator.OnSetDividerSize(fForm, FDividers[i].Id, FDividers[i].Size);
+    end;
+  end;
 end;
 
 { TSimpleWindowLayoutList }
@@ -1027,71 +1521,7 @@ begin
     begin
       ALayout.Form:=AForm;
       if ALayout.Applied then exit;
-      ALayout.Applied:=true;
-      {$IFDEF VerboseIDEDocking}
-      debugln(['TSimpleWindowLayoutList.ApplyAndShow restore ',
-              ALayout.FormID,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],
-              ' Valid=',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,',',
-              ALayout.Top,',',ALayout.Width,',',ALayout.Height]);
-      {$ENDIF}
-
-      case ALayout.WindowPlacement of
-      iwpCustomPosition,iwpRestoreWindowGeometry:
-        begin
-          //DebugLn(['TMainIDE.OnApplyWindowLayout ',IDEWindowStateNames[ALayout.WindowState]]);
-          case ALayout.WindowState of
-          iwsMinimized: AForm.WindowState:=wsMinimized;
-          iwsMaximized: AForm.WindowState:=wsMaximized;
-          end;
-
-          if (ALayout.CustomCoordinatesAreValid) then begin
-            // explicit position
-            NewBounds:=Bounds(ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height);
-            // set minimum size
-            if NewBounds.Right-NewBounds.Left<60 then
-              NewBounds.Right:=NewBounds.Left+60;
-            if NewBounds.Bottom-NewBounds.Top<60 then
-              NewBounds.Bottom:=NewBounds.Top+60;
-
-            // Move to visible area :
-            // window is out at left side of screen
-            if NewBounds.Right<Screen.DesktopLeft+60 then
-              OffsetRect(NewBounds,Screen.DesktopLeft+60-NewBounds.Right,0);
-
-            // window is out above the screen
-            if NewBounds.Bottom<Screen.DesktopTop+60 then
-              OffsetRect(NewBounds,0,Screen.DesktopTop+60-NewBounds.Bottom);
-
-            // window is out at right side of screen, i = right edge of screen - 60
-            i:=Screen.DesktopWidth+Screen.DesktopLeft-60;
-            if NewBounds.Left > i then begin
-              NewBounds.Left := i;
-              NewBounds.Right := NewBounds.Right + i - NewBounds.Left;
-            end;
-
-            // window is out below the screen, i = bottom edge of screen - 60
-            i:=Screen.DesktopHeight+Screen.DesktopTop-60;
-            if NewBounds.Top > i then begin
-              NewBounds.Top := i;
-              NewBounds.Bottom := NewBounds.Bottom + i - NewBounds.Top;
-            end;
-
-            // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
-            AForm.SetBounds(NewBounds.Left,NewBounds.Top,
-                            NewBounds.Right-NewBounds.Left,
-                            NewBounds.Bottom-NewBounds.Top);
-            exit;
-          end;
-
-          if ALayout.WindowState in [iwsMinimized, iwsMaximized] then
-            exit;
-        end;
-
-      iwpUseWindowManagerSetting:
-        begin
-          exit;
-        end;
-      end;
+      if ALayout.Apply then exit;
     end;
 
     {$IFDEF VerboseIDEDocking}
@@ -1183,15 +1613,13 @@ begin
 end;
 
 procedure TSimpleWindowLayoutList.Assign(SrcList: TSimpleWindowLayoutList);
-var i: integer;
-  NewLayout: TSimpleWindowLayout;
+var
+  i: integer;
 begin
   Clear;
   if SrcList=nil then exit;
   for i:=0 to SrcList.Count-1 do begin
-    NewLayout:=TSimpleWindowLayout.Create(SrcList[i].FormID);
-    NewLayout.Assign(SrcList[i]);
-    Add(NewLayout);
+    Add(SrcList[i].CreateCopy);
   end;
 end;
 
@@ -1225,6 +1653,13 @@ begin
   CheckBoundValue(AValue);
   if FBottom=AValue then exit;
   FBottom:=AValue;
+end;
+
+function TIDEWindowCreator.GetDividerTemplate: TSimpleWindowLayoutDividerPosList;
+begin
+  If FDividerTemplate = nil then
+    FDividerTemplate := TSimpleWindowLayoutDividerPosList.Create;
+  Result := FDividerTemplate;
 end;
 
 procedure TIDEWindowCreator.SetLeft(const AValue: string);
@@ -1337,9 +1772,18 @@ begin
   DefBounds.Bottom:=aBottom;
 end;
 
+procedure TIDEWindowCreator.InitSimpleLayout(ALayout: TSimpleWindowLayout);
+begin
+  if FDividerTemplate <> nil then
+    ALayout.Dividers.Assign(FDividerTemplate);
+end;
+
 constructor TIDEWindowCreator.Create(aFormName: string);
+var
+  sl: TSimpleWindowLayout;
 begin
   FFormName:=aFormName;
+  FDividerTemplate := nil;
 end;
 
 constructor TIDEWindowCreator.Create(aFormName: string;
@@ -1359,6 +1803,12 @@ begin
   OnCreateFormMethod:=CreateFormMethod;
   OnCreateFormProc:=CreateFormProc;
   OnGetLayout:=GetLayoutEvent;
+end;
+
+destructor TIDEWindowCreator.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FDividerTemplate);
 end;
 
 function TIDEWindowCreator.NameFits(const AName: string): boolean;

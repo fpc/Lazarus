@@ -1682,8 +1682,9 @@ begin
   end;
 
   for DlgType:=Low(TDebugDialogType) to High(TDebugDialogType) do
-    IDEWindowCreators.Add(NonModalIDEWindowNames[DebugDlgIDEWindow[DlgType]],
-      nil,@CreateDebugDialog,'','','','');
+    if not (DlgType in [ddtWatches]) then
+      IDEWindowCreators.Add(NonModalIDEWindowNames[DebugDlgIDEWindow[DlgType]],
+        nil,@CreateDebugDialog,'','','','');
 end;
 
 procedure TDebugManager.ConnectSourceNotebookEvents;

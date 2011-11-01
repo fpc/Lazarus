@@ -39,6 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, math,
+  IDEWindowIntf, IDEOptionDefs,
   StdCtrls, Buttons, Menus, ComCtrls, LCLType, ActnList, IDEImagesIntf,
   EnvironmentOpts, LazarusIDEStrConsts, Debugger, DebuggerDlg, BaseDebugManager;
 
@@ -95,8 +96,6 @@ type
     procedure actDisableSelectedExecute(Sender: TObject);
     procedure actEnableSelectedExecute(Sender: TObject);
     procedure actPowerExecute(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure lvWatchesDblClick(Sender: TObject);
@@ -112,7 +111,6 @@ type
     function GetWatches: TWatches;
     procedure ContextChanged(Sender: TObject);
     procedure SnapshotChanged(Sender: TObject);
-    procedure SaveColumnWidths;
   private
     FWatchesInView: TWatches;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
@@ -134,6 +132,8 @@ type
   protected
     procedure DoEndUpdate; override;
     procedure DoWatchesChanged; override;
+    function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+    procedure ColSizeSetter(AColId: Integer; ASize: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     property WatchesMonitor;
@@ -147,6 +147,25 @@ type
 implementation
 
 {$R *.lfm}
+
+var
+  WatchWindowCreator: TIDEWindowCreator;
+const
+  COL_WATCH_EXPR  = 1;
+  COL_WATCH_VALUE = 2;
+
+function WatchesDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := AForm is TWatchesDlg;
+  if Result then
+    Result := TWatchesDlg(AForm).ColSizeGetter(AColId, ASize);
+end;
+
+procedure WatchesDlgColSizeSetter(AForm: TCustomForm; AColId: Integer; ASize: Integer);
+begin
+  if AForm is TWatchesDlg then
+    TWatchesDlg(AForm).ColSizeSetter(AColId, ASize);
+end;
 
 { TWatchesDlg }
 
@@ -351,27 +370,8 @@ begin
 end;
 
 procedure TWatchesDlg.FormShow(Sender: TObject);
-var
-  Conf: TDebuggerWatchesDlgConfig;
 begin
   UpdateAll;
-  Conf := EnvironmentOptions.DebuggerConfig.DlgWatchesConfig;
-  if Conf.ColumnNameWidth > 0 then
-    lvWatches.Column[0].Width := Conf.ColumnNameWidth;
-  if Conf.ColumnValueWidth > 0 then
-    lvWatches.Column[1].Width := Conf.ColumnValueWidth;
-end;
-
-procedure TWatchesDlg.FormCloseQuery(Sender: TObject; var CanClose: boolean);
-begin
-  //DebugLn('TWatchesDlg.FormCloseQuery ',dbgs(CanClose));
-  SaveColumnWidths;
-end;
-
-procedure TWatchesDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
-begin
-  //DebugLn('TWatchesDlg.FormClose ',dbgs(ord(CloseAction)));
-  SaveColumnWidths;
 end;
 
 procedure TWatchesDlg.actPowerExecute(Sender: TObject);
@@ -485,15 +485,6 @@ begin
   end;
 end;
 
-procedure TWatchesDlg.SaveColumnWidths;
-var
-  Conf: TDebuggerWatchesDlgConfig;
-begin
-  Conf := EnvironmentOptions.DebuggerConfig.DlgWatchesConfig;
-  Conf.ColumnNameWidth  := lvWatches.Column[0].Width;
-  Conf.ColumnValueWidth := lvWatches.Column[1].Width;
-end;
-
 function TWatchesDlg.GetWatches: TWatches;
 var
   Snap: TSnapshot;
@@ -520,6 +511,25 @@ end;
 procedure TWatchesDlg.DoWatchesChanged;
 begin
   UpdateAll;
+end;
+
+function TWatchesDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := True;
+  case AColId of
+    COL_WATCH_EXPR:  ASize := lvWatches.Column[0].Width;
+    COL_WATCH_VALUE: ASize := lvWatches.Column[1].Width;
+    else
+      Result := False;
+  end;
+end;
+
+procedure TWatchesDlg.ColSizeSetter(AColId: Integer; ASize: Integer);
+begin
+  case AColId of
+    COL_WATCH_EXPR:  lvWatches.Column[0].Width := ASize;
+    COL_WATCH_VALUE: lvWatches.Column[1].Width := ASize;
+  end;
 end;
 
 procedure TWatchesDlg.popDeleteClick(Sender: TObject);
@@ -750,6 +760,14 @@ begin
   lvWatches.Items.FindData(AWatch).Free;
   lvWatchesSelectItem(nil, nil, False);
 end;
+
+initialization
+
+  WatchWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwWatches]);
+  WatchWindowCreator.OnSetDividerSize := @WatchesDlgColSizeSetter;
+  WatchWindowCreator.OnGetDividerSize := @WatchesDlgColSizeGetter;
+  WatchWindowCreator.DividerTemplate.Add('ColumnWatchExpr', COL_WATCH_EXPR, dbgLCWatchExpression);
+  WatchWindowCreator.DividerTemplate.Add('ColumnWatchValue', COL_WATCH_VALUE, dbgLCWatchValue);
 
 end.
 

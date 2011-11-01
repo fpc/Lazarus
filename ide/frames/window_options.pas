@@ -38,6 +38,7 @@ type
     ApplyButton: TButton;
     Bevel1: TBevel;
     Bevel2: TBevel;
+    dropSplitterPlacement: TComboBox;
     CustomPositionRadioButton: TRadioButton;
     DefaultRadioButton: TRadioButton;
     GetWindowPositionButton: TButton;
@@ -45,11 +46,15 @@ type
     HeightLabel: TLabel;
     HideIDEOnRunCheckBox: TCheckBox;
     HideMessagesIconsCheckBox: TCheckBox;
+    SplitLabel: TLabel;
     lblWindowCaption: TLabel;
     LeftEdit: TSpinEdit;
     LeftLabel: TLabel;
+    SplitterList: TListBox;
+    SplitterPanel: TPanel;
     SingleTaskBarButtonCheckBox: TCheckBox;
     RestoreWindowGeometryRadioButton: TRadioButton;
+    SplitEdit: TSpinEdit;
     TitleStartsWithProjectCheckBox: TCheckBox;
     ProjectDirInIdeTitleCheckBox: TCheckBox;
     TopEdit: TSpinEdit;
@@ -61,17 +66,22 @@ type
     WindowPositionsListBox: TListBox;
     procedure ApplyButtonClick(Sender: TObject);
     procedure GetWindowPositionButtonClick(Sender: TObject);
+    procedure SplitterListSelectionChange(Sender: TObject; User: boolean);
     procedure WindowPositionsListBoxSelectionChange(Sender: TObject; User: boolean);
   private
     FLayouts: TSimpleWindowLayoutList;
     FLayout: TSimpleWindowLayout;
+    FDivider: TSimpleWindowLayoutDividerPos;
     FShowSimpleLayout: boolean;
     function GetPlacementRadioButtons(APlacement: TIDEWindowPlacement): TRadioButton;
     procedure SetLayout(const AValue: TSimpleWindowLayout);
+    procedure SetDivider(const AValue: TSimpleWindowLayoutDividerPos);
     procedure SetWindowPositionsItem(Index: integer);
+    procedure SaveCurrentSplitterLayout;
     procedure SaveLayout;
     function GetLayoutCaption(ALayout: TSimpleWindowLayout): String;
     property Layout: TSimpleWindowLayout read FLayout write SetLayout;
+    property Divider: TSimpleWindowLayoutDividerPos read FDivider write SetDivider;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -144,6 +154,7 @@ begin
           WindowPositionsListBox.Items.AddObject(GetLayoutCaption(FLayouts[j]),FLayouts[j]);
       end;
     end;
+    //WindowPositionsListBox.Sorted := True;
     WindowPositionsListBox.Items.EndUpdate;
 
     LeftLabel.Caption := dlgLeftPos;
@@ -152,11 +163,18 @@ begin
     HeightLabel.Caption := DlgHeightPos;
     ApplyButton.Caption := dlgButApply;
     GetWindowPositionButton.Caption := dlgGetPosition;
+    SplitLabel.Caption := dlgWidthPos;
 
     UseWindowManagerSettingRadioButton.Caption := rsiwpUseWindowManagerSetting;
     DefaultRadioButton.Caption := rsiwpDefault;
     RestoreWindowGeometryRadioButton.Caption := rsiwpRestoreWindowGeometry;
     CustomPositionRadioButton.Caption := rsiwpCustomPosition;
+
+    dropSplitterPlacement.Clear;
+    dropSplitterPlacement.Items.Add(rsiwpSplitterFollowWindow);
+    dropSplitterPlacement.Items.Add(rsiwpSplitterDefault);
+    dropSplitterPlacement.Items.Add(rsiwpSplitterRestoreWindowGeometry);
+    dropSplitterPlacement.Items.Add(rsiwpSplitterCustomPosition);
 
     SetWindowPositionsItem(0);
   end else begin
@@ -198,9 +216,14 @@ var
   APlacement: TIDEWindowPlacement;
   RadioButton: TRadioButton;
   p: TPoint;
+  i: Integer;
 begin
   FLayout := AValue;
-  if Layout=nil then Exit;
+  Divider := nil;
+  if Layout=nil then begin
+    SplitterPanel.Visible := False;
+    Exit;
+  end;
   //debugln(['TWindowOptionsFrame.SetLayout ',Layout.FormID,' ',IDEWindowPlacementNames[Layout.WindowPlacement]]);
 
   for APlacement := Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do
@@ -242,6 +265,27 @@ begin
   end;
 
   GetWindowPositionButton.Enabled := (Layout.Form <> nil);
+
+  SplitterPanel.Visible := Layout.Dividers.NamedCount > 0;
+  SplitterList.Clear;
+  for i := 0 to Layout.Dividers.NamedCount - 1 do
+    SplitterList.AddItem(Layout.Dividers.NamedItems[i].DisplayName, Layout.Dividers.NamedItems[i]);
+  if Layout.Dividers.NamedCount > 0 then
+    SplitterList.ItemIndex := 0;
+end;
+
+procedure TWindowOptionsFrame.SetDivider(const AValue: TSimpleWindowLayoutDividerPos);
+begin
+  FDivider := AValue;
+  if FDivider=nil then exit;
+
+  SplitEdit.Value := FDivider.Size;
+  case FDivider.Placement of
+    iwpdUseWindowSetting: dropSplitterPlacement.ItemIndex := 0;
+    iwpdDefault:          dropSplitterPlacement.ItemIndex := 1;
+    iwpdRestore:          dropSplitterPlacement.ItemIndex := 2;
+    iwpdCustomSize:       dropSplitterPlacement.ItemIndex := 3;
+  end;
 end;
 
 procedure TWindowOptionsFrame.WindowPositionsListBoxSelectionChange(
@@ -257,29 +301,32 @@ var
 begin
   SaveLayout;
   if (Layout<>nil) and (Layout.Form<>nil) and (Layout.Form.Parent=nil)
-  and (Layout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry])
   then begin
-    if (Layout.CustomCoordinatesAreValid) then begin
-      // explicit position
-      NewBounds:=Bounds(Layout.Left,Layout.Top,Layout.Width,Layout.Height);
-      // set minimum size
-      if NewBounds.Right-NewBounds.Left<20 then
-        NewBounds.Right:=NewBounds.Left+20;
-      if NewBounds.Bottom-NewBounds.Top<20 then
-        NewBounds.Bottom:=NewBounds.Top+20;
-      // move to visible area
-      if NewBounds.Right<20 then
-        OffsetRect(NewBounds,20-NewBounds.Right,0);
-      if NewBounds.Bottom<20 then
-        OffsetRect(NewBounds,0,20-NewBounds.Bottom);
-      if NewBounds.Left>Screen.DesktopWidth-20 then
-        OffsetRect(NewBounds,NewBounds.Left-(Screen.DesktopWidth-20),0);
-      if NewBounds.Top>Screen.DesktopHeight-20 then
-        OffsetRect(NewBounds,NewBounds.Top-(Screen.DesktopHeight-20),0);
-      Layout.Form.SetBounds(
-        NewBounds.Left,NewBounds.Top,
-        NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
+    if (Layout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry])
+    then begin
+      if (Layout.CustomCoordinatesAreValid) then begin
+        // explicit position
+        NewBounds:=Bounds(Layout.Left,Layout.Top,Layout.Width,Layout.Height);
+        // set minimum size
+        if NewBounds.Right-NewBounds.Left<20 then
+          NewBounds.Right:=NewBounds.Left+20;
+        if NewBounds.Bottom-NewBounds.Top<20 then
+          NewBounds.Bottom:=NewBounds.Top+20;
+        // move to visible area
+        if NewBounds.Right<20 then
+          OffsetRect(NewBounds,20-NewBounds.Right,0);
+        if NewBounds.Bottom<20 then
+          OffsetRect(NewBounds,0,20-NewBounds.Bottom);
+        if NewBounds.Left>Screen.DesktopWidth-20 then
+          OffsetRect(NewBounds,NewBounds.Left-(Screen.DesktopWidth-20),0);
+        if NewBounds.Top>Screen.DesktopHeight-20 then
+          OffsetRect(NewBounds,NewBounds.Top-(Screen.DesktopHeight-20),0);
+        Layout.Form.SetBounds(
+          NewBounds.Left,NewBounds.Top,
+          NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
+      end;
     end;
+    Layout.ApplyDivider(True);
   end;
 end;
 
@@ -292,6 +339,16 @@ begin
     WidthEdit.Value := Layout.Form.Width;
     HeightEdit.Value := Layout.Form.Height;
   end;
+  Layout.ReadCurrentDividers(True);
+  SplitterListSelectionChange(nil, False);
+end;
+
+procedure TWindowOptionsFrame.SplitterListSelectionChange(Sender: TObject; User: boolean);
+begin
+  if User then SaveCurrentSplitterLayout;
+
+  if (SplitterList.Count = 0) or (SplitterList.ItemIndex < 0) then exit;
+  SetDivider(TSimpleWindowLayoutDividerPos(SplitterList.Items.Objects[SplitterList.ItemIndex]));
 end;
 
 procedure TWindowOptionsFrame.SetWindowPositionsItem(Index: integer);
@@ -306,6 +363,18 @@ begin
 
   if Index >= 0 then
     lblWindowCaption.Caption := WindowPositionsListBox.Items[Index];
+end;
+
+procedure TWindowOptionsFrame.SaveCurrentSplitterLayout;
+begin
+  if FDivider = nil then exit;
+  case dropSplitterPlacement.ItemIndex of
+    0: FDivider.Placement := iwpdUseWindowSetting;
+    1: FDivider.Placement := iwpdDefault;
+    2: FDivider.Placement := iwpdRestore;
+    3: FDivider.Placement := iwpdCustomSize;
+  end;
+  FDivider.Size := SplitEdit.Value;
 end;
 
 procedure TWindowOptionsFrame.SaveLayout;
@@ -329,6 +398,7 @@ begin
       Layout.Height := HeightEdit.Value;
     end;
   end;
+  SaveCurrentSplitterLayout;
 end;
 
 function TWindowOptionsFrame.GetLayoutCaption(ALayout: TSimpleWindowLayout
