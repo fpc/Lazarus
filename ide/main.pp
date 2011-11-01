@@ -4383,7 +4383,7 @@ end;
 
 procedure TMainIDE.mnuBuildProjectClicked(Sender: TObject);
 Begin
-  DoBuildProject(crBuild,[pbfCleanCompile,pbfCompileDependenciesClean]);
+  DoBuildProject(crBuild,[pbfCleanCompile]);
 end;
 
 procedure TMainIDE.mnuQuickCompileProjectClicked(Sender: TObject);
