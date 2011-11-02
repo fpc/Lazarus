@@ -721,12 +721,17 @@ begin
 
   case Command of
   // moving
-  ecWordLeft:SetCombo(VK_A, [ssCtrl], VK_UNKNOWN, [], VK_LEFT, [ssCtrl], VK_UNKNOWN,[]);
-  ecWordRight: SetCombo(VK_D, [ssCtrl], VK_UNKNOWN, [], VK_RIGHT, [ssCtrl],VK_UNKNOWN,[]);
+  ecLeft: SetSingle(VK_S,[ssCtrl], VK_LEFT,[]);
+  ecRight: SetCombo(VK_D, [ssCtrl], VK_UNKNOWN, [], VK_RIGHT, [], VK_UNKNOWN,[]);
+  ecUp: SetCombo(VK_E, [ssCtrl], VK_UNKNOWN, [], VK_UP, [], VK_UNKNOWN,[]);
+  ecDown: SetCombo(VK_X, [ssCtrl], VK_UNKNOWN, [], VK_DOWN, [], VK_UNKNOWN,[]);
+  ecWordLeft: SetCombo(VK_A, [ssCtrl], VK_UNKNOWN, [], VK_LEFT, [ssCtrl], VK_UNKNOWN,[]);
+  ecWordRight: SetCombo(VK_F, [ssCtrl], VK_UNKNOWN, [], VK_RIGHT, [ssCtrl],VK_UNKNOWN,[]);
   ecLineStart: SetCombo(VK_Q, [ssCtrl], VK_S, [], VK_HOME, [],VK_UNKNOWN,[]);
   ecLineEnd: SetCombo(VK_Q, [ssCtrl], VK_D, [], VK_END, [],VK_UNKNOWN,[]);
   ecPageUp: SetCombo(VK_R, [ssCtrl], VK_UNKNOWN, [], VK_PRIOR, [],VK_UNKNOWN,[]);
   ecPageDown: SetCombo(VK_C, [ssCtrl], VK_UNKNOWN, [], VK_NEXT, [],VK_UNKNOWN,[]);
+  // Paragraph Down: VK_B, [ssCtrl]
   ecPageLeft: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPageRight: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecPageTop: SetCombo(VK_Q, [ssCtrl], VK_E, [], VK_HOME, [ssCtrl],VK_UNKNOWN,[]);
@@ -771,81 +776,82 @@ begin
   ecSelectionSort: SetCombo(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecSelectionBreakLines: SetCombo(VK_UNKNOWN, [],VK_UNKNOWN,[], VK_UNKNOWN, [], VK_UNKNOWN, []);
 
-  ecBlockSetBegin   : SetCombo(VK_K,[ssCtrl],VK_B,[],  VK_K,[ssCtrl],VK_B,[ssCtrl]);
-  ecBlockSetEnd     : SetCombo(VK_K,[ssCtrl],VK_K,[],  VK_K,[ssCtrl],VK_K,[ssCtrl]);
-  ecBlockToggleHide : SetCombo(VK_K,[ssCtrl],VK_H,[],  VK_K,[ssCtrl],VK_H,[ssCtrl]);
+  ecBlockSetBegin   : SetCombo(VK_K,[ssCtrl],VK_B,[], VK_K,[ssCtrl],VK_B,[ssCtrl]);
+  ecBlockSetEnd     : SetCombo(VK_K,[ssCtrl],VK_K,[], VK_K,[ssCtrl],VK_K,[ssCtrl]);
+  ecBlockToggleHide : SetCombo(VK_K,[ssCtrl],VK_H,[], VK_K,[ssCtrl],VK_H,[ssCtrl]);
   ecBlockHide       : SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBlockShow       : SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecBlockMove       : SetCombo(VK_K,[ssCtrl],VK_V,[],  VK_K,[ssCtrl],VK_V,[ssCtrl]);
-  ecBlockCopy       : SetCombo(VK_K,[ssCtrl],VK_C,[],  VK_K,[ssCtrl],VK_C,[ssCtrl]);
-  ecBlockDelete     : SetCombo(VK_K,[ssCtrl],VK_Y,[ssCtrl],  VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecBlockMove       : SetCombo(VK_K,[ssCtrl],VK_V,[], VK_K,[ssCtrl],VK_V,[ssCtrl]);
+  ecBlockCopy       : SetCombo(VK_K,[ssCtrl],VK_C,[], VK_K,[ssCtrl],VK_C,[ssCtrl]);
+  ecBlockDelete     : SetCombo(VK_K,[ssCtrl],VK_Y,[], VK_K,[ssCtrl],VK_Y,[ssCtrl]);
   ecBlockGotoBegin  : SetCombo(VK_Q,[ssCtrl],VK_B,[ssCtrl],  VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecBlockGotoEnd    : SetCombo(VK_Q,[ssCtrl],VK_K,[ssCtrl],  VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // column mode selection
-  ecColSelUp: SetCombo(VK_UP, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
-  ecColSelDown: SetCombo(VK_DOWN, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
-  ecColSelLeft: SetCombo(VK_LEFT, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
-  ecColSelRight: SetCombo(VK_RIGHT, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
-  ecColSelPageDown: SetCombo(VK_NEXT, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
-  ecColSelPageBottom: SetCombo(VK_NEXT, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
-  ecColSelPageUp: SetCombo(VK_PRIOR, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
-  ecColSelPageTop: SetCombo(VK_PRIOR, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
-  ecColSelLineStart: SetCombo(VK_HOME, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
-  ecColSelLineEnd: SetCombo(VK_END, [ssAlt, ssShift], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
-  ecColSelEditorTop: SetCombo(VK_HOME, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
-  ecColSelEditorBottom: SetCombo(VK_END, [ssAlt, ssShift,ssCtrl], VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelUp:          SetCombo(VK_UP,    [ssAlt, ssShift],       VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelDown:        SetCombo(VK_DOWN,  [ssAlt, ssShift],       VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelLeft:        SetCombo(VK_LEFT,  [ssAlt, ssShift],       VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelRight:       SetCombo(VK_RIGHT, [ssAlt, ssShift],       VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelPageDown:    SetCombo(VK_NEXT,  [ssAlt, ssShift],       VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelPageBottom:  SetCombo(VK_NEXT,  [ssAlt, ssShift,ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelPageUp:      SetCombo(VK_PRIOR, [ssAlt, ssShift],       VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelPageTop:     SetCombo(VK_PRIOR, [ssAlt, ssShift,ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelLineStart:   SetCombo(VK_HOME,  [ssAlt, ssShift],       VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelLineEnd:     SetCombo(VK_END,   [ssAlt, ssShift],       VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelEditorTop:   SetCombo(VK_HOME,  [ssAlt, ssShift,ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecColSelEditorBottom:SetCombo(VK_END,   [ssAlt, ssShift,ssCtrl],VK_UNKNOWN,[], VK_UNKNOWN,[], VK_UNKNOWN,[]);
 
   // editing
-  ecBlockIndent: SetCombo(VK_K,[ssCtrl],VK_I,[],VK_K,[ssCtrl],VK_I,[ssCtrl]);
-  ecBlockUnindent: SetCombo(VK_K,[ssCtrl],VK_U,[],VK_K,[ssCtrl],VK_U,[ssCtrl]);
-  ecDeleteLastChar: SetCombo(VK_H,[ssCtrl],VK_UNKNOWN,[],VK_BACK, [],VK_UNKNOWN,[]);
-  ecDeleteChar: SetSingle(VK_DELETE,[],VK_UNKNOWN,[]);
-  ecDeleteWord: SetSingle(VK_T,[ssCtrl],VK_UNKNOWN,[]);
-  ecDeleteLastWord: SetSingle(VK_BACK,[ssCtrl],VK_UNKNOWN,[]);
-  ecDeleteBOL: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecDeleteEOL: SetCombo(VK_K,[ssCtrl],VK_Y,[]);
-  ecDeleteLine: SetSingle(VK_Y,[ssCtrl],VK_UNKNOWN,[]);
-  ecClearAll: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecLineBreak: SetCombo(VK_RETURN,[],VK_UNKNOWN,[],VK_M,[ssCtrl],VK_UNKNOWN,[]);
-  ecInsertLine: SetSingle(VK_N,[ssCtrl],VK_UNKNOWN,[]);
-  ecInsertCharacter: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertGPLNotice: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertLGPLNotice: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertModifiedLGPLNotice: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertUserName: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertDateTime: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertChangeLogEntry: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertCVSAuthor: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertCVSDate: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertCVSHeader: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertCVSID: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertCVSLog: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertCVSName: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertCVSRevision: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecInsertCVSSource: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertMode:       SetSingle(VK_V,[ssCtrl],         VK_INSERT,[]);
+  ecBlockIndent:      SetCombo(VK_K,[ssCtrl],VK_I,[],  VK_K,[ssCtrl],VK_I,[ssCtrl]);
+  ecBlockUnindent:    SetCombo(VK_K,[ssCtrl],VK_U,[],  VK_K,[ssCtrl],VK_U,[ssCtrl]);
+  ecDeleteLastChar:   SetCombo(VK_H,[ssCtrl],VK_UNKNOWN,[], VK_BACK, [],VK_UNKNOWN,[]);
+  ecDeleteChar:       SetSingle(VK_G,[ssCtrl],         VK_DELETE,[]);
+  ecDeleteWord:       SetSingle(VK_T,[ssCtrl],         VK_UNKNOWN,[]);
+  ecDeleteLastWord:   SetSingle(VK_BACK,[ssCtrl],      VK_UNKNOWN,[]);
+  ecDeleteBOL:        SetCombo(VK_Q,[ssCtrl],VK_H,[],  VK_Q,[ssCtrl],VK_H,[ssCtrl]);
+  ecDeleteEOL:        SetCombo(VK_Q,[ssCtrl],VK_Y,[],  VK_Q,[ssCtrl],VK_Y,[ssCtrl]);
+  ecDeleteLine:       SetSingle(VK_Y,[ssCtrl],         VK_UNKNOWN,[]);
+  ecClearAll:         SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
+  ecLineBreak:        SetCombo(VK_RETURN,[],VK_UNKNOWN,[], VK_M,[ssCtrl],VK_UNKNOWN,[]);
+  ecInsertLine:       SetSingle(VK_N,[ssCtrl],         VK_UNKNOWN,[]);
+  ecInsertCharacter:  SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
+  ecInsertGPLNotice:  SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
+  ecInsertLGPLNotice: SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
+  ecInsertModifiedLGPLNotice: SetSingle(VK_UNKNOWN,[], VK_UNKNOWN,[]);
+  ecInsertUserName:   SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
+  ecInsertDateTime:   SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
+  ecInsertChangeLogEntry: SetSingle(VK_UNKNOWN,[],     VK_UNKNOWN,[]);
+  ecInsertCVSAuthor:  SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
+  ecInsertCVSDate:    SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
+  ecInsertCVSHeader:  SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
+  ecInsertCVSID:      SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
+  ecInsertCVSLog:     SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
+  ecInsertCVSName:    SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
+  ecInsertCVSRevision:SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
+  ecInsertCVSSource:  SetSingle(VK_UNKNOWN,[],         VK_UNKNOWN,[]);
 
   // command commands
-  ecUndo: SetSingle(VK_BACK,[ssALT],VK_UNKNOWN,[]);
+  ecUndo: SetSingle(VK_BACK,[ssALT],        VK_U,[ssCtrl]);
   ecRedo: SetSingle(VK_BACK,[ssALT,ssShift],VK_UNKNOWN,[]);
 
   // search & replace
-  ecMatchBracket: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecFind: SetCombo(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_Q,[SSCtrl],VK_F,[]);
-  ecFindNext: SetSingle(VK_L,[ssCtrl],VK_UNKNOWN,[]);
-  ecFindPrevious: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecFindInFiles: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecReplace: SetCombo(VK_Q,[SSCtrl],VK_A,[]);
-  ecIncrementalFind: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecGotoLineNumber: SetSingle(VK_G,[ssCtrl],VK_UNKNOWN,[]);
+  ecMatchBracket:           SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFind:                   SetCombo(VK_Q,[SSCtrl],VK_F,[]);
+  ecFindNext:               SetSingle(VK_L,[ssCtrl],VK_UNKNOWN,[]);
+  ecFindPrevious:           SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecFindInFiles:            SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecReplace:                SetCombo(VK_Q,[SSCtrl],VK_A,[]);
+  ecIncrementalFind:        SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecGotoLineNumber:         SetCombo(VK_Q,[ssCtrl],VK_G,[]);
   ecFindNextWordOccurrence: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindPrevWordOccurrence: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecJumpBack: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecJumpForward: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecAddJumpPoint: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecJumpToPrevError: SetSingle(VK_F7,[ssShift,ssAlt],VK_UNKNOWN,[]);
-  ecJumpToNextError: SetSingle(VK_F8,[ssShift,ssAlt],VK_UNKNOWN,[]);
-  ecOpenFileAtCursor: SetSingle(VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
+  ecJumpBack:               SetSingle(VK_B,[ssCtrl]);
+  ecJumpForward:            SetSingle(VK_B,[ssShift,ssCtrl]);
+  ecAddJumpPoint:           SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecJumpToPrevError:        SetSingle(VK_F7,[ssShift,ssAlt],VK_UNKNOWN,[]);
+  ecJumpToNextError:        SetSingle(VK_F8,[ssShift,ssAlt],VK_UNKNOWN,[]);
+  ecOpenFileAtCursor:       SetSingle(VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
 
   // marker
   ecSetFreeBookmark: SetSingle(VK_UNKNOWN,[],VK_UNKNOWN,[]);
