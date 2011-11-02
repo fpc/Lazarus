@@ -5200,8 +5200,9 @@ var
   ComponentSize, SizeLength: int64;
   AStream: TMemoryStream;
 begin
-  if not ReadComponentSize(ComponentSize,SizeLength) then exit(false);
-  if (FQueue.Size-SizeLength<ComponentSize) then exit(false);
+  Result:=false;
+  if not ReadComponentSize(ComponentSize,SizeLength) then exit;
+  if (FQueue.Size-SizeLength<ComponentSize) then exit;
   // a complete component is in the buffer -> copy it to a stream
   AStream:=TMemoryStream.Create;
   try
@@ -5215,6 +5216,7 @@ begin
   finally
     AStream.Free;
   end;
+  Result:=true;
 end;
 
 function TCustomLazComponentQueue.ConvertComponentAsString(AComponent: TComponent
