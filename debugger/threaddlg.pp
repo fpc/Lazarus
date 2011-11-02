@@ -58,61 +58,68 @@ begin
   {$IFDEF DBG_DATA_MONITORS} try DebugLnEnter(['DebugDataMonitor: >>ENTER: TThreadsDlg.ThreadsChanged from ',  DbgSName(Sender)]); {$ENDIF}
   Exclude(FUpdateFlags, ufThreadChanged);
 
-  if ThreadsMonitor = nil then begin
-    lvThreads.Clear;
-    exit;
-  end;
+  BeginUpdate;
+  lvThreads.BeginUpdate;
+  try
+    if ThreadsMonitor = nil then begin
+      lvThreads.Clear;
+      exit;
+    end;
 
-  Snap := GetSelectedSnapshot;
-  Threads := GetSelectedThreads(Snap);
-  if (Snap <> nil)
-  then begin
-    Caption:= lisThreads + ' ('+ Snap.LocationAsText +')';
-  end
-  else begin
-    Caption:= lisThreads;
-  end;
+    Snap := GetSelectedSnapshot;
+    Threads := GetSelectedThreads(Snap);
+    if (Snap <> nil)
+    then begin
+      Caption:= lisThreads + ' ('+ Snap.LocationAsText +')';
+    end
+    else begin
+      Caption:= lisThreads;
+    end;
 
-  if (Threads = nil) or ((Snap <> nil) and (Threads.Count=0)) then begin
-    lvThreads.Clear;
-    Item := lvThreads.Items.Add;
-    Item.SubItems.add('');
-    Item.SubItems.add('');
-    Item.SubItems.add('');
-    Item.SubItems.add(lisThreadsNotEvaluated);
-    Item.SubItems.add('');
-    Item.SubItems.add('');
-    exit;
-  end;
+    if (Threads = nil) or ((Snap <> nil) and (Threads.Count=0)) then begin
+      lvThreads.Clear;
+      Item := lvThreads.Items.Add;
+      Item.SubItems.add('');
+      Item.SubItems.add('');
+      Item.SubItems.add('');
+      Item.SubItems.add(lisThreadsNotEvaluated);
+      Item.SubItems.add('');
+      Item.SubItems.add('');
+      exit;
+    end;
 
-  i := Threads.Count;
-  while lvThreads.Items.Count > i do lvThreads.Items.Delete(i);
-  while lvThreads.Items.Count < i do begin
-    Item := lvThreads.Items.Add;
-    Item.SubItems.add('');
-    Item.SubItems.add('');
-    Item.SubItems.add('');
-    Item.SubItems.add('');
-    Item.SubItems.add('');
-    Item.SubItems.add('');
-  end;
+    i := Threads.Count;
+    while lvThreads.Items.Count > i do lvThreads.Items.Delete(i);
+    while lvThreads.Items.Count < i do begin
+      Item := lvThreads.Items.Add;
+      Item.SubItems.add('');
+      Item.SubItems.add('');
+      Item.SubItems.add('');
+      Item.SubItems.add('');
+      Item.SubItems.add('');
+      Item.SubItems.add('');
+    end;
 
-  for i := 0 to Threads.Count - 1 do begin
-    lvThreads.Items[i].Caption := '';
-    if Threads[i].ThreadId = Threads.CurrentThreadId
-    then lvThreads.Items[i].ImageIndex := imgCurrentLine
-    else lvThreads.Items[i].ImageIndex := -1;
-    lvThreads.Items[i].SubItems[0] := IntToStr(Threads[i].ThreadId);
-    lvThreads.Items[i].SubItems[1] := Threads[i].ThreadName;
-    lvThreads.Items[i].SubItems[2] := Threads[i].ThreadState;
-    s := Threads[i].Source;
-    if s = '' then s := ':' + IntToHex(Threads[i].Address, 8);
-    lvThreads.Items[i].SubItems[3] := s;
-    lvThreads.Items[i].SubItems[4] := IntToStr(Threads[i].Line);
-    lvThreads.Items[i].SubItems[5] := Threads[i].GetFunctionWithArg;
-    lvThreads.Items[i].Data := Threads[i];
+    for i := 0 to Threads.Count - 1 do begin
+      lvThreads.Items[i].Caption := '';
+      if Threads[i].ThreadId = Threads.CurrentThreadId
+      then lvThreads.Items[i].ImageIndex := imgCurrentLine
+      else lvThreads.Items[i].ImageIndex := -1;
+      lvThreads.Items[i].SubItems[0] := IntToStr(Threads[i].ThreadId);
+      lvThreads.Items[i].SubItems[1] := Threads[i].ThreadName;
+      lvThreads.Items[i].SubItems[2] := Threads[i].ThreadState;
+      s := Threads[i].Source;
+      if s = '' then s := ':' + IntToHex(Threads[i].Address, 8);
+      lvThreads.Items[i].SubItems[3] := s;
+      lvThreads.Items[i].SubItems[4] := IntToStr(Threads[i].Line);
+      lvThreads.Items[i].SubItems[5] := Threads[i].GetFunctionWithArg;
+      lvThreads.Items[i].Data := Threads[i];
+    end;
+  finally
+    lvThreads.EndUpdate;
+    EndUpdate;
+    {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataMonitor: <<EXIT: TThreadsDlg.ThreadsChanged']); end; {$ENDIF}
   end;
-  {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataMonitor: <<EXIT: TThreadsDlg.ThreadsChanged']); end; {$ENDIF}
 end;
 
 procedure TThreadsDlg.tbCurrentClick(Sender: TObject);
