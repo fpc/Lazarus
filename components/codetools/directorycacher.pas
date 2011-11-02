@@ -1598,13 +1598,16 @@ end;
 
 function TCTDirectoryCachePool.FindDiskFilename(const Filename: string
   ): string;
+{$IFDEF defined(NotLiteralFilenames) or defined(CaseInsensitiveFilenames)}
 var
   ADirectory: String;
   Cache: TCTDirectoryCache;
   ShortFilename: String;
+{$ENDIF}
 begin
   Result:=ChompPathDelim(TrimFilename(Filename));
   if Result='' then exit;
+  {$IFDEF defined(NotLiteralFilenames) or defined(CaseInsensitiveFilenames)}
   ADirectory:=ExtractFilePath(Result);
   if ADirectory=Result then
     exit; // e.g. / under Linux
@@ -1613,6 +1616,7 @@ begin
   Result:=Cache.FindFile(ShortFilename,ctsfcAllCase);
   if Result='' then exit;
   Result:=Cache.Directory+Result;
+  {$ENDIF}
 end;
 
 function TCTDirectoryCachePool.FindUnitInDirectory(const Directory,
