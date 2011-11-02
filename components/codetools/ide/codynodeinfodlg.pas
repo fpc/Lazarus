@@ -36,7 +36,7 @@ uses
   SrcEditorIntf,
   // CodeTools
   CodeToolManager, CodeTree, FindDeclarationCache, PascalParserTool,
-  LinkScanner, CodeCache, CodeAtom, BasicCodeTools, FindDeclarationTool,
+  LinkScanner, CodeCache, BasicCodeTools, FindDeclarationTool,
   CodyUtils, CodyStrConsts;
 
 type

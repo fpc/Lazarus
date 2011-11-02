@@ -884,10 +884,17 @@ begin
   inherited Create;
   FCheckFilesOnDisk:=true;
   FOnFindDefinePropertyForContext:=@DefaultFindDefinePropertyForContext;
+  DirectoryCachePool:=TCTDirectoryCachePool.Create;
+  DirectoryCachePool.OnGetString:=@DirectoryCachePoolGetString;
+  DirectoryCachePool.OnFindVirtualFile:=@DirectoryCachePoolFindVirtualFile;
+  DirectoryCachePool.OnGetUnitFromSet:=@DirectoryCachePoolGetUnitFromSet;
+  DirectoryCachePool.OnGetCompiledUnitFromSet:=@DirectoryCachePoolGetCompiledUnitFromSet;
+  DirectoryCachePool.OnIterateFPCUnitsFromSet:=@DirectoryCachePoolIterateFPCUnitsFromSet;
   DefineTree:=TDefineTree.Create;
   DefineTree.OnReadValue:=@OnDefineTreeReadValue;
   DefinePool:=TDefinePool.Create;
   SourceCache:=TCodeCache.Create;
+  SourceCache.DirectoryCachePool:=DirectoryCachePool;
   if DefaultConfigCodeCache=nil then
     DefaultConfigCodeCache:=SourceCache;
   SourceChangeCache:=TSourceChangeCache.Create;
@@ -898,12 +905,6 @@ begin
   Indenter.OnGetExamples:=@OnFABGetExamples;
   Indenter.OnLoadFile:=@OnLoadFileForTool;
   GlobalValues:=TExpressionEvaluator.Create;
-  DirectoryCachePool:=TCTDirectoryCachePool.Create;
-  DirectoryCachePool.OnGetString:=@DirectoryCachePoolGetString;
-  DirectoryCachePool.OnFindVirtualFile:=@DirectoryCachePoolFindVirtualFile;
-  DirectoryCachePool.OnGetUnitFromSet:=@DirectoryCachePoolGetUnitFromSet;
-  DirectoryCachePool.OnGetCompiledUnitFromSet:=@DirectoryCachePoolGetCompiledUnitFromSet;
-  DirectoryCachePool.OnIterateFPCUnitsFromSet:=@DirectoryCachePoolIterateFPCUnitsFromSet;
   OnFileExistsCached:=@DirectoryCachePool.FileExists;
   OnFileAgeCached:=@DirectoryCachePool.FileAge;
   DefineTree.DirectoryCachePool:=DirectoryCachePool;
@@ -1601,26 +1602,26 @@ end;
 procedure TCodeToolManager.FreeListOfPCodeXYPosition(var List: TFPList);
 begin
   if List<>nil then begin
-    CodeAtom.FreeListOfPCodeXYPosition(List);
+    CodeCache.FreeListOfPCodeXYPosition(List);
     List:=nil;
   end;
 end;
 
 procedure TCodeToolManager.FreeTreeOfPCodeXYPosition(var Tree: TAVLTree);
 begin
-  CodeAtom.FreeTreeOfPCodeXYPosition(Tree);
+  CodeCache.FreeTreeOfPCodeXYPosition(Tree);
   Tree:=nil;
 end;
 
 function TCodeToolManager.CreateTreeOfPCodeXYPosition: TAVLTree;
 begin
-  Result:=CodeAtom.CreateTreeOfPCodeXYPosition;
+  Result:=CodeCache.CreateTreeOfPCodeXYPosition;
 end;
 
 procedure TCodeToolManager.AddListToTreeOfPCodeXYPosition(SrcList: TFPList;
   DestTree: TAVLTree; ClearList, CreateCopies: boolean);
 begin
-  CodeAtom.AddListToTreeOfPCodeXYPosition(SrcList,DestTree,ClearList,CreateCopies);
+  CodeCache.AddListToTreeOfPCodeXYPosition(SrcList,DestTree,ClearList,CreateCopies);
 end;
 
 function TCodeToolManager.Explore(Code: TCodeBuffer;

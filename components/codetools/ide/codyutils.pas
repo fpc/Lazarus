@@ -33,8 +33,7 @@ uses
   Classes, SysUtils, Dialogs, Controls, LCLIntf, Clipbrd, LCLType, LResources,
   // IDEIntf
   IDEDialogs, LazIDEIntf, SrcEditorIntf, IDEHelpIntf,
-  // codetools
-  CodeAtom, FileProcs, CodeToolManager, CodeCache, SourceLog, BasicCodeTools,
+  FileProcs, CodeToolManager, CodeCache, SourceLog, BasicCodeTools,
   EventCodeTool, LinkScanner, PascalParserTool, CodeTree, SourceChanger,
   CodeBeautifier,
   CodyStrConsts;

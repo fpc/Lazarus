@@ -37,10 +37,10 @@ unit ProcedureList;
 
 interface
 uses
-  Classes, SysUtils, Forms,
-  Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, StdCtrls, CodeTree, CodeToolManager,
-  CodeAtom, IDEImagesIntf;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls,
+  ExtCtrls, StdCtrls,
+  CodeTree, CodeToolManager, CodeAtom, CodeCache,
+  IDEImagesIntf;
 
 type
   { TProcedureListForm }
@@ -107,7 +107,6 @@ implementation
 uses
   MenuIntf
   ,SrcEditorIntf
-  ,CodeCache
   ,PascalParserTool
   ,KeywordFuncLists
   ,LCLType

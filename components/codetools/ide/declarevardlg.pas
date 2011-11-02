@@ -40,7 +40,7 @@ uses
   Dialogs, ButtonPanel, StdCtrls, ExtCtrls,
   IDEDialogs, LazIDEIntf, SrcEditorIntf,
   FileProcs, CodeToolManager, FindDeclarationTool, CodeTree, CodeCache,
-  KeywordFuncLists, BasicCodeTools, CodeAtom,
+  KeywordFuncLists, BasicCodeTools,
   CodyUtils, CodyStrConsts;
 
 type

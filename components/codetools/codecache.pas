@@ -38,7 +38,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, SourceLog, LinkScanner, FileProcs,
+  Classes, SysUtils, SourceLog, LinkScanner, FileProcs, DirectoryCacher,
   Avl_Tree, Laz_XMLCfg;
 
 const
@@ -137,6 +137,7 @@ type
   private
     FChangeStamp: int64;
     FDefaultEncoding: string;
+    FDirectoryCachePool: TCTDirectoryCachePool;
     FItems: TAVLTree;  // tree of TCodeBuffer
     FIncludeLinks: TAVLTree; // tree of TIncludedByLink
     FDestroying: boolean;
@@ -213,6 +214,54 @@ type
                                                       write FOnEncodeSaving;
     property DefaultEncoding: string read FDefaultEncoding write FDefaultEncoding;
     property ChangeStamp: int64 read FChangeStamp;
+    property DirectoryCachePool: TCTDirectoryCachePool read FDirectoryCachePool
+                                                      write FDirectoryCachePool;
+  end;
+
+type
+  TCodePosition = packed record
+    Code: TCodeBuffer;
+    P: integer;
+  end;
+  PCodePosition = ^TCodePosition;
+
+  TCodeXYPosition = packed record
+    Code: TCodeBuffer;
+    X, Y: integer;
+  end;
+  PCodeXYPosition = ^TCodeXYPosition;
+const
+  CleanCodeXYPosition: TCodeXYPosition = (Code:nil; X:0; Y:0);
+
+type
+  { TCodeXYPositions - a list of PCodeXYPosition }
+
+  TCodeXYPositions = class
+  private
+    FItems: TFPList; // list of PCodeXYPosition, can be nil
+    function GetCaretsXY(Index: integer): TPoint;
+    function GetCodes(Index: integer): TCodeBuffer;
+    function GetItems(Index: integer): PCodeXYPosition;
+    procedure SetCaretsXY(Index: integer; const AValue: TPoint);
+    procedure SetCodes(Index: integer; const AValue: TCodeBuffer);
+    procedure SetItems(Index: integer; const AValue: PCodeXYPosition);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function Add(const Position: TCodeXYPosition): integer;
+    function Add(X,Y: integer; Code: TCodeBuffer): integer;
+    procedure Assign(Source: TCodeXYPositions);
+    function IsEqual(Source: TCodeXYPositions): boolean;
+    function Count: integer;
+    procedure Delete(Index: integer);
+    function CreateCopy: TCodeXYPositions;
+    function CalcMemSize: PtrUint;
+  public
+    property Items[Index: integer]: PCodeXYPosition
+                                          read GetItems write SetItems; default;
+    property CaretsXY[Index: integer]: TPoint read GetCaretsXY write SetCaretsXY;
+    property Codes[Index: integer]: TCodeBuffer read GetCodes write SetCodes;
   end;
 
 
@@ -221,6 +270,28 @@ function CompareAnsistringWithCodeBuffer(AString, ABuffer: pointer): integer;
 function CompareIncludedByLink(NodeData1, NodeData2: pointer): integer;
 function ComparePAnsiStringWithIncludedByLink(Key, Data: pointer): integer;
 
+function CodePosition(P: integer; Code: TCodeBuffer): TCodePosition;
+function CodeXYPosition(X, Y: integer; Code: TCodeBuffer): TCodeXYPosition;
+function CompareCodeXYPositions(Pos1, Pos2: PCodeXYPosition): integer;
+
+function CompareCodePositions(Pos1, Pos2: PCodePosition): integer;
+
+procedure AddCodePosition(var ListOfPCodeXYPosition: TFPList;
+                          const NewCodePos: TCodeXYPosition);
+function IndexOfCodePosition(var ListOfPCodeXYPosition: TFPList;
+                             const APosition: PCodeXYPosition): integer;
+procedure FreeListOfPCodeXYPosition(ListOfPCodeXYPosition: TFPList);
+
+function CreateTreeOfPCodeXYPosition: TAVLTree;
+procedure AddCodePosition(var TreeOfPCodeXYPosition: TAVLTree;
+                          const NewCodePos: TCodeXYPosition);
+procedure FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree);
+procedure AddListToTreeOfPCodeXYPosition(SrcList: TFPList;
+                          DestTree: TAVLTree; ClearList, CreateCopies: boolean);
+function ListOfPCodeXYPositionToStr(const ListOfPCodeXYPosition: TFPList): string;
+
+function Dbgs(const p: TCodeXYPosition): string; overload;
+function Dbgs(const p: TCodePosition): string; overload;
 
 implementation
 
@@ -254,6 +325,176 @@ function ComparePAnsiStringWithIncludedByLink(Key, Data: pointer): integer;
 begin
   Result:=CompareFilenames(PAnsiString(Key)^,
                            TIncludedByLink(Data).IncludeFilename);
+end;
+
+function CodePosition(P: integer; Code: TCodeBuffer): TCodePosition;
+begin
+  Result.P:=P;
+  Result.Code:=Code;
+end;
+
+function CodeXYPosition(X, Y: integer; Code: TCodeBuffer): TCodeXYPosition;
+begin
+  Result.X:=X;
+  Result.Y:=Y;
+  Result.Code:=Code;
+end;
+
+function CompareCodeXYPositions(Pos1, Pos2: PCodeXYPosition): integer;
+begin
+  if Pointer(Pos1^.Code)>Pointer(Pos2^.Code) then Result:=1
+  else if Pointer(Pos1^.Code)<Pointer(Pos2^.Code) then Result:=-1
+  else if Pos1^.Y<Pos2^.Y then Result:=1
+  else if Pos1^.Y>Pos2^.Y then Result:=-1
+  else if Pos1^.X<Pos2^.X then Result:=1
+  else if Pos1^.Y<Pos2^.Y then Result:=-1
+  else Result:=0;
+end;
+
+function CompareCodePositions(Pos1, Pos2: PCodePosition): integer;
+begin
+  if Pointer(Pos1^.Code)>Pointer(Pos2^.Code) then Result:=1
+  else if Pointer(Pos1^.Code)<Pointer(Pos2^.Code) then Result:=-1
+  else if Pos1^.P<Pos2^.P then Result:=1
+  else if Pos1^.P>Pos2^.P then Result:=-1
+  else Result:=0;
+end;
+
+procedure AddCodePosition(var ListOfPCodeXYPosition: TFPList;
+  const NewCodePos: TCodeXYPosition);
+var
+  AddCodePos: PCodeXYPosition;
+begin
+  if ListOfPCodeXYPosition=nil then ListOfPCodeXYPosition:=TFPList.Create;
+  New(AddCodePos);
+  AddCodePos^:=NewCodePos;
+  ListOfPCodeXYPosition.Add(AddCodePos);
+end;
+
+function IndexOfCodePosition(var ListOfPCodeXYPosition: TFPList;
+  const APosition: PCodeXYPosition): integer;
+begin
+  if ListOfPCodeXYPosition=nil then
+    Result:=-1
+  else begin
+    Result:=ListOfPCodeXYPosition.Count-1;
+    while (Result>=0)
+    and (CompareCodeXYPositions(APosition,
+                             PCodeXYPosition(ListOfPCodeXYPosition[Result]))<>0)
+    do
+      dec(Result);
+  end;
+end;
+
+procedure FreeListOfPCodeXYPosition(ListOfPCodeXYPosition: TFPList);
+var
+  CurCodePos: PCodeXYPosition;
+  i: Integer;
+begin
+  if ListOfPCodeXYPosition=nil then exit;
+  for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
+    CurCodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
+    Dispose(CurCodePos);
+  end;
+  ListOfPCodeXYPosition.Free;
+end;
+
+function CreateTreeOfPCodeXYPosition: TAVLTree;
+begin
+  Result:=TAVLTree.Create(TListSortCompare(@CompareCodeXYPositions));
+end;
+
+procedure AddCodePosition(var TreeOfPCodeXYPosition: TAVLTree;
+  const NewCodePos: TCodeXYPosition);
+var
+  AddCodePos: PCodeXYPosition;
+begin
+  if TreeOfPCodeXYPosition=nil then
+    TreeOfPCodeXYPosition:=TAVLTree.Create(TListSortCompare(@CompareCodeXYPositions));
+  New(AddCodePos);
+  AddCodePos^:=NewCodePos;
+  TreeOfPCodeXYPosition.Add(AddCodePos);
+end;
+
+procedure FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree);
+var
+  ANode: TAVLTreeNode;
+  CursorPos: PCodeXYPosition;
+begin
+  if TreeOfPCodeXYPosition=nil then exit;
+  ANode:=TreeOfPCodeXYPosition.FindLowest;
+  while ANode<>nil do begin
+    CursorPos:=PCodeXYPosition(ANode.Data);
+    if CursorPos<>nil then
+      Dispose(CursorPos);
+    ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
+  end;
+  TreeOfPCodeXYPosition.Free;
+end;
+
+procedure AddListToTreeOfPCodeXYPosition(SrcList: TFPList; DestTree: TAVLTree;
+  ClearList, CreateCopies: boolean);
+var
+  i: Integer;
+  CodePos: PCodeXYPosition;
+  NewCodePos: PCodeXYPosition;
+begin
+  if SrcList=nil then exit;
+  for i:=SrcList.Count-1 downto 0 do begin
+    CodePos:=PCodeXYPosition(SrcList[i]);
+    if DestTree.Find(CodePos)=nil then begin
+      // new position -> add
+      if CreateCopies and (not ClearList) then begin
+        // list items should be kept and copies should be added to the tree
+        New(NewCodePos);
+        NewCodePos^:=CodePos^;
+      end else
+        NewCodePos:=CodePos;
+      DestTree.Add(NewCodePos);
+    end else if ClearList then begin
+      // position already exists and items should be deleted
+      Dispose(CodePos);
+    end;
+  end;
+  if ClearList then
+    SrcList.Clear;
+end;
+
+function ListOfPCodeXYPositionToStr(const ListOfPCodeXYPosition: TFPList
+  ): string;
+var
+  p: TCodeXYPosition;
+  i: Integer;
+begin
+  if ListOfPCodeXYPosition=nil then
+    Result:='nil'
+  else begin
+    Result:='';
+    for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
+      p:=PCodeXYPosition(ListOfPCodeXYPosition[i])^;
+      Result:=Result+'  '+Dbgs(p)+LineEnding;
+    end;
+  end;
+end;
+
+function Dbgs(const p: TCodeXYPosition): string;
+begin
+  if p.Code=nil then
+    Result:='(none)'
+  else
+    Result:=p.Code.Filename+'(y='+dbgs(p.y)+',x='+dbgs(p.x)+')';
+end;
+
+function Dbgs(const p: TCodePosition): string;
+var
+  CodeXYPosition: TCodeXYPosition;
+begin
+  FillChar(CodeXYPosition,SizeOf(TCodeXYPosition),0);
+  CodeXYPosition.Code:=p.Code;
+  if CodeXYPosition.Code<>nil then begin
+    CodeXYPosition.Code.AbsoluteToLineCol(p.P,CodeXYPosition.Y,CodeXYPosition.X);
+  end;
+  Result:=Dbgs(CodeXYPosition);
 end;
 
 { TCodeCache }
@@ -349,7 +590,10 @@ begin
       // load new buffer
       if (not FileExistsCached(AFilename)) then
         exit;
-      DiskFilename:=FindDiskFilename(AFilename);
+      if DirectoryCachePool<>nil then
+        DiskFilename:=DirectoryCachePool.FindDiskFilename(AFilename)
+      else
+        DiskFilename:=FindDiskFilename(AFilename);
       if FindFile(DiskFilename)<>nil then
         FindDiskFilenameInconsistent;
       Result:=TCodeBuffer.Create;
@@ -1050,7 +1294,7 @@ begin
   end;
   if (not IsVirtual) or (Filename='') then begin
     if CompareFilenames(AFilename,Filename)=0 then begin
-      //DebugLn('****** [TCodeBuffer.LoadFromFile] ',Filename,' FileDateValid=',FileDateValid,' ',FFileDate,',',FileAgeUTF8(Filename),',',FFileChangeStep,',',ChangeStep,', NeedsUpdate=',FileNeedsUpdate);
+      //DebugLn('[TCodeBuffer.LoadFromFile] ',Filename,' FileDateValid=',FileDateValid,' ',FFileDate,',',FileAgeUTF8(Filename),',',FFileChangeStep,',',ChangeStep,', NeedsUpdate=',FileNeedsUpdate);
       if FileNeedsUpdate then begin
         Result:=inherited LoadFromFile(AFilename);
         if Result then MakeFileDateValid;
@@ -1293,6 +1537,165 @@ begin
     +MemSizeString(IncludeFilename);
 end;
 
+{ TCodeXYPositions }
+
+function TCodeXYPositions.GetItems(Index: integer): PCodeXYPosition;
+begin
+  Result:=PCodeXYPosition(FItems[Index]);
+end;
+
+function TCodeXYPositions.GetCaretsXY(Index: integer): TPoint;
+var
+  Item: PCodeXYPosition;
+begin
+  Item:=Items[Index];
+  Result:=Point(Item^.X,Item^.Y);
+end;
+
+function TCodeXYPositions.GetCodes(Index: integer): TCodeBuffer;
+var
+  Item: PCodeXYPosition;
+begin
+  Item:=Items[Index];
+  Result:=Item^.Code;
+end;
+
+procedure TCodeXYPositions.SetCaretsXY(Index: integer; const AValue: TPoint);
+var
+  Item: PCodeXYPosition;
+begin
+  Item:=Items[Index];
+  Item^.X:=AValue.X;
+  Item^.Y:=AValue.Y;
+end;
+
+procedure TCodeXYPositions.SetCodes(Index: integer; const AValue: TCodeBuffer);
+var
+  Item: PCodeXYPosition;
+begin
+  Item:=Items[Index];
+  Item^.Code:=AValue;
+end;
+
+procedure TCodeXYPositions.SetItems(Index: integer;
+  const AValue: PCodeXYPosition);
+begin
+  FItems[Index]:=AValue;
+end;
+
+constructor TCodeXYPositions.Create;
+begin
+
+end;
+
+destructor TCodeXYPositions.Destroy;
+begin
+  Clear;
+  FItems.Free;
+  FItems:=nil;
+  inherited Destroy;
+end;
+
+procedure TCodeXYPositions.Clear;
+var
+  i: Integer;
+  Item: PCodeXYPosition;
+begin
+  if FItems<>nil then begin
+    for i:=0 to FItems.Count-1 do begin
+      Item:=Items[i];
+      Dispose(Item);
+    end;
+    FItems.Clear;
+  end;
+end;
+
+function TCodeXYPositions.Add(const Position: TCodeXYPosition): integer;
+var
+  NewItem: PCodeXYPosition;
+begin
+  New(NewItem);
+  NewItem^:=Position;
+  if FItems=nil then FItems:=TFPList.Create;
+  Result:=FItems.Add(NewItem);
+end;
+
+function TCodeXYPositions.Add(X, Y: integer; Code: TCodeBuffer): integer;
+var
+  NewItem: TCodeXYPosition;
+begin
+  NewItem.X:=X;
+  NewItem.Y:=Y;
+  NewItem.Code:=Code;
+  Result:=Add(NewItem);
+end;
+
+procedure TCodeXYPositions.Assign(Source: TCodeXYPositions);
+var
+  i: Integer;
+begin
+  if IsEqual(Source) then exit;
+  Clear;
+  for i:=0 to Source.Count-1 do
+    Add(Source[i]^);
+end;
+
+function TCodeXYPositions.IsEqual(Source: TCodeXYPositions): boolean;
+var
+  SrcItem: TCodeXYPosition;
+  CurItem: TCodeXYPosition;
+  i: Integer;
+begin
+  if Source=Self then
+    Result:=true
+  else if (Source=nil) or (Source.Count<>Count) then
+    Result:=false
+  else begin
+    for i:=0 to Count-1 do begin
+      SrcItem:=Source[i]^;
+      CurItem:=Items[i]^;
+      if (SrcItem.X<>CurItem.X)
+      or (SrcItem.Y<>CurItem.Y)
+      or (SrcItem.Code<>CurItem.Code)
+      then begin
+        Result:=false;
+        exit;
+      end;
+    end;
+    Result:=true;
+  end;
+end;
+
+function TCodeXYPositions.Count: integer;
+begin
+  if FItems<>nil then
+    Result:=FItems.Count
+  else
+    Result:=0;
+end;
+
+procedure TCodeXYPositions.Delete(Index: integer);
+var
+  Item: PCodeXYPosition;
+begin
+  Item:=Items[Index];
+  Dispose(Item);
+  FItems.Delete(Index);
+end;
+
+function TCodeXYPositions.CreateCopy: TCodeXYPositions;
+begin
+  Result:=TCodeXYPositions.Create;
+  Result.Assign(Self);
+end;
+
+function TCodeXYPositions.CalcMemSize: PtrUint;
+begin
+  Result:=PtrUInt(InstanceSize);
+  if FItems<>nil then
+    inc(Result,PtrUInt(FItems.InstanceSize)
+      +PtrUInt(FItems.Capacity)*SizeOf(TCodeXYPosition));
+end;
 
 end.
  

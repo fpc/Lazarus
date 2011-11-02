@@ -43,7 +43,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
-  CustomCodeTool,
+  CodeCache, CustomCodeTool,
   PascalParserTool, CodeCompletionTool, KeywordFuncLists, BasicCodeTools,
   LinkScanner, AVL_Tree, SourceChanger,
   FindDeclarationTool;

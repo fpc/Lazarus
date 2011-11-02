@@ -34,7 +34,7 @@ uses
   Dialogs, ButtonPanel, StdCtrls, ComCtrls, Menus, AVL_Tree,
   // Codetools
   CodeCache, CodeToolManager, FileProcs, PascalParserTool,
-  BasicCodeTools, CodeAtom, CodeTree, FindDeclarationTool,
+  BasicCodeTools, CodeTree, FindDeclarationTool,
   // IDEIntf
   IDEDialogs, LazIDEIntf, SrcEditorIntf,
   // Cody

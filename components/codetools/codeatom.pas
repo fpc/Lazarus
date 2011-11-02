@@ -39,21 +39,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, AVL_Tree, CodeCache, KeywordFuncLists;
+  Classes, SysUtils, FileProcs, AVL_Tree, KeywordFuncLists;
 
 type
-  TCodePosition = record
-    P: integer;
-    Code: TCodeBuffer;
-  end;
-  PCodePosition = ^TCodePosition;
-
-  TCodeXYPosition = record
-    X, Y: integer;
-    Code: TCodeBuffer;
-  end;
-  PCodeXYPosition = ^TCodeXYPosition;
-
   TCommonAtomFlag = (
     cafNone, // = none of the below
     cafSemicolon, cafEqual, cafColon, cafComma, cafPoint,
@@ -63,7 +51,6 @@ type
     );
     
 const
-  CleanCodeXYPosition: TCodeXYPosition = (X:0; Y:0; Code:nil);
   AllCommonAtomWords = [cafWord, cafEnd];
   CommonAtomFlagNames: array[TCommonAtomFlag] of shortstring = (
       'None',
@@ -133,28 +120,8 @@ type
 //-----------------------------------------------------------------------------
 // useful functions
 function AtomPosition(StartPos, EndPos: integer): TAtomPosition;
-function CodePosition(P: integer; Code: TCodeBuffer): TCodePosition;
-function CodeXYPosition(X, Y: integer; Code: TCodeBuffer): TCodeXYPosition;
-function CompareCodeXYPositions(Pos1, Pos2: PCodeXYPosition): integer;
-function CompareCodePositions(Pos1, Pos2: PCodePosition): integer;
 
-procedure AddCodePosition(var ListOfPCodeXYPosition: TFPList;
-                          const NewCodePos: TCodeXYPosition);
-function IndexOfCodePosition(var ListOfPCodeXYPosition: TFPList;
-                             const APosition: PCodeXYPosition): integer;
-procedure FreeListOfPCodeXYPosition(ListOfPCodeXYPosition: TFPList);
-
-function CreateTreeOfPCodeXYPosition: TAVLTree;
-procedure AddCodePosition(var TreeOfPCodeXYPosition: TAVLTree;
-                          const NewCodePos: TCodeXYPosition);
-procedure FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree);
-procedure AddListToTreeOfPCodeXYPosition(SrcList: TFPList;
-                          DestTree: TAVLTree; ClearList, CreateCopies: boolean);
-
-function Dbgs(const p: TCodeXYPosition): string; overload;
-function Dbgs(const p: TCodePosition): string; overload;
 function dbgs(const a: TAtomPosition): string; overload;
-function ListOfPCodeXYPositionToStr(const ListOfPCodeXYPosition: TFPList): string;
 
 
 implementation
@@ -169,179 +136,9 @@ begin
   Result.Flag:=cafNone;
 end;
 
-function CodePosition(P: integer; Code: TCodeBuffer): TCodePosition;
-begin
-  Result.P:=P;
-  Result.Code:=Code;
-end;
-
-function CodeXYPosition(X, Y: integer; Code: TCodeBuffer): TCodeXYPosition;
-begin
-  Result.X:=X;
-  Result.Y:=Y;
-  Result.Code:=Code;
-end;
-
-function CompareCodeXYPositions(Pos1, Pos2: PCodeXYPosition): integer;
-begin
-  if Pointer(Pos1^.Code)>Pointer(Pos2^.Code) then Result:=1
-  else if Pointer(Pos1^.Code)<Pointer(Pos2^.Code) then Result:=-1
-  else if Pos1^.Y<Pos2^.Y then Result:=1
-  else if Pos1^.Y>Pos2^.Y then Result:=-1
-  else if Pos1^.X<Pos2^.X then Result:=1
-  else if Pos1^.Y<Pos2^.Y then Result:=-1
-  else Result:=0;
-end;
-
-function CompareCodePositions(Pos1, Pos2: PCodePosition): integer;
-begin
-  if Pointer(Pos1^.Code)>Pointer(Pos2^.Code) then Result:=1
-  else if Pointer(Pos1^.Code)<Pointer(Pos2^.Code) then Result:=-1
-  else if Pos1^.P<Pos2^.P then Result:=1
-  else if Pos1^.P>Pos2^.P then Result:=-1
-  else Result:=0;
-end;
-
-procedure AddCodePosition(var ListOfPCodeXYPosition: TFPList;
-  const NewCodePos: TCodeXYPosition);
-var
-  AddCodePos: PCodeXYPosition;
-begin
-  if ListOfPCodeXYPosition=nil then ListOfPCodeXYPosition:=TFPList.Create;
-  New(AddCodePos);
-  AddCodePos^:=NewCodePos;
-  ListOfPCodeXYPosition.Add(AddCodePos);
-end;
-
-function IndexOfCodePosition(var ListOfPCodeXYPosition: TFPList;
-  const APosition: PCodeXYPosition): integer;
-begin
-  if ListOfPCodeXYPosition=nil then
-    Result:=-1
-  else begin
-    Result:=ListOfPCodeXYPosition.Count-1;
-    while (Result>=0)
-    and (CompareCodeXYPositions(APosition,
-                             PCodeXYPosition(ListOfPCodeXYPosition[Result]))<>0)
-    do
-      dec(Result);
-  end;
-end;
-
-procedure FreeListOfPCodeXYPosition(ListOfPCodeXYPosition: TFPList);
-var
-  CurCodePos: PCodeXYPosition;
-  i: Integer;
-begin
-  if ListOfPCodeXYPosition=nil then exit;
-  for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
-    CurCodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
-    Dispose(CurCodePos);
-  end;
-  ListOfPCodeXYPosition.Free;
-end;
-
-function CreateTreeOfPCodeXYPosition: TAVLTree;
-begin
-  Result:=TAVLTree.Create(TListSortCompare(@CompareCodeXYPositions));
-end;
-
-procedure AddCodePosition(var TreeOfPCodeXYPosition: TAVLTree;
-  const NewCodePos: TCodeXYPosition);
-var
-  AddCodePos: PCodeXYPosition;
-begin
-  if TreeOfPCodeXYPosition=nil then
-    TreeOfPCodeXYPosition:=TAVLTree.Create(TListSortCompare(@CompareCodeXYPositions));
-  New(AddCodePos);
-  AddCodePos^:=NewCodePos;
-  TreeOfPCodeXYPosition.Add(AddCodePos);
-end;
-
-procedure FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree);
-var
-  ANode: TAVLTreeNode;
-  CursorPos: PCodeXYPosition;
-begin
-  if TreeOfPCodeXYPosition=nil then exit;
-  ANode:=TreeOfPCodeXYPosition.FindLowest;
-  while ANode<>nil do begin
-    CursorPos:=PCodeXYPosition(ANode.Data);
-    if CursorPos<>nil then
-      Dispose(CursorPos);
-    ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
-  end;
-  TreeOfPCodeXYPosition.Free;
-end;
-
-procedure AddListToTreeOfPCodeXYPosition(SrcList: TFPList; DestTree: TAVLTree;
-  ClearList, CreateCopies: boolean);
-var
-  i: Integer;
-  CodePos: PCodeXYPosition;
-  NewCodePos: PCodeXYPosition;
-begin
-  if SrcList=nil then exit;
-  for i:=SrcList.Count-1 downto 0 do begin
-    CodePos:=PCodeXYPosition(SrcList[i]);
-    if DestTree.Find(CodePos)=nil then begin
-      // new position -> add
-      if CreateCopies and (not ClearList) then begin
-        // list items should be kept and copies should be added to the tree
-        New(NewCodePos);
-        NewCodePos^:=CodePos^;
-      end else
-        NewCodePos:=CodePos;
-      DestTree.Add(NewCodePos);
-    end else if ClearList then begin
-      // position already exists and items should be deleted
-      Dispose(CodePos);
-    end;
-  end;
-  if ClearList then
-    SrcList.Clear;
-end;
-
-function Dbgs(const p: TCodeXYPosition): string;
-begin
-  if p.Code=nil then
-    Result:='(none)'
-  else
-    Result:=p.Code.Filename+'(y='+dbgs(p.y)+',x='+dbgs(p.x)+')';
-end;
-
-function Dbgs(const p: TCodePosition): string;
-var
-  CodeXYPosition: TCodeXYPosition;
-begin
-  FillChar(CodeXYPosition,SizeOf(TCodeXYPosition),0);
-  CodeXYPosition.Code:=p.Code;
-  if CodeXYPosition.Code<>nil then begin
-    CodeXYPosition.Code.AbsoluteToLineCol(p.P,CodeXYPosition.Y,CodeXYPosition.X);
-  end;
-  Result:=Dbgs(CodeXYPosition);
-end;
-
 function dbgs(const a: TAtomPosition): string;
 begin
   Result:=CommonAtomFlagNames[a.Flag]+'['+dbgs(a.StartPos)+'-'+dbgs(a.EndPos)+']';
-end;
-
-function ListOfPCodeXYPositionToStr(const ListOfPCodeXYPosition: TFPList
-  ): string;
-var
-  p: TCodeXYPosition;
-  i: Integer;
-begin
-  if ListOfPCodeXYPosition=nil then
-    Result:='nil'
-  else begin
-    Result:='';
-    for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
-      p:=PCodeXYPosition(ListOfPCodeXYPosition[i])^;
-      Result:=Result+'  '+Dbgs(p)+LineEnding;
-    end;
-  end;
 end;
 
 { TAtomRing }

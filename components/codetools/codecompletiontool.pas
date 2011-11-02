@@ -80,9 +80,9 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
-  CustomCodeTool, PascalParserTool, MethodJumpTool, FindDeclarationTool,
-  KeywordFuncLists, CodeToolsStructs, BasicCodeTools, LinkScanner,
-  SourceChanger, CodeGraph, AVL_Tree;
+  CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,
+  FindDeclarationTool, KeywordFuncLists, CodeToolsStructs, BasicCodeTools,
+  LinkScanner, SourceChanger, CodeGraph, AVL_Tree;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,
