@@ -127,6 +127,7 @@ function GetSysColor(NIndex: Integer): DWORD; override;
 function GetSysColorBrush(nIndex: Integer): HBrush; override;
 function GetSystemMetrics(NIndex: Integer): Integer; override;
 function GetTextColor(DC: HDC): TColorRef; override;
+function GetTextExtentExPoint(DC: HDC; Str: PChar; Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize): Boolean; override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; Var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean; override;
 function GetViewPortExtEx(DC: HDC; Size: PSize): Integer; override;

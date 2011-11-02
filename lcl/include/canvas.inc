@@ -1684,6 +1684,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: TCanvas.TextFitInfo
+  Params:   Text: The text in consideration
+            MaxWidth: The size, the major input
+  Returns:  The number of characters which will fit into MaxWidth
+
+  Returns how many characters will fit in a specified width
+ ------------------------------------------------------------------------------}
+function TCanvas.TextFitInfo(const Text: string; MaxWidth: Integer): Integer;
+var
+  lSize: TSize;
+begin
+  LCLIntf.GetTextExtentExPoint(Self.Handle, PChar(Text), Length(Text),
+    MaxWidth, @Result, nil, lSize);
+end;
+
+{------------------------------------------------------------------------------
   Function: TCanvas.TextHeight
   Params:   Text: The text to measure
   Returns:  A handle to the GUI object

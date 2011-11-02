@@ -2050,6 +2050,37 @@ begin
   Result := TColorRef(Windows.GetTextColor(DC));
 end;
 
+function TWin32WidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
+  Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize): Boolean;
+var
+  LCLStr: utf8string;
+  s: AnsiString;
+  w: WideString;
+begin
+  // use temp buffer, if count is set, there might be no null terminator
+  if count = -1 then
+    LCLStr := Str
+  else
+  begin
+    SetLength(LCLStr, count);
+    move(str^, PChar(LCLStr)^, count);
+  end;
+  // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
+  if UnicodeEnabledOS then
+  begin
+    // TODO: use the real number of chars (and not the length)
+    w := UTF8ToUTF16(LCLStr);
+    Result := Windows.GetTextExtentExPointW(DC, PWideChar(W), Length(W),
+      MaxWidth, MaxCount, PartialWidths, Size);
+  end
+  else
+  begin
+    s := Utf8ToAnsi(LCLStr);
+    Result := Windows.GetTextExtentExPoint(DC, pchar(s), length(s),
+      MaxWidth, MaxCount, PartialWidths, Size);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  GetTextExtentPoint
   Params:  DC    - handle of device context

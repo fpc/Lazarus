@@ -1158,6 +1158,7 @@ type
     function TextExtent(const Text: string): TSize; virtual;
     function TextHeight(const Text: string): Integer; virtual;
     function TextWidth(const Text: string): Integer; virtual;
+    function TextFitInfo(const Text: string; MaxWidth: Integer): Integer;
     function HandleAllocated: boolean; virtual;
     function GetUpdatedHandle(ReqState: TCanvasState): HDC; virtual;
   public
