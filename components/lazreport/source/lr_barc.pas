@@ -272,7 +272,8 @@ begin
   BarC.Top := 0;
   BarC.Typ := Param.cBarType;
   BarC.Angle := Param.cAngle;
-  BarC.Ratio := 2.1; //Param.cRatio;
+  BarC.Ratio := Param.cRatio;  // some barcodes allow only some ratios
+                               // use at your own risk, for ean13 only 2.0-3.0
   BarC.Modul := 1; //Param.cModul;
   {$IFDEF BC_1_25}
   BarC.ShowTextPosition:=stpBottomCenter;
@@ -488,6 +489,12 @@ begin
   Bmp := CreateBarcode;
   if Bmp <> nil then
   try
+    // dx/dy is calculated in CreateBarCode using as base
+    // barcdode type, angle, zoom and data
+    if (Param.cAngle = 90) or (Param.cAngle = 270) then
+      dy := round(dy * param.cRatio)
+    else
+      dx := round(dx * Param.cRatio);
     CalcGaps;
     ShowBackground;
     if Param.cShowText then
@@ -535,12 +542,13 @@ begin
     end
     else
       aCanvas.StretchDraw(DRect,Bmp);
-  finally
-    Bmp.Free
-  end;
 
-  ShowFrame;
-  RestoreCoord;
+    ShowFrame;
+
+  finally
+    Bmp.Free;
+    RestoreCoord;
+  end;
 end;
 
 procedure TfrBarCodeView.Print(Stream: TStream);
