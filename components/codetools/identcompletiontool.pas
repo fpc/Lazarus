@@ -392,14 +392,6 @@ type
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
   
-const
-  IdentifierCompatibilityNames: array[TIdentifierCompatibility] of string = (
-    'icompExact',
-    'icompCompatible',
-    'icompUnknown',
-    'icompIncompatible'
-    );
-
 implementation
 
 function CompareIdentListItems(Data1, Data2: Pointer): integer;
@@ -2843,7 +2835,7 @@ function TIdentifierListItem.AsString: string;
 var
   ANode: TCodeTreeNode;
 begin
-  Result:=IdentifierCompatibilityNames[Compatibility];
+  WriteStr(Result, Compatibility);
   if HasChilds then
     Result:=Result+' HasChilds'
   else
