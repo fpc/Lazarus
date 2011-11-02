@@ -160,8 +160,7 @@ begin
       FSeriesCount += 1;
     end;
     if Assigned(FOnPopulate) then FOnPopulate(Self);
-  except
-    ClearAllSeries;
+  finally
     FreeAndNil(legendItems);
     FreeAndNil(bmp);
   end;
@@ -192,14 +191,14 @@ procedure TChartImageList.WriteData(AStream: TStream);
 var
   ch: TChart;
 begin
-  ch := FChart;
+  ch := Chart;
   try
     // Don't write the series images to stream.
     // They will be recreated automatically when the chart is assigned on loading.
     Chart := nil;
     inherited WriteData(AStream);
   finally
-    FChart := ch;
+    Chart := ch;
   end;
 end;
 
