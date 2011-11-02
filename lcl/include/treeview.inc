@@ -1233,8 +1233,12 @@ begin
   FPrevMultiSelected:=nil;
 end;
 
-procedure TTreeNode.InternalMove(ANode: TTreeNode;
-  AddMode: TAddMode);
+function AddModeStr(AddMode: TAddMode): string;
+begin
+  WriteStr(Result, AddMode);
+end;
+
+procedure TTreeNode.InternalMove(ANode: TTreeNode; AddMode: TAddMode);
 {
   TAddMode = (taAddFirst, taAdd, taInsert);
 
@@ -1249,8 +1253,9 @@ var
 begin
   {$IFDEF TREEVIEW_DEBUG}
   DbgOut('[TTreeNode.InternalMove]  Self=',DbgS(Self),' Self.Text=',Text
-  ,' ANode=',ANode<>nil,' AddMode=',AddModeNames[AddMode]);
-  if ANode<>nil then DbgOut(' ANode.Text=',ANode.Text);
+         ,' ANode=',ANode<>nil,' AddMode=', AddModeStr(AddMode));
+  if ANode<>nil then
+    DbgOut(' ANode.Text=',ANode.Text);
   DebugLn('');
   {$ENDIF}
   if TreeView<>nil then TreeView.BeginUpdate;
@@ -1363,8 +1368,9 @@ begin
 
   {$IFDEF TREEVIEW_DEBUG}
   DbgOut('[TTreeNode.InternalMove] END Self=',DbgS(Self),' Self.Text=',Text
-  ,' ANode=',DbgS(ANode<>nil),' AddMode=',AddModeNames[AddMode]);
-  if ANode<>nil then DbgOut(' ANode.Text=',ANode.Text);
+         ,' ANode=',DbgS(ANode<>nil),' AddMode=',AddModeStr(AddMode));
+  if ANode<>nil then
+    DbgOut(' ANode.Text=',ANode.Text);
   DebugLn('');
   {$ENDIF}
 end;
@@ -2099,8 +2105,9 @@ begin
     TreeNodeError('TTreeNodes.InternalAddObject Owner=nil');
   {$IFDEF TREEVIEW_DEBUG}
   write('[TTreeNodes.InternalAddObject] Node=',Node<>nil,' S=',S,
-  ' AddMode=',AddModeNames[AddMode]);
-  if Node<>nil then DbgOut(' Node.Text=',Node.Text);
+        ' AddMode=',AddModeStr(AddMode));
+  if Node<>nil then
+    DbgOut(' Node.Text=',Node.Text);
   DebugLn('');
   {$ENDIF}
   Result := Owner.CreateNode;

@@ -2342,8 +2342,6 @@ type
   ETreeViewError = class(ETreeNodeError);
 
 const
-  AddModeNames: array[TAddMode] of string =
-    ('taAddFirst', 'taAdd', 'taInsert');
   LCLStreamID = -7;
 
 type
