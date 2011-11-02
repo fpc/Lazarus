@@ -355,14 +355,16 @@ begin
     Result.Style := [];
     Result.Size := -defaultFontSize;
 
-      if Param.cAngle = 90 then
-        Result.Orientation := 900
-      else
-        if Param.cAngle = 180 then
-          Result.Orientation := 1800
-        else
-        if Param.cAngle = 270 then
-          Result.Orientation := 2700;
+    if Param.cAngle = 90 then
+      Result.Orientation := 900
+    else
+    if Param.cAngle = 180 then
+      Result.Orientation := 1800
+    else
+    if Param.cAngle = 270 then
+      Result.Orientation := 2700
+    else
+      Result.Orientation := 0;
   end;
 
 end;
