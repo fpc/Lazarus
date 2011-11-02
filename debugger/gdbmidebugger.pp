@@ -10722,7 +10722,8 @@ end;
 function TGDBMIDebuggerCommandEvaluate.GetTypeInfo: TGDBType;
 begin
   Result := FTypeInfo;
-  FTypeInfoAutoDestroy := False;
+  // if the command wasn't executed, typeinfo may still get set, and need auto-destroy
+  FTypeInfoAutoDestroy := FTypeInfo = nil;
 end;
 
 procedure TGDBMIDebuggerCommandEvaluate.DoWatchFreed(Sender: TObject);
@@ -11714,6 +11715,7 @@ var
 
     function PrepareExpr(var expr: string; NoAddressOp: Boolean = False): boolean;
     begin
+      Assert(FTypeInfo = nil, 'Type info must be nil');
       FTypeInfo := GetGDBTypeInfo(expr, defFullTypeInfo in FEvalFlags, TypeInfoFlags);
       Result := FTypeInfo <> nil;
       if (not Result) then begin
@@ -11859,6 +11861,7 @@ var
       else // wdfDefault
         begin
           Result := False;
+          Assert(FTypeInfo = nil, 'Type info must be nil');
           FTypeInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags, TypeInfoFlags + [gtcfExprEvaluate], FDisplayFormat);
 
           if (FTypeInfo = nil) or (dcsCanceled in SeenStates)
