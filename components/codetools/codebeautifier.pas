@@ -179,63 +179,6 @@ const
                   bbtFor,bbtForDo,bbtWith,bbtWithDo,bbtCaseLabel,bbtCaseColon];
   bbtAllAlignToSibling = [bbtNone]+bbtAllStatements;
 
-const
-  FABBlockTypeNames: array[TFABBlockType] of string = (
-    'bbtNone',
-    // code sections
-    'bbtInterface',
-    'bbtImplementation',
-    'bbtInitialization',
-    'bbtFinalization',
-    // identifier sections
-    'bbtUsesSection',
-    'bbtTypeSection',
-    'bbtConstSection',
-    'bbtVarSection',
-    'bbtResourceStringSection',
-    'bbtLabelSection',
-    'bbtDefinition',
-    // type blocks
-    'bbtRecord',
-    'bbtClass',
-    'bbtClassInterface',
-    'bbtClassSection',
-    'bbtTypeRoundBracket',
-    'bbtTypeEdgedBracket',
-    // statement blocks
-    'bbtProcedure',
-    'bbtFunction',
-    'bbtProcedureHead',
-    'bbtProcedureParamList',
-    'bbtProcedureModifiers',
-    'bbtProcedureBegin',
-    'bbtMainBegin',
-    'bbtFreeBegin',
-    'bbtRepeat',
-    'bbtWhile',
-    'bbtWhileDo',
-    'bbtFor',
-    'bbtForDo',
-    'bbtWith',
-    'bbtWithDo',
-    'bbtCase',
-    'bbtCaseOf',
-    'bbtCaseLabel',
-    'bbtCaseColon',
-    'bbtCaseElse',
-    'bbtTry',
-    'bbtFinally',
-    'bbtExcept',
-    'bbtIf',
-    'bbtIfThen',
-    'bbtIfElse',
-    'bbtIfBegin',
-    'bbtStatement',
-    'bbtStatementRoundBracket',
-    'bbtStatementEdgedBracket',
-    'bbtProperty'
-    );
-
 type
   TOnGetFABExamples = procedure(Sender: TObject; Code: TCodeBuffer;
                                 Step: integer; // starting at 0
@@ -413,10 +356,16 @@ type
                  read FUseDefaultIndentForTypes write FUseDefaultIndentForTypes;
   end;
 
+function EnumToStr(BlockType: TFABBlockType): string;
 function CompareFABPoliciesWithCode(Data1, Data2: Pointer): integer;
 function CompareCodeWithFABPolicy(Key, Data: Pointer): integer;
 
 implementation
+
+function EnumToStr(BlockType: TFABBlockType): string;
+begin
+  WriteStr(Result, BlockType);
+end;
 
 function CompareFABPoliciesWithCode(Data1, Data2: Pointer): integer;
 var
@@ -462,7 +411,7 @@ begin
     ReAllocMem(Stack,SizeOf(TBlock)*Capacity);
   end;
   {$IFDEF ShowCodeBeautifier}
-  DebugLn([GetIndentStr(Top*2),'TFABBlockStack.BeginBlock ',FABBlockTypeNames[Typ],' ',StartPos,' at ',PosToStr(StartPos)]);
+  DebugLn([GetIndentStr(Top*2),'TFABBlockStack.BeginBlock ',EnumToStr(Typ),' ',StartPos,' at ',PosToStr(StartPos)]);
   {$ENDIF}
   Block:=@Stack[Top];
   Block^.Typ:=Typ;
@@ -480,7 +429,7 @@ end;
 procedure TFABBlockStack.EndBlock(EndPos: integer);
 begin
   {$IFDEF ShowCodeBeautifier}
-  DebugLn([GetIndentStr(Top*2),'TFABBlockStack.EndBlock ',FABBlockTypeNames[TopType]]);
+  DebugLn([GetIndentStr(Top*2),'TFABBlockStack.EndBlock ',EnumToStr(TopType)]);
   {$ENDIF}
   if Top<0 then
     exit;
@@ -518,7 +467,7 @@ var
   i: Integer;
 begin
   for i:=0 to Top do begin
-    debugln([Prefix+GetIndentStr(i*2),FABBlockTypeNames[Stack[i].Typ],
+    debugln([Prefix+GetIndentStr(i*2),EnumToStr(Stack[i].Typ),
       ' StartPos=',Stack[i].StartPos,
       ' Indent=',Stack[i].Indent,
       ' Trailing=',Stack[i].Trailing,
@@ -612,24 +561,24 @@ var
         if (not InFirstLine) or LearnFromFirstLine then
           Policies.AddIndent(Block^.Typ,Typ,AtomStart,Indent-BaseBlock^.Indent);
         {$IFDEF ShowCodeBeautifierLearn}
-        DebugLn([GetIndentStr(Stack.Top*2),'nested indentation learned ',FABBlockTypeNames[Block^.Typ],'/',FABBlockTypeNames[Typ],': ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(AtomStart),' Indent=',Indent,'-',BaseBlock^.Indent,'=',Indent-BaseBlock^.Indent]);
-        debugln([GetIndentStr(Stack.Top*2),'  Src=',dbgstr(copy(Src,AtomStart-10,10)),'|',copy(Src,AtomStart,p-AtomStart),' BaseBlock=',FABBlockTypeNames[BaseBlock^.Typ]]);
+        DebugLn([GetIndentStr(Stack.Top*2),'nested indentation learned ',EnumToStr(Block^.Typ),'/',EnumToStr(Typ),': ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(AtomStart),' Indent=',Indent,'-',BaseBlock^.Indent,'=',Indent-BaseBlock^.Indent]);
+        debugln([GetIndentStr(Stack.Top*2),'  Src=',dbgstr(copy(Src,AtomStart-10,10)),'|',copy(Src,AtomStart,p-AtomStart),' BaseBlock=',EnumToStr(BaseBlock^.Typ)]);
         if Typ=bbtCaseLabel then
           Stack.WriteDebugReport(GetIndentStr(Stack.Top*2));
         {$ENDIF}
       end;
     end;
-    //if not FirstAtomOnNewLine then DebugLn([GetIndentStr(Stack.Top*2),'TRAILING BeginBlock ',FABBlockTypeNames[Typ],' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(AtomStart)]);
+    //if not FirstAtomOnNewLine then DebugLn([GetIndentStr(Stack.Top*2),'TRAILING BeginBlock ',EnumToStr(Typ),' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(AtomStart)]);
     Stack.BeginBlock(Typ,AtomStart,not FirstAtomOnNewLine,Indent);
     {$IFDEF ShowCodeBeautifierParser}
-    DebugLn([GetIndentStr(Stack.Top*2),'BeginBlock ',FABBlockTypeNames[Typ],' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(AtomStart)]);
+    DebugLn([GetIndentStr(Stack.Top*2),'BeginBlock ',EnumToStr(Typ),' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(AtomStart)]);
     {$ENDIF}
   end;
 
   procedure EndBlock;
   begin
     {$IFDEF ShowCodeBeautifierParser}
-    DebugLn([GetIndentStr(Stack.Top*2),'EndBlock ',FABBlockTypeNames[Stack.TopType],' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(AtomStart)]);
+    DebugLn([GetIndentStr(Stack.Top*2),'EndBlock ',EnumToStr(Stack.TopType),' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(AtomStart)]);
     {$ENDIF}
     AtomEndedBlock:=true;
     Stack.EndBlock(p);
@@ -1297,7 +1246,7 @@ begin
         if (Block^.InnerIdent>=0) then begin
           Policies.AddIndent(Block^.Typ,bbtNone,AtomStart,Block^.InnerIdent);
           {$IFDEF ShowCodeBeautifierLearn}
-          DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned for bbtNone: ',FABBlockTypeNames[Block^.Typ],' Indent=',Block^.InnerIdent,' at ',PosToStr(p)]);
+          DebugLn([GetIndentStr(Stack.Top*2),'Indentation learned for bbtNone: ',EnumToStr(Block^.Typ),' Indent=',Block^.InnerIdent,' at ',PosToStr(p)]);
           {$ENDIF}
         end;
       end;
@@ -1355,7 +1304,7 @@ function TFullyAutomaticBeautifier.FindPolicyInExamples(StartCode: TCodeBuffer;
     then begin
       {$IFDEF VerboseIndenter}
       DebugLn(['TFullyAutomaticBeautifier.FindPolicyInExamples found in ',
-        Code.Filename,' ',FABBlockTypeNames[Typ],'/',FABBlockTypeNames[SubTyp]]);
+        Code.Filename,' ',EnumToStr(Typ),'/',EnumToStr(SubTyp)]);
       {$ENDIF}
       exit;
     end;
@@ -1712,7 +1661,7 @@ begin
   if (Stack.Top<>Result)  then
     DebugLn(['TFullyAutomaticBeautifier.AdjustByNextAtom block close: Stack.Top=',Stack.Top,' Result=',Result]);
   if TopTypeValid then
-    DebugLn(['TFullyAutomaticBeautifier.AdjustByNextAtom block open: TopType=',FABBlockTypeNames[TopType]]);
+    DebugLn(['TFullyAutomaticBeautifier.AdjustByNextAtom block open: TopType=',EnumToStr(TopType)]);
   {$ENDIF}
 end;
 
@@ -1726,7 +1675,7 @@ begin
   if Stack<>nil then begin
     for i:=0 to Stack.Top do begin
       Block:=@Stack.Stack[i];
-      DebugLn([GetIndentStr(i*2),' : Typ=',FABBlockTypeNames[Block^.Typ],' StartPos=',Block^.StartPos,' InnerIdent=',Block^.InnerIdent,' InnerStartPos=',Block^.InnerStartPos]);
+      DebugLn([GetIndentStr(i*2),' : Typ=',EnumToStr(Block^.Typ),' StartPos=',Block^.StartPos,' InnerIdent=',Block^.InnerIdent,' InnerStartPos=',Block^.InnerStartPos]);
     end;
   end;
 end;
@@ -1777,9 +1726,9 @@ var
     // policy found
     {$IFDEF VerboseIndenter}
     if SubTypeValid then
-      DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: Block.Typ=',FABBlockTypeNames[Block.Typ],'/',FABBlockTypeNames[SubType],' BlockIndent=',BlockIndent])
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: Block.Typ=',EnumToStr(Block.Typ),'/',EnumToStr(SubType),' BlockIndent=',BlockIndent])
     else
-      DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: Block.Typ=',FABBlockTypeNames[Block.Typ],' BlockIndent=',BlockIndent]);
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: Block.Typ=',EnumToStr(Block.Typ),' BlockIndent=',BlockIndent]);
     //Policies.WriteDebugReport;
     {$ENDIF}
     Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)
@@ -1870,7 +1819,7 @@ begin
     if (Stack.Stack[StackIndex].Typ in UseDefaultIndentForTypes) then begin
       // use default indent
       {$IFDEF VerboseIndenter}
-      DebugLn(['TFullyAutomaticBeautifier.GetIndent use default for this type: ',FABBlockTypeNames[Stack.Stack[StackIndex].Typ]]);
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent use default for this type: ',EnumToStr(Stack.Stack[StackIndex].Typ)]);
       {$ENDIF}
       GetDefaultSrcIndent(Source,CleanPos,NewNestedComments,Indent);
       exit(Indent.IndentValid);
@@ -1881,7 +1830,7 @@ begin
       // use indent of block start
       Block:=Stack.Stack[StackIndex+1];
       {$IFDEF VerboseIndenter}
-      DebugLn(['TFullyAutomaticBeautifier.GetIndent next token close block: ',FABBlockTypeNames[Stack.TopType],' Block=',dbgstr(copy(Source,Block.StartPos,20))]);
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent next token close block: ',EnumToStr(Stack.TopType),' Block=',dbgstr(copy(Source,Block.StartPos,20))]);
       {$ENDIF}
       Indent.Indent:=GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth);
       Indent.IndentValid:=true;
@@ -1929,7 +1878,7 @@ begin
     end;
 
     {$IFDEF VerboseIndenter}
-    DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[Block.Typ],'/',FABBlockTypeNames[SubType],' indent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',EnumToStr(Block.Typ),'/',EnumToStr(SubType),' indent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
     {$ENDIF}
     if Policies<>nil then begin
       // check source in front for good match
@@ -1952,14 +1901,14 @@ begin
     // parse examples for good match
     ExamplePolicies:=FindPolicyInExamples(nil,Block.Typ,SubType,true,false);
     {$IFDEF VerboseIndenter}
-    DebugLn(['TFullyAutomaticBeautifier.GetIndent searched examples for exact match: context=',FABBlockTypeNames[Block.Typ],'/',FABBlockTypeNames[SubType],' contextindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent searched examples for exact match: context=',EnumToStr(Block.Typ),'/',EnumToStr(SubType),' contextindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
     {$ENDIF}
     if CheckPolicies(ExamplePolicies,Result,false) then exit;
 
     if Policies<>nil then begin
       // check current source for any match
       {$IFDEF VerboseIndenter}
-      DebugLn(['TFullyAutomaticBeautifier.GetIndent check current source for any match: context=',FABBlockTypeNames[Block.Typ],'/',FABBlockTypeNames[SubType],' contextindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
+      DebugLn(['TFullyAutomaticBeautifier.GetIndent check current source for any match: context=',EnumToStr(Block.Typ),'/',EnumToStr(SubType),' contextindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
       {$ENDIF}
       if CheckPolicies(Policies,Result,true) then exit;
     end;
@@ -1967,7 +1916,7 @@ begin
     // parse examples for any match
     ExamplePolicies:=FindPolicyInExamples(nil,Block.Typ,SubType,true,true);
     {$IFDEF VerboseIndenter}
-    DebugLn(['TFullyAutomaticBeautifier.GetIndent searching examples for any match: context=',FABBlockTypeNames[Block.Typ],'/',FABBlockTypeNames[SubType],' contextindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent searching examples for any match: context=',EnumToStr(Block.Typ),'/',EnumToStr(SubType),' contextindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
     {$ENDIF}
     if CheckPolicies(ExamplePolicies,Result,true) then exit;
 
@@ -1979,7 +1928,7 @@ begin
   end;
 
   {$IFDEF VerboseIndenter}
-  DebugLn(['TFullyAutomaticBeautifier.GetIndent no example found : context=',FABBlockTypeNames[Block.Typ],'/',FABBlockTypeNames[SubType],' contextindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
+  DebugLn(['TFullyAutomaticBeautifier.GetIndent no example found : context=',EnumToStr(Block.Typ),'/',EnumToStr(SubType),' contextindent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
   {$ENDIF}
   if SubTypeValid then
     GetDefaultIndentPolicy(Block.Typ,SubType,Indent)
@@ -2015,7 +1964,7 @@ var
     if (BlockIndent<0) then exit;
     // policy found
     {$IFDEF VerboseIndenter}
-    DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: Block.Typ=',FABBlockTypeNames[Item^.Block.Typ],' BlockIndent=',BlockIndent]);
+    DebugLn(['TFullyAutomaticBeautifier.GetIndent policy found: Block.Typ=',EnumToStr(Item^.Block.Typ),' BlockIndent=',BlockIndent]);
     {$ENDIF}
     Item^.Indent.Indent:=GetLineIndentWithTabs(Source,Item^.Block.StartPos,DefaultTabWidth)
                    +BlockIndent;
@@ -2121,7 +2070,7 @@ begin
         end else begin
           Item^.Block:=Stack.Stack[StackIndex];
           {$IFDEF VerboseIndenter}
-          DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',FABBlockTypeNames[Item^.Block.Typ],'/',FABBlockTypeNames[Item^.SubType],' indent=',GetLineIndentWithTabs(Source,Item^.Block.StartPos,DefaultTabWidth)]);
+          DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed code in front: context=',EnumToStr(Item^.Block.Typ),'/',EnumToStr(Item^.SubType),' indent=',GetLineIndentWithTabs(Source,Item^.Block.StartPos,DefaultTabWidth)]);
           {$ENDIF}
           if CheckPolicies(Policies,Item) then exit(true);
         end;
@@ -2336,7 +2285,7 @@ begin
     Ind^.SrcPos:=SrcPos;
     {$ENDIF}
     {$IFDEF ShowCodeBeautifierLearn}
-    DebugLn(['TFABPolicies.AddIndent New SubTyp ',FABBlockTypeNames[Typ],'-',FABBlockTypeNames[SubType],': indent=',Indent,' ',CodePosToStr(SrcPos)]);
+    DebugLn(['TFABPolicies.AddIndent New SubTyp ',EnumToStr(Typ),'-',EnumToStr(SubType),': indent=',Indent,' ',CodePosToStr(SrcPos)]);
     ConsistencyCheck;
     {$ENDIF}
   end else begin
@@ -2344,7 +2293,7 @@ begin
     if Ind^.Indent<>Indent then begin
       Ind^.Indent:=Indent;
       {$IFDEF ShowCodeBeautifierLearn}
-      DebugLn(['TFABPolicies.AddIndent Changed SubTyp ',FABBlockTypeNames[Typ],'-',FABBlockTypeNames[SubType],': indent=',Indent,' ',CodePosToStr(SrcPos)]);
+      DebugLn(['TFABPolicies.AddIndent Changed SubTyp ',EnumToStr(Typ),'-',EnumToStr(SubType),': indent=',Indent,' ',CodePosToStr(SrcPos)]);
       {$ENDIF}
     end;
   end;
@@ -2358,7 +2307,7 @@ begin
   for i:=0 to IndentationCount-1 do begin
     if (Indentations[i].Typ<>Typ) or (Indentations[i].Indent<0) then continue;
     {$IFDEF VerboseIndenter}
-    debugln(['TFABPolicies.GetSmallestIndent ',FABBlockTypeNames[Indentations[i].Typ],'/',FABBlockTypeNames[Indentations[i].SubTyp],' Indent=',Indentations[i].Indent
+    debugln(['TFABPolicies.GetSmallestIndent ',EnumToStr(Indentations[i].Typ),'/',EnumToStr(Indentations[i].SubTyp),' Indent=',Indentations[i].Indent
       {$IFDEF StoreLearnedPositions}
       ,' SrcPos=',CodePosToStr(Indentations[i].SrcPos)
       {$ENDIF}
@@ -2379,12 +2328,12 @@ begin
   if FindIndentation(Typ,SubType,i) then begin
     Result:=Indentations[i].Indent;
     {$IFDEF VerboseIndenter}
-    debugln(['TFABPolicies.GetIndent ',FABBlockTypeNames[Typ],'/',FABBlockTypeNames[SubType],' learned at ',CodePosToStr(Indentations[i].SrcPos),' Result=',Result]);
+    debugln(['TFABPolicies.GetIndent ',EnumToStr(Typ),'/',EnumToStr(SubType),' learned at ',CodePosToStr(Indentations[i].SrcPos),' Result=',Result]);
     {$ENDIF}
   end else if UseNoneIfNotFound and FindIndentation(Typ,bbtNone,i) then begin
     Result:=Indentations[i].Indent;
     {$IFDEF VerboseIndenter}
-    debugln(['TFABPolicies.GetIndent ',FABBlockTypeNames[Typ],'/',FABBlockTypeNames[bbtNone],' learned at ',CodePosToStr(Indentations[i].SrcPos),' Result=',Result]);
+    debugln(['TFABPolicies.GetIndent ',EnumToStr(Typ),'/',EnumToStr(bbtNone),' learned at ',CodePosToStr(Indentations[i].SrcPos),' Result=',Result]);
     {$ENDIF}
   end else if UseSmallestIfNotFound then
     Result:=GetSmallestIndent(Typ)
@@ -2450,7 +2399,7 @@ begin
   debugln(['TFABPolicies.WriteDebugReport ']);
   for i:=0 to IndentationCount-1 do begin
     Ind:=@Indentations[i];
-    debugln(['  ',i,'/',IndentationCount,' ',FABBlockTypeNames[Ind^.Typ],'=',ord(Ind^.Typ),' ',FABBlockTypeNames[Ind^.SubTyp],'=',ord(Ind^.SubTyp),' Indent=',Ind^.Indent]);
+    debugln(['  ',i,'/',IndentationCount,' ',EnumToStr(Ind^.Typ),'=',ord(Ind^.Typ),' ',EnumToStr(Ind^.SubTyp),'=',ord(Ind^.SubTyp),' Indent=',Ind^.Indent]);
   end;
 end;
 

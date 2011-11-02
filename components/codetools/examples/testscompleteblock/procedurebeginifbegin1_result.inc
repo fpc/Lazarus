@@ -13,7 +13,7 @@ procedure Do1;
     end;
     Stack.BeginBlock(Typ,AtomStart);
     {$IFDEF ShowCodeBeautifierParser}
-    DebugLn([GetIndentStr(Stack.Top*2),'BeginBlock ',FABBlockTypeNames[Typ],' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p)]);
+    DebugLn([GetIndentStr(Stack.Top*2),'BeginBlock ',EnumToStr(Typ),' ',GetAtomString(@Src[AtomStart],NestedComments),' at ',PosToStr(p)]);
     {$ENDIF}
   end;
 begin
