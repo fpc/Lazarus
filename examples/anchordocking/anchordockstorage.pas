@@ -615,7 +615,7 @@ var
     Info: PNodeInfo;
   begin
     Info:=GetNodeInfo(Node);
-    //DebugLn(['GetMinPos ',Node.Name,' ',AnchorNames[Side],' ',Info^.MinLeftCalculating]);
+    //DebugLn(['GetMinPos ',Node.Name,' ',DbgS(Side),' ',Info^.MinLeftCalculating]);
     if Side=akLeft then
       Result:=Compute(Info^.MinLeftValid,Info^.MinLeftCalculating,Info^.MinLeft)
     else
@@ -1145,7 +1145,7 @@ begin
   Anchors[akTop]:=Config.GetValue('Anchors/Top','');
   Anchors[akRight]:=Config.GetValue('Anchors/Right','');
   Anchors[akBottom]:=Config.GetValue('Anchors/Bottom','');
-  Align:=NameToADLAlign(Config.GetValue('Anchors/Align',AlignNames[alNone]));
+  Align:=NameToADLAlign(Config.GetValue('Anchors/Align',dbgs(alNone)));
   WindowState:=NameToADLWindowState(Config.GetValue('WindowState',ADLWindowStateNames[wsNormal]));
   HeaderPosition:=NameToADLHeaderPosition(Config.GetValue('Header/Position',ADLHeaderPositionNames[adlhpAuto]));
   TabPosition:=NameToADLTabPosition(Config.GetValue('Header/TabPosition',ADLTabPostionNames[tpTop]));

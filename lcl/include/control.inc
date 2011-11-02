@@ -143,7 +143,7 @@ begin
         alBottom: OffsetRect(ARect,0,NewDockSite.ClientHeight-ARect.Bottom);
       end;
     end;
-    //DebugLn('TControl.DoDock AFTER Adjusting ',DbgSName(Self),' ',dbgs(ARect),' Align=',AlignNames[Align],' NewDockSite.ClientRect=',dbgs(NewDockSite.ClientRect));
+    //DebugLn('TControl.DoDock AFTER Adjusting ',DbgSName(Self),' ',dbgs(ARect),' Align=',DbgS(Align),' NewDockSite.ClientRect=',dbgs(NewDockSite.ClientRect));
   end;
   //debugln('TControl.DoDock BEFORE MOVE ',Name,' BoundsRect=',dbgs(BoundsRect),' NewRect=',dbgs(ARect));
   if Parent<>NewDockSite then
@@ -3294,7 +3294,7 @@ var
   a: TAnchorKind;
 begin
   if FAlign = Value then exit;
-  //DebugLn(['TControl.SetAlign ',DbgSName(Self),' Old=',AlignNames[FAlign],' New=',AlignNames[Value],' ',Anchors<>AnchorAlign[FAlign]]);
+  //DebugLn(['TControl.SetAlign ',DbgSName(Self),' Old=',DbgS(FAlign),' New=',DbgS(Value),' ',Anchors<>AnchorAlign[FAlign]]);
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.setalign'){$ENDIF};
   OldAlign := FAlign;
   FAlign := Value;
@@ -3391,7 +3391,7 @@ begin
   DbgOut(Prefix,'TControl.WriteLayoutDebugReport ');
   DbgOut(DbgSName(Self),' Bounds=',dbgs(BoundsRect));
   if Align<>alNone then
-    DbgOut(' Align=',AlignNames[Align]);
+    DbgOut(' Align=',DbgS(Align));
   DbgOut(' Anchors=[');
   NeedSeparator:=false;
   for a:=Low(TAnchorKind) to High(TAnchorKind) do begin

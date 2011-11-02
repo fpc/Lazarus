@@ -1467,7 +1467,7 @@ procedure TCustomLazControlDocker.ShrinkNeighbourhood(
     Neighbour: TControl;
     i: Integer;
   begin
-    DebugLn(['ShrinkNeighboursOnSide START ',DbgSName(CurControl),' ',AnchorNames[Side]]);
+    DebugLn(['ShrinkNeighboursOnSide START ',DbgSName(CurControl),' ',DbgS(Side)]);
     if Side in CurControl.Anchors then begin
       Neighbour:=CurControl.AnchorSide[Side].Control;
       DebugLn(['ShrinkNeighboursOnSide Neighbour=',DbgSName(Neighbour)]);
@@ -1488,7 +1488,7 @@ procedure TCustomLazControlDocker.ShrinkNeighbourhood(
     Node: TLazDockConfigNode;
     CurBounds: TRect;
   begin
-    DebugLn(['ShrinkControl START ',DbgSName(CurControl),' Side=',AnchorNames[Side]]);
+    DebugLn(['ShrinkControl START ',DbgSName(CurControl),' Side=',DbgS(Side)]);
     if (CurControl=nil) or (CurControl=AControl)
     or (CurControl.Parent<>AControl.Parent) then
       exit;
@@ -1504,7 +1504,7 @@ procedure TCustomLazControlDocker.ShrinkNeighbourhood(
     Node:=Layout.FindByName(NodeName,true);
     if Node=nil then exit;
     CurBounds:=Node.Bounds;
-    DebugLn(['ShrinkControl ',DbgSName(CurControl),' Side=',AnchorNames[Side],' LayoutBounds=',dbgs(CurBounds)]);
+    DebugLn(['ShrinkControl ',DbgSName(CurControl),' Side=',DbgS(Side),' LayoutBounds=',dbgs(CurBounds)]);
     if Side in [akLeft,akRight] then
       CurControl.Width:=Min(CurControl.Width,CurBounds.Right-CurBounds.Left)
     else
@@ -3075,7 +3075,7 @@ function TCustomLazDockingManager.ConfigIsCompatible(
       procedure ErrorWrongSplitter;
       begin
         Error('invalid Node.Sides[a] Node="'+Node.Name+'"'
-          +' Node.Sides['+AnchorNames[a]+']="'+Node.Sides[a]+'"');
+          +' Node.Sides['+DbgS(a)+']="'+Node.Sides[a]+'"');
       end;
       
     begin
@@ -3517,7 +3517,7 @@ begin
 
   // Sides
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
-    Config.SetDeleteValue(Path+'Sides/'+AnchorNames[a]+'/Name',Sides[a],'');
+    Config.SetDeleteValue(Path+'Sides/'+DbgS(a)+'/Name',Sides[a],'');
 
   // children
   Config.SetDeleteValue(Path+'Children/Count',ChildCount,0);
@@ -3549,7 +3549,7 @@ begin
 
   // Sides
   for a:=Low(TAnchorKind) to High(TAnchorKind) do
-    Sides[a]:=Config.GetValue(Path+'Sides/'+AnchorNames[a]+'/Name','');
+    Sides[a]:=Config.GetValue(Path+'Sides/'+DbgS(a)+'/Name','');
 
   // children
   NewChildCount:=Config.GetValue(Path+'Children/Count',0);
@@ -3581,7 +3581,7 @@ procedure TLazDockConfigNode.WriteDebugReport;
       s:=ANode.Sides[a];
       if s='' then
         s:='?';
-      DbgOut(' '+AnchorNames[a]+'="'+s+'"');
+      DbgOut(' '+DbgS(a)+'="'+s+'"');
     end;
     debugln;
     for i:=0 to ANode.ChildCount-1 do begin
@@ -3763,7 +3763,7 @@ var
     Info: PNodeInfo;
   begin
     Info:=GetNodeInfo(Node);
-    //DebugLn(['GetMinPos ',Node.Name,' ',AnchorNames[Side],' ',Info^.MinLeftCalculating]);
+    //DebugLn(['GetMinPos ',Node.Name,' ',DbgS(Side),' ',Info^.MinLeftCalculating]);
     if Side=akLeft then
       Result:=Compute(Info^.MinLeftValid,Info^.MinLeftCalculating,Info^.MinLeft)
     else

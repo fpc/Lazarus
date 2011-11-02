@@ -4364,7 +4364,7 @@ begin
     Item.Checked:=HeaderPosition=TADLHeaderPosition(Item.Tag);
   end;
   for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
-    Item:=DockMaster.AddPopupMenuItem('HeaderPos'+AnchorNames[Side]+'MenuItem',
+    Item:=DockMaster.AddPopupMenuItem('HeaderPos'+DbgS(Side)+'MenuItem',
                      SideCaptions[Side], @HeaderPositionItemClick,
                      HeaderPosItem);
     if Item=nil then continue;
@@ -4375,7 +4375,7 @@ begin
   // enlarge
   for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
     Item:=DockMaster.AddRemovePopupMenuItem(ParentSite.EnlargeSide(Side,true),
-      'Enlarge'+AnchorNames[Side]+'MenuItem', Format(adrsEnlargeSide, [
+      'Enlarge'+DbgS(Side)+'MenuItem', Format(adrsEnlargeSide, [
         SideCaptions[Side]]),@EnlargeSideClick);
     if Item<>nil then Item.Tag:=ord(Side);
   end;

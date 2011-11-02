@@ -2373,18 +2373,6 @@ const
     // akBottom -> asrTop, asrBottom, asrCenter
     (akLeft,akRight,akLeft)
     );
-  AlignNames: array[TAlign] of string = (
-    'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom');
-  AnchorNames: array[TAnchorKind] of string = (
-    'akTop', 'akLeft', 'akRight', 'akBottom');
-  AutoSizePhaseNames: array[TControlAutoSizePhase] of string = (
-    'caspNone',
-    'caspChangingProperties',
-    'caspCreatingHandles',
-    'caspComputingBounds',
-    'caspRealizingBounds',
-    'caspShowing'
-    );
 
 function FindDragTarget(const Position: TPoint; AllowDisabled: Boolean): TControl;
 function FindControlAtPosition(const Position: TPoint; AllowDisabled: Boolean): TControl;
@@ -2595,7 +2583,7 @@ end;
 
 function DbgS(a: TAnchorKind): string;
 begin
-  Result:=AnchorNames[a];
+  WriteStr(Result, a);
 end;
 
 function DbgS(Anchors: TAnchors): string;
@@ -2605,8 +2593,9 @@ begin
   Result:='';
   for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
     if a in Anchors then begin
-      if Result<>'' then Result:=Result+',';
-      Result:=Result+AnchorNames[a];
+      if Result<>'' then
+        Result:=Result+',';
+      Result:=Result+DbgS(a);
     end;
   end;
   Result:='['+Result+']';
@@ -2614,7 +2603,7 @@ end;
 
 function DbgS(a: TAlign): string;
 begin
-  Result:=AlignNames[a];
+  WriteStr(Result, a);
 end;
 
 function DbgS(a: TAnchorKind; Side: TAnchorSideReference): string;
@@ -2629,7 +2618,7 @@ end;
 
 function DbgS(p: TControlAutoSizePhase): string; overload;
 begin
-  Result:=AutoSizePhaseNames[p];
+  WriteStr(Result, p);
 end;
 
 function DbgS(Phases: TControlAutoSizePhases): string; overload;
@@ -2639,8 +2628,9 @@ begin
   Result:='';
   for p:=Low(TControlAutoSizePhase) to High(TControlAutoSizePhase) do begin
     if p in Phases then begin
-      if Result<>'' then Result:=Result+',';
-      Result:=Result+AutoSizePhaseNames[p];
+      if Result<>'' then
+        Result:=Result+',';
+      Result:=Result+DbgS(p);
     end;
   end;
   Result:='['+Result+']';

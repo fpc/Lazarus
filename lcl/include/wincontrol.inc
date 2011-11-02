@@ -2653,7 +2653,10 @@ var
     {$IFDEF CHECK_POSITION}
     if CheckPosition(Control) then
     with Control do
-      DebugLn('[TWinControl.AlignControls.DoPosition] A Control=',dbgsName(Control),' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height),' recalculate the anchors=',dbgs(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
+      DebugLn('[TWinControl.AlignControls.DoPosition] A Control=',dbgsName(Control),' ',
+              dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height),
+              ' recalculate the anchors=',dbgs(Control.Anchors <> AnchorAlign[AAlign]),
+              ' Align=',DbgS(AAlign));
     {$ENDIF}
 
     with Control do begin
@@ -2818,7 +2821,7 @@ var
       with Control do begin
         DebugLn(['[TWinControl.AlignControls.DoPosition] After Anchoring',
           ' Self=',DbgSName(Self),
-          ' Align=',AlignNames[AAlign],
+          ' Align=',DbgS(AAlign),
           ' Control=',dbgsName(Control),
           ' Old= l=',Left,',t=',Top,',w=',Width,',h=',Height,
           ' New= l=',NewLeft,',t=',NewTop,',w=',NewWidth,',h=',NewHeight,
@@ -2950,7 +2953,7 @@ var
           with Control do
             DebugLn('[TWinControl.AlignControls.DoPosition] After Aligning',
             ' ',Name,':',ClassName,
-            ' Align=',AlignNames[AAlign],
+            ' Align=',DbgS(AAlign),
             ' Control=',Name,':',ClassName,
             ' Old=',DbgS(Left,Top,Width,Height),
             ' New=',DbgS(NewLeft,NewTop,NewWidth,NewHeight),
@@ -3058,7 +3061,7 @@ var
       DebugLn('[TWinControl.AlignControls.DoPosition] END Control=',
         Name,':',ClassName,
         ' ',DbgS(Left,Top,Width,Height),
-        ' Align=',AlignNames[AAlign],
+        ' Align=',DbgS(AAlign),
         //' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right-ARect.Left,',',ARect.Bottom-ARect.Top,
         '');
     {$ENDIF}
@@ -3076,7 +3079,7 @@ var
       if AlignList.Count>0 then
       begin
         DbgOut('[TWinControl.AlignControls.DoAlign] Self=',DbgSName(Self),' Control=',dbgsName(AControl),
-          ' current align=',AlignNames[AAlign],' AlignList=[');
+          ' current align=',DbgS(AAlign),' AlignList=[');
         for i:=0 to AlignList.Count-1 do
         begin
           if i>0 then DbgOut(',');

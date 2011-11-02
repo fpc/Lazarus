@@ -2655,7 +2655,8 @@ var
 begin
   Result:=false;
   if Control=nil then exit;
-  DebugLn(['TCustomAnchoredDockManager.EnlargeControl Control=',DbgSName(Control),' Side=',AnchorNames[Side]]);
+  DebugLn(['TCustomAnchoredDockManager.EnlargeControl Control=',DbgSName(Control),
+           ' Side=',DbgS(Side)]);
   if Side in [akLeft,akRight] then
     Side2:=akTop
   else
