@@ -205,12 +205,6 @@ Type
   end;
 
 Const
-  cBrushStyle : Array[TBrushStyle] of String =
-     ('bsClear', 'bsSolid', 'bsBDiagonal',
-      'bsFDiagonal', 'bsCross', 'bsDiagCross',
-      'bsHorizontal', 'bsVertical', 'bsImage', 'bsPattern');
-
-
   cFontPSMetrics : Array[0..12] of TFontPSMetrics =(
     (Name  : 'Courier';
      ULPos : -100; ULThickness : 50; Ascender : 604; Descender : -186;
@@ -920,6 +914,8 @@ end;
 //Use SetBorder and SetFill for initialize 1 or 2 sequence
 procedure TPostScriptPrinterCanvas.SetBrushFillPattern(Lst: TStringList;
   SetBorder, SetFill: Boolean);
+var
+  s: string;
 begin
   If not Assigned(Lst) then Exit;
   
@@ -938,7 +934,8 @@ begin
          else
          begin
            UpdateLineColor(Brush.Color);
-           write(Format('/%s findfont  %% a pattern font patternfill',[cBrushStyle[Brush.Style]]));
+           WriteStr(s, Brush.Style);
+           write(Format('/%s findfont  %% a pattern font patternfill',[s]));
            Write(Lst);
            write('patternfill');
          end;
