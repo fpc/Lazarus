@@ -330,22 +330,32 @@ begin
 end;
 
 function TCodeCache.LoadFile(const AFilename: string): TCodeBuffer;
-// search file in cache
+var
+  DiskFilename: String;
+
+  procedure FindDiskFilenameInconsistent;
+  var
+    s: String;
+  begin
+    s:='[TCodeCache.LoadFile] Inconsistency found: AFilename="'+AFilename+'" FindDiskFilename="'+DiskFilename+'"';
+    s:=s+' CompareFilenames='+dbgs(CompareFilenames(AFilename,DiskFilename));
+    raise Exception.Create(s);
+  end;
+
 begin
   Result:=FindFile(AFilename);
   if FilenameIsAbsolute(AFilename) then begin
     if Result=nil then begin
       // load new buffer
-      Result:=TCodeBuffer.Create;
-      if (not FileExistsCached(AFilename)) then begin
-        Result.Free;
-        Result:=nil;
+      if (not FileExistsCached(AFilename)) then
         exit;
-      end;
-      Result.Filename:=GetFilenameOnDisk(AFilename);
+      DiskFilename:=FindDiskFilename(AFilename);
+      if FindFile(DiskFilename)<>nil then
+        FindDiskFilenameInconsistent;
+      Result:=TCodeBuffer.Create;
+      Result.Filename:=DiskFilename;
       Result.FCodeCache:=Self;
-      if (not Result.LoadFromFile(Result.Filename)) then
-      begin
+      if (not Result.LoadFromFile(Result.Filename)) then begin
         Result.FCodeCache:=nil;
         Result.Free;
         Result:=nil;

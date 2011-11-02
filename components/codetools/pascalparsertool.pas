@@ -4703,7 +4703,8 @@ begin
     NewSrcLen:=length(NewSrc);
     if AllChanged then begin
       {$IFDEF VerboseUpdateNeeded}
-      debugln(['TPascalParserTool.FetchScannerSource compiler clean all nodes, because compiler mode/values changed ',MainFilename]);
+      if Tree.Root<>nil then
+        debugln(['TPascalParserTool.FetchScannerSource compiler clean all nodes, because compiler mode/values changed ',MainFilename]);
       {$ENDIF}
     end else begin
       // find the first difference in source

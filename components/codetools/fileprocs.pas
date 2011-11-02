@@ -161,7 +161,7 @@ function FileIsReadableCached(const AFilename: string): boolean; inline;
 function FileIsWritableCached(const AFilename: string): boolean; inline;
 function FileIsTextCached(const AFilename: string): boolean; inline;
 function FileAgeCached(const AFileName: string): Longint; inline;
-function GetFilenameOnDisk(const AFilename: string): string; inline;
+function GetFilenameOnDisk(const AFilename: string): string; inline; deprecated; // use FindDiskFilename
 
 function CompareAnsiStringFilenames(Data1, data2: Pointer): integer;
 function CompareFilenameOnly(Filename: PChar; FilenameLen: integer;
@@ -902,7 +902,7 @@ end;
 
 function GetFilenameOnDisk(const AFilename: string): string;
 begin
-  Result:=LazFileUtils.GetFilenameOnDisk(AFilename);
+  Result:=FindDiskFilename(AFilename);
 end;
 
 function CompareAnsiStringFilenames(Data1, data2: Pointer): integer;

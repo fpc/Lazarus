@@ -6291,7 +6291,7 @@ var
   begin
     Result:=TrimFilename(AFilename);
     if FilenameIsAbsolute(Result) then begin
-      Result:=FindDiskFilename(Result);
+      Result:=DirectoryCache.Pool.FindDiskFilename(Result);
       Add(FilenameSrcPos,Result,FileExistsCached(Result));
       //DebugLn('SearchIncludeFilename AbsoluteFilename="',Result,'"');
     end else begin
@@ -6302,7 +6302,7 @@ var
         AFilePath:=ExtractFilePath(Result);
         if AFilePath<>'' then begin
           // search relative to unit
-          CurFilename:=FindDiskFilename(BaseDir+Result);
+          CurFilename:=DirectoryCache.Pool.FindDiskFilename(BaseDir+Result);
           Result:=copy(CurFilename,length(BaseDir)+1,length(CurFilename));
           if FileExistsCached(CurFilename) then
             Add(FilenameSrcPos,CurFilename,true)

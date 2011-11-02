@@ -9261,7 +9261,7 @@ begin
 
   // normalize filename
   AFilename:=TrimFilename(AFilename);
-  DiskFilename:=FindDiskFilename(AFilename);
+  DiskFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(AFilename);
   if DiskFilename<>AFilename then begin
     // the case is different
     DebugLn(['TMainIDE.DoOpenEditorFile Fixing file case: ',AFilename,' -> ',DiskFilename]);

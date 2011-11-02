@@ -7,6 +7,13 @@ interface
 uses
   Classes, SysUtils, LazUTF8, LUResStrings;
 
+{$if defined(Windows) or defined(darwin)}
+  {$define CaseInsensitiveFilenames}
+{$endif}
+{$IF defined(CaseInsensitiveFilenames) or defined(darwin)}
+  {$DEFINE NotLiteralFilenames} // e.g. HFS+ normalizes file names
+{$ENDIF}
+
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
 function CompareFileExt(const Filename, Ext: string;
@@ -39,8 +46,6 @@ function CreateRelativePath(const Filename, BaseDirectory: string;
 function FileIsInPath(const Filename, Path: string): boolean;
 function AppendPathDelim(const Path: string): string;
 function ChompPathDelim(const Path: string): string;
-
-function GetFilenameOnDisk(const AFilename: string): string;
 
 // file operations
 function FileExistsUTF8(const Filename: string): boolean;
@@ -287,18 +292,6 @@ begin
   CFRelease(s);
 end;
 {$ENDIF}
-
-function GetFilenameOnDisk(const AFilename: string): string;
-begin
-  Result:=AFilename;
-  {$IFDEF darwin}
-  Result:=GetDarwinSystemFilename(Result);
-  {$ELSE}
-    {$IFDEF NotLiteralFilenames}
-    Result:=FindDiskFilename(Result);
-    {$ENDIF}
-  {$ENDIF}
-end;
 
 function CompareFilenameStarts(const Filename1, Filename2: string): integer;
 var
