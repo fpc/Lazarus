@@ -175,20 +175,6 @@ const
   ParsedCompilerFiles =
     ParsedCompilerSearchPaths+ParsedCompilerFilenames+ParsedCompilerDirectories;
     
-  ParsedCompilerOptStringNames: array[TParsedCompilerOptString] of string = (
-    'pcosNone',
-    'pcosBaseDir', // only auto created packages can have macros in the BaseDir
-    'pcosUnitPath',
-    'pcosIncludePath',
-    'pcosObjectPath',
-    'pcosLibraryPath',
-    'pcosSrcPath',
-    'pcosLinkerOptions',
-    'pcosCustomOptions',
-    'pcosOutputDir',
-    'pcosCompilerPath',
-    'pcosDebugPath'
-    );
   ParsedCompilerOptsVars: array[TParsedCompilerOptString] of string = (
     '',
     '',
@@ -668,6 +654,7 @@ var
   OnParseString: TParseStringEvent = nil;
   RunCompilerWithOptions: TRunCompilerWithOptions = nil;
 
+function EnumToStr(opt: TParsedCompilerOptString): string;
 function ParseString(Options: TParsedCompilerOptions;
                      const UnparsedValue: string;
                      PlatformIndependent: boolean): string;
@@ -712,6 +699,11 @@ implementation
 
 const
   CompilerOptionsVersion = 11;
+
+function EnumToStr(opt: TParsedCompilerOptString): string;
+begin
+  WriteStr(Result, opt);
+end;
 
 function ParseString(Options: TParsedCompilerOptions;
   const UnparsedValue: string; PlatformIndependent: boolean): string;
@@ -3657,7 +3649,7 @@ begin
   end;
   if ParsedStamp[Option]<>CompilerParseStamp then begin
     if Parsing[Option] then begin
-      DebugLn('TParsedCompilerOptions.GetParsedValue Circle in Options: ',ParsedCompilerOptStringNames[Option],' Unparsed="',UnparsedValues[Option],'"');
+      DebugLn('TParsedCompilerOptions.GetParsedValue Circle in Options: ',EnumToStr(Option),' Unparsed="',UnparsedValues[Option],'"');
       ParsedError(Option, lisCircleInMacros);
       exit('');
     end;
@@ -3683,7 +3675,7 @@ var
 begin
   if ParsedPIStamp[Option]<>CompilerParseStamp then begin
     if ParsingPI[Option] then begin
-      DebugLn('TParsedCompilerOptions.GetParsedPIValue Circle in Options: ',ParsedCompilerOptStringNames[Option]);
+      DebugLn('TParsedCompilerOptions.GetParsedPIValue Circle in Options: ',EnumToStr(Option));
       exit('');
     end;
     ParsingPI[Option]:=true;

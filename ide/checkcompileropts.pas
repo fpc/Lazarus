@@ -866,7 +866,7 @@ begin
     begin
       if cp in ParsedCompilerSearchPaths then begin
         Result:=CheckSpecialCharsInPath(
-          copy(ParsedCompilerOptStringNames[cp],5,100),
+          copy(EnumToStr(cp),5,100),
           Options.ParsedOpts.GetParsedValue(cp));
         if not (Result in [mrOk,mrIgnore]) then exit;
       end;

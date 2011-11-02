@@ -183,8 +183,7 @@ begin
       pcosDebugPath:
         Msg:=lisErrorInTheDebuggerPathAddition;
       else
-        Msg:=Format(lisIWonderHowYouDidThatErrorInThe, [
-          ParsedCompilerOptStringNames[o]]);
+        Msg:=Format(lisIWonderHowYouDidThatErrorInThe, [EnumToStr(o)]);
       end;
       Msg:=Msg+#13+FCompilerOpts.ParsedOpts.ParsedErrorMsg+#13
         +lisValue3+dbgstr(FCompilerOpts.ParsedOpts.UnparsedValues[o]);
