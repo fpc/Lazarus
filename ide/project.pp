@@ -1115,13 +1115,6 @@ const
 var
   Project1: TProject = nil;// the main project
   
-const
-  UnitInfoFlagNames: array[TUnitInfoFlag] of string = (
-    'uifComponentUsedByDesigner',
-    'uifComponentIndirectlyUsedByDesigner',
-    'uifMarked'
-    );
-
 function AddCompileReasonsDiff(const PropertyName: string;
        const Old, New: TCompileReasons; Tool: TCompilerDiffTool = nil): boolean;
 function dbgs(aType: TUnitCompDependencyType): string; overload;
@@ -1169,7 +1162,7 @@ end;
 
 function dbgs(Flag: TUnitInfoFlag): string;
 begin
-  Result:=UnitInfoFlagNames[Flag];
+  WriteStr(Result, Flag);
 end;
 
 function dbgs(Flags: TUnitInfoFlags): string;
