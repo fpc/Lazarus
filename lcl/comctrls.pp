@@ -2342,9 +2342,6 @@ type
   ETreeViewError = class(ETreeNodeError);
 
 const
-  NodeAttachModeNames: array[TNodeAttachMode] of string =
-    ('naAdd', 'naAddFirst', 'naAddChild', 'naAddChildFirst',
-     'naInsert', 'naInsertBehind');
   AddModeNames: array[TAddMode] of string =
     ('taAddFirst', 'taAdd', 'taInsert');
   LCLStreamID = -7;
