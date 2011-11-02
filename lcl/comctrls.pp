@@ -39,7 +39,7 @@ uses
   SysUtils, Types, Classes, Math, LCLStrConsts, LResources, LCLIntf, LCLType,
   FileUtil, LCLProc, AvgLvlTree, LMessages, ImgList, ActnList, GraphType,
   Graphics, Menus, Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons,
-  Themes;
+  Themes, WSLCLClasses, LCLClasses;
 
 type
   THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,
@@ -673,6 +673,8 @@ type
     property NoteBook: TCustomTabControl read FNoteBook;
   end;
 
+  {$ifndef LCL_NEW_TABCONTROL}
+
   { TTabControl }
 
   TTabControl = class(TCustomControl)
@@ -805,26 +807,100 @@ type
     property Visible;
   end;
 
-{$ifdef LCL_NEW_TABCONTROL}
+{$else}
 
-  { TNewTabControl }
-
-(* TNewTabControl is a replacement for TTabControl, derived from TCustomTabControl.
-  TTabPage is a dummy page, for communication with the widgetsets.
-  TTabPages holds the tabs (Strings[] and Objects[]).
+(* This is the new TTabControl which replaces the one one.
+  This new one is derived from TCustomTabControl.
 *)
 
-  TNewTabControl = class(TCustomTabControl)
+  TTabControl = class(TCustomTabControl)
+  private
+    FImageChangeLink: TChangeLink;
+    FOnChange: TNotifyEvent;
+    FOnChangeNeeded: Boolean;
+    FTabControlCreating: Boolean;
+    FTabs: TStrings;// this is a TTabControlNoteBookStrings
+    FCanvas: TCanvas;
+    FOnPaint: TNotifyEvent;
+    procedure AdjustDisplayRect(var ARect: TRect);
+    function GetDisplayRect: TRect;
+    function GetHotTrack: Boolean;
+    function GetMultiLine: Boolean;
+    function GetMultiSelect: Boolean;
+    function GetOwnerDraw: Boolean;
+    function GetRaggedRight: Boolean;
+    function GetScrollOpposite: Boolean;
+    function GetTabHeight: Smallint;
+    function GetTabIndex: Integer;
+    function GetTabRectWithBorder: TRect;
+    function GetTabWidth: Smallint;
+    procedure SetHotTrack(const AValue: Boolean);
+    procedure SetImages(const AValue: TCustomImageList);
+    procedure SetMultiLine(const AValue: Boolean);
+    procedure SetMultiSelect(const AValue: Boolean);
+    procedure SetOwnerDraw(const AValue: Boolean);
+    procedure SetRaggedRight(const AValue: Boolean);
+    procedure SetScrollOpposite(const AValue: Boolean);
+    procedure SetStyle(const AValue: TTabStyle);
+    procedure SetTabHeight(const AValue: Smallint);
+    procedure SetTabPosition(const AValue: TTabPosition);
+    procedure SetTabs(const AValue: TStrings);
+    procedure SetTabWidth(const AValue: Smallint);
   protected
-    procedure DoChange; override;
-    function GetPage(AIndex: Integer): TCustomPage; override;
-    procedure InsertPage(APage: TCustomPage; Index: Integer); override;
-    procedure RemovePage(Index: Integer); override;
+    function CanChange: Boolean; virtual;
+    function CanShowTab(ATabIndex: Integer): Boolean; virtual;
+    procedure Change; virtual;
+    function GetImageIndex(ATabIndex: Integer): Integer; virtual;
+    procedure Loaded; override;
+    procedure CreateWnd; override;
+    procedure DestroyHandle; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure SetTabIndex(Value: Integer); virtual;
+    procedure UpdateTabImages;
+    procedure ImageListChange(Sender: TObject);
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    class function GetControlClassDefaultSize: TSize; override;
+    procedure PaintWindow(DC: HDC); override;
+    procedure Paint; virtual;
+    procedure AdjustDisplayRectWithBorder(var ARect: TRect); virtual;
+    procedure AdjustClientRect(var ARect: TRect); override;
+    class function GetWSComponentClass(ASelf: TLCLComponent): TWSLCLComponentClass; override;
+    procedure DoCreateWnd; override;
   public
     constructor Create(TheOwner: TComponent); override;
-    function IndexOf(APage: TPersistent): integer; override;
+    destructor Destroy; override;
+    function IndexOfTabAt(X, Y: Integer): Integer;
+    function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function IndexOfTabWithCaption(const TabCaption: string): Integer;
-  published //copied from TTabControl
+    function TabRect(Index: Integer): TRect;
+    function RowCount: Integer;
+    procedure ScrollTabs(Delta: Integer);
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function IsUpdating: boolean;
+  public
+    property DisplayRect: TRect read GetDisplayRect;
+  published
+    property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
+    property Images;
+    property MultiLine: Boolean read GetMultiLine write SetMultiLine default False;
+    property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChanging;
+    property OnDrawTab;
+    property OnGetImageIndex;
+    property OwnerDraw: Boolean read GetOwnerDraw write SetOwnerDraw default False;
+    property RaggedRight: Boolean read GetRaggedRight write SetRaggedRight default False;
+    property ScrollOpposite: Boolean read GetScrollOpposite
+                                     write SetScrollOpposite default False;
+    property Style default tsTabs;
+    property TabHeight: Smallint read GetTabHeight write SetTabHeight default 0;
+    property TabPosition default tpTop;
+    property TabWidth: Smallint read GetTabWidth write SetTabWidth default 0;
+    property TabIndex: Integer read GetTabIndex write SetTabIndex default -1;
+    property Tabs: TStrings read FTabs write SetTabs;
+    property TabStop default True;
+    //
     property Align;
     property Anchors;
     property BorderSpacing;
@@ -835,24 +911,16 @@ type
     property DragMode;
     property Enabled;
     property Font;
-    property HotTrack;
-    property Images;
-    property MultiLine;
-    property MultiSelect;
-    property OnChange;
     property OnChangeBounds;
-    property OnChanging;
     property OnContextPopup;
     property OnDockDrop;
     property OnDockOver;
     property OnDragDrop;
     property OnDragOver;
-    property OnDrawTab;
     property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnGetImageIndex;
     property OnGetSiteInfo;
     property OnMouseDown;
     property OnMouseEnter;
@@ -863,22 +931,11 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
-    property OwnerDraw;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property RaggedRight;
-    property ScrollOpposite;
     property ShowHint;
-    property Style;
-    property TabHeight;
-    property TabCount: integer read GetPageCount;
-    property TabIndex: Integer read FPageIndex write SetPageIndex default -1;
     property TabOrder;
-    property TabPosition;
-    property Tabs: TStrings read FAccess write SetPages;
-    property TabStop;
-    property TabWidth;
     property Visible;
   end;
 
@@ -3372,7 +3429,7 @@ implementation
 
 // !!! Avoid unit circles. Only add units if really needed.
 uses
-  WSComCtrls, WSFactory, WSLCLClasses;
+  WSComCtrls, WSFactory;
 
 const
   ScrollBarWidth = 0;
@@ -3463,7 +3520,6 @@ procedure Register;
 begin
   RegisterComponents('Common Controls',[TTrackbar,TProgressBar,TTreeView,
     TListView,TStatusBar,TToolBar,TUpDown,TPageControl,TTabControl,
-{$ifdef LCL_NEW_TABCONTROL}TNewTabControl,{$endif}
     THeaderControl]);
   RegisterNoIcon([TToolButton,TTabSheet]);
 end;

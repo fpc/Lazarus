@@ -389,7 +389,7 @@ begin
   if FImages = AValue then Exit;
   if FImages <> nil then
     FImages.RemoveFreeNotification(Self);
-  FImages := AValue;
+  FImages := TImageList(AValue);
   if FImages <> nil then
     FImages.FreeNotification(Self);
   TTabControlStrings(FTabs).Images := FImages;
@@ -475,6 +475,7 @@ begin
     FOnChange(Self);
 end;
 
+{$ifndef LCL_NEW_TABCONTROL}
 procedure TTabControl.DrawTab(ATabIndex: Integer; const Rect: TRect;
   Active: Boolean);
 begin
@@ -483,6 +484,7 @@ begin
   else
     Canvas.FillRect(Rect);
 end;
+{$endif}
 
 function TTabControl.GetImageIndex(ATabIndex: Integer): Integer;
 begin
@@ -545,12 +547,35 @@ begin
   Result.CY := 150;
 end;
 
+{$ifdef LCL_NEW_TABCONTROL}
+procedure TTabControl.PaintWindow(DC: HDC);
+var
+  DCChanged: boolean;
+begin
+  DCChanged := (not FCanvas.HandleAllocated) or (FCanvas.Handle <> DC);
+  if DCChanged then
+    FCanvas.Handle := DC;
+  try
+    Paint;
+  finally
+    if DCChanged then FCanvas.Handle := 0;
+  end;
+end;
+{$endif}
+
 procedure TTabControl.Paint;
 var
   ARect: TRect;
   TS: TTextStyle;
   Details: TThemedElementDetails;
+  lCanvas: TCanvas;
 begin
+  {$ifdef LCL_NEW_TABCONTROL}
+  lCanvas := FCanvas;
+  {$else}
+  lCanvas := Canvas;
+  {$endif}
+
   //DebugLn(['TTabControl.Paint Bounds=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' CientOrigin=',dbgs(ClientOrigin)]);
   // clear only display area since button area is painted by another control
   // draw a frame
@@ -558,20 +583,20 @@ begin
   AdjustDisplayRectWithBorder(ARect);
 
   Details := ThemeServices.GetElementDetails(ttPane);
-  ThemeServices.DrawElement(Canvas.Handle, Details, ARect);
+  ThemeServices.DrawElement(lCanvas.Handle, Details, ARect);
 
   InflateRect(ARect,BorderWidth,BorderWidth);
-  Canvas.Frame3d(ARect, BorderWidth, bvRaised);
+  lCanvas.Frame3d(ARect, BorderWidth, bvRaised);
 
   if (csDesigning in ComponentState) and (Caption <> '') then
   begin
     ARect:=GetDisplayRect;
-    TS := Canvas.TextStyle;
+    TS := lCanvas.TextStyle;
     TS.Alignment:=taCenter;
     TS.Layout:= tlCenter;
     TS.Opaque:= false;
     TS.Clipping:= false;
-    Canvas.TextRect(ARect, ARect.Left, ARect.Top, Caption, TS);
+    lCanvas.TextRect(ARect, ARect.Left, ARect.Top, Caption, TS);
   end;
 end;
 
@@ -607,6 +632,20 @@ begin
   AdjustDisplayRect(ARect);
 end;
 
+{$ifdef LCL_NEW_TABCONTROL}
+class function TTabControl.GetWSComponentClass(ASelf: TLCLComponent
+  ): TWSLCLComponentClass;
+begin
+  Result:= FindWSComponentClass(TCustomControl);
+end;
+
+procedure TTabControl.DoCreateWnd;
+begin
+
+end;
+
+{$endif}
+
 constructor TTabControl.Create(TheOwner: TComponent);
 begin
   FTabControlCreating:=true;
@@ -621,6 +660,10 @@ begin
     SetInitialBounds(0, 0, CX, CY);
   BorderWidth:=2;
   FTabControlCreating:=false;
+  {$ifdef LCL_NEW_TABCONTROL}
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+  {$endif}
 end;
 
 destructor TTabControl.Destroy;
@@ -688,159 +731,6 @@ function TTabControl.IsUpdating: boolean;
 begin
   Result:=(FTabs<>nil) and TTabControlStrings(fTabs).IsUpdating;
 end;
-
-{$ifdef LCL_NEW_TABCONTROL}
-
-{ TTabPage }
-
-type
-  TTabPage = class(TCustomPage)
-  protected
-    FIndex: integer;
-    FTabs: TTabControl;
-    function GetTabVisible: Boolean; override; //assure always visible
-    function GetPageIndex: integer; override;
-    procedure SetPageIndex(AValue: Integer); override;
-  public
-    function IsControlVisible: Boolean; override;
-    function VisibleIndex: integer; override;
-  end;
-
-function TTabPage.GetTabVisible: Boolean;
-begin
-  Result := True;
-end;
-
-function TTabPage.GetPageIndex: integer;
-begin
-  Result := FIndex;
-end;
-
-procedure TTabPage.SetPageIndex(AValue: Integer);
-begin
-  FIndex := AValue;
-end;
-
-function TTabPage.IsControlVisible: Boolean;
-begin
-  Result := True;
-end;
-
-function TTabPage.VisibleIndex: integer;
-begin
-  Result := FIndex; //assume always visible
-end;
-
-{ TTabPages }
-
-type
-  TTabPages = class(TStringList)
-  protected
-    FPage: TTabPage;
-    FTabs: TNewTabControl;
-  public
-    constructor Create(ATabCtl: TNewTabControl);
-    function Add(const S: string): Integer; override;
-    procedure Delete(Index: Integer); override;
-  end;
-
-constructor TTabPages.Create(ATabCtl: TNewTabControl);
-begin
-  inherited Create;
-  FTabs := ATabCtl;
-  FPage := TTabPage.Create(ATabCtl);
-  FPage.Visible := False;
-end;
-
-function TTabPages.Add(const S: string): Integer;
-begin
-  Result:=inherited Add(S);
-  FTabs.InsertPage(nil, Result);
-end;
-
-procedure TTabPages.Delete(Index: Integer);
-begin
-  inherited Delete(Index);
-  FTabs.PageRemoved(Index);
-end;
-
-{ TNewTabControl }
-
-constructor TNewTabControl.Create(TheOwner: TComponent);
-begin
-  FUnPaged:=True;
-  FAccess := TTabPages.Create(Self); //specialization required for notifications
-  TTabPages(FAccess).FTabs := Self;
-  inherited Create(TheOwner);
-end;
-
-procedure TNewTabControl.DoChange;
-var
-  i: integer;
-  p: TObject;
-begin
-  //inherited DoChange;
-  if Assigned(OnChange) then
-    OnChange(Self)
-  else begin
-  //emulate page switch
-    for i := 0 to TabCount - 1 do begin
-      p := Tabs.Objects[i];
-      if p is TControl then
-        TControl(p).Visible := i = TabIndex;
-    end;
-  end;
-end;
-
-function TNewTabControl.GetPage(AIndex: Integer): TCustomPage;
-begin
-  Result := TTabPages(Tabs).FPage;
-  Result.PageIndex := AIndex;
-  Result.Caption := FAccess.Strings[AIndex];
-end;
-
-function TNewTabControl.IndexOf(APage: TPersistent): integer;
-begin
-  if APage is TTabPage then begin
-    Result := TTabPage(APage).FIndex;
-  end else
-    Result := Tabs.IndexOfObject(APage);
-end;
-
-function TNewTabControl.IndexOfTabWithCaption(const TabCaption: string): Integer;
-begin
-  Result := Tabs.IndexOf(TabCaption);
-end;
-
-procedure TNewTabControl.InsertPage(APage: TCustomPage; Index: Integer);
-begin
-//A page has been added to Pages - notify widgetset
-//TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, APage.VisibleIndex);
-  if HandleAllocated and (not (csLoading in ComponentState)) then begin
-  //if first page, make it current
-    if APage = nil then
-      APage := Page[Index];
-    TWSCustomTabControlClass(WidgetSetClass).AddPage(Self, APage, Index);
-    if PageIndex <> Index then begin //???
-      //DoSendPageIndex;
-      PageIndex:=Index;
-    end;
-  end;
-end;
-
-procedure TNewTabControl.RemovePage(Index: Integer);
-begin
-//A page has been removed from Pages - notify widgetset
-//TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, APage.VisibleIndex);
-  //if False then inherited RemovePage(Index);
-  if HandleAllocated and not (csDestroying in ComponentState) then begin
-  //select next visible page
-    TWSCustomTabControlClass(WidgetSetClass).RemovePage(Self, Index);
-    if FPageIndex >= Index then
-      Dec(FPageIndex);
-  end;
-end;
-{$endif}
 
 // included by comctrls.pp
 
