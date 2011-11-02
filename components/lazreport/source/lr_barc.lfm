@@ -2,14 +2,15 @@ object frBarCodeForm: TfrBarCodeForm
   Left = 376
   Height = 337
   Top = 242
-  Width = 353
+  Width = 380
   HorzScrollBar.Page = 292
   VertScrollBar.Page = 285
   ActiveControl = Panel1
   BorderStyle = bsDialog
   Caption = 'Barcode editor'
   ClientHeight = 337
-  ClientWidth = 353
+  ClientWidth = 380
+  Constraints.MinWidth = 380
   Font.Color = clBlack
   OnActivate = FormActivate
   OnClose = FormClose
@@ -23,7 +24,7 @@ object frBarCodeForm: TfrBarCodeForm
     Left = 6
     Height = 14
     Top = 6
-    Width = 26
+    Width = 30
     BorderSpacing.Around = 6
     Caption = 'Code'
     ParentColor = False
@@ -34,8 +35,8 @@ object frBarCodeForm: TfrBarCodeForm
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 14
-    Top = 53
-    Width = 57
+    Top = 51
+    Width = 64
     BorderSpacing.Around = 6
     Caption = 'Type of bar'
     ParentColor = False
@@ -66,9 +67,9 @@ object frBarCodeForm: TfrBarCodeForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 21
+    Height = 19
     Top = 26
-    Width = 341
+    Width = 368
     HelpContext = 260
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
@@ -81,21 +82,27 @@ object frBarCodeForm: TfrBarCodeForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 21
-    Top = 73
-    Width = 341
+    Height = 27
+    Top = 71
+    Width = 368
     HelpContext = 261
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
-    ItemHeight = 13
+    ItemHeight = 0
     Style = csDropDownList
     TabOrder = 1
   end
   object Panel1: TPanel
-    Left = 310
+    AnchorSideTop.Control = M1
+    AnchorSideRight.Control = M1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = M1
+    Left = 340
     Height = 17
-    Top = 8
+    Top = 3
     Width = 34
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Bottom = 6
     BevelOuter = bvNone
     ClientHeight = 17
     ClientWidth = 34
@@ -128,24 +135,24 @@ object frBarCodeForm: TfrBarCodeForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 71
-    Top = 100
-    Width = 341
+    Height = 76
+    Top = 104
+    Width = 368
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Options'
-    ClientHeight = 53
-    ClientWidth = 337
+    ClientHeight = 62
+    ClientWidth = 366
     TabOrder = 3
     object labZoom: TLabel
       AnchorSideLeft.Control = GroupBox1
       AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = GroupBox1
-      Left = 155
+      Left = 166
       Height = 14
       Top = 6
-      Width = 27
+      Width = 35
       BorderSpacing.Around = 6
       Caption = 'Zoom'
       ParentColor = False
@@ -154,9 +161,9 @@ object frBarCodeForm: TfrBarCodeForm
       AnchorSideLeft.Control = GroupBox1
       AnchorSideTop.Control = GroupBox1
       Left = 6
-      Height = 17
+      Height = 22
       Top = 6
-      Width = 69
+      Width = 87
       HelpContext = 262
       BorderSpacing.Around = 6
       Caption = 'Checksum '
@@ -167,9 +174,9 @@ object frBarCodeForm: TfrBarCodeForm
       AnchorSideTop.Control = ckCheckSum
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 29
-      Width = 96
+      Height = 22
+      Top = 34
+      Width = 118
       HelpContext = 263
       BorderSpacing.Around = 6
       Caption = 'Human readable'
@@ -179,8 +186,8 @@ object frBarCodeForm: TfrBarCodeForm
       AnchorSideLeft.Control = labZoom
       AnchorSideTop.Control = labZoom
       AnchorSideTop.Side = asrBottom
-      Left = 161
-      Height = 21
+      Left = 172
+      Height = 19
       Top = 26
       Width = 77
       BorderSpacing.Around = 6
@@ -197,19 +204,19 @@ object frBarCodeForm: TfrBarCodeForm
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 65
-    Top = 177
-    Width = 341
+    Top = 186
+    Width = 368
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     Caption = 'Orientation'
-    ClientHeight = 47
-    ClientWidth = 337
+    ClientHeight = 51
+    ClientWidth = 366
     TabOrder = 4
     object RB1: TRadioButton
       Left = 8
-      Height = 17
+      Height = 22
       Top = 16
-      Width = 27
+      Width = 35
       HelpContext = 264
       Caption = '0 '
       Checked = True
@@ -218,27 +225,27 @@ object frBarCodeForm: TfrBarCodeForm
     end
     object RB2: TRadioButton
       Left = 72
-      Height = 17
+      Height = 22
       Top = 16
-      Width = 33
+      Width = 42
       HelpContext = 264
       Caption = '90 '
       TabOrder = 1
     end
     object RB3: TRadioButton
       Left = 136
-      Height = 17
+      Height = 22
       Top = 16
-      Width = 39
+      Width = 49
       HelpContext = 264
       Caption = '180 '
       TabOrder = 2
     end
     object RB4: TRadioButton
       Left = 200
-      Height = 17
+      Height = 22
       Top = 16
-      Width = 39
+      Width = 49
       HelpContext = 264
       Caption = '270 '
       TabOrder = 3
@@ -246,9 +253,9 @@ object frBarCodeForm: TfrBarCodeForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 297
-    Width = 341
+    Height = 42
+    Top = 289
+    Width = 368
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
     OKButton.DefaultCaption = False
