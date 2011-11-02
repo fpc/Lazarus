@@ -1403,7 +1403,8 @@ begin
     if DoReference then
       Result.Reference;
   end else if DoReference or CreateIfNotExists then begin
-    Result:=TCTDirectoryCache.Create(Directory,Self);
+    Dir:=FindDiskFilename(ChompPathDelim(TrimFilename(Directory)));
+    Result:=TCTDirectoryCache.Create(Dir,Self);
     FDirectories.Add(Result);
     if DoReference then
       Result.Reference;
@@ -1602,8 +1603,11 @@ var
   Cache: TCTDirectoryCache;
   ShortFilename: String;
 begin
-  Result:=TrimFilename(Filename);
+  Result:=ChompPathDelim(TrimFilename(Filename));
+  if Result='' then exit;
   ADirectory:=ExtractFilePath(Result);
+  if ADirectory=Result then
+    exit; // e.g. / under Linux
   Cache:=GetCache(ADirectory,true,false);
   ShortFilename:=ExtractFileName(Result);
   Result:=Cache.FindFile(ShortFilename,ctsfcAllCase);
