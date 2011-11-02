@@ -5,17 +5,11 @@
     <Name Value="customdrawn"/>
     <AddToProjectUsesSection Value="True"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Linking>
-        <Debugging>
-          <GenerateDebugInfo Value="True"/>
-          <DebugInfoType Value="dsAuto"/>
-        </Debugging>
-      </Linking>
       <Other>
         <CompilerMessages>
           <UseMsgFile Value="True"/>
@@ -23,7 +17,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="10">
+    <Files Count="11">
       <Item1>
         <Filename Value="customdrawnextras.pas"/>
         <HasRegisterProc Value="True"/>
@@ -65,6 +59,10 @@
         <Filename Value="customdrawn_gnome.pas"/>
         <UnitName Value="customdrawn_gnome"/>
       </Item10>
+      <Item11>
+        <Filename Value="customdrawn_common.pas"/>
+        <UnitName Value="customdrawn_common"/>
+      </Item11>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

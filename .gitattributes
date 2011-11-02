@@ -639,6 +639,7 @@ components/custom/README.txt svneol=native#text/plain
 components/customdrawn/customdrawn.lpk svneol=native#text/plain
 components/customdrawn/customdrawn.pas svneol=native#text/pascal
 components/customdrawn/customdrawn_android.pas svneol=native#text/plain
+components/customdrawn/customdrawn_common.pas svneol=native#text/plain
 components/customdrawn/customdrawn_extra1.pas svneol=native#text/plain
 components/customdrawn/customdrawn_gnome.pas svneol=native#text/plain
 components/customdrawn/customdrawn_kde.pas svneol=native#text/plain

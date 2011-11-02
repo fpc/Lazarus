@@ -27,22 +27,31 @@ uses
   customdrawnutils;
 
 const
-  CDDRAWSTYLE_COUNT = 12;
+  CDDRAWSTYLE_COUNT = 19;
 
-  TCDEDIT_LEFT_TEXT_SPACING  = $400;
-  TCDEDIT_RIGHT_TEXT_SPACING = $401;
+  TCDEDIT_LEFT_TEXT_SPACING  = $400; // The space between the start of the text and the left end of the control
+  TCDEDIT_RIGHT_TEXT_SPACING = $401; // The space between the end of the text and the right end of the control
+  TCDEDIT_BACKGROUND_COLOR = $402;
+  TCDEDIT_TEXT_COLOR = $403;
+  TCDEDIT_SELECTED_BACKGROUND_COLOR = $404;
+  TCDEDIT_SELECTED_TEXT_COLOR = $405;
 
 type
 
   TCDDrawStyle = (
     // The default is given by the DefaultStyle global variable
+    // Don't implement anything for this drawer
     dsDefault = 0,
+    // This is a common drawer, with a minimal implementation on which other
+    // drawers base on
+    dsCommon,
     // Operating system styles
     dsWinCE, dsWin2000, dsWinXP,
     dsKDE, dsGNOME, dsMacOSX,
     dsAndroid,
     // Other special styles for the user
-    dsExtra1, dsExtra2, dsExtra3, dsExtra4
+    dsExtra1, dsExtra2, dsExtra3, dsExtra4, dsExtra5,
+    dsExtra6, dsExtra7, dsExtra8, dsExtra9, dsExtra10
     );
 
   TCDControlDrawer = class;
@@ -67,6 +76,7 @@ type
     // state information
     IsMouseOver: Boolean;
     //
+    constructor Create(AOwner: TComponent); override;
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
   end;
@@ -215,6 +225,7 @@ type
 
   TCDEditDrawer = class(TCDControlDrawer)
   public
+    procedure DrawBackground(ADest: TCanvas; AControl: TCDControl); virtual; abstract;
   end;
 
   {@@
@@ -537,20 +548,20 @@ resourcestring
 var
   // Standard Tab
   RegisteredButtonDrawers: array[TCDDrawStyle] of TCDButtonDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   RegisteredEditDrawers: array[TCDDrawStyle] of TCDEditDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   RegisteredGroupBoxDrawers: array[TCDDrawStyle] of TCDGroupBoxDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   RegisteredCheckBoxDrawers: array[TCDDrawStyle] of TCDCheckBoxDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   // Common Controls Tab
   RegisteredTrackBarDrawers: array[TCDDrawStyle] of TCDTrackBarDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   RegisteredListViewDrawers: array[TCDDrawStyle] of TCDListViewDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   RegisteredCustomTabControlDrawers: array[TCDDrawStyle] of TCDCustomTabControlDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
 
 procedure RegisterButtonDrawer(ADrawer: TCDButtonDrawer; AStyle: TCDDrawStyle);
 begin
@@ -631,7 +642,7 @@ begin
   if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
   else lDrawStyle := DrawStyle;
   FCurrentDrawer := RegisteredListViewDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredListViewDrawers[dsWince];
+  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredListViewDrawers[dsCommon];
   if FCurrentDrawer = nil then raise Exception.Create('No registered list view drawers were found');
 end;
 
@@ -745,7 +756,7 @@ begin
   if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
   else lDrawStyle := DrawStyle;
   FCurrentDrawer := RegisteredEditDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredEditDrawers[dsWince];
+  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredEditDrawers[dsCommon];
   if FCurrentDrawer = nil then raise Exception.Create('No registered edit drawers were found');
 end;
 
@@ -928,7 +939,6 @@ begin
   FCaretTimer.Interval := 500;
   FCaretTimer.Enabled := False;
 
-  DrawStyle := dsWinCE;
   PrepareCurrentDrawer();
 end;
 
@@ -946,7 +956,7 @@ begin
   if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
   else lDrawStyle := DrawStyle;
   FCurrentDrawer := RegisteredCheckBoxDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredCheckBoxDrawers[dsWince];
+  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredCheckBoxDrawers[dsCommon];
   if FCurrentDrawer = nil then raise Exception.Create('No registered check box drawers were found');
 end;
 
@@ -1087,7 +1097,7 @@ begin
   if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
   else lDrawStyle := DrawStyle;
   FCurrentDrawer := RegisteredCustomTabControlDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredCustomTabControlDrawers[dsWince];
+  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredCustomTabControlDrawers[dsCommon];
   if FCurrentDrawer = nil then raise Exception.Create('No registered custom tab control drawers were found');
 end;
 
@@ -1116,7 +1126,6 @@ begin
   Height := 184;
   TabStop := True;
 
-  FDrawStyle := dsWinCE;
   PrepareCurrentDrawer();
 
   ParentColor := True;
@@ -1245,6 +1254,11 @@ begin
   inherited MouseLeave;
 end;
 
+constructor TCDControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
 { TCDButtonDrawer }
 
 function TCDButtonDrawer.GetClientRect(AControl: TCDControl): TRect;
@@ -1345,7 +1359,7 @@ begin
   if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
   else lDrawStyle := DrawStyle;
   FCurrentDrawer := RegisteredButtonDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredButtonDrawers[dsWince];
+  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredButtonDrawers[dsCommon];
   if FCurrentDrawer = nil then raise Exception.Create('No registered button drawers were found');
 end;
 
@@ -1358,8 +1372,6 @@ begin
   //Color := clTeal;
   ParentFont := True;
   Color := $00F1F5F5;
-
-  FDrawStyle := dsAndroid;
   PrepareCurrentDrawer();
 end;
 
@@ -1411,7 +1423,7 @@ begin
   if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
   else lDrawStyle := DrawStyle;
   FCurrentDrawer := RegisteredGroupBoxDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredGroupBoxDrawers[dsWince];
+  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredGroupBoxDrawers[dsCommon];
   if FCurrentDrawer = nil then raise Exception.Create('No registered group box drawers were found');
 end;
 
@@ -1442,7 +1454,6 @@ begin
   ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
     csDoubleClicks, csReplicatable];
 
-  DrawStyle := dsWinCE;
   PrepareCurrentDrawer();
 end;
 
@@ -1496,7 +1507,7 @@ begin
   if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
   else lDrawStyle := DrawStyle;
   FCurrentDrawer := RegisteredTrackBarDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredTrackBarDrawers[dsWince];
+  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredTrackBarDrawers[dsCommon];
   if FCurrentDrawer = nil then raise Exception.Create('No registered track bar drawers were found');
 end;
 

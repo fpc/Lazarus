@@ -1,4 +1,4 @@
-unit customdrawn_wince;
+unit customdrawn_common;
 
 {$mode objfpc}{$H+}
 
@@ -14,26 +14,29 @@ uses
   // Others only for types
   StdCtrls,
   //
-  customdrawncontrols, customdrawnutils, customdrawn_common;
+  customdrawncontrols, customdrawnutils;
 
 type
-  TCDButtonDrawerWinCE = class(TCDButtonDrawer)
+  TCDButtonDrawerCommon = class(TCDButtonDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
     procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton); override;
   end;
 
-  { TCDEditDrawerWinCE }
+  { TCDEditDrawerCommon }
 
-  TCDEditDrawerWinCE = class(TCDEditDrawerCommon)
+  TCDEditDrawerCommon = class(TCDEditDrawer)
   public
     function GetMeasures(AMeasureID: Integer): Integer; override;
-    procedure DrawBackground(ADest: TCanvas; CDControl: TCDControl); override;
+    function GetColor(AColorID: Integer): TColor; override;
+    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDControl: TCDControl); override;
+    procedure DrawBackground(ADest: TCanvas; AControl: TCDControl); override;
+    procedure DrawToCanvas(ADest: TCanvas; CDControl: TCDControl); override;
   end;
 
-  { TCDCheckBoxDrawerWinCE }
+  { TCDCheckBoxDrawerCommon }
 
-  TCDCheckBoxDrawerWinCE = class(TCDCheckBoxDrawer)
+  TCDCheckBoxDrawerCommon = class(TCDCheckBoxDrawer)
   public
     function GetCaptionWidth(CDCheckBox: TCDCheckBox): Integer;
     function GetCaptionHeight(CDCheckBox: TCDCheckBox): Integer;
@@ -43,7 +46,7 @@ type
     procedure DrawToCanvas(ADest: TCanvas; CDCheckBox: TCDCheckBox); override;
   end;
 
-  TCDGroupBoxDrawerWinCE = class(TCDGroupBoxDrawer)
+  TCDGroupBoxDrawerCommon = class(TCDGroupBoxDrawer)
   public
     FCaptionMiddle: integer;
     procedure SetClientRectPos(CDGroupBox: TCDGroupBox); override;
@@ -55,21 +58,20 @@ type
   // Common Controls Tab
   // ===================================
 
-  { TCDListViewDrawerWinCE }
+  { TCDListViewDrawerCommon }
 
-  TCDListViewDrawerWinCE = class(TCDListViewDrawer)
+  TCDListViewDrawerCommon = class(TCDListViewDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDListView: TCDListView); override;
     procedure DrawToCanvas(ADest: TCanvas; CDListView: TCDListView); override;
   end;
 
-  { TCDCustomTabControlDrawerWinCE }
+  { TCDCustomTabControlDrawerCommon }
 
-  TCDCustomTabControlDrawerWinCE = class(TCDCustomTabControlDrawer)
+  TCDCustomTabControlDrawerCommon = class(TCDCustomTabControlDrawer)
   private
     StartIndex: integer;       //FEndIndex
     LeftmostTabVisibleIndex: Integer;
-    procedure DrawCaptionBar(ADest: TCanvas; lRect: TRect; CL: TColor);
     procedure DrawTabs(ADest: TCanvas; CDTabControl: TCDCustomTabControl);
     procedure DrawTab(ADest: TCanvas; AIndex: Integer; ACurStartLeftPos: Integer;
       CDTabControl: TCDCustomTabControl);
@@ -90,23 +92,23 @@ type
 
 implementation
 
-{ TCDListViewDrawerWinCE }
+{ TCDListViewDrawerCommon }
 
-procedure TCDListViewDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
+procedure TCDListViewDrawerCommon.DrawToIntfImage(ADest: TFPImageCanvas;
   CDListView: TCDListView);
 begin
 
 end;
 
-procedure TCDListViewDrawerWinCE.DrawToCanvas(ADest: TCanvas;
+procedure TCDListViewDrawerCommon.DrawToCanvas(ADest: TCanvas;
   CDListView: TCDListView);
 begin
 
 end;
 
-{ TCDEditDrawerWinCE }
+{ TCDEditDrawerCommon }
 
-function TCDEditDrawerWinCE.GetMeasures(AMeasureID: Integer): Integer;
+function TCDEditDrawerCommon.GetMeasures(AMeasureID: Integer): Integer;
 begin
   case AMeasureID of
   TCDEDIT_LEFT_TEXT_SPACING: Result := 4;
@@ -116,34 +118,119 @@ begin
   end;
 end;
 
-procedure TCDEditDrawerWinCE.DrawBackground(ADest: TCanvas;
+function TCDEditDrawerCommon.GetColor(AColorID: Integer): TColor;
+begin
+  case AColorId of
+  TCDEDIT_BACKGROUND_COLOR:    Result := clWhite;
+  TCDEDIT_TEXT_COLOR:          Result := clBlack;
+  TCDEDIT_SELECTED_BACKGROUND_COLOR: Result := clBlue;
+  TCDEDIT_SELECTED_TEXT_COLOR: Result := clWhite;
+  else
+    Result := inherited GetColor(AColorId);
+  end;
+end;
+
+procedure TCDEditDrawerCommon.DrawToIntfImage(ADest: TFPImageCanvas;
   CDControl: TCDControl);
+begin
+
+end;
+
+procedure TCDEditDrawerCommon.DrawBackground(ADest: TCanvas;
+  AControl: TCDControl);
 begin
   // The background
   ADest.Brush.Color := clWhite;
   ADest.Brush.Style := bsSolid;
   ADest.Pen.Color := clBlack;
   ADest.Pen.Style := psSolid;
-  ADest.Rectangle(0, 0, CDControl.Width, CDControl.Height);
+  ADest.Rectangle(0, 0, AControl.Width, AControl.Height);
 end;
 
-{ TCDCheckBoxDrawerWinCE }
+procedure TCDEditDrawerCommon.DrawToCanvas(ADest: TCanvas; CDControl: TCDControl);
+var
+  CDEdit: TCDEdit absolute CDControl;
+  lVisibleText, lTmpText, lControlText: TCaption;
+  lCaretPixelPos: Integer;
+  lHeight: Integer;
+  lSelLeftPos, lSelLeftPixelPos, lSelLength, lSelRightPos: Integer;
+  lTextWidth: Integer;
+begin
+  DrawBackground(ADest, CDControl);
 
-function TCDCheckBoxDrawerWinCE.GetCaptionWidth(CDCheckBox: TCDCheckBox
+  lControlText := CDEdit.Text;
+  ADest.Brush.Style := bsClear;
+  ADest.Font.Assign(CDControl.Font);
+
+  // The text without selection
+  if CDEdit.FSelLength = 0 then
+  begin
+    lVisibleText := Copy(lControlText, CDEdit.FVisibleTextStart, Length(lControlText));
+    ADest.TextOut(4, 1, lVisibleText);
+  end
+  // Text and Selection
+  else
+  begin
+    lSelLeftPos := CDEdit.FSelStart;
+    if CDEdit.FSelLength < 0 then lSelLeftPos := lSelLeftPos + CDEdit.FSelLength;
+    lSelRightPos := CDEdit.FSelStart;
+    if CDEdit.FSelLength > 0 then lSelRightPos := lSelRightPos + CDEdit.FSelLength;
+    lSelLength := CDEdit.FSelLength;
+    if lSelLength < 0 then lSelLength := lSelLength * -1;
+
+    // Text left of the selection
+    lVisibleText := Copy(lControlText, CDEdit.FVisibleTextStart, lSelLeftPos-CDEdit.FVisibleTextStart);
+    ADest.TextOut(4, 1, lVisibleText);
+    lSelLeftPixelPos := ADest.TextWidth(lVisibleText)+4;
+
+    // The selection background
+    lVisibleText := Copy(lControlText, lSelLeftPos, lSelLength);
+    lTextWidth := ADest.TextWidth(lVisibleText);
+    ADest.Brush.Color := clBlue;
+    ADest.Brush.Style := bsSolid;
+    ADest.Rectangle(lSelLeftPixelPos, 1, lSelLeftPixelPos+lTextWidth, lHeight-1);
+    ADest.Brush.Style := bsClear;
+
+    // The selection text
+    ADest.Font.Color := clWhite;
+    ADest.TextOut(lSelLeftPixelPos, 1, lVisibleText);
+    lSelLeftPixelPos := lSelLeftPixelPos + lTextWidth;
+
+    // Text right of the selection
+    ADest.Brush.Color := clWhite;
+    ADest.Font.Color := CDEdit.Font.Color;
+    lVisibleText := Copy(lControlText, lSelLeftPos+lSelLength+1, Length(lControlText));
+    ADest.TextOut(lSelLeftPixelPos, 1, lVisibleText);
+  end;
+
+  // And the caret
+  if CDEdit.FCaretIsVisible then
+  begin
+    lTmpText := Copy(lControlText, 1, CDEdit.FCaretPos-CDEdit.FVisibleTextStart+1);
+    lCaretPixelPos := ADest.TextWidth(lTmpText) + 3;
+    lHeight := CDControl.Height;
+    ADest.Line(lCaretPixelPos, 2, lCaretPixelPos, lHeight-2);
+    ADest.Line(lCaretPixelPos+1, 2, lCaretPixelPos+1, lHeight-2);
+  end;
+end;
+
+{ TCDCheckBoxDrawerCommon }
+
+function TCDCheckBoxDrawerCommon.GetCaptionWidth(CDCheckBox: TCDCheckBox
   ): Integer;
 begin
   CDCheckBox.Canvas.Font.Assign(CDCheckBox.Font);
   Result := CDCheckBox.Canvas.TextWidth(CDCheckBox.Caption);
 end;
 
-function TCDCheckBoxDrawerWinCE.GetCaptionHeight(CDCheckBox: TCDCheckBox
+function TCDCheckBoxDrawerCommon.GetCaptionHeight(CDCheckBox: TCDCheckBox
   ): Integer;
 begin
   CDCheckBox.Canvas.Font.Assign(CDCheckBox.Font);
   Result := CDCheckBox.Canvas.TextHeight('ŹÇ')+3;
 end;
 
-procedure TCDCheckBoxDrawerWinCE.CalculatePreferredSize(
+procedure TCDCheckBoxDrawerCommon.CalculatePreferredSize(
   CDCheckBox: TCDCheckBox; var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
 begin
@@ -155,17 +242,17 @@ begin
   PreferredHeight := GetCaptionHeight(CDCheckBox);
 end;
 
-procedure TCDCheckBoxDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
+procedure TCDCheckBoxDrawerCommon.DrawToIntfImage(ADest: TFPImageCanvas;
   CDCheckBox: TCDCheckBox);
 begin
 
 end;
 
-procedure TCDCheckBoxDrawerWinCE.DrawToCanvas(ADest: TCanvas;
+procedure TCDCheckBoxDrawerCommon.DrawToCanvas(ADest: TCanvas;
   CDCheckBox: TCDCheckBox);
 const
-  CDCheckBoxWinCE_Half_Height = 7;
-  CDCheckBoxWinCE_Height = 15;
+  CDCheckBoxCommon_Half_Height = 7;
+  CDCheckBoxCommon_Height = 15;
 var
   lHalf: Integer;
   lColor: TColor;
@@ -187,19 +274,19 @@ begin
   else ADest.Pen.Color := clBlack;
   ADest.Rectangle(
     1,
-    lHalf - CDCheckBoxWinCE_Half_Height,
-    CDCheckBoxWinCE_Height+1,
-    lHalf + CDCheckBoxWinCE_Half_Height);
+    lHalf - CDCheckBoxCommon_Half_Height,
+    CDCheckBoxCommon_Height+1,
+    lHalf + CDCheckBoxCommon_Half_Height);
 
   // The Tickmark
   if CDCheckBox.State = cbChecked then
   begin
     // 4 lines going down and to the right
     for i := 0 to 3 do
-      ADest.Line(5+i, lHalf - CDCheckBoxWinCE_Half_Height+5+i, 5+i, lHalf - CDCheckBoxWinCE_Half_Height+8+i);
+      ADest.Line(5+i, lHalf - CDCheckBoxCommon_Half_Height+5+i, 5+i, lHalf - CDCheckBoxCommon_Half_Height+8+i);
     // Now 5 lines going up and to the right
     for i := 4 to 8 do
-      ADest.Line(5+i, lHalf - CDCheckBoxWinCE_Half_Height+5+6-i, 5+i, lHalf - CDCheckBoxWinCE_Half_Height+8+6-i);
+      ADest.Line(5+i, lHalf - CDCheckBoxCommon_Half_Height+5+6-i, 5+i, lHalf - CDCheckBoxCommon_Half_Height+8+6-i);
   end;
 
   // The selection
@@ -211,30 +298,30 @@ begin
     // The selection inside the square
     ADest.Rectangle(
       2,
-      lHalf - CDCheckBoxWinCE_Half_Height+1,
-      CDCheckBoxWinCE_Height,
-      lHalf + CDCheckBoxWinCE_Half_Height-1);
+      lHalf - CDCheckBoxCommon_Half_Height+1,
+      CDCheckBoxCommon_Height,
+      lHalf + CDCheckBoxCommon_Half_Height-1);
 
     // Selection around the text
     ADest.Rectangle(
-      CDCheckBoxWinCE_Height+4, 0,
+      CDCheckBoxCommon_Height+4, 0,
       CDCheckBox.Width, CDCheckBox.Height);
   end;
 
   // Now the text
   ADest.Font.Assign(CDCheckBox.Font);
-  ADest.TextOut(CDCheckBoxWinCE_Height+5, 0, CDCheckBox.Caption);
+  ADest.TextOut(CDCheckBoxCommon_Height+5, 0, CDCheckBox.Caption);
 end;
 
-{ TCDButtonDrawerWinCE }
+{ TCDButtonDrawerCommon }
 
-procedure TCDButtonDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
+procedure TCDButtonDrawerCommon.DrawToIntfImage(ADest: TFPImageCanvas;
   CDButton: TCDButton);
 begin
 
 end;
 
-procedure TCDButtonDrawerWinCE.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton);
+procedure TCDButtonDrawerCommon.DrawToCanvas(ADest: TCanvas; CDButton: TCDButton);
 var
   TmpB: TBitmap;
   Str: string;
@@ -296,124 +383,9 @@ begin
   {$endif}
 end;
 
-{ TCDCustomTabControlDrawerWinCE }
+{ TCDCustomTabControlDrawerCommon }
 
-procedure TCDCustomTabControlDrawerWinCE.DrawCaptionBar(ADest: TCanvas;
-  lRect: TRect; CL: TColor);
-begin
-  {  CaptionHeight := GetTabHeight(CDPageControl.PageIndex, CDPageControl) - 4;
-    RButtHeight := GetTabHeight(CDPageControl.PageIndex, CDPageControl);
-    aRect := lRect;
-    ADest.Pen.Style := psSolid;
-    ADest.Brush.Style := bsSolid;
-    ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(CL));
-    //TColorToFPColor(ColorToRGB($009C9B91));
-    ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CL));
-    aRect.Left := lRect.Left;
-    aRect.Top := lRect.Top;
-    aRect.Bottom := lRect.Bottom;
-    aRect.Right := lRect.Right;
-    ADest.RecTangle(lRect);
-    if CDPageControl.FPages.Count = 0 then
-    begin
-      ADest.Brush.Color := clWhite;
-      ADest.Pen.Color := $009C9B91;
-      ADest.RecTangle(Rect(aRect.Left, aRect.Top, aRect.Right + 1, aRect.Bottom + 2));
-      ADest.Pen.Color := clWhite;
-      ADest.Line(aRect.Left + 1, aRect.Bottom + 1, aRect.Right, aRect.Bottom + 1);
-      Exit;
-    end;
-    aRect.Left := lRect.Left + 2;
-    aRect.Top := lRect.Top + 3;
-    //ADest.TextStyle.Opaque :=false;
-    //SetBkMode(ADest.Handle, TRANSPARENT);
-    if ADest.Brush.Style = bsSolid then
-      SetBkMode(ADest.Handle, OPAQUE)
-    else
-      SetBkMode(ADest.Handle, TRANSPARENT);
-
-    for i := StartIndex to CDPageControl.FPages.Count - 1 do
-    begin
-      aText := CDPageControl.FPages[i].TabPage.Caption;
-      rWidth := (CaptionHeight - ADest.TextHeight(aText)) + ADest.TextWidth(aText);
-      CDPageControl.FPages[i].Width := rWidth;
-      if aRect.Left + rWidth > lRect.Right - 6 then
-        Break
-      else
-        aRect.Right := aRect.Left + rWidth;
-      if CDPageControl.PageIndex = i then
-      begin
-        cRect := aRect;
-        if i = StartIndex then
-          cRect.Left := aRect.Left - 2
-        else
-          cRect.Left := aRect.Left - 4;
-        cRect.Right := aRect.Right + 4;
-        cRect.Top := cRect.Top - 2;
-        bText := CDPageControl.FPages[i].TabPage.Caption;
-      end
-      else
-        DrawTabHead(aDest, aRect, CDPageControl.Color, False);
-      MaskColor := MaskBaseColor + i - StartIndex;
-      //DrawTabHeadMask(MaskHeadBmp.Canvas, aRect, MaskColor, False);
-      ADest.TextOut(aRect.Left + (aRect.Right - aRect.Left - ADest.TextWidth(aText)) div 2,
-        aRect.Top + (aRect.Bottom - aRect.Top - ADest.TextHeight(aText)) div 2, aText);
-      aRect.Left := aRect.Right + 3;
-    end;
-    ADest.Line(lRect.Left, lRect.Bottom - 1, cRect.Left, lRect.Bottom - 1);
-    ADest.Line(cRect.Right, lRect.Bottom - 1, lRect.Right, lRect.Bottom - 1);
-    DrawTabHead(aDest, cRect, clWhite, True);
-    ADest.TextOut(cRect.Left + (cRect.Right - cRect.Left - ADest.TextWidth(bText)) div 2,
-      cRect.Top + (cRect.Bottom - cRect.Top - ADest.TextHeight(bText)) div 2, bText);
-    if not CheckTabButton(lRect.Right - lRect.Left, CDPageControl.FPages) then
-      Exit;
-    aRect.Left := lRect.Right - RButtHeight * 2 - 3;
-    aRect.Top := 1;
-    aRect.Bottom := RButtHeight + 1;
-    aRect.Right := lRect.Right - RButtHeight;
-    //if FMDownL then
-    //  GradFill(ADest, aRect, $00F1A079, $00EFAF9B)
-    //else
-      GradFill(ADest, aRect, $00FDD9CB, $00F2C9B8);
-    aRect.Left := lRect.Right - RButtHeight - 1;
-    aRect.Top := 1;
-    aRect.Bottom := RButtHeight + 1;
-    aRect.Right := lRect.Right;
-
-    GradFill(ADest, aRect, $00FDD9CB, $00F2C9B8);
-
-    ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($0085614D));
-    bRect.Top := 1;
-    bRect.Left := lRect.Right - RButtHeight * 2 - 3;
-    bRect.Right := lRect.Right;
-    bRect.Bottom := RButtHeight + 1;
-    DrawArrow(ADest, bRect, True);
-    DrawArrow(ADest, bRect, False);
-    ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(clWhite));
-    ADest.Line(lRect.Right - RButtHeight * 2 - 3, 1, lRect.Right, 1);
-    ADest.Line(lRect.Right, 1, lRect.Right, RButtHeight + 1);
-    ADest.Line(lRect.Right, RButtHeight + 1, lRect.Right - RButtHeight *
-      2 - 3, RButtHeight + 1);
-    ADest.Line(lRect.Right - RButtHeight * 2 - 3, RButtHeight + 1,
-      lRect.Right - RButtHeight * 2 - 3, 1);
-    ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($00E5BAA7));
-    ADest.Brush.Style := bsClear;
-    ADest.Rectangle(lRect.Right - RButtHeight * 2 - 2, 2, lRect.Right -
-      1, RButtHeight + 1);
-    CornerColor := TColorToFPColor(ColorToRGB($00F6E3D9));
-    ADest.Colors[lRect.Right - RButtHeight * 2 - 2, 2] := CornerColor;
-    ADest.Colors[lRect.Right - RButtHeight * 2 - 2, RButtHeight] := CornerColor;
-    ADest.Colors[lRect.Right - 1, 2] := CornerColor;
-    ADest.Colors[lRect.Right - 1, RButtHeight] := CornerColor;
-    ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(clWhite));
-    ADest.Line(lRect.Right - 51, 1, lRect.Right, 1);
-    ADest.Line(lRect.Right, 1, lRect.Right, 25);
-    ADest.Line(lRect.Right, 25, lRect.Right - 51, 25);
-    ADest.Line(lRect.Right - 51, 25, lRect.Right - 51, 1);
-    ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($00FFFFFF));}
-end;
-
-procedure TCDCustomTabControlDrawerWinCE.DrawTabs(ADest: TCanvas; CDTabControl: TCDCustomTabControl);
+procedure TCDCustomTabControlDrawerCommon.DrawTabs(ADest: TCanvas; CDTabControl: TCDCustomTabControl);
 var
   IsPainting: Boolean = False;
   CurStartLeftPos: Integer = 0;
@@ -432,7 +404,7 @@ begin
   end;
 end;
 
-procedure TCDCustomTabControlDrawerWinCE.DrawTab(ADest: TCanvas;
+procedure TCDCustomTabControlDrawerCommon.DrawTab(ADest: TCanvas;
   AIndex: Integer; ACurStartLeftPos: Integer; CDTabControl: TCDCustomTabControl);
 var
   IsSelected: Boolean;
@@ -494,13 +466,13 @@ begin
   ADest.TextOut(ACurStartLeftPos+5, lTabTopPos+5, lCaption);
 end;
 
-function TCDCustomTabControlDrawerWinCE.GetPageIndexFromXY(x, y: integer
+function TCDCustomTabControlDrawerCommon.GetPageIndexFromXY(x, y: integer
   ): integer;
 begin
   Result := 1;
 end;
 
-function TCDCustomTabControlDrawerWinCE.GetTabHeight(AIndex: Integer; CDTabControl: TCDCustomTabControl): Integer;
+function TCDCustomTabControlDrawerCommon.GetTabHeight(AIndex: Integer; CDTabControl: TCDCustomTabControl): Integer;
 begin
   if CDTabControl.Font.Size = 0 then
     Result := 32
@@ -508,19 +480,19 @@ begin
     Result := CDTabControl.Font.Size + 22;
 end;
 
-function TCDCustomTabControlDrawerWinCE.GetTabWidth(ADest: TCanvas;
+function TCDCustomTabControlDrawerCommon.GetTabWidth(ADest: TCanvas;
   AIndex: Integer; CDTabControl: TCDCustomTabControl): Integer;
 const
-  TCDTabControl_WinCE_TabCaptionExtraWidth = 20;
+  TCDTabControl_Common_TabCaptionExtraWidth = 20;
 var
   lCaption: string;
 begin
   lCaption := CDTabControl.Tabs.Strings[AIndex];
 
-  Result := ADest.TextWidth(lCaption) + TCDTabControl_WinCE_TabCaptionExtraWidth;
+  Result := ADest.TextWidth(lCaption) + TCDTabControl_Common_TabCaptionExtraWidth;
 end;
 
-{function TCDCustomTabControlDrawerWinCE.GetClientRect(AControl: TCDControl
+{function TCDCustomTabControlDrawerCommon.GetClientRect(AControl: TCDControl
   ): TRect;
 var
   lCaptionHeight: Integer;
@@ -531,7 +503,7 @@ begin
     CDTabControl.Height - lCaptionHeight - 5);
 end;}
 
-procedure TCDCustomTabControlDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
+procedure TCDCustomTabControlDrawerCommon.DrawToIntfImage(ADest: TFPImageCanvas;
   FPImg: TLazIntfImage; CDTabControl: TCDCustomTabControl);
 var
   lColor: TColor;
@@ -545,7 +517,7 @@ begin
   FPImg.FillPixels(lFPColor);
 end;
 
-procedure TCDCustomTabControlDrawerWinCE.DrawToCanvas(ADest: TCanvas; CDTabControl: TCDCustomTabControl);
+procedure TCDCustomTabControlDrawerCommon.DrawToCanvas(ADest: TCanvas; CDTabControl: TCDCustomTabControl);
 var
   CaptionHeight: Integer;
 begin
@@ -575,7 +547,7 @@ begin
   DrawTabs(ADest, CDTabControl);
 end;
 
-procedure TCDCustomTabControlDrawerWinCE.DrawTabSheet(ADest: TCanvas; CDTabControl: TCDCustomTabControl);
+procedure TCDCustomTabControlDrawerCommon.DrawTabSheet(ADest: TCanvas; CDTabControl: TCDCustomTabControl);
 begin
   ADest.Brush.Color := CDTabControl.Color;
   ADest.Brush.Style := bsSolid;
@@ -583,7 +555,7 @@ begin
   ADest.Rectangle(0, 0, CDTabControl.Width, CDTabControl.Height);
 end;
 
-procedure TCDCustomTabControlDrawerWinCE.MouseDown(Button: TMouseButton;
+procedure TCDCustomTabControlDrawerCommon.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: integer; CDTabControl: TCDCustomTabControl);
 var
   i: Integer;
@@ -616,13 +588,13 @@ begin
   end;
 end;
 
-procedure TCDCustomTabControlDrawerWinCE.MouseUp(Button: TMouseButton;
+procedure TCDCustomTabControlDrawerCommon.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: integer; CDTabControl: TCDCustomTabControl);
 begin
 
 end;
 
-procedure TCDGroupBoxDrawerWinCE.SetClientRectPos(CDGroupBox: TCDGroupBox);
+procedure TCDGroupBoxDrawerCommon.SetClientRectPos(CDGroupBox: TCDGroupBox);
 var
   lRect: TRect;
   lCaptionHeight: integer;
@@ -632,7 +604,7 @@ begin
   //CDGroupBox.AdjustClientRect(lRect);
 end;
 
-procedure TCDGroupBoxDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
+procedure TCDGroupBoxDrawerCommon.DrawToIntfImage(ADest: TFPImageCanvas;
   CDGroupBox: TCDGroupBox);
 {$ifdef CUSTOMDRAWN_USE_FREETYPE}
 var
@@ -687,7 +659,7 @@ begin
   {$endif}
 end;
 
-procedure TCDGroupBoxDrawerWinCE.DrawToCanvas(ADest: TCanvas; CDGroupBox: TCDGroupBox);
+procedure TCDGroupBoxDrawerCommon.DrawToCanvas(ADest: TCanvas; CDGroupBox: TCDGroupBox);
 begin
   if CDGroupBox.Parent = nil then
     ADest.Brush.Color := clLtGray
@@ -704,10 +676,10 @@ begin
 end;
 
 initialization
-  RegisterButtonDrawer(TCDButtonDrawerWinCE.Create, dsWinCE);
-  RegisterEditDrawer(TCDEditDrawerWinCE.Create, dsWinCE);
-  RegisterGroupBoxDrawer(TCDGroupBoxDrawerWinCE.Create, dsWinCE);
-  RegisterCheckBoxDrawer(TCDCheckBoxDrawerWinCE.Create, dsWinCE);
-  RegisterCustomTabControlDrawer(TCDCustomTabControlDrawerWinCE.Create, dsWinCE);
+  RegisterButtonDrawer(TCDButtonDrawerCommon.Create, dsCommon);
+  RegisterEditDrawer(TCDEditDrawerCommon.Create, dsCommon);
+  RegisterGroupBoxDrawer(TCDGroupBoxDrawerCommon.Create, dsCommon);
+  RegisterCheckBoxDrawer(TCDCheckBoxDrawerCommon.Create, dsCommon);
+  RegisterCustomTabControlDrawer(TCDCustomTabControlDrawerCommon.Create, dsCommon);
 end.
 
