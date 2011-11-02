@@ -175,18 +175,6 @@ type
     );
   TPkgCompileFlags = set of TPkgCompileFlag;
 
-const
-  PkgCompileFlagNames: array[TPkgCompileFlag] of string = (
-    'pcfCleanCompile',
-    'pcfDoNotCompileDependencies',
-    'pcfDoNotCompilePackage',
-    'pcfCompileDependenciesClean',
-    'pcfSkipDesignTimePackages',
-    'pcfOnlyIfNeeded',
-    'pcfDoNotSaveEditorFiles',
-    'pcfCreateMakefile'
-    );
-
 type
   TPkgInstallInIDEFlag = (
     piiifQuiet,
@@ -336,12 +324,15 @@ implementation
 function PkgCompileFlagsToString(Flags: TPkgCompileFlags): string;
 var
   f: TPkgCompileFlag;
+  s: string;
 begin
   Result:='';
   for f:=Low(TPkgCompileFlag) to High(TPkgCompileFlag) do begin
     if not (f in Flags) then continue;
-    if Result<>'' then Result:=Result+',';
-    Result:=Result+PkgCompileFlagNames[f];
+    WriteStr(s, f);
+    if Result<>'' then
+      Result:=Result+',';
+    Result:=Result+s;
   end;
   Result:='['+Result+']';
 end;
