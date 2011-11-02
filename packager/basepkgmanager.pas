@@ -154,19 +154,6 @@ type
 var
   PkgBoss: TBasePkgManager;
   
-const
-  PkgSaveFlagNames: array[TPkgSaveFlag] of string = (
-    'psfSaveAs'
-    );
-
-  PkgOpenFlagNames: array[TPkgOpenFlag] of string = (
-    'pofAddToRecent',
-    'pofRevert',
-    'pofConvertMacros',
-    'pofMultiOpen',
-    'pofDoNotOpenEditor'
-    );
-
 function PkgSaveFlagsToString(Flags: TPkgSaveFlags): string;
 function PkgOpenFlagsToString(Flags: TPkgOpenFlags): string;
 
@@ -181,12 +168,15 @@ implementation
 function PkgSaveFlagsToString(Flags: TPkgSaveFlags): string;
 var
   f: TPkgSaveFlag;
+  s: string;
 begin
   Result:='';
   for f:=Low(TPkgSaveFlag) to High(TPkgSaveFlag) do begin
     if not (f in Flags) then continue;
-    if Result<>'' then Result:=Result+',';
-    Result:=Result+PkgSaveFlagNames[f];
+    WriteStr(s, f);
+    if Result<>'' then
+      Result:=Result+',';
+    Result:=Result+s;
   end;
   Result:='['+Result+']';
 end;
@@ -194,12 +184,15 @@ end;
 function PkgOpenFlagsToString(Flags: TPkgOpenFlags): string;
 var
   f: TPkgOpenFlag;
+  s: string;
 begin
   Result:='';
   for f:=Low(TPkgOpenFlag) to High(TPkgOpenFlag) do begin
     if not (f in Flags) then continue;
-    if Result<>'' then Result:=Result+',';
-    Result:=Result+PkgOpenFlagNames[f];
+    WriteStr(s, f);
+    if Result<>'' then
+      Result:=Result+',';
+    Result:=Result+s;
   end;
   Result:='['+Result+']';
 end;
