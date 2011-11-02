@@ -27,6 +27,8 @@ type
 
   TCDEditDrawerWinCE = class(TCDEditDrawer)
   public
+    function GetMeasures(AMeasureID: Integer): Integer; override;
+    //function GetColor(AColorID: Integer): TColor; virtual;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDControl: TCDControl); override;
     procedure DrawToCanvas(ADest: TCanvas; CDControl: TCDControl); override;
   end;
@@ -105,6 +107,16 @@ begin
 end;
 
 { TCDEditDrawerWinCE }
+
+function TCDEditDrawerWinCE.GetMeasures(AMeasureID: Integer): Integer;
+begin
+  case AMeasureID of
+  TCDEDIT_LEFT_TEXT_SPACING: Result := 4;
+  TCDEDIT_RIGHT_TEXT_SPACING: Result := 3;
+  else
+    Result := inherited GetMeasures(AMeasureID);
+  end;
+end;
 
 procedure TCDEditDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
   CDControl: TCDControl);

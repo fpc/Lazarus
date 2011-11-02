@@ -29,6 +29,9 @@ uses
 const
   CDDRAWSTYLE_COUNT = 12;
 
+  TCDEDIT_LEFT_TEXT_SPACING  = $400;
+  TCDEDIT_RIGHT_TEXT_SPACING = $401;
+
 type
 
   TCDDrawStyle = (
@@ -69,12 +72,16 @@ type
   end;
   TCDControlClass = class of TCDControl;
 
+  { TCDControlDrawer }
+
   TCDControlDrawer = class
   public
-    function GetClientRect(AControl: TCDControl): TRect; virtual; abstract;
+    function GetClientRect(AControl: TCDControl): TRect; virtual;
+    function GetMeasures(AMeasureID: Integer): Integer; virtual;
+    function GetColor(AColorID: Integer): TColor; virtual;
     procedure DrawToIntfImage(ADest: TFPImageCanvas; AControl: TCDControl);
-      virtual; abstract;
-    procedure DrawToCanvas(ADest: TCanvas; AControl: TCDControl); virtual; abstract;
+      virtual;
+    procedure DrawToCanvas(ADest: TCanvas; AControl: TCDControl); virtual;
   end;
 
   // ===================================
@@ -170,6 +177,7 @@ type
     FCaretTimer: TTimer;
     procedure HandleCaretTimer(Sender: TObject);
     procedure DoDeleteSelection;
+    procedure DoManageVisibleTextStart;
     procedure PrepareCurrentDrawer(); override;
     function GetText: string;
     procedure SetText(AValue: string);
@@ -203,8 +211,11 @@ type
     property Text: string read GetText write SetText;
   end;
 
+  { TCDEditDrawer }
+
   TCDEditDrawer = class(TCDControlDrawer)
   public
+    function GetVisibleCharCount(CDEdit: TCDEdit): Integer; virtual;
   end;
 
   {@@
@@ -584,6 +595,63 @@ begin
   RegisteredCustomTabControlDrawers[AStyle] := ADrawer;
 end;
 
+{ TCDControlDrawer }
+
+function TCDControlDrawer.GetClientRect(AControl: TCDControl): TRect;
+begin
+  Result := AControl.BoundsRect;
+end;
+
+function TCDControlDrawer.GetMeasures(AMeasureID: Integer): Integer;
+begin
+
+end;
+
+function TCDControlDrawer.GetColor(AColorID: Integer): TColor;
+begin
+
+end;
+
+procedure TCDControlDrawer.DrawToIntfImage(ADest: TFPImageCanvas;
+  AControl: TCDControl);
+begin
+
+end;
+
+procedure TCDControlDrawer.DrawToCanvas(ADest: TCanvas; AControl: TCDControl);
+begin
+
+end;
+
+{ TCDEditDrawer }
+
+function TCDEditDrawer.GetVisibleCharCount(CDEdit: TCDEdit): Integer;
+var
+  lMaxWidth: Integer;
+  lText, lLastSearchedText: String;
+begin
+{  lText := CDEdit.Text;
+  lText := Copy(lText, CDEdit.FVisibleTextStart, Length(lText));
+  lMaxWidth := CDEdit.Width - GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
+    - GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
+
+  // First the simplest case: less chars are to the right then the width of the control
+  if CDEdit.Canvas.TextWidth(lText) <= lMaxWidth then Exit(Length(lText));
+
+  // Now the more complex case
+  lLastSearchedText := '';
+  while lLastSearchedText <> lText do
+  begin
+    lLastSearchedText := lText;
+    lTextWidth := CDEdit.Canvas.TextWidth(lText);
+    if lTextWidth < lMaxWidth then
+      lText := Copy(lLastSearchedText, 1, Length(lLastSearchedText) div 2)
+    else if lTextWidth > lMaxWidth then
+      lText := Copy(lLastSearchedText, 1, Length(lLastSearchedText) div 2)
+    else Exit(Length(lText));
+  end;}
+end;
+
 { TCDListView }
 
 procedure TCDListView.PrepareCurrentDrawer;
@@ -683,6 +751,18 @@ begin
   FSelLength := 0;
 end;
 
+procedure TCDEdit.DoManageVisibleTextStart;
+var
+  lTextWidth: Integer;
+begin
+  // Moved to the left and we need to adjust the text start
+  FVisibleTextStart := Min(FCaretPos+1, FVisibleTextStart);
+
+  // Moved to the right and we need to adjust the text start
+//  lTextWidth := TCDEditDrawer(FCurrentDrawer).GetVisibleCharCount(Self);
+//  FVisibleTextStart := Max(FCaretPos-lTextWidth, FVisibleTextStart);
+end;
+
 procedure TCDEdit.PrepareCurrentDrawer;
 var
   lDrawStyle: TCDDrawStyle;
@@ -739,6 +819,7 @@ begin
       lRightText := Copy(lOldText, FCaretPos+1, Length(lOldText));
       Text := lLeftText + lRightText;
       Dec(FCaretPos);
+      DoManageVisibleTextStart();
       Invalidate;
     end;
   end;
@@ -771,6 +852,7 @@ begin
       else FSelLength := 0;
 
       Dec(FCaretPos);
+      DoManageVisibleTextStart();
       FCaretIsVisible := True;
       Invalidate;
     end;
@@ -789,6 +871,7 @@ begin
       else FSelLength := 0;
 
       Inc(FCaretPos);
+      DoManageVisibleTextStart();
       FCaretIsVisible := True;
       Invalidate;
     end;
