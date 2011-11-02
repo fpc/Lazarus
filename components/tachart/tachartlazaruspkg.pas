@@ -13,7 +13,7 @@ uses
   TALegendPanel, TARadialSeries, TACustomSource, TAGeometry, TANavigation, 
   TADrawerCanvas, TADrawerSVG, TAIntervalSources, TAChartAxisUtils, 
   TAChartListbox, TAEnumerators, TADataPointsEditor, TAChartExtentLink, 
-  TAToolEditors, TAMath, LazarusPackageIntf;
+  TAToolEditors, TAMath, TAChartImageList, LazarusPackageIntf;
 
 implementation
 
@@ -33,6 +33,7 @@ begin
   RegisterUnit('TADataPointsEditor', @TADataPointsEditor.Register); 
   RegisterUnit('TAChartExtentLink', @TAChartExtentLink.Register); 
   RegisterUnit('TAToolEditors', @TAToolEditors.Register); 
+  RegisterUnit('TAChartImageList', @TAChartImageList.Register); 
 end; 
 
 initialization

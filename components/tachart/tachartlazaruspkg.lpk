@@ -6,7 +6,7 @@
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Luís Rodrigues (lr@neei.uevora.pt), Philippe Martinole, Alexander Klenin"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <OtherUnitFiles Value="numlib_fix;editors"/>
@@ -22,12 +22,6 @@
           <RangeChecks Value="True"/>
         </Checks>
       </CodeGeneration>
-      <Linking>
-        <Debugging>
-          <GenerateDebugInfo Value="True"/>
-          <DebugInfoType Value="dsAuto"/>
-        </Debugging>
-      </Linking>
       <Other>
         <CompilerMessages>
           <UseMsgFile Value="True"/>
@@ -41,7 +35,7 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="35">
+    <Files Count="36">
       <Item1>
         <Filename Value="tagraph.pas"/>
         <HasRegisterProc Value="True"/>
@@ -198,6 +192,11 @@
         <Filename Value="tamath.pas"/>
         <UnitName Value="TAMath"/>
       </Item35>
+      <Item36>
+        <Filename Value="tachartimagelist.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="TAChartImageList"/>
+      </Item36>
     </Files>
     <LazDoc Paths="$(LazarusDir)\components\tachart\fpdoc"/>
     <Type Value="RunAndDesignTime"/>

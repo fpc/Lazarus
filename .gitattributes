@@ -2569,6 +2569,7 @@ components/tachart/icons/tcalculatedchartsource.png -text svneol=unset#images/pn
 components/tachart/icons/tchart.png -text svneol=unset#images/png
 components/tachart/icons/tchartaxistransformations.png -text svneol=unset#images/png
 components/tachart/icons/tchartextentlink.png -text svneol=unset#images/png
+components/tachart/icons/tchartimagelist.png -text svneol=unset#images/png
 components/tachart/icons/tchartlegendpanel.png -text
 components/tachart/icons/tchartlistbox.png -text svneol=unset#images/png
 components/tachart/icons/tchartnavpanel.png -text svneol=unset#images/png
@@ -2595,6 +2596,7 @@ components/tachart/tachartbgra.pas svneol=native#text/pascal
 components/tachart/tachartextentlink.pas svneol=native#text/pascal
 components/tachart/tachartfpvectorial.lpk svneol=native#text/plain
 components/tachart/tachartfpvectorial.pas svneol=native#text/pascal
+components/tachart/tachartimagelist.pas svneol=native#text/pascal
 components/tachart/tachartlazaruspkg.lpk svneol=native#text/plain
 components/tachart/tachartlazaruspkg.pas svneol=native#text/plain
 components/tachart/tachartlistbox.pas svneol=native#text/pascal
