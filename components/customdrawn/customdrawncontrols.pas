@@ -215,7 +215,6 @@ type
 
   TCDEditDrawer = class(TCDControlDrawer)
   public
-    function GetVisibleCharCount(CDEdit: TCDEdit): Integer; virtual;
   end;
 
   {@@
@@ -604,12 +603,12 @@ end;
 
 function TCDControlDrawer.GetMeasures(AMeasureID: Integer): Integer;
 begin
-
+  Result := 0;
 end;
 
 function TCDControlDrawer.GetColor(AColorID: Integer): TColor;
 begin
-
+  Result := clBlack;
 end;
 
 procedure TCDControlDrawer.DrawToIntfImage(ADest: TFPImageCanvas;
@@ -621,35 +620,6 @@ end;
 procedure TCDControlDrawer.DrawToCanvas(ADest: TCanvas; AControl: TCDControl);
 begin
 
-end;
-
-{ TCDEditDrawer }
-
-function TCDEditDrawer.GetVisibleCharCount(CDEdit: TCDEdit): Integer;
-var
-  lMaxWidth: Integer;
-  lText, lLastSearchedText: String;
-begin
-{  lText := CDEdit.Text;
-  lText := Copy(lText, CDEdit.FVisibleTextStart, Length(lText));
-  lMaxWidth := CDEdit.Width - GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
-    - GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
-
-  // First the simplest case: less chars are to the right then the width of the control
-  if CDEdit.Canvas.TextWidth(lText) <= lMaxWidth then Exit(Length(lText));
-
-  // Now the more complex case
-  lLastSearchedText := '';
-  while lLastSearchedText <> lText do
-  begin
-    lLastSearchedText := lText;
-    lTextWidth := CDEdit.Canvas.TextWidth(lText);
-    if lTextWidth < lMaxWidth then
-      lText := Copy(lLastSearchedText, 1, Length(lLastSearchedText) div 2)
-    else if lTextWidth > lMaxWidth then
-      lText := Copy(lLastSearchedText, 1, Length(lLastSearchedText) div 2)
-    else Exit(Length(lText));
-  end;}
 end;
 
 { TCDListView }
@@ -753,14 +723,19 @@ end;
 
 procedure TCDEdit.DoManageVisibleTextStart;
 var
-  lTextWidth: Integer;
+  lText: String;
+  lVisibleTextCharCount: Integer;
+  lAvailableWidth: Integer;
 begin
   // Moved to the left and we need to adjust the text start
   FVisibleTextStart := Min(FCaretPos+1, FVisibleTextStart);
 
   // Moved to the right and we need to adjust the text start
-//  lTextWidth := TCDEditDrawer(FCurrentDrawer).GetVisibleCharCount(Self);
-//  FVisibleTextStart := Max(FCaretPos-lTextWidth, FVisibleTextStart);
+  lText := Copy(Text, FVisibleTextStart, Length(Text));
+  lAvailableWidth := Width - FCurrentDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
+   - FCurrentDrawer.GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
+  lVisibleTextCharCount := Canvas.TextFitInfo(lText, lAvailableWidth);
+  FVisibleTextStart := Max(FCaretPos-lVisibleTextCharCount, FVisibleTextStart);
 end;
 
 procedure TCDEdit.PrepareCurrentDrawer;
