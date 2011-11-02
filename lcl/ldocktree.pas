@@ -1737,16 +1737,12 @@ var
   procedure DumpZone(Zone: TDockZone);
   const
     DumpStr = 'Zone: Orientation = <b>%s</b>, ChildCount = <b>%d</b>, ChildControl = <b>%s</b>, %s, Splitter = <b>%s</b>';
-    StrOrientation: array[TDockOrientation] of String =
-    (
-      'doNoOrient',
-      'doHorizontal',
-      'doVertical',
-      'doPages'
-    );
+  var
+    S: string;
   begin
-    WriteLn(Format(DumpStr, [StrOrientation[Zone.Orientation], Zone.ChildCount,
-      DbgSName(Zone.ChildControl), DbgS(Bounds(Zone.Left, Zone.Top, Zone.Width, Zone.Height)),
+    WriteStr(S, Zone.Orientation);
+    WriteLn(Format(DumpStr, [S, Zone.ChildCount, DbgSName(Zone.ChildControl),
+      DbgS(Bounds(Zone.Left, Zone.Top, Zone.Width, Zone.Height)),
       dbgs(TLazDockZone(Zone).Splitter)]));
     if TLazDockZone(Zone).Splitter <> nil then
       DumpAnchors('<br>Splitter anchors: ', TLazDockZone(Zone).Splitter);
