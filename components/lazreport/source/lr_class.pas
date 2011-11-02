@@ -3683,7 +3683,6 @@ end;
 
 procedure TfrBandView.Draw(aCanvas: TCanvas);
 var
-  h, oldh: HFont;
   St     : String;
   R      : TRect;
 begin
@@ -3731,12 +3730,9 @@ begin
         MoveTo(r.left, r.Bottom-1); LineTo(r.right, r.Bottom-1);
         Pen.Color := clBtnHighlight;
         MoveTo(r.left, r.bottom-1); lineto(r.left, r.top);
-        h := Create90Font(Font);
-        oldh := SelectObject(Handle, h);
+        Font.Orientation := 900;
         Brush.Color:=clBtnFace;
         TextOut(r.Left + 3, r.bottom-6, frBandNames[BandType]);
-        SelectObject(Handle, oldh);
-        DeleteObject(h);
       end
       else
       begin
@@ -3747,6 +3743,7 @@ begin
         MoveTo(r.Right-1, r.Top);
         LineTo(r.Right-1, r.Bottom);
         st:=frBandNames[BandType];
+        Font.Orientation := 0;
         Brush.Color:=clBtnFace;
         TextOut(r.left+5, r.top+1, frBandNames[BandType]);
       end;
@@ -3756,15 +3753,13 @@ begin
       Brush.Style := bsClear;
       if BandType in [btCrossHeader..btCrossFooter] then
       begin
-        h := Create90Font(Font);
-        oldh := SelectObject(Handle, h);
+        Font.Orientation := 900;
         Brush.Color:=clBtnFace;
         TextOut(x + 2, r.bottom-6, frBandNames[BandType]);
-        SelectObject(Handle, oldh);
-        DeleteObject(h);
       end
       else
       begin
+        Font.Orientation := 0;
         Brush.Color:=clBtnFace;
         TextOut(x + 4, y + 2, frBandNames[BandType]);
       end;
