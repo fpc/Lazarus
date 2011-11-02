@@ -846,28 +846,13 @@ type
 const
   LazPkgXMLFileVersion = 4;
   
-  PkgFileTypeNames: array[TPkgFileType] of string = (
-    'pftUnit', 'pftVirtualUnit', 'pftMainUnit',
-    'pftLFM', 'pftLRS', 'pftInclude', 'pftIssues',
-    'pftText', 'pftBinary');
   PkgFileTypeIdents: array[TPkgFileType] of string = (
     'Unit', 'Virtual Unit', 'Main Unit',
     'LFM', 'LRS', 'Include', 'Issues', 'Text', 'Binary');
-  PkgFileFlag: array[TPkgFileFlag] of string = (
-    'pffHasRegisterProc', 'pffAddToPkgUsesSection', 'pffReportedAsRemoved');
-  PkgDependencyFlagNames: array[TPkgDependencyFlag] of string = (
-    'pdfMinVersion', 'pdfMaxVersion');
-  LazPackageTypeNames: array[TLazPackageType] of string = (
-    'lptRunTime', 'lptDesignTime', 'lptRunAndDesignTime');
   LazPackageTypeIdents: array[TLazPackageType] of string = (
     'RunTime', 'DesignTime', 'RunAndDesignTime');
-  LazPackageFlagNames: array[TLazPackageFlag] of string = (
-    'lpfAutoIncrementVersionOnBuild', 'lpfModified',
-    'lpfNeeded', 'lpfVisited', 'lpfDestroying', 'lpfLoading', 'lpfSkipSaving',
-    'lpfCircle');
   AutoUpdateNames: array[TPackageUpdatePolicy] of string = (
-    'Manually', 'OnRebuildingAll', 'AsNeeded'
-    );
+    'Manually', 'OnRebuildingAll', 'AsNeeded');
     
 var
   // All TPkgDependency are added to this AVL tree (sorted for names, not version!)
@@ -2650,6 +2635,11 @@ begin
   FStorePathDelim:=pdsNone;
 end;
 
+//function DbgS(PkgFileType: TPkgFileType): string;
+//begin
+//  WriteStr(Result, PkgFileType);
+//end;
+
 procedure TLazPackage.UpdateSourceDirectories;
 var
   Cnt: Integer;
@@ -2667,7 +2657,7 @@ begin
     PkgFile.AutoReferenceSourceDir:=true;
     PkgFile.UpdateSourceDirectoryReference;
     //debugln('TLazPackage.UpdateSourceDirectories A ',PkgFile.Filename,' ',
-    //  ' ',PkgFileTypeNames[PkgFile.FileType],' ',PkgFile.Removed,
+    //  ' ',DbgS(PkgFile.FileType),' ',PkgFile.Removed,
     //  ' HasPkg=',dbgs(PkgFile.LazPackage=Self),
     //  ' Need=',PkgFile.FSourceDirNeedReference,
     //  ' Is=',PkgFile.FSourceDirectoryReferenced);
