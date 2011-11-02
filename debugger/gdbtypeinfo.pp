@@ -1927,7 +1927,9 @@ var
     FProcessState := gtpsClassAncestor;
 
     If FTypeInfoAncestor = nil then begin
-      FTypeInfoAncestor := TGDBType.CreateForExpression(FAncestor, FCreationFlags + [gtcfExprIsType]);
+      FTypeInfoAncestor := TGDBType.CreateForExpression(FAncestor,
+        FCreationFlags*[gtcfClassIsPointer, gtcfFullTypeInfo, gtcfSkipTypeName] + [gtcfExprIsType]
+      );
       AddSubType(FTypeInfoAncestor);
     end;
     if not FTypeInfoAncestor.IsFinished then
