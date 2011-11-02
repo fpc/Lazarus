@@ -67,7 +67,9 @@ type
     dgHeaderPushedLook,
     dgPersistentMultiSelect,
     dgAutoSizeColumns,
-    dgAnyButtonCanSelect                // any mouse button can move selection
+    dgAnyButtonCanSelect,               // any mouse button can move selection
+    dgDisableDelete,                    // disable deleting records with Ctrl+Delete
+    dgDisableInsert                     // disable inserting (or append) records
   );
   TDbGridOptions = set of TDbGridOption;
 
@@ -1960,9 +1962,10 @@ var
       result:=false;
       SelectNext(true,true);
       doOperation(opMoveBy, 1);
-      if GridCanModify and FDataLink.EOF then
-        doOperation(opAppend)
-      else
+      if GridCanModify and FDataLink.EOF then begin
+        if not (dgDisableInsert in Options) then
+          doOperation(opAppend);
+      end else
         SelectNext(false,true);
     end;
     {$ifdef dbgGrid}DebugLn('DoVKDown FIN');{$endif}
@@ -2048,13 +2051,16 @@ begin
       begin
         doOnKeyDown;
         if (Key<>0) and (ssCtrl in Shift) and GridCanModify and
-            not FDataLink.DataSet.IsEmpty  then begin
+           (not (dgDisableDelete in Options)) and
+           not FDataLink.DataSet.IsEmpty then begin
+
           if not (dgConfirmDelete in Options) or
             (MessageDlg(rsDeleteRecord, mtConfirmation, mbOKCancel, 0 )<>mrCancel)
           then begin
             doOperation(opDelete);
             key := 0;
           end;
+
         end;
       end;
 
@@ -2115,7 +2121,7 @@ begin
       begin
         doOnKeyDown;
         if Key<>0 then
-          if GridCanModify then begin
+          if not (dgDisableInsert in Options) and GridCanModify then begin
             doOperation(opInsert);
             Key:=0;
           end;
