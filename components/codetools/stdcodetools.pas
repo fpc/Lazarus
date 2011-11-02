@@ -3225,14 +3225,12 @@ type
     scatEdgedBracketOpen, scatEdgedBracketClose,
     scatRoundBracketOpen, scatRoundBracketClose);
 
-{$IFDEF VerboseGetStringConstBounds}
-const
-  StrConstTokenTypeName: array[TStrConstTokenType] of string = (
-    'scatNone', 'scatStrConst', 'scatPlus', 'scatIdent',
-    'scatInherited', 'scatPoint', 'scatUp',
-    'scatEdgedBracketOpen', 'scatEdgedBracketClose',
-    'scatRoundBracketOpen', 'scatRoundBracketClose');
-{$ENDIF}
+  {$IFDEF VerboseGetStringConstBounds}
+  function EnumToStr(TokenType: TStrConstTokenType): string;
+  begin
+    WriteStr(Result, TokenType);
+  end;
+  {$ENDIF}
 
   function GetCurrentTokenType: TStrConstTokenType;
   begin
@@ -3297,9 +3295,8 @@ begin
     CurrentToken:=GetCurrentTokenType;
     {$IFDEF VerboseGetStringConstBounds}
     DebugLn('TStandardCodeTool.GetStringConstBounds Read Forward: ',GetAtom,' EndCleanPos=',dbgs(EndCleanPos),
-    ' LastToken=',StrConstTokenTypeName[LastToken],
-    ' CurrentToken=',StrConstTokenTypeName[CurrentToken],
-    ' ',StrConstTokenTypeName[GetCurrentTokenType]);
+      ' LastToken=',EnumToStr(LastToken),
+      ' CurrentToken=',EnumToStr(CurrentToken),' ',EnumToStr(GetCurrentTokenType));
     {$ENDIF}
     case CurrentToken of
     scatNone, scatEdgedBracketClose, scatRoundBracketClose:
