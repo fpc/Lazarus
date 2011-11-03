@@ -54,7 +54,7 @@ unit CompilerOptions;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, FileUtil, InterfaceBase, LCLProc, Forms,
+  typinfo, Classes, SysUtils, FileProcs, FileUtil, InterfaceBase, LCLProc, Forms,
   Controls, Laz_XMLCfg, ExprEval, DefineTemplates, CodeToolsCfgScript,
   CodeToolManager,
   // IDEIntf
@@ -340,7 +340,13 @@ type
   end;
   TCompilationToolClass = class of TCompilationToolOptions;
 
-  TCompilerMessagesList = class; 
+  TCompilerMessagesList = class;
+
+  TCompilerMessageState = (
+    msDefault,
+    msOn,
+    msOff
+  );
   
   { TCompilerMessageConfig }
   
@@ -348,10 +354,11 @@ type
   private
     fOwner  : TCompilerMessagesList; 
   public
-    MsgIndex : integer;
-    MsgText  : String;
-    Ignored  : Boolean;
-    MsgType  : TFPCErrorType;
+    MsgIndex : integer;       // message index
+    MsgText  : String;        // message text
+    DefIgnored : Boolean;     // is message ignored by default (based on the message file)
+    State    : TCompilerMessageState;  // user state of the message
+    MsgType  : TFPCErrorType; // type of message (error, warning, etc)
     constructor Create(AOwner: TCompilerMessagesList); 
     function GetUserText: string; overload;
     function GetUserText(const ReplaceParams: array of string): string; overload; 
@@ -376,11 +383,11 @@ type
 
     function GetMsgConfigByIndex(AIndex: Integer): TCompilerMessageConfig; 
     function GetMsgConfig(i: Integer): TCompilerMessageConfig; virtual;
-    procedure SetMsgIgnored(i: Integer; const AValue: Boolean); virtual;
-    function GetMsgIgnored(i: Integer): Boolean; virtual;
+    procedure SetMsgState(i: Integer; const AValue: TCompilerMessageState); virtual;
+    function GetMsgState(i: Integer): TCompilerMessageState; virtual;
 
-    procedure GetIgnoredArray(var b: array of Boolean);    // array must be large enough 
-    procedure SetIgnoredArray(const b: array of Boolean);  // to store b[MaxMsgIndex], or function fail
+    procedure GetStateArray(var b: array of TCompilerMessageState);    // array must be large enough
+    procedure SetStateArray(const b: array of TCompilerMessageState);  // to store b[MaxMsgIndex], or function fail
 
     function GetCount: Integer; 
     function GetErrorNames(errtype: TFPCErrorType): string;
@@ -400,15 +407,15 @@ type
 
     function LoadMsgFile(const FileName: string): Boolean; virtual;
 
-    function Add(AMsgIndex: Integer; AMsgType: TFPCErrorType; const AMsgText: string; AIgnored: Boolean=false): TCompilerMessageConfig; virtual;
+    function Add(AMsgIndex: Integer; AMsgType: TFPCErrorType; const AMsgText: string; DefIgnored: Boolean = false; AState: TCompilerMessageState = msDefault): TCompilerMessageConfig; virtual;
 
-    procedure SetDefault(KeepIgnored: Boolean=true); virtual;
+    procedure SetDefault(KeepState: Boolean=true); virtual;
     function GetParams(MsgIndex: Integer; var prms: array of string; out PrmCount: Integer): Integer; virtual;
     function Equals(Obj: TObject): boolean; {$ifndef ver2_4_0}override;{$endif}
 
     property Msg[i: Integer]: TCompilerMessageConfig read GetMsgConfig;
     property MsgByIndex[AIndex: Integer]:  TCompilerMessageConfig read GetMsgConfigByIndex;
-    property MsgIgnored[i: Integer]: Boolean read GetMsgIgnored write SetMsgIgnored;
+    property MsgState[i: Integer]: TCompilerMessageState read GetMsgState write SetMsgState;
     property Count: Integer read GetCount; 
     property UsedMsgFile : string read fUsedMsgFile; 
     property ErrorNames[errtype: TFPCErrorType]: string read GetErrorNames;
@@ -1279,7 +1286,7 @@ var
   i: LongInt;
   s: String;
   dit: TCompilerDbgSymbolType;
-  
+
   function f(const Filename: string): string;
   begin
     Result:=SwitchPathDelims(Filename,PathDelimChange);
@@ -1481,9 +1488,13 @@ begin
     fCompilerMessages.LoadMsgFile(MsgFileName);
 
   for i := 0 to fCompilerMessages.Count - 1 do begin
-    with fCompilerMessages.Msg[i] do 
-      Ignored := aXMLConfig.GetValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), false);
-  end; 
+    with fCompilerMessages.Msg[i] do
+      if aXMLConfig.GetValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), false) then
+        State := msOff
+      else
+      if aXMLConfig.GetValue(p+'CompilerMessages/NonIgnoredMessages/idx'+IntToStr(MsgIndex), false) then
+        State := msOn;
+  end;
 
   if UseMsgFile then 
     with aXMLConfig do begin
@@ -1665,8 +1676,11 @@ begin
   aXMLConfig.SetDeleteValue(p+'ConfigFile/StopAfterErrCount/Value', StopAfterErrCount,1);
 
   for i := 0 to CompilerMessages.Count - 1 do begin
-    with CompilerMessages.Msg[i] do 
-      aXMLConfig.SetDeleteValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), Ignored, false);
+    with CompilerMessages.Msg[i] do
+    begin
+      aXMLConfig.SetDeleteValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), State = msOff, false);
+      aXMLConfig.SetDeleteValue(p+'CompilerMessages/NonIgnoredMessages/idx'+IntToStr(MsgIndex), State = msOn, false);
+    end;
   end;
   aXMLConfig.SetDeleteValue(p+'CompilerMessages/UseMsgFile/Value', UseMsgFile, False);
   aXMLConfig.SetDeleteValue(p+'CompilerMessages/MsgFileName/Value', MsgFileName, '');
@@ -2255,14 +2269,14 @@ begin
   Result:=MakeOptionsString(GetDefaultMainSourceFileName,Flags);
 end;
 
-function GetIgnoredMsgsIndexes(msglist: TCompilerMessagesList; const Separator: string): string;
+function GetMsgsIndexesWithState(msglist: TCompilerMessagesList; const Separator: string; const State: TCompilerMessageState): string;
 var
   i : integer;
 begin
   Result := '';
   if not Assigned(msglist) then Exit;
   for i := 0 to msglist.Count - 1 do 
-    if msglist.Msg[i].Ignored then begin
+    if msglist.Msg[i].State = State then begin
       if Result <> '' then 
         Result := Result + Separator + IntToStr(msglist.Msg[i].MsgIndex)
       else 
@@ -2798,9 +2812,12 @@ begin
       switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
   end;
 
-  t := GetIgnoredMsgsIndexes(CompilerMessages, ',');
+  t := GetMsgsIndexesWithState(CompilerMessages, ',', msOff);
   if t <> '' then
     switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
+  t := GetMsgsIndexesWithState(CompilerMessages, ',', msOn);
+  if t <> '' then
+    switches := switches + ' ' + PrepareCmdLineOption('-vm-'+t);
   if fUseMsgFile and FileExistsCached(MsgFileName)then
     switches := switches + ' ' + PrepareCmdLineOption('-Fr'+MsgFileName);
 
@@ -3329,11 +3346,12 @@ begin
   if Done(Tool.AddDiff('UseMsgFile',fUseMsgFile,CompOpts.fUseMsgFile)) then exit;
   if Done(Tool.AddDiff('MsgFileName',fMsgFileName,CompOpts.fMsgFileName)) then exit;
   for i:=0 to fCompilerMessages.Count-1 do
-    if fCompilerMessages.Msg[i].Ignored<>CompOpts.fCompilerMessages.Msg[i].Ignored
+    if fCompilerMessages.Msg[i].State<>CompOpts.fCompilerMessages.Msg[i].State
     then begin
       Result:=true;
-      Tool.AddDiff('Ignored'+IntToStr(fCompilerMessages.Msg[i].MsgIndex),
-        fCompilerMessages.Msg[i].Ignored,CompOpts.fCompilerMessages.Msg[i].Ignored);
+      Tool.AddDiff('State'+IntToStr(fCompilerMessages.Msg[i].MsgIndex),
+        GetEnumName(TypeInfo(TCompilerMessageState),Ord(fCompilerMessages.Msg[i].State)),
+        GetEnumName(TypeInfo(TCompilerMessageState),Ord(CompOpts.fCompilerMessages.Msg[i].State)));
     end;
 
   // other
@@ -4276,30 +4294,30 @@ begin
   Result := TCompilerMessageConfig(fItems[i]);
 end;
 
-procedure TCompilerMessagesList.SetMsgIgnored(i: Integer; const AValue: Boolean);
+procedure TCompilerMessagesList.SetMsgState(i: Integer; const AValue: TCompilerMessageState);
 begin
-  msg[i].Ignored := AValue;
+  msg[i].State := AValue;
 end;
 
-function TCompilerMessagesList.GetMsgIgnored(i: Integer): Boolean;
+function TCompilerMessagesList.GetMsgState(i: Integer): TCompilerMessageState;
 begin
-  Result := msg[i].Ignored;
+  Result := msg[i].State;
 end;
 
-procedure TCompilerMessagesList.GetIgnoredArray(var b: array of Boolean); 
+procedure TCompilerMessagesList.GetStateArray(var b: array of TCompilerMessageState);
 var
   i   : Integer; 
   idx : Integer; 
 begin
-  FillChar(b[0], length(b)*sizeof(boolean), false);
+  FillChar(b[0], length(b)*sizeof(TCompilerMessageState), 0);
   for i := 0 to Count - 1 do begin 
     idx := msg[i].MsgIndex; 
     if (idx >= 0) and (idx < length(b)) then  
-      b[idx] := msg[i].Ignored; 
+      b[idx] := msg[i].State;
   end; 
 end;
 
-procedure TCompilerMessagesList.SetIgnoredArray(const b: array of Boolean); 
+procedure TCompilerMessagesList.SetStateArray(const b: array of TCompilerMessageState);
 var
   i   : Integer; 
   idx : Integer; 
@@ -4307,7 +4325,7 @@ begin
   for i := 0 to Count - 1 do begin 
     idx := msg[i].MsgIndex; 
     if (idx >= 0) and (idx < length(b)) then
-      msg[i].Ignored := b[idx];
+      msg[i].State := b[idx];
   end; 
 end;
 
@@ -4371,7 +4389,8 @@ begin
         m := TCompilerMessageConfig.Create(Self);
         m.MsgIndex := MsgIndex;
         m.MsgText := MsgText;
-        m.Ignored := Ignored;
+        m.DefIgnored := DefIgnored;
+        m.State := State;
         m.MsgType := MsgType;
         fItems.Add(m);
         AddHash(m);
@@ -4397,7 +4416,7 @@ end;
 function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
 
   function IsMsgLine(const s: string; out msgIdx: Integer; out msgType, msgText: string;
-    out isMultiLine: Boolean): Boolean;
+    out Ignore: Boolean; out isMultiLine: Boolean): Boolean;
   var
     i   : Integer; 
     p   : Integer; 
@@ -4425,10 +4444,15 @@ function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
     inc(p); 
     i := p; 
     while (p <= length(s)) and (s[p] <> '_') do inc(p); 
-    msgType := Copy(s, i, p-i); 
+    msgType := Copy(s, i, p-i);
+    Ignore := (Length(msgType) >= 2) and (msgType[1] = '-');
     isMultiLine := msgType = '[';
-    if isMultiLine then msgType := ''; 
-  
+    if isMultiLine then
+      msgType := ''
+    else
+    if Ignore then
+      Delete(msgType, 1, 1);
+
     inc(p);
     msgText := Copy(s, p, length(s) - p + 1); 
     Result := true; 
@@ -4462,10 +4486,11 @@ var
   isMln   : Boolean; 
   midx    : Integer;
   mtype   : string;
-  mtext   : string; 
+  mtext   : string;
+  mignore : Boolean;
   i       : Integer; 
   lst     : Boolean; 
-  b       : array of Boolean; 
+  b       : array of TCompilerMessageState;
   err     : TFPCErrorType;
 const
   idxFatal   = 01012;
@@ -4477,7 +4502,7 @@ begin
   BeginUpdate; 
   try
     SetLength(b, MaxMsgIndex);
-    GetIgnoredArray(b); 
+    GetStateArray(b);
     
     SetDefault(false);
      
@@ -4486,7 +4511,7 @@ begin
       temp.LoadFromFile(FileName); 
       i := 0;
       while i < temp.Count do begin
-        if IsMsgLine(temp[i], midx, mtype, mtext, isMln) then begin
+        if IsMsgLine(temp[i], midx, mtype, mtext, mignore, isMln) then begin
           if isMln then begin
             lst := false; 
             while (i < temp.Count) and (not lst) do begin
@@ -4495,7 +4520,7 @@ begin
             end; 
           end;
 
-          Add(midx, StrToErrType(mtype), mtext, b[midx]);
+          Add(midx, StrToErrType(mtype), mtext, mignore, b[midx]);
 
           if (midx >= idxFatal) and (midx<= idxHint) then begin
             case midx of
@@ -4523,7 +4548,7 @@ begin
       fUsedMsgFile := FileName;    
     finally
       temp.Free; 
-      SetIgnoredArray(b); 
+      SetStateArray(b);
       EndUpdate; 
     end;  
   except
@@ -4552,7 +4577,8 @@ begin
 end; 
 
 function TCompilerMessagesList.Add(AMsgIndex: Integer;
-  AMsgType: TFPCErrorType; const AMsgText: string; AIgnored: Boolean): TCompilerMessageConfig;
+  AMsgType: TFPCErrorType; const AMsgText: string; DefIgnored: Boolean = false;
+  AState: TCompilerMessageState = msDefault): TCompilerMessageConfig;
 var
   msgconf : TCompilerMessageConfig;
   prm   : array of string;
@@ -4567,7 +4593,8 @@ begin
   end; 
   msgconf.MsgType := AMsgType;
   msgconf.MsgText := AMsgText;
-  msgconf.Ignored := AIgnored;
+  msgconf.DefIgnored := DefIgnored;
+  msgconf.State := AState;
   SetLength(prm, MaxMsgParams); 
   GetParams(AMsgIndex, prm, cnt); 
   Result := msgconf; 
@@ -4624,14 +4651,14 @@ begin
     Result := Result + Copy(ACompilerMsg, p, length(ACompilerMsg) - p + 1);
 end;
 
-procedure TCompilerMessagesList.SetDefault(KeepIgnored: Boolean);
+procedure TCompilerMessagesList.SetDefault(KeepState: Boolean);
 var
-  b   : array of Boolean; 
+  b   : array of TCompilerMessageState;
   err : TFPCErrorType;
 begin
-  if KeepIgnored then begin
+  if KeepState then begin
     SetLength(b, MaxMsgIndex); 
-    GetIgnoredArray(b) 
+    GetStateArray(b)
   end; 
   BeginUpdate;
   try 
@@ -4764,8 +4791,8 @@ begin
     Add(09012,etWarning,'Library $1 not found, Linking may fail !');
   finally
     EndUpdate; 
-    if KeepIgnored then
-      SetIgnoredArray(b);
+    if KeepState then
+      SetStateArray(b);
   end; 
 end;
 
@@ -4828,7 +4855,7 @@ begin
     Result := ObjList.Count = Count;
     if Result then
       for i := 0 to Count - 1 do
-        if Msg[i].Ignored <> ObjList.Msg[i].Ignored then
+        if Msg[i].State <> ObjList.Msg[i].State then
         begin
           Result := False;
           Exit;

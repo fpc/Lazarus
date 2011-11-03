@@ -57,12 +57,13 @@ begin
   UpdateFilter;
 end;
 
-procedure TCompilerMessagesOptionsFrame.chklistCompMsgItemClick(
-  Sender: TObject; Index: integer);
+procedure TCompilerMessagesOptionsFrame.chklistCompMsgItemClick(Sender: TObject; Index: integer);
+const
+  BoolToMessageState: array[Boolean] of TCompilerMessageState = (msOff, msOn);
 begin
   if (Index >= 0) and (Index < chklistCompMsg.Items.Count) then
-    TCompilerMessageConfig(chklistCompMsg.Items.Objects[Index]).Ignored :=
-      not chklistCompMsg.Checked[Index];
+    if not chklistCompMsg.Checked[Index] <> TCompilerMessageConfig(chklistCompMsg.Items.Objects[Index]).DefIgnored then
+      TCompilerMessageConfig(chklistCompMsg.Items.Objects[Index]).State := BoolToMessageState[chklistCompMsg.Checked[Index]];
 end;
 
 procedure TCompilerMessagesOptionsFrame.btnBrowseMsgClick(Sender: TObject);
@@ -137,7 +138,10 @@ begin
       if add then
       begin
         j := chklistCompMsg.Items.AddObject( Format('(%s) %s', [MsgTypeStr[m.MsgType], m.GetUserText([])]), m);
-        chklistCompMsg.Checked[j] := not m.Ignored;
+        if m.State = msDefault then
+          chklistCompMsg.Checked[j] := not m.DefIgnored
+        else
+          chklistCompMsg.Checked[j] := m.State = msOn;
       end;
     end;
   finally            
