@@ -28,6 +28,8 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx;
       var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     function GetColor(AColorID: Integer): TColor; override;
+    function GetClientArea(ADest: TCanvas; ASize: TSize; AControlId: TCDControlID;
+      AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; override;
     procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // ===================================
@@ -91,7 +93,7 @@ begin
   TCDCONTROL_CAPTION_HEIGHT: Result := ADest.TextHeight('ŹÇ')+3;
   TCDCTABCONTROL_TAB_HEIGHT:
   begin
-    if AStateEx.Font.Size = 0 then Result := 22
+    if AStateEx.Font.Size = 0 then Result := ADest.TextHeight('Z')+14
     else Result := AStateEx.Font.Size + 14;
   end;
   TCDCTABCONTROL_TAB_WIDTH:
@@ -132,6 +134,23 @@ begin
   TCDEDIT_SELECTED_TEXT_COLOR: Result := clWhite;
   else
     Result := clBlack;
+  end;
+end;
+
+function TCDDrawerCommon.GetClientArea(ADest: TCanvas; ASize: TSize;
+  AControlId: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx
+  ): TRect;
+begin
+  Result := Bounds(0, 0, ASize.cx, ASize.cy);
+
+  case AControlId of
+  cidCTabControl:
+  begin
+    Result.Top := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx) + 2;
+    Result.Left := 2;
+    Result.Right := Result.Right - 2;
+    Result.Bottom := Result.Bottom - 2;
+  end;
   end;
 end;
 
@@ -495,8 +514,8 @@ begin
   ADest.Brush.Color := clWhite;
   SetLength(Points, 5);
   Points[0] := Point(AStateEx.CurStartLeftPos, lTabTopPos);
-  Points[1] := Point(AStateEx.CurStartLeftPos+lTabWidth-5, lTabTopPos);
-  Points[2] := Point(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+5);
+  Points[1] := Point(AStateEx.CurStartLeftPos+lTabWidth-2, lTabTopPos);
+  Points[2] := Point(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+2);
   Points[3] := Point(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+lTabHeight);
   Points[4] := Point(AStateEx.CurStartLeftPos, lTabTopPos+lTabHeight);
   ADest.Polygon(Points);
@@ -505,9 +524,9 @@ begin
   ADest.Pen.Style := psSolid;
   ADest.Brush.Style := bsClear;
   ADest.Pen.Color := ColorToRGB($009C9B91);
-  ADest.MoveTo(AStateEx.CurStartLeftPos+1, lTabTopPos);
-  ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth-5, lTabTopPos);
-  ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+5);
+  ADest.MoveTo(AStateEx.CurStartLeftPos, lTabTopPos);
+  ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth-2, lTabTopPos);
+  ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+2);
   ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+lTabHeight);
 
   if IsSelected then

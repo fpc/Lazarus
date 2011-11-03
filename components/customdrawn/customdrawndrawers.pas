@@ -151,6 +151,8 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx;
       var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual; abstract;
     function GetColor(AColorID: Integer): TColor; virtual; abstract;
+    function GetClientArea(ADest: TCanvas; ASize: TSize; AControlId: TCDControlID;
+      AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; virtual; abstract;
     procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDButton

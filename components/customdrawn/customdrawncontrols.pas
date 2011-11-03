@@ -1518,16 +1518,18 @@ end;
 procedure TCDPageControl.PositionTabSheet(ATabSheet: TCDTabSheet);
 var
   lTabHeight, lIndex: Integer;
+  lClientArea: TRect;
 begin
   lIndex := FTabs.IndexOfObject(ATabSheet);
   FTabCState.TabIndex := lIndex;
   PrepareControlState;
   PrepareControlStateEx;
-  lTabHeight := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_HEIGHT, FState, FStateEx);
-  ATabSheet.BorderSpacing.Top := lTabHeight;
-  ATabSheet.BorderSpacing.Left := 2;
-  ATabSheet.BorderSpacing.Right := 3;
-  ATabSheet.BorderSpacing.Bottom := 3;
+  lClientArea := FDrawer.GetClientArea(Canvas, Size(Width, Height), GetControlId, FState, FStateEx);
+
+  ATabSheet.BorderSpacing.Top := lClientArea.Top;
+  ATabSheet.BorderSpacing.Left := lClientArea.Left;
+  ATabSheet.BorderSpacing.Right := Width - lClientArea.Right;
+  ATabSheet.BorderSpacing.Bottom := Height - lClientArea.Bottom;
   ATabSheet.Align := alClient;
 end;
 
