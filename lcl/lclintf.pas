@@ -150,8 +150,19 @@ end;
 
 {$IFNDEF WINDOWS}
 function GetTickCount: DWord;
+{$IFDEF UNIX}
+var
+  tp: TTimeVal;
+{$ENDIF}
 begin
+  {$IFDEF UNIX}
+  if fpgettimeofday(@tp, nil) = 0 then
+    Result := DWord((tp.tv_sec * 1000) + (tp.tv_usec div 1000))
+  else
+    Result := DWord(Trunc(Now * 24 * 60 * 60 * 1000));
+  {$ELSE}
   Result := DWord(Trunc(Now * 24 * 60 * 60 * 1000));
+  {$ENDIF}
 end;
 {$ENDIF}
 
