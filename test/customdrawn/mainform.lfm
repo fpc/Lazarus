@@ -39,7 +39,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 439
-    PageIndex = 4
+    PageIndex = 0
     TabOrder = 2
     TabStop = True
     object pageButtons: TPage
@@ -50,9 +50,9 @@ object Form1: TForm1
         Height = 25
         Top = 16
         Width = 75
-        Caption = 'CDButton1'
+        Caption = 'dsCommon'
         Color = 15857141
-        DrawStyle = dsDefault
+        DrawStyle = dsCommon
         TabOrder = 0
         TabStop = True
       end
@@ -61,9 +61,9 @@ object Form1: TForm1
         Height = 25
         Top = 50
         Width = 75
-        Caption = 'CDButton2'
+        Caption = 'dsWinCE'
         Color = 15857141
-        DrawStyle = dsDefault
+        DrawStyle = dsWinCE
         TabOrder = 1
         TabStop = True
       end
@@ -75,10 +75,32 @@ object Form1: TForm1
         Caption = 'TButton'
         TabOrder = 2
       end
+      object CDButton3: TCDButton
+        Left = 119
+        Height = 25
+        Top = 88
+        Width = 75
+        Caption = 'dsWin2000'
+        Color = 15857141
+        DrawStyle = dsWin2000
+        TabOrder = 3
+        TabStop = True
+      end
+      object CDButton4: TCDButton
+        Left = 119
+        Height = 25
+        Top = 121
+        Width = 75
+        Caption = 'dsWinXP'
+        Color = 15857141
+        DrawStyle = dsWinXP
+        TabOrder = 4
+        TabStop = True
+      end
     end
     object pageEdits: TPage
-      ClientWidth = 878
-      ClientHeight = 480
+      ClientWidth = 439
+      ClientHeight = 240
       object CDEdit1: TCDEdit
         Left = 103
         Height = 30
@@ -95,8 +117,78 @@ object Form1: TForm1
       end
     end
     object pageCheckboxes: TPage
+      ClientWidth = 439
+      ClientHeight = 240
+      object CheckBox1: TCheckBox
+        Left = 20
+        Height = 17
+        Top = 29
+        Width = 71
+        Caption = 'CheckBox1'
+        TabOrder = 0
+      end
     end
     object pageGroupBoxes: TPage
+      ClientWidth = 439
+      ClientHeight = 240
+      object GroupBox1: TGroupBox
+        Left = -1
+        Height = 105
+        Top = 8
+        Width = 129
+        Caption = 'GroupBox1'
+        ClientHeight = 87
+        ClientWidth = 125
+        TabOrder = 0
+        object Label1: TLabel
+          Left = 14
+          Height = 14
+          Top = 4
+          Width = 32
+          Caption = 'Label1'
+          ParentColor = False
+        end
+        object Button2: TButton
+          Left = 17
+          Height = 25
+          Top = 32
+          Width = 75
+          Caption = 'Button2'
+          TabOrder = 0
+        end
+      end
+      object CDGroupBox1: TCDGroupBox
+        Left = 159
+        Height = 100
+        Top = 13
+        Width = 100
+        DrawStyle = dsCommon
+        Caption = 'dsCommon'
+        object Label2: TLabel
+          Left = 13
+          Height = 14
+          Top = 21
+          Width = 32
+          Caption = 'Label2'
+          ParentColor = False
+        end
+        object Button3: TButton
+          Left = 8
+          Height = 25
+          Top = 43
+          Width = 75
+          Caption = 'Button3'
+          TabOrder = 0
+        end
+      end
+      object CDGroupBox2: TCDGroupBox
+        Left = 279
+        Height = 100
+        Top = 13
+        Width = 100
+        DrawStyle = dsWinCE
+        Caption = 'dsWinCE'
+      end
     end
     object pageTrackBars: TPage
       ClientWidth = 439
@@ -119,6 +211,72 @@ object Form1: TForm1
       end
     end
     object pagePageControls: TPage
+      ClientWidth = 439
+      ClientHeight = 240
+      object CDPageControl1: TCDPageControl
+        Left = 191
+        Height = 144
+        Top = 32
+        Width = 184
+        ActivePage = CDTabSheet3
+        DrawStyle = dsDefault
+        Caption = 'CDPageControl1'
+        PageIndex = 2
+        Options = []
+        TabIndex = 2
+        object CDTabSheet1: TCDTabSheet
+          Left = 2
+          Height = 109
+          Top = 32
+          Width = 179
+        end
+        object CDTabSheet2: TCDTabSheet
+          Left = 2
+          Height = 109
+          Top = 32
+          Width = 179
+        end
+        object CDTabSheet3: TCDTabSheet
+          Left = 2
+          Height = 109
+          Top = 32
+          Width = 179
+        end
+      end
+      object PageControl1: TPageControl
+        Left = 7
+        Height = 120
+        Top = 40
+        Width = 176
+        ActivePage = TabSheet1
+        TabIndex = 0
+        TabOrder = 1
+        object TabSheet1: TTabSheet
+          Caption = 'TabSheet1'
+        end
+        object TabSheet2: TTabSheet
+          Caption = 'TabSheet2'
+        end
+        object TabSheet3: TTabSheet
+          Caption = 'TabSheet3'
+        end
+      end
+      object StaticText3: TStaticText
+        Left = 6
+        Height = 17
+        Top = 9
+        Width = 65
+        Caption = 'Native:'
+        TabOrder = 2
+      end
+      object StaticText4: TStaticText
+        Left = 190
+        Height = 17
+        Top = 8
+        Width = 65
+        Caption = 'dsWinCE:'
+        TabOrder = 3
+      end
     end
     object Page7: TPage
     end
