@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, customdrawncontrols, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ExtCtrls;
+  Dialogs, StdCtrls, ExtCtrls, ComCtrls;
 
 type
 
@@ -21,15 +21,17 @@ type
     Edit1: TEdit;
     Memo1: TMemo;
     notebookControls: TNotebook;
-    Page1: TPage;
-    Page2: TPage;
-    Page3: TPage;
-    Page4: TPage;
-    Page5: TPage;
-    Page6: TPage;
+    pageButtons: TPage;
+    pageEdits: TPage;
+    pageCheckboxes: TPage;
+    pageGroupBoxes: TPage;
+    pageTrackBars: TPage;
+    pagePageControls: TPage;
     Page7: TPage;
     StaticText1: TStaticText;
     StaticText2: TStaticText;
+    TrackBar1: TTrackBar;
+    CDTrackBar1: TCDTrackBar;
     procedure comboControlsChange(Sender: TObject);
   private
     { private declarations }
