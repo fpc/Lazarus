@@ -9,7 +9,7 @@ object Form1: TForm1
   LCLVersion = '0.9.31'
   object comboControls: TComboBox
     Left = 72
-    Height = 21
+    Height = 27
     Top = 12
     Width = 172
     ItemHeight = 0
@@ -21,6 +21,7 @@ object Form1: TForm1
       'TCDGroupBox'
       'TCDCustomTabControl'
     )
+    OnChange = comboControlsChange
     TabOrder = 0
     Text = 'TCDButton'
   end
@@ -37,16 +38,71 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 439
+    PageIndex = 1
     TabOrder = 2
     TabStop = True
-  end
-  object Button1: TButton
-    Left = 24
-    Height = 25
-    Top = 55
-    Width = 75
-    Caption = 'TButton'
-    TabOrder = 3
+    object Page1: TPage
+      ClientWidth = 439
+      ClientHeight = 240
+      object CDButton1: TCDButton
+        Left = 119
+        Height = 25
+        Top = 16
+        Width = 75
+        Caption = 'CDButton1'
+        Color = 15857141
+        DrawStyle = dsDefault
+        TabOrder = 0
+        TabStop = True
+      end
+      object CDButton2: TCDButton
+        Left = 119
+        Height = 25
+        Top = 50
+        Width = 75
+        Caption = 'CDButton2'
+        Color = 15857141
+        DrawStyle = dsDefault
+        TabOrder = 1
+        TabStop = True
+      end
+      object Button1: TButton
+        Left = 7
+        Height = 25
+        Top = 16
+        Width = 75
+        Caption = 'TButton'
+        TabOrder = 2
+      end
+    end
+    object Page2: TPage
+      ClientWidth = 439
+      ClientHeight = 240
+      object CDEdit1: TCDEdit
+        Left = 103
+        Height = 30
+        Top = 24
+        Width = 100
+      end
+      object Edit1: TEdit
+        Left = 8
+        Height = 25
+        Top = 28
+        Width = 80
+        TabOrder = 1
+        Text = 'Edit1'
+      end
+    end
+    object Page3: TPage
+    end
+    object Page4: TPage
+    end
+    object Page5: TPage
+    end
+    object Page6: TPage
+    end
+    object Page7: TPage
+    end
   end
   object Memo1: TMemo
     Left = 9
@@ -56,7 +112,7 @@ object Form1: TForm1
     Lines.Strings = (
       'Memo1'
     )
-    TabOrder = 4
+    TabOrder = 3
   end
   object StaticText2: TStaticText
     Left = 7
@@ -64,6 +120,6 @@ object Form1: TForm1
     Top = 281
     Width = 65
     Caption = 'Events:'
-    TabOrder = 5
+    TabOrder = 4
   end
 end
