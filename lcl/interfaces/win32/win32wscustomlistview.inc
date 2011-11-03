@@ -125,7 +125,7 @@ var
     begin
       if DataInfo^.hdr.code = UInt(LVN_GETDISPINFOA) then
       begin
-        LVInfo^.DispInfoTextA[LVInfo^.DispInfoIndex]:=UTF8Decode(txt);
+        LVInfo^.DispInfoTextA[LVInfo^.DispInfoIndex]:=Utf8ToAnsi(txt);
         DataInfo^.item.pszText := @(LVInfo^.DispInfoTextA[LVInfo^.DispInfoIndex][1]);
       end
       else
