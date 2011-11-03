@@ -299,14 +299,23 @@ type
 
   { TCDCustomTabSheet }
 
-  TCDCustomTabSheet = class(TCustomControl)
+  { TCDTabSheet }
+
+  TCDTabSheet = class(TCustomControl)
   private
     CDTabControl: TCDCustomTabControl;
     FTabVisible: Boolean;
   protected
     procedure RealSetText(const Value: TCaption); override; // to update on caption changes
-  public
+    procedure SetParent(NewParent: TWinControl); override; // For being created by the LCL resource reader
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EraseBackground(DC: HDC); override;
+    procedure Paint; override;
+  published
+    property Caption;
+    property Color;
+    property Font;
     property TabVisible: Boolean read FTabVisible write FTabVisible;
   end;
 
@@ -351,23 +360,6 @@ type
     property TabIndex;
     property OnChanging;
     property OnChange;
-  end;
-
-  { TCDTabSheet }
-
-  TCDPageControl = class;
-
-  TCDTabSheet = class(TCDCustomTabSheet)
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure EraseBackground(DC: HDC); override;
-    procedure Paint; override;
-  published
-    property Caption;
-    property Color;
-    property Font;
-    property TabVisible: Boolean;
   end;
 
   { TCDPageControl }
@@ -691,45 +683,11 @@ begin
     csDoubleClicks, csReplicatable];
   AutoSize := True;
 
-  DrawStyle := dsWinXP;
   PrepareCurrentDrawer();
 end;
 
 destructor TCDCheckBox.Destroy;
 begin
-  inherited Destroy;
-end;
-
-{ TCDCustomTabSheet }
-
-procedure TCDCustomTabSheet.RealSetText(const Value: TCaption);
-var
-  lIndex: Integer;
-begin
-  inherited RealSetText(Value);
-  lIndex := CDTabControl.Tabs.IndexOfObject(Self);
-  if lIndex >= 0 then
-    CDTabControl.Tabs.Strings[lIndex] := Value;
-  CDTabControl.Invalidate;
-end;
-
-destructor TCDCustomTabSheet.Destroy;
-var
-  lIndex: Integer;
-begin
-  // We should support deleting the tabsheet directly too,
-  // and then it should update the tabcontrol
-  // This is important mostly for the designer
-  if CDTabControl <> nil then
-  begin
-    lIndex := CDTabControl.FTabs.IndexOfObject(Self);
-    if lIndex >= 0 then
-    begin
-      CDTabControl.FTabs.Delete(lIndex);
-      CDTabControl.CorrectTabIndex();
-    end;
-  end;
-
   inherited Destroy;
 end;
 
@@ -1259,7 +1217,6 @@ begin
   DrawStyle := dsExtra1;
   PrepareCurrentDrawer();
 
-  Color := clBtnFace;
   FMax := 10;
   FMin := 0;
   TabStop := True;
@@ -1297,6 +1254,23 @@ end;}
 
 { TCDTabSheet }
 
+procedure TCDTabSheet.RealSetText(const Value: TCaption);
+var
+  lIndex: Integer;
+begin
+  inherited RealSetText(Value);
+  lIndex := CDTabControl.Tabs.IndexOfObject(Self);
+  if lIndex >= 0 then
+    CDTabControl.Tabs.Strings[lIndex] := Value;
+  CDTabControl.Invalidate;
+end;
+
+procedure TCDTabSheet.SetParent(NewParent: TWinControl);
+begin
+  inherited SetParent(NewParent);
+  CDTabControl := NewParent as TCDCustomTabControl;
+end;
+
 constructor TCDTabSheet.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1311,7 +1285,22 @@ begin
 end;
 
 destructor TCDTabSheet.Destroy;
+var
+  lIndex: Integer;
 begin
+  // We should support deleting the tabsheet directly too,
+  // and then it should update the tabcontrol
+  // This is important mostly for the designer
+  if CDTabControl <> nil then
+  begin
+    lIndex := CDTabControl.FTabs.IndexOfObject(Self);
+    if lIndex >= 0 then
+    begin
+      CDTabControl.FTabs.Delete(lIndex);
+      CDTabControl.CorrectTabIndex();
+    end;
+  end;
+
   inherited Destroy;
 end;
 
@@ -1342,12 +1331,7 @@ begin
   NewPage := TCDTabSheet.Create(Owner);
   NewPage.Parent := Self;
   NewPage.CDTabControl := Self;
-  //Name := Designer.CreateUniqueComponentName(ClassName);
-{  NewPage.Name := GetUniqueName(sTABSHEET_DEFAULT_NAME, Self.Owner);
-  if S = '' then
-    NewPage.Caption := NewPage.Name
-  else}
-    NewPage.Caption := S;
+  NewPage.Caption := S;
 
   PositionTabSheet(NewPage);
 
@@ -1372,12 +1356,8 @@ var
 begin
   NewPage := TCDTabSheet.Create(Owner);
   NewPage.Parent := Self;
-  //Name := Designer.CreateUniqueComponentName(ClassName);
-{  NewPage.Name := GetUniqueName(sTABSHEET_DEFAULT_NAME, Self.Owner);
-  if S = '' then
-    NewPage.Caption := NewPage.Name
-  else}
-    NewPage.Caption := S;
+  NewPage.CDTabControl := Self;
+  NewPage.Caption := S;
 
   PositionTabSheet(NewPage);
 

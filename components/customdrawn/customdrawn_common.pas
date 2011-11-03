@@ -7,10 +7,8 @@ interface
 uses
   // RTL
   Classes, SysUtils, Types,
-  // fpimage
-  fpcanvas, fpimgcanv, fpimage,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
-  Graphics, Controls, LCLType, LCLIntf, //IntfGraphics,
+  Graphics, Controls, LCLType,
   // Others only for types
   StdCtrls,
   //
@@ -372,7 +370,7 @@ begin
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
 
   // frame
-  ADest.Pen.FPColor := colBlack;
+  ADest.Pen.Color := clBlack;
   ADest.Pen.Style := psSolid;
   ADest.Brush.Style := bsClear;
   ADest.Rectangle(0, FCaptionMiddle, ASize.cx - 1, ASize.cy - 1);
@@ -395,6 +393,13 @@ procedure TCDDrawerCommon.DrawCTabControl(ADest: TCanvas; ADestPos: TPoint;
 var
   CaptionHeight: Integer;
 begin
+  // Background
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := AStateEx.ParentRGBColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Brush.Color := AStateEx.ParentRGBColor;
+  ADest.Rectangle(ADestPos.X, ADestPos.Y, ADestPos.X+ASize.cx, ADestPos.Y+ASize.cy);
+
   CaptionHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx);
 
   // frame

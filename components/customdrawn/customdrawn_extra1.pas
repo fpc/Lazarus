@@ -145,12 +145,13 @@ begin
 
   ADest.Brush.Color := AStateEx.ParentRGBColor;
   ADest.Brush.Style := bsSolid;
-  ADest.Pen.Style := psClear;
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := AStateEx.ParentRGBColor;
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
-  ADest.Brush.Color := ColorToRGB($006BB6E6);
 
   // Draws the double-sided arrow in the center of the slider
 
+  ADest.Brush.Color := ColorToRGB($006BB6E6);
   ADest.Pen.Style := psSolid;
   ADest.Pen.Color := ColorToRGB($006BB6E6);
   ADest.Line(0, lDrawingBottom, ASize.cx, lDrawingBottom);
@@ -194,29 +195,29 @@ begin
       ADest.Brush.FPColor := TColorToFPColor(ColorToRGB($006BB6E6));
       ADest.Brush.Style := bsSolid;
       ADest.Rectangle(pStart, lDrawingBottom + 1, pStart + 10, lDrawingBottom + 6);
-      ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($005BA6C6));
+      ADest.Pen.Color := ColorToRGB($005BA6C6);
       ADest.RecTangle(pStart, lDrawingBottom + 2, pStart + 10, lDrawingBottom + 7);
-      ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($006BB6E6));
+      ADest.Pen.Color := ColorToRGB($006BB6E6);
       ADest.RecTangle(pStart, lDrawingBottom, pStart + 10, lDrawingBottom + 2);
     end;
     pStart := pStart + pStepWidth;
   end;
 
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($007BC6F6));
+  ADest.Pen.Color := ColorToRGB($007BC6F6);
   ADest.Line(7, lDrawingBottom - 1, ASize.cx - 8, lDrawingBottom - 1);
   ADest.Line(7, lDrawingBottom + 1, ASize.cx - 8, lDrawingBottom + 1);
-  ADest.Colors[2, lDrawingBottom - 1] := ADest.Pen.FPColor;
-  ADest.Colors[4, lDrawingBottom - 2] := ADest.Pen.FPColor;
-  ADest.Colors[2, lDrawingBottom + 1] := ADest.Pen.FPColor;
-  ADest.Colors[4, lDrawingBottom + 2] := ADest.Pen.FPColor;
-  ADest.Colors[6, lDrawingBottom - 3] := ADest.Pen.FPColor;
-  ADest.Colors[6, lDrawingBottom + 3] := ADest.Pen.FPColor;
-  ADest.Colors[ASize.cx - 1 - 2, lDrawingBottom - 1] := ADest.Pen.FPColor;
-  ADest.Colors[ASize.cx - 1 - 4, lDrawingBottom - 2] := ADest.Pen.FPColor;
-  ADest.Colors[ASize.cx - 1 - 2, lDrawingBottom + 1] := ADest.Pen.FPColor;
-  ADest.Colors[ASize.cx - 1 - 4, lDrawingBottom + 2] := ADest.Pen.FPColor;
-  ADest.Colors[ASize.cx - 1 - 6, lDrawingBottom - 3] := ADest.Pen.FPColor;
-  ADest.Colors[ASize.cx - 1 - 6, lDrawingBottom + 3] := ADest.Pen.FPColor;
+  ADest.Pixels[2, lDrawingBottom - 1] := ADest.Pen.Color;
+  ADest.Pixels[4, lDrawingBottom - 2] := ADest.Pen.Color;
+  ADest.Pixels[2, lDrawingBottom + 1] := ADest.Pen.Color;
+  ADest.Pixels[4, lDrawingBottom + 2] := ADest.Pen.Color;
+  ADest.Pixels[6, lDrawingBottom - 3] := ADest.Pen.Color;
+  ADest.Pixels[6, lDrawingBottom + 3] := ADest.Pen.Color;
+  ADest.Pixels[ASize.cx - 1 - 2, lDrawingBottom - 1] := ADest.Pen.Color;
+  ADest.Pixels[ASize.cx - 1 - 4, lDrawingBottom - 2] := ADest.Pen.Color;
+  ADest.Pixels[ASize.cx - 1 - 2, lDrawingBottom + 1] := ADest.Pen.Color;
+  ADest.Pixels[ASize.cx - 1 - 4, lDrawingBottom + 2] := ADest.Pen.Color;
+  ADest.Pixels[ASize.cx - 1 - 6, lDrawingBottom - 3] := ADest.Pen.Color;
+  ADest.Pixels[ASize.cx - 1 - 6, lDrawingBottom + 3] := ADest.Pen.Color;
 end;
 
 initialization

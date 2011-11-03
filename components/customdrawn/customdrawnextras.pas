@@ -184,7 +184,7 @@ procedure Register;
 begin
   RegisterComponents('Custom Drawn', [
     // Standard tab
-    TCDButton, TCDEdit, TCDGroupBox,
+    TCDButton, TCDEdit, TCDCheckBox, TCDGroupBox,
     // Common Controls
     TCDTrackBar, TCDPageControl, TCDTabControl]);
   RegisterComponentEditor(TCDPageControl, TCDPageControlEditor);
@@ -427,18 +427,21 @@ var
   Hook: TPropertyEditorHook;
   PageComponent: TPersistent;
   OldPage: longint;
+  lPageName: String;
 begin
   if not GetHook(Hook) then exit;
 
   case Index of
     0:
     begin  //  New Page
-      NewPage := PControl.AddPage('');
+      lPageName := Designer.CreateUniqueComponentName(TCDTabSheet.ClassName);
+      NewPage := PControl.AddPage(lPageName);
       Hook.PersistentAdded(NewPage, True);
     end;
     1:
     begin // Insert Page
-      NewPage := PControl.InsertPage(PControl.PageIndex, '');
+      lPageName := Designer.CreateUniqueComponentName(TCDTabSheet.ClassName);
+      NewPage := PControl.InsertPage(PControl.PageIndex, lPageName);
       Hook.PersistentAdded(NewPage, True);
     end;
     2:
