@@ -20,13 +20,14 @@ type
     CDButton2: TCDButton;
     CDButton3: TCDButton;
     CDButton4: TCDButton;
+    CDCheckBox1: TCDCheckBox;
+    CDCheckBox2: TCDCheckBox;
     CDEdit1: TCDEdit;
     CDGroupBox1: TCDGroupBox;
     CDGroupBox2: TCDGroupBox;
     CDPageControl1: TCDPageControl;
     CDTabSheet1: TCDTabSheet;
     CDTabSheet2: TCDTabSheet;
-    CDTabSheet3: TCDTabSheet;
     CheckBox1: TCheckBox;
     comboControls: TComboBox;
     Edit1: TEdit;
