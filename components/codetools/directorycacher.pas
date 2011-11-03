@@ -1598,7 +1598,7 @@ end;
 
 function TCTDirectoryCachePool.FindDiskFilename(const Filename: string
   ): string;
-{$IFDEF defined(NotLiteralFilenames) or defined(CaseInsensitiveFilenames)}
+{$IF defined(NotLiteralFilenames) or defined(CaseInsensitiveFilenames)}
 var
   ADirectory: String;
   Cache: TCTDirectoryCache;
@@ -1607,7 +1607,7 @@ var
 begin
   Result:=ChompPathDelim(TrimFilename(Filename));
   if Result='' then exit;
-  {$IFDEF defined(NotLiteralFilenames) or defined(CaseInsensitiveFilenames)}
+  {$IF defined(NotLiteralFilenames) or defined(CaseInsensitiveFilenames)}
   ADirectory:=ExtractFilePath(Result);
   if ADirectory=Result then
     exit; // e.g. / under Linux
