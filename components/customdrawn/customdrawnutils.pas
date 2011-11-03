@@ -23,10 +23,8 @@ procedure GradFill(Canvas: TFPCustomCanvas; aRect: TRect; Clr1, Clr2: TColor);
 procedure GradCenterFill(Canvas: TFPCustomCanvas; aRect: TRect;
   Clr1, Clr2: TColor; rate: float);
 procedure DrawAndroidButton(Canvas: TCanvas; Color: TColor);
-procedure DrawXPTaskbarButton(Canvas: TCanvas; Color: TColor);
 procedure FPImgCloneRect(IntfImg1, IntfImg2: TLazIntfImage; lRect: TRect; Fast: boolean);
 procedure DrawArrow(aDest: TFPCustomCanvas; aRect: TRect; R: boolean);
-procedure DrawCDButtonDown(Canvas: TCanvas; ABackgroundColor: TColor);
 
 type
   PRGBTripleArray = ^TRGBTripleArray;
@@ -337,38 +335,6 @@ begin
   end;
 end;
 
-procedure DrawXPTaskbarButton(Canvas: TCanvas; Color: TColor);
-var
-  aColor: TColor;
-begin
-  aColor := GetUColor(Color, 96);
-  with Canvas do
-  begin
-    Brush.Color := Color;
-    Brush.Style := bsSolid;
-    FillRect(0, 0, Width, Height);
-    Pen.Color := aColor;
-    RecTangle(0, 0, Width, Height);
-    Pen.Color := GetAColor(aColor, 86);
-    RoundRect(0, 0, Width, Canvas.Height, 8, 8);
-    //    Pen.Color := aColor;
-    //    RecTangle(0, 6, Width, Height);
-    Pen.Color := GetAColor(aColor, 86);
-    Line(0, 3, 0, Height - 3);
-    Line(Width, 3, Width, Height - 3);
-    Line(3, Height - 1, Width - 3, Height - 1);
-    Line(2, Height - 2, Width - 2, Height - 2);
-    Pen.Color := GetAColor(aColor, 93);
-    Line(1, Height - 4, Width - 1, Height - 4);
-    Pen.Color := GetAColor(aColor, 91);
-    Line(1, Height - 3, Width - 1, Height - 3);
-    Pen.Color := GetAColor(aColor, 88);
-    Line(Width - 2, 4, Width - 2, Height - 3);
-    //Pen.Color := GetAColor(aColor, 94);
-    //Line(2, 2, 6, 2);
-  end;
-end;
-
 procedure FastAntiAliasPicture(orig_bmp, dest_bmp: TBitmap);
 var
   x, y, cx, cy: integer;
@@ -437,21 +403,6 @@ begin
   IntfImg1.Free;
   IntfImg2.Free;
   TmpBmp.Free;
-end;
-
-procedure DrawCDButtonDown(Canvas: TCanvas; ABackgroundColor: TColor);
-begin
-  with Canvas do
-  begin
-    Brush.Style := bsSolid;
-    Brush.Color := ABackgroundColor;
-    Pen.Color := Brush.Color;
-    Rectangle(0, 0, Width, Height);
-    FillRect(0, 0, Width, Height);
-    Brush.Color := GetAColor(ABackgroundColor, 93);
-    Pen.Color := GetAColor(Brush.Color, 76);
-    RoundRect(0, 0, Width, Height, 8, 8);
-  end;
 end;
 
 end.
