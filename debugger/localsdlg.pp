@@ -37,6 +37,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ClipBrd, LCLProc,
+  IDEWindowIntf, IDEOptionDefs, DebuggerStrConst,
   ComCtrls, ActnList, Menus, BaseDebugManager, Debugger, DebuggerDlg;
 
 type
@@ -74,6 +75,8 @@ type
   protected
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
+    function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+    procedure ColSizeSetter(AColId: Integer; ASize: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     property LocalsMonitor;
@@ -89,7 +92,27 @@ implementation
 
 uses
   LazarusIDEStrConsts;
-  
+
+var
+  LocalsDlgWindowCreator: TIDEWindowCreator;
+
+const
+  COL_LOCALS_NAME   = 1;
+  COL_LOCALS_VALUE  = 2;
+
+function LocalsDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := AForm is TLocalsDlg;
+  if Result then
+    Result := TLocalsDlg(AForm).ColSizeGetter(AColId, ASize);
+end;
+
+procedure LocalsDlgColSizeSetter(AForm: TCustomForm; AColId: Integer; ASize: Integer);
+begin
+  if AForm is TLocalsDlg then
+    TLocalsDlg(AForm).ColSizeSetter(AColId, ASize);
+end;
+
 { TLocalsDlg }
 
 constructor TLocalsDlg.Create(AOwner: TComponent);
@@ -309,6 +332,34 @@ begin
   if ufNeedUpdating in FUpdateFlags then LocalsChanged(nil);
   lvLocals.EndUpdate;
 end;
+
+function TLocalsDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := True;
+  case AColId of
+    COL_LOCALS_NAME:   ASize := lvLocals.Column[0].Width;
+    COL_LOCALS_VALUE:  ASize := lvLocals.Column[1].Width;
+    else
+      Result := False;
+  end;
+end;
+
+procedure TLocalsDlg.ColSizeSetter(AColId: Integer; ASize: Integer);
+begin
+  case AColId of
+    COL_LOCALS_NAME:   lvLocals.Column[0].Width := ASize;
+    COL_LOCALS_VALUE:  lvLocals.Column[1].Width := ASize;
+  end;
+end;
+
+initialization
+
+  LocalsDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwLocals]);
+  LocalsDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
+  LocalsDlgWindowCreator.OnSetDividerSize := @LocalsDlgColSizeSetter;
+  LocalsDlgWindowCreator.OnGetDividerSize := @LocalsDlgColSizeGetter;
+  LocalsDlgWindowCreator.DividerTemplate.Add('LocalsName',  COL_LOCALS_NAME,  drsColWidthName);
+  LocalsDlgWindowCreator.DividerTemplate.Add('LocalsValue', COL_LOCALS_VALUE, drsColWidthValue);
 
 end.
 

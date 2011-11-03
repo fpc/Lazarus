@@ -29,8 +29,9 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, FileUtil, Forms, Controls, Graphics,
+  IDEWindowIntf, IDEOptionDefs, DebuggerStrConst,
   Dialogs, ComCtrls, ObjectInspector, PropEdits, Debugger, DebuggerDlg, BaseDebugManager,
-  LazarusIDEStrConsts, IDEWindowIntf, LCLProc, LCLType, Grids, StdCtrls;
+  LazarusIDEStrConsts, LCLProc, LCLType, Grids, StdCtrls;
 
 type
 
@@ -55,12 +56,12 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
-    FDataGridHook,
-    FPropertiesGridHook,
-    FMethodsGridHook: TPropertyEditorHook;
-    FDataGrid,
-    FPropertiesGrid,
-    FMethodsGrid: TOIDBGGrid;
+    //FDataGridHook,
+    //FPropertiesGridHook,
+    //FMethodsGridHook: TPropertyEditorHook;
+    //FDataGrid,
+    //FPropertiesGrid,
+    //FMethodsGrid: TOIDBGGrid;
     FExpression: ansistring;
     FHumanReadable: ansistring;
     FDBGInfo: TDBGType;
@@ -74,12 +75,14 @@ type
     procedure InspectEnum;
     procedure InspectSet;
     procedure InspectPointer;
-    procedure GridDataSetup;
-    procedure GridMethodsSetup;
+    procedure GridDataSetup(Initial: Boolean = False);
+    procedure GridMethodsSetup(Initial: Boolean = False);
     procedure ShowDataFields;
     procedure ShowMethodsFields;
     procedure Clear;
   protected
+    function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+    procedure ColSizeSetter(AColId: Integer; ASize: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -90,6 +93,31 @@ type
 implementation
 
 {$R *.lfm}
+
+var
+  InspectDlgWindowCreator: TIDEWindowCreator;
+
+const
+  COL_INSPECT_DNAME    = 1;
+  COL_INSPECT_DTYPE    = 2;
+  COL_INSPECT_DVALUE   = 3;
+  COL_INSPECT_MNAME    = 11;
+  COL_INSPECT_MTYPE    = 12;
+  COL_INSPECT_MRETURNS = 13;
+  COL_INSPECT_MADDRESS = 14;
+
+function InspectDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := AForm is TIDEInspectDlg;
+  if Result then
+    Result := TIDEInspectDlg(AForm).ColSizeGetter(AColId, ASize);
+end;
+
+procedure InspectDlgColSizeSetter(AForm: TCustomForm; AColId: Integer; ASize: Integer);
+begin
+  if AForm is TIDEInspectDlg then
+    TIDEInspectDlg(AForm).ColSizeSetter(AColId, ASize);
+end;
 
 { TIDEInspectDlg }
 
@@ -124,12 +152,12 @@ begin
   EditInspected.Text:=FExpression+' : Class '+FDBGInfo.TypeName+' inherits from '+FDBGInfo.Ancestor;
   GridDataSetup;
   ShowDataFields;
-  FGridData.AutoSizeColumn(1);
-  FGridData.AutoSizeColumn(2);
+  //FGridData.AutoSizeColumn(1);
+  //FGridData.AutoSizeColumn(2);
   GridMethodsSetup;
   ShowMethodsFields;
-  FGridMethods.AutoSizeColumn(1);
-  FGridMethods.AutoSizeColumn(3);
+  //FGridMethods.AutoSizeColumn(1);
+  //FGridMethods.AutoSizeColumn(3);
 end;
 
 procedure TIDEInspectDlg.InspectVariant;
@@ -143,7 +171,7 @@ begin
   FGridData.Cells[0,1]:=FExpression;
   FGridData.Cells[1,1]:='Variant';
   FGridData.Cells[2,1]:=FDBGInfo.Value.AsString;
-  FGridData.AutoSizeColumn(1);
+  //FGridData.AutoSizeColumn(1);
 end;
 
 procedure TIDEInspectDlg.InspectRecord;
@@ -157,7 +185,7 @@ begin
   EditInspected.Text:=FExpression+' : '+FDBGInfo.TypeName;
   GridDataSetup;
   ShowDataFields;
-  FGridData.AutoSizeColumn(2);
+  //FGridData.AutoSizeColumn(2);
 end;
 
 procedure TIDEInspectDlg.InspectSimple;
@@ -171,7 +199,7 @@ begin
   FGridData.Cells[0,1]:=FExpression;
   FGridData.Cells[1,1]:=FDBGInfo.TypeName;
   FGridData.Cells[2,1]:=FDBGInfo.Value.AsString;
-  FGridData.AutoSizeColumn(2);
+  //FGridData.AutoSizeColumn(2);
 end;
 
 procedure TIDEInspectDlg.InspectEnum;
@@ -188,7 +216,7 @@ begin
   then FGridData.Cells[1,1] := FGridData.Cells[1,1] + ' = ';
   FGridData.Cells[1,1] := FGridData.Cells[1,1] + FDBGInfo.TypeDeclaration;
   FGridData.Cells[2,1]:=FDBGInfo.Value.AsString;
-  FGridData.AutoSizeColumn(2);
+  //FGridData.AutoSizeColumn(2);
 end;
 
 procedure TIDEInspectDlg.InspectSet;
@@ -205,7 +233,7 @@ begin
   then FGridData.Cells[1,1] := FGridData.Cells[1,1] + ' = ';
   FGridData.Cells[1,1] := FGridData.Cells[1,1] + FDBGInfo.TypeDeclaration;
   FGridData.Cells[2,1]:=FDBGInfo.Value.AsString;
-  FGridData.AutoSizeColumn(2);
+  //FGridData.AutoSizeColumn(2);
 end;
 
 procedure TIDEInspectDlg.InspectPointer;
@@ -221,56 +249,65 @@ begin
   then FGridData.Cells[1,1]:='Pointer to '+copy(FDBGInfo.TypeName, 2, length(FDBGInfo.TypeName))
   else FGridData.Cells[1,1]:=FDBGInfo.TypeName;
   FGridData.Cells[2,1]:=format('$%x',[PtrUInt(FDBGInfo.Value.AsPointer)]);
-  FGridData.AutoSizeColumn(2);
+  //FGridData.AutoSizeColumn(2);
 end;
 
-procedure TIDEInspectDlg.GridDataSetup;
+procedure TIDEInspectDlg.GridDataSetup(Initial: Boolean = False);
 begin
-  with FGridData do begin
-    Clear;
-    BorderStyle:=bsNone;
-    BorderWidth:=0;
-    DefaultColWidth:=100;
-    Options:=[goColSizing,goDblClickAutoSize,goDrawFocusSelected,
-                        goVertLine,goHorzLine,goFixedHorzLine,goSmoothScroll,
-                        goTabs,goScrollKeepVisible,goRowSelect];
-    Align:=alClient;
-    TitleFont.Style:=[fsBold];
-    ExtendedSelect:=false;
-    RowCount:=2;
-    FixedRows:=1;
-    FixedCols:=0;
-    ColCount:=3;
-    Cols[0].Text:='Name';
-    Cols[1].Text:='Type';
-    Cols[2].Text:='Value';
-    Color:=clBtnFace;
-  end;
+  if Initial then
+    with FGridData do begin
+      Clear;
+      BorderStyle:=bsNone;
+      BorderWidth:=0;
+      DefaultColWidth:=100;
+      Options:=[goColSizing,goDblClickAutoSize,goDrawFocusSelected,
+                          goVertLine,goHorzLine,goFixedHorzLine,goSmoothScroll,
+                          goTabs,goScrollKeepVisible,goRowSelect];
+      Align:=alClient;
+      TitleFont.Style:=[fsBold];
+      ExtendedSelect:=false;
+      RowCount:=2;
+      FixedRows:=1;
+      FixedCols:=0;
+      ColCount:=3;
+      Cols[0].Text:='Name';
+      Cols[1].Text:='Type';
+      Cols[2].Text:='Value';
+      Color:=clBtnFace;
+    end;
+  FGridData.RowCount:=1;
+  FGridData.RowCount:=2;
+  FGridData.FixedRows:=1;
+  FGridData.Visible := True;
 end;
 
-procedure TIDEInspectDlg.GridMethodsSetup;
+procedure TIDEInspectDlg.GridMethodsSetup(Initial: Boolean = False);
 begin
-  with FGridMethods do begin
-    Clear;
-    BorderStyle:=bsNone;
-    BorderWidth:=0;
-    DefaultColWidth:=100;
-    Options:=[goColSizing,goDblClickAutoSize,goDrawFocusSelected,
-                        goVertLine,goHorzLine,goFixedHorzLine,goSmoothScroll,
-                        goTabs,goScrollKeepVisible,goRowSelect];
-    Align:=alClient;
-    TitleFont.Style:=[fsBold];
-    ExtendedSelect:=false;
-    RowCount:=2;
-    FixedRows:=1;
-    FixedCols:=0;
-    ColCount:=4;
-    Cols[0].Text:='Name';
-    Cols[1].Text:='Type';
-    Cols[2].Text:='Returns';
-    Cols[3].Text:='Address';
-    Color:=clBtnFace;
-  end;
+  if Initial then
+    with FGridMethods do begin
+      Clear;
+      BorderStyle:=bsNone;
+      BorderWidth:=0;
+      DefaultColWidth:=100;
+      Options:=[goColSizing,goDblClickAutoSize,goDrawFocusSelected,
+                          goVertLine,goHorzLine,goFixedHorzLine,goSmoothScroll,
+                          goTabs,goScrollKeepVisible,goRowSelect];
+      Align:=alClient;
+      TitleFont.Style:=[fsBold];
+      ExtendedSelect:=false;
+      RowCount:=2;
+      FixedRows:=1;
+      FixedCols:=0;
+      ColCount:=4;
+      Cols[0].Text:='Name';
+      Cols[1].Text:='Type';
+      Cols[2].Text:='Returns';
+      Cols[3].Text:='Address';
+      Color:=clBtnFace;
+    end;
+  FGridMethods.RowCount:=1;
+  FGridMethods.RowCount:=2;
+  FGridMethods.FixedRows:=1;
 end;
 
 procedure TIDEInspectDlg.ShowDataFields;
@@ -390,9 +427,39 @@ begin
   DataPage.TabVisible:=false;
   PropertiesPage.TabVisible:=false;
   MethodsPage.TabVisible:=false;
-  FGridData.Clear;
+  GridDataSetup;
+  FGridData.Visible := False;
   FreeAndNil(FDBGInfo);
   EditInspected.Text:='';
+end;
+
+function TIDEInspectDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := True;
+  case AColId of
+    COL_INSPECT_DNAME:    ASize := FGridData.ColWidths[0];
+    COL_INSPECT_DTYPE:    ASize := FGridData.ColWidths[1];
+    COL_INSPECT_DVALUE:   ASize := FGridData.ColWidths[2];
+    COL_INSPECT_MNAME:    ASize := FGridMethods.ColWidths[0];
+    COL_INSPECT_MTYPE:    ASize := FGridMethods.ColWidths[1];
+    COL_INSPECT_MRETURNS: ASize := FGridMethods.ColWidths[2];
+    COL_INSPECT_MADDRESS: ASize := FGridMethods.ColWidths[3];
+    else
+      Result := False;
+  end;
+end;
+
+procedure TIDEInspectDlg.ColSizeSetter(AColId: Integer; ASize: Integer);
+begin
+  case AColId of
+    COL_INSPECT_DNAME:    FGridData.ColWidths[0]:= ASize;
+    COL_INSPECT_DTYPE:    FGridData.ColWidths[1]:= ASize;
+    COL_INSPECT_DVALUE:   FGridData.ColWidths[2]:= ASize;
+    COL_INSPECT_MNAME:    FGridMethods.ColWidths[0]:= ASize;
+    COL_INSPECT_MTYPE:    FGridMethods.ColWidths[1]:= ASize;
+    COL_INSPECT_MRETURNS: FGridMethods.ColWidths[2]:= ASize;
+    COL_INSPECT_MADDRESS: FGridMethods.ColWidths[3]:= ASize;
+  end;
 end;
 
 constructor TIDEInspectDlg.Create(AOwner: TComponent);
@@ -411,31 +478,34 @@ constructor TIDEInspectDlg.Create(AOwner: TComponent);
 
 begin
   inherited Create(AOwner);
-  FDataGridHook := TPropertyEditorHook.Create;
-  FDataGrid := NewGrid('DataGrid', DataPage, FDataGridHook);
-
-  FPropertiesGridHook := TPropertyEditorHook.Create;
-  FPropertiesGrid := NewGrid('PropertiesGrid', PropertiesPage, FPropertiesGridHook);
-
-  FMethodsGridHook := TPropertyEditorHook.Create;
-  FMethodsGrid := NewGrid('MethodsGrid', MethodsPage, FMethodsGridHook);
+  //FDataGridHook := TPropertyEditorHook.Create;
+  //FDataGrid := NewGrid('DataGrid', DataPage, FDataGridHook);
+  //
+  //FPropertiesGridHook := TPropertyEditorHook.Create;
+  //FPropertiesGrid := NewGrid('PropertiesGrid', PropertiesPage, FPropertiesGridHook);
+  //
+  //FMethodsGridHook := TPropertyEditorHook.Create;
+  //FMethodsGrid := NewGrid('MethodsGrid', MethodsPage, FMethodsGridHook);
 
   Localize;
 
   FGridData:=TStringGrid.Create(DataPage);
   DataPage.InsertControl(FGridData);
-  GridDataSetup;
+  GridDataSetup(True);
+
   FGridMethods:=TStringGrid.Create(MethodsPage);
   MethodsPage.InsertControl(FGridMethods);
-  GridMethodsSetup;
+  GridMethodsSetup(True);
+
+  Clear;
 end;
 
 destructor TIDEInspectDlg.Destroy;
 begin
   FreeAndNil(FDBGInfo);
-  FreeAndNil(FDataGridHook);
-  FreeAndNil(FPropertiesGridHook);
-  FreeAndNil(FMethodsGridHook);
+  //FreeAndNil(FDataGridHook);
+  //FreeAndNil(FPropertiesGridHook);
+  //FreeAndNil(FMethodsGridHook);
   inherited Destroy;
 end;
 
@@ -479,6 +549,21 @@ procedure TOIDBGGrid.BuildPropertyList(OnlyIfNeeded: boolean);
 begin
 
 end;
+
+initialization
+
+  InspectDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwInspect]);
+  InspectDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
+  InspectDlgWindowCreator.OnSetDividerSize := @InspectDlgColSizeSetter;
+  InspectDlgWindowCreator.OnGetDividerSize := @InspectDlgColSizeGetter;
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectDataName',  COL_INSPECT_DNAME, drsInspectColWidthDataName);
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectDataType',  COL_INSPECT_DTYPE, drsInspectColWidthDataType);
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectDataValue', COL_INSPECT_DVALUE, drsInspectColWidthDataValue);
+
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectMethName',    COL_INSPECT_MNAME,    drsInspectColWidthMethName);
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectMethType',    COL_INSPECT_MTYPE,    drsInspectColWidthMethType);
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectMethReturns', COL_INSPECT_MRETURNS, drsInspectColWidthMethReturns);
+  InspectDlgWindowCreator.DividerTemplate.Add('InspectMethAddress', COL_INSPECT_MADDRESS, drsInspectColWidthMethAddress);
 
 end.
 

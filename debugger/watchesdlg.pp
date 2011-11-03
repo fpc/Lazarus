@@ -41,7 +41,8 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, math,
   IDEWindowIntf, IDEOptionDefs,
   StdCtrls, Buttons, Menus, ComCtrls, LCLType, ActnList, IDEImagesIntf,
-  EnvironmentOpts, LazarusIDEStrConsts, Debugger, DebuggerDlg, BaseDebugManager;
+  EnvironmentOpts, LazarusIDEStrConsts, DebuggerStrConst,
+  Debugger, DebuggerDlg, BaseDebugManager;
 
 type
 
@@ -764,10 +765,11 @@ end;
 initialization
 
   WatchWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwWatches]);
+  WatchWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   WatchWindowCreator.OnSetDividerSize := @WatchesDlgColSizeSetter;
   WatchWindowCreator.OnGetDividerSize := @WatchesDlgColSizeGetter;
-  WatchWindowCreator.DividerTemplate.Add('ColumnWatchExpr', COL_WATCH_EXPR, dbgLCWatchExpression);
-  WatchWindowCreator.DividerTemplate.Add('ColumnWatchValue', COL_WATCH_VALUE, dbgLCWatchValue);
+  WatchWindowCreator.DividerTemplate.Add('ColumnWatchExpr',  COL_WATCH_EXPR,  drsColWidthExpression);
+  WatchWindowCreator.DividerTemplate.Add('ColumnWatchValue', COL_WATCH_VALUE, drsColWidthValue);
 
 end.
 

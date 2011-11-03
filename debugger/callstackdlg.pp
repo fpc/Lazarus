@@ -37,6 +37,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  IDEWindowIntf, IDEOptionDefs, DebuggerStrConst,
   ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls, Spin,
   ActnList, MainIntf, MainBase, IDEImagesIntf, IDECommands;
 
@@ -130,6 +131,8 @@ type
     procedure BreakPointChanged(const ASender: TIDEBreakPoints; const ABreakpoint: TIDEBreakPoint);
     procedure CallStackChanged(Sender: TObject);
     procedure CallStackCurrent(Sender: TObject);
+    function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+    procedure ColSizeSetter(AColId: Integer; ASize: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     property BreakPoints;
@@ -150,6 +153,28 @@ uses
 var
   imgSourceLine: Integer;
   imgNoSourceLine: Integer;
+
+  CallStackDlgWindowCreator: TIDEWindowCreator;
+
+const
+  COL_STACK_BRKPOINT  = 1;
+  COL_STACK_INDEX     = 2;
+  COL_STACK_SOURCE    = 3;
+  COL_STACK_LINE      = 4;
+  COL_STACK_FUNC      = 5;
+
+function CallStackDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := AForm is TCallStackDlg;
+  if Result then
+    Result := TCallStackDlg(AForm).ColSizeGetter(AColId, ASize);
+end;
+
+procedure CallStackDlgColSizeSetter(AForm: TCustomForm; AColId: Integer; ASize: Integer);
+begin
+  if AForm is TCallStackDlg then
+    TCallStackDlg(AForm).ColSizeSetter(AColId, ASize);
+end;
 
 { TCallStackDlg }
 
@@ -187,6 +212,31 @@ begin
   {$IFDEF DBG_DATA_MONITORS} DebugLn(['DebugDataWindow: TCallStackDlg.CallStackCurrent from ',  DbgSName(Sender), '  Upd:', IsUpdating]); {$ENDIF}
   if not ToolButtonPower.Down then exit;
   UpdateView;
+end;
+
+function TCallStackDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := True;
+  case AColId of
+    COL_STACK_BRKPOINT:  ASize := lvCallStack.Column[0].Width;
+    COL_STACK_INDEX:     ASize := lvCallStack.Column[1].Width;
+    COL_STACK_SOURCE:    ASize := lvCallStack.Column[2].Width;
+    COL_STACK_LINE:      ASize := lvCallStack.Column[3].Width;
+    COL_STACK_FUNC:      ASize := lvCallStack.Column[4].Width;
+    else
+      Result := False;
+  end;
+end;
+
+procedure TCallStackDlg.ColSizeSetter(AColId: Integer; ASize: Integer);
+begin
+  case AColId of
+    COL_STACK_BRKPOINT:  lvCallStack.Column[0].Width := ASize;
+    COL_STACK_INDEX:     lvCallStack.Column[1].Width := ASize;
+    COL_STACK_SOURCE:    lvCallStack.Column[2].Width := ASize;
+    COL_STACK_LINE:      lvCallStack.Column[3].Width := ASize;
+    COL_STACK_FUNC:      lvCallStack.Column[4].Width := ASize;
+  end;
 end;
 
 function TCallStackDlg.GetImageIndex(Entry: TCallStackEntry): Integer;
@@ -756,6 +806,18 @@ begin
   
 
 end;
+
+initialization
+
+  CallStackDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCallStack]);
+  CallStackDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
+  CallStackDlgWindowCreator.OnSetDividerSize := @CallStackDlgColSizeSetter;
+  CallStackDlgWindowCreator.OnGetDividerSize := @CallStackDlgColSizeGetter;
+  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackBrkPoint', COL_STACK_BRKPOINT, drsColWidthBrkPointImg);
+  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackIndex',    COL_STACK_INDEX,    drsColWidthIndex);
+  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackSource',   COL_STACK_SOURCE,   drsColWidthSource);
+  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackLine',     COL_STACK_LINE,     drsColWidthLine);
+  CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackFunc',     COL_STACK_FUNC,     drsColWidthFunc);
 
 end.
 

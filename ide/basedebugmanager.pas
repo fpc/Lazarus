@@ -171,6 +171,9 @@ type
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; virtual; abstract;
     function ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''): TModalresult; virtual; abstract;
 
+    // Dialog routines
+    procedure CreateDebugDialog(Sender: TObject; aFormName: string;
+                          var AForm: TCustomForm; DoDisableAutoSizing: boolean); virtual;
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType;
                               BringToFront: Boolean = True; Show: Boolean = true;
                               DoDisableAutoSizing: boolean = false); virtual; abstract;
@@ -232,6 +235,12 @@ begin
   if idx = -1
   then Result := nil
   else Result := TDebuggerClass(MDebuggerClasses.Objects[idx]);
+end;
+
+procedure TBaseDebugManager.CreateDebugDialog(Sender: TObject; aFormName: string;
+  var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+begin
+  //
 end;
 
 function TBaseDebugManager.GetDebuggerClass(const AIndex: Integer): TDebuggerClass;

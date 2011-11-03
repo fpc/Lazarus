@@ -38,7 +38,8 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager, IDEWindowIntf,
+  IDEWindowIntf, IDEOptionDefs,
+  ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager,
   InputHistory, Debugger;
 
 type
@@ -86,6 +87,9 @@ implementation
 
 uses
   IDEImagesIntf, LazarusIDEStrConsts;
+
+var
+  EvaluateDlgWindowCreator: TIDEWindowCreator;
 
 { TEvaluateDlg }
 
@@ -247,6 +251,11 @@ begin
   end;
   DebugBoss.ViewDebugDialog(ddtWatches);
 end;
+
+initialization
+
+  EvaluateDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwEvaluate]);
+  EvaluateDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
 
 end.
 

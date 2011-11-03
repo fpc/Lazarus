@@ -6,6 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil,
+  IDEWindowIntf, IDEOptionDefs,
   Forms, Controls, Graphics, Dialogs, StdCtrls, DebuggerDlg, BaseDebugManager;
 
 type
@@ -30,6 +31,9 @@ var
   PseudoConsoleDlg: TPseudoConsoleDlg;
 
 implementation
+
+var
+  PseudeoTerminalDlgWindowCreator: TIDEWindowCreator;
 
 { TPseudoConsoleDlg }
 
@@ -61,6 +65,10 @@ end;
 
 {$R *.lfm}
 
+initialization
+
+  PseudeoTerminalDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwPseudoTerminal]);
+  PseudeoTerminalDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
 
 end.
 

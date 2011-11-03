@@ -2827,6 +2827,7 @@ debugger/debugeventsform.lfm svneol=native#text/plain
 debugger/debugeventsform.pp svneol=native#text/pascal
 debugger/debugger.pp svneol=native#text/pascal
 debugger/debuggerdlg.pp svneol=native#text/pascal
+debugger/debuggerstrconst.pp svneol=native#text/pascal
 debugger/debugoutputform.lfm svneol=native#text/plain
 debugger/debugoutputform.pp svneol=native#text/pascal
 debugger/debugutils.pp svneol=native#text/pascal

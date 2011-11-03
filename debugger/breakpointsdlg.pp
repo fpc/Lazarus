@@ -39,6 +39,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  IDEWindowIntf, IDEOptionDefs, DebuggerStrConst,
   Buttons, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg, lclType, ActnList, MainBase,
   IDEImagesIntf, SourceEditor, MainIntf;
 
@@ -152,6 +153,8 @@ type
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
     procedure DisableAllActions;
+    function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+    procedure ColSizeSetter(AColId: Integer; ASize: Integer);
   public
     constructor Create(AOwner: TComponent); override;
   public
@@ -166,9 +169,33 @@ function GetBreakPointActionsDescription(ABreakpoint: TBaseBreakpoint): string;
 implementation
 
 {$R *.lfm}
-
 uses
   LazarusIDEStrConsts, BaseDebugManager;
+
+var
+  BreakPointDlgWindowCreator: TIDEWindowCreator;
+
+const
+  COL_BREAK_STATE     = 1;
+  COL_BREAK_FILE      = 2;
+  COL_BREAK_LINE      = 3;
+  COL_BREAK_CONDITION = 4;
+  COL_BREAK_ACTION    = 5;
+  COL_BREAK_PASS      = 6;
+  COL_BREAK_GROUP     = 7;
+
+function BreakPointDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := AForm is TBreakPointsDlg;
+  if Result then
+    Result := TBreakPointsDlg(AForm).ColSizeGetter(AColId, ASize);
+end;
+
+procedure BreakPointDlgColSizeSetter(AForm: TCustomForm; AColId: Integer; ASize: Integer);
+begin
+  if AForm is TBreakPointsDlg then
+    TBreakPointsDlg(AForm).ColSizeSetter(AColId, ASize);
+end;
 
 function GetBreakPointStateDescription(ABreakpoint: TBaseBreakpoint): string;
 const
@@ -787,6 +814,35 @@ begin
   actAddWatchPoint.Enabled := True;
 end;
 
+function TBreakPointsDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := True;
+  case AColId of
+    COL_BREAK_STATE:     ASize := lvBreakPoints.Column[0].Width;
+    COL_BREAK_FILE:      ASize := lvBreakPoints.Column[1].Width;
+    COL_BREAK_LINE:      ASize := lvBreakPoints.Column[2].Width;
+    COL_BREAK_CONDITION: ASize := lvBreakPoints.Column[3].Width;
+    COL_BREAK_ACTION:    ASize := lvBreakPoints.Column[4].Width;
+    COL_BREAK_PASS:      ASize := lvBreakPoints.Column[5].Width;
+    COL_BREAK_GROUP:     ASize := lvBreakPoints.Column[6].Width;
+    else
+      Result := False;
+  end;
+end;
+
+procedure TBreakPointsDlg.ColSizeSetter(AColId: Integer; ASize: Integer);
+begin
+  case AColId of
+    COL_BREAK_STATE:     lvBreakPoints.Column[0].Width := ASize;
+    COL_BREAK_FILE:      lvBreakPoints.Column[1].Width := ASize;
+    COL_BREAK_LINE:      lvBreakPoints.Column[2].Width := ASize;
+    COL_BREAK_CONDITION: lvBreakPoints.Column[3].Width := ASize;
+    COL_BREAK_ACTION:    lvBreakPoints.Column[4].Width := ASize;
+    COL_BREAK_PASS:      lvBreakPoints.Column[5].Width := ASize;
+    COL_BREAK_GROUP:     lvBreakPoints.Column[6].Width := ASize;
+  end;
+end;
+
 procedure TBreakPointsDlg.UpdateItem(const AnItem: TListItem;
   const ABreakpoint: TIDEBreakPoint);
 var
@@ -964,6 +1020,20 @@ begin
   inherited DoBeginUpdate;
   DisableAllActions;
 end;
+
+initialization
+
+  BreakPointDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwBreakPoints]);
+  BreakPointDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
+  BreakPointDlgWindowCreator.OnSetDividerSize := @BreakPointDlgColSizeSetter;
+  BreakPointDlgWindowCreator.OnGetDividerSize := @BreakPointDlgColSizeGetter;
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakState',     COL_BREAK_STATE,     drsColWidthState);
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakFile',      COL_BREAK_FILE,      drsBreakPointColWidthFile);
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakLine',      COL_BREAK_LINE,      drsBreakPointColWidthLine);
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakCondition', COL_BREAK_CONDITION, drsBreakPointColWidthCondition);
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakAction',    COL_BREAK_ACTION,    drsBreakPointColWidthAction);
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakPassCnt',   COL_BREAK_PASS,      drsBreakPointColWidthPassCount);
+  BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakGroup',     COL_BREAK_GROUP,     drsBreakPointColWidthGroup);
 
 end.
 

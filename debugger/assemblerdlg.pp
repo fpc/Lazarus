@@ -6,6 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  IDEWindowIntf, IDEOptionDefs,
   ComCtrls, StdCtrls, Grids, ExtCtrls, LclType, LCLIntf, DebuggerDlg, Debugger,
   BaseDebugManager, EditorOptions, Maps, Math, types, LCLProc, Menus, Clipbrd, ActnList,
   IDECommands, IDEImagesIntf, CodeToolManager, CodeCache, SourceEditor;
@@ -161,6 +162,9 @@ implementation
 
 uses
   LazarusIDEStrConsts;
+
+var
+  AsmWindowCreator: TIDEWindowCreator;
 
 { TAssemblerDlg }
 
@@ -1190,6 +1194,11 @@ begin
     then UpdateLineData;
   end;
 end;
+
+initialization
+
+  AsmWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwAssembler]);
+  AsmWindowCreator.OnCreateFormProc := @CreateDebugDialog;
 
 end.
 

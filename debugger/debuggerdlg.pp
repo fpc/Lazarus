@@ -109,11 +109,20 @@ type
 var
   OnProcessCommand: procedure(Sender: TObject; Command: word; var Handled: boolean) of object;
 
+procedure CreateDebugDialog(Sender: TObject; aFormName: string;
+                            var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+
 implementation
 
 var
   BrkImgIdxInitialized: Boolean;
   ImgBreakPoints: Array [0..8] of Integer;
+
+procedure CreateDebugDialog(Sender: TObject; aFormName: string; var AForm: TCustomForm;
+  DoDisableAutoSizing: boolean);
+begin
+  DebugBoss.CreateDebugDialog(Sender, aFormName, AForm, DoDisableAutoSizing);
+end;
 
 { TDebuggerDlg }
 

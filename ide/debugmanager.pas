@@ -130,8 +130,6 @@ type
                                            var ASrcEdit: TSourceEditor);
 
     // Dialog routines
-    procedure CreateDebugDialog(Sender: TObject; aFormName: string;
-                          var AForm: TCustomForm; DoDisableAutoSizing: boolean);
     procedure DestroyDebugDialog(const ADialogType: TDebugDialogType);
     procedure InitDebugOutputDlg;
     procedure InitDebugEventsDlg;
@@ -227,6 +225,9 @@ type
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; override;
     function ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''): TModalresult; override;
 
+    // Dialog routines
+    procedure CreateDebugDialog(Sender: TObject; aFormName: string;
+                          var AForm: TCustomForm; DoDisableAutoSizing: boolean); override;
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType; BringToFront: Boolean = true; Show: Boolean = true; DoDisableAutoSizing: boolean = false); override;
     procedure ViewDisassembler(AnAddr: TDBGPtr;
                               BringToFront: Boolean = True; Show: Boolean = true;
@@ -1680,11 +1681,6 @@ begin
     // TODO: add capacibilities to DebuggerClass
     // and disable unsuported items
   end;
-
-  for DlgType:=Low(TDebugDialogType) to High(TDebugDialogType) do
-    if not (DlgType in [ddtWatches]) then
-      IDEWindowCreators.Add(NonModalIDEWindowNames[DebugDlgIDEWindow[DlgType]],
-        nil,@CreateDebugDialog,'','','','');
 end;
 
 procedure TDebugManager.ConnectSourceNotebookEvents;

@@ -34,6 +34,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, ExtCtrls, ComCtrls, ActnList,
+  IDEWindowIntf, IDEOptionDefs,
   StdActns, ClipBrd, Menus, Dialogs, FileUtil, Debugger, DebuggerDlg,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory, IDEOptionsIntf,
   IDEImagesIntf, LazIDEIntf, debugger_eventlog_options;
@@ -81,6 +82,9 @@ type
 implementation
 
 {$R *.lfm}
+
+var
+  EventsDlgWindowCreator: TIDEWindowCreator;
 
 type
   TCustomTreeViewAccess = class(TCustomTreeView);
@@ -306,6 +310,11 @@ begin
     tvFilteredEvents.Selected := Item;
   end;
 end;
+
+initialization
+
+  EventsDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwDbgEvents]);
+  EventsDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
 
 end.
 

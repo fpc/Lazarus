@@ -37,6 +37,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  IDEWindowIntf, IDEOptionDefs, DebuggerStrConst,
   ComCtrls, ActnList, Menus, Debugger, DebuggerDlg,
   LazarusIDEStrConsts, IDEImagesIntf;
 
@@ -74,6 +75,8 @@ type
   protected
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
+    function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+    procedure ColSizeSetter(AColId: Integer; ASize: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -85,6 +88,26 @@ type
 implementation
 
 {$R *.lfm}
+
+var
+  RegisterDlgWindowCreator: TIDEWindowCreator;
+
+const
+  COL_REGISTER_NAME   = 1;
+  COL_REGISTER_VALUE  = 2;
+
+function RegisterDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := AForm is TRegistersDlg;
+  if Result then
+    Result := TRegistersDlg(AForm).ColSizeGetter(AColId, ASize);
+end;
+
+procedure RegisterDlgColSizeSetter(AForm: TCustomForm; AColId: Integer; ASize: Integer);
+begin
+  if AForm is TRegistersDlg then
+    TRegistersDlg(AForm).ColSizeSetter(AColId, ASize);
+end;
 
 { TRegistersDlg }
 
@@ -316,6 +339,34 @@ procedure TRegistersDlg.DoEndUpdate;
 begin
   lvRegisters.EndUpdate;
 end;
+
+function TRegistersDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := True;
+  case AColId of
+    COL_REGISTER_NAME:   ASize := lvRegisters.Column[0].Width;
+    COL_REGISTER_VALUE:  ASize := lvRegisters.Column[1].Width;
+    else
+      Result := False;
+  end;
+end;
+
+procedure TRegistersDlg.ColSizeSetter(AColId: Integer; ASize: Integer);
+begin
+  case AColId of
+    COL_REGISTER_NAME:   lvRegisters.Column[0].Width := ASize;
+    COL_REGISTER_VALUE:  lvRegisters.Column[1].Width := ASize;
+  end;
+end;
+
+initialization
+
+  RegisterDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwRegisters]);
+  RegisterDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
+  RegisterDlgWindowCreator.OnSetDividerSize := @RegisterDlgColSizeSetter;
+  RegisterDlgWindowCreator.OnGetDividerSize := @RegisterDlgColSizeGetter;
+  RegisterDlgWindowCreator.DividerTemplate.Add('RegisterName',  COL_REGISTER_NAME,  drsColWidthName);
+  RegisterDlgWindowCreator.DividerTemplate.Add('RegisterValue', COL_REGISTER_VALUE, drsColWidthValue);
 
 end.
 

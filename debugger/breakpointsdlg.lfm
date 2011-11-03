@@ -2,7 +2,7 @@ inherited BreakpointsDlg: TBreakpointsDlg
   Left = 344
   Height = 205
   Top = 153
-  Width = 773
+  Width = 560
   HelpType = htKeyword
   HorzScrollBar.Page = 559
   VertScrollBar.Page = 204
@@ -10,14 +10,14 @@ inherited BreakpointsDlg: TBreakpointsDlg
   BorderStyle = bsSizeToolWin
   Caption = 'Breakpoint list'
   ClientHeight = 205
-  ClientWidth = 773
+  ClientWidth = 560
   OnCreate = BreakpointsDlgCREATE
   Visible = True
   object lvBreakPoints: TListView[0]
     Left = 0
     Height = 179
     Top = 26
-    Width = 773
+    Width = 560
     HelpType = htKeyword
     Align = alClient
     Columns = <    
@@ -65,7 +65,7 @@ inherited BreakpointsDlg: TBreakpointsDlg
     Left = 0
     Height = 26
     Top = 0
-    Width = 773
+    Width = 560
     Caption = 'ToolBar1'
     ParentShowHint = False
     ShowHint = True

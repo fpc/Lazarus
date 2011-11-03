@@ -5,7 +5,8 @@ unit ThreadDlg;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, LCLProc, Debugger, DebuggerDlg, LazarusIDEStrConsts,
+  Classes, SysUtils, ComCtrls, LCLProc, Debugger, DebuggerDlg, Forms, LazarusIDEStrConsts,
+  IDEWindowIntf, IDEOptionDefs, DebuggerStrConst,
   BaseDebugManager, MainIntf, MainBase, IDEImagesIntf;
 
 type
@@ -28,6 +29,8 @@ type
   protected
     procedure DoEndUpdate; override;
     procedure ThreadsChanged(Sender: TObject);
+    function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+    procedure ColSizeSetter(AColId: Integer; ASize: Integer);
   public
     { public declarations }
     constructor Create(TheOwner: TComponent); override;
@@ -38,6 +41,31 @@ type
 implementation
 
 {$R *.lfm}
+
+var
+  ThreadDlgWindowCreator: TIDEWindowCreator;
+
+const
+  COL_THREAD_BRKPOINT = 1;
+  COL_THREAD_INDEX    = 2;
+  COL_THREAD_NAME     = 3;
+  COL_THREAD_STATE    = 4;
+  COL_THREAD_SOURCE   = 5;
+  COL_THREAD_LINE     = 6;
+  COL_THREAD_FUNC     = 7;
+
+function ThreadsDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := AForm is TThreadsDlg;
+  if Result then
+    Result := TThreadsDlg(AForm).ColSizeGetter(AColId, ASize);
+end;
+
+procedure ThreadsDlgColSizeSetter(AForm: TCustomForm; AColId: Integer; ASize: Integer);
+begin
+  if AForm is TThreadsDlg then
+    TThreadsDlg(AForm).ColSizeSetter(AColId, ASize);
+end;
 
 { TThreadsDlg }
 
@@ -122,6 +150,35 @@ begin
   end;
 end;
 
+function TThreadsDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := True;
+  case AColId of
+    COL_THREAD_BRKPOINT: ASize := lvThreads.Column[0].Width;
+    COL_THREAD_INDEX:    ASize := lvThreads.Column[1].Width;
+    COL_THREAD_NAME:     ASize := lvThreads.Column[2].Width;
+    COL_THREAD_STATE:    ASize := lvThreads.Column[3].Width;
+    COL_THREAD_SOURCE:   ASize := lvThreads.Column[4].Width;
+    COL_THREAD_LINE:     ASize := lvThreads.Column[5].Width;
+    COL_THREAD_FUNC:     ASize := lvThreads.Column[6].Width;
+    else
+      Result := False;
+  end;
+end;
+
+procedure TThreadsDlg.ColSizeSetter(AColId: Integer; ASize: Integer);
+begin
+  case AColId of
+    COL_THREAD_BRKPOINT: lvThreads.Column[0].Width := ASize;
+    COL_THREAD_INDEX:    lvThreads.Column[1].Width := ASize;
+    COL_THREAD_NAME:     lvThreads.Column[2].Width := ASize;
+    COL_THREAD_STATE:    lvThreads.Column[3].Width := ASize;
+    COL_THREAD_SOURCE:   lvThreads.Column[4].Width := ASize;
+    COL_THREAD_LINE:     lvThreads.Column[5].Width := ASize;
+    COL_THREAD_FUNC:     lvThreads.Column[6].Width := ASize;
+  end;
+end;
+
 procedure TThreadsDlg.tbCurrentClick(Sender: TObject);
 var
   Item: TListItem;
@@ -198,6 +255,20 @@ begin
   imgCurrentLine := IDEImages.LoadImage(16, 'debugger_current_line');
   lvThreads.SmallImages := IDEImages.Images_16;
 end;
+
+initialization
+
+  ThreadDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwThreads]);
+  ThreadDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
+  ThreadDlgWindowCreator.OnSetDividerSize := @ThreadsDlgColSizeSetter;
+  ThreadDlgWindowCreator.OnGetDividerSize := @ThreadsDlgColSizeGetter;
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadBrkPoint', COL_THREAD_BRKPOINT,  drsColWidthBrkPointImg);
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadIndex',    COL_THREAD_INDEX,     drsColWidthIndex);
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadName',     COL_THREAD_NAME,      drsColWidthName);
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadState',    COL_THREAD_STATE,     drsColWidthState);
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadSource',   COL_THREAD_SOURCE,    drsColWidthSource);
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadLine',     COL_THREAD_LINE,      drsColWidthLine);
+  ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadFunc',     COL_THREAD_FUNC,      drsColWidthFunc);
 
 end.
 

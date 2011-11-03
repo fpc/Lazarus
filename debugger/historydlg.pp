@@ -5,7 +5,8 @@ unit HistoryDlg;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, Debugger, DebuggerDlg, LazarusIDEStrConsts,
+  Classes, SysUtils, ComCtrls, Debugger, DebuggerDlg, LazarusIDEStrConsts, Forms,
+  IDEWindowIntf, IDEOptionDefs, DebuggerStrConst,
   BaseDebugManager, MainBase, IDEImagesIntf, Clipbrd, Dialogs;
 
 type
@@ -46,6 +47,9 @@ type
     FEnabledImgIdx, FDisabledIdx: Integer;
     procedure SnapshotChanged(Sender: TObject);
     procedure UpdateToolbar;
+  protected
+    function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+    procedure ColSizeSetter(AColId: Integer; ASize: Integer);
   public
     { public declarations }
     constructor Create(TheOwner: TComponent); override;
@@ -55,6 +59,27 @@ type
 implementation
 
 {$R *.lfm}
+
+var
+  HistoryDlgWindowCreator: TIDEWindowCreator;
+
+const
+  COL_HISTORY_CUR    = 1;
+  COL_HISTORY_TIME   = 2;
+  COL_HISTORY_LOC    = 3;
+
+function HistoryDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := AForm is THistoryDialog;
+  if Result then
+    Result := THistoryDialog(AForm).ColSizeGetter(AColId, ASize);
+end;
+
+procedure HistoryDlgColSizeSetter(AForm: TCustomForm; AColId: Integer; ASize: Integer);
+begin
+  if AForm is THistoryDialog then
+    THistoryDialog(AForm).ColSizeSetter(AColId, ASize);
+end;
 
 { THistoryDialog }
 
@@ -263,6 +288,27 @@ begin
   tbRemove.Enabled := lvHistory.Selected <> nil;
 end;
 
+function THistoryDialog.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
+begin
+  Result := True;
+  case AColId of
+    COL_HISTORY_CUR:    ASize := lvHistory.Column[0].Width;
+    COL_HISTORY_TIME:   ASize := lvHistory.Column[1].Width;
+    COL_HISTORY_LOC:    ASize := lvHistory.Column[2].Width;
+    else
+      Result := False;
+  end;
+end;
+
+procedure THistoryDialog.ColSizeSetter(AColId: Integer; ASize: Integer);
+begin
+  case AColId of
+    COL_HISTORY_CUR:    lvHistory.Column[0].Width := ASize;
+    COL_HISTORY_TIME:   lvHistory.Column[1].Width := ASize;
+    COL_HISTORY_LOC:    lvHistory.Column[2].Width := ASize;
+  end;
+end;
+
 constructor THistoryDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -312,6 +358,16 @@ begin
   tbPowerClick(nil);
   tbHistorySelectedClick(nil);
 end;
+
+initialization
+
+  HistoryDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiHistory]);
+  HistoryDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
+  HistoryDlgWindowCreator.OnSetDividerSize := @HistoryDlgColSizeSetter;
+  HistoryDlgWindowCreator.OnGetDividerSize := @HistoryDlgColSizeGetter;
+  HistoryDlgWindowCreator.DividerTemplate.Add('HistoryColCur',      COL_HISTORY_CUR,  drsHistoryColWidthCurrent);
+  HistoryDlgWindowCreator.DividerTemplate.Add('HistoryColTime',     COL_HISTORY_TIME, drsHistoryColWidthTime);
+  HistoryDlgWindowCreator.DividerTemplate.Add('HistoryColLocation', COL_HISTORY_LOC,  drsHistoryColWidthLocation);
 
 end.
 

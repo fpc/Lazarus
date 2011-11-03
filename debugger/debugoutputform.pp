@@ -44,6 +44,7 @@ interface
 
 uses
   Classes, Graphics, Controls, Forms, Dialogs, Clipbrd,
+  IDEWindowIntf, IDEOptionDefs,
   Buttons, StdCtrls, Menus, ExtCtrls, DebuggerDlg
   {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
   , BaseDebugManager, GDBMIDebugger, CmdLineDebugger
@@ -86,6 +87,9 @@ implementation
 
 uses 
   LazarusIDEStrConsts;
+
+var
+  DbgOutputDlgWindowCreator: TIDEWindowCreator;
 
 procedure TDbgOutputForm.AddText(const AText: String);
 begin
@@ -173,5 +177,10 @@ procedure TDbgOutputForm.popCopyAllClick(Sender: TObject);
 begin
   Clipboard.AsText := txtOutput.Text;
 end;
+
+initialization
+
+  DbgOutputDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwDbgOutput]);
+  DbgOutputDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
 
 end.
