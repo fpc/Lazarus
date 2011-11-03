@@ -381,7 +381,8 @@ type
     destructor Destroy; override;
     function InsertPage(aIndex: integer; S: string): TCDTabSheet;
     procedure RemovePage(aIndex: integer);
-    function AddPage(S: string): TCDTabSheet;
+    function AddPage(S: string): TCDTabSheet; overload;
+    procedure AddPage(APage: TCDTabSheet); overload;
     function GetPage(aIndex: integer): TCDTabSheet;
     property PageCount: integer read GetPageCount;
     // Used by the property editor in customdrawnextras
@@ -1268,7 +1269,11 @@ end;
 procedure TCDTabSheet.SetParent(NewParent: TWinControl);
 begin
   inherited SetParent(NewParent);
-  CDTabControl := NewParent as TCDCustomTabControl;
+  if (NewParent <> nil) and (NewParent is TCDPageControl) then
+  begin
+    CDTabControl := NewParent as TCDCustomTabControl;
+    TCDPageControl(CDTabControl).AddPage(Self);
+  end;
 end;
 
 constructor TCDTabSheet.Create(AOwner: TComponent);
@@ -1340,6 +1345,14 @@ begin
   SetActivePage(NewPage);
 
   Result := NewPage;
+end;
+
+procedure TCDPageControl.AddPage(APage: TCDTabSheet);
+begin
+  APage.CDTabControl := Self;
+  PositionTabSheet(APage);
+  FTabs.AddObject(APage.Caption, APage);
+  SetActivePage(APage);
 end;
 
 function TCDPageControl.GetPage(AIndex: integer): TCDTabSheet;
@@ -1503,9 +1516,10 @@ procedure TCDPageControl.PositionTabSheet(ATabSheet: TCDTabSheet);
 var
   lTabHeight, lIndex: Integer;
 begin
-//  ATabSheet.SetBounds(1, 32 + 1, Width - 3, Height - 32 - 4);
   lIndex := FTabs.IndexOfObject(ATabSheet);
   FTabCState.TabIndex := lIndex;
+  PrepareControlState;
+  PrepareControlStateEx;
   lTabHeight := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_HEIGHT, FState, FStateEx);
   ATabSheet.BorderSpacing.Top := lTabHeight;
   ATabSheet.BorderSpacing.Left := 2;

@@ -25,7 +25,6 @@ procedure GradCenterFill(Canvas: TFPCustomCanvas; aRect: TRect;
 procedure DrawAndroidButton(Canvas: TCanvas; Color: TColor);
 procedure DrawXPTaskbarButton(Canvas: TCanvas; Color: TColor);
 procedure FPImgCloneRect(IntfImg1, IntfImg2: TLazIntfImage; lRect: TRect; Fast: boolean);
-function GetUniqueName(const Name: string; PControl: TComponent): string;
 procedure DrawArrow(aDest: TFPCustomCanvas; aRect: TRect; R: boolean);
 procedure DrawCDButtonDown(Canvas: TCanvas; ABackgroundColor: TColor);
 
