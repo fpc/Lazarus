@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Types,
   // LCL for types
-  Graphics;
+  Graphics, ComCtrls;
 
 const
   CDDRAWSTYLE_COUNT = 19;
@@ -118,6 +118,7 @@ type
     Tabs: TStringList; // Just a reference, don't Free
     TabIndex: Integer;
     TabCount: Integer;
+    Options: TNoteBookOptions;
     // Used internally by the drawers
     CurTabIndex: Integer;// For Tab routines, obtain the index
     CurStartLeftPos: Integer;

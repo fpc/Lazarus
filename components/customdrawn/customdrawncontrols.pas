@@ -325,6 +325,7 @@ type
     FTabs: TStringList;
     FOnChanging: TNotifyEvent;
     FOnChange: TNotifyEvent;
+    FOptions: TNoteBookOptions;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: integer); override;
     //procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
@@ -333,12 +334,14 @@ type
     //procedure MouseLeave; override;
     procedure SetTabIndex(AValue: Integer); virtual;
     procedure SetTabs(AValue: TStringList);
+    procedure SetOptions(AValue: TNoteBookOptions);
   protected
     FTabCState: TCDCTabControlStateEx;
     function GetControlId: TCDControlID; override;
     procedure CreateControlStateEx; override;
     procedure PrepareControlStateEx; override;
     procedure CorrectTabIndex();
+    property Options: TNoteBookOptions read FOptions write SetOptions;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -366,12 +369,10 @@ type
 
   TCDPageControl = class(TCDCustomTabControl)
   private
-    FOptions: TNoteBookOptions;
     function GetActivePage: TCDTabSheet;
     function GetPageCount: integer;
     function GetPageIndex: integer;
     procedure SetActivePage(Value: TCDTabSheet);
-    procedure SetOptions(AValue: TNoteBookOptions);
     procedure SetPageIndex(Value: integer);
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
@@ -396,7 +397,7 @@ type
     property Color;
     property Font;
     property PageIndex: integer read GetPageIndex write SetPageIndex;
-    property Options: TNoteBookOptions read FOptions write SetOptions;
+    property Options;
     property ParentColor;
     property ParentFont;
     property TabStop default True;
@@ -754,6 +755,13 @@ begin
   Invalidate;
 end;
 
+procedure TCDCustomTabControl.SetOptions(AValue: TNoteBookOptions);
+begin
+  if FOptions=AValue then Exit;
+  FOptions:=AValue;
+  Invalidate;
+end;
+
 function TCDCustomTabControl.GetControlId: TCDControlID;
 begin
   Result := cidCTabControl;
@@ -772,6 +780,7 @@ begin
   FTabCState.Tabs := Tabs;
   FTabCState.TabIndex := TabIndex;
   FTabCState.TabCount := GetTabCount();
+  FTabCState.Options := FOptions;
 end;
 
 constructor TCDCustomTabControl.Create(AOwner: TComponent);
@@ -1476,12 +1485,6 @@ begin
   end;
 
   Invalidate;
-end;
-
-procedure TCDPageControl.SetOptions(AValue: TNoteBookOptions);
-begin
-  if FOptions=AValue then Exit;
-  FOptions:=AValue;
 end;
 
 procedure TCDPageControl.SetPageIndex(Value: integer);

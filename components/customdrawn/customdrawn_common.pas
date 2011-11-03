@@ -50,6 +50,7 @@ type
     // ===================================
     // Common Controls Tab
     // ===================================
+    // TCDTrackBar
     procedure DrawTrackBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDTrackBarStateEx); override;
     // TCDCustomTabControl
@@ -90,8 +91,8 @@ begin
   TCDCONTROL_CAPTION_HEIGHT: Result := ADest.TextHeight('ŹÇ')+3;
   TCDCTABCONTROL_TAB_HEIGHT:
   begin
-    if AStateEx.Font.Size = 0 then Result := 32
-    else Result := AStateEx.Font.Size + 22;
+    if AStateEx.Font.Size = 0 then Result := 22
+    else Result := AStateEx.Font.Size + 14;
   end;
   TCDCTABCONTROL_TAB_WIDTH:
   begin
@@ -411,27 +412,32 @@ begin
   ADest.Brush.Color := AStateEx.ParentRGBColor;
   ADest.Rectangle(ADestPos.X, ADestPos.Y, ADestPos.X+ASize.cx, ADestPos.Y+ASize.cy);
 
-  CaptionHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx);
-
   // frame
+  if AStateEx.TabCount = 0 then CaptionHeight := 0
+  else CaptionHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx);
+
+  // white lines in the left and top
   ADest.Pen.Style := psSolid;
   ADest.Brush.Style := bsClear;
-  ADest.Pen.Color := ColorToRGB($009C9B91);
-
-  if AStateEx.TabCount = 0 then
-    ADest.Rectangle(0, 0, ASize.cx - 2, ASize.cy - 2)
-  else
-    ADest.Rectangle(0, CaptionHeight, ASize.cx -  2, ASize.cy - 2);
-
-  ADest.Pen.Color := ColorToRGB($00BFCED0);
-  ADest.Line(ASize.cx - 1, CaptionHeight + 1,
-    ASize.cx - 1, ASize.cy - 1);
-  ADest.Line(ASize.cx - 1, ASize.cy - 1, 1,
-    ASize.cy - 1);
+  ADest.Pen.Color := clWhite;
+  ADest.Line(0, CaptionHeight, 0, ASize.cy-1);
+  ADest.Pixels[1,1] := clWhite;
+  ADest.Line(2, CaptionHeight, ASize.cx-1, CaptionHeight);
+  // Grey line on the inside left and top
+  ADest.Pen.Color := ColorToRGB($00E2EFF1);
+  ADest.Line(1, CaptionHeight, 1, ASize.cy-2);
+  ADest.Line(2, CaptionHeight+1, ASize.cx-2, CaptionHeight+1);
+  // Dark grey line on the right and bottom
+  ADest.Pen.Color := ColorToRGB($00646F71);
+  ADest.Line(0, ASize.cy, ASize.cx, ASize.cy);
+  ADest.Line(ASize.cx, ASize.cy, ASize.cx, CaptionHeight);
+  // Grey line on the inside right and bottom
+  ADest.Pen.Color := ColorToRGB($00646F71);
+  ADest.Line(1, ASize.cy-1, ASize.cx-1, ASize.cy-1);
+  ADest.Line(ASize.cx-1, ASize.cy-1, ASize.cx-1, CaptionHeight);
 
   // Tabs
-  ADest.Font.Name := AStateEx.Font.Name;
-  ADest.Font.Size := AStateEx.Font.Size;
+  ADest.Font.Assign(AStateEx.Font);
   DrawTabs(ADest, ADestPos, ASize, AState, AStateEx);
 end;
 
@@ -473,20 +479,14 @@ var
   lTabWidth, lTabHeight, lTabTopPos: Integer;
   Points: array of TPoint;
   lCaption: String;
+  lTabHeightCorrection: Integer = 0;
 begin
   IsSelected := AStateEx.TabIndex = AStateEx.CurTabIndex;
 
-  if IsSelected then
-  begin
-    lTabTopPos := 0;
-    lTabHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx);
-  end
-  else
-  begin
-    lTabTopPos := 5;
-    lTabHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx)-5;
-  end;
+  if not IsSelected then lTabHeightCorrection := 3;
 
+  lTabTopPos := lTabHeightCorrection;
+  lTabHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx)-lTabHeightCorrection;
   lTabWidth := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
 
   // Fill the area inside the outer border
@@ -502,7 +502,6 @@ begin
   ADest.Polygon(Points);
 
   // Draw the outer border only in the top and right sides,
-  // and bottom if unselected
   ADest.Pen.Style := psSolid;
   ADest.Brush.Style := bsClear;
   ADest.Pen.Color := ColorToRGB($009C9B91);
@@ -511,16 +510,27 @@ begin
   ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+5);
   ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+lTabHeight);
 
-  // If it is selected, add a selection frame
   if IsSelected then
   begin
-    ADest.Pen.Color := ColorToRGB($00D6C731);
+    // If it is selected, add a selection frame
+    ADest.Pen.Color := clWhite;
     ADest.Pen.Style := psSolid;
     ADest.Brush.Style := bsClear;
     ADest.Rectangle(
       AStateEx.CurStartLeftPos+3, lTabTopPos+3,
-      AStateEx.CurStartLeftPos+lTabWidth-5, lTabTopPos+lTabHeight-5
-      );
+      AStateEx.CurStartLeftPos+lTabWidth-5, lTabTopPos+lTabHeight-3);
+    ADest.Pen.Color := clBlack;
+    ADest.Pen.Style := psDot;
+    ADest.Rectangle(
+      AStateEx.CurStartLeftPos+3, lTabTopPos+3,
+      AStateEx.CurStartLeftPos+lTabWidth-5, lTabTopPos+lTabHeight-3);
+
+    // and Clear the bottom area if selected
+    ADest.Pen.Color := AStateEx.RGBColor;
+    ADest.Line(AStateEx.CurStartLeftPos, lTabTopPos+lTabHeight,
+      AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+lTabHeight);
+    ADest.Line(AStateEx.CurStartLeftPos, lTabTopPos+lTabHeight-1,
+      AStateEx.CurStartLeftPos+lTabWidth-2, lTabTopPos+lTabHeight-1);
   end;
 
   // Now the text
