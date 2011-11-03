@@ -1171,7 +1171,7 @@ function TStandardCodeTool.FixUsedUnitCaseInUsesSection(
     end;
     CheckDirectoryCache;
     if DirectoryCache=nil then exit;
-    Result:=DirectoryCache.Pool.FindDiskFilename(AFilename);
+    Result:=DirectoryCache.Pool.FindDiskFilename(AFilename,true);
     if Result='' then exit;
     if MakeRelative then
       Result:=CreateRelativePath(Result,CurDir);
@@ -6288,7 +6288,7 @@ var
   begin
     Result:=TrimFilename(AFilename);
     if FilenameIsAbsolute(Result) then begin
-      Result:=DirectoryCache.Pool.FindDiskFilename(Result);
+      Result:=DirectoryCache.Pool.FindDiskFilename(Result,true);
       Add(FilenameSrcPos,Result,FileExistsCached(Result));
       //DebugLn('SearchIncludeFilename AbsoluteFilename="',Result,'"');
     end else begin
@@ -6299,7 +6299,7 @@ var
         AFilePath:=ExtractFilePath(Result);
         if AFilePath<>'' then begin
           // search relative to unit
-          CurFilename:=DirectoryCache.Pool.FindDiskFilename(BaseDir+Result);
+          CurFilename:=DirectoryCache.Pool.FindDiskFilename(BaseDir+Result,true);
           Result:=copy(CurFilename,length(BaseDir)+1,length(CurFilename));
           if FileExistsCached(CurFilename) then
             Add(FilenameSrcPos,CurFilename,true)

@@ -241,7 +241,8 @@ type
     function FindCompiledUnitInUnitSet(const Directory, AUnitName: string): string;
     procedure IterateFPCUnitsInSet(const Directory: string;
                                    const Iterate: TCTOnIterateFile);
-    function FindDiskFilename(const Filename: string): string;
+    function FindDiskFilename(const Filename: string;
+                              {%H-}SearchCaseInsensitive: boolean = false): string;
     function FindUnitInDirectory(const Directory, AUnitName: string;
                                  AnyCase: boolean = false): string;
     function FindVirtualFile(const Filename: string): string;
@@ -1596,18 +1597,19 @@ begin
   Cache.IterateFPCUnitsInSet(Iterate);
 end;
 
-function TCTDirectoryCachePool.FindDiskFilename(const Filename: string
-  ): string;
-{$IF defined(NotLiteralFilenames) or defined(CaseInsensitiveFilenames)}
+function TCTDirectoryCachePool.FindDiskFilename(const Filename: string;
+  SearchCaseInsensitive: boolean): string;
 var
   ADirectory: String;
   Cache: TCTDirectoryCache;
   ShortFilename: String;
-{$ENDIF}
 begin
   Result:=ChompPathDelim(TrimFilename(Filename));
   if Result='' then exit;
   {$IF defined(NotLiteralFilenames) or defined(CaseInsensitiveFilenames)}
+  {$ELSE}
+  if (not SearchCaseInsensitive) then exit;
+  {$ENDIF}
   ADirectory:=ExtractFilePath(Result);
   if ADirectory=Result then
     exit; // e.g. / under Linux
@@ -1616,7 +1618,6 @@ begin
   Result:=Cache.FindFile(ShortFilename,ctsfcAllCase);
   if Result='' then exit;
   Result:=Cache.Directory+Result;
-  {$ENDIF}
 end;
 
 function TCTDirectoryCachePool.FindUnitInDirectory(const Directory,
