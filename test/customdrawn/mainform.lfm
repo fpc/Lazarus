@@ -1,0 +1,69 @@
+object Form1: TForm1
+  Left = 332
+  Height = 397
+  Top = 177
+  Width = 458
+  Caption = 'Form1'
+  ClientHeight = 397
+  ClientWidth = 458
+  LCLVersion = '0.9.31'
+  object comboControls: TComboBox
+    Left = 72
+    Height = 21
+    Top = 12
+    Width = 172
+    ItemHeight = 0
+    ItemIndex = 0
+    Items.Strings = (
+      'TCDButton'
+      'TCDEdit'
+      'TCDTrackBar'
+      'TCDGroupBox'
+      'TCDCustomTabControl'
+    )
+    TabOrder = 0
+    Text = 'TCDButton'
+  end
+  object StaticText1: TStaticText
+    Left = 9
+    Height = 17
+    Top = 16
+    Width = 65
+    Caption = 'Control:'
+    TabOrder = 1
+  end
+  object notebookControls: TNotebook
+    Left = 9
+    Height = 240
+    Top = 40
+    Width = 439
+    TabOrder = 2
+    TabStop = True
+  end
+  object Button1: TButton
+    Left = 24
+    Height = 25
+    Top = 55
+    Width = 75
+    Caption = 'TButton'
+    TabOrder = 3
+  end
+  object Memo1: TMemo
+    Left = 9
+    Height = 90
+    Top = 303
+    Width = 439
+    Lines.Strings = (
+      'Memo1'
+    )
+    TabOrder = 4
+  end
+  object StaticText2: TStaticText
+    Left = 7
+    Height = 17
+    Top = 281
+    Width = 65
+    Caption = 'Events:'
+    TabOrder = 5
+  end
+end
