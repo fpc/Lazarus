@@ -1659,6 +1659,12 @@ implementation
 uses
   WSGrids;
 
+{$WARN SYMBOL_DEPRECATED OFF}
+{$IFDEF FPC_HAS_CPSTRING}
+  {$WARN IMPLICIT_STRING_CAST OFF}
+  {$WARN IMPLICIT_STRING_CAST_LOSS OFF}
+{$ENDIF}
+
 function BidiFlipX(X: Integer; const Width: Integer; const Flip: Boolean): Integer;
 begin
   if Flip then
@@ -1806,7 +1812,7 @@ begin
 end;
 {$endif}
 
-procedure CfgSetFontValue(cfg: TXMLConfig; AKey:string; AFont: TFont);
+procedure CfgSetFontValue(cfg: TXMLConfig; AKey: WideString; AFont: TFont);
 begin
   cfg.SetValue(AKey + '/name/value', AFont.Name);
   cfg.SetValue(AKey + '/size/value', AFont.Size);
@@ -1814,7 +1820,7 @@ begin
   cfg.SetValue(AKey + '/style/value', Integer(AFont.Style));
 end;
 
-procedure CfgGetFontValue(cfg: TXMLConfig; AKey:string; AFont: TFont);
+procedure CfgGetFontValue(cfg: TXMLConfig; AKey: WideString; AFont: TFont);
 begin
   AFont.Name := cfg.GetValue(AKey + '/name/value', 'default');
   AFont.Size := cfg.GetValue(AKey + '/size/value', 0);

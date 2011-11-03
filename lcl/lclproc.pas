@@ -1495,8 +1495,8 @@ begin
     vtChar: DbgOut(Args[i].VChar);
     vtPChar: DbgOut(Args[i].VPChar);
     vtPWideChar: DbgOut(Args[i].VPWideChar);
-    vtWideChar: DbgOut(Args[i].VWideChar);
-    vtWidestring: DbgOut(WideString(Args[i].VWideString));
+    vtWideChar: DbgOut(AnsiString(Args[i].VWideChar));
+    vtWidestring: DbgOut(AnsiString(WideString(Args[i].VWideString)));
     vtObject: DbgOut(DbgSName(Args[i].VObject));
     vtClass: DbgOut(DbgSName(Args[i].VClass));
     vtPointer: DbgOut(Dbgs(Args[i].VPointer));
@@ -2375,9 +2375,9 @@ begin
     vtAnsiString: s:=s+AnsiString(Args[i].VAnsiString);
     vtChar: s:=s+Args[i].VChar;
     vtPChar: s:=s+Args[i].VPChar;
-    vtPWideChar: s:=s+Args[i].VPWideChar;
-    vtWideChar: s:=s+Args[i].VWideChar;
-    vtWidestring: s:=s+WideString(Args[i].VWideString);
+    vtPWideChar: s:=AnsiString(WideString(s)+Args[i].VPWideChar);
+    vtWideChar: s:=AnsiString(WideString(s)+Args[i].VWideChar);
+    vtWidestring: s:=AnsiString(WideString(s)+WideString(Args[i].VWideString));
     vtObject: s:=s+DbgSName(Args[i].VObject);
     vtClass: s:=s+DbgSName(Args[i].VClass);
     vtPointer: s:=s+Dbgs(Args[i].VPointer);

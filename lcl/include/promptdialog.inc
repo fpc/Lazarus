@@ -829,8 +829,8 @@ begin
             vtChar: CurBtnCaption := Buttons[i].VChar;
             vtPChar: CurBtnCaption := Buttons[i].VPChar;
             vtPWideChar: CurBtnCaption := Buttons[i].VPWideChar;
-            vtWideChar: CurBtnCaption := Buttons[i].VWideChar;
-            vtWidestring: CurBtnCaption := WideString(Buttons[i].VWideString);
+            vtWideChar: CurBtnCaption := AnsiString(Buttons[i].VWideChar);
+            vtWidestring: CurBtnCaption := AnsiString(WideString(Buttons[i].VWideString));
           else
             dec(i); // prevent the following inc(i)
           end;
@@ -849,8 +849,8 @@ begin
             vtChar: CurOptions := Buttons[i].VChar;
             vtPChar: CurOptions := Buttons[i].VPChar;
             vtPWideChar: CurOptions := Buttons[i].VPWideChar;
-            vtWideChar: CurOptions := Buttons[i].VWideChar;
-            vtWidestring: CurOptions := WideString(Buttons[i].VWideString);
+            vtWideChar: CurOptions := AnsiString(Buttons[i].VWideChar);
+            vtWidestring: CurOptions := AnsiString(WideString(Buttons[i].VWideString));
           else
             HasOptions := False;
           end;

@@ -67,6 +67,8 @@ procedure Register;
 
 implementation
 
+{$WARN SYMBOL_DEPRECATED OFF}
+
 { TProcessUTF8 }
 
 procedure TProcessUTF8.SetApplicationNameUTF8(const AValue: string);

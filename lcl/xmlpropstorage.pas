@@ -105,6 +105,10 @@ procedure Register;
 
 implementation
 
+{$IFDEF FPC_HAS_CPSTRING}
+  {$WARN IMPLICIT_STRING_CAST OFF}
+  {$WARN IMPLICIT_STRING_CAST_LOSS OFF}
+{$ENDIF}
 
 procedure Register;
 begin

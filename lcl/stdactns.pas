@@ -805,8 +805,8 @@ var
   end;
   
 begin
-  SearchTxt := UTF8Decode(TFindDialog(FDialog).FindText);
-  Text := UTF8Decode(FControl.Text);
+  SearchTxt := Utf8ToAnsi(TFindDialog(FDialog).FindText);
+  Text := Utf8ToAnsi(FControl.Text);
   
   Result := (SearchTxt <> '') and (Text <> '');
   if not Result then
@@ -966,8 +966,8 @@ var
 begin
   if PerformSearch then
   begin
-    Text := UTF8Decode(FControl.Text);
-    RText := UTF8Decode(Dialog.ReplaceText);
+    Text := Utf8ToAnsi(FControl.Text);
+    RText := Utf8ToAnsi(Dialog.ReplaceText);
     p1 := FControl.SelStart;
     p2 := FControl.SelLength;
     FControl.ClearSelection;

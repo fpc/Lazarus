@@ -2243,7 +2243,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
         else begin
           // normal char
           NewInString := True;
-          NewStr := s[i];
+          NewStr := AnsiString(s[i]);
         end;
         if NewInString <> InString then begin
           NewStr := '''' + NewStr;
