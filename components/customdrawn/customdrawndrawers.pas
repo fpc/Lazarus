@@ -181,7 +181,6 @@ type
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
     procedure DrawTab(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
-    function  GetPageIndexFromXY(x, y: integer): integer; virtual; abstract;
   end;
 
 procedure RegisterDrawer(ADrawer: TCDDrawer; AStyle: TCDDrawStyle);

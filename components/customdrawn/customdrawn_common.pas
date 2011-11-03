@@ -61,7 +61,6 @@ type
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
     procedure DrawTab(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
-    function  GetPageIndexFromXY(x, y: integer): integer; override;
   end;
 
 implementation
@@ -429,7 +428,8 @@ procedure TCDDrawerCommon.DrawTabSheet(ADest: TCanvas; ADestPos: TPoint;
 begin
   ADest.Brush.Color := AStateEx.RGBColor;
   ADest.Brush.Style := bsSolid;
-  ADest.Pen.Style := psClear;
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := AStateEx.RGBColor;
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
 end;
 
@@ -437,9 +437,9 @@ procedure TCDDrawerCommon.DrawTabs(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
 var
   IsPainting: Boolean = False;
-  CurStartLeftPos: Integer = 0;
   i: Integer;
 begin
+  AStateEx.CurStartLeftPos := 0;
   for i := 0 to AStateEx.Tabs.Count - 1 do
   begin
     if i = AStateEx.LeftmostTabVisibleIndex then
@@ -449,7 +449,7 @@ begin
     begin
       AStateEx.CurTabIndex := i;
       DrawTab(ADest, ADestPos, ASize, AState, AStateEx);
-      CurStartLeftPos := CurStartLeftPos + GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
+      AStateEx.CurStartLeftPos := AStateEx.CurStartLeftPos + GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
     end;
   end;
 end;
@@ -514,11 +514,6 @@ begin
   // Now the text
   lCaption := AStateEx.Tabs.Strings[AStateEx.CurTabIndex];
   ADest.TextOut(AStateEx.CurStartLeftPos+5, lTabTopPos+5, lCaption);
-end;
-
-function TCDDrawerCommon.GetPageIndexFromXY(x, y: integer): integer;
-begin
-  Result := 1;
 end;
 
 { TCDListViewDrawerCommon }
