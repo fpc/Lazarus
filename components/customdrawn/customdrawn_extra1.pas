@@ -6,16 +6,26 @@ interface
 
 uses
   // RTL
-  Classes, SysUtils,
-  // fpimage
-  fpcanvas, fpimgcanv, fpimage,
+  Classes, SysUtils, Types,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
-  Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
+  Graphics, Controls, LCLType,
   //
-  customdrawncontrols, customdrawnutils;
+  customdrawndrawers, customdrawn_common;
 
-{type
-  TCDButtonDrawerGrad = class(TCDButtonDrawer)
+type
+
+  { TCDDrawerExtra1 }
+
+  TCDDrawerExtra1 = class(TCDDrawerCommon)
+  public
+    function GetMeasures(AMeasureID: Integer): Integer; override;
+    // ===================================
+    // Common Controls Tab
+    // ===================================
+    procedure DrawTrackBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDTrackBarStateEx); override;
+  end;
+{  TCDButtonDrawerGrad = class(TCDButtonDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
     procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton); override;
@@ -87,6 +97,30 @@ end;
 
 procedure TCDTrackBarDrawerGraph.DrawToIntfImage(ADest: TFPImageCanvas;
   FPImg: TLazIntfImage; CDTrackBar: TCDTrackBar);
+
+procedure TCDTrackBarDrawerGraph.GetGeometry(var ALeftBorder,
+  ARightBorder: Integer);
+begin
+  ALeftBorder := 9;
+  ARightBorder := 9;
+end;
+
+  RegisterTrackBarDrawer(TCDTrackBarDrawerGraph.Create, dsExtra1);}
+
+{ TCDDrawerExtra1 }
+
+function TCDDrawerExtra1.GetMeasures(AMeasureID: Integer): Integer;
+begin
+  case AMeasureId of
+  TCDTRACKBAR_LEFT_SPACING:  Result := 9;
+  TCDTRACKBAR_RIGHT_SPACING: Result := 9;
+  else
+    Result:=inherited GetMeasures(AMeasureID);
+  end;
+end;
+
+procedure TCDDrawerExtra1.DrawTrackBar(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDTrackBarStateEx);
 const
   CDBarEdge = 18;
 var
@@ -96,43 +130,40 @@ var
   pStepWidth, pHalfStepWidth: Integer;
 begin
   // Sanity check
-  if CDTrackBar.Max - CDTrackBar.Min <= 0 then
+  if AStateEx.Max - AStateEx.Min <= 0 then
     raise Exception.Create('[TCDTrackBarDrawerGraph.DrawToIntfImage] Max-Min must be at least 1');
 
   // Preparations
-  StepsCount := CDTrackBar.Max - CDTrackBar.Min + 1;
-  pStepWidth := (CDTrackBar.Width - CDBarEdge) div StepsCount;
-  pHalfStepWidth := (CDTrackBar.Width - CDBarEdge) div (StepsCount * 2);
+  StepsCount := AStateEx.Max - AStateEx.Min + 1;
+  pStepWidth := (ASize.cx - CDBarEdge) div StepsCount;
+  pHalfStepWidth := (ASize.cx - CDBarEdge) div (StepsCount * 2);
 
   // The bottom part of the drawing
-  lDrawingBottom := CDTrackBar.Height - 10;
+  lDrawingBottom := ASize.cy - 10;
 
   // Background
 
-  if CDTrackBar.Parent = nil then
-    ADest.Brush.FPColor := colLtGray
-  else
-    ADest.Brush.FPColor := TColorToFPColor(ColorToRGB(CDTrackBar.Color));
+  ADest.Brush.Color := AStateEx.ParentRGBColor;
   ADest.Brush.Style := bsSolid;
   ADest.Pen.Style := psClear;
-  ADest.Rectangle(0, 0, CDTrackBar.Width, CDTrackBar.Height);
-  ADest.Brush.FPColor := TColorToFPColor(ColorToRGB($006BB6E6));
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+  ADest.Brush.Color := ColorToRGB($006BB6E6);
 
   // Draws the double-sided arrow in the center of the slider
 
   ADest.Pen.Style := psSolid;
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($006BB6E6));
-  ADest.Line(0, lDrawingBottom, CDTrackBar.Width, lDrawingBottom);
+  ADest.Pen.Color := ColorToRGB($006BB6E6);
+  ADest.Line(0, lDrawingBottom, ASize.cx, lDrawingBottom);
   ADest.Line(3, lDrawingBottom - 1, 6, lDrawingBottom - 1);
   ADest.Line(5, lDrawingBottom - 2, 6, lDrawingBottom - 2);
   ADest.Line(3, lDrawingBottom + 1, 6, lDrawingBottom + 1);
   ADest.Line(5, lDrawingBottom + 2, 6, lDrawingBottom + 2);
-  ADest.Line(CDTrackBar.Width - 1 - 3, lDrawingBottom - 1, CDTrackBar.Width - 1 - 6, lDrawingBottom - 1);
-  ADest.Line(CDTrackBar.Width - 1 - 5, lDrawingBottom - 2, CDTrackBar.Width - 1 - 6, lDrawingBottom - 2);
-  ADest.Line(CDTrackBar.Width - 1 - 3, lDrawingBottom + 1, CDTrackBar.Width - 1 - 6, lDrawingBottom + 1);
-  ADest.Line(CDTrackBar.Width - 1 - 5, lDrawingBottom + 2, CDTrackBar.Width - 1 - 6, lDrawingBottom + 2);
-  ADest.Pen.FPColor := TColorToFPColor(ColorToRGB(clGray));
-  ADest.Brush.FPColor := TColorToFPColor(ColorToRGB($00F0F0F0));
+  ADest.Line(ASize.cx - 1 - 3, lDrawingBottom - 1, ASize.cx - 1 - 6, lDrawingBottom - 1);
+  ADest.Line(ASize.cx - 1 - 5, lDrawingBottom - 2, ASize.cx - 1 - 6, lDrawingBottom - 2);
+  ADest.Line(ASize.cx - 1 - 3, lDrawingBottom + 1, ASize.cx - 1 - 6, lDrawingBottom + 1);
+  ADest.Line(ASize.cx - 1 - 5, lDrawingBottom + 2, ASize.cx - 1 - 6, lDrawingBottom + 2);
+  ADest.Pen.Color := ColorToRGB(clGray);
+  ADest.Brush.Color := ColorToRGB($00F0F0F0);
 
   // Draws the decorative bars and also the slider button
 
@@ -148,17 +179,17 @@ begin
 
     ADest.Brush.Style := bsSolid;
     ADest.Pen.Style := psSolid;
-    ADest.Pen.FPColor := colBlack;
-    if i + CDTrackBar.Min <= CDTrackBar.Position then
-      ADest.Brush.FPColor := colDkGray
+    ADest.Pen.Color := clBlack;
+    if i + AStateEx.Min <= AStateEx.Position then
+      ADest.Brush.Color := clDkGray
     else
-      ADest.Brush.FPColor := colWhite;
+      ADest.Brush.Color := clWhite;
 
     ADest.Rectangle(dRect);
 
     // Draw the slider
 
-    if i + CDTrackBar.Min = CDTrackBar.Position then
+    if i + AStateEx.Min = AStateEx.Position then
     begin
       ADest.Brush.FPColor := TColorToFPColor(ColorToRGB($006BB6E6));
       ADest.Brush.Style := bsSolid;
@@ -172,31 +203,23 @@ begin
   end;
 
   ADest.Pen.FPColor := TColorToFPColor(ColorToRGB($007BC6F6));
-  ADest.Line(7, lDrawingBottom - 1, CDTrackBar.Width - 8, lDrawingBottom - 1);
-  ADest.Line(7, lDrawingBottom + 1, CDTrackBar.Width - 8, lDrawingBottom + 1);
+  ADest.Line(7, lDrawingBottom - 1, ASize.cx - 8, lDrawingBottom - 1);
+  ADest.Line(7, lDrawingBottom + 1, ASize.cx - 8, lDrawingBottom + 1);
   ADest.Colors[2, lDrawingBottom - 1] := ADest.Pen.FPColor;
   ADest.Colors[4, lDrawingBottom - 2] := ADest.Pen.FPColor;
   ADest.Colors[2, lDrawingBottom + 1] := ADest.Pen.FPColor;
   ADest.Colors[4, lDrawingBottom + 2] := ADest.Pen.FPColor;
   ADest.Colors[6, lDrawingBottom - 3] := ADest.Pen.FPColor;
   ADest.Colors[6, lDrawingBottom + 3] := ADest.Pen.FPColor;
-  ADest.Colors[CDTrackBar.Width - 1 - 2, lDrawingBottom - 1] := ADest.Pen.FPColor;
-  ADest.Colors[CDTrackBar.Width - 1 - 4, lDrawingBottom - 2] := ADest.Pen.FPColor;
-  ADest.Colors[CDTrackBar.Width - 1 - 2, lDrawingBottom + 1] := ADest.Pen.FPColor;
-  ADest.Colors[CDTrackBar.Width - 1 - 4, lDrawingBottom + 2] := ADest.Pen.FPColor;
-  ADest.Colors[CDTrackBar.Width - 1 - 6, lDrawingBottom - 3] := ADest.Pen.FPColor;
-  ADest.Colors[CDTrackBar.Width - 1 - 6, lDrawingBottom + 3] := ADest.Pen.FPColor;
-end;
-
-procedure TCDTrackBarDrawerGraph.GetGeometry(var ALeftBorder,
-  ARightBorder: Integer);
-begin
-  ALeftBorder := 9;
-  ARightBorder := 9;
+  ADest.Colors[ASize.cx - 1 - 2, lDrawingBottom - 1] := ADest.Pen.FPColor;
+  ADest.Colors[ASize.cx - 1 - 4, lDrawingBottom - 2] := ADest.Pen.FPColor;
+  ADest.Colors[ASize.cx - 1 - 2, lDrawingBottom + 1] := ADest.Pen.FPColor;
+  ADest.Colors[ASize.cx - 1 - 4, lDrawingBottom + 2] := ADest.Pen.FPColor;
+  ADest.Colors[ASize.cx - 1 - 6, lDrawingBottom - 3] := ADest.Pen.FPColor;
+  ADest.Colors[ASize.cx - 1 - 6, lDrawingBottom + 3] := ADest.Pen.FPColor;
 end;
 
 initialization
-  RegisterButtonDrawer(TCDButtonDrawerGrad.Create, dsExtra1);
-  RegisterTrackBarDrawer(TCDTrackBarDrawerGraph.Create, dsExtra1);}
+  RegisterDrawer(TCDDrawerExtra1.Create, dsExtra1);
 end.
 

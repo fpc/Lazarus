@@ -26,6 +26,9 @@ type
     function GetMeasures(AMeasureID: Integer): Integer; override;
     function GetMeasuresEx(ADest: TCanvas; AMeasureID: Integer;
       AState: TCDControlState; AStateEx: TCDControlStateEx): Integer; override;
+    procedure CalculatePreferredSize(ADest: TCanvas; AControlId: TCDControlID;
+      AState: TCDControlState; AStateEx: TCDControlStateEx;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     function GetColor(AColorID: Integer): TColor; override;
     procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx); override;
@@ -41,9 +44,6 @@ type
     procedure DrawEdit(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     // TCDCheckBox
-    procedure CalculateCheckBoxPreferredSize(ADest: TCanvas;
-      AState: TCDControlState; AStateEx: TCDControlStateEx;
-      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure DrawCheckBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDGroupBox
@@ -52,6 +52,8 @@ type
     // ===================================
     // Common Controls Tab
     // ===================================
+    procedure DrawTrackBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDTrackBarStateEx); override;
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
@@ -104,6 +106,25 @@ begin
   end;
 end;
 
+procedure TCDDrawerCommon.CalculatePreferredSize(ADest: TCanvas;
+  AControlId: TCDControlID; AState: TCDControlState;
+  AStateEx: TCDControlStateEx; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  PreferredWidth := 0;
+  PreferredHeight := 0;
+
+  case AControlId of
+  cidCheckBox:
+  begin
+    if AStateEx.AutoSize then
+      PreferredWidth := 21 + GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx);
+
+    PreferredHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx);
+  end;
+  end;
+end;
+
 function TCDDrawerCommon.GetColor(AColorID: Integer): TColor;
 begin
   case AColorId of
@@ -121,7 +142,12 @@ procedure TCDDrawerCommon.DrawControl(ADest: TCanvas; ADestPos: TPoint;
   AStateEx: TCDControlStateEx);
 begin
   case AControl of
-  cidButton: DrawButton(ADest, ADestPos, ASize, AState, AStateEx);
+  cidButton:     DrawButton(ADest, ADestPos, ASize, AState, AStateEx);
+  cidEdit:       DrawEdit(ADest, ADestPos, ASize, AState, TCDEditStateEx(AStateEx));
+  cidCheckBox:   DrawCheckBox(ADest, ADestPos, ASize, AState, AStateEx);
+  cidGroupBox:   DrawGroupBox(ADest, ADestPos, ASize, AState, AStateEx);
+  cidTrackBar:   DrawTrackBar(ADest, ADestPos, ASize, AState, TCDTrackBarStateEx(AStateEx));
+  cidCTabControl:DrawCTabControl(ADest, ADestPos, ASize, AState, TCDCTabControlStateEx(AStateEx));
   end;
 end;
 
@@ -265,18 +291,6 @@ begin
   end;
 end;
 
-procedure TCDDrawerCommon.CalculateCheckBoxPreferredSize(ADest: TCanvas;
-  AState: TCDControlState; AStateEx: TCDControlStateEx; var PreferredWidth,
-  PreferredHeight: integer; WithThemeSpace: Boolean);
-begin
-  PreferredWidth := 0;
-
-  if AStateEx.AutoSize then
-    PreferredWidth := 21 + GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx);
-
-  PreferredHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx);
-end;
-
 procedure TCDDrawerCommon.DrawCheckBox(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 const
@@ -368,6 +382,12 @@ begin
   ADest.Brush.Style := bsSolid; // This will fill the text background
   ADest.Font.Size := 10;
   ADest.TextOut(FCaptionMiddle, 0, AStateEx.Caption);
+end;
+
+procedure TCDDrawerCommon.DrawTrackBar(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDTrackBarStateEx);
+begin
+
 end;
 
 procedure TCDDrawerCommon.DrawCTabControl(ADest: TCanvas; ADestPos: TPoint;

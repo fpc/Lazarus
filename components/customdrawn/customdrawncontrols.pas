@@ -35,6 +35,8 @@ type
     FDrawer: TCDDrawer;
     FState: TCDControlState;
     FStateEx: TCDControlStateEx;
+    procedure CalculatePreferredSize(var PreferredWidth,
+      PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure PrepareCurrentDrawer(); virtual;
     procedure SetDrawStyle(const AValue: TCDDrawStyle); virtual;
     function GetClientRect: TRect; override;
@@ -193,8 +195,6 @@ type
     FCheckedState: TCheckBoxState;
   protected
     procedure DoButtonUp(); override;
-    procedure CalculatePreferredSize(var PreferredWidth,
-      PreferredHeight: integer; WithThemeSpace: Boolean); override;
     function GetControlId: TCDControlID; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -205,16 +205,6 @@ type
     property Caption;
     property TabStop default True;
     property State: TCheckBoxState read FCheckedState write FCheckedState default cbUnchecked;
-  end;
-
-  { TCDCheckBoxDrawer }
-
-  TCDCheckBoxDrawer = class(TCDDrawer)
-  public
-    procedure CalculatePreferredSize(CDCheckBox: TCDCheckBox; var PreferredWidth,
-      PreferredHeight: integer; WithThemeSpace: Boolean); virtual; abstract;
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDCheckBox: TCDCheckBox); virtual; abstract;
-    procedure DrawToCanvas(ADest: TCanvas; CDCheckBox: TCDCheckBox); virtual; abstract;
   end;
 
   // ===================================
@@ -264,20 +254,12 @@ type
     //procedure Paint; override;
   published
     property Color;
+    property DrawStyle;
     property Max: integer read FMax write SetMax default 10;
     property Min: integer read FMin write SetMin default 0;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Position: integer read FPosition write SetPosition;
     property TabStop default True;
-  end;
-
-  { TCDTrackBarDrawer }
-
-  TCDTrackBarDrawer = class(TCDDrawer)
-  public
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage;
-      CDTrackBar: TCDTrackBar); virtual; abstract;
-    procedure GetGeometry(var ALeftBorder, ARightBorder: Integer); virtual; abstract;
   end;
 
   { TCDListView }
@@ -694,13 +676,6 @@ begin
   Invalidate;
 end;
 
-procedure TCDCheckBox.CalculatePreferredSize(var PreferredWidth,
-  PreferredHeight: integer; WithThemeSpace: Boolean);
-begin
-  TCDCheckBoxDrawer(FDrawer).CalculatePreferredSize(
-    Self, PreferredWidth, PreferredHeight, WithThemeSpace)
-end;
-
 function TCDCheckBox.GetControlId: TCDControlID;
 begin
   Result := cidCheckBox;
@@ -822,7 +797,7 @@ end;
 
 function TCDCustomTabControl.GetControlId: TCDControlID;
 begin
-  Result := cidCustomTabControl;
+  Result := cidCTabControl;
 end;
 
 procedure TCDCustomTabControl.CreateControlStateEx;
@@ -878,6 +853,15 @@ end;
 
 { TCDControl }
 
+procedure TCDControl.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  PrepareControlState;
+  PrepareControlStateEx;
+  FDrawer.CalculatePreferredSize(Canvas, GetControlId(), FState, FStateEx,
+    PreferredWidth, PreferredHeight, WithThemeSpace);
+end;
+
 procedure TCDControl.PrepareCurrentDrawer;
 begin
   FDrawer := GetDrawer(FDrawStyle);
@@ -925,9 +909,12 @@ end;
 
 procedure TCDControl.PrepareControlStateEx;
 begin
-  if Parent <> nil then FStateEx.ParentRGBColor := Parent.GetRGBBackgroundColor;
+  if Parent <> nil then FStateEx.ParentRGBColor := Parent.GetRGBBackgroundColor
+  else FStateEx.ParentRGBColor := clSilver;
+
   if Color = clDefault then FStateEx.RGBColor := FDrawer.GetControlColor(GetControlId())
   else FStateEx.RGBColor := GetRGBBackgroundColor;
+
   FStateEx.Caption := Caption;
   FStateEx.Font := Font;
   FStateEx.AutoSize := AutoSize;
@@ -1151,7 +1138,9 @@ function TCDTrackBar.GetPositionFromMousePos(X, Y: integer): integer;
 var
   lLeftBorder, lRightBorder: Integer;
 begin
-  TCDTrackBarDrawer(FDrawer).GetGeometry(lLeftBorder, lRightBorder);
+  lLeftBorder := FDrawer.GetMeasures(TCDTRACKBAR_LEFT_SPACING);
+  lRightBorder := FDrawer.GetMeasures(TCDTRACKBAR_RIGHT_SPACING);
+
   if X > Width - lRightBorder then Result := FMax
   else if X < lLeftBorder then Result := FMin
   else Result := FMin + (X - lLeftBorder) * (FMax - FMin + 1) div (Width - lRightBorder - lLeftBorder);

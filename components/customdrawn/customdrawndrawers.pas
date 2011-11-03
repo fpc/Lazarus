@@ -15,13 +15,15 @@ const
   // Measures
   TCDEDIT_LEFT_TEXT_SPACING  = $400; // The space between the start of the text and the left end of the control
   TCDEDIT_RIGHT_TEXT_SPACING = $401; // The space between the end of the text and the right end of the control
+  TCDTRACKBAR_LEFT_SPACING    = $1000;
+  TCDTRACKBAR_RIGHT_SPACING   = $1001;
 
   // Measures Ex
   TCDCONTROL_CAPTION_WIDTH  = $100;
   TCDCONTROL_CAPTION_HEIGHT = $101;
 
-  TCDCTABCONTROL_TAB_HEIGHT = $1000;
-  TCDCTABCONTROL_TAB_WIDTH  = $1001;
+  TCDCTABCONTROL_TAB_HEIGHT = $1100;
+  TCDCTABCONTROL_TAB_WIDTH  = $1101;
 
   // Colors
   TCDEDIT_BACKGROUND_COLOR = $400;
@@ -128,7 +130,7 @@ type
     cidCheckBox,
     cidGroupBox,
     cidTrackBar,
-    cidCustomTabControl
+    cidCTabControl
     );
 
   { TCDDrawer }
@@ -144,6 +146,9 @@ type
     function GetMeasures(AMeasureID: Integer): Integer; virtual; abstract;
     function GetMeasuresEx(ADest: TCanvas; AMeasureID: Integer;
       AState: TCDControlState; AStateEx: TCDControlStateEx): Integer; virtual; abstract;
+    procedure CalculatePreferredSize(ADest: TCanvas; AControlId: TCDControlID;
+      AState: TCDControlState; AStateEx: TCDControlStateEx;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual; abstract;
     function GetColor(AColorID: Integer): TColor; virtual; abstract;
     procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
@@ -156,9 +161,6 @@ type
     procedure DrawEdit(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
     // TCDCheckBox
-    procedure CalculateCheckBoxPreferredSize(ADest: TCanvas;
-      AState: TCDControlState; AStateEx: TCDControlStateEx;
-      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual; abstract;
     procedure DrawCheckBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDGroupBox
@@ -167,6 +169,9 @@ type
     // ===================================
     // Common Controls Tab
     // ===================================
+    // TCDTrackBar
+    procedure DrawTrackBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDTrackBarStateEx); virtual; abstract;
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
@@ -232,13 +237,13 @@ end;
 function TCDDrawer.GetControlColor(AControlId: TCDControlID): TColor;
 begin
   case AControlId of
-  cidControl:          Result := clSilver;
-  cidButton:           Result := clSilver;
-  cidEdit:             Result := clSilver;
-  cidCheckBox:         Result := clSilver;
-  cidGroupBox:         Result := clSilver;
-  cidTrackBar:         Result := clSilver;
-  cidCustomTabControl: Result := clSilver;
+  cidControl:     Result := clSilver;
+  cidButton:      Result := clSilver;
+  cidEdit:        Result := clSilver;
+  cidCheckBox:    Result := clSilver;
+  cidGroupBox:    Result := clSilver;
+  cidTrackBar:    Result := clSilver;
+  cidCTabControl: Result := clSilver;
   else
     Result := clSilver;
   end;
