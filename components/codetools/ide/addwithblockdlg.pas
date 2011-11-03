@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   ButtonPanel, StdCtrls, Grids,
   // Codetools
-  CodeCache, CodeToolManager, FileProcs, PascalParserTool, FindDeclarationTool,
+  CodeCache, CodeToolManager, FileProcs, FindDeclarationTool,
   // IDEIntf
   IDEDialogs, LazIDEIntf, SrcEditorIntf, CodyStrConsts, CodyUtils;
 
