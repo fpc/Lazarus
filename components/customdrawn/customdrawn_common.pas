@@ -151,62 +151,74 @@ end;
 procedure TCDDrawerCommon.DrawButton(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
-  TmpB: TBitmap;
   Str: string;
 begin
   // Button shape -> This crashes in Gtk2
-  TmpB := TBitmap.Create;
-  TmpB.Width := ASize.cx;
-  TmpB.Height := ASize.cy;
-  TmpB.Canvas.Brush.Color := AStateEx.RGBColor;
-  TmpB.Canvas.Brush.Style := bsSolid;
-  TmpB.Canvas.RoundRect(0, 0, TmpB.Width, TmpB.Height, 8, 8);
-  //  CDButton.SetShape(TmpB);
+  ADest.Brush.Color := AStateEx.RGBColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.RoundRect(0, 0, ASize.cx, ASize.cy, 8, 8);
+
+  ADest.Brush.Style := bsSolid;
+  ADest.Brush.Color := AStateEx.RGBColor;
+  ADest.Pen.Color := clWhite;
+  ADest.Pen.Style := psSolid;
+  ADest.Rectangle(0, 0, ASize.cx - 1, ASize.cy - 1);
+  ADest.Pen.Color := clWhite;
+  ADest.Line(0, 0, ASize.cx - 1, 0);
+  ADest.Line(0, 0, 0, ASize.cy - 1);
+  ADest.Pen.Color := clGray;
+  ADest.Line(0, ASize.cy - 1, ASize.cx - 1, ASize.cy - 1);
+  ADest.Line(ASize.cx - 1, ASize.cy - 1, ASize.cx - 1, -1);
+  ADest.Pen.Color := $0099A8AC;
+  ADest.Line(1, ASize.cy - 2, ASize.cx - 2, ASize.cy - 2);
+  ADest.Line(ASize.cx - 2, ASize.cx - 2, ASize.cx - 2, 0);
+  ADest.Pen.Color := $00E2EFF1;
+  ADest.Line(1, 1, ASize.cx - 2, 1);
+  ADest.Line(1, 1, 1, ASize.cy - 2);
 
   // Button image
   if csfSunken in AState then
   begin
-    TmpB.Canvas.Brush.Style := bsSolid;
-    TmpB.Canvas.Brush.Color := RGBToColor(230, 230, 230);
-    TmpB.Canvas.Pen.Color := clBlack;
-    TmpB.Canvas.Pen.Style := psSolid;
-    TmpB.Canvas.Rectangle(0, 0, TmpB.Canvas.Width, TmpB.Canvas.Height);
+    ADest.Brush.Style := bsSolid;
+    ADest.Brush.Color := AStateEx.RGBColor;
+    ADest.Pen.Color := clWhite;
+    ADest.Pen.Style := psSolid;
+    ADest.Rectangle(0, 0, ASize.cx - 1, ASize.cy - 1);
+    ADest.Pen.Color := clGray;
+    ADest.Line(0, 0, ASize.cx - 1, 0);
+    ADest.Line(0, 0, 0, ASize.cy - 1);
+    ADest.Pen.Color := clWhite;
+    ADest.Line(0, ASize.cy - 1, ASize.cx - 1, ASize.cy - 1);
+    ADest.Line(ASize.cx - 1, ASize.cy - 1, ASize.cx - 1, -1);
+    ADest.Pen.Color := $00E2EFF1;
+    ADest.Line(1, ASize.cy - 2, ASize.cx - 2, ASize.cy - 2);
+    ADest.Line(ASize.cx - 2, ASize.cy - 2, ASize.cx - 2, 0);
+    ADest.Pen.Color := $0099A8AC;
+    ADest.Line(1, 1, ASize.cx - 2, 1);
+    ADest.Line(1, 1, 1, ASize.cy - 2);
   end
   else if csfHasFocus in AState then
   begin
-    with TmpB.Canvas do
-      begin
-        Brush.Style := bsSolid;
-        Brush.Color := RGBToColor($FD, $FD, $FD);
-        Pen.Color := clBlack;
-        Pen.Style := psSolid;
-        Rectangle(0, 0, Width, Height);
-        Rectangle(1, 1, Width - 1, Height - 1); // The border is thicken when focused
-      end;
-  end
-  else
-  begin
-    with TmpB.Canvas do
-      begin
-        Brush.Style := bsSolid;
-        Brush.Color := AStateEx.RGBColor;
-        Pen.Color := clBlack;
-        Pen.Style := psSolid;
-        Rectangle(0, 0, Width, Height);
-      end;
+    ADest.Brush.Style := bsClear;
+    ADest.Pen.Color := clWhite;
+    ADest.Pen.Style := psSolid;
+    ADest.Rectangle(3, 3, ASize.cx - 4, ASize.cy - 4);
+    ADest.Pen.Color := clBlack;
+    ADest.Pen.Style := psDot;
+    ADest.Rectangle(3, 3, ASize.cx - 4, ASize.cy - 4);
   end;
-
-  ADest.Draw(0, 0, TmpB);
-
-  TmpB.Free;
 
   // Button text
   ADest.Font.Assign(AStateEx.Font);
   ADest.Brush.Style := bsClear;
   ADest.Pen.Style := psSolid;
   Str := AStateEx.Caption;
-  ADest.TextOut((ASize.cx - ADest.TextWidth(Str)) div 2,
-    (ASize.cy - ADest.TextHeight(Str)) div 2, Str);
+  if csfSunken in AState then
+    ADest.TextOut((ASize.cx - ADest.TextWidth(Str)) div 2 + 1,
+      (ASize.cy - ADest.TextHeight(Str)) div 2 + 1, Str)
+  else
+    ADest.TextOut((ASize.cx - ADest.TextWidth(Str)) div 2,
+      (ASize.cy - ADest.TextHeight(Str)) div 2, Str);
 end;
 
 procedure TCDDrawerCommon.DrawEditBackground(ADest: TCanvas;
