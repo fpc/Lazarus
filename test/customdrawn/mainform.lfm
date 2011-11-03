@@ -99,8 +99,8 @@ object Form1: TForm1
       end
     end
     object pageEdits: TPage
-      ClientWidth = 3512
-      ClientHeight = 1920
+      ClientWidth = 14048
+      ClientHeight = 7680
       object CDEdit1: TCDEdit
         Left = 103
         Height = 30
@@ -117,8 +117,8 @@ object Form1: TForm1
       end
     end
     object pageCheckboxes: TPage
-      ClientWidth = 1756
-      ClientHeight = 960
+      ClientWidth = 7024
+      ClientHeight = 3840
       object CheckBox1: TCheckBox
         Left = 20
         Height = 17
@@ -145,8 +145,8 @@ object Form1: TForm1
       end
     end
     object pageGroupBoxes: TPage
-      ClientWidth = 3512
-      ClientHeight = 1920
+      ClientWidth = 14048
+      ClientHeight = 7680
       object GroupBox1: TGroupBox
         Left = -1
         Height = 105
@@ -207,8 +207,8 @@ object Form1: TForm1
       end
     end
     object pageTrackBars: TPage
-      ClientWidth = 3512
-      ClientHeight = 1920
+      ClientWidth = 14048
+      ClientHeight = 7680
       object TrackBar1: TTrackBar
         Left = 7
         Height = 25
@@ -231,38 +231,38 @@ object Form1: TForm1
       ClientWidth = 439
       ClientHeight = 240
       object CDPageControl1: TCDPageControl
-        Left = 190
-        Height = 144
+        Left = 199
+        Height = 104
         Top = 32
-        Width = 208
+        Width = 200
         ActivePage = CDTabSheet1
         DrawStyle = dsDefault
         Caption = 'CDPageControl1'
-        PageIndex = 0
+        PageIndex = 1
         Options = []
-        TabIndex = 0
+        TabIndex = 1
         object CDTabSheet2: TCDTabSheet
           Left = 2
-          Height = 109
+          Height = 69
           Top = 32
-          Width = 203
+          Width = 195
           Caption = 'CDTabSheet2'
           TabVisible = False
         end
         object CDTabSheet1: TCDTabSheet
           Left = 2
-          Height = 109
+          Height = 69
           Top = 32
-          Width = 203
+          Width = 195
           Caption = 'CDTabSheet1'
           TabVisible = False
         end
       end
       object PageControl1: TPageControl
-        Left = 7
-        Height = 120
-        Top = 40
-        Width = 176
+        Left = -1
+        Height = 104
+        Top = 32
+        Width = 192
         ActivePage = TabSheet1
         TabIndex = 0
         TabOrder = 1
@@ -285,12 +285,48 @@ object Form1: TForm1
         TabOrder = 2
       end
       object StaticText4: TStaticText
-        Left = 190
+        Left = 207
         Height = 17
         Top = 8
         Width = 65
         Caption = 'dsWinCE:'
         TabOrder = 3
+      end
+      object CDPageControl2: TCDPageControl
+        Left = -1
+        Height = 96
+        Top = 144
+        Width = 192
+        ActivePage = CDTabSheet5
+        DrawStyle = dsCommon
+        Caption = 'CDPageControl2'
+        PageIndex = 2
+        Options = []
+        TabIndex = 2
+        object CDTabSheet3: TCDTabSheet
+          Left = 2
+          Height = 61
+          Top = 32
+          Width = 187
+          Caption = 'CDTabSheet3'
+          TabVisible = False
+        end
+        object CDTabSheet4: TCDTabSheet
+          Left = 2
+          Height = 61
+          Top = 32
+          Width = 187
+          Caption = 'CDTabSheet4'
+          TabVisible = False
+        end
+        object CDTabSheet5: TCDTabSheet
+          Left = 2
+          Height = 61
+          Top = 32
+          Width = 187
+          Caption = 'CDTabSheet5'
+          TabVisible = False
+        end
       end
     end
     object Page7: TPage

@@ -26,8 +26,12 @@ type
     CDGroupBox1: TCDGroupBox;
     CDGroupBox2: TCDGroupBox;
     CDPageControl1: TCDPageControl;
+    CDPageControl2: TCDPageControl;
     CDTabSheet1: TCDTabSheet;
     CDTabSheet2: TCDTabSheet;
+    CDTabSheet3: TCDTabSheet;
+    CDTabSheet4: TCDTabSheet;
+    CDTabSheet5: TCDTabSheet;
     CheckBox1: TCheckBox;
     comboControls: TComboBox;
     Edit1: TEdit;
