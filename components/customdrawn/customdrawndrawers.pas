@@ -114,7 +114,11 @@ type
   public
     LeftmostTabVisibleIndex: Integer;
     Tabs: TStringList; // Just a reference, don't Free
-    TabIndex: Integer; // For Tab routines, obtain the index
+    TabIndex: Integer;
+    TabCount: Integer;
+    // Used internally by the drawers
+    CurTabIndex: Integer;// For Tab routines, obtain the index
+    CurStartLeftPos: Integer;
   end;
 
   TCDControlID = (
@@ -130,7 +134,11 @@ type
   { TCDDrawer }
 
   TCDDrawer = class
+  protected
   public
+    constructor Create; virtual;
+    destructor Destroy; override;
+    //
     function GetControlColor(AControlId: TCDControlID): TColor;
     // General
     function GetMeasures(AMeasureID: Integer): Integer; virtual; abstract;
@@ -143,7 +151,7 @@ type
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDEdit
-    procedure CreateEditBackgroundBitmap(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
     procedure DrawEdit(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
@@ -208,6 +216,18 @@ var
   i: Integer;
 
 { TCDDrawer }
+
+constructor TCDDrawer.Create;
+begin
+  inherited Create;
+
+
+end;
+
+destructor TCDDrawer.Destroy;
+begin
+  inherited Destroy;
+end;
 
 function TCDDrawer.GetControlColor(AControlId: TCDControlID): TColor;
 begin

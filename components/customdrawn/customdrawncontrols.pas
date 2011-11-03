@@ -835,6 +835,9 @@ procedure TCDCustomTabControl.PrepareControlStateEx;
 begin
   inherited PrepareControlStateEx;
 
+  FTabCState.Tabs := Tabs;
+  FTabCState.TabIndex := TabIndex;
+  FTabCState.TabCount := GetTabCount();
 end;
 
 constructor TCDCustomTabControl.Create(AOwner: TComponent);

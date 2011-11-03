@@ -36,7 +36,7 @@ type
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDEdit
-    procedure CreateEditBackgroundBitmap(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     procedure DrawEdit(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
@@ -63,29 +63,6 @@ type
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
     function  GetPageIndexFromXY(x, y: integer): integer; override;
   end;
-
-  { TCDCustomTabControlDrawerCommon }
-
-{  TCDCustomTabControlDrawerCommon = class(TCDCustomTabControlDrawer)
-  private
-    StartIndex: integer;       //FEndIndex
-    LeftmostTabVisibleIndex: Integer;
-    procedure DrawTabs(ADest: TCanvas; CDTabControl: TCDCustomTabControl);
-    procedure DrawTab(ADest: TCanvas; AIndex: Integer; ACurStartLeftPos: Integer;
-      CDTabControl: TCDCustomTabControl);
-  public
-    function GetPageIndexFromXY(x, y: integer): integer; override;
-    function GetTabHeight(AIndex: Integer; CDTabControl: TCDCustomTabControl): Integer; override;
-    function GetTabWidth(ADest: TCanvas; AIndex: Integer; CDTabControl: TCDCustomTabControl): Integer; override;
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage;
-      CDTabControl: TCDCustomTabControl); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDTabControl: TCDCustomTabControl); override;
-    procedure DrawTabSheet(ADest: TCanvas; CDTabControl: TCDCustomTabControl); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: integer; CDTabControl: TCDCustomTabControl); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: integer; CDTabControl: TCDCustomTabControl); override;
-  end;}
 
 implementation
 
@@ -119,7 +96,7 @@ begin
   end;
   TCDCTABCONTROL_TAB_WIDTH:
   begin
-    lCaption := ATabsStateEx.Tabs.Strings[ATabsStateEx.TabIndex];
+    lCaption := ATabsStateEx.Tabs.Strings[ATabsStateEx.CurTabIndex];
     Result := ADest.TextWidth(lCaption) + TCDTabControl_Common_TabCaptionExtraWidth;
   end
   else
@@ -209,7 +186,7 @@ begin
     (ASize.cy - ADest.TextHeight(Str)) div 2, Str);
 end;
 
-procedure TCDDrawerCommon.CreateEditBackgroundBitmap(ADest: TCanvas;
+procedure TCDDrawerCommon.DrawEditBackground(ADest: TCanvas;
   ADestPos: TPoint; ASize: TSize; AState: TCDControlState;
   AStateEx: TCDEditStateEx);
 begin
@@ -223,8 +200,69 @@ end;
 
 procedure TCDDrawerCommon.DrawEdit(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDEditStateEx);
+var
+  lVisibleText, lTmpText, lControlText: TCaption;
+  lCaretPixelPos: Integer;
+  lHeight: Integer;
+  lSelLeftPos, lSelLeftPixelPos, lSelLength, lSelRightPos: Integer;
+  lTextWidth: Integer;
 begin
+  DrawEditBackground(ADest, ADestPos, ASize, AState, AStateEx);
 
+  lControlText := AStateEx.Caption;
+  ADest.Brush.Style := bsClear;
+  ADest.Font.Assign(AStateEx.Font);
+
+  // The text without selection
+  if AStateEx.SelLength = 0 then
+  begin
+    lVisibleText := Copy(lControlText, AStateEx.VisibleTextStart, Length(lControlText));
+    ADest.TextOut(4, 1, lVisibleText);
+  end
+  // Text and Selection
+  else
+  begin
+    lSelLeftPos := AStateEx.SelStart;
+    if AStateEx.SelLength < 0 then lSelLeftPos := lSelLeftPos + AStateEx.SelLength;
+    lSelRightPos := AStateEx.SelStart;
+    if AStateEx.SelLength > 0 then lSelRightPos := lSelRightPos + AStateEx.SelLength;
+    lSelLength := AStateEx.SelLength;
+    if lSelLength < 0 then lSelLength := lSelLength * -1;
+
+    // Text left of the selection
+    lVisibleText := Copy(lControlText, AStateEx.VisibleTextStart, lSelLeftPos-AStateEx.VisibleTextStart);
+    ADest.TextOut(4, 1, lVisibleText);
+    lSelLeftPixelPos := ADest.TextWidth(lVisibleText)+4;
+
+    // The selection background
+    lVisibleText := Copy(lControlText, lSelLeftPos, lSelLength);
+    lTextWidth := ADest.TextWidth(lVisibleText);
+    ADest.Brush.Color := clBlue;
+    ADest.Brush.Style := bsSolid;
+    ADest.Rectangle(lSelLeftPixelPos, 1, lSelLeftPixelPos+lTextWidth, lHeight-1);
+    ADest.Brush.Style := bsClear;
+
+    // The selection text
+    ADest.Font.Color := clWhite;
+    ADest.TextOut(lSelLeftPixelPos, 1, lVisibleText);
+    lSelLeftPixelPos := lSelLeftPixelPos + lTextWidth;
+
+    // Text right of the selection
+    ADest.Brush.Color := clWhite;
+    ADest.Font.Color := AStateEx.Font.Color;
+    lVisibleText := Copy(lControlText, lSelLeftPos+lSelLength+1, Length(lControlText));
+    ADest.TextOut(lSelLeftPixelPos, 1, lVisibleText);
+  end;
+
+  // And the caret
+  if AStateEx.CaretIsVisible then
+  begin
+    lTmpText := Copy(lControlText, 1, AStateEx.CaretPos-AStateEx.VisibleTextStart+1);
+    lCaretPixelPos := ADest.TextWidth(lTmpText) + 3;
+    lHeight := ASize.cy;
+    ADest.Line(lCaretPixelPos, 2, lCaretPixelPos, lHeight-2);
+    ADest.Line(lCaretPixelPos+1, 2, lCaretPixelPos+1, lHeight-2);
+  end;
 end;
 
 procedure TCDDrawerCommon.CalculateCheckBoxPreferredSize(ADest: TCanvas;
@@ -334,168 +372,96 @@ end;
 
 procedure TCDDrawerCommon.DrawCTabControl(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
+var
+  CaptionHeight: Integer;
 begin
+  CaptionHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx);
 
+  // frame
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Color := ColorToRGB($009C9B91);
+
+  if AStateEx.TabCount = 0 then
+    ADest.Rectangle(0, 0, ASize.cx - 2, ASize.cy - 2)
+  else
+    ADest.Rectangle(0, CaptionHeight, ASize.cx -  2, ASize.cy - 2);
+
+  ADest.Pen.Color := ColorToRGB($00BFCED0);
+  ADest.Line(ASize.cx - 1, CaptionHeight + 1,
+    ASize.cx - 1, ASize.cy - 1);
+  ADest.Line(ASize.cx - 1, ASize.cy - 1, 1,
+    ASize.cy - 1);
+
+  // Tabs
+  ADest.Font.Name := AStateEx.Font.Name;
+  ADest.Font.Size := AStateEx.Font.Size;
+  DrawTabs(ADest, ADestPos, ASize, AState, AStateEx);
 end;
 
 procedure TCDDrawerCommon.DrawTabSheet(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
 begin
-
+  ADest.Brush.Color := AStateEx.RGBColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psClear;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
 end;
 
 procedure TCDDrawerCommon.DrawTabs(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
-begin
-
-end;
-
-procedure TCDDrawerCommon.DrawTab(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
-begin
-
-end;
-
-function TCDDrawerCommon.GetPageIndexFromXY(x, y: integer): integer;
-begin
-
-end;
-
-{ TCDListViewDrawerCommon }
-
-(*procedure TCDListViewDrawerCommon.DrawToIntfImage(ADest: TFPImageCanvas;
-  CDListView: TCDListView);
-begin
-
-end;
-
-procedure TCDListViewDrawerCommon.DrawToCanvas(ADest: TCanvas;
-  CDListView: TCDListView);
-begin
-
-end;
-
-procedure TCDEditDrawerCommon.DrawToCanvas(ADest: TCanvas; CDControl: TCDControl);
-var
-  CDEdit: TCDEdit absolute CDControl;
-  lVisibleText, lTmpText, lControlText: TCaption;
-  lCaretPixelPos: Integer;
-  lHeight: Integer;
-  lSelLeftPos, lSelLeftPixelPos, lSelLength, lSelRightPos: Integer;
-  lTextWidth: Integer;
-begin
-  DrawBackground(ADest, CDControl);
-
-  lControlText := CDEdit.Text;
-  ADest.Brush.Style := bsClear;
-  ADest.Font.Assign(CDControl.Font);
-
-  // The text without selection
-  if CDEdit.FSelLength = 0 then
-  begin
-    lVisibleText := Copy(lControlText, CDEdit.FVisibleTextStart, Length(lControlText));
-    ADest.TextOut(4, 1, lVisibleText);
-  end
-  // Text and Selection
-  else
-  begin
-    lSelLeftPos := CDEdit.FSelStart;
-    if CDEdit.FSelLength < 0 then lSelLeftPos := lSelLeftPos + CDEdit.FSelLength;
-    lSelRightPos := CDEdit.FSelStart;
-    if CDEdit.FSelLength > 0 then lSelRightPos := lSelRightPos + CDEdit.FSelLength;
-    lSelLength := CDEdit.FSelLength;
-    if lSelLength < 0 then lSelLength := lSelLength * -1;
-
-    // Text left of the selection
-    lVisibleText := Copy(lControlText, CDEdit.FVisibleTextStart, lSelLeftPos-CDEdit.FVisibleTextStart);
-    ADest.TextOut(4, 1, lVisibleText);
-    lSelLeftPixelPos := ADest.TextWidth(lVisibleText)+4;
-
-    // The selection background
-    lVisibleText := Copy(lControlText, lSelLeftPos, lSelLength);
-    lTextWidth := ADest.TextWidth(lVisibleText);
-    ADest.Brush.Color := clBlue;
-    ADest.Brush.Style := bsSolid;
-    ADest.Rectangle(lSelLeftPixelPos, 1, lSelLeftPixelPos+lTextWidth, lHeight-1);
-    ADest.Brush.Style := bsClear;
-
-    // The selection text
-    ADest.Font.Color := clWhite;
-    ADest.TextOut(lSelLeftPixelPos, 1, lVisibleText);
-    lSelLeftPixelPos := lSelLeftPixelPos + lTextWidth;
-
-    // Text right of the selection
-    ADest.Brush.Color := clWhite;
-    ADest.Font.Color := CDEdit.Font.Color;
-    lVisibleText := Copy(lControlText, lSelLeftPos+lSelLength+1, Length(lControlText));
-    ADest.TextOut(lSelLeftPixelPos, 1, lVisibleText);
-  end;
-
-  // And the caret
-  if CDEdit.FCaretIsVisible then
-  begin
-    lTmpText := Copy(lControlText, 1, CDEdit.FCaretPos-CDEdit.FVisibleTextStart+1);
-    lCaretPixelPos := ADest.TextWidth(lTmpText) + 3;
-    lHeight := CDControl.Height;
-    ADest.Line(lCaretPixelPos, 2, lCaretPixelPos, lHeight-2);
-    ADest.Line(lCaretPixelPos+1, 2, lCaretPixelPos+1, lHeight-2);
-  end;
-end;
-
-{ TCDCustomTabControlDrawerCommon }
-
-procedure TCDCustomTabControlDrawerCommon.DrawTabs(ADest: TCanvas; CDTabControl: TCDCustomTabControl);
 var
   IsPainting: Boolean = False;
   CurStartLeftPos: Integer = 0;
   i: Integer;
 begin
-  for i := 0 to CDTabControl.Tabs.Count - 1 do
+  for i := 0 to AStateEx.Tabs.Count - 1 do
   begin
-    if i = LeftmostTabVisibleIndex then
+    if i = AStateEx.LeftmostTabVisibleIndex then
       IsPainting := True;
 
     if IsPainting then
     begin
-      DrawTab(ADest, i, CurStartLeftPos, CDTabControl);
-      CurStartLeftPos := CurStartLeftPos + GetTabWidth(ADest, i, CDTabControl);
+      AStateEx.CurTabIndex := i;
+      DrawTab(ADest, ADestPos, ASize, AState, AStateEx);
+      CurStartLeftPos := CurStartLeftPos + GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
     end;
   end;
 end;
 
-procedure TCDCustomTabControlDrawerCommon.DrawTab(ADest: TCanvas;
-  AIndex: Integer; ACurStartLeftPos: Integer; CDTabControl: TCDCustomTabControl);
+procedure TCDDrawerCommon.DrawTab(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
 var
   IsSelected: Boolean;
   lTabWidth, lTabHeight, lTabTopPos: Integer;
   Points: array of TPoint;
   lCaption: String;
 begin
-  IsSelected := CDTabControl.TabIndex = AIndex;
+  IsSelected := AStateEx.TabIndex = AStateEx.CurTabIndex;
 
   if IsSelected then
   begin
     lTabTopPos := 0;
-    lTabHeight := GetTabHeight(AIndex, CDTabControl);
+    lTabHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx);
   end
   else
   begin
     lTabTopPos := 5;
-    lTabHeight := GetTabHeight(AIndex, CDTabControl)-5;
+    lTabHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx)-5;
   end;
 
-  lTabWidth := GetTabWidth(ADest, AIndex, CDTabControl);
+  lTabWidth := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
 
   // Fill the area inside the outer border
   ADest.Pen.Style := psClear;
   ADest.Brush.Style := bsSolid;
   ADest.Brush.Color := clWhite;
   SetLength(Points, 5);
-  Points[0] := Point(ACurStartLeftPos, lTabTopPos);
-  Points[1] := Point(ACurStartLeftPos+lTabWidth-5, lTabTopPos);
-  Points[2] := Point(ACurStartLeftPos+lTabWidth, lTabTopPos+5);
-  Points[3] := Point(ACurStartLeftPos+lTabWidth, lTabTopPos+lTabHeight);
-  Points[4] := Point(ACurStartLeftPos, lTabTopPos+lTabHeight);
+  Points[0] := Point(AStateEx.CurStartLeftPos, lTabTopPos);
+  Points[1] := Point(AStateEx.CurStartLeftPos+lTabWidth-5, lTabTopPos);
+  Points[2] := Point(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+5);
+  Points[3] := Point(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+lTabHeight);
+  Points[4] := Point(AStateEx.CurStartLeftPos, lTabTopPos+lTabHeight);
   ADest.Polygon(Points);
 
   // Draw the outer border only in the top and right sides,
@@ -503,10 +469,10 @@ begin
   ADest.Pen.Style := psSolid;
   ADest.Brush.Style := bsClear;
   ADest.Pen.Color := ColorToRGB($009C9B91);
-  ADest.MoveTo(ACurStartLeftPos+1, lTabTopPos);
-  ADest.LineTo(ACurStartLeftPos+lTabWidth-5, lTabTopPos);
-  ADest.LineTo(ACurStartLeftPos+lTabWidth, lTabTopPos+5);
-  ADest.LineTo(ACurStartLeftPos+lTabWidth, lTabTopPos+lTabHeight);
+  ADest.MoveTo(AStateEx.CurStartLeftPos+1, lTabTopPos);
+  ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth-5, lTabTopPos);
+  ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+5);
+  ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+lTabHeight);
 
   // If it is selected, add a selection frame
   if IsSelected then
@@ -515,84 +481,22 @@ begin
     ADest.Pen.Style := psSolid;
     ADest.Brush.Style := bsClear;
     ADest.Rectangle(
-      ACurStartLeftPos+3, lTabTopPos+3,
-      ACurStartLeftPos+lTabWidth-5, lTabTopPos+lTabHeight-5
+      AStateEx.CurStartLeftPos+3, lTabTopPos+3,
+      AStateEx.CurStartLeftPos+lTabWidth-5, lTabTopPos+lTabHeight-5
       );
   end;
 
   // Now the text
-  lCaption := CDTabControl.Tabs.Strings[AIndex];
-  ADest.TextOut(ACurStartLeftPos+5, lTabTopPos+5, lCaption);
+  lCaption := AStateEx.Tabs.Strings[AStateEx.CurTabIndex];
+  ADest.TextOut(AStateEx.CurStartLeftPos+5, lTabTopPos+5, lCaption);
 end;
 
-function TCDCustomTabControlDrawerCommon.GetPageIndexFromXY(x, y: integer
-  ): integer;
+function TCDDrawerCommon.GetPageIndexFromXY(x, y: integer): integer;
 begin
   Result := 1;
 end;
 
-{function TCDCustomTabControlDrawerCommon.GetClientRect(AControl: TCDControl
-  ): TRect;
-var
-  lCaptionHeight: Integer;
-begin
-  lCaptionHeight := GetTabHeight(CDTabControl.FTabIndex) - 4;
-
-  Result := Rect(5, lCaptionHeight + 1, CDTabControl.Width - 10,
-    CDTabControl.Height - lCaptionHeight - 5);
-end;}
-
-procedure TCDCustomTabControlDrawerCommon.DrawToIntfImage(ADest: TFPImageCanvas;
-  FPImg: TLazIntfImage; CDTabControl: TCDCustomTabControl);
-var
-  lColor: TColor;
-  lFPColor: TFPColor;
-  x, y: Integer;
-begin
-  lColor := CDTabControl.GetRGBBackgroundColor();
-
-  // Background
-  lFPColor := TColorToFPColor(lColor);
-  FPImg.FillPixels(lFPColor);
-end;
-
-procedure TCDCustomTabControlDrawerCommon.DrawToCanvas(ADest: TCanvas; CDTabControl: TCDCustomTabControl);
-var
-  CaptionHeight: Integer;
-begin
-  CaptionHeight := GetTabHeight(CDTabControl.TabIndex, CDTabControl);
-
-  // frame
-  ADest.Pen.Style := psSolid;
-  ADest.Brush.Style := bsClear;
-  ADest.Pen.Color := ColorToRGB($009C9B91);
-
-  if CDTabControl.GetTabCount = 0 then
-    ADest.Rectangle(0, 0, CDTabControl.Width - 2, CDTabControl.Height - 2)
-  else
-    ADest.Rectangle(0, CaptionHeight, CDTabControl.Width -  2, CDTabControl.Height - 2);
-
-  ADest.Pen.Color := ColorToRGB($00BFCED0);
-  ADest.Line(CDTabControl.Width - 1, CaptionHeight + 1,
-    CDTabControl.Width - 1, CDTabControl.Height - 1);
-  ADest.Line(CDTabControl.Width - 1, CDTabControl.Height - 1, 1,
-    CDTabControl.Height - 1);
-
-  // Tabs
-  ADest.Font.Name := CDTabControl.Font.Name;
-  ADest.Font.Size := CDTabControl.Font.Size;
-//  DrawCaptionBar(ADest, Rect(0, 0, CDPageControl.Width -
-//    2, CaptionHeight + 1), CDPageControl.Color, CDPageControl);
-  DrawTabs(ADest, CDTabControl);
-end;
-
-procedure TCDCustomTabControlDrawerCommon.DrawTabSheet(ADest: TCanvas; CDTabControl: TCDCustomTabControl);
-begin
-  ADest.Brush.Color := CDTabControl.Color;
-  ADest.Brush.Style := bsSolid;
-  ADest.Pen.Style := psClear;
-  ADest.Rectangle(0, 0, CDTabControl.Width, CDTabControl.Height);
-end;*)
+{ TCDListViewDrawerCommon }
 
 initialization
   RegisterDrawer(TCDDrawerCommon.Create, dsCommon);
