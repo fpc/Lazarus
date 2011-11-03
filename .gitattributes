@@ -647,6 +647,7 @@ components/customdrawn/customdrawn_win2000.pas svneol=native#text/plain
 components/customdrawn/customdrawn_wince.pas svneol=native#text/plain
 components/customdrawn/customdrawn_winxp.pas svneol=native#text/plain
 components/customdrawn/customdrawncontrols.pas svneol=native#text/pascal
+components/customdrawn/customdrawndrawers.pas svneol=native#text/plain
 components/customdrawn/customdrawnextras.pas svneol=native#text/plain
 components/customdrawn/customdrawnutils.pas svneol=native#text/pascal
 components/customform/custforms.pp svneol=native#text/plain

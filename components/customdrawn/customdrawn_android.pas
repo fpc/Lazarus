@@ -14,16 +14,16 @@ uses
   //
   customdrawncontrols, customdrawnutils;
 
-type
+{type
   TCDButtonDrawerAndroid = class(TCDButtonDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
     procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton); override;
-  end;
+  end;}
 
 implementation
 
-procedure TCDButtonDrawerAndroid.DrawToIntfImage(ADest: TFPImageCanvas;
+{procedure TCDButtonDrawerAndroid.DrawToIntfImage(ADest: TFPImageCanvas;
   CDButton: TCDButton);
 begin
 
@@ -66,6 +66,6 @@ begin
 end;
 
 initialization
-  RegisterButtonDrawer(TCDButtonDrawerAndroid.Create, dsAndroid);
+  RegisterButtonDrawer(TCDButtonDrawerAndroid.Create, dsAndroid);}
 end.
 

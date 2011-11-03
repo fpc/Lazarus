@@ -14,16 +14,16 @@ uses
   //
   customdrawncontrols, customdrawnutils;
 
-type
+{type
   TCDButtonDrawerXPTB = class(TCDButtonDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
     procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton); override;
-  end;
+  end;}
 
 implementation
 
-procedure TCDButtonDrawerXPTB.DrawToIntfImage(ADest: TFPImageCanvas;
+{procedure TCDButtonDrawerXPTB.DrawToIntfImage(ADest: TFPImageCanvas;
   CDButton: TCDButton);
 begin
 
@@ -50,6 +50,6 @@ begin
 end;
 
 initialization
-  RegisterButtonDrawer(TCDButtonDrawerXPTB.Create, dsWinXP);
+  RegisterButtonDrawer(TCDButtonDrawerXPTB.Create, dsWinXP);}
 end.
 

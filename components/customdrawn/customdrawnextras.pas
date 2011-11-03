@@ -182,8 +182,11 @@ resourcestring
 
 procedure Register;
 begin
-  RegisterComponents('Custom Drawn', [TCDButton, TCDTrackBar, TCDTabControl,
-    TCDPageControl, TCDGroupBox]);
+  RegisterComponents('Custom Drawn', [
+    // Standard tab
+    TCDButton, TCDEdit, TCDGroupBox,
+    // Common Controls
+    TCDTrackBar, TCDPageControl, TCDTabControl]);
   RegisterComponentEditor(TCDPageControl, TCDPageControlEditor);
   RegisterComponentEditor(TCDTabSheet, TCDPageControlEditor);
   RegisterNoIcon([TCDTabSheet]);

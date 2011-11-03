@@ -14,7 +14,7 @@ uses
   //
   customdrawncontrols, customdrawnutils;
 
-type
+{type
   TCDButtonDrawerGrad = class(TCDButtonDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
@@ -26,11 +26,11 @@ type
     procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage;
       CDTrackBar: TCDTrackBar); override;
     procedure GetGeometry(var ALeftBorder, ARightBorder: Integer); override;
-  end;
+  end;}
 
 implementation
 
-procedure TCDButtonDrawerGrad.DrawToIntfImage(ADest: TFPImageCanvas;
+{procedure TCDButtonDrawerGrad.DrawToIntfImage(ADest: TFPImageCanvas;
   CDButton: TCDButton);
 begin
 
@@ -197,6 +197,6 @@ end;
 
 initialization
   RegisterButtonDrawer(TCDButtonDrawerGrad.Create, dsExtra1);
-  RegisterTrackBarDrawer(TCDTrackBarDrawerGraph.Create, dsExtra1);
+  RegisterTrackBarDrawer(TCDTrackBarDrawerGraph.Create, dsExtra1);}
 end.
 

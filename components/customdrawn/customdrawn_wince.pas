@@ -14,83 +14,16 @@ uses
   // Others only for types
   StdCtrls,
   //
-  customdrawncontrols, customdrawnutils, customdrawn_common;
+  customdrawndrawers, customdrawn_common;
 
 type
-  TCDButtonDrawerWinCE = class(TCDButtonDrawer)
+  TCDDrawerWinCE = class(TCDDrawerCommon)
   public
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton); override;
-  end;
-
-  { TCDEditDrawerWinCE }
-
-  TCDEditDrawerWinCE = class(TCDEditDrawerCommon)
-  public
-    function GetMeasures(AMeasureID: Integer): Integer; override;
-    procedure DrawBackground(ADest: TCanvas; CDControl: TCDControl); override;
-  end;
-
-  { TCDCheckBoxDrawerWinCE }
-
-  TCDCheckBoxDrawerWinCE = class(TCDCheckBoxDrawer)
-  public
-    function GetCaptionWidth(CDCheckBox: TCDCheckBox): Integer;
-    function GetCaptionHeight(CDCheckBox: TCDCheckBox): Integer;
-    procedure CalculatePreferredSize(CDCheckBox: TCDCheckBox; var PreferredWidth,
-      PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDCheckBox: TCDCheckBox); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDCheckBox: TCDCheckBox); override;
-  end;
-
-  TCDGroupBoxDrawerWinCE = class(TCDGroupBoxDrawer)
-  public
-    FCaptionMiddle: integer;
-    procedure SetClientRectPos(CDGroupBox: TCDGroupBox); override;
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDGroupBox: TCDGroupBox); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDGroupBox: TCDGroupBox); override;
-  end;
-
-  // ===================================
-  // Common Controls Tab
-  // ===================================
-
-  { TCDListViewDrawerWinCE }
-
-  TCDListViewDrawerWinCE = class(TCDListViewDrawer)
-  public
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDListView: TCDListView); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDListView: TCDListView); override;
-  end;
-
-  { TCDCustomTabControlDrawerWinCE }
-
-  TCDCustomTabControlDrawerWinCE = class(TCDCustomTabControlDrawer)
-  private
-    StartIndex: integer;       //FEndIndex
-    LeftmostTabVisibleIndex: Integer;
-    procedure DrawCaptionBar(ADest: TCanvas; lRect: TRect; CL: TColor);
-    procedure DrawTabs(ADest: TCanvas; CDTabControl: TCDCustomTabControl);
-    procedure DrawTab(ADest: TCanvas; AIndex: Integer; ACurStartLeftPos: Integer;
-      CDTabControl: TCDCustomTabControl);
-  public
-    function GetPageIndexFromXY(x, y: integer): integer; override;
-    function GetTabHeight(AIndex: Integer; CDTabControl: TCDCustomTabControl): Integer; override;
-    function GetTabWidth(ADest: TCanvas; AIndex: Integer; CDTabControl: TCDCustomTabControl): Integer; override;
-    //function GetClientRect(AControl: TCDControl): TRect; override;
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage;
-      CDTabControl: TCDCustomTabControl); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDTabControl: TCDCustomTabControl); override;
-    procedure DrawTabSheet(ADest: TCanvas; CDTabControl: TCDCustomTabControl); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: integer; CDTabControl: TCDCustomTabControl); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: integer; CDTabControl: TCDCustomTabControl); override;
   end;
 
 implementation
 
-{ TCDListViewDrawerWinCE }
+(*{ TCDListViewDrawerWinCE }
 
 procedure TCDListViewDrawerWinCE.DrawToIntfImage(ADest: TFPImageCanvas;
   CDListView: TCDListView);
@@ -701,13 +634,9 @@ begin
   ADest.Brush.Style := bsSolid; // This will fill the text background
   ADest.Font.Size := 10;
   ADest.TextOut(FCaptionMiddle, 0, CDGroupBox.Caption);
-end;
+end;*)
 
 initialization
-  RegisterButtonDrawer(TCDButtonDrawerWinCE.Create, dsWinCE);
-  RegisterEditDrawer(TCDEditDrawerWinCE.Create, dsWinCE);
-  RegisterGroupBoxDrawer(TCDGroupBoxDrawerWinCE.Create, dsWinCE);
-  RegisterCheckBoxDrawer(TCDCheckBoxDrawerWinCE.Create, dsWinCE);
-  RegisterCustomTabControlDrawer(TCDCustomTabControlDrawerWinCE.Create, dsWinCE);
+  RegisterDrawer(TCDDrawerWinCE.Create, dsWinCE);
 end.
 

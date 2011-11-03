@@ -12,18 +12,16 @@ uses
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
   Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
   //
-  customdrawncontrols, customdrawnutils;
+  customdrawndrawers, customdrawn_common;
 
 type
-  TCDButtonDrawerWin2k = class(TCDButtonDrawer)
+  TCDDrawerWin2k = class(TCDDrawerCommon)
   public
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton); override;
   end;
 
 implementation
 
-procedure TCDButtonDrawerWin2k.DrawToIntfImage(ADest: TFPImageCanvas;
+{procedure TCDButtonDrawerWin2k.DrawToIntfImage(ADest: TFPImageCanvas;
   CDButton: TCDButton);
 begin
 
@@ -108,9 +106,9 @@ begin
   else
     ADest.TextOut((CDButton.Width - ADest.TextWidth(Str)) div 2,
       (CDButton.Height - ADest.TextHeight(Str)) div 2, Str);
-end;
+end;}
 
 initialization
-  RegisterButtonDrawer(TCDButtonDrawerWin2k.Create, dsWin2000);
+  RegisterDrawer(TCDDrawerWin2k.Create, dsWin2000);
 end.
 

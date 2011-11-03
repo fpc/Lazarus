@@ -24,75 +24,37 @@ uses
   // Other LCL units are only for types
   StdCtrls, ExtCtrls, ComCtrls,
   //
-  customdrawnutils;
-
-const
-  CDDRAWSTYLE_COUNT = 19;
-
-  TCDEDIT_LEFT_TEXT_SPACING  = $400; // The space between the start of the text and the left end of the control
-  TCDEDIT_RIGHT_TEXT_SPACING = $401; // The space between the end of the text and the right end of the control
-  TCDEDIT_BACKGROUND_COLOR = $402;
-  TCDEDIT_TEXT_COLOR = $403;
-  TCDEDIT_SELECTED_BACKGROUND_COLOR = $404;
-  TCDEDIT_SELECTED_TEXT_COLOR = $405;
+  customdrawndrawers;
 
 type
-
-  TCDDrawStyle = (
-    // The default is given by the DefaultStyle global variable
-    // Don't implement anything for this drawer
-    dsDefault = 0,
-    // This is a common drawer, with a minimal implementation on which other
-    // drawers base on
-    dsCommon,
-    // Operating system styles
-    dsWinCE, dsWin2000, dsWinXP,
-    dsKDE, dsGNOME, dsMacOSX,
-    dsAndroid,
-    // Other special styles for the user
-    dsExtra1, dsExtra2, dsExtra3, dsExtra4, dsExtra5,
-    dsExtra6, dsExtra7, dsExtra8, dsExtra9, dsExtra10
-    );
-
-  TCDControlDrawer = class;
-
   { TCDControl }
 
   TCDControl = class(TCustomControl)
   protected
     FDrawStyle: TCDDrawStyle;
-    FCurrentDrawer: TCDControlDrawer;
-    //constructor Create(AOwner: TComponent); override;
-    //destructor Destroy; override;
+    FDrawer: TCDDrawer;
+    FState: TCDControlState;
+    FStateEx: TCDControlStateEx;
     procedure PrepareCurrentDrawer(); virtual;
     procedure SetDrawStyle(const AValue: TCDDrawStyle); virtual;
     function GetClientRect: TRect; override;
+    function GetControlId: TCDControlID; virtual;
+    procedure CreateControlStateEx; virtual;
+    procedure PrepareControlState; virtual;
+    procedure PrepareControlStateEx; virtual;
     // mouse
     procedure MouseEnter; override;
     procedure MouseLeave; override;
     //
     property DrawStyle: TCDDrawStyle read FDrawStyle write SetDrawStyle;
   public
-    // state information
-    IsMouseOver: Boolean;
     //
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
   end;
   TCDControlClass = class of TCDControl;
-
-  { TCDControlDrawer }
-
-  TCDControlDrawer = class
-  public
-    function GetClientRect(AControl: TCDControl): TRect; virtual;
-    function GetMeasures(AMeasureID: Integer): Integer; virtual;
-    function GetColor(AColorID: Integer): TColor; virtual;
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; AControl: TCDControl);
-      virtual;
-    procedure DrawToCanvas(ADest: TCanvas; AControl: TCDControl); virtual;
-  end;
 
   // ===================================
   // Standard Tab
@@ -100,8 +62,6 @@ type
 
   TCDButtonControl = class(TCDControl)
   private
-    // button state
-    FIsDown: Boolean;
   protected
     // keyboard
     procedure DoEnter; override;
@@ -119,20 +79,18 @@ type
     procedure DoButtonUp(); virtual;
     procedure RealSetText(const Value: TCaption); override;
   public
-    // button state
-    property IsDown: Boolean read FIsDown write FIsDown;
+    //property Down: Boolean read GetDown write SetDown;
   end;
 
   { TCDButton }
 
   TCDButton = class(TCDButtonControl)
   private
-    procedure PrepareCurrentDrawer(); override;
   protected
+    function GetControlId: TCDControlID; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Paint; override;
   published
     property Action;
     property Anchors;
@@ -170,25 +128,18 @@ type
     property Visible;
   end;
 
-  { TCDButtonDrawer }
-
-  TCDButtonDrawer = class(TCDControlDrawer)
-  public
-    function GetClientRect(AControl: TCDControl): TRect; override;
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton);
-      virtual; abstract;
-    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton); virtual; abstract;
-  end;
-
   { TCDEdit }
 
   TCDEdit = class(TCDControl)
   private
+    DragDropStarted: boolean;
     FCaretTimer: TTimer;
+    FEditState: TCDEditStateEx; // Points to the same object as FStateEx, so don't Free!
+    function GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
     procedure HandleCaretTimer(Sender: TObject);
     procedure DoDeleteSelection;
     procedure DoManageVisibleTextStart;
-    procedure PrepareCurrentDrawer(); override;
     function GetText: string;
     procedure SetText(AValue: string);
   protected
@@ -206,26 +157,12 @@ type
     procedure MouseEnter; override;
     procedure MouseLeave; override;
   public
-    // State information
-    FDragDropStarted: boolean;
-    FCaretIsVisible: Boolean;
-    FCaretPos: Integer; // zero-based position
-    FSelStart: Integer; // zero-based position
-    FSelLength: Integer; // zero means no selection. Negative numbers selection to the left from the start and positive ones to the right
-    FVisibleTextStart: Integer; // 1-based
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property Color;
     property TabStop default True;
     property Text: string read GetText write SetText;
-  end;
-
-  { TCDEditDrawer }
-
-  TCDEditDrawer = class(TCDControlDrawer)
-  public
-    procedure DrawBackground(ADest: TCanvas; AControl: TCDControl); virtual; abstract;
   end;
 
   {@@
@@ -236,28 +173,16 @@ type
 
   TCDGroupBox = class(TCDControl)
   private
-    procedure PrepareCurrentDrawer(); override;
-    procedure SetDrawStyle(const AValue: TCDDrawStyle); override;
+    function GetControlId: TCDControlID; override;
   protected
     procedure RealSetText(const Value: TCaption); override; // to update on caption changes
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EraseBackground(DC: HDC); override;
-    procedure Paint; override;
   published
     property DrawStyle;
     property Caption;
     property TabStop default False;
-  end;
-
-  { TCDGroupBoxDrawer }
-
-  TCDGroupBoxDrawer = class(TCDControlDrawer)
-  public
-    procedure SetClientRectPos(CDGroupBox: TCDGroupBox); virtual; abstract;
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDGroupBox: TCDGroupBox); virtual; abstract;
-    procedure DrawToCanvas(ADest: TCanvas; CDGroupBox: TCDGroupBox); virtual; abstract;
   end;
 
   { TCDCheckBox }
@@ -266,16 +191,14 @@ type
   private
     FAllowGrayed: Boolean;
     FCheckedState: TCheckBoxState;
-    procedure PrepareCurrentDrawer(); override;
   protected
     procedure DoButtonUp(); override;
     procedure CalculatePreferredSize(var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    function GetControlId: TCDControlID; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EraseBackground(DC: HDC); override;
-    procedure Paint; override;
   published
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default False;
     property DrawStyle;
@@ -286,7 +209,7 @@ type
 
   { TCDCheckBoxDrawer }
 
-  TCDCheckBoxDrawer = class(TCDControlDrawer)
+  TCDCheckBoxDrawer = class(TCDDrawer)
   public
     procedure CalculatePreferredSize(CDCheckBox: TCDCheckBox; var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); virtual; abstract;
@@ -312,13 +235,16 @@ type
     FMax: integer;
     FPosition: integer;
     FOnChange: TNotifyEvent;
-    procedure PrepareCurrentDrawer(); override;
     procedure SetMax(Value: integer);
     procedure SetMin(Value: integer);
     procedure SetPosition(Value: integer);
     //
     function GetPositionFromMousePos(X, Y: Integer): integer;
   protected
+    FTBState: TCDTrackBarStateEx;
+    function GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
     procedure Changed; virtual;
     // keyboard
     procedure DoEnter; override;
@@ -335,8 +261,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EraseBackground(DC: HDC); override;
-    procedure Paint; override;
+    //procedure Paint; override;
   published
     property Color;
     property Max: integer read FMax write SetMax default 10;
@@ -348,7 +273,7 @@ type
 
   { TCDTrackBarDrawer }
 
-  TCDTrackBarDrawer = class(TCDControlDrawer)
+  TCDTrackBarDrawer = class(TCDDrawer)
   public
     procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage;
       CDTrackBar: TCDTrackBar); virtual; abstract;
@@ -357,11 +282,10 @@ type
 
   { TCDListView }
 
-  TCDListView = class(TCDControl)
+(*  TCDListView = class(TCDControl)
   private
     DragDropStarted: boolean;
     // fields
-    procedure PrepareCurrentDrawer(); override;
   protected
     // keyboard
     procedure DoEnter; override;
@@ -383,13 +307,7 @@ type
   published
     property Color;
     property TabStop default True;
-  end;
-
-  TCDListViewDrawer = class(TCDControlDrawer)
-  public
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDListView: TCDListView); virtual; abstract;
-    procedure DrawToCanvas(ADest: TCanvas; CDListView: TCDListView); virtual; abstract;
-  end;
+  end;*)
 
   {TCDTabControl}
 
@@ -422,11 +340,13 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
     //procedure MouseEnter; override;
     //procedure MouseLeave; override;
-    procedure PrepareCurrentDrawer(); override;
     procedure SetTabIndex(AValue: Integer); virtual;
     procedure SetTabs(AValue: TStringList);
   protected
-    procedure Paint; override;
+    FTabCState: TCDCTabControlStateEx;
+    function GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
     procedure CorrectTabIndex();
   public
     constructor Create(AOwner: TComponent); override;
@@ -436,23 +356,6 @@ type
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property TabIndex: integer read FTabIndex write SetTabIndex;
-  end;
-
-  { TCDCustomTabControlDrawer }
-
-  TCDCustomTabControlDrawer = class(TCDControlDrawer)
-  public
-    function GetPageIndexFromXY(x, y: integer): integer; virtual; abstract;
-    function GetTabHeight(AIndex: Integer; CDTabControl: TCDCustomTabControl): Integer;  virtual; abstract;
-    function GetTabWidth(ADest: TCanvas; AIndex: Integer; CDTabControl: TCDCustomTabControl): Integer; virtual; abstract;
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; FPImg: TLazIntfImage;
-      CDTabControl: TCDCustomTabControl); virtual; abstract;
-    procedure DrawToCanvas(ADest: TCanvas; CDTabControl: TCDCustomTabControl); virtual; abstract;
-    procedure DrawTabSheet(ADest: TCanvas; CDTabControl: TCDCustomTabControl); virtual; abstract;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: integer; CDTabControl: TCDCustomTabControl); virtual; abstract;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: integer; CDTabControl: TCDCustomTabControl); virtual; abstract;
   end;
 
 //  TTabSelectedEvent = procedure(Sender: TObject; ATab: TTabItem;
@@ -527,191 +430,10 @@ type
     property OnChange;
   end;
 
-// Standard Tab
-procedure RegisterButtonDrawer(ADrawer: TCDButtonDrawer; AStyle: TCDDrawStyle);
-procedure RegisterEditDrawer(ADrawer: TCDEditDrawer; AStyle: TCDDrawStyle);
-procedure RegisterGroupBoxDrawer(ADrawer: TCDGroupBoxDrawer; AStyle: TCDDrawStyle);
-procedure RegisterCheckBoxDrawer(ADrawer: TCDCheckBoxDrawer; AStyle: TCDDrawStyle);
-// Common Controls Tab
-procedure RegisterTrackBarDrawer(ADrawer: TCDTrackBarDrawer; AStyle: TCDDrawStyle);
-procedure RegisterListViewDrawer(ADrawer: TCDListViewDrawer; AStyle: TCDDrawStyle);
-procedure RegisterCustomTabControlDrawer(ADrawer: TCDCustomTabControlDrawer; AStyle: TCDDrawStyle);
-
-var
-  DefaultStyle: TCDDrawStyle = dsWinCE; // For now default to the most complete one, later per platform
-
 implementation
 
 resourcestring
   sTABSHEET_DEFAULT_NAME = 'CTabSheet';
-
-var
-  // Standard Tab
-  RegisteredButtonDrawers: array[TCDDrawStyle] of TCDButtonDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
-  RegisteredEditDrawers: array[TCDDrawStyle] of TCDEditDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
-  RegisteredGroupBoxDrawers: array[TCDDrawStyle] of TCDGroupBoxDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
-  RegisteredCheckBoxDrawers: array[TCDDrawStyle] of TCDCheckBoxDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
-  // Common Controls Tab
-  RegisteredTrackBarDrawers: array[TCDDrawStyle] of TCDTrackBarDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
-  RegisteredListViewDrawers: array[TCDDrawStyle] of TCDListViewDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
-  RegisteredCustomTabControlDrawers: array[TCDDrawStyle] of TCDCustomTabControlDrawer
-    = (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
-
-procedure RegisterButtonDrawer(ADrawer: TCDButtonDrawer; AStyle: TCDDrawStyle);
-begin
-  if RegisteredButtonDrawers[AStyle] <> nil then RegisteredButtonDrawers[AStyle].Free;
-  RegisteredButtonDrawers[AStyle] := ADrawer;
-end;
-
-procedure RegisterEditDrawer(ADrawer: TCDEditDrawer; AStyle: TCDDrawStyle);
-begin
-  if RegisteredEditDrawers[AStyle] <> nil then RegisteredEditDrawers[AStyle].Free;
-  RegisteredEditDrawers[AStyle] := ADrawer;
-end;
-
-procedure RegisterGroupBoxDrawer(ADrawer: TCDGroupBoxDrawer; AStyle: TCDDrawStyle);
-begin
-  if RegisteredGroupBoxDrawers[AStyle] <> nil then RegisteredGroupBoxDrawers[AStyle].Free;
-  RegisteredGroupBoxDrawers[AStyle] := ADrawer;
-end;
-
-procedure RegisterCheckBoxDrawer(ADrawer: TCDCheckBoxDrawer; AStyle: TCDDrawStyle);
-begin
-  if RegisteredCheckBoxDrawers[AStyle] <> nil then RegisteredCheckBoxDrawers[AStyle].Free;
-  RegisteredCheckBoxDrawers[AStyle] := ADrawer;
-end;
-
-procedure RegisterTrackBarDrawer(ADrawer: TCDTrackBarDrawer; AStyle: TCDDrawStyle);
-begin
-  if RegisteredTrackBarDrawers[AStyle] <> nil then RegisteredTrackBarDrawers[AStyle].Free;
-  RegisteredTrackBarDrawers[AStyle] := ADrawer;
-end;
-
-procedure RegisterListViewDrawer(ADrawer: TCDListViewDrawer; AStyle: TCDDrawStyle);
-begin
-  if RegisteredListViewDrawers[AStyle] <> nil then RegisteredListViewDrawers[AStyle].Free;
-  RegisteredListViewDrawers[AStyle] := ADrawer;
-end;
-
-procedure RegisterCustomTabControlDrawer(ADrawer: TCDCustomTabControlDrawer; AStyle: TCDDrawStyle);
-begin
-  if RegisteredCustomTabControlDrawers[AStyle] <> nil then RegisteredCustomTabControlDrawers[AStyle].Free;
-  RegisteredCustomTabControlDrawers[AStyle] := ADrawer;
-end;
-
-{ TCDControlDrawer }
-
-function TCDControlDrawer.GetClientRect(AControl: TCDControl): TRect;
-begin
-  Result := AControl.BoundsRect;
-end;
-
-function TCDControlDrawer.GetMeasures(AMeasureID: Integer): Integer;
-begin
-  Result := 0;
-end;
-
-function TCDControlDrawer.GetColor(AColorID: Integer): TColor;
-begin
-  Result := clBlack;
-end;
-
-procedure TCDControlDrawer.DrawToIntfImage(ADest: TFPImageCanvas;
-  AControl: TCDControl);
-begin
-
-end;
-
-procedure TCDControlDrawer.DrawToCanvas(ADest: TCanvas; AControl: TCDControl);
-begin
-
-end;
-
-{ TCDListView }
-
-procedure TCDListView.PrepareCurrentDrawer;
-var
-  lDrawStyle: TCDDrawStyle;
-begin
-  if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
-  else lDrawStyle := DrawStyle;
-  FCurrentDrawer := RegisteredListViewDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredListViewDrawers[dsCommon];
-  if FCurrentDrawer = nil then raise Exception.Create('No registered list view drawers were found');
-end;
-
-procedure TCDListView.DoEnter;
-begin
-  inherited DoEnter;
-end;
-
-procedure TCDListView.DoExit;
-begin
-  inherited DoExit;
-end;
-
-procedure TCDListView.KeyDown(var Key: word; Shift: TShiftState);
-begin
-  inherited KeyDown(Key, Shift);
-end;
-
-procedure TCDListView.KeyUp(var Key: word; Shift: TShiftState);
-begin
-  inherited KeyUp(Key, Shift);
-end;
-
-procedure TCDListView.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
-  Y: integer);
-begin
-  inherited MouseDown(Button, Shift, X, Y);
-end;
-
-procedure TCDListView.MouseMove(Shift: TShiftState; X, Y: integer);
-begin
-  inherited MouseMove(Shift, X, Y);
-end;
-
-procedure TCDListView.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: integer);
-begin
-  inherited MouseUp(Button, Shift, X, Y);
-end;
-
-procedure TCDListView.MouseEnter;
-begin
-  inherited MouseEnter;
-end;
-
-procedure TCDListView.MouseLeave;
-begin
-  inherited MouseLeave;
-end;
-
-constructor TCDListView.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-end;
-
-destructor TCDListView.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TCDListView.EraseBackground(DC: HDC);
-begin
-  inherited EraseBackground(DC);
-end;
-
-procedure TCDListView.Paint;
-begin
-  inherited Paint;
-end;
 
 { TCDEdit }
 
@@ -720,16 +442,27 @@ begin
   Result := Caption;
 end;
 
+function TCDEdit.GetControlId: TCDControlID;
+begin
+  Result := cidEdit;
+end;
+
+procedure TCDEdit.CreateControlStateEx;
+begin
+  FEditState := TCDEditStateEx.Create;
+  FStateEx := FEditState;
+end;
+
 procedure TCDEdit.HandleCaretTimer(Sender: TObject);
 begin
-  FCaretIsVisible := not FCaretIsVisible;
+  FEditState.CaretIsVisible := not FEditState.CaretIsVisible;
   Invalidate;
 end;
 
 procedure TCDEdit.DoDeleteSelection;
 begin
-  FSelStart := 1;
-  FSelLength := 0;
+  FEditState.SelStart := 1;
+  FEditState.SelLength := 0;
 end;
 
 procedure TCDEdit.DoManageVisibleTextStart;
@@ -739,25 +472,15 @@ var
   lAvailableWidth: Integer;
 begin
   // Moved to the left and we need to adjust the text start
-  FVisibleTextStart := Min(FCaretPos+1, FVisibleTextStart);
+  FEditState.VisibleTextStart := Min(FEditState.CaretPos+1, FEditState.VisibleTextStart);
 
   // Moved to the right and we need to adjust the text start
-  lText := Copy(Text, FVisibleTextStart, Length(Text));
-  lAvailableWidth := Width - FCurrentDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
-   - FCurrentDrawer.GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
+  lText := Copy(Text, FEditState.VisibleTextStart, Length(Text));
+  lAvailableWidth := Width
+   - FDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
+   - FDrawer.GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
   lVisibleTextCharCount := Canvas.TextFitInfo(lText, lAvailableWidth);
-  FVisibleTextStart := Max(FCaretPos-lVisibleTextCharCount, FVisibleTextStart);
-end;
-
-procedure TCDEdit.PrepareCurrentDrawer;
-var
-  lDrawStyle: TCDDrawStyle;
-begin
-  if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
-  else lDrawStyle := DrawStyle;
-  FCurrentDrawer := RegisteredEditDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredEditDrawers[dsCommon];
-  if FCurrentDrawer = nil then raise Exception.Create('No registered edit drawers were found');
+  FEditState.VisibleTextStart := Max(FEditState.CaretPos-lVisibleTextCharCount, FEditState.VisibleTextStart);
 end;
 
 procedure TCDEdit.SetText(AValue: string);
@@ -770,7 +493,7 @@ begin
   inherited DoEnter;
 
   FCaretTimer.Enabled := True;
-  FCaretIsVisible := True;
+  FEditState.CaretIsVisible := True;
   Invalidate;
 end;
 
@@ -779,7 +502,7 @@ begin
   inherited DoExit;
 
   FCaretTimer.Enabled := False;
-  FCaretIsVisible := False;
+  FEditState.CaretIsVisible := False;
   Invalidate;
 end;
 
@@ -796,15 +519,15 @@ begin
   VK_BACK:
   begin
     // Selection backspace
-    if FSelLength > 0 then
+    if FEditState.SelLength > 0 then
       DoDeleteSelection()
     // Normal backspace
-    else if FCaretPos > 0 then
+    else if FEditState.CaretPos > 0 then
     begin
-      lLeftText := Copy(lOldText, 1, FCaretPos-1);
-      lRightText := Copy(lOldText, FCaretPos+1, Length(lOldText));
+      lLeftText := Copy(lOldText, 1, FEditState.CaretPos-1);
+      lRightText := Copy(lOldText, FEditState.CaretPos+1, Length(lOldText));
       Text := lLeftText + lRightText;
-      Dec(FCaretPos);
+      Dec(FEditState.CaretPos);
       DoManageVisibleTextStart();
       Invalidate;
     end;
@@ -813,52 +536,52 @@ begin
   VK_DELETE:
   begin
     // Selection delete
-    if FSelLength > 0 then
+    if FEditState.SelLength > 0 then
       DoDeleteSelection()
     // Normal delete
-    else if FCaretPos < Length(lOldText) then
+    else if FEditState.CaretPos < Length(lOldText) then
     begin
-      lLeftText := Copy(lOldText, 1, FCaretPos);
-      lRightText := Copy(lOldText, FCaretPos+2, Length(lOldText));
+      lLeftText := Copy(lOldText, 1, FEditState.CaretPos);
+      lRightText := Copy(lOldText, FEditState.CaretPos+2, Length(lOldText));
       Text := lLeftText + lRightText;
       Invalidate;
     end;
   end;
   VK_LEFT:
   begin
-    if (FCaretPos > 0) then
+    if (FEditState.CaretPos > 0) then
     begin
       // Selecting to the left
       if ssShift in Shift then
       begin
-        Dec(FSelLength);
-        if FSelStart < 0 then FSelStart := FCaretPos;
+        Dec(FEditState.SelLength);
+        if FEditState.SelStart < 0 then FEditState.SelStart := FEditState.CaretPos;
       end
       // Normal move to the left
-      else FSelLength := 0;
+      else FEditState.SelLength := 0;
 
-      Dec(FCaretPos);
+      Dec(FEditState.CaretPos);
       DoManageVisibleTextStart();
-      FCaretIsVisible := True;
+      FEditState.CaretIsVisible := True;
       Invalidate;
     end;
   end;
   VK_RIGHT:
   begin
-    if FCaretPos < Length(lOldText) then
+    if FEditState.CaretPos < Length(lOldText) then
     begin
       // Selecting to the right
       if ssShift in Shift then
       begin
-        Inc(FSelLength);
-        if FSelStart < 0 then FSelStart := FCaretPos;
+        Inc(FEditState.SelLength);
+        if FEditState.SelStart < 0 then FEditState.SelStart := FEditState.CaretPos;
       end
       // Normal move to the right
-      else FSelLength := 0;
+      else FEditState.SelLength := 0;
 
-      Inc(FCaretPos);
+      Inc(FEditState.CaretPos);
       DoManageVisibleTextStart();
-      FCaretIsVisible := True;
+      FEditState.CaretIsVisible := True;
       Invalidate;
     end;
   end;
@@ -885,11 +608,11 @@ begin
 
   // Normal characters
   lOldText := Text;
-  lLeftText := Copy(lOldText, 1, FCaretPos);
-  lRightText := Copy(lOldText, FCaretPos+1, Length(lOldText));
+  lLeftText := Copy(lOldText, 1, FEditState.CaretPos);
+  lRightText := Copy(lOldText, FEditState.CaretPos+1, Length(lOldText));
   Text := lLeftText + UTF8Key + lRightText;
-  Inc(FCaretPos);
-  FCaretIsVisible := True;
+  Inc(FEditState.CaretPos);
+  FEditState.CaretIsVisible := True;
   Invalidate;
 end;
 
@@ -930,8 +653,8 @@ begin
     csDoubleClicks, csReplicatable];
 
   // State information
-  FVisibleTextStart := 1;
-  FSelStart := -1;
+  FEditState.VisibleTextStart := 1;
+  FEditState.SelStart := -1;
 
   // Caret code
   FCaretTimer := TTimer.Create(Self);
@@ -948,17 +671,6 @@ begin
 end;
 
 { TCDCheckBox }
-
-procedure TCDCheckBox.PrepareCurrentDrawer;
-var
-  lDrawStyle: TCDDrawStyle;
-begin
-  if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
-  else lDrawStyle := DrawStyle;
-  FCurrentDrawer := RegisteredCheckBoxDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredCheckBoxDrawers[dsCommon];
-  if FCurrentDrawer = nil then raise Exception.Create('No registered check box drawers were found');
-end;
 
 procedure TCDCheckBox.DoButtonUp;
 begin
@@ -985,8 +697,13 @@ end;
 procedure TCDCheckBox.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  TCDCheckBoxDrawer(FCurrentDrawer).CalculatePreferredSize(
+  TCDCheckBoxDrawer(FDrawer).CalculatePreferredSize(
     Self, PreferredWidth, PreferredHeight, WithThemeSpace)
+end;
+
+function TCDCheckBox.GetControlId: TCDControlID;
+begin
+  Result := cidCheckBox;
 end;
 
 constructor TCDCheckBox.Create(AOwner: TComponent);
@@ -1006,39 +723,6 @@ end;
 destructor TCDCheckBox.Destroy;
 begin
   inherited Destroy;
-end;
-
-procedure TCDCheckBox.EraseBackground(DC: HDC);
-begin
-end;
-
-procedure TCDCheckBox.Paint;
-var
-  AImage: TLazIntfImage = nil;
-  ABmp: TBitmap = nil;
-  lCanvas: TFPImageCanvas = nil;
-begin
-  PrepareCurrentDrawer();
-
-  ABmp := TBitmap.Create;
-  try
-    ABmp.Width := Width;
-    ABmp.Height := Height;
-    AImage := ABmp.CreateIntfImage;
-    lCanvas := TFPImageCanvas.Create(AImage);
-    // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
-    TCDCheckBoxDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, Self);
-    ABmp.LoadFromIntfImage(AImage);
-    // Second step of the drawing: LCL TCustomCanvas for easy font access
-    TCDCheckBoxDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas, Self);
-    Canvas.Draw(0, 0, ABmp);
-  finally
-    if lCanvas <> nil then
-      lCanvas.Free;
-    if AImage <> nil then
-      AImage.Free;
-    ABmp.Free;
-  end;
 end;
 
 { TCDCustomTabSheet }
@@ -1078,27 +762,45 @@ end;
 
 procedure TCDCustomTabControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: integer);
+var
+  i: Integer;
+  CurPage: TCDTabSheet;
+  CurStartLeftPos: Integer = 0;
+  VisiblePagesStarted: Boolean = False;
+  lTabWidth: Integer;
 begin
-  TCDCustomTabControlDrawer(FCurrentDrawer).MouseDown(Button, Shift, X, Y, Self);
   inherited MouseDown(Button, Shift, X, Y);
+
+  for i := 0 to Tabs.Count - 1 do
+  begin
+    if i = FTabCState.LeftmostTabVisibleIndex then
+      VisiblePagesStarted := True;
+
+    if VisiblePagesStarted then
+    begin
+      FTabCState.TabIndex := i;
+      lTabWidth := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_WIDTH, FState, FTabCState);
+      if (X > CurStartLeftPos) and
+        (X < CurStartLeftPos + lTabWidth) and
+        (Y < FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_HEIGHT, FState, FTabCState)) then
+      begin
+        if Self is TCDPageControl then
+          (Self as TCDPageControl).PageIndex := i
+        else
+          TabIndex := i;
+
+        Exit;
+      end;
+      CurStartLeftPos := CurStartLeftPos + lTabWidth;
+    end;
+  end;
 end;
 
 procedure TCDCustomTabControl.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: integer);
 begin
-  TCDCustomTabControlDrawer(FCurrentDrawer).MouseUp(Button, Shift, X, Y, Self);
-  inherited MouseUp(Button, Shift, X, Y);
-end;
 
-procedure TCDCustomTabControl.PrepareCurrentDrawer;
-var
-  lDrawStyle: TCDDrawStyle;
-begin
-  if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
-  else lDrawStyle := DrawStyle;
-  FCurrentDrawer := RegisteredCustomTabControlDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredCustomTabControlDrawers[dsCommon];
-  if FCurrentDrawer = nil then raise Exception.Create('No registered custom tab control drawers were found');
+  inherited MouseUp(Button, Shift, X, Y);
 end;
 
 procedure TCDCustomTabControl.SetTabIndex(AValue: Integer);
@@ -1116,6 +818,23 @@ begin
   FTabs.Assign(AValue);
   CorrectTabIndex();
   Invalidate;
+end;
+
+function TCDCustomTabControl.GetControlId: TCDControlID;
+begin
+  Result := cidCustomTabControl;
+end;
+
+procedure TCDCustomTabControl.CreateControlStateEx;
+begin
+  FTabCState := TCDCTabControlStateEx.Create;
+  FStateEx := FTabCState;
+end;
+
+procedure TCDCustomTabControl.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+
 end;
 
 constructor TCDCustomTabControl.Create(AOwner: TComponent);
@@ -1143,32 +862,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TCDCustomTabControl.Paint;
-var
-  AImage: TLazIntfImage = nil;
-  ABmp: TBitmap = nil;
-  lCanvas: TFPImageCanvas = nil;
-begin
-  ABmp := TBitmap.Create;
-  try
-    ABmp.Width := Width;
-    ABmp.Height := Height;
-    AImage := ABmp.CreateIntfImage;
-    lCanvas := TFPImageCanvas.Create(AImage);
-    TCDCustomTabControlDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, AImage, Self);
-    ABmp.LoadFromIntfImage(AImage);
-    ABmp.Canvas.Font.Assign(Font);
-    TCDCustomTabControlDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas, Self);
-    Canvas.Draw(0, 0, ABmp);
-  finally
-    if lCanvas <> nil then
-      lCanvas.Free;
-    if AImage <> nil then
-      AImage.Free;
-    ABmp.Free;
-  end;
-end;
-
 function TCDCustomTabControl.GetTabCount: Integer;
 begin
   Result := 0;
@@ -1184,7 +877,9 @@ end;
 
 procedure TCDControl.PrepareCurrentDrawer;
 begin
-
+  FDrawer := GetDrawer(FDrawStyle);
+  if FDrawer = nil then FDrawer := GetDrawer(dsCommon); // avoid exceptions in the object inspector if an invalid drawer is selected
+  if FDrawer = nil then raise Exception.Create('No registered drawers were found');
 end;
 
 procedure TCDControl.SetDrawStyle(const AValue: TCDDrawStyle);
@@ -1206,6 +901,35 @@ begin
     //Result := FCurrentDrawer.GetClientRect(Self);
 end;
 
+function TCDControl.GetControlId: TCDControlID;
+begin
+  Result := cidControl;
+end;
+
+procedure TCDControl.CreateControlStateEx;
+begin
+  FStateEx := TCDControlStateEx.Create;
+end;
+
+procedure TCDControl.PrepareControlState;
+begin
+  if Focused then FState := FState + [csfHasFocus]
+  else FState := FState - [csfHasFocus];
+
+  if Enabled then FState := FState + [csfEnabled]
+  else FState := FState - [csfEnabled];
+end;
+
+procedure TCDControl.PrepareControlStateEx;
+begin
+  if Parent <> nil then FStateEx.ParentRGBColor := Parent.GetRGBBackgroundColor;
+  if Color = clDefault then FStateEx.RGBColor := FDrawer.GetControlColor(GetControlId())
+  else FStateEx.RGBColor := GetRGBBackgroundColor;
+  FStateEx.Caption := Caption;
+  FStateEx.Font := Font;
+  FStateEx.AutoSize := AutoSize;
+end;
+
 procedure TCDControl.EraseBackground(DC: HDC);
 begin
 
@@ -1213,9 +937,9 @@ end;
 
 procedure TCDControl.Paint;
 var
-  AImage: TLazIntfImage = nil;
-  ABmp: TBitmap = nil;
-  lCanvas: TFPImageCanvas = nil;
+  ABmp: TBitmap;
+  lSize: TSize;
+  lControlId: TCDControlID;
 begin
   inherited Paint;
 
@@ -1225,48 +949,43 @@ begin
   try
     ABmp.Width := Width;
     ABmp.Height := Height;
-    AImage := ABmp.CreateIntfImage;
-    lCanvas := TFPImageCanvas.Create(AImage);
-    // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
-    FCurrentDrawer.DrawToIntfImage(lCanvas, Self);
-    ABmp.LoadFromIntfImage(AImage);
-    // Second step of the drawing: LCL TCustomCanvas for easy font access
-    FCurrentDrawer.DrawToCanvas(ABmp.Canvas, Self);
+    lSize := Size(Width, Height);
+    lControlId := GetControlId();
+    PrepareControlState;
+    PrepareControlStateEx;
+    FDrawer.DrawControl(ABmp.Canvas, Point(0, 0),
+      lSize, lControlId, FState, FStateEx);
     Canvas.Draw(0, 0, ABmp);
   finally
-    if lCanvas <> nil then
-      lCanvas.Free;
-    if AImage <> nil then
-      AImage.Free;
     ABmp.Free;
   end;
 end;
 
 procedure TCDControl.MouseEnter;
 begin
-  IsMouseOver := True;
+  FState := FState + [csfMouseOver];
   inherited MouseEnter;
 end;
 
 procedure TCDControl.MouseLeave;
 begin
-  IsMouseOver := True;
+  FState := FState - [csfMouseOver];
   inherited MouseLeave;
 end;
 
 constructor TCDControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  CreateControlStateEx;
+end;
+
+destructor TCDControl.Destroy;
+begin
+  FStateEx.Free;
+  inherited Destroy;
 end;
 
 { TCDButtonDrawer }
-
-function TCDButtonDrawer.GetClientRect(AControl: TCDControl): TRect;
-var
-  CDButton: TCDButton absolute AControl;
-begin
-  Result := Rect(1, 1, CDButton.Width - 1, CDButton.Height - 1);
-end;
 
 procedure TCDButtonControl.DoEnter;
 begin
@@ -1316,32 +1035,30 @@ end;
 
 procedure TCDButtonControl.MouseEnter;
 begin
-  IsMouseOver := True;
   Invalidate;
   inherited MouseEnter;
 end;
 
 procedure TCDButtonControl.MouseLeave;
 begin
-  IsMouseOver := False;
   Invalidate;
   inherited MouseLeave;
 end;
 
 procedure TCDButtonControl.DoButtonDown();
 begin
-  if not FIsDown then
+  if not (csfSunken in FState) then
   begin
-    FIsDown := True;
+    FState := FState + [csfSunken];
     Invalidate;
   end;
 end;
 
 procedure TCDButtonControl.DoButtonUp();
 begin
-  if FIsDown then
+  if csfSunken in FState then
   begin
-    FIsDown := False;
+    FState := FState - [csfSunken];
     Invalidate;
   end;
 end;
@@ -1352,23 +1069,17 @@ begin
   Invalidate;
 end;
 
-procedure TCDButton.PrepareCurrentDrawer;
-var
-  lDrawStyle: TCDDrawStyle;
+function TCDButton.GetControlId: TCDControlID;
 begin
-  if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
-  else lDrawStyle := DrawStyle;
-  FCurrentDrawer := RegisteredButtonDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredButtonDrawers[dsCommon];
-  if FCurrentDrawer = nil then raise Exception.Create('No registered button drawers were found');
+  Result := cidButton;
 end;
 
 constructor TCDButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   TabStop := True;
-  Width := 120;
-  Height := 43;
+  Width := 75;
+  Height := 25;
   //Color := clTeal;
   ParentFont := True;
   Color := $00F1F5F5;
@@ -1380,63 +1091,11 @@ begin
   inherited Destroy;
 end;
 
-procedure TCDButton.Paint;
-var
-  AImage: TLazIntfImage = nil;
-  ABmp: TBitmap = nil;
-  lCanvas: TFPImageCanvas = nil;
-  pColor: TColor;
-begin
-  //  inherited Paint;
-
-  PrepareCurrentDrawer();
-
-  ABmp := TBitmap.Create;
-  try
-    ABmp.Width := Width;
-    ABmp.Height := Height;
-    AImage := ABmp.CreateIntfImage;
-    lCanvas := TFPImageCanvas.Create(AImage);
-    // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
-    TCDButtonDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, Self);
-    ABmp.LoadFromIntfImage(AImage);
-    // Second step of the drawing: LCL TCustomCanvas for easy font access
-    TCDButtonDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas, Self);
-
-    Canvas.Draw(0, 0, ABmp);
-  finally
-    if lCanvas <> nil then
-      lCanvas.Free;
-    if AImage <> nil then
-      AImage.Free;
-    ABmp.Free;
-  end;
-end;
-
-
 { TCDGroupBox }
 
-procedure TCDGroupBox.PrepareCurrentDrawer();
-var
-  lDrawStyle: TCDDrawStyle;
+function TCDGroupBox.GetControlId: TCDControlID;
 begin
-  if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
-  else lDrawStyle := DrawStyle;
-  FCurrentDrawer := RegisteredGroupBoxDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredGroupBoxDrawers[dsCommon];
-  if FCurrentDrawer = nil then raise Exception.Create('No registered group box drawers were found');
-end;
-
-procedure TCDGroupBox.SetDrawStyle(const AValue: TCDDrawStyle);
-begin
-  if FDrawStyle = AValue then
-    exit;
-  FDrawStyle := AValue;
-
-  Invalidate;
-
-  PrepareCurrentDrawer();
-  TCDGroupBoxDrawer(FCurrentDrawer).SetClientRectPos(Self);
+  Result := cidGroupBox;
 end;
 
 procedure TCDGroupBox.RealSetText(const Value: TCaption);
@@ -1453,8 +1112,6 @@ begin
   TabStop := False;
   ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
     csDoubleClicks, csReplicatable];
-
-  PrepareCurrentDrawer();
 end;
 
 destructor TCDGroupBox.Destroy;
@@ -1462,54 +1119,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TCDGroupBox.EraseBackground(DC: HDC);
-begin
-
-end;
-
-procedure TCDGroupBox.Paint;
-var
-  AImage: TLazIntfImage = nil;
-  ABmp: TBitmap = nil;
-  lCanvas: TFPImageCanvas = nil;
-begin
-  inherited Paint;
-
-  PrepareCurrentDrawer();
-
-  ABmp := TBitmap.Create;
-  try
-    ABmp.Width := Width;
-    ABmp.Height := Height;
-    AImage := ABmp.CreateIntfImage;
-    lCanvas := TFPImageCanvas.Create(AImage);
-    // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
-    TCDGroupBoxDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, Self);
-    ABmp.LoadFromIntfImage(AImage);
-    // Second step of the drawing: LCL TCustomCanvas for easy font access
-    TCDGroupBoxDrawer(FCurrentDrawer).DrawToCanvas(ABmp.Canvas, Self);
-    Canvas.Draw(0, 0, ABmp);
-  finally
-    if lCanvas <> nil then
-      lCanvas.Free;
-    if AImage <> nil then
-      AImage.Free;
-    ABmp.Free;
-  end;
-end;
-
 { TCDTrackBar }
-
-procedure TCDTrackBar.PrepareCurrentDrawer;
-var
-  lDrawStyle: TCDDrawStyle;
-begin
-  if DrawStyle = dsDefault then lDrawStyle := DefaultStyle
-  else lDrawStyle := DrawStyle;
-  FCurrentDrawer := RegisteredTrackBarDrawers[lDrawStyle];
-  if FCurrentDrawer = nil then FCurrentDrawer := RegisteredTrackBarDrawers[dsCommon];
-  if FCurrentDrawer = nil then raise Exception.Create('No registered track bar drawers were found');
-end;
 
 procedure TCDTrackBar.SetMax(Value: integer);
 begin
@@ -1538,7 +1148,7 @@ function TCDTrackBar.GetPositionFromMousePos(X, Y: integer): integer;
 var
   lLeftBorder, lRightBorder: Integer;
 begin
-  TCDTrackBarDrawer(FCurrentDrawer).GetGeometry(lLeftBorder, lRightBorder);
+  TCDTrackBarDrawer(FDrawer).GetGeometry(lLeftBorder, lRightBorder);
   if X > Width - lRightBorder then Result := FMax
   else if X < lLeftBorder then Result := FMin
   else Result := FMin + (X - lLeftBorder) * (FMax - FMin + 1) div (Width - lRightBorder - lLeftBorder);
@@ -1546,6 +1156,25 @@ begin
   // sanity check
   if Result > FMax then Result := FMax;
   if Result < FMin then Result := FMin;
+end;
+
+function TCDTrackBar.GetControlId: TCDControlID;
+begin
+  Result := cidTrackBar;
+end;
+
+procedure TCDTrackBar.CreateControlStateEx;
+begin
+  FTBState := TCDTrackBarStateEx.Create;
+  FStateEx := FTBState;
+end;
+
+procedure TCDTrackBar.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+  FTBState.Min := FMin;
+  FTBState.Max := FMax;
+  FTBState.Position := FPosition;
 end;
 
 procedure TCDTrackBar.Changed;
@@ -1646,16 +1275,10 @@ end;
 
 destructor TCDTrackBar.Destroy;
 begin
-  FCurrentDrawer.Free;
   inherited Destroy;
 end;
 
-procedure TCDTrackBar.EraseBackground(DC: HDC);
-begin
-  //inherited EraseBackground(DC);
-end;
-
-procedure TCDTrackBar.Paint;
+{procedure TCDTrackBar.Paint;
 var
   AImage: TLazIntfImage = nil;
   ABmp: TBitmap = nil;
@@ -1668,7 +1291,7 @@ begin
     AImage := ABmp.CreateIntfImage;
     lCanvas := TFPImageCanvas.Create(AImage);
     // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
-    TCDTrackBarDrawer(FCurrentDrawer).DrawToIntfImage(lCanvas, AImage, Self);
+    FCurrentDrawer.DrawToIntfImage(lCanvas, AImage, Self);
     ABmp.LoadFromIntfImage(AImage);
     Canvas.Draw(0, 0, ABmp);
   finally
@@ -1678,7 +1301,7 @@ begin
       AImage.Free;
     ABmp.Free;
   end;
-end;
+end;}
 
 { TCDTabSheet }
 
@@ -1706,10 +1329,14 @@ begin
 end;
 
 procedure TCDTabSheet.Paint;
+var
+  lSize: TSize;
 begin
   if CDTabControl <> nil then
   begin
-    TCDCustomTabControlDrawer(CDTabControl.FCurrentDrawer).DrawTabSheet(Canvas, CDTabControl);
+    lSize := Size(Width, Height);
+    CDTabControl.FDrawer.DrawTabSheet(Canvas, Point(0, 0), lSize, CDTabControl.FState,
+      CDTabControl.FTabCState);
   end;
 end;
 
@@ -1724,10 +1351,10 @@ begin
   NewPage.Parent := Self;
   NewPage.CDTabControl := Self;
   //Name := Designer.CreateUniqueComponentName(ClassName);
-  NewPage.Name := GetUniqueName(sTABSHEET_DEFAULT_NAME, Self.Owner);
+{  NewPage.Name := GetUniqueName(sTABSHEET_DEFAULT_NAME, Self.Owner);
   if S = '' then
     NewPage.Caption := NewPage.Name
-  else
+  else}
     NewPage.Caption := S;
 
   PositionTabSheet(NewPage);
@@ -1754,10 +1381,10 @@ begin
   NewPage := TCDTabSheet.Create(Owner);
   NewPage.Parent := Self;
   //Name := Designer.CreateUniqueComponentName(ClassName);
-  NewPage.Name := GetUniqueName(sTABSHEET_DEFAULT_NAME, Self.Owner);
+{  NewPage.Name := GetUniqueName(sTABSHEET_DEFAULT_NAME, Self.Owner);
   if S = '' then
     NewPage.Caption := NewPage.Name
-  else
+  else}
     NewPage.Caption := S;
 
   PositionTabSheet(NewPage);
@@ -1906,7 +1533,8 @@ var
 begin
 //  ATabSheet.SetBounds(1, 32 + 1, Width - 3, Height - 32 - 4);
   lIndex := FTabs.IndexOfObject(ATabSheet);
-  lTabHeight := TCDCustomTabControlDrawer(FCurrentDrawer).GetTabHeight(lIndex, Self);
+  FTabCState.TabIndex := lIndex;
+  lTabHeight := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_HEIGHT, FState, FStateEx);
   ATabSheet.BorderSpacing.Top := lTabHeight;
   ATabSheet.BorderSpacing.Left := 2;
   ATabSheet.BorderSpacing.Right := 3;
@@ -1929,67 +1557,5 @@ begin
   Result := FTabIndex;
 end;
 
-var
-  i: Integer;
-finalization
-  // Free all drawers
-  // Standard Tab
-  for i := 0 to CDDRAWSTYLE_COUNT-1 do
-  begin
-    if RegisteredButtonDrawers[TCDDrawStyle(i)] <> nil then
-    begin
-      RegisteredButtonDrawers[TCDDrawStyle(i)].Free;
-      RegisteredButtonDrawers[TCDDrawStyle(i)] := nil;
-    end;
-  end;
-  for i := 0 to CDDRAWSTYLE_COUNT-1 do
-  begin
-    if RegisteredEditDrawers[TCDDrawStyle(i)] <> nil then
-    begin
-      RegisteredEditDrawers[TCDDrawStyle(i)].Free;
-      RegisteredEditDrawers[TCDDrawStyle(i)] := nil;
-    end;
-  end;
-  for i := 0 to CDDRAWSTYLE_COUNT-1 do
-  begin
-    if RegisteredGroupBoxDrawers[TCDDrawStyle(i)] <> nil then
-    begin
-      RegisteredGroupBoxDrawers[TCDDrawStyle(i)].Free;
-      RegisteredGroupBoxDrawers[TCDDrawStyle(i)] := nil;
-    end;
-  end;
-  for i := 0 to CDDRAWSTYLE_COUNT-1 do
-  begin
-    if RegisteredCheckBoxDrawers[TCDDrawStyle(i)] <> nil then
-    begin
-      RegisteredCheckBoxDrawers[TCDDrawStyle(i)].Free;
-      RegisteredCheckBoxDrawers[TCDDrawStyle(i)] := nil;
-    end;
-  end;
-  // Common Controls Tab
-  for i := 0 to CDDRAWSTYLE_COUNT-1 do
-  begin
-    if RegisteredTrackBarDrawers[TCDDrawStyle(i)] <> nil then
-    begin
-      RegisteredTrackBarDrawers[TCDDrawStyle(i)].Free;
-      RegisteredTrackBarDrawers[TCDDrawStyle(i)] := nil;
-    end;
-  end;
-  for i := 0 to CDDRAWSTYLE_COUNT-1 do
-  begin
-    if RegisteredListViewDrawers[TCDDrawStyle(i)] <> nil then
-    begin
-      RegisteredListViewDrawers[TCDDrawStyle(i)].Free;
-      RegisteredListViewDrawers[TCDDrawStyle(i)] := nil;
-    end;
-  end;
-  for i := 0 to CDDRAWSTYLE_COUNT-1 do
-  begin
-    if RegisteredCustomTabControlDrawers[TCDDrawStyle(i)] <> nil then
-    begin
-      RegisteredCustomTabControlDrawers[TCDDrawStyle(i)].Free;
-      RegisteredCustomTabControlDrawers[TCDDrawStyle(i)] := nil;
-    end;
-  end;
 end.
 
