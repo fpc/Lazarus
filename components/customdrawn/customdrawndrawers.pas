@@ -31,6 +31,9 @@ const
   TCDEDIT_SELECTED_BACKGROUND_COLOR = $402;
   TCDEDIT_SELECTED_TEXT_COLOR = $403;
 
+  // Default Colors
+  TCDBUTTON_DEFAULT_COLOR = $10000;
+
 type
 
   TCDDrawStyle = (

@@ -115,16 +115,8 @@ begin
   PreferredHeight := 0;
 
   case AControlId of
-  cidEdit:
-  begin
-{    if AStateEx.AutoSize then
-      PreferredWidth :=
-          TCDEDIT_LEFT_TEXT_SPACING: Result := 4;
-  TCDEDIT_RIGHT_TEXT_SPACING: Result := 3;
-+ GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx);}
-
-    PreferredHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx)+5;
-  end;
+  // In the LCL TEdit AutoSizes only its Height, so follow this here
+  cidEdit: PreferredHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx)+5;
   cidCheckBox:
   begin
     if AStateEx.AutoSize then
@@ -142,6 +134,7 @@ begin
   TCDEDIT_TEXT_COLOR:          Result := clBlack;
   TCDEDIT_SELECTED_BACKGROUND_COLOR: Result := clBlue;
   TCDEDIT_SELECTED_TEXT_COLOR: Result := clWhite;
+  TCDBUTTON_DEFAULT_COLOR:     Result := $00F1F5F5;
   else
     Result := clBlack;
   end;

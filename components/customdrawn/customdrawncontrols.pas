@@ -19,7 +19,7 @@ uses
   // LazUtils
   lazutf8,
   // LCL -> Use only TForm, TWinControl, TCanvas, TLazIntfImage
-  Graphics, Controls, LCLType, LCLIntf,
+  Graphics, Controls, LCLType, LCLIntf, LCLMessageGlue,
   LMessages, Messages, LCLProc, Forms,
   // Other LCL units are only for types
   StdCtrls, ExtCtrls, ComCtrls,
@@ -95,7 +95,9 @@ type
     destructor Destroy; override;
   published
     property Action;
+    property Align;
     property Anchors;
+    property AutoSize;
     property Caption;
     property Color;
     property Constraints;
@@ -162,7 +164,11 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    property Align;
+    property Anchors;
+    property AutoSize;
     property Color;
+    property DrawStyle;
     property TabStop default True;
     property Text: string read GetText write SetText;
   end;
@@ -624,8 +630,8 @@ end;
 constructor TCDEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Width := 100;
-  Height := 30;
+  Width := 80;
+  Height := 25;
   TabStop := True;
   ControlStyle := [csCaptureMouse, csClickEvents,
     csDoubleClicks, csReplicatable];
@@ -972,7 +978,10 @@ end;
 procedure TCDButtonControl.KeyUp(var Key: word; Shift: TShiftState);
 begin
   if (Key = VK_SPACE) or (Key = VK_RETURN) then
+  begin
     DoButtonUp();
+    Self.Click; // TCustomControl does not respond to LM_CLICKED
+  end;
 
   inherited KeyUp(Key, Shift);
 end;
@@ -1040,9 +1049,7 @@ begin
   TabStop := True;
   Width := 75;
   Height := 25;
-  //Color := clTeal;
   ParentFont := True;
-  Color := $00F1F5F5;
   PrepareCurrentDrawer();
 end;
 
