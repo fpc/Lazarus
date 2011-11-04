@@ -253,7 +253,7 @@ begin
   {Assign Barcode text}
   Memo1.Assign(Memo);
 
-  if (Memo1.Text <> '') and (Memo1.Strings[0][1]<>'[') and
+  if (Memo1.Text <> '') and (pos('[',Memo1.Strings[0])=0) and
     ((bcNames[Param.cBarType, 1] = 'A') or IsNumeric(Memo1.Strings[0]))  then
   begin
       BarC.Text := Memo1.Strings[0];
@@ -337,7 +337,10 @@ begin
 
   try
     BarC.DrawBarcode(Result.Canvas);
-    FText := BarC.Text;
+    if BarC.Checksum then
+      FText := BarC.CodeText
+    else
+      FText := BarC.Text;
   except on E: Exception do
     FText := E.Message
   end;
@@ -560,7 +563,7 @@ begin
   if not Visible then Exit;
 
   if Memo1.Count > 0 then
-    if (Length(Memo1[0]) > 0) and (Memo1[0][1] = '[') then
+    if (Length(Memo1[0]) > 0) and (Pos('[',Memo1[0])<>0) then
       Memo1[0] := frParser.Calc(Memo1[0]);
   Stream.Write(Typ, 1);
   frWriteString(Stream, ClassName);
@@ -705,7 +708,7 @@ begin
   Bmp := nil;
   bc := TBarCode.Create(nil);
   try
-    if Pos('[',M1.Text) = 1 then
+    if Pos('[',M1.Text) <> 0 then
     begin
       bc.Text := cbDefaultText;
       bc.checksum := true

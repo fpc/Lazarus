@@ -97,6 +97,8 @@ type
   // black_half means a black line with 2/5 height (used for PostNet)
 
 
+  { TBarcode }
+
   TBarcode = class(TComponent)
   private
     { Private-Deklarationen }
@@ -110,6 +112,7 @@ type
     FCheckSum: boolean;
     FShowText: boolean;
     FAngle: double;
+    FCodetext: string;
 
     modules: array[0..3] of shortint;
 
@@ -138,6 +141,7 @@ type
     procedure SetModul(v: integer);
 
     function GetWidth: integer;
+    procedure SetText(AValue: string);
 
   protected
     { Protected-Deklarationen }
@@ -148,11 +152,13 @@ type
     constructor Create(aOwner: TComponent); override;
     procedure DrawBarcode(Canvas: TCanvas);
     procedure DrawText(Canvas: TCanvas);
+
+    property CodeText: string read FCodetext write FCodeText;
   published
     { Published-Deklarationen }
     // Height of Barcode (Pixel)
     property Height: integer read FHeight write FHeight;
-    property Text: string read FText write FText;
+    property Text: string read FText write SetText;
     property Top: integer read FTop write FTop;
     property Left: integer read FLeft write FLeft;
     // Width of the smallest line in a Barcode
@@ -439,6 +445,13 @@ begin
   end;
 end;
 
+procedure TBarcode.SetText(AValue: string);
+begin
+  if FText=AValue then Exit;
+  FText:=AValue;
+  FCodeText:=AValue;
+end;
+
 
 ////////////////////////////// EAN /////////////////////////////////////////
 
@@ -573,16 +586,31 @@ var
   i, j, LK: integer;
   tmp: string;
 begin
-  if FCheckSum then
-  begin
-    tmp := '0000000000000' + FText;
-    tmp := getEAN(copy(tmp, length(tmp) - 12, 12) + '0');
-  end
-  else
-    tmp := Ftext;
 
-  LK := StrToInt(tmp[1]);
-  tmp := copy(tmp, 2, 12);
+  // enforce a 13 char string by adding a 0
+  // verifier digit if necesary or calc it if
+  // checksum was specified
+  tmp := FText;
+  lk := Length(tmp);
+  if lk<13 then begin
+    tmp := stringofchar('0', 12-lk) + tmp + '0';
+    // TODO: if not FCheckSum was specified
+    //       resulting barcode might be invalid
+    //       as a '0' checksum digit was forced.
+  end;
+
+  if FCheckSum then
+    FCodeText := getEAN(copy(tmp, 1, 12) + '0')
+  else
+    FCodeText := copy(tmp, 1, 13);
+
+  // check if there is any strange char in string
+  for i:=1 to 13 do
+    if not (FCodeText[i] in ['0'..'9']) then
+      FCodeText[i] := '0';
+
+  LK := StrToInt(FCodeText[1]);
+  tmp := copy(FCodeText, 2, 12);
 
   Result := '505';   // Startcode
 
