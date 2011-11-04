@@ -151,6 +151,7 @@ type
     procedure DoManageVisibleTextStart;
     function GetText: string;
     procedure SetText(AValue: string);
+    function MousePosToCaretPos(X, Y: Integer): Integer;
   protected
     // keyboard
     procedure DoEnter; override;
@@ -442,7 +443,13 @@ end;
 
 procedure TCDEdit.HandleCaretTimer(Sender: TObject);
 begin
-  FEditState.CaretIsVisible := not FEditState.CaretIsVisible;
+  if FEditState.EventArrived then
+  begin
+    FEditState.CaretIsVisible := True;
+    FEditState.EventArrived := False;
+  end
+  else FEditState.CaretIsVisible := not FEditState.CaretIsVisible;
+
   Invalidate;
 end;
 
@@ -475,6 +482,46 @@ begin
   Caption := AValue;
 end;
 
+// returns a zero-based position of the caret
+function TCDEdit.MousePosToCaretPos(X, Y: Integer): Integer;
+var
+  lStrLen, i: PtrInt;
+  lVisibleStr, lCurChar: String;
+  lPos, lCurCharLen: Integer;
+  lBestDiff: Cardinal = $FFFFFFFF;
+  lLastDiff: Cardinal = $FFFFFFFF;
+  lCurDiff, lBestMatch: Integer;
+begin
+  Canvas.Font := Font;
+  lVisibleStr := UTF8Copy(Text, FEditState.VisibleTextStart, Length(Text));
+  lStrLen := UTF8Length(lVisibleStr);
+  lPos := FDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING);
+  for i := 0 to lStrLen do
+  begin
+    lCurDiff := X - lPos;
+    if lCurDiff < 0 then lCurDiff := lCurDiff * -1;
+
+    if lCurDiff < lBestDiff then
+    begin
+      lBestDiff := lCurDiff;
+      lBestMatch := i;
+    end;
+
+    // When the diff starts to grow we already found the caret pos, so exit
+    if lCurDiff > lLastDiff then Exit(lBestMatch)
+    else lLastDiff := lCurDiff;
+
+    if i <> lStrLen then
+    begin
+      lCurChar := UTF8Copy(lVisibleStr, i+1, 1);
+      lCurCharLen := Canvas.TextWidth(lCurChar);
+      lPos := lPos + lCurCharLen;
+    end;
+  end;
+
+  Exit(lBestMatch);
+end;
+
 procedure TCDEdit.DoEnter;
 begin
   inherited DoEnter;
@@ -497,6 +544,7 @@ procedure TCDEdit.KeyDown(var Key: word; Shift: TShiftState);
 var
   lLeftText, lRightText, lOldText: String;
   lOldTextLength: PtrInt;
+  lKeyWasProcessed: Boolean = True;
 begin
   inherited KeyDown(Key, Shift);
 
@@ -541,10 +589,10 @@ begin
     if (FEditState.CaretPos > 0) then
     begin
       // Selecting to the left
-      if ssShift in Shift then
+      if [ssShift] = Shift then
       begin
+        if FEditState.SelLength = 0 then FEditState.SelStart := FEditState.CaretPos;
         Dec(FEditState.SelLength);
-        if FEditState.SelStart < 0 then FEditState.SelStart := FEditState.CaretPos;
       end
       // Normal move to the left
       else FEditState.SelLength := 0;
@@ -560,10 +608,10 @@ begin
     if FEditState.CaretPos < lOldTextLength then
     begin
       // Selecting to the right
-      if ssShift in Shift then
+      if [ssShift] = Shift then
       begin
+        if FEditState.SelLength = 0 then FEditState.SelStart := FEditState.CaretPos;
         Inc(FEditState.SelLength);
-        if FEditState.SelStart < 0 then FEditState.SelStart := FEditState.CaretPos;
       end
       // Normal move to the right
       else FEditState.SelLength := 0;
@@ -575,7 +623,11 @@ begin
     end;
   end;
 
+  else
+    lKeyWasProcessed := False;
   end; // case
+
+  if lKeyWasProcessed then FEditState.EventArrived := True;
 end;
 
 procedure TCDEdit.KeyUp(var Key: word; Shift: TShiftState);
@@ -601,6 +653,7 @@ begin
   lRightText := UTF8Copy(lOldText, FEditState.CaretPos+1, UTF8Length(lOldText));
   Text := lLeftText + UTF8Key + lRightText;
   Inc(FEditState.CaretPos);
+  FEditState.EventArrived := True;
   FEditState.CaretIsVisible := True;
   Invalidate;
 end;
@@ -609,17 +662,37 @@ procedure TCDEdit.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
+  DragDropStarted := True;
+
+  // Caret positioning
+  FEditState.CaretPos := MousePosToCaretPos(X, Y);
+  FEditState.SelLength := 0;
+  FEditState.SelStart := FEditState.CaretPos;
+  FEditState.EventArrived := True;
+  FEditState.CaretIsVisible := True;
+  Invalidate;
 end;
 
 procedure TCDEdit.MouseMove(Shift: TShiftState; X, Y: integer);
 begin
   inherited MouseMove(Shift, X, Y);
+
+  // Mouse dragging selection
+  if DragDropStarted then
+  begin
+    FEditState.CaretPos := MousePosToCaretPos(X, Y);
+    FEditState.SelLength := FEditState.CaretPos - FEditState.SelStart;
+    FEditState.EventArrived := True;
+    FEditState.CaretIsVisible := True;
+    Invalidate;
+  end;
 end;
 
 procedure TCDEdit.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
+  DragDropStarted := False;
 end;
 
 procedure TCDEdit.MouseEnter;
@@ -642,7 +715,6 @@ begin
 
   // State information
   FEditState.VisibleTextStart := 1;
-  FEditState.SelStart := -1;
 
   // Caret code
   FCaretTimer := TTimer.Create(Self);

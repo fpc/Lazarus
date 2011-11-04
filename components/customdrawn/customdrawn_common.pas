@@ -366,12 +366,12 @@ begin
     if lSelLength < 0 then lSelLength := lSelLength * -1;
 
     // Text left of the selection
-    lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart, lSelLeftPos-AStateEx.VisibleTextStart);
+    lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart, lSelLeftPos-AStateEx.VisibleTextStart+1);
     ADest.TextOut(4, lTextTopSpacing, lVisibleText);
     lSelLeftPixelPos := ADest.TextWidth(lVisibleText)+lTextLeftSpacing;
 
     // The selection background
-    lVisibleText := UTF8Copy(lControlText, lSelLeftPos, lSelLength);
+    lVisibleText := UTF8Copy(lControlText, lSelLeftPos+1, lSelLength);
     lTextWidth := ADest.TextWidth(lVisibleText);
     ADest.Brush.Color := clBlue;
     ADest.Brush.Style := bsSolid;
