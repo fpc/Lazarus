@@ -4048,10 +4048,6 @@ msgstr "このファイルがソースエディタでアクティブなとき.."
 msgid "Working directory (Leave empty for file path)"
 msgstr "作業ディレクトリ （ファイルパスは空白にしておいてください）"
 
-#: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath2
-msgid "Working Directory (Leave empty for file path)"
-msgstr "作業ディレクトリ （ファイルパスは空白にしておいてください）"
-
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "デフォルトでない値を太字に"
@@ -4427,7 +4423,9 @@ msgid "Is a root control"
 msgstr "はルートコントロールです"
 
 #: lazarusidestrconsts.liscelongparamlistcount
-msgid "Parameters count treating as \"many\""
+#, fuzzy
+#| msgid "Parameters count treating as \"many\""
+msgid "Parameters count treated as \"many\""
 msgstr "「多い」と扱われる引数の数"
 
 #: lazarusidestrconsts.liscelongprocedures
@@ -4455,7 +4453,9 @@ msgid "Show Source Nodes"
 msgstr "ソースノードを表示"
 
 #: lazarusidestrconsts.liscenestedproccount
-msgid "Nested procedures count treating as \"many\""
+#, fuzzy
+#| msgid "Nested procedures count treating as \"many\""
+msgid "Nested procedures count treated as \"many\""
 msgstr "「多い」と扱われるネストされた手続きの数"
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
@@ -7720,10 +7720,6 @@ msgstr ""
 msgid "Exclude Filter"
 msgstr "除外フィルタ"
 
-#: lazarusidestrconsts.lisexcludefilter2
-msgid "Exclude filter"
-msgstr "除外フィルタ"
-
 #: lazarusidestrconsts.lisexecutable
 msgid "Executable"
 msgstr ""
@@ -8241,6 +8237,38 @@ msgstr "<説明>%s著作権(C)<年><作者名><連絡先>%sこのソースはフ
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
 msgstr "グループ"
+
+#: lazarusidestrconsts.lisgroupassignexisting
+msgid "Assign to existing \"%s\" group?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupemptydelete
+msgid "No more breakpoints are assigned to group \"%s\", delete it?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupemptydeletemore
+msgid "%sThere are %d more empty groups, delete all?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameemptyclearinstead
+msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameinput
+msgid "Group name:"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameinvalid
+msgid "BreakpointGroup name must be a valid Pascal identifier name."
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupsetnew
+msgid "Set new group..."
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupsetnone
+msgid "Clear group(s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
@@ -9571,11 +9599,6 @@ msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "構築"
 
-#: lazarusidestrconsts.lislazbuildbuildadvanced
-msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
-msgid "Build Advanced"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "コードツールを構築"
@@ -9595,6 +9618,10 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "JITFormを構築"
+
+#: lazarusidestrconsts.lislazbuildbuildmany
+msgid "Build Many"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -14129,6 +14156,10 @@ msgstr "値をセット"
 msgid "Short:"
 msgstr "Short:"
 
+#: lazarusidestrconsts.lisshow
+msgid "Show"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
 msgstr "宣言ヒントを表示"
@@ -16132,6 +16163,22 @@ msgstr "ウィンドウの位置/サイズを復元"
 #: lazarusidestrconsts.rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "ウィンドウサイズを復元"
+
+#: lazarusidestrconsts.rsiwpsplittercustomposition
+msgid "Custom Size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterdefault
+msgid "Default Size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterfollowwindow
+msgid "Restore with window"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
+msgid "Restore Size"
+msgstr ""
 
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"

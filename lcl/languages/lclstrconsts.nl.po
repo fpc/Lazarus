@@ -74,6 +74,10 @@ msgstr "Hoofdletter"
 msgid "Clear"
 msgstr "Wissen"
 
+#: lclstrconsts.ifsvk_cmd
+msgid "Cmd"
+msgstr ""
+
 #: lclstrconsts.ifsvk_control
 msgid "Control"
 msgstr "Controleer"
@@ -157,6 +161,10 @@ msgctxt "lclstrconsts.ifsvk_menu"
 msgid "Menu"
 msgstr "Menu"
 
+#: lclstrconsts.ifsvk_meta
+msgid "Meta"
+msgstr ""
+
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
 msgstr "Mode wijziging"
@@ -227,6 +235,10 @@ msgstr "Snapshot"
 #: lclstrconsts.ifsvk_space
 msgid "Space key"
 msgstr "Spatiebar"
+
+#: lclstrconsts.ifsvk_super
+msgid "Super"
+msgstr ""
 
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"

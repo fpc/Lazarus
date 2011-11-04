@@ -73,6 +73,10 @@ msgstr "大写"
 msgid "Clear"
 msgstr "清除"
 
+#: lclstrconsts.ifsvk_cmd
+msgid "Cmd"
+msgstr ""
+
 #: lclstrconsts.ifsvk_control
 msgid "Control"
 msgstr "控件"
@@ -156,6 +160,10 @@ msgctxt "lclstrconsts.ifsvk_menu"
 msgid "Menu"
 msgstr "菜单"
 
+#: lclstrconsts.ifsvk_meta
+msgid "Meta"
+msgstr ""
+
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
 msgstr "模式更改"
@@ -226,6 +234,10 @@ msgstr "快照"
 #: lclstrconsts.ifsvk_space
 msgid "Space key"
 msgstr "空格键"
+
+#: lclstrconsts.ifsvk_super
+msgid "Super"
+msgstr ""
 
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"

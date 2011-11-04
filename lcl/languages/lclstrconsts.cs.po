@@ -71,6 +71,10 @@ msgstr "Velké písmena"
 msgid "Clear"
 msgstr "Vyčistit"
 
+#: lclstrconsts.ifsvk_cmd
+msgid "Cmd"
+msgstr ""
+
 #: lclstrconsts.ifsvk_control
 msgid "Control"
 msgstr "Ovládání"
@@ -154,6 +158,10 @@ msgctxt "lclstrconsts.ifsvk_menu"
 msgid "Menu"
 msgstr "Nabídka"
 
+#: lclstrconsts.ifsvk_meta
+msgid "Meta"
+msgstr ""
+
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
 msgstr "Změna režimu"
@@ -224,6 +232,10 @@ msgstr "Snímek"
 #: lclstrconsts.ifsvk_space
 msgid "Space key"
 msgstr "Mezerník"
+
+#: lclstrconsts.ifsvk_super
+msgid "Super"
+msgstr ""
 
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"

@@ -4027,10 +4027,6 @@ msgstr "Quando este arquivo estiver ativo no editor de código ..."
 msgid "Working directory (Leave empty for file path)"
 msgstr "Diretório de trabalho (Deixar vazio para caminho de arquivo)"
 
-#: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath2
-msgid "Working Directory (Leave empty for file path)"
-msgstr "Diretório de trabalho (Deixar vazio para caminho de arquivo)"
-
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "Valores não padrão em negrito"
@@ -4402,7 +4398,9 @@ msgid "Is a root control"
 msgstr "É um controle raiz"
 
 #: lazarusidestrconsts.liscelongparamlistcount
-msgid "Parameters count treating as \"many\""
+#, fuzzy
+#| msgid "Parameters count treating as \"many\""
+msgid "Parameters count treated as \"many\""
 msgstr "Núm. parâmetros tratados como \"muitos\""
 
 #: lazarusidestrconsts.liscelongprocedures
@@ -4430,7 +4428,9 @@ msgid "Show Source Nodes"
 msgstr "Exibir Nós Fonte"
 
 #: lazarusidestrconsts.liscenestedproccount
-msgid "Nested procedures count treating as \"many\""
+#, fuzzy
+#| msgid "Nested procedures count treating as \"many\""
+msgid "Nested procedures count treated as \"many\""
 msgstr "Núm. procedimentos aninhados tratados como \"muitos\""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
@@ -7680,10 +7680,6 @@ msgstr "%s excluído em tempo de execução"
 msgid "Exclude Filter"
 msgstr "Filtro de Exclusão"
 
-#: lazarusidestrconsts.lisexcludefilter2
-msgid "Exclude filter"
-msgstr "Filtro exclusão"
-
 #: lazarusidestrconsts.lisexecutable
 msgid "Executable"
 msgstr "Executável"
@@ -8198,6 +8194,38 @@ msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEstes fo
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
 msgstr "Grupo"
+
+#: lazarusidestrconsts.lisgroupassignexisting
+msgid "Assign to existing \"%s\" group?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupemptydelete
+msgid "No more breakpoints are assigned to group \"%s\", delete it?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupemptydeletemore
+msgid "%sThere are %d more empty groups, delete all?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameemptyclearinstead
+msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameinput
+msgid "Group name:"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameinvalid
+msgid "BreakpointGroup name must be a valid Pascal identifier name."
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupsetnew
+msgid "Set new group..."
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupsetnone
+msgid "Clear group(s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
@@ -9522,11 +9550,6 @@ msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Construir"
 
-#: lazarusidestrconsts.lislazbuildbuildadvanced
-msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
-msgid "Build Advanced"
-msgstr "Construção Avançada"
-
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Construir Ferramentas de Código"
@@ -9546,6 +9569,10 @@ msgstr "Construção da IDE"
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Construir JITForm"
+
+#: lazarusidestrconsts.lislazbuildbuildmany
+msgid "Build Many"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -14024,6 +14051,10 @@ msgstr "Definir valor"
 msgid "Short:"
 msgstr "Curto:"
 
+#: lazarusidestrconsts.lisshow
+msgid "Show"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
 msgstr "Exibir dicas declarações"
@@ -16011,6 +16042,22 @@ msgstr "Restaurar geometria da janela"
 #: lazarusidestrconsts.rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Restaurar tamanho da janela"
+
+#: lazarusidestrconsts.rsiwpsplittercustomposition
+msgid "Custom Size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterdefault
+msgid "Default Size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterfollowwindow
+msgid "Restore with window"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
+msgid "Restore Size"
+msgstr ""
 
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"

@@ -1072,6 +1072,7 @@ msgid "Editor files"
 msgstr "Editorin tiedostot"
 
 #: lazarusidestrconsts.dlgedidcomlet
+msgctxt "lazarusidestrconsts.dlgedidcomlet"
 msgid "Identifier completion"
 msgstr "Tunnisteen täydentäminen"
 
@@ -1633,6 +1634,7 @@ msgid "Host application"
 msgstr "Isäntäsovellus"
 
 #: lazarusidestrconsts.dlgidentifiercompletion
+msgctxt "lazarusidestrconsts.dlgidentifiercompletion"
 msgid "Identifier completion"
 msgstr "Tunnisteen täydentäminen"
 
@@ -3942,10 +3944,6 @@ msgstr "Kun tämä tiedosto on aktiivinen editorissa ..."
 msgid "Working directory (Leave empty for file path)"
 msgstr "Työhakemisto (Tyhjä = tiedoston polku)"
 
-#: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath2
-msgid "Working Directory (Leave empty for file path)"
-msgstr ""
-
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "Lihavoi muutetut arvot"
@@ -4314,7 +4312,9 @@ msgid "Is a root control"
 msgstr "On juuri-kontrolli"
 
 #: lazarusidestrconsts.liscelongparamlistcount
-msgid "Parameters count treating as \"many\""
+#, fuzzy
+#| msgid "Parameters count treating as \"many\""
+msgid "Parameters count treated as \"many\""
 msgstr "Parametrien määränä käytetään \"monta\""
 
 #: lazarusidestrconsts.liscelongprocedures
@@ -4342,7 +4342,9 @@ msgid "Show Source Nodes"
 msgstr "Näytä lähdesolmut"
 
 #: lazarusidestrconsts.liscenestedproccount
-msgid "Nested procedures count treating as \"many\""
+#, fuzzy
+#| msgid "Nested procedures count treating as \"many\""
+msgid "Nested procedures count treated as \"many\""
 msgstr "Sisäkkäisten proceduurien määränä käytetään \"monta\""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
@@ -5495,6 +5497,7 @@ msgid "Comma"
 msgstr "Pilkku"
 
 #: lazarusidestrconsts.liscodetoolsoptsidentifier
+msgctxt "lazarusidestrconsts.liscodetoolsoptsidentifier"
 msgid "Identifier"
 msgstr "Tunniste"
 
@@ -7564,10 +7567,6 @@ msgstr "%s sivuutetaan ajon akana"
 msgid "Exclude Filter"
 msgstr "Poistosuodatin"
 
-#: lazarusidestrconsts.lisexcludefilter2
-msgid "Exclude filter"
-msgstr ""
-
 #: lazarusidestrconsts.lisexecutable
 msgid "Executable"
 msgstr "Suoritettava tiedosto"
@@ -8073,6 +8072,38 @@ msgstr ""
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
 msgstr "Ryhmä"
+
+#: lazarusidestrconsts.lisgroupassignexisting
+msgid "Assign to existing \"%s\" group?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupemptydelete
+msgid "No more breakpoints are assigned to group \"%s\", delete it?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupemptydeletemore
+msgid "%sThere are %d more empty groups, delete all?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameemptyclearinstead
+msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameinput
+msgid "Group name:"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameinvalid
+msgid "BreakpointGroup name must be a valid Pascal identifier name."
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupsetnew
+msgid "Set new group..."
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupsetnone
+msgid "Clear group(s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
@@ -9389,10 +9420,6 @@ msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Käännä"
 
-#: lazarusidestrconsts.lislazbuildbuildadvanced
-msgid "Build Advanced"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Käännä CodeTools"
@@ -9412,6 +9439,10 @@ msgstr "Käännetään IDE"
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Käännä JITForm"
+
+#: lazarusidestrconsts.lislazbuildbuildmany
+msgid "Build Many"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -9455,10 +9486,12 @@ msgid "Defines without -d"
 msgstr "Määrite ilman -d"
 
 #: lazarusidestrconsts.lislazbuildeditdefines
+msgctxt "lazarusidestrconsts.lislazbuildeditdefines"
 msgid "Edit Defines"
 msgstr "Muokkaa määritteitä"
 
 #: lazarusidestrconsts.lislazbuildeditdefinesdialogcaption
+msgctxt "lazarusidestrconsts.lislazbuildeditdefinesdialogcaption"
 msgid "Edit Defines"
 msgstr "Muokkaa määritteitä"
 
@@ -9467,6 +9500,7 @@ msgid "Edit list of defines which can be used by any profile"
 msgstr "Muokkaa määrite-luetteloa, mitä voidaan käyttää kaikille profiileille"
 
 #: lazarusidestrconsts.lislazbuilderrorwritingfile
+msgctxt "lazarusidestrconsts.lislazbuilderrorwritingfile"
 msgid "Error writing file"
 msgstr "Virhe kirjoitettaessa tiedostoa"
 
@@ -12930,7 +12964,9 @@ msgid "Private Method"
 msgstr "Yksityinen metodi"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer.If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
+#, fuzzy
+#| msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer.If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
+msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
 msgstr "Joitain paketteja pitää ehkä asentaa ennen jatkamista.%s%sVaroitus:%sProjekti käyttää seuraavia design-paketteja, joita ehkä tarvitaan avaamaan suunniteltava lomake.Jatkettaessa voi tulla virheitä puuttuvista komponenteista ja lomakkeen lataus epäonnistuu.%s%sOn suositeltavaa peruuttaa ja asentaa nuo paketit ensin.%s%s"
 
 #: lazarusidestrconsts.lisprocedure
@@ -13798,6 +13834,10 @@ msgstr "Aseta arvo"
 #: lazarusidestrconsts.lisshort
 msgid "Short:"
 msgstr "Lyhyt:"
+
+#: lazarusidestrconsts.lisshow
+msgid "Show"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -15760,6 +15800,22 @@ msgstr "Palauta ikkunan mitat"
 #: lazarusidestrconsts.rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Palauta ikkunan koko"
+
+#: lazarusidestrconsts.rsiwpsplittercustomposition
+msgid "Custom Size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterdefault
+msgid "Default Size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterfollowwindow
+msgid "Restore with window"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
+msgid "Restore Size"
+msgstr ""
 
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"

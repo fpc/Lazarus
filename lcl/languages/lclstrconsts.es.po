@@ -70,6 +70,10 @@ msgstr "Mayúscula"
 msgid "Clear"
 msgstr "Limpiar"
 
+#: lclstrconsts.ifsvk_cmd
+msgid "Cmd"
+msgstr ""
+
 #: lclstrconsts.ifsvk_control
 msgid "Control"
 msgstr "Control"
@@ -153,6 +157,10 @@ msgctxt "lclstrconsts.ifsvk_menu"
 msgid "Menu"
 msgstr "Menú"
 
+#: lclstrconsts.ifsvk_meta
+msgid "Meta"
+msgstr ""
+
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
 msgstr "Mode Change"
@@ -223,6 +231,10 @@ msgstr "Snapshot"
 #: lclstrconsts.ifsvk_space
 msgid "Space key"
 msgstr "Tecla espaciadora"
+
+#: lclstrconsts.ifsvk_super
+msgid "Super"
+msgstr ""
 
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"

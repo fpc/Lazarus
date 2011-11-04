@@ -75,6 +75,10 @@ msgstr "Veľkým"
 msgid "Clear"
 msgstr "Vyčistiť"
 
+#: lclstrconsts.ifsvk_cmd
+msgid "Cmd"
+msgstr ""
+
 #: lclstrconsts.ifsvk_control
 msgid "Control"
 msgstr "Prvok"
@@ -158,6 +162,10 @@ msgctxt "lclstrconsts.ifsvk_menu"
 msgid "Menu"
 msgstr "Menu"
 
+#: lclstrconsts.ifsvk_meta
+msgid "Meta"
+msgstr ""
+
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
 msgstr ""
@@ -228,6 +236,10 @@ msgstr "Snímka"
 #: lclstrconsts.ifsvk_space
 msgid "Space key"
 msgstr "Medzerník"
+
+#: lclstrconsts.ifsvk_super
+msgid "Super"
+msgstr ""
 
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"

@@ -74,6 +74,10 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
+#: lclstrconsts.ifsvk_cmd
+msgid "Cmd"
+msgstr ""
+
 #: lclstrconsts.ifsvk_control
 msgid "Control"
 msgstr ""
@@ -157,6 +161,10 @@ msgctxt "lclstrconsts.ifsvk_menu"
 msgid "Menu"
 msgstr ""
 
+#: lclstrconsts.ifsvk_meta
+msgid "Meta"
+msgstr ""
+
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
 msgstr ""
@@ -226,6 +234,10 @@ msgstr ""
 
 #: lclstrconsts.ifsvk_space
 msgid "Space key"
+msgstr ""
+
+#: lclstrconsts.ifsvk_super
+msgid "Super"
 msgstr ""
 
 #: lclstrconsts.ifsvk_tab

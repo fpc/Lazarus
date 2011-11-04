@@ -72,6 +72,10 @@ msgstr "Majuscule"
 msgid "Clear"
 msgstr "Effacer"
 
+#: lclstrconsts.ifsvk_cmd
+msgid "Cmd"
+msgstr ""
+
 #: lclstrconsts.ifsvk_control
 msgid "Control"
 msgstr "Contrôle"
@@ -155,6 +159,10 @@ msgctxt "lclstrconsts.ifsvk_menu"
 msgid "Menu"
 msgstr "Menu"
 
+#: lclstrconsts.ifsvk_meta
+msgid "Meta"
+msgstr ""
+
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
 msgstr "Changement de mode"
@@ -225,6 +233,10 @@ msgstr "Capture d'écran"
 #: lclstrconsts.ifsvk_space
 msgid "Space key"
 msgstr "Barre d'espace"
+
+#: lclstrconsts.ifsvk_super
+msgid "Super"
+msgstr ""
 
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-08-25 01:00+0300\n"
+"PO-Revision-Date: 2011-11-04 20:07+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -69,6 +69,10 @@ msgstr "CapsLock"
 #: lclstrconsts.ifsvk_clear
 msgid "Clear"
 msgstr "Clear"
+
+#: lclstrconsts.ifsvk_cmd
+msgid "Cmd"
+msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_control
 msgid "Control"
@@ -153,6 +157,10 @@ msgctxt "lclstrconsts.ifsvk_menu"
 msgid "Menu"
 msgstr "Menu"
 
+#: lclstrconsts.ifsvk_meta
+msgid "Meta"
+msgstr "Meta"
+
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
 msgstr "Изменение режима"
@@ -223,6 +231,10 @@ msgstr "Snapshot"
 #: lclstrconsts.ifsvk_space
 msgid "Space key"
 msgstr "Пробел"
+
+#: lclstrconsts.ifsvk_super
+msgid "Super"
+msgstr "Super"
 
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"

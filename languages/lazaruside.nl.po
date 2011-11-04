@@ -4021,10 +4021,6 @@ msgstr ""
 msgid "Working directory (Leave empty for file path)"
 msgstr ""
 
-#: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath2
-msgid "Working Directory (Leave empty for file path)"
-msgstr ""
-
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr ""
@@ -4396,7 +4392,7 @@ msgid "Is a root control"
 msgstr ""
 
 #: lazarusidestrconsts.liscelongparamlistcount
-msgid "Parameters count treating as \"many\""
+msgid "Parameters count treated as \"many\""
 msgstr ""
 
 #: lazarusidestrconsts.liscelongprocedures
@@ -4424,7 +4420,7 @@ msgid "Show Source Nodes"
 msgstr ""
 
 #: lazarusidestrconsts.liscenestedproccount
-msgid "Nested procedures count treating as \"many\""
+msgid "Nested procedures count treated as \"many\""
 msgstr ""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
@@ -7678,10 +7674,6 @@ msgstr ""
 msgid "Exclude Filter"
 msgstr "Uitzonderingen filter"
 
-#: lazarusidestrconsts.lisexcludefilter2
-msgid "Exclude filter"
-msgstr ""
-
 #: lazarusidestrconsts.lisexecutable
 msgid "Executable"
 msgstr ""
@@ -8194,6 +8186,38 @@ msgstr ""
 
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupassignexisting
+msgid "Assign to existing \"%s\" group?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupemptydelete
+msgid "No more breakpoints are assigned to group \"%s\", delete it?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupemptydeletemore
+msgid "%sThere are %d more empty groups, delete all?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameemptyclearinstead
+msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameinput
+msgid "Group name:"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameinvalid
+msgid "BreakpointGroup name must be a valid Pascal identifier name."
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupsetnew
+msgid "Set new group..."
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupsetnone
+msgid "Clear group(s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisgrowtolarges
@@ -9515,11 +9539,6 @@ msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Bouw"
 
-#: lazarusidestrconsts.lislazbuildbuildadvanced
-msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
-msgid "Build Advanced"
-msgstr ""
-
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Bouw CodeTools"
@@ -9539,6 +9558,10 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Bouw JITForm"
+
+#: lazarusidestrconsts.lislazbuildbuildmany
+msgid "Build Many"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -14053,6 +14076,10 @@ msgstr ""
 msgid "Short:"
 msgstr ""
 
+#: lazarusidestrconsts.lisshow
+msgid "Show"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
 msgstr ""
@@ -16042,6 +16069,22 @@ msgstr "Herstel window plaatsing"
 #: lazarusidestrconsts.rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Herstel window afmeting"
+
+#: lazarusidestrconsts.rsiwpsplittercustomposition
+msgid "Custom Size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterdefault
+msgid "Default Size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterfollowwindow
+msgid "Restore with window"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
+msgid "Restore Size"
+msgstr ""
 
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"

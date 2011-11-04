@@ -4008,10 +4008,6 @@ msgstr "Když tento soubor je aktivní v editoru ..."
 msgid "Working directory (Leave empty for file path)"
 msgstr "Pracovní složka (nechejte prázné pro cestu souboru)"
 
-#: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath2
-msgid "Working Directory (Leave empty for file path)"
-msgstr "Pracovní složka (nechejte prázdné pro cestu souboru)"
-
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
 msgstr "Tlustě nevýchozí hodnoty"
@@ -4387,7 +4383,9 @@ msgid "Is a root control"
 msgstr "Je kořenový ovládací prvek"
 
 #: lazarusidestrconsts.liscelongparamlistcount
-msgid "Parameters count treating as \"many\""
+#, fuzzy
+#| msgid "Parameters count treating as \"many\""
+msgid "Parameters count treated as \"many\""
 msgstr "Počet parametrů považován za \"příliš\""
 
 #: lazarusidestrconsts.liscelongprocedures
@@ -4415,7 +4413,9 @@ msgid "Show Source Nodes"
 msgstr "Ukázat uzly zdroje"
 
 #: lazarusidestrconsts.liscenestedproccount
-msgid "Nested procedures count treating as \"many\""
+#, fuzzy
+#| msgid "Nested procedures count treating as \"many\""
+msgid "Nested procedures count treated as \"many\""
 msgstr "Počet vnořených procedur považován za \"příliš\""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
@@ -7671,10 +7671,6 @@ msgstr ""
 msgid "Exclude Filter"
 msgstr "Filtr vyřazení"
 
-#: lazarusidestrconsts.lisexcludefilter2
-msgid "Exclude filter"
-msgstr "Filtr vyřazení"
-
 #: lazarusidestrconsts.lisexecutable
 msgid "Executable"
 msgstr ""
@@ -8190,6 +8186,38 @@ msgstr "<description>%sCopyright (C) <rok> <jméno autora> <kontakt>%sTento zdro
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
 msgstr "Skupina"
+
+#: lazarusidestrconsts.lisgroupassignexisting
+msgid "Assign to existing \"%s\" group?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupemptydelete
+msgid "No more breakpoints are assigned to group \"%s\", delete it?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupemptydeletemore
+msgid "%sThere are %d more empty groups, delete all?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameemptyclearinstead
+msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameinput
+msgid "Group name:"
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupnameinvalid
+msgid "BreakpointGroup name must be a valid Pascal identifier name."
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupsetnew
+msgid "Set new group..."
+msgstr ""
+
+#: lazarusidestrconsts.lisgroupsetnone
+msgid "Clear group(s)"
+msgstr ""
 
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
@@ -9518,11 +9546,6 @@ msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
 msgstr "Sestavit"
 
-#: lazarusidestrconsts.lislazbuildbuildadvanced
-msgctxt "lazarusidestrconsts.lislazbuildbuildadvanced"
-msgid "Build Advanced"
-msgstr "Rozšířené sestavení"
-
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Sestavit kódové nástroje"
@@ -9542,6 +9565,10 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Sestavit JITForm"
+
+#: lazarusidestrconsts.lislazbuildbuildmany
+msgid "Build Many"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -14013,6 +14040,10 @@ msgstr "Nastavit hodnotu"
 msgid "Short:"
 msgstr "Krátky:"
 
+#: lazarusidestrconsts.lisshow
+msgid "Show"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
 msgstr "Ukázat pokyny deklarace"
@@ -16011,6 +16042,22 @@ msgstr "Obnovit rozměry okna"
 #: lazarusidestrconsts.rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Obnovit velikost okna"
+
+#: lazarusidestrconsts.rsiwpsplittercustomposition
+msgid "Custom Size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterdefault
+msgid "Default Size"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterfollowwindow
+msgid "Restore with window"
+msgstr ""
+
+#: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
+msgid "Restore Size"
+msgstr ""
 
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"

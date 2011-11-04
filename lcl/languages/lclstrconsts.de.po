@@ -73,6 +73,10 @@ msgstr "Großbuchstabe"
 msgid "Clear"
 msgstr "Löschen"
 
+#: lclstrconsts.ifsvk_cmd
+msgid "Cmd"
+msgstr ""
+
 #: lclstrconsts.ifsvk_control
 msgid "Control"
 msgstr "Steuerelement"
@@ -156,6 +160,10 @@ msgctxt "lclstrconsts.ifsvk_menu"
 msgid "Menu"
 msgstr "Menü"
 
+#: lclstrconsts.ifsvk_meta
+msgid "Meta"
+msgstr ""
+
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
 msgstr "Modusänderung"
@@ -226,6 +234,10 @@ msgstr "Auszug"
 #: lclstrconsts.ifsvk_space
 msgid "Space key"
 msgstr "Leertaste"
+
+#: lclstrconsts.ifsvk_super
+msgid "Super"
+msgstr ""
 
 #: lclstrconsts.ifsvk_tab
 msgctxt "lclstrconsts.ifsvk_tab"
