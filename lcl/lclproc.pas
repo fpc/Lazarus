@@ -508,7 +508,6 @@ end;
 
 // Used also by TWidgetSet.GetAcceleratorString
 function KeyAndShiftStateToKeyString(Key: word; ShiftState: TShiftState): String;
-//function AcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
 
   procedure AddPart(const APart: string);
   begin
@@ -570,17 +569,20 @@ function KeyAndShiftStateToKeyString(Key: word; ShiftState: TShiftState): String
       VK_NUMPAD0..VK_NUMPAD9:  AddPart(Format(ifsVK_NUMPAD,[Key-VK_NUMPAD0]));
       VK_MULTIPLY   :AddPart('*');
       VK_ADD        :AddPart('+');
+      VK_OEM_PLUS   :AddPart('+');
       VK_SEPARATOR  :AddPart('|');
       VK_SUBTRACT   :AddPart('-');
+      VK_OEM_MINUS  :AddPart('-');
       VK_DECIMAL    :AddPart('.');
+      VK_OEM_PERIOD :AddPart('.');
+      VK_OEM_COMMA  :AddPart(',');
       VK_DIVIDE     :AddPart('/');
       VK_F1..VK_F24: AddPart('F'+IntToStr(Key-VK_F1+1));
       VK_NUMLOCK    :AddPart(ifsVK_NUMLOCK);
       VK_SCROLL     :AddPart(ifsVK_SCROLL);
+      VK_OEM_2      :AddPart('OEM2');
+      VK_OEM_3      :AddPart('OEM3');
 //    VK_EQUAL      :AddPart('=');
-//    VK_COMMA      :AddPart(',');
-//    VK_POINT      :AddPart('.');
-//    VK_SLASH      :AddPart('/');
 //    VK_AT         :AddPart('@');
     else
       AddPart(UNKNOWN_VK_PREFIX + IntToStr(Key) + UNKNOWN_VK_POSTFIX);
