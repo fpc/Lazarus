@@ -231,10 +231,6 @@ var
 
 implementation
 
-const
-  UNKNOWN_VK_PREFIX = 'Word(''';
-  UNKNOWN_VK_POSTFIX = ''')';
-
 { TDialogButtons }
 
 procedure TDialogButtons.SetCancelButton(const AValue: TDialogButton);

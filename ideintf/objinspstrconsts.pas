@@ -400,6 +400,7 @@ resourcestring
   peFilterEditor = 'Filter editor';
   peFilterName = 'Filter name';
   peFilter = 'Filter';
+  pirsUnit = 'Pascal unit';
 
   fesFormCaption = 'New field';
   fesFieldType   = 'Field Type';
@@ -424,78 +425,8 @@ resourcestring
   oisMoveDownHint = 'Move field down';
   oisSelectAllHint = 'Select All Fields';
   oisUnselectAllHint = 'Unselect All';
-  
-  //Key strings
-  srVK_UNKNOWN    = 'Unknown';
-  srVK_LBUTTON    = 'Mouse Button Left';
-  srVK_RBUTTON    = 'Mouse Button Right';
-  srVK_CANCEL     = 'Cancel'; //= dlgCancel
-  srVK_MBUTTON    = 'Mouse Button Middle';
-  srVK_BACK       = 'Backspace';
-  srVK_TAB        = 'Tab';
-  srVK_CLEAR      = 'Clear';
-  srVK_RETURN     = 'Return';
-  srVK_SHIFT      = 'Shift';
-  srVK_CONTROL    = 'Control';
-  srVK_SUPER      = 'Super';
-  srVK_META       = 'Meta';
-  srVK_CMD        = 'Cmd';
-  srVK_MENU       = 'Menu';
-  srVK_PAUSE      = 'Pause key';
-  srVK_CAPITAL    = 'Capital';
-  srVK_KANA       = 'Kana';
-  srVK_JUNJA      = 'Junja';
-  srVK_FINAL      = 'Final';
-  srVK_HANJA      = 'Hanja';
-  srVK_ESCAPE     = 'Escape';
-  srVK_CONVERT    = 'Convert';
-  srVK_NONCONVERT = 'Nonconvert';
-  srVK_ACCEPT     = 'Accept';
-  srVK_MODECHANGE = 'Mode Change';
-  srVK_SPACE      = 'Space key';
-  srVK_PRIOR      = 'Prior';
-  srVK_NEXT       = 'Next';
-  srVK_END        = 'End';
-  srVK_HOME       = 'Home';
-  srVK_LEFT       = 'Left';
-  srVK_UP         = 'Up';
-  srVK_RIGHT      = 'Right';
-  srVK_DOWN       = 'Down'; //= dlgdownword
-  srVK_SELECT     = 'Select'; //= lismenuselect
-  srVK_PRINT      = 'Print';
-  srVK_EXECUTE    = 'Execute';
-  srVK_SNAPSHOT   = 'Snapshot';
-  srVK_INSERT     = 'Insert';
-  srVK_DELETE     = 'Delete'; //dlgeddelete
-  srVK_HELP       = 'Help';
-  srVK_LWIN       = 'Left Windows Key';
-  srVK_RWIN       = 'Right Windows Key';
-  srVK_APPS       = 'Application Key';
-  srVK_NUMPAD     = 'Numpad %d';
-  srVK_NUMLOCK    = 'Numlock';
-  srVK_SCROLL     = 'Scroll';
-  lisOEMPlus = 'OEM plus';
-  lisOEM1 = 'OEM 1';
-  lisOEMComma = 'OEM comma';
-  lisOEMMinus = 'OEM minus';
-  lisOEMPeriod = 'OEM period';
-  lisOEM2 = 'OEM 2';
-  lisOEM3 = 'OEM 3';
-  lisOEM4 = 'OEM 4';
-  lisOEM5 = 'OEM 5';
-  lisOEM6 = 'OEM 6';
-  lisOEM7 = 'OEM 7';
-  lisOEM8 = 'OEM 8';
-  srVK_IRREGULAR  = 'Irregular';
-  srVK_NONE       = 'none';
-  srkm_Alt        = 'Alt';
-  srkm_Ctrl       = 'Ctrl';
-  pirsUnit = 'Pascal unit';
-  oisIndexOutOfBounds = 'Index out of bounds';
-  oisNotSupported = 'not supported';
   oisUnableToChangeParentOfControlToNewParent = 'Unable to change parent of '
     +'control %s%s%s to new parent %s%s%s.%s%s';
-
   oisAddCollectionItem = '&Add Item';
 
 implementation

@@ -318,6 +318,9 @@ resourceString
   ifsVK_CLEAR      = 'Clear';
   ifsVK_RETURN     = 'Return';
   ifsVK_SHIFT      = 'Shift';
+  ifsVK_META       = 'Meta';
+  ifsVK_CMD        = 'Cmd';
+  ifsVK_SUPER      = 'Super';
   ifsVK_CONTROL    = 'Control';
   ifsVK_MENU       = 'Menu';
   ifsVK_PAUSE      = 'Pause key';

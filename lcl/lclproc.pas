@@ -120,13 +120,14 @@ function CompareAddrWithLineInfoCacheItem(Addr, Item: Pointer): integer;
 type
   TStringsSortCompare = function(const Item1, Item2: string): Integer;
 
-
 procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare); // sort so that for each i is OnCompare(List[i],List[i+1])<=0
 procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare); // sort so that for each i is OnCompare(List[i],List[i+1])<=0
 
 function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
                          const DefaultValue: Integer): Integer;
 
+function KeyAndShiftStateToKeyString(Key: word; ShiftState: TShiftState): String;
+function KeyStringIsIrregular(const s: string): boolean;
 function ShortCutToText(ShortCut: TShortCut): string;// untranslated
 function TextToShortCut(const ShortCutText: string): TShortCut;// untranslated
 
@@ -180,7 +181,6 @@ function RoundToCardinal(const e: Extended): cardinal;
 function TruncToInt(const e: Extended): integer;
 function TruncToCardinal(const e: Extended): cardinal;
 function StrToDouble(const s: string): double;
-
 
 
 // debugging
@@ -392,6 +392,8 @@ uses gettext;
 
 const
   Str_LCL_Debug_File = 'lcldebug.log';
+  UNKNOWN_VK_PREFIX = 'Word(''';
+  UNKNOWN_VK_POSTFIX = ''')';
 
 var
   InterfaceInitializationHandlers: TFPList = nil;
@@ -502,6 +504,108 @@ begin
   Result:=GetEnumValue(TypeInfo,Name);
   if Result<0 then
     Result:=DefaultValue;
+end;
+
+// Used also by TWidgetSet.GetAcceleratorString
+function KeyAndShiftStateToKeyString(Key: word; ShiftState: TShiftState): String;
+//function AcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
+
+  procedure AddPart(const APart: string);
+  begin
+    if Result <> '' then
+      Result := Result + '+';
+    Result := Result + APart;
+  end;
+
+  // Tricky routine. This only works for western languages
+  procedure AddKey;
+  begin
+    case Key of
+      VK_UNKNOWN    :AddPart(ifsVK_UNKNOWN);
+      VK_LBUTTON    :AddPart(ifsVK_LBUTTON);
+      VK_RBUTTON    :AddPart(ifsVK_RBUTTON);
+      VK_CANCEL     :AddPart(ifsVK_CANCEL);
+      VK_MBUTTON    :AddPart(ifsVK_MBUTTON);
+      VK_BACK       :AddPart(ifsVK_BACK);
+      VK_TAB        :AddPart(ifsVK_TAB);
+      VK_CLEAR      :AddPart(ifsVK_CLEAR);
+      VK_RETURN     :AddPart(ifsVK_RETURN);
+      VK_SHIFT      :AddPart(ifsVK_SHIFT);
+      VK_CONTROL    :AddPart(ifsVK_CONTROL);
+      VK_MENU       :AddPart(ifsVK_MENU);
+      VK_PAUSE      :AddPart(ifsVK_PAUSE);
+      VK_CAPITAL    :AddPart(ifsVK_CAPITAL);
+      VK_KANA       :AddPart(ifsVK_KANA);
+    //  VK_HANGUL     :AddPart('Hangul');
+      VK_JUNJA      :AddPart(ifsVK_JUNJA);
+      VK_FINAL      :AddPart(ifsVK_FINAL);
+      VK_HANJA      :AddPart(ifsVK_HANJA );
+    //  VK_KANJI      :AddPart('Kanji');
+      VK_ESCAPE     :AddPart(ifsVK_ESCAPE);
+      VK_CONVERT    :AddPart(ifsVK_CONVERT);
+      VK_NONCONVERT :AddPart(ifsVK_NONCONVERT);
+      VK_ACCEPT     :AddPart(ifsVK_ACCEPT);
+      VK_MODECHANGE :AddPart(ifsVK_MODECHANGE);
+      VK_SPACE      :AddPart(ifsVK_SPACE);
+      VK_PRIOR      :AddPart(ifsVK_PRIOR);
+      VK_NEXT       :AddPart(ifsVK_NEXT);
+      VK_END        :AddPart(ifsVK_END);
+      VK_HOME       :AddPart(ifsVK_HOME);
+      VK_LEFT       :AddPart(ifsVK_LEFT);
+      VK_UP         :AddPart(ifsVK_UP);
+      VK_RIGHT      :AddPart(ifsVK_RIGHT);
+      VK_DOWN       :AddPart(ifsVK_DOWN);
+      VK_SELECT     :AddPart(ifsVK_SELECT);
+      VK_PRINT      :AddPart(ifsVK_PRINT);
+      VK_EXECUTE    :AddPart(ifsVK_EXECUTE);
+      VK_SNAPSHOT   :AddPart(ifsVK_SNAPSHOT);
+      VK_INSERT     :AddPart(ifsVK_INSERT);
+      VK_DELETE     :AddPart(ifsVK_DELETE);
+      VK_HELP       :AddPart(ifsVK_HELP);
+      VK_0..VK_9    :AddPart(chr(ord('0')+Key-VK_0));
+      VK_A..VK_Z    :AddPart(chr(ord('A')+Key-VK_A));
+      VK_LWIN       :AddPart(ifsVK_LWIN);
+      VK_RWIN       :AddPart(ifsVK_RWIN);
+      VK_APPS       :AddPart(ifsVK_APPS);
+      VK_NUMPAD0..VK_NUMPAD9:  AddPart(Format(ifsVK_NUMPAD,[Key-VK_NUMPAD0]));
+      VK_MULTIPLY   :AddPart('*');
+      VK_ADD        :AddPart('+');
+      VK_SEPARATOR  :AddPart('|');
+      VK_SUBTRACT   :AddPart('-');
+      VK_DECIMAL    :AddPart('.');
+      VK_DIVIDE     :AddPart('/');
+      VK_F1..VK_F24: AddPart('F'+IntToStr(Key-VK_F1+1));
+      VK_NUMLOCK    :AddPart(ifsVK_NUMLOCK);
+      VK_SCROLL     :AddPart(ifsVK_SCROLL);
+//    VK_EQUAL      :AddPart('=');
+//    VK_COMMA      :AddPart(',');
+//    VK_POINT      :AddPart('.');
+//    VK_SLASH      :AddPart('/');
+//    VK_AT         :AddPart('@');
+    else
+      AddPart(UNKNOWN_VK_PREFIX + IntToStr(Key) + UNKNOWN_VK_POSTFIX);
+    end;
+  end;
+
+begin
+  Result := '';
+  if ssCtrl in ShiftState then AddPart(ifsCtrl);
+  if ssAlt in ShiftState then AddPart(ifsAlt);
+  if ssShift in ShiftState then AddPart(ifsVK_SHIFT);
+  if ssMeta in ShiftState then
+    {$IFDEF LCLcarbon}
+    AddPart(ifsVK_CMD);
+    {$ELSE}
+    AddPart(ifsVK_META);
+    {$ENDIF}
+  if ssSuper in ShiftState then AddPart(ifsVK_SUPER);
+  AddKey;
+end;
+
+function KeyStringIsIrregular(const s: string): boolean;
+begin
+  Result:=(length(UNKNOWN_VK_PREFIX)<length(s)) and
+    (AnsiStrLComp(PChar(s),PChar(UNKNOWN_VK_PREFIX),length(UNKNOWN_VK_PREFIX))=0);
 end;
 
 function ShortCutToText(ShortCut: TShortCut): string;
@@ -1390,6 +1494,9 @@ begin
   for i:=0 to List.Count-1 do MergeList[i]:='';
   Freemem(MergeList);
 end;
+
+
+// Debug funcs :
 
 procedure InitializeDebugOutput;
 var

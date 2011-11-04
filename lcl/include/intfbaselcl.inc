@@ -355,93 +355,11 @@ begin
   Result:= false;
 end;
 
-// MWE: Work in progress
 function TWidgetSet.GetAcceleratorString(const AVKey: Byte;
   const AShiftState: TShiftState): String;
-  // If the interface has a better way to create a string it can override this
-
-  procedure AddPart(const APart: string);
-  begin
-    if Result <> '' then Result := Result + '+';
-    Result := Result + APart;
-  end;
-
-  // Tricky routine. This only works for western languages
-  procedure AddKey;
-  begin
-    case AVKey of
-      VK_UNKNOWN    :AddPart(ifsVK_UNKNOWN);
-      VK_LBUTTON    :AddPart(ifsVK_LBUTTON);
-      VK_RBUTTON    :AddPart(ifsVK_RBUTTON);
-      VK_CANCEL     :AddPart(ifsVK_CANCEL);
-      VK_MBUTTON    :AddPart(ifsVK_MBUTTON);
-      VK_BACK       :AddPart(ifsVK_BACK);
-      VK_TAB        :AddPart(ifsVK_TAB);
-      VK_CLEAR      :AddPart(ifsVK_CLEAR);
-      VK_RETURN     :AddPart(ifsVK_RETURN);
-      VK_SHIFT      :AddPart(ifsVK_SHIFT);
-      VK_CONTROL    :AddPart(ifsVK_CONTROL);
-      VK_MENU       :AddPart(ifsVK_MENU);
-      VK_PAUSE      :AddPart(ifsVK_PAUSE);
-      VK_CAPITAL    :AddPart(ifsVK_CAPITAL);
-      VK_KANA       :AddPart(ifsVK_KANA);
-    //  VK_HANGUL     :AddPart('Hangul');
-      VK_JUNJA      :AddPart(ifsVK_JUNJA);
-      VK_FINAL      :AddPart(ifsVK_FINAL);
-      VK_HANJA      :AddPart(ifsVK_HANJA );
-    //  VK_KANJI      :AddPart('Kanji');
-      VK_ESCAPE     :AddPart(ifsVK_ESCAPE);
-      VK_CONVERT    :AddPart(ifsVK_CONVERT);
-      VK_NONCONVERT :AddPart(ifsVK_NONCONVERT);
-      VK_ACCEPT     :AddPart(ifsVK_ACCEPT);
-      VK_MODECHANGE :AddPart(ifsVK_MODECHANGE);
-      VK_SPACE      :AddPart(ifsVK_SPACE);
-      VK_PRIOR      :AddPart(ifsVK_PRIOR);
-      VK_NEXT       :AddPart(ifsVK_NEXT);
-      VK_END        :AddPart(ifsVK_END);
-      VK_HOME       :AddPart(ifsVK_HOME);
-      VK_LEFT       :AddPart(ifsVK_LEFT);
-      VK_UP         :AddPart(ifsVK_UP);
-      VK_RIGHT      :AddPart(ifsVK_RIGHT);
-      VK_DOWN       :AddPart(ifsVK_DOWN);
-      VK_SELECT     :AddPart(ifsVK_SELECT);
-      VK_PRINT      :AddPart(ifsVK_PRINT);
-      VK_EXECUTE    :AddPart(ifsVK_EXECUTE);
-      VK_SNAPSHOT   :AddPart(ifsVK_SNAPSHOT);
-      VK_INSERT     :AddPart(ifsVK_INSERT);
-      VK_DELETE     :AddPart(ifsVK_DELETE);
-      VK_HELP       :AddPart(ifsVK_HELP);
-      VK_0..VK_9    :AddPart(chr(ord('0')+AVKey-VK_0));
-      VK_A..VK_Z    :AddPart(chr(ord('A')+AVKey-VK_A));
-      VK_LWIN       :AddPart(ifsVK_LWIN);
-      VK_RWIN       :AddPart(ifsVK_RWIN);
-      VK_APPS       :AddPart(ifsVK_APPS);
-      VK_NUMPAD0..VK_NUMPAD9:  AddPart(Format(ifsVK_NUMPAD,[AVKey-VK_NUMPAD0]));
-      VK_MULTIPLY   :AddPart('*');
-      VK_ADD        :AddPart('+');
-      VK_SEPARATOR  :AddPart('|');
-      VK_SUBTRACT   :AddPart('-');
-      VK_DECIMAL    :AddPart('.');
-      VK_DIVIDE     :AddPart('/');
-      VK_F1..VK_F24: AddPart('F'+IntToStr(AVKey-VK_F1+1));
-      VK_NUMLOCK    :AddPart(ifsVK_NUMLOCK);
-      VK_SCROLL     :AddPart(ifsVK_SCROLL);
-//    VK_EQUAL      :AddPart('=');
-//    VK_COMMA      :AddPart(',');
-//    VK_POINT      :AddPart('.');
-//    VK_SLASH      :AddPart('/');
-//    VK_AT         :AddPart('@');
-    else
-      AddPart(UNKNOWN_VK_PREFIX + IntToStr(AVKey) + UNKNOWN_VK_POSTFIX);
-    end;
-  end;
-
+// If the interface has a better way to create a string it can override this
 begin
-  Result := '';
-  if ssCtrl in AShiftState then AddPart(ifsCtrl);
-  if ssAlt in AShiftState then AddPart(ifsAlt);
-  if ssShift in AShiftState then AddPart(ifsVK_SHIFT);
-  AddKey;
+  Result := KeyAndShiftStateToKeyString(AVKey, AShiftState);
 end;
 
 function TWidgetSet.GetCaretRespondToFocus(handle: HWND;

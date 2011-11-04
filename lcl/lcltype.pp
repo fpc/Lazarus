@@ -528,13 +528,11 @@ const
   //MWE: And should not be used.
   //     The keys they are on map to another VK
 
-(*
-  VK_EQUAL      = 187;
-  VK_COMMA      = 188;
-  VK_POINT      = 190;
-  VK_SLASH      = 191;
-  VK_AT         = 192;
-*)
+//  VK_EQUAL      = 187;
+//  VK_COMMA      = 188;
+//  VK_POINT      = 190;
+//  VK_SLASH      = 191;
+//  VK_AT         = 192;
 
   // VK_L & VK_R - left and right Alt, Ctrl and Shift virtual keys.
   // Used only as parameters to GetAsyncKeyState() and GetKeyState().
