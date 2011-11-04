@@ -2178,6 +2178,10 @@ begin
   if LCLObject <> nil then
   begin
     case QEvent_type(Event) of
+      QEventFontChange:
+        begin
+          //TODO: for issue #19695
+        end;
       QEventEnabledChange:
         begin
           // if we are disabled, imediatelly invalidate widgetAt cache
@@ -5887,7 +5891,11 @@ begin
   end;
 
   case QEvent_type(Event) of
-    QEventFontChange,
+    QEventFontChange:
+      begin
+        Result := inherited EventFilter(Sender, Event);
+        setLayoutThemeMargins(QWidget_layout(Widget), Widget);
+      end;
     QEventStyleChange: setLayoutThemeMargins(QWidget_layout(Widget), Widget);
     QEventShow:
       begin
