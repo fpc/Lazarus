@@ -23,6 +23,8 @@ type
     CDCheckBox1: TCDCheckBox;
     CDCheckBox2: TCDCheckBox;
     CDEdit1: TCDEdit;
+    CDEdit2: TCDEdit;
+    editWinXP: TCDEdit;
     CDGroupBox1: TCDGroupBox;
     CDGroupBox2: TCDGroupBox;
     CDPageControl1: TCDPageControl;
@@ -70,6 +72,8 @@ var
 
 implementation
 
+uses TypInfo, customdrawndrawers;
+
 {$R *.lfm}
 
 { TForm1 }
@@ -77,6 +81,7 @@ implementation
 procedure TForm1.comboControlsChange(Sender: TObject);
 begin
   notebookControls.PageIndex := comboControls.ItemIndex;
+//  Caption := GetEnumName(TypeInfo(TCDDrawStyle), Integer(editWinXP.DrawStyle));
 end;
 
 procedure TForm1.HandleClick(Sender: TObject);
