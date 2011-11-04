@@ -281,7 +281,7 @@ type
     function getStyle: QtBrushStyle;
     procedure setStyle(style: QtBrushStyle);
   public
-    Widget: QBrushH;
+    FHandle: QBrushH;
     constructor Create(CreateHandle: Boolean); virtual;
     destructor Destroy; override;
     function getColor: PQColor;
@@ -298,7 +298,7 @@ type
   private
     FIsExtPen: Boolean;
   public
-    Widget: QPenH;
+    FHandle: QPenH;
     constructor Create(CreateHandle: Boolean); virtual;
     destructor Destroy; override;
   public
@@ -1730,9 +1730,9 @@ begin
   {$endif}
 
   if CreateHandle then
-    Widget := QBrush_create
+    FHandle := QBrush_create
   else
-    Widget := nil;
+    FHandle := nil;
   
   FShared := False;
   FSelected := False;
@@ -1749,21 +1749,21 @@ begin
     WriteLn('TQtBrush.Destroy');
   {$endif}
 
-  if not FShared and (Widget <> nil) and not FSelected then
-    QBrush_destroy(Widget);
+  if not FShared and (FHandle <> nil) and not FSelected then
+    QBrush_destroy(FHandle);
 
   inherited Destroy;
 end;
 
 function TQtBrush.getColor: PQColor;
 begin
-  Result := QBrush_Color(Widget);
+  Result := QBrush_Color(FHandle);
 end;
 
 function TQtBrush.GetLBStyle(out AStyle: LongWord; out AHatch: PtrUInt
   ): Boolean;
 begin
-  Result := Widget <> nil;
+  Result := FHandle <> nil;
   if not Result then
     exit;
 
@@ -1787,12 +1787,12 @@ end;
 
 procedure TQtBrush.setColor(AColor: PQColor);
 begin
-  QBrush_setColor(Widget, AColor);
+  QBrush_setColor(FHandle, AColor);
 end;
 
 function TQtBrush.getStyle: QtBrushStyle;
 begin
-  Result := QBrush_style(Widget);
+  Result := QBrush_style(FHandle);
 end;
 
 {------------------------------------------------------------------------------
@@ -1802,12 +1802,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtBrush.setStyle(style: QtBrushStyle);
 begin
-  QBrush_setStyle(Widget, style);
+  QBrush_setStyle(FHandle, style);
 end;
 
 procedure TQtBrush.setTexture(pixmap: QPixmapH);
 begin
-  QBrush_setTexture(Widget, pixmap);
+  QBrush_setTexture(FHandle, pixmap);
 end;
 
 procedure TQtBrush.setTextureImage(image: QImageH);
@@ -1821,7 +1821,7 @@ begin
   // as workaround we are copying an original image so qt create new image with own data
   TempImage := QImage_create();
   QImage_copy(image, TempImage, 0, 0, QImage_width(image), QImage_height(image));
-  QBrush_setTextureImage(Widget, TempImage);
+  QBrush_setTextureImage(FHandle, TempImage);
   QImage_destroy(TempImage);
 end;
 
@@ -1839,9 +1839,9 @@ begin
   {$endif}
   
   if CreateHandle then
-    Widget := QPen_create
+    FHandle := QPen_create
   else
-    Widget := nil;
+    FHandle := nil;
   FShared := False;
   FIsExtPen := False;
 end;
@@ -1857,30 +1857,30 @@ begin
     WriteLn('TQtPen.Destroy');
   {$endif}
 
-  if not FShared and (Widget <> nil) then
-    QPen_destroy(Widget);
+  if not FShared and (FHandle <> nil) then
+    QPen_destroy(FHandle);
 
   inherited Destroy;
 end;
 
 function TQtPen.getCapStyle: QtPenCapStyle;
 begin
-  Result := QPen_capStyle(Widget);
+  Result := QPen_capStyle(FHandle);
 end;
 
 function TQtPen.getWidth: Integer;
 begin
-  Result := QPen_width(Widget);
+  Result := QPen_width(FHandle);
 end;
 
 function TQtPen.getStyle: QtPenStyle;
 begin
-  Result := QPen_style(Widget);
+  Result := QPen_style(FHandle);
 end;
 
 function TQtPen.getDashPattern: TQRealArray;
 begin
-  QPen_dashPattern(Widget, @Result);
+  QPen_dashPattern(FHandle, @Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -1891,7 +1891,7 @@ end;
 
 procedure TQtPen.setBrush(brush: QBrushH);
 begin
-  QPen_setBrush(Widget, brush);
+  QPen_setBrush(FHandle, brush);
 end;
 
 {------------------------------------------------------------------------------
@@ -1901,7 +1901,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtPen.setStyle(AStyle: QtPenStyle);
 begin
-  QPen_setStyle(Widget, AStyle);
+  QPen_setStyle(FHandle, AStyle);
 end;
 
 {------------------------------------------------------------------------------
@@ -1911,7 +1911,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtPen.setWidth(p1: Integer);
 begin
-  QPen_setWidth(Widget, p1);
+  QPen_setWidth(FHandle, p1);
 end;
 
 procedure TQtPen.setDashPattern(APattern: PDWord; ALength: DWord);
@@ -1922,32 +1922,32 @@ begin
   SetLength(QtPattern, ALength);
   for i := 0 to ALength - 1 do
     QtPattern[i] := APattern[i];
-  QPen_setDashPattern(Widget, @QtPattern);
+  QPen_setDashPattern(FHandle, @QtPattern);
 end;
 
 procedure TQtPen.setJoinStyle(pcs: QtPenJoinStyle);
 begin
-  QPen_setJoinStyle(Widget, pcs);
+  QPen_setJoinStyle(FHandle, pcs);
 end;
 
 function TQtPen.getColor: TQColor;
 begin
-  QPen_color(Widget, @Result);
+  QPen_color(FHandle, @Result);
 end;
 
 function TQtPen.getCosmetic: Boolean;
 begin
-  Result := QPen_isCosmetic(Widget);
+  Result := QPen_isCosmetic(FHandle);
 end;
 
 function TQtPen.getJoinStyle: QtPenJoinStyle;
 begin
-  Result := QPen_joinStyle(Widget);
+  Result := QPen_joinStyle(FHandle);
 end;
 
 procedure TQtPen.setCapStyle(pcs: QtPenCapStyle);
 begin
-  QPen_setCapStyle(Widget, pcs);
+  QPen_setCapStyle(FHandle, pcs);
 end;
 
 
@@ -1959,12 +1959,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtPen.setColor(p1: TQColor);
 begin
-  QPen_setColor(Widget, @p1);
+  QPen_setColor(FHandle, @p1);
 end;
 
 procedure TQtPen.setCosmetic(b: Boolean);
 begin
-  QPen_setCosmetic(Widget, b);
+  QPen_setCosmetic(FHandle, b);
 end;
 
 
@@ -2256,9 +2256,9 @@ begin
   //vFont.Widget := nil;
   FreeAndNil(vFont);
   //WriteLn('Destroying brush: ', PtrUInt(vBrush), ' ', ClassName, ' ', PtrUInt(Self));
-  vBrush.Widget := nil;
+  vBrush.FHandle := nil;
   FreeAndNil(vBrush);
-  vPen.Widget := nil;
+  vPen.FHandle := nil;
   FreeAndNil(vPen);
   if vRegion.Widget <> nil then
   begin
@@ -2266,7 +2266,7 @@ begin
     vRegion.Widget := nil;
   end;
   FreeAndNil(vRegion);
-  vBackgroundBrush.Widget := nil;
+  vBackgroundBrush.FHandle := nil;
   FreeAndNil(vBackgroundBrush);
 end;
 
@@ -2824,7 +2824,7 @@ end;
 
 procedure TQtDeviceContext.fillRect(x, y, w, h: Integer);
 begin
-  fillRect(x, y, w, h, BackgroundBrush.Widget);
+  fillRect(x, y, w, h, BackgroundBrush.FHandle);
 end;
 
 {------------------------------------------------------------------------------
@@ -2961,7 +2961,7 @@ begin
   {$endif}
   
   if vBrush <> nil then
-    vBrush.Widget := QPainter_brush(Widget);
+    vBrush.FHandle := QPainter_brush(Widget);
     
   if SelBrush = nil then
     Result := vBrush
@@ -2985,8 +2985,8 @@ begin
   if SelBrush <> nil then
     SelBrush.FSelected := True;
     
-  if (ABrush.Widget <> nil) and (Widget <> nil) then
-    QPainter_setBrush(Widget, ABrush.Widget);
+  if (ABrush.FHandle <> nil) and (Widget <> nil) then
+    QPainter_setBrush(Widget, ABrush.FHandle);
 end;
 
 function TQtDeviceContext.BackgroundBrush: TQtBrush;
@@ -2994,7 +2994,7 @@ begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.backgroundBrush() ');
   {$endif}
-  vBackgroundBrush.Widget := QPainter_background(Widget);
+  vBackgroundBrush.FHandle := QPainter_background(Widget);
   result := vBackGroundBrush;
 end;
 
@@ -3020,7 +3020,7 @@ begin
   {$endif}
   
   if vPen <> nil then
-    vPen.Widget := QPainter_pen(Widget);
+    vPen.FHandle := QPainter_pen(Widget);
     
   if SelPen = nil then
     Result := vPen
@@ -3040,8 +3040,8 @@ begin
   {$endif}
   Result := pen;
   SelPen := APen;
-  if (APen <> nil) and (APen.Widget <> nil) and (Widget <> nil) then
-    QPainter_setPen(Widget, APen.Widget);
+  if (APen <> nil) and (APen.FHandle <> nil) and (Widget <> nil) then
+    QPainter_setPen(Widget, APen.FHandle);
 end;
 
 procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);

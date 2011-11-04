@@ -1011,10 +1011,10 @@ procedure TQtWidgetSet.FreeSysColorBrushes(const AInvalidateHandlesOnly: Boolean
 
   procedure InvalidateHandleOnly(AIndex: Integer; h: HGDIOBJ);
   begin
-    if (h <> 0) and (TQtBrush(h).Widget <> nil) then
+    if (h <> 0) and (TQtBrush(h).FHandle <> nil) then
     begin
-      QBrush_destroy(TQtBrush(h).Widget);
-      TQtBrush(h).Widget := nil;
+      QBrush_destroy(TQtBrush(h).FHandle);
+      TQtBrush(h).FHandle := nil;
       getSysColorBrush(AIndex);
     end;
   end;

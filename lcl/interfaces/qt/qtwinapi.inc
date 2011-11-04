@@ -472,7 +472,7 @@ begin
     }
 
     // set brush color
-    Color := QBrush_Color(QtBrush.Widget)^;
+    Color := QBrush_Color(QtBrush.FHandle)^;
     ColorRefToTQColor(ColorToRGB(TColor(logBrush.lbColor)), Color);
     QtBrush.setColor(@Color);
   except
@@ -705,9 +705,9 @@ begin
       QtPen.setWidth(lopnWidth.X);
     end;
 
-    QPen_Color(QtPen.Widget, @Color);
+    QPen_Color(QtPen.FHandle, @Color);
     ColorRefToTQColor(ColorToRGB(TColor(lopnColor)), Color);
-    QPen_setColor(QtPen.Widget, @Color);
+    QPen_setColor(QtPen.FHandle, @Color);
   end;
 
   Result := HPEN(QtPen);
@@ -2078,9 +2078,9 @@ begin
   if (dwPenStyle and PS_STYLE_MASK) = PS_USERSTYLE then
     QtPen.setDashPattern(lpStyle, dwStyleCount);
 
-  QPen_Color(QtPen.Widget, @Color);
+  QPen_Color(QtPen.FHandle, @Color);
   ColorRefToTQColor(ColorToRGB(TColor(lplb.lbColor)), Color);
-  QPen_setColor(QtPen.Widget, @Color);
+  QPen_setColor(QtPen.FHandle, @Color);
 
   Result := HPEN(QtPen);
 end;
@@ -2253,7 +2253,7 @@ begin
   if not IsValidGdiObject(Brush) then
     exit;
 
-  TQtDeviceContext(DC).fillRect(@Rect, TQtBrush(Brush).Widget);
+  TQtDeviceContext(DC).fillRect(@Rect, TQtBrush(Brush).FHandle);
   Result := True;
 end;
 
@@ -2290,7 +2290,7 @@ begin
     if SelectClipRgn(DC, RegionHnd) <> ERROR then
     begin
       R := TQtRegion(RegionHnd).getBoundingRect;
-      QtDC.fillRect(@R, TQtBrush(hbr).Widget);
+      QtDC.fillRect(@R, TQtBrush(hbr).FHandle);
       if HasClipping then
         SelectClipRgn(DC, HRGN(OldRgn));
       Result := True;
@@ -3621,7 +3621,7 @@ function TQtWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
       Result := HBrush(TQtBrush.Create(False))
     else
       Result := FSysColorBrushes[nIndex];
-    TQtBrush(Result).Widget := QBrush_create(QPalette_brush(Handle, Group, Role));
+    TQtBrush(Result).FHandle := QBrush_create(QPalette_brush(Handle, Group, Role));
     TQtBrush(Result).FShared := True;
 
     QPalette_destroy(Handle);
@@ -3635,9 +3635,9 @@ function TQtWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
       Result := HBrush(TQtBrush.Create(True))
     else
       Result := FSysColorBrushes[nIndex];
-    Color := QBrush_Color(TQtBrush(Result).Widget)^;
+    Color := QBrush_Color(TQtBrush(Result).FHandle)^;
     ColorRefToTQColor(ColorToRGB(AColor), Color);
-    QBrush_setColor(TQtBrush(Result).Widget, @Color);
+    QBrush_setColor(TQtBrush(Result).FHandle, @Color);
     TQtBrush(Result).FShared := True;
   end;
 
@@ -3651,7 +3651,7 @@ begin
   if (FSysColorBrushes[nIndex] = 0) or
     (
     (FSysColorBrushes[nIndex] <> 0) and
-    (TQtBrush(FSysColorBrushes[nIndex]).Widget = nil)
+    (TQtBrush(FSysColorBrushes[nIndex]).FHandle = nil)
     ) then
   begin
     case nIndex of
