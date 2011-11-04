@@ -6266,6 +6266,10 @@ dmFindTarget: find child control under the mouse
         <errors>
         </errors>
         <seealso>
+          <link id="TControl.Color"/>
+          <link id="TControl.ParentColor"/>
+          <link id="TControl.GetColorResolvingParent"/>
+          <link id="TControl.GetRGBColorResolvingParent"/>
         </seealso>
       </element>
       <element name="TControl.GetDefaultColor.Result">
@@ -6273,6 +6277,31 @@ dmFindTarget: find child control under the mouse
       </element>
       <element name="TControl.GetDefaultColor.DefaultColorType">
         <short>The color type to use, as the last resort.</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TControl.GetColorResolvingParent">
+        <short>Returns the color of the control while resolving clDefault and ParentColor</short>
+        <descr>This convenience routine will allow to obtain the Color of the control while resolving clDefault.
+		       It will never return clDefault, but it might return non-RGB color. To obtain a purely RGB result
+			   use GetRGBColorResolvingParent.</descr>
+        <seealso>
+          <link id="TControl.Color"/>
+          <link id="TControl.GetDefaultColor"/>
+          <link id="TControl.ParentColor"/>
+          <link id="TControl.GetRGBColorResolvingParent"/>
+        </seealso>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TControl.GetRGBColorResolvingParent">
+        <short>Returns a RGB value for the color of the control</short>
+        <descr>This convenience routine will allow to obtain the Color of the control while resolving clDefault,
+		       ParentColor and system color indexes and returns a RGB TColor.</descr>
+        <seealso>
+          <link id="TControl.Color"/>
+          <link id="TControl.GetDefaultColor"/>
+          <link id="TControl.ParentColor"/>
+          <link id="TControl.GetColorResolvingParent"/>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetSidePosition">
@@ -7238,11 +7267,17 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.Color">
         <short>The background color of the control.</short>
         <descr>
-          <p>The default Color is the same as the parent window Color.</p>
+          <p>The default Color is the same as the parent window Color. If the color is clDefault
+		  then the result will need to be passed through GetDefaultColor to resolve clDefault.
+		  Convenience routines which obtains the color resolving clDefault and ParentColor are also
+		  provided as TControl.GetColorResolvingParent and TControl.GetRGBColorResolvingParent</p>
         </descr>
         <seealso>
           <link id="TControl.ParentColor"/>
           <link id="#lcl.Graphics.TColor"/>
+          <link id="TControl.GetDefaultColor"/>
+          <link id="TControl.GetColorResolvingParent"/>
+          <link id="TControl.GetRGBColorResolvingParent"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -7684,9 +7719,15 @@ dmFindTarget: find child control under the mouse
         <descr>While this property is True, all changes to the Color of the parent will be 
           also done to the Color of the control, syncronizing them and keeping them with the same value. 
           If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+		  The combination of ParentColor with clDefault can cause problems in resolving clDefault. To obtain the Color
+		  property of a control while taking into account clDefault and ParentColor one whould use TControl.GetColorResolvingParent.
+		  This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use
+		  TColor.GetRGBColorResolvingParent
         </descr>
         <seealso>
           <link id="TControl.Color"/>
+          <link id="TControl.GetColorResolvingParent"/>
+          <link id="TControl.GetRGBColorResolvingParent"/>
         </seealso>
       </element>
       <!-- property Visibility: protected -->
