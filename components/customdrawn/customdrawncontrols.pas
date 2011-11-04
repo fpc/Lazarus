@@ -47,6 +47,8 @@ type
     // mouse
     procedure MouseEnter; override;
     procedure MouseLeave; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer); override;
     //
     property DrawStyle: TCDDrawStyle read FDrawStyle write SetDrawStyle;
   public
@@ -65,6 +67,9 @@ type
   TCDButtonControl = class(TCDControl)
   private
   protected
+    // This fields are set by descendents
+    FHasOnOffStates: Boolean;
+    FHasPartiallyOnState: Boolean;
     // keyboard
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -173,26 +178,6 @@ type
     property Text: string read GetText write SetText;
   end;
 
-  {@@
-    TCDGroupBox is a custom-drawn group box control
-  }
-
-  { TCDGroupBox }
-
-  TCDGroupBox = class(TCDControl)
-  private
-    function GetControlId: TCDControlID; override;
-  protected
-    procedure RealSetText(const Value: TCaption); override; // to update on caption changes
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  published
-    property DrawStyle;
-    property Caption;
-    property TabStop default False;
-  end;
-
   { TCDCheckBox }
 
   TCDCheckBox = class(TCDButtonControl)
@@ -211,6 +196,26 @@ type
     property Caption;
     property TabStop default True;
     property State: TCheckBoxState read FCheckedState write FCheckedState default cbUnchecked;
+  end;
+
+  {@@
+    TCDGroupBox is a custom-drawn group box control
+  }
+
+  { TCDGroupBox }
+
+  TCDGroupBox = class(TCDControl)
+  private
+    function GetControlId: TCDControlID; override;
+  protected
+    procedure RealSetText(const Value: TCaption); override; // to update on caption changes
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property DrawStyle;
+    property Caption;
+    property TabStop default False;
   end;
 
   // ===================================
@@ -633,8 +638,7 @@ begin
   Width := 80;
   Height := 25;
   TabStop := True;
-  ControlStyle := [csCaptureMouse, csClickEvents,
-    csDoubleClicks, csReplicatable];
+  ControlStyle := ControlStyle - [csAcceptsControls];
 
   // State information
   FEditState.VisibleTextStart := 1;
@@ -692,6 +696,7 @@ begin
   ControlStyle := [csCaptureMouse, csClickEvents,
     csDoubleClicks, csReplicatable];
   AutoSize := True;
+  FHasOnOffStates := True;
 
   PrepareCurrentDrawer();
 end;
@@ -939,6 +944,13 @@ begin
   inherited MouseLeave;
 end;
 
+procedure TCDControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  SetFocus();
+end;
+
 constructor TCDControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -988,8 +1000,6 @@ end;
 
 procedure TCDButtonControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
-  if not Focused then
-    SetFocus;
   DoButtonDown();
 
   inherited MouseDown(Button, Shift, X, Y);
@@ -1029,6 +1039,26 @@ begin
   begin
     FState := FState - [csfSunken];
     Invalidate;
+  end;
+  // Only for buttons with checked/down states
+  if FHasOnOffStates then
+  begin
+    if FHasPartiallyOnState then
+    begin
+      if csfOn in FState then
+        FState := FState + [csfOff] - [csfOn, csfPartiallyOn]
+      else if csfPartiallyOn in FState then
+        FState := FState + [csfOn] - [csfOff, csfPartiallyOn]
+      else
+        FState := FState + [csfPartiallyOn] - [csfOn, csfOff];
+    end
+    else
+    begin
+      if csfOn in FState then
+        FState := FState + [csfOff] - [csfOn]
+      else
+        FState := FState + [csfOn] - [csfOff];
+    end;
   end;
 end;
 
