@@ -676,6 +676,34 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TControl.IsParentColor
+  Params:   none
+  Returns:  Boolean
+
+  Used at places where we need to check ParentColor property from TControl.
+  Property is protected, so this function avoids hacking to get
+  protected property value.
+ ------------------------------------------------------------------------------}
+function TControl.IsParentColor: Boolean;
+begin
+  Result := FParentColor;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TControl.IsParentFont
+  Params:   none
+  Returns:  Boolean
+
+  Used at places where we need to check ParentFont property from TControl.
+  Property is protected, so this function avoids hacking to get
+  protected property value.
+ ------------------------------------------------------------------------------}
+function TControl.IsParentFont: Boolean;
+begin
+  Result := FParentFont;
+end;
+
+{------------------------------------------------------------------------------
   Method: TControl.IsParentShowHint
   Params:   none
   Returns:  Boolean
