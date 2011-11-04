@@ -633,7 +633,7 @@ begin
   
   if (TQtDeviceContext(CanvasHandle).vImage <> nil) then
   begin
-    Color := QColor_create(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
+    Color := QColor_create(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.FHandle, X, Y));
     Result := RGBToColor(QColor_red(Color), QColor_green(Color), QColor_blue(Color));
     QColor_destroy(Color);
   end;

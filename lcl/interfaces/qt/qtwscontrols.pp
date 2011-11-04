@@ -667,7 +667,8 @@ begin
     Exit;
   end;
 
-  Result := TQtWidgetset(Widgetset).DragImageList_BeginDrag(TQtImage(ABitmap.Handle).Handle, ADragImageList.DragHotSpot);
+  Result := TQtWidgetset(Widgetset).DragImageList_BeginDrag(
+    TQtImage(ABitmap.Handle).FHandle, ADragImageList.DragHotSpot);
   if Result then
     TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y);
   ABitmap.Free;
@@ -708,7 +709,8 @@ begin
   end else
   begin
     TQtWidgetset(Widgetset).DragImageLock := True;
-    Result := TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y) and TQtWidgetset(Widgetset).DragImageList_SetVisible(True);
+    Result := TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y) and
+      TQtWidgetset(Widgetset).DragImageList_SetVisible(True);
   end;
 end;
 

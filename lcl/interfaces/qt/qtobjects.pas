@@ -140,7 +140,7 @@ type
     FData: PByte;
     FDataOwner: Boolean;
   public
-    Handle: QImageH;
+    FHandle: QImageH;
   public
     constructor Create;
     constructor Create(vHandle: QImageH); overload;
@@ -1229,7 +1229,7 @@ end;
 
 constructor TQtImage.Create;
 begin
-  Handle := QImage_create();
+  FHandle := QImage_create();
   FData := nil;
   FDataOwner := False;
 end;
@@ -1241,7 +1241,7 @@ end;
  ------------------------------------------------------------------------------}
 constructor TQtImage.Create(vHandle: QImageH);
 begin
-  Handle := vHandle;
+  FHandle := vHandle;
   FData := nil;
   FDataOwner := False;
 end;
@@ -1259,11 +1259,11 @@ begin
 
   if FData = nil then
   begin
-    Handle := QImage_create(width, height, format);
-    QImage_fill(Handle, 0);
+    FHandle := QImage_create(width, height, format);
+    QImage_fill(FHandle, 0);
   end
   else
-    Handle := QImage_create(FData, width, height, format);
+    FHandle := QImage_create(FData, width, height, format);
 end;
 
 constructor TQtImage.Create(AData: PByte; width: Integer; height: Integer;
@@ -1273,9 +1273,9 @@ begin
   FDataOwner := ADataOwner;
 
   if FData = nil then
-    Handle := QImage_create(width, height, format)
+    FHandle := QImage_create(width, height, format)
   else
-    Handle := QImage_create(FData, width, height, bytesPerLine, format);
+    FHandle := QImage_create(FData, width, height, bytesPerLine, format);
 end;
 
 {------------------------------------------------------------------------------
@@ -1291,8 +1291,8 @@ begin
     WriteLn('TQtImage.Destroy Handle:', dbgs(Handle));
   {$endif}
 
-  if Handle <> nil then
-    QImage_destroy(Handle);
+  if FHandle <> nil then
+    QImage_destroy(FHandle);
   if (FDataOwner) and (FData <> nil) then
     FreeMem(FData);
 
@@ -1313,18 +1313,18 @@ end;
 function TQtImage.AsPixmap(flags: QtImageConversionFlags = QtAutoColor): QPixmapH;
 begin
   Result := QPixmap_create();
-  QPixmap_fromImage(Result, Handle, flags);
+  QPixmap_fromImage(Result, FHandle, flags);
 end;
 
 function TQtImage.AsBitmap(flags: QtImageConversionFlags = QtAutoColor): QBitmapH;
 begin
   Result := QBitmap_create();
-  QBitmap_fromImage(Result, Handle, flags);
+  QBitmap_fromImage(Result, FHandle, flags);
 end;
 
 procedure TQtImage.CopyFrom(AImage: QImageH; x, y, w, h: integer);
 begin
-  QImage_copy(AImage, Handle, x, y, w, h);
+  QImage_copy(AImage, FHandle, x, y, w, h);
 end;
 
 {------------------------------------------------------------------------------
@@ -1334,7 +1334,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtImage.height: Integer;
 begin
-  Result := QImage_height(Handle);
+  Result := QImage_height(FHandle);
 end;
 
 {------------------------------------------------------------------------------
@@ -1344,22 +1344,22 @@ end;
  ------------------------------------------------------------------------------}
 function TQtImage.width: Integer;
 begin
-  Result := QImage_width(Handle);
+  Result := QImage_width(FHandle);
 end;
 
 function TQtImage.depth: Integer;
 begin
-  Result := QImage_depth(Handle);
+  Result := QImage_depth(FHandle);
 end;
 
 function TQtImage.dotsPerMeterX: Integer;
 begin
-  Result := QImage_dotsPerMeterX(Handle);
+  Result := QImage_dotsPerMeterX(FHandle);
 end;
 
 function TQtImage.dotsPerMeterY: Integer;
 begin
-  Result := QImage_dotsPerMeterY(Handle);
+  Result := QImage_dotsPerMeterY(FHandle);
 end;
 
 {------------------------------------------------------------------------------
@@ -1369,7 +1369,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtImage.bits: PByte;
 begin
-  Result := QImage_bits(Handle);
+  Result := QImage_bits(FHandle);
 end;
 
 {------------------------------------------------------------------------------
@@ -1379,22 +1379,22 @@ end;
  ------------------------------------------------------------------------------}
 function TQtImage.numBytes: Integer;
 begin
-  Result := QImage_numBytes(Handle);
+  Result := QImage_numBytes(FHandle);
 end;
 
 function TQtImage.bytesPerLine: Integer;
 begin
-  Result := QImage_bytesPerLine(Handle);
+  Result := QImage_bytesPerLine(FHandle);
 end;
 
 procedure TQtImage.invertPixels(InvertMode: QImageInvertMode = QImageInvertRgb);
 begin
-  QImage_invertPixels(Handle, InvertMode);
+  QImage_invertPixels(FHandle, InvertMode);
 end;
 
 function TQtImage.getFormat: QImageFormat;
 begin
-  Result := QImage_format(Handle);
+  Result := QImage_format(FHandle);
 end;
 
 { TQtFont }
@@ -2313,7 +2313,7 @@ begin
   
   QPainter_destroy(Widget);
 
-  Widget := QPainter_Create(vImage.Handle);
+  Widget := QPainter_Create(vImage.FHandle);
 end;
 
 {------------------------------------------------------------------------------
