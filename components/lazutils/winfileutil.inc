@@ -588,7 +588,7 @@ begin
     Result:=False;
 end;
 
-function FileOpenUTF8(Const FileName : utf8string; Mode : Integer) : THandle;
+function FileOpenUTF8(Const FileName : string; Mode : Integer) : THandle;
 const
   AccessMode: array[0..2] of Cardinal  = (
     GENERIC_READ,
@@ -607,13 +607,13 @@ begin
   //if fail api return feInvalidHandle (INVALIDE_HANDLE=feInvalidHandle=-1)
 end;
 
-function FileCreateUTF8(Const FileName : utf8string) : THandle;
+function FileCreateUTF8(Const FileName : string) : THandle;
 begin
   Result := CreateFileW(PWideChar(UTF8Decode(FileName)), GENERIC_READ or GENERIC_WRITE,
                        0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 end;
 
-function FileCreateUTF8(Const FileName : utf8String; Rights: Cardinal) : THandle;
+function FileCreateUTF8(Const FileName : string; Rights: Cardinal) : THandle;
 begin
   Result := CreateFileW(PWideChar(UTF8Decode(FileName)), GENERIC_READ or GENERIC_WRITE,
                        0, nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);

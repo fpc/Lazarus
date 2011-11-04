@@ -61,8 +61,8 @@ function UTF8Copy(const s: string; StartCharIndex, CharCount: PtrInt): string;
 procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
 procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt);
 
-function UTF8LowerCase(const AInStr: utf8string; ALanguage: utf8string=''): utf8string;
-function UTF8UpperCase(const AInStr: utf8string; ALanguage: utf8string=''): utf8string;
+function UTF8LowerCase(const AInStr: string; ALanguage: string=''): string;
+function UTF8UpperCase(const AInStr: string; ALanguage: string=''): string;
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
                                   StopOnNonASCII: Boolean = false): PtrInt;
 function ValidUTF8String(const s: String): String;
@@ -71,8 +71,8 @@ procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);
 
 //compare functions
 
-function UTF8CompareStr(const S1, S2: utf8string): Integer;
-function UTF8CompareText(const S1, S2: utf8string): Integer;
+function UTF8CompareStr(const S1, S2: string): Integer;
+function UTF8CompareText(const S1, S2: string): Integer;
 
 type
   TConvertResult = (trNoError, trNullSrc, trNullDest, trDestExhausted,
@@ -668,7 +668,7 @@ end;
   The columns in the file UnicodeData.txt are explained here:
   http://www.ksu.ru/eng/departments/ktk/test/perl/lib/unicode/UCDFF301.html#Case Mappings
 }
-function UTF8LowerCase(const AInStr: utf8string; ALanguage: utf8string=''): utf8string;
+function UTF8LowerCase(const AInStr: string; ALanguage: string=''): string;
 var
   CounterDiff: PtrInt;
   InStr, InStrEnd, OutStr: PChar;
@@ -1810,7 +1810,7 @@ end;
   The columns in the file UnicodeData.txt are explained here:
   http://www.ksu.ru/eng/departments/ktk/test/perl/lib/unicode/UCDFF301.html#Case Mappings
 }
-function UTF8UpperCase(const AInStr: utf8string; ALanguage: utf8string=''): utf8string;
+function UTF8UpperCase(const AInStr: string; ALanguage: string=''): string;
 var
   i, InCounter, OutCounter: PtrInt;
   OutStr: PChar;
@@ -2270,7 +2270,7 @@ end;
   Note: Use this function instead of AnsiCompareStr.
   This function guarantees proper collation on all supported platforms.
  ------------------------------------------------------------------------------}
-function UTF8CompareStr(const S1, S2: utf8string): Integer;
+function UTF8CompareStr(const S1, S2: string): Integer;
 begin
   Result := SysUtils.CompareStr(S1, S2);
 end;
@@ -2283,9 +2283,9 @@ end;
   Note: Use this function instead of AnsiCompareText.
   This function guarantees proper collation on all supported platforms.
  ------------------------------------------------------------------------------}
-function UTF8CompareText(const S1, S2: utf8string): Integer;
+function UTF8CompareText(const S1, S2: string): Integer;
 var
-  S1Lower, S2Lower: utf8string;
+  S1Lower, S2Lower: string;
 begin
   S1Lower := UTF8LowerCase(S1);
   S2Lower := UTF8LowerCase(S2);

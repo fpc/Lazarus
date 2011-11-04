@@ -41,7 +41,7 @@ function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF16(u: cardinal): widestring;
 
 function UnicodeLowercase(u: cardinal): cardinal;
-function UTF8LowerCaseViaTables(const s: utf8string): utf8string;
+function UTF8LowerCaseViaTables(const s: string): string;
 
 implementation
 
@@ -896,7 +896,7 @@ begin
   end;
 end;
 
-function UTF8LowerCaseViaTables(const s: utf8string): utf8string;
+function UTF8LowerCaseViaTables(const s: string): string;
 var
   i: PtrInt;
   CharLen: integer;
