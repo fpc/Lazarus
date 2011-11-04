@@ -2337,8 +2337,6 @@ begin
 end;
 
 procedure TCustomGrid.SetFixedCols(const AValue: Integer);
-var
-  EditorAffected: boolean;
 begin
   if FFixedCols=AValue then begin
     if FixedGrid and FGridPropBackup.ValidData then begin
@@ -2350,8 +2348,7 @@ begin
   end;
   CheckFixedCount(ColCount, RowCount, AValue, FFixedRows);
 
-  EditorAffected := (AValue>=FCol);
-  if EditorAffected and EditorMode then
+  if EditorMode then
     EditorMode:=False;
 
   FFixedCols:=AValue;
@@ -2371,16 +2368,12 @@ begin
     if not (csLoading in componentState) then
       doTopleftChange(true);
 
-    if EditorAffected then begin
-      MoveNextSelectable(False, FixedCols, FRow);
-      UpdateSelectionRange;
-    end;
+    MoveNextSelectable(False, FixedCols, FRow);
+    UpdateSelectionRange;
   end;
 end;
 
 procedure TCustomGrid.SetFixedRows(const AValue: Integer);
-var
-  EditorAffected: boolean;
 begin
   if FFixedRows=AValue then begin
     if FixedGrid and FGridPropBackup.ValidData then begin
@@ -2392,8 +2385,7 @@ begin
   end;
   CheckFixedCount(ColCount, RowCount, FFixedCols, AValue);
 
-  EditorAffected := (AValue>=FRow);
-  if EditorAffected and EditorMode then
+  if EditorMode then
     EditorMode:=False;
 
   FFixedRows:=AValue;
@@ -2402,10 +2394,8 @@ begin
   if not (csLoading in ComponentState) then
     doTopleftChange(true);
 
-  if EditorAffected then begin
-    MoveNextSelectable(False, FCol, FixedRows);
-    UpdateSelectionRange;
-  end;
+  MoveNextSelectable(False, FCol, FixedRows);
+  UpdateSelectionRange;
 end;
 
 procedure TCustomGrid.SetGridLineColor(const AValue: TColor);
