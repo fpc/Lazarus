@@ -15,6 +15,8 @@ const
   // Measures
   TCDEDIT_LEFT_TEXT_SPACING  = $400; // The space between the start of the text and the left end of the control
   TCDEDIT_RIGHT_TEXT_SPACING = $401; // The space between the end of the text and the right end of the control
+  TCDEDIT_TOP_TEXT_SPACING   = $402;
+  TCDEDIT_BOTTOM_TEXT_SPACING= $403;
   TCDTRACKBAR_LEFT_SPACING    = $1000;
   TCDTRACKBAR_RIGHT_SPACING   = $1001;
 
@@ -163,6 +165,8 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
+    procedure DrawCaret(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
     procedure DrawEdit(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;

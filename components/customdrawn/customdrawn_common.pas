@@ -43,6 +43,8 @@ type
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
+    procedure DrawCaret(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     procedure DrawEdit(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     // TCDCheckBox
@@ -70,6 +72,14 @@ type
 
 implementation
 
+const
+  WIN2000_FRAME_WHITE = clWhite;
+  WIN2000_FRAME_LIGHT_GRAY = $00E2EFF1;
+  WIN2000_FRAME_GRAY = $0099A8AC;
+  WIN2000_FRAME_DARK_GRAY = $00646F71;
+
+  WIN2000_WINDOW_MAINCOLOR = $00D8E9EC;
+
 { TCDDrawerCommon }
 
 function TCDDrawerCommon.GetMeasures(AMeasureID: Integer): Integer;
@@ -77,6 +87,8 @@ begin
   case AMeasureID of
   TCDEDIT_LEFT_TEXT_SPACING: Result := 4;
   TCDEDIT_RIGHT_TEXT_SPACING: Result := 3;
+  TCDEDIT_TOP_TEXT_SPACING: Result := 3;
+  TCDEDIT_BOTTOM_TEXT_SPACING: Result := 3;
   else
     Result := 0;
   end;
@@ -251,33 +263,73 @@ begin
   // The background
   ADest.Brush.Color := clWhite;
   ADest.Brush.Style := bsSolid;
-  ADest.Pen.Color := clBlack;
+  ADest.Pen.Color := WIN2000_FRAME_WHITE;
   ADest.Pen.Style := psSolid;
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  // The Frame, except the lower-bottom which is white anyway
+  // outter top-right
+  ADest.Pen.Color := WIN2000_FRAME_GRAY;
+  ADest.MoveTo(0, ASize.cy-1);
+  ADest.LineTo(0, 0);
+  ADest.LineTo(ASize.cx-1, 0);
+  // inner top-right
+  ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
+  ADest.MoveTo(1, ASize.cy-2);
+  ADest.LineTo(1, 1);
+  ADest.LineTo(ASize.cx-2, 1);
+  // inner bottom-right
+  ADest.Pen.Color := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.MoveTo(1, ASize.cy-2);
+  ADest.LineTo(ASize.cx-2, ASize.cy-2);
+  ADest.LineTo(ASize.cx-2, 0);
+end;
+
+procedure TCDDrawerCommon.DrawCaret(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDEditStateEx);
+var
+  lTextTopSpacing, lCaptionHeight: Integer;
+  lControlText, lTmpText: string;
+  lCaretPixelPos: Integer;
+begin
+  if not AStateEx.CaretIsVisible then Exit;
+
+  lControlText := AStateEx.Caption;
+  lCaptionHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx);
+  lTextTopSpacing := GetMeasures(TCDEDIT_TOP_TEXT_SPACING);
+
+  lTmpText := UTF8Copy(lControlText, 1, AStateEx.CaretPos-AStateEx.VisibleTextStart+1);
+  lCaretPixelPos := ADest.TextWidth(lTmpText) + 3;
+  ADest.Pen.Color := clBlack;
+  ADest.Line(lCaretPixelPos, lTextTopSpacing, lCaretPixelPos, lTextTopSpacing+lCaptionHeight);
 end;
 
 procedure TCDDrawerCommon.DrawEdit(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDEditStateEx);
 var
-  lVisibleText, lTmpText, lControlText: TCaption;
-  lCaretPixelPos: Integer;
-  lHeight: Integer;
+  lVisibleText, lControlText: TCaption;
   lSelLeftPos, lSelLeftPixelPos, lSelLength, lSelRightPos: Integer;
   lTextWidth: Integer;
   lControlTextLen: PtrInt;
+  lTextLeftSpacing, lTextRightSpacing, lTextTopSpacing, lTextBottomSpacing: Integer;
 begin
+  // Background
   DrawEditBackground(ADest, ADestPos, ASize, AState, AStateEx);
 
   lControlText := AStateEx.Caption;
   lControlTextLen := UTF8Length(AStateEx.Caption);
   ADest.Brush.Style := bsClear;
   ADest.Font.Assign(AStateEx.Font);
+  lTextLeftSpacing := GetMeasures(TCDEDIT_LEFT_TEXT_SPACING);
+  lTextRightSpacing := GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
+  lTextTopSpacing := GetMeasures(TCDEDIT_TOP_TEXT_SPACING);
+  lTextBottomSpacing := GetMeasures(TCDEDIT_BOTTOM_TEXT_SPACING);
 
   // The text without selection
   if AStateEx.SelLength = 0 then
   begin
     lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart, lControlTextLen);
-    ADest.TextOut(4, 1, lVisibleText);
+    ADest.TextOut(lTextLeftSpacing, lTextTopSpacing, lVisibleText);
   end
   // Text and Selection
   else
@@ -291,38 +343,31 @@ begin
 
     // Text left of the selection
     lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart, lSelLeftPos-AStateEx.VisibleTextStart);
-    ADest.TextOut(4, 1, lVisibleText);
-    lSelLeftPixelPos := ADest.TextWidth(lVisibleText)+4;
+    ADest.TextOut(4, lTextTopSpacing, lVisibleText);
+    lSelLeftPixelPos := ADest.TextWidth(lVisibleText)+lTextLeftSpacing;
 
     // The selection background
     lVisibleText := UTF8Copy(lControlText, lSelLeftPos, lSelLength);
     lTextWidth := ADest.TextWidth(lVisibleText);
     ADest.Brush.Color := clBlue;
     ADest.Brush.Style := bsSolid;
-    ADest.Rectangle(lSelLeftPixelPos, 1, lSelLeftPixelPos+lTextWidth, lHeight-1);
+    ADest.Rectangle(lSelLeftPixelPos, lTextTopSpacing, lSelLeftPixelPos+lTextWidth, ASize.cy-lTextBottomSpacing);
     ADest.Brush.Style := bsClear;
 
     // The selection text
     ADest.Font.Color := clWhite;
-    ADest.TextOut(lSelLeftPixelPos, 1, lVisibleText);
+    ADest.TextOut(lSelLeftPixelPos, lTextTopSpacing, lVisibleText);
     lSelLeftPixelPos := lSelLeftPixelPos + lTextWidth;
 
     // Text right of the selection
     ADest.Brush.Color := clWhite;
     ADest.Font.Color := AStateEx.Font.Color;
     lVisibleText := UTF8Copy(lControlText, lSelLeftPos+lSelLength+1, lControlTextLen);
-    ADest.TextOut(lSelLeftPixelPos, 1, lVisibleText);
+    ADest.TextOut(lSelLeftPixelPos, lTextTopSpacing, lVisibleText);
   end;
 
   // And the caret
-  if AStateEx.CaretIsVisible then
-  begin
-    lTmpText := UTF8Copy(lControlText, 1, AStateEx.CaretPos-AStateEx.VisibleTextStart+1);
-    lCaretPixelPos := ADest.TextWidth(lTmpText) + 3;
-    lHeight := ASize.cy;
-    ADest.Line(lCaretPixelPos, 2, lCaretPixelPos, lHeight-2);
-    ADest.Line(lCaretPixelPos+1, 2, lCaretPixelPos+1, lHeight-2);
-  end;
+  DrawCaret(ADest, ADestPos, ASize, AState, AStateEx);
 end;
 
 procedure TCDDrawerCommon.DrawCheckBox(ADest: TCanvas; ADestPos: TPoint;
@@ -443,20 +488,20 @@ begin
   // white lines in the left and top
   ADest.Pen.Style := psSolid;
   ADest.Brush.Style := bsClear;
-  ADest.Pen.Color := clWhite;
+  ADest.Pen.Color := WIN2000_FRAME_WHITE;
   ADest.Line(0, CaptionHeight, 0, ASize.cy-1);
   ADest.Pixels[1,1] := clWhite;
   ADest.Line(2, CaptionHeight, ASize.cx-1, CaptionHeight);
   // Grey line on the inside left and top
-  ADest.Pen.Color := ColorToRGB($00E2EFF1);
+  ADest.Pen.Color := WIN2000_FRAME_LIGHT_GRAY;
   ADest.Line(1, CaptionHeight, 1, ASize.cy-2);
   ADest.Line(2, CaptionHeight+1, ASize.cx-2, CaptionHeight+1);
   // Dark grey line on the right and bottom
-  ADest.Pen.Color := ColorToRGB($00646F71);
+  ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
   ADest.Line(0, ASize.cy, ASize.cx, ASize.cy);
   ADest.Line(ASize.cx, ASize.cy, ASize.cx, CaptionHeight);
   // Grey line on the inside right and bottom
-  ADest.Pen.Color := ColorToRGB($00646F71);
+  ADest.Pen.Color := WIN2000_FRAME_GRAY;
   ADest.Line(1, ASize.cy-1, ASize.cx-1, ASize.cy-1);
   ADest.Line(ASize.cx-1, ASize.cy-1, ASize.cx-1, CaptionHeight);
 

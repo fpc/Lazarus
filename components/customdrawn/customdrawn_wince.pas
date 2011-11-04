@@ -7,6 +7,8 @@ interface
 uses
   // RTL
   Classes, SysUtils, Types,
+  // LazUtils
+  lazutf8,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
   Graphics, Controls, LCLType,
   // Others only for types
@@ -15,6 +17,9 @@ uses
   customdrawndrawers, customdrawn_common;
 
 type
+
+  { TCDDrawerWinCE }
+
   TCDDrawerWinCE = class(TCDDrawerCommon)
   public
     // ===================================
@@ -23,6 +28,14 @@ type
     // TCDButton
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+    // TCDEdit
+    procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDEditStateEx); override;
+    procedure DrawCaret(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDEditStateEx); override;
+    // ===================================
+    // Common Controls Tab
+    // ===================================
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
@@ -95,6 +108,37 @@ begin
   Str := AStateEx.Caption;
   ADest.TextOut((ASize.cx - ADest.TextWidth(Str)) div 2,
     (ASize.cy - ADest.TextHeight(Str)) div 2, Str);
+end;
+
+procedure TCDDrawerWinCE.DrawEditBackground(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDEditStateEx);
+begin
+  // The background
+  ADest.Brush.Color := clWhite;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Color := clBlack;
+  ADest.Pen.Style := psSolid;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+end;
+
+procedure TCDDrawerWinCE.DrawCaret(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDEditStateEx);
+var
+  lTextTopSpacing, lCaptionHeight: Integer;
+  lControlText, lTmpText: string;
+  lCaretPixelPos: Integer;
+begin
+  if not AStateEx.CaretIsVisible then Exit;
+
+  lControlText := AStateEx.Caption;
+  lCaptionHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx);
+  lTextTopSpacing := GetMeasures(TCDEDIT_TOP_TEXT_SPACING);
+
+  lTmpText := UTF8Copy(lControlText, 1, AStateEx.CaretPos-AStateEx.VisibleTextStart+1);
+  lCaretPixelPos := ADest.TextWidth(lTmpText) + 3;
+  ADest.Pen.Color := clBlack;
+  ADest.Line(lCaretPixelPos, lTextTopSpacing, lCaretPixelPos, lTextTopSpacing+lCaptionHeight);
+  ADest.Line(lCaretPixelPos+1, lTextTopSpacing, lCaretPixelPos+1, lTextTopSpacing+lCaptionHeight);
 end;
 
 procedure TCDDrawerWinCE.DrawCTabControl(ADest: TCanvas; ADestPos: TPoint;
