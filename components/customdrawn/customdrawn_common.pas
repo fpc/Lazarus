@@ -22,6 +22,7 @@ type
 
   TCDDrawerCommon = class(TCDDrawer)
   public
+    procedure LoadFallbackPaletteColors; override;
     // General
     function GetMeasures(AMeasureID: Integer): Integer; override;
     function GetMeasuresEx(ADest: TCanvas; AMeasureID: Integer;
@@ -80,7 +81,16 @@ const
 
   WIN2000_WINDOW_MAINCOLOR = $00D8E9EC;
 
+  WIN2000_FORM       = $00D8E9EC;
+
 { TCDDrawerCommon }
+
+procedure TCDDrawerCommon.LoadFallbackPaletteColors;
+begin
+  Palette.BtnFace := WIN2000_FORM;
+  Palette.Form := WIN2000_FORM;
+  Palette.Window := clWhite; // The inside of a Edit control, for example
+end;
 
 function TCDDrawerCommon.GetMeasures(AMeasureID: Integer): Integer;
 begin

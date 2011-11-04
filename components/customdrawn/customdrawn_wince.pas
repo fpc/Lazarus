@@ -22,6 +22,8 @@ type
 
   TCDDrawerWinCE = class(TCDDrawerCommon)
   public
+    procedure LoadFallbackPaletteColors; override;
+    function GetDrawStyle: TCDDrawStyle; override;
     // ===================================
     // Standard Tab
     // ===================================
@@ -48,6 +50,17 @@ type
   end;
 
 implementation
+
+procedure TCDDrawerWinCE.LoadFallbackPaletteColors;
+begin
+  Palette.Form := $EFDFCE;
+  Palette.BtnFace := $EFDFCE;
+end;
+
+function TCDDrawerWinCE.GetDrawStyle: TCDDrawStyle;
+begin
+  Result := dsWinCE;
+end;
 
 procedure TCDDrawerWinCE.DrawButton(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);

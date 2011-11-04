@@ -18,6 +18,8 @@ type
 
   TCDDrawerWinXP = class(TCDDrawerCommon)
   public
+    function GetDrawStyle: TCDDrawStyle; override;
+    procedure LoadFallbackPaletteColors; override;
     // ===================================
     // Standard Tab
     // ===================================
@@ -33,8 +35,20 @@ implementation
 
 const
   WINXP_FRAME_BLUE = $00B99D7F;
+  WINXP_FORM       = $00D8E9EC;
 
 { TCDDrawerWinXP }
+
+function TCDDrawerWinXP.GetDrawStyle: TCDDrawStyle;
+begin
+  Result := dsWinXP;
+end;
+
+procedure TCDDrawerWinXP.LoadFallbackPaletteColors;
+begin
+  Palette.BtnFace := WINXP_FORM;
+  Palette.Form := WINXP_FORM;
+end;
 
 procedure TCDDrawerWinXP.DrawButton(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);

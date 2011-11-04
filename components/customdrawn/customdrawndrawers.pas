@@ -139,14 +139,40 @@ type
     cidCTabControl
     );
 
+  TCDColorPalette = class
+  public
+    ScrollBar, Background, ActiveCaption, InactiveCaption,
+    Menu, Window, WindowFrame, MenuText, WindowText, CaptionText,
+    ActiveBorder, InactiveBorder, AppWorkspace, Highlight, HighlightText,
+    BtnFace, BtnShadow, GrayText, BtnText, InactiveCaptionText,
+    BtnHighlight, color3DDkShadow, color3DLight, InfoText, InfoBk,
+    //
+    HotLight, GradientActiveCaption, GradientInactiveCaption,
+    MenuHighlight, MenuBar, Form: TColor;
+  end;
+
+  { There are 3 possible sources of input for color palettes:
+   palDefault  - Uses palNative when the operating system matches the drawer style,
+                 palFallback otherwise
+   palNative   - Obtain from the operating system
+   palFallback - Use the fallback colors of the drawer
+   palUserConfig-Load it from the user configuration files, ToDo
+   palCustom   - The user application has set its own palette
+  }
+  TCDPaletteKind = (palDefault, palNative, palFallback, palUserConfig, palCustom);
+
   { TCDDrawer }
 
   TCDDrawer = class
   protected
   public
+    Palette: TCDColorPalette;
     constructor Create; virtual;
     destructor Destroy; override;
-    //
+    procedure SetPaletteKind(APaletteKind: TCDPaletteKind);
+    procedure LoadNativePaletteColors;
+    procedure LoadFallbackPaletteColors; virtual;
+    function GetDrawStyle: TCDDrawStyle; virtual;
     function GetControlColor(AControlId: TCDControlID): TColor;
     // General
     function GetMeasures(AMeasureID: Integer): Integer; virtual; abstract;
@@ -235,26 +261,101 @@ constructor TCDDrawer.Create;
 begin
   inherited Create;
 
-
+  Palette := TCDColorPalette.Create;
+  SetPaletteKind(palDefault);
 end;
 
 destructor TCDDrawer.Destroy;
 begin
+  Palette.Free;
+
   inherited Destroy;
+end;
+
+procedure TCDDrawer.SetPaletteKind(APaletteKind: TCDPaletteKind);
+var
+  lIsOnNativeSystem: Boolean = False;
+  lStyle: TCDDrawStyle;
+begin
+  case APaletteKind of
+  palDefault:
+  begin
+    lStyle := GetDrawStyle();
+    case lStyle of
+    dsWinCE: lIsOnNativeSystem := {$ifdef WinCE}True{$else}False{$endif};
+    dsCommon, dsWin2000, dsWinXP:
+      lIsOnNativeSystem := {$ifdef MSWindows}True{$else}False{$endif};
+    else
+      lIsOnNativeSystem := False;
+    end;
+
+    if lIsOnNativeSystem then LoadNativePaletteColors()
+    else LoadFallbackPaletteColors();
+  end;
+  palNative:   LoadNativePaletteColors();
+  palFallback: LoadFallbackPaletteColors();
+  //palUserConfig:
+  end;
+end;
+
+procedure TCDDrawer.LoadNativePaletteColors;
+begin
+  Palette.ScrollBar := ColorToRGB(clScrollBar);
+  Palette.Background := ColorToRGB(clBackground);
+  Palette.ActiveCaption := ColorToRGB(clActiveCaption);
+  Palette.InactiveCaption := ColorToRGB(clInactiveCaption);
+  Palette.Menu := ColorToRGB(clMenu);
+  Palette.Window := ColorToRGB(clWindow);
+  Palette.WindowFrame := ColorToRGB(clWindowFrame);
+  Palette.MenuText := ColorToRGB(clMenuText);
+  Palette.WindowText := ColorToRGB(clWindowText);
+  Palette.CaptionText := ColorToRGB(clCaptionText);
+  Palette.ActiveBorder := ColorToRGB(clActiveBorder);
+  Palette.InactiveBorder := ColorToRGB(clInactiveBorder);
+  Palette.AppWorkspace := ColorToRGB(clAppWorkspace);
+  Palette.Highlight := ColorToRGB(clHighlight);
+  Palette.HighlightText := ColorToRGB(clHighlightText);
+  Palette.BtnFace := ColorToRGB(clBtnFace);
+  Palette.BtnShadow := ColorToRGB(clBtnShadow);
+  Palette.GrayText := ColorToRGB(clGrayText);
+  Palette.BtnText := ColorToRGB(clBtnText);
+  Palette.InactiveCaptionText := ColorToRGB(clInactiveCaptionText);
+  Palette.BtnHighlight := ColorToRGB(clBtnHighlight);
+  Palette.color3DDkShadow := ColorToRGB(cl3DDkShadow);
+  Palette.color3DLight := ColorToRGB(cl3DLight);
+  Palette.InfoText := ColorToRGB(clInfoText);
+  Palette.InfoBk := ColorToRGB(clInfoBk);
+
+  Palette.HotLight := ColorToRGB(clHotLight);
+  Palette.GradientActiveCaption := ColorToRGB(clGradientActiveCaption);
+  Palette.GradientInactiveCaption := ColorToRGB(clGradientInactiveCaption);
+  Palette.MenuHighlight := ColorToRGB(clMenuHighlight);
+  Palette.MenuBar := ColorToRGB(clMenuBar);
+  Palette.Form := ColorToRGB(clForm);
+end;
+
+procedure TCDDrawer.LoadFallbackPaletteColors;
+begin
+
+end;
+
+function TCDDrawer.GetDrawStyle: TCDDrawStyle;
+begin
+  Result := dsCommon;
 end;
 
 function TCDDrawer.GetControlColor(AControlId: TCDControlID): TColor;
 begin
   case AControlId of
-  cidControl:     Result := clSilver;
-  cidButton:      Result := clSilver;
-  cidEdit:        Result := clSilver;
-  cidCheckBox:    Result := clSilver;
-  cidGroupBox:    Result := clSilver;
-  cidTrackBar:    Result := clSilver;
-  cidCTabControl: Result := clSilver;
+  cidControl:     Result := Palette.Form;
+  cidButton:      Result := Palette.BtnFace;
+  cidEdit:        Result := Palette.Window;
+  cidCheckBox:    Result := Palette.Form;
+  cidGroupBox:    Result := Palette.Form;
+  cidTrackBar:    Result := Palette.Form;
+  cidCTabControl: Result := Palette.Form;
   else
-    Result := clSilver;
+    Result := Palette.Form;
   end;
 end;
 
