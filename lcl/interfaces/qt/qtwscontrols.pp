@@ -518,25 +518,25 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
     Exit;
 
-  // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
-  if AWinControl.Color = clDefault then
-  begin
-    QtWidget := TQtWidget(AWinControl.Handle);
-    QtWidget.BeginUpdate;
-    QtWidget.SetDefaultColor(dctBrush);
-    QtWidget.EndUpdate;
-  end
-  else
-  begin
-    ColorRef := ColorToRGB(AWinControl.Color);
+  QtWidget := TQtWidget(AWinControl.Handle);
+  QtWidget.BeginUpdate;
+  QtWidget.WidgetState := QtWidget.WidgetState + [qtwsColorUpdating];
+  try
+    // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
+    if AWinControl.Color = clDefault then
+      QtWidget.SetDefaultColor(dctBrush)
+    else
+    begin
+      ColorRef := ColorToRGB(AWinControl.Color);
 
-    // Fill QColor
-    QColor_fromRgb(@QColor,Red(ColorRef),Green(ColorRef),Blue(ColorRef));
+      // Fill QColor
+      QColor_fromRgb(@QColor,Red(ColorRef),Green(ColorRef),Blue(ColorRef));
 
-    // Set color of the widget to QColor
-    QtWidget := TQtWidget(AWinControl.Handle);
-    QtWidget.BeginUpdate;
-    QtWidget.SetColor(@QColor);
+      // Set color of the widget to QColor
+      QtWidget.SetColor(@QColor);
+    end;
+  finally
+    QtWidget.WidgetState := QtWidget.WidgetState - [qtwsColorUpdating];
     QtWidget.EndUpdate;
   end;
 end;
@@ -575,34 +575,33 @@ begin
     Exit;
 
   QtWidget := TQtWidget(AWinControl.Handle);
-  QtWidget.setFont(TQtFont(AFont.Reference.Handle).FHandle);
+  QtWidget.BeginUpdate;
+  QtWidget.WidgetState := QtWidget.WidgetState + [qtwsFontUpdating];
+  try
+    QtWidget.setFont(TQtFont(AFont.Reference.Handle).FHandle);
 
-  // tscrollbar, ttrackbar etc.
-  if not QtWidget.CanChangeFontColor then
-  begin
-    with QtWidget do
+    // tscrollbar, ttrackbar etc.
+    if not QtWidget.CanChangeFontColor then
     begin
-      BeginUpdate;
-      Palette.ForceColor := True;
-      setDefaultColor(dctFont);
-      Palette.ForceColor := False;
-      EndUpdate;
+      with QtWidget do
+      begin
+        Palette.ForceColor := True;
+        setDefaultColor(dctFont);
+        Palette.ForceColor := False;
+      end;
+      exit;
     end;
-    exit;
-  end;
 
-  if AFont.Color = clDefault then
-  begin
-    QtWidget.BeginUpdate;
-    QtWidget.SetDefaultColor(dctFont);
-    QtWidget.EndUpdate;
-  end
-  else
-  begin
-    ColorRef := ColorToRGB(AFont.Color);
-    QColor_fromRgb(@QColor,Red(ColorRef),Green(ColorRef),Blue(ColorRef));
-    QtWidget.BeginUpdate;
-    QtWidget.SetTextColor(@QColor);
+    if AFont.Color = clDefault then
+      QtWidget.SetDefaultColor(dctFont)
+    else
+    begin
+      ColorRef := ColorToRGB(AFont.Color);
+      QColor_fromRgb(@QColor,Red(ColorRef),Green(ColorRef),Blue(ColorRef));
+      QtWidget.SetTextColor(@QColor);
+    end;
+  finally
+    QtWidget.WidgetState := QtWidget.WidgetState - [qtwsFontUpdating];
     QtWidget.EndUpdate;
   end;
 end;

@@ -60,6 +60,13 @@ type
   TQtGroupBoxType = (tgbtNormal,
                    tgbtCheckGroup,
                    tgbtRadioGroup);
+
+  {state is setted up only when LCL is doing changes.}
+  TQtWidgetState = (qtwsColorUpdating, qtwsFontUpdating, qtwsSizeUpdating,
+    qtwsPositionUpdating);
+
+  TQtWidgetStates = set of TQtWidgetState;
+
   // records
   TPaintData = record
     PaintWidget: QWidgetH;
@@ -98,6 +105,7 @@ type
 
   TQtWidget = class(TQtObject, IUnknown)
   private
+    FWidgetState: TQtWidgetStates;
     FWidgetNeedFontColorInitialization: Boolean;
     FChildOfComplexWidget: TChildOfComplexWidget;
     FOwnWidget: Boolean;
@@ -301,6 +309,7 @@ type
     property TextColorRole: QPaletteColorRole read FTextColorRole write FTextColorRole;
     property Widget: QWidgetH read GetWidget write SetWidget;
     property WidgetColorRole: QPaletteColorRole read FWidgetColorRole write FWidgetColorRole;
+    property WidgetState: TQtWidgetStates read FWidgetState write FWidgetState;
   end;
 
   { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar }
@@ -1775,6 +1784,8 @@ end;
 
 procedure TQtWidget.InitializeWidget;
 begin
+  // default states
+  FWidgetState := [];
   // default color roles
   FWidgetNeedFontColorInitialization := False;
   SetDefaultColorRoles;
@@ -11560,6 +11571,7 @@ end;
 
 procedure TQtMenu.InitializeWidget;
 begin
+  FWidgetState := [];
   ChildOfComplexWidget := ccwNone;
   WidgetColorRole := QPaletteWindow;
   TextColorRole := QPaletteText;
