@@ -7680,21 +7680,33 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentColor">
-        <short>Allows to use the Color of Parent. Default is true.</short>
+        <short>If true, the Color of the control will be the same as the one from the Parent. Default is true.</short>
+        <descr>While this property is True, all changes to the Color of the parent will be 
+          also done to the Color of the control, syncronizing them and keeping them with the same value. 
+          If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+        </descr>
         <seealso>
           <link id="TControl.Color"/>
         </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentFont">
-        <short>Allows to use the Font of Parent. Default is true.</short>
+        <short>If true, the Font of the control will be the same as the one from the Parent. Default is true.</short>
+        <descr>While this property is True, all changes to the font of the parent will be 
+          also done to the font of the control, syncronizing them and keeping them with the same value. 
+          If the Font of the control is changed by the application, then ParentFont will be automatically set to False.
+        </descr>
         <seealso>
           <link id="TControl.Font"/>
         </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentShowHint">
-        <short>Allows to use the hinting behaviour of Parent. Default is true.</short>
+        <short>If true, the value of ShowHint for the control will be the same as the one from the Parent. Default is true.</short>
+        <descr>While this property is True, all changes to the ShowHint property of the parent will be 
+          also done to the ShowHint property of the control, syncronizing them and keeping them with the same value. 
+          If the ShowHint property of the control is changed by the application, then ParentShowHint will be automatically set to False.
+        </descr>
         <seealso>
           <link id="TControl.Hint"/>
           <link id="TControl.ShowHint"/>
