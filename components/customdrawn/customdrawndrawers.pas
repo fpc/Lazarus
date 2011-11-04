@@ -173,7 +173,8 @@ type
     procedure LoadNativePaletteColors;
     procedure LoadFallbackPaletteColors; virtual;
     function GetDrawStyle: TCDDrawStyle; virtual;
-    function GetControlColor(AControlId: TCDControlID): TColor;
+    // GetControlDefaultColor is used by customdrawncontrols to resolve clDefault
+    function GetControlDefaultColor(AControlId: TCDControlID): TColor;
     // General
     function GetMeasures(AMeasureID: Integer): Integer; virtual; abstract;
     function GetMeasuresEx(ADest: TCanvas; AMeasureID: Integer;
@@ -186,6 +187,8 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; virtual; abstract;
     procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
+    // General drawing routines
+    procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     // TCDButton
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
@@ -344,7 +347,7 @@ begin
   Result := dsCommon;
 end;
 
-function TCDDrawer.GetControlColor(AControlId: TCDControlID): TColor;
+function TCDDrawer.GetControlDefaultColor(AControlId: TCDControlID): TColor;
 begin
   case AControlId of
   cidControl:     Result := Palette.Form;

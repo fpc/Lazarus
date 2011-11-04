@@ -35,6 +35,8 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; override;
     procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+    // General drawing routines
+    procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     // ===================================
     // Standard Tab
     // ===================================
@@ -191,6 +193,18 @@ begin
   cidTrackBar:   DrawTrackBar(ADest, ADestPos, ASize, AState, TCDTrackBarStateEx(AStateEx));
   cidCTabControl:DrawCTabControl(ADest, ADestPos, ASize, AState, TCDCTabControlStateEx(AStateEx));
   end;
+end;
+
+procedure TCDDrawerCommon.DrawFocusRect(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize);
+begin
+  ADest.Pen.Color := clWhite;
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Style := bsClear;
+  ADest.Rectangle(ADestPos.X, ADestPos.Y, ADestPos.X + ASize.CX, ADestPos.Y + ASize.CY);
+  ADest.Pen.Color := clBlack;
+  ADest.Pen.Style := psDot;
+  ADest.Rectangle(ADestPos.X, ADestPos.Y, ADestPos.X + ASize.CX, ADestPos.Y + ASize.CY);
 end;
 
 procedure TCDDrawerCommon.DrawButton(ADest: TCanvas; ADestPos: TPoint;
@@ -592,17 +606,8 @@ begin
   if IsSelected then
   begin
     // If it is selected, add a selection frame
-    ADest.Pen.Color := clWhite;
-    ADest.Pen.Style := psSolid;
-    ADest.Brush.Style := bsClear;
-    ADest.Rectangle(
-      AStateEx.CurStartLeftPos+3, lTabTopPos+3,
-      AStateEx.CurStartLeftPos+lTabWidth-5, lTabTopPos+lTabHeight-3);
-    ADest.Pen.Color := clBlack;
-    ADest.Pen.Style := psDot;
-    ADest.Rectangle(
-      AStateEx.CurStartLeftPos+3, lTabTopPos+3,
-      AStateEx.CurStartLeftPos+lTabWidth-5, lTabTopPos+lTabHeight-3);
+    DrawFocusRect(ADest, Point(AStateEx.CurStartLeftPos+3, lTabTopPos+3),
+      Size(lTabWidth-8, lTabHeight-6));
 
     // and Clear the bottom area if selected
     ADest.Pen.Color := AStateEx.RGBColor;

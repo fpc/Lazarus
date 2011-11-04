@@ -893,7 +893,7 @@ begin
   if Parent <> nil then FStateEx.ParentRGBColor := Parent.GetRGBColorResolvingParent
   else FStateEx.ParentRGBColor := clSilver;
 
-  if Color = clDefault then FStateEx.RGBColor := FDrawer.GetControlColor(GetControlId())
+  if Color = clDefault then FStateEx.RGBColor := FDrawer.GetControlDefaultColor(GetControlId())
   else FStateEx.RGBColor := GetRGBColorResolvingParent;
 
   FStateEx.Caption := Caption;
