@@ -208,11 +208,13 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TWindowState">
-        <short>Represents the actual State of the window on the screen</short>
+        <short>Represents the actual State of the window on the screen.</short>
         <descr>
+		  <p>Not all platforms support all modes. In Android windows are always fullscreen. In Windows Mobile (but not in all Windows CE platforms) wsMinimized and wsNormal are understood as wsMaximized, which is the normal state for windows in this platform, except for windows with BorderStyle=bsDialog or bsNone, which are allowed the state wsNormal.</p>
           <p>wsNormal - The window appears normal</p>
-          <p>wsMinimized - The window appears minimized</p>
+          <p>wsMinimized - The window is minimized and is not shown in the screen, but only in the taskbar</p>
           <p>wsMaximized - The window appears maximized</p>
+          <p>wsFullScreen - The window appears in full screen mode, as much as allowed by the platform.</p>
         </descr>
         <seealso/>
       </element>
