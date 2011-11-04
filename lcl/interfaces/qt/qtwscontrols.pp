@@ -578,6 +578,7 @@ begin
   QtWidget.BeginUpdate;
   QtWidget.WidgetState := QtWidget.WidgetState + [qtwsFontUpdating];
   try
+    QtWidget.SetLCLFont(TQtFont(AFont.Reference.Handle));
     QtWidget.setFont(TQtFont(AFont.Reference.Handle).FHandle);
 
     // tscrollbar, ttrackbar etc.

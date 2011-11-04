@@ -830,6 +830,7 @@ function QtDefaultContext: TQtDeviceContext;
 function QtScreenContext: TQtDeviceContext;
 
 procedure AssignQtFont(FromFont: QFontH; ToFont: QFontH);
+function IsFontEqual(AFont1, AFont2: TQtFont): Boolean;
 
 implementation
 
@@ -939,6 +940,28 @@ begin
   QFont_setStrikeOut(ToFont, QFont_strikeOut(FromFont));
   QFont_setStyle(ToFont, QFont_style(FromFont));
   QFont_setStyleStrategy(ToFont, QFont_styleStrategy(FromFont));
+end;
+
+function IsFontEqual(AFont1, AFont2: TQtFont): Boolean;
+var
+  AInfo1, AInfo2: TQtFontInfo;
+begin
+  Result := False;
+  if (AFont1 = nil) or (AFont2 = nil) then
+    exit;
+  if (AFont1.FHandle = nil) or (AFont2.FHandle = nil) then
+    exit;
+  AInfo1 := AFont1.FontInfo;
+  AInfo2 := AFont2.FontInfo;
+  if (AInfo1 = nil) or (AInfo2 = nil) then
+    exit;
+  Result := (AInfo1.Family = AInfo2.Family) and (AInfo1.Bold = AInfo2.Bold) and
+    (AInfo1.Italic = AInfo2.Italic) and (AInfo1.FixedPitch = AInfo2.FixedPitch) and
+    (AInfo1.Underline = AInfo2.Underline) and (AInfo1.Overline = AInfo2.OverLine) and
+    (AInfo1.PixelSize = AInfo2.PixelSize) and (AInfo1.PointSize = AInfo2.PointSize) and
+    (AInfo1.StrikeOut = AInfo2.StrikeOut) and (AInfo1.Weight = AInfo2.Weight) and
+    (AInfo1.RawMode = AInfo2.RawMode) and (AInfo1.Style = AInfo2.Style) and
+    (AInfo1.StyleHint = AInfo2.StyleHint);
 end;
 
 { TQtFontInfo }
@@ -2939,12 +2962,8 @@ begin
   SelFont := AFont;
   if (AFont.FHandle <> nil) and (Widget <> nil) then
   begin
-    if not FOwnPainter then
-    begin
-      QFnt := QPainter_font(Widget);
-      AssignQtFont(AFont.FHandle, QFnt);
-    end else
-      QPainter_setFont(Widget, QFontH(AFont.FHandle));
+    QFnt := QPainter_font(Widget);
+    AssignQtFont(AFont.FHandle, QFnt);
     vFont.Angle := AFont.Angle;
   end;
 end;

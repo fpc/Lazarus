@@ -106,6 +106,8 @@ type
   TQtWidget = class(TQtObject, IUnknown)
   private
     FWidgetState: TQtWidgetStates;
+    FWidgetDefaultFont: TQtFont;
+    FWidgetLCLFont: TQtFont;
     FWidgetNeedFontColorInitialization: Boolean;
     FChildOfComplexWidget: TChildOfComplexWidget;
     FOwnWidget: Boolean;
@@ -185,6 +187,7 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getAcceptDropFiles: Boolean; virtual;
     procedure SetNoMousePropagation(Sender: QWidgetH; const ANoMousePropagation: Boolean); virtual;
+    procedure SetLCLFont(AFont: TQtFont);
     procedure SlotShow(vShow: Boolean); cdecl;
     function SlotClose: Boolean; cdecl; virtual;
     procedure SlotDestroy; cdecl;
@@ -929,9 +932,11 @@ type
     FParentShowPassed: PtrInt;
     {$endif}
     FEditingFinishedHook: QAbstractSpinBox_hookH;
+    FLineEditHook: QObject_hookH;
     // parts
     FLineEdit: QLineEditH;
     function GetLineEdit: QLineEditH;
+    function LineEditEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     // IQtEdit implementation
@@ -1429,6 +1434,7 @@ type
   public
     constructor Create(const AParent: QWidgetH); overload;
   public
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function addMenu(AMenu: QMenuH): QActionH;
     function insertMenu(AIndex: Integer; AMenu: QMenuH): QActionH;
     function getGeometry: TRect; override;
@@ -1768,6 +1774,8 @@ begin
   
   FDefaultCursor := QCursor_create();
   QWidget_cursor(Widget, FDefaultCursor);
+  FWidgetLCLFont := nil;
+  FWidgetDefaultFont := TQtFont.Create(QWidget_font(AWidget));
 
   // set Handle->QWidget map
   setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
@@ -1799,6 +1807,10 @@ begin
   // retrieve default cursor on create
   FDefaultCursor := QCursor_create();
   QWidget_cursor(Widget, FDefaultCursor);
+
+  FWidgetDefaultFont := TQtFont.Create(QWidget_font(Widget));
+  FWidgetLCLFont := nil;
+
   
   // apply initial position and size
   move(FParams.X, FParams.Y);
@@ -1862,6 +1874,11 @@ begin
   
   if HasCaret then
     DestroyCaret;
+
+  if Assigned(FWidgetDefaultFont) then
+    FreeThenNil(FWidgetDefaultFont);
+  if Assigned(FWidgetLCLFont) then
+    FreeThenNil(FWidgetLCLFont);
 
   if FPalette <> nil then
   begin
@@ -2180,7 +2197,15 @@ begin
     case QEvent_type(Event) of
       QEventFontChange:
         begin
-          //TODO: for issue #19695
+          //explanation for this event usage: issue #19695
+          if not (qtwsFontUpdating in WidgetState) and
+            not LCLObject.IsParentFont then
+          begin
+            if Assigned(FWidgetLCLFont) then
+              AssignQtFont(FWidgetLCLFont.FHandle, QWidget_font(QWidgetH(Sender)))
+            else
+              AssignQtFont(FWidgetDefaultFont.FHandle, QWidget_font(QWidgetH(Sender)));
+          end;
         end;
       QEventEnabledChange:
         begin
@@ -2343,6 +2368,25 @@ procedure TQtWidget.SetNoMousePropagation(Sender: QWidgetH;
   const ANoMousePropagation: Boolean);
 begin
   QWidget_setAttribute(Sender, QtWA_NoMousePropagation, ANoMousePropagation);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWidget.SetLCLFont
+  Params:  None
+  Returns: Nothing
+  Sets FWidgetLCLFont , font which is different from FWidgetDefaultFont
+  so we can keep track over it inside QEventFontChange.
+  This routine does nothing if called outside of TQtWSControl.SetFont,
+  since qtwdFontUpdating must be in WidgetState
+ ------------------------------------------------------------------------------}
+procedure TQtWidget.SetLCLFont(AFont: TQtFont);
+begin
+  if not (qtwsFontUpdating in FWidgetState) then
+    exit;
+  if Assigned(FWidgetLCLFont) then
+    FreeThenNil(FWidgetLCLFont);
+  if not IsFontEqual(FWidgetDefaultFont, AFont) and (AFont.FHandle <> nil) then
+    FWidgetLCLFont := TQtFont.Create(AFont.FHandle);
 end;
 
 {------------------------------------------------------------------------------
@@ -5141,6 +5185,7 @@ begin
   // The main window takes care of the menubar handle
   if MenuBar <> nil then
   begin
+    MenuBar.DetachEvents;
     MenuBar.Widget := nil;
     MenuBar.Free;
   end;
@@ -8431,6 +8476,8 @@ begin
 
   if (FDropList <> nil) and (Sender = FDropList.Widget) then
   begin
+    if QEvent_type(Event) = QEventFontChange then
+      Result := inherited EventFilter(Sender, Event);
     QEvent_ignore(Event);
     exit;
   end;
@@ -8602,7 +8649,21 @@ function TQtAbstractSpinBox.GetLineEdit: QLineEditH;
 begin
   if FLineEdit = nil then
     FLineEdit := QLCLAbstractSpinBox_lineEditHandle(QAbstractSpinBoxH(Widget));
+  if Assigned(FLineEdit) and not Assigned(FLineEditHook) then
+  begin
+    FLineEditHook := QObject_hook_create(FLineEdit);
+    QObject_hook_hook_events(FLineEditHook, @LineEditEventFilter);
+  end;
   Result := FLineEdit;
+end;
+
+function TQtAbstractSpinBox.LineEditEventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  if QEvent_type(Event) = QEventFontChange then
+    Result := EventFilter(QWidgetH(Sender), Event);
 end;
 
 function TQtAbstractSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -8613,6 +8674,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractSpinBox.Create');
   {$endif}
+  FLineEditHook := nil;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -8792,6 +8854,12 @@ begin
     QAbstractSpinBox_hook_destroy(FEditingFinishedHook);
     FEditingFinishedHook := nil;
   end;
+
+  if FLineEditHook <> nil then
+  begin
+    QObject_hook_destroy(FLineEditHook);
+    FLineEditHook := nil;
+  end;
   
   inherited DetachEvents;
 end;
@@ -8862,6 +8930,7 @@ begin
   FParentShowPassed := 0;
   {$endif}
   FValue := 0;
+  FLineEditHook := nil;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -8941,6 +9010,7 @@ begin
   {$ifdef CPU64 and not WIN64}
   FParentShowPassed := 0;
   {$endif}
+  FLineEditHook := nil;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -11586,6 +11656,8 @@ begin
   Widget := CreateWidget(FParams);
   setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
   QtWidgetSet.AddHandle(Self);
+  FWidgetDefaultFont := TQtFont.Create(QWidget_font(Widget));
+  FWidgetLCLFont := nil;
 end;
 
 constructor TQtMenu.Create(const AMenuItem: TMenuItem);
@@ -11989,6 +12061,8 @@ constructor TQtMenuBar.Create(const AParent: QWidgetH);
 begin
   Create;
   Widget := QMenuBar_create(AParent);
+  FWidgetDefaultFont := TQtFont.Create(QWidget_font(Widget));
+  FWidgetLCLFont := nil;
   FHeight := getHeight;
   FVisible := False;
   FIsApplicationMainMenu := False;
@@ -11996,6 +12070,15 @@ begin
   setDefaultColor(dctFont);
   Palette.ForceColor := False;
   setVisible(FVisible);
+end;
+
+function TQtMenuBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  if (QEvent_type(Event) = QEventFontChange) then
+    AssignQtFont(FWidgetDefaultFont.FHandle, QWidget_font(QWidgetH(Sender)));
 end;
 
 function TQtMenuBar.addMenu(AMenu: QMenuH): QActionH;

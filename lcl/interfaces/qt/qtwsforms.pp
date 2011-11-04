@@ -197,6 +197,7 @@ begin
 
   // Sets Various Events
   QtMainWindow.AttachEvents;
+  QtMainWindow.MenuBar.AttachEvents;
   
   if (AForm.FormStyle in [fsMDIChild]) and
      (Application.MainForm.FormStyle = fsMdiForm) and
