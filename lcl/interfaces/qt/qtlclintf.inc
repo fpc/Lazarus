@@ -341,7 +341,7 @@ begin
   Result := IsValidGDIObject(Font);
   if Result then
   begin
-    QtFontInfo := QFontInfo_create(TQtFont(Font).Widget);
+    QtFontInfo := QFontInfo_create(TQtFont(Font).FHandle);
     try
   	  Result := QFontInfo_fixedPitch(QtFontInfo);
     finally

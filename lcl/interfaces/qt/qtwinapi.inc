@@ -4053,7 +4053,7 @@ begin
         MaxCount^ := 0;
       for i := 0 to Count - 1 do
       begin
-        w := QFontMetrics_charWidth(Font.Metrics.Widget, @AStr, i);
+        w := QFontMetrics_charWidth(Font.Metrics.FHandle, @AStr, i);
         Inc(Size.cx, w);
         if MaxCount <> nil then
         begin

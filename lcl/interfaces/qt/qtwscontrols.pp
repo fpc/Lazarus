@@ -575,7 +575,7 @@ begin
     Exit;
 
   QtWidget := TQtWidget(AWinControl.Handle);
-  QtWidget.setFont(TQtFont(AFont.Reference.Handle).Widget);
+  QtWidget.setFont(TQtFont(AFont.Reference.Handle).FHandle);
 
   // tscrollbar, ttrackbar etc.
   if not QtWidget.CanChangeFontColor then

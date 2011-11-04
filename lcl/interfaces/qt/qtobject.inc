@@ -956,7 +956,7 @@ var
 begin
   QtFont := TQtFont.Create(True);
   QtFont.FShared := True;
-  QApplication_font(QtFont.Widget);
+  QApplication_font(QtFont.FHandle);
   Result := HFONT(QtFont);
 end;
 
