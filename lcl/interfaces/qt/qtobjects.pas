@@ -117,7 +117,7 @@ type
   private
     FIcon: QIconH;
   public
-    Handle: QActionH;
+    FHandle: QActionH;
     MenuItem: TMenuItem;
   public
     constructor Create(const AHandle: QActionH);
@@ -1131,7 +1131,7 @@ end;
  ------------------------------------------------------------------------------}
 constructor TQtAction.Create(const AHandle: QActionH);
 begin
-  Handle := AHandle;
+  FHandle := AHandle;
   FIcon := nil;
 end;
 
@@ -1145,8 +1145,8 @@ begin
   if FIcon <> nil then
     QIcon_destroy(FIcon);
 
-  if Handle <> nil then
-    QAction_destroy(Handle);
+  if FHandle <> nil then
+    QAction_destroy(FHandle);
 
   inherited Destroy;
 end;
@@ -1175,7 +1175,7 @@ begin
   if p1 then setCheckable(True)
   else setCheckable(False);
 
-  QAction_setChecked(Handle, p1);
+  QAction_setChecked(FHandle, p1);
 end;
 
 {------------------------------------------------------------------------------
@@ -1185,7 +1185,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtAction.setCheckable(p1: Boolean);
 begin
-  QAction_setCheckable(Handle, p1);
+  QAction_setCheckable(FHandle, p1);
 end;
 
 {------------------------------------------------------------------------------
@@ -1193,12 +1193,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtAction.setEnabled(p1: Boolean);
 begin
-  QAction_setEnabled(Handle, p1);
+  QAction_setEnabled(FHandle, p1);
 end;
 
 procedure TQtAction.setIcon(const AIcon: QIconH);
 begin
-  QAction_setIcon(Handle, AIcon);
+  QAction_setIcon(FHandle, AIcon);
 end;
 
 procedure TQtAction.setImage(const AImage: TQtImage);
@@ -1222,7 +1222,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtAction.setVisible(p1: Boolean);
 begin
-  QAction_setVisible(Handle, p1);
+  QAction_setVisible(FHandle, p1);
 end;
 
 { TQtImage }
