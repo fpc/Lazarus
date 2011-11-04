@@ -38,7 +38,7 @@ type
     GroupBox1: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
-    Memo1: TMemo;
+    memoLog: TMemo;
     notebookControls: TNotebook;
     pageButtons: TPage;
     PageControl1: TPageControl;
@@ -47,7 +47,7 @@ type
     pageGroupBoxes: TPage;
     pageTrackBars: TPage;
     pagePageControls: TPage;
-    Page7: TPage;
+    pageTabControls: TPage;
     StaticText1: TStaticText;
     StaticText2: TStaticText;
     StaticText3: TStaticText;
@@ -58,6 +58,7 @@ type
     TrackBar1: TTrackBar;
     CDTrackBar1: TCDTrackBar;
     procedure comboControlsChange(Sender: TObject);
+    procedure HandleClick(Sender: TObject);
   private
     { private declarations }
   public
@@ -76,6 +77,11 @@ implementation
 procedure TForm1.comboControlsChange(Sender: TObject);
 begin
   notebookControls.PageIndex := comboControls.ItemIndex;
+end;
+
+procedure TForm1.HandleClick(Sender: TObject);
+begin
+  memoLog.Lines.Add(Format('%s: %s OnClick', [TControl(Sender).Name, TControl(Sender).ClassName]));
 end;
 
 end.
