@@ -7,6 +7,8 @@ interface
 uses
   // RTL
   Classes, SysUtils, Types,
+  // LazUtils
+  lazutf8,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
   Graphics, Controls, LCLType,
   // Others only for types
@@ -88,14 +90,12 @@ var
   ATabsStateEx: TCDCTabControlStateEx absolute AStateEx;
   lCaption: String;
 begin
+  ADest.Font.Assign(AStateEx.Font);
+
   case AMeasureID of
   TCDCONTROL_CAPTION_WIDTH:  Result := ADest.TextWidth(AStateEx.Caption);
   TCDCONTROL_CAPTION_HEIGHT: Result := ADest.TextHeight('ŹÇ')+3;
-  TCDCTABCONTROL_TAB_HEIGHT:
-  begin
-    if AStateEx.Font.Size = 0 then Result := ADest.TextHeight('Z')+14
-    else Result := AStateEx.Font.Size + 14;
-  end;
+  TCDCTABCONTROL_TAB_HEIGHT: Result := ADest.TextHeight('ŹÇ')+10;
   TCDCTABCONTROL_TAB_WIDTH:
   begin
     lCaption := ATabsStateEx.Tabs.Strings[ATabsStateEx.CurTabIndex];
@@ -115,6 +115,16 @@ begin
   PreferredHeight := 0;
 
   case AControlId of
+  cidEdit:
+  begin
+{    if AStateEx.AutoSize then
+      PreferredWidth :=
+          TCDEDIT_LEFT_TEXT_SPACING: Result := 4;
+  TCDEDIT_RIGHT_TEXT_SPACING: Result := 3;
++ GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx);}
+
+    PreferredHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx)+5;
+  end;
   cidCheckBox:
   begin
     if AStateEx.AutoSize then
@@ -261,17 +271,19 @@ var
   lHeight: Integer;
   lSelLeftPos, lSelLeftPixelPos, lSelLength, lSelRightPos: Integer;
   lTextWidth: Integer;
+  lControlTextLen: PtrInt;
 begin
   DrawEditBackground(ADest, ADestPos, ASize, AState, AStateEx);
 
   lControlText := AStateEx.Caption;
+  lControlTextLen := UTF8Length(AStateEx.Caption);
   ADest.Brush.Style := bsClear;
   ADest.Font.Assign(AStateEx.Font);
 
   // The text without selection
   if AStateEx.SelLength = 0 then
   begin
-    lVisibleText := Copy(lControlText, AStateEx.VisibleTextStart, Length(lControlText));
+    lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart, lControlTextLen);
     ADest.TextOut(4, 1, lVisibleText);
   end
   // Text and Selection
@@ -285,12 +297,12 @@ begin
     if lSelLength < 0 then lSelLength := lSelLength * -1;
 
     // Text left of the selection
-    lVisibleText := Copy(lControlText, AStateEx.VisibleTextStart, lSelLeftPos-AStateEx.VisibleTextStart);
+    lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart, lSelLeftPos-AStateEx.VisibleTextStart);
     ADest.TextOut(4, 1, lVisibleText);
     lSelLeftPixelPos := ADest.TextWidth(lVisibleText)+4;
 
     // The selection background
-    lVisibleText := Copy(lControlText, lSelLeftPos, lSelLength);
+    lVisibleText := UTF8Copy(lControlText, lSelLeftPos, lSelLength);
     lTextWidth := ADest.TextWidth(lVisibleText);
     ADest.Brush.Color := clBlue;
     ADest.Brush.Style := bsSolid;
@@ -305,14 +317,14 @@ begin
     // Text right of the selection
     ADest.Brush.Color := clWhite;
     ADest.Font.Color := AStateEx.Font.Color;
-    lVisibleText := Copy(lControlText, lSelLeftPos+lSelLength+1, Length(lControlText));
+    lVisibleText := UTF8Copy(lControlText, lSelLeftPos+lSelLength+1, lControlTextLen);
     ADest.TextOut(lSelLeftPixelPos, 1, lVisibleText);
   end;
 
   // And the caret
   if AStateEx.CaretIsVisible then
   begin
-    lTmpText := Copy(lControlText, 1, AStateEx.CaretPos-AStateEx.VisibleTextStart+1);
+    lTmpText := UTF8Copy(lControlText, 1, AStateEx.CaretPos-AStateEx.VisibleTextStart+1);
     lCaretPixelPos := ADest.TextWidth(lTmpText) + 3;
     lHeight := ASize.cy;
     ADest.Line(lCaretPixelPos, 2, lCaretPixelPos, lHeight-2);

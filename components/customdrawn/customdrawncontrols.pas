@@ -16,10 +16,10 @@ interface
 uses
   // FPC
   Classes, SysUtils, contnrs, Math, types,
-  // fpimage
-  fpcanvas, fpimgcanv, fpimage,
+  // LazUtils
+  lazutf8,
   // LCL -> Use only TForm, TWinControl, TCanvas, TLazIntfImage
-  Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
+  Graphics, Controls, LCLType, LCLIntf,
   LMessages, Messages, LCLProc, Forms,
   // Other LCL units are only for types
   StdCtrls, ExtCtrls, ComCtrls,
@@ -451,7 +451,7 @@ begin
   FEditState.VisibleTextStart := Min(FEditState.CaretPos+1, FEditState.VisibleTextStart);
 
   // Moved to the right and we need to adjust the text start
-  lText := Copy(Text, FEditState.VisibleTextStart, Length(Text));
+  lText := UTF8Copy(Text, FEditState.VisibleTextStart, Length(Text));
   lAvailableWidth := Width
    - FDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
    - FDrawer.GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
@@ -485,10 +485,12 @@ end;
 procedure TCDEdit.KeyDown(var Key: word; Shift: TShiftState);
 var
   lLeftText, lRightText, lOldText: String;
+  lOldTextLength: PtrInt;
 begin
   inherited KeyDown(Key, Shift);
 
   lOldText := Text;
+  lOldTextLength := UTF8Length(Text);
 
   case Key of
   // Backspace
@@ -500,8 +502,8 @@ begin
     // Normal backspace
     else if FEditState.CaretPos > 0 then
     begin
-      lLeftText := Copy(lOldText, 1, FEditState.CaretPos-1);
-      lRightText := Copy(lOldText, FEditState.CaretPos+1, Length(lOldText));
+      lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos-1);
+      lRightText := UTF8Copy(lOldText, FEditState.CaretPos+1, lOldTextLength);
       Text := lLeftText + lRightText;
       Dec(FEditState.CaretPos);
       DoManageVisibleTextStart();
@@ -515,10 +517,10 @@ begin
     if FEditState.SelLength > 0 then
       DoDeleteSelection()
     // Normal delete
-    else if FEditState.CaretPos < Length(lOldText) then
+    else if FEditState.CaretPos < lOldTextLength then
     begin
-      lLeftText := Copy(lOldText, 1, FEditState.CaretPos);
-      lRightText := Copy(lOldText, FEditState.CaretPos+2, Length(lOldText));
+      lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos);
+      lRightText := UTF8Copy(lOldText, FEditState.CaretPos+2, lOldTextLength);
       Text := lLeftText + lRightText;
       Invalidate;
     end;
@@ -544,7 +546,7 @@ begin
   end;
   VK_RIGHT:
   begin
-    if FEditState.CaretPos < Length(lOldText) then
+    if FEditState.CaretPos < lOldTextLength then
     begin
       // Selecting to the right
       if ssShift in Shift then
@@ -584,8 +586,8 @@ begin
 
   // Normal characters
   lOldText := Text;
-  lLeftText := Copy(lOldText, 1, FEditState.CaretPos);
-  lRightText := Copy(lOldText, FEditState.CaretPos+1, Length(lOldText));
+  lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos);
+  lRightText := UTF8Copy(lOldText, FEditState.CaretPos+1, UTF8Length(lOldText));
   Text := lLeftText + UTF8Key + lRightText;
   Inc(FEditState.CaretPos);
   FEditState.CaretIsVisible := True;
