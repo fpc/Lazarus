@@ -210,7 +210,12 @@
       <element name="TWindowState">
         <short>Represents the actual State of the window on the screen.</short>
         <descr>
-		  <p>Not all platforms support all modes. In Android windows are always fullscreen. In Windows Mobile (but not in all Windows CE platforms) wsMinimized and wsNormal are understood as wsMaximized, which is the normal state for windows in this platform, except for windows with BorderStyle=bsDialog or bsNone, which are allowed the state wsNormal.</p>
+		  <p>The actual meaning of each value depends on the platform:<p>
+          <p>Windows and Mac OS X - These operating systems support all values.</p>
+          <p>X11 - The window state is a hint sent to the Window Manager, so more primitive Window Managers might ignore this hints.</p>
+          <p>Windows CE - In Windows CE platforms where Application.ApplicationType = atKeyPadDevice or atPDA (like in Windows Phone, PocketPC and Windows Mobile), wsMinimized and wsNormal are understood as wsMaximized, which is the normal state for windows in this platform. An exception are windows with BorderStyle=bsDialog or bsNone, which are allowed to have a custom position and size. For more information please read http://wiki.lazarus.freepascal.org/Windows_CE_Development_Notes#Positioning_and_size_of_Dialogs_and_Forms</p>
+          <p>Android - In this platform windows are always fullscreen.</p>
+          <p>The valid values for this enumerated type are:</p>
           <p>wsNormal - The window appears normal</p>
           <p>wsMinimized - The window is minimized and is not shown in the screen, but only in the taskbar</p>
           <p>wsMaximized - The window appears maximized</p>
