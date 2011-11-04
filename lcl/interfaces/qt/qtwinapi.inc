@@ -243,14 +243,14 @@ begin
     exit
   else
   begin
-    RDest := TQtRegion(Dest).Widget;
-    RSrc1 := TQtRegion(Src1).Widget;
+    RDest := TQtRegion(Dest).FHandle;
+    RSrc1 := TQtRegion(Src1).FHandle;
   end;
 
   if (fnCombineMode<>RGN_COPY) and not IsValidGDIObject(Src2) then
     exit
   else
-    RSrc2 := TQtRegion(Src2).Widget;
+    RSrc2 := TQtRegion(Src2).FHandle;
 
   case fnCombineMode of
     RGN_AND:
@@ -2286,7 +2286,7 @@ begin
     OldRgn := TQtRegion.Create(True);
   try
     if HasClipping then
-      QPainter_clipRegion(QtDC.Widget, OldRgn.Widget);
+      QPainter_clipRegion(QtDC.Widget, OldRgn.FHandle);
     if SelectClipRgn(DC, RegionHnd) <> ERROR then
     begin
       R := TQtRegion(RegionHnd).getBoundingRect;
@@ -2641,12 +2641,12 @@ begin
     // if our TQtRegion contains widget then
     // first destroy it because QPainter creates
     // new reference.
-    if TQtRegion(Rgn).Widget <> nil then
+    if TQtRegion(Rgn).FHandle <> nil then
     begin
-      QRegion_destroy(TQtRegion(Rgn).Widget);
-      TQtRegion(Rgn).Widget := QRegion_create;
+      QRegion_destroy(TQtRegion(Rgn).FHandle);
+      TQtRegion(Rgn).FHandle := QRegion_create;
     end;
-    QPainter_clipRegion(TQtDeviceContext(DC).Widget, TQtRegion(Rgn).Widget);
+    QPainter_clipRegion(TQtDeviceContext(DC).Widget, TQtRegion(Rgn).FHandle);
     Result := 1;
   end;
 end;
@@ -4678,8 +4678,8 @@ begin
   {$endif}
   if aHandle = 0 then
     exit(False);
-  if IsValidGDIObject(Rgn) and (TQtRegion(Rgn).Widget <> nil) then
-    TQtWidget(aHandle).UpdateRegion(TQtRegion(Rgn).Widget)
+  if IsValidGDIObject(Rgn) and (TQtRegion(Rgn).FHandle <> nil) then
+    TQtWidget(aHandle).UpdateRegion(TQtRegion(Rgn).FHandle)
   else
     TQtWidget(aHandle).Update;
 end;
@@ -4805,7 +4805,7 @@ begin
   if not IsValidGDIObject(RGN) then
     Exit
   else
-    QtRgn := TQtRegion(RGN).Widget;
+    QtRgn := TQtRegion(RGN).FHandle;
 
   QRegion_translate(QtRgn, nXOffset, nYOffset);
 
@@ -4981,7 +4981,7 @@ begin
   if Region = nil then
     Result := InvalidateRect(Wnd, lprcUpdate, False)
   else
-    QtWidget.UpdateRegion(Region.Widget);
+    QtWidget.UpdateRegion(Region.FHandle);
 
   Result := True;
 end;
@@ -5232,7 +5232,7 @@ begin
       // so we need to convert RGN coords.
       GetWindowOrgEx(DC, @P);
       TQtRegion(Rgn).translate(P.X, P.Y);
-      QtDC.setClipRegion(TQtRegion(Rgn).Widget);
+      QtDC.setClipRegion(TQtRegion(Rgn).FHandle);
     end else
     begin
       EmptyRegion := QRegion_create;
@@ -5845,7 +5845,7 @@ begin
   r := TQtRegion(hRgn);
 
   // Now set the mask in the widget
-  w.setMask(r.Widget);
+  w.setMask(r.FHandle);
 
   Result := 1;
 end;

@@ -330,7 +330,7 @@ type
     FPolygon: QPolygonH;
     function GetIsPolyRegion: Boolean;
   public
-    Widget: QRegionH;
+    FHandle: QRegionH;
     constructor Create(CreateHandle: Boolean); virtual; overload;
     constructor Create(CreateHandle: Boolean; X1,Y1,X2,Y2: Integer;
       Const RegionType: QRegionRegionType = QRegionRectangle); virtual; overload;
@@ -1983,9 +1983,9 @@ begin
   FPolygon := nil;
   // Creates the widget
   if CreateHandle then
-    Widget := QRegion_create()
+    FHandle := QRegion_create()
   else
-    Widget := nil;
+    FHandle := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -2013,9 +2013,9 @@ begin
       W := 0;
     if H < 0 then
       H := 0;
-    Widget := QRegion_create(X1, Y1, W, H, RegionType);
+    FHandle := QRegion_create(X1, Y1, W, H, RegionType);
   end else
-    Widget := nil;
+    FHandle := nil;
 end;
 
 constructor TQtRegion.Create(CreateHandle: Boolean; Poly: QPolygonH;
@@ -2028,9 +2028,9 @@ begin
   if CreateHandle then
   begin
     FPolygon := QPolygon_create(Poly);
-    Widget := QRegion_create(FPolygon, Fill);
+    FHandle := QRegion_create(FPolygon, Fill);
   end else
-    Widget := nil;
+    FHandle := nil;
 end;
 
 
@@ -2046,8 +2046,8 @@ begin
   {$endif}
   if FPolygon <> nil then
     QPolygon_destroy(FPolygon);
-  if Widget <> nil then
-    QRegion_destroy(Widget);
+  if FHandle <> nil then
+    QRegion_destroy(FHandle);
 
   inherited Destroy;
 end;
@@ -2063,32 +2063,32 @@ var
 begin
   P.X := X;
   P.Y := Y;
-  Result := QRegion_contains(Widget, PQtPoint(@P));
+  Result := QRegion_contains(FHandle, PQtPoint(@P));
 end;
 
 function TQtRegion.containsRect(R: TRect): Boolean;
 begin
-  Result := QRegion_contains(Widget, PRect(@R));
+  Result := QRegion_contains(FHandle, PRect(@R));
 end;
 
 function TQtRegion.intersects(R: TRect): Boolean;
 begin
-  Result := QRegion_intersects(Widget, PRect(@R));
+  Result := QRegion_intersects(FHandle, PRect(@R));
 end;
 
 function TQtRegion.intersects(Rgn: QRegionH): Boolean;
 begin
-  Result := QRegion_intersects(Widget, Rgn);
+  Result := QRegion_intersects(FHandle, Rgn);
 end;
 
 function TQtRegion.GetRegionType: integer;
 begin
   try
-    if not IsPolyRegion and QRegion_isEmpty(Widget) then
+    if not IsPolyRegion and QRegion_isEmpty(FHandle) then
       Result := NULLREGION
     else
     begin
-      if IsPolyRegion or (QRegion_numRects(Widget) > 1) then
+      if IsPolyRegion or (QRegion_numRects(FHandle) > 1) then
         Result := COMPLEXREGION
       else
         Result := SIMPLEREGION;
@@ -2103,17 +2103,17 @@ begin
   if IsPolyRegion then
     QPolygon_boundingRect(FPolygon, @Result)
   else
-    QRegion_boundingRect(Widget, @Result);
+    QRegion_boundingRect(FHandle, @Result);
 end;
 
 function TQtRegion.numRects: Integer;
 begin
-  Result := QRegion_numRects(Widget);
+  Result := QRegion_numRects(FHandle);
 end;
 
 procedure TQtRegion.translate(dx, dy: Integer);
 begin
-  QRegion_translate(Widget, dx, dy);
+  QRegion_translate(FHandle, dx, dy);
 end;
 
 { TQtDeviceContext }
@@ -2260,10 +2260,10 @@ begin
   FreeAndNil(vBrush);
   vPen.FHandle := nil;
   FreeAndNil(vPen);
-  if vRegion.Widget <> nil then
+  if vRegion.FHandle <> nil then
   begin
-    QRegion_destroy(vRegion.Widget);
-    vRegion.Widget := nil;
+    QRegion_destroy(vRegion.FHandle);
+    vRegion.FHandle := nil;
   end;
   FreeAndNil(vRegion);
   vBackgroundBrush.FHandle := nil;
@@ -3178,15 +3178,15 @@ begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.region() ');
   {$endif}
-  if vRegion.Widget <> nil then
+  if vRegion.FHandle <> nil then
   begin
-    QRegion_destroy(vRegion.Widget);
-    vRegion.Widget := nil;
+    QRegion_destroy(vRegion.FHandle);
+    vRegion.FHandle := nil;
   end;
-  if vRegion.Widget = nil then
-    vRegion.Widget := QRegion_Create();
+  if vRegion.FHandle = nil then
+    vRegion.FHandle := QRegion_Create();
 
-  QPainter_clipRegion(Widget,  vRegion.Widget);
+  QPainter_clipRegion(Widget,  vRegion.FHandle);
   Result := vRegion;
 end;
 
@@ -3221,8 +3221,8 @@ begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.setRegion() ');
   {$endif}
-  if (ARegion.Widget <> nil) and (Widget <> nil) then
-    setClipRegion(ARegion.Widget);
+  if (ARegion.FHandle <> nil) and (Widget <> nil) then
+    setClipRegion(ARegion.FHandle);
 end;
 
 {------------------------------------------------------------------------------
