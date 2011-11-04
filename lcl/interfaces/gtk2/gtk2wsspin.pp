@@ -49,6 +49,7 @@ type
 
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; ReadOnly: boolean); override;
 
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -121,6 +122,29 @@ begin
                      NewLength);
 end;
 
+class procedure TGtk2WSCustomFloatSpinEdit.SetReadOnly(const ACustomEdit: TCustomEdit; ReadOnly: boolean);
+var
+  Widget: PGtkWidget;
+  AnAdjustment: PGtkAdjustment;
+begin
+  Widget := PGtkWidget(ACustomEdit.Handle);
+  if GTK_IS_EDITABLE(Widget) then
+    gtk_editable_set_editable(PGtkEditable(Widget), not ReadOnly);
+
+  AnAdjustment:=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(Widget));
+  if ReadOnly then
+  begin
+    AnAdjustment^.lower := TCustomFloatSpinEdit(ACustomEdit).Value;
+    AnAdjustment^.upper := TCustomFloatSpinEdit(ACustomEdit).Value;
+  end
+  else
+  begin
+    AnAdjustment^.lower := TCustomFloatSpinEdit(ACustomEdit).MinValue;
+    AnAdjustment^.upper := TCustomFloatSpinEdit(ACustomEdit).MaxValue;
+  end;
+  gtk_spin_button_update(GTK_SPIN_BUTTON(Widget));
+end;
+
 class procedure TGtk2WSCustomFloatSpinEdit.UpdateControl(
   const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
 var
@@ -156,6 +180,8 @@ begin
   gtk_spin_button_set_digits(SpinWidget, ACustomFloatSpinEdit.DecimalPlaces);
   gtk_spin_button_set_value(SpinWidget,ACustomFloatSpinEdit.Value);
   AnAdjustment^.step_increment := ACustomFloatSpinEdit.Increment;
+
+  SetReadOnly(TCustomEdit(ACustomFloatSpinEdit), ACustomFloatSpinEdit.ReadOnly);
 end;
 
 class function TGtk2WSCustomFloatSpinEdit.CreateHandle(
