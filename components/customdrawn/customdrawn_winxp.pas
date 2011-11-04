@@ -24,9 +24,15 @@ type
     // TCDButton
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+    // TCDEdit
+    procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDEditStateEx); override;
   end;
 
 implementation
+
+const
+  WINXP_FRAME_BLUE = $00B99D7F;
 
 { TCDDrawerWinXP }
 
@@ -87,6 +93,17 @@ begin
   Str := AStateEx.Caption;
   ADest.TextOut((ASize.cx - ADest.TextWidth(Str)) div 2,
     (ASize.cy - ADest.TextHeight(Str)) div 2, Str);
+end;
+
+procedure TCDDrawerWinXP.DrawEditBackground(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDEditStateEx);
+begin
+  // The background
+  ADest.Brush.Color := clWhite;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Color := WINXP_FRAME_BLUE;
+  ADest.Pen.Style := psSolid;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
 end;
 
 initialization
