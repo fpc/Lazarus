@@ -119,6 +119,8 @@ type
     procedure DoCaretChanged(Sender: TObject);
     procedure AdjustAfterTrimming; // TODO: Move into TrimView?
   protected
+    procedure DoLock; override;
+    procedure DoUnlock; override;
     Procedure LineChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
                             aLineBrkCnt: Integer; aText: String);
@@ -788,6 +790,18 @@ begin
   // Todo: Call ChangeNotification
 end;
 
+procedure TSynEditSelection.DoLock;
+begin
+  inherited DoLock;
+  FLastCarePos := Point(-1, -1);
+end;
+
+procedure TSynEditSelection.DoUnlock;
+begin
+  inherited DoUnlock;
+  FLastCarePos := Point(-1, -1);
+end;
+
 function TSynEditSelection.GetSelText : string;
 
   function CopyPadded(const S: string; Index, Count: integer): string;
@@ -952,6 +966,7 @@ end;
 
 procedure TSynEditSelection.DoCaretChanged(Sender: TObject);
 begin
+  // FIgnoreNextCaretMove => caret skip selection
   if FIgnoreNextCaretMove then begin
     FIgnoreNextCaretMove := False;
     FLastCarePos := Point(-1, -1);

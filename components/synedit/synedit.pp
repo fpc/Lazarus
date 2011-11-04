@@ -1907,6 +1907,7 @@ begin
   FMarkupManager.IncPaintLock;
   FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
   FTrimmedLinesView.Lock; // Lock before caret
+  FBlockSelection.Lock;
   FCaret.Lock;
   FScreenCaret.Lock;
 end;
@@ -1928,6 +1929,7 @@ begin
       FChangedLinesEnd:=0;
     end;
     FCaret.Unlock;            // Maybe after FFoldedLinesView
+    FBlockSelection.Unlock;
     FTrimmedLinesView.UnLock; // Must be unlocked after caret // May Change lines
     FFoldedLinesView.UnLock;  // after ScanFrom, but before UpdateCaret
     FMarkupManager.DecPaintLock;
