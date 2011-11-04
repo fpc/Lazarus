@@ -40,6 +40,7 @@ type
   TQActions = Array of QActionH;
   TQtImage = class;
   TQtFontMetrics = class;
+  TQtFontInfo = class;
   TQtTimer = class;
   TRop2OrCompositionSupport = (rocNotSupported, rocSupported, rocUndefined);
 
@@ -169,6 +170,8 @@ type
   private
     FDefaultFont: QFontH;
     FMetrics: TQtFontMetrics;
+    FFontInfo: TQtFontInfo;
+    function GetFontInfo: TQtFontInfo;
     function GetMetrics: TQtFontMetrics;
     function GetDefaultFont: QFontH;
   public
@@ -176,6 +179,7 @@ type
     Angle: Integer;
   public
     constructor Create(CreateHandle: Boolean); virtual;
+    constructor Create(AFromFont: QFontH); virtual;
     destructor Destroy; override;
   public
     function getPointSize: Integer;
@@ -200,7 +204,8 @@ type
     procedure setStyleStrategy(s: QFontStyleStrategy);
     procedure family(retval: PWideString);
     function fixedPitch: Boolean;
-    
+
+    property FontInfo: TQtFontInfo read GetFontInfo;
     property Metrics: TQtFontMetrics read GetMetrics;
   end;
 
@@ -227,6 +232,46 @@ type
     function elidedText(const AText: WideString;
       const AMode: QtTextElideMode; const AWidth: Integer;
       const AFlags: Integer = 0): WideString;
+  end;
+
+  { TQtFontInfo }
+
+  TQtFontInfo = class(TObject)
+  private
+    function GetBold: Boolean;
+    function GetExactMatch: Boolean;
+    function GetFamily: WideString;
+    function GetFixedPitch: Boolean;
+    function GetFontStyle: QFontStyle;
+    function GetFontStyleHint: QFontStyleHint;
+    function GetItalic: Boolean;
+    function GetOverLine: Boolean;
+    function GetPixelSize: Integer;
+    function GetPointSize: Integer;
+    function GetRawMode: Boolean;
+    function GetStrikeOut: Boolean;
+    function GetUnderline: Boolean;
+    function GetWeight: Integer;
+  public
+    FHandle: QFontInfoH;
+  public
+    constructor Create(AFont: QFontH); virtual;
+    destructor Destroy; override;
+  public
+    property Bold: Boolean read GetBold;
+    property Italic: Boolean read GetItalic;
+    property ExactMatch: Boolean read GetExactMatch;
+    property Family: WideString read GetFamily;
+    property FixedPitch: Boolean read GetFixedPitch;
+    property Overline: Boolean read GetOverLine;
+    property PointSize: Integer read GetPointSize;
+    property PixelSize: Integer read GetPixelSize;
+    property RawMode: Boolean read GetRawMode;
+    property StrikeOut: Boolean read GetStrikeOut;
+    property Style: QFontStyle read GetFontStyle;
+    property StyleHint: QFontStyleHint read GetFontStyleHint;
+    property Underline: Boolean read GetUnderline;
+    property Weight: Integer read GetWeight;
   end;
 
   { TQtBrush }
@@ -896,6 +941,92 @@ begin
   QFont_setStyleStrategy(ToFont, QFont_styleStrategy(FromFont));
 end;
 
+{ TQtFontInfo }
+
+function TQtFontInfo.GetBold: Boolean;
+begin
+  Result := QFontInfo_bold(FHandle);
+end;
+
+function TQtFontInfo.GetExactMatch: Boolean;
+begin
+  Result := QFontInfo_exactMatch(FHandle);
+end;
+
+function TQtFontInfo.GetFamily: WideString;
+var
+  WStr: WideString;
+begin
+  QFontInfo_family(FHandle, @WStr);
+  Result := UTF8ToUTF16(WStr);
+end;
+
+function TQtFontInfo.GetFixedPitch: Boolean;
+begin
+  Result := QFontInfo_fixedPitch(FHandle);
+end;
+
+function TQtFontInfo.GetFontStyle: QFontStyle;
+begin
+  Result := QFontInfo_style(FHandle);
+end;
+
+function TQtFontInfo.GetFontStyleHint: QFontStyleHint;
+begin
+  Result := QFontInfo_styleHint(FHandle);
+end;
+
+function TQtFontInfo.GetItalic: Boolean;
+begin
+  Result := QFontInfo_italic(FHandle);
+end;
+
+function TQtFontInfo.GetOverLine: Boolean;
+begin
+  Result := QFontInfo_overline(FHandle);
+end;
+
+function TQtFontInfo.GetPixelSize: Integer;
+begin
+  Result := QFontInfo_pixelSize(FHandle);
+end;
+
+function TQtFontInfo.GetPointSize: Integer;
+begin
+  Result := QFontInfo_pointSize(FHandle);
+end;
+
+function TQtFontInfo.GetRawMode: Boolean;
+begin
+  Result := QFontInfo_rawMode(FHandle);
+end;
+
+function TQtFontInfo.GetStrikeOut: Boolean;
+begin
+  Result := QFontInfo_strikeOut(FHandle);
+end;
+
+function TQtFontInfo.GetUnderline: Boolean;
+begin
+  Result := QFontInfo_underline(FHandle);
+end;
+
+function TQtFontInfo.GetWeight: Integer;
+begin
+  Result := QFontInfo_weight(FHandle);
+end;
+
+constructor TQtFontInfo.Create(AFont: QFontH);
+begin
+  FHandle := QFontInfo_create(AFont);
+end;
+
+destructor TQtFontInfo.Destroy;
+begin
+  QFontInfo_destroy(FHandle);
+  inherited Destroy;
+end;
+
 { TQtObject }
 
 constructor TQtObject.Create;
@@ -1280,6 +1411,13 @@ begin
   Result := FMetrics;
 end;
 
+function TQtFont.GetFontInfo: TQtFontInfo;
+begin
+  if not Assigned(FFontInfo) and Assigned(Widget) then
+    FFontInfo := TQtFontInfo.Create(Widget);
+  Result := FFontInfo;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtFont.GetDefaultFont
   Params:  None
@@ -1315,6 +1453,20 @@ begin
   FShared := False;
   FMetrics := nil;
   FDefaultFont := nil;
+  FFontInfo := nil;
+end;
+
+constructor TQtFont.Create(AFromFont: QFontH);
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtFont.Create AFromFont: ', dbgs(AFromFont));
+  {$endif}
+
+  Widget := QFont_create(AFromFont);
+  FShared := False;
+  FMetrics := nil;
+  FDefaultFont := nil;
+  GetFontInfo;
 end;
 
 {------------------------------------------------------------------------------
@@ -1330,6 +1482,9 @@ begin
 
   if FMetrics <> nil then
     FMetrics.Free;
+
+  if FFontInfo <> nil then
+    FFontInfo.Free;
 
   if not FShared and (Widget <> nil) then
     QFont_destroy(Widget);
