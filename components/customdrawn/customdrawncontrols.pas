@@ -519,7 +519,7 @@ begin
     end;
   end;
 
-  Result.X := lBestMatch;
+  Result.X := lBestMatch+(FEditState.VisibleTextStart.X-1);
 end;
 
 procedure TCDEdit.DoEnter;

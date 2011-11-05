@@ -37,6 +37,9 @@ type
       AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // General drawing routines
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
     // ===================================
     // Standard Tab
     // ===================================
@@ -51,6 +54,8 @@ type
     procedure DrawEdit(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     // TCDCheckBox
+    procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     procedure DrawCheckBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDGroupBox
@@ -101,6 +106,9 @@ begin
   TCDEDIT_RIGHT_TEXT_SPACING: Result := 3;
   TCDEDIT_TOP_TEXT_SPACING: Result := 3;
   TCDEDIT_BOTTOM_TEXT_SPACING: Result := 3;
+  //
+  TCDCHECKBOX_SQUARE_HALF_HEIGHT: Result := 7;
+  TCDCHECKBOX_SQUARE_HEIGHT: Result := 15;
   else
     Result := 0;
   end;
@@ -205,6 +213,53 @@ begin
   ADest.Pen.Color := clBlack;
   ADest.Pen.Style := psDot;
   ADest.Rectangle(ADestPos.X, ADestPos.Y, ADestPos.X + ASize.CX, ADestPos.Y + ASize.CY);
+end;
+
+procedure TCDDrawerCommon.DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize);
+begin
+
+end;
+
+procedure TCDDrawerCommon.DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize);
+begin
+  // The Frame, except the lower-bottom which is white anyway
+  // outter top-right
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := WIN2000_FRAME_GRAY;
+  ADest.MoveTo(ADestPos.X,            ADestPos.Y+ASize.cy-1);
+  ADest.LineTo(ADestPos.X,            ADestPos.Y);
+  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y);
+  // inner top-right
+  ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
+  ADest.MoveTo(ADestPos.X+1,          ADestPos.Y+ASize.cy-2);
+  ADest.LineTo(ADestPos.X+1,          ADestPos.Y+1);
+  ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y+1);
+  // inner bottom-right
+  ADest.Pen.Color := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.MoveTo(ADestPos.X+1,          ADestPos.Y+ASize.cy-2);
+  ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y+ASize.cy-2);
+  ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y);
+  // outter bottom-right
+  ADest.Pen.Color := WIN2000_FRAME_WHITE;
+  ADest.MoveTo(ADestPos.X+1,          ADestPos.Y+ASize.cy-1);
+  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y+ASize.cy-1);
+  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y);
+end;
+
+procedure TCDDrawerCommon.DrawTickmark(ADest: TCanvas; ADestPos: TPoint);
+var
+  i: Integer;
+begin
+  ADest.Pen.Color := clBlack;
+  ADest.Pen.Style := psSolid;
+  // 4 lines going down and to the right
+  for i := 0 to 3 do
+    ADest.Line(ADestPos.X+2+i, ADestPos.Y+2+i, ADestPos.X+2+i, ADestPos.Y+5+i);
+  // Now 5 lines going up and to the right
+  for i := 4 to 8 do
+    ADest.Line(ADestPos.X+2+i, ADestPos.Y+2+6-i, ADestPos.X+2+i, ADestPos.Y+5+6-i);
 end;
 
 procedure TCDDrawerCommon.DrawButton(ADest: TCanvas; ADestPos: TPoint;
@@ -394,17 +449,41 @@ begin
   DrawCaret(ADest, ADestPos, ASize, AState, AStateEx);
 end;
 
-procedure TCDDrawerCommon.DrawCheckBox(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
-const
-  CDCheckBoxCommon_Half_Height = 7;
-  CDCheckBoxCommon_Height = 15;
 var
-  lHalf: Integer;
+  lHalf, lSquareHalf, lSquareHeight: Integer;
   lColor: TColor;
-  i: Integer;
 begin
   lHalf := ASize.cy div 2;
+  lSquareHalf := GetMeasures(TCDCHECKBOX_SQUARE_HALF_HEIGHT);
+  lSquareHeight := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
+
+  // the square itself
+  DrawSunkenFrame(ADest, Point(1, lHalf - lSquareHalf),
+    Size(lSquareHeight, lSquareHeight));
+
+{  // The selection inside the square
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Color := RGBToColor($31, $C6, $D6);
+  ADest.Pen.Style := psSolid;
+  if csfHasFocus in AState then
+  begin
+    ADest.Rectangle(
+      2,
+      lHalf - lSquareHalf+1,
+      lSquareHeight,
+      lHalf + lSquareHalf-1);
+  end;}
+end;
+
+procedure TCDDrawerCommon.DrawCheckBox(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+var
+  lColor: TColor;
+  lSquareHeight: Integer;
+begin
+  lSquareHeight := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
 
   // Background
   lColor := AStateEx.ParentRGBColor;
@@ -414,49 +493,20 @@ begin
   ADest.FillRect(0, 0, ASize.cx, ASize.cy);
 
   // The checkbox item itself
-  ADest.Brush.Color := clWhite;
-  ADest.Pen.Style := psSolid;
-  if csfSunken in AState then ADest.Pen.Color := clGray
-  else ADest.Pen.Color := clBlack;
-  ADest.Rectangle(
-    1,
-    lHalf - CDCheckBoxCommon_Half_Height,
-    CDCheckBoxCommon_Height+1,
-    lHalf + CDCheckBoxCommon_Half_Height);
+  DrawCheckBoxSquare(ADest, ADestPos, ASize, AState, AStateEx);
 
   // The Tickmark
   if csfOn in AState then
-  begin
-    // 4 lines going down and to the right
-    for i := 0 to 3 do
-      ADest.Line(5+i, lHalf - CDCheckBoxCommon_Half_Height+5+i, 5+i, lHalf - CDCheckBoxCommon_Half_Height+8+i);
-    // Now 5 lines going up and to the right
-    for i := 4 to 8 do
-      ADest.Line(5+i, lHalf - CDCheckBoxCommon_Half_Height+5+6-i, 5+i, lHalf - CDCheckBoxCommon_Half_Height+8+6-i);
-  end;
+    DrawTickmark(ADest, Point(3, ASize.cy div 2 - GetMeasures(TCDCHECKBOX_SQUARE_HALF_HEIGHT)+3));
 
-  // The selection
-  ADest.Brush.Style := bsClear;
-  ADest.Pen.Color := RGBToColor($31, $C6, $D6);
-  ADest.Pen.Style := psSolid;
+  // The text selection
   if csfHasFocus in AState then
-  begin
-    // The selection inside the square
-    ADest.Rectangle(
-      2,
-      lHalf - CDCheckBoxCommon_Half_Height+1,
-      CDCheckBoxCommon_Height,
-      lHalf + CDCheckBoxCommon_Half_Height-1);
-
-    // Selection around the text
-    ADest.Rectangle(
-      CDCheckBoxCommon_Height+4, 0,
-      ASize.cx, ASize.cy);
-  end;
+    DrawFocusRect(ADest, Point(lSquareHeight+4, 0),
+      Size(ASize.cx-lSquareHeight-4, ASize.cy));
 
   // Now the text
   ADest.Font.Assign(AStateEx.Font);
-  ADest.TextOut(CDCheckBoxCommon_Height+5, 0, AStateEx.Caption);
+  ADest.TextOut(lSquareHeight+5, 0, AStateEx.Caption);
 end;
 
 procedure TCDDrawerCommon.DrawGroupBox(ADest: TCanvas; ADestPos: TPoint;

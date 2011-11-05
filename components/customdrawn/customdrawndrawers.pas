@@ -17,6 +17,10 @@ const
   TCDEDIT_RIGHT_TEXT_SPACING = $401; // The space between the end of the text and the right end of the control
   TCDEDIT_TOP_TEXT_SPACING   = $402;
   TCDEDIT_BOTTOM_TEXT_SPACING= $403;
+
+  TCDCHECKBOX_SQUARE_HALF_HEIGHT = $500;
+  TCDCHECKBOX_SQUARE_HEIGHT = $501;
+
   TCDTRACKBAR_LEFT_SPACING    = $1000;
   TCDTRACKBAR_RIGHT_SPACING   = $1001;
 
@@ -190,6 +194,9 @@ type
       AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // General drawing routines
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
+    procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
+    procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
+    procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
     // TCDButton
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
@@ -201,9 +208,13 @@ type
     procedure DrawEdit(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
     // TCDCheckBox
+    procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     procedure DrawCheckBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDGroupBox
+    procedure DrawGroupBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     procedure DrawGroupBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // ===================================

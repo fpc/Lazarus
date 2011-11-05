@@ -35,6 +35,9 @@ type
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     procedure DrawCaret(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
+    // TCDCheckBox
+    procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // ===================================
     // Common Controls Tab
     // ===================================
@@ -129,6 +132,41 @@ begin
   ADest.Pen.Color := clBlack;
   ADest.Line(lCaretPixelPos, lTextTopSpacing, lCaretPixelPos, lTextTopSpacing+lCaptionHeight);
   ADest.Line(lCaretPixelPos+1, lTextTopSpacing, lCaretPixelPos+1, lTextTopSpacing+lCaptionHeight);
+end;
+
+procedure TCDDrawerWinCE.DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+var
+  lHalf, lSquareHalf, lSquareHeight: Integer;
+  lColor: TColor;
+begin
+  lHalf := ASize.cy div 2;
+  lSquareHalf := GetMeasures(TCDCHECKBOX_SQUARE_HALF_HEIGHT);
+  lSquareHeight := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
+
+  // the square itself
+  ADest.Brush.Color := clWhite;
+  ADest.Pen.Style := psSolid;
+  if csfSunken in AState then ADest.Pen.Color := clGray
+  else ADest.Pen.Color := clBlack;
+  ADest.Rectangle(
+    1,
+    lHalf - lSquareHalf,
+    lSquareHeight+1,
+    lHalf + lSquareHalf);
+
+  // The selection inside the square
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Color := RGBToColor($31, $C6, $D6);
+  ADest.Pen.Style := psSolid;
+  if csfHasFocus in AState then
+  begin
+    ADest.Rectangle(
+      2,
+      lHalf - lSquareHalf+1,
+      lSquareHeight,
+      lHalf + lSquareHalf-1);
+  end;
 end;
 
 procedure TCDDrawerWinCE.DrawCTabControl(ADest: TCanvas; ADestPos: TPoint;
