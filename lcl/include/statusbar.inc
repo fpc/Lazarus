@@ -146,6 +146,8 @@ end;
 procedure TStatusBar.DestroyWnd;
 begin
   inherited DestroyWnd;
+  if FCanvas <> nil then
+    TControlCanvas(FCanvas).FreeHandle;
   FHandlePanelCount:=0;
   FHandleObjectNeedsUpdate:=false;
 end;
