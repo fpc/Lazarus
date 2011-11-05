@@ -5033,7 +5033,7 @@ begin
       ruInches: RB8.Checked := True;
     end;
     
-    CB3.Checked := not GrayedButtons;
+    //CB3.Checked := not GrayedButtons;
     CB4.Checked := EditAfterInsert;
     CB5.Checked := ShowBandTitles;
 
@@ -5057,7 +5057,7 @@ begin
         Units := ruMM
       else
         Units := ruInches;
-      GrayedButtons := not CB3.Checked;
+      //GrayedButtons := not CB3.Checked;
       EditAfterInsert := CB4.Checked;
       ShowBandTitles := CB5.Checked;
       RedrawPage;
@@ -5353,7 +5353,7 @@ begin
   GridAlign := True;
   ShowGrid := False; //True;
   Units := TfrReportUnits(0);
-  GrayedButtons := True; //False;
+  //GrayedButtons := True; //False;
   EditAfterInsert := True;
   ShapeMode := TfrShapeMode(1);
 
