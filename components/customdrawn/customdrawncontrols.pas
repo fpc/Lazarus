@@ -1030,8 +1030,7 @@ begin
   Width := 75;
   Height := 17;
   TabStop := True;
-  ControlStyle := [csCaptureMouse, csClickEvents,
-    csDoubleClicks, csReplicatable];
+  ControlStyle := ControlStyle - [csAcceptsControls];
   AutoSize := True;
   FHasOnOffStates := True;
 
@@ -1091,6 +1090,15 @@ end;
 constructor TCDRadioButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
+  Width := 75;
+  Height := 17;
+  TabStop := True;
+  ControlStyle := ControlStyle - [csAcceptsControls];
+  AutoSize := True;
+  FHasOnOffStates := True;
+
+  PrepareCurrentDrawer();
 end;
 
 destructor TCDRadioButton.Destroy;

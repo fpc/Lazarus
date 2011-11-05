@@ -156,7 +156,7 @@ begin
   case AControlId of
   // In the LCL TEdit AutoSizes only its Height, so follow this here
   cidEdit: PreferredHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx)+5;
-  cidCheckBox:
+  cidCheckBox, cidRadioButton:
   begin
     if AStateEx.AutoSize then
       PreferredWidth := 21 + GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx);
@@ -544,15 +544,80 @@ begin
   ADest.Pen.Style := psClear;
   ADest.Brush.Style := bsSolid;
   ADest.Brush.Color := Palette.Window; // or WIN2000_FRAME_WHITE ?
-  ADest.Rectangle(Bounds(ADestPos.X, ADestPos.Y+lCircleThird, lCircleThird, lCircleHeight));
-  ADest.Rectangle(Bounds(ADestPos.X+lCircleThird, ADestPos.Y, lCircleHeight, lCircleThird));
+  ADest.Rectangle(Bounds(ADestPos.X, ADestPos.Y+lCircleThird-1, lCircleHeight-2, lCircleThird));
+  ADest.Rectangle(Bounds(ADestPos.X+lCircleThird-1, ADestPos.Y, lCircleThird, lCircleHeight-2));
 
   // The circle itself
   ADest.Pen.Style := psSolid;
+  // Gray area
+  ADest.Pixels[ADestPos.X+4, ADestPos.Y] := WIN2000_FRAME_GRAY;
+  ADest.Pixels[ADestPos.X+5, ADestPos.Y] := WIN2000_FRAME_GRAY;
+  ADest.Pixels[ADestPos.X+6, ADestPos.Y] := WIN2000_FRAME_GRAY;
+  ADest.Pixels[ADestPos.X+7, ADestPos.Y] := WIN2000_FRAME_GRAY;
+  ADest.Pixels[ADestPos.X+8, ADestPos.Y+1] := WIN2000_FRAME_GRAY;
+  ADest.Pixels[ADestPos.X+9, ADestPos.Y+1] := WIN2000_FRAME_GRAY;
+  ADest.Pixels[ADestPos.X+3, ADestPos.Y+1] := WIN2000_FRAME_GRAY;
+  ADest.Pixels[ADestPos.X+2, ADestPos.Y+1] := WIN2000_FRAME_GRAY;
+  ADest.Pixels[ADestPos.X+1, ADestPos.Y+2] := WIN2000_FRAME_GRAY;
+  ADest.Pixels[ADestPos.X+1, ADestPos.Y+3] := WIN2000_FRAME_GRAY;
   ADest.Pixels[ADestPos.X, ADestPos.Y+4] := WIN2000_FRAME_GRAY;
-{  WIN2000_FRAME_LIGHT_GRAY = $00E2EFF1;
-   = $0099A8AC;
-  WIN2000_FRAME_DARK_GRAY = $00646F71;}
+  ADest.Pixels[ADestPos.X, ADestPos.Y+5] := WIN2000_FRAME_GRAY;
+  ADest.Pixels[ADestPos.X, ADestPos.Y+6] := WIN2000_FRAME_GRAY;
+  ADest.Pixels[ADestPos.X, ADestPos.Y+7] := WIN2000_FRAME_GRAY;
+  ADest.Pixels[ADestPos.X+1, ADestPos.Y+8] := WIN2000_FRAME_GRAY;
+  ADest.Pixels[ADestPos.X+1, ADestPos.Y+9] := WIN2000_FRAME_GRAY;
+  // Dark area
+  ADest.Pixels[ADestPos.X+4, ADestPos.Y+1] := WIN2000_FRAME_DARK_GRAY;
+  ADest.Pixels[ADestPos.X+5, ADestPos.Y+1] := WIN2000_FRAME_DARK_GRAY;
+  ADest.Pixels[ADestPos.X+6, ADestPos.Y+1] := WIN2000_FRAME_DARK_GRAY;
+  ADest.Pixels[ADestPos.X+7, ADestPos.Y+1] := WIN2000_FRAME_DARK_GRAY;
+  ADest.Pixels[ADestPos.X+8, ADestPos.Y+2] := WIN2000_FRAME_DARK_GRAY;
+  ADest.Pixels[ADestPos.X+9, ADestPos.Y+2] := WIN2000_FRAME_DARK_GRAY;
+  ADest.Pixels[ADestPos.X+3, ADestPos.Y+2] := WIN2000_FRAME_DARK_GRAY;
+  ADest.Pixels[ADestPos.X+2, ADestPos.Y+2] := WIN2000_FRAME_DARK_GRAY;
+  ADest.Pixels[ADestPos.X+2, ADestPos.Y+3] := WIN2000_FRAME_DARK_GRAY;
+  ADest.Pixels[ADestPos.X+1, ADestPos.Y+4] := WIN2000_FRAME_DARK_GRAY;
+  ADest.Pixels[ADestPos.X+1, ADestPos.Y+5] := WIN2000_FRAME_DARK_GRAY;
+  ADest.Pixels[ADestPos.X+1, ADestPos.Y+6] := WIN2000_FRAME_DARK_GRAY;
+  ADest.Pixels[ADestPos.X+1, ADestPos.Y+7] := WIN2000_FRAME_DARK_GRAY;
+  ADest.Pixels[ADestPos.X+2, ADestPos.Y+8] := WIN2000_FRAME_DARK_GRAY;
+  // Light area
+  ADest.Pixels[ADestPos.X+9, ADestPos.Y+3] := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Pixels[ADestPos.X+10, ADestPos.Y+4] := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Pixels[ADestPos.X+10, ADestPos.Y+5] := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Pixels[ADestPos.X+10, ADestPos.Y+6] := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Pixels[ADestPos.X+10, ADestPos.Y+7] := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Pixels[ADestPos.X+9, ADestPos.Y+8] := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Pixels[ADestPos.X+9, ADestPos.Y+9] := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Pixels[ADestPos.X+8, ADestPos.Y+9] := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Pixels[ADestPos.X+7, ADestPos.Y+10] := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Pixels[ADestPos.X+6, ADestPos.Y+10] := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Pixels[ADestPos.X+5, ADestPos.Y+10] := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Pixels[ADestPos.X+4, ADestPos.Y+10] := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Pixels[ADestPos.X+3, ADestPos.Y+9] := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Pixels[ADestPos.X+2, ADestPos.Y+9] := WIN2000_FRAME_LIGHT_GRAY;
+  // white area
+  ADest.Pixels[ADestPos.X+10, ADestPos.Y+2] := WIN2000_FRAME_WHITE;
+  ADest.Pixels[ADestPos.X+10, ADestPos.Y+3] := WIN2000_FRAME_WHITE;
+  ADest.Pixels[ADestPos.X+10, ADestPos.Y+8] := WIN2000_FRAME_WHITE;
+  ADest.Pixels[ADestPos.X+10, ADestPos.Y+9] := WIN2000_FRAME_WHITE;
+  ADest.Pixels[ADestPos.X+9, ADestPos.Y+10] := WIN2000_FRAME_WHITE;
+  ADest.Pixels[ADestPos.X+8, ADestPos.Y+10] := WIN2000_FRAME_WHITE;
+  ADest.Pixels[ADestPos.X+3, ADestPos.Y+10] := WIN2000_FRAME_WHITE;
+  ADest.Pixels[ADestPos.X+2, ADestPos.Y+10] := WIN2000_FRAME_WHITE;
+  ADest.Pixels[ADestPos.X+3, ADestPos.Y+3] := WIN2000_FRAME_WHITE;
+  ADest.Pixels[ADestPos.X+3, ADestPos.Y+8] := WIN2000_FRAME_WHITE;
+  ADest.Pixels[ADestPos.X+8, ADestPos.Y+3] := WIN2000_FRAME_WHITE;
+  ADest.Pixels[ADestPos.X+8, ADestPos.Y+8] := WIN2000_FRAME_WHITE;
+
+  // The Tickmark
+  if csfOn in AState then
+  begin
+    ADest.Pen.Style := psSolid;
+    ADest.Pen.Color := clBlack;
+    ADest.Rectangle(ADestPos.X+4, ADestPos.Y+5, ADestPos.X+8, ADestPos.Y+7);
+    ADest.Rectangle(ADestPos.X+5, ADestPos.Y+4, ADestPos.X+7, ADestPos.Y+8);
+  end;
 end;
 
 procedure TCDDrawerCommon.DrawRadioButton(ADest: TCanvas; ADestPos: TPoint;
@@ -575,10 +640,11 @@ begin
 
   // The text selection
   if csfHasFocus in AState then
-    DrawFocusRect(ADest, Point(lCircleHeight+4, 0),
-      Size(ASize.cx-lCircleHeight-4, ASize.cy));
+    DrawFocusRect(ADest, Point(lCircleHeight+3, 0),
+      Size(ASize.cx-lCircleHeight-3, ASize.cy));
 
   // Now the text
+  ADest.Brush.Style := bsClear;
   ADest.Font.Assign(AStateEx.Font);
   ADest.TextOut(lCircleHeight+5, 0, AStateEx.Caption);
 end;
