@@ -5367,19 +5367,7 @@ begin
     QEventWindowBlocked: Blocked := True;
     QEventWindowActivate: if not IsMDIChild then SlotActivateWindow(True);
     QEventWindowDeactivate: if not IsMDIChild then SlotActivateWindow(False);
-    QEventShowToParent:
-    begin
-      if IsMdiChild then
-      begin
-        if not TCustomForm(LCLObject).Active then
-        begin
-          SlotActivateWindow(True);
-          Result := True;
-          QEvent_ignore(Event);
-        end;
-      end;
-    end;
-
+    QEventShowToParent: ; // do nothing for TQtMainWindow, but leave it unhandled
     QEventWindowStateChange:
     begin
       CanSendEvent := True;
