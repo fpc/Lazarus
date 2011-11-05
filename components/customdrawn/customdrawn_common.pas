@@ -322,7 +322,7 @@ begin
   lCaptionHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx);
   lTextTopSpacing := GetMeasures(TCDEDIT_TOP_TEXT_SPACING);
 
-  lTmpText := UTF8Copy(lControlText, 1, AStateEx.CaretPos-AStateEx.VisibleTextStart+1);
+  lTmpText := UTF8Copy(lControlText, 1, AStateEx.CaretPos.X-AStateEx.VisibleTextStart.X+1);
   lCaretPixelPos := ADest.TextWidth(lTmpText) + 3;
   ADest.Pen.Color := clBlack;
   ADest.Line(lCaretPixelPos, lTextTopSpacing, lCaretPixelPos, lTextTopSpacing+lCaptionHeight);
@@ -352,21 +352,21 @@ begin
   // The text without selection
   if AStateEx.SelLength = 0 then
   begin
-    lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart, lControlTextLen);
+    lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, lControlTextLen);
     ADest.TextOut(lTextLeftSpacing, lTextTopSpacing, lVisibleText);
   end
   // Text and Selection
   else
   begin
-    lSelLeftPos := AStateEx.SelStart;
+    lSelLeftPos := AStateEx.SelStart.X;
     if AStateEx.SelLength < 0 then lSelLeftPos := lSelLeftPos + AStateEx.SelLength;
-    lSelRightPos := AStateEx.SelStart;
+    lSelRightPos := AStateEx.SelStart.X;
     if AStateEx.SelLength > 0 then lSelRightPos := lSelRightPos + AStateEx.SelLength;
     lSelLength := AStateEx.SelLength;
     if lSelLength < 0 then lSelLength := lSelLength * -1;
 
     // Text left of the selection
-    lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart, lSelLeftPos-AStateEx.VisibleTextStart+1);
+    lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, lSelLeftPos-AStateEx.VisibleTextStart.X+1);
     ADest.TextOut(4, lTextTopSpacing, lVisibleText);
     lSelLeftPixelPos := ADest.TextWidth(lVisibleText)+lTextLeftSpacing;
 

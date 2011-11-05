@@ -104,10 +104,10 @@ type
   TCDEditStateEx = class(TCDControlStateEx)
   public
     CaretIsVisible: Boolean;
-    CaretPos: Integer; // zero-based position
-    SelStart: Integer; // zero-based position
+    CaretPos: TPoint; // X is a zero-based position
+    SelStart: TPoint; // X is a zero-based position
     SelLength: Integer; // zero means no selection. Negative numbers selection to the left from the start and positive ones to the right
-    VisibleTextStart: Integer; // 1-based
+    VisibleTextStart: TPoint; // X is 1-based
     EventArrived: Boolean; // Added by event handlers and used by the caret so that it stops blinking while events are incoming
   end;
 

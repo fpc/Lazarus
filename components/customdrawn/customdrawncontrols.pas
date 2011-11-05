@@ -151,7 +151,7 @@ type
     procedure DoManageVisibleTextStart;
     function GetText: string;
     procedure SetText(AValue: string);
-    function MousePosToCaretPos(X, Y: Integer): Integer;
+    function MousePosToCaretPos(X, Y: Integer): TPoint;
   protected
     // keyboard
     procedure DoEnter; override;
@@ -455,7 +455,7 @@ end;
 
 procedure TCDEdit.DoDeleteSelection;
 begin
-  FEditState.SelStart := 1;
+  FEditState.SelStart.X := 1;
   FEditState.SelLength := 0;
 end;
 
@@ -466,15 +466,15 @@ var
   lAvailableWidth: Integer;
 begin
   // Moved to the left and we need to adjust the text start
-  FEditState.VisibleTextStart := Min(FEditState.CaretPos+1, FEditState.VisibleTextStart);
+  FEditState.VisibleTextStart.X := Min(FEditState.CaretPos.X+1, FEditState.VisibleTextStart.X);
 
   // Moved to the right and we need to adjust the text start
-  lText := UTF8Copy(Text, FEditState.VisibleTextStart, Length(Text));
+  lText := UTF8Copy(Text, FEditState.VisibleTextStart.X, Length(Text));
   lAvailableWidth := Width
    - FDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
    - FDrawer.GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
   lVisibleTextCharCount := Canvas.TextFitInfo(lText, lAvailableWidth);
-  FEditState.VisibleTextStart := Max(FEditState.CaretPos-lVisibleTextCharCount, FEditState.VisibleTextStart);
+  FEditState.VisibleTextStart.X := Max(FEditState.CaretPos.X-lVisibleTextCharCount, FEditState.VisibleTextStart.X);
 end;
 
 procedure TCDEdit.SetText(AValue: string);
@@ -482,8 +482,8 @@ begin
   Caption := AValue;
 end;
 
-// returns a zero-based position of the caret
-function TCDEdit.MousePosToCaretPos(X, Y: Integer): Integer;
+// Result.X -> returns a zero-based position of the caret
+function TCDEdit.MousePosToCaretPos(X, Y: Integer): TPoint;
 var
   lStrLen, i: PtrInt;
   lVisibleStr, lCurChar: String;
@@ -493,7 +493,7 @@ var
   lCurDiff, lBestMatch: Integer;
 begin
   Canvas.Font := Font;
-  lVisibleStr := UTF8Copy(Text, FEditState.VisibleTextStart, Length(Text));
+  lVisibleStr := UTF8Copy(Text, FEditState.VisibleTextStart.X, Length(Text));
   lStrLen := UTF8Length(lVisibleStr);
   lPos := FDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING);
   for i := 0 to lStrLen do
@@ -508,7 +508,7 @@ begin
     end;
 
     // When the diff starts to grow we already found the caret pos, so exit
-    if lCurDiff > lLastDiff then Exit(lBestMatch)
+    if lCurDiff > lLastDiff then Break
     else lLastDiff := lCurDiff;
 
     if i <> lStrLen then
@@ -519,7 +519,7 @@ begin
     end;
   end;
 
-  Exit(lBestMatch);
+  Result.X := lBestMatch;
 end;
 
 procedure TCDEdit.DoEnter;
@@ -559,12 +559,12 @@ begin
     if FEditState.SelLength > 0 then
       DoDeleteSelection()
     // Normal backspace
-    else if FEditState.CaretPos > 0 then
+    else if FEditState.CaretPos.X > 0 then
     begin
-      lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos-1);
-      lRightText := UTF8Copy(lOldText, FEditState.CaretPos+1, lOldTextLength);
+      lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos.X-1);
+      lRightText := UTF8Copy(lOldText, FEditState.CaretPos.X+1, lOldTextLength);
       Text := lLeftText + lRightText;
-      Dec(FEditState.CaretPos);
+      Dec(FEditState.CaretPos.X);
       DoManageVisibleTextStart();
       Invalidate;
     end;
@@ -576,28 +576,28 @@ begin
     if FEditState.SelLength > 0 then
       DoDeleteSelection()
     // Normal delete
-    else if FEditState.CaretPos < lOldTextLength then
+    else if FEditState.CaretPos.X < lOldTextLength then
     begin
-      lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos);
-      lRightText := UTF8Copy(lOldText, FEditState.CaretPos+2, lOldTextLength);
+      lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos.X);
+      lRightText := UTF8Copy(lOldText, FEditState.CaretPos.X+2, lOldTextLength);
       Text := lLeftText + lRightText;
       Invalidate;
     end;
   end;
   VK_LEFT:
   begin
-    if (FEditState.CaretPos > 0) then
+    if (FEditState.CaretPos.X > 0) then
     begin
       // Selecting to the left
       if [ssShift] = Shift then
       begin
-        if FEditState.SelLength = 0 then FEditState.SelStart := FEditState.CaretPos;
+        if FEditState.SelLength = 0 then FEditState.SelStart.X := FEditState.CaretPos.X;
         Dec(FEditState.SelLength);
       end
       // Normal move to the left
       else FEditState.SelLength := 0;
 
-      Dec(FEditState.CaretPos);
+      Dec(FEditState.CaretPos.X);
       DoManageVisibleTextStart();
       FEditState.CaretIsVisible := True;
       Invalidate;
@@ -605,18 +605,18 @@ begin
   end;
   VK_RIGHT:
   begin
-    if FEditState.CaretPos < lOldTextLength then
+    if FEditState.CaretPos.X < lOldTextLength then
     begin
       // Selecting to the right
       if [ssShift] = Shift then
       begin
-        if FEditState.SelLength = 0 then FEditState.SelStart := FEditState.CaretPos;
+        if FEditState.SelLength = 0 then FEditState.SelStart.X := FEditState.CaretPos.X;
         Inc(FEditState.SelLength);
       end
       // Normal move to the right
       else FEditState.SelLength := 0;
 
-      Inc(FEditState.CaretPos);
+      Inc(FEditState.CaretPos.X);
       DoManageVisibleTextStart();
       FEditState.CaretIsVisible := True;
       Invalidate;
@@ -633,6 +633,16 @@ end;
 procedure TCDEdit.KeyUp(var Key: word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
+
+  // copy, paste, cut, etc
+  if Shift = [ssCtrl] then
+  begin
+    case Key of
+    VK_C:
+    begin
+    end;
+    end;
+  end;
 end;
 
 procedure TCDEdit.UTF8KeyPress(var UTF8Key: TUTF8Char);
@@ -649,10 +659,11 @@ begin
 
   // Normal characters
   lOldText := Text;
-  lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos);
-  lRightText := UTF8Copy(lOldText, FEditState.CaretPos+1, UTF8Length(lOldText));
+  lLeftText := UTF8Copy(lOldText, 1, FEditState.CaretPos.X);
+  lRightText := UTF8Copy(lOldText, FEditState.CaretPos.X+1, UTF8Length(lOldText));
   Text := lLeftText + UTF8Key + lRightText;
-  Inc(FEditState.CaretPos);
+  Inc(FEditState.CaretPos.X);
+  DoManageVisibleTextStart();
   FEditState.EventArrived := True;
   FEditState.CaretIsVisible := True;
   Invalidate;
@@ -667,7 +678,7 @@ begin
   // Caret positioning
   FEditState.CaretPos := MousePosToCaretPos(X, Y);
   FEditState.SelLength := 0;
-  FEditState.SelStart := FEditState.CaretPos;
+  FEditState.SelStart.X := FEditState.CaretPos.X;
   FEditState.EventArrived := True;
   FEditState.CaretIsVisible := True;
   Invalidate;
@@ -681,7 +692,7 @@ begin
   if DragDropStarted then
   begin
     FEditState.CaretPos := MousePosToCaretPos(X, Y);
-    FEditState.SelLength := FEditState.CaretPos - FEditState.SelStart;
+    FEditState.SelLength := FEditState.CaretPos.X - FEditState.SelStart.X;
     FEditState.EventArrived := True;
     FEditState.CaretIsVisible := True;
     Invalidate;
@@ -714,7 +725,7 @@ begin
   ControlStyle := ControlStyle - [csAcceptsControls];
 
   // State information
-  FEditState.VisibleTextStart := 1;
+  FEditState.VisibleTextStart := Point(1, 1);
 
   // Caret code
   FCaretTimer := TTimer.Create(Self);

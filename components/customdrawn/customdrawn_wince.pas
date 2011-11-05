@@ -124,7 +124,7 @@ begin
   lCaptionHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx);
   lTextTopSpacing := GetMeasures(TCDEDIT_TOP_TEXT_SPACING);
 
-  lTmpText := UTF8Copy(lControlText, 1, AStateEx.CaretPos-AStateEx.VisibleTextStart+1);
+  lTmpText := UTF8Copy(lControlText, 1, AStateEx.CaretPos.X-AStateEx.VisibleTextStart.X+1);
   lCaretPixelPos := ADest.TextWidth(lTmpText) + 3;
   ADest.Pen.Color := clBlack;
   ADest.Line(lCaretPixelPos, lTextTopSpacing, lCaretPixelPos, lTextTopSpacing+lCaptionHeight);
