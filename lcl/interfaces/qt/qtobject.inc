@@ -584,8 +584,10 @@ begin
     // WriteLn('KILL: ', OldWidget.LCLObject.ClassName);
     Msg.msg := LM_KILLFOCUS;
     Msg.wParam := PtrInt(NewWidget);
-    if (OldWidget is TQtMainWindow) and (TQtMainWindow(OldWidget).IsMdiChild) then
-      TQtMainWindow(OldWidget).SlotActivateWindow(False)
+    if (OldWidget is TQtMainWindow) and (TQtMainWindow(OldWidget).IsMdiChild) and
+      Assigned(TQtMainWindow(OldWidget).LCLObject) and
+      not (csDesigning in TQtMainWindow(OldWidget).LCLObject.ComponentState) then
+      // DO NOT TRIGGER ANYTHING, THIS IS SPURIOUS EVENT FROM MDIAREA
     else
       OldWidget.DeliverMessage(Msg);
   end;
@@ -594,8 +596,10 @@ begin
     // WriteLn('SET: ', NewWidget.LCLObject.ClassName);
     Msg.msg := LM_SETFOCUS;
     Msg.wParam := PtrInt(OldWidget);
-    if (NewWidget is TQtMainWindow) and (TQtMainWindow(NewWidget).IsMdiChild) then
-      TQtMainWindow(NewWidget).SlotActivateWindow(True)
+    if (NewWidget is TQtMainWindow) and (TQtMainWindow(NewWidget).IsMdiChild) and
+      Assigned(TQtMainWindow(NewWidget).LCLObject) and
+      not (csDesigning in TQtMainWindow(NewWidget).LCLObject.ComponentState) then
+      // DO NOT TRIGGER ANYTHING, THIS IS SPURIOUS EVENT FROM MDIAREA
     else
       NewWidget.DeliverMessage(Msg);
   end;
