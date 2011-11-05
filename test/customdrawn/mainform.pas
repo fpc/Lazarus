@@ -24,6 +24,7 @@ type
     CDCheckBox2: TCDCheckBox;
     CDEdit1: TCDEdit;
     CDEdit2: TCDEdit;
+    CDRadioButton1: TCDRadioButton;
     editWinXP: TCDEdit;
     CDGroupBox1: TCDGroupBox;
     CDGroupBox2: TCDGroupBox;
@@ -42,6 +43,15 @@ type
     Label2: TLabel;
     memoLog: TMemo;
     notebookControls: TNotebook;
+    Page1: TPage;
+    pageMenu: TPage;
+    pagePopUp: TPage;
+    pageEditMultiline: TPage;
+    pageRadioButton: TPage;
+    Page5: TPage;
+    Page6: TPage;
+    Page7: TPage;
+    Page8: TPage;
     pageButtons: TPage;
     PageControl1: TPageControl;
     pageEdits: TPage;
@@ -50,6 +60,9 @@ type
     pageTrackBars: TPage;
     pagePageControls: TPage;
     pageTabControls: TPage;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    RadioButton3: TRadioButton;
     StaticText1: TStaticText;
     StaticText2: TStaticText;
     StaticText3: TStaticText;

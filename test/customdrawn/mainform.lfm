@@ -15,16 +15,24 @@ object Form1: TForm1
     ItemHeight = 13
     ItemIndex = 0
     Items.Strings = (
+      'TCDMenu'
+      'TCDPopUp'
       'TCDButton'
       'TCDEdit'
+      'TCDEdit Multiline'
+      'TCDToggleBox'
       'TCDCheckBox'
+      'TCDRadioButton'
+      'TCDListBox'
+      'TCDComboBox'
+      'TCDScrollBar'
       'TCDGroupBox'
       'TCDTrackBar'
       'TCDCustomTabControl'
     )
     OnChange = comboControlsChange
     TabOrder = 0
-    Text = 'TCDButton'
+    Text = 'TCDMenu'
   end
   object StaticText1: TStaticText
     Left = 9
@@ -40,12 +48,16 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 439
-    PageIndex = 5
+    PageIndex = 7
     TabOrder = 2
     TabStop = True
+    object pageMenu: TPage
+    end
+    object pagePopUp: TPage
+    end
     object pageButtons: TPage
-      ClientWidth = 439
-      ClientHeight = 240
+      ClientWidth = 878
+      ClientHeight = 480
       object CDButton1: TCDButton
         Left = 119
         Height = 25
@@ -101,8 +113,8 @@ object Form1: TForm1
       end
     end
     object pageEdits: TPage
-      ClientWidth = 878
-      ClientHeight = 480
+      ClientWidth = 1756
+      ClientHeight = 960
       object CDEdit1: TCDEdit
         Left = 119
         Height = 24
@@ -136,9 +148,13 @@ object Form1: TForm1
         Text = 'editWinXP'
       end
     end
+    object pageEditMultiline: TPage
+    end
+    object Page1: TPage
+    end
     object pageCheckboxes: TPage
-      ClientWidth = 878
-      ClientHeight = 480
+      ClientWidth = 7024
+      ClientHeight = 3840
       object CheckBox1: TCheckBox
         Left = 20
         Height = 17
@@ -164,9 +180,52 @@ object Form1: TForm1
         Caption = 'dsWinCE'
       end
     end
-    object pageGroupBoxes: TPage
+    object pageRadioButton: TPage
       ClientWidth = 439
       ClientHeight = 240
+      object RadioButton1: TRadioButton
+        Left = 16
+        Height = 17
+        Top = 30
+        Width = 83
+        Caption = 'RadioButton1'
+        TabOrder = 0
+      end
+      object RadioButton2: TRadioButton
+        Left = 16
+        Height = 17
+        Top = 48
+        Width = 83
+        Caption = 'RadioButton2'
+        TabOrder = 1
+      end
+      object RadioButton3: TRadioButton
+        Left = 16
+        Height = 17
+        Top = 64
+        Width = 83
+        Caption = 'RadioButton3'
+        TabOrder = 2
+      end
+      object CDRadioButton1: TCDRadioButton
+        Left = 136
+        Height = 16
+        Top = 32
+        Width = 101
+        DrawStyle = dsCommon
+        Caption = 'dsCommon'
+        TabStop = False
+      end
+    end
+    object Page5: TPage
+    end
+    object Page6: TPage
+    end
+    object Page7: TPage
+    end
+    object pageGroupBoxes: TPage
+      ClientWidth = 3512
+      ClientHeight = 1920
       object GroupBox1: TGroupBox
         Left = 7
         Height = 100
@@ -227,8 +286,8 @@ object Form1: TForm1
       end
     end
     object pageTrackBars: TPage
-      ClientWidth = 3512
-      ClientHeight = 1920
+      ClientWidth = 28096
+      ClientHeight = 15360
       object TrackBar1: TTrackBar
         Left = 7
         Height = 25
@@ -247,6 +306,8 @@ object Form1: TForm1
         DrawStyle = dsExtra1
         Position = 0
       end
+    end
+    object Page8: TPage
     end
     object pagePageControls: TPage
       ClientWidth = 439
