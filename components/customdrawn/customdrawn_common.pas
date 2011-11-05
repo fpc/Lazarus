@@ -70,6 +70,8 @@ type
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
+    procedure DrawCTabControlFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
     procedure DrawTabSheet(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
     procedure DrawTabs(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -218,7 +220,28 @@ end;
 procedure TCDDrawerCommon.DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize);
 begin
-
+  // white lines in the left and top
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Color := WIN2000_FRAME_WHITE;
+  ADest.MoveTo(ADestPos.X, ADestPos.Y+ASize.cy-1);
+  ADest.LineTo(ADestPos.X, ADestPos.Y);
+  ADest.LineTo(ADestPos.X+ASize.cy-1, ADestPos.Y);
+  // Grey line on the inside left and top
+  ADest.Pen.Color := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.MoveTo(ADestPos.X+1, ADestPos.Y+ASize.cy-2);
+  ADest.LineTo(ADestPos.X+1, ADestPos.Y+1);
+  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y+1);
+  // Dark grey line on the right and bottom
+  ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
+  ADest.MoveTo(ADestPos.X,            ADestPos.Y+ASize.cy-1);
+  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y+ASize.cy-1);
+  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y);
+  // Grey line on the inside right and bottom
+  ADest.Pen.Color := WIN2000_FRAME_GRAY;
+  ADest.MoveTo(ADestPos.X+1,          ADestPos.Y+ASize.cy-2);
+  ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y+ASize.cy-2);
+  ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y-1);
 end;
 
 procedure TCDDrawerCommon.DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint;
@@ -551,8 +574,6 @@ end;
 
 procedure TCDDrawerCommon.DrawCTabControl(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
-var
-  CaptionHeight: Integer;
 begin
   // Background
   ADest.Pen.Style := psSolid;
@@ -562,32 +583,23 @@ begin
   ADest.Rectangle(ADestPos.X, ADestPos.Y, ADestPos.X+ASize.cx, ADestPos.Y+ASize.cy);
 
   // frame
-  if AStateEx.TabCount = 0 then CaptionHeight := 0
-  else CaptionHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx);
-
-  // white lines in the left and top
-  ADest.Pen.Style := psSolid;
-  ADest.Brush.Style := bsClear;
-  ADest.Pen.Color := WIN2000_FRAME_WHITE;
-  ADest.Line(0, CaptionHeight, 0, ASize.cy-1);
-  ADest.Pixels[1,1] := clWhite;
-  ADest.Line(2, CaptionHeight, ASize.cx-1, CaptionHeight);
-  // Grey line on the inside left and top
-  ADest.Pen.Color := WIN2000_FRAME_LIGHT_GRAY;
-  ADest.Line(1, CaptionHeight, 1, ASize.cy-2);
-  ADest.Line(2, CaptionHeight+1, ASize.cx-2, CaptionHeight+1);
-  // Dark grey line on the right and bottom
-  ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
-  ADest.Line(0, ASize.cy, ASize.cx, ASize.cy);
-  ADest.Line(ASize.cx, ASize.cy, ASize.cx, CaptionHeight);
-  // Grey line on the inside right and bottom
-  ADest.Pen.Color := WIN2000_FRAME_GRAY;
-  ADest.Line(1, ASize.cy-1, ASize.cx-1, ASize.cy-1);
-  ADest.Line(ASize.cx-1, ASize.cy-1, ASize.cx-1, CaptionHeight);
+  DrawCTabControlFrame(ADest, ADestPos, ASize, AState, AStateEx);
 
   // Tabs
   ADest.Font.Assign(AStateEx.Font);
   DrawTabs(ADest, ADestPos, ASize, AState, AStateEx);
+end;
+
+procedure TCDDrawerCommon.DrawCTabControlFrame(ADest: TCanvas;
+  ADestPos: TPoint; ASize: TSize; AState: TCDControlState;
+  AStateEx: TCDCTabControlStateEx);
+var
+  CaptionHeight: Integer;
+begin
+  if AStateEx.TabCount = 0 then CaptionHeight := 0
+  else CaptionHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx);
+
+  DrawRaisedFrame(ADest, Point(0, CaptionHeight), Size(ASize.cx, ASize.cy-CaptionHeight));
 end;
 
 procedure TCDDrawerCommon.DrawTabSheet(ADest: TCanvas; ADestPos: TPoint;
@@ -629,35 +641,50 @@ var
   Points: array of TPoint;
   lCaption: String;
   lTabHeightCorrection: Integer = 0;
+  lTabRightBorderExtraHeight: Integer = 0;
 begin
   IsSelected := AStateEx.TabIndex = AStateEx.CurTabIndex;
 
   if not IsSelected then lTabHeightCorrection := 3;
+  if IsSelected then lTabRightBorderExtraHeight := 1;
 
   lTabTopPos := lTabHeightCorrection;
   lTabHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx)-lTabHeightCorrection;
   lTabWidth := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
 
   // Fill the area inside the outer border
-  ADest.Pen.Style := psClear;
+  // And at the same time fill the white border (part of it will be erased later)
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := WIN2000_FRAME_WHITE;
   ADest.Brush.Style := bsSolid;
-  ADest.Brush.Color := clWhite;
-  SetLength(Points, 5);
-  Points[0] := Point(AStateEx.CurStartLeftPos, lTabTopPos);
-  Points[1] := Point(AStateEx.CurStartLeftPos+lTabWidth-2, lTabTopPos);
-  Points[2] := Point(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+2);
-  Points[3] := Point(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+lTabHeight);
-  Points[4] := Point(AStateEx.CurStartLeftPos, lTabTopPos+lTabHeight);
+  ADest.Brush.Color := AStateEx.RGBColor;
+  SetLength(Points, 6);
+  Points[0] := Point(AStateEx.CurStartLeftPos, lTabTopPos+lTabHeight);
+  Points[1] := Point(AStateEx.CurStartLeftPos, lTabTopPos+2);
+  Points[2] := Point(AStateEx.CurStartLeftPos+2, lTabTopPos);
+  Points[3] := Point(AStateEx.CurStartLeftPos+lTabWidth-3, lTabTopPos);
+  Points[4] := Point(AStateEx.CurStartLeftPos+lTabWidth-1, lTabTopPos+2);
+  Points[5] := Point(AStateEx.CurStartLeftPos+lTabWidth-1, lTabTopPos+lTabHeight);
   ADest.Polygon(Points);
 
-  // Draw the outer border only in the top and right sides,
+  // Draw the inner border of the top and right sides,
   ADest.Pen.Style := psSolid;
   ADest.Brush.Style := bsClear;
-  ADest.Pen.Color := ColorToRGB($009C9B91);
-  ADest.MoveTo(AStateEx.CurStartLeftPos, lTabTopPos);
-  ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth-2, lTabTopPos);
-  ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+2);
-  ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+lTabHeight);
+  ADest.Pen.Color := WIN2000_FRAME_LIGHT_GRAY;
+  ADest.MoveTo(AStateEx.CurStartLeftPos+1, lTabTopPos+lTabHeight-1);
+  ADest.LineTo(AStateEx.CurStartLeftPos+1, lTabTopPos+2);
+  ADest.LineTo(AStateEx.CurStartLeftPos+2, lTabTopPos+1);
+  ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth-3, lTabTopPos+1);
+
+  // Draw the inner border of the right side
+  ADest.Pen.Color := WIN2000_FRAME_GRAY;
+  ADest.MoveTo(AStateEx.CurStartLeftPos+lTabWidth-2, lTabTopPos+2);
+  ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth-2, lTabTopPos+lTabHeight+lTabRightBorderExtraHeight);
+  // Draw the outter border of the right side
+  ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
+  ADest.MoveTo(AStateEx.CurStartLeftPos+lTabWidth-1, lTabTopPos+2);
+  ADest.LineTo(AStateEx.CurStartLeftPos+lTabWidth-1, lTabTopPos+lTabHeight+lTabRightBorderExtraHeight);
+  ADest.Pixels[AStateEx.CurStartLeftPos+lTabWidth-2, lTabTopPos+1] := WIN2000_FRAME_DARK_GRAY;
 
   if IsSelected then
   begin
@@ -666,11 +693,12 @@ begin
       Size(lTabWidth-8, lTabHeight-6));
 
     // and Clear the bottom area if selected
+    ADest.Pen.Style := psSolid;
     ADest.Pen.Color := AStateEx.RGBColor;
-    ADest.Line(AStateEx.CurStartLeftPos, lTabTopPos+lTabHeight,
-      AStateEx.CurStartLeftPos+lTabWidth, lTabTopPos+lTabHeight);
-    ADest.Line(AStateEx.CurStartLeftPos, lTabTopPos+lTabHeight-1,
-      AStateEx.CurStartLeftPos+lTabWidth-2, lTabTopPos+lTabHeight-1);
+    ADest.Line(AStateEx.CurStartLeftPos+1,  lTabTopPos+lTabHeight,
+      AStateEx.CurStartLeftPos+lTabWidth-2, lTabTopPos+lTabHeight);
+    ADest.Line(AStateEx.CurStartLeftPos+1,  lTabTopPos+lTabHeight+1,
+      AStateEx.CurStartLeftPos+lTabWidth-2, lTabTopPos+lTabHeight+1);
   end;
 
   // Now the text

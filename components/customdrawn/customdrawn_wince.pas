@@ -24,6 +24,9 @@ type
   public
     procedure LoadFallbackPaletteColors; override;
     function GetDrawStyle: TCDDrawStyle; override;
+    // General drawing routines
+    procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     // ===================================
     // Standard Tab
     // ===================================
@@ -42,12 +45,6 @@ type
     // Common Controls Tab
     // ===================================
     // TCDCustomTabControl
-    procedure DrawCTabControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
-    procedure DrawTabSheet(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
-    procedure DrawTabs(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
     procedure DrawTab(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
   end;
@@ -64,6 +61,24 @@ end;
 function TCDDrawerWinCE.GetDrawStyle: TCDDrawStyle;
 begin
   Result := dsWinCE;
+end;
+
+procedure TCDDrawerWinCE.DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize);
+begin
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Color := clBlack;
+  ADest.Rectangle(Bounds(ADestPos.X, ADestPos.Y, ASize.cx, ASize.cy));
+end;
+
+procedure TCDDrawerWinCE.DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize);
+begin
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Color := clBlack;
+  ADest.Rectangle(Bounds(ADestPos.X, ADestPos.Y, ASize.cx, ASize.cy));
 end;
 
 procedure TCDDrawerWinCE.DrawButton(ADest: TCanvas; ADestPos: TPoint;
@@ -166,73 +181,6 @@ begin
       lHalf - lSquareHalf+1,
       lSquareHeight,
       lHalf + lSquareHalf-1);
-  end;
-end;
-
-procedure TCDDrawerWinCE.DrawCTabControl(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
-var
-  CaptionHeight: Integer;
-begin
-  // Background
-  ADest.Pen.Style := psSolid;
-  ADest.Pen.Color := AStateEx.ParentRGBColor;
-  ADest.Brush.Style := bsSolid;
-  ADest.Brush.Color := AStateEx.ParentRGBColor;
-  ADest.Rectangle(ADestPos.X, ADestPos.Y, ADestPos.X+ASize.cx, ADestPos.Y+ASize.cy);
-
-  CaptionHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx);
-
-  // frame
-  ADest.Pen.Style := psSolid;
-  ADest.Brush.Style := bsClear;
-  ADest.Pen.Color := ColorToRGB($009C9B91);
-
-  if AStateEx.TabCount = 0 then
-    ADest.Rectangle(0, 0, ASize.cx - 2, ASize.cy - 2)
-  else
-    ADest.Rectangle(0, CaptionHeight, ASize.cx -  2, ASize.cy - 2);
-
-  ADest.Pen.Color := ColorToRGB($00BFCED0);
-  ADest.Line(ASize.cx - 1, CaptionHeight + 1,
-    ASize.cx - 1, ASize.cy - 1);
-  ADest.Line(ASize.cx - 1, ASize.cy - 1, 1,
-    ASize.cy - 1);
-
-  // Tabs
-  ADest.Font.Name := AStateEx.Font.Name;
-  ADest.Font.Size := AStateEx.Font.Size;
-  DrawTabs(ADest, ADestPos, ASize, AState, AStateEx);
-end;
-
-procedure TCDDrawerWinCE.DrawTabSheet(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
-begin
-  ADest.Brush.Color := AStateEx.RGBColor;
-  ADest.Brush.Style := bsSolid;
-  ADest.Pen.Style := psSolid;
-  ADest.Pen.Color := AStateEx.RGBColor;
-  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
-end;
-
-procedure TCDDrawerWinCE.DrawTabs(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
-var
-  IsPainting: Boolean = False;
-  i: Integer;
-begin
-  AStateEx.CurStartLeftPos := 0;
-  for i := 0 to AStateEx.Tabs.Count - 1 do
-  begin
-    if i = AStateEx.LeftmostTabVisibleIndex then
-      IsPainting := True;
-
-    if IsPainting then
-    begin
-      AStateEx.CurTabIndex := i;
-      DrawTab(ADest, ADestPos, ASize, AState, AStateEx);
-      AStateEx.CurStartLeftPos := AStateEx.CurStartLeftPos + GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
-    end;
   end;
 end;
 
