@@ -106,6 +106,7 @@ inherited fObfuscateSettings: TfObfuscateSettings
     Width = 97
     BorderSpacing.Around = 6
     Caption = '&Obfuscate mode'
+    OnChange = cbEnabledChange
     TabOrder = 0
   end
 end

@@ -45,6 +45,7 @@ type
     cbRebreak: TCheckBox;
     cbRemoveIndent: TCheckBox;
     cbEnabled: TCheckBox;
+    procedure cbEnabledChange(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -63,6 +64,18 @@ uses
   JcfSettings, SettingsTypes, JcfHelp, SetObfuscate, jcfuiconsts;
 
 { TfObfuscateSettings }
+
+procedure TfObfuscateSettings.cbEnabledChange(Sender: TObject);
+var
+  b: Boolean;
+begin
+  b := (Sender as TCheckBox).Checked;
+  rgObfuscateCaps.Enabled := b;
+  cbRemoveWhiteSpace.Enabled := b;
+  cbRemoveComments.Enabled := b;
+  cbRemoveIndent.Enabled := b;
+  cbRebreak.Enabled := b;
+end;
 
 constructor TfObfuscateSettings.Create(AOwner: TComponent);
 begin
@@ -89,6 +102,7 @@ begin
   cbRemoveComments.Caption := lisObfsRemoveComments;
   cbRemoveIndent.Caption := lisObfsRemoveIndent;
   cbRebreak.Caption := lisObfsRebreakLines;
+  cbEnabledChange(cbEnabled);
 end;
 
 procedure TfObfuscateSettings.ReadSettings(AOptions: TAbstractIDEOptions);
