@@ -44,6 +44,8 @@ type
     cbWarnUnusedParams: TCheckBox;
     mIgnoreUnusedParams: TMemo;
     Label1: TLabel;
+    procedure cbWarningsOnChange(Sender: TObject);
+    procedure cbWarnUnusedParamsChange(Sender: TObject);
     procedure FrameResize(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
@@ -78,6 +80,7 @@ begin
   cbWarningsOn.Caption := lisWarningsWarningsOn;
   cbWarnUnusedParams.Caption := lisWarningsWarnAboutUnusedParameters;
   Label1.Caption := lisWarningsIgnoreUnusedParametersNamed;
+  cbWarningsOnChange(cbWarningsOn);
 end;
 
 procedure TfWarnings.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -87,7 +90,6 @@ begin
     cbWarningsOn.Checked := Warnings;
     cbWarnUnusedParams.Checked  := WarnUnusedParams;
     mIgnoreUnusedParams.Lines.Assign(IgnoreUnusedParams);
-
   end;
 end;
 
@@ -112,8 +114,24 @@ const
   PAD = 6;
 begin
   inherited;
-
   mIgnoreUnusedParams.Height := ClientHeight - (mIgnoreUnusedParams.Top + PAD);
+end;
+
+procedure TfWarnings.cbWarningsOnChange(Sender: TObject);
+var
+  b: Boolean;
+begin
+  b := (Sender as TCheckBox).Checked;
+  cbWarnUnusedParams.Enabled := b;
+  mIgnoreUnusedParams.Enabled := b and cbWarnUnusedParams.Checked;
+end;
+
+procedure TfWarnings.cbWarnUnusedParamsChange(Sender: TObject);
+var
+  b: Boolean;
+begin
+  b := (Sender as TCheckBox).Checked;
+  mIgnoreUnusedParams.Enabled := b;
 end;
 
 initialization

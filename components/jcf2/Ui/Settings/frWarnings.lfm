@@ -28,6 +28,7 @@ inherited fWarnings: TfWarnings
     Width = 80
     BorderSpacing.Around = 6
     Caption = '&Warnings On'
+    OnChange = cbWarningsOnChange
     TabOrder = 0
   end
   object cbWarnUnusedParams: TCheckBox[2]
@@ -40,6 +41,7 @@ inherited fWarnings: TfWarnings
     Width = 140
     BorderSpacing.Around = 6
     Caption = 'Warn &unused parameters'
+    OnChange = cbWarnUnusedParamsChange
     TabOrder = 1
   end
   object mIgnoreUnusedParams: TMemo[3]
