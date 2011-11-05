@@ -543,6 +543,13 @@ type
   TQtToolBar = class;
   TQtStatusBar = class;
 
+  { TQtMDIArea }
+
+  TQtMDIArea = class(TQtAbstractScrollArea)
+  public
+    constructor Create(const AParent: QWidgetH); overload;
+  end;
+
   TQtMainWindow = class(TQtWidget)
   private
     FBlocked: Boolean;
@@ -559,7 +566,7 @@ type
     QtFormBorderStyle: Integer;
     QtFormStyle: Integer;
     IsMainForm: Boolean;
-    MDIAreaHandle: QMDIAreaH;
+    MDIAreaHandle: TQtMDIArea;
     MenuBar: TQtMenuBar;
     ToolBar: TQtToolBar;
     destructor Destroy; override;
@@ -5018,6 +5025,19 @@ begin
 end;
 
 
+{ TQtMDIArea }
+
+constructor TQtMDIArea.Create(const AParent: QWidgetH);
+begin
+  Create;
+  Widget := QMdiArea_create(AParent);
+  FWidgetDefaultFont := TQtFont.Create(QWidget_font(Widget));
+  FWidgetLCLFont := nil;
+  Palette.ForceColor := True;
+  setDefaultColor(dctFont);
+  Palette.ForceColor := False;
+end;
+
 { TQtMainWindow }
 
 function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -5060,13 +5080,13 @@ begin
        not (csDesigning in LCLObject.ComponentState) then
     begin
       FCentralWidget := QWidget_create(Result);
-      MDIAreaHandle := QMdiArea_create(Result);
+      MDIAreaHandle := TQtMDIArea.Create(Result);
       p := QWidget_palette(FCentralWidget);
       if p <> nil then
-        QMdiArea_setBackground(MdiAreaHandle, QPalette_background(P));
-      QWidget_setParent(MdiAreaHandle, FCentralWidget);
-      QMdiArea_setActivationOrder(MdiAreaHandle, QMdiAreaActivationHistoryOrder);
-      QMdiArea_setOption(MdiAreaHandle,
+        QMdiArea_setBackground(QMdiAreaH(MdiAreaHandle.Widget), QPalette_background(P));
+      QWidget_setParent(MdiAreaHandle.Widget, FCentralWidget);
+      QMdiArea_setActivationOrder(QMdiAreaH(MdiAreaHandle.Widget), QMdiAreaActivationHistoryOrder);
+      QMdiArea_setOption(QMdiAreaH(MdiAreaHandle.Widget),
         QMdiAreaDontMaximizeSubWindowOnActivation, True);
     end
     else
@@ -5188,6 +5208,12 @@ begin
     MenuBar.DetachEvents;
     MenuBar.Widget := nil;
     MenuBar.Free;
+  end;
+
+  if MDIAreaHandle <> nil then
+  begin
+    MDIAreaHandle.Widget := nil;
+    FreeThenNil(MDIAreaHandle);
   end;
 
   inherited Destroy;
@@ -5433,7 +5459,7 @@ begin
   if IsMdiChild then
     Area := QMdiSubWindow_mdiArea(QMdiSubWindowH(Widget))
   else
-    Area := MDIAreaHandle;
+    Area := QMDIAreaH(MDIAreaHandle.Widget);
   if Area <> nil then
   begin
     QMdiArea_subWindowList(Area, @Arr);
@@ -5601,7 +5627,7 @@ begin
               
             end; {components loop}
             
-            QWidget_setGeometry(MDIAreaHandle, @R);
+            QWidget_setGeometry(MDIAreaHandle.Widget, @R);
           end;
           {mdi area part end}
           

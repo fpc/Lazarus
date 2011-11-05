@@ -2391,7 +2391,7 @@ begin
     begin
       if TQtMainWindow(W).MDIAreaHandle <> nil then
       begin
-        Area := TQtMainWindow(W).MDIAreaHandle;
+        Area := QMdiAreaH(TQtMainWindow(W).MDIAreaHandle.Widget);
         SubW := QtObjectFromWidgetH(QMdiArea_activeSubWindow(Area));
         if SubW <> nil then
           Result := HWND(SubW)

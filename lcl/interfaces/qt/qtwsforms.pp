@@ -213,7 +213,8 @@ begin
   if (AForm.FormStyle in [fsMDIChild]) and
      (Application.MainForm.FormStyle = fsMdiForm) and
      not (csDesigning in AWinControl.ComponentState) then
-    QMdiArea_addSubWindow(TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle,
+    QMdiArea_addSubWindow(
+      QMdiAreaH(TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle.Widget),
       QtMainWindow.Widget, QtWindow);
 
 
@@ -521,7 +522,7 @@ begin
   if not (AForm.FormStyle in [fsMDIForm, fsMDIChild]) then
     exit;
   if AForm.FormStyle = fsMDIForm then
-    MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle
+    MDIWorkSpace := QMdiAreaH(TQtMainWindow(AForm.Handle).MDIAreaHandle.Widget)
   else
     MDIWorkSpace := QMdiSubWindow_mdiArea(QMdiSubWindowH(TQtWidget(AForm.Handle).Widget));
 
@@ -555,7 +556,7 @@ begin
     Exit;
   if AForm.FormStyle <> fsMDIForm then
     exit;
-  MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle;
+  MDIWorkSpace := QMdiAreaH(TQtMainWindow(AForm.Handle).MDIAreaHandle.Widget);
   QMdiArea_cascadeSubWindows(MDIWorkSpace);
 end;
 
@@ -571,6 +572,9 @@ begin
   {TODO: make TQtMainWindow(AForm.Handle).MDIAreaHandle TQtWidget and return that,
    but without attached events !}
   Result := 0;
+  if not WSCheckHandleAllocated(AForm, 'GetClientHandle') then
+    Exit;
+  Result := HWND(TQtMainWindow(AForm.Handle).MDIAreaHandle);
 end;
 
 {------------------------------------------------------------------------------
@@ -594,7 +598,7 @@ begin
     exit;
 
   if AForm.FormStyle = fsMDIForm then
-    MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle
+    MDIWorkSpace := QMdiAreaH(TQtMainWindow(AForm.Handle).MDIAreaHandle.Widget)
   else
     MDIWorkSpace := QMdiSubWindow_mdiArea(QMdiSubWindowH(TQtWidget(AForm.Handle).Widget));
 
@@ -632,7 +636,7 @@ begin
     Exit;
   if AForm.FormStyle <> fsMDIForm then
     exit;
-  MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle;
+  MDIWorkSpace := QMdiAreaH(TQtMainWindow(AForm.Handle).MDIAreaHandle.Widget);
   QMdiArea_activateNextSubWindow(MDIWorkSpace);
 end;
 
@@ -651,7 +655,7 @@ begin
     Exit;
   if AForm.FormStyle <> fsMDIForm then
     exit;
-  MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle;
+  MDIWorkSpace := QMdiAreaH(TQtMainWindow(AForm.Handle).MDIAreaHandle.Widget);
   QMdiArea_activatePreviousSubWindow(MDIWorkSpace);
 end;
 
@@ -670,7 +674,7 @@ begin
     Exit;
   if AForm.FormStyle <> fsMDIForm then
     exit;
-  MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle;
+  MDIWorkSpace := QMdiAreaH(TQtMainWindow(AForm.Handle).MDIAreaHandle.Widget);
   QMdiArea_tileSubWindows(MDIWorkSpace);
 end;
 
@@ -693,7 +697,7 @@ begin
     exit;
 
   if AForm.FormStyle = fsMDIForm then
-    MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle
+    MDIWorkSpace := QMdiAreaH(TQtMainWindow(AForm.Handle).MDIAreaHandle.Widget)
   else
     MDIWorkSpace := QMdiSubWindow_mdiArea(QMdiSubWindowH(TQtWidget(AForm.Handle).Widget));
 
