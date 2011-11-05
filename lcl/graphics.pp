@@ -1412,6 +1412,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure FreeImage; override;
     function GetResourceType: TResourceType; override;

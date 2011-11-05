@@ -63,6 +63,16 @@ begin
   inherited Destroy;
 end;
 
+procedure TCustomBitmap.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TCustomBitmap then
+  begin
+    FPixelFormat := TCustomBitmap(Source).FPixelFormat;
+    FPixelFormatNeedsUpdate := TCustomBitmap(Source).FPixelFormatNeedsUpdate;
+  end;
+end;
+
 function TCustomBitmap.CreateDefaultBitmapHandle(const ADesc: TRawImageDescription): HBITMAP;
 var
   DC: HDC;
