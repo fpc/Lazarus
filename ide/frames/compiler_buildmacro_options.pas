@@ -53,7 +53,7 @@ type
   TCompOptBuildMacrosFrame = class(TAbstractIDEOptionsEditor)
     BMAddMacroSpeedButton: TSpeedButton;
     BMAddMacroValueSpeedButton: TSpeedButton;
-    BMDeleteSpeedButton: TSpeedButton;
+    BMDeleteMacroSpeedButton: TSpeedButton;
     BuildMacroDescriptionEdit: TEdit;
     BuildMacroSelectedGroupBox: TGroupBox;
     BuildMacrosTreeView: TTreeView;
@@ -67,7 +67,8 @@ type
     Splitter1: TSplitter;
     procedure BMAddMacroSpeedButtonClick(Sender: TObject);
     procedure BMAddMacroValueSpeedButtonClick(Sender: TObject);
-    procedure BMDeleteSpeedButtonClick(Sender: TObject);
+    procedure BMDeleteMacroSpeedButtonClick(Sender: TObject);
+    procedure BuildMacroDescriptionEditExit(Sender: TObject);
     procedure BuildMacrosTreeViewEdited(Sender: TObject; Node: TTreeNode;
       var S: string);
     procedure BuildMacrosTreeViewEditing(Sender: TObject; Node: TTreeNode;
@@ -111,7 +112,6 @@ type
     fDefValueImgID: LongInt;
     fEngine: TCTConfigScriptEngine;
     fSynCompletion: TSynCompletion;
-    procedure SaveItemProperties;
     procedure SetBuildMacros(const AValue: TIDEBuildMacros);
     procedure RebuildTreeView;
     procedure SetIdleConnected(const AValue: Boolean);
@@ -348,8 +348,7 @@ begin
   AllowEdit:=NodeType in [cbmntBuildMacro,cbmntValue];
 end;
 
-procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewSelectionChanged(
-  Sender: TObject);
+procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewSelectionChanged(Sender: TObject);
 begin
   UpdateItemPropertyControls;
 end;
@@ -520,7 +519,7 @@ begin
   BuildMacrosTreeView.EndUpdate;
 end;
 
-procedure TCompOptBuildMacrosFrame.BMDeleteSpeedButtonClick(Sender: TObject);
+procedure TCompOptBuildMacrosFrame.BMDeleteMacroSpeedButtonClick(Sender: TObject);
 var
   aBuildMacro: TIDEBuildMacro;
   SelTVNode: TTreeNode;
@@ -550,6 +549,16 @@ begin
   BuildMacrosTreeView.BeginUpdate;
   SelTVNode.Delete;
   BuildMacrosTreeView.EndUpdate;
+end;
+
+procedure TCompOptBuildMacrosFrame.BuildMacroDescriptionEditExit(Sender: TObject);
+var
+  BuildMacro: TLazBuildMacro;
+  NodeType: TCBMNodeType;
+begin
+  GetSelectedNode(BuildMacro,NodeType);
+  if BuildMacro<>nil then
+    BuildMacro.Description:=BuildMacroDescriptionEdit.Text;
 end;
 
 procedure TCompOptBuildMacrosFrame.SetBuildMacros(
@@ -697,17 +706,15 @@ var
 begin
   GetSelectedNode(aBuildMacro,NodeType);
   if aBuildMacro<>nil then begin
-    BuildMacroSelectedGroupBox.Caption:=Format(lisMacro, [aBuildMacro.Identifier
-      ]);
+    BuildMacroSelectedGroupBox.Caption:=Format(lisMacro, [aBuildMacro.Identifier]);
     BuildMacroSelectedGroupBox.Enabled:=true;
     BuildMacroDescriptionEdit.Enabled:=true;
     BuildMacroDescriptionEdit.Text:=aBuildMacro.Description;
-    BMAddMacroValueSpeedButton.Hint:=Format(lisAddValueToMacro, [
-      aBuildMacro.Identifier]);
+    BMAddMacroValueSpeedButton.Hint:=Format(lisAddValueToMacro, [aBuildMacro.Identifier]);
     if NodeType=cbmntBuildMacro then
-      BMDeleteSpeedButton.Hint:=Format(lisDeleteMacro, [aBuildMacro.Identifier])
+      BMDeleteMacroSpeedButton.Hint:=Format(lisDeleteMacro, [aBuildMacro.Identifier])
     else
-      BMDeleteSpeedButton.Hint:=Format(lisDeleteValue2, [BuildMacrosTreeView.
+      BMDeleteMacroSpeedButton.Hint:=Format(lisDeleteValue2, [BuildMacrosTreeView.
         Selected.Text]);
   end else begin
     BuildMacroSelectedGroupBox.Caption:=lisNoMacroSelected;
@@ -715,11 +722,11 @@ begin
     BuildMacroDescriptionEdit.Enabled:=false;
     BuildMacroDescriptionEdit.Text:='';
     BMAddMacroValueSpeedButton.Hint:='';
-    BMDeleteSpeedButton.Hint:='';
+    BMDeleteMacroSpeedButton.Hint:='';
   end;
   BMAddMacroSpeedButton.Hint:=lisAddNewMacro;
   BMAddMacroValueSpeedButton.Enabled:=NodeType in [cbmntBuildMacro,cbmntValue];
-  BMDeleteSpeedButton.Enabled:=NodeType in [cbmntBuildMacro,cbmntValue];
+  BMDeleteMacroSpeedButton.Enabled:=NodeType in [cbmntBuildMacro,cbmntValue];
 end;
 
 procedure TCompOptBuildMacrosFrame.UpdateMessages;
@@ -947,16 +954,6 @@ begin
   //debugln(['TCompOptBuildMacrosFrame.GetCondCursorWord "',Result,'"']);
 end;
 
-procedure TCompOptBuildMacrosFrame.SaveItemProperties;
-var
-  BuildMacro: TLazBuildMacro;
-  NodeType: TCBMNodeType;
-begin
-  GetSelectedNode(BuildMacro,NodeType);
-  if BuildMacro=nil then exit;
-  BuildMacro.Description:=BuildMacroDescriptionEdit.Text;
-end;
-
 constructor TCompOptBuildMacrosFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -983,7 +980,7 @@ begin
 
   BMAddMacroSpeedButton.LoadGlyphFromLazarusResource('laz_add');
   BMAddMacroValueSpeedButton.LoadGlyphFromLazarusResource('laz_add');
-  BMDeleteSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
+  BMDeleteMacroSpeedButton.LoadGlyphFromLazarusResource('laz_delete');
 
   fSynCompletion:=TSynCompletion.Create(Self);
   fSynCompletion.TheForm.Parent:=Self;
@@ -1061,7 +1058,6 @@ end;
 
 procedure TCompOptBuildMacrosFrame.SaveToOptions(Options: TBaseCompilerOptions);
 begin
-  SaveItemProperties;
   (Options.BuildMacros as TIDEBuildMacros).Assign(BuildMacros);
   Options.Conditionals:=CondSynEdit.Lines.Text;
 end;

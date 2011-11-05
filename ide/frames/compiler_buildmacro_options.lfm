@@ -5,8 +5,8 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
   ClientWidth = 514
   TabOrder = 0
   Visible = False
-  DesignLeft = 308
-  DesignTop = 268
+  DesignLeft = 304
+  DesignTop = 213
   object MacrosGroupBox: TGroupBox[0]
     Left = 0
     Height = 243
@@ -14,8 +14,8 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
     Width = 514
     Align = alTop
     Caption = 'MacrosGroupBox'
-    ClientHeight = 221
-    ClientWidth = 506
+    ClientHeight = 223
+    ClientWidth = 508
     TabOrder = 0
     object BuildMacrosTreeView: TTreeView
       AnchorSideLeft.Control = MacrosGroupBox
@@ -25,7 +25,7 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       AnchorSideBottom.Control = MacrosGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 199
+      Height = 201
       Top = 22
       Width = 227
       Anchors = [akTop, akLeft, akBottom]
@@ -43,7 +43,7 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       AnchorSideBottom.Control = MacrosGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 233
-      Height = 221
+      Height = 223
       Top = 0
       Width = 5
       Align = alNone
@@ -53,22 +53,22 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       AnchorSideLeft.Control = Splitter1
       AnchorSideLeft.Side = asrBottom
       Left = 244
-      Height = 221
+      Height = 223
       Top = 0
-      Width = 262
+      Width = 264
       Align = alRight
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 6
       Caption = 'BuildMacroSelectedGroupBox'
-      ClientHeight = 199
-      ClientWidth = 254
+      ClientHeight = 203
+      ClientWidth = 258
       TabOrder = 2
       object BuildMacroDefaultLabel: TLabel
         Left = 6
-        Height = 127
-        Top = 66
-        Width = 242
-        Align = alClient
+        Height = 129
+        Top = 68
+        Width = 246
+        Align = alBottom
         AutoSize = False
         BorderSpacing.Top = 15
         BorderSpacing.Around = 6
@@ -78,9 +78,9 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       end
       object BuildMacroDescriptionLabel: TLabel
         Left = 6
-        Height = 17
+        Height = 16
         Top = 6
-        Width = 242
+        Width = 246
         Align = alTop
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
@@ -90,14 +90,26 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       end
       object BuildMacroDescriptionEdit: TEdit
         Left = 6
-        Height = 22
-        Top = 23
-        Width = 242
+        Height = 23
+        Top = 22
+        Width = 246
         Align = alTop
         BorderSpacing.Left = 6
         BorderSpacing.Right = 6
+        OnExit = BuildMacroDescriptionEditExit
         TabOrder = 0
         Text = 'BuildMacroDescriptionEdit'
+      end
+      object BMAddMacroValueSpeedButton: TSpeedButton
+        Left = 6
+        Height = 22
+        Top = 48
+        Width = 23
+        BorderSpacing.Left = 6
+        NumGlyphs = 0
+        OnClick = BMAddMacroValueSpeedButtonClick
+        ShowHint = True
+        ParentShowHint = False
       end
     end
     object BMAddMacroSpeedButton: TSpeedButton
@@ -112,31 +124,16 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       ShowHint = True
       ParentShowHint = False
     end
-    object BMAddMacroValueSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = BMAddMacroSpeedButton
+    object BMDeleteMacroSpeedButton: TSpeedButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = MacrosGroupBox
-      Left = 29
+      Left = 22
       Height = 22
       Top = 0
       Width = 23
       BorderSpacing.Left = 6
       NumGlyphs = 0
-      OnClick = BMAddMacroValueSpeedButtonClick
-      ShowHint = True
-      ParentShowHint = False
-    end
-    object BMDeleteSpeedButton: TSpeedButton
-      AnchorSideLeft.Control = BMAddMacroValueSpeedButton
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = MacrosGroupBox
-      Left = 58
-      Height = 22
-      Top = 0
-      Width = 23
-      BorderSpacing.Left = 6
-      NumGlyphs = 0
-      OnClick = BMDeleteSpeedButtonClick
+      OnClick = BMDeleteMacroSpeedButtonClick
       ShowHint = True
       ParentShowHint = False
     end
@@ -157,14 +154,14 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
     Width = 514
     Align = alClient
     Caption = 'ConditionalsGroupBox'
-    ClientHeight = 174
-    ClientWidth = 506
+    ClientHeight = 176
+    ClientWidth = 508
     TabOrder = 2
     inline CondSynEdit: TSynEdit
       Left = 0
-      Height = 159
+      Height = 156
       Top = 0
-      Width = 506
+      Width = 508
       Align = alClient
       Font.Height = 9
       Font.Name = '-misc-dejavu sans mono-*-*-*-*-*-*-*-*-*-*-iso10646-1'
@@ -175,7 +172,7 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       TabOrder = 0
       OnKeyDown = CondSynEditKeyDown
       OnKeyPress = CondSynEditKeyPress
-      Gutter.Width = 59
+      Gutter.Width = 51
       Gutter.MouseActions = <      
         item
           Shift = []
@@ -770,6 +767,7 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       Lines.Strings = (
         'CondSynEdit'
       )
+      VisibleSpecialChars = [vscSpace, vscTabAtLast]
       BracketHighlightStyle = sbhsBoth
       OnChange = CondSynEditChange
       OnProcessCommand = CondSynEditProcessCommand
@@ -779,7 +777,7 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
           Width = 24
         end
         object SynGutterLineNumber1: TSynGutterLineNumber
-          Width = 19
+          Width = 11
           MouseActions = <>
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
@@ -884,9 +882,9 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
     end
     object CondStatusbar: TStatusBar
       Left = 0
-      Height = 15
-      Top = 159
-      Width = 506
+      Height = 20
+      Top = 156
+      Width = 508
       Panels = <      
         item
           Width = 80
