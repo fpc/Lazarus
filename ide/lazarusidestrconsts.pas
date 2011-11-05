@@ -4058,7 +4058,6 @@ resourcestring
   lisPckOptsAutoRebuildWhenRebuildingAll = 'Auto rebuild when rebuilding all';
   lisPckOptsManualCompilationNeverAutomatically = 'Manual compilation (never '
     +'automatically)';
-  lisPckOptsLazDocLazarusDocumentation = 'FPDoc files path';
   lisPckOptsAddPathsToDependentPackagesProjects = 'Add paths to dependent '
     +'packages/projects';
   lisPckOptsInclude = 'Include';

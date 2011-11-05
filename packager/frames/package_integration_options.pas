@@ -125,7 +125,7 @@ begin
   UpdateRadioGroup.Items[0] := lisPckOptsAutomaticallyRebuildAsNeeded;
   UpdateRadioGroup.Items[1] := lisPckOptsAutoRebuildWhenRebuildingAll;
   UpdateRadioGroup.Items[2] := lisPckOptsManualCompilationNeverAutomatically;
-  LazDocGroupBox.Caption := lisPckOptsLazDocLazarusDocumentation;
+  LazDocGroupBox.Caption := lisCodeHelpPathsGroupBox;
 
   LazDocPathButton := TPathEditorButton.Create(Self);
   with LazDocPathButton do
