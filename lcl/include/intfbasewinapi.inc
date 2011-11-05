@@ -1092,16 +1092,47 @@ begin
   Result := 0;
 end;
 
+{ Returns in MaxCount how many characters fit into a given MaxWidth
+  It also returns the width of each character }
 function TWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
   Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger;
   var Size: TSize): Boolean;
+var
+  lPasStr, lCurSubStr: String;
+  lPasStrLen, i: PtrInt;
+  lCurSize: TSize;
+  lBestFitFound: Boolean = False;
 begin
-  if MaxCount<>nil then MaxCount^:=Count;
-  if PartialWidths<>nil then
-    DebugLn('Warning: TWidgetSet.GetTextExtentExPoint PartialWidths not implemented yet');
+  // First obtain the size information which duplicates GetTextExtentPoint
   Result := GetTextExtentPoint(DC,Str,Count,Size);
+
+  // Now calculate MaxCount and PartialWidths
+  lPasStr := StrPas(Str);
+  lPasStrLen := UTF8Length(lPasStr);
+  for i := 1 to lPasStrLen do
+  begin
+    // Since we can't just sum the partial widths because the spaces between
+    // chars matter too, only calculate them if necessary
+    if PartialWidths<>nil then
+    begin
+      lCurSubStr := UTF8Copy(lPasStr, i, 1);
+      Self.GetTextExtentPoint(DC, PChar(lCurSubStr), 1, lCurSize);
+      PartialWidths[i-1] := lCurSize.cx;
+    end;
+
+    // Calculate the width until the utilized size gets bigger then the desired one
+    // Give up when the size surpases MaxWidth to be faster
+    if (not lBestFitFound) and (MaxCount <> nil) then
+    begin
+      lCurSubStr := UTF8Copy(lPasStr, 1, i);
+      Self.GetTextExtentPoint(DC, PChar(lCurSubStr), Length(lCurSubStr), lCurSize);
+      if lCurSize.cx <= MaxWidth then MaxCount^ := i
+      else lBestFitFound := True;
+    end;
+  end;
 end;
 
+// Note that Count is the number of bytes in the utf-8 encoded string Str
 function TWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
 begin

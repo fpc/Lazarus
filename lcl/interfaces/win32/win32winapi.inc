@@ -2084,8 +2084,8 @@ end;
 {------------------------------------------------------------------------------
   Method:  GetTextExtentPoint
   Params:  DC    - handle of device context
-           Str   - text string
-           Count - number of characters in string
+           Str   - text string encoded in UTF-8
+           Count - number of bytes in the string
            Size  - TSize record in which the dimensions of the string are to be
                    returned
   Returns: If the function succeeded
