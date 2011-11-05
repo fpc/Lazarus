@@ -5254,7 +5254,8 @@ end;
 
 procedure TQtMainWindow.Resize(ANewWidth, ANewHeight: Integer);
 begin
-  if (TCustomForm(LCLObject).BorderStyle in [bsDialog, bsNone, bsSingle]) and
+  if not IsMDIChild and
+    (TCustomForm(LCLObject).BorderStyle in [bsDialog, bsNone, bsSingle]) and
      not (csDesigning in LCLObject.ComponentState) then
     QWidget_setFixedSize(Widget, ANewWidth, ANewHeight)
   else
