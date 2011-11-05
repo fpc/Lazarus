@@ -4,6 +4,7 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
   Anchors = [akTop]
   ClientHeight = 352
   ClientWidth = 511
+  TabOrder = 0
   Visible = False
   DesignLeft = 346
   DesignTop = 366
@@ -41,6 +42,7 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
     Top = 0
     Width = 149
     Caption = 'chkCodeFoldingEnabled'
+    OnChange = chkCodeFoldingEnabledChange
     TabOrder = 0
   end
   object LanguageComboBox: TComboBox[3]

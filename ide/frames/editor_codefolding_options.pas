@@ -45,6 +45,7 @@ type
     chkFold: TRadioButton;
     chkHide: TRadioButton;
     chkBoth: TRadioButton;
+    procedure chkCodeFoldingEnabledChange(Sender: TObject);
     procedure chkFoldChange(Sender: TObject);
     procedure FoldConfigCheckListBoxClick(Sender: TObject);
     procedure FoldConfigCheckListBoxClickCheck(Sender: TObject);
@@ -180,6 +181,16 @@ begin
   Hl.FoldConfig[i].Modes := Modes;
 end;
 
+procedure TEditorCodefoldingOptionsFrame.chkCodeFoldingEnabledChange(Sender: TObject);
+var
+  b: Boolean;
+begin
+  b := (Sender as TCheckBox).Checked;
+  LanguageComboBox.Enabled := b;
+  FoldConfigCheckListBox.Enabled := b;
+  chkPopOrder.Enabled := b;
+end;
+
 procedure TEditorCodefoldingOptionsFrame.FoldConfigCheckListBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   FoldConfigCheckListBoxClickCheck(Sender);
@@ -229,6 +240,7 @@ begin
   chkPopOrder.Caption := dlgCodeFoldPopUpOrder;
   LanguageLabel.Caption := dlgLang;
   FModeLock := False;
+  chkCodeFoldingEnabledChange(chkCodeFoldingEnabled);
 end;
 
 procedure TEditorCodefoldingOptionsFrame.ReadSettings(
