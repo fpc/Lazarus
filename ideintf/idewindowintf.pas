@@ -1774,13 +1774,12 @@ begin
 end;
 
 function TIDEWindowCreator.CreateSimpleLayout: TSimpleWindowLayout;
-var
-  simple: TSimpleWindowLayout;
 begin
-  if not Assigned(IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(FormName))
-  then begin
-    simple := IDEWindowCreators.SimpleLayoutStorage.CreateWindowLayout(FormName);
-    InitSimpleLayout(simple);
+  Result:=IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(FormName);
+  if not Assigned(Result) then
+  begin
+    Result := IDEWindowCreators.SimpleLayoutStorage.CreateWindowLayout(FormName);
+    InitSimpleLayout(Result);
   end;
 end;
 
