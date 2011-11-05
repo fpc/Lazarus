@@ -857,6 +857,7 @@ type
     procedure Loaded; override;
     procedure DoPositionLabel; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure CMBiDiModeChanged(var Msg: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMVisibleChanged(var Msg: TLMessage); message CM_VISIBLECHANGED;
     procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
     procedure CreateInternalLabel; virtual;

@@ -105,6 +105,14 @@ begin
     FEditLabel := nil;
 end;
 
+procedure TCustomLabeledEdit.CMBiDiModeChanged(var Msg: TLMessage);
+begin
+  inherited CMBiDiModeChanged(Msg);
+  FEditLabel.BiDiMode := BiDiMode;
+  DoPositionLabel;
+  Invalidate;
+end;
+
 procedure TCustomLabeledEdit.CMVisibleChanged(var Msg: TLMessage);
 begin
   inherited CMVisiblechanged(Msg);
