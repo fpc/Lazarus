@@ -199,6 +199,24 @@ type
     property State: TCheckBoxState read FCheckedState write FCheckedState default cbUnchecked;
   end;
 
+  { TCDRadioButton }
+
+  TCDRadioButton = class(TCDButtonControl)
+  private
+    function GetChecked: Boolean;
+    procedure SetChecked(AValue: Boolean);
+  protected
+    function GetControlId: TCDControlID; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property Checked: Boolean read GetChecked write SetChecked default False;
+    property DrawStyle;
+    property Caption;
+    property TabStop default True;
+  end;
+
   {@@
     TCDGroupBox is a custom-drawn group box control
   }
@@ -422,6 +440,242 @@ implementation
 
 resourcestring
   sTABSHEET_DEFAULT_NAME = 'CTabSheet';
+
+{ TCDControl }
+
+procedure TCDControl.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  PrepareControlState;
+  PrepareControlStateEx;
+  FDrawer.CalculatePreferredSize(Canvas, GetControlId(), FState, FStateEx,
+    PreferredWidth, PreferredHeight, WithThemeSpace);
+end;
+
+procedure TCDControl.PrepareCurrentDrawer;
+begin
+  FDrawer := GetDrawer(FDrawStyle);
+  if FDrawer = nil then FDrawer := GetDrawer(dsCommon); // avoid exceptions in the object inspector if an invalid drawer is selected
+  if FDrawer = nil then raise Exception.Create('No registered drawers were found');
+end;
+
+procedure TCDControl.SetDrawStyle(const AValue: TCDDrawStyle);
+begin
+  if FDrawStyle = AValue then exit;
+  FDrawStyle := AValue;
+  Invalidate;
+  PrepareCurrentDrawer();
+
+  //FCurrentDrawer.SetClientRectPos(Self);
+end;
+
+function TCDControl.GetClientRect: TRect;
+begin
+  // Disable this, since although it works in Win32, it doesn't seam to work in LCL-Carbon
+  //if (FCurrentDrawer = nil) then
+    Result := inherited GetClientRect()
+  //else
+    //Result := FCurrentDrawer.GetClientRect(Self);
+end;
+
+function TCDControl.GetControlId: TCDControlID;
+begin
+  Result := cidControl;
+end;
+
+procedure TCDControl.CreateControlStateEx;
+begin
+  FStateEx := TCDControlStateEx.Create;
+end;
+
+procedure TCDControl.PrepareControlState;
+begin
+  if Focused then FState := FState + [csfHasFocus]
+  else FState := FState - [csfHasFocus];
+
+  if Enabled then FState := FState + [csfEnabled]
+  else FState := FState - [csfEnabled];
+end;
+
+procedure TCDControl.PrepareControlStateEx;
+begin
+  if Parent <> nil then FStateEx.ParentRGBColor := Parent.GetRGBColorResolvingParent
+  else FStateEx.ParentRGBColor := clSilver;
+
+  if Color = clDefault then FStateEx.RGBColor := FDrawer.GetControlDefaultColor(GetControlId())
+  else FStateEx.RGBColor := GetRGBColorResolvingParent;
+
+  FStateEx.Caption := Caption;
+  FStateEx.Font := Font;
+  FStateEx.AutoSize := AutoSize;
+end;
+
+procedure TCDControl.EraseBackground(DC: HDC);
+begin
+
+end;
+
+procedure TCDControl.Paint;
+var
+  ABmp: TBitmap;
+  lSize: TSize;
+  lControlId: TCDControlID;
+begin
+  inherited Paint;
+
+  PrepareCurrentDrawer();
+
+  ABmp := TBitmap.Create;
+  try
+    ABmp.Width := Width;
+    ABmp.Height := Height;
+    lSize := Size(Width, Height);
+    lControlId := GetControlId();
+    PrepareControlState;
+    PrepareControlStateEx;
+    FDrawer.DrawControl(ABmp.Canvas, Point(0, 0),
+      lSize, lControlId, FState, FStateEx);
+    Canvas.Draw(0, 0, ABmp);
+  finally
+    ABmp.Free;
+  end;
+end;
+
+procedure TCDControl.MouseEnter;
+begin
+  FState := FState + [csfMouseOver];
+  inherited MouseEnter;
+end;
+
+procedure TCDControl.MouseLeave;
+begin
+  FState := FState - [csfMouseOver];
+  inherited MouseLeave;
+end;
+
+procedure TCDControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  SetFocus();
+end;
+
+constructor TCDControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  CreateControlStateEx;
+end;
+
+destructor TCDControl.Destroy;
+begin
+  FStateEx.Free;
+  inherited Destroy;
+end;
+
+{ TCDButtonDrawer }
+
+procedure TCDButtonControl.DoEnter;
+begin
+  Invalidate;
+
+  inherited DoEnter;
+end;
+
+procedure TCDButtonControl.DoExit;
+begin
+  Invalidate;
+
+  inherited DoExit;
+end;
+
+procedure TCDButtonControl.KeyDown(var Key: word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+
+  if (Key = VK_SPACE) or (Key = VK_RETURN) then
+    DoButtonDown();
+end;
+
+procedure TCDButtonControl.KeyUp(var Key: word; Shift: TShiftState);
+begin
+  if (Key = VK_SPACE) or (Key = VK_RETURN) then
+  begin
+    DoButtonUp();
+    Self.Click; // TCustomControl does not respond to LM_CLICKED
+  end;
+
+  inherited KeyUp(Key, Shift);
+end;
+
+procedure TCDButtonControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+begin
+  DoButtonDown();
+
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TCDButtonControl.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+begin
+  DoButtonUp();
+
+  inherited MouseUp(Button, Shift, X, Y);
+end;
+
+procedure TCDButtonControl.MouseEnter;
+begin
+  Invalidate;
+  inherited MouseEnter;
+end;
+
+procedure TCDButtonControl.MouseLeave;
+begin
+  Invalidate;
+  inherited MouseLeave;
+end;
+
+procedure TCDButtonControl.DoButtonDown();
+begin
+  if not (csfSunken in FState) then
+  begin
+    FState := FState + [csfSunken];
+    Invalidate;
+  end;
+end;
+
+procedure TCDButtonControl.DoButtonUp();
+begin
+  if csfSunken in FState then
+  begin
+    FState := FState - [csfSunken];
+    Invalidate;
+  end;
+  // Only for buttons with checked/down states
+  if FHasOnOffStates then
+  begin
+    if FHasPartiallyOnState then
+    begin
+      if csfOn in FState then
+        FState := FState + [csfOff] - [csfOn, csfPartiallyOn]
+      else if csfPartiallyOn in FState then
+        FState := FState + [csfOn] - [csfOff, csfPartiallyOn]
+      else
+        FState := FState + [csfPartiallyOn] - [csfOn, csfOff];
+    end
+    else
+    begin
+      if csfOn in FState then
+        FState := FState + [csfOff] - [csfOn]
+      else
+        FState := FState + [csfOn] - [csfOff];
+    end;
+  end;
+end;
+
+procedure TCDButtonControl.RealSetText(const Value: TCaption);
+begin
+  inherited RealSetText(Value);
+  Invalidate;
+end;
 
 { TCDEdit }
 
@@ -789,367 +1043,7 @@ begin
   inherited Destroy;
 end;
 
-{ TCDCustomTabControl }
-
-procedure TCDCustomTabControl.MouseDown(Button: TMouseButton;
-  Shift: TShiftState; X, Y: integer);
-var
-  i: Integer;
-  CurPage: TCDTabSheet;
-  CurStartLeftPos: Integer = 0;
-  VisiblePagesStarted: Boolean = False;
-  lTabWidth: Integer;
-begin
-  inherited MouseDown(Button, Shift, X, Y);
-
-  for i := 0 to Tabs.Count - 1 do
-  begin
-    if i = FTabCState.LeftmostTabVisibleIndex then
-      VisiblePagesStarted := True;
-
-    if VisiblePagesStarted then
-    begin
-      FTabCState.TabIndex := i;
-      lTabWidth := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_WIDTH, FState, FTabCState);
-      if (X > CurStartLeftPos) and
-        (X < CurStartLeftPos + lTabWidth) and
-        (Y < FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_HEIGHT, FState, FTabCState)) then
-      begin
-        if Self is TCDPageControl then
-          (Self as TCDPageControl).PageIndex := i
-        else
-          TabIndex := i;
-
-        Exit;
-      end;
-      CurStartLeftPos := CurStartLeftPos + lTabWidth;
-    end;
-  end;
-end;
-
-procedure TCDCustomTabControl.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: integer);
-begin
-
-  inherited MouseUp(Button, Shift, X, Y);
-end;
-
-procedure TCDCustomTabControl.SetTabIndex(AValue: Integer);
-begin
-  if FTabIndex = AValue then Exit;
-  if Assigned(OnChanging) then OnChanging(Self);
-  FTabIndex := AValue;
-  if Assigned(OnChange) then OnChange(Self);
-  Invalidate;
-end;
-
-procedure TCDCustomTabControl.SetTabs(AValue: TStringList);
-begin
-  if FTabs=AValue then Exit;
-  FTabs.Assign(AValue);
-  CorrectTabIndex();
-  Invalidate;
-end;
-
-procedure TCDCustomTabControl.SetOptions(AValue: TNoteBookOptions);
-begin
-  if FOptions=AValue then Exit;
-  FOptions:=AValue;
-  Invalidate;
-end;
-
-function TCDCustomTabControl.GetControlId: TCDControlID;
-begin
-  Result := cidCTabControl;
-end;
-
-procedure TCDCustomTabControl.CreateControlStateEx;
-begin
-  FTabCState := TCDCTabControlStateEx.Create;
-  FStateEx := FTabCState;
-end;
-
-procedure TCDCustomTabControl.PrepareControlStateEx;
-begin
-  inherited PrepareControlStateEx;
-
-  FTabCState.Tabs := Tabs;
-  FTabCState.TabIndex := TabIndex;
-  FTabCState.TabCount := GetTabCount();
-  FTabCState.Options := FOptions;
-end;
-
-constructor TCDCustomTabControl.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-
-  Width := 232;
-  Height := 184;
-  TabStop := True;
-
-  PrepareCurrentDrawer();
-
-  ParentColor := True;
-  ParentFont := True;
-  ControlStyle := ControlStyle + [csAcceptsControls, csDesignInteractive];
-
-  // FTabs should hold only visible tabs
-  FTabs := TStringList.Create;
-end;
-
-destructor TCDCustomTabControl.Destroy;
-begin
-  FTabs.Free;
-
-  inherited Destroy;
-end;
-
-function TCDCustomTabControl.GetTabCount: Integer;
-begin
-  Result := 0;
-  if FTabs <> nil then Result := FTabs.Count;
-end;
-
-procedure TCDCustomTabControl.CorrectTabIndex;
-begin
-  if FTabIndex >= FTabs.Count then SetTabIndex(FTabs.Count - 1);
-end;
-
-{ TCDControl }
-
-procedure TCDControl.CalculatePreferredSize(var PreferredWidth,
-  PreferredHeight: integer; WithThemeSpace: Boolean);
-begin
-  PrepareControlState;
-  PrepareControlStateEx;
-  FDrawer.CalculatePreferredSize(Canvas, GetControlId(), FState, FStateEx,
-    PreferredWidth, PreferredHeight, WithThemeSpace);
-end;
-
-procedure TCDControl.PrepareCurrentDrawer;
-begin
-  FDrawer := GetDrawer(FDrawStyle);
-  if FDrawer = nil then FDrawer := GetDrawer(dsCommon); // avoid exceptions in the object inspector if an invalid drawer is selected
-  if FDrawer = nil then raise Exception.Create('No registered drawers were found');
-end;
-
-procedure TCDControl.SetDrawStyle(const AValue: TCDDrawStyle);
-begin
-  if FDrawStyle = AValue then exit;
-  FDrawStyle := AValue;
-  Invalidate;
-  PrepareCurrentDrawer();
-
-  //FCurrentDrawer.SetClientRectPos(Self);
-end;
-
-function TCDControl.GetClientRect: TRect;
-begin
-  // Disable this, since although it works in Win32, it doesn't seam to work in LCL-Carbon
-  //if (FCurrentDrawer = nil) then
-    Result := inherited GetClientRect()
-  //else
-    //Result := FCurrentDrawer.GetClientRect(Self);
-end;
-
-function TCDControl.GetControlId: TCDControlID;
-begin
-  Result := cidControl;
-end;
-
-procedure TCDControl.CreateControlStateEx;
-begin
-  FStateEx := TCDControlStateEx.Create;
-end;
-
-procedure TCDControl.PrepareControlState;
-begin
-  if Focused then FState := FState + [csfHasFocus]
-  else FState := FState - [csfHasFocus];
-
-  if Enabled then FState := FState + [csfEnabled]
-  else FState := FState - [csfEnabled];
-end;
-
-procedure TCDControl.PrepareControlStateEx;
-begin
-  if Parent <> nil then FStateEx.ParentRGBColor := Parent.GetRGBColorResolvingParent
-  else FStateEx.ParentRGBColor := clSilver;
-
-  if Color = clDefault then FStateEx.RGBColor := FDrawer.GetControlDefaultColor(GetControlId())
-  else FStateEx.RGBColor := GetRGBColorResolvingParent;
-
-  FStateEx.Caption := Caption;
-  FStateEx.Font := Font;
-  FStateEx.AutoSize := AutoSize;
-end;
-
-procedure TCDControl.EraseBackground(DC: HDC);
-begin
-
-end;
-
-procedure TCDControl.Paint;
-var
-  ABmp: TBitmap;
-  lSize: TSize;
-  lControlId: TCDControlID;
-begin
-  inherited Paint;
-
-  PrepareCurrentDrawer();
-
-  ABmp := TBitmap.Create;
-  try
-    ABmp.Width := Width;
-    ABmp.Height := Height;
-    lSize := Size(Width, Height);
-    lControlId := GetControlId();
-    PrepareControlState;
-    PrepareControlStateEx;
-    FDrawer.DrawControl(ABmp.Canvas, Point(0, 0),
-      lSize, lControlId, FState, FStateEx);
-    Canvas.Draw(0, 0, ABmp);
-  finally
-    ABmp.Free;
-  end;
-end;
-
-procedure TCDControl.MouseEnter;
-begin
-  FState := FState + [csfMouseOver];
-  inherited MouseEnter;
-end;
-
-procedure TCDControl.MouseLeave;
-begin
-  FState := FState - [csfMouseOver];
-  inherited MouseLeave;
-end;
-
-procedure TCDControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
-  Y: integer);
-begin
-  inherited MouseDown(Button, Shift, X, Y);
-  SetFocus();
-end;
-
-constructor TCDControl.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  CreateControlStateEx;
-end;
-
-destructor TCDControl.Destroy;
-begin
-  FStateEx.Free;
-  inherited Destroy;
-end;
-
-{ TCDButtonDrawer }
-
-procedure TCDButtonControl.DoEnter;
-begin
-  Invalidate;
-
-  inherited DoEnter;
-end;
-
-procedure TCDButtonControl.DoExit;
-begin
-  Invalidate;
-
-  inherited DoExit;
-end;
-
-procedure TCDButtonControl.KeyDown(var Key: word; Shift: TShiftState);
-begin
-  inherited KeyDown(Key, Shift);
-
-  if (Key = VK_SPACE) or (Key = VK_RETURN) then
-    DoButtonDown();
-end;
-
-procedure TCDButtonControl.KeyUp(var Key: word; Shift: TShiftState);
-begin
-  if (Key = VK_SPACE) or (Key = VK_RETURN) then
-  begin
-    DoButtonUp();
-    Self.Click; // TCustomControl does not respond to LM_CLICKED
-  end;
-
-  inherited KeyUp(Key, Shift);
-end;
-
-procedure TCDButtonControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
-begin
-  DoButtonDown();
-
-  inherited MouseDown(Button, Shift, X, Y);
-end;
-
-procedure TCDButtonControl.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
-begin
-  DoButtonUp();
-
-  inherited MouseUp(Button, Shift, X, Y);
-end;
-
-procedure TCDButtonControl.MouseEnter;
-begin
-  Invalidate;
-  inherited MouseEnter;
-end;
-
-procedure TCDButtonControl.MouseLeave;
-begin
-  Invalidate;
-  inherited MouseLeave;
-end;
-
-procedure TCDButtonControl.DoButtonDown();
-begin
-  if not (csfSunken in FState) then
-  begin
-    FState := FState + [csfSunken];
-    Invalidate;
-  end;
-end;
-
-procedure TCDButtonControl.DoButtonUp();
-begin
-  if csfSunken in FState then
-  begin
-    FState := FState - [csfSunken];
-    Invalidate;
-  end;
-  // Only for buttons with checked/down states
-  if FHasOnOffStates then
-  begin
-    if FHasPartiallyOnState then
-    begin
-      if csfOn in FState then
-        FState := FState + [csfOff] - [csfOn, csfPartiallyOn]
-      else if csfPartiallyOn in FState then
-        FState := FState + [csfOn] - [csfOff, csfPartiallyOn]
-      else
-        FState := FState + [csfPartiallyOn] - [csfOn, csfOff];
-    end
-    else
-    begin
-      if csfOn in FState then
-        FState := FState + [csfOff] - [csfOn]
-      else
-        FState := FState + [csfOn] - [csfOff];
-    end;
-  end;
-end;
-
-procedure TCDButtonControl.RealSetText(const Value: TCaption);
-begin
-  inherited RealSetText(Value);
-  Invalidate;
-end;
+{ TCDButton }
 
 function TCDButton.GetControlId: TCDControlID;
 begin
@@ -1167,6 +1061,39 @@ begin
 end;
 
 destructor TCDButton.Destroy;
+begin
+  inherited Destroy;
+end;
+
+{ TCDRadioButton }
+
+procedure TCDRadioButton.SetChecked(AValue: Boolean);
+begin
+  if (AValue and (csfOn in FState)) or
+   ((not AValue) and (csfOff in FState)) then Exit;
+
+  if AValue then FState := FState + [csfOn] - [csfOff]
+  else FState := FState + [csfOff] - [csfOn];
+
+  Invalidate;
+end;
+
+function TCDRadioButton.GetChecked: Boolean;
+begin
+  Result := csfOn in FState;
+end;
+
+function TCDRadioButton.GetControlId: TCDControlID;
+begin
+  Result := cidRadioButton;
+end;
+
+constructor TCDRadioButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
+destructor TCDRadioButton.Destroy;
 begin
   inherited Destroy;
 end;
@@ -1276,19 +1203,23 @@ end;
 
 procedure TCDTrackBar.KeyDown(var Key: word; Shift: TShiftState);
 var
-  NewPosition: Integer;
+  NewPosition: Integer = -1;
 begin
   inherited KeyDown(Key, Shift);
-  if (Key = 37) or (Key = 40) then
+
+  if (Key = VK_LEFT) or (Key = VK_DOWN) then
     NewPosition := FPosition - (FMax - FMin) div 10;
-  if (Key = 38) or (Key = 39) then
+  if (Key = VK_UP) or (Key = VK_RIGHT) then
     NewPosition := FPosition + (FMax - FMin) div 10;
 
   // sanity check
-  if NewPosition > FMax then NewPosition := FMax;
-  if NewPosition < FMin then NewPosition := FMin;
+  if NewPosition >= 0 then
+  begin
+    if NewPosition > FMax then NewPosition := FMax;
+    if NewPosition < FMin then NewPosition := FMin;
 
-  Position := NewPosition;
+    Position := NewPosition;
+  end;
 end;
 
 procedure TCDTrackBar.KeyUp(var Key: word; Shift: TShiftState);
@@ -1455,6 +1386,132 @@ begin
     CDTabControl.FDrawer.DrawTabSheet(Canvas, Point(0, 0), lSize, CDTabControl.FState,
       CDTabControl.FTabCState);
   end;
+end;
+
+{ TCDCustomTabControl }
+
+procedure TCDCustomTabControl.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: integer);
+var
+  i: Integer;
+  CurPage: TCDTabSheet;
+  CurStartLeftPos: Integer = 0;
+  VisiblePagesStarted: Boolean = False;
+  lTabWidth: Integer;
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+
+  for i := 0 to Tabs.Count - 1 do
+  begin
+    if i = FTabCState.LeftmostTabVisibleIndex then
+      VisiblePagesStarted := True;
+
+    if VisiblePagesStarted then
+    begin
+      FTabCState.TabIndex := i;
+      lTabWidth := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_WIDTH, FState, FTabCState);
+      if (X > CurStartLeftPos) and
+        (X < CurStartLeftPos + lTabWidth) and
+        (Y < FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_HEIGHT, FState, FTabCState)) then
+      begin
+        if Self is TCDPageControl then
+          (Self as TCDPageControl).PageIndex := i
+        else
+          TabIndex := i;
+
+        Exit;
+      end;
+      CurStartLeftPos := CurStartLeftPos + lTabWidth;
+    end;
+  end;
+end;
+
+procedure TCDCustomTabControl.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: integer);
+begin
+
+  inherited MouseUp(Button, Shift, X, Y);
+end;
+
+procedure TCDCustomTabControl.SetTabIndex(AValue: Integer);
+begin
+  if FTabIndex = AValue then Exit;
+  if Assigned(OnChanging) then OnChanging(Self);
+  FTabIndex := AValue;
+  if Assigned(OnChange) then OnChange(Self);
+  Invalidate;
+end;
+
+procedure TCDCustomTabControl.SetTabs(AValue: TStringList);
+begin
+  if FTabs=AValue then Exit;
+  FTabs.Assign(AValue);
+  CorrectTabIndex();
+  Invalidate;
+end;
+
+procedure TCDCustomTabControl.SetOptions(AValue: TNoteBookOptions);
+begin
+  if FOptions=AValue then Exit;
+  FOptions:=AValue;
+  Invalidate;
+end;
+
+function TCDCustomTabControl.GetControlId: TCDControlID;
+begin
+  Result := cidCTabControl;
+end;
+
+procedure TCDCustomTabControl.CreateControlStateEx;
+begin
+  FTabCState := TCDCTabControlStateEx.Create;
+  FStateEx := FTabCState;
+end;
+
+procedure TCDCustomTabControl.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+
+  FTabCState.Tabs := Tabs;
+  FTabCState.TabIndex := TabIndex;
+  FTabCState.TabCount := GetTabCount();
+  FTabCState.Options := FOptions;
+end;
+
+constructor TCDCustomTabControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  Width := 232;
+  Height := 184;
+  TabStop := True;
+
+  PrepareCurrentDrawer();
+
+  ParentColor := True;
+  ParentFont := True;
+  ControlStyle := ControlStyle + [csAcceptsControls, csDesignInteractive];
+
+  // FTabs should hold only visible tabs
+  FTabs := TStringList.Create;
+end;
+
+destructor TCDCustomTabControl.Destroy;
+begin
+  FTabs.Free;
+
+  inherited Destroy;
+end;
+
+function TCDCustomTabControl.GetTabCount: Integer;
+begin
+  Result := 0;
+  if FTabs <> nil then Result := FTabs.Count;
+end;
+
+procedure TCDCustomTabControl.CorrectTabIndex;
+begin
+  if FTabIndex >= FTabs.Count then SetTabIndex(FTabs.Count - 1);
 end;
 
 { TCDPageControl }

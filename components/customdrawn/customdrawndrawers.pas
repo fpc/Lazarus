@@ -21,6 +21,8 @@ const
   TCDCHECKBOX_SQUARE_HALF_HEIGHT = $500;
   TCDCHECKBOX_SQUARE_HEIGHT = $501;
 
+  TCDRADIOBUTTON_CIRCLE_HEIGHT = $601;
+
   TCDTRACKBAR_LEFT_SPACING    = $1000;
   TCDTRACKBAR_RIGHT_SPACING   = $1001;
 
@@ -67,7 +69,7 @@ type
     csfHasFocus,
     csfReadOnly,
     csfMouseOver,
-    // for TCDCheckBox
+    // for TCDCheckBox, TCDRadioButton
     csfOn,
     csfOff,
     csfPartiallyOn
@@ -136,11 +138,22 @@ type
 
   TCDControlID = (
     cidControl,
+    // Standard
+    cidMenu,
+    cidPopUp,
     cidButton,
     cidEdit,
     cidCheckBox,
+    cidRadioButton,
+    cidListBox,
+    cidComboBox,
     cidGroupBox,
+    // Additional
+    cidStaticText,
+    // Common Controls
     cidTrackBar,
+    cidProgressBar,
+    cidListView,
     cidCTabControl
     );
 
@@ -191,7 +204,7 @@ type
     function GetClientArea(ADest: TCanvas; ASize: TSize; AControlId: TCDControlID;
       AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; virtual; abstract;
     procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
+      AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx);
     // General drawing routines
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
@@ -211,6 +224,11 @@ type
     procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     procedure DrawCheckBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
+    // TCDRadioButton
+    procedure DrawRadioButtonCircle(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
+    procedure DrawRadioButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDGroupBox
     procedure DrawGroupBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -373,6 +391,21 @@ begin
   cidCTabControl: Result := Palette.Form;
   else
     Result := Palette.Form;
+  end;
+end;
+
+procedure TCDDrawer.DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+  AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx
+    );
+begin
+  case AControl of
+  cidButton:     DrawButton(ADest, ADestPos, ASize, AState, AStateEx);
+  cidEdit:       DrawEdit(ADest, ADestPos, ASize, AState, TCDEditStateEx(AStateEx));
+  cidCheckBox:   DrawCheckBox(ADest, ADestPos, ASize, AState, AStateEx);
+  cidRadioButton:DrawRadioButton(ADest, ADestPos, ASize, AState, AStateEx);
+  cidGroupBox:   DrawGroupBox(ADest, ADestPos, ASize, AState, AStateEx);
+  cidTrackBar:   DrawTrackBar(ADest, ADestPos, ASize, AState, TCDTrackBarStateEx(AStateEx));
+  cidCTabControl:DrawCTabControl(ADest, ADestPos, ASize, AState, TCDCTabControlStateEx(AStateEx));
   end;
 end;
 

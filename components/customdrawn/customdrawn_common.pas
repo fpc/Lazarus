@@ -33,8 +33,6 @@ type
     function GetColor(AColorID: Integer): TColor; override;
     function GetClientArea(ADest: TCanvas; ASize: TSize; AControlId: TCDControlID;
       AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; override;
-    procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // General drawing routines
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
@@ -57,6 +55,11 @@ type
     procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     procedure DrawCheckBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+    // TCDRadioButton
+    procedure DrawRadioButtonCircle(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+    procedure DrawRadioButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDGroupBox
     procedure DrawGroupBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -111,6 +114,8 @@ begin
   //
   TCDCHECKBOX_SQUARE_HALF_HEIGHT: Result := 7;
   TCDCHECKBOX_SQUARE_HEIGHT: Result := 15;
+  //
+  TCDRADIOBUTTON_CIRCLE_HEIGHT: Result := 15;
   else
     Result := 0;
   end;
@@ -188,20 +193,6 @@ begin
     Result.Right := Result.Right - 2;
     Result.Bottom := Result.Bottom - 2;
   end;
-  end;
-end;
-
-procedure TCDDrawerCommon.DrawControl(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize; AControl: TCDControlID; AState: TCDControlState;
-  AStateEx: TCDControlStateEx);
-begin
-  case AControl of
-  cidButton:     DrawButton(ADest, ADestPos, ASize, AState, AStateEx);
-  cidEdit:       DrawEdit(ADest, ADestPos, ASize, AState, TCDEditStateEx(AStateEx));
-  cidCheckBox:   DrawCheckBox(ADest, ADestPos, ASize, AState, AStateEx);
-  cidGroupBox:   DrawGroupBox(ADest, ADestPos, ASize, AState, AStateEx);
-  cidTrackBar:   DrawTrackBar(ADest, ADestPos, ASize, AState, TCDTrackBarStateEx(AStateEx));
-  cidCTabControl:DrawCTabControl(ADest, ADestPos, ASize, AState, TCDCTabControlStateEx(AStateEx));
   end;
 end;
 
@@ -536,6 +527,60 @@ begin
   // Now the text
   ADest.Font.Assign(AStateEx.Font);
   ADest.TextOut(lSquareHeight+5, 0, AStateEx.Caption);
+end;
+
+procedure TCDDrawerCommon.DrawRadioButtonCircle(ADest: TCanvas;
+  ADestPos: TPoint; ASize: TSize; AState: TCDControlState;
+  AStateEx: TCDControlStateEx);
+var
+  lHalf, lCircleThird, lCircleHeight: Integer;
+  lColor: TColor;
+begin
+  lHalf := ASize.cy div 2;
+  lCircleHeight := GetMeasures(TCDRADIOBUTTON_CIRCLE_HEIGHT);
+  lCircleThird := lCircleHeight div 3;
+
+  // the circle background
+  ADest.Pen.Style := psClear;
+  ADest.Brush.Style := bsSolid;
+  ADest.Brush.Color := Palette.Window; // or WIN2000_FRAME_WHITE ?
+  ADest.Rectangle(Bounds(ADestPos.X, ADestPos.Y+lCircleThird, lCircleThird, lCircleHeight));
+  ADest.Rectangle(Bounds(ADestPos.X+lCircleThird, ADestPos.Y, lCircleHeight, lCircleThird));
+
+  // The circle itself
+  ADest.Pen.Style := psSolid;
+  ADest.Pixels[ADestPos.X, ADestPos.Y+4] := WIN2000_FRAME_GRAY;
+{  WIN2000_FRAME_LIGHT_GRAY = $00E2EFF1;
+   = $0099A8AC;
+  WIN2000_FRAME_DARK_GRAY = $00646F71;}
+end;
+
+procedure TCDDrawerCommon.DrawRadioButton(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+var
+  lColor: TColor;
+  lCircleHeight: Integer;
+begin
+  lCircleHeight := GetMeasures(TCDRADIOBUTTON_CIRCLE_HEIGHT);
+
+  // Background
+  lColor := AStateEx.ParentRGBColor;
+  ADest.Brush.Color := lColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psClear;
+  ADest.FillRect(0, 0, ASize.cx, ASize.cy);
+
+  // The radiobutton circle itself
+  DrawRadioButtonCircle(ADest, ADestPos, ASize, AState, AStateEx);
+
+  // The text selection
+  if csfHasFocus in AState then
+    DrawFocusRect(ADest, Point(lCircleHeight+4, 0),
+      Size(ASize.cx-lCircleHeight-4, ASize.cy));
+
+  // Now the text
+  ADest.Font.Assign(AStateEx.Font);
+  ADest.TextOut(lCircleHeight+5, 0, AStateEx.Caption);
 end;
 
 procedure TCDDrawerCommon.DrawGroupBox(ADest: TCanvas; ADestPos: TPoint;
