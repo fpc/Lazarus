@@ -459,7 +459,13 @@ begin
   lSquareHalf := GetMeasures(TCDCHECKBOX_SQUARE_HALF_HEIGHT);
   lSquareHeight := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
 
-  // the square itself
+  // the square background
+  ADest.Pen.Style := psClear;
+  ADest.Brush.Style := bsSolid;
+  ADest.Brush.Color := Palette.Window;
+  ADest.Rectangle(Bounds(1, lHalf - lSquareHalf, lSquareHeight, lSquareHeight));
+
+  // the square frame
   DrawSunkenFrame(ADest, Point(1, lHalf - lSquareHalf),
     Size(lSquareHeight, lSquareHeight));
 
