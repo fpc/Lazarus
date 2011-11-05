@@ -406,13 +406,20 @@ type
 
   TDebuggerDataMonitor = class
   private
+    FOnModified: TNotifyEvent;
+    FIgnoreModified: Integer;
     FSupplier: TDebuggerDataSupplier;
     procedure SetSupplier(const AValue: TDebuggerDataSupplier);
   protected
+    procedure DoModified;                                                       // user-modified / xml-storable data modified
+    procedure BeginIgnoreModified;
+    procedure EndIgnoreModified;
     procedure DoNewSupplier; virtual;
     property  Supplier: TDebuggerDataSupplier read FSupplier write SetSupplier;
   public
+    constructor Create;
     destructor Destroy; override;
+    property OnModified: TNotifyEvent read FOnModified write FOnModified;       // user-modified / xml-storable data modified
   end;
 
   { TDebuggerDataSupplier }
@@ -1155,6 +1162,7 @@ type
   protected
     procedure AssignTo(Dest: TPersistent); override;
     function CreateValueList: TWatchValueList; virtual;
+    procedure DoModified; virtual;  // user-storable data: expression, enabled, display-format
     procedure DoEnableChange; virtual;
     procedure DoExpressionChange; virtual;
     procedure DoDisplayFormatChanged; virtual;
@@ -1244,6 +1252,7 @@ type
   protected
     function CreateValueList: TWatchValueList; override;
     procedure DoChanged; override;
+    procedure DoModified; override;
     procedure RequestData(AWatchValue: TCurrentWatchValue);
     property SnapShot: TWatch read FSnapShot write SetSnapShot;
   public
@@ -1262,6 +1271,7 @@ type
   private
     FMonitor: TWatchesMonitor;
     FSnapShot: TWatches;
+    FDestroying: Boolean;
     procedure SetSnapShot(const AValue: TWatches);
     procedure WatchesChanged(Sender: TObject);
   protected
@@ -1270,11 +1280,13 @@ type
   protected
     procedure NotifyAdd(const AWatch: TCurrentWatch); virtual;    // called when a watch is added
     procedure NotifyRemove(const AWatch: TCurrentWatch); virtual; // called by watch when destructed
+    procedure DoModified;
     procedure Update(Item: TCollectionItem); override;
     procedure RequestData(AWatchValue: TCurrentWatchValue);
     property SnapShot: TWatches read FSnapShot write SetSnapShot;
   public
     constructor Create(AMonitor: TWatchesMonitor);
+    destructor Destroy; override;
     // Watch
     function Add(const AExpression: String): TCurrentWatch;
     function Find(const AExpression: String): TCurrentWatch;
@@ -5318,9 +5330,31 @@ begin
   DoNewSupplier;
 end;
 
+procedure TDebuggerDataMonitor.DoModified;
+begin
+  if (FIgnoreModified = 0) and Assigned(FOnModified) then
+    FOnModified(Self);
+end;
+
+procedure TDebuggerDataMonitor.BeginIgnoreModified;
+begin
+  inc(FIgnoreModified);
+end;
+
+procedure TDebuggerDataMonitor.EndIgnoreModified;
+begin
+  dec(FIgnoreModified);
+end;
+
 procedure TDebuggerDataMonitor.DoNewSupplier;
 begin
   //
+end;
+
+constructor TDebuggerDataMonitor.Create;
+begin
+  FIgnoreModified := 0;
+  FOnModified := nil;
 end;
 
 destructor TDebuggerDataMonitor.Destroy;
@@ -7975,6 +8009,11 @@ begin
   Result := TWatchValueList.Create(Self);
 end;
 
+procedure TWatch.DoModified;
+begin
+  //
+end;
+
 constructor TWatch.Create(ACollection: TCollection);
 begin
   assert(((Self is TCurrentWatch) and (ACollection is TCurrentWatches)) or ((not(Self is TCurrentWatch)) and not(ACollection is TCurrentWatches)),
@@ -8001,16 +8040,19 @@ end;
 procedure TWatch.DoEnableChange;
 begin
   Changed;
+  DoModified;
 end;
 
 procedure TWatch.DoExpressionChange;
 begin
   Changed;
+  DoModified;
 end;
 
 procedure TWatch.DoDisplayFormatChanged;
 begin
   Changed;
+  DoModified;
 end;
 
 function TWatch.GetEnabled: Boolean;
@@ -8117,6 +8159,12 @@ begin
   then TCurrentWatches(Collection).Update(Self);
 end;
 
+procedure TCurrentWatch.DoModified;
+begin
+  inherited DoModified;
+  TCurrentWatches(Collection).DoModified;
+end;
+
 procedure TCurrentWatch.RequestData(AWatchValue: TCurrentWatchValue);
 begin
   if Collection <> nil
@@ -8132,7 +8180,10 @@ end;
 destructor TCurrentWatch.Destroy;
 begin
   if (TCurrentWatches(Collection) <> nil)
-  then TCurrentWatches(Collection).NotifyRemove(Self);
+  then begin
+    TCurrentWatches(Collection).NotifyRemove(Self);
+    TCurrentWatches(Collection).DoModified;
+  end;
   inherited Destroy;
 end;
 
@@ -8249,12 +8300,20 @@ begin
     Result.SnapShot := R;
   end;
   NotifyAdd(Result);
+  DoModified;
 end;
 
 constructor TCurrentWatches.Create(AMonitor: TWatchesMonitor);
 begin
+  FDestroying := False;
   FMonitor := AMonitor;
   inherited Create(TCurrentWatch);
+end;
+
+destructor TCurrentWatches.Destroy;
+begin
+  FDestroying := True;
+  inherited Destroy;
 end;
 
 function TCurrentWatches.Find(const AExpression: String): TCurrentWatch;
@@ -8302,14 +8361,21 @@ var
   i: Integer;
   Watch: TCurrentWatch;
 begin
-  Clear;
-  NewCount := AConfig.GetValue(APath + 'Count', 0);
-  for i := 0 to NewCount-1 do
-  begin
-    // Call inherited Add, so NotifyAdd can be send, after the Watch was loaded
-    Watch := TCurrentWatch(inherited Add(''));
-    Watch.LoadFromXMLConfig(AConfig, Format('%sItem%d/', [APath, i + 1]));
-    NotifyAdd(Watch);
+  if FMonitor <> nil then
+    FMonitor.BeginIgnoreModified;
+  try
+    Clear;
+    NewCount := AConfig.GetValue(APath + 'Count', 0);
+    for i := 0 to NewCount-1 do
+    begin
+      // Call inherited Add, so NotifyAdd can be send, after the Watch was loaded
+      Watch := TCurrentWatch(inherited Add(''));
+      Watch.LoadFromXMLConfig(AConfig, Format('%sItem%d/', [APath, i + 1]));
+      NotifyAdd(Watch);
+    end;
+  finally
+    if FMonitor <> nil then
+      FMonitor.EndIgnoreModified;
   end;
 end;
 
@@ -8321,6 +8387,12 @@ end;
 procedure TCurrentWatches.NotifyRemove(const AWatch: TCurrentWatch);
 begin
   FMonitor.NotifyRemove(Self, AWatch);
+end;
+
+procedure TCurrentWatches.DoModified;
+begin
+  if (FMonitor <> nil) and (not FDestroying) then
+    FMonitor.DoModified;
 end;
 
 procedure TCurrentWatches.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);

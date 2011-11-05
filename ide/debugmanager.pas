@@ -66,6 +66,7 @@ type
 
   TDebugManager = class(TBaseDebugManager)
     procedure DebuggerIdle(Sender: TObject);
+    procedure DoProjectModified(Sender: TObject);
   private
     procedure BreakAutoContinueTimer(Sender: TObject);
     procedure OnRunTimer(Sender: TObject);
@@ -703,6 +704,12 @@ end;
 procedure TDebugManager.DebuggerIdle(Sender: TObject);
 begin
   FSnapshots.DoDebuggerIdle;
+end;
+
+procedure TDebugManager.DoProjectModified(Sender: TObject);
+begin
+  if Project1 <> nil then
+    Project1.Modified := True;
 end;
 
 procedure TDebugManager.mnuAddBpAddress(Sender: TObject);
@@ -1574,6 +1581,8 @@ begin
   FRunTimer := TTimer.Create(Self);
   FRunTimer.Interval := 1;
   FRunTimer.OnTimer := @OnRunTimer;
+
+  FWatches.OnModified  := @DoProjectModified;
 
   FIsInitializingDebugger:= False;
 
