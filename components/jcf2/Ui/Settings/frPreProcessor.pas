@@ -44,6 +44,7 @@ type
     lblSymbols: TLabel;
     mOptions: TMemo;
     lblCompilerOptions: TLabel;
+    procedure cbEnableChange(Sender: TObject);
     procedure FrameResize(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
@@ -77,8 +78,8 @@ procedure TfPreProcessor.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   cbEnable.Caption := lisPrpEnablePreprocessorParsing;
   lblSymbols.Caption := lisPrpSymbolsDefinedForConditionalCompilation;
-  lblCompilerOptions.Caption :=
-    lisPrpCompilerOptionsDefinedForConditionalCompilation;
+  lblCompilerOptions.Caption := lisPrpCompilerOptionsDefinedForConditionalCompilation;
+  cbEnableChange(cbEnable);
 end;
 
 procedure TfPreProcessor.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -109,6 +110,15 @@ end;
 procedure TfPreProcessor.FrameResize(Sender: TObject);
 begin
   mSymbols.Height := (mSymbols.Height+mOptions.Height) div 2;
+end;
+
+procedure TfPreProcessor.cbEnableChange(Sender: TObject);
+var
+  b: Boolean;
+begin
+  b := (Sender as TCheckBox).Checked;
+  mSymbols.Enabled := b;
+  mOptions.Enabled := b;
 end;
 
 initialization

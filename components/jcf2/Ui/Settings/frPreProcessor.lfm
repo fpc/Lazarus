@@ -57,6 +57,7 @@ inherited fPreProcessor: TfPreProcessor
     BorderSpacing.Around = 6
     Caption = 'Enable preprocessor parsing'
     Checked = True
+    OnChange = cbEnableChange
     State = cbChecked
     TabOrder = 0
   end
