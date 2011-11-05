@@ -2050,6 +2050,7 @@ begin
   Result := TColorRef(Windows.GetTextColor(DC));
 end;
 
+// MaxCount is provided in the number of UTF-8 characters, not bytes
 function TWin32WidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
   Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize): Boolean;
 var

@@ -1093,7 +1093,10 @@ begin
 end;
 
 { Returns in MaxCount how many characters fit into a given MaxWidth
-  It also returns the width of each character }
+  It also returns the width of each character
+
+  MaxCount is given in the number of UTF-8 characters, not bytes
+}
 function TWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
   Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger;
   var Size: TSize): Boolean;
