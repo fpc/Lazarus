@@ -42,6 +42,7 @@ inherited DebuggerEventLogOptionsFrame: TDebuggerEventLogOptionsFrame
       Width = 98
       BorderSpacing.Around = 6
       Caption = 'Limit linecount to'
+      OnChange = chkLimitLinecountChange
       TabOrder = 1
     end
     object seLimitLinecount: TSpinEdit

@@ -46,6 +46,7 @@ type
     gbMessages: TGroupBox;
     gbColors: TGroupBox;
     seLimitLinecount: TSpinEdit;
+    procedure chkLimitLinecountChange(Sender: TObject);
     procedure chkUseEventLogColorsChange(Sender: TObject);
     procedure ColorTreeAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
@@ -152,6 +153,11 @@ begin
   BackGroundColorBox.Enabled := chkUseEventLogColors.Checked;
 end;
 
+procedure TDebuggerEventLogOptionsFrame.chkLimitLinecountChange(Sender: TObject);
+begin
+  seLimitLinecount.Enabled := (Sender as TCheckBox).Checked;
+end;
+
 class function TDebuggerEventLogOptionsFrame.GetCategoryStr(ACategory: TDBGEventCategory): String;
 begin
   case ACategory of
@@ -223,6 +229,9 @@ begin
 
   for i := Low(DebuggerDefaultColors) to High(DebuggerDefaultColors) do
     ColorTree.Items.Add(nil, DBGEventNames[i]);
+
+  chkLimitLinecountChange(chkLimitLinecount);
+  chkUseEventLogColorsChange(chkUseEventLogColors);
 end;
 
 procedure TDebuggerEventLogOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -251,7 +260,6 @@ begin
     for EventType := Low(TDBGEventType) to High(TDBGEventType) do
       FColors[EventType] := DebuggerEventLogColors[EventType];
   end;
-  //chkUseEventLogColorsChange(chkUseEventLogColors);
 end;
 
 procedure TDebuggerEventLogOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
