@@ -67,8 +67,9 @@ end;
 
 initialization
 
-  PseudeoTerminalDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwPseudoTerminal]);
+  PseudeoTerminalDlgWindowCreator := IDEWindowCreators.Add(DebugDialogNames[ddtPseudoTerminal]);
   PseudeoTerminalDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
+  PseudeoTerminalDlgWindowCreator.CreateSimpleLayout;
 
 end.
 

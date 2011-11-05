@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, ExtCtrls, ComCtrls, ActnList,
-  IDEWindowIntf, IDEOptionDefs,
+  BaseDebugManager, IDEWindowIntf, IDEOptionDefs,
   StdActns, ClipBrd, Menus, Dialogs, FileUtil, Debugger, DebuggerDlg,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory, IDEOptionsIntf,
   IDEImagesIntf, LazIDEIntf, debugger_eventlog_options;
@@ -313,8 +313,9 @@ end;
 
 initialization
 
-  EventsDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwDbgEvents]);
+  EventsDlgWindowCreator := IDEWindowCreators.Add(DebugDialogNames[ddtEvents]);
   EventsDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
+  EventsDlgWindowCreator.CreateSimpleLayout;
 
 end.
 

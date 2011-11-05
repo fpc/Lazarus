@@ -809,7 +809,7 @@ end;
 
 initialization
 
-  CallStackDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCallStack]);
+  CallStackDlgWindowCreator := IDEWindowCreators.Add(DebugDialogNames[ddtCallStack]);
   CallStackDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   CallStackDlgWindowCreator.OnSetDividerSize := @CallStackDlgColSizeSetter;
   CallStackDlgWindowCreator.OnGetDividerSize := @CallStackDlgColSizeGetter;
@@ -818,6 +818,7 @@ initialization
   CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackSource',   COL_STACK_SOURCE,   drsColWidthSource);
   CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackLine',     COL_STACK_LINE,     drsColWidthLine);
   CallStackDlgWindowCreator.DividerTemplate.Add('ColumnCStackFunc',     COL_STACK_FUNC,     drsColWidthFunc);
+  CallStackDlgWindowCreator.CreateSimpleLayout;
 
 end.
 

@@ -339,6 +339,7 @@ type
     procedure SetLeft(const AValue: string);
     procedure SetTop(const AValue: string);
     procedure SetRight(const AValue: string);
+    procedure InitSimpleLayout(ALayout: TSimpleWindowLayout);
   public
     constructor Create(aFormName: string); overload;
     constructor Create(aFormName: string;
@@ -369,7 +370,7 @@ type
     procedure CheckBoundValue(s: string);
     procedure GetDefaultBounds(AForm: TCustomForm; out DefBounds: TRect);
 
-    procedure InitSimpleLayout(ALayout: TSimpleWindowLayout);
+    function CreateSimpleLayout: TSimpleWindowLayout;
     // TODO: Need a WindowCreator factory, by class of TForm
     // then this data can be stored per window class
     property  DividerTemplate: TSimpleWindowLayoutDividerPosList read GetDividerTemplate;
@@ -1770,6 +1771,17 @@ begin
       inc(aBottom,ScreenR.Top); // relative to top of screen
   end;
   DefBounds.Bottom:=aBottom;
+end;
+
+function TIDEWindowCreator.CreateSimpleLayout: TSimpleWindowLayout;
+var
+  simple: TSimpleWindowLayout;
+begin
+  if not Assigned(IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(FormName))
+  then begin
+    simple := IDEWindowCreators.SimpleLayoutStorage.CreateWindowLayout(FormName);
+    InitSimpleLayout(simple);
+  end;
 end;
 
 procedure TIDEWindowCreator.InitSimpleLayout(ALayout: TSimpleWindowLayout);

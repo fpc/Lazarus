@@ -552,7 +552,7 @@ end;
 
 initialization
 
-  InspectDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwInspect]);
+  InspectDlgWindowCreator := IDEWindowCreators.Add(DebugDialogNames[ddtInspect]);
   InspectDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   InspectDlgWindowCreator.OnSetDividerSize := @InspectDlgColSizeSetter;
   InspectDlgWindowCreator.OnGetDividerSize := @InspectDlgColSizeGetter;
@@ -564,6 +564,7 @@ initialization
   InspectDlgWindowCreator.DividerTemplate.Add('InspectMethType',    COL_INSPECT_MTYPE,    drsInspectColWidthMethType);
   InspectDlgWindowCreator.DividerTemplate.Add('InspectMethReturns', COL_INSPECT_MRETURNS, drsInspectColWidthMethReturns);
   InspectDlgWindowCreator.DividerTemplate.Add('InspectMethAddress', COL_INSPECT_MADDRESS, drsInspectColWidthMethAddress);
+  InspectDlgWindowCreator.CreateSimpleLayout;
 
 end.
 

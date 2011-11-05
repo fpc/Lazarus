@@ -764,12 +764,13 @@ end;
 
 initialization
 
-  WatchWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwWatches]);
+  WatchWindowCreator := IDEWindowCreators.Add(DebugDialogNames[ddtWatches]);
   WatchWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   WatchWindowCreator.OnSetDividerSize := @WatchesDlgColSizeSetter;
   WatchWindowCreator.OnGetDividerSize := @WatchesDlgColSizeGetter;
   WatchWindowCreator.DividerTemplate.Add('ColumnWatchExpr',  COL_WATCH_EXPR,  drsColWidthExpression);
   WatchWindowCreator.DividerTemplate.Add('ColumnWatchValue', COL_WATCH_VALUE, drsColWidthValue);
+  WatchWindowCreator.CreateSimpleLayout;
 
 end.
 

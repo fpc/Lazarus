@@ -254,8 +254,9 @@ end;
 
 initialization
 
-  EvaluateDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwEvaluate]);
+  EvaluateDlgWindowCreator := IDEWindowCreators.Add(DebugDialogNames[ddtEvaluate]);
   EvaluateDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
+  EvaluateDlgWindowCreator.CreateSimpleLayout;
 
 end.
 

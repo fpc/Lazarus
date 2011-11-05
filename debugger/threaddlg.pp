@@ -258,7 +258,7 @@ end;
 
 initialization
 
-  ThreadDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwThreads]);
+  ThreadDlgWindowCreator := IDEWindowCreators.Add(DebugDialogNames[ddtThreads]);
   ThreadDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   ThreadDlgWindowCreator.OnSetDividerSize := @ThreadsDlgColSizeSetter;
   ThreadDlgWindowCreator.OnGetDividerSize := @ThreadsDlgColSizeGetter;
@@ -269,6 +269,7 @@ initialization
   ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadSource',   COL_THREAD_SOURCE,    drsColWidthSource);
   ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadLine',     COL_THREAD_LINE,      drsColWidthLine);
   ThreadDlgWindowCreator.DividerTemplate.Add('ColumnThreadFunc',     COL_THREAD_FUNC,      drsColWidthFunc);
+  ThreadDlgWindowCreator.CreateSimpleLayout;
 
 end.
 

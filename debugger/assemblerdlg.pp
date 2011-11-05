@@ -1197,8 +1197,9 @@ end;
 
 initialization
 
-  AsmWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwAssembler]);
+  AsmWindowCreator := IDEWindowCreators.Add(DebugDialogNames[ddtAssembler]);
   AsmWindowCreator.OnCreateFormProc := @CreateDebugDialog;
+  AsmWindowCreator.CreateSimpleLayout;
 
 end.
 

@@ -1023,7 +1023,7 @@ end;
 
 initialization
 
-  BreakPointDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwBreakPoints]);
+  BreakPointDlgWindowCreator := IDEWindowCreators.Add(DebugDialogNames[ddtBreakpoints]);
   BreakPointDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   BreakPointDlgWindowCreator.OnSetDividerSize := @BreakPointDlgColSizeSetter;
   BreakPointDlgWindowCreator.OnGetDividerSize := @BreakPointDlgColSizeGetter;
@@ -1034,6 +1034,7 @@ initialization
   BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakAction',    COL_BREAK_ACTION,    drsBreakPointColWidthAction);
   BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakPassCnt',   COL_BREAK_PASS,      drsBreakPointColWidthPassCount);
   BreakPointDlgWindowCreator.DividerTemplate.Add('ColumnBreakGroup',     COL_BREAK_GROUP,     drsBreakPointColWidthGroup);
+  BreakPointDlgWindowCreator.CreateSimpleLayout;
 
 end.
 

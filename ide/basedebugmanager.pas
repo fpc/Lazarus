@@ -60,6 +60,27 @@ type
     ddtHistory
     );
 
+const
+  // used as ID for layout storage.
+  // Do not change. Do not translate
+  DebugDialogNames: array [TDebugDialogType] of string = (
+    'DbgOutput',
+    'DbgEvents',
+    'BreakPoints',
+    'Watches',
+    'Locals',
+    'CallStack',
+    'EvaluateModify',
+    'Registers',
+    'Assembler',
+    'Inspect',
+    'PseudoTerminal',
+    'Threads',
+    'DbgHistory'
+    );
+
+type
+
   { TBaseDebugManager }
   
   TDebugManagerState = (

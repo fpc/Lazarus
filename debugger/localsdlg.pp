@@ -354,12 +354,13 @@ end;
 
 initialization
 
-  LocalsDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwLocals]);
+  LocalsDlgWindowCreator := IDEWindowCreators.Add(DebugDialogNames[ddtLocals]);
   LocalsDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   LocalsDlgWindowCreator.OnSetDividerSize := @LocalsDlgColSizeSetter;
   LocalsDlgWindowCreator.OnGetDividerSize := @LocalsDlgColSizeGetter;
   LocalsDlgWindowCreator.DividerTemplate.Add('LocalsName',  COL_LOCALS_NAME,  drsColWidthName);
   LocalsDlgWindowCreator.DividerTemplate.Add('LocalsValue', COL_LOCALS_VALUE, drsColWidthValue);
+  LocalsDlgWindowCreator.CreateSimpleLayout;
 
 end.
 

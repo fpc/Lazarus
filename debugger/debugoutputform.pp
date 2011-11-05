@@ -180,7 +180,8 @@ end;
 
 initialization
 
-  DbgOutputDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwDbgOutput]);
+  DbgOutputDlgWindowCreator := IDEWindowCreators.Add(DebugDialogNames[ddtOutput]);
   DbgOutputDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
+  DbgOutputDlgWindowCreator.CreateSimpleLayout;
 
 end.

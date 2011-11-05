@@ -236,14 +236,6 @@ type
 
 implementation
 
-
-const
-  DebugDlgIDEWindow: array[TDebugDialogType] of TNonModalIDEWindow = (
-    nmiwDbgOutput, nmiwDbgEvents,  nmiwBreakPoints, nmiwWatches, nmiwLocals,
-    nmiwCallStack, nmiwEvaluate, nmiwRegisters, nmiwAssembler, nmiwInspect,
-    nmiwPseudoTerminal, nmiwThreads, nmiHistory
-  );
-
 type
 
   { TManagedBreakPoint }
@@ -1350,7 +1342,7 @@ begin
     CurDialog.DisableAutoSizing;
     CurDialog.Create(Self);
     FDialogs[ADialogType]:=CurDialog;
-    CurDialog.Name:=NonModalIDEWindowNames[DebugDlgIDEWindow[ADialogType]];
+    CurDialog.Name:= DebugDialogNames[ADialogType];
     CurDialog.Tag := Integer(ADialogType);
     CurDialog.OnDestroy := @DebugDialogDestroy;
     case ADialogType of
@@ -1637,8 +1629,6 @@ begin
 end;
 
 procedure TDebugManager.ConnectMainBarEvents;
-var
-  DlgType: TDebugDialogType;
 begin
   with MainIDEBar do begin
     itmViewWatches.OnClick := @mnuViewDebugDialogClick;
@@ -1925,7 +1915,7 @@ var
   DlgType: TDebugDialogType;
 begin
   for DlgType:=Low(TDebugDialogType) to High(TDebugDialogType) do
-    if ItIs(NonModalIDEWindowNames[DebugDlgIDEWindow[DlgType]]) then
+    if ItIs(DebugDialogNames[DlgType]) then
     begin
       ViewDebugDialog(DlgType,false,false,DoDisableAutoSizing);
       AForm:=FDialogs[DlgType];

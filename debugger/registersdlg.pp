@@ -37,7 +37,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  IDEWindowIntf, IDEOptionDefs, DebuggerStrConst,
+  BaseDebugManager, IDEWindowIntf, IDEOptionDefs, DebuggerStrConst,
   ComCtrls, ActnList, Menus, Debugger, DebuggerDlg,
   LazarusIDEStrConsts, IDEImagesIntf;
 
@@ -361,12 +361,13 @@ end;
 
 initialization
 
-  RegisterDlgWindowCreator := IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwRegisters]);
+  RegisterDlgWindowCreator := IDEWindowCreators.Add(DebugDialogNames[ddtRegisters]);
   RegisterDlgWindowCreator.OnCreateFormProc := @CreateDebugDialog;
   RegisterDlgWindowCreator.OnSetDividerSize := @RegisterDlgColSizeSetter;
   RegisterDlgWindowCreator.OnGetDividerSize := @RegisterDlgColSizeGetter;
   RegisterDlgWindowCreator.DividerTemplate.Add('RegisterName',  COL_REGISTER_NAME,  drsColWidthName);
   RegisterDlgWindowCreator.DividerTemplate.Add('RegisterValue', COL_REGISTER_VALUE, drsColWidthValue);
+  RegisterDlgWindowCreator.CreateSimpleLayout;
 
 end.
 
