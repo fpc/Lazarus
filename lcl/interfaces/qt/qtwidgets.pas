@@ -5032,11 +5032,36 @@ end;
 { TQtMDIArea }
 
 procedure TQtMDIArea.SubWindowActivated(AWindow: QMDISubWindowH); cdecl;
+var
+  i: Integer;
+  Arr: TPtrIntArray;
+  ActiveChild: TQtMainWindow;
+  InActiveChild: TQtMainWindow;
+  H: HWND;
 begin
-  // when AWindow = nil then there's no active mdichildren
-  // TODO: refactor a bit this class and add mdichildcount etc
-  // so on each activation we must send msg to lcl to deactivate
-  // other mdi childs
+  // when AWindow = nil then there's no mdichildren at all
+  // so only valid state is AWindow <> nil
+  QMdiArea_subWindowList(QMdiAreaH(Widget), @Arr);
+  if AWindow <> nil then
+  begin
+    H := HwndFromWidgetH(AWindow);
+    if H <> 0 then
+      ActiveChild := TQtMainWindow(H)
+    else
+      ActiveChild := nil;
+    for i := 0 to High(Arr) do
+    begin
+      H := HwndFromWidgetH(AWindow);
+      if H <> 0 then
+      begin
+        InActiveChild := TQtMainWindow(H);
+        if (InactiveChild <> ActiveChild) and TCustomForm(InActiveChild.LCLObject).Active then
+          InActiveChild.SlotActivateWindow(False);
+      end;
+    end;
+    if ActiveChild <> nil then
+      ActiveChild.SlotActivateWindow(True);
+  end;
 end;
 
 constructor TQtMDIArea.Create(const AParent: QWidgetH);
@@ -5340,8 +5365,8 @@ begin
   case QEvent_type(Event) of
     QEventWindowUnblocked: Blocked := False;
     QEventWindowBlocked: Blocked := True;
-    QEventWindowActivate: SlotActivateWindow(True);
-    QEventWindowDeactivate: SlotActivateWindow(False);
+    QEventWindowActivate: if not IsMDIChild then SlotActivateWindow(True);
+    QEventWindowDeactivate: if not IsMDIChild then SlotActivateWindow(False);
     QEventShowToParent:
     begin
       if IsMdiChild then
