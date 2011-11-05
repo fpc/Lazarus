@@ -17,7 +17,7 @@ interface
       - persistent block moves on edit
 *)
 uses
-  Classes, SysUtils, testregistry, TestBase,
+  Classes, SysUtils, testregistry, TestBase, Forms,
   SynEdit, SynEditTypes, SynEditTextTrimmer, SynEditKeyCmds,
   LCLType, LCLProc;
 
@@ -42,12 +42,13 @@ type
                         var AnAction: TSynCopyPasteAction);
   published
     procedure SelectByKey;
-
     (* Test for selection via the following Methods:
        SelectWord /.SelectLine / SelectParagraph / SelectAll / SelectToBrace
        [ BeginUpdate; BlockBegin := ; BlockEnd := ; EndUpdatel ]
     *)
     procedure SelectByMethod;
+    procedure SetCaretSetBlock;
+    procedure UnsetSelectionByKey;
 
     procedure ReplaceSelText;
 
@@ -292,7 +293,7 @@ begin
             'end;'
            ]);
 
-
+  {%region Default:smNormal}
   PushBaseName('Default:smNormal');
     SynEdit.DefaultSelectionMode := smNormal;
     //      Name                                   Start  Select-Key          Block-End    UnSel-Key     End-Caret/Skipped
@@ -330,8 +331,9 @@ begin
     SynEdit.Options := SynEdit.Options  - [eoScrollPastEol] + [eoKeepCaretX];
     TestKey('SA-VK_UP (Col), Exit=VK_DOWN (PastEOL=Off KeepX=On)',  10,2, VK_UP,[ssShift, ssAlt],   6,1, ['    ','(bar'],  VK_DOWN,[],  10,2, 14,3); // caret-after-skip + 4 utf8 2 byte
     SkipBlockOtherEndBack := False;
+  {%endregion Default:smNormal}
 
-
+  {%region Default:smColumn}
   PopPushBaseName('Default:smColumn');
     SynEdit.DefaultSelectionMode := smColumn;
     //      Name                                      Start  Select-Key          Block-End    UnSel-Key     End-Caret/Skipped
@@ -357,8 +359,9 @@ begin
     SynEdit.Options := SynEdit.Options  - [eoScrollPastEol] + [eoKeepCaretX];
     TestKey('SA-VK_UP (Col), Exit=VK_DOWN (PastEOL=Off KeepX=On)',  10,2, VK_UP,[ssShift, ssAlt],   6,1, ['    ','(bar'],  VK_DOWN,[],  10,2, 14,3); // caret-after-skip + 4 utf8 2 byte
     SkipBlockOtherEndBack := False;
+  {%endregion Default:smColumn}
 
-
+  {%region Default:smLine}
   PopPushBaseName('Default:smLine');
     SynEdit.DefaultSelectionMode := smLine;
     //      Name                                   Start  Select-Key          Block-End              UnSel-Key     End-Caret/Skipped
@@ -389,6 +392,7 @@ begin
     SynEdit.Options := SynEdit.Options  - [eoScrollPastEol] + [eoKeepCaretX];
     TestKey('SA-VK_UP (Col), Exit=VK_DOWN (PastEOL=Off KeepX=On)',  10,2, VK_UP,[ssShift, ssAlt],   6,1, ['    ','(bar'],  VK_DOWN,[],  10,2, 14,3); // caret-after-skip + 4 utf8 2 byte
     SkipBlockOtherEndBack := False;
+  {%endregion Default:smLine}
 
 
   PopBaseName; // Default:smLine
@@ -872,6 +876,107 @@ begin
   SynEdit.Options  := SynEdit.Options  + [eoNoSelection];
   PopPushBaseName('Persisent eoNoSelection Locked');
   DoSelectByMethod;
+end;
+
+procedure TTestSynSelection.SetCaretSetBlock;
+
+  procedure TestBlock(Name: String; x,y, BBx, BBy, BEx, BEy, Cx,Cy: Integer; ExpBlock: Boolean;
+    UpdAll: Boolean = False; UpdBlock: Boolean = False; UpdCaret: Boolean = False);
+  begin
+    Name := Format('%s (%d,%d, %d,%d, %d,%d, %d,%d)', [Name, x,y, BBx, BBy, BEx, BEy, Cx,Cy]);
+
+    SynEdit.LogicalCaretXY := Point(x, y);
+
+    if UpdAll then SynEdit.BeginUpdate;
+    if UpdBlock then SynEdit.BeginUpdate;
+    SynEdit.BlockBegin := Point(BBx, BBy);
+    SynEdit.BlockEnd   := Point(BEx, BEy);
+    TestIsBlock(Name + ' selftest',  BBx, BBy,  BEx, BEy);
+    if UpdBlock then SynEdit.EndUpdate;
+
+    if UpdCaret then SynEdit.BeginUpdate;
+    SynEdit.LogicalCaretXY := Point(Cx, Cy);
+    if UpdCaret then SynEdit.EndUpdate;
+    if UpdAll then SynEdit.EndUpdate;
+
+    AssertEquals(Name + ' has block', ExpBlock, SynEdit.SelAvail);
+    if ExpBlock then
+      TestIsBlock(Name + ' is block',  BBx, BBy,  BEx, BEy);
+  end;
+
+  procedure TestBlockSimple(Name: String; x,y, BBx, BBy, BEx, BEy, Cx,Cy: Integer; ExpBlock: Boolean);
+  begin
+    TestBlock(Name+'[simple]', x, y, BBx, BBy, BEx, BEy, Cx, Cy, ExpBlock);
+  end;
+  procedure TestBlockUpdate(Name: String; x,y, BBx, BBy, BEx, BEy, Cx,Cy: Integer; ExpBlock: Boolean);
+  begin
+    TestBlock(Name+'[upd]', x, y, BBx, BBy, BEx, BEy, Cx, Cy, ExpBlock, True);
+  end;
+  procedure TestBlockMixUpd(Name: String; x,y, BBx, BBy, BEx, BEy, Cx,Cy: Integer; ExpBlock: Boolean);
+  begin
+    TestBlock(Name+'[mix1]', x, y, BBx, BBy, BEx, BEy, Cx, Cy, ExpBlock, False, True, False);
+    TestBlock(Name+'[mix2]', x, y, BBx, BBy, BEx, BEy, Cx, Cy, ExpBlock, False, False, True);
+  end;
+
+begin
+  ReCreateEdit;
+  SynEdit.DefaultSelectionMode := smNormal;
+  SynEdit.Options2 := SynEdit.Options2 - [eoPersistentBlock];
+
+  SetLines(['begin',
+            '  Foo(bar);',
+            '  ABC def',
+            'end;'
+           ]);
+
+  // allow to set caret to block borders (after setting block-selection), without loosing selection
+
+  TestBlockSimple('caret to begin',  1,1,  3,2, 5,2,  3,2,  True);
+  TestBlockSimple('caret to end',  1,1,  3,2, 5,2,  5,2,  True);
+
+  TestBlockUpdate('caret to begin',  1,1,  3,2, 5,2,  3,2,  True);
+  TestBlockUpdate('caret to end',  1,1,  3,2, 5,2,  5,2,  True);
+
+  // unset selection if caret is set somewhere else
+
+  TestBlockSimple('caret to somewhere',  1,1,  3,2, 5,2,  5,1,  False);
+  TestBlockUpdate('caret to somewhere',  1,1,  3,2, 5,2,  5,1,  False);
+  TestBlockMixUpd('caret to somewhere',  1,1,  3,2, 5,2,  5,1,  False);
+
+
+  SynEdit.Options2 := SynEdit.Options2 + [eoPersistentBlock];
+
+  TestBlockSimple('caret to begin',  1,1,  3,2, 5,2,  3,2,  True);
+  TestBlockSimple('caret to end',  1,1,  3,2, 5,2,  5,2,  True);
+
+  TestBlockUpdate('caret to begin',  1,1,  3,2, 5,2,  3,2,  True);
+  TestBlockUpdate('caret to end',  1,1,  3,2, 5,2,  5,2,  True);
+
+  TestBlockSimple('caret to somewhere',  1,1,  3,2, 5,2,  5,1,  True);
+  TestBlockUpdate('caret to somewhere',  1,1,  3,2, 5,2,  5,1,  True);
+  TestBlockMixUpd('caret to somewhere',  1,1,  3,2, 5,2,  5,1,  True);
+end;
+
+procedure TTestSynSelection.UnsetSelectionByKey;
+begin
+  ReCreateEdit;
+  SynEdit.DefaultSelectionMode := smNormal;
+  SynEdit.Options2 := SynEdit.Options2 - [eoPersistentBlock];
+
+  SetLines(['begin',
+            '  ABC def',
+            'end;'
+           ]);
+
+  SynEdit.LogicalCaretXY := Point(10, 2); // end of line
+  SynEdit.SelectWord;
+  TestIsBlock('word selected', 7,2, 10,2);
+  TestIsCaret('caret not moved', 10, 2);
+
+  DoKeyPress(VK_END, []);
+  AssertEquals('vk_end undid block', False, SynEdit.SelAvail);
+  TestIsCaret('caret not moved after vk_end', 10, 2);
+
 end;
 
 procedure TTestSynSelection.ReplaceSelText;
