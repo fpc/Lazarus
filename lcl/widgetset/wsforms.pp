@@ -96,6 +96,16 @@ type
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); virtual;
     class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
     class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
+
+    {mdi support}
+    class function ActiveMDIChild(const AForm: TCustomForm): TCustomForm; virtual;
+    class function Cascade(const AForm: TCustomForm): Boolean; virtual;
+    class function GetClientHandle(const AForm: TCustomForm): HWND; virtual;
+    class function GetMDIChildren(const AForm: TCustomForm; AIndex: Integer): TCustomForm; virtual;
+    class function Next(const AForm: TCustomForm): Boolean; virtual;
+    class function Previous(const AForm: TCustomForm): Boolean; virtual;
+    class function Tile(const AForm: TCustomForm): Boolean; virtual;
+    class function MDIChildCount(const AForm: TCustomForm): Integer; virtual;
   end;
   TWSCustomFormClass = class of TWSCustomForm;
 
@@ -189,7 +199,7 @@ const
 begin
   Result := DefColors[ADefaultColorType];
 end;
-   
+
 class procedure TWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
 end;
@@ -203,6 +213,51 @@ class procedure TWSCustomForm.SetAlphaBlend(const ACustomForm: TCustomForm;
   const AlphaBlend: Boolean; const Alpha: Byte);
 begin
 end;
+
+{ mdi support }
+
+class function TWSCustomForm.ActiveMDIChild(const AForm: TCustomForm
+  ): TCustomForm;
+begin
+  Result := nil;
+end;
+
+class function TWSCustomForm.Cascade(const AForm: TCustomForm): Boolean;
+begin
+  Result := False;
+end;
+
+class function TWSCustomForm.GetClientHandle(const AForm: TCustomForm): HWND;
+begin
+  Result := 0;
+end;
+
+class function TWSCustomForm.GetMDIChildren(const AForm: TCustomForm;
+  AIndex: Integer): TCustomForm;
+begin
+  Result := nil;
+end;
+
+class function TWSCustomForm.MDIChildCount(const AForm: TCustomForm): Integer;
+begin
+  Result := 0;
+end;
+
+class function TWSCustomForm.Next(const AForm: TCustomForm): Boolean;
+begin
+  Result := False;
+end;
+
+class function TWSCustomForm.Previous(const AForm: TCustomForm): Boolean;
+begin
+  Result := False;
+end;
+
+class function TWSCustomForm.Tile(const AForm: TCustomForm): Boolean;
+begin
+  Result := False;
+end;
+
 
 { WidgetSetRegistration }
 

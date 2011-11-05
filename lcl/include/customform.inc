@@ -2612,6 +2612,81 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCustomForm.GetClientHandle
+  Params:  None
+  Returns: Nothing
+
+  Returns handle of fsMdiForm container for mdi children.
+  This is not same as Handle of form.
+  Result is valid only if form FormStyle = fsMDIForm or FormStyle = fsMDIChild.
+  In case when FormStyle = fsMDIChild it'll return handle of it's container
+  (fsMDIForm).
+ ------------------------------------------------------------------------------}
+function TCustomForm.GetClientHandle: HWND;
+begin
+  Result := 0;
+  if not (FormStyle in [fsMDIForm, fsMDIChild]) then
+    exit;
+  if HandleAllocated and not (csDesigning in ComponentState) then
+    Result := TWSCustomFormClass(WidgetSetClass).GetClientHandle(Self);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCustomForm.ActiveMDIChild
+  Params:  None
+  Returns: Nothing
+
+  Returns currently active MDI child form of self.
+  Valid result is returned only when Self FormStyle = fsMDIForm or fsMDIChild,
+  otherwise Result is nil.
+ ------------------------------------------------------------------------------}
+function TCustomForm.ActiveMDIChild: TCustomForm;
+begin
+  Result := nil;
+  if not (FormStyle in [fsMDIForm, fsMDIChild]) then
+    exit;
+  if HandleAllocated and not (csDesigning in ComponentState) then
+    Result := TWSCustomFormClass(WidgetSetClass).ActiveMDIChild(Self);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCustomForm.MDIChildCount
+  Params:  None
+  Returns: Nothing
+
+  Returns count of MDIChild forms.
+  Result is returned only when Self FormStyle = fsMDIForm or fsMDIChild (can
+  be 0 ... number of mdichild forms).
+  If Result is -1 then caller isn't mdi or handle is not allocated.
+ ------------------------------------------------------------------------------}
+function TCustomForm.MDIChildCount: Integer;
+begin
+  Result := -1;
+  if not (FormStyle in [fsMDIForm, fsMDIChild]) then
+    exit;
+  if HandleAllocated and not (csDesigning in ComponentState) then
+    Result := TWSCustomFormClass(WidgetSetClass).MDIChildCount(Self);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCustomForm.MDIChildCount
+  Params:  AIndex: Integer;
+  Returns: TCustomForm with FormStyle = fsMDIChild
+
+  Returns MDI child (fsMDIChild) of parent mdi form (fsMDIForm) at index
+  AIndex in list of mdi children.
+  Result can be nil if caller isn't an mdi type or handle isn't allocated.
+ ------------------------------------------------------------------------------}
+function TCustomForm.GetMDIChildren(AIndex: Integer): TCustomForm;
+begin
+  Result := nil;
+  if not (FormStyle in [fsMDIForm, fsMDIChild]) then
+    exit;
+  if HandleAllocated and not (csDesigning in ComponentState) then
+    Result := TWSCustomFormClass(WidgetSetClass).GetMDIChildren(Self, AIndex);
+end;
+
+{------------------------------------------------------------------------------
   TCustomForm ShowModal
 ------------------------------------------------------------------------------}
 function TCustomForm.ShowModal: Integer;
@@ -2864,6 +2939,78 @@ constructor TForm.Create(TheOwner: TComponent);
 begin
   FLCLVersion:=lcl_version;
   inherited Create(TheOwner);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TForm.Cascade
+  Params:  None
+  Returns: Nothing
+
+  Arranges MDI child forms so they overlap.
+  Use Cascade to arrange MDI child forms so they overlap.
+  Cascade works only if the form is an MDI parent form (FormStyle=fsMDIForm).
+ ------------------------------------------------------------------------------}
+procedure TForm.Cascade;
+begin
+  if (FormStyle <> fsMDIForm) then
+    exit;
+  if HandleAllocated and not (csDesigning in ComponentState) then
+    TWSCustomFormClass(WidgetSetClass).Cascade(Self);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TForm.Next
+  Params:  None
+  Returns: Nothing
+
+  Activates the next child MDI form (fsMDIChild) in the form sequence.
+  Use Next to change the active child form of an MDI parent.
+  If calling of Next comes to the end of count it restarts and activates
+  first dsMDIChild in sequence.
+  The Next method applies only to forms with FormStyle = fsMDIForm.
+ ------------------------------------------------------------------------------}
+procedure TForm.Next;
+begin
+  if (FormStyle <> fsMDIForm) then
+    exit;
+  if HandleAllocated and not (csDesigning in ComponentState) then
+    TWSCustomFormClass(WidgetSetClass).Next(Self);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TForm.Previous
+  Params:  None
+  Returns: Nothing
+  Activates the previous MDI child form in the form sequence.
+  Behaviour is vice-versa of TForm.Next.
+  The Previous method can be called only for forms with FormStyle = fsMDIForm
+ ------------------------------------------------------------------------------}
+procedure TForm.Previous;
+begin
+  if (FormStyle <> fsMDIForm) then
+    exit;
+  if HandleAllocated and not (csDesigning in ComponentState) then
+    TWSCustomFormClass(WidgetSetClass).Previous(Self);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TForm.Tile
+  Params:  None
+  Returns: Nothing
+
+  Arranges MDI child forms so that they are all the same size.
+  Use Tile to arrange MDI child forms so that they are all the same size.
+  Tiled forms completely fill up the client area of the parent form.
+  How the forms arrange themselves depends upon the values of
+  their TileMode properties, and it depends on widgetset.
+  Tile works only if the form FormStyle = fsMDIForm.
+ ------------------------------------------------------------------------------}
+procedure TForm.Tile;
+begin
+  if (FormStyle <> fsMDIForm) then
+    exit;
+  if HandleAllocated and not (csDesigning in ComponentState) then
+    TWSCustomFormClass(WidgetSetClass).Tile(Self);
 end;
 
 //==============================================================================

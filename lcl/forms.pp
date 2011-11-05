@@ -404,6 +404,7 @@ type
   THelpEvent = function(Command: Word; Data: PtrInt; var CallHelp: Boolean): Boolean of object;
   TShortCutEvent = procedure (var Msg: TLMKey; var Handled: Boolean) of object;
 
+
   TCustomForm = class(TScrollingWinControl)
   private
     FActive: Boolean;
@@ -452,6 +453,7 @@ type
     FRestoredHeight: integer;
     FShowInTaskbar: TShowInTaskbar;
     FWindowState: TWindowState;
+    function GetClientHandle: HWND;
     function GetEffectiveShowInTaskBar: TShowInTaskBar;
     function GetMonitor: TMonitor;
     function GetPixelsPerInch: Longint;
@@ -570,6 +572,11 @@ type
     function DoExecuteAction(ExeAction: TBasicAction): boolean;
     function DoUpdateAction(TheAction: TBasicAction): boolean;
     procedure UpdateActions; virtual;
+  protected
+    {MDI implementation}
+    {returns handle of MDIForm client handle (container for mdi children this
+    is not Handle of form itself !)}
+    property ClientHandle: HWND read GetClientHandle;
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Num: Integer = 0); virtual;
@@ -604,6 +611,7 @@ type
     function SetFocusedControl(Control: TWinControl): Boolean ; virtual;
     procedure SetRestoredBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure Show;
+
     function ShowModal: Integer; virtual;
     procedure ShowOnTop;
     function SmallIconHandle: HICON;
@@ -619,6 +627,12 @@ type
     procedure RemoveHandlerClose(OnCloseHandler: TCloseEvent);
     procedure AddHandlerCreate(OnCreateHandler: TNotifyEvent; AsFirst: Boolean=true);
     procedure RemoveHandlerCreate(OnCreateHandler: TNotifyEvent);
+  public
+    {MDI implementation}
+    function ActiveMDIChild: TCustomForm; virtual;
+    function GetMDIChildren(AIndex: Integer): TCustomForm; virtual;
+    function MDIChildCount: Integer; virtual;
+
   public
     // drag and dock
     procedure Dock(NewDockSite: TWinControl; ARect: TRect); override;
@@ -648,6 +662,7 @@ type
     property HelpFile: string read FHelpFile write FHelpFile;
     property Icon: TIcon read FIcon write SetIcon stored IsIconStored;
     property KeyPreview: Boolean read FKeyPreview write FKeyPreview default False;
+    property MDIChildren[I: Integer]: TCustomForm read GetMDIChildren;
     property Menu : TMainMenu read FMenu write SetMenu;
     property ModalResult : TModalResult read FModalResult write FModalResult;
     property Monitor: TMonitor read GetMonitor;
@@ -690,7 +705,6 @@ type
 
   TForm = class(TCustomForm)
   private
-    FClientHandle: HWND;
     FLCLVersion: string;
     function LCLVersionIsStored: boolean;
   protected
@@ -698,7 +712,18 @@ type
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
-    property ClientHandle: HWND read FClientHandle;
+
+    { mdi related routine}
+    procedure Cascade;
+    { mdi related routine}
+    procedure Next;
+    { mdi related routine}
+    procedure Previous;
+    { mdi related routine}
+    procedure Tile;
+    { mdi related property}
+    property ClientHandle;
+
     property DockManager;
   published
     property Action;
