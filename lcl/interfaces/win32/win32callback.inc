@@ -2459,7 +2459,14 @@ begin
 
   if WinProcess then
   begin
-    PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+
+    if (Msg=WM_CHAR) and (WParam=VK_RETURN) and (lWinControl is TCustomEdit)
+      // and not TCustomEdit(lWinControl).WindowsSpecificOptionToEnableBeep
+    then
+      // this thing will beep, don't call defaultWindowProc
+    else
+      PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+
     case Msg of
       WM_CHAR, WM_KEYDOWN, WM_KEYUP,
       WM_SYSCHAR, WM_SYSKEYDOWN, WM_SYSKEYUP:
