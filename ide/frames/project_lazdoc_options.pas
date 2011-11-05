@@ -22,6 +22,8 @@ type
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
     procedure LazDocDeletePathButtonClick(Sender: TObject);
+    procedure LazDocListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure LazDocPathEditChange(Sender: TObject);
   private
     { private declarations }
   public
@@ -38,24 +40,6 @@ implementation
 
 { TProjectLazDocOptionsFrame }
 
-procedure TProjectLazDocOptionsFrame.LazDocBrowseButtonClick(Sender: TObject);
-begin
-  if SelectDirectoryDialog.Execute then
-    LazDocPathEdit.Text := SelectDirectoryDialog.FileName;
-end;
-
-procedure TProjectLazDocOptionsFrame.LazDocDeletePathButtonClick(Sender: TObject);
-begin
-  if (LazDocListBox.ItemIndex >= 0) then
-    LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
-end;
-
-procedure TProjectLazDocOptionsFrame.LazDocAddPathButtonClick(Sender: TObject);
-begin
-  if LazDocPathEdit.Text <> '' then
-    LazDocListBox.Items.Add(LazDocPathEdit.Text);
-end;
-
 function TProjectLazDocOptionsFrame.GetTitle: string;
 begin
   Result := lisFPDocEditor;
@@ -69,6 +53,38 @@ begin
   LazDocAddPathButton.LoadGlyphFromLazarusResource('laz_add');
 
   LazDocPathEdit.Clear;
+end;
+
+procedure TProjectLazDocOptionsFrame.LazDocBrowseButtonClick(Sender: TObject);
+begin
+  if SelectDirectoryDialog.Execute then
+    LazDocPathEdit.Text := SelectDirectoryDialog.FileName;
+end;
+
+procedure TProjectLazDocOptionsFrame.LazDocAddPathButtonClick(Sender: TObject);
+begin
+  if LazDocPathEdit.Text <> '' then begin
+    LazDocListBox.Items.Add(LazDocPathEdit.Text);
+    LazDocPathEdit.Text := '';
+  end;
+end;
+
+procedure TProjectLazDocOptionsFrame.LazDocDeletePathButtonClick(Sender: TObject);
+begin
+  if (LazDocListBox.ItemIndex >= 0) then begin
+    LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
+    LazDocListBoxSelectionChange(LazDocListBox, True);
+  end;
+end;
+
+procedure TProjectLazDocOptionsFrame.LazDocListBoxSelectionChange(Sender: TObject; User: boolean);
+begin
+  LazDocDeletePathButton.Enabled:=(Sender as TListBox).ItemIndex <> -1;
+end;
+
+procedure TProjectLazDocOptionsFrame.LazDocPathEditChange(Sender: TObject);
+begin
+  LazDocAddPathButton.Enabled:=(Sender as TEdit).Text <> '';
 end;
 
 procedure TProjectLazDocOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

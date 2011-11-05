@@ -88,8 +88,10 @@ end;
 
 procedure TFpDocOptionsFrame.LazDocAddPathButtonClick(Sender: TObject);
 begin
-  if LazDocPathEdit.Text <> '' then
+  if LazDocPathEdit.Text <> '' then begin
     LazDocListBox.Items.Add(LazDocPathEdit.Text);
+    LazDocPathEdit.Text := '';
+  end;
 end;
 
 procedure TFpDocOptionsFrame.LazDocDeletePathButtonClick(Sender: TObject);

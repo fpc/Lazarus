@@ -17,6 +17,7 @@ inherited ProjectLazDocOptionsFrame: TProjectLazDocOptionsFrame
     Width = 478
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 0
+    OnSelectionChange = LazDocListBoxSelectionChange
     TabOrder = 0
   end
   object LazDocPathEdit: TEdit[1]
@@ -31,6 +32,7 @@ inherited ProjectLazDocOptionsFrame: TProjectLazDocOptionsFrame
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
+    OnChange = LazDocPathEditChange
     TabOrder = 1
     Text = 'LazDocPathEdit'
   end
@@ -62,6 +64,7 @@ inherited ProjectLazDocOptionsFrame: TProjectLazDocOptionsFrame
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'LazDocAddPathButton'
+    Enabled = False
     NumGlyphs = 0
     OnClick = LazDocAddPathButtonClick
     TabOrder = 3
@@ -78,6 +81,7 @@ inherited ProjectLazDocOptionsFrame: TProjectLazDocOptionsFrame
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'LazDocDeletePathButton'
+    Enabled = False
     NumGlyphs = 0
     OnClick = LazDocDeletePathButtonClick
     TabOrder = 4
