@@ -65,6 +65,11 @@ type
     procedure DrawGroupBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // ===================================
+    // Additional Tab
+    // ===================================
+    procedure DrawStaticText(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+    // ===================================
     // Common Controls Tab
     // ===================================
     // TCDTrackBar
@@ -675,6 +680,24 @@ begin
   ADest.Brush.Style := bsSolid; // This will fill the text background
   ADest.Font.Size := 10;
   ADest.TextOut(FCaptionMiddle, 0, AStateEx.Caption);
+end;
+
+procedure TCDDrawerCommon.DrawStaticText(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+var
+  lColor: TColor;
+begin
+  // Background
+  lColor := AStateEx.ParentRGBColor;
+  ADest.Brush.Color := lColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psClear;
+  ADest.FillRect(0, 0, ASize.cx, ASize.cy);
+
+  // Now the text
+  ADest.Brush.Style := bsClear;
+  ADest.Font.Assign(AStateEx.Font);
+  ADest.TextOut(0, 0, AStateEx.Caption);
 end;
 
 procedure TCDDrawerCommon.DrawTrackBar(ADest: TCanvas; ADestPos: TPoint;

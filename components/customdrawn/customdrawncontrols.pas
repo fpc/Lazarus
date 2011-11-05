@@ -232,6 +232,27 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    property AutoSize;
+    property DrawStyle;
+    property Caption;
+    property TabStop default False;
+  end;
+
+  // ===================================
+  // Additional Tab
+  // ===================================
+
+  { TCDStaticText }
+
+  TCDStaticText = class(TCDControl)
+  private
+    function GetControlId: TCDControlID; override;
+  protected
+    procedure RealSetText(const Value: TCaption); override; // to update on caption changes
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
     property DrawStyle;
     property Caption;
     property TabStop default False;
@@ -440,6 +461,33 @@ implementation
 
 resourcestring
   sTABSHEET_DEFAULT_NAME = 'CTabSheet';
+
+{ TCDStaticText }
+
+function TCDStaticText.GetControlId: TCDControlID;
+begin
+  Result:=cidStaticText;
+end;
+
+procedure TCDStaticText.RealSetText(const Value: TCaption);
+begin
+  inherited RealSetText(Value);
+  Invalidate;
+end;
+
+constructor TCDStaticText.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 70;
+  Height := 20;
+  TabStop := False;
+  ControlStyle := ControlStyle - [csAcceptsControls];
+end;
+
+destructor TCDStaticText.Destroy;
+begin
+  inherited Destroy;
+end;
 
 { TCDControl }
 
@@ -1125,8 +1173,7 @@ begin
   Width := 100;
   Height := 100;
   TabStop := False;
-  ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
-    csDoubleClicks, csReplicatable];
+  AutoSize := True;
 end;
 
 destructor TCDGroupBox.Destroy;

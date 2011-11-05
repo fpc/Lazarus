@@ -236,6 +236,11 @@ type
     procedure DrawGroupBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // ===================================
+    // Additional Tab
+    // ===================================
+    procedure DrawStaticText(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
+    // ===================================
     // Common Controls Tab
     // ===================================
     // TCDTrackBar
@@ -404,6 +409,9 @@ begin
   cidCheckBox:   DrawCheckBox(ADest, ADestPos, ASize, AState, AStateEx);
   cidRadioButton:DrawRadioButton(ADest, ADestPos, ASize, AState, AStateEx);
   cidGroupBox:   DrawGroupBox(ADest, ADestPos, ASize, AState, AStateEx);
+  //
+  cidStaticText: DrawStaticText(ADest, ADestPos, ASize, AState, AStateEx);
+  //
   cidTrackBar:   DrawTrackBar(ADest, ADestPos, ASize, AState, TCDTrackBarStateEx(AStateEx));
   cidCTabControl:DrawCTabControl(ADest, ADestPos, ASize, AState, TCDCTabControlStateEx(AStateEx));
   end;

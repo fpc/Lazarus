@@ -185,6 +185,8 @@ begin
   RegisterComponents('Custom Drawn', [
     // Standard tab
     TCDButton, TCDEdit, TCDCheckBox, TCDRadioButton, TCDGroupBox,
+    // Additional
+    TCDStaticText,
     // Common Controls
     TCDTrackBar, TCDPageControl, TCDTabControl]);
   RegisterComponentEditor(TCDPageControl, TCDPageControlEditor);
