@@ -546,8 +546,12 @@ type
   { TQtMDIArea }
 
   TQtMDIArea = class(TQtAbstractScrollArea)
+  private
+    FSubWindowActivationHook: QMdiArea_hookH;
+    procedure SubWindowActivated(AWindow: QMDISubWindowH); cdecl;
   public
     constructor Create(const AParent: QWidgetH); overload;
+    destructor Destroy; override;
   end;
 
   TQtMainWindow = class(TQtWidget)
@@ -5027,6 +5031,14 @@ end;
 
 { TQtMDIArea }
 
+procedure TQtMDIArea.SubWindowActivated(AWindow: QMDISubWindowH); cdecl;
+begin
+  // when AWindow = nil then there's no active mdichildren
+  // TODO: refactor a bit this class and add mdichildcount etc
+  // so on each activation we must send msg to lcl to deactivate
+  // other mdi childs
+end;
+
 constructor TQtMDIArea.Create(const AParent: QWidgetH);
 begin
   Create;
@@ -5036,7 +5048,20 @@ begin
   Palette.ForceColor := True;
   setDefaultColor(dctFont);
   Palette.ForceColor := False;
+  FSubWindowActivationHook := QMdiArea_hook_create(Widget);
+  QMdiArea_hook_hook_subWindowActivated(FSubWindowActivationHook, @SubWindowActivated);
 end;
+
+destructor TQtMDIArea.Destroy;
+begin
+  if FSubWindowActivationHook <> nil then
+  begin
+    QMdiArea_hook_destroy(FSubWindowActivationHook);
+    FSubWindowActivationHook := nil;
+  end;
+  inherited Destroy;
+end;
+
 
 { TQtMainWindow }
 
