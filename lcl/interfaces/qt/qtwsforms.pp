@@ -94,6 +94,17 @@ type
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm;
        const AlphaBlend: Boolean; const Alpha: Byte); override;
+
+    { mdi support }
+    class function ActiveMDIChild(const AForm: TCustomForm): TCustomForm; override;
+    class function Cascade(const AForm: TCustomForm): Boolean; override;
+    class function GetClientHandle(const AForm: TCustomForm): HWND; override;
+    class function GetMDIChildren(const AForm: TCustomForm; AIndex: Integer): TCustomForm; override;
+    class function Next(const AForm: TCustomForm): Boolean; override;
+    class function Previous(const AForm: TCustomForm): Boolean; override;
+    class function Tile(const AForm: TCustomForm): Boolean; override;
+    class function MDIChildCount(const AForm: TCustomForm): Integer; override;
+
   end;
 
   { TQtWSForm }
@@ -497,6 +508,202 @@ begin
     TQtMainWindow(ACustomForm.Handle).setWindowOpacity(Alpha / 255)
   else
     TQtMainWindow(ACustomForm.Handle).setWindowOpacity(1);
+end;
+
+class function TQtWSCustomForm.ActiveMDIChild(const AForm: TCustomForm
+  ): TCustomForm;
+var
+  MDIWorkSpace: QMdiAreaH;
+  ActiveChild: QWidgetH;
+  i: Integer;
+begin
+  Result := nil;
+  if not WSCheckHandleAllocated(AForm, 'ActiveMDIChild') then
+    Exit;
+  if not (AForm.FormStyle in [fsMDIForm, fsMDIChild]) then
+    exit;
+  if AForm.FormStyle = fsMDIForm then
+    MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle
+  else
+    MDIWorkSpace := QMdiSubWindow_mdiArea(QMdiSubWindowH(TQtWidget(AForm.Handle).Widget));
+
+  if MDIWorkSpace <> nil then
+  begin
+    ActiveChild := QMdiArea_activeSubWindow(MDIWorkSpace);
+    for i := 0 to Screen.FormCount - 1 do
+    begin
+      if (Screen.Forms[i].HandleAllocated) and
+      (TQtWidget(Screen.Forms[i].Handle).Widget = ActiveChild) then
+      begin
+        Result := Screen.Forms[i];
+        break;
+      end;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.Cascade
+  Params:  AForm fsMDIForm.
+  Returns: Nothing
+  Cascade mdi children.
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomForm.Cascade(const AForm: TCustomForm): Boolean;
+var
+  MDIWorkspace: QMdiAreaH;
+begin
+  Result := False;
+  if not WSCheckHandleAllocated(AForm, 'Cascade') then
+    Exit;
+  if AForm.FormStyle <> fsMDIForm then
+    exit;
+  MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle;
+  QMdiArea_cascadeSubWindows(MDIWorkSpace);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.Next
+  Params:  AForm fsMDIForm.
+  Returns: Nothing
+  Returns handle of mdi area container (viewport).
+  Currently not implemented.
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomForm.GetClientHandle(const AForm: TCustomForm): HWND;
+begin
+  {TODO: make TQtMainWindow(AForm.Handle).MDIAreaHandle TQtWidget and return that,
+   but without attached events !}
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.Next
+  Params:  AForm: Parent fsMDIForm, AIndex - index of mdi child
+  Returns: Nothing
+  Returns MDI child window at index AIndex.
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomForm.GetMDIChildren(const AForm: TCustomForm;
+  AIndex: Integer): TCustomForm;
+var
+  MDIWorkspace: QMdiAreaH;
+  IntAr: TPtrIntArray;
+  ChildAtIndex: QWidgetH;
+  i: Integer;
+begin
+  Result := nil;
+  if not WSCheckHandleAllocated(AForm, 'GetMDIChildren') then
+    Exit;
+  if not (AForm.FormStyle in [fsMDIForm, fsMDIChild]) then
+    exit;
+
+  if AForm.FormStyle = fsMDIForm then
+    MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle
+  else
+    MDIWorkSpace := QMdiSubWindow_mdiArea(QMdiSubWindowH(TQtWidget(AForm.Handle).Widget));
+
+  if MDIWorkSpace <> nil then
+  begin
+    QMdiArea_subWindowList(MDIWorkSpace, @IntAr);
+    if (AIndex >= 0) and (AIndex <= High(IntAr)) then
+    begin
+      ChildAtIndex := QMdiSubWindowH(IntAr[AIndex]);
+      for i := 0 to Screen.FormCount - 1 do
+      begin
+        if TQtWidget(Screen.Forms[i].Handle).Widget = ChildAtIndex then
+        begin
+          Result := Screen.Forms[i];
+          break;
+        end;
+      end;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.Next
+  Params:  AForm: Parent fsMDIForm
+  Returns: Nothing
+  Activates next MDI child window in chain, if next reaches last subwindow,
+  it restarts from first window.
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomForm.Next(const AForm: TCustomForm): Boolean;
+var
+  MDIWorkspace: QMdiAreaH;
+begin
+  Result := False;
+  if not WSCheckHandleAllocated(AForm, 'Next') then
+    Exit;
+  if AForm.FormStyle <> fsMDIForm then
+    exit;
+  MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle;
+  QMdiArea_activateNextSubWindow(MDIWorkSpace);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.Previous
+  Params:  AForm: Parent fsMDIForm
+  Returns: Nothing
+  Activates previous MDI child window in chain.
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomForm.Previous(const AForm: TCustomForm): Boolean;
+var
+  MDIWorkspace: QMdiAreaH;
+begin
+  Result := False;
+  if not WSCheckHandleAllocated(AForm, 'Previous') then
+    Exit;
+  if AForm.FormStyle <> fsMDIForm then
+    exit;
+  MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle;
+  QMdiArea_activatePreviousSubWindow(MDIWorkSpace);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.Tile
+  Params:  AForm: Parent fsMDIForm
+  Returns: Nothing
+  Tiles mdi children.
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomForm.Tile(const AForm: TCustomForm): Boolean;
+var
+  MDIWorkspace: QMdiAreaH;
+begin
+  Result := False;
+  if not WSCheckHandleAllocated(AForm, 'Tile') then
+    Exit;
+  if AForm.FormStyle <> fsMDIForm then
+    exit;
+  MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle;
+  QMdiArea_tileSubWindows(MDIWorkSpace);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TQtWSCustomForm.MDIChildCount
+  Params:  AForm: Parent fsMDIForm
+  Returns: Nothing
+  Returns number of mdi child windows.
+ ------------------------------------------------------------------------------}
+class function TQtWSCustomForm.MDIChildCount(const AForm: TCustomForm
+  ): Integer;
+var
+  MDIWorkspace: QMdiAreaH;
+  IntAr: TPtrIntArray;
+begin
+  Result := 0;
+  if not WSCheckHandleAllocated(AForm, 'MDIChildCount') then
+    Exit;
+  if not (AForm.FormStyle in [fsMDIForm, fsMDIChild]) then
+    exit;
+
+  if AForm.FormStyle = fsMDIForm then
+    MDIWorkSpace := TQtMainWindow(AForm.Handle).MDIAreaHandle
+  else
+    MDIWorkSpace := QMdiSubWindow_mdiArea(QMdiSubWindowH(TQtWidget(AForm.Handle).Widget));
+
+  if MDIWorkSpace <> nil then
+  begin
+    QMdiArea_subWindowList(MDIWorkSpace, @IntAr);
+    Result := length(IntAr);
+  end;
 end;
 
 {------------------------------------------------------------------------------
