@@ -60,8 +60,6 @@ type
     property OnBeforeShow: TBeforeShowPageEvent read FOnBeforeShow write FOnBeforeShow;
     // Other events and properties
     property ChildSizing;
-    property ClientWidth;
-    property ClientHeight;
     property Color;
     property Left stored False;
     property Top stored False;
@@ -1166,5 +1164,7 @@ end;
 
 initialization
   DockSplitterClass := TSplitter;
+  RegisterPropertyToSkip(TPage, 'ClientHeight', 'This property was published for a long time in Lazarus 0.9.31', '');
+  RegisterPropertyToSkip(TPage, 'ClientWidth', 'This property was published for a long time in Lazarus 0.9.31', '');
 
 end.
