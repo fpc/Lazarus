@@ -35,11 +35,12 @@ object Form1: TForm1
     TabOrder = 1
   end
   object notebookControls: TNotebook
-    Left = 9
+    AnchorSideLeft.Control = Owner
+    Left = 0
     Height = 240
     Top = 40
     Width = 439
-    PageIndex = 1
+    PageIndex = 5
     TabOrder = 2
     TabStop = True
     object pageButtons: TPage
@@ -100,8 +101,8 @@ object Form1: TForm1
       end
     end
     object pageEdits: TPage
-      ClientWidth = 439
-      ClientHeight = 240
+      ClientWidth = 878
+      ClientHeight = 480
       object CDEdit1: TCDEdit
         Left = 119
         Height = 24
@@ -136,8 +137,8 @@ object Form1: TForm1
       end
     end
     object pageCheckboxes: TPage
-      ClientWidth = 439
-      ClientHeight = 240
+      ClientWidth = 878
+      ClientHeight = 480
       object CheckBox1: TCheckBox
         Left = 20
         Height = 17
@@ -164,15 +165,15 @@ object Form1: TForm1
       end
     end
     object pageGroupBoxes: TPage
-      ClientWidth = 224
-      ClientHeight = 122
+      ClientWidth = 439
+      ClientHeight = 240
       object GroupBox1: TGroupBox
-        Left = -1
-        Height = 105
-        Top = 8
+        Left = 7
+        Height = 100
+        Top = 13
         Width = 129
         Caption = 'GroupBox1'
-        ClientHeight = 87
+        ClientHeight = 82
         ClientWidth = 125
         TabOrder = 0
         object Label1: TLabel
@@ -226,8 +227,8 @@ object Form1: TForm1
       end
     end
     object pageTrackBars: TPage
-      ClientWidth = 1756
-      ClientHeight = 960
+      ClientWidth = 3512
+      ClientHeight = 1920
       object TrackBar1: TTrackBar
         Left = 7
         Height = 25
@@ -251,7 +252,7 @@ object Form1: TForm1
       ClientWidth = 439
       ClientHeight = 240
       object CDPageControl1: TCDPageControl
-        Left = 199
+        Left = 207
         Height = 104
         Top = 32
         Width = 200
@@ -263,24 +264,24 @@ object Form1: TForm1
         TabIndex = 1
         object CDTabSheet2: TCDTabSheet
           Left = 2
-          Height = 69
-          Top = 32
-          Width = 195
+          Height = 77
+          Top = 25
+          Width = 196
           Caption = 'CDTabSheet2'
           TabVisible = False
         end
         object CDTabSheet1: TCDTabSheet
           Left = 2
-          Height = 69
-          Top = 32
-          Width = 195
+          Height = 77
+          Top = 25
+          Width = 196
           Caption = 'CDTabSheet1'
           TabVisible = False
         end
       end
       object PageControl1: TPageControl
-        Left = -1
-        Height = 104
+        Left = 6
+        Height = 88
         Top = 32
         Width = 192
         ActivePage = TabSheet1
@@ -313,7 +314,7 @@ object Form1: TForm1
         TabOrder = 3
       end
       object CDPageControl2: TCDPageControl
-        Left = -1
+        Left = 6
         Height = 96
         Top = 144
         Width = 192
@@ -325,28 +326,36 @@ object Form1: TForm1
         TabIndex = 2
         object CDTabSheet3: TCDTabSheet
           Left = 2
-          Height = 61
-          Top = 32
-          Width = 187
+          Height = 69
+          Top = 25
+          Width = 188
           Caption = 'CDTabSheet3'
           TabVisible = False
         end
         object CDTabSheet4: TCDTabSheet
           Left = 2
-          Height = 61
-          Top = 32
-          Width = 187
+          Height = 69
+          Top = 25
+          Width = 188
           Caption = 'CDTabSheet4'
           TabVisible = False
         end
         object CDTabSheet5: TCDTabSheet
           Left = 2
-          Height = 61
-          Top = 32
-          Width = 187
+          Height = 69
+          Top = 25
+          Width = 188
           Caption = 'CDTabSheet5'
           TabVisible = False
         end
+      end
+      object StaticText5: TStaticText
+        Left = 7
+        Height = 17
+        Top = 127
+        Width = 65
+        Caption = 'dsCommon:'
+        TabOrder = 5
       end
     end
     object pageTabControls: TPage
