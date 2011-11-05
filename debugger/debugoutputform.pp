@@ -45,9 +45,9 @@ interface
 uses
   Classes, Graphics, Controls, Forms, Dialogs, Clipbrd,
   IDEWindowIntf, IDEOptionDefs,
-  Buttons, StdCtrls, Menus, ExtCtrls, DebuggerDlg
+  BaseDebugManager, Buttons, StdCtrls, Menus, ExtCtrls, DebuggerDlg
   {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
-  , BaseDebugManager, GDBMIDebugger, CmdLineDebugger
+  , GDBMIDebugger, CmdLineDebugger
   {$ENDIF}
   ;
 
