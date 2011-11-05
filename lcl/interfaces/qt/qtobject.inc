@@ -581,17 +581,23 @@ begin
   FillChar(Msg, SizeOf(Msg), 0);
   if OldWidget <> nil then
   begin
-    //WriteLn('KILL: ', OldWidget.LCLObject.ClassName);
+    // WriteLn('KILL: ', OldWidget.LCLObject.ClassName);
     Msg.msg := LM_KILLFOCUS;
     Msg.wParam := PtrInt(NewWidget);
-    OldWidget.DeliverMessage(Msg);
+    if (OldWidget is TQtMainWindow) and (TQtMainWindow(OldWidget).IsMdiChild) then
+      TQtMainWindow(OldWidget).SlotActivateWindow(False)
+    else
+      OldWidget.DeliverMessage(Msg);
   end;
   if NewWidget <> nil then
   begin
-    //WriteLn('SET: ', NewWidget.LCLObject.ClassName);
+    // WriteLn('SET: ', NewWidget.LCLObject.ClassName);
     Msg.msg := LM_SETFOCUS;
     Msg.wParam := PtrInt(OldWidget);
-    NewWidget.DeliverMessage(Msg);
+    if (NewWidget is TQtMainWindow) and (TQtMainWindow(NewWidget).IsMdiChild) then
+      TQtMainWindow(OldWidget).SlotActivateWindow(True)
+    else
+      NewWidget.DeliverMessage(Msg);
   end;
 end;
 
