@@ -595,7 +595,7 @@ begin
     Msg.msg := LM_SETFOCUS;
     Msg.wParam := PtrInt(OldWidget);
     if (NewWidget is TQtMainWindow) and (TQtMainWindow(NewWidget).IsMdiChild) then
-      TQtMainWindow(OldWidget).SlotActivateWindow(True)
+      TQtMainWindow(NewWidget).SlotActivateWindow(True)
     else
       NewWidget.DeliverMessage(Msg);
   end;
