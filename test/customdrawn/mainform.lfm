@@ -27,6 +27,8 @@ object Form1: TForm1
       'TCDComboBox'
       'TCDScrollBar'
       'TCDGroupBox'
+      'TCDPanel'
+      'TCDStaticText'
       'TCDTrackBar'
       'TCDCustomTabControl'
     )
@@ -48,7 +50,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 439
-    PageIndex = 7
+    PageIndex = 13
     TabOrder = 2
     TabStop = True
     object pageMenu: TPage
@@ -56,8 +58,8 @@ object Form1: TForm1
     object pagePopUp: TPage
     end
     object pageButtons: TPage
-      ClientWidth = 878
-      ClientHeight = 480
+      ClientWidth = 3512
+      ClientHeight = 1920
       object CDButton1: TCDButton
         Left = 119
         Height = 25
@@ -113,8 +115,8 @@ object Form1: TForm1
       end
     end
     object pageEdits: TPage
-      ClientWidth = 1756
-      ClientHeight = 960
+      ClientWidth = 7024
+      ClientHeight = 3840
       object CDEdit1: TCDEdit
         Left = 119
         Height = 24
@@ -153,8 +155,8 @@ object Form1: TForm1
     object Page1: TPage
     end
     object pageCheckboxes: TPage
-      ClientWidth = 7024
-      ClientHeight = 3840
+      ClientWidth = 28096
+      ClientHeight = 15360
       object CheckBox1: TCheckBox
         Left = 20
         Height = 17
@@ -181,8 +183,8 @@ object Form1: TForm1
       end
     end
     object pageRadioButton: TPage
-      ClientWidth = 439
-      ClientHeight = 240
+      ClientWidth = 1756
+      ClientHeight = 960
       object RadioButton1: TRadioButton
         Left = 16
         Height = 17
@@ -224,8 +226,8 @@ object Form1: TForm1
     object Page7: TPage
     end
     object pageGroupBoxes: TPage
-      ClientWidth = 3512
-      ClientHeight = 1920
+      ClientWidth = 14048
+      ClientHeight = 7680
       object GroupBox1: TGroupBox
         Left = 7
         Height = 100
@@ -285,9 +287,31 @@ object Form1: TForm1
         Caption = 'dsWinCE'
       end
     end
+    object Page2: TPage
+    end
+    object pageStaticTexts: TPage
+      ClientWidth = 439
+      ClientHeight = 240
+      object StaticText6: TStaticText
+        Left = 18
+        Height = 17
+        Top = 31
+        Width = 65
+        Caption = 'StaticText6'
+        TabOrder = 0
+      end
+      object CDStaticText1: TCDStaticText
+        Left = 144
+        Height = 20
+        Top = 31
+        Width = 70
+        DrawStyle = dsCommon
+        Caption = 'dsCommon'
+      end
+    end
     object pageTrackBars: TPage
-      ClientWidth = 28096
-      ClientHeight = 15360
+      ClientWidth = 112384
+      ClientHeight = 61440
       object TrackBar1: TTrackBar
         Left = 7
         Height = 25
@@ -345,8 +369,8 @@ object Form1: TForm1
         Height = 88
         Top = 32
         Width = 192
-        ActivePage = TabSheet1
-        TabIndex = 0
+        ActivePage = TabSheet2
+        TabIndex = 1
         TabOrder = 1
         object TabSheet1: TTabSheet
           Caption = 'TabSheet1'

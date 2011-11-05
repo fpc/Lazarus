@@ -25,6 +25,7 @@ type
     CDEdit1: TCDEdit;
     CDEdit2: TCDEdit;
     CDRadioButton1: TCDRadioButton;
+    CDStaticText1: TCDStaticText;
     editWinXP: TCDEdit;
     CDGroupBox1: TCDGroupBox;
     CDGroupBox2: TCDGroupBox;
@@ -44,6 +45,8 @@ type
     memoLog: TMemo;
     notebookControls: TNotebook;
     Page1: TPage;
+    Page2: TPage;
+    pageStaticTexts: TPage;
     pageMenu: TPage;
     pagePopUp: TPage;
     pageEditMultiline: TPage;
@@ -68,6 +71,7 @@ type
     StaticText3: TStaticText;
     StaticText4: TStaticText;
     StaticText5: TStaticText;
+    StaticText6: TStaticText;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
