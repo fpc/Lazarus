@@ -570,7 +570,8 @@ type
     QtFormBorderStyle: Integer;
     QtFormStyle: Integer;
     IsMainForm: Boolean;
-    MDIAreaHandle: TQtMDIArea;
+    MDIAreaHandle: TQtMDIArea; // valid only if we are fsMDIForm
+    MDIChildArea: TQtMDIArea; // valid only if we are fsMDIChild
     MenuBar: TQtMenuBar;
     ToolBar: TQtToolBar;
     destructor Destroy; override;
@@ -5105,6 +5106,8 @@ begin
   FHasPaint := True;
   FPopupMode := pmNone;
   FPopupParent := nil;
+  MDIAreaHandle := nil;
+  MDIChildArea := nil;
 
   IsMainForm := (LCLObject <> nil) and (LCLObject = Application.MainForm);
 

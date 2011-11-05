@@ -213,10 +213,13 @@ begin
   if (AForm.FormStyle in [fsMDIChild]) and
      (Application.MainForm.FormStyle = fsMdiForm) and
      not (csDesigning in AWinControl.ComponentState) then
+  begin
     QMdiArea_addSubWindow(
       QMdiAreaH(TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle.Widget),
       QtMainWindow.Widget, QtWindow);
-
+    // needed to take care of tricky focus problem with mdichildren
+    QtMainWindow.MDIChildArea := TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle;
+  end;
 
   // Return the handle
   Result := TLCLIntfHandle(QtMainWindow);
