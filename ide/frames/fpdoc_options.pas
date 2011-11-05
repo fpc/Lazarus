@@ -43,6 +43,8 @@ type
     procedure LazDocDeletePathButtonClick(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
     procedure LazDocBrowseButtonClick(Sender: TObject);
+    procedure LazDocListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure LazDocPathEditChange(Sender: TObject);
   private
   public
     function GetTitle: String; override;
@@ -90,16 +92,28 @@ begin
     LazDocListBox.Items.Add(LazDocPathEdit.Text);
 end;
 
+procedure TFpDocOptionsFrame.LazDocDeletePathButtonClick(Sender: TObject);
+begin
+  if LazDocListBox.ItemIndex >= 0 then begin
+    LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
+    LazDocListBoxSelectionChange(LazDocListBox, True);
+  end;
+end;
+
 procedure TFpDocOptionsFrame.LazDocBrowseButtonClick(Sender: TObject);
 begin
   if SelectDirectoryDialog.Execute then
     LazDocPathEdit.Text := SelectDirectoryDialog.FileName;
 end;
 
-procedure TFpDocOptionsFrame.LazDocDeletePathButtonClick(Sender: TObject);
+procedure TFpDocOptionsFrame.LazDocListBoxSelectionChange(Sender: TObject; User: boolean);
 begin
-  if LazDocListBox.ItemIndex >= 0 then
-    LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
+  LazDocDeletePathButton.Enabled:=(Sender as TListBox).ItemIndex <> -1;
+end;
+
+procedure TFpDocOptionsFrame.LazDocPathEditChange(Sender: TObject);
+begin
+  LazDocAddPathButton.Enabled:=(Sender as TEdit).Text <> '';
 end;
 
 class function TFpDocOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

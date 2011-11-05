@@ -11,22 +11,25 @@ inherited FpDocOptionsFrame: TFpDocOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Height = 196
+    Left = 0
+    Height = 199
+    Top = 0
     Width = 476
     Align = alTop
     AutoSize = True
     Caption = 'LazDocPathsGroupBox'
-    ClientHeight = 178
-    ClientWidth = 472
+    ClientHeight = 179
+    ClientWidth = 470
     TabOrder = 0
     object LazDocListBox: TListBox
       Left = 6
       Height = 108
       Top = 6
-      Width = 460
+      Width = 458
       Align = alTop
       BorderSpacing.Around = 6
+      ItemHeight = 0
+      OnSelectionChange = LazDocListBoxSelectionChange
       TabOrder = 0
     end
     object LazDocAddPathButton: TButton
@@ -34,12 +37,13 @@ inherited FpDocOptionsFrame: TFpDocOptionsFrame
       AnchorSideTop.Control = LazDocListBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 23
+      Height = 24
       Top = 120
-      Width = 133
+      Width = 152
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'LazDocAddPathButton'
+      Enabled = False
       OnClick = LazDocAddPathButtonClick
       TabOrder = 1
     end
@@ -47,13 +51,14 @@ inherited FpDocOptionsFrame: TFpDocOptionsFrame
       AnchorSideLeft.Control = LazDocAddPathButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LazDocAddPathButton
-      Left = 149
-      Height = 23
+      Left = 168
+      Height = 24
       Top = 120
-      Width = 145
+      Width = 168
       AutoSize = True
       BorderSpacing.Left = 10
       Caption = 'LazDocDeletePathButton'
+      Enabled = False
       OnClick = LazDocDeletePathButtonClick
       TabOrder = 2
     end
@@ -64,9 +69,9 @@ inherited FpDocOptionsFrame: TFpDocOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = LazDocPathEdit
       AnchorSideBottom.Side = asrBottom
-      Left = 442
+      Left = 440
       Height = 23
-      Top = 149
+      Top = 150
       Width = 24
       Anchors = [akTop, akRight, akBottom]
       BorderSpacing.Right = 6
@@ -81,12 +86,13 @@ inherited FpDocOptionsFrame: TFpDocOptionsFrame
       AnchorSideRight.Control = LazDocBrowseButton
       Left = 6
       Height = 23
-      Top = 149
-      Width = 436
+      Top = 150
+      Width = 434
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
+      OnChange = LazDocPathEditChange
       TabOrder = 4
       Text = 'LazDocPathEdit'
     end
