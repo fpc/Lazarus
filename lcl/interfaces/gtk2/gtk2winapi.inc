@@ -4702,6 +4702,9 @@ begin
 
   if TopList <> nil
   then g_list_free(TopList);
+  {$IFDEF VerboseFocus}
+  DebugLn('TGtk2WidgetSet.GetFocus: Result=',dbgHex(Result));
+  {$ENDIF}
 
   {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
 end;
