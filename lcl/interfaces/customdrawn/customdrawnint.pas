@@ -118,7 +118,7 @@ function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 implementation
 
 uses
-  WsControls, lclintf, menus,
+  WsControls, lclintf,
 {  Win32WSFactory,
   Win32WSButtons,
   Win32WSMenus,

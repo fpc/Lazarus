@@ -17,16 +17,16 @@ uses
   //win32wspairsplitter,
 {  win32themes,
   win32wsmenus,
-  win32debug,
-  win32wscontrols,
-  win32wsfactory,
-  win32wsextctrls,
+  win32debug,}
+  customdrawnwscontrols,
+  customdrawnwsfactory,
+  {win32wsextctrls,
   win32wscomctrls,
   win32wsgrids,
   win32wsimglist,}
-  customdrawnint
+  customdrawnint,
   {win32wsspin,
-  win32wsbuttons,
-  win32wsforms};
+  win32wsbuttons,}
+  customdrawnwsforms;
 implementation
 end.

@@ -1092,13 +1092,12 @@ end;
 function GetControlText(AHandle: HWND): string;
 var
   TextLen: dword;
-  tmpWideStr : PWideChar;
+  tmpWideStr: WideString;
 begin
   TextLen := GetWindowTextLength(AHandle);
-  tmpWideStr := PWideChar(SysAllocStringLen(nil,TextLen + 1));
-  GetWindowTextW(AHandle, tmpWideStr, TextLen + 1);
-  Result := UTF8Encode(widestring(tmpWideStr));
-  SysFreeString(tmpWideStr);
+  SetLength(tmpWideStr, TextLen+1);
+  GetWindowTextW(AHandle, PWideChar(tmpWideStr), TextLen + 1);
+  Result := UTF8Encode(tmpWideStr);
 end;
 
 procedure WideStrCopy(Dest, Src: PWideChar);
