@@ -442,11 +442,12 @@ type
     procedure Change;
   public
     function AsShortCut: TShortCut; virtual;
-    constructor Create(TheCategory: TIDECommandCategory; const TheName,
-              TheLocalizedName: String;
-              TheCommand: word; const TheShortcutA, TheShortcutB: TIDEShortCut;
-              const ExecuteMethod: TNotifyEvent;
-              const ExecuteProc: TNotifyProcedure);
+    constructor Create(TheCategory: TIDECommandCategory;
+              const TheName, TheLocalizedName: String; TheCommand: word;
+              const TheShortcutA, TheShortcutB: TIDEShortCut;
+              const ExecuteMethod: TNotifyEvent; const ExecuteProc: TNotifyProcedure);
+    constructor Create(TheCategory: TIDECommandCategory;
+              const TheName, TheLocalizedName: String; TheCommand: word);
     constructor Create(ACommand: TIDECommand; ACategory: TIDECommandCategory);
     destructor Destroy; override;
     procedure Assign(ACommand: TIDECommand);
@@ -815,8 +816,14 @@ begin
   //DebugLn('TIDECommand.Create Name=',Name,' ',ShortCutToText(AsShortCut),' ',dbgs(Pointer(Self)));
 end;
 
-constructor TIDECommand.Create(ACommand: TIDECommand;
-  ACategory: TIDECommandCategory);
+constructor TIDECommand.Create(TheCategory: TIDECommandCategory;
+  const TheName, TheLocalizedName: String; TheCommand: word);
+begin
+  Create(TheCategory, TheName, TheLocalizedName, TheCommand,
+         CleanIDEShortCut, CleanIDEShortCut, Nil, Nil);
+end;
+
+constructor TIDECommand.Create(ACommand: TIDECommand; ACategory: TIDECommandCategory);
 begin
   fCommand:=ACommand.Command;
   fName:=ACommand.Name;
