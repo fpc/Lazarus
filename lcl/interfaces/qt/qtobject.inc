@@ -563,25 +563,40 @@ var
   OldWidget, NewWidget: TQtWidget;
   Msg: TLMessage;
 begin
-  // WriteLn('old: ', PtrUInt(aold), ' new: ', PtrUInt(anew));
+  {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+  WriteLn('TQtWidgetSet.FocusChanged: old: ', dbgHex(PtrUInt(aold)), ' new: ', dbgHex(PtrUInt(anew)));
+  {$ENDIF}
   OldWidget := GetFirstQtObjectFromWidgetH(aold);
   NewWidget := GetFirstQtObjectFromWidgetH(anew);
 
   if OldWidget = NewWidget then
+  begin
+    {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+    WriteLn('TQtWidgetSet.FocusChanged: OldWidget = NewWidget ... exiting ...');
+    {$ENDIF}
     Exit;
+  end;
 
   {Applies to all TQtWidgets which have "subwidgets" created
    by CreateFrom() eg. comboBox.}
   if (OldWidget <> nil) and
      (NewWidget <> nil) and
      (OldWidget.LCLObject = NewWidget.LCLObject) then
+  begin
+    {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+    WriteLn('TQtWidgetSet.FocusChanged: exiting ... '+
+    'OldWidget.LCLObject=NewWidget.LCLObject OBJ=',dbgsName(OldWidget.LCLObject));
+    {$ENDIF}
     exit;
+  end;
 
   Msg.Msg := 0; // shutup compiler
   FillChar(Msg, SizeOf(Msg), 0);
   if OldWidget <> nil then
   begin
-    // WriteLn('KILL: ', OldWidget.LCLObject.ClassName);
+    {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+    WriteLn('TQtWidgetSet.FocusChanged: KILL ', dbgsName(OldWidget.LCLObject));
+    {$ENDIF}
     Msg.msg := LM_KILLFOCUS;
     Msg.wParam := PtrInt(NewWidget);
     if (OldWidget is TQtMainWindow) and (TQtMainWindow(OldWidget).IsMdiChild) and
@@ -593,7 +608,9 @@ begin
   end;
   if NewWidget <> nil then
   begin
-    // WriteLn('SET: ', NewWidget.LCLObject.ClassName);
+    {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+    WriteLn('TQtWidgetSet.FocusChanged: SET ', dbgsName(NewWidget.LCLObject));
+    {$ENDIF}
     Msg.msg := LM_SETFOCUS;
     Msg.wParam := PtrInt(OldWidget);
     if (NewWidget is TQtMainWindow) and (TQtMainWindow(NewWidget).IsMdiChild) and
