@@ -2174,6 +2174,7 @@ begin
     QEventCocoaRequestModal: result := 'QEventCocoaRequestModal';
     QEventUser: result:='QEventUser';
     QEventMaxUser: result:='QEventMaxUser';
+    200: Result := 'QEventCloseSoftwareInputPanel';
   else
     Result := Format('Unknown event: %d', [QEvent_type(Event)]);
   end;
