@@ -877,6 +877,7 @@ type
     property Anchors;
     property AutoSelect;
     property AutoSize;
+    property BidiMode;
     property BorderSpacing;
     property BorderStyle;
     property CharCase;
@@ -891,6 +892,7 @@ type
     property LabelPosition;
     property LabelSpacing;
     property MaxLength;
+    property ParentBidiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
