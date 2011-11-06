@@ -4,16 +4,10 @@
     <Name Value="LazUtils"/>
     <Author Value="Lazarus Team"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Linking>
-        <Debugging>
-          <GenerateDebugInfo Value="True"/>
-          <DebugInfoType Value="dsAuto"/>
-        </Debugging>
-      </Linking>
       <Other>
         <CompilerMessages>
           <UseMsgFile Value="True"/>
@@ -25,7 +19,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="28">
+    <Files Count="29">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="laz2_DOM"/>
@@ -138,6 +132,10 @@
         <Filename Value="lazutf16.pas"/>
         <UnitName Value="lazutf16"/>
       </Item28>
+      <Item29>
+        <Filename Value="lazutf8sysutils.pas"/>
+        <UnitName Value="lazutf8sysutils"/>
+      </Item29>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

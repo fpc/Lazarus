@@ -1761,6 +1761,7 @@ components/lazutils/lazfileutils.pas svneol=native#text/plain
 components/lazutils/lazutf16.pas svneol=native#text/pascal
 components/lazutils/lazutf8.pas svneol=native#text/plain
 components/lazutils/lazutf8classes.pas svneol=native#text/pascal
+components/lazutils/lazutf8sysutils.pas svneol=native#text/plain
 components/lazutils/lazutils.lpk svneol=native#text/plain
 components/lazutils/lazutils.pas svneol=native#text/plain
 components/lazutils/lazutilsstrconsts.pas svneol=native#text/pascal

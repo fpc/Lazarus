@@ -53,7 +53,7 @@ uses
   {$IFDEF UNIX}Unix, {$ENDIF}
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
   Types, Math, Classes, SysUtils, LCLType, LCLProc, GraphType, InterfaceBase,
-  LResources, FileUtil, UTF8Process, Maps, LMessages;
+  LResources, FileUtil, UTF8Process, Maps, LMessages, lazutf8sysutils;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
@@ -71,18 +71,7 @@ function PredefinedClipboardFormat(
 
 function MsgKeyDataToShiftState(KeyData: PtrInt): TShiftState;
 
-
-{$IFDEF WINDOWS}
-
-{$IFDEF MSWindows}
-function GetTickCount:DWORD; stdcall; external 'kernel32.dll' name 'GetTickCount';
-{$ELSE}
-function GetTickCount:DWORD; stdcall; external KernelDLL name 'GetTickCount';
-{$ENDIF}
-
-{$ELSE}
-function GetTickCount: DWord;
-{$ENDIF}
+function GetTickCount(): Int64;
 
 {$IFDEF DebugLCL}
 function GetTickStep: DWord;
@@ -147,24 +136,10 @@ begin
   end;
 end;
 
-
-{$IFNDEF WINDOWS}
-function GetTickCount: DWord;
-{$IFDEF UNIX}
-var
-  tp: TTimeVal;
-{$ENDIF}
+function GetTickCount(): Int64;
 begin
-  {$IFDEF UNIX}
-  if fpgettimeofday(@tp, nil) = 0 then
-    Result := DWord((tp.tv_sec * 1000) + (tp.tv_usec div 1000))
-  else
-    Result := DWord(Trunc(Now * 24 * 60 * 60 * 1000));
-  {$ELSE}
-  Result := DWord(Trunc(Now * 24 * 60 * 60 * 1000));
-  {$ENDIF}
+  Result := lazutf8sysutils.GetTickCount();
 end;
-{$ENDIF}
 
 {$IFDEF DebugLCL}
 var

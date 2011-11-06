@@ -11,7 +11,7 @@ uses
   Laz_XMLCfg, Laz_XMLRead, Laz_XMLStreaming, Laz_XMLWrite, LazFileUtils, 
   LazFileCache, LUResStrings, LazUTF8, LazDbgLog, paswstring, FileUtil, 
   lazutf8classes, Masks, LazUtilsStrConsts, LConvEncoding, lazutf16, 
-  LazarusPackageIntf;
+  lazutf8sysutils, LazarusPackageIntf;
 
 implementation
 
