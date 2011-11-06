@@ -16132,6 +16132,7 @@ var
   CurPos, CurFound: TProjectBookmark;
   AnUnitInfo: TUnitInfo;
   AnEditorInfo: TUnitEditorInfo;
+  NewXY: TPoint;
 begin
   if ID < 0 then begin
     // ID < 0  => next/prev
@@ -16175,6 +16176,7 @@ begin
 
       if CurFound = nil then exit;
       ID := CurFound.ID;
+      NewXY := CurFound.CursorPos;
     finally
       CurPos.Free;
     end;
@@ -16183,15 +16185,22 @@ begin
   end
   else begin
     AnEditor := nil;
-    AnUnitInfo := TUnitInfo(Project1.Bookmarks.UnitInfoForBookmarkWithIndex(ID));
     AnEditorInfo := nil;
-    if (AnUnitInfo <> nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then
-      AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo,
-                        Project1.Bookmarks.BookmarkWithID(ID).CursorPos);
+    AnUnitInfo := TUnitInfo(Project1.Bookmarks.UnitInfoForBookmarkWithIndex(ID));
+    if (AnUnitInfo <> nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then begin
+      NewXY := Project1.Bookmarks.BookmarkWithID(ID).CursorPos;
+      AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, NewXY);
+    end;
     if AnEditorInfo <> nil then
       AnEditor := TSourceEditor(AnEditorInfo.EditorComponent);
     if AnEditor = nil then exit;
   end;
+
+  if (AnEditor <> SourceEditorManager.ActiveEditor)
+  or (AnEditor.EditorComponent.CaretX <> NewXY.X)
+  or (AnEditor.EditorComponent.CaretY <> NewXY.Y)
+  then
+    SourceEditorManager.AddJumpPointClicked(Self);
 
   SourceEditorManager.ActiveEditor := AnEditor;
   SourceEditorManager.ShowActiveWindowOnTop(True);
