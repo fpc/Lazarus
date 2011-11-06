@@ -12268,11 +12268,6 @@ msgstr "Įtraukti"
 msgid "Invalid package type"
 msgstr "Klaidingas paketo tipas"
 
-#: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
-msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
-msgid "FPDoc files path"
-msgstr "FPDoc failų kelias"
-
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
 msgstr "Biblioteka"

@@ -12257,11 +12257,6 @@ msgstr "Zahrnúť"
 msgid "Invalid package type"
 msgstr "Neplatný typ balíčka"
 
-#: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
-msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
-msgid "FPDoc files path"
-msgstr "Cesta k súborom FPDoc"
-
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
 msgstr "Knižnica"

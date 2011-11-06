@@ -55,6 +55,14 @@ msgstr "%0:sПроцесс GDB больше не выполняется.%0:s"
 msgid "Unrecoverable error: \"%s\""
 msgstr "Неустранимая ошибка: \"%s\""
 
+#: gdbmidebugger.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
+msgstr "Нажмите \"Пропустить\", чтобы продолжить отладку. Это может быть небезопасно. Нажмите \"Прервать\", чтобы окончить отладку.%0:sИсключение: %1:s с сообщением \"%2:s\"%0:sКонтекст: %4:s. Состояние: %5:s %0:s%0:s%3:s"
+
+#: gdbmidebugger.gdbmithedebuggerexperiencedanunknowncondition
+msgid "The debugger experienced an unknown condition"
+msgstr "Возникла неизвестная для отладчика ситуация"
+
 #: gdbmidebugger.gdbmitimeoutforcmd
 msgid "Time-out for command: \"%s\""
 msgstr "Истекло время ожидания для команды: \"%s\""

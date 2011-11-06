@@ -12072,11 +12072,6 @@ msgstr "Вставити"
 msgid "Invalid package type"
 msgstr "Неправильний тип пакунку"
 
-#: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
-msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
-msgid "FPDoc files path"
-msgstr "Шлях до файлів FPDoc"
-
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
 msgstr "Бібліотека"

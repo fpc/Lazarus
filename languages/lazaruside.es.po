@@ -12238,11 +12238,6 @@ msgstr "Incluir"
 msgid "Invalid package type"
 msgstr "Tipo del paquete no válido"
 
-#: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
-msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
-msgid "FPDoc files path"
-msgstr "Ruta a los archivos FPDoc"
-
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
 msgstr "Biblioteca"

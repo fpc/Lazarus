@@ -12294,11 +12294,6 @@ msgstr "インクルード"
 msgid "Invalid package type"
 msgstr "無効なパッケージタイプ"
 
-#: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
-msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
-msgid "FPDoc files path"
-msgstr "FPDocファイルパス"
-
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
 msgstr "ライブラリ"

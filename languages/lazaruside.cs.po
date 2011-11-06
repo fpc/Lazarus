@@ -12188,11 +12188,6 @@ msgstr "Zahrnout"
 msgid "Invalid package type"
 msgstr "Neplatný typ balíčku"
 
-#: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
-msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
-msgid "FPDoc files path"
-msgstr "Cesta souborů FPDoc"
-
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
 msgstr "Knihovna"

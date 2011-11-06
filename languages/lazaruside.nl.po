@@ -12214,11 +12214,6 @@ msgstr "Neem op"
 msgid "Invalid package type"
 msgstr "Ongeldige pakket type"
 
-#: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
-msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
-msgid "FPDoc files path"
-msgstr ""
-
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
 msgstr "Bibliotheek"

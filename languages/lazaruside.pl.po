@@ -12240,11 +12240,6 @@ msgstr "Dołącz"
 msgid "Invalid package type"
 msgstr "Nieprawidłowy typ pakietu"
 
-#: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
-msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
-msgid "FPDoc files path"
-msgstr "Ścieżka do plików FPDoc"
-
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
 msgstr "Biblioteka"

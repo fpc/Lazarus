@@ -41,6 +41,14 @@ msgstr ""
 msgid "Unrecoverable error: \"%s\""
 msgstr ""
 
+#: gdbmidebugger.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
+msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
+msgstr ""
+
+#: gdbmidebugger.gdbmithedebuggerexperiencedanunknowncondition
+msgid "The debugger experienced an unknown condition"
+msgstr ""
+
 #: gdbmidebugger.gdbmitimeoutforcmd
 msgid "Time-out for command: \"%s\""
 msgstr ""

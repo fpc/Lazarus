@@ -12252,11 +12252,6 @@ msgstr "הוסף"
 msgid "Invalid package type"
 msgstr "סוג חבילה לא חוקי"
 
-#: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
-msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
-msgid "FPDoc files path"
-msgstr "נתיב של קבצי FPDoc"
-
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
 msgstr "ספריה"

@@ -12210,11 +12210,6 @@ msgstr "Включаемый"
 msgid "Invalid package type"
 msgstr "Неверный тип пакета"
 
-#: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
-msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
-msgid "FPDoc files path"
-msgstr "Путь к файлам FPDoc"
-
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
 msgstr "Библиотека"

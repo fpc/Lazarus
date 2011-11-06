@@ -12042,11 +12042,6 @@ msgstr ""
 msgid "Invalid package type"
 msgstr ""
 
-#: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
-msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
-msgid "FPDoc files path"
-msgstr ""
-
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
 msgstr ""

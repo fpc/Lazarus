@@ -12269,11 +12269,6 @@ msgstr "包含"
 msgid "Invalid package type"
 msgstr "无效包类型"
 
-#: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
-msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
-msgid "FPDoc files path"
-msgstr "FPDoc 文件路径"
-
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
 msgstr "库"
