@@ -2175,6 +2175,7 @@ begin
     QEventUser: result:='QEventUser';
     QEventMaxUser: result:='QEventMaxUser';
     200: Result := 'QEventCloseSoftwareInputPanel';
+    203: Result := 'QEventWinIdChange';
   else
     Result := Format('Unknown event: %d', [QEvent_type(Event)]);
   end;
