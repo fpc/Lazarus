@@ -8,16 +8,16 @@
 -->
     <module name="LResources">
       <short>This unit maintains and stores all standard Lazarus resources
-        in the global <link id="LazarusResources"/> list
+        in the global <link id="#LCL.LResources.LazarusResources">LazarusResources</link> list
         and provides methods and types for component streaming.</short>
       <descr>
-        <p>A <link id="TLResource">Lazarus resource</link> is streamed as an ansistring [UTF-8?],
+        <p>A <link id="TLResource">Lazarus resource</link> is streamed as an UTF-8 string,
           with a name, value and valuetype.
         </p>
         <p>Lazarus resources are normally included via an include directive
           in the initialization part of a unit.
           To create such include files use the <var>BinaryToLazarusResourceCode</var> procedure.</p>
-        <p>To create a LRS file from an LFM file use the <var>LFMtoLRSfile</var> function
+        <p>To create an LRS file from an LFM file use the <var>LFMtoLRSfile</var> function
           which transforms the LFM text to binary format and stores it as Lazarus resource include file.</p>
       </descr>
       <!-- unresolved type reference Visibility: default -->
@@ -50,24 +50,20 @@
         <descr/>
         <seealso/>
       </element>
-<!-- constant Visibility: default -->
+      <!-- constant Visibility: default -->
       <element name="LRSComment">
         <short>Text of the "automatically generated..." warning in resource files.
         </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- array type Visibility: default -->
       <element name="TFilerSignature">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>[?]</short>
+        <descr/>
+        <seealso/>
       </element>
-<!-- object Visibility: default -->
+      <!-- object Visibility: default -->
       <element name="TLResource">
         <short>The Lazarus resource descriptor class.
         </short>
@@ -83,33 +79,33 @@
       </element>
       <!-- variable Visibility: public -->
       <element name="TLResource.ValueType">
-        <short>[?]</short>
+        <short>The resource type, always uppercase.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: public -->
       <element name="TLResource.Value">
-        <short>[?]</short>
+        <short>The resource value.</short>
         <descr/>
         <seealso/>
       </element>
-<!-- object Visibility: default -->
+      <!-- object Visibility: default -->
       <element name="TLResourceList">
-        <short>The container class for all Lazarus resoucres.
+        <short>The container class for all Lazarus resources.
         </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TLResourceList.FList" link="TLResourceList.Items">
-        <short>main list with all resource pointers</short>
+      <element link="TLResourceList.Items" name="TLResourceList.FList">
+        <short>Main list with all resource pointers.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TLResourceList.FMergeList">
-        <short>list needed for mergesort</short>
+        <short>List needed for mergesort.</short>
         <descr/>
         <seealso/>
       </element>
@@ -135,7 +131,7 @@
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TLResourceList.GetItems" link="TLResourceList.Items"/>
+      <element link="TLResourceList.Items" name="TLResourceList.GetItems"/>
       <element name="TLResourceList.GetItems.Result">
         <short/>
       </element>
@@ -197,7 +193,8 @@
       <!-- procedure Visibility: public -->
       <element name="TLResourceList.Add">
         <short>Adds a resource.</short>
-        <descr/>
+        <descr>ValueType is stored in uppercase.
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -208,10 +205,10 @@
         <short/>
       </element>
       <element name="TLResourceList.Add.Value">
-        <short/>
+        <short>A sinlge value string.</short>
       </element>
       <element name="TLResourceList.Add.Values">
-        <short/>
+        <short>The value splitted into an string array.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TLResourceList.Find">
@@ -228,7 +225,7 @@
         <short/>
       </element>
       <element name="TLResourceList.Find.ValueType">
-        <short></short>
+        <short>Should be uppercase, if present.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TLResourceList.Count">
@@ -249,36 +246,29 @@
       <element name="TLResourceList.Items.Index">
         <short/>
       </element>
-<!-- class Visibility: default -->
+      <!-- class Visibility: default -->
       <element name="TLazarusResourceStream">
-        <short>Helper class for streaming rescources [abstract?].</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Helper class for streaming resources (read only).</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TLazarusResourceStream.FLRes" link="TLazarusResourceStream.Res"/>
+      <element link="TLazarusResourceStream.Res" name="TLazarusResourceStream.FLRes"/>
       <!-- variable Visibility: private -->
       <element name="TLazarusResourceStream.FPRes">
         <short>Resource in FPC format.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLazarusResourceStream.Initialize">
         <short>Initializes the resource descriptor.</short>
         <descr>The descriptor must already exist.
         </descr>
-        <errors>
-          EResNotFound if the resource does not yet exist.
+        <errors>EResNotFound if the resource does not yet exist.
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TLazarusResourceStream.Initialize.Name">
         <short>The resource name.</short>
@@ -289,12 +279,9 @@
       <!-- constructor Visibility: public -->
       <element name="TLazarusResourceStream.Create">
         <short>Creates an resource stream for a named resource.</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLazarusResourceStream.Create.ResName">
         <short>The resource name.</short>
@@ -305,12 +292,9 @@
       <!-- constructor Visibility: public -->
       <element name="TLazarusResourceStream.CreateFromID">
         <short>Creates an resource stream for a resource ID.</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLazarusResourceStream.CreateFromID.ResID">
         <short>The resource ID.</short>
@@ -321,18 +305,15 @@
       <!-- constructor Visibility: public -->
       <element name="TLazarusResourceStream.CreateFromHandle">
         <short>Creates an resource stream from an resource descriptor.</short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLazarusResourceStream.CreateFromHandle.AHandle">
-        <short></short>
+        <short/>
       </element>
       <element name="TLazarusResourceStream.CreateFromHandle.Instance">
-        <short></short>
+        <short/>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TLazarusResourceStream.Destroy"/>
@@ -343,277 +324,239 @@
         </descr>
         <errors>EStreamError SCantWriteResourceStreamError.
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TLazarusResourceStream.Write.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TLazarusResourceStream.Write.Buffer">
-        <short></short>
+        <short/>
       </element>
       <element name="TLazarusResourceStream.Write.Count">
-        <short></short>
+        <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TLazarusResourceStream.Res">
         <short>The resource descriptor, owned by the global resource list[?].</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- class Visibility: default -->
       <element name="TAbstractTranslator">
         <short>Abstract base class for translators [what's this?]</short>
         <descr>[implemented where?]
         </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TAbstractTranslator.TranslateStringProperty">
-        <short>Override this method to [do what?]</short>
-        <descr>
+        <short>The base class for an TReader.OnReadStringProperty handler.
+        </short>
+        <descr>Override this method to [do what?]
         </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TAbstractTranslator.TranslateStringProperty.Sender">
-        <short></short>
+        <short/>
       </element>
       <element name="TAbstractTranslator.TranslateStringProperty.Instance">
-        <short></short>
+        <short/>
       </element>
       <element name="TAbstractTranslator.TranslateStringProperty.PropInfo">
-        <short></short>
+        <short/>
       </element>
       <element name="TAbstractTranslator.TranslateStringProperty.Content">
-        <short></short>
+        <short/>
       </element>
-<!-- variable Visibility: default -->
+      <!-- variable Visibility: default -->
       <element name="LRSTranslator">
-        <short>The translator instance to use [for what?].</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The default translator instance to use in <link id="CreateLRSReader"/>.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
-<!-- enumeration type Visibility: default -->
+      <!-- enumeration type Visibility: default -->
       <element name="TLRSItemType">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Stack item type for the nested resource reader/writer.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLRSItemType.lrsitCollection">
-        <short></short>
+        <short>A list terminated by an EndList [empty entry?].</short>
       </element>
       <element name="TLRSItemType.lrsitComponent">
-        <short></short>
+        <short>A component has two lists: properties and children.</short>
       </element>
       <element name="TLRSItemType.lrsitList">
-        <short></short>
+        <short>A list with a known (stored) number of entries.</short>
       </element>
       <element name="TLRSItemType.lrsitProperty">
-        <short></short>
+        <short/>
       </element>
-<!-- record type Visibility: default -->
+      <!-- record type Visibility: default -->
       <element name="TLRSORStackItem">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Stack item for the <link id="TLRSObjectReader">nested resource reader</link>.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSORStackItem.Name">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSORStackItem.ItemType">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSORStackItem.Root">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSORStackItem.PushCount">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The number of contained collections, needing an EndList.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSORStackItem.ItemNr">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- pointer type Visibility: default -->
-      <element name="PLRSORStackItem" link="TLRSORStackItem"/>
-<!-- object Visibility: default -->
+      <element link="TLRSORStackItem" name="PLRSORStackItem"/>
+      <!-- object Visibility: default -->
       <element name="TLRSObjectReader">
-        <short>Reader class for resource streams[?]</short>
-        <descr/>
+        <short>Reader for resource streams.</short>
+        <descr>Uses an stack for reading nested objects.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TLRSObjectReader.FStream" link="TLRSObjectReader.Stream"/>
+      <element link="TLRSObjectReader.Stream" name="TLRSObjectReader.FStream"/>
       <!-- variable Visibility: private -->
       <element name="TLRSObjectReader.FBuffer">
-        <short/>
+        <short>The input stream buffer.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TLRSObjectReader.FBufSize">
-        <short/>
+        <short>Size of the input buffer.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TLRSObjectReader.FBufPos">
-        <short/>
+        <short>Current position in the input buffer.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TLRSObjectReader.FBufEnd">
-        <short/>
+        <short>The number of bytes in the buffer.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TLRSObjectReader.FStack">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The object stack.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TLRSObjectReader.FStackPointer">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TLRSObjectReader.FStackCapacity">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The Length of the allocated stack.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TLRSObjectReader.FReader" link="TLRSObjectReader.Reader"/>
+      <element link="TLRSObjectReader.Reader" name="TLRSObjectReader.FReader"/>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectReader.SkipProperty">
-        <short/>
+        <short>Skip the property name, then the property value.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectReader.SkipSetBody">
-        <short/>
+        <short>Skips until the next empty string [EndList?].</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectReader.Push">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Push a new resource item.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLRSObjectReader.Push.ItemType">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRSObjectReader.Push.AName">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRSObjectReader.Push.Root">
-        <short></short>
+        <short>The Component whose properties follow.</short>
       </element>
       <element name="TLRSObjectReader.Push.PushCount">
-        <short></short>
+        <short>The number of contained lists, which need an EndList.</short>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectReader.Pop">
-        <short></short>
-        <descr>
+        <short>Pop an item, or decrement its PushCount.</short>
+        <descr>Called on EndList (vaNull) encounterd[?]
         </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectReader.ClearStack">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Destroys the stack, during reader destrucion.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- function Visibility: private -->
       <element name="TLRSObjectReader.InternalReadValue">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Reads the 1-byte value type.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLRSObjectReader.InternalReadValue.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectReader.EndPropertyIfOpen">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Terminate reading a Component list (properties or children).</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- function Visibility: private -->
       <element name="TLRSObjectReader.ReadIntegerContent">
-        <short/>
+        <short>Reads an 4 byte integer value.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -630,17 +573,17 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TLRSObjectReader.Create.AStream">
-        <short>The input stream[?]</short>
+        <short>The input stream.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TLRSObjectReader.Create.BufSize">
-        <short>[?]</short>
+        <short>The stream buffer size to allocate.</short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TLRSObjectReader.Destroy"/>
       <!-- function Visibility: public -->
       <element name="TLRSObjectReader.NextValue">
-        <short/>
+        <short>Peek the next byte (value type indicator).</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -650,7 +593,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TLRSObjectReader.ReadValue">
-        <short/>
+        <short>Reads the next ValueType. Pops or pushes a stack item if required (for list or collection).</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -660,9 +603,10 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TLRSObjectReader.BeginRootComponent">
-        <short/>
+        <short>Reads the filer signature from the input.</short>
         <descr/>
-        <errors/>
+        <errors>EReadError 'Invalid Filer Signature' on filer signature mismatch.
+        </errors>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
@@ -696,20 +640,17 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TLRSObjectReader.GetStackPath">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Returns the qualified current item name.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLRSObjectReader.GetStackPath.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TLRSObjectReader.Read">
-        <short/>
+        <short>Read a number of bytes from the input stream.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -722,7 +663,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TLRSObjectReader.ReadBinary">
-        <short/>
+        <short>Reads binary data, stored with a Length prefix.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -732,8 +673,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TLRSObjectReader.ReadFloat">
-        <short/>
-        <descr/>
+        <short>Reads an Extended value (10 Bytes).</short>
+        <descr>The result may have less bytes, when Extended is not a 10 byte value.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -742,7 +683,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TLRSObjectReader.ReadSingle">
-        <short/>
+        <short>Reads an Single value (4 bytes).</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -752,20 +693,17 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TLRSObjectReader.ReadCurrency">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Reads an Currency value (8 bytes).</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLRSObjectReader.ReadCurrency.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TLRSObjectReader.ReadDate">
-        <short/>
+        <short>Reads an Date value (8 bytes).</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -775,16 +713,18 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TLRSObjectReader.ReadIdent">
-        <short/>
+        <short>Reads an identifier, maybe a name or a standard key (which is not stored).
+        </short>
         <descr/>
-        <errors/>
+        <errors>GDB error on an unexpected ValueType.</errors>
         <seealso/>
       </element>
       <element name="TLRSObjectReader.ReadIdent.Result">
         <short/>
       </element>
       <element name="TLRSObjectReader.ReadIdent.ValueType">
-        <short/>
+        <short>The expected type: vaIdent for an stored name, or vaNil, vaFalse, vaTrue, vaNull for an standard string.
+        </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TLRSObjectReader.ReadInt8">
@@ -828,20 +768,20 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TLRSObjectReader.ReadSet">
-        <short/>
+        <short>Reads enum member names, until an empty string is read.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TLRSObjectReader.ReadSet.Result">
-        <short/>
+        <short>The constructed set, as an Integer.</short>
       </element>
       <element name="TLRSObjectReader.ReadSet.EnumType">
-        <short/>
+        <short>The expected set type.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TLRSObjectReader.ReadStr">
-        <short/>
+        <short>Reads an ShortString.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -864,72 +804,61 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TLRSObjectReader.ReadWideString">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TLRSObjectReader.ReadWideString.Result">
-        <short></short>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TLRSObjectReader.ReadUnicodeString">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TLRSObjectReader.ReadUnicodeString.Result">
-        <short></short>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TLRSObjectReader.SkipComponent">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <element name="TLRSObjectReader.SkipComponent.SkipComponentInfos">
+      <element name="TLRSObjectReader.ReadWideString.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TLRSObjectReader.ReadUnicodeString">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TLRSObjectReader.ReadUnicodeString.Result">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
+      <element name="TLRSObjectReader.SkipComponent">
+        <short>Skips an entire Component.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TLRSObjectReader.SkipComponent.SkipComponentInfos">
+        <short>If True: skip prefix, component class name and component object name.
+        </short>
+      </element>
+      <!-- procedure Visibility: public -->
       <element name="TLRSObjectReader.SkipValue">
-        <short/>
+        <short>Skips the next value.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TLRSObjectReader.Stream">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The input stream.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TLRSObjectReader.Reader">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The root component reader[?]</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- "class of" type Visibility: default -->
-      <element name="TLRSObjectReaderClass" link="TLRSObjectReader"/>
-<!-- enumeration type Visibility: default -->
+      <element link="TLRSObjectReader" name="TLRSObjectReaderClass"/>
+      <!-- enumeration type Visibility: default -->
       <element name="TLRSOWStackItemState">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Tracking what already has been stored or written.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLRSOWStackItemState.lrsowsisStarted">
         <short>now writing header</short>
@@ -940,99 +869,78 @@
       <element name="TLRSOWStackItemState.lrsowsisDataWritten">
         <short>header written to stream, data written</short>
       </element>
-<!-- record type Visibility: default -->
+      <!-- record type Visibility: default -->
       <element name="TLRSOWStackItem">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Stack item for the <link id="TLRSObjectWriter">nested resource writer</link>.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSOWStackItem.Name">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSOWStackItem.ItemType">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSOWStackItem.Root">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSOWStackItem.PushCount">
-        <short>waiting for this number of Pop
+        <short>waiting for this number of Pops
         </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSOWStackItem.ItemNr">
-        <short>nr in a collection or list
+        <short>Index in a collection or list.
         </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSOWStackItem.SkipIfEmpty">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSOWStackItem.State">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSOWStackItem.Buffer">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSOWStackItem.BufCount">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRSOWStackItem.BufCapacity">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- pointer type Visibility: default -->
-      <element name="PLRSOWStackItem" link="TLRSOWStackItem"/>
-<!-- object Visibility: default -->
+      <element link="TLRSOWStackItem" name="PLRSOWStackItem"/>
+      <!-- object Visibility: default -->
       <element name="TLRSObjectWriter">
         <short>Object writer for Lazarus Resource Streams.
         </short>
@@ -1073,109 +981,87 @@
       </element>
       <!-- variable Visibility: private -->
       <element name="TLRSObjectWriter.FStack">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TLRSObjectWriter.FStackPointer">
-        <short></short>
+        <short/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TLRSObjectWriter.FStackCapacity">
-        <short></short>
+        <short/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TLRSObjectWriter.FWriteEmptyInheritedChilds">
-        <short></short>
-      </element>
+      <element link="TLRSObjectWriter.WriteEmptyInheritedChilds" name="TLRSObjectWriter.FWriteEmptyInheritedChilds"/>
       <!-- variable Visibility: private -->
-      <element name="TLRSObjectWriter.FWriter" link="TLRSObjectWriter.Writer"/>
+      <element link="TLRSObjectWriter.Writer" name="TLRSObjectWriter.FWriter"/>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectWriter.Push">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLRSObjectWriter.Push.ItemType">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRSObjectWriter.Push.AName">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRSObjectWriter.Push.Root">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRSObjectWriter.Push.PushCount">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRSObjectWriter.Push.SkipIfEmpty">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectWriter.EndHeader">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectWriter.Pop">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLRSObjectWriter.Pop.WriteNull">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectWriter.ClearStack">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectWriter.FlushStackToStream">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectWriter.WriteToStream">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLRSObjectWriter.WriteToStream.Buffer">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRSObjectWriter.WriteToStream.Count">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TLRSObjectWriter.FlushBuffer">
@@ -1274,33 +1160,28 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TLRSObjectWriter.WriteCurrencyContent">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLRSObjectWriter.WriteCurrencyContent.c">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TLRSObjectWriter.WriteWideStringContent">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLRSObjectWriter.WriteWideStringContent.ws">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TLRSObjectWriter.WriteWordsReversed">
-        <short/>
+        <short>Writes multiples words (WideChar) with reversed byte order.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1401,16 +1282,13 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TLRSObjectWriter.GetStackPath">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLRSObjectWriter.GetStackPath.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TLRSObjectWriter.Write">
@@ -1477,16 +1355,13 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TLRSObjectWriter.WriteCurrency">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLRSObjectWriter.WriteCurrency.Value">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TLRSObjectWriter.WriteDate">
@@ -1560,206 +1435,134 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TLRSObjectWriter.WriteWideString">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLRSObjectWriter.WriteWideString.Value">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TLRSObjectWriter.WriteUnicodeString">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="TLRSObjectWriter.WriteUnicodeString.Value">
-        <short></short>
+        <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TLRSObjectWriter.WriteEmptyInheritedChilds">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TLRSObjectWriter.Writer">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- "class of" type Visibility: default -->
-      <element name="TLRSObjectWriterClass" link="TLRSObjectWriter"/>
-<!-- record type Visibility: default -->
+      <element link="TLRSObjectWriter" name="TLRSObjectWriterClass"/>
+      <!-- record type Visibility: default -->
       <element name="TLRPositionLink">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>[?]</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRPositionLink.LFMPosition">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRPositionLink.LRSPosition">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TLRPositionLink.Data">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- pointer type Visibility: default -->
-      <element name="PLRPositionLink">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-<!-- class Visibility: default -->
+      <element link="TLRPositionLink" name="PLRPositionLink"/>
+      <!-- class Visibility: default -->
       <element name="TLRPositionLinks">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>[?]</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TLRPositionLinks.FItems">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TLRPositionLinks.FCount">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
+      <element link="TLRPositionLinks.Count" name="TLRPositionLinks.FCount"/>
       <!-- function Visibility: private -->
-      <element name="TLRPositionLinks.GetData">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
+      <element link="TLRPositionLinks.Data" name="TLRPositionLinks.GetData"/>
       <element name="TLRPositionLinks.GetData.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRPositionLinks.GetData.Index">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TLRPositionLinks.GetLFM">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
+      <element link="TLRPositionLinks.LFM" name="TLRPositionLinks.GetLFM"/>
       <element name="TLRPositionLinks.GetLFM.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRPositionLinks.GetLFM.Index">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TLRPositionLinks.GetLRS">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
+      <element link="TLRPositionLinks.LRS" name="TLRPositionLinks.GetLRS"/>
       <element name="TLRPositionLinks.GetLRS.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRPositionLinks.GetLRS.Index">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLRPositionLinks.SetCount">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLRPositionLinks.SetCount.AValue">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TLRPositionLinks.SetData">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
+      <element link="TLRPositionLinks.Data" name="TLRPositionLinks.SetData"/>
       <element name="TLRPositionLinks.SetData.Index">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRPositionLinks.SetData.AValue">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TLRPositionLinks.SetLFM">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
+      <element link="TLRPositionLinks.LFM" name="TLRPositionLinks.SetLFM"/>
       <element name="TLRPositionLinks.SetLFM.Index">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRPositionLinks.SetLFM.AValue">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TLRPositionLinks.SetLRS">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
+      <element link="TLRPositionLinks.LRS" name="TLRPositionLinks.SetLRS"/>
       <element name="TLRPositionLinks.SetLRS.Index">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRPositionLinks.SetLRS.AValue">
-        <short></short>
+        <short/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TLRPositionLinks.Create"/>
@@ -1767,976 +1570,880 @@
       <element name="TLRPositionLinks.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TLRPositionLinks.Clear">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TLRPositionLinks.Sort">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Sort the items by LFM or LRS position.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLRPositionLinks.Sort.LFMPositions">
-        <short></short>
+        <short>True for sorting by LFM position.
+        </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TLRPositionLinks.IndexOf">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Searches for an item by LFM or LRS position.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLRPositionLinks.IndexOf.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRPositionLinks.IndexOf.Position">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRPositionLinks.IndexOf.LFMPositions">
-        <short></short>
+        <short>True for searching an LFM position.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TLRPositionLinks.IndexOfRange">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Find a random item within an position range.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLRPositionLinks.IndexOfRange.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRPositionLinks.IndexOfRange.FromPos">
-        <short></short>
+        <short>First acceptable position.</short>
       </element>
       <element name="TLRPositionLinks.IndexOfRange.ToPos">
-        <short></short>
+        <short>First position after the range (exclude)</short>
       </element>
       <element name="TLRPositionLinks.IndexOfRange.LFMPositions">
-        <short></short>
+        <short>True for searching LFM positions.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TLRPositionLinks.SetPosition">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Change the position of an item within the given position range.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLRPositionLinks.SetPosition.FromPos">
-        <short></short>
+        <short>First acceptable position.</short>
       </element>
       <element name="TLRPositionLinks.SetPosition.ToPos">
-        <short></short>
+        <short>First position after the range (exclude)</short>
       </element>
       <element name="TLRPositionLinks.SetPosition.MappedPos">
-        <short></short>
+        <short>The new position.</short>
       </element>
       <element name="TLRPositionLinks.SetPosition.LFMtoLRSPositions">
-        <short></short>
+        <short>True for using LFM positions.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TLRPositionLinks.Add">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLRPositionLinks.Add.LFMPos">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRPositionLinks.Add.LRSPos">
-        <short></short>
+        <short/>
       </element>
       <element name="TLRPositionLinks.Add.AData">
-        <short></short>
+        <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TLRPositionLinks.LFM">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Indexed access to the LFM positions.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLRPositionLinks.LFM.Index">
-        <short></short>
+        <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TLRPositionLinks.LRS">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Indexed access to the LRS positions.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLRPositionLinks.LRS.Index">
-        <short></short>
+        <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TLRPositionLinks.Data">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Indexed access to the Data pointers.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TLRPositionLinks.Data.Index">
-        <short></short>
+        <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TLRPositionLinks.Count">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
 <!-- class Visibility: default -->
       <element name="TUTF8Parser">
-        <short></short>
+        <short>Parser for identifiers, and string and number literals.</short>
         <descr>
+          <p>
+            Use <link id="TUTF8Parser.NextToken"/> to get the next token.
+            The token type also is available in Token.
+          </p><p>
+            Allowed whitespace is newline (CR,LF), tab and space.
+          </p><p>
+            Allowed identifiers consist of ASCII letters, digits or underscore.
+          </p><p>
+            Strings are a sequence of quoted strings or #nn characters.
+          </p><p>
+            Numbers are parsed as integer or floating point values,
+            with toFloat values subdivided into number, single, date or currency,
+            according to FloatType.
+          </p><p>
+            All other characters are returned literally.
+          </p>
         </descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TUTF8Parser.fStream">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The input stream.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TUTF8Parser.fBuf">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The allocated buffer.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TUTF8Parser.fBufLen">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Number of valid chars (bytes) in the buffer.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TUTF8Parser.fPos">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Current position (index) in the buffer.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TUTF8Parser.fLineStart">
-        <short></short>
-        <descr>
+        <short>Buffer-relative begin of the current line.
+        </short>
+        <descr>column = fPos - fLineStart + 1
         </descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TUTF8Parser.fFloatType" link="TUTF8Parser.FloatType"/>
-      <element name="TUTF8Parser.fSourceLine" link="TUTF8Parser.SourceLine"/>
-      <element name="TUTF8Parser.fToken" link="TUTF8Parser.Token"/>
+      <element link="TUTF8Parser.FloatType" name="TUTF8Parser.fFloatType"/>
+      <element link="TUTF8Parser.SourceLine" name="TUTF8Parser.fSourceLine"/>
+      <element link="TUTF8Parser.Token" name="TUTF8Parser.fToken"/>
       <!-- variable Visibility: private -->
       <element name="TUTF8Parser.fEofReached">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>True when reached the end of the input stream.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TUTF8Parser.fLastTokenStr">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Holds the last parsed token text[?]</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- function Visibility: private -->
       <element name="TUTF8Parser.GetTokenName">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The name of a token, maybe the Token character itself.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.GetTokenName.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TUTF8Parser.GetTokenName.aTok">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.LoadBuffer">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Fills the buffer from the input stream.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.CheckLoadBuffer">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Skips to the next non-null character[?]</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.ProcessChar">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Add the current character to the token string.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- function Visibility: private -->
       <element name="TUTF8Parser.IsNumber">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>True when the current character is a digit.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.IsNumber.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: private -->
       <element name="TUTF8Parser.IsHexNum">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>True when the current character is a hex digit.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.IsHexNum.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: private -->
       <element name="TUTF8Parser.IsAlpha">
-        <short></short>
-        <descr>
+        <short>True when the current character is an ASCII character (or underscore).</short>
+        <descr>Should mean: all allowed characters in an identifier.
+          [To be updated for Unicode identifiers]
         </descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.IsAlpha.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: private -->
       <element name="TUTF8Parser.IsAlphaNum">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>True when the current character is a digit or IsAlpha.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.IsAlphaNum.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: private -->
       <element name="TUTF8Parser.GetHexValue">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Returns the value of a hex digit.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.GetHexValue.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TUTF8Parser.GetHexValue.c">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: private -->
       <element name="TUTF8Parser.GetAlphaNum">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Parses and returns an identifier.</short>
+        <descr/>
+        <seealso/>
+        <errors>EParserError when the current character is not valid for an identifier.
+        </errors>
       </element>
       <element name="TUTF8Parser.GetAlphaNum.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.HandleNewLine">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Skip CR/LF, adjust SourceLine.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.SkipSpaces">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Skip space and tab chars.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.SkipWhitespace">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Skip all whitespace characters.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.HandleEof">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Marks end of input reached (fEofReached).</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.HandleAlphaNum">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Parse an identifier.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.HandleNumber">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Parse a number,
+          recognizing trailing floating point format specifiers.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.HandleHexNumber">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Parse a hex number, prefix the token string with '$'.
+        </short>
+        <descr/>
+        <seealso/>
+        <errors>EParserError when no valid hex digit was found.
+        </errors>
       </element>
       <!-- function Visibility: private -->
       <element name="TUTF8Parser.HandleQuotedString">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Parse an quoted string, excluding the leading and trailing quotes.</short>
+        <descr/>
+        <seealso/>
+        <errors>EParserError on an unterminated string literal.
+        </errors>
       </element>
       <element name="TUTF8Parser.HandleQuotedString.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: private -->
       <element name="TUTF8Parser.HandleDecimalString">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Parse an decimal Unicode codepoint, return it as an UTF-8 string.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.HandleDecimalString.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TUTF8Parser.HandleDecimalString.ascii">
-        <short></short>
+        <short>Is set to False on a non-ASCII character.</short>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.HandleString">
-        <short></short>
+        <short>Parses a string literal.</short>
         <descr>
+          <p>
+            The string can consist of quoted strings and Unicode codepoints.
+            Surrounding quote characters are removed.
+          </p><p>
+            The result is stored in fLastTokenStr, in UTF-8 encoding.
+          </p><p>
+            The resulting token is toString for all-ASCII strings, else toWString.
+          </p>
         </descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.HandleMinus">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Tries to parse a negative number, or a single '-' character.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.HandleUnknown">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Sets Token to the unrecognized character (no error).
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TUTF8Parser.Create"/>
       <element name="TUTF8Parser.Create.Stream">
-        <short></short>
+        <short/>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TUTF8Parser.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TUTF8Parser.CheckToken">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Asserts that Token is of the expected type.</short>
+        <descr/>
+        <seealso/>
+        <errors>EParserError when Token doesn't match the expected type.
+        </errors>
       </element>
       <element name="TUTF8Parser.CheckToken.T">
-        <short></short>
+        <short>The expected token type.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TUTF8Parser.CheckTokenSymbol">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Asserts that the given name was parsed (case insensitive).
+        </short>
+        <descr/>
+        <seealso/>
+        <errors>EParserError when Token doesn't match the expected type or name.
+        </errors>
       </element>
       <element name="TUTF8Parser.CheckTokenSymbol.S">
-        <short></short>
+        <short>The expected identifier.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TUTF8Parser.Error">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Raises an EParserError with the given message.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.Error.Ident">
-        <short></short>
+        <short>The message text.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TUTF8Parser.ErrorFmt">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Raises an EParserError with the formatted message.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.ErrorFmt.Ident">
-        <short></short>
+        <short>The Format string.</short>
       </element>
       <element name="TUTF8Parser.ErrorFmt.Args">
-        <short></short>
+        <short>The arguments to be formatted.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TUTF8Parser.ErrorStr">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Raises an EParserError with the given message, adding source position information.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.ErrorStr.Message">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TUTF8Parser.HexToBinary">
-        <short></short>
+        <short>Writes an hex value into the output stream.
+        </short>
         <descr>
+          <p>
+            The hex digits must occur in pairs, for every byte.
+          </p><p>
+            The binary bytes are written in input order (highest first).
+          </p>
         </descr>
-        <seealso>
-        </seealso>
+        <seealso/>
+        <errors>EParserError on unpaired hex digits.
+        </errors>
       </element>
       <element name="TUTF8Parser.HexToBinary.Stream">
-        <short></short>
+        <short>The output stream.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TUTF8Parser.NextToken">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Parses the next token.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.NextToken.Result">
-        <short></short>
+        <short>The token type.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TUTF8Parser.SourcePos">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Returns the current position in the input stream.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.SourcePos.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TUTF8Parser.TokenComponentIdent">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Parses an (possibly) qualified identifer, after a symbol has been parsed.</short>
+        <descr/>
+        <seealso/>
+        <errors>EParserError when Token is not toSymbol.
+        </errors>
       </element>
       <element name="TUTF8Parser.TokenComponentIdent.Result">
         <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TUTF8Parser.TokenFloat">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Returns the binary value of a floating point number.</short>
+        <descr/>
+        <seealso/>
+        <errors>EParserError on an invalid number.
+        </errors>
       </element>
       <element name="TUTF8Parser.TokenFloat.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TUTF8Parser.TokenInt">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Returns the binary value of an integral number.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.TokenInt.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TUTF8Parser.TokenString">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Returns the last parsed token as an string.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.TokenString.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TUTF8Parser.TokenSymbolIs">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Compares the parsed symbol with the given string (case-insensitive).
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.TokenSymbolIs.Result">
-        <short></short>
+        <short>True when a matching symbol has been parsed.</short>
       </element>
       <element name="TUTF8Parser.TokenSymbolIs.S">
-        <short></short>
+        <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TUTF8Parser.FloatType">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The type of the parsed floating point number. (number, date...)
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TUTF8Parser.SourceLine">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The current line number in the input stream.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TUTF8Parser.SourceColumn">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The current column number in the source line.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TUTF8Parser.SourceColumn.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TUTF8Parser.Token">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The last parsed token type.</short>
+        <descr/>
+        <seealso/>
       </element>
 <!-- class Visibility: default -->
       <element name="TCustomLazComponentQueue">
         <short>A queue to stream components, used for multithreading or network.
         </short>
         <descr>
-          The function ConvertComponentAsString converts a component to binary format
-          with a leading size information (using WriteLRSInt64MB[?]).
-          When streaming components over network, they will arrive in chunks.
-          TCustomLazComponentQueue tells you, if a whole component has arrived and if
-          it has completely arrived.
+          <p>
+            The function ConvertComponentAsString converts a component to binary format
+            with a leading size information (using WriteLRSInt64MB).
+          </p><p>
+            When streaming components over network, they will arrive in chunks.
+          </p><p>
+            TCustomLazComponentQueue tells you, if a whole component has arrived.
+          </p>
         </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <errors/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomLazComponentQueue.FOnFindComponentClass">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TCustomLazComponentQueue.FOnFindComponentClass" link="TCustomLazComponentQueue.OnFindComponentClass"/>
       <!-- variable Visibility: protected -->
       <element name="TCustomLazComponentQueue.FQueue">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomLazComponentQueue.ReadComponentSize">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomLazComponentQueue.ReadComponentSize.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomLazComponentQueue.ReadComponentSize.ComponentSize">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomLazComponentQueue.ReadComponentSize.SizeLength">
-        <short></short>
+        <short/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomLazComponentQueue.Create"/>
       <element name="TCustomLazComponentQueue.Create.TheOwner">
-        <short></short>
+        <short/>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomLazComponentQueue.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TCustomLazComponentQueue.Clear">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomLazComponentQueue.Write">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomLazComponentQueue.Write.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomLazComponentQueue.Write.Buffer">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomLazComponentQueue.Write.Count">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomLazComponentQueue.CopyFrom">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomLazComponentQueue.CopyFrom.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomLazComponentQueue.CopyFrom.AStream">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomLazComponentQueue.CopyFrom.Count">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomLazComponentQueue.HasComponent">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomLazComponentQueue.HasComponent.Result">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomLazComponentQueue.ReadComponent">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomLazComponentQueue.ReadComponent.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomLazComponentQueue.ReadComponent.AComponent">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomLazComponentQueue.ReadComponent.NewOwner">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomLazComponentQueue.ConvertComponentAsString">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Converts a component to binary format
+            with a leading size information (using WriteLRSInt64MB).
+        </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TCustomLazComponentQueue.ConvertComponentAsString.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="TCustomLazComponentQueue.ConvertComponentAsString.AComponent">
-        <short></short>
+        <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomLazComponentQueue.OnFindComponentClass">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>[?]</short>
+        <descr/>
+        <seealso/>
       </element>
 <!-- class Visibility: default -->
       <element name="TLazComponentQueue">
-        <short></short>
+        <short>[?]</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TLazComponentQueue.Name">
-        <short></short>
+        <short/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLazComponentQueue.OnFindComponentClass">
-        <short></short>
+        <short/>
       </element>
 <!-- record type Visibility: default -->
       <element name="TPropertyToSkip">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Item of TPropertiesToSkip[?]</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TPropertyToSkip.PersistentClass">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TPropertyToSkip.PropertyName">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TPropertyToSkip.Note">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- variable Visibility: default -->
-      <element name="TPropertyToSkip.HelpKeyword">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- pointer type Visibility: default -->
-      <element name="PRemovedProperty" link="TPropertyToSkip"/>
-<!-- class Visibility: default -->
-      <element name="TPropertiesToSkip">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TPropertiesToSkip.GetItem">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TPropertiesToSkip.GetItem.Result">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.GetItem.AIndex">
-        <short></short>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TPropertiesToSkip.SetItem">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TPropertiesToSkip.SetItem.AIndex">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.SetItem.AValue">
-        <short></short>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPropertiesToSkip.Notify">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TPropertiesToSkip.Notify.Ptr">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.Notify.Action">
-        <short></short>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TPropertiesToSkip.DoPropertyNotFound">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TPropertiesToSkip.DoPropertyNotFound.Reader">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.DoPropertyNotFound.Instance">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.DoPropertyNotFound.PropName">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.DoPropertyNotFound.IsPath">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.DoPropertyNotFound.Handled">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.DoPropertyNotFound.Skip">
-        <short></short>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TPropertiesToSkip.IndexOf">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TPropertiesToSkip.IndexOf.Result">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.IndexOf.AInstance">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.IndexOf.APropertyName">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.IndexOf.AClass">
-        <short></short>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TPropertiesToSkip.Add">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TPropertiesToSkip.Add.Result">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.Add.APersistentClass">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.Add.APropertyName">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.Add.ANote">
-        <short></short>
-      </element>
-      <element name="TPropertiesToSkip.Add.AHelpKeyWord">
-        <short></short>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPropertiesToSkip.Items">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TPropertiesToSkip.Items.AIndex">
-        <short></short>
-      </element>
-<!-- constant Visibility: default -->
-      <element name="ObjStreamMaskInherited">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="ObjStreamMaskChildPos">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="ObjStreamMaskInline">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-<!-- variable Visibility: default -->
-      <element name="LazarusResources">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
+      <element name="TPropertyToSkip.PropertyName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TPropertyToSkip.Note">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TPropertyToSkip.HelpKeyword">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- pointer type Visibility: default -->
+      <element name="PRemovedProperty" link="TPropertyToSkip"/>
+<!-- class Visibility: default -->
+      <element name="TPropertiesToSkip">
+        <short>[?]</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TPropertiesToSkip.GetItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPropertiesToSkip.GetItem.Result">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.GetItem.AIndex">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TPropertiesToSkip.SetItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPropertiesToSkip.SetItem.AIndex">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.SetItem.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPropertiesToSkip.Notify">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPropertiesToSkip.Notify.Ptr">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.Notify.Action">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPropertiesToSkip.DoPropertyNotFound">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPropertiesToSkip.DoPropertyNotFound.Reader">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.DoPropertyNotFound.Instance">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.DoPropertyNotFound.PropName">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.DoPropertyNotFound.IsPath">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.DoPropertyNotFound.Handled">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.DoPropertyNotFound.Skip">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TPropertiesToSkip.IndexOf">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPropertiesToSkip.IndexOf.Result">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.IndexOf.AInstance">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.IndexOf.APropertyName">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.IndexOf.AClass">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TPropertiesToSkip.Add">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPropertiesToSkip.Add.Result">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.Add.APersistentClass">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.Add.APropertyName">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.Add.ANote">
+        <short/>
+      </element>
+      <element name="TPropertiesToSkip.Add.AHelpKeyWord">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPropertiesToSkip.Items">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPropertiesToSkip.Items.AIndex">
+        <short/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ObjStreamMaskInherited">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ObjStreamMaskChildPos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ObjStreamMaskInline">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="LazarusResources" link="TLResourceList">
+        <short>The list of all loaded standard resources.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
       <element name="PropertiesToSkip">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>[?]</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="LRSObjectReaderClass">
@@ -2752,22 +2459,19 @@
       </element>
       <!-- function Visibility: default -->
       <element name="InitResourceComponent">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="InitResourceComponent.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="InitResourceComponent.Instance">
-        <short></short>
+        <short/>
       </element>
       <element name="InitResourceComponent.RootAncestor">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="InitLazResourceComponent">
@@ -2819,219 +2523,192 @@
       </element>
       <!-- function Visibility: default -->
       <element name="GetClassNameFromLRSStream">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="GetClassNameFromLRSStream.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetClassNameFromLRSStream.s">
-        <short></short>
+        <short/>
       </element>
       <element name="GetClassNameFromLRSStream.IsInherited">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="GetComponentInfoFromLRSStream">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="GetComponentInfoFromLRSStream.s">
-        <short></short>
+        <short/>
       </element>
       <element name="GetComponentInfoFromLRSStream.ComponentName">
-        <short></short>
+        <short/>
       </element>
       <element name="GetComponentInfoFromLRSStream.ComponentClassName">
-        <short></short>
+        <short/>
       </element>
       <element name="GetComponentInfoFromLRSStream.IsInherited">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="WriteComponentAsBinaryToStream">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="WriteComponentAsBinaryToStream.AStream">
-        <short></short>
+        <short/>
       </element>
       <element name="WriteComponentAsBinaryToStream.AComponent">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="ReadComponentFromBinaryStream">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="ReadComponentFromBinaryStream.AStream">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadComponentFromBinaryStream.RootComponent">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadComponentFromBinaryStream.OnFindComponentClass">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadComponentFromBinaryStream.TheOwner">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadComponentFromBinaryStream.Parent">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadComponentFromBinaryStream.ReaderRoot">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="WriteComponentAsTextToStream">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="WriteComponentAsTextToStream.AStream">
-        <short></short>
+        <short/>
       </element>
       <element name="WriteComponentAsTextToStream.AComponent">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="ReadComponentFromTextStream">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="ReadComponentFromTextStream.AStream">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadComponentFromTextStream.RootComponent">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadComponentFromTextStream.OnFindComponentClass">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadComponentFromTextStream.TheOwner">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadComponentFromTextStream.Parent">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="SaveComponentToConfig">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="SaveComponentToConfig.Config">
-        <short></short>
+        <short/>
       </element>
       <element name="SaveComponentToConfig.Path">
-        <short></short>
+        <short/>
       </element>
       <element name="SaveComponentToConfig.AComponent">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="LoadComponentFromConfig">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="LoadComponentFromConfig.Config">
-        <short></short>
+        <short/>
       </element>
       <element name="LoadComponentFromConfig.Path">
-        <short></short>
+        <short/>
       </element>
       <element name="LoadComponentFromConfig.RootComponent">
-        <short></short>
+        <short/>
       </element>
       <element name="LoadComponentFromConfig.OnFindComponentClass">
-        <short></short>
+        <short/>
       </element>
       <element name="LoadComponentFromConfig.TheOwner">
-        <short></short>
+        <short/>
       </element>
       <element name="LoadComponentFromConfig.Parent">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="CompareComponents">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="CompareComponents.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareComponents.Component1">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareComponents.Component2">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="CompareMemStreams">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="CompareMemStreams.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareMemStreams.Stream1">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareMemStreams.Stream2">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="BinaryToLazarusResourceCode">
         <short/>
-        <descr/>
+        <descr>FPC is not optimized for building a constant string out of thousands of lines.
+          It needs huge amounts of memory and becomes very slow.
+          Therefore big files are split into several strings.
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -3102,53 +2779,47 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="ReadLFMHeader">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="ReadLFMHeader.LFMStream">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLFMHeader.LFMType">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLFMHeader.LFMComponentName">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLFMHeader.LFMClassName">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLFMHeader.LFMSource">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ReadLFMHeaderFromFile">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="ReadLFMHeaderFromFile.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLFMHeaderFromFile.Filename">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLFMHeaderFromFile.LFMType">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLFMHeaderFromFile.LFMComponentName">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLFMHeaderFromFile.LFMClassName">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateLFMFile">
@@ -3169,7 +2840,7 @@
       <element name="CreateLFMFile.LFMStream">
         <short/>
       </element>
-<!-- enumeration type Visibility: default -->
+      <!-- enumeration type Visibility: default -->
       <element name="TLRSStreamOriginalFormat">
         <short/>
         <descr/>
@@ -3198,7 +2869,7 @@
         <short/>
       </element>
       <element name="LRSObjectTextToBinary.Links">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="LRSObjectTextToBinary">
@@ -3296,25 +2967,22 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DefineRectProperty">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="DefineRectProperty.Filer">
-        <short></short>
+        <short/>
       </element>
       <element name="DefineRectProperty.Name">
-        <short></short>
+        <short/>
       </element>
       <element name="DefineRectProperty.ARect">
-        <short></short>
+        <short/>
       </element>
       <element name="DefineRectProperty.DefaultRect">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="ReverseBytes">
@@ -3378,67 +3046,55 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="ConvertLEDoubleToLRSExtended">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="ConvertLEDoubleToLRSExtended.LEDouble">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertLEDoubleToLRSExtended.LRSExtended">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ReadLRSShortInt">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="ReadLRSShortInt.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLRSShortInt.s">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ReadLRSByte">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="ReadLRSByte.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLRSByte.s">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ReadLRSSmallInt">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="ReadLRSSmallInt.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLRSSmallInt.s">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ReadLRSWord">
@@ -3547,35 +3203,29 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ReadLRSCurrency">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="ReadLRSCurrency.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLRSCurrency.s">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ReadLRSWideString">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="ReadLRSWideString.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLRSWideString.s">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ReadLRSEndianLittleExtendedAsDouble">
@@ -3594,51 +3244,42 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ReadLRSValueType">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="ReadLRSValueType.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLRSValueType.s">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ReadLRSInt64MB">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="ReadLRSInt64MB.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ReadLRSInt64MB.s">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="WriteLRSSmallInt">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="WriteLRSSmallInt.s">
-        <short></short>
+        <short/>
       </element>
       <element name="WriteLRSSmallInt.i">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="WriteLRSWord">
@@ -3747,51 +3388,42 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="WriteLRSCurrency">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="WriteLRSCurrency.s">
-        <short></short>
+        <short/>
       </element>
       <element name="WriteLRSCurrency.c">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="WriteLRSWideStringContent">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="WriteLRSWideStringContent.s">
-        <short></short>
+        <short/>
       </element>
       <element name="WriteLRSWideStringContent.w">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="WriteLRSInt64MB">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Writes an integer value, using the smallest possible representation.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="WriteLRSInt64MB.s">
-        <short></short>
+        <short/>
       </element>
       <element name="WriteLRSInt64MB.Value">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="WriteLRSReversedWord">
@@ -3885,19 +3517,16 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="WriteLRSDoubleAsExtended">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="WriteLRSDoubleAsExtended.s">
-        <short></short>
+        <short/>
       </element>
       <element name="WriteLRSDoubleAsExtended.ADouble">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="WriteLRSReversedWords">
@@ -3920,95 +3549,86 @@
       </element>
       <!-- function Visibility: default -->
       <element name="FloatToLFMStr">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="FloatToLFMStr.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="FloatToLFMStr.Value">
-        <short></short>
+        <short/>
       </element>
       <element name="FloatToLFMStr.Precision">
-        <short></short>
+        <short/>
       </element>
       <element name="FloatToLFMStr.Digits">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="CompareLRPositionLinkWithLFMPosition">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="CompareLRPositionLinkWithLFMPosition.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareLRPositionLinkWithLFMPosition.Item1">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareLRPositionLinkWithLFMPosition.Item2">
-        <short></short>
+        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="CompareLRPositionLinkWithLRSPosition">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="CompareLRPositionLinkWithLRSPosition.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareLRPositionLinkWithLRSPosition.Item1">
-        <short></short>
+        <short/>
       </element>
       <element name="CompareLRPositionLinkWithLRSPosition.Item2">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="RegisterPropertyToSkip">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <element name="RegisterPropertyToSkip.PersistentClass">
-        <short></short>
+        <short/>
       </element>
       <element name="RegisterPropertyToSkip.PropertyName">
-        <short></short>
+        <short/>
       </element>
       <element name="RegisterPropertyToSkip.Note">
-        <short></short>
+        <short/>
       </element>
       <element name="RegisterPropertyToSkip.HelpKeyWord">
-        <short></short>
+        <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
+        <short>Registers the component TLazComponentQueue.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ReadError">
+        <short>Raises an EReadError exception.</short>
+      </element>
+      <element name="PropValueError">
+        <short>Raises an InvalidPropertyValue EReadError.</short>
       </element>
     </module>
     <!-- LResources -->
