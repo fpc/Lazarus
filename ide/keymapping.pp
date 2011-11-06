@@ -74,8 +74,6 @@ type
 
   TKeyCommandRelation = class(TIDECommand)
   private
-    procedure SetShortcutA(const AValue: TIDEShortCut); override;
-    procedure SetShortcutB(const AValue: TIDEShortCut); override;
     procedure SetSingle(NewKeyA: word; NewShiftA: TShiftState;
                         NewKeyB: word; NewShiftB: TShiftState);
     procedure SetSingle(NewKeyA: word; NewShiftA: TShiftState);
@@ -764,25 +762,6 @@ end;
 
 { TKeyCommandRelation }
 
-procedure TKeyCommandRelation.SetShortcutA(const AValue: TIDEShortCut);
-begin
-  inherited SetShortcutA(AValue);
-  {if Command=12000 then begin
-    debugln('TKeyCommandRelation.SetShortcutA ',KeyAndShiftStateToEditorKeyString(ShortcutA),' ',KeyAndShiftStateToEditorKeyString(ShortcutB));
-    if AValue.Key1=VK_UNKNOWN then
-      RaiseGDBException('');
-  end;}
-end;
-
-procedure TKeyCommandRelation.SetShortcutB(const AValue: TIDEShortCut);
-begin
-  inherited SetShortcutB(AValue);
-  {if Command=ecBlockIndent then begin
-    debugln('TKeyCommandRelation.SetShortcutB ',KeyAndShiftStateToEditorKeyString(ShortcutA),' ',KeyAndShiftStateToEditorKeyString(ShortcutB));
-    if ShortcutB.Key2=VK_UNKNOWN then
-      RaiseGDBException('');
-  end;}
-end;
 procedure TKeyCommandRelation.SetSingle(NewKeyA: word; NewShiftA: TShiftState;
                                         NewKeyB: word; NewShiftB: TShiftState);
 begin
