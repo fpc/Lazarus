@@ -5,7 +5,7 @@ object frPrintForm: TfrPrintForm
   Width = 368
   HorzScrollBar.Page = 367
   VertScrollBar.Page = 269
-  ActiveControl = PropButton
+  ActiveControl = OkButton
   BorderStyle = bsDialog
   Caption = 'Print'
   ClientHeight = 270
@@ -13,7 +13,7 @@ object frPrintForm: TfrPrintForm
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Image1: TImage
     Left = 192
     Height = 16
@@ -78,11 +78,10 @@ object frPrintForm: TfrPrintForm
       Top = 20
       Width = 37
       HelpContext = 108
-      AllowGrayed = True
       Caption = 'All'
       Checked = True
-      State = cbChecked
       TabOrder = 0
+      TabStop = True
     end
     object RB2: TRadioButton
       Left = 8
@@ -90,10 +89,8 @@ object frPrintForm: TfrPrintForm
       Top = 40
       Width = 85
       HelpContext = 118
-      AllowGrayed = True
       Caption = 'Current &page'
       TabOrder = 1
-      TabStop = False
     end
     object RB3: TRadioButton
       Left = 8
@@ -101,11 +98,9 @@ object frPrintForm: TfrPrintForm
       Top = 60
       Width = 68
       HelpContext = 124
-      AllowGrayed = True
       Caption = '&Numbers:'
       OnClick = RB3Click
       TabOrder = 2
-      TabStop = False
     end
     object E2: TEdit
       Left = 88
@@ -132,7 +127,6 @@ object frPrintForm: TfrPrintForm
       Height = 8
       Top = 0
       Width = 17
-      Color = clBtnFace
       Glyph.Data = {
         86000000424D8600000000000000760000002800000007000000040000000100
         0400000000001000000000000000000000001000000000000000000000000000
@@ -149,7 +143,6 @@ object frPrintForm: TfrPrintForm
       Height = 8
       Top = 9
       Width = 17
-      Color = clBtnFace
       Glyph.Data = {
         86000000424D8600000000000000760000002800000007000000040000000100
         0400000000001000000000000000000000001000000000000000000000000000
@@ -161,7 +154,7 @@ object frPrintForm: TfrPrintForm
       OnClick = frSpeedButton2Click
     end
   end
-  object Button1: TButton
+  object OkButton: TButton
     Left = 282
     Height = 25
     Top = 108
@@ -172,7 +165,7 @@ object frPrintForm: TfrPrintForm
     ModalResult = 1
     TabOrder = 3
   end
-  object Button2: TButton
+  object CancelButton: TButton
     Left = 282
     Height = 25
     Top = 136

@@ -36,8 +36,8 @@ type
     frSpeedButton1: TSpeedButton;
     frSpeedButton2: TSpeedButton;
     Label2: TLabel;
-    Button1: TButton;
-    Button2: TButton;
+    OkButton: TButton;
+    CancelButton: TButton;
     GroupBox1: TGroupBox;
     CB1: TComboBox;
     PropButton: TButton;
@@ -84,8 +84,8 @@ begin
   RB2.Caption := sPrintFormCurPg;
   RB3.Caption := sPrintFormNumber;
   Label2.Caption := sPrintFormInfo;
-  Button1.Caption := sOk;
-  Button2.Caption := sCancel;
+  OkButton.Caption := sOk;
+  CancelButton.Caption := sCancel;
 end;
 
 procedure TfrPrintForm.FormDeactivate(Sender: TObject);
