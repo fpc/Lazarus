@@ -5368,6 +5368,20 @@ begin
 
   BeginEventProcessing;
   case QEvent_type(Event) of
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease,
+    QEventMouseButtonDblClick:
+    begin
+      if IsMdiChild then
+      begin
+        if QMouseEvent_y(QMouseEventH(Event)) <= QStyle_pixelMetric(
+            QApplication_style(), QStylePM_TitleBarHeight, nil, Widget) then
+          QEvent_ignore(Event)
+        else
+          Result := SlotMouse(Sender, Event);
+      end else
+        Result := SlotMouse(Sender, Event);
+    end;
     QEventWindowUnblocked: Blocked := False;
     QEventWindowBlocked: Blocked := True;
     QEventWindowActivate: if not IsMDIChild then SlotActivateWindow(True);
