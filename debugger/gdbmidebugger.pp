@@ -487,6 +487,12 @@ resourcestring
   gdbmiWarningUnknowBreakPoint = 'The debugger reached an unexpected %1:s%0:s%0:s'
     + 'Press "Ok" to continue debugging (paused).%0:s'
     + 'Press "Stop" to end the debug session.';
+  gdbmiTheDebuggerExperiencedAnUnknownCondition = 'The debugger experienced an'
+    +' unknown condition';
+  gdbmiPressIgnoreToContinueDebuggingThisMayNOTBeSafePres = 'Press "Ignore" to'
+    +' continue debugging. This may NOT be safe. Press "Abort" to stop the '
+    +'debugger.%0:sException: %1:s with message "%2:s"%0:sContext: %4:s. State'
+    +': %5:s %0:s%0:s%3:s';
 
 
 implementation
@@ -10625,11 +10631,8 @@ begin
       end;
       debugln(Report);
 
-      if MessageDlg('The debugger experienced an unknown condition.',
-        Format('Press "Ignore" to continue debugging. This may NOT be save. Press "Abort to stop the debugger. %0:s'
-          +'Exception: %1:s.with message "%2:s"%0:s'
-          +'Context: %4:s State: %5:s %0:s'
-          +'%0:s%3:s',
+      if MessageDlg(gdbmiTheDebuggerExperiencedAnUnknownCondition,
+        Format(gdbmiPressIgnoreToContinueDebuggingThisMayNOTBeSafePres,
         [LineEnding, e.ClassName, e.Message, Report2, ClassName, dbgs(FTheDebugger.State)]),
         mtWarning, [mbIgnore, mbAbort], 0, mbAbort) = mrAbort
       then begin
