@@ -62,7 +62,8 @@ const
       'fpGUI (alpha)',
       'NoGUI',
       'cocoa (alpha)',
-      'android (pre-alpha)'
+      'android (pre-alpha)',
+      'customdraw (pre-alpha)'
     );
 
 { Config Path Functions }

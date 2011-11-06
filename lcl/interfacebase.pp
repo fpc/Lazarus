@@ -64,7 +64,8 @@ type
     lpfpGUI,
     lpNoGUI,
     lpCocoa,
-    lpAndroid
+    lpAndroid,
+    lpCustomDrawn
     );
     
   TLCLPlatforms = set of TLCLPlatform;
@@ -197,7 +198,8 @@ const
       'fpgui',
       'nogui',
       'cocoa',
-      'android'
+      'android',
+      'customdrawn'
     );
     
   { Constants for the routine TWidgetSet.GetLCLCapability }

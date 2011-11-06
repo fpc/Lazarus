@@ -42,6 +42,7 @@ type
     GroupBox1: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
+    Memo1: TMemo;
     memoLog: TMemo;
     notebookControls: TNotebook;
     Page1: TPage;

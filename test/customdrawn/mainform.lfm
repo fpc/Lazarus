@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 332
+  Left = 234
   Height = 496
-  Top = 144
+  Top = 67
   Width = 459
   Caption = 'Custom Drawn Controls Tester'
   ClientHeight = 496
@@ -50,7 +50,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 439
-    PageIndex = 13
+    PageIndex = 4
     TabOrder = 2
     TabStop = True
     object pageMenu: TPage
@@ -58,8 +58,6 @@ object Form1: TForm1
     object pagePopUp: TPage
     end
     object pageButtons: TPage
-      ClientWidth = 3512
-      ClientHeight = 1920
       object CDButton1: TCDButton
         Left = 119
         Height = 25
@@ -115,8 +113,6 @@ object Form1: TForm1
       end
     end
     object pageEdits: TPage
-      ClientWidth = 7024
-      ClientHeight = 3840
       object CDEdit1: TCDEdit
         Left = 119
         Height = 24
@@ -151,12 +147,20 @@ object Form1: TForm1
       end
     end
     object pageEditMultiline: TPage
+      object Memo1: TMemo
+        Left = 16
+        Height = 90
+        Top = 16
+        Width = 150
+        Lines.Strings = (
+          'Memo1'
+        )
+        TabOrder = 0
+      end
     end
     object Page1: TPage
     end
     object pageCheckboxes: TPage
-      ClientWidth = 28096
-      ClientHeight = 15360
       object CheckBox1: TCheckBox
         Left = 20
         Height = 17
@@ -183,8 +187,6 @@ object Form1: TForm1
       end
     end
     object pageRadioButton: TPage
-      ClientWidth = 1756
-      ClientHeight = 960
       object RadioButton1: TRadioButton
         Left = 16
         Height = 17
@@ -226,8 +228,6 @@ object Form1: TForm1
     object Page7: TPage
     end
     object pageGroupBoxes: TPage
-      ClientWidth = 14048
-      ClientHeight = 7680
       object GroupBox1: TGroupBox
         Left = 7
         Height = 100
@@ -259,6 +259,7 @@ object Form1: TForm1
         Height = 100
         Top = 13
         Width = 100
+        AutoSize = True
         DrawStyle = dsCommon
         Caption = 'dsCommon'
         object Label2: TLabel
@@ -283,6 +284,7 @@ object Form1: TForm1
         Height = 100
         Top = 13
         Width = 100
+        AutoSize = True
         DrawStyle = dsWinCE
         Caption = 'dsWinCE'
       end
@@ -290,8 +292,6 @@ object Form1: TForm1
     object Page2: TPage
     end
     object pageStaticTexts: TPage
-      ClientWidth = 439
-      ClientHeight = 240
       object StaticText6: TStaticText
         Left = 18
         Height = 17
@@ -310,8 +310,6 @@ object Form1: TForm1
       end
     end
     object pageTrackBars: TPage
-      ClientWidth = 112384
-      ClientHeight = 61440
       object TrackBar1: TTrackBar
         Left = 7
         Height = 25
@@ -334,8 +332,6 @@ object Form1: TForm1
     object Page8: TPage
     end
     object pagePageControls: TPage
-      ClientWidth = 439
-      ClientHeight = 240
       object CDPageControl1: TCDPageControl
         Left = 207
         Height = 104
