@@ -2866,6 +2866,9 @@ end;
 function TQtWidgetSet.GetFocus: HWND;
 var
   W: QWidgetH;
+ {$ifdef VerboseFocus}
+ Obj: TQtWidget;
+ {$endif}
 begin
   Result := 0;
   W := QApplication_FocusWidget();
@@ -2873,7 +2876,8 @@ begin
   begin
     Result := HwndFromWidgetH(W);
     {$ifdef VerboseFocus}
-    Write('TQtWidgetSet.GetFocus: WidgetH=',dbghex(ptrint(WidgetH)), ' QtWidget=', dbgsname(Obj));
+    Obj := TQtWidget(Result);
+    Write('TQtWidgetSet.GetFocus: WidgetH=',dbghex(ptruint(W)), ' QtWidget=', dbgsname(Obj));
     if Obj<>nil then
       WriteLn(' LclObject=', dbgsname(Obj.LCLObject))
     else
