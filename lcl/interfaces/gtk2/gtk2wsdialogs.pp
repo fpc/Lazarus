@@ -186,6 +186,17 @@ procedure Gtk2FileChooserResponseCB(widget: PGtkFileChooser; arg1: gint;
     List.Add(NewFile);
   end;
 
+  function SkipDirectory(const AName: String): Boolean;
+  // gtk2-2.20 have problems.
+  // issue http://bugs.freepascal.org/view.php?id=17278
+  begin
+    Result := False;
+    if (gtk_major_version = 2) and (gtk_minor_version >= 20) and
+      (gtk_file_chooser_get_action(Widget) =  GTK_FILE_CHOOSER_ACTION_OPEN) and
+      DirectoryExists(AName) then
+      Result := True;
+  end;
+
 var
   TheDialog: TFileDialog;
   cFilename: PChar;
@@ -218,7 +229,8 @@ begin
           cFilename := PChar(cFilenames1^.data);
           if Assigned(cFilename) then
           begin
-            AddFile(Files, cFilename);
+            if not SkipDirectory(cFileName) then
+              AddFile(Files, cFilename);
             g_free(cFilename);
           end;
           cFilenames1 := cFilenames1^.next;
@@ -229,9 +241,13 @@ begin
   end;
 
   cFilename := gtk_file_chooser_get_filename(widget);
+
   if Assigned(cFilename) then
   begin
-    TheDialog.FileName := cFilename;
+    if SkipDirectory(cFileName) then
+      TheDialog.FileName := ''
+    else
+      TheDialog.FileName := cFilename;
     g_free(cFilename);
   end;
 
