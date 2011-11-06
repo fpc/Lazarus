@@ -562,6 +562,85 @@ procedure TQtWidgetSet.FocusChanged(aold: QWidgetH; anew: QWidgetH); cdecl;
 var
   OldWidget, NewWidget: TQtWidget;
   Msg: TLMessage;
+
+  {qt is tricky about focus, we don't want to inform LCL when qt internally
+  kills focus on an inactive form. eg. TTreeView->Editor enabled}
+  function CheckIfActiveForm(AWidget: TQtWidget): Boolean;
+  var
+    AForm: TCustomForm;
+    AMainWin: TQtMainWindow;
+    QtEdit: IQtEdit;
+  begin
+    Result := True;
+    if Assigned(AWidget) and Assigned(AWidget.LCLObject) then
+    begin
+      AMainWin := nil;
+      if (csDesigning in AWidget.LCLObject.ComponentState) then
+        exit;
+      if TQtWidget(AWidget.LCLObject.Handle) is TQtMainWindow then
+        AMainWin := TQtMainWindow(AWidget);
+
+      if AMainWin = nil then
+      begin
+        AForm := GetParentForm(AWidget.LCLObject);
+        if Assigned(AForm) and (AForm.HandleAllocated) then
+          AMainWin := TQtMainWindow(AForm.Handle);
+      end;
+      Result := AMainWin <> nil;
+      if not Result then
+      begin
+        {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+        WriteLn('TQtWidgetSet.FocusChanged: CheckIfActiveForm *** NO FORM ?!? ***');
+        {$ENDIF}
+        exit;
+      end;
+
+      if AMainWin.IsMdiChild then
+      begin
+        Result :=
+          QMdiArea_activeSubWindow(QMdiSubWindow_mdiArea(QMdiSubWindowH(AMainWin.Widget))) =
+            QMdiSubWindowH(AMainWin.Widget);
+      end else
+      begin
+        Result := QWidget_isActiveWindow(AMainWin.Widget);
+      end;
+      if (AMainWin <> AWidget) and not Supports(AWidget, IQtEdit, QtEdit) then
+        Result := True;
+    end;
+  end;
+
+  {checks when qtmdi is doing weird thing (trying to loop itself)}
+  function MDIFocusFixNeeded: Boolean;
+  var
+    OldWin, NewWin: TCustomForm;
+    H: HWND;
+  begin
+    Result := False;
+
+    if Assigned(OldWidget.LCLObject) then
+      OldWin := GetParentForm(OldWidget.LCLObject)
+    else
+      OldWin := nil;
+
+    if (NewWidget <> nil) and Assigned(NewWidget.LCLObject) then
+      NewWin := GetParentForm(NewWidget.LCLObject)
+    else
+      NewWin := nil;
+
+    Result := (OldWin <> nil) and OldWin.HandleAllocated and
+      ((OldWin = NewWin) or (NewWin = nil));
+
+    if not Result then
+      exit;
+
+    // that's real window of our => form
+    Result := TQtMainWindow(OldWin.Handle).MDIChildArea <> nil;
+    // Result := Result and ((NewWin = nil) or (TQtMainWindow(NewWin.Handle).MDIChildArea <> nil));
+    if Result then
+      Result := (OldWin = OldWidget.LCLObject) or
+        ((NewWin = nil) or (NewWin = NewWidget.LCLObject));
+  end;
+
 begin
   {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
   WriteLn('TQtWidgetSet.FocusChanged: old: ', dbgHex(PtrUInt(aold)), ' new: ', dbgHex(PtrUInt(anew)));
@@ -592,21 +671,8 @@ begin
 
   Msg.Msg := 0; // shutup compiler
   FillChar(Msg, SizeOf(Msg), 0);
-  if OldWidget <> nil then
-  begin
-    {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
-    WriteLn('TQtWidgetSet.FocusChanged: KILL ', dbgsName(OldWidget.LCLObject));
-    {$ENDIF}
-    Msg.msg := LM_KILLFOCUS;
-    Msg.wParam := PtrInt(NewWidget);
-    if (OldWidget is TQtMainWindow) and (TQtMainWindow(OldWidget).IsMdiChild) and
-      Assigned(TQtMainWindow(OldWidget).LCLObject) and
-      not (csDesigning in TQtMainWindow(OldWidget).LCLObject.ComponentState) then
-      // DO NOT TRIGGER ANYTHING, THIS IS SPURIOUS EVENT FROM MDIAREA
-    else
-      OldWidget.DeliverMessage(Msg);
-  end;
-  if NewWidget <> nil then
+
+  if IsValidHandle(HWND(NewWidget)) then
   begin
     {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
     WriteLn('TQtWidgetSet.FocusChanged: SET ', dbgsName(NewWidget.LCLObject));
@@ -617,8 +683,39 @@ begin
       Assigned(TQtMainWindow(NewWidget).LCLObject) and
       not (csDesigning in TQtMainWindow(NewWidget).LCLObject.ComponentState) then
       // DO NOT TRIGGER ANYTHING, THIS IS SPURIOUS EVENT FROM MDIAREA
+      {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+      Writeln('TQtWidgetSet.FocusChanged: *** DO NOT SET FOCUS ***')
+      {$ENDIF}
     else
       NewWidget.DeliverMessage(Msg);
+  end;
+
+  FillChar(Msg, SizeOf(Msg), 0);
+  if IsValidHandle(HWND(OldWidget)) then
+  begin
+    {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+    WriteLn('TQtWidgetSet.FocusChanged: KILL ', dbgsName(OldWidget.LCLObject),' W.Visible ',OldWidget.getVisible,
+    ' destroying ? ',csDestroying in OldWidget.LCLObject.ComponentState,
+    ' handle ?!? ',OldWidget.LCLObject.HandleAllocated);
+    {$ENDIF}
+    Msg.msg := LM_KILLFOCUS;
+    Msg.wParam := PtrInt(NewWidget);
+    if ((OldWidget is TQtMainWindow) and (TQtMainWindow(OldWidget).IsMdiChild) and
+      Assigned(TQtMainWindow(OldWidget).LCLObject) and
+      not (csDesigning in TQtMainWindow(OldWidget).LCLObject.ComponentState))
+      or MDIFocusFixNeeded then
+      // DO NOT TRIGGER ANYTHING, THIS IS SPURIOUS EVENT FROM MDIAREA
+      {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+      Writeln('TQtWidgetSet.FocusChanged: *** DO NOT KILL FOCUS ***')
+      {$ENDIF}
+    else
+      if CheckIfActiveForm(OldWidget) then
+        OldWidget.DeliverMessage(Msg)
+      {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+      else
+        Writeln('TQtWidgetSet.FocusChanged: Cannot kill focus of ',dbgsName(OldWidget.LCLObject))
+      {$ENDIF}
+      ;
   end;
 end;
 

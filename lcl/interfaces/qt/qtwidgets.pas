@@ -5044,6 +5044,7 @@ var
 begin
   // when AWindow = nil then there's no mdichildren at all
   // so only valid state is AWindow <> nil
+  {DO NOT USE THIS FOR NOW, MAYBE WILL BE REMOVED, MAKES PROBLEMS WITH FOCUS
   QMdiArea_subWindowList(QMdiAreaH(Widget), @Arr);
   if AWindow <> nil then
   begin
@@ -5065,6 +5066,7 @@ begin
     if ActiveChild <> nil then
       ActiveChild.SlotActivateWindow(True);
   end;
+  }
 end;
 
 constructor TQtMDIArea.Create(const AParent: QWidgetH);
