@@ -558,14 +558,14 @@ begin
   end;
 end;
 
-procedure TQtWidgetSet.FocusChanged(old: QWidgetH; now: QWidgetH); cdecl;
+procedure TQtWidgetSet.FocusChanged(aold: QWidgetH; anew: QWidgetH); cdecl;
 var
   OldWidget, NewWidget: TQtWidget;
   Msg: TLMessage;
 begin
-  // WriteLn('old: ', PtrUInt(old), ' new: ', PtrUInt(now));
-  OldWidget := GetFirstQtObjectFromWidgetH(old);
-  NewWidget := GetFirstQtObjectFromWidgetH(now);
+  // WriteLn('old: ', PtrUInt(aold), ' new: ', PtrUInt(anew));
+  OldWidget := GetFirstQtObjectFromWidgetH(aold);
+  NewWidget := GetFirstQtObjectFromWidgetH(anew);
 
   if OldWidget = NewWidget then
     Exit;

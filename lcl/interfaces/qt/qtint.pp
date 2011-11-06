@@ -110,7 +110,7 @@ type
     
     function CreateThemeServices: TThemeServices; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-    procedure FocusChanged(old: QWidgetH; now: QWidgetH); cdecl;
+    procedure FocusChanged(aold: QWidgetH; anew: QWidgetH); cdecl;
     procedure OnWakeMainThread(Sender: TObject);
   public
     function LCLPlatform: TLCLPlatform; override;
