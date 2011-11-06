@@ -15198,8 +15198,8 @@ begin
     LogCaret.X,LogCaret.Y,
     NewSource,NewX,NewY,NewTopLine,RevertableJump) then
   begin
-    Flags := [jfAddJumpPoint];
-    if not RevertableJump then include(Flags, jfFocusEditor);
+    Flags := [jfFocusEditor];
+    if not RevertableJump then include(Flags, jfAddJumpPoint);
     DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
       NewSource, NewX, NewY, NewTopLine, Flags);
   end else begin
