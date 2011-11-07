@@ -44,6 +44,25 @@ uses
   LCLType, LMessages{, StdCtrls, Graphics, Menus };
 
 type
+  {$ifdef CD_Windows}
+  PPPipeEventInfo = ^PPipeEventInfo;
+  PPipeEventInfo = ^TPipeEventInfo;
+  TPipeEventInfo = record
+    Handle: THandle;
+    UserData: PtrInt;
+    OnEvent: TPipeEvent;
+    Prev: PPipeEventInfo;
+    Next: PPipeEventInfo;
+  end;
+
+  TWaitHandler = record
+    ListIndex: pdword;
+    UserData: PtrInt;
+    OnEvent: TWaitHandleEvent;
+  end;
+
+  TSocketEvent = function(ASocket: THandle; Flags: dword): Integer of object;
+  {$endif}
   {$ifdef CD_Cocoa}
 
   TCDTimerObject=objcclass(NSObject)
@@ -61,6 +80,7 @@ type
 
   TCDWidgetSet = class(TWidgetSet)
   private
+    FTerminating: Boolean;
     {$ifdef CD_WINDOWS}
     // In win32 it is: The parent of all windows, represents the button of the taskbar
     // In wince it is just an invisible window, but retains the following functions:
@@ -82,16 +102,15 @@ type
     FStatusFont: HFONT;
     FMessageFont: HFONT;
 
-    {FWaitHandleCount: dword;
+    FWaitHandleCount: dword;
     FWaitHandles: array of HANDLE;
     FWaitHandlers: array of TWaitHandler;
     FWaitPipeHandlers: PPipeEventInfo;
 
-    FOnAsyncSocketMsg: TSocketEvent;}
+    FOnAsyncSocketMsg: TSocketEvent;
     {$endif}
 
     {$ifdef CD_Cocoa}
-    FTerminating: Boolean;
     pool      : NSAutoreleasePool;
     NSApp     : NSApplication;
     delegate  : TCDAppDelegate;

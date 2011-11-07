@@ -25,7 +25,7 @@
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TCDWidgetSet.Create;
+procedure TCDWidgetSet.BackendCreate;
 var
   Font: THandle;
 begin
@@ -46,7 +46,7 @@ begin
 
   CDWidgetSet := Self;
 end;
-(*
+
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.Destroy
   Params:  None
@@ -54,14 +54,14 @@ end;
 
   destructor for the class.
  ------------------------------------------------------------------------------}
-destructor TCDWidgetSet.Destroy;
-var
+procedure TCDWidgetSet.BackendDestroy;
+{var
   n: integer;
-  TimerInfo : PWinCETimerInfo;
+  TimerInfo : PWinCETimerInfo;}
 begin
   //DebugLn('Trace:TWinCEWidgetSet is being destroyed');
 
-  n := FTimerData.Count;
+{  n := FTimerData.Count;
   if (n > 0) then
   begin
     DebugLn(Format('[TWinCEWidgetSet.Destroy] WARNING: There are %d TimerInfo structures left, I''ll free them' ,[n]));
@@ -97,8 +97,8 @@ begin
 
   Windows.UnregisterClass(@ClsName, System.HInstance);
 
-  inherited Destroy;
-end;*)
+  inherited Destroy;}
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppInit
@@ -196,6 +196,12 @@ begin
   // Thread.Synchronize support
   //WakeMainThread := @HandleWakeMainThread;
 end;
+
+procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
+begin
+  inherited AppRun(ALoop);
+end;
+
 (*
 function TWinCEWidgetSet.GetAppHandle: THandle;
 begin
@@ -208,7 +214,7 @@ begin
   // if handle is already created we can't reassign it
   if AppHandle = 0 then
     FAppHandle := AValue;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppMinimize
@@ -217,7 +223,7 @@ end;
 
   Minimizes the whole application to the taskbar
  ------------------------------------------------------------------------------}
-procedure TWinCEWidgetSet.AppMinimize;
+procedure TCDWidgetSet.AppMinimize;
 begin
 //  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 end;
@@ -230,7 +236,7 @@ end;
   Restore minimized whole application from taskbar
  ------------------------------------------------------------------------------}
 
-procedure TWinCEWidgetSet.AppRestore;
+procedure TCDWidgetSet.AppRestore;
 begin
 //  Windows.SendMessage(FAppHandle, WM_SYSCOMMAND, SC_RESTORE, 0);
 end;
@@ -243,12 +249,12 @@ end;
 
   Brings the entire application on top of all other non-topmost programs
  ------------------------------------------------------------------------------}
-procedure TWinCEWidgetSet.AppBringToFront;
+procedure TCDWidgetSet.AppBringToFront;
 begin
   Windows.SetForegroundWindow(FAppHandle);
 end;
 
-
+(*
 procedure TWinCEWidgetSet.SetDesigning(AComponent: TComponent);
 begin
   //if Data<>nil then EnableWindow((AComponent As TWinControl).Handle, boolean(Data^));
@@ -298,7 +304,7 @@ begin
   else
     Window := (Sender as TWinControl).Handle;
   if Window=0 then exit;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppProcessMessages
@@ -307,7 +313,7 @@ end;
 
   Handle all pending messages
  ------------------------------------------------------------------------------}
-procedure TWinCEWidgetSet.AppProcessMessages;
+procedure TCDWidgetSet.AppProcessMessages;
 var
   AMessage: TMsg;
   retVal, index: dword;
@@ -350,7 +356,7 @@ begin
     begin
       // check for pending to-be synchronized methods
       CheckSynchronize;
-      CheckPipeEvents;
+      //CheckPipeEvents;
       break;
     end else
     if retVal = $FFFFFFFF then
@@ -360,7 +366,7 @@ begin
     end;
   until false;
 end;
-
+(*
 procedure TWinCEWidgetSet.CheckPipeEvents;
 var
   lHandler: PPipeEventInfo;
@@ -391,7 +397,7 @@ begin
     end;
     inc(ChangedCount);}
   end;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppWaitMessage
@@ -401,12 +407,12 @@ end;
   Passes execution control to Windows
  ------------------------------------------------------------------------------}
 //roozbeh:new update...whole procedure body is added.what is it?
-procedure TWinCEWidgetSet.AppWaitMessage;
+procedure TCDWidgetSet.AppWaitMessage;
 var
   timeout, retVal: DWord;
   pHandles: Windows.LPHANDLE;
 begin
-  RedrawMenus;
+//  RedrawMenus;
   //DebugLn('Trace:TWinCEWidgetSet.WaitMessage - Start');
   if FWaitPipeHandlers <> nil then
     timeout := 100
@@ -436,31 +442,15 @@ end;
   Tells Windows to halt and destroy
  ------------------------------------------------------------------------------}
 
-procedure TWinCEWidgetSet.AppTerminate;
+procedure TCDWidgetSet.AppTerminate;
 begin
   //DebugLn('Trace:TWinCEWidgetSet.AppTerminate - Start');
 end;
 
 
-procedure TWinCEWidgetSet.AppSetTitle(const ATitle: string);
+procedure TCDWidgetSet.AppSetTitle(const ATitle: string);
 begin
   Windows.SetWindowTextW(FAppHandle, PWideChar(UTF8Decode(ATitle)));
-end;
-
-
-function TWinCEWidgetSet.LCLPlatform: TLCLPlatform;
-begin
-  Result:= lpWinCE;
-end;
-
-function TWinCEWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
-begin
-  case ACapability of
-    lcModalWindow: Result := LCL_CAPABILITY_NO;
-    lcDragDockStartOnTitleClick: Result := LCL_CAPABILITY_YES;
-  else
-    Result := inherited;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -472,7 +462,7 @@ end;
   Design: A timer which calls TimerCallBackProc, is created.
     The TimerCallBackProc calls the TimerFunc.
  ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle;
+function TCDWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle;
 var
   TimerInfo: PWinCETimerInfo;
 begin
@@ -497,7 +487,7 @@ end;
   Params: TimerHandle
   Returns:
  ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
+function TCDWidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
 var
   n : integer;
   TimerInfo : PWinCETimerinfo;
@@ -517,7 +507,7 @@ begin
   end;
   //DebugLn('Trace:Destroy timer Result: '+ BOOL_RESULT[result]);
 end;
-
+(*
 procedure TWinCEWidgetSet.HandleWakeMainThread(Sender: TObject);
 begin
   // wake up GUI thread by sending a message to it
