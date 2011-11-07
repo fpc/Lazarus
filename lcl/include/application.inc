@@ -52,7 +52,7 @@ begin
 
   // Find control that actually provides the hint = first parent with a hint text.
   Result := Control;
-  while (Result <> nil) and (Result.Hint = '')
+  while (Result <> nil) and (Result.Hint = '') and (Result.OnShowHint = nil)
   and (Result.ShowHint or Result.IsParentShowHint) do
     Result := Result.Parent;
 
