@@ -562,6 +562,8 @@ procedure TQtWidgetSet.FocusChanged(aold: QWidgetH; anew: QWidgetH); cdecl;
 var
   OldWidget, NewWidget: TQtWidget;
   Msg: TLMessage;
+  FocusedQtWidget: QWidgetH;
+  FocusedTQtWidget: TQtWidget;
 
   {qt is tricky about focus, we don't want to inform LCL when qt internally
   kills focus on an inactive form. eg. TTreeView->Editor enabled}
@@ -682,11 +684,76 @@ begin
     if (NewWidget is TQtMainWindow) and (TQtMainWindow(NewWidget).IsMdiChild) and
       Assigned(TQtMainWindow(NewWidget).LCLObject) and
       not (csDesigning in TQtMainWindow(NewWidget).LCLObject.ComponentState) then
+    begin
       // DO NOT TRIGGER ANYTHING, THIS IS SPURIOUS EVENT FROM MDIAREA
+      FocusedQtWidget := QWidget_focusWidget(NewWidget.Widget);
       {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
-      Writeln('TQtWidgetSet.FocusChanged: *** DO NOT SET FOCUS ***')
+      Writeln('TQtWidgetSet.FocusChanged: *** DO NOT SET FOCUS ***',dbgHex(PtrUInt(FocusedQtWidget)));
       {$ENDIF}
-    else
+      if FocusedQtWidget <> nil then
+      begin
+        FocusedTQtWidget := TQtWidget(HwndFromWidgetH(FocusedQtWidget));
+        if FocusedTQtWidget <> nil then
+        begin
+          if FocusedTQtWidget = NewWidget then
+          begin
+            {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+            writeln('TQtWidgetSet.FocusChanged: WE CANNOT FOCUS (segfault) ',dbgsName(FocusedTQtWidget.LCLObject),
+            ' Active ? ',TCustomForm(NewWidget.LCLObject).Active);
+            {$ENDIF}
+            if Assigned(TCustomForm(NewWidget.LCLObject).ActiveControl) then
+            begin
+              {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+              writeln('TQtWidgetSet.FocusChanged: THIS ONE SHOULD BE FOCUSED (1) : ',dbgsName(TCustomForm(NewWidget.LCLObject).ActiveControl));
+              {$ENDIF}
+              if TCustomForm(NewWidget.LCLObject).ActiveControl.HandleAllocated then
+              begin
+                // setFocus(TCustomForm(NewWidget.LCLObject).ActiveControl.Handle);
+                FocusedTQtWidget := TQtWidget(TCustomForm(NewWidget.LCLObject).ActiveControl.Handle);
+                if FocusedTQtWidget <> nil then
+                begin
+                  // first check if we are active subwin, if not then we'll trigger qt do
+                  // do correct thing
+                  if TQtMainWindow(NewWidget).MDIChildArea.ActiveSubWindow <> NewWidget.Widget then
+                    TQtMainWindow(NewWidget).MDIChildArea.ActivateSubWindow(QMDISubWindowH(NewWidget.Widget))
+                  else
+                  begin
+                    // if we are already active then just inform lcl
+                    Msg.msg := LM_SETFOCUS;
+                    if OldWidget = FocusedTQtWidget then
+                      OldWidget := nil;
+                    Msg.wParam := PtrInt(OldWidget);
+                    FocusedTQtWidget.DeliverMessage(Msg);
+                  end;
+                end;
+              end else
+                {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+                writeln('TQtWidgetSet.FocusChanged: BUT NO HANDLE ... CRAP: ',dbgsName(TCustomForm(NewWidget.LCLObject).ActiveControl))
+                {$ENDIF}
+                ;
+
+            end else
+              // if this happens then qt's mdi focus is real crap
+              {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+              writeln('TQtWidgetSet.FocusChanged: WE ARE COMPLETELY OUT OF MIND WHAT TO DO (1) .....')
+              {$ENDIF}
+              ;
+
+          end else
+          begin
+            // should never happen
+            {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+            if Assigned(TCustomForm(NewWidget.LCLObject).ActiveControl) then
+              writeln('TQtWidgetSet.FocusChanged: THIS ONE SHOULD BE FOCUSED (2) : ',dbgsName(TCustomForm(NewWidget.LCLObject).ActiveControl))
+            else
+              writeln('TQtWidgetSet.FocusChanged: WE ARE COMPLETELY OUT OF MIND WHAT TO DO (2) .....');
+            {$ENDIF}
+          end;
+
+        end;
+      end;
+
+    end else
       NewWidget.DeliverMessage(Msg);
   end;
 

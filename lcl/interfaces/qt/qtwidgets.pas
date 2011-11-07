@@ -552,6 +552,8 @@ type
   public
     constructor Create(const AParent: QWidgetH); overload;
     destructor Destroy; override;
+    function ActiveSubWindow: QMdiSubWindowH;
+    procedure ActivateSubWindow(AMdiWindow: QMdiSubWindowH);
   end;
 
   TQtMainWindow = class(TQtWidget)
@@ -5055,7 +5057,7 @@ begin
       exit;
 
     W := QWidget_focusWidget(AWindow);
-    if W <> nil then
+    if (W <> nil) and (W <> AWindow) then
     begin
       H := HwndFromWidgetH(W);
       if H <> 0 then
@@ -5109,6 +5111,17 @@ begin
     FSubWindowActivationHook := nil;
   end;
   inherited Destroy;
+end;
+
+function TQtMDIArea.ActiveSubWindow: QMdiSubWindowH;
+begin
+  Result := QMdiArea_activeSubWindow(QMdiAreaH(Widget));
+end;
+
+procedure TQtMDIArea.ActivateSubWindow(AMdiWindow: QMdiSubWindowH);
+begin
+  if AMdiWindow <> nil then
+    QMdiArea_setActiveSubWindow(QMdiAreaH(Widget), AMdiWindow);
 end;
 
 
