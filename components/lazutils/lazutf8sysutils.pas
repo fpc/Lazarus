@@ -102,7 +102,7 @@ var
   tp: TTimeVal;
 begin
   fpgettimeofday(@tp, nil);
-  Result := (tp.tv_sec * 1000) + (tp.tv_usec div 1000);
+  Result := (Int64(tp.tv_sec) * 1000) + (tp.tv_usec div 1000);
 end;
 {$else}
 // Not Windows and not UNIX, so just write the most trivial code until we have something besser:
