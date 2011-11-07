@@ -4,7 +4,7 @@
     <Name Value="LCL"/>
     <Author Value="Lazarus"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <SearchPaths>
         <IncludeFiles Value="$(LCLWidgetType)"/>
         <OtherUnitFiles Value="$(LCLWidgetType)"/>
@@ -109,7 +109,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="350">
+    <Files Count="362">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1744,6 +1744,61 @@ end;"/>
         <Filename Value="android/androidlclintf.inc"/>
         <Type Value="Include"/>
       </Item350>
+      <Item351>
+        <Filename Value="customdrawn/wincallback.inc"/>
+        <Type Value="Include"/>
+      </Item351>
+      <Item352>
+        <Filename Value="customdrawn/winproc.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinProc"/>
+      </Item352>
+      <Item353>
+        <Filename Value="customdrawn/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item353>
+      <Item354>
+        <Filename Value="customdrawn/customdrawndefines.inc"/>
+        <Type Value="Include"/>
+      </Item354>
+      <Item355>
+        <Filename Value="customdrawn/customdrawnint.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnInt"/>
+      </Item355>
+      <Item356>
+        <Filename Value="customdrawn/customdrawnobject.inc"/>
+        <Type Value="Include"/>
+      </Item356>
+      <Item357>
+        <Filename Value="customdrawn/customdrawnobject_cocoa.inc"/>
+        <Type Value="Include"/>
+      </Item357>
+      <Item358>
+        <Filename Value="customdrawn/customdrawnobject_win.inc"/>
+        <Type Value="Include"/>
+      </Item358>
+      <Item359>
+        <Filename Value="customdrawn/customdrawnwscontrols.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnWSControls"/>
+      </Item359>
+      <Item360>
+        <Filename Value="customdrawn/customdrawnwsfactory.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnWSFactory"/>
+      </Item360>
+      <Item361>
+        <Filename Value="customdrawn/customdrawnwsforms.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnWSForms"/>
+      </Item361>
+      <Item362>
+        <Filename Value="customdrawn/interfaces.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Interfaces"/>
+      </Item362>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
