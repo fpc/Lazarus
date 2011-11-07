@@ -5036,16 +5036,13 @@ end;
 
 procedure TQtMDIArea.SubWindowActivated(AWindow: QMDISubWindowH); cdecl;
 var
-  i: Integer;
-  Arr: TPtrIntArray;
   ActiveChild: TQtMainWindow;
-  InActiveChild: TQtMainWindow;
   H: HWND;
+  W: QWidgetH;
+  WW: TQtWidget;
 begin
-  // when AWindow = nil then there's no mdichildren at all
-  // so only valid state is AWindow <> nil
-  {DO NOT USE THIS FOR NOW, MAYBE WILL BE REMOVED, MAKES PROBLEMS WITH FOCUS
-  QMdiArea_subWindowList(QMdiAreaH(Widget), @Arr);
+  {we must fix qt bugs here. QWidget_focusWidget() is lost when
+   activating mdichild via BringToFront (eg from menu)}
   if AWindow <> nil then
   begin
     H := HwndFromWidgetH(AWindow);
@@ -5053,20 +5050,42 @@ begin
       ActiveChild := TQtMainWindow(H)
     else
       ActiveChild := nil;
-    for i := 0 to High(Arr) do
+
+    if ActiveChild = nil then
+      exit;
+
+    W := QWidget_focusWidget(AWindow);
+    if W <> nil then
     begin
-      H := HwndFromWidgetH(AWindow);
+      H := HwndFromWidgetH(W);
       if H <> 0 then
       begin
-        InActiveChild := TQtMainWindow(H);
-        if (InactiveChild <> ActiveChild) and TCustomForm(InActiveChild.LCLObject).Active then
-          InActiveChild.SlotActivateWindow(False);
+        WW := TQtWidget(H);
+        {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+        writeln('TQtMDIArea.SubWindowActivated: *=* Current focus widget ',dbgsName(WW.LCLObject));
+        {$ENDIF}
+        {trigger QMDIArea to update it's focusWidget (it could be nil) }
+        QWidget_setFocus(WW.Widget, QtActiveWindowFocusReason);
+      end;
+    end else
+    begin
+      // fallback when qt completely looses it's mind about focusWidget() inside
+      // mdi form.
+      {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+      writeln('TQtMDIArea.SubWindowActivated: fallback - ask TCustomForm.ActiveControl ',
+        dbgsName(TCustomForm(ActiveChild.LCLObject).ActiveControl));
+      {$ENDIF}
+      if Assigned(TCustomForm(ActiveChild.LCLObject).ActiveControl) and
+        TCustomForm(ActiveChild.LCLObject).ActiveControl.HandleAllocated then
+      begin
+        WW := TQtWidget(TCustomForm(ActiveChild.LCLObject).ActiveControl.Handle);
+        {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
+        writeln('**** SUCCESFULLY ACTIVATED FOCUS PATCH ****');
+        {$ENDIF}
+        QWidget_setFocus(WW.Widget, QtActiveWindowFocusReason);
       end;
     end;
-    if ActiveChild <> nil then
-      ActiveChild.SlotActivateWindow(True);
   end;
-  }
 end;
 
 constructor TQtMDIArea.Create(const AParent: QWidgetH);
