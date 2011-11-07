@@ -5292,11 +5292,17 @@ end;
 destructor TQtMainWindow.Destroy;
 begin
   // The main window takes care of the menubar handle
-  if MenuBar <> nil then
+  {handle validator is added since we added events to
+   menubar in r33309 (because of font changes).
+   Events are attached in TQtWSCustomForm.CreateHandle
+   Sometimes in various combinations we can
+   crash here because MenuBar <> nil but not valid handle.
+   Now it's totally safe.}
+  if QtWidgetSet.IsValidHandle(HWND(MenuBar)) then
   begin
     MenuBar.DetachEvents;
     MenuBar.Widget := nil;
-    MenuBar.Free;
+    FreeThenNil(MenuBar);
   end;
 
   if MDIAreaHandle <> nil then
