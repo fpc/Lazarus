@@ -265,8 +265,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppProcessMessages;
 begin
-  {we must use QEventLoopDefferedDeletion because of SlotClose.
-   Normal forms are NOT closed without this ...}
   QCoreApplication_processEvents(QEventLoopAllEvents);
 end;
 
