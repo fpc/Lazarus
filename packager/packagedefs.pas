@@ -926,6 +926,8 @@ procedure PkgVersionSaveToXMLConfig(Version: TPkgVersion; XMLConfig: TXMLConfig;
 procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
   XMLConfig: TXMLConfig);
 
+function IsValidUnitName(AUnitName: String): Boolean;
+
 var
   Package1: TLazPackage; // don't use it - only for options dialog
 
@@ -933,6 +935,27 @@ function dbgs(p: TPackageUpdatePolicy): string; overload;
 
 implementation
 
+
+function IsValidUnitName(AUnitName: String): Boolean;
+var
+  P: Integer;
+  UnitPart: String;
+begin
+  Result := True;
+  repeat
+    P := Pos('.', AUnitName);
+    if P > 0 then
+    begin
+      UnitPart := Copy(AUnitName, 1, P - 1);
+      Delete(AUnitName, 1, P);
+      Result := Result and IsValidIdent(UnitPart);
+    end
+    else
+      Result := IsValidIdent(AUnitName);
+    if not Result then
+      Break;
+  until P = 0;
+end;
 
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 begin
@@ -1358,7 +1381,7 @@ begin
   Result:=false;
   if CompareFileExt(AFilename,'.lpk',false)<>0 then exit;
   PkgName:=ExtractFileNameOnly(AFilename);
-  if (PkgName='') or (not IsValidIdent(PkgName)) then exit;
+  if (PkgName='') or (not IsValidUnitName(PkgName)) then exit;
   Result:=true;
 end;
 
@@ -1880,7 +1903,7 @@ end;
 
 function TPkgDependency.MakeSense: boolean;
 begin
-  Result:=IsValidIdent(PackageName);
+  Result:=IsValidUnitName(PackageName);
   if Result
   and (pdfMinVersion in FFlags) and (pdfMaxVersion in FFlags)
   and (MinVersion.Compare(MaxVersion)>0) then
@@ -2913,7 +2936,7 @@ end;
 function TLazPackage.MakeSense: boolean;
 begin
   Result:=false;
-  if (Name='') or (not IsValidIdent(Name)) then exit;
+  if (Name='') or (not IsValidUnitName(Name)) then exit;
   Result:=true;
 end;
 

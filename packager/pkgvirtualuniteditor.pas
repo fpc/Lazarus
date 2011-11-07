@@ -114,7 +114,7 @@ begin
       mtError,[mbCancel],0);
     exit;
   end;
-  if (NewUnitName='') or (not IsValidIdent(NewUnitName)) then begin
+  if (NewUnitName='') or (not IsValidUnitName(NewUnitName)) then begin
     MessageDlg(lisPEInvalidUnitname,
       lisPVUTheUnitnameIsNotAValidPascalIdentifier,
       mtError,[mbCancel],0);

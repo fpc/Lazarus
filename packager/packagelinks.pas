@@ -283,7 +283,7 @@ end;
 
 function TPackageLink.MakeSense: boolean;
 begin
-  Result:=(Name<>'') and IsValidIdent(Name)
+  Result:=(Name<>'') and IsValidUnitName(Name)
            and PackageFileNameIsValid(Filename)
            and (CompareText(Name,ExtractFileNameOnly(Filename))=0);
 end;

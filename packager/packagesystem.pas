@@ -1309,7 +1309,7 @@ begin
   try
     // check unitname
     FRegistrationUnitName:=TheUnitName;
-    if not IsValidIdent(FRegistrationUnitName) then begin
+    if not IsValidUnitName(FRegistrationUnitName) then begin
       RegistrationError(Format(lisPkgSysInvalidUnitname, [FRegistrationUnitName]
         ));
       exit;
@@ -2228,7 +2228,7 @@ var
 begin
   for i:=0 to PkgList.Count-1 do begin
     PackageName:=PkgList[i];
-    if (PackageName='') or (not IsValidIdent(PackageName)) then continue;
+    if (PackageName='') or (not IsValidUnitName(PackageName)) then continue;
     Dependency:=FindDependencyByNameInList(FirstAutoInstallDependency,
                                            pdlRequires,PackageName);
     //DebugLn('TLazPackageGraph.LoadAutoInstallPackages ',dbgs(Dependency),' ',PackageName);
@@ -4507,7 +4507,7 @@ begin
             CurFile.Unit_Name:=CurUnitName;
         end;
 
-        if (CurUnitName='') or (not IsValidIdent(CurUnitName)) then begin
+        if (CurUnitName='') or (not IsValidUnitName(CurUnitName)) then begin
           AddMessage(Format(lisIDEInfoWARNINGUnitNameInvalidPackage, [CurFile.
             Filename, APackage.IDAsString]),
              APackage.Directory);

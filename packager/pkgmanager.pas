@@ -536,7 +536,7 @@ begin
     copy(aFormName,1,length(PackageEditorWindowPrefix)))=0
   then begin
     APackageName:=copy(aFormName,length(PackageEditorWindowPrefix)+1,length(aFormName));
-    if (APackageName='') or not IsValidIdent(APackageName) then exit;
+    if (APackageName='') or not IsValidUnitName(APackageName) then exit;
     NewDependency:=TPkgDependency.Create;
     try
       NewDependency.PackageName:=APackageName;
@@ -1034,7 +1034,7 @@ begin
       end;
 
       // check filename
-      if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
+      if (NewPkgName='') or (not IsValidUnitName(NewPkgName)) then begin
         Result:=IDEMessageDialog(lisPkgMangInvalidPackageName,
           Format(lisPkgMangThePackageNameIsNotAValidPackageNamePleaseChooseAn, [
             '"', NewPkgName, '"', #13]),
@@ -1401,7 +1401,7 @@ begin
     StaticPackage:=PRegisteredPackage(StaticPackages[i]);
 
     // check package name
-    if (StaticPackage^.Name='') or (not IsValidIdent(StaticPackage^.Name))
+    if (StaticPackage^.Name='') or (not IsValidUnitName(StaticPackage^.Name))
     then begin
       DebugLn('TPkgManager.LoadStaticCustomPackages Invalid Package Name: "',
         BinaryStrToText(StaticPackage^.Name),'"');
@@ -1757,7 +1757,7 @@ var
     if LangEnd<>length(Filename)-2 then exit;
     AUnitName:=copy(Filename,1,UnitNameEnd-1);
     Language:=copy(Filename,UnitNameEnd+1,LangEnd-UnitNameEnd-1);
-    Result:=IsValidIdent(AUnitName) and (Language<>'');
+    Result:=IsValidUnitName(AUnitName) and (Language<>'');
     //DebugLn(['GetPOFilenameParts AUnitName=',AUnitName,' Language=',Language,' Result=',Result]);
   end;
   
@@ -1827,7 +1827,7 @@ var
   ConflictPkg: TLazPackage;
 begin
   // check Package Name
-  if (APackage.Name='') or (not IsValidIdent(APackage.Name)) then begin
+  if (APackage.Name='') or (not IsValidUnitName(APackage.Name)) then begin
     Result:=IDEMessageDialog(lisPkgMangInvalidPackageName2,
       Format(lisPkgMangThePackageNameOfTheFileIsInvalid, ['"', APackage.Name,
         '"', #13, '"', APackage.Filename, '"']),
@@ -1985,7 +1985,7 @@ begin
   RequiredPackages:=SplitString(Packages,';');
   for i:=0 to RequiredPackages.Count-1 do begin
     PkgName:=Trim(RequiredPackages[i]);
-    if (PkgName='') or (not IsValidIdent(PkgName)) then continue;
+    if (PkgName='') or (not IsValidUnitName(PkgName)) then continue;
     APackage:=PackageGraph.FindPackageWithName(PkgName,nil);
     if APackage=nil then begin
       DebugLn(['TPkgManager.AddProjectDependencies package not found: ',PkgName]);
@@ -2117,7 +2117,7 @@ var
   LoadResult: TLoadPackageResult;
 begin
   Result:=mrCancel;
-  if (APackageName='') or not IsValidIdent(APackageName) then exit;
+  if (APackageName='') or not IsValidUnitName(APackageName) then exit;
   NewDependency:=TPkgDependency.Create;
   try
     NewDependency.PackageName:=APackageName;
@@ -2170,7 +2170,7 @@ begin
   // check filename
   AlternativePkgName:=ExtractFileNameOnly(AFilename);
   if (not (pofRevert in Flags))
-  and ((AlternativePkgName='') or (not IsValidIdent(AlternativePkgName)))
+  and ((AlternativePkgName='') or (not IsValidUnitName(AlternativePkgName)))
   then begin
     DoQuestionDlg(lisPkgMangInvalidPackageFilename,
       Format(lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName, ['"',

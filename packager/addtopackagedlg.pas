@@ -324,7 +324,7 @@ begin
   // check unitname
   if AddFileType in [d2ptUnit,d2ptNewComponent,d2ptVirtualUnit] then begin
     AnUnitName:=ExtractFileNameOnly(AFilename);
-    if not IsValidIdent(AnUnitName) then begin
+    if not IsValidUnitName(AnUnitName) then begin
       MessageDlg(lisA2PFileNotUnit,
         Format(lisA2PisNotAValidUnitName, ['"', AnUnitName, '"']),
         mtWarning,[mbCancel],0);
@@ -385,7 +385,7 @@ begin
   end;
 
   // check packagename
-  if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
+  if (NewPkgName='') or (not IsValidUnitName(NewPkgName)) then begin
     MessageDlg(lisProjAddInvalidPackagename,
       Format(lisA2PThePackageNameIsInvalidPleaseChooseAnExisting, ['"', NewPkgName, '"', #13]),
       mtError,[mbCancel],0);
