@@ -1,4 +1,8 @@
 
+{$ifdef Darwin}
+{$modeswitch objectivec1}
+{$endif}
+
 // Choosing the default backend
 //{$ifndef CD_OPENGL} <- for the future
 {$ifdef Windows}

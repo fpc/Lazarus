@@ -481,8 +481,8 @@ end;
 
 function RegisterCustomForm: Boolean; alias : 'WSRegisterCustomForm';
 begin
-//  RegisterWSComponent(TCustomForm, TWinCEWSCustomForm);
-  Result := False;
+  RegisterWSComponent(TCustomForm, TCDWSCustomForm);
+  Result := True;
 end;
 
 function RegisterHintWindow: Boolean; alias : 'WSRegisterHintWindow';

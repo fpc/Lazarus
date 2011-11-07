@@ -22,9 +22,6 @@
 unit CustomDrawnInt;
 
 {$mode objfpc}{$H+}
-{$ifdef Darwin}
-{$modeswitch objectivec1}
-{$endif}
 
 {$I customdrawndefines.inc}
 
@@ -173,8 +170,8 @@ implementation
 
 uses
   WsControls, lclintf,
-{  Win32WSFactory,
-  Win32WSButtons,
+  CustomDrawnWSFactory,
+{  Win32WSButtons,
   Win32WSMenus,
   Win32WSStdCtrls,
   Win32WSDialogs,

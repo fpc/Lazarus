@@ -72,7 +72,7 @@ end;"/>
         <Count Value="2"/>
         <Item1>
           <Identifier Value="LCLWidgetType"/>
-          <Values Count="10">
+          <Values Count="11">
             <Item1 Value="gtk"/>
             <Item2 Value="gtk2"/>
             <Item3 Value="qt"/>
@@ -83,6 +83,7 @@ end;"/>
             <Item8 Value="carbon"/>
             <Item9 Value="cocoa"/>
             <Item10 Value="android"/>
+            <Item11 Value="customdrawn"/>
           </Values>
           <ValueDescriptions Count="10"/>
         </Item1>
@@ -109,7 +110,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="362">
+    <Files Count="364">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1799,6 +1800,14 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Interfaces"/>
       </Item362>
+      <Item363>
+        <Filename Value="customdrawn/customdrawnwsforms_win.inc"/>
+        <AddToUsesPkgSection Value="False"/>
+      </Item363>
+      <Item364>
+        <Filename Value="customdrawn/customdrawnwscontrols_win.inc"/>
+        <AddToUsesPkgSection Value="False"/>
+      </Item364>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
