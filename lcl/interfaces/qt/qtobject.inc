@@ -842,11 +842,11 @@ var
 begin
   if IsValidDC(CanvasHandle) then
   begin
-    //WriteLn('TQtWidgetSet.DCSetPixel X=',X,' Y=',Y, ' AColor=',dbghex(AColor));
+    // WriteLn('TQtWidgetSet.DCSetPixel X=',X,' Y=',Y, ' AColor=',dbghex(AColor),' rgb ? ',dbgHex(ColorToRGB(AColor)));
     Painter := TQtDeviceContext(CanvasHandle).Widget;
     Pen := QPainter_pen(Painter);
     QPen_color(Pen, @ASavedColor);
-    QColor_fromRgb(@Color, ColorToRGB(AColor));
+    QColor_fromRgb(@Color, Red(AColor), Green(AColor), Blue(AColor));
     QPainter_setPen(Painter, @Color);
     QPainter_drawPoint(Painter, X,Y);
     QPainter_setPen(Painter, @ASavedColor);
