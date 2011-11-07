@@ -1260,6 +1260,7 @@ var
     if aList.PartCount = 0 then exit;
     if (aList.PartCount = 1) and (Result = nil) then begin
       Result := aList.Parts[0];
+      aList.ClearShared;
       exit;
     end;
 
@@ -1274,6 +1275,7 @@ var
     end;
 
     TGDBExpressionPartList(Result).AddList(aList);
+    aList.ClearShared;
   end;
 
   function MoveListToCopy(aList: TGDBExpressionPartList): TGDBExpressionPart;
@@ -1345,13 +1347,11 @@ begin
       ScanToWordStart;
       CurList.Add(TGDBExpression.CreateSimple(CurPartPtr, CurPtr - CurPartPtr));
       AddExpPart(CurList);
-      CurList.ClearShared;
     end;
 
   end;
 
   AddExpPart(CurList);
-  CurList.ClearShared;
   CurList.Free;
 
   if CurPtr < EndPtr then debugln(['Scan aborted: ', PCLenToString(FText)]);
@@ -1412,6 +1412,7 @@ end;
 
 destructor TGDBExpressionPartListBase.Destroy;
 begin
+  Clear;
   FreeAndNil(FList);
   inherited Destroy;
 end;
