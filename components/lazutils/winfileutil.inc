@@ -175,7 +175,7 @@ begin
   // Fix for the bug 14360:
   // Don't assign the widestring to TSearchRec.name because it is of type
   // string, which will generate a conversion to the system encoding
-  Str := UTF8Decode(Filename);
+  Str := Utf8ToAnsi(Filename);
   FindHandle:=Windows.FindFirstFileA(PAnsiChar(Str), FindData);
   if FindHandle=Windows.Invalid_Handle_value then
   begin
@@ -262,20 +262,20 @@ end;
   See FindMatch also }
 procedure FindWideToAnsi(const wide: TWIN32FINDDATAW; var ansi: TWIN32FINDDATA);
 var
-  ws : WideString;
-  an : utf8string;
+  ws: WideString;
+  an: AnsiString;
 begin
   {$ifdef WinCE}
   ansi := wide;
   {$else}
   SetLength(ws, length(wide.cAlternateFileName));
   Move(wide.cAlternateFileName[0], ws[1], length(ws)*2);
-  an:=ws; // no need to utf8 for cAlternateFileName (it's always ansi encoded)
+  an := AnsiString(ws); // no need to utf8 for cAlternateFileName (it's always ansi encoded)
   Move(an[1], ansi.cAlternateFileName, sizeof(ansi.cAlternateFileName));
 
-  ws:=PWideChar(@wide.cFileName[0]);
-  an:=UTF8Encode(ws);
-  ansi.cFileName:=an;
+  ws := PWideChar(@wide.cFileName[0]);
+  an := UTF8Encode(ws);
+  ansi.cFileName := an;
   if length(an)<length(ansi.cFileName) then ansi.cFileName[ length(an)]:=#0;
 
   with ansi do
