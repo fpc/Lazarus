@@ -3414,7 +3414,11 @@ begin
   Result:=true;
   ScannedRange:=lsrSourceType;
   if ScannedRange=ScanTill then exit;
-  ReadNextToken;
+  repeat
+    ReadNextToken; // read identifier
+    if TokenType=lsttWord then
+      ReadNextToken; // read ';' or '.' or hint modifier
+  until TokenType<>lsttPoint;
   ScannedRange:=lsrSourceName;
   if ScannedRange=ScanTill then exit;
 end;
