@@ -33,14 +33,14 @@ uses
   // RTL
   SysUtils, Classes,
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
+  {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate, CocoaUtils,{$endif}
   // LCL
-  Controls, LCLType, Forms,
+  Controls, LCLType, Forms, LCLProc,
   // Widgetset
-  InterfaceBase, WSForms, WSProc, WSLCLClasses,
+  InterfaceBase, WSForms, WSProc, WSLCLClasses, LCLMessageGlue,
   customdrawnwscontrols, customdrawnint;
 
 type
-
   { TCDWSScrollingWinControl }
 
   TCDWSScrollingWinControl = class(TWSScrollingWinControl)
@@ -81,11 +81,12 @@ type
      Bounds: TRect; lForm: TCustomForm);
     {$endif}
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 //    class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class procedure SetBounds(const AWinControl: TWinControl;
       const ALeft, ATop, AWidth, AHeight: Integer); override;
+    {$ifdef CD_Windows}
     class procedure SetBorderIcons(const AForm: TCustomForm;
                                    const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
@@ -93,7 +94,16 @@ type
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
+    {$endif}
     class procedure ShowHide(const AWinControl: TWinControl); override;
+
+    {$ifdef CD_Cocoa}
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    {$endif}
 {    class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
@@ -141,6 +151,9 @@ implementation
 
 {$ifdef CD_Windows}
   {$include customdrawnwsforms_win.inc}
+{$endif}
+{$ifdef CD_Cocoa}
+  {$include customdrawnwsforms_cocoa.inc}
 {$endif}
 
 end.

@@ -60,6 +60,7 @@ type
 
   TCDWSWinControl = class(TWSWinControl)
   published
+    {$ifdef CD_Windows}
     class procedure AddControl(const AControl: TControl); override;
 
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
@@ -78,6 +79,7 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
+    {$endif}
 
 {    class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
     class function  CreateHandle(const AWinControl: TWinControl;
