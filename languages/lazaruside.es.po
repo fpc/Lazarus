@@ -360,12 +360,18 @@ msgid "Hide mouse when typing"
 msgstr "Ocultar el cursor del ratón al escribir"
 
 #: lazarusidestrconsts.dlgautoindent
+msgctxt "lazarusidestrconsts.dlgautoindent"
 msgid "Auto indent"
 msgstr "Sangrar Automáticamente"
 
 #: lazarusidestrconsts.dlgautoindentlink
 msgid "(Setup smart indent)"
 msgstr "(Configurar sangrado inteligente)"
+
+#: lazarusidestrconsts.dlgautoindenttype
+msgctxt "lazarusidestrconsts.dlgautoindenttype"
+msgid "Auto indent"
+msgstr "Sangrar Automáticamente"
 
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
@@ -407,7 +413,9 @@ msgid "Selection"
 msgstr "Selección:"
 
 #: lazarusidestrconsts.dlgblockindent
-msgid "Block indent"
+#, fuzzy
+#| msgid "Block indent"
+msgid "Block indent (spaces)"
 msgstr "Sangrado de bloque"
 
 #: lazarusidestrconsts.dlgblockindenttype
@@ -425,6 +433,10 @@ msgstr "Solamente posición"
 #: lazarusidestrconsts.dlgblockindenttypespace
 msgid "Spaces"
 msgstr "Espacios"
+
+#: lazarusidestrconsts.dlgblocktabindent
+msgid "Block indent (tabs)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgbp7cptb
 msgid "TP/BP 7.0 Compatible"

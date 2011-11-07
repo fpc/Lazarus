@@ -363,12 +363,18 @@ msgid "Hide mouse when typing"
 msgstr "הסתר סמן עכבר בזמן הקלדה"
 
 #: lazarusidestrconsts.dlgautoindent
+msgctxt "lazarusidestrconsts.dlgautoindent"
 msgid "Auto indent"
 msgstr "זיהוי אוטומטי"
 
 #: lazarusidestrconsts.dlgautoindentlink
 msgid "(Setup smart indent)"
 msgstr "(הפעל זיהוי חכם)"
+
+#: lazarusidestrconsts.dlgautoindenttype
+msgctxt "lazarusidestrconsts.dlgautoindenttype"
+msgid "Auto indent"
+msgstr "זיהוי אוטומטי"
 
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
@@ -410,7 +416,9 @@ msgid "Selection"
 msgstr "בחירה:"
 
 #: lazarusidestrconsts.dlgblockindent
-msgid "Block indent"
+#, fuzzy
+#| msgid "Block indent"
+msgid "Block indent (spaces)"
 msgstr "זהות הבלוק"
 
 #: lazarusidestrconsts.dlgblockindenttype
@@ -428,6 +436,10 @@ msgstr "מיקום בלבד"
 #: lazarusidestrconsts.dlgblockindenttypespace
 msgid "Spaces"
 msgstr "רווחים"
+
+#: lazarusidestrconsts.dlgblocktabindent
+msgid "Block indent (tabs)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgbp7cptb
 msgid "TP/BP 7.0 Compatible"

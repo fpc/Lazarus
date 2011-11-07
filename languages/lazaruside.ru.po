@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-11-04 21:11+0400\n"
+"PO-Revision-Date: 2011-11-08 01:38+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -374,12 +374,18 @@ msgid "Hide mouse when typing"
 msgstr "Скрывать курсор мыши во время набора текста"
 
 #: lazarusidestrconsts.dlgautoindent
+msgctxt "lazarusidestrconsts.dlgautoindent"
 msgid "Auto indent"
 msgstr "Автоматический отступ"
 
 #: lazarusidestrconsts.dlgautoindentlink
 msgid "(Setup smart indent)"
 msgstr "(Настроить)"
+
+#: lazarusidestrconsts.dlgautoindenttype
+msgctxt "lazarusidestrconsts.dlgautoindenttype"
+msgid "Auto indent"
+msgstr "Автоматический отступ"
 
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
@@ -420,8 +426,9 @@ msgid "Selection"
 msgstr "Выделение"
 
 #: lazarusidestrconsts.dlgblockindent
-msgid "Block indent"
-msgstr "Отступ блока"
+#| msgid "Block indent"
+msgid "Block indent (spaces)"
+msgstr "Отступ блока в пробелах"
 
 #: lazarusidestrconsts.dlgblockindenttype
 msgid "Indent method"
@@ -438,6 +445,10 @@ msgstr "По положению"
 #: lazarusidestrconsts.dlgblockindenttypespace
 msgid "Spaces"
 msgstr "Пробелы"
+
+#: lazarusidestrconsts.dlgblocktabindent
+msgid "Block indent (tabs)"
+msgstr "Отступ блока в ТАБах"
 
 #: lazarusidestrconsts.dlgbp7cptb
 msgid "TP/BP 7.0 Compatible"
