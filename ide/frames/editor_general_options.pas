@@ -35,6 +35,8 @@ type
 
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     BlockIndentComboBox: TComboBox;
+    BlockTabIndentComboBox: TComboBox;
+    BlockTabIndentLabel: TLabel;
     BlockIndentTypeComboBox: TComboBox;
     BlockIndentLabel: TLabel;
     AutoIndentCheckBox: TCheckBox;
@@ -138,7 +140,8 @@ begin
   FDialog := ADialog;
 
   BlockIndentLabel.Caption := dlgBlockIndent;
-  BlockIndentTypeLabel.Caption := dlgBlockIndent;
+  BlockTabIndentLabel.Caption := dlgBlockTabIndent;
+  BlockIndentTypeLabel.Caption := dlgAutoIndentType;
   BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeSpace);
   BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeCopy);
   BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypePos);
@@ -189,6 +192,7 @@ begin
   with AOptions as TEditorOptions do
   begin
     SetComboBoxText(BlockIndentComboBox, IntToStr(BlockIndent), cstCaseInsensitive);
+    SetComboBoxText(BlockTabIndentComboBox, IntToStr(BlockTabIndent), cstCaseInsensitive);
     SetComboBoxText(TabWidthsComboBox, IntToStr(TabWidth), cstCaseInsensitive);
     BlockIndentTypeComboBox.ItemIndex := ord(BlockIndentType);
 
@@ -283,11 +287,19 @@ begin
     TabWidth := i;
 
     i := StrToIntDef(BlockIndentComboBox.Text, 2);
-    if i < 1 then
-      i := 1;
+    if i < 0 then
+      i := 0;
     if i > 20 then
       i := 20;
     BlockIndent := i;
+
+    i := StrToIntDef(BlockTabIndentComboBox.Text, 0);
+    if i < 0 then
+      i := 0;
+    if i > 20 then
+      i := 20;
+    BlockTabIndent := i;
+
     BlockIndentType := TSynBeautifierIndentType(BlockIndentTypeComboBox.ItemIndex);
 
     // cursor
@@ -405,10 +417,21 @@ begin
   if Sender = BlockIndentComboBox then
   begin
     NewVal := StrToIntDef(BlockIndentComboBox.Text, PreviewEdits[1].BlockIndent);
+    // Todo: min/max
     SetComboBoxText(BlockIndentComboBox, IntToStr(NewVal), cstCaseInsensitive);
     for a := Low(PreviewEdits) to High(PreviewEdits) do
       if PreviewEdits[a] <> nil then
         PreviewEdits[a].BlockIndent := NewVal;
+  end
+  else
+  if Sender = BlockTabIndentComboBox then
+  begin
+    NewVal := StrToIntDef(BlockTabIndentComboBox.Text, PreviewEdits[1].BlockTabIndent);
+    // Todo: min/max
+    SetComboBoxText(BlockTabIndentComboBox, IntToStr(NewVal), cstCaseInsensitive);
+    for a := Low(PreviewEdits) to High(PreviewEdits) do
+      if PreviewEdits[a] <> nil then
+        PreviewEdits[a].BlockTabIndent := NewVal;
   end
   else
   if Sender = TabWidthsComboBox then

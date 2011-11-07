@@ -351,6 +351,7 @@ type
     procedure WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_VSCROLL;
   private
     FBlockIndent: integer;
+    FBlockTabIndent: integer;
     FCaret: TSynEditCaret;
     FInternalCaret: TSynEditCaret;
     FScreenCaret: TSynEditScreenCaret;
@@ -477,6 +478,7 @@ type
     function GetPaintLockOwner: TSynEditBase;
     function GetPlugin(Index: Integer): TSynEditPlugin;
     function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
+    procedure SetBlockTabIndent(AValue: integer);
     procedure SetDefSelectionMode(const AValue: TSynSelectionMode);
     procedure SetFoldState(const AValue: String);
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
@@ -922,7 +924,8 @@ type
       read GetTrimSpaceType write SetTrimSpaceType;
     property BookMarkOptions: TSynBookMarkOpt
       read fBookMarkOpt write fBookMarkOpt;
-    property BlockIndent: integer read fBlockIndent write SetBlockIndent default 2;
+    property BlockIndent: integer read FBlockIndent write SetBlockIndent default 2;
+    property BlockTabIndent: integer read FBlockTabIndent write SetBlockTabIndent default 0;
     property ExtraCharSpacing: integer
       read fExtraCharSpacing write SetExtraCharSpacing default 0;
     property ExtraLineSpacing: integer
@@ -1012,6 +1015,7 @@ type
     property Align;
     property Beautifier;
     property BlockIndent;
+    property BlockTabIndent;
     property BorderSpacing;
 {$IFNDEF SYN_LAZARUS}
     property Ctl3D;
@@ -1193,9 +1197,9 @@ type
 
   TSynEditUndoIndent = class(TSynEditUndoItem)
   public
-    FPosY1, FPosY2, FCnt: Integer;
+    FPosY1, FPosY2, FCnt, FTabCnt: Integer;
   public
-    constructor Create(APosY, EPosY, ACnt: Integer);
+    constructor Create(APosY, EPosY, ACnt, ATabCnt: Integer);
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
 
@@ -1292,11 +1296,12 @@ end;
 
 { TSynEditUndoIndent }
 
-constructor TSynEditUndoIndent.Create(APosY, EPosY, ACnt: Integer);
+constructor TSynEditUndoIndent.Create(APosY, EPosY, ACnt, ATabCnt: Integer);
 begin
   FPosY1 := APosY;
   FPosY2 := EPosY;
-  FCnt :=  ACnt;
+  FCnt    :=  ACnt;
+  FTabCnt := ATabCnt;
 end;
 
 function TSynEditUndoIndent.PerformUndo(Caller: TObject): Boolean;
@@ -1444,6 +1449,12 @@ begin
   FInternalBlockSelection.StartLineBytePos := aStartPoint;
   FInternalBlockSelection.EndLineBytePos := aEndPoint;
   Result := FInternalBlockSelection.SelText;
+end;
+
+procedure TCustomSynEdit.SetBlockTabIndent(AValue: integer);
+begin
+  if FBlockTabIndent = AValue then Exit;
+  FBlockTabIndent := AValue;
 end;
 
 procedure TCustomSynEdit.SetDefSelectionMode(const AValue: TSynSelectionMode);
@@ -5172,10 +5183,13 @@ begin
       SetCaretAndSelection(LogicalToPhysicalPos(Point(1,TSynEditUndoIndent(Item).FPosY1)),
         Point(1, TSynEditUndoIndent(Item).FPosY1), Point(2, TSynEditUndoIndent(Item).FPosY2),
         smNormal);
-      x := fBlockIndent;
-      fBlockIndent := TSynEditUndoIndent(Item).FCnt;
+      x := FBlockIndent;
+      y := FBlockTabIndent;
+      FBlockIndent := TSynEditUndoIndent(Item).FCnt;
+      FBlockTabIndent := TSynEditUndoIndent(Item).FTabCnt;
       DoBlockIndent;
-      fBlockIndent := x;
+      FBlockIndent := x;
+      FBlockTabIndent := y;
     end
     else
     if Item.ClassType = TSynEditUndoUnIndent then
@@ -5263,7 +5277,7 @@ end;
 procedure TCustomSynEdit.UndoItem(Item: TSynEditUndoItem);
 var
   Line, OldText: PChar;
-  y, Len, Len2: integer;
+  y, Len, Len2, LenT: integer;
 
   function GetLeadWSLen : integer;
   var
@@ -5283,14 +5297,16 @@ begin
     begin
       // add to redo list
       fRedoList.AddChange(TSynEditUndoIndent.Create(TSynEditUndoIndent(Item).FPosY1,
-         TSynEditUndoIndent(Item).FPosY2, TSynEditUndoIndent(Item).FCnt));
+         TSynEditUndoIndent(Item).FPosY2, TSynEditUndoIndent(Item).FCnt, TSynEditUndoIndent(Item).FTabCnt));
       // quick unintend (must all be spaces, as inserted...)
       fRedoList.Lock;
       Len2 := TSynEditUndoIndent(Item).FCnt;
+      LenT := TSynEditUndoIndent(Item).FTabCnt;
       for y := TSynEditUndoUnIndent(Item).FPosY1 to TSynEditUndoUnIndent(Item).FPosY2 do begin
         Line := PChar(FTheLinesView[y - 1]);
         Len := GetLeadWSLen;
         FTheLinesView.EditDelete(Len+1-Len2, y, Len2);
+        FTheLinesView.EditDelete(1, y, LenT);
       end;
       fRedoList.Unlock;
     end
@@ -7824,7 +7840,7 @@ var
   BB,BE            : TPoint;
   Line : PChar;
   Len, e, y: integer;
-  Spaces: String;
+  Spaces, Tabs: String;
 
   function GetLeadWSLen : integer;
   var
@@ -7853,7 +7869,8 @@ begin
       else e := BE.y;
     end;
 
-    Spaces := StringOfChar(#32, fBlockIndent);
+    Spaces := StringOfChar(#32, FBlockIndent);
+    Tabs   := StringOfChar( #9, FBlockTabIndent);
     fUndoList.Lock;
     fRedoList.Lock;
     try
@@ -7862,13 +7879,14 @@ begin
         Line := PChar(FTheLinesView[y - 1]);
         Len := GetLeadWSLen;
         FTheLinesView.EditInsert(Len + 1, y, Spaces);
+        FTheLinesView.EditInsert(1,       y, Tabs);
       end;
     finally
       fUndoList.Unlock;
       fRedoList.Unlock;
     end;
 
-    fUndoList.AddChange(TSynEditUndoIndent.Create(BB.Y, e, fBlockIndent));
+    fUndoList.AddChange(TSynEditUndoIndent.Create(BB.Y, e, FBlockIndent, FBlockTabIndent));
   finally
     FTrimmedLinesView.ForceTrim; // Otherwise it may reset the block
     FCaret.LineBytePos := FBlockSelection.EndLineBytePos;
@@ -7885,6 +7903,7 @@ var
   FullStrToDelete: PChar;
   Line: PChar;
   Len, LogP1, PhyP1, LogP2, PhyP2, y, StrToDeleteLen, e : integer;
+  i, i2, j: Integer;
   SomethingDeleted : Boolean;
   HasTab: Boolean;
 
@@ -7970,6 +7989,25 @@ begin
       if LogP1 - LogP2 > 0 then
         FTheLinesView.EditDelete(LogP2, y, LogP1 - LogP2);
       SomethingDeleted := SomethingDeleted or (LogP1 - LogP2 > 0);
+
+      // Todo: create FullTabStrToDelete for tabs
+      fUndoList.Unlock;
+      fRedoList.Unlock;
+      Line := PChar(FTheLinesView[y - 1]);
+      j := 0;
+      for i := 1 to FBlockTabIndent do begin
+        i2 := fTabWidth;
+        while (i2 > 0) and (Line[j] = #32) do begin
+          dec(i2);
+          inc(j);
+        end;
+        if (i2 > 0) and (Line[j] = #9) then inc(j);
+      end;
+      if j > 0 then
+        FTheLinesView.EditDelete(1, y, j);
+      fUndoList.Lock;
+      fRedoList.Lock;
+
     end;
 
     fUndoList.Unlock;

@@ -930,6 +930,7 @@ type
 
   TEditorOptions = class(TAbstractIDEEnvironmentOptions)
   private
+    FBlockTabIndent: Integer;
     FCompletionLongLineHintInMSec: Integer;
     FCompletionLongLineHintType: TSynCompletionLongHintType;
     FPasExtendedKeywordsMode: Boolean;
@@ -1077,6 +1078,8 @@ type
       write FShowGutterHints;
     property BlockIndent: Integer
       read fBlockIndent write fBlockIndent default 2;
+    property BlockTabIndent: Integer
+      read FBlockTabIndent write FBlockTabIndent default 0;
     property BlockIndentType: TSynBeautifierIndentType
       read fBlockIndentType write fBlockIndentType default sbitCopySpaceTab;
     property TrimSpaceType: TSynEditStringTrimmingType
@@ -3062,6 +3065,7 @@ begin
   FCopyWordAtCursorOnCopyNone := True;
   FShowGutterHints := True;
   fBlockIndent := 2;
+  FBlockTabIndent := 0;
   fBlockIndentType := sbitSpace;
   FTrimSpaceType := settEditLine;
   fUndoLimit := 32767;
@@ -3189,6 +3193,8 @@ begin
       'EditorOptions/General/Editor/UseSyntaxHighlight', True);
     fBlockIndent :=
       XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent', 2);
+    FBlockTabIndent :=
+      XMLConfig.GetValue('EditorOptions/General/Editor/BlockTabIndent', 0);
     fBlockIndentType := GetSynBeautifierIndentType
       (XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndentType',
                           'SpaceIndent'));
@@ -3397,6 +3403,8 @@ begin
       , fUseSyntaxHighlight, True);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/BlockIndent'
       , fBlockIndent, 2);
+    XMLConfig.SetDeleteValue('EditorOptions/General/Editor/BlockTabIndent'
+      , FBlockTabIndent, 0);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/BlockIndentType'
       , GetSynBeautifierIndentName(fBlockIndentType), 'SpaceIndent');
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/SpaceTrimType'
@@ -3978,6 +3986,7 @@ begin
   ASynEdit.Options := fSynEditOptions;
   ASynEdit.Options2 := fSynEditOptions2;
   ASynEdit.BlockIndent := fBlockIndent;
+  ASynEdit.BlockTabIndent := FBlockTabIndent;
   (ASynEdit.Beautifier as TSynBeautifier).IndentType := fBlockIndentType;
   ASynEdit.TrimSpaceType := FTrimSpaceType;
   ASynEdit.TabWidth := fTabWidth;
