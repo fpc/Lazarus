@@ -987,7 +987,8 @@ begin
   if CurItem=nil then exit;
   CurBreakPoint:=TIDEBreakPoint(CurItem.Data);
   if CurBreakPoint.Kind = bpkSource then
-    MainIDE.DoJumpToSourcePosition(CurBreakPoint.Source, 0, CurBreakPoint.Line, 0, [jfAddJumpPoint, jfSearchVirtualFullPath]);
+    MainIDE.DoJumpToSourcePosition(CurBreakPoint.Source, 0, CurBreakPoint.Line, 0,
+      [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfSearchVirtualFullPath]);
 end;
 
 procedure TBreakPointsDlg.ShowProperties;
