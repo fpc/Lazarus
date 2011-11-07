@@ -198,8 +198,16 @@ begin
 end;
 
 procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
+var
+  AMessage: TMsg;
 begin
-  inherited AppRun(ALoop);
+//  inherited AppRun(ALoop);
+
+  while Windows.GetMessage(@AMessage, 0, 0, 0) do
+  begin
+    Windows.TranslateMessage(@AMessage);
+    Windows.DispatchMessage(@AMessage);
+  end;
 end;
 
 (*

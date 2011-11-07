@@ -160,14 +160,8 @@ end;}
   Handles the messages sent to the specified window, in parameter Window, by
   Windows or other applications
  ------------------------------------------------------------------------------}
-function
-{$ifdef MSG_DEBUG}
-  RealWindowProc
-{$else}
-  WindowProc
-{$endif}
-  (Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; {$ifdef win32}stdcall{$else}cdecl{$endif};
+function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+  LParam: Windows.LParam): LResult; {$ifdef win32}stdcall{$else}cdecl{$endif};
 Var
   LMessage: TLMessage;
   menuItem: TObject;
@@ -565,7 +559,6 @@ Var
     end;
   end;
 
-
 begin
   //DebugLn('Trace:WindowProc - Start');
 
@@ -580,8 +573,8 @@ begin
 
   lWinControl := WindowInfo^.WinControl;
 
-{$ifdef MSG_DEBUG}
-  DebugLn('WindowProc lWinControl: ',DbgSName(lWinControl));
+{$ifdef CD_MSG_DEBUG}
+  DebugLn('WindowProc lWinControl: ',DbgSName(lWinControl),' MSG=',WM_To_String(Msg));
 {$endif}
   if (IgnoreNextCharWindow <> 0) and ((Msg = WM_CHAR) or (Msg = WM_SYSCHAR)) then
   begin
@@ -1540,49 +1533,6 @@ begin
   else                               Result := PLMsg^.Result;
 
   //DebugLn('Trace:WindowProc - Exit');
-end;
-
-{$ifdef MSG_DEBUG}
-
-function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; {$ifdef Wince}cdecl;{$else}stdcall;{$endif}
-begin
-  DebugLn('WindowProc called for window=', IntToHex(Window, 8),' msg=',
-    WM_To_String(msg),' wparam=', IntToHex(WParam, 8), ' lparam=', IntToHex(lparam, 8));
-
-  Result := RealWindowProc(Window, Msg, WParam, LParam);
-
-  DebugLn('Finished WindowProc');
-end;
-{$endif}
-
-{------------------------------------------------------------------------------
- Function: ComboBoxWindowProc
- Params: Window - The window that receives a message
-         Msg    - The message received
-         WParam - Word parameter
-         LParam - Long-integer parameter
-  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
-
-  Handles the messages sent to a combobox control by Windows or other
-  applications
- ------------------------------------------------------------------------------}
-function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; cdecl;
-begin
-  // darn MS: if combobox has edit control, and combobox receives focus, it
-  // passes it on to the edit, so it will send a WM_KILLFOCUS; inhibit
-  // also don't pass WM_SETFOCUS to the lcl,
-  // it will get one from the edit control
-  if ((Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS)) and
-     (GetTopWindow(Window) <> HWND(nil)) then
-  begin
-    // continue normal processing, don't send to lcl
-    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
-  end else begin
-    // normal processing
-    Result := WindowProc(Window, Msg, WParam, LParam);
-  end;
 end;
 
 {------------------------------------------------------------------------------
