@@ -139,24 +139,11 @@ type
     property Height: Integer read FHeight;
   end;
 
-  { TCocoaTextLayout }
-
-  TCocoaTextLayout = class(TObject)
-  public
-    constructor Create; virtual;
-    procedure SetFont(AFont: TCocoaFont); virtual; abstract;
-    procedure SetText(UTF8Text: PChar; ByteSize: Integer); virtual; abstract;
-    function GetSize: TSize; virtual; abstract;
-
-    procedure Draw(cg: CGContextRef; X, Y: Integer; DX: PInteger); virtual; abstract;
-  end;
-  TCocoaTextLayoutClass = class of TCocoaTextLayout;
-
   { TCocoaContext }
 
   TCocoaContext = class(TObject)
   private
-    fText    : TCocoaTextLayout;
+    //fText    : TCocoaTextLayout;
     fBrush   : TCocoaBrush;
     fPen     : TCocoaPen;
     fFont    : TCocoaFont;
@@ -194,9 +181,6 @@ type
     property Region: TCocoaRegion read fRegion write SetRegion;
     property Bitmap: TCocoaBitmap read fBitmap write SetBitmap;
   end;
-
-var
-  TextLayoutClass  : TCocoaTextLayoutClass = nil;
 
 function CheckDC(dc: HDC): TCocoaContext;
 function CheckDC(dc: HDC; Str: string): Boolean;
@@ -397,12 +381,10 @@ end;
 
 constructor TCocoaContext.Create;
 begin
-  fText:=TextLayoutClass.Create;
 end;
 
 destructor TCocoaContext.Destroy;
 begin
-  fText.Free;
   inherited Destroy;
 end;
 
@@ -581,7 +563,7 @@ procedure TCocoaContext.TextOut(X,Y:Integer;UTF8Chars:PChar;Count:Integer;
 var
   cg      : CGContextRef;
 begin
-  cg:=CGContext;
+  {cg:=CGContext;
   if not Assigned(cg) then Exit;
 
   CGContextScaleCTM(cg, 1, -1);
@@ -594,7 +576,7 @@ begin
   if Assigned(fBrush) then fBrush.Apply(cg);
 
   CGContextTranslateCTM(cg, 0, ContextSize.cy);
-  CGContextScaleCTM(cg, 1, -1);
+  CGContextScaleCTM(cg, 1, -1);}
 end;
 
 {------------------------------------------------------------------------------
@@ -611,7 +593,7 @@ function TCocoaContext.GetTextExtentPoint(AStr: PChar; ACount: Integer;
 var
   LStr: String;
 begin
-  Result := False;
+  {Result := False;
   Size.cx := 0;
   Size.cy := 0;
 
@@ -623,7 +605,7 @@ begin
   fText.SetText(PChar(LStr), Length(LStr));
   Size := fText.getSize();
 
-  Result := True;
+  Result := True;}
 end;
 
 {------------------------------------------------------------------------------
@@ -1008,13 +990,6 @@ procedure TCocoaBrush.Apply(cg:CGContextRef);
 begin
   if cg = nil then Exit;
   CGContextSetRGBFillColor(cg, R,G,B, 1);
-end;
-
-{ TCocoaTextLayout }
-
-constructor TCocoaTextLayout.Create;
-begin
-  inherited Create;
 end;
 
 { TCocoaGDIObject }
