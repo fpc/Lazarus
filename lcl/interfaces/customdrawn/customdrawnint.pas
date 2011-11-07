@@ -22,14 +22,21 @@
 unit CustomDrawnInt;
 
 {$mode objfpc}{$H+}
-//{$I customdrawndefines.inc}
+{$ifdef Darwin}
+{$modeswitch objectivec1}
+{$endif}
+
+{$I customdrawndefines.inc}
 
 interface
 
 uses
   // RTL
-  SysUtils, Classes,
-  {$ifdef Windows}Windows, WinProc,{$endif}
+  Types, Classes, SysUtils, Math,
+  {$ifdef CD_Windows}Windows, WinProc,{$endif}
+  {$ifdef CD_Cocoa}MacOSAll, CocoaAll,{$endif}
+  // Widgetset
+   //CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaTextLayout, CocoaProc,
   // LCL
   InterfaceBase, Translations,
   Controls,  Forms, lclproc,
@@ -37,11 +44,24 @@ uses
   LCLType, LMessages{, StdCtrls, Graphics, Menus };
 
 type
+  {$ifdef CD_Cocoa}
+
+  TCDTimerObject=objcclass(NSObject)
+    func : TWSTimerProc;
+    procedure timerEvent; message 'timerEvent';
+    class function initWithFunc(afunc: TWSTimerProc): TCDTimerObject; message 'initWithFunc:';
+  end;
+
+  TCDAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
+    function applicationShouldTerminate(sender: NSApplication): NSApplicationTerminateReply; message 'applicationShouldTerminate:';
+  end;
+  {$endif}
+
   { TCDWidgetSet }
 
   TCDWidgetSet = class(TWidgetSet)
   private
-    // Used by _win
+    {$ifdef CD_WINDOWS}
     // In win32 it is: The parent of all windows, represents the button of the taskbar
     // In wince it is just an invisible window, but retains the following functions:
     // * This window is also the owner of the clipboard.
@@ -68,27 +88,40 @@ type
     FWaitPipeHandlers: PPipeEventInfo;
 
     FOnAsyncSocketMsg: TSocketEvent;}
+    {$endif}
+
+    {$ifdef CD_Cocoa}
+    FTerminating: Boolean;
+    pool      : NSAutoreleasePool;
+    NSApp     : NSApplication;
+    delegate  : TCDAppDelegate;
+    {$endif}
   protected
     {function CreateThemeServices: TThemeServices; override;
     function GetAppHandle: THandle; override;
     procedure SetAppHandle(const AValue: THandle); override;}
+    //
+    procedure BackendCreate;
+    procedure BackendDestroy;
   public
     constructor Create; override;
-    //destructor Destroy; override;
+    destructor Destroy; override;
 
     function LCLPlatform: TLCLPlatform; override;
     function GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
 
     { Initialize the API }
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
-(*    procedure AppMinimize; override;
+    procedure AppRun(const ALoop: TApplicationMainLoop); override;
+    procedure AppWaitMessage; override;
+    procedure AppProcessMessages; override;
+    procedure AppTerminate; override;
+    procedure AppMinimize; override;
     procedure AppRestore; override;
     procedure AppBringToFront; override;
-    procedure AppProcessMessages; override;
-    procedure AppWaitMessage; override;
-    procedure AppTerminate; override;
-    procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
+  (*
+    procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetVisible(const AVisible: Boolean); override;
     function AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
     function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
@@ -99,11 +132,11 @@ type
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCRedraw(CanvasHandle: HDC); override;
-    procedure SetDesigning(AComponent: TComponent); override;
+    procedure SetDesigning(AComponent: TComponent); override;*)
 
     // create and destroy
-    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle; override;
-    function DestroyTimer(TimerHandle: THandle) : boolean; override;*)
+    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
+    function DestroyTimer(TimerHandle: THandle): boolean; override;
 
 //    {$I win32winapih.inc}
 //    {$I win32lclintfh.inc}
@@ -112,8 +145,10 @@ type
 var
   CDWidgetSet: TCDWidgetSet absolute WidgetSet;
 
+{$ifdef CD_WINDOWS}
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult; stdcall;
+{$endif}
 
 implementation
 
@@ -128,14 +163,21 @@ uses
 ////////////////////////////////////////////////////
   Win32Extra,} LCLMessageGlue;
 
-{$include wincallback.inc}
 
 //{$I win32winapi.inc}
 //{$I win32lclintf.inc}
 
 {$I customdrawnobject.inc}
-{$ifdef Windows}
+
+{$ifdef CD_Windows}
+  {$include wincallback.inc}
   {$I customdrawnobject_win.inc}
+{$endif}
+{$ifdef CD_Cocoa}
+  {$I customdrawnobject_cocoa.inc}
+{$endif}
+{$ifdef CD_X11}
+  {$I customdrawnobject_x11.inc}
 {$endif}
 
 initialization

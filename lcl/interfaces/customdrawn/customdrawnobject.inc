@@ -14,7 +14,7 @@
  *****************************************************************************
 }
 //---------------------------------------------------------------
-(*
+
 {------------------------------------------------------------------------------
   Method: TQtWidgetSet.Create
   Params:  None
@@ -22,35 +22,14 @@
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TQtWidgetSet.Create;
+constructor TCDWidgetSet.Create;
 begin
-  FLastWFPMousePos := Point(MaxInt, MaxInt);
-  FLastWFPResult := 0;
-
   inherited Create;
 
-  App := QApplication_Create(@argc, argv);
-  {$J+}
-  QtVersionInt(QtVersionMajor, QtVersionMinor, QtVersionMicro);
-  {$J-}
-  InitStockItems;
-  QtWidgetSet := Self;
-  ClearCachedColors;
-  FDockImage := nil;
-  FDragImageLock := False;
-  System.InitCriticalSection(CriticalSection);
-  SavedHandlesList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
-  FSocketEventMap := TMap.Create(TMapIdType(its4), SizeOf(Pointer));
-  StayOnTopList := nil;
-  FEatNextDeactivate := False;
-  {$IFDEF HASX11}
-  FMinimizedByPager := False;
-  FLastMinimizeEvent := 0;
-  if ((QtVersionMajor = 4) and (QtVersionMinor < 6)) or IsOldKDEInstallation then
-    QtX11InitializePalettes;
-  FWindowManagerName := LowerCase(GetWindowManager);
-  {$ENDIF}
-  FGlobalActions := TFPList.Create;
+  CDWidgetSet := Self;
+  FTerminating := False;
+
+  BackendCreate;
 end;
 
 {------------------------------------------------------------------------------
@@ -60,74 +39,14 @@ end;
 
   Destructor for the class.
  ------------------------------------------------------------------------------}
-destructor TQtWidgetSet.Destroy;
+destructor TCDWidgetSet.Destroy;
 begin
-  if FDockImage <> nil then
-    QRubberBand_destroy(FDockImage);
-  DestroyGlobalCaret;
-  Clipboard.Free;
-  FreeStockItems;
-  FreeSysColorBrushes;
-  QtDefaultPrinter.Free;
-  QtWidgetSet := nil;
-  
-  if SavedDCList<>nil then
-    SavedDCList.Free;
-    
-  QtDefaultContext.Free;
-  QtScreenContext.Free;
-
-  ClearCachedColors;
-
-  if StayOnTopList <> nil then
-  begin
-    StayOnTopList.Free;
-    StayOnTopList := nil;
-  end;
-
-  if SavedHandlesList <> nil then
-  begin
-    SavedHandlesList.Free;
-    SavedHandlesList := nil;
-  end;
-  FSocketEventMap.Free;
-  FGlobalActions.Free;
-
-  System.DoneCriticalsection(CriticalSection);
-
+  BackendDestroy;
+  CDWidgetSet := nil;
   inherited Destroy;
 end;
 
-{------------------------------------------------------------------------------
-  Method: TQtWidgetSet.Destroy
-  Params:  None
-  Returns: Nothing
-
-  Creates a new timer and sets the callback event.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;
-var
-  QtTimer: TQtTimer;
-begin
-  QtTimer := TQtTimer.CreateTimer(Interval, TimerFunc, App);
-  
-  Result := THandle(QtTimer);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWidgetSet.Destroy
-  Params:  None
-  Returns: Nothing
-
-  Destroys a timer.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
-begin
-  TQtTimer(TimerHandle).Free;
-  
-  Result := True;
-end;
-
+(*
 {------------------------------------------------------------------------------
   Method: TQtWidgetSet.AppInit
   Params:  None
