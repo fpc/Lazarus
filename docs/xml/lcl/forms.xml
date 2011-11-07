@@ -2955,8 +2955,11 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.CanFocus">
-        <short></short>
+        <short>True when the form can receive the focus.
+        </short>
         <descr>
+          A control can receive the focus when it is visible and enabled,
+          and all its Parents also can receive the focus.
         </descr>
         <errors>
         </errors>
@@ -4091,7 +4094,7 @@ When the form is put into another control the window borders depend on the widge
         <seealso/>
       </element>
       <!-- "class of" type Visibility: default -->
-      <element name="THintWindowClass">
+      <element name="THintWindowClass" link="THintWindow">
         <short>
           <var>THintWindowClass</var> - class of <var>THintWindow</var>
         </short>
@@ -4100,16 +4103,18 @@ When the form is put into another control the window borders depend on the widge
       </element>
 <!-- object Visibility: default -->
       <element name="TMonitor">
-        <short>
-          <var>TMonitor</var> - system monitor</short>
-        <descr>TMonitor contains properties to access visible and work dimensions of the system monitor.</descr>
+        <short>Information about an phyiscal monitor.</short>
+        <descr>All informations are retrieved dynamically from the OS,
+          so that all changes are taken into account.
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TMonitor.FHandle" link="TMonitor.Handle"/>
       <element name="TMonitor.FMonitorNum" link="TMonitor.MonitorNum"/>
       <!-- function Visibility: private -->
       <element name="TMonitor.GetInfo">
-        <short></short>
+        <short>Retrieves monitor information from the OS.
+        </short>
         <descr>
         </descr>
         <errors>
@@ -4124,149 +4129,77 @@ When the form is put into another control the window borders depend on the widge
         <short></short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitor.GetLeft">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TMonitor.GetLeft" link="TMonitor.Left"/>
       <element name="TMonitor.GetLeft.Result">
         <short></short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitor.GetHeight">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TMonitor.GetHeight" link="TMonitor.Height"/>
       <element name="TMonitor.GetHeight.Result">
         <short></short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitor.GetTop">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TMonitor.GetTop" link="TMonitor.Top"/>
       <element name="TMonitor.GetTop.Result">
         <short></short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitor.GetWidth">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TMonitor.GetWidth" link="TMonitor.Width"/>
       <element name="TMonitor.GetWidth.Result">
         <short></short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitor.GetBoundsRect">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TMonitor.GetBoundsRect" link="TMonitor.BoundsRect"/>
       <element name="TMonitor.GetBoundsRect.Result">
         <short></short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitor.GetWorkareaRect">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TMonitor.GetWorkareaRect" link="TMonitor.WorkareaRect"/>
       <element name="TMonitor.GetWorkareaRect.Result">
         <short></short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitor.GetPrimary">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TMonitor.GetPrimary" link="TMonitor.Primary"/>
       <element name="TMonitor.GetPrimary.Result">
         <short></short>
       </element>
       <!-- property Visibility: public -->
       <element name="TMonitor.BoundsRect">
-        <short>
-          <var>BoundsRect</var> - the logical dimensions of the monitor</short>
+        <short>The logical dimensions of the monitor, within the desktop.
+        </short>
       </element>
       <element name="TMonitor.Handle">
-        <short>
-          <var>Handle</var> - system handle of monitor</short>
+        <short>Identifies this monitor to the system.
+        </short>
       </element>
       <element name="TMonitor.Height">
-        <short>
-          <var>Height</var> - the logical height of the monitor</short>
+        <short>The height of the display.</short>
       </element>
       <element name="TMonitor.Left">
-        <short>
-          <var>Left</var> - the logical position of the left side of the monitor</short>
+        <short>The leftmost screen coordinate of the display.</short>
       </element>
       <element name="TMonitor.MonitorNum">
-        <short>
-          <var>MonitorNum</var> - index of the monitor in the screen monitors list</short>
+        <short>Index of the monitor in the <link id="TScreen.Monitors"/> list.</short>
       </element>
       <element name="TMonitor.Primary">
-        <short>
-          <var>Primary</var> - indicates whether this monitor is primary</short>
+        <short>True if this is the primary monitor of the system.</short>
       </element>
       <element name="TMonitor.Top">
-        <short>
-          <var>Top</var> - the logical position of the top side of the monitor</short>
+        <short>The topmost screen coordinate of the display.</short>
       </element>
       <element name="TMonitor.Width">
-        <short>
-          <var>Width</var> - the logical width of the monitor</short>
+        <short>The width of the display.</short>
       </element>
       <element name="TMonitor.WorkareaRect">
-        <short>
-          <var>WorkareaRect</var> - the logical dimensions of the monitor except the unusable parts (like the taskbar, the dockbar, the global menu)</short>
+        <short>The usable display area, excluding a taskbar etc.
+        </short>
       </element>
-
 <!-- object Visibility: default -->
       <element name="TMonitorList">
-        <short>
-          <var>TMonitorList</var> - a list of monitors</short>
+        <short>A list of all available monitors.</short>
       </element>
       <!-- function Visibility: private -->
-      <element name="TMonitorList.GetItem">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TMonitorList.GetItem" link="TMonitorList.Items"/>
       <element name="TMonitorList.GetItem.Result">
         <short></short>
       </element>
@@ -4274,15 +4207,7 @@ When the form is put into another control the window borders depend on the widge
         <short></short>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TMonitorList.SetItem">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TMonitorList.SetItem" link="TMonitorList.Items"/>
       <element name="TMonitorList.SetItem.AIndex">
         <short></short>
       </element>
@@ -4291,7 +4216,8 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMonitorList.Notify">
-        <short></short>
+        <short>List notification handler, destroys the Monitor object on removal from the list.
+        </short>
         <descr>
         </descr>
         <errors>
@@ -4300,14 +4226,14 @@ When the form is put into another control the window borders depend on the widge
         </seealso>
       </element>
       <element name="TMonitorList.Notify.Ptr">
-        <short></short>
+        <short>The monitor object.</short>
       </element>
       <element name="TMonitorList.Notify.Action">
-        <short></short>
+        <short>The list operation.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TMonitorList.Items">
-        <short></short>
+        <short>The indexed list of all Monitors.</short>
         <descr>
         </descr>
         <seealso>
@@ -4317,125 +4243,151 @@ When the form is put into another control the window borders depend on the widge
         <short></short>
       </element>
 <!-- pointer type Visibility: default -->
-      <element name="PCursorRec">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="PCursorRec" link="TCursorRec"/>
       <!-- record type Visibility: default -->
       <element name="TCursorRec">
-        <short/>
+        <short>An element of the Cursor list.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TCursorRec.Next">
-        <short/>
+        <short>The next list element.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TCursorRec.Index">
-        <short/>
+        <short>The list index.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TCursorRec.Handle">
-        <short/>
+        <short>The OS identifier for this cursor.
+        </short>
         <descr/>
         <seealso/>
       </element>
 <!-- procedure type Visibility: default -->
       <element name="TScreenFormEvent">
-        <short/>
+        <short>Type of an screen notification handler, for form related events.[?]
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreenNotification"/>
+          <link id="TScreenControlEvent"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TScreenFormEvent.Sender">
-        <short/>
+        <short>The Screen[?]</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TScreenFormEvent.Form">
-        <short/>
+        <short>The affected form.</short>
       </element>
 <!-- procedure type Visibility: default -->
       <element name="TScreenControlEvent">
-        <short/>
+        <short>Type of an screen notification handler, for control related events.[?]
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreenNotification"/>
+          <link id="TScreenFormEvent"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TScreenControlEvent.Sender">
-        <short/>
+        <short>The Screen[?]</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TScreenControlEvent.LastControl">
-        <short/>
+        <short>The <b>new</b> active control.</short>
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TScreenNotification">
-        <short/>
+        <short>Screen notification events and handler types.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreenFormEvent"/>
+          <link id="TScreenControlEvent"/>
+        </seealso>
       </element>
       <element name="TScreenNotification.snFormAdded">
-        <short/>
+        <short>A form was added.
+        </short>
       </element>
       <element name="TScreenNotification.snRemoveForm">
-        <short/>
+        <short>A form was removed.
+        </short>
       </element>
       <element name="TScreenNotification.snActiveControlChanged">
-        <short/>
+        <short>The focus moved to another control.
+        </short>
       </element>
       <element name="TScreenNotification.snActiveFormChanged">
-        <short/>
+        <short>The focus moved to another form.
+        </short>
       </element>
       <element name="TScreenNotification.snFormVisibleChanged">
-        <short></short>
+        <short>The visibility of a form changed.
+        </short>
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TMonitorDefaultTo">
-        <short></short>
+        <short>The monitor to choose when screen coordinates are out of the screen bounds.
+        </short>
         <descr>
         </descr>
         <seealso>
         </seealso>
       </element>
       <element name="TMonitorDefaultTo.mdNearest">
-        <short></short>
+        <short>Default to the nearest monitor.</short>
       </element>
       <element name="TMonitorDefaultTo.mdNull">
-        <short></short>
+        <short>Default to Nil (no suggested monitor).</short>
       </element>
       <element name="TMonitorDefaultTo.mdPrimary">
-        <short></short>
+        <short>Default to the primary monitor.</short>
       </element>
 <!-- object Visibility: default -->
       <element name="TScreen">
-        <short>Screen - the visible area</short>
-        <descr/>
+        <short>Provides information about the display and related objects.
+        </short>
+        <descr>
+          <p>The virtual screen (desktop) can include multiple
+            <link id="TScreen.Monitors">physical Monitors</link>.
+          </p><p>
+            Screen objects are Cursors, Fonts and Forms.
+            For Delphi compatibility also (invisible) DataModules are listed.[?]
+          </p><p>
+            The currently active Form, Control and Cursor also are tracked.
+          </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.Cursors"/>
+          <link id="TScreen.DataModules"/>
+          <link id="TScreen.DesktopRect"/>
+          <link id="TScreen.Fonts"/>
+          <link id="TScreen.Forms"/>
+          <link id="TScreen.Monitors"/>
+          <link id="TScreen.WorkareaRect"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TScreen.FActiveControl" link="TScreen.ActiveControl"/>
       <element name="TScreen.FActiveCustomForm" link="TScreen.ActiveCustomForm"/>
       <element name="TScreen.FActiveForm" link="TScreen.ActiveForm"/>
       <element name="TScreen.FCursor" link="TScreen.Cursor"/>
-      <element name="TScreen.FCursorCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TScreen.FCursorMap">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
+      <element name="TScreen.FCursorCount" link="TScreen.Cursors"/>
+      <element name="TScreen.FCursorMap" link="TScreen.Cursors"/>
       <element name="TScreen.FCustomForms" link="TScreen.CustomForms"/>
       <element name="TScreen.FCustomFormsZOrdered" link="TScreen.CustomFormsZOrdered"/>
       <element name="TScreen.FDefaultCursor">
@@ -4452,21 +4404,25 @@ When the form is put into another control the window borders depend on the widge
       <element name="TScreen.FIconFont" link="TScreen.IconFont"/>
       <element name="TScreen.FMenuFont" link="TScreen.MenuFont"/>
       <element name="TScreen.FScreenHandlers">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TScreen.FLastActiveControl">
-        <short/>
+        <short>The last active control, used to detect focus changes.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.RestoreLastActive"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TScreen.FLastActiveCustomForm">
-        <short/>
+        <short>The last active form, used to detect focus changes.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.RestoreLastActive"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TScreen.FMonitors" link="TScreen.Monitors"/>
@@ -4475,7 +4431,7 @@ When the form is put into another control the window borders depend on the widge
       <element name="TScreen.FPixelsPerInch" link="TScreen.PixelsPerInch"/>
       <!-- variable Visibility: private -->
       <element name="TScreen.FSaveFocusedList">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -4483,24 +4439,27 @@ When the form is put into another control the window borders depend on the widge
       <element name="TScreen.FSystemFont" link="TScreen.SystemFont"/>
       <!-- procedure Visibility: private -->
       <element name="TScreen.DeleteCursor">
-        <short/>
+        <short>Removes an cursor from Cursors[].
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TScreen.DeleteCursor.AIndex">
-        <short/>
+        <short>The logical cursor ID.
+        </short>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.DestroyCursors">
-        <short/>
+        <short>Deletes the Cursors list.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.DestroyMonitors">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <errors>
@@ -4514,7 +4473,8 @@ When the form is put into another control the window borders depend on the widge
         <short/>
       </element>
       <element name="TScreen.GetCursors.AIndex">
-        <short/>
+        <short>The logical cursor ID.
+        </short>
       </element>
       <!-- function Visibility: private -->
       <element name="TScreen.GetCustomFormCount" link="TScreen.CustomFormCount"/>
@@ -4628,23 +4588,23 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.AddForm">
-        <short/>
+        <short>Internal notification handler, adds a new form to the lists.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TScreen.AddForm.AForm">
         <short/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.RemoveForm">
-        <short/>
+        <short>Internal notification handler, removes the form from the lists.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TScreen.RemoveForm.AForm">
         <short/>
       </element>
@@ -4691,14 +4651,16 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.UpdateLastActive">
-        <short/>
+        <short>Remembers the currently active form and control as last active.
+          Notifies all registered handlers of eventual changes.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.UpdateMonitors">
-        <short></short>
+        <short>Builds the list of available monitors.</short>
         <descr>
         </descr>
         <errors>
@@ -4708,7 +4670,8 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.RestoreLastActive">
-        <short></short>
+        <short>Moves the Focus back to the previously focused control.
+        </short>
         <descr>
         </descr>
         <errors>
@@ -4718,36 +4681,36 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.AddHandler">
-        <short/>
+        <short>Adds an notification handler.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TScreen.AddHandler.HandlerType">
-        <short/>
+        <short>The notification (event) type.</short>
       </element>
       <element name="TScreen.AddHandler.Handler">
-        <short/>
+        <short>The notification handler.</short>
       </element>
       <element name="TScreen.AddHandler.AsFirst">
-        <short/>
+        <short>Add the handler as the first (True) or last (False) handler.</short>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.RemoveHandler">
-        <short/>
+        <short>Removes an notification handler.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TScreen.RemoveHandler.HandlerType">
-        <short/>
+        <short>The notification (event) type.</short>
       </element>
       <element name="TScreen.RemoveHandler.Handler">
-        <short/>
+        <short>The notification handler.</short>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TScreen.DoAddDataModule">
-        <short></short>
+      <element name="TScreen.DoAddDataModule" link="TScreen.DataModules">
+        <short>Adds the DataModule to the list.</short>
         <descr>
         </descr>
         <errors>
@@ -4759,8 +4722,8 @@ When the form is put into another control the window borders depend on the widge
         <short></short>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TScreen.DoRemoveDataModule">
-        <short></short>
+      <element name="TScreen.DoRemoveDataModule" link="TScreen.DataModules">
+        <short>Removes the DataModule from the list.</short>
         <descr>
         </descr>
         <errors>
@@ -4773,7 +4736,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.NotifyScreenFormHandler">
-        <short></short>
+        <short>Notifies all registered handlers for the given event.</short>
         <descr>
         </descr>
         <errors>
@@ -4782,10 +4745,10 @@ When the form is put into another control the window borders depend on the widge
         </seealso>
       </element>
       <element name="TScreen.NotifyScreenFormHandler.HandlerType">
-        <short></short>
+        <short>The event type.</short>
       </element>
       <element name="TScreen.NotifyScreenFormHandler.Form">
-        <short></short>
+        <short>The related form.</short>
       </element>
       <!-- function Visibility: private -->
       <element name="TScreen.GetWorkAreaHeight" link="TScreen.WorkAreaHeight"/>
@@ -4840,37 +4803,40 @@ When the form is put into another control the window borders depend on the widge
       <!-- destructor Visibility: public -->
       <element name="TScreen.Destroy"/>
       <!-- function Visibility: public -->
-      <element name="TScreen.CustomFormIndex">
-        <short>The Index number of a Custom Form on the screen</short>
+      <element name="TScreen.CustomFormIndex" link="TScreen.CustomForms">
+        <short>Returns the CustomForms[] Index of the form.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TScreen.CustomFormIndex.Result">
-        <short>The Index number of the Custom Form, stored as an integer</short>
+        <short>The form Index, -1 if not found.
+        </short>
       </element>
       <element name="TScreen.CustomFormIndex.AForm">
-        <short>The Custom Form to which the Index refers</short>
+        <short>The Form to which the Index refers.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TScreen.FormIndex">
-        <short>The index number of a Form on the Screen</short>
+        <short>Returns the Forms[] Index of the form.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TScreen.FormIndex.Result">
-        <short>The index number of the Form, stored as an integer</short>
+        <short>The form Index, -1 if not found.</short>
       </element>
       <element name="TScreen.FormIndex.AForm">
-        <short>The Form to which the Index refers</short>
+        <short>The Form to which the Index refers.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TScreen.CustomFormZIndex">
-        <short>
-          <var>CustomFormZIndex</var> - the index value of the form  in the Z dimension (Front to Back)</short>
-        <descr/>
-        <errors/>
+        <short>The index of the form  in the Z dimension (Front to Back).</short>
+        <descr>The index reflects the activation order of the forms,
+          with the currently active form at index zero.
+        </descr>
+        <errors>
+        </errors>
         <seealso/>
       </element>
       <element name="TScreen.CustomFormZIndex.Result">
@@ -4881,10 +4847,11 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.MoveFormToFocusFront">
-        <short>
-          <var>MoveFormToFocusFront</var> - move the specified form to the front of the focus</short>
+        <short>Moves the form to the front of all form lists.
+        </short>
         <descr/>
-        <errors/>
+        <errors>GDB exception when the form is (being) destroyed, or the application is shutting down.
+        </errors>
         <seealso/>
       </element>
       <element name="TScreen.MoveFormToFocusFront.ACustomForm">
@@ -4892,41 +4859,43 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.MoveFormToZFront">
-        <short>
-          <var>MoveFormToZFront</var> - move form to front in the Z-plane (does not specify whether focused)</short>
+        <short>Moves the form to the front of the Z-order list (notification only).</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <errors>GDB exception when the form is (being) destroyed, or the application is shutting down.
+        </errors>
+        <seealso>
+          <link id="TScreen.MoveFormToFocusFront"/>
+        </seealso>
       </element>
       <element name="TScreen.MoveFormToZFront.ACustomForm">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TScreen.GetCurrentModalForm">
-        <short>
-          <var>GetCurrentModalForm</var> - returns the current Modal form on the current screen (ie a form that is awaiting a user response)</short>
+        <short>Returns the topmost Modal form (ie a form that is awaiting a user response).</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TScreen.GetCurrentModalForm.Result">
-        <short/>
+        <short>The modal form, or Nil if none is active.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TScreen.GetCurrentModalFormZIndex">
-        <short>
-          <var>GetCurrentModalFormZIndex</var> - returns the Z-plane index of the current modal form</short>
+        <short>Returns the index of the tompost modal form in CustomFormsZOrdered[].
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TScreen.GetCurrentModalFormZIndex.Result">
-        <short/>
+        <short>The index, or -1 if no modal form is active.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TScreen.CustomFormBelongsToActiveGroup">
-        <short>
-          <var>CustomFormBelongsToActiveGroup</var> - returns True if the specified form belongs to the active group</short>
+        <short>Checks whether the form is visible[?]
+          and either modal or not blocked by another modal form.[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4938,27 +4907,13 @@ When the form is put into another control the window borders depend on the widge
         <short/>
       </element>
       <!-- function Visibility: public -->
-      <element name="TScreen.FindForm">
-        <short>
-          <var>FindForm</var> - returns the form with the specified name</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TScreen.FindForm.Result">
-        <short/>
-      </element>
-      <element name="TScreen.FindForm.FormName">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
       <element name="TScreen.FindNonDesignerForm">
-        <short></short>
+        <short>Finds the named form, excluding designer forms.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TScreen.FindForm"/>
         </seealso>
       </element>
       <element name="TScreen.FindNonDesignerForm.Result">
@@ -4968,13 +4923,28 @@ When the form is put into another control the window borders depend on the widge
         <short></short>
       </element>
       <!-- function Visibility: public -->
+      <element name="TScreen.FindForm">
+        <short>Finds a form by its name.</short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="TScreen.FindNonDesignerForm"/>
+        </seealso>
+      </element>
+      <element name="TScreen.FindForm.Result">
+        <short/>
+      </element>
+      <element name="TScreen.FindForm.FormName">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
       <element name="TScreen.FindNonDesignerDataModule">
-        <short></short>
+        <short>Finds the named DataModule, excluding designer modules.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TScreen.FindDataModule"/>
         </seealso>
       </element>
       <element name="TScreen.FindNonDesignerDataModule.Result">
@@ -4991,29 +4961,28 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.FindDataModule">
-        <short>
-          <var>FindDataModule</var> - returns the Data Module with the specified name</short>
+        <short>Finds the named DataModule.
+        </short>
+        <seealso>
+          <link id="TScreen.FindNonDesignerDataModule"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.UpdateScreen">
-        <short>Method for updating screen</short>
+        <short>Updates the <link id="TScreen.PixelsPerInch"/> property.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TScreen.RemoveAllHandlersOfObject" link="#LCL.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject">
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TScreen.RemoveAllHandlersOfObject" link="#LCL.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject"/>
       <element name="TScreen.RemoveAllHandlersOfObject.AnObject">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.AddHandlerFormAdded">
-        <short>
-          <var>AddHandlerFormAdded</var> - method for adding a form-adding handler</short>
+        <short>Adds an notification handler.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5026,8 +4995,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.RemoveHandlerFormAdded">
-        <short>
-          <var>RemoveHandlerFormAdded</var> - method for removing a form-adding handler</short>
+        <short>Removes an notification handler.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5037,8 +5005,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.AddHandlerRemoveForm">
-        <short>
-          <var>AddHandlerRemoveForm</var> - method for adding a form-removing handler</short>
+        <short>Adds an notification handler.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5051,8 +5018,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.RemoveHandlerRemoveForm">
-        <short>
-          <var>RemoveHandlerRemoveForm</var> - method for removing a form-removing handler</short>
+        <short>Removes an notification handler.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5062,8 +5028,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.AddHandlerActiveControlChanged">
-        <short>
-          <var>AddHandlerActiveControlChanged</var> - method for adding a handler for a change in the active control</short>
+        <short>Adds an notification handler.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5076,8 +5041,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.RemoveHandlerActiveControlChanged">
-        <short>
-          <var>RemoveHandlerActiveControlChanged</var> - method for removing a handler for a change in the active control</short>
+        <short>Removes an notification handler.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5087,8 +5051,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.AddHandlerActiveFormChanged">
-        <short>
-          <var>AddHandlerActiveFormChanged</var> - method for adding a handler for a change in active form</short>
+        <short>Adds an notification handler.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5101,19 +5064,17 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.RemoveHandlerActiveFormChanged">
-        <short>
-          <var>RemoveHandlerActiveFormChanged</var> - method for removing a handler for a change in active form</short>
+        <short>Removes an notification handler.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TScreen.RemoveHandlerActiveFormChanged.OnActiveFormChanged">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.AddHandlerFormVisibleChanged">
-        <short></short>
+        <short>Adds an notification handler.</short>
         <descr>
         </descr>
         <errors>
@@ -5129,11 +5090,9 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.RemoveHandlerFormVisibleChanged">
-        <short></short>
+        <short>Removes an notification handler.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -5142,68 +5101,84 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.DisableForms">
-        <short>
-          <var>DisableForms</var> - disable all forms except <var>SkipForm</var>. If <var>DisabledList</var> is available then add forms to that list and return it, otherwise return new list. Used to show forms and other dialogs modal        </short>
+        <short>Disable all forms except <var>SkipForm</var>.
+        </short>
+        <descr>
+          <p>
+             Used to show modal forms or dialogs.
+          </p><p>
+            The enabled state is determined from the widget, not from LCL properties.
+          </p><p>
+             If <var>DisabledList</var> is Nil, a new list is created.
+             Then all disabled forms are added to that list.
+          </p><p>
+            When the modal form returns, call EnableForms to restore all forms.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TScreen.EnableForms"/>
+        </seealso>
       </element>
       <element name="TScreen.DisableForms.Result">
-        <short></short>
+        <short>The list containing all disabled forms.</short>
       </element>
       <element name="TScreen.DisableForms.SkipForm">
-        <short></short>
+        <short>Don't disable this form (ignored if Nil).</short>
       </element>
       <element name="TScreen.DisableForms.DisabledList">
-        <short></short>
+        <short>The list to update. If Nil, a new list is created and returned.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TScreen.EnableForms">
-        <short>
-          <var>EnableForms</var> - enable all forms from <var>AFormList</var> and destroy list. Used to restore state after <var>DisableForms</var>
+        <short>Use this method to restore all
+          <link id="TScreen.DisableForms">previously disabled</link> forms.
         </short>
+        <seealso>
+          <link id="TScreen.DisableForms"/>
+        </seealso>
       </element>
       <element name="TScreen.EnableForms.AFormList">
-        <short></short>
+        <short>The list containing the forms to enable. The list is destroyed on exit.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TScreen.MonitorFromPoint">
-        <short></short>
+        <short>Find the monitor containing the given screen coordinates.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TScreen.MonitorFromRect"/>
         </seealso>
       </element>
       <element name="TScreen.MonitorFromPoint.Result">
-        <short></short>
+        <short>The monitor found.</short>
       </element>
       <element name="TScreen.MonitorFromPoint.Point">
-        <short></short>
+        <short>The screen coordinates to find.</short>
       </element>
       <element name="TScreen.MonitorFromPoint.MonitorDefault">
-        <short></short>
+        <short>What to return when no monitor was found.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TScreen.MonitorFromRect">
-        <short></short>
+        <short>Find the monitor containing (most of) the given screen coordinates.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TScreen.MonitorFromPoint"/>
         </seealso>
       </element>
       <element name="TScreen.MonitorFromRect.Result">
-        <short></short>
+        <short>The monitor found.</short>
       </element>
       <element name="TScreen.MonitorFromRect.Rect">
-        <short></short>
+        <short>The screen coordinates to find.</short>
       </element>
       <element name="TScreen.MonitorFromRect.MonitorDefault">
-        <short></short>
+        <short>What to return when no monitor was found.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TScreen.MonitorFromWindow">
-        <short></short>
+        <short>Find the monitor containing (most of) the given window.</short>
         <descr>
         </descr>
         <errors>
@@ -5212,52 +5187,56 @@ When the form is put into another control the window borders depend on the widge
         </seealso>
       </element>
       <element name="TScreen.MonitorFromWindow.Result">
-        <short></short>
+        <short>The monitor found.</short>
       </element>
       <element name="TScreen.MonitorFromWindow.Handle">
-        <short></short>
+        <short>The window handle to use.</short>
       </element>
       <element name="TScreen.MonitorFromWindow.MonitorDefault">
-        <short></short>
+        <short>What to return when no monitor was found.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.ActiveControl">
-        <short>The identity of the active control on this screen</short>
-        <descr>Reads a flag to determine the active control</descr>
-        <seealso/>
+        <short>The control which has the Focus.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+          <link id="TScreen.ActiveForm"/>
+          <link id="TScreen.ActiveCustomForm"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.ActiveCustomForm">
-        <short>The identity of the active Custom Form on this screen</short>
-        <descr>Reads a flag to determine the active Custom Form</descr>
-        <seealso/>
+        <short>The custom form which has the Focus.
+        </short>
+        <seealso>
+          <link id="TScreen.ActiveForm"/>
+          <link id="TScreen.ActiveControl"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.ActiveForm">
-        <short>The identity of the active Form on this Screen</short>
-        <descr>Reads a flag to determine the active Form</descr>
-        <seealso/>
+        <short>The form which has the Focus.
+        </short>
+        <seealso>
+          <link id="TScreen.ActiveControl"/>
+          <link id="TScreen.ActiveCustomForm"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.Cursor">
-        <short>The cursor currently being used in this screen</short>
-        <descr>Reads or writes a flag to determine the cursor. <br/>
-
-
-		This can take any integer value, but there are several pre-determined cursor styles <br/>
-
-
-		listed as constants in 'Controls', <br/>
-
-
-		and these should be used to define the cursor for the current screen</descr>
+        <short>The current mouse cursor shape.</short>
+        <descr>Use one of the predefined cursor styles, e.g. crHourGlass.
+        </descr>
         <seealso>
           <link id="Controls.crDefault"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.Cursors">
-        <short>The indexed list of available cursors for this screen</short>
+        <short>The indexed list of available cursor shapes.
+        </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TScreen.Cursors.Index">
@@ -5265,25 +5244,29 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.CustomFormCount">
-        <short>The number of Custom Forms on this screen</short>
-        <descr>Reads flag to determine number of Custom Forms (integer)</descr>
-        <seealso/>
+        <short>The number of Custom Forms.</short>
+        <seealso>
+          <link id="TScreen.CustomForms"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.CustomForms">
-        <short>The list of Custom Forms on the screen</short>
+        <short>The indexed list of Custom Forms.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.CustomFormCount"/>
+        </seealso>
       </element>
       <element name="TScreen.CustomForms.Index">
         <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.CustomFormsZOrdered">
-        <short>
-          <var>CustomFormsZOrdered</var> - the forms arranged in Z-plane order (ie Front to Back)</short>
+        <short>The list of Custom Forms, indexed by Z-order (zero is topmost).</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.CustomFormZOrderCount"/>
+        </seealso>
       </element>
       <element name="TScreen.CustomFormsZOrdered.Index">
         <short/>
@@ -5293,26 +5276,36 @@ When the form is put into another control the window borders depend on the widge
         <short>
           <var>CustomFormZOrderCount</var> - the number of forms arranged in Z-plane order (ie Front to Back)</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.CustomFormsZOrdered"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.DataModuleCount">
-        <short>The number of data modules on the screen</short>
+        <short>The number of existing data modules.</short>
+        <seealso>
+          <link id="TScreen.DataModules"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.DataModules">
-        <short>The list of Data Modules </short>
+        <short>The indexed list of Data Modules.</short>
+        <seealso>
+          <link id="TScreen.DataModuleCount"/>
+        </seealso>
       </element>
       <element name="TScreen.DataModules.Index">
         <short></short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.DesktopHeight">
-        <short>The total available height of the desktop in which the screen is to be placed</short>
+      <element name="TScreen.DesktopHeight" link="TScreen.DesktopRect">
+        <short>The total vertical size of the desktop.
+        </short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.DesktopLeft">
-        <short></short>
+      <element name="TScreen.DesktopLeft" link="TScreen.DesktopRect">
+        <short>The leftmost coordinate of the desktop.
+        </short>
         <descr>
         </descr>
         <seealso>
@@ -5320,67 +5313,79 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.DesktopRect">
-        <short></short>
+        <short>The origin and total extent of the desktop, spanning all monitors.
+        </short>
+        <descr>
+          <remark>
+            The Right field contains the <b>width</b>,
+            the Bottom field the <b>height</b> of the desktop.
+          </remark>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TScreen.DesktopTop" link="TScreen.DesktopRect">
+        <short>The topmost coordinate of the desktop.
+        </short>
         <descr>
         </descr>
         <seealso>
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.DesktopTop">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TScreen.DesktopWidth">
-        <short>The total available width of the desktop in which the screen is to be placed</short>
+      <element name="TScreen.DesktopWidth" link="TScreen.DesktopRect">
+        <short>The total horizontal size of the display.
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.FocusedForm">
-        <short>
-          <var>FocusedForm</var> - the form that holds Focus</short>
-        <descr/>
-        <seealso/>
+        <short>The form that holds Focus [really?]</short>
+        <descr>[what's different from ActiveForm?]
+        </descr>
+        <seealso>
+          <link id="TScreen.ActiveForm"/>
+          <link id="TScreen.ActiveCustomForm"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.Fonts">
-        <short>The fonts to be used in this screen</short>
-        <descr>Reads a flag to determine the fonts to be used; their names are stored as a list of strings</descr>
+        <short>The names of the available (installed) fonts.</short>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.FormCount">
-        <short>The number of Forms on this screen</short>
-        <descr>Reads a flag to determine the number of Forms (integer)</descr>
+      <element name="TScreen.FormCount" link="TScreen.Forms">
+        <short>The number of existing Forms.</short>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.Forms">
-        <short>The list of Forms in this Screen</short>
+        <short>The indexed list of all Forms, in Z-order.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.FormCount"/>
+          <link id="TScreen.CustomForms"/>
+        </seealso>
       </element>
       <element name="TScreen.Forms.Index">
-        <short>Index number of a Form, stored as an integer</short>
+        <short></short>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.Height">
-        <short>The height of the screen</short>
-        <descr>Reads a flag to determine screen height; stored as an integer</descr>
-        <seealso/>
+        <short>The height of the primary monitor.</short>
+        <seealso>
+          <link id="TScreen.PrimaryMonitor"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.HintFont">
-        <short>The font to be used to display hints</short>
-        <descr>Reads a flag to determine the font to be used (font name stored as a string)</descr>
+        <short>The font used to display Hints.</short>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.IconFont">
-        <short></short>
+        <short>The Icon font, used with desktop icons[?].
+        </short>
         <descr>
         </descr>
         <seealso>
@@ -5388,49 +5393,65 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.MenuFont">
-        <short></short>
+        <short>The font used in menus.</short>
         <descr>
         </descr>
         <seealso>
         </seealso>
       </element>
-      <element name="TScreen.MonitorCount">
-        <short>
-          <var>MonitorCount</var> - returns a number of monitors</short>
+      <!-- property Visibility: public -->
+      <element name="TScreen.MonitorCount" link="TScreen.Monitors">
+        <short>The number of available Monitors.</short>
       </element>
+      <!-- property Visibility: public -->
       <element name="TScreen.Monitors">
-        <short>
-          <var>Monitors</var> - provides access to the monitor list array</short>
+        <short>The indexed list of available monitors.
+        </short>
+        <seealso>
+          <link id="TScreen.MonitorCount"/>
+        </seealso>
       </element>
       <element name="TScreen.Monitors.Index">
         <short></short>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.OnActiveControlChange">
-        <short>Event handler for change in the active control</short>
+        <short>Handler for a Focus changed notification.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.AddHandlerActiveControlChanged"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.OnActiveFormChange">
-        <short>Event handler for a change in the active form on the screen</short>
+        <short>Handler for a Focus changed notification.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.AddHandlerActiveFormChanged"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.PixelsPerInch">
-        <short>Scaling factor for displaying graphic information on the screen</short>
-        <descr>Reads a flag to determine number of pixels per inch (integer)</descr>
+        <short>The number of screen pixels for an virtual inch (DPI), in vertical direction.
+        </short>
+        <descr>
+          The display uses virtual inches,
+          which typically are bigger than physical inches.
+          This requires that text appears bigger on an screen than e.g. on an printer.
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.PrimaryMonitor">
-        <short>
-          <var>PrimaryMonitor</var> - return the primary monitor of the system</short>
+        <short>The primary monitor typically shows the taskbar.
+        </short>
+        <seealso>
+          <link id="TScreen.WorkareaRect"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.SystemFont">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <seealso>
@@ -5438,21 +5459,20 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.Width">
-        <short>The width of the screen</short>
-        <descr>Reads flag to determine screen width, stored as an integer</descr>
+        <short>The width of the primary monitor.</short>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.WorkAreaHeight">
-        <short></short>
+      <element name="TScreen.WorkAreaHeight" link="TScreen.WorkareaRect">
+        <short>The usable height on the primary monitor.</short>
         <descr>
         </descr>
         <seealso>
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.WorkAreaLeft">
-        <short></short>
+      <element name="TScreen.WorkAreaLeft" link="TScreen.WorkareaRect">
+        <short>The usable left coordinate on the primary monitor.</short>
         <descr>
         </descr>
         <seealso>
@@ -5460,23 +5480,24 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.WorkAreaRect">
-        <short></short>
+        <short>The usable display area on the primary monitor, excluding e.g. the taskbar.</short>
+        <descr>
+        </descr>
+        <seealso>
+          <link id="TScreen.DesktopRect"/>
+        </seealso>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TScreen.WorkAreaTop" link="TScreen.WorkareaRect">
+        <short>The usable top coordinate on the primary monitor.</short>
         <descr>
         </descr>
         <seealso>
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TScreen.WorkAreaTop">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TScreen.WorkAreaWidth">
-        <short></short>
+      <element name="TScreen.WorkAreaWidth" link="TScreen.WorkareaRect">
+        <short>The usable width on the primary monitor.</short>
         <descr>
         </descr>
         <seealso>
@@ -9045,7 +9066,8 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function Visibility: default -->
       <element name="GetParentForm">
-        <short/>
+        <short>The topmost Form containing Control.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
