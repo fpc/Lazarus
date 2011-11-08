@@ -1327,7 +1327,6 @@ begin
   Height := 25;
   Width := 100;
 
-  DrawStyle := dsExtra1;
   PrepareCurrentDrawer();
 
   FMax := 10;
