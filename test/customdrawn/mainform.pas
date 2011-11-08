@@ -26,6 +26,7 @@ type
     CDEdit2: TCDEdit;
     CDRadioButton1: TCDRadioButton;
     CDStaticText1: TCDStaticText;
+    CDTrackBar2: TCDTrackBar;
     editWinXP: TCDEdit;
     CDGroupBox1: TCDGroupBox;
     CDGroupBox2: TCDGroupBox;

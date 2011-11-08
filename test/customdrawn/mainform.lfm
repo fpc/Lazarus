@@ -50,7 +50,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 439
-    PageIndex = 4
+    PageIndex = 14
     TabOrder = 2
     TabStop = True
     object pageMenu: TPage
@@ -312,7 +312,7 @@ object Form1: TForm1
     object pageTrackBars: TPage
       object TrackBar1: TTrackBar
         Left = 7
-        Height = 25
+        Height = 33
         Top = 16
         Width = 100
         Position = 0
@@ -321,11 +321,19 @@ object Form1: TForm1
       end
       object CDTrackBar1: TCDTrackBar
         Left = 151
-        Height = 25
-        Top = 16
+        Height = 33
+        Top = 64
         Width = 100
         Color = clBtnFace
         DrawStyle = dsExtra1
+        Position = 0
+      end
+      object CDTrackBar2: TCDTrackBar
+        Left = 151
+        Height = 33
+        Top = 16
+        Width = 100
+        DrawStyle = dsCommon
         Position = 0
       end
     end
