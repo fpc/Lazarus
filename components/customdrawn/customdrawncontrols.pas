@@ -44,6 +44,9 @@ type
     procedure CreateControlStateEx; virtual;
     procedure PrepareControlState; virtual;
     procedure PrepareControlStateEx; virtual;
+    // keyboard
+    procedure DoEnter; override;
+    procedure DoExit; override;
     // mouse
     procedure MouseEnter; override;
     procedure MouseLeave; override;
@@ -71,8 +74,6 @@ type
     FHasOnOffStates: Boolean;
     FHasPartiallyOnState: Boolean;
     // keyboard
-    procedure DoEnter; override;
-    procedure DoExit; override;
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
     procedure KeyUp(var Key: word; Shift: TShiftState); override;
     // mouse
@@ -558,6 +559,18 @@ begin
   FStateEx.AutoSize := AutoSize;
 end;
 
+procedure TCDControl.DoEnter;
+begin
+  Invalidate;
+  inherited DoEnter;
+end;
+
+procedure TCDControl.DoExit;
+begin
+  Invalidate;
+  inherited DoExit;
+end;
+
 procedure TCDControl.EraseBackground(DC: HDC);
 begin
 
@@ -621,20 +634,6 @@ begin
 end;
 
 { TCDButtonDrawer }
-
-procedure TCDButtonControl.DoEnter;
-begin
-  Invalidate;
-
-  inherited DoEnter;
-end;
-
-procedure TCDButtonControl.DoExit;
-begin
-  Invalidate;
-
-  inherited DoExit;
-end;
 
 procedure TCDButtonControl.KeyDown(var Key: word; Shift: TShiftState);
 begin
@@ -826,20 +825,16 @@ end;
 
 procedure TCDEdit.DoEnter;
 begin
-  inherited DoEnter;
-
   FCaretTimer.Enabled := True;
   FEditState.CaretIsVisible := True;
-  Invalidate;
+  inherited DoEnter;
 end;
 
 procedure TCDEdit.DoExit;
 begin
-  inherited DoExit;
-
   FCaretTimer.Enabled := False;
   FEditState.CaretIsVisible := False;
-  Invalidate;
+  inherited DoExit;
 end;
 
 procedure TCDEdit.KeyDown(var Key: word; Shift: TShiftState);
