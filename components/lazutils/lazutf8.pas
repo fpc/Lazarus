@@ -709,7 +709,7 @@ begin
         end;
       end;
       // Process E5 to avoid stopping on chinese chars
-      #$E5: if (c2 = #$BC) and (c3 in [#$A1..#$BA]) then Break;
+      #$E5: if (c2 = #$BC) and (InStr[2] in [#$A1..#$BA]) then Break;
       // Others are too complex, better not to pre-inspect them
       else
         Break;
