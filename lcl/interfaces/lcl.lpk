@@ -85,7 +85,7 @@ end;"/>
             <Item10 Value="android"/>
             <Item11 Value="customdrawn"/>
           </Values>
-          <ValueDescriptions Count="10"/>
+          <ValueDescriptions Count="11"/>
         </Item1>
         <Item2>
           <Identifier Value="fpGUIPlatform"/>
@@ -110,7 +110,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="364">
+    <Files Count="366">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1803,11 +1803,21 @@ end;"/>
       <Item363>
         <Filename Value="customdrawn/customdrawnwsforms_win.inc"/>
         <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawnwsforms_win"/>
       </Item363>
       <Item364>
         <Filename Value="customdrawn/customdrawnwscontrols_win.inc"/>
         <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawnwscontrols_win"/>
       </Item364>
+      <Item365>
+        <Filename Value="customdrawn/customdrawnwsforms_x11.inc"/>
+        <AddToUsesPkgSection Value="False"/>
+      </Item365>
+      <Item366>
+        <Filename Value="customdrawn/customdrawnobject_x11.inc"/>
+        <AddToUsesPkgSection Value="False"/>
+      </Item366>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>

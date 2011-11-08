@@ -86,7 +86,7 @@ type
 
     class procedure SetBounds(const AWinControl: TWinControl;
       const ALeft, ATop, AWidth, AHeight: Integer); override;
-    {$ifdef CD_Windows}
+    {$if defined(CD_Windows) or defined(CD_X11)}
     class procedure SetBorderIcons(const AForm: TCustomForm;
                                    const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
@@ -154,6 +154,9 @@ implementation
 {$endif}
 {$ifdef CD_Cocoa}
   {$include customdrawnwsforms_cocoa.inc}
+{$endif}
+{$ifdef CD_X11}
+  {$include customdrawnwsforms_x11.inc}
 {$endif}
 
 end.

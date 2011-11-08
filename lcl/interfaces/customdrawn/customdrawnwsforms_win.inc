@@ -67,7 +67,7 @@ end;
   Creates a Windows CE Form, initializes it according to it´s properties and shows it
  ------------------------------------------------------------------------------}
 class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
+  const AParams: TCreateParams): TLCLIntfHandle;
 var
   Params: TCreateWindowExParams;
   LForm : TCustomForm;
