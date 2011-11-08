@@ -1,9 +1,8 @@
-
-{$R *.res}
-
 program cd_test_all;
 
 {$mode objfpc}{$H+}
+
+{$R *.res}
 
 uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
