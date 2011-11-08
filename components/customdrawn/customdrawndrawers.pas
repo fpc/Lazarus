@@ -124,6 +124,7 @@ type
     Min: integer;
     Max: integer;
     Position: integer;
+    Orientation: TTrackBarOrientation;
   end;
 
   TCDCTabControlStateEx = class(TCDControlStateEx)
@@ -212,6 +213,7 @@ type
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
+    procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AOrientation: TTrackBarOrientation); virtual; abstract;
     // TCDButton
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;

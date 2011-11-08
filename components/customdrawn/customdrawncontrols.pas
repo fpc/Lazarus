@@ -275,10 +275,12 @@ type
     // fields
     FMin: integer;
     FMax: integer;
+    FOrientation: TTrackBarOrientation;
     FPosition: integer;
     FOnChange: TNotifyEvent;
     procedure SetMax(Value: integer);
     procedure SetMin(Value: integer);
+    procedure SetOrientation(AValue: TTrackBarOrientation);
     procedure SetPosition(Value: integer);
     //
     function GetPositionFromMousePos(X, Y: Integer): integer;
@@ -310,6 +312,7 @@ type
     property Max: integer read FMax write SetMax default 10;
     property Min: integer read FMin write SetMin default 0;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property Orientation: TTrackBarOrientation read FOrientation write SetOrientation default trHorizontal;
     property Position: integer read FPosition write SetPosition;
     property TabStop default True;
   end;
@@ -1180,17 +1183,38 @@ end;
 
 procedure TCDTrackBar.SetMax(Value: integer);
 begin
-  if Value = FMax then
-    Exit;
+  if Value = FMax then Exit;
   FMax := Value;
+  PrepareControlStateEx;
   Invalidate;
 end;
 
 procedure TCDTrackBar.SetMin(Value: integer);
 begin
-  if Value = FMin then
-    Exit;
+  if Value = FMin then Exit;
   FMin := Value;
+  PrepareControlStateEx;
+  Invalidate;
+end;
+
+procedure TCDTrackBar.SetOrientation(AValue: TTrackBarOrientation);
+var
+  lOldWidth: Integer;
+begin
+  if FOrientation=AValue then Exit;
+
+  // Invert the width and the height, but not if the property comes from the LFM
+  // because the width was already inverted in the designer and stored in the new value
+  if not (csLoading in ComponentState) then
+  begin
+    lOldWidth := Width;
+    Width := Height;
+    Height := lOldWidth;
+  end;
+
+  // Set the property and redraw
+  FOrientation:=AValue;
+  PrepareControlStateEx;
   Invalidate;
 end;
 
@@ -1198,19 +1222,32 @@ procedure TCDTrackBar.SetPosition(Value: integer);
 begin
   if Value = FPosition then Exit;
   FPosition := Value;
+  PrepareControlStateEx;
   Invalidate;
 end;
 
 function TCDTrackBar.GetPositionFromMousePos(X, Y: integer): integer;
 var
   lLeftBorder, lRightBorder: Integer;
+  lCoord, lSize: Integer;
 begin
   lLeftBorder := FDrawer.GetMeasures(TCDTRACKBAR_LEFT_SPACING);
   lRightBorder := FDrawer.GetMeasures(TCDTRACKBAR_RIGHT_SPACING);
 
-  if X > Width - lRightBorder then Result := FMax
-  else if X < lLeftBorder then Result := FMin
-  else Result := FMin + (X - lLeftBorder) * (FMax - FMin + 1) div (Width - lRightBorder - lLeftBorder);
+  if FOrientation = trHorizontal then
+  begin
+    lCoord := X;
+    lSize := Width;
+  end
+  else
+  begin
+    lCoord := Y;
+    lSize := Height;
+  end;
+
+  if lCoord > lSize - lRightBorder then Result := FMax
+  else if lCoord < lLeftBorder then Result := FMin
+  else Result := FMin + (lCoord - lLeftBorder) * (FMax - FMin + 1) div (lSize - lRightBorder - lLeftBorder);
 
   // sanity check
   if Result > FMax then Result := FMax;
@@ -1234,6 +1271,7 @@ begin
   FTBState.Min := FMin;
   FTBState.Max := FMax;
   FTBState.Position := FPosition;
+  FTBState.Orientation := FOrientation;
 end;
 
 procedure TCDTrackBar.Changed;
@@ -1283,11 +1321,8 @@ var
   NewPosition: Integer;
 begin
   SetFocus;
-
   NewPosition := GetPositionFromMousePos(X, Y);
-
   DragDropStarted := True;
-
   Position := NewPosition;
 
   inherited MouseDown(Button, Shift, X, Y);
