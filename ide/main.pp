@@ -8542,6 +8542,14 @@ begin
     end;
   end;
 
+  if FilenameIsAbsolute(NewFilename) and DirectoryExistsUTF8(NewFilename) then
+  begin
+    IDEMessageDialog(lisFileIsDirectory,
+      lisUnableToCreateNewFileBecauseThereIsAlreadyADirecto,
+      mtError,[mbCancel]);
+    exit(mrCancel);
+  end;
+
   if NewOwner is TProject then
     AProject:=TProject(NewOwner)
   else

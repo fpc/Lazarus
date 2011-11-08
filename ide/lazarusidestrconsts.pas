@@ -5366,6 +5366,9 @@ resourcestring
   lisDiscardChangesAndQuit = 'Discard changes and quit';
   dbgBreakPropertyGroupNotFound = 'Some groups in the Enable/Disable list do not exist.%0:s'
     +'Create them?%0:s%0:s%1:s';
+  lisFileIsDirectory = 'File is directory';
+  lisUnableToCreateNewFileBecauseThereIsAlreadyADirecto = 'Unable to create '
+    +'new file, because there is already a directory with this name.';
 
 implementation
 
