@@ -1896,10 +1896,10 @@ type
   // Color / Identifier mapping
   TGetColorStringProc = procedure(const s: AnsiString) of object;
 
-function IdentEntry(Entry: Longint; var MapEntry: TIdentMapEntry): boolean;
-function ColorToIdent(Color: Longint; var Ident: String): Boolean;
-function IdentToColor(const Ident: string; var Color: Longint): Boolean;
-function ColorIndex(Color: Longint; var Index: Integer): Boolean;
+function IdentEntry(Entry: Longint; out MapEntry: TIdentMapEntry): boolean;
+function ColorToIdent(Color: Longint; out Ident: String): Boolean;
+function IdentToColor(const Ident: string; out Color: Longint): Boolean;
+function ColorIndex(Color: Longint; out Index: Integer): Boolean;
 function SysColorToSysColorIndex(Color: TColor): integer;
 function ColorToRGB(Color: TColor): Longint;
 function ColorToString(Color: TColor): AnsiString;
@@ -1921,8 +1921,8 @@ function TColorToFPColor(const c: TColor): TFPColor; overload; // does not work 
 
 // fonts
 procedure GetCharsetValues(Proc: TGetStrProc);
-function CharsetToIdent(Charset: Longint; var Ident: string): Boolean;
-function IdentToCharset(const Ident: string; var Charset: Longint): Boolean;
+function CharsetToIdent(Charset: Longint; out Ident: string): Boolean;
+function IdentToCharset(const Ident: string; out Charset: Longint): Boolean;
 function GetFontData(Font: HFont): TFontData;
 
 function GetDefFontCharSet: TFontCharSet;
@@ -2466,7 +2466,7 @@ const
     {$warnings on}
     );
 
-function IdentEntry(Entry: Longint; var MapEntry: TIdentMapEntry): boolean;
+function IdentEntry(Entry: Longint; out MapEntry: TIdentMapEntry): boolean;
 begin
   Result := False;
   if (Entry >= 0) and (Entry <= High(Colors)) then
@@ -2476,17 +2476,17 @@ begin
   end;
 end;
 
-function ColorToIdent(Color: Longint; var Ident: String): Boolean;
+function ColorToIdent(Color: Longint; out Ident: String): Boolean;
 begin
   Result := IntToIdent(Color, Ident, Colors);
 end;
 
-function IdentToColor(const Ident: string; var Color: Longint): Boolean;
+function IdentToColor(const Ident: string; out Color: Longint): Boolean;
 begin
   Result := IdentToInt(Ident, Color, Colors);
 end;
 
-function ColorIndex(Color: Longint; var Index: Integer): Boolean;
+function ColorIndex(Color: Longint; out Index: Integer): Boolean;
 var
   i: integer;
 begin
@@ -2729,8 +2729,8 @@ end;
 initialization
   UpdateLock := TCriticalSection.Create;
   OnGetSystemFont := @LocalGetSystemFont;
-  RegisterIntegerConsts(TypeInfo(TColor), @IdentToColor, @ColorToIdent);
-  RegisterIntegerConsts(TypeInfo(TFontCharset), @IdentToCharset, @CharsetToIdent);
+  RegisterIntegerConsts(TypeInfo(TColor), TIdentToInt(@IdentToColor), TIntToIdent(@ColorToIdent));
+  RegisterIntegerConsts(TypeInfo(TFontCharset), TIdentToInt(@IdentToCharset), TIntToIdent(@CharsetToIdent));
   RegisterInterfaceInitializationHandler(@InterfaceInit);
   RegisterInterfaceFinalizationHandler(@InterfaceFinal);
 

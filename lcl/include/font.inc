@@ -128,12 +128,12 @@ begin
     Proc(FontCharsets[I].Name);
 end;
 
-function CharsetToIdent(Charset: Longint; var Ident: string): Boolean;
+function CharsetToIdent(Charset: Longint; out Ident: string): Boolean;
 begin
   Result := IntToIdent(Charset, Ident, FontCharsets);
 end;
 
-function IdentToCharset(const Ident: string; var Charset: Longint): Boolean;
+function IdentToCharset(const Ident: string; out Charset: Longint): Boolean;
 begin
   Result := IdentToInt(Ident, CharSet, FontCharsets);
 end;
