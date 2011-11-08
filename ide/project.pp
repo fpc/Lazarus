@@ -477,6 +477,8 @@ type
     FDefaultCompileReasons: TCompileReasons;
     procedure SetCompileReasons(const AValue: TCompileReasons);
     procedure SetDefaultCompileReasons(const AValue: TCompileReasons);
+  protected
+    procedure SubstituteMacros(var s: string); override;
   public
     procedure Clear; override;
     function CreateDiff(CompOpts: TCompilationToolOptions;
@@ -486,6 +488,7 @@ type
                                 DoSwitchPathDelims: boolean); override;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               UsePathDelim: TPathDelimSwitch); override;
+    function GetProject: TProject;
   public
     property CompileReasons: TCompileReasons read FCompileReasons write SetCompileReasons;
     property DefaultCompileReasons: TCompileReasons read FDefaultCompileReasons write SetDefaultCompileReasons;
@@ -5782,6 +5785,18 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TProjectCompilationToolOptions.SubstituteMacros(var s: string);
+var
+  CompOpts: TProjectCompilerOptions;
+begin
+  if Owner is TProjectCompilerOptions then begin
+    CompOpts:=TProjectCompilerOptions(Owner);
+    //debugln(['TProjectCompilationToolOptions.SubstituteMacros ',DbgSName(Owner),' ',CompOpts.LazProject<>nil]);
+    s:=CompOpts.SubstituteProjectMacros(s,false);
+  end;
+  inherited SubstituteMacros(s);
+end;
+
 procedure TProjectCompilationToolOptions.Clear;
 begin
   inherited Clear;
@@ -5830,6 +5845,14 @@ begin
   SaveXMLCompileReasons(XMLConfig, Path+'CompileReasons/', CompileReasons,
                         DefaultCompileReasons);
   //debugln(['TProjectCompilationToolOptions.SaveToXMLConfig ',Path,' ',crCompile in CompileReasons]);
+end;
+
+function TProjectCompilationToolOptions.GetProject: TProject;
+begin
+  if (Owner is TProjectCompilerOptions) then
+    Result:=TProjectCompilerOptions(Owner).LazProject
+  else
+    Result:=nil;
 end;
 
 { TProjectCompilerOptions }
@@ -5959,6 +5982,7 @@ function TProjectCompilerOptions.SubstituteProjectMacros(const s: string;
 begin
   Result:=s;
   if LazProject=nil then exit;
+  //debugln(['TProjectCompilerOptions.SubstituteProjectMacros s="',s,'"']);
   if PlatformIndependent then
     LazProject.MacroEngine.SubstituteStr(Result,CompilerOptionMacroPlatformIndependent)
   else

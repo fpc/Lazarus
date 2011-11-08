@@ -312,14 +312,20 @@ type
     FChangeStamp: int64;
     FCommand: string;
     FOnChanged: TNotifyEvent;
+    FOwner: TObject;
     FScanForFPCMessages: boolean;
     FScanForMakeMessages: boolean;
     FShowAllMessages: boolean;
+    FParsedCommandStamp: integer;
+    FParsedCommand: string;
     procedure SetCommand(const AValue: string);
     procedure SetScanForFPCMessages(const AValue: boolean);
     procedure SetScanForMakeMessages(const AValue: boolean);
     procedure SetShowAllMessages(const AValue: boolean);
+  protected
+    procedure SubstituteMacros(var s: string); virtual;
   public
+    constructor Create(TheOwner: TObject); virtual;
     procedure Clear; virtual;
     function CreateDiff(CompOpts: TCompilationToolOptions;
                         Tool: TCompilerDiffTool = nil): boolean; virtual;
@@ -332,7 +338,9 @@ type
     property ChangeStamp: int64 read FChangeStamp;
     procedure IncreaseChangeStamp;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
+    function GetParsedCommand: string; // resolved macros
   public
+    property Owner: TObject read FOwner;
     property Command: string read FCommand write SetCommand;
     property ScanForFPCMessages: boolean read FScanForFPCMessages write SetScanForFPCMessages;
     property ScanForMakeMessages: boolean read FScanForMakeMessages write SetScanForMakeMessages;
@@ -1000,9 +1008,9 @@ constructor TBaseCompilerOptions.Create(const AOwner: TObject;
 begin
   inherited Create(AOwner);
   FParsedOpts := TParsedCompilerOptions.Create(Self);
-  FExecuteBefore := AToolClass.Create;
+  FExecuteBefore := AToolClass.Create(Self);
   FExecuteBefore.OnChanged:=@OnItemChanged;
-  FExecuteAfter := AToolClass.Create;
+  FExecuteAfter := AToolClass.Create(Self);
   fExecuteAfter.OnChanged:=@OnItemChanged;
   fBuildMacros := TIDEBuildMacros.Create(Self);
   FCompilerMessages:=TCompilerMessagesList.Create;
@@ -3875,6 +3883,16 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TCompilationToolOptions.SubstituteMacros(var s: string);
+begin
+  IDEMacros.SubstituteMacros(s);
+end;
+
+constructor TCompilationToolOptions.Create(TheOwner: TObject);
+begin
+  FOwner:=TheOwner;
+end;
+
 procedure TCompilationToolOptions.Clear;
 begin
   Command:='';
@@ -3939,8 +3957,10 @@ var
   ProgramFilename, Params: string;
   ExtTool: TIDEExternalToolOptions;
   Filename: String;
+  CurCommand: String;
 begin
-  if Command='' then begin
+  CurCommand:=GetParsedCommand;
+  if CurCommand='' then begin
     Result:=mrOk;
     exit;
   end;
@@ -3948,7 +3968,7 @@ begin
   if SourceEditorManagerIntf<>nil then
     SourceEditorManagerIntf.ClearErrorLines;
 
-  SplitCmdLine(Command,ProgramFilename,Params);
+  SplitCmdLine(CurCommand,ProgramFilename,Params);
   if not FilenameIsAbsolute(ProgramFilename) then begin
     Filename:=FindProgram(ProgramFilename,WorkingDir,true);
     if Filename<>'' then ProgramFilename:=Filename;
@@ -3977,6 +3997,18 @@ procedure TCompilationToolOptions.IncreaseChangeStamp;
 begin
   CTIncreaseChangeStamp64(FChangeStamp);
   if assigned(OnChanged) then OnChanged(Self);
+end;
+
+function TCompilationToolOptions.GetParsedCommand: string;
+begin
+  if FParsedCommandStamp<>CompilerParseStamp then begin
+    FParsedCommandStamp:=CompilerParseStamp;
+    FParsedCommand:=Command;
+    //debugln(['TCompilationToolOptions.GetParsedCommand Unparsed="',FParsedCommand,'"']);
+    SubstituteMacros(FParsedCommand);
+    //debugln(['TCompilationToolOptions.GetParsedCommand Parsed="',FParsedCommand,'"']);
+  end;
+  Result:=FParsedCommand;
 end;
 
 { TIDEBuildMacro }
