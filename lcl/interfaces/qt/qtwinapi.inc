@@ -1985,6 +1985,7 @@ end;
 function TQtWidgetSet.ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer;
 var
   Region: QRegionH;
+  ClipRegion: QRegionH;
   ExRegion: QRegionH;
   QtDC: TQtDeviceContext;
   R: TRect;
@@ -2009,9 +2010,10 @@ begin
    see comment in TQtWidgetSet.ExtSelectClipRgn}
   ExRegion := QRegion_create(Left, Top, Right - Left, Bottom - Top, QRegionRectangle);
   Region := QRegion_create;
+  ClipRegion := QRegion_create;
   try
-    QPainter_clipRegion(QtDC.Widget, Region);
-    QRegion_subtracted(Region, Region, ExRegion);
+    QPainter_clipRegion(QtDC.Widget, ClipRegion);
+    QRegion_subtracted(ClipRegion, Region, ExRegion);
 
     // only for X11 paintEngine.
     if (QPaintEngine_type(QtDC.PaintEngine) = QPaintEngineX11) and
@@ -2033,6 +2035,7 @@ begin
       Result := COMPLEXREGION;
 
   finally
+    QRegion_destroy(ClipRegion);
     QRegion_destroy(Region);
     QRegion_destroy(ExRegion);
   end;
