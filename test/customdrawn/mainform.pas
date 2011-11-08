@@ -47,6 +47,7 @@ type
     GroupBox2: TGroupBox;
     GroupBox3: TGroupBox;
     Label1: TLabel;
+    Label10: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -58,10 +59,10 @@ type
     Memo1: TMemo;
     memoLog: TMemo;
     notebookControls: TNotebook;
-    Page1: TPage;
-    Page2: TPage;
-    Page3: TPage;
-    Page4: TPage;
+    pageToolBars: TPage;
+    pageUpDowns: TPage;
+    pageListViews: TPage;
+    pageStatusBars: TPage;
     pageScrollBars: TPage;
     pageToggleBoxes: TPage;
     pageComboBoxes: TPage;
@@ -83,6 +84,12 @@ type
     pagePageControls: TPage;
     pageTabControls: TPage;
     Panel1: TPanel;
+    ProgressBar1: TProgressBar;
+    ProgressBar2: TProgressBar;
+    ProgressBar3: TProgressBar;
+    ProgressBar4: TProgressBar;
+    ProgressBar5: TProgressBar;
+    ProgressBar6: TProgressBar;
     RadioButton1: TRadioButton;
     RadioButton2: TRadioButton;
     RadioButton3: TRadioButton;
@@ -95,6 +102,7 @@ type
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
+    ToggleBox1: TToggleBox;
     TrackBar1: TTrackBar;
     CDTrackBar1: TCDTrackBar;
     TrackBar2: TTrackBar;
