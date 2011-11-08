@@ -127,6 +127,14 @@ type
     Orientation: TTrackBarOrientation;
   end;
 
+  TCDProgressBarStateEx = class(TCDControlStateEx)
+  public
+    Min: integer;
+    Max: integer;
+    Position: integer;
+    Orientation: TProgressBarOrientation;
+  end;
+
   TCDCTabControlStateEx = class(TCDControlStateEx)
   public
     LeftmostTabVisibleIndex: Integer;

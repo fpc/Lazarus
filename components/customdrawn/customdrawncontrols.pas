@@ -317,6 +317,40 @@ type
     property TabStop default True;
   end;
 
+  { TCDProgressBar }
+
+  TCDProgressBar = class(TCDControl)
+  private
+    DragDropStarted: boolean;
+    // fields
+    FMin: integer;
+    FMax: integer;
+    FOrientation: TProgressBarOrientation;
+    FPosition: integer;
+    FOnChange: TNotifyEvent;
+    procedure SetMax(Value: integer);
+    procedure SetMin(Value: integer);
+    procedure SetOrientation(AValue: TProgressBarOrientation);
+    procedure SetPosition(Value: integer);
+  protected
+    FPBState: TCDProgressBarStateEx;
+    function GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property Color;
+    property DrawStyle;
+    property Max: integer read FMax write SetMax default 10;
+    property Min: integer read FMin write SetMin default 0;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property Orientation: TProgressBarOrientation read FOrientation write SetOrientation;// default prHorizontal;
+    property Position: integer read FPosition write SetPosition;
+    property TabStop default True;
+  end;
+
   { TCDListView }
 
 (*  TCDListView = class(TCDControl)
@@ -465,6 +499,54 @@ implementation
 
 resourcestring
   sTABSHEET_DEFAULT_NAME = 'CTabSheet';
+
+{ TCDProgressBar }
+
+procedure TCDProgressBar.SetMax(Value: integer);
+begin
+
+end;
+
+procedure TCDProgressBar.SetMin(Value: integer);
+begin
+
+end;
+
+procedure TCDProgressBar.SetOrientation(AValue: TProgressBarOrientation);
+begin
+
+end;
+
+procedure TCDProgressBar.SetPosition(Value: integer);
+begin
+
+end;
+
+function TCDProgressBar.GetControlId: TCDControlID;
+begin
+  Result:=inherited GetControlId;
+end;
+
+procedure TCDProgressBar.CreateControlStateEx;
+begin
+  FPBState := TCDProgressBarStateEx.Create;
+  FStateEx := FPBState;
+end;
+
+procedure TCDProgressBar.PrepareControlStateEx;
+begin
+//  FPBState.Min:=;
+end;
+
+constructor TCDProgressBar.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
+destructor TCDProgressBar.Destroy;
+begin
+  inherited Destroy;
+end;
 
 { TCDStaticText }
 
