@@ -837,6 +837,7 @@ procedure TQtWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGra
 var
   ASavedColor: TQColor;
   Color: TQColor;
+  ColorRef: TColorRef;
   Pen: QPenH;
   Painter: QPainterH;
 begin
@@ -846,7 +847,8 @@ begin
     Painter := TQtDeviceContext(CanvasHandle).Widget;
     Pen := QPainter_pen(Painter);
     QPen_color(Pen, @ASavedColor);
-    QColor_fromRgb(@Color, Red(AColor), Green(AColor), Blue(AColor));
+    ColorRef := TColorRef(ColorToRGB(AColor));
+    QColor_fromRgb(@Color, Red(ColorRef), Green(ColorRef), Blue(ColorRef));
     QPainter_setPen(Painter, @Color);
     QPainter_drawPoint(Painter, X,Y);
     QPainter_setPen(Painter, @ASavedColor);
