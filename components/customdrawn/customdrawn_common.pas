@@ -96,15 +96,15 @@ const
   WIN2000_FRAME_GRAY = $0099A8AC;
   WIN2000_FRAME_DARK_GRAY = $00646F71;
 
-  WIN2000_WINDOW_MAINCOLOR = $00D8E9EC;
+  WIN2000_BTNFACE = $00D8E9EC;
 
-  WIN2000_FORM       = $00D8E9EC;
+  WIN2000_FORM    = WIN2000_BTNFACE;
 
 { TCDDrawerCommon }
 
 procedure TCDDrawerCommon.LoadFallbackPaletteColors;
 begin
-  Palette.BtnFace := WIN2000_FORM;
+  Palette.BtnFace := WIN2000_BTNFACE;
   Palette.Form := WIN2000_FORM;
   Palette.Window := clWhite; // The inside of a Edit control, for example
 end;
@@ -121,6 +121,11 @@ begin
   TCDCHECKBOX_SQUARE_HEIGHT: Result := 15;
   //
   TCDRADIOBUTTON_CIRCLE_HEIGHT: Result := 15;
+  //
+  TCDTRACKBAR_LEFT_SPACING: Result := 9;
+  TCDTRACKBAR_RIGHT_SPACING: Result := 9;
+  TCDTRACKBAR_TOP_SPACING: Result := 5;
+  TCDTRACKBAR_FRAME_HEIGHT: Result := 20;
   else
     Result := 0;
   end;
@@ -702,8 +707,94 @@ end;
 
 procedure TCDDrawerCommon.DrawTrackBar(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDTrackBarStateEx);
+var
+  lDrawingBottom, StepsCount, i: Integer;
+  lTickmarkLeft, lTickmarkTop: integer; // for drawing the decorative bars
+  dRect: TRect;
+  pStepWidth, CDBarEdge: Integer;
+  lPoints: array[0..4] of TPoint;
+  lSliderBottom: Integer;
 begin
+  CDBarEdge := GetMeasures(TCDTRACKBAR_LEFT_SPACING)
+    + GetMeasures(TCDTRACKBAR_RIGHT_SPACING);
 
+  // Sanity check
+  if AStateEx.Max - AStateEx.Min <= 0 then
+    raise Exception.Create('[TCDDrawerCommon.DrawTrackBar] Max-Min must be at least 1');
+
+  // Preparations
+  StepsCount := AStateEx.Max - AStateEx.Min + 1;
+  if StepsCount > 0 then pStepWidth := (ASize.cx - CDBarEdge) div (StepsCount-1)
+  else pStepWidth := 0;
+
+  // The bottom part of the drawing
+  lDrawingBottom := ASize.cy - 10;
+
+  // Background
+
+  ADest.Brush.Color := AStateEx.ParentRGBColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := AStateEx.ParentRGBColor;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  // Draws the frame
+
+  DrawSunkenFrame(ADest,
+    Point(ADestPos.X + GetMeasures(TCDTRACKBAR_LEFT_SPACING),
+     ADestPos.Y + GetMeasures(TCDTRACKBAR_TOP_SPACING)),
+    Size(ASize.CX - CDBarEdge,
+     GetMeasures(TCDTRACKBAR_FRAME_HEIGHT)));
+
+  // Draw the focus
+
+  DrawFocusRect(ADest,
+    Point(ADestPos.X + GetMeasures(TCDTRACKBAR_LEFT_SPACING)-3,
+     ADestPos.Y + GetMeasures(TCDTRACKBAR_TOP_SPACING)-3),
+    Size(ASize.CX - CDBarEdge+6,
+     GetMeasures(TCDTRACKBAR_FRAME_HEIGHT)+6));
+
+  // Draws the tickmarks and also the slider button
+  lTickmarkLeft := GetMeasures(TCDTRACKBAR_LEFT_SPACING);
+  lTickmarkTop := GetMeasures(TCDTRACKBAR_TOP_SPACING) + GetMeasures(TCDTRACKBAR_FRAME_HEIGHT)+6;
+  ADest.Pen.Style := psSolid;
+  for i := 0 to StepsCount - 1 do
+  begin
+    ADest.Pen.Color := clBlack;
+    ADest.Line(lTickmarkLeft, lTickmarkTop, lTickmarkLeft, lTickmarkTop+5);
+
+    // Draw the slider
+
+    if i + AStateEx.Min = AStateEx.Position then
+    begin
+      ADest.Brush.Color := Palette.BtnFace;
+      ADest.Brush.Style := bsSolid;
+      ADest.Pen.Color := WIN2000_FRAME_WHITE;
+      lSliderBottom := GetMeasures(TCDTRACKBAR_TOP_SPACING) + GetMeasures(TCDTRACKBAR_FRAME_HEIGHT)+4;
+      lPoints[0] := Point(lTickmarkLeft, lSliderBottom);
+      lPoints[1] := Point(lTickmarkLeft-5, GetMeasures(TCDTRACKBAR_TOP_SPACING) + GetMeasures(TCDTRACKBAR_FRAME_HEIGHT));
+      lPoints[2] := Point(lTickmarkLeft-5, GetMeasures(TCDTRACKBAR_TOP_SPACING)-2);
+      lPoints[3] := Point(lTickmarkLeft+5, GetMeasures(TCDTRACKBAR_TOP_SPACING)-2);
+      lPoints[4] := Point(lTickmarkLeft+5, GetMeasures(TCDTRACKBAR_TOP_SPACING) + GetMeasures(TCDTRACKBAR_FRAME_HEIGHT));
+      ADest.Polygon(lPoints);
+      // left-top inner frame
+      ADest.Pen.Color := WIN2000_FRAME_LIGHT_GRAY;
+      ADest.MoveTo(lTickmarkLeft, lSliderBottom-1);
+      ADest.LineTo(lTickmarkLeft-4, GetMeasures(TCDTRACKBAR_TOP_SPACING) + GetMeasures(TCDTRACKBAR_FRAME_HEIGHT));
+      ADest.LineTo(lTickmarkLeft-4, GetMeasures(TCDTRACKBAR_TOP_SPACING));
+{      // right inner frame
+      ADest.Pen.Color := WIN2000_FRAME_GRAY;
+      ADest.MoveTo(lTickmarkLeft, lSliderBottom-1);
+      ADest.LineTo(lTickmarkLeft-4, GetMeasures(TCDTRACKBAR_TOP_SPACING) + GetMeasures(TCDTRACKBAR_FRAME_HEIGHT));
+      ADest.LineTo(lTickmarkLeft-4, GetMeasures(TCDTRACKBAR_TOP_SPACING)-1);
+      // right outter frame
+      ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
+      ADest.MoveTo(lTickmarkLeft, lSliderBottom-1);
+      ADest.LineTo(lTickmarkLeft-4, GetMeasures(TCDTRACKBAR_TOP_SPACING) + GetMeasures(TCDTRACKBAR_FRAME_HEIGHT));
+      ADest.LineTo(lTickmarkLeft-4, GetMeasures(TCDTRACKBAR_TOP_SPACING)-1);}
+    end;
+    lTickmarkLeft := lTickmarkLeft + pStepWidth;
+  end;
 end;
 
 procedure TCDDrawerCommon.DrawCTabControl(ADest: TCanvas; ADestPos: TPoint;

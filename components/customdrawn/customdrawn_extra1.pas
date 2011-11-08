@@ -121,14 +121,16 @@ end;
 
 procedure TCDDrawerExtra1.DrawTrackBar(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDTrackBarStateEx);
-const
-  CDBarEdge = 18;
 var
   lDrawingBottom, StepsCount, i: Integer;
   pStart, pEnd: integer; // for drawing the decorative bars
   dRect: TRect;
   pStepWidth, pHalfStepWidth: Integer;
+  CDBarEdge: Integer;
 begin
+  CDBarEdge := GetMeasures(TCDTRACKBAR_LEFT_SPACING)
+    + GetMeasures(TCDTRACKBAR_RIGHT_SPACING);
+
   // Sanity check
   if AStateEx.Max - AStateEx.Min <= 0 then
     raise Exception.Create('[TCDTrackBarDrawerGraph.DrawToIntfImage] Max-Min must be at least 1');
