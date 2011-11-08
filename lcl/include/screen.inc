@@ -636,7 +636,7 @@ end;
 
 function TScreen.GetDataModuleCount: Integer;
 begin
-  Result:=FDataModuleList.Count;
+  Result := FDataModuleList.Count;
 end;
 
 function TScreen.GetDataModules(AIndex: Integer): TDataModule;
@@ -661,7 +661,13 @@ end;
 
 function TScreen.GetDesktopRect: TRect;
 begin
-  Result := Bounds(DesktopLeft, DesktopTop, DesktopWidth, DesktopHeight);
+  with Result do
+  begin
+    Left := DesktopLeft;
+    Top := DesktopTop;
+    Right := Left + DesktopWidth;
+    Bottom := Top + DesktopHeight;
+  end;
 end;
 
 function TScreen.GetDesktopTop: Integer;
