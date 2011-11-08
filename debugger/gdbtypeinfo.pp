@@ -50,91 +50,9 @@ uses
     [ name = "..." ]
     [ type = "..." ]
 
-  Examples: (tested with fpc 2.4.2 and 2.5.1 (Jan 2011) / gdb 7.0, gdb 7.2
-  (excluding the '~"type = '  and the '\n"')
 
-  * procedure x(ArgTFoo: TFoo; var VArgTFoo: TFoo); // TFoo = class end;
-  * procedure x(ArgPFoo: PFoo; var VArgPFoo: PFoo); // PFoo = ^TFoo;
-
-  "PType" Results (for the "???" part):
-    ptype Arg<YYY>       ~"type = <???> = class : public TOBJECT \n"   ## followed by lines of fields (exlude inherited)
-                       Normal          |                Param-by-ref
-                 Stabs    Dwarf        |               Stabs    Dwarf   Dwarf(fpc 2.6 up)
-    ArgTFoo      ^TFOO    ^TFOO        |  VArgTFoo     ^TFOO    &TFOO   ^TFOO
-    ArgTFoo^      TFOO     TFOO        |  VArgTFoo^    ^TFOO    ^TFOO    TFOO
-   @ArgTFoo      ^TFOO    ^TFOO        | @VArgTFoo     ^TFOO   ^&TFOO   ^TFOO
-
-    ArgPFoo      ^TFOO    ^TFOO        |  VArgPFoo     ^TFOO    &TFOO   ^TFOO
-    ArgPFoo^     ^TFOO    ^TFOO        |  VArgPFoo^    ^TFOO    ^TFOO   ^TFOO
-   @ArgPFoo      ^TFOO    ^TFOO        | @VArgPFoo     ^TFOO   ^&TFOO   ^TFOO
-
-                 Stabs    Dwarf
-    TFoo         TFOO     ^TFOO
-    PFoo         ^TFOO    ^TFOO
-
-  "WhatIs" Results:     Normal         |                Param-by-ref
-    - some "whatis" have a trailing "=class\n" (indicated by a "=" below
-                 Stabs    Dwarf        |               Stabs    Dwarf   Dwarf(fpc 2.6 up)
-    ArgTFoo      TFOO      TFOO        |  VArgTFoo     TFOO     &TFOO   TFOO
-    ArgTFoo^     TFOO      TFOO=       |  VArgTFoo^    TFOO      TFOO   TFOO=
-   @ArgTFoo      PFOO     ^TFOO        | @VArgTFoo     PFOO    ^&TFOO  ^TFOO    ## whatis @ArgTFoo  may be ^TFoo under Stabs if no named type PFoo exists
-
-    ArgPFoo      PFOO      PFOO        |  VArgPFoo     PFOO     &PFOO   PFOO
-    ArgPFoo^     TFOO      TFOO        |  VArgPFoo^    TFOO      PFOO   TFOO
-   @ArgPFoo      PPFOO    ^PFOO        | @VArgPFoo     PPFOO   ^&PFOO  ^PFOO    ## whatis @ArgPFoo  may be ^PFoo under Stabs if no named type PPFoo exists
-
-                 Stabs    Dwarf
-    TFoo         TFOO     ^TFOO = class
-    PFoo         PFOO     ^TFOO               ## requires gdb 7 (mayb 6.7)
-
-    ==> "ptype SomeVariable" does not differ between TFoo and PFoo
-    ==> dwarf ptype is the same for TFoo and PFoo (whatis can tell the diff)
-
-
-  * procedure x(ArgEnum: TEnum); // TEnum = (One, Two, Three);
-  * procedure x(ArgEnumSet: TEnumSet; var VArgEnumSet: TEnumSet); // TEnumSet = set of TEnum;
-  * procedure x(ArgSet: TSet; var VArgSet: TSet); // TSet = Set of (Alpha, Beta, Gamma);
-  * var VarEnumA: (e1,e2,e3); VarEnumSetA: set of TEnum; VarSetA: Set of (s1,s2,s3);
-
-  "WhatIs" Results (| marks a new line / gdb starts a new line with ~"):
-                 Stabs                 Dwarf                     Dwarf without -godwarfset
-    ArgEnumSet   TENUMSET              TENUMSET                  TENUMSET
-    VArgEnumSet  TENUMSET              &TENUMSET                 &TENUMSET
-    ArgSet       TSET                  TSET                      TSET
-    VArgSet      TSET                  &TSET                     &TSET
-    VarEnumSetA  set of TENUM          set of |ONE..THREE        <invalid unnamed pascal type code 8>
-    VarSetA      set of  = (...)       set of |S1..S3            <invalid unnamed pascal type code 8>
-
-    TEnumSet     TENUMSET              set of |ONE..THREE        TENUMSET
-    TSet         TSET                  set of |ALPHA..GAMMA      TSET
-
-    ArgEnum      TENUM                        ## same for stabs (both)
-    VarEnumA      = (...)                     ## same for stabs (both)
-    TEnum        TENUN                        ## same for stabs (both)
-
-  "PType" Results:
-                 Stabs                            Dwarf                      Dwarf without -godwarfset
-
-    ArgEnumSet   set of TENUM                     set of |ONE..THREE         TENUMSET
-    VArgEnumSet  set of TENUM                     &set of |ONE..THREE        &TENUMSET
-    ArgSet       set of  = (ALPHA, BETA, GAMMA)   set of |ALPHA..GAMMA       TSET
-    VArgSet      set of  = (ALPHA, BETA, GAMMA)   &set of |ALPHA..GAMMA      &TSET
-    VarEnumSetA  set of TENUM                     set of |ONE..THREE         <invalid unnamed pascal type code 8>
-    VarSetA      set of  = (S1, S2, S3)           set of |S1..S3             <invalid unnamed pascal type code 8>
-
-    TEnumSet     set of TENUM                     set of |ONE..THREE         TENUMSET
-    TSet         set of  = (ALPHA, BETA, GAMMA)   set of |ALPHA..GAMMA       TSET
-
-    ArgEnum      TENUM  = (ONE, TWO, THREE)      ## same for stabs (both)
-    VarEnumA      = (E1, E2, E3)                 ## same for stabs (both)
-    TEnum        TENUM  = (ONE, TWO, THREE)      ## same for stabs (both)
-
-      ## Alternative new lines:  set of ONE|..THREE|      set of S1|..S3|
-      ## All results can be prefixed by ^, for unamed pointertypes (^& for var param)
-
-
-
-  TODO: functions ? Stabs seem to always add pointer; dwarf does not?
+  For example results, comparision between similar types, different GDB versions
+  or stabs vs dwarf, see the folder "test/gdb responses/"
 
 *)
 type
