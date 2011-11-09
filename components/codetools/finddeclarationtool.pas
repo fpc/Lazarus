@@ -485,6 +485,7 @@ type
     FirstFoundProc: PFoundProc;//list of all saved PFoundProc
     LastFoundProc: PFoundProc;
     FExtractedOperand: string;
+    procedure ClearFoundProc;
     procedure FreeFoundProc(aFoundProc: PFoundProc; FreeNext: boolean);
     procedure RemoveFoundProcFromList(aFoundProc: PFoundProc);
   public
@@ -519,6 +520,7 @@ type
     procedure SetResult(NodeCacheEntry: PCodeTreeNodeCacheEntry);
     procedure SetIdentifier(NewIdentifierTool: TFindDeclarationTool;
                 NewIdentifier: PChar; NewOnIdentifierFound: TOnIdentifierFound);
+  private
     procedure SetFirstFoundProc(const ProcContext: TFindContext);
     procedure SetGenericParamValues(SpecializeParamsTool: TFindDeclarationTool;
                 SpecializeNode: TCodeTreeNode);
@@ -533,7 +535,6 @@ type
     procedure ConvertResultCleanPosToCaretPos;
     procedure ClearResult(CopyCacheFlags: boolean);
     procedure ClearInput;
-    procedure ClearFoundProc;
     procedure WriteDebugReport;
   end;
   
@@ -10560,8 +10561,23 @@ end;
 
 { TFindDeclarationParams }
 
-procedure TFindDeclarationParams.FreeFoundProc(aFoundProc: PFoundProc;
-  FreeNext: boolean);
+procedure TFindDeclarationParams.ClearFoundProc;
+begin
+  if FoundProc=nil then exit;
+  //DebugLn(['TFindDeclarationParams.ClearFoundProc ',dbgs(FoundProc),' Saved=',FoundProc^.Owner<>nil]);
+  if FoundProc^.Owner=nil then
+    // the FoundProc is not saved
+    FreeFoundProc(FoundProc,true)
+  else if FoundProc^.Next<>nil then
+    // the FoundProc is saved (release the later FoundProcs,
+    // which are not needed any more)
+    FreeFoundProc(FoundProc^.Next,true)
+  else
+    DebugLn(['TFindDeclarationParams.ClearFoundProc ',dbgs(FoundProc),' Potential memory leak created here! Build with -gh.']);
+  FoundProc:=nil;
+end;
+
+procedure TFindDeclarationParams.FreeFoundProc(aFoundProc: PFoundProc; FreeNext: boolean);
 var
   Next: PFoundProc;
 begin
@@ -10739,20 +10755,6 @@ begin
   ContextNode:=nil;
   OnIdentifierFound:=nil;
   IdentifierTool:=nil;
-end;
-
-procedure TFindDeclarationParams.ClearFoundProc;
-begin
-  if FoundProc=nil then exit;
-  //DebugLn(['TFindDeclarationParams.ClearFoundProc ',dbgs(FoundProc),' Saved=',FoundProc^.Owner<>nil]);
-  if FoundProc^.Owner=nil then
-    // the FoundProc is not saved
-    FreeFoundProc(FoundProc,true)
-  else if FoundProc^.Next<>nil then
-    // the FoundProc is saved (release the later FoundProcs,
-    // which are not needed any more)
-    FreeFoundProc(FoundProc^.Next,true);
-  FoundProc:=nil;
 end;
 
 procedure TFindDeclarationParams.WriteDebugReport;
