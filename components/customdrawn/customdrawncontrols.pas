@@ -552,6 +552,7 @@ end;
 
 procedure TCDListView.PrepareControlStateEx;
 begin
+  inherited PrepareControlStateEx;
   FLVState.Items := FListItems;
   FLVState.Columns := FColumns;
   FLVState.ViewStyle := FViewStyle;
@@ -609,7 +610,9 @@ end;
 
 procedure TCDProgressBar.PrepareControlStateEx;
 begin
-  FPBState.PercentPosition := (FPosition-FMin)/FMax;
+  inherited PrepareControlStateEx;
+  if FMax <> FMin then FPBState.PercentPosition := (FPosition-FMin)*100/(FMax-FMin)
+  else FPBState.PercentPosition := 100.0;
 end;
 
 constructor TCDProgressBar.Create(AOwner: TComponent);

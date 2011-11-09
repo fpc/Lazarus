@@ -37,6 +37,7 @@ type
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AOrientation: TTrackBarOrientation); override;
     // ===================================
@@ -76,6 +77,12 @@ type
     // TCDTrackBar
     procedure DrawTrackBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDTrackBarStateEx); override;
+    // TCDProgressBar
+    procedure DrawProgressBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDProgressBarStateEx); override;
+    // TCDListView
+    procedure DrawListView(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDListViewStateEx); override;
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
@@ -271,6 +278,21 @@ begin
   ADest.MoveTo(ADestPos.X+1,          ADestPos.Y+ASize.cy-1);
   ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y+ASize.cy-1);
   ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y);
+end;
+
+procedure TCDDrawerCommon.DrawShallowSunkenFrame(ADest: TCanvas;
+  ADestPos: TPoint; ASize: TSize);
+begin
+  // Inside area, there is no background because the control occupies the entire area
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := WIN2000_FRAME_GRAY;
+  ADest.MoveTo(ADestPos.X, ADestPos.Y + ASize.cy);
+  ADest.LineTo(ADestPos.X, ADestPos.Y);
+  ADest.LineTo(ADestPos.X + ASize.cx, ADestPos.Y);
+  ADest.Pen.Color := WIN2000_FRAME_WHITE;
+  ADest.MoveTo(ADestPos.X, ADestPos.Y + ASize.cy-1);
+  ADest.LineTo(ADestPos.X + ASize.cx-1, ADestPos.Y + ASize.cy-1);
+  ADest.LineTo(ADestPos.X + ASize.cx-1, ADestPos.Y-1);
 end;
 
 procedure TCDDrawerCommon.DrawTickmark(ADest: TCanvas; ADestPos: TPoint);
@@ -730,6 +752,8 @@ procedure TCDDrawerCommon.DrawGroupBox(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
   FCaptionMiddle: integer;
+  lTextSize: TSize;
+  lCaption: String;
 begin
   FCaptionMiddle := ADest.TextHeight('Ź') div 2;
   if FCaptionMiddle = 0 then FCaptionMiddle := AStateEx.Font.Size div 2;
@@ -738,20 +762,32 @@ begin
   // Background
   ADest.Brush.Color := AStateEx.ParentRGBColor;
   ADest.Brush.Style := bsSolid;
-  ADest.Pen.Style := psClear;
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := AStateEx.ParentRGBColor;
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
 
   // frame
   ADest.Pen.Color := clBlack;
   ADest.Pen.Style := psSolid;
   ADest.Brush.Style := bsClear;
-  ADest.Rectangle(0, FCaptionMiddle, ASize.cx - 1, ASize.cy - 1);
+  ADest.Rectangle(0, FCaptionMiddle, ASize.cx, ASize.cy-FCaptionMiddle);
+
+  // ToDo: Make the caption smaller if it is too big
+  lCaption := AStateEx.Caption;
+  lTextSize := ADest.TextExtent(lCaption);
+
+  // fill the text background
+  ADest.Brush.Style := bsSolid;
+  ADest.Brush.Color := AStateEx.ParentRGBColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psClear;
+  ADest.Rectangle(FCaptionMiddle, 0, lTextSize.cx, lTextSize.cy);
 
   // paint text
-  ADest.Pen.Style := psSolid;
-  ADest.Brush.Style := bsSolid; // This will fill the text background
+  ADest.Pen.Style := psClear;
+  ADest.Brush.Style := bsClear;
   ADest.Font.Size := 10;
-  ADest.TextOut(FCaptionMiddle, 0, AStateEx.Caption);
+  ADest.TextOut(FCaptionMiddle, 0, lCaption);
 end;
 
 procedure TCDDrawerCommon.DrawStaticText(ADest: TCanvas; ADestPos: TPoint;
@@ -845,6 +881,34 @@ begin
     DrawFocusRect(ADest,
       Point(ADestPos.X + 1, ADestPos.Y + 1),
       Size(ASize.CX - 2, ASize.CY - 2));
+end;
+
+procedure TCDDrawerCommon.DrawProgressBar(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDProgressBarStateEx);
+begin
+  // Inside area, there is no background because the control occupies the entire area
+  ADest.Brush.Color := AStateEx.RGBColor;//WIN2000_FRAME_LIGHT_GRAY;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psClear;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  // The Frame
+  DrawShallowSunkenFrame(ADest, ADestPos, ASize);
+
+  // The percentage indicator
+end;
+
+procedure TCDDrawerCommon.DrawListView(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDListViewStateEx);
+begin
+  // Inside area, there is no background because the control occupies the entire area
+  ADest.Brush.Color := Palette.Window;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psClear;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  // The frame
+  DrawSunkenFrame(ADest, ADestPos, ASize);
 end;
 
 procedure TCDDrawerCommon.DrawCTabControl(ADest: TCanvas; ADestPos: TPoint;

@@ -230,6 +230,7 @@ type
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
+    procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AOrientation: TTrackBarOrientation); virtual; abstract;
     // TCDButton
@@ -268,6 +269,12 @@ type
     // TCDTrackBar
     procedure DrawTrackBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDTrackBarStateEx); virtual; abstract;
+    // TCDProgressBar
+    procedure DrawProgressBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDProgressBarStateEx); virtual; abstract;
+    // TCDListView
+    procedure DrawListView(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDListViewStateEx); virtual; abstract;
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
@@ -436,16 +443,22 @@ begin
   Result := dsCommon;
 end;
 
+{ Control colors can refer to their background or foreground }
 function TCDDrawer.GetControlDefaultColor(AControlId: TCDControlID): TColor;
 begin
   case AControlId of
   cidControl:     Result := Palette.Form;
-  cidButton:      Result := Palette.BtnFace;
-  cidEdit:        Result := Palette.Window;
-  cidCheckBox:    Result := Palette.Form;
-  cidGroupBox:    Result := Palette.Form;
-  cidTrackBar:    Result := Palette.Form;
-  cidCTabControl: Result := Palette.Form;
+  cidButton:      Result := Palette.BtnFace;// foreground color
+  cidEdit:        Result := Palette.Window; // foreground color
+  cidCheckBox:    Result := Palette.Form;   // background color
+  cidGroupBox:    Result := Palette.Form;   // ...
+  //
+  cidStaticText:  Result := Palette.Form;   // ...
+  //
+  cidTrackBar:    Result := Palette.Form;   // ...
+  cidProgressBar: Result := Palette.Form;   // foreground color
+  cidListView:    Result := Palette.Window; // foreground color
+  cidCTabControl: Result := Palette.Form;   // foreground color
   else
     Result := Palette.Form;
   end;
@@ -465,6 +478,8 @@ begin
   cidStaticText: DrawStaticText(ADest, ADestPos, ASize, AState, AStateEx);
   //
   cidTrackBar:   DrawTrackBar(ADest, ADestPos, ASize, AState, TCDTrackBarStateEx(AStateEx));
+  cidProgressBar:DrawProgressBar(ADest, ADestPos, ASize, AState, TCDProgressBarStateEx(AStateEx));
+  cidListView:   DrawListView(ADest, ADestPos, ASize, AState, TCDListViewStateEx(AStateEx));
   cidCTabControl:DrawCTabControl(ADest, ADestPos, ASize, AState, TCDCTabControlStateEx(AStateEx));
   end;
 end;
