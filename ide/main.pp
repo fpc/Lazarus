@@ -9364,6 +9364,7 @@ begin
   end else begin
     UnitIndex:=Project1.IndexOfFilename(AFilename);
     UnknownFile := (UnitIndex < 0);
+    NewEditorInfo := nil;
     if not UnknownFile then begin
       NewUnitInfo:=Project1.Units[UnitIndex];
       if AEditorInfo <> nil then
@@ -9375,13 +9376,13 @@ begin
     end;
   end;
 
-  if (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
+  if (NewEditorInfo <> nil) and (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
   begin
     NewUnitInfo.IsPartOfProject:=true;
     Project1.Modified:=true;
   end;
 
-  if (Flags * [ofProjectLoading, ofRevert] = []) and (NewEditorInfo.EditorComponent <> nil) then
+  if (NewEditorInfo <> nil) and (Flags * [ofProjectLoading, ofRevert] = []) and (NewEditorInfo.EditorComponent <> nil) then
   begin
     //DebugLn(['TMainIDE.DoOpenEditorFile file already open ',NewUnitInfo.Filename,' WindowIndex=',NewEditorInfo.WindowIndex,' PageIndex=',NewEditorInfo.PageIndex]);
     // file already open -> change source notebook page
