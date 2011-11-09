@@ -26,6 +26,10 @@ const
   TCDRADIOBUTTON_CIRCLE_HEIGHT = $601;
 
   TCDSCROLLBAR_BUTTON_WIDTH = $900;
+  TCDSCROLLBAR_LEFT_SPACING = $901;   // Left and right are only read left and right for horizontal orientation
+  TCDSCROLLBAR_RIGHT_SPACING= $902;   // in vertical orientation they are respectively top and bottom
+  TCDSCROLLBAR_LEFT_BUTTON_POS =$903; // Positive Pos means it relative to the left margin,
+  TCDSCROLLBAR_RIGHT_BUTTON_POS=$904; // negative that it is relative to the right margin
 
   TCDTRACKBAR_LEFT_SPACING    = $1000;
   TCDTRACKBAR_RIGHT_SPACING   = $1001;
@@ -89,15 +93,18 @@ type
     csfHorizontal,
     csfVertical,
     csfRightToLeft,
-    csfTopDown
+    csfTopDown,
+    // for TCDProgressBar
+    csfLeftArrow,
+    csfRightArrow,
     // for TCDComboBox
-{    csfDownArrow,
+    csfDownArrow
+{    csfUpArrow
     // for tool button
     csfAutoRaise,
     csfTop,
     csfBottom,
     csfFocusAtBorder,
-    csfUpArrow,
     csfSelected,
     csfActive,
     csfWindow,
@@ -280,7 +287,7 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDScrollBar
     procedure DrawScrollBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
+      AState: TCDControlState; AStateEx: TCDScrollBarStateEx); virtual; abstract;
     // TCDGroupBox
     procedure DrawGroupBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;

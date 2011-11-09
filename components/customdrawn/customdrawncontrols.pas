@@ -218,19 +218,53 @@ type
     property TabStop default True;
   end;
 
-  { TCDScrollBar }
+  { TCDPositionedControl }
 
-  TCDScrollBar = class(TCDControl)
+  TCDPositionedControl = class(TCDControl)
   private
+    DragDropStarted: boolean;
+    FButton: TCDControlState; // the button currently being clicked
+    // fields
     FMax: Integer;
     FMin: Integer;
+    FOnChange: TNotifyEvent;
     FPosition: Integer;
     procedure SetMax(AValue: Integer);
     procedure SetMin(AValue: Integer);
     procedure SetPosition(AValue: Integer);
+    procedure DoClickButton(AButton: TCDControlState);
+  protected
+    FSmallChange, FLargeChange: Integer;
+    function GetPositionFromMousePosWithMargins(X, Y, ALeftMargin, ARightMargin: Integer;
+       AIsHorizontal, AAcceptMouseOutsideStrictArea: Boolean): integer;
+    function GetPositionFromMousePos(X, Y: Integer): integer; virtual; abstract;
+    function GetButtonFromMousePos(X, Y: Integer): TCDControlState; virtual;
+    // keyboard
+    procedure KeyDown(var Key: word; Shift: TShiftState); override;
+    // mouse
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property Max: Integer read FMax write SetMax;
+    property Min: Integer read FMin write SetMin;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property Position: Integer read FPosition write SetPosition;
+  end;
+
+  { TCDScrollBar }
+
+  TCDScrollBar = class(TCDPositionedControl)
+  private
+    FKind: TScrollBarKind;
+    procedure SetKind(AValue: TScrollBarKind);
   protected
     FSBState: TCDScrollBarStateEx;
-    procedure RealSetText(const Value: TCaption); override; // to update on caption changes
+    function GetPositionFromMousePos(X, Y: Integer): integer; override;
+    function GetButtonFromMousePos(X, Y: Integer): TCDControlState; override;
     function GetControlId: TCDControlID; override;
     procedure CreateControlStateEx; override;
     procedure PrepareControlStateEx; override;
@@ -239,9 +273,7 @@ type
     destructor Destroy; override;
   published
     property DrawStyle;
-    property Max: Integer read FMax write SetMax;
-    property Min: Integer read FMin write SetMin;
-    property Position: Integer read FPosition write SetPosition;
+    property Kind: TScrollBarKind read FKind write SetKind;
     property TabStop default True;
   end;
 
@@ -296,39 +328,16 @@ type
 
   { TCDTrackBar }
 
-  TCDTrackBar = class(TCDControl)
+  TCDTrackBar = class(TCDPositionedControl)
   private
-    DragDropStarted: boolean;
-    // fields
-    FMin: integer;
-    FMax: integer;
     FOrientation: TTrackBarOrientation;
-    FPosition: integer;
-    FOnChange: TNotifyEvent;
-    procedure SetMax(Value: integer);
-    procedure SetMin(Value: integer);
     procedure SetOrientation(AValue: TTrackBarOrientation);
-    procedure SetPosition(Value: integer);
-    //
-    function GetPositionFromMousePos(X, Y: Integer): integer;
   protected
     FTBState: TCDTrackBarStateEx;
+    function GetPositionFromMousePos(X, Y: Integer): integer; override;
     function GetControlId: TCDControlID; override;
     procedure CreateControlStateEx; override;
     procedure PrepareControlStateEx; override;
-    procedure Changed; virtual;
-    // keyboard
-    procedure DoEnter; override;
-    procedure DoExit; override;
-    procedure KeyDown(var Key: word; Shift: TShiftState); override;
-    procedure KeyUp(var Key: word; Shift: TShiftState); override;
-    // mouse
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
-    procedure MouseEnter; override;
-    procedure MouseLeave; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -336,11 +345,7 @@ type
   published
     property Color;
     property DrawStyle;
-    property Max: integer read FMax write SetMax default 10;
-    property Min: integer read FMin write SetMin default 0;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Orientation: TTrackBarOrientation read FOrientation write SetOrientation default trHorizontal;
-    property Position: integer read FPosition write SetPosition;
     property TabStop default True;
   end;
 
@@ -1214,29 +1219,211 @@ begin
   inherited Destroy;
 end;
 
-{ TCDScrollBar }
+{ TCDPositionedControl }
 
-procedure TCDScrollBar.SetMax(AValue: Integer);
+procedure TCDPositionedControl.SetMax(AValue: Integer);
 begin
   if FMax=AValue then Exit;
   FMax:=AValue;
+
+  if AValue < FMin then FMax := FMin
+  else FMax := AValue;
+
+  if FPosition > FMax then FPosition := FMax;
+
+  if not (csLoading in ComponentState) then Invalidate;
 end;
 
-procedure TCDScrollBar.SetMin(AValue: Integer);
+procedure TCDPositionedControl.SetMin(AValue: Integer);
 begin
   if FMin=AValue then Exit;
-  FMin:=AValue;
+
+  if AValue > FMax then FMin := FMax
+  else FMin:=AValue;
+
+  if FPosition < FMin then FPosition := FMin;
+
+  if not (csLoading in ComponentState) then Invalidate;
 end;
 
-procedure TCDScrollBar.SetPosition(AValue: Integer);
+procedure TCDPositionedControl.SetPosition(AValue: Integer);
 begin
   if FPosition=AValue then Exit;
   FPosition:=AValue;
+
+  if FPosition > FMax then FPosition := FMax;
+  if FPosition < FMin then FPosition := FMin;
+
+  // Don't do OnChange during loading
+  if not (csLoading in ComponentState) then
+  begin
+    if Assigned(OnChange) then OnChange(Self);
+    Invalidate;
+  end;
 end;
 
-procedure TCDScrollBar.RealSetText(const Value: TCaption);
+procedure TCDPositionedControl.DoClickButton(AButton: TCDControlState);
 begin
-  inherited RealSetText(Value);
+  if csfLeftArrow in AButton then Position := Position - FSmallChange
+  else if csfRightArrow in AButton then Position := Position + FSmallChange;
+end;
+
+function TCDPositionedControl.GetPositionFromMousePosWithMargins(X, Y,
+  ALeftMargin, ARightMargin: Integer; AIsHorizontal, AAcceptMouseOutsideStrictArea: Boolean): integer;
+var
+  lCoord, lSize: Integer;
+begin
+  Result := -1;
+
+  if AIsHorizontal then
+  begin
+    lCoord := X;
+    lSize := Width;
+  end
+  else
+  begin
+    lCoord := Y;
+    lSize := Height;
+  end;
+
+  if lCoord > lSize - ARightMargin then
+  begin
+    if AAcceptMouseOutsideStrictArea then Result := FMax
+    else Exit;
+  end
+  else if lCoord < ALeftMargin then
+  begin
+    if AAcceptMouseOutsideStrictArea then Result := FMin
+    else Exit;
+  end
+  else Result := FMin + (lCoord - ALeftMargin) * (FMax - FMin + 1) div (lSize - ARightMargin - ALeftMargin);
+
+  // sanity check
+  if Result > FMax then Result := FMax;
+  if Result < FMin then Result := FMin;
+end;
+
+function TCDPositionedControl.GetButtonFromMousePos(X, Y: Integer): TCDControlState;
+begin
+  Result := [];
+end;
+
+procedure TCDPositionedControl.KeyDown(var Key: word; Shift: TShiftState);
+var
+  NewPosition: Integer;
+begin
+  inherited KeyDown(Key, Shift);
+
+  if (Key = VK_LEFT) or (Key = VK_DOWN) then
+    NewPosition := FPosition - FSmallChange;
+  if (Key = VK_UP) or (Key = VK_RIGHT) then
+    NewPosition := FPosition + FSmallChange;
+  if (Key = VK_PRIOR) then
+    NewPosition := FPosition - FLargeChange;
+  if (Key = VK_NEXT) then
+    NewPosition := FPosition + FLargeChange;
+
+  // sanity check
+  if NewPosition >= 0 then
+  begin
+    if NewPosition > FMax then NewPosition := FMax;
+    if NewPosition < FMin then NewPosition := FMin;
+
+    Position := NewPosition;
+  end;
+end;
+
+procedure TCDPositionedControl.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: integer);
+var
+  NewPosition: Integer;
+begin
+  SetFocus;
+  NewPosition := GetPositionFromMousePos(X, Y);
+  DragDropStarted := True;
+  if NewPosition > 0 then Position := NewPosition;
+
+  // Check if any buttons were clicked
+  FButton := GetButtonFromMousePos(X, Y);
+  FState := FState + FButton;
+  DoClickButton(FButton);
+
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TCDPositionedControl.MouseMove(Shift: TShiftState; X, Y: integer);
+var
+  NewPosition: Integer;
+begin
+  if DragDropStarted then
+  begin
+    NewPosition := GetPositionFromMousePos(X, Y);
+    if NewPosition > 0 then Position := NewPosition;
+  end;
+  inherited MouseMove(Shift, X, Y);
+end;
+
+procedure TCDPositionedControl.MouseUp(Button: TMouseButton;
+  Shift: TShiftState; X, Y: integer);
+begin
+  DragDropStarted := False;
+  FState := FState - [csfLeftArrow, csfRightArrow];
+  Invalidate;
+  inherited MouseUp(Button, Shift, X, Y);
+end;
+
+constructor TCDPositionedControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FSmallChange := 1;
+  FLargeChange := 5;
+  FMin := 0;
+  FMax := 10;
+  FPosition := 0;
+end;
+
+{ TCDScrollBar }
+
+procedure TCDScrollBar.SetKind(AValue: TScrollBarKind);
+begin
+  if FKind=AValue then Exit;
+  FKind:=AValue;
+
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+function TCDScrollBar.GetPositionFromMousePos(X, Y: Integer): integer;
+var
+  lLeftBorder, lRightBorder: Integer;
+begin
+  lLeftBorder := FDrawer.GetMeasures(TCDSCROLLBAR_LEFT_SPACING);
+  lRightBorder := FDrawer.GetMeasures(TCDSCROLLBAR_RIGHT_SPACING);
+
+  Result := GetPositionFromMousePosWithMargins(X, Y, lLeftBorder, lRightBorder, FKind = sbHorizontal, False);
+end;
+
+function TCDScrollBar.GetButtonFromMousePos(X, Y: Integer): TCDControlState;
+var
+  lCoord, lLeftBtnPos, lRightBtnPos: Integer;
+begin
+  Result := [];
+  lLeftBtnPos := TCDSCROLLBAR_LEFT_BUTTON_POS;
+  lRightBtnPos := TCDSCROLLBAR_RIGHT_BUTTON_POS;
+  if FKind = sbHorizontal then
+  begin
+    lCoord := X;
+    if lLeftBtnPos < 0 then lLeftBtnPos := Width + lLeftBtnPos;
+    if lRightBtnPos < 0 then lRightBtnPos := Width + lLeftBtnPos;
+  end
+  else
+  begin
+    lCoord := Y;
+    if lLeftBtnPos < 0 then lLeftBtnPos := Height + lLeftBtnPos;
+    if lRightBtnPos < 0 then lRightBtnPos := Height + lLeftBtnPos;
+  end;
+
+  if (lCoord > lLeftBtnPos) and (lCoord < lLeftBtnPos + TCDSCROLLBAR_BUTTON_WIDTH) then Result := [csfLeftArrow]
+  else if (lCoord > lRightBtnPos) and (lCoord < lRightBtnPos + TCDSCROLLBAR_BUTTON_WIDTH) then Result := [csfRightArrow];
 end;
 
 function TCDScrollBar.GetControlId: TCDControlID;
@@ -1253,8 +1440,13 @@ end;
 procedure TCDScrollBar.PrepareControlStateEx;
 begin
   inherited PrepareControlStateEx;
+
   if FMin < FMax then FSBState.Position := Position / (FMax - FMin)
   else FSBState.Position := 1.0;
+
+  if FKind = sbHorizontal then
+    FState := FState + [csfHorizontal] - [csfVertical, csfRightToLeft, csfTopDown]
+  else FState := FState + [csfVertical] - [csfHorizontal, csfRightToLeft, csfTopDown];
 end;
 
 constructor TCDScrollBar.Create(AOwner: TComponent);
@@ -1262,6 +1454,7 @@ begin
   inherited Create(AOwner);
   Width := 121;
   Height := 17;
+  FMax := 100;
 end;
 
 destructor TCDScrollBar.Destroy;
@@ -1279,7 +1472,7 @@ end;
 procedure TCDGroupBox.RealSetText(const Value: TCaption);
 begin
   inherited RealSetText(Value);
-  Invalidate;
+  if not (csLoading in ComponentState) then Invalidate;
 end;
 
 constructor TCDGroupBox.Create(AOwner: TComponent);
@@ -1325,28 +1518,6 @@ end;
 
 { TCDTrackBar }
 
-procedure TCDTrackBar.SetMax(Value: integer);
-begin
-  if Value = FMax then Exit;
-  // Sanity check
-  if Value < FMin then FMax := FMin
-  else FMax := Value;
-
-  if not (csLoading in ComponentState) then
-    Invalidate;
-end;
-
-procedure TCDTrackBar.SetMin(Value: integer);
-begin
-  if Value = FMin then Exit;
-  // Sanity check
-  if Value > FMax then FMin := FMax
-  else FMin := Value;
-
-  if not (csLoading in ComponentState) then
-    Invalidate;
-end;
-
 procedure TCDTrackBar.SetOrientation(AValue: TTrackBarOrientation);
 var
   lOldWidth: Integer;
@@ -1368,44 +1539,14 @@ begin
     Invalidate;
 end;
 
-procedure TCDTrackBar.SetPosition(Value: integer);
-begin
-  if Value = FPosition then Exit;
-  FPosition := Value;
-  // Don't do OnChange during loading
-  if not (csLoading in ComponentState) then
-  begin
-    if Assigned(OnChange) then OnChange(Self);
-    Invalidate;
-  end;
-end;
-
 function TCDTrackBar.GetPositionFromMousePos(X, Y: integer): integer;
 var
   lLeftBorder, lRightBorder: Integer;
-  lCoord, lSize: Integer;
 begin
   lLeftBorder := FDrawer.GetMeasures(TCDTRACKBAR_LEFT_SPACING);
   lRightBorder := FDrawer.GetMeasures(TCDTRACKBAR_RIGHT_SPACING);
 
-  if FOrientation = trHorizontal then
-  begin
-    lCoord := X;
-    lSize := Width;
-  end
-  else
-  begin
-    lCoord := Y;
-    lSize := Height;
-  end;
-
-  if lCoord > lSize - lRightBorder then Result := FMax
-  else if lCoord < lLeftBorder then Result := FMin
-  else Result := FMin + (lCoord - lLeftBorder) * (FMax - FMin + 1) div (lSize - lRightBorder - lLeftBorder);
-
-  // sanity check
-  if Result > FMax then Result := FMax;
-  if Result < FMin then Result := FMin;
+  Result := GetPositionFromMousePosWithMargins(X, Y, lLeftBorder, lRightBorder, FOrientation = trHorizontal, True);
 end;
 
 function TCDTrackBar.GetControlId: TCDControlID;
@@ -1430,88 +1571,6 @@ begin
   end;
 end;
 
-procedure TCDTrackBar.Changed;
-begin
-
-end;
-
-procedure TCDTrackBar.DoEnter;
-begin
-  inherited DoEnter;
-end;
-
-procedure TCDTrackBar.DoExit;
-begin
-  inherited DoExit;
-end;
-
-procedure TCDTrackBar.KeyDown(var Key: word; Shift: TShiftState);
-var
-  NewPosition: Integer = -1;
-begin
-  inherited KeyDown(Key, Shift);
-
-  if (Key = VK_LEFT) or (Key = VK_DOWN) then
-    NewPosition := FPosition - (FMax - FMin) div 10;
-  if (Key = VK_UP) or (Key = VK_RIGHT) then
-    NewPosition := FPosition + (FMax - FMin) div 10;
-
-  // sanity check
-  if NewPosition >= 0 then
-  begin
-    if NewPosition > FMax then NewPosition := FMax;
-    if NewPosition < FMin then NewPosition := FMin;
-
-    Position := NewPosition;
-  end;
-end;
-
-procedure TCDTrackBar.KeyUp(var Key: word; Shift: TShiftState);
-begin
-  inherited KeyUp(Key, Shift);
-end;
-
-procedure TCDTrackBar.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: integer);
-var
-  NewPosition: Integer;
-begin
-  SetFocus;
-  NewPosition := GetPositionFromMousePos(X, Y);
-  DragDropStarted := True;
-  Position := NewPosition;
-
-  inherited MouseDown(Button, Shift, X, Y);
-end;
-
-procedure TCDTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer);
-begin
-  DragDropStarted := False;
-  inherited MouseUp(Button, Shift, X, Y);
-end;
-
-procedure TCDTrackBar.MouseMove(Shift: TShiftState; X, Y: integer);
-var
-  NewPosition: Integer;
-begin
-  if DragDropStarted then
-  begin
-    NewPosition := GetPositionFromMousePos(X, Y);
-    Position := NewPosition;
-  end;
-  inherited MouseMove(Shift, X, Y);
-end;
-
-procedure TCDTrackBar.MouseEnter;
-begin
-  inherited MouseEnter;
-end;
-
-procedure TCDTrackBar.MouseLeave;
-begin
-  inherited MouseLeave;
-end;
-
 constructor TCDTrackBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1520,8 +1579,6 @@ begin
 
   PrepareCurrentDrawer();
 
-  FMax := 10;
-  FMin := 0;
   TabStop := True;
 end;
 

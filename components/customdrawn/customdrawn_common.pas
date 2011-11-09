@@ -65,7 +65,7 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDScrollBar
     procedure DrawScrollBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+      AState: TCDControlState; AStateEx: TCDScrollBarStateEx); override;
     // TCDGroupBox
     procedure DrawGroupBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
@@ -142,6 +142,10 @@ begin
   TCDRADIOBUTTON_CIRCLE_HEIGHT: Result := 15;
   //
   TCDSCROLLBAR_BUTTON_WIDTH: Result := 17;
+  TCDSCROLLBAR_LEFT_SPACING: Result := 17;
+  TCDSCROLLBAR_RIGHT_SPACING: Result := 17;
+  TCDSCROLLBAR_LEFT_BUTTON_POS: Result := 0;
+  TCDSCROLLBAR_RIGHT_BUTTON_POS: Result := -17;
   //
   TCDTRACKBAR_LEFT_SPACING: Result := 9;
   TCDTRACKBAR_RIGHT_SPACING: Result := 9;
@@ -771,7 +775,7 @@ begin
 end;
 
 procedure TCDDrawerCommon.DrawScrollBar(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDScrollBarStateEx);
 var
   lPos: TPoint;
   lSize: TSize;
@@ -806,6 +810,17 @@ begin
   DrawRaisedFrame(ADest, lPos, lSize);
 
   // The slider
+  lPos := Point(0, 0);
+  if csfHorizontal in AState then
+    lPos.X := Round(GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH)
+      + AStateEx.Position * (ASize.cx - GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH) * 3))
+  else
+    lPos.Y := Round(GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH)
+      + AStateEx.Position * (ASize.cy - GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH) * 3));
+  ADest.Brush.Color := Palette.BtnFace;
+  ADest.Brush.Style := bsSolid;
+  ADest.Rectangle(Bounds(lPos.X, lPos.Y, lSize.cx, lSize.cy));
+  DrawRaisedFrame(ADest, lPos, lSize);
 end;
 
 procedure TCDDrawerCommon.DrawGroupBox(ADest: TCanvas; ADestPos: TPoint;
