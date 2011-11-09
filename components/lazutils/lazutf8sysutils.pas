@@ -46,7 +46,7 @@ Const
   D1   = 146097;
   D2   =1721119;
 
-Procedure JulianToGregorian(JulianDN:LongInt;Var Year,Month,Day:Word);
+Procedure JulianToGregorian(JulianDN:LongInt;out Year,Month,Day:Word);
 Var
   YYear,XYear,Temp,TempMonth : LongInt;
 Begin
@@ -69,7 +69,7 @@ end;
 
 
 
-Procedure EpochToLocal(epoch:longint;var year,month,day,hour,minute,second:Word);
+Procedure EpochToLocal(epoch:longint;out year,month,day,hour,minute,second:Word);
 {
   Transforms Epoch time into local time (hour, minute,seconds)
 }
