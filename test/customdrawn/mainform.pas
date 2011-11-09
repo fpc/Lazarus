@@ -24,12 +24,18 @@ type
     CDEdit1: TCDEdit;
     CDEdit2: TCDEdit;
     CDListView1: TCDListView;
-    CDProgressBar1: TCDProgressBar;
+    progressCommon3: TCDProgressBar;
+    progressCommon2: TCDProgressBar;
+    progressCommon4: TCDProgressBar;
+    progressNative2: TProgressBar;
+    progressNative4: TProgressBar;
+    progressCommon1: TCDProgressBar;
     CDRadioButton1: TCDRadioButton;
     CDRadioButton2: TCDRadioButton;
     CDRadioButton3: TCDRadioButton;
     CDStaticText1: TCDStaticText;
     CDTrackBar2: TCDTrackBar;
+    trackChangeProgress: TCDTrackBar;
     CDTrackBar4: TCDTrackBar;
     editWinXP: TCDEdit;
     CDGroupBox1: TCDGroupBox;
@@ -51,6 +57,7 @@ type
     Label10: TLabel;
     Label11: TLabel;
     Label12: TLabel;
+    Label13: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -88,12 +95,8 @@ type
     pagePageControls: TPage;
     pageTabControls: TPage;
     Panel1: TPanel;
-    ProgressBar1: TProgressBar;
-    ProgressBar2: TProgressBar;
-    ProgressBar3: TProgressBar;
-    ProgressBar4: TProgressBar;
-    ProgressBar5: TProgressBar;
-    ProgressBar6: TProgressBar;
+    progressNative1: TProgressBar;
+    progressNative3: TProgressBar;
     RadioButton1: TRadioButton;
     RadioButton2: TRadioButton;
     RadioButton3: TRadioButton;
@@ -112,6 +115,7 @@ type
     TrackBar2: TTrackBar;
     procedure comboControlsChange(Sender: TObject);
     procedure HandleClick(Sender: TObject);
+    procedure trackChangeProgressChange(Sender: TObject);
   private
     { private declarations }
   public
@@ -138,6 +142,18 @@ end;
 procedure TForm1.HandleClick(Sender: TObject);
 begin
   memoLog.Lines.Add(Format('%s: %s OnClick', [TControl(Sender).Name, TControl(Sender).ClassName]));
+end;
+
+procedure TForm1.trackChangeProgressChange(Sender: TObject);
+begin
+  progressNative1.Position := trackChangeProgress.Position;
+  progressNative2.Position := trackChangeProgress.Position;
+  progressNative3.Position := trackChangeProgress.Position;
+  progressNative4.Position := trackChangeProgress.Position;
+  progressCommon1.Position := trackChangeProgress.Position;
+  progressCommon2.Position := trackChangeProgress.Position;
+  progressCommon3.Position := trackChangeProgress.Position;
+  progressCommon4.Position := trackChangeProgress.Position;
 end;
 
 end.
