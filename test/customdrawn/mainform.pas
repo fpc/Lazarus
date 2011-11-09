@@ -23,6 +23,10 @@ type
     CDCheckBox2: TCDCheckBox;
     CDEdit1: TCDEdit;
     CDEdit2: TCDEdit;
+    CDScrollBar1: TCDScrollBar;
+    CDScrollBar2: TCDScrollBar;
+    Label14: TLabel;
+    Label15: TLabel;
     listviewCommon: TCDListView;
     progressCommon3: TCDProgressBar;
     progressCommon2: TCDProgressBar;
@@ -35,6 +39,8 @@ type
     CDRadioButton3: TCDRadioButton;
     CDStaticText1: TCDStaticText;
     CDTrackBar2: TCDTrackBar;
+    ScrollBar1: TScrollBar;
+    ScrollBar2: TScrollBar;
     trackChangeProgress: TCDTrackBar;
     CDTrackBar4: TCDTrackBar;
     editWinXP: TCDEdit;

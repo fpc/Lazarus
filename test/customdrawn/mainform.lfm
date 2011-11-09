@@ -60,7 +60,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 463
-    PageIndex = 17
+    PageIndex = 10
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 2
     TabStop = True
@@ -283,6 +283,61 @@ object Form1: TForm1
     object pageComboBoxes: TPage
     end
     object pageScrollBars: TPage
+      object ScrollBar1: TScrollBar
+        Left = 8
+        Height = 17
+        Top = 24
+        Width = 121
+        PageSize = 0
+        TabOrder = 0
+      end
+      object ScrollBar2: TScrollBar
+        Left = 56
+        Height = 121
+        Top = 48
+        Width = 17
+        Kind = sbVertical
+        PageSize = 0
+        TabOrder = 1
+      end
+      object Label14: TLabel
+        Left = 48
+        Height = 14
+        Top = 8
+        Width = 36
+        Caption = 'Native:'
+        ParentColor = False
+      end
+      object Label15: TLabel
+        Left = 176
+        Height = 14
+        Top = 8
+        Width = 53
+        Caption = 'dsCommon'
+        ParentColor = False
+      end
+      object CDScrollBar1: TCDScrollBar
+        Left = 152
+        Height = 17
+        Top = 24
+        Width = 121
+        DrawStyle = dsDefault
+        Max = 0
+        Min = 0
+        Position = 0
+        TabStop = False
+      end
+      object CDScrollBar2: TCDScrollBar
+        Left = 192
+        Height = 121
+        Top = 48
+        Width = 17
+        DrawStyle = dsDefault
+        Max = 0
+        Min = 0
+        Position = 0
+        TabStop = False
+      end
     end
     object pageGroupBoxes: TPage
       object GroupBox1: TGroupBox
@@ -638,7 +693,6 @@ object Form1: TForm1
           item
             Caption = 'Column2'
           end>
-        ShowColumnHeader = True
         ViewStyle = vsReport
       end
       object Label12: TLabel
