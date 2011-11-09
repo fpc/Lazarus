@@ -83,6 +83,10 @@ type
     // TCDListView
     procedure DrawListView(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDListViewStateEx); override;
+    procedure DrawReportListView(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDListViewStateEx); override;
+    procedure DrawReportListViewItem(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      ACurItem: TCDListItems; AState: TCDControlState; AStateEx: TCDListViewStateEx); override;
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
@@ -136,6 +140,12 @@ begin
   TCDTRACKBAR_RIGHT_SPACING: Result := 9;
   TCDTRACKBAR_TOP_SPACING: Result := 5;
   TCDTRACKBAR_FRAME_HEIGHT: Result := 17;
+  //
+  TCDLISTVIEW_COLUMN_LEFT_SPACING:  Result := 10;
+  TCDLISTVIEW_COLUMN_RIGHT_SPACING: Result := 10;
+  TCDLISTVIEW_COLUMN_TEXT_LEFT_SPACING:  Result := 5;
+  TCDLISTVIEW_LINE_TOP_SPACING: Result := 3;
+  TCDLISTVIEW_LINE_BOTTOM_SPACING: Result := 3;
   else
     Result := 0;
   end;
@@ -153,8 +163,8 @@ begin
 
   case AMeasureID of
   TCDCONTROL_CAPTION_WIDTH:  Result := ADest.TextWidth(AStateEx.Caption);
-  TCDCONTROL_CAPTION_HEIGHT: Result := ADest.TextHeight('ŹÇ')+3;
-  TCDCTABCONTROL_TAB_HEIGHT: Result := ADest.TextHeight('ŹÇ')+10;
+  TCDCONTROL_CAPTION_HEIGHT: Result := ADest.TextHeight(cddTestStr)+3;
+  TCDCTABCONTROL_TAB_HEIGHT: Result := ADest.TextHeight(cddTestStr)+10;
   TCDCTABCONTROL_TAB_WIDTH:
   begin
     lCaption := ATabsStateEx.Tabs.Strings[ATabsStateEx.CurTabIndex];
@@ -627,6 +637,8 @@ begin
       Size(ASize.cx-lSquareHeight-4, ASize.cy));
 
   // Now the text
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Style := psClear;
   ADest.Font.Assign(AStateEx.Font);
   ADest.TextOut(lSquareHeight+5, 0, AStateEx.Caption);
 end;
@@ -758,7 +770,7 @@ var
   lTextSize: TSize;
   lCaption: String;
 begin
-  FCaptionMiddle := ADest.TextHeight('ŹÇ') div 2;
+  FCaptionMiddle := ADest.TextHeight(cddTestStr) div 2;
   if FCaptionMiddle = 0 then FCaptionMiddle := AStateEx.Font.Size div 2;
   if FCaptionMiddle = 0 then FCaptionMiddle := 5;
 
@@ -956,6 +968,101 @@ begin
   DrawSunkenFrame(ADest, ADestPos, ASize);
 
   // The contents depend on the view style
+  case AStateEx.ViewStyle of
+  vsReport: DrawReportListView(ADest, ADestPos, ASize, AState, AStateEx);
+  end;
+end;
+
+procedure TCDDrawerCommon.DrawReportListView(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDListViewStateEx);
+var
+  lColumn: TListColumn;
+  lWidth: TWidth;
+  i, j: Integer;
+  lCurPos: TPoint;
+  lItemSize: TSize;
+  lItemCount: Integer;
+  lCurItem: TCDListItems;
+begin
+  lCurPos := Point(2, 2);
+  lItemCount := AStateEx.Items.GetItemCount();
+
+  // i is an column zero-based index
+  for i := AStateEx.FirstVisibleColumn to AStateEx.Columns.Count-1 do
+  begin
+    lColumn := AStateEx.Columns[i];
+    lCurPos.Y := 2;
+
+    // get the column width
+    if lColumn.AutoSize then
+    begin
+      lItemSize.cx := ADest.GetTextWidth(lColumn.Caption)
+        + GetMeasures(TCDLISTVIEW_COLUMN_LEFT_SPACING)
+        + GetMeasures(TCDLISTVIEW_COLUMN_RIGHT_SPACING);
+      if (lColumn.MinWidth > 0) and (lItemSize.cx < lColumn.MinWidth) then lItemSize.cx := lColumn.MinWidth
+      else if (lColumn.MaxWidth > 0) and (lItemSize.cx > lColumn.MaxWidth) then lItemSize.cx := lColumn.MaxWidth;
+    end
+    else lItemSize.cx := lColumn.Width;
+
+    // line height measure
+    lItemSize.cy := ADest.TextHeight(cddTestStr)
+      + GetMeasures(TCDLISTVIEW_LINE_TOP_SPACING)
+      + GetMeasures(TCDLISTVIEW_LINE_BOTTOM_SPACING);
+
+    // Draw the column header
+    if AStateEx.ShowColumnHeader then
+    begin
+      // Foreground
+      ADest.Brush.Style := bsSolid;
+      ADest.Brush.Color := Palette.BtnFace; // WIN2000_BTNFACE
+      ADest.Pen.Style := psClear;
+      ADest.FillRect(Bounds(lCurPos.X, lCurPos.Y, lItemSize.cx, lItemSize.cy));
+
+      // Frame
+      DrawRaisedFrame(ADest, lCurPos, lItemSize);
+
+      // The caption
+      ADest.Brush.Style := bsClear;
+      ADest.Pen.Style := psClear;
+      ADest.TextOut(
+        lCurPos.X+GetMeasures(TCDLISTVIEW_COLUMN_TEXT_LEFT_SPACING),
+        lCurPos.Y+GetMeasures(TCDLISTVIEW_LINE_TOP_SPACING),
+        lColumn.Caption);
+
+      Inc(lCurPos.Y, lItemSize.cy);
+    end;
+
+    // j is a zero-based index for lines, ignoring the header
+    // Draw all items until we get out of the visible area
+    for j := 0 to lItemCount-1 do
+    begin
+      lCurItem := nil;
+      if i = 0 then lCurItem := AStateEx.Items.GetItem(j)
+      else if AStateEx.Items.GetItem(j).GetItemCount >= i then
+        lCurItem := AStateEx.Items.GetItem(j).GetItem(i-1);
+
+      if lCurItem = nil then Continue;
+
+      // Draw the item
+      DrawReportListViewItem(ADest, lCurPos, lItemSize, lCurItem, AState, AStateEx);
+
+      Inc(lCurPos.Y, lItemSize.CY);
+    end;
+
+    Inc(lCurPos.X, lItemSize.CX);
+  end;
+end;
+
+procedure TCDDrawerCommon.DrawReportListViewItem(ADest: TCanvas;
+  ADestPos: TPoint; ASize: TSize; ACurItem: TCDListItems; AState: TCDControlState;
+  AStateEx: TCDListViewStateEx);
+begin
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Style := psClear;
+  ADest.TextOut(
+    ADestPos.X+GetMeasures(TCDLISTVIEW_COLUMN_TEXT_LEFT_SPACING),
+    ADestPos.Y+GetMeasures(TCDLISTVIEW_LINE_TOP_SPACING),
+    ACurItem.Caption);
 end;
 
 procedure TCDDrawerCommon.DrawCTabControl(ADest: TCanvas; ADestPos: TPoint;

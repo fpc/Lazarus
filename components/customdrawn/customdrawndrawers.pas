@@ -12,6 +12,8 @@ uses
 const
   CDDRAWSTYLE_COUNT = 19;
 
+  cddTestStr = 'ŹÇ'; // Used for testing text height
+
   // Measures
   TCDEDIT_LEFT_TEXT_SPACING  = $400; // The space between the start of the text and the left end of the control
   TCDEDIT_RIGHT_TEXT_SPACING = $401; // The space between the end of the text and the right end of the control
@@ -27,6 +29,12 @@ const
   TCDTRACKBAR_RIGHT_SPACING   = $1001;
   TCDTRACKBAR_TOP_SPACING     = $1002;
   TCDTRACKBAR_FRAME_HEIGHT    = $1003;
+
+  TCDLISTVIEW_COLUMN_LEFT_SPACING  = $1200;
+  TCDLISTVIEW_COLUMN_RIGHT_SPACING = $1201;
+  TCDLISTVIEW_COLUMN_TEXT_LEFT_SPACING = $1202;
+  TCDLISTVIEW_LINE_TOP_SPACING     = $1203;
+  TCDLISTVIEW_LINE_BOTTOM_SPACING  = $1204;
 
   // Measures Ex
   TCDCONTROL_CAPTION_WIDTH  = $100;
@@ -75,7 +83,7 @@ type
     csfOn,
     csfOff,
     csfPartiallyOn
-{    // for TCDPageControl
+{    // for TCDComboBox
     csfDownArrow,
     // for tool button
     csfAutoRaise,
@@ -149,6 +157,8 @@ type
     constructor Create;
     destructor Destroy; override;
     function Add(ACaption: string; AImageIndex, AStateIndex: Integer): TCDListItems;
+    function GetItem(AIndex: Integer): TCDListItems;
+    function GetItemCount: Integer;
   end;
 
   TCDListViewStateEx = class(TCDControlStateEx)
@@ -156,6 +166,9 @@ type
     Columns: TListColumns; // just a reference, never free
     Items: TCDListItems; // just a reference, never free
     ViewStyle: TViewStyle;
+    FirstVisibleColumn: Integer; // 0-based index
+    FirstVisibleLine: Integer; // 0-based index, remember that the header is always visible or always invisible
+    ShowColumnHeader: Boolean;
   end;
 
   TCDCTabControlStateEx = class(TCDControlStateEx)
@@ -278,6 +291,10 @@ type
     // TCDListView
     procedure DrawListView(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDListViewStateEx); virtual; abstract;
+    procedure DrawReportListView(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDListViewStateEx); virtual; abstract;
+    procedure DrawReportListViewItem(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      ACurItem: TCDListItems; AState: TCDControlState; AStateEx: TCDListViewStateEx); virtual; abstract;
     // TCDCustomTabControl
     procedure DrawCTabControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
@@ -355,6 +372,16 @@ begin
   Result.ImageIndex := AImageIndex;
   Result.StateIndex := AStateIndex;
   Childs.Add(Pointer(Result));
+end;
+
+function TCDListItems.GetItem(AIndex: Integer): TCDListItems;
+begin
+  Result := TCDListItems(Childs.Items[AIndex]);
+end;
+
+function TCDListItems.GetItemCount: Integer;
+begin
+  Result := Childs.Count;
 end;
 
 { TCDDrawer }

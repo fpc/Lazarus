@@ -369,10 +369,12 @@ type
     FIconOptions: TIconOptions;
     FListItems: TCDListItems;
     FProperties: TListViewProperties;
+    FShowColumnHeader: Boolean;
     FViewStyle: TViewStyle;
     function GetProperty(AIndex: Integer): Boolean;
     procedure SetColumns(AValue: TListColumns);
     procedure SetProperty(AIndex: Integer; AValue: Boolean);
+    procedure SetShowColumnHeader(AValue: Boolean);
     procedure SetViewStyle(AValue: TViewStyle);
   protected
 {    // keyboard
@@ -401,10 +403,11 @@ type
     property Columns: TListColumns read FColumns write SetColumns;
     //property GridLines: Boolean index Ord(lvpGridLines) read GetProperty write SetProperty default False;
     property Items: TCDListItems read FListItems;
-    property ViewStyle: TViewStyle read FViewStyle default vsList;
+    property ShowColumnHeader: Boolean read FShowColumnHeader write SetShowColumnHeader default True;
+    property ViewStyle: TViewStyle read FViewStyle write SetViewStyle default vsList;
   end;
 
-  {TCDTabControl}
+  { TCDTabControl }
 
   { TCDCustomTabControl }
 
@@ -523,187 +526,6 @@ implementation
 
 resourcestring
   sTABSHEET_DEFAULT_NAME = 'CTabSheet';
-
-{ TCDListView }
-
-function TCDListView.GetProperty(AIndex: Integer): Boolean;
-begin
-
-end;
-
-procedure TCDListView.SetColumns(AValue: TListColumns);
-begin
-  if FColumns=AValue then Exit;
-  FColumns:=AValue;
-end;
-
-procedure TCDListView.SetProperty(AIndex: Integer; AValue: Boolean);
-begin
-
-end;
-
-procedure TCDListView.SetViewStyle(AValue: TViewStyle);
-begin
-  if FViewStyle=AValue then Exit;
-  FViewStyle:=AValue;
-end;
-
-function TCDListView.GetControlId: TCDControlID;
-begin
-  Result := cidListView;
-end;
-
-procedure TCDListView.CreateControlStateEx;
-begin
-  FLVState := TCDListViewStateEx.Create;
-  FStateEx := FLVState;
-end;
-
-procedure TCDListView.PrepareControlStateEx;
-begin
-  inherited PrepareControlStateEx;
-  FLVState.Items := FListItems;
-  FLVState.Columns := FColumns;
-  FLVState.ViewStyle := FViewStyle;
-end;
-
-constructor TCDListView.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  Width := 250;
-  Height := 150;
-  FColumns := TListColumns.Create(nil);
-  FListItems := TCDListItems.Create();
-  TabStop := True;
-//  FProperties: TListViewProperties;
-//  FViewStyle: TViewStyle;
-
-  PrepareCurrentDrawer();
-end;
-
-destructor TCDListView.Destroy;
-begin
-  FColumns.Free;
-  FListItems.Free;
-  inherited Destroy;
-end;
-
-{ TCDProgressBar }
-
-procedure TCDProgressBar.SetMax(AValue: integer);
-begin
-  if FMax=AValue then Exit;
-  FMax:=AValue;
-  Invalidate;
-end;
-
-procedure TCDProgressBar.SetBarShowText(AValue: Boolean);
-begin
-  if FBarShowText=AValue then Exit;
-  FBarShowText:=AValue;
-  Invalidate;
-end;
-
-procedure TCDProgressBar.SetMin(AValue: integer);
-begin
-  if FMin=AValue then Exit;
-  FMin:=AValue;
-  Invalidate;
-end;
-
-procedure TCDProgressBar.SetOrientation(AValue: TProgressBarOrientation);
-var
-  lOldWidth: Integer;
-begin
-  if FOrientation=AValue then Exit;
-  FOrientation:=AValue;
-  Invalidate;
-end;
-
-procedure TCDProgressBar.SetPosition(AValue: integer);
-begin
-  if FPosition=AValue then Exit;
-  FPosition:=AValue;
-  Invalidate;
-end;
-
-procedure TCDProgressBar.SetSmooth(AValue: Boolean);
-begin
-  if FSmooth=AValue then Exit;
-  FSmooth:=AValue;
-  Invalidate;
-end;
-
-procedure TCDProgressBar.SetStyle(AValue: TProgressBarStyle);
-begin
-  if FStyle=AValue then Exit;
-  FStyle:=AValue;
-  Invalidate;
-end;
-
-function TCDProgressBar.GetControlId: TCDControlID;
-begin
-  Result := cidProgressBar;
-end;
-
-procedure TCDProgressBar.CreateControlStateEx;
-begin
-  FPBState := TCDProgressBarStateEx.Create;
-  FStateEx := FPBState;
-end;
-
-procedure TCDProgressBar.PrepareControlStateEx;
-begin
-  inherited PrepareControlStateEx;
-  if FMax <> FMin then FPBState.PercentPosition := (FPosition-FMin)/(FMax-FMin)
-  else FPBState.PercentPosition := 1.0;
-  FPBState.BarShowText := FBarShowText;
-  FPBState.Style := FStyle;
-  FPBState.Orientation := FOrientation;
-  FPBState.Smooth := FSmooth;
-end;
-
-constructor TCDProgressBar.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  Width := 100;
-  Height := 20;
-  FMax := 100;
-  TabStop := False;
-  PrepareCurrentDrawer();
-end;
-
-destructor TCDProgressBar.Destroy;
-begin
-  inherited Destroy;
-end;
-
-{ TCDStaticText }
-
-function TCDStaticText.GetControlId: TCDControlID;
-begin
-  Result:=cidStaticText;
-end;
-
-procedure TCDStaticText.RealSetText(const Value: TCaption);
-begin
-  inherited RealSetText(Value);
-  Invalidate;
-end;
-
-constructor TCDStaticText.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  Width := 70;
-  Height := 20;
-  TabStop := False;
-  ControlStyle := ControlStyle - [csAcceptsControls];
-end;
-
-destructor TCDStaticText.Destroy;
-begin
-  inherited Destroy;
-end;
 
 { TCDControl }
 
@@ -1392,6 +1214,33 @@ begin
   inherited Destroy;
 end;
 
+{ TCDStaticText }
+
+function TCDStaticText.GetControlId: TCDControlID;
+begin
+  Result:=cidStaticText;
+end;
+
+procedure TCDStaticText.RealSetText(const Value: TCaption);
+begin
+  inherited RealSetText(Value);
+  Invalidate;
+end;
+
+constructor TCDStaticText.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 70;
+  Height := 20;
+  TabStop := False;
+  ControlStyle := ControlStyle - [csAcceptsControls];
+end;
+
+destructor TCDStaticText.Destroy;
+begin
+  inherited Destroy;
+end;
+
 { TCDTrackBar }
 
 procedure TCDTrackBar.SetMax(Value: integer);
@@ -1596,30 +1445,171 @@ begin
   inherited Destroy;
 end;
 
-{procedure TCDTrackBar.Paint;
-var
-  AImage: TLazIntfImage = nil;
-  ABmp: TBitmap = nil;
-  lCanvas: TFPImageCanvas = nil;
+{ TCDProgressBar }
+
+procedure TCDProgressBar.SetMax(AValue: integer);
 begin
-  ABmp := TBitmap.Create;
-  try
-    ABmp.Width := Width;
-    ABmp.Height := Height;
-    AImage := ABmp.CreateIntfImage;
-    lCanvas := TFPImageCanvas.Create(AImage);
-    // First step of the drawing: FCL TFPCustomCanvas for fast pixel access
-    FCurrentDrawer.DrawToIntfImage(lCanvas, AImage, Self);
-    ABmp.LoadFromIntfImage(AImage);
-    Canvas.Draw(0, 0, ABmp);
-  finally
-    if lCanvas <> nil then
-      lCanvas.Free;
-    if AImage <> nil then
-      AImage.Free;
-    ABmp.Free;
-  end;
-end;}
+  if FMax=AValue then Exit;
+  FMax:=AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+procedure TCDProgressBar.SetBarShowText(AValue: Boolean);
+begin
+  if FBarShowText=AValue then Exit;
+  FBarShowText:=AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+procedure TCDProgressBar.SetMin(AValue: integer);
+begin
+  if FMin=AValue then Exit;
+  FMin:=AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+procedure TCDProgressBar.SetOrientation(AValue: TProgressBarOrientation);
+var
+  lOldWidth: Integer;
+begin
+  if FOrientation=AValue then Exit;
+  FOrientation:=AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+procedure TCDProgressBar.SetPosition(AValue: integer);
+begin
+  if FPosition=AValue then Exit;
+  FPosition:=AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+procedure TCDProgressBar.SetSmooth(AValue: Boolean);
+begin
+  if FSmooth=AValue then Exit;
+  FSmooth:=AValue;
+  if not (csLoading in ComponentState) then
+    Invalidate;
+end;
+
+procedure TCDProgressBar.SetStyle(AValue: TProgressBarStyle);
+begin
+  if FStyle=AValue then Exit;
+  FStyle:=AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+function TCDProgressBar.GetControlId: TCDControlID;
+begin
+  Result := cidProgressBar;
+end;
+
+procedure TCDProgressBar.CreateControlStateEx;
+begin
+  FPBState := TCDProgressBarStateEx.Create;
+  FStateEx := FPBState;
+end;
+
+procedure TCDProgressBar.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+  if FMax <> FMin then FPBState.PercentPosition := (FPosition-FMin)/(FMax-FMin)
+  else FPBState.PercentPosition := 1.0;
+  FPBState.BarShowText := FBarShowText;
+  FPBState.Style := FStyle;
+  FPBState.Orientation := FOrientation;
+  FPBState.Smooth := FSmooth;
+end;
+
+constructor TCDProgressBar.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 100;
+  Height := 20;
+  FMax := 100;
+  TabStop := False;
+  PrepareCurrentDrawer();
+end;
+
+destructor TCDProgressBar.Destroy;
+begin
+  inherited Destroy;
+end;
+
+{ TCDListView }
+
+function TCDListView.GetProperty(AIndex: Integer): Boolean;
+begin
+
+end;
+
+procedure TCDListView.SetColumns(AValue: TListColumns);
+begin
+  if FColumns=AValue then Exit;
+  FColumns:=AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+procedure TCDListView.SetProperty(AIndex: Integer; AValue: Boolean);
+begin
+
+end;
+
+procedure TCDListView.SetShowColumnHeader(AValue: Boolean);
+begin
+  if FShowColumnHeader=AValue then Exit;
+  FShowColumnHeader:=AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+procedure TCDListView.SetViewStyle(AValue: TViewStyle);
+begin
+  if FViewStyle=AValue then Exit;
+  FViewStyle:=AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+function TCDListView.GetControlId: TCDControlID;
+begin
+  Result := cidListView;
+end;
+
+procedure TCDListView.CreateControlStateEx;
+begin
+  FLVState := TCDListViewStateEx.Create;
+  FStateEx := FLVState;
+end;
+
+procedure TCDListView.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+  FLVState.Items := FListItems;
+  FLVState.Columns := FColumns;
+  FLVState.ViewStyle := FViewStyle;
+  FLVState.ShowColumnHeader := FShowColumnHeader;
+end;
+
+constructor TCDListView.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 250;
+  Height := 150;
+  FColumns := TListColumns.Create(nil);
+  FListItems := TCDListItems.Create();
+  TabStop := True;
+  FShowColumnHeader := True;
+//  FProperties: TListViewProperties;
+//  FViewStyle: TViewStyle;
+
+  PrepareCurrentDrawer();
+end;
+
+destructor TCDListView.Destroy;
+begin
+  FColumns.Free;
+  FListItems.Free;
+  inherited Destroy;
+end;
 
 { TCDTabSheet }
 
