@@ -15,7 +15,6 @@ type
   TForm1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
-    Button3: TButton;
     CDButton1: TCDButton;
     CDButton2: TCDButton;
     CDButton3: TCDButton;
@@ -24,6 +23,8 @@ type
     CDCheckBox2: TCDCheckBox;
     CDEdit1: TCDEdit;
     CDEdit2: TCDEdit;
+    CDListView1: TCDListView;
+    CDProgressBar1: TCDProgressBar;
     CDRadioButton1: TCDRadioButton;
     CDRadioButton2: TCDRadioButton;
     CDRadioButton3: TCDRadioButton;
@@ -48,6 +49,8 @@ type
     GroupBox3: TGroupBox;
     Label1: TLabel;
     Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -56,6 +59,7 @@ type
     Label7: TLabel;
     Label8: TLabel;
     Label9: TLabel;
+    ListView1: TListView;
     Memo1: TMemo;
     memoLog: TMemo;
     notebookControls: TNotebook;

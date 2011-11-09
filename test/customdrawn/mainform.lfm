@@ -59,7 +59,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 463
-    PageIndex = 16
+    PageIndex = 17
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 2
     TabStop = True
@@ -290,7 +290,7 @@ object Form1: TForm1
         Top = 13
         Width = 129
         Caption = 'GroupBox1'
-        ClientHeight = 81
+        ClientHeight = 82
         ClientWidth = 125
         TabOrder = 0
         object Label1: TLabel
@@ -318,22 +318,6 @@ object Form1: TForm1
         AutoSize = True
         DrawStyle = dsCommon
         Caption = 'dsCommon'
-        object Label2: TLabel
-          Left = 13
-          Height = 14
-          Top = 21
-          Width = 32
-          Caption = 'Label2'
-          ParentColor = False
-        end
-        object Button3: TButton
-          Left = 8
-          Height = 25
-          Top = 43
-          Width = 75
-          Caption = 'Button3'
-          TabOrder = 0
-        end
       end
       object CDGroupBox2: TCDGroupBox
         Left = 279
@@ -543,8 +527,68 @@ object Form1: TForm1
         Style = pbstMarquee
         TabOrder = 5
       end
+      object CDProgressBar1: TCDProgressBar
+        Left = 152
+        Height = 20
+        Top = 16
+        Width = 100
+        DrawStyle = dsDefault
+        Max = 0
+        Orientation = pbHorizontal
+        Position = 0
+      end
+      object Label11: TLabel
+        Left = 171
+        Height = 14
+        Top = 1
+        Width = 53
+        Caption = 'dsCommon'
+        ParentColor = False
+      end
     end
     object pageListViews: TPage
+      object ListView1: TListView
+        Left = 11
+        Height = 119
+        Top = 25
+        Width = 149
+        Columns = <        
+          item
+          end        
+          item
+          end>
+        Items.LazData = {
+          8000000002000000FFFFFFFFFFFFFFFFFFFFFFFF03000000050000004974656D
+          31060000004974656D3131060000004974656D3132060000004974656D3133FF
+          FFFFFFFFFFFFFFFFFFFFFF02000000050000004974656D32060000004974656D
+          3231060000004974656D3232FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+        }
+        TabOrder = 0
+        ViewStyle = vsReport
+      end
+      object Label2: TLabel
+        Left = 64
+        Height = 14
+        Top = 9
+        Width = 32
+        Caption = 'Native'
+        ParentColor = False
+      end
+      object CDListView1: TCDListView
+        Left = 208
+        Height = 121
+        Top = 25
+        Width = 146
+        Columns = <>
+      end
+      object Label12: TLabel
+        Left = 258
+        Height = 14
+        Top = 10
+        Width = 57
+        Caption = 'dsCommon:'
+        ParentColor = False
+      end
     end
     object pageStatusBars: TPage
     end
