@@ -9193,7 +9193,7 @@ function TMainIDE.DoOpenEditorFile(AFileName: string; PageIndex,
   ): TModalResult;
 var
   UnitIndex: integer;
-  ReOpen, Handled:boolean;
+  UnknownFile, Handled:boolean;
   NewUnitInfo:TUnitInfo;
   NewBuf: TCodeBuffer;
   FilenameNoPath: String;
@@ -9346,8 +9346,8 @@ begin
   // check if the project knows this file
   if (not (ofRevert in Flags)) then begin
     UnitIndex:=Project1.IndexOfFilename(AFilename);
-    ReOpen:=(UnitIndex>=0);
-    if ReOpen then begin
+    UnknownFile := (UnitIndex < 0);
+    if not UnknownFile then begin
       NewUnitInfo:=Project1.Units[UnitIndex];
       if AEditorInfo <> nil then
         NewEditorInfo := AEditorInfo
@@ -9358,6 +9358,7 @@ begin
     end;
   end else begin
     // revert
+    UnknownFile := False;
     NewEditorInfo := Project1.EditorInfoWithEditorComponent(
       SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex]);
     NewUnitInfo := NewEditorInfo.UnitInfo;
@@ -9372,7 +9373,6 @@ begin
       Result:=mrCancel;
       exit;
     end;
-    ReOpen:=true;
   end;
 
   if (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
@@ -9420,7 +9420,7 @@ begin
     end;
 
     // load the source
-    if ReOpen then begin
+    if not UnknownFile then begin
       // project knows this file => all the meta data is known
       // -> just load the source
       NewUnitInfo:=Project1.Units[UnitIndex];
@@ -9443,9 +9443,10 @@ begin
       NewUnitInfo.Modified:=NewUnitInfo.Source.FileOnDiskNeedsUpdate;
     end else begin
       // open unknown file
+      // Never happens if ofRevert
       Handled:=false;
       Result:=DoOpenUnknownFile(AFilename,Flags,NewUnitInfo,Handled);
-      if Result<>mrOk then exit;
+      if (Result<>mrOk) or Handled then exit;
       // the file was previously unknown, use the default EditorInfo
       if AEditorInfo <> nil then
         NewEditorInfo := AEditorInfo
@@ -9454,7 +9455,6 @@ begin
         NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
       else
         NewEditorInfo := nil;
-      if Handled then exit;
     end;
 
     // check readonly
