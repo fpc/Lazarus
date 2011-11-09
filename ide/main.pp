@@ -9355,23 +9355,6 @@ begin
         NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
       else
         NewEditorInfo := NewUnitInfo.EditorInfo[0];
-      if (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
-      begin
-        NewUnitInfo.IsPartOfProject:=true;
-        Project1.Modified:=true;
-      end;
-      if (not (ofProjectLoading in Flags)) and (NewEditorInfo.EditorComponent <> nil) then
-      begin
-        //DebugLn(['TMainIDE.DoOpenEditorFile file already open ',NewUnitInfo.Filename,' WindowIndex=',NewEditorInfo.WindowIndex,' PageIndex=',NewEditorInfo.PageIndex]);
-        // file already open -> change source notebook page
-        SourceEditorManager.ActiveSourceWindowIndex := NewEditorInfo.WindowIndex;
-        SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
-        if ofDoLoadResource in Flags then
-          Result:=OpenResource
-        else
-          Result:=mrOk;
-        exit;
-      end;
     end;
   end else begin
     // revert
@@ -9390,11 +9373,25 @@ begin
       exit;
     end;
     ReOpen:=true;
-    if (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
-    begin
-      NewUnitInfo.IsPartOfProject:=true;
-      Project1.Modified:=true;
-    end;
+  end;
+
+  if (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
+  begin
+    NewUnitInfo.IsPartOfProject:=true;
+    Project1.Modified:=true;
+  end;
+
+  if (Flags * [ofProjectLoading, ofRevert] = []) and (NewEditorInfo.EditorComponent <> nil) then
+  begin
+    //DebugLn(['TMainIDE.DoOpenEditorFile file already open ',NewUnitInfo.Filename,' WindowIndex=',NewEditorInfo.WindowIndex,' PageIndex=',NewEditorInfo.PageIndex]);
+    // file already open -> change source notebook page
+    SourceEditorManager.ActiveSourceWindowIndex := NewEditorInfo.WindowIndex;
+    SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
+    if ofDoLoadResource in Flags then
+      Result:=OpenResource
+    else
+      Result:=mrOk;
+    exit;
   end;
 
   Reverting:=false;
