@@ -568,10 +568,14 @@ begin
   TabStop := True;
 //  FProperties: TListViewProperties;
 //  FViewStyle: TViewStyle;
+
+  PrepareCurrentDrawer();
 end;
 
 destructor TCDListView.Destroy;
 begin
+  FColumns.Free;
+  FListItems.Free;
   inherited Destroy;
 end;
 
@@ -621,6 +625,7 @@ begin
   Width := 100;
   Height := 20;
   TabStop := False;
+  PrepareCurrentDrawer();
 end;
 
 destructor TCDProgressBar.Destroy;

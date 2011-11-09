@@ -293,7 +293,7 @@ function GetDefaultDrawer: TCDDrawer;
 function GetDrawer(AStyle: TCDDrawStyle): TCDDrawer;
 
 var
-  DefaultStyle: TCDDrawStyle = dsWinCE; // For now default to the most complete one, later per platform
+  DefaultStyle: TCDDrawStyle = dsCommon; // For now default to the most complete one, later per platform
 
 implementation
 

@@ -755,7 +755,7 @@ var
   lTextSize: TSize;
   lCaption: String;
 begin
-  FCaptionMiddle := ADest.TextHeight('Ź') div 2;
+  FCaptionMiddle := ADest.TextHeight('ŹÇ') div 2;
   if FCaptionMiddle = 0 then FCaptionMiddle := AStateEx.Font.Size div 2;
   if FCaptionMiddle = 0 then FCaptionMiddle := 5;
 
@@ -779,9 +779,8 @@ begin
   // fill the text background
   ADest.Brush.Style := bsSolid;
   ADest.Brush.Color := AStateEx.ParentRGBColor;
-  ADest.Brush.Style := bsSolid;
   ADest.Pen.Style := psClear;
-  ADest.Rectangle(FCaptionMiddle, 0, lTextSize.cx, lTextSize.cy);
+  ADest.Rectangle(Bounds(FCaptionMiddle, 0, lTextSize.cx, lTextSize.cy));
 
   // paint text
   ADest.Pen.Style := psClear;
@@ -909,6 +908,8 @@ begin
 
   // The frame
   DrawSunkenFrame(ADest, ADestPos, ASize);
+
+  // The contents depend on the view style
 end;
 
 procedure TCDDrawerCommon.DrawCTabControl(ADest: TCanvas; ADestPos: TPoint;
