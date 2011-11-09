@@ -564,6 +564,7 @@ type
     FShowOnTaskBar: Boolean;
     FPopupMode: TPopupMode;
     FPopupParent: QWidgetH;
+    FMDIStateHook: QMdiSubWindow_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     procedure ChangeParent(NewParent: QWidgetH);
@@ -585,6 +586,7 @@ type
     procedure setText(const W: WideString); override;
     procedure setMenuBar(AMenuBar: QMenuBarH);
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure MDIChildWindowStateChanged(AOldState: QtWindowStates; ANewState: QtWindowStates); cdecl;
     function IsMdiChild: Boolean;
     function IsModal: Boolean;
     function MdiChildCount: integer;
@@ -5144,6 +5146,7 @@ begin
   FPopupParent := nil;
   MDIAreaHandle := nil;
   MDIChildArea := nil;
+  FMDIStateHook := nil;
 
   IsMainForm := (LCLObject <> nil) and (LCLObject = Application.MainForm);
 
@@ -5429,6 +5432,14 @@ begin
     QEventShowToParent: ; // do nothing for TQtMainWindow, but leave it unhandled
     QEventWindowStateChange:
     begin
+      if IsMDIChild then
+      begin
+        //do not process QEventWindowStateChange for MDI children !
+        //we are doing that job in MDIChildWindowStateChanged slot.
+        EndEventProcessing;
+        exit;
+      end;
+
       CanSendEvent := True;
       {$IFDEF HASX11}
       // for X11 we must ask state of each modified window.
@@ -5534,6 +5545,67 @@ begin
     Result := inherited EventFilter(Sender, Event);
   end;
   EndEventProcessing;
+end;
+
+procedure TQtMainWindow.MDIChildWindowStateChanged(AOldState: QtWindowStates;
+  ANewState: QtWindowStates); cdecl;
+var
+  AOld, ANew: QtWindowStates;
+  Arr: TPtrIntArray;
+  i: Integer;
+  W: QMDISubWindowH;
+  B: Boolean;
+  FoundWin: Boolean;
+begin
+  // check if state is same without active flag, in that case don't inform lcl.
+  AOld := AOldState and not QtWindowActive;
+  ANew := ANewState and not QtWindowActive;
+  if AOld = ANew then
+    exit;
+
+  {inform LCL about change}
+  SlotWindowStateChange;
+
+  {activate next mdi in chain if we are minimized}
+  if Assigned(MDIChildArea) and
+    (ANewState and QtWindowMinimized = QtWindowMinimized) and
+    (ANewState and QtWindowActive = QtWindowActive) then
+  begin
+    QMdiArea_subWindowList(QMdiAreaH(MDIChildArea.Widget), @Arr);
+    // activate only if MDIChild is not minimized !
+    // we are using *history activation order*,
+    // so we must take into account index of
+    // current minimized win.
+    B := False;
+    FoundWin := False;
+    for i := High(Arr) downto 0 do
+    begin
+      W := QMdiSubWindowH(Arr[i]);
+      AOld := QWidget_windowState(W);
+      B := W = Widget;
+      if B and (W <> Widget) and (AOld and QtWindowMinimized = 0) then
+      begin
+        FoundWin := True;
+        MDIChildArea.ActivateSubWindow(W);
+        break;
+      end;
+    end;
+    // not found lower index window, search for higher one
+    if not FoundWin then
+    begin
+      for i := High(Arr) downto 0 do
+      begin
+        W := QMdiSubWindowH(Arr[i]);
+        AOld := QWidget_windowState(W);
+        if (W <> Widget) and (AOld and QtWindowMinimized = 0) then
+        begin
+          MDIChildArea.ActivateSubWindow(W);
+          break;
+        end;
+      end;
+    end;
+
+  end;
 end;
 
 function TQtMainWindow.IsMdiChild: Boolean;
@@ -5663,6 +5735,12 @@ begin
     FCWEventHook := QObject_hook_create(FCentralWidget);
     QObject_hook_hook_events(FCWEventHook, @CWEventFilter);
   end;
+  if IsMDIChild then
+  begin
+    FMDIStateHook := QMdiSubWindow_hook_create(Widget);
+    QMdiSubWindow_hook_hook_windowStateChanged(FMDIStateHook,
+      @MDIChildWindowStateChanged);
+  end;
 end;
 
 procedure TQtMainWindow.DetachEvents;
@@ -5671,6 +5749,12 @@ begin
   begin
     QObject_hook_destroy(FCWEventHook);
     FCWEventHook := nil;
+  end;
+
+  if FMDIStateHook <> nil then
+  begin
+    QMdiSubWindow_hook_destroy(FMDIStateHook);
+    FMDIStateHook := nil;
   end;
 
   inherited DetachEvents;
