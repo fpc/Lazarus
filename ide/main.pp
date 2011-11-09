@@ -10093,6 +10093,7 @@ var
   Access: TEditorOptionsEditAccessOrderEntry;
 begin
   Result := nil;
+  // Check for already open Editor. If there is none, then it must be opened in DoOpenEditorFile
   if AnUnitInfo.OpenEditorInfoCount = 0 then exit;
   for i := 0 to EditorOpts.MultiWinEditAccessOrder.Count - 1 do begin
     Access := EditorOpts.MultiWinEditAccessOrder[i];
