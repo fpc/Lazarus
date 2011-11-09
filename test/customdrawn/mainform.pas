@@ -21,10 +21,12 @@ type
     CDButton4: TCDButton;
     CDCheckBox1: TCDCheckBox;
     CDCheckBox2: TCDCheckBox;
+    CDCheckBox3: TCDCheckBox;
     CDEdit1: TCDEdit;
     CDEdit2: TCDEdit;
     CDScrollBar1: TCDScrollBar;
     CDScrollBar2: TCDScrollBar;
+    CheckBox2: TCheckBox;
     Label14: TLabel;
     Label15: TLabel;
     listviewCommon: TCDListView;

@@ -13,7 +13,7 @@ object Form1: TForm1
     Height = 21
     Top = 12
     Width = 136
-    ItemHeight = 13
+    ItemHeight = 0
     ItemIndex = 0
     Items.Strings = (
       'TCDMenu'
@@ -60,7 +60,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 463
-    PageIndex = 10
+    PageIndex = 6
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 2
     TabStop = True
@@ -176,33 +176,55 @@ object Form1: TForm1
         Top = 8
         Width = 90
         Caption = 'Native'
+        Checked = True
+        State = cbChecked
         TabOrder = 0
       end
     end
     object pageCheckboxes: TPage
       object CheckBox1: TCheckBox
         Left = 20
-        Height = 17
+        Height = 18
         Top = 29
-        Width = 71
+        Width = 91
         Caption = 'CheckBox1'
         TabOrder = 0
       end
       object CDCheckBox1: TCDCheckBox
         Left = 119
-        Height = 16
+        Height = 19
         Top = 29
-        Width = 73
+        Width = 93
         DrawStyle = dsCommon
         Caption = 'dsCommon'
       end
       object CDCheckBox2: TCDCheckBox
         Left = 119
-        Height = 16
-        Top = 48
-        Width = 63
+        Height = 19
+        Top = 72
+        Width = 75
         DrawStyle = dsWinCE
         Caption = 'dsWinCE'
+      end
+      object CheckBox2: TCheckBox
+        Left = 20
+        Height = 18
+        Top = 55
+        Width = 91
+        AllowGrayed = True
+        Caption = 'CheckBox2'
+        Checked = True
+        State = cbChecked
+        TabOrder = 3
+      end
+      object CDCheckBox3: TCDCheckBox
+        Left = 119
+        Height = 19
+        Top = 48
+        Width = 93
+        AllowGrayed = True
+        DrawStyle = dsCommon
+        Caption = 'dsCommon'
       end
     end
     object pageRadioButton: TPage
