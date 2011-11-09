@@ -6,6 +6,7 @@ object Form1: TForm1
   Caption = 'Custom Drawn Controls Tester'
   ClientHeight = 500
   ClientWidth = 463
+  OnCreate = FormCreate
   LCLVersion = '0.9.31'
   object comboControls: TComboBox
     Left = 80
@@ -59,7 +60,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 463
-    PageIndex = 16
+    PageIndex = 17
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 2
     TabStop = True
@@ -211,30 +212,30 @@ object Form1: TForm1
         Top = 16
         Width = 137
         Caption = 'GroupBox2'
-        ClientHeight = 70
+        ClientHeight = 71
         ClientWidth = 133
         TabOrder = 0
         object RadioButton3: TRadioButton
           Left = 8
-          Height = 21
+          Height = 17
           Top = 42
-          Width = 109
+          Width = 83
           Caption = 'RadioButton3'
           TabOrder = 0
         end
         object RadioButton2: TRadioButton
           Left = 8
-          Height = 21
+          Height = 17
           Top = 26
-          Width = 109
+          Width = 83
           Caption = 'RadioButton2'
           TabOrder = 1
         end
         object RadioButton1: TRadioButton
           Left = 8
-          Height = 21
+          Height = 17
           Top = 8
-          Width = 109
+          Width = 83
           Caption = 'RadioButton1'
           Checked = True
           TabOrder = 2
@@ -247,31 +248,31 @@ object Form1: TForm1
         Top = 16
         Width = 129
         Caption = 'GroupBox3'
-        ClientHeight = 69
+        ClientHeight = 70
         ClientWidth = 125
         TabOrder = 1
         object CDRadioButton2: TCDRadioButton
           Left = 14
-          Height = 20
+          Height = 16
           Top = 47
-          Width = 95
+          Width = 73
           DrawStyle = dsDefault
           Caption = 'dsCommon'
         end
         object CDRadioButton1: TCDRadioButton
           Left = 14
-          Height = 20
+          Height = 16
           Top = 7
-          Width = 95
+          Width = 73
           DrawStyle = dsCommon
           Caption = 'dsCommon'
           TabStop = False
         end
         object CDRadioButton3: TCDRadioButton
           Left = 14
-          Height = 20
+          Height = 16
           Top = 27
-          Width = 95
+          Width = 73
           DrawStyle = dsDefault
           Caption = 'dsCommon'
         end
@@ -601,10 +602,18 @@ object Form1: TForm1
           item
           end>
         Items.LazData = {
-          8000000002000000FFFFFFFFFFFFFFFFFFFFFFFF03000000050000004974656D
+          670100000B000000FFFFFFFFFFFFFFFFFFFFFFFF03000000050000004974656D
           31060000004974656D3131060000004974656D3132060000004974656D3133FF
           FFFFFFFFFFFFFFFFFFFFFF02000000050000004974656D32060000004974656D
-          3231060000004974656D3232FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+          3231060000004974656D3232FFFFFFFFFFFFFFFFFFFFFFFF0000000005000000
+          4974656D37FFFFFFFFFFFFFFFFFFFFFFFF00000000050000004974656D38FFFF
+          FFFFFFFFFFFFFFFFFFFF00000000050000004974656D39FFFFFFFFFFFFFFFFFF
+          FFFFFF00000000060000004974656D3130FFFFFFFFFFFFFFFFFFFFFFFF000000
+          00060000004974656D3131FFFFFFFFFFFFFFFFFFFFFFFF000000000600000049
+          74656D3132FFFFFFFFFFFFFFFFFFFFFFFF00000000060000004974656D3133FF
+          FFFFFFFFFFFFFFFFFFFFFF00000000060000004974656D3134FFFFFFFFFFFFFF
+          FFFFFFFFFF00000000060000004974656D3135FFFFFFFFFFFFFFFFFFFFFFFFFF
+          FFFFFFFFFFFFFF
         }
         TabOrder = 0
         ViewStyle = vsReport
@@ -617,12 +626,20 @@ object Form1: TForm1
         Caption = 'Native'
         ParentColor = False
       end
-      object CDListView1: TCDListView
+      object listviewCommon: TCDListView
         Left = 208
         Height = 121
         Top = 25
         Width = 146
-        Columns = <>
+        Columns = <        
+          item
+            Caption = 'Column1'
+          end        
+          item
+            Caption = 'Column2'
+          end>
+        ShowColumnHeader = True
+        ViewStyle = vsReport
       end
       object Label12: TLabel
         Left = 258

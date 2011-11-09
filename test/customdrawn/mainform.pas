@@ -5,8 +5,8 @@ unit mainform;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, customdrawncontrols, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ExtCtrls, ComCtrls;
+  Classes, SysUtils, FileUtil, customdrawncontrols, customdrawndrawers, Forms,
+  Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls;
 
 type
 
@@ -23,7 +23,7 @@ type
     CDCheckBox2: TCDCheckBox;
     CDEdit1: TCDEdit;
     CDEdit2: TCDEdit;
-    CDListView1: TCDListView;
+    listviewCommon: TCDListView;
     progressCommon3: TCDProgressBar;
     progressCommon2: TCDProgressBar;
     progressCommon4: TCDProgressBar;
@@ -114,6 +114,7 @@ type
     CDTrackBar1: TCDTrackBar;
     TrackBar2: TTrackBar;
     procedure comboControlsChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure HandleClick(Sender: TObject);
     procedure trackChangeProgressChange(Sender: TObject);
   private
@@ -127,8 +128,6 @@ var
 
 implementation
 
-uses TypInfo, customdrawndrawers;
-
 {$R *.lfm}
 
 { TForm1 }
@@ -136,7 +135,24 @@ uses TypInfo, customdrawndrawers;
 procedure TForm1.comboControlsChange(Sender: TObject);
 begin
   notebookControls.PageIndex := comboControls.ItemIndex;
-//  Caption := GetEnumName(TypeInfo(TCDDrawStyle), Integer(editWinXP.DrawStyle));
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  lItem: TCDListItems;
+begin
+  // We still dont have a property editor for this
+  lItem := listviewCommon.Items.Add('First', -1, -1);
+  lItem.Add('FirstSub1', -1, -1);
+  lItem.Add('FirstSub2', -1, -1);
+  lItem.Add('FirstSub3', -1, -1);
+  lItem := listviewCommon.Items.Add('Second', -1, -1);
+  lItem.Add('SecSub1', -1, -1);
+  lItem := listviewCommon.Items.Add('Third', -1, -1);
+  lItem.Add('3rdSub1', -1, -1);
+  lItem := listviewCommon.Items.Add('Fourth', -1, -1);
+  lItem.Add('4thSub1', -1, -1);
+  lItem.Add('4thSub2', -1, -1);
 end;
 
 procedure TForm1.HandleClick(Sender: TObject);
