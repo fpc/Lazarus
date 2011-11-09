@@ -6,7 +6,7 @@ interface
 
 uses
   // RTL
-  Classes, SysUtils, Types,
+  Classes, SysUtils, Types, Math,
   // LazUtils
   lazutf8,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
@@ -103,6 +103,8 @@ const
   WIN2000_FRAME_LIGHT_GRAY = $00E2EFF1;
   WIN2000_FRAME_GRAY = $0099A8AC;
   WIN2000_FRAME_DARK_GRAY = $00646F71;
+
+  WIN2000_PROGRESSBAR_BLUE = $00C56A31;
 
   WIN2000_BTNFACE = $00D8E9EC;
 
@@ -518,6 +520,7 @@ begin
   lTextBottomSpacing := GetMeasures(TCDEDIT_BOTTOM_TEXT_SPACING);
 
   // The text without selection
+  ADest.Pen.Style := psClear;
   if AStateEx.SelLength = 0 then
   begin
     lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, lControlTextLen);
@@ -780,13 +783,12 @@ begin
   ADest.Brush.Style := bsSolid;
   ADest.Brush.Color := AStateEx.ParentRGBColor;
   ADest.Pen.Style := psClear;
-  ADest.Rectangle(Bounds(FCaptionMiddle, 0, lTextSize.cx, lTextSize.cy));
+  ADest.Rectangle(Bounds(FCaptionMiddle, 0, lTextSize.cx+5, lTextSize.cy));
 
   // paint text
   ADest.Pen.Style := psClear;
   ADest.Brush.Style := bsClear;
-  ADest.Font.Size := 10;
-  ADest.TextOut(FCaptionMiddle, 0, lCaption);
+  ADest.TextOut(FCaptionMiddle+3, 0, lCaption);
 end;
 
 procedure TCDDrawerCommon.DrawStaticText(ADest: TCanvas; ADestPos: TPoint;
@@ -882,8 +884,13 @@ begin
       Size(ASize.CX - 2, ASize.CY - 2));
 end;
 
+// Felipe: Smooth=False is not supported for now
 procedure TCDDrawerCommon.DrawProgressBar(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDProgressBarStateEx);
+var
+  lProgPos, lProgMult: TPoint;
+  lProgSize: TSize;
+  lProgWidth, i: Integer;
 begin
   // Inside area, there is no background because the control occupies the entire area
   ADest.Brush.Color := AStateEx.RGBColor;//WIN2000_FRAME_LIGHT_GRAY;
@@ -894,7 +901,46 @@ begin
   // The Frame
   DrawShallowSunkenFrame(ADest, ADestPos, ASize);
 
-  // The percentage indicator
+  // Preparations to have 1 code for all orientations
+  lProgSize := Size(ASize.cx-4, ASize.cy-4);
+  case AStateEx.Orientation of
+  pbHorizontal:
+  begin
+    lProgPos := Point(ADestPos.X+2, ADestPos.Y+2);
+    lProgMult := Point(1, 0);
+    lProgWidth := lProgSize.cx;
+  end;
+  pbVertical:
+  begin
+    lProgPos := Point(ADestPos.X+2, ADestPos.Y+ASize.cy-2);
+    lProgMult := Point(0, -1);
+    lProgWidth := lProgSize.cy;
+  end;
+  pbRightToLeft:
+  begin
+    lProgPos := Point(ADestPos.X+ASize.cx-2, ADestPos.Y+2);
+    lProgMult := Point(-1, 0);
+    lProgWidth := lProgSize.cx;
+  end;
+  pbTopDown:
+  begin
+    lProgPos := Point(ADestPos.X+2, ADestPos.Y+2);
+    lProgMult := Point(0, 1);
+    lProgWidth := lProgSize.cy;
+  end;
+  end;
+  lProgWidth := Round(lProgWidth * AStateEx.PercentPosition);
+
+  // Draws the filling
+  ADest.Pen.Color := WIN2000_PROGRESSBAR_BLUE;
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Color := WIN2000_PROGRESSBAR_BLUE;
+  ADest.Brush.Style := bsSolid;
+  ADest.Rectangle(
+    lProgPos.X,
+    lProgPos.Y,
+    lProgPos.X+lProgWidth*lProgMult.X+lProgSize.cx*Abs(lProgMult.Y),
+    lProgPos.Y+lProgWidth*lProgMult.Y+lProgSize.cy*Abs(lProgMult.X));
 end;
 
 procedure TCDDrawerCommon.DrawListView(ADest: TCanvas; ADestPos: TPoint;

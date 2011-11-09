@@ -128,8 +128,11 @@ type
 
   TCDProgressBarStateEx = class(TCDControlStateEx)
   public
-    PercentPosition: Double;
+    BarShowText: Boolean;
+    PercentPosition: Double; // a float between 0.0 and 1.0 (1=full)
     Orientation: TProgressBarOrientation;
+    Smooth: Boolean;
+    Style: TProgressBarStyle;
   end;
 
   // TCDListItems are implemented as a tree with 2 levels beyond the first node

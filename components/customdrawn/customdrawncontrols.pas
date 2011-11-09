@@ -322,16 +322,22 @@ type
   TCDProgressBar = class(TCDControl)
   private
     DragDropStarted: boolean;
+    FBarShowText: Boolean;
     // fields
     FMin: integer;
     FMax: integer;
     FOrientation: TProgressBarOrientation;
     FPosition: integer;
     FOnChange: TNotifyEvent;
-    procedure SetMax(Value: integer);
-    procedure SetMin(Value: integer);
+    FSmooth: Boolean;
+    FStyle: TProgressBarStyle;
+    procedure SetBarShowText(AValue: Boolean);
+    procedure SetMax(AValue: integer);
+    procedure SetMin(AValue: integer);
     procedure SetOrientation(AValue: TProgressBarOrientation);
-    procedure SetPosition(Value: integer);
+    procedure SetPosition(AValue: integer);
+    procedure SetSmooth(AValue: Boolean);
+    procedure SetStyle(AValue: TProgressBarStyle);
   protected
     FPBState: TCDProgressBarStateEx;
     function GetControlId: TCDControlID; override;
@@ -341,6 +347,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
+    property BarShowText: Boolean read FBarShowText write SetBarShowText;
     property Color;
     property DrawStyle;
     property Max: integer read FMax write SetMax default 10;
@@ -348,6 +355,8 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Orientation: TProgressBarOrientation read FOrientation write SetOrientation;// default prHorizontal;
     property Position: integer read FPosition write SetPosition;
+    property Smooth: Boolean read FSmooth write SetSmooth;
+    property Style: TProgressBarStyle read FStyle write SetStyle;
   end;
 
   { TCDListView }
@@ -581,24 +590,55 @@ end;
 
 { TCDProgressBar }
 
-procedure TCDProgressBar.SetMax(Value: integer);
+procedure TCDProgressBar.SetMax(AValue: integer);
 begin
-
+  if FMax=AValue then Exit;
+  FMax:=AValue;
+  Invalidate;
 end;
 
-procedure TCDProgressBar.SetMin(Value: integer);
+procedure TCDProgressBar.SetBarShowText(AValue: Boolean);
 begin
+  if FBarShowText=AValue then Exit;
+  FBarShowText:=AValue;
+  Invalidate;
+end;
 
+procedure TCDProgressBar.SetMin(AValue: integer);
+begin
+  if FMin=AValue then Exit;
+  FMin:=AValue;
+  Invalidate;
 end;
 
 procedure TCDProgressBar.SetOrientation(AValue: TProgressBarOrientation);
+var
+  lOldWidth: Integer;
 begin
-
+  if FOrientation=AValue then Exit;
+  FOrientation:=AValue;
+  Invalidate;
 end;
 
-procedure TCDProgressBar.SetPosition(Value: integer);
+procedure TCDProgressBar.SetPosition(AValue: integer);
 begin
+  if FPosition=AValue then Exit;
+  FPosition:=AValue;
+  Invalidate;
+end;
 
+procedure TCDProgressBar.SetSmooth(AValue: Boolean);
+begin
+  if FSmooth=AValue then Exit;
+  FSmooth:=AValue;
+  Invalidate;
+end;
+
+procedure TCDProgressBar.SetStyle(AValue: TProgressBarStyle);
+begin
+  if FStyle=AValue then Exit;
+  FStyle:=AValue;
+  Invalidate;
 end;
 
 function TCDProgressBar.GetControlId: TCDControlID;
@@ -615,8 +655,12 @@ end;
 procedure TCDProgressBar.PrepareControlStateEx;
 begin
   inherited PrepareControlStateEx;
-  if FMax <> FMin then FPBState.PercentPosition := (FPosition-FMin)*100/(FMax-FMin)
-  else FPBState.PercentPosition := 100.0;
+  if FMax <> FMin then FPBState.PercentPosition := (FPosition-FMin)/(FMax-FMin)
+  else FPBState.PercentPosition := 1.0;
+  FPBState.BarShowText := FBarShowText;
+  FPBState.Style := FStyle;
+  FPBState.Orientation := FOrientation;
+  FPBState.Smooth := FSmooth;
 end;
 
 constructor TCDProgressBar.Create(AOwner: TComponent);
@@ -624,6 +668,7 @@ begin
   inherited Create(AOwner);
   Width := 100;
   Height := 20;
+  FMax := 100;
   TabStop := False;
   PrepareCurrentDrawer();
 end;
@@ -1004,6 +1049,7 @@ procedure TCDEdit.DoExit;
 begin
   FCaretTimer.Enabled := False;
   FEditState.CaretIsVisible := False;
+  DoDeleteSelection();
   inherited DoExit;
 end;
 
@@ -1355,8 +1401,8 @@ begin
   if Value < FMin then FMax := FMin
   else FMax := Value;
 
-  PrepareControlStateEx;
-  Invalidate;
+  if not (csLoading in ComponentState) then
+    Invalidate;
 end;
 
 procedure TCDTrackBar.SetMin(Value: integer);
@@ -1366,8 +1412,8 @@ begin
   if Value > FMax then FMin := FMax
   else FMin := Value;
 
-  PrepareControlStateEx;
-  Invalidate;
+  if not (csLoading in ComponentState) then
+    Invalidate;
 end;
 
 procedure TCDTrackBar.SetOrientation(AValue: TTrackBarOrientation);
@@ -1387,16 +1433,20 @@ begin
 
   // Set the property and redraw
   FOrientation:=AValue;
-  PrepareControlStateEx;
-  Invalidate;
+  if not (csLoading in ComponentState) then
+    Invalidate;
 end;
 
 procedure TCDTrackBar.SetPosition(Value: integer);
 begin
   if Value = FPosition then Exit;
   FPosition := Value;
-  PrepareControlStateEx;
-  Invalidate;
+  // Don't do OnChange during loading
+  if not (csLoading in ComponentState) then
+  begin
+    if Assigned(OnChange) then OnChange(Self);
+    Invalidate;
+  end;
 end;
 
 function TCDTrackBar.GetPositionFromMousePos(X, Y: integer): integer;
