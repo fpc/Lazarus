@@ -25,6 +25,8 @@ const
 
   TCDRADIOBUTTON_CIRCLE_HEIGHT = $601;
 
+  TCDSCROLLBAR_BUTTON_WIDTH = $900;
+
   TCDTRACKBAR_LEFT_SPACING    = $1000;
   TCDTRACKBAR_RIGHT_SPACING   = $1001;
   TCDTRACKBAR_TOP_SPACING     = $1002;
@@ -82,12 +84,16 @@ type
     // for TCDCheckBox, TCDRadioButton
     csfOn,
     csfOff,
-    csfPartiallyOn
-{    // for TCDComboBox
-    csfDownArrow,
+    csfPartiallyOn,
+    // for TCDScrollBar, TCDProgressBar
+    csfHorizontal,
+    csfVertical,
+    csfRightToLeft,
+    csfTopDown
+    // for TCDComboBox
+{    csfDownArrow,
     // for tool button
     csfAutoRaise,
-    csfHorizontal,
     csfTop,
     csfBottom,
     csfFocusAtBorder,
@@ -127,18 +133,21 @@ type
     EventArrived: Boolean; // Added by event handlers and used by the caret so that it stops blinking while events are incoming
   end;
 
+  TCDScrollBarStateEx = class(TCDControlStateEx)
+  public
+    Position: Double; // between 0.0 and 1.0
+  end;
+
   TCDTrackBarStateEx = class(TCDControlStateEx)
   public
     PosCount: integer; // The number of positions, calculated as Max - Min + 1
     Position: integer; // A zero-based position, therefore it is = Position - Min
-    Orientation: TTrackBarOrientation;
   end;
 
   TCDProgressBarStateEx = class(TCDControlStateEx)
   public
     BarShowText: Boolean;
     PercentPosition: Double; // a float between 0.0 and 1.0 (1=full)
-    Orientation: TProgressBarOrientation;
     Smooth: Boolean;
     Style: TProgressBarStyle;
   end;
@@ -187,7 +196,7 @@ type
     cidControl,
     // Standard
     cidMenu, cidPopUp, cidButton, cidEdit, cidCheckBox, cidRadioButton,
-    cidListBox, cidComboBox, cidGroupBox,
+    cidListBox, cidComboBox, cidScrollBar, cidGroupBox,
     // Additional
     cidStaticText,
     // Common Controls
@@ -248,7 +257,7 @@ type
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
-    procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AOrientation: TTrackBarOrientation); virtual; abstract;
+    procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); virtual; abstract;
     // TCDButton
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
@@ -268,6 +277,9 @@ type
     procedure DrawRadioButtonCircle(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     procedure DrawRadioButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
+    // TCDScrollBar
+    procedure DrawScrollBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDGroupBox
     procedure DrawGroupBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -503,6 +515,7 @@ begin
   cidEdit:       DrawEdit(ADest, ADestPos, ASize, AState, TCDEditStateEx(AStateEx));
   cidCheckBox:   DrawCheckBox(ADest, ADestPos, ASize, AState, AStateEx);
   cidRadioButton:DrawRadioButton(ADest, ADestPos, ASize, AState, AStateEx);
+  cidScrollBar:  DrawScrollBar(ADest, ADestPos, ASize, AState, TCDScrollBarStateEx(AStateEx));
   cidGroupBox:   DrawGroupBox(ADest, ADestPos, ASize, AState, AStateEx);
   //
   cidStaticText: DrawStaticText(ADest, ADestPos, ASize, AState, AStateEx);

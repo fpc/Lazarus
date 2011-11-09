@@ -39,7 +39,7 @@ type
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
-    procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AOrientation: TTrackBarOrientation); override;
+    procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); override;
     // ===================================
     // Standard Tab
     // ===================================
@@ -62,6 +62,9 @@ type
     procedure DrawRadioButtonCircle(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     procedure DrawRadioButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+    // TCDScrollBar
+    procedure DrawScrollBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDGroupBox
     procedure DrawGroupBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -108,6 +111,8 @@ const
   WIN2000_FRAME_GRAY = $0099A8AC;
   WIN2000_FRAME_DARK_GRAY = $00646F71;
 
+  WIN2000_SCROLLBAR_BACKGROUND = $00ECF4F6;
+
   WIN2000_PROGRESSBAR_BLUE = $00C56A31;
 
   WIN2000_BTNFACE = $00D8E9EC;
@@ -135,6 +140,8 @@ begin
   TCDCHECKBOX_SQUARE_HEIGHT: Result := 15;
   //
   TCDRADIOBUTTON_CIRCLE_HEIGHT: Result := 15;
+  //
+  TCDSCROLLBAR_BUTTON_WIDTH: Result := 17;
   //
   TCDTRACKBAR_LEFT_SPACING: Result := 9;
   TCDTRACKBAR_RIGHT_SPACING: Result := 9;
@@ -322,7 +329,7 @@ begin
 end;
 
 procedure TCDDrawerCommon.DrawSlider(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize; AOrientation: TTrackBarOrientation);
+  ASize: TSize; AState: TCDControlState);
 var
   lPoints: array[0..4] of TPoint;
   lSliderBottom: Integer;
@@ -331,7 +338,7 @@ begin
   ADest.Brush.Style := bsSolid;
   ADest.Pen.Color := WIN2000_FRAME_WHITE;
 
-  if AOrientation = trHorizontal then
+  if csfHorizontal in AState then
   begin
     lSliderBottom := ADestPos.Y+ASize.CY;
     // outter white frame
@@ -763,6 +770,44 @@ begin
   ADest.TextOut(lCircleHeight+5, 0, AStateEx.Caption);
 end;
 
+procedure TCDDrawerCommon.DrawScrollBar(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+var
+  lPos: TPoint;
+  lSize: TSize;
+begin
+  // Background
+  ADest.Brush.Color := WIN2000_SCROLLBAR_BACKGROUND;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := WIN2000_SCROLLBAR_BACKGROUND;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  // Left/Top button
+  lPos := ADestPos;
+
+  if csfHorizontal in AState then
+    lSize := Size(GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH), ASize.CY)
+  else lSize := Size(ASize.CX, GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH));
+
+  ADest.Brush.Color := Palette.BtnFace;
+  ADest.Brush.Style := bsSolid;
+  ADest.Rectangle(Bounds(lPos.X, lPos.Y, lSize.cx, lSize.cy));
+  DrawRaisedFrame(ADest, lPos, lSize);
+
+  // Right/Bottom button
+  if csfHorizontal in AState then
+    lPos.X := lPos.X+ASize.CX-GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH)
+  else
+    lPos.Y := lPos.Y+ASize.CY-GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH);
+  ADest.Brush.Color := Palette.BtnFace;
+  ADest.Brush.Style := bsSolid;
+  ADest.Rectangle(Bounds(lPos.X, lPos.Y, lSize.cx, lSize.cy));
+  DrawRaisedFrame(ADest, lPos, lSize);
+
+  // The slider
+end;
+
 procedure TCDDrawerCommon.DrawGroupBox(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
@@ -832,7 +877,7 @@ var
   lSize, lMeasureSize: TSize;
 begin
   // The orientation i
-  if AStateEx.Orientation = trHorizontal then lMeasureSize := ASize
+  if csfHorizontal in AState then lMeasureSize := ASize
   else lMeasureSize := Size(ASize.CY, ASize.CX);
 
   CDBarSpacing := GetMeasures(TCDTRACKBAR_LEFT_SPACING) + GetMeasures(TCDTRACKBAR_RIGHT_SPACING);
@@ -851,7 +896,7 @@ begin
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
 
   // Draws the frame and its inner white area
-  if AStateEx.Orientation = trHorizontal then
+  if csfHorizontal in AState then
   begin
     lPoint := Point(ADestPos.X + GetMeasures(TCDTRACKBAR_LEFT_SPACING),
        ADestPos.Y + GetMeasures(TCDTRACKBAR_TOP_SPACING));
@@ -875,7 +920,7 @@ begin
   for i := 0 to StepsCount - 1 do
   begin
     ADest.Pen.Color := clBlack;
-    if AStateEx.Orientation = trHorizontal then
+    if csfHorizontal in AState then
       ADest.Line(lTickmarkLeft, lTickmarkTop, lTickmarkLeft, lTickmarkTop+3)
     else
       ADest.Line(lTickmarkTop, lTickmarkLeft, lTickmarkTop+3, lTickmarkLeft);
@@ -884,7 +929,7 @@ begin
     if i = AStateEx.Position then
       DrawSlider(ADest,
         Point(lTickmarkLeft-5, GetMeasures(TCDTRACKBAR_TOP_SPACING)-2),
-        Size(11, GetMeasures(TCDTRACKBAR_FRAME_HEIGHT)+5), AStateEx.Orientation);
+        Size(11, GetMeasures(TCDTRACKBAR_FRAME_HEIGHT)+5), AState);
 
     lTickmarkLeft := lTickmarkLeft + pStepWidth;
   end;
@@ -915,31 +960,28 @@ begin
 
   // Preparations to have 1 code for all orientations
   lProgSize := Size(ASize.cx-4, ASize.cy-4);
-  case AStateEx.Orientation of
-  pbHorizontal:
+  if csfHorizontal in AState then
   begin
     lProgPos := Point(ADestPos.X+2, ADestPos.Y+2);
     lProgMult := Point(1, 0);
     lProgWidth := lProgSize.cx;
-  end;
-  pbVertical:
+  end
+  else if csfVertical in AState then
   begin
     lProgPos := Point(ADestPos.X+2, ADestPos.Y+ASize.cy-2);
     lProgMult := Point(0, -1);
     lProgWidth := lProgSize.cy;
-  end;
-  pbRightToLeft:
+  end else if csfRightToLeft in AState then
   begin
     lProgPos := Point(ADestPos.X+ASize.cx-2, ADestPos.Y+2);
     lProgMult := Point(-1, 0);
     lProgWidth := lProgSize.cx;
-  end;
-  pbTopDown:
+  end
+  else
   begin
     lProgPos := Point(ADestPos.X+2, ADestPos.Y+2);
     lProgMult := Point(0, 1);
     lProgWidth := lProgSize.cy;
-  end;
   end;
   lProgWidth := Round(lProgWidth * AStateEx.PercentPosition);
 

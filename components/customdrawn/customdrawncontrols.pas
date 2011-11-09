@@ -145,8 +145,6 @@ type
     DragDropStarted: boolean;
     FCaretTimer: TTimer;
     FEditState: TCDEditStateEx; // Points to the same object as FStateEx, so don't Free!
-    function GetControlId: TCDControlID; override;
-    procedure CreateControlStateEx; override;
     procedure HandleCaretTimer(Sender: TObject);
     procedure DoDeleteSelection;
     procedure DoManageVisibleTextStart;
@@ -154,6 +152,8 @@ type
     procedure SetText(AValue: string);
     function MousePosToCaretPos(X, Y: Integer): TPoint;
   protected
+    function GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
     // keyboard
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -215,6 +215,33 @@ type
     property Checked: Boolean read GetChecked write SetChecked default False;
     property DrawStyle;
     property Caption;
+    property TabStop default True;
+  end;
+
+  { TCDScrollBar }
+
+  TCDScrollBar = class(TCDControl)
+  private
+    FMax: Integer;
+    FMin: Integer;
+    FPosition: Integer;
+    procedure SetMax(AValue: Integer);
+    procedure SetMin(AValue: Integer);
+    procedure SetPosition(AValue: Integer);
+  protected
+    FSBState: TCDScrollBarStateEx;
+    procedure RealSetText(const Value: TCaption); override; // to update on caption changes
+    function GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property DrawStyle;
+    property Max: Integer read FMax write SetMax;
+    property Min: Integer read FMin write SetMin;
+    property Position: Integer read FPosition write SetPosition;
     property TabStop default True;
   end;
 
@@ -1187,6 +1214,61 @@ begin
   inherited Destroy;
 end;
 
+{ TCDScrollBar }
+
+procedure TCDScrollBar.SetMax(AValue: Integer);
+begin
+  if FMax=AValue then Exit;
+  FMax:=AValue;
+end;
+
+procedure TCDScrollBar.SetMin(AValue: Integer);
+begin
+  if FMin=AValue then Exit;
+  FMin:=AValue;
+end;
+
+procedure TCDScrollBar.SetPosition(AValue: Integer);
+begin
+  if FPosition=AValue then Exit;
+  FPosition:=AValue;
+end;
+
+procedure TCDScrollBar.RealSetText(const Value: TCaption);
+begin
+  inherited RealSetText(Value);
+end;
+
+function TCDScrollBar.GetControlId: TCDControlID;
+begin
+  Result:= cidScrollBar;
+end;
+
+procedure TCDScrollBar.CreateControlStateEx;
+begin
+  FSBState := TCDScrollBarStateEx.Create;
+  FStateEx := FSBState;
+end;
+
+procedure TCDScrollBar.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+  if FMin < FMax then FSBState.Position := Position / (FMax - FMin)
+  else FSBState.Position := 1.0;
+end;
+
+constructor TCDScrollBar.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 121;
+  Height := 17;
+end;
+
+destructor TCDScrollBar.Destroy;
+begin
+  inherited Destroy;
+end;
+
 { TCDGroupBox }
 
 function TCDGroupBox.GetControlId: TCDControlID;
@@ -1342,7 +1424,10 @@ begin
   inherited PrepareControlStateEx;
   FTBState.PosCount := FMax - FMin + 1;
   FTBState.Position := FPosition - FMin;
-  FTBState.Orientation := FOrientation;
+  case FOrientation of
+  trHorizontal: FState := FState + [csfHorizontal] - [csfVertical, csfRightToLeft, csfTopDown];
+  trVertical: FState := FState + [csfVertical] - [csfHorizontal, csfRightToLeft, csfTopDown];
+  end;
 end;
 
 procedure TCDTrackBar.Changed;
@@ -1517,7 +1602,12 @@ begin
   else FPBState.PercentPosition := 1.0;
   FPBState.BarShowText := FBarShowText;
   FPBState.Style := FStyle;
-  FPBState.Orientation := FOrientation;
+  case FOrientation of
+  pbHorizontal:  FState := FState + [csfHorizontal] - [csfVertical, csfRightToLeft, csfTopDown];
+  pbVertical:    FState := FState + [csfVertical] - [csfHorizontal, csfRightToLeft, csfTopDown];
+  pbRightToLeft: FState := FState + [csfRightToLeft] - [csfVertical, csfHorizontal, csfTopDown];
+  pbTopDown:     FState := FState + [csfTopDown] - [csfVertical, csfRightToLeft, csfHorizontal];
+  end;
   FPBState.Smooth := FSmooth;
 end;
 
