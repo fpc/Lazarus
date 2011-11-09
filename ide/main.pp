@@ -9344,19 +9344,7 @@ begin
   end;
 
   // check if the project knows this file
-  if (not (ofRevert in Flags)) then begin
-    UnitIndex:=Project1.IndexOfFilename(AFilename);
-    UnknownFile := (UnitIndex < 0);
-    if not UnknownFile then begin
-      NewUnitInfo:=Project1.Units[UnitIndex];
-      if AEditorInfo <> nil then
-        NewEditorInfo := AEditorInfo
-      else if (ofProjectLoading in Flags) then
-        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
-      else
-        NewEditorInfo := NewUnitInfo.EditorInfo[0];
-    end;
-  end else begin
+  if (ofRevert in Flags) then begin
     // revert
     UnknownFile := False;
     NewEditorInfo := Project1.EditorInfoWithEditorComponent(
@@ -9372,6 +9360,18 @@ begin
       end;
       Result:=mrCancel;
       exit;
+    end;
+  end else begin
+    UnitIndex:=Project1.IndexOfFilename(AFilename);
+    UnknownFile := (UnitIndex < 0);
+    if not UnknownFile then begin
+      NewUnitInfo:=Project1.Units[UnitIndex];
+      if AEditorInfo <> nil then
+        NewEditorInfo := AEditorInfo
+      else if (ofProjectLoading in Flags) then
+        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
+      else
+        NewEditorInfo := NewUnitInfo.EditorInfo[0];
     end;
   end;
 
@@ -9420,7 +9420,20 @@ begin
     end;
 
     // load the source
-    if not UnknownFile then begin
+    if UnknownFile then begin
+      // open unknown file // Never happens if ofRevert
+      Handled:=false;
+      Result:=DoOpenUnknownFile(AFilename,Flags,NewUnitInfo,Handled);
+      if (Result<>mrOk) or Handled then exit;
+      // the file was previously unknown, use the default EditorInfo
+      if AEditorInfo <> nil then
+        NewEditorInfo := AEditorInfo
+      else
+      if NewUnitInfo <> nil then
+        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
+      else
+        NewEditorInfo := nil;
+    end else begin
       // project knows this file => all the meta data is known
       // -> just load the source
       NewUnitInfo:=Project1.Units[UnitIndex];
@@ -9441,20 +9454,6 @@ begin
       if FilenameIsPascalUnit(NewUnitInfo.Filename) then
         NewUnitInfo.ReadUnitNameFromSource(false);
       NewUnitInfo.Modified:=NewUnitInfo.Source.FileOnDiskNeedsUpdate;
-    end else begin
-      // open unknown file
-      // Never happens if ofRevert
-      Handled:=false;
-      Result:=DoOpenUnknownFile(AFilename,Flags,NewUnitInfo,Handled);
-      if (Result<>mrOk) or Handled then exit;
-      // the file was previously unknown, use the default EditorInfo
-      if AEditorInfo <> nil then
-        NewEditorInfo := AEditorInfo
-      else
-      if NewUnitInfo <> nil then
-        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
-      else
-        NewEditorInfo := nil;
     end;
 
     // check readonly
