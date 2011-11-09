@@ -91,30 +91,19 @@ implementation
  ------------------------------------------------------------------------------}
 class procedure TQtWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 var
-  ParentWidget: TQtWidget;
-  QtMenu: TQtMenu;
+  Widget: TQtWidget;
 begin
   if not WSCheckMenuItem(AMenuItem, 'AttachMenu') or (AMenuItem.Parent = nil) then
     Exit;
 
-  ParentWidget := TQtWidget(AMenuItem.Parent.Handle);
-  QtMenu := TQtMenu(AMenuItem.Handle);
-  if ParentWidget is TQtMenuBar then
-  begin
-    {$IFDEF QtMenuImages}
-    // With this code sub-menus stop working.
-    // On top-level menuitems only icon is shown, caption is lost.
-    TQtMenuBar(ParentWidget).addMenuWithIcon(QMenuH(QtMenu.Widget), AMenuItem);
-    {$ELSE}
-    TQtMenuBar(ParentWidget).addMenu(QMenuH(QtMenu.Widget));
-    // This also shows only the icons on top-level menuitems but at least sub-menus work.
-    if AMenuItem.HasIcon then
-      QtMenu.setImage(TQtImage(AMenuItem.Bitmap.Handle));
-    {$ENDIF}
-  end
+  Widget := TQtWidget(AMenuItem.Parent.Handle);
+  if Widget is TQtMenuBar then
+    TQtMenuBar(Widget).insertMenu(AMenuItem.Parent.VisibleIndexOf(AMenuItem),
+      QMenuH(TQtMenu(AMenuItem.Handle).Widget))
   else
-  if ParentWidget is TQtMenu then
-    TQtMenu(ParentWidget).insertMenu(AMenuItem.Parent.VisibleIndexOf(AMenuItem),QMenuH(QtMenu.Widget),AMenuItem);
+  if Widget is TQtMenu then
+    TQtMenu(Widget).insertMenu(AMenuItem.Parent.VisibleIndexOf(AMenuItem),
+      QMenuH(TQtMenu(AMenuItem.Handle).Widget), AMenuItem);
 end;
 
 class function TQtWSMenuItem.CreateMenuFromMenuItem(const AMenuItem: TMenuItem): TQtMenu;
@@ -133,15 +122,7 @@ begin
     Result.EndUpdate;
     Result.setShortcut(AMenuItem.ShortCut, AMenuItem.ShortCutKey2);
     if AMenuItem.HasIcon then
-    begin
-      // If the parent has no parent, then this item is directly owned by a TMenu
-      // In this case we have to detect if the parent is a TMainMenu or a TPopUpMenu
-      // because TMainMenu uses the special Handle QMenuBar while TPopUpMenu can be
-      // treat like if this menu item was a subitem of another item
-      if AMenuItem.Parent.HasParent or not (AMenuItem.GetParentMenu is TMainMenu) then
-        // If the parent has a parent, then that item's Handle is necessarely a TQtMenu
-        Result.setImage(TQtImage(AMenuItem.Bitmap.Handle));
-    end;
+      Result.setImage(TQtImage(AMenuItem.Bitmap.Handle));
   end;
 end;
 {------------------------------------------------------------------------------
@@ -163,25 +144,44 @@ begin
   {$endif}
   
   Menu := nil;
+
   {------------------------------------------------------------------------------
-    This case should not happen. A menu item must have a parent, but it seems LCL
+    This case should not happen. A menu item must have a parent, but it seams LCL
    will sometimes create a menu item prior to creating it's parent.
     So, if we arrive here, we must create this item as if it was a TMenu
    ------------------------------------------------------------------------------}
-  if not AMenuItem.HasParent then
+  if (not AMenuItem.HasParent) then
   begin
     {$ifdef VerboseQt}
       Write(' Parent: Menu without parent');
     {$endif}
+
     Result := TQtWSMenu.CreateHandle(AMenuItem.GetParentMenu);
   end
+  {------------------------------------------------------------------------------
+    If the parent has no parent, then this item is directly owned by a TMenu
+    In this case we have to detect if the parent is a TMainMenu or a TPopUpMenu
+   because TMainMenu uses the special Handle QMenuBar while TPopUpMenu can be
+   treat like if this menu item was a subitem of another item
+   ------------------------------------------------------------------------------}
+  else
+  if ((not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TMainMenu)) then
+  begin
+    Menu := CreateMenuFromMenuItem(AMenuItem);
+    Result := HMENU(Menu);
+  end
+  {------------------------------------------------------------------------------
+    If the parent has a parent, then that item's Handle is necessarely a TQtMenu
+   ------------------------------------------------------------------------------}
   else
   begin
     Menu := CreateMenuFromMenuItem(AMenuItem);
     Result := HMENU(Menu);
   end;
+  
   if Menu <> nil then
     Menu.AttachEvents;
+
   {$ifdef VerboseQt}
     WriteLn(' Result: ', dbghex(Result));
   {$endif}

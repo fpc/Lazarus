@@ -1447,14 +1447,11 @@ type
     FVisible: Boolean;
     FHeight: Integer;
     FIsApplicationMainMenu: Boolean;
-    procedure SetActions;
-    procedure ShowMenuBar;
   public
     constructor Create(const AParent: QWidgetH); overload;
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function addMenu(AMenu: QMenuH): QActionH;
-    procedure addMenuWithIcon(AMenu: QMenuH; AMenuItem: TMenuItem);
     function insertMenu(AIndex: Integer; AMenu: QMenuH): QActionH;
     function getGeometry: TRect; override;
   end;
@@ -4691,7 +4688,10 @@ end;
 
 function TQtWidget.GetWidget: QWidgetH;
 begin
-  Result := QWidgetH(TheObject)
+  if TheObject <> nil then
+    Result := QWidgetH(TheObject)
+  else
+    Result := nil;
 end;
 
 function TQtWidget.DeliverMessage(var Msg;
@@ -8814,7 +8814,8 @@ begin
     exit;
 
   {we must fire OnChange() if it isn''t editable
-   since SlotChange() fires only for editable comboboxes }
+   since SlotChange() fires only for editable
+   comboboxes }
   if not getEditable then
   begin
     FillChar(Msg, SizeOf(Msg), #0);
@@ -12279,7 +12280,8 @@ begin
   setVisible(FVisible);
 end;
 
-function TQtMenuBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+function TQtMenuBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -12287,23 +12289,35 @@ begin
     AssignQtFont(FWidgetDefaultFont.FHandle, QWidget_font(QWidgetH(Sender)));
 end;
 
-procedure TQtMenuBar.ShowMenuBar;
+function TQtMenuBar.addMenu(AMenu: QMenuH): QActionH;
 begin
   if not FVisible then
   begin
     FVisible := True;
     setVisible(FVisible);
   end;
+  Result := QMenuBar_addMenu(QMenuBarH(Widget), AMenu);
 end;
 
-procedure TQtMenuBar.SetActions;
+function TQtMenuBar.insertMenu(AIndex: Integer; AMenu: QMenuH): QActionH;
 var
-  WStr: WideString;
-  seq: QKeySequenceH;
-  i: Integer;
-  Action: QActionH;
+  actionBefore: QActionH;
   Actions: TPtrIntArray;
+  Action: QActionH;
+  i: Integer;
+  seq: QKeySequenceH;
+  WStr: WideString;
 begin
+  if not FVisible then
+  begin
+    FVisible := True;
+    setVisible(FVisible);
+  end;
+  actionBefore := getActionByIndex(AIndex);
+  if actionBefore <> nil then
+    Result := QMenuBar_insertMenu(QMenuBarH(Widget), actionBefore, AMenu)
+  else
+    Result := QMenuBar_addMenu(QMenuBarH(Widget), AMenu);
   if FIsApplicationMainMenu then
   begin
     QWidget_actions(Widget, @Actions);
@@ -12335,48 +12349,10 @@ begin
   end;
 end;
 
-function TQtMenuBar.addMenu(AMenu: QMenuH): QActionH;
-begin
-  ShowMenuBar;
-  Result := QMenuBar_addMenu(QMenuBarH(Widget), AMenu);
-  SetActions;
-end;
-
-procedure TQtMenuBar.addMenuWithIcon(AMenu: QMenuH; AMenuItem: TMenuItem);
-var
-  QtMenu: TQtMenu;
-  Image: TQtImage;
-  titl: WideString;
-begin
-  ShowMenuBar;
-  QtMenu := TQtMenu(AMenuItem.Handle);
-  if AMenuItem.HasIcon then begin
-    Image := TQtImage(AMenuItem.Bitmap.Handle);
-    QtMenu.FIcon := Image.AsIcon();
-  end
-  else
-    QtMenu.FIcon := QIcon_create();
-  titl := AMenuItem.Caption;
-  QMenuBar_addMenu(QMenuBarH(Widget), QtMenu.FIcon, @titl);
-  SetActions;
-end;
-
-function TQtMenuBar.insertMenu(AIndex: Integer; AMenu: QMenuH): QActionH;
-var
-  actionBefore: QActionH;
-begin
-  ShowMenuBar;
-  actionBefore := getActionByIndex(AIndex);
-  if actionBefore <> nil then
-    Result := QMenuBar_insertMenu(QMenuBarH(Widget), actionBefore, AMenu)
-  else
-    Result := QMenuBar_addMenu(QMenuBarH(Widget), AMenu);
-  SetActions;
-end;
-
 function TQtMenuBar.getGeometry: TRect;
 begin
   Result := inherited getGeometry;
+
   // workaround since after attaching menu it takes 0 height
   if Result.Bottom = 0 then
     Result.Bottom := FHeight;
