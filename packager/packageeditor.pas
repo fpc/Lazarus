@@ -530,9 +530,9 @@ begin
     end;
   end else begin
     Dependency:=GetCurrentDependency(Removed);
-    if (Dependency<>nil) and (Removed) then begin
+    if (Dependency<>nil) and Removed then begin
       // re-add dependency
-      if not CheckAddingDependency(LazPackage,Dependency) then exit;
+      if CheckAddingDependency(LazPackage,Dependency,false,true)<>mrOk then exit;
       LazPackage.RemoveRemovedDependency(Dependency);
       PackageGraph.AddDependencyToPackage(LazPackage,Dependency);
     end;

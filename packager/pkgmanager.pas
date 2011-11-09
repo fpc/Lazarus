@@ -287,7 +287,6 @@ type
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
     function GetPackageOfEditorItem(Sender: TObject): TIDEPackage; override;
 
-
     // package compilation
     function DoCompileProjectDependencies(AProject: TProject;
                                Flags: TPkgCompileFlags): TModalResult; override;
@@ -1901,7 +1900,7 @@ var
 begin
   Result:=mrCancel;
 
-  // check if there is dependency, that requires another version
+  // check if there is a dependency, that requires another version
   ConflictDependency:=PackageGraph.FindConflictRecursively(
     AProject.FirstRequiredDependency,APackage);
   if ConflictDependency<>nil then begin
@@ -1918,13 +1917,14 @@ begin
     Result:=mrOk;
     exit;
   end;
+
   ProvidingAPackage:=PackageGraph.FindPackageProvidingName(
     AProject.FirstRequiredDependency,APackage.Name);
   if ProvidingAPackage<>nil then
   begin
     // package is already provided by another package
     DebugLn(['TPkgManager.AddProjectDependency ',APackage.Name,' is already provided by ',ProvidingAPackage.IDAsString]);
-    Result:=mrCancel;
+    Result:=mrOk;
     exit;
   end;
 
@@ -2775,18 +2775,23 @@ var
   begin
     Result:=LoadAndParseUnitBuf;
     if Result<>mrOk then exit;
-    if not CodeToolBoss.FindUsedUnitNames(UnitBuf,MainUsesSection,
-      ImplementationUsesSection)
-    then begin
-      MainIDE.DoJumpToCodeToolBossError;
-      exit;
+    MainUsesSection:=nil;
+    ImplementationUsesSection:=nil;
+    try
+      if not CodeToolBoss.FindUsedUnitNames(UnitBuf,MainUsesSection,
+        ImplementationUsesSection)
+      then begin
+        MainIDE.DoJumpToCodeToolBossError;
+        exit;
+      end;
+      for i:=0 to MainUsesSection.Count-1 do begin
+        j:=UnitNames.IndexOf(MainUsesSection[i]);
+        if j>=0 then UnitNames.Delete(j);
+      end;
+    finally
+      MainUsesSection.Free;
+      ImplementationUsesSection.Free;
     end;
-    for i:=0 to MainUsesSection.Count-1 do begin
-      j:=UnitNames.IndexOf(MainUsesSection[i]);
-      if j>=0 then UnitNames.Delete(j);
-    end;
-    MainUsesSection.Free;
-    ImplementationUsesSection.Free;
     Result:=mrOk;
   end;
   
@@ -2855,8 +2860,7 @@ var
           AddProjectDependency(TProject(UnitOwner),RequiredPackage);
         end else if UnitOwner is TLazPackage then begin
           DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses Adding Package Dependency ',TLazPackage(UnitOwner).Name,' -> ',RequiredPackage.Name);
-          PackageGraph.AddDependencyToPackage(TLazPackage(UnitOwner),
-                                              RequiredPackage);
+          AddPackageDependency(TLazPackage(UnitOwner),RequiredPackage.Name);
         end;
       end;
     end;
@@ -3195,6 +3199,7 @@ var
   Item: TObject;
   NewDependency: TPkgDependency;
   ADependency: TPkgDependency;
+  r: TModalResult;
 begin
   if not OnlyTestIfPossible then begin
     Result:=AddDependencyToOwners(OwnerList,APackage,true);
@@ -3212,9 +3217,9 @@ begin
       NewDependency:=TPkgDependency.Create;
       try
         NewDependency.PackageName:=APackage.Name;
-        if not CheckAddingDependency(TLazPackage(Item),NewDependency) then
-          exit;
-        if not OnlyTestIfPossible then begin
+        r:=CheckAddingDependency(TLazPackage(Item),NewDependency,false,false);
+        if r=mrCancel then exit;
+        if (not OnlyTestIfPossible) and (r<>mrIgnore) then begin
           ADependency:=NewDependency;
           NewDependency:=nil;
           PackageGraph.AddDependencyToPackage(TLazPackage(Item),ADependency);
@@ -3464,7 +3469,7 @@ begin
   NewDependency:=TPkgDependency.Create;
   try
     NewDependency.PackageName:=ReqPackage;
-    if not CheckAddingDependency(APackage,NewDependency) then
+    if CheckAddingDependency(APackage,NewDependency,false,false)<>mrOk then
       exit;
     if not OnlyTestIfPossible then begin
       ADependency:=NewDependency;

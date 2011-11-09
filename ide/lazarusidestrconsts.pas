@@ -3342,6 +3342,7 @@ resourcestring
   lisProjAddThePackageNameIsInvalidPlaseChooseAnExistingPackag = 'The package '
     +'name %s%s%s is invalid.%sPlase choose an existing package.';
   lisProjAddDependencyAlreadyExists = 'Dependency already exists';
+  lisVersionMismatch = 'Version mismatch';
   lisProjAddTheProjectHasAlreadyADependency = 'The project has already a '
     +'dependency for the package %s%s%s.';
   lisProjAddPackageNotFound = 'Package not found';
