@@ -900,7 +900,7 @@ begin
   if AObject <> nil then
   begin
     //WriteLn('Delete object: ', PtrUInt(AObject));
-    AObject.Free;
+    FreeThenNil(AObject);
   end;
 
   Result := True;

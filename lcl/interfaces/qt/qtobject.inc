@@ -918,7 +918,7 @@ begin
     end;
   except
     DebugLn(['Gdi object: ', GDIObject, ' is not an object!']);
-    raise;
+    raise Exception.CreateFmt('TQtWidgetSet.IsValidGDIObject: %u is not valid object!',[PtrUInt(GdiObject)]);
   end;
 end;
 
