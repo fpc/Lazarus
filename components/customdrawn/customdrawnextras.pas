@@ -188,7 +188,7 @@ begin
     // Additional
     TCDStaticText,
     // Common Controls
-    TCDTrackBar, TCDPageControl, TCDTabControl]);
+    TCDTrackBar, TCDProgressBar, TCDListView, TCDPageControl, TCDTabControl]);
   RegisterComponentEditor(TCDPageControl, TCDPageControlEditor);
   RegisterComponentEditor(TCDTabSheet, TCDPageControlEditor);
   RegisterNoIcon([TCDTabSheet]);

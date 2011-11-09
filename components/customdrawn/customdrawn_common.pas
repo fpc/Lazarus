@@ -788,12 +788,8 @@ begin
 
   CDBarSpacing := GetMeasures(TCDTRACKBAR_LEFT_SPACING) + GetMeasures(TCDTRACKBAR_RIGHT_SPACING);
 
-  // Sanity check
-  if AStateEx.Max - AStateEx.Min <= 0 then
-    raise Exception.Create('[TCDDrawerCommon.DrawTrackBar] Max-Min must be at least 1');
-
   // Preparations
-  StepsCount := AStateEx.Max - AStateEx.Min + 1;
+  StepsCount := AStateEx.PosCount;
   if StepsCount > 0 then pStepWidth := (lMeasureSize.cx - CDBarSpacing) div (StepsCount-1)
   else pStepWidth := 0;
 
@@ -836,7 +832,7 @@ begin
       ADest.Line(lTickmarkTop, lTickmarkLeft, lTickmarkTop+3, lTickmarkLeft);
 
     // Draw the slider
-    if i + AStateEx.Min = AStateEx.Position then
+    if i = AStateEx.Position then
       DrawSlider(ADest,
         Point(lTickmarkLeft-5, GetMeasures(TCDTRACKBAR_TOP_SPACING)-2),
         Size(11, GetMeasures(TCDTRACKBAR_FRAME_HEIGHT)+5), AStateEx.Orientation);

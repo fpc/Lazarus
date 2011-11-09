@@ -348,17 +348,25 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Orientation: TProgressBarOrientation read FOrientation write SetOrientation;// default prHorizontal;
     property Position: integer read FPosition write SetPosition;
-    property TabStop default True;
   end;
 
   { TCDListView }
 
-(*  TCDListView = class(TCDControl)
+  TCDListView = class(TCDControl)
   private
     DragDropStarted: boolean;
     // fields
+    FColumns: TListColumns;
+    FIconOptions: TIconOptions;
+    FListItems: TCDListItems;
+    FProperties: TListViewProperties;
+    FViewStyle: TViewStyle;
+    function GetProperty(AIndex: Integer): Boolean;
+    procedure SetColumns(AValue: TListColumns);
+    procedure SetProperty(AIndex: Integer; AValue: Boolean);
+    procedure SetViewStyle(AValue: TViewStyle);
   protected
-    // keyboard
+{    // keyboard
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
@@ -369,16 +377,23 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
     procedure MouseEnter; override;
-    procedure MouseLeave; override;
+    procedure MouseLeave; override;}
+  protected
+    FLVState: TCDListViewStateEx;
+    function GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EraseBackground(DC: HDC); override;
-    procedure Paint; override;
   published
     property Color;
     property TabStop default True;
-  end;*)
+    property Columns: TListColumns read FColumns write SetColumns;
+    //property GridLines: Boolean index Ord(lvpGridLines) read GetProperty write SetProperty default False;
+    property Items: TCDListItems read FListItems;
+    property ViewStyle: TViewStyle read FViewStyle default vsList;
+  end;
 
   {TCDTabControl}
 
@@ -500,6 +515,65 @@ implementation
 resourcestring
   sTABSHEET_DEFAULT_NAME = 'CTabSheet';
 
+{ TCDListView }
+
+function TCDListView.GetProperty(AIndex: Integer): Boolean;
+begin
+
+end;
+
+procedure TCDListView.SetColumns(AValue: TListColumns);
+begin
+  if FColumns=AValue then Exit;
+  FColumns:=AValue;
+end;
+
+procedure TCDListView.SetProperty(AIndex: Integer; AValue: Boolean);
+begin
+
+end;
+
+procedure TCDListView.SetViewStyle(AValue: TViewStyle);
+begin
+  if FViewStyle=AValue then Exit;
+  FViewStyle:=AValue;
+end;
+
+function TCDListView.GetControlId: TCDControlID;
+begin
+  Result := cidListView;
+end;
+
+procedure TCDListView.CreateControlStateEx;
+begin
+  FLVState := TCDListViewStateEx.Create;
+  FStateEx := FLVState;
+end;
+
+procedure TCDListView.PrepareControlStateEx;
+begin
+  FLVState.Items := FListItems;
+  FLVState.Columns := FColumns;
+  FLVState.ViewStyle := FViewStyle;
+end;
+
+constructor TCDListView.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 250;
+  Height := 150;
+  FColumns := TListColumns.Create(nil);
+  FListItems := TCDListItems.Create();
+  TabStop := True;
+//  FProperties: TListViewProperties;
+//  FViewStyle: TViewStyle;
+end;
+
+destructor TCDListView.Destroy;
+begin
+  inherited Destroy;
+end;
+
 { TCDProgressBar }
 
 procedure TCDProgressBar.SetMax(Value: integer);
@@ -524,7 +598,7 @@ end;
 
 function TCDProgressBar.GetControlId: TCDControlID;
 begin
-  Result:=inherited GetControlId;
+  Result := cidProgressBar;
 end;
 
 procedure TCDProgressBar.CreateControlStateEx;
@@ -535,12 +609,15 @@ end;
 
 procedure TCDProgressBar.PrepareControlStateEx;
 begin
-//  FPBState.Min:=;
+  FPBState.PercentPosition := (FPosition-FMin)/FMax;
 end;
 
 constructor TCDProgressBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  Width := 100;
+  Height := 20;
+  TabStop := False;
 end;
 
 destructor TCDProgressBar.Destroy;
@@ -1266,7 +1343,10 @@ end;
 procedure TCDTrackBar.SetMax(Value: integer);
 begin
   if Value = FMax then Exit;
-  FMax := Value;
+  // Sanity check
+  if Value < FMin then FMax := FMin
+  else FMax := Value;
+
   PrepareControlStateEx;
   Invalidate;
 end;
@@ -1274,7 +1354,10 @@ end;
 procedure TCDTrackBar.SetMin(Value: integer);
 begin
   if Value = FMin then Exit;
-  FMin := Value;
+  // Sanity check
+  if Value > FMax then FMin := FMax
+  else FMin := Value;
+
   PrepareControlStateEx;
   Invalidate;
 end;
@@ -1350,9 +1433,8 @@ end;
 procedure TCDTrackBar.PrepareControlStateEx;
 begin
   inherited PrepareControlStateEx;
-  FTBState.Min := FMin;
-  FTBState.Max := FMax;
-  FTBState.Position := FPosition;
+  FTBState.PosCount := FMax - FMin + 1;
+  FTBState.Position := FPosition - FMin;
   FTBState.Orientation := FOrientation;
 end;
 

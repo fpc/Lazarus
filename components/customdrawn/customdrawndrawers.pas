@@ -121,18 +121,38 @@ type
 
   TCDTrackBarStateEx = class(TCDControlStateEx)
   public
-    Min: integer;
-    Max: integer;
-    Position: integer;
+    PosCount: integer; // The number of positions, calculated as Max - Min + 1
+    Position: integer; // A zero-based position, therefore it is = Position - Min
     Orientation: TTrackBarOrientation;
   end;
 
   TCDProgressBarStateEx = class(TCDControlStateEx)
   public
-    Min: integer;
-    Max: integer;
-    Position: integer;
+    PercentPosition: Double;
     Orientation: TProgressBarOrientation;
+  end;
+
+  // TCDListItems are implemented as a tree with 2 levels beyond the first node
+  TCDListItems = class
+  private
+    procedure DoFreeItem(data,arg:pointer);
+  public
+    // These fields are not used in the first node of the tree
+    Caption: string;
+    ImageIndex: Integer;
+    StateIndex: Integer;
+    //
+    Childs: TFPList;
+    constructor Create;
+    destructor Destroy; override;
+    function Add(ACaption: string; AImageIndex, AStateIndex: Integer): TCDListItems;
+  end;
+
+  TCDListViewStateEx = class(TCDControlStateEx)
+  public
+    Columns: TListColumns; // just a reference, never free
+    Items: TCDListItems; // just a reference, never free
+    ViewStyle: TViewStyle;
   end;
 
   TCDCTabControlStateEx = class(TCDControlStateEx)
@@ -150,22 +170,12 @@ type
   TCDControlID = (
     cidControl,
     // Standard
-    cidMenu,
-    cidPopUp,
-    cidButton,
-    cidEdit,
-    cidCheckBox,
-    cidRadioButton,
-    cidListBox,
-    cidComboBox,
-    cidGroupBox,
+    cidMenu, cidPopUp, cidButton, cidEdit, cidCheckBox, cidRadioButton,
+    cidListBox, cidComboBox, cidGroupBox,
     // Additional
     cidStaticText,
     // Common Controls
-    cidTrackBar,
-    cidProgressBar,
-    cidListView,
-    cidCTabControl
+    cidTrackBar, cidProgressBar, cidListView, cidCTabControl
     );
 
   TCDColorPalette = class
@@ -306,6 +316,36 @@ end;
 
 var
   i: Integer;
+
+{ TCDListItems }
+
+procedure TCDListItems.DoFreeItem(data, arg: pointer);
+begin
+  TCDListItems(data).Free;
+end;
+
+constructor TCDListItems.Create;
+begin
+  inherited Create;
+  Childs := TFPList.Create;
+end;
+
+destructor TCDListItems.Destroy;
+begin
+  Childs.ForEachCall(@DoFreeItem, nil);
+  Childs.Free;
+  inherited Destroy;
+end;
+
+function TCDListItems.Add(ACaption: string; AImageIndex, AStateIndex: Integer
+  ): TCDListItems;
+begin
+  Result := TCDListItems.Create;
+  Result.Caption := ACaption;
+  Result.ImageIndex := AImageIndex;
+  Result.StateIndex := AStateIndex;
+  Childs.Add(Pointer(Result));
+end;
 
 { TCDDrawer }
 
