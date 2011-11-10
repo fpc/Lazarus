@@ -672,7 +672,7 @@ type
   public
     property NoteBook: TCustomTabControl read FNoteBook;
   end;
-
+  {$define LCL_NEW_TABCONTROL}
   {$ifndef LCL_NEW_TABCONTROL}
 
   { TTabControl }
