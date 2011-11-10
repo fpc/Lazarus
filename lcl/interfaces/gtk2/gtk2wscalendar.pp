@@ -104,6 +104,8 @@ begin
     SetCallback(LM_YEARCHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
     SetCallback(LM_DAYCHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
   end;
+  g_signal_handlers_disconnect_by_func(PGtkObject(AWidgetInfo^.CoreWidget),
+      TGTKSignalFunc(@GtkDragDataReceived), AWidgetInfo^.LCLObject);
 end;
 
 class function TGtk2WSCustomCalendar.GetCalendar(const ACalendar: TCustomCalendar): PGtkCalendar; //inline;
