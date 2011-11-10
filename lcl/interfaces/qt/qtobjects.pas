@@ -2162,6 +2162,9 @@ begin
   Parent := nil;
   ParentPixmap := nil;
   FMetrics := nil;
+  SelFont := nil;
+  SelBrush := nil;
+  SelPen := nil;
 
   if AWidget = nil then
   begin
@@ -2194,6 +2197,9 @@ end;
 
 constructor TQtDeviceContext.CreatePrinterContext(ADevice: QPrinterH);
 begin
+  SelFont := nil;
+  SelBrush := nil;
+  SelPen := nil;
   FMetrics := nil;
   Parent := nil;
   Widget := QPainter_Create(ADevice);
@@ -2206,6 +2212,9 @@ end;
 
 constructor TQtDeviceContext.CreateFromPainter(APainter: QPainterH);
 begin
+  SelFont := nil;
+  SelBrush := nil;
+  SelPen := nil;
   FMetrics := nil;
   FRopMode := R2_COPYPEN;
   Widget := APainter;
@@ -2939,7 +2948,10 @@ begin
     if vFont <> nil then
     begin
       if vFont.FHandle <> nil then
+      begin
         QFont_destroy(vFont.FHandle);
+        vFont.FHandle := nil;
+      end;
     end;
     Result := vFont;
   end
