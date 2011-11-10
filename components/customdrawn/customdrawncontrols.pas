@@ -229,18 +229,23 @@ type
     FMax: Integer;
     FMin: Integer;
     FOnChange: TNotifyEvent;
+    FPageSize: Integer;
     FPosition: Integer;
     procedure SetMax(AValue: Integer);
     procedure SetMin(AValue: Integer);
+    procedure SetPageSize(AValue: Integer);
     procedure SetPosition(AValue: Integer);
     procedure DoClickButton(AButton: TCDControlState; ALargeChange: Boolean);
     procedure HandleBtnClickTimer(ASender: TObject);
   protected
     FSmallChange, FLargeChange: Integer;
+    FPCState: TCDPositionedCStateEx;
     function GetPositionFromMousePosWithMargins(X, Y, ALeftMargin, ARightMargin: Integer;
        AIsHorizontal, AAcceptMouseOutsideStrictArea: Boolean): integer;
     function GetPositionFromMousePos(X, Y: Integer): integer; virtual; abstract;
     function GetButtonFromMousePos(X, Y: Integer): TCDControlState; virtual;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
     // keyboard
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
     // mouse
@@ -248,6 +253,8 @@ type
       X, Y: integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+    //
+    property PageSize: Integer read FPageSize write SetPageSize;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -265,18 +272,17 @@ type
     FKind: TScrollBarKind;
     procedure SetKind(AValue: TScrollBarKind);
   protected
-    FSBState: TCDScrollBarStateEx;
     function GetPositionFromMousePos(X, Y: Integer): integer; override;
     function GetButtonFromMousePos(X, Y: Integer): TCDControlState; override;
     function GetControlId: TCDControlID; override;
-    procedure CreateControlStateEx; override;
-    procedure PrepareControlStateEx; override;
+    procedure PrepareControlState; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property DrawStyle;
     property Kind: TScrollBarKind read FKind write SetKind;
+    property PageSize;
     property TabStop default True;
   end;
 
@@ -336,11 +342,9 @@ type
     FOrientation: TTrackBarOrientation;
     procedure SetOrientation(AValue: TTrackBarOrientation);
   protected
-    FTBState: TCDTrackBarStateEx;
     function GetPositionFromMousePos(X, Y: Integer): integer; override;
     function GetControlId: TCDControlID; override;
-    procedure CreateControlStateEx; override;
-    procedure PrepareControlStateEx; override;
+    procedure PrepareControlState; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1249,6 +1253,13 @@ begin
   if not (csLoading in ComponentState) then Invalidate;
 end;
 
+procedure TCDPositionedControl.SetPageSize(AValue: Integer);
+begin
+  if FPageSize=AValue then Exit;
+  FPageSize:=AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
 procedure TCDPositionedControl.SetPosition(AValue: Integer);
 begin
   if FPosition=AValue then Exit;
@@ -1325,6 +1336,27 @@ begin
   Result := [];
 end;
 
+procedure TCDPositionedControl.CreateControlStateEx;
+begin
+  inherited CreateControlStateEx;
+  FPCState := TCDPositionedCStateEx.Create;
+  FStateEx := FPCState;
+end;
+
+procedure TCDPositionedControl.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+
+  if FMin < FMax then FPCState.FloatPos := FPosition / (FMax - FMin)
+  else FPCState.FloatPos := 0.0;
+
+  FPCState.PosCount := FMax - FMin + 1;
+  FPCState.Position := FPosition - FMin;
+
+  if FMin < FMax then FPCState.FloatPageSize := FPageSize / (FMax - FMin)
+  else FPCState.FloatPageSize := 1.0;
+end;
+
 procedure TCDPositionedControl.KeyDown(var Key: word; Shift: TShiftState);
 var
   NewPosition: Integer;
@@ -1358,7 +1390,7 @@ begin
   SetFocus;
   NewPosition := GetPositionFromMousePos(X, Y);
   DragDropStarted := True;
-  if NewPosition > 0 then Position := NewPosition;
+  if NewPosition >= 0 then Position := NewPosition;
 
   // Check if any buttons were clicked
   FButton := GetButtonFromMousePos(X, Y);
@@ -1465,18 +1497,9 @@ begin
   Result:= cidScrollBar;
 end;
 
-procedure TCDScrollBar.CreateControlStateEx;
+procedure TCDScrollBar.PrepareControlState;
 begin
-  FSBState := TCDScrollBarStateEx.Create;
-  FStateEx := FSBState;
-end;
-
-procedure TCDScrollBar.PrepareControlStateEx;
-begin
-  inherited PrepareControlStateEx;
-
-  if FMin < FMax then FSBState.Position := Position / (FMax - FMin)
-  else FSBState.Position := 1.0;
+  inherited PrepareControlState;
 
   if FKind = sbHorizontal then
     FState := FState + [csfHorizontal] - [csfVertical, csfRightToLeft, csfTopDown]
@@ -1573,7 +1596,7 @@ begin
     Invalidate;
 end;
 
-function TCDTrackBar.GetPositionFromMousePos(X, Y: integer): integer;
+function TCDTrackBar.GetPositionFromMousePos(X, Y: Integer): integer;
 var
   lLeftBorder, lRightBorder: Integer;
 begin
@@ -1588,17 +1611,9 @@ begin
   Result := cidTrackBar;
 end;
 
-procedure TCDTrackBar.CreateControlStateEx;
+procedure TCDTrackBar.PrepareControlState;
 begin
-  FTBState := TCDTrackBarStateEx.Create;
-  FStateEx := FTBState;
-end;
-
-procedure TCDTrackBar.PrepareControlStateEx;
-begin
-  inherited PrepareControlStateEx;
-  FTBState.PosCount := FMax - FMin + 1;
-  FTBState.Position := FPosition - FMin;
+  inherited PrepareControlState;
   case FOrientation of
   trHorizontal: FState := FState + [csfHorizontal] - [csfVertical, csfRightToLeft, csfTopDown];
   trVertical: FState := FState + [csfVertical] - [csfHorizontal, csfRightToLeft, csfTopDown];

@@ -65,7 +65,7 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDScrollBar
     procedure DrawScrollBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDScrollBarStateEx); override;
+      AState: TCDControlState; AStateEx: TCDPositionedCStateEx); override;
     // TCDGroupBox
     procedure DrawGroupBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
@@ -79,7 +79,7 @@ type
     // ===================================
     // TCDTrackBar
     procedure DrawTrackBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDTrackBarStateEx); override;
+      AState: TCDControlState; AStateEx: TCDPositionedCStateEx); override;
     // TCDProgressBar
     procedure DrawProgressBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDProgressBarStateEx); override;
@@ -775,7 +775,7 @@ begin
 end;
 
 procedure TCDDrawerCommon.DrawScrollBar(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDScrollBarStateEx);
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDPositionedCStateEx);
 var
   lPos: TPoint;
   lSize: TSize;
@@ -814,11 +814,23 @@ begin
   // The slider
   lPos := Point(0, 0);
   if csfHorizontal in AState then
+  begin
+    if AStateEx.FloatPageSize > 0 then lSize.cx := Round(
+      AStateEx.FloatPageSize * (ASize.cx - GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH) * 2));
+    if lSize.cx < 5 then lSize.cx := 5;
+
     lPos.X := Round(GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH)
-      + AStateEx.Position * (ASize.cx - GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH) * 3))
+      + AStateEx.FloatPos * (ASize.cx - GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH) * 2 - lSize.cx));
+  end
   else
+  begin
+    if AStateEx.FloatPageSize > 0 then lSize.cy := Round(
+      AStateEx.FloatPageSize * (ASize.cy - GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH) * 2));
+    if lSize.cy < 5 then lSize.cy := 5;
+
     lPos.Y := Round(GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH)
-      + AStateEx.Position * (ASize.cy - GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH) * 3));
+      + AStateEx.FloatPos * (ASize.cy - GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH) * 2 - lSize.cy));
+  end;
   ADest.Brush.Color := Palette.BtnFace;
   ADest.Brush.Style := bsSolid;
   ADest.Rectangle(Bounds(lPos.X, lPos.Y, lSize.cx, lSize.cy));
@@ -884,7 +896,7 @@ begin
 end;
 
 procedure TCDDrawerCommon.DrawTrackBar(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDTrackBarStateEx);
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDPositionedCStateEx);
 var
   StepsCount, i: Integer;
   lTickmarkLeft, lTickmarkTop: integer; // for drawing the decorative bars

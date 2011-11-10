@@ -140,15 +140,12 @@ type
     EventArrived: Boolean; // Added by event handlers and used by the caret so that it stops blinking while events are incoming
   end;
 
-  TCDScrollBarStateEx = class(TCDControlStateEx)
-  public
-    Position: Double; // between 0.0 and 1.0
-  end;
-
-  TCDTrackBarStateEx = class(TCDControlStateEx)
+  TCDPositionedCStateEx = class(TCDControlStateEx)
   public
     PosCount: integer; // The number of positions, calculated as Max - Min + 1
     Position: integer; // A zero-based position, therefore it is = Position - Min
+    FloatPos: Double; // The same position, but as a float between 0.0 and 1.0
+    FloatPageSize: Double; // The page size as a float between 0.0 and 1.0
   end;
 
   TCDProgressBarStateEx = class(TCDControlStateEx)
@@ -287,7 +284,7 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDScrollBar
     procedure DrawScrollBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDScrollBarStateEx); virtual; abstract;
+      AState: TCDControlState; AStateEx: TCDPositionedCStateEx); virtual; abstract;
     // TCDGroupBox
     procedure DrawGroupBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
@@ -303,7 +300,7 @@ type
     // ===================================
     // TCDTrackBar
     procedure DrawTrackBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDTrackBarStateEx); virtual; abstract;
+      AState: TCDControlState; AStateEx: TCDPositionedCStateEx); virtual; abstract;
     // TCDProgressBar
     procedure DrawProgressBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDProgressBarStateEx); virtual; abstract;
@@ -522,12 +519,12 @@ begin
   cidEdit:       DrawEdit(ADest, ADestPos, ASize, AState, TCDEditStateEx(AStateEx));
   cidCheckBox:   DrawCheckBox(ADest, ADestPos, ASize, AState, AStateEx);
   cidRadioButton:DrawRadioButton(ADest, ADestPos, ASize, AState, AStateEx);
-  cidScrollBar:  DrawScrollBar(ADest, ADestPos, ASize, AState, TCDScrollBarStateEx(AStateEx));
+  cidScrollBar:  DrawScrollBar(ADest, ADestPos, ASize, AState, TCDPositionedCStateEx(AStateEx));
   cidGroupBox:   DrawGroupBox(ADest, ADestPos, ASize, AState, AStateEx);
   //
   cidStaticText: DrawStaticText(ADest, ADestPos, ASize, AState, AStateEx);
   //
-  cidTrackBar:   DrawTrackBar(ADest, ADestPos, ASize, AState, TCDTrackBarStateEx(AStateEx));
+  cidTrackBar:   DrawTrackBar(ADest, ADestPos, ASize, AState, TCDPositionedCStateEx(AStateEx));
   cidProgressBar:DrawProgressBar(ADest, ADestPos, ASize, AState, TCDProgressBarStateEx(AStateEx));
   cidListView:   DrawListView(ADest, ADestPos, ASize, AState, TCDListViewStateEx(AStateEx));
   cidCTabControl:DrawCTabControl(ADest, ADestPos, ASize, AState, TCDCTabControlStateEx(AStateEx));

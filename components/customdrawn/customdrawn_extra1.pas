@@ -23,7 +23,7 @@ type
     // Common Controls Tab
     // ===================================
     procedure DrawTrackBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDTrackBarStateEx); override;
+      AState: TCDControlState; AStateEx: TCDPositionedCStateEx); override;
   end;
 {  TCDButtonDrawerGrad = class(TCDButtonDrawer)
   public
@@ -120,7 +120,7 @@ begin
 end;
 
 procedure TCDDrawerExtra1.DrawTrackBar(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDTrackBarStateEx);
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDPositionedCStateEx);
 var
   lDrawingBottom, StepsCount, i: Integer;
   pStart, pEnd: integer; // for drawing the decorative bars
