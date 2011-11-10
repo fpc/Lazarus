@@ -76,8 +76,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
   end;
 
   // ===================================
@@ -459,6 +458,7 @@ type
     property Columns: TListColumns read FColumns write SetColumns;
     //property GridLines: Boolean index Ord(lvpGridLines) read GetProperty write SetProperty default False;
     property Items: TCDListItems read FListItems;
+    property ScrollBars;
     property ShowColumnHeader: Boolean read FShowColumnHeader write SetShowColumnHeader default True;
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle default vsList;
   end;
@@ -590,7 +590,7 @@ begin
   if FScrollBars=AValue then Exit;
   FScrollBars:=AValue;
 
-{  if AValue = ssNone then
+  if AValue = ssNone then
   begin
     FSpacer.Visible := False;
     FRightScrollBar.Visible := False;
@@ -616,36 +616,50 @@ begin
   begin
     FSpacer.Visible := True;
 
-    FBottomScrollBar.BorderSpacing.Bottom := 0;
-    FBottomScrollBar.Align := alRight;
-    FBottomScrollBar.Visible := True;
+    // alRight and alBottom seam to work differently, so here we don't need the spacing
+    FRightScrollBar.BorderSpacing.Bottom := 0;
+    FRightScrollBar.Align := alRight;
+    FRightScrollBar.Visible := True;
 
-    FBottomScrollBar := TCDScrollBar.Create(nil);
-    FBottomScrollBar.Kind := bsHorizontal;
-    FBottomScrollBar.Parent := Self;
+    // Enough spacing to fit the FSpacer
+    FBottomScrollBar.BorderSpacing.Right := FBottomScrollBar.Height;
     FBottomScrollBar.Align := alBottom;
     FBottomScrollBar.Visible := True;
-  end;}
+  end;
 end;
 
 constructor TCDScrollableControl.Create(AOwner: TComponent);
+var
+  lWidth: Integer;
 begin
   inherited Create(AOwner);
 
-  {FSpacer := TCDControl.Create(nil);
-  FSpacer.Parent := Self;
-
   FRightScrollBar := TCDScrollBar.Create(nil);
-  FBottomScrollBar.Kind := bsVertical;
+  FRightScrollBar.Kind := sbVertical;
+  FRightScrollBar.Visible := False;
   FRightScrollBar.Parent := Self;
-  FRightScrollBar.Visible := True;
+  // Invert the dimensions because they are not automatically inverted in Loading state
+  lWidth := FRightScrollBar.Width;
+  FRightScrollBar.Width := FRightScrollBar.Height;
+  FRightScrollBar.Height := lWidth;
 
   FBottomScrollBar := TCDScrollBar.Create(nil);
-  FBottomScrollBar.Kind := bsHorizontal;
+  FBottomScrollBar.Kind := sbHorizontal;
+  FBottomScrollBar.Visible := False;
   FBottomScrollBar.Parent := Self;
-  FBottomScrollBar.Visible := True;
 
-  SetScrollBars(ssBoth);}
+  FSpacer := TCDControl.Create(nil);
+  PrepareCurrentDrawer();
+  FSpacer.Color := FDrawer.Palette.BtnFace;
+  FSpacer.Visible := False;
+  FSpacer.Parent := Self;
+  FSpacer.Width := FRightScrollBar.Width;
+  FSpacer.Height := FBottomScrollBar.Height;
+  FSpacer.AnchorSide[akRight].Control := Self;
+  FSpacer.AnchorSide[akRight].Side := asrBottom;
+  FSpacer.AnchorSide[akBottom].Control := Self;
+  FSpacer.AnchorSide[akBottom].Side := asrBottom;
+  FSpacer.Anchors := [akRight, akBottom];
 end;
 
 destructor TCDScrollableControl.Destroy;
@@ -1885,6 +1899,8 @@ begin
 //  FViewStyle: TViewStyle;
 
   PrepareCurrentDrawer();
+
+  ScrollBars := ssBoth;
 end;
 
 destructor TCDListView.Destroy;

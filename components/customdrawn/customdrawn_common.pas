@@ -41,6 +41,9 @@ type
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); override;
     procedure DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState); override;
+    // TCDControl
+    procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // ===================================
     // Standard Tab
     // ===================================
@@ -438,6 +441,20 @@ begin
   ADest.Pen.Style := psSolid;
   ADest.Pen.Color := clBlack;
   ADest.Polygon(lPoints);
+end;
+
+procedure TCDDrawerCommon.DrawControl(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+var
+  lColor: TColor;
+begin
+  // Background
+  lColor := AStateEx.RGBColor;
+  ADest.Brush.Color := lColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := lColor;
+  ADest.FillRect(0, 0, ASize.cx, ASize.cy);
 end;
 
 procedure TCDDrawerCommon.DrawButton(ADest: TCanvas; ADestPos: TPoint;
@@ -968,7 +985,8 @@ var
   StepsCount, i: Integer;
   lTickmarkLeft, lTickmarkTop: integer; // for drawing the decorative bars
   dRect: TRect;
-  pStepWidth, CDBarSpacing: Integer;
+  CDBarSpacing: Integer;
+  pStepWidth, lTickmarkLeftFloat: Double;
   lPoint: TPoint;
   lSize, lMeasureSize: TSize;
 begin
@@ -980,8 +998,8 @@ begin
 
   // Preparations
   StepsCount := AStateEx.PosCount;
-  if StepsCount > 0 then pStepWidth := (lMeasureSize.cx - CDBarSpacing) div (StepsCount-1)
-  else pStepWidth := 0;
+  if StepsCount > 0 then pStepWidth := (lMeasureSize.cx - CDBarSpacing) / (StepsCount-1)
+  else pStepWidth := 0.0;
 
   // Background
 
@@ -1011,6 +1029,7 @@ begin
 
   // Draws the tickmarks and also the slider button
   lTickmarkLeft := GetMeasures(TCDTRACKBAR_LEFT_SPACING);
+  lTickmarkLeftFloat := lTickmarkLeft;
   lTickmarkTop := GetMeasures(TCDTRACKBAR_TOP_SPACING) + GetMeasures(TCDTRACKBAR_FRAME_HEIGHT)+5;
   ADest.Pen.Style := psSolid;
   for i := 0 to StepsCount - 1 do
@@ -1027,7 +1046,8 @@ begin
         Point(lTickmarkLeft-5, GetMeasures(TCDTRACKBAR_TOP_SPACING)-2),
         Size(11, GetMeasures(TCDTRACKBAR_FRAME_HEIGHT)+5), AState);
 
-    lTickmarkLeft := lTickmarkLeft + pStepWidth;
+    lTickmarkLeftFloat := lTickmarkLeftFloat + pStepWidth;
+    lTickmarkLeft := Round(lTickmarkLeftFloat);
   end;
 
   // Draw the focus

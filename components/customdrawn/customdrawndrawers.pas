@@ -262,6 +262,9 @@ type
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); virtual; abstract;
     procedure DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState); virtual; abstract;
+    // TCDControl
+    procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDButton
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
@@ -515,6 +518,8 @@ procedure TCDDrawer.DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
     );
 begin
   case AControl of
+  cidControl:    DrawControl(ADest, ADestPos, ASize, AState, AStateEx);
+  //
   cidButton:     DrawButton(ADest, ADestPos, ASize, AState, AStateEx);
   cidEdit:       DrawEdit(ADest, ADestPos, ASize, AState, TCDEditStateEx(AStateEx));
   cidCheckBox:   DrawCheckBox(ADest, ADestPos, ASize, AState, AStateEx);
