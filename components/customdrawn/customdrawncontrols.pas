@@ -224,6 +224,7 @@ type
   private
     DragDropStarted: boolean;
     FButton: TCDControlState; // the button currently being clicked
+    FBtnClickTimer: TTimer;
     // fields
     FMax: Integer;
     FMin: Integer;
@@ -232,7 +233,8 @@ type
     procedure SetMax(AValue: Integer);
     procedure SetMin(AValue: Integer);
     procedure SetPosition(AValue: Integer);
-    procedure DoClickButton(AButton: TCDControlState);
+    procedure DoClickButton(AButton: TCDControlState; ALargeChange: Boolean);
+    procedure HandleBtnClickTimer(ASender: TObject);
   protected
     FSmallChange, FLargeChange: Integer;
     function GetPositionFromMousePosWithMargins(X, Y, ALeftMargin, ARightMargin: Integer;
@@ -248,6 +250,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   published
     property Max: Integer read FMax write SetMax;
     property Min: Integer read FMin write SetMin;
@@ -1262,10 +1265,24 @@ begin
   end;
 end;
 
-procedure TCDPositionedControl.DoClickButton(AButton: TCDControlState);
+procedure TCDPositionedControl.DoClickButton(AButton: TCDControlState; ALargeChange: Boolean);
+var
+  lChange: Integer;
 begin
-  if csfLeftArrow in AButton then Position := Position - FSmallChange
-  else if csfRightArrow in AButton then Position := Position + FSmallChange;
+  if ALargeChange then lChange := FLargeChange
+  else lChange := FSmallChange;
+  if csfLeftArrow in AButton then Position := Position - lChange
+  else if csfRightArrow in AButton then Position := Position + lChange;
+end;
+
+procedure TCDPositionedControl.HandleBtnClickTimer(ASender: TObject);
+var
+  lButton: TCDControlState;
+  lMousePos: TPoint;
+begin
+  lMousePos := ScreenToClient(Mouse.CursorPos);
+  lButton := GetButtonFromMousePos(lMousePos.X, lMousePos.Y);
+  if lButton = FButton then DoClickButton(FButton, True);
 end;
 
 function TCDPositionedControl.GetPositionFromMousePosWithMargins(X, Y,
@@ -1346,7 +1363,11 @@ begin
   // Check if any buttons were clicked
   FButton := GetButtonFromMousePos(X, Y);
   FState := FState + FButton;
-  DoClickButton(FButton);
+  if FButton <> [] then
+  begin
+    DoClickButton(FButton, False);
+    FBtnClickTimer.Enabled := True;
+  end;
 
   inherited MouseDown(Button, Shift, X, Y);
 end;
@@ -1367,6 +1388,7 @@ procedure TCDPositionedControl.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: integer);
 begin
   DragDropStarted := False;
+  FBtnClickTimer.Enabled := False;
   FState := FState - [csfLeftArrow, csfRightArrow];
   Invalidate;
   inherited MouseUp(Button, Shift, X, Y);
@@ -1380,6 +1402,16 @@ begin
   FMin := 0;
   FMax := 10;
   FPosition := 0;
+  FBtnClickTimer := TTimer.Create(nil);
+  FBtnClickTimer.Enabled := False;
+  FBtnClickTimer.Interval := 100;
+  FBtnClickTimer.OnTimer := @HandleBtnClickTimer;
+end;
+
+destructor TCDPositionedControl.Destroy;
+begin
+  FBtnClickTimer.Free;
+  inherited Destroy;
 end;
 
 { TCDScrollBar }
@@ -1407,23 +1439,25 @@ var
   lCoord, lLeftBtnPos, lRightBtnPos: Integer;
 begin
   Result := [];
-  lLeftBtnPos := TCDSCROLLBAR_LEFT_BUTTON_POS;
-  lRightBtnPos := TCDSCROLLBAR_RIGHT_BUTTON_POS;
+  lLeftBtnPos := FDrawer.GetMeasures(TCDSCROLLBAR_LEFT_BUTTON_POS);
+  lRightBtnPos := FDrawer.GetMeasures(TCDSCROLLBAR_RIGHT_BUTTON_POS);
   if FKind = sbHorizontal then
   begin
     lCoord := X;
     if lLeftBtnPos < 0 then lLeftBtnPos := Width + lLeftBtnPos;
-    if lRightBtnPos < 0 then lRightBtnPos := Width + lLeftBtnPos;
+    if lRightBtnPos < 0 then lRightBtnPos := Width + lRightBtnPos;
   end
   else
   begin
     lCoord := Y;
     if lLeftBtnPos < 0 then lLeftBtnPos := Height + lLeftBtnPos;
-    if lRightBtnPos < 0 then lRightBtnPos := Height + lLeftBtnPos;
+    if lRightBtnPos < 0 then lRightBtnPos := Height + lRightBtnPos;
   end;
 
-  if (lCoord > lLeftBtnPos) and (lCoord < lLeftBtnPos + TCDSCROLLBAR_BUTTON_WIDTH) then Result := [csfLeftArrow]
-  else if (lCoord > lRightBtnPos) and (lCoord < lRightBtnPos + TCDSCROLLBAR_BUTTON_WIDTH) then Result := [csfRightArrow];
+  if (lCoord > lLeftBtnPos) and (lCoord < lLeftBtnPos +
+    FDrawer.GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH)) then Result := [csfLeftArrow]
+  else if (lCoord > lRightBtnPos) and (lCoord < lRightBtnPos +
+    FDrawer.GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH)) then Result := [csfRightArrow];
 end;
 
 function TCDScrollBar.GetControlId: TCDControlID;

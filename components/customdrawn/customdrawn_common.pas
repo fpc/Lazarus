@@ -797,7 +797,8 @@ begin
   ADest.Brush.Color := Palette.BtnFace;
   ADest.Brush.Style := bsSolid;
   ADest.Rectangle(Bounds(lPos.X, lPos.Y, lSize.cx, lSize.cy));
-  DrawRaisedFrame(ADest, lPos, lSize);
+  if csfLeftArrow in AState then DrawSunkenFrame(ADest, lPos, lSize)
+  else DrawRaisedFrame(ADest, lPos, lSize);
 
   // Right/Bottom button
   if csfHorizontal in AState then
@@ -807,7 +808,8 @@ begin
   ADest.Brush.Color := Palette.BtnFace;
   ADest.Brush.Style := bsSolid;
   ADest.Rectangle(Bounds(lPos.X, lPos.Y, lSize.cx, lSize.cy));
-  DrawRaisedFrame(ADest, lPos, lSize);
+  if csfRightArrow in AState then DrawSunkenFrame(ADest, lPos, lSize)
+  else DrawRaisedFrame(ADest, lPos, lSize);
 
   // The slider
   lPos := Point(0, 0);
