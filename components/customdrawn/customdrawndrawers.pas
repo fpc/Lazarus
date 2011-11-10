@@ -94,13 +94,12 @@ type
     csfVertical,
     csfRightToLeft,
     csfTopDown,
-    // for TCDProgressBar
+    // for TCDProgressBar, TCDScrollBar, TCDComboBox
     csfLeftArrow,
     csfRightArrow,
-    // for TCDComboBox
-    csfDownArrow
-{    csfUpArrow
-    // for tool button
+    csfDownArrow,
+    csfUpArrow
+{    // for tool button
     csfAutoRaise,
     csfTop,
     csfBottom,
@@ -262,6 +261,7 @@ type
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); virtual; abstract;
+    procedure DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState); virtual; abstract;
     // TCDButton
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;

@@ -40,6 +40,7 @@ type
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); override;
+    procedure DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState); override;
     // ===================================
     // Standard Tab
     // ===================================
@@ -396,6 +397,47 @@ begin
     ADest.LineTo(lSliderBottom-5, ADestPos.X+10);
     ADest.LineTo(ADestPos.Y-1, ADestPos.X+10);
   end;
+end;
+
+procedure TCDDrawerCommon.DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint;
+  ADirection: TCDControlState);
+var
+  lPoints: array[0..2] of TPoint;
+  lPos: TPoint;
+begin
+  lPos := ADestPos;
+  // Move the arrow a little bit when a sunken state is passed
+  if csfSunken in ADirection then lPos := Point(lPos.X+1, lPos.Y+1);
+
+  if csfLeftArrow in ADirection then
+  begin
+    lPoints[0] := Point(lPos.X,   lPos.Y+3);// left point
+    lPoints[1] := Point(lPos.X+3, lPos.Y+6);// lower point
+    lPoints[2] := Point(lPos.X+3, lPos.Y);  // upper point
+  end
+  else if csfRightArrow in ADirection then
+  begin
+    lPoints[0] := Point(lPos.X+1, lPos.Y);  // upper point
+    lPoints[1] := Point(lPos.X+1, lPos.Y+6);// lower point
+    lPoints[2] := Point(lPos.X+4, lPos.Y+3);// right point
+  end
+  else if csfUpArrow in ADirection then
+  begin
+    lPoints[0] := Point(lPos.X+3, lPos.Y);  // upper point
+    lPoints[1] := Point(lPos.X,   lPos.Y+3);// left point
+    lPoints[2] := Point(lPos.X+6, lPos.Y+3);// right point
+  end
+  else // downArrow
+  begin
+    lPoints[0] := Point(lPos.X,   lPos.Y+1);// left point
+    lPoints[1] := Point(lPos.X+6, lPos.Y+1);// right point
+    lPoints[2] := Point(lPos.X+3, lPos.Y+4);// lower point
+  end;
+  ADest.Brush.Style := bsSolid;
+  ADest.Brush.Color := clBlack;
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := clBlack;
+  ADest.Polygon(lPoints);
 end;
 
 procedure TCDDrawerCommon.DrawButton(ADest: TCanvas; ADestPos: TPoint;
@@ -779,6 +821,7 @@ procedure TCDDrawerCommon.DrawScrollBar(ADest: TCanvas; ADestPos: TPoint;
 var
   lPos: TPoint;
   lSize: TSize;
+  lArrowState: TCDControlState;
 begin
   // Background
   ADest.Brush.Color := WIN2000_SCROLLBAR_BACKGROUND;
@@ -797,8 +840,20 @@ begin
   ADest.Brush.Color := Palette.BtnFace;
   ADest.Brush.Style := bsSolid;
   ADest.Rectangle(Bounds(lPos.X, lPos.Y, lSize.cx, lSize.cy));
-  if csfLeftArrow in AState then DrawSunkenFrame(ADest, lPos, lSize)
-  else DrawRaisedFrame(ADest, lPos, lSize);
+  if csfLeftArrow in AState then
+  begin
+    DrawSunkenFrame(ADest, lPos, lSize);
+    lArrowState := [csfSunken];
+  end
+  else
+  begin
+    DrawRaisedFrame(ADest, lPos, lSize);
+    lArrowState := [];
+  end;
+
+  if csfHorizontal in AState then
+    DrawCompactArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfLeftArrow]+lArrowState)
+  else DrawCompactArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfUpArrow]+lArrowState);
 
   // Right/Bottom button
   if csfHorizontal in AState then
@@ -808,8 +863,20 @@ begin
   ADest.Brush.Color := Palette.BtnFace;
   ADest.Brush.Style := bsSolid;
   ADest.Rectangle(Bounds(lPos.X, lPos.Y, lSize.cx, lSize.cy));
-  if csfRightArrow in AState then DrawSunkenFrame(ADest, lPos, lSize)
-  else DrawRaisedFrame(ADest, lPos, lSize);
+  if csfRightArrow in AState then
+  begin
+    DrawSunkenFrame(ADest, lPos, lSize);
+    lArrowState := [csfSunken];
+  end
+  else
+  begin
+    DrawRaisedFrame(ADest, lPos, lSize);
+    lArrowState := [];
+  end;
+
+  if csfHorizontal in AState then
+    DrawCompactArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfRightArrow] + lArrowState)
+  else DrawCompactArrow(ADest, Point(lPos.X+5, lPos.Y+5), [csfDownArrow] + lArrowState);
 
   // The slider
   lPos := Point(0, 0);

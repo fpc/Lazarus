@@ -63,6 +63,23 @@ type
   end;
   TCDControlClass = class of TCDControl;
 
+  TCDScrollBar = class;
+
+  { TCDScrollableControl }
+
+  TCDScrollableControl = class(TCDControl)
+  private
+    FRightScrollBar, FBottomScrollBar: TCDScrollBar;
+    FSpacer: TCDControl;
+    FScrollBars: TScrollStyle;
+    procedure SetScrollBars(AValue: TScrollStyle);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
+  end;
+
   // ===================================
   // Standard Tab
   // ===================================
@@ -400,7 +417,7 @@ type
 
   { TCDListView }
 
-  TCDListView = class(TCDControl)
+  TCDListView = class(TCDScrollableControl)
   private
     DragDropStarted: boolean;
     // fields
@@ -565,6 +582,76 @@ implementation
 
 resourcestring
   sTABSHEET_DEFAULT_NAME = 'CTabSheet';
+
+{ TCDScrollableControl }
+
+procedure TCDScrollableControl.SetScrollBars(AValue: TScrollStyle);
+begin
+  if FScrollBars=AValue then Exit;
+  FScrollBars:=AValue;
+
+{  if AValue = ssNone then
+  begin
+    FSpacer.Visible := False;
+    FRightScrollBar.Visible := False;
+    FBottomScrollBar.Visible := False;
+  end
+  else if AValue in [ssHorizontal, ssAutoHorizontal] then
+  begin
+    FSpacer.Visible := False;
+    FRightScrollBar.Visible := False;
+    FBottomScrollBar.BorderSpacing.Bottom := 0;
+    FBottomScrollBar.Align := alRight;
+    FBottomScrollBar.Visible := True;
+  end
+  else if AValue in [ssVertical, ssAutoVertical] then
+  begin
+    FSpacer.Visible := False;
+    FRightScrollBar.BorderSpacing.Bottom := 0;
+    FRightScrollBar.Align := alRight;
+    FRightScrollBar.Visible := True;
+    FBottomScrollBar.Visible := False;
+  end
+  else // ssBoth, ssAutoBoth
+  begin
+    FSpacer.Visible := True;
+
+    FBottomScrollBar.BorderSpacing.Bottom := 0;
+    FBottomScrollBar.Align := alRight;
+    FBottomScrollBar.Visible := True;
+
+    FBottomScrollBar := TCDScrollBar.Create(nil);
+    FBottomScrollBar.Kind := bsHorizontal;
+    FBottomScrollBar.Parent := Self;
+    FBottomScrollBar.Align := alBottom;
+    FBottomScrollBar.Visible := True;
+  end;}
+end;
+
+constructor TCDScrollableControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  {FSpacer := TCDControl.Create(nil);
+  FSpacer.Parent := Self;
+
+  FRightScrollBar := TCDScrollBar.Create(nil);
+  FBottomScrollBar.Kind := bsVertical;
+  FRightScrollBar.Parent := Self;
+  FRightScrollBar.Visible := True;
+
+  FBottomScrollBar := TCDScrollBar.Create(nil);
+  FBottomScrollBar.Kind := bsHorizontal;
+  FBottomScrollBar.Parent := Self;
+  FBottomScrollBar.Visible := True;
+
+  SetScrollBars(ssBoth);}
+end;
+
+destructor TCDScrollableControl.Destroy;
+begin
+  inherited Destroy;
+end;
 
 { TCDControl }
 
