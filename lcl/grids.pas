@@ -11058,10 +11058,10 @@ end;
 
 procedure TGridColumns.InsertColumn(Index: Integer);
 begin
-  BeginUpdate;
+  FGrid.BeginUpdate;
   Add;
   MoveColumn(Count-1, Index);
-  EndUpdate;
+  FGrid.EndUpdate;
 end;
 
 constructor TGridColumns.Create(AGrid: TCustomGrid;
