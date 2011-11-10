@@ -1368,11 +1368,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCloseEvent.Sender">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCloseEvent.CloseAction">
         <short/>
       </element>
@@ -1382,47 +1380,39 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCloseQueryEvent.Sender">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCloseQueryEvent.CanClose">
         <short/>
       </element>
       <!-- function type Visibility: default -->
       <element name="THelpEvent">
-        <short/>
+        <short>Type of an application OnHelp handler.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="THelpEvent.Result">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="THelpEvent.Command">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="THelpEvent.Data">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="THelpEvent.CallHelp">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TDropFilesEvent">
-        <short/>
+        <short>Type of an application OnDropFiles handler[?]</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TDropFilesEvent.Sender">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TDropFilesEvent.FileNames">
         <short/>
       </element>
@@ -1432,11 +1422,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <descr/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TShortCutEvent.Msg">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TShortCutEvent.Handled">
         <short/>
       </element>
@@ -5313,13 +5301,9 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.DesktopRect">
-        <short>The origin and total extent of the desktop, spanning all monitors.
+        <short>The total extent of the desktop, spanning all monitors.
         </short>
         <descr>
-          <remark>
-            The Right field contains the <b>width</b>,
-            the Bottom field the <b>height</b> of the desktop.
-          </remark>
         </descr>
         <seealso>
         </seealso>
@@ -5464,7 +5448,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.WorkAreaHeight" link="TScreen.WorkareaRect">
-        <short>The usable height on the primary monitor.</short>
+        <short>The usable height of the primary monitor.</short>
         <descr>
         </descr>
         <seealso>
@@ -5497,7 +5481,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TScreen.WorkAreaWidth" link="TScreen.WorkareaRect">
-        <short>The usable width on the primary monitor.</short>
+        <short>The usable width of the primary monitor.</short>
         <descr>
         </descr>
         <seealso>
@@ -5505,16 +5489,17 @@ When the form is put into another control the window borders depend on the widge
       </element>
 <!-- procedure type Visibility: default -->
       <element name="TQueryEndSessionEvent">
-        <short/>
+        <short>The type of an <link id="TApplication.OnQueryEndSession"/> handler.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TQueryEndSessionEvent.Cancel">
-        <short/>
+        <short>Set Cancel to True to prevent an logoff.</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TExceptionEvent">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -5526,7 +5511,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TGetHandleEvent">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <seealso>
@@ -5537,7 +5522,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TIdleEvent">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -5549,7 +5534,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TOnUserInputEvent">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -5561,13 +5546,14 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TDataEvent">
-        <short/>
+        <short>The type of an asynchronous callback method.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.QueueAsyncCall"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TDataEvent.Data">
-        <short/>
+        <short>The argument passed to the method.</short>
       </element>
       <!-- record type Visibility: default -->
       <element name="TCMHintShow">
@@ -5577,7 +5563,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- variable Visibility: default -->
       <element name="TCMHintShow.Msg">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -5601,7 +5587,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- record type Visibility: default -->
       <element name="TCMHintShowPause">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -5629,13 +5615,12 @@ When the form is put into another control the window borders depend on the widge
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration type Visibility: default -->
+<!-- enumeration type Visibility: default -->
       <element name="TAppHintTimerType">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
-<!-- enumeration value Visibility: default -->
       <element name="TAppHintTimerType.ahttNone">
         <short/>
       </element>
@@ -5650,41 +5635,35 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TShowHintEvent">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TShowHintEvent.HintStr">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TShowHintEvent.CanShow">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TShowHintEvent.HintInfo">
         <short/>
       </element>
-      <!-- record type Visibility: default -->
+<!-- record type Visibility: default -->
       <element name="THintInfoAtMouse">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="THintInfoAtMouse.MousePos">
         <short/>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="THintInfoAtMouse.Control">
         <short/>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="THintInfoAtMouse.ControlHasHint">
         <short/>
         <descr/>
@@ -5692,219 +5671,246 @@ When the form is put into another control the window borders depend on the widge
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TApplicationFlag">
-        <short/>
+        <short>Application state flags.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TApplicationFlag.AppWaiting">
-        <short/>
+        <short>In Idle state[?]</short>
       </element>
       <element name="TApplicationFlag.AppIdleEndSent">
-        <short/>
+        <short>IdleEnd handlers have been notified[?]</short>
       </element>
       <element name="TApplicationFlag.AppHandlingException">
-        <short/>
+        <short>In exception handling[?]</short>
       </element>
       <element name="TApplicationFlag.AppNoExceptionMessages">
-        <short/>
+        <short>Suppress [or Panic on?] further exceptions[?]</short>
       </element>
       <element name="TApplicationFlag.AppActive">
-        <short>application has focus</short>
+        <short>Application has the focus.</short>
       </element>
       <element name="TApplicationFlag.AppDestroying">
-        <short/>
+        <short>Shutting down[?]</short>
       </element>
       <element name="TApplicationFlag.AppDoNotCallAsyncQueue">
-        <short/>
+        <short>Skip asynchronous callbacks between handling messages[?]</short>
       </element>
       <element name="TApplicationFlag.AppInitialized">
-        <short>initialization of application was done</short>
+        <short>Application has been initialized.</short>
       </element>
       <!-- set type Visibility: default -->
       <element name="TApplicationFlags" link="TApplicationFlag"/>
 <!-- enumeration type Visibility: default -->
       <element name="TApplicationNavigationOption">
-        <short/>
+        <short>Which keys can be used for the navigation within a form[?]
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TApplicationNavigationOption.anoTabToSelectNext">
-        <short/>
+        <short>The Tab key moves the Focus to the next (or previous) control in TabOrder.
+        </short>
       </element>
       <element name="TApplicationNavigationOption.anoReturnForDefaultControl">
-        <short/>
+        <short>The Enter key triggers the default action.
+        </short>
       </element>
       <element name="TApplicationNavigationOption.anoEscapeForCancelControl">
-        <short/>
+        <short>The Escape key triggers the Cancel action.
+        </short>
       </element>
       <element name="TApplicationNavigationOption.anoF1ForHelp">
-        <short/>
+        <short>The F1 key brings up context sensitive help.
+        </short>
       </element>
       <element name="TApplicationNavigationOption.anoArrowToSelectNextInParent">
-        <short></short>
+        <short>The Arrow keys move the focus.[?]
+        </short>
       </element>
       <!-- set type Visibility: default -->
       <element name="TApplicationNavigationOptions" link="TApplicationNavigationOption"/>
 <!-- enumeration type Visibility: default -->
       <element name="TApplicationHandlerType">
-        <short/>
+        <short>Types of Application notification handlers.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TApplicationHandlerType.ahtIdle">
-        <short/>
+        <short>Application becoming idle[?]</short>
       </element>
       <element name="TApplicationHandlerType.ahtIdleEnd">
-        <short/>
+        <short>Application becoming busy[?]</short>
       </element>
       <element name="TApplicationHandlerType.ahtKeyDownBefore">
-        <short>before interface and LCL</short>
+        <short>Handler for KeyDown events, invoked before interface and LCL handlers[?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtKeyDownAfter">
-        <short>after interface and LCL</short>
+        <short>Default handler for KeyDown events, invoked after interface and LCL handlers[?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtActivate">
-        <short/>
+        <short>Handler invoked on
+          application activated[?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtDeactivate">
-        <short/>
+        <short>Handler invoked on
+          application deactivated[?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtUserInput">
-        <short/>
+        <short>Handler invoked on
+          user input [what's this?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtException">
-        <short/>
+        <short>Handler invoked on
+          unhandled[?] exception.
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtEndSession">
-        <short/>
+        <short>Handler invoked on
+          session end [what's this?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtQueryEndSession">
-        <short/>
+        <short>Handler invoked before
+          session ends[?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtMinimize">
-        <short/>
+        <short>Handler invoked on
+          application minimized[what's this?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtModalBegin">
-        <short></short>
+        <short>Handler invoked on
+          application entering modal state[?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtModalEnd">
-        <short></short>
+        <short>Handler invoked on
+          application exiting modal state[?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtRestore">
-        <short/>
+        <short>Handler invoked on
+          application restored (from minimized state)[?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtDropFiles">
-        <short/>
+        <short>Handler invoked on
+          files dropped[?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtHelp">
-        <short/>
+        <short>Handler invoked on
+          F1 key (help request)[?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtHint">
-        <short/>
+        <short>Handler invoked on
+          Hint request[?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtShowHint">
-        <short/>
+        <short>Handler invoked on
+          Hint becoming visible[?]
+        </short>
       </element>
       <element name="TApplicationHandlerType.ahtGetMainFormHandle">
-        <short></short>
+        <short>Handler providing the Handle of the main form[?] [application/taskbar window?]
+        </short>
       </element>
 <!-- pointer type Visibility: default -->
-      <element name="PAsyncCallQueueItem">
-        <short/>
+      <element name="PAsyncCallQueueItem" link="TAsyncCallQueueItem">
+        <short>A queued asynchronous callback request node.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- record type Visibility: default -->
+<!-- record type Visibility: default -->
       <element name="TAsyncCallQueueItem">
-        <short/>
+        <short>A queued asynchronous callback request node.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.QueueAsyncCall"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TAsyncCallQueueItem.Method">
-        <short/>
+        <short>The callback method.</short>
         <descr/>
-        <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TAsyncCallQueueItem.Data">
-        <short/>
+        <short>The method call argument.</short>
         <descr/>
-        <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TAsyncCallQueueItem.NextItem">
-        <short/>
+        <short>The next list node.</short>
         <descr/>
-        <seealso/>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TAsyncCallQueueItem.PrevItem">
-        <short></short>
+        <short>The preceding list node.
+          [superfluous, could be removed?]
+        </short>
         <descr>
         </descr>
-        <seealso>
-        </seealso>
       </element>
-      <!-- record type Visibility: default -->
+<!-- record type Visibility: default -->
       <element name="TAsyncCallQueue">
-        <short></short>
+        <short>The queue head for asynchronous callbacks.</short>
         <descr>
         </descr>
         <seealso>
+          <link id="TApplication.QueueAsyncCall"/>
         </seealso>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TAsyncCallQueue.Top">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The first queued method.</short>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TAsyncCallQueue.Last">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The last queued method.</short>
       </element>
-      <!-- record type Visibility: default -->
+<!-- record type Visibility: default -->
       <element name="TAsyncCallQueues">
-        <short></short>
+        <short>Management information for asynchronous callbacks.</short>
         <descr>
+          <p>
+            Two queues are used:
+          </p><p>
+            New calls are added to the Next queue.
+          </p><p>
+            When the application starts processing the calls,
+            the Next queue becomes the Cur queue, and a new Next queue is created.
+            This simplifies thread-safe addition of further calls.
+          </p>
         </descr>
         <seealso>
+          <link id="TApplication.QueueAsyncCall"/>
         </seealso>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TAsyncCallQueues.CritSec">
-        <short></short>
+        <short>The critical section for adding and removing queue elements.
+        </short>
         <descr>
         </descr>
-        <seealso>
-        </seealso>
       </element>
-      <!-- variable Visibility: default -->
       <element name="TAsyncCallQueues.Cur">
-        <short></short>
+        <short>The currently processed queue. Processed entries are removed.
+        </short>
         <descr>
         </descr>
-        <seealso>
-        </seealso>
       </element>
       <!-- variable Visibility: default -->
       <element name="TAsyncCallQueues.Next">
-        <short></short>
+        <short>New calls are added to this queue.</short>
         <descr>
         </descr>
-        <seealso>
-        </seealso>
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TApplicationType">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -5922,8 +5928,8 @@ When the form is put into another control the window borders depend on the widge
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TApplicationShowGlyphs">
-        <short>
-          <var>TApplicationShowGlyphs</var> - enumerated type to describe the glyphs showing rule - whether to show them always, never or depends on system settings</short>
+        <short>How glyphs are shown [on Button or Tab controls, and menus?]
+        </short>
         <descr>
           <p>sbgAlways - show glyphs always (inspite of system preferences)</p>
           <p>sbgNever - show glyphs never (inspite of system preferences)</p>
@@ -5931,44 +5937,52 @@ When the form is put into another control the window borders depend on the widge
         </descr>
       </element>
       <element name="TApplicationShowGlyphs.sbgAlways">
-        <short>show them always (default)</short>
+        <short>Show glyphs always.</short>
       </element>
       <element name="TApplicationShowGlyphs.sbgNever">
-        <short>show them never</short>
+        <short>Show glyphs never.</short>
       </element>
       <element name="TApplicationShowGlyphs.sbgSystem">
-        <short>show them depending on OS</short>
+        <short>Show glyphs according to the platform default.</short>
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TTaskBarBehavior">
-        <short></short>
+        <short>How forms are represented in the TaskBar[?]</short>
         <descr>
         </descr>
         <seealso>
         </seealso>
       </element>
       <element name="TTaskBarBehavior.tbDefault">
-        <short>widgetset dependent</short>
+        <short>Show TaskBar buttons according to the platform default.</short>
       </element>
       <element name="TTaskBarBehavior.tbMultiButton">
-        <short>show buttons for Forms with ShowTaskBar = stDefault</short>
+        <short>Show buttons for Forms with ShowInTaskBar=stDefault.</short>
       </element>
       <element name="TTaskBarBehavior.tbSingleButton">
-        <short>hide buttons for Forms with ShowTaskBar = stDefault</short>
+        <short>Hide buttons for Forms with ShowInTaskBar=stDefault.</short>
       </element>
 <!-- object Visibility: default -->
       <element name="TApplication">
-        <short>
-          <var>TApplication</var> - the whole current program, described as an object</short>
+        <short>Application management and configuration for a GUI application.
+        </short>
         <descr>
-          <p>Includes the useful function <var>MessageBox</var>, a simple dialog intended for displaying error messages internally, but available as an alternative to the various Message Dialogs</p>
+          <p>
+            Provides a message loop, hooks for application event handlers, and more.
+          </p><p>
+            Includes the useful function <var>MessageBox</var>,
+            a simple dialog intended for displaying error messages,
+            but also usable as an alternative to the various Message Dialogs.
+          </p>
         </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FApplicationHandlers">
-        <short/>
+        <short>Holds the registered event handlers.</short>
         <descr/>
         <seealso/>
       </element>
@@ -5976,16 +5990,17 @@ When the form is put into another control the window borders depend on the widge
       <element name="TApplication.FApplicationType" link="TApplication.ApplicationType"/>
       <!-- variable Visibility: private -->
       <element name="TApplication.FAsyncCall">
-        <short></short>
+        <short>Queues for asynchronous calls.</short>
         <descr>
         </descr>
         <seealso>
+          <link id="TApplication.QueueAsyncCall"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FBidiMode" link="TApplication.BiDiMode"/>
       <element name="TApplication.FBigIconHandle">
-        <short></short>
+        <short>The Handle of the big application icon.</short>
         <descr>
         </descr>
         <seealso>
@@ -5995,21 +6010,24 @@ When the form is put into another control the window borders depend on the widge
       <element name="TApplication.FCaptureExceptions" link="TApplication.CaptureExceptions"/>
       <!-- variable Visibility: private -->
       <element name="TApplication.FComponentsReleasing">
-        <short></short>
+        <short>The list of components which currently are released (destroyed).</short>
         <descr>
         </descr>
         <seealso>
+          <link id="TApplication.Release"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FComponentsToRelease">
-        <short/>
+        <short>The list of components marked for release.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.Release"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FCreatingForm">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -6023,10 +6041,11 @@ When the form is put into another control the window borders depend on the widge
       <element name="TApplication.FHintHidePausePerChar" link="TApplication.HintHidePausePerChar"/>
       <element name="TApplication.FHintPause" link="TApplication.HintPause"/>
       <element name="TApplication.FHintRect">
-        <short></short>
+        <short>The screen area of the current Hint window[?]</short>
         <descr>
         </descr>
         <seealso>
+          <link id="TApplication.Hint"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -6034,62 +6053,66 @@ When the form is put into another control the window borders depend on the widge
       <element name="TApplication.FHintShortPause" link="TApplication.HintShortPause"/>
       <!-- variable Visibility: private -->
       <element name="TApplication.FHintTimer">
-        <short/>
+        <short>The timer for showing and hiding Hints[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FHintTimerType">
-        <short/>
+        <short>The Hint time mode[?]</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.Hint"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FHintWindow">
-        <short/>
+        <short>The current Hint window[?]</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.Hint"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FIcon" link="TApplication.Icon"/>
       <element name="TApplication.FIdleLockCount">
-        <short/>
+        <short>Counter for nested Idle locks, preventing execution of OnIdle handlers[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FLastKeyDownKey">
-        <short/>
+        <short>Cached key event parameter[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FLastKeyDownSender">
-        <short/>
+        <short>Cached key event parameter[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FLastKeyDownShift">
-        <short/>
+        <short>Cached key event parameter[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FLastMouseControl">
-        <short/>
+        <short>Cached mouse event parameter[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FLastMouseControlValid">
-        <short/>
+        <short>Cached mouse event parameter[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FLastMousePos">
-        <short/>
+        <short>Cached mouse event parameter[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -6101,13 +6124,13 @@ When the form is put into another control the window borders depend on the widge
       <element name="TApplication.FNavigation" link="TApplication.Navigation"/>
       <!-- variable Visibility: private -->
       <element name="TApplication.FOldExceptProc">
-        <short/>
+        <short>The previously installed exception handler[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FOldExitProc">
-        <short/>
+        <short>The previously installed Exit procedure[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -6133,8 +6156,8 @@ When the form is put into another control the window borders depend on the widge
       <element name="TApplication.FOnShowHint" link="TApplication.OnShowHint"/>
       <element name="TApplication.FOnUserInput" link="TApplication.OnUserInput"/>
       <element name="TApplication.FRestoreStayOnTop">
-        <short></short>
-        <descr>
+        <short>The list of all forms that should be restored to StayOnTop.</short>
+        <descr>The list is created in RemoveStayOnTop, processed in RestoreStayOnTop.
         </descr>
         <seealso>
         </seealso>
@@ -6146,7 +6169,7 @@ When the form is put into another control the window borders depend on the widge
       <element name="TApplication.FShowMenuGlyphs" link="TApplication.ShowMenuGlyphs"/>
       <!-- variable Visibility: private -->
       <element name="TApplication.FSmallIconHandle">
-        <short></short>
+        <short>The Handle of the small application icon.</short>
         <descr>
         </descr>
         <seealso>
@@ -6156,9 +6179,8 @@ When the form is put into another control the window borders depend on the widge
       <element name="TApplication.FTaskBarBehavior" link="TApplication.TaskBarBehavior"/>
       <!-- procedure Visibility: private -->
       <element name="TApplication.DoOnIdleEnd">
-        <short/>
+        <short>Notifies the OnIdleEnd handlers; called when the application exits Idle state.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: private -->
@@ -6168,7 +6190,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- function Visibility: private -->
       <element name="TApplication.GetCurrentHelpFile">
-        <short/>
+        <short>Searches for an HelpFile name in the active form, then in Application.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6178,7 +6200,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- function Visibility: private -->
       <element name="TApplication.GetExename">
-        <short/>
+        <short>[Useless, drop!?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6188,12 +6210,12 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- function Visibility: private -->
       <element name="TApplication.GetMainFormHandle">
-        <short></short>
+        <short>Determines the main form handle, using all available handlers.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TApplication.OnGetMainFormHandle"/>
+          <link id="TApplicationHandlerType.ahtOnGetMainFormHandle"/>
         </seealso>
       </element>
       <element name="TApplication.GetMainFormHandle.Result">
@@ -6201,7 +6223,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- function Visibility: private -->
       <element name="TApplication.GetTitle">
-        <short/>
+        <short>When no Title was stored, extracts the program name from the commandline arguments.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6211,7 +6233,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.FreeIconHandles">
-        <short></short>
+        <short>Reloads the (new) application icons, notifies the widgetset and all forms.</short>
         <descr>
         </descr>
         <errors>
@@ -6221,7 +6243,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.IconChanged">
-        <short/>
+        <short>Loads the new application icons, notifies the widgetset and all forms.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6266,7 +6288,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.UpdateMouseControl">
-        <short/>
+        <short>Handles mouse moving onto a new control.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6276,16 +6298,15 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.UpdateMouseHint">
-        <short></short>
+        <short>Sets Hint to the (new) hint that applies to CurrentControl.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TApplication.Hint"/>
         </seealso>
       </element>
       <element name="TApplication.UpdateMouseHint.CurrentControl">
-        <short></short>
+        <short>The control under the mouse.</short>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.SetCaptureExceptions" link="TApplication.CaptureExceptions"/>
@@ -6314,24 +6335,25 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.StopHintTimer">
-        <short/>
+        <short>Disables the Hint timer.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: private -->
       <element name="TApplication.ValidateHelpSystem">
-        <short/>
+        <short>Checks for an installed <link id="#lcl.HelpIntfs.HelpManager">HelpManager</link>.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TApplication.ValidateHelpSystem.Result">
-        <short/>
+        <short>True when HelpManager is not Nil.</short>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.WndProc">
-        <short/>
+        <short>Here: handles CM_ACTIONEXECUTE and CM_ACTIONUPDATE messages.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6341,14 +6363,14 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- function Visibility: private -->
       <element name="TApplication.DispatchAction">
-        <short/>
+        <short>Asks the active form and MainForm to handle the action.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TApplication.DispatchAction.Result">
-        <short/>
+        <short>True when the action was handled.</short>
       </element>
       <element name="TApplication.DispatchAction.Msg">
         <short/>
@@ -6358,10 +6380,12 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.AddHandler">
-        <short/>
+        <short>Adds an application notification handler.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType"/>
+        </seealso>
       </element>
       <element name="TApplication.AddHandler.HandlerType">
         <short/>
@@ -6374,10 +6398,12 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.RemoveHandler">
-        <short/>
+        <short>Removes an application notification handler.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveHandler.HandlerType">
         <short/>
@@ -6387,110 +6413,118 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.RunLoop">
-        <short>Make the application run in a loop, ie it starts again when it has finished</short>
+        <short>Encapsulates the application message loop (HandleMessage).
+        </short>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.Activate">
-        <short/>
+        <short>Handler for application activation, notifies all activation handlers.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.Deactivate">
-        <short/>
+        <short>Handler for application deactivation, notifies all deactivation handlers.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TApplication.Deactivate.Force">
-        <short></short>
+        <short>True when called from the widgetset.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TApplication.GetConsoleApplication">
-        <short>
-          <var>GetConsoleApplication</var> - returns True if this is a Console application (ie text-mode, non-GUI)</short>
+        <short>Here: returns False, because this is a GUI application.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TApplication.GetConsoleApplication.Result">
-        <short/>
+        <short>False for a GUI application.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.NotifyIdleHandler">
-        <short>
-          <var>NotifyIdleHandler</var> - method for sending message to Idle handler (sends True if process is done)</short>
+        <short>Notifies all Idle handlers.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.OnIdle"/>
+          <link id="TApplicationHandlerType.ahtIdle"/>
+        </seealso>
       </element>
       <element name="TApplication.NotifyIdleHandler.Done">
-        <short/>
+        <short>True when all handlers are done, meaning: wait for next message.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.NotifyIdleEndHandler">
-        <short>
-          <var>NotifyIdleEndHandler</var> - method for sending message to handler for end of idle state</short>
+        <short>Notifies all Idle End handlers, when a new message arrived.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.OnIdleEnd"/>
+          <link id="TApplicationHandlerType.ahtIdleEnd"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.NotifyActivateHandler">
-        <short>
-          <var>NotifyActivateHandler</var> - method for sending message to handler for activation</short>
+        <short>Notifies all Activation handlers.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.OnActivate"/>
+          <link id="TApplicationHandlerType.ahtActivate"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.NotifyDeactivateHandler">
-        <short>
-          <var>NotifyDeactivateHandler</var> - method for sending message to handler for deactivation</short>
+        <short>Notifies all Deactivation handlers.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.OnDeactivate"/>
+          <link id="TApplicationHandlerType.ahtDeactivate"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.NotifyCustomForms">
-        <short></short>
+        <short>Notifies all CustomForms of Msg arrived.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TApplication.NotifyCustomForms.Msg">
-        <short></short>
+        <short>The message to process.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TApplication.IsHintMsg">
-        <short>
-          <var>IsHintMsg</var> - returns True if specified message is a valid Hint</short>
+        <short>Nop, exists for Delphi compatibility only.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TApplication.IsHintMsg.Result">
-        <short/>
+        <short>Always False.</short>
       </element>
       <element name="TApplication.IsHintMsg.Msg">
         <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TApplication.DoOnHelp">
-        <short></short>
+        <short>OnHelp message handler. Tries OnHelp handlers of the active form, Application OnHelp and application Help handlers.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TApplication.OnHelp"/>
+          <link id="TApplicationHandlerType.ahtHelp"/>
         </seealso>
       </element>
       <element name="TApplication.DoOnHelp.Result">
-        <short></short>
+        <short>True when the message was handled.</short>
       </element>
       <element name="TApplication.DoOnHelp.Command">
         <short></short>
@@ -6499,31 +6533,29 @@ When the form is put into another control the window borders depend on the widge
         <short></short>
       </element>
       <element name="TApplication.DoOnHelp.CallHelp">
-        <short></short>
+        <short>[?]</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.DoOnMouseMove">
-        <short>
-          <var>DoOnMouseMove</var> - method for the OnMouseMove event</short>
+        <short>OnMouseMove message handler, updates the Hint.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.ShowHintWindow">
-        <short>
-          <var>ShowHintWindow</var> - method for showing a hint window</short>
+        <short>Shows or hides the Hint window.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TApplication.ShowHintWindow.Info">
-        <short/>
+        <short>Is updated with the Hint related information.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.OnHintTimer">
-        <short>
-          <var>OnHintTimer</var> - event handler for timing the duration of hints</short>
+        <short>Event handler for timing the duration of hints.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6538,11 +6570,12 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.StartHintTimer">
-        <short>
-          <var>StartHintTimer</var> - method for starting the timer for display of a hint message</short>
+        <short>Starts the timer for display of a hint message.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.Hint"/>
+        </seealso>
       </element>
       <element name="TApplication.StartHintTimer.Interval">
         <short/>
@@ -6552,26 +6585,23 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.UpdateVisible">
-        <short>
-          <var>UpdateVisible</var> - update all visible components</short>
+        <short>Asks the widgetset to update the TaskBar entries.[?]
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.DoIdleActions">
-        <short>
-          <var>DoIdleActions</var> - perform the actions that remain idle</short>
+        <short>Updates all Actions, hides splash screens.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.MenuPopupHandler">
-        <short>
-          <var>MenuPopupHandler</var> - method for dealing with menu popups</short>
+        <short>Hides the Hint window.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TApplication.MenuPopupHandler.Sender">
@@ -6579,45 +6609,35 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.ProcessAsyncCallQueue">
-        <short>
-          <var>ProcessAsyncCallQueue</var> - method to process a queue of asynchronous calls</short>
+        <short>Calls all methods queued by QueueAsyncCall.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TApplication.FreeComponent">
-        <short>
-          <var>FreeComponent</var> - method for freeing a component</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TApplication.FreeComponent" link="TApplication.ReleaseComponents"/>
       <element name="TApplication.FreeComponent.Data">
-        <short/>
+        <short>Ignored, should be zero.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.ReleaseComponents">
-        <short></short>
+        <short>Destroys all components marked for release.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.DoBeforeFinalization">
-        <short>
-          <var>DoBeforeFinalization</var> - the things to be done before finalisation of the application</short>
+        <short>Destroys all components.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TApplication.GetParams">
-        <short>
-          <var>GetParams</var> - find the application's parameters (typically by parsing the command line that invoked the application)</short>
+        <short>Returns the indexed commandline argument.</short>
       </element>
       <element name="TApplication.GetParams.Result">
         <short></short>
@@ -6626,17 +6646,7 @@ When the form is put into another control the window borders depend on the widge
         <short></short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TApplication.Create">
-        <descr>This instance of the constructor performs most of the setting up of the environment for the application. The instances of Create that occur in some of the ancestor classes are place holders rather than actual instructions for constructing the object
-</descr>
-        <errors/>
-        <seealso>
-          <link id="#fcl.CustApp.TCustomApplication.Create">TCustomApplication.Create</link>
-        </seealso>
-        <short>
-          <var>Create</var> - constructor for <var>TApplication</var>: initialises a large number of local variables and properties, then calls inherited <var>Create</var>
-        </short>
-      </element>
+      <element name="TApplication.Create"/>
       <element name="TApplication.Create.AOwner">
         <short>The Owner object that invoked this instance of TApplication</short>
       </element>
@@ -6644,7 +6654,7 @@ When the form is put into another control the window borders depend on the widge
       <element name="TApplication.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ActivateHint">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <errors>
@@ -6660,17 +6670,20 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- function Visibility: private -->
       <element name="TApplication.GetControlAtMouse">
-        <short/>
-        <descr/>
+        <short>Finds the control under the mouse.
+        </short>
+        <descr>Updates the LastMouse... info.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TApplication.GetControlAtMouse.Result">
-        <short/>
+        <short>The control, Nil if no control found.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ControlDestroyed">
-        <short>Method for dealing with a control that has been destroyed</short>
+        <short>Clears all references to the destroyed control.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6680,113 +6693,125 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.BigIconHandle">
-        <short>
-          <var>BigIconHandle</var> - system Handle for large Icon</short>
+        <short>The Handle of the large application Icon.</short>
+        <seealso>
+          <link id="TApplication.Icon"/>
+        </seealso>
       </element>
       <element name="TApplication.BigIconHandle.Result">
         <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.SmallIconHandle">
-        <short>
-          <var>SmallIconHandle</var> - system handle for small Icon</short>
+        <short>The Handle of the small application Icon.</short>
+        <seealso>
+          <link id="TApplication.Icon"/>
+        </seealso>
       </element>
       <element name="TApplication.SmallIconHandle.Result">
         <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.BringToFront">
-        <short>
-          <var>BringToFront</var> - Use the selected widget set's method to bring the application's form(s) to the front</short>
+        <short>Asks the widgetset to bring the application's form(s) to the front[?]
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.CreateForm">
-        <short>Create Form or any other kind of component</short>
-        <descr>Note: The name is confusing and only kept for Delphi compatibility. <br/>
-
-It can actually create any kind of component<br/>
-          <br/>
-
-Creates a Component instance, sets the pointer to the component variable and loads the component. <br/>
-
-If it is a form it will be added to the application's forms list</descr>
-        <errors/>
+        <short>Creates a Form or component, owned by Application.</short>
+        <descr>
+          <p>
+            Note: The name is confusing and only kept for Delphi compatibility.
+            It can actually create any kind of component.
+          </p><p>
+            Creates a Component instance of the given class,
+            sets the pointer to the component variable [and loads the component?].
+          </p><p>
+            [If it is a form it will be added to the application's forms list.?]
+          </p><p>
+            A splash form is shown immediately.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TApplication.CreateForm.InstanceClass">
-        <short/>
+        <short>The component class.</short>
       </element>
       <element name="TApplication.CreateForm.Reference">
-        <short/>
+        <short>The variable receiving the new component reference.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.UpdateMainForm">
-        <short>
-          <var>UpdateMainForm</var> - update the Application's main form</short>
+        <short>When MainForm is Nil, this form becomes the application MainForm.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TApplication.UpdateMainForm.AForm">
-        <short/>
+        <short>The form that may become the MainForm.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.QueueAsyncCall">
-        <short>Insert a given asynchronous call into the queue</short>
+        <short>Inserts an asynchronous call into the queue.</short>
         <descr>This is thread safe.</descr>
-        <errors/>
+        <errors>Exceptions on various inconsistencies of the queue.
+        </errors>
         <seealso/>
         <example file="forms/tapplication_queueasynccall.pas"/>
       </element>
       <element name="TApplication.QueueAsyncCall.AMethod">
-        <short>The method to be used for the asynchronous call</short>
+        <short>The method to call asynchronously.</short>
       </element>
       <element name="TApplication.QueueAsyncCall.Data">
-        <short>The data structure used by the asynchronous call method</short>
+        <short>The argument passed to the method.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveAsyncCalls">
-        <short>Removes all calls added via QueueAsyncCall</short>
-        <descr>This is thread safe.</descr>
+        <short>Removes all calls added via QueueAsyncCall.
+        </short>
+        <descr>This is thread safe.
+        </descr>
+        <errors>Exceptions on various inconsistencies of the queue.
+        </errors>
       </element>
       <element name="TApplication.RemoveAsyncCalls.AnObject">
         <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ReleaseComponent">
-        <short>
-          <var>ReleaseComponent</var> - method to release the specified component</short>
-        <descr/>
-        <errors/>
+        <short>Safe destruction of a component, can be requested by the component itself.
+        </short>
+        <descr>Unless the application is shutting down, all requests are queued.
+          Queued requests are processed when the application is not currently processing a message.
+        </descr>
         <seealso/>
       </element>
       <element name="TApplication.ReleaseComponent.AComponent">
-        <short/>
+        <short>The component to destroy.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.ExecuteAction">
-        <descr>This is a function that should be supplied by the application programmer, to override the placeholders declared in ancestor classes
-</descr>
+        <short>Invokes the <var>OnActionExecute</var> handler.
+        </short>
+        <descr>
+        </descr>
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.ExecuteAction">TComponent.ExecuteAction</link>
         </seealso>
-        <short>
-          <var>ExecuteAction</var> - calls the <var>OnActionExecute</var> event hndler if it is assigned</short>
       </element>
       <element name="TApplication.ExecuteAction.Result">
-        <short/>
+        <short>True when the Action was handled.</short>
       </element>
       <element name="TApplication.ExecuteAction.ExeAction">
-        <short/>
+        <short>The Action to execute.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.UpdateAction">
-        <short>
-          <var>UpdateAction</var> - calls the OnUpdateAction event handler if it is assigned</short>
+        <short>Invokes the <var>OnActionUpdate</var> handler.
+        </short>
         <descr/>
         <errors/>
         <seealso>
@@ -6801,34 +6826,35 @@ If it is a form it will be added to the application's forms list</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.HandleException">
-        <descr>Individual exception handler methods should be supplied by the application programmer, to override place-holder entries declared in ancestor classes.<br/>
-
-This method checks whether the application is required to halt if an exception occurs, or invokes the appropriate handler. <br/>
-
-
-It also writes details of the exception to the appropriate place for debugging.
-</descr>
+        <short>
+          <var>HandleException</var> method for handling an exception;
+          attempts to maintain program execution if possible, otherwise exits gracefully
+        </short>
+        <descr>Individual exception handler methods should be supplied by the application programmer,
+          to override place-holder entries declared in ancestor classes.<br/>
+          This method checks whether the application is required to halt if an exception occurs, or invokes the appropriate handler. <br/>
+          It also writes details of the exception to the appropriate place for debugging.
+        </descr>
         <errors/>
         <seealso>
           <link id="#fcl.CustApp.TCustomApplication.HandleException">TCustomApplication.HandleException</link>
         </seealso>
-        <short>
-          <var>HandleException</var> method for handling an exception; attempts to maintain program execution if possible, otherwise exits gracefully</short>
       </element>
       <element name="TApplication.HandleException.Sender">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.HandleMessage">
-        <short>Process all events according to the method defined for the widget set</short>
+        <short>Handles all messages, then enters Idle state.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.HelpCommand">
-        <short></short>
-        <descr>
+        <short>Shhow help on [what?]</short>
+        <descr>Currently relies on OnHelp handlers, CallHelp is not implemented.
         </descr>
         <errors>
         </errors>
@@ -6836,7 +6862,7 @@ It also writes details of the exception to the appropriate place for debugging.
         </seealso>
       </element>
       <element name="TApplication.HelpCommand.Result">
-        <short></short>
+        <short>[?]</short>
       </element>
       <element name="TApplication.HelpCommand.Command">
         <short></short>
@@ -6846,28 +6872,20 @@ It also writes details of the exception to the appropriate place for debugging.
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.HelpContext">
-        <short>
-          <var>HelpContext</var> - returns True if there is a specified context-dependent help message associated with the application, with an optionally specified position</short>
+        <short>Show context sensitive help.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TApplication.HelpContext.Result">
-        <short/>
-      </element>
-      <element name="TApplication.HelpContext.Sender">
-        <short/>
-      </element>
-      <element name="TApplication.HelpContext.Position">
-        <short/>
+        <short>Request handled[?]</short>
       </element>
       <element name="TApplication.HelpContext.Context">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.HelpKeyword">
-        <short>
-          <var>HelpKeyword</var> - returns True if there is a specified help keyword associated with the application, with an optionally specified position</short>
+        <short>Show help for a keyword.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6875,136 +6893,102 @@ It also writes details of the exception to the appropriate place for debugging.
       <element name="TApplication.HelpKeyword.Result">
         <short/>
       </element>
-      <element name="TApplication.HelpKeyword.Sender">
-        <short/>
-      </element>
-      <element name="TApplication.HelpKeyword.Position">
-        <short/>
-      </element>
       <element name="TApplication.HelpKeyword.Keyword">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ShowHelpForObject">
-        <short>
-          <var>ShowHelpForObject</var> - method for displaying help messages</short>
+        <short>When Sender is a TControl, invoke its ShowHelp method.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TApplication.ShowHelpForObject.Sender">
-        <short/>
+        <short>Should be a TControl, else nothing will happen.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveStayOnTop">
-        <short></short>
+        <short>Remove StayOnTop from all forms. Builds a form list for use in RestoreStayOnTop.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TApplication.RestoreStayOnTop"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveStayOnTop.ASystemTopAlso">
-        <short></short>
+        <short>[?]</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RestoreStayOnTop">
-        <short></short>
+        <short>Restores StayOnTop for all forms changed by RemoveStayOnTop.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TApplication.RemoveStayOnTop"/>
         </seealso>
       </element>
       <element name="TApplication.RestoreStayOnTop.ASystemTopAlso">
-        <short></short>
+        <short>[?]</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.IsWaiting">
-        <short>
-          <var>IsWaiting</var> - returns True if the application is awainting an event</short>
+        <short>True if the application is awaiting an event[?]</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TApplication.IsWaiting.Result">
-        <short/>
+        <short>True if the application is in AppWaiting state.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.CancelHint">
-        <short>Cancels a request for a hint, if there is no hint timer or no hint to display</short>
+        <short>Called when the Hint time has expired, to stop showing the Hint.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.HideHint">
-        <short>Don't display the hint</short>
+        <short>Hides the Hint window.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.HintMouseMessage">
-        <short>
-          <var>HintMouseMessage</var> - method to find the hint for the control at the mouse position</short>
-        <descr/>
+        <short>Called when the the mouse is over a control with a Hint[?]
+        </short>
+        <descr/>Does nothing [exists for Delphi compatibility only?]
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TApplication.HintMouseMessage.Control">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TApplication.HintMouseMessage.AMessage">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Initialize">
-        <descr>Finds the appropriate widget set, reads the application's icon (if any) from the Lazarus Resource file, initialises the screen, and leaves it ready for processing.
-</descr>
+        <short>Initializes the widgetset (and more).
+        </short>
+        <descr>
+        </descr>
         <errors/>
         <seealso>
           <link id="#fcl.CustApp.TCustomApplication.Initialize">TCustomApplication.Initialize</link>
         </seealso>
-        <short>
-          <var>Initialize</var> - calls inherited Initialize, then initialises widget set, loads icons from Laz resources and updates screen</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.MessageBox">
-        <short>
-          <var>Message Box</var>: a useful function to display a message.</short>
+        <short>Display an message dialog with several response buttons.</short>
         <descr>
-          <p>
-            <var>MessageBox</var>: a useful function to display a message.</p>
-          <p>The function is used internally to display messages during the handling of <var>Exceptions</var>
-, but is also available to application programmers as an alternative to some of the message dialogs found in <var>Dialogs</var>
+          <p>The function is used internally to display messages during the handling of <var>Exceptions</var>,
+            but is also available to application programmers as an alternative to some of the message dialogs found in <var>Dialogs</var>.
           </p>
-          <p>The argument <var>Flags</var> is a long integer constructed by adding together various constants to define the contents and behaviour of the box, for example:</p>
-          <p>MB_ABORTRETRYIGNORE + MR_ICONQUESTION will cause the application to display a query (?) icon in a box with three buttons: </p>
-          <p>ABORT RETRY IGNORE.</p>
-          <p>The following button constants are available:</p>
-          <p>MB_OK</p>
-          <p>MB_OKCANCEL</p>
-          <p>MB_ABORTRETRYIGNORE</p>
-          <p>MB_YESNOCANCEL</p>
-          <p>MB_YESNO</p>
-          <p>MB_RETRYCANCEL</p>
-          <p>And the following icon constants:</p>
-          <p>MB_ICONHAND</p>
-          <p>MB_ICONQUESTION</p>
-          <p>MB_ICONEXCLAMATION</p>
-          <p>MB_ICONASTERICK</p>
-          <p>MB_ICONWARNING = MB_ICONEXCLAMATION</p>
-          <p>MB_ICONERROR = MB_ICONHAND</p>
-          <p>MB_ICONSTOP = MB_ICONHAND</p>
-          <p>MB_ICONINFORMATION = MB_ICONASTERICK</p>
-          <p>These constants are declared on the LCLType unit.</p>
-          <p>The function returns an integer value corresponding to the button that was pressed; its value can be determined by reference to the constants [IDOK..IDHELP]</p>
-          <p>It can be invoked like a procedure call (ie as a 'MessageBox()' statement rather than as a 'Variable := MessageBox()' function call)</p>
+          <p>The function returns an integer value corresponding to the button that was pressed; its value can be determined by reference to the constants [IDOK..IDHELP].</p>
         </descr>
         <errors/>
         <seealso>
@@ -7013,127 +6997,101 @@ It also writes details of the exception to the appropriate place for debugging.
         <example file="dialogs/displaymessagebox.pas"/>
       </element>
       <element name="TApplication.MessageBox.Result">
-        <short>Result</short>
-        <descr>Result: integer value returned by the function to signify which box was selected<br/>
-          <br/>
-
-Can be one of the following values:<br/>
-          <br/>
-
- IDOK<br/>
-
- IDCANCEL<br/>
-
- IDABORT<br/>
-
- IDRETRY<br/>
-
- IDIGNORE<br/>
-
- IDYES<br/>
-
- IDNO<br/>
-
- IDCLOSE<br/>
-
- IDHELP	
-		</descr>
+        <short>Indicates the pressed button.</short>
+        <descr>Can be one of the following values:<br/>
+          IDOK<br/>
+          IDCANCEL<br/>
+          IDABORT<br/>
+          IDRETRY<br/>
+          IDIGNORE<br/>
+          IDYES<br/>
+          IDNO<br/>
+          IDCLOSE<br/>
+          IDHELP
+    		</descr>
       </element>
       <element name="TApplication.MessageBox.Text">
-        <short>Text: the string that is displayed as a prompt or instruction in the Box</short>
+        <short>The text in the MessageBox.</short>
         <descr/>
       </element>
       <element name="TApplication.MessageBox.Caption">
-        <short>Caption: the string label at the top of the message box</short>
+        <short>The Caption of the MessageBox.</short>
         <descr/>
       </element>
       <element name="TApplication.MessageBox.Flags">
-        <short>Flags - a long integer constructed by adding together various constants to define the contents and behaviour of the box</short>
-        <descr>Flags: longint - an integer constructed by adding together various constants to define the contents and behaviour of the box, for example<br/>
- 
-		MB_ABORTRETRYIGNORE + MR_ICONQUESTION will cause the application to display a query (?) icon in a box with three buttons: <br/>
-ABORT RETRY IGNORE.<br/>
-          <br/>
-
-The following button constants are available:<br/>
-          <br/>
-
- MB_OK<br/>
-
- MB_OKCANCEL<br/>
-
- MB_ABORTRETRYIGNORE<br/>
-
- MB_YESNOCANCEL<br/>
-
- MB_YESNO<br/>
-
- MB_RETRYCANCEL<br/>
-          <br/>
-
-And the following icon constants:<br/>
-          <br/>
-
- MB_ICONHAND<br/>
-
- MB_ICONQUESTION<br/>
-
- MB_ICONEXCLAMATION<br/>
-
- MB_ICONASTERICK<br/>
-
- MB_ICONWARNING = MB_ICONEXCLAMATION<br/>
-
- MB_ICONERROR = MB_ICONHAND<br/>
-
- MB_ICONSTOP = MB_ICONHAND<br/>
-
- MB_ICONINFORMATION = MB_ICONASTERICK<br/>
-          <br/>
-
-These constants are declared on the LCLType unit.
+        <short>The icon and buttons appearing in the box.
+        </short>
+        <descr>
+          <p>
+            Several constants are declared in the LCLType unit.
+          </p><p>
+            Add (better: OR) an icon constant and a buttons constant, for example<br/>
+  		      MB_ABORTRETRYIGNORE + MR_ICONQUESTION will cause the application to display a query (?) icon in a box with three buttons: <br/>
+            ABORT RETRY IGNORE.
+          </p><p>
+            Buttons can be one of:
+          </p><p>
+             MB_OK<br/>
+             MB_OKCANCEL<br/>
+             MB_ABORTRETRYIGNORE<br/>
+             MB_YESNOCANCEL<br/>
+             MB_YESNO<br/>
+             MB_RETRYCANCEL
+          </p><p>
+            The icon can be one of:
+          </p><p>
+            MB_ICONHAND<br/>
+            MB_ICONQUESTION<br/>
+            MB_ICONEXCLAMATION<br/>
+            MB_ICONASTERISK<br/>
+            MB_ICONWARNING = MB_ICONEXCLAMATION<br/>
+            MB_ICONERROR = MB_ICONHAND<br/>
+            MB_ICONSTOP = MB_ICONHAND<br/>
+            MB_ICONINFORMATION = MB_ICONASTERISK
+          </p>
         </descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Minimize">
-        <short>Minimise the form using the widget set's method</short>
+        <short>Asks the widgetset to minimize the application.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ModalStarted">
-        <short></short>
-        <descr>
+        <short>Called when a form is shown modally.</short>
+        <descr>Invokes all OnModalBegin handlers when entering Modal state.
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TApplication.ModalFinished"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ModalFinished">
-        <short></short>
-        <descr>
+        <short>Called when a modal form is closed.</short>
+        <descr>Invokes all OnModalEnd handlers when exiting Modal state.
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TApplication.ModalStarted"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Restore">
-        <short>Restore the application's form to the size it was before minimisation or maximisation</short>
+        <short>Restores the previously minimized application.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.Minimize"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Notification">
-        <short>
-          <var>Notification</var> if Operation is Remove, then sets any Component to nil, otherwise calls inherited <var>Notification</var>
+        <short>Invokes the notification handlers.
         </short>
-        <descr/>
+        <descr>Special handling, here: Clears the reference to a removed component,
+          terminates the application when the MainForm is removed.
+        </descr>
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Notification">TComponent.Notification</link>
@@ -7148,81 +7106,99 @@ These constants are declared on the LCLType unit.
       <!-- procedure Visibility: public -->
       <element name="TApplication.ProcessMessages">
         <short>
-          <var>ProcessMessages</var> - method for processing system messages</short>
-        <descr/>
+          Call this method during lengthy operations, to keep the GUI responsive.
+        </short>
+        <descr>
+          Processes all waiting messages, then the queued asynchronous callbacks.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Idle">
-        <short>
-          <var>Idle</var> - method for rendering the Application Idle if <var>Wait</var> is True</short>
+        <short>Invoked when the application enters the idle state.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TApplication.Idle.Wait">
-        <short/>
+        <short>Wait for next message?</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Run" link="#fcl.CustApp.TCustomApplication.Run">
-        <descr>This method should be supplied by the application programmer, and should be the main process control procedure for the application
-</descr>
+        <short>MainForm is loaded and control is passed to the event loop.
+        </short>
+        <descr>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.RunLoop"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ShowException" link="#fcl.CustApp.TCustomApplication.ShowException">
+        <short>Shows the exception message and asks the user to abort or continue.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TApplication.ShowException.E">
-        <short>The exception that is to be displayed</short>
+        <short>The exception to show.
+        </short>
         <seealso>
           <link id="#rtl.sysutils.exception"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.Terminate" link="#fcl.CustApp.TCustomApplication.Terminate">
+        <short>The application is terminated and the component engine is shutdown.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.DisableIdleHandler">
-        <short>
-          <var>DisableIdleHandler</var> - turn off the Idle handler</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Blocks Idle handling. Can be called moreoften, every call must be followed by EnableIdleHandler.
+        </short>
+        <descr>[what does this mean to application behaviour?]</descr>
+        <seealso>
+          <link id="TApplication.EnableIdleHandler"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.EnableIdleHandler">
-        <short>
-          <var>EnableIdleHandler</var> - turn on the Idle handler</short>
+        <short>Resume Idle handling.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <errors>GDB exception when not previously disabled.
+        </errors>
+        <seealso>
+          <link id="TApplication.DisableIdleHandler"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.NotifyUserInputHandler">
-        <short>
-          <var>NotifyUserInputHandler</var> - send message t handler for user input</short>
+        <short>Notifies all user input handlers [of what?]
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtUserInput"/>
+        </seealso>
       </element>
       <element name="TApplication.NotifyUserInputHandler.Msg">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.NotifyKeyDownBeforeHandler">
-        <short>
-          <var>NotifyKeyDownBeforeHandler</var> - send message to handler for the condition where a key has been previously pressed (eg a Shift, Control or Alt key(</short>
+        <short>Notifies all ahtKeyDownBefore handlers.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtKeyDownBefore"/>
+        </seealso>
       </element>
       <element name="TApplication.NotifyKeyDownBeforeHandler.Sender">
         <short/>
@@ -7235,11 +7211,12 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.NotifyKeyDownHandler">
-        <short>
-          <var>NotifyKeyDownHandler</var> - sends message to handler for a key pressed down</short>
+        <short>Notifies all ahtKeyDownAfter handlers, eventually reacts on F1 (Help).
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtKeyDownAfter"/>
+        </seealso>
       </element>
       <element name="TApplication.NotifyKeyDownHandler.Sender">
         <short/>
@@ -7252,8 +7229,8 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ControlKeyDown">
-        <short>
-          <var>ControlKeyDown</var> - method for dealing with the Control Key being pressed down</short>
+        <short>Handles KeyDown events in a Control, e.g. handles navigation keys.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7269,8 +7246,8 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.ControlKeyUp">
-        <short>
-          <var>ControlKeyUp</var> - method for dealing with a released Control key</short>
+        <short>Handles KeyUp events in a Control, e.g. handles Enter and Esc keys.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7286,11 +7263,12 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnIdleHandler">
-        <short>
-          <var>AddOnIdleHandler</var> - method for adding a handler for the Idle state</short>
+        <short>Adds an application Idle handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtIdle"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnIdleHandler.Handler">
         <short/>
@@ -7300,22 +7278,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnIdleHandler">
-        <short>
-          <var>RemoveOnIdleHandler</var> - method for removing a handler for the Idle state</short>
+        <short>Removes an application Idle handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtIdle"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnIdleHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnIdleEndHandler">
-        <short>
-          <var>AddOnIdleEndHandler</var> - method to add a handler for the end of the Idle state</short>
+        <short>Adds an application IdleEnd handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtIdleEnd"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnIdleEndHandler.Handler">
         <short/>
@@ -7325,22 +7305,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnIdleEndHandler">
-        <short>
-          <var>RemoveOnIdleEndHandler</var> - method for removing handler for the end of the Idle state</short>
+        <short>Removes an application IdleEnd handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtIdleEnd"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnIdleEndHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnUserInputHandler">
-        <short>
-          <var>AddOnUserInputHandler</var> - method for adding a handler for user input</short>
+        <short>Adds an application user input handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtUserInput"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnUserInputHandler.Handler">
         <short/>
@@ -7350,22 +7332,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnUserInputHandler">
-        <short>
-          <var>RemoveOnUserInputHandler</var> - method for removing handler for user input</short>
+        <short>Removes an application user input handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtUserInput"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnUserInputHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnKeyDownBeforeHandler">
-        <short>
-          <var>AddOnKeyDownBeforeHandler</var> - method for adding handler for the state where a key (eg Ctrl, Shift, Alt) has been already pressed</short>
+        <short>Adds an application key down before interface handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtKeyDownBefore"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnKeyDownBeforeHandler.Handler">
         <short/>
@@ -7375,22 +7359,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnKeyDownBeforeHandler">
-        <short>
-          <var>RemoveOnKeyDownBeforeHandler</var> - method for removing handler for the state where a key (eg Ctrl, Shift, Alt) has been already pressed</short>
+        <short>Removes an application key down before interface handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtKeyDownBefore"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnKeyDownBeforeHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnKeyDownHandler">
-        <short>
-          <var>AddOnKeyDownHandler</var> - method for adding a handler for the Key Down state</short>
+        <short>Adds an application key down after interface handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtKeyDownAfter"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnKeyDownHandler.Handler">
         <short/>
@@ -7400,22 +7386,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnKeyDownHandler">
-        <short>
-          <var>RemoveOnKeyDownHandler</var> - method for removing handler for the Key Down state</short>
+        <short>Removes an application key down after interface handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtKeyDownAfter"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnKeyDownHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnActivateHandler">
-        <short>
-          <var>AddOnActivateHandler</var> - method for adding a handler for activation</short>
+        <short>Adds an application activation handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtActivate"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnActivateHandler.Handler">
         <short/>
@@ -7425,22 +7413,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnActivateHandler">
-        <short>
-          <var>RemoveOnActivateHandler</var> - method for removing handler for activation</short>
+        <short>Removes an application activation handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtActivate"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnActivateHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnDeactivateHandler">
-        <short>
-          <var>AddOnDeactivateHandler</var> - method for adding handler for deactivation</short>
+        <short>Adds an application deactivation handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtDeactivate"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnDeactivateHandler.Handler">
         <short/>
@@ -7450,22 +7440,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnDeactivateHandler">
-        <short>
-          <var>RemoveOnDeactivateHandler</var> - method for removing deactivation handler</short>
+        <short>Removes an application deactivation handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtDeactivate"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnDeactivateHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnExceptionHandler">
-        <short>
-          <var>AddOnExceptionHandler</var> - method for adding exception handler</short>
+        <short>Adds an application exception handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtException"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnExceptionHandler.Handler">
         <short/>
@@ -7475,22 +7467,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnExceptionHandler">
-        <short>
-          <var>RemoveOnExceptionHandler</var> - method for removing exception handler</short>
+        <short>Removes an application exception handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtException"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnExceptionHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnEndSessionHandler">
-        <short>
-          <var>AddOnEndSessionHandler</var> - method for adding handler for end of session</short>
+        <short>Adds an application logoff[?] handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtEndSession"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnEndSessionHandler.Handler">
         <short/>
@@ -7500,22 +7494,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnEndSessionHandler">
-        <short>
-          <var>RemoveOnEndSessionHandler</var> - method for removing handler for end of session</short>
+        <short>Removes an application logoff[?] handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtEndSession"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnEndSessionHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnQueryEndSessionHandler">
-        <short>
-          <var>AddOnQueryEndSessionHandler</var> - method for adding handler for a query at the end of a session</short>
+        <short>Adds an application logoff query handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtQueryEndSession"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnQueryEndSessionHandler.Handler">
         <short/>
@@ -7525,22 +7521,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnQueryEndSessionHandler">
-        <short>
-          <var>RemoveOnQueryEndSessionHandler</var> - method for removing handler for a query at the end of a session</short>
+        <short>Removes an application logoff query handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtQueryEndSession"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnQueryEndSessionHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnMinimizeHandler">
-        <short>
-          <var>AddOnMinimizeHandler</var> - method for adding handler for minimising component</short>
+        <short>Adds an application minimizing handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtMinimize"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnMinimizeHandler.Handler">
         <short/>
@@ -7550,23 +7548,23 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnMinimizeHandler">
-        <short>
-          <var>RemoveOnMinimizeHandler</var> - method to remove handler for maximising component</short>
+        <short>Removes an application minimizing handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtMinimize"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnMinimizeHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnModalBeginHandler">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
+        <short>Adds an application becoming modal handler.
+        </short>
+        <descr/>
         <seealso>
+          <link id="TApplicationHandlerType.ahtModalBegin"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnModalBeginHandler.Handler">
@@ -7577,12 +7575,11 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnModalBeginHandler">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
+        <short>Removes an application becoming modal handler.
+        </short>
+        <descr/>
         <seealso>
+          <link id="TApplicationHandlerType.ahtModalBegin"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnModalBeginHandler.Handler">
@@ -7590,12 +7587,11 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnModalEndHandler">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
+        <short>Adds an application exiting modal state handler.
+        </short>
+        <descr/>
         <seealso>
+          <link id="TApplicationHandlerType.ahtModalEnd"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnModalEndHandler.Handler">
@@ -7606,12 +7602,11 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnModalEndHandler">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
+        <short>Removes an application exiting modal state handler.
+        </short>
+        <descr/>
         <seealso>
+          <link id="TApplicationHandlerType.ahtModalEnd"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnModalEndHandler.Handler">
@@ -7619,11 +7614,12 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnRestoreHandler">
-        <short>
-          <var>AddOnRestoreHandler</var> - method to add handler for Restore component</short>
+        <short>Adds an application exiting minimized state handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtRestore"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnRestoreHandler.Handler">
         <short/>
@@ -7633,22 +7629,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnRestoreHandler">
-        <short>
-          <var>RemoveOnRestoreHandler</var> - method to remove restore handler</short>
+        <short>Removes an application exiting minimized state handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtRestore"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnRestoreHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnDropFilesHandler">
-        <short>
-          <var>AddOnDropFilesHandler</var> - method to add handler for dropped files</short>
+        <short>Adds an application dropped files handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtDropFiles"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnDropFilesHandler.Handler">
         <short/>
@@ -7658,22 +7656,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnDropFilesHandler">
-        <short>
-          <var>RemoveOnDropFilesHandler</var> - method for removing drop files handler</short>
+        <short>Removes an application dropped files handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtDropFiles"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnDropFilesHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnHelpHandler">
-        <short>
-          <var>AddOnHelpHandler</var> - method to add Help handler</short>
+        <short>Adds an application Help handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtHelp"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnHelpHandler.Handler">
         <short/>
@@ -7683,22 +7683,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnHelpHandler">
-        <short>
-          <var>RemoveOnHelpHandler</var> - method to remove Help handler</short>
+        <short>Removes an application Help handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtHelp"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnHelpHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnHintHandler">
-        <short>
-          <var>AddOnHintHandler</var> - method to add handler for Hints</short>
+        <short>Adds an application Hint handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtHint"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnHintHandler.Handler">
         <short/>
@@ -7708,22 +7710,24 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnHintHandler">
-        <short>
-          <var>RemoveOnHintHandler</var> - method to remove Hint handler</short>
+        <short>Removes an application Hint handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtHint"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnHintHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnShowHintHandler">
-        <short>
-          <var>AddOnShowHintHandler</var> - method to add handler for showing Hints</short>
+        <short>Adds an application Hint show handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtShowHint"/>
+        </seealso>
       </element>
       <element name="TApplication.AddOnShowHintHandler.Handler">
         <short/>
@@ -7733,23 +7737,23 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnShowHintHandler">
-        <short>
-          <var>RemoveOnShowHintHandler</var> - method for removing handler for showing Hints</short>
+        <short>Removes an application Hint show handler.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtShowHint"/>
+        </seealso>
       </element>
       <element name="TApplication.RemoveOnShowHintHandler.Handler">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.AddOnGetMainFormHandleHandler">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
+        <short>Adds an application MainForm Handle handler.
+        </short>
+        <descr/>
         <seealso>
+          <link id="TApplicationHandlerType.ahtGetMainFormHandle"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnGetMainFormHandleHandler.Handler">
@@ -7760,12 +7764,11 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveOnGetMainFormHandleHandler">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
+        <short>Removes an application MainForm Handle handler.
+        </short>
+        <descr/>
         <seealso>
+          <link id="TApplicationHandlerType.ahtGetMainFormHandle"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnGetMainFormHandleHandler.Handler">
@@ -7773,8 +7776,8 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.RemoveAllHandlersOfObject">
-        <short>
-          <var>RemoveAllHandlersOfObject</var> - method to remove all handlers of an object</short>
+        <short>Removes all handlers implemented in the given object.
+         </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7784,8 +7787,7 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.DoBeforeMouseMessage">
-        <short>
-          <var>DoBeforeMouseMessage</var> - things to be done before a mouse message is processed</short>
+        <short>Things to be done before a mouse message is processed.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7795,91 +7797,101 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.IsShortcut">
-        <short>
-          <var>IsShortcut</var> - returns True if specified Keyi s a shortcut</short>
+        <short>Asks all shortcut handlers to handle the key.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TApplication.IsShortcut.Result">
-        <short/>
+        <short>True when the shortcut was handled.</short>
       </element>
       <element name="TApplication.IsShortcut.Message">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.IntfQueryEndSession">
-        <short>
-          <var>IntfQueryEndSession</var> - called by the interface when there is a query at the end of a session</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Called by the interface to confirm the end of a session.</short>
+        <descr>Asks all QueryEndSession handlers to confirm termination of the application.
+        </descr>
+        <seealso>
+          <link id="TApplication.OnQueryEndSession"/>
+          <link id="TApplicationHandlerType.ahtQueryEndSession"/>
+        </seealso>
       </element>
       <element name="TApplication.IntfQueryEndSession.Cancel">
-        <short/>
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.IntfEndSession">
-        <short>
-          <var>IntfEndSession</var> - called by the interface at the end of a session</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Called by the interface when the session ends.
+        </short>
+        <descr>Notifies all OnEndSession handlers.
+        </descr>
+        <seealso>
+          <link id="TApplication.OnEndSession"/>
+          <link id="TApplicationHandlerType.ahtEndSession"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.IntfAppActivate">
-        <short></short>
-        <descr>
+        <short>Called by the interface on application activation[?]
+        </short>
+        <descr>Notifies all activation handlers.
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TApplication.OnActivate"/>
+          <link id="TApplicationHandlerType.ahtActivate"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.IntfAppDeactivate">
-        <short></short>
+        <short>Called by the interface on application deactivation[?]
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TApplication.OnDeactivate"/>
+          <link id="TApplicationHandlerType.ahtDeactivate"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.IntfAppMinimize">
-        <short>
-          <var>IntfAppMinimize</var> - called by the interface if an application is minimised</short>
+        <short>Called by the interface when the application is minimized.
+          </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.OnMinimize"/>
+          <link id="TApplicationHandlerType.ahtMinimize"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.IntfAppRestore">
-        <short>
-          <var>IntfAppRestore</var> - called by the interface when an application is being restored</short>
+        <short>Called by the interface when the application is restored.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.OnRestore"/>
+          <link id="TApplicationHandlerType.ahtRestore"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.IntfDropFiles">
-        <short>
-          <var>IntfDropFiles</var> - called by the interface for dropping files</short>
+        <short>Called by the interface when files have been dropped.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.OnDropFiles"/>
+          <link id="TApplicationHandlerType.ahtDropFiles"/>
+        </seealso>
       </element>
       <element name="TApplication.IntfDropFiles.FileNames">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.IntfThemeOptionChange">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
+        <short>Called by the interface when a theme option has changed.
+        </short>
+        <descr/>
         <seealso>
         </seealso>
       </element>
@@ -7891,11 +7903,9 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.IsRTLLang">
-        <short></short>
+        <short>Checks the given language name for right-to-left reading.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -7907,7 +7917,7 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.Direction">
-        <short></short>
+        <short>Checks the given language name for right-to-left reading.</short>
         <descr>
         </descr>
         <errors>
@@ -7923,80 +7933,77 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- function Visibility: public -->
       <element name="TApplication.DoArrowKey">
-        <short>
-          <var>DoArrowKey</var> - method for processing an arrow key</short>
+        <short>Uses arrow keys for navigation, if enabled.
+        </short>
       </element>
       <element name="TApplication.DoArrowKey.AControl">
-        <short></short>
+        <short>The control receiving the key.</short>
       </element>
       <element name="TApplication.DoArrowKey.Key">
-        <short></short>
+        <short>The virtual key; becomes VK_UNKNOWN when handled.</short>
       </element>
       <element name="TApplication.DoArrowKey.Shift">
-        <short></short>
+        <short>The active modifier keys.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.DoEscapeKey">
-        <short>
-          <var>DoEscapeKey</var> - method for processing the Escape key</short>
+        <short>Interprets Esc as Cancel action, if applicable.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TApplication.DoEscapeKey.AControl">
-        <short/>
+        <short>The control receiving the key.</short>
       </element>
       <element name="TApplication.DoEscapeKey.Key">
-        <short/>
+        <short>The virtual key; becomes VK_UNKNOWN when handled.</short>
       </element>
       <element name="TApplication.DoEscapeKey.Shift">
-        <short/>
+        <short>The active modifier keys.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.DoReturnKey">
-        <short>
-          <var>DoReturnKey</var> - method for processing the Return (Enter) key</short>
+        <short>Interprets Enter as the default action, if applicable.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TApplication.DoReturnKey.AControl">
-        <short/>
+        <short>The control receiving the key.</short>
       </element>
       <element name="TApplication.DoReturnKey.Key">
-        <short/>
+        <short>The virtual key; becomes VK_UNKNOWN when handled.</short>
       </element>
       <element name="TApplication.DoReturnKey.Shift">
-        <short/>
+        <short>The active modifier keys.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.DoTabKey">
-        <short>
-          <var>DoTabKey</var> - method for processing the Tab key</short>
+        <short>Uses the Tab key for navigation, if enabled.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TApplication.DoTabKey.AControl">
-        <short/>
+        <short>The control receiving the key.</short>
       </element>
       <element name="TApplication.DoTabKey.Key">
-        <short/>
+        <short>The virtual key; becomes VK_UNKNOWN when handled.</short>
       </element>
       <element name="TApplication.DoTabKey.Shift">
         <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.Active">
-        <short>
-          <var>Active</var> - returns True if this is an active Application</short>
+        <short>True if the application has the focus.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.ApplicationType">
-        <short>
-          <var>ApplicationType</var> - The type of the application (ie the sort of device for which it is intended)</short>
+        <short>The type of the application (ie the sort of device for which it is intended).</short>
         <descr>
           <p>The type of the application:</p>
           <p>Default, Desktop, Handheld, PDA, Smartphone</p>
@@ -8005,102 +8012,128 @@ These constants are declared on the LCLType unit.
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.BidiMode">
-        <short>
-          <var>BidiMode</var> - whether bi-directional mode is available</short>
+        <short>The bidirectional mode to use.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.CaptureExceptions">
-        <short>
-          <var>CaptureExceptions</var> -  If exceptions have occurred, find out what they are, ready for processing</short>
+        <short>Enables exception handling by Application.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.FindGlobalComponentEnabled">
-        <short>
-          <var>FindGlobalComponentEnabled</var> - returns True if the Find Global Component state is enabled</short>
+        <short>Enables searching for global components by name.[?]
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.Flags">
-        <short>
-          <var>Flags</var> - the list of flags for this application</short>
+        <short>Application state flags.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.Hint">
-        <short>The hint associated with the main application</short>
-        <descr>A hint is a small pop-up mesage that appears briefly while the mouse hovers over a specified area of the screen. It usually displays useful information about how to use an object or what data should be entered, etc<br/>
-          <br/>
-
-Reads or writes a flag to determine the hint associated with the application</descr>
-        <seealso/>
+        <short>The current Hint text.</short>
+        <descr>
+          <p>
+            A hint is a small pop-up mesage that appears briefly
+            while the mouse hovers over a control.
+          </p><p>
+            It usually displays useful information about how to use an object or what data should be entered, etc
+          </p><p>
+            Several properties allow to customize the delay before a Hint is shown,
+            after an mouse move, and how long it will stay visible.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TApplication.HintPause"/>
+          <link id="TApplication.HintHidePause"/>
+          <link id="TApplication.HintHidePausePerChar"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.HintColor">
-        <short>The colour used to display the hint</short>
+        <short>The color of Hint windows.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.Hint"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.HintHidePause">
-        <short>The delay period after mouse entry before the hint becomes visible</short>
+        <short>How long a Hint stays visible, after an mouse move.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.Hint"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.HintHidePausePerChar">
-        <short>
-          <var>HintHidePausePerChar</var> - the pause period per character for hiding a hint</short>
+        <short>How much a keystroke extends the time a Hint stays visible (added to HintHidePause).
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.HintHidePause"/>
+          <link id="TApplication.Hint"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.HintPause">
-        <short>
-          <var>HintPause</var> - The length of time for which the hint is displayed</short>
+        <short>The delay before a Hint is shown.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.Hint"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.HintShortCuts">
-        <short>
-          <var>HintShortCuts</var> - If True, there are hints for short cut keys </short>
+        <short>Enables the display of keyboard shortcuts (e.g. on menu entries).
+          [not implemented?]
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.Hint"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.HintShortPause">
-        <short>
-          <var>HintShortPause</var> - the pause before a shortcut hint is displayed</short>
+        <short>The pause before a different Hint is displayed.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.Hint"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.Icon">
-        <short>The icon to be associated with this application</short>
+        <short>The icon associated with this application.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.MainForm">
-        <short>The Main Form used by the application for process control and for data input/output</short>
-        <descr>Reads a flag to get particulars of the main form</descr>
+        <short>The application terminates when this form is closed.
+        </short>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.MainFormHandle">
-        <short></short>
+        <short>The Handle of the MainForm[?]</short>
         <descr>
         </descr>
         <seealso>
+          <link id="TApplication.OnGetMainFormHandle"/>
+          <link id="TApplicationHandlerType.ahtGetMainFormHandle"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.MainFormOnTaskBar">
-        <short></short>
+        <short>[?]
+        </short>
         <descr>
         </descr>
         <seealso>
@@ -8108,79 +8141,81 @@ Reads or writes a flag to determine the hint associated with the application</de
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.ModalLevel">
-        <short></short>
-        <descr>
+        <short>The number of modal forms shown.</short>
+        <descr>Tracks modal forms showing another form modally.
         </descr>
         <seealso>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.MouseControl">
-        <short></short>
-        <descr>
+        <short>The control currently under the mouse.</short>
+        <descr>Used to detect mouse entering and leaving a control.
         </descr>
         <seealso>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.Navigation">
-        <short>Determine how the form is to be navigated</short>
-        <descr>Reads or writes a flag to determine the navigation method: <br/>
-
-Is <b>Tab</b>
- used to move to next control? <br/>
-
-Does <b>Enter</b>
- or <b>Ret</b>
- activate the default action? <br/>
-
-Does <b>Esc</b>
- perform the cancel action? <br/>
-
-Does <b>F1</b>
- activate a Help system?<br/>
-          <br/>
-
-Navigation Options is a set, so can take zero or more of the available values</descr>
+        <short>Allows to switch between controls by pressing keys.
+        </short>
+        <descr>
+          <p>These keys can be enabled for navigation:</p>
+          <ul>
+          <li>
+            The Tab key moves the Focus to the next (or previous) control in TabOrder.
+          </li><li>
+            The Enter key triggers the default action.
+          </li><li>
+            The Escape key triggers the Cancel action.
+          </li><li>
+            The F1 key brings up context sensitive help.
+          </li><li>
+            The Arrow keys move the focus.[?]
+          </li>
+          </ul>
+        </descr>
         <seealso>
           <link id="TApplicationNavigationOptions"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnActionExecute">
-        <short>
-          <var>OnActionExecute</var> - event handler for executing the application's main action</short>
+        <short>Default handler for unhandled Actions[?]
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnActionUpdate">
-        <short>
-          <var>OnActionUpdate</var> - event handler for updating the application's main action</short>
+        <short>Default handler for unhandled Action updates[?]
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnActivate">
-        <short>
-          <var>OnActivate</var> - Event handler for activation of the application</short>
+        <short>Event handler for activation of the application.</short>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtActivate"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnDeactivate">
-        <short>
-          <var>OnDeactivate</var> - Event handler for deactivation of the application</short>
+        <short>Event handler for deactivation of the application.</short>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtDeactivate"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnDestroy">
-        <short>
-          <var>OnDestroy</var> - Event handler for destruction of the application</short>
+        <short>[?]
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnDropFiles">
-        <short>
-          <var>OnDropFiles</var> - The event invoked when file is dropped on one of the application forms.</short>
-        <descr>The OnDropFiles event is invoked when user drops one or multiple files on one of the application forms. You must enable this feature by setting AllowDropFiles property of form.
-</descr>
+        <short>The default handler for dropped files[?]
+        </short>
         <seealso>
           <link id="TCustomForm.OnDropFiles"/>
           <link id="TCustomForm.AllowDropFiles"/>
@@ -8188,124 +8223,142 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnEndSession">
-        <short>
-          <var>OnEndSession</var> - Event handler for ending a session of the application</short>
+        <short>Event handler for ending a session of the application [or logoff?]
+        </short>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtEndSession"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnGetMainFormHandle">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <seealso>
+          <link id="TApplicationHandlerType.ahtGetMainFormHandle"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnHelp">
-        <short>
-          <var>OnHelp</var> - Event handler when help is required</short>
+        <short>Event handler when help is requested.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtHelp"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnHint">
-        <short>
-          <var>OnHint</var> - Event handler when a hint is required</short>
+        <short>Event handler when a hint is requested.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtHint"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnIdle">
-        <short>
-          <var>OnIdle</var> - event handler for the Idle state</short>
+        <short>Event handler for application entering Idle state.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtIdle"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnIdleEnd">
-        <short>
-          <var>OnIdleEnd</var> - event handler for the end of the Idle state</short>
+        <short>Event handler for application leaving Idle state.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtIdleEnd"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnMinimize">
-        <short>
-          <var>OnMinimize</var> - Event handler for minimising the application's form</short>
+        <short>Event handler for application minimized.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnModalBegin">
-        <short></short>
+        <short>Event handler for a modal form opened (application entering modal mode).
+        </short>
         <descr>
         </descr>
         <seealso>
+          <link id="TApplicationHandlerType.ahtModalBegin"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnModalEnd">
-        <short></short>
+        <short>Event handler for all modal forms closed (application exiting modal mode).
+        </short>
         <descr>
         </descr>
         <seealso>
+          <link id="TApplicationHandlerType.ahtModalEnd"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnQueryEndSession">
-        <short>
-          <var>OnQueryEndSession</var> - event handler for processing a query at the end of a session</short>
+        <short>This event handler can deny to end the session.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtQueryEndSession"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnRestore">
-        <short>
-          <var>OnRestore</var> - Event handler for restoring the application's form from minimised or maximised condition</short>
+        <short>Event handler for application restored (from minimized/maximized state).</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnShortcut">
-        <short>
-          <var>OnShortcut</var> - Event handler when a shortcut key is pressed</short>
+        <short>This event handler can interpret keystrokes as shortcuts,
+          before the normal target handles the key[?].
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtKeyDownBefore"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnShowHint">
-        <short>
-          <var>OnShowHint</var> - Event handler for showing a hint</short>
+        <short>Event handler for showing an Hint.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtShowHint"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnUserInput">
-        <short>
-          <var>OnUserInput</var> - Event handler when user input is required or is occurring</short>
+        <short>[?]</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplicationHandlerType.ahtUserInput"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.ShowButtonGlyphs">
-        <short></short>
-        <descr>
+        <short>Allows to override the platform default for glyphs on buttons.
+        </short>
+        <descr>Some platforms show glyphs on all buttons, others don't.
         </descr>
         <seealso>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.ShowHint">
-        <short>
-          <var>ShowHint</var> - Is a hint required to be shown?</short>
+        <short>Enables Hint display[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.ShowMainForm">
-        <short>
-          <var>ShowMainForm</var> - Is the main form for the application to be shown? Default TRUE</short>
+        <short>Allows to show or hide the main form, on application start.
+          Default TRUE.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.ShowMenuGlyphs">
-        <short></short>
+        <short>Allows to show glyphs in menus[?]</short>
         <descr>
         </descr>
         <seealso>
@@ -8313,7 +8366,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.TaskBarBehavior">
-        <short></short>
+        <short>How forms are represented in the TaskBar.
+        </short>
         <descr>
         </descr>
         <seealso>
@@ -8323,7 +8377,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <element name="TApplication.Title" link="#fcl.CustApp.TCustomApplication.Title"/>
 <!-- constant Visibility: default -->
       <element name="DefHintColor">
-        <short>default hint window color</short>
+        <short>The default hint window color.</short>
         <descr>
         </descr>
         <seealso>
@@ -8331,7 +8385,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- constant Visibility: default -->
       <element name="DefHintPause">
-        <short>default pause before hint window displays (ms)</short>
+        <short>The default pause before hint window displays (ms).</short>
         <descr>
         </descr>
         <seealso>
@@ -8339,7 +8393,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- constant Visibility: default -->
       <element name="DefHintShortPause">
-        <short>default reshow pause</short>
+        <short>The default Hint reshow pause.</short>
         <descr>
         </descr>
         <seealso>
@@ -8347,7 +8401,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- constant Visibility: default -->
       <element name="DefHintHidePause">
-        <short>default pause before hint is hidden (ms)</short>
+        <short>The default pause before hint is hidden (ms).</short>
         <descr>
         </descr>
         <seealso>
@@ -8355,7 +8409,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
       </element>
       <!-- constant Visibility: default -->
       <element name="DefHintHidePausePerChar">
-        <short>added to DefHintHidePause (ms)</short>
+        <short>The default pause added to DefHintHidePause (ms).</short>
         <descr>
         </descr>
         <seealso>
@@ -8956,7 +9010,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function Visibility: default -->
       <element name="ShiftStateToKeys">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <errors>
@@ -9000,7 +9054,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function Visibility: default -->
       <element name="dbgs">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <errors>
@@ -9022,13 +9076,13 @@ Different operation systems has different preferences regards showing images in 
       </element>
 <!-- alias type Visibility: default -->
       <element name="TFocusState">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- function Visibility: default -->
       <element name="SaveFocusState">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9038,7 +9092,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- procedure Visibility: default -->
       <element name="RestoreFocusState">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9048,7 +9102,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function type Visibility: default -->
       <element name="TGetDesignerFormEvent">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -9080,7 +9134,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function Visibility: default -->
       <element name="GetFirstParentForm">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9093,7 +9147,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function Visibility: default -->
       <element name="GetDesignerForm">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9106,7 +9160,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function Visibility: default -->
       <element name="FindRootDesigner">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9119,7 +9173,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function Visibility: default -->
       <element name="IsAccel">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9135,7 +9189,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- procedure Visibility: default -->
       <element name="NotifyApplicationUserInput">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9145,7 +9199,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function Visibility: default -->
       <element name="GetShortHint">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9158,7 +9212,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function Visibility: default -->
       <element name="GetLongHint">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9171,31 +9225,31 @@ Different operation systems has different preferences regards showing images in 
       </element>
 <!-- variable Visibility: default -->
       <element name="Application">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="Screen">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="ExceptionObject">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="HintWindowClass">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="RequireDerivedFormResource">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <seealso>
@@ -9208,37 +9262,33 @@ Different operation systems has different preferences regards showing images in 
         <descr/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TMessageBoxFunction.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMessageBoxFunction.Text">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMessageBoxFunction.Caption">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TMessageBoxFunction.Flags">
         <short/>
       </element>
       <!-- variable Visibility: default -->
       <element name="MessageBoxFunction">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DefaultBorderIcons">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="CreateWidgetset">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9249,7 +9299,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- procedure Visibility: default -->
       <element name="FreeWidgetSet">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9262,28 +9312,44 @@ Different operation systems has different preferences regards showing images in 
         <seealso/>
       </element>
       <element name="TDefaultMonitor">
-        <short>
-          <var>TDefaultMonitor</var> - enumerated type to specify on which monitor to place the form</short>
-        <descr>dmDesktop - don't change the form position (use the full desktop)
-dmPrimary - place the form on the primary monitor
-dmMainForm - place the form on the same monitor as the main form. If there is no main form then use dmPrimary behavior.
-dmActiveForm - place the form on the same monitor as the current active form. If there is no active form use dmMainForm behavior.</descr>
+        <short>The preferred monitor for showing a form.
+        </short>
+        <descr>
+          <p>When a form is not assigned to a specific monitor,
+            assume the following display context:
+          </p>
+          <ul>
+            <li>
+              dmDesktop - on the full desktop
+            </li><li>
+              dmPrimary - on the primary monitor
+            </li><li>
+              dmMainForm - on the same monitor as the main form. If there is no main form then use dmPrimary behavior.
+            </li><li>
+              dmActiveForm - on the same monitor as the currently active form. If there is no active form use dmMainForm behavior.
+            </li>
+          </ul>
+        </descr>
       </element>
       <element name="TDefaultMonitor.dmDesktop">
-        <short></short>
+        <short>Place the form on the full desktop.</short>
       </element>
       <element name="TDefaultMonitor.dmPrimary">
-        <short></short>
+        <short>Place the form on the primary monitor.</short>
       </element>
       <element name="TDefaultMonitor.dmMainForm">
-        <short></short>
+        <short>Place the form on the same monitor as the main form.
+          If there is no such form then use the primary monitor.
+        </short>
       </element>
       <element name="TDefaultMonitor.dmActiveForm">
-        <short></short>
+        <short>Place the form on the same monitor as the currently active form.
+          If there is no such form then use the primary monitor.
+        </short>
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TPopupMode">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <seealso>
