@@ -563,6 +563,7 @@ type
       GoForward, CheckTabVisible: boolean): TCDTabSheet;
     procedure SelectNextPage(GoForward: boolean; CheckTabVisible: boolean = True);
   published
+    property Align;
     property ActivePage: TCDTabSheet read GetActivePage write SetActivePage;
     property DrawStyle;
     property Caption;
@@ -1926,7 +1927,9 @@ end;
 procedure TCDTabSheet.SetParent(NewParent: TWinControl);
 begin
   inherited SetParent(NewParent);
-  if (NewParent <> nil) and (NewParent is TCDPageControl) then
+  // Code adding tabs added via the object inspector
+  if (csLoading in ComponentState) and
+    (NewParent <> nil) and (NewParent is TCDPageControl) then
   begin
     CDTabControl := NewParent as TCDCustomTabControl;
     TCDPageControl(CDTabControl).AddPage(Self);
@@ -1992,7 +1995,7 @@ var
   CurPage: TCDTabSheet;
   CurStartLeftPos: Integer = 0;
   VisiblePagesStarted: Boolean = False;
-  lTabWidth: Integer;
+  lTabWidth, lTabHeight: Integer;
 begin
   inherited MouseDown(Button, Shift, X, Y);
 
@@ -2005,9 +2008,10 @@ begin
     begin
       FTabCState.TabIndex := i;
       lTabWidth := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_WIDTH, FState, FTabCState);
+      lTabHeight := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_HEIGHT, FState, FTabCState);
       if (X > CurStartLeftPos) and
         (X < CurStartLeftPos + lTabWidth) and
-        (Y < FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_HEIGHT, FState, FTabCState)) then
+        (Y < lTabHeight) then
       begin
         if Self is TCDPageControl then
           (Self as TCDPageControl).PageIndex := i
