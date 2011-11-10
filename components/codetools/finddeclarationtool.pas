@@ -5886,8 +5886,7 @@ begin
   Result:=nil;
   if (UnitNameAtom.StartPos<1) or (UnitNameAtom.EndPos<=UnitNameAtom.StartPos)
   or (UnitNameAtom.EndPos>SrcLen+1) then
-    RaiseException('[TFindDeclarationTool.FindCodeToolForUsedUnit] '
-      +'internal error: invalid UnitNameAtom');
+    exit;
   AnUnitName:=copy(Src,UnitNameAtom.StartPos,
                    UnitNameAtom.EndPos-UnitNameAtom.StartPos);
   if UnitInFileAtom.StartPos>=1 then begin
