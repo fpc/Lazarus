@@ -538,7 +538,8 @@ end;
 procedure TTabControl.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
-  TTabControlStrings(FTabs).TabControlBoundsChange;
+  if FTabs <> nil then
+    TTabControlStrings(FTabs).TabControlBoundsChange;
 end;
 
 class function TTabControl.GetControlClassDefaultSize: TSize;
