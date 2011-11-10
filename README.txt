@@ -36,6 +36,8 @@ Start the IDE with:
   []$ cd your/lazarus/directory
   []$ ./lazarus
 
+Under Ubuntu 10.10 and above you need
+  []$ LIBOVERLAY_SCROLLBAR=0 ./lazarus
 
 --------------------------------------------------------------------------------
 Documentation:
