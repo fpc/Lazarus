@@ -2486,7 +2486,7 @@ begin
     aCanvas.Font.Name := 'default';
   //Font := Self.Font;
   if not IsPrinting and (ScaleY<>0) then
-    ACanvas.Font.Height := -Round(Self.Font.Size * ACanvas.Font.PixelsPerInch / 72 * ScaleY);
+    ACanvas.Font.Height := -Round(Self.Font.Size * 96 / 72 * ScaleY);
   {$IFDEF DebugLR}
   DebugLnExit('AssignFont (%s) DONE: Self.Font.Size=%d aCanvas.Font.Size=%d',
     [self.Font.Name,Self.Font.Size,ACanvas.Font.Size]);
