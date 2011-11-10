@@ -19,10 +19,19 @@ unit GLGtkGlxContext;
 {$LinkLib GL}
 {$PACKRECORDS C}
 
+{$IFNDEF VER2_4}
+  {$Define UseFPGLX}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, glx, X, XUtil, XLib, gl, InterfaceBase,
+  Classes, SysUtils, LCLProc, LCLType, X, XUtil, XLib, gl, InterfaceBase,
+  {$IFDEF UseFPGLX}
+  glx,
+  {$ELSE}
+  ctypes,
+  {$ENDIF}
   WSLCLClasses,
   {$IFDEF LCLGTK2}
   LMessages, Gtk2Def, gdk2x, glib2, gdk2, gtk2, Gtk2Int,
@@ -32,8 +41,20 @@ uses
   {$ENDIF}
   Controls;
 
+{$IFDEF UseFPGLX}
+type
+  TGLBool = longbool;
+const
+  GLXTrue:longbool = true;
+  GLXFalse:longbool = false;
+{$ELSE}
+type
+  TGLBool = cint;
+const
+  GLXTrue = 1;
+  GLXFalse = 0;
+{$ENDIF}
 // gdkgl
-
 const
 // enum _GDK_GL_CONFIGS
   GDK_GL_NONE                           = 0;
@@ -76,9 +97,9 @@ function gdk_gl_choose_visual(attrlist: Plongint): PGdkVisual;
 function gdk_gl_get_config(visual: PGdkVisual; attrib: longint): longint;
 function gdk_gl_context_new(visual: PGdkVisual; attrlist: PlongInt): PGdkGLContext;
 function gdk_gl_context_share_new(visual: PGdkVisual; sharelist: PGdkGLContext;
-                                  direct: boolean; attrlist: plongint): PGdkGLContext;
+                                  direct: TGLBool; attrlist: plongint): PGdkGLContext;
 function gdk_gl_context_attrlist_share_new(attrlist: Plongint;
-               sharelist: PGdkGLContext; direct: boolean): PGdkGLContext;
+               sharelist: PGdkGLContext; direct: TGLBool): PGdkGLContext;
 function gdk_gl_context_ref(context: PGdkGLContext): PGdkGLContext;
 procedure gdk_gl_context_unref(context:PGdkGLContext);
 function gdk_gl_make_current(drawable: PGdkDrawable;
@@ -157,6 +178,28 @@ type
 
   //PGLXDrawable = ^GLXDrawable;
   GLXDrawable = TXID;
+
+{$IFNDEF UseFPGLX}
+{ GLX 1.0 functions. }
+
+function glXChooseVisual(dpy:PDisplay; screen:longint; attrib_list:Plongint):PXVisualInfo;cdecl;external;
+procedure glXCopyContext(dpy:PDisplay; src:TGLXContext; dst:TGLXContext; mask: cardinal);cdecl;external;
+function glXCreateContext(dpy:PDisplay; vis:PXVisualInfo; share_list:TGLXContext; direct:TGLBool):TGLXContext;cdecl;external;
+function glXCreateGLXPixmap(dpy:PDisplay; vis:PXVisualInfo; pixmap:TPixmap):GLXPixmap;cdecl;external;
+procedure glXDestroyContext(dpy:PDisplay; ctx:TGLXContext);cdecl;external;
+procedure glXDestroyGLXPixmap(dpy:PDisplay; pix:GLXPixmap);cdecl;external;
+function glXGetConfig(dpy:PDisplay; vis:PXVisualInfo; attrib:longint; var value:longint):longint;cdecl;external;
+function glXGetCurrentContext:TGLXContext;cdecl;external;
+function glXGetCurrentDrawable:GLXDrawable;cdecl;external;
+function glXIsDirect(dpy:PDisplay; ctx:TGLXContext):TGLBool;cdecl;external;
+function glXMakeCurrent(dpy:PDisplay; drawable:GLXDrawable; ctx:TGLXContext):TGLBool;cdecl;external;
+function glXQueryExtension(dpy:PDisplay; var error_base:longint; var event_base:longint):TGLBool;cdecl;external;
+function glXQueryVersion(dpy:PDisplay; major:Plongint; minor:Plongint):TGLBool;cdecl;external;
+procedure glXSwapBuffers(dpy:PDisplay; drawable:GLXDrawable);cdecl;external;
+procedure glXUseXFont(font:TFont; first:longint; count:longint; list_base:longint);cdecl;external;
+procedure glXWaitGL;cdecl;external;
+procedure glXWaitX;cdecl;external;
+{$ENDIF}
 
 procedure g_return_if_fail(b: boolean; const Msg: string);
 begin
@@ -313,7 +356,7 @@ var
   errorb: Integer = 0;
   event: Integer = 0;
 begin
-  Result:=boolean(glXQueryExtension(GetDefaultXDisplay, errorb, event){$IFDEF VER2_2}=true{$ENDIF});
+  Result:=boolean(glXQueryExtension(GetDefaultXDisplay, errorb, event));
 end;
 
 function gdk_gl_choose_visual(attrlist: Plongint): PGdkVisual;
@@ -357,6 +400,7 @@ begin
 
   vi := get_xvisualinfo(visual);
 
+  value:=0;
   if (glXGetConfig(dpy, vi, attrib, value) = 0) then begin
     XFree(vi);
     Result:=value;
@@ -366,18 +410,18 @@ end;
 
 function gdk_gl_context_new(visual: PGdkVisual; attrlist: PlongInt): PGdkGLContext;
 begin
-  Result := gdk_gl_context_share_new(visual, nil, false, attrlist);
+  Result := gdk_gl_context_share_new(visual, nil, GLXFalse, attrlist);
 end;
 
 function gdk_gl_context_share_new(visual: PGdkVisual; sharelist: PGdkGLContext;
-  direct: boolean; attrlist: plongint): PGdkGLContext;
+  direct: TGLBool; attrlist: plongint): PGdkGLContext;
 var
   dpy: PDisplay;
   vi: PXVisualInfo;
   PrivateShareList: PGdkGLContextPrivate;
   PrivateContext: PGdkGLContextPrivate;
   glxcontext: TGLXContext;
-
+{$IFDEF UseFPGLX}
   FBConfig: TGLXFBConfig;
   FBConfigs: PGLXFBConfig;
   FBConfigsCount: Integer;
@@ -391,6 +435,7 @@ var
     GLX_BLUE_SIZE, 1,
     GLX_DOUBLEBUFFER, 1 { true },
     none);
+{$ENDIF}
 
 begin
   Result:=nil;
@@ -398,43 +443,56 @@ begin
   dpy := GetDefaultXDisplay;
 
   {$IFDEF lclgtk2}
-  if visual=nil then ;
-  if GLX_version_1_3(dpy) then begin
-    { use approach recommended since glX 1.3 }
-    FBConfigs:=glXChooseFBConfig(dpy, DefaultScreen(dpy), AttrFB, FBConfigsCount);
-    if FBConfigsCount = 0 then
-      raise Exception.Create('Could not find FB config');
+    if visual=nil then ;
+    {$IFDEF UseFPGLX}
+      if GLX_version_1_3(dpy) then begin
+        { use approach recommended since glX 1.3 }
+        FBConfigsCount:=0;
+        FBConfigs:=glXChooseFBConfig(dpy, DefaultScreen(dpy), AttrFB, FBConfigsCount);
+        if FBConfigsCount = 0 then
+          raise Exception.Create('Could not find FB config');
 
-    { just choose the first FB config from the FBConfigs list.
-      More involved selection possible. }
-    FBConfig := FBConfigs^;
-    vi:=glXGetVisualFromFBConfig(dpy, FBConfig);
-  end else begin
-    vi:=glXChooseVisual(dpy, DefaultScreen(dpy), @attrList[0]);
-  end;
+        { just choose the first FB config from the FBConfigs list.
+          More involved selection possible. }
+        FBConfig := FBConfigs^;
+        vi:=glXGetVisualFromFBConfig(dpy, FBConfig);
+      end else begin
+        vi:=glXChooseVisual(dpy, DefaultScreen(dpy), @attrList[0]);
+      end;
+    {$ELSE}
+      vi:=glXChooseVisual(dpy, DefaultScreen(dpy), @attrList[0]);
+    {$ENDIF}
   {$ELSE}
-  if visual=nil then exit;
-  vi := get_xvisualinfo(visual);
+    if visual=nil then exit;
+    vi := get_xvisualinfo(visual);
   {$ENDIF}
   if vi=nil then
     raise Exception.Create('gdk_gl_context_share_new no visual found');
 
   PrivateShareList:=PGdkGLContextPrivate(sharelist);
 
-  if GLX_version_1_3(dpy) then begin
-    //DebugLn('GLX Version 1.3 context creation');
-    if (sharelist<>nil) then
-      glxcontext := glXCreateNewContext(dpy, FBConfig, GLX_RGBA_TYPE,
-                                        PrivateShareList^.glxcontext, true)
-    else
-      glxcontext := glXCreateNewContext(dpy, FBConfig, GLX_RGBA_TYPE, nil, true);
-  end else begin
+  {$IFDEF UseFPGLX}
+    if GLX_version_1_3(dpy) then begin
+      //DebugLn('GLX Version 1.3 context creation');
+      if (sharelist<>nil) then
+        glxcontext := glXCreateNewContext(dpy, FBConfig, GLX_RGBA_TYPE,
+                                          PrivateShareList^.glxcontext, true)
+      else
+        glxcontext := glXCreateNewContext(dpy, FBConfig, GLX_RGBA_TYPE, nil, true);
+    end else begin
+      if (sharelist<>nil) then
+        glxcontext := glXCreateContext(dpy, vi, PrivateShareList^.glxcontext,
+                                       direct)
+      else
+        glxcontext := glXCreateContext(dpy, vi, nil, direct);
+    end;
+  {$ELSE}
     if (sharelist<>nil) then
       glxcontext := glXCreateContext(dpy, vi, PrivateShareList^.glxcontext,
                                      direct)
     else
       glxcontext := glXCreateContext(dpy, vi, nil, direct);
-  end;
+  {$ENDIF}
 
   XFree(vi);
   if (glxcontext = nil) then exit;
@@ -448,7 +506,7 @@ begin
 end;
 
 function gdk_gl_context_attrlist_share_new(attrlist: Plongint;
-  sharelist: PGdkGLContext; direct: boolean): PGdkGLContext;
+  sharelist: PGdkGLContext; direct: TGLBool): PGdkGLContext;
 var
   visual: PGdkVisual;
 begin
@@ -653,7 +711,7 @@ begin
 
   sharelist := nil;
   if share <> nil then sharelist := share^.glcontext;
-  glcontext := gdk_gl_context_share_new(visual, sharelist, true, attrlist);
+  glcontext := gdk_gl_context_share_new(visual, sharelist, GLXTrue, attrlist);
   if (glcontext = nil) then exit;
 
   {$IFNDEF MSWindows}
