@@ -34,7 +34,7 @@ interface
 {$I gtk2defines.inc}
 
 uses
-  ctypes,
+  ctypes{%H-},
   {$ifdef Unix}
   BaseUnix, Unix,
   {$endif}
@@ -47,13 +47,13 @@ uses
 
 
   // LCL
-  FileUtil, Translations, ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts,
+  FileUtil, Dialogs, Controls, Forms, LCLStrConsts,
   LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
   Graphics, Menus, Themes, WSLCLClasses,
 
-  Buttons, StdCtrls, CheckLst, PairSplitter,
-  ComCtrls, Calendar, Arrow, Spin,
-  ExtCtrls, FileCtrl, LResources,
+  Buttons, StdCtrls, CheckLst,
+  ComCtrls, Spin,
+  ExtCtrls, LResources,
 
   gdk2pixbuf, gtk2, gdk2, glib2, Pango,
   InterfaceBase,
@@ -346,7 +346,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
-    function Find(const S: String; var Index: Integer): Boolean;
+    function Find(const S: String; out Index: Integer): Boolean;
     function IndexOf(const S: String): Integer; override;
     procedure Insert(Index: Integer; const S: String); override;
     procedure Move(CurIndex, NewIndex: Integer); override;
@@ -376,14 +376,14 @@ uses
 {$ifdef Windows}
   Gtk2Windows,
 {$endif}
-  Gtk2WSFactory,
+  Gtk2WSFactory{%H-},
   Gtk2WSStdCtrls,
   Gtk2WSControls,
   Gtk2WSCheckLst,
   Gtk2WSPrivate,
   Gtk2Themes,
 ////////////////////////////////////////////////////
-  Gtk2Debug;
+  Gtk2Debug{%H-};
 
 {$include gtk2widgetset.inc}
 {$include gtk2winapi.inc}
@@ -806,7 +806,7 @@ begin
   end;
 end;
 
-function TGtkListStoreStringList.Find(const S: String; var Index: Integer): Boolean;
+function TGtkListStoreStringList.Find(const S: String; out Index: Integer): Boolean;
 var
   L, R, I: Integer;
   CompareRes: Integer;
@@ -836,6 +836,7 @@ end;
 
 function TGtkListStoreStringList.IndexOf(const S: String): Integer;
 begin
+  Result := -1;
   BeginUpdate;
   if FSorted then
   begin
@@ -1068,7 +1069,6 @@ begin
     TObject(ListOfFileSelFilterEntry[i]).Free;
   ListOfFileSelFilterEntry.Free;
 end;
-
 
 procedure InternalInit;
 var
