@@ -24,11 +24,13 @@ type
     CDCheckBox3: TCDCheckBox;
     CDEdit1: TCDEdit;
     CDEdit2: TCDEdit;
-    CDScrollBar1: TCDScrollBar;
-    CDScrollBar2: TCDScrollBar;
+    sbCommon1: TCDScrollBar;
+    sbCommon2: TCDScrollBar;
+    trackScrollBarPageSize: TCDTrackBar;
     CheckBox2: TCheckBox;
     Label14: TLabel;
     Label15: TLabel;
+    Label16: TLabel;
     listviewCommon: TCDListView;
     progressCommon3: TCDProgressBar;
     progressCommon2: TCDProgressBar;
@@ -41,8 +43,8 @@ type
     CDRadioButton3: TCDRadioButton;
     CDStaticText1: TCDStaticText;
     CDTrackBar2: TCDTrackBar;
-    ScrollBar1: TScrollBar;
-    ScrollBar2: TScrollBar;
+    sbNative1: TScrollBar;
+    sbNative2: TScrollBar;
     trackChangeProgress: TCDTrackBar;
     CDTrackBar4: TCDTrackBar;
     editWinXP: TCDEdit;
@@ -125,6 +127,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure HandleClick(Sender: TObject);
     procedure trackChangeProgressChange(Sender: TObject);
+    procedure trackScrollBarPageSizeChange(Sender: TObject);
   private
     { private declarations }
   public
@@ -178,6 +181,14 @@ begin
   progressCommon2.Position := trackChangeProgress.Position;
   progressCommon3.Position := trackChangeProgress.Position;
   progressCommon4.Position := trackChangeProgress.Position;
+end;
+
+procedure TForm1.trackScrollBarPageSizeChange(Sender: TObject);
+begin
+  sbNative1.PageSize := trackScrollBarPageSize.Position;
+  sbNative2.PageSize := trackScrollBarPageSize.Position;
+  sbCommon1.PageSize := trackScrollBarPageSize.Position;
+  sbCommon2.PageSize := trackScrollBarPageSize.Position;
 end;
 
 end.

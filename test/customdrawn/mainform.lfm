@@ -305,7 +305,7 @@ object Form1: TForm1
     object pageComboBoxes: TPage
     end
     object pageScrollBars: TPage
-      object ScrollBar1: TScrollBar
+      object sbNative1: TScrollBar
         Left = 8
         Height = 17
         Top = 24
@@ -313,7 +313,7 @@ object Form1: TForm1
         PageSize = 0
         TabOrder = 0
       end
-      object ScrollBar2: TScrollBar
+      object sbNative2: TScrollBar
         Left = 56
         Height = 121
         Top = 48
@@ -338,7 +338,7 @@ object Form1: TForm1
         Caption = 'dsCommon'
         ParentColor = False
       end
-      object CDScrollBar1: TCDScrollBar
+      object sbCommon1: TCDScrollBar
         Left = 152
         Height = 17
         Top = 24
@@ -350,7 +350,7 @@ object Form1: TForm1
         Kind = sbHorizontal
         TabStop = False
       end
-      object CDScrollBar2: TCDScrollBar
+      object sbCommon2: TCDScrollBar
         Left = 192
         Height = 121
         Top = 48
@@ -361,6 +361,25 @@ object Form1: TForm1
         DrawStyle = dsDefault
         Kind = sbVertical
         TabStop = False
+      end
+      object trackScrollBarPageSize: TCDTrackBar
+        Left = 88
+        Height = 32
+        Top = 184
+        Width = 176
+        Max = 70
+        Min = 0
+        OnChange = trackScrollBarPageSizeChange
+        Position = 0
+        DrawStyle = dsDefault
+      end
+      object Label16: TLabel
+        Left = 18
+        Height = 17
+        Top = 186
+        Width = 60
+        Caption = 'PageSize:'
+        ParentColor = False
       end
     end
     object pageGroupBoxes: TPage
