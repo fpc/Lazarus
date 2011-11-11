@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CONFIG>
+  <LazReport>
+    <Version Value="25"/>
+    <Title Value=""/>
+    <Subject Value=""/>
+    <KeyWords Value=""/>
+    <Comments Value=""/>
+    <ReportVersionBuild Value=""/>
+    <ReportVersionMajor Value=""/>
+    <ReportVersionMinor Value=""/>
+    <ReportVersionRelease Value=""/>
+    <ReportAutor Value=""/>
+    <Pages>
+      <PrintToDefault Value="False"/>
+      <DoublePass Value="True"/>
+      <SelectedPrinter Value="Microsoft Office Document Image Writer"/>
+      <PageCount Value="1"/>
+      <Page1>
+        <Name Value="Page1"/>
+        <ClassName Value="TfrPageReport"/>
+        <Visible Value="1"/>
+        <Width Value="1"/>
+        <Height Value="1" PageType="0"/>
+        <PgSize Value="9"/>
+        <Margins>
+          <left Value="0"/>
+          <Top Value="0"/>
+          <Right Value="0"/>
+          <Bottom Value="0"/>
+        </Margins>
+        <Orientation Value="poPortrait"/>
+        <UseMargins Value="True"/>
+        <PrintToPrevPage Value="False"/>
+        <ColCount Value="1"/>
+        <ColGap Value="0"/>
+        <LayoutOrder Value="loColumns"/>
+        <ObjectCount Value="12"/>
+        <Object1>
+          <Name Value="RoundRect1"/>
+          <ClassName Value="TfrRoundRectView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="56"/>
+            <Top Value="44"/>
+            <Width Value="140"/>
+            <Height Value="90"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value="Curva 10&#xD;&#xA;Ancho de sombra 6&#xD;&#xA;Sin enmarcar&#xD;&#xA;"/>
+            <Script Value=""/>
+            <ShowGradian Value="0"/>
+            <GradianStyle Value="gsHorizontal"/>
+            <ShadowColor Value="clGray"/>
+            <ShadowWidth Value="6"/>
+            <RoundRect Value="1"/>
+            <RoundRectCurve Value="10"/>
+          </Data>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object1>
+        <Object2>
+          <Name Value="RoundRect2"/>
+          <ClassName Value="TfrRoundRectView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="212"/>
+            <Top Value="44"/>
+            <Width Value="140"/>
+            <Height Value="90"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clRed"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value="Curva 10&#xD;&#xA;Ancho de sombra 6&#xD;&#xA;Enmarcado&#xD;&#xA;"/>
+            <Script Value=""/>
+            <ShowGradian Value="0"/>
+            <GradianStyle Value="gsHorizontal"/>
+            <ShadowColor Value="clGray"/>
+            <ShadowWidth Value="6"/>
+            <RoundRect Value="1"/>
+            <RoundRectCurve Value="10"/>
+          </Data>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object2>
+        <Object3>
+          <Name Value="RoundRect3"/>
+          <ClassName Value="TfrRoundRectView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="368"/>
+            <Top Value="44"/>
+            <Width Value="140"/>
+            <Height Value="90"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clYellow"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value="Curva 20&#xD;&#xA;Ancho de sombra 10&#xD;&#xA;Enmarcado&#xD;&#xA;"/>
+            <Script Value=""/>
+            <ShowGradian Value="0"/>
+            <GradianStyle Value="gsHorizontal"/>
+            <ShadowColor Value="clGray"/>
+            <ShadowWidth Value="10"/>
+            <RoundRect Value="1"/>
+            <RoundRectCurve Value="20"/>
+          </Data>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object3>
+        <Object4>
+          <Name Value="RoundRect4"/>
+          <ClassName Value="TfrRoundRectView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="60"/>
+            <Top Value="160"/>
+            <Width Value="140"/>
+            <Height Value="90"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value="Curva disabled&#xD;&#xA;Ancho de sombra 6&#xD;&#xA;Sin enmarcar&#xD;&#xA;"/>
+            <Script Value=""/>
+            <ShowGradian Value="0"/>
+            <GradianStyle Value="gsHorizontal"/>
+            <ShadowColor Value="clGray"/>
+            <ShadowWidth Value="6"/>
+            <RoundRect Value="0"/>
+            <RoundRectCurve Value="10"/>
+          </Data>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object4>
+        <Object5>
+          <Name Value="RoundRect5"/>
+          <ClassName Value="TfrRoundRectView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="216"/>
+            <Top Value="160"/>
+            <Width Value="140"/>
+            <Height Value="90"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value="Curva disabled&#xD;&#xA;Ancho de sombra 6&#xD;&#xA;Enmarcado&#xD;&#xA;"/>
+            <Script Value=""/>
+            <ShowGradian Value="0"/>
+            <GradianStyle Value="gsHorizontal"/>
+            <ShadowColor Value="clGray"/>
+            <ShadowWidth Value="6"/>
+            <RoundRect Value="0"/>
+            <RoundRectCurve Value="10"/>
+          </Data>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object5>
+        <Object6>
+          <Name Value="RoundRect6"/>
+          <ClassName Value="TfrRoundRectView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="372"/>
+            <Top Value="160"/>
+            <Width Value="140"/>
+            <Height Value="90"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clAqua"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="2"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value="Curva disabled&#xD;&#xA;Ancho de sombra 10&#xD;&#xA;Enmarcado&#xD;&#xA;"/>
+            <Script Value=""/>
+            <ShowGradian Value="0"/>
+            <GradianStyle Value="gsHorizontal"/>
+            <ShadowColor Value="clGray"/>
+            <ShadowWidth Value="10"/>
+            <RoundRect Value="0"/>
+            <RoundRectCurve Value="20"/>
+          </Data>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object6>
+        <Object7>
+          <Name Value="RoundRect7"/>
+          <ClassName Value="TfrRoundRectView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="60"/>
+            <Top Value="272"/>
+            <Width Value="140"/>
+            <Height Value="90"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value="Degradado&#xD;&#xA;Vertical&#xD;&#xA;Sin enmarcar&#xD;&#xA;"/>
+            <Script Value=""/>
+            <ShowGradian Value="1"/>
+            <GradianStyle Value="gsHorizontal"/>
+            <ShadowColor Value="clGray"/>
+            <ShadowWidth Value="6"/>
+            <RoundRect Value="0"/>
+            <RoundRectCurve Value="0"/>
+          </Data>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object7>
+        <Object8>
+          <Name Value="RoundRect8"/>
+          <ClassName Value="TfrRoundRectView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="216"/>
+            <Top Value="272"/>
+            <Width Value="140"/>
+            <Height Value="90"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value="Degradado&#xD;&#xA;Horizontal&#xD;&#xA;Enmarcado&#xD;&#xA;"/>
+            <Script Value=""/>
+            <ShowGradian Value="1"/>
+            <GradianStyle Value="gsVertical"/>
+            <ShadowColor Value="clGray"/>
+            <ShadowWidth Value="6"/>
+            <RoundRect Value="0"/>
+            <RoundRectCurve Value="0"/>
+          </Data>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object8>
+        <Object9>
+          <Name Value="RoundRect9"/>
+          <ClassName Value="TfrRoundRectView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="376"/>
+            <Top Value="272"/>
+            <Width Value="140"/>
+            <Height Value="90"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value="degradado&#xD;&#xA;Eliptico&#xD;&#xA;Enmarcado&#xD;&#xA;"/>
+            <Script Value=""/>
+            <ShowGradian Value="1"/>
+            <GradianStyle Value="gsElliptic"/>
+            <ShadowColor Value="clGray"/>
+            <ShadowWidth Value="10"/>
+            <RoundRect Value="0"/>
+            <RoundRectCurve Value="0"/>
+          </Data>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object9>
+        <Object10>
+          <Name Value="RoundRect10"/>
+          <ClassName Value="TfrRoundRectView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="60"/>
+            <Top Value="384"/>
+            <Width Value="140"/>
+            <Height Value="90"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value="Degradado&#xD;&#xA;rectangulol&#xD;&#xA;Sin enmarcar&#xD;&#xA;"/>
+            <Script Value=""/>
+            <ShowGradian Value="1"/>
+            <GradianStyle Value="gsHorizontal"/>
+            <ShadowColor Value="clGray"/>
+            <ShadowWidth Value="6"/>
+            <RoundRect Value="1"/>
+            <RoundRectCurve Value="0"/>
+          </Data>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object10>
+        <Object11>
+          <Name Value="RoundRect11"/>
+          <ClassName Value="TfrRoundRectView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="216"/>
+            <Top Value="384"/>
+            <Width Value="140"/>
+            <Height Value="90"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value="Degradado&#xD;&#xA;centro horiz.&#xD;&#xA;enmarcado&#xD;&#xA;"/>
+            <Script Value=""/>
+            <ShowGradian Value="1"/>
+            <GradianStyle Value="gsHorizontal"/>
+            <ShadowColor Value="clGray"/>
+            <ShadowWidth Value="6"/>
+            <RoundRect Value="1"/>
+            <RoundRectCurve Value="0"/>
+          </Data>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object11>
+        <Object12>
+          <Name Value="RoundRect12"/>
+          <ClassName Value="TfrRoundRectView"/>
+          <Visible Value="1"/>
+          <Typ Value="gtAddIn"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="376"/>
+            <Top Value="384"/>
+            <Width Value="140"/>
+            <Height Value="90"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="558"/>
+            <FormatStr Value=""/>
+            <Memo Value="Degradado&#xD;&#xA;centro vert.&#xD;&#xA;enmarcado&#xD;&#xA;"/>
+            <Script Value=""/>
+            <ShowGradian Value="1"/>
+            <GradianStyle Value="gsHorizontal"/>
+            <ShadowColor Value="clGray"/>
+            <ShadowWidth Value="6"/>
+            <RoundRect Value="1"/>
+            <RoundRectCurve Value="0"/>
+          </Data>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+        </Object12>
+      </Page1>
+      <FVal>
+        <Count Value="0"/>
+      </FVal>
+      <ParentVars Value=""/>
+    </Pages>
+  </LazReport>
+</CONFIG>

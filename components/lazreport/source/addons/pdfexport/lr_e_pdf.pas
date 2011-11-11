@@ -354,6 +354,7 @@ procedure TfrTNPDFExportFilter.ShowRoundRect(View: TfrRoundRectView; x, y, h,
   w: integer);
 var
   Data: TShapeData;
+  SWidth: Integer;
 begin
 
   if view.ShowGradian then
@@ -363,22 +364,32 @@ begin
   else
   begin
 
-    if View.RoundRect then begin
+    SWidth := Round((View.RoundRectCurve/2) * PDFEscx + 1);
+    if View.RoundRect then
+      Data.Radius := SWidth
+    else
+      Data.Radius := 0.0;
 
-      Data.ShapeType := frstRoundRect;
-      Data.FillColor := View.FillColor;
-      Data.FrameColor := View.FrameColor;
-      Data.FrameWidth := View.FrameWidth;
-      Data.FrameStyle := View.FrameStyle;
-      Data.Radius := View.RoundRectCurve div 2;
+    // draw shadow
+    Data.ShapeType := frstRoundRect;
+    Data.FillColor := ColorToRGB(View.ShadowColor);
+    Data.FrameColor := Data.FillColor; //ColorToRGB(View.FrameColor);
+    Data.FrameWidth := 0;
+    Data.FrameStyle := frsSolid;
+    SWidth := Round(View.ShadowWidth * PDFEscx + 1);
+    if View.ShadowWidth>0 then
+      AddShape(Data, x + SWidth, y + SWidth, h - SWidth, w - SWidth);
 
-      AddShape(Data, x, y, h, w);
-
-    end else begin
-      // not supported yet
-      DefaultShowView(View, x, y, h, w);
-
-    end;
+    // draw roundrect
+    Data.ShapeType := frstRoundRect;
+    Data.FillColor := ColorToRGB(View.FillColor);
+    if View.Frames=[] then
+      Data.FrameColor := Data.FillColor
+    else
+      Data.FrameColor := ColorToRGB(View.FrameColor);
+    Data.FrameWidth := View.FrameWidth;
+    Data.FrameStyle := View.FrameStyle;
+    AddShape(Data, x, y, h - SWidth, w - SWidth);
   end;
 end;
 
