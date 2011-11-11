@@ -196,7 +196,8 @@ end;
 procedure TControlScrollBar.SetRange(const AValue: Integer);
 begin
   if not (csLoading in FControl.ComponentState) then
-    SetAutoScroll(False);
+    if FControl is TScrollingWinControl then
+      TScrollingWinControl(FControl).FAutoScroll := False;
 
   InternalSetRange(AValue);
 end;
@@ -381,12 +382,6 @@ begin
     NewPos := FRange;
   InvalidateScrollInfo;
   SetPosition(NewPos);
-end;
-
-procedure TControlScrollBar.SetAutoScroll(const AValue: Boolean);
-begin
-  if FControl is TScrollingWinControl then
-    TScrollingWinControl(FControl).FAutoScroll := False;
 end;
 
 procedure TControlScrollBar.ControlUpdateScrollBars;

@@ -114,7 +114,6 @@ type
     procedure ControlUpdateScrollBars; virtual;
     procedure InternalSetRange(const AValue: Integer); virtual;
     procedure ScrollHandler(var Message: TLMScroll);
-    procedure SetAutoScroll(const AValue: Boolean); virtual;
     procedure SetIncrement(const AValue: TScrollBarInc); virtual;
     procedure SetPage(const AValue: TScrollBarInc); virtual;
     procedure SetPosition(const Value: Integer); virtual;
