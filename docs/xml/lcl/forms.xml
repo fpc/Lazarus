@@ -328,28 +328,22 @@
             This class allows access to (one of) these integrated scrollbars.
           </p><p>
             A scrollable control has both a physical (visible) client size,
-            and a virtual (scrollable) client size.
+            and a logical (virtual) client size.
           </p><p>
-            The <var>Range</var> property reflects the virtual client size,
-            e.g. the total number of lines in an file.
+            The <var>Range</var> property reflects the total virtual client size,
+            in pixels.
           </p><p>
-            The <var>Page</var> property then reflects the number of lines,
-            actually visible in the scrollable control.
+            The <var>Page</var> property corresponds to physical (visible) client size,
+            in pixels, excluding[?] the scrollbars.
             It also determines the size of the slider, relative to the total Range.
           </p><p>
-            The <var>Position</var> property then reflects
-            the number of the first visible line in the scrollable control,
-            equivalent to the top coordinate of the slider.
+            The <var>Position</var> property reflects the virtual origin of the
+            visible client area, equivalent to the top coordinate of the slider.
             The Position can be changed by the user or by code.
           </p><p>
             Scrollbars usually appear only when Range is higher than Page,
             i.e. when not the entire content can be shown at the same time.
             See the ScrollBar property of the scrolling control for details.
-          </p><p>
-            The Range and Position can be limited to 16 bit (TScrollBarInc) precision internally,
-            what is sufficient for painting the scrollbar widget,
-            but may not be enough for the virtual content.
-            See the actual scrolling control for details.
           </p>
         </descr>
         <seealso>
@@ -804,11 +798,19 @@
       </element>
 <!-- object Visibility: default -->
       <element name="TScrollingWinControl">
-        <short>Class of a Window Control that has one or more scroll bars.
+        <short>Class of a windowed control with incorporated scroll bars.
         </short>
-        <descr></descr>
+        <descr>
+          This class introduces a logical (virtual) client area,
+          part of which is visible in the physical (visible) client area.
+          <link id="TControlScrollBar">ScrollBars</link> allow the user to scroll through the logical client area.
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TControlScrollBar"/>
+          <link id="TForm"/>
+          <link id="TScrollBox"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TScrollingWinControl.FHorzScrollBar" link="TScrollingWinControl.HorzScrollBar"/>
@@ -816,7 +818,8 @@
       <element name="TScrollingWinControl.FAutoScroll" link="TScrollingWinControl.AutoScroll"/>
       <!-- variable Visibility: private -->
       <element name="TScrollingWinControl.FIsUpdating">
-        <short/>
+        <short>Prevents recursive updates, True while an update is already in progress.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -833,9 +836,8 @@
       <!-- procedure Visibility: protected -->
       <element name="TScrollingWinControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.AlignControls">
-        <short>
-          <var>AlignControls</var> - calls inherited <var>AlignControls</var>, then calculates sizes for the scrollbars if required</short>
+      <element name="TScrollingWinControl.AlignControls" link="#LCL.Controls.TWinControl.AlignControls">
+        <short>Also calculates sizes for the scrollbars if required.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -849,19 +851,11 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.CreateWnd">
-        <short>
-          <var>CreateWnd</var> - performs inherited <var>CreateWnd</var> then updates ScrollBars</short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
-        </seealso>
-      </element>
+      <element name="TScrollingWinControl.CreateWnd"/>
       <!-- function Visibility: protected -->
       <element name="TScrollingWinControl.GetClientScrollOffset">
-        <short>
-          <var>GetClientScrollOffset</var> - finds the position for scrollbars from the client, if any, otherwise sets default postiions</short>
+        <short>The virtual origin of the physical client area.
+        </short>
         <descr/>
         <errors/>
         <seealso>
@@ -869,12 +863,13 @@
         </seealso>
       </element>
       <element name="TScrollingWinControl.GetClientScrollOffset.Result">
-        <short/>
+        <short>The ScrollBar Positions, or (0,0) if no scrollbars in use.
+        </short>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TScrollingWinControl.GetLogicalClientRect">
-        <short>
-          <var>GetLogicalClientRect</var> - adjusts client rect to allow for size of scrollbars</short>
+      <element name="TScrollingWinControl.GetLogicalClientRect" link="#LCL.Controls.TControl.GetLogicalClientRect">
+        <short>Returns the full virtual ClientRect.
+        </short>
         <descr/>
         <errors/>
         <seealso>
@@ -885,9 +880,8 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.DoOnResize">
-        <short>
-          <var>DoOnResize</var> - performs inherited <var>DoOnResize</var> then updates scrollbars if needed</short>
+      <element name="TScrollingWinControl.DoOnResize" link="#LCL.Controls.TControl.DoOnResize">
+        <short>Also updates scrollbars if needed.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -896,8 +890,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TScrollingWinControl.WMHScroll">
-        <short>
-          <var>WMHScroll</var> - system message method for horizontal scrolling</short>
+        <short>Delegates scroll messages to the horizontal ScrollBar.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -907,8 +901,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TScrollingWinControl.WMVScroll">
-        <short>
-          <var>WMVScroll</var> - system message method for vertical scroling</short>
+        <short>Delegates scroll messages to the vertical ScrollBar.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -918,29 +912,28 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TScrollingWinControl.ComputeScrollbars">
-        <short>
-          <var>ComputeScrollbars</var> - returns True if scroll bar positions need to be computed</short>
+        <short>Updates Page, AutoRange, IsScrollBarVisible, returns True on changes.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TScrollingWinControl.ComputeScrollbars.Result">
-        <short/>
+        <short>True when something changed.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TScrollingWinControl.ScrollbarHandler">
-        <short>
-          <var>ScrollbarHandler</var> - method for handling scroll bars of specified kind at specified position</short>
+        <short>Tells the widget to scroll the client area, in the given direction.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TScrollingWinControl.ScrollbarHandler.ScrollKind">
-        <short/>
+        <short>The direction to scroll.</short>
       </element>
       <element name="TScrollingWinControl.ScrollbarHandler.OldPosition">
-        <short/>
+        <short>The previous scroll Position, needed to calculate the relative scroll amount.</short>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TScrollingWinControl.SetAutoScroll" link="TScrollingWinControl.AutoScroll"/>
@@ -949,8 +942,7 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TScrollingWinControl.Loaded">
-        <short>
-          <var>Loaded</var> - calls inherited <var>Loaded</var> and updates scroll bars</short>
+        <short>Also initializes the scroll bars.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -958,15 +950,7 @@
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.SetAutoSize">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TScrollingWinControl.SetAutoSize" link="#lcl.Controls.TControl.AutoSize"/>
       <element name="TScrollingWinControl.SetAutoSize.Value">
         <short></short>
       </element>
@@ -979,32 +963,24 @@
       <element name="TScrollingWinControl.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TScrollingWinControl.UpdateScrollbars">
-        <short>Update the position of the scroll indicatores in the scroll bars</short>
-        <descr>Checks if the scroll bars are in process of being loaded or destroyed; <br/>
-if so, or if there is no valid handle, exit. <br/>
-If the indicators are valid, re-computes position etc</descr>
+        <short>Initializes or updates the ScrollBars.
+        </short>
+        <descr>Ignores recursive calls.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TScrollingWinControl.GetControlClassDefaultSize">
-        <short>
-          <var>GetControlClassDefaultSize</var> inserts its own defaults, overriding inherited values</short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
-        </seealso>
-      </element>
-      <!-- function result Visibility: default -->
+      <element name="TScrollingWinControl.GetControlClassDefaultSize"/>
       <element name="TScrollingWinControl.GetControlClassDefaultSize.Result">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TScrollingWinControl.ScrollBy">
-        <short>
-          <var>ScrollBy</var> - amount by which to scroll</short>
-        <descr/>
+        <short>Tells the widget to scroll the client area relative.
+        </short>
+        <descr>The still visible part doesn't deserve a repaint (optimization).
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -1014,30 +990,28 @@ If the indicators are valid, re-computes position etc</descr>
       <element name="TScrollingWinControl.ScrollBy.DeltaY">
         <short/>
       </element>
-      <element name="TScrollingWinControl.HasVisibleScrollbars.Result">
-        <short/>
-      </element>
       <!-- property Visibility: published -->
       <element name="TScrollingWinControl.AutoScroll">
-        <short>Does auto-scrolling apply?</short>
-        <descr>Reads or writes a flag to determine auto-scrolling</descr>
+        <short>Allows to show ScrollBars only if needed (when True).
+        </short>
+        <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollingWinControl.HorzScrollBar">
-        <short>The properties of the horizontal scroll bar</short>
+        <short>The horizontal scroll bar (LCL control).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollingWinControl.VertScrollBar">
-        <short>The properties of the vertical scroll bar</short>
+        <short>The vertical scroll bar (LCL control).</short>
         <descr/>
         <seealso/>
       </element>
 <!-- object Visibility: default -->
       <element name="TScrollBox">
-        <short>A box with scroll bars.</short>
+        <short>A windowed control with scroll bars.</short>
         <descr/>
         <errors/>
         <seealso/>
