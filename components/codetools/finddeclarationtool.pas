@@ -482,12 +482,29 @@ type
 
   TFindDeclarationParams = class(TObject)
   private
-    FirstFoundProc: PFoundProc;//list of all saved PFoundProc
-    LastFoundProc: PFoundProc;
+    FFoundProcStackFirst: PFoundProc;//list of all saved PFoundProc
+    FFoundProcStackLast: PFoundProc;
     FExtractedOperand: string;
     procedure ClearFoundProc;
     procedure FreeFoundProc(aFoundProc: PFoundProc; FreeNext: boolean);
     procedure RemoveFoundProcFromList(aFoundProc: PFoundProc);
+  private
+    procedure SetFoundProc(const ProcContext: TFindContext);
+    procedure ChangeFoundProc(const ProcContext: TFindContext;
+                              ProcCompatibility: TTypeCompatibility;
+                              ParamCompatibilityList: TTypeCompatibilityList);
+  private
+    procedure SetGenericParamValues(SpecializeParamsTool: TFindDeclarationTool;
+                SpecializeNode: TCodeTreeNode);
+    function FindGenericParamType: Boolean;
+    procedure AddOperandPart(aPart: string);
+    property ExtractedOperand: string read FExtractedOperand;
+    function IsFoundProcFinal: boolean;
+    procedure PrettifyResult;
+    procedure ConvertResultCleanPosToCaretPos;
+    procedure ClearResult(CopyCacheFlags: boolean);
+    procedure ClearInput;
+    procedure WriteDebugReport;
   public
     // input parameters:
     Flags: TFindDeclarationFlags;
@@ -520,22 +537,6 @@ type
     procedure SetResult(NodeCacheEntry: PCodeTreeNodeCacheEntry);
     procedure SetIdentifier(NewIdentifierTool: TFindDeclarationTool;
                 NewIdentifier: PChar; NewOnIdentifierFound: TOnIdentifierFound);
-  private
-    procedure SetFirstFoundProc(const ProcContext: TFindContext);
-    procedure SetGenericParamValues(SpecializeParamsTool: TFindDeclarationTool;
-                SpecializeNode: TCodeTreeNode);
-    function FindGenericParamType: Boolean;
-    procedure AddOperandPart(aPart: string);
-    property ExtractedOperand: string read FExtractedOperand;
-    procedure ChangeFoundProc(const ProcContext: TFindContext;
-                              ProcCompatibility: TTypeCompatibility;
-                              ParamCompatibilityList: TTypeCompatibilityList);
-    function IsFinal: boolean;
-    procedure PrettifyResult;
-    procedure ConvertResultCleanPosToCaretPos;
-    procedure ClearResult(CopyCacheFlags: boolean);
-    procedure ClearInput;
-    procedure WriteDebugReport;
   end;
   
   
@@ -5142,7 +5143,7 @@ begin
       {$ENDIF}
       Result:=ClassContext.Tool.FindIdentifierInContext(Params);
       Params.Load(OldInput,true);
-      if Result and Params.IsFinal then exit;
+      if Result and Params.IsFoundProcFinal then exit;
     end;
   end else begin
     // proc is not a method
@@ -5861,7 +5862,7 @@ begin
                      -[fdfExceptionOnNotFound];
         Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
         Params.Flags:=OldFlags;
-        if Result and Params.IsFinal then exit;
+        if Result and Params.IsFoundProcFinal then exit;
       end else if MissingUnitNamePos=0 then begin
         MissingUnitNamePos:=UnitNameAtom.StartPos;
       end;
@@ -6420,47 +6421,47 @@ begin
     then begin
       // try hidden used unit 'systhrds'
       Result:=FindIdentifierInUsedUnit('SysThrds',Params);
-      if Result and Params.IsFinal then exit;
+      if Result and Params.IsFoundProcFinal then exit;
     end;
     if (CurUnitType>sutHeapTrc)
     and Scanner.InitialValues.IsDefined(ExternalMacroStart+'UseHeapTrcUnit')
     then begin
       // try hidden used unit 'heaptrc'
       Result:=FindIdentifierInUsedUnit('HeapTrc',Params);
-      if Result and Params.IsFinal then exit;
+      if Result and Params.IsFoundProcFinal then exit;
     end;
     if (CurUnitType>sutLineInfo)
     and Scanner.InitialValues.IsDefined(ExternalMacroStart+'UseLineInfo')
     then begin
       // try hidden used unit 'lineinfo'
       Result:=FindIdentifierInUsedUnit('LineInfo',Params);
-      if Result and Params.IsFinal then exit;
+      if Result and Params.IsFoundProcFinal then exit;
     end;
     if (CurUnitType>sutObjPas)
     and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
     and (Scanner.PascalCompiler=pcFPC) then begin
       // try hidden used fpc unit 'objpas'
       Result:=FindIdentifierInUsedUnit('ObjPas',Params);
-      if Result and Params.IsFinal then exit;
+      if Result and Params.IsFoundProcFinal then exit;
     end;
     if (CurUnitType>sutObjCBase)
     and (cmsObjectiveC1 in Scanner.CompilerModeSwitches) then begin
       // try hidden used fpc unit 'objcbase'
       Result:=FindIdentifierInUsedUnit('ObjCBase',Params);
-      if Result and Params.IsFinal then exit;
+      if Result and Params.IsFoundProcFinal then exit;
     end;
     if (CurUnitType>sutObjC)
     and (cmsObjectiveC1 in Scanner.CompilerModeSwitches) then begin
       // try hidden used fpc unit 'objc'
       Result:=FindIdentifierInUsedUnit('ObjC',Params);
-      if Result and Params.IsFinal then exit;
+      if Result and Params.IsFoundProcFinal then exit;
     end;
     if (CurUnitType>sutMacPas)
     and (Scanner.CompilerMode=cmMacPas)
     and (Scanner.PascalCompiler=pcFPC) then begin
       // try hidden used fpc unit 'macpas'
       Result:=FindIdentifierInUsedUnit('MacPas',Params);
-      if Result and Params.IsFinal then exit;
+      if Result and Params.IsFoundProcFinal then exit;
     end;
     if (CurUnitType>sutSystem) then begin
       // try hidden used unit 'system'
@@ -6475,7 +6476,7 @@ begin
         Params.Load(OldInput,true);
       end;
     end;
-    if Result and Params.IsFinal then exit;
+    if Result and Params.IsFoundProcFinal then exit;
   end;
 end;
 
@@ -8329,7 +8330,7 @@ begin
       ' FIRST PROC'
       );
       {$ENDIF}
-      Params.SetFirstFoundProc(FoundContext);
+      Params.SetFoundProc(FoundContext);
       exit;
     end;
     
@@ -10571,8 +10572,9 @@ begin
     // the FoundProc is saved (release the later FoundProcs,
     // which are not needed any more)
     FreeFoundProc(FoundProc^.Next,true)
-  else
-    DebugLn(['TFindDeclarationParams.ClearFoundProc ',dbgs(FoundProc),' Potential memory leak created here! Build with -gh.']);
+  else begin
+    // the FoundProc is owned, that means someo other function is reponsible for freeing it
+  end;
   FoundProc:=nil;
 end;
 
@@ -10583,7 +10585,7 @@ begin
   //DebugLn(['TFindDeclarationParams.FreeFoundProc ',dbgs(aFoundProc)]);
   while aFoundProc<>nil do begin
     if (aFoundProc^.Owner<>Self)
-    and ((FirstFoundProc=aFoundProc)
+    and ((FFoundProcStackFirst=aFoundProc)
          or (aFoundProc^.Prior<>nil) or (aFoundProc^.Next<>nil))
     then
       raise Exception.Create('FoundProc is in list, but not owned');
@@ -10612,10 +10614,11 @@ end;
 procedure TFindDeclarationParams.RemoveFoundProcFromList(aFoundProc: PFoundProc);
 begin
   //DebugLn(['TFindDeclarationParams.RemoveFoundProcFromList ',dbgs(aFoundProc)]);
-  if FirstFoundProc=aFoundProc then
-    FirstFoundProc:=aFoundProc^.Next;
-  if LastFoundProc=aFoundProc then
-    LastFoundProc:=aFoundProc^.Next;
+  if aFoundProc^.Owner<>Self then exit;
+  if FFoundProcStackFirst=aFoundProc then
+    FFoundProcStackFirst:=aFoundProc^.Next;
+  if FFoundProcStackLast=aFoundProc then
+    FFoundProcStackLast:=aFoundProc^.Next;
   with aFoundProc^ do begin
     if Next<>nil then
       Next^.Prior:=Prior;
@@ -10636,7 +10639,7 @@ end;
 destructor TFindDeclarationParams.Destroy;
 begin
   Clear;
-  FreeFoundProc(FirstFoundProc,true);
+  FreeFoundProc(FFoundProcStackFirst,true);
   inherited Destroy;
 end;
 
@@ -10646,6 +10649,27 @@ begin
   ClearFoundProc;
   ClearResult(false);
   OnTopLvlIdentifierFound:=nil;
+end;
+
+procedure TFindDeclarationParams.Save(out Input: TFindDeclarationInput);
+begin
+  Input.Flags:=Flags;
+  Input.Identifier:=Identifier;
+  Input.ContextNode:=ContextNode;
+  Input.OnIdentifierFound:=OnIdentifierFound;
+  Input.IdentifierTool:=IdentifierTool;
+  Input.FoundProc:=FoundProc;
+  if (FoundProc<>nil) and (FoundProc^.Owner=nil) then begin
+    // add to list of saved FoundProcs
+    //DebugLn(['TFindDeclarationParams.Save ',dbgs(FoundProc)]);
+    FoundProc^.Prior:=FFoundProcStackLast;
+    if FFoundProcStackLast<>nil then
+      FFoundProcStackLast^.Next:=FoundProc;
+    FFoundProcStackLast:=FoundProc;
+    if FFoundProcStackFirst=nil then
+      FFoundProcStackFirst:=FoundProc;
+    FoundProc^.Owner:=Self;
+  end;
 end;
 
 procedure TFindDeclarationParams.Load(Input: TFindDeclarationInput;
@@ -10659,7 +10683,7 @@ begin
   OnIdentifierFound:=Input.OnIdentifierFound;
   IdentifierTool:=Input.IdentifierTool;
   if FoundProc<>Input.FoundProc then begin
-    // free current FoundProc (probably not yet saved)
+    // clear current FoundProc
     if FoundProc<>nil then
       ClearFoundProc;
     // use saved FoundProc
@@ -10672,27 +10696,6 @@ begin
         RemoveFoundProcFromList(FoundProc);
       end;
     end;
-  end;
-end;
-
-procedure TFindDeclarationParams.Save(out Input: TFindDeclarationInput);
-begin
-  Input.Flags:=Flags;
-  Input.Identifier:=Identifier;
-  Input.ContextNode:=ContextNode;
-  Input.OnIdentifierFound:=OnIdentifierFound;
-  Input.IdentifierTool:=IdentifierTool;
-  Input.FoundProc:=FoundProc;
-  if (FoundProc<>nil) and (FoundProc^.Owner=nil) then begin
-    // add to list of saves FoundProcs
-    //DebugLn(['TFindDeclarationParams.Save ',dbgs(FoundProc)]);
-    FoundProc^.Prior:=LastFoundProc;
-    if LastFoundProc<>nil then
-      LastFoundProc^.Next:=FoundProc;
-    LastFoundProc:=FoundProc;
-    if FirstFoundProc=nil then
-      FirstFoundProc:=FoundProc;
-    FoundProc^.Owner:=Self;
   end;
 end;
 
@@ -10812,7 +10815,7 @@ begin
   ClearFoundProc;
 end;
 
-procedure TFindDeclarationParams.SetFirstFoundProc(
+procedure TFindDeclarationParams.SetFoundProc(
   const ProcContext: TFindContext);
 begin
   //DebugLn(['TFindDeclarationParams.SetFirstFoundProc Old=',dbgs(FoundProc)]);
@@ -10894,7 +10897,7 @@ begin
   end;
 end;
 
-function TFindDeclarationParams.IsFinal: boolean;
+function TFindDeclarationParams.IsFoundProcFinal: boolean;
 begin
   Result:=(FoundProc=nil)
        or (FoundProc^.CacheValid and (FoundProc^.ProcCompatibility=tcExact));
