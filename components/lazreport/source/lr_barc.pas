@@ -254,7 +254,8 @@ begin
   Memo1.Assign(Memo);
 
   if (Memo1.Text <> '') and (pos('[',Memo1.Strings[0])=0) and
-    ((bcNames[Param.cBarType, 1] = 'A') or IsNumeric(Memo1.Strings[0]))  then
+    ((bcNames[Param.cBarType, 1] = 'A') or IsNumeric(Memo1.Strings[0]) or
+      Barc.BarcodeTypeChecked(Param.cBarType) )  then
   begin
       BarC.Text := Memo1.Strings[0];
       BarC.Checksum := Param.cCheckSum;
@@ -593,7 +594,6 @@ begin
   XML.SetValue(Path+'BarCode/CheckSum', GetSaveProperty('CheckSum'));
   XML.SetValue(Path+'BarCode/Zoom', GetSaveProperty('Zoom'));
 end;
-
 
 //--------------------------------------------------------------------------
 procedure TfrBarCodeForm.FormCreate(Sender: TObject);
