@@ -58,8 +58,6 @@ Version 1.6:
 
 Todo (missing features)
 -----------------------
-- Code128C not implemented (could someone else
-  do this for me ?)
 - Wrapper Class for Quick Reports
 
 
@@ -142,6 +140,7 @@ type
 
     function GetWidth: integer;
     procedure SetText(AValue: string);
+    function CleanEANValue(const AValue: string; const ASize:Byte): string;
 
   protected
     { Protected-Deklarationen }
@@ -152,6 +151,7 @@ type
     constructor Create(aOwner: TComponent); override;
     procedure DrawBarcode(Canvas: TCanvas);
     procedure DrawText(Canvas: TCanvas);
+    function BarcodeTypeChecked(AType: TBarcodeType): boolean;
 
     property CodeText: string read FCodetext write FCodeText;
   published
@@ -517,22 +517,16 @@ const
 function TBarcode.Code_EAN8: string;
 var
   i, j: integer;
-  tmp: string;
 begin
-  if FCheckSum then
-  begin
-    tmp := '00000000' + FText;
-    tmp := getEAN(copy(tmp, length(tmp) - 6, 7) + '0');
-  end
-  else
-    tmp := Ftext;
+
+  FCodeText := CleanEANValue(FText, 8);
 
   Result := '505';   // Startcode
 
   for i := 1 to 4 do
     for j := 1 to 4 do
     begin
-      Result := Result + tabelle_EAN_A[tmp[i], j];
+      Result := Result + tabelle_EAN_A[FCodeText[i], j];
     end;
 
   Result := Result + '05050';   // Trennzeichen
@@ -540,7 +534,7 @@ begin
   for i := 5 to 8 do
     for j := 1 to 4 do
     begin
-      Result := Result + tabelle_EAN_C[tmp[i], j];
+      Result := Result + tabelle_EAN_C[FCodeText[i], j];
     end;
 
   Result := Result + '505';   // Stopcode
@@ -587,27 +581,7 @@ var
   tmp: string;
 begin
 
-  // enforce a 13 char string by adding a 0
-  // verifier digit if necesary or calc it if
-  // checksum was specified
-  tmp := FText;
-  lk := Length(tmp);
-  if lk<13 then begin
-    tmp := stringofchar('0', 12-lk) + tmp + '0';
-    // TODO: if not FCheckSum was specified
-    //       resulting barcode might be invalid
-    //       as a '0' checksum digit was forced.
-  end;
-
-  if FCheckSum then
-    FCodeText := getEAN(copy(tmp, 1, 12) + '0')
-  else
-    FCodeText := copy(tmp, 1, 13);
-
-  // check if there is any strange char in string
-  for i:=1 to 13 do
-    if not (FCodeText[i] in ['0'..'9']) then
-      FCodeText[i] := '0';
+  FCodeText := CleanEanValue(FText, 13);
 
   LK := StrToInt(FCodeText[1]);
   tmp := copy(FCodeText, 2, 12);
@@ -1028,45 +1002,69 @@ const
 
 var
   i, idx: integer;
-  startcode: string;
+  startcode, tmp: string;
   vChecksum: integer;
 
 begin
+
   vChecksum := 0; // Added by TZ
   case FTyp of
     bcCode128A:
     begin
       vChecksum := 103;
       startcode := StartA;
+      FCodeText := FText;
     end;
     bcCode128B:
     begin
       vChecksum := 104;
       startcode := StartB;
+      FCodeText := FText;
     end;
     bcCode128C:
     begin
       vChecksum := 105;
       startcode := StartC;
+
+      // make sure we have an even numeric only string
+      FCodeText := '';
+      for i := 1 to Length(FText) do
+        if not (FText[i] in ['0'..'9']) then
+          FCodeText := FCodeText + '0'
+        else
+          FCodeText := FCodeText + FText[i];
+
+      if Odd(Length(FText)) then
+        FCodeText := '0' + FText;
     end;
   end;
 
   Result := Convert(startcode);    // Startcode
 
   if FTyp = bcCode128C then
-    for i := 1 to Length(FText) div 2 do
+  begin
+    tmp := '';
+    i := 1;
+    while i<Length(FCodeText) do
     begin
-      // not implemented !!!
-    end
-  else
-    for i := 1 to Length(FText) do
-    begin
-      idx := Find_Code128AB(FText[i]);
+      tmp := tmp + chr( StrToIntDef(Copy(FCodeText, i, 2), 0) );
+      inc(i,2);
+    end;
+  end else
+    tmp := FCodeText;
+
+  for i := 1 to Length(tmp) do
+  begin
+    if FTyp = bcCode128C then
+      idx := Ord(tmp[i])
+    else begin
+      idx := Find_Code128AB(tmp[i]);
       if idx < 0 then
         idx := Find_Code128AB(' ');
-      Result := Result + Convert(tabelle_128[idx].Data);
-      Inc(vChecksum, idx * i);
     end;
+    Result := Result + Convert(tabelle_128[idx].Data);
+    Inc(vChecksum, idx * i);
+  end;
 
   vChecksum := vChecksum mod 103;
   Result := Result + Convert(tabelle_128[vChecksum].Data);
@@ -1601,6 +1599,46 @@ begin
     TextOut(FLeft, FTop + 14, GetTypText); // type/name of barcode
   end;
 end;
+
+// this function returns true for those symbols that correct them selves
+// in case invalid data is fed. For example feeding ABCD to 128C numeric
+// only symbol, the generated barcode will be for 0000
+function TBarcode.BarcodeTypeChecked(AType: TBarcodeType): boolean;
+begin
+  result := aType in [ bcCode128A, bcCode128B, bcCode128C, bcCodeEAN8,
+                       bcCodeEAN13 ];
+end;
+
+function TBarcode.CleanEANValue(const AValue:string; const ASize: Byte): string;
+var
+  tmp: string;
+  n,i: Integer;
+begin
+  tmp := AValue;
+  n := Length(tmp);
+
+  // check if there is any strange char in string
+  for i:=1 to n do
+    if not (tmp[i] in ['0'..'9']) then
+      tmp[i] := '0';
+
+  // enforce a ASize char string by adding a 0
+  // verifier digit if necesary or calc it if
+  // checksum was specified
+  if n<ASize then begin
+    tmp := stringofchar('0', ASize-n-1) + tmp + '0';
+    // TODO: if not FCheckSum was specified
+    //       resulting barcode might be invalid
+    //       as a '0' checksum digit was forced.
+  end;
+
+  if FCheckSum then
+    Result := getEAN(copy(tmp, 1, ASize-1) + '0')
+  else
+    Result := copy(tmp, 1, ASize);
+
+end;
+
 
 
 end.
