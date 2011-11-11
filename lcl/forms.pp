@@ -118,7 +118,6 @@ type
     procedure SetPage(const AValue: TScrollBarInc); virtual;
     procedure SetPosition(const Value: Integer); virtual;
     procedure SetRange(const AValue: Integer); virtual;
-    procedure SetSize(const AValue: integer); virtual;
     procedure SetSmooth(const AValue: Boolean); virtual;
     procedure SetTracking(const AValue: Boolean);
     procedure SetVisible(const AValue: Boolean); virtual;
@@ -138,7 +137,7 @@ type
     function ScrollPos: Integer; virtual;
     property Kind: TScrollBarKind read FKind;
     function GetOtherScrollBar: TControlScrollBar;
-    property Size: integer read GetSize write SetSize stored False;
+    property Size: integer read GetSize stored False;
     function ClientSize: integer; // return for vertical scrollbar the clientwidth
     function ClientSizeWithBar: integer; // return for vertical scrollbar the clientwidth with the bar, even if Visible=false
     function ClientSizeWithoutBar: integer; // return for vertical scrollbar the clientwidth without the bar, even if Visible=true

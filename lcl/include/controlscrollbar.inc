@@ -202,11 +202,6 @@ begin
   InternalSetRange(AValue);
 end;
 
-procedure TControlScrollBar.SetSize(const AValue: integer);
-begin
-  raise EScrollBar.Create('[TControlScrollBar.SetSize] Size is readonly');
-end;
-
 procedure TControlScrollBar.SetVisible(const AValue: Boolean);
 begin
   if FVisible = AValue then
