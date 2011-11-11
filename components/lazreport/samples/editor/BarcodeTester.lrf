@@ -92,7 +92,7 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="40"/>
-            <Top Value="812"/>
+            <Top Value="820"/>
             <Width Value="268"/>
             <Height Value="50"/>
           </Size>
@@ -115,8 +115,8 @@
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="336"/>
-            <Top Value="812"/>
+            <Left Value="40"/>
+            <Top Value="880"/>
             <Width Value="268"/>
             <Height Value="50"/>
           </Size>
@@ -139,9 +139,9 @@
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="628"/>
-            <Top Value="812"/>
-            <Width Value="70"/>
+            <Left Value="88"/>
+            <Top Value="936"/>
+            <Width Value="180"/>
             <Height Value="50"/>
           </Size>
           <Flags Value="1"/>
@@ -211,8 +211,8 @@
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="92"/>
-            <Top Value="924"/>
+            <Left Value="600"/>
+            <Top Value="820"/>
             <Width Value="134"/>
             <Height Value="46"/>
           </Size>
@@ -235,8 +235,8 @@
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="384"/>
-            <Top Value="920"/>
+            <Left Value="600"/>
+            <Top Value="880"/>
             <Width Value="134"/>
             <Height Value="46"/>
           </Size>
@@ -259,9 +259,9 @@
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="644"/>
-            <Top Value="920"/>
-            <Width Value="35"/>
+            <Left Value="616"/>
+            <Top Value="936"/>
+            <Width Value="90"/>
             <Height Value="46"/>
           </Size>
           <Flags Value="1"/>
@@ -513,8 +513,8 @@
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="60"/>
-            <Top Value="872"/>
+            <Left Value="352"/>
+            <Top Value="820"/>
             <Width Value="201"/>
             <Height Value="46"/>
           </Size>
@@ -537,8 +537,8 @@
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="356"/>
-            <Top Value="872"/>
+            <Left Value="352"/>
+            <Top Value="880"/>
             <Width Value="201"/>
             <Height Value="46"/>
           </Size>
@@ -561,9 +561,9 @@
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="636"/>
-            <Top Value="872"/>
-            <Width Value="52"/>
+            <Left Value="388"/>
+            <Top Value="936"/>
+            <Width Value="135"/>
             <Height Value="46"/>
           </Size>
           <Flags Value="1"/>
