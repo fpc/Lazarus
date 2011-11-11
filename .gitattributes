@@ -2424,7 +2424,6 @@ components/synunihighlighter/languages/synunireg.pt_BR.po svneol=native#text/pla
 components/synunihighlighter/languages/synunireg.ru.po svneol=native#text/plain
 components/synunihighlighter/languages/synunireg.uk.po svneol=native#text/plain
 components/synunihighlighter/languages/synunireg.zh_CN.po svneol=native#text/plain
-components/synunihighlighter/lib/README.txt svneol=native#text/plain
 components/synunihighlighter/synuni.lpk svneol=native#text/pascal
 components/synunihighlighter/synuni.pas svneol=native#text/pascal
 components/synunihighlighter/synunidesigner.pas svneol=native#text/pascal
