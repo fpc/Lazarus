@@ -412,18 +412,10 @@ begin
 
   try
     case LogBrush.lbStyle of
-//      BS_HOLLOW,         // Hollow brush.
-      BS_NULL:           // Same as BS_HOLLOW.
-      begin
-        QtBrush.Style := QtNoBrush;
-      end;
+      BS_NULL: QtBrush.Style := QtNoBrush; // Same as BS_HOLLOW.
+      BS_SOLID: QtBrush.Style := QtSolidPattern;
 
-      BS_SOLID:          // Solid brush.
-      begin
-        QtBrush.Style := QtSolidPattern;
-      end;
-
-      BS_HATCHED:        // Hatched brush.
+      BS_HATCHED: // Hatched brushes.
       begin
         case LogBrush.lbHatch of
           HS_BDIAGONAL: QtBrush.Style := QtBDiagPattern;
@@ -475,14 +467,11 @@ begin
     Color := QBrush_Color(QtBrush.FHandle)^;
     ColorRefToTQColor(ColorToRGB(TColor(logBrush.lbColor)), Color);
     QtBrush.setColor(@Color);
+    Result := HBRUSH(QtBrush);
   except
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('[WinAPI CreateBrushIndirect] Failed');
-    {$endif}
+    Result := 0;
+    DebugLn('TQtWidgetSet.CreateBrushIndirect: Failed');
   end;
-
-  Result := HBRUSH(QtBrush);
-  //WriteLn('Created brush ', Result);
 
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI CreateBrushIndirect] Result: ', dbghex(Result));
@@ -607,8 +596,10 @@ begin
 
     if (LogFont.lfQuality >= Low(QStyleStategy)) and (LogFont.lfQuality <= High(QStyleStategy)) then
       QtFont.setStyleStrategy(QStyleStategy[LogFont.lfQuality]);
-  finally
     Result := HFONT(QtFont);
+  except
+    Result := 0;
+    DebugLn('TQtWidgetSet.CreateFontIndirectEx: Failed');
   end;
 end;
 
