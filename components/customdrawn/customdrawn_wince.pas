@@ -41,6 +41,9 @@ type
     // TCDCheckBox
     procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+    // TCDGroupBox
+    procedure DrawGroupBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // ===================================
     // Common Controls Tab
     // ===================================
@@ -182,6 +185,46 @@ begin
       lSquareHeight,
       lHalf + lSquareHalf-1);
   end;
+end;
+
+procedure TCDDrawerWinCE.DrawGroupBox(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+var
+  FCaptionMiddle: integer;
+  lTextSize: TSize;
+  lCaption: String;
+begin
+  FCaptionMiddle := ADest.TextHeight(cddTestStr) div 2;
+  if FCaptionMiddle = 0 then FCaptionMiddle := AStateEx.Font.Size div 2;
+  if FCaptionMiddle = 0 then FCaptionMiddle := 5;
+
+  // Background
+  ADest.Brush.Color := AStateEx.ParentRGBColor;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := AStateEx.ParentRGBColor;
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+
+  // frame
+  ADest.Pen.Color := clBlack;
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Style := bsClear;
+  ADest.Rectangle(0, FCaptionMiddle, ASize.cx, ASize.cy);
+
+  // ToDo: Make the caption smaller if it is too big
+  lCaption := AStateEx.Caption;
+  lTextSize := ADest.TextExtent(lCaption);
+
+  // fill the text background
+  ADest.Brush.Style := bsSolid;
+  ADest.Brush.Color := AStateEx.ParentRGBColor;
+  ADest.Pen.Style := psClear;
+  ADest.Rectangle(Bounds(FCaptionMiddle, 0, lTextSize.cx+5, lTextSize.cy));
+
+  // paint text
+  ADest.Pen.Style := psClear;
+  ADest.Brush.Style := bsClear;
+  ADest.TextOut(FCaptionMiddle+3, 0, lCaption);
 end;
 
 procedure TCDDrawerWinCE.DrawTab(ADest: TCanvas; ADestPos: TPoint;

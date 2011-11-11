@@ -940,10 +940,14 @@ begin
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
 
   // frame
-  ADest.Pen.Color := clBlack;
+  ADest.Pen.Color := WIN2000_FRAME_WHITE;
   ADest.Pen.Style := psSolid;
   ADest.Brush.Style := bsClear;
-  ADest.Rectangle(0, FCaptionMiddle, ASize.cx, ASize.cy-FCaptionMiddle);
+  ADest.Rectangle(Bounds(1, 1+FCaptionMiddle, ASize.cx-1, ASize.cy-1-FCaptionMiddle));
+  ADest.Pen.Color := WIN2000_FRAME_GRAY;
+  ADest.Rectangle(Bounds(0, FCaptionMiddle, ASize.cx-1, ASize.cy-1-FCaptionMiddle));
+  ADest.Pixels[0, ASize.cy-1] := WIN2000_FRAME_WHITE;
+  ADest.Pixels[ASize.cx-1, FCaptionMiddle] := WIN2000_FRAME_WHITE;
 
   // ToDo: Make the caption smaller if it is too big
   lCaption := AStateEx.Caption;
