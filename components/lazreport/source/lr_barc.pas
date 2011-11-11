@@ -272,9 +272,8 @@ begin
   BarC.Top := 0;
   BarC.Typ := Param.cBarType;
   BarC.Angle := Param.cAngle;
-  BarC.Ratio := Param.cRatio;  // some barcodes allow only some ratios
-                               // use at your own risk, for ean13 only 2.0-3.0
-  BarC.Modul := 1; //Param.cModul;
+  BarC.Ratio := 2; // param.cRatio <>2 renders some codes unreadable
+  BarC.Modul := 1; // param.cModul
   {$IFDEF BC_1_25}
   BarC.ShowTextPosition:=stpBottomCenter;
   BarC.ShowText := bcoNone;
