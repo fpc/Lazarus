@@ -225,16 +225,16 @@
         <seealso/>
       </element>
       <element name="TWindowState.wsNormal">
-        <short/>
+        <short>Neither maximized nor minimized.</short>
       </element>
       <element name="TWindowState.wsMinimized">
-        <short/>
+        <short>Minimized to the taskbar.</short>
       </element>
       <element name="TWindowState.wsMaximized">
-        <short/>
+        <short>Maximized [to the full monitor?]</short>
       </element>
       <element name="TWindowState.wsFullScreen">
-        <short></short>
+        <short>Maximized [to the work area? desktop?]</short>
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TCloseAction">
@@ -260,78 +260,108 @@
       <element name="TCloseAction.caMinimize">
         <short/>
       </element>
-      <!-- object Visibility: default -->
+<!-- object Visibility: default -->
       <element name="TCustomHintAction">
-        <short>
-          <var>TCustomHintAction</var> - Base class for <var>THintAction</var>, the action for displaying a Hint</short>
+        <short>[?] Action taken when a new value is assigned to <link id="TApplication.Hint"/>,
+          and no OnHint handler is available.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomHintAction.Hint" link="#LCL.ActnList.TCustomAction.Hint">
-        <short/>
+        <short>The new Hint text.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TScrollBarKind">
-        <short/>
+        <short>The orientation of a ScrollBar.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TScrollBarKind.sbHorizontal">
-        <short/>
+        <short>Horizontal scrollbar.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TScrollBarKind.sbVertical">
-        <short/>
+        <short>Vertical scrollbar.</short>
       </element>
       <!-- range type Visibility: default -->
       <element name="TScrollBarInc">
-        <short/>
+        <short>The range of scrollbar increments.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TScrollBarStyle">
-        <short/>
+        <short>Scrollbar style.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollBarStyle.ssRegular">
-        <short/>
+        <short>Default.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollBarStyle.ssFlat">
-        <short/>
+        <short>Scrollbar appears flat.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TScrollBarStyle.ssHotTrack">
-        <short/>
+        <short>Scrollbar sends HotTrack (ThumbTrack?) messages[?]</short>
       </element>
       <!-- object Visibility: default -->
       <element name="EScrollBar">
-        <short>Exception in Scroll Bar</short>
-        <descr>Exception class for Scroll Bar</descr>
-        <errors/>
+        <short>Class for exception in <link id="TControlScrollBar"/>.
+        </short>
+        <descr/>
         <seealso/>
       </element>
-      <!-- object Visibility: default -->
+<!-- object Visibility: default -->
       <element name="TControlScrollBar">
-        <short>
-          <var>TControlScrollBar</var> - base class for defining scroll bars on Forms and windows</short>
-        <descr>Control Scroll Bar: Scroll Bar control for adding to windows.
-          Can be horizontal or vertical.<br/>
+        <short>Type of a scrollbar in a <link id="TScrollingWinControl"/>.
+        </short>
+        <descr>
+          <p>
+            Scrollable controls supply their own <b>integrated</b> scrollbars,
+            one for horizontal and one for vertical scrolling.
+            This class allows access to (one of) these integrated scrollbars.
+          </p><p>
+            A scrollable control has both a physical (visible) client size,
+            and a virtual (scrollable) client size.
+          </p><p>
+            The <var>Range</var> property reflects the virtual client size,
+            e.g. the total number of lines in an file.
+          </p><p>
+            The <var>Page</var> property then reflects the number of lines,
+            actually visible in the scrollable control.
+            It also determines the size of the slider, relative to the total Range.
+          </p><p>
+            The <var>Position</var> property then reflects
+            the number of the first visible line in the scrollable control,
+            equivalent to the top coordinate of the slider.
+            The Position can be changed by the user or by code.
+          </p><p>
+            Scrollbars usually appear only when Range is higher than Page,
+            i.e. when not the entire content can be shown at the same time.
+            See the ScrollBar property of the scrolling control for details.
+          </p><p>
+            The Range and Position can be limited to 16 bit (TScrollBarInc) precision internally,
+            what is sufficient for painting the scrollbar widget,
+            but may not be enough for the virtual content.
+            See the actual scrolling control for details.
+          </p>
         </descr>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TScrollingWinControl"/>
+          <link id="TScrollBox"/>
+          <link id="TCustomForm"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TControlScrollBar.FAutoRange">
-        <short/>
+        <short>The virtual scroll range (FRange - ClientSize), at least zero (never negative).
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -358,15 +388,15 @@
       </element>
       <!-- variable Visibility: protected -->
       <element name="TControlScrollBar.FControl">
-        <short>
-          <var>FControl</var> - local variable to hold the Window Control to which the scroll bar belongs</short>
+        <short>The associated <link id="TScrollingWinControl"/>.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.ControlHandle">
-        <short>
-          <var>ControlHandle</var> - the operating system handle for this control</short>
+        <short>The Handle of the associated <link id="TScrollingWinControl"/>.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -376,11 +406,10 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.GetAutoScroll">
-        <short></short>
+        <short>The AutoScroll state of the associated <link id="TScrollingWinControl"/>.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -408,13 +437,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TControlScrollBar.GetSize">
-        <short>
-          <var>GetSize</var> - returns the size of the scroll bar</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TControlScrollBar.GetSize" link="TControlScrollBar.Size"/>
       <element name="TControlScrollBar.GetSize.Result">
         <short/>
       </element>
@@ -425,53 +448,45 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.HandleAllocated">
-        <short>
-          <var>HandleAllocated</var> - returns True if a handle has been allocated</short>
+        <short>True when the associated <link id="TScrollingWinControl"/> has a handle allocated.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TControlScrollBar.HandleAllocated.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TControlScrollBar.IsRangeStored">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TControlScrollBar.IsRangeStored" link="TControlScrollBar.Range"/>
       <element name="TControlScrollBar.IsRangeStored.Result">
         <short></short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.AutoCalcRange">
-        <short>
-          <var>AutoCalcRange</var> - method for automatically calculating the range of values for the scroll bar</short>
+        <short>Determines the Range, based on the physical and virtual size of the associated control.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.ControlUpdateScrollBars">
-        <short>
-          <var>ControlUpdateScrollBars</var> - method to be used by the owner control for updating its scrollbars</short>
+        <short>Notifies the associated Control of changes.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TScrollingWinControl.UpdateScrollBars"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.InternalSetRange">
-        <short></short>
+        <short>Checks and propagates the new range to the Control.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TControlScrollBar.ControlUpdateScrollBars"/>
+          <link id="TScrollingWinControl.UpdateScrollBars"/>
         </seealso>
       </element>
       <element name="TControlScrollBar.InternalSetRange.AValue">
@@ -479,8 +494,8 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.ScrollHandler">
-        <short>
-          <var>ScrollHandler</var> - message handler to control scrolling</short>
+        <short>Handler for the ScrollBar (movement) messages.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -490,16 +505,17 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetAutoScroll">
-        <short></short>
+        <short>Disables AutoScroll - even if the name suggests something different!
+        </short>
         <descr>
         </descr>
-        <errors>
+        <errors>[AutoScroll not yet implemented?]
         </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TControlScrollBar.SetAutoScroll.AValue">
-        <short></short>
+        <short>Ignored (assumed to be False)</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.SetIncrement" link="TControlScrollBar.Increment"/>
@@ -522,14 +538,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TControlScrollBar.SetSize">
-        <short>
-          <var>SetSize</var> - specifies the size of the scroll bar</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TControlScrollBar.SetSize" link="TControlScrollBar.Size"/>
       <element name="TControlScrollBar.SetSize.AValue">
         <short/>
       </element>
@@ -539,15 +548,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TControlScrollBar.SetTracking">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TControlScrollBar.SetTracking" link="TControlScrollBar.Tracking"/>
       <element name="TControlScrollBar.SetTracking.AValue">
         <short></short>
       </element>
@@ -558,47 +559,48 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.UpdateScrollBar">
-        <short>
-          <var>UpdateScrollBar</var> - method to update the scroll bar (position etc)</short>
+        <short>[usage?] update the scroll bar (position etc)</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControlScrollBar.InvalidateScrollInfo">
-        <short>
-          <var>InvalidateScrollInfo</var> - method to render scroll information non-valid</short>
+        <short>[usage?] render scroll information non-valid</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.GetHorzScrollBar">
-        <short>
-          <var>GetHorzScrollBar</var> - find the position and properties of the horizontal scroll bar</short>
+        <short>Get the horizontal scrollbar of Control.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControlScrollBar.GetHorzScrollBar.Result">
-        <short>Returns details of the horizontal scroll bar as a pointer to a structure</short>
+        <short>
+        </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.GetVertScrollBar">
-        <short>
-          <var>GetVertScrollBar</var> - find the position and properties of the vertical scroll bar</short>
+        <short>Get the vertical scrollbar of Control.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControlScrollBar.GetVertScrollBar.Result">
-        <short>Returns details of the vertical scroll bar as a pointer to a structure</short>
+        <short>
+        </short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControlScrollBar.ScrollBarShouldBeVisible">
-        <short></short>
+        <short>Determines whether a scrollbar is required.
+        </short>
         <descr>
         </descr>
         <errors>
@@ -607,12 +609,12 @@
         </seealso>
       </element>
       <element name="TControlScrollBar.ScrollBarShouldBeVisible.Result">
-        <short></short>
+        <short>True when Visible and Range higher than Page.</short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TControlScrollBar.Create"/>
       <element name="TControlScrollBar.Create.AControl">
-        <short>The identity of the windowed control in which the scroll bar is found</short>
+        <short>The windowed control in which the scroll bar is found</short>
       </element>
       <element name="TControlScrollBar.Create.AKind">
         <short>Whether this is a horizontal or a vertical scrollbar</short>
@@ -630,110 +632,126 @@
         </seealso>
       </element>
       <element name="TControlScrollBar.Assign.Source">
-        <short>The object that called this instance of the class</short>
+        <short>
+        </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.IsScrollBarVisible">
-        <short>Returns current widget state.
+        <short>Determines the current widget state.
         </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TControlScrollBar.IsScrollBarVisible.Result">
-        <short>True if scroll bar visible.</short>
+        <short>True if scrollbar is visible.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.ScrollPos">
-        <short>Position of the indicator cursor on the scroll bar</short>
+        <short>The scroll Position, zero if not Visible.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TControlScrollBar.ScrollPos.Result">
-        <short>Returns position of the scroll cursor as an integer</short>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TControlScrollBar.Kind">
-        <short>Finds which kind of scroll bar this is: horizontal or vertical</short>
-        <descr>Reads a flag to determine which kind of scroll bar</descr>
-        <seealso/>
+        <short>The scroll Position, zero if not Visible.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.GetOtherScrollBar">
-        <short>Finds out details of the other scroll bar</short>
+        <short>Get the ScrollBar of the opposite direction (horz/vert).
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TControlScrollBar.GetOtherScrollBar.Result">
-        <short>Returns a link to the details of the other scroll bar</short>
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.ClientSize">
-        <short></short>
-        <descr>
+        <short>The currently remaining extent of the Parent Control, depending on ScrollBar visibility.
+        </short>
+        <descr>return for vertical scrollbar the clientwidth
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TControlScrollBar.ClientSize.Result">
-        <short></short>
+        <short>for vertical scrollbar the clientwidth</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.ClientSizeWithBar">
-        <short></short>
-        <descr>
+        <short>The remaining extent of the Parent Control, when the ScrollBar is visible.
+        </short>
+        <descr>return for vertical scrollbar the clientwidth with the bar, even if Visible=false
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TControlScrollBar.ClientSizeWithBar.Result">
-        <short></short>
+        <short>for vertical scrollbar the clientwidth with the bar, even if Visible=false
+        </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TControlScrollBar.ClientSizeWithoutBar">
-        <short></short>
-        <descr>
+        <short>The remaining extent of the Parent Control, when the ScrollBar is not visible.
+        </short>
+        <descr>return for vertical scrollbar the clientwidth without the bar, even if Visible=true
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TControlScrollBar.ClientSizeWithoutBar.Result">
-        <short></short>
+        <short>for vertical scrollbar the clientwidth without the bar, even if Visible=true
+        </short>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Increment">
-        <short>The size of the scrolling increment</short>
-        <descr>The amount by which the scroll indicator moves if the triangle at either end of the bar is selected.<br/>
-
-Read or write a flag to determine the increment, an integer with a default value of 8 (pixels)</descr>
+        <short>The small Position increment, applicable to the scrollbar arrows.
+        </short>
+        <descr>The amount by which the Position moves if the triangle at either end of the bar is selected.
+          <br/>Default is 8 (pixels).
+        </descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TControlScrollBar.Kind">
+        <short>The orientation: horizontal or vertical.</short>
+        <descr>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Page">
-        <short>The size of the paging increment for scrolling</short>
-        <descr>The amount by which the scroll indicator moves if the cursor selects the scroll bar above, below or on either side of the scroll indicator. <br/>
-Reads or writes a flag to determine paging increment; default value is 80 pixels</descr>
+        <short>The slider size,
+          Position increment applicable to the scrollbar area beneath the slider.
+        </short>
+        <descr>The amount by which the scroll indicator moves if the cursor selects the scroll bar above, below or on either side of the scroll indicator.
+          <br/>Default is 80 (pixels).
+         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Position">
-        <short>Position of the scroll bar</short>
-        <descr>Reads or writes a flag with the position; default is zero</descr>
+        <short>Position of the slider, 0..Range-Page.
+        </short>
+        <descr>The Position reflects the top coordinate of the slider,
+          which is Range-Page when the slider is at the bottom of the bar.
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Smooth">
-        <short>Determine whether smooth scrolling is to be implemented</short>
-        <descr>Reads or writes a flag to determine smooth scrolling, and sets a flag is the scrolling status is stored</descr>
-        <seealso/>
+        <short>Enables smooth scrolling, with automatic adjustment of Increment and Page.
+        </short>
+        <descr>Smooth scrolling uses an Increment of 10%
+          and a Page size of 90% of the visible client area[?]
+        </descr>
+        <seealso>
+          <link id="TControlScrollBar.Increment"/>
+          <link id="TControlScrollBar.Page"/>
+        </seealso>
       </element>
       <element name="TControlScrollBar.SmoothIsStored" link="TControlScrollBar.Smooth"/>
       <element name="TControlScrollBar.SmoothIsStored.Result">
@@ -741,33 +759,50 @@ Reads or writes a flag to determine paging increment; default value is 80 pixels
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Range">
-        <short>The range (extent) of the scroll bar</short>
-        <descr>Reads or writes a flag to determine the range; default is zero</descr>
+        <short>The virtual size of the Parent Control.</short>
+        <descr>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControlScrollBar.Size">
-        <short>Determine the size of the scroll bar</short>
-        <descr>Reads or writes a flag to determine the size; by default the size is not stored</descr>
+        <short>The adjustable size of the scroll bar.</short>
+        <descr>The length of the bar is the Width (or Height) of the Parent Control,
+          the Size is the other (free) coordinate.
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Tracking">
-        <short></short>
-        <descr>
+        <short>Gives feedback while the slider is dragged.
+        </short>
+        <descr>When it takes an significant amount of time,
+          to repaint the parent control at a new position,
+          Tracking should be False to prevent flicker;
+          then the control is updated only when the slider is released.
         </descr>
         <seealso>
         </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlScrollBar.Visible">
-        <short>Can the scroll bar be made visible?</short>
-        <descr>Reads or writes flag to determine visibility, and sets a flag if the property is stored.
-The Handle object (widget) is made visible if (Visible=true) and (Range&gt;Page).
-To get the current visible state of the widget use the method IsScrollBarVisible.</descr>
-        <seealso/>
+        <short>Definitely hides the scrollbar when False (default True).
+        </short>
+        <descr>
+          <p>
+            The scrollbar widget is visible only if (Visible=True) <b>and</b> (Range&gt;Page).
+          </p><p>
+            Set Visible to False to disallow the user to scroll the content,
+            while the content still can be scrolled by code.
+          </p><p>
+            Use IsScrollBarVisible to get the current visible state of the widget.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControlScrollBar.IsScrollBarVisible"/>
+        </seealso>
       </element>
-      <!-- object Visibility: default -->
+<!-- object Visibility: default -->
       <element name="TScrollingWinControl">
         <short>Class of a Window Control that has one or more scroll bars.
         </short>
