@@ -44,6 +44,16 @@ begin
   inherited Change;
 end;
 
+procedure TCustomDBComboBox.Select;
+begin
+  //avoid reseting text when calling select
+  FDataLink.OnDataChange := nil;
+  FDataLink.Edit;
+  FDataLink.Modified;
+  FDataLink.OnDataChange := @DataChange;
+  inherited Select;
+end;
+
 
 function TCustomDBComboBox.GetReadOnly: Boolean;
 begin

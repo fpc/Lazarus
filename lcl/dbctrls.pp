@@ -654,6 +654,7 @@ Type
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure Change; override;
+    procedure Select; override;
     procedure UpdateData(Sender: TObject); virtual; abstract;
     procedure WndProc(var Message: TLMessage); override;
   public
@@ -676,7 +677,6 @@ Type
     procedure DataChange(Sender: TObject); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
-    procedure Select; override;
     procedure UpdateData(Sender: TObject); override;
   published
     property Anchors;
