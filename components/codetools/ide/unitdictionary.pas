@@ -80,6 +80,7 @@ type
     procedure ClearIdentifiers;
     function IsInGroup(Group: TUDUnitGroup): boolean;
     function GetDictionary: TUnitDictionary;
+    function HasIdentifier(Item: TUDIdentifier): boolean;
   end;
 
   { TUDIdentifier }
@@ -107,6 +108,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear(CreateDefaults: boolean = true);
+    procedure ConsistencyCheck;
 
     // groups
     function AddUnitGroup(Group: TUDUnitGroup): TUDUnitGroup; overload;
@@ -247,6 +249,18 @@ begin
   Result:=TUDUnitGroup(UnitGroups.Root.Data).Dictionary;
 end;
 
+function TUDUnit.HasIdentifier(Item: TUDIdentifier): boolean;
+var
+  i: TUDIdentifier;
+begin
+  i:=FirstIdentifier;
+  while i<>nil do begin
+    if i=Item then exit(true);
+    i:=i.NextInUnit;
+  end;
+  Result:=false;
+end;
+
 { TUDUnitGroup }
 
 constructor TUDUnitGroup.Create(const aName, aFilename: string);
@@ -328,6 +342,98 @@ begin
   FIdentifiers.FreeAndClear;
   if CreateDefaults then
     FDefaultGroup:=AddUnitGroup('','');
+end;
+
+procedure TUnitDictionary.ConsistencyCheck;
+
+  procedure e(const Msg: string);
+  begin
+    raise Exception.Create('ERROR: TUnitDictionary.ConsistencyCheck '+Msg);
+  end;
+
+var
+  AVLNode: TAVLTreeNode;
+  CurUnit: TUDUnit;
+  Group: TUDUnitGroup;
+  Item: TUDIdentifier;
+  SubAVLNode: TAVLTreeNode;
+begin
+  if DefaultGroup=nil then
+    e('DefaultGroup=nil');
+
+  // check FUnitsByName
+  AVLNode:=FUnitsByName.FindLowest;
+  while AVLNode<>nil do begin
+    CurUnit:=TUDUnit(AVLNode.Data);
+    if CurUnit.Name='' then
+      e('unit without name');
+    if CurUnit.Filename='' then
+      e('unit '+CurUnit.Name+' without filename');
+    if FUnitsByFilename.FindPointer(CurUnit)=nil then
+      e('unit '+CurUnit.Name+' in FUnitsByName not in FUnitsByFilename');
+    if CurUnit.UnitGroups.Count=0 then
+      e('unit '+CurUnit.Name+' has not group');
+    SubAVLNode:=CurUnit.UnitGroups.FindLowest;
+    while SubAVLNode<>nil do begin
+      Group:=TUDUnitGroup(SubAVLNode.Data);
+      if Group.Units.FindPointer(CurUnit)=nil then
+        e('unit '+CurUnit.Name+' not in group '+Group.Name);
+      SubAVLNode:=CurUnit.UnitGroups.FindSuccessor(SubAVLNode);
+    end;
+    AVLNode:=FUnitsByName.FindSuccessor(AVLNode);
+  end;
+
+  // FUnitsByFilename
+  AVLNode:=FUnitsByFilename.FindLowest;
+  while AVLNode<>nil do begin
+    CurUnit:=TUDUnit(AVLNode.Data);
+    if FUnitsByName.FindPointer(CurUnit)=nil then
+      e('unit '+CurUnit.Name+' in FUnitsByFilename not in FUnitsByName');
+    AVLNode:=FUnitsByFilename.FindSuccessor(AVLNode);
+  end;
+
+  // check FUnitGroupsByName
+  AVLNode:=FUnitGroupsByName.FindLowest;
+  while AVLNode<>nil do begin
+    Group:=TUDUnitGroup(AVLNode.Data);
+    if (Group.Name='') and (Group<>DefaultGroup) then
+      e('group without name');
+    if (Group.Filename='') and (Group<>DefaultGroup) then
+      e('group '+Group.Name+' without filename');
+    if FUnitGroupsByFilename.FindPointer(Group)=nil then
+      e('group '+Group.Name+' in FUnitGroupsByName not in FUnitGroupsByFilename');
+    SubAVLNode:=Group.Units.FindLowest;
+    while SubAVLNode<>nil do begin
+      CurUnit:=TUDUnit(SubAVLNode.Data);
+      if CurUnit.UnitGroups.FindPointer(Group)=nil then
+        e('group '+Group.Name+' has not the unit '+CurUnit.Name);
+      SubAVLNode:=Group.Units.FindSuccessor(SubAVLNode);
+    end;
+    AVLNode:=FUnitGroupsByName.FindSuccessor(AVLNode);
+  end;
+
+  // FUnitGroupsByFilename
+  AVLNode:=FUnitGroupsByFilename.FindLowest;
+  while AVLNode<>nil do begin
+    Group:=TUDUnitGroup(AVLNode.Data);
+    if FUnitGroupsByName.FindPointer(Group)=nil then
+      e('group '+Group.Name+' in FUnitGroupsByFilename not in FUnitGroupsByName');
+    AVLNode:=FUnitGroupsByFilename.FindSuccessor(AVLNode);
+  end;
+
+  // FIdentifiers
+  AVLNode:=FIdentifiers.FindLowest;
+  while AVLNode<>nil do begin
+    Item:=TUDIdentifier(AVLNode.Data);
+    if Item.Name='' then
+      e('identifier without name');
+    if Item.DUnit=nil then
+      e('identifier '+Item.Name+' without unit');
+    if not Item.DUnit.HasIdentifier(Item) then
+      e('identifier '+Item.Name+' not in unit '+Item.DUnit.Name);
+    AVLNode:=FIdentifiers.FindSuccessor(AVLNode);
+  end;
+
 end;
 
 function TUnitDictionary.AddUnitGroup(Group: TUDUnitGroup): TUDUnitGroup;
