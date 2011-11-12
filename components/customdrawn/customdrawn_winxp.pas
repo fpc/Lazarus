@@ -18,8 +18,22 @@ type
 
   TCDDrawerWinXP = class(TCDDrawerCommon)
   public
+    //procedure LoadFallbackPaletteColors; override;
+    // General
+    function GetMeasures(AMeasureID: Integer): Integer; override;
+    //function GetMeasuresEx(ADest: TCanvas; AMeasureID: Integer;
+      //AState: TCDControlState; AStateEx: TCDControlStateEx): Integer; override;
+    //
     function GetDrawStyle: TCDDrawStyle; override;
     procedure LoadFallbackPaletteColors; override;
+    // General drawing routines
+    {procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;}
+    procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
+    {procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); override;
+    procedure DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState); override;}
     // ===================================
     // Standard Tab
     // ===================================
@@ -29,15 +43,54 @@ type
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
+    // TCDCheckBox
+    procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
   end;
 
 implementation
 
 const
+  WINXP_CHECKBOX_GRADIENT_1 = $00D6DED6;
+  WINXP_CHECKBOX_GRADIENT_2 = $00CED6D6;
+  WINXP_CHECKBOX_GRADIENT_3 = $00D6DED6;
+  WINXP_CHECKBOX_GRADIENT_4 = $00D6D6D6;
+  WINXP_CHECKBOX_GRADIENT_5 = $00DEE7DE;
+  WINXP_CHECKBOX_GRADIENT_6 = $00D6DEDE;
+  WINXP_CHECKBOX_GRADIENT_7 = $00E7E7DE;
+  WINXP_CHECKBOX_GRADIENT_8 = $00DEE7E7;
+  WINXP_CHECKBOX_GRADIENT_9 = $00EFEFE7;
+  WINXP_CHECKBOX_GRADIENT_10 = $00E7E7E7;
+
+  WINXP_CHECKBOX_GRADIENT_DIAGONAL = $00D6DED6; // The biggest diagonal
+
+  WINXP_CHECKBOX_GRADIENT_11 = $00EFEFF7;
+  WINXP_CHECKBOX_GRADIENT_12 = $00F7EFEF;
+  WINXP_CHECKBOX_GRADIENT_13 = $00EFEFEF;
+  WINXP_CHECKBOX_GRADIENT_14 = $00F7FFF7;
+  WINXP_CHECKBOX_GRADIENT_15 = $00F7F7FF;
+  WINXP_CHECKBOX_GRADIENT_16 = $00FFF7F7;
+  WINXP_CHECKBOX_GRADIENT_17 = $00F7F7F7;
+  WINXP_CHECKBOX_GRADIENT_18 = $00F7FFF7;
+  WINXP_CHECKBOX_GRADIENT_19 = $00F7F7FF;
+  WINXP_CHECKBOX_GRADIENT_20 = $00FFF7F7;
+
+  WINXP_TICKMARK = $0021A521;
+
   WINXP_FRAME_BLUE = $00B99D7F;
   WINXP_FORM       = $00D8E9EC;
 
 { TCDDrawerWinXP }
+
+function TCDDrawerWinXP.GetMeasures(AMeasureID: Integer): Integer;
+begin
+  case AMeasureID of
+  TCDCHECKBOX_SQUARE_HALF_HEIGHT: Result := 6;
+  TCDCHECKBOX_SQUARE_HEIGHT: Result := 13;
+  else
+    Result:=inherited GetMeasures(AMeasureID);
+  end;
+end;
 
 function TCDDrawerWinXP.GetDrawStyle: TCDDrawStyle;
 begin
@@ -48,6 +101,20 @@ procedure TCDDrawerWinXP.LoadFallbackPaletteColors;
 begin
   Palette.BtnFace := WINXP_FORM;
   Palette.Form := WINXP_FORM;
+end;
+
+procedure TCDDrawerWinXP.DrawTickmark(ADest: TCanvas; ADestPos: TPoint);
+var
+  i: Integer;
+begin
+  ADest.Pen.Color := WINXP_TICKMARK;
+  ADest.Pen.Style := psSolid;
+  // 4 lines going down and to the right
+  for i := 0 to 3 do
+    ADest.Line(ADestPos.X+i, ADestPos.Y+i, ADestPos.X+i, ADestPos.Y+3+i);
+  // Now 5 lines going up and to the right
+  for i := 4 to 8 do
+    ADest.Line(ADestPos.X+i, ADestPos.Y+6-i, ADestPos.X+i, ADestPos.Y+3+6-i);
 end;
 
 procedure TCDDrawerWinXP.DrawButton(ADest: TCanvas; ADestPos: TPoint;
@@ -118,6 +185,55 @@ begin
   ADest.Pen.Color := WINXP_FRAME_BLUE;
   ADest.Pen.Style := psSolid;
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+end;
+
+procedure TCDDrawerWinXP.DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+begin
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Color := clBlack;
+  ADest.Rectangle(0,0,13,13);
+  ADest.Pixels[1,1] := WINXP_CHECKBOX_GRADIENT_1;
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_2;
+  ADest.Line(1,2,2,1);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_3;
+  ADest.Line(1,3,3,1);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_4;
+  ADest.Line(1,4,4,1);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_5;
+  ADest.Line(1,5,5,1);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_6;
+  ADest.Line(1,6,6,1);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_7;
+  ADest.Line(1,7,7,1);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_8;
+  ADest.Line(1,8,8,1);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_9;
+  ADest.Line(1,9,9,1);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_10;
+  ADest.Line(1,10,10,1);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_DIAGONAL;
+  ADest.Line(1,11,11,1);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_11;
+  ADest.Line(2,11,11,2);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_12;
+  ADest.Line(3,11,11,3);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_13;
+  ADest.Line(4,11,11,4);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_14;
+  ADest.Line(5,11,11,5);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_15;
+  ADest.Line(6,11,11,6);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_16;
+  ADest.Line(7,11,11,7);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_17;
+  ADest.Line(8,11,11,8);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_18;
+  ADest.Line(9,11,11,9);
+  ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_19;
+  ADest.Line(10,11,11,10);
+  ADest.Pixels[11,11] := WINXP_CHECKBOX_GRADIENT_20;
 end;
 
 initialization
