@@ -30,7 +30,8 @@ unit unitdictionary;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, BasicCodeTools, FileProcs;
+  Classes, SysUtils, AVL_Tree, BasicCodeTools, FileProcs,
+  FindDeclarationCache, CodeToolManager;
 
 type
   TUDIdentifier = class;
@@ -62,6 +63,7 @@ type
     destructor Destroy; override;
     function AddUnit(NewUnit: TUDUnit): TUDUnit; overload;
     function AddUnit(const aName, aFilename: string): TUDUnit; overload;
+    procedure RemoveUnit(TheUnit: TUDUnit);
   end;
 
   { TUDUnit }
@@ -69,11 +71,14 @@ type
   TUDUnit = class(TUDFileItem)
   public
     FileAge: longint;
-    FirstIdentifier: TUDIdentifier;
+    FirstIdentifier, LastIdentifier: TUDIdentifier;
     UnitGroups: TAVLTree; // tree of TUDUnitGroup sorted with CompareIDItems
     constructor Create(const aName, aFilename: string);
     destructor Destroy; override;
-    function AddIdentifier(aName: PChar): TUDIdentifier;
+    function AddIdentifier(Item: TUDIdentifier): TUDIdentifier;
+    procedure ClearIdentifiers;
+    function IsInGroup(Group: TUDUnitGroup): boolean;
+    function GetDictionary: TUnitDictionary;
   end;
 
   { TUDIdentifier }
@@ -90,17 +95,22 @@ type
 
   TUnitDictionary = class
   private
+    FDefaultGroup: TUDUnitGroup;
     FIdentifiers: TAVLTree; // tree of TUDIdentifier sorted with CompareIDItems
     FUnitsByName: TAVLTree; // tree of TUDUnit sorted with CompareIDItems
     FUnitsByFilename: TAVLTree; // tree of TUDUnit sorted with CompareIDFileItems
     FUnitGroupsByName: TAVLTree; // tree of TUDUnitGroup sorted with CompareIDItems
     FUnitGroupsByFilename: TAVLTree; // tree of TUDUnitGroup sorted with CompareIDFileItems
+    procedure RemoveIdentifier(Item: TUDIdentifier);
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Clear;
+    procedure Clear(CreateDefaults: boolean = true);
     function AddUnitGroup(Group: TUDUnitGroup): TUDUnitGroup; overload;
     function AddUnitGroup(const aName, aFilename: string): TUDUnitGroup; overload;
+    property DefaultGroup: TUDUnitGroup read FDefaultGroup;
+    procedure ParseUnit(Tool: TCodeTool; Group: TUDUnitGroup = nil);
+    function FindUnitWithFilename(const aFilename: string): TUDUnit;
   end;
 
 function CompareNameWithIDItem(NamePChar, Item: Pointer): integer;
@@ -184,9 +194,42 @@ begin
   inherited Destroy;
 end;
 
-function TUDUnit.AddIdentifier(aName: PChar): TUDIdentifier;
+function TUDUnit.AddIdentifier(Item: TUDIdentifier): TUDIdentifier;
 begin
-  Result:=TUDIdentifier.Create(aName);
+  Result:=Item;
+  Result.DUnit:=Self;
+  if LastIdentifier<>nil then
+    LastIdentifier.NextInUnit:=Result
+  else
+    FirstIdentifier:=Result;
+  Result.NextInUnit:=nil;
+  LastIdentifier:=Result;
+end;
+
+procedure TUDUnit.ClearIdentifiers;
+var
+  Item: TUDIdentifier;
+  Dictionary: TUnitDictionary;
+begin
+  Dictionary:=GetDictionary;
+  while FirstIdentifier<>nil do begin
+    Item:=FirstIdentifier;
+    FirstIdentifier:=Item.NextInUnit;
+    Item.NextInUnit:=nil;
+    Dictionary.RemoveIdentifier(Item);
+    Item.Free;
+  end;
+  LastIdentifier:=nil;
+end;
+
+function TUDUnit.IsInGroup(Group: TUDUnitGroup): boolean;
+begin
+  Result:=UnitGroups.FindPointer(Group)<>nil;
+end;
+
+function TUDUnit.GetDictionary: TUnitDictionary;
+begin
+  Result:=TUDUnitGroup(UnitGroups.Root.Data).Dictionary;
 end;
 
 { TUDUnitGroup }
@@ -208,12 +251,20 @@ end;
 function TUDUnitGroup.AddUnit(NewUnit: TUDUnit): TUDUnit;
 begin
   Result:=NewUnit;
+  if Units.FindPointer(NewUnit)<>nil then exit;
   Units.Add(Result);
+  Result.UnitGroups.Add(Self);
 end;
 
 function TUDUnitGroup.AddUnit(const aName, aFilename: string): TUDUnit;
 begin
   Result:=AddUnit(TUDUnit.Create(aName,aFilename));
+end;
+
+procedure TUDUnitGroup.RemoveUnit(TheUnit: TUDUnit);
+begin
+  Units.RemovePointer(TheUnit);
+  TheUnit.UnitGroups.RemovePointer(Self);
 end;
 
 { TUDFileItem }
@@ -226,6 +277,11 @@ end;
 
 { TUnitDictionary }
 
+procedure TUnitDictionary.RemoveIdentifier(Item: TUDIdentifier);
+begin
+  FIdentifiers.RemovePointer(Item);
+end;
+
 constructor TUnitDictionary.Create;
 begin
   FIdentifiers:=TAVLTree.Create(@CompareIDItems);
@@ -233,11 +289,12 @@ begin
   FUnitsByFilename:=TAVLTree.Create(@CompareIDFileItems);
   FUnitGroupsByName:=TAVLTree.Create(@CompareIDItems);
   FUnitGroupsByFilename:=TAVLTree.Create(@CompareIDFileItems);
+  FDefaultGroup:=AddUnitGroup('','');
 end;
 
 destructor TUnitDictionary.Destroy;
 begin
-  Clear;
+  Clear(false);
   FreeAndNil(FIdentifiers);
   FreeAndNil(FUnitsByName);
   FreeAndNil(FUnitsByFilename);
@@ -246,13 +303,16 @@ begin
   inherited Destroy;
 end;
 
-procedure TUnitDictionary.Clear;
+procedure TUnitDictionary.Clear(CreateDefaults: boolean);
 begin
+  FDefaultGroup:=nil;
   FUnitGroupsByFilename.Clear;
   FUnitGroupsByName.FreeAndClear;
   FUnitsByFilename.Clear;
   FUnitsByName.FreeAndClear;
   FIdentifiers.FreeAndClear;
+  if CreateDefaults then
+    FDefaultGroup:=AddUnitGroup('','');
 end;
 
 function TUnitDictionary.AddUnitGroup(Group: TUDUnitGroup): TUDUnitGroup;
@@ -269,6 +329,103 @@ function TUnitDictionary.AddUnitGroup(const aName, aFilename: string
   ): TUDUnitGroup;
 begin
   Result:=AddUnitGroup(TUDUnitGroup.Create(aName,aFilename));
+end;
+
+procedure TUnitDictionary.ParseUnit(Tool: TCodeTool; Group: TUDUnitGroup);
+var
+  SrcTree: TAVLTree;
+  AVLNode: TAVLTreeNode;
+  Item: PInterfaceIdentCacheEntry;
+  UnitFilename: String;
+  CurUnit: TUDUnit;
+  NiceName: String;
+  SrcName: String;
+  IdentifierItem: TUDIdentifier;
+  Changed: Boolean;
+begin
+  if Tool=nil then exit;
+  if Group=nil then
+    Group:=DefaultGroup;
+  // parse unit
+  Tool.BuildInterfaceIdentifierCache(true);
+
+  // get unit name from source
+  UnitFilename:=Tool.MainFilename;
+  NiceName:=ExtractFileNameOnly(UnitFilename);
+  if (LowerCase(NiceName)=NiceName)
+  or (UpperCase(NiceName)=NiceName) then begin
+    SrcName:=Tool.GetSourceName(false);
+    if CompareDottedIdentifiers(PChar(SrcName),PChar(NiceName))=0 then
+      NiceName:=SrcName;
+  end;
+
+  // find/create unit
+  CurUnit:=FindUnitWithFilename(UnitFilename);
+  if CurUnit<>nil then begin
+    // old unit
+    if (Group<>DefaultGroup) then begin
+      if CurUnit.IsInGroup(DefaultGroup) then begin
+        // move from no group to some group
+        DefaultGroup.RemoveUnit(CurUnit);
+      end;
+      Group.AddUnit(CurUnit);
+    end;
+    // update name
+    if CurUnit.Name<>NiceName then
+      CurUnit.Name:=NiceName;
+  end else begin
+    // new unit
+    CurUnit:=Group.AddUnit(NiceName,UnitFilename);
+    FUnitsByName.Add(CurUnit);
+    FUnitsByFilename.Add(CurUnit);
+  end;
+
+  SrcTree:=Tool.InterfaceIdentifierCache.Items;
+  // check if something changed
+  AVLNode:=SrcTree.FindLowest;
+  Changed:=false;
+  IdentifierItem:=CurUnit.FirstIdentifier;
+  while AVLNode<>nil do begin
+    Item:=PInterfaceIdentCacheEntry(AVLNode.Data);
+    if (Item^.Node<>nil) and (Item^.Identifier<>nil) then begin
+      if (IdentifierItem=nil)
+      or (CompareIdentifiers(Item^.Identifier,PChar(Pointer(IdentifierItem.Name)))<>0)
+      then begin
+        Changed:=true;
+        break;
+      end;
+      IdentifierItem:=IdentifierItem.NextInUnit;
+    end;
+    AVLNode:=SrcTree.FindSuccessor(AVLNode);
+  end;
+  if IdentifierItem<>nil then
+    Changed:=true; // the old list had more identifiers
+  if Changed then begin
+    // list of identifiers has changed => rebuild
+    CurUnit.ClearIdentifiers;
+    AVLNode:=SrcTree.FindLowest;
+    while AVLNode<>nil do begin
+      Item:=PInterfaceIdentCacheEntry(AVLNode.Data);
+      if (Item^.Node<>nil) and (Item^.Identifier<>nil) then begin
+        IdentifierItem:=TUDIdentifier.Create(Item^.Identifier);
+        CurUnit.AddIdentifier(IdentifierItem);
+        FIdentifiers.Add(IdentifierItem);
+      end;
+      AVLNode:=SrcTree.FindSuccessor(AVLNode);
+    end;
+  end;
+end;
+
+function TUnitDictionary.FindUnitWithFilename(const aFilename: string
+  ): TUDUnit;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=FUnitsByFilename.FindKey(Pointer(aFilename),@CompareFileNameWithIDFileItem);
+  if AVLNode<>nil then
+    Result:=TUDUnit(AVLNode.Data)
+  else
+    Result:=nil;
 end;
 
 end.
