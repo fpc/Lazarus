@@ -33,7 +33,8 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LCLType, LCLIntf, Menus, LCLProc, Graphics, ClipBrd, ExtCtrls, Interfacebase;
+  LCLType, LCLIntf, Menus, LCLProc, Graphics, ClipBrd, ExtCtrls, Interfacebase,
+  maps;
 
 type
   // forward declarations
@@ -812,6 +813,25 @@ type
     property ObjList: TFPList read FObjList;
   end;
 
+  { TQtGDIObjects }
+
+  TQtGDIObjects = class(TObject)
+  private
+    {$IFDEF DebugQTGDIObjects}
+    FMaxCount: Int64;
+    FInvalidCount: Int64;
+    {$ENDIF}
+    FCount: Integer;
+    FSavedHandlesList: TMap;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddGDIObject(AObject: TObject);
+    procedure RemoveGDIObject(AObject: TObject);
+    function IsValidGDIObject(AGDIObject: PtrUInt): Boolean;
+    property Count: PtrInt read FCount;
+  end;
+
 
 const
   LCLQt_Destroy = QEventType(Ord(QEventUser) + $1000);
@@ -831,6 +851,9 @@ function QtScreenContext: TQtDeviceContext;
 
 procedure AssignQtFont(FromFont: QFontH; ToFont: QFontH);
 function IsFontEqual(AFont1, AFont2: TQtFont): Boolean;
+
+var
+  QtGDIObjects: TQtGDIObjects = nil;
 
 implementation
 
@@ -1255,6 +1278,7 @@ begin
   FHandle := QImage_create();
   FData := nil;
   FDataOwner := False;
+  QtGDIObjects.AddGDIObject(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1267,6 +1291,7 @@ begin
   FHandle := vHandle;
   FData := nil;
   FDataOwner := False;
+  QtGDIObjects.AddGDIObject(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1287,6 +1312,7 @@ begin
   end
   else
     FHandle := QImage_create(FData, width, height, format);
+  QtGDIObjects.AddGDIObject(Self);
 end;
 
 constructor TQtImage.Create(AData: PByte; width: Integer; height: Integer;
@@ -1299,6 +1325,7 @@ begin
     FHandle := QImage_create(width, height, format)
   else
     FHandle := QImage_create(FData, width, height, bytesPerLine, format);
+  QtGDIObjects.AddGDIObject(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1313,6 +1340,8 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtImage.Destroy Handle:', dbgs(Handle));
   {$endif}
+
+  QtGDIObjects.RemoveGDIObject(Self);
 
   if FHandle <> nil then
     QImage_destroy(FHandle);
@@ -1477,6 +1506,7 @@ begin
   FMetrics := nil;
   FDefaultFont := nil;
   FFontInfo := nil;
+  QtGDIObjects.AddGDIObject(Self);
 end;
 
 constructor TQtFont.Create(AFromFont: QFontH);
@@ -1490,6 +1520,7 @@ begin
   FMetrics := nil;
   FDefaultFont := nil;
   GetFontInfo;
+  QtGDIObjects.AddGDIObject(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1503,6 +1534,8 @@ begin
     WriteLn('TQtFont.Destroy');
   {$endif}
 
+  QtGDIObjects.RemoveGDIObject(Self);
+
   if FMetrics <> nil then
     FMetrics.Free;
 
@@ -1514,6 +1547,7 @@ begin
     
   if FDefaultFont <> nil then
     QFont_destroy(FDefaultFont);
+
 
   inherited Destroy;
 end;
@@ -1759,6 +1793,7 @@ begin
   
   FShared := False;
   FSelected := False;
+  QtGDIObjects.AddGDIObject(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1771,6 +1806,8 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtBrush.Destroy');
   {$endif}
+
+  QtGDIObjects.RemoveGDIObject(Self);
 
   if not FShared and (FHandle <> nil) and not FSelected then
     QBrush_destroy(FHandle);
@@ -1867,6 +1904,7 @@ begin
     FHandle := nil;
   FShared := False;
   FIsExtPen := False;
+  QtGDIObjects.AddGDIObject(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1879,6 +1917,8 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtPen.Destroy');
   {$endif}
+
+  QtGDIObjects.RemoveGDIObject(Self);
 
   if not FShared and (FHandle <> nil) then
     QPen_destroy(FHandle);
@@ -2009,6 +2049,7 @@ begin
     FHandle := QRegion_create()
   else
     FHandle := nil;
+  QtGDIObjects.AddGDIObject(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -2039,6 +2080,7 @@ begin
     FHandle := QRegion_create(X1, Y1, W, H, RegionType);
   end else
     FHandle := nil;
+  QtGDIObjects.AddGDIObject(Self);
 end;
 
 constructor TQtRegion.Create(CreateHandle: Boolean; Poly: QPolygonH;
@@ -2054,6 +2096,7 @@ begin
     FHandle := QRegion_create(FPolygon, Fill);
   end else
     FHandle := nil;
+  QtGDIObjects.AddGDIObject(Self);
 end;
 
 
@@ -2067,6 +2110,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtRegion.Destroy');
   {$endif}
+  QtGDIObjects.RemoveGDIObject(Self);
   if FPolygon <> nil then
     QPolygon_destroy(FPolygon);
   if FHandle <> nil then
@@ -5012,6 +5056,68 @@ begin
   FList.Free;
   FObjList.Free;
   inherited Destroy;
+end;
+
+{ TQtGDIObjects }
+
+constructor TQtGDIObjects.Create;
+begin
+  inherited Create;
+  {$IFDEF DebugQTGDIObjects}
+  FMaxCount := 0;
+  FInvalidCount := 0;
+  {$ENDIF}
+  FCount := 0;
+  FSavedHandlesList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
+  {$IFDEF DebugQTGDIObjects}
+  DebugLn('TQtGDIObjects.Create ');
+  {$ENDIF}
+end;
+
+destructor TQtGDIObjects.Destroy;
+begin
+  {$IFDEF DebugQTGDIObjects}
+  DebugLn('TQtGDIObjects.Destroy: Count (must be zero) ',dbgs(FCount),
+    ' FMaxCount ',dbgs(FMaxCount),' FInvalidCount ',dbgs(FInvalidCount));
+  {$ENDIF}
+  FSavedHandlesList.Free;
+  inherited Destroy;
+end;
+
+procedure TQtGDIObjects.AddGDIObject(AObject: TObject);
+begin
+  if not FSavedHandlesList.HasId(AObject) then
+  begin
+    FSavedHandlesList.Add(AObject, AObject);
+    inc(FCount);
+    {$IFDEF DebugQTGDIObjects}
+    if FMaxCount < FCount then
+      FMaxCount := FCount;
+    {$ENDIF}
+  end;
+end;
+
+procedure TQtGDIObjects.RemoveGDIObject(AObject: TObject);
+begin
+  if FSavedHandlesList.HasId(AObject) then
+  begin
+    FSavedHandlesList.Delete(AObject);
+    dec(FCount);
+  end;
+end;
+
+function TQtGDIObjects.IsValidGDIObject(AGDIObject: PtrUInt): Boolean;
+begin
+  if (AGDIObject = 0) then
+    Exit(False);
+  Result := FSavedHandlesList.HasId(TObject(AGDIObject));
+  {$IFDEF DebugQTGDIObjects}
+  if not Result then
+  begin
+    inc(FInvalidCount);
+    DebugLn('TQtGDIObjects.IsValidGDIObject: Invalid object ',dbgs(AGDIObject));
+  end;
+  {$ENDIF}
 end;
 
 end.

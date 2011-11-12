@@ -5325,6 +5325,11 @@ begin
 
     // TODO: is this also saved in qpainter_save?
     TQtDeviceContext(DC).setImage(TQtImage(aObject));
+  end else
+  if AObject is TQtRegion then
+  begin
+    Result := HGDIOBJ(TQtDeviceContext(DC).getClipRegion);
+    SelectClipRGN(DC, HRGN(GDIObj));
   end;
 
   {$ifdef VerboseQtWinAPI}

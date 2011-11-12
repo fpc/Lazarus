@@ -85,6 +85,7 @@ begin
   {$J+}
   QtVersionInt(QtVersionMajor, QtVersionMinor, QtVersionMicro);
   {$J-}
+  QtGDIObjects := TQtGDIObjects.Create;
   InitStockItems;
   QtWidgetSet := Self;
   ClearCachedColors;
@@ -146,6 +147,9 @@ begin
   FGlobalActions.Free;
 
   System.DoneCriticalsection(CriticalSection);
+
+  if Assigned(QtGDIObjects) then
+    FreeThenNil(QtGDIObjects);
 
   inherited Destroy;
 end;
@@ -902,8 +906,9 @@ var
   aObject: TObject;
 begin
   Result := False;
-  
-  if GDIObject = 0 then Exit;
+
+  if not QtGDIObjects.IsValidGDIObject(GDIObject) then
+    exit;
   
   aObject := TObject(GDIObject);
   try
@@ -917,8 +922,8 @@ begin
         (aObject is TQtRegion);
     end;
   except
-    DebugLn(['Gdi object: ', GDIObject, ' is not an object!']);
-    raise Exception.CreateFmt('TQtWidgetSet.IsValidGDIObject: %u is not valid object!',[PtrUInt(GdiObject)]);
+    // DebugLn(['TQtWidgetSet.IsValidGDIObject: Gdi object ', GDIObject, ' is not an object!']);
+    raise Exception.CreateFmt('TQtWidgetSet.IsValidGDIObject: %u is not an object ',[PtrUInt(GDIObject)]);
   end;
 end;
 
