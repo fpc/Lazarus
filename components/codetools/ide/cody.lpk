@@ -4,7 +4,7 @@
     <Name Value="Cody"/>
     <Author Value="Mattias Gaertner - mattias@freepascal.org"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -19,7 +19,7 @@
     <Description Value="IDE extensions using Codetools."/>
     <License Value="GPL2"/>
     <Version Major="1" Minor="1"/>
-    <Files Count="11">
+    <Files Count="12">
       <Item1>
         <Filename Value="ppulistdlg.pas"/>
         <UnitName Value="PPUListDlg"/>
@@ -65,6 +65,10 @@
         <Filename Value="addwithblockdlg.pas"/>
         <UnitName Value="addwithblockdlg"/>
       </Item11>
+      <Item12>
+        <Filename Value="identifierdictionary.pas"/>
+        <UnitName Value="identifierdictionary"/>
+      </Item12>
     </Files>
     <LazDoc Paths="doc"/>
     <i18n>
