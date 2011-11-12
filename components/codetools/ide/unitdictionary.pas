@@ -23,7 +23,7 @@
   Abstract:
     Quick lookup database for identifiers in units.
 }
-unit IdentifierDictionary;
+unit unitdictionary;
 
 {$mode objfpc}{$H+}
 

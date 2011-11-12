@@ -9,8 +9,7 @@ interface
 uses
   PPUListDlg, CodyStrConsts, AddAssignMethodDlg, CodyCtrls, CodyFrm, 
   CodyRegistration, DeclareVarDlg, CodyUtils, CodyNodeInfoDlg, 
-  CodyCopyDeclaration, AddWithBlockDlg, IdentifierDictionary, 
-  LazarusPackageIntf;
+  CodyCopyDeclaration, AddWithBlockDlg, unitdictionary, LazarusPackageIntf;
 
 implementation
 

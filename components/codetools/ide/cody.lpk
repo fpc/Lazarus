@@ -63,11 +63,11 @@
       </Item10>
       <Item11>
         <Filename Value="addwithblockdlg.pas"/>
-        <UnitName Value="addwithblockdlg"/>
+        <UnitName Value="AddWithBlockDlg"/>
       </Item11>
       <Item12>
-        <Filename Value="identifierdictionary.pas"/>
-        <UnitName Value="identifierdictionary"/>
+        <Filename Value="unitdictionary.pas"/>
+        <UnitName Value="unitdictionary"/>
       </Item12>
     </Files>
     <LazDoc Paths="doc"/>
