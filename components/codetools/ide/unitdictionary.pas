@@ -71,6 +71,7 @@ type
   TUDUnit = class(TUDFileItem)
   public
     FileAge: longint;
+    ToolStamp: integer;
     FirstIdentifier, LastIdentifier: TUDIdentifier;
     UnitGroups: TAVLTree; // tree of TUDUnitGroup sorted with CompareIDItems
     constructor Create(const aName, aFilename: string);
@@ -106,9 +107,13 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear(CreateDefaults: boolean = true);
+
+    // groups
     function AddUnitGroup(Group: TUDUnitGroup): TUDUnitGroup; overload;
     function AddUnitGroup(const aName, aFilename: string): TUDUnitGroup; overload;
     property DefaultGroup: TUDUnitGroup read FDefaultGroup;
+
+    // units
     procedure ParseUnit(Tool: TCodeTool; Group: TUDUnitGroup = nil);
     function FindUnitWithFilename(const aFilename: string): TUDUnit;
   end;
@@ -182,6 +187,7 @@ end;
 
 constructor TUDUnit.Create(const aName, aFilename: string);
 begin
+  ToolStamp:=CTInvalidChangeStamp;
   IDCheckUnitNameAndFilename(aName,aFilename);
   inherited Create(aName,aFilename);
   UnitGroups:=TAVLTree.Create(@CompareIDItems);
@@ -373,6 +379,11 @@ begin
     // update name
     if CurUnit.Name<>NiceName then
       CurUnit.Name:=NiceName;
+    if CurUnit.ToolStamp=Tool.Scanner.ChangeStep then begin
+      // nothing changed since last parsing
+      exit;
+    end;
+    CurUnit.ToolStamp:=Tool.Scanner.ChangeStep;
   end else begin
     // new unit
     CurUnit:=Group.AddUnit(NiceName,UnitFilename);
