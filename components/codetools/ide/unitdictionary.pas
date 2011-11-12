@@ -112,10 +112,17 @@ type
     function AddUnitGroup(Group: TUDUnitGroup): TUDUnitGroup; overload;
     function AddUnitGroup(const aName, aFilename: string): TUDUnitGroup; overload;
     property DefaultGroup: TUDUnitGroup read FDefaultGroup;
+    property UnitGroupsByName: TAVLTree read FUnitGroupsByName;
+    property UnitGroupsByFilename: TAVLTree read FUnitGroupsByFilename;
 
     // units
     procedure ParseUnit(Tool: TCodeTool; Group: TUDUnitGroup = nil);
     function FindUnitWithFilename(const aFilename: string): TUDUnit;
+    property UnitsByName: TAVLTree read FUnitsByName;
+    property UnitsByFilename: TAVLTree read FUnitsByFilename;
+
+    // identifiers
+    property Identifiers: TAVLTree read FIdentifiers;
   end;
 
 function CompareNameWithIDItem(NamePChar, Item: Pointer): integer;
@@ -347,7 +354,6 @@ var
   NiceName: String;
   SrcName: String;
   IdentifierItem: TUDIdentifier;
-  Changed: Boolean;
 begin
   if Tool=nil then exit;
   if Group=nil then
@@ -379,11 +385,11 @@ begin
     // update name
     if CurUnit.Name<>NiceName then
       CurUnit.Name:=NiceName;
-    if CurUnit.ToolStamp=Tool.Scanner.ChangeStep then begin
+    if CurUnit.ToolStamp=Tool.TreeChangeStep then begin
       // nothing changed since last parsing
       exit;
     end;
-    CurUnit.ToolStamp:=Tool.Scanner.ChangeStep;
+    CurUnit.ToolStamp:=Tool.TreeChangeStep;
   end else begin
     // new unit
     CurUnit:=Group.AddUnit(NiceName,UnitFilename);
@@ -391,39 +397,18 @@ begin
     FUnitsByFilename.Add(CurUnit);
   end;
 
+  // rebuild list of identifiers
+  CurUnit.ClearIdentifiers;
   SrcTree:=Tool.InterfaceIdentifierCache.Items;
-  // check if something changed
   AVLNode:=SrcTree.FindLowest;
-  Changed:=false;
-  IdentifierItem:=CurUnit.FirstIdentifier;
   while AVLNode<>nil do begin
     Item:=PInterfaceIdentCacheEntry(AVLNode.Data);
     if (Item^.Node<>nil) and (Item^.Identifier<>nil) then begin
-      if (IdentifierItem=nil)
-      or (CompareIdentifiers(Item^.Identifier,PChar(Pointer(IdentifierItem.Name)))<>0)
-      then begin
-        Changed:=true;
-        break;
-      end;
-      IdentifierItem:=IdentifierItem.NextInUnit;
+      IdentifierItem:=TUDIdentifier.Create(Item^.Identifier);
+      CurUnit.AddIdentifier(IdentifierItem);
+      FIdentifiers.Add(IdentifierItem);
     end;
     AVLNode:=SrcTree.FindSuccessor(AVLNode);
-  end;
-  if IdentifierItem<>nil then
-    Changed:=true; // the old list had more identifiers
-  if Changed then begin
-    // list of identifiers has changed => rebuild
-    CurUnit.ClearIdentifiers;
-    AVLNode:=SrcTree.FindLowest;
-    while AVLNode<>nil do begin
-      Item:=PInterfaceIdentCacheEntry(AVLNode.Data);
-      if (Item^.Node<>nil) and (Item^.Identifier<>nil) then begin
-        IdentifierItem:=TUDIdentifier.Create(Item^.Identifier);
-        CurUnit.AddIdentifier(IdentifierItem);
-        FIdentifiers.Add(IdentifierItem);
-      end;
-      AVLNode:=SrcTree.FindSuccessor(AVLNode);
-    end;
   end;
 end;
 
