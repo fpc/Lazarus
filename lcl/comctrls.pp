@@ -850,7 +850,7 @@ type
     function CanChange: Boolean; virtual;
     function CanShowTab(ATabIndex: Integer): Boolean; virtual;
     procedure Change; override;
-    function GetImageIndex(ATabIndex: Integer): Integer; virtual;
+    function GetImageIndex(ATabIndex: Integer): Integer; override;
     procedure Loaded; override;
     procedure CreateWnd; override;
     procedure DestroyHandle; override;
