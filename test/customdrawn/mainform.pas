@@ -22,10 +22,15 @@ type
     CDCheckBox1: TCDCheckBox;
     CDCheckBox2: TCDCheckBox;
     CDCheckBox3: TCDCheckBox;
+    CDCheckBox4: TCDCheckBox;
+    CDCheckBox5: TCDCheckBox;
+    CDCheckBox6: TCDCheckBox;
     CDEdit1: TCDEdit;
     CDEdit2: TCDEdit;
+    CDTabControl1: TCDTabControl;
     sbCommon1: TCDScrollBar;
     sbCommon2: TCDScrollBar;
+    TabControl1: TTabControl;
     trackScrollBarPageSize: TCDTrackBar;
     CheckBox2: TCheckBox;
     Label14: TLabel;
