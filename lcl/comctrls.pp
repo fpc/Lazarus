@@ -849,7 +849,7 @@ type
   protected
     function CanChange: Boolean; virtual;
     function CanShowTab(ATabIndex: Integer): Boolean; virtual;
-    procedure Change; virtual;
+    procedure Change; override;
     function GetImageIndex(ATabIndex: Integer): Integer; virtual;
     procedure Loaded; override;
     procedure CreateWnd; override;
