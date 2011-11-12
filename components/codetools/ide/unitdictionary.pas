@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, BasicCodeTools, FileProcs,
-  FindDeclarationCache, CodeToolManager;
+  FindDeclarationCache, CodeToolManager, CodeCache;
 
 type
   TUDIdentifier = class;
@@ -116,7 +116,9 @@ type
     property UnitGroupsByFilename: TAVLTree read FUnitGroupsByFilename;
 
     // units
-    procedure ParseUnit(Tool: TCodeTool; Group: TUDUnitGroup = nil);
+    procedure ParseUnit(UnitFilename: string; Group: TUDUnitGroup = nil); overload;
+    procedure ParseUnit(Code: TCodeBuffer; Group: TUDUnitGroup = nil); overload;
+    procedure ParseUnit(Tool: TCodeTool; Group: TUDUnitGroup = nil); overload;
     function FindUnitWithFilename(const aFilename: string): TUDUnit;
     property UnitsByName: TAVLTree read FUnitsByName;
     property UnitsByFilename: TAVLTree read FUnitsByFilename;
@@ -342,6 +344,26 @@ function TUnitDictionary.AddUnitGroup(const aName, aFilename: string
   ): TUDUnitGroup;
 begin
   Result:=AddUnitGroup(TUDUnitGroup.Create(aName,aFilename));
+end;
+
+procedure TUnitDictionary.ParseUnit(UnitFilename: string; Group: TUDUnitGroup);
+var
+  Code: TCodeBuffer;
+begin
+  UnitFilename:=TrimFilename(UnitFilename);
+  if UnitFilename='' then exit;
+  Code:=CodeToolBoss.LoadFile(UnitFilename,true,false);
+  if Code=nil then
+    raise Exception.Create('unable to load file '+UnitFilename);
+  ParseUnit(Code,Group);
+end;
+
+procedure TUnitDictionary.ParseUnit(Code: TCodeBuffer; Group: TUDUnitGroup);
+begin
+  if Code=nil then exit;
+  if not CodeToolBoss.InitCurCodeTool(Code) then
+    raise Exception.Create('unable to init unit parser for file '+Code.Filename);
+  ParseUnit(CodeToolBoss.CurCodeTool,Group);
 end;
 
 procedure TUnitDictionary.ParseUnit(Tool: TCodeTool; Group: TUDUnitGroup);
