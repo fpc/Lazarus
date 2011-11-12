@@ -109,12 +109,12 @@ var
 begin
   ADest.Pen.Color := WINXP_TICKMARK;
   ADest.Pen.Style := psSolid;
-  // 4 lines going down and to the right
-  for i := 0 to 3 do
+  // 3 lines going down and to the right
+  for i := 0 to 2 do
     ADest.Line(ADestPos.X+i, ADestPos.Y+i, ADestPos.X+i, ADestPos.Y+3+i);
-  // Now 5 lines going up and to the right
-  for i := 4 to 8 do
-    ADest.Line(ADestPos.X+i, ADestPos.Y+6-i, ADestPos.X+i, ADestPos.Y+3+6-i);
+  // Now 4 lines going up and to the right
+  for i := 3 to 6 do
+    ADest.Line(ADestPos.X+i, ADestPos.Y+4-i, ADestPos.X+i, ADestPos.Y+3+4-i);
 end;
 
 procedure TCDDrawerWinXP.DrawButton(ADest: TCanvas; ADestPos: TPoint;
@@ -196,43 +196,43 @@ begin
   ADest.Rectangle(0,0,13,13);
   ADest.Pixels[1,1] := WINXP_CHECKBOX_GRADIENT_1;
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_2;
-  ADest.Line(1,2,2,1);
+  ADest.Line(1,2,3,0);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_3;
-  ADest.Line(1,3,3,1);
+  ADest.Line(1,3,4,0);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_4;
-  ADest.Line(1,4,4,1);
+  ADest.Line(1,4,5,0);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_5;
-  ADest.Line(1,5,5,1);
+  ADest.Line(1,5,6,0);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_6;
-  ADest.Line(1,6,6,1);
+  ADest.Line(1,6,7,0);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_7;
-  ADest.Line(1,7,7,1);
+  ADest.Line(1,7,8,0);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_8;
-  ADest.Line(1,8,8,1);
+  ADest.Line(1,8,9,0);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_9;
-  ADest.Line(1,9,9,1);
+  ADest.Line(1,9,10,0);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_10;
-  ADest.Line(1,10,10,1);
+  ADest.Line(1,10,11,0);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_DIAGONAL;
-  ADest.Line(1,11,11,1);
+  ADest.Line(1,11,12,0);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_11;
-  ADest.Line(2,11,11,2);
+  ADest.Line(2,11,12,1);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_12;
-  ADest.Line(3,11,11,3);
+  ADest.Line(3,11,12,2);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_13;
-  ADest.Line(4,11,11,4);
+  ADest.Line(4,11,12,3);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_14;
-  ADest.Line(5,11,11,5);
+  ADest.Line(5,11,12,4);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_15;
-  ADest.Line(6,11,11,6);
+  ADest.Line(6,11,12,5);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_16;
-  ADest.Line(7,11,11,7);
+  ADest.Line(7,11,12,6);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_17;
-  ADest.Line(8,11,11,8);
+  ADest.Line(8,11,12,7);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_18;
-  ADest.Line(9,11,11,9);
+  ADest.Line(9,11,12,8);
   ADest.Pen.Color := WINXP_CHECKBOX_GRADIENT_19;
-  ADest.Line(10,11,11,10);
+  ADest.Line(10,11,12,9);
   ADest.Pixels[11,11] := WINXP_CHECKBOX_GRADIENT_20;
 end;
 
