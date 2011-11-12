@@ -7732,6 +7732,10 @@ msgstr "Tiedosto %s%s%s on muuttunut. Talletetaanko?"
 msgid "File has no project"
 msgstr "Tiedostolla ei ole projektia"
 
+#: lazarusidestrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisfileisnotanexecutable
 msgid "File is not an executable"
 msgstr "Tiedosto ei ole suoritettava"
@@ -15060,6 +15064,10 @@ msgstr "Tiedoston %s%s%s luominen ei onnistu."
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr "Linkin %s%s%s luominen kohteeseen %s%s%s ei onnistu"
 
+#: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
+msgid "Unable to create new file, because there is already a directory with this name."
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocreatenewmethod
 msgid "Unable to create new method."
 msgstr "Uuden metodin luominen ei onnistu."
@@ -15449,6 +15457,10 @@ msgstr "Tarkista metodi kutsut"
 #: lazarusidestrconsts.lisversion
 msgid "Version"
 msgstr "Versio"
+
+#: lazarusidestrconsts.lisversionmismatch
+msgid "Version mismatch"
+msgstr ""
 
 #: lazarusidestrconsts.lisvertical
 msgid "Vertical"

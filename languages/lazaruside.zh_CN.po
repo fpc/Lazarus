@@ -7871,6 +7871,10 @@ msgstr "文件%s%s%s已经改变，是否保存？"
 msgid "File has no project"
 msgstr ""
 
+#: lazarusidestrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisfileisnotanexecutable
 msgid "File is not an executable"
 msgstr ""
@@ -15383,6 +15387,10 @@ msgstr "无法创建文件 %s%s%s."
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr ""
 
+#: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
+msgid "Unable to create new file, because there is already a directory with this name."
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocreatenewmethod
 msgid "Unable to create new method."
 msgstr ""
@@ -15775,6 +15783,10 @@ msgstr "校验方法调用"
 #: lazarusidestrconsts.lisversion
 msgid "Version"
 msgstr "版本"
+
+#: lazarusidestrconsts.lisversionmismatch
+msgid "Version mismatch"
+msgstr ""
 
 #: lazarusidestrconsts.lisvertical
 msgid "Vertical"

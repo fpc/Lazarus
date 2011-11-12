@@ -7759,6 +7759,10 @@ msgstr "Soubor %s%s%s byl pozměněn. Uložit?"
 msgid "File has no project"
 msgstr "Soubor nemá projekt"
 
+#: lazarusidestrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisfileisnotanexecutable
 msgid "File is not an executable"
 msgstr "Soubor není spustitelný"
@@ -15109,6 +15113,10 @@ msgstr "Nelze vytvořit soubor %s%s%s."
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr "Nelze vytvořit odkaz %s%s%s s cílem %s%s%s"
 
+#: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
+msgid "Unable to create new file, because there is already a directory with this name."
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocreatenewmethod
 msgid "Unable to create new method."
 msgstr "Nelze vytvořit novou metodu."
@@ -15499,6 +15507,10 @@ msgstr "Ověřit volání metod"
 #: lazarusidestrconsts.lisversion
 msgid "Version"
 msgstr "Verze"
+
+#: lazarusidestrconsts.lisversionmismatch
+msgid "Version mismatch"
+msgstr ""
 
 #: lazarusidestrconsts.lisvertical
 msgid "Vertical"

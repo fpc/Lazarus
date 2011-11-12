@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-11-08 01:38+0400\n"
+"PO-Revision-Date: 2011-11-13 00:59+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -7855,6 +7855,10 @@ msgstr "Файл %s%s%s был изменён. Сохранить?"
 msgid "File has no project"
 msgstr "Файл не имеет проекта"
 
+#: lazarusidestrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr "Файл является каталогом"
+
 #: lazarusidestrconsts.lisfileisnotanexecutable
 msgid "File is not an executable"
 msgstr "Файл не является исполнимым"
@@ -15313,6 +15317,10 @@ msgstr "Невозможно создать файл %s%s%s."
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr "Невозможно создать ссылку %s%s%s с объектом %s%s%s"
 
+#: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
+msgid "Unable to create new file, because there is already a directory with this name."
+msgstr "Невозможно создать новый файл, так как уже имеется каталог с таким именем."
+
 #: lazarusidestrconsts.lisunabletocreatenewmethod
 msgid "Unable to create new method."
 msgstr "Не удалось создать новый метод."
@@ -15707,6 +15715,10 @@ msgstr "Вызовов методов"
 #: lazarusidestrconsts.lisversion
 msgid "Version"
 msgstr "Версия"
+
+#: lazarusidestrconsts.lisversionmismatch
+msgid "Version mismatch"
+msgstr "Версии не соответствуют"
 
 #: lazarusidestrconsts.lisvertical
 msgid "Vertical"

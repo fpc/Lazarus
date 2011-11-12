@@ -7882,6 +7882,10 @@ msgstr "Arquivo %s%s%s foi alterado. Salvar?"
 msgid "File has no project"
 msgstr "Arquivo não tem projeto"
 
+#: lazarusidestrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisfileisnotanexecutable
 msgid "File is not an executable"
 msgstr ""
@@ -15383,6 +15387,10 @@ msgstr "Impossível criar arquivo %s%s%s."
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr "Impossível criar vínculo %s%s%s com alvo %s%s%s"
 
+#: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
+msgid "Unable to create new file, because there is already a directory with this name."
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocreatenewmethod
 msgid "Unable to create new method."
 msgstr ""
@@ -15777,6 +15785,10 @@ msgstr "Verificar chamadas de método"
 #: lazarusidestrconsts.lisversion
 msgid "Version"
 msgstr "Versão"
+
+#: lazarusidestrconsts.lisversionmismatch
+msgid "Version mismatch"
+msgstr ""
 
 #: lazarusidestrconsts.lisvertical
 msgid "Vertical"

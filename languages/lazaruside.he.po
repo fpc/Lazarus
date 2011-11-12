@@ -7856,6 +7856,10 @@ msgstr "הקובץ s%s%s%s% השתנה. לשמור?"
 msgid "File has no project"
 msgstr "לקובץ אין פרוייקט"
 
+#: lazarusidestrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisfileisnotanexecutable
 msgid "File is not an executable"
 msgstr ""
@@ -15369,6 +15373,10 @@ msgstr "לא ניתן ליצור את הקובץ %s%s%s."
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr "לא ניתן ליצור את הקישור %s%s%s עם %s%s%s"
 
+#: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
+msgid "Unable to create new file, because there is already a directory with this name."
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocreatenewmethod
 msgid "Unable to create new method."
 msgstr "לא יכול ליצור מתודה חדשה."
@@ -15763,6 +15771,10 @@ msgstr "וודא קריאות למתודות"
 #: lazarusidestrconsts.lisversion
 msgid "Version"
 msgstr "גרסה"
+
+#: lazarusidestrconsts.lisversionmismatch
+msgid "Version mismatch"
+msgstr ""
 
 #: lazarusidestrconsts.lisvertical
 msgid "Vertical"

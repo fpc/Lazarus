@@ -7857,6 +7857,10 @@ msgstr ""
 msgid "File has no project"
 msgstr ""
 
+#: lazarusidestrconsts.lisfileisdirectory
+msgid "File is directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisfileisnotanexecutable
 msgid "File is not an executable"
 msgstr ""
@@ -15373,6 +15377,10 @@ msgstr "Nemožno vytvoriť súbor %s%s%s."
 msgid "Unable to create link %s%s%s with target %s%s%s"
 msgstr "Nemožno vytvoriť odkaz %s%s%s s cieľom %s%s%s"
 
+#: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
+msgid "Unable to create new file, because there is already a directory with this name."
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletocreatenewmethod
 msgid "Unable to create new method."
 msgstr ""
@@ -15767,6 +15775,10 @@ msgstr "Overiť volania metód"
 #: lazarusidestrconsts.lisversion
 msgid "Version"
 msgstr "Verzia"
+
+#: lazarusidestrconsts.lisversionmismatch
+msgid "Version mismatch"
+msgstr ""
 
 #: lazarusidestrconsts.lisvertical
 msgid "Vertical"
