@@ -2461,8 +2461,9 @@ begin
   begin
 
     if (Msg=WM_CHAR) and (WParam=VK_RETURN) and
-       ((lWinControl is TCustomEdit) or (lWinControl is TCustomCombobox))
-      // and not TCustomEdit(lWinControl).WindowsSpecificOptionToEnableBeep
+       ((lWinControl is TCustomCombobox) or
+        ((lWinControl is TCustomEdit) and not (lWinControl is TCustomMemo ))
+       )
     then
       // this thing will beep, don't call defaultWindowProc
     else
