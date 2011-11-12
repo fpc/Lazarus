@@ -139,7 +139,6 @@ begin
 
   if FShowSimpleLayout then begin
     // Window Positions
-    FLayouts.Assign(IDEWindowCreators.SimpleLayoutStorage);
     WindowPositionsGroupBox.Parent:=Self;
     WindowPositionsGroupBox.Caption := dlgWinPos;
     WindowPositionsListBox.Items.BeginUpdate;
@@ -300,32 +299,9 @@ var
   NewBounds: TRect;
 begin
   SaveLayout;
-  if (Layout<>nil) and (Layout.Form<>nil) and (Layout.Form.Parent=nil)
-  then begin
-    if (Layout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry])
-    then begin
-      if (Layout.CustomCoordinatesAreValid) then begin
-        // explicit position
-        NewBounds:=Bounds(Layout.Left,Layout.Top,Layout.Width,Layout.Height);
-        // set minimum size
-        if NewBounds.Right-NewBounds.Left<20 then
-          NewBounds.Right:=NewBounds.Left+20;
-        if NewBounds.Bottom-NewBounds.Top<20 then
-          NewBounds.Bottom:=NewBounds.Top+20;
-        // move to visible area
-        if NewBounds.Right<20 then
-          OffsetRect(NewBounds,20-NewBounds.Right,0);
-        if NewBounds.Bottom<20 then
-          OffsetRect(NewBounds,0,20-NewBounds.Bottom);
-        if NewBounds.Left>Screen.DesktopWidth-20 then
-          OffsetRect(NewBounds,NewBounds.Left-(Screen.DesktopWidth-20),0);
-        if NewBounds.Top>Screen.DesktopHeight-20 then
-          OffsetRect(NewBounds,NewBounds.Top-(Screen.DesktopHeight-20),0);
-        Layout.Form.SetBounds(
-          NewBounds.Left,NewBounds.Top,
-          NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
-      end;
-    end;
+  if (Layout<>nil) and (Layout.Form<>nil) and (Layout.Form.Parent=nil) then begin
+    if (Layout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry]) then
+      Layout.SetNewBounds;        // Adjust bounds to screen area and apply them.
     Layout.ApplyDivider(True);
   end;
 end;
