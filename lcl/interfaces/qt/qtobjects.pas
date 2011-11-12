@@ -821,7 +821,7 @@ type
     FMaxCount: Int64;
     FInvalidCount: Int64;
     {$ENDIF}
-    FCount: Integer;
+    FCount: PtrInt;
     FSavedHandlesList: TMap;
   public
     constructor Create;
