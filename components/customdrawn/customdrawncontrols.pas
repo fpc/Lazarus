@@ -955,7 +955,11 @@ begin
     // Text right of the selection
     lTextRight := UTF8Copy(lControlText, lSelLeftPos+lSelLength+1, Length(lControlText));
 
+    // Execute the deletion
     Text := lTextLeft + lTextRight;
+
+    // Correct the caret position
+    FEditState.CaretPos.X := Length(lTextLeft);
   end;
 
   DoClearSelection;
@@ -1067,7 +1071,7 @@ begin
   VK_BACK:
   begin
     // Selection backspace
-    if FEditState.SelLength > 0 then
+    if IsSomethingSelected() then
       DoDeleteSelection()
     // Normal backspace
     else if FEditState.CaretPos.X > 0 then
@@ -1084,7 +1088,7 @@ begin
   VK_DELETE:
   begin
     // Selection delete
-    if FEditState.SelLength > 0 then
+    if IsSomethingSelected() then
       DoDeleteSelection()
     // Normal delete
     else if FEditState.CaretPos.X < lOldTextLength then
