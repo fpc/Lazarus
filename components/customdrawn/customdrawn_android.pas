@@ -19,7 +19,12 @@ type
   { TCDDrawerAndroid }
 
   TCDDrawerAndroid = class(TCDDrawerCommon)
+  private
+    bmpCheckbox, bmpCheckboxChecked: TBitmap;
   public
+    procedure CreateResources; override;
+    procedure LoadResources; override;
+    procedure FreeResources; override;
     // General drawing routines
     {procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
@@ -94,36 +99,46 @@ initialization
 
 { TCDDrawerAndroid }
 
+procedure TCDDrawerAndroid.CreateResources;
+begin
+  bmpCheckbox := TBitmap.Create;
+  bmpCheckboxChecked := TBitmap.Create;
+end;
+
+procedure TCDDrawerAndroid.LoadResources;
+begin
+  bmpCheckbox.LoadFromLazarusResource('android_checkbox');
+  bmpCheckboxChecked.LoadFromLazarusResource('android_checkbox_checked');
+
+  // for now hardcoded to ldpi
+  bmpCheckbox.Canvas.StretchDraw(Bounds(0, 0, 22, 22), bmpCheckbox);
+  bmpCheckbox.Width := 22;
+  bmpCheckbox.Height := 22;
+  bmpCheckboxChecked.Canvas.StretchDraw(Bounds(0, 0, 22, 22), bmpCheckboxChecked);
+  bmpCheckboxChecked.Width := 22;
+  bmpCheckboxChecked.Height := 22;
+end;
+
+procedure TCDDrawerAndroid.FreeResources;
+begin
+  bmpCheckbox.Free;
+  bmpCheckboxChecked.Free;
+end;
+
 procedure TCDDrawerAndroid.DrawTickmark(ADest: TCanvas; ADestPos: TPoint);
 begin
-
+  // Don't draw anything, tickmarks are impressed into the general images
 end;
 
 procedure TCDDrawerAndroid.DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
-var
-  Bitmap: TBitmap;
 begin
-  Bitmap := TBitmap.Create;
-  try
-    if csfOn in AState then
-      Bitmap.LoadFromLazarusResource('android_checkbox_checked_'+ANDROID_DPI)
-    else
-      Bitmap.LoadFromLazarusResource('android_checkbox_'+ANDROID_DPI);
-    ADest.Draw(0, 0, Bitmap);
-  finally
-    Bitmap.Free;
-  end;
+  if csfOn in AState then ADest.Draw(0, 0, bmpCheckboxChecked)
+  else ADest.Draw(0, 0, bmpCheckbox);
 end;
 
 initialization
-//{$if defined(Android)}
-  // Use ldpi when in the real Android OS
-//  {$I android_ldpi.lrs}
-//{$else}
-  // of vldpi for desktop targets
-  {$I customdrawnimages/android_vldpi.lrs}
-//{$endif}
+  {$I customdrawnimages/android.lrs}
 
   RegisterDrawer(TCDDrawerAndroid.Create, dsAndroid);
 end.

@@ -236,6 +236,9 @@ type
     Palette: TCDColorPalette;
     constructor Create; virtual;
     destructor Destroy; override;
+    procedure CreateResources; virtual;
+    procedure LoadResources; virtual;
+    procedure FreeResources; virtual;
     procedure SetPaletteKind(APaletteKind: TCDPaletteKind);
     procedure LoadNativePaletteColors;
     procedure LoadFallbackPaletteColors; virtual;
@@ -411,13 +414,32 @@ begin
 
   Palette := TCDColorPalette.Create;
   SetPaletteKind(palDefault);
+
+  CreateResources;
+  LoadResources;
 end;
 
 destructor TCDDrawer.Destroy;
 begin
+  FreeResources;
   Palette.Free;
 
   inherited Destroy;
+end;
+
+procedure TCDDrawer.CreateResources;
+begin
+
+end;
+
+procedure TCDDrawer.LoadResources;
+begin
+
+end;
+
+procedure TCDDrawer.FreeResources;
+begin
+
 end;
 
 procedure TCDDrawer.SetPaletteKind(APaletteKind: TCDPaletteKind);
