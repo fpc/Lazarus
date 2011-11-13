@@ -163,10 +163,12 @@ type
     FEditState: TCDEditStateEx; // Points to the same object as FStateEx, so don't Free!
     procedure HandleCaretTimer(Sender: TObject);
     procedure DoDeleteSelection;
+    procedure DoClearSelection;
     procedure DoManageVisibleTextStart;
     function GetText: string;
     procedure SetText(AValue: string);
     function MousePosToCaretPos(X, Y: Integer): TPoint;
+    function IsSomethingSelected: Boolean;
   protected
     function GetControlId: TCDControlID; override;
     procedure CreateControlStateEx; override;
@@ -933,6 +935,33 @@ begin
 end;
 
 procedure TCDEdit.DoDeleteSelection;
+var
+  lSelLeftPos, lSelRightPos, lSelLength: Integer;
+  lControlText, lTextLeft, lTextRight: string;
+begin
+  if IsSomethingSelected then
+  begin
+    lSelLeftPos := FEditState.SelStart.X;
+    if FEditState.SelLength < 0 then lSelLeftPos := lSelLeftPos + FEditState.SelLength;
+    lSelRightPos := FEditState.SelStart.X;
+    if FEditState.SelLength > 0 then lSelRightPos := lSelRightPos + FEditState.SelLength;
+    lSelLength := FEditState.SelLength;
+    if lSelLength < 0 then lSelLength := lSelLength * -1;
+    lControlText := Text;
+
+    // Text left of the selection
+    lTextLeft := UTF8Copy(lControlText, FEditState.VisibleTextStart.X, lSelLeftPos-FEditState.VisibleTextStart.X+1);
+
+    // Text right of the selection
+    lTextRight := UTF8Copy(lControlText, lSelLeftPos+lSelLength+1, Length(lControlText));
+
+    Text := lTextLeft + lTextRight;
+  end;
+
+  DoClearSelection;
+end;
+
+procedure TCDEdit.DoClearSelection;
 begin
   FEditState.SelStart.X := 1;
   FEditState.SelLength := 0;
@@ -959,6 +988,7 @@ end;
 procedure TCDEdit.SetText(AValue: string);
 begin
   Caption := AValue;
+  Invalidate;
 end;
 
 // Result.X -> returns a zero-based position of the caret
@@ -1001,6 +1031,11 @@ begin
   Result.X := lBestMatch+(FEditState.VisibleTextStart.X-1);
 end;
 
+function TCDEdit.IsSomethingSelected: Boolean;
+begin
+  Result := FEditState.SelLength <> 0;
+end;
+
 procedure TCDEdit.DoEnter;
 begin
   FCaretTimer.Enabled := True;
@@ -1012,7 +1047,7 @@ procedure TCDEdit.DoExit;
 begin
   FCaretTimer.Enabled := False;
   FEditState.CaretIsVisible := False;
-  DoDeleteSelection();
+  DoClearSelection();
   inherited DoExit;
 end;
 
