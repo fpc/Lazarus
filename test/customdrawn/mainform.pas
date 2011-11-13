@@ -25,6 +25,8 @@ type
     CDCheckBox4: TCDCheckBox;
     CDCheckBox5: TCDCheckBox;
     CDCheckBox6: TCDCheckBox;
+    CDCheckBox7: TCDCheckBox;
+    CDCheckBox8: TCDCheckBox;
     CDEdit1: TCDEdit;
     CDEdit2: TCDEdit;
     CDTabControl1: TCDTabControl;

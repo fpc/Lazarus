@@ -60,7 +60,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 463
-    PageIndex = 22
+    PageIndex = 6
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 2
     TabStop = True
@@ -186,8 +186,8 @@ object Form1: TForm1
         Left = 20
         Height = 18
         Top = 29
-        Width = 91
-        Caption = 'CheckBox1'
+        Width = 60
+        Caption = 'Native'
         TabOrder = 0
       end
       object CDCheckBox1: TCDCheckBox
@@ -210,9 +210,9 @@ object Form1: TForm1
         Left = 20
         Height = 18
         Top = 55
-        Width = 91
+        Width = 99
         AllowGrayed = True
-        Caption = 'CheckBox2'
+        Caption = 'Native+Gray'
         Checked = True
         State = cbChecked
         TabOrder = 3
@@ -229,7 +229,7 @@ object Form1: TForm1
       object CDCheckBox4: TCDCheckBox
         Left = 119
         Height = 19
-        Top = 94
+        Top = 88
         Width = 114
         AllowGrayed = True
         DrawStyle = dsWinCE
@@ -239,18 +239,35 @@ object Form1: TForm1
         Left = 119
         Height = 19
         Top = 117
-        Width = 113
+        Width = 74
         DrawStyle = dsWinXP
-        Caption = 'dsWinXP+Gray'
+        Caption = 'dsWinXP'
       end
       object CDCheckBox6: TCDCheckBox
         Left = 119
         Height = 19
-        Top = 141
+        Top = 136
         Width = 113
         AllowGrayed = True
         DrawStyle = dsWinXP
         Caption = 'dsWinXP+Gray'
+      end
+      object CDCheckBox7: TCDCheckBox
+        Left = 119
+        Height = 19
+        Top = 167
+        Width = 86
+        DrawStyle = dsAndroid
+        Caption = 'dsAndroid'
+      end
+      object CDCheckBox8: TCDCheckBox
+        Left = 119
+        Height = 19
+        Top = 184
+        Width = 125
+        AllowGrayed = True
+        DrawStyle = dsAndroid
+        Caption = 'dsAndroid+Gray'
       end
     end
     object pageRadioButton: TPage
