@@ -619,15 +619,18 @@ begin
   do
     FSectionList.Delete(FRegionScanRangeIndex);
   VDiff := 0;
+DebugLn(['***** ', FRegionScanStartRangeIndex, ' cnt ', Count]);
   if FRegionScanStartRangeIndex < Count then begin
     // fix virtual lines on sections
     if (FRegionScanStartRangeIndex > 0) then begin
       s := FSectionList.Sections[FRegionScanStartRangeIndex-1];
       NewVLine := s.VirtualLine + s.EndPos.y - s.StartPos.y;
+DebugLn(['A ', NewVLine]);
       LastEnd := s.EndPos.y;
     end
     else begin
       NewVLine := 0;
+DebugLn(['B ', NewVLine]);
       LastEnd := FSectionList.Sections[FRegionScanStartRangeIndex].StartPos.y;
     end;
     LastVline := NewVLine;
@@ -679,6 +682,7 @@ begin
     Sect.EndPos   := AnEndPoint;
     Sect.TokenStartPos := ATokenStartPos;
     Sect.TokenEndPos   := ATokenEndPos;
+    Sect.VirtualLine := 0;
     FSectionList.Insert(FRegionScanRangeIndex, Sect);
   end else begin
     p := FSectionList.PSections[FRegionScanRangeIndex];
