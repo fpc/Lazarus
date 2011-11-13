@@ -30,9 +30,11 @@ unit unitdictionary;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, BasicCodeTools, FileProcs,
+  Classes, SysUtils, AVL_Tree, BasicCodeTools, FileProcs, CodeToolsStructs,
   FindDeclarationCache, CodeToolManager, CodeCache;
 
+const
+  UDFileVersion = 1;
 type
   TUDIdentifier = class;
   TUDUnit = class;
@@ -109,6 +111,8 @@ type
     destructor Destroy; override;
     procedure Clear(CreateDefaults: boolean = true);
     procedure ConsistencyCheck;
+    procedure SaveToFile(Filename: string);
+    procedure SaveToStream(aStream: TStream);
 
     // groups
     function AddUnitGroup(Group: TUDUnitGroup): TUDUnitGroup; overload;
@@ -434,6 +438,116 @@ begin
     AVLNode:=FIdentifiers.FindSuccessor(AVLNode);
   end;
 
+end;
+
+procedure TUnitDictionary.SaveToFile(Filename: string);
+var
+  ms: TMemoryStream;
+begin
+  ms:=TMemoryStream.Create;
+  try
+    SaveToStream(ms);
+    ms.Position:=0;
+    ms.SaveToFile(Filename);
+  finally
+    ms.Free;
+  end;
+end;
+
+procedure TUnitDictionary.SaveToStream(aStream: TStream);
+
+  procedure w(const s: string);
+  begin
+    if s='' then exit;
+    aStream.Write(s[1],length(s));
+  end;
+
+  function GetBase32(i: integer): string;
+  const
+    l: shortstring = '0123456789ABCDEFGHIJKLMNOPQRSTUV';
+  begin
+    Result:='';
+    while i>0 do begin
+      Result:=Result+l[(i mod 32)+1];
+      i:=i div 32;
+    end;
+  end;
+
+var
+  AVLNode: TAVLTreeNode;
+  CurUnit: TUDUnit;
+  Item: TUDIdentifier;
+  Group: TUDUnitGroup;
+  SubAVLNode: TAVLTreeNode;
+  UnitID: TFilenameToStringTree;
+  i: Integer;
+begin
+  // write format version
+  w('UnitDirectory:');
+  w(IntToStr(UDFileVersion));
+  w(LineEnding);
+
+  UnitID:=TFilenameToStringTree.Create(false);
+  try
+    // write units
+    i:=0;
+    AVLNode:=FUnitsByFilename.FindLowest;
+    while AVLNode<>nil do begin
+      CurUnit:=TUDUnit(AVLNode.Data);
+      inc(i);
+      UnitID.Add(CurUnit.Filename,GetBase32(i));
+      AVLNode:=FUnitsByFilename.FindSuccessor(AVLNode);
+    end;
+
+    // write groups
+    AVLNode:=FUnitGroupsByFilename.FindLowest;
+    while AVLNode<>nil do begin
+      Group:=TUDUnitGroup(AVLNode.Data);
+      // write group name
+      w(Group.Name);
+      w(';');
+      w(Group.Filename);
+      w(LineEnding);
+      // write IDs of units
+      SubAVLNode:=Group.Units.FindLowest;
+      while SubAVLNode<>nil do begin
+        CurUnit:=TUDUnit(SubAVLNode.Data);
+        w(UnitID[CurUnit.Filename]);
+        w(LineEnding);
+        SubAVLNode:=Group.Units.FindSuccessor(SubAVLNode);
+      end;
+      w(LineEnding); // empty line as end of group
+      AVLNode:=FUnitGroupsByFilename.FindSuccessor(AVLNode);
+    end;
+
+    // write units
+    AVLNode:=FUnitsByFilename.FindLowest;
+    while AVLNode<>nil do begin
+      CurUnit:=TUDUnit(AVLNode.Data);
+      // write unit number ; unit name ; unit file name
+      w(UnitID[CurUnit.Filename]);
+      w(';');
+      w(CurUnit.Name);
+      w(';');
+      w(CurUnit.Filename);
+      w(LineEnding);
+      // write identifiers
+      Item:=CurUnit.FirstIdentifier;
+      while Item<>nil do begin
+        if Item.Name<>'' then begin
+          w(Item.Name);
+          w(LineEnding);
+        end;
+        Item:=Item.NextInUnit;
+      end;
+      w(LineEnding); // empty line as end of unit
+      AVLNode:=FUnitsByFilename.FindSuccessor(AVLNode);
+    end;
+
+
+  finally
+    UnitID.Free;
+  end;
 end;
 
 function TUnitDictionary.AddUnitGroup(Group: TUDUnitGroup): TUDUnitGroup;
