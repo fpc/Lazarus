@@ -637,6 +637,7 @@ components/compilers/javascript/examples/ReadJSClassesXML.lpi svneol=native#text
 components/compilers/javascript/examples/ReadJSClassesXML.lpr svneol=native#text/plain
 components/compilers/javascript/examples/jsclassxmlread.pas svneol=native#text/plain
 components/custom/README.txt svneol=native#text/plain
+components/customdrawn/build_resources.sh svneol=native#text/plain
 components/customdrawn/customdrawn.lpk svneol=native#text/plain
 components/customdrawn/customdrawn.pas svneol=native#text/pascal
 components/customdrawn/customdrawn_android.pas svneol=native#text/plain
@@ -650,6 +651,11 @@ components/customdrawn/customdrawn_winxp.pas svneol=native#text/plain
 components/customdrawn/customdrawncontrols.pas svneol=native#text/pascal
 components/customdrawn/customdrawndrawers.pas svneol=native#text/plain
 components/customdrawn/customdrawnextras.pas svneol=native#text/plain
+components/customdrawn/customdrawnimages/android_checkbox.png -text svneol=unset#image/png
+components/customdrawn/customdrawnimages/android_checkbox_checked_ldpi.bmp -text
+components/customdrawn/customdrawnimages/android_checkbox_checked_vldpi.bmp -text
+components/customdrawn/customdrawnimages/android_checkbox_vldpi.bmp -text
+components/customdrawn/customdrawnimages/android_vldpi.lrs svneol=native#text/plain
 components/customdrawn/customdrawnutils.pas svneol=native#text/pascal
 components/customform/custforms.pp svneol=native#text/plain
 components/customform/demo/appform.pas svneol=native#text/plain

@@ -6,22 +6,46 @@ interface
 
 uses
   // RTL
-  Classes, SysUtils,
+  Classes, SysUtils, Types,
   // fpimage
   fpcanvas, fpimgcanv, fpimage,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
-  Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
+  Graphics, Controls, LCLType, LCLIntf, IntfGraphics, LResources,
   //
-  customdrawncontrols, customdrawnutils;
+  customdrawndrawers, customdrawn_common;
 
-{type
-  TCDButtonDrawerAndroid = class(TCDButtonDrawer)
+type
+
+  { TCDDrawerAndroid }
+
+  TCDDrawerAndroid = class(TCDDrawerCommon)
   public
-    procedure DrawToIntfImage(ADest: TFPImageCanvas; CDButton: TCDButton); override;
-    procedure DrawToCanvas(ADest: TCanvas; CDButton: TCDButton); override;
-  end;}
+    // General drawing routines
+    {procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;}
+    procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
+    {procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); override;
+    procedure DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState); override;}
+    // ===================================
+    // Standard Tab
+    // ===================================
+    // TCDButton
+{    procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+    // TCDEdit
+    procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDEditStateEx); override;}
+    // TCDCheckBox
+    procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+  end;
 
 implementation
+
+const
+  ANDROID_DPI = 'vldpi';
 
 {procedure TCDButtonDrawerAndroid.DrawToIntfImage(ADest: TFPImageCanvas;
   CDButton: TCDButton);
@@ -67,5 +91,40 @@ end;
 
 initialization
   RegisterButtonDrawer(TCDButtonDrawerAndroid.Create, dsAndroid);}
+
+{ TCDDrawerAndroid }
+
+procedure TCDDrawerAndroid.DrawTickmark(ADest: TCanvas; ADestPos: TPoint);
+begin
+
+end;
+
+procedure TCDDrawerAndroid.DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+var
+  Bitmap: TBitmap;
+begin
+  Bitmap := TBitmap.Create;
+  try
+    if csfOn in AState then
+      Bitmap.LoadFromLazarusResource('android_checkbox_checked_'+ANDROID_DPI)
+    else
+      Bitmap.LoadFromLazarusResource('android_checkbox_'+ANDROID_DPI);
+    ADest.Draw(0, 0, Bitmap);
+  finally
+    Bitmap.Free;
+  end;
+end;
+
+initialization
+//{$if defined(Android)}
+  // Use ldpi when in the real Android OS
+//  {$I android_ldpi.lrs}
+//{$else}
+  // of vldpi for desktop targets
+  {$I customdrawnimages/android_vldpi.lrs}
+//{$endif}
+
+  RegisterDrawer(TCDDrawerAndroid.Create, dsAndroid);
 end.
 
