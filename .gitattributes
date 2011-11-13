@@ -654,6 +654,7 @@ components/customdrawn/customdrawnextras.pas svneol=native#text/plain
 components/customdrawn/customdrawnimages/android_checkbox.png -text svneol=unset#image/png
 components/customdrawn/customdrawnimages/android_checkbox_checked_ldpi.bmp -text
 components/customdrawn/customdrawnimages/android_checkbox_checked_vldpi.bmp -text
+components/customdrawn/customdrawnimages/android_checkbox_ldpi.bmp -text
 components/customdrawn/customdrawnimages/android_checkbox_vldpi.bmp -text
 components/customdrawn/customdrawnimages/android_vldpi.lrs svneol=native#text/plain
 components/customdrawn/customdrawnutils.pas svneol=native#text/pascal
