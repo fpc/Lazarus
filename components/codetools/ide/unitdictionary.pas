@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, BasicCodeTools, FileProcs, CodeToolsStructs,
-  FindDeclarationCache, CodeToolManager, CodeCache;
+  FindDeclarationCache, CodeToolManager, CodeCache, zstream;
 
 const
   UDFileVersion = 1;
@@ -442,15 +442,23 @@ end;
 
 procedure TUnitDictionary.SaveToFile(Filename: string);
 var
-  ms: TMemoryStream;
+  UncompressedMS: TMemoryStream;
+  cs: Tcompressionstream;
+  CompressedMS: TMemoryStream;
 begin
-  ms:=TMemoryStream.Create;
+  UncompressedMS:=TMemoryStream.Create;
+  CompressedMS:=TMemoryStream.Create;
+  cs:=Tcompressionstream.create(cldefault,CompressedMS);
   try
-    SaveToStream(ms);
-    ms.Position:=0;
-    ms.SaveToFile(Filename);
+    SaveToStream(UncompressedMS);
+    UncompressedMS.Position:=0;
+    cs.CopyFrom(UncompressedMS,UncompressedMS.Size);
+    CompressedMS.Position:=0;
+    CompressedMS.SaveToFile(Filename);
   finally
-    ms.Free;
+    cs.Free;
+    UncompressedMS.Free;
+    CompressedMS.Free;
   end;
 end;
 
@@ -543,7 +551,6 @@ begin
       w(LineEnding); // empty line as end of unit
       AVLNode:=FUnitsByFilename.FindSuccessor(AVLNode);
     end;
-
 
   finally
     UnitID.Free;
