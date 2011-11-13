@@ -79,6 +79,7 @@ type
     Name, BaseName: TPCharWithLen; // BaseName is without ^&
     BoundLow, BoundHigh: TPCharWithLen;
     Declaration, BaseDeclaration: TPCharWithLen; // BaseDeclaration only for Array and Set types, see note on ptprfDeclarationInBrackets
+    PointerCount: Integer;
     // type of array entry, or set-enum
     SubName, BaseSubName: TPCharWithLen;
     SubFlags: TGDBPTypeResultFlags;
@@ -88,6 +89,7 @@ type
     NestArray: array of record  // reverse order, last entry is first nest level
       Flags: TGDBPTypeResultFlags;
       BoundLow, BoundHigh: TPCharWithLen;
+      PointerCount: Integer;
     end;
   end;
 
@@ -178,9 +180,14 @@ type
 
   TGDBExpressionPartArrayIdx = class(TGDBExpressionPartBracketed)
   private
+    FArrayPTypeNestIdx: integer;
+    FArrayPTypePointerIdx: integer;
     FVarParam: Boolean;
     FPTypeReq: TGDBPTypeRequest;
     FPTypeDeRefReq: TGDBPTypeRequest;
+    function GetArrayPTypeIsDeRef: boolean;
+    function GetArrayPTypeIsPointer: boolean;
+    function GetArrayPTypeResult: TGDBPTypeResult;
   protected
     procedure Init; override;
     procedure InitReq(var AReqPtr: PGDBPTypeRequest; AReqText: String);
@@ -188,6 +195,11 @@ type
     property VarParam: Boolean read FVarParam write FVarParam;
     property PTypeReq: TGDBPTypeRequest read FPTypeReq write FPTypeReq;
     property PTypeDeRefReq: TGDBPTypeRequest read FPTypeDeRefReq write FPTypeDeRefReq;
+    property ArrayPTypeResult: TGDBPTypeResult read GetArrayPTypeResult;
+    property ArrayPTypeIsDeRef: boolean read GetArrayPTypeIsDeRef;
+    property ArrayPTypeIsPointer: boolean read GetArrayPTypeIsPointer;
+    property ArrayPTypeNestIdx: integer read FArrayPTypeNestIdx write FArrayPTypeNestIdx;
+    property ArrayPTypePointerIdx: integer read FArrayPTypePointerIdx write FArrayPTypePointerIdx;
   end;
 
   { TGDBExpressionPartArray }
@@ -571,6 +583,7 @@ begin
   Result.Declaration.Len := 0;
   Result.BaseDeclaration.Ptr := nil;
   Result.BaseDeclaration.Len := 0;
+  Result.PointerCount := 0;
   Result.BoundLow.Ptr := nil;
   Result.BoundLow.Len := 0;
   Result.BoundHigh.Ptr := nil;
@@ -621,7 +634,10 @@ begin
   // Leading ^&
   while True do begin
     case CurPtr^ of
-      '^': include(Result.Flags, ptprfPointer);
+      '^': begin
+          include(Result.Flags, ptprfPointer);
+          inc(Result.PointerCount);
+        end;
       '&': include(Result.Flags, ptprfParamByRef);
       else break;
     end;
@@ -788,9 +804,10 @@ begin
             Result.NestArray      := SubRes.NestArray;
             if length(Result.NestArray) < Result.NestArrayCount
             then SetLength(Result.NestArray, Result.NestArrayCount + 3);
-            Result.NestArray[SubRes.NestArrayCount].Flags     := SubRes.Flags;
-            Result.NestArray[SubRes.NestArrayCount].BoundLow  := SubRes.BoundLow;
-            Result.NestArray[SubRes.NestArrayCount].BoundHigh := SubRes.BoundHigh;
+            Result.NestArray[SubRes.NestArrayCount].Flags        := SubRes.Flags;
+            Result.NestArray[SubRes.NestArrayCount].PointerCount := SubRes.PointerCount;
+            Result.NestArray[SubRes.NestArrayCount].BoundLow     := SubRes.BoundLow;
+            Result.NestArray[SubRes.NestArrayCount].BoundHigh    := SubRes.BoundHigh;
           end else begin
             Result.SubName        := SubRes.Name;
             Result.BaseSubName    := SubRes.BaseName;
@@ -862,12 +879,38 @@ end;
 
 { TGDBExpressionPartArrayIdx }
 
+function TGDBExpressionPartArrayIdx.GetArrayPTypeIsDeRef: boolean;
+begin
+  Result := (FPTypeReq.Result.Kind <> ptprkArray);
+end;
+
+function TGDBExpressionPartArrayIdx.GetArrayPTypeIsPointer: boolean;
+begin
+  if FArrayPTypeNestIdx < 0 then begin
+    if ArrayPTypeIsDeRef
+    then Result := True
+    else Result := ptprfPointer in FPTypeReq.Result.Flags;
+  end
+  else begin
+    Result := ptprfPointer in ArrayPTypeResult.NestArray[FArrayPTypeNestIdx].Flags;
+  end;
+end;
+
+function TGDBExpressionPartArrayIdx.GetArrayPTypeResult: TGDBPTypeResult;
+begin
+  Result := FPTypeReq.Result;
+  if (Result.Kind <> ptprkArray) then
+    Result := FPTypeDeRefReq.Result;
+end;
+
 procedure TGDBExpressionPartArrayIdx.Init;
 begin
   inherited Init;
   FPTypeReq.Result.Kind := ptprkNotEvaluated;
   FPTypeDeRefReq.Result.Kind := ptprkNotEvaluated;
   FVarParam := False;
+  FArrayPTypeNestidx := -1;
+  FArrayPTypePointerIdx := 0;
 end;
 
 procedure TGDBExpressionPartArrayIdx.InitReq(var AReqPtr: PGDBPTypeRequest; AReqText: String);
@@ -917,32 +960,50 @@ begin
 end;
 
 function TGDBExpressionPartArray.GetTextToIdx(AIdx: Integer): String;
+
+  function GetPointerCast(AnIdxPart: TGDBExpressionPartArrayIdx; out PointerCnt: Integer): String;
+  var
+    PTRes: TGDBPTypeResult;
+    i: Integer;
+  begin
+    Result := '';
+    PointerCnt := 0;
+    if not AnIdxPart.ArrayPTypeIsPointer then exit;
+    PTRes := AnIdxPart.ArrayPTypeResult;
+    if PTRes.SubName.Len = 0 then exit;
+
+    i := PTRes.NestArrayCount - 1;
+    if i >= 0 then begin
+      while (i >= 0) and (ptprfPointer in PTRes.NestArray[i].Flags) do dec(i);
+      if i >= 0 then exit; // cant cast, if contains static array
+      PointerCnt := PTRes.NestArrayCount+1;
+      Result := StringOfChar('^', PointerCnt) + PCLenToString(PTRes.SubName);
+      exit;
+    end;
+
+    PointerCnt := PTRes.PointerCount;
+    // If PTRes is the result of an extra de-ref in the ptype, then we need to add that pointer back
+    if AnIdxPart.ArrayPTypeIsDeRef then
+      inc(PointerCnt);
+    Result := StringOfChar('^', PointerCnt) + PCLenToString(PTRes.SubName);
+  end;
+
 var
-  i: Integer;
+  i, j, PCastCnt: Integer;
   IdxPart: TGDBExpressionPartArrayIdx;
-  PTReqRes, PTDeRefReqRes, PTResult: TGDBPTypeResult;
-  IsPointer, NeedTCast: Boolean;
+  PTResult: TGDBPTypeResult;
+  NeedTCast: Boolean;
+  s: String;
 begin
   Result := Parts[0].Text;
+  PCastCnt := 0;
 
   if AIdx < 0 then exit;
 
   for i := 0 to AIdx do begin
     IdxPart := IndexPart[i];
-    PTReqRes := IdxPart.PTypeReq.Result;
-    PTDeRefReqRes := IdxPart.PTypeDeRefReq.Result; // only evaluated, if PTReqRes is pointer and not array
-
-
-    PTResult := PTReqRes;
-    if (PTReqRes.Kind <> ptprkArray) and
-       (PTDeRefReqRes.Kind = ptprkArray) and (ptprfDynArray in PTDeRefReqRes.Flags)
-    then begin
-      PTResult := PTDeRefReqRes;
-      IsPointer := True;
-    end
-    else
-      IsPointer := ptprfPointer in PTResult.Flags;
-
+    PTResult := IdxPart.ArrayPTypeResult;
+    if PCastCnt > 0 then dec(PCastCnt);
 
     if not (PTResult.Kind = ptprkArray)
     then begin
@@ -951,10 +1012,11 @@ begin
       continue;
     end;
 
-
-    if PTResult.NestArrayCount > 0 then  // not yet supported
-    begin
-      if IsPointer
+    if ((PTResult.NestArrayCount > 0) and (IdxPart.ArrayPTypeNestIdx <> PTResult.NestArrayCount-1)) or
+       (IdxPart.ArrayPTypePointerIdx > 0)
+    then begin
+      // nested array / no named type known
+      if (PCastCnt = 0) and IdxPart.ArrayPTypeIsPointer
       then Result := Result + '^';
       Result := Result + IdxPart.Text;
       continue;
@@ -963,17 +1025,25 @@ begin
 
     NeedTCast := FNeedTypeCast and (i = IndexCount-1);
 
-    if IsPointer
+    if IdxPart.ArrayPTypeIsPointer
     then begin
-      // dyn array
-      if IdxPart.VarParam and (PTResult.SubName.Len > 0)
-      //and
-      //   (  NeedTCast or (i < IndexCount-1)  )
+      //dyn array
+      s := '';
+      if IdxPart.VarParam then
+        s := GetPointerCast(IdxPart, j);
+      if s <> '' // IdxPart.VarParam and (PTResult.SubName.Len > 0)                        // var param can only be set for the un-inxed variable
       then begin
-        Result := '^' + PCLenToString(PTResult.SubName) + '(' + Result + ')';
+        // fpc 2.4.4 Var-param dynarray
+        // var param are marked with a "&" in fpc 2.4. They are a semi automatic pointer.
+        // Any such var param, that points to an internal pointer type (e.g dyn array) must be typecasted, to trigger the semi automatic pointer of the var-param
+        // For single dyn array: ^Foo(var)[1]
+        // For nested dyn array: ^^Foo(var)[1][2]  // the ^ in front of the index must be skipped, as the dyn array was casted into a pointer
+        Result := s + '(' + Result + ')';
         NeedTCast := False;
+        PCastCnt := j;
       end
       else
+      if (PCastCnt = 0) then
         Result := Result + '^';
     end;
 
@@ -1006,9 +1076,10 @@ end;
 
 function TGDBExpressionPartArray.NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean;
 var
-  i: Integer;
-  IdxPart: TGDBExpressionPartArrayIdx;
+  i, j: Integer;
+  IdxPart, IdxPart2: TGDBExpressionPartArrayIdx;
   PTReq, PTDeRefReq: TGDBPTypeRequest;
+  ArrRes: TGDBPTypeResult;
 begin
   Result := False;
   for i := 1 to PartCount - 1 do
@@ -1059,6 +1130,39 @@ begin
       else IdxPart.InitDeRefReq(AReqPtr, 'ptype ' + GetTextToIdx(i-1) + '^');
       Result := True;
       exit;
+    end;
+
+    // we may have nested array (dyn array only):
+    // - ^^(array ...)
+    // - array ... oaf array
+    // A combination of both is not expected
+
+    ArrRes := IdxPart.ArrayPTypeResult;
+    if (ArrRes.Kind = ptprkArray) and (ArrRes.NestArrayCount > 0) then begin
+      j := ArrRes.NestArrayCount;
+      while j > 0 do begin
+        inc(i);
+        dec(j);
+        if i >= IndexCount then break;
+        IdxPart2 := IndexPart[i];
+        IdxPart2.PTypeReq      := IdxPart.PTypeReq;
+        IdxPart2.PTypeDeRefReq := IdxPart.PTypeDeRefReq;
+        IdxPart2.ArrayPTypeNestIdx := j;
+      end;
+    end
+
+    else
+    if (ArrRes.Kind = ptprkArray) and (ArrRes.PointerCount > 1) then begin
+      j := ArrRes.PointerCount - 1;
+      while j > 0 do begin
+        inc(i);
+        dec(j);
+        if i >= IndexCount then break;
+        IdxPart2 := IndexPart[i];
+        IdxPart2.PTypeReq      := IdxPart.PTypeReq;
+        IdxPart2.PTypeDeRefReq := IdxPart.PTypeDeRefReq;
+        IdxPart2.ArrayPTypePointerIdx := j;
+      end;
     end;
 
     inc(i);
