@@ -11736,6 +11736,7 @@ var
     R: TGDBMIExecResult;
     MemDump: TGDBMIMemoryDumpResultList;
     Size: integer;
+    s: String;
   begin
     Result := False;
 
@@ -11865,7 +11866,8 @@ var
         begin
           Result := False;
           Assert(FTypeInfo = nil, 'Type info must be nil');
-          FTypeInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags, TypeInfoFlags + [gtcfExprEvaluate], FDisplayFormat);
+          FTypeInfo := GetGDBTypeInfo(AnExpression, defFullTypeInfo in FEvalFlags,
+            TypeInfoFlags + [gtcfExprEvaluate, gtcfExprEvalStrFixed], FDisplayFormat);
 
           if (FTypeInfo = nil) or (dcsCanceled in SeenStates)
           then begin
@@ -11878,6 +11880,15 @@ var
             FValidity := ddsValid;
             Result := True;
             FixUpResult(AnExpression, FTypeInfo);
+
+            if FTypeInfo.HasStringExprEvaluatedAsText then begin
+              s := FTextValue;
+              FTextValue := FTypeInfo.StringExprEvaluatedAsText;
+              FTextValue := DeleteEscapeChars(FTextValue);
+              FixUpResult(AnExpression, FTypeInfo);
+              FTextValue := 'PCHAR: ' + s + LineEnding + 'STRING: ' + FTextValue;
+            end;
+
             exit;
           end;
 

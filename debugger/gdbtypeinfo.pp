@@ -116,16 +116,20 @@ type
   protected
     FText: TPCharWithLen;
     function GetParts(Index: Integer): TGDBExpressionPart; virtual;
-    function GetText: String; virtual;
+    function GetTextFixed(AStringFixed: Boolean): String; virtual;
+    function GetText: String;
+    function GetTextStrFixed: String;
     function ParseExpression(AText: PChar; ATextLen: Integer): TGDBExpressionPart;
     procedure Init; virtual;
   public
     function NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean; virtual;
+    function MayNeedStringFix: Boolean; virtual;
   public
     constructor Create;
     function PartCount: Integer; virtual;
     property Parts[Index: Integer]: TGDBExpressionPart read GetParts;
     property Text: String read GetText;
+    property TextStrFixed: String read GetTextStrFixed;
   end;
 
   { TGDBExpression }
@@ -135,7 +139,7 @@ type
     FTextStr: String;
   protected
     FExpressionPart: TGDBExpressionPart;
-    function GetText: String; override;
+    function GetTextFixed(AStringFixed: Boolean): String; override;
     function GetParts(Index: Integer): TGDBExpressionPart; override;
   public
     constructor CreateSimple(AText: PChar; ATextLen: Integer);
@@ -149,7 +153,8 @@ type
 
   TGDBExpressionPartBracketed = class(TGDBExpression)
   protected
-    function GetText: String; override;
+    function GetTextFixed(AStringFixed: Boolean): String; override;
+    function GetPlainText: String;
   public
     constructor Create(AText: PChar; ATextLen: Integer);
   end;
@@ -161,7 +166,7 @@ type
     FList: TFPList;
   protected
     function GetParts(Index: Integer): TGDBExpressionPart; override;
-    function GetText: String; override;
+    function GetTextFixed(AStringFixed: Boolean): String; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -182,6 +187,7 @@ type
   private
     FArrayPTypeNestIdx: integer;
     FArrayPTypePointerIdx: integer;
+    FPTypeIndexReq: TGDBPTypeRequest;
     FVarParam: Boolean;
     FPTypeReq: TGDBPTypeRequest;
     FPTypeDeRefReq: TGDBPTypeRequest;
@@ -192,9 +198,12 @@ type
     procedure Init; override;
     procedure InitReq(var AReqPtr: PGDBPTypeRequest; AReqText: String);
     procedure InitDeRefReq(var AReqPtr: PGDBPTypeRequest; AReqText: String);
+    procedure InitIndexReq(var AReqPtr: PGDBPTypeRequest);
+    function GetTextFixed(AStringFixed: Boolean): String; override;
     property VarParam: Boolean read FVarParam write FVarParam;
     property PTypeReq: TGDBPTypeRequest read FPTypeReq write FPTypeReq;
     property PTypeDeRefReq: TGDBPTypeRequest read FPTypeDeRefReq write FPTypeDeRefReq;
+    property PTypeIndexReq: TGDBPTypeRequest read FPTypeIndexReq write FPTypeIndexReq;
     property ArrayPTypeResult: TGDBPTypeResult read GetArrayPTypeResult;
     property ArrayPTypeIsDeRef: boolean read GetArrayPTypeIsDeRef;
     property ArrayPTypeIsPointer: boolean read GetArrayPTypeIsPointer;
@@ -207,16 +216,18 @@ type
   TGDBExpressionPartArray = class(TGDBExpressionPartListBase)
   private
     FNeedTypeCast: Boolean;
+    FMaybeString: Boolean;
     function GetIndexParts(Index: Integer): TGDBExpressionPartArrayIdx;
   protected
-    function GetText: String; override;
-    function GetTextToIdx(AIdx: Integer): String;
+    function GetTextFixed(AStringFixed: Boolean): String; override;
+    function GetTextToIdx(AIdx: Integer; AStrFixed: Boolean = False): String;
     function IndexCount: Integer;
     property IndexPart[Index: Integer]: TGDBExpressionPartArrayIdx read GetIndexParts;
   public
     constructor Create(ALeadExpresion: TGDBExpressionPart);
     function AddIndex(APart: TGDBExpressionPartArrayIdx):Integer;
     function NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean; override;
+    function MayNeedStringFix: Boolean; override;
     property NeedTypeCast: Boolean read FNeedTypeCast write FNeedTypeCast;
   end;
 
@@ -270,6 +281,7 @@ type
                           gtcfSkipTypeName,
                           gtcfExprIsType,
                           gtcfExprEvaluate,
+                          gtcfExprEvalStrFixed,      // Evaluate with string fix, if needed; only if gtcfExprEvaluate is set
                           gtcfAutoCastClass          // Find real class of instance, and use, instead of declared class of variable
                          );
   TGDBTypeCreationFlags = set of TGDBTypeCreationFlag;
@@ -286,6 +298,7 @@ type
     (gptrPTypeExpr, gptrWhatisExpr, gptrPTypeOfWhatis,
      gptrPTypeExprDeRef, gptrPTypeExprDeDeRef,  // "Foo^", "Foo^^"  for Foo=Object, or &Object
      gptrEvalExpr, gptrEvalExprDeRef, gptrEvalExprCast,
+     gptrEvalExpr2, gptrEvalExprDeRef2, gptrEvalExprCast2, // used by MaybeString
      gptrPtypeCustomFixCast, gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2,
      gptrInstanceClassName
     );
@@ -296,6 +309,7 @@ type
     FInternalTypeName: string;
   private
     FExpression, FOrigExpression: string;
+    FHasStringExprEvaluatedAsText: Boolean;
     FCreationFlags: TGDBTypeCreationFlags;
 
     // Value-Eval
@@ -305,6 +319,7 @@ type
 
     // Sub-Types (FNext is managed by creator / linked list)
     FFirstProcessingSubType, FNextProcessingSubType: TGDBType;
+    FStringExprEvaluatedAsText: String;
     FTypeInfoAncestor: TGDBType;
     FTypeInfoArrayExpression: TGDBType;
 
@@ -340,6 +355,10 @@ type
 
     property HasExprEvaluatedAsText: Boolean read FHasExprEvaluatedAsText;
     property ExprEvaluatedAsText: String read FExprEvaluatedAsText;
+
+    // Expression with index fixed by +1 for string access
+    property HasStringExprEvaluatedAsText: Boolean read FHasStringExprEvaluatedAsText;
+    property StringExprEvaluatedAsText: String read FStringExprEvaluatedAsText;
   public
     // InternalTypeName: include ^ for TObject, if needed
     property InternalTypeName: string read FInternalTypeName;
@@ -908,6 +927,7 @@ begin
   inherited Init;
   FPTypeReq.Result.Kind := ptprkNotEvaluated;
   FPTypeDeRefReq.Result.Kind := ptprkNotEvaluated;
+  FPTypeIndexReq.Result.Kind := ptprkNotEvaluated;
   FVarParam := False;
   FArrayPTypeNestidx := -1;
   FArrayPTypePointerIdx := 0;
@@ -934,6 +954,28 @@ begin
   AReqPtr := @FPTypeDeRefReq;
 end;
 
+procedure TGDBExpressionPartArrayIdx.InitIndexReq(var AReqPtr: PGDBPTypeRequest);
+begin
+  FPTypeIndexReq.Request := '-data-evaluate-expression ' + GetPlainText;
+  FPTypeIndexReq.Error := '';
+  FPTypeIndexReq.ReqType := gcrtEvalExpr;
+  FPTypeIndexReq.Next := AReqPtr;
+  FPTypeIndexReq.Result.Kind := ptprkError;
+  AReqPtr := @FPTypeIndexReq;
+end;
+
+function TGDBExpressionPartArrayIdx.GetTextFixed(AStringFixed: Boolean): String;
+begin
+  if AStringFixed then begin
+    if FExpressionPart = nil
+    then Result := PCLenPartToString(FText, 1, FText.Len-2)
+    else Result := FExpressionPart.Text;
+    Result := FText.Ptr^ + Result + '+1' + (FText.Ptr + FText.Len-1)^;
+  end
+  else
+     Result := inherited GetTextFixed(AStringFixed);
+end;
+
 { TGDBExpressionPartList }
 
 function TGDBExpressionPartList.AddList(APartList: TGDBExpressionPartList): Integer;
@@ -954,12 +996,12 @@ begin
   Result := TGDBExpressionPartArrayIdx(Parts[Index+1]);
 end;
 
-function TGDBExpressionPartArray.GetText: String;
+function TGDBExpressionPartArray.GetTextFixed(AStringFixed: Boolean): String;
 begin
-  Result := GetTextToIdx(IndexCount-1);
+  Result := GetTextToIdx(IndexCount-1, AStringFixed);
 end;
 
-function TGDBExpressionPartArray.GetTextToIdx(AIdx: Integer): String;
+function TGDBExpressionPartArray.GetTextToIdx(AIdx: Integer; AStrFixed: Boolean = False): String;
 
   function GetPointerCast(AnIdxPart: TGDBExpressionPartArrayIdx; out PointerCnt: Integer): String;
   var
@@ -1008,7 +1050,9 @@ begin
     if not (PTResult.Kind = ptprkArray)
     then begin
       // maybe pointer with index access
-      Result := Result + IdxPart.Text;
+      if AStrFixed and (i = IndexCount - 1)
+      then Result := Result + IdxPart.TextStrFixed
+      else Result := Result + IdxPart.Text;
       continue;
     end;
 
@@ -1075,11 +1119,20 @@ begin
 end;
 
 function TGDBExpressionPartArray.NeedValidation(var AReqPtr: PGDBPTypeRequest): Boolean;
+  function IsNumber(s: String): Boolean;
+  var i: Integer;
+  begin
+    i := Length(s);
+    while (i >= 1) and (s[i] in ['0'..'9']) do dec(i);
+    Result := i = 0;
+  end;
 var
   i, j: Integer;
   IdxPart, IdxPart2: TGDBExpressionPartArrayIdx;
   PTReq, PTDeRefReq: TGDBPTypeRequest;
   ArrRes: TGDBPTypeResult;
+  ResultList: TGDBMINameValueList;
+  s: String;
 begin
   Result := False;
   for i := 1 to PartCount - 1 do
@@ -1167,6 +1220,49 @@ begin
 
     inc(i);
   end;
+
+  if IndexCount=0 then exit;
+
+  // check if we may access a char in a string
+  IdxPart := IndexPart[IndexCount-1];
+  PTReq := IdxPart.PTypeReq;
+  if (PTReq.Result.Kind = ptprkSimple) and
+     not(IdxPart.PTypeDeRefReq.Result.Kind = ptprkArray)
+  then begin
+    s := LowerCase(PCLenToString(PTReq.Result.BaseName));
+    if (ptprfPointer in PTReq.Result.Flags) and
+       ( ( s = 'char') or (s = 'character') or (s = 'wchar') or (s = 'widechar') )
+    then begin
+      if IsNumber(IdxPart.GetPlainText)
+      then begin
+        FMaybeString := True;
+      end
+      else begin
+        PTReq := IdxPart.PTypeIndexReq;
+        if PTReq.Result.Kind = ptprkNotEvaluated
+        then begin
+          IdxPart.InitIndexReq(AReqPtr);
+          Result := True;
+          exit;
+        end;
+
+        if (PTReq.Result.Kind = ptprkSimple)
+        then begin
+          ResultList := TGDBMINameValueList.Create(PTReq.Result.GdbDescription);
+          FMaybeString := IsNumber(ResultList.Values['value']);
+          ResultList.Free;
+        end;
+      end;
+    end;
+  end;
+
+end;
+
+function TGDBExpressionPartArray.MayNeedStringFix: Boolean;
+begin
+  Result := FMaybeString;
+  if not Result then
+    Result := inherited MayNeedStringFix;
 end;
 
 { TGDBExpressionPartCastCall }
@@ -1184,11 +1280,18 @@ end;
 
 { TGDBExpressionPartBracketed }
 
-function TGDBExpressionPartBracketed.GetText: String;
+function TGDBExpressionPartBracketed.GetTextFixed(AStringFixed: Boolean): String;
 begin
   if FExpressionPart = nil
-  then Result := inherited GetText
-  else Result := FText.Ptr^ + FExpressionPart.Text + (FText.Ptr + FText.Len-1)^;
+  then Result := inherited GetTextFixed(AStringFixed)
+  else Result := FText.Ptr^ + FExpressionPart.GetTextFixed(AStringFixed) + (FText.Ptr + FText.Len-1)^;
+end;
+
+function TGDBExpressionPartBracketed.GetPlainText: String;
+begin
+  if FExpressionPart = nil
+  then Result := PCLenPartToString(FText, 1, FText.Len-2)
+  else Result := FExpressionPart.Text;
 end;
 
 constructor TGDBExpressionPartBracketed.Create(AText: PChar; ATextLen: Integer);
@@ -1199,9 +1302,14 @@ end;
 
 { TGDBExpressionPart }
 
-function TGDBExpressionPart.GetText: String;
+function TGDBExpressionPart.GetTextFixed(AStringFixed: Boolean): String;
 begin
   Result := PCLenToString(FText);
+end;
+
+function TGDBExpressionPart.GetText: String;
+begin
+  Result := GetTextFixed(False);
 end;
 
 function TGDBExpressionPart.ParseExpression(AText: PChar; ATextLen: Integer): TGDBExpressionPart;
@@ -1395,9 +1503,24 @@ begin
       Result := True;
 end;
 
+function TGDBExpressionPart.MayNeedStringFix: Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  for i := 0 to PartCount - 1 do
+    if Parts[i].MayNeedStringFix then
+      Result := True;
+end;
+
 constructor TGDBExpressionPart.Create;
 begin
   Init;
+end;
+
+function TGDBExpressionPart.GetTextStrFixed: String;
+begin
+  Result := GetTextFixed(True);
 end;
 
 function TGDBExpressionPart.GetParts(Index: Integer): TGDBExpressionPart;
@@ -1417,13 +1540,13 @@ begin
   Result := TGDBExpressionPart(FList[Index]);
 end;
 
-function TGDBExpressionPartListBase.GetText: String;
+function TGDBExpressionPartListBase.GetTextFixed(AStringFixed: Boolean): String;
 var
   i: Integer;
 begin
   Result := '';
   for i := 0 to PartCount - 1 do
-    Result := Result + Parts[i].Text;
+    Result := Result + Parts[i].GetTextFixed(AStringFixed);
 end;
 
 constructor TGDBExpressionPartListBase.Create;
@@ -1464,11 +1587,11 @@ end;
 
 { TGDBExpression }
 
-function TGDBExpression.GetText: String;
+function TGDBExpression.GetTextFixed(AStringFixed: Boolean): String;
 begin
   if FExpressionPart = nil
-  then Result := inherited GetText
-  else Result := FExpressionPart.Text;
+  then Result := inherited GetTextFixed(AStringFixed)
+  else Result := FExpressionPart.GetTextFixed(AStringFixed);
 end;
 
 function TGDBExpression.GetParts(Index: Integer): TGDBExpressionPart;
@@ -1623,9 +1746,12 @@ function TGDBType.RequireRequests(ARequired: TGDBTypeProcessRequests; ACustomDat
       gptrPTypeOfWhatis:    Result := 'ptype ' + PCLenToString(FReqResults[gptrWhatisExpr].Result.BaseName);
       gptrPTypeExprDeRef:   Result := 'ptype ' + ApplyBrackets(FExpression) + '^';
       gptrPTypeExprDeDeRef: Result := 'ptype ' + ApplyBrackets(FExpression) + '^^';
-      gptrEvalExpr:      Result := '-data-evaluate-expression '+FExpression;
-      gptrEvalExprDeRef: Result := '-data-evaluate-expression '+FExpression+'^';
-      gptrEvalExprCast:  Result := '-data-evaluate-expression '+InternalTypeName+'('+FExpression+')';
+      gptrEvalExpr:       Result := '-data-evaluate-expression '+FExpression;
+      gptrEvalExprDeRef:  Result := '-data-evaluate-expression '+FExpression+'^';
+      gptrEvalExprCast:   Result := '-data-evaluate-expression '+InternalTypeName+'('+FExpression+')';
+      gptrEvalExpr2:      Result := '-data-evaluate-expression '+ACustomData;
+      gptrEvalExprDeRef2: Result := '-data-evaluate-expression '+ACustomData+'^';
+      gptrEvalExprCast2:  Result := '-data-evaluate-expression '+InternalTypeName+'('+ACustomData+')';
       gptrPtypeCustomFixCast, gptrPtypeCustomAutoCast, gptrPtypeCustomAutoCast2:
                          Result := 'ptype ' + ACustomData;
       gptrInstanceClassName: Result := '-data-evaluate-expression (^^^char('+FExpression+')^+3)^';
@@ -2172,6 +2298,16 @@ var
       //FTextValue := DeleteEscapeChars(FTextValue);
       ResultList.Free;
     end;
+    procedure ParseFromResultForStrFixed(AGdbDesc, AField: String);
+    var
+      ResultList: TGDBMINameValueList;
+    begin
+      ResultList := TGDBMINameValueList.Create(AGdbDesc);
+      FStringExprEvaluatedAsText := ResultList.Values[AField];
+      FHasStringExprEvaluatedAsText := True;
+      //FTextValue := DeleteEscapeChars(FTextValue);
+      ResultList.Free;
+    end;
   begin
     FProcessState := gtpsEvalExpr;
     if not(gtcfExprEvaluate in FCreationFlags) then begin
@@ -2183,10 +2319,22 @@ var
       exit;
     end;
 
+    // TODO: stringFixed need to know about:
+    // - ProcessInitFixTypeCast
+    // - AutoTypeCast
+
     if (saInternalPointer in FAttributes) then begin
       if not RequireRequests([gptrEvalExprDeRef]) then exit;
       if not IsReqError(gptrEvalExprDeRef, False) then begin
         ParseFromResult(FReqResults[gptrEvalExprDeRef].Result.GdbDescription, 'value');
+
+        if (gtcfExprEvalStrFixed in FCreationFlags) and
+           (FParsedExpression <> nil) and FParsedExpression.MayNeedStringFix
+        then begin
+          if not RequireRequests([gptrEvalExprDeRef2], FParsedExpression.TextStrFixed) then exit;
+          ParseFromResultForStrFixed(FReqResults[gptrEvalExprDeRef2].Result.GdbDescription, 'value');
+        end;
+
         Result := True;
         exit;
       end;
@@ -2196,6 +2344,14 @@ var
       if not RequireRequests([gptrEvalExprCast]) then exit;
       if not IsReqError(gptrEvalExprCast, False) then begin
         ParseFromResult(FReqResults[gptrEvalExprCast].Result.GdbDescription, 'value');
+
+        if (gtcfExprEvalStrFixed in FCreationFlags) and
+           (FParsedExpression <> nil) and FParsedExpression.MayNeedStringFix
+        then begin
+          if not RequireRequests([gptrEvalExprCast2], FParsedExpression.TextStrFixed) then exit;
+          ParseFromResultForStrFixed(FReqResults[gptrEvalExprCast2].Result.GdbDescription, 'value');
+        end;
+
         Result := True;
         exit;
       end;
@@ -2204,6 +2360,14 @@ var
     if not RequireRequests([gptrEvalExpr]) then exit;
     if not IsReqError(gptrEvalExpr, False) then begin
       ParseFromResult(FReqResults[gptrEvalExpr].Result.GdbDescription, 'value');
+
+      if (gtcfExprEvalStrFixed in FCreationFlags) and
+         (FParsedExpression <> nil) and FParsedExpression.MayNeedStringFix
+      then begin
+        if not RequireRequests([gptrEvalExpr2], FParsedExpression.TextStrFixed) then exit;
+        ParseFromResultForStrFixed(FReqResults[gptrEvalExpr2].Result.GdbDescription, 'value');
+      end;
+
       Result := True;
       exit;
     end;
