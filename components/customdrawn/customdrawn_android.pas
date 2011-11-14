@@ -25,6 +25,18 @@ type
     procedure CreateResources; override;
     procedure LoadResources; override;
     procedure FreeResources; override;
+    //procedure LoadFallbackPaletteColors; override;
+    function GetDrawStyle: TCDDrawStyle; override;
+    // General
+    function GetMeasures(AMeasureID: Integer): Integer; override;
+{    function GetMeasuresEx(ADest: TCanvas; AMeasureID: Integer;
+      AState: TCDControlState; AStateEx: TCDControlStateEx): Integer; virtual; abstract;
+    procedure CalculatePreferredSize(ADest: TCanvas; AControlId: TCDControlID;
+      AState: TCDControlState; AStateEx: TCDControlStateEx;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual; abstract;
+    function GetColor(AColorID: Integer): TColor; virtual; abstract;
+    function GetClientArea(ADest: TCanvas; ASize: TSize; AControlId: TCDControlID;
+      AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; virtual; abstract;}
     // General drawing routines
     {procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
@@ -111,18 +123,53 @@ begin
   bmpCheckboxChecked.LoadFromLazarusResource('android_checkbox_checked');
 
   // for now hardcoded to ldpi
-  bmpCheckbox.Canvas.StretchDraw(Bounds(0, 0, 22, 22), bmpCheckbox);
-  bmpCheckbox.Width := 22;
-  bmpCheckbox.Height := 22;
-  bmpCheckboxChecked.Canvas.StretchDraw(Bounds(0, 0, 22, 22), bmpCheckboxChecked);
-  bmpCheckboxChecked.Width := 22;
-  bmpCheckboxChecked.Height := 22;
+  ScaleRasterImage(bmpCheckbox, 160, 96);
+  ScaleRasterImage(bmpCheckboxChecked, 160, 96);
 end;
 
 procedure TCDDrawerAndroid.FreeResources;
 begin
   bmpCheckbox.Free;
   bmpCheckboxChecked.Free;
+end;
+
+function TCDDrawerAndroid.GetDrawStyle: TCDDrawStyle;
+begin
+  Result := dsAndroid;
+end;
+
+function TCDDrawerAndroid.GetMeasures(AMeasureID: Integer): Integer;
+begin
+  case AMeasureID of
+{  TCDEDIT_LEFT_TEXT_SPACING: Result := 4;
+  TCDEDIT_RIGHT_TEXT_SPACING: Result := 3;
+  TCDEDIT_TOP_TEXT_SPACING: Result := 3;
+  TCDEDIT_BOTTOM_TEXT_SPACING: Result := 3;}
+  //
+  TCDCHECKBOX_SQUARE_HALF_HEIGHT: Result := 9;
+  TCDCHECKBOX_SQUARE_HEIGHT: Result := 18;
+{  //
+  TCDRADIOBUTTON_CIRCLE_HEIGHT: Result := 15;
+  //
+  TCDSCROLLBAR_BUTTON_WIDTH: Result := 17;
+  TCDSCROLLBAR_LEFT_SPACING: Result := 17;
+  TCDSCROLLBAR_RIGHT_SPACING: Result := 17;
+  TCDSCROLLBAR_LEFT_BUTTON_POS: Result := 0;
+  TCDSCROLLBAR_RIGHT_BUTTON_POS: Result := -17;
+  //
+  TCDTRACKBAR_LEFT_SPACING: Result := 9;
+  TCDTRACKBAR_RIGHT_SPACING: Result := 9;
+  TCDTRACKBAR_TOP_SPACING: Result := 5;
+  TCDTRACKBAR_FRAME_HEIGHT: Result := 17;
+  //
+  TCDLISTVIEW_COLUMN_LEFT_SPACING:  Result := 10;
+  TCDLISTVIEW_COLUMN_RIGHT_SPACING: Result := 10;
+  TCDLISTVIEW_COLUMN_TEXT_LEFT_SPACING:  Result := 5;
+  TCDLISTVIEW_LINE_TOP_SPACING: Result := 3;
+  TCDLISTVIEW_LINE_BOTTOM_SPACING: Result := 3;}
+  else
+    Result := inherited GetMeasures(AMeasureID);
+  end;
 end;
 
 procedure TCDDrawerAndroid.DrawTickmark(ADest: TCanvas; ADestPos: TPoint);

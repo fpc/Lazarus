@@ -239,6 +239,7 @@ type
     procedure CreateResources; virtual;
     procedure LoadResources; virtual;
     procedure FreeResources; virtual;
+    procedure ScaleRasterImage(ARasterImage: TRasterImage; ASourceDPI, ADestDPI: Word);
     procedure SetPaletteKind(APaletteKind: TCDPaletteKind);
     procedure LoadNativePaletteColors;
     procedure LoadFallbackPaletteColors; virtual;
@@ -440,6 +441,17 @@ end;
 procedure TCDDrawer.FreeResources;
 begin
 
+end;
+
+procedure TCDDrawer.ScaleRasterImage(ARasterImage: TRasterImage; ASourceDPI, ADestDPI: Word);
+var
+  lNewWidth, lNewHeight: Int64;
+begin
+  lNewWidth := Round(ARasterImage.Width * ADestDPI / ASourceDPI);
+  lNewHeight := Round(ARasterImage.Height * ADestDPI / ASourceDPI);
+  ARasterImage.Canvas.StretchDraw(Bounds(0, 0, lNewWidth, lNewHeight), ARasterImage);
+  ARasterImage.Width := lNewWidth;
+  ARasterImage.Height := lNewHeight;
 end;
 
 procedure TCDDrawer.SetPaletteKind(APaletteKind: TCDPaletteKind);
