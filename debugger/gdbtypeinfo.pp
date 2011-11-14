@@ -356,7 +356,7 @@ type
     property HasExprEvaluatedAsText: Boolean read FHasExprEvaluatedAsText;
     property ExprEvaluatedAsText: String read FExprEvaluatedAsText;
 
-    // Expression with index fixed by +1 for string access
+    // Expression with index fixed by -1 for string access
     property HasStringExprEvaluatedAsText: Boolean read FHasStringExprEvaluatedAsText;
     property StringExprEvaluatedAsText: String read FStringExprEvaluatedAsText;
   public
@@ -970,7 +970,7 @@ begin
     if FExpressionPart = nil
     then Result := PCLenPartToString(FText, 1, FText.Len-2)
     else Result := FExpressionPart.Text;
-    Result := FText.Ptr^ + Result + '+1' + (FText.Ptr + FText.Len-1)^;
+    Result := FText.Ptr^ + Result + '-1' + (FText.Ptr + FText.Len-1)^;
   end
   else
      Result := inherited GetTextFixed(AStringFixed);
