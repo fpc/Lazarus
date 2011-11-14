@@ -295,8 +295,6 @@ begin
 end;
 
 procedure TWindowOptionsFrame.ApplyButtonClick(Sender: TObject);
-var
-  NewBounds: TRect;
 begin
   SaveLayout;
   if (Layout<>nil) and (Layout.Form<>nil) and (Layout.Form.Parent=nil) then begin
