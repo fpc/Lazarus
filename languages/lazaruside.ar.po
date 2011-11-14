@@ -818,6 +818,10 @@ msgstr ""
 msgid "Range"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcorelocatable
+msgid "Relocatable"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoshowerr
 msgid "Show Errors"
 msgstr ""
@@ -7744,6 +7748,35 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfilefilter
 msgid "File filter"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefilters
+msgid "File Filters"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersaddrow
+msgid "Add Row"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersdeleterow
+msgid "Delete Row"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersinsertrow
+msgid "Insert Row"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersmask
+msgid "File mask"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersname
+msgctxt "lazarusidestrconsts.lisfilefiltersname"
+msgid "Name"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefilterstitle
+msgid "These are file filters that will appear in all File Open dialogs"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave

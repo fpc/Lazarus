@@ -837,6 +837,10 @@ msgstr "Copia la parola se non c'è selezione"
 msgid "Range"
 msgstr "Intervallo"
 
+#: lazarusidestrconsts.dlgcorelocatable
+msgid "Relocatable"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoshowerr
 msgid "Show Errors"
 msgstr "Mostra gli errori"
@@ -7875,6 +7879,35 @@ msgstr "Estensione dei file di programma"
 #: lazarusidestrconsts.lisfilefilter
 msgid "File filter"
 msgstr "Filtro dei file"
+
+#: lazarusidestrconsts.lisfilefilters
+msgid "File Filters"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersaddrow
+msgid "Add Row"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersdeleterow
+msgid "Delete Row"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersinsertrow
+msgid "Insert Row"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersmask
+msgid "File mask"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersname
+msgctxt "lazarusidestrconsts.lisfilefiltersname"
+msgid "Name"
+msgstr "Nome"
+
+#: lazarusidestrconsts.lisfilefilterstitle
+msgid "These are file filters that will appear in all File Open dialogs"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File %s%s%s has changed. Save?"

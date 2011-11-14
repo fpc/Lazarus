@@ -834,6 +834,10 @@ msgstr "Copiar palabra al Copiar Nada"
 msgid "Range"
 msgstr "Rango"
 
+#: lazarusidestrconsts.dlgcorelocatable
+msgid "Relocatable"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoshowerr
 msgid "Show Errors"
 msgstr "Mostrar errores"
@@ -7852,6 +7856,35 @@ msgstr "Extensión de archivo de programas"
 #: lazarusidestrconsts.lisfilefilter
 msgid "File filter"
 msgstr "Filtro de archivos"
+
+#: lazarusidestrconsts.lisfilefilters
+msgid "File Filters"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersaddrow
+msgid "Add Row"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersdeleterow
+msgid "Delete Row"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersinsertrow
+msgid "Insert Row"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersmask
+msgid "File mask"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersname
+msgctxt "lazarusidestrconsts.lisfilefiltersname"
+msgid "Name"
+msgstr "Nombre"
+
+#: lazarusidestrconsts.lisfilefilterstitle
+msgid "These are file filters that will appear in all File Open dialogs"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File %s%s%s has changed. Save?"

@@ -835,6 +835,10 @@ msgstr ""
 msgid "Range"
 msgstr "范围"
 
+#: lazarusidestrconsts.dlgcorelocatable
+msgid "Relocatable"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcoshowerr
 msgid "Show Errors"
 msgstr "显示错误"
@@ -7862,6 +7866,35 @@ msgstr "程序的文件扩展名"
 #: lazarusidestrconsts.lisfilefilter
 msgid "File filter"
 msgstr "文件过滤"
+
+#: lazarusidestrconsts.lisfilefilters
+msgid "File Filters"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersaddrow
+msgid "Add Row"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersdeleterow
+msgid "Delete Row"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersinsertrow
+msgid "Insert Row"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersmask
+msgid "File mask"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefiltersname
+msgctxt "lazarusidestrconsts.lisfilefiltersname"
+msgid "Name"
+msgstr "名称"
+
+#: lazarusidestrconsts.lisfilefilterstitle
+msgid "These are file filters that will appear in all File Open dialogs"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File %s%s%s has changed. Save?"

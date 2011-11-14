@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-11-13 00:59+0400\n"
+"PO-Revision-Date: 2011-11-15 02:00+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -840,6 +840,10 @@ msgstr "Копировать слово при пустом копировани
 #: lazarusidestrconsts.dlgcorange
 msgid "Range"
 msgstr "Диапазона"
+
+#: lazarusidestrconsts.dlgcorelocatable
+msgid "Relocatable"
+msgstr "Перемещаемый"
 
 #: lazarusidestrconsts.dlgcoshowerr
 msgid "Show Errors"
@@ -7845,7 +7849,36 @@ msgstr "Расширение файлов программ"
 
 #: lazarusidestrconsts.lisfilefilter
 msgid "File filter"
-msgstr "Фильтр файлов"
+msgstr "Файловый фильтр"
+
+#: lazarusidestrconsts.lisfilefilters
+msgid "File Filters"
+msgstr "Файловые фильтры"
+
+#: lazarusidestrconsts.lisfilefiltersaddrow
+msgid "Add Row"
+msgstr "Добавить строку"
+
+#: lazarusidestrconsts.lisfilefiltersdeleterow
+msgid "Delete Row"
+msgstr "Удалить строку"
+
+#: lazarusidestrconsts.lisfilefiltersinsertrow
+msgid "Insert Row"
+msgstr "Вставить строку"
+
+#: lazarusidestrconsts.lisfilefiltersmask
+msgid "File mask"
+msgstr "Файловая маска"
+
+#: lazarusidestrconsts.lisfilefiltersname
+msgctxt "lazarusidestrconsts.lisfilefiltersname"
+msgid "Name"
+msgstr "Имя"
+
+#: lazarusidestrconsts.lisfilefilterstitle
+msgid "These are file filters that will appear in all File Open dialogs"
+msgstr "Эти файловые фильтры появятся во всех диалогах открытия файлов"
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File %s%s%s has changed. Save?"
@@ -7959,7 +7992,7 @@ msgstr "Параметры каталогов"
 #: lazarusidestrconsts.lisfindfilefilemask
 #| msgid "File mask"
 msgid "Fi&le mask"
-msgstr "Маска фа&йлов"
+msgstr "Фа&йловая маска"
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
 #| msgid "Include sub directories"
@@ -14537,7 +14570,7 @@ msgstr "%s содержит несуществующий каталог:%s%s"
 
 #: lazarusidestrconsts.listhecontainsastarcharacterlazarususesthisasnormalch
 msgid "The %s contains a star * character.%sLazarus uses this as normal character and does not expand this as file mask."
-msgstr "%s содержит символ звёздочки *.%sLazarus интерпретирует его как обычный символ, не раскрывая в качестве маски файла."
+msgstr "%s содержит символ звёздочки *.%sLazarus интерпретирует его как обычный символ, не раскрывая в качестве файловой маски."
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
 #| msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
