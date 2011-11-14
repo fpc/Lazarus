@@ -47,7 +47,7 @@ uses
   TypInfo, Classes, SysUtils, Forms, FileUtil, LCLProc,
   LazIDEIntf, PackageIntf, MenuIntf,
   LazarusIDEStrConsts, EnvironmentOpts,
-  PackageDefs, PackageSystem, ComponentReg, CompilerOptions, Project;
+  PackageDefs, PackageSystem, ComponentReg, Project;
 
 type
   { TBasePkgManager }
