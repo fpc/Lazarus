@@ -100,7 +100,7 @@ type
 
   TUnitDictionary = class
   private
-    FDefaultGroup: TUDUnitGroup;
+    FNoGroup: TUDUnitGroup;
     FIdentifiers: TAVLTree; // tree of TUDIdentifier sorted with CompareIDItems
     FUnitsByName: TAVLTree; // tree of TUDUnit sorted with CompareIDItems
     FUnitsByFilename: TAVLTree; // tree of TUDUnit sorted with CompareIDFileItems
@@ -121,12 +121,13 @@ type
     // groups
     function AddUnitGroup(Group: TUDUnitGroup): TUDUnitGroup; overload;
     function AddUnitGroup(const aName, aFilename: string): TUDUnitGroup; overload;
-    property DefaultGroup: TUDUnitGroup read FDefaultGroup;
+    property NoGroup: TUDUnitGroup read FNoGroup;
     property UnitGroupsByName: TAVLTree read FUnitGroupsByName;
     property UnitGroupsByFilename: TAVLTree read FUnitGroupsByFilename;
     function FindGroupWithFilename(const aFilename: string): TUDUnitGroup;
 
     // units
+    function AddUnit(const aName, aFilename: string; Group: TUDUnitGroup = nil): TUDUnit; overload;
     procedure ParseUnit(UnitFilename: string; Group: TUDUnitGroup = nil); overload;
     procedure ParseUnit(Code: TCodeBuffer; Group: TUDUnitGroup = nil); overload;
     procedure ParseUnit(Tool: TCodeTool; Group: TUDUnitGroup = nil); overload;
@@ -327,7 +328,7 @@ begin
   FUnitsByFilename:=TAVLTree.Create(@CompareIDFileItems);
   FUnitGroupsByName:=TAVLTree.Create(@CompareIDItems);
   FUnitGroupsByFilename:=TAVLTree.Create(@CompareIDFileItems);
-  FDefaultGroup:=AddUnitGroup('','');
+  FNoGroup:=AddUnitGroup('','');
 end;
 
 destructor TUnitDictionary.Destroy;
@@ -343,14 +344,14 @@ end;
 
 procedure TUnitDictionary.Clear(CreateDefaults: boolean);
 begin
-  FDefaultGroup:=nil;
+  FNoGroup:=nil;
   FUnitGroupsByFilename.Clear;
   FUnitGroupsByName.FreeAndClear;
   FUnitsByFilename.Clear;
   FUnitsByName.FreeAndClear;
   FIdentifiers.FreeAndClear;
   if CreateDefaults then
-    FDefaultGroup:=AddUnitGroup('','');
+    FNoGroup:=AddUnitGroup('','');
 end;
 
 procedure TUnitDictionary.ConsistencyCheck;
@@ -367,7 +368,7 @@ var
   Item: TUDIdentifier;
   SubAVLNode: TAVLTreeNode;
 begin
-  if DefaultGroup=nil then
+  if NoGroup=nil then
     e('DefaultGroup=nil');
 
   if UnitGroupsByFilename.Count<>UnitGroupsByName.Count then
@@ -410,9 +411,9 @@ begin
   AVLNode:=FUnitGroupsByName.FindLowest;
   while AVLNode<>nil do begin
     Group:=TUDUnitGroup(AVLNode.Data);
-    if (Group.Name='') and (Group<>DefaultGroup) then
+    if (Group.Name='') and (Group<>NoGroup) then
       e('group without name');
-    if (Group.Filename='') and (Group<>DefaultGroup) then
+    if (Group.Filename='') and (Group<>NoGroup) then
       e('group '+Group.Name+' without filename');
     if FUnitGroupsByFilename.FindPointer(Group)=nil then
       e('group '+Group.Name+' in FUnitGroupsByName not in FUnitGroupsByFilename');
@@ -696,9 +697,7 @@ var
       Move(StartP^,UnitFilename[1],length(UnitFilename));
       ReadLineEnding;
 
-      CurUnit:=FindUnitWithFilename(UnitFilename);
-      if CurUnit=nil then
-        CurUnit:=DefaultGroup.AddUnit(CurUnitName,UnitFilename);
+      CurUnit:=AddUnit(CurUnitName,UnitFilename);
       IDToUnit[UnitID]:=CurUnit;
 
       // read identifiers until empty line
@@ -771,9 +770,9 @@ var
 
         CurUnit:=TUDUnit(IDToUnit[UnitID]);
         if CurUnit<>nil then begin
-          if (Group<>DefaultGroup) and (CurUnit.IsInGroup(DefaultGroup)) then begin
+          if (Group<>NoGroup) and (CurUnit.IsInGroup(NoGroup)) then begin
             // move from no group to some group
-            DefaultGroup.RemoveUnit(CurUnit);
+            NoGroup.RemoveUnit(CurUnit);
           end;
           Group.AddUnit(CurUnit);
         end else begin
@@ -799,7 +798,7 @@ begin
   Version:=ReadFileFormat;
   if Version<1 then
     E('invalid version '+IntToStr(Version));
-  debugln(['TUnitDictionary.LoadFromStream Version=',Version]);
+  //debugln(['TUnitDictionary.LoadFromStream Version=',Version]);
   IDToUnit:=TStringToPointerTree.Create(true);
   try
     ReadUnits;
@@ -820,20 +819,13 @@ var
   Item2: TUDIdentifier;
 begin
   Result:=false;
-  debugln(['TUnitDictionary.Equals AAA1']);
   if Dictionary=nil then exit;
   if Dictionary=Self then exit(true);
-  debugln(['TUnitDictionary.Equals AAA1.1']);
   if UnitGroupsByFilename.Count<>Dictionary.UnitGroupsByFilename.Count then exit;
-  debugln(['TUnitDictionary.Equals AAA1.2']);
   if UnitGroupsByName.Count<>Dictionary.UnitGroupsByName.Count then exit;
-  debugln(['TUnitDictionary.Equals AAA1.3']);
   if UnitsByFilename.Count<>Dictionary.UnitsByFilename.Count then exit;
-  debugln(['TUnitDictionary.Equals AAA1.4']);
   if UnitsByName.Count<>Dictionary.UnitsByName.Count then exit;
-  debugln(['TUnitDictionary.Equals AAA1.5']);
   if Identifiers.Count<>Dictionary.Identifiers.Count then exit;
-  debugln(['TUnitDictionary.Equals AAA2']);
 
   Node1:=UnitGroupsByFilename.FindLowest;
   Node2:=Dictionary.UnitGroupsByFilename.FindLowest;
@@ -846,7 +838,6 @@ begin
     Node2:=UnitGroupsByFilename.FindSuccessor(Node2);
   end;
 
-  debugln(['TUnitDictionary.Equals AAA3']);
   Node1:=UnitsByFilename.FindLowest;
   Node2:=Dictionary.UnitsByFilename.FindLowest;
   while Node1<>nil do begin
@@ -854,20 +845,21 @@ begin
     Unit2:=TUDUnit(Node2.Data);
     if Unit1.Name<>Unit2.Name then exit;
     if Unit1.Filename<>Unit2.Filename then exit;
+
+    Item1:=Unit1.FirstIdentifier;
+    Item2:=Unit2.FirstIdentifier;
+    while (Item1<>nil) and (Item2<>nil) do begin
+      if Item1.Name<>Item2.Name then begin
+        //debugln(['TUnitDictionary.Equals Item1.Name=',Item1.Name,'<>Item2.Name=',Item2.Name]);
+        exit;
+      end;
+      Item1:=Item1.NextInUnit;
+      Item2:=Item2.NextInUnit;
+    end;
+    if (Item1<>nil) then exit;
+    if (Item2<>nil) then exit;
     Node1:=UnitGroupsByFilename.FindSuccessor(Node1);
     Node2:=UnitGroupsByFilename.FindSuccessor(Node2);
-  end;
-
-  debugln(['TUnitDictionary.Equals AAA4']);
-  Node1:=Identifiers.FindLowest;
-  Node2:=Dictionary.Identifiers.FindLowest;
-  while Node1<>nil do begin
-    Item1:=TUDIdentifier(Node1.Data);
-    Item2:=TUDIdentifier(Node2.Data);
-    if Item1.Name<>Item2.Name then exit;
-    if Item1.DUnit.Filename<>Item2.DUnit.Filename then exit;
-    Node1:=Identifiers.FindSuccessor(Node1);
-    Node2:=Identifiers.FindSuccessor(Node2);
   end;
 
   Result:=true
@@ -899,6 +891,22 @@ begin
     Result:=TUDUnitGroup(AVLNode.Data)
   else
     Result:=nil;
+end;
+
+function TUnitDictionary.AddUnit(const aName, aFilename: string;
+  Group: TUDUnitGroup): TUDUnit;
+begin
+  if Group=nil then
+    Group:=NoGroup;
+  Result:=FindUnitWithFilename(aFilename);
+  if Result=nil then begin
+    Result:=Group.AddUnit(aName,aFilename);
+    FUnitsByFilename.Add(Result);
+    FUnitsByName.Add(Result);
+  end else
+    Group.AddUnit(Result);
+  if Group<>NoGroup then
+    NoGroup.RemoveUnit(Result);
 end;
 
 procedure TUnitDictionary.ParseUnit(UnitFilename: string; Group: TUDUnitGroup);
@@ -934,7 +942,7 @@ var
 begin
   if Tool=nil then exit;
   if Group=nil then
-    Group:=DefaultGroup;
+    Group:=NoGroup;
   // parse unit
   Tool.BuildInterfaceIdentifierCache(true);
 
@@ -952,10 +960,10 @@ begin
   CurUnit:=FindUnitWithFilename(UnitFilename);
   if CurUnit<>nil then begin
     // old unit
-    if (Group<>DefaultGroup) then begin
-      if CurUnit.IsInGroup(DefaultGroup) then begin
+    if (Group<>NoGroup) then begin
+      if CurUnit.IsInGroup(NoGroup) then begin
         // move from no group to some group
-        DefaultGroup.RemoveUnit(CurUnit);
+        NoGroup.RemoveUnit(CurUnit);
       end;
       Group.AddUnit(CurUnit);
     end;
