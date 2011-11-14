@@ -1505,7 +1505,7 @@ begin
     // increase priority by one, so that the LCL components are inserted to the
     // left in the palette
     for i:=0 to FileCount-1 do
-      inc(Files[i].ComponentPriority.Level);
+      Files[i].ComponentPriority.Level+=1;
 
     // add unit paths
     UsageOptions.UnitPath:=SetDirSeparators(

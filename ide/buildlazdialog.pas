@@ -493,12 +493,8 @@ begin
       NewUnitDirectory:=AppendPathDelim(NewTargetDirectory)+'units'
                       +PathDelim+NewTargetCPU+'-'+NewTargetOS;
       debugln('CreateBuildLazarusOptions UnitsTargetDirectory=',NewUnitDirectory);
-      Result:=ForceDirectoryInteractive(NewUnitDirectory,[]);
-      if Result<>mrOk then exit;
       NewTargetDirectory:=AppendPathDelim(NewTargetDirectory)+'bin';
       debugln('CreateBuildLazarusOptions ExecutableTargetDirectory=',NewTargetDirectory);
-      Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
-      if Result<>mrOk then exit;
       if OSLocksExecutables and not CrossCompiling then begin
         // Allow for the case where this corresponds to the current executable
         NewTargetFilename:='lazarus'+GetExecutableExt(NewTargetOS);
@@ -518,8 +514,6 @@ begin
         Macros.SubstituteStr(NewUnitDirectory);
         debugln('CreateBuildLazarusOptions Options.TargetOS=',Options.FPCTargetOS,' Options.TargetCPU=',
                 Options.FPCTargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
-        Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
-        if Result<>mrOk then exit;
       end else begin
         // -> normal compile for this platform
 
@@ -539,8 +533,6 @@ begin
             NewUnitDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'units'
                             +PathDelim+NewTargetCPU+'-'+NewTargetOS;
             debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',NewTargetDirectory);
-            Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
-            if Result<>mrOk then exit;
           end else begin
             // the lazarus directory is writable
             if OSLocksExecutables then begin
@@ -560,6 +552,11 @@ begin
         end;
       end;
     end;
+
+    Result:=ForceDirectoryInteractive(NewUnitDirectory,[]);
+    if Result<>mrOk then exit;
+    Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
+    if Result<>mrOk then exit;
 
     OutputDirRedirected:=NewTargetDirectory<>'';
 
