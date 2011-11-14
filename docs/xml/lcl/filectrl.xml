@@ -9,30 +9,6 @@
     <module name="FileCtrl">
       <short>Class definitions for a box with a list of files for selection</short>
       <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="StdCtrls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="FileUtil">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TFileAttr">
         <short>
@@ -83,120 +59,9 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomFileListBox.FDrive">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomFileListBox.FDirectory">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomFileListBox.FFileName">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomFileListBox.FFileType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomFileListBox.FMask">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomFileListBox.FOnChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomFileListBox.FLastChangeFileName">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomFileListBox.MaskIsStored">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
       <!-- function result Visibility: default -->
       <element name="TCustomFileListBox.MaskIsStored.Result">
         <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomFileListBox.SetDirectory">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomFileListBox.SetDirectory.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomFileListBox.SetDrive">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomFileListBox.SetDrive.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomFileListBox.SetFileName">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomFileListBox.SetFileName.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomFileListBox.SetFileType">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomFileListBox.SetFileType.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomFileListBox.SetMask">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomFileListBox.SetMask.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomFileListBox.UpdateSelectedFileName">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomFileListBox.DoChangeFile">
@@ -305,9 +170,15 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomFileListBox.Mask">
-        <short>The search <var>Mask</var> used to find the file</short>
-        <descr/>
-        <seealso/>
+        <short>Specifies which files will be shown</short>
+        <descr>
+          <p>This property should be filled with a list of masks separated by semi-colons. For example: "*.pdf;*.svg" will show all files with the extensions pdf and svg. The default value for this property is "*" which for this control will be consider the generic mask meaning any file. Do not use the Windows specific mask "*.*" to attempt to show all files, which is the behavior from Delphi. In the LCL version of the control this will require the file name to have a point.</p>
+          <p>Allowed wildcarss are "*" which means zero or more characters and "?" which means exactly 1 character of any kind. Other characters represent themselves with one important detail: The file matching algorithm is case insensitive. So if you set "*.PDF" in the mask, then "PostScript.pdf" will also be shown, even in Linux in a case-sensitive file system.</p>
+          <p>This property has exactly the same rules and behavior as TFilterComboBox.Mask.</p>
+        </descr>
+        <seealso>
+          <link id="TCustomFilterComboBox.Mask"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomFileListBox.OnChange">
@@ -317,11 +188,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomFileListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomFileListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted" />
       <!-- object Visibility: default -->
       <element name="TFileListBox">
         <short>
@@ -330,241 +197,20 @@
         <errors/>
         <seealso/>
       </element>
+      <element name="TFileListBox.Align" link="#LCL.Controls.TControl.Align" />
+      <element name="TFileListBox.Anchors" link="#LCL.Controls.TControl.Anchors" />
+      <element name="TFileListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle" />
+      <element name="TFileListBox.Constraints" link="#LCL.Controls.TControl.Constraints" />
+      <element name="TFileListBox.ExtendedSelect" link="#LCL.StdCtrls.TCustomListBox.ExtendedSelect" />
+      <element name="TFileListBox.FileType" link="#LCL.FileCtrl.TCustomFileListBox.FileType" />
+      <element name="TFileListBox.Font" link="#LCL.Controls.TControl.Font" />
+      <element name="TFileListBox.IntegralHeight" link="#LCL.StdCtrls.TCustomListBox.IntegralHeight"/>
+      <element name="TFileListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight" />
       <!-- property Visibility: published -->
-      <element name="TFileListBox.Align" link="#LCL.Controls.TControl.Align">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.Anchors" link="#LCL.Controls.TControl.Anchors">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.Constraints" link="#LCL.Controls.TControl.Constraints">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.ExtendedSelect" link="#LCL.StdCtrls.TCustomListBox.ExtendedSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.FileType" link="#LCL.FileCtrl.TCustomFileListBox.FileType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.Font" link="#LCL.Controls.TControl.Font">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.IntegralHeight" link="#LCL.StdCtrls.TCustomListBox.IntegralHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.Mask" link="#LCL.FileCtrl.TCustomFileListBox.Mask">
-        <short>Specifies which files will be shown</short>
-        <descr>
-          <p>This property should be filled with a list of masks separated by semi-colons. For example: "*.pdf;*.svg" will show all files with the extensions pdf and svg. The default value for this property is "*" which for this control will be consider the generic mask meaning any file. Do not use the Windows specific mask "*.*" to attempt to show all files, which is the behavior from Delphi. In the LCL version of the control this will require the file name to have a point.</p>
-          <p>Allowed wildcarss are "*" which means zero or more characters and "?" which means exactly 1 character of any kind. Other characters represent themselves with one important detail: The file matching algorithm is case insensitive. So if you set "*.PDF" in the mask, then "PostScript.pdf" will also be shown, even in Linux in a case-sensitive file system.</p>
-          <p>This property has exactly the same rules and behavior as TFilterComboBox.Mask.</p>
-        </descr>
-        <seealso>
-          <link id="TFilterComboBox.Mask"/>
-        </seealso>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.MultiSelect" link="#LCL.StdCtrls.TCustomListBox.MultiSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnChange" link="#LCL.FileCtrl.TCustomFileListBox.OnChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnClick" link="#LCL.Controls.TControl.OnClick">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.OnResize" link="#LCL.Controls.TControl.OnResize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.ParentFont" link="#LCL.Controls.TControl.ParentFont">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.TopIndex" link="#LCL.StdCtrls.TCustomListBox.TopIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileListBox.Visible" link="#LCL.Controls.TControl.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="Register">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TFileListBox.Mask" link="#LCL.FileCtrl.TCustomFileListBox.Mask" />
+      <element name="TFileListBox.MultiSelect" link="#LCL.StdCtrls.TCustomListBox.MultiSelect" />
+      <element name="TFileListBox.OnChange" link="#LCL.FileCtrl.TCustomFileListBox.OnChange" />
+      <element name="TFileListBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds" />
       <element name="TFileListBox.Directory" link="#LCL.FileCtrl.TCustomFileListBox.Directory"/>
       <element name="TFileListBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
       <element name="TFileListBox.DragMode" link="#LCL.Controls.TControl.DragMode"/>
@@ -573,14 +219,239 @@
       <element name="TFileListBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag"/>
       <element name="TFileListBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TFileListBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="MiniMizeName">
-        <short>
-          <var>MiniMizeName</var> This function will return a shortened version of <var>FileName</var>, so that it fits on the given <var>Canvas</var>, with a given <var>MaxWidth</var>.</short>
+      <element name="TFileListBox.OnClick" link="#LCL.Controls.TControl.OnClick"/>
+      <element name="TFileListBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
+      <element name="TFileListBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter"/>
+      <element name="TFileListBox.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
+      <element name="TFileListBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
+      <element name="TFileListBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
+      <element name="TFileListBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
+      <element name="TFileListBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
+      <element name="TFileListBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
+      <element name="TFileListBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
+      <element name="TFileListBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
+      <element name="TFileListBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown"/>
+      <element name="TFileListBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
+      <element name="TFileListBox.OnResize" link="#LCL.Controls.TControl.OnResize"/>
+      <element name="TFileListBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
+      <element name="TFileListBox.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
+      <element name="TFileListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
+      <element name="TFileListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
+      <element name="TFileListBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
+      <element name="TFileListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted" />
+      <element name="TFileListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style" />
+      <element name="TFileListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder" />
+      <element name="TFileListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop" />
+      <element name="TFileListBox.TopIndex" link="#LCL.StdCtrls.TCustomListBox.TopIndex" />
+      <element name="TFileListBox.Visible" link="#LCL.Controls.TControl.Visible" />
+      <element name="TFileListBox.BiDiMode" link="#LCL.Controls.TControl.BiDiMode" />
+      <element name="TFileListBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing" />
+      <element name="TFileListBox.OnSelectionChange" link="#LCL.StdCtrls.TCustomListBox.OnSelectionChange" />
+      <element name="TFileListBox.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode" />
+
+      <!-- class Visibility: default -->
+      <element name="TCustomFilterComboBox">
+        <short>A combobox to select filename filters</short>
         <descr>
-          <p>
-            <var>MiniMizeName</var> This function will return a shortened version of FileName, so that it fits on the given Canvas, with a given MaxWidth.</p>
-          <p>eg. C:\Documents and Settings\User\Application Data\Microsoft\Word\custom.dic  would become something like: C:\...\Word\custom.dic</p>
         </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomFilterComboBox.Select">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
+
+      <!-- constructor Visibility: public -->
+      <element name="TCustomFilterComboBox.Create">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomFilterComboBox.Create.TheOwner">
+      <short></short>
+      </element>
+
+      <!-- destructor Visibility: public -->
+      <element name="TCustomFilterComboBox.Destroy">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
+
+      <!-- class procedure Visibility: default -->
+      <element name="TCustomFilterComboBox.ConvertFilterToStrings">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomFilterComboBox.ConvertFilterToStrings.AFilter">
+      <short></short>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomFilterComboBox.ConvertFilterToStrings.AStrings">
+      <short></short>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomFilterComboBox.ConvertFilterToStrings.AClearStrings">
+      <short></short>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomFilterComboBox.ConvertFilterToStrings.AAddDescription">
+      <short></short>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="TCustomFilterComboBox.ConvertFilterToStrings.AAddFilter">
+      <short></short>
+      </element>
+
+      <!-- property Visibility: public -->
+      <element name="TCustomFilterComboBox.Mask">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
+
+      <!-- property Visibility: public -->
+      <element name="TCustomFilterComboBox.ShellListView">
+        <short>Allows to concect this control to a TShellListView</short>
+        <descr>The files shown in the TShellListView will be filtered by the filter selected in this control
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+
+      <!-- class Visibility: default -->
+      <element name="TFilterComboBox">
+        <short>A combobox to select filename filters</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+
+      <element name="TFilterComboBox.Align" link="#LCL.Controls.TControl.Align" />
+      <element name="TFilterComboBox.Anchors" link="#LCL.Controls.TControl.Anchors" />
+      <element name="TFilterComboBox.AutoComplete" link="#LCL.StdCtrls.TCustomComboBox.AutoComplete" />
+      <element name="TFilterComboBox.AutoDropDown" link="#LCL.StdCtrls.TCustomComboBox.AutoDropDown" />
+      <element name="TFilterComboBox.AutoSize" link="#LCL.Controls.TControl.AutoSize" />
+      <element name="TFilterComboBox.BidiMode" link="#LCL.Controls.TControl.BidiMode" />
+      <element name="TFilterComboBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing" />
+      <element name="TFilterComboBox.Color" link="#LCL.Controls.TControl.Color" />
+      <element name="TFilterComboBox.Constraints" link="#LCL.Controls.TControl.Constraints" />
+      <element name="TFilterComboBox.DragCursor" link="#LCL.Controls.TControl.DragCursor" />
+      <element name="TFilterComboBox.DragKind" link="#LCL.Controls.TControl.DragKind" />
+      <element name="TFilterComboBox.DragMode" link="#LCL.Controls.TControl.DragMode" />
+      <element name="TFilterComboBox.Enabled" link="#LCL.Controls.TControl.Enabled" />
+      <element name="TFilterComboBox.Filter" link="#LCL.StdCtrls.TCustomComboBox.Filter" />
+      <element name="TFilterComboBox.Font" link="#LCL.Controls.TControl.Font" />
+      <element name="TFilterComboBox.ItemIndex" link="#LCL.StdCtrls.TCustomComboBox.ItemIndex" />
+      <element name="TFilterComboBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBidiMode" />
+      <element name="TFilterComboBox.ParentColor" link="#LCL.Controls.TControl.ParentColor" />
+      <element name="TFilterComboBox.ParentFont" link="#LCL.Controls.TControl.ParentFont" />
+      <element name="TFilterComboBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint" />
+      <element name="TFilterComboBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu" />
+      <element name="TFilterComboBox.ShellListView" link="#LCL.FileCtrl.TCustomFilterComboBox.ShellListView" />
+      <element name="TFilterComboBox.ShowHint" link="#LCL.Controls.TControl.ShowHint" />
+      <element name="TFilterComboBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder" />
+      <element name="TFilterComboBox.TabStop" link="#LCL.Controls.TWinControl.TabStop" />
+      <element name="TFilterComboBox.Visible" link="#LCL.Controls.TControl.Visible" />
+      <element name="TFilterComboBox.OnChange" link="#LCL.StdCtrls.TCustomComboBox.OnChange" />
+      <element name="TFilterComboBox.OnClick" link="#LCL.Controls.TControl.OnClick" />
+      <element name="TFilterComboBox.OnCloseUp" link="#LCL.StdCtrls.TCustomComboBox.OnCloseUp" />
+      <element name="TFilterComboBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup" />
+      <element name="TFilterComboBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick" />
+      <element name="TFilterComboBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop" />
+      <element name="TFilterComboBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver" />
+      <element name="TFilterComboBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag" />
+      <element name="TFilterComboBox.OnDropDown" link="#LCL.StdCtrls.TCustomComboBox.OnDropDown" />
+      <element name="TFilterComboBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter" />
+      <element name="TFilterComboBox.OnExit" link="#LCL.Controls.TWinControl.OnExit" />
+      <element name="TFilterComboBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown" />
+      <element name="TFilterComboBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress" />
+      <element name="TFilterComboBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp" />
+      <element name="TFilterComboBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown" />
+      <element name="TFilterComboBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove" />
+      <element name="TFilterComboBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp" />
+      <element name="TFilterComboBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag" />
+
+      <!-- property Visibility: published -->
+      <element name="TFilterComboBox.OnSelect">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
+
+      <element name="TFilterComboBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress" />
+
+      <element name="MiniMizeName">
+        <short>Returns a shortened version of a file name, so that it fits on the given MaxWidth</short>
+        <descr>
+          <p>This function will return a shortened version of FileName, so that it fits on the given MaxWidth.
+          It uses the Font currently selected in the given Canvas.</p>
+          <p>For example: C:\Documents and Settings\User\Application Data\Microsoft\Word\custom.dic  would become something like: C:\...\Word\custom.dic</p>
+        </descr>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="MiniMizeName.Result">
+      <short></short>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="MiniMizeName.FileName">
+      <short></short>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="MiniMizeName.Canvas">
+      <short></short>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="MiniMizeName.MaxWidth">
+      <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="Register">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
     </module>
     <!-- FileCtrl -->
