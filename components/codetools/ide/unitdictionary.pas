@@ -35,6 +35,7 @@ uses
 
 const
   UDFileVersion = 1;
+  UDFileHeader = 'UnitDirectory:';
 type
   TUDIdentifier = class;
   TUDUnit = class;
@@ -111,8 +112,10 @@ type
     destructor Destroy; override;
     procedure Clear(CreateDefaults: boolean = true);
     procedure ConsistencyCheck;
-    procedure SaveToFile(Filename: string);
+    procedure SaveToFile(const Filename: string; Compress: boolean = false);
     procedure SaveToStream(aStream: TStream);
+    procedure LoadFromFile(const Filename: string);
+    procedure LoadFromStream(aStream: TMemoryStream);
 
     // groups
     function AddUnitGroup(Group: TUDUnitGroup): TUDUnitGroup; overload;
@@ -120,6 +123,7 @@ type
     property DefaultGroup: TUDUnitGroup read FDefaultGroup;
     property UnitGroupsByName: TAVLTree read FUnitGroupsByName;
     property UnitGroupsByFilename: TAVLTree read FUnitGroupsByFilename;
+    function FindGroupWithFilename(const aFilename: string): TUDUnitGroup;
 
     // units
     procedure ParseUnit(UnitFilename: string; Group: TUDUnitGroup = nil); overload;
@@ -440,25 +444,36 @@ begin
 
 end;
 
-procedure TUnitDictionary.SaveToFile(Filename: string);
+procedure TUnitDictionary.SaveToFile(const Filename: string; Compress: boolean);
 var
   UncompressedMS: TMemoryStream;
   cs: Tcompressionstream;
   CompressedMS: TMemoryStream;
 begin
-  UncompressedMS:=TMemoryStream.Create;
-  CompressedMS:=TMemoryStream.Create;
-  cs:=Tcompressionstream.create(cldefault,CompressedMS);
-  try
-    SaveToStream(UncompressedMS);
-    UncompressedMS.Position:=0;
-    cs.CopyFrom(UncompressedMS,UncompressedMS.Size);
-    CompressedMS.Position:=0;
-    CompressedMS.SaveToFile(Filename);
-  finally
-    cs.Free;
-    UncompressedMS.Free;
-    CompressedMS.Free;
+  if Compress then begin
+    UncompressedMS:=TMemoryStream.Create;
+    CompressedMS:=TMemoryStream.Create;
+    cs:=Tcompressionstream.create(cldefault,CompressedMS);
+    try
+      SaveToStream(UncompressedMS);
+      UncompressedMS.Position:=0;
+      cs.CopyFrom(UncompressedMS,UncompressedMS.Size);
+      CompressedMS.Position:=0;
+      CompressedMS.SaveToFile(Filename);
+    finally
+      cs.Free;
+      UncompressedMS.Free;
+      CompressedMS.Free;
+    end;
+  end else begin
+    UncompressedMS:=TMemoryStream.Create;
+    try
+      SaveToStream(UncompressedMS);
+      UncompressedMS.Position:=0;
+      UncompressedMS.SaveToFile(Filename);
+    finally
+      UncompressedMS.Free;
+    end;
   end;
 end;
 
@@ -491,47 +506,20 @@ var
   i: Integer;
 begin
   // write format version
-  w('UnitDirectory:');
+  w(UDFileHeader);
   w(IntToStr(UDFileVersion));
   w(LineEnding);
 
   UnitID:=TFilenameToStringTree.Create(false);
   try
     // write units
-    i:=0;
+    w('//BeginUnits'+LineEnding);
     AVLNode:=FUnitsByFilename.FindLowest;
+    i:=0;
     while AVLNode<>nil do begin
       CurUnit:=TUDUnit(AVLNode.Data);
       inc(i);
       UnitID.Add(CurUnit.Filename,GetBase32(i));
-      AVLNode:=FUnitsByFilename.FindSuccessor(AVLNode);
-    end;
-
-    // write groups
-    AVLNode:=FUnitGroupsByFilename.FindLowest;
-    while AVLNode<>nil do begin
-      Group:=TUDUnitGroup(AVLNode.Data);
-      // write group name
-      w(Group.Name);
-      w(';');
-      w(Group.Filename);
-      w(LineEnding);
-      // write IDs of units
-      SubAVLNode:=Group.Units.FindLowest;
-      while SubAVLNode<>nil do begin
-        CurUnit:=TUDUnit(SubAVLNode.Data);
-        w(UnitID[CurUnit.Filename]);
-        w(LineEnding);
-        SubAVLNode:=Group.Units.FindSuccessor(SubAVLNode);
-      end;
-      w(LineEnding); // empty line as end of group
-      AVLNode:=FUnitGroupsByFilename.FindSuccessor(AVLNode);
-    end;
-
-    // write units
-    AVLNode:=FUnitsByFilename.FindLowest;
-    while AVLNode<>nil do begin
-      CurUnit:=TUDUnit(AVLNode.Data);
       // write unit number ; unit name ; unit file name
       w(UnitID[CurUnit.Filename]);
       w(';');
@@ -551,9 +539,267 @@ begin
       w(LineEnding); // empty line as end of unit
       AVLNode:=FUnitsByFilename.FindSuccessor(AVLNode);
     end;
+    w('//EndUnits'+LineEnding);
 
+    // write groups
+    w('//BeginGroups'+LineEnding);
+    AVLNode:=FUnitGroupsByFilename.FindLowest;
+    while AVLNode<>nil do begin
+      Group:=TUDUnitGroup(AVLNode.Data);
+      // write group name
+      w(Group.Name);
+      w(';');
+      w(Group.Filename);
+      w(LineEnding);
+      // write IDs of units
+      SubAVLNode:=Group.Units.FindLowest;
+      while SubAVLNode<>nil do begin
+        CurUnit:=TUDUnit(SubAVLNode.Data);
+        w(UnitID[CurUnit.Filename]);
+        w(LineEnding);
+        SubAVLNode:=Group.Units.FindSuccessor(SubAVLNode);
+      end;
+      w(LineEnding); // empty line as end of group
+      AVLNode:=FUnitGroupsByFilename.FindSuccessor(AVLNode);
+    end;
+    w('//EndGroups'+LineEnding);
   finally
     UnitID.Free;
+  end;
+end;
+
+procedure TUnitDictionary.LoadFromFile(const Filename: string);
+var
+  UncompressedMS: TMemoryStream;
+begin
+  UncompressedMS:=TMemoryStream.Create;
+  try
+    UncompressedMS.LoadFromFile(Filename);
+    UncompressedMS.Position:=0;
+    LoadFromStream(UncompressedMS);
+  finally
+    UncompressedMS.Free;
+  end;
+end;
+
+procedure TUnitDictionary.LoadFromStream(aStream: TMemoryStream);
+var
+  Y: integer;
+  LineStart: PChar;
+  p: PChar;
+  EndP: PChar;
+  Version: Integer;
+  IDToUnit: TStringToPointerTree;
+
+  procedure E(Msg: string; Col: PtrInt = 0);
+  var
+    s: String;
+  begin
+    s:='Error in line '+IntToStr(Y);
+    if Col=0 then
+      Col:=p-LineStart+1;
+    if Col>0 then
+      s:=s+', column '+IntToStr(Col);
+    s:=s+': '+Msg;
+    raise Exception.Create(s);
+  end;
+
+  function ReadDecimal: integer;
+  var
+    s: PChar;
+  begin
+    Result:=0;
+    s:=p;
+    while (p<EndP) and (p^ in ['0'..'9']) do begin
+      Result:=Result*10+ord(p^)-ord('0');
+      inc(p);
+    end;
+    if s=p then
+      e('number expected, but '+dbgstr(p^)+' found.');
+  end;
+
+  procedure ReadConstant(const Expected, ErrMsg: string);
+  var
+    i: Integer;
+  begin
+    i:=1;
+    while (i<=length(Expected)) do begin
+      if (p=EndP) or (p^<>Expected[i]) then
+        e(ErrMsg);
+      inc(p);
+      inc(i);
+    end;
+  end;
+
+  procedure ReadLineEnding;
+  var
+    c: Char;
+  begin
+    if (p=EndP) or (not (p^ in [#10,#13])) then
+      e('line ending missing');
+    c:=p^;
+    inc(p);
+    if (p<EndP) and (p^ in [#10,#13]) and (c<>p^) then
+      inc(p);
+    inc(y);
+    LineStart:=p;
+  end;
+
+  function ReadFileFormat: integer;
+  begin
+    ReadConstant(UDFileHeader,'invalid file header');
+    Result:=ReadDecimal;
+    ReadLineEnding;
+  end;
+
+  procedure ReadUnits;
+  var
+    StartP: PChar;
+    UnitID, CurUnitName, UnitFilename, Identifier: string;
+    CurUnit: TUDUnit;
+    Item: TUDIdentifier;
+  begin
+    ReadConstant('//BeginUnits','missing //BeginUnits header');
+    ReadLineEnding;
+
+    repeat
+      // read unit id
+      StartP:=p;
+      while (p<EndP) and (p^ in ['0'..'9','A'..'Z']) do inc(p);
+      if (StartP=p) or (p^<>';') then
+        e('unit id expected');
+      SetLength(UnitID,p-StartP);
+      Move(StartP^,UnitID[1],length(UnitID));
+      inc(p); // skip semicolon
+
+      // read unit name
+      StartP:=p;
+      while (p<EndP) and (p^ in ['0'..'9','A'..'Z','a'..'z','_','.']) do inc(p);
+      if (StartP=p) or (p^<>';') then
+        e('unit name expected');
+      SetLength(CurUnitName,p-StartP);
+      Move(StartP^,CurUnitName[1],length(CurUnitName));
+      inc(p); // skip semicolon
+
+      // read file name
+      StartP:=p;
+      while (p<EndP) and (not (p^ in [#10,#13])) do inc(p);
+      if (StartP=p) or (not (p^ in [#10,#13])) then
+        e('file name expected');
+      SetLength(UnitFilename,p-StartP);
+      Move(StartP^,UnitFilename[1],length(UnitFilename));
+      ReadLineEnding;
+
+      CurUnit:=FindUnitWithFilename(UnitFilename);
+      if CurUnit=nil then
+        CurUnit:=DefaultGroup.AddUnit(CurUnitName,UnitFilename);
+      IDToUnit[UnitID]:=CurUnit;
+
+      // read identifiers until empty line
+      repeat
+        StartP:=p;
+        while (p<EndP) and (p^ in ['0'..'9','A'..'Z','a'..'z','_']) do inc(p);
+        if (not (p^ in [#10,#13])) then
+          e('identifier expected');
+        if p=StartP then break;
+        SetLength(Identifier,p-StartP);
+        Move(StartP^,Identifier[1],length(Identifier));
+        ReadLineEnding;
+        Item:=TUDIdentifier.Create(Identifier);
+        FIdentifiers.Add(Item);
+        CurUnit.AddIdentifier(Item);
+      until false;
+      ReadLineEnding;
+
+    until (p=EndP) or (p^='/');
+
+    ReadConstant('//EndUnits','missing //EndUnits footer');
+    ReadLineEnding;
+  end;
+
+  procedure ReadGroups;
+  var
+    GroupName, GroupFilename, UnitID: string;
+    StartP: PChar;
+    Group: TUDUnitGroup;
+    CurUnit: TUDUnit;
+  begin
+    ReadConstant('//BeginGroups','missing //BeginGroups header');
+    ReadLineEnding;
+
+    repeat
+      // read group name
+      StartP:=p;
+      while (p<EndP) and (p^ in ['0'..'9','A'..'Z','a'..'z','_','.']) do inc(p);
+      if (p^<>';') then
+        e('group name expected');
+      SetLength(GroupName,p-StartP);
+      if GroupName<>'' then
+        Move(StartP^,GroupName[1],length(GroupName));
+      inc(p); // skip semicolon
+
+      // read file name
+      StartP:=p;
+      while (p<EndP) and (not (p^ in [#10,#13])) do inc(p);
+      if (not (p^ in [#10,#13])) then
+        e('file name expected');
+      SetLength(GroupFilename,p-StartP);
+      if GroupFilename<>'' then
+        Move(StartP^,GroupFilename[1],length(GroupFilename));
+      ReadLineEnding;
+
+      Group:=FindGroupWithFilename(GroupFilename);
+      if Group=nil then
+        Group:=AddUnitGroup(GroupName,GroupFilename);
+
+      // read units of group until empty line
+      repeat
+        StartP:=p;
+        while (p<EndP) and (p^ in ['0'..'9','A'..'Z','a'..'z','_']) do inc(p);
+        if (not (p^ in [#10,#13])) then
+          e('unit identifier expected');
+        if p=StartP then break;
+        SetLength(UnitID,p-StartP);
+        Move(StartP^,UnitID[1],length(UnitID));
+        ReadLineEnding;
+
+        CurUnit:=TUDUnit(IDToUnit[UnitID]);
+        if CurUnit<>nil then begin
+          if (Group<>DefaultGroup) and (CurUnit.IsInGroup(DefaultGroup)) then begin
+            // move from no group to some group
+            DefaultGroup.RemoveUnit(CurUnit);
+          end;
+          Group.AddUnit(CurUnit);
+        end else begin
+          debugln(['Warning: TUnitDictionary.LoadFromStream.ReadGroups unit id is not defined: ',UnitID]);
+        end;
+      until false;
+      ReadLineEnding;
+
+    until (p=EndP) or (p^='/');
+
+    ReadConstant('//EndGroups','missing //EndGroups footer');
+    ReadLineEnding;
+  end;
+
+begin
+  Clear;
+  if aStream.Size<=aStream.Position then
+    raise Exception.Create('This is not a UnitDictionary. Header missing.');
+  p:=PChar(aStream.Memory);
+  EndP:=p+aStream.Size;
+  LineStart:=p;
+  Y:=1;
+  Version:=ReadFileFormat;
+  if Version<1 then
+    E('invalid version '+IntToStr(Version));
+  debugln(['TUnitDictionary.LoadFromStream Version=',Version]);
+  IDToUnit:=TStringToPointerTree.Create(true);
+  try
+    ReadUnits;
+    ReadGroups;
+  finally
+    IDToUnit.Free;
   end;
 end;
 
@@ -571,6 +817,18 @@ function TUnitDictionary.AddUnitGroup(const aName, aFilename: string
   ): TUDUnitGroup;
 begin
   Result:=AddUnitGroup(TUDUnitGroup.Create(aName,aFilename));
+end;
+
+function TUnitDictionary.FindGroupWithFilename(const aFilename: string
+  ): TUDUnitGroup;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=FUnitGroupsByFilename.FindKey(Pointer(aFilename),@CompareFileNameWithIDFileItem);
+  if AVLNode<>nil then
+    Result:=TUDUnitGroup(AVLNode.Data)
+  else
+    Result:=nil;
 end;
 
 procedure TUnitDictionary.ParseUnit(UnitFilename: string; Group: TUDUnitGroup);
