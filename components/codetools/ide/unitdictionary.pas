@@ -116,6 +116,7 @@ type
     procedure SaveToStream(aStream: TStream);
     procedure LoadFromFile(const Filename: string);
     procedure LoadFromStream(aStream: TMemoryStream);
+    function Equals(Dictionary: TUnitDictionary): boolean; reintroduce;
 
     // groups
     function AddUnitGroup(Group: TUDUnitGroup): TUDUnitGroup; overload;
@@ -368,6 +369,11 @@ var
 begin
   if DefaultGroup=nil then
     e('DefaultGroup=nil');
+
+  if UnitGroupsByFilename.Count<>UnitGroupsByName.Count then
+    e('UnitGroupsByFilename.Count<>UnitGroupsByName.Count');
+  if UnitsByFilename.Count<>UnitsByName.Count then
+    e('UnitsByFilename.Count<>UnitsByName.Count');
 
   // check FUnitsByName
   AVLNode:=FUnitsByName.FindLowest;
@@ -801,6 +807,70 @@ begin
   finally
     IDToUnit.Free;
   end;
+end;
+
+function TUnitDictionary.Equals(Dictionary: TUnitDictionary): boolean;
+var
+  Node1, Node2: TAVLTreeNode;
+  Group1: TUDUnitGroup;
+  Group2: TUDUnitGroup;
+  Unit1: TUDUnit;
+  Unit2: TUDUnit;
+  Item1: TUDIdentifier;
+  Item2: TUDIdentifier;
+begin
+  Result:=false;
+  debugln(['TUnitDictionary.Equals AAA1']);
+  if Dictionary=nil then exit;
+  if Dictionary=Self then exit(true);
+  debugln(['TUnitDictionary.Equals AAA1.1']);
+  if UnitGroupsByFilename.Count<>Dictionary.UnitGroupsByFilename.Count then exit;
+  debugln(['TUnitDictionary.Equals AAA1.2']);
+  if UnitGroupsByName.Count<>Dictionary.UnitGroupsByName.Count then exit;
+  debugln(['TUnitDictionary.Equals AAA1.3']);
+  if UnitsByFilename.Count<>Dictionary.UnitsByFilename.Count then exit;
+  debugln(['TUnitDictionary.Equals AAA1.4']);
+  if UnitsByName.Count<>Dictionary.UnitsByName.Count then exit;
+  debugln(['TUnitDictionary.Equals AAA1.5']);
+  if Identifiers.Count<>Dictionary.Identifiers.Count then exit;
+  debugln(['TUnitDictionary.Equals AAA2']);
+
+  Node1:=UnitGroupsByFilename.FindLowest;
+  Node2:=Dictionary.UnitGroupsByFilename.FindLowest;
+  while Node1<>nil do begin
+    Group1:=TUDUnitGroup(Node1.Data);
+    Group2:=TUDUnitGroup(Node2.Data);
+    if Group1.Name<>Group2.Name then exit;
+    if Group1.Filename<>Group2.Filename then exit;
+    Node1:=UnitGroupsByFilename.FindSuccessor(Node1);
+    Node2:=UnitGroupsByFilename.FindSuccessor(Node2);
+  end;
+
+  debugln(['TUnitDictionary.Equals AAA3']);
+  Node1:=UnitsByFilename.FindLowest;
+  Node2:=Dictionary.UnitsByFilename.FindLowest;
+  while Node1<>nil do begin
+    Unit1:=TUDUnit(Node1.Data);
+    Unit2:=TUDUnit(Node2.Data);
+    if Unit1.Name<>Unit2.Name then exit;
+    if Unit1.Filename<>Unit2.Filename then exit;
+    Node1:=UnitGroupsByFilename.FindSuccessor(Node1);
+    Node2:=UnitGroupsByFilename.FindSuccessor(Node2);
+  end;
+
+  debugln(['TUnitDictionary.Equals AAA4']);
+  Node1:=Identifiers.FindLowest;
+  Node2:=Dictionary.Identifiers.FindLowest;
+  while Node1<>nil do begin
+    Item1:=TUDIdentifier(Node1.Data);
+    Item2:=TUDIdentifier(Node2.Data);
+    if Item1.Name<>Item2.Name then exit;
+    if Item1.DUnit.Filename<>Item2.DUnit.Filename then exit;
+    Node1:=Identifiers.FindSuccessor(Node1);
+    Node2:=Identifiers.FindSuccessor(Node2);
+  end;
+
+  Result:=true
 end;
 
 function TUnitDictionary.AddUnitGroup(Group: TUDUnitGroup): TUDUnitGroup;
