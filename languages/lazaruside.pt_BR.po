@@ -425,10 +425,9 @@ msgid "Selection"
 msgstr "Seleção"
 
 #: lazarusidestrconsts.dlgblockindent
-#, fuzzy
 #| msgid "Block indent"
 msgid "Block indent (spaces)"
-msgstr "Identação bloco"
+msgstr "Identação de bloco (espaços)"
 
 #: lazarusidestrconsts.dlgblockindenttype
 msgid "Indent method"
@@ -448,7 +447,7 @@ msgstr "Espaços"
 
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
-msgstr ""
+msgstr "Identação de bloco (tabs)"
 
 #: lazarusidestrconsts.dlgbp7cptb
 msgid "TP/BP 7.0 Compatible"
@@ -4410,7 +4409,6 @@ msgid "Is a root control"
 msgstr "É um controle raiz"
 
 #: lazarusidestrconsts.liscelongparamlistcount
-#, fuzzy
 #| msgid "Parameters count treating as \"many\""
 msgid "Parameters count treated as \"many\""
 msgstr "Núm. parâmetros tratados como \"muitos\""
@@ -4440,7 +4438,6 @@ msgid "Show Source Nodes"
 msgstr "Exibir Nós Fonte"
 
 #: lazarusidestrconsts.liscenestedproccount
-#, fuzzy
 #| msgid "Nested procedures count treating as \"many\""
 msgid "Nested procedures count treated as \"many\""
 msgstr "Núm. procedimentos aninhados tratados como \"muitos\""
@@ -7849,7 +7846,7 @@ msgstr "Arquivo não tem projeto"
 
 #: lazarusidestrconsts.lisfileisdirectory
 msgid "File is directory"
-msgstr ""
+msgstr "Arquivo é um diretório"
 
 #: lazarusidestrconsts.lisfileisnotanexecutable
 msgid "File is not an executable"
@@ -8213,35 +8210,35 @@ msgstr "Grupo"
 
 #: lazarusidestrconsts.lisgroupassignexisting
 msgid "Assign to existing \"%s\" group?"
-msgstr ""
+msgstr "Atribuir ao grupo \"%s\" existente?"
 
 #: lazarusidestrconsts.lisgroupemptydelete
 msgid "No more breakpoints are assigned to group \"%s\", delete it?"
-msgstr ""
+msgstr "Não há mais pontos de parada atribuídos ao grupo \"%s\", excluí-lo?"
 
 #: lazarusidestrconsts.lisgroupemptydeletemore
 msgid "%sThere are %d more empty groups, delete all?"
-msgstr ""
+msgstr "%sExistem mais %d grupos vazios, excluir todos?"
 
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
-msgstr ""
+msgstr "O nome de grupo não pode ser vazio. Limpar grupo(s) de pontos de parada?"
 
 #: lazarusidestrconsts.lisgroupnameinput
 msgid "Group name:"
-msgstr ""
+msgstr "Nome do grupo:"
 
 #: lazarusidestrconsts.lisgroupnameinvalid
 msgid "BreakpointGroup name must be a valid Pascal identifier name."
-msgstr ""
+msgstr "Nome do grupo de pontos de parada deve ser um nome de identificador Pascal válido."
 
 #: lazarusidestrconsts.lisgroupsetnew
 msgid "Set new group..."
-msgstr ""
+msgstr "Definir novo grupo..."
 
 #: lazarusidestrconsts.lisgroupsetnone
 msgid "Clear group(s)"
-msgstr ""
+msgstr "Limpar grupo(s)"
 
 #: lazarusidestrconsts.lisgrowtolarges
 msgid "Grow to Largest"
@@ -9588,7 +9585,7 @@ msgstr "Construir JITForm"
 
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
-msgstr ""
+msgstr "Construir muitos"
 
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -14064,7 +14061,7 @@ msgstr "Curto:"
 
 #: lazarusidestrconsts.lisshow
 msgid "Show"
-msgstr ""
+msgstr "Exibir"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
@@ -15301,7 +15298,7 @@ msgstr "Impossível criar vínculo %s%s%s com alvo %s%s%s"
 
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
 msgid "Unable to create new file, because there is already a directory with this name."
-msgstr ""
+msgstr "Incapaz de criar novo arquivo, porque já existe um diretório com este nome."
 
 #: lazarusidestrconsts.lisunabletocreatenewmethod
 msgid "Unable to create new method."
@@ -15698,8 +15695,9 @@ msgid "Version"
 msgstr "Versão"
 
 #: lazarusidestrconsts.lisversionmismatch
+#, fuzzy
 msgid "Version mismatch"
-msgstr ""
+msgstr "Versão incompatível"
 
 #: lazarusidestrconsts.lisvertical
 msgid "Vertical"
@@ -16064,19 +16062,19 @@ msgstr "Restaurar tamanho da janela"
 
 #: lazarusidestrconsts.rsiwpsplittercustomposition
 msgid "Custom Size"
-msgstr ""
+msgstr "Tamanho customizado"
 
 #: lazarusidestrconsts.rsiwpsplitterdefault
 msgid "Default Size"
-msgstr ""
+msgstr "Tamanho padrão"
 
 #: lazarusidestrconsts.rsiwpsplitterfollowwindow
 msgid "Restore with window"
-msgstr ""
+msgstr "Restaurar com a janela"
 
 #: lazarusidestrconsts.rsiwpsplitterrestorewindowgeometry
 msgid "Restore Size"
-msgstr ""
+msgstr "Restaurar tamanho"
 
 #: lazarusidestrconsts.rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
