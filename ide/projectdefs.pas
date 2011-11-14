@@ -1507,6 +1507,7 @@ begin
   AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
   AProject.LazCompilerOptions.TargetFilename:='project1';
   AProject.LazCompilerOptions.Win32GraphicApp:=false;
+  AProject.LazCompilerOptions.RelocatableUnit:=true;
 end;
 
 function TProjectLibraryDescriptor.CreateStartFiles(AProject: TLazProject
