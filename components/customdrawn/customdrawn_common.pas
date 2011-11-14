@@ -204,9 +204,12 @@ begin
   cidCheckBox, cidRadioButton:
   begin
     if AStateEx.AutoSize then
-      PreferredWidth := 21 + GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx);
+      PreferredWidth := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT)
+        + GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx) + 6;
 
-    PreferredHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx);
+    PreferredHeight :=
+      Max(GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx),
+       GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT));
   end;
   end;
 end;
