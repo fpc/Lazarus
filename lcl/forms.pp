@@ -473,7 +473,6 @@ type
     procedure SetFormBorderStyle(NewStyle: TFormBorderStyle);
     procedure SetCancelControl(NewControl: TControl);
     procedure SetDefaultControl(NewControl: TControl);
-    procedure SetDesigner(Value : TIDesigner);
     procedure SetFormStyle(Value : TFormStyle);
     procedure SetIcon(AValue: TIcon);
     procedure SetMenu(Value: TMainMenu);
@@ -653,7 +652,7 @@ type
     property DefaultControl: TControl read FDefaultControl write SetDefaultControl;
     property DefaultMonitor: TDefaultMonitor read FDefaultMonitor
       write FDefaultMonitor default dmActiveForm;
-    property Designer: TIDesigner read FDesigner write SetDesigner;
+    property Designer: TIDesigner read FDesigner write FDesigner;
     property FormState: TFormState read FFormState;
     property FormStyle: TFormStyle read FFormStyle write SetFormStyle
                                    default fsNormal;

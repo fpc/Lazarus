@@ -1103,14 +1103,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-       TCustomForm SetDesigner
-------------------------------------------------------------------------------}
-procedure TCustomForm.SetDesigner(Value : TIDesigner);
-Begin
-  FDesigner := Value;
-end;
-
-{------------------------------------------------------------------------------
   procedure TCustomForm.SetZOrder(Topmost: Boolean);
 ------------------------------------------------------------------------------}
 procedure TCustomForm.SetZOrder(Topmost: Boolean);
