@@ -1881,8 +1881,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TDesigner.MouseUpOnControl(Sender : TControl;
-  var TheMessage:TLMMouse);
+procedure TDesigner.MouseUpOnControl(Sender : TControl; var TheMessage:TLMMouse);
 var
   NewLeft, NewTop, NewWidth, NewHeight: Integer;
   Button: TMouseButton;
@@ -2000,7 +1999,6 @@ var
     // modified
     Modified;
 
-
     // set initial properties
     if NewComponent is TControl then begin
       NewControl:=TControl(NewComponent);
@@ -2109,8 +2107,7 @@ begin
 
   SetCaptureControl(nil);
 
-  // check if the message is for the designed form
-  // and there was a mouse down before
+  // check if the message is for the designed form and there was a mouse down before
   DesignSender:=GetDesignControl(Sender);
   SenderParentForm:=GetParentForm(DesignSender);
   //DebugLn(['TDesigner.MouseUpOnControl DesignSender=',dbgsName(DesignSender),' SenderParentForm=',dbgsName(SenderParentForm),' ',TheMessage.XPos,',',TheMessage.YPos]);
@@ -2198,13 +2195,11 @@ begin
   end;
 
   DisableRubberBand;
-
   LastMouseMovePos.X:=-1;
-  if (not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions) or
-     (dfHasSized in FFlags) then
+  if (not ControlSelection.OnlyVisualComponentsSelected and ShowComponentCaptions)
+  or (dfHasSized in FFlags) then
     Form.Invalidate;
   Exclude(FFlags,dfHasSized);
-
   MouseDownComponent:=nil;
   MouseDownSender:=nil;
   {$IFDEF VerboseDesigner}

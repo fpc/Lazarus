@@ -1809,7 +1809,8 @@ begin
   SaveIncludeLinks;
   InputHistories.Save;
   PkgBoss.SaveSettings;
-  if TheControlSelection<>nil then TheControlSelection.Clear;
+  if TheControlSelection<>nil then
+    TheControlSelection.Clear;
   FreeIDEWindows;
 end;
 
@@ -9102,10 +9103,8 @@ begin
       exit;
     end;
 
-    if (AnUnitInfo.Component<>nil)
-    and (FLastFormActivated<>nil)
-    and (TDesigner(FLastFormActivated.Designer).LookupRoot=AnUnitInfo.Component)
-    then
+    if (AnUnitInfo.Component<>nil) and (FLastFormActivated<>nil)
+    and (TDesigner(FLastFormActivated.Designer).LookupRoot=AnUnitInfo.Component) then
       FLastFormActivated:=nil;
 
     // save some meta data of the source
