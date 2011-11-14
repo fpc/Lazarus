@@ -3517,6 +3517,7 @@ var
   CurReferenceControl: TControl;
   CurReferenceSide: TAnchorSideReference;
 begin
+  Result:=false;
   ReferenceControl:=nil;
   ReferenceSide:=Side;
   Position:=0;
@@ -3532,6 +3533,8 @@ begin
   Found:=false;
   CurReferenceControl:=NewControl;
   CurReferenceSide:=NewSide;
+  if CurReferenceControl = nil then
+    exit(true);
   while CurReferenceControl<>nil do begin
 
     // check for circles
@@ -3541,7 +3544,7 @@ begin
       DebugLn(['TAnchorSide.GetSidePosition Circle, ',DbgSName(Owner),' ',dbgs(Kind)]);
       {$ENDIF}
       ReferenceControl:=nil;
-      exit(false);
+      exit;
     end;
 
     inc(ChainLength);
@@ -3552,7 +3555,7 @@ begin
       DebugLn(['TAnchorSide.GetSidePosition Circle, ',DbgSName(Owner),' ',dbgs(Kind)]);
       {$ENDIF}
       ReferenceControl:=nil;
-      exit(false);
+      exit;
     end;
 
     // check if ReferenceControl is valid
@@ -3564,7 +3567,7 @@ begin
       DebugLn(['TAnchorSide.GetSidePosition invalid anchor control, ',DbgSName(Owner),' ',dbgs(Kind)]);
       {$ENDIF}
       ReferenceControl:=nil;
-      exit(false);
+      exit;
     end;
 
     //debugln(['TAnchorSide.CheckSidePosition CurReferenceControl=',DbgSName(CurReferenceControl),' Kind=',dbgs(Kind),' Visible=',CurReferenceControl.IsControlVisible]);
