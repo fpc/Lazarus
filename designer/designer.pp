@@ -92,6 +92,8 @@ type
     FGridColor: TColor;
     FLookupRoot: TComponent;
     FMediator: TDesignerMediator;
+    FFreeComponent: boolean;
+    FProcessingDesignerEvent: Integer;
     FOnActivated: TNotifyEvent;
     FOnCloseQuery: TNotifyEvent;
     FOnShowObjectInspector: TNotifyEvent;
@@ -250,7 +252,8 @@ type
 
     constructor Create(TheDesignerForm: TCustomForm;
        AControlSelection: TControlSelection);
-    procedure FreeDesigner(FreeComponent: boolean);
+    procedure PrepareFreeDesigner(AFreeComponent: boolean);
+    procedure FinalizeFreeDesigner;
     destructor Destroy; override;
 
     procedure Modified; override;
@@ -312,6 +315,7 @@ type
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property LookupRoot: TComponent read FLookupRoot;
     property Mediator: TDesignerMediator read FMediator write SetMediator;
+    property ProcessingDesignerEvent: Integer read FProcessingDesignerEvent;
     property OnActivated: TNotifyEvent read FOnActivated write FOnActivated;
     property OnCloseQuery: TNotifyEvent read FOnCloseQuery write FOnCloseQuery;
     property OnPersistentDeleted: TOnPersistentDeleted
@@ -618,7 +622,12 @@ begin
   FPopupMenuComponentEditor := nil;
 end;
 
-procedure TDesigner.FreeDesigner(FreeComponent: boolean);
+procedure TDesigner.PrepareFreeDesigner(AFreeComponent: boolean);
+begin
+  FFreeComponent:=AFreeComponent;
+end;
+
+procedure TDesigner.FinalizeFreeDesigner;
 var
   i: Integer;
 begin
@@ -634,7 +643,7 @@ begin
     end;
     if GlobalDesignHook.LookupRoot = FLookupRoot then
       GlobalDesignHook.LookupRoot := nil;
-    if FreeComponent then
+    if FFreeComponent then
     begin
       // tell hooks about deleting
       for i := FLookupRoot.ComponentCount - 1 downto 0 do
@@ -647,7 +656,7 @@ begin
     if Mediator<>nil then
       Mediator.Designer:=nil;
     // free or hide the form
-    TheFormEditor.DeleteComponent(FLookupRoot,FreeComponent);
+    TheFormEditor.DeleteComponent(FLookupRoot,FFreeComponent);
     FMediator:=nil;
   end;
   Free;
@@ -2199,7 +2208,7 @@ begin
   MouseDownComponent:=nil;
   MouseDownSender:=nil;
   {$IFDEF VerboseDesigner}
-  DebugLn('[TDesigner.MouseLeftUpOnControl] END');
+  DebugLn('[TDesigner.MouseUpOnControl] END');
   {$ENDIF}
 end;
 
@@ -2612,6 +2621,7 @@ begin
   Result := false;
   if csDesigning in Sender.ComponentState then begin
     Result:=true;
+    Inc(FProcessingDesignerEvent);
     case TheMessage.Msg of
       LM_PAINT:       Result := PaintControl(Sender, TLMPaint(TheMessage));
       CN_KEYDOWN,CN_SYSKEYDOWN: KeyDown(Sender,TLMKey(TheMessage));
@@ -2631,6 +2641,7 @@ begin
     else
       Result:=false;
     end;
+    Dec(FProcessingDesignerEvent);
   end else begin
     if (TheMessage.Msg=LM_PAINT)
     or (TheMessage.Msg=CN_KEYDOWN)

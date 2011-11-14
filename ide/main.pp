@@ -633,6 +633,7 @@ type
             out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
   private
     FUserInputSinceLastIdle: boolean;
+    FDesignerToBeFreed: TDesigner;   // Will be freed in OnIdle.
     FDisplayState: TDisplayState;
     FLastFormActivated: TCustomForm;// used to find the last form so you can
                                     // display the correct tab
@@ -752,6 +753,8 @@ type
                            var ComponentUnitInfo: TUnitInfo): TModalResult;
 
     // methods for 'close unit'
+    procedure FreeDesigner(AnUnitInfo: TUnitInfo; ADesigner: TDesigner;
+                           AFreeComponent: boolean);
     function CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags
                                 ): TModalResult;
     function CloseDependingUnitComponents(AnUnitInfo: TUnitInfo;
@@ -3747,7 +3750,9 @@ end;
 procedure TMainIDE.UpdateIDEComponentPalette;
 begin
   IDEComponentPalette.HideControls:=(FLastFormActivated<>nil)
-    and (not (TDesigner(FLastFormActivated.Designer).LookupRoot is TControl));
+    and (FLastFormActivated.Designer<>nil)
+    and (TDesigner(FLastFormActivated.Designer).LookupRoot<>nil)
+    and not ((FLastFormActivated.Designer as TDesigner).LookupRoot is TControl);
   IDEComponentPalette.UpdateVisible;
   TComponentPalette(IDEComponentPalette).OnClassSelected := @ComponentPaletteClassSelected;
   SetupHints;
@@ -6775,6 +6780,7 @@ begin
   AnUnitInfo.ComponentName:=NewComponent.Name;
   AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
   DesignerForm := nil;
+  FLastFormActivated := nil;
   if not (ofLoadHiddenResource in OpenFlags) then
   begin
     DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
@@ -7483,6 +7489,17 @@ begin
   end;
 end;
 
+procedure TMainIDE.FreeDesigner(AnUnitInfo: TUnitInfo; ADesigner: TDesigner;
+                                AFreeComponent: boolean);
+begin
+  AnUnitInfo.LoadedDesigner:=false;
+  ADesigner.PrepareFreeDesigner(AFreeComponent);
+  if ADesigner.ProcessingDesignerEvent > 0 then
+    FDesignerToBeFreed:=ADesigner               // Free it later on idle time.
+  else
+    ADesigner.FinalizeFreeDesigner;             // Free it now.
+end;
+
 {-------------------------------------------------------------------------------
   function TMainIDE.CloseUnitComponent
 
@@ -7588,16 +7605,14 @@ begin
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TMainIDE.CloseUnitComponent hiding component and freeing designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
         {$ENDIF}
-        AnUnitInfo.LoadedDesigner:=false;
-        OldDesigner.FreeDesigner(false);
+        FreeDesigner(AnUnitInfo, OldDesigner, false);
       end else begin
         // free designer and design form
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TMainIDE.CloseUnitComponent freeing component and designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
         {$ENDIF}
         try
-          AnUnitInfo.LoadedDesigner:=false;
-          OldDesigner.FreeDesigner(true);
+          FreeDesigner(AnUnitInfo, OldDesigner, true);
         finally
           AnUnitInfo.Component:=nil;
         end;
@@ -17061,6 +17076,10 @@ begin
   ExternalTools.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
 
+  if Assigned(FDesignerToBeFreed) then begin
+    FDesignerToBeFreed.FinalizeFreeDesigner;
+    FDesignerToBeFreed:=Nil;
+  end;
   if FUserInputSinceLastIdle then
   begin
     FUserInputSinceLastIdle:=false;
