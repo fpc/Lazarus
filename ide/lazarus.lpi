@@ -63,7 +63,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="85">
+    <Units Count="86">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -641,6 +641,13 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="IDEGuiCmdLine"/>
       </Unit84>
+      <Unit85>
+        <Filename Value="frames/env_file_filters.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FileFiltersOptionsFrame"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="env_file_filters"/>
+      </Unit85>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

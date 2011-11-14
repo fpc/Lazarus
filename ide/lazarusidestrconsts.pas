@@ -5372,6 +5372,15 @@ resourcestring
   lisUnableToCreateNewFileBecauseThereIsAlreadyADirecto = 'Unable to create '
     +'new file, because there is already a directory with this name.';
 
+  // File Filters - Environment options
+  lisFileFiltersTitle ='These are file filters that will appear in all File Open dialogs';
+  lisFileFilters = 'File Filters';
+  lisFileFiltersName = 'Name';
+  lisFileFiltersMask = 'File mask';
+  lisFileFiltersAddRow = 'Add Row';
+  lisFileFiltersDeleteRow = 'Delete Row';
+  lisFileFiltersInsertRow = 'Insert Row';
+
 implementation
 
 end.

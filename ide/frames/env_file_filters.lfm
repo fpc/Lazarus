@@ -1,0 +1,56 @@
+inherited FileFiltersOptionsFrame: TFileFiltersOptionsFrame
+  Height = 319
+  Width = 455
+  ClientHeight = 319
+  ClientWidth = 455
+  TabOrder = 0
+  DesignLeft = 367
+  DesignTop = 168
+  object grdFileFilters: TStringGrid[0]
+    Left = 8
+    Height = 281
+    Top = 32
+    Width = 440
+    AlternateColor = 15592941
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColCount = 3
+    Columns = <    
+      item
+        Title.Caption = 'Name'
+        Width = 130
+      end    
+      item
+        Title.Caption = 'File mask'
+        Width = 300
+      end>
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goThumbTracking, goSmoothScroll, goFixedRowNumbering]
+    PopupMenu = pmGrid
+    RowCount = 1
+    TabOrder = 0
+    OnKeyDown = grdFileFiltersKeyDown
+  end
+  object lblTitle: TLabel[1]
+    Left = 8
+    Height = 18
+    Top = 9
+    Width = 41
+    Caption = 'lblTitle'
+    ParentColor = False
+  end
+  object pmGrid: TPopupMenu[2]
+    left = 205
+    top = 75
+    object pmiAddRow: TMenuItem
+      Caption = 'Add row'
+      OnClick = pmiAddRowClick
+    end
+    object pmiDelRow: TMenuItem
+      Caption = 'Delete row'
+      OnClick = pmiDelRowClick
+    end
+    object pmiInsRow: TMenuItem
+      Caption = 'Insert row'
+      OnClick = pmiInsRowClick
+    end
+  end
+end

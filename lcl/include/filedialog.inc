@@ -115,7 +115,8 @@ class function TFileDialog.ExtractAllFilterMasks(aFilter: string;
 { The filter is a list of pairs of captions and masks separated by pipe |
   The masks are separated by semicolon ;
   For example:
-    Pascal Files|*.pas;*.pp|All files|*.*
+    Pascal Files|*.pas;*.pp|Include Files|*.inc|All files|*.*
+    Result: *.pas;*.pp;*.inc
 }
 var
   AllFilesMask: string;

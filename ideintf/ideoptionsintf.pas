@@ -205,14 +205,15 @@ function IDEEditorGroups: TIDEOptionsGroupList;
 const
   // predefined environment options groups
   GroupEnvironment  = 100;
-    EnvOptionsFiles   = 100;
-    EnvOptionsDesktop = 200;
-    EnvOptionsWindow  = 300;
-    EnvOptionsFormEd  = 400;
-    EnvOptionsOI      = 500;
-    EnvOptionsBackup  = 600;
-    EnvOptionsNaming  = 700;
-    EnvOptionsFpDoc   = 800;
+    EnvOptionsFiles         = 100;
+    EnvOptionsDesktop       = 200;
+    EnvOptionsWindow        = 300;
+    EnvOptionsFormEd        = 400;
+    EnvOptionsOI            = 500;
+    EnvOptionsBackup        = 600;
+    EnvOptionsNaming        = 700;
+    EnvOptionsFpDoc         = 800;
+    EnvOptionsFileFilters   = 900;
 
   GroupEditor       = 200;
     EdtOptionsGeneral     = 100;
