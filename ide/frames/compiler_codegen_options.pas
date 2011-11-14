@@ -24,12 +24,13 @@ type
     chkOptUncertain: TCheckBox;
     chkOptVarsInReg: TCheckBox;
     chkSmartLinkUnit: TCheckBox;
+    chkRelocatableUnit: TCheckBox;
     chkVerifyObjMethodCall: TCheckBox;
     edtHeapSize: TEdit;
     grpChecks: TGroupBox;
     grpHeapSize: TGroupBox;
     grpOptimizations: TGroupBox;
-    grpSmartLinkUnit: TGroupBox;
+    grpUnitStyle: TGroupBox;
     grpTargetPlatform: TGroupBox;
     lblTargetCPU: TLabel;
     lblTargetOS: TLabel;
@@ -109,8 +110,9 @@ end;
 
 procedure TCompilerCodegenOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  grpSmartLinkUnit.Caption := dlgCOUnitStyle;
+  grpUnitStyle.Caption := dlgCOUnitStyle;
   chkSmartLinkUnit.Caption := dlgCOSmartLinkable + ' (-CX)';
+  chkRelocatableUnit.Caption := dlgCORelocatable + ' (-WR)';
 
   grpChecks.Caption := dlgCOChecks;
   chkChecksIO.Caption := 'I/O (-Ci)';
@@ -214,6 +216,7 @@ begin
   with AOptions as TBaseCompilerOptions do
   begin
     chkSmartLinkUnit.Checked := SmartLinkUnit;
+    chkRelocatableUnit.Checked := RelocatableUnit;
 
     chkChecksIO.Checked := IOChecks;
     chkChecksRange.Checked := RangeChecks;
@@ -260,6 +263,7 @@ begin
   with AOptions as TBaseCompilerOptions do
   begin
     SmartLinkUnit := chkSmartLinkUnit.Checked;
+    RelocatableUnit := chkRelocatableUnit.Checked;
 
     IOChecks := chkChecksIO.Checked;
     RangeChecks := chkChecksRange.Checked;

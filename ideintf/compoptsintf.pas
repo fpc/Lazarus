@@ -147,6 +147,7 @@ type
     procedure SetShowWarn(const AValue: Boolean);
     procedure SetSmallerCode(const AValue: boolean);
     procedure SetSmartLinkUnit(const AValue: Boolean);
+    procedure SetRelocatableUnit(const AValue: Boolean);
     procedure SetStackChecks(const AValue: Boolean);
     procedure SetStaticKeyword(const AValue: Boolean);
     procedure SetStopAfterErrCount(const AValue: integer);
@@ -192,6 +193,7 @@ type
 
     // Code generation:
     fSmartLinkUnit: Boolean;
+    fRelocatableUnit: Boolean;
     fIOChecks: Boolean;
     fRangeChecks: Boolean;
     fOverflowChecks: Boolean;
@@ -333,6 +335,7 @@ type
     property OverflowChecks: Boolean read fOverflowChecks write SetOverflowChecks;
     property StackChecks: Boolean read fStackChecks write SetStackChecks;
     property SmartLinkUnit: Boolean read fSmartLinkUnit write SetSmartLinkUnit;
+    property RelocatableUnit: Boolean read fRelocatableUnit write SetRelocatableUnit;
     property EmulatedFloatOpcodes: boolean read SetEmulatedFloatOpcodes
                                            write SetEmulatedFloatOpcodes;
     property HeapSize: Integer read fHeapSize write SetHeapSize;
@@ -601,6 +604,13 @@ procedure TLazCompilerOptions.SetSmartLinkUnit(const AValue: Boolean);
 begin
   if fSmartLinkUnit=AValue then exit;
   fSmartLinkUnit:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetRelocatableUnit(const AValue: Boolean);
+begin
+  if fRelocatableUnit=AValue then exit;
+  fRelocatableUnit:=AValue;
   IncreaseChangeStamp;
 end;
 

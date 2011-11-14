@@ -1401,6 +1401,7 @@ begin
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
   ReadSmartLinkUnit;
+  RelocatableUnit := aXMLConfig.GetValue(p+'RelocatableUnit/Value', false);
   IOChecks := aXMLConfig.GetValue(p+'Checks/IOChecks/Value', false);
   RangeChecks := aXMLConfig.GetValue(p+'Checks/RangeChecks/Value', false);
   OverflowChecks := aXMLConfig.GetValue(p+'Checks/OverflowChecks/Value', false);
@@ -1622,6 +1623,7 @@ begin
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
   aXMLConfig.SetDeleteValue(p+'SmartLinkUnit/Value', SmartLinkUnit,false);
+  aXMLConfig.SetDeleteValue(p+'RelocatableUnit/Value', RelocatableUnit,false);
   aXMLConfig.SetDeleteValue(p+'Checks/IOChecks/Value', IOChecks,false);
   aXMLConfig.SetDeleteValue(p+'Checks/RangeChecks/Value', RangeChecks,false);
   aXMLConfig.SetDeleteValue(p+'Checks/OverflowChecks/Value', OverflowChecks,false);
@@ -2562,6 +2564,8 @@ begin
   { UnitStyle   '' = Static     'D' = Dynamic (not implemented)   'X' = smart linked }
   if SmartLinkUnit then
     switches := switches + ' -CX';
+  if RelocatableUnit then
+    switches := switches + ' -WR';
 
   { Checks }
   tempsw := '';
@@ -3148,6 +3152,7 @@ begin
 
   // Code Generation
   fSmartLinkUnit := CompOpts.SmartLinkUnit;
+  fRelocatableUnit := CompOpts.RelocatableUnit;
   fIOChecks := CompOpts.fIOChecks;
   fRangeChecks := CompOpts.fRangeChecks;
   fOverflowChecks := CompOpts.fOverflowChecks;
@@ -3295,6 +3300,7 @@ begin
   // code generation
   if Tool<>nil then Tool.Path:='Code';
   if Done(Tool.AddDiff('SmartLinkUnit',fSmartLinkUnit,CompOpts.SmartLinkUnit)) then exit;
+  if Done(Tool.AddDiff('Relocatable',fRelocatableUnit,CompOpts.RelocatableUnit)) then exit;
   if Done(Tool.AddDiff('IOChecks',fIOChecks,CompOpts.fIOChecks)) then exit;
   if Done(Tool.AddDiff('RangeChecks',fRangeChecks,CompOpts.fRangeChecks)) then exit;
   if Done(Tool.AddDiff('OverflowChecks',fOverflowChecks,CompOpts.fOverflowChecks)) then exit;

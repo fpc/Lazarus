@@ -1804,6 +1804,7 @@ resourcestring
   dlgGPCComp = 'GPC (GNU Pascal Compiler) Compatible';
   dlgCOUnitStyle = 'Unit Style';
   dlgCOSmartLinkable = 'Smart Linkable';
+  dlgCORelocatable = 'Relocatable';
   dlgCOChecks = 'Checks';
   dlgCORange = 'Range';
   dlgCOOverflow = 'Overflow';
