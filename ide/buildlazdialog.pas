@@ -267,7 +267,7 @@ begin
       // append extra options
       ExOptions:='';
       Result:=CreateBuildLazarusOptions(Profiles,Macros,PackageOptions,Flags,
-                                 ExOptions,UpdateRevisionInc,OutputDirRedirected);
+                               ExOptions,UpdateRevisionInc,OutputDirRedirected);
       if Result<>mrOk then exit;
 
       if (not OutputDirRedirected)
@@ -422,11 +422,10 @@ begin
       // create directory <primary config dir>/bin/<TargetCPU>-<TargetOS>
       NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
                           +PathDelim+NewTargetOS+'-'+NewTargetCPU;
-      Macros.SubstituteStr(NewUnitDirectory);
+      NewUnitDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'units'
+                      +PathDelim+NewTargetCPU+'-'+NewTargetOS;
       debugln('CreateBuildLazarusOptions Options.TargetOS=',Options.FPCTargetOS,' Options.TargetCPU=',
               Options.FPCTargetCPU,' DefaultOS=',DefaultTargetOS,' DefaultCPU=',DefaultTargetCPU);
-      Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
-      if Result<>mrOk then exit;
     end else begin
       // -> normal compile for this platform
 
@@ -443,11 +442,9 @@ begin
           // create directory <primary config dir>/bin/
           UpdateRevisionInc:=false;
           NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
+          debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',NewTargetDirectory);
           NewUnitDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'units'
                           +PathDelim+NewTargetCPU+'-'+NewTargetOS;
-          debugln('CreateBuildLazarusOptions LazDir readonly NewTargetDirectory=',NewTargetDirectory);
-          Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
-          if Result<>mrOk then exit;
         end else begin
           // the lazarus directory is writable
           if ExeLocked then begin
@@ -467,6 +464,11 @@ begin
       end;
     end;
   end;
+  // create output directories
+  Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
+  if Result<>mrOk then exit;
+  Result:=ForceDirectoryInteractive(NewUnitDirectory,[]);
+  if Result<>mrOk then exit;
 
   OutputDirRedirected:=NewTargetDirectory<>'';
 
