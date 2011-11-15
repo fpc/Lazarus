@@ -2055,13 +2055,15 @@ end;
 procedure TCDCustomTabControl.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: integer);
 var
-  lTabIndex: Integer;
+  lTabIndex, lCloseButtonSize: Integer;
   lNewPage: TCDTabSheet;
+  lCloseButtonPos: TPoint;
 begin
   inherited MouseUp(Button, Shift, X, Y);
 
   lTabIndex := MousePosToTabIndex(X, Y);
 
+  // Check if the add button was clicked
   if (nboShowAddTabButton in Options) and (lTabIndex = Tabs.Count) then
   begin
     if Self is TCDPageControl then
@@ -2073,6 +2075,20 @@ begin
     begin
       Tabs.Add('New Tab');
       if Assigned(OnUserAddedPage) then OnUserAddedPage(Self, nil);
+    end;
+  end
+  // Check if a close button was clicked
+  else if (nboShowCloseButtons in Options) then
+  begin
+    FTabCState.CurTabIndex := lTabIndex;
+    lCloseButtonPos.X := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_CLOSE_BUTTON_POS_X, FState, FStateEx);
+    lCloseButtonPos.Y := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_CLOSE_BUTTON_POS_Y, FState, FStateEx);
+    lCloseButtonSize := FDrawer.GetMeasures(TCDCTABCONTROL_CLOSE_TAB_BUTTON_WIDTH);
+    if (X >= lCloseButtonPos.X) and (X <= lCloseButtonPos.X + lCloseButtonSize) and
+       (Y >= lCloseButtonPos.Y) and (Y <= lCloseButtonPos.Y + lCloseButtonSize) then
+    begin
+      if Self is TCDPageControl then (Self as TCDPageControl).RemovePage(lTabIndex)
+      else Tabs.Delete(lTabIndex);
     end;
   end;
 end;

@@ -42,12 +42,18 @@ const
   TCDLISTVIEW_LINE_TOP_SPACING     = $1203;
   TCDLISTVIEW_LINE_BOTTOM_SPACING  = $1204;
 
+  TCDCTABCONTROL_CLOSE_TAB_BUTTON_WIDTH = $2600;
+  TCDCTABCONTROL_CLOSE_TAB_BUTTON_EXTRA_SPACING = $2601;
+
   // Measures Ex
   TCDCONTROL_CAPTION_WIDTH  = $100;
   TCDCONTROL_CAPTION_HEIGHT = $101;
 
-  TCDCTABCONTROL_TAB_HEIGHT = $1100;
-  TCDCTABCONTROL_TAB_WIDTH  = $1101;
+  TCDCTABCONTROL_TAB_HEIGHT = $2600;
+  TCDCTABCONTROL_TAB_WIDTH  = $2601;
+  TCDCTABCONTROL_TAB_LEFT_POS = $2602;
+  TCDCTABCONTROL_CLOSE_BUTTON_POS_X = $2603;
+  TCDCTABCONTROL_CLOSE_BUTTON_POS_Y = $2604;
 
   // Colors
   TCDEDIT_BACKGROUND_COLOR = $400;
@@ -266,6 +272,8 @@ type
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); virtual; abstract;
     procedure DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState); virtual; abstract;
+    // Extra buttons drawing routines
+    procedure DrawSmallCloseButton(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
     // TCDControl
     procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;

@@ -231,13 +231,14 @@ end;
 procedure TCDDrawerWinCE.DrawTab(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
 var
-  IsSelected: Boolean;
+  IsSelected, IsAddButton: Boolean;
   lTabWidth, lTabHeight, lTabTopPos: Integer;
   Points: array of TPoint;
   lCaption: String;
   lTabHeightCorrection: Integer = 0;
 begin
   IsSelected := AStateEx.TabIndex = AStateEx.CurTabIndex;
+  IsAddButton := AStateEx.CurTabIndex = AStateEx.Tabs.Count;
 
   if not IsSelected then lTabHeightCorrection := 3;
 
@@ -280,7 +281,8 @@ begin
   end;
 
   // Now the text
-  lCaption := AStateEx.Tabs.Strings[AStateEx.CurTabIndex];
+  if IsAddButton then lCaption := '+'
+  else lCaption := AStateEx.Tabs.Strings[AStateEx.CurTabIndex];
   ADest.TextOut(AStateEx.CurStartLeftPos+5, lTabTopPos+5, lCaption);
 end;
 

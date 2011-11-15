@@ -41,6 +41,8 @@ type
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
     procedure DrawSlider(ADest: TCanvas; ADestPos: TPoint; ASize: TSize; AState: TCDControlState); override;
     procedure DrawCompactArrow(ADest: TCanvas; ADestPos: TPoint; ADirection: TCDControlState); override;
+    // Extra buttons drawing routines
+    procedure DrawSmallCloseButton(ADest: TCanvas; ADestPos: TPoint); override;
     // TCDControl
     procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
@@ -161,6 +163,9 @@ begin
   TCDLISTVIEW_COLUMN_TEXT_LEFT_SPACING:  Result := 5;
   TCDLISTVIEW_LINE_TOP_SPACING: Result := 3;
   TCDLISTVIEW_LINE_BOTTOM_SPACING: Result := 3;
+  //
+  TCDCTABCONTROL_CLOSE_TAB_BUTTON_WIDTH: Result := 10;
+  TCDCTABCONTROL_CLOSE_TAB_BUTTON_EXTRA_SPACING: Result := 10;
   else
     Result := 0;
   end;
@@ -173,6 +178,8 @@ const
 var
   ATabsStateEx: TCDCTabControlStateEx absolute AStateEx;
   lCaption: String;
+  lTabWidth, i: Integer;
+  IsPainting: Boolean = False;
 begin
   ADest.Font.Assign(AStateEx.Font);
 
@@ -186,11 +193,34 @@ begin
     begin
       lCaption := ATabsStateEx.Tabs.Strings[ATabsStateEx.CurTabIndex];
       Result := ADest.TextWidth(lCaption) + TCDTabControl_Common_TabCaptionExtraWidth;
+      if (nboShowCloseButtons in ATabsStateEx.Options) then
+        Result := Result + GetMeasures(TCDCTABCONTROL_CLOSE_TAB_BUTTON_WIDTH)
+          + GetMeasures(TCDCTABCONTROL_CLOSE_TAB_BUTTON_EXTRA_SPACING);
     end
     // in any other case we are referring to the aditional + button for adding a new tab
     else
       Result := ADest.TextWidth('+') + TCDTabControl_Common_TabCaptionExtraWidth;
-  end
+  end;
+  TCDCTABCONTROL_TAB_LEFT_POS:
+  begin
+    Result := 0;
+    for i := 0 to ATabsStateEx.CurTabIndex-1 do
+    begin
+      if i = ATabsStateEx.LeftmostTabVisibleIndex then IsPainting := True;
+
+      if IsPainting then
+        Result := Result + GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
+    end;
+  end;
+  TCDCTABCONTROL_CLOSE_BUTTON_POS_X:
+  begin
+    lTabWidth := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
+    Result := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_LEFT_POS, AState, AStateEx)
+      +lTabWidth
+      -GetMeasures(TCDCTABCONTROL_CLOSE_TAB_BUTTON_WIDTH)
+      -GetMeasures(TCDCTABCONTROL_CLOSE_TAB_BUTTON_EXTRA_SPACING);
+  end;
+  TCDCTABCONTROL_CLOSE_BUTTON_POS_Y: Result := 10;
   else
     Result := 0;
   end;
@@ -450,6 +480,16 @@ begin
   ADest.Pen.Style := psSolid;
   ADest.Pen.Color := clBlack;
   ADest.Polygon(lPoints);
+end;
+
+procedure TCDDrawerCommon.DrawSmallCloseButton(ADest: TCanvas; ADestPos: TPoint);
+begin
+  ADest.Pen.Style := psSolid;
+  ADest.Pen.Color := clGray;
+  ADest.Pen.Width := 4;
+  ADest.Line(ADestPos.X, ADestPos.Y, ADestPos.X+10, ADestPos.Y+10);
+  ADest.Line(ADestPos.X+10, ADestPos.Y, ADestPos.X, ADestPos.Y+10);
+  ADest.Pen.Width := 1;
 end;
 
 procedure TCDDrawerCommon.DrawControl(ADest: TCanvas; ADestPos: TPoint;
@@ -1310,6 +1350,7 @@ var
   lCaption: String;
   lTabHeightCorrection: Integer = 0;
   lTabRightBorderExtraHeight: Integer = 0;
+  lCloseButtonPos: TPoint;
 begin
   IsSelected := AStateEx.TabIndex = AStateEx.CurTabIndex;
   IsAddButton := AStateEx.CurTabIndex = AStateEx.Tabs.Count;
@@ -1374,6 +1415,14 @@ begin
   if IsAddButton then lCaption := '+'
   else lCaption := AStateEx.Tabs.Strings[AStateEx.CurTabIndex];
   ADest.TextOut(AStateEx.CurStartLeftPos+5, lTabTopPos+5, lCaption);
+
+  // Now the close button
+  if (not IsAddButton) and (nboShowCloseButtons in AStateEx.Options) then
+  begin
+    lCloseButtonPos.X := GetMeasuresEx(ADest, TCDCTABCONTROL_CLOSE_BUTTON_POS_X, AState, AStateEx);
+    lCloseButtonPos.Y := GetMeasuresEx(ADest, TCDCTABCONTROL_CLOSE_BUTTON_POS_Y, AState, AStateEx);
+    DrawSmallCloseButton(ADest, lCloseButtonPos);
+  end;
 end;
 
 { TCDListViewDrawerCommon }
