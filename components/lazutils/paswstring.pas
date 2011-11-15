@@ -36,6 +36,7 @@ implementation
 {$IFNDEF VER2_7}
 procedure fpc_rangeerror; [external name 'FPC_RANGEERROR'];
 
+// len comes in widechars, not bytes
 procedure Wide2AnsiMove(source:pwidechar;var dest:ansistring;len:SizeInt);
 var
   widestr: widestring;
@@ -43,7 +44,7 @@ begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('Wide2AnsiMove START');{$endif}
   // Copy the originating string taking into account the specified length
   SetLength(widestr, len);
-  System.Move(source^, widestr[1], len);
+  System.Move(source^, widestr[1], len * SizeOf(WideChar));
 
   // Now convert it, using UTF-16 -> UTF-8
   dest := UTF16ToUTF8(widestr);
