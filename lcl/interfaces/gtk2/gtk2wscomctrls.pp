@@ -89,7 +89,7 @@ type
     class procedure MovePage(const ATabControl: TCustomTabControl;
       const AChild: TCustomPage; const NewIndex: integer); override;
 
-    class function GetCapabilities: TNoteBookCapabilities; override;
+    class function GetCapabilities: TCTabControlCapabilities; override;
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
     class function GetTabIndexAtPos(const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer; override;

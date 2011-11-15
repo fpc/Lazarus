@@ -297,12 +297,20 @@ type
   TTabGetImageEvent = procedure(Sender: TObject; TabIndex: Integer;
     var ImageIndex: Integer) of object;
 
-  TNoteBookOption = (
+  // These are LCL additions
+  TCTabControlOption = (
     nboShowCloseButtons, nboMultiLine, nboHidePageListPopup,
-    nboKeyboardTabSwitch);
-  TNoteBookOptions = set of TNoteBookOption;
-  TNoteBookCapability = (nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup);
-  TNoteBookCapabilities = set of TNoteBookCapability;
+    nboKeyboardTabSwitch, nboShowAddTabButton);
+  TCTabControlOptions = set of TCTabControlOption;
+  TCTabControlCapability = (nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup, nbcShowAddTabButton);
+  TCTabControlCapabilities = set of TCTabControlCapability;
+  // Don't use anymore the old names of these types
+  // TNotebook is unrelated to CustomTabControl, so the types were renamed to
+  // better names
+  TNoteBookOption = TCTabControlOption deprecated;
+  TNoteBookOptions = TCTabControlOptions deprecated;
+  TNoteBookCapability = TCTabControlCapability deprecated;
+  TNoteBookCapabilities = TCTabControlCapabilities deprecated;
 
   TDrawTabEvent = procedure(Control: TCustomTabControl; TabIndex: Integer;
     const Rect: TRect; Active: Boolean) of object;
@@ -321,7 +329,7 @@ type
     FOnDrawTab: TDrawTabEvent;
     FOnGetImageIndex: TTabGetImageEvent;
     FOnPageChanged: TNotifyEvent;
-    FOptions: TNoteBookOptions;
+    FOptions: TCTabControlOptions;
     FOwnerDraw: Boolean;
     FPageIndex: Integer;
     FPageIndexOnLastChange: integer;// needed for unique OnChange events
@@ -352,7 +360,7 @@ type
     procedure SetActivePage(const Value: String);
     procedure SetActivePageComponent(const AValue: TCustomPage);
     procedure SetImages(const AValue: TImageList);
-    procedure SetOptions(const AValue: TNoteBookOptions);
+    procedure SetOptions(const AValue: TCTabControlOptions);
     procedure SetPageIndex(AValue: Integer);
     procedure SetPages(AValue: TStrings);
     procedure SetShowTabs(AValue: Boolean);
@@ -423,7 +431,7 @@ type
                                              write FOnCloseTabClicked;
     property OnGetImageIndex: TTabGetImageEvent read FOnGetImageIndex
                                                 write FOnGetImageIndex;
-    property Options: TNoteBookOptions read FOptions write SetOptions default [];
+    property Options: TCTabControlOptions read FOptions write SetOptions default [];
     property Page[Index: Integer]: TCustomPage read GetPage;
     property PageCount: integer read GetPageCount;
     property PageIndex: Integer read FPageIndex write SetPageIndex default -1;

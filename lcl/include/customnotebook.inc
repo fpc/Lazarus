@@ -501,9 +501,9 @@ begin
   UpdateTabProperties;
 end;
 
-procedure TCustomTabControl.SetOptions(const AValue: TNoteBookOptions);
+procedure TCustomTabControl.SetOptions(const AValue: TCTabControlOptions);
 var
-  ChangedOptions: TNoteBookOptions;
+  ChangedOptions: TCTabControlOptions;
 begin
   if FOptions = AValue then Exit;
   ChangedOptions := (FOptions - AValue) + (AValue - FOptions);

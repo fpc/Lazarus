@@ -349,7 +349,7 @@ begin
   UpdateNoteBookClientWidget(ATabControl);
 end;
 
-class function TGtk2WSCustomTabControl.GetCapabilities: TNoteBookCapabilities;
+class function TGtk2WSCustomTabControl.GetCapabilities: TCTabControlCapabilities;
 begin
   Result:=[nbcPageListPopup, nbcShowCloseButtons];
 end;

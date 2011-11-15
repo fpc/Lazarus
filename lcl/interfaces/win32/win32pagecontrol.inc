@@ -508,7 +508,7 @@ begin
     Result := inherited GetTabRect(ATabControl, AIndex);
 end;
 
-class function TWin32WSCustomNotebook.GetCapabilities: TNoteBookCapabilities;
+class function TWin32WSCustomNotebook.GetCapabilities: TCTabControlCapabilities;
 begin
   Result:=[nbcMultiLine];
 end;

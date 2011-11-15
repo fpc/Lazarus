@@ -426,7 +426,7 @@ begin
     Result := inherited GetTabRect(ATabControl, AIndex);
 end;
 
-class function TWinCEWSCustomNotebook.GetCapabilities: TNoteBookCapabilities;
+class function TWinCEWSCustomNotebook.GetCapabilities: TCTabControlCapabilities;
 begin
   Result:=[];
 end;

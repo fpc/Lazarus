@@ -1323,24 +1323,24 @@
         <short/>
       </element>
       <!-- enumeration type Visibility: default -->
-      <element name="TNoteBookOption">
+      <element name="TCTabControlOption">
         <short>
-          <var>TNoteBookOption</var> - Show the close button on a tab, allow multi-line tabs</short>
+          <var>TCTabControlOption</var> - Show the close button on a tab, allow multi-line tabs</short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TNoteBookOption.nboShowCloseButtons">
+      <element name="TCTabControlOption.nboShowCloseButtons">
         <short/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TNoteBookOption.nboMultiLine">
+      <element name="TCTabControlOption.nboMultiLine">
         <short/>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TNoteBookOptions">
+      <element name="TCTabControlOptions">
         <short>
-          <var>TNoteBookOptions</var> - set of <var>TNoteBookOption</var>
+          <var>TCTabControlOptions</var> - set of <var>TCTabControlOption</var>
         </short>
         <descr/>
         <seealso/>
@@ -2149,14 +2149,14 @@
         <short>
           <var>GetCapabilities</var> - returns the set of capabilities</short>
       </element>
-      <element name="TNoteBookCapability">
+      <element name="TCTabControlCapability">
         <short>
-          <var>TNoteBookCapability</var> - enumerated type containing possible capabilities of a notebook</short>
-        <descr>nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup</descr>
+          <var>TCTabControlCapability</var> - enumerated type containing possible capabilities of a notebook</short>
+        <descr>nbcShowCloseButtons, nbcMultiLine, nbcPageListPopup, nbcShowAddTabButton</descr>
       </element>
-      <element name="TNoteBookCapabilities">
+      <element name="TCTabControlCapabilities">
         <short>
-          <var>TNoteBookCapabilities</var> - set of <var>TNoteBookCapability</var>
+          <var>TCTabControlCapabilities</var> - set of <var>TCTabControlCapability</var>
         </short>
       </element>
       <!-- enumeration type Visibility: default -->

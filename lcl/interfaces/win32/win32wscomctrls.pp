@@ -72,7 +72,7 @@ type
 
     class function GetTabIndexAtPos(const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer; override;
     class function GetTabRect(const ATabControl: TCustomTabControl; const AIndex: Integer): TRect; override;
-    class function GetCapabilities: TNoteBookCapabilities;override;
+    class function GetCapabilities: TCTabControlCapabilities;override;
     class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
     class procedure SetImageList(const ATabControl: TCustomTabControl; const AImageList: TCustomImageList); override;
     class procedure SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer); override;

@@ -164,7 +164,7 @@ begin
   end;
 end;
 
-class function TQtWSCustomTabControl.GetCapabilities: TNoteBookCapabilities;
+class function TQtWSCustomTabControl.GetCapabilities: TCTabControlCapabilities;
 begin
   Result := [nbcShowCloseButtons];
 end;

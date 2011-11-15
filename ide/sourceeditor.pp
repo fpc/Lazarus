@@ -801,7 +801,7 @@ type
               deprecated {$IFDEF VER2_5}'use SourceEditorManager'{$ENDIF};       // deprecated in 0.9.29 March 2010
 
   public
-    function GetCapabilities: TNoteBookCapabilities;
+    function GetCapabilities: TCTabControlCapabilities;
     procedure IncUpdateLock;
     procedure DecUpdateLock;
 
@@ -5965,7 +5965,7 @@ begin
     Manager.OnCurrentCodeBufferChanged(Self);
 end;
 
-function TSourceNotebook.GetCapabilities: TNoteBookCapabilities;
+function TSourceNotebook.GetCapabilities: TCTabControlCapabilities;
 begin
   Result := FNotebook.GetCapabilities
 end;
