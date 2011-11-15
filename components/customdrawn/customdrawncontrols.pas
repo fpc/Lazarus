@@ -471,8 +471,6 @@ type
 
   TCDCustomTabControl = class;
 
-  { TCDCustomTabSheet }
-
   { TCDTabSheet }
 
   TCDTabSheet = class(TCustomControl)
@@ -493,29 +491,34 @@ type
     property TabVisible: Boolean read FTabVisible write FTabVisible;
   end;
 
+  // If the sender is a TCDPageControl, APage will contain the page,
+  // but if it is a TCDTabControl APage will be nil
+  TOnUserAddedPage = procedure (Sender: TObject; APage: TCDTabSheet) of object;
+
   TCDCustomTabControl = class(TCDControl)
   private
+    FOnUserAddedPage: TOnUserAddedPage;
     FTabIndex: Integer;
     FTabs: TStringList;
     FOnChanging: TNotifyEvent;
     FOnChange: TNotifyEvent;
-    FOptions: TNoteBookOptions;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: integer); override;
+    FOptions: TCTabControlOptions;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
     //procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+    procedure SetOptions(AValue: TCTabControlOptions);
     //procedure MouseEnter; override;
     //procedure MouseLeave; override;
     procedure SetTabIndex(AValue: Integer); virtual;
     procedure SetTabs(AValue: TStringList);
-    procedure SetOptions(AValue: TNoteBookOptions);
+    function MousePosToTabIndex(X, Y: Integer): Integer;
   protected
     FTabCState: TCDCTabControlStateEx;
     function GetControlId: TCDControlID; override;
     procedure CreateControlStateEx; override;
     procedure PrepareControlStateEx; override;
     procedure CorrectTabIndex();
-    property Options: TNoteBookOptions read FOptions write SetOptions;
+    property Options: TCTabControlOptions read FOptions write SetOptions;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -523,6 +526,7 @@ type
     property Tabs: TStringList read FTabs write SetTabs;
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnUserAddedPage: TOnUserAddedPage read FOnUserAddedPage write FOnUserAddedPage;
     property TabIndex: integer read FTabIndex write SetTabIndex;
   end;
 
@@ -537,6 +541,7 @@ type
     property TabIndex;
     property OnChanging;
     property OnChange;
+    property OnUserAddedPage;
   end;
 
   { TCDPageControl }
@@ -579,6 +584,7 @@ type
     property TabIndex;
     property OnChanging;
     property OnChange;
+    property OnUserAddedPage;
   end;
 
 implementation
@@ -2031,45 +2037,51 @@ end;
 procedure TCDCustomTabControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: integer);
 var
-  i: Integer;
-  CurPage: TCDTabSheet;
-  CurStartLeftPos: Integer = 0;
-  VisiblePagesStarted: Boolean = False;
-  lTabWidth, lTabHeight: Integer;
+  lTabIndex: Integer;
 begin
   inherited MouseDown(Button, Shift, X, Y);
 
-  for i := 0 to Tabs.Count - 1 do
+  lTabIndex := MousePosToTabIndex(X, Y);
+
+  if lTabIndex >=0 then
   begin
-    if i = FTabCState.LeftmostTabVisibleIndex then
-      VisiblePagesStarted := True;
-
-    if VisiblePagesStarted then
-    begin
-      FTabCState.TabIndex := i;
-      lTabWidth := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_WIDTH, FState, FTabCState);
-      lTabHeight := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_HEIGHT, FState, FTabCState);
-      if (X > CurStartLeftPos) and
-        (X < CurStartLeftPos + lTabWidth) and
-        (Y < lTabHeight) then
-      begin
-        if Self is TCDPageControl then
-          (Self as TCDPageControl).PageIndex := i
-        else
-          TabIndex := i;
-
-        Exit;
-      end;
-      CurStartLeftPos := CurStartLeftPos + lTabWidth;
-    end;
+    if Self is TCDPageControl then
+      (Self as TCDPageControl).PageIndex := lTabIndex
+    else
+      TabIndex := lTabIndex;
   end;
 end;
 
 procedure TCDCustomTabControl.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: integer);
+var
+  lTabIndex: Integer;
+  lNewPage: TCDTabSheet;
 begin
-
   inherited MouseUp(Button, Shift, X, Y);
+
+  lTabIndex := MousePosToTabIndex(X, Y);
+
+  if (nboShowAddTabButton in Options) and (lTabIndex = Tabs.Count) then
+  begin
+    if Self is TCDPageControl then
+    begin
+      lNewPage := (Self as TCDPageControl).AddPage('New Page');
+      if Assigned(OnUserAddedPage) then OnUserAddedPage(Self, lNewPage);
+    end
+    else
+    begin
+      Tabs.Add('New Tab');
+      if Assigned(OnUserAddedPage) then OnUserAddedPage(Self, nil);
+    end;
+  end;
+end;
+
+procedure TCDCustomTabControl.SetOptions(AValue: TCTabControlOptions);
+begin
+  if FOptions=AValue then Exit;
+  FOptions:=AValue;
+  Invalidate;
 end;
 
 procedure TCDCustomTabControl.SetTabIndex(AValue: Integer);
@@ -2089,11 +2101,38 @@ begin
   Invalidate;
 end;
 
-procedure TCDCustomTabControl.SetOptions(AValue: TNoteBookOptions);
+function TCDCustomTabControl.MousePosToTabIndex(X, Y: Integer): Integer;
+var
+  i: Integer;
+  CurPage: TCDTabSheet;
+  CurStartLeftPos: Integer = 0;
+  VisiblePagesStarted: Boolean = False;
+  lLastTab, lTabWidth, lTabHeight: Integer;
 begin
-  if FOptions=AValue then Exit;
-  FOptions:=AValue;
-  Invalidate;
+  Result := -1;
+
+  if nboShowAddTabButton in Options then lLastTab := Tabs.Count
+  else lLastTab := Tabs.Count - 1;
+
+  for i := 0 to lLastTab do
+  begin
+    if i = FTabCState.LeftmostTabVisibleIndex then
+      VisiblePagesStarted := True;
+
+    if VisiblePagesStarted then
+    begin
+      FTabCState.CurTabIndex := i;
+      lTabWidth := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_WIDTH, FState, FTabCState);
+      lTabHeight := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_HEIGHT, FState, FTabCState);
+      if (X > CurStartLeftPos) and
+        (X < CurStartLeftPos + lTabWidth) and
+        (Y < lTabHeight) then
+      begin
+        Exit(i);
+      end;
+      CurStartLeftPos := CurStartLeftPos + lTabWidth;
+    end;
+  end;
 end;
 
 function TCDCustomTabControl.GetControlId: TCDControlID;

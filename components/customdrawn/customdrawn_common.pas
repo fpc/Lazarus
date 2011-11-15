@@ -182,8 +182,14 @@ begin
   TCDCTABCONTROL_TAB_HEIGHT: Result := ADest.TextHeight(cddTestStr)+10;
   TCDCTABCONTROL_TAB_WIDTH:
   begin
-    lCaption := ATabsStateEx.Tabs.Strings[ATabsStateEx.CurTabIndex];
-    Result := ADest.TextWidth(lCaption) + TCDTabControl_Common_TabCaptionExtraWidth;
+    if ATabsStateEx.CurTabIndex < ATabsStateEx.TabCount then
+    begin
+      lCaption := ATabsStateEx.Tabs.Strings[ATabsStateEx.CurTabIndex];
+      Result := ADest.TextWidth(lCaption) + TCDTabControl_Common_TabCaptionExtraWidth;
+    end
+    // in any other case we are referring to the aditional + button for adding a new tab
+    else
+      Result := ADest.TextWidth('+') + TCDTabControl_Common_TabCaptionExtraWidth;
   end
   else
     Result := 0;
@@ -1275,10 +1281,13 @@ procedure TCDDrawerCommon.DrawTabs(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
 var
   IsPainting: Boolean = False;
-  i: Integer;
+  lLastTabIndex, i: Integer;
 begin
   AStateEx.CurStartLeftPos := 0;
-  for i := 0 to AStateEx.Tabs.Count - 1 do
+  if nboShowAddTabButton in AStateEx.Options then lLastTabIndex := AStateEx.Tabs.Count
+  else lLastTabIndex := AStateEx.Tabs.Count - 1;
+
+  for i := 0 to lLastTabIndex do
   begin
     if i = AStateEx.LeftmostTabVisibleIndex then
       IsPainting := True;
@@ -1295,7 +1304,7 @@ end;
 procedure TCDDrawerCommon.DrawTab(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
 var
-  IsSelected: Boolean;
+  IsSelected, IsAddButton: Boolean;
   lTabWidth, lTabHeight, lTabTopPos: Integer;
   Points: array of TPoint;
   lCaption: String;
@@ -1303,6 +1312,7 @@ var
   lTabRightBorderExtraHeight: Integer = 0;
 begin
   IsSelected := AStateEx.TabIndex = AStateEx.CurTabIndex;
+  IsAddButton := AStateEx.CurTabIndex = AStateEx.Tabs.Count;
 
   if not IsSelected then lTabHeightCorrection := 3;
   if IsSelected then lTabRightBorderExtraHeight := 1;
@@ -1361,7 +1371,8 @@ begin
   end;
 
   // Now the text
-  lCaption := AStateEx.Tabs.Strings[AStateEx.CurTabIndex];
+  if IsAddButton then lCaption := '+'
+  else lCaption := AStateEx.Tabs.Strings[AStateEx.CurTabIndex];
   ADest.TextOut(AStateEx.CurStartLeftPos+5, lTabTopPos+5, lCaption);
 end;
 

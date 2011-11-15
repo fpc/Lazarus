@@ -189,7 +189,7 @@ type
     Tabs: TStringList; // Just a reference, don't Free
     TabIndex: Integer;
     TabCount: Integer;
-    Options: TNoteBookOptions;
+    Options: TCTabControlOptions;
     // Used internally by the drawers
     CurTabIndex: Integer;// For Tab routines, obtain the index
     CurStartLeftPos: Integer;
@@ -218,7 +218,7 @@ type
     MenuHighlight, MenuBar, Form: TColor;
   end;
 
-  { There are 3 possible sources of input for color palettes:
+  { There are 5 possible sources of input for color palettes:
    palDefault  - Uses palNative when the operating system matches the drawer style,
                  palFallback otherwise
    palNative   - Obtain from the operating system
