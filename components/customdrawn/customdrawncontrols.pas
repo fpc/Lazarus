@@ -1175,7 +1175,7 @@ begin
   // LCL-Carbon sends Backspace as a UTF-8 Char
   // LCL-Qt sends arrow left,right,up,down (#28..#31), <enter>, ESC, etc
   // Don't handle any non-char keys here because they are already handled in KeyDown
-  if UTF8Key[1] in [#0..#31] then Exit;
+  if UTF8Key[1] in [#0..#$1F,#$7F..#$9F] then Exit;
 
   DoDeleteSelection;
 
