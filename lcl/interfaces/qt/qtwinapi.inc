@@ -4033,20 +4033,36 @@ var
   i: Integer;
   w: Integer;
   AStr: WideString;
+  Accu: Integer;
 begin
   Result := False;
   if not IsValidDC(DC) then Exit;
   with TQtDeviceContext(DC) do
   begin
     AStr := GetUtf8String(Str);
+    Size.cx := 0;
+    Size.cY := Font.Metrics.Height;
     if PartialWidths = nil then
     begin
-      Size.cX := Font.Metrics.Width(@AStr, Count);
-      Size.cY := Font.Metrics.Height;
+      if MaxCount <> nil then
+      begin
+        Size.cx := Font.Metrics.width(@AStr);
+        Accu := 0;
+        if MaxWidth <= 0 then
+          MaxCount^ := 0
+        else
+          for i := 0 to Count - 1 do
+          begin
+            W := QFontMetrics_charWidth(Font.Metrics.FHandle, @AStr, i);
+            Accu := Accu + W;
+            if Accu <= MaxWidth then
+              MaxCount^ := i + 1
+            else
+              break;
+          end;
+      end;
     end else
     begin
-      Size.cx := 0;
-      Size.cY := Font.Metrics.Height;
       if MaxCount <> nil then
         MaxCount^ := 0;
       for i := 0 to Count - 1 do
