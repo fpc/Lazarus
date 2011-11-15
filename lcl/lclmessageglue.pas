@@ -101,12 +101,12 @@ begin
   {$ENDIF}
   RefCounted := False;
   try
-    if Target is TLCLComponent then
-    begin
-      TLCLComponent(Target).IncLCLRefCount;
-      RefCounted := True;
-    end;
     try
+      if Target is TLCLComponent then
+      begin
+        TLCLComponent(Target).IncLCLRefCount;
+        RefCounted := True;
+      end;
       if Target is TControl then
         TControl(Target).WindowProc(TLMessage(AMessage))
       else
