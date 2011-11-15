@@ -1114,23 +1114,21 @@ begin
   lPasStrLen := UTF8Length(lPasStr);
   for i := 1 to lPasStrLen do
   begin
-    // Since we can't just sum the partial widths because the spaces between
-    // chars matter too, only calculate them if necessary
-    if PartialWidths<>nil then
-    begin
-      lCurSubStr := UTF8Copy(lPasStr, i, 1);
-      Self.GetTextExtentPoint(DC, PChar(lCurSubStr), 1, lCurSize);
-      PartialWidths[i-1] := lCurSize.cx;
-    end;
-
-    // Calculate the width until the utilized size gets bigger then the desired one
-    // Give up when the size surpases MaxWidth to be faster
-    if (not lBestFitFound) and (MaxCount <> nil) then
+    if (not lBestFitFound) then
     begin
       lCurSubStr := UTF8Copy(lPasStr, 1, i);
       Self.GetTextExtentPoint(DC, PChar(lCurSubStr), Length(lCurSubStr), lCurSize);
-      if lCurSize.cx <= MaxWidth then MaxCount^ := i
-      else lBestFitFound := True;
+
+      // Calculate the summed partial widths
+      if PartialWidths<>nil then PartialWidths[i-1] := lCurSize.cx;
+
+      // Calculate the width until the utilized size gets bigger then the desired one
+      // Give up when the size surpases MaxWidth to be faster
+      if (MaxCount <> nil) then
+      begin
+        if lCurSize.cx <= MaxWidth then MaxCount^ := i
+        else lBestFitFound := True;
+      end;
     end;
   end;
 end;
