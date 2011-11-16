@@ -40,7 +40,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, contnrs, TypInfo, FileProcs, BasicCodeTools,
+  Classes, SysUtils, contnrs, LazMethodList, TypInfo, FileProcs, BasicCodeTools,
   CodeToolsStrConsts,
   LazFileCache,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
@@ -70,6 +70,12 @@ type
     var IsDefined: boolean) of object;
     
   ECodeToolManagerError = class(Exception);
+
+  TCodeToolManagerHandler = (
+    ctmOnToolTreeChanging
+    );
+  TCodeToolManagerHandlers = set of TCodeToolManagerHandler;
+  TOnToolTreeChanging = TCodeTreeChangeEvent;
 
   { TCodeToolManager }
 
@@ -114,6 +120,7 @@ type
     FWriteExceptions: boolean;
     FWriteLockCount: integer;// Set/Unset counter
     FWriteLockStep: integer; // current write lock ID
+    FHandlers: array[TCodeToolManagerHandler] of TMethodList;
     function OnScannerGetInitValues(Code: Pointer;
       out AChangeStep: integer): TExpressionEvaluator;
     procedure OnDefineTreeReadValue(Sender: TObject; const VariableName: string;
@@ -166,6 +173,8 @@ type
                                      const UnitSet, AnUnitName: string): string;
     procedure DirectoryCachePoolIterateFPCUnitsFromSet(const UnitSet: string;
                                               const Iterate: TCTOnIterateFile);
+    procedure AddHandler(HandlerType: TCodeToolManagerHandler; const Handler: TMethod);
+    procedure RemoveHandler(HandlerType: TCodeToolManagerHandler; const Handler: TMethod);
   public
     DefinePool: TDefinePool; // definition templates (rules)
     DefineTree: TDefineTree; // cache for defines (e.g. initial compiler values)
@@ -193,6 +202,8 @@ type
     property CodeNodeTreeChangeStep: integer read FCodeNodeTreeChangeStep;// nodes altered, added, deleted
     property CodeTreeNodesDeletedStep: integer read FCodeTreeNodesDeletedStep;// nodes deleted
     procedure GetCodeTreeNodesDeletedStep(out NodesDeletedStep: integer);// use this for events
+    procedure AddHandlerToolTreeChanging(const OnToolTreeChanging: TOnToolTreeChanging);
+    procedure RemoveHandlerToolTreeChanging(const OnToolTreeChanging: TOnToolTreeChanging);
 
     // file handling
     property SourceExtensions: string
@@ -929,6 +940,8 @@ begin
 end;
 
 destructor TCodeToolManager.Destroy;
+var
+  e: TCodeToolManagerHandler;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] A');
@@ -969,6 +982,8 @@ begin
     OnFileAgeCached:=nil;
   FreeAndNil(DirectoryCachePool);
   FreeAndNil(FPCDefinesCache);
+  for e:=low(FHandlers) to high(FHandlers) do
+    FreeAndNil(FHandlers[e]);
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] F');
   {$ENDIF}
@@ -5217,6 +5232,8 @@ end;
 
 procedure TCodeToolManager.OnToolTreeChange(Tool: TCustomCodeTool;
   NodesDeleting: boolean);
+var
+  i: Integer;
 begin
   CTIncreaseChangeStamp(FCodeNodeTreeChangeStep);
   if NodesDeleting then begin
@@ -5224,7 +5241,10 @@ begin
     // Note: IdentifierList nodes do not need to be cleared, because Node
     // is accessed via GetNode, which checks if nodes were deleted
   end;
-
+  //debugln(['TCodeToolManager.OnToolTreeChange ',FHandlers[ctmOnToolTreeChanging].Count]);
+  i:=FHandlers[ctmOnToolTreeChanging].Count;
+  while FHandlers[ctmOnToolTreeChanging].NextDownIndex(i) do
+    TOnToolTreeChanging(FHandlers[ctmOnToolTreeChanging][i])(Tool,NodesDeleting);
 end;
 
 function TCodeToolManager.OnScannerProgress(Sender: TLinkScanner): boolean;
@@ -5571,6 +5591,18 @@ begin
   NodesDeletedStep:=FCodeTreeNodesDeletedStep;
 end;
 
+procedure TCodeToolManager.AddHandlerToolTreeChanging(
+  const OnToolTreeChanging: TOnToolTreeChanging);
+begin
+  AddHandler(ctmOnToolTreeChanging,TMethod(OnToolTreeChanging));
+end;
+
+procedure TCodeToolManager.RemoveHandlerToolTreeChanging(
+  const OnToolTreeChanging: TOnToolTreeChanging);
+begin
+  RemoveHandler(ctmOnToolTreeChanging,TMethod(OnToolTreeChanging));
+end;
+
 function TCodeToolManager.GetResourceTool: TResourceCodeTool;
 begin
   if FResourceTool=nil then FResourceTool:=TResourceCodeTool.Create;
@@ -5705,6 +5737,21 @@ begin
     Iterate(Item^.Value);
     Node:=aConfigCache.Units.Tree.FindSuccessor(Node);
   end;
+end;
+
+procedure TCodeToolManager.AddHandler(HandlerType: TCodeToolManagerHandler;
+  const Handler: TMethod);
+begin
+  if Handler.Code=nil then RaiseCatchableException('TCodeToolManager.AddHandler');
+  if FHandlers[HandlerType]=nil then
+    FHandlers[HandlerType]:=TMethodList.Create;
+  FHandlers[HandlerType].Add(Handler);
+end;
+
+procedure TCodeToolManager.RemoveHandler(HandlerType: TCodeToolManagerHandler;
+  const Handler: TMethod);
+begin
+  FHandlers[HandlerType].Remove(Handler);
 end;
 
 procedure TCodeToolManager.OnToolSetWriteLock(Lock: boolean);

@@ -30,14 +30,16 @@ unit CodyIdentifiersDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ButtonPanel, StdCtrls, CodeToolManager, UnitDictionary;
+  Classes, SysUtils, FileUtil, LResources, LCLProc, Forms, Controls, Graphics,
+  Dialogs, ButtonPanel, StdCtrls, CustomCodeTool, CodeToolManager, UnitDictionary;
 
 type
 
   { TCodyUnitDictionary }
 
   TCodyUnitDictionary = class(TUnitDictionary)
+  private
+    procedure ToolTreeChanged(Tool: TCustomCodeTool; {%H-}NodesDeleting: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -83,10 +85,16 @@ end;
 
 { TCodyUnitDictionary }
 
+procedure TCodyUnitDictionary.ToolTreeChanged(Tool: TCustomCodeTool;
+  NodesDeleting: boolean);
+begin
+  //debugln(['TCodyUnitDictionary.ToolTreeChanged ',Tool.MainFilename]);
+end;
+
 constructor TCodyUnitDictionary.Create;
 begin
   inherited Create;
-
+  CodeToolBoss.AddHandlerToolTreeChanging(@ToolTreeChanged);
 end;
 
 destructor TCodyUnitDictionary.Destroy;

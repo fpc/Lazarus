@@ -774,6 +774,7 @@ begin
       {$ENDIF}
       ScanTill:=lsrEnd;
       CloseUnfinishedNodes;
+      IncreaseTreeChangeStep(false);
     end;
   except
     {$IFDEF ShowIgnoreErrorAfter}
