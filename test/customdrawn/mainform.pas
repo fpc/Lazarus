@@ -6,19 +6,21 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, customdrawncontrols, customdrawndrawers, Forms,
-  Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls;
+  Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ComCtrls, Buttons;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
+    BitBtn1: TBitBtn;
     Button1: TButton;
     Button2: TButton;
     CDButton1: TCDButton;
     CDButton2: TCDButton;
     CDButton3: TCDButton;
     CDButton4: TCDButton;
+    CDButton5: TCDButton;
     CDCheckBox1: TCDCheckBox;
     CDCheckBox2: TCDCheckBox;
     CDCheckBox3: TCDCheckBox;
