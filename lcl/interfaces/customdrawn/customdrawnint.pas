@@ -32,6 +32,7 @@ uses
   Types, Classes, SysUtils, Math,
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll,{$endif}
+  {$ifdef CD_X11}X, XLib, XUtil, {unitxft, Xft font support}{$endif}
   // Widgetset
    //CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaTextLayout, CocoaProc,
   // LCL
@@ -78,6 +79,7 @@ type
   TCDWidgetSet = class(TWidgetSet)
   private
     FTerminating: Boolean;
+
     {$ifdef CD_WINDOWS}
     // In win32 it is: The parent of all windows, represents the button of the taskbar
     // In wince it is just an invisible window, but retains the following functions:
@@ -111,6 +113,18 @@ type
     pool      : NSAutoreleasePool;
     NSApp     : NSApplication;
     delegate  : TCDAppDelegate;
+    {$endif}
+  public
+    {$ifdef CD_X11}
+    FDisplayName: string;
+    FDisplay: PDisplay;
+
+    LeaderWindow: X.TWindow;
+    ClientLeaderAtom: TAtom;
+
+    FWMProtocols: TAtom;	  // Atom for "WM_PROTOCOLS"
+    FWMDeleteWindow: TAtom;	  // Atom for "WM_DELETE_WINDOW"
+    FWMHints: TAtom;		  // Atom for "_MOTIF_WM_HINTS"
     {$endif}
   protected
     {function CreateThemeServices: TThemeServices; override;

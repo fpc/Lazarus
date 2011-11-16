@@ -34,6 +34,7 @@ uses
   SysUtils, Classes,
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate, CocoaUtils,{$endif}
+  {$ifdef CD_X11}X, XLib, XUtil, {unitxft, Xft font support}{$endif}
   // LCL
   Controls, LCLType, Forms, LCLProc,
   // Widgetset

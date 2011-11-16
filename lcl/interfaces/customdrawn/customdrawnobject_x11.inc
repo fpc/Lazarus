@@ -48,15 +48,186 @@ end;
   initialize Windows
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
+var
+  ClassHint: PXClassHint;
 begin
-  {$ifdef VerboseWinCE}
-//  DebugLn('TWinCEWidgetSet.AppInit');
+  {$ifdef Verbose_CDWS}
+//  DebugLn('TCDWidgetSet.AppInit');
   {$endif}
 
+  // Maybe it was passed as a -display parameter. Lets check first!
+  if FDisplayName = '' then
+    FDisplayName := XDisplayName(nil);
+
+  FDisplay := XOpenDisplay(PChar(FDisplayName));
+
+  if not Assigned(FDisplay) then
+    raise Exception.Create('[TCDWidgetSet.AppInit] XOpenDisplay failed');
+
+  //if (not (woX11SkipWMHints in WindowOptions)) and (woWindow in WindowOptions) then
+  //begin
+    LeaderWindow := XCreateSimpleWindow(FDisplay, XDefaultRootWindow(FDisplay), 0, 0, 1, 1, 0, 0, 0);
+
+    ClassHint := XAllocClassHint;
+    ClassHint^.res_name := 'fpGFX'; // !!! use app name
+    ClassHint^.res_class := 'FpGFX';
+    XSetWMProperties(FDisplay, LeaderWindow, nil, nil, nil, 0, nil, nil, ClassHint);
+    XFree(ClassHint);
+    ClientLeaderAtom := XInternAtom(FDisplay, 'WM_CLIENT_LEADER', False);
+  //end;
 end;
 
 procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
+var
+  XEvent: TXEvent;
+//  WindowEntry: TX11Window;
+  MouseButton: TMouseButton;
+  Sum: Integer;
+  NewEvent: TXEvent;
+  DoBreakRun: Boolean = False;
 begin
+  while (DoBreakRun = False) do
+  begin
+{    if Assigned(OnIdle) then
+    begin
+      if not XCheckMaskEvent(FDisplay, MaxInt, @XEvent) then
+      begin
+        if Assigned(OnIdle) then OnIdle(Self);
+
+        continue;
+      end;
+    end
+    else}
+      XNextEvent(FDisplay, @XEvent);
+
+    // if the event filter returns true then it ate the message
+    //if Assigned(FEventFilter) and FEventFilter(XEvent) then continue;
+
+    //if Forms.Count = 0 then continue;
+
+    // According to a comment in X.h, the valid event types start with 2!
+    if XEvent._type >= 2 then
+    begin
+//      WindowEntry := TX11Window(FindWindowByXID(XEvent.XAny.Window));
+
+//      if not Assigned(WindowEntry) then
+//      begin
+//        WriteLn('fpGFX/X11: Received X event "', GetXEventName(XEvent._type), '" for unknown window');
+//        continue;
+//      end;
+
+//      WindowEntry.FXEvent := @XEvent;
+
+      case XEvent._type of
+       X.DestroyNotify:
+         begin
+//           Forms.Remove(WindowEntry);
+         end;
+       X.KeyPress:
+         begin
+//           WindowEntry.EvKeyPressed(XEvent.xkey.keycode);
+         end;
+       X.KeyRelease:
+         begin
+//           WindowEntry.EvKeyReleased(XEvent.xkey.keycode);
+         end;
+       X.ButtonPress:
+         begin
+{           if XButtonToMouseButton(XEvent.xbutton.button, MouseButton) then
+            WindowEntry.EvMousePressed(MouseButton,
+             Point(XEvent.xbutton.x, XEvent.xbutton.y))
+           else
+           begin
+             if XEvent.xbutton.button = 4 then Sum := -1
+             else Sum := 1;
+
+             // Check for other mouse wheel messages in the queue
+             while XCheckTypedWindowEvent(GFApplication.Handle,
+              WindowEntry.Handle, X.ButtonPress, @NewEvent) do
+             begin
+	       if NewEvent.xbutton.Button = 4 then Dec(Sum)
+               else if NewEvent.xbutton.Button = 5 then Inc(Sum)
+               else
+               begin
+                 XPutBackEvent(GFApplication.Handle, @NewEvent);
+                 break;
+               end;
+             end;
+
+             WindowEntry.EvMouseWheel(
+              Sum, Point(XEvent.xbutton.x, XEvent.xbutton.y));
+           end;}
+         end;
+       X.ButtonRelease:
+         begin
+           { Release events are only for mouse buttons, and not mouse wheel moviments }
+{           if (XEvent.xbutton.button >= 1) and (XEvent.xbutton.button <= 3) then
+           begin
+             XButtonToMouseButton(XEvent.xbutton.button, MouseButton);
+
+             WindowEntry.EvMouseReleased(
+              MouseButton,
+              Point(XEvent.xbutton.x, XEvent.xbutton.y));
+           end;}
+         end;
+       X.EnterNotify:
+         begin
+//           WindowEntry.EvMouseEnter(
+//            Point(XEvent.xbutton.x, XEvent.xbutton.y));
+         end;
+       X.LeaveNotify:
+         begin
+//           WindowEntry.EvMouseLeave();
+         end;
+       X.MotionNotify:
+         begin
+//           WindowEntry.EvMouseMove(
+//            Point(XEvent.xbutton.x, XEvent.xbutton.y));
+         end;
+       X.FocusIn:
+         begin
+//           WindowEntry.EvFocusIn();
+         end;
+       X.FocusOut:
+         begin
+//           WindowEntry.EvFocusOut();
+         end;
+       X.MapNotify:
+         begin
+//           WindowEntry.EvShow();
+         end;
+       X.UnmapNotify:
+         begin
+//           WindowEntry.EvHide();
+         end;
+       X.ReparentNotify:
+         begin
+//           WindowEntry.EvCreate();
+         end;
+       X.Expose:
+         begin
+           {$Note We can do performance tuning here by looking at Count.
+             For now we are just ignoring all expose messages where Count <> 0 }
+{           if XEvent.xexpose.count = 0 then
+           begin
+             WindowEntry.EvPaint();
+           end;}
+         end;
+       X.ConfigureNotify:
+         begin
+//           WindowEntry.Dispatch(XEvent);
+         end;
+       X.ClientMessage:
+         begin
+//           WindowEntry.Dispatch(XEvent);
+         end;
+      else
+//        WriteLn('fpGFX/X11: Unhandled X11 event received: ', GetXEventName(XEvent._type));
+      end;
+
+    end;
+  end;
+  DoBreakRun := False;
 end;
 
 (*
