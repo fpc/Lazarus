@@ -50,7 +50,7 @@ begin
   // TextFitInfo test 1 (calls GetTextExtentExPoint with partial widths = nil)
   lStr := 'ABCDEFGHIJKLMNOPQRSXYZ';
   lRes := Image.Canvas.TextFitInfo(lStr, 80);
-  Image.Canvas.TextOut(20, 20, Format('TextFitInfo Text 1. Returned %d should be aprox. 10', [lRes]));
+  Image.Canvas.TextOut(20, 20, Format('TextFitInfo Test 1. Returned %d should be aprox. 7 to 10', [lRes]));
   Image.Canvas.Brush.Color := clBlue;
   Image.Canvas.Rectangle(20, 35, 100, 50);
   Image.Canvas.TextOut(20, 35, lStr);
@@ -60,7 +60,7 @@ begin
   LCLIntf.GetTextExtentExPoint(Image.Canvas.Handle, PChar(lStr),
     Length(lStr), 50, @lMaxCount, @lPartialWidths[0], lSize);
   lRes := Image.Canvas.TextFitInfo(lStr, 50);
-  Image.Canvas.TextOut(20, 60, Format('GetTextExtentExPoint Text 1. Returned MaxCount=%d should be aprox. 6', [lMaxCount]));
+  Image.Canvas.TextOut(20, 60, Format('GetTextExtentExPoint Test 1. Returned MaxCount=%d should be aprox. 4 to 6', [lMaxCount]));
   Image.Canvas.Brush.Color := clBlue;
   for i := 0 to 6 do
   begin
