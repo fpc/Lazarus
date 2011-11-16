@@ -3472,6 +3472,7 @@ function TAnchorSide.CheckSidePosition(NewControl: TControl;
   NewSide: TAnchorSideReference;
   out ReferenceControl: TControl;
   out ReferenceSide: TAnchorSideReference; out Position: Integer): boolean;
+{off $DEFINE VerboseAnchorSide}
 var
   ParentRect: TRect;
   ParentRectValid: boolean;
@@ -3533,15 +3534,13 @@ begin
   Found:=false;
   CurReferenceControl:=NewControl;
   CurReferenceSide:=NewSide;
-  if CurReferenceControl = nil then
-    exit(true);
   while CurReferenceControl<>nil do begin
 
     // check for circles
     if CurReferenceControl=Owner then begin
       // circle
-      {$IFNDEF DisableChecks}
-      DebugLn(['TAnchorSide.GetSidePosition Circle, ',DbgSName(Owner),' ',dbgs(Kind)]);
+      {$IFNDEF VerboseAnchorSide}
+      DebugLn(['TAnchorSide.CheckSidePosition Circle, ',DbgSName(Owner),' ',dbgs(Kind)]);
       {$ENDIF}
       ReferenceControl:=nil;
       exit;
@@ -3551,8 +3550,8 @@ begin
     if ChainLength>MaxChainLength then begin
       // the chain has more elements than there are siblings -> circle
       //if CheckPosition(Owner) then
-      {$IFNDEF DisableChecks}
-      DebugLn(['TAnchorSide.GetSidePosition Circle, ',DbgSName(Owner),' ',dbgs(Kind)]);
+      {$IFNDEF VerboseAnchorSide}
+      DebugLn(['TAnchorSide.CheckSidePosition Circle, ',DbgSName(Owner),' ',dbgs(Kind)]);
       {$ENDIF}
       ReferenceControl:=nil;
       exit;
@@ -3563,8 +3562,8 @@ begin
     and (CurReferenceControl<>OwnerParent) then begin
       // not a sibling and not the parent -> invalid AnchorSide
       //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition invalid AnchorSide ',dbgsName(ReferenceControl)]);
-      {$IFNDEF DisableChecks}
-      DebugLn(['TAnchorSide.GetSidePosition invalid anchor control, ',DbgSName(Owner),' ',dbgs(Kind)]);
+      {$IFNDEF VerboseAnchorSide}
+      DebugLn(['TAnchorSide.CheckSidePosition invalid anchor control, ',DbgSName(Owner),' ',dbgs(Kind)]);
       {$ENDIF}
       ReferenceControl:=nil;
       exit;
@@ -3581,7 +3580,7 @@ begin
 
         // -> calculate Position
         OwnerBorderSpacing:=FOwner.BorderSpacing.GetSideSpace(Kind);
-        //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition ',dbgsName(Owner),' ReferenceControl=',dbgsName(ReferenceControl),' ',dbgs(ReferenceControl.BoundsRect),' OwnerBorderSpacing=',OwnerBorderSpacing,' Kind=',dbgs(Kind),' ReferenceSide=',dbgs(Kind,ReferenceSide)]);
+        //if CheckPosition(Owner) then DebugLn(['TAnchorSide.CheckSidePosition ',dbgsName(Owner),' ReferenceControl=',dbgsName(ReferenceControl),' ',dbgs(ReferenceControl.BoundsRect),' OwnerBorderSpacing=',OwnerBorderSpacing,' Kind=',dbgs(Kind),' ReferenceSide=',dbgs(Kind,ReferenceSide)]);
         case ReferenceSide of
 
         asrTop: // asrTop = asrLeft
@@ -3742,7 +3741,7 @@ begin
       // Note: if anchored control is not visible, it is anchored to the parent
       //if CheckPosition(Owner) and (Kind=akRight) then
       //if Owner.Name='ClassPartInsertPolicyRadioGroup' then
-      //  DebugLn(['TAnchorSide.GetSidePosition Success ',DbgSName(Owner),' ReferenceControl=',dbgsName(ReferenceControl),' CurReferenceControl=',DbgSName(CurReferenceControl),' CurReferenceSide=',dbgs(Kind,CurReferenceSide)]);
+      //  DebugLn(['TAnchorSide.CheckSidePosition Success ',DbgSName(Owner),' ReferenceControl=',dbgsName(ReferenceControl),' CurReferenceControl=',DbgSName(CurReferenceControl),' CurReferenceSide=',dbgs(Kind,CurReferenceSide)]);
       exit(true);
     end;
     if NextReferenceSide=Self then begin
@@ -3752,8 +3751,9 @@ begin
       CurReferenceControl:=NextReferenceSide.Control;
       CurReferenceSide:=NextReferenceSide.Side;
     end;
-    //DebugLn(['TAnchorSide.GetSidePosition ',DbgSName(FOwner),' ReferenceControl=',DbgSName(ReferenceControl),' Kind=',dbgs(Kind),' ReferenceSide=',dbgs(Kind,ReferenceSide)]);
+    //DebugLn(['TAnchorSide.CheckSidePosition ',DbgSName(FOwner),' ReferenceControl=',DbgSName(ReferenceControl),' Kind=',dbgs(Kind),' ReferenceSide=',dbgs(Kind,ReferenceSide)]);
   end;
+  Result:=true;
 end;
 
 procedure TAnchorSide.Assign(Source: TPersistent);
