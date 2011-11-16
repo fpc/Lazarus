@@ -75,6 +75,22 @@ begin
     Image.Canvas.Brush.Style := bsClear;
     Image.Canvas.TextOut(20, 75 + i *15, lStr);
   end;
+
+  // Now add something hard: Arabic
+  lStr := 'العرب';
+  LCLIntf.GetTextExtentExPoint(Image.Canvas.Handle, PChar(lStr),
+    Length(lStr), 50, @lMaxCount, @lPartialWidths[0], lSize);
+  lRes := Image.Canvas.TextFitInfo(lStr, 50);
+  Image.Canvas.Brush.Style := bsClear;
+  Image.Canvas.TextOut(20, 200, Format('GetTextExtentExPoint Arabic. Returned MaxCount=%d should be aprox. 5', [lMaxCount]));
+  Image.Canvas.Brush.Color := clBlue;
+  for i := 0 to 4 do
+  begin
+    Image.Canvas.Brush.Style := bsSolid;
+    Image.Canvas.Rectangle(20+lSize.cx-lPartialWidths[i], 225 + i * 15, 20+lSize.cx, 240 + i * 15);
+    Image.Canvas.Brush.Style := bsClear;
+    Image.Canvas.TextOut(20, 225 + i *15, lStr);
+  end;
 end;
 
 end.
