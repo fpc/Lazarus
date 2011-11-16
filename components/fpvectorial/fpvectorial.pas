@@ -172,8 +172,8 @@ type
     procedure ExpandBoundingBox(var ALeft, ATop, ARight, ABottom: Double);
     {@@ ASubpart is only valid if this routine returns vfrSubpartFound }
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; virtual;
-    procedure Translate(ADeltaX, ADeltaY: Integer); virtual;
-    procedure TransladeSubpart(ADeltaX, ADeltaY: Integer; ASubpart: Cardinal); virtual;
+    procedure Move(ADeltaX, ADeltaY: Integer); virtual;
+    procedure MoveSubpart(ADeltaX, ADeltaY: Integer; ASubpart: Cardinal); virtual;
     procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
   end;
@@ -234,8 +234,8 @@ type
   TvEllipse = class(TvEntity)
   public
     // Mandatory fields
-    MajorHalfAxis: Double; // This half-axis is the horizontal one when Angle=0
-    MinorHalfAxis: Double; // This half-axis is the vertical one when Angle=0
+    HorzHalfAxis: Double; // This half-axis is the horizontal one when Angle=0
+    VertHalfAxis: Double; // This half-axis is the vertical one when Angle=0
     {@@ The Angle is measured in degrees in relation to the positive X axis }
     Angle: Double;
     procedure CalculateBoundingBox(var ALeft, ATop, ARight, ABottom: Double); override;
@@ -373,7 +373,7 @@ type
     procedure AddText(AX, AY, AZ: Double; AStr: utf8string); overload;
     procedure AddCircle(ACenterX, ACenterY, ARadius: Double);
     procedure AddCircularArc(ACenterX, ACenterY, ARadius, AStartAngle, AEndAngle: Double; AColor: TFPColor);
-    procedure AddEllipse(CenterX, CenterY, MajorHalfAxis, MinorHalfAxis, Angle: Double);
+    procedure AddEllipse(CenterX, CenterY, HorzHalfAxis, VertHalfAxis, Angle: Double);
     // Dimensions
     procedure AddAlignedDimension(BaseLeft, BaseRight, DimLeft, DimRight: T3DPoint);
   end;
@@ -878,16 +878,16 @@ begin
   AddEntity(lCircularArc);
 end;
 
-procedure TvVectorialPage.AddEllipse(CenterX, CenterY, MajorHalfAxis,
-  MinorHalfAxis, Angle: Double);
+procedure TvVectorialPage.AddEllipse(CenterX, CenterY, HorzHalfAxis,
+  VertHalfAxis, Angle: Double);
 var
   lEllipse: TvEllipse;
 begin
   lEllipse := TvEllipse.Create;
   lEllipse.X := CenterX;
   lEllipse.Y := CenterY;
-  lEllipse.MajorHalfAxis := MajorHalfAxis;
-  lEllipse.MinorHalfAxis := MinorHalfAxis;
+  lEllipse.HorzHalfAxis := HorzHalfAxis;
+  lEllipse.VertHalfAxis := VertHalfAxis;
   lEllipse.Angle := Angle;
   AddEntity(lEllipse);
 end;
@@ -965,13 +965,13 @@ begin
   Result := vfrNotFound;
 end;
 
-procedure TvEntity.Translate(ADeltaX, ADeltaY: Integer);
+procedure TvEntity.Move(ADeltaX, ADeltaY: Integer);
 begin
   X := X + ADeltaX;
   Y := Y + ADeltaY;
 end;
 
-procedure TvEntity.TransladeSubpart(ADeltaX, ADeltaY: Integer;
+procedure TvEntity.MoveSubpart(ADeltaX, ADeltaY: Integer;
   ASubpart: Cardinal);
 begin
 
@@ -990,10 +990,10 @@ var
   t, tmp: Double;
 begin
   // First do the trivial
-  ALeft := X - MajorHalfAxis;
-  ARight := X + MajorHalfAxis;
-  ATop := Y - MinorHalfAxis;
-  ABottom := Y + MinorHalfAxis;
+  ALeft := X - HorzHalfAxis;
+  ARight := X + HorzHalfAxis;
+  ATop := Y - VertHalfAxis;
+  ABottom := Y + VertHalfAxis;
   {
     To calculate the bounding rectangle we can do this:
 
@@ -1017,8 +1017,8 @@ begin
   }
   if Angle <> 0.0 then
   begin
-    t := cotan(-MinorHalfAxis*tan(Angle)/MajorHalfAxis);
-    tmp := X + MajorHalfAxis*cos(t)*cos(Angle) - MinorHalfAxis*sin(t)*sin(Angle);
+    t := cotan(-VertHalfAxis*tan(Angle)/HorzHalfAxis);
+    tmp := X + HorzHalfAxis*cos(t)*cos(Angle) - VertHalfAxis*sin(t)*sin(Angle);
     ARight := Round(tmp);
   end;
 end;
