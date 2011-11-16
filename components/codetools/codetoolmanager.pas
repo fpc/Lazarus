@@ -5224,6 +5224,7 @@ begin
     // Note: IdentifierList nodes do not need to be cleared, because Node
     // is accessed via GetNode, which checks if nodes were deleted
   end;
+
 end;
 
 function TCodeToolManager.OnScannerProgress(Sender: TLinkScanner): boolean;

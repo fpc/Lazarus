@@ -1,0 +1,34 @@
+object CodyIdentifiersDlg: TCodyIdentifiersDlg
+  Left = 250
+  Height = 300
+  Top = 250
+  Width = 428
+  Caption = 'CodyIdentifiersDlg'
+  ClientHeight = 300
+  ClientWidth = 428
+  LCLVersion = '0.9.31'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 252
+    Width = 416
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object InfoLabel: TLabel
+    Left = 28
+    Height = 17
+    Top = 25
+    Width = 59
+    Caption = 'InfoLabel'
+    ParentColor = False
+  end
+end

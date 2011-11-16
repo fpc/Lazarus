@@ -397,6 +397,10 @@ msgstr "Selecionar expressão"
 msgid "Show CodeTools node info ..."
 msgstr "Exibir info do nó CodeTools ..."
 
+#: codystrconsts.crsshowunitidentifierdictionary
+msgid "Show unit/identifier dictionary ..."
+msgstr ""
+
 #: codystrconsts.crsshowusedppufiles
 #| msgid "Show used .ppu files"
 msgid "Show used .ppu files ..."

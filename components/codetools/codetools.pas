@@ -18,7 +18,7 @@ uses
   PascalReaderTool, PPUCodeTools, PPUGraph, PPUParser, ResourceCodeTool, 
   SourceChanger, SourceLog, StdCodeTools, OtherIdentifierTree, 
   CodeToolsCfgScript, CTXMLFixFragment, CTUnitGraph, ChangeDeclarationTool, 
-  CodeToolsFPCMsgs, unitdictionary, LazarusPackageIntf;
+  CodeToolsFPCMsgs, UnitDictionary, LazarusPackageIntf;
 
 implementation
 

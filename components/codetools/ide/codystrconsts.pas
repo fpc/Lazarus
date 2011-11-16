@@ -75,6 +75,7 @@ resourcestring
   crsClose = '&Close';
   crsAddAssignMethod = 'Add Assign method';
   crsShowCodeToolsNodeInfo = 'Show CodeTools node info ...';
+  crsShowUnitIdentifierDictionary = 'Show unit/identifier dictionary ...';
   crsAddAssignMethod2 = 'Add Assign method ...';
   crsCopyDeclarationToClipboard = 'Copy declaration to clipboard';
   crsCutDeclarationToClipboard = 'Cut declaration to clipboard';

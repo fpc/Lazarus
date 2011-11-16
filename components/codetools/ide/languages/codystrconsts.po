@@ -389,6 +389,10 @@ msgstr ""
 msgid "Show CodeTools node info ..."
 msgstr ""
 
+#: codystrconsts.crsshowunitidentifierdictionary
+msgid "Show unit/identifier dictionary ..."
+msgstr ""
+
 #: codystrconsts.crsshowusedppufiles
 msgid "Show used .ppu files ..."
 msgstr ""

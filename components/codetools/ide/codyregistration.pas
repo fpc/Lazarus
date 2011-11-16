@@ -33,7 +33,8 @@ uses
   Classes, SysUtils, LResources, Controls,
   IDECommands, MenuIntf, IDEWindowIntf, SrcEditorIntf,
   CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg,
-  CodyUtils, CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration;
+  CodyUtils, CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration,
+  CodyIdentifiersDlg;
 
 procedure Register;
 
@@ -57,6 +58,7 @@ var
   ViewCodyWindowCommand: TIDECommand;
   CopyDeclarationToClipboardCommand: TIDECommand;
   CutDeclarationToClipboardCommand: TIDECommand;
+  ShowIdentifierDictionaryCommand: TIDECommand;
 begin
   CmdCatFileMenu:=IDECommandList.FindCategoryByName('FileMenu');
   if CmdCatFileMenu=nil then
@@ -148,6 +150,13 @@ begin
   RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'ShowCodeNodeInfo',
     crsShowCodeToolsNodeInfo, nil, nil, ShowCodeNodeInfoCommand);
 
+  // Show unit/identifier dictionary
+  InitUnitDictionary;
+  ShowIdentifierDictionaryCommand:=RegisterIDECommand(CmdCatCodeTools, 'ShowUnitDictionary',
+    crsShowUnitIdentifierDictionary,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowUnitDictionaryDialog);
+  RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'ShowIdentifierDictionary',
+    crsShowUnitIdentifierDictionary, nil, nil, ShowIdentifierDictionaryCommand);
 
   // View menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ViewCodyWindowCommand:=RegisterIDECommand(CmdCatView, 'Cody',
