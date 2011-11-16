@@ -2029,9 +2029,12 @@ begin
     SM_CYVSCROLL:
       Result := GetCarbonThemeMetric(kThemeMetricScrollBarWidth);
     SM_CXSCREEN,
-    SM_CXVIRTUALSCREEN : Result := CGDisplayPixelsWide(CGMainDisplayID);
+    SM_CXVIRTUALSCREEN: Result := CGDisplayPixelsWide(CGMainDisplayID);
     SM_CYSCREEN,
-    SM_CYVIRTUALSCREEN : Result := CGDisplayPixelsHigh(CGMainDisplayID);
+    SM_CYVIRTUALSCREEN: Result := CGDisplayPixelsHigh(CGMainDisplayID);
+    SM_XVIRTUALSCREEN: Result := Round(CGDisplayBounds(CGMainDisplayID).origin.x);
+    SM_YVIRTUALSCREEN: Result := Round(CGDisplayBounds(CGMainDisplayID).origin.y);
+
     SM_CXSMICON,
     SM_CYSMICON:
       Result := 16;
