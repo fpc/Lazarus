@@ -1872,7 +1872,7 @@ end;
 function TLinkScanner.LastErrorIsInFrontOfCleanedPos(ACleanedPos: integer
   ): boolean;
 begin
-  Result:=LastErrorIsValid and (CleanedLen>ACleanedPos);
+  Result:=LastErrorIsValid and (CleanedLen<ACleanedPos);
   {$IFDEF ShowIgnoreErrorAfter}
   DebugLn('TLinkScanner.LastErrorIsInFrontOfCleanedPos Result=',dbgs(Result));
   {$ENDIF}

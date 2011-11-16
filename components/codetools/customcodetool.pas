@@ -2803,7 +2803,7 @@ begin
   DebugLn('TCustomCodeTool.UpdateNeeded A Range=',dbgs(Range),' ',Scanner.MainFilename);
   {$ENDIF}
   if Range=lsrNone then exit(false);
-  if ord(FRangeValidTill)<ord(Range) then begin
+  if (not LastErrorValid) and (ord(FRangeValidTill)<ord(Range)) then begin
     {$IFDEF VerboseUpdateNeeded}
     DebugLn(['TCustomCodeTool.UpdateNeeded because range increased from ',dbgs(FRangeValidTill),' to ',dbgs(Range),' ',MainFilename]);
     {$ENDIF}

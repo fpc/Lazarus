@@ -537,7 +537,7 @@ begin
   // scan code
   BeginParsing(Range);
   {$IFDEF VerboseUpdateNeeded}
-  DebugLn(['TPascalParserTool.BuildTree PARSING ... Range=',dbgs(Range),' ',MainFilename]);
+  DebugLn(['TPascalParserTool.BuildTree PARSING ... ScannedRange=',dbgs(Range),' new Range=',dbgs(Range),' ',MainFilename]);
   {$ENDIF}
   //debugln(['TPascalParserTool.BuildTree "',Src,'"']);
 
@@ -657,6 +657,12 @@ begin
         // some parts were already parsed
         CurSection:=CurNode.Desc;
         Node:=CurNode;
+        case Node.Desc of
+        ctnInterface: ScannedRange:=lsrInterfaceStart;
+        ctnImplementation: ScannedRange:=lsrImplementationStart;
+        end;
+        if ord(Range)<=ord(ScannedRange) then exit;
+
         //debugln(['TPascalParserTool.BuildTree SOME parts were already parsed Node=',Node.DescAsString]);
         Node.EndPos:=-1;
         if (Node.LastChild=nil) then begin
@@ -682,6 +688,15 @@ begin
             Node.EndPos:=-1;
             MoveCursorToCleanPos(Node.StartPos);
           end else begin
+            if Node.FirstChild.Desc=ctnUsesSection then begin
+              // uses section is already parsed
+              if ScannedRange<lsrMainUsesSectionEnd then
+                ScannedRange:=lsrMainUsesSectionEnd
+              else if ScannedRange=lsrImplementationStart then
+                ScannedRange:=lsrImplementationUsesSectionEnd;
+              if ord(Range)<=ord(ScannedRange) then exit;
+            end;
+
             // for example: Node=ctnInterface, Node.LastChild=ctnTypeSection
             // Note: the half parsed section was behind this one and was deleted
             if Node.LastChild<>nil then begin
@@ -746,7 +761,7 @@ begin
         if (CurNode.Desc=ctnUsesSection)
         or ((CurNode.Desc=ctnImplementation) and (CurNode.FirstChild=nil)) then
         begin
-          // read main uses section
+          // read implementation uses section
           if UpAtomIs('USES') then
             ReadUsesSection(true);
           //debugln(['TPascalParserTool.BuildTree AFTER reading implementation uses section Atom="',GetAtom,'"']);
@@ -4746,14 +4761,14 @@ begin
                 {$IFDEF VerboseUpdateNeeded}
                 debugln(['TPascalParserTool.FetchScannerSource keep parts, last kept section=',Node.DescAsString,' FirstDeleteNode=',DeleteNode.DescAsString,' ',MainFilename]);
                 {$ENDIF}
-                if LastErrorIsInFrontOfCleanedPos(DeleteNode.StartPos) then
+                if not LastErrorIsInFrontOfCleanedPos(DeleteNode.StartPos) then
                   ClearLastError;
                 DoDeleteNodes(DeleteNode);
               end else begin
                 {$IFDEF VerboseUpdateNeeded}
                 debugln(['TPascalParserTool.FetchScannerSource keep all nodes, open last section=',Node.DescAsString,' ',MainFilename]);
                 {$ENDIF}
-                if LastErrorIsInFrontOfCleanedPos(DiffPos) then
+                if not LastErrorIsInFrontOfCleanedPos(DiffPos) then
                   ClearLastError;
               end;
             end;
