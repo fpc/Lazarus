@@ -15,11 +15,19 @@ unit fpvectorial;
   {$mode delphi}
 {$endif}
 
+{$define USE_LCL_CANVAS}
+
 interface
 
 uses
   Classes, SysUtils, Math,
-  fpcanvas, fpimage;
+  // FCL-Image
+  fpcanvas, fpimage
+  // LCL
+  {$ifdef USE_LCL_CANVAS}
+  , Graphics, LCLIntf, LCLType
+  {$endif}
+  ;
 
 type
   TvVectorialFormat = (
@@ -220,15 +228,19 @@ type
 
   {@@
   }
+
+  { TvEllipse }
+
   TvEllipse = class(TvEntity)
   public
     // Mandatory fields
-    MajorHalfAxis, MinorHalfAxis: Double;
+    MajorHalfAxis: Double; // This half-axis is the horizontal one when Angle=0
+    MinorHalfAxis: Double; // This half-axis is the vertical one when Angle=0
     {@@ The Angle is measured in degrees in relation to the positive X axis }
     Angle: Double;
-    // Calculated fields
-    BoundingRect: TRect;
-    procedure CalculateBoundingRectangle;
+    procedure CalculateBoundingBox(var ALeft, ATop, ARight, ABottom: Double); override;
+    procedure Render(ADest: TFPCustomCanvas; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   {@@
@@ -420,6 +432,8 @@ procedure RegisterVectorialWriter(
 function Make2DPoint(AX, AY: Double): T3DPoint;
 
 implementation
+
+uses fpvutils;
 
 const
   Str_Error_Nil_Path = ' The program attempted to add a segment before creating a path';
@@ -971,10 +985,15 @@ end;
 
 { TvEllipse }
 
-procedure TvEllipse.CalculateBoundingRectangle;
+procedure TvEllipse.CalculateBoundingBox(var ALeft, ATop, ARight, ABottom: Double);
 var
   t, tmp: Double;
 begin
+  // First do the trivial
+  ALeft := X - MajorHalfAxis;
+  ARight := X + MajorHalfAxis;
+  ATop := Y - MinorHalfAxis;
+  ABottom := Y + MinorHalfAxis;
   {
     To calculate the bounding rectangle we can do this:
 
@@ -996,9 +1015,70 @@ begin
     =>
     tan(t) = b*cot(phi)/a
   }
-  t := cotan(-MinorHalfAxis*tan(Angle)/MajorHalfAxis);
-  tmp := X + MajorHalfAxis*cos(t)*cos(Angle) - MinorHalfAxis*sin(t)*sin(Angle);
-  BoundingRect.Right := Round(tmp);
+  if Angle <> 0.0 then
+  begin
+    t := cotan(-MinorHalfAxis*tan(Angle)/MajorHalfAxis);
+    tmp := X + MajorHalfAxis*cos(t)*cos(Angle) - MinorHalfAxis*sin(t)*sin(Angle);
+    ARight := Round(tmp);
+  end;
+end;
+
+procedure TvEllipse.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  PointList: array[0..6] of TPoint;
+  f: TPoint;
+  dk, x1, x2, y1, y2: Integer;
+  fx1, fy1, fx2, fy2: Double;
+  {$ifdef USE_LCL_CANVAS}
+  ALCLDest: TCanvas absolute ADest;
+  {$endif}
+begin
+  CalculateBoundingBox(fx1, fy1, fx2, fy2);
+  x1 := CoordToCanvasX(fx1);
+  x2 := CoordToCanvasX(fx2);
+  y1 := CoordToCanvasY(fy1);
+  y2 := CoordToCanvasY(fy2);
+
+  {$ifdef USE_LCL_CANVAS}
+  if Angle <> 0 then
+  begin
+    dk := Round(0.654 * Abs(y2-y1));
+    f.x := Round(X);
+    f.y := Round(Y - 1);
+    PointList[0] := Rotate2DPoint(Point(x1, f.y), f, Angle) ;  // Startpoint
+    PointList[1] := Rotate2DPoint(Point(x1,  f.y - dk), f, Angle);
+    //Controlpoint of Startpoint first part
+    PointList[2] := Rotate2DPoint(Point(x2- 1,  f.y - dk), f, Angle);
+    //Controlpoint of secondpoint first part
+    PointList[3] := Rotate2DPoint(Point(x2 -1 , f.y), f, Angle);
+    // Firstpoint of secondpart
+    PointList[4] := Rotate2DPoint(Point(x2-1 , f.y + dk), f, Angle);
+    // Controllpoint of secondpart firstpoint
+    PointList[5] := Rotate2DPoint(Point(x1, f.y +  dk), f, Angle);
+    // Conrollpoint of secondpart endpoint
+    PointList[6] := PointList[0];   // Endpoint of
+     // Back to the startpoint
+    ALCLDest.PolyBezier(Pointlist[0]);
+  end
+  else
+  {$endif}
+  begin
+    ADest.Pen.Style := psSolid;
+    ADest.Pen.FPColor := colBlack;
+    ADest.Ellipse(x1, y1, x2, y2);
+  end;
 end;
 
 { TsWorksheet }

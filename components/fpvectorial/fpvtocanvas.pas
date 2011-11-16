@@ -37,56 +37,6 @@ procedure DrawFPVTextToCanvas(ASource: TvVectorialPage; CurText: TvText;
 
 implementation
 
-function Rotate2DPoint(P,Fix :TPoint; alpha:double): TPoint;
-var
-  sinus, cosinus : Extended;
-begin
-  SinCos(alpha, sinus, cosinus);
-  P.x := P.x - Fix.x;
-  P.y := P.y - Fix.y;
-  result.x := Round(p.x*cosinus + p.y*sinus)  +  fix.x ;
-  result.y := Round(-p.x*sinus + p.y*cosinus) +  Fix.y;
-end;
-
-procedure DrawRotatedEllipse(
-  ADest: TFPCustomCanvas;
-  CurEllipse: TvEllipse;
-  ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
-var
-  PointList: array[0..6] of TPoint;
-  f: TPoint;
-  dk, x1, x2, y1, y2: Integer;
-  {$ifdef USE_LCL_CANVAS}
-  ALCLDest: TCanvas absolute ADest;
-  {$endif}
-begin
-  {$ifdef USE_LCL_CANVAS}
-  CurEllipse.CalculateBoundingRectangle();
-  x1 := CurEllipse.BoundingRect.Left;
-  x2 := CurEllipse.BoundingRect.Right;
-  y1 := CurEllipse.BoundingRect.Top;
-  y2 := CurEllipse.BoundingRect.Bottom;
-
-  dk := Round(0.654 * Abs(y2-y1));
-  f.x := Round(CurEllipse.X);
-  f.y := Round(CurEllipse.Y - 1);
-  PointList[0] := Rotate2DPoint(Point(x1, f.y), f, CurEllipse.Angle) ;  // Startpoint
-  PointList[1] := Rotate2DPoint(Point(x1,  f.y - dk), f, CurEllipse.Angle);
-  //Controlpoint of Startpoint first part
-  PointList[2] := Rotate2DPoint(Point(x2- 1,  f.y - dk), f, CurEllipse.Angle);
-  //Controlpoint of secondpoint first part
-  PointList[3] := Rotate2DPoint(Point(x2 -1 , f.y), f, CurEllipse.Angle);
-  // Firstpoint of secondpart
-  PointList[4] := Rotate2DPoint(Point(x2-1 , f.y + dk), f, CurEllipse.Angle);
-  // Controllpoint of secondpart firstpoint
-  PointList[5] := Rotate2DPoint(Point(x1, f.y +  dk), f, CurEllipse.Angle);
-  // Conrollpoint of secondpart endpoint
-  PointList[6] := PointList[0];   // Endpoint of
-   // Back to the startpoint
-  ALCLDest.PolyBezier(Pointlist[0]);
-  {$endif}
-end;
-
 {@@
   This function draws a FPVectorial vectorial image to a TFPCustomCanvas
   descendent, such as TCanvas from the LCL.
@@ -387,11 +337,6 @@ begin
       CoordToCanvasX(CurCircle.X + CurCircle.Radius),
       CoordToCanvasY(CurCircle.Y + CurCircle.Radius)
       );
-  end
-  else if CurEntity is TvEllipse then
-  begin
-    CurEllipse := CurEntity as TvEllipse;
-    DrawRotatedEllipse(ADest, CurEllipse);
   end
   else if CurEntity is TvCircularArc then
   begin
