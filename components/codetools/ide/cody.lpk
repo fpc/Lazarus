@@ -19,7 +19,7 @@
     <Description Value="IDE extensions using Codetools."/>
     <License Value="GPL2"/>
     <Version Major="1" Minor="1"/>
-    <Files Count="12">
+    <Files Count="11">
       <Item1>
         <Filename Value="ppulistdlg.pas"/>
         <UnitName Value="PPUListDlg"/>
@@ -65,10 +65,6 @@
         <Filename Value="addwithblockdlg.pas"/>
         <UnitName Value="AddWithBlockDlg"/>
       </Item11>
-      <Item12>
-        <Filename Value="unitdictionary.pas"/>
-        <UnitName Value="unitdictionary"/>
-      </Item12>
     </Files>
     <LazDoc Paths="doc"/>
     <i18n>

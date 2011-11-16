@@ -4,7 +4,7 @@
     <Name Value="CodeTools"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -14,12 +14,6 @@
           <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
-      <Linking>
-        <Debugging>
-          <GenerateDebugInfo Value="True"/>
-          <DebugInfoType Value="dsAuto"/>
-        </Debugging>
-      </Linking>
       <Other>
         <Verbosity>
           <ShowHints Value="False"/>
@@ -35,7 +29,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="57">
+    <Files Count="58">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -265,6 +259,10 @@
         <Filename Value="codetoolsfpcmsgs.pas"/>
         <UnitName Value="CodeToolsFPCMsgs"/>
       </Item57>
+      <Item58>
+        <Filename Value="unitdictionary.pas"/>
+        <UnitName Value="unitdictionary"/>
+      </Item58>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>
