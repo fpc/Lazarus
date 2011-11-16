@@ -71,7 +71,8 @@ function PredefinedClipboardFormat(
 
 function MsgKeyDataToShiftState(KeyData: PtrInt): TShiftState;
 
-function GetTickCount(): Int64;
+function GetTickCount(): DWord;
+function GetTickCount64(): QWord;
 
 {$IFDEF DebugLCL}
 function GetTickStep: DWord;
@@ -136,9 +137,14 @@ begin
   end;
 end;
 
-function GetTickCount(): Int64;
+function GetTickCount(): DWord;
 begin
-  Result := lazutf8sysutils.GetTickCount();
+  Result := DWord(lazutf8sysutils.GetTickCount64());
+end;
+
+function GetTickCount64(): QWord;
+begin
+  Result := lazutf8sysutils.GetTickCount64();
 end;
 
 {$IFDEF DebugLCL}

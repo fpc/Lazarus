@@ -8,7 +8,7 @@ uses
   SysUtils;
 
 function NowUTC: TDateTime;
-function GetTickCount: Int64;
+function GetTickCount64: QWord;
 
 implementation
 
@@ -31,9 +31,9 @@ begin
   result := systemTimeToDateTime(SystemTime);
 end;
 
-// GetTickCount64 is better, but we need to check the Windows version to use it
-function GetTickCount: Int64;
+function GetTickCount64: QWord;
 begin
+  // GetTickCount64 is better, but we need to check the Windows version to use it
   Result := Windows.GetTickCount();
 end;
 
@@ -97,7 +97,7 @@ begin
   result := systemTimeToDateTime(SystemTime);
 end;
 
-function GetTickCount: Int64;
+function GetTickCount64: QWord;
 var
   tp: TTimeVal;
 begin
@@ -111,7 +111,7 @@ begin
   Result := Now;
 end;
 
-function GetTickCount: Int64;
+function GetTickCount64: QWord;
 begin
   Result := Trunc(Now * 24 * 60 * 60 * 1000);
 end;
