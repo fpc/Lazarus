@@ -2054,7 +2054,7 @@ end;
 function TWin32WidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
   Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize): Boolean;
 var
-  LCLStr: utf8string;
+  LCLStr: string;
   s: AnsiString;
   w: WideString;
 begin

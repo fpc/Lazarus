@@ -819,7 +819,7 @@ function TCarbonWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
 var
   FamilyCount: LongWord;
   FamilyListPtr, PFamily: ^ATSUFontID;
-  FontName: UTF8String;
+  FontName: String;
   EnumLogFont: TEnumLogFontEx;
   Metric: TNewTextMetricEx;
   FontType, I: Integer;

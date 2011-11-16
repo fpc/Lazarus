@@ -511,7 +511,7 @@ end;
 function CarbonFontIDToFontName(ID: ATSUFontID): String;
 var
   NameLength: LongWord;
-  FontName: UTF8String;
+  FontName: String;
 const
   SName = 'CarbonFontIDToFontName';
 begin
