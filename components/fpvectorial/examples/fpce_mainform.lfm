@@ -6,12 +6,12 @@ object formCorelExplorer: TformCorelExplorer
   Caption = 'FP Corel Explorer'
   ClientHeight = 345
   ClientWidth = 466
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object Label1: TLabel
     Left = 8
-    Height = 14
+    Height = 18
     Top = 40
-    Width = 123
+    Width = 158
     Caption = 'Location of the Input file:'
     ParentColor = False
   end
@@ -37,25 +37,25 @@ object formCorelExplorer: TformCorelExplorer
   end
   object labelFilename: TLabel
     Left = 256
-    Height = 14
+    Height = 18
     Top = 65
-    Width = 47
+    Width = 62
     Caption = 'Filename:'
     ParentColor = False
   end
   object labelVersion: TLabel
     Left = 256
-    Height = 14
+    Height = 18
     Top = 88
-    Width = 40
+    Width = 52
     Caption = 'Version:'
     ParentColor = False
   end
   object labelSize: TLabel
     Left = 256
-    Height = 14
+    Height = 18
     Top = 112
-    Width = 24
+    Width = 32
     Caption = 'Size:'
     ParentColor = False
   end

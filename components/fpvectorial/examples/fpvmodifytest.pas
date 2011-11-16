@@ -8,7 +8,7 @@ program fpvmodifytest;
 {$mode objfpc}{$H+}
 
 uses
-  fpvectorial, svgvectorialwriter, svgvectorialreader, fpvutils;
+  fpvectorial, svgvectorialwriter, svgvectorialreader, fpvutils, fpvectorialpkg;
 
 const
   cFormat = vfSVG;

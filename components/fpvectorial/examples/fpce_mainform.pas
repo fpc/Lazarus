@@ -34,7 +34,7 @@ var
 implementation
 
 uses
-  fpvectorial, cdrvectorialreader, svgvectorialwriter, pdfvectorialreader,
+  fpvectorial, cdrvectorialreader, svgvectorialwriter, //pdfvectorialreader,
   fpvtocanvas;
 
 {$R *.lfm}
@@ -72,7 +72,7 @@ begin
 
       // Main data
       lCurChunk := TCDRChunk(lChunk.ChildChunks.Items[1]);
-      labelSize.Caption := 'Size: ' + ;
+      //labelSize.Caption := 'Size: ' + ;
     end;
   finally
     Reader.Free;

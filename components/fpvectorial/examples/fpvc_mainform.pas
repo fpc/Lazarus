@@ -38,7 +38,7 @@ var
 implementation
 
 uses
-  fpvectorial, cdrvectorialreader, svgvectorialwriter, pdfvectorialreader,
+  fpvectorial, cdrvectorialreader, svgvectorialwriter, //pdfvectorialreader,
   fpvtocanvas;
 
 {$R *.lfm}
@@ -62,7 +62,7 @@ begin
     Vec.ReadFromFile(editInput.FileName, vfPDF);
     imagePreview.Canvas.Brush.Color := clWhite;
     imagePreview.Canvas.FillRect(0, 0, imagePreview.Width, imagePreview.Height);
-    DrawFPVectorialToCanvas(Vec, imagePreview.Canvas);
+    DrawFPVectorialToCanvas(Vec.GetPage(0), imagePreview.Canvas);
   finally
     Vec.Free;
   end;

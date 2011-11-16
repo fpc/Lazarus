@@ -4,7 +4,7 @@ program fpvectorialconverter;
 
 uses
   Interfaces, // this includes the LCL widgetset
-  Forms, fpvc_mainform;
+  Forms, fpvc_mainform, fpvectorialpkg;
 
 {$R *.res}
 
