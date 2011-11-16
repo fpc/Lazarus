@@ -39,7 +39,7 @@ type
     // ===================================
     // TCDButton
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+      AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
@@ -118,7 +118,7 @@ begin
 end;
 
 procedure TCDDrawerWinXP.DrawButton(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDButtonStateEx);
 var
   Str: string;
   lColor: TColor;

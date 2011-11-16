@@ -110,8 +110,13 @@ type
 
   TCDButton = class(TCDButtonControl)
   private
+    FGlyph: TBitmap;
+    procedure SetGlyph(AValue: TBitmap);
   protected
+    FBState: TCDButtonStateEx;
     function GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -126,6 +131,7 @@ type
     property DrawStyle;
     property Enabled;
     property Font;
+    property Glyph: TBitmap read FGlyph write SetGlyph;
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;
@@ -1313,9 +1319,28 @@ end;
 
 { TCDButton }
 
+procedure TCDButton.SetGlyph(AValue: TBitmap);
+begin
+  if FGlyph=AValue then Exit;
+  FGlyph.Assign(AValue);
+  Invalidate;
+end;
+
 function TCDButton.GetControlId: TCDControlID;
 begin
   Result := cidButton;
+end;
+
+procedure TCDButton.CreateControlStateEx;
+begin
+  FBState := TCDButtonStateEx.Create;
+  FStateEx := FBState;
+end;
+
+procedure TCDButton.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+  FBState.Glyph := FGlyph;
 end;
 
 constructor TCDButton.Create(AOwner: TComponent);
@@ -1325,6 +1350,7 @@ begin
   Width := 75;
   Height := 25;
   ParentFont := True;
+  FGlyph := TBitmap.Create;
   PrepareCurrentDrawer();
 end;
 

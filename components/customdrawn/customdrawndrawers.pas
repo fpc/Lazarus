@@ -135,6 +135,11 @@ type
     AutoSize: Boolean;
   end;
 
+  TCDButtonStateEx = class(TCDControlStateEx)
+  public
+    Glyph: TBitmap; // Just a reference, never Free
+  end;
+
   TCDEditStateEx = class(TCDControlStateEx)
   public
     CaretIsVisible: Boolean;
@@ -279,7 +284,7 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDButton
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
+      AState: TCDControlState; AStateEx: TCDButtonStateEx); virtual; abstract;
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
@@ -562,7 +567,7 @@ begin
   case AControl of
   cidControl:    DrawControl(ADest, ADestPos, ASize, AState, AStateEx);
   //
-  cidButton:     DrawButton(ADest, ADestPos, ASize, AState, AStateEx);
+  cidButton:     DrawButton(ADest, ADestPos, ASize, AState, TCDButtonStateEx(AStateEx));
   cidEdit:       DrawEdit(ADest, ADestPos, ASize, AState, TCDEditStateEx(AStateEx));
   cidCheckBox:   DrawCheckBox(ADest, ADestPos, ASize, AState, AStateEx);
   cidRadioButton:DrawRadioButton(ADest, ADestPos, ASize, AState, AStateEx);

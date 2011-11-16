@@ -51,7 +51,7 @@ type
     // ===================================
     // TCDButton
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+      AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
@@ -507,9 +507,12 @@ begin
 end;
 
 procedure TCDDrawerCommon.DrawButton(ADest: TCanvas; ADestPos: TPoint;
-  ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDButtonStateEx);
 var
   Str: string;
+  lGlyphLeftSpacing: Integer = 0;
+  lTextOutPos: TPoint;
+  lGlyphCaptionHeight: Integer;
 begin
   // Button shape -> This crashes in Gtk2
   ADest.Brush.Color := AStateEx.RGBColor;
@@ -566,17 +569,33 @@ begin
     ADest.Rectangle(3, 3, ASize.cx - 4, ASize.cy - 4);
   end;
 
-  // Button text
+  // Position calculations
   ADest.Font.Assign(AStateEx.Font);
+  Str := AStateEx.Caption;
+  lGlyphCaptionHeight := Max(ADest.TextHeight(Str), AStateEx.Glyph.Height);
+  lTextOutPos.X := (ASize.cx - ADest.TextWidth(Str) - AStateEx.Glyph.Width) div 2;
+  lTextOutPos.Y := (ASize.cy - lGlyphCaptionHeight) div 2;
+  lTextOutPos.X := Max(lTextOutPos.X, 5);
+  lTextOutPos.Y := Max(lTextOutPos.Y, 5);
+
+  // Button glyph
+  if not AStateEx.Glyph.Empty then
+  begin
+    ADest.Draw(lTextOutPos.X, lTextOutPos.Y, AStateEx.Glyph);
+    lGlyphLeftSpacing := AStateEx.Glyph.Width+5;
+  end;
+
+  // Button text
+  lTextOutPos.X := lTextOutPos.X + lGlyphLeftSpacing;
+  lTextOutPos.Y := (ASize.cy - ADest.TextHeight(Str)) div 2;
   ADest.Brush.Style := bsClear;
   ADest.Pen.Style := psSolid;
-  Str := AStateEx.Caption;
   if csfSunken in AState then
-    ADest.TextOut((ASize.cx - ADest.TextWidth(Str)) div 2 + 1,
-      (ASize.cy - ADest.TextHeight(Str)) div 2 + 1, Str)
-  else
-    ADest.TextOut((ASize.cx - ADest.TextWidth(Str)) div 2,
-      (ASize.cy - ADest.TextHeight(Str)) div 2, Str);
+  begin
+    Inc(lTextOutPos.X);
+    Inc(lTextOutPos.Y);
+  end;
+  ADest.TextOut(lTextOutPos.X, lTextOutPos.Y, Str)
 end;
 
 procedure TCDDrawerCommon.DrawEditBackground(ADest: TCanvas;
