@@ -52,7 +52,7 @@ begin
   lRes := Image.Canvas.TextFitInfo(lStr, 80);
   Image.Canvas.TextOut(20, 20, Format('TextFitInfo Text 1. Returned %d should be aprox. 10', [lRes]));
   Image.Canvas.Brush.Color := clBlue;
-  Image.Canvas.Rectangle(20, 35, 70, 50);
+  Image.Canvas.Rectangle(20, 35, 100, 50);
   Image.Canvas.TextOut(20, 35, lStr);
 
   // GetTextExtentExPoint test 1 with partial widths and MaxCount
