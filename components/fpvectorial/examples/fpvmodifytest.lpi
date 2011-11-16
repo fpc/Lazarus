@@ -7,11 +7,11 @@
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
       </Flags>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <Title Value="fpvmodifytest"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
-      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <i18n>
       <EnableI18N LFM="False"/>
@@ -19,7 +19,7 @@
     <VersionInfo>
       <StringTable ProductVersion=""/>
     </VersionInfo>
-    <BuildModes Count="1" Active="Default">
+    <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
     </BuildModes>
     <PublishOptions>
@@ -39,76 +39,13 @@
         <DefaultFilename Value="../fpvectorialpkg.lpk" Prefer="True"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="1">
       <Unit0>
         <Filename Value="fpvmodifytest.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="fpvmodifytest"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="0"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="28"/>
-        <CursorPos X="26" Y="35"/>
-        <UsageCount Value="23"/>
-        <Loaded Value="True"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="fpvectorial.pas"/>
-        <UnitName Value="fpvectorial"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1267"/>
-        <CursorPos X="16" Y="1275"/>
-        <UsageCount Value="12"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="svgvectorialwriter.pas"/>
-        <UnitName Value="svgvectorialwriter"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="228"/>
-        <CursorPos X="19" Y="245"/>
-        <UsageCount Value="12"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="svgvectorialreader.pas"/>
-        <UnitName Value="svgvectorialreader"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="319"/>
-        <CursorPos X="17" Y="352"/>
-        <UsageCount Value="12"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="fpvutils.pas"/>
-        <UnitName Value="fpvutils"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="2"/>
-        <CursorPos X="3" Y="14"/>
-        <UsageCount Value="11"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="../fpvectorial.pas"/>
-        <UnitName Value="fpvectorial"/>
-        <EditorIndex Value="1"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="315"/>
-        <CursorPos X="17" Y="335"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-      </Unit5>
     </Units>
-    <JumpHistory Count="3" HistoryIndex="2">
-      <Position1>
-        <Filename Value="fpvmodifytest.pas"/>
-        <Caret Line="40" Column="1" TopLine="19"/>
-      </Position1>
-      <Position2>
-        <Filename Value="fpvmodifytest.pas"/>
-        <Caret Line="42" Column="1" TopLine="19"/>
-      </Position2>
-      <Position3>
-        <Filename Value="fpvmodifytest.pas"/>
-        <Caret Line="35" Column="26" TopLine="19"/>
-      </Position3>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
@@ -120,6 +57,9 @@
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
