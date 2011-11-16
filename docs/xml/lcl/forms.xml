@@ -3540,12 +3540,6 @@
 <!-- object Visibility: default -->
       <element name="TForm">
       </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TForm.CreateWnd" link="#LCL.Forms.TScrollingWinControl.CreateWnd">
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
       <!-- variable Visibility: private -->
       <element name="TForm.FLCLVersion" link="TForm.LCLVersion"/>
       <!-- function Visibility: private -->
@@ -3553,121 +3547,106 @@
       <element name="TForm.LCLVersionIsStored.Result">
         <short></short>
       </element>
-      <element name="TForm.Loaded" link="#LCL.Forms.TCustomForm.Loaded">
-        <seealso>
-          <link id="#rtl.Classes.TComponent.Loaded">TComponent.Loaded</link>
-        </seealso>
-      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TForm.CreateWnd" link="#LCL.Forms.TScrollingWinControl.CreateWnd"/>
+      <element name="TForm.Loaded" link="#LCL.Forms.TCustomForm.Loaded"/>
       <element name="TForm.Create"/>
       <element name="TForm.Create.TheOwner">
         <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TForm.Cascade">
-        <short></short>
+        <short>Arranges MDI child forms so they overlap.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TForm.Next">
-        <short></short>
+        <short>Activates the next child MDI form (fsMDIChild) in the form sequence.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TForm.Previous">
-        <short></short>
+        <short>Activates the previous MDI child form in the form sequence.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TForm.Tile">
-        <short></short>
+        <short>Arranges MDI child forms side by side.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TForm.Action" link="#LCL.Controls.TControl.Action"/>
-      <element name="TForm.ActiveControl" link="#LCL.Forms.TCustomForm.ActiveControl"/>
+      <element name="TForm.ActiveControl" link="TCustomForm.ActiveControl"/>
       <element name="TForm.Align" link="#LCL.Controls.TControl.Align"/>
-      <element name="TForm.AllowDropFiles" link="#LCL.Forms.TCustomForm.AllowDropFiles"/>
-      <element name="TForm.AlphaBlend"/>
-      <element name="TForm.AlphaBlendValue"/>
-      <element name="TForm.Anchors"/>
-      <element name="TForm.AutoScroll" link="#LCL.Forms.TScrollingWinControl.AutoScroll"/>
+      <element name="TForm.AllowDropFiles" link="TCustomForm.AllowDropFiles"/>
+      <element name="TForm.AlphaBlend" link="TCustomForm.AlphaBlend"/>
+      <element name="TForm.AlphaBlendValue" link="TCustomForm.AlphaBlendValue"/>
+      <element name="TForm.Anchors" link="#LCL.Controls.TControl.Anchors"/>
+      <element name="TForm.AutoScroll" link="TScrollingWinControl.AutoScroll"/>
       <element name="TForm.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
       <element name="TForm.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
-      <element name="TForm.BorderIcons" link="#LCL.Forms.TCustomForm.BorderIcons"/>
-      <element name="TForm.BorderStyle" link="#LCL.Forms.TCustomForm.BorderStyle"/>
-      <element name="TForm.BorderWidth"/>
+      <element name="TForm.BorderIcons" link="TCustomForm.BorderIcons"/>
+      <element name="TForm.BorderStyle" link="TCustomForm.BorderStyle"/>
+      <element name="TForm.BorderWidth" link="#LCL.Controls.TWinControl.BorderWidth"/>
       <element name="TForm.Caption" link="#LCL.Controls.TControl.Caption"/>
       <element name="TForm.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing"/>
-      <!-- property Visibility: public -->
-      <element name="TForm.ClientHandle">
-        <short>The operating system handle for the client</short>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TForm.ClientHandle" link="TCustomForm.ClientHandle"/>
       <element name="TForm.ClientHeight" link="#LCL.Controls.TControl.ClientHeight"/>
       <element name="TForm.ClientWidth" link="#LCL.Controls.TControl.ClientWidth"/>
       <element name="TForm.Color" link="#LCL.Controls.TControl.Color"/>
       <element name="TForm.Constraints" link="#LCL.Controls.TControl.Constraints"/>
-      <element name="TForm.DefaultMonitor"/>
+      <element name="TForm.DefaultMonitor" link="TCustomForm.DefaultMonitor"/>
       <element name="TForm.DockManager" link="#LCL.Controls.TWinControl.DockManager"/>
       <element name="TForm.DockSite" link="#LCL.Controls.TWinControl.DockSite"/>
       <element name="TForm.DragKind" link="#LCL.Controls.TControl.DragKind"/>
       <element name="TForm.DragMode" link="#LCL.Controls.TControl.DragMode"/>
       <element name="TForm.Enabled" link="#LCL.Controls.TControl.Enabled"/>
       <element name="TForm.Font" link="#LCL.Controls.TControl.Font"/>
-      <element name="TForm.FormStyle" link="#LCL.Forms.TCustomForm.FormStyle"/>
-      <element name="TForm.HelpFile" link="#LCL.Forms.TCustomForm.HelpFile"/>
-      <element name="TForm.Icon" link="#LCL.Forms.TCustomForm.Icon"/>
-      <element name="TForm.KeyPreview" link="#LCL.Forms.TCustomForm.KeyPreview"/>
+      <element name="TForm.FormStyle" link="TCustomForm.FormStyle"/>
+      <element name="TForm.HelpFile" link="TCustomForm.HelpFile"/>
+      <element name="TForm.Icon" link="TCustomForm.Icon"/>
+      <element name="TForm.KeyPreview" link="TCustomForm.KeyPreview"/>
       <element name="TForm.LCLVersion">
         <short>The version of the LCL as string. Used to distinguish form streams of different versions.</short>
       </element>
-      <element name="TForm.Menu" link="#LCL.Forms.TCustomForm.Menu"/>
-      <element name="TForm.OnActivate" link="#LCL.Forms.TCustomForm.OnActivate"/>
+      <element name="TForm.Menu" link="TCustomForm.Menu"/>
+      <element name="TForm.OnActivate" link="TCustomForm.OnActivate"/>
       <element name="TForm.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds"/>
       <element name="TForm.OnClick" link="#LCL.Controls.TControl.OnClick"/>
-      <element name="TForm.OnClose" link="#LCL.Forms.TCustomForm.OnClose"/>
-      <element name="TForm.OnCloseQuery" link="#LCL.Forms.TCustomForm.OnCloseQuery"/>
-      <element name="TForm.OnContextPopup"/>
-      <element name="TForm.OnCreate" link="#LCL.Forms.TCustomForm.OnCreate"/>
+      <element name="TForm.OnClose" link="TCustomForm.OnClose"/>
+      <element name="TForm.OnCloseQuery" link="TCustomForm.OnCloseQuery"/>
+      <element name="TForm.OnContextPopup" link="TCustomForm.OnContextPopup"/>
+      <element name="TForm.OnCreate" link="TCustomForm.OnCreate"/>
       <element name="TForm.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
-      <element name="TForm.OnDeactivate" link="#LCL.Forms.TCustomForm.OnDeactivate"/>
-      <element name="TForm.OnDestroy" link="#LCL.Forms.TCustomForm.OnDestroy"/>
+      <element name="TForm.OnDeactivate" link="TCustomForm.OnDeactivate"/>
+      <element name="TForm.OnDestroy" link="TCustomForm.OnDestroy"/>
       <element name="TForm.OnDockDrop" link="#LCL.Controls.TWinControl.OnDockDrop"/>
       <element name="TForm.OnDockOver" link="#LCL.Controls.TWinControl.OnDockOver"/>
       <element name="TForm.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop"/>
       <element name="TForm.OnDragOver" link="#LCL.Controls.TControl.OnDragOver"/>
-      <element name="TForm.OnDropFiles" link="#LCL.Forms.TCustomForm.OnDropFiles"/>
+      <element name="TForm.OnDropFiles" link="TCustomForm.OnDropFiles"/>
       <element name="TForm.OnEndDock" link="#LCL.Controls.TControl.OnEndDock"/>
       <element name="TForm.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo"/>
-      <element name="TForm.OnHelp" link="#LCL.Forms.TCustomForm.OnHelp"/>
-      <element name="TForm.OnHide" link="#LCL.Forms.TCustomForm.OnHide"/>
+      <element name="TForm.OnHelp" link="TCustomForm.OnHelp"/>
+      <element name="TForm.OnHide" link="TCustomForm.OnHide"/>
       <element name="TForm.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown"/>
       <element name="TForm.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress"/>
       <element name="TForm.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp"/>
       <element name="TForm.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
-      <element name="TForm.OnMouseEnter"/>
-      <element name="TForm.OnMouseLeave"/>
+      <element name="TForm.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
+      <element name="TForm.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
       <element name="TForm.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
       <element name="TForm.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
       <element name="TForm.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
@@ -3675,30 +3654,29 @@
       <element name="TForm.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp"/>
       <element name="TForm.OnPaint" link="#LCL.Controls.TCustomControl.OnPaint"/>
       <element name="TForm.OnResize" link="#LCL.Controls.TControl.OnResize"/>
-      <element name="TForm.OnShortCut" link="#LCL.Forms.TCustomForm.OnShortcut"/>
-      <element name="TForm.OnShow" link="#LCL.Forms.TCustomForm.OnShow"/>
+      <element name="TForm.OnShortCut" link="TCustomForm.OnShortcut"/>
+      <element name="TForm.OnShow" link="TCustomForm.OnShow"/>
       <element name="TForm.OnShowHint" link="#LCL.Controls.TControl.OnShowHint"/>
       <element name="TForm.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TForm.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
       <element name="TForm.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TForm.OnWindowStateChange" link="#LCL.Forms.TCustomForm.OnWindowStateChange"/>
+      <element name="TForm.OnWindowStateChange" link="TCustomForm.OnWindowStateChange"/>
       <element name="TForm.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
       <element name="TForm.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
-      <element name="TForm.PixelsPerInch" link="#LCL.Forms.TCustomForm.PixelsPerInch"/>
+      <element name="TForm.PixelsPerInch" link="TCustomForm.PixelsPerInch"/>
       <element name="TForm.PopupMenu" link="#LCL.Controls.TControl.PopupMenu"/>
-      <element name="TForm.PopupMode"/>
-      <element name="TForm.PopupParent"/>
-      <element name="TForm.Position"/>
+      <element name="TForm.PopupMode" link="TCustomForm.PopupMode"/>
+      <element name="TForm.PopupParent" link="TCustomForm.PopupParent"/>
+      <element name="TForm.Position" link="TCustomForm.Position"/>
       <element name="TForm.SessionProperties" link="#LCL.Controls.TControl.SessionProperties"/>
       <element name="TForm.ShowHint" link="#LCL.Controls.TControl.ShowHint"/>
-      <element name="TForm.ShowInTaskBar" link="#LCL.Forms.TCustomForm.ShowInTaskBar"/>
+      <element name="TForm.ShowInTaskBar" link="TCustomForm.ShowInTaskBar"/>
       <element name="TForm.UseDockManager" link="#LCL.Controls.TWinControl.UseDockManager"/>
       <element name="TForm.Visible" link="#LCL.Controls.TControl.Visible"/>
-      <element name="TForm.WindowState" link="#LCL.Forms.TCustomForm.WindowState"/>
+      <element name="TForm.WindowState" link="TCustomForm.WindowState"/>
       <!-- "class of" type Visibility: default -->
-      <element name="TFormClass">
-        <short>
-          <var>TFormClass</var> - class of <var>TForm</var>
+      <element name="TFormClass" link="TForm">
+        <short>Class of <var>TForm</var>
         </short>
         <descr/>
         <seealso/>
