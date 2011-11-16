@@ -24,7 +24,7 @@ type
   protected
     FTestCmdLine: String;
     procedure SendCmdLn(const ACommand: String); override;  overload;
-    function  ReadLine(const APeek: Boolean; ATimeOut: Integer = - 1): String; override; overload;
+    function  ReadLine(const APeek: Boolean; ATimeOut: Int64 = - 1): String; override; overload;
     function CreateDebugProcess(const AOptions: String): Boolean; override;
     function GetDebugProcessRunning: Boolean; override;
   protected
@@ -67,7 +67,7 @@ begin
   FTestCmdLine := ACommand;
 end;
 
-function TTestBrkGDBMIDebugger.ReadLine(const APeek: Boolean; ATimeOut: Integer): String;
+function TTestBrkGDBMIDebugger.ReadLine(const APeek: Boolean; ATimeOut: Int64): String;
   procedure SkipSpaces(var pos: Integer);
   begin
     while (pos <= length(FTestCmdLine)) and (FTestCmdLine[pos] = ' ') do inc(pos);

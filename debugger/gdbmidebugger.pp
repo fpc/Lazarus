@@ -224,24 +224,24 @@ type
     // ExecuteCommand does execute direct. It does not use the queue
     function  ExecuteCommand(const ACommand: String;
                              AFlags: TGDBMICommandFlags = [];
-                             ATimeOut: Integer = -1
+                             ATimeOut: Int64 = -1
                             ): Boolean; overload;
     function  ExecuteCommand(const ACommand: String;
                              out AResult: TGDBMIExecResult;
                              AFlags: TGDBMICommandFlags = [];
-                             ATimeOut: Integer = -1
+                             ATimeOut: Int64 = -1
                             ): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const;
                              AFlags: TGDBMICommandFlags;
-                             ATimeOut: Integer = -1
+                             ATimeOut: Int64 = -1
                             ): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AValues: array of const;
                              out AResult: TGDBMIExecResult;
                              AFlags: TGDBMICommandFlags = [];
-                             ATimeOut: Integer = -1
+                             ATimeOut: Int64 = -1
                             ): Boolean; overload;
     procedure DoTimeoutFeedback;
-    function  ProcessResult(var AResult: TGDBMIExecResult; ATimeOut: Integer = -1): Boolean;
+    function  ProcessResult(var AResult: TGDBMIExecResult; ATimeOut: Int64 = -1): Boolean;
     function  ProcessGDBResultText(S: String): String;
     function  GetStackDepth(MaxDepth: integer): Integer;
     function  FindStackFrame(FP: TDBGPtr; StartAt, MaxDepth: Integer): Integer;
@@ -9651,7 +9651,7 @@ begin
 end;
 
 function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
-  AFlags: TGDBMICommandFlags = []; ATimeOut: Integer = -1): Boolean;
+  AFlags: TGDBMICommandFlags = []; ATimeOut: Int64 = -1): Boolean;
 var
   R: TGDBMIExecResult;
 begin
@@ -9660,7 +9660,7 @@ end;
 
 function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
   out AResult: TGDBMIExecResult; AFlags: TGDBMICommandFlags = [];
-  ATimeOut: Integer = -1): Boolean;
+  ATimeOut: Int64 = -1): Boolean;
 
   function RevorerTimeOut: Boolean;
   var
@@ -9769,7 +9769,7 @@ end;
 
 function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
   const AValues: array of const; AFlags: TGDBMICommandFlags;
-  ATimeOut: Integer = -1): Boolean;
+  ATimeOut: Int64 = -1): Boolean;
 var
   R: TGDBMIExecResult;
 begin
@@ -9778,7 +9778,7 @@ end;
 
 function TGDBMIDebuggerCommand.ExecuteCommand(const ACommand: String;
   const AValues: array of const; out AResult: TGDBMIExecResult;
-  AFlags: TGDBMICommandFlags = []; ATimeOut: Integer = -1): Boolean;
+  AFlags: TGDBMICommandFlags = []; ATimeOut: Int64 = -1): Boolean;
 begin
   Result := ExecuteCommand(Format(ACommand, AValues), AResult, AFlags, ATimeOut);
 end;
@@ -9790,7 +9790,7 @@ begin
                   mtWarning, [mbOK], 0);
 end;
 
-function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult;ATimeOut: Integer = -1): Boolean;
+function TGDBMIDebuggerCommand.ProcessResult(var AResult: TGDBMIExecResult;ATimeOut: Int64 = -1): Boolean;
 var
   InLogWarning: Boolean;
 
