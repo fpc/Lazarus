@@ -54,7 +54,7 @@ type
     FFlushAfterRead: Boolean;// Set if we should flush after finished reading
     FPeekOffset: Integer;    // Count the number of lines we have peeked
     FReadLineTimedOut: Boolean;
-    function WaitForHandles(const AHandles: array of Integer; var ATimeOut: Int64): Integer; overload;
+    function WaitForHandles(const AHandles: array of Integer; var ATimeOut: Integer): Integer; overload;
     function WaitForHandles(const AHandles: array of Integer): Integer; overload;
   protected
     procedure DoReadError; virtual;
@@ -64,8 +64,8 @@ type
     function  CreateDebugProcess(const AOptions: String): Boolean; virtual;
     procedure Flush;                                   // Flushes output buffer
     function  GetWaiting: Boolean; override;
-    function  ReadLine(ATimeOut: Int64 = -1): String; overload;
-    function  ReadLine(const APeek: Boolean; ATimeOut: Int64 = -1): String; virtual; overload;
+    function  ReadLine(ATimeOut: Integer = -1): String; overload;
+    function  ReadLine(const APeek: Boolean; ATimeOut: Integer = -1): String; virtual; overload;
     procedure SendCmdLn(const ACommand: String); virtual; overload;
     procedure SendCmdLn(const ACommand: String; Values: array of const); overload;
     procedure SetLineEnds(ALineEnds: TStringDynArray);
@@ -103,14 +103,14 @@ uses
   TimeOut: Max Time in milli-secs => set to 0 if timeout occured
   Returns: BitArray of handles set, 0 when an error occoured
  ------------------------------------------------------------------------------}
-function TCmdLineDebugger.WaitForHandles(const AHandles: array of Integer; var ATimeOut: Int64): Integer;
+function TCmdLineDebugger.WaitForHandles(const AHandles: array of Integer; var ATimeOut: Integer): Integer;
 {$IFDEF UNIX}
 var
   n, R, Max, Count: Integer;
   TimeOut: Integer;
   FDSWait, FDS: TFDSet;
   Step: Integer;
-  t, t2, t3: Int64;
+  t, t2, t3: DWord;
 begin
   Result := 0;
   Max := 0;
@@ -268,7 +268,7 @@ end;
 
 function TCmdLineDebugger.WaitForHandles(const AHandles: array of Integer): Integer; overload;
 var
-  t: Int64;
+  t: Integer;
 begin
   t := -1;
   Result := WaitForHandles(AHandles, t);
@@ -355,12 +355,12 @@ begin
   Result := FReading;
 end;
 
-function TCmdLineDebugger.ReadLine(ATimeOut: Int64 = -1): String;
+function TCmdLineDebugger.ReadLine(ATimeOut: Integer = -1): String;
 begin
   Result := ReadLine(False, ATimeOut);
 end;
 
-function TCmdLineDebugger.ReadLine(const APeek: Boolean; ATimeOut: Int64 = -1): String;
+function TCmdLineDebugger.ReadLine(const APeek: Boolean; ATimeOut: Integer = -1): String;
 
   function ReadData(const AStream: TStream; var ABuffer: String): Integer;
   var
