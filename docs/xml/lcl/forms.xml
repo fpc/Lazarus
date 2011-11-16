@@ -297,12 +297,12 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TScrollBarStyle">
-        <short>Scrollbar style.</short>
+        <short>Scrollbar style flags.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TScrollBarStyle.ssRegular">
-        <short>Default.</short>
+        <short>Default[what's that?].</short>
       </element>
       <element name="TScrollBarStyle.ssFlat">
         <short>Scrollbar appears flat.</short>
@@ -1077,10 +1077,13 @@
       <element name="TScrollBox.Visible" link="#LCL.Controls.TControl.Visible"/>
 <!-- object Visibility: default -->
       <element name="TCustomFrame">
-        <short>
-          <var>TCustomFrame</var> - the base type for <var>TFrame</var>
+        <short>The base type for <var>TFrame</var>.
         </short>
-        <descr/>
+        <descr>
+          Frames can be designed like Forms
+          and used like custom controls,
+          without much coding or installation in the IDE.
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -1159,8 +1162,8 @@
       <element name="TCustomFrame.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <!-- procedure Visibility: protected -->
       <element name="TCustomFrame.GetChildren">
-        <short>
-          <var>GetChildren</var> - calls inherited <var>GetChildren</var> then accepts ownership of all owned components that have no parent</short>
+        <short>Invokes Proc for all Controls and also for all Components with no Parent.
+        </short>
         <descr/>
         <errors/>
         <seealso>
@@ -1169,15 +1172,14 @@
         </seealso>
       </element>
       <element name="TCustomFrame.GetChildren.Proc">
-        <short/>
+        <short>The callback method.</short>
       </element>
       <element name="TCustomFrame.GetChildren.Root">
-        <short/>
+        <short>Components are enumerated only if Root=Self.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomFrame.Notification">
-        <short>
-          <var>Notification</var> calls inherited Notification then add or removes the component's action list (depending on what Operation specifies)</short>
+        <short>Also handles add/remove of ActionLists.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -1193,8 +1195,7 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomFrame.SetParent">
-        <short>
-          <var>SetParent</var> - calls inherited <var>Setparent</var> after validity checks, then updates the action lists </short>
+        <short>Also updates the ActionLists.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -1204,27 +1205,12 @@
       <element name="TCustomFrame.SetParent.AParent">
         <short/>
       </element>
-      <element name="TCustomFrame.DefineProperties">
-        <short>
-          <var>DefineProperties</var>- calculates low and high values for frame design from ancestor class</short>
-        <seealso>
-          <link id="#rtl.Classes.TComponent.DefineProperties">TComponent.DefineProperties</link>
-          <link id="#LCL.Controls.TControl.DefineProperties">TControl.DefineProperties</link>
-        </seealso>
-      </element>
+      <element name="TCustomFrame.DefineProperties"/>
       <element name="TCustomFrame.DefineProperties.Filer">
         <short></short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomFrame.CalculatePreferredSize">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TCustomFrame.CalculatePreferredSize"/>
       <element name="TCustomFrame.CalculatePreferredSize.PreferredWidth">
         <short></short>
       </element>
@@ -1240,15 +1226,7 @@
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomFrame.GetControlClassDefaultSize">
-        <short>
-          <var>GetControlClassDefaultSize</var> - returns its own defaults for frame design, overriding the inherited values</short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
-        </seealso>
-      </element>
+      <element name="TCustomFrame.GetControlClassDefaultSize"/>
       <element name="TCustomFrame.GetControlClassDefaultSize.Result">
         <short/>
       </element>
@@ -1257,8 +1235,12 @@
 <!-- object Visibility: default -->
       <element name="TFrame">
         <short>
-          <var>TFrame</var> - a container for all the other components on a form, or for a group of components within a form</short>
-        <descr/>
+          Frames can be designed like Forms
+          and used like custom controls,
+          without much coding or installation in the IDE.
+        </short>
+        <descr>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -1326,123 +1308,73 @@
       <element name="TFrame.TabOrder" link="#LCL.Controls.TWinControl.TabOrder"/>
       <element name="TFrame.TabStop" link="#LCL.Controls.TWinControl.TabStop"/>
       <element name="TFrame.Visible" link="#LCL.Controls.TControl.Visible"/>
-<!-- object Visibility: default -->
-      <element name="TIDesigner">
-        <short>
-          <var>TIDesigner</var> - a class describing a Form Designer</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- enumeration type Visibility: default -->
+<!-- enumeration type Visibility: default -->
       <element name="TBorderIcon">
-        <short>
-          <var>TBorderIcon</var> - enumerated type to specify which icon appears on the top border of the Form</short>
+        <short>Visual elements in window title bars - depending on window manager support.
+        </short>
         <descr>biSystemMenu - The form has a System menu (Maybe not all windowmanager supports this)<br/>
-
-biMinimize - The form has an minimize button<br/>
-
-biMaximize - The form has a maximize button<br/>
-
-biHelp - When you click this button a Question Cursor appears and the help routines are called if you click on an control
-</descr>
+          biMinimize - The form has an minimize button<br/>
+          biMaximize - The form has a maximize button<br/>
+          biHelp - When you click this button a Question Cursor appears and the help routines are called if you click on an control
+        </descr>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TBorderIcon.biSystemMenu">
-        <short/>
+        <short>Window has a system menu.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TBorderIcon.biMinimize">
-        <short/>
+        <short>Window has an Minimize button.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TBorderIcon.biMaximize">
-        <short/>
+        <short>Window has an Maximize button.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TBorderIcon.biHelp">
-        <short/>
+        <short>Window has an Help button.</short>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TBorderIcons">
-        <short>
-          <var>TBorderIcons</var> - set of <var>TBorderIcon</var>; the group of icons to appear at the top of the form</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure type Visibility: default -->
-      <element name="TCloseEvent">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCloseEvent.Sender">
-        <short/>
-      </element>
-      <element name="TCloseEvent.CloseAction">
-        <short/>
-      </element>
-      <!-- procedure type Visibility: default -->
-      <element name="TCloseQueryEvent">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCloseQueryEvent.Sender">
-        <short/>
-      </element>
-      <element name="TCloseQueryEvent.CanClose">
-        <short/>
-      </element>
-      <!-- function type Visibility: default -->
-      <element name="THelpEvent">
-        <short>Type of an application OnHelp handler.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="THelpEvent.Result">
-        <short>[?]</short>
-      </element>
-      <element name="THelpEvent.Command">
-        <short>[?]</short>
-      </element>
-      <element name="THelpEvent.Data">
-        <short>[?]</short>
-      </element>
-      <element name="THelpEvent.CallHelp">
-        <short>[?]</short>
-      </element>
-      <!-- procedure type Visibility: default -->
-      <element name="TDropFilesEvent">
-        <short>Type of an application OnDropFiles handler[?]</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TDropFilesEvent.Sender">
-        <short/>
-      </element>
-      <element name="TDropFilesEvent.FileNames">
-        <short/>
-      </element>
-      <!-- procedure type Visibility: default -->
-      <element name="TShortCutEvent">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TShortCutEvent.Msg">
-        <short/>
-      </element>
-      <element name="TShortCutEvent.Handled">
-        <short/>
-      </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TFormStateType">
-        <short>
-          <var>TFormStateType</var> - enumerated type to describe the state of a form; whether it is being created or destroyed, its visibility, whether Modal etc</short>
+      <element name="TBorderIcons" link="TBorderIcon"/>
+<!-- enumeration type Visibility: default -->
+      <element name="TDefaultMonitor">
+        <short>The preferred monitor for showing a form.
+        </short>
         <descr>
-          <p>The valid states are:</p>
+          <p>When a form is not assigned to a specific monitor,
+            assume the following display context:
+          </p>
+          <ul>
+            <li>
+              dmDesktop - on the full desktop
+            </li><li>
+              dmPrimary - on the primary monitor
+            </li><li>
+              dmMainForm - on the same monitor as the main form. If there is no main form then use dmPrimary behavior.
+            </li><li>
+              dmActiveForm - on the same monitor as the currently active form. If there is no active form use dmMainForm behavior.
+            </li>
+          </ul>
+        </descr>
+      </element>
+      <element name="TDefaultMonitor.dmDesktop">
+        <short>Place the form on the full desktop.</short>
+      </element>
+      <element name="TDefaultMonitor.dmPrimary">
+        <short>Place the form on the primary monitor.</short>
+      </element>
+      <element name="TDefaultMonitor.dmMainForm">
+        <short>Place the form on the same monitor as the main form.
+          If there is no such form then use the primary monitor.
+        </short>
+      </element>
+      <element name="TDefaultMonitor.dmActiveForm">
+        <short>Place the form on the same monitor as the currently active form.
+          If there is no such form then use the primary monitor.
+        </short>
+      </element>
+<!-- enumeration type Visibility: default -->
+      <element name="TFormStateType">
+        <short>Form state flags.</short>
+        <descr>
+          <p>The states are:</p>
           <pre>fsCreating,  // initializing (form streaming)
     fsVisible,   // form should be shown
     fsShowing,
@@ -1455,55 +1387,47 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         </descr>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStateType.fsCreating">
-        <short/>
+        <short>initializing (form streaming)</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStateType.fsVisible">
-        <short/>
+        <short>form should be shown</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStateType.fsShowing">
-        <short/>
+        <short>form handling WM_SHOWWINDOW message</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStateType.fsModal">
-        <short/>
+        <short>form is modal</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStateType.fsCreatedMDIChild">
-        <short/>
+        <short>not yet implemented</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStateType.fsBorderStyleChanged">
-        <short/>
+        <short>border style changed before window handle creation</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStateType.fsFormStyleChanged">
-        <short/>
+        <short>form style is changed before window handle creation</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStateType.fsFirstShow">
-        <short/>
+        <short>form is shown for the first time</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormStateType.fsDisableAutoSize">
-        <short/>
+        <short>disable autosize</short>
       </element>
       <!-- set type Visibility: default -->
-      <element name="TFormState">
-        <short>
-          <var>TFormState</var> - the set of form states that apply to this form</short>
+      <element name="TFormState" link="TFormStateType">
+        <short>The set of form state flags.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- range type Visibility: default -->
       <element name="TModalResult">
-        <short>
-          <var>TModalResult</var> - the range of values that can be returned as a modal result</short>
+        <short>Dummy type for the values that can be returned as a modal result.</short>
         <descr>
-          <var>TModalResult</var> represents the value returned by a modal dialog. Even though the type is defined as an integer, instead a few standard constants are used as return results in applications.</descr>
+          Even though the type is defined as an integer,
+          only the defined constant values should be used (mrOK...).
+        </descr>
         <seealso>
           <link id="controls.mrNone"/>
           <link id="controls.mrOK"/>
@@ -1517,46 +1441,148 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         </seealso>
       </element>
       <!-- pointer type Visibility: default -->
-      <element name="PModalResult">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration type Visibility: default -->
+      <element name="PModalResult" link="TModalResult"/>
+<!-- enumeration type Visibility: default -->
       <element name="TFormHandlerType">
-        <short/>
+        <short>TForm Notification handler types.
+        </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormHandlerType.fhtFirstShow">
-        <short/>
+        <short>Notified on first form Show.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormHandlerType.fhtClose">
-        <short/>
+        <short>Notified on form Close.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TFormHandlerType.fhtCreate">
-        <short/>
+        <short>Notified after form Create.</short>
       </element>
-      <!-- enumeration type Visibility: default -->
+<!-- enumeration type Visibility: default -->
       <element name="TShowInTaskbar">
-        <short/>
+        <short>How a form is represented in the TaskBar.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TShowInTaskbar.stDefault">
-        <short/>
+        <short>Use default [platform?] rules for showing the form in the TaskBar.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TShowInTaskbar.stAlways">
-        <short/>
+        <short>Always show the form in the TaskBar.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TShowInTaskbar.stNever">
-        <short/>
+        <short>Never show the form in the TaskBar.</short>
+      </element>
+<!-- enumeration type Visibility: default -->
+      <element name="TPopupMode">
+        <short>Where popup menus[?] shall appear.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TPopupMode.pmNone">
+        <short>default behavior - popup to mainform/taskbar window</short>
+      </element>
+      <element name="TPopupMode.pmAuto">
+        <short>popup to active form, and same as pmNone if no active form</short>
+      </element>
+      <element name="TPopupMode.pmExplicit">
+        <short>popup to PopupParent, and same as pmNone if not exists</short>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TCloseEvent">
+        <short>Type of an form OnClose handler.</short>
+        <descr>
+          <p>
+            Closing a form can have several meanings:
+          </p>
+          <ul>
+            <li>
+              caNone: do nothing (don't close)
+            </li><li>
+              caHide: hide the form (default for modal forms)
+            </li><li>
+              caFree: destroy the form
+            </li><li>
+              caMinimize: minimize the form (MDI child default)
+            </li>
+          </ul>
+          <p>
+            The handler can set CloseAction to the desired action.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TCloseEvent.Sender">
+        <short>The form that received an Close request.</short>
+      </element>
+      <element name="TCloseEvent.CloseAction">
+        <short>Set this to caNone, to prevent the form from closing.</short>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TCloseQueryEvent">
+        <short>Type of an form OnCloseQuery handler.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCloseQueryEvent.Sender">
+        <short>The form that received an Close request.</short>
+      </element>
+      <element name="TCloseQueryEvent.CanClose">
+        <short>Set to False to deny closing[?]</short>
+      </element>
+      <!-- function type Visibility: default -->
+      <element name="THelpEvent">
+        <short>Type of an OnHelp event handler.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="THelpEvent.Result">
+        <short>False means: use the default procedure[?]</short>
+      </element>
+      <element name="THelpEvent.Command">
+        <short>[?]</short>
+      </element>
+      <element name="THelpEvent.Data">
+        <short>[?]</short>
+      </element>
+      <element name="THelpEvent.CallHelp">
+        <short>False means: do not show any help.</short>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TDropFilesEvent">
+        <short>Type of an OnDropFiles event handler.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDropFilesEvent.Sender">
+        <short>The control that received the dropped files[?]</short>
+      </element>
+      <element name="TDropFilesEvent.FileNames">
+        <short>The list of the dropped files[?]</short>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TShortCutEvent">
+        <short>Type of an OnShortcut event handler.</short>
+        <descr>
+          <p>
+            A shortcut handler is invoked when a key is pressed,
+            before any other processing.
+          </p><p>
+            It can interpret the key as an shortcut and act accordingly.
+            In this case Handled should be set to True,
+            to prevent further processing of the key.
+          </p><p>
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TShortCutEvent.Msg">
+        <short>The key event message.</short>
+      </element>
+      <element name="TShortCutEvent.Handled">
+        <short>Set Handled to True to prevent further processing of the key.</short>
       </element>
 <!-- object Visibility: default -->
       <element name="TCustomForm">
@@ -1580,65 +1606,49 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <element name="TCustomForm.FAllowDropFiles" link="TCustomForm.AllowDropFiles"/>
       <element name="TCustomForm.FAlphaBlend" link="TCustomForm.AlphaBlend"/>
       <element name="TCustomForm.FAlphaBlendValue" link="TCustomForm.AlphaBlendValue"/>
+      <!-- variable Visibility: private -->
+      <element name="TCustomForm.FBigIconHandle">
+        <short>The Handle of the big form icon[?]</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
       <element name="TCustomForm.FBorderIcons" link="TCustomForm.BorderIcons"/>
-      <element name="TCustomForm.FDefaultControl" link="TCustomForm.DefaultControl"/>
       <element name="TCustomForm.FCancelControl" link="TCustomForm.CancelControl"/>
+      <element name="TCustomForm.FDefaultControl" link="TCustomForm.DefaultControl"/>
       <element name="TCustomForm.FDefaultMonitor" link="TCustomForm.DefaultMonitor"/>
       <element name="TCustomForm.FDesigner" link="TCustomForm.Designer"/>
-      <element name="TCustomForm.FDummyTextHeight">
-        <short/>
+      <element name="TCustomForm.FFormBorderStyle" link="TCustomForm.BorderStyle"/>
+      <!-- variable Visibility: private -->
+      <element name="TCustomForm.FFormHandlers">
+        <short>Lists of installed Notification handlers[?]</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomForm.FFormBorderStyle" link="TCustomForm.BorderStyle"/>
       <element name="TCustomForm.FFormState" link="TCustomForm.FormState"/>
       <element name="TCustomForm.FFormStyle" link="TCustomForm.FormStyle"/>
       <element name="TCustomForm.FFormUpdateCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomForm.FFormHandlers">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomForm.FHelpFile" link="TCustomForm.HelpFile"/>
       <element name="TCustomForm.FIcon" link="TCustomForm.Icon"/>
-      <element name="TCustomForm.FPopupMode" link="TCustomForm.PopupMode"/>
-      <element name="TCustomForm.FPopupParent" link="TCustomForm.PopupParent"/>
-      <!-- variable Visibility: private -->
-      <element name="TCustomForm.FSmallIconHandle">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomForm.FBigIconHandle">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
       <element name="TCustomForm.FKeyPreview" link="TCustomForm.KeyPreview"/>
-      <element name="TCustomForm.FMenu" link="TCustomForm.Menu"/>
-      <element name="TCustomForm.FModalResult" link="TCustomForm.ModalResult"/>
       <!-- variable Visibility: private -->
       <element name="TCustomForm.FLastFocusedControl">
-        <short></short>
+        <short>Used to detect Focus changes (Enter/Exit events)[?]</short>
         <descr>
         </descr>
         <seealso>
         </seealso>
       </element>
+      <element name="TCustomForm.FMenu" link="TCustomForm.Menu"/>
+      <element name="TCustomForm.FModalResult" link="TCustomForm.ModalResult"/>
       <element name="TCustomForm.FOldBorderStyle">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -1656,20 +1666,33 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <element name="TCustomForm.FOnShow" link="TCustomForm.OnShow"/>
       <element name="TCustomForm.FOnWindowStateChange" link="TCustomForm.OnWindowStateChange"/>
       <element name="TCustomForm.FPixelsPerInch" link="TCustomForm.PixelsPerInch"/>
+      <element name="TCustomForm.FPopupMode" link="TCustomForm.PopupMode"/>
+      <element name="TCustomForm.FPopupParent" link="TCustomForm.PopupParent"/>
       <element name="TCustomForm.FPosition" link="TCustomForm.Position"/>
       <!-- variable Visibility: private -->
       <element name="TCustomForm.FRealizedShowInTaskBar">
-        <short></short>
+        <short>The taskbar representation of the form, as set in the widgetset.</short>
+        <descr>
+        </descr>
+        <seealso>
+          <link id="TCustomForm.ShowInTaskBar"/>
+          <link id="TCustomForm.GetEffectiveShowInTaskBar"/>
+          <link id="TCustomForm.UpdateShowInTaskBar"/>
+        </seealso>
+      </element>
+      <element name="TCustomForm.FRestoredHeight" link="TCustomForm.RestoredHeight"/>
+      <element name="TCustomForm.FRestoredLeft" link="TCustomForm.RestoredLeft"/>
+      <element name="TCustomForm.FRestoredTop" link="TCustomForm.RestoredTop"/>
+      <element name="TCustomForm.FRestoredWidth" link="TCustomForm.RestoredWidth"/>
+      <element name="TCustomForm.FShowInTaskbar" link="TCustomForm.ShowInTaskBar"/>
+      <!-- variable Visibility: private -->
+      <element name="TCustomForm.FSmallIconHandle">
+        <short>The Handle of the small form icon[?]</short>
         <descr>
         </descr>
         <seealso>
         </seealso>
       </element>
-      <element name="TCustomForm.FRestoredLeft" link="TCustomForm.RestoredLeft"/>
-      <element name="TCustomForm.FRestoredTop" link="TCustomForm.RestoredTop"/>
-      <element name="TCustomForm.FRestoredWidth" link="TCustomForm.RestoredWidth"/>
-      <element name="TCustomForm.FRestoredHeight" link="TCustomForm.RestoredHeight"/>
-      <element name="TCustomForm.FShowInTaskbar" link="TCustomForm.ShowInTaskBar"/>
       <element name="TCustomForm.FWindowState" link="TCustomForm.WindowState"/>
       <!-- function Visibility: private -->
       <element name="TCustomForm.GetClientHandle" link="TCustomForm.ClientHandle"/>
@@ -1678,11 +1701,10 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: private -->
       <element name="TCustomForm.GetEffectiveShowInTaskBar">
-        <short></short>
+        <short>Tries to resolve ShowInTaskBar=stDefault according to Application settings.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -1716,17 +1738,12 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: private -->
       <element name="TCustomForm.IsForm">
-        <short/>
+        <short>Whether Form properties should be stored in the[?] stream.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TCustomForm.IsForm.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomForm.IsHelpFileStored" link="TCustomForm.HelpFile"/>
-      <element name="TCustomForm.IsHelpFileStored.Result">
         <short/>
       </element>
       <!-- function Visibility: private -->
@@ -1736,14 +1753,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.CloseModal">
-        <short/>
+        <short>Closes a modal form[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.FreeIconHandles">
-        <short></short>
+        <short>Destroys the form icons[?]</short>
         <descr>
         </descr>
         <errors>
@@ -1753,7 +1770,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.IconChanged">
-        <short/>
+        <short>Loads the new form icons, notifies the widgetset and all forms.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1863,11 +1880,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetLastFocusedControl">
-        <short></short>
+        <short>Remembers the last focused control.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -1876,7 +1891,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.SetWindowFocus">
-        <short/>
+        <short>Called when the Focus changed[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1888,7 +1903,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.WMActivate">
-        <short/>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1898,8 +1913,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.WMCloseQuery">
-        <short/>
-        <descr/>
+        <short></short>
+        <descr>[what does Result=0 mean?]</descr>
         <errors/>
         <seealso/>
       </element>
@@ -2068,10 +2083,12 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.AddHandler">
-        <short/>
+        <short>Adds an form notification handler.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFormHandlerType"/>
+        </seealso>
       </element>
       <element name="TCustomForm.AddHandler.HandlerType">
         <short/>
@@ -2084,7 +2101,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.RemoveHandler">
-        <short/>
+        <short>Removes an form notification handler.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2097,7 +2114,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: private -->
       <element name="TCustomForm.FindDefaultForActiveControl">
-        <short/>
+        <short>Returns the first control in Tab order.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2107,8 +2125,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.UpdateMenu">
-        <short></short>
-        <descr>
+        <short>Called when the main menu changed.</short>
+        <descr>Don't show a main menu for dialog forms,
+          i.e. when BorderStyle=bsDialog (delphi compatible).
         </descr>
         <errors>
         </errors>
@@ -2117,7 +2136,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomForm.UpdateShowInTaskBar">
-        <short></short>
+        <short>Notifies the widgetset of the change.</short>
         <descr>
         </descr>
         <errors>
@@ -2130,7 +2149,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.CMShowingChanged">
         <short>
-          <var>CMShowingChanged</var> - system message method for showing if the form has changed</short>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2139,29 +2158,29 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <element name="TCustomForm.DoShowWindow">
-        <short>
-          <var>DoShowWindow</var> automatically choose a control to focus</short>
+        <short>When no control is Active, sets the Focus to the first control in TabOrder.
+        </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.Activate">
-        <short>
-          <var>Activate</var> - method for rendering the Form active</short>
+        <short>Notifies the OnActivate handler.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.ActiveChanged">
-        <short>
-          <var>ActiveChanged</var> - method for a form that is active and changed</short>
+        <short>[?] Does nothing.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.AdjustClientRect">
-        <short>
-          <var>AdjustClientRect</var> - adjusts window size to accommodate borders</short>
+        <short>Excludes borders from the given rectangle.
+        </short>
         <seealso>
           <link id="#LCL.Controls.TWinControl.AdjustClientRect">TWinControl.AdjustClientRect</link>
         </seealso>
@@ -2171,9 +2190,10 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.BeginFormUpdate">
-        <short>
-          <var>BeginFormUpdate</var> - start updating the Form</short>
-        <descr/>
+        <short>Locks form updates (AutoSize), until EndFormUpdate.
+        </short>
+        <descr>Nested calls are allowed (pairs of Begin/EndFormUpdate).
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -2183,22 +2203,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.CreateParams">
-        <short>
-          <var>CreateParams</var> calls inherited <var>CreateParams</var>, and specifically copies style from parent</short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TWinControl.CreateParams">TWinControl.CreateParams</link>
-        </seealso>
-      </element>
+      <element name="TCustomForm.CreateParams"/>
       <element name="TCustomForm.CreateParams.Params">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.CreateWnd">
-        <short>
-          <var>CreateWnd</var> calls inherited <var>CreateWnd, </var>signals if a handle is required and attaches a menu to the window if one does not yet exist; activates focus if visible</short>
+        <short>Creates the widget, updates the widget-dependent properties.
+        </short>
         <descr/>
         <errors/>
         <seealso>
@@ -2208,68 +2220,80 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.Deactivate">
-        <short>
-          <var>Deactivate</var> - method for rendering the Form inactive</short>
+        <short>Called when the form looses the focus. Notifies the OnDeactivate handler.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoClose">
-        <short>
-          <var>DoClose</var> - close the Form using the specified <var>CloseAction</var>
+        <short>Notifies the form close handlers.
         </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFormHandlerType.fhtClose"/>
+          <link id="TCustomForm.OnClose"/>
+        </seealso>
       </element>
       <element name="TCustomForm.DoClose.CloseAction">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoCreate">
-        <short>
-          <var>DoCreate</var> - perform the Create action</short>
+        <short>Notifies the form create handlers.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFormHandlerType.fhtCreate"/>
+          <link id="TCustomForm.OnCreate"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoDestroy">
-        <short>
-          <var>DoDestroy</var>- perform the Destroy action</short>
+        <short>Notifies the <link id="TCustomForm.OnDestroy">OnDestroy</link> handler.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomForm.OnDestroy"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoHide">
-        <short>
-          <var>DoHide</var> - method for hiding a previously visible object</short>
+        <short>Notifies the <link id="TCustomForm.OnHide">OnHide</link> handler.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoShow">
-        <short>
-          <var>DoShow</var> - method to redender visible a previously hidden form</short>
+        <short>Notifies the <link id="TCustomForm.OnShow">OnShow</link> handler.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.EndFormUpdate">
-        <short>
-          <var>EndFormUpdate</var> - finish updating the Form</short>
-        <descr/>
+        <short>Unlocks form updates, in sync with BeginFormUpdate.
+        </short>
+        <descr>When the update counter reaches zero,
+          FormEndUpdated is invoked to realize the pending changes.
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomForm.BeginFormUpdate"/>
+          <link id="TCustomForm.FormEndUpdated"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.GetChildren">
-        <short>
-          <var>GetChildren</var> calls inherited <var>GetChildren</var> then takes ownership of all components, including those  without parents</short>
+        <short>Invokes Proc for all Controls and also for all Components with no Parent.
+        </short>
         <descr/>
         <errors/>
         <seealso>
@@ -2278,64 +2302,63 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         </seealso>
       </element>
       <element name="TCustomForm.GetChildren.Proc">
-        <short/>
+        <short>The callback method.</short>
       </element>
       <element name="TCustomForm.GetChildren.Root">
-        <short/>
+        <short>Components are enumerated only if Root=Self.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.HandleCreateException">
-        <short></short>
-        <descr>
+        <short>Placeholder for exception handlers in derived classes.</short>
+        <descr>By default the Application exception handler is invoked.
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TApplication.HandleException"/>
+          <link id="TApplication.CaptureExceptions"/>
         </seealso>
       </element>
       <element name="TCustomForm.HandleCreateException.Result">
-        <short></short>
+        <short>True when the exception was handled.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.HandleDestroyException">
-        <short></short>
-        <descr>
+        <short>Placeholder for exception handlers in derived classes.</short>
+        <descr>By default the Application exception handler is invoked.
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TApplication.HandleException"/>
+          <link id="TApplication.CaptureExceptions"/>
         </seealso>
       </element>
       <element name="TCustomForm.HandleDestroyException.Result">
-        <short></short>
+        <short>True when the exception was handled.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.HandleShowHideException">
-        <short></short>
-        <descr>
+        <short>Placeholder for exception handlers in derived classes.</short>
+        <descr>By default the Application exception handler is invoked.
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TApplication.HandleException"/>
+          <link id="TApplication.CaptureExceptions"/>
         </seealso>
       </element>
       <element name="TCustomForm.HandleShowHideException.Result">
-        <short></short>
+        <short>True when the exception was handled.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.InitializeWnd">
-        <short></short>
+        <short>Initializes the widget, also for AlphaBlend and AllowDropFiles.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.Loaded">
-        <short>
-          <var>Loaded</var> - calls inherited <var>Loaded</var>, makes this the active control and gives it focus</short>
+        <short>Also renews ActiveControl and Visible.
+        </short>
         <descr/>
         <errors/>
         <seealso>
@@ -2345,8 +2368,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.ChildHandlesCreated">
-        <short>
-          <var>ChildHandlesCreated</var> - method for use when handles have been created for descendants</short>
+        <short>Called after all child control handles are created.
+          When this is a top level form (Parent=Nil) also invokes ParentFormHandleInitialized.
+        </short>
         <descr/>
         <errors/>
         <seealso>
@@ -2354,15 +2378,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.Notification">
-        <short>
-          <var>Notification</var> calls inherited Notification then add or removes the component's action list (depending on what Operation specifies)</short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#rtl.Classes.TComponent.Notification">TComponent.Notification</link>
-        </seealso>
-      </element>
+      <element name="TCustomForm.Notification"/>
       <element name="TCustomForm.Notification.AComponent">
         <short/>
       </element>
@@ -2371,9 +2387,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.PaintWindow" link="#LCL.Controls.TCustomControl.PaintWindow">
-        <short/>
+        <short>Calls the user Paint handler.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TCustomForm.PaintWindow.dc">
@@ -2381,18 +2397,18 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.RequestAlign" link="#LCL.Controls.TControl.RequestAlign">
-        <short/>
+        <short>Calls the user Alignment handler (AlignControls).
+          Here: Nop for a top-level form.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.CalculatePreferredSize">
-        <short></short>
+        <short>Here: clip width and height of a top-level form to the monitor WorkArea.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -2407,39 +2423,34 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.SetZOrder">
-        <short>
-          <var>SetZOrder</var> - set the Z order for the Form; if <var>Topmost </var>is True, Form is on top of all other objects</short>
+        <short>Here: Moves a top-level form in front or back of all forms.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TCustomForm.SetZOrder.Topmost">
-        <short/>
+        <short>True for BringToFront.</short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.SetParent" link="#LCL.Controls.TControl.SetParent">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.SetParent" link="#LCL.Controls.TControl.Parent"/>
       <element name="TCustomForm.SetParent.NewParent">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.MoveToDefaultPosition">
-        <short></short>
+      <element name="TCustomForm.MoveToDefaultPosition" link="TCustomForm.Position">
+        <short>Moves the form to the initial Position.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.UpdateShowing">
-        <short>
-          <var>UpdateShowing</var> - method to update the <var>Visible</var> property</short>
+        <short>Called when the widget's visibility (Showing) changed.
+          Updates (and realizes?) all properties affecting the visual representation.
+        </short>
         <descr/>
         <errors/>
         <seealso>
@@ -2447,80 +2458,61 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.SetVisible" link="#LCL.Controls.TControl.SetVisible">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomForm.SetVisible" link="#LCL.Controls.TControl.SetVisible"/>
       <element name="TCustomForm.SetVisible.Value">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.AllAutoSized">
-        <short></short>
+      <element name="TCustomForm.AllAutoSized" link="#LCL.Controls.TWinControl.AllAutoSized">
+        <short>If the the form is about to show, calculate its metrics.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoFirstShow">
-        <short>
-          <var>DoFirstShow</var> - perform the first Show action since creation of the Form</short>
+        <short>Notifies the FirstShow handlers.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFormHandlerType.fhtFirstShow"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.UpdateWindowState">
-        <short>
-          <var>UpdateWindowState</var> - update the state of the Window displaying the Form</short>
+        <short>[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.VisibleChanging">
-        <short>
-          <var>VisibleChanging</var> - method for dealing with a Form whose Visible property is changing</short>
+        <short>Notifies all <var>VisibleChanging</var> handlers.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.VisibleChanged">
-        <short></short>
+        <short>Notifies all <var>VisibleChanged</var> handlers.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TScreenNotification.snFormVisibleChanged"/>
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.WndProc">
-        <short>
-          <var>WndProc</var> - performs actions specific to the message then calls inherited <var>WndProc</var>
-        </short>
-        <descr>
-          <p>
-            <var>WndProc</var> - performs actions specific to the message then calls inherited <var>WndProc</var>
-          </p>
-          <p>Specific messages include:</p>
-          <p>Activate, SetFocus. KillFocus; Exit, Enter; Window Position Changing; Draw Item</p>
-        </descr>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Controls.TControl.WndProc">TControl.WndProc</link>
-          <link id="#LCL.Controls.TWinControl.WndProc">TWinControl.WndProc</link>
-        </seealso>
-      </element>
+      <element name="TCustomForm.WndProc"/>
       <element name="TCustomForm.WndProc.TheMessage">
-        <short/>
+        <short>
+          Handled messages include:
+          Activate, SetFocus. KillFocus; Exit, Enter; Window Position Changing; DrawItem
+        </short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.VisibleIsStored" link="TCustomForm.Visible"/>
@@ -2528,26 +2520,11 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.DoSendBoundsToInterface" link="#LCL.Controls.TWinControl.DoSendBoundsToInterface">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.DoSendBoundsToInterface" link="#LCL.Controls.TWinControl.DoSendBoundsToInterface"/>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.DoAutoSize" link="#LCL.Controls.TControl.DoAutoSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.DoAutoSize" link="#LCL.Controls.TControl.DoAutoSize"/>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.SetAutoSize" link="#LCL.Controls.TControl.SetAutoSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.SetAutoSize" link="#LCL.Controls.TControl.AutoSize"/>
       <element name="TCustomForm.SetAutoSize.Value">
         <short/>
       </element>
@@ -2558,12 +2535,11 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoAddActionList">
-        <short></short>
+        <short>Adds another ActionList.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TCustomForm.RemoveActionList"/>
         </seealso>
       </element>
       <element name="TCustomForm.DoAddActionList.List">
@@ -2571,12 +2547,13 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.DoRemoveActionList">
-        <short></short>
+        <short>Removes an ActionList.</short>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
+          <link id="TCustomForm.AddActionList"/>
         </seealso>
       </element>
       <element name="TCustomForm.DoRemoveActionList.List">
@@ -2584,8 +2561,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.BeginAutoDrag">
-        <short></short>
-        <descr>
+        <short>Checked BeginDrag.</short>
+        <descr>allow form dragging only if it is docked into a site without DockManager[why?]
         </descr>
         <errors>
         </errors>
@@ -2593,12 +2570,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.DoDock" link="#LCL.Controls.TControl.DoDock">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.DoDock" link="#LCL.Controls.TControl.DoDock"/>
       <element name="TCustomForm.DoDock.NewDockSite">
         <short/>
       </element>
@@ -2606,19 +2578,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomForm.GetFloating" link="#LCL.Controls.TControl.GetFloating">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.GetFloating" link="#LCL.Controls.TControl.GetFloating"/>
       <element name="TCustomForm.GetFloating.Result">
         <short/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.GetDefaultDockCaption">
-        <short>
-          <var>GetDefaultDockCaption</var> - returns the default caption to be used for docking</short>
+        <short>Here: returns the Caption.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2628,10 +2595,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.CMActionExecute">
-        <short>
-          <var>CMActionExecute</var> - system message method for executing action</short>
+        <short>Handler for ActionExecute messages.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TCustomForm.CMActionExecute.Message">
@@ -2639,8 +2605,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.CMActionUpdate">
-        <short>
-          <var>CMActionUpdate</var> - system message method for updating action</short>
+        <short>Handler for ActionUpdate messages.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2650,29 +2616,26 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.DoExecuteAction">
-        <short>Asks every visible control to Execute the specified action <var>ExeAction</var>.</short>
+        <short>Asks all applicable components to execute an action.
+        </short>
         <descr>
-          <p>DoExecuteAction asks every visible control to Execute the specified action <var>ExeAction</var>. If some control executes it and returns true, then the traversal of visible components is stopped. All child controls (and its children etc) are queried too.</p>
-          <p>For example you have</p>
-          <code>TForm
-   TPanel
-     TButton
-     TCheckBox
-   TMemo</code>
-          <p>then the following controls are queried in this order: TPanel, TButton, TCheckBox, TMemo.</p>
-          <p>But first of all, the Form itself and the ActiveControl are asked to execute the given action.</p>
+          <p>First the ActiveControl and the Form itself are asked to execute the action.
+            Then all child components are tried.
+            The search stops as soon as the action is handled.
+          </p>
         </descr>
       </element>
       <element name="TCustomForm.DoExecuteAction.Result">
-        <short>True, if any control handles the action.</short>
+        <short>True when the action was handled.
+        </short>
       </element>
       <element name="TCustomForm.DoExecuteAction.ExeAction">
         <short>Action to execute.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.DoUpdateAction">
-        <short>
-          <var>DoUpdateAction</var> - asks all visible controls to update the specified action</short>
+        <short>Tries all applicable components to update an action.
+        </short>
         <descr/>
         <errors/>
         <seealso>
@@ -2680,38 +2643,30 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         </seealso>
       </element>
       <element name="TCustomForm.DoUpdateAction.Result">
-        <short/>
+        <short>True when the action was updated.
+        </short>
       </element>
       <element name="TCustomForm.DoUpdateAction.TheAction">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.UpdateActions">
-        <short>
-          <var>UpdateActions</var> - method for updating actions</short>
+        <short>Asks all components to initiate their actions[?]
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomForm.Create">
-        <short>
-          <var>Create</var> - constructor for <var>TCustomForm</var>: checks for correct <var>ClassType</var>, looks for required resources then creates the Form</short>
-        <descr>This constructor can override the constructor of an ancestor class
-</descr>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Forms.TScrollingWinControl.Create">TScrollingWinControl.Create</link>
-        </seealso>
-      </element>
+      <element name="TCustomForm.Create"/>
       <element name="TCustomForm.Create.AOwner">
         <short/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomForm.CreateNew">
-        <short>
-          <var>CreateNew</var> - constructor for creating a completely new form</short>
-        <descr/>
+        <short>Creates a form without a resource.
+        </short>
+        <descr>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -2719,103 +2674,95 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <element name="TCustomForm.CreateNew.Num">
-        <short/>
+        <short>Here: ignored [purpose?]</short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomForm.Destroy"/>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.AfterConstruction">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TCustomForm.AfterConstruction"/>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.BeforeDestruction">
-        <short>
-          <var>BeforeDestruction</var> - method to be applied before Form is destroyed (usually involves clean-up)</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.BeforeDestruction"/>
       <!-- function Visibility: protected -->
-      <element name="TCustomForm.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
       <element name="TCustomForm.GetControlClassDefaultSize.Result">
         <short/>
       </element>
       <element name="TCustomForm.BigIconHandle">
-        <short>
-          <var>BigIconHandle</var> - returns system Handle for large Icon</short>
+        <short>The Handle of the big form icon.</short>
       </element>
       <element name="TCustomForm.BigIconHandle.Result">
         <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.Close">
-        <descr/>
+        <short>Close the form.</short>
+        <descr>
+          <p>
+            Close does not necessarily destroy the form.
+            Modal forms only are hidden.
+          </p><p>
+            When the MainForm is closed, the application terminates.
+          </p><p>
+            An OnCloseQuery handler can deny to close the form.
+          </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomForm.CloseQuery"/>
+        </seealso>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.CloseQuery">
-        <short>Is the associated query to be closed?</short>
+        <short>Asks the OnCloseQuery handler whether the form can close.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomForm.OnCloseQuery"/>
+        </seealso>
       </element>
       <element name="TCustomForm.CloseQuery.Result">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.DefocusControl">
-        <short>
-          <var>DefocusControl</var> - withdraws focus from the specified control, removing it if required</short>
+        <short>Updates ActiveControl if it is to be defocused.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TCustomForm.DefocusControl.Control">
-        <short/>
+        <short>The control that looses the focus.</short>
       </element>
       <element name="TCustomForm.DefocusControl.Removing">
-        <short/>
+        <short>True when the control is removed.</short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.DestroyWnd" link="#LCL.Controls.TWinControl.DestroyWnd"/>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.EnsureVisible">
-        <short>Ensure that this form is always visible, if necessary moving it to the top (front) of the stack of images</short>
+        <short>Ensure that this form is fully visible,
+          optionally brings it in front of all forms.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TCustomForm.EnsureVisible.AMoveToTop">
-        <short/>
+        <short>Bring the form to front if True.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.FocusControl">
-        <short>
-          <var>FocusControl</var> - giving focus to specified control, automatically bringing form to front</short>
+        <short>Focus the control. If needed [when? always?] bring form to front.
+        </short>
         <descr/>
-        <errors>If the control or one of its parents is not visible or disabled an exception will be raised.
-</errors>
+        <errors>If the control or one of its parents is not visible or disabled
+          an exception will be raised (in SetFocus).
+        </errors>
         <seealso/>
       </element>
       <element name="TCustomForm.FocusControl.WinControl">
-        <short/>
+        <short>The control receiving the focus.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomForm.FormIsUpdating" link="#LCL.Controls.TControl.FormIsUpdating">
@@ -2829,16 +2776,16 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.GetFormImage">
-        <short>
-          <var>GetFormImage</var> - gets a Bitmap image for the Form</short>
+        <short>Makes a Bitmap image from the Form.
+        </short>
       </element>
       <element name="TCustomForm.GetFormImage.Result">
         <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.GetRolesForControl">
-        <short>
-          <var>GetRolesForControl</var> - returns a set of roles (default, cancel) for the Form </short>
+        <short>The role(s) of the control in a modal form (default or cancel button).
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2850,17 +2797,17 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.Hide" link="#LCL.Controls.TControl.Hide">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.Hide" link="#LCL.Controls.TControl.Hide"/>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.IntfDropFiles">
-        <short>
-          <var>IntfDropFiles</var> - Invokes <var>OnDropFilesEvent</var> of the form. This function is called by the interface. </short>
-        <descr/>
+        <short>Invokes the <link id="TCustomForm.OnDropFiles">OnDropFiles</link> handler of the form.
+          This function is called by the interface.
+        </short>
+        <descr>The drop files event will be invoked when the user drops
+          one or multiple dragged files on one of application's forms.
+          First this event should be fired for target form (or main form if drop target is unknown),
+          then for the application.
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -2869,32 +2816,36 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.IntfHelp">
-        <short>
-          <var>IntfHelp</var> - Show help for control or menu item. This function is called by the interface.</short>
+        <short>Show help for control or menu item.
+          This function is called by the interface.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+        <seealso>
+          <link id="#lcl.Controls.TControl.ShowHelp"/>
+        </seealso>
+       </element>
       <element name="TCustomForm.IntfHelp.AComponent">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.IsShortcut">
-        <short>
-          <var>IsShortcut</var> - if True, the specified Key and Message are active as a shortcut</short>
+        <short>Asks all applicable components to interpret an keystroke as an shortcut.
+          True, the specified Key and Message are active as a shortcut
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TCustomForm.IsShortcut.Result">
-        <short/>
+        <short>True when the specified Key was handled as a shortcut.
+        </short>
       </element>
       <element name="TCustomForm.IsShortcut.Message">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.MakeFullyVisible">
-        <short></short>
+        <short>Extends or shrinks the form to a monitor.</short>
         <descr>
         </descr>
         <errors>
@@ -2903,15 +2854,18 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         </seealso>
       </element>
       <element name="TCustomForm.MakeFullyVisible.AMonitor">
-        <short></short>
+        <short>The monitor to use, Nil means the designed monitor.</short>
       </element>
       <element name="TCustomForm.MakeFullyVisible.UseWorkarea">
-        <short></short>
+        <short>If True then extend to the WorkArea of the monitor,
+          else clip the form to the monitor bounds.
+        </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.AutoSizeDelayedHandle">
-        <short></short>
-        <descr>
+        <short>Returns true if AutoSize should be skipped / delayed because of a missing handle.
+        </short>
+        <descr>[propagate back into TControl?]
         </descr>
         <errors>
         </errors>
@@ -2922,15 +2876,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short></short>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.GetPreferredSize">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TCustomForm.GetPreferredSize"/>
       <element name="TCustomForm.GetPreferredSize.PreferredWidth">
         <short></short>
       </element>
@@ -2945,7 +2891,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.Release">
-        <short>Set free the resources of the form </short>
+        <short>Marks the form for destruction.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2955,8 +2902,6 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short>True when the form can receive the focus.
         </short>
         <descr>
-          A control can receive the focus when it is visible and enabled,
-          and all its Parents also can receive the focus.
         </descr>
         <errors>
         </errors>
@@ -2967,31 +2912,26 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short></short>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.SetFocus" link="#LCL.Controls.TWinControl.SetFocus">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.SetFocus" link="#LCL.Controls.TWinControl.SetFocus"/>
       <!-- function Visibility: public -->
       <element name="TCustomForm.SetFocusedControl">
-        <short>
-          <var>SetFocusedControl</var> - method for giving focus to specified control; returns True if successful</short>
+        <short>Handles focus switch to a control (enter/exit messages).
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TCustomForm.SetFocusedControl.Result">
-        <short/>
+        <short>False when no switching allowed[?]</short>
       </element>
       <element name="TCustomForm.SetFocusedControl.Control">
-        <short/>
+        <short>The control that received the focus[?]</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.SetRestoredBounds">
-        <short>
-          <var>SetRestoredBounds</var> - set the bounds defining the position of the restored control</short>
-        <descr/>
+        <short>Sets the bounds defining the restored control.</short>
+        <descr>Temporarily goes to normal (restored) window state, if required.
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -3008,45 +2948,49 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.Show" link="#LCL.Controls.TControl.Show">
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.Show" link="#LCL.Controls.TControl.Show"/>
       <!-- function Visibility: public -->
       <element name="TCustomForm.ShowModal">
-        <short>Show this form as modal - ie control cannot be resumed by another form until the current form is closed</short>
-        <descr/>
-        <errors/>
+        <short>Show this form as a modal Dialog.
+        </short>
+        <descr>The call doesn't return until the form is closed.
+          The application switches to modal state until then.
+        </descr>
+        <errors>EInvalidOperation if the form cannot be shown modally.
+        </errors>
         <seealso/>
       </element>
       <element name="TCustomForm.ShowModal.Result">
-        <short/>
+        <short>The modal result of the dialog.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.ShowOnTop">
-        <short>Shows this form as the top (nearest) item of any stack of windows or images.</short>
+        <short>Shows this form in front of all other forms.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
+      <!-- procedure Visibility: public -->
       <element name="TCustomForm.SmallIconHandle">
-        <short>
-          <var>SmallIconHandle</var> - returns system Handle for small Icon</short>
+        <short>Returns (eventually creates) the Handle of the small Form or Application Icon.
+        </short>
+        <seealso>
+          <link id="TCustomForm.Icon"/>
+        </seealso>
       </element>
       <element name="TCustomForm.SmallIconHandle.Result">
         <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.WantChildKey">
-        <short>
-          <var>WantChildKey</var> - returns True if the specified child control requires a key (Message)</short>
+        <short>[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TCustomForm.WantChildKey.Result">
-        <short/>
+        <short>Here: always False.</short>
       </element>
       <element name="TCustomForm.WantChildKey.Child">
         <short/>
@@ -3055,19 +2999,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.RemoveAllHandlersOfObject" link="#LCL.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.RemoveAllHandlersOfObject" link="#LCL.LCLClasses.TLCLComponent.RemoveAllHandlersOfObject"/>
       <element name="TCustomForm.RemoveAllHandlersOfObject.AnObject">
         <short/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.AddHandlerFirstShow">
-        <short>
-          <var>AddHandlerFirstShow</var> - perform the action for adding a handler at the time of first showing</short>
+        <short>Adds an handler for the first Show of the form.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3080,8 +3019,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.RemoveHandlerFirstShow">
-        <short>
-          <var>RemoveHandlerFirstShow</var> - perform the action for removing the handler on the first showing</short>
+        <short>Removes an handler for the first Show of the form.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3091,8 +3030,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.AddHandlerClose">
-        <short>
-          <var>AddHandlerClose</var> - adds a handler for closing Form</short>
+        <short>Adds an handler for form Close.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3105,8 +3044,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.RemoveHandlerClose">
-        <short>
-          <var>RemoveHandlerClose</var> - removes handler for closing form</short>
+        <short>Removes an handler for form Close.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3116,8 +3055,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.AddHandlerCreate">
-        <short>
-          <var>AddHandlerCreate</var> - performs the OnCreateHandler event</short>
+        <short>Adds an handler for form Create.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3130,8 +3069,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.RemoveHandlerCreate">
-        <short>
-          <var>RemoveHandlerCreate</var> - removes the handler for the Create event</short>
+        <short>Removes an handler for form Create.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3141,8 +3080,10 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.ActiveMDIChild">
-        <short></short>
-        <descr>
+        <short>Returns the currently active MDI child form.
+        </short>
+        <descr>Valid result is returned only when FormStyle = fsMDIForm or fsMDIChild,
+          otherwise Result is nil.
         </descr>
         <errors>
         </errors>
@@ -3150,44 +3091,23 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         </seealso>
       </element>
       <element name="TCustomForm.ActiveMDIChild.Result">
-        <short></short>
+        <short>Nil if the form is neither an MDI host nor child.</short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomForm.GetMDIChildren">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TCustomForm.GetMDIChildren" link="TCustomForm.MDIChildren"/>
       <element name="TCustomForm.GetMDIChildren.Result">
-        <short></short>
+        <short>Nil if caller isn't an mdi type or handle isn't allocated.</short>
       </element>
       <element name="TCustomForm.GetMDIChildren.AIndex">
         <short></short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TCustomForm.MDIChildCount">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TCustomForm.MDIChildCount" link="TCustomForm.MDIChildren"/>
       <element name="TCustomForm.MDIChildCount.Result">
-        <short></short>
+        <short>-1 if caller isn't an MDI form or handle is not allocated.</short>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.Dock" link="#LCL.Controls.TControl.Dock">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.Dock" link="#LCL.Controls.TControl.Dock"/>
       <element name="TCustomForm.Dock.NewDockSite">
         <short/>
       </element>
@@ -3195,59 +3115,55 @@ biHelp - When you click this button a Question Cursor appears and the help routi
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.UpdateDockCaption">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TCustomForm.UpdateDockCaption"/>
       <element name="TCustomForm.UpdateDockCaption.Exclude">
         <short></short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Active">
-        <short>Is true when the form has the focus</short>
+        <short>Is true when the form has the focus.</short>
         <descr>Use active to check if the form has the focus</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.ActiveControl">
-        <short>Specifies the active control on the form</short>
-        <descr>Use this to get or set the active control on this form</descr>
+        <short>Specifies the active control on the form.</short>
+        <descr>Use this to get or set the active control on this form.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.ActiveDefaultControl">
-        <short>Specifies the active default control on the Form</short>
-        <descr/>
+        <short>Specifies the Default control on the Form.</short>
+        <descr>The Default control reacts on the Enter key pressed.
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.AllowDropFiles">
-        <short>Specifies if files are allowed to be dropped on this form.</short>
-        <descr>Set AllowDropFiles event to True to allow dropping files on this form. It is set to False by default.
-</descr>
+        <short>Specifies whether files can be dropped onto this form.</short>
+        <descr>Set AllowDropFiles event to True to allow dropping files on this form.
+          It is set to False by default.
+        </descr>
         <seealso>
           <link id="TCustomForm.OnDropFiles"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.AlphaBlend">
-        <short></short>
+        <short>Allows for a translucent form [somewhat transparent?].</short>
         <descr>
         </descr>
         <seealso>
+          <link id="TCustomForm.AlphaBlendValue"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.AlphaBlendValue">
-        <short></short>
+        <short>How translucent the form is (0=transparent, 255=opaque).</short>
         <descr>
         </descr>
         <seealso>
+          <link id="TCustomForm.AlphaBlend"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -3260,49 +3176,60 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.BorderIcons">
-        <short>Specifies which icons appear on the top of the form</short>
-        <descr>Use bordericons flags to get or set the icons that appear on the top border of the form. <br/>
-
-		By default we see down-triangle or other generic icon on the left, <br/>
-
-		which activates a pop-up system menu allowing closure or re-sizing of the form, <br/>
-
-		and on the right end we see the minimise and  re-size/maximise buttons, <br/>
-
-		but of course these can be customised by the application programmer.</descr>
-        <seealso/>
+        <short>Specifies which icons appear in the title bar of the form.
+        </short>
+        <descr>The icons can represent a system menu,
+          minimize/restore/maximize and close buttons,
+          and an <var>What's this</var> button.
+        </descr>
+        <seealso>
+          <link id="TBorderIcon"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.BorderStyle">
-        <short>The border style for this Form</short>
+        <short>The border style affects the title bar, border and resize behaviour of the form.
+        </short>
         <descr>
           <p>Use borderstyle to get or set the appearance of the form's border. </p>
           <p>By default it is a sizeable window, but it could, for example, be a dialog form or a tool window, or could be non-sizeable</p>
-          <p>This property is slightly different (has a differert base type) from the <var>TCustomControl.BorderStyle</var>
-When the form is put into another control the window borders depend on the widgetset. There are no borders under gtk.
-</p>
+          <p>This property is slightly different (has a different base type) from the <var>TCustomControl.BorderStyle</var>
+            When the form is put into another control the window borders depend on the widgetset.
+            There are no borders under gtk.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TFormBorderStyle"/>
+          <link id="#lcl.Controls.TBorderStyle"/>
+          <link id="#lcl.Controls.TCustomControl.BorderStyle"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.CancelControl">
-        <short>The control associated with the cancel action</short>
+        <short>The control associated with the Cancel action.</short>
         <descr>
-          <p>Determines the control associated with the Cancel action (exit from the control without changing anything).</p>
-          <p>This is usually a button with the caption 'Cancel', but might be an 'Exit' button or anything else the application programmer decides.</p>
-          <p>This control is selected either by explicitly clicking with the mouse, or by hitting the 'Esc' key</p>
+          <p>Determines the control associated with the Cancel action
+            (exit from the modal form without changing anything).</p>
+          <p>This is usually a button with the caption 'Cancel',
+            but might be an 'Exit' button or anything else the application programmer decides.</p>
+          <p>This control is selected either by explicitly clicking with the mouse,
+            or by hitting the 'Esc' key.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomForm.DefaultControl"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Caption" link="#LCL.Controls.TControl.Caption">
-        <short/>
+        <short>The text appearing in the title bar.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomForm.ClientHandle">
-        <short></short>
+        <short>The Handle of the MDIForm client (container for mdi children).
+        </short>
         <descr>
         </descr>
         <seealso>
@@ -3310,21 +3237,24 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Color" link="#LCL.Controls.TControl.Color">
-        <descr>The form's colour; by default it is the same as the colour specified for button faces.
-</descr>
+        <descr>The form's background color.
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.DefaultControl">
-        <short>The control associated with the default action for this form</short>
-        <descr>Reads or sets a flag determining the default control. <br/>
-
-		This is typically a button such as 'Accept' which is highlighted in some way on-screen to indicate that this is the default action, and is selected either by hitting 'Return' or 'Enter' or by selecting that control with the mouse</descr>
+        <short>The control associated with the default action for this form.</short>
+        <descr>
+		      This is typically a button such as 'Accept'
+          which is highlighted in some way on-screen to indicate
+          that this is the default action,
+          and is selected either by hitting 'Return' or 'Enter'
+          or by selecting that control with the mouse.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.DefaultMonitor">
-        <short></short>
+        <short>The monitor type on which the form shall appear.</short>
         <descr>
         </descr>
         <seealso>
@@ -3332,31 +3262,25 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Designer">
-        <short/>
+        <short>The designer object when the form is in design state.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.FormState">
-        <short>Determines the state of the form</short>
-        <descr>Reads or writes a flag to determine the form's state: <br/>
-
-
-		is it being created, is this its first showing, is the border style being changed, etc. <br/>
-
-
-		FormState is a set, so could take zero or more of possible values.</descr>
+        <short>Various state flags.
+        </short>
+        <descr>
+        </descr>
         <seealso>
           <link id="TFormState"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.FormStyle">
-        <short>Determinates the style of the form</short>
+        <short>Determines the <link id="#lcl.Controls.TFormStyle">Style</link> of the form (MDI, splash...).
+        </short>
         <descr>
-          <p>Reads or writes flag to determine the style of the form.</p>
-          <p>Default is 'normal', but could be MDIChild or MDINormal, could stay on top or could be a 'Splash' form.</p>
-          <p>FormStyle is a set, so could take zero or more of these values.</p>
         </descr>
         <seealso>
           <link id="#lcl.Controls.TFormStyle"/>
@@ -3364,33 +3288,35 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.HelpFile">
-        <short>Specifies the help file that is used by the form</short>
-        <descr>Reads or writes a flag to determine identity of Help file, <br/>
-
-		and to determine whether its name is stored.<br/>
-
-		Property contains filename as a string.</descr>
+        <short>The name of the help file for this form.</short>
+        <descr>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Icon">
-        <short>The Icon associated with this Form (which may appear in menus, directories, ListBoxes etc)</short>
+        <short>The Icon associated with this Form (in minimized state).
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomForm.BigIconHandle"/>
+          <link id="TCustomForm.SmallIconHandle"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.KeyPreview">
-        <short>
-          <var>KeyPreview</var> - if True, Key Preview is possible</short>
+        <short>Allows the form to intercept keystrokes in child controls.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.MDIChildren">
-        <short></short>
+        <short>Indexed access to MDI child forms, when this is an MDI form.</short>
         <descr>
         </descr>
         <seealso>
+          <link id="TCustomForm.FormStyle"/>
         </seealso>
       </element>
       <element name="TCustomForm.MDIChildren.I">
@@ -3398,8 +3324,9 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Menu">
-        <short>Specifies a MainMenu for this form</short>
-        <descr>Drop a TMainMenu on the form and select it here to show it on the form.<br/>
+        <short>The main menu for this form.</short>
+        <descr>Drop a TMainMenu on the form to store it here
+          and to show it on the form.<br/>
         </descr>
         <seealso>
           <link id="#lcl.Menus.TMainMenu"/>
@@ -3407,196 +3334,209 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.ModalResult">
-        <short>Specifies the return value of an modal form</short>
-        <descr>Reads or writes a flag to determine whether there is a modal resut. <br/>
-
-		If the form is modal, returns an integer value.</descr>
-        <seealso/>
+        <short>Specifies the return value of a modal form (dialog).</short>
+        <descr>
+        </descr>
+        <seealso>
+          <link id="TModalResult"/>
+        </seealso>
       </element>
       <element name="TCustomForm.Monitor">
-        <short>
-          <var>Monitor</var> - returns the monitor on which the form is mostly places (the biggest form area is placed)</short>
+        <short>The Monitor on which the form is shown.
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnActivate">
-        <short>Event called when the form receives focus</short>
-        <descr>This method is called when the form receives focus for the first time at application start up and then subsequently each time focus is changed from another window of the same application to this window. For focus changes between different applications the event Application.OnActivate is called instead.</descr>
+        <short>Handler called when the form receives focus.
+        </short>
+        <descr>
+          <p>
+            This handler is called when the form receives focus for the first time
+            at application start up and then subsequently each time focus is changed
+            from another window of the same application to this window.
+          </p><p>
+            For focus changes between different applications
+            the Application.OnActivate handler is called instead.
+          </p>
+        </descr>
         <seealso>
           <link id="#LCL.Forms.TApplication.OnActivate">TApplication.OnActivate</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnClose">
-        <short>Event handler for closing the form</short>
+        <short>Handler called when the form is closed.
+          It determines what happens to the form (destroy, hide...).
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnCloseQuery">
-        <short>Event handler for closing the query associated with the form</short>
-        <descr/>
+        <short>Handler called before the form is closed.
+          It can reject an close request.
+        </short>
+        <descr>An OnCloseQuery handler can check for unsaved information,
+          ask the user whether it's okay to save or discard changes,
+          or simply reject the close request.
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnCreate">
-        <short>Event handler for creating the form</short>
+        <short>Handler called when the form has been created.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnDeactivate">
-        <short>Event handler for deactivating the form</short>
+        <short>Handler called when the form is deactivated (lost focus).
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TApplication.OnDeactivate"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnDestroy">
-        <short>Event handler when the form is being destroyed</short>
+        <short>Handler called when the form is destroyed.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnDropFiles">
-        <short>The event invoked when file is dropped on this form.</short>
-        <descr>The OnDropFiles event is invoked when user drops one or multiple files on this form. You enable this feature by setting AllowDropFiles property.</descr>
+        <short>Handler called when files have been dropped.
+        </short>
+        <descr>
+          You enable this feature by setting AllowDropFiles property.
+        </descr>
         <seealso>
           <link id="TCustomForm.AllowDropFiles"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnHelp">
-        <short>Event handler when Help is required</short>
+        <short>Handler called when Help is requested.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnHide">
-        <short>Event handler if form is being hidden</short>
+        <short>Handler called when the form is being hidden.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomForm.OnResize" link="#LCL.Controls.TControl.OnResize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.OnResize" link="#LCL.Controls.TControl.OnResize"/>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnShortcut">
-        <short>Event handler if shortcut key is pressed</short>
-        <descr/>
+        <short>Handler called when a key is pressed, before further handling of the key.
+        </short>
+        <descr>The handler can interpret the key as an shortcut
+          and act accordingly.
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnShow">
-        <short>Event handler if form is to be shown</short>
+        <short>Handler called when the form becomes visible.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnWindowStateChange">
-        <short>Event handler for a change in the window state</short>
+        <short>Handler called when the form is minimized, maximized or restored.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomForm.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <!-- property Visibility: public -->
       <element name="TCustomForm.PixelsPerInch">
-        <short>The scaling of the form in absolute terms</short>
+        <short>The logical scaling of the form [font? used where?]
+        </short>
         <descr>
-          <p>Reads or writes a flag to determine the scaling factor (a longinteger).</p>
-          <p>Not normally stored locally</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.PopupMode">
-        <short></short>
+        <short>Where popup menus are shown[???]</short>
         <descr>
         </descr>
         <seealso>
+          <link id="TCustomForm.PopupParent"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.PopupParent">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <seealso>
+          <link id="TCustomForm.PopupMode"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Position">
-        <short>The position of the form on the screen</short>
-        <descr>Reads or writes a flag to determine screen position of form. <br/>
-
-
-		By default it is in the position that it was placed in the Form Designer</descr>
+        <short>The initial placement of the form.
+        </short>
+        <descr>
+		      By default it is in the position that it was placed in the Form Designer
+        </descr>
         <seealso>
           <link id="TPosition"/>
+          <link id="TCustomForm.DefaultMonitor"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.RestoredHeight">
-        <short>The height of the form when it is restored (ie changes from minimised or maximised)</short>
+        <short>The height of the form when it is restored (ie changes from minimised or maximised).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.RestoredLeft">
-        <short>The position of the left edge of the form when it is restored (ie changes from minimised or maximised)</short>
+        <short>The position of the left edge of the form when it is restored (ie changes from minimised or maximised).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.RestoredTop">
-        <short>The position of the top edge of the form when it is restored (ie changes from minimised or maximised)</short>
+        <short>The position of the top edge of the form when it is restored (ie changes from minimised or maximised).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.RestoredWidth">
-        <short>The width of the form when it is restored (ie changes from minimised or maximised)</short>
+        <short>The width of the form when it is restored (ie changes from minimised or maximised).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.ShowInTaskBar">
-        <short>Should the form be shown in the system Task Bar?</short>
+        <short>How the form is represented in the system Task Bar.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomForm.TextHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomForm.Visible" link="#LCL.Controls.TControl.Visible">
-        <descr>Set or get this to set the form visible/hidden or get the status of the form
-</descr>
-        <seealso/>
-      </element>
+      <element name="TCustomForm.Visible" link="#LCL.Controls.TControl.Visible"/>
       <!-- property Visibility: public -->
       <element name="TCustomForm.WindowState">
-        <short>Represents how the form appears on the screen</short>
-        <descr>Reads or write flag to determine state of the window on screen. <br/>
-
-
-		Default is 'normal' (ie not minimised or maximised)</descr>
+        <short>Whether the form is currently minimized, maximized or normal (restored).
+        </short>
+        <descr>
+      		Default is 'normal' (ie not minimized nor maximized)
+        </descr>
         <seealso>
           <link id="TWindowState"/>
         </seealso>
       </element>
       <!-- "class of" type Visibility: default -->
-      <element name="TCustomFormClass" link="TCustomForm">
-        <short>
-          <var>TCustomFormClass</var> - class of <var>TCustomForm</var>
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomFormClass" link="TCustomForm"/>
 <!-- object Visibility: default -->
       <element name="TForm">
       </element>
@@ -5790,23 +5730,20 @@ When the form is put into another control the window borders depend on the widge
         </short>
       </element>
       <element name="TApplicationHandlerType.ahtMinimize">
-        <short>Handler invoked on
-          application minimized[what's this?]
+        <short>Handler invoked when the application is minimized.
         </short>
       </element>
       <element name="TApplicationHandlerType.ahtModalBegin">
-        <short>Handler invoked on
-          application entering modal state[?]
+        <short>Handler invoked when a form is shown modally.
         </short>
       </element>
       <element name="TApplicationHandlerType.ahtModalEnd">
-        <short>Handler invoked on
-          application exiting modal state[?]
+        <short>Handler invoked when the last modal form is closed.
         </short>
       </element>
       <element name="TApplicationHandlerType.ahtRestore">
         <short>Handler invoked on
-          application restored (from minimized state)[?]
+          application restored (from minimized state).
         </short>
       </element>
       <element name="TApplicationHandlerType.ahtDropFiles">
@@ -5816,22 +5753,24 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <element name="TApplicationHandlerType.ahtHelp">
         <short>Handler invoked on
-          F1 key (help request)[?]
+          F1 key (help request) [purpose?]
         </short>
       </element>
       <element name="TApplicationHandlerType.ahtHint">
         <short>Handler invoked on
-          Hint request[?]
+          Hint request [purpose?]
         </short>
       </element>
       <element name="TApplicationHandlerType.ahtShowHint">
         <short>Handler invoked on
-          Hint becoming visible[?]
+          Hint becoming visible [purpose?]
         </short>
       </element>
       <element name="TApplicationHandlerType.ahtGetMainFormHandle">
-        <short>Handler providing the Handle of the main form[?] [application/taskbar window?]
+        <short>Handler providing the Handle of the main form[?] [application/taskbar window?] [purpose?]
         </short>
+        <descr>[what's the purpose for *not* returning MainForm.Handle???]
+        </descr>
       </element>
 <!-- pointer type Visibility: default -->
       <element name="PAsyncCallQueueItem" link="TAsyncCallQueueItem">
@@ -5982,6 +5921,8 @@ When the form is put into another control the window borders depend on the widge
             Includes the useful function <var>MessageBox</var>,
             a simple dialog intended for displaying error messages,
             but also usable as an alternative to the various Message Dialogs.
+          </p><p>
+            Other project types have a different [or no?] Application class[?]
           </p>
         </descr>
         <errors/>
@@ -5991,7 +5932,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- variable Visibility: private -->
       <element name="TApplication.FApplicationHandlers">
-        <short>Holds the registered event handlers.</short>
+        <short>Holds the registered notification handlers.</short>
         <descr/>
         <seealso/>
       </element>
@@ -6208,16 +6149,6 @@ When the form is put into another control the window borders depend on the widge
         <short/>
       </element>
       <!-- function Visibility: private -->
-      <element name="TApplication.GetExename">
-        <short>[Useless, drop!?]</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TApplication.GetExename.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
       <element name="TApplication.GetMainFormHandle">
         <short>Determines the main form handle, using all available handlers.</short>
         <descr>
@@ -6242,7 +6173,7 @@ When the form is put into another control the window borders depend on the widge
       </element>
       <!-- procedure Visibility: private -->
       <element name="TApplication.FreeIconHandles">
-        <short>Reloads the (new) application icons, notifies the widgetset and all forms.</short>
+        <short>Destroys the application icons[?]</short>
         <descr>
         </descr>
         <errors>
@@ -8836,7 +8767,15 @@ Different operation systems has different preferences regards showing images in 
         <descr/>
         <seealso/>
       </element>
-<!-- function Visibility: public -->
+<!-- object Visibility: default -->
+      <element name="TIDesigner">
+        <short>
+          <var>TIDesigner</var> - a class describing a Form Designer</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
       <element name="TIDesigner.IsDesignMsg">
         <short>
           <var>IsDesignMsg</var> - receives a message from Sender, and returns True if it is a design message</short>
@@ -9319,59 +9258,6 @@ Different operation systems has different preferences regards showing images in 
         <descr/>
         <errors/>
         <seealso/>
-      </element>
-      <element name="TDefaultMonitor">
-        <short>The preferred monitor for showing a form.
-        </short>
-        <descr>
-          <p>When a form is not assigned to a specific monitor,
-            assume the following display context:
-          </p>
-          <ul>
-            <li>
-              dmDesktop - on the full desktop
-            </li><li>
-              dmPrimary - on the primary monitor
-            </li><li>
-              dmMainForm - on the same monitor as the main form. If there is no main form then use dmPrimary behavior.
-            </li><li>
-              dmActiveForm - on the same monitor as the currently active form. If there is no active form use dmMainForm behavior.
-            </li>
-          </ul>
-        </descr>
-      </element>
-      <element name="TDefaultMonitor.dmDesktop">
-        <short>Place the form on the full desktop.</short>
-      </element>
-      <element name="TDefaultMonitor.dmPrimary">
-        <short>Place the form on the primary monitor.</short>
-      </element>
-      <element name="TDefaultMonitor.dmMainForm">
-        <short>Place the form on the same monitor as the main form.
-          If there is no such form then use the primary monitor.
-        </short>
-      </element>
-      <element name="TDefaultMonitor.dmActiveForm">
-        <short>Place the form on the same monitor as the currently active form.
-          If there is no such form then use the primary monitor.
-        </short>
-      </element>
-<!-- enumeration type Visibility: default -->
-      <element name="TPopupMode">
-        <short>[?]</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TPopupMode.pmNone">
-        <short></short>
-      </element>
-      <element name="TPopupMode.pmAuto">
-        <short></short>
-      </element>
-      <element name="TPopupMode.pmExplicit">
-        <short></short>
       </element>
     </module>
     <!-- Forms -->

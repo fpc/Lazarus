@@ -3669,26 +3669,38 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- function Visibility: default -->
       <element name="InflateRect">
-        <short/>
-        <descr/>
+        <short>Inflates the rectangle in all directions.
+        </short>
+        <descr>
+          <p>
+            The deltas are applied to every side,
+            i.e. the width and height increase by the double amount.
+          </p><p>
+            Positive values inflate, negative values deflate.
+          </p><p>
+            The rectangle is clipped so that width and height never can become negative.
+          </p><p>
+            This method can be used to add or subtract a border around the rectangle.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="InflateRect.Result">
-        <short/>
+        <short>Always True.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="InflateRect.ARect">
-        <short/>
+        <short>This rectangle is modified.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="InflateRect.dx">
-        <short/>
+        <short>The horizontal increase, negative to decrease.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="InflateRect.dy">
-        <short/>
+        <short>The vertical increase, negative to decrease.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="IntersectRect">
