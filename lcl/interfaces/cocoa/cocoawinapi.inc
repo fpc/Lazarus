@@ -223,19 +223,11 @@ begin
   if IconInfo^.hbmColor = 0 then Exit;
 
   ABitmap := Create32BitAlphaBitmap(TCocoaBitmap(IconInfo^.hbmColor), TCocoaBitmap(IconInfo^.hbmMask));
-  // For now just ignore the mask
-  Result := HICON(IconInfo^.hbmColor);
 
   if IconInfo^.fIcon then
-  begin
     Result := HICON(ABitmap)
-  end;
-{  else
-  begin
-    IconInfo^.hbmColor := HBITMAP(ABitmap);
-    IconInfo^.hbmMask := 0;
-    Result := HICON(TCarbonCursor.CreateFromInfo(IconInfo));
-  end;}
+  else
+    Result := HICON(TCocoaCursor.CreateFromBitmap(ABitmap, GetNSPoint(IconInfo^.xHotSpot, IconInfo^.yHotSpot)));
 end;
 
 function TCocoaWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
@@ -292,6 +284,19 @@ begin
   Result:=True;
   gdi:=CheckGDIOBJ(GdiObject);
   if Assigned(gdi) then gdi.Release;
+end;
+
+function TCocoaWidgetSet.DestroyIcon(Handle: HICON): Boolean;
+var
+  Ico: TObject;
+begin
+  Result := Handle <> 0;
+  if not Result then
+    Exit;
+  Ico := TObject(Handle);
+  Result := (Ico is TCocoaBitmap) or (Ico is TCocoaCursor);
+  if Result then
+    Ico.Destroy;
 end;
 
 function TCocoaWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
@@ -794,6 +799,23 @@ begin
     ctx.GetOrigin(p^.X, p^.Y);
     Result:=1;
   end;
+end;
+
+function TCocoaWidgetSet.SetCursor(ACursor: HCURSOR): HCURSOR;
+begin
+  Result := HCURSOR(TCocoaCursor(ACursor).Install);
+end;
+
+function TCocoaWidgetSet.SetCursorPos(X, Y: Integer): Boolean;
+var
+  CursorPos: CGPoint;
+begin
+  Result := False;
+
+  CursorPos.X := X;
+  CursorPos.Y := Y;
+  if CGWarpMouseCursorPosition(CursorPos) <> noErr then Exit;
+  Result := True;
 end;
 
 {------------------------------- FONT AND TEXT --------------------------------}

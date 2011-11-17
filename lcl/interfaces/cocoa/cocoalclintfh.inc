@@ -25,8 +25,8 @@
  *****************************************************************************
 }
 
-{function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
-procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
+function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
+{procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
   Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;

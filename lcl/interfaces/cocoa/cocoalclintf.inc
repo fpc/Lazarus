@@ -26,34 +26,32 @@
  *                                                                           *
  *****************************************************************************
 }
-(*
+
 {------------------------------------------------------------------------------
   Method:  CreateStandardCursor
   Params:  ACursor - Cursor type
   Returns: Cursor object in Carbon for the specified cursor type
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
-var
-  AThemeCursor: ThemeCursor;
+function TCocoaWidgetSet.CreateStandardCursor(ACursor: SmallInt): HCursor;
 begin
-  {$IFDEF VerboseLCLIntf}
-    DebugLn('TCarbonWidgetSet.CreateStandardCursor ACursor: ' + DbgS(ACursor));
-  {$ENDIF}
-  
-  Result := 0;
-  if (ACursor >= crLow) and (ACursor <= crHigh) then
-  begin
-    AThemeCursor := CursorToThemeCursor[TCursor(ACursor)];
-    if AThemeCursor <> kThemeUndefCursor then
-      Result := hCursor(TCarbonCursor.CreateThemed(AThemeCursor,
-        TCursor(ACursor) = crDefault));
+  case ACursor of
+    crDefault     : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.currentSystemCursor));
+    crArrow       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.arrowCursor));
+    crCross       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.crosshairCursor));
+    crIBeam       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.IBeamCursor));
+    crSizeNS      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeUpDownCursor));
+    crSizeWE      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeLeftRightCursor));
+    crSizeN       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeUpCursor));
+    crSizeW       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeLeftCursor));
+    crSizeE       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeRightCursor));
+    crSizeS       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeDownCursor));
+    crNo          : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.operationNotAllowedCursor));
+    crHandPoint   : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.pointingHandCursor));
+  else
+    Result := 0;
   end;
-  
-  {$IFDEF VerboseLCLIntf}
-    DebugLn('TCarbonWidgetSet.CreateStandardCursor Result: ' + DbgS(Result));
-  {$ENDIF}
 end;
-
+(*
 {------------------------------------------------------------------------------
   Method:  DrawGrid
   Params:  DC     - Handle to device context

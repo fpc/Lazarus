@@ -64,9 +64,9 @@ function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
 procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
 {function DeleteDC(hDC: HDC): Boolean; override;}
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
-{function DestroyCaret(Handle : HWND): Boolean; override;
+{function DestroyCaret(Handle : HWND): Boolean; override;}
 function DestroyIcon(Handle: HICON): Boolean; override;
-function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL; override;
+{function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL; override;
 function DrawFocusRect(DC: HDC; const Rect: TRect): boolean; override;
 function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean; override;}
 //function DrawText(DC: HDC; Str: PChar; Count: Integer; var ARect: TRect; Flags: Cardinal): Integer; override;
@@ -167,10 +167,10 @@ function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
 function SetCapture(AHandle: HWND): HWND; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
-function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
+function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;}
 function SetCursor(ACursor: HCURSOR): HCURSOR; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
-function SetFocus(hWnd: HWND): HWND; override;
+{function SetFocus(hWnd: HWND): HWND; override;
 function SetForegroundWindow(HWnd: HWND): boolean; override;}
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;

@@ -139,6 +139,21 @@ type
     property Height: Integer read FHeight;
   end;
 
+  { TCocoaCursor }
+
+  TCocoaCursor = class(TObject)
+  private
+    FStandard: Boolean;
+    FBitmap: TCocoaBitmap;
+    FCursor: NSCursor;
+  public
+    constructor CreateStandard(const ACursor: NSCursor);
+    constructor CreateFromBitmap(const ABitmap: TCocoaBitmap; const hotSpot: NSPoint);
+    destructor Destroy; override;
+    function Install: TCocoaCursor;
+    property Standard: Boolean read FStandard;
+  end;
+
   { TCocoaTextLayout }
 
   TCocoaTextLayout = class(TObject)
@@ -359,6 +374,35 @@ begin
     FbitsPerSample := ABitsPerPixel div 3;
     FsamplesPerPixel := 3;
   end;
+end;
+
+{ TCocoaCursor }
+constructor TCocoaCursor.CreateStandard(const ACursor: NSCursor);
+begin
+  FBitmap := nil;
+  FCursor := ACursor;
+  FStandard := True;
+end;
+
+constructor TCocoaCursor.CreateFromBitmap(const ABitmap: TCocoaBitmap; const hotSpot: NSPoint);
+begin
+  FBitmap := ABitmap;
+  FCursor := NSCursor.alloc.initWithImage_hotSpot(ABitmap.Image, hotSpot);
+  FStandard := False;
+end;
+
+destructor TCocoaCursor.Destroy;
+begin
+  FBitmap.Free;
+  if not Standard then
+    FCursor.release;
+  inherited;
+end;
+
+function TCocoaCursor.Install: TCocoaCursor;
+begin
+  FCursor.set_;
+  Result := nil;
 end;
 
 { TCocoaContext }
