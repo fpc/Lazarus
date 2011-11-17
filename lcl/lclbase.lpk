@@ -4,7 +4,7 @@
     <Name Value="LCLBase"/>
     <Author Value="Lazarus"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <SearchPaths>
         <IncludeFiles Value="include"/>
         <OtherUnitFiles Value="forms;widgetset"/>
@@ -12,12 +12,6 @@
       </SearchPaths>
       <Conditionals Value="if SrcOS&lt;>'win' then
   UnitPath := 'nonwin32';"/>
-      <Linking>
-        <Debugging>
-          <GenerateDebugInfo Value="True"/>
-          <DebugInfoType Value="dsAuto"/>
-        </Debugging>
-      </Linking>
       <Other>
         <Verbosity>
           <ShowNotes Value="False"/>
@@ -37,7 +31,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="285">
+    <Files Count="286">
       <Item1>
         <Filename Value="barchart.pp"/>
         <UnitName Value="BarChart"/>
@@ -1184,6 +1178,10 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="ValEdit"/>
       </Item285>
+      <Item286>
+        <Filename Value="lazcanvas.pas"/>
+        <UnitName Value="lazcanvas"/>
+      </Item286>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
