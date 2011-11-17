@@ -1370,20 +1370,12 @@ begin
     SynDefaultFontHeight := 14;
     {$DEFINE SynDefaultFont}
   {$ENDIF}
-  {$IFDEF LCLgtk2}
-    SynDefaultFontName   := 'Courier New';
-    SynDefaultFontHeight := -13;
-    if Screen.Fonts.IndexOf(SynDefaultFontName) >= 0 then
-      exit;
-    SynDefaultFontName   := '-misc-dejavu sans mono-medium-r-normal-*-*-90-*-*-*-*-iso10646-1';
-    SynDefaultFontHeight := 9;
-    {$DEFINE SynDefaultFont}
-  {$ENDIF}
   {$IFDEF LCLcarbon}
     SynDefaultFontName   := 'Monaco'; // Note: carbon is case sensitive
     SynDefaultFontHeight := 12;
     {$DEFINE SynDefaultFont}
   {$ENDIF}
+  // LCLgtk2 and LCLQt use default settings
   {$IFnDEF SynDefaultFont}
     SynDefaultFontName   := 'Courier New';
     SynDefaultFontHeight := -13;
