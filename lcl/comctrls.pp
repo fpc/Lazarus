@@ -1473,7 +1473,8 @@ type
     procedure InsertItem(Item : TListItem);
     procedure ImageChanged(Sender : TObject);
     procedure Loaded; override;
-    
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
     function IsCustomDrawn(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage): Boolean; virtual;
     function CustomDraw(const ARect: TRect; AStage: TCustomDrawStage): Boolean; virtual;                                                   // Return True if default drawing should be done
     function CustomDrawItem(AItem: TListItem; AState: TCustomDrawState; AStage: TCustomDrawStage): Boolean; virtual;                       //

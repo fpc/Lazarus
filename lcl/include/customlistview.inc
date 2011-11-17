@@ -1213,6 +1213,16 @@ begin
   inherited Loaded;
 end;
 
+procedure TCustomListView.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then begin
+    if AComponent = LargeImages then LargeImages := nil;
+    if AComponent = SmallImages then SmallImages := nil;
+    if AComponent = StateImages then StateImages := nil;
+  end;
+end;
+
 procedure TCustomListView.SetScrollBars(const AValue: TScrollStyle);
 begin
   if (FScrollBars = AValue) then exit;
