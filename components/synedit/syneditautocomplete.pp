@@ -44,45 +44,35 @@ unit SynEditAutoComplete;
 interface
 
 uses
-  {$IFDEF SYN_LAZARUS}
   LCLIntf, LCLType, LCLProc,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
   Classes, SynEdit, SynEditKeyCmds,
   Controls;
 
-{$IFDEF SYN_LAZARUS}
 const
   CodeTemplateMacroMagic = '$(EnableMakros)';
   CodeTemplateEnableMacros = 'EnableMakros';
   CodeTemplateKeepSubIndent = 'KeepSubIndent';
   CodeTemplateAttributesStartMagic = '$(AttributesStart)';
   CodeTemplateAttributesEndMagic = '$(AttributesEnd)';
-{$ENDIF}
 
 type
-  {$IFDEF SYN_LAZARUS}
   TCustomSynAutoComplete = class;
   
   TOnTokenNotFound = procedure(Sender: TObject; AToken: string; 
                            AEditor: TCustomSynEdit; var Index:integer) of object;
   TOnExecuteCompletion = procedure(ASynAutoComplete: TCustomSynAutoComplete;
                                    Index: integer) of object;
-  {$ENDIF}
 
   { TCustomSynAutoComplete }
 
   TCustomSynAutoComplete = class(TComponent)
   private
-    {$IFDEF SYN_LAZARUS}
     fOnTokenNotFound: TOnTokenNotFound;
     fIndentToTokenStart: boolean;
     FOnExecuteCompletion: TOnExecuteCompletion;
     fAttributes: TFPList;// list of TStrings
     function GetCompletionAttributes(Index: integer): TStrings;
     procedure ClearAttributes;
-    {$ENDIF}
   protected
     fAutoCompleteList: TStrings;
     fCompletions: TStrings;
@@ -104,18 +94,15 @@ type
     procedure SetEditor(Value: TCustomSynEdit);
     procedure SynEditCommandHandler(Sender: TObject; AfterProcessing: boolean;
       var Handled: boolean; var Command: TSynEditorCommand;
-      var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF};
+      var AChar: TUTF8Char;
       Data: pointer; HandlerData: pointer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure AddCompletion(AToken, AValue, AComment: string
-      {$IFDEF SYN_LAZARUS}; TheAttributes: TStrings = nil{$ENDIF}
-      );
-    {$IFDEF SYN_LAZARUS}
+    procedure AddCompletion(AToken, AValue, AComment: string;
+                            TheAttributes: TStrings = nil);
     procedure DeleteCompletion(Index: integer);
-    {$ENDIF}
     function AddEditor(AEditor: TCustomSynEdit): boolean;
     procedure Execute(AEditor: TCustomSynEdit); virtual;
     procedure ExecuteCompletion(AToken: string; AEditor: TCustomSynEdit);
@@ -135,7 +122,6 @@ type
     property EditorCount: integer read GetEditorCount;
     property Editors[Index: integer]: TCustomSynEdit read GetNthEditor;
     property EndOfTokenChr: string read fEOTokenChars write fEOTokenChars;
-    {$IFDEF SYN_LAZARUS}
     property CompletionAttributes[Index: integer]: TStrings
                                                    read GetCompletionAttributes;
     property OnTokenNotFound: TOnTokenNotFound
@@ -144,7 +130,6 @@ type
       read fIndentToTokenStart write fIndentToTokenStart;
     property OnExecuteCompletion: TOnExecuteCompletion read FOnExecuteCompletion
                                                      write FOnExecuteCompletion;
-    {$ENDIF}
   end;
 
   { TSynEditAutoComplete }
@@ -155,11 +140,9 @@ type
     property CaseSensitive;
     property Editor;
     property EndOfTokenChr;
-    {$IFDEF SYN_LAZARUS}
     property OnTokenNotFound;
     property IndentToTokenStart;
     property OnExecuteCompletion;
-    {$ENDIF}
   end;
 
 implementation
@@ -169,18 +152,16 @@ uses
 
 { TCustomSynAutoComplete }
 
-procedure TCustomSynAutoComplete.AddCompletion(AToken, AValue, AComment: string
-  {$IFDEF SYN_LAZARUS}; TheAttributes: TStrings {$ENDIF});
+procedure TCustomSynAutoComplete.AddCompletion(AToken, AValue, AComment: string;
+  TheAttributes: TStrings);
 begin
   if AToken <> '' then begin
     fCompletions.Add(AToken);
     fCompletionComments.Add(AComment);
     fCompletionValues.Add(AValue);
-    {$IFDEF SYN_LAZARUS}
     if TheAttributes=nil then
       TheAttributes:=TStringList.Create;
     fAttributes.Add(TheAttributes);
-    {$ENDIF}
   end;
 end;
 
@@ -217,12 +198,9 @@ begin
   fCompletionValues := TStringList.Create;
   fEditors := TList.Create;
   fEOTokenChars := '()[]{}.';
-  {$IFDEF SYN_LAZARUS}
   fAttributes:=TFPList.Create;
-  {$ENDIF}
 end;
 
-{$IFDEF SYN_LAZARUS}
 function TCustomSynAutoComplete.GetCompletionAttributes(Index: integer
   ): TStrings;
 begin
@@ -246,7 +224,6 @@ begin
   TObject(fAttributes[Index]).Free;
   fAttributes.Delete(Index);
 end;
-{$ENDIF}
 
 destructor TCustomSynAutoComplete.Destroy;
 begin
@@ -255,10 +232,8 @@ begin
   fCompletionComments.Free;
   fCompletionValues.Free;
   fAutoCompleteList.Free;
-  {$IFDEF SYN_LAZARUS}
   ClearAttributes;
   fAttributes.Free;
-  {$ENDIF}
   inherited Destroy;
 end;
 
@@ -279,13 +254,11 @@ begin
       s := Copy(s, i, j - i);
       ExecuteCompletion(s, AEditor);
     end else begin
-      {$IFDEF SYN_LAZARUS}
       i:=-1;
       if Assigned(OnTokenNotFound) then
         OnTokenNotFound(Self,'',AEditor,i);
       if i>=0 then
         ExecuteCompletion(FCompletions[i], AEditor);
-      {$ENDIF}
     end;
   end;
 end;
@@ -303,10 +276,8 @@ begin
   if not fParsed then
     ParseCompletionList;
   Len := Length(AToken);
-  {$IFDEF SYN_LAZARUS}
   if (Len=0) and Assigned(OnTokenNotFound) then
     OnTokenNotFound(Self,AToken,AEditor,i);
-  {$ENDIF}
   if (Len > 0) and (AEditor <> nil) and not AEditor.ReadOnly
     and (fCompletions.Count > 0)
   then begin
@@ -339,22 +310,16 @@ begin
     end;
     if (i = -1) and (NumMaybe = 1) then
       i := IdxMaybe;
-    {$IFDEF SYN_LAZARUS}
     if (i < 0) and Assigned(fOnTokenNotFound) then
       fOnTokenNotFound(Self,AToken,AEditor,i);
-    {$ENDIF}
     if i > -1 then begin
       // select token in editor
       p := AEditor.LogicalCaretXY;
-{begin}
-      {$IFDEF SYN_LAZARUS}
       if Assigned(OnExecuteCompletion) then
         OnExecuteCompletion(Self,i)
       else begin
-      {$ENDIF}
         AEditor.BeginUpdate;
         try
-          {$IFDEF SYN_LAZARUS}
           TokenStartX:=p.x;
           s:=AEditor.Lines[p.y-1];
           if TokenStartX>length(s) then TokenStartX:=length(s);
@@ -377,22 +342,14 @@ begin
             end;
             dec(IndentLen);
           end;
-          {$ELSE}
-          AEditor.BlockBegin := Point(p.x - Len, p.y);
-          AEditor.BlockEnd := p;
-          // indent the completion string if necessary, determine the caret pos
-          IndentLen := p.x - Len - 1;
-          {$ENDIF}
           p := AEditor.BlockBegin;
           NewCaretPos := FALSE;
           Temp := TStringList.Create;
           try
             Temp.Text := fCompletionValues[i];
-            {$IFDEF SYN_LAZARUS}
             s:=fCompletionValues[i];
             if (s<>'') and (s[length(s)] in [#10,#13]) then
               Temp.Add('');
-            {$ENDIF}
 
             // indent lines
             if (IndentLen > 0) and (Temp.Count > 1) then
@@ -425,14 +382,12 @@ begin
             s := Temp.Text;
             // strip the trailing #13#10 that was appended by the stringlist
             i := Length(s);
-            {$IFDEF SYN_LAZARUS}
             if (i>=1) and (s[i] in [#10,#13]) then begin
               dec(i);
               if (i>=1) and (s[i] in [#10,#13]) and (s[i]<>s[i+1]) then
                 dec(i);
               SetLength(s, i);
             end;
-            {$ENDIF}
           finally
             Temp.Free;
           end;
@@ -440,16 +395,11 @@ begin
           AEditor.SelText := s;
           if NewCaretPos then
             AEditor.CaretXY := p;
-          {$IFDEF SYN_LAZARUS}
           AEditor.EnsureCursorPosVisible;
-          {$ENDIF}
         finally
           AEditor.EndUpdate;
         end;
-      {$IFDEF SYN_LAZARUS}
       end;
-      {$ENDIF}
-{end}                                                                           //mh 2000-11-08
     end;
   end;
 end;
@@ -508,7 +458,7 @@ var
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove)
-  {$IFDEF SYN_LAZARUS}and (AComponent is TCustomSynEdit){$ENDIF} then begin
+  and (AComponent is TCustomSynEdit) then begin
     i := fEditors.IndexOf(AComponent);
     if i > -1 then
       RemoveEditor(AComponent as TCustomSynEdit);
@@ -517,7 +467,6 @@ end;
 
 procedure TCustomSynAutoComplete.ParseCompletionList;
 
-  {$IFDEF SYN_LAZARUS}
   procedure RemoveFirstLine(var Pattern: string);
   var
     i: Integer;
@@ -530,30 +479,24 @@ procedure TCustomSynAutoComplete.ParseCompletionList;
       inc(i);
     Pattern:=copy(Pattern,i+1,length(Pattern));
   end;
-  {$ENDIF}
 
 var
   BorlandDCI: boolean;
   i, j, Len: integer;
   s, sCompl, sComment, sComplValue: string;
-  {$IFDEF SYN_LAZARUS}
   TemplateStarted: Boolean;
-  {$ENDIF}
 
   procedure SaveEntry;
-  {$IFDEF SYN_LAZARUS}
   var
     CurAttributes: TStrings;
     Lines: TStringList;
     LastLineHasEnding: boolean;
     l: Integer;
-  {$ENDIF}
   begin
     fCompletions.Add(sCompl);
     sCompl := '';
     fCompletionComments.Add(sComment);
     sComment := '';
-    {$IFDEF SYN_LAZARUS}
     CurAttributes:=TStringList.Create;
     if copy(sComplValue,1,length(CodeTemplateMacroMagic))=CodeTemplateMacroMagic
     then begin
@@ -586,7 +529,6 @@ var
       end;
       Lines.Free;
     end;
-    {$ENDIF}
     fCompletionValues.Add(sComplValue);
     sComplValue := '';
     fAttributes.Add(CurAttributes);
@@ -605,9 +547,7 @@ begin
     sCompl := '';
     sComment := '';
     sComplValue := '';
-    {$IFDEF SYN_LAZARUS}
     TemplateStarted:=false;
-    {$ENDIF}
     for i := 0 to fAutoCompleteList.Count - 1 do begin
       s := fAutoCompleteList[i];
       Len := Length(s);
@@ -632,18 +572,11 @@ begin
           sComment := Copy(s, j, Len);
           if sComment[Length(sComment)] = ']' then
             SetLength(sComment, Length(sComment) - 1);
-          {$IFDEF SYN_LAZARUS}
           TemplateStarted:=true;
-          {$ENDIF}
         end else begin
-          {$IFDEF SYN_LAZARUS}
           if not TemplateStarted then
             sComplValue := sComplValue + #13#10;
           TemplateStarted:=false;
-          {$ELSE}
-          if sComplValue <> '' then
-            sComplValue := sComplValue + #13#10;
-          {$ENDIF}
           sComplValue := sComplValue + s;
         end;
       end else begin
@@ -654,18 +587,11 @@ begin
             SaveEntry;
           // new completion entry
           sCompl := s;
-          {$IFDEF SYN_LAZARUS}
           TemplateStarted:=true;
-          {$ENDIF}
         end else if (Len > 0) and (s[1] = '=') then begin
-          {$IFDEF SYN_LAZARUS}
           if not TemplateStarted then
             sComplValue := sComplValue + #13#10;
           TemplateStarted:=false;
-          {$ELSE}
-          if sComplValue <> '' then
-            sComplValue := sComplValue + #13#10;
-          {$ENDIF}
           sComplValue := sComplValue + Copy(s, 2, Len);
         end;
       end;
@@ -673,9 +599,7 @@ begin
     if sCompl <> '' then                                                        //mg 2000-11-07
       SaveEntry;
   end;
-  {$IFDEF SYN_LAZARUS}
   fParsed:=true;
-  {$ENDIF}
 end;
 
 function TCustomSynAutoComplete.RemoveEditor(AEditor: TCustomSynEdit): boolean;
@@ -717,7 +641,7 @@ end;
 procedure TCustomSynAutoComplete.SynEditCommandHandler(Sender: TObject;
   AfterProcessing: boolean; var Handled: boolean;
   var Command: TSynEditorCommand;
-  var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF}; Data: pointer;
+  var AChar: TUTF8Char; Data: pointer;
   HandlerData: pointer);
 begin
   if not AfterProcessing and not Handled and (Command = ecAutoCompletion) then
