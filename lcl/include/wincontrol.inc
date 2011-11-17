@@ -4150,7 +4150,6 @@ procedure TWinControl.SetTabStop(NewTabStop: Boolean);
 begin
   if FTabStop = NewTabStop then
     Exit;
-
   FTabStop := NewTabStop;
   UpdateTabOrder(FTabOrder);
   Perform(CM_TABSTOPCHANGED, 0, 0);
@@ -4501,9 +4500,9 @@ end;
 
 procedure TWinControl.FixupTabList;
 var
-  Count, I, J: Integer;
-  List: TFPList;
+  I, J: Integer;
   Control: TWinControl;
+  List: TFPList;
   WinControls: TFPList;
 begin
   if FControls <> nil then
@@ -4513,19 +4512,20 @@ begin
     try
       for i:=0 to FControls.Count-1 do
         if TObject(FControls[i]) is TWinControl then
-          WinControls.Add(TWinControl(FControls[i]));
-      Count := WinControls.Count;
-      List.Count := Count;
-      for I := 0 to Count - 1 do
+          WinControls.Add(FControls[i]);
+      List.Count := WinControls.Count;
+      for I := 0 to WinControls.Count - 1 do
       begin
         Control := TWinControl(WinControls[I]);
         J := Control.FTabOrder;
-        if (J >= 0) and (J < Count) then List[J] := Control;
+        if (J >= 0) and (J < WinControls.Count) then
+          List[J] := Control;
       end;
-      for I := 0 to Count - 1 do
+      for I := 0 to List.Count - 1 do
       begin
         Control := TWinControl(List[I]);
-        if Control <> nil then Control.UpdateTabOrder(TTabOrder(I));
+        if Control <> nil then
+          Control.UpdateTabOrder(TTabOrder(I));
       end;
     finally
       List.Free;
