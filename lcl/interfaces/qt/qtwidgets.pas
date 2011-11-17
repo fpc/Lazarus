@@ -2614,7 +2614,6 @@ var
   UTF8Text: String; // use to prevent 3 time convertion from WideString to utf8 string
   UTF8Char: TUTF8Char;
   ACharCode: Word;
-  AQtKey: Cardinal;
   {$IFDEF UNIX}
   ScanCode: LongWord;
   {$ENDIF}
@@ -2626,6 +2625,19 @@ var
   s1: String;
   NativeModifiers: LongWord;
   {$ENDIF}
+
+  function IsControlKey: Boolean;
+  var
+    AQtKey: Cardinal;
+  begin
+    // do not send UTF8KeyPress for control keys
+    AQtKey := QKeyEvent_key(QKeyEventH(Event));
+
+    Result := ((AQtKey >= QtKey_Escape) and (AQtKey <= QtKey_Clear)) or
+      ((AQtKey >= QtKey_Home) and (AQtKey <= QtKey_PageDown)) or
+      ((AQtKey >= QtKey_F1) and (AQtKey <= QtKey_Direction_L)) or
+      (AQtKey = QtKey_Direction_R);
+  end;
 begin
   {$ifdef VerboseQt}
     DebugLn('TQtWidget.SlotKey ', dbgsname(LCLObject));
@@ -2812,15 +2824,6 @@ begin
   if (LCLObject = nil) then
     Exit(False);
 
-  // do not send UTF8KeyPress for control keys
-  AQtKey := QKeyEvent_key(QKeyEventH(Event));
-
-  if ((AQtKey >= QtKey_Escape) and (AQtKey <= QtKey_Clear)) or
-    ((AQtKey >= QtKey_Home) and (AQtKey <= QtKey_PageDown)) or
-    ((AQtKey >= QtKey_F1) and (AQtKey <= QtKey_Direction_L)) or
-    (AQtKey = QtKey_Direction_R) then
-      Exit(False);
-
 
   { Also sends a utf-8 key event for key down }
   if (QEvent_type(Event) = QEventKeyPress) and (Length(Text) <> 0) then
@@ -2830,7 +2833,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('sending char ', UTF8Char);
   {$endif}
-    if LCLObject.IntfUTF8KeyPress(UTF8Char, 1, IsSysKey) then
+    if not IsControlKey and LCLObject.IntfUTF8KeyPress(UTF8Char, 1, IsSysKey) then
     begin
       // the LCL has handled the key
   {$ifdef VerboseQt}
