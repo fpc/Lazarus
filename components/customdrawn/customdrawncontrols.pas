@@ -2105,7 +2105,7 @@ begin
     end;
   end
   // Check if a close button was clicked
-  else if (nboShowCloseButtons in Options) then
+  else if (nboShowCloseButtons in Options) and (lTabIndex >= 0) then
   begin
     FTabCState.CurTabIndex := lTabIndex;
     lCloseButtonPos.X := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_CLOSE_BUTTON_POS_X, FState, FStateEx);
