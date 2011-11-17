@@ -10,18 +10,19 @@
       <short>Contains winapi like functions for Delphi compatibility</short>
       <descr>
         <p>This unit is being created specifically for compatibility with Delphi. It
-contains selected functions that are included in the Delphi Windows unit.
-These functions are mostly abstract and implemented by the LCL interfaces.
-<br/>
-For LCL users:<br/>
-The functions can be used to make porting of Delphi applications easier
-and are not 100% emulating winapi functions, not even under windows. They were
-implemented and tested with some common Delphi libraries.
-The LCL contains many extra functions that the Delphi VCL does not have.<br/>
-For example:<br/>
-Instead of using the common windows functions SaveDC and RestoreDC use instead
-the Canvas.SaveHandleState and Canvas.RestoreHandleState.
-</p>
+          contains selected functions that are included in the Delphi Windows unit.
+          These functions are mostly abstract and implemented by the LCL interfaces.
+        </p><p>
+          For LCL users:<br/>
+          The functions can be used to make porting of Delphi applications easier
+          and are not 100% emulating winapi functions, not even under windows. They were
+          implemented and tested with some common Delphi libraries.
+          The LCL contains many extra functions that the Delphi VCL does not have.
+        </p><p>
+          For example:<br/>
+          Instead of using the common windows functions SaveDC and RestoreDC use
+          the Canvas.SaveHandleState and Canvas.RestoreHandleState.
+        </p>
       </descr>
       <!-- unresolved type reference Visibility: default -->
       <element name="Math">
@@ -71,110 +72,99 @@ the Canvas.SaveHandleState and Canvas.RestoreHandleState.
         <descr/>
         <seealso/>
       </element>
-      <!-- function Visibility: default -->
+<!-- function Visibility: default -->
       <element name="Arc">
-        <short>Draws an elliptical curve</short>
-        <descr>Use Arc to draw an elliptically curved line with the current Pen.
-  The angles angle1 and angle2 are 1/16th of a degree. For example, a full
-  circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
-  counter-clockwise while negative values mean clockwise direction.
-  Zero degrees is at the 3'o clock position.</descr>
+        <short>Draws an elliptical curve.</short>
+        <descr>
+          <p>
+            Use Arc to draw an elliptically curved line with the current Pen.
+          </p><p>
+            [This description deserves an update!?]
+          </p><p>
+            The angles angle1 and angle2 are 1/16th of a degree. For example, a full
+            circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
+            counter-clockwise while negative values mean clockwise direction.
+          </p><p>
+            Zero degrees is at the 3'o clock position.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="Arc.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="Arc.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Arc.x">
-        <short/>
+      <element name="Arc.Left">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Arc.y">
-        <short/>
+      <element name="Arc.Top">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Arc.width">
-        <short/>
+      <element name="Arc.Right">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Arc.height">
-        <short/>
+      <element name="Arc.Bottom">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Arc.angle1">
-        <short/>
+      <element name="Arc.Angle16Deg">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Arc.angle2">
-        <short/>
+      <element name="Arc.Angle16DegLength">
+        <short></short>
       </element>
-      <!-- function Visibility: default -->
+<!-- function Visibility: default -->
       <element name="AngleChord">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="AngleChord.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="AngleChord.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="AngleChord.x">
-        <short/>
+      <element name="AngleChord.x1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="AngleChord.y">
-        <short/>
+      <element name="AngleChord.y1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="AngleChord.width">
-        <short/>
+      <element name="AngleChord.x2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="AngleChord.height">
-        <short/>
+      <element name="AngleChord.y2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="AngleChord.angle1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="AngleChord.angle2">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+<!-- function Visibility: default -->
       <element name="BeginPaint">
-        <short/>
+        <short>Start painting in a window[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="BeginPaint.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="BeginPaint.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="BeginPaint.PS">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+<!-- function Visibility: default -->
       <element name="BitBlt">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -217,21 +207,6 @@ the Canvas.SaveHandleState and Canvas.RestoreHandleState.
       </element>
       <!-- argument Visibility: default -->
       <element name="BitBlt.Rop">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="BringWindowToTop">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="BringWindowToTop.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="BringWindowToTop.hWnd">
         <short/>
       </element>
       <!-- function Visibility: default -->
@@ -541,21 +516,17 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <element name="CreateEllipticRgn.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="CreateEllipticRgn.p1">
-        <short/>
+      <element name="CreateEllipticRgn.X1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="CreateEllipticRgn.p2">
-        <short/>
+      <element name="CreateEllipticRgn.Y1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="CreateEllipticRgn.p3">
-        <short/>
+      <element name="CreateEllipticRgn.X2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="CreateEllipticRgn.p4">
-        <short/>
+      <element name="CreateEllipticRgn.Y2">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateFontIndirect">
@@ -579,17 +550,30 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreateFontIndirectEx.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateFontIndirectEx.LogFont">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateFontIndirectEx.LongFontName">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CreateIconIndirect">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CreateIconIndirect.Result">
+        <short></short>
+      </element>
+      <element name="CreateIconIndirect.IconInfo">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreatePalette">
@@ -605,6 +589,22 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <!-- argument Visibility: default -->
       <element name="CreatePalette.LogPalette">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CreatePatternBrush">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CreatePatternBrush.Result">
+        <short></short>
+      </element>
+      <element name="CreatePatternBrush.ABitmap">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreatePenIndirect">
@@ -651,25 +651,51 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreateRectRgn.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateRectRgn.X1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateRectRgn.Y1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateRectRgn.X2">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateRectRgn.Y2">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CreateRoundRectRgn">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CreateRoundRectRgn.Result">
+        <short></short>
+      </element>
+      <element name="CreateRoundRectRgn.X1">
+        <short></short>
+      </element>
+      <element name="CreateRoundRectRgn.Y1">
+        <short></short>
+      </element>
+      <element name="CreateRoundRectRgn.X2">
+        <short></short>
+      </element>
+      <element name="CreateRoundRectRgn.Y2">
+        <short></short>
+      </element>
+      <element name="CreateRoundRectRgn.nWidthEllipse">
+        <short></short>
+      </element>
+      <element name="CreateRoundRectRgn.nHeightEllipse">
+        <short></short>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DeleteCriticalSection">
@@ -719,13 +745,43 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="DestroyCaret.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DestroyCaret.Handle">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DestroyCursor">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DestroyCursor.Result">
+        <short></short>
+      </element>
+      <element name="DestroyCursor.Handle">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DestroyIcon">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DestroyIcon.Result">
+        <short></short>
+      </element>
+      <element name="DestroyIcon.Handle">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="DPtoLP">
@@ -734,19 +790,15 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="DPtoLP.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DPtoLP.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DPtoLP.Points">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DPtoLP.Count">
         <short/>
       </element>
@@ -761,21 +813,36 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <element name="DrawFrameControl.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DrawFrameControl.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DrawFrameControl.Rect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DrawFrameControl.uType">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DrawFrameControl.uState">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="DrawFocusRect">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DrawFocusRect.Result">
+        <short></short>
+      </element>
+      <element name="DrawFocusRect.DC">
+        <short></short>
+      </element>
+      <element name="DrawFocusRect.Rect">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="DrawEdge">
@@ -784,23 +851,18 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="DrawEdge.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DrawEdge.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DrawEdge.Rect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DrawEdge.edge">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DrawEdge.grfFlags">
         <short/>
       </element>
@@ -903,9 +965,86 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="EnterCriticalSection.CritSection">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="EnumDisplayMonitors">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="EnumDisplayMonitors.Result">
+        <short></short>
+      </element>
+      <element name="EnumDisplayMonitors.hdc">
+        <short></short>
+      </element>
+      <element name="EnumDisplayMonitors.lprcClip">
+        <short></short>
+      </element>
+      <element name="EnumDisplayMonitors.lpfnEnum">
+        <short></short>
+      </element>
+      <element name="EnumDisplayMonitors.dwData">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="EnumFontFamilies">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="EnumFontFamilies.Result">
+        <short></short>
+      </element>
+      <element name="EnumFontFamilies.DC">
+        <short></short>
+      </element>
+      <element name="EnumFontFamilies.Family">
+        <short></short>
+      </element>
+      <element name="EnumFontFamilies.EnumFontFamProc">
+        <short></short>
+      </element>
+      <element name="EnumFontFamilies.LParam">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="EnumFontFamiliesEx">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="EnumFontFamiliesEx.Result">
+        <short></short>
+      </element>
+      <element name="EnumFontFamiliesEx.DC">
+        <short></short>
+      </element>
+      <element name="EnumFontFamiliesEx.lpLogFont">
+        <short></short>
+      </element>
+      <element name="EnumFontFamiliesEx.Callback">
+        <short></short>
+      </element>
+      <element name="EnumFontFamiliesEx.Lparam">
+        <short></short>
+      </element>
+      <element name="EnumFontFamiliesEx.Flags">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="Ellipse">
@@ -968,6 +1107,34 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <!-- argument Visibility: default -->
       <element name="ExcludeClipRect.Bottom">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="ExtCreatePen">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="ExtCreatePen.Result">
+        <short></short>
+      </element>
+      <element name="ExtCreatePen.dwPenStyle">
+        <short></short>
+      </element>
+      <element name="ExtCreatePen.dwWidth">
+        <short></short>
+      </element>
+      <element name="ExtCreatePen.lplb">
+        <short></short>
+      </element>
+      <element name="ExtCreatePen.dwStyleCount">
+        <short></short>
+      </element>
+      <element name="ExtCreatePen.lpStyle">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="ExtTextOut">
@@ -1174,6 +1341,22 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="GetBkColor">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetBkColor.Result">
+        <short></short>
+      </element>
+      <element name="GetBkColor.DC">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
       <element name="GetCapture">
         <short/>
         <descr/>
@@ -1201,20 +1384,24 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetClientRect">
-        <short/>
-        <descr/>
+        <short>Returns the client rectangle of a control. Left and Top are always 0.</short>
+        <descr>
+          <p>
+            The client rectangle is the size of the inner area of a control,
+            where the child controls are visible.
+          </p><p>
+            A child control with Align=alClient will completely fill the clientrect.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetClientRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetClientRect.handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetClientRect.Rect">
         <short/>
       </element>
@@ -1263,13 +1450,30 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetCursorPos.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetCursorPos.lpPoint">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetCurrentObject">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetCurrentObject.Result">
+        <short></short>
+      </element>
+      <element name="GetCurrentObject.DC">
+        <short></short>
+      </element>
+      <element name="GetCurrentObject.uObjectType">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="GetCharABCWidths">
@@ -1320,17 +1524,27 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetDeviceCaps.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetDeviceCaps.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetDeviceCaps.Index">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetDoubleClickTime">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetDoubleClickTime.Result">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="GetDIBits">
@@ -1398,6 +1612,37 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="GetForegroundWindow">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetForegroundWindow.Result">
+        <short></short>
+      </element>
+      <element name="GetIconInfo">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetIconInfo.Result">
+        <short></short>
+      </element>
+      <element name="GetIconInfo.AIcon">
+        <short></short>
+      </element>
+      <element name="GetIconInfo.AIconInfo">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
       <element name="GetKeyState">
         <short/>
         <descr/>
@@ -1426,6 +1671,25 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <!-- argument Visibility: default -->
       <element name="GetMapMode.DC">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetMonitorInfo">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetMonitorInfo.Result">
+        <short></short>
+      </element>
+      <element name="GetMonitorInfo.hMonitor">
+        <short></short>
+      </element>
+      <element name="GetMonitorInfo.lpmi">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="GetObject">
@@ -1531,6 +1795,22 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="GetROP2">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetROP2.Result">
+        <short></short>
+      </element>
+      <element name="GetROP2.DC">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
       <element name="GetScrollInfo">
         <short/>
         <descr/>
@@ -1582,6 +1862,22 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <!-- argument Visibility: default -->
       <element name="GetSysColor.nIndex">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetSysColorBrush">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetSysColorBrush.Result">
+        <short></short>
+      </element>
+      <element name="GetSysColorBrush.nIndex">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="GetSystemPaletteEntries">
@@ -1753,6 +2049,70 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="GetViewPortExtEx">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetViewPortExtEx.Result">
+        <short></short>
+      </element>
+      <element name="GetViewPortExtEx.DC">
+        <short></short>
+      </element>
+      <element name="GetViewPortExtEx.Size">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetViewPortOrgEx">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetViewPortOrgEx.Result">
+        <short></short>
+      </element>
+      <element name="GetViewPortOrgEx.DC">
+        <short></short>
+      </element>
+      <element name="GetViewPortOrgEx.P">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetWindowExtEx">
+      <short></short>
+      <descr>
+      </descr>
+      <errors>
+      </errors>
+      <seealso>
+      </seealso>
+      </element>
+
+      <!-- function result Visibility: default -->
+      <element name="GetWindowExtEx.Result">
+      <short></short>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="GetWindowExtEx.DC">
+      <short></short>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="GetWindowExtEx.Size">
+      <short></short>
+      </element>
+
+      <!-- function Visibility: default -->
       <element name="GetWindowLong">
         <short/>
         <descr/>
@@ -1773,43 +2133,40 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetWindowRect">
-        <short/>
-        <descr/>
+        <short>After the call, ARect will be the control area in screen coordinates.
+        </short>
+        <descr>That means, Left and Top will be the screen coordinates of
+          the TopLeft pixel of the Handle object and Right and Bottom
+          will be the screens coordinate of the BottomRight pixel.
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetWindowRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetWindowRect.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetWindowRect.Rect">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetWindowSize">
-        <short/>
+        <short>Returns the Width and Height of the window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetWindowSize.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetWindowSize.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetWindowSize.Width">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetWindowSize.Height">
         <short/>
       </element>
@@ -1882,21 +2239,18 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <element name="HideCaret.hWnd">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="InitializeCriticalSection">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="InitializeCriticalSection.CritSection">
-        <short/>
-      </element>
       <!-- function Visibility: default -->
       <element name="IntersectClipRect">
-        <short/>
-        <descr/>
+        <short>Shrinks the current clipping region in the device context dc
+          to the boundary defined by Left, Top, Right, Bottom.
+        </short>
+        <descr>The result can be one of the following constants:<br/>
+          Error
+          NullRegion
+          SimpleRegion
+          ComplexRegion
+          Region_Error
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -1948,6 +2302,28 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="InvalidateRgn">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="InvalidateRgn.Result">
+        <short></short>
+      </element>
+      <element name="InvalidateRgn.Handle">
+        <short></short>
+      </element>
+      <element name="InvalidateRgn.Rgn">
+        <short></short>
+      </element>
+      <element name="InvalidateRgn.Erase">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
       <element name="IsDBCSLeadByte">
         <short/>
         <descr/>
@@ -1963,6 +2339,54 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="IsIconic">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="IsIconic.Result">
+        <short></short>
+      </element>
+      <element name="IsIconic.handle">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="IsWindow">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="IsWindow.Result">
+        <short></short>
+      </element>
+      <element name="IsWindow.handle">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="IsWindowEnabled">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="IsWindowEnabled.Result">
+        <short></short>
+      </element>
+      <element name="IsWindowEnabled.handle">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
       <element name="IsWindowVisible">
         <short/>
         <descr/>
@@ -1975,6 +2399,33 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- argument Visibility: default -->
       <element name="IsWindowVisible.handle">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="IsZoomed">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="IsZoomed.Result">
+        <short></short>
+      </element>
+      <element name="IsZoomed.handle">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="InitializeCriticalSection">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="InitializeCriticalSection.CritSection">
         <short/>
       </element>
       <!-- procedure Visibility: default -->
@@ -2010,6 +2461,28 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <!-- argument Visibility: default -->
       <element name="LineTo.Y">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="LPtoDP">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="LPtoDP.Result">
+        <short></short>
+      </element>
+      <element name="LPtoDP.DC">
+        <short></short>
+      </element>
+      <element name="LPtoDP.Points">
+        <short></short>
+      </element>
+      <element name="LPtoDP.Count">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="MaskBlt">
@@ -2153,31 +2626,105 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="MonitorFromPoint">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="MonitorFromPoint.Result">
+        <short></short>
+      </element>
+      <element name="MonitorFromPoint.ptScreenCoords">
+        <short></short>
+      </element>
+      <element name="MonitorFromPoint.dwFlags">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="MonitorFromRect">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="MonitorFromRect.Result">
+        <short></short>
+      </element>
+      <element name="MonitorFromRect.lprcScreenCoords">
+        <short></short>
+      </element>
+      <element name="MonitorFromRect.dwFlags">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="MonitorFromWindow">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="MonitorFromWindow.Result">
+        <short></short>
+      </element>
+      <element name="MonitorFromWindow.hWnd">
+        <short></short>
+      </element>
+      <element name="MonitorFromWindow.dwFlags">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
       <element name="MoveToEx">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="MoveToEx.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MoveToEx.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MoveToEx.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MoveToEx.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MoveToEx.OldPoint">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="OffsetRgn">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="OffsetRgn.Result">
+        <short></short>
+      </element>
+      <element name="OffsetRgn.RGN">
+        <short></short>
+      </element>
+      <element name="OffsetRgn.nXOffset">
+        <short></short>
+      </element>
+      <element name="OffsetRgn.nYOffset">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="PeekMessage">
@@ -2225,37 +2772,29 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <element name="Pie.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Pie.EllipseX1">
-        <short/>
+      <element name="Pie.x1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Pie.EllipseY1">
-        <short/>
+      <element name="Pie.y1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Pie.EllipseX2">
-        <short/>
+      <element name="Pie.x2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Pie.EllipseY2">
-        <short/>
+      <element name="Pie.y2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Pie.StartX">
-        <short/>
+      <element name="Pie.sx">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Pie.StartY">
-        <short/>
+      <element name="Pie.sy">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Pie.EndX">
-        <short/>
+      <element name="Pie.ex">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="Pie.EndY">
-        <short/>
+      <element name="Pie.ey">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="PolyBezier">
@@ -2491,6 +3030,31 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="RedrawWindow">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="RedrawWindow.Result">
+        <short></short>
+      </element>
+      <element name="RedrawWindow.Wnd">
+        <short></short>
+      </element>
+      <element name="RedrawWindow.lprcUpdate">
+        <short></short>
+      </element>
+      <element name="RedrawWindow.hrgnUpdate">
+        <short></short>
+      </element>
+      <element name="RedrawWindow.flags">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
       <element name="ReleaseCapture">
         <short/>
         <descr/>
@@ -2521,23 +3085,23 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short/>
       </element>
       <!-- function Visibility: default -->
-      <element name="RestoreDC">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="RemoveProp">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="RestoreDC.Result">
-        <short/>
+      <element name="RemoveProp.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RestoreDC.DC">
-        <short/>
+      <element name="RemoveProp.Handle">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RestoreDC.SavedDC">
-        <short/>
+      <element name="RemoveProp.Str">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="RoundRect">
@@ -2576,6 +3140,25 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- argument Visibility: default -->
       <element name="RoundRect.RY">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="RestoreDC">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="RestoreDC.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RestoreDC.DC">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="RestoreDC.SavedDC">
         <short/>
       </element>
       <!-- function Visibility: default -->
@@ -2653,67 +3236,6 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- argument Visibility: default -->
       <element name="ScrollWindowEx.flags">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="SelectClipRGN">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="SelectClipRGN.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="SelectClipRGN.DC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="SelectClipRGN.RGN">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="SelectObject">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="SelectObject.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="SelectObject.DC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="SelectObject.GDIObj">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="SelectPalette">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="SelectPalette.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="SelectPalette.DC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="SelectPalette.Palette">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="SelectPalette.ForceBackground">
         <short/>
       </element>
       <!-- function Visibility: default -->
@@ -2810,7 +3332,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="SetCapture.Value">
+      <element name="SetCapture.AHandle">
         <short/>
       </element>
       <!-- function Visibility: default -->
@@ -2871,19 +3393,23 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short/>
       </element>
       <!-- function Visibility: default -->
-      <element name="SetFocus">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="SetCursorPos">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="SetFocus.Result">
-        <short/>
+      <element name="SetCursorPos.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="SetFocus.hWnd">
-        <short/>
+      <element name="SetCursorPos.X">
+        <short></short>
+      </element>
+      <element name="SetCursorPos.Y">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="SetMapMode">
@@ -2892,18 +3418,54 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetMapMode.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetMapMode.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="SetMapMode.MapMode">
-        <short/>
+      <element name="SetMapMode.fnMapMode">
+        <short></short>
       </element>
+      <!-- function Visibility: default -->
+      <element name="SetMenu">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SetMenu.Result">
+        <short></short>
+      </element>
+      <element name="SetMenu.AWindowHandle">
+        <short></short>
+      </element>
+      <element name="SetMenu.AMenuHandle">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SetParent">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SetParent.Result">
+        <short></short>
+      </element>
+      <element name="SetParent.hWndChild">
+        <short></short>
+      </element>
+      <element name="SetParent.hWndParent">
+        <short></short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="SetProp">
         <short/>
@@ -2926,6 +3488,117 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <!-- argument Visibility: default -->
       <element name="SetProp.Data">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SetROP2">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SetROP2.Result">
+        <short></short>
+      </element>
+      <element name="SetROP2.DC">
+        <short></short>
+      </element>
+      <element name="SetROP2.Mode">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SelectClipRGN">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="SelectClipRGN.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SelectClipRGN.DC">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SelectClipRGN.RGN">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SelectObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="SelectObject.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SelectObject.DC">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SelectObject.GDIObj">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SelectPalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="SelectPalette.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SelectPalette.DC">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SelectPalette.Palette">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SelectPalette.ForceBackground">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SetFocus">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="SetFocus.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SetFocus.hWnd">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SetForegroundWindow">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SetForegroundWindow.Result">
+        <short></short>
+      </element>
+      <element name="SetForegroundWindow.hWnd">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="SetScrollInfo">
@@ -2997,25 +3670,6 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short/>
       </element>
       <!-- function Visibility: default -->
-      <element name="SetTextAlign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="SetTextAlign.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="SetTextAlign.DC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="SetTextAlign.Flags">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
       <element name="SetTextCharacterExtra">
         <short/>
         <descr/>
@@ -3052,6 +3706,81 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <!-- argument Visibility: default -->
       <element name="SetTextColor.Color">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SetViewPortExtEx">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SetViewPortExtEx.Result">
+        <short></short>
+      </element>
+      <element name="SetViewPortExtEx.DC">
+        <short></short>
+      </element>
+      <element name="SetViewPortExtEx.XExtent">
+        <short></short>
+      </element>
+      <element name="SetViewPortExtEx.YExtent">
+        <short></short>
+      </element>
+      <element name="SetViewPortExtEx.OldSize">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SetViewPortOrgEx">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SetViewPortOrgEx.Result">
+        <short></short>
+      </element>
+      <element name="SetViewPortOrgEx.DC">
+        <short></short>
+      </element>
+      <element name="SetViewPortOrgEx.NewX">
+        <short></short>
+      </element>
+      <element name="SetViewPortOrgEx.NewY">
+        <short></short>
+      </element>
+      <element name="SetViewPortOrgEx.OldPoint">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SetWindowExtEx">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SetWindowExtEx.Result">
+        <short></short>
+      </element>
+      <element name="SetWindowExtEx.DC">
+        <short></short>
+      </element>
+      <element name="SetWindowExtEx.XExtent">
+        <short></short>
+      </element>
+      <element name="SetWindowExtEx.YExtent">
+        <short></short>
+      </element>
+      <element name="SetWindowExtEx.OldSize">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="SetWindowLong">
@@ -3155,6 +3884,18 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
           <link id="#lcl.LCLIntf.CreateRectRgn">LCLIntf.CreateRectRgn</link>
         </seealso>
       </element>
+      <element name="SetWindowRgn.Result">
+        <short></short>
+      </element>
+      <element name="SetWindowRgn.hWnd">
+        <short></short>
+      </element>
+      <element name="SetWindowRgn.hRgn">
+        <short></short>
+      </element>
+      <element name="SetWindowRgn.bRedraw">
+        <short></short>
+      </element>
       <!-- function Visibility: default -->
       <element name="ShowCaret">
         <short/>
@@ -3210,17 +3951,6 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- argument Visibility: default -->
       <element name="ShowWindow.nCmdShow">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="Sleep">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="Sleep.dwMilliseconds">
         <short/>
       </element>
       <!-- function Visibility: default -->
@@ -3342,6 +4072,31 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="SystemParametersInfo">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SystemParametersInfo.Result">
+        <short></short>
+      </element>
+      <element name="SystemParametersInfo.uiAction">
+        <short></short>
+      </element>
+      <element name="SystemParametersInfo.uiParam">
+        <short></short>
+      </element>
+      <element name="SystemParametersInfo.pvParam">
+        <short></short>
+      </element>
+      <element name="SystemParametersInfo.fWinIni">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
       <element name="TextOut">
         <short/>
         <descr/>
@@ -3385,21 +4140,6 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- argument Visibility: default -->
       <element name="UpdateWindow.Handle">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="VkKeyScan">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="VkKeyScan.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="VkKeyScan.AChar">
         <short/>
       </element>
       <!-- function Visibility: default -->
@@ -3594,17 +4334,31 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreateRectRgnIndirect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateRectRgnIndirect.ARect">
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="CreateSolidBrush">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CreateSolidBrush.Result">
+        <short></short>
+      </element>
+      <element name="CreateSolidBrush.Color">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
       <element name="EqualRect">
-        <short/>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3621,6 +4375,7 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       <element name="EqualRect.lprc2">
         <short/>
       </element>
+
       <!-- function Visibility: default -->
       <element name="GetScrollPos">
         <short>Returns the scollbar position.</short>
@@ -3638,33 +4393,6 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- argument Visibility: default -->
       <element name="GetScrollPos.nBar">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetScrollRange">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="GetScrollRange.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetScrollRange.Handle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetScrollRange.nBar">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetScrollRange.lpMinPos">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetScrollRange.lpMaxPos">
         <short/>
       </element>
       <!-- function Visibility: default -->
@@ -3742,21 +4470,90 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- function Visibility: default -->
       <element name="IsRectEmpty">
-        <short>Returns true, if the rectangle is empty</short>
-        <descr>IsEmptyRect returns true, if the area of the rectangle described by ARect is empty,
-  i.e. right coordinate is less than or equal to the left coordinate,
- or the bottom coordinate is less than or equal to the top coordinate
-
-</descr>
+        <short>Returns true if the rectangle is empty.</short>
+        <descr>
+          IsEmptyRect returns true, if the area of the rectangle is empty,
+          i.e. right coordinate is less than or equal to the left coordinate,
+          or the bottom coordinate is less than or equal to the top coordinate
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="IsRectEmpty.Result">
+        <short/>
+      </element>
+      <element name="IsRectEmpty.ARect">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="KillTimer">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="KillTimer.Result">
+        <short></short>
+      </element>
+      <element name="KillTimer.Wnd">
+        <short></short>
+      </element>
+      <element name="KillTimer.uIDEvent">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="MakeLong">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="MakeLong.Result">
+        <short/>
+      </element>
+      <element name="MakeLong.A">
+        <short/>
+      </element>
+      <element name="MakeLong.B">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="MakeROP4">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="MakeROP4.Result">
+        <short></short>
+      </element>
+      <element name="MakeROP4.fore">
+        <short></short>
+      </element>
+      <element name="MakeROP4.back">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="MakeWord">
+        <short/>
+        <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="IsRectEmpty.Result">
+      <element name="MakeWord.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="IsRectEmpty.ARect">
+      <element name="MakeWord.A">
+        <short/>
+      </element>
+      <element name="MakeWord.B">
         <short/>
       </element>
       <!-- function Visibility: default -->
@@ -3766,15 +4563,12 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="MakeWParam.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MakeWParam.l">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MakeWParam.h">
         <short/>
       </element>
@@ -3785,15 +4579,12 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="MakeLParam.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MakeLParam.l">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MakeLParam.h">
         <short/>
       </element>
@@ -3808,11 +4599,9 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       <element name="MakeLResult.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MakeLResult.l">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MakeLResult.h">
         <short/>
       </element>
@@ -3984,29 +4773,48 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetScrollRange.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetScrollRange.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetScrollRange.nBar">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetScrollRange.nMinPos">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetScrollRange.nMaxPos">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetScrollRange.bRedraw">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SetTimer">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SetTimer.Result">
+        <short></short>
+      </element>
+      <element name="SetTimer.Wnd">
+        <short></short>
+      </element>
+      <element name="SetTimer.nIDEvent">
+        <short></short>
+      </element>
+      <element name="SetTimer.uElapse">
+        <short></short>
+      </element>
+      <element name="SetTimer.lpTimerFunc">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="SmallPointToPoint">
@@ -4015,13 +4823,33 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SmallPointToPoint.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SmallPointToPoint.P">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="SubtractRect">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SubtractRect.Result">
+        <short></short>
+      </element>
+      <element name="SubtractRect.lprcDst">
+        <short></short>
+      </element>
+      <element name="SubtractRect.lprcSrc1">
+        <short></short>
+      </element>
+      <element name="SubtractRect.lprcSrc2">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="UnionRect">
@@ -4091,6 +4919,94 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       <element name="GetBValue.RGB">
         <short/>
       </element>
+      <!-- procedure Visibility: default -->
+      <element name="GetRGBValues">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetRGBValues.RGB">
+        <short></short>
+      </element>
+      <element name="GetRGBValues.R">
+        <short></short>
+      </element>
+      <element name="GetRGBValues.G">
+        <short></short>
+      </element>
+      <element name="GetRGBValues.B">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="GetRGBIntValues">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetRGBIntValues.RGB">
+        <short></short>
+      </element>
+      <element name="GetRGBIntValues.R">
+        <short></short>
+      </element>
+      <element name="GetRGBIntValues.G">
+        <short></short>
+      </element>
+      <element name="GetRGBIntValues.B">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetScrollRange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="GetScrollRange.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetScrollRange.Handle">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetScrollRange.nBar">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetScrollRange.lpMinPos">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="GetScrollRange.lpMaxPos">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="IndexToOverlayMask">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="IndexToOverlayMask.Result">
+        <short></short>
+      </element>
+      <element name="IndexToOverlayMask.iOverlay">
+        <short></short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="RGB">
         <short/>
@@ -4114,16 +5030,120 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       <element name="RGB.B">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="AttachMenuToWindow">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+
+      <!-- function Visibility: default -->
+      <element name="AddEventHandler">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="AttachMenuToWindow.AMenuObject">
-        <short/>
+      <element name="AddEventHandler.Result">
+        <short></short>
+      </element>
+      <element name="AddEventHandler.AHandle">
+        <short></short>
+      </element>
+      <element name="AddEventHandler.AFlags">
+        <short></short>
+      </element>
+      <element name="AddEventHandler.AEventHandler">
+        <short></short>
+      </element>
+      <element name="AddEventHandler.AData">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="AddProcessEventHandler">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="AddProcessEventHandler.Result">
+        <short></short>
+      </element>
+      <element name="AddProcessEventHandler.AHandle">
+        <short></short>
+      </element>
+      <element name="AddProcessEventHandler.AEventHandler">
+        <short></short>
+      </element>
+      <element name="AddProcessEventHandler.AData">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="AddPipeEventHandler">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="AddPipeEventHandler.Result">
+        <short></short>
+      </element>
+      <element name="AddPipeEventHandler.AHandle">
+        <short></short>
+      </element>
+      <element name="AddPipeEventHandler.AEventHandler">
+        <short></short>
+      </element>
+      <element name="AddPipeEventHandler.AData">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="AllocateHWnd">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="AllocateHWnd.Result">
+        <short></short>
+      </element>
+      <element name="AllocateHWnd.Method">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="AskUser">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="AskUser.Result">
+        <short></short>
+      </element>
+      <element name="AskUser.DialogCaption">
+        <short></short>
+      </element>
+      <element name="AskUser.DialogMessage">
+        <short></short>
+      </element>
+      <element name="AskUser.DialogType">
+        <short></short>
+      </element>
+      <element name="AskUser.Buttons">
+        <short></short>
+      </element>
+      <element name="AskUser.HelpCtx">
+        <short></short>
       </element>
       <!-- procedure Visibility: default -->
       <element name="CallDefaultWndHandler">
@@ -4244,52 +5264,6 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <short/>
       </element>
       <!-- function Visibility: default -->
-      <element name="ComboBoxDropDown">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="ComboBoxDropDown.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="ComboBoxDropDown.Handle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="ComboBoxDropDown.DropDown">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="CreateBitmapFromRawImage">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="CreateBitmapFromRawImage.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="CreateBitmapFromRawImage.RawImage">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="CreateBitmapFromRawImage.Bitmap">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="CreateBitmapFromRawImage.MaskBitmap">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="CreateBitmapFromRawImage.AlwaysCreateMask">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
       <element name="CreateEmptyRegion">
         <short/>
         <descr/>
@@ -4335,6 +5309,41 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="CreateRubberBand">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CreateRubberBand.Result">
+        <short></short>
+      </element>
+      <element name="CreateRubberBand.ARect">
+        <short></short>
+      </element>
+      <element name="CreateRubberBand.ABrush">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CreateStandardCursor">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="CreateStandardCursor.Result">
+        <short></short>
+      </element>
+      <element name="CreateStandardCursor.ACursor">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
       <element name="DCClipRegionValid">
         <short/>
         <descr/>
@@ -4350,19 +5359,71 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <short/>
       </element>
       <!-- procedure Visibility: default -->
-      <element name="DrawArrow">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="DeallocateHWnd">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="DrawArrow.Arrow">
-        <short/>
+      <element name="DeallocateHWnd.Wnd">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="DrawArrow.Canvas">
-        <short/>
+      <!-- procedure Visibility: default -->
+      <element name="DestroyRubberBand">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DestroyRubberBand.ARubberBand">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DrawDefaultDockImage">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DrawDefaultDockImage.AOldRect">
+        <short></short>
+      </element>
+      <element name="DrawDefaultDockImage.ANewRect">
+        <short></short>
+      </element>
+      <element name="DrawDefaultDockImage.AOperation">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="DrawGrid">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DrawGrid.DC">
+        <short></short>
+      </element>
+      <element name="DrawGrid.R">
+        <short></short>
+      </element>
+      <element name="DrawGrid.DX">
+        <short></short>
+      </element>
+      <element name="DrawGrid.DY">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="ExtUTF8Out">
@@ -4371,39 +5432,30 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ExtUTF8Out.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtUTF8Out.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtUTF8Out.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtUTF8Out.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtUTF8Out.Options">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtUTF8Out.Rect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtUTF8Out.Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtUTF8Out.Count">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtUTF8Out.Dx">
         <short/>
       </element>
@@ -4414,13 +5466,27 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="FontCanUTF8.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FontCanUTF8.Font">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FontIsMonoSpace">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="FontIsMonoSpace.Result">
+        <short></short>
+      </element>
+      <element name="FontIsMonoSpace.Font">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="Frame">
@@ -4485,25 +5551,6 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- argument Visibility: default -->
       <element name="GetAcceleratorString.AShiftState">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetBitmapRawImageDescription">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="GetBitmapRawImageDescription.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetBitmapRawImageDescription.Bitmap">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetBitmapRawImageDescription.Desc">
         <short/>
       </element>
       <!-- function Visibility: default -->
@@ -4609,25 +5656,6 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <short/>
       </element>
       <!-- function Visibility: default -->
-      <element name="GetDeviceRawImageDescription">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="GetDeviceRawImageDescription.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetDeviceRawImageDescription.DC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetDeviceRawImageDescription.Desc">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
       <element name="GetDeviceSize">
         <short/>
         <descr/>
@@ -4659,117 +5687,6 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- argument Visibility: default -->
       <element name="GetLCLOwnerObject.Handle">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetListBoxIndexAtY">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="GetListBoxIndexAtY.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetListBoxIndexAtY.ListBox">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetListBoxIndexAtY.y">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetListBoxItemRect">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="GetListBoxItemRect.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetListBoxItemRect.ListBox">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetListBoxItemRect.Index">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetListBoxItemRect.ARect">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetNotebookTabIndexAtPos">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="GetNotebookTabIndexAtPos.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetNotebookTabIndexAtPos.Handle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetNotebookTabIndexAtPos.ClientPos">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetRawImageFromDevice">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="GetRawImageFromDevice.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetRawImageFromDevice.SrcDC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetRawImageFromDevice.SrcRect">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetRawImageFromDevice.NewRawImage">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetRawImageFromBitmap">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="GetRawImageFromBitmap.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetRawImageFromBitmap.SrcBitmap">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetRawImageFromBitmap.SrcMaskBitmap">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetRawImageFromBitmap.SrcRect">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetRawImageFromBitmap.NewRawImage">
         <short/>
       </element>
       <!-- function Visibility: default -->
@@ -4872,49 +5789,23 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <short/>
       </element>
       <!-- function Visibility: default -->
-      <element name="LoadStockPixmap">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="IsDesignerDC">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="LoadStockPixmap.Result">
-        <short/>
+      <element name="IsDesignerDC.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="LoadStockPixmap.StockID">
-        <short/>
+      <element name="IsDesignerDC.WindowHandle">
+        <short></short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="MenuItemSetCheck">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="MenuItemSetCheck.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MenuItemSetCheck.AMenuItem">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="MenuItemSetEnable">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="MenuItemSetEnable.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MenuItemSetEnable.AMenuItem">
-        <short/>
+      <element name="IsDesignerDC.DC">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="MoveWindowOrgEx">
@@ -4937,82 +5828,6 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- argument Visibility: default -->
       <element name="MoveWindowOrgEx.dY">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="PairSplitterAddSide">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="PairSplitterAddSide.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PairSplitterAddSide.SplitterHandle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PairSplitterAddSide.SideHandle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PairSplitterAddSide.Side">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="PairSplitterGetInterfaceInfo">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="PairSplitterGetInterfaceInfo.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="PairSplitterRemoveSide">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="PairSplitterRemoveSide.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PairSplitterRemoveSide.SplitterHandle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PairSplitterRemoveSide.SideHandle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PairSplitterRemoveSide.Side">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="PairSplitterSetPosition">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="PairSplitterSetPosition.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PairSplitterSetPosition.SplitterHandle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="PairSplitterSetPosition.NewPosition">
         <short/>
       </element>
       <!-- function Visibility: default -->
@@ -5108,43 +5923,33 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="RadialArc.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RadialArc.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialArc.x">
-        <short/>
+      <element name="RadialArc.left">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialArc.y">
-        <short/>
+      <element name="RadialArc.top">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialArc.width">
-        <short/>
+      <element name="RadialArc.right">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialArc.height">
-        <short/>
+      <element name="RadialArc.bottom">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RadialArc.sx">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RadialArc.sy">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RadialArc.ex">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RadialArc.ey">
         <short/>
       </element>
@@ -5155,43 +5960,33 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="RadialChord.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RadialChord.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialChord.x">
-        <short/>
+      <element name="RadialChord.x1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialChord.y">
-        <short/>
+      <element name="RadialChord.y1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialChord.width">
-        <short/>
+      <element name="RadialChord.x2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialChord.height">
-        <short/>
+      <element name="RadialChord.y2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RadialChord.sx">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RadialChord.sy">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RadialChord.ex">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RadialChord.ey">
         <short/>
       </element>
@@ -5202,103 +5997,158 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="RadialPie.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RadialPie.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPie.x">
-        <short/>
+      <element name="RadialPie.x1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPie.y">
-        <short/>
+      <element name="RadialPie.y1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPie.width">
-        <short/>
+      <element name="RadialPie.x2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPie.height">
-        <short/>
+      <element name="RadialPie.y2">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPie.sx">
-        <short/>
+      <element name="RadialPie.Angle1">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPie.sy">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPie.ex">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPie.ey">
-        <short/>
+      <element name="RadialPie.Angle2">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
-      <element name="RadialPieWithAngles">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="RawImage_CreateBitmaps">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="RadialPieWithAngles.Result">
-        <short/>
+      <element name="RawImage_CreateBitmaps.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPieWithAngles.DC">
-        <short/>
+      <element name="RawImage_CreateBitmaps.ARawImage">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPieWithAngles.X">
-        <short/>
+      <element name="RawImage_CreateBitmaps.ABitmap">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPieWithAngles.Y">
-        <short/>
+      <element name="RawImage_CreateBitmaps.AMask">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPieWithAngles.Width">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPieWithAngles.Height">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPieWithAngles.Angle1">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="RadialPieWithAngles.Angle2">
-        <short/>
+      <element name="RawImage_CreateBitmaps.ASkipMask">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
-      <element name="RadioMenuItemGroup">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="RawImage_DescriptionFromBitmap">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="RadioMenuItemGroup.Result">
-        <short/>
+      <element name="RawImage_DescriptionFromBitmap.Result">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadioMenuItemGroup.hndMenu">
-        <short/>
+      <element name="RawImage_DescriptionFromBitmap.ABitmap">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="RadioMenuItemGroup.bRadio">
-        <short/>
+      <element name="RawImage_DescriptionFromBitmap.ADesc">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="RawImage_DescriptionFromDevice">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="RawImage_DescriptionFromDevice.Result">
+        <short></short>
+      </element>
+      <element name="RawImage_DescriptionFromDevice.ADC">
+        <short></short>
+      </element>
+      <element name="RawImage_DescriptionFromDevice.ADesc">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="RawImage_FromBitmap">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="RawImage_FromBitmap.Result">
+        <short></short>
+      </element>
+      <element name="RawImage_FromBitmap.ARawImage">
+        <short></short>
+      </element>
+      <element name="RawImage_FromBitmap.ABitmap">
+        <short></short>
+      </element>
+      <element name="RawImage_FromBitmap.AMask">
+        <short></short>
+      </element>
+      <element name="RawImage_FromBitmap.ARect">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="RawImage_FromDevice">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="RawImage_FromDevice.Result">
+        <short></short>
+      </element>
+      <element name="RawImage_FromDevice.ARawImage">
+        <short></short>
+      </element>
+      <element name="RawImage_FromDevice.ADC">
+        <short></short>
+      </element>
+      <element name="RawImage_FromDevice.ARect">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="RawImage_QueryDescription">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="RawImage_QueryDescription.Result">
+        <short></short>
+      </element>
+      <element name="RawImage_QueryDescription.AFlags">
+        <short></short>
+      </element>
+      <element name="RawImage_QueryDescription.ADesc">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="RegroupMenuItem">
@@ -5338,28 +6188,44 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       <element name="ReleaseDesignerDC.DC">
         <short/>
       </element>
-      <!-- function Visibility: default -->
-      <element name="ReplaceBitmapMask">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <!-- procedure Visibility: default -->
+      <element name="RemoveEventHandler">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="ReplaceBitmapMask.Result">
-        <short/>
+      <element name="RemoveEventHandler.AHandler">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="ReplaceBitmapMask.Image">
-        <short/>
+      <!-- procedure Visibility: default -->
+      <element name="RemoveProcessEventHandler">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="ReplaceBitmapMask.Mask">
-        <short/>
+      <element name="RemoveProcessEventHandler.AHandler">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="ReplaceBitmapMask.NewMask">
-        <short/>
+      <!-- procedure Visibility: default -->
+      <element name="RemovePipeEventHandler">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="RemovePipeEventHandler.AHandler">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="RequestInput">
@@ -5388,25 +6254,6 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       <element name="RequestInput.Value">
         <short/>
       </element>
-      <!-- function Visibility: default -->
-      <element name="RightJustifyMenuItem">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="RightJustifyMenuItem.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="RightJustifyMenuItem.HndMenu">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="RightJustifyMenuItem.bRightJustify">
-        <short/>
-      </element>
       <!-- procedure Visibility: default -->
       <element name="SendCachedLCLMessages">
         <short/>
@@ -5420,22 +6267,6 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <descr/>
         <errors/>
         <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="DrawSplitter.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DrawSplitter.DC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DrawSplitter.ARect">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="DrawSplitter.Horizontal">
-        <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetCaretRespondToFocus">
@@ -5482,6 +6313,38 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       <!-- argument Visibility: default -->
       <element name="SetComboMinDropDownSize.MinItemCount">
         <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="SetEventHandlerFlags">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SetEventHandlerFlags.AHandler">
+        <short></short>
+      </element>
+      <element name="SetEventHandlerFlags.NewFlags">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="SetRubberBandRect">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="SetRubberBandRect.ARubberBand">
+        <short></short>
+      </element>
+      <element name="SetRubberBandRect.ARect">
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="StretchMaskBlt">
@@ -5550,6 +6413,35 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       <element name="StretchMaskBlt.Rop">
         <short/>
       </element>
+      <!-- function Visibility: default -->
+      <element name="TextUTF8Out">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="TextUTF8Out.Result">
+        <short></short>
+      </element>
+      <element name="TextUTF8Out.DC">
+        <short></short>
+      </element>
+      <element name="TextUTF8Out.X">
+        <short></short>
+      </element>
+      <element name="TextUTF8Out.Y">
+        <short></short>
+      </element>
+      <element name="TextUTF8Out.Str">
+        <short></short>
+      </element>
+      <element name="TextUTF8Out.Count">
+        <short></short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="ExcludeClipRgn">
         <short/>
@@ -5879,51 +6771,6 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       <element name="PromptUserAtXY.Y">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="RaiseLastOSError">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="MakeLong">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="MakeLong.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MakeLong.A">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MakeLong.B">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="MakeWord">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="MakeWord.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MakeWord.A">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MakeWord.B">
-        <short/>
-      </element>
       <!-- function Visibility: default -->
       <element name="PredefinedClipboardFormat">
         <short/>
@@ -5939,6 +6786,93 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       <element name="PredefinedClipboardFormat.AFormat">
         <short/>
       </element>
+      <!-- function Visibility: default -->
+      <element name="MsgKeyDataToShiftState">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="MsgKeyDataToShiftState.Result">
+        <short></short>
+      </element>
+      <element name="MsgKeyDataToShiftState.KeyData">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetTickCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="GetTickCount.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetTickCount64">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetTickCount64.Result">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="FindDefaultBrowser">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="FindDefaultBrowser.Result">
+        <short></short>
+      </element>
+      <element name="FindDefaultBrowser.ABrowser">
+        <short></short>
+      </element>
+      <element name="FindDefaultBrowser.AParams">
+        <short></short>
+      </element>
+
+      <element name="OpenURL">
+        <short>Open a given URL with the default browser</short>
+        <descr>The function uses FindDefaultBrowser to find the default browser. If it can be found it starts it and returns true. The AURL is passed as parameter. AURL must be an URL like http://www.lazarus.freepascal.org or file:///tmp/test.txt or file://C:\test.txt.</descr>
+      </element>
+      <element name="OpenURL.Result">
+        <short></short>
+      </element>
+      <element name="OpenURL.AURL">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="OpenDocument">
+        <short></short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="OpenDocument.Result">
+        <short></short>
+      </element>
+      <element name="OpenDocument.APath">
+        <short></short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="CharLower">
         <short/>
@@ -5968,21 +6902,6 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       <!-- argument Visibility: default -->
       <element name="CharUpper.c">
         <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetTickCount">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="GetTickCount.Result">
-        <short/>
-      </element>
-      <element name="OpenURL">
-        <short>Open a given URL with the default browser</short>
-        <descr>The function uses FindDefaultBrowser to find the default browser. If it can be found it starts it and returns true. The AURL is passed as parameter. AURL must be an URL like http://www.lazarus.freepascal.org or file:///tmp/test.txt or file://C:\test.txt.</descr>
       </element>
     </module>
     <!-- LCLIntf -->
