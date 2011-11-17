@@ -5,19 +5,8 @@ unit frmFileBrowser;
 interface
 
 uses
-  Classes,
-  SysUtils,
-  FileUtil,
-  LResources,
-  Forms,
-  Controls,
-  Graphics,
-  Dialogs,
-  EditBtn,
-  FileCtrl,
-  ComCtrls,
-  StdCtrls,
-  ExtCtrls;
+  Classes, SysUtils, FileUtil, LResources, LCLType, Forms, Controls, Graphics,
+  Dialogs, EditBtn, FileCtrl, ComCtrls, StdCtrls, ExtCtrls;
 
 type
   TOpenFileEvent = procedure(Sender: TObject; const AFileName: string) of object;
@@ -44,6 +33,8 @@ type
     procedure TVExpanded(Sender: TObject; Node: TTreeNode);
     procedure TVSelectionChanged(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure FilterComboBoxSelect(Sender: TObject);
+    procedure FileListBoxKeyPress(Sender: TObject; var Key: char);
   private
     FOnConfigure: TNotifyEvent;
     FOnOpenFile: TOpenFileEvent;
@@ -159,6 +150,17 @@ begin
   TV.MakeSelectionVisible;
 end;
 
+procedure TFileBrowserForm.FilterComboBoxSelect(Sender: TObject);
+begin
+  FileListBox.Mask := FilterComboBox.Mask;
+end;
+
+procedure TFileBrowserForm.FileListBoxKeyPress(Sender: TObject; var Key: char);
+begin
+  if Key = Char(VK_RETURN) then
+   FileListBoxDblClick(Sender);
+end;
+
 procedure TFileBrowserForm.btnConfigureClick(Sender: TObject);
 begin
   if Assigned(FOnConfigure) then
@@ -195,7 +197,7 @@ end;
 
 procedure TFileBrowserForm.FilterComboBoxChange(Sender: TObject);
 begin
-  FileListBox.Mask := FilterComboBox.Mask;
+  FileListBox.Mask := FilterComboBox.Text;
 end;
 
 procedure TFileBrowserForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);

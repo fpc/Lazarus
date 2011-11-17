@@ -11,17 +11,18 @@ object FileBrowserForm: TFileBrowserForm
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object FileListBox: TFileListBox
     Left = 0
-    Height = 214
-    Top = 253
+    Height = 207
+    Top = 260
     Width = 345
     Align = alClient
     Directory = '/home/graemeg'
     FileType = [ftArchive, ftNormal]
-    ItemHeight = 0
+    ItemHeight = 22
     OnDblClick = FileListBoxDblClick
+    OnKeyPress = FileListBoxKeyPress
     TabOrder = 0
   end
   object TV: TTreeView
@@ -30,7 +31,7 @@ object FileBrowserForm: TFileBrowserForm
     Top = 42
     Width = 345
     Align = alTop
-    DefaultItemHeight = 15
+    DefaultItemHeight = 18
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 1
@@ -50,9 +51,9 @@ object FileBrowserForm: TFileBrowserForm
     TabOrder = 2
     object cbHidden: TCheckBox
       Left = 208
-      Height = 17
+      Height = 24
       Top = 18
-      Width = 101
+      Width = 132
       Caption = 'Show hidden files'
       OnChange = cbHiddenChange
       TabOrder = 0
@@ -87,11 +88,12 @@ object FileBrowserForm: TFileBrowserForm
   end
   object FilterComboBox: TFilterComboBox
     Left = 0
-    Height = 21
+    Height = 28
     Top = 232
     Width = 345
     Align = alTop
     TabOrder = 4
     OnChange = FilterComboBoxChange
+    OnSelect = FilterComboBoxSelect
   end
 end
