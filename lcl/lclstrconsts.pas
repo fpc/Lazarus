@@ -354,6 +354,7 @@ resourceString
   ifsAlt           = 'Alt';
   rsWholeWordsOnly = 'Whole words only';
   rsCaseSensitive  = 'Case sensitive';
+  rsPromptOnReplace= 'Prompt on replace';
   rsEntireScope    = 'Search entire file';
   rsText           = 'Text';
   rsDirection      = 'Direction';

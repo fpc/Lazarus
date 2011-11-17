@@ -26,6 +26,7 @@ type
 { TReplaceDialogForm }
 
   TReplaceDialogForm = class(TForm)
+    PromptOnReplaceCheckBox: TCheckBox;
     EntireScopeCheckBox: TCheckBox;
     FindMoreButton: TButton;
     ReplaceButton: TButton;
@@ -76,6 +77,7 @@ begin
     WholeWordsOnlyCheckBox.Caption := rsWholeWordsOnly;
     CaseSensitiveCheckBox.Caption := rsCaseSensitive;
     EntireScopeCheckBox.Caption := rsEntireScope;
+    PromptOnReplaceCheckBox.Caption := rsPromptOnReplace;
     TextLabel.Caption := rsText;
     ReplaceLabel.Caption := rsReplace;
     DirectionRadioGroup.Caption := rsDirection;
@@ -106,6 +108,7 @@ begin
   dlg.WholeWordsOnlyCheckBox.Checked:=frWholeWord in Options;
   Dlg.EntireScopeCheckBox.Checked:=frEntireScope in Options;
   dlg.CaseSensitiveCheckBox.Checked:=frMatchCase in Options;
+  dlg.PromptOnReplaceCheckBox.Checked := frPromptOnReplace in Options;
   Dlg.DirectionRadioGroup.ItemIndex:=ord(not(frDown in Options));
 
   dlg.WholeWordsOnlyCheckBox.Enabled:=not (frDisableWholeWord in Options);
@@ -117,6 +120,7 @@ begin
   dlg.DirectionRadioGroup.Visible:=not (frHideUpDown in Options);
   dlg.HelpButton.Visible:=(frShowHelp in Options);
   Dlg.EntireScopeCheckBox.Visible := not (frHideEntireScope in Options);
+  dlg.PromptOnReplaceCheckBox.Visible := not (frHidePromptOnReplace in Options);
 end;
 
 procedure TReplaceDialog.GetFormValues;
@@ -140,6 +144,10 @@ begin
     FOptions:=FOptions + [frEntireScope]
   else
     FOptions:=FOptions - [frEntireScope];
+  if Dlg.PromptOnReplaceCheckBox.Checked then
+    FOptions := FOptions + [frPromptOnReplace]
+  else
+    FOptions := FOptions - [frPromptOnReplace];
   FFindText := Dlg.EditFind.Text;
   FReplaceText := Dlg.EditReplace.Text;
 end;
@@ -147,7 +155,7 @@ end;
 constructor TReplaceDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Options:=Options + [frReplace, frReplaceAll];
+  Options:=Options + [frReplace, frReplaceAll, frHidePromptOnreplace];
 end;
 
 function TReplaceDialog.DefaultTitle: string; 

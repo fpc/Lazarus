@@ -43,6 +43,7 @@ type
   { TReplaceDialogForm }
 
   TReplaceDialogForm = class(TForm)
+    PromptOnReplaceCheckBox: TCheckBox;
     EntireScopeCheckBox: TCheckBox;
     FindMoreButton: TButton;
     ReplaceButton: TButton;

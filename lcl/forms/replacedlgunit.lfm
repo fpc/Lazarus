@@ -1,35 +1,35 @@
 object ReplaceDialogForm: TReplaceDialogForm
   Left = 415
-  Height = 162
+  Height = 171
   Top = 391
   Width = 432
   ActiveControl = EditFind
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'Replace text'
-  ClientHeight = 162
+  ClientHeight = 171
   ClientWidth = 432
   LCLVersion = '0.9.31'
   object TextLabel: TLabel
     Left = 4
-    Height = 16
+    Height = 14
     Top = 19
-    Width = 61
+    Width = 54
     Caption = 'Text to find'
     FocusControl = EditFind
     ParentColor = False
   end
   object ReplaceLabel: TLabel
     Left = 4
-    Height = 16
+    Height = 14
     Top = 48
-    Width = 68
+    Width = 63
     Caption = 'Replace with'
     FocusControl = EditReplace
     ParentColor = False
   end
   object EditFind: TEdit
     Left = 72
-    Height = 23
+    Height = 21
     Top = 10
     Width = 257
     Anchors = [akTop, akLeft, akRight]
@@ -38,7 +38,7 @@ object ReplaceDialogForm: TReplaceDialogForm
   end
   object EditReplace: TEdit
     Left = 72
-    Height = 23
+    Height = 21
     Top = 42
     Width = 257
     Anchors = [akTop, akLeft, akRight]
@@ -47,17 +47,17 @@ object ReplaceDialogForm: TReplaceDialogForm
   end
   object WholeWordsOnlyCheckBox: TCheckBox
     Left = 4
-    Height = 19
+    Height = 17
     Top = 80
-    Width = 115
+    Width = 104
     Caption = 'Whole words only'
     TabOrder = 2
   end
   object CaseSensitiveCheckBox: TCheckBox
     Left = 4
-    Height = 19
+    Height = 17
     Top = 104
-    Width = 93
+    Width = 88
     Caption = 'Case sensitive'
     TabOrder = 3
   end
@@ -106,7 +106,7 @@ object ReplaceDialogForm: TReplaceDialogForm
   object HelpButton: TButton
     Left = 337
     Height = 25
-    Top = 129
+    Top = 138
     Width = 91
     Anchors = [akRight, akBottom]
     Caption = 'Help'
@@ -138,10 +138,18 @@ object ReplaceDialogForm: TReplaceDialogForm
   end
   object EntireScopeCheckBox: TCheckBox
     Left = 4
-    Height = 19
+    Height = 17
     Top = 128
-    Width = 107
+    Width = 99
     Caption = 'Search entire file'
     TabOrder = 10
+  end
+  object PromptOnReplaceCheckBox: TCheckBox
+    Left = 4
+    Height = 17
+    Top = 152
+    Width = 106
+    Caption = 'Prompt on replace'
+    TabOrder = 11
   end
 end

@@ -1831,6 +1831,12 @@ shows all letters both in uppercase and lowercase.
       <element name="TFindOption.frShowHelp">
         <short>If set the dialog will display a help button.</short>
       </element>
+      <element name="TFindOption.frPromptOnReplace">
+        <short>This flag is set when the user checks the "Prompt on replace" checkbox.</short>
+      </element>
+      <element name="TFindOption.frHidePromptOnReplace">
+        <short>If set the "Prompt on replace" checkbox is hidden from the Find dialog.</short>
+      </element>
       <!-- set type Visibility: default -->
       <element name="TFindOptions">
         <short>A set of TFindOption</short>
