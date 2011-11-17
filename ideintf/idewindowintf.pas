@@ -233,7 +233,7 @@ type
     procedure SaveToConfig(Config: TConfigStorage; const Path: string);
     function CustomCoordinatesAreValid: boolean;
     procedure CloseForm;
-    function SetNewBounds: Boolean;
+    function ValidateAndSetCoordinates: Boolean;
   public
     property FormID: string read GetFormID write FFormID;
     function FormBaseID(out SubIndex: Integer): String; // split FormID into name+number
@@ -1133,49 +1133,50 @@ begin
   Form:=nil;
 end;
 
-function TSimpleWindowLayout.SetNewBounds: Boolean;
+function TSimpleWindowLayout.ValidateAndSetCoordinates: Boolean;
 var
   i: Integer;
   NewBounds: TRect;
 begin
-  // No need to check coordinate validity because they will be adjusted.
-  // explicit position
-  NewBounds := Bounds(Left, Top, Width, Height);
-  // set minimum size
-  if NewBounds.Right - NewBounds.Left < 60 then
-    NewBounds.Right := NewBounds.Left + 60;
-  if NewBounds.Bottom - NewBounds.Top < 60 then
-    NewBounds.Bottom := NewBounds.Top + 60;
+  Result := False;
+  if CustomCoordinatesAreValid then begin
+    // explicit position
+    NewBounds := Bounds(Left, Top, Width, Height);
+    // set minimum size
+    if NewBounds.Right - NewBounds.Left < 60 then
+      NewBounds.Right := NewBounds.Left + 60;
+    if NewBounds.Bottom - NewBounds.Top < 60 then
+      NewBounds.Bottom := NewBounds.Top + 60;
 
-  // Move to visible area :
-  // window is out at left side of screen
-  if NewBounds.Right < Screen.DesktopLeft + 60 then
-    OffsetRect(NewBounds, Screen.DesktopLeft + 60 - NewBounds.Right, 0);
+    // Move to visible area :
+    // window is out at left side of screen
+    if NewBounds.Right < Screen.DesktopLeft + 60 then
+      OffsetRect(NewBounds, Screen.DesktopLeft + 60 - NewBounds.Right, 0);
 
-  // window is out above the screen
-  if NewBounds.Bottom < Screen.DesktopTop+60 then
-    OffsetRect(NewBounds, 0, Screen.DesktopTop + 60 - NewBounds.Bottom);
+    // window is out above the screen
+    if NewBounds.Bottom < Screen.DesktopTop+60 then
+      OffsetRect(NewBounds, 0, Screen.DesktopTop + 60 - NewBounds.Bottom);
 
-  // window is out at right side of screen, i = right edge of screen - 60
-  i := Screen.DesktopWidth + Screen.DesktopLeft - 60;
-  if NewBounds.Left > i then begin
-    NewBounds.Left := i;
-    NewBounds.Right := NewBounds.Right + i - NewBounds.Left;
+    // window is out at right side of screen, i = right edge of screen - 60
+    i := Screen.DesktopWidth + Screen.DesktopLeft - 60;
+    if NewBounds.Left > i then begin
+      NewBounds.Left := i;
+      NewBounds.Right := NewBounds.Right + i - NewBounds.Left;
+    end;
+
+    // window is out below the screen, i = bottom edge of screen - 60
+    i := Screen.DesktopHeight + Screen.DesktopTop - 60;
+    if NewBounds.Top > i then begin
+      NewBounds.Top := i;
+      NewBounds.Bottom := NewBounds.Bottom + i - NewBounds.Top;
+    end;
+
+    // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
+    FForm.SetBounds(NewBounds.Left, NewBounds.Top,
+                    NewBounds.Right - NewBounds.Left,
+                    NewBounds.Bottom - NewBounds.Top);
+    Result := True;
   end;
-
-  // window is out below the screen, i = bottom edge of screen - 60
-  i := Screen.DesktopHeight + Screen.DesktopTop - 60;
-  if NewBounds.Top > i then begin
-    NewBounds.Top := i;
-    NewBounds.Bottom := NewBounds.Bottom + i - NewBounds.Top;
-  end;
-
-  // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
-  FForm.SetBounds(NewBounds.Left, NewBounds.Top,
-                  NewBounds.Right - NewBounds.Left,
-                  NewBounds.Bottom - NewBounds.Top);
-  Applied := True;
-  Result := True;
 end;
 
 function TSimpleWindowLayout.FormBaseID(out SubIndex: Integer): String;
@@ -1338,7 +1339,7 @@ begin
         iwsMinimized: FForm.WindowState:=wsMinimized;
         iwsMaximized: FForm.WindowState:=wsMaximized;
       end;
-      Result := SetNewBounds;     // Adjust bounds to screen area and apply them.
+      Result := ValidateAndSetCoordinates;     // Adjust bounds to screen area and apply them.
       if WindowState in [iwsMinimized, iwsMaximized] then
         Result := True;
     end;

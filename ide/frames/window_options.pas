@@ -298,8 +298,10 @@ procedure TWindowOptionsFrame.ApplyButtonClick(Sender: TObject);
 begin
   SaveLayout;
   if (Layout<>nil) and (Layout.Form<>nil) and (Layout.Form.Parent=nil) then begin
-    if (Layout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry]) then
-      Layout.SetNewBounds;        // Adjust bounds to screen area and apply them.
+    if (Layout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry]) then begin
+      Layout.ValidateAndSetCoordinates; // Adjust bounds to screen area and apply them.
+      Layout.Applied := True;
+    end;
     Layout.ApplyDivider(True);
   end;
 end;
