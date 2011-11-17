@@ -346,6 +346,19 @@ begin
   arr.release;
 end;
 
+function TCocoaWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
+  lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
+var
+  i: integer;
+begin
+  Result := True;
+  for i := 0 to NSScreen.screens.count - 1 do
+  begin
+    Result := Result and lpfnEnum(HMONITOR(NSScreen.screens.objectAtIndex(i)), 0, nil, dwData);
+    if not Result then break;
+  end;
+end;
+
 function TCocoaWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
@@ -454,6 +467,20 @@ begin
     MoveRect(ARect, dx, dy);
   end else
     Result:=False;
+end;
+
+function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
+var
+  ScreenID: NSScreen absolute hMonitor;
+begin
+  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
+  if not Result then Exit;
+  NSToLCLRect(ScreenID.frame, lpmi^.rcMonitor);
+  NSToLCLRect(ScreenID.visibleFrame, lpmi^.rcWork);
+  if ScreenID = NSScreen.mainScreen then
+    lpmi^.dwFlags := MONITORINFOF_PRIMARY
+  else
+    lpmi^.dwFlags := 0;
 end;
 
 function TCocoaWidgetSet.GetParent(Handle : HWND): HWND;
