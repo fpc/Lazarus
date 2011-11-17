@@ -2296,7 +2296,7 @@ begin
   Application.ReleaseComponent(TComponent(FTabs.Objects[AIndex]));
 
   FTabs.Delete(aIndex);
-  if FTabIndex >= FTabs.Count then SetTabIndex(FTabIndex-1);
+  if FTabIndex >= FTabs.Count then SetPageIndex(FTabIndex-1);
 
   Invalidate;
 end;
