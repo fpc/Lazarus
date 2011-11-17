@@ -474,6 +474,16 @@ begin
     Result:=False;
 end;
 
+function TCocoaWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
+begin
+  with NSEvent.mouseLocation do
+  begin
+    lpPoint.x := Round(x);
+    lpPoint.y := Round(y);
+  end;
+  Result := True;
+end;
+
 function TCocoaWidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
 var
   ScreenID: NSScreen absolute hMonitor;
