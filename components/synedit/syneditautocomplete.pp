@@ -245,7 +245,7 @@ begin
   if AEditor <> nil then begin
     // get token
     s := AEditor.LineText;
-    j := AEditor.CaretX;
+    j := AEditor.LogicalCaretXY.x;
     i := j - 1;
     if i <= Length(s) then begin
       while (i > 0) and (s[i] > ' ') and (Pos(s[i], fEOTokenChars) = 0) do
