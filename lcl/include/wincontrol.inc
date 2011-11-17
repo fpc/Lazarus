@@ -4166,16 +4166,22 @@ begin
   begin
     FTabOrder := GetTabOrder;
     Count := ListCount(FParent.FTabList);
-    if NewTabOrder < 0 then NewTabOrder := Count;
-    if FTabOrder = -1 then Inc(Count);
-    if NewTabOrder >= Count then NewTabOrder := Count - 1;
+    if NewTabOrder < 0 then
+      NewTabOrder := Count;
+    if FTabOrder = -1 then
+      Inc(Count);
+    if NewTabOrder > Count then
+      NewTabOrder := Count;
     if NewTabOrder <> FTabOrder then
     begin
       if FTabOrder <> - 1 then
         ListDelete(FParent.FTabList,FTabOrder);
       if NewTabOrder <> -1 then
       begin
-        ListInsert(FParent.FTabList,NewTabOrder,Self);
+        if NewTabOrder = Count then
+           ListAdd(FParent.FTabList,Self)
+        else
+          ListInsert(FParent.FTabList,NewTabOrder,Self);
         FTabOrder := NewTabOrder;
       end;
     end;
