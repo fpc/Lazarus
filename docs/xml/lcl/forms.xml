@@ -149,19 +149,19 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TProcedure">
-        <short/>
+        <short>The type of a procedure that takes no arguments.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TProcedureOfObject">
-        <short/>
+        <short>The type of a method that takes no arguments.</short>
         <descr/>
         <seealso/>
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TPosition">
-        <short>Represents the Position and Size on Screen of an Form</short>
+        <short>Represents the Position and Size of a Form on Screen.</short>
         <descr>
           <p>poDesigned - The Form appears exactly as it is positioned and sized in the Form Designer</p>
           <p>poDefault - The window manager decides how the form is to appear, in a default position and size</p>
@@ -183,11 +183,11 @@
         </short>
       </element>
       <element name="TPosition.poDefaultPosOnly">
-        <short>Keeps the designed size, but position determined by windowmanager.
+        <short>Keeps the designed form size, but position determined by windowmanager.
         </short>
       </element>
       <element name="TPosition.poDefaultSizeOnly">
-        <short>Keeps the designed position, but size determined by windowmanager.
+        <short>Keeps the designed form position, but size determined by windowmanager.
         </short>
       </element>
       <element name="TPosition.poScreenCenter">
@@ -195,15 +195,15 @@
         </short>
       </element>
       <element name="TPosition.poDesktopCenter">
-        <short>Centers the form on desktop (not recommended, use poScreenCenter).
+        <short>Centers the form on the desktop (not recommended, use poScreenCenter).
         </short>
       </element>
       <element name="TPosition.poMainFormCenter">
-        <short>Centers the Form on the Main Form.
+        <short>Centers the form on the Main Form.
         </short>
       </element>
       <element name="TPosition.poOwnerFormCenter">
-        <short>Centers the Form on Owner form.
+        <short>Centers the form on its Owner form.
         </short>
       </element>
 <!-- enumeration type Visibility: default -->
@@ -234,11 +234,11 @@
         <short>Maximized [to the full monitor?]</short>
       </element>
       <element name="TWindowState.wsFullScreen">
-        <short>Maximized [to the work area? desktop?]</short>
+        <short>[?]</short>
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TCloseAction">
-        <short/>
+        <short>What should happen when a form is closed.</short>
         <descr/>
         <seealso>
           <link id="TCustomForm.OnClose">TCustomForm.OnClose</link>
@@ -246,27 +246,27 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCloseAction.caNone">
-        <short/>
+        <short>Do nothing.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCloseAction.caHide">
-        <short/>
+        <short>The form is hidden.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCloseAction.caFree">
-        <short/>
+        <short>The form is destroyed.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCloseAction.caMinimize">
-        <short/>
+        <short>The form is minimized.</short>
       </element>
 <!-- object Visibility: default -->
       <element name="TCustomHintAction">
-        <short>[?] Action taken when a new value is assigned to <link id="TApplication.Hint"/>,
+        <short>Action taken when a new value is assigned to <link id="TApplication.Hint"/>,
           and no OnHint handler is available.
         </short>
-        <descr/>
-        <errors/>
+        <descr>The Hint handlers deserve more detailed documentation[!?]
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -302,7 +302,7 @@
         <seealso/>
       </element>
       <element name="TScrollBarStyle.ssRegular">
-        <short>Default[what's that?].</short>
+        <short>Default [what's this?].</short>
       </element>
       <element name="TScrollBarStyle.ssFlat">
         <short>Scrollbar appears flat.</short>
@@ -573,7 +573,6 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TControlScrollBar.GetHorzScrollBar.Result">
         <short>
         </short>
@@ -586,7 +585,6 @@
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TControlScrollBar.GetVertScrollBar.Result">
         <short>
         </short>
@@ -3199,7 +3197,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TFormBorderStyle"/>
+          <link id="#lcl.Controls.TFormBorderStyle"/>
           <link id="#lcl.Controls.TBorderStyle"/>
           <link id="#lcl.Controls.TCustomControl.BorderStyle"/>
         </seealso>
@@ -3683,122 +3681,92 @@
       </element>
 <!-- object Visibility: default -->
       <element name="TCustomDockForm">
-        <short>
-          <var>TCustomDockForm</var> - Base class for docking forms</short>
+        <short>A floating DockSite, usable to make TControls float.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomDockForm.DoAddDockClient" link="#LCL.Controls.TWinControl.DoAddDockClient">
+        <short>Makes the client occupy the entire client area (alClient).</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomDockForm.DoAddDockClient.Client">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomDockForm.DoAddDockClient.ARect">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomDockForm.DoRemoveDockClient" link="#LCL.Controls.TWinControl.DoRemoveDockClient">
-        <short/>
+        <short>Closes (releases) the form after the last client has been undocked.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomDockForm.DoRemoveDockClient.Client">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomDockForm.GetSiteInfo" link="#LCL.Controls.TWinControl.GetSiteInfo">
-        <short/>
+        <short>Disallows docking of an second client.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomDockForm.GetSiteInfo.Client">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomDockForm.GetSiteInfo.InfluenceRect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomDockForm.GetSiteInfo.MousePos">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomDockForm.GetSiteInfo.CanDock">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomDockForm.Loaded" link="#LCL.Forms.TCustomForm.Loaded">
-        <short/>
+        <short>Tries to make all child controls dockclients.
+          This is of little use in practice, a floating hostdocksite should have no child controls.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomDockForm.Create">
-        <short>
-          <var>Create</var> - constructor for <var>TCustomDockForm</var>: performs <var>CreateNew</var> then initialises autoscroll and style properties</short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#LCL.Forms.TCustomForm.Create">TCustomForm.Create</link>
-        </seealso>
-      </element>
-      <!-- argument Visibility: default -->
+      <element name="TCustomDockForm.Create"/>
       <element name="TCustomDockForm.Create.TheOwner">
         <short/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomDockForm.AutoScroll" link="#LCL.Forms.TScrollingWinControl.AutoScroll">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomDockForm.BorderStyle" link="#LCL.Forms.TCustomForm.BorderStyle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomDockForm.FormStyle" link="#LCL.Forms.TCustomForm.FormStyle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TCustomDockForm.PixelsPerInch" link="#LCL.Forms.TCustomForm.PixelsPerInch">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomDockForm.AutoScroll" link="#LCL.Forms.TScrollingWinControl.AutoScroll"/>
+      <element name="TCustomDockForm.BorderStyle" link="#LCL.Forms.TCustomForm.BorderStyle"/>
+      <element name="TCustomDockForm.FormStyle" link="#LCL.Forms.TCustomForm.FormStyle"/>
+      <element name="TCustomDockForm.PixelsPerInch" link="#LCL.Forms.TCustomForm.PixelsPerInch"/>
 <!-- object Visibility: default -->
       <element name="THintWindow">
-        <short>Hint Window - the popup box containing helpful information that appears when the mouse pointer hovers over an object</short>
-        <descr/>
+        <short>The popup box containing helpful information that appears when the mouse pointer hovers over an object.</short>
+        <descr><p>Usage:</p>
+<code>
+   HintWindow := THintWindow.Create(nil);
+   Rect := HintWindow.CalcHintRect(0,'This is the hint',nil);
+   HintWindow.ActivateHint(Rect,'This is the hint');
+</code>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="THintWindow.FActivating">
-        <short/>
+        <short>True during ActivateHint.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="THintWindow.FAlignment" link="THintWindow.Alignment"/>
       <element name="THintWindow.FAutoHide" link="THintWindow.AutoHide"/>
       <element name="THintWindow.FAutoHideTimer">
-        <short/>
+        <short>The timer used to make the hint disappear.</short>
         <descr/>
         <seealso/>
       </element>
@@ -3806,11 +3774,9 @@
       <element name="THintWindow.FHideInterval" link="THintWindow.HideInterval"/>
       <!-- function Visibility: private -->
       <element name="THintWindow.GetDrawTextFlags">
-        <short></short>
+        <short>Collect the flags for the formatting of the text.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -3824,7 +3790,9 @@
       </element>
       <!-- procedure Visibility: private -->
       <element name="THintWindow.AutoHideHint">
-        <short/>
+        <short>Called when the hint timer expires.
+          Hides the window.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3833,23 +3801,16 @@
         <short/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="THintWindow.SetHideInterval">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="THintWindow.SetHideInterval" link="THintWindow.HideInterval"/>
       <element name="THintWindow.SetHideInterval.Value">
         <short/>
       </element>
       <element name="THintWindow.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <!-- procedure Visibility: protected -->
       <element name="THintWindow.WMNCHitTest">
-        <short></short>
+        <short>Treats the whole window as transparent.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -3860,11 +3821,9 @@
       <element name="THintWindow.DoShowWindow" link="#LCL.Forms.TCustomForm.DoShowWindow"/>
       <!-- procedure Visibility: protected -->
       <element name="THintWindow.UpdateRegion">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -3877,10 +3836,12 @@
       <element name="THintWindow.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="THintWindow.ActivateHint">
-        <short>Allow the hint message to be displayed in the specified rectangular space</short>
+        <short>Shows the hint.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="THintWindow.CalcHintRect"/>
+        </seealso>
       </element>
       <element name="THintWindow.ActivateHint.ARect">
         <short/>
@@ -3890,10 +3851,13 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="THintWindow.ActivateHintData">
-        <short>Allow the hint message to be displayed, with a pointer to further data</short>
+        <short>Extended version of ActivateHint.
+          Override this method to make use of the additional data.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="THintWindow.ActivateHint"/>
+        </seealso>
       </element>
       <element name="THintWindow.ActivateHintData.ARect">
         <short/>
@@ -3906,16 +3870,17 @@
       </element>
       <!-- function Visibility: public -->
       <element name="THintWindow.CalcHintRect">
-        <short>Work out the size of the rectangle required to display the specified hint message</short>
+        <short>Determines the rectangle required for the hint display,
+          based on the maximum text/window width.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="THintWindow.CalcHintRect.Result">
         <short/>
       </element>
       <element name="THintWindow.CalcHintRect.MaxWidth">
-        <short/>
+        <short>Greater zero, else the full monitor width is used.</short>
       </element>
       <element name="THintWindow.CalcHintRect.AHint">
         <short/>
@@ -3924,39 +3889,13 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="THintWindow.InitializeWnd">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="THintWindow.InitializeWnd"/>
       <!-- procedure Visibility: public -->
-      <element name="THintWindow.ReleaseHandle">
-        <short>Release the handle for the hint message and return it to the system</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="THintWindow.ReleaseHandle"/>
       <!-- procedure Visibility: protected -->
-      <element name="THintWindow.Paint" link="#LCL.Controls.TCustomControl.Paint">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="THintWindow.Paint" link="#LCL.Controls.TCustomControl.Paint"/>
       <!-- procedure Visibility: public -->
-      <element name="THintWindow.SetBounds">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="THintWindow.SetBounds"/>
       <element name="THintWindow.SetBounds.ALeft">
         <short></short>
       </element>
@@ -3970,19 +3909,14 @@
         <short></short>
       </element>
       <!-- function Visibility: protected -->
-      <element name="THintWindow.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="THintWindow.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
       <element name="THintWindow.GetControlClassDefaultSize.Result">
         <short/>
       </element>
       <!-- property Visibility: public -->
       <element name="THintWindow.Alignment">
-        <short></short>
-        <descr>
+        <short>The intended text alignment.</short>
+        <descr>See DrawText [link?]
         </descr>
         <seealso>
         </seealso>
@@ -3990,28 +3924,24 @@
       <!-- property Visibility: public -->
       <element name="THintWindow.AutoHide">
         <short>Does the hint disappear (get hidden) after a while?</short>
-        <descr>If <var>AutoHide</var> is TRUE, the hint disappears afer an interval specified by <link id="THintWindow.HideInterval">HideInterval</link>
+        <descr>If <var>AutoHide</var> is TRUE, the hint disappears afer an
+          interval specified by <link id="THintWindow.HideInterval">HideInterval</link>.
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="THintWindow.BiDiMode">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="THintWindow.BiDiMode"/>
       <!-- property Visibility: public -->
       <element name="THintWindow.HideInterval">
-        <short>The time after which the displayed hint disappears</short>
+        <short>The time after which the displayed hint disappears.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="THintWindow.AutoHide"/>
+        </seealso>
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="THintWindowClass" link="THintWindow">
-        <short>
-          <var>THintWindowClass</var> - class of <var>THintWindow</var>
+        <short>Class of <var>THintWindow</var>.
         </short>
         <descr/>
         <seealso/>
@@ -4135,8 +4065,6 @@
         </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -4369,16 +4297,13 @@
         <short>Deletes the Cursors list.
         </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TScreen.DestroyMonitors">
-        <short>[?]</short>
+        <short>Clears the Monitors list.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -4506,7 +4431,6 @@
         <short>Internal notification handler, adds a new form to the lists.
         </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TScreen.AddForm.AForm">
@@ -4517,7 +4441,6 @@
         <short>Internal notification handler, removes the form from the lists.
         </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TScreen.RemoveForm.AForm">
@@ -5449,19 +5372,22 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TIdleEvent">
-        <short>[?]</short>
-        <descr/>
+        <short>Type of an Idle event handler.</short>
+        <descr>Lengthy operations should be broken into parts,
+          to keep the application responsive.
+          The handlers are called repeatedly, until all signal Done.
+        </descr>
         <seealso/>
       </element>
       <element name="TIdleEvent.Sender">
         <short/>
       </element>
       <element name="TIdleEvent.Done">
-        <short/>
+        <short>Set to True when everything is done.</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TOnUserInputEvent">
-        <short>[?]</short>
+        <short>Called [when?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -5484,13 +5410,13 @@
       </element>
       <!-- record type Visibility: default -->
       <element name="TCMHintShow">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="TCMHintShow.Msg">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
@@ -5544,25 +5470,25 @@
       </element>
 <!-- enumeration type Visibility: default -->
       <element name="TAppHintTimerType">
-        <short>[?]</short>
+        <short>The TApplication hint timer state.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TAppHintTimerType.ahttNone">
-        <short/>
+        <short>The hint timer is off.</short>
       </element>
       <element name="TAppHintTimerType.ahttShowHint">
-        <short/>
+        <short>Waiting to show an hint[?]</short>
       </element>
       <element name="TAppHintTimerType.ahttHideHint">
-        <short/>
+        <short>Waiting to hide an hint[?]</short>
       </element>
       <element name="TAppHintTimerType.ahttReshowHint">
-        <short/>
+        <short>Waiting to show the next hint[?]</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TShowHintEvent">
-        <short>[?]</short>
+        <short>Called [when?], does [what?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -8335,10 +8261,9 @@
       </element>
 <!-- object Visibility: default -->
       <element name="TApplicationProperties">
-        <short>
-          <var>TApplicationProperties</var>: The properties of the current application</short>
+        <short>A component that simplifies[?] access to the properties of the current application.</short>
         <descr>
-          <p>TApplication Properties can be set as a local default set of properties to be used for any new instance fo TApplication</p>
+          <p>TApplication Properties can be set as a local default set of properties to be used for any new instance of TApplication[???]</p>
         </descr>
         <errors/>
         <seealso/>
@@ -8523,234 +8448,46 @@
           <link id="#LCL.LCLClasses.TLCLComponent.Create">TLCLComponent.Create</link>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TApplicationProperties.Create.AOwner">
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TApplicationProperties.Destroy">
-        <short>
-          <var>Destroy</var> - destructor for TApplicationProperties: removes a number of handlers then calls inherited <var>Destroy</var>
-        </short>
-        <descr/>
-        <errors/>
-        <seealso>
-          <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#LCL.LCLClasses.TLCLComponent.Destroy">TLCLComponent.Destroy</link>
-        </seealso>
-      </element>
+      <element name="TApplicationProperties.Destroy"/>
       <!-- property Visibility: published -->
-      <element name="TApplicationProperties.CaptureExceptions">
-        <short>
-          <var>CaptureExceptions</var> - Determine whether exceptions are being captured</short>
-        <descr>Boolean property (true if exceptions are being captured); reads or writes flag to see if they are being captured
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.HelpFile">
-        <short>
-          <var>HelpFile</var> - Determines which file to use for Help</short>
-        <descr>Reads or writes flag to determine name of Help file - name is stored as a string
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.Hint">
-        <short>
-          <var>Hint</var> - Determines Hint to be used</short>
-        <descr>Reads or writes flag to determine Hint - stored as a string
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.HintColor">
-        <short>
-          <var>HintColor</var> - Colour to be used when displaying Hint</short>
-        <descr>Reads or writes flag to determine Hint colour (stored as a TColor integer)
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.HintHidePause">
-        <short>
-          <var>HintHidePause</var> - the length of pause before a hint becomes hidden</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.HintPause">
-        <short>
-          <var>HintPause</var> - the length of pause before a hint is displayed</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.HintShortCuts">
-        <short>
-          <var>HintShortCuts</var> - the hints for shortcut keys (present if True)</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.HintShortPause">
-        <short>
-          <var>HintShortPause</var> - the length of pause before a shortcut hint is displayed</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnDropFiles">
-        <short>
-          <var>OnDropFiles</var> - Event handler when files are dropped on the form</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnEndSession">
-        <short>
-          <var>OnEndSession</var> - Event handler for the end of the session</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnException">
-        <short>
-          <var>OnException</var> - Event handler for exceptions</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnGetMainFormHandle">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnHelp">
-        <short>
-          <var>OnHelp</var> - Event handler when help is needed</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnHint">
-        <short>
-          <var>OnHint</var> - Event handler when a hint is needed</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnIdle">
-        <short>
-          <var>OnIdle</var> - event handler for the Idle state</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnIdleEnd">
-        <short>
-          <var>OnIdleEnd</var> - event handler for the end of the Idle state</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnMinimize">
-        <short>
-          <var>OnMinimize</var> - Event handler for minimising the form</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnModalBegin">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnModalEnd">
-        <short></short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnQueryEndSession">
-        <short>
-          <var>OnQueryEndSession</var> - Event handler for a query at the end of a  session</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnRestore">
-        <short>
-          <var>OnRestore</var> - Event handler for restoring a form which has been minimised or maximised</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnShowHint">
-        <short>
-          <var>OnShowHint</var> - Event handler for showing a hint</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.OnUserInput">
-        <short>
-          <var>OnUserInput</var> - Event handler when user input is received</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.ShowButtonGlyphs">
-        <short>
-          <var>ShowButtonGlyphs</var> - determines whether to show show or not glyphs on TBitBtn controls</short>
-        <descr>This option allows to set rule for all application TBitBtn controls which have GlyphShowMode = gsmApplication.
-
-Different operation systems has different preferences regards showing button glyphs. Mac OS X and Windows UI guidlines suggests not to use them. Gnome has a special theme setting for this. sbgSystem option allows application to use system preferences for glyphs showing. sbgAlways is the default value because of Delphi compatibility.</descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.ShowHint">
-        <short>
-          <var>ShowHint</var> - Determines whether a hint is to be displayed</short>
-        <descr>Read or write flag to determine whether to display hint (stored as boolean, True if hint is to be displayed)
-</descr>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.ShowMainForm">
-        <short>
-          <var>ShowMainForm</var> - Determines whether main form is to be displayed</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.ShowMenuGlyphs">
-        <short>
-          <var>ShowMenuGlyphs</var> - Deturmines whether show or not glyphs in menu</short>
-        <descr>This option allows to set rule for all application TMenuItem components which have GlyphShowMode = gsmApplication.
-
-Different operation systems has different preferences regards showing images in menus. Mac OS X suggests not to use them. Gnome has a special theme setting for this. sbgSystem option allows application to use system preferences for menu icons showing. sbgAlways is the default value because of Delphi compatibility.</descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TApplicationProperties.Title">
-        <short>
-          <var>Title</var> to be shown in Application's top Border</short>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TApplicationProperties.CaptureExceptions" link="TApplication.CaptureExceptions"/>
+      <element name="TApplicationProperties.HelpFile" link="TApplication.HelpFile"/>
+      <element name="TApplicationProperties.Hint" link="TApplication.Hint"/>
+      <element name="TApplicationProperties.HintColor" link="TApplication.HintColor"/>
+      <element name="TApplicationProperties.HintHidePause" link="TApplication.HintHidePause"/>
+      <element name="TApplicationProperties.HintPause" link="TApplication.HintPause"/>
+      <element name="TApplicationProperties.HintShortCuts" link="TApplication.HintShortCuts"/>
+      <element name="TApplicationProperties.HintShortPause" link="TApplication.HintShortPause"/>
+      <element name="TApplicationProperties.OnDropFiles" link="TApplication.OnDropFiles"/>
+      <element name="TApplicationProperties.OnEndSession" link="TApplication.OnEndSession"/>
+      <element name="TApplicationProperties.OnException" link="TApplication.OnException"/>
+      <element name="TApplicationProperties.OnGetMainFormHandle" link="TApplication.OnGetMainFormHandle"/>
+      <element name="TApplicationProperties.OnHelp" link="TApplication.OnHelp"/>
+      <element name="TApplicationProperties.OnHint" link="TApplication.OnHint"/>
+      <element name="TApplicationProperties.OnIdle" link="TApplication.OnIdle"/>
+      <element name="TApplicationProperties.OnIdleEnd" link="TApplication.OnIdleEnd"/>
+      <element name="TApplicationProperties.OnMinimize" link="TApplication.OnMinimize"/>
+      <element name="TApplicationProperties.OnModalBegin" link="TApplication.OnModalBegin"/>
+      <element name="TApplicationProperties.OnModalEnd" link="TApplication.OnModalEnd"/>
+      <element name="TApplicationProperties.OnQueryEndSession" link="TApplication.OnQueryEndSession"/>
+      <element name="TApplicationProperties.OnRestore" link="TApplication.OnRestore"/>
+      <element name="TApplicationProperties.OnShowHint" link="TApplication.OnShowHint"/>
+      <element name="TApplicationProperties.OnUserInput" link="TApplication.OnUserInput"/>
+      <element name="TApplicationProperties.ShowButtonGlyphs" link="TApplication.ShowButtonGlyphs"/>
+      <element name="TApplicationProperties.ShowHint" link="TApplication.ShowHint"/>
+      <element name="TApplicationProperties.ShowMainForm" link="TApplication.ShowMainForm"/>
+      <element name="TApplicationProperties.ShowMenuGlyphs" link="TApplication.ShowMenuGlyphs"/>
+      <element name="TApplicationProperties.Title" link="TApplication.Title"/>
 <!-- object Visibility: default -->
       <element name="TIDesigner">
-        <short>
-          <var>TIDesigner</var> - a class describing a Form Designer</short>
-        <descr/>
-        <errors/>
+        <short>The abstract base class for visual Form Designers[?]</short>
+        <descr>The whole description looks like guesswork :-(
+          <br/>It should become more informative.
+        </descr>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
@@ -8761,15 +8498,12 @@ Different operation systems has different preferences regards showing images in 
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TIDesigner.IsDesignMsg.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TIDesigner.IsDesignMsg.Sender">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TIDesigner.IsDesignMsg.Message">
         <short/>
       </element>
@@ -8784,16 +8518,14 @@ Different operation systems has different preferences regards showing images in 
       <!-- procedure Visibility: public -->
       <element name="TIDesigner.Notification">
         <short>
-          <var>Notification</var> that the suppied Operation has been applied to the specified Component</short>
+          <var>Notification</var> that the supplied Operation has been applied to the specified Component[???]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TIDesigner.Notification.AComponent">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TIDesigner.Notification.Operation">
         <short/>
       </element>
@@ -8813,15 +8545,12 @@ Different operation systems has different preferences regards showing images in 
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TIDesigner.ValidateRename.AComponent">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TIDesigner.ValidateRename.CurName">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TIDesigner.ValidateRename.NewName">
         <short/>
       </element>
@@ -8833,7 +8562,6 @@ Different operation systems has different preferences regards showing images in 
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TIDesigner.GetShiftState.Result">
         <short/>
       </element>
@@ -8845,7 +8573,6 @@ Different operation systems has different preferences regards showing images in 
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TIDesigner.SelectOnlyThisComponent.AComponent">
         <short/>
       </element>
@@ -8861,7 +8588,6 @@ Different operation systems has different preferences regards showing images in 
       <element name="TIDesigner.UniqueName.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TIDesigner.UniqueName.BaseName">
         <short/>
       </element>
@@ -8908,8 +8634,8 @@ Different operation systems has different preferences regards showing images in 
       <element name="TFormPropertyStorage.Destroy" link="#rtl.Classes.TComponent.Destroy"/>
 <!-- function Visibility: default -->
       <element name="KeysToShiftState">
-        <short>
-          <var>KeysToShiftState</var> - converts an actual physical key code to a shift state (ie Shift, Ctrl, Alt etc)</short>
+        <short>Collects all active modifier keys.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8918,12 +8644,12 @@ Different operation systems has different preferences regards showing images in 
         <short/>
       </element>
       <element name="KeysToShiftState.Keys">
-        <short/>
+        <short>The asynchronous keyboard state[?]</short>
       </element>
       <!-- function Visibility: default -->
       <element name="KeyDataToShiftState">
-        <short>
-          <var>KeyDataToShiftState</var> - converts Key data to a shift state</short>
+        <short>Collects modifier keys from a key message[?]
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8932,11 +8658,11 @@ Different operation systems has different preferences regards showing images in 
         <short/>
       </element>
       <element name="KeyDataToShiftState.KeyData">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- function Visibility: default -->
       <element name="ShiftStateToKeys">
-        <short>[?]</short>
+        <short>Converts an shift state [into what?]</short>
         <descr>
         </descr>
         <errors>
@@ -8945,7 +8671,7 @@ Different operation systems has different preferences regards showing images in 
         </seealso>
       </element>
       <element name="ShiftStateToKeys.Result">
-        <short></short>
+        <short>[?]</short>
       </element>
       <element name="ShiftStateToKeys.ShiftState">
         <short></short>
@@ -8980,7 +8706,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function Visibility: default -->
       <element name="dbgs">
-        <short>[?]</short>
+        <short>Formats various typed values into readable text.</short>
         <descr>
         </descr>
         <errors>
@@ -8989,7 +8715,7 @@ Different operation systems has different preferences regards showing images in 
         </seealso>
       </element>
       <element name="dbgs.Result">
-        <short></short>
+        <short>The formatted value.</short>
       </element>
       <element name="dbgs.State">
         <short></short>
@@ -9008,20 +8734,24 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function Visibility: default -->
       <element name="SaveFocusState">
-        <short>[?]</short>
+        <short>Returns the remembered control[?]</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="RestoreFocusState"/>
+        </seealso>
       </element>
       <element name="SaveFocusState.Result">
         <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="RestoreFocusState">
-        <short>[?]</short>
+        <short>Remembers the control in LastFocusedControl.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="SaveFocusState"/>
+        </seealso>
       </element>
       <element name="RestoreFocusState.FocusState">
         <short/>
@@ -9040,7 +8770,7 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- variable Visibility: default -->
       <element name="OnGetDesignerForm">
-        <short/>
+        <short>[?]</short>
         <descr/>
         <seealso/>
       </element>
@@ -9060,7 +8790,8 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function Visibility: default -->
       <element name="GetFirstParentForm">
-        <short>[?]</short>
+        <short>Does a recursive search for the first Parent of type TCustomForm.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9099,49 +8830,53 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function Visibility: default -->
       <element name="IsAccel">
-        <short>[?]</short>
-        <descr/>
+        <short>Searches for the given virtual key, used as an accelerator.</short>
+        <descr>An accelerator consists of an ampersand followed by the accelerator key.
+          Duplicate ampersands are ignored, they denote an literal (displayed) ampersand.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="IsAccel.Result">
-        <short/>
+        <short>True when the key is used as an accelerator.</short>
       </element>
       <element name="IsAccel.VK">
-        <short/>
+        <short>The virtual key (uppercase ASCII) to find.</short>
       </element>
       <element name="IsAccel.Str">
-        <short/>
+        <short>The string to scan.</short>
       </element>
       <!-- procedure Visibility: default -->
       <element name="NotifyApplicationUserInput">
-        <short>[?]</short>
+        <short>Invokes all application user input handlers.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="NotifyApplicationUserInput.Msg">
-        <short/>
+        <short>The message to process.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="GetShortHint">
-        <short>[?]</short>
-        <descr/>
-        <errors/>
+        <short>Returns the short version of an Hint string.</short>
+        <descr>A short Hint is separated from the long Hint by an '|'.
+          When no such character is found, the whole Hint is returned.
+        </descr>
         <seealso/>
       </element>
       <element name="GetShortHint.Result">
-        <short/>
+        <short>The short (or complete) Hint.</short>
       </element>
       <element name="GetShortHint.Hint">
-        <short/>
+        <short>The string containing both an short and long Hint.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="GetLongHint">
-        <short>[?]</short>
+        <short>Returns the long version of an Hint string.</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="GetShortHint"/>
+        </seealso>
       </element>
       <element name="GetLongHint.Result">
         <short/>
@@ -9151,31 +8886,31 @@ Different operation systems has different preferences regards showing images in 
       </element>
 <!-- variable Visibility: default -->
       <element name="Application">
-        <short>[?]</short>
+        <short>The TApplication singleton.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="Screen">
-        <short>[?]</short>
+        <short>The TScreen singleton.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="ExceptionObject">
-        <short>[?]</short>
+        <short>The current exception object[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="HintWindowClass">
-        <short>[?]</short>
+        <short>The class to be used for hints[?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="RequireDerivedFormResource">
-        <short>[?]</short>
+        <short>When True every form must have a resource[?]</short>
         <descr>
         </descr>
         <seealso>
@@ -9183,8 +8918,8 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- function type Visibility: default -->
       <element name="TMessageBoxFunction">
-        <short>
-          <var>TMessageBoxFunction</var> - the function to be used by a message box: specifies Text and Flags, and returns an integer value</short>
+        <short>The type of a MessageBox function.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -9202,37 +8937,36 @@ Different operation systems has different preferences regards showing images in 
       </element>
       <!-- variable Visibility: default -->
       <element name="MessageBoxFunction">
-        <short>[?]</short>
+        <short>[used where?]</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DefaultBorderIcons">
-        <short>[?]</short>
+        <short>Maps form border styles into their border icons.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="CreateWidgetset">
-        <short>[?]</short>
+        <short>Creates the widgetset[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateWidgetset.AWidgetsetClass">
         <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="FreeWidgetSet">
-        <short>[?]</short>
+        <short>Destroys almost all singletons[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short/>
+        <short>Registers a few components, declared in this unit.</short>
         <descr/>
         <errors/>
         <seealso/>
