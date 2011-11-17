@@ -2948,13 +2948,10 @@ type
     procedure InitializeWnd; override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure Loaded; override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
-      Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-      override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
     procedure SetDragMode(Value: TDragMode); override;
     procedure SetOptions(NewOptions: TTreeViewOptions);

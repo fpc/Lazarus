@@ -4980,8 +4980,7 @@ begin
   FStates:=FStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,tvsEditOnMouseUp];
 end;
 
-procedure TCustomTreeView.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TCustomTreeView.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then begin
