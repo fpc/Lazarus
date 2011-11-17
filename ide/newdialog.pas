@@ -203,26 +203,27 @@ begin
     NewFile:=TNewItemProjectFile(FNewItem);
     if (NewFile.Descriptor is TFileDescInheritedItem) then
     begin
-      AInheritedNode := nil;
       // If we are inheriting from a form
       if (NewFile.Descriptor is TFileDescInheritedComponent) then begin
         InhCompItem:=TFileDescInheritedComponent(NewFile.Descriptor);
         AInheritedNode := InheritableComponentsListView.Selected;
-        // load the ancestor component
-        AnUnitInfo:=TUnitInfo(AInheritedNode.Data);
-        if LazarusIDE.DoOpenComponent(AnUnitInfo.Filename,
-          [ofOnlyIfExists,ofQuiet,ofLoadHiddenResource,ofUseCache],[],
-          AncestorComponent)<>mrOk then
-        begin
-          MessageDlg(lisErrorOpeningComponent,
-            lisUnableToOpenAncestorComponent, mtError, [mbCancel], 0);
-          exit;
+        if Assigned(AInheritedNode) then begin
+          // load the ancestor component
+          AnUnitInfo:=TUnitInfo(AInheritedNode.Data);
+          if LazarusIDE.DoOpenComponent(AnUnitInfo.Filename,
+            [ofOnlyIfExists,ofQuiet,ofLoadHiddenResource,ofUseCache],[],
+            AncestorComponent)<>mrOk then
+          begin
+            MessageDlg(lisErrorOpeningComponent,
+              lisUnableToOpenAncestorComponent, mtError, [mbCancel], 0);
+            exit;
+          end;
+          // Set the resource class of the file descriptor
+          InhCompItem.ResourceClass := TPersistentClass(AncestorComponent.ClassType);
+          InhCompItem.InheritedUnit := AnUnitInfo;
+          InhCompItem.DeclareClassVariable := not AncestorComponent.ClassType.InheritsFrom(TFrame);
+          //DebugLn(['TNewOtherDialog.OKButtonClick ',InhCompItem.InheritedUnit.Filename,' ',dbgsname(InhCompItem.ResourceClass)]);
         end;
-        // Set the resource class of the file descriptor
-        InhCompItem.ResourceClass := TPersistentClass(AncestorComponent.ClassType);
-        InhCompItem.InheritedUnit := AnUnitInfo;
-        InhCompItem.DeclareClassVariable := not AncestorComponent.ClassType.InheritsFrom(TFrame);
-        //DebugLn(['TNewOtherDialog.OKButtonClick ',InhCompItem.InheritedUnit.Filename,' ',dbgsname(InhCompItem.ResourceClass)]);
       end
       else
       begin
