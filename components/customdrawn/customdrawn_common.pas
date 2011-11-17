@@ -220,7 +220,11 @@ begin
       -GetMeasures(TCDCTABCONTROL_CLOSE_TAB_BUTTON_WIDTH)
       -GetMeasures(TCDCTABCONTROL_CLOSE_TAB_BUTTON_EXTRA_SPACING);
   end;
-  TCDCTABCONTROL_CLOSE_BUTTON_POS_Y: Result := 10;
+  TCDCTABCONTROL_CLOSE_BUTTON_POS_Y:
+  begin
+    if ATabsStateEx.TabIndex = ATabsStateEx.CurTabIndex then Result := 8
+    else Result := 10;
+  end;
   else
     Result := 0;
   end;
@@ -488,7 +492,7 @@ begin
   ADest.Pen.Color := clGray;
   ADest.Pen.Width := 4;
   ADest.Line(ADestPos.X, ADestPos.Y, ADestPos.X+10, ADestPos.Y+10);
-  ADest.Line(ADestPos.X+10, ADestPos.Y, ADestPos.X, ADestPos.Y+10);
+  ADest.Line(ADestPos.X+9, ADestPos.Y, ADestPos.X-1, ADestPos.Y+10);
   ADest.Pen.Width := 1;
 end;
 
