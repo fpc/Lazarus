@@ -2614,6 +2614,7 @@ var
   UTF8Text: String; // use to prevent 3 time convertion from WideString to utf8 string
   UTF8Char: TUTF8Char;
   ACharCode: Word;
+  AQtKey: Cardinal;
   {$IFDEF UNIX}
   ScanCode: LongWord;
   {$ENDIF}
@@ -2810,6 +2811,16 @@ begin
     we'll run into problems.}
   if (LCLObject = nil) then
     Exit(False);
+
+  // do not send UTF8KeyPress for control keys
+  AQtKey := QKeyEvent_key(QKeyEventH(Event));
+
+  if ((AQtKey >= QtKey_Escape) and (AQtKey <= QtKey_Clear)) or
+    ((AQtKey >= QtKey_Home) and (AQtKey <= QtKey_PageDown)) or
+    ((AQtKey >= QtKey_F1) and (AQtKey <= QtKey_Direction_L)) or
+    (AQtKey = QtKey_Direction_R) then
+      exit;
+
 
   { Also sends a utf-8 key event for key down }
   if (QEvent_type(Event) = QEventKeyPress) and (Length(Text) <> 0) then
