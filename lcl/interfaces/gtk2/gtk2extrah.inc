@@ -27,6 +27,19 @@ uses
   Pango;
 
 const
+  { This is equired when people don't have -dev/-devel packages on linux.
+    I'm not sure how Darwin is handled tho }
+  {$ifdef windows}
+  GLibNames: array[1..1] of string = (gliblib);
+  {$else}
+    {$ifdef darwin} // Mac/Darwin
+    GLibNames: array[1..1] of string = (gliblib); // TODO: I don't know this one!
+    {$else} // BSD, Solaris, Linux
+    GLibNames: array[1..2] of string = (gliblib, gliblib + '.0');
+    {$endif}
+  {$endif}
+
+const
   gdkdll = gdklib;
 
 // missing declarations in fpc 2.2
@@ -214,6 +227,7 @@ function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external
 
 var
   gtk_window_set_opacity: procedure(window: PGtkWindow; opacity: gdouble); cdecl;
+  g_object_ref_sink: function(anObject: PGObject): gpointer; cdecl;
 
 {$ifdef ver2_2}
 {$ifdef darwin}

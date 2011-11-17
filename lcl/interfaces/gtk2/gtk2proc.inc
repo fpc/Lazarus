@@ -7503,14 +7503,14 @@ procedure FreeStyleObject(var StyleObject : PStyleObject);
 begin
   if StyleObject <> nil then
   begin
-    if StyleObject^.Obj <> nil then
-      gtk_object_destroy(StyleObject^.Obj);
-    if StyleObject^.Widget <> nil then
+    if StyleObject^.Owner <> nil then
     begin
-      // first unref
-      gtk_widget_unref(StyleObject^.Widget);
-      // then destroy
-      gtk_widget_destroy(StyleObject^.Widget);
+      // GTK owns the reference to top level widgets created by application,
+      // so they cannot be destroyed by unreferencing.
+      if GTK_WIDGET_TOPLEVEL(StyleObject^.Owner) then
+        gtk_widget_destroy(StyleObject^.Owner)
+      else
+        g_object_unref(StyleObject^.Owner);
     end;
     if StyleObject^.Style <> nil then
       if StyleObject^.Style^.attach_count > 0 then
@@ -7655,8 +7655,8 @@ var
   NoName: PGChar;
   lgs: TLazGtkStyle;
   WidgetName: String;
-  //VBox: PGtkWidget;
   AddToStyleWindow: Boolean;
+  AddReference: Boolean;
   StyleWindowWidget: PGtkWidget;
   Requisition: TGtkRequisition;
   WindowFixedWidget: PGtkWidget;
@@ -7683,6 +7683,7 @@ begin
     lgs := lgsUserDefined;
     Tp := nil;
     AddToStyleWindow := True;
+    AddReference := True;
     WidgetName := 'LazStyle' + WName;
     // create a style widget
     If CompareText(WName,LazGtkStyleNames[lgsButton])=0 then begin
@@ -7698,18 +7699,21 @@ begin
       If CompareText(WName,LazGtkStyleNames[lgsDefault])=0 then begin
         lgs:=lgsDefault;
         AddToStyleWindow:=false;
+        AddReference:=false;
         NoName:=nil;
-        StyleObject^.Widget :=
-          // GTK2 does not allow to instantiate the abstract base Widget
-          // so we use the "invisible" widget, which should never be defined
-          // by the theme
-          GTK_WIDGET_NEW( GTK_TYPE_INVISIBLE, NoName,[]);
+        // GTK2 does not allow to instantiate the abstract base Widget
+        // so we use the "invisible" widget, which should never be defined
+        // by the theme.
+        // It is created with a real reference count=1 (not floating)
+        // because it is a treated as top level widget.
+        StyleObject^.Widget := gtk_invisible_new;
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsWindow])=0 then begin
         lgs:=lgsWindow;
         StyleObject^.Widget := GTK_WINDOW_NEW(GTK_WINDOW_TOPLEVEL);
         AddToStyleWindow:=false;
+        AddReference:=false;
         gtk_widget_hide(StyleObject^.Widget);
         // create the fixed widget
         // (where to put all style widgets, that need a parent for realize)
@@ -7798,13 +7802,12 @@ begin
         Tp := gtk_tooltips_new;
         gtk_tooltips_force_window(Tp);
         StyleObject^.Widget := PGTKTooltips(Tp)^.Tip_Window;
-        gtk_widget_ref(StyleObject^.Widget);// MG: why is this needed?
 
         g_signal_connect(StyleObject^.Widget, 'style-set',
-			 TGCallback(@tooltip_window_style_set), StyleObject);
+          TGCallback(@tooltip_window_style_set), StyleObject);
 
         WidgetName := 'gtk-tooltip-lcl';
-        StyleObject^.Obj := Tp;
+        StyleObject^.Owner := Tp;
         Tp := nil;
       end
     else
@@ -7844,7 +7847,8 @@ begin
     else
       If CompareText(WName,LazGtkStyleNames[lgsToolButton])=0 then begin
         lgs:=lgsToolButton;
-        StyleObject^.Widget := gtk_toolbar_append_item(PGtkToolBar(GetStyleWidget(lgsToolBar)), 'B', nil, nil, nil, nil, nil);
+        StyleObject^.Widget := PGtkWidget(gtk_tool_button_new(nil, 'B'));
+        gtk_toolbar_insert(PGtkToolbar(GetStyleWidget(lgsToolBar)), PGtkToolItem(StyleObject^.Widget), -1);
       end
     else
       if CompareText(WName,LazGtkStyleNames[lgsScrolledWindow])=0 then begin
@@ -7869,18 +7873,36 @@ begin
       // consistency error
       RaiseGDBException('');
     end;
-    
+
     // ensure style of the widget
     If (StyleObject^.Widget <> nil) then begin
-      gtk_widget_ref(StyleObject^.Widget);
 
-      // put style widget on style window, so that it can be realized
+      if not Assigned(StyleObject^.Owner) then
+        StyleObject^.Owner := StyleObject^.Widget;
+
+      // Widgets are created with a floating reference, except for top level.
+      // Here the floating reference is acquired, or reference count increased
+      // in case the floating reference is already owned (the widget has been
+      // added to a container).
+      if AddReference then
+      begin
+        if g_object_ref_sink = nil then
+        begin
+          // Deprecated since 2.10.
+          gtk_object_ref(PGtkObject(StyleObject^.Owner));
+          gtk_object_sink(PGtkObject(StyleObject^.Owner));
+        end
+        else
+          g_object_ref_sink(PGObject(StyleObject^.Owner));
+      end;
+
+      // Put style widget on style window, so that it can be realized.
       if AddToStyleWindow then
       begin
         gtk_widget_show_all(StyleObject^.Widget);
         if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU) then
         begin
-          // attach menu to window
+          // Attach menu to window. Increases reference count for the menu.
           gtk_menu_attach_to_widget(PGtkMenu(StyleObject^.Widget),
             GetStyleWidget(lgsWindow), nil);
         end
@@ -7899,15 +7921,6 @@ begin
           gtk_menu_bar_append( GetStyleWidget(lgsMenuBar), StyleObject^.Widget);
         end
         else
-
-        if GtkWidgetIsA(StyleObject^.Widget, GTK_TYPE_TOOL_BUTTON) then
-        begin
-          //gtk_toolbar_insert();
-          gtk_toolbar_append_widget(GTK_TOOLBAR(GetStyleWidget(lgsToolBar)),
-            StyleObject^.Widget, nil, nil);
-        end
-        else
-
         if (lgs = lgsToolButton) or
            (lgs = lgsTooltip) then
         begin
@@ -7927,7 +7940,7 @@ begin
 
       gtk_widget_set_name(StyleObject^.Widget,PChar(WidgetName));
       gtk_widget_ensure_style(StyleObject^.Widget);
-      
+
       // request default sizing
       FillChar(Requisition,SizeOf(Requisition),0);
       gtk_widget_size_request(StyleObject^.Widget, @Requisition);

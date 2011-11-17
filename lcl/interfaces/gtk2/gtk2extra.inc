@@ -55,6 +55,7 @@ end;
 
 var
   gtkhandle: tlibhandle;
+  glibhandle: tlibhandle;
   libIter: Integer;
 
 initialization
@@ -67,7 +68,18 @@ initialization
       break;
     end;
   end;
+  for libIter := High(GLibNames) downto Low(GLibNames) do
+  begin
+    glibhandle := LoadLibrary(GLibNames[libIter]);
+    if glibhandle <> 0 then
+    begin
+      pointer(g_object_ref_sink):=GetProcAddress(glibhandle,'g_object_ref_sink');
+      break;
+    end;
+  end;
 
 finalization
   if gtkhandle <> 0 then
     FreeLibrary(gtkhandle);
+  if glibhandle <> 0 then
+    FreeLibrary(glibhandle);

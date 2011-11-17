@@ -693,9 +693,9 @@ function CreateFormContents(AForm: TCustomForm;
 type
   PStyleObject = ^TStyleObject;
   TStyleObject = Record
-    Obj: PGtkObject;
     Style: PGTKStyle;
-    Widget: PGTKWidget;
+    Owner: PGtkWidget;  // The widget that we hold a reference to.
+    Widget: PGTKWidget; // This is the style widget.
     FrameBordersValid: boolean;
     FrameBorders: TRect;
   end;
