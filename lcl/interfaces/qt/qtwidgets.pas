@@ -2819,7 +2819,7 @@ begin
     ((AQtKey >= QtKey_Home) and (AQtKey <= QtKey_PageDown)) or
     ((AQtKey >= QtKey_F1) and (AQtKey <= QtKey_Direction_L)) or
     (AQtKey = QtKey_Direction_R) then
-      exit;
+      Exit(False);
 
 
   { Also sends a utf-8 key event for key down }
