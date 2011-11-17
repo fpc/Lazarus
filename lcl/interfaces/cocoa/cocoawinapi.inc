@@ -808,9 +808,11 @@ begin
     SM_CYVSCROLL:
       Result := 10;//GetCarbonThemeMetric(kThemeMetricScrollBarWidth);}
     SM_CXSCREEN,
-    SM_CXVIRTUALSCREEN : Result := CGDisplayPixelsWide(CGMainDisplayID);
+    SM_CXVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.size.width);
     SM_CYSCREEN,
-    SM_CYVIRTUALSCREEN : Result := CGDisplayPixelsHigh(CGMainDisplayID);
+    SM_CYVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.size.height);
+    SM_XVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.origin.x);
+    SM_YVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.origin.y);
     SM_CXSMICON,
     SM_CYSMICON:
       Result := 16;
