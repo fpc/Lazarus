@@ -127,9 +127,10 @@ type
     procedure SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
       AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType);
   public
-//    property BitsPerComponent: Integer read GetBitsPerComponent;
     property BitmapType: TCocoaBitmapType read FType;
-//    property BytesPerRow: Integer read FBytesPerRow;
+    property BitsPerPixel: Byte read FBitsPerPixel;
+    property BitsPerSample: NSInteger read FBitsPerSample;
+    property BytesPerRow: Integer read FBytesPerRow;
 //    property CGImage: CGImageRef read FCGImage write SetCGImage;
     property ColorSpace: NSString read GetColorSpace;
     property Data: Pointer read FData;
@@ -271,6 +272,9 @@ type
 constructor TCocoaBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
   AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType;
   AData: Pointer; ACopyData: Boolean);
+var
+  HasAlpha: Boolean;
+  BitmapFormat: NSBitmapFormat;
 begin
   SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel, AAlignment, AType);
 
@@ -290,6 +294,11 @@ begin
     FFreeData := False;
   end;
 
+  HasAlpha := AType in [cbtARGB, cbtRGBA, cbtBGRA];
+  BitmapFormat := NSAlphaNonpremultipliedBitmapFormat;
+  if AType = cbtARGB then
+    BitmapFormat := BitmapFormat or NSAlphaFirstBitmapFormat;
+
   // Create the associated NSImageRep
   imagerep := NSBitmapImageRep(NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
     @FData, // planes, BitmapDataPlanes
@@ -297,10 +306,10 @@ begin
     FHeight,// height, PixelsHigh
     FbitsPerSample,// bitsPerSample, bps
     FsamplesPerPixel, // samplesPerPixel, sps
-    False, // hasAlpha
+    HasAlpha, // hasAlpha
     False, // isPlanar
     GetColorSpace, // colorSpaceName
-    NSAlphaNonpremultipliedBitmapFormat, // bitmapFormat
+    BitmapFormat, // bitmapFormat
     FBytesPerRow, // bytesPerRow
     FBitsPerPixel //bitsPerPixel
     ));

@@ -317,7 +317,6 @@ end;
 function TCocoaWidgetSet.RawImage_DescriptionFromCocoaBitmap(out ADesc: TRawImageDescription; ABitmap: TCocoaBitmap): Boolean;
 var
   Prec, Shift, BPR: Byte;
-  AlphaInfo: CGImageAlphaInfo;
 begin
   ADesc.Init;
 
@@ -327,15 +326,18 @@ begin
     ADesc.Format := ricfRGBA;
   end;
 
-{  ADesc.Width := CGImageGetWidth(ABitmap.CGImage);
-  ADesc.Height := CGImageGetHeight(ABitmap.CGImage);
+  with ABitmap.image.size do
+  begin
+    ADesc.Width := Round(width);
+    ADesc.Height := Round(Height);
+  end;
 
   //ADesc.PaletteColorCount := 0;
 
   ADesc.BitOrder := riboReversedBits;
   ADesc.ByteOrder := riboMSBFirst;
 
-  BPR := CGImageGetBytesPerRow(ABitmap.CGImage) and $FF;
+  BPR := ABitmap.BytesPerRow;
   if BPR and $F = 0 then ADesc.LineEnd := rileDQWordBoundary     // 128bit aligned
   else if BPR and $7 = 0 then ADesc.LineEnd := rileQWordBoundary //  64bit aligned
   else if BPR and $3 = 0 then ADesc.LineEnd := rileWordBoundary  //  32bit aligned
@@ -343,43 +345,29 @@ begin
   else ADesc.LineEnd := rileTight;
 
   ADesc.LineOrder := riloTopToBottom;
-  ADesc.BitsPerPixel := CGImageGetBitsPerPixel(ABitmap.CGImage);
+  ADesc.BitsPerPixel := ABitmap.BitsPerPixel;
 
   ADesc.MaskBitOrder := riboReversedBits;
   ADesc.MaskBitsPerPixel := 1;
   ADesc.MaskLineEnd := rileByteBoundary;
   // ADesc.MaskShift := 0;
 
-  Prec := CGImageGetBitsPerComponent(ABitmap.CGImage) and $FF;
-  AlphaInfo := CGImageGetAlphaInfo(ABitmap.CGImage);
+  ADesc.Depth := ABitmap.Depth;
+  Prec := ABitmap.BitsPerSample;
 
-  if AlphaInfo <> kCGImageAlphaOnly
-  then begin
-    ADesc.RedPrec := Prec;
-    ADesc.GreenPrec := Prec;
-    ADesc.BluePrec := Prec;
-  end;
+  ADesc.RedPrec := Prec;
+  ADesc.GreenPrec := Prec;
+  ADesc.BluePrec := Prec;
 
   // gray or mono
   if ADesc.Format = ricfGray then Exit;
 
   // alpha
-  case AlphaInfo of
-    kCGImageAlphaNone,
-    kCGImageAlphaNoneSkipLast,
-    kCGImageAlphaNoneSkipFirst: begin
-      ADesc.Depth := Prec * 3;
-      // ADesc.AlphaPrec := 0;
-    end;
-  else
-    ADesc.Depth := Prec * 4;
+  if ABitmap.BitmapType in [cbtARGB, cbtRGBA, cbtBGRA] then
     ADesc.AlphaPrec := Prec;
-  end;
 
-  case AlphaInfo of
-    kCGImageAlphaNone,
-    kCGImageAlphaNoneSkipLast: begin
-      // RGBx
+  case ABitmap.BitmapType of
+    cbtRGB: begin
       Shift := 32 - Prec;
       ADesc.RedShift := Shift;
       Dec(Shift, Prec);
@@ -387,18 +375,15 @@ begin
       Dec(Shift, Prec);
       ADesc.BlueShift := Shift;
     end;
-    kCGImageAlphaNoneSkipFirst: begin
-      // xRGB
-      Shift := 0;
+    cbtBGR: begin
+      Shift := 32 - Prec;
       ADesc.BlueShift := Shift;
-      Inc(Shift, Prec);
+      Dec(Shift, Prec);
       ADesc.GreenShift := Shift;
-      Inc(Shift, Prec);
+      Dec(Shift, Prec);
       ADesc.RedShift := Shift;
     end;
-    kCGImageAlphaPremultipliedFirst,
-    kCGImageAlphaFirst: begin
-      // ARGB
+    cbtARGB: begin
       Shift := 32 - Prec;
       ADesc.AlphaShift := Shift;
       Dec(Shift, Prec);
@@ -408,9 +393,7 @@ begin
       Dec(Shift, Prec);
       ADesc.BlueShift := Shift;
     end;
-    kCGImageAlphaPremultipliedLast,
-    kCGImageAlphaLast: begin
-      // RGBA
+    cbtRGBA: begin
       Shift := 32 - Prec;
       ADesc.RedShift := Shift;
       Dec(Shift, Prec);
@@ -420,13 +403,19 @@ begin
       Dec(Shift, Prec);
       ADesc.AlphaShift := Shift;
     end;
-    kCGImageAlphaOnly: begin
-      // A
-      //ADesc.AlphaShift := 0;
+    cbtBGRA: begin
+      Shift := 32 - Prec;
+      ADesc.BlueShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.GreenShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.RedShift := Shift;
+      Dec(Shift, Prec);
+      ADesc.AlphaShift := Shift;
     end;
   end;
 
-  Result := True;}
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
