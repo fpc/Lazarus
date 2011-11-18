@@ -37,6 +37,7 @@ type
     FStateEx: TCDControlStateEx;
     procedure CalculatePreferredSize(var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure SetState(const AValue: TCDControlState); virtual;
     procedure PrepareCurrentDrawer(); virtual;
     procedure SetDrawStyle(const AValue: TCDDrawStyle); virtual;
     function GetClientRect: TRect; override;
@@ -83,12 +84,15 @@ type
   // Standard Tab
   // ===================================
 
+  { TCDButtonControl }
+
   TCDButtonControl = class(TCDControl)
-  private
   protected
     // This fields are set by descendents
     FHasOnOffStates: Boolean;
-    FHasPartiallyOnState: Boolean;
+    FIsGrouped: Boolean;
+    FGroupIndex: Integer;
+    FAllowGrayed: Boolean;
     // keyboard
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
     procedure KeyUp(var Key: word; Shift: TShiftState); override;
@@ -99,11 +103,21 @@ type
     procedure MouseEnter; override;
     procedure MouseLeave; override;
     // button state change
+    procedure DoUncheckButton(); virtual;
+    procedure DoCheckIfFirstButtonInGroup();
     procedure DoButtonDown(); virtual;
     procedure DoButtonUp(); virtual;
     procedure RealSetText(const Value: TCaption); override;
-  public
+    function GetChecked: Boolean;
+    procedure SetChecked(AValue: Boolean);
+    function GetCheckedState: TCheckBoxState;
+    procedure SetCheckedState(AValue: TCheckBoxState);
+    // properties
+    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default False;
+    property Checked: Boolean read GetChecked write SetChecked default False;
     //property Down: Boolean read GetDown write SetDown;
+    property State: TCheckBoxState read GetCheckedState write SetCheckedState default cbUnchecked;
+  public
   end;
 
   { TCDButton }
@@ -207,36 +221,30 @@ type
   { TCDCheckBox }
 
   TCDCheckBox = class(TCDButtonControl)
-  private
-    FAllowGrayed: Boolean;
-    FCheckedState: TCheckBoxState;
   protected
-    procedure DoButtonUp(); override;
     function GetControlId: TCDControlID; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default False;
+    property AllowGrayed default False;
+    property Checked;
     property DrawStyle;
     property Caption;
     property TabStop default True;
-    property State: TCheckBoxState read FCheckedState write FCheckedState default cbUnchecked;
+    property State;
   end;
 
   { TCDRadioButton }
 
   TCDRadioButton = class(TCDButtonControl)
-  private
-    function GetChecked: Boolean;
-    procedure SetChecked(AValue: Boolean);
   protected
     function GetControlId: TCDControlID; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Checked: Boolean read GetChecked write SetChecked default False;
+    property Checked;
     property DrawStyle;
     property Caption;
     property TabStop default True;
@@ -693,6 +701,15 @@ begin
     PreferredWidth, PreferredHeight, WithThemeSpace);
 end;
 
+procedure TCDControl.SetState(const AValue: TCDControlState);
+begin
+  if AValue <> FState then
+  begin
+    FState := AValue;
+    Invalidate;
+  end;
+end;
+
 procedure TCDControl.PrepareCurrentDrawer;
 begin
   FDrawer := GetDrawer(FDrawStyle);
@@ -872,48 +889,144 @@ begin
   inherited MouseLeave;
 end;
 
-procedure TCDButtonControl.DoButtonDown();
+procedure TCDButtonControl.DoUncheckButton;
+var
+  NewState: TCDControlState;
 begin
-  if not (csfSunken in FState) then
+  NewState := FState + [csfOff] - [csfOn, csfPartiallyOn];
+  SetState(NewState);
+end;
+
+procedure TCDButtonControl.DoCheckIfFirstButtonInGroup;
+var
+  NewState: TCDControlState;
+  i: Integer;
+  lControl: TControl;
+begin
+  // Start with the checked value
+  NewState := FState + [csfOn] - [csfOff, csfPartiallyOn];
+
+  // Search for other buttons in the group in the same parent
+  if Parent <> nil then
   begin
-    FState := FState + [csfSunken];
-    Invalidate;
+    for i := 0 to Parent.ControlCount - 1 do
+    begin
+      lControl := Parent.Controls[i];
+      if (lControl is TCDButtonControl) and
+        (lControl <> Self) and
+        (TCDButtonControl(lControl).FGroupIndex = FGroupIndex) then
+      begin
+        NewState := FState + [csfOff] - [csfOn, csfPartiallyOn];
+        Break;
+      end;
+    end;
   end;
+
+  SetState(NewState);
+end;
+
+procedure TCDButtonControl.DoButtonDown();
+var
+  NewState: TCDControlState;
+begin
+  NewState := FState;
+  if not (csfSunken in FState) then NewState := FState + [csfSunken];
+  SetState(NewState);
 end;
 
 procedure TCDButtonControl.DoButtonUp();
+var
+  i: Integer;
+  lControl: TControl;
+  NewState: TCDControlState;
 begin
-  if csfSunken in FState then
+  NewState := FState;
+  if csfSunken in FState then NewState := FState - [csfSunken];
+
+  // For grouped buttons, call DoButtonUp for all other buttons on the same parent
+  if FIsGrouped then
   begin
-    FState := FState - [csfSunken];
-    Invalidate;
-  end;
+    NewState := FState + [csfOn] - [csfOff, csfPartiallyOn];
+    if Parent <> nil then
+    begin
+      for i := 0 to Parent.ControlCount - 1 do
+      begin
+        lControl := Parent.Controls[i];
+        if (lControl is TCDButtonControl) and
+          (lControl <> Self) and
+          (TCDButtonControl(lControl).FGroupIndex = FGroupIndex) then
+          TCDButtonControl(lControl).DoUncheckButton();
+      end;
+    end;
+  end
   // Only for buttons with checked/down states
-  if FHasOnOffStates then
+  // TCDCheckbox, TCDRadiobutton, TCDButton configured as TToggleButton
+  else if FHasOnOffStates then
   begin
-    if FHasPartiallyOnState then
+    if FAllowGrayed then
     begin
       if csfOn in FState then
-        FState := FState + [csfOff] - [csfOn, csfPartiallyOn]
+        NewState := FState + [csfOff] - [csfOn, csfPartiallyOn]
       else if csfPartiallyOn in FState then
-        FState := FState + [csfOn] - [csfOff, csfPartiallyOn]
+        NewState := FState + [csfOn] - [csfOff, csfPartiallyOn]
       else
-        FState := FState + [csfPartiallyOn] - [csfOn, csfOff];
+        NewState := FState + [csfPartiallyOn] - [csfOn, csfOff];
     end
     else
     begin
       if csfOn in FState then
-        FState := FState + [csfOff] - [csfOn]
+        NewState := FState + [csfOff] - [csfOn]
       else
-        FState := FState + [csfOn] - [csfOff];
+        NewState := FState + [csfOn] - [csfOff];
     end;
   end;
+
+  SetState(NewState);
 end;
 
 procedure TCDButtonControl.RealSetText(const Value: TCaption);
 begin
   inherited RealSetText(Value);
   Invalidate;
+end;
+
+function TCDButtonControl.GetChecked: Boolean;
+begin
+  Result := csfOn in FState;
+end;
+
+procedure TCDButtonControl.SetChecked(AValue: Boolean);
+var
+  NewState: TCDControlState;
+begin
+  // In grouped elements when setting to true we do the full group sequence
+  // but when setting to false we just uncheck the element
+  if FIsGrouped and AValue then DoButtonUp()
+  else
+  begin
+    if AValue then NewState := FState + [csfOn] - [csfOff, csfPartiallyOn]
+    else NewState := FState + [csfOff] - [csfOn, csfPartiallyOn];
+    SetState(NewState);
+  end;
+end;
+
+function TCDButtonControl.GetCheckedState: TCheckBoxState;
+begin
+  if csfOn in FState then Result := cbChecked
+  else if csfPartiallyOn in FState then Result := cbGrayed
+  else Result := cbUnchecked;
+end;
+
+procedure TCDButtonControl.SetCheckedState(AValue: TCheckBoxState);
+var
+  NewState: TCDControlState;
+begin
+  case AValue of
+  cbChecked:   NewState := FState + [csfOff] - [csfOn, csfPartiallyOn];
+  cbGrayed:    NewState := FState + [csfOn] - [csfOff, csfPartiallyOn];
+  cbUnchecked: NewState := FState + [csfPartiallyOn] - [csfOn, csfOff];
+  end;
+  SetState(NewState);
 end;
 
 { TCDEdit }
@@ -1272,28 +1385,6 @@ end;
 
 { TCDCheckBox }
 
-procedure TCDCheckBox.DoButtonUp;
-begin
-  inherited DoButtonUp;
-
-  if AllowGrayed then
-  begin
-    case FCheckedState of
-    cbUnchecked: FCheckedState := cbGrayed;
-    cbGrayed: FCheckedState := cbChecked;
-    else
-      FCheckedState := cbUnchecked;
-    end;
-  end
-  else
-  begin
-    if FCheckedState in [cbUnchecked, cbGrayed] then FCheckedState := cbChecked
-    else FCheckedState := cbUnchecked;
-  end;
-
-  Invalidate;
-end;
-
 function TCDCheckBox.GetControlId: TCDControlID;
 begin
   Result := cidCheckBox;
@@ -1361,22 +1452,6 @@ end;
 
 { TCDRadioButton }
 
-procedure TCDRadioButton.SetChecked(AValue: Boolean);
-begin
-  if (AValue and (csfOn in FState)) or
-   ((not AValue) and (csfOff in FState)) then Exit;
-
-  if AValue then FState := FState + [csfOn] - [csfOff]
-  else FState := FState + [csfOff] - [csfOn];
-
-  Invalidate;
-end;
-
-function TCDRadioButton.GetChecked: Boolean;
-begin
-  Result := csfOn in FState;
-end;
-
 function TCDRadioButton.GetControlId: TCDControlID;
 begin
   Result := cidRadioButton;
@@ -1392,7 +1467,9 @@ begin
   ControlStyle := ControlStyle - [csAcceptsControls];
   AutoSize := True;
   FHasOnOffStates := True;
-
+  FIsGrouped := True;
+  FGroupIndex := -2; // special value for TCDRadioButton
+  DoCheckIfFirstButtonInGroup();
   PrepareCurrentDrawer();
 end;
 
