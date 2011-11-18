@@ -34,7 +34,7 @@ type
     procedure MouseClick(clickCount: Integer); override;
     procedure MouseMove(x,y: Integer); override;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); override;
-    procedure ResetCursorRects; override;
+    function ResetCursorRects: Boolean; override;
   end;
 
   { TCocoaWSWinControl }
@@ -162,12 +162,13 @@ begin
   end;
 end;
 
-procedure TLCLCommonCallback.ResetCursorRects;
+function TLCLCommonCallback.ResetCursorRects: Boolean;
 var
   ACursor: TCursor;
   AControl: TControl;
   View: NSView;
 begin
+  Result := False;
   if Owner.isKindOfClass_(NSWindow) then
     View := NSwindow(Owner).contentView
   else
@@ -183,7 +184,8 @@ begin
       // traverse visible child controls
       ACursor := Target.Cursor;
     end;
-    if ACursor <> crDefault then
+    Result := ACursor <> crDefault;
+    if Result then
       View.addCursorRect_cursor(View.visibleRect, TCocoaCursor(Screen.Cursors[ACursor]).Cursor);
   end;
 end;

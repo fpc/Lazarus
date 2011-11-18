@@ -93,7 +93,7 @@ type
     procedure MouseClick(ClickCount: Integer); virtual; abstract;
     procedure MouseMove(x,y: Integer); virtual; abstract;
     procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect); virtual; abstract;
-    procedure ResetCursorRects; virtual; abstract;
+    function ResetCursorRects: Boolean; virtual; abstract;
   end;
 
   { TWindowCallback }
@@ -141,9 +141,12 @@ type
     procedure resetCursorRects; override;
   end;
 
+  { TCocoaTextField }
+
   TCocoaTextField = objcclass(NSTextField)
     callback  : TCommonCallback;
     function acceptsFirstResponder: Boolean; override;
+    procedure resetCursorRects; override;
   end;
 
   { TCocoaSecureTextField }
@@ -151,12 +154,16 @@ type
   TCocoaSecureTextField = objcclass(NSSecureTextField)
     callback  : TCommonCallback;
     function acceptsFirstResponder: Boolean; override;
+    procedure resetCursorRects; override;
   end;
 
+
+  { TCocoaTextView }
 
   TCocoaTextView = objcclass(NSTextView)
     callback  : TCommonCallback;
     function acceptsFirstResponder: Boolean; override;
+    procedure resetCursorRects; override;
   end;
 
   { TCocoaWindow }
@@ -192,6 +199,7 @@ type
 
   TCocoaScrollView = objcclass(NSScrollView)
     callback  : TCommonCallback;
+    procedure resetCursorRects; override;
   end;
 
 
@@ -220,12 +228,14 @@ type
     function numberOfItemsInComboBox(combo: TCocoaComboBox): NSInteger;
       message 'numberOfItemsInComboBox:';
     procedure dealloc; override;
+    procedure resetCursorRects; override;
   end;
 
   { TCocoaScrollBar }
 
   TCocoaScrollBar = objcclass(NSScroller)
     callback  : TCommonCallback;
+    procedure resetCursorRects; override;
   end;
 
   TCocoaListView = objcclass;
@@ -251,15 +261,41 @@ type
       objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
       message 'tableView:objectValueForTableColumn:row:';
     procedure dealloc; override;
+    procedure resetCursorRects; override;
   end;
 
   { TCocoaGroupBox }
 
   TCocoaGroupBox = objcclass(NSBox)
     callback  : TCommonCallback;
+    procedure resetCursorRects; override;
   end;
 
 implementation
+
+{ TCocoaScrollView }
+
+procedure TCocoaScrollView.resetCursorRects;
+begin
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
+end;
+
+{ TCocoaScrollBar }
+
+procedure TCocoaScrollBar.resetCursorRects;
+begin
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
+end;
+
+{ TCocoaGroupBox }
+
+procedure TCocoaGroupBox.resetCursorRects;
+begin
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
+end;
 
 { TCocoaButton }
 
@@ -294,8 +330,8 @@ end;
 
 procedure TCocoaButton.resetCursorRects;
 begin
-  callback.resetCursorRects;
-  inherited resetCursorRects;
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
 end;
 
 procedure TCocoaButton.mouseDown(event: NSEvent);
@@ -334,11 +370,26 @@ begin
   Result:=true;
 end;
 
+procedure TCocoaTextField.resetCursorRects;
+begin
+  // this will not work well because
+  // cocoa replaced TextField and TextView cursors in
+  // mouseEntered, mouseMoved and CursorUpdate
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
+end;
+
 { TCocoaTextView }
 
 function TCocoaTextView.acceptsFirstResponder: Boolean;
 begin
   Result:=true;
+end;
+
+procedure TCocoaTextView.resetCursorRects;
+begin
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
 end;
 
 { TCocoaWindow }
@@ -441,6 +492,12 @@ begin
   Result:=True;
 end;
 
+procedure TCocoaSecureTextField.resetCursorRects;
+begin
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
+end;
+
 { TWindowCallback }
 
 constructor TWindowCallback.Create(AOwner: NSWindow);
@@ -458,8 +515,8 @@ end;
 
 procedure TCocoaCustomControl.resetCursorRects;
 begin
-  callback.resetCursorRects;
-  inherited resetCursorRects;
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
 end;
 
 { LCLObjectExtension }
@@ -692,6 +749,12 @@ begin
   inherited dealloc;
 end;
 
+procedure TCocoaListView.resetCursorRects;
+begin
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
+end;
+
 { TCocoaStringList }
 
 procedure TCocoaStringList.Changed;
@@ -744,6 +807,12 @@ begin
   end;
   resultNS.release;
   inherited dealloc;
+end;
+
+procedure TCocoaComboBox.resetCursorRects;
+begin
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
 end;
 
 { TCocoaMenu }

@@ -67,7 +67,7 @@ type
     FTerminating: Boolean;
 
     pool      : NSAutoreleasePool;
-    NSApp     : NSApplication;
+    FNSApp    : NSApplication;
     delegate  : TCocoaAppDelegate;
   protected
     function GetAppHandle: THandle; override;
@@ -102,7 +102,7 @@ type
     function RawImage_FromCocoaBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCocoaBitmap; ARect: PRect = nil): Boolean;
     function RawImage_DescriptionToBitmapType(ADesc: TRawImageDescription; out bmpType: TCocoaBitmapType): Boolean;
 //    function GetImagePixelData(AImage: CGImageRef; var bitmapByteCount: PtrUInt): Pointer;
-
+    property NSApp: NSApplication read FNSApp;
     // the winapi compatibility methods
     {$I cocoawinapih.inc}
     // the extra LCL interface methods

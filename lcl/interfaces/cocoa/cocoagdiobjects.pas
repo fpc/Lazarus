@@ -223,6 +223,9 @@ function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
 
 implementation
 
+uses
+  CocoaInt;
+
 //todo: a better check!
 
 function CheckDC(dc: HDC): TCocoaContext;
@@ -421,6 +424,8 @@ end;
 function TCocoaCursor.Install: TCocoaCursor;
 begin
   FCursor.push;
+  // also request form cursors invalidation
+  CocoaWidgetSet.NSApp.keyWindow.resetCursorRects;
   Result := nil;
 end;
 

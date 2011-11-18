@@ -39,8 +39,8 @@ begin
   delegate:=TCocoaAppDelegate.alloc;
 
   { Creates the application NSApp object }
-  NsApp := NSApplication.sharedApplication;
-  NSApp.setDelegate(delegate);
+  FNsApp := NSApplication.sharedApplication;
+  FNSApp.setDelegate(delegate);
 end;
 
 {------------------------------------------------------------------------------
