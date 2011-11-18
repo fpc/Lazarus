@@ -215,6 +215,7 @@ begin
   end;
 
   win:=TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
+  win.enableCursorRects;
   TCocoaWindow(win).callback:=TLCLCommonCallback.Create(win, AWinControl);
   TCocoaWindow(win).wincallback:=TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);

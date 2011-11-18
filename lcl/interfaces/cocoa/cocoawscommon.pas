@@ -10,7 +10,7 @@ uses
   MacOSAll, CocoaAll,
   Classes, Controls, SysUtils,
   //
-  WSControls, LCLType, LCLProc,
+  WSControls, LCLType, LCLProc, Forms,
   CocoaPrivate, CocoaGDIObjects, CocoaUtils, LCLMessageGlue;
 
 type
@@ -34,6 +34,7 @@ type
     procedure MouseClick(clickCount: Integer); override;
     procedure MouseMove(x,y: Integer); override;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); override;
+    procedure ResetCursorRects; override;
   end;
 
   { TCocoaWSWinControl }
@@ -157,6 +158,32 @@ begin
     {$IFDEF VerboseWinAPI}
       DebugLn('[TLCLCommonCallback.Draw] OnPaint event ended');
     {$ENDIF}
+  end;
+end;
+
+procedure TLCLCommonCallback.ResetCursorRects;
+var
+  ACursor: TCursor;
+  AControl: TControl;
+  View: NSView;
+begin
+  if Owner.isKindOfClass_(NSWindow) then
+    View := NSwindow(Owner).contentView
+  else
+  if Owner.isKindOfClass_(NSView) then
+    View := NSView(Owner)
+  else
+    Exit;
+  if not (csDesigning in Target.ComponentState) then
+  begin
+    ACursor := Screen.Cursor;
+    if ACursor = crDefault then
+    begin
+      // traverse visible child controls
+      ACursor := Target.Cursor;
+    end;
+    if ACursor <> crDefault then
+      View.addCursorRect_cursor(View.visibleRect, TCocoaCursor(Screen.Cursors[ACursor]).Cursor);
   end;
 end;
 

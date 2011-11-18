@@ -35,18 +35,21 @@
 function TCocoaWidgetSet.CreateStandardCursor(ACursor: SmallInt): HCursor;
 begin
   case ACursor of
-    crDefault     : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.currentSystemCursor));
     crArrow       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.arrowCursor));
     crCross       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.crosshairCursor));
     crIBeam       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.IBeamCursor));
-    crSizeNS      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeUpDownCursor));
-    crSizeWE      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeLeftRightCursor));
+    crSizeNS,
+    crVSplit      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeUpDownCursor));
+    crSizeWE,
+    crHSplit      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeLeftRightCursor));
     crSizeN       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeUpCursor));
     crSizeW       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeLeftCursor));
     crSizeE       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeRightCursor));
     crSizeS       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.resizeDownCursor));
-    crNo          : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.operationNotAllowedCursor));
+    crNo,
+    crNoDrop      : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.operationNotAllowedCursor));
     crHandPoint   : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.pointingHandCursor));
+    crDrag        : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.dragCopyCursor));
   else
     Result := 0;
   end;

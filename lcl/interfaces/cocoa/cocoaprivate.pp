@@ -93,6 +93,7 @@ type
     procedure MouseClick(ClickCount: Integer); virtual; abstract;
     procedure MouseMove(x,y: Integer); virtual; abstract;
     procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect); virtual; abstract;
+    procedure ResetCursorRects; virtual; abstract;
   end;
 
   { TWindowCallback }
@@ -137,6 +138,7 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
+    procedure resetCursorRects; override;
   end;
 
   TCocoaTextField = objcclass(NSTextField)
@@ -176,6 +178,7 @@ type
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
+    procedure resetCursorRects; override;
   end;
 
   { TCocoaCustomControl }
@@ -183,6 +186,7 @@ type
   TCocoaCustomControl = objcclass(NSControl)
     callback  : TCommonCallback;
     procedure drawRect(dirtyRect: NSRect); override;
+    procedure resetCursorRects; override;
   end;
 
   { TCocoaScrollView }
@@ -287,6 +291,12 @@ begin
   mp:=event.locationInWindow;
   callback.MouseUp(round(mp.x), round(mp.y));
   inherited mouseUp(event);
+end;
+
+procedure TCocoaButton.resetCursorRects;
+begin
+  callback.resetCursorRects;
+  inherited resetCursorRects;
 end;
 
 procedure TCocoaButton.mouseDown(event: NSEvent);
@@ -408,6 +418,12 @@ begin
   inherited mouseMoved(event);
 end;
 
+procedure TCocoaWindow.resetCursorRects;
+begin
+  callback.resetCursorRects;
+  inherited resetCursorRects;
+end;
+
 procedure TCocoaWindow.mouseEntered(event: NSEvent);
 begin
   inherited mouseEntered(event);
@@ -445,6 +461,12 @@ procedure TCocoaCustomControl.drawRect(dirtyRect:NSRect);
 begin
   inherited drawRect(dirtyRect);
   callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+end;
+
+procedure TCocoaCustomControl.resetCursorRects;
+begin
+  callback.resetCursorRects;
+  inherited resetCursorRects;
 end;
 
 { LCLObjectExtension }

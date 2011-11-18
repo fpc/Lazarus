@@ -153,6 +153,7 @@ type
     constructor CreateFromBitmap(const ABitmap: TCocoaBitmap; const hotSpot: NSPoint);
     destructor Destroy; override;
     function Install: TCocoaCursor;
+    property Cursor: NSCursor read FCursor;
     property Standard: Boolean read FStandard;
   end;
 
@@ -419,7 +420,7 @@ end;
 
 function TCocoaCursor.Install: TCocoaCursor;
 begin
-  FCursor.set_;
+  FCursor.push;
   Result := nil;
 end;
 
