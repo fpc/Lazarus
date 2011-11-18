@@ -7,16 +7,15 @@ interface
 uses
   Classes, SysUtils, FileUtil,
   IDEWindowIntf, IDEOptionDefs,
-  Forms, Controls, Graphics, Dialogs, StdCtrls, DebuggerDlg, BaseDebugManager;
+  Forms, Controls, Graphics, Dialogs, StdCtrls, DebuggerDlg, BaseDebugManager, LCLType;
 
 type
 
   { TPseudoConsoleDlg }
 
   TPseudoConsoleDlg = class(TDebuggerDlg)
-    Edit1: TEdit;
     Memo1: TMemo;
-    procedure Edit1KeyPress(Sender: TObject; var Key: char);
+    procedure Memo1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
   private
     { private declarations }
   protected
@@ -37,11 +36,11 @@ var
 
 { TPseudoConsoleDlg }
 
-procedure TPseudoConsoleDlg.Edit1KeyPress(Sender: TObject; var Key: char);
+procedure TPseudoConsoleDlg.Memo1UTF8KeyPress(Sender: TObject;
+  var UTF8Key: TUTF8Char);
 begin
-  if Key <> #13 then exit;
-  DebugBoss.DoSendConsoleInput(Edit1.Text+LineEnding);
-  Edit1.Text := '';
+  DebugBoss.DoSendConsoleInput(Utf8Key);
+  Utf8Key := #0;
 end;
 
 procedure TPseudoConsoleDlg.DoClose(var CloseAction: TCloseAction);

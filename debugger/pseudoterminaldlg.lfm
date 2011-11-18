@@ -5,21 +5,13 @@ inherited PseudoConsoleDlg: TPseudoConsoleDlg
   DockSite = True
   object Memo1: TMemo[0]
     Left = 0
-    Height = 217
+    Height = 240
     Top = 0
     Width = 320
     Align = alClient
+    OnUTF8KeyPress = Memo1UTF8KeyPress
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 0
-  end
-  object Edit1: TEdit[1]
-    Left = 0
-    Height = 23
-    Top = 217
-    Width = 320
-    Align = alBottom
-    OnKeyPress = Edit1KeyPress
-    TabOrder = 1
   end
 end
