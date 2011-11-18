@@ -4179,7 +4179,7 @@ begin
       if NewTabOrder <> -1 then
       begin
         if NewTabOrder = Count then
-           ListAdd(FParent.FTabList,Self)
+          ListAdd(FParent.FTabList,Self)
         else
           ListInsert(FParent.FTabList,NewTabOrder,Self);
         FTabOrder := NewTabOrder;

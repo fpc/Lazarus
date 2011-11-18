@@ -1390,21 +1390,21 @@ var
   CurPath: String;
   EndPos: Integer;
   StartPos: Integer;
-  l: Integer;
+  len: Integer;
   BaseDir: String;
 begin
   Result:='';
   EndPos:=1;
-  l:=length(SearchPath);
+  len:=length(SearchPath);
   BaseDir:=AppendPathDelim(TrimFilename(BaseDirectory));
-  while EndPos<=l do begin
+  while EndPos<=len do begin
     StartPos:=EndPos;
     // skip empty paths and space chars at start
-    while (StartPos<=l) and (SearchPath[StartPos] in [';',#0..#32]) do
+    while (StartPos<=len) and (SearchPath[StartPos] in [';',#0..#32]) do
       inc(StartPos);
-    if StartPos>l then break;
+    if StartPos>len then break;
     EndPos:=StartPos;
-    while (EndPos<=l) and (SearchPath[EndPos]<>';') do inc(EndPos);
+    while (EndPos<=len) and (SearchPath[EndPos]<>';') do inc(EndPos);
     CurPath:=copy(SearchPath,StartPos,EndPos-StartPos);
     if CurPath<>'' then begin
       // non empty path => expand, trim and normalize
@@ -1413,8 +1413,7 @@ begin
       CurPath:=ChompPathDelim(TrimFilename(CurPath));
       if CurPath='' then CurPath:='.';
       // check if path already exists
-      if (not DeleteDoubles)
-        or (SearchDirectoryInSearchPath(Result,CurPath)<1)
+      if (not DeleteDoubles) or (SearchDirectoryInSearchPath(Result,CurPath)<1)
       then begin
         if Result<>'' then
           CurPath:=';'+CurPath;
