@@ -479,7 +479,8 @@ begin
   with NSEvent.mouseLocation do
   begin
     lpPoint.x := Round(x);
-    lpPoint.y := Round(y);
+    // cocoa returns cursor with inverted y coordinate
+    lpPoint.y := Round(NSScreen.mainScreen.frame.size.height-y);
   end;
   Result := True;
 end;
