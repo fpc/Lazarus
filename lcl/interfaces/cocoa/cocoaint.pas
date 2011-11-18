@@ -85,6 +85,7 @@ type
     procedure AppMinimize; override;
     procedure AppRestore; override;
     procedure AppBringToFront; override;
+    procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
 
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;

@@ -177,6 +177,14 @@ begin
   NSApp.activateIgnoringOtherApps(True);
 end;
 
+procedure TCocoaWidgetSet.AppSetIcon(const Small, Big: HICON);
+begin
+  if Big <> 0 then
+    NSApp.setApplicationIconImage(TCocoaBitmap(Big).image)
+  else
+    NSApp.setApplicationIconImage(nil);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCocoaWidgetSet.AppSetTitle
   Params:  ATitle - New application title
