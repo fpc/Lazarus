@@ -116,6 +116,7 @@ type
     // Cocoa information
     FbitsPerSample: NSInteger;  // How many bits in each color component
     FsamplesPerPixel: NSInteger;// How many color components
+    function GetColorSpace: NSString;
   public
     image: NSImage;
     imagerep: NSBitmapImageRep;
@@ -130,7 +131,7 @@ type
     property BitmapType: TCocoaBitmapType read FType;
 //    property BytesPerRow: Integer read FBytesPerRow;
 //    property CGImage: CGImageRef read FCGImage write SetCGImage;
-//    property ColorSpace: CGColorSpaceRef read GetColorSpace;
+    property ColorSpace: NSString read GetColorSpace;
     property Data: Pointer read FData;
     property DataSize: Integer read FDataSize;
     property Depth: Byte read FDepth;
@@ -298,7 +299,7 @@ begin
     FsamplesPerPixel, // samplesPerPixel, sps
     False, // hasAlpha
     False, // isPlanar
-    NSCalibratedRGBColorSpace, // colorSpaceName
+    GetColorSpace, // colorSpaceName
     NSAlphaNonpremultipliedBitmapFormat, // bitmapFormat
     FBytesPerRow, // bytesPerRow
     FBitsPerPixel //bitsPerPixel
@@ -311,7 +312,7 @@ end;
 
 destructor TCocoaBitmap.Destroy;
 begin
-  //CGImageRelease(FCGImage);
+  image.release;
   if FFreeData then System.FreeMem(FData);
 
   inherited Destroy;
@@ -374,6 +375,14 @@ begin
     FbitsPerSample := ABitsPerPixel div 3;
     FsamplesPerPixel := 3;
   end;
+end;
+
+function TCocoaBitmap.GetColorSpace: NSString;
+begin
+  if FType in [cbtMono, cbtGray] then
+    Result := NSCalibratedWhiteColorSpace
+  else
+    Result := NSCalibratedRGBColorSpace;
 end;
 
 { TCocoaCursor }
