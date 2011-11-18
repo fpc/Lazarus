@@ -604,12 +604,21 @@
         <short>True when Visible and Range higher than Page.</short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TControlScrollBar.Create"/>
+      <element name="TControlScrollBar.Create">
+        <short>Creates a scrollbar object for AControl.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="#rtl.System.TObject.Create">TObject.Create</link>
+        </seealso>
+      </element>
       <element name="TControlScrollBar.Create.AControl">
-        <short>The windowed control in which the scroll bar is found</short>
+        <short>The windowed control in which the scroll bar is found.</short>
       </element>
       <element name="TControlScrollBar.Create.AKind">
-        <short>Whether this is a horizontal or a vertical scrollbar</short>
+        <short>The scrollbar orientation.
+        </short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControlScrollBar.Assign">
@@ -849,7 +858,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TScrollingWinControl.CreateWnd"/>
+      <element name="TScrollingWinControl.CreateWnd" link="#lcl.Controls.TWinControl.CreateWnd"/>
       <!-- function Visibility: protected -->
       <element name="TScrollingWinControl.GetClientScrollOffset">
         <short>The virtual origin of the physical client area.
@@ -953,7 +962,7 @@
         <short></short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TScrollingWinControl.Create"/>
+      <element name="TScrollingWinControl.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="TScrollingWinControl.Create.TheOwner">
         <short/>
       </element>
@@ -969,7 +978,7 @@
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TScrollingWinControl.GetControlClassDefaultSize"/>
+      <element name="TScrollingWinControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
       <element name="TScrollingWinControl.GetControlClassDefaultSize.Result">
         <short/>
       </element>
@@ -1016,7 +1025,7 @@
       </element>
       <element name="TScrollBox.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <!-- constructor Visibility: public -->
-      <element name="TScrollBox.Create" link="#LCL.Forms.TScrollingWinControl.Create"/>
+      <element name="TScrollBox.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="TScrollBox.Create.AOwner">
         <short/>
       </element>
@@ -1029,8 +1038,8 @@
       <element name="TScrollBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing"/>
       <element name="TScrollBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle"/>
       <element name="TScrollBox.ChildSizing" link="#LCL.Controls.TWinControl.ChildSizing"/>
-      <element name="TScrollBox.ClientHeight"/>
-      <element name="TScrollBox.ClientWidth"/>
+      <element name="TScrollBox.ClientHeight" link="#LCL.Controls.TControl.ClientHeight"/>
+      <element name="TScrollBox.ClientWidth"  link="#LCL.Controls.TControl.ClientWidth"/>
       <element name="TScrollBox.Color" link="#LCL.Controls.TControl.Color"/>
       <element name="TScrollBox.Constraints" link="#LCL.Controls.TControl.Constraints"/>
       <element name="TScrollBox.DockSite" link="#LCL.Controls.TWinControl.DockSite"/>
@@ -1052,8 +1061,8 @@
       <element name="TScrollBox.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
       <element name="TScrollBox.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo"/>
       <element name="TScrollBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
-      <element name="TScrollBox.OnMouseEnter"/>
-      <element name="TScrollBox.OnMouseLeave"/>
+      <element name="TScrollBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
+      <element name="TScrollBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
       <element name="TScrollBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
       <element name="TScrollBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
       <element name="TScrollBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
@@ -1203,12 +1212,12 @@
       <element name="TCustomFrame.SetParent.AParent">
         <short/>
       </element>
-      <element name="TCustomFrame.DefineProperties"/>
+      <element name="TCustomFrame.DefineProperties" link="#rtl.Classes.TComponent.DefineProperties"/>
       <element name="TCustomFrame.DefineProperties.Filer">
         <short></short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomFrame.CalculatePreferredSize"/>
+      <element name="TCustomFrame.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize"/>
       <element name="TCustomFrame.CalculatePreferredSize.PreferredWidth">
         <short></short>
       </element>
@@ -1219,12 +1228,12 @@
         <short></short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomFrame.Create"/>
+      <element name="TCustomFrame.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="TCustomFrame.Create.AOwner">
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomFrame.GetControlClassDefaultSize"/>
+      <element name="TCustomFrame.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
       <element name="TCustomFrame.GetControlClassDefaultSize.Result">
         <short/>
       </element>
@@ -1248,7 +1257,7 @@
       <element name="TFrame.LCLVersionIsStored.Result">
         <short></short>
       </element>
-      <element name="TFrame.Create" link="#LCL.Forms.TCustomFrame.Create"/>
+      <element name="TFrame.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="TFrame.Create.TheOwner">
         <short></short>
       </element>
@@ -1258,9 +1267,9 @@
       <element name="TFrame.AutoScroll" link="#LCL.Forms.TScrollingWinControl.AutoScroll"/>
       <element name="TFrame.AutoSize" link="#LCL.Controls.TControl.AutoSize"/>
       <!-- property Visibility: published -->
-      <element name="TFrame.BiDiMode"/>
-      <element name="TFrame.BorderSpacing"/>
-      <element name="TFrame.ChildSizing"/>
+      <element name="TFrame.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
+      <element name="TFrame.BorderSpacing"  link="#LCL.Controls.TControl.BorderSpacing"/>
+      <element name="TFrame.ChildSizing"  link="#LCL.Controls.TWinControl.ChildSizing"/>
       <element name="TFrame.ClientHeight" link="#LCL.Controls.TControl.ClientHeight"/>
       <element name="TFrame.ClientWidth" link="#LCL.Controls.TControl.ClientWidth"/>
       <element name="TFrame.Color" link="#LCL.Controls.TControl.Color"/>
@@ -1286,8 +1295,8 @@
       <element name="TFrame.OnExit" link="#LCL.Controls.TWinControl.OnExit"/>
       <element name="TFrame.OnGetSiteInfo" link="#LCL.Controls.TWinControl.OnGetSiteInfo"/>
       <element name="TFrame.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown"/>
-      <element name="TFrame.OnMouseEnter"/>
-      <element name="TFrame.OnMouseLeave"/>
+      <element name="TFrame.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter"/>
+      <element name="TFrame.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave"/>
       <element name="TFrame.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove"/>
       <element name="TFrame.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp"/>
       <element name="TFrame.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel"/>
@@ -1297,7 +1306,7 @@
       <element name="TFrame.OnStartDock" link="#LCL.Controls.TControl.OnStartDock"/>
       <element name="TFrame.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag"/>
       <element name="TFrame.OnUnDock" link="#LCL.Controls.TWinControl.OnUnDock"/>
-      <element name="TFrame.ParentBiDiMode"/>
+      <element name="TFrame.ParentBiDiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
       <element name="TFrame.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
       <element name="TFrame.ParentFont" link="#LCL.Controls.TControl.ParentFont"/>
       <element name="TFrame.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint"/>
@@ -2201,12 +2210,12 @@
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.CreateParams"/>
+      <element name="TCustomForm.CreateParams" link="#LCL.Controls.TWinControl.CreateParams"/>
       <element name="TCustomForm.CreateParams.Params">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.CreateWnd">
+      <element name="TCustomForm.CreateWnd" link="#lcl.Controls.TWinControl.CreateWnd">
         <short>Creates the widget, updates the widget-dependent properties.
         </short>
         <descr/>
@@ -2345,7 +2354,7 @@
         <short>True when the exception was handled.</short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.InitializeWnd">
+      <element name="TCustomForm.InitializeWnd" link="#LCL.Controls.TControl.InitializeWnd">
         <short>Initializes the widget, also for AlphaBlend and AllowDropFiles.
         </short>
         <descr>
@@ -2376,7 +2385,7 @@
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.Notification"/>
+      <element name="TCustomForm.Notification" link="#rtl.Classes.TComponent.Notification"/>
       <element name="TCustomForm.Notification.AComponent">
         <short/>
       </element>
@@ -2402,7 +2411,7 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.CalculatePreferredSize">
+      <element name="TCustomForm.CalculatePreferredSize" link="#LCL.Controls.TControl.CalculatePreferredSize">
         <short>Here: clip width and height of a top-level form to the monitor WorkArea.
         </short>
         <descr>
@@ -2505,7 +2514,7 @@
         </seealso>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomForm.WndProc"/>
+      <element name="TCustomForm.WndProc" link="#LCL.Controls.TControl.WndProc"/>
       <element name="TCustomForm.WndProc.TheMessage">
         <short>
           Handled messages include:
@@ -2655,7 +2664,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomForm.Create"/>
+      <element name="TCustomForm.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="TCustomForm.Create.AOwner">
         <short/>
       </element>
@@ -2874,7 +2883,7 @@
         <short></short>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.GetPreferredSize"/>
+      <element name="TCustomForm.GetPreferredSize" link="#LCL.Controls.TControl.GetPreferredSize"/>
       <element name="TCustomForm.GetPreferredSize.PreferredWidth">
         <short></short>
       </element>
@@ -3113,7 +3122,7 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomForm.UpdateDockCaption"/>
+      <element name="TCustomForm.UpdateDockCaption" link="#LCL.Controls.TWinControl.UpdateDockCaption"/>
       <element name="TCustomForm.UpdateDockCaption.Exclude">
         <short></short>
       </element>
@@ -3546,9 +3555,9 @@
         <short></short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TForm.CreateWnd" link="#LCL.Forms.TScrollingWinControl.CreateWnd"/>
+      <element name="TForm.CreateWnd" link="#lcl.Controls.TWinControl.CreateWnd"/>
       <element name="TForm.Loaded" link="#LCL.Forms.TCustomForm.Loaded"/>
-      <element name="TForm.Create"/>
+      <element name="TForm.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="TForm.Create.TheOwner">
         <short></short>
       </element>
@@ -3735,7 +3744,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomDockForm.Create"/>
+      <element name="TCustomDockForm.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="TCustomDockForm.Create.TheOwner">
         <short/>
       </element>
@@ -3828,7 +3837,7 @@
         </seealso>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="THintWindow.Create"/>
+      <element name="THintWindow.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="THintWindow.Create.AOwner">
         <short/>
       </element>
@@ -3889,13 +3898,18 @@
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="THintWindow.InitializeWnd"/>
+      <element name="THintWindow.InitializeWnd" link="#LCL.Controls.TControl.InitializeWnd"/>
       <!-- procedure Visibility: public -->
-      <element name="THintWindow.ReleaseHandle"/>
+      <element name="THintWindow.ReleaseHandle">
+        <short>Destroys the widget.</short>
+        <seealso>
+          <link id="#LCL.Controls.TWinControl.DestroyHandle"/>
+        </seealso>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="THintWindow.Paint" link="#LCL.Controls.TCustomControl.Paint"/>
       <!-- procedure Visibility: public -->
-      <element name="THintWindow.SetBounds"/>
+      <element name="THintWindow.SetBounds" link="#LCL.Controls.TControl.InitializeWnd"/>
       <element name="THintWindow.SetBounds.ALeft">
         <short></short>
       </element>
@@ -3930,7 +3944,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="THintWindow.BiDiMode"/>
+      <element name="THintWindow.BiDiMode" link="#LCL.Controls.TControl.BiDiMode"/>
       <!-- property Visibility: public -->
       <element name="THintWindow.HideInterval">
         <short>The time after which the displayed hint disappears.</short>
@@ -4634,7 +4648,7 @@
         <short></short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TScreen.Create"/>
+      <element name="TScreen.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="TScreen.Create.AOwner">
         <short/>
       </element>
@@ -6196,12 +6210,7 @@
         <short>True when HelpManager is not Nil.</short>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TApplication.WndProc">
-        <short>Here: handles CM_ACTIONEXECUTE and CM_ACTIONUPDATE messages.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TApplication.WndProc" link="#LCL.Controls.TControl.WndProc"/>
       <element name="TApplication.WndProc.AMessage">
         <short/>
       </element>
@@ -6490,7 +6499,7 @@
         <short></short>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TApplication.Create"/>
+      <element name="TApplication.Create" link="#rtl.Classes.TComponent.Create"/>
       <element name="TApplication.Create.AOwner">
         <short>The Owner object that invoked this instance of TApplication</short>
       </element>
