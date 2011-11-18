@@ -18442,8 +18442,9 @@ begin
   if ActiveSrcEdit = nil then Exit;
   with TOpenDialog.Create(nil) do
   try
-     if Execute then
-       ActiveSrcEdit.Selection := FileName;
+    Title:=lisSelectFile;
+    if Execute then
+      ActiveSrcEdit.Selection := FileName;
   finally
     Free;
   end;
