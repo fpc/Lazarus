@@ -2327,7 +2327,7 @@ begin
   ecShowExecutionPoint:  SetSingle(VK_UNKNOWN,[]);
   ecStepInto:            SetSingle(VK_F7,[],          VK_F7,[ssMeta]);
   ecStepOver:            SetSingle(VK_F8,[],          VK_F8,[ssMeta]);
-  ecStepOut:             SetSingle(VK_F8,[],          VK_F8,[ssShift,ssMeta]);
+  ecStepOut:             SetSingle(VK_F8,[ssShift],   VK_F8,[ssShift,ssMeta]);
   ecRunToCursor:         SetSingle(VK_F4,[],          VK_F4,[ssMeta]);
   ecStopProgram:         SetSingle(VK_F2,[ssCtrl],    VK_F2,[ssCtrl,ssMeta]);
   ecRemoveBreakPoint:    SetSingle(VK_UNKNOWN,[]);
