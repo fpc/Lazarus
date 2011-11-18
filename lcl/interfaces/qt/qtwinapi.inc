@@ -2456,7 +2456,11 @@ begin
     w := nil;
 
   if (w = nil) and (QApplication_mouseButtons() > 0) then
-    w := QApplication_focusWidget();
+    w := QApplication_focusWidget()
+  else
+    if w <> QWidget_mouseGrabber then
+      w := QWidget_mouseGrabber;
+
   {$ELSE}
   w := QWidget_mouseGrabber();
   {$ENDIF}
