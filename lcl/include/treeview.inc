@@ -1393,14 +1393,12 @@ var
   OldOnChanging: TTVChangingEvent;
   OldOnChange: TTVChangedEvent;
 begin
-  if (Destination=nil)
-  and not(Mode in [naAdd,naAddFirst]) then
+  if (Destination=nil) and not(Mode in [naAdd,naAddFirst]) then
     TreeNodeError('TTreeNode.MoveTo Destination=nil');
-  if Mode=naInsertBehind then begin
-    // convert naInsertBehind
-    if Destination.GetNextSibling=nil then begin
-      Mode:=naAdd;
-    end else begin
+  if Mode=naInsertBehind then begin      // convert naInsertBehind
+    if Destination.GetNextSibling=nil then
+      Mode:=naAdd
+    else begin
       Mode:=naInsert;
       Destination:=Destination.GetNextSibling;
     end;
@@ -1414,11 +1412,9 @@ begin
       if (Destination <> nil) and (Mode in [naAdd, naAddFirst]) then
         Destination := Destination.Parent;
       case Mode of
-        naAdd,
-        naAddChild: AddMode := taAdd;
         naAddFirst,
         naAddChildFirst: AddMode := taAddFirst;
-        naInsert: AddMode := taInsert;
+        naInsert:        AddMode := taInsert;
       else
         AddMode:=taAdd;
       end;
@@ -2006,6 +2002,34 @@ begin
   Result := InternalAddObject(ParentNode, S, Data, taAddFirst);
 end;
 
+function TTreeNodes.AddNode(Node: TTreeNode; Relative: TTreeNode;
+  const S: string; Ptr: Pointer; Method: TNodeAttachMode): TTreeNode;
+var
+   AddMode: TAddMode;
+begin
+  if (Relative=nil) and not (Method in [naAdd,naAddFirst]) then
+    TreeNodeError('TTreeNode.AddNode Relative=nil');
+  if Method=naInsertBehind then begin    // convert naInsertBehind
+    if Relative.GetNextSibling=nil then
+      Method:=naAdd
+    else begin
+      Method:=naInsert;
+      Relative:=Relative.GetNextSibling;
+    end;
+  end;
+  if (Relative <> nil) and (Method in [naAdd, naAddFirst]) then
+    Relative := Relative.Parent;
+  // Convert TNodeAttachMode to TAddMode
+  case Method of
+    naAddFirst,naAddChildFirst: AddMode := taAddFirst;
+    naInsert: AddMode := taInsert;
+  else
+    AddMode:=taAdd;
+  end;
+  fNewNodeToBeAdded := Node;
+  Result := InternalAddObject(Relative, S, Ptr, AddMode);
+end;
+
 procedure TTreeNodes.SelectionsChanged(ANode: TTreeNode; const AIsSelected: Boolean);
 begin
   if ANode <> nil then
@@ -2067,8 +2091,7 @@ begin
   Result:=InternalAddObject(NextNode,S,Data,taInsert);
 end;
 
-function TTreeNodes.InsertBehind(PrevNode: TTreeNode; const S: string
-  ): TTreeNode;
+function TTreeNodes.InsertBehind(PrevNode: TTreeNode; const S: string): TTreeNode;
 begin
   Result := InsertObjectBehind(PrevNode, S, nil);
 end;
@@ -2110,7 +2133,10 @@ begin
     DbgOut(' Node.Text=',Node.Text);
   DebugLn('');
   {$ENDIF}
-  Result := Owner.CreateNode;
+  Result := fNewNodeToBeAdded; // Used by AddNode to pass an existing node.
+  if Result = Nil then
+    Result := Owner.CreateNode;
+  fNewNodeToBeAdded := nil;
   ok:=false;
   try
     Result.Data := Data;

@@ -2341,8 +2341,7 @@ type
 
   TAddMode = (taAddFirst, taAdd, taInsert);
 
-  TMultiSelectStyles = (msControlSelect, msShiftSelect,
-    msVisibleOnly, msSiblingOnly);
+  TMultiSelectStyles = (msControlSelect, msShiftSelect, msVisibleOnly, msSiblingOnly);
   TMultiSelectStyle = set of TMultiSelectStyles;
 
   TTreeNodeArray = ^TTreeNode;
@@ -2626,6 +2625,7 @@ type
     FTopLvlCount: integer;
     FTopLvlItems: TTreeNodeArray; // root and root siblings
     FUpdateCount: Integer;
+    fNewNodeToBeAdded: TTreeNode;
     procedure ClearCache;
     function GetHandle: THandle;
     function GetNodeFromIndex(Index: Integer): TTreeNode;
@@ -2665,6 +2665,8 @@ type
       Data: Pointer): TTreeNode;
     function AddObjectFirst(SiblingNode: TTreeNode; const S: string;
       Data: Pointer): TTreeNode;
+    function AddNode(Node: TTreeNode; Relative: TTreeNode; const S: string;
+      Ptr: Pointer; Method: TNodeAttachMode): TTreeNode;
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure Clear;
