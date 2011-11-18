@@ -41,7 +41,7 @@ type
     procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
     // TCDEdit
-    procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawEditFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     // TCDCheckBox
     procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -176,12 +176,11 @@ begin
     (ASize.cy - ADest.TextHeight(Str)) div 2, Str);
 end;
 
-procedure TCDDrawerWinXP.DrawEditBackground(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerWinXP.DrawEditFrame(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDEditStateEx);
 begin
-  // The background
-  ADest.Brush.Color := clWhite;
-  ADest.Brush.Style := bsSolid;
+  // The frame
+  ADest.Brush.Style := bsClear;
   ADest.Pen.Color := WINXP_FRAME_BLUE;
   ADest.Pen.Style := psSolid;
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);

@@ -148,6 +148,8 @@ type
     SelLength: Integer; // zero means no selection. Negative numbers selection to the left from the start and positive ones to the right
     VisibleTextStart: TPoint; // X is 1-based
     EventArrived: Boolean; // Added by event handlers and used by the caret so that it stops blinking while events are incoming
+    // customizable extra margins, zero is the base value
+    LeftTextMargin, RightTextMargin: Integer;
   end;
 
   TCDPositionedCStateEx = class(TCDControlStateEx)
@@ -287,6 +289,8 @@ type
       AState: TCDControlState; AStateEx: TCDButtonStateEx); virtual; abstract;
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
+    procedure DrawEditFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
     procedure DrawCaret(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;

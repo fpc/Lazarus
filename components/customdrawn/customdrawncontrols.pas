@@ -146,6 +146,7 @@ type
     property Enabled;
     property Font;
     property Glyph: TBitmap read FGlyph write SetGlyph;
+//    property IsToggleBox: Boolean read FGlyph write SetGlyph;
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;
@@ -181,11 +182,15 @@ type
     DragDropStarted: boolean;
     FCaretTimer: TTimer;
     FEditState: TCDEditStateEx; // Points to the same object as FStateEx, so don't Free!
+    function GetLeftTextMargin: Integer;
+    function GetRightTextMargin: Integer;
     procedure HandleCaretTimer(Sender: TObject);
     procedure DoDeleteSelection;
     procedure DoClearSelection;
     procedure DoManageVisibleTextStart;
     function GetText: string;
+    procedure SetLeftTextMargin(AValue: Integer);
+    procedure SetRightTextMargin(AValue: Integer);
     procedure SetText(AValue: string);
     function MousePosToCaretPos(X, Y: Integer): TPoint;
     function IsSomethingSelected: Boolean;
@@ -208,6 +213,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property LeftTextMargin: Integer read GetLeftTextMargin write SetLeftTextMargin;
+    property RightTextMargin: Integer read GetRightTextMargin write SetRightTextMargin;
   published
     property Align;
     property Anchors;
@@ -1036,6 +1043,20 @@ begin
   Result := Caption;
 end;
 
+procedure TCDEdit.SetLeftTextMargin(AValue: Integer);
+begin
+  if FEditState.LeftTextMargin = AValue then Exit;
+  FEditState.LeftTextMargin := AValue;
+  Invalidate;
+end;
+
+procedure TCDEdit.SetRightTextMargin(AValue: Integer);
+begin
+  if FEditState.RightTextMargin = AValue then Exit;
+  FEditState.RightTextMargin := AValue;
+  Invalidate;
+end;
+
 function TCDEdit.GetControlId: TCDControlID;
 begin
   Result := cidEdit;
@@ -1057,6 +1078,16 @@ begin
   else FEditState.CaretIsVisible := not FEditState.CaretIsVisible;
 
   Invalidate;
+end;
+
+function TCDEdit.GetLeftTextMargin: Integer;
+begin
+  Result := FEditState.LeftTextMargin;
+end;
+
+function TCDEdit.GetRightTextMargin: Integer;
+begin
+  Result := FEditState.RightTextMargin;
 end;
 
 procedure TCDEdit.DoDeleteSelection;
@@ -1111,7 +1142,7 @@ begin
    - FDrawer.GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
    - FDrawer.GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
   lVisibleTextCharCount := Canvas.TextFitInfo(lText, lAvailableWidth);
-  FEditState.VisibleTextStart.X := Max(FEditState.CaretPos.X-lVisibleTextCharCount, FEditState.VisibleTextStart.X);
+  FEditState.VisibleTextStart.X := Max(FEditState.CaretPos.X-lVisibleTextCharCount+1, FEditState.VisibleTextStart.X);
 end;
 
 procedure TCDEdit.SetText(AValue: string);
@@ -1241,6 +1272,42 @@ begin
       DoManageVisibleTextStart();
       FEditState.CaretIsVisible := True;
       Invalidate;
+    end
+    // if we are not moving, at least deselect
+    else if ([ssShift] <> Shift) then
+    begin
+      FEditState.SelLength := 0;
+      Invalidate;
+    end;
+  end;
+  VK_HOME:
+  begin
+    if (FEditState.CaretPos.X > 0) then
+    begin
+      // Selecting to the left
+      if [ssShift] = Shift then
+      begin
+        if FEditState.SelLength = 0 then
+        begin
+          FEditState.SelStart.X := FEditState.CaretPos.X;
+          FEditState.SelLength := -1 * FEditState.CaretPos.X;
+        end
+        else
+          FEditState.SelLength := -1 * FEditState.SelStart.X;
+      end
+      // Normal move to the left
+      else FEditState.SelLength := 0;
+
+      FEditState.CaretPos.X := 0;
+      DoManageVisibleTextStart();
+      FEditState.CaretIsVisible := True;
+      Invalidate;
+    end
+    // if we are not moving, at least deselect
+    else if (FEditState.SelLength <> 0) and ([ssShift] <> Shift) then
+    begin
+      FEditState.SelLength := 0;
+      Invalidate;
     end;
   end;
   VK_RIGHT:
@@ -1259,6 +1326,38 @@ begin
       Inc(FEditState.CaretPos.X);
       DoManageVisibleTextStart();
       FEditState.CaretIsVisible := True;
+      Invalidate;
+    end
+    // if we are not moving, at least deselect
+    else if ([ssShift] <> Shift) then
+    begin
+      FEditState.SelLength := 0;
+      Invalidate;
+    end;
+  end;
+  VK_END:
+  begin
+    if FEditState.CaretPos.X < lOldTextLength then
+    begin
+      // Selecting to the right
+      if [ssShift] = Shift then
+      begin
+        if FEditState.SelLength = 0 then
+          FEditState.SelStart.X := FEditState.CaretPos.X;
+        FEditState.SelLength := lOldTextLength - FEditState.SelStart.X;
+      end
+      // Normal move to the right
+      else FEditState.SelLength := 0;
+
+      FEditState.CaretPos.X := lOldTextLength;
+      DoManageVisibleTextStart();
+      FEditState.CaretIsVisible := True;
+      Invalidate;
+    end
+    // if we are not moving, at least deselect
+    else if (FEditState.SelLength <> 0) and ([ssShift] <> Shift) then
+    begin
+      FEditState.SelLength := 0;
       Invalidate;
     end;
   end;

@@ -55,6 +55,8 @@ type
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
+    procedure DrawEditFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     procedure DrawCaret(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     procedure DrawEdit(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -137,7 +139,7 @@ end;
 function TCDDrawerCommon.GetMeasures(AMeasureID: Integer): Integer;
 begin
   case AMeasureID of
-  TCDEDIT_LEFT_TEXT_SPACING: Result := 4;
+  TCDEDIT_LEFT_TEXT_SPACING: Result := 6;
   TCDEDIT_RIGHT_TEXT_SPACING: Result := 3;
   TCDEDIT_TOP_TEXT_SPACING: Result := 3;
   TCDEDIT_BOTTOM_TEXT_SPACING: Result := 3;
@@ -612,9 +614,14 @@ begin
   ADest.Pen.Color := WIN2000_FRAME_WHITE;
   ADest.Pen.Style := psSolid;
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
+end;
 
+procedure TCDDrawerCommon.DrawEditFrame(ADest: TCanvas; ADestPos: TPoint;
+  ASize: TSize; AState: TCDControlState; AStateEx: TCDEditStateEx);
+begin
   // The Frame, except the lower-bottom which is white anyway
   // outter top-right
+  ADest.Pen.Style := psSolid;
   ADest.Pen.Color := WIN2000_FRAME_GRAY;
   ADest.MoveTo(0, ASize.cy-1);
   ADest.LineTo(0, 0);
@@ -644,8 +651,9 @@ begin
   lCaptionHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx);
   lTextTopSpacing := GetMeasures(TCDEDIT_TOP_TEXT_SPACING);
 
-  lTmpText := UTF8Copy(lControlText, 1, AStateEx.CaretPos.X-AStateEx.VisibleTextStart.X+1);
-  lCaretPixelPos := ADest.TextWidth(lTmpText) + 3;
+  lTmpText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, AStateEx.CaretPos.X-AStateEx.VisibleTextStart.X+1);
+  lCaretPixelPos := ADest.TextWidth(lTmpText) + GetMeasures(TCDEDIT_LEFT_TEXT_SPACING)
+    + AStateEx.LeftTextMargin;
   ADest.Pen.Color := clBlack;
   ADest.Pen.Style := psSolid;
   ADest.Line(lCaretPixelPos, lTextTopSpacing, lCaretPixelPos, lTextTopSpacing+lCaptionHeight);
@@ -672,7 +680,7 @@ begin
   lTextTopSpacing := GetMeasures(TCDEDIT_TOP_TEXT_SPACING);
   lTextBottomSpacing := GetMeasures(TCDEDIT_BOTTOM_TEXT_SPACING);
 
-  // The text without selection
+  // The text
   ADest.Pen.Style := psClear;
   if AStateEx.SelLength = 0 then
   begin
@@ -684,14 +692,19 @@ begin
   begin
     lSelLeftPos := AStateEx.SelStart.X;
     if AStateEx.SelLength < 0 then lSelLeftPos := lSelLeftPos + AStateEx.SelLength;
+    lSelLeftPos := lSelLeftPos + AStateEx.VisibleTextStart.X-1;
+
     lSelRightPos := AStateEx.SelStart.X;
     if AStateEx.SelLength > 0 then lSelRightPos := lSelRightPos + AStateEx.SelLength;
+    lSelRightPos := lSelRightPos + AStateEx.VisibleTextStart.X-1;
+
     lSelLength := AStateEx.SelLength;
     if lSelLength < 0 then lSelLength := lSelLength * -1;
+    lSelLength := lSelLength - (AStateEx.VisibleTextStart.X-1);
 
     // Text left of the selection
     lVisibleText := UTF8Copy(lControlText, AStateEx.VisibleTextStart.X, lSelLeftPos-AStateEx.VisibleTextStart.X+1);
-    ADest.TextOut(4, lTextTopSpacing, lVisibleText);
+    ADest.TextOut(lTextLeftSpacing, lTextTopSpacing, lVisibleText);
     lSelLeftPixelPos := ADest.TextWidth(lVisibleText)+lTextLeftSpacing;
 
     // The selection background
@@ -716,6 +729,9 @@ begin
 
   // And the caret
   DrawCaret(ADest, ADestPos, ASize, AState, AStateEx);
+
+  // In the end the frame, because it must be on top of everything
+  DrawEditFrame(ADest, ADestPos, ASize, AState, AStateEx);
 end;
 
 procedure TCDDrawerCommon.DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint;
