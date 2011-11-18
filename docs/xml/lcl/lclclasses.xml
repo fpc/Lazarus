@@ -97,7 +97,7 @@
       <element name="TLCLComponent.DecLCLRefCount" link="TLCLComponent.LCLRefCount"/>
       <element name="TLCLComponent.LCLRefCount">
         <short>The number of references to this component.</short>
-        <descr>[Which are the possible owners of such references?]
+        <descr>
         </descr>
       </element>
 <!-- object Visibility: default -->
@@ -109,12 +109,9 @@
             The widget is created by the LCL control whenever required,
             and its reference is stored in FReferencePtr.
             This reference is for internal use by the LCL control, not by application code.
-          </p><p>
-            This reference is [can be?] different from the OS/window manager specific window Handle.
-          </p><p>
-            Applications only can send messages to a windowed control,
-            using its window Handle.
           </p>
+          <p>This reference is different from the OS/window manager specific window Handle.</p>
+          <p>Applications only can send messages to a windowed control, using its window Handle.</p>
         </descr>
         <seealso>
           <link id="TLCLReferenceComponent.ReferenceNeeded"/>
@@ -170,7 +167,7 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TLCLReferenceComponent.GetReferenceHandle">
-        <short>Override this method to return the Handle from the reference [what is Handle?]
+        <short>Override this method to return the Handle from the reference
         </short>
       </element>
       <element name="TLCLReferenceComponent.GetReferenceHandle.Result">
@@ -211,7 +208,7 @@
       <element name="TLCLReferenceComponent.Handle">
         <short>Get the Handle of this component.</short>
         <descr>The Handle is  sort of pointer or reference, allocated by the operating system or widgetset to this component.
-          A window handle can be used for sending messages to the component.[?]</descr>
+          A window handle can be used for sending messages to the component.</descr>
       </element>
       <element name="TLCLReferenceComponent.HandleAllocated" link="TLCLReferenceComponent.ReferenceAllocated"/>
       <element name="TLCLReferenceComponent.ReferenceAllocated">

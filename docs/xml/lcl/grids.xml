@@ -12682,8 +12682,7 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
                 <li>
                   <b>OnPrepareCanvas.</b> If the programmer wrote an event handler for the 
                   <var>OnPrepareCanvas</var> event, it is called at this point. This event can be used for doing simple customization like changing a cell's background color, font's properties like color, fontface and style, Text layout like different combinations of left, center, top, bottom, right alignment, etc. Any change made to the canvas for a particular cell in this event would be lost, because the next cell drawing will reset canvas again to a default state. So it's safe doing changes only for a particular cell or cells and forget about it for the rest. Using this event sometimes helps to avoid using the 
-                  <var>OnDrawCell</var> grid event, where users would be forced to duplicate the grid's drawing code.
-                  [Todo: samples of what can be made and what to leave for OnDrawCell?]</li>
+                  <var>OnDrawCell</var> grid event, where users would be forced to duplicate the grid's drawing code.</li>
                 <li>
                   <b>OnDrawCell.</b> Next, if no handler for the <var>OnDrawCell</var> event was specified, the grid calls the
                   <var>DefaultDrawCell</var> method which simply paints the cell background using the current canvas brush color and style.

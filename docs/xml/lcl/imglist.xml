@@ -53,9 +53,8 @@
       <!-- enumeration type Visibility: default -->
       <element name="TDrawingStyle">
         <short>Defines transparency and blending of rendered images.</short>
-        <descr>[What's "blending"?]
-          Blending means that the BlendColor is applied to the image foreground,
-          to a certain degree (dithering). [right?]
+        <descr>Blending means that the Color is merged with the previous contents of
+         the destination area by a degree defined by an alpha value.
         </descr>
         <seealso/>
       </element>
@@ -74,8 +73,7 @@
       <!-- enumeration type Visibility: default -->
       <element name="TImageType">
         <short>Indicates whether a mask shall be used in rendering an image.</short>
-        <descr>[What's the effect of applying a mask?]
-          The mask specifies the transparent part of the image [right?]</descr>
+        <descr>The mask specifies the transparent part of the image</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -98,7 +96,6 @@
             This allows to insert e.g. other (compatible) ImageLists, or bitmaps for multiple states of essentially the same image (button pressed, released and disabled).
           </p><p>
             Transparency is implemented in the alpha channel of the raw 32 bit RGBA imagedata array - but not all platforms support such an alpha channel.
-            [What exactly does this mean to the user?]
           </p><p>
             The painting of an image from the list is handled by the widgetset, no bitmap or icon component is involved.
             The widgetset can use a different internal organization of the data, optimized for immediate painting of an image.
@@ -108,11 +105,8 @@
           </p><p>
             Please note also that inserting or moving images will affect the index of all following images,
             what can cause trouble with index constants. In such cases a bitmap collection may better fit your needs.
-          </p><p>
-            [What about Mask, HotSpot and ShareImages?]
           </p>
           <remark>Windows ImgageLists can contain a list of monochrome mask bitmaps, present when Masked=True.
-            [Does the LCL support this feature, or is only the TransparentColor used to make images transparent?]
           </remark>
         </descr>
         <errors>
@@ -182,7 +176,7 @@
         <short>Height of all images in pixels.</short>
       </element>
       <element name="TCustomImageList.InternalInsert.ARawImage">
-        <short>[?]</short>
+        <short></short>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomImageList.InternalMove">
@@ -201,11 +195,11 @@
         <short>the new index of the image</short>
       </element>
       <element name="TCustomImageList.InternalMove.AIgnoreCurrent">
-        <short>[?]</short>
+        <short></short>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomImageList.InternalReplace">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -530,13 +524,13 @@
          <short>If False, draw the image disabled (dithered).</short>
      </element>
       <element name="TCustomImageList.Draw.ADrawEffect">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="TCustomImageList.Draw.ADrawingStyle">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="TCustomImageList.Draw.AImageType">
-        <short>[?]</short>
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.GetBitmap">
@@ -727,7 +721,6 @@
           <p>BkColor is intended to speed up drawing of transparent images,
           on a background of known color (=BkColor). In this case the image can be drawn opaque,
           eliminating the need for really masking out and merging with existing background.
-          <br/>[does this really apply? depending on the widgetset?]
           </p>
         </descr>
         <seealso/>
@@ -771,7 +764,7 @@
       <element name="TCustomImageList.Masked">
         <short>
           True when mask images are stored with every image (unused!).</short>
-        <descr>This property exists only for Delphi compatibility[?]</descr>
+        <descr>This property exists only for Delphi compatibility</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -779,7 +772,7 @@
         <short>
           True when this image list is shared. Unused!</short>
         <descr>This property exists only for Delphi compatibility.
-          True means that the imagelist <b>widget</b> is freed together with the ImageList[?]
+          True means that the imagelist <b>widget</b> is freed together with the ImageList
         </descr>
         <seealso/>
       </element>
@@ -787,7 +780,7 @@
       <element name="TCustomImageList.ImageType">
         <short>
           Unused!</short>
-        <descr>This property exists only for Delphi compatibility[?]</descr>
+        <descr>This property exists only for Delphi compatibility</descr>
         <seealso/>
       </element>
       <element name="TCustomImageList.FillDescription">
@@ -799,7 +792,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.GetFullBitmap">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -874,16 +867,16 @@
           Draws an image stretched to ARect.</short>
       </element>
       <element name="TCustomImageList.StretchDraw.Canvas">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="TCustomImageList.StretchDraw.Index">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="TCustomImageList.StretchDraw.ARect">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="TCustomImageList.StretchDraw.Enabled">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="TCustomImageList.Equals">
         <short>Check for equivalence with another ImageList</short>

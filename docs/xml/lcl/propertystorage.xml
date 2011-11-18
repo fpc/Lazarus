@@ -41,7 +41,7 @@
       </element>
 <!-- alias type Visibility: default -->
       <element name="TStoredType">
-        <short>An AnsiString or Variant, holding the property values.[?]</short>
+        <short>An AnsiString or Variant, holding the property values.</short>
         <descr/>
         <seealso/>
       </element>
@@ -54,11 +54,11 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TStoredValueEvent.Sender">
-        <short>[?]</short>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TStoredValueEvent.Value">
-        <short>[?]</short>
+        <short></short>
       </element>
 <!-- object Visibility: default -->
       <element name="TStoredValue">
@@ -312,7 +312,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TPropertyStorageLink.OnSave">
-        <short>Supply your handler for saving all properties. [almost unused?]
+        <short>Supply your handler for saving all properties.
         </short>
         <descr/>
         <seealso>
@@ -322,7 +322,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TPropertyStorageLink.OnLoad">
-        <short>Supply your handler for loading all properties. [almost unused?]
+        <short>Supply your handler for loading all properties.
         </short>
         <descr/>
         <seealso>
@@ -334,8 +334,7 @@
       <element name="TCustomPropertyStorage">
         <short>Provides abstract means to Save/Restore properties.
         </short>
-        <descr>[...?]
-          There seem to exist multiple ways to implement a concrete storage[describe?]
+        <descr>
         </descr>
         <errors/>
         <seealso/>
@@ -347,19 +346,19 @@
       <element name="TCustomPropertyStorage.FActive" link="TCustomPropertyStorage.Active"/>
       <!-- variable Visibility: private -->
       <element name="TCustomPropertyStorage.FLinks">
-        <short>The list of linked property collections[?]</short>
+        <short>The list of linked property collections</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomPropertyStorage.FSaved">
-        <short>True when everything has been saved[?]</short>
+        <short>True when everything has been saved</short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomPropertyStorage.FRestored">
-        <short>True when everything has been restored[?]</short>
+        <short>True when everything has been restored</short>
         <descr/>
         <seealso/>
       </element>
@@ -387,7 +386,7 @@
       <!-- procedure Visibility: private -->
       <element name="TCustomPropertyStorage.NotifyLinks">
         <short>Notifies all connected property collections.</short>
-        <descr>[purpose?]
+        <descr>
         </descr>
         <errors/>
         <seealso/>
@@ -418,21 +417,21 @@
       <element name="TCustomPropertyStorage.RootSection.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.SaveProperties">
-        <short>Saves all linked property collections[?]</short>
+        <short>Saves all linked property collections</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.RestoreProperties">
-        <short>Restores all linked property collections[?]</short>
+        <short>Restores all linked property collections</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.GetPropertyList">
-        <short>Builds a list of all linked propery collections[?]</short>
+        <short>Builds a list of all linked propery collections</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -440,8 +439,8 @@
       <element name="TCustomPropertyStorage.GetPropertyList.List"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.FinishPropertyList">
-        <short>set Objects (i.e. the component of each property)[?]</short>
-        <descr>[?]Reads the Strings[] in the list,
+        <short>set Objects (i.e. the component of each property)</short>
+        <descr>Reads the Strings[] in the list,
           retrieves and stores the associated Root or Component object in Objects[].
         </descr>
         <errors/>
@@ -464,8 +463,7 @@
       <element name="TCustomPropertyStorage.DoReadString">
         <short>Default OnReadString handler, must be overridden!
         </short>
-        <descr>[How to implement an OnReadString handler?]
-          [template where?]
+        <descr>
         </descr>
         <errors/>
         <seealso/>
@@ -474,10 +472,10 @@
         <short>The previously stored string.</short>
       </element>
       <element name="TCustomPropertyStorage.DoReadString.Section">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="TCustomPropertyStorage.DoReadString.Ident">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="TCustomPropertyStorage.DoReadString.DefaultValue">
         <short>The default value, when no string was stored.</short>
@@ -486,8 +484,7 @@
       <element name="TCustomPropertyStorage.DoWriteString">
         <short>Default OnWriteString handler, must be overridden!
         </short>
-        <descr>[How to implement an OnWriteString handler?]
-          [template where?]
+        <descr>
         </descr>
         <errors/>
         <seealso/>
@@ -514,8 +511,8 @@
       <element name="TCustomPropertyStorage.DoWriteInteger.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.DoEraseSections">
-        <short>[?]</short>
-        <descr>Must be overridden [how?]
+        <short></short>
+        <descr>Must be overridden
         </descr>
         <errors/>
         <seealso/>
@@ -528,14 +525,14 @@
       <element name="TCustomPropertyStorage.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TCustomPropertyStorage.Save">
-        <short>Saves all linked property collections[?]</short>
+        <short>Saves all linked property collections</short>
         <descr>
           <p>
-            Uses SaveProperties and [or?] StoredValues.SaveValues to do the actual work.
-            At least one of these should be implemented. [supply links?]
+            Uses SaveProperties and StoredValues.SaveValues to do the actual work.
+            At least one of these should be implemented.
           </p><p>
             All linked property collections are notified,
-            when everything has been stored, or to actually store their values[???].
+            when everything has been stored, or to actually store their values.
           </p><p>
             The OnSavingProperties handler is invoked before the properties are stored,
             OnSaveProperties afterwards.
@@ -552,14 +549,14 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomPropertyStorage.Restore">
-        <short>Restores all linked property collections[?]</short>
+        <short>Restores all linked property collections</short>
         <descr>
           <p>
-            Uses RestoreProperties and [or?] StoredValues.RestoreValues to do the actual work.
-            At least one of these should be implemented. [supply links?]
+            Uses RestoreProperties and StoredValues.RestoreValues to do the actual work.
+            At least one of these should be implemented.
           </p><p>
             All linked property collections are notified,
-            when everything has been restored, or to actually restore the values[???].
+            when everything has been restored, or to actually restore the values.
           </p><p>
             The OnRestoringProperties handler is invoked before the properties are restored,
             OnRestoreProperties afterwards.
@@ -576,7 +573,7 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.StorageNeeded">
-        <short>Override this to provide a storage object[???]</short>
+        <short>Override this to provide a storage object</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -584,7 +581,7 @@
       <element name="TCustomPropertyStorage.StorageNeeded.ReadOnly"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.FreeStorage">
-        <short>Override this method to release your storage.[???]</short>
+        <short>Override this method to release your storage.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -743,7 +740,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomPropertyStorage.EraseSections">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso>
@@ -752,32 +749,32 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.StoredValue">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomPropertyStorage.StoredValue.AName"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.Root">
-        <short>[the Owner ?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.Active">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.StoredValues">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.OnSavingProperties">
-        <short>Handler called at the begin of Save. [purpose?]</short>
+        <short>Handler called at the begin of Save.</short>
         <descr>
         </descr>
         <seealso>
@@ -785,13 +782,13 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.OnSaveProperties">
-        <short>Handler called at the end of Save. [purpose?]</short>
+        <short>Handler called at the end of Save.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.OnRestoringProperties">
-        <short>Handler called at the begin of Restore. [purpose?]</short>
+        <short>Handler called at the begin of Restore.</short>
         <descr>
         </descr>
         <seealso>
@@ -799,7 +796,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPropertyStorage.OnRestoreProperties">
-        <short>Handler called at the end of Restore. [purpose?]</short>
+        <short>Handler called at the end of Restore.</short>
         <descr/>
         <seealso/>
       </element>

@@ -76,17 +76,13 @@
       <element name="Arc">
         <short>Draws an elliptical curve.</short>
         <descr>
+          <p>Use Arc to draw an elliptically curved line with the current Pen.</p>
           <p>
-            Use Arc to draw an elliptically curved line with the current Pen.
-          </p><p>
-            [This description deserves an update!?]
-          </p><p>
             The angles angle1 and angle2 are 1/16th of a degree. For example, a full
             circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
             counter-clockwise while negative values mean clockwise direction.
-          </p><p>
-            Zero degrees is at the 3'o clock position.
           </p>
+          <p>Zero degrees is at the 3'o clock position.</p>
         </descr>
         <errors/>
         <seealso/>
@@ -117,10 +113,22 @@
       </element>
 <!-- function Visibility: default -->
       <element name="AngleChord">
-        <short>[?]</short>
-        <descr/>
+        <short>Draws a Chord described by two angles</short>
+        <descr><p>AngleChord is a Lazarus addition, similar to the Windows API Chord,
+         but which uses angles to control the location of the chord inside the ellipse
+         instead of two points like the Windows API Chord.</p>
+         <p>A Chord is a section of an ellipse between the two angles from the parameters
+         angle1 and angle2. This ellipse segment is closed by a direct line conecting its two
+         extremities. This way to conect the extremities is what differentias a Chord from a
+         Pie, because the Pie conects each extremity to the center of the ellipse.</p>
+         <p>The curve part of the chord is defined by the ellipse which fits in the
+         bounding rectangle specified by the coordinates x1, y1, x2 and y2.<p/></descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.LCLIntf.Pie">LCLIntf.Pie</link>
+          <link id="#lcl.Graphics.TCanvas.Chord">Graphics.TCanvas.Chord</link>
+          <link id="#lcl.Graphics.TCanvas.Pie">Graphics.TCanvas.Pie</link>
+        </seealso>
       </element>
       <element name="AngleChord.Result">
         <short/>
@@ -148,7 +156,7 @@
       </element>
 <!-- function Visibility: default -->
       <element name="BeginPaint">
-        <short>Start painting in a window[?]</short>
+        <short>Start painting in a window</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -164,8 +172,38 @@
       </element>
 <!-- function Visibility: default -->
       <element name="BitBlt">
-        <short>[?]</short>
-        <descr/>
+        <short>Copies a section of a Canvas to another one, performing a Rop operation</short>
+        <descr><p>This routine implements the equivalent Windows GDI API of the same name in
+          all platforms supported by Lazarus. It copies a section of a Canvas to another one,
+          without any stretching. It alloes to select the kind of operation which should be
+          performed to draw the pixels into the destination in the parameter Rop. Allowed
+          operations go from simply copying the pixels without change to inverting them and
+          also to executing logical operations involving the source pixels and the previously
+          existing pixels in the destination Canvas.</p>
+          <p>For normal usage one should only use SRCOPY in the ROP parameter.
+          One should be careful when using Rop values other then SRCCOPY because they might
+          not be supported in all widgetsets. The possible values for ROP are:</p>
+          <ul>
+            <li>BLACKNESS - Fills the destination rectangle with black</li>
+            <li>CAPTUREBLT - Includes windows which are on top of the specified Canvas while
+            doing the capture. This option is not recommended and it is very hard to implement it in all supported platforms.</li>
+            <li>DSTINVERT - Inverts the colors of the destination area</li>
+            <li>MERGECOPY -</li>
+            <li>MERGEPAINT -</li>
+            <li>NOMIRRORBITMAP -</li>
+            <li>NOTSRCCOPY -</li>
+            <li>NOTSRCERASE -</li>
+            <li>PATCOPY -</li>
+            <li>PATINVERT -</li>
+            <li>PATPAINT -</li>
+            <li>SRCAND -</li>
+            <li>SRCCOPY -</li>
+            <li>SRCERASE -</li>
+            <li>SRCINVERT -</li>
+            <li>SRCPAINT - Combines the colors of the source and the destination using the operator OR in each pixel</li>
+            <li>WHITENESS - Fills the destination rectangle with white</li>
+          </ul>
+        </descr>
         <errors/>
         <seealso/>
       </element>

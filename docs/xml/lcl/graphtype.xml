@@ -111,11 +111,11 @@
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TRawImageBitOrder.riboBitsInOrder">
-        <short>Bit 0 represents first pixel[?]</short>
+        <short>Bit 0 represents first pixel</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TRawImageBitOrder.riboReversedBits">
-        <short>Bit 0 represents highest pixel[?]</short>
+        <short>Bit 0 represents highest pixel</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TRawImageLineEnd">
@@ -160,7 +160,7 @@
       <!-- record type Visibility: default -->
       <element name="TRawImageDescription">
         <short>Descriptor object for the image format of devices and raw (uncompressed) image data</short>
-        <descr>This effectivley is a record with some attached methods. More related procedures exist outside the object. [where?]
+        <descr>This effectivley is a record with some attached methods. More related procedures exist outside the object.
 
 The object describes the presence and exact storage of the RGBA image and mask pixels, of a device or image. The color information is stored in aligned scanlines.
 
@@ -187,9 +187,7 @@ xxxBitsPerPixel and xxxPrecisionMask applies to color data. For masked images, t
       <!-- variable Visibility: default -->
       <element name="TRawImageDescription.Depth">
         <short>Number of used bits per pixel</short>
-        <descr>The color and pixel storage can be subject to alignment, so that the logical color Depth can be less than the physical BitsPerPixel.
-
-[What if a palette is used?]</descr>
+        <descr>The color and pixel storage can be subject to alignment, so that the logical color Depth can be less than the physical BitsPerPixel.</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
@@ -768,14 +766,12 @@ This object currently is subject to refactoring, don't use it in application cod
       </element>
       <element name="TRawImageDescription.MaskBitsPerPixel">
         <short>Bits per mask pixel, 0 when no mask is present.</short>
-        <descr>A pixel Mask (currently) has a logical depth of 1 bit per pixel, but a pixel can occupy an entire byte[?]
-
-As opposed to the Alpha (transparency) channel, a Mask is stored in its own array. [of bits or bytes?]
-
+        <descr>A pixel Mask (currently) has a logical depth of 1 bit per pixel, but a pixel can occupy an entire byte.
+As opposed to the Alpha (transparency) channel, a Mask is stored in its own array.
 A Mask value of 1 means that the pixel is masked (transparent); a value of 0 means the pixel value is shown (opaque).</descr>
       </element>
       <element name="TRawImageDescription.MaskShift">
-        <short>The bit offset of the mask bit [if stored in a byte?]</short>
+        <short>The bit offset of the mask bit</short>
       </element>
       <element name="TRawImageDescription.MaskLineEnd">
         <short>Alignment of Mask lines.</short>
@@ -784,22 +780,25 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
         <short>Bit order of the Mask.</short>
       </element>
       <element name="TRawImageDescription.PaletteBitsPerIndex">
-        <short>Bits per palette index, stored in the pixel data[?]</short>
-        <descr>When a palette is used, [I suppose that] the color description fields apply to the palette colors, while pixel data contains the palette index. Then Depth applies to the size of the palette colors, and the pixel data is described by PaletteBitsPerIndex and PaletteShift[?]</descr>
+        <short>Bits per palette index, stored in the pixel data</short>
+        <descr>When a palette is used, the color description fields apply to the
+        palette colors, while pixel data contains the palette index. Then Depth
+        applies to the size of the palette colors, and the pixel data is described
+        by PaletteBitsPerIndex and PaletteShift</descr>
         <errors>[palettes are not yet implemented]</errors>
       </element>
       <element name="TRawImageDescription.PaletteShift">
-        <short>[useless by definition]</short>
+        <short></short>
       </element>
       <element name="TRawImageDescription.PaletteLineEnd">
-        <short>Alignment of [what?]</short>
-        <descr>The wording suggests that the PaletteXYZ fields apply to the pixel data (palette indices), not to the palette itself. A palette is not organized in lines...</descr>
+        <short></short>
+        <descr></descr>
       </element>
       <element name="TRawImageDescription.PaletteBitOrder">
-        <short>Bit order of the palette indices[?]</short>
+        <short>Bit order of the palette indices</short>
       </element>
       <element name="TRawImageDescription.PaletteByteOrder">
-        <short>Byte order of the palette indices[?]</short>
+        <short>Byte order of the palette indices</short>
       </element>
       <element name="TRawImageDescription.Init">
         <short>Initialize the image descriptor to all zeroes.</short>
@@ -810,7 +809,6 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
         <descr>
           <p>Init_BPP24_B8G8R8_BIO_TTB - initiator for specified format</p>
           <pre>{ pf24bit:
-
  Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
  BitOrder=riboBitsInOrder ByteOrder=DefaultByteOrder
  LineOrder=riloTopToBottom
@@ -1016,7 +1014,7 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
         <short>Scanlines start at a 128 bit boundary.</short>
       </element>
       <element name="TRawImageQueryFlag">
-        <short>Image formats supported by a device, or present in image data[?]</short>
+        <short>Image formats supported by a device, or present in image data</short>
       </element>
       <element name="RawImage_ReadBits">
         <short>Read color bits.</short>

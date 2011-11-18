@@ -41,7 +41,7 @@
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="TTranslateString">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -49,7 +49,7 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="TCriticalSection">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -86,7 +86,7 @@
       <element name="PHandle" link="THandle"/>
       <!-- alias type Visibility: default -->
       <element name="HKEY">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -105,7 +105,7 @@
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="HHOOK">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -199,7 +199,7 @@
       <!-- alias type Visibility: default -->
       <element name="HCURSOR">
         <short>The type of a
-          mouse[?] Cursor
+          mouse Cursor
           Handle.
         </short>
         <descr>
@@ -299,7 +299,7 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="Short">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -339,7 +339,7 @@
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="ULONG_PTR">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -347,7 +347,7 @@
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="TLCLIntfHandle">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -647,7 +647,7 @@
         <descr>
         </descr>
         <seealso>
-          <!-- ExtTextOut [where?] -->
+          <link id="#lcl.LCLIntf.ExtTextOut">ExtTextOut</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
@@ -658,12 +658,12 @@
         <descr>
         </descr>
         <seealso>
-          <!-- ExtTextOut [where?] -->
+          <link id="#lcl.LCLIntf.ExtTextOut">ExtTextOut</link>
         </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="CS_VREDRAW">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -671,7 +671,7 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="CS_HREDRAW">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -1229,7 +1229,7 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="HTERROR">
-        <short>Hit test: [what?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -1237,7 +1237,7 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="HTTRANSPARENT">
-        <short>Hit test: transparent area[?]</short>
+        <short>Hit test: transparent area</short>
         <descr>
         </descr>
         <seealso>
@@ -1363,7 +1363,7 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_BYHANDLE">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -3882,7 +3882,7 @@
 
       <!-- constant Visibility: default -->
       <element name="MB_ICONASTERICK">
-      <short>[MB_ICONASTERIsK!!!?]</short>
+      <short></short>
       <descr>
       </descr>
       <seealso>

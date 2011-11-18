@@ -40,7 +40,7 @@
       </element>
 <!-- "type" alias type Visibility: default -->
       <element name="PEventHandler">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -48,7 +48,7 @@
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="PProcessEventHandler">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -56,7 +56,7 @@
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="PPipeEventHandler">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -64,7 +64,7 @@
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="PSocketEventHandler">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -79,14 +79,14 @@
         </seealso>
       </element>
       <element name="TChildExitReason.cerExit">
-        <short>Normal exit[?]</short>
+        <short>Normal exit</short>
       </element>
       <element name="TChildExitReason.cerSignal">
-        <short>Killed[?]</short>
+        <short>Killed</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TPipeReason">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -105,7 +105,7 @@
       <element name="TPipeReasons" link="TPipeReason"/>
       <!-- procedure type Visibility: default -->
       <element name="TApplicationMainLoop">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -113,7 +113,7 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TWaitHandleEvent">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -127,7 +127,7 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TChildExitEvent">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -144,7 +144,7 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TPipeEvent">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -158,7 +158,7 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TSocketEvent">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -237,7 +237,7 @@
         <short>Supports drawing outside OnPaint event of an control.</short>
       </element>
       <element name="TLCLCapability.lcNeedMininimizeAppWithMainForm">
-        <short>When main form is minimized, then minimize also app [all forms?].
+        <short>When main form is minimized, then minimize also app.
         </short>
       </element>
       <element name="TLCLCapability.lcApplicationTitle">
@@ -256,7 +256,7 @@
         <short>Can drag-dock forms from the title bar.</short>
       </element>
       <element name="TLCLCapability.lcAntialiasingEnabledByDefault">
-        <short>Is amDontCare = amOn for the widgetset.[?]
+        <short>Is amDontCare = amOn for the widgetset.
         </short>
       </element>
       <element name="TLCLCapability.lcLMHelpSupport">
@@ -460,7 +460,7 @@
       </element>
 <!-- procedure type Visibility: default -->
       <element name="TWSTimerProc">
-        <short>Type of a timer callback procedure[?]
+        <short>Type of a timer callback procedure
         </short>
         <descr>
         </descr>
@@ -484,7 +484,7 @@
       <element name="TWidgetSet.FThemeServices" link="TWidgetSet.ThemeServices"/>
       <!-- procedure Visibility: protected -->
       <element name="TWidgetSet.PassCmdLineOptions">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -542,7 +542,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppInit">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -585,14 +585,14 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppTerminate">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppMinimize">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -609,7 +609,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppBringToFront">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -758,7 +758,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DCGetPixel">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -777,7 +777,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DCSetPixel">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -796,7 +796,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DCRedraw">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -822,7 +822,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.SetDesigning">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -870,7 +870,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateTimer">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -886,7 +886,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DestroyTimer">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -907,7 +907,7 @@
       </element>
 <!-- function Visibility: public -->
       <element name="TWidgetSet.Arc">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>

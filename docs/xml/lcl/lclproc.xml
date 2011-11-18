@@ -208,7 +208,7 @@
       </element>
 <!-- class Visibility: default -->
       <element name="TDebugLCLItemInfo">
-        <short>A node in TDebugLCLItems, holding information about a heap[?] object.
+        <short>A node in TDebugLCLItems, holding information about a heap object.
         </short>
         <descr>
         </descr>
@@ -236,7 +236,7 @@
       </element>
       <!-- variable Visibility: public -->
       <element name="TDebugLCLItemInfo.Info">
-        <short>A descriptive string[?]
+        <short>A descriptive string
         </short>
         <descr>
         </descr>
@@ -245,7 +245,7 @@
       </element>
       <!-- variable Visibility: public -->
       <element name="TDebugLCLItemInfo.CreationStack">
-        <short>Stack trace at creation of the object[?]
+        <short>Stack trace at creation of the object
         </short>
         <descr>
         </descr>
@@ -254,7 +254,7 @@
       </element>
       <!-- variable Visibility: public -->
       <element name="TDebugLCLItemInfo.DestructionStack">
-        <short>Stack trace at destruction of the object[?]
+        <short>Stack trace at destruction of the object
         </short>
         <descr>
         </descr>
@@ -465,7 +465,7 @@
       <element name="PLineInfoCacheItem" link="TLineInfoCacheItem"/>
       <!-- function Visibility: default -->
       <element name="CompareDebugLCLItemInfos">
-        <short>Compare function for the TDebugLCLItems AVL tree[?]
+        <short>Compare function for the TDebugLCLItems AVL tree
         </short>
         <descr>Compares the Item addresses.
         </descr>
@@ -578,7 +578,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="GetEnumValueDef">
-        <short>Finds an enum member by name[?]
+        <short>Finds an enum member by name
         </short>
         <descr>
         </descr>
@@ -588,7 +588,7 @@
         </seealso>
       </element>
       <element name="GetEnumValueDef.Result">
-        <short>The member ordinal[?]</short>
+        <short>The member ordinal</short>
       </element>
       <element name="GetEnumValueDef.TypeInfo">
         <short>The enum TypeInfo.</short>
@@ -601,7 +601,7 @@
       </element>
 <!-- function Visibility: default -->
       <element name="ShortCutToText">
-        <short>Returns the textual representation of an shortcut[?]
+        <short>Returns the textual representation of an shortcut
         </short>
         <descr/>
         <errors/>
@@ -615,7 +615,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="TextToShortCut">
-        <short>Converts the textual representation of an shortcut into an shortcut[?]
+        <short>Converts the textual representation of an shortcut into an shortcut
         </short>
         <descr/>
         <errors/>
@@ -648,11 +648,11 @@
         <short>The list index where the search should start.</short>
       </element>
       <element name="GetCompleteText.bCaseSensitive">
-        <short>True means case-sensitive comparison[?]
+        <short>True means case-sensitive comparison
         </short>
       </element>
       <element name="GetCompleteText.bSearchAscending">
-        <short>True means search ascending from iSelStart[?]
+        <short>True means search ascending from iSelStart
         </short>
       </element>
       <element name="GetCompleteText.slTextList">
@@ -661,7 +661,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="IsEditableTextKey">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -677,7 +677,7 @@
       </element>
       <!-- function type Visibility: default -->
       <element name="TSendApplicationMessageFunction">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
@@ -695,7 +695,7 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TOwnerFormDesignerModifiedProc">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
@@ -704,19 +704,19 @@
       </element>
       <!-- variable Visibility: default -->
       <element name="SendApplicationMessageFunction">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="OwnerFormDesignerModifiedProc">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
       <!-- function Visibility: default -->
       <element name="SendApplicationMessage">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -735,7 +735,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="OwnerFormDesignerModified">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -755,7 +755,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="RegisterInterfaceInitializationHandler">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -778,7 +778,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="RegisterInterfaceFinalizationHandler">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -907,7 +907,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="BreakString">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1037,7 +1037,7 @@
       <element name="RoundToInt">
         <short>Returns the rounded value as an Integer.</short>
         <descr/>
-        <errors>[What if the result exceeds the Integer range?]
+        <errors>
         </errors>
         <seealso/>
       </element>
@@ -1051,7 +1051,7 @@
       <element name="RoundToCardinal">
         <short>Returns the rounded value as an Cardinal.</short>
         <descr/>
-        <errors>[What if the result exceeds the Cardinal range?]
+        <errors>
         </errors>
         <seealso/>
       </element>
@@ -1065,7 +1065,7 @@
       <element name="TruncToInt">
         <short>Returns the truncated value as an Integer.</short>
         <descr/>
-        <errors>[What if the result exceeds the Integer range?]
+        <errors>
         </errors>
         <seealso/>
       </element>
@@ -1079,7 +1079,7 @@
       <element name="TruncToCardinal">
         <short>Returns the rounded value as an Cardinal.</short>
         <descr/>
-        <errors>[What if the result exceeds the Cardinal range?]
+        <errors>
         </errors>
         <seealso/>
       </element>
@@ -1117,7 +1117,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="RaiseAndCatchException">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1127,7 +1127,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DumpExceptionBackTrace">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1137,7 +1137,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DumpStack">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1147,7 +1147,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="GetStackTrace">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1163,7 +1163,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="GetStackTracePointers">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1176,7 +1176,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="StackTraceAsString">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1195,7 +1195,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="GetLineInfo">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1214,7 +1214,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DebugLn">
-        <short>Writes a number of strings (heavily overloaded) to the debug output[?]</short>
+        <short>Writes a number of strings (heavily overloaded) to the debug output</short>
         <errors/>
         <seealso/>
       </element>
@@ -1275,7 +1275,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DebugLnEnter">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1309,7 +1309,7 @@
       <element name="DebugLnEnter.s18"/>
       <!-- procedure Visibility: default -->
       <element name="DebugLnExit">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1360,16 +1360,16 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DbgOut">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="DbgOut.s">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgOut.Args">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgOut.s1"/>
       <element name="DbgOut.s2"/>
@@ -1398,7 +1398,7 @@
             </li>
           </ul>
         </descr>
-        <errors>""[?]
+        <errors>""
         </errors>
         <seealso/>
       </element>
@@ -1406,58 +1406,58 @@
         <short/>
       </element>
       <element name="DbgS.s">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.q">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.MaxDecimals">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.m">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.c">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.i">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.r">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.p">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.e">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.b">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.Shift">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.i1">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.i2">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.i3">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.i4">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.ASize">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.ATM">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="DbgS.AScrollInfo">
-        <short>[?]</short>
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="DbgSName">
@@ -1622,7 +1622,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DbgOutThreadLog">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1635,7 +1635,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DebuglnThreadLog">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1647,11 +1647,11 @@
         <short></short>
       </element>
       <element name="DebuglnThreadLog.Args">
-        <short>[?]</short>
+        <short></short>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DbgSaveData">
-        <short>Writes data into an file[?]</short>
+        <short>Writes data into an file</short>
         <descr>
         </descr>
         <errors>
@@ -1670,7 +1670,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DbgAppendToFile">
-        <short>Appends a line to the given file[?]</short>
+        <short>Appends a line to the given file</short>
         <descr>
         </descr>
         <errors>
@@ -1686,7 +1686,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="DbgAppendToFileWithoutLn">
-        <short>Appends (preformatted) text to an file[?]</short>
+        <short>Appends (preformatted) text to an file</short>
         <descr>
         </descr>
         <errors>
@@ -1702,7 +1702,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="CloseDebugOutput">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1712,7 +1712,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="StripLN">
-        <short>Strips everything after (and including) an CR or LF.[???]
+        <short>Strips everything after (and including) an CR or LF.
         </short>
         <descr>
         </descr>
@@ -1729,7 +1729,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="GetPart">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1796,7 +1796,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="StringCase">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1821,7 +1821,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ClassCase">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -1843,7 +1843,7 @@
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="UTF16String">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -1852,7 +1852,7 @@
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PUTF16String" link="UTF16String">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -1861,7 +1861,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharacterLength">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -1875,7 +1875,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8Length">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -1885,24 +1885,24 @@
         <short/>
       </element>
       <element name="UTF8Length.s">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="UTF8Length.p">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="UTF8Length.ByteCount">
-        <short>[?]</short>
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharacterToUnicode">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="UTF8CharacterToUnicode.Result">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="UTF8CharacterToUnicode.p">
         <short/>
@@ -1912,7 +1912,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UnicodeToUTF8">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -1929,7 +1929,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UnicodeToUTF8SkipErrors">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -1949,7 +1949,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8ToDoubleByteString">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -1963,7 +1963,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8ToDoubleByte">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -1983,7 +1983,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8FindNearestCharStart">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -2003,7 +2003,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharStart">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr/>
         <errors/>
@@ -2023,7 +2023,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharToByteIndex">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
       <descr>
       </descr>
@@ -2046,7 +2046,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="UTF8FixBroken">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2060,7 +2060,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CharacterStrictLength">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2077,7 +2077,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CStringToUTF8String">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2097,7 +2097,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8Pos">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2117,7 +2117,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8Copy">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2140,7 +2140,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="UTF8Delete">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2160,7 +2160,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="UTF8Insert">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2180,7 +2180,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8LowerCase">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2197,7 +2197,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8UpperCase">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2214,7 +2214,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="FindInvalidUTF8Character">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2237,7 +2237,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ValidUTF8String">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2254,7 +2254,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="AssignUTF8ListToAnsi">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2271,7 +2271,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF16CharacterLength">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2288,7 +2288,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF16Length">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2311,7 +2311,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF16CharacterToUnicode">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2331,7 +2331,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UnicodeToUTF16">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2348,7 +2348,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CompareStr">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2368,7 +2368,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8CompareText">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2388,7 +2388,7 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="TConvertResult">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2397,7 +2397,7 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="TConvertOption">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2406,7 +2406,7 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="TConvertOptions">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2415,7 +2415,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ConvertUTF8ToUTF16">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2447,7 +2447,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ConvertUTF16ToUTF8">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2479,7 +2479,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF8ToUTF16">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2496,7 +2496,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF16ToUTF8">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2513,7 +2513,7 @@
       </element>
       <!-- procedure Visibility: default -->
       <element name="LCLGetLanguageIDs">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2530,7 +2530,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="CreateFirstIdentifier">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2547,7 +2547,7 @@
       </element>
       <!-- function Visibility: default -->
       <element name="CreateNextIdentifier">
-        <short>[?] Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
+        <short> Deprecated, see <link id="#LCL.LazUTF8"/> for replacements.
         </short>
         <descr>
         </descr>
@@ -2564,7 +2564,7 @@
       </element>
       <!-- variable Visibility: default -->
       <element name="DebugLnMaxNestPrefixLen">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -2572,7 +2572,7 @@
       </element>
       <!-- variable Visibility: default -->
       <element name="DebugLnNestLvlIndent">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -2580,7 +2580,7 @@
       </element>
       <!-- variable Visibility: default -->
       <element name="DebugText">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>

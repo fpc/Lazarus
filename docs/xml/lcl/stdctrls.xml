@@ -126,7 +126,7 @@
         <short>Characters are shown unmodified.</short>
       </element>
       <element name="TEchoMode.emNone">
-        <short>All characters shown as spaces [or nothing displayed at all?].</short>
+        <short>All characters shown as spaces.</short>
       </element>
       <element name="TEchoMode.emPassword">
         <short>All characters shown as PasswordChar.</short>
@@ -150,13 +150,13 @@
         <short>Both horizontal and vertical scrollbars are shown.</short>
       </element>
       <element name="TScrollStyle.ssAutoHorizontal">
-        <short>A horizontal scrollbar is shown when needed[?].</short>
+        <short>A horizontal scrollbar is shown when needed.</short>
       </element>
       <element name="TScrollStyle.ssAutoVertical">
-        <short>A vertical scrollbar is shown when needed[?].</short>
+        <short>A vertical scrollbar is shown when needed.</short>
       </element>
       <element name="TScrollStyle.ssAutoBoth">
-        <short>Both scrollbars are shown as needed[?].</short>
+        <short>Both scrollbars are shown as needed.</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TScrollCode">
@@ -204,7 +204,7 @@
         <seealso/>
       </element>
       <element name="TScrollEvent.Sender">
-        <short>The scrollbar[?]</short>
+        <short>The scrollbar</short>
       </element>
       <element name="TScrollEvent.ScrollCode">
         <short>The scroll action.</short>
@@ -548,7 +548,7 @@
       <element name="TGroupBox">
         <short>A container that allows a number of objects to be grouped physically and conceptually on a form.</short>
         <descr>
-          <p>The objects can be moved around together and have certain properties in common.[?]</p>
+          <p>The objects can be moved around together and have certain properties in common.</p>
         </descr>
         <seealso>
           <link id="HowToUseStdCtrls"/>
@@ -726,7 +726,6 @@
           <p>
             A ComboBox <b>comb</b>ines an edit <b>box</b> with an item list.
             The list can be either static (always visible), or drops down when needed.
-            [Should read <u>comb</u>ines an edit <u>box</u>, but fpdoc errors?]
           </p><p>
             Depending on the ComboBox <var>Style</var> the user can type text into the edit box,
             or he can select items from the <var>Items</var> list.
@@ -736,7 +735,6 @@
           </p>
           <p>It has some interesting properties including <var>AutoComplete</var> and <var>AutoCompleteText</var>, <var>AutoDropDown</var>
             and the ability to create and add a History display.
-            [how to use all that?]
           </p>
         </descr>
       </element>
@@ -1210,9 +1208,9 @@
       <element name="TCustomComboBox.Destroy"/>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.IntfGetItems">
-        <short>Called whenever the items can [must?] be just-in-time populated.</short>
+        <short>Called whenever the items can be just-in-time populated.</short>
         <descr>
-          Gets list of items from the interface[?].
+          Gets list of items from the interface.
           Invokes GetItems, which calls the OnGetItems handler.
         </descr>
         <errors/>
@@ -1423,12 +1421,10 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.OnGetItems">
-        <short>Handler invoked when widgetset[?] items list can [must?] be populated</short>
+        <short>Handler invoked when widgetset items list can be populated</short>
         <descr>
           <p>Some widgetsets like gtk call this just before the list drops down, while others do it on handle creation.
             This event allows to handle both cases with one event.
-          </p><p>
-            [What's the purpose or task of the handler?]
           </p>
         </descr>
         <seealso><link id="TCustomComboBox.IntfGetItems"/></seealso>
@@ -1472,7 +1468,7 @@
           </p>
           <p>When no text is selected, SelStart is the cursor position, and SelLength=0.
           </p><p>
-            Writing moves the cursor, and removes the selection[?].
+            Writing moves the cursor, and removes the selection.
             Set SelLength after changing SelStart, to establish a new selection.
           </p><p>
             SelStart is a <b>zero-based</b> index into Text, in contrast to usual <b>1-based</b> string indices.
@@ -1657,7 +1653,7 @@
         <short>The ListBox control.</short>
       </element>
       <element name="TSelectionChangeEvent.User">
-        <short>True if the user changed the selection, False if changed by code[?].</short>
+        <short>True if the user changed the selection, False if changed by code.</short>
       </element>
 <!-- object Visibility: default -->
       <element name="TCustomListBox">
@@ -2441,7 +2437,6 @@
             as well as simple editing and clipboard operations.
           </p>
           <p>Text attributes (bold, italic...) are <b>not</b> supported.
-            [see TSynEdit...?]
           </p>
         </descr>
       </element>
@@ -2687,7 +2682,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.AutoSize">
-        <short>Allows to adjust the control to the extent of the contained text.[?]</short>
+        <short>Allows to adjust the control to the extent of the contained text.</short>
         <descr>
         </descr>
         <seealso>
@@ -2702,8 +2697,8 @@
         <short>The position of the text cursor.</short>
         <descr>
           <p>
-            Character positions are relative to the string, independent of LTR/RTL display.[?]
-            The position reflects logical (UTF-8) characters.[?]
+            Character positions are relative to the string, independent of LTR/RTL display.
+            The position reflects logical (UTF-8) characters.
           </p><p>
             Position zero is right <b>before</b> the first character.
           </p><p>
@@ -2921,7 +2916,7 @@
         </seealso>
       </element>
       <element name="TCustomMemo.RealSetText.Value">
-        <short>The entire text in one string. Lines are separated by LineFeed (LF) and/or CarriageReturn (CR) characters.[?]</short>
+        <short>The entire text in one string. Lines are separated by LineFeed (LF) and/or CarriageReturn (CR) characters.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomMemo.GetCachedText" link="#LCL.Controls.TControl.GetCachedText">
@@ -3701,7 +3696,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomButton.Active">
-        <short>True if this control is the Cancel or Default button.[?]</short>
+        <short>True if this control is the Cancel or Default button.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomButton.Cancel">
@@ -3729,7 +3724,7 @@
       <element name="TCustomButton.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
       <!-- property Visibility: public -->
       <element name="TCustomButton.ShortCut">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -3737,7 +3732,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomButton.ShortCutKey2">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -3748,7 +3743,7 @@
 <!-- object Visibility: default -->
       <element name="TButton" link="TCustomButton">
         <short>A push button control.</short>
-        <descr>[?]</descr>
+        <descr></descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TButton.Click" link="#LCL.Controls.TControl.Click"/>
@@ -3963,7 +3958,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckBox.ShortCut">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>
@@ -3971,7 +3966,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckBox.ShortCutKey2">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <seealso>

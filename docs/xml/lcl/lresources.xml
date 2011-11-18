@@ -59,7 +59,7 @@
       </element>
       <!-- array type Visibility: default -->
       <element name="TFilerSignature">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
@@ -337,14 +337,14 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TLazarusResourceStream.Res">
-        <short>The resource descriptor, owned by the global resource list[?].</short>
+        <short>The resource descriptor, owned by the global resource list.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- class Visibility: default -->
       <element name="TAbstractTranslator">
-        <short>Abstract base class for translators [what's this?]</short>
-        <descr>[implemented where?]
+        <short>Abstract base class for translators</short>
+        <descr>
         </descr>
         <errors/>
         <seealso/>
@@ -353,7 +353,7 @@
       <element name="TAbstractTranslator.TranslateStringProperty">
         <short>The base class for an TReader.OnReadStringProperty handler.
         </short>
-        <descr>Override this method to [do what?]
+        <descr>
         </descr>
         <errors/>
         <seealso/>
@@ -384,7 +384,7 @@
         <seealso/>
       </element>
       <element name="TLRSItemType.lrsitCollection">
-        <short>A list terminated by an EndList [empty entry?].</short>
+        <short>A list terminated by an EndList.</short>
       </element>
       <element name="TLRSItemType.lrsitComponent">
         <short>A component has two lists: properties and children.</short>
@@ -497,7 +497,7 @@
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectReader.SkipSetBody">
-        <short>Skips until the next empty string [EndList?].</short>
+        <short>Skips until the next empty string.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -524,7 +524,7 @@
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectReader.Pop">
         <short>Pop an item, or decrement its PushCount.</short>
-        <descr>Called on EndList (vaNull) encounterd[?]
+        <descr>Called on EndList (vaNull) encounterd
         </descr>
         <errors/>
         <seealso/>
@@ -848,7 +848,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TLRSObjectReader.Reader">
-        <short>The root component reader[?]</short>
+        <short>The root component reader</short>
         <descr/>
         <seealso/>
       </element>
@@ -1469,7 +1469,7 @@
       <element link="TLRSObjectWriter" name="TLRSObjectWriterClass"/>
       <!-- record type Visibility: default -->
       <element name="TLRPositionLink">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
@@ -1495,7 +1495,7 @@
       <element link="TLRPositionLink" name="PLRPositionLink"/>
       <!-- class Visibility: default -->
       <element name="TLRPositionLinks">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
@@ -1756,7 +1756,7 @@
       </element>
       <!-- variable Visibility: private -->
       <element name="TUTF8Parser.fLastTokenStr">
-        <short>Holds the last parsed token text[?]</short>
+        <short>Holds the last parsed token text</short>
         <descr/>
         <seealso/>
       </element>
@@ -1780,7 +1780,7 @@
       </element>
       <!-- procedure Visibility: private -->
       <element name="TUTF8Parser.CheckLoadBuffer">
-        <short>Skips to the next non-null character[?]</short>
+        <short>Skips to the next non-null character</short>
         <descr/>
         <seealso/>
       </element>
@@ -2255,13 +2255,13 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomLazComponentQueue.OnFindComponentClass">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
 <!-- class Visibility: default -->
       <element name="TLazComponentQueue">
-        <short>[?]</short>
+        <short></short>
       </element>
       <!-- property Visibility: published -->
       <element name="TLazComponentQueue.Name">
@@ -2273,7 +2273,7 @@
       </element>
 <!-- record type Visibility: default -->
       <element name="TPropertyToSkip">
-        <short>Item of TPropertiesToSkip[?]</short>
+        <short>Item of TPropertiesToSkip</short>
         <descr/>
         <seealso/>
       </element>
@@ -2305,7 +2305,7 @@
       <element name="PRemovedProperty" link="TPropertyToSkip"/>
 <!-- class Visibility: default -->
       <element name="TPropertiesToSkip">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
@@ -2441,7 +2441,7 @@
       </element>
       <!-- variable Visibility: default -->
       <element name="PropertiesToSkip">
-        <short>[?]</short>
+        <short></short>
         <descr/>
         <seealso/>
       </element>
