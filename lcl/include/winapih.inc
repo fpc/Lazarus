@@ -313,8 +313,8 @@ function GetScrollRange(Handle: HWND; nBar: Integer; var lpMinPos, lpMaxPos: Int
 function GetRValue(RGB : DWORD) : BYTE; inline;
 function GetGValue(RGB : DWORD) : BYTE; inline;
 function GetBValue(RGB : DWORD) : BYTE; inline;
-procedure GetRGBValues(RGB : DWORD; var R, G, B: Byte); inline;
-procedure GetRGBIntValues(RGB : DWORD; var R, G, B: integer); inline;
+procedure GetRGBValues(RGB : DWORD; out R, G, B: Byte); inline;
+procedure GetRGBIntValues(RGB : DWORD; out R, G, B: integer); inline;
 
 function IndexToOverlayMask(iOverlay: UINT): UINT; inline;
 function InflateRect(var ARect: TRect; dx, dy: Integer): Boolean;

@@ -1230,14 +1230,14 @@ begin
   Result := (RGB shr 16) and $ff;
 end;
 
-procedure GetRGBValues(RGB : DWORD; var R, G, B: Byte); inline;
+procedure GetRGBValues(RGB : DWORD; out R, G, B: Byte); inline;
 begin
   R := RGB and $ff;
   G := (RGB shr 8) and $ff;
   B := (RGB shr 16) and $ff;
 end;
 
-procedure GetRGBIntValues(RGB : DWORD; var R, G, B: integer); inline;
+procedure GetRGBIntValues(RGB : DWORD; out R, G, B: integer); inline;
 begin
   R := RGB and $ff;
   G := (RGB shr 8) and $ff;
