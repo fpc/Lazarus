@@ -71,8 +71,6 @@
       <Verbosity>
         <ShowHintsForUnusedUnitsInMainSrc Value="True"/>
       </Verbosity>
-      <CustomOptions Value="-WC
-"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
