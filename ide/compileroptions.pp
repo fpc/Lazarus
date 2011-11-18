@@ -1408,6 +1408,7 @@ begin
   StackChecks := aXMLConfig.GetValue(p+'Checks/StackChecks/Value', false);
   EmulatedFloatOpcodes := aXMLConfig.GetValue(p+'EmulateFloatingPointOpCodes/Value', false);
   HeapSize := aXMLConfig.GetValue(p+'HeapSize/Value', 0);
+  StackSize := aXMLConfig.GetValue(p+'StackSize/Value', 0);
   VerifyObjMethodCall := aXMLConfig.GetValue(p+'VerifyObjMethodCallValidity/Value', false);
   ReadSmaller;
   if FileVersion<7 then begin
@@ -1630,6 +1631,7 @@ begin
   aXMLConfig.SetDeleteValue(p+'Checks/StackChecks/Value', StackChecks,false);
   aXMLConfig.SetDeleteValue(p+'EmulateFloatingPointOpCodes/Value', EmulatedFloatOpcodes,false);
   aXMLConfig.SetDeleteValue(p+'HeapSize/Value', HeapSize,0);
+  aXMLConfig.SetDeleteValue(p+'StackSize/Value', StackSize,0);
   aXMLConfig.SetDeleteValue(p+'VerifyObjMethodCallValidity/Value', VerifyObjMethodCall,false);
   aXMLConfig.SetDeleteValue(p+'SmallerCode/Value', SmallerCode, false);
   aXMLConfig.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,'');
@@ -2591,6 +2593,10 @@ begin
   if (HeapSize > 0) then
     switches := switches + ' ' + '-Ch' + IntToStr(HeapSize);
 
+  { Stack Size }
+  if (StackSize > 0) then
+    switches := switches + ' ' + '-Cs' + IntToStr(StackSize);
+
   { Optimizations }
   OptimizeSwitches:='';
   if SmallerCode then
@@ -3043,6 +3049,7 @@ begin
   fOverflowChecks := false;
   fStackChecks := false;
   fHeapSize := 0;
+  fStackSize := 0;
   FSmallerCode := false;
   fTargetProc := '';
   fTargetCPU := '';
@@ -3159,6 +3166,7 @@ begin
   fStackChecks := CompOpts.fStackChecks;
   FEmulatedFloatOpcodes := CompOpts.fEmulatedFloatOpcodes;
   fHeapSize := CompOpts.fHeapSize;
+  fStackSize := CompOpts.fStackSize;
   fEmulatedFloatOpcodes := CompOpts.fEmulatedFloatOpcodes;
   FSmallerCode := CompOpts.FSmallerCode;
   fTargetProc := CompOpts.fTargetProc;
@@ -3307,6 +3315,7 @@ begin
   if Done(Tool.AddDiff('StackChecks',fStackChecks,CompOpts.fStackChecks)) then exit;
   if Done(Tool.AddDiff('EmulatedFloatOpcodes',FEmulatedFloatOpcodes,CompOpts.FEmulatedFloatOpcodes)) then exit;
   if Done(Tool.AddDiff('HeapSize',fHeapSize,CompOpts.fHeapSize)) then exit;
+  if Done(Tool.AddDiff('StackSize',fStackSize,CompOpts.fStackSize)) then exit;
   if Done(Tool.AddDiff('EmulatedFloatOpcodes',fEmulatedFloatOpcodes,CompOpts.fEmulatedFloatOpcodes)) then exit;
   if Done(Tool.AddDiff('SmallerCode',FSmallerCode,CompOpts.FSmallerCode)) then exit;
   if Done(Tool.AddDiff('TargetProc',fTargetProc,CompOpts.fTargetProc)) then exit;

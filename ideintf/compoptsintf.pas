@@ -118,6 +118,7 @@ type
     procedure SetGenerateDwarf(const AValue: Boolean);
     procedure SetGenGProfCode(const AValue: Boolean);
     procedure SetHeapSize(const AValue: Integer);
+    procedure SetStackSize(const AValue: Integer);
     procedure SetIncludeAssertionCode(const AValue: Boolean);
     procedure SetInitConst(const AValue: Boolean);
     procedure SetIOChecks(const AValue: Boolean);
@@ -200,6 +201,7 @@ type
     fStackChecks: Boolean;
     FEmulatedFloatOpcodes: boolean;
     fHeapSize: LongInt;
+    fStackSize: LongInt;
     fVerifyObjMethodCall: boolean;
     FSmallerCode: boolean;
     fTargetProc: string;
@@ -339,6 +341,7 @@ type
     property EmulatedFloatOpcodes: boolean read SetEmulatedFloatOpcodes
                                            write SetEmulatedFloatOpcodes;
     property HeapSize: Integer read fHeapSize write SetHeapSize;
+    property StackSize: Integer read fStackSize write SetStackSize;
     property VerifyObjMethodCall: boolean read FVerifyObjMethodCall
                                           write SetVerifyObjMethodCall;
     property SmallerCode: boolean read FSmallerCode write SetSmallerCode;
@@ -728,6 +731,13 @@ procedure TLazCompilerOptions.SetHeapSize(const AValue: Integer);
 begin
   if fHeapSize=AValue then exit;
   fHeapSize:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetStackSize(const AValue: Integer);
+begin
+  if fStackSize=AValue then exit;
+  fStackSize:=AValue;
   IncreaseChangeStamp;
 end;
 

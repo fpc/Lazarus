@@ -27,11 +27,14 @@ type
     chkRelocatableUnit: TCheckBox;
     chkVerifyObjMethodCall: TCheckBox;
     edtHeapSize: TEdit;
+    edtStackSize: TEdit;
     grpChecks: TGroupBox;
-    grpHeapSize: TGroupBox;
+    grpHeapStackSize: TGroupBox;
     grpOptimizations: TGroupBox;
     grpUnitStyle: TGroupBox;
     grpTargetPlatform: TGroupBox;
+    lbHeapSize: TLabel;
+    lbStackSize: TLabel;
     lblTargetCPU: TLabel;
     lblTargetOS: TLabel;
     lblTargetProcessorProc: TLabel;
@@ -121,8 +124,11 @@ begin
   chkChecksStack.Caption := dlgCOStack + ' (-Ct)';
   chkVerifyObjMethodCall.Caption := lisVerifyMethodCalls + ' (-CR)';
 
-  grpHeapSize.Caption := dlgHeapSize + ' (-Ch)';
+  grpHeapStackSize.Caption := dlgHeapAndStackSize;
+  lbHeapSize.Caption := dlgHeapSize + ' (-Ch)';
+  lbStackSize.Caption := dlgStackSize + ' (-Cs)';
   edtHeapSize.Text := '';
+  edtStackSize.Text := '';
 
   grpTargetPlatform.Caption := dlgTargetPlatform;
   lblTargetOS.Caption := dlgTargetOS + ' (-T)';
@@ -224,8 +230,9 @@ begin
     chkChecksStack.Checked := StackChecks;
     chkVerifyObjMethodCall.Checked := VerifyObjMethodCall;
 
-    grpHeapSize.Enabled := NeedsLinkerOpts;
+    grpHeapStackSize.Enabled := NeedsLinkerOpts;
     edtHeapSize.Text := IntToStr(HeapSize);
+    edtStackSize.Text := IntToStr(StackSize);
 
     i := TargetOSComboBox.Items.IndexOf(TargetOS);
     if i < 0 then
@@ -276,6 +283,12 @@ begin
       HeapSize := 0
     else
       HeapSize := hs;
+
+    Val(edtStackSize.Text, hs, code);
+    if (code <> 0) then
+      StackSize := 0
+    else
+      StackSize := hs;
 
     NewTargetOS := TargetOSComboBox.Text;
     if TargetOSComboBox.Items.IndexOf(NewTargetOS) <= 0 then

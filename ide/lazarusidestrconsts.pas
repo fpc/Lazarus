@@ -1809,7 +1809,9 @@ resourcestring
   dlgCORange = 'Range';
   dlgCOOverflow = 'Overflow';
   dlgCOStack = 'Stack';
+  dlgHeapAndStackSize = 'Heap and Stack sizes';
   dlgHeapSize = 'Heap Size';
+  dlgStackSize = 'Stack Size';
   dlgCONormal = 'Normal Code';
   dlgCOFast = 'Faster Code';
   dlgCOSmaller = 'Smaller Code';

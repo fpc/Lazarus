@@ -3,8 +3,8 @@ inherited CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
   Width = 601
   ClientHeight = 523
   ClientWidth = 601
-  DesignLeft = 271
-  DesignTop = 89
+  DesignLeft = 290
+  DesignTop = 90
   object grpUnitStyle: TGroupBox[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = grpChecks
@@ -104,7 +104,7 @@ inherited CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
       TabOrder = 4
     end
   end
-  object grpHeapSize: TGroupBox[2]
+  object grpHeapStackSize: TGroupBox[2]
     AnchorSideLeft.Control = grpChecks
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = grpTargetPlatform
@@ -121,19 +121,66 @@ inherited CompilerCodegenOptionsFrame: TCompilerCodegenOptionsFrame
     AutoSize = True
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    Caption = 'grpHeapSize'
+    Caption = 'grpHeapStackSize'
     ClientHeight = 56
     ClientWidth = 423
     TabOrder = 2
     object edtHeapSize: TEdit
-      Left = 6
+      AnchorSideLeft.Control = lbHeapSize
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = grpHeapStackSize
+      AnchorSideRight.Control = grpHeapStackSize
+      AnchorSideRight.Side = asrBottom
+      Left = 82
       Height = 20
       Top = 6
-      Width = 411
-      Align = alTop
+      Width = 335
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
       BorderSpacing.Around = 6
       TabOrder = 0
       Text = 'edtHeapSize'
+    end
+    object lbHeapSize: TLabel
+      AnchorSideLeft.Control = grpHeapStackSize
+      AnchorSideTop.Control = edtHeapSize
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 15
+      Top = 9
+      Width = 64
+      BorderSpacing.Around = 6
+      Caption = 'lbHeapSize'
+      ParentColor = False
+    end
+    object edtStackSize: TEdit
+      AnchorSideLeft.Control = lbStackSize
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = edtHeapSize
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grpHeapStackSize
+      AnchorSideRight.Side = asrBottom
+      Left = 82
+      Height = 20
+      Top = 32
+      Width = 335
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Around = 6
+      TabOrder = 1
+      Text = 'edtStackSize'
+    end
+    object lbStackSize: TLabel
+      AnchorSideLeft.Control = grpHeapStackSize
+      AnchorSideTop.Control = edtStackSize
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 15
+      Top = 35
+      Width = 64
+      BorderSpacing.Around = 6
+      Caption = 'lbStackSize'
+      ParentColor = False
     end
   end
   object grpTargetPlatform: TGroupBox[3]
