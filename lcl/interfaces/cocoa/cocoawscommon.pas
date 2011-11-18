@@ -50,6 +50,7 @@ type
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
   end;
 
 
@@ -257,6 +258,19 @@ class procedure TCocoaWSWinControl.SetBounds(const AWinControl: TWinControl;
 begin
   if (AWinControl.Handle<>0) then
     NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
+end;
+
+class procedure TCocoaWSWinControl.SetCursor(const AWinControl: TWinControl;
+  const ACursor: HCursor);
+var
+  Obj: NSObject;
+begin
+  if (AWinControl.Handle <> 0) then
+  begin
+    Obj := NSObject(AWinControl.Handle);
+    if Obj.isKindOfClass_(NSView) then
+      NSView(Obj).resetCursorRects;
+  end;
 end;
 
 { TCocoaWSCustomControl }

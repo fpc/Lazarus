@@ -178,7 +178,6 @@ type
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
-    procedure resetCursorRects; override;
   end;
 
   { TCocoaCustomControl }
@@ -416,12 +415,6 @@ begin
   mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
   callback.MouseMove(round(mp.x), round(mp.y));
   inherited mouseMoved(event);
-end;
-
-procedure TCocoaWindow.resetCursorRects;
-begin
-  callback.resetCursorRects;
-  inherited resetCursorRects;
 end;
 
 procedure TCocoaWindow.mouseEntered(event: NSEvent);
