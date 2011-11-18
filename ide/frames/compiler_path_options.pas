@@ -343,7 +343,7 @@ begin
   end;
 
   // check for special characters
-  if (not IDEMacros.StrHasMacros(CurPath)) then
+  if (not IDEMacros.StrHasMacros(ExpandedPath)) then
   begin
     FindSpecialCharsInPath(ExpandedPath, HasChars);
     if Ord(Level) <= Ord(ccomlWarning) then
