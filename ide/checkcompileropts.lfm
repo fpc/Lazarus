@@ -9,7 +9,7 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
   ClientHeight = 307
   ClientWidth = 624
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object OutputGroupBox: TGroupBox
     Left = 6
     Height = 153
@@ -74,6 +74,14 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
     Height = 26
     Top = 275
     Width = 612
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 3
     ShowButtons = [pbClose]
     ShowBevel = False

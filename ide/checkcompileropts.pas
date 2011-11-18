@@ -209,16 +209,6 @@ end;
 
 function TCheckCompilerOptsDlg.CheckSpecialCharsInPath(const Title, ExpandedPath: string
   ): TModalResult;
-  
-  procedure AddStr(var s: string; const Addition: string);
-  begin
-    if s='' then
-      s:=lisCCOContains
-    else
-      s:=s+', ';
-    s:=s+Addition;
-  end;
-  
 var
   Warning: String;
   ErrorMsg: String;
@@ -865,9 +855,8 @@ begin
     for cp:=Low(TParsedCompilerOptString) to High(TParsedCompilerOptString) do
     begin
       if cp in ParsedCompilerSearchPaths then begin
-        Result:=CheckSpecialCharsInPath(
-          copy(EnumToStr(cp),5,100),
-          Options.ParsedOpts.GetParsedValue(cp));
+        Result:=CheckSpecialCharsInPath(copy(EnumToStr(cp),5,100),
+                                        Options.ParsedOpts.GetParsedValue(cp));
         if not (Result in [mrOk,mrIgnore]) then exit;
       end;
     end;
