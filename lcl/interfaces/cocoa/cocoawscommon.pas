@@ -268,6 +268,9 @@ begin
   if (AWinControl.Handle <> 0) then
   begin
     Obj := NSObject(AWinControl.Handle);
+    if Obj.isKindOfClass_(NSWindow) then
+      NSWindow(Obj).resetCursorRects
+    else
     if Obj.isKindOfClass_(NSView) then
       NSView(Obj).resetCursorRects;
   end;
