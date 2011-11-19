@@ -72,10 +72,10 @@ resourcestring
   rsSettings = 'Settings';
   rsSVNSettings = 'SVN settings';
   rsShowDiff = 'Show diff';
-  rsShowDiffBase = 'Show diff of local changes';
-  rsShowDiffPrev = 'Show diff against previous version';
-  rsShowDiffHead = 'Show diff against HEAD';
-  rsShowDiffCountRev = 'Show last X commits';
+  rsShowDiffBase = 'Show Diff of Local Changes';
+  rsShowDiffPrev = 'Show Diff Against Previous Version';
+  rsShowDiffHead = 'Show Diff Against HEAD';
+  rsShowDiffCountRev = 'Show Last X Commits';
   rsShowLog = 'Show log';
   rsSourceFileDoesNotBelongToTheProjectPleaseAddFirst = 'Source file does not '
     +'belong to the project. Please add first.';

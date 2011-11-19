@@ -357,7 +357,7 @@ begin
     //debugln(['TIDETodoWindow.UpdateTodos Owner=',DbgSName(CurOwner)]);
     if CurProject<>nil then begin
       // scan all units of project
-      Caption:=lisTodoListCaption+' '+CurProject.ProjectInfoFile;
+      Caption:=lisToDoList+' '+CurProject.ProjectInfoFile;
       FBaseDirectory:=ExtractFilePath(CurProject.ProjectInfoFile);
       if (CurProject.MainFile<>nil) and (pfMainUnitIsPascalSource in CurProject.Flags)
       then
@@ -371,7 +371,7 @@ begin
       end;
     end else if CurPackage<>nil then begin
       // scan all units of package
-      Caption:=lisTodoListCaption+' '+CurPackage.Filename;
+      Caption:=lisToDoList+' '+CurPackage.Filename;
       FBaseDirectory:=ExtractFilePath(CurPackage.Filename);
       for i:=0 to CurPackage.FileCount-1 do begin
         CurPkgFile:=CurPackage.Files[i];
@@ -627,7 +627,7 @@ begin
   fUpdating := False;
   fScannedFiles := TAvgLvlTree.Create(@CompareTLScannedFiles);
 
-  Caption := lisTodoListCaption;
+  Caption := lisToDoList;
 
   acRefresh.Hint := lisTodolistRefresh;
   acGoto.Hint := listodoListGotoLine;

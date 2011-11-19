@@ -28,7 +28,6 @@ uses
   Classes, SysUtils;
 
 resourcestring
-  lisTodoListCaption='ToDo List';
   lisTodolistRefresh='Refresh todo items';
   lisTodoListGotoLine='Goto selected source line';
   lisTodoListPrintList='Print todo items';
@@ -47,8 +46,8 @@ resourcestring
   lisPrint = 'Print';
   dlgUnitDepRefresh = 'Refresh';
   lisTDDInsertToDo = 'Insert ToDo';
-  lisViewToDoList = 'View ToDo list';
-  lisToDoList = 'ToDo list';
+  lisViewToDoList = 'View ToDo List';
+  lisToDoList = 'ToDo List';
   lisPkgFileTypeText = 'Text';
 
 implementation
