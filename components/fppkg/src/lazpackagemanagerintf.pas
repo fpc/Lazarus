@@ -71,10 +71,10 @@ begin
     Cat:=nil;
   {$endif}
 
-  CmdFppkgFrm:=RegisterIDECommand(Cat, 'Lazarus package manager', rsShowLazarusPackageManager, Key, nil, @ProcFppkgForm);
+  CmdFppkgFrm:=RegisterIDECommand(Cat, 'Lazarus Package Manager', rsShowLazarusPackageManager, Key, nil, @ProcFppkgForm);
 
-  mnuFppkgSection:=RegisterIDESubMenu(itmPkgGraphSection, 'lazfppkg', 'Lazarus package manager', nil, nil);
-  RegisterIDEMenuCommand(mnuFppkgSection, 'Lazarus package manager', rsShowLazarusPackageManager, nil, nil, CmdFppkgFrm);
+  mnuFppkgSection:=RegisterIDESubMenu(itmPkgGraphSection, 'lazfppkg', 'Lazarus Package Manager', nil, nil);
+  RegisterIDEMenuCommand(mnuFppkgSection, 'Lazarus Package Manager', rsShowLazarusPackageManager, nil, nil, CmdFppkgFrm);
 end;
 
 end.

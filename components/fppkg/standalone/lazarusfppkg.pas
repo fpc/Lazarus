@@ -13,7 +13,7 @@ fppkg_lpk;
 {$R *.res}
 
 begin
-  Application.Title:='Lazarus package manager';
+  Application.Title:='Lazarus Package Manager';
   RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TFppkgForm, FppkgForm);

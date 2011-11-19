@@ -62,7 +62,7 @@ resourcestring
   rsOptions = 'Options';
   rsRemoteMirrorsURL = 'Remote mirrors URL';
   rsRemoteRepository = 'Remote repository';
-  rsShowLazarusPackageManager = 'Show Lazarus package manager';
+  rsShowLazarusPackageManager = 'Show Lazarus Package Manager';
 
 implementation
 
