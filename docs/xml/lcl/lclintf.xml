@@ -7,21 +7,25 @@
   ====================================================================
 -->
     <module name="LCLIntf">
-      <short>Contains winapi like functions for Delphi compatibility</short>
+      <short>Contains winapi like functions for Delphi compatibility.</short>
       <descr>
-        <p>This unit is being created specifically for compatibility with Delphi. It
-          contains selected functions that are included in the Delphi Windows unit.
-          These functions are mostly abstract and implemented by the LCL interfaces.
+        <p>This unit was created for Delphi compatibility. It
+          contains selected functions from the Delphi Windows unit,
+          which finally are implemented in the widgetsets.
         </p><p>
           For LCL users:<br/>
-          The functions can be used to make porting of Delphi applications easier
-          and are not 100% emulating winapi functions, not even under windows. They were
-          implemented and tested with some common Delphi libraries.
+          The functions can be used to make porting of Delphi applications easier,
+          and are not 100% emulating winapi functions, not even under windows.
+          They were implemented and tested with some common Delphi libraries.
           The LCL contains many extra functions that the Delphi VCL does not have.
-        </p><p>
+        </p>
+        <remark>Some functions are not exactly Delphi or WinAPI compatible.
+        </remark>
+        <p>
           For example:<br/>
           Instead of using the common windows functions SaveDC and RestoreDC use
           the Canvas.SaveHandleState and Canvas.RestoreHandleState.
+          [really? where's an according map?]
         </p>
       </descr>
       <!-- unresolved type reference Visibility: default -->
@@ -77,12 +81,12 @@
         <short>Draws an elliptical curve.</short>
         <descr>
           <p>Use Arc to draw an elliptically curved line with the current Pen.</p>
-          <p>
+          <p>[this looks outdated?]
             The angles angle1 and angle2 are 1/16th of a degree. For example, a full
             circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
             counter-clockwise while negative values mean clockwise direction.
           </p>
-          <p>Zero degrees is at the 3'o clock position.</p>
+          <p>Zero degrees is at the 3'o clock position (right).</p>
         </descr>
         <errors/>
         <seealso/>
@@ -106,23 +110,30 @@
         <short></short>
       </element>
       <element name="Arc.Angle16Deg">
-        <short></short>
+        <short>The starting angle in 1/16 degrees, starting right and continuing counter-clockwise.</short>
       </element>
       <element name="Arc.Angle16DegLength">
-        <short></short>
+        <short>[?]</short>
       </element>
 <!-- function Visibility: default -->
       <element name="AngleChord">
-        <short>Draws a Chord described by two angles</short>
-        <descr><p>AngleChord is a Lazarus addition, similar to the Windows API Chord,
-         but which uses angles to control the location of the chord inside the ellipse
-         instead of two points like the Windows API Chord.</p>
-         <p>A Chord is a section of an ellipse between the two angles from the parameters
-         angle1 and angle2. This ellipse segment is closed by a direct line conecting its two
-         extremities. This way to conect the extremities is what differentias a Chord from a
-         Pie, because the Pie conects each extremity to the center of the ellipse.</p>
-         <p>The curve part of the chord is defined by the ellipse which fits in the
-         bounding rectangle specified by the coordinates x1, y1, x2 and y2.<p/></descr>
+        <short>Draws a filled Chord described by two angles.</short>
+        <descr>
+          <p>
+            AngleChord is a Lazarus addition, similar to the Windows API Chord,
+            but uses angles to control the location of the chord inside the ellipse
+            instead of two points like the Windows API Chord.
+          </p><p>
+            A Chord is a section of an ellipse between two angles (angle1 and angle2),
+            closed by a straight line (secant).
+            It's equivalent to a Pie without the triangle between the arc and the center of the ellipse.
+          </p><p>
+            The curve part of the chord is defined by the ellipse which fits in the
+            bounding rectangle specified by the coordinates x1, y1, x2 and y2.
+          </p><p>
+            The Chord is outlined by the current Pen and filled with the current Brush.
+          </p>
+        </descr>
         <errors/>
         <seealso>
           <link id="#lcl.LCLIntf.Pie">LCLIntf.Pie</link>
@@ -131,7 +142,7 @@
         </seealso>
       </element>
       <element name="AngleChord.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="AngleChord.DC">
         <short/>
@@ -149,15 +160,17 @@
         <short></short>
       </element>
       <element name="AngleChord.angle1">
-        <short/>
+        <short>The starting angle in 1/16 degrees, starting right and continuing counter-clockwise.</short>
       </element>
       <element name="AngleChord.angle2">
-        <short/>
+        <short>The ending angle in 1/16 degrees, starting right and continuing counter-clockwise.</short>
       </element>
 <!-- function Visibility: default -->
       <element name="BeginPaint">
-        <short>Start painting in a window</short>
-        <descr/>
+        <short>Start painting in a window.</short>
+        <descr>This function is for use in WM_PAINT handlers only.
+          Not all platforms allow for painting outside WM_PAINT messages.
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -172,25 +185,30 @@
       </element>
 <!-- function Visibility: default -->
       <element name="BitBlt">
-        <short>Copies a section of a Canvas to another one, performing a Rop operation</short>
-        <descr><p>This routine implements the equivalent Windows GDI API of the same name in
-          all platforms supported by Lazarus. It copies a section of a Canvas to another one,
-          without any stretching. It alloes to select the kind of operation which should be
-          performed to draw the pixels into the destination in the parameter Rop. Allowed
-          operations go from simply copying the pixels without change to inverting them and
-          also to executing logical operations involving the source pixels and the previously
-          existing pixels in the destination Canvas.</p>
-          <p>For normal usage one should only use SRCOPY in the ROP parameter.
-          One should be careful when using Rop values other then SRCCOPY because they might
-          not be supported in all widgetsets. The possible values for ROP are:</p>
+        <short>Copies a section of a Canvas to another one, performing a raster operation (ROP).</short>
+        <descr>
+          <p>
+            This routine implements the equivalent Windows GDI API
+            of the same name in all platforms supported by Lazarus.
+            It copies a section of a Canvas to another one, without any stretching.
+            It allows to select the kind of operation which should be
+            performed to draw the pixels into the destination in the parameter ROP.
+            Allowed operations go from simply copying the pixels without change
+            to inverting them and also to executing logical operations involving the source pixels and the previously
+            existing pixels in the destination Canvas.
+          </p><p>
+            For normal usage one should only use SRCOPY in the ROP parameter,
+            other operations may not be supported by all widgetsets.
+          </p><p>
+            There exist 16 raster operations, according to the possible combinations
+            of two (boolean) values.
+            Excluding the NOP case, that doesn't modify the target area,
+            the possible values for ROP are:</p>
           <ul>
             <li>BLACKNESS - Fills the destination rectangle with black</li>
-            <li>CAPTUREBLT - Includes windows which are on top of the specified Canvas while
-            doing the capture. This option is not recommended and it is very hard to implement it in all supported platforms.</li>
             <li>DSTINVERT - Inverts the colors of the destination area</li>
             <li>MERGECOPY -</li>
             <li>MERGEPAINT -</li>
-            <li>NOMIRRORBITMAP -</li>
             <li>NOTSRCCOPY -</li>
             <li>NOTSRCERASE -</li>
             <li>PATCOPY -</li>
@@ -200,134 +218,133 @@
             <li>SRCCOPY -</li>
             <li>SRCERASE -</li>
             <li>SRCINVERT -</li>
-            <li>SRCPAINT - Combines the colors of the source and the destination using the operator OR in each pixel</li>
+            <li>SRCPAINT - Combines the colors of the source and the destination using the operator OR on each pixel</li>
             <li>WHITENESS - Fills the destination rectangle with white</li>
           </ul>
+          <p>These flags can be added to above ROPs:
+          </p>
+          <ul>
+            <li>CAPTUREBLT - Includes windows which are on top of the specified Canvas.
+              This option is not recommended and is very hard to implement in all supported platforms.
+            </li>
+            <li>NOMIRRORBITMAP - Prevents the bitmap from being mirrored.
+              (The coordinates are sorted before painting?)
+            </li>
+          </ul>
+        </descr>
+        <errors/>
+        <seealso>
+          <link id="#lcl.LCLType.SRCCOPY"/>
+        </seealso>
+      </element>
+      <element name="BitBlt.Result">
+        <short>False on failure.</short>
+      </element>
+      <element name="BitBlt.DestDC">
+        <short>The destination Device Context.</short>
+      </element>
+      <element name="BitBlt.X">
+        <short>The origin in the destination DC.</short>
+      </element>
+      <element name="BitBlt.Y">
+        <short>The origin in the destination DC.</short>
+      </element>
+      <element name="BitBlt.Width">
+        <short>The image size.</short>
+      </element>
+      <element name="BitBlt.Height">
+        <short>The image size.</short>
+      </element>
+      <element name="BitBlt.SrcDC">
+        <short>The source Device Context.</short>
+      </element>
+      <element name="BitBlt.XSrc">
+        <short>The origin in the source DC.</short>
+      </element>
+      <element name="BitBlt.YSrc">
+        <short>The origin in the source DC.</short>
+      </element>
+      <element name="BitBlt.Rop">
+        <short>The raster operation.</short>
+      </element>
+<!-- function Visibility: default -->
+      <element name="CallNextHookEx">
+        <short>Invokes the next installed system Hook handler.
+        </short>
+        <descr>Useless without SetWindowsHookEx().
+          [How to install an system Hook?]
         </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="BitBlt.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="BitBlt.DestDC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="BitBlt.X">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="BitBlt.Y">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="BitBlt.Width">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="BitBlt.Height">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="BitBlt.SrcDC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="BitBlt.XSrc">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="BitBlt.YSrc">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="BitBlt.Rop">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="CallNextHookEx">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
       <element name="CallNextHookEx.Result">
-        <short/>
+        <short>Depends on the Hook type.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CallNextHookEx.hhk">
-        <short/>
+        <short>Ignored.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CallNextHookEx.ncode">
-        <short/>
+        <short>The Hook code (ID).</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CallNextHookEx.WParam">
-        <short/>
+        <short>Message parameter.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CallNextHookEx.LParam">
-        <short/>
+        <short>Message parameter.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CallWindowProc">
-        <short/>
+        <short>Calls another Window procedure, to handle a message.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CallWindowProc.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CallWindowProc.lpPrevWndFunc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CallWindowProc.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CallWindowProc.Msg">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CallWindowProc.WParam">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CallWindowProc.LParam">
         <short/>
       </element>
       <!-- function Visibility: default -->
-      <element name="ClienttoScreen">
-        <short/>
+      <element name="ClientToScreen">
+        <short>Converts (relative) Client coordinates into absolute Screen coordinates.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="ScreenToClient"/>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
-      <element name="ClienttoScreen.Result">
-        <short/>
+      <element name="ClientToScreen.Result">
+        <short>False on failure.</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="ClienttoScreen.Handle">
-        <short/>
+      <element name="ClientToScreen.Handle">
+        <short>The window with the client area.</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="ClienttoScreen.P">
-        <short/>
+      <element name="ClientToScreen.P">
+        <short>The point to convert.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CombineRgn">
         <short>Combines two regions</short>
-        <descr>The following parameters are present in this function:
+        <descr>
+          <pre>
+The following parameters are present in this function:
 Dest - The Handle of a region which will receive the result of the operation
 Src1 - One of the two regions to combine
 Src2 - The other region to combinee
@@ -338,221 +355,191 @@ RGN_COPY - The result is a copy of the region Src1
 RGN_DIFF - Combines the parts of Src1 that are not part of Src2.
 RGN_OR - The result is the union of the two regions.
 RGN_XOR - The result is the union of two combined regions except for any overlapping areas.
-</descr>
+          </pre>
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CombineRgn.Result">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CombineRgn.Dest">
-        <short/>
+        <short>The Handle of the destination region. This region must already exist!
+        </short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CombineRgn.Src1">
-        <short/>
+        <short>The handle of a region to combine.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CombineRgn.Src2">
-        <short/>
+        <short>The handle of a region to combine.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CombineRgn.fnCombineMode">
-        <short/>
+        <short>How the regions are combined.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateBitmap">
-        <short/>
-        <descr/>
+        <short>Creates a bitmap object.</short>
+        <descr>
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreateBitmap.Result">
-        <short/>
+        <short>The bitmap Handle.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateBitmap.Width">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateBitmap.Height">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateBitmap.Planes">
-        <short/>
+        <short>The number of color planes.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateBitmap.BitCount">
-        <short/>
+        <short>The number of color bits per pixel.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateBitmap.BitmapBits">
-        <short/>
+        <short>The bitmap pixels. Scanlines must be word-aligned.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateBrushIndirect">
-        <short/>
-        <descr/>
+        <short>Creates a brush object (bitmap).</short>
+        <descr>A brush is used to fill image areas (background...).
+          It has a color and a pattern, e.g. BS_SOLID.
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreateBrushIndirect.Result">
-        <short/>
+        <short>The brush Handle.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateBrushIndirect.LogBrush">
-        <short/>
+        <short>Description of the brush.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateCaret">
-        <short/>
-        <descr/>
+        <short>Creates a Caret (text cursor).</short>
+        <descr>This description is taken from the WinAPI,
+          no guarantee for other platforms.
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreateCaret.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateCaret.Handle">
-        <short/>
+        <short>The window that owns the caret.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateCaret.Bitmap">
-        <short/>
+        <short>Bitmap Handle, or zero for a solid (black) caret, 1 for a grey caret.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateCaret.width">
-        <short/>
+        <short>The width of the caret, in logical units.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateCaret.Height">
-        <short/>
+        <short>The height of the caret, in logical units.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateCompatibleBitmap">
-        <short/>
+        <short>Creates a bitmap that is compatible with the given DC.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreateCompatibleBitmap.Result">
-        <short/>
+        <short>The bitmap handle.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateCompatibleBitmap.DC">
-        <short/>
+        <short>The Device Context for the bitmap.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateCompatibleBitmap.Width">
-        <short/>
+        <short>The bitmap width in pixels.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateCompatibleBitmap.Height">
-        <short/>
+        <short>The bitmap height in pixels.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateCompatibleDC">
-        <short/>
+        <short>Creates an memory Device Context, compatible with the device of the given DC.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreateCompatibleDC.Result">
-        <short/>
+        <short>The memory DC, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateCompatibleDC.DC">
-        <short/>
+        <short>The device DC.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateDIBitmap">
-        <short/>
+        <short>Creates a Device Dependent Bitmap (DDB) from a Device Independent Bitmap (DIB).</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreateDIBitmap.Result">
-        <short/>
+        <short>The bitmap handle, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateDIBitmap.DC">
-        <short/>
+        <short>The context for the DDB.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateDIBitmap.InfoHeader">
-        <short/>
+        <short>The bitmap info header.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateDIBitmap.dwUsage">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateDIBitmap.InitBits">
-        <short/>
+        <short>An array containing the bitmap pixels.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateDIBitmap.InitInfo">
-        <short/>
+        <short>CBM_INIT when InitBits contains valid data, else zero.[?]</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateDIBitmap.wUsage">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateDIBSection">
-        <short/>
+        <short>Creates a bitmap into which the application can write.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreateDIBSection.Result">
-        <short/>
+        <short>The bitmap Handle, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateDIBSection.DC">
-        <short/>
+        <short>The DC for the bitmap.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateDIBSection.BitmapInfo">
-        <short/>
+        <short>Contains all information about the bitmap, except the pixels.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateDIBSection.Usage">
-        <short/>
+        <short>The type of the bitmap colors, e.g. DIB_RGB_COLORS.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateDIBSection.Bits">
-        <short/>
+        <short>Returns the pointer to the bitmap pixels.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateDIBSection.SectionHandle">
-        <short/>
+        <short>Zero or the Handle of a file-mapping object, from which the bitmap is initialized
+          (needs CreateFileMapping).
+        </short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateDIBSection.Offset">
-        <short/>
+        <short>The offset to the bitmap bits in the file-mapping object.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateEllipticRgn">
-        <short/>
+        <short>Creates an elliptical region.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreateEllipticRgn.Result">
-        <short/>
+        <short>The region Handle, zero on failure.</short>
       </element>
       <element name="CreateEllipticRgn.X1">
         <short></short>
@@ -568,38 +555,40 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="CreateFontIndirect">
-        <short/>
+        <short>Creates an logical font, selectable into any DC.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="CreateFontIndirectEx"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreateFontIndirect.Result">
-        <short/>
+        <short>The font handle, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreateFontIndirect.LogFont">
-        <short/>
+        <short>The font description.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateFontIndirectEx">
-        <short/>
+        <short>Creates an logical font, selectable into any DC. Allows for an long fontname.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="CreateFontIndirect"/>
+        </seealso>
       </element>
       <element name="CreateFontIndirectEx.Result">
-        <short/>
+        <short>The font handle, zero on failure.</short>
       </element>
       <element name="CreateFontIndirectEx.LogFont">
-        <short/>
+        <short>The font description.</short>
       </element>
       <element name="CreateFontIndirectEx.LongFontName">
-        <short/>
+        <short>The font name, can be longer than 32 characters.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateIconIndirect">
-        <short></short>
+        <short>Creates an icon or cursor.</short>
         <descr>
         </descr>
         <errors>
@@ -608,30 +597,34 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         </seealso>
       </element>
       <element name="CreateIconIndirect.Result">
-        <short></short>
+        <short>The Handle, zero on failure.</short>
       </element>
       <element name="CreateIconIndirect.IconInfo">
         <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreatePalette">
-        <short/>
+        <short>Creates a logical palette, selectable into any DC.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreatePalette.Result">
-        <short/>
+        <short>The palette Handle, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreatePalette.LogPalette">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreatePatternBrush">
-        <short></short>
+        <short>Creates a logical brush, selectable into any DC.</short>
         <descr>
+          <p>
+            The bitmap pattern is repeated for areas of larger width or height,
+            it should allow for smooth transitions.
+          </p><p>
+            Monochrome bitmaps obtain the text (0) and background (1) color of the DC.
+          </p>
         </descr>
         <errors>
         </errors>
@@ -639,58 +632,54 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         </seealso>
       </element>
       <element name="CreatePatternBrush.Result">
-        <short></short>
+        <short>The brush handle, zero on failure.</short>
       </element>
       <element name="CreatePatternBrush.ABitmap">
-        <short></short>
+        <short>The bitmap to use for the brush.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreatePenIndirect">
-        <short/>
-        <descr/>
+        <short>Creates an logical Pen, selectable into any DC.</short>
+        <descr>
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreatePenIndirect.Result">
-        <short/>
+        <short>The pen Handle, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreatePenIndirect.LogPen">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreatePolygonRgn">
-        <short/>
-        <descr/>
+        <short>Creates a polygonial region.</short>
+        <descr>The last point is connected to the first point, to close the region.
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CreatePolygonRgn.Result">
-        <short/>
+        <short>The region Handle, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreatePolygonRgn.Points">
-        <short/>
+        <short>The array of points.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreatePolygonRgn.NumPts">
-        <short/>
+        <short>The number of points in Points.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CreatePolygonRgn.FillMode">
-        <short/>
+        <short>Can be ALTERNATE or WINDING.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CreateRectRgn">
-        <short>Creates a new rectangular region</short>
+        <short>Creates a rectangular region.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="CreateRectRgn.Result">
-        <short/>
+        <short>The region handle, zero on failure.</short>
       </element>
       <element name="CreateRectRgn.X1">
         <short/>
@@ -706,7 +695,9 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="CreateRoundRectRgn">
-        <short></short>
+        <short>Creates a rectangular region with rounded corners.
+          All parameters in logical units.
+        </short>
         <descr>
         </descr>
         <errors>
@@ -715,7 +706,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         </seealso>
       </element>
       <element name="CreateRoundRectRgn.Result">
-        <short></short>
+        <short>The region Handle, zero on failure.</short>
       </element>
       <element name="CreateRoundRectRgn.X1">
         <short></short>
@@ -730,61 +721,62 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short></short>
       </element>
       <element name="CreateRoundRectRgn.nWidthEllipse">
-        <short></short>
+        <short>The extent of the ellipse, used for the rounded corners.</short>
       </element>
       <element name="CreateRoundRectRgn.nHeightEllipse">
-        <short></short>
+        <short>The extent of the ellipse, used for the rounded corners.</short>
       </element>
       <!-- procedure Visibility: default -->
       <element name="DeleteCriticalSection">
-        <short/>
+        <short>Deletes an unowned crititcal section.</short>
         <descr/>
-        <errors/>
+        <errors>Results are unpredictable when the section is owned,
+          i.e. has been entered but not yet left.
+        </errors>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DeleteCriticalSection.CritSection">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="DeleteDC">
-        <short/>
+        <short>Deletes an Device Context, created by CreateDC.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="ReleaseDC"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="DeleteDC.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DeleteDC.hDC">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="DeleteObject">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Frees an GDI object.</short>
+        <descr>The bitmap of a pattern brush is not destroyed with the brush.
+        </descr>
+        <errors>The function fails when the Handle is selected into an DC.
+        </errors>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="DeleteObject.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="DeleteObject.GDIObject">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="DestroyCaret">
-        <short/>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="DestroyCaret.Result">
-        <short/>
+        <short></short>
       </element>
       <element name="DestroyCaret.Handle">
         <short/>
@@ -1854,7 +1846,10 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.LCLType.tagScrollInfo"/>
+          <link id="SetScrollInfo"/>
+        </seealso>
       </element>
       <element name="GetScrollInfo.Result">
         <short>False on failure.</short>
@@ -3093,33 +3088,31 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="ReleaseCapture">
-        <short/>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ReleaseCapture.Result">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="ReleaseDC">
-        <short/>
+        <short>Releases an Device Context obtained by GetDC.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="DeleteDC"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ReleaseDC.Result">
-        <short/>
+        <short>Zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ReleaseDC.hWnd">
-        <short/>
+        <short>The window associated with the DC.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ReleaseDC.DC">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="RemoveProp">
@@ -3215,22 +3208,22 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="ScreenToClient">
-        <short/>
+        <short>Converts absolute Screen coordinates into Client relative coordinates.
+        </short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="ClientToScreen"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ScreenToClient.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ScreenToClient.Handle">
-        <short/>
+        <short>The window with the client area.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ScreenToClient.P">
-        <short/>
+        <short>The point to convert.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="ScrollWindowEx">

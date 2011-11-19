@@ -14275,77 +14275,61 @@
       </seealso>
       </element>
 
-<!-- pointer type Visibility: default -->
-<element name="LPLOGFONT">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- pointer type Visibility: default -->
+      <element name="LPLOGFONT">
+      <short></short>
+      <descr>
+      </descr>
+      <seealso>
+      </seealso>
+      </element>
 
       <!-- pointer type Visibility: default -->
-      <element name="PLogBrush">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
-      </element>
-
+      <element name="PLogBrush" link="tagLOGBRUSH"/>
       <!-- record type Visibility: default -->
       <element name="tagLOGBRUSH">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Description of a Brush.</short>
+        <descr>
+          <p>
+            A brush has a color and a pattern.
+          </p><p>
+            The content of lbColor and lbHatch varies, depending on lbStyle.
+          </p><p>
+            When a drawing function fills an area, using the current brush,
+            a BS_HOLLOW brush can be used to suppress filling.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.LCLIntf.CreateBrushIndirect"/>
+          <link id="BS_SOLID"/>
+          <link id="HS_HORIZONTAL"/>
+        </seealso>
       </element>
-
-      <!-- variable Visibility: default -->
       <element name="tagLOGBRUSH.lbStyle">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>The brush style, e.g. BS_SOLID or BS_HATCHED.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
-      <!-- variable Visibility: default -->
       <element name="tagLOGBRUSH.lbColor">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>The brush color, a TColorRef for BS_SOLID or BS_HATCHED.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
-      <!-- variable Visibility: default -->
       <element name="tagLOGBRUSH.lbHatch">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Polymorphic, depending on lbStyle.
+          With style BS_HATCHED lbHatch is a pattern constant, e.g. HS_VERTICAL.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
-      <!-- alias type Visibility: default -->
-      <element name="TLogBrush">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
-      </element>
-
-      <!-- alias type Visibility: default -->
-      <element name="LOGBRUSH">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
-      </element>
+      <element name="TLogBrush" link="tagLOGBRUSH"/>
+      <element name="LOGBRUSH" link="tagLOGBRUSH"/>
 
       <!-- pointer type Visibility: default -->
       <element name="PMaxLogPalette">
