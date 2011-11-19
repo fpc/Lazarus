@@ -4458,65 +4458,46 @@
 
       <!-- constant Visibility: default -->
       <element name="SIF_Range">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Request for the scrollbar range.</short>
+        <seealso>
+          <link id="tagScrollInfo"/>
+        </seealso>
       </element>
-
-      <!-- constant Visibility: default -->
       <element name="SIF_PAGE">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Request for the scrollbar page size.</short>
+        <seealso>
+          <link id="tagScrollInfo"/>
+        </seealso>
       </element>
-
-      <!-- constant Visibility: default -->
       <element name="SIF_POS">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Request for the scrollbar position.</short>
+        <seealso>
+          <link id="tagScrollInfo"/>
+        </seealso>
       </element>
-
-      <!-- constant Visibility: default -->
       <element name="SIF_DISABLENOSCROLL">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Disable the scrollbar if not needed.</short>
+        <seealso>
+          <link id="tagScrollInfo"/>
+        </seealso>
       </element>
-
-      <!-- constant Visibility: default -->
       <element name="SIF_TRACKPOS">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Request for the scrollbar tracking position.</short>
+        <seealso>
+          <link id="tagScrollInfo"/>
+        </seealso>
       </element>
-
-      <!-- constant Visibility: default -->
       <element name="SIF_ALL">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Request all scrollbar properties.</short>
+        <seealso>
+          <link id="tagScrollInfo"/>
+        </seealso>
       </element>
-
-      <!-- constant Visibility: default -->
       <element name="SIF_UPDATEPOLICY">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>[?]</short>
+        <seealso>
+          <link id="tagScrollInfo"/>
+        </seealso>
       </element>
 
       <!-- constant Visibility: default -->
@@ -6814,103 +6795,61 @@
 
       <!-- record type Visibility: default -->
       <element name="tagScrollInfo">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>The Scrollbar properties parameter record.</short>
+        <descr>
+          <p>
+            This record is used with the GetScrollInfo and SetScrollInfo procedures.
+            before every call fMask must be initialized with the flags for the desired values:
+          </p>
+          <ul>
+            <li>
+              SIF_DISABLENOSCROLL: when the new parameters make the scrollbar unnecessary,
+              the scrollbar is only disabled, not removed. (write only)
+            </li><li>
+              SIF_PAGE: nPage contains the page size.
+            </li><li>
+              SIF_POS: nPos contains the slider position.
+            </li><li>
+              SIF_RANGE: nMin and nMax contain the scroll limits.
+            </li><li>
+              SIF_TRACKPOS: nTrackPos contains the current slider position,
+              while the user is dragging the slider. (read only)
+            </li>
+          </ul>
+          <p>
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.LCLIntf.GetScrollInfo">GetScrollInfo</link>
+          <link id="#lcl.LCLIntf.SetScrollInfo">SetScrollInfo</link>
+        </seealso>
       </element>
-
-      <!-- variable Visibility: default -->
       <element name="tagScrollInfo.cbSize">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Must be initialized to sizeof(TScrollInfo).</short>
       </element>
-
-      <!-- variable Visibility: default -->
       <element name="tagScrollInfo.fMask">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>Contains the flags for the desired values.</short>
       </element>
-
-      <!-- variable Visibility: default -->
       <element name="tagScrollInfo.nMin">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>The minimum Position value.</short>
       </element>
-
-      <!-- variable Visibility: default -->
       <element name="tagScrollInfo.nMax">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>The maximum Position value.</short>
       </element>
-
-      <!-- variable Visibility: default -->
       <element name="tagScrollInfo.nPage">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>The page size, equivalent to the slider size.</short>
       </element>
-
-      <!-- variable Visibility: default -->
       <element name="tagScrollInfo.nPos">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>The slider position.</short>
       </element>
-
-      <!-- variable Visibility: default -->
       <element name="tagScrollInfo.nTrackPos">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
+        <short>The current position while the user is dragging the slider.</short>
       </element>
+      <element name="PScrollInfo" link="tagScrollInfo"/>
+      <element name="TScrollInfo" link="tagScrollInfo"/>
 
       <!-- pointer type Visibility: default -->
-      <element name="PScrollInfo">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
-      </element>
-
-      <!-- alias type Visibility: default -->
-      <element name="TScrollInfo">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
-      </element>
-
-      <!-- pointer type Visibility: default -->
-      <element name="PPaletteEntry">
-      <short></short>
-      <descr>
-      </descr>
-      <seealso>
-      </seealso>
-      </element>
-
+      <element name="PPaletteEntry" link="tagPaletteEntry"/>
       <!-- record type Visibility: default -->
       <element name="tagPALETTEENTRY">
       <short></short>

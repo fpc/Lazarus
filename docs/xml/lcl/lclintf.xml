@@ -1850,26 +1850,25 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetScrollInfo">
-        <short/>
+        <short>Returns all or selected information about a ScrollBar.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetScrollInfo.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetScrollInfo.Handle">
-        <short/>
+        <short>The ScrollBar or window handle.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetScrollInfo.SBStyle">
-        <short/>
+        <short>The ScrollBar kind.
+        </short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetScrollInfo.ScrollInfo">
-        <short/>
+        <short>Initialize ScrollInfo.fMask with the flags for the desired values.
+        </short>
       </element>
       <!-- function Visibility: default -->
       <element name="GetStockObject">
@@ -4396,24 +4395,20 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- function Visibility: default -->
       <element name="EqualRect">
-        <short></short>
+        <short>Returns True when the rectangles are identical.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="EqualRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="EqualRect.lprc1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="EqualRect.lprc2">
         <short/>
       </element>
-
       <!-- function Visibility: default -->
       <element name="GetScrollPos">
         <short>Returns the scollbar position.</short>
@@ -4421,17 +4416,136 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetScrollPos.Result">
-        <short/>
+        <short>The position, zero if the scrollbar is not visible.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetScrollPos.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetScrollPos.nBar">
         <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetScrollRange">
+        <short>Returns the minimum and maximum Position values of a ScrollBar.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="GetScrollRange.Result">
+        <short/>
+      </element>
+      <element name="GetScrollRange.Handle">
+        <short/>
+      </element>
+      <element name="GetScrollRange.nBar">
+        <short/>
+      </element>
+      <element name="GetScrollRange.lpMinPos">
+        <short/>
+      </element>
+      <element name="GetScrollRange.lpMaxPos">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetRValue">
+        <short>Extracts the red color value from a COLORREF.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="GetRValue.Result">
+        <short/>
+      </element>
+      <element name="GetRValue.RGB">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetGValue">
+        <short>Extracts the green color value from a COLORREF.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="GetGValue.Result">
+        <short/>
+      </element>
+      <element name="GetGValue.RGB">
+        <short/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="GetBValue">
+        <short>Extracts the blue color value from a COLORREF.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="GetBValue.Result">
+        <short/>
+      </element>
+      <element name="GetBValue.RGB">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="GetRGBValues">
+        <short>Extracts the red, green and blue color values from a COLORREF.</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetRGBValues.RGB">
+        <short></short>
+      </element>
+      <element name="GetRGBValues.R">
+        <short></short>
+      </element>
+      <element name="GetRGBValues.G">
+        <short></short>
+      </element>
+      <element name="GetRGBValues.B">
+        <short></short>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="GetRGBIntValues">
+        <short>Extracts the red, green and blue color values from a COLORREF.</short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="GetRGBIntValues.RGB">
+        <short></short>
+      </element>
+      <element name="GetRGBIntValues.R">
+        <short></short>
+      </element>
+      <element name="GetRGBIntValues.G">
+        <short></short>
+      </element>
+      <element name="GetRGBIntValues.B">
+        <short></short>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="IndexToOverlayMask">
+        <short>Converts an imagelist index into an overlay index.
+        </short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="IndexToOverlayMask.Result">
+        <short>Ready for combination with another imagelist index.
+        </short>
+      </element>
+      <element name="IndexToOverlayMask.iOverlay">
+        <short>The imagelist index of the overlay.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="InflateRect">
@@ -4452,111 +4566,107 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="InflateRect.Result">
         <short>Always True.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="InflateRect.ARect">
         <short>This rectangle is modified.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="InflateRect.dx">
         <short>The horizontal increase, negative to decrease.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="InflateRect.dy">
         <short>The vertical increase, negative to decrease.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="IntersectRect">
-        <short/>
-        <descr/>
+        <short>Intersects SrcRect1 and SrcRect2 into DestRect.</short>
+        <descr>
+          <p>
+            Intersecting means that DestRect will be the overlapping area of SrcRect1 and SrcRect2.
+          </p><p>
+            If SrcRect1 and SrcRect2 do not overlap the Result is false, else true.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="IntersectRect.Result">
-        <short/>
+        <short>False when the rectangles don't overlap.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="IntersectRect.DestRect">
-        <short/>
+        <short>Receives the intersection.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="IntersectRect.SrcRect1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="IntersectRect.SrcRect2">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="IsCharAlphaNumeric">
-        <short/>
+        <short>Checks for ASCII letter or digit characters.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="IsCharAlphaNumeric.Result">
-        <short/>
+        <short>True when the character is a letter or digit.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="IsCharAlphaNumeric.c">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="IsRectEmpty">
-        <short>Returns true if the rectangle is empty.</short>
+        <short>Returns True if the rectangle is empty.</short>
         <descr>
-          IsEmptyRect returns true, if the area of the rectangle is empty,
-          i.e. right coordinate is less than or equal to the left coordinate,
-          or the bottom coordinate is less than or equal to the top coordinate
+          IsEmptyRect returns true if the area of the rectangle is empty,
+           i.e. has a zero or negative width or height.
         </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="IsRectEmpty.Result">
-        <short/>
+        <short>True if the rectangle is empty.</short>
       </element>
       <element name="IsRectEmpty.ARect">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="KillTimer">
-        <short></short>
+        <short>Removes an timer.</short>
         <descr>
         </descr>
         <errors>
         </errors>
         <seealso>
+          <link id="SetTimer"/>
         </seealso>
       </element>
       <element name="KillTimer.Result">
-        <short></short>
+        <short>Zero on failure!</short>
       </element>
       <element name="KillTimer.Wnd">
-        <short></short>
+        <short>The window handle associated with the timer, can be zero.</short>
       </element>
       <element name="KillTimer.uIDEvent">
-        <short></short>
+        <short>The timer ID.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="MakeLong">
-        <short/>
+        <short>Copies two words into a double word.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="MakeLong.Result">
-        <short/>
+        <short>The combined doubleword.</short>
       </element>
       <element name="MakeLong.A">
-        <short/>
+        <short>The low word.</short>
       </element>
       <element name="MakeLong.B">
-        <short/>
+        <short>The high word.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="MakeROP4">
@@ -4579,109 +4689,110 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- function Visibility: default -->
       <element name="MakeWord">
-        <short/>
+        <short>Copies two bytes into a word.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="MakeWord.Result">
-        <short/>
+        <short></short>
       </element>
       <element name="MakeWord.A">
-        <short/>
+        <short>The low byte.</short>
       </element>
       <element name="MakeWord.B">
-        <short/>
+        <short>The high byte.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="MakeWParam">
-        <short/>
-        <descr/>
+        <short>Copies two words into a double word, usable as a message wParam.</short>
+        <descr>The result has the size of an pointer.
+          Excess bits are sign extended[?].
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="MakeWParam.Result">
-        <short/>
+        <short></short>
       </element>
       <element name="MakeWParam.l">
-        <short/>
+        <short>The low word.</short>
       </element>
       <element name="MakeWParam.h">
-        <short/>
+        <short>The high word.</short>
       </element>
       <!-- function Visibility: default -->
-      <element name="MakeLParam">
-        <short/>
+      <element name="MakeLParam" link="MakeWParam">
+        <short>Copies two words into a double word, usable as a message lParam.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="MakeLParam.Result">
-        <short/>
+        <short></short>
       </element>
       <element name="MakeLParam.l">
-        <short/>
+        <short>The low word.</short>
       </element>
       <element name="MakeLParam.h">
-        <short/>
+        <short>The high word.</short>
       </element>
       <!-- function Visibility: default -->
-      <element name="MakeLResult">
-        <short/>
+      <element name="MakeLResult" link="MakeWParam">
+        <short>Copies two words into a double word, usable as a message Result.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="MakeLResult.Result">
-        <short/>
+        <short></short>
       </element>
       <element name="MakeLResult.l">
-        <short/>
+        <short>The low word.</short>
       </element>
       <element name="MakeLResult.h">
-        <short/>
+        <short>The high word.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="OffSetRect">
-        <short>Move Left/Right by dx, Top/Bottom by dy. Return Top and Left are &gt;= 0.</short>
+        <short>Move Left/Right by dx, Top/Bottom by dy.
+          Return Top and Left are &gt;= 0.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="OffSetRect.Result">
-        <short/>
+        <short>False if resulting Top or Left are negative.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="OffSetRect.Rect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="OffSetRect.dx">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="OffSetRect.dy">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="PtInRect">
-        <short/>
-        <descr/>
+        <short>Checks whether a Point is within a Rect.</short>
+        <descr>
+          <p>
+            Top and Left side are part of the rectangle,
+            but Bottom and Right side are outside.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="PtInRect.Result">
-        <short/>
+        <short>True when Point is within Rect.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="PtInRect.Rect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="PtInRect.Point">
         <short/>
       </element>
@@ -4701,118 +4812,139 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <short/>
       </element>
       <!-- function Visibility: default -->
+      <element name="RGB">
+        <short>Combines Red, Green and Blue values into an Color value.
+        </short>
+        <descr>
+          <p>
+            The bytes are shifted into place, for a standard COLORREF.
+            Their physical order depends on the endianness of the machine.
+          </p><p>
+            Depending on the application and hardware,
+            the color components may not be in the desired order.
+            [see also?]
+          </p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="RGB.Result">
+        <short>The combined doubleword.</short>
+      </element>
+      <element name="RGB.R">
+        <short>The low byte.</short>
+      </element>
+      <element name="RGB.G">
+        <short>The mid byte (*16).</short>
+      </element>
+      <element name="RGB.B">
+        <short>The high byte (*256).</short>
+      </element>
+      <!-- function Visibility: default -->
       <element name="ScrollWindow">
-        <short/>
+        <short>Scrolls the content of a window, by a number of pixels.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ScrollWindow.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ScrollWindow.hWnd">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ScrollWindow.XAmount">
-        <short/>
+        <short>Horizontal distance (positive to scroll down)</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ScrollWindow.YAmount">
-        <short/>
+        <short>Vertical distance (positive to scroll right)</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ScrollWindow.Rect">
-        <short/>
+        <short>The part of the window, that is to be scrolled.
+        </short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ScrollWindow.ClipRect">
-        <short/>
+        <short>Pixels falling outside this rectangle are lost.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="SetRect">
-        <short/>
+        <short>Copies coordinates into a rectangle.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetRect.Result">
-        <short/>
+        <short>Always True.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetRect.ARect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetRect.xLeft">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetRect.yTop">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetRect.xRight">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetRect.yBottom">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetRectEmpty">
-        <short/>
+        <short>Clears the rectangle to all zero coordinates.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetRectEmpty.Result">
-        <short/>
+        <short>Always True.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetRectEmpty.ARect">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetScrollPos">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Changes the Position of an ScrollBar slider.
+        </short>
+        <descr>
+          The SetScrollPos function sets the position of the scroll box (thumb)
+          in the specified scroll bar and, if requested, redraws the scroll bar
+          to reflect the new position of the scroll box.
+        </descr>
+        <seealso>
+          <link id="SetScrollInfo"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetScrollPos.Result">
-        <short/>
+        <short>The previous Position, zero if invisible.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetScrollPos.Handle">
-        <short/>
+        <short>The ScrollBar or Window Handle.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetScrollPos.nBar">
-        <short/>
+        <short>
+          <link id="#lcl.LCLType.SB_CTL">SB_CTL</link>
+          means a ScrollBar control.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetScrollPos.nPos">
-        <short/>
+        <short>The new Position.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetScrollPos.bRedraw">
-        <short/>
+        <short>True forces a repaint.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="SetScrollRange">
-        <short/>
+        <short>Sets the minimum and maximum position values of an ScrollBar.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="SetScrollInfo"/>
+        </seealso>
       </element>
       <element name="SetScrollRange.Result">
-        <short/>
+        <short>Always True.</short>
       </element>
       <element name="SetScrollRange.Handle">
         <short/>
@@ -4831,32 +4963,42 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- function Visibility: default -->
       <element name="SetTimer">
-        <short></short>
+        <short>Creates or resets an timer for the given time interval.</short>
         <descr>
+          <p>
+            Every timer has a unique ID, which is reported in the timer message
+            and can be used to reset or kill the timer.
+          </p><p>
+            When the time has elapsed, the callback procedure is invoked.
+            If no procedure is given, a WM_TIMER message is sent to the window.
+            If also no window is given, the function fails.
+          </p><p>
+            When the timer already exists, it is reset to the new interval.
+          </p>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="KillTimer"/>
+          <link id="#lcl.LCLType.TTimerProc"/>
         </seealso>
       </element>
       <element name="SetTimer.Result">
-        <short></short>
+        <short>The timer ID, or zero on failure.</short>
       </element>
       <element name="SetTimer.Wnd">
-        <short></short>
+        <short>The window associated with the timer.</short>
       </element>
       <element name="SetTimer.nIDEvent">
-        <short></short>
+        <short>The ID of the timer, ignored when Wnd is zero.</short>
       </element>
       <element name="SetTimer.uElapse">
-        <short></short>
+        <short>The time interval to wait.</short>
       </element>
       <element name="SetTimer.lpTimerFunc">
-        <short></short>
+        <short>The callback procedure, can be Nil.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="SmallPointToPoint">
-        <short/>
+        <short>Converts an TSmallPoint into an TPoint.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4869,8 +5011,16 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- function Visibility: default -->
       <element name="SubtractRect">
-        <short></short>
+        <short>Computes the bounding box of the geometric difference of two rectangles.</short>
         <descr>
+          <p>
+            When the rectangles do not overlap completely in either x or y direction,
+            the result is the first rectangle (lprcSrc1).
+          </p><p>
+            Otherwise the overlapping area is excluded from the first rectangle.
+          </p><p>
+            The bounding box is the <b>rectangle</b> that covers the entire resulting area.
+          </p>
         </descr>
         <errors>
         </errors>
@@ -4878,7 +5028,7 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         </seealso>
       </element>
       <element name="SubtractRect.Result">
-        <short></short>
+        <short>False when the resulting rectangle is empty.</short>
       </element>
       <element name="SubtractRect.lprcDst">
         <short></short>
@@ -4887,189 +5037,38 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <short></short>
       </element>
       <element name="SubtractRect.lprcSrc2">
-        <short></short>
+        <short>The rectangle to subtract.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="UnionRect">
-        <short/>
-        <descr/>
+        <short>Computes the bounding box of the union of two rectangles.
+        </short>
+        <descr>
+          <p>
+            The bounding box is the <b>rectangle</b> that covers the entire resulting area.
+            Here the result covers both rectangles.
+          </p><p>
+            The rectangles can be disjoint.
+          </p><p>
+            Rectangles with a zero or negative width or height
+            are treated as empty rectangles (ignored).
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="UnionRect.Result">
-        <short/>
+        <short>False when the resulting rectangle is empty, i.e. when both source rectangles are empty.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UnionRect.DestRect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UnionRect.SrcRect1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UnionRect.SrcRect2">
         <short/>
       </element>
-      <!-- function Visibility: default -->
-      <element name="GetRValue">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="GetRValue.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetRValue.RGB">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetGValue">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="GetGValue.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetGValue.RGB">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetBValue">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="GetBValue.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetBValue.RGB">
-        <short/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="GetRGBValues">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="GetRGBValues.RGB">
-        <short></short>
-      </element>
-      <element name="GetRGBValues.R">
-        <short></short>
-      </element>
-      <element name="GetRGBValues.G">
-        <short></short>
-      </element>
-      <element name="GetRGBValues.B">
-        <short></short>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="GetRGBIntValues">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="GetRGBIntValues.RGB">
-        <short></short>
-      </element>
-      <element name="GetRGBIntValues.R">
-        <short></short>
-      </element>
-      <element name="GetRGBIntValues.G">
-        <short></short>
-      </element>
-      <element name="GetRGBIntValues.B">
-        <short></short>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="GetScrollRange">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="GetScrollRange.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetScrollRange.Handle">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetScrollRange.nBar">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetScrollRange.lpMinPos">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="GetScrollRange.lpMaxPos">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
-      <element name="IndexToOverlayMask">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="IndexToOverlayMask.Result">
-        <short></short>
-      </element>
-      <element name="IndexToOverlayMask.iOverlay">
-        <short></short>
-      </element>
-
-      <!-- function Visibility: default -->
-      <element name="RGB">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="RGB.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="RGB.R">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="RGB.G">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="RGB.B">
-        <short/>
-      </element>
-
-
       <!-- function Visibility: default -->
       <element name="AddEventHandler">
         <short></short>
