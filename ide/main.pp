@@ -17077,8 +17077,12 @@ var
   AnIDesigner: TIDesigner;
   HasResources: Boolean;
 begin
-  if FNeedUpdateHighlighters then
+  if FNeedUpdateHighlighters then begin
+    {$IFDEF VerboseIdle}
+    debugln(['TMainIDE.OnApplicationIdle FNeedUpdateHighlighters']);
+    {$ENDIF}
     UpdateHighlighters(true);
+  end;
   GetDefaultProcessList.FreeStoppedProcesses;
   ExternalTools.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
@@ -17089,6 +17093,9 @@ begin
   end;
   if FUserInputSinceLastIdle then
   begin
+    {$IFDEF VerboseIdle}
+    debugln(['TMainIDE.OnApplicationIdle FUserInputSinceLastIdle']);
+    {$ENDIF}
     FUserInputSinceLastIdle:=false;
     UpdateWindowMenu;
     FormEditor1.CheckDesignerPositions;
@@ -17120,12 +17127,24 @@ begin
       DebugBoss.UpdateButtonsAndMenuItems;
     end;
   end;
-  if FCheckFilesOnDiskNeeded then
+  if FCheckFilesOnDiskNeeded then begin
+    {$IFDEF VerboseIdle}
+    debugln(['TMainIDE.OnApplicationIdle FCheckFilesOnDiskNeeded']);
+    {$ENDIF}
     DoCheckFilesOnDisk(true);
-  if (FRemoteControlTimer=nil) and EnableRemoteControl then
+  end;
+  if (FRemoteControlTimer=nil) and EnableRemoteControl then begin
+    {$IFDEF VerboseIdle}
+    debugln(['TMainIDE.OnApplicationIdle EnableRemoteControl']);
+    {$ENDIF}
     SetupRemoteControl;
-  if Screen.GetCurrentModalForm=nil then
+  end;
+  if Screen.GetCurrentModalForm=nil then begin
+    {$IFDEF VerboseIdle}
+    debugln(['TMainIDE.OnApplicationIdle Screen.GetCurrentModalForm']);
+    {$ENDIF}
     PkgBoss.OpenHiddenModifiedPackages;
+  end;
 end;
 
 procedure TMainIDE.OnApplicationDeActivate(Sender: TObject);
