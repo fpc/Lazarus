@@ -10,15 +10,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: codystrconsts.crsaddassignmethod
-msgid "Add Assign method"
+#, fuzzy
+#| msgid "Add Assign method"
+msgid "Add Assign Method"
 msgstr "Добавить метод Assign"
 
 #: codystrconsts.crsaddassignmethod2
-msgid "Add Assign method ..."
+#, fuzzy
+#| msgid "Add Assign method ..."
+msgid "Add Assign Method ..."
 msgstr "Добавить метод Assign ..."
 
 #: codystrconsts.crsaddawithblock
-msgid "Add a \"With\" block"
+#, fuzzy
+#| msgid "Add a \"With\" block"
+msgid "Add a \"With\" Block"
 msgstr "Добавить блок \"With\""
 
 #: codystrconsts.crsaddcallinherited
@@ -36,6 +42,10 @@ msgstr "Идентификатор уже объявлен"
 #: codystrconsts.crsalreadydefinedat
 msgid "Already defined at %s"
 msgstr "Уже объявлена (%s)"
+
+#: codystrconsts.crsandmoreidentifiers
+msgid "... and %s more identifiers"
+msgstr ""
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -154,7 +164,9 @@ msgid "Code Node Information"
 msgstr "Сведения об элементе кода"
 
 #: codystrconsts.crscopydeclarationtoclipboard
-msgid "Copy declaration to clipboard"
+#, fuzzy
+#| msgid "Copy declaration to clipboard"
+msgid "Copy declaration to Clipboard"
 msgstr "Копировать объявление в буфер обмена"
 
 #: codystrconsts.crscount
@@ -178,7 +190,9 @@ msgid "Select file to insert at cursor"
 msgstr "Выбор файла для вставки в месте расположения курсора"
 
 #: codystrconsts.crscutdeclarationtoclipboard
-msgid "Cut declaration to clipboard"
+#, fuzzy
+#| msgid "Cut declaration to clipboard"
+msgid "Cut declaration to Clipboard"
 msgstr "Вырезать объявление в буфер обмена"
 
 #: codystrconsts.crscuthefileseemstobeabinaryproceed
@@ -218,7 +232,9 @@ msgid "\"%s\" is a keyword."
 msgstr "\"%s\" является ключевым словом."
 
 #: codystrconsts.crsexplodeawithblock
-msgid "Explode a \"With\" block"
+#, fuzzy
+#| msgid "Explode a \"With\" block"
+msgid "Explode a \"With\" Block"
 msgstr "Раскрыть блок \"With\""
 
 #: codystrconsts.crsexpression
@@ -228,6 +244,10 @@ msgstr "Выражение"
 #: codystrconsts.crsfile
 msgid "File"
 msgstr "Файл"
+
+#: codystrconsts.crsfilter
+msgid "(Filter)"
+msgstr ""
 
 #: codystrconsts.crsflags
 msgid "Flags"
@@ -254,7 +274,9 @@ msgid "In interface"
 msgstr "В секции Interface"
 
 #: codystrconsts.crsinsertfileatcursor
-msgid "Insert file at cursor ..."
+#, fuzzy
+#| msgid "Insert file at cursor ..."
+msgid "Insert File at Cursor ..."
 msgstr "Вставить содержимое файла в месте расположения курсора ..."
 
 #: codystrconsts.crskbytes
@@ -363,7 +385,9 @@ msgid "Project has no main source file."
 msgstr "В проекте отсутствует главный файл исходного кода."
 
 #: codystrconsts.crsprojectoutput
-msgid "Project output"
+#, fuzzy
+#| msgid "Project output"
+msgid "Project Output"
 msgstr "Вывод проекта"
 
 #: codystrconsts.crsprotected
@@ -395,16 +419,19 @@ msgid "Select expression"
 msgstr "Выберите выражение"
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
-msgid "Show CodeTools node info ..."
+#, fuzzy
+#| msgid "Show CodeTools node info ..."
+msgid "Show CodeTools Node Info ..."
 msgstr "Показать сведения об элементе CodeTools ..."
 
 #: codystrconsts.crsshowunitidentifierdictionary
-msgid "Show unit/identifier dictionary ..."
+msgid "Show Unit / Identifier Dictionary ..."
 msgstr ""
 
 #: codystrconsts.crsshowusedppufiles
-#| msgid "Show used .ppu files"
-msgid "Show used .ppu files ..."
+#, fuzzy
+#| msgid "Show used .ppu files ..."
+msgid "Show Used .ppu Files ..."
 msgstr "Показать используемые файлы PPU ..."
 
 #: codystrconsts.crssizeofofile
@@ -464,7 +491,9 @@ msgid "Uses"
 msgstr "Использует"
 
 #: codystrconsts.crsvirtualunit
-msgid "Virtual unit"
+#, fuzzy
+#| msgid "Virtual unit"
+msgid "Virtual Unit"
 msgstr "Виртуальный модуль"
 
 #: codystrconsts.crswhere

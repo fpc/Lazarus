@@ -163,6 +163,8 @@ resourcestring
   crsReport = 'Report';
   crsOptions = 'Options';
   crsRefresh = 'Refresh';
+  crsFilter = '(Filter)';
+  crsAndMoreIdentifiers = '... and %s more identifiers';
 
 implementation
 

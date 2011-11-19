@@ -3,14 +3,16 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
   Height = 300
   Top = 250
   Width = 428
+  ActiveControl = FilterEdit
   Caption = 'CodyIdentifiersDlg'
   ClientHeight = 300
   ClientWidth = 428
+  OnCreate = FormCreate
   LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 252
+    Height = 30
+    Top = 264
     Width = 416
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -24,11 +26,48 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object InfoLabel: TLabel
-    Left = 28
+    Left = 8
     Height = 17
-    Top = 25
+    Top = 8
     Width = 59
     Caption = 'InfoLabel'
     ParentColor = False
+  end
+  object FilterEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = InfoLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 22
+    Top = 35
+    Width = 416
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 10
+    BorderSpacing.Right = 6
+    OnChange = FilterEditChange
+    OnExit = FilterEditExit
+    TabOrder = 1
+    Text = 'FilterEdit'
+  end
+  object ItemsListBox: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FilterEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 201
+    Top = 57
+    Width = 416
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    ItemHeight = 0
+    TabOrder = 2
   end
 end

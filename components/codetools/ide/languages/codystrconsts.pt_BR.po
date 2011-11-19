@@ -10,15 +10,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: codystrconsts.crsaddassignmethod
-msgid "Add Assign method"
+#, fuzzy
+#| msgid "Add Assign method"
+msgid "Add Assign Method"
 msgstr "Adicionar método \"Assign\""
 
 #: codystrconsts.crsaddassignmethod2
-msgid "Add Assign method ..."
+#, fuzzy
+#| msgid "Add Assign method ..."
+msgid "Add Assign Method ..."
 msgstr "Adicionar método \"Assign\" ..."
 
 #: codystrconsts.crsaddawithblock
-msgid "Add a \"With\" block"
+#, fuzzy
+#| msgid "Add a \"With\" block"
+msgid "Add a \"With\" Block"
 msgstr "Adicionar um bloco \"With\""
 
 #: codystrconsts.crsaddcallinherited
@@ -36,6 +42,10 @@ msgstr "Já definido"
 #: codystrconsts.crsalreadydefinedat
 msgid "Already defined at %s"
 msgstr "Já definido em %s"
+
+#: codystrconsts.crsandmoreidentifiers
+msgid "... and %s more identifiers"
+msgstr ""
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -154,7 +164,9 @@ msgid "Code Node Information"
 msgstr "Informação Nó de Código"
 
 #: codystrconsts.crscopydeclarationtoclipboard
-msgid "Copy declaration to clipboard"
+#, fuzzy
+#| msgid "Copy declaration to clipboard"
+msgid "Copy declaration to Clipboard"
 msgstr "Copiar declaração para área transferência"
 
 #: codystrconsts.crscount
@@ -178,7 +190,9 @@ msgid "Select file to insert at cursor"
 msgstr "Selecionar arquivo à inserir na posição do cursor"
 
 #: codystrconsts.crscutdeclarationtoclipboard
-msgid "Cut declaration to clipboard"
+#, fuzzy
+#| msgid "Cut declaration to clipboard"
+msgid "Cut declaration to Clipboard"
 msgstr "Recortar declaração para área transferência"
 
 #: codystrconsts.crscuthefileseemstobeabinaryproceed
@@ -218,7 +232,9 @@ msgid "\"%s\" is a keyword."
 msgstr "\"%s\" é uma palavra-chave."
 
 #: codystrconsts.crsexplodeawithblock
-msgid "Explode a \"With\" block"
+#, fuzzy
+#| msgid "Explode a \"With\" block"
+msgid "Explode a \"With\" Block"
 msgstr "Expandir um bloco \"With\""
 
 #: codystrconsts.crsexpression
@@ -228,6 +244,10 @@ msgstr "Expressão"
 #: codystrconsts.crsfile
 msgid "File"
 msgstr "Arquivo"
+
+#: codystrconsts.crsfilter
+msgid "(Filter)"
+msgstr ""
 
 #: codystrconsts.crsflags
 msgid "Flags"
@@ -254,7 +274,9 @@ msgid "In interface"
 msgstr "Na interface"
 
 #: codystrconsts.crsinsertfileatcursor
-msgid "Insert file at cursor ..."
+#, fuzzy
+#| msgid "Insert file at cursor ..."
+msgid "Insert File at Cursor ..."
 msgstr "Inserir arquivo na posição do cursor ..."
 
 #: codystrconsts.crskbytes
@@ -362,7 +384,9 @@ msgid "Project has no main source file."
 msgstr "Projeto não tem arquivo fonte principal."
 
 #: codystrconsts.crsprojectoutput
-msgid "Project output"
+#, fuzzy
+#| msgid "Project output"
+msgid "Project Output"
 msgstr "Saída do Projeto"
 
 #: codystrconsts.crsprotected
@@ -394,16 +418,19 @@ msgid "Select expression"
 msgstr "Selecionar expressão"
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
-msgid "Show CodeTools node info ..."
+#, fuzzy
+#| msgid "Show CodeTools node info ..."
+msgid "Show CodeTools Node Info ..."
 msgstr "Exibir info do nó CodeTools ..."
 
 #: codystrconsts.crsshowunitidentifierdictionary
-msgid "Show unit/identifier dictionary ..."
+msgid "Show Unit / Identifier Dictionary ..."
 msgstr ""
 
 #: codystrconsts.crsshowusedppufiles
-#| msgid "Show used .ppu files"
-msgid "Show used .ppu files ..."
+#, fuzzy
+#| msgid "Show used .ppu files ..."
+msgid "Show Used .ppu Files ..."
 msgstr "Exibir arquivos .ppu usados ..."
 
 #: codystrconsts.crssizeofofile
@@ -463,7 +490,9 @@ msgid "Uses"
 msgstr "\"Uses\""
 
 #: codystrconsts.crsvirtualunit
-msgid "Virtual unit"
+#, fuzzy
+#| msgid "Virtual unit"
+msgid "Virtual Unit"
 msgstr "Unidade Virtual"
 
 #: codystrconsts.crswhere

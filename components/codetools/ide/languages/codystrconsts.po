@@ -2,15 +2,15 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: codystrconsts.crsaddassignmethod
-msgid "Add Assign method"
+msgid "Add Assign Method"
 msgstr ""
 
 #: codystrconsts.crsaddassignmethod2
-msgid "Add Assign method ..."
+msgid "Add Assign Method ..."
 msgstr ""
 
 #: codystrconsts.crsaddawithblock
-msgid "Add a \"With\" block"
+msgid "Add a \"With\" Block"
 msgstr ""
 
 #: codystrconsts.crsaddcallinherited
@@ -27,6 +27,10 @@ msgstr ""
 
 #: codystrconsts.crsalreadydefinedat
 msgid "Already defined at %s"
+msgstr ""
+
+#: codystrconsts.crsandmoreidentifiers
+msgid "... and %s more identifiers"
 msgstr ""
 
 #: codystrconsts.crsbtncancel
@@ -146,7 +150,7 @@ msgid "Code Node Information"
 msgstr ""
 
 #: codystrconsts.crscopydeclarationtoclipboard
-msgid "Copy declaration to clipboard"
+msgid "Copy declaration to Clipboard"
 msgstr ""
 
 #: codystrconsts.crscount
@@ -170,7 +174,7 @@ msgid "Select file to insert at cursor"
 msgstr ""
 
 #: codystrconsts.crscutdeclarationtoclipboard
-msgid "Cut declaration to clipboard"
+msgid "Cut declaration to Clipboard"
 msgstr ""
 
 #: codystrconsts.crscuthefileseemstobeabinaryproceed
@@ -210,7 +214,7 @@ msgid "\"%s\" is a keyword."
 msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
-msgid "Explode a \"With\" block"
+msgid "Explode a \"With\" Block"
 msgstr ""
 
 #: codystrconsts.crsexpression
@@ -219,6 +223,10 @@ msgstr ""
 
 #: codystrconsts.crsfile
 msgid "File"
+msgstr ""
+
+#: codystrconsts.crsfilter
+msgid "(Filter)"
 msgstr ""
 
 #: codystrconsts.crsflags
@@ -246,7 +254,7 @@ msgid "In interface"
 msgstr ""
 
 #: codystrconsts.crsinsertfileatcursor
-msgid "Insert file at cursor ..."
+msgid "Insert File at Cursor ..."
 msgstr ""
 
 #: codystrconsts.crskbytes
@@ -354,7 +362,7 @@ msgid "Project has no main source file."
 msgstr ""
 
 #: codystrconsts.crsprojectoutput
-msgid "Project output"
+msgid "Project Output"
 msgstr ""
 
 #: codystrconsts.crsprotected
@@ -386,15 +394,15 @@ msgid "Select expression"
 msgstr ""
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
-msgid "Show CodeTools node info ..."
+msgid "Show CodeTools Node Info ..."
 msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary
-msgid "Show unit/identifier dictionary ..."
+msgid "Show Unit / Identifier Dictionary ..."
 msgstr ""
 
 #: codystrconsts.crsshowusedppufiles
-msgid "Show used .ppu files ..."
+msgid "Show Used .ppu Files ..."
 msgstr ""
 
 #: codystrconsts.crssizeofofile
@@ -454,7 +462,7 @@ msgid "Uses"
 msgstr ""
 
 #: codystrconsts.crsvirtualunit
-msgid "Virtual unit"
+msgid "Virtual Unit"
 msgstr ""
 
 #: codystrconsts.crswhere

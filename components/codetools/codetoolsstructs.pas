@@ -61,8 +61,26 @@ const
     'published'
     );
 
-
 type
+
+  { TMTAVLTreeNodeMemManager }
+
+  TMTAVLTreeNodeMemManager = class(TAVLTreeNodeMemManager)
+  public
+    procedure DisposeNode(ANode: TAVLTreeNode); override;
+    function NewNode: TAVLTreeNode; override;
+  end;
+
+  { TMTAVLTree - TAVLTree with a multithreaded node manager }
+
+  TMTAVLTree = class(TAVLTree)
+  protected
+    fNodeManager: TAVLTreeNodeMemManager;
+  public
+    constructor Create(OnCompareMethod: TListSortCompare);
+    destructor Destroy; override;
+  end;
+
   TStringMap = class;
 
   TStringMapItem = record
@@ -384,6 +402,31 @@ end;
 function CompareAnsiStringPtrs(Data1, Data2: Pointer): integer;
 begin
   Result:=CompareStr(AnsiString(Data1),AnsiString(Data2));
+end;
+
+constructor TMTAVLTree.Create(OnCompareMethod: TListSortCompare);
+begin
+  inherited Create(OnCompareMethod);
+  fNodeManager:=TMTAVLTreeNodeMemManager.Create;
+  SetNodeManager(fNodeManager);
+end;
+
+destructor TMTAVLTree.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(fNodeManager);
+end;
+
+{ TMTAVLTreeNodeMemManager }
+
+procedure TMTAVLTreeNodeMemManager.DisposeNode(ANode: TAVLTreeNode);
+begin
+  ANode.Free;
+end;
+
+function TMTAVLTreeNodeMemManager.NewNode: TAVLTreeNode;
+begin
+  Result:=TAVLTreeNode.Create;
 end;
 
 { TFilenameToPointerTree }
