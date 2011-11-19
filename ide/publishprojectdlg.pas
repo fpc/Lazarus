@@ -269,7 +269,7 @@ begin
   if FOptions is TPublishPackageOptions then
     Caption:=lisPkgEditPublishPackage
   else
-    Caption:=lisMenuPublishProject;
+    Caption:=lisPublishProject;
   LoadFromOptions(FOptions);
 end;
 

@@ -694,7 +694,7 @@ end;
 
 function TBuildModesEditorFrame.GetTitle: String;
 begin
-  Result := lisBuildModes;
+  Result := dlgBuildModes;
 end;
 
 procedure TBuildModesEditorFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
