@@ -150,7 +150,7 @@ begin
   RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'ShowCodeNodeInfo',
     crsShowCodeToolsNodeInfo, nil, nil, ShowCodeNodeInfoCommand);
 
-  // Show unit/identifier dictionary
+  // Show unit / identifier dictionary
   InitUnitDictionary;
   ShowIdentifierDictionaryCommand:=RegisterIDECommand(CmdCatCodeTools, 'ShowUnitDictionary',
     crsShowUnitIdentifierDictionary,
