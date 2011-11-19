@@ -1627,7 +1627,10 @@ begin
           TextBetweenPointsEx[NewBlockBegin, NewBlockEnd, scamEnd] := ItemList[Position];
           TCustomSynEdit(F.CurrentEditor).SetFocus;
         end;
-      end;
+      end
+      else
+      if (ItemList.Count = 0) then
+        Cancel(Sender);
       EndUpdate;
       EndUndoBlock;
     end;
