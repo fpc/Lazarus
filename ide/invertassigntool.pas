@@ -49,7 +49,8 @@ end;
 procedure DivideLines(Lines: TStrings; var PreList, AList, BList, PostList: TStrings);
 var
   ALine, TrueFalse: String;
-  X, I, EqPos, SemiPos, WordEndPos: Integer;
+  t, f: Boolean;
+  X, I, EqPos, SemiPos, WordEndPos, BracketCount: Integer;
 begin
   for X := 0 to Lines.Count-1 do begin
     ALine := Trim(Lines[X]);
@@ -62,8 +63,17 @@ begin
       while (I > 0) and (ALine[I] = ' ') do      // Skip initial spaces
         Dec(I);
       WordEndPos := I+1;
-      while (I > 0) and (ALine[I] <> ' ') do     // The word before :=
+      BracketCount := 0;
+      // Get the word before :=
+      while I > 0 do begin
+        if ALine[I] = ']' then
+          Inc(BracketCount)
+        else if ALine[I] = '[' then
+          Dec(BracketCount);
+        if (BracketCount = 0) and (ALine[I] = ' ') then
+          Break;
         Dec(I);
+      end;
       // I points now at beginning of word - 1
       Alist.Add(Copy(ALine, I+1, WordEndPos-(I+1)));
       BList.Add(Trim(Copy(ALine, EqPos+2, SemiPos-EqPos-2)));
@@ -79,14 +89,11 @@ begin
       PostList.Add('');
     end;
     // Check if is being assigned true or false
-    if CompareText(BList[X], 'True') = 0 then begin
+    t := CompareText(BList[X], 'True') = 0;
+    f := CompareText(BList[X], 'False') = 0;
+    if t or f then begin
       TrueFalse := AList[X];
-      AList[X] := 'False';
-      BList[X] := TrueFalse;
-    end;
-    if CompareText(BList[X], 'False') = 0 then begin
-      TrueFalse := AList[X];
-      AList[X] := 'True';
+      AList[X] := BoolToStr(not t, 'True', 'False');
       BList[X] := TrueFalse;
     end;
   end;
