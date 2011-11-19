@@ -62,19 +62,12 @@
 
 unit SynTextDrawer;
 
-{$IFDEF FPC}
-  {$mode objfpc}{$H+}
-  {$DEFINE SYN_LAZARUS}
-{$ENDIF}
+{$mode objfpc}{$H+}
 
 interface
 
 uses
-  {$IFDEF SYN_LAZARUS}
   LCLProc, LCLType, LCLIntf, GraphType,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
   SysUtils, Classes, Graphics, GraphUtil, Types, SynEditTypes, SynEditMiscProcs;
 
 type
@@ -119,8 +112,7 @@ type
     procedure LockFontsInfo(pFontsInfo: PheSharedFontsInfo);
     procedure UnLockFontsInfo(pFontsInfo: PheSharedFontsInfo);
     function GetFontsInfo(ABaseFont: TFont): PheSharedFontsInfo;
-    procedure ReleaseFontsInfo(
-       {$IFDEF SYN_LAZARUS}var {$ENDIF}pFontsInfo: PheSharedFontsInfo);
+    procedure ReleaseFontsInfo(var pFontsInfo: PheSharedFontsInfo);
   end;
 
   { TheFontStock }
@@ -188,9 +180,7 @@ type
   private
     FDC: HDC;
     FSaveDC: Integer;
-    {$IFDEF SYN_LAZARUS}
     FSavedFont: HFont;
-    {$ENDIF}
 
     // Font information
     FFontStock: TheFontStock;
@@ -219,13 +209,8 @@ type
   protected
     procedure ReleaseETODist; virtual;
     procedure AfterStyleSet; virtual;
-    {$IFNDEF SYN_LAZARUS}
-    procedure DoSetCharExtra(Value: Integer); virtual;
-    {$ENDIF}
-    {$IFDEF SYN_LAZARUS}
     function GetUseUTF8: boolean;
     function GetMonoSpace: boolean;
-    {$ENDIF}
     function CreateColorPen(AColor: TColor; AStyle: LongWord = PS_SOLID): HPen;
     property StockDC: HDC read FDC;
     property DrawingCount: Integer read FDrawingCount;
@@ -272,10 +257,8 @@ type
 
     property Style: TFontStyles write SetStyle;
     property CharExtra: Integer read FCharExtra write SetCharExtra;
-    {$IFDEF SYN_LAZARUS}
     property UseUTF8: boolean read GetUseUTF8;
     property MonoSpace: boolean read GetMonoSpace;
-    {$ENDIF}
   end;
 
   { TheTextDrawerEx }
@@ -289,9 +272,6 @@ type
     FExtTextOutProc: TheExtTextOutProc;
   protected
     procedure AfterStyleSet; override;
-    {$IFNDEF SYN_LAZARUS}
-    procedure DoSetCharExtra(Value: Integer); override;
-    {$ENDIF}
     procedure TextOutOrExtTextOut(X, Y: Integer; fuOptions: UINT;
       const ARect: TRect; Text: PChar; Length: Integer); virtual;
     procedure ExtTextOutFixed(X, Y: Integer; fuOptions: UINT;
@@ -307,6 +287,7 @@ type
 
   function GetFontsInfoManager: TheFontsInfoManager;
 
+(*
 {$IFNDEF VER93}
 {$IFNDEF VER90}
 {$IFNDEF VER80}
@@ -316,6 +297,7 @@ type
 {$ENDIF}
 {$ENDIF}
 {$ENDIF}
+*)
 
 {$IFNDEF HE_LEADBYTES}
 type
@@ -331,9 +313,7 @@ const
 
 var
   gFontsInfoManager: TheFontsInfoManager;
-{$IFDEF SYN_LAZARUS}
   SynTextDrawerFinalization: boolean;
-{$ENDIF}
 
 {$IFNDEF HE_LEADBYTES}
   LeadBytes: TheLeadByteChars;
@@ -344,9 +324,7 @@ var
 function GetFontsInfoManager: TheFontsInfoManager;
 begin
   if (not Assigned(gFontsInfoManager)) 
-  {$IFDEF SYN_LAZARUS}
   and (not SynTextDrawerFinalization)
-  {$ENDIF}
   then
     gFontsInfoManager := TheFontsInfoManager.Create;
   Result := gFontsInfoManager;
@@ -374,33 +352,10 @@ end;
 {$ENDIF}
 
 {$IFNDEF HE_COMPAREMEM}
-{$IFDEF SYN_LAZARUS}
 function CompareMem(P1, P2: Pointer; Length: Integer): Boolean;
 begin
   Result := CompareByte(P1^, P2^, Length) = 0;
 end;
-{$ELSE}
-function CompareMem(P1, P2: Pointer; Length: Integer): Boolean; assembler;
-asm
-        PUSH    ESI
-        PUSH    EDI
-        MOV     ESI,P1
-        MOV     EDI,P2
-        MOV     EDX,ECX
-        XOR     EAX,EAX
-        AND     EDX,3
-        SHR     ECX,1
-        SHR     ECX,1
-        REPE    CMPSD
-        JNE     @@2
-        MOV     ECX,EDX
-        REPE    CMPSB
-        JNE     @@2
-@@1:    INC     EAX
-@@2:    POP     EDI
-        POP     ESI
-end;
-{$ENDIF}
 {$ENDIF}
 
 function GetStyleIndex(Value: TFontStyles): Integer;
@@ -432,17 +387,11 @@ procedure TheFontsInfoManager.UnlockFontsInfo(
 begin
   with pFontsInfo^ do
   begin
-    {$IFDEF SYN_LAZARUS}
     if LockCount>0 then begin
       Dec(LockCount);
       if 0 = LockCount then
         DestroyFontHandles(pFontsInfo);
     end;
-    {$ELSE}
-    Dec(LockCount);
-    if 0 = LockCount then
-      DestroyFontHandles(pFontsInfo);
-    {$ENDIF}
   end;
 end;
 
@@ -535,8 +484,7 @@ begin
     Inc(Result^.RefCount);
 end;
 
-procedure TheFontsInfoManager.ReleaseFontsInfo(
-  {$IFDEF SYN_LAZARUS}var {$ENDIF}pFontsInfo: PheSharedFontsInfo);
+procedure TheFontsInfoManager.ReleaseFontsInfo(var pFontsInfo: PheSharedFontsInfo);
 begin
   ASSERT(Assigned(pFontsInfo));
 
@@ -558,13 +506,11 @@ begin
       Dispose(pFontsInfo);
     end;
   end;
-  {$IFDEF SYN_LAZARUS}
   pFontsInfo:=nil;
   if SynTextDrawerFinalization and (FFontsInfo.Count=0) then
     // the program is in the finalization phase
     // and this object is not used anymore -> destroy it
     Free;
-  {$ENDIF}
 end;
 
 { TheFontStock }
@@ -852,9 +798,6 @@ begin
         FUsingFontHandles := False;
       end;
       ReleaseFontsInfo(FpInfo);
-      {$IFNDEF SYN_LAZARUS}
-      FpInfo := nil;
-      {$ENDIF}
     end;
 end;
 
@@ -866,10 +809,8 @@ begin
   begin
     pInfo := GetFontsInfoManager.GetFontsInfo(Value);
     if pInfo = FpInfo then begin
-      {$IFDEF SYN_LAZARUS}
       // GetFontsInfo has increased the refcount, but we already have the font
       // -> decrease the refcount
-      {$ENDIF}
       GetFontsInfoManager.ReleaseFontsInfo(pInfo);
     end else begin
       ReleaseFontsInfo;
@@ -918,21 +859,15 @@ begin
   hOldFont := SelectObject(DC, FCrntFont);
 
   // retrieve height and advances of new font
-  {$IFDEF SYN_LAZARUS}
   FpInfo^.IsDBCSFont := (0 <> (GCP_DBCS and GetFontLanguageInfo(DC)));
   //debugln('TheFontStock.SetStyle A IsDBCSFont=',IsDBCSFont);
-  {$ENDIF}
   FpCrntFontData^.Handle := FCrntFont;
   CalcFontAdvance(DC, FpCrntFontData, Max(BaseFont.Size, BaseFont.Height));
   //if FpCrntFontData^.NeedETO then debugln(['Needing ETO fot Font=',BaseFont.Name, ' Height=', BaseFont.Height, ' Style=', integer(Value) ]);
 
-  {$IFDEF SYN_LAZARUS}
   hOldFont:=SelectObject(DC, hOldFont);
   if hOldFont<>FCrntFont then
     RaiseGDBException('TheFontStock.SetStyle LCL interface lost the font');
-  {$ELSE}
-  SelectObject(DC, hOldFont);
-  {$ENDIF}
   InternalReleaseDC(DC);
 end;
 
@@ -979,7 +914,6 @@ begin
   inherited;
 end;
 
-{$IFDEF SYN_LAZARUS}
 function TheTextDrawer.GetUseUTF8: boolean;
 begin
   FFontStock.BaseFont.Reference;
@@ -993,8 +927,6 @@ begin
   Result:=FFontStock.BaseFont.IsMonoSpace;
   //debugln('TheTextDrawer.GetMonoSpace ',FFontStock.BaseFont.Name,' ',dbgs(FFontStock.BaseFont.IsMonoSpace),' ',dbgs(FFontStock.BaseFont.HandleAllocated));
 end;
-
-{$ENDIF}
 
 function TheTextDrawer.CreateColorPen(AColor: TColor; AStyle: LongWord = PS_SOLID): HPen;
 var
@@ -1044,16 +976,9 @@ begin
     ASSERT((FDC = 0) and (DC <> 0) and (FDrawingCount = 0));
     FDC := DC;
     FSaveDC := SaveDC(DC);
-    {$IFNDEF SYN_LAZARUS}
-    SelectObject(DC, FCrntFont);
-    Windows.SetTextColor(DC, ColorToRGB(FColor));
-    Windows.SetBkColor(DC, ColorToRGB(FBkColor));
-    DoSetCharExtra(FCharExtra);
-    {$ELSE}
     FSavedFont := SelectObject(DC, FCrntFont);
     LCLIntf.SetTextColor(DC, TColorRef(FColor));
     LCLIntf.SetBkColor(DC, TColorRef(FBkColor));
-    {$ENDIF}
   end;
   Inc(FDrawingCount);
 end;
@@ -1066,10 +991,8 @@ begin
   begin
     if FDC <> 0 then
     begin
-      {$IFDEF SYN_LAZARUS}
       if FSavedFont <> 0 then
         SelectObject(FDC, FSavedFont);
-      {$ENDIF}
       RestoreDC(FDC, FSaveDC);
     end;
     FSaveDC := 0;
@@ -1160,11 +1083,7 @@ begin
   begin
     FColor := Value;
     if FDC <> 0 then
-      {$IFDEF SYN_LAZARUS}
       SetTextColor(FDC, TColorRef(Value));
-      {$ELSE}
-      SetTextColor(FDC, ColorToRGB(Value));
-      {$ENDIF}
   end;
 end;
 
@@ -1174,11 +1093,7 @@ begin
   begin
     FBkColor := Value;
     if FDC <> 0 then
-      {$IFDEF SYN_LAZARUS}
       LCLIntf.SetBkColor(FDC, TColorRef(Value));
-      {$ELSE}
-      Windows.SetBkColor(FDC, ColorToRGB(Value));
-      {$ENDIF}
   end;
 end;
 
@@ -1203,30 +1118,14 @@ begin
   if FCharExtra <> Value then
   begin
     FCharExtra := Value;
-    {$IFDEF SYN_LAZARUS}
     FETOSizeInChar := 0;
-    {$ELSE}
-    DoSetCharExtra(FCharExtra);
-    {$ENDIF}
   end;
 end;
-
-{$IFNDEF SYN_LAZARUS}
-procedure TheTextDrawer.DoSetCharExtra(Value: Integer);
-begin
-  if FDC <> 0 then
-    SetTextCharacterExtra(FDC, Value);
-end;
-{$ENDIF}
 
 procedure TheTextDrawer.TextOut(X, Y: Integer; Text: PChar;
   Length: Integer);
 begin
-  {$IFDEF SYN_LAZARUS}
   LCLIntf.TextOut(FDC, X, Y, Text, Length);
-  {$ELSE}
-  Windows.TextOut(FDC, X, Y, Text, Length);
-  {$ENDIF}
 end;
 
 procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;
@@ -1234,7 +1133,7 @@ procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;
 
   procedure InitETODist(InitValue: Integer);
   const
-    EtoBlockSize = $40;          
+    EtoBlockSize = $40;
   var
     NewSize: Integer;
     TmpLen: Integer;
@@ -1244,11 +1143,7 @@ procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;
     TmpLen := ((not (EtoBlockSize - 1)) and Length) + EtoBlockSize;
     NewSize := TmpLen * SizeOf(Integer);
     ReallocMem(FETODist, NewSize);
-    {$IFDEF FPC}
     p := PInteger(FETODist + (FETOSizeInChar * SizeOf(Integer)));
-    {$ELSE}
-    p := PInteger(Integer(FETODist) + FETOSizeInChar * SizeOf(Integer));
-    {$ENDIF}
     for i := 1 to TmpLen - FETOSizeInChar do
     begin
       p^ := InitValue;
@@ -1442,19 +1337,6 @@ begin
   end;
 end;
 
-{$IFNDEF SYN_LAZARUS}
-procedure TheTextDrawerEx.DoSetCharExtra(Value: Integer);
-begin
-  if not FontStock.IsDBCSFont then
-  begin
-    SetBkMode(StockDC, OPAQUE);
-    SetTextCharacterExtra(StockDC, Value + FCrntDx);
-  end
-  else if FCrntDBDx = DBCHAR_CALCULATION_FALED then
-    SetTextCharacterExtra(StockDC, Value);
-end;
-{$ENDIF}
-
 procedure TheTextDrawerEx.ExtTextOut(X, Y: Integer; fuOptions: UINT;
   const ARect: TRect; Text: PChar; Length: Integer; FrameBottom: Integer = -1);
 begin
@@ -1464,11 +1346,7 @@ end;
 procedure TheTextDrawerEx.ExtTextOutFixed(X, Y: Integer; fuOptions: UINT;
   const ARect: TRect; Text: PChar; Length: Integer);
 begin
-  {$IFDEF SYN_LAZARUS}
   LCLIntf.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil);
-  {$ELSE}
-  Windows.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil);
-  {$ENDIF}
 end;
 
 procedure TheTextDrawerEx.ExtTextOutForDBCS(X, Y: Integer; fuOptions: UINT;
@@ -1497,11 +1375,7 @@ var
 begin
   pCrnt := Text;
   pRun := Text;
-  {$IFDEF FPC}
   pTail := PChar(Pointer(Text) + Length);
-  {$ELSE}
-  pTail := PChar(Integer(Text) + Length);
-  {$ENDIF}
   TmpRect := ARect;
   while pCrnt < pTail do
   begin
@@ -1509,20 +1383,12 @@ begin
     if pRun <> pCrnt then
     begin
       SetTextCharacterExtra(StockDC, FCharExtra + FCrntDx);
-      {$IFDEF FPC}
       Len := PtrUInt(pRun) - PtrUInt(pCrnt);
-      {$ELSE}
-      Len := Integer(pRun) - Integer(pCrnt);
-      {$ENDIF}
       with TmpRect do
       begin
         n := GetCharWidth * Len;
         Right := Min(Left + n + GetCharWidth, ARect.Right);
-        {$IFDEF SYN_LAZARUS}
         LCLIntf.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, pCrnt, Len, nil);
-        {$ELSE}
-        Windows.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, pCrnt, Len, nil);
-        {$ENDIF}
         Inc(X, n);
         Inc(Left, n);
       end;
@@ -1533,20 +1399,12 @@ begin
 
     GetDBCharRange;
     SetTextCharacterExtra(StockDC, FCharExtra + FCrntDBDx);
-    {$IFDEF FPC}
     Len := PtrUInt(pRun) - PtrUInt(pCrnt);
-    {$ELSE}
-    Len := Integer(pRun) - Integer(pCrnt);
-    {$ENDIF}
     with TmpRect do
     begin
       n := GetCharWidth * Len;
       Right := Min(Left + n + GetCharWidth, ARect.Right);
-      {$IFDEF SYN_LAZARUS}
       LCLIntf.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, pCrnt, Len, nil);
-      {$ELSE}
-      Windows.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, pCrnt, Len, nil);
-      {$ENDIF}
       Inc(X, n);
       Inc(Left, n);
     end;
@@ -1557,11 +1415,7 @@ begin
      (TmpRect.Right < ARect.Right) then
   begin
     SetTextCharacterExtra(StockDC, FCharExtra + FCrntDx);
-    {$IFDEF SYN_LAZARUS}
     LCLIntf.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, nil, 0, nil);
-    {$ELSE}
-    Windows.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, nil, 0, nil);
-    {$ENDIF}
   end;
 end;
 
@@ -1586,17 +1440,9 @@ begin
       and
        (Left + GetCharWidth * (Length + 1) > Right)
     then
-      {$IFDEF SYN_LAZARUS}
       LCLIntf.TextOut(StockDC, X, Y, Text, Length)
-      {$ELSE}
-      Windows.TextOut(StockDC, X, Y, Text, Length)
-      {$ENDIF}
     else
-      {$IFDEF SYN_LAZARUS}
       LCLIntf.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil)
-      {$ELSE}
-      Windows.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil)
-      {$ENDIF}
 end;
 
 {$IFNDEF HE_LEADBYTES}
@@ -1611,15 +1457,12 @@ end;
 {$ENDIF} // HE_LEADBYTES
 
 initialization
-{$IFDEF SYN_LAZARUS}
   SynTextDrawerFinalization:=false;
-{$ENDIF}
 {$IFNDEF HE_LEADBYTES}
   InitializeLeadBytes;
 {$ENDIF} 
 
 finalization
-{$IFDEF SYN_LAZARUS}
   // MG: We can't free the gFontsInfoManager here, because the synedit
   //     components need it and will be destroyed with the Application object in
   //     the lcl after this finalization section.
@@ -1629,9 +1472,6 @@ finalization
   if Assigned(gFontsInfoManager) and (gFontsInfoManager.FFontsInfo.Count=0)
   then
     FreeAndNil(gFontsInfoManager);
-{$ELSE}
-  FreeAndNil(gFontsInfoManager);
-{$ENDIF}
 
 end.
 

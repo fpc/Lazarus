@@ -42,11 +42,7 @@ unit SynEditMiscClasses;
 interface
 
 uses
-  {$IFDEF SYN_LAZARUS}
   LCLIntf, LCLType, LCLProc,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
   Classes, Graphics, Controls, SysUtils, Clipbrd,
   SynEditMiscProcs, SynEditTypes, SynEditTextBase, SynEditPointClasses;
 
@@ -310,10 +306,6 @@ type
     constructor Create(const AName: string; Count: integer);
     destructor Destroy; override;
     procedure DrawMark(ACanvas: TCanvas; Number, X, Y, LineHeight: integer);
-    {$IFNDEF SYN_LAZARUS}
-    procedure DrawMarkTransparent(ACanvas: TCanvas; Number, X, Y,
-      LineHeight: integer; TransparentColor: TColor);
-    {$ENDIF}
   end;
 
 
@@ -953,28 +945,6 @@ begin
     ACanvas.CopyRect(rcDest, InternalImages.Canvas, rcSrc);
   end;
 end;
-
-{$IFNDEF SYN_LAZARUS}
-procedure TSynInternalImage.DrawMarkTransparent(ACanvas: TCanvas; Number, X, Y,
-  LineHeight: integer; TransparentColor: TColor);
-var
-  rcSrc, rcDest: TRect;
-begin
-  if (Number >= 0) and (Number < IICount) then
-  begin
-    if LineHeight >= IIHeight then begin
-      rcSrc := Rect(Number * IIWidth, 0, (Number + 1) * IIWidth, IIHeight);
-      Inc(Y, (LineHeight - IIHeight) div 2);
-      rcDest := Rect(X, Y, X + IIWidth, Y + IIHeight);
-    end else begin
-      rcDest := Rect(X, Y, X + IIWidth, Y + LineHeight);
-      Y := (IIHeight - LineHeight) div 2;
-      rcSrc := Rect(Number * IIWidth, Y, (Number + 1) * IIWidth, Y + LineHeight);
-    end;
-    ACanvas.BrushCopy(rcDest, InternalImages, rcSrc, TransparentColor);
-  end;
-end;
-{$ENDIF}
 
 { TSynObjectList }
 
