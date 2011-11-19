@@ -10204,8 +10204,9 @@ begin
           {$ENDIF}
           aCanvas.Brush.Style := bsClear;
           //debugln(['TIpHtmlNodeBlock.RenderQueue ',CurWord.AnsiWord]);
+          Owner.PageRectToScreen(CurWord.WordRect2, R);
           if CurWord.AnsiWord <> NAnchorChar then //JMN
-               aCanvas.TextOut(P.x, P.y, NoBreakToSpace(CurWord.AnsiWord));
+               aCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(CurWord.AnsiWord));
           {$IFDEF IP_LAZARUS}
           restoreCanvasProperties;
           {$ENDIF}
