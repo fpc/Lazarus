@@ -78,10 +78,11 @@ begin
     ASpinWidget.setMinimum(ACustomFloatSpinEdit.MinValue);
     ASpinWidget.setMaximum(ACustomFloatSpinEdit.MaxValue);
     ASpinWidget.setSingleStep(ACustomFloatSpinEdit.Increment);
-    ASpinWidget.setValue(ACustomFloatSpinEdit.Value);
   finally
     ASpinWidget.EndUpdate;
   end;
+  // trigger OnChange of spin edits
+  ASpinWidget.setValue(ACustomFloatSpinEdit.Value);
 end;
 
 {------------------------------------------------------------------------------
