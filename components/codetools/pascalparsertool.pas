@@ -3846,7 +3846,7 @@ begin
           ReadNextAtom;
         end;
       end
-      else if UpAtomIs('EXTERNAL') and (ClassDesc=ctnObjCClass) then
+      else if UpAtomIs('EXTERNAL') and (ClassDesc in [ctnObjCClass,ctnObjCCategory]) then
       begin
         CreateChildNode;
         CurNode.Desc:=ctnClassExternal;
