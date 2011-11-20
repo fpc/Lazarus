@@ -1738,7 +1738,7 @@ var
           then begin
             // multi click
             {$IFDEF VerboseMouseBugfix}
-            DebugLn('  MULTI CLICK: ',dbgs(now),'-',dbgs(LastMouse.TheTime),'<= ',
+            DebugLn('  MULTI CLICK: ',dbgs(now),'-',dbgs(LastMouse.eventTime),'<= ',
               dbgs((1/86400)*(DblClickTime/1000)));
             {$ENDIF}
           end else begin
