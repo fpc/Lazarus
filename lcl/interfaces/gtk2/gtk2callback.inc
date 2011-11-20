@@ -1458,13 +1458,6 @@ end;
 
   Called whenever the mouse is over a widget and a mouse button is pressed.
 -------------------------------------------------------------------------------}
-{-------------------------------------------------------------------------------
-  gtkMouseBtnPress
-  Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
-  Returns: GBoolean
-
-  Called whenever the mouse is over a widget and a mouse button is pressed.
--------------------------------------------------------------------------------}
 function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton; data: gPointer): GBoolean; cdecl;
 
   procedure CheckListSelection;
