@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-11-04 20:07+0400\n"
+"PO-Revision-Date: 2011-11-21 01:36+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1051,6 +1051,10 @@ msgstr "%s%sНажмите 'OK' чтобы игнорировать и подв�
 msgctxt "lclstrconsts.rspriorrecordhint"
 msgid "Prior"
 msgstr "Предыдущая"
+
+#: lclstrconsts.rspromptonreplace
+msgid "Prompt on replace"
+msgstr "Спрашивать при &замене"
 
 #: lclstrconsts.rspropertydoesnotexist
 msgid "Property %s does not exist"

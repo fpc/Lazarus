@@ -54,10 +54,8 @@ msgid "Module"
 msgstr "Módulo"
 
 #: todoliststrconsts.listodolist
-msgid "ToDo list"
-msgstr "Lista \"ToDo\" (à fazer)"
-
-#: todoliststrconsts.listodolistcaption
+#, fuzzy
+#| msgid "ToDo list"
 msgid "ToDo List"
 msgstr "Lista \"ToDo\" (à fazer)"
 
@@ -94,6 +92,8 @@ msgid "Category"
 msgstr "Categoria"
 
 #: todoliststrconsts.lisviewtodolist
-msgid "View ToDo list"
+#, fuzzy
+#| msgid "View ToDo list"
+msgid "View ToDo List"
 msgstr "Exibir lista \"ToDo\" (à fazer)"
 

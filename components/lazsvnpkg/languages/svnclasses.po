@@ -174,19 +174,19 @@ msgid "Show diff"
 msgstr ""
 
 #: svnclasses.rsshowdiffbase
-msgid "Show diff of local changes"
+msgid "Show Diff of Local Changes"
 msgstr ""
 
 #: svnclasses.rsshowdiffcountrev
-msgid "Show last X commits"
+msgid "Show Last X Commits"
 msgstr ""
 
 #: svnclasses.rsshowdiffhead
-msgid "Show diff against HEAD"
+msgid "Show Diff Against HEAD"
 msgstr ""
 
 #: svnclasses.rsshowdiffprev
-msgid "Show diff against previous version"
+msgid "Show Diff Against Previous Version"
 msgstr ""
 
 #: svnclasses.rsshowlog

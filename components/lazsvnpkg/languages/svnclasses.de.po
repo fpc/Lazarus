@@ -182,19 +182,27 @@ msgid "Show diff"
 msgstr "Zeige Vergleich"
 
 #: svnclasses.rsshowdiffbase
-msgid "Show diff of local changes"
+#, fuzzy
+#| msgid "Show diff of local changes"
+msgid "Show Diff of Local Changes"
 msgstr "Zeige Vergleich der lokalen Änderungen"
 
 #: svnclasses.rsshowdiffcountrev
-msgid "Show last X commits"
+#, fuzzy
+#| msgid "Show last X commits"
+msgid "Show Last X Commits"
 msgstr "Zeige letzte x Übertragungen"
 
 #: svnclasses.rsshowdiffhead
-msgid "Show diff against HEAD"
+#, fuzzy
+#| msgid "Show diff against HEAD"
+msgid "Show Diff Against HEAD"
 msgstr "Zeige Vergleich mit HEAD"
 
 #: svnclasses.rsshowdiffprev
-msgid "Show diff against previous version"
+#, fuzzy
+#| msgid "Show diff against previous version"
+msgid "Show Diff Against Previous Version"
 msgstr "Zeige Vergleich mit vorheriger Version"
 
 #: svnclasses.rsshowlog

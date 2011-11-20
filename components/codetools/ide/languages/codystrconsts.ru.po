@@ -10,19 +10,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: codystrconsts.crsaddassignmethod
-#, fuzzy
 #| msgid "Add Assign method"
 msgid "Add Assign Method"
 msgstr "Добавить метод Assign"
 
 #: codystrconsts.crsaddassignmethod2
-#, fuzzy
 #| msgid "Add Assign method ..."
 msgid "Add Assign Method ..."
 msgstr "Добавить метод Assign ..."
 
 #: codystrconsts.crsaddawithblock
-#, fuzzy
 #| msgid "Add a \"With\" block"
 msgid "Add a \"With\" Block"
 msgstr "Добавить блок \"With\""
@@ -45,7 +42,7 @@ msgstr "Уже объявлена (%s)"
 
 #: codystrconsts.crsandmoreidentifiers
 msgid "... and %s more identifiers"
-msgstr ""
+msgstr "... дополнительно идентификаторов: %s"
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -164,7 +161,6 @@ msgid "Code Node Information"
 msgstr "Сведения об элементе кода"
 
 #: codystrconsts.crscopydeclarationtoclipboard
-#, fuzzy
 #| msgid "Copy declaration to clipboard"
 msgid "Copy declaration to Clipboard"
 msgstr "Копировать объявление в буфер обмена"
@@ -190,7 +186,6 @@ msgid "Select file to insert at cursor"
 msgstr "Выбор файла для вставки в месте расположения курсора"
 
 #: codystrconsts.crscutdeclarationtoclipboard
-#, fuzzy
 #| msgid "Cut declaration to clipboard"
 msgid "Cut declaration to Clipboard"
 msgstr "Вырезать объявление в буфер обмена"
@@ -232,7 +227,6 @@ msgid "\"%s\" is a keyword."
 msgstr "\"%s\" является ключевым словом."
 
 #: codystrconsts.crsexplodeawithblock
-#, fuzzy
 #| msgid "Explode a \"With\" block"
 msgid "Explode a \"With\" Block"
 msgstr "Раскрыть блок \"With\""
@@ -247,7 +241,7 @@ msgstr "Файл"
 
 #: codystrconsts.crsfilter
 msgid "(Filter)"
-msgstr ""
+msgstr "(Фильтр)"
 
 #: codystrconsts.crsflags
 msgid "Flags"
@@ -274,7 +268,6 @@ msgid "In interface"
 msgstr "В секции Interface"
 
 #: codystrconsts.crsinsertfileatcursor
-#, fuzzy
 #| msgid "Insert file at cursor ..."
 msgid "Insert File at Cursor ..."
 msgstr "Вставить содержимое файла в месте расположения курсора ..."
@@ -385,7 +378,6 @@ msgid "Project has no main source file."
 msgstr "В проекте отсутствует главный файл исходного кода."
 
 #: codystrconsts.crsprojectoutput
-#, fuzzy
 #| msgid "Project output"
 msgid "Project Output"
 msgstr "Вывод проекта"
@@ -419,17 +411,15 @@ msgid "Select expression"
 msgstr "Выберите выражение"
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
-#, fuzzy
 #| msgid "Show CodeTools node info ..."
 msgid "Show CodeTools Node Info ..."
 msgstr "Показать сведения об элементе CodeTools ..."
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."
-msgstr ""
+msgstr "Показать словарь модулей/идентификаторов ..."
 
 #: codystrconsts.crsshowusedppufiles
-#, fuzzy
 #| msgid "Show used .ppu files ..."
 msgid "Show Used .ppu Files ..."
 msgstr "Показать используемые файлы PPU ..."
@@ -491,7 +481,6 @@ msgid "Uses"
 msgstr "Использует"
 
 #: codystrconsts.crsvirtualunit
-#, fuzzy
 #| msgid "Virtual unit"
 msgid "Virtual Unit"
 msgstr "Виртуальный модуль"

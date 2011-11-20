@@ -182,19 +182,27 @@ msgid "Show diff"
 msgstr "Показати відмінності"
 
 #: svnclasses.rsshowdiffbase
-msgid "Show diff of local changes"
+#, fuzzy
+#| msgid "Show diff of local changes"
+msgid "Show Diff of Local Changes"
 msgstr "Показати відмінності локальних змін"
 
 #: svnclasses.rsshowdiffcountrev
-msgid "Show last X commits"
+#, fuzzy
+#| msgid "Show last X commits"
+msgid "Show Last X Commits"
 msgstr "Показати X останніх ревізій"
 
 #: svnclasses.rsshowdiffhead
-msgid "Show diff against HEAD"
+#, fuzzy
+#| msgid "Show diff against HEAD"
+msgid "Show Diff Against HEAD"
 msgstr "Показати відмінності відносно HEAD"
 
 #: svnclasses.rsshowdiffprev
-msgid "Show diff against previous version"
+#, fuzzy
+#| msgid "Show diff against previous version"
+msgid "Show Diff Against Previous Version"
 msgstr "Показати відмінності відносно попередньої версії"
 
 #: svnclasses.rsshowlog

@@ -102,6 +102,7 @@ msgid "Remote repository"
 msgstr "Удалённый репозитарий"
 
 #: fppkg_const.rsshowlazaruspackagemanager
-msgid "Show Lazarus package manager"
+#| msgid "Show Lazarus package manager"
+msgid "Show Lazarus Package Manager"
 msgstr "Показать средство управления пакетами Free Pascal"
 

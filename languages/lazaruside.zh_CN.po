@@ -60,11 +60,11 @@ msgid "General"
 msgstr "普通"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
-msgid "Standard, All actions (breakpoint, fold) on Mouse down"
+msgid "Standard, All actions (breakpoint, fold) on mouse down"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftup
-msgid "Extended, Actions (breakpoint, fold) on Mouse up. Selection on Mouse down and move"
+msgid "Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpleguttersect
@@ -104,11 +104,11 @@ msgid "nothing"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
-msgid "Double Click selects line"
+msgid "Double click selects line"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdrag
-msgid "Drag Selection (copy/paste)"
+msgid "Drag selection (copy/paste)"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
@@ -297,7 +297,9 @@ msgid "Visualized Special Chars"
 msgstr ""
 
 #: lazarusidestrconsts.dlgadditionalsrcpath
-msgid "Additional Source search path for all projects (.pp;.pas)"
+#, fuzzy
+#| msgid "Additional Source search path for all projects (.pp;.pas)"
+msgid "Additional source search path for all projects (.pp;.pas)"
 msgstr "工程的附加的源文件的路径 (.pp;.pas)"
 
 #: lazarusidestrconsts.dlgaddsemicolon
@@ -333,7 +335,9 @@ msgid "Warn on compile"
 msgstr "编译时警告"
 
 #: lazarusidestrconsts.dlgapplicationsettings
-msgid "Application Settings"
+#, fuzzy
+#| msgid "Application Settings"
+msgid "Application settings"
 msgstr "应用程序设置"
 
 #: lazarusidestrconsts.dlgassemblerdefault
@@ -342,7 +346,9 @@ msgid "Default"
 msgstr "默认"
 
 #: lazarusidestrconsts.dlgassertcode
-msgid "Include Assertion Code"
+#, fuzzy
+#| msgid "Include Assertion Code"
+msgid "Include assertion code"
 msgstr "包含声明代码"
 
 #: lazarusidestrconsts.dlgautocreateforms
@@ -384,7 +390,9 @@ msgid "Auto rename file lowercase"
 msgstr "自动把文件名重命名为小写"
 
 #: lazarusidestrconsts.dlgautosave
-msgid "Auto save"
+#, fuzzy
+#| msgid "Auto save"
+msgid "Auto Save"
 msgstr "自动保存"
 
 #: lazarusidestrconsts.dlgavailableforms
@@ -439,7 +447,9 @@ msgid "Block indent (tabs)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgbp7cptb
-msgid "TP/BP 7.0 Compatible"
+#, fuzzy
+#| msgid "TP/BP 7.0 Compatible"
+msgid "TP/BP 7.0 compatible"
 msgstr "TP/BP 7.0 兼容"
 
 #: lazarusidestrconsts.dlgbrackethighlight
@@ -454,6 +464,10 @@ msgstr ""
 msgid "Free Pascal Compiler messages file (*.msg)|*.msg|Any Files (*.*)|*.*"
 msgstr "Free Pascal编译信息文件 (*.msg)|*.msg|所有文件 (*.*)|*.*"
 
+#: lazarusidestrconsts.dlgbuildmodes
+msgid "Build Modes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgbutapply
 msgid "Apply"
 msgstr "应用"
@@ -464,8 +478,10 @@ msgid "Cancel"
 msgstr "取消"
 
 #: lazarusidestrconsts.dlgcasesensitive
+#, fuzzy
+#| msgid "&Case Sensitive"
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
-msgid "&Case Sensitive"
+msgid "&Case sensitive"
 msgstr "区分大小写(&C)"
 
 #: lazarusidestrconsts.dlgccocaption
@@ -526,7 +542,9 @@ msgid "lowercase"
 msgstr "小写"
 
 #: lazarusidestrconsts.dlgcdtpreview
-msgid "Preview (Max line length = 1)"
+#, fuzzy
+#| msgid "Preview (Max line length = 1)"
+msgid "Preview (max line length = 1)"
 msgstr "预览 (最大行宽为1)"
 
 #: lazarusidestrconsts.dlgcdtreadprefix
@@ -550,7 +568,9 @@ msgid "Write prefix"
 msgstr "写入前缀"
 
 #: lazarusidestrconsts.dlgcentercursorline
-msgid "Center Cursor Line"
+#, fuzzy
+#| msgid "Center Cursor Line"
+msgid "Center cursor line"
 msgstr "光标所在行中部"
 
 #: lazarusidestrconsts.dlgcharcasefileact
@@ -582,11 +602,15 @@ msgid "Color Scheme"
 msgstr "颜色配置"
 
 #: lazarusidestrconsts.dlgcmacro
-msgid "C Style Macros (global)"
+#, fuzzy
+#| msgid "C Style Macros (global)"
+msgid "C style macros (global)"
 msgstr "C 风格的宏 (全局)"
 
 #: lazarusidestrconsts.dlgcoansistr
-msgid "Use Ansi Strings"
+#, fuzzy
+#| msgid "Use Ansi Strings"
+msgid "Use ansi strings"
 msgstr "使用 Ansi Strings"
 
 #: lazarusidestrconsts.dlgcoasis
@@ -613,11 +637,14 @@ msgid "Compilation"
 msgstr "编辑"
 
 #: lazarusidestrconsts.dlgcoconditionals
+msgctxt "lazarusidestrconsts.dlgcoconditionals"
 msgid "Conditionals"
 msgstr "条件"
 
 #: lazarusidestrconsts.dlgcocops
-msgid "C Style Operators (*=, +=, /= and -=)"
+#, fuzzy
+#| msgid "C Style Operators (*=, +=, /= and -=)"
+msgid "C style operators (*=, +=, /= and -=)"
 msgstr "C 风格的操作符(*=, +=, /= 和 -=)"
 
 #: lazarusidestrconsts.dlgcocreatechildnode
@@ -638,14 +665,16 @@ msgid "Create node below"
 msgstr "建立下节点"
 
 #: lazarusidestrconsts.dlgcodbx
-msgid "Generate Debugging Info For DBX (Slows Compiling)"
+#, fuzzy
+#| msgid "Generate Debugging Info For DBX (Slows Compiling)"
+msgid "Generate debugging info for DBX (slows compiling)"
 msgstr "为 DBX 产生调试信息(慢速编译)"
 
 #: lazarusidestrconsts.dlgcodebugging
 #, fuzzy
-#| msgid "Debugging Info:"
+#| msgid "Debugging Info"
 msgctxt "lazarusidestrconsts.dlgcodebugging"
-msgid "Debugging Info"
+msgid "Debugging info"
 msgstr "调试:"
 
 #: lazarusidestrconsts.dlgcodebugging2
@@ -686,8 +715,8 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcodegeneration
 #, fuzzy
-#| msgid "Code"
-msgid "Code generation"
+#| msgid "Code generation"
+msgid "Code Generation"
 msgstr "代码"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
@@ -695,23 +724,27 @@ msgid "CodeTools Options"
 msgstr "CodeTools 选项"
 
 #: lazarusidestrconsts.dlgcofast
-msgid "Faster Code"
+#, fuzzy
+#| msgid "Faster Code"
+msgid "Faster code"
 msgstr "更快的代码"
 
 #: lazarusidestrconsts.dlgcogdb
 #, fuzzy
-#| msgid "Generate Debugging Info For GDB (Slows Compiling)"
-msgid "Generate Debugging Info For GDB (Slower / Increases exe-size)"
+#| msgid "Generate Debugging Info For GDB (Slower / Increases exe-size)"
+msgid "Generate debugging info for GDB (slower / increases exe-size)"
 msgstr "为 GDB 产生调试信息(慢速编译)"
 
 #: lazarusidestrconsts.dlgcoheaptrc
 #, fuzzy
-#| msgid "Use Heaptrc Unit"
-msgid "Use Heaptrc Unit (check for mem-leaks)"
+#| msgid "Use Heaptrc Unit (check for mem-leaks)"
+msgid "Use Heaptrc unit (check for mem-leaks)"
 msgstr "Use Heaptrc 单元"
 
 #: lazarusidestrconsts.dlgcoincfiles
-msgid "Include Files (-Fi):"
+#, fuzzy
+#| msgid "Include Files (-Fi):"
+msgid "Include files (-Fi):"
 msgstr "包含文件 (-Fi):"
 
 #: lazarusidestrconsts.dlgcoinherited
@@ -782,7 +815,9 @@ msgid "Move up"
 msgstr "上移"
 
 #: lazarusidestrconsts.dlgcompilermessage
-msgid "Compiler Messages"
+#, fuzzy
+#| msgid "Compiler Messages"
+msgid "Compiler messages"
 msgstr "编译信息"
 
 #: lazarusidestrconsts.dlgcompilermessages
@@ -799,11 +834,15 @@ msgid "Complete properties"
 msgstr "自动完成属性"
 
 #: lazarusidestrconsts.dlgconfigfiles
-msgid "Config Files:"
+#, fuzzy
+#| msgid "Config Files:"
+msgid "Config files"
 msgstr "配置文件:"
 
 #: lazarusidestrconsts.dlgconormal
-msgid "Normal Code"
+#, fuzzy
+#| msgid "Normal Code"
+msgid "Normal code"
 msgstr "正常代码"
 
 #: lazarusidestrconsts.dlgcoopts
@@ -840,7 +879,9 @@ msgid "Relocatable"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcoshowerr
-msgid "Show Errors"
+#, fuzzy
+#| msgid "Show Errors"
+msgid "Show errors"
 msgstr "显示错误"
 
 #: lazarusidestrconsts.dlgcoshowoptions
@@ -850,15 +891,21 @@ msgid "&Show Options"
 msgstr "显示选项"
 
 #: lazarusidestrconsts.dlgcosmaller
-msgid "Smaller Code"
+#, fuzzy
+#| msgid "Smaller Code"
+msgid "Smaller code"
 msgstr "更小的代码"
 
 #: lazarusidestrconsts.dlgcosmartlinkable
-msgid "Smart Linkable"
+#, fuzzy
+#| msgid "Smart Linkable"
+msgid "Smart linkable"
 msgstr "智能连接"
 
 #: lazarusidestrconsts.dlgcosources
-msgid "Other Sources (.pp/.pas files, used only by IDE not by compiler)"
+#, fuzzy
+#| msgid "Other Sources (.pp/.pas files, used only by IDE not by compiler)"
+msgid "Other sources (.pp/.pas files, used only by IDE not by compiler)"
 msgstr "其余源代码文件 (.pp/.pas 文件, 只被 IDE 使用而不被编译器使用)"
 
 #: lazarusidestrconsts.dlgcostack
@@ -866,7 +913,9 @@ msgid "Stack"
 msgstr "栈"
 
 #: lazarusidestrconsts.dlgcostrip
-msgid "Strip Symbols From Executable"
+#, fuzzy
+#| msgid "Strip Symbols From Executable"
+msgid "Strip symbols from executable"
 msgstr "从可执行程序中除去符号,可以减小程序体积(Strip Symbol)"
 
 #: lazarusidestrconsts.dlgcosymboltype
@@ -883,7 +932,7 @@ msgid "Dwarf2"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2set
-msgid "Dwarf with Sets"
+msgid "Dwarf with sets"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf3
@@ -896,8 +945,8 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcounitstyle
 #, fuzzy
-#| msgid "Unit Style:"
-msgid "Unit Style"
+#| msgid "Unit Style"
+msgid "Unit style"
 msgstr "单元风格:"
 
 #: lazarusidestrconsts.dlgcouseasdefault
@@ -913,7 +962,9 @@ msgid "Verbosity"
 msgstr "冗余"
 
 #: lazarusidestrconsts.dlgcppinline
-msgid "C++ Styled INLINE"
+#, fuzzy
+#| msgid "C++ Styled INLINE"
+msgid "C++ styled INLINE"
 msgstr "C++ 风格的 INLINE"
 
 #: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
@@ -963,7 +1014,9 @@ msgid "Delete template "
 msgstr "删除模板"
 
 #: lazarusidestrconsts.dlgdeplhicomp
-msgid "Delphi Compatible"
+#, fuzzy
+#| msgid "Delphi Compatible"
+msgid "Delphi compatible"
 msgstr "Delphi 兼容"
 
 #: lazarusidestrconsts.dlgdesktop
@@ -975,7 +1028,9 @@ msgid "Buttons - "
 msgstr ""
 
 #: lazarusidestrconsts.dlgdesktopfiles
-msgid "Desktop files"
+#, fuzzy
+#| msgid "Desktop files"
+msgid "Desktop Files"
 msgstr "桌面配置文件"
 
 #: lazarusidestrconsts.dlgdesktophints
@@ -1083,7 +1138,9 @@ msgid "Sub directory"
 msgstr "子目录"
 
 #: lazarusidestrconsts.dlgedcodetempl
-msgid "Code templates"
+#, fuzzy
+#| msgid "Code templates"
+msgid "Code Templates"
 msgstr "代码模板"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
@@ -1118,7 +1175,9 @@ msgid "Edit ..."
 msgstr "编辑..."
 
 #: lazarusidestrconsts.dlgedfiles
-msgid "Editor files"
+#, fuzzy
+#| msgid "Editor files"
+msgid "Editor Files"
 msgstr "编辑器文件"
 
 #: lazarusidestrconsts.dlgedidcomlet
@@ -1291,7 +1350,9 @@ msgid "None"
 msgstr "无"
 
 #: lazarusidestrconsts.dlgenvotherfiles
-msgid "Other files"
+#, fuzzy
+#| msgid "Other files"
+msgid "Other Files"
 msgstr "其余文件"
 
 #: lazarusidestrconsts.dlgenvproject
@@ -1516,11 +1577,13 @@ msgid "Form Editor"
 msgstr "窗体编辑器"
 
 #: lazarusidestrconsts.dlgfrombeginning
-msgid "From B&eginning"
+msgid "From b&eginning"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfromcursor
-msgid "&From Cursor"
+#, fuzzy
+#| msgid "&From Cursor"
+msgid "&From cursor"
 msgstr "从光标处(&F)"
 
 #: lazarusidestrconsts.dlgfropts
@@ -1537,7 +1600,9 @@ msgid "&Global"
 msgstr "全部(&G)"
 
 #: lazarusidestrconsts.dlggpccomp
-msgid "GPC (GNU Pascal Compiler) Compatible"
+#, fuzzy
+#| msgid "GPC (GNU Pascal Compiler) Compatible"
+msgid "GPC (GNU Pascal Compiler) compatible"
 msgstr "GPC (GNU Pascal Compiler) 兼容"
 
 #: lazarusidestrconsts.dlggprof
@@ -1633,8 +1698,14 @@ msgstr "边缝宽度"
 msgid "Half page scroll"
 msgstr "滚动半页"
 
+#: lazarusidestrconsts.dlgheapandstacksize
+msgid "Heap and stack sizes"
+msgstr ""
+
 #: lazarusidestrconsts.dlgheapsize
-msgid "Heap Size"
+#, fuzzy
+#| msgid "Heap Size"
+msgid "Heap size"
 msgstr "堆大小"
 
 #: lazarusidestrconsts.dlgheightpos
@@ -1670,11 +1741,15 @@ msgid "Right Of Cursor"
 msgstr "光标右边"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
-msgid "Show Hints for parameter \"Sender\" not used"
+#, fuzzy
+#| msgid "Show Hints for parameter \"Sender\" not used"
+msgid "Show hints for parameter \"Sender\" not used"
 msgstr "显示参数提示 \"Sender\" 没有使用到"
 
 #: lazarusidestrconsts.dlghintsunused
-msgid "Show Hints for unused units in main source"
+#, fuzzy
+#| msgid "Show Hints for unused units in main source"
+msgid "Show hints for unused units in main"
 msgstr "在源码中提示未使用的单元"
 
 #: lazarusidestrconsts.dlghomekeyjumpstoneareststart
@@ -1686,8 +1761,10 @@ msgid "Host application"
 msgstr "宿主程序"
 
 #: lazarusidestrconsts.dlgidentifiercompletion
+#, fuzzy
+#| msgid "Identifier completion"
 msgctxt "lazarusidestrconsts.dlgidentifiercompletion"
-msgid "Identifier completion"
+msgid "Identifier Completion"
 msgstr "标识符自动完成"
 
 #: lazarusidestrconsts.dlgidentifierpolicy
@@ -1812,7 +1889,9 @@ msgid "Level 3 (Level 2 + slow optimizations)"
 msgstr "Level 3 (Level 2 + 慢速优化)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-msgid "Level 0 (no extra Optimizations)"
+#, fuzzy
+#| msgid "Level 0 (no extra Optimizations)"
+msgid "Level 0 (no extra optimizations)"
 msgstr "Level 0 (无优化)"
 
 #: lazarusidestrconsts.dlglinesplitting
@@ -1821,16 +1900,20 @@ msgstr "分割行"
 
 #: lazarusidestrconsts.dlglinklibraries
 #, fuzzy
-#| msgid "Link Style:"
-msgid "Link Style"
+#| msgid "Link Style"
+msgid "Link style"
 msgstr "连接类型:"
 
 #: lazarusidestrconsts.dlglinksmart
-msgid "Link Smart"
+#, fuzzy
+#| msgid "Link Smart"
+msgid "Link smart"
 msgstr "智能连接"
 
 #: lazarusidestrconsts.dlglnumsbct
-msgid "Display Line Numbers in Run-time Error Backtraces"
+#, fuzzy
+#| msgid "Display Line Numbers in Run-time Error Backtraces"
+msgid "Display line numbers in run-time error backtraces"
 msgstr "当出现运行错误时显示行号"
 
 #: lazarusidestrconsts.dlgloaddfile
@@ -1842,15 +1925,22 @@ msgid "Main Menu"
 msgstr "主菜单"
 
 #: lazarusidestrconsts.dlgmainviewforms
-msgid "View project forms"
+#, fuzzy
+#| msgid "View project forms"
+msgid "View Project Forms"
 msgstr "查看工程窗口"
 
 #: lazarusidestrconsts.dlgmainviewframes
-msgid "View project frames"
+#, fuzzy
+#| msgid "View project frames"
+msgid "View Project Frames"
 msgstr "查看工程框架"
 
 #: lazarusidestrconsts.dlgmainviewunits
-msgid "View project units"
+#, fuzzy
+#| msgid "View project units"
+msgctxt "lazarusidestrconsts.dlgmainviewunits"
+msgid "View Project Units"
 msgstr "查看工程单元"
 
 #: lazarusidestrconsts.dlgmakepath
@@ -1866,7 +1956,7 @@ msgid "Marker color"
 msgstr "书签颜色"
 
 #: lazarusidestrconsts.dlgmarkupgroup
-msgid "Word under Caret Highlight"
+msgid "Highlight of Word under Caret"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
@@ -1874,17 +1964,19 @@ msgid "Match word boundaries for words up to this length:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
-msgid "Ignore Keywords"
+#, fuzzy
+#| msgid "Ignore Keywords"
+msgid "Ignore keywords"
 msgstr "忽略关键字"
 
 #: lazarusidestrconsts.dlgmarkupwordnotimer
-msgid "Disable Timer for Markup Current Word"
+msgid "Disable timer for markup current word"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
 #, fuzzy
-#| msgid "Trim Spaces"
-msgid "Trim Spaces (when highlighting current selection)"
+#| msgid "Trim Spaces (when highlighting current selection)"
+msgid "Trim spaces (when highlighting current selection)"
 msgstr "清除空格"
 
 #: lazarusidestrconsts.dlgmaxcntr
@@ -2277,7 +2369,7 @@ msgid "Multi Select"
 msgstr "多选"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find editor for jump targets"
+msgid "Find Editor for Jump Targets"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -2343,11 +2435,15 @@ msgid "Top"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotsplitlineafter
-msgid "Do not split line after:"
+#, fuzzy
+#| msgid "Do not split line after:"
+msgid "Do not split line after"
 msgstr "不拆分后面的行:"
 
 #: lazarusidestrconsts.dlgnotsplitlinefront
-msgid "Do not split line In front of:"
+#, fuzzy
+#| msgid "Do not split line In front of:"
+msgid "Do not split line in front of"
 msgstr "不拆分前面的行:"
 
 #: lazarusidestrconsts.dlgobjinsp
@@ -2388,11 +2484,13 @@ msgid "Optimizations"
 msgstr "优化:"
 
 #: lazarusidestrconsts.dlgotherunitfiles
-msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
+#, fuzzy
+#| msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
+msgid "Other unit files (-Fu) (delimiter is semicolon):"
 msgstr "补充单元文件 (-Fu) (分号格开):"
 
 #: lazarusidestrconsts.dlgoverwriteblock
-msgid "Overwrite Block"
+msgid "Overwrite block"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpalhints
@@ -2408,15 +2506,17 @@ msgid "Highlight control statements as keywords"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasextkeywordsgroup
-msgid "Extended Pascal keyword options"
+msgid "Extended Pascal Keyword Options"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpassoptslinker
-msgid "Pass Options To The Linker (Delimiter is space)"
+#, fuzzy
+#| msgid "Pass Options To The Linker (Delimiter is space)"
+msgid "Pass options to linker (delimiter is space)"
 msgstr "传送选项到连接器 (空格分开)"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
-msgid "Highlight String keyword(s)"
+msgid "Highlight \"String\" keyword(s)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpasstringkeywordsoptdefault
@@ -2434,7 +2534,7 @@ msgid "Only \"String\""
 msgstr ""
 
 #: lazarusidestrconsts.dlgpersistentblock
-msgid "Persistent Block"
+msgid "Persistent block"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpersistentcursor
@@ -2458,7 +2558,7 @@ msgid "Create Application Bundle"
 msgstr "创建应用程序包"
 
 #: lazarusidestrconsts.dlgpodpiaware
-msgid "Dpi Aware application (for Vista+)"
+msgid "Dpi aware application (for Vista+)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpofroms
@@ -2492,7 +2592,9 @@ msgid "Miscellaneous"
 msgstr "杂项"
 
 #: lazarusidestrconsts.dlgpooutputsettings
-msgid "Output Settings"
+#, fuzzy
+#| msgid "Output Settings"
+msgid "Output settings"
 msgstr "输出设置"
 
 #: lazarusidestrconsts.dlgposaveicon
@@ -2512,7 +2614,9 @@ msgid "Title:"
 msgstr "标题:"
 
 #: lazarusidestrconsts.dlgpouseappbundle
-msgid "Use Application Bundle for running and debugging (darwin only)"
+#, fuzzy
+#| msgid "Use Application Bundle for running and debugging (darwin only)"
+msgid "Use Application Bundle for running and debugging (Darwin only)"
 msgstr "用程序包运行或调试(仅darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
@@ -2530,11 +2634,15 @@ msgid "Options for Project: %s"
 msgstr ""
 
 #: lazarusidestrconsts.dlgprojfiles
-msgid "Project files"
+#, fuzzy
+#| msgid "Project files"
+msgid "Project Files"
 msgstr "工程文件"
 
 #: lazarusidestrconsts.dlgpromptonreplace
-msgid "&Prompt On Replace"
+#, fuzzy
+#| msgid "&Prompt On Replace"
+msgid "&Prompt on replace"
 msgstr "替换时提示(&P)"
 
 #: lazarusidestrconsts.dlgpropertycompletion
@@ -2575,8 +2683,8 @@ msgstr "参考"
 
 #: lazarusidestrconsts.dlgregularexpressions
 #, fuzzy
-#| msgid "&Regular Expressions"
-msgid "Regular E&xpressions"
+#| msgid "Regular E&xpressions"
+msgid "Regular e&xpressions"
 msgstr "正则表达式(&R)"
 
 #: lazarusidestrconsts.dlgreplaceall
@@ -2584,7 +2692,9 @@ msgid "Replace &All"
 msgstr "替换所有(&A)"
 
 #: lazarusidestrconsts.dlgreplacewith
-msgid "&Replace With"
+#, fuzzy
+#| msgid "&Replace With"
+msgid "&Replace with"
 msgstr "替换(&R)"
 
 #: lazarusidestrconsts.dlgreport
@@ -2661,7 +2771,9 @@ msgid "Variable"
 msgstr "变量"
 
 #: lazarusidestrconsts.dlgrunparameters
-msgid "Run parameters"
+#, fuzzy
+#| msgid "Run parameters"
+msgid "Run Parameters"
 msgstr "带参数运行"
 
 #: lazarusidestrconsts.dlgsavedfile
@@ -2728,7 +2840,9 @@ msgid "Paths"
 msgstr "路径"
 
 #: lazarusidestrconsts.dlgselectedtext
-msgid "&Selected Text"
+#, fuzzy
+#| msgid "&Selected Text"
+msgid "&Selected text"
 msgstr "选择文本(&S)"
 
 #: lazarusidestrconsts.dlgsetallelementdefault
@@ -2793,7 +2907,10 @@ msgid "Show gutter hints"
 msgstr "显示边缝提示"
 
 #: lazarusidestrconsts.dlgshowhint
-msgid "Show Hints"
+#, fuzzy
+#| msgid "Show Hints"
+msgctxt "lazarusidestrconsts.dlgshowhint"
+msgid "Show hints"
 msgstr "显示提示"
 
 #: lazarusidestrconsts.dlgshowlinenumbers
@@ -2802,7 +2919,9 @@ msgid "Show line numbers"
 msgstr "显示行号"
 
 #: lazarusidestrconsts.dlgshownotes
-msgid "Show Notes"
+#, fuzzy
+#| msgid "Show Notes"
+msgid "Show notes"
 msgstr "显示注释"
 
 #: lazarusidestrconsts.dlgshownothing
@@ -2831,7 +2950,9 @@ msgid "Show used files"
 msgstr "显示 used 文件"
 
 #: lazarusidestrconsts.dlgshowwarnings
-msgid "Show Warnings"
+#, fuzzy
+#| msgid "Show Warnings"
+msgid "Show warnings"
 msgstr "显示警告"
 
 #: lazarusidestrconsts.dlgsingletaskbarbutton
@@ -2880,8 +3001,14 @@ msgstr "源码编辑器"
 msgid "Origin"
 msgstr "起点"
 
+#: lazarusidestrconsts.dlgstacksize
+msgid "Stack size"
+msgstr ""
+
 #: lazarusidestrconsts.dlgstatickeyword
-msgid "Static Keyword in Objects"
+#, fuzzy
+#| msgid "Static Keyword in Objects"
+msgid "Static keyword in objects"
 msgstr "对象文件中使用静态关键字"
 
 #: lazarusidestrconsts.dlgstopafternrerr
@@ -2924,8 +3051,8 @@ msgstr "目标OS"
 
 #: lazarusidestrconsts.dlgtargetplatform
 #, fuzzy
-#| msgid "Target Platform:"
-msgid "Target Platform"
+#| msgid "Target Platform"
+msgid "Target platform"
 msgstr "目标平台:"
 
 #: lazarusidestrconsts.dlgtargetproc
@@ -2937,8 +3064,10 @@ msgid "Directory for building test projects"
 msgstr "工程构建测试目录"
 
 #: lazarusidestrconsts.dlgtexttofind
+#, fuzzy
+#| msgid "&Text to Find"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
-msgid "&Text to Find"
+msgid "&Text to find"
 msgstr "查找文本(&T)"
 
 #: lazarusidestrconsts.dlgthedirectory
@@ -2966,7 +3095,9 @@ msgid "Template file name"
 msgstr "模板文件名"
 
 #: lazarusidestrconsts.dlgtrimspacetypecaption
-msgid "Trim Spaces Style"
+#, fuzzy
+#| msgid "Trim Spaces Style"
+msgid "Trim spaces style"
 msgstr "清空类型"
 
 #: lazarusidestrconsts.dlgtrimspacetypecaretmove
@@ -2990,7 +3121,9 @@ msgid "Trim trailing spaces"
 msgstr "修剪行尾空格"
 
 #: lazarusidestrconsts.dlguncertopt
-msgid "Uncertain Optimizations"
+#, fuzzy
+#| msgid "Uncertain Optimizations"
+msgid "Uncertain optimizations"
 msgstr "不确定的优化"
 
 #: lazarusidestrconsts.dlgundoaftersave
@@ -3035,19 +3168,27 @@ msgid "Up"
 msgstr "上移"
 
 #: lazarusidestrconsts.dlgusecodefolding
-msgid "Code folding"
+#, fuzzy
+#| msgid "Code folding"
+msgid "Code Folding"
 msgstr "代码折叠"
 
 #: lazarusidestrconsts.dlgusecustomconfig
-msgid "Use additional Compiler Config File"
+#, fuzzy
+#| msgid "Use additional Compiler Config File"
+msgid "Use additional compiler config file"
 msgstr "使用附加的编译器配置文件"
 
 #: lazarusidestrconsts.dlgusedividerdraw
-msgid "Divider drawing"
+#, fuzzy
+#| msgid "Divider drawing"
+msgid "Divider Drawing"
 msgstr "隔离区绘制"
 
 #: lazarusidestrconsts.dlgusefpccfg
-msgid "Use standard Compiler Config File (fpc.cfg)"
+#, fuzzy
+#| msgid "Use standard Compiler Config File (fpc.cfg)"
+msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "使用标准编译器配置文件 (fpc.cfg)"
 
 #: lazarusidestrconsts.dlguselaunchingapp
@@ -3100,7 +3241,9 @@ msgid "Visible right margin"
 msgstr "右边界可视"
 
 #: lazarusidestrconsts.dlgwholewordsonly
-msgid "&Whole Words Only"
+#, fuzzy
+#| msgid "&Whole Words Only"
+msgid "&Whole words only"
 msgstr "仅整词(&W)"
 
 #: lazarusidestrconsts.dlgwidthpos
@@ -3117,7 +3260,9 @@ msgid "Window"
 msgstr "窗口"
 
 #: lazarusidestrconsts.dlgwinpos
-msgid "Window Positions"
+#, fuzzy
+#| msgid "Window Positions"
+msgid "Window positions"
 msgstr "窗口位置"
 
 #: lazarusidestrconsts.dlgwordspolicies
@@ -3131,7 +3276,9 @@ msgid "Preview"
 msgstr "预览"
 
 #: lazarusidestrconsts.dlgwritefpclogo
-msgid "Write an FPC logo"
+#, fuzzy
+#| msgid "Write an FPC logo"
+msgid "Write FPC logo"
 msgstr "写入一个 FPC logo"
 
 #: lazarusidestrconsts.fdinvalidmultiselectiontext
@@ -3449,6 +3596,7 @@ msgid "Shorten or expand filename"
 msgstr "改变文件名长度"
 
 #: lazarusidestrconsts.lisa2pshowall
+msgctxt "lazarusidestrconsts.lisa2pshowall"
 msgid "Show all"
 msgstr "显示所有"
 
@@ -3719,15 +3867,21 @@ msgid "Add value to macro %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
-msgid "Add file to a package"
+#, fuzzy
+#| msgid "Add file to a package"
+msgid "Add File to Package"
 msgstr "添加文件到包"
 
 #: lazarusidestrconsts.lisaf2pdestinationpackage
-msgid "Destination Package"
+#, fuzzy
+#| msgid "Destination Package"
+msgid "Destination package"
 msgstr "目标包"
 
 #: lazarusidestrconsts.lisaf2pfiletype
-msgid "File Type"
+#, fuzzy
+#| msgid "File Type"
+msgid "File type"
 msgstr "文件类型"
 
 #: lazarusidestrconsts.lisaf2phasregisterprocedure
@@ -3755,7 +3909,10 @@ msgid "Package %s%s%s not found."
 msgstr "未找到 %s%s%s ."
 
 #: lazarusidestrconsts.lisaf2pshowall
-msgid "Show All"
+#, fuzzy
+#| msgid "Show All"
+msgctxt "lazarusidestrconsts.lisaf2pshowall"
+msgid "Show all"
 msgstr "显示所有"
 
 #: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
@@ -3768,7 +3925,9 @@ msgid "The package %s is read only."
 msgstr "包 %s 为只读."
 
 #: lazarusidestrconsts.lisaf2punitname
-msgid "Unit Name: "
+#, fuzzy
+#| msgid "Unit Name: "
+msgid "Unit name: "
 msgstr "单元名: "
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
@@ -4023,7 +4182,9 @@ msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
 msgstr ""
 
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
-msgid "Always Build before Run"
+#, fuzzy
+#| msgid "Always Build before Run"
+msgid "Always build before run"
 msgstr "运行前总是构建"
 
 #: lazarusidestrconsts.lisbfbuild
@@ -4053,11 +4214,15 @@ msgid "Run Command"
 msgstr "运行命令"
 
 #: lazarusidestrconsts.lisbfwhenthisfileisactiveinsourceeditor
-msgid "When this file is active in source editor ..."
+#, fuzzy
+#| msgid "When this file is active in source editor ..."
+msgid "When this file is active in source editor"
 msgstr "当文件在源码编辑器中是活动时 ..."
 
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
-msgid "Working directory (Leave empty for file path)"
+#, fuzzy
+#| msgid "Working directory (Leave empty for file path)"
+msgid "Working directory (leave empty for file path)"
 msgstr "工作目录"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
@@ -4139,11 +4304,11 @@ msgid "Building Lazarus failed"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmacros
-msgid "Build macros"
+msgid "Build Macros"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmacros2
-msgid "Build macros:"
+msgid "Build macros"
 msgstr ""
 
 #: lazarusidestrconsts.lisbuildmode
@@ -4171,7 +4336,9 @@ msgid "Build new project"
 msgstr "构建新的工程"
 
 #: lazarusidestrconsts.lisbuildnumber
-msgid "Build Number"
+#, fuzzy
+#| msgid "Build Number"
+msgid "Build number"
 msgstr "构建编号"
 
 #: lazarusidestrconsts.lisbuildproject
@@ -4487,7 +4654,9 @@ msgid "Centers"
 msgstr "中心"
 
 #: lazarusidestrconsts.lisceomode
-msgid "Preferred Exhibition Mode"
+#, fuzzy
+#| msgid "Preferred Exhibition Mode"
+msgid "Preferred exhibition mode"
 msgstr "优先的表现模式"
 
 #: lazarusidestrconsts.lisceomodecategory
@@ -5028,7 +5197,10 @@ msgid "Code"
 msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
-msgid "Code browser"
+#, fuzzy
+#| msgid "Code browser"
+msgctxt "lazarusidestrconsts.liscodebrowser"
+msgid "Code Browser"
 msgstr "代码浏览"
 
 #: lazarusidestrconsts.liscodeexplorer
@@ -5125,7 +5297,10 @@ msgid "Insert paragraph formatting tag"
 msgstr "插入段落格式标记"
 
 #: lazarusidestrconsts.liscodehelpmainformcaption
-msgid "FPDoc editor"
+#, fuzzy
+#| msgid "FPDoc editor"
+msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
+msgid "FPDoc Editor"
 msgstr "FPDoc 编辑器"
 
 #: lazarusidestrconsts.liscodehelpnodocumentation
@@ -5201,7 +5376,9 @@ msgid " A token %s%s%s already exists! "
 msgstr "符号 %s%s%s 已经存在!"
 
 #: lazarusidestrconsts.liscodetemplautocompleteon
-msgid "Auto complete on ..."
+#, fuzzy
+#| msgid "Auto complete on ..."
+msgid "Auto complete on"
 msgstr "自动完成 ..."
 
 #: lazarusidestrconsts.liscodetemplchange
@@ -5815,8 +5992,9 @@ msgid "Condition"
 msgstr "状态"
 
 #: lazarusidestrconsts.lisconditionals
-msgid "Conditionals:"
-msgstr ""
+msgctxt "lazarusidestrconsts.lisconditionals"
+msgid "Conditionals"
+msgstr "条件"
 
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
@@ -6070,7 +6248,9 @@ msgid "Convert"
 msgstr "转换"
 
 #: lazarusidestrconsts.lisconvertencoding
-msgid "Convert encoding"
+#, fuzzy
+#| msgid "Convert encoding"
+msgid "Convert Encoding"
 msgstr "转换编码"
 
 #: lazarusidestrconsts.lisconvertencodingofprojectspackages
@@ -6171,7 +6351,7 @@ msgid "Copy All"
 msgstr "拷贝所有"
 
 #: lazarusidestrconsts.liscopyallitemstoclipboard
-msgid "Copy all items to clipboard"
+msgid "Copy All Items to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyalloutputclipboard
@@ -6179,11 +6359,11 @@ msgid "Copy all output to clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
-msgid "Copy all shown and hidden messages to clipboard"
+msgid "Copy All Shown and Hidden Messages to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
-msgid "Copy all shown messages to clipboard"
+msgid "Copy All Shown Messages to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopydescription
@@ -6207,15 +6387,17 @@ msgid "Copying a whole form is not implemented."
 msgstr "复制整个窗体失败."
 
 #: lazarusidestrconsts.liscopyitemtoclipboard
-msgid "Copy item to clipboard"
+msgid "Copy Item to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
-msgid "Copy selected items to clipboard"
+msgid "Copy Selected Items to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyselectedmessagestoclipboard
-msgid "Copy selected messages to clipboard"
+#, fuzzy
+#| msgid "Copy selected messages to clipboard"
+msgid "Copy Selected Messages to Clipboard"
 msgstr "复制所选的消息到剪切板"
 
 #: lazarusidestrconsts.liscoscanforfpcmessages
@@ -6235,7 +6417,9 @@ msgid "Show all messages"
 msgstr "显示所有信息"
 
 #: lazarusidestrconsts.liscoskipcallingcompiler
-msgid "Skip calling Compiler"
+#, fuzzy
+#| msgid "Skip calling Compiler"
+msgid "Skip calling compiler"
 msgstr "跳过调用编译器"
 
 #: lazarusidestrconsts.liscotargetosspecificoptions
@@ -6373,10 +6557,6 @@ msgstr "当前代码编辑器中光标所在列"
 msgid "Cursor row in current editor"
 msgstr "当前代码编辑器中光标所在行"
 
-#: lazarusidestrconsts.liscustombuildmacros
-msgid "Custom build macros"
-msgstr ""
-
 #: lazarusidestrconsts.liscustomopthint
 msgid "These options are passed directly to the compiler. Macros are replaced, line breaks are replaced with single spaces."
 msgstr ""
@@ -6438,7 +6618,7 @@ msgid "Enable all"
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
-msgid "Copy to clipboard"
+msgid "Copy to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgbreakpointpropertieshint
@@ -7019,22 +7199,22 @@ msgstr "汇编"
 
 #: lazarusidestrconsts.lisdisassgotoaddress
 msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
-msgid "Goto address"
+msgid "Goto Address"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisassgotoaddresshint
 msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
-msgid "Goto address"
+msgid "Goto Address"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisassgotocurrentaddress
 msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
-msgid "Goto current address"
+msgid "Goto Current Address"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisassgotocurrentaddresshint
 msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
-msgid "Goto current address"
+msgid "Goto Current Address"
 msgstr ""
 
 #: lazarusidestrconsts.lisdiscardchanges
@@ -7718,7 +7898,9 @@ msgid "%s excluded at run time"
 msgstr ""
 
 #: lazarusidestrconsts.lisexcludefilter
-msgid "Exclude Filter"
+#, fuzzy
+#| msgid "Exclude Filter"
+msgid "Exclude filter"
 msgstr "排除过滤器"
 
 #: lazarusidestrconsts.lisexecutable
@@ -7795,7 +7977,9 @@ msgid "Extract Procedure"
 msgstr "抽取过程"
 
 #: lazarusidestrconsts.lisexttoolexternaltools
-msgid "External tools"
+#, fuzzy
+#| msgid "External tools"
+msgid "External Tools"
 msgstr "外部工具"
 
 #: lazarusidestrconsts.lisexttoolfailedtoruntool
@@ -8254,7 +8438,7 @@ msgid "get word at current cursor position"
 msgstr ""
 
 #: lazarusidestrconsts.lisgotoline
-msgid "Goto line"
+msgid "Goto Line"
 msgstr ""
 
 #: lazarusidestrconsts.lisgotoselectedsourceline
@@ -8595,7 +8779,9 @@ msgid "Include Examples"
 msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
-msgid "Include Filter"
+#, fuzzy
+#| msgid "Include Filter"
+msgid "Include filter"
 msgstr "包含过滤器"
 
 #: lazarusidestrconsts.lisincludepath
@@ -8808,7 +8994,7 @@ msgstr "安装所选"
 
 #: lazarusidestrconsts.lisinstalluninstallpackages
 msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
-msgid "Install/Uninstall packages"
+msgid "Install/Uninstall Packages"
 msgstr ""
 
 #: lazarusidestrconsts.lisinsteadofcompilepackagecreateasimplemakefile
@@ -9005,15 +9191,15 @@ msgid "Abort building"
 msgstr "中止构建"
 
 #: lazarusidestrconsts.liskmaddbpaddress
-msgid "Add address breakpoint"
+msgid "Add Address Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.liskmaddbpsource
-msgid "Add source breakpoint"
+msgid "Add Source Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts.liskmaddbpwatchpoint
-msgid "Add data/watchPoint"
+msgid "Add Data/WatchPoint"
 msgstr ""
 
 #: lazarusidestrconsts.liskmaddwatch
@@ -9048,16 +9234,15 @@ msgstr "关闭工程"
 msgid "CodeTools defines editor"
 msgstr "代码工具定义编辑器"
 
-#: lazarusidestrconsts.liskmcodetoolsoptions
-msgid "CodeTools options"
-msgstr "代码工具选项"
-
 #: lazarusidestrconsts.liskmcompileprojectprogram
 msgid "Compile project/program"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcompileroptions
-msgid "Compiler options"
+#, fuzzy
+#| msgid "Compiler options"
+msgctxt "lazarusidestrconsts.liskmcompileroptions"
+msgid "Compiler Options"
 msgstr "编译选项"
 
 #: lazarusidestrconsts.liskmconfigbuildfile
@@ -9065,7 +9250,9 @@ msgid "Config %sBuild File%s"
 msgstr "配置 %s构建文件%s"
 
 #: lazarusidestrconsts.liskmconfigurecustomcomponents
-msgid "Configure custom components"
+#, fuzzy
+#| msgid "Configure custom components"
+msgid "Configure Custom Components"
 msgstr "配置用户组件"
 
 #: lazarusidestrconsts.liskmconfigurehelp
@@ -9081,15 +9268,21 @@ msgid "Convert Delphi package to Lazarus package"
 msgstr "转换 Delphi 包为 Lazarus 包"
 
 #: lazarusidestrconsts.liskmconvertdelphiprojecttolazarusproject
-msgid "Convert Delphi project to Lazarus project"
+#, fuzzy
+#| msgid "Convert Delphi project to Lazarus project"
+msgid "Convert Delphi Project to Lazarus Project"
 msgstr "转换 Delphi 工程为 Lazarus 工程"
 
 #: lazarusidestrconsts.liskmconvertdelphiunittolazarusunit
-msgid "Convert Delphi unit to Lazarus unit"
+#, fuzzy
+#| msgid "Convert Delphi unit to Lazarus unit"
+msgid "Convert Delphi Unit to Lazarus Unit"
 msgstr "转换 Delphi 单元为 Lazarus 单元"
 
 #: lazarusidestrconsts.liskmconvertdfmfiletolfm
-msgid "Convert DFM file to LFM"
+#, fuzzy
+#| msgid "Convert DFM file to LFM"
+msgid "Convert DFM File to LFM"
 msgstr "转换 DFM 文件为 LFM"
 
 #: lazarusidestrconsts.liskmcopyselectedcomponentstoclipboard
@@ -9105,7 +9298,9 @@ msgid "Delete last char"
 msgstr "删除最后的字符"
 
 #: lazarusidestrconsts.liskmdiffeditorfiles
-msgid "Diff editor files"
+#, fuzzy
+#| msgid "Diff editor files"
+msgid "Diff Editor Files"
 msgstr "编辑文件差异"
 
 #: lazarusidestrconsts.liskmeditcodetemplates
@@ -9116,13 +9311,10 @@ msgstr "编辑代码模板"
 msgid "Edit context sensitive help"
 msgstr "编辑上下文敏感帮助"
 
-#: lazarusidestrconsts.liskmeditoroptions
-msgctxt "lazarusidestrconsts.liskmeditoroptions"
-msgid "Editor options"
-msgstr "编辑器选项"
-
 #: lazarusidestrconsts.liskmencloseselection
-msgid "Enclose selection"
+#, fuzzy
+#| msgid "Enclose selection"
+msgid "Enclose Selection"
 msgstr "装入选择区"
 
 #: lazarusidestrconsts.liskmevaluatemodify
@@ -9138,7 +9330,9 @@ msgid "External Tools settings"
 msgstr "外部工具设置"
 
 #: lazarusidestrconsts.liskmfindincremental
-msgid "Find incremental"
+#, fuzzy
+#| msgid "Find incremental"
+msgid "Find Incremental"
 msgstr "增量查找"
 
 #: lazarusidestrconsts.liskmgotomarker0
@@ -9291,7 +9485,7 @@ msgid "Quick compile, no linking"
 msgstr "快速编译，不连接"
 
 #: lazarusidestrconsts.liskmremoveactivefilefromproject
-msgid "Remove active file from project"
+msgid "Remove Active File from Project"
 msgstr ""
 
 #: lazarusidestrconsts.liskmrunprogram
@@ -9315,27 +9509,45 @@ msgid "Save project as"
 msgstr "另存工程为"
 
 #: lazarusidestrconsts.liskmselectlineend
-msgid "Select line end"
+#, fuzzy
+#| msgid "Select line end"
+msgctxt "lazarusidestrconsts.liskmselectlineend"
+msgid "Select Line End"
 msgstr "选择到行尾"
 
 #: lazarusidestrconsts.liskmselectlinestart
-msgid "Select line start"
+#, fuzzy
+#| msgid "Select line start"
+msgctxt "lazarusidestrconsts.liskmselectlinestart"
+msgid "Select Line Start"
 msgstr "选择到行首"
 
 #: lazarusidestrconsts.liskmselectpagebottom
-msgid "Select page bottom"
+#, fuzzy
+#| msgid "Select page bottom"
+msgctxt "lazarusidestrconsts.liskmselectpagebottom"
+msgid "Select Page Bottom"
 msgstr "选择到页底部"
 
 #: lazarusidestrconsts.liskmselectpagetop
-msgid "Select page top"
+#, fuzzy
+#| msgid "Select page top"
+msgctxt "lazarusidestrconsts.liskmselectpagetop"
+msgid "Select Page Top"
 msgstr "选择到页顶部"
 
 #: lazarusidestrconsts.liskmselectwordleft
-msgid "Select word left"
+#, fuzzy
+#| msgid "Select word left"
+msgctxt "lazarusidestrconsts.liskmselectwordleft"
+msgid "Select Word Left"
 msgstr "选择左边的词"
 
 #: lazarusidestrconsts.liskmselectwordright
-msgid "Select word right"
+#, fuzzy
+#| msgid "Select word right"
+msgctxt "lazarusidestrconsts.liskmselectwordright"
+msgid "Select Word Right"
 msgstr "选择右边的词"
 
 #: lazarusidestrconsts.liskmsetfreebookmark
@@ -9383,7 +9595,9 @@ msgid "Set marker 9"
 msgstr "设置标记 9"
 
 #: lazarusidestrconsts.liskmstopprogram
-msgid "Stop program"
+#, fuzzy
+#| msgid "Stop program"
+msgid "Stop Program"
 msgstr "停止程序"
 
 #: lazarusidestrconsts.liskmtogglebetweenunitandform
@@ -9447,7 +9661,9 @@ msgid "Toggle view Code Explorer"
 msgstr "切换到代码管理器视图"
 
 #: lazarusidestrconsts.liskmtoggleviewcomponentpalette
-msgid "Toggle view component palette"
+#, fuzzy
+#| msgid "Toggle view component palette"
+msgid "Toggle View Component Palette"
 msgstr "切换到组件面板视图"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
@@ -9515,7 +9731,9 @@ msgid "View project options"
 msgstr "查看工程选项"
 
 #: lazarusidestrconsts.liskmviewprojectsource
-msgid "View project source"
+#, fuzzy
+#| msgid "View project source"
+msgid "View Project Source"
 msgstr "查看工程源文件"
 
 #: lazarusidestrconsts.liskmviewunitinfo
@@ -9751,6 +9969,10 @@ msgstr ""
 msgid "Current build options will be associated with:"
 msgstr ""
 
+#: lazarusidestrconsts.lislazbuildnormalide
+msgid "Normal IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lislazbuildok
 #, fuzzy
 #| msgid "Ok"
@@ -9771,7 +9993,7 @@ msgid "Options passed to compiler"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildprofile
-msgid "Profile to Build"
+msgid "Profile to build"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildrefresh
@@ -9807,10 +10029,6 @@ msgstr "构建成功后重新开始"
 msgctxt "lazarusidestrconsts.lislazbuildrestartlazarusautomatically"
 msgid "Restart Lazarus automatically after building the IDE (has no effect when building other parts)"
 msgstr ""
-
-#: lazarusidestrconsts.lislazbuildsavesettings
-msgid "Save settings"
-msgstr "保存设置"
 
 #: lazarusidestrconsts.lislazbuildselectprofilestobuild
 msgid "Select profiles to build"
@@ -9852,7 +10070,9 @@ msgid "Clean Up + Build all"
 msgstr "清除 + 构建所有"
 
 #: lazarusidestrconsts.lislclwidgettype
-msgid "LCL Widget Type"
+#, fuzzy
+#| msgid "LCL Widget Type"
+msgid "LCL widget type"
 msgstr "LCL 窗口部件类型"
 
 #: lazarusidestrconsts.lisldaddlinktoinherited
@@ -10054,19 +10274,27 @@ msgid "Macro value"
 msgstr ""
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-msgid "Main Unit has Application.CreateForm statements"
+#, fuzzy
+#| msgid "Main Unit has Application.CreateForm statements"
+msgid "Main unit has Application.CreateForm statements"
 msgstr "主单元已经有 Application.CreateForm 声明"
 
 #: lazarusidestrconsts.lismainunithasapplicationtitlestatements
-msgid "Main Unit has Application.Title statements"
+#, fuzzy
+#| msgid "Main Unit has Application.Title statements"
+msgid "Main unit has Application.Title statements"
 msgstr "主单元已经有 Application.Title 声明"
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
-msgid "Main Unit has Uses Section containing all Units of project"
+#, fuzzy
+#| msgid "Main Unit has Uses Section containing all Units of project"
+msgid "Main unit has Uses section containing all units of project"
 msgstr "主单元的 Uses 节包含所有工程所需的单元"
 
 #: lazarusidestrconsts.lismainunitispascalsource
-msgid "Main Unit is Pascal Source"
+#, fuzzy
+#| msgid "Main Unit is Pascal Source"
+msgid "Main unit is Pascal source"
 msgstr "主单元式Pascal源代码"
 
 #: lazarusidestrconsts.lismakeexe
@@ -10178,15 +10406,19 @@ msgid "Add &Breakpoint"
 msgstr "添加断点"
 
 #: lazarusidestrconsts.lismenuaddcurfiletopkg
-msgid "Add active file to a package ..."
+msgid "Add Active File to Package ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
-msgid "Add jump point to history"
+#, fuzzy
+#| msgid "Add jump point to history"
+msgid "Add Jump Point to History"
 msgstr "添加跳转点到历史"
 
 #: lazarusidestrconsts.lismenuaddtoproject
-msgid "Add editor file to Project"
+#, fuzzy
+#| msgid "Add editor file to Project"
+msgid "Add Editor File to Project"
 msgstr "添加代码编辑器中的文件到工程"
 
 #: lazarusidestrconsts.lismenuaddwatch
@@ -10196,7 +10428,9 @@ msgid "Add &Watch ..."
 msgstr "添加观察点..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
-msgid "Break Lines in selection"
+#, fuzzy
+#| msgid "Break Lines in selection"
+msgid "Break Lines in Selection"
 msgstr "选中节自动分行"
 
 #: lazarusidestrconsts.lismenubuild
@@ -10210,24 +10444,28 @@ msgstr "构建文件"
 
 #: lazarusidestrconsts.lismenubuildlazarus
 #, fuzzy
-#| msgid "Build Lazarus"
-msgid "Build Lazarus with current profile"
+#| msgid "Build Lazarus with current profile"
+msgid "Build Lazarus with Current Profile"
 msgstr "构建 Lazarus"
 
 #: lazarusidestrconsts.lismenubuildlazarusprof
-msgid "Build Lazarus with profile: %s"
+msgid "Build Lazarus with Profile: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuchecklfm
-msgid "Check LFM file in editor"
+#, fuzzy
+#| msgid "Check LFM file in editor"
+msgid "Check LFM File in Editor"
 msgstr "在编辑器中检查 LFM 文件"
 
 #: lazarusidestrconsts.lismenucleandirectory
-msgid "Clean directory ..."
+#, fuzzy
+#| msgid "Clean directory ..."
+msgid "Clean Directory ..."
 msgstr "清除目录 ..."
 
 #: lazarusidestrconsts.lismenucleanupcompiled
-msgid "Clean up build files ..."
+msgid "Clean up Build Files ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuclose
@@ -10237,8 +10475,8 @@ msgstr "关闭"
 
 #: lazarusidestrconsts.lismenucloseall
 #, fuzzy
-#| msgid "Close all editor files"
-msgid "Close a&ll editor files"
+#| msgid "Close a&ll editor files"
+msgid "Close A&ll Editor Files"
 msgstr "关闭所有编辑器中的文件"
 
 #: lazarusidestrconsts.lismenucloseproject
@@ -10246,7 +10484,9 @@ msgid "Close Project"
 msgstr "关闭工程"
 
 #: lazarusidestrconsts.lismenucodetoolsdefineseditor
-msgid "CodeTools defines editor ..."
+#, fuzzy
+#| msgid "CodeTools defines editor ..."
+msgid "CodeTools Defines Editor ..."
 msgstr "代码工具自定义编辑器 ..."
 
 #: lazarusidestrconsts.lismenucollectpofil
@@ -10254,7 +10494,9 @@ msgid "Collect .po files"
 msgstr "搜集 .po 文件"
 
 #: lazarusidestrconsts.lismenucommentselection
-msgid "Comment selection"
+#, fuzzy
+#| msgid "Comment selection"
+msgid "Comment Selection"
 msgstr "注释所选"
 
 #: lazarusidestrconsts.lismenucompile
@@ -10276,11 +10518,15 @@ msgid "Configure Build+Run File ..."
 msgstr "配置 编译+运行 文件 ..."
 
 #: lazarusidestrconsts.lismenuconfigcustomcomps
-msgid "Configure custom components ..."
+#, fuzzy
+#| msgid "Configure custom components ..."
+msgid "Configure Custom Components ..."
 msgstr "配置自定义组件 ..."
 
 #: lazarusidestrconsts.lismenuconfigexternaltools
-msgid "Configure external tools ..."
+#, fuzzy
+#| msgid "Configure external tools ..."
+msgid "Configure External Tools ..."
 msgstr "配置外部工具..."
 
 #: lazarusidestrconsts.lismenuconfigurebuildlazarus
@@ -10296,25 +10542,33 @@ msgid "Context sensitive Help"
 msgstr "上下文关联的帮助"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
-msgid "Convert Delphi package to Lazarus package ..."
+#, fuzzy
+#| msgid "Convert Delphi package to Lazarus package ..."
+msgid "Convert Delphi Package to Lazarus Package ..."
 msgstr "转换 Delphi 包为 Lazarus 包..."
 
 #: lazarusidestrconsts.lismenuconvertdelphiproject
-msgid "Convert Delphi project to Lazarus project ..."
+#, fuzzy
+#| msgid "Convert Delphi project to Lazarus project ..."
+msgid "Convert Delphi Project to Lazarus Project ..."
 msgstr "转换 Delphi 工程为 Lazarus 工程 ..."
 
 #: lazarusidestrconsts.lismenuconvertdelphiunit
-msgid "Convert Delphi unit to Lazarus unit ..."
+#, fuzzy
+#| msgid "Convert Delphi unit to Lazarus unit ..."
+msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "转换 Delphi 单元为 Lazarus 单元..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
 #, fuzzy
-#| msgid "Convert binary DFM file to text LFM and check syntax ..."
-msgid "Convert binary DFM to text LFM + check syntax ..."
+#| msgid "Convert binary DFM to text LFM + check syntax ..."
+msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
 msgstr "转换 DFM 文件为 LFM 文件..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
-msgid "Convert encoding of projects/packages ..."
+#, fuzzy
+#| msgid "Convert encoding of projects/packages ..."
+msgid "Convert Encoding of Projects/Packages ..."
 msgstr "转换工程/包的编码..."
 
 #: lazarusidestrconsts.lismenucopy
@@ -10336,7 +10590,9 @@ msgid "Cut"
 msgstr "剪切"
 
 #: lazarusidestrconsts.lismenudebugwindows
-msgid "Debug windows"
+#, fuzzy
+#| msgid "Debug windows"
+msgid "Debug Windows"
 msgstr "调试窗口"
 
 #: lazarusidestrconsts.lismenudiff
@@ -10360,8 +10616,8 @@ msgstr "编辑上下文帮助"
 
 #: lazarusidestrconsts.lismenueditinstallpkgs
 #, fuzzy
-#| msgid "Configure installed packages ..."
-msgid "Install/Uninstall packages ..."
+#| msgid "Install/Uninstall packages ..."
+msgid "Install/Uninstall Packages ..."
 msgstr "配置已安装的包 ..."
 
 #: lazarusidestrconsts.lismenueditor
@@ -10446,7 +10702,9 @@ msgid "Enclose in $IFDEF ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuencloseselection
-msgid "Enclose selection ..."
+#, fuzzy
+#| msgid "Enclose selection ..."
+msgid "Enclose Selection ..."
 msgstr "封装所选 ..."
 
 #: lazarusidestrconsts.lismenuevaluate
@@ -10460,7 +10718,9 @@ msgid "Example Projects ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuextractproc
-msgid "Extract procedure ..."
+#, fuzzy
+#| msgid "Extract procedure ..."
+msgid "Extract Procedure ..."
 msgstr "解析过程 ..."
 
 #: lazarusidestrconsts.lismenufile
@@ -10477,15 +10737,21 @@ msgid "&Find ..."
 msgstr "查找(&F)..."
 
 #: lazarusidestrconsts.lismenufindblockotherendofcodeblock
-msgid "Find other end of code block"
+#, fuzzy
+#| msgid "Find other end of code block"
+msgid "Find Other End of Code Block"
 msgstr "找代码区段的另一端"
 
 #: lazarusidestrconsts.lismenufindcodeblockstart
-msgid "Find code block start"
+#, fuzzy
+#| msgid "Find code block start"
+msgid "Find Start of Code Block"
 msgstr "查找代码区段开始"
 
 #: lazarusidestrconsts.lismenufinddeclarationatcursor
-msgid "Find Declaration at cursor"
+#, fuzzy
+#| msgid "Find Declaration at cursor"
+msgid "Find Declaration at Cursor"
 msgstr "在光标处查找声明"
 
 #: lazarusidestrconsts.lismenufindidentifierrefs
@@ -10493,7 +10759,9 @@ msgid "Find Identifier References ..."
 msgstr "查找标识符参考 ..."
 
 #: lazarusidestrconsts.lismenufindinfiles
-msgid "Find &in files ..."
+#, fuzzy
+#| msgid "Find &in files ..."
+msgid "Find &in Files ..."
 msgstr "在文件中查找(&I) ..."
 
 #: lazarusidestrconsts.lismenufindnext
@@ -10504,29 +10772,32 @@ msgstr "查找下一个(&N)"
 msgid "Find &Previous"
 msgstr "查找前一个(&P)"
 
-#: lazarusidestrconsts.lismenufpdoceditor
-msgctxt "lazarusidestrconsts.lismenufpdoceditor"
-msgid "FPDoc Editor"
-msgstr "FPDoc 编辑器"
-
 #: lazarusidestrconsts.lismenugeneraloptions
 msgid "Options ..."
 msgstr "选项..."
 
 #: lazarusidestrconsts.lismenugotoincludedirective
-msgid "Goto include directive"
+#, fuzzy
+#| msgid "Goto include directive"
+msgid "Goto Include Directive"
 msgstr "前往包含指示处"
 
 #: lazarusidestrconsts.lismenugotoline
-msgid "Goto line ..."
+#, fuzzy
+#| msgid "Goto line ..."
+msgid "Goto Line ..."
 msgstr "转到行..."
 
 #: lazarusidestrconsts.lismenuguessmisplacedifdef
-msgid "Guess misplaced IFDEF/ENDIF"
+#, fuzzy
+#| msgid "Guess misplaced IFDEF/ENDIF"
+msgid "Guess Misplaced IFDEF/ENDIF"
 msgstr "猜测错位的IFDEF/ENDIF"
 
 #: lazarusidestrconsts.lismenuguessunclosedblock
-msgid "Guess unclosed block"
+#, fuzzy
+#| msgid "Guess unclosed block"
+msgid "Guess Unclosed Block"
 msgstr "猜测未关闭的块"
 
 #: lazarusidestrconsts.lismenuhelp
@@ -10534,7 +10805,9 @@ msgid "&Help"
 msgstr "帮助(&H)"
 
 #: lazarusidestrconsts.lismenuideinternals
-msgid "IDE internals"
+#, fuzzy
+#| msgid "IDE internals"
+msgid "IDE Internals"
 msgstr "IDE 内部"
 
 #: lazarusidestrconsts.lismenuincrementalfind
@@ -10542,11 +10815,15 @@ msgid "Incremental Find"
 msgstr "增量搜索"
 
 #: lazarusidestrconsts.lismenuindentselection
-msgid "Indent selection"
+#, fuzzy
+#| msgid "Indent selection"
+msgid "Indent Selection"
 msgstr "缩进所选"
 
 #: lazarusidestrconsts.lismenuinsertchangelogentry
-msgid "ChangeLog entry"
+#, fuzzy
+#| msgid "ChangeLog entry"
+msgid "ChangeLog Entry"
 msgstr "ChangeLog 条目"
 
 #: lazarusidestrconsts.lismenuinsertcharacter
@@ -10557,12 +10834,14 @@ msgstr "从字符表插入"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
 #, fuzzy
-#| msgid "CVS keyword"
-msgid "Insert CVS keyword"
+#| msgid "Insert CVS keyword"
+msgid "Insert CVS Keyword"
 msgstr "CVS 关键字"
 
 #: lazarusidestrconsts.lismenuinsertdatetime
-msgid "Current date and time"
+#, fuzzy
+#| msgid "Current date and time"
+msgid "Current Date and Time"
 msgstr "当前时间日期"
 
 #: lazarusidestrconsts.lismenuinsertfilename
@@ -10577,19 +10856,27 @@ msgid "Insert General"
 msgstr "普通"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
-msgid "GPL notice"
+#, fuzzy
+#| msgid "GPL notice"
+msgid "GPL Notice"
 msgstr "GPL公约"
 
 #: lazarusidestrconsts.lismenuinsertlgplnotice
-msgid "LGPL notice"
+#, fuzzy
+#| msgid "LGPL notice"
+msgid "LGPL Notice"
 msgstr "LGPL公约"
 
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
-msgid "Modified LGPL notice"
+#, fuzzy
+#| msgid "Modified LGPL notice"
+msgid "Modified LGPL Notice"
 msgstr "修正的LGPL公约"
 
 #: lazarusidestrconsts.lismenuinsertusername
-msgid "Current username"
+#, fuzzy
+#| msgid "Current username"
+msgid "Current Username"
 msgstr "当前用户名"
 
 #: lazarusidestrconsts.lismenuinspect
@@ -10600,11 +10887,15 @@ msgid "&Inspect ..."
 msgstr "查看..."
 
 #: lazarusidestrconsts.lismenujumpback
-msgid "Jump back"
+#, fuzzy
+#| msgid "Jump back"
+msgid "Jump Back"
 msgstr "跳转到后一个"
 
 #: lazarusidestrconsts.lismenujumpforward
-msgid "Jump forward"
+#, fuzzy
+#| msgid "Jump forward"
+msgid "Jump Forward"
 msgstr "跳转到前一个"
 
 #: lazarusidestrconsts.lismenujumpto
@@ -10612,27 +10903,37 @@ msgid "Jump to"
 msgstr "跳到"
 
 #: lazarusidestrconsts.lismenujumptoimplementation
-msgid "Jump to implementation"
+msgid "Jump to Implementation"
 msgstr ""
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
-msgid "Jump to next bookmark"
+#, fuzzy
+#| msgid "Jump to next bookmark"
+msgid "Jump to Next Bookmark"
 msgstr "跳到下一个书签"
 
 #: lazarusidestrconsts.lismenujumptonexterror
-msgid "Jump to next error"
+#, fuzzy
+#| msgid "Jump to next error"
+msgid "Jump to Next Error"
 msgstr "跳到下一个错误"
 
 #: lazarusidestrconsts.lismenujumptoprevbookmark
-msgid "Jump to previous bookmark"
+#, fuzzy
+#| msgid "Jump to previous bookmark"
+msgid "Jump to Previous Bookmark"
 msgstr "跳到前一个书签"
 
 #: lazarusidestrconsts.lismenujumptopreverror
-msgid "Jump to previous error"
+#, fuzzy
+#| msgid "Jump to previous error"
+msgid "Jump to Previous Error"
 msgstr "跳到前一个错误"
 
 #: lazarusidestrconsts.lismenulowercaseselection
-msgid "Lowercase selection"
+#, fuzzy
+#| msgid "Lowercase selection"
+msgid "Lowercase Selection"
 msgstr "转换选区为小写"
 
 #: lazarusidestrconsts.lismenumakeresourcestring
@@ -10648,7 +10949,9 @@ msgid "New ..."
 msgstr "新建..."
 
 #: lazarusidestrconsts.lismenunewpackage
-msgid "New package ..."
+#, fuzzy
+#| msgid "New package ..."
+msgid "New Package ..."
 msgstr "新建包..."
 
 #: lazarusidestrconsts.lismenunewproject
@@ -10656,7 +10959,9 @@ msgid "New Project ..."
 msgstr "新建工程..."
 
 #: lazarusidestrconsts.lismenunewprojectfromfile
-msgid "New Project from file ..."
+#, fuzzy
+#| msgid "New Project from file ..."
+msgid "New Project from File ..."
 msgstr "从文件新建工程..."
 
 #: lazarusidestrconsts.lismenunewunit
@@ -10675,19 +10980,27 @@ msgid "&Open ..."
 msgstr "打开(&O)..."
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
-msgid "Open filename at cursor"
+#, fuzzy
+#| msgid "Open filename at cursor"
+msgid "Open Filename at Cursor"
 msgstr "在光标处打开文件名"
 
 #: lazarusidestrconsts.lismenuopenpackage
-msgid "Open loaded package ..."
+#, fuzzy
+#| msgid "Open loaded package ..."
+msgid "Open Loaded Package ..."
 msgstr "打开装载的包..."
 
 #: lazarusidestrconsts.lismenuopenpackagefile
-msgid "Open package file (.lpk) ..."
+#, fuzzy
+#| msgid "Open package file (.lpk) ..."
+msgid "Open Package File (.lpk) ..."
 msgstr "打开包文件"
 
 #: lazarusidestrconsts.lismenuopenpackageofcurunit
-msgid "Open package of current unit"
+#, fuzzy
+#| msgid "Open package of current unit"
+msgid "Open Package of Current Unit"
 msgstr "打开当前单元的包"
 
 #: lazarusidestrconsts.lismenuopenproject
@@ -10702,8 +11015,8 @@ msgstr "打开最近的文件..."
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
 #, fuzzy
-#| msgid "Open recent package ..."
-msgid "Open recent package"
+#| msgid "Open recent package"
+msgid "Open Recent Package"
 msgstr "打开最近的包..."
 
 #: lazarusidestrconsts.lismenuopenrecentproject
@@ -10726,7 +11039,9 @@ msgid "Package Graph"
 msgstr "包关系图..."
 
 #: lazarusidestrconsts.lismenupackagelinks
-msgid "Package links ..."
+#, fuzzy
+#| msgid "Package links ..."
+msgid "Package Links ..."
 msgstr "包连接关系..."
 
 #: lazarusidestrconsts.lismenupaste
@@ -10768,11 +11083,15 @@ msgid "Publish Project ..."
 msgstr "发布工程..."
 
 #: lazarusidestrconsts.lismenuquickcompile
-msgid "Quick compile"
+#, fuzzy
+#| msgid "Quick compile"
+msgid "Quick Compile"
 msgstr "快速编译"
 
 #: lazarusidestrconsts.lismenuquicksyntaxcheck
-msgid "Quick syntax check"
+#, fuzzy
+#| msgid "Quick syntax check"
+msgid "Quick Syntax Check"
 msgstr "快速语法检查"
 
 #: lazarusidestrconsts.lismenuquicksyntaxcheckok
@@ -10809,17 +11128,21 @@ msgstr "替换(&R) ..."
 
 #: lazarusidestrconsts.lismenureportingbug
 #, fuzzy
-#| msgid "Reporting a bug ..."
+#| msgid "Reporting a bug"
 msgctxt "lazarusidestrconsts.lismenureportingbug"
-msgid "Reporting a bug"
+msgid "Reporting a Bug"
 msgstr "报告 bug..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
-msgid "Rescan FPC source directory"
+#, fuzzy
+#| msgid "Rescan FPC source directory"
+msgid "Rescan FPC Source Directory"
 msgstr "重新扫描 FPC 源代码目录"
 
 #: lazarusidestrconsts.lismenuresetdebugger
-msgid "Reset debugger"
+#, fuzzy
+#| msgid "Reset debugger"
+msgid "Reset Debugger"
 msgstr "重置调试器"
 
 #: lazarusidestrconsts.lismenurestart
@@ -10847,8 +11170,8 @@ msgstr "带参数运行..."
 
 #: lazarusidestrconsts.lismenuruntocursor
 #, fuzzy
-#| msgid "Run to cursor"
-msgid "Run to &cursor"
+#| msgid "Run to &cursor"
+msgid "Run to &Cursor"
 msgstr "运行到光标处"
 
 #: lazarusidestrconsts.lismenusave
@@ -10885,39 +11208,57 @@ msgid "Select"
 msgstr "选择"
 
 #: lazarusidestrconsts.lismenuselectall
-msgid "Select all"
+#, fuzzy
+#| msgid "Select all"
+msgctxt "lazarusidestrconsts.lismenuselectall"
+msgid "Select All"
 msgstr "选择所有"
 
 #: lazarusidestrconsts.lismenuselectcodeblock
-msgid "Select code block"
+#, fuzzy
+#| msgid "Select code block"
+msgid "Select Code Block"
 msgstr "选择代码块"
 
 #: lazarusidestrconsts.lismenuselectline
-msgid "Select line"
+#, fuzzy
+#| msgid "Select line"
+msgid "Select Line"
 msgstr "选择行"
 
 #: lazarusidestrconsts.lismenuselectparagraph
-msgid "Select paragraph"
+#, fuzzy
+#| msgid "Select paragraph"
+msgid "Select Paragraph"
 msgstr "选择一段"
 
 #: lazarusidestrconsts.lismenuselecttobrace
-msgid "Select to brace"
+#, fuzzy
+#| msgid "Select to brace"
+msgid "Select to Brace"
 msgstr "选择到括号"
 
 #: lazarusidestrconsts.lismenuselectword
-msgid "Select word"
+#, fuzzy
+#| msgid "Select word"
+msgid "Select Word"
 msgstr "选择单词"
 
 #: lazarusidestrconsts.lismenusetfreebookmark
-msgid "Set a free bookmark"
+#, fuzzy
+#| msgid "Set a free bookmark"
+msgctxt "lazarusidestrconsts.lismenusetfreebookmark"
+msgid "Set a Free Bookmark"
 msgstr "设置一个自由书签"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-msgid "S&how execution point"
+msgid "S&how Execution Point"
 msgstr ""
 
 #: lazarusidestrconsts.lismenusortselection
-msgid "Sort selection ..."
+#, fuzzy
+#| msgid "Sort selection ..."
+msgid "Sort Selection ..."
 msgstr "排序所选 ..."
 
 #: lazarusidestrconsts.lismenusource
@@ -10926,46 +11267,46 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenustepinto
 #, fuzzy
-#| msgid "Step into"
-msgid "Step in&to"
+#| msgid "Step in&to"
+msgid "Step In&to"
 msgstr "单步进入"
 
 #: lazarusidestrconsts.lismenustepintocontext
-msgid "Step into (Context)"
+msgid "Step Into (Context)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepintoinstr
 msgctxt "lazarusidestrconsts.lismenustepintoinstr"
-msgid "Step into instruction"
+msgid "Step Into Instruction"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepintoinstrhint
 msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
-msgid "Step into instruction"
+msgid "Step Into Instruction"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepout
-msgid "Step o&ut"
+msgid "Step O&ut"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepover
 #, fuzzy
-#| msgid "Step over"
-msgid "&Step over"
+#| msgid "&Step over"
+msgid "&Step Over"
 msgstr "下一步"
 
 #: lazarusidestrconsts.lismenustepovercontext
-msgid "Step over (Context)"
+msgid "Step Over (Context)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepoverinstr
 msgctxt "lazarusidestrconsts.lismenustepoverinstr"
-msgid "Step over instruction"
+msgid "Step Over Instruction"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustepoverinstrhint
 msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
-msgid "Step over instruction"
+msgid "Step Over Instruction"
 msgstr ""
 
 #: lazarusidestrconsts.lismenustop
@@ -10974,11 +11315,13 @@ msgid "Stop"
 msgstr "停止"
 
 #: lazarusidestrconsts.lismenuswapcaseselection
-msgid "Swap case in selection"
+msgid "Swap Case in Selection"
 msgstr ""
 
 #: lazarusidestrconsts.lismenutabstospacesselection
-msgid "Tabs to spaces in selection"
+#, fuzzy
+#| msgid "Tabs to spaces in selection"
+msgid "Tabs to Spaces in Selection"
 msgstr "转换选区制表符转换为空格"
 
 #: lazarusidestrconsts.lismenutemplateabout
@@ -11037,6 +11380,7 @@ msgid "Find"
 msgstr "查找"
 
 #: lazarusidestrconsts.lismenutemplatefindnext
+msgctxt "lazarusidestrconsts.lismenutemplatefindnext"
 msgid "Find Next"
 msgstr "查找下一个"
 
@@ -11088,7 +11432,7 @@ msgid "Undo"
 msgstr "撤销"
 
 #: lazarusidestrconsts.lismenutogglecomment
-msgid "Toggle comment"
+msgid "Toggle Comment in Selection"
 msgstr ""
 
 #: lazarusidestrconsts.lismenutools
@@ -11096,7 +11440,9 @@ msgid "&Tools"
 msgstr "工具(&T)"
 
 #: lazarusidestrconsts.lismenuuncommentselection
-msgid "Uncomment selection"
+#, fuzzy
+#| msgid "Uncomment selection"
+msgid "Uncomment Selection"
 msgstr "取消注释所选"
 
 #: lazarusidestrconsts.lismenuundo
@@ -11105,16 +11451,20 @@ msgid "Undo"
 msgstr "撤销"
 
 #: lazarusidestrconsts.lismenuunindentselection
-msgid "Unindent selection"
+#, fuzzy
+#| msgid "Unindent selection"
+msgid "Unindent Selection"
 msgstr "取消所选缩进"
 
 #: lazarusidestrconsts.lismenuuppercaseselection
-msgid "Uppercase selection"
+#, fuzzy
+#| msgid "Uppercase selection"
+msgid "Uppercase Selection"
 msgstr "转换所选为大写"
 
 #: lazarusidestrconsts.lismenuuseunit
 msgctxt "lazarusidestrconsts.lismenuuseunit"
-msgid "Add unit to uses section ..."
+msgid "Add Unit to Uses Section ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuview
@@ -11141,6 +11491,7 @@ msgid "Call Stack"
 msgstr "调用堆栈"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
+msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
 msgid "Code Browser"
 msgstr "代码浏览"
 
@@ -11165,7 +11516,9 @@ msgid "Event Log"
 msgstr "事件日志"
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
-msgid "Debug output"
+#, fuzzy
+#| msgid "Debug output"
+msgid "Debug Output"
 msgstr "调试输出"
 
 #: lazarusidestrconsts.lismenuviewforms
@@ -11180,8 +11533,10 @@ msgid "History"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
+#, fuzzy
+#| msgid "IDE speed buttons"
 msgctxt "lazarusidestrconsts.lismenuviewidespeedbuttons"
-msgid "IDE speed buttons"
+msgid "IDE Speed Buttons"
 msgstr "IDE快速按钮"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
@@ -11246,7 +11601,9 @@ msgid "ToDo List"
 msgstr "ToDo 列表"
 
 #: lazarusidestrconsts.lismenuviewtoggleformunit
-msgid "Toggle form/unit view"
+#, fuzzy
+#| msgid "Toggle form/unit view"
+msgid "Toggle Form/Unit View"
 msgstr "切换 窗体/单元 视图"
 
 #: lazarusidestrconsts.lismenuviewunitdependencies
@@ -11499,7 +11856,7 @@ msgid "New setting"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
-msgid "New units are added to uses sections:"
+msgid "New units are added to uses sections"
 msgstr ""
 
 #: lazarusidestrconsts.lisno
@@ -11579,7 +11936,9 @@ msgid "No ResourceString Section found"
 msgstr "未找到任何资源字符串节"
 
 #: lazarusidestrconsts.lisnormallythefilterisaregularexpressioninsimplesynta
-msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
+#, fuzzy
+#| msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
+msgid "Normally the filter is a regular expression. In simple syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
 msgstr "通常的过滤器提供正则表达式. 简单语法 a . 是一个正常得字符, a * 代表所有, a ? 代表任何字符, 逗号和分号是二选一的. 例如: 简单语法 *.pas;*.pp 正则表达式应该为 ^(.*\\.pas|.*\\.pp)$"
 
 #: lazarusidestrconsts.lisnostringconstantfound
@@ -11711,7 +12070,9 @@ msgid "No package selected"
 msgstr "没有选择包"
 
 #: lazarusidestrconsts.lisoipopenloadedpackage
-msgid "Open loaded package"
+#, fuzzy
+#| msgid "Open loaded package"
+msgid "Open Loaded Package"
 msgstr "打开装载的包"
 
 #: lazarusidestrconsts.lisoippackagename
@@ -11902,7 +12263,9 @@ msgid "package %s"
 msgstr ""
 
 #: lazarusidestrconsts.lispackageinfo
-msgid "Package Info"
+#, fuzzy
+#| msgid "Package Info"
+msgid "Package info"
 msgstr "包信息"
 
 #: lazarusidestrconsts.lispackagenamebeginswith
@@ -12003,8 +12366,10 @@ msgid "Add an item"
 msgstr "添加一个项目"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
+#, fuzzy
+#| msgid "Add to project"
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
-msgid "Add to project"
+msgid "Add to Project"
 msgstr "添加到工程"
 
 #: lazarusidestrconsts.lispckeditapplychanges
@@ -12146,11 +12511,15 @@ msgid "Read Only: %s"
 msgstr "只读: %s"
 
 #: lazarusidestrconsts.lispckeditrecompileallrequired
-msgid "Recompile all required"
+#, fuzzy
+#| msgid "Recompile all required"
+msgid "Recompile All Required"
 msgstr "重新编译所需要的"
 
 #: lazarusidestrconsts.lispckeditrecompileclean
-msgid "Recompile clean"
+#, fuzzy
+#| msgid "Recompile clean"
+msgid "Recompile Clean"
 msgstr "完全重新编译"
 
 #: lazarusidestrconsts.lispckeditrecompilethisandallrequiredpackages
@@ -12206,7 +12575,9 @@ msgid "Required Packages"
 msgstr "需要的包"
 
 #: lazarusidestrconsts.lispckeditsavepackage
-msgid "Save package"
+#, fuzzy
+#| msgid "Save package"
+msgid "Save Package"
 msgstr "保存包"
 
 #: lazarusidestrconsts.lispckeditstorefilenameasdefaultforthisdependency
@@ -12275,7 +12646,9 @@ msgid "Add paths to dependent packages/projects"
 msgstr "添加依赖的包或者工程的路径"
 
 #: lazarusidestrconsts.lispckoptsauthor
-msgid "Author:"
+#, fuzzy
+#| msgid "Author:"
+msgid "Author"
 msgstr "锚:"
 
 #: lazarusidestrconsts.lispckoptsautomaticallyincrementversiononbuild
@@ -12295,11 +12668,15 @@ msgid "Custom"
 msgstr "自定义"
 
 #: lazarusidestrconsts.lispckoptsdescriptionabstract
-msgid "Description/Abstract"
+#, fuzzy
+#| msgid "Description/Abstract"
+msgid "Description / Abstract"
 msgstr "描述及概要"
 
 #: lazarusidestrconsts.lispckoptsdesigntimeandruntime
-msgid "Designtime and Runtime"
+#, fuzzy
+#| msgid "Designtime and Runtime"
+msgid "Designtime and runtime"
 msgstr "设计时和运行时"
 
 #: lazarusidestrconsts.lispckoptsdesigntimeonly
@@ -12323,7 +12700,9 @@ msgid "Library"
 msgstr "库"
 
 #: lazarusidestrconsts.lispckoptslicense
-msgid "License:"
+#, fuzzy
+#| msgid "License:"
+msgid "License"
 msgstr "许可:"
 
 #: lazarusidestrconsts.lispckoptslinker
@@ -12351,7 +12730,9 @@ msgid "Package Options"
 msgstr "包选项"
 
 #: lazarusidestrconsts.lispckoptspackagetype
-msgid "PackageType"
+#, fuzzy
+#| msgid "PackageType"
+msgid "Package type"
 msgstr "包类型"
 
 #: lazarusidestrconsts.lispckoptsprovides
@@ -12375,7 +12756,9 @@ msgid "This package provides the same as the following packages:"
 msgstr "这个包提供的信息和下列的包相同"
 
 #: lazarusidestrconsts.lispckoptsupdaterebuild
-msgid "Update/Rebuild"
+#, fuzzy
+#| msgid "Update/Rebuild"
+msgid "Update / Rebuild"
 msgstr "更新/重新编译"
 
 #: lazarusidestrconsts.lispckoptsusage
@@ -12462,11 +12845,11 @@ msgid "Remove selected files"
 msgstr ""
 
 #: lazarusidestrconsts.lisperevertpackage
-msgid "Revert package"
+msgid "Revert Package"
 msgstr ""
 
 #: lazarusidestrconsts.lispesavepackageas
-msgid "Save package as"
+msgid "Save Package As ..."
 msgstr ""
 
 #: lazarusidestrconsts.lispeshowdirectoryhierarchy
@@ -12474,11 +12857,13 @@ msgid "Show directory hierarchy"
 msgstr ""
 
 #: lazarusidestrconsts.lispeshowmissingfiles
-msgid "Show missing files"
+msgid "Show Missing Files"
 msgstr ""
 
 #: lazarusidestrconsts.lispesortfiles
-msgid "Sort files"
+#, fuzzy
+#| msgid "Sort files"
+msgid "Sort Files"
 msgstr "排序文件"
 
 #: lazarusidestrconsts.lispesortfilesalphabetically
@@ -13426,8 +13811,10 @@ msgid "The unit name %s%s%s is not a valid pascal identifier."
 msgstr "单元名 %s%s%s 不是有效的 pascal 标识符."
 
 #: lazarusidestrconsts.lisprojaddtoproject
+#, fuzzy
+#| msgid "Add to project"
 msgctxt "lazarusidestrconsts.lisprojaddtoproject"
-msgid "Add to project"
+msgid "Add to Project"
 msgstr "添加到工程"
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
@@ -13464,7 +13851,9 @@ msgid "Project info file detected"
 msgstr "检测到工程信息文件"
 
 #: lazarusidestrconsts.lisprojectinformation
-msgid "Project Information"
+#, fuzzy
+#| msgid "Project Information"
+msgid "Project information"
 msgstr "工程信息"
 
 #: lazarusidestrconsts.lisprojectisrunnable
@@ -13626,12 +14015,20 @@ msgstr "发布的方法"
 msgid "Publish project directory"
 msgstr "发布工程目录"
 
+#: lazarusidestrconsts.lispublishproject
+msgid "Publish Project"
+msgstr ""
+
 #: lazarusidestrconsts.lispublprojinvalidexcludefilter
-msgid "Invalid Exclude filter"
+#, fuzzy
+#| msgid "Invalid Exclude filter"
+msgid "Invalid exclude filter"
 msgstr "无效排除过滤器"
 
 #: lazarusidestrconsts.lispublprojinvalidincludefilter
-msgid "Invalid Include filter"
+#, fuzzy
+#| msgid "Invalid Include filter"
+msgid "Invalid include filter"
 msgstr "无效包含过滤器"
 
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
@@ -13754,7 +14151,9 @@ msgid "Remove from install list"
 msgstr ""
 
 #: lazarusidestrconsts.lisremovefromproject
-msgid "Remove from project"
+#, fuzzy
+#| msgid "Remove from project"
+msgid "Remove from Project"
 msgstr "从工程移除"
 
 #: lazarusidestrconsts.lisremovefromsearchpath
@@ -13866,7 +14265,7 @@ msgid "Resource save error"
 msgstr "资源保存错误"
 
 #: lazarusidestrconsts.lisresourcetypeofnewfiles
-msgid "Resource type of project:"
+msgid "Resource type of project"
 msgstr ""
 
 #: lazarusidestrconsts.lisresponsecontinue
@@ -13935,7 +14334,9 @@ msgid "Run-to failed"
 msgstr "运行到失败处"
 
 #: lazarusidestrconsts.lissamabstractmethodsnotyetoverridden
-msgid "Abstract methods - not yet overridden"
+#, fuzzy
+#| msgid "Abstract methods - not yet overridden"
+msgid "Abstract Methods - not yet overridden"
 msgstr "抽象方法 - 不能重载"
 
 #: lazarusidestrconsts.lissamabstractmethodsof
@@ -13991,7 +14392,9 @@ msgid "Save ..."
 msgstr "保存 ..."
 
 #: lazarusidestrconsts.lissaveallmessagestofile
-msgid "Save all messages to file"
+#, fuzzy
+#| msgid "Save all messages to file"
+msgid "Save All Messages to File"
 msgstr "保存所有消息到文件"
 
 #: lazarusidestrconsts.lissaveallmodified
@@ -14204,6 +14607,7 @@ msgid "Show help"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
+msgctxt "lazarusidestrconsts.lisshowhintsinobjectinspector"
 msgid "Show hints"
 msgstr "在对象观察器中显示提示"
 
@@ -14256,7 +14660,9 @@ msgid "Sibling"
 msgstr "同级别"
 
 #: lazarusidestrconsts.lissimplesyntax
-msgid "Simple Syntax"
+#, fuzzy
+#| msgid "Simple Syntax"
+msgid "Simple syntax"
 msgstr "简单语法"
 
 #: lazarusidestrconsts.lisskiperrors
@@ -14979,7 +15385,7 @@ msgid "The root component can not be deleted."
 msgstr "根组件无法删除."
 
 #: lazarusidestrconsts.listhesefileswillbedeleted
-msgid "These files will be deleted:"
+msgid "These files will be deleted"
 msgstr ""
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
@@ -15741,7 +16147,9 @@ msgid "Use design time packages"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
-msgid "Use Exclude Filter"
+#, fuzzy
+#| msgid "Use Exclude Filter"
+msgid "Use exclude filter"
 msgstr "使用排除过滤器"
 
 #: lazarusidestrconsts.lisuseidentifier
@@ -15753,7 +16161,9 @@ msgid "Use identifier %s in %s at %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseincludefilter
-msgid "Use Include Filter"
+#, fuzzy
+#| msgid "Use Include Filter"
+msgid "Use include filter"
 msgstr "使用包含过滤器"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
@@ -15782,7 +16192,7 @@ msgstr "用户主目录"
 
 #: lazarusidestrconsts.lisuseunit
 msgctxt "lazarusidestrconsts.lisuseunit"
-msgid "Add unit to uses section"
+msgid "Add Unit to Uses Section"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseunitinunit
@@ -15835,6 +16245,7 @@ msgid "Breakpoint Properties ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisviewprojectunits
+msgctxt "lazarusidestrconsts.lisviewprojectunits"
 msgid "View Project Units"
 msgstr "查看工程单元"
 
@@ -15998,7 +16409,9 @@ msgid "&Properties"
 msgstr "属性(&P)"
 
 #: lazarusidestrconsts.liswlwatchlist
-msgid "Watch list"
+#, fuzzy
+#| msgid "Watch list"
+msgid "Watch List"
 msgstr "查看列表"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
@@ -16159,7 +16572,9 @@ msgid "i18n Options"
 msgstr "多语言选项"
 
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
-msgid "Include Version Info in executable"
+#, fuzzy
+#| msgid "Include Version Info in executable"
+msgid "Include version info in executable"
 msgstr "在执行文件中包含版本信息"
 
 #: lazarusidestrconsts.rsiwpcustomposition
@@ -16494,7 +16909,7 @@ msgid "abort build"
 msgstr "中断编译"
 
 #: lazarusidestrconsts.srkmecabstractmethods
-msgid "Abstract methods ..."
+msgid "Abstract Methods ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecaddbpaddress
@@ -16510,7 +16925,9 @@ msgid "add data/watchpoint"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecaddjumppoint
-msgid "Add jump point"
+#, fuzzy
+#| msgid "Add jump point"
+msgid "Add Jump Point"
 msgstr "添加跳转点"
 
 #: lazarusidestrconsts.srkmecaddwatch
@@ -16597,10 +17014,6 @@ msgstr "删除整个文本"
 msgid "Codetools defines editor"
 msgstr "Codetools 自定义编辑器"
 
-#: lazarusidestrconsts.srkmeccodetoolsoptions
-msgid "Codetools options"
-msgstr "CodeTools 选项"
-
 #: lazarusidestrconsts.srkmeccolseldown
 msgid "Column Select Down"
 msgstr ""
@@ -16674,7 +17087,10 @@ msgid "compiler options"
 msgstr "编译选项"
 
 #: lazarusidestrconsts.srkmeccompletecode
-msgid "Complete code"
+#, fuzzy
+#| msgid "Complete code"
+msgctxt "lazarusidestrconsts.srkmeccompletecode"
+msgid "Complete Code"
 msgstr "自动完成代码"
 
 #: lazarusidestrconsts.srkmecconfigbuildfile
@@ -16696,10 +17112,6 @@ msgstr ""
 #: lazarusidestrconsts.srkmeccopyeditorprevwindow
 msgid "Copy editor to prior free window"
 msgstr ""
-
-#: lazarusidestrconsts.srkmeccustomtool
-msgid "Custom tool %d"
-msgstr "自定义工具 %d"
 
 #: lazarusidestrconsts.srkmeccut
 msgid "Cut selection to clipboard"
@@ -16747,7 +17159,7 @@ msgid "Move cursor to absolute beginning"
 msgstr "移动光标到绝对的开始"
 
 #: lazarusidestrconsts.srkmecemptymethods
-msgid "Empty methods ..."
+msgid "Empty Methods ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecenvironmentoptions
@@ -16761,7 +17173,10 @@ msgid "evaluate/modify"
 msgstr "评估/更改"
 
 #: lazarusidestrconsts.srkmecextractproc
-msgid "Extract procedure"
+#, fuzzy
+#| msgid "Extract procedure"
+msgctxt "lazarusidestrconsts.srkmecextractproc"
+msgid "Extract Procedure"
 msgstr "解析过程"
 
 #: lazarusidestrconsts.srkmecexttool
@@ -16773,7 +17188,9 @@ msgid "External tools settings"
 msgstr "外部工具设置"
 
 #: lazarusidestrconsts.srkmecfind
-msgid "Find text"
+#, fuzzy
+#| msgid "Find text"
+msgid "Find Text"
 msgstr "查找下一个"
 
 #: lazarusidestrconsts.srkmecfindblockotherend
@@ -16785,47 +17202,66 @@ msgid "Find block start"
 msgstr "查找块开始"
 
 #: lazarusidestrconsts.srkmecfinddeclaration
-msgid "Find declaration"
+#, fuzzy
+#| msgid "Find declaration"
+msgid "Find Declaration"
 msgstr "查找声明"
 
 #: lazarusidestrconsts.srkmecfindidentifierrefs
-msgid "Find identifier references"
+#, fuzzy
+#| msgid "Find identifier references"
+msgid "Find Identifier References"
 msgstr "查找标识符参考"
 
 #: lazarusidestrconsts.srkmecfindinfiles
-msgid "Find in files"
+#, fuzzy
+#| msgid "Find in files"
+msgid "Find in Files"
 msgstr "在文件中查找"
 
 #: lazarusidestrconsts.srkmecfindnext
-msgid "Find next"
+#, fuzzy
+#| msgid "Find next"
+msgctxt "lazarusidestrconsts.srkmecfindnext"
+msgid "Find Next"
 msgstr "查找下一个"
 
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
-msgid "Find next word occurrence"
+#, fuzzy
+#| msgid "Find next word occurrence"
+msgid "Find Next Word Occurrence"
 msgstr "查找下一个发现的词"
 
 #: lazarusidestrconsts.srkmecfindoverloads
-msgid "Find overloads"
+msgid "Find Overloads"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecfindoverloadscapt
-msgid "Find overloads ..."
+msgid "Find Overloads ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecfindprevious
-msgid "Find previous"
+#, fuzzy
+#| msgid "Find previous"
+msgid "Find Previous"
 msgstr "查找前一个"
 
 #: lazarusidestrconsts.srkmecfindprevwordoccurrence
-msgid "Find previous word occurrence"
+#, fuzzy
+#| msgid "Find previous word occurrence"
+msgid "Find Previous Word Occurrence"
 msgstr "查找前一个发现的词"
 
 #: lazarusidestrconsts.srkmecfindproceduredefinition
-msgid "Find procedure definiton"
+#, fuzzy
+#| msgid "Find procedure definiton"
+msgid "Find Procedure Definiton"
 msgstr "查找过程定义"
 
 #: lazarusidestrconsts.srkmecfindproceduremethod
-msgid "Find procedure method"
+#, fuzzy
+#| msgid "Find procedure method"
+msgid "Find Procedure Method"
 msgstr "查找过程方法"
 
 #: lazarusidestrconsts.srkmecfoldcurrent
@@ -16841,11 +17277,15 @@ msgid "Go to editor %d"
 msgstr "转到编辑器 %d"
 
 #: lazarusidestrconsts.srkmecgotoincludedirective
-msgid "Go to to include directive of current include file"
+#, fuzzy
+#| msgid "Go to to include directive of current include file"
+msgid "Go to include directive of current include file"
 msgstr "前往当前文件包含指示处"
 
 #: lazarusidestrconsts.srkmecgotolinenumber
-msgid "Go to line number"
+#, fuzzy
+#| msgid "Go to line number"
+msgid "Go to Line Number"
 msgstr "跳到行..."
 
 #: lazarusidestrconsts.srkmecgotomarker
@@ -16857,7 +17297,9 @@ msgid "Goto XY"
 msgstr "转到 XY"
 
 #: lazarusidestrconsts.srkmecguessmisplacedifdef
-msgid "Guess misplaced $IFDEF"
+#, fuzzy
+#| msgid "Guess misplaced $IFDEF"
+msgid "Guess Misplaced $IFDEF"
 msgstr "猜测放置错误的 $IFDEF"
 
 #: lazarusidestrconsts.srkmecimestr
@@ -16945,7 +17387,10 @@ msgid "inspect"
 msgstr "查看"
 
 #: lazarusidestrconsts.srkmecinvertassignment
-msgid "Invert assignment"
+#, fuzzy
+#| msgid "Invert assignment"
+msgctxt "lazarusidestrconsts.srkmecinvertassignment"
+msgid "Invert Assignment"
 msgstr "交换赋值"
 
 #: lazarusidestrconsts.srkmeclinebreak
@@ -16973,7 +17418,9 @@ msgid "Lock Editor"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecmakeresourcestring
-msgid "Make resource string"
+#, fuzzy
+#| msgid "Make resource string"
+msgid "Make Resource String"
 msgstr "制作资源字符串"
 
 #: lazarusidestrconsts.srkmecmatchbracket
@@ -17029,7 +17476,9 @@ msgid "Normal selection mode"
 msgstr "正常选择模式"
 
 #: lazarusidestrconsts.srkmecopenfileatcursor
-msgid "Open file at cursor"
+#, fuzzy
+#| msgid "Open file at cursor"
+msgid "Open File at Cursor"
 msgstr "在光标处打开文件"
 
 #: lazarusidestrconsts.srkmecoverwritemode
@@ -17097,19 +17546,27 @@ msgid "remove break point"
 msgstr "移除断点"
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
-msgid "Remove empty methods"
+#, fuzzy
+#| msgid "Remove empty methods"
+msgid "Remove Empty Methods"
 msgstr "移除空方法"
 
 #: lazarusidestrconsts.srkmecremoveunusedunits
-msgid "Remove unused units"
+#, fuzzy
+#| msgid "Remove unused units"
+msgid "Remove Unused Units"
 msgstr "移除未用单元"
 
 #: lazarusidestrconsts.srkmecrenameidentifier
-msgid "Rename identifier"
+#, fuzzy
+#| msgid "Rename identifier"
+msgid "Rename Identifier"
 msgstr "重命名标识符"
 
 #: lazarusidestrconsts.srkmecreplace
-msgid "Replace text"
+#, fuzzy
+#| msgid "Replace text"
+msgid "Replace Text"
 msgstr "替换文本"
 
 #: lazarusidestrconsts.srkmecreportingbug
@@ -17184,10 +17641,12 @@ msgid "SelLeft"
 msgstr "SelLeft"
 
 #: lazarusidestrconsts.srkmecsellineend
+msgctxt "lazarusidestrconsts.srkmecsellineend"
 msgid "Select Line End"
 msgstr "选择到行末"
 
 #: lazarusidestrconsts.srkmecsellinestart
+msgctxt "lazarusidestrconsts.srkmecsellinestart"
 msgid "Select Line Start"
 msgstr "选择到行首"
 
@@ -17196,6 +17655,7 @@ msgid "Select to text start in line"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselpagebottom
+msgctxt "lazarusidestrconsts.srkmecselpagebottom"
 msgid "Select Page Bottom"
 msgstr "选择页移动到底部"
 
@@ -17212,6 +17672,7 @@ msgid "Select Page Right"
 msgstr "选择页右移"
 
 #: lazarusidestrconsts.srkmecselpagetop
+msgctxt "lazarusidestrconsts.srkmecselpagetop"
 msgid "Select Page Top"
 msgstr "选择页移动到最上"
 
@@ -17228,10 +17689,12 @@ msgid "Select Up"
 msgstr "Select Up"
 
 #: lazarusidestrconsts.srkmecselwordleft
+msgctxt "lazarusidestrconsts.srkmecselwordleft"
 msgid "Select Word Left"
 msgstr "左选一个单词"
 
 #: lazarusidestrconsts.srkmecselwordright
+msgctxt "lazarusidestrconsts.srkmecselwordright"
 msgid "Select Word Right"
 msgstr "右选一个单词"
 
@@ -17249,11 +17712,15 @@ msgid "Shift Tab"
 msgstr "Shift Tab"
 
 #: lazarusidestrconsts.srkmecshowabstractmethods
-msgid "Show abstract methods"
+#, fuzzy
+#| msgid "Show abstract methods"
+msgid "Show Abstract Methods"
 msgstr "显示抽象方法"
 
 #: lazarusidestrconsts.srkmecshowcodecontext
-msgid "Show code context"
+#, fuzzy
+#| msgid "Show code context"
+msgid "Show Code Context"
 msgstr "上下文"
 
 #: lazarusidestrconsts.srkmecshowexecutionpoint
@@ -17359,7 +17826,9 @@ msgid "Previous Cell (all selected)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
-msgid "Syntax check"
+#, fuzzy
+#| msgid "Syntax check"
+msgid "Syntax Check"
 msgstr "语法检查"
 
 #: lazarusidestrconsts.srkmectoggleassembler
@@ -17464,7 +17933,7 @@ msgid "unknown editor command"
 msgstr "未知编辑器命令"
 
 #: lazarusidestrconsts.srkmecunusedunits
-msgid "Unused units ..."
+msgid "Unused Units ..."
 msgstr ""
 
 #: lazarusidestrconsts.srkmecuserfirst
@@ -17512,7 +17981,9 @@ msgid "View units"
 msgstr "查看单元"
 
 #: lazarusidestrconsts.srkmecwordcompletion
-msgid "Word completion"
+#, fuzzy
+#| msgid "Word completion"
+msgid "Word Completion"
 msgstr "单词自动完成"
 
 #: lazarusidestrconsts.srkmecwordleft
@@ -17556,11 +18027,11 @@ msgid "Hide comments in selection"
 msgstr ""
 
 #: lazarusidestrconsts.synfunfoldallinselection
-msgid "Unfold all in Selection"
+msgid "Unfold all in selection"
 msgstr ""
 
 #: lazarusidestrconsts.synfunfoldcommentsinselection
-msgid "Unfold comments in Selection"
+msgid "Unfold comments in selection"
 msgstr ""
 
 #: lazarusidestrconsts.uefilerocap
@@ -17611,11 +18082,11 @@ msgid "Copy Filename"
 msgstr "复制文件名"
 
 #: lazarusidestrconsts.uemcopytonewwindow
-msgid "Clone to new Window"
+msgid "Clone to New Window"
 msgstr ""
 
 #: lazarusidestrconsts.uemcopytootherwindow
-msgid "Clone to other Window"
+msgid "Clone to Other Window"
 msgstr ""
 
 #: lazarusidestrconsts.uemcopytootherwindownew
@@ -17633,7 +18104,9 @@ msgid "Debug"
 msgstr "调试"
 
 #: lazarusidestrconsts.uemeditorproperties
-msgid "Editor properties"
+#, fuzzy
+#| msgid "Editor properties"
+msgid "Editor Properties"
 msgstr "编辑器属性"
 
 #: lazarusidestrconsts.uemencoding
@@ -17647,6 +18120,10 @@ msgstr ""
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "查找声明(&F)"
+
+#: lazarusidestrconsts.uemfindinotherwindow
+msgid "Find in other Window"
+msgstr ""
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
@@ -17662,11 +18139,12 @@ msgid "&Inspect ..."
 msgstr "查看..."
 
 #: lazarusidestrconsts.ueminvertassignment
+msgctxt "lazarusidestrconsts.ueminvertassignment"
 msgid "Invert Assignment"
 msgstr "互换指派"
 
 #: lazarusidestrconsts.uemlineending
-msgid "Line ending"
+msgid "Line Ending"
 msgstr ""
 
 #: lazarusidestrconsts.uemlockpage
@@ -17674,27 +18152,27 @@ msgid "&Lock Page"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft
-msgid "Move page left"
+msgid "Move Page Left"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleftmost
-msgid "Move page leftmost"
+msgid "Move Page Leftmost"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovepageright
-msgid "Move page right"
+msgid "Move Page Right"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovepagerightmost
-msgid "Move page rightmost"
+msgid "Move Page Rightmost"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovetonewwindow
-msgid "Move to new Window"
+msgid "Move to New Window"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovetootherwindow
-msgid "Move to other Window"
+msgid "Move to Other Window"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovetootherwindownew
@@ -17703,7 +18181,9 @@ msgid "New Window"
 msgstr ""
 
 #: lazarusidestrconsts.uemnextbookmark
-msgid "Goto next Bookmark"
+#, fuzzy
+#| msgid "Goto next Bookmark"
+msgid "Goto Next Bookmark"
 msgstr "下一个书签"
 
 #: lazarusidestrconsts.uemodified
@@ -17711,7 +18191,9 @@ msgid "Modified"
 msgstr "已更改"
 
 #: lazarusidestrconsts.uemopenfileatcursor
-msgid "&Open file at cursor"
+#, fuzzy
+#| msgid "&Open file at cursor"
+msgid "&Open File at Cursor"
 msgstr "在光标处打开文件(&O)"
 
 #: lazarusidestrconsts.uempaste
@@ -17720,7 +18202,9 @@ msgid "Paste"
 msgstr "粘贴"
 
 #: lazarusidestrconsts.uemprevbookmark
-msgid "Goto previous Bookmark"
+#, fuzzy
+#| msgid "Goto previous Bookmark"
+msgid "Goto Previous Bookmark"
 msgstr "前一个书签"
 
 #: lazarusidestrconsts.uemprocedurejump
@@ -17746,8 +18230,8 @@ msgstr "设置书签(&S)"
 
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
-msgid "Set a free Bookmark"
-msgstr ""
+msgid "Set a Free Bookmark"
+msgstr "设置一个自由书签"
 
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
