@@ -2874,6 +2874,7 @@ resourcestring
   lisLazBuildErrorWritingFile = 'Error writing file';
   lisLazBuildUnableToWriteFile = 'Unable to write file "%s":%s';
   lisLazBuildIDEwithoutPackages = 'IDE without Packages';
+  lisLazBuildNormalIDE = 'Normal IDE';
   lisLazBuildDebugIDE = 'Debug IDE';
   lisLazBuildOptimizedIDE = 'Optimized IDE';
   lisLazCleanUpBuildAll = 'Clean Up + Build all';

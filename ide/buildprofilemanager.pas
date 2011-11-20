@@ -354,6 +354,16 @@ var
 begin
   Platfrm:=GetDefaultLCLWidgetType;
 
+  // Build Normal IDE
+  Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildNormalIDE);
+  with Profile, fOwnerCnt do begin
+    fTargetPlatform:=Platfrm;
+    fIdeBuildMode:=bmBuild;
+    fUpdateRevisionInc:=True;
+  end;
+  // Return this one as default. Needed when building packages without saved profiles.
+  Result:=Add(Profile);
+
   // Build Debug IDE
   Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildDebugIDE);
   with Profile, fOwnerCnt do begin
@@ -367,8 +377,7 @@ begin
     fOptions.Add('-gw -gl -godwarfsets -gh -gt -Co -Cr -Ci -Sa');
     {$ENDIF}
   end;
-  // Return this one as default. Needed when building packages without saved profiles.
-  Result:=Add(Profile);
+  Add(Profile);
 
   // Build Optimised IDE
   Profile:=TBuildLazarusProfile.Create(Self, lisLazBuildOptimizedIDE);
