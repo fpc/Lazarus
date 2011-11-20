@@ -2262,7 +2262,7 @@ begin
   then exit;
   AsmList := TGDBMINameValueList.Create(FItems[Index].AsmEntry);
 
-  FItems[Index].ParsedInfo.SrcFileName := PCLenToString(FItems[Index].SrcFile, True);
+  FItems[Index].ParsedInfo.SrcFileName := ConvertGdbPathAndFile(PCLenToString(FItems[Index].SrcFile, True));
   FItems[Index].ParsedInfo.SrcFileLine := PCLenToInt(FItems[Index].SrcLine, 0);
   // SrcStatementIndex, SrcStatementCount are already set
 
