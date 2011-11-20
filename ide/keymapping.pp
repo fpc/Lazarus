@@ -95,7 +95,10 @@ type
   end;
 
   { TLoadedKeyCommand
-    used for  }
+    Used to keep shortcuts for unknown commands.
+    A command can be unknown, if it is currently not registered, e.g.
+    because the user started an IDE without the package that registered the command.
+    When an IDE with the package is started the shortcut is restored. }
 
   TLoadedKeyCommand = class
   public
@@ -125,8 +128,7 @@ type
     function GetRelationCount: integer;
     function AddCategory(const Name, Description: string;
                          TheScope: TIDECommandScope): integer;
-    function SetLoadedKeyCommand(const Name: string;
-      Command: word; TheKeyA, TheKeyB: TIDEShortCut): TLoadedKeyCommand;
+    function SetKeyCommandToLoadedValues(Cmd: TKeyCommandRelation): TLoadedKeyCommand;
     function AddDefault(Category: TIDECommandCategory;
                         const Name, LocalizedName: string; Command: word):integer;
     procedure SetExtToolCount(NewCount: integer);
@@ -2875,28 +2877,28 @@ begin
   Result:=FRelations.Count;
 end;
 
-function TKeyCommandRelationList.SetLoadedKeyCommand(const Name: string;
-  Command: word; TheKeyA, TheKeyB: TIDEShortCut): TLoadedKeyCommand;
+function TKeyCommandRelationList.SetKeyCommandToLoadedValues(Cmd: TKeyCommandRelation
+  ): TLoadedKeyCommand;
 var
   AVLNode: TAvgLvlTreeNode;
 begin
-  AVLNode:=fLoadedKeyCommands.FindKey(Pointer(Name),@CompareNameWithLoadedKeyCommand);
+  AVLNode:=fLoadedKeyCommands.FindKey(Pointer(Cmd.Name),@CompareNameWithLoadedKeyCommand);
   if AVLNode=nil then begin
     // new key
     Result:=TLoadedKeyCommand.Create;
-    Result.Name:=Name;
-    Result.ShortcutA:=TheKeyA;
-    Result.ShortcutB:=TheKeyB;
-    Result.DefaultShortcutA:=TheKeyA;
-    Result.DefaultShortcutB:=TheKeyB;
+    Result.Name:=Cmd.Name;
+    Result.DefaultShortcutA:=Cmd.ShortcutA;
+    Result.DefaultShortcutB:=Cmd.ShortcutB;
+    Result.ShortcutA:=Result.DefaultShortcutA;
+    Result.ShortcutB:=Result.DefaultShortcutB;
     fLoadedKeyCommands.Add(Result);
   end else begin
     Result:=TLoadedKeyCommand(AVLNode.Data);
-    Result.DefaultShortcutA:=TheKeyA;
-    Result.DefaultShortcutB:=TheKeyB;
+    Result.DefaultShortcutA:=Cmd.ShortcutA;
+    Result.DefaultShortcutB:=Cmd.ShortcutB;
     // old key, values were loaded (key is registered after loading keymapping)
-    TheKeyA:=Result.ShortcutA;
-    TheKeyB:=Result.ShortcutB;
+    Cmd.ShortcutA:=Result.ShortcutA;
+    Cmd.ShortcutB:=Result.ShortcutB;
   end;
 end;
 
@@ -2909,7 +2911,7 @@ begin
   CmdRel.GetDefaultKeyForCommand;
   CmdRel.DefaultShortcutA:=CmdRel.ShortcutA;
   CmdRel.DefaultShortcutB:=CmdRel.ShortcutB;
-  SetLoadedKeyCommand(Name, Command, CmdRel.ShortcutA, CmdRel.ShortcutB);
+  SetKeyCommandToLoadedValues(CmdRel);
   Result:=FRelations.Add(CmdRel);
 end;
 
@@ -3030,6 +3032,7 @@ begin
   if FileVersion>5 then begin
     Cnt:=XMLConfig.GetValue(Path+'Count',0);
     // load all keys from the config, this may be more than the current relations
+    // for example because the command is not yet registered.
     for a:=1 to Cnt do begin
       SubPath:=Path+'Item'+IntToStr(a)+'/';
       Name:=XMLConfig.GetValue(SubPath+'Name','');
@@ -3045,6 +3048,8 @@ begin
       end;
       Load(SubPath+'KeyA/',LoadedKey.ShortcutA,LoadedKey.DefaultShortcutA);
       Load(SubPath+'KeyB/',LoadedKey.ShortcutB,LoadedKey.DefaultShortcutB);
+      //if Name='ShowUnitDictionary' then
+      //  debugln(['TKeyCommandRelationList.LoadFromXMLConfig ',LoadedKey.AsString]);
     end;
     // apply
     for a:=0 to FRelations.Count-1 do begin
@@ -3446,7 +3451,7 @@ begin
   CmdRel:=TKeyCommandRelation.Create(Category as TKeyCommandCategory,
                       NewName, Description, cmd,
                       TheShortcutA, TheShortcutB, OnExecuteMethod, OnExecuteProc);
-  SetLoadedKeyCommand(NewName, cmd, CmdRel.ShortcutA, CmdRel.ShortcutB);
+  SetKeyCommandToLoadedValues(CmdRel);
   FRelations.Add(CmdRel);
   Result:=CmdRel;
 end;
