@@ -1464,7 +1464,7 @@ end;
 
 function TSynHTMLSyn.Func143: TtkTokenKind;
 begin
-  if KeyComp('/DEL') Or KeyComp('/LI') Or KeyComp('/U') then begin
+  if KeyComp('/DEL') Or KeyComp('/LI') Or KeyComp('/U')  Or KeyComp('/BDO') then begin
     Result := tkKey;
   end else begin
     Result := tkUndefKey;
