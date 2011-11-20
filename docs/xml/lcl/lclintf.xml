@@ -168,20 +168,27 @@
 <!-- function Visibility: default -->
       <element name="BeginPaint">
         <short>Start painting in a window.</short>
-        <descr>This function is for use in WM_PAINT handlers only.
-          Not all platforms allow for painting outside WM_PAINT messages.
+        <descr>
+          <p>
+            This function is for use in WM_PAINT handlers only.
+            Not all platforms allow for painting outside WM_PAINT messages.
+          </p><p>
+            BeginPaint prepares the specified window for painting
+            and fills a PAINTSTRUCT structure with information about the painting.
+          </p>
         </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="BeginPaint.Result">
-        <short/>
+        <short>A Device Context for the window, Nil on failure.
+        </short>
       </element>
       <element name="BeginPaint.Handle">
-        <short/>
+        <short>The window Handle.</short>
       </element>
       <element name="BeginPaint.PS">
-        <short/>
+        <short>Will receive painting information.</short>
       </element>
 <!-- function Visibility: default -->
       <element name="BitBlt">
@@ -269,7 +276,7 @@
       </element>
 <!-- function Visibility: default -->
       <element name="CallNextHookEx">
-        <short>Invokes the next installed system Hook handler.
+        <short>Calls the next procedure in the hook chain.
         </short>
         <descr>Useless without SetWindowsHookEx().
           [How to install an system Hook?]
@@ -281,10 +288,10 @@
         <short>Depends on the Hook type.</short>
       </element>
       <element name="CallNextHookEx.hhk">
-        <short>Ignored.</short>
+        <short>Handle of the current hook.</short>
       </element>
       <element name="CallNextHookEx.ncode">
-        <short>The Hook code (ID).</short>
+        <short>The Hook code (message ID).</short>
       </element>
       <element name="CallNextHookEx.WParam">
         <short>Message parameter.</short>
@@ -327,21 +334,18 @@
           <link id="ScreenToClient"/>
         </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ClientToScreen.Result">
         <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ClientToScreen.Handle">
         <short>The window with the client area.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ClientToScreen.P">
         <short>The point to convert.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="CombineRgn">
-        <short>Combines two regions</short>
+        <short>Combines two regions.</short>
         <descr>
           <pre>
 The following parameters are present in this function:
@@ -385,7 +389,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <seealso/>
       </element>
       <element name="CreateBitmap.Result">
-        <short>The bitmap Handle.</short>
+        <short>The bitmap Handle, zero on failure.</short>
       </element>
       <element name="CreateBitmap.Width">
         <short></short>
@@ -397,7 +401,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short>The number of color planes.</short>
       </element>
       <element name="CreateBitmap.BitCount">
-        <short>The number of color bits per pixel.</short>
+        <short>The number of color bits per pixel and plane.</short>
       </element>
       <element name="CreateBitmap.BitmapBits">
         <short>The bitmap pixels. Scanlines must be word-aligned.</short>
@@ -412,7 +416,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <seealso/>
       </element>
       <element name="CreateBrushIndirect.Result">
-        <short>The brush Handle.</short>
+        <short>The brush Handle, zero on failure.</short>
       </element>
       <element name="CreateBrushIndirect.LogBrush">
         <short>Description of the brush.</short>
@@ -449,7 +453,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <seealso/>
       </element>
       <element name="CreateCompatibleBitmap.Result">
-        <short>The bitmap handle.</short>
+        <short>The bitmap handle, zero on failure.</short>
       </element>
       <element name="CreateCompatibleBitmap.DC">
         <short>The Device Context for the bitmap.</short>
@@ -521,7 +525,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short>The type of the bitmap colors, e.g. DIB_RGB_COLORS.</short>
       </element>
       <element name="CreateDIBSection.Bits">
-        <short>Returns the pointer to the bitmap pixels.</short>
+        <short>Pointer to the bitmap pixels.</short>
       </element>
       <element name="CreateDIBSection.SectionHandle">
         <short>Zero or the Handle of a file-mapping object, from which the bitmap is initialized
@@ -533,7 +537,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="CreateEllipticRgn">
-        <short>Creates an elliptical region.</short>
+        <short>Creates an elliptic region.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -623,11 +627,9 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
             The bitmap pattern is repeated for areas of larger width or height,
             it should allow for smooth transitions.
           </p><p>
-            Monochrome bitmaps obtain the text (0) and background (1) color of the DC.
+            Monochrome bitmaps obtain the actual text (0) or background (1) color of the DC.
           </p>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -770,20 +772,20 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="DestroyCaret">
-        <short></short>
+        <short>Destroys the caret but doesn't free the bitmap.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="DestroyCaret.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="DestroyCaret.Handle">
-        <short/>
+        <short>Handle of the window with the caret.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="DestroyCursor">
-        <short></short>
+        <short>Destroys an mouse cursor.</short>
         <descr>
         </descr>
         <errors>
@@ -792,10 +794,10 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         </seealso>
       </element>
       <element name="DestroyCursor.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="DestroyCursor.Handle">
-        <short></short>
+        <short>The cursor Handle.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="DestroyIcon">
@@ -815,7 +817,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="DPtoLP">
-        <short/>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -834,7 +836,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="DrawFrameControl">
-        <short/>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1315,8 +1317,9 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="FrameRect">
-        <short>Draws the border of a rectangle with the brush</short>
-        <descr>Draws the border of a rectangle with the current brush</descr>
+        <short>Draws the border of a rectangle with the brush.</short>
+        <descr>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -2273,7 +2276,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="IntersectClipRect">
-        <short>Shrinks the current clipping region in the device context dc
+        <short>Shrinks the clipping region in an Device Context
           to the boundary defined by Left, Top, Right, Bottom.
         </short>
         <descr>The result can be one of the following constants:<br/>
@@ -2284,29 +2287,25 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
           Region_Error
         </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.LCLType.Region_Error"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="IntersectClipRect.Result">
-        <short/>
+        <short>The region type, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="IntersectClipRect.dc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="IntersectClipRect.Left">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="IntersectClipRect.Top">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="IntersectClipRect.Right">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="IntersectClipRect.Bottom">
         <short/>
       </element>

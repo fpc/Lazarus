@@ -1,0 +1,5039 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="lcl">
+    <!--
+  ====================================================================
+    Win32Int
+  ====================================================================
+-->
+    <module name="Win32Int">
+      <element name="IDC_ARROW">
+        <short>Arrow cursor.</short>
+      </element>
+      <element name="IDC_IBEAM">
+        <short>I-Beam cursor, often used with text controls.</short>
+      </element>
+      <element name="IDC_WAIT">
+        <short>Busy cursor.</short>
+      </element>
+      <element name="IDC_CROSS">
+        <short>Cross cursor.</short>
+      </element>
+      <element name="IDC_UPARROW">
+        <short>Up Arrow cursor.</short>
+      </element>
+      <element name="IDC_SIZE">
+        <short>Sizing cursor.</short>
+      </element>
+      <element name="IDC_ICON">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="IDC_SIZENWSE">
+        <short>Sizing cursor NorthWest to SouthEast.</short>
+      </element>
+      <element name="IDC_SIZENESW">
+        <short>Sizing cursor NorthEast to SouthWest.</short>
+      </element>
+      <element name="IDC_SIZEWE">
+        <short>Horizontal sizing cursor.</short>
+      </element>
+      <element name="IDC_SIZENS">
+        <short>Sizing cursor North to South.</short>
+      </element>
+      <element name="IDC_SIZEALL">
+        <short>All Directions sizing cursor.</short>
+      </element>
+      <element name="IDC_NO">
+        <short>"No" cursor.</short>
+      </element>
+      <element name="IDC_HAND">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="IDC_APPSTARTING">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="IDC_HELP">
+        <short>"What's This" Help cursor.</short>
+      </element>
+      <element name="IDC_NODROP">
+        <short>No Drop Allowed dragging cursor.</short>
+      </element>
+      <element name="IDC_DRAG">
+        <short>Dragging cursor.</short>
+      </element>
+      <element name="IDC_HSPLIT">
+        <short>Horizontal Splitter cursor.</short>
+      </element>
+      <element name="IDC_VSPLIT">
+        <short>Vertical Split cursor.</short>
+      </element>
+      <element name="IDC_MULTIDRAG">
+        <short>Multiple Object dragging cursor.</short>
+      </element>
+      <element name="IDC_SQLWAIT">
+        <short>Waiting for SQL cursor.</short>
+      </element>
+      <element name="IDC_HANDPT">
+        <short>Pointing hand cursor.</short>
+      </element>
+      <element name="LclCursorToWin32CursorMap">
+        <short>Table mapping LCL cursor constants into Windows cursors.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="SKIP_LMCHANGE">
+        <short>Flag used to avoid propagating LM_CHANGE for TCustomCheckBox.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="PPPipeEventInfo" link="TPipeEventInfo"/>
+      <element name="PPipeEventInfo" link="TPipeEventInfo"/>
+      <element name="TPipeEventInfo">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPipeEventInfo.Handle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPipeEventInfo.UserData">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPipeEventInfo.OnEvent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPipeEventInfo.Prev">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TPipeEventInfo.Next">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWaitHandler">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWaitHandler.ListIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWaitHandler.UserData">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWaitHandler.OnEvent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TSocketEvent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TSocketEvent.Result">
+        <short/>
+      </element>
+      <element name="TSocketEvent.ASocket">
+        <short/>
+      </element>
+      <element name="TSocketEvent.Flags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet">
+        <short>The Windows interface class, derived from TWidgetSet.</short>
+      </element>
+      <element name="TWin32WidgetSet.FAppHandle">
+        <short>The parent of all windows, represents the button of the taskbar.</short>
+        <descr>
+          This window also is the owner of the clipboard.
+          Assoc. windowproc also acts as handler for popup menus.
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FDockWndHandle">
+        <short>Handle of the DockRect window.</short>
+        <descr/>
+        <errors>Eats keyboard messages :-(
+        </errors>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FCommonControlsVersion" link="TWin32WidgetSet.CommonControlsVersion"/>
+      <element name="TWin32WidgetSet.FMetrics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FMetricsFailed">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FDefaultFont" link="TWin32WidgetSet.DefaultFont"/>
+      <element name="TWin32WidgetSet.FWaitHandleCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FWaitHandles">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FWaitHandlers">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FWaitPipeHandlers">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FPendingWaitHandlerIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ICC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.InitCommonControlsEx">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FOnAsyncSocketMsg" link="TWin32WidgetSet.OnAsyncSocketMsg"/>
+      <element name="TWin32WidgetSet.FDotsPatternBitmap" link="TWin32WidgetSet.DotsPatternBitmap"/>
+      <element name="TWin32WidgetSet.GetDotsPatternBitmap" link="TWin32WidgetSet.DotsPatternBitmap"/>
+      <element name="TWin32WidgetSet.GetDotsPatternBitmap.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.HandleProcessEvent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.HandleProcessEvent.AData">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.HandleProcessEvent.AFlags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CheckPipeEvents">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.WinRegister">
+        <short>Registers the main window class.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.WinRegister.Result">
+        <short>False on failure.</short>
+      </element>
+      <element name="TWin32WidgetSet.CreateAppHandle" link="TWidgetSet.AppHandle"/>
+      <element name="TWin32WidgetSet.CreateThemeServices" link="#lcl.InterfaceBase.TWidgetSet.ThemeServices"/>
+      <element name="TWin32WidgetSet.CreateThemeServices.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetAppHandle" link="TWidgetSet.AppHandle"/>
+      <element name="TWin32WidgetSet.GetAppHandle.Result">
+        <short>Returns FAppHandle.</short>
+      </element>
+      <element name="TWin32WidgetSet.SetAppHandle" link="TWidgetSet.AppHandle">
+        <short>Sets the application window handle, if not done before.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetAppHandle.AValue">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCallback">
+        <short>Installs an callback for a Lazarus message Msg for Sender[???]</short>
+        <descr>Here: does nothing.</descr>
+        <errors/>
+        <seealso>
+          <link id="TWin32WidgetSet.RemoveCallbacks"/>
+        </seealso>
+      </element>
+      <element name="TWin32WidgetSet.SetCallback.Msg">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCallback.Sender">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RemoveCallbacks">
+        <short>Removes all callbacks for Sender.</short>
+        <descr/>
+        <errors/>
+        <seealso>
+          <link id="TWin32WidgetSet.SetCallback"/>
+        </seealso>
+      </element>
+      <element name="TWin32WidgetSet.RemoveCallbacks.Sender">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Create"/>
+      <element name="TWin32WidgetSet.Destroy"/>
+      <element name="TWin32WidgetSet.LCLPlatform" link="#lcl.InterfaceBase.TWidgetSet.LCLPlatform"/>
+      <element name="TWin32WidgetSet.LCLPlatform.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetLCLCapability" link="#lcl.InterfaceBase.TWidgetSet.GetLCLCapability"/>
+      <element name="TWin32WidgetSet.GetLCLCapability.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetLCLCapability.ACapability">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AppInit" link="#lcl.InterfaceBase.TWidgetSet.AppInit">
+        <short>Initializes the application on the platform, returns Screen information.</short>
+      </element>
+      <element name="TWin32WidgetSet.AppInit.ScreenInfo">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AppMinimize" link="#lcl.InterfaceBase.TWidgetSet.AppMinimize">
+        <short>Minimizes the whole application to the taskbar.</short>
+      </element>
+      <element name="TWin32WidgetSet.AppRestore" link="#lcl.InterfaceBase.TWidgetSet.AppRestore">
+        <short>Restore application previously minimized to the taskbar.</short>
+      </element>
+      <element name="TWin32WidgetSet.AppBringToFront" link="#lcl.InterfaceBase.TWidgetSet.AppBringToFront">
+        <short>Brings the entire application on top of all other non-topmost programs.</short>
+      </element>
+      <element name="TWin32WidgetSet.AppProcessMessages" link="#lcl.InterfaceBase.TWidgetSet.AppProcessMessages">
+        <short>Handles all pending messages.</short>
+      </element>
+      <element name="TWin32WidgetSet.AppWaitMessage" link="#lcl.InterfaceBase.TWidgetSet.AppWaitMessage">
+        <short>Waits for arrival of a message.</short>
+      </element>
+      <element name="TWin32WidgetSet.AppTerminate" link="#lcl.InterfaceBase.TWidgetSet.AppTerminate">
+        <short>Release system resources[?]</short>
+        <descr>Not implemented as: Tells Windows to halt and destroy[?]</descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.AppSetIcon" link="#lcl.InterfaceBase.TWidgetSet.AppSetIcon">
+        <short>Set the icon of the taskbar button.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.AppSetIcon.Small">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AppSetIcon.Big">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AppSetTitle" link="#lcl.InterfaceBase.TWidgetSet.AppSetTitle">
+        <short>Set the title of the taskbar button.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.AppSetTitle.ATitle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AppSetVisible" link="#lcl.InterfaceBase.TWidgetSet.AppSetVisible">
+        <short>Change the visibility of the application window.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.AppSetVisible.AVisible">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AppRemoveStayOnTopFlags" link="#lcl.InterfaceBase.TWidgetSet.AppRemoveStayOnTopFlags">
+        <short>Resets all StayOnTop windows to NoTopmost.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.AppRemoveStayOnTopFlags.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AppRemoveStayOnTopFlags.ASystemTopAlso">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AppRestoreStayOnTopFlags" link="#lcl.InterfaceBase.TWidgetSet.AppRestoreStayOnTopFlags">
+        <short>Sets all windows in the StayOnTop list to TopMost.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.AppRestoreStayOnTopFlags.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AppRestoreStayOnTopFlags.ASystemTopAlso">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AppSetMainFormOnTaskBar" link="#lcl.InterfaceBase.TWidgetSet.AppSetMainFormOnTaskBar">
+        <short>Make the MainForm (in)visible in the TaskBar (exchange with application window).</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.AppSetMainFormOnTaskBar.DoSet">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.InitStockFont" link="#lcl.InterfaceBase.TWidgetSet.InitStockFont">
+        <short>Initializes a font object to an (predefined) stock font.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.InitStockFont.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.InitStockFont.AFont">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.InitStockFont.AStockFont">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DCSetPixel" link="#lcl.InterfaceBase.TWidgetSet.DCSetPixel">
+        <short>Set the color of a pixel on a canvas.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DCSetPixel.CanvasHandle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DCSetPixel.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DCSetPixel.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DCSetPixel.AColor">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DCGetPixel" link="#lcl.InterfaceBase.TWidgetSet.DCGetPixel">
+        <short>Get the color of a pixel on a canvas.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DCGetPixel.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DCGetPixel.CanvasHandle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DCGetPixel.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DCGetPixel.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DCRedraw" link="#lcl.InterfaceBase.TWidgetSet.DCRedraw">
+        <short>Redraws (the window of) a canvas [how?]</short>
+        <descr/>
+        <errors>TODO: implement me!
+        </errors>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DCRedraw.CanvasHandle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetDesigning" link="#lcl.InterfaceBase.TWidgetSet.SetDesigning">
+        <short>[NOP?]</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetDesigning.AComponent">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateTimer" link="#lcl.InterfaceBase.TWidgetSet.CreateTimer">
+        <short>Creates an timer with the given callback method.</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateTimer.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateTimer.Interval">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateTimer.TimerFunc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyTimer" link="#lcl.InterfaceBase.TWidgetSet.DestroyTimer">
+        <short>Destroys an timer.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyTimer.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyTimer.TimerHandle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.HandleWakeMainThread">
+        <short>Wake up GUI thread by sending a message to it.</short>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.HandleWakeMainThread.Sender">
+        <short>Ignored.</short>
+      </element>
+      <element name="TWin32WidgetSet.DefaultFont">
+        <short>The default font of the platform.</short>
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.Arc">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.Arc.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Arc.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Arc.Left">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Arc.Top">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Arc.Right">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Arc.Bottom">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Arc.Angle16Deg">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Arc.Angle16DegLength">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AngleChord">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.AngleChord.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AngleChord.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AngleChord.x1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AngleChord.y1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AngleChord.x2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AngleChord.y2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AngleChord.angle1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AngleChord.angle2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.BeginPaint">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.BeginPaint.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.BeginPaint.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.BeginPaint.PS">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.BitBlt">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.BitBlt.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.BitBlt.DestDC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.BitBlt.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.BitBlt.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.BitBlt.Width">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.BitBlt.Height">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.BitBlt.SrcDC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.BitBlt.XSrc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.BitBlt.YSrc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.BitBlt.Rop">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CallDefaultWndHandler">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CallDefaultWndHandler.Sender">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CallDefaultWndHandler.Message">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CallNextHookEx">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CallNextHookEx.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CallNextHookEx.HHk">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CallNextHookEx.NCode">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CallNextHookEx.WParam">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CallNextHookEx.LParam">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CallWindowProc">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CallWindowProc.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CallWindowProc.LPPrevWndFunc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CallWindowProc.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CallWindowProc.Msg">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CallWindowProc.WParam">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CallWindowProc.LParam">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClientToScreen">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ClientToScreen.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClientToScreen.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClientToScreen.P">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardFormatToMimeType">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardFormatToMimeType.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardFormatToMimeType.FormatID">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetData.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetData.ClipboardType">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetData.FormatID">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetData.Stream">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetFormats">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetFormats.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetFormats.ClipboardType">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetFormats.Count">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetFormats.List">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetOwnerShip">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetOwnerShip.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetOwnerShip.ClipboardType">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetOwnerShip.OnRequestProc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetOwnerShip.FormatCount">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardGetOwnerShip.Formats">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardRegisterFormat">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardRegisterFormat.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ClipboardRegisterFormat.AMimeType">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CombineRgn">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CombineRgn.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CombineRgn.Dest">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CombineRgn.Src1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CombineRgn.Src2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CombineRgn.fnCombineMode">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateBitmap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateBitmap.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateBitmap.Width">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateBitmap.Height">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateBitmap.Planes">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateBitmap.BitCount">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateBitmap.BitmapBits">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateBrushIndirect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateBrushIndirect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateBrushIndirect.LogBrush">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCaret">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCaret.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCaret.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCaret.Bitmap">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCaret.Width">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCaret.Height">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCompatibleBitmap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCompatibleBitmap.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCompatibleBitmap.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCompatibleBitmap.Width">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCompatibleBitmap.Height">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCompatibleDC">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCompatibleDC.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateCompatibleDC.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateDIBSection">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateDIBSection.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateDIBSection.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateDIBSection.p2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateDIBSection.p3">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateDIBSection.p4">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateDIBSection.p5">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateDIBSection.p6">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateEllipticRgn">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateEllipticRgn.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateEllipticRgn.p1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateEllipticRgn.p2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateEllipticRgn.p3">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateEllipticRgn.p4">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateFontIndirect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateFontIndirect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateFontIndirect.LogFont">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateIconIndirect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateIconIndirect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateIconIndirect.IconInfo">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreatePatternBrush">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreatePatternBrush.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreatePatternBrush.ABitmap">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreatePenIndirect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreatePenIndirect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreatePenIndirect.LogPen">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreatePolygonRgn">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreatePolygonRgn.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreatePolygonRgn.Points">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreatePolygonRgn.NumPts">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreatePolygonRgn.FillMode">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRectRgn">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRectRgn.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRectRgn.X1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRectRgn.Y1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRectRgn.X2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRectRgn.Y2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRoundRectRgn">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRoundRectRgn.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRoundRectRgn.X1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRoundRectRgn.Y1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRoundRectRgn.X2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRoundRectRgn.Y2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRoundRectRgn.nWidthEllipse">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRoundRectRgn.nHeightEllipse">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DeleteDC">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DeleteDC.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DeleteDC.HDC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DeleteObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DeleteObject.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DeleteObject.GDIObject">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyCaret">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyCaret.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyCaret.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyCursor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyCursor.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyCursor.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyIcon">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyIcon.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyIcon.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DPtoLP">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DPtoLP.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DPtoLP.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DPtoLP.Points">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DPtoLP.Count">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawEdge">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DrawEdge.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawEdge.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawEdge.Rect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawEdge.Edge">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawEdge.GrfFlags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawFrameControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DrawFrameControl.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawFrameControl.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawFrameControl.Rect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawFrameControl.UType">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawFrameControl.UState">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawFocusRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DrawFocusRect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawFocusRect.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawFocusRect.Rect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DrawText.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawText.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawText.Str">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawText.Count">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawText.Rect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawText.Flags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Ellipse">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.Ellipse.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Ellipse.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Ellipse.X1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Ellipse.Y1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Ellipse.X2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Ellipse.Y2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EmptyClipBoard">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.EmptyClipBoard.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnableScrollBar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.EnableScrollBar.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnableScrollBar.Wnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnableScrollBar.WSBFlags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnableScrollBar.WArrows">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnableWindow">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.EnableWindow.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnableWindow.HWnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnableWindow.BEnable">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EndPaint">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.EndPaint.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EndPaint.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EndPaint.PS">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumDisplayMonitors">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.EnumDisplayMonitors.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumDisplayMonitors.hdc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumDisplayMonitors.lprcClip">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumDisplayMonitors.lpfnEnum">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumDisplayMonitors.dwData">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumFontFamilies">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.EnumFontFamilies.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumFontFamilies.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumFontFamilies.Family">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumFontFamilies.EnumFontFamProc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumFontFamilies.LParam">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumFontFamiliesEx">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.EnumFontFamiliesEx.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumFontFamiliesEx.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumFontFamiliesEx.lpLogFont">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumFontFamiliesEx.Callback">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumFontFamiliesEx.LParam">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnumFontFamiliesEx.flags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExcludeClipRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ExcludeClipRect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExcludeClipRect.dc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExcludeClipRect.Left">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExcludeClipRect.Top">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExcludeClipRect.Right">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExcludeClipRect.Bottom">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtCreatePen">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ExtCreatePen.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtCreatePen.dwPenStyle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtCreatePen.dwWidth">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtCreatePen.lplb">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtCreatePen.dwStyleCount">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtCreatePen.lpStyle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtTextOut">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ExtTextOut.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtTextOut.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtTextOut.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtTextOut.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtTextOut.Options">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtTextOut.Rect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtTextOut.Str">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtTextOut.Count">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtTextOut.Dx">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtSelectClipRGN">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ExtSelectClipRGN.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtSelectClipRGN.dc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtSelectClipRGN.rgn">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtSelectClipRGN.Mode">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FillRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FillRect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FillRect.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FillRect.Rect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FillRect.Brush">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FillRgn">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FillRgn.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FillRgn.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FillRgn.RegionHnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FillRgn.hbr">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FloodFill">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FloodFill.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FloodFill.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FloodFill.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FloodFill.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FloodFill.Color">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FloodFill.FillStyle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FloodFill.Brush">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Frame3D">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.Frame3D.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Frame3D.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Frame3D.ARect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Frame3D.FrameWidth">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Frame3D.Style">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FrameRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FrameRect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FrameRect.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FrameRect.ARect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FrameRect.hBr">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetActiveWindow">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetActiveWindow.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetBitmapBits">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetBitmapBits.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetBitmapBits.Bitmap">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetBitmapBits.Count">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetBitmapBits.Bits">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetBkColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetBkColor.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetBkColor.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetCapture">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetCapture.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetCaretPos">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetCaretPos.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetCaretPos.LPPoint">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetCharABCWidths">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetCharABCWidths.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetCharABCWidths.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetCharABCWidths.P2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetCharABCWidths.P3">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetCharABCWidths.ABCStructs">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetClientBounds">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetClientBounds.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetClientBounds.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetClientBounds.Rect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetClientRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetClientRect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetClientRect.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetClientRect.Rect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetClipBox">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetClipBox.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetClipBox.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetClipBox.lpRect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetClipRGN">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetClipRGN.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetClipRGN.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetClipRGN.RGN">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetCurrentObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetCurrentObject.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetCurrentObject.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetCurrentObject.uObjectType">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetCursorPos">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetCursorPos.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetCursorPos.LPPoint">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDC">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetDC.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDC.HWnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDCOriginRelativeToWindow">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetDCOriginRelativeToWindow.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDCOriginRelativeToWindow.PaintDC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDCOriginRelativeToWindow.WindowHandle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDCOriginRelativeToWindow.OriginDiff">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDeviceCaps">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetDeviceCaps.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDeviceCaps.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDeviceCaps.Index">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDeviceSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetDeviceSize.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDeviceSize.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDeviceSize.P">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDIBits">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetDIBits.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDIBits.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDIBits.Bitmap">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDIBits.StartScan">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDIBits.NumScans">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDIBits.Bits">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDIBits.BitInfo">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDIBits.Usage">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDoubleClickTime">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetDoubleClickTime.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetFocus">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetFocus.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetForegroundWindow">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetForegroundWindow.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetIconInfo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetIconInfo.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetIconInfo.AIcon">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetIconInfo.AIconInfo">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetKeyState">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetKeyState.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetKeyState.NVirtKey">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetMapMode">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetMapMode.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetMapMode.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetMonitorInfo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetMonitorInfo.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetMonitorInfo.hMonitor">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetMonitorInfo.lpmi">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetObject.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetObject.GDIObj">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetObject.BufSize">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetObject.Buf">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetParent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetParent.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetParent.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetProp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetProp.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetProp.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetProp.Str">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetROP2">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetROP2.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetROP2.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetRGNBox">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetRGNBox.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetRGNBox.Rgn">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetRGNBox.lpRect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetScrollInfo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetScrollInfo.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetScrollInfo.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetScrollInfo.BarFlag">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetScrollInfo.ScrollInfo">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetStockObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetStockObject.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetStockObject.Value">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetSysColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetSysColor.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetSysColor.NIndex">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetSysColorBrush">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetSysColorBrush.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetSysColorBrush.nIndex">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetSystemMetrics">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetSystemMetrics.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetSystemMetrics.NIndex">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextColor.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextColor.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentExPoint">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentExPoint.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentExPoint.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentExPoint.Str">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentExPoint.Count">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentExPoint.MaxWidth">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentExPoint.MaxCount">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentExPoint.PartialWidths">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentExPoint.Size">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentPoint">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentPoint.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentPoint.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentPoint.Str">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentPoint.Count">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextExtentPoint.Size">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextMetrics">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextMetrics.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextMetrics.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetTextMetrics.TM">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetViewPortExtEx">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetViewPortExtEx.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetViewPortExtEx.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetViewPortExtEx.Size">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetViewPortOrgEx">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetViewPortOrgEx.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetViewPortOrgEx.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetViewPortOrgEx.P">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowExtEx">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowExtEx.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowExtEx.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowExtEx.Size">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowLong">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowLong.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowLong.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowLong.Int">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowOrgEx">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowOrgEx.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowOrgEx.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowOrgEx.P">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowRect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowRect.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowRect.Rect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowRelativePosition">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowRelativePosition.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowRelativePosition.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowRelativePosition.Left">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowRelativePosition.Top">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowSize.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowSize.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowSize.Width">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetWindowSize.Height">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GradientFill">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GradientFill.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GradientFill.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GradientFill.Vertices">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GradientFill.NumVertices">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GradientFill.Meshes">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GradientFill.NumMeshes">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GradientFill.Mode">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.HideCaret">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.HideCaret.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.HideCaret.HWnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IntersectClipRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.IntersectClipRect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IntersectClipRect.dc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IntersectClipRect.Left">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IntersectClipRect.Top">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IntersectClipRect.Right">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IntersectClipRect.Bottom">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.InvalidateRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.InvalidateRect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.InvalidateRect.AHandle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.InvalidateRect.Rect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.InvalidateRect.BErase">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.InvalidateRgn">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.InvalidateRgn.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.InvalidateRgn.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.InvalidateRgn.Rgn">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.InvalidateRgn.Erase">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IsIconic">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.IsIconic.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IsIconic.handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IsWindow">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.IsWindow.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IsWindow.handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IsWindowEnabled">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.IsWindowEnabled.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IsWindowEnabled.handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IsWindowVisible">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.IsWindowVisible.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IsWindowVisible.handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IsZoomed">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.IsZoomed.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IsZoomed.handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.LineTo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.LineTo.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.LineTo.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.LineTo.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.LineTo.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.LPtoDP">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.LPtoDP.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.LPtoDP.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.LPtoDP.Points">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.LPtoDP.Count">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt.DestDC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt.Width">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt.Height">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt.SrcDC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt.XSrc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt.YSrc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt.Mask">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt.XMask">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt.YMask">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MaskBlt.Rop">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MessageBox">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.MessageBox.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MessageBox.HWnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MessageBox.LPText">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MessageBox.LPCaption">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MessageBox.UType">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MonitorFromPoint">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.MonitorFromPoint.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MonitorFromPoint.ptScreenCoords">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MonitorFromPoint.dwFlags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MonitorFromRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.MonitorFromRect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MonitorFromRect.lprcScreenCoords">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MonitorFromRect.dwFlags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MonitorFromWindow">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.MonitorFromWindow.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MonitorFromWindow.hWnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MonitorFromWindow.dwFlags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MoveToEx">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.MoveToEx.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MoveToEx.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MoveToEx.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MoveToEx.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.MoveToEx.OldPoint">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.OffsetRgn">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.OffsetRgn.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.OffsetRgn.RGN">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.OffsetRgn.nXOffset">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.OffsetRgn.nYOffset">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PeekMessage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.PeekMessage.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PeekMessage.LPMsg">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PeekMessage.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PeekMessage.WMsgFilterMin">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PeekMessage.WMsgFilterMax">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PeekMessage.WRemoveMsg">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Pie">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.Pie.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Pie.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Pie.EllipseX1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Pie.EllipseY1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Pie.EllipseX2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Pie.EllipseY2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Pie.StartX">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Pie.StartY">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Pie.EndX">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Pie.EndY">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PolyBezier">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.PolyBezier.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PolyBezier.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PolyBezier.Points">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PolyBezier.NumPts">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PolyBezier.Filled">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PolyBezier.Continuous">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Polygon">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.Polygon.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Polygon.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Polygon.Points">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Polygon.NumPts">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Polygon.Winding">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Polyline">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.Polyline.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Polyline.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Polyline.Points">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Polyline.NumPts">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PostMessage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.PostMessage.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PostMessage.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PostMessage.Msg">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PostMessage.WParam">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PostMessage.LParam">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PtInRegion">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.PtInRegion.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PtInRegion.Rgn">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PtInRegion.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PtInRegion.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialArc">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RadialArc.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialArc.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialArc.left">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialArc.top">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialArc.right">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialArc.bottom">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialArc.sx">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialArc.sy">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialArc.ex">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialArc.ey">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialChord">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RadialChord.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialChord.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialChord.x1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialChord.y1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialChord.x2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialChord.y2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialChord.sx">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialChord.sy">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialChord.ex">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RadialChord.ey">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RealizePalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RealizePalette.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RealizePalette.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Rectangle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.Rectangle.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Rectangle.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Rectangle.X1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Rectangle.Y1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Rectangle.X2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.Rectangle.Y2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RectVisible">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RectVisible.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RectVisible.dc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RectVisible.ARect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RedrawWindow">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RedrawWindow.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RedrawWindow.Wnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RedrawWindow.lprcUpdate">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RedrawWindow.hrgnUpdate">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RedrawWindow.flags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ReleaseCapture">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ReleaseCapture.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ReleaseDC">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ReleaseDC.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ReleaseDC.Window">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ReleaseDC.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RemoveProp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RemoveProp.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RemoveProp.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RemoveProp.Str">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RestoreDC">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RestoreDC.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RestoreDC.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RestoreDC.SavedDC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RoundRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RoundRect.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RoundRect.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RoundRect.X1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RoundRect.Y1">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RoundRect.X2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RoundRect.Y2">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RoundRect.RX">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RoundRect.RY">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SaveDC">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SaveDC.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SaveDC.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ScreenToClient">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ScreenToClient.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ScreenToClient.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ScreenToClient.P">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ScrollWindowEx">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ScrollWindowEx.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ScrollWindowEx.HWnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ScrollWindowEx.DX">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ScrollWindowEx.DY">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ScrollWindowEx.PRcScroll">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ScrollWindowEx.PRcClip">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ScrollWindowEx.HRgnUpdate">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ScrollWindowEx.PRcUpdate">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ScrollWindowEx.Flags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SelectClipRGN">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SelectClipRGN.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SelectClipRGN.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SelectClipRGN.RGN">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SelectObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SelectObject.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SelectObject.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SelectObject.GDIObj">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SelectPalette">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SelectPalette.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SelectPalette.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SelectPalette.Palette">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SelectPalette.ForceBackground">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SendMessage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SendMessage.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SendMessage.HandleWnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SendMessage.Msg">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SendMessage.WParam">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SendMessage.LParam">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetActiveWindow">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetActiveWindow.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetActiveWindow.Window">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetBkColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetBkColor.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetBkColor.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetBkColor.Color">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetBkMode">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetBkMode.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetBkMode.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetBkMode.BkMode">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetComboMinDropDownSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetComboMinDropDownSize.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetComboMinDropDownSize.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetComboMinDropDownSize.MinItemsWidth">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetComboMinDropDownSize.MinItemsHeight">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetComboMinDropDownSize.MinItemCount">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCapture">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetCapture.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCapture.Value">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCaretPos">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetCaretPos.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCaretPos.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCaretPos.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCaretPosEx">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetCaretPosEx.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCaretPosEx.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCaretPosEx.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCaretPosEx.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCursor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetCursor.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCursor.hCursor">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCursorPos">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetCursorPos.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCursorPos.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetCursorPos.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetFocus">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetFocus.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetFocus.HWnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetForegroundWindow">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetForegroundWindow.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetForegroundWindow.HWnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetMapMode">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetMapMode.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetMapMode.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetMapMode.fnMapMode">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetMenu">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetMenu.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetMenu.AWindowHandle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetMenu.AMenuHandle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetParent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetParent.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetParent.hWndChild">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetParent.hWndParent">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetProp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetProp.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetProp.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetProp.Str">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetProp.Data">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetROP2">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetROP2.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetROP2.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetROP2.Mode">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetScrollInfo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetScrollInfo.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetScrollInfo.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetScrollInfo.SBStyle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetScrollInfo.ScrollInfo">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetScrollInfo.BRedraw">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetStretchBltMode">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetStretchBltMode.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetStretchBltMode.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetStretchBltMode.StretchMode">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetSysColors">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetSysColors.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetSysColors.CElements">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetSysColors.LPAElements">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetSysColors.LPARgbValues">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetTextCharacterExtra">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetTextCharacterExtra.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetTextCharacterExtra._HDC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetTextCharacterExtra.NCharExtra">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetTextColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetTextColor.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetTextColor.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetTextColor.Color">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetViewPortExtEx">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetViewPortExtEx.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetViewPortExtEx.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetViewPortExtEx.XExtent">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetViewPortExtEx.YExtent">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetViewPortExtEx.OldSize">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetViewPortOrgEx">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetViewPortOrgEx.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetViewPortOrgEx.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetViewPortOrgEx.NewX">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetViewPortOrgEx.NewY">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetViewPortOrgEx.OldPoint">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowExtEx">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowExtEx.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowExtEx.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowExtEx.XExtent">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowExtEx.YExtent">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowExtEx.OldSize">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowLong">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowLong.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowLong.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowLong.Idx">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowLong.NewLong">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowOrgEx">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowOrgEx.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowOrgEx.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowOrgEx.NewX">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowOrgEx.NewY">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowOrgEx.OldPoint">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowPos">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowPos.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowPos.HWnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowPos.HWndInsertAfter">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowPos.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowPos.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowPos.CX">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowPos.CY">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowPos.UFlags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowRgn">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowRgn.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowRgn.hWnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowRgn.hRgn">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetWindowRgn.bRedraw">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ShowCaret">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ShowCaret.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ShowCaret.HWnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ShowScrollBar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ShowScrollBar.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ShowScrollBar.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ShowScrollBar.WBar">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ShowScrollBar.BShow">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ShowWindow">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ShowWindow.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ShowWindow.hWnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ShowWindow.nCmdShow">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchBlt">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.StretchBlt.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchBlt.DestDC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchBlt.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchBlt.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchBlt.Width">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchBlt.Height">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchBlt.SrcDC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchBlt.XSrc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchBlt.YSrc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchBlt.SrcWidth">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchBlt.SrcHeight">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchBlt.Rop">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.DestDC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.Width">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.Height">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.SrcDC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.XSrc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.YSrc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.SrcWidth">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.SrcHeight">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.Mask">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.XMask">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.YMask">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.StretchMaskBlt.Rop">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SystemParametersInfo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SystemParametersInfo.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SystemParametersInfo.uiAction">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SystemParametersInfo.uiParam">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SystemParametersInfo.pvParam">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SystemParametersInfo.fWinIni">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.TextOut">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.TextOut.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.TextOut.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.TextOut.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.TextOut.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.TextOut.Str">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.TextOut.Count">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.UpdateWindow">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.UpdateWindow.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.UpdateWindow.Handle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.WindowFromPoint">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.WindowFromPoint.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.WindowFromPoint.Point">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.InitializeCriticalSection">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.InitializeCriticalSection.CritSection">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.EnterCriticalSection">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.EnterCriticalSection.CritSection">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.LeaveCriticalSection">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.LeaveCriticalSection.CritSection">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DeleteCriticalSection">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DeleteCriticalSection.CritSection">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AddEventHandler">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.AddEventHandler.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AddEventHandler.AHandle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AddEventHandler.AFlags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AddEventHandler.AEventHandler">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AddEventHandler.AData">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AddPipeEventHandler">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.AddPipeEventHandler.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AddPipeEventHandler.AHandle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AddPipeEventHandler.AEventHandler">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AddPipeEventHandler.AData">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AddProcessEventHandler">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.AddProcessEventHandler.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AddProcessEventHandler.AHandle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AddProcessEventHandler.AEventHandler">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AddProcessEventHandler.AData">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AllocateHWnd">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.AllocateHWnd.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AllocateHWnd.Method">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AskUser">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.AskUser.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AskUser.DialogCaption">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AskUser.DialogMessage">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AskUser.DialogType">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AskUser.Buttons">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.AskUser.HelpCtx">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateStandardCursor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateStandardCursor.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateStandardCursor.ACursor">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRubberBand">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRubberBand.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRubberBand.ARect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CreateRubberBand.ABrush">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DeallocateHWnd">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DeallocateHWnd.Wnd">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyRubberBand">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DestroyRubberBand.ARubberBand">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawDefaultDockImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DrawDefaultDockImage.AOldRect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawDefaultDockImage.ANewRect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawDefaultDockImage.AOperation">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawGrid">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DrawGrid.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawGrid.R">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawGrid.DX">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.DrawGrid.DY">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtUTF8Out">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ExtUTF8Out.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtUTF8Out.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtUTF8Out.X">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtUTF8Out.Y">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtUTF8Out.Options">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtUTF8Out.Rect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtUTF8Out.Str">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtUTF8Out.Count">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ExtUTF8Out.Dx">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FontCanUTF8">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.FontCanUTF8.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.FontCanUTF8.Font">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetAcceleratorString">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetAcceleratorString.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetAcceleratorString.AVKey">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetAcceleratorString.AShiftState">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetControlConstraints">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetControlConstraints.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetControlConstraints.Constraints">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDesignerDC">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.GetDesignerDC.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.GetDesignerDC.WindowHandle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IntfSendsUTF8KeyPress">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.IntfSendsUTF8KeyPress.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IsDesignerDC">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.IsDesignerDC.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IsDesignerDC.WindowHandle">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.IsDesignerDC.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PromptUser">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.PromptUser.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PromptUser.DialogCaption">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PromptUser.DialogMessage">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PromptUser.DialogType">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PromptUser.Buttons">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PromptUser.ButtonCount">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PromptUser.DefaultIndex">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.PromptUser.EscapeResult">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_CreateBitmaps">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_CreateBitmaps.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_CreateBitmaps.ARawImage">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_CreateBitmaps.ABitmap">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_CreateBitmaps.AMask">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_CreateBitmaps.ASkipMask">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_DescriptionFromBitmap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_DescriptionFromBitmap.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_DescriptionFromBitmap.ABitmap">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_DescriptionFromBitmap.ADesc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_DescriptionFromDevice">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_DescriptionFromDevice.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_DescriptionFromDevice.ADC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_DescriptionFromDevice.ADesc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_FromBitmap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_FromBitmap.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_FromBitmap.ARawImage">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_FromBitmap.ABitmap">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_FromBitmap.AMask">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_FromBitmap.ARect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_FromDevice">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_FromDevice.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_FromDevice.ARawImage">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_FromDevice.ADC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_FromDevice.ARect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_QueryDescription">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_QueryDescription.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_QueryDescription.AFlags">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RawImage_QueryDescription.ADesc">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ReleaseDesignerDC">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.ReleaseDesignerDC.Result">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ReleaseDesignerDC.Window">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.ReleaseDesignerDC.DC">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RemoveEventHandler">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RemoveEventHandler.AHandler">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RemovePipeEventHandler">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RemovePipeEventHandler.AHandler">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.RemoveProcessEventHandler">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.RemoveProcessEventHandler.AHandler">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetRubberBandRect">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.SetRubberBandRect.ARubberBand">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.SetRubberBandRect.ARect">
+        <short/>
+      </element>
+      <element name="TWin32WidgetSet.CommonControlsVersion">
+        <short>Version number of the CommCtrl.dll[?]</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.OnAsyncSocketMsg">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32WidgetSet.DotsPatternBitmap">
+        <short>A dotted bitmap [for Brushes?].</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FWin32List">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FSorted">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FSender">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FlastInsertedIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagSort">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagGetText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagGetTextLen">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagGetCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagResetContent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagDeleteString">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagInsertString">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagAddString">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagGetItemData">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagSetItemData">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagGetItemIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagSetItemIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagGetCaretIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagSetCaretIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagGetSelected">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagsetSelected">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.FFlagInitStorage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.Get">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.Get.Result">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.Get.Index">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.GetCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.GetCount.Result">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.GetObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.GetObject.Result">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.GetObject.Index">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.Put">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.Put.Index">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.Put.S">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.PutObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.PutObject.Index">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.PutObject.AObject">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.SetCapacity">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.SetCapacity.NewCapacity">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.SetUpdateState">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.SetUpdateState.Updating">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.InitFlags">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.SetSorted">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.SetSorted.Val">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.SaveData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.SaveData.Result">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.SaveData.AIndex">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.RestoreData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.RestoreData.AIndex">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.RestoreData.AData">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.Create.List">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.Create.TheOwner">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.Add">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.Add.Result">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.Add.S">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.AddStrings">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.AddStrings.TheStrings">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.Delete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.Delete.Index">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.Insert">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.Insert.Index">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.Insert.S">
+        <short/>
+      </element>
+      <element name="TWin32ListStringList.Sort">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ListStringList.Sorted">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ComboBoxStringList">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ComboBoxStringList.FDropDownCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ComboBoxStringList.SetDropDownCount">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ComboBoxStringList.SetDropDownCount.AValue">
+        <short/>
+      </element>
+      <element name="TWin32ComboBoxStringList.GetComboHeight">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ComboBoxStringList.GetComboHeight.Result">
+        <short/>
+      </element>
+      <element name="TWin32ComboBoxStringList.InitFlags">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ComboBoxStringList.UpdateComboHeight">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ComboBoxStringList.Assign">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ComboBoxStringList.Assign.Source">
+        <short/>
+      </element>
+      <element name="TWin32ComboBoxStringList.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ComboBoxStringList.Delete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ComboBoxStringList.Delete.Index">
+        <short/>
+      </element>
+      <element name="TWin32ComboBoxStringList.Insert">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32ComboBoxStringList.Insert.Index">
+        <short/>
+      </element>
+      <element name="TWin32ComboBoxStringList.Insert.S">
+        <short/>
+      </element>
+      <element name="TWin32ComboBoxStringList.ComboHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32ComboBoxStringList.DropDownCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="PWin32CheckListBoxItemRecord">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxItemRecord">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxItemRecord.TheObject">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxItemRecord.State">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxItemRecord.Enabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.FDefaultItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.GetEnabled">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.GetEnabled.Result">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.GetEnabled.Index">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.GetState">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.GetState.Result">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.GetState.Index">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.GetItemRecord">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.GetItemRecord.Result">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.GetItemRecord.Index">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.GetItemRecord.CreateNew">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.SetEnabled">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.SetEnabled.Index">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.SetEnabled.AValue">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.SetItemRecord">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.SetItemRecord.Index">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.SetItemRecord.ItemRecord">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.SetState">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.SetState.Index">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.SetState.AValue">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.GetObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.GetObject.Result">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.GetObject.Index">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.PutObject">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.PutObject.Index">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.PutObject.AObject">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.SaveData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.SaveData.Result">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.SaveData.AIndex">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.RestoreData">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.RestoreData.AIndex">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.RestoreData.AData">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.Create.List">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.Create.TheOwner">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.DeleteItemRecords">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.DeleteItemRecords.List">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.DeleteItemRecord">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.DeleteItemRecord.List">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.DeleteItemRecord.Index">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.Delete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.Delete.Index">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.Move">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.Move.CurIndex">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.Move.NewIndex">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.Enabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.Enabled.Index">
+        <short/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.State">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWin32CheckListBoxStrings.State.Index">
+        <short/>
+      </element>
+      <element name="Win32WidgetSet">
+        <short>Typed alias for the generic WidgetSet variable.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="BOOL_RESULT">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ClsName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ClsHintName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="EditClsName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ButtonClsName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ComboboxClsName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ListboxClsName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TabControlClsName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ListViewClsName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="LCLComboboxClsName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="LCLListboxClsName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="LCLCheckListboxClsName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ClsNameW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ClsHintNameW">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="WindowProc">
+        <short>The WndProc of all LCL windows.</short>
+        <descr>Translates Windows messages into LCL messages.
+          Invokes the target Dispatch() or "Intf..." methods.
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="WindowProc.Result">
+        <short>0 if Msg is handled.</short>
+      </element>
+      <element name="WindowProc.Window">
+        <short/>
+      </element>
+      <element name="WindowProc.Msg">
+        <short/>
+      </element>
+      <element name="WindowProc.WParam">
+        <short/>
+      </element>
+      <element name="WindowProc.LParam">
+        <short/>
+      </element>
+      <element name="CallDefaultWindowProc">
+        <short>Passes message on to 'default' handler.
+          This can be a control specific window procedure or the default window procedure.
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="CallDefaultWindowProc.Result">
+        <short>0 if Msg is handled</short>
+      </element>
+      <element name="CallDefaultWindowProc.Window">
+        <short/>
+      </element>
+      <element name="CallDefaultWindowProc.Msg">
+        <short/>
+      </element>
+      <element name="CallDefaultWindowProc.WParam">
+        <short/>
+      </element>
+      <element name="CallDefaultWindowProc.LParam">
+        <short/>
+      </element>
+      <short>The Windows interface for the LCL.</short>
+    </module>
+    <!-- Win32Int -->
+  </package>
+</fpdoc-descriptions>

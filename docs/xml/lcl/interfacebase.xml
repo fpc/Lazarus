@@ -220,6 +220,9 @@
       <element name="TLCLPlatform.lpAndroid">
         <short></short>
       </element>
+      <element name="TLCLPlatform.lpCustomDrawn">
+        <short></short>
+      </element>
       <!-- set type Visibility: default -->
       <element name="TLCLPlatforms" link="TLCLPlatform"/>
       <!-- enumeration type Visibility: default -->
@@ -477,7 +480,6 @@
             The declaration contains a number of specific methods for interfacing with the operating system.
           </p>
         </descr>
-        <errors/>
         <seealso/>
       </element>
       <!-- variable Visibility: protected -->
@@ -490,59 +492,27 @@
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TWidgetSet.CreateThemeServices">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TWidgetSet.CreateThemeServices" link="TWidgetSet.ThemeServices"/>
       <element name="TWidgetSet.CreateThemeServices.Result">
         <short></short>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TWidgetSet.GetAppHandle">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TWidgetSet.GetAppHandle" link="TWidgetSet.AppHandle"/>
       <element name="TWidgetSet.GetAppHandle.Result">
         <short></short>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TWidgetSet.SetAppHandle">
-      <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TWidgetSet.SetAppHandle" link="TWidgetSet.AppHandle"/>
       <element name="TWidgetSet.SetAppHandle.AValue">
         <short></short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TWidgetSet.Create"/>
       <!-- procedure Visibility: public -->
-      <element name="TWidgetSet.BeforeDestruction">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="TWidgetSet.BeforeDestruction"/>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppInit">
-        <short></short>
+        <short>Initializes the application on the platform, returns Screen information.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -565,7 +535,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppWaitMessage">
-        <short></short>
+        <short>Waits for arrival of a message.</short>
         <descr>
         </descr>
         <errors>
@@ -575,7 +545,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppProcessMessages">
-        <short></short>
+        <short>Handles all pending messages.</short>
         <descr>
         </descr>
         <errors>
@@ -585,42 +555,39 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppTerminate">
-        <short></short>
-        <descr/>
+        <short>Release system resources[?]</short>
+        <descr></descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppMinimize">
-        <short></short>
+        <short>Minimizes the whole application to the taskbar.</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.AppRestore"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppRestore">
-        <short></short>
+        <short>Restore application previously minimized to the taskbar.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TWidgetSet.AppMinimize"/>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppBringToFront">
-        <short></short>
+        <short>Brings the entire application on top of all other non-topmost programs.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetIcon">
-        <short></short>
+        <short>Set the icon of the taskbar button.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -645,11 +612,9 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetVisible">
-        <short></short>
+        <short>Change the visibility of the application window.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -658,27 +623,23 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AppRemoveStayOnTopFlags">
-        <short></short>
+        <short>Resets all StayOnTop windows to NoTopmost.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.AppRemoveStayOnTopFlags.Result">
-        <short></short>
+        <short>False on failure[?]</short>
       </element>
       <element name="TWidgetSet.AppRemoveStayOnTopFlags.ASystemTopAlso">
-        <short></short>
+        <short>Also system-wide StayOnTop windows?</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AppRestoreStayOnTopFlags">
-        <short></short>
+        <short>Sets all windows in the StayOnTop list to TopMost.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -686,11 +647,11 @@
         <short></short>
       </element>
       <element name="TWidgetSet.AppRestoreStayOnTopFlags.ASystemTopAlso">
-        <short></short>
+        <short>Also system-wide StayOnTop windows?</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetMainFormOnTaskBar">
-        <short></short>
+        <short>Make the MainForm (in)visible in the TaskBar (exchange with application window).</short>
         <descr>
         </descr>
         <errors>
@@ -699,15 +660,13 @@
         </seealso>
       </element>
       <element name="TWidgetSet.AppSetMainFormOnTaskBar.DoSet">
-        <short></short>
+        <short>The visibility of the MainForm in the TaskBar.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.LCLPlatform">
-        <short></short>
+        <short>Returns the widgetset in use.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -716,16 +675,14 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetLCLCapability">
-        <short></short>
+        <short>Checks the widgetset for available capabilities.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.GetLCLCapability.Result">
-        <short></short>
+        <short>LCL_CAPABILITY_NO, LCL_CAPABILITY_YES, or a pointer[?]</short>
       </element>
       <element name="TWidgetSet.GetLCLCapability.ACapability">
         <short></short>
@@ -832,7 +789,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.InitStockFont">
-        <short></short>
+        <short>Initializes a font object to an (predefined) stock font.</short>
         <descr>
         </descr>
         <errors>
@@ -841,17 +798,17 @@
         </seealso>
       </element>
       <element name="TWidgetSet.InitStockFont.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.InitStockFont.AFont">
-        <short></short>
+        <short>The font to initialize.</short>
       </element>
       <element name="TWidgetSet.InitStockFont.AStockFont">
-        <short></short>
+        <short>The predefined font to use.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsHelpKey">
-        <short></short>
+        <short>[?]</short>
         <descr>
         </descr>
         <errors>
@@ -870,36 +827,41 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateTimer">
-        <short></short>
+        <short>Creates an timer with the given callback method.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.CreateTimer.Result">
-        <short/>
+        <short>The timer ID, zero on failure.</short>
+        <seealso>
+          <link id="TWidgetSet.DestroyTimer"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.CreateTimer.Interval">
-        <short/>
+        <short>The time interval.</short>
       </element>
       <element name="TWidgetSet.CreateTimer.TimerProc">
-        <short></short>
+        <short>The callback method.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DestroyTimer">
-        <short></short>
+        <short>Destroys an timer.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.CreateTimer"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.DestroyTimer.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.DestroyTimer.TimerHandle">
-        <short/>
+        <short>The timer ID.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWidgetSet.AppHandle">
-        <short></short>
+        <short>Handle to which application messages can be sent[?]</short>
         <descr>
         </descr>
         <seealso>
@@ -907,16 +869,25 @@
       </element>
 <!-- function Visibility: public -->
       <element name="TWidgetSet.Arc">
-        <short></short>
-        <descr/>
+        <short>Use Arc to draw an elliptically curved line with the current Pen.</short>
+        <descr>
+          <p>
+            The arc is (part of) an ellipse in a bounding rectangle.
+          </p><p>
+            The angles angle1 and angle2 are 1/16th of a degree. For example, a full
+            circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
+            counter-clockwise while negative values mean clockwise direction.
+            Zero degrees is at the 3'o clock position.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.Arc.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.Arc.DC">
-        <short/>
+        <short></short>
       </element>
       <element name="TWidgetSet.Arc.Left">
         <short></short>
@@ -931,21 +902,30 @@
         <short></short>
       </element>
       <element name="TWidgetSet.Arc.Angle16Deg">
-        <short></short>
+        <short>base angle</short>
       </element>
       <element name="TWidgetSet.Arc.Angle16DegLength">
-        <short></short>
+        <short>angle length</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AngleChord">
-        <short/>
-        <descr/>
+        <short>Use AngleChord to draw a filled Chord shape on a canvas.</short>
+        <descr>
+          <p>
+            The chord is outlined with the current pen, and filled with the current brush.
+          </p><p>
+            The angles angle1 and angle2 are 1/16th of a degree. For example, a full circle equals 5760
+            16*360). Positive values of Angle and AngleLength mean counter-clockwise while
+            negative values mean clockwise direction. Zero degrees is at the 3'o clock
+            position.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TWidgetSet.AngleChord.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.AngleChord.DC">
         <short/>
@@ -963,255 +943,307 @@
         <short></short>
       </element>
       <element name="TWidgetSet.AngleChord.angle1">
-        <short/>
+        <short>Base angle.</short>
       </element>
       <element name="TWidgetSet.AngleChord.angle2">
-        <short/>
+        <short>Angle length.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.BeginPaint">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Start painting in a window.</short>
+        <descr>
+          <p>
+            This function is for use in WM_PAINT handlers only.
+            Not all platforms allow for painting outside WM_PAINT messages.
+          </p><p>
+            BeginPaint prepares the specified window for painting
+            and fills a PAINTSTRUCT structure with information about the painting.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TWidgetSet.BeginPaint.Result">
-        <short/>
+        <short>A Device Context for the window, Nil on failure.</short>
       </element>
       <element name="TWidgetSet.BeginPaint.Handle">
-        <short/>
+        <short>The window Handle.</short>
       </element>
       <element name="TWidgetSet.BeginPaint.PS">
-        <short/>
+        <short>Will receive painting information.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.BitBlt">
-        <short/>
-        <descr/>
+        <short>Copies a bitmap from a source DC into a destination DC,
+          using the specified raster operation.
+        </short>
+        <descr>
+          <p>
+            This routine implements the equivalent Windows GDI API
+            of the same name in all platforms supported by Lazarus.
+            It copies a section of a Canvas to another one, without any stretching.
+            It allows to select the kind of operation which should be
+            performed to draw the pixels into the destination in the parameter ROP.
+            Allowed operations go from simply copying the pixels without change
+            to inverting them and also to executing logical operations involving the source pixels and the previously
+            existing pixels in the destination Canvas.
+          </p><p>
+            For normal usage one should only use SRCOPY in the ROP parameter,
+            other operations may not be supported by all widgetsets.
+          </p><p>
+            There exist 16 raster operations, according to the possible combinations
+            of two (boolean) values.
+            Excluding the NOP case, that doesn't modify the target area,
+            the possible values for ROP are:</p>
+          <ul>
+            <li>BLACKNESS - Fills the destination rectangle with black</li>
+            <li>DSTINVERT - Inverts the colors of the destination area</li>
+            <li>MERGECOPY -</li>
+            <li>MERGEPAINT -</li>
+            <li>NOTSRCCOPY -</li>
+            <li>NOTSRCERASE -</li>
+            <li>PATCOPY -</li>
+            <li>PATINVERT -</li>
+            <li>PATPAINT -</li>
+            <li>SRCAND -</li>
+            <li>SRCCOPY -</li>
+            <li>SRCERASE -</li>
+            <li>SRCINVERT -</li>
+            <li>SRCPAINT - Combines the colors of the source and the destination using the operator OR on each pixel</li>
+            <li>WHITENESS - Fills the destination rectangle with white</li>
+          </ul>
+          <p>These flags can be added to above ROPs:
+          </p>
+          <ul>
+            <li>CAPTUREBLT - Includes windows which are on top of the specified Canvas.
+              This option is not recommended and is very hard to implement in all supported platforms.
+            </li>
+            <li>NOMIRRORBITMAP - Prevents the bitmap from being mirrored.
+              (The coordinates are sorted before painting?)
+            </li>
+          </ul>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.BitBlt.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.BitBlt.DestDC">
-        <short/>
+        <short>The destination Device Context.</short>
       </element>
       <element name="TWidgetSet.BitBlt.X">
-        <short/>
+        <short>The origin in the destination DC.</short>
       </element>
       <element name="TWidgetSet.BitBlt.Y">
-        <short/>
+        <short>The origin in the destination DC.</short>
       </element>
       <element name="TWidgetSet.BitBlt.Width">
-        <short/>
+        <short>The image size.</short>
       </element>
       <element name="TWidgetSet.BitBlt.Height">
-        <short/>
+        <short>The image size.</short>
       </element>
       <element name="TWidgetSet.BitBlt.SrcDC">
-        <short/>
+        <short>The source Device Context.</short>
       </element>
       <element name="TWidgetSet.BitBlt.XSrc">
-        <short/>
+        <short>The origin in the source DC.</short>
       </element>
       <element name="TWidgetSet.BitBlt.YSrc">
-        <short/>
+        <short>The origin in the source DC.</short>
       </element>
       <element name="TWidgetSet.BitBlt.Rop">
-        <short/>
+        <short>The raster operation.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CallNextHookEx">
-        <short/>
-        <descr/>
+        <short>Calls the next procedure in the hook chain.</short>
+        <descr>Useless without SetWindowsHookEx().
+          [How to install an system Hook?]
+          [Which hook types exist?]
+        </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CallNextHookEx.Result">
-        <short/>
+        <short>Depends on the Hook type.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CallNextHookEx.hhk">
-        <short/>
+        <short>Handle of the current hook.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CallNextHookEx.ncode">
-        <short/>
+        <short>The Hook code (message ID).</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CallNextHookEx.WParam">
-        <short/>
+        <short>Message parameter.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CallNextHookEx.LParam">
-        <short/>
+        <short>Message parameter.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CallWindowProc">
-        <short/>
+        <short>Calls another Window procedure, to handle a message.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CallWindowProc.Result">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CallWindowProc.lpPrevWndFunc">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CallWindowProc.Handle">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CallWindowProc.Msg">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CallWindowProc.WParam">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CallWindowProc.LParam">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.ClienttoScreen">
-        <short/>
+      <element name="TWidgetSet.ClientToScreen">
+        <short>Converts (relative) Client coordinates into absolute Screen coordinates.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.ClienttoScreen.Result">
-        <short/>
+      <element name="TWidgetSet.ClientToScreen.Result">
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.ClienttoScreen.Handle">
-        <short/>
+      <element name="TWidgetSet.ClientToScreen.Handle">
+        <short>The window with the client area.</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.ClienttoScreen.P">
-        <short/>
+      <element name="TWidgetSet.ClientToScreen.P">
+        <short>The point to convert.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CombineRgn">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Combines two regions.</short>
+        <descr>
+          <p>The Destination must already be initialized.
+            The Return value is the Destination's Region type, or ERROR (0).
+          </p><p>
+            fnCombineMode can be one of:
+          </p>
+          <ul>
+            <li>
+              RGN_AND  : Gets a region of all points which are in both source regions.
+            </li><li>
+              RGN_COPY : Gets an exact copy of the first source region.
+            </li><li>
+              RGN_DIFF : Gets a region of all points which are in the first source region
+              but not in the second.(Src1 - Src2)
+            </li><li>
+              RGN_OR   : Gets a region of all points which are in either the first
+                 source region or in the second.(Src1 + Src2)
+            </li><li>
+              RGN_XOR  : Gets all points which are in either the first Source Region
+                 or in the second, but not in both.
+            </li>
+          </ul>
+        </descr>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CombineRgn.Result">
-        <short/>
+        <short>The Destination's Region type, or ERROR (0).</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CombineRgn.Dest">
-        <short/>
+        <short>The Handle of the destination region. This region must already exist!
+        </short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CombineRgn.Src1">
-        <short/>
+        <short>The handle of a region to combine.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CombineRgn.Src2">
-        <short/>
+        <short>The handle of a region to combine.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CombineRgn.fnCombineMode">
-        <short/>
+        <short>How the regions are combined.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateBitmap">
-        <short/>
+        <short>Creates a bitmap with the specified width, height, and color format (color planes and bits per pixel).
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreateBitmap.Result">
-        <short/>
+        <short>The bitmap Handle, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateBitmap.Width">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateBitmap.Height">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateBitmap.Planes">
-        <short/>
+        <short>The number of color planes.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateBitmap.BitCount">
-        <short/>
+        <short>The number of color bits per pixel and plane.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateBitmap.BitmapBits">
-        <short/>
+        <short>Pointer to array containing color data.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateBrushIndirect">
-        <short/>
+        <short>Creates a logical brush that has the specified style, color, and pattern.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreateBrushIndirect.Result">
-        <short/>
+        <short>The brush Handle, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateBrushIndirect.LogBrush">
-        <short/>
+        <short>Description of the brush.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateCaret">
-        <short/>
+        <short>Creates a new shape for the system caret
+          and assigns ownership of the caret to the specified window.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreateCaret.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateCaret.Handle">
-        <short/>
+        <short>The window that owns the caret.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateCaret.Bitmap">
-        <short/>
+        <short>Bitmap Handle, or zero for a solid (black) caret, 1 for a grey caret.
+        </short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.CreateCaret.width">
-        <short/>
+      <element name="TWidgetSet.CreateCaret.Width">
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateCaret.Height">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateCompatibleBitmap">
-        <short/>
+        <short>Creates a bitmap that is compatible with the given DC.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreateCompatibleBitmap.Result">
-        <short/>
+        <short>The bitmap handle, zero on failure.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateCompatibleBitmap.DC">
-        <short/>
+        <short>The Device Context for the bitmap.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateCompatibleBitmap.Width">
@@ -1223,99 +1255,86 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateCompatibleDC">
-        <short/>
+        <short>Creates an memory Device Context, compatible with the device of the given DC.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreateCompatibleDC.Result">
-        <short/>
+        <short>The memory DC, zero on failure.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateCompatibleDC.DC">
-        <short/>
+        <short>The device DC.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateDIBitmap">
-        <short/>
-        <descr/>
+        <short>Creates a Device Dependent Bitmap (DDB) from a Device Independent Bitmap (DIB).</short>
+        <descr>[not implemented?]</descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreateDIBitmap.Result">
-        <short/>
+        <short>The bitmap handle, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateDIBitmap.DC">
-        <short/>
+        <short>The context for the DDB.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateDIBitmap.InfoHeader">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateDIBitmap.dwUsage">
-        <short/>
+        <short>[?]</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateDIBitmap.InitBits">
-        <short/>
+        <short>An array containing the bitmap pixels.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateDIBitmap.InitInfo">
-        <short/>
+        <short>CBM_INIT when InitBits contains valid data, else zero.[?]</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateDIBitmap.wUsage">
-        <short/>
+        <short>[?]</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateDIBSection">
-        <short/>
+        <short>Creates a bitmap into which the application can write.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreateDIBSection.Result">
-        <short/>
+        <short>The bitmap Handle, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateDIBSection.DC">
-        <short/>
+        <short>The DC for the bitmap.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateDIBSection.BitmapInfo">
-        <short/>
+        <short>Contains all information about the bitmap, except the pixels.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateDIBSection.Usage">
-        <short/>
+        <short>The type of the bitmap colors, e.g. DIB_RGB_COLORS.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateDIBSection.Bits">
-        <short/>
+        <short>Pointer to the bitmap pixels.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateDIBSection.SectionHandle">
-        <short/>
+        <short>Zero or the Handle of a file-mapping object, from which the bitmap is initialized
+          (needs CreateFileMapping).
+        </short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.CreateDIBSection.Offset">
-        <short/>
+        <short>The offset to the bitmap bits in the file-mapping object.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateEllipticRgn">
-        <short/>
+        <short>Creates an elliptic region, bounded by the given rectangle.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreateEllipticRgn.Result">
-        <short/>
+        <short>The region Handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreateEllipticRgn.X1">
         <short></short>
@@ -1331,120 +1350,138 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateFontIndirect">
-        <short/>
+        <short>Creates an logical font, selectable into any DC.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.CreateFontIndirectEx"/>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TWidgetSet.CreateFontIndirect.Result">
-        <short/>
+        <short>The font handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreateFontIndirect.LogFont">
-        <short/>
+        <short>The font description.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateFontIndirectEx">
-        <short/>
+        <short>Creates an logical font, selectable into any DC. Allows for an long fontname.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.CreateFontIndirect"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.CreateFontIndirectEx.Result">
-        <short/>
+        <short>The font handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreateFontIndirectEx.LogFont">
-        <short/>
+        <short>The font description.</short>
       </element>
       <element name="TWidgetSet.CreateFontIndirectEx.LongFontName">
-        <short/>
+        <short>The font name, can be longer than 32 characters.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateIconIndirect">
-        <short></short>
+        <short>Creates an icon or cursor.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.CreateIconIndirect.Result">
-        <short></short>
+        <short>The Handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreateIconIndirect.IconInfo">
         <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreatePalette">
-        <short/>
+        <short>Creates a logical palette, selectable into any DC.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.CreatePalette.Result">
-        <short/>
+        <short>The palette Handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreatePalette.LogPalette">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreatePatternBrush">
-        <short></short>
+        <short>Creates a logical brush, selectable into any DC.</short>
         <descr>
+          <p>
+            The bitmap pattern is repeated for areas of larger width or height,
+            it should allow for smooth transitions.
+          </p><p>
+            Monochrome bitmaps obtain the actual text (0) or background (1) color of the DC.
+          </p>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.CreatePatternBrush.Result">
-        <short></short>
+        <short>The brush handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreatePatternBrush.ABitmap">
-        <short></short>
+        <short>The bitmap to use for the brush.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreatePenIndirect">
-        <short/>
+        <short>Creates an logical Pen, selectable into any DC.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.CreatePenIndirect.Result">
-        <short/>
+        <short>The pen Handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreatePenIndirect.LogPen">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreatePolygonRgn">
-        <short/>
-        <descr/>
+        <short>Creates a polygonial region.</short>
+        <descr>
+          <p>
+            The Points parameter is an array of points that give the vertices of the polygon.
+            The connections between two points can cross others.
+          </p><p>
+            FillMode determines what points are going to be included in the region.
+            When FillMode=Winding points are selected by using the Winding fill algorithm.
+            When FillMode=ALTERNATE points are selected by using using the
+            even-odd (alternative) fill algorithm.
+          </p><p>
+            The last point is connected to the first point, to close the region.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.CreatePolygonRgn.Result">
-        <short/>
+        <short>The region Handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreatePolygonRgn.Points">
-        <short/>
+        <short>The array of points.</short>
       </element>
       <element name="TWidgetSet.CreatePolygonRgn.NumPts">
-        <short/>
+        <short>The number of points in Points.</short>
       </element>
       <element name="TWidgetSet.CreatePolygonRgn.FillMode">
-        <short/>
+        <short>Can be ALTERNATE or WINDING.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateRectRgn">
-        <short/>
+        <short>Creates a rectangular region.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.CreateRectRgn.Result">
-        <short/>
+        <short>The region handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreateRectRgn.X1">
         <short/>
@@ -1460,16 +1497,15 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateRoundRectRgn">
-        <short></short>
+        <short>Creates a rectangular region with rounded corners.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.CreateRoundRectRgn.Result">
-        <short></short>
+        <short>The region Handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreateRoundRectRgn.X1">
         <short></short>
@@ -1484,16 +1520,18 @@
         <short></short>
       </element>
       <element name="TWidgetSet.CreateRoundRectRgn.nWidthEllipse">
-        <short></short>
+        <short>The extent of the ellipse, used for the rounded corners.</short>
       </element>
       <element name="TWidgetSet.CreateRoundRectRgn.nHeightEllipse">
-        <short></short>
+        <short>The extent of the ellipse, used for the rounded corners.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DeleteCriticalSection">
-        <short/>
+        <short>Deletes an unowned crititcal section.</short>
         <descr/>
-        <errors/>
+        <errors>Results are unpredictable when the section is owned,
+          i.e. has been entered but not yet left.
+        </errors>
         <seealso/>
       </element>
       <element name="TWidgetSet.DeleteCriticalSection.CritSection">
@@ -1501,58 +1539,61 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DeleteDC">
-        <short/>
+        <short>Deletes an Device Context, created by CreateDC.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.ReleaseDC"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.DeleteDC.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.DeleteDC.hDC">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DeleteObject">
-        <short/>
+        <short>Deletes a graphic object, freeing all system resources
+          associated with the object.
+        </short>
         <descr/>
-        <errors/>
+        <errors>The function fails when the Handle is selected into an DC.
+        </errors>
         <seealso/>
       </element>
       <element name="TWidgetSet.DeleteObject.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.DeleteObject.GDIObject">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DestroyCaret">
-        <short/>
+        <short>Destroys the caret but doesn't free the bitmap.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.DestroyCaret.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.DestroyCaret.Handle">
-        <short/>
+        <short>Handle of the window with the caret.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DestroyCursor">
-        <short></short>
+        <short>Destroys an mouse cursor.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.DestroyCursor.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.DestroyCursor.Handle">
-        <short></short>
+        <short>The cursor Handle.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DestroyIcon">

@@ -3211,6 +3211,7 @@ docs/xml/lcl/interfaces/gtk/gtkwsspin.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/interfaces/gtk/gtkwsstdctrls.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/interfaces/gtk/gtkwstoolwin.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/interfaces/gtk/interfaces.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/interfaces/win32/win32int.xml svneol=native#text/xml
 docs/xml/lcl/intfgraphics.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lazconfigstorage.xml svneol=native#text/plain
 docs/xml/lcl/lazhelphtml.xml svneol=native#text/plain
