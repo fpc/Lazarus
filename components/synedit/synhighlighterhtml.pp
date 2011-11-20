@@ -244,7 +244,7 @@ type
     Temp: PChar;
     fStringLen: Integer;
     fToIdent: PChar;
-    fIdentFuncTable: array[0..243] of TIdentFuncTableFunc;
+    fIdentFuncTable: array[0..255] of TIdentFuncTableFunc;
     fTokenPos: Integer;
     fTokenID: TtkTokenKind;
     fAndAttri: TSynHighlighterAttributes;
@@ -334,6 +334,7 @@ type
     function Func121: TtkTokenKind;
     function Func123: TtkTokenKind;
     function Func124: TtkTokenKind;
+    function Func128: TtkTokenKind;
     function Func130: TtkTokenKind;
     function Func131: TtkTokenKind;
     function Func132: TtkTokenKind;
@@ -396,6 +397,7 @@ type
     function Func229: TtkTokenKind;
     function Func236: TtkTokenKind;
     function Func243: TtkTokenKind;
+    function Func250: TtkTokenKind;
     function AltFunc: TtkTokenKind;
     function IdentKind(MayBe: PChar): TtkTokenKind;
     procedure InitIdent;
@@ -501,7 +503,7 @@ procedure TSynHTMLSyn.InitIdent;
 var
   i: Integer;
 begin
-  for i := 0 to 243 do
+  for i := 0 to 255 do
     case i of
       1:   fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func1;
       2:   fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func2;
@@ -576,6 +578,7 @@ begin
       121: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func121;
       123: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func123;
       124: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func124;
+      128: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func128;
       130: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func130;
       131: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func131;
       132: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func132;
@@ -638,6 +641,7 @@ begin
       229: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func229;
       236: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func236;
       243: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func243;
+      250: fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}Func250;
       else fIdentFuncTable[i] := {$IFDEF FPC}@{$ENDIF}AltFunc;
     end;
 end;
@@ -1363,6 +1367,15 @@ begin
   end;
 end;
 
+function TSynHTMLSyn.Func128: TtkTokenKind;
+begin
+  if KeyComp('OPTGROUP') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
 function TSynHTMLSyn.Func130: TtkTokenKind;
 begin
   if KeyComp('/DD') then begin
@@ -1921,6 +1934,15 @@ begin
   end;
 end;
 
+function TSynHTMLSyn.Func250: TtkTokenKind;
+begin
+  if KeyComp('/OPTGROUP') then begin
+    Result := tkKey;
+  end else begin
+    Result := tkUndefKey;
+  end;
+end;
+
 function TSynHTMLSyn.AltFunc: TtkTokenKind;
 begin
   Result := tkUndefKey;
@@ -2141,7 +2163,7 @@ var
 begin
   fToIdent := MayBe;
   hashKey := KeyHash(MayBe);
-  if (hashKey < 244) then begin
+  if (hashKey <= 255) then begin
     Result := fIdentFuncTable[hashKey]{$IFDEF FPC}(){$ENDIF};
   end else begin
     Result := tkIdentifier;
