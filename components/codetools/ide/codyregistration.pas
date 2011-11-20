@@ -30,11 +30,11 @@ unit CodyRegistration;
 interface
 
 uses
-  Classes, SysUtils, LResources, Controls,
-  IDECommands, MenuIntf, IDEWindowIntf, SrcEditorIntf,
+  Classes, SysUtils, LResources, LCLProc, Controls,
+  IDECommands, MenuIntf, IDEWindowIntf, SrcEditorIntf, IDEOptionsIntf,
   CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg,
   CodyUtils, CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration,
-  CodyIdentifiersDlg;
+  CodyIdentifiersDlg, CodyMiscOptsFrame;
 
 procedure Register;
 
@@ -62,6 +62,9 @@ var
   ShowIdentifierDictionaryCommand: TIDECommand;
   {$ENDIF}
 begin
+  CodyOptions:=TCodyMiscOptions.Create;
+  CodyOptions.LoadSafe;
+
   CmdCatFileMenu:=IDECommandList.FindCategoryByName('FileMenu');
   if CmdCatFileMenu=nil then
     raise Exception.Create('cody: command category FileMenu not found');
@@ -180,6 +183,11 @@ begin
   // Windows - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   CodyWindowCreator:=IDEWindowCreators.Add(CodyWindowName,@CreateCodyWindow,nil,
     '80%','50%','+18%','+25%','CodeExplorer',alBottom);
+
+  // Options
+  CodyMiscOptionID:=RegisterIDEOptionsEditor(GroupCodetools,
+      TCodyMiscOptionsFrame,CodyMiscOptionID)^.Index;
+  CodyOptions.Apply;
 
   // Global handlers - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   SourceEditorManagerIntf.RegisterCopyPasteEvent(@Cody.SrcEditCopyPaste);

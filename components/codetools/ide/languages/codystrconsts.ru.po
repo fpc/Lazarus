@@ -160,6 +160,10 @@ msgstr "&Закрыть"
 msgid "Code Node Information"
 msgstr "Сведения об элементе кода"
 
+#: codystrconsts.crscodyidentifierdictionary
+msgid "Cody Identifier Dictionary"
+msgstr ""
+
 #: codystrconsts.crscopydeclarationtoclipboard
 #| msgid "Copy declaration to clipboard"
 msgid "Copy declaration to Clipboard"
@@ -225,6 +229,10 @@ msgstr "Объявление переменной \"%s\""
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" является ключевым словом."
+
+#: codystrconsts.crserror
+msgid "Error: %s"
+msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 #| msgid "Explode a \"With\" block"
@@ -331,6 +339,10 @@ msgstr "Прочие статические библиотеки"
 #: codystrconsts.crspackage
 msgid "Package"
 msgstr "Пакет"
+
+#: codystrconsts.crspackagesunitsidentifiersfile
+msgid "Packages: %s, Units: %s, Identifiers: %s%sFile: %s"
+msgstr ""
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."

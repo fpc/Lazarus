@@ -32,6 +32,7 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     Width = 59
     Caption = 'InfoLabel'
     ParentColor = False
+    WordWrap = True
   end
   object FilterEdit: TEdit
     AnchorSideLeft.Control = Owner

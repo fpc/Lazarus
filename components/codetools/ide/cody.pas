@@ -9,14 +9,15 @@ interface
 uses
   PPUListDlg, CodyStrConsts, AddAssignMethodDlg, CodyCtrls, CodyFrm, 
   CodyRegistration, DeclareVarDlg, CodyUtils, CodyNodeInfoDlg, 
-  CodyCopyDeclaration, AddWithBlockDlg, CodyIdentifiersDlg, LazarusPackageIntf;
+  CodyCopyDeclaration, AddWithBlockDlg, CodyIdentifiersDlg, CodyMiscOptsFrame, 
+  LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
   RegisterUnit('CodyRegistration', @CodyRegistration.Register); 
-end; 
+end;
 
 initialization
   RegisterPackage('Cody', @Register); 

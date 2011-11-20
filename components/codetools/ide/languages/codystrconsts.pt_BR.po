@@ -163,6 +163,10 @@ msgstr "&Fechar"
 msgid "Code Node Information"
 msgstr "Informação Nó de Código"
 
+#: codystrconsts.crscodyidentifierdictionary
+msgid "Cody Identifier Dictionary"
+msgstr ""
+
 #: codystrconsts.crscopydeclarationtoclipboard
 #, fuzzy
 #| msgid "Copy declaration to clipboard"
@@ -230,6 +234,10 @@ msgstr "Declarar variável \"%s\""
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" é uma palavra-chave."
+
+#: codystrconsts.crserror
+msgid "Error: %s"
+msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 #, fuzzy
@@ -338,6 +346,10 @@ msgstr "Outras bibliotecas estáticas"
 #: codystrconsts.crspackage
 msgid "Package"
 msgstr "Pacote"
+
+#: codystrconsts.crspackagesunitsidentifiersfile
+msgid "Packages: %s, Units: %s, Identifiers: %s%sFile: %s"
+msgstr ""
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."

@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, BasicCodeTools, FileProcs, CodeToolsStructs,
-  FindDeclarationCache, CodeToolManager, CodeCache, zstream;
+  FindDeclarationCache, CodeToolManager, CodeCache;
 
 const
   UDFileVersion = 1;
@@ -112,7 +112,7 @@ type
     destructor Destroy; override;
     procedure Clear(CreateDefaults: boolean = true);
     procedure ConsistencyCheck;
-    procedure SaveToFile(const Filename: string; Compress: boolean = false);
+    procedure SaveToFile(const Filename: string);
     procedure SaveToStream(aStream: TStream);
     procedure LoadFromFile(const Filename: string; KeepData: boolean);
     procedure LoadFromStream(aStream: TMemoryStream;
@@ -453,41 +453,22 @@ begin
 
 end;
 
-procedure TUnitDictionary.SaveToFile(const Filename: string; Compress: boolean);
+procedure TUnitDictionary.SaveToFile(const Filename: string);
 var
   UncompressedMS: TMemoryStream;
-  cs: Tcompressionstream;
-  CompressedMS: TMemoryStream;
   TempFilename: String;
 begin
-  if Compress then begin
-    UncompressedMS:=TMemoryStream.Create;
-    CompressedMS:=TMemoryStream.Create;
-    cs:=Tcompressionstream.create(cldefault,CompressedMS);
-    try
-      SaveToStream(UncompressedMS);
-      UncompressedMS.Position:=0;
-      cs.CopyFrom(UncompressedMS,UncompressedMS.Size);
-      CompressedMS.Position:=0;
-      CompressedMS.SaveToFile(Filename);
-    finally
-      cs.Free;
-      UncompressedMS.Free;
-      CompressedMS.Free;
-    end;
-  end else begin
-    UncompressedMS:=TMemoryStream.Create;
-    try
-      SaveToStream(UncompressedMS);
-      UncompressedMS.Position:=0;
-      // reduce the risk of file corruption due to crashes while saving:
-      // save to a temporary file and then rename
-      TempFilename:=FileProcs.GetTempFilename(Filename,'unitdictionary');
-      UncompressedMS.SaveToFile(TempFilename);
-      RenameFileUTF8(TempFilename,Filename);
-    finally
-      UncompressedMS.Free;
-    end;
+  UncompressedMS:=TMemoryStream.Create;
+  try
+    SaveToStream(UncompressedMS);
+    UncompressedMS.Position:=0;
+    // reduce the risk of file corruption due to crashes while saving:
+    // save to a temporary file and then rename
+    TempFilename:=FileProcs.GetTempFilename(Filename,'unitdictionary');
+    UncompressedMS.SaveToFile(TempFilename);
+    RenameFileUTF8(TempFilename,Filename);
+  finally
+    UncompressedMS.Free;
   end;
 end;
 
@@ -509,6 +490,34 @@ procedure TUnitDictionary.SaveToStream(aStream: TStream);
       i:=i div 32;
     end;
   end;
+
+  { Not used, because gzip is good enough:
+  procedure WriteDiff(var Last: string; Cur: string);
+  // write n^diff, where n is the base32 number of same bytes of last value
+  // and diff the remaining string that differs
+  var
+    p1: PChar;
+    p2: PChar;
+    l: PtrUInt;
+  begin
+    if (Cur<>'') and (Last<>'') then begin
+      p1:=PChar(Cur);
+      p2:=PChar(Last);
+      while (p1^=p2^) and (p1^<>#0) do begin
+        inc(p1);
+        inc(p2);
+      end;
+      l:=length(Cur)-(PChar(Cur)-p1);
+      w(GetBase32(l));
+      w('^');
+      if l>0 then
+        aStream.Write(p1^,l);
+    end else begin
+      w('^');
+      w(Cur);
+    end;
+    Last:=Cur;
+  end;}
 
 var
   AVLNode: TAVLTreeNode;

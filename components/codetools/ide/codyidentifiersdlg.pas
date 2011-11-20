@@ -25,13 +25,6 @@
     Dialog to view and search the whole list.
 
   ToDo:
-    -show file name of db
-    -Test with lot of data
-    -save file names shortened
-    -save
-    -gzip
-    -auto fix broken load
-    -cody options: save interval, load delay
     -quickfix for identifier not found
       -show dialog
       -list with units and packages
@@ -45,6 +38,7 @@
       -add dependency to owner
     -clean up old entries
       -When, How?
+    -gzip? lot of cpu, may be faster on first load
 }
 unit CodyIdentifiersDlg;
 
@@ -79,7 +73,7 @@ type
   private
     FLoadAfterStartInS: integer;
     FLoadSaveError: string;
-    FSaveIntervalInMS: integer;
+    FSaveIntervalInS: integer;
     fTimer: TTimer;
     FIdleConnected: boolean;
     fQueuedTools: TAVLTree; // tree of TCustomCodeTool
@@ -91,20 +85,21 @@ type
     procedure SetIdleConnected(AValue: boolean);
     procedure SetLoadAfterStartInS(AValue: integer);
     procedure SetLoadSaveError(AValue: string);
-    procedure SetSaveIntervalInMS(AValue: integer);
+    procedure SetSaveIntervalInS(AValue: integer);
     procedure ToolTreeChanged(Tool: TCustomCodeTool; {%H-}NodesDeleting: boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure WaitForThread;
     procedure OnTimer(Sender: TObject);
-    function GetFilename: string;
     function StartLoadSaveThread: boolean;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Load;
+    procedure Save;
     property Loaded: boolean read fLoaded;
+    function GetFilename: string;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
-    property SaveIntervalInMS: integer read FSaveIntervalInMS write SetSaveIntervalInMS;
+    property SaveIntervalInS: integer read FSaveIntervalInS write SetSaveIntervalInS;
     property LoadAfterStartInS: integer read FLoadAfterStartInS write SetLoadAfterStartInS;
     procedure BeginCritSec;
     procedure EndCritSec;
@@ -118,6 +113,7 @@ type
     FilterEdit: TEdit;
     InfoLabel: TLabel;
     ItemsListBox: TListBox;
+    procedure FileLabelClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
     procedure FilterEditExit(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -186,8 +182,10 @@ begin
           UncompressedMS.Position:=0;
           Dictionary.BeginCritSec;
           try
-            Dictionary.LoadFromStream(UncompressedMS,true);
+            // Note: if loading fails, then the format or read permissions are wrong
+            // mark as loaded, so that the next save will create a valid one
             Dictionary.fLoaded:=true;
+            Dictionary.LoadFromStream(UncompressedMS,true);
           finally
             Dictionary.EndCritSec;
           end;
@@ -301,7 +299,7 @@ begin
         if ChangeStamp<>OldChangeStamp then begin
           if fTimer=nil then begin
             fTimer:=TTimer.Create(nil);
-            fTimer.Interval:=SaveIntervalInMS;
+            fTimer.Interval:=SaveIntervalInS*1000;
             fTimer.OnTimer:=@OnTimer;
           end;
           //debugln(['TCodyUnitDictionary.OnIdle starting timer: ms=',fTimer.Interval]);
@@ -346,7 +344,7 @@ end;
 
 function TCodyUnitDictionary.GetFilename: string;
 begin
-  Result:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+'codyunitdictionary.txt';
+  Result:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+'codyunitdictionary.gz';
 end;
 
 function TCodyUnitDictionary.StartLoadSaveThread: boolean;
@@ -395,18 +393,18 @@ begin
   end;
 end;
 
-procedure TCodyUnitDictionary.SetSaveIntervalInMS(AValue: integer);
+procedure TCodyUnitDictionary.SetSaveIntervalInS(AValue: integer);
 begin
-  if FSaveIntervalInMS=AValue then Exit;
-  FSaveIntervalInMS:=AValue;
+  if FSaveIntervalInS=AValue then Exit;
+  FSaveIntervalInS:=AValue;
   if fTimer<>nil then
-    fTimer.Interval:=SaveIntervalInMS;
+    fTimer.Interval:=SaveIntervalInS;
 end;
 
 constructor TCodyUnitDictionary.Create;
 begin
   inherited Create;
-  FSaveIntervalInMS:=1000*60*3; // every 3 minutes
+  FSaveIntervalInS:=60*3; // every 3 minutes
   FLoadAfterStartInS:=3;
   InitCriticalSection(fCritSec);
   fQueuedTools:=TAVLTree.Create;
@@ -415,6 +413,7 @@ end;
 
 destructor TCodyUnitDictionary.Destroy;
 begin
+  CodeToolBoss.RemoveHandlerToolTreeChanging(@ToolTreeChanged);
   FreeAndNil(fTimer);
   WaitForThread;
   IdleConnected:=false;
@@ -428,6 +427,14 @@ begin
   if fLoaded then exit;
   WaitForThread;
   if fLoaded then exit;
+  StartLoadSaveThread;
+  WaitForThread;
+end;
+
+procedure TCodyUnitDictionary.Save;
+begin
+  WaitForThread;
+  fLoaded:=true;
   StartLoadSaveThread;
   WaitForThread;
 end;
@@ -449,6 +456,11 @@ begin
   IdleConnected:=true;
 end;
 
+procedure TCodyIdentifiersDlg.FileLabelClick(Sender: TObject);
+begin
+
+end;
+
 procedure TCodyIdentifiersDlg.FilterEditExit(Sender: TObject);
 begin
   if GetFilterEditText='' then
@@ -457,7 +469,7 @@ end;
 
 procedure TCodyIdentifiersDlg.FormCreate(Sender: TObject);
 begin
-  Caption:='Cody Identifier Dictionary';
+  Caption:=crsCodyIdentifierDictionary;
   FMaxItems:=20;
   FNoFilterText:=crsFilter;
 end;
@@ -534,11 +546,14 @@ procedure TCodyIdentifiersDlg.UpdateInfo;
 var
   s: String;
 begin
-  s:='Packages: '+IntToStr(CodyUnitDictionary.UnitGroupsByFilename.Count)
-    +', Units: '+IntToStr(CodyUnitDictionary.UnitsByFilename.Count)
-    +', Identifiers: '+IntToStr(CodyUnitDictionary.Identifiers.Count);
+  s:=Format(crsPackagesUnitsIdentifiersFile,
+    [IntToStr(CodyUnitDictionary.UnitGroupsByFilename.Count),
+     IntToStr(CodyUnitDictionary.UnitsByFilename.Count),
+     IntToStr(CodyUnitDictionary.Identifiers.Count),
+     #13#10,
+     CodyUnitDictionary.GetFilename]);
   if CodyUnitDictionary.LoadSaveError<>'' then
-    s:=s+', Error: '+CodyUnitDictionary.LoadSaveError;
+    s:=s+#13#10+Format(crsError, [CodyUnitDictionary.LoadSaveError]);
   InfoLabel.Caption:=s;
 end;
 

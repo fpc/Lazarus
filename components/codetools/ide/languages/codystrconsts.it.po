@@ -158,6 +158,10 @@ msgstr "&Chiudi"
 msgid "Code Node Information"
 msgstr ""
 
+#: codystrconsts.crscodyidentifierdictionary
+msgid "Cody Identifier Dictionary"
+msgstr ""
+
 #: codystrconsts.crscopydeclarationtoclipboard
 msgid "Copy declaration to Clipboard"
 msgstr ""
@@ -220,6 +224,10 @@ msgstr ""
 
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
+msgstr ""
+
+#: codystrconsts.crserror
+msgid "Error: %s"
 msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
@@ -325,6 +333,10 @@ msgstr ""
 #: codystrconsts.crspackage
 msgid "Package"
 msgstr "Pacchetto"
+
+#: codystrconsts.crspackagesunitsidentifiersfile
+msgid "Packages: %s, Units: %s, Identifiers: %s%sFile: %s"
+msgstr ""
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."

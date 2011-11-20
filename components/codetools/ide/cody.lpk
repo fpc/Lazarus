@@ -19,7 +19,7 @@
     <Description Value="IDE extensions using Codetools."/>
     <License Value="GPL2"/>
     <Version Major="1" Minor="1"/>
-    <Files Count="12">
+    <Files Count="13">
       <Item1>
         <Filename Value="ppulistdlg.pas"/>
         <UnitName Value="PPUListDlg"/>
@@ -67,8 +67,12 @@
       </Item11>
       <Item12>
         <Filename Value="codyidentifiersdlg.pas"/>
-        <UnitName Value="codyidentifiersdlg"/>
+        <UnitName Value="CodyIdentifiersDlg"/>
       </Item12>
+      <Item13>
+        <Filename Value="codymiscoptsframe.pas"/>
+        <UnitName Value="CodyMiscOptsFrame"/>
+      </Item13>
     </Files>
     <LazDoc Paths="doc"/>
     <i18n>
@@ -76,23 +80,26 @@
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="5">
+    <RequiredPkgs Count="6">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="LazControls"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCLBase"/>
+        <PackageName Value="LCL"/>
       </Item2>
       <Item3>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="LCLBase"/>
       </Item3>
       <Item4>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="IDEIntf"/>
       </Item4>
       <Item5>
+        <PackageName Value="CodeTools"/>
+      </Item5>
+      <Item6>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True" Release="1"/>
-      </Item5>
+      </Item6>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

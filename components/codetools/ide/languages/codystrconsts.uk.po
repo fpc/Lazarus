@@ -161,6 +161,10 @@ msgstr "&Закрити"
 msgid "Code Node Information"
 msgstr "Інформація про Вузол Коду"
 
+#: codystrconsts.crscodyidentifierdictionary
+msgid "Cody Identifier Dictionary"
+msgstr ""
+
 #: codystrconsts.crscopydeclarationtoclipboard
 #, fuzzy
 #| msgid "Copy declaration to clipboard"
@@ -228,6 +232,10 @@ msgstr "Оголосити змінну \"%s\""
 #: codystrconsts.crsdvisakeyword
 msgid "\"%s\" is a keyword."
 msgstr "\"%s\" це ключове слово."
+
+#: codystrconsts.crserror
+msgid "Error: %s"
+msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 #, fuzzy
@@ -336,6 +344,10 @@ msgstr "Інші статичні бібліотеки"
 #: codystrconsts.crspackage
 msgid "Package"
 msgstr "Пакунок"
+
+#: codystrconsts.crspackagesunitsidentifiersfile
+msgid "Packages: %s, Units: %s, Identifiers: %s%sFile: %s"
+msgstr ""
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."

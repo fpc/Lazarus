@@ -165,6 +165,10 @@ resourcestring
   crsRefresh = 'Refresh';
   crsFilter = '(Filter)';
   crsAndMoreIdentifiers = '... and %s more identifiers';
+  crsCodyIdentifierDictionary = 'Cody Identifier Dictionary';
+  crsPackagesUnitsIdentifiersFile = 'Packages: %s, Units: %s, Identifiers: %s%'
+    +'sFile: %s';
+  crsError = 'Error: %s';
 
 implementation
 
