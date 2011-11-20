@@ -31,7 +31,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="286">
+    <Files Count="287">
       <Item1>
         <Filename Value="barchart.pp"/>
         <UnitName Value="BarChart"/>
@@ -1182,6 +1182,10 @@
         <Filename Value="lazcanvas.pas"/>
         <UnitName Value="lazcanvas"/>
       </Item286>
+      <Item287>
+        <Filename Value="lazdialogs.pas"/>
+        <UnitName Value="lazdialogs"/>
+      </Item287>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>

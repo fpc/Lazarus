@@ -5756,6 +5756,7 @@ lcl/languages/lclstrconsts.uk.po svneol=native#text/plain
 lcl/languages/lclstrconsts.zh_CN.po svneol=native#text/utf8
 lcl/lazcanvas.pas svneol=native#text/pascal
 lcl/lazconfigstorage.pas svneol=native#text/pascal
+lcl/lazdialogs.pas svneol=native#text/plain
 lcl/lazhelphtml.pas svneol=native#text/pascal
 lcl/lazhelpintf.pas svneol=native#text/pascal
 lcl/lazlinkedlist.pas svneol=native#text/pascal
