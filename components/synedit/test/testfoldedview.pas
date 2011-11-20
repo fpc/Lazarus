@@ -43,6 +43,7 @@ type
     function TestTextHide2(ALen: Integer): TStringArray;
     function TestTextHide3: TStringArray;
     function TestTextHide4: TStringArray;
+    function TestTextPlain: TStringArray;
   protected
     procedure TstSetText(AName: String; AText: TStringArray);
     procedure TstFold(AName: String; AFoldAtIndex: integer; AExpectedLines: Array of Integer);
@@ -454,6 +455,23 @@ begin
   Result[10]:= '{foo';
   Result[11]:= '}';
   Result[12]:= '';
+
+end;
+
+function TTestFoldedView.TestTextPlain: TStringArray;
+begin
+  SetLength(Result, 11);
+  Result[0] := 'begin';
+  Result[1] := 'l1';
+  Result[2] := 'end';
+  Result[3] := 'l2';
+  Result[4] := 'l3';
+  Result[5] := 'l4';
+  Result[6] := 'l5';
+  Result[7] := 'begin';
+  Result[8] := 'l6';
+  Result[9] := 'end';
+  Result[10] := '';
 
 end;
 
@@ -1367,6 +1385,8 @@ begin
 end;
 
 procedure TTestFoldedView.TestFoldStateDesc;
+var
+  a1,a2, a3, a4: String;
 begin
   (* - The values returned by GetFoldDescription can change in future versions
        Therefore there is only a limited number of tests.
@@ -1398,6 +1418,43 @@ begin
   //TestCompareString('FoldDesc (txt / ext)', ' TA004 T12025',
   //                  FoldedView.GetFoldDescription(0,1,-1,-1, True,  True)
   //                 );
+
+
+
+
+  // No crash,if folded selection
+  ReCreateEdit;
+  SetLines(TestTextPlain);
+  SetCaretAndSel(1,5, 2,6);
+  FoldedView.FoldAtTextIndex(4, 0, 1, False, 0);
+  AssertEquals(FoldedView.Count, 8);
+
+  FoldedView.GetFoldDescription(0, 0, -1, -1, True,  False);
+  FoldedView.GetFoldDescription(0, 0, -1, -1, False, False);
+  FoldedView.GetFoldDescription(0, 0, -1, -1, True,  True);
+  FoldedView.GetFoldDescription(0, 0, -1, -1, False, True);
+
+  // compare fold desc with/without selection-fold
+  ReCreateEdit;
+  SetLines(TestTextPlain);
+  FoldedView.FoldAtTextIndex(0);
+  FoldedView.FoldAtTextIndex(7);
+  AssertEquals(FoldedView.Count, 6);
+
+  a1 := FoldedView.GetFoldDescription(0, 0, -1, -1, True,  False);
+  a2 := FoldedView.GetFoldDescription(0, 0, -1, -1, False, False);
+  a3 := FoldedView.GetFoldDescription(0, 0, -1, -1, True,  True);
+  a4 := FoldedView.GetFoldDescription(0, 0, -1, -1, False, True);
+
+  SetCaretAndSel(1,5, 2,6);
+  FoldedView.FoldAtTextIndex(4, 0, 1, False, 0);
+  AssertEquals(FoldedView.Count, 4);
+
+  TestCompareString('1', a1, FoldedView.GetFoldDescription(0, 0, -1, -1, True,  False));
+  TestCompareString('2', a2, FoldedView.GetFoldDescription(0, 0, -1, -1, False, False));
+//  a3 := FoldedView.GetFoldDescription(0, 0, -1, -1, True,  True);
+//  a4 := FoldedView.GetFoldDescription(0, 0, -1, -1, False, True);
+
 end;
 
 initialization
