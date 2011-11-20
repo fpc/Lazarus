@@ -234,7 +234,8 @@ end;
 
 function RegisterSelectDirectoryDialog: Boolean; alias : 'WSRegisterSelectDirectoryDialog';
 begin
-  Result := False;
+  RegisterWSComponent(TSelectDirectoryDialog, TWinCEWSSelectDirectoryDialog);
+  Result := True;
 end;
 
 function RegisterColorDialog: Boolean; alias : 'WSRegisterColorDialog';

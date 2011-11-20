@@ -31,6 +31,7 @@ type
     // input/output
     FileName: string;
     Filter: string;
+    InitialDir: string;
     Title: string;
     //
     constructor CreateNew(AOwner: TComponent; Num: Integer = 0); override;

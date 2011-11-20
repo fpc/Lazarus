@@ -32,7 +32,7 @@ uses
   // LCL
   ShellCtrls, Forms, Dialogs, FileCtrl, Controls, ComCtrls,
   LResources, ExtCtrls, Buttons, Graphics, StdCtrls,
-  LCLStrConsts, FileUtil,
+  LCLStrConsts, FileUtil, lazdialogs,
   // Widgetset
   WSDialogs, WSLCLClasses, InterfaceBase;
 
@@ -74,7 +74,9 @@ type
 
   TWinCEWSSelectDirectoryDialog = class(TWSSelectDirectoryDialog)
   published
-//    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
+    class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TWinCEWSColorDialog }
@@ -349,6 +351,39 @@ begin
 
   // Without setting UserChoice the app will be locked
   ACommonDialog.UserChoice := ResultForm.ModalResult;
+end;
+
+{ TWinCEWSSelectDirectoryDialog }
+
+class function TWinCEWSSelectDirectoryDialog.CreateHandle(
+  const ACommonDialog: TCommonDialog): THandle;
+begin
+  Result := THandle(TLazSelectDirectoryDialog.Create(nil));
+end;
+
+class procedure TWinCEWSSelectDirectoryDialog.DestroyHandle(
+  const ACommonDialog: TCommonDialog);
+var
+  Handle: TLazSelectDirectoryDialog;
+begin
+  Handle := TLazSelectDirectoryDialog(ACommonDialog.Handle);
+  Handle.Free;
+end;
+
+class procedure TWinCEWSSelectDirectoryDialog.ShowModal(
+  const ACommonDialog: TCommonDialog);
+var
+  Handle: TLazSelectDirectoryDialog;
+  OpenDialog: TOpenDialog absolute ACommonDialog;
+begin
+  Handle := TLazSelectDirectoryDialog(ACommonDialog.Handle);
+  Handle.InitialDir := OpenDialog.InitialDir;
+
+  // Without setting UserChoice the app will be locked
+  if Handle.Execute then ACommonDialog.UserChoice := mrOk
+  else ACommonDialog.UserChoice := mrCancel;
+
+  OpenDialog.FileName := Handle.FileName;
 end;
 
 initialization
