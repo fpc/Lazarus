@@ -7902,9 +7902,7 @@ begin
         gtk_widget_show_all(StyleObject^.Widget);
         if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU) then
         begin
-          // Attach menu to window. Increases reference count for the menu.
-          gtk_menu_attach_to_widget(PGtkMenu(StyleObject^.Widget),
-            GetStyleWidget(lgsWindow), nil);
+          // Do nothing. Don't need to attach it to a widget to get the style.
         end
         else
         if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU_BAR) then
