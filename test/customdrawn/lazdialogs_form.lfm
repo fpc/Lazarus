@@ -2,105 +2,105 @@ object Form1: TForm1
   Left = 315
   Height = 243
   Top = 183
-  Width = 527
+  Width = 240
   Caption = 'Lazarus Dialogs Test'
   ClientHeight = 243
-  ClientWidth = 527
+  ClientWidth = 240
   LCLVersion = '0.9.31'
   object buttonNativeOpen: TButton
-    Left = 16
+    Left = 8
     Height = 25
-    Top = 24
-    Width = 250
+    Top = 48
+    Width = 226
     Caption = 'Native TOpenDialog'
     OnClick = buttonNativeOpenClick
     TabOrder = 0
   end
   object buttonLazOpen: TButton
-    Left = 16
+    Left = 8
     Height = 25
-    Top = 60
-    Width = 250
+    Top = 80
+    Width = 226
     Caption = 'TLazOpenDialog'
     OnClick = buttonLazOpenClick
     TabOrder = 1
   end
   object buttonNativeSave: TButton
-    Left = 16
+    Left = 8
     Height = 25
-    Top = 96
-    Width = 250
+    Top = 112
+    Width = 226
     Caption = 'Native TSaveDialog'
     OnClick = buttonNativeSaveClick
     TabOrder = 2
   end
   object buttonLazSave: TButton
-    Left = 16
+    Left = 8
     Height = 25
-    Top = 136
-    Width = 250
+    Top = 144
+    Width = 226
     Caption = 'TLazSaveDialog'
     OnClick = buttonLazSaveClick
     TabOrder = 3
   end
   object buttonNativeSelectDir: TButton
-    Left = 16
+    Left = 8
     Height = 25
     Top = 173
-    Width = 250
+    Width = 226
     Caption = 'Native TSelectDirectoryDialog'
     OnClick = buttonNativeSelectDirClick
     TabOrder = 4
   end
   object buttonLazSelectDir: TButton
-    Left = 16
+    Left = 8
     Height = 25
-    Top = 208
-    Width = 250
+    Top = 200
+    Width = 226
     Caption = 'TLazSelectDirectoryDialog'
     OnClick = buttonLazSelectDirClick
     TabOrder = 5
   end
   object Label1: TLabel
-    Left = 288
-    Height = 17
-    Top = 24
-    Width = 100
-    Caption = 'Input FileName:'
+    Left = 8
+    Height = 14
+    Top = 4
+    Width = 73
+    Caption = 'Input InitialDir:'
     ParentColor = False
   end
-  object editInputFileName: TEdit
-    Left = 288
-    Height = 22
-    Top = 48
-    Width = 232
+  object editInputInitialDir: TEdit
+    Left = 96
+    Height = 21
+    Top = 4
+    Width = 136
     TabOrder = 6
   end
   object Label2: TLabel
-    Left = 288
-    Height = 17
-    Top = 136
-    Width = 107
+    Left = 8
+    Height = 14
+    Top = 24
+    Width = 81
     Caption = 'Output FileName'
     ParentColor = False
   end
   object editOutputFileName: TEdit
-    Left = 288
-    Height = 22
-    Top = 160
-    Width = 232
+    Left = 96
+    Height = 21
+    Top = 24
+    Width = 136
     TabOrder = 7
   end
   object dialogNativeOpen: TOpenDialog
-    left = 8
-    top = 8
+    left = 160
+    top = 184
   end
   object dialogNativeSave: TSaveDialog
-    left = 56
-    top = 8
+    left = 208
+    top = 184
   end
   object dialogNativeSelectDir: TSelectDirectoryDialog
-    left = 112
-    top = 8
+    left = 248
+    top = 184
   end
 end

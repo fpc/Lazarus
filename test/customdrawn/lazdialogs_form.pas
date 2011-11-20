@@ -20,7 +20,7 @@ type
     buttonNativeSelectDir: TButton;
     buttonLazSelectDir: TButton;
     dialogNativeOpen: TOpenDialog;
-    editInputFileName: TEdit;
+    editInputInitialDir: TEdit;
     editOutputFileName: TEdit;
     Label1: TLabel;
     Label2: TLabel;
@@ -51,7 +51,9 @@ uses lazdialogs;
 
 procedure TForm1.buttonNativeOpenClick(Sender: TObject);
 begin
-  dialogNativeOpen.Execute;
+  dialogNativeOpen.InitialDir := editInputInitialDir.Text;
+  if dialogNativeOpen.Execute then
+    editOutputFileName.Text := dialogNativeOpen.FileName;
 end;
 
 procedure TForm1.buttonLazSaveClick(Sender: TObject);
@@ -60,9 +62,9 @@ var
 begin
   lDialog := TLazSaveDialog.Create(nil);
   try
-    lDialog.FileName := editInputFileName.Text;
-    lDialog.Execute;
-    editOutputFileName.Text := lDialog.FileName;
+    lDialog.InitialDir := editInputInitialDir.Text;
+    if lDialog.Execute then
+      editOutputFileName.Text := lDialog.FileName;
   finally
     lDialog.Free;
   end;
@@ -74,9 +76,9 @@ var
 begin
   lDialog := TLazOpenDialog.Create(nil);
   try
-    lDialog.FileName := editInputFileName.Text;
-    lDialog.Execute;
-     editOutputFileName.Text := lDialog.FileName;
+    lDialog.InitialDir := editInputInitialDir.Text;
+    if lDialog.Execute then
+      editOutputFileName.Text := lDialog.FileName;
   finally
     lDialog.Free;
   end;
@@ -88,9 +90,9 @@ var
 begin
   lDialog := TLazSelectDirectoryDialog.Create(nil);
   try
-    lDialog.FileName := editInputFileName.Text;
-    lDialog.Execute;
-    editOutputFileName.Text := lDialog.FileName;
+    lDialog.InitialDir := editInputInitialDir.Text;
+    if lDialog.Execute then
+      editOutputFileName.Text := lDialog.FileName;
   finally
     lDialog.Free;
   end;
@@ -98,12 +100,16 @@ end;
 
 procedure TForm1.buttonNativeSaveClick(Sender: TObject);
 begin
-  dialogNativeSave.Execute;
+  dialogNativeSave.InitialDir := editInputInitialDir.Text;
+  if dialogNativeSave.Execute then
+    editOutputFileName.Text := dialogNativeSave.FileName;
 end;
 
 procedure TForm1.buttonNativeSelectDirClick(Sender: TObject);
 begin
-  dialogNativeSelectDir.Execute;
+  dialogNativeSelectDir.InitialDir := editInputInitialDir.Text;
+  if dialogNativeSelectDir.Execute then
+    editOutputFileName.Text := dialogNativeSelectDir.FileName;
 end;
 
 end.
