@@ -1,0 +1,106 @@
+object Form1: TForm1
+  Left = 315
+  Height = 243
+  Top = 183
+  Width = 527
+  Caption = 'Lazarus Dialogs Test'
+  ClientHeight = 243
+  ClientWidth = 527
+  LCLVersion = '0.9.31'
+  object buttonNativeOpen: TButton
+    Left = 16
+    Height = 25
+    Top = 24
+    Width = 250
+    Caption = 'Native TOpenDialog'
+    OnClick = buttonNativeOpenClick
+    TabOrder = 0
+  end
+  object buttonLazOpen: TButton
+    Left = 16
+    Height = 25
+    Top = 60
+    Width = 250
+    Caption = 'TLazOpenDialog'
+    OnClick = buttonLazOpenClick
+    TabOrder = 1
+  end
+  object buttonNativeSave: TButton
+    Left = 16
+    Height = 25
+    Top = 96
+    Width = 250
+    Caption = 'Native TSaveDialog'
+    OnClick = buttonNativeSaveClick
+    TabOrder = 2
+  end
+  object buttonLazSave: TButton
+    Left = 16
+    Height = 25
+    Top = 136
+    Width = 250
+    Caption = 'TLazSaveDialog'
+    OnClick = buttonLazSaveClick
+    TabOrder = 3
+  end
+  object buttonNativeSelectDir: TButton
+    Left = 16
+    Height = 25
+    Top = 173
+    Width = 250
+    Caption = 'Native TSelectDirectoryDialog'
+    OnClick = buttonNativeSelectDirClick
+    TabOrder = 4
+  end
+  object buttonLazSelectDir: TButton
+    Left = 16
+    Height = 25
+    Top = 208
+    Width = 250
+    Caption = 'TLazSelectDirectoryDialog'
+    OnClick = buttonLazSelectDirClick
+    TabOrder = 5
+  end
+  object Label1: TLabel
+    Left = 288
+    Height = 17
+    Top = 24
+    Width = 100
+    Caption = 'Input FileName:'
+    ParentColor = False
+  end
+  object editInputFileName: TEdit
+    Left = 288
+    Height = 22
+    Top = 48
+    Width = 232
+    TabOrder = 6
+  end
+  object Label2: TLabel
+    Left = 288
+    Height = 17
+    Top = 136
+    Width = 107
+    Caption = 'Output FileName'
+    ParentColor = False
+  end
+  object editOutputFileName: TEdit
+    Left = 288
+    Height = 22
+    Top = 160
+    Width = 232
+    TabOrder = 7
+  end
+  object dialogNativeOpen: TOpenDialog
+    left = 8
+    top = 8
+  end
+  object dialogNativeSave: TSaveDialog
+    left = 56
+    top = 8
+  end
+  object dialogNativeSelectDir: TSelectDirectoryDialog
+    left = 112
+    top = 8
+  end
+end
