@@ -2247,6 +2247,7 @@ resourcestring
   uemMoveToNewWindow = 'Move to New Window';
   uemMoveToOtherWindow = 'Move to Other Window';
   uemMoveToOtherWindowNew = 'New Window';
+  uemFindInOtherWindow = 'Find in other Window';
   uemCut = 'Cut';
   uemCopy = 'Copy';
   uemPaste = 'Paste';

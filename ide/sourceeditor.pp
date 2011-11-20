@@ -575,6 +575,7 @@ type
     procedure InsertCharacter(const C: TUTF8Char);
     procedure SrcEditMenuCopyToExistingWindowClicked(Sender: TObject);
     procedure SrcEditMenuMoveToExistingWindowClicked(Sender: TObject);
+    procedure SrcEditMenuFindInWindowClicked(Sender: TObject);
     procedure EditorLockClicked(Sender: TObject);
   public
     procedure DeleteBreakpointClicked(Sender: TObject);
@@ -1197,6 +1198,8 @@ var
   SrcEditMenuCopyToOtherWindow: TIDEMenuSection;
   SrcEditMenuCopyToOtherWindowNew: TIDEMenuCommand;
   SrcEditMenuCopyToOtherWindowList: TIDEMenuSection;
+  SrcEditMenuFindInOtherWindow: TIDEMenuSection;
+  SrcEditMenuFindInOtherWindowList: TIDEMenuSection;
   // EditorLocks
   SrcEditMenuEditorLock: TIDEMenuCommand;
   {$ENDIF}
@@ -1330,6 +1333,12 @@ begin
       SrcEditMenuCopyToOtherWindowList := RegisterIDEMenuSection
           (SrcEditMenuCopyToOtherWindow, 'CopyToOtherWindowList Section');
     {%endregion}
+
+    SrcEditMenuFindInOtherWindow := RegisterIDESubMenu
+        (SrcEditMenuSectionPages, 'FindInOtherWindow', uemFindInOtherWindow);
+    // Section for dynamically created targets
+    SrcEditMenuFindInOtherWindowList := RegisterIDEMenuSection
+        (SrcEditMenuFindInOtherWindow, 'FindInOtherWindowList Section');
     {$ENDIF}
 
     {%region * Move Page (left/right) *}
@@ -5303,7 +5312,7 @@ var
 
   {$IFnDEF SingleSrcWindow}
   function ToWindow(ASection: TIDEMenuSection; const OpName: string;
-                    const OnClickMethod: TNotifyEvent): Boolean;
+                    const OnClickMethod: TNotifyEvent; WinForFind: Boolean = False): Boolean;
   var
     i, ThisWin, SharedEditor: Integer;
     nb: TSourceNotebook;
@@ -5314,7 +5323,7 @@ var
     for i := 0 to Manager.SourceWindowCount - 1 do begin
       nb:=Manager.SourceWindows[i];
       SharedEditor:=nb.IndexOfEditorInShareWith(ASrcEdit);
-      if (i <> ThisWin) and (SharedEditor < 0) then begin
+      if (i <> ThisWin) and ((SharedEditor < 0) <> WinForFind) then begin
         Result := True;
         with RegisterIDEMenuCommand(ASection, OpName+IntToStr(i), nb.Caption,
                                     OnClickMethod) do
@@ -5475,6 +5484,10 @@ begin
                        @SrcEditMenuCopyToExistingWindowClicked);
     SrcEditMenuCopyToNewWindow.Visible := not NBAvail;
     SrcEditMenuCopyToOtherWindow.Visible := NBAvail;
+
+    NBAvail := ToWindow(SrcEditMenuFindInOtherWindowList, 'FindInWindow',
+                       @SrcEditMenuFindInWindowClicked, True);
+    SrcEditMenuFindInOtherWindow.Enabled := NBAvail;
     {$ENDIF}
 
     if Assigned(Manager.OnPopupMenu) then
@@ -6784,6 +6797,25 @@ end;
 procedure TSourceNotebook.SrcEditMenuMoveToExistingWindowClicked(Sender: TObject);
 begin
   MoveEditor(PageIndex, (Sender as TIDEMenuItem).Tag, -1)
+end;
+
+procedure TSourceNotebook.SrcEditMenuFindInWindowClicked(Sender: TObject);
+var
+  TargetIndex: Integer;
+  DestWin: TSourceNotebook;
+  Edit: TSourceEditor;
+  SharedEditorIdx: Integer;
+begin
+  TargetIndex := (Sender as TIDEMenuItem).Tag;
+  if (TargetIndex < 0) or (TargetIndex >= Manager.SourceWindowCount) then
+    exit;
+  DestWin := Manager.SourceWindows[TargetIndex];
+  Edit := FindSourceEditorWithPageIndex(PageIndex);
+  SharedEditorIdx := DestWin.IndexOfEditorInShareWith(Edit);
+  If SharedEditorIdx < 0 then
+    exit;
+  Manager.ActiveEditor := DestWin.Editors[SharedEditorIdx];
+  Manager.ShowActiveWindowOnTop(True);
 end;
 
 procedure TSourceNotebook.EditorLockClicked(Sender: TObject);
