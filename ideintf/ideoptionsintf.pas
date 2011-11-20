@@ -51,7 +51,7 @@ type
 
   TIDEOptionsWriteEvent = procedure(Sender: TObject; Restore: boolean) of object;
 
-  { TAbstractIDEOptions }
+  { TAbstractIDEOptions base class for all option containers }
 
   TAbstractIDEOptions = class(TPersistent)
   private
@@ -98,7 +98,7 @@ type
   TOnLoadIDEOptions = procedure(Sender: TObject; AOptions: TAbstractIDEOptions) of object;
   TOnSaveIDEOptions = procedure(Sender: TObject; AOptions: TAbstractIDEOptions) of object;
 
-  { TAbstractIDEOptionsEditor }
+  { TAbstractIDEOptionsEditor base frame class for all options frames (global, project and packages) }
 
   PIDEOptionsEditorRec = ^TIDEOptionsEditorRec;
   PIDEOptionsGroupRec = ^TIDEOptionsGroupRec;
