@@ -3343,10 +3343,7 @@ var
         end;
       smNormal:
         begin
-          if OldBlockStart.Y = OldBlockEnd.Y then
-            Result := OldBlockStart.X
-          else
-            Result := MinCommonIndent;
+          Result := MinCommonIndent;
         end;
        else
          Result := 1;
