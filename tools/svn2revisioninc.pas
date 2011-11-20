@@ -92,7 +92,6 @@ const
 
 function TSvn2RevisionApplication.FindRevision: boolean;
 var
-  SvnDir: string;
   GitDir: string;
 
   function GetRevisionFromGitVersion : boolean;
@@ -147,10 +146,14 @@ var
           n:=OutPut.Read(Buffer[1], 80);
           RevisionStr := Copy(Buffer, 1, n);
 
+          // If cannot determine svn version it will return localized message
+          // "Unversioned directory" with no error result but svn revisions
+          // always start with a number.
+          Result:=(n > 0) and (RevisionStr[1] in ['0'..'9']);
+
           SetLength(Buffer, 1024);
           n:=Stderr.Read(Buffer[1], 1024);
 
-          Result:=true;
           Show('Retrieved revision with svnversion.');
           Show('');
           Show('svnversion error:');
@@ -184,7 +187,7 @@ var
              Readln(EntriesText);
              Readln(EntriesText);
              Readln(EntriesText, RevisionStr);
-             Result := true;
+             Result := RevisionStr <> '';
            end;
          finally
            CloseFile(EntriesText);
@@ -225,12 +228,11 @@ var
   end;
 
 begin
-  Result:=false;
-  SvnDir:= AppendPathDelim(SourceDirectory)+'.svn';
-  if DirectoryExistsUTF8(SvnDir) then begin
-    Result := GetRevisionFromSvnVersion or GetRevisionFromEntriesTxt or
-              GetRevisionFromEntriesXml;
-  end else begin
+  Result := GetRevisionFromSvnVersion or GetRevisionFromEntriesTxt or
+            GetRevisionFromEntriesXml;
+
+  if not Result then
+  begin
     GitDir:= AppendPathDelim(SourceDirectory)+'.git';
     if DirectoryExistsUTF8(GitDir) then
     begin
