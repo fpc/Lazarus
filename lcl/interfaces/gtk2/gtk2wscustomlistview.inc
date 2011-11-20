@@ -163,8 +163,8 @@ begin
     NM.uNewState := LVIS_SELECTED;
   NM.uChanged := LVIF_STATE;
   msg.NMHdr := @NM.hdr;
-
-  DeliverMessage(Target, msg);
+  if gtk_object_get_data(PGtkObject(TWinControl(Target).Handle),'lcl_gtkwidget_in_update') = nil then
+    DeliverMessage(Target, msg);
 end;
 
 procedure Gtk2_ItemSelectionChanged(selection: PGtkTreeSelection; WidgetInfo: PWidgetInfo); cdecl;
@@ -1560,15 +1560,8 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'BeginUpdate')
   then Exit;
-
-  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-  g_object_ref(Widgets^.TreeModel);
-
-  if GTK_IS_TREE_VIEW(Widgets^.MainView) then
-    gtk_tree_view_set_model(PGtkTreeView(Widgets^.MainView), nil)
-  else
-  if GTK_IS_ICON_VIEW(Widgets^.MainView) then
-    gtk_icon_view_set_model(PGtkIconView(Widgets^.MainView), nil);
+  if gtk_object_get_data(PGtkObject(ALV.Handle),'lcl_gtkwidget_in_update') = nil then
+    gtk_object_set_data(PGtkObject(ALV.Handle),'lcl_gtkwidget_in_update', ALV);
 end;
 
 class procedure TGtk2WSCustomListView.EndUpdate(const ALV: TCustomListView);
@@ -1577,15 +1570,8 @@ var
 begin
   if not WSCheckHandleAllocated(ALV, 'EndUpdate')
   then Exit;
-
-  GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-
-  if GTK_IS_TREE_VIEW(Widgets^.MainView) then
-    gtk_tree_view_set_model(PGtkTreeView(Widgets^.MainView), Widgets^.TreeModel)
-  else
-  if GTK_IS_ICON_VIEW(Widgets^.MainView) then
-    gtk_icon_view_set_model(PGtkIconView(Widgets^.MainView), Widgets^.TreeModel);
-  g_object_unref(Widgets^.TreeModel);
+  if gtk_object_get_data(PGtkObject(ALV.Handle),'lcl_gtkwidget_in_update') <> nil then
+    gtk_object_remove_data(PGtkObject(ALV.Handle),'lcl_gtkwidget_in_update');
 end;
 
 class function TGtk2WSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
