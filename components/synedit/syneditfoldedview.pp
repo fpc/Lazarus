@@ -1901,6 +1901,7 @@ begin
   FActions := [sfaClose, sfaFold];
   NdInfo := FHighlighter.FoldNodeInfo[ANode.StartLine - ANode.SourceLineOffset - 1,
                                       ANode.FoldIndex, [sfaOpen, sfaFold]];
+  if sfaInvalid in NdInfo.FoldAction then exit(NdInfo);
 
   EndLineIdx := FHighlighter.FoldEndLine(ANode.StartLine - ANode.SourceLineOffset - 1,
                                         ANode.FoldIndex);
@@ -3338,6 +3339,11 @@ begin
       {$IFDEF SynFoldSaveDebug}
       DebugLnEnter(['TSynEditFoldedView.GetFoldDescription as Text']);
       {$ENDIF}
+      while Node.IsInFold and (Node.fData.Classification <> fncHighlighter) do
+        Node := NodeIterator.Next;
+      if not node.IsInFold then
+        exit;
+
       NdInfo := NdiHelper1.GotoNodeOpenPos(Node);
       while Node.IsInFold and (Node.StartLine-2 <= AEndIndex) do
       begin
@@ -3346,17 +3352,20 @@ begin
         NodeFoldType := scftFold;
         if Node.SourceLineOffset = 0 then
           NodeFoldType := scftHide;
-        if not(sfaDefaultCollapsed in NdInfo.FoldAction) then // Currently skip default nodes
+        if (NdInfo.FoldAction * [sfaInvalid, sfaDefaultCollapsed] = []) then // Currently skip default nodes
           FoldCoderForType(NdInfo.FoldType).AddNode
                      (NdInfo.LogXStart, NdInfo.LineIndex, Node.FullCount, NodeFoldType);
+
         Node := NodeIterator.Next;
+        while Node.IsInFold and (Node.fData.Classification <> fncHighlighter) do
+          Node := NodeIterator.Next;
         if not Node.IsInFold then
           break;
 
         NdInfo := NdiHelper1.Next;
         while NdiHelper1.IsValid and (not NdiHelper1.IsAtNodeOpenPos(Node)) do begin
           // Add unfolded nodes
-          if not(sfaDefaultCollapsed in NdInfo.FoldAction) then // Currently skip default nodes
+          if (NdInfo.FoldAction * [sfaInvalid, sfaDefaultCollapsed] = []) then // Currently skip default nodes
             FoldCoderForType(NdInfo.FoldType).AddNode
                                  (NdInfo.LogXStart, NdInfo.LineIndex, 0, scftOpen);
           NdInfo := NdiHelper1.Next;
