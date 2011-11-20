@@ -58,9 +58,7 @@ var
   ViewCodyWindowCommand: TIDECommand;
   CopyDeclarationToClipboardCommand: TIDECommand;
   CutDeclarationToClipboardCommand: TIDECommand;
-  {$IFDEF EnableCodyIdentifiers}
   ShowIdentifierDictionaryCommand: TIDECommand;
-  {$ENDIF}
 begin
   CodyOptions:=TCodyMiscOptions.Create;
   CodyOptions.LoadSafe;
@@ -156,14 +154,12 @@ begin
     crsShowCodeToolsNodeInfo, nil, nil, ShowCodeNodeInfoCommand);
 
   // Show unit / identifier dictionary
-  {$IFDEF EnableCodyIdentifiers}
   InitUnitDictionary;
   ShowIdentifierDictionaryCommand:=RegisterIDECommand(CmdCatCodeTools, 'ShowUnitDictionary',
     crsShowUnitIdentifierDictionary,
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowUnitDictionaryDialog);
   RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'ShowIdentifierDictionary',
     crsShowUnitIdentifierDictionary, nil, nil, ShowIdentifierDictionaryCommand);
-  {$ENDIF}
 
   // View menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ViewCodyWindowCommand:=RegisterIDECommand(CmdCatView, 'Cody',
