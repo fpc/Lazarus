@@ -70,13 +70,15 @@ end;*)
   - Once on every OnPaint event
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct): hdc;
-var
-  DC: TLazCanvas;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseWinAPI}
     DebugLn('Trace:> [WinAPI BeginPaint] Handle=', dbghex(Handle));
   {$endif}
-(*  Widget := TQtWidget(Handle);
+  Result := 0;
+
+  if Handle = 0 then Exit;
+
+  (*  Widget := TQtWidget(Handle);
   if Widget <> nil then
     DC := TQtDeviceContext.Create(Widget.PaintData.PaintWidget, True)
   else
@@ -487,7 +489,7 @@ end;*)
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseWinAPI}
     WriteLn('[WinAPI CreateCompatibleDC] DC: ', dbghex(DC));
   {$endif}
   Result := 0;//HDC(TQtDeviceContext.Create(nil, True));

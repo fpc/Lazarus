@@ -9,10 +9,13 @@ uses
   // rtl+ftl
   Types, Classes, SysUtils,
   CGGeometry,
+  fpimage, fpcanvas,
+  // Custom Drawn Canvas
+  IntfGraphics, lazcanvas, customdrawnproc,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   //
-  Controls, LCLMessageGlue, WSControls, LCLType;
+  Controls, LCLMessageGlue, WSControls, LCLType, LCLProc;
 
 type
   { LCLObjectExtension }
@@ -115,6 +118,8 @@ type
 
   TCocoaCustomControl = objcclass(NSControl)
     callback  : TCommonCallback;
+    Image: TLazIntfImage;
+    Canvas: TLazCanvas;
     procedure drawRect(dirtyRect: NSRect); override;
   end;
 
@@ -576,14 +581,22 @@ procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
   const bounds, dirty:NSRect);
 var
   struct : TPaintStruct;
+  lWidth, lHeight: Integer;
 begin
   if not Assigned(Context) then Context:=TCocoaContext.Create;
 
   Context.ctx:=ControlContext;
-  if Context.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then
+  lWidth := Round(bounds.size.width);
+  lHeight := Round(bounds.size.height);
+  if Context.InitDraw(lWidth, lHeight) then
   begin
     FillChar(struct, SizeOf(TPaintStruct), 0);
-    struct.hdc := HDC(Context);
+
+    UpdateControlLazImageAndCanvas(TCocoaCustomControl(Owner).Image,
+      TCocoaCustomControl(Owner).Canvas, lWidth, lHeight);
+
+    struct.hdc := HDC(TCocoaCustomControl(Owner).Canvas);
+
     {$IFDEF VerboseWinAPI}
       DebugLn(Format('[TLCLCommonCallback.Draw] OnPaint event started context: %x', [HDC(context)]));
     {$ENDIF}
