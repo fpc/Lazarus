@@ -1246,6 +1246,7 @@ begin
       end;
       //DebugLn('TOutputFilter.ReadFPCompilerLine AbsFilename=',AbsFilename,' Filename=',Filename,' Dir=',fCurrentDirectory);
       if AbsFilename<>'' then begin
+        AbsFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(AbsFilename);
         CurrentMessageParts.Values['Filename']:=AbsFilename;
         Line:=StrToIntDef(LineNumberStr,1);
         Col:=StrToIntDef(ColNumberStr,1);
