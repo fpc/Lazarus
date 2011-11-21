@@ -82,34 +82,28 @@ begin
     Windows.SetWindowPos(Window, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
     }
   end;
-{
   with Params do
   begin
     if Window <> 0 then
     begin
-      // some controls (combobox) immediately send a message upon setting font
-      if not NCCreateParams.Handled then
-      begin
-        WindowInfo := AllocWindowInfo(Window);
-        WindowInfo^.needParentPaint := GetWin32WindowInfo(Parent)^.needParentPaint;
-        WindowInfo^.WinControl := AWinControl;
-        AWinControl.Handle := Window;
-        if Assigned(SubClassWndProc) then
-          WindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
-            Window, GWL_WNDPROC, PtrInt(SubClassWndProc)));
-        // Set control ID to map WinControl. This is required for messages that sent to parent
-        // to extract control from the passed ID.
-        // In case of subclassing this ID will be set in WM_NCCREATE message handler
-        SetWindowLong(Window, GWL_ID, PtrInt(AWinControl));
-      end;
+      WindowInfo := AllocWindowInfo(Window);
+      WindowInfo^.WinControl := AWinControl;
+      AWinControl.Handle := Window;
+      //if Assigned(SubClassWndProc) then
+      //  WindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
+      //    Window, GWL_WNDPROC, PtrInt(SubClassWndProc)));
+      // Set control ID to map WinControl. This is required for messages that sent to parent
+      // to extract control from the passed ID.
+      // In case of subclassing this ID will be set in WM_NCCREATE message handler
+      //SetWindowLong(Window, GWL_ID, PtrInt(AWinControl));
 
-      if AWinControl.Font.IsDefault then
-        lhFont := Win32WidgetSet.DefaultFont
+{      if AWinControl.Font.IsDefault then
+        lhFont := CDWidgetSet.DefaultFont
       else
         lhFont := AWinControl.Font.Reference.Handle;
-      Windows.SendMessage(Window, WM_SETFONT, WPARAM(lhFont), 0);
+      Windows.SendMessage(Window, WM_SETFONT, WPARAM(lhFont), 0);}
     end;
-  end;}
+  end;
 end;
 
 class procedure TCDWSWinControl.AddControl(const AControl: TControl);
