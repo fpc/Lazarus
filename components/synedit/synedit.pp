@@ -278,12 +278,10 @@ const
     eosShareMarks
   ];
 
-  {$IFDEF SYN_LAZARUS}
   SYNEDIT_DEFAULT_OPTIONS2 = [
     eoFoldedCopyPaste,
     eoOverwriteBlock
   ];
-  {$ENDIF}
 
   SYNEDIT_DEFAULT_VISIBLESPECIALCHARS = [
     vscSpace,
@@ -652,7 +650,7 @@ type
     procedure DestroyWnd; override;
     procedure DragOver(Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean); override;
-    procedure FontChanged(Sender: TObject); {$IFDEF SYN_LAZARUS}override;{$ENDIF}
+    procedure FontChanged(Sender: TObject); override;
     function GetReadOnly: boolean; virtual;
     procedure HighlighterAttrChanged(Sender: TObject);
     // note: FirstLine and LastLine don't need to be in correct order
@@ -714,20 +712,14 @@ type
       Data: pointer); virtual;
     function DoOnReplaceText(const ASearch, AReplace: string;
       Line, Column: integer): TSynReplaceAction; virtual;
-    {$IFNDEF SYN_LAZARUS}
-    function DoOnSpecialLineColors(Line: integer;
-      var Foreground, Background: TColor): boolean; virtual;
-    {$ENDIF}
     procedure DoOnStatusChange(Changes: TSynStatusChanges); virtual;
     property LastMouseCaret: TPoint read FLastMouseCaret write SetLastMouseCaret;
-    {$IFDEF SYN_LAZARUS}
     function GetSelEnd: integer;                                                 //L505
     function GetSelStart: integer;
     procedure SetSelEnd(const Value: integer);
     procedure SetSelStart(const Value: integer);
     property TextView : TSynEditFoldedView read FFoldedLinesView;
     property TopView: Integer read GetTopView write SetTopView;  // TopLine converted into Visible(View) lines
-    {$ENDIF}
     function PasteFromClipboardEx(ClipHelper: TSynClipboardStream): Boolean;
     function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
     // Todo: Reduce the argument list of Creategutter
@@ -794,7 +786,6 @@ type
     procedure InvalidateLine(Line: integer);
     function IsBookmark(BookMark: integer): boolean;
     procedure MarkTextAsSaved;
-    {$IFDEF SYN_LAZARUS}
     // Byte to Char
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
     function LogicalToPhysicalCol(const Line: String; Index, LogicalPos
@@ -808,18 +799,13 @@ type
     procedure MoveCaretToVisibleArea;
     procedure MoveCaretIgnoreEOL(const NewCaret: TPoint);
     procedure MoveLogicalCaretIgnoreEOL(const NewLogCaret: TPoint);
-    {$ELSE}
-    function LogicalToPhysicalPos(p: TPoint): TPoint;
-    {$ENDIF}
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure PasteFromClipboard;
     function PixelsToRowColumn(Pixels: TPoint): TPoint;
-    {$IFDEF SYN_LAZARUS}
     function PixelsToLogicalPos(const Pixels: TPoint): TPoint;
     function ScreenRowToRow(ScreenRow: integer): integer;
     function RowToScreenRow(PhysicalRow: integer): integer;
-    {$ENDIF}
     procedure Redo;
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
       AHandlerData: pointer);
@@ -837,8 +823,7 @@ type
     procedure UnRegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
 
     // RowColumnToPixels: Physical coords
-    function RowColumnToPixels(
-                      {$IFDEF SYN_LAZARUS}const {$ENDIF}RowCol: TPoint): TPoint;
+    function RowColumnToPixels(const RowCol: TPoint): TPoint;
     function SearchReplace(const ASearch, AReplace: string;
       AOptions: TSynSearchOptions): integer;
     function SearchReplaceEx(const ASearch, AReplace: string;
@@ -875,11 +860,9 @@ type
     property CharWidth: integer read fCharWidth;
     property Color default clWhite;
     property Beautifier: TSynCustomBeautifier read fBeautifier write SetBeautifier;
-    {$IFDEF SYN_LAZARUS}
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
     property UseIncrementalColor : Boolean write SetUseIncrementalColor;
-    {$ENDIF}
     property Highlighter: TSynCustomHighlighter
       read fHighlighter write SetHighlighter;
     property LeftChar: Integer read fLeftChar write SetLeftChar;
@@ -901,12 +884,10 @@ type
     property TextBetweenPointsEx[aStartPoint, aEndPoint: TPoint; CaretMode: TSynCaretAdjustMode]: String
       write SetTextBetweenPointsEx;
     property TopLine: Integer read fTopLine write SetTopLine;
-    {$IFDEF SYN_LAZARUS}
     property UseUTF8: boolean read FUseUTF8;
     procedure Update; override;
     procedure Invalidate; override;
     property ChangeStamp: int64 read GetChangeStamp;
-    {$ENDIF}
     procedure ShareTextBufferFrom(AShareEditor: TCustomSynEdit);
     procedure UnShareTextBuffer;
   public
@@ -994,17 +975,10 @@ type
       read FOnProcessUserCommand write FOnProcessUserCommand;
     property OnReplaceText: TReplaceTextEvent read fOnReplaceText
       write fOnReplaceText;
-    {$IFDEF SYN_LAZARUS}
     property OnSpecialLineColors: TSpecialLineColorsEvent
       read FOnSpecialLineColors write SetSpecialLineColors;  deprecated;
-    {$ELSE}
-    property OnSpecialLineColors: TSpecialLineColorsEvent
-      read fOnSpecialLineColors write fOnSpecialLineColors;
-    {$ENDIF}
-    {$IFDEF SYN_LAZARUS}
     property OnSpecialLineMarkup: TSpecialLineMarkupEvent
       read FOnSpecialLineMarkup write SetSpecialLineMarkup;
-    {$ENDIF}
     property OnStatusChange: TStatusChangeEvent
       read fOnStatusChange write fOnStatusChange;
   end;
@@ -1017,18 +991,12 @@ type
     property BlockIndent;
     property BlockTabIndent;
     property BorderSpacing;
-{$IFNDEF SYN_LAZARUS}
-    property Ctl3D;
-    property ParentCtl3D;
-{$ENDIF}
 {$IFDEF SYN_COMPILER_4_UP}
     property Anchors;
     property Constraints;
 {$ENDIF}
     property Color;
-    {$IFDEF SYN_LAZARUS}
     property Cursor default crIBeam;
-    {$ENDIF}
     property Enabled;
     property Font;
     property Height;
@@ -1046,10 +1014,8 @@ type
     // inherited events
     property OnClick;
     property OnDblClick;
-    {$IFDEF SYN_LAZARUS}
     property OnTripleClick;
     property OnQuadClick;
-    {$ENDIF}
     property OnDragDrop;
     property OnDragOver;
 {$IFDEF SYN_COMPILER_4_UP}
@@ -1065,12 +1031,10 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF SYN_LAZARUS}
     property OnClickLink : TMouseEvent read FOnClickLink write FOnClickLink;
     property OnMouseLink: TSynMouseLinkEvent read FOnMouseLink write FOnMouseLink;
     property OnMouseEnter;
     property OnMouseLeave;
-    {$ENDIF}
 {$IFDEF SYN_COMPILER_4_UP}
 // ToDo Docking
     property OnStartDock;
@@ -1102,7 +1066,6 @@ type
     property RightEdgeColor;
     property ScrollBars;
     property SelectedColor;
-    {$IFDEF SYN_LAZARUS}
     property IncrementColor;
     property HighlightAllColor;
     property BracketHighlightStyle;
@@ -1110,7 +1073,6 @@ type
     property FoldedCodeColor;
     property MouseLinkColor;
     property LineHighlightColor;
-    {$ENDIF}
     property DefaultSelectionMode;
     property SelectionMode;
     property TabWidth;
@@ -1130,9 +1092,7 @@ type
     property OnProcessUserCommand;
     property OnReplaceText;
     property OnSpecialLineColors; deprecated;
-    {$IFDEF SYN_LAZARUS}
     property OnSpecialLineMarkup;
-    {$ENDIF}
     property OnStatusChange;
   end;
 
@@ -1340,9 +1300,7 @@ type
     fEvent: THookedCommandEvent;
     fData: pointer;
     function Equals(AEvent: THookedCommandEvent): boolean; reintroduce;
-  {$IFDEF SYN_LAZARUS}
   public
-  {$ENDIF}
     constructor Create(AEvent: THookedCommandEvent; AData: pointer);
   end;
 
@@ -1491,7 +1449,6 @@ begin
   {$ENDIF}
 end;
 
-{$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.PixelsToLogicalPos(const Pixels: TPoint): TPoint;
 begin
   Result:=PhysicalToLogicalPos(PixelsToRowColumn(Pixels));
@@ -1516,20 +1473,15 @@ begin
   if Result > LinesInWindow+1 then Result := LinesInWindow+1;
 //  DebugLn(['=== Row TO ScreenRow   In:',PhysicalRow,'  out:',Result]);
 end;
-{$ENDIF}
 
 function TCustomSynEdit.RowColumnToPixels(
-  {$IFDEF SYN_LAZARUS}const {$ENDIF}RowCol: TPoint): TPoint;
+  const RowCol: TPoint): TPoint;
 // converts screen position (1,1) based
 // to client area coordinate (0,0 based on canvas)
 begin
   Result:=RowCol;
   Result.X := (Result.X - 1) * fCharWidth + fTextOffset;
-  {$IFDEF SYN_LAZARUS}
   Result.Y := RowToScreenRow(RowCol.Y) * fTextHeight;
-  {$ELSE}
-  Result.Y := (Result.Y - fTopLine) * fTextHeight;
-  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.ComputeCaret(X, Y: Integer);
@@ -1683,12 +1635,6 @@ begin
 
   RecreateMarkList;
 
-{$IFDEF SYN_COMPILER_4_UP}
-{$IFNDEF SYN_LAZARUS}
-// ToDo DoubleBuffered
-  DoubleBuffered := false;
-{$ENDIF}
-{$ENDIF}
   {$IFNDEF EnableDoubleBuf}
   DoubleBuffered := True;
   {$ENDIF}
@@ -1709,14 +1655,12 @@ begin
 
   fTextOffset := TextLeftPixelOffset;
 
-  ControlStyle := ControlStyle + [csOpaque, csSetCaption
-                    {$IFDEF SYN_LAZARUS}, csTripleClicks, csQuadClicks{$ENDIF}];
+  ControlStyle := ControlStyle + [csOpaque, csSetCaption, csTripleClicks, csQuadClicks];
   Height := 150;
   Width := 200;
   Cursor := crIBeam;
   fPlugins := TList.Create;
   FHookedKeyTranslationList := TSynHookedKeyTranslationList.Create;
-{$IFDEF SYN_LAZARUS}
   // needed before setting color
   fMarkupHighCaret := TSynEditMarkupHighlightAllCaret.Create(self);
   fMarkupHighCaret.Selection := FBlockSelection;
@@ -1749,15 +1693,7 @@ begin
   fLastMouseCaret := Point(-1,-1);
   FLastMousePoint := Point(-1,-1);
   fBlockIndent := 2;
-{$ELSE}
-  Color := clWindow;
-  fFontDummy.Name := 'Courier New';
-  fFontDummy.Size := 10;
-{$IFDEF SYN_COMPILER_3_UP}
-// ToDo Font CharSet
-  fFontDummy.CharSet := DEFAULT_CHARSET;
-{$ENDIF}
-{$ENDIF}
+
   Font.Assign(fFontDummy);
   Font.OnChange := {$IFDEF FPC}@{$ENDIF}FontChanged;
   FontChanged(nil);
@@ -2091,7 +2027,6 @@ begin
   Result := fMarkupManager.MarkupByClass[Index];
 end;
 
-{$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.GetHighlightAllColor : TSynSelectedColor;
 begin
   result := fMarkupHighAll.MarkupInfo;
@@ -2174,7 +2109,6 @@ procedure TCustomSynEdit.SetUseIncrementalColor(const AValue : Boolean);
 begin
   fMarkupSelection.UseIncrementalColor:=AValue;
 end;
-{$ENDIF}
 
 function TCustomSynEdit.GetCharLen(const Line: string; CharStartPos: integer
   ): integer;
@@ -4087,12 +4021,7 @@ end;
 
 procedure TCustomSynEdit.Update;
 begin
-  {$IFDEF SYN_LAZARUS}
   Invalidate;
-  {$ELSE}
-  Paint;
-  inherited Update;
-  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.Invalidate;
@@ -4520,7 +4449,6 @@ begin
     MoveCaretToVisibleArea;
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.MoveCaretToVisibleArea;
 // scroll to make the caret visible
 var
@@ -4564,7 +4492,6 @@ procedure TCustomSynEdit.MoveLogicalCaretIgnoreEOL(const NewLogCaret: TPoint);
 begin
   MoveCaretIgnoreEOL(LogicalToPhysicalPos(NewLogCaret));
 end;
-{$ENDIF}
 
 procedure TCustomSynEdit.UpdateCaret(IgnorePaintLock: Boolean = False);
 {$IFDEF SYN_MBCSSUPPORT}
@@ -5733,9 +5660,7 @@ procedure TCustomSynEdit.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   inherited;
-  {$IFDEF SYN_LAZARUS}
   LastMouseCaret:=Point(-1,-1);
-  {$ENDIF}
   if (Source is TCustomSynEdit) and not TCustomSynEdit(Source).ReadOnly then
   begin
     Accept := True;
@@ -5860,8 +5785,7 @@ begin
     fRightEdgeColor := Value;
     if HandleAllocated then begin
       nX := fTextOffset + fRightEdge * fCharWidth;
-      rcInval := Rect(nX - 1, 0, nX + 1
-         , ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF});
+      rcInval := Rect(nX - 1, 0, nX + 1, ClientHeight-ScrollBarWidth);
       {$IFDEF VerboseSynEditInvalidate}
       DebugLn(['TCustomSynEdit.SetRightEdgeColor ',dbgs(rcInval)]);
       {$ENDIF}
@@ -6448,10 +6372,8 @@ begin
         end;
       ecShiftTab:
         if not ReadOnly then
-          {$IFDEF SYN_LAZARUS}
           if SelAvail and (eoTabIndent in Options) then
-            DoBlockUnindent
-          {$ENDIF};
+            DoBlockUnindent;
       ecMatchBracket:
         FindMatchingBracket;
       ecChar:
@@ -6701,7 +6623,6 @@ begin
           end;
         end;
 {$ENDIF}
-      {$IFDEF SYN_LAZARUS}
       EcFoldLevel1..EcFoldLevel9:
         FoldAll(Command - EcFoldLevel1);
       EcFoldLevel0:
@@ -6716,7 +6637,6 @@ begin
         end;
       EcUnFoldCurrent:
           FFoldedLinesView.UnFoldAtTextIndex(CaretY-1);
-      {$ENDIF}
       EcToggleMarkupWord:
           FMarkupHighCaret.ToggleCurrentWord;
     end;
@@ -6748,14 +6668,10 @@ end;
 
 procedure TCustomSynEdit.ClearAll;
 begin
-  {$IFDEF SYN_LAZARUS}
   InternalBeginUndoBlock;
   SelectAll;
   SelText:='';
   InternalEndUndoBlock;
-  {$ELSE}
-  Lines.Clear;
-  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.ClearSelection;
@@ -6878,7 +6794,6 @@ begin
   InvalidateGutterLines(Sender.Line, Sender.Line);
 end;
 
-{$IFDEF SYN_LAZARUS}
 function TCustomSynEdit.GetSelStart: integer;                                   //L505 begin
 
   function llen(const data: string): integer;
@@ -6988,7 +6903,6 @@ begin
   p.x := value - count; p.y := loop + 1;
   BlockEnd := p;
 end;
-{$ENDIF}
 
 procedure TCustomSynEdit.SetExtraLineSpacing(const Value: integer);
 begin
@@ -7705,11 +7619,9 @@ begin
     FScreenCaret.CharHeight := fTextHeight;
     FScreenCaret.UnLock;
   end;
-  {$IFDEF SYN_LAZARUS}
   FUseUTF8:=fTextDrawer.UseUTF8;
   FLines.IsUtf8 := FUseUTF8;
   //debugln('TCustomSynEdit.RecalcCharExtent UseUTF8=',dbgs(UseUTF8),' Font.CanUTF8=',dbgs(Font.CanUTF8));
-  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.HighlighterAttrChanged(Sender: TObject);
@@ -7805,9 +7717,7 @@ begin
     {$ELSE}
     DragAcceptFiles(Handle, TRUE);
     {$ENDIF}
-  {$IFDEF SYN_LAZARUS}
   SizeOrFontChanged(true);
-  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.DestroyWnd;
@@ -8176,16 +8086,6 @@ begin
   TSynEditStringList(FLines).Modified := Value;
 end;
 
-{$IFNDEF SYN_LAZARUS}
-function TCustomSynEdit.DoOnSpecialLineColors(Line: integer; var Foreground,
-  Background: TColor): boolean;
-begin
-  Result := FALSE;
-  if Assigned(fOnSpecialLineColors) then
-    fOnSpecialLineColors(Self, Line, Result, Foreground, Background);
-end;
-{$ENDIF}
-
 procedure TCustomSynEdit.InvalidateLine(Line: integer);
 begin
   InvalidateLines(Line, Line);
@@ -8206,89 +8106,8 @@ begin
 end;
 
 procedure TCustomSynEdit.FindMatchingBracket;
-{$IFDEF SYN_LAZARUS}
-{$ELSE}
-const
-  Brackets: array[0..5] of char = ('(', ')', '[', ']', '{', '}');
-var
-  Line: string;
-  i, PosX, PosY, Len: integer;
-  Test, BracketInc, BracketDec: char;
-  NumBrackets: integer;
-{$ENDIF}
 begin
-  {$IFDEF SYN_LAZARUS}
   FindMatchingBracket(CaretXY,false,true,false,false);
-  {$ELSE}
-  // get char at caret
-  PosX := CaretX;
-  PosY := CaretY;
-  Line := LineText;
-  if Length(Line) >= PosX then begin
-    Test := Line[PosX];
-    // is it one of the recognized brackets?
-    for i := Low(Brackets) to High(Brackets) do
-      if Test = Brackets[i] then begin
-        // this is the bracket, get the matching one and the direction
-        BracketInc := Brackets[i];
-        BracketDec := Brackets[i xor 1]; // 0 -> 1, 1 -> 0, ...
-        // search for the matching bracket (that is until NumBrackets = 0)
-        NumBrackets := 1;
-        if Odd(i) then begin
-          // closing bracket -> search opening bracket
-          repeat
-            // search until start of line
-            while PosX > 1 do begin
-              Dec(PosX);
-              Test := Line[PosX];
-              if Test = BracketInc then
-                Inc(NumBrackets)
-              else if Test = BracketDec then begin
-                Dec(NumBrackets);
-                if NumBrackets = 0 then begin
-                  // matching bracket found, set caret and bail out
-                  CaretXY := Point(PosX, PosY);
-                  exit;
-                end;
-              end;
-            end;
-            // get previous line if possible
-            if PosY = 1 then break;
-            Dec(PosY);
-            Line := Lines[PosY - 1];
-            PosX := Length(Line) + 1;
-          until FALSE;
-        end else begin
-          // opening bracket -> search closing bracket
-          repeat
-            // search until end of line
-            Len := Length(Line);
-            while PosX < Len do begin
-              Inc(PosX);
-              Test := Line[PosX];
-              if Test = BracketInc then
-                Inc(NumBrackets)
-              else if Test = BracketDec then begin
-                Dec(NumBrackets);
-                if NumBrackets = 0 then begin
-                  // matching bracket found, set caret and bail out
-                  CaretXY := Point(PosX, PosY);
-                  exit;
-                end;
-              end;
-            end;
-            // get next line if possible
-            if PosY = Lines.Count then break;
-            Inc(PosY);
-            Line := Lines[PosY - 1];
-            PosX := 0;
-          until FALSE;
-        end;
-        // don't test the other brackets, we're done
-        break;
-      end;
-  end;
-  {$ENDIF}
 end;
 
 function TCustomSynEdit.FindMatchingBracket(PhysStartBracket: TPoint;
