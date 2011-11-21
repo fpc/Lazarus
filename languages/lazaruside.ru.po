@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-11-21 02:41+0400\n"
+"PO-Revision-Date: 2011-11-22 00:30+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -13980,7 +13980,7 @@ msgstr "Удалить их"
 
 #: lazarusidestrconsts.lisremovethepathsfromothersources
 msgid "Remove the paths from \"Other sources\""
-msgstr "Удалить пути из списка \"Другие модули\""
+msgstr "Удалить пути из списка \"Прочие файлы исходного кода\""
 
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
