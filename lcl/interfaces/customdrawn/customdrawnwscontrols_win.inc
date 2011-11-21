@@ -1,5 +1,13 @@
 {$MainUnit customdrawnwscontrols.pp}
 
+type
+  TNCCreateParams = record
+    WinControl: TWinControl;
+    DefWndProc: WNDPROC;
+    Handled: Boolean;
+  end;
+  PNCCreateParams = ^TNCCreateParams;
+
 procedure PrepareCreateWindow(const AWinControl: TWinControl;
   const CreateParams: TCreateParams; out Params: TCreateWindowExParams);
 begin
@@ -26,9 +34,10 @@ begin
     Height := CreateParams.Height;
 
     LCLBoundsToWin32Bounds(AWinControl, Left, Top, Width, Height);
-    if AWinControl is TCustomControl then
-      if TCustomControl(AWinControl).BorderStyle = bsSingle then
-        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+//    if AWinControl is TCustomControl then
+//      if TCustomControl(AWinControl).BorderStyle = bsSingle then
+//        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+//    SetStdBiDiModeParams(AWinControl, Params);
 
     {$IFDEF VerboseSizeMsg}
     Debugln('PrepareCreateWindow ',AWinControl.Name,':',AWinControl.ClassName,
@@ -41,37 +50,27 @@ procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreate
   const AlternateCreateWindow: boolean);
 var
   lhFont: HFONT;
+  AErrorCode: Cardinal;
+  NCCreateParams: TNCCreateParams;
+  WindowClassW, DummyClassW: WndClassW;
 begin
+  NCCreateParams.DefWndProc := nil;
+  NCCreateParams.WinControl := AWinControl;
+  NCCreateParams.Handled := False;
+
   if not AlternateCreateWindow then
   begin
     with Params do
     begin
-      if (Flags and WS_CHILD) <> 0 then
-      begin
-        // menu handle is also for specifying a control id if this is a child
-        MenuHandle := HMENU(AWinControl);
-      end else begin
-        MenuHandle := HMENU(nil);
-      end;
-
-      Window := CreateWindowExW(
-       FlagsEx,            // Extra Flags
-       pClassName,         // Name of the registered class
-       PWideChar(UTF8Decode(WindowTitle)),// Title of the window
-       Flags,              // Style of the window
-       Left,               // x-position (at beginning)
-       Top,                // y-position (at beginning)
-       Width,              // window width
-       Height,             // window height
-       Parent,             // handle to parent or owner window
-       MenuHandle,         // handle to menu
-       System.HInstance,   // handle to application instance
-       nil);               // pointer to window-creation data
+      Window := CreateWindowExW(FlagsEx, PWideChar(WideString(pClassName)),
+        PWideChar(UTF8ToUTF16(WindowTitle)), Flags,
+        Left, Top, Width, Height, Parent, 0, HInstance, @NCCreateParams);
 
       if Window = 0 then
       begin
-        raise exception.create('failed to create win32 control, error: '+IntToStr(GetLastError())
-         + ' WindowTitle: ' + WindowTitle);
+        AErrorCode := GetLastError;
+        DebugLn(['Failed to create win32 control, error: ', AErrorCode, ' : ', GetLastErrorText(AErrorCode)]);
+        raise Exception.Create('Failed to create win32 control, error: ' + IntToStr(AErrorCode) + ' : ' + GetLastErrorText(AErrorCode));
       end;
     end;
     { after creating a child window the following happens:
@@ -83,29 +82,34 @@ begin
     Windows.SetWindowPos(Window, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
     }
   end;
+{
   with Params do
   begin
-    if Window <> HWND(Nil) then
+    if Window <> 0 then
     begin
       // some controls (combobox) immediately send a message upon setting font
-      WindowInfo := AllocWindowInfo(Window);
-      WindowInfo^.WinControl := AWinControl;
-      AWinControl.Handle := Window;
-      if SubClassWndProc <> nil then
-        WindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLongW(
-          Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
-      {$ifdef MSG_DEBUG}
-        DebugLn('Trace:FinishCreateWindow - ', AWinControl.Name,
-          ' SubClassWndProc: ', IntToHex(PtrInt(SubClassWndProc), 8),
-          ' DefWndProc: ', IntToHex(PtrInt(WindowInfo^.DefWndProc), 8));
-      {$endif}
-//      if AWinControl.Font.IsDefault then
-//        lhFont := WinCEWidgetset.MessageFont
-//      else
-//        lhFont := AWinControl.Font.Reference.Handle;
-//      Windows.SendMessage(Window, WM_SETFONT, lhFont, 0)
+      if not NCCreateParams.Handled then
+      begin
+        WindowInfo := AllocWindowInfo(Window);
+        WindowInfo^.needParentPaint := GetWin32WindowInfo(Parent)^.needParentPaint;
+        WindowInfo^.WinControl := AWinControl;
+        AWinControl.Handle := Window;
+        if Assigned(SubClassWndProc) then
+          WindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
+            Window, GWL_WNDPROC, PtrInt(SubClassWndProc)));
+        // Set control ID to map WinControl. This is required for messages that sent to parent
+        // to extract control from the passed ID.
+        // In case of subclassing this ID will be set in WM_NCCREATE message handler
+        SetWindowLong(Window, GWL_ID, PtrInt(AWinControl));
+      end;
+
+      if AWinControl.Font.IsDefault then
+        lhFont := Win32WidgetSet.DefaultFont
+      else
+        lhFont := AWinControl.Font.Reference.Handle;
+      Windows.SendMessage(Window, WM_SETFONT, WPARAM(lhFont), 0);
     end;
-  end;
+  end;}
 end;
 
 class procedure TCDWSWinControl.AddControl(const AControl: TControl);
@@ -202,23 +206,35 @@ class procedure TCDWSWinControl.SetBounds(const AWinControl: TWinControl;
 var
   IntfLeft, IntfTop, IntfWidth, IntfHeight: integer;
   suppressMove: boolean;
+  Handle: HWND;
+  WindowPlacement: TWINDOWPLACEMENT;
 begin
-  IntfLeft := ALeft; IntfTop := ATop;
-  IntfWidth := AWidth; IntfHeight := AHeight;
+  IntfLeft := ALeft;
+  IntfTop := ATop;
+  IntfWidth := AWidth;
+  IntfHeight := AHeight;
   LCLBoundsToWin32Bounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight);
   {$IFDEF VerboseSizeMsg}
-  Debugln('TCDWSWinControl.ResizeWindow A ',AWinControl.Name,':',AWinControl.ClassName,
-    ' LCL=',dbgs(ALeft),',',dbgs(ATop),',',dbgs(AWidth)+','+dbgs(AHeight),
-    ' Win32=',dbgs(IntfLeft)+','+dbgs(IntfTop)+','+dbgs(IntfWidth),',',dbgs(IntfHeight),
-    '');
+  DebugLn('TWin32WSWinControl.ResizeWindow A ', dbgsName(AWinControl),
+    ' LCL=',Format('%d, %d, %d, %d', [ALeft,ATop,AWidth,AHeight]),
+    ' Win32=',Format('%d, %d, %d, %d', [IntfLeft,IntfTop,IntfWidth,IntfHeight])
+    );
   {$ENDIF}
-  suppressMove := false;
+  suppressMove := False;
   AdaptBounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight, suppressMove);
-  // Some controls, like spins, may set suppressMove in AdaptBounds
   if not suppressMove then
-    MoveWindow(AWinControl.Handle, IntfLeft, IntfTop, IntfWidth, IntfHeight, true);
-
-  LCLControlSizeNeedsUpdate(AWinControl, false);
+  begin
+    Handle := AWinControl.Handle;
+    WindowPlacement.length := SizeOf(WindowPlacement);
+    if IsIconic(Handle) and GetWindowPlacement(Handle, @WindowPlacement) then
+    begin
+      WindowPlacement.rcNormalPosition := Bounds(IntfLeft, IntfTop, IntfWidth, IntfHeight);
+      SetWindowPlacement(Handle, @WindowPlacement);
+    end
+    else
+      Windows.SetWindowPos(Handle, 0, IntfLeft, IntfTop, IntfWidth, IntfHeight, SWP_NOZORDER or SWP_NOACTIVATE);
+  end;
+  LCLControlSizeNeedsUpdate(AWinControl, True);
 end;
 
 class procedure TCDWSWinControl.SetColor(const AWinControl: TWinControl);
@@ -280,7 +296,13 @@ begin
 end;
 
 class procedure TCDWSWinControl.ShowHide(const AWinControl: TWinControl);
-var
+const
+  VisibilityToFlag: array[Boolean] of UINT = (SWP_HIDEWINDOW, SWP_SHOWWINDOW);
+begin
+  Windows.SetWindowPos(AWinControl.Handle, 0, 0, 0, 0, 0,
+    SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible])
+end;
+(*var
   Handle: HWND;
 //  ParentPanel: HWND;
   Flags: dword;
@@ -329,5 +351,5 @@ begin
     //DebugLn('TRACE: [TWinCEWidgetSet.ShowHide] Hiding the window');
     ShowWindow(Handle, SW_HIDE);
   end;
-end;
+end;  *)
 

@@ -86,7 +86,7 @@ type
     // * This window is also the owner of the clipboard.
     // * Assoc. windowproc also acts as handler for popup menus
     // * It is indispensable for popupmenus and thread synchronization
-    FAppHandle: HWND;
+    FAppHandle: THandle;
 
     FMetrics: TNonClientMetrics;
     FMetricsFailed: Boolean;
@@ -107,6 +107,9 @@ type
     FWaitPipeHandlers: PPipeEventInfo;
 
     FOnAsyncSocketMsg: TSocketEvent;
+
+    function WinRegister: Boolean;
+    procedure CreateAppHandle;
     {$endif}
 
     {$ifdef CD_Cocoa}
@@ -127,8 +130,8 @@ type
     FWMHints: TAtom;		  // Atom for "_MOTIF_WM_HINTS"
     {$endif}
   protected
-    {function CreateThemeServices: TThemeServices; override;
-    function GetAppHandle: THandle; override;
+    {function CreateThemeServices: TThemeServices; override;}
+    {function GetAppHandle: THandle; override;
     procedure SetAppHandle(const AValue: THandle); override;}
     //
     procedure BackendCreate;
@@ -149,20 +152,19 @@ type
     procedure AppMinimize; override;
     procedure AppRestore; override;
     procedure AppBringToFront; override;
-    procedure AppSetTitle(const ATitle: string); override;
-  (*
     procedure AppSetIcon(const Small, Big: HICON); override;
+    procedure AppSetTitle(const ATitle: string); override;
     procedure AppSetVisible(const AVisible: Boolean); override;
     function AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
     function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
     procedure AppSetMainFormOnTaskBar(const DoSet: Boolean); override;
 
-    function  InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean; override;
+(*    function  InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean; override;
 
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCRedraw(CanvasHandle: HDC); override;
-    procedure SetDesigning(AComponent: TComponent); override;*)
+    procedure SetDesigning(AComponent: TComponent); override;      *)
 
     // create and destroy
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;

@@ -1,5 +1,9 @@
 {$MainForm customdrawnwsforms.pp}
 
+type
+  TWinControlAccess = class(TWinControl)
+  end;
+
 { TCDWSCustomForm }
 
 class function TCDWSCustomForm.CalcBorderIconsFlags(const AForm: TCustomForm): dword;
@@ -8,30 +12,45 @@ var
 begin
   Result := 0;
   BorderIcons := AForm.BorderIcons;
-  if biSystemMenu in BorderIcons then
+  if (biSystemMenu in BorderIcons) or (csDesigning in AForm.ComponentState) then
     Result := Result or WS_SYSMENU;
-  if AForm.BorderStyle in [bsNone, bsSingle, bsSizeable] then
+  if GetDesigningBorderStyle(AForm) in [bsNone, bsSingle, bsSizeable] then
   begin
     if biMinimize in BorderIcons then
-      Result := Result or WS_MINIMIZE;
+      Result := Result or WS_MINIMIZEBOX;
     if biMaximize in BorderIcons then
-      Result := Result or WS_MAXIMIZE;
+      Result := Result or WS_MAXIMIZEBOX;
+  end;
+end;
+
+class function TCDWSCustomForm.CalcBorderIconsFlagsEx(const AForm: TCustomForm): DWORD;
+var
+  BorderIcons: TBorderIcons;
+begin
+  Result := 0;
+  BorderIcons := AForm.BorderIcons;
+  if GetDesigningBorderStyle(AForm) in [bsSingle, bsSizeable, bsDialog] then
+  begin
+    if biHelp in BorderIcons then
+      Result := Result or WS_EX_CONTEXTHELP;
   end;
 end;
 
 class procedure TCDWSCustomForm.CalcFormWindowFlags(const AForm: TCustomForm;
   var Flags, FlagsEx: dword);
-var
-  BorderStyle: TFormBorderStyle;
 begin
-  BorderStyle := AForm.BorderStyle;
-  Flags := BorderStyleToWinAPIFlags(BorderStyle);
-  if AForm.Parent <> nil then
-    Flags := (Flags or WS_CHILD) and not WS_POPUP;
-  FlagsEx := BorderStyleToWinAPIFlagsEx(AForm, BorderStyle);
-  if (AForm.FormStyle in fsAllStayOnTop) then
+  // clear all styles which can be set by border style and icons
+  Flags := Flags and not (WS_POPUP or WS_BORDER or WS_CAPTION or WS_THICKFRAME or
+    WS_DLGFRAME or WS_MINIMIZEBOX or WS_MAXIMIZEBOX or WS_SYSMENU);
+  FlagsEx := FlagsEx and not (WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE or
+    WS_EX_TOOLWINDOW or WS_EX_CONTEXTHELP);
+  // set border style flags
+  Flags := Flags or CalcBorderStyleFlags(AForm);
+  FlagsEx := FlagsEx or CalcBorderStyleFlagsEx(AForm);
+  if (AForm.FormStyle in fsAllStayOnTop) and not (csDesigning in AForm.ComponentState) then
     FlagsEx := FlagsEx or WS_EX_TOPMOST;
   Flags := Flags or CalcBorderIconsFlags(AForm);
+  FlagsEx := FlagsEx or CalcBorderIconsFlagsEx(AForm);
 end;
 
 class procedure TCDWSCustomForm.CalculateDialogPosition(var Params: TCreateWindowExParams;
@@ -59,6 +78,50 @@ begin
   end;
 end;
 
+class function TCDWSCustomForm.GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
+begin
+  if csDesigning in AForm.ComponentState then
+    Result := bsSizeable
+  else
+    Result := AForm.BorderStyle;
+end;
+
+class function TCDWSCustomForm.CalcBorderStyleFlags(const AForm: TCustomForm): DWORD;
+begin
+  Result := WS_CLIPCHILDREN or WS_CLIPSIBLINGS;
+  case GetDesigningBorderStyle(AForm) of
+    bsSizeable, bsSizeToolWin:
+      Result := Result or (WS_OVERLAPPED or WS_THICKFRAME or WS_CAPTION);
+    bsSingle, bsToolWindow:
+      Result := Result or (WS_OVERLAPPED or WS_BORDER or WS_CAPTION);
+    bsDialog:
+      Result := Result or (WS_POPUP or WS_BORDER or WS_CAPTION);
+    bsNone:
+      if (AForm.Parent = nil) and (AForm.ParentWindow = 0) then
+        Result := Result or WS_POPUP;
+  end;
+end;
+
+class function TCDWSCustomForm.CalcBorderStyleFlagsEx(const AForm: TCustomForm): DWORD;
+begin
+  Result := 0;
+  case GetDesigningBorderStyle(AForm) of
+    bsDialog:
+      Result := WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
+    bsToolWindow, bsSizeToolWin:
+      Result := WS_EX_TOOLWINDOW;
+  end;
+end;
+
+class procedure TCDWSCustomForm.AdjustFormBounds(const AForm: TCustomForm; out SizeRect: TRect);
+begin
+  // the LCL defines the size of a form without border, win32 with.
+  // -> adjust size according to BorderStyle
+  SizeRect := AForm.BoundsRect;
+  Windows.AdjustWindowRectEx(@SizeRect, CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
+    False, CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm));
+end;
+
 {------------------------------------------------------------------------------
   Method: TCDWSCustomForm.CreateHandle
   Params:  None
@@ -69,6 +132,82 @@ end;
 class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
+  Params: TCreateWindowExParams;
+  lForm: TCustomForm absolute AWinControl;
+  Bounds: TRect;
+  SystemMenu: HMenu;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, AParams, Params);
+  // customization of Params
+  with Params do
+  begin
+    if (Parent = 0) then
+    begin
+      if not Application.MainFormOnTaskBar then
+        Parent := CDWidgetSet.AppHandle
+      else
+      if (AWinControl <> Application.MainForm) then
+      begin
+        if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+          Parent := Application.MainFormHandle
+        else
+          Parent := CDWidgetSet.AppHandle;
+      end;
+    end;
+    CalcFormWindowFlags(lForm, Flags, FlagsEx);
+    pClassName := @ClsName[0];
+    WindowTitle := StrCaption;
+    AdjustFormBounds(lForm, Bounds);
+    if (lForm.Position in [poDefault, poDefaultPosOnly]) and not (csDesigning in lForm.ComponentState) then
+    begin
+      Left := CW_USEDEFAULT;
+      Top := CW_USEDEFAULT;
+    end
+    else
+    begin
+      Left := Bounds.Left;
+      Top := Bounds.Top;
+    end;
+    if (lForm.Position in [poDefault, poDefaultSizeOnly]) and not (csDesigning in lForm.ComponentState) then
+    begin
+      Width := CW_USEDEFAULT;
+      Height := CW_USEDEFAULT;
+    end
+    else
+    begin
+      Width := Bounds.Right - Bounds.Left;
+      Height := Bounds.Bottom - Bounds.Top;
+    end;
+    //SubClassWndProc := @CustomFormWndProc;
+    if not (csDesigning in lForm.ComponentState) and lForm.AlphaBlend then
+      FlagsEx := FlagsEx or WS_EX_LAYERED;
+  end;
+  //SetStdBiDiModeParams(AWinControl, Params);
+  // create window
+  FinishCreateWindow(AWinControl, Params, False);
+
+  Result := Params.Window;
+
+  // remove system menu items for bsDialog
+  if (lForm.BorderStyle = bsDialog) and not (csDesigning in lForm.ComponentState) then
+  begin
+    SystemMenu := GetSystemMenu(Result, False);
+    DeleteMenu(SystemMenu, SC_RESTORE, MF_BYCOMMAND);
+    DeleteMenu(SystemMenu, SC_SIZE, MF_BYCOMMAND);
+    DeleteMenu(SystemMenu, SC_MINIMIZE, MF_BYCOMMAND);
+    DeleteMenu(SystemMenu, SC_MAXIMIZE, MF_BYCOMMAND);
+    DeleteMenu(SystemMenu, 1, MF_BYPOSITION); // remove the separator between move and close
+  end;
+
+  // Beginning with Windows 2000 the UI in an application may hide focus
+  // rectangles and accelerator key indication. According to msdn we need to
+  // initialize all root windows with this message
+  if WindowsVersion >= wv2000 then
+    Windows.SendMessage(Result, WM_CHANGEUISTATE,
+      MakeWParam(UIS_INITIALIZE, UISF_HIDEFOCUS or UISF_HIDEACCEL), 0)
+end;
+(*var
   Params: TCreateWindowExParams;
   LForm : TCustomForm;
   BorderStyle: TFormBorderStyle;
@@ -178,7 +317,7 @@ begin
   {$if defined(VerboseWinCE) or defined(VerboseSizeMsg)}
   DebugLn('Window Handle = ' + IntToStr(Result));
   {$endif}
-end;
+end;   *)
 
 class procedure TCDWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
  const ABorderIcons: TBorderIcons);
@@ -196,6 +335,47 @@ end;
 class procedure TCDWSCustomForm.SetBounds(const AWinControl: TWinControl;
     const ALeft, ATop, AWidth, AHeight: Integer);
 var
+  AForm: TCustomForm absolute AWinControl;
+  CurRect, SizeRect: Windows.RECT;
+  L, T, W, H: Integer;
+begin
+  // the LCL defines the size of a form without border, win32 with.
+  // -> adjust size according to BorderStyle
+  SizeRect := Bounds(ALeft, ATop, AWidth, AHeight);
+
+  Windows.AdjustWindowRectEx(@SizeRect, CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
+    False, CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm));
+
+
+  L := ALeft;
+  T := ATop;
+  W := SizeRect.Right - SizeRect.Left;
+  H := SizeRect.Bottom - SizeRect.Top;
+
+  // we are calling setbounds in TWinControl.Initialize
+  // if position is default it will be changed to designed. We do not want this.
+  if wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags then
+  begin
+    if GetWindowRect(AForm.Handle, CurRect) then
+    begin
+      if AForm.Position in [poDefault, poDefaultPosOnly] then
+      begin
+        L := CurRect.Left;
+        T := CurRect.Top;
+      end;
+
+      if AForm.Position in [poDefault, poDefaultSizeOnly] then
+      begin
+        W := CurRect.Right - CurRect.Left;
+        H := CurRect.Bottom - CurRect.Top;
+      end;
+    end;
+  end;
+
+  // rect adjusted, pass to inherited to do real work
+  TCDWSWinControl.SetBounds(AWinControl, L, T, W, H);
+end;
+(*var
   SizeRect: Windows.RECT;
   BorderStyle: TFormBorderStyle;
   WR: Windows.RECT;
@@ -246,7 +426,7 @@ begin
     SizeRect.Left, SizeRect.Top,
     SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top]));
   {$ENDIF}
-end;
+end;   *)
 
 class procedure TCDWSCustomForm.SetIcon(const AForm: TCustomForm; const Small, Big: HICON);
 begin

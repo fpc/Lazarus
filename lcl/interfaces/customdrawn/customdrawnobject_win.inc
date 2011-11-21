@@ -18,6 +18,53 @@
  *****************************************************************************
 }
 
+function TCDWidgetSet.WinRegister: Boolean;
+var
+  WindowClass: Windows.WndClassW;
+begin
+  FillChar(WindowClass, SizeOf(WindowClass), #0);
+
+  WindowClass.LPFnWndProc := @WindowProc;
+  WindowClass.Style := CS_DBLCLKS;// wince uses: CS_HREDRAW or CS_VREDRAW;
+  WindowClass.hIcon := Windows.LoadIcon(System.hInstance, 'MAINICON');
+  if WindowClass.hIcon = 0 then
+    WindowClass.hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
+  WindowClass.hCursor := Windows.LoadCursor(0, IDC_ARROW);
+  WindowClass.hbrBackground := 0;
+  WindowClass.LPSzMenuName := nil;
+  WindowClass.LPSzClassName := @ClsName;
+  Result := Windows.RegisterClassW(@WindowClass) <> 0;
+
+  if Result then
+  begin
+    WindowClass.style := WindowClass.style or CS_SAVEBITS;
+    if WindowsVersion >= wvXP then
+      WindowClass.style := WindowClass.style or CS_DROPSHADOW;
+    WindowClass.hIcon := 0;
+    WindowClass.hbrBackground := 0;
+    WindowClass.LPSzClassName := @ClsHintName;
+    Result := Windows.RegisterClassW(@WindowClass) <> 0;
+  end;
+end;
+
+procedure TCDWidgetSet.CreateAppHandle;
+var
+  SysMenu: HMENU;
+begin
+  FAppHandle := CreateWindowExW(0, @ClsName,
+    PWideChar(UTF8ToUTF16(Application.Title)),
+    WS_POPUP or WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX,
+    0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
+    0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
+    0, 0, HWND(nil), HMENU(nil), HInstance, nil);
+  AllocWindowInfo(FAppHandle);
+  // remove useless menuitems from sysmenu
+  SysMenu := Windows.GetSystemMenu(FAppHandle, False);
+  Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
+  Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
+  Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
+end;
+
 {------------------------------------------------------------------------------
   Method: TCDWidgetSet.Create
   Params:  None
@@ -112,34 +159,15 @@ var
   Handle: HWND;
   DC: HDC;
 //  Flags : integer;
-  WindowClass: Windows.WndClass;
-  lRegisterResult: Boolean;
 begin
   {$ifdef VerboseWinCE}
   DebugLn('TWinCEWidgetSet.AppInit');
   {$endif}
 
   // WinRegister
-  FillChar(WindowClass, SizeOf(WindowClass), #0);
-
-  WindowClass.LPFnWndProc := @WindowProc;
-  WindowClass.Style := CS_HREDRAW or CS_VREDRAW;
-  WindowClass.CbClsExtra := 0;
-  WindowClass.CbWndExtra := 0;
-  WindowClass.hInstance := System.HInstance;
-  WindowClass.hIcon := Windows.LoadIcon(System.hInstance, nil);
-  if WindowClass.hIcon = 0 then
-    WindowClass.hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
-  WindowClass.hCursor := Windows.LoadCursor(0, IDC_ARROW);
-  WindowClass.hbrBackground := 0;
-  WindowClass.LPSzMenuName := nil;
-  WindowClass.LPSzClassName := @ClsName;
-
-  lRegisterResult := Windows.RegisterClassW(@WindowClass) <> 0;
-
-  if not lRegisterResult then
+  if not WinRegister() then
   begin
-    DebugLn('TCDWidgetSet.AppInit failed.');
+    DebugLn('TCDWidgetSet.AppInit RegisterClassW failed.');
     Exit;
   end;
   
@@ -163,15 +191,13 @@ begin
   FMessageFont := Windows.GetStockObject(SYSTEM_FONT);
 
   // Create parent of all windows, 'button on taskbar'
-  // The AppHandle window is necessary for popupmenus and
-  // many other features, see bug 14560
-  FAppHandle := CreateWindowExW(0, @ClsName,
-    PWideChar(UTF8Decode(Application.Title)),
-    WS_POPUP or WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX,
-    0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
-    0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
-    0, 0, HWND(nil), HMENU(nil), HInstance, nil);
-  AllocWindowInfo(FAppHandle);
+  if not IsLibrary then
+  begin
+    CreateAppHandle;
+    // set nice main icon
+//    AIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
+//    AppSetIcon(AIcon, AIcon);
+  end;
 
   // set nice main icon
   SendMessage(FAppHandle, WM_SETICON, ICON_BIG,
@@ -455,10 +481,58 @@ begin
   //DebugLn('Trace:TWinCEWidgetSet.AppTerminate - Start');
 end;
 
+procedure TCDWidgetSet.AppSetIcon(const Small, Big: HICON);
+begin
+  if FAppHandle <> 0 then
+  begin
+    Windows.SendMessage(FAppHandle, WM_SETICON, ICON_SMALL, LPARAM(Small));
+    SetClassLong(FAppHandle, GCL_HICONSM, LONG(Small));
+
+    Windows.SendMessage(FAppHandle, WM_SETICON, ICON_BIG, LPARAM(Big));
+    SetClassLong(FAppHandle, GCL_HICON, LONG(Big));
+  end;
+end;
 
 procedure TCDWidgetSet.AppSetTitle(const ATitle: string);
 begin
-  Windows.SetWindowTextW(FAppHandle, PWideChar(UTF8Decode(ATitle)));
+  Windows.SetWindowTextW(FAppHandle, PWideChar(UTF8ToUTF16(ATitle)));
+end;
+
+procedure TCDWidgetSet.AppSetVisible(const AVisible: Boolean);
+begin
+  if (FAppHandle <> 0) and not (Assigned(Application) and Application.MainFormOnTaskBar) then
+  begin
+    if AVisible then
+      Windows.ShowWindow(FAppHandle, SW_SHOW)
+    else
+      Windows.ShowWindow(FAppHandle, SW_HIDE);
+  end;
+end;
+
+function TCDWidgetSet.AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
+begin
+  if not IsLibrary then
+    RemoveStayOnTopFlags(FAppHandle, ASystemTopAlso);
+  Result := True;
+end;
+
+function TCDWidgetSet.AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
+begin
+  if not IsLibrary then
+    RestoreStayOnTopFlags(FAppHandle);
+  Result := True;
+end;
+
+procedure TCDWidgetSet.AppSetMainFormOnTaskBar(const DoSet: Boolean);
+begin
+  // 1. Update the visibility of the TaskBar window
+  if DoSet then
+    ShowWindow(AppHandle, SW_HIDE)
+  else
+    ShowWindow(AppHandle, SW_SHOW);
+  // 2. Recreate the main form - so it will (not) have an own taskbar item and WndParent = 0 (AppHandle)
+  if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+    RecreateWnd(Application.MainForm);
 end;
 
 {------------------------------------------------------------------------------

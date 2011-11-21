@@ -76,10 +76,15 @@ type
   private
     {$ifdef CD_Windows}
     class function CalcBorderIconsFlags(const AForm: TCustomForm): dword;
+    class function CalcBorderIconsFlagsEx(const AForm: TCustomForm): DWORD;
     class procedure CalcFormWindowFlags(const AForm: TCustomForm;
       var Flags, FlagsEx: dword);
     class procedure CalculateDialogPosition(var Params: TCreateWindowExParams;
      Bounds: TRect; lForm: TCustomForm);
+    class function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
+    class function CalcBorderStyleFlags(const AForm: TCustomForm): DWORD;
+    class function CalcBorderStyleFlagsEx(const AForm: TCustomForm): DWORD;
+    class procedure AdjustFormBounds(const AForm: TCustomForm; out SizeRect: TRect);
     {$endif}
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;

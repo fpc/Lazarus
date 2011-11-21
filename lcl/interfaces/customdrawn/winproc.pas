@@ -99,14 +99,38 @@ type
     PWinControl: TWinControl; // control to paint for
     AWinControl: TWinControl; // control associated with (for buddy controls)
     List: TStrings;
+    StayOnTopList: TList;     // a list of windows that were normalized when showing modal
     {needParentPaint: boolean; // has a tabpage as parent, and is winxp themed}
     MaxLength: dword;
     MouseX, MouseY: word; // noticing spurious WM_MOUSEMOVE messages
   end;
 
+  PStayOnTopWindowsInfo = ^TStayOnTopWindowsInfo;
+  TStayOnTopWindowsInfo = record
+    AppHandle: HWND;
+    SystemTopAlso: Boolean;
+    StayOnTopList: TList;
+  end;
+
   TWinCEVersion = (wince_1, wince_2, wince_3, wince_4,
    wince_5, wince_6, wince_6_1, wince_6_5, wince_7,
    wince_other);
+
+  TWindowsVersion = (
+    wvUnknown,
+    wv95,
+    wvNT4,
+    wv98,
+    wvMe,
+    wv2000,
+    wvXP,
+    wvServer2003,
+    //wvServer2003R2,  // has the same major/minor as wvServer2003
+    wvVista,
+    //wvServer2008,    // has the same major/minor as wvVista
+    wv7,
+    wvLater
+  );
 
 function WM_To_String(WM_Message: Integer): string;
 function WindowPosFlagsToString(Flags: UINT): string;
@@ -140,6 +164,10 @@ function BorderStyleToWinAPIFlagsEx(AForm: TCustomForm; Style: TFormBorderStyle)
 function GetFileVersion(FileName: string): dword;
 function AllocWindowInfo(Window: HWND): PWindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
+
+procedure RemoveStayOnTopFlags(AppHandle: HWND; ASystemTopAlso: Boolean = False);
+procedure RestoreStayOnTopFlags(AppHandle: HWND);
+
 function GetWindowInfo(Window: HWND): PWindowInfo;
 procedure AddToChangedMenus(Window: HWnd);
 procedure RedrawMenus;
@@ -155,6 +183,7 @@ function WideStrCmp(W1, W2: PWideChar): Integer;
 function GetWinCEPlatform: TApplicationType;
 function GetWinCEVersion: TWinCEVersion;
 function IsHiResMode: Boolean;
+procedure UpdateWindowsVersion;
 
 var
   DefaultWindowInfo: TWindowInfo;
@@ -162,12 +191,16 @@ var
   OverwriteCheck: Integer = 0;
   ChangedMenus: TList; // list of HWNDs which menus needs to be redrawn
 
+  WindowsVersion: TWindowsVersion = wvUnknown;
+
 const
   ClsName: array[0..6] of WideChar = ('W', 'i', 'n', 'd', 'o', 'w', #0);
   ClsHintName: array[0..10] of WideChar = ('H', 'i', 'n', 't', 'W', 'i', 'n', 'd', 'o', 'w', #0);
 
 implementation
 
+var
+  InRemoveStayOnTopFlags: Integer = 0;
 
 {------------------------------------------------------------------------------
   Function: WM_To_String
@@ -1013,6 +1046,79 @@ begin
     Dispose(WindowInfo);
 end;
 
+function EnumStayOnTopRemove(Handle: HWND; Param: LPARAM): WINBOOL; stdcall;
+var
+  StayOnTopWindowsInfo: PStayOnTopWindowsInfo absolute Param;
+  lWindowInfo: PWindowInfo;
+  lWinControl: TWinControl;
+begin
+  Result := True;
+  if ((GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_TOPMOST) <> 0) then
+  begin
+    // Don't remove system-wide stay on top, unless desired
+    if not StayOnTopWindowsInfo^.SystemTopAlso then
+    begin
+      lWindowInfo := GetWindowInfo(Handle);
+      if Assigned(lWindowInfo) then
+      begin
+        lWinControl := lWindowInfo^.WinControl;
+        if (lWinControl is TCustomForm) and
+          (TCustomForm(lWinControl).FormStyle = fsSystemStayOnTop) then
+        Exit;
+      end;
+    end;
+
+    StayOnTopWindowsInfo^.StayOnTopList.Add(Pointer(Handle));
+  end;
+end;
+
+procedure RemoveStayOnTopFlags(AppHandle: HWND; ASystemTopAlso: Boolean = False);
+var
+  StayOnTopWindowsInfo: PStayOnTopWindowsInfo;
+  WindowInfo: PWindowInfo;
+  I: Integer;
+begin
+  //WriteLn('RemoveStayOnTopFlags ', InRemoveStayOnTopFlags);
+  if InRemoveStayOnTopFlags = 0 then
+  begin
+    New(StayOnTopWindowsInfo);
+    StayOnTopWindowsInfo^.AppHandle := AppHandle;
+    StayOnTopWindowsInfo^.SystemTopAlso := ASystemTopAlso;
+    StayOnTopWindowsInfo^.StayOnTopList := TList.Create;
+    WindowInfo := GetWindowInfo(AppHandle);
+    WindowInfo^.StayOnTopList := StayOnTopWindowsInfo^.StayOnTopList;
+    EnumThreadWindows(GetWindowThreadProcessId(AppHandle, nil),
+      @EnumStayOnTopRemove, LPARAM(StayOnTopWindowsInfo));
+    for I := 0 to WindowInfo^.StayOnTopList.Count - 1 do
+      SetWindowPos(HWND(WindowInfo^.StayOnTopList[I]), HWND_NOTOPMOST, 0, 0, 0, 0,
+        SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_DRAWFRAME);
+    Dispose(StayOnTopWindowsInfo);
+  end;
+  inc(InRemoveStayOnTopFlags);
+end;
+
+procedure RestoreStayOnTopFlags(AppHandle: HWND);
+var
+  WindowInfo: PWindowInfo;
+  I: integer;
+begin
+  //WriteLn('RestoreStayOnTopFlags ', InRemoveStayOnTopFlags);
+  if InRemoveStayOnTopFlags = 1 then
+  begin
+    WindowInfo := GetWindowInfo(AppHandle);
+    if WindowInfo^.StayOnTopList <> nil then
+    begin
+      for I := 0 to WindowInfo^.StayOnTopList.Count - 1 do
+        SetWindowPos(HWND(WindowInfo^.StayOnTopList.Items[I]),
+          HWND_TOPMOST, 0, 0, 0, 0,
+          SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_DRAWFRAME);
+      FreeAndNil(WindowInfo^.StayOnTopList);
+    end;
+  end;
+  if InRemoveStayOnTopFlags > 0 then
+    dec(InRemoveStayOnTopFlags);
+end;
+
 function GetWindowInfo(Window: HWND): PWindowInfo;
 begin
   {$ifdef win32}
@@ -1245,10 +1351,49 @@ begin
   ChangedMenus.Clear;
 end;
 
+procedure UpdateWindowsVersion;
+begin
+  case Win32MajorVersion of
+    0..3:;
+    4: begin
+     if Win32Platform = VER_PLATFORM_WIN32_NT
+     then WindowsVersion := wvNT4
+     else
+       case Win32MinorVersion of
+         10: WindowsVersion := wv98;
+         90: WindowsVersion := wvME;
+       else
+         WindowsVersion :=wv95;
+       end;
+    end;
+    5: begin
+     case Win32MinorVersion of
+       0: WindowsVersion := wv2000;
+       1: WindowsVersion := wvXP;
+     else
+       // XP64 has also a 5.2 version
+       // we could detect that based on arch and versioninfo.Producttype
+       WindowsVersion := wvServer2003;
+     end;
+    end;
+    6: begin
+     case Win32MinorVersion of
+       0: WindowsVersion := wvVista;
+       1: WindowsVersion := wv7;
+     else
+       WindowsVersion := wvLater;
+     end;
+    end;
+  else
+    WindowsVersion := wvLater;
+  end;
+end;
+
 initialization
   FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
   WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
   ChangedMenus := TList.Create;
+  UpdateWindowsVersion();
 
 finalization
   Windows.GlobalDeleteAtom(WindowInfoAtom);
