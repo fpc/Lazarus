@@ -85,10 +85,6 @@ begin
     {$ifdef MSG_DEBUG}
       DebugLn('Trace:CallDefaultWindowProc - B ' + IntToHex(PtrInt(PrevWndProc), 8));
     {$endif}
-    // combobox child edit weirdness: combobox handling WM_SIZE will compare text
-    // to list of strings, and if appears in there, will set the text, and select it
-    // WM_GETTEXTLENGTH, WM_GETTEXT, WM_SETTEXT, EM_SETSEL
-    // combobox sends WM_SIZE to itself indirectly, check recursion
     Result := Windows.CallWindowProc(PrevWndProc, Window, Msg, WParam, LParam);
   end;
 end;

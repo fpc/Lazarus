@@ -170,8 +170,8 @@ type
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
 
-//    {$I win32winapih.inc}
-//    {$I win32lclintfh.inc}
+    {$I customdrawnwinapih.inc}
+    {$I customdrawnlclintfh.inc}
   end;
 
 var
@@ -196,10 +196,10 @@ uses
   Win32Extra,} LCLMessageGlue;
 
 
-//{$I win32winapi.inc}
-//{$I win32lclintf.inc}
-
 {$I customdrawnobject.inc}
+
+{$I customdrawnwinapi.inc}
+{$I customdrawnlclintf.inc}
 
 {$ifdef CD_Windows}
   {$include wincallback.inc}
