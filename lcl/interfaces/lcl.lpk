@@ -110,7 +110,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="366">
+    <Files Count="376">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1813,11 +1813,56 @@ end;"/>
       <Item365>
         <Filename Value="customdrawn/customdrawnwsforms_x11.inc"/>
         <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawnwsforms_x11"/>
       </Item365>
       <Item366>
         <Filename Value="customdrawn/customdrawnobject_x11.inc"/>
         <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawnobject_x11"/>
       </Item366>
+      <Item367>
+        <Filename Value="customdrawn/cocoagdiobjects.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaGDIObjects"/>
+      </Item367>
+      <Item368>
+        <Filename Value="customdrawn/cocoaprivate.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="cocoaprivate"/>
+      </Item368>
+      <Item369>
+        <Filename Value="customdrawn/cocoautils.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaUtils"/>
+      </Item369>
+      <Item370>
+        <Filename Value="customdrawn/customdrawnlclintf.inc"/>
+        <Type Value="Include"/>
+      </Item370>
+      <Item371>
+        <Filename Value="customdrawn/customdrawnlclintfh.inc"/>
+        <Type Value="Include"/>
+      </Item371>
+      <Item372>
+        <Filename Value="customdrawn/customdrawnwinapi_cocoa.inc"/>
+        <Type Value="Include"/>
+      </Item372>
+      <Item373>
+        <Filename Value="customdrawn/customdrawnwinapi_win.inc"/>
+        <Type Value="Include"/>
+      </Item373>
+      <Item374>
+        <Filename Value="customdrawn/customdrawnwinapi.inc"/>
+        <Type Value="Include"/>
+      </Item374>
+      <Item375>
+        <Filename Value="customdrawn/customdrawnwinapih.inc"/>
+        <Type Value="Include"/>
+      </Item375>
+      <Item376>
+        <Filename Value="customdrawn/customdrawnwsforms_cocoa.inc"/>
+        <Type Value="Include"/>
+      </Item376>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
