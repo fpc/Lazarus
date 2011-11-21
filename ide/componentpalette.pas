@@ -713,7 +713,8 @@ begin
               OnMouseUp:=@ComponentBtnMouseUp;
               OnDblClick := @ComponentBtnDblClick;
               ShowHint := true;
-              Hint := CurComponent.ComponentClass.ClassName;
+              Hint := CurComponent.ComponentClass.ClassName + sLineBreak
+                + '(' + CurComponent.ComponentClass.UnitName + ')';
               CurBtn.PopupMenu:=Self.PopupMenu;
             end;
             //debugln(['TComponentPalette.UpdateNoteBookButtons Created Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name]);
