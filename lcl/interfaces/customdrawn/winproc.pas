@@ -40,6 +40,20 @@ type
   TMCMHitTestInfo = MCHITTESTINFO;
   PMCMHitTestInfo = ^TMCMHitTestInfo;
 
+  // Window information snapshot
+  tagWINDOWINFO = record
+    cbSize: DWORD;
+    rcWindow: TRect;
+    rcClient: TRect;
+    dwStyle: DWORD;
+    dwExStyle: DWORD;
+    dwWindowStatus: DWORD;
+    cxWindowBorders: UINT;
+    cyWindowBorders: UINT;
+    atomWindowType: ATOM;
+    wCreatorVersion: WORD;
+  end;
+
 type
   { lazarus win32 Interface definition for additional timer data needed to find the callback}
   PWinCETimerInfo = ^TWinCETimerinfo;
@@ -145,8 +159,10 @@ function BytesPerLine(nWidth, nBitsPerPixel: Integer): PtrUInt;
 function CreateDIBSectionFromDescription(ADC: HDC; const ADesc: TRawImageDescription; out ABitsPtr: Pointer): HBITMAP;
 procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
 procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc: TRawImageDescription);
+function WinProc_RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
 
-function GetBitmapBytes(ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; var AData: Pointer; var ADataSize: PtrUInt): Boolean;
+function GetBitmapOrder(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP):TRawImageLineOrder;
+function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; ALineOrder: TRawImageLineOrder; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
 function IsAlphaBitmap(ABitmap: HBITMAP): Boolean;
 function IsAlphaDC(ADC: HDC): Boolean;
 
@@ -619,6 +635,62 @@ begin
   ADesc.MaskBitOrder := riboReversedBits;
 end;
 
+function WinProc_RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
+var
+  WinDIB: Windows.TDIBSection;
+  WinBmp: Windows.TBitmap absolute WinDIB.dsBm;
+  ASize: Integer;
+  R: TRect;
+begin
+  ARawImage.Init;
+  FillChar(WinDIB, SizeOf(WinDIB), 0);
+  ASize := Windows.GetObject(ABitmap, SizeOf(WinDIB), @WinDIB);
+  if ASize = 0
+  then Exit(False);
+
+  //DbgDumpBitmap(ABitmap, 'FromBitmap - Image');
+  //DbgDumpBitmap(AMask, 'FromMask - Mask');
+
+  FillRawImageDescription(WinBmp, ARawImage.Description);
+  // if it is not DIB then alpha in bitmaps is not supported => use 0 alpha prec
+  if ASize < SizeOf(WinDIB) then
+    ARawImage.Description.AlphaPrec := 0;
+
+  if ARect = nil
+  then begin
+    R := Rect(0, 0, WinBmp.bmWidth, WinBmp.bmHeight);
+  end
+  else begin
+    R := ARect^;
+    if R.Top > WinBmp.bmHeight then
+      R.Top := WinBmp.bmHeight;
+    if R.Bottom > WinBmp.bmHeight then
+      R.Bottom := WinBmp.bmHeight;
+    if R.Left > WinBmp.bmWidth then
+      R.Left := WinBmp.bmWidth;
+    if R.Right > WinBmp.bmWidth then
+      R.Right := WinBmp.bmWidth;
+  end;
+
+  ARawImage.Description.Width := R.Right - R.Left;
+  ARawImage.Description.Height := R.Bottom - R.Top;
+
+  // copy bitmap
+  Result := GetBitmapBytes(WinBmp, ABitmap, R, ARawImage.Description.LineEnd, ARawImage.Description.LineOrder, ARawImage.Data, ARawImage.DataSize);
+
+  // check mask
+  if AMask <> 0 then
+  begin
+    if Windows.GetObject(AMask, SizeOf(WinBmp), @WinBmp) = 0
+    then Exit(False);
+
+    Result := GetBitmapBytes(WinBmp, AMask, R, ARawImage.Description.MaskLineEnd, ARawImage.Description.LineOrder, ARawImage.Mask, ARawImage.MaskSize);
+  end
+  else begin
+    ARawImage.Description.MaskBitsPerPixel := 0;
+  end;
+end;
+
 function CreateDIBSectionFromDescription(ADC: HDC; const ADesc: TRawImageDescription; out ABitsPtr: Pointer): HBITMAP;
   function GetMask(APrec, AShift: Byte): Cardinal;
   begin
@@ -698,37 +770,170 @@ begin
   DeleteDC(DstDC);
 end;
 
-function GetBitmapBytes(ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; var AData: Pointer; var ADataSize: PtrUInt): Boolean;
+function GetBitmapOrder(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP): TRawImageLineOrder;
+  procedure DbgLog(const AFunc: String);
+  begin
+    DebugLn('GetBitmapOrder - GetDIBits ', AFunc, ' failed: ', GetLastErrorText(Windows.GetLastError));
+  end;
+
 var
-  Section: Windows.TDIBSection;
-  DIBCopy: HBitmap;
-  DIBData: Pointer;
+  SrcPixel: PCardinal absolute AWinBmp.bmBits;
+  OrgPixel, TstPixel: Cardinal;
+  Scanline: Pointer;
+  DC: HDC;
+  Info: record
+    Header: Windows.TBitmapInfoHeader;
+    Colors: array[Byte] of Cardinal; // reserve extra color for colormasks
+  end;
+
+  FullScanLine: Boolean; // win9x requires a full scanline to be retrieved
+                         // others won't fail when one pixel is requested
 begin
-  Result := False;
-  // first try if the bitmap is created as section
-  if (Windows.GetObject(ABitmap, SizeOf(Section), @Section) > 0) and (Section.dsBm.bmBits <> nil)
+  if AWinBmp.bmBits = nil
   then begin
-    with Section.dsBm do
-      Result := CopyImageData(bmWidth, bmHeight, bmWidthBytes, bmBitsPixel, bmBits, ARect, riloTopToBottom, riloTopToBottom, ALineEnd, AData, ADataSize);
+    // no DIBsection so always bottom-up
+    Exit(riloBottomToTop);
+  end;
+
+  // try to figure out the orientation of the given bitmap.
+  // Unfortunately MS doesn't provide a direct function for this.
+  // So modify the first pixel to see if it changes. This pixel is always part
+  // of the first scanline of the given bitmap.
+  // When we request the data through GetDIBits as bottom-up, windows adjusts
+  // the data when it is a top-down. So if the pixel doesn't change the bitmap
+  // was internally a top-down image.
+
+  FullScanLine := Win32Platform = VER_PLATFORM_WIN32_WINDOWS;
+  if FullScanLine
+  then ScanLine := GetMem(AWinBmp.bmWidthBytes);
+
+  FillChar(Info.Header, sizeof(Windows.TBitmapInfoHeader), 0);
+  Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);
+  DC := Windows.GetDC(0);
+  if Windows.GetDIBits(DC, ABitmap, 0, 1, nil, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
+  then begin
+    DbgLog('Getinfo');
+    // failed ???
+    Windows.ReleaseDC(0, DC);
+    Exit(riloBottomToTop);
+  end;
+
+  // Get only 1 pixel (or full scanline for win9x)
+  OrgPixel := 0;
+  if FullScanLine
+  then begin
+    if Windows.GetDIBits(DC, ABitmap, 0, 1, ScanLine, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
+    then DbgLog('OrgPixel')
+    else OrgPixel := PCardinal(ScanLine)^;
+  end
+  else begin
+    Info.Header.biWidth := 1;
+    if Windows.GetDIBits(DC, ABitmap, 0, 1, @OrgPixel, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
+    then DbgLog('OrgPixel');
+  end;
+
+  // modify pixel
+  SrcPixel^ := not SrcPixel^;
+
+  // get test
+  TstPixel := 0;
+  if FullScanLine
+  then begin
+    if Windows.GetDIBits(DC, ABitmap, 0, 1, ScanLine, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
+    then DbgLog('TstPixel')
+    else TstPixel := PCardinal(ScanLine)^;
+  end
+  else begin
+    if Windows.GetDIBits(DC, ABitmap, 0, 1, @TstPixel, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
+    then DbgLog('TstPixel');
+  end;
+
+  if OrgPixel = TstPixel
+  then Result := riloTopToBottom
+  else Result := riloBottomToTop;
+
+  // restore pixel & cleanup
+  SrcPixel^ := not SrcPixel^;
+  Windows.ReleaseDC(0, DC);
+  if FullScanLine
+  then FreeMem(Scanline);
+end;
+
+function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; ALineOrder: TRawImageLineOrder; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
+var
+  DC: HDC;
+  Info: record
+    Header: Windows.TBitmapInfoHeader;
+    Colors: array[Byte] of TRGBQuad; // reserve extra colors for palette (256 max)
+  end;
+  H: Cardinal;
+  R: TRect;
+  SrcData: PByte;
+  SrcSize: PtrUInt;
+  SrcLineBytes: Cardinal;
+  SrcLineOrder: TRawImageLineOrder;
+  StartScan: Integer;
+begin
+  SrcLineOrder := GetBitmapOrder(AWinBmp, ABitmap);
+  SrcLineBytes := (AWinBmp.bmWidthBytes + 3) and not 3;
+
+  if AWinBmp.bmBits <> nil
+  then begin
+    // this is bitmapsection data :) we can just copy the bits
+
+    // We cannot trust windows with bmWidthBytes. Use SrcLineBytes which takes
+    // DWORD alignment into consideration
+    with AWinBmp do
+      Result := CopyImageData(bmWidth, bmHeight, SrcLineBytes, bmBitsPixel, bmBits, ARect, SrcLineOrder, ALineOrder, ALineEnd, AData, ADataSize);
     Exit;
   end;
 
-  // bitmap is not a section, retrieve only bitmap
-  if Windows.GetObject(ABitmap, SizeOf(Section.dsBm), @Section) = 0
-  then Exit;
+  // retrieve the data though GetDIBits
 
-  DIBCopy := CreateDIBSectionFromDDB(ABitmap, DIBData);
-  if DIBCopy = 0 then
-    Exit;
-  if (Windows.GetObject(DIBCopy, SizeOf(Section), @Section) > 0) and (Section.dsBm.bmBits <> nil)
+  // initialize bitmapinfo structure
+  Info.Header.biSize := sizeof(Info.Header);
+  Info.Header.biPlanes := 1;
+  Info.Header.biBitCount := AWinBmp.bmBitsPixel;
+  Info.Header.biCompression := BI_RGB;
+  Info.Header.biSizeImage := 0;
+
+  Info.Header.biWidth := AWinBmp.bmWidth;
+  H := ARect.Bottom - ARect.Top;
+  // request a top-down DIB
+  if AWinBmp.bmHeight > 0
   then begin
-    with Section.dsBm do
-      Result := CopyImageData(bmWidth, bmHeight, bmWidthBytes, bmBitsPixel, bmBits, ARect, riloTopToBottom, riloTopToBottom, ALineEnd, AData, ADataSize);
+    Info.Header.biHeight := -AWinBmp.bmHeight;
+    StartScan := AWinBmp.bmHeight - ARect.Bottom;
+  end
+  else begin
+    Info.Header.biHeight := AWinBmp.bmHeight;
+    StartScan := ARect.Top;
+  end;
+  // adjust height
+  if StartScan < 0
+  then begin
+    Inc(H, StartScan);
+    StartScan := 0;
   end;
 
-  DeleteObject(DIBCopy);
+  // alloc buffer
+  SrcSize := SrcLineBytes * H;
+  GetMem(SrcData, SrcSize);
 
-  Result := True;
+  DC := Windows.GetDC(0);
+  Result := Windows.GetDIBits(DC, ABitmap, StartScan, H, SrcData, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) <> 0;
+  Windows.ReleaseDC(0, DC);
+
+  // since we only got the needed scanlines, adjust top and bottom
+  R.Left := ARect.Left;
+  R.Top := 0;
+  R.Right := ARect.Right;
+  R.Bottom := H;
+
+  with Info.Header do
+    Result := Result and CopyImageData(biWidth, H, SrcLineBytes, biBitCount, SrcData, R, riloTopToBottom, ALineOrder, ALineEnd, AData, ADataSize);
+
+  FreeMem(SrcData);
 end;
 
 function IsAlphaBitmap(ABitmap: HBITMAP): Boolean;

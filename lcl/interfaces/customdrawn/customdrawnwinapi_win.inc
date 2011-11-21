@@ -1,14 +1,14 @@
-{%MainUnit qtint.pp}
-{ $Id: qtwinapi.inc 33607 2011-11-18 08:04:42Z zeljko $ }
+{%MainUnit win32int.pp}
+{ $Id: win32winapi.inc 33552 2011-11-16 05:52:31Z paul $ }
+
 {******************************************************************************
-  All QT Winapi implementations.
-  This are the implementations of the overrides of the QT Interface for the
-  methods defined in the
-  lcl/include/winapi.inc
+                         All Windows API implementations.
+                   Initial Revision : Sat Nov 13 12:53:53 1999
 
 
   !! Keep alphabetical !!
 
+  Support routines go to win32proc.pp
 
  ******************************************************************************
  Implementation
@@ -28,180 +28,696 @@
  *****************************************************************************
 }
 
-//##apiwiz##sps##   // Do not remove, no wizard declaration before this line
-(*
-{------------------------------------------------------------------------------
-  Function: Arc
-  Params: DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer
-  Returns: Boolean
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean;
-var
-  R: TRect;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI Arc] DC: ', dbghex(DC));
-  {$endif}
-  Result := IsValidDC(DC);
+(*//##apiwiz##sps##   // Do not remove
 
-  if Result then
+{------------------------------------------------------------------------------
+  Method:  Arc
+  Params:  DC - handle to device context
+           Left - x-coordinate of bounding rectangle's upper-left corner
+           Top - y-coordinate of bounding rectangle's upper-left corner
+           Right - x-coordinate of bounding rectangle's lower-right corner
+           Bottom - y-coordinate of bounding rectangle's lower-right corner
+           StartAngle - base angle
+           AngleLength - angle length
+  Returns: Whether the call was successful
+
+  Use Arc to draw an elliptically curved line with the current Pen.
+  The angles angle1 and angle2 are 1/16th of a degree. For example, a full
+  circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
+  counter-clockwise while negative values mean clockwise direction.
+  Zero degrees is at the 3'o clock position.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.Arc(DC: HDC; Left, Top, Right, Bottom, Angle16Deg, Angle16DegLength: Integer): Boolean;
+var
+  SX, SY, EX, EY, OldArcDirection: Longint;
+begin
+  if Angle16DegLength < 0 then OldArcDirection := Windows.SetArcDirection(DC, AD_CLOCKWISE)
+  else OldArcDirection := Windows.SetArcDirection(DC, AD_COUNTERCLOCKWISE);
+
+  Angles2Coords(Left, Top, Right - Left, Bottom - Top, Angle16Deg, Angle16DegLength, SX, SY, EX, EY);
+  Result := Boolean(Windows.Arc(DC, Left, Top, Right, Bottom, SX, SY, EX, EY));
+  // Revert the arc direction to the previous value
+  Windows.SetArcDirection(DC, OldArcDirection);
+end;
+
+{------------------------------------------------------------------------------
+  Method:   AngleChord
+  Params:   DC, x1, y1, x2, y2, angle1, angle2
+  Returns:  Nothing
+
+  Use AngleChord to draw a filled Chord-shape on the canvas. The angles angle1
+  and angle2 are 1/16th of a degree. For example, a full circle equals 5760
+  16*360). Positive values of Angle and AngleLength mean counter-clockwise while
+  negative values mean clockwise direction. Zero degrees is at the 3'o clock
+  position.
+
+------------------------------------------------------------------------------}
+function TWin32WidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, Angle1,
+  Angle2: Integer): Boolean;
+var
+  SX, SY, EX, EY : Longint;
+begin
+  Angles2Coords(x1, y1, x2-x1, y2-y1, Angle1, Angle2, SX, SY, EX, EY);
+  Result := Boolean(Windows.Chord(DC, x1, y1, x2, y2, SX, SY, EX, EY));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  BitBlt
+  Params:  DestDC        - The destination device context
+           X, Y          - The left/top corner of the destination rectangle
+           Width, Height - The size of the destination rectangle
+           SrcDC         - The source devicecontext
+           XSrc, YSrc    - The left/top corner of the source rectangle
+           Rop           - The raster operation to be performed
+  Returns: True if succesful
+
+  The BitBlt function copies a bitmap from a source context into a destination
+  context using the specified raster operation.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
+begin
+  // use stretchmaskblt for alpha images, since that one is customized for alpha
+  if IsAlphaDC(DestDC) or IsAlphaDC(SrcDC)
+  then Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width, Height, 0, 0, 0, Rop)
+  else Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  BeginPaint
+  Params:  Handle        - Handle to window to begin painting in
+           PS            - PAINTSTRUCT variable that will receive painting information.
+  Returns: A device context for the specified window if succesful otherwise nil
+
+  The BeginPaint function prepares the specified window for painting and fills
+  a PAINTSTRUCT structure with information about the painting.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.BeginPaint(Handle: HWND; var PS: TPaintStruct): HDC;
+begin
+  Result := Windows.BeginPaint(Handle, @PS);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  CallDefaultWndHandler
+  Params:  Sender - object, that sent the message
+           Message - a TLMessage
+  Returns: -
+
+  Called by TWinControl.DefaultHandler to let the interface call some default
+  functions for the message.
+ ------------------------------------------------------------------------------}
+procedure TWin32WidgetSet.CallDefaultWndHandler(Sender: TObject; var Message);
+var
+  Handle: HWND;
+
+  procedure CallWin32PaintHandler;
+  var
+    ClientBoundRect: TRect;
+    Moved: Boolean;
+    PaintMsg: TLMPaint absolute Message;
   begin
-    R := Rect(Left, Top, Right, Bottom);
-    QPainter_drawArc(TQtDeviceContext(DC).Widget, @R, Angle1, Angle2);
+    // the LCL creates paint messages, with a DC origin set to the client
+    // origin of the emitting control. The paint handler of win32 expects the
+    // DC origin at the origin of the control.
+    // -> move the windoworigin
+    if PaintMsg.DC <> 0 then
+    begin
+      ClientBoundRect := Rect(0, 0, 0, 0);
+      if Sender is TWinControl then
+        if not GetClientBounds(Handle, ClientBoundRect) then Exit;
+      Moved := MoveWindowOrgEx(PaintMsg.DC, -ClientBoundRect.Left, -ClientBoundRect.Top);
+    end
+    else
+      Moved := False;
+    try
+      // call win32 paint handler
+      CallDefaultWindowProc(Handle, WM_PAINT, WPARAM(PaintMsg.DC), 0);
+    finally
+      // restore DC origin
+      if Moved then
+        MoveWindowOrgEx(PaintMsg.DC, ClientBoundRect.Left, ClientBoundRect.Top);
+    end;
   end;
-end;
 
-{------------------------------------------------------------------------------
-  Function: AngleChord
-  Params: DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer
-  Returns: Boolean
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean;
+  procedure CallMouseWheelHandler;
+  var
+    ScrollInfo: Windows.tagScrollInfo;
+    WParam: Windows.WParam;
+    ScrollMsg, ScrollBar: dword;
+    ScrollOffset: integer;
+    Pos: TPoint;
+  begin
+    if not TWinControl(Sender).HandleAllocated then
+      exit;
+
+    // why coords are client? - they must be screen
+    with TLMMouseEvent(Message) do
+    begin
+      Pos.X := X;
+      Pos.Y := Y;
+    end;
+    ClientToScreen(Handle, Pos);
+    WParam := Windows.WParam(Longint(PointToSmallPoint(Pos)));
+    with TLMMouseEvent(Message) do
+    begin
+      X := Pos.X;
+      Y := Pos.Y;
+    end;
+
+    with TLMessage(Message) do
+    begin
+      Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
+      // Windows handled it, so exit here.
+      if Result<>0 then exit;
+    end;
+
+    // send scroll message
+    FillChar(ScrollInfo, sizeof(ScrollInfo), #0);
+    ScrollInfo.cbSize := sizeof(ScrollInfo);
+    ScrollInfo.fMask := SIF_PAGE or SIF_POS or SIF_RANGE;
+    // if mouse is over horizontal scrollbar, scroll horizontally
+
+    if Windows.SendMessage(Handle, WM_NCHITTEST, 0, WParam) = HTHSCROLL then
+    begin
+      ScrollBar := SB_HORZ;
+      ScrollMsg := WM_HSCROLL;
+    end else
+    begin
+      ScrollBar := SB_VERT;
+      ScrollMsg := WM_VSCROLL;
+    end;
+    if Windows.GetScrollInfo(Handle, ScrollBar, ScrollInfo) then
+    begin
+      with TLMMouseEvent(Message) do
+      begin
+        if Mouse.WheelScrollLines < 0 then
+          // -1 means, scroll one page
+          ScrollOffset := (WheelDelta * integer(ScrollInfo.nPage)) div 120
+        else
+          ScrollOffset := (WheelDelta * Mouse.WheelScrollLines) div 120;
+        WParam := Windows.WParam(ScrollInfo.nPos - ScrollOffset);
+        if WParam > ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1 then
+          WParam := ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1;
+        if WParam < ScrollInfo.nMin then
+          WParam := ScrollInfo.nMin;
+        WParam := SB_THUMBPOSITION or (WParam shl 16);
+      end;
+      Windows.PostMessage(Handle, ScrollMsg, WParam, HWND(nil));
+    end;
+  end;
+
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI AngleChord] DC: ', dbghex(DC));
-  {$endif}
-  Result := IsValidDC(DC);
-  if Result then
-    QPainter_drawChord(TQtDeviceContext(DC).Widget, x1, y1, x2, y2, Angle1, Angle2);
-end;
-
-{------------------------------------------------------------------------------
-  Function: BeginPaint
-  Params:
-  Returns:
-
-  This function is Called:
-  - Once on every OnPaint event
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct): hdc;
-var
-  Widget: TQtWidget;
-  DC: TQtDeviceContext;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI BeginPaint] Handle=', dbghex(Handle));
-  {$endif}
-  Widget := TQtWidget(Handle);
-  if Widget <> nil then
-    DC := TQtDeviceContext.Create(Widget.PaintData.PaintWidget, True)
+  Handle := ObjectToHwnd(Sender);
+  case TLMessage(Message).Msg of
+    LM_PAINT:
+      CallWin32PaintHandler;
+    LM_MOUSEWHEEL: // provide default wheel scrolling functionality
+      CallMouseWheelHandler;
+    LM_ERASEBKGND,
+    LM_GETDLGCODE,
+    LM_HELP:
+      with TLMessage(Message) do
+        Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
   else
-    DC := TQtDeviceContext.Create(nil, True);
-
-  PS.hdc := HDC(DC);
-
-  if Handle<>0 then
-  begin
-    // if current handle has paintdata information,
-    // setup hdc with it
-    //DC.DebugClipRect('BeginPaint: Before');
-    if Widget.PaintData.ClipRegion <> nil then
-    begin
-      //Write('>>> Setting Paint ClipRegion: ');
-      //DebugRegion('PaintData.ClipRegion: ', Widget.PaintData.ClipRegion);
-      DC.setClipRegion(Widget.PaintData.ClipRegion);
-      DC.setClipping(True);
-    end;
-    if Widget.PaintData.ClipRect <> nil then
-    begin
-      New(DC.vClipRect);
-      DC.vClipRect^ := Widget.PaintData.ClipRect^;
-    end;
+    if TLMessage(Message).Msg >= WM_USER then
+      with TLMessage(Message) do
+        Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
   end;
-
-  Result := PS.hdc;
-
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI BeginPaint] Result=', dbghex(Result));
-  {$endif}
 end;
 
-function TQtWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
+{------------------------------------------------------------------------------
+  Method:  CallNextHookEx
+  Params:  HHk    - handle of the current hook
+           NCode  - Hook code
+           WParam - Word parameter
+           LParam - Long-integer parameter
+  Returns: The handle of the next hook procedure
+
+  Calls the next procedure in the hook chain
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.CallNextHookEx(HHk: HHOOK; NCode: Integer; WParam: WParam; LParam: LParam): Integer;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [TQtWidgetSet.BitBlt]');
-  {$endif}
-
-  Result := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width,
-                       Height, ROP);
-
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [TQtWidgetSet.BitBlt]');
-  {$endif}
+  Result := Windows.CallNextHookEx(hhk, ncode, Windows.WPARAM(wParam), Windows.LPARAM(lParam));
 end;
 
-function TQtWidgetSet.CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer;
-begin
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-  	WriteLn('***** [WinAPI TQtWidgetSet.CallNextHookEx] missing implementation ');
-  {$endif}
-  Result := 0;
-end;
+{------------------------------------------------------------------------------
+  Method:  CallWindowProc
+  Params: LPPrevWndFunc - Address of specified window procedure
+          Handle        - Handle of window receiving messages
+          Msg           - The message sent
+          WParam        - Word parameter
+          LParam        - Long-integer parameter
+  Returns: Message result
 
-function TQtWidgetSet.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer;
+  Passes message information to the specified window procedure
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.CallWindowProc(LPPrevWndFunc: TFarProc; Handle: HWND;
+    Msg: UINT; WParam: WParam; LParam: LParam): Integer;
 begin
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-  	WriteLn('***** [WinAPI TQtWidgetSet.CallWindowProc] missing implementation ');
-  {$endif}
-  Result := -1;
+  Result := Windows.CallWindowProc(WNDPROC(LPPrevWndFunc), Handle, Msg, Windows.WPARAM(WParam), Windows.LPARAM(LParam));
 end;
 
 {------------------------------------------------------------------------------
   Method:  ClientToScreen
-  Params:  Handle    -
-  Returns:
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint) : Boolean;
-var
-  APoint: TQtPoint;
-  Pt: TPoint;
-begin
-  Result := IsValidHandle(Handle);
-  if Result then
-  begin
-    APoint := QtPoint(P.X, P.Y);
+  Params:  Handle - Handle of window
+           P      - container that contains coordinates
+  Returns: Whether the call was successful
 
-    QWidget_mapToGlobal(TQtWidget(Handle).GetContainerWidget, @APoint, @APoint);
-    if TQtWidget(Handle).ChildOfComplexWidget = ccwScrollingWinControl then
-    begin
-      Pt := TQtCustomControl(Handle).viewport.ScrolledOffset;
-      dec(APoint.X, Pt.X);
-      dec(APoint.Y, Pt.Y);
-    end;
-    P := Point(APoint.x, APoint.y);
+  Converts client coordinates to screen coordinates
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
+var
+  ORect: TRect;
+begin
+  Result := Boolean(Windows.ClientToScreen(Handle, @P));
+  if not Result then exit;
+  Result := GetLCLClientBoundsOffset(Handle, ORect);
+  if not Result then exit;
+  inc(P.X, ORect.Left);
+  inc(P.Y, ORect.Top);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  ClipboardFormatToMimeType
+  Params:  FormatID - a registered format identifier (can't be a predefined format)
+  Returns: the corresponding mime type as string
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): String;
+var
+  FormatLength: Integer;
+begin
+  case FormatID of
+    CF_BITMAP, CF_DIB, CF_PALETTE:
+      Result := PredefinedClipboardMimeTypes[pcfBitmap];
+    CF_TEXT, CF_UNICODETEXT:
+      Result := PredefinedClipboardMimeTypes[pcfText];
+    CF_METAFILEPICT:
+      Result := 'image/x-wmf';
+    CF_ENHMETAFILE:
+      Result := 'image/x-emf';
+    CF_TIFF:
+      Result := 'image/tiff';
+    CF_WAVE:
+      Result := 'audio/wav';
+    CF_RIFF:
+      Result := 'audio/riff';
+    CF_SYLK:
+      Result := 'application/x-ms-shortcut';
+    CF_LOCALE:
+      Result := 'application/x-ms-locale';
+    CF_OEMTEXT:
+      Result := 'application/x-ms-oemtext';
+  else
+    SetLength(Result,1000);
+    FormatLength:= Windows.GetClipboardFormatName(FormatID, PChar(Result), 1000);
+    if FormatLength = 0 then
+      raise Exception.CreateFmt('Unknown clipboard format: %d', [FormatID]);
+    SetLength(Result,FormatLength);
+    {$IFDEF VerboseWin32Clipbrd}
+    debugln('TWin32WidgetSet.ClipboardFormatToMimeType FormatID=',dbgs(FormatID),' ',Result);
+    {$ENDIF}
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  ClipboardGetData
+  Params:  ClipboardType - clipboard type
+           FormatID      - a registered format identifier (0 is invalid)
+           Stream        - If format is available, it will be appended to this
+                           stream
+  Returns: true on success
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
+  FormatID: TClipboardFormat; Stream: TStream): Boolean;
+var
+  DataHandle: HGLOBAL;
+  Data: pointer;
+  Size: integer;
+  {$IFDEF VerboseWin32Clipbrd}
+  DbgFormatID: integer;
+  {$ENDIF}
+  Bitmap: TBitmap;
+  {$IFDEF WindowsUnicodeSupport}
+  BufferStream: TMemoryStream;
+  BufferWideString: widestring;
+  BufferString: ansistring;
+  {$ENDIF}
 
-function TQtWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
+  function ReadClipboardToStream(DestStream: TStream): Boolean;
+  begin
+    Result := false;
+
+    DataHandle := Windows.GetClipboardData(FormatID);
+    if DataHandle<>HWND(0) then
+    begin
+      Size := Windows.GlobalSize(DataHandle);
+      if Size>0 then
+      begin
+        Data := Windows.GlobalLock(DataHandle);
+        try
+          DestStream.Write(Data^, Size);
+        finally
+          Windows.GlobalUnlock(DataHandle);
+        end;
+        Result := true;
+      end;
+    end;
+  end;
+
 begin
-  Result := Clipboard.FormatToMimeType(FormatID);
+  Result := false;
+  {$IFDEF VerboseWin32Clipbrd}
+  debugln('TWin32WidgetSet.ClipboardGetData FormatID=',dbgs(FormatID));
+  Windows.OpenClipboard(Windows.HWND(nil));
+  DbgFormatID := 0;
+  repeat
+    DbgFormatID := EnumClipboardFormats(DbgFormatID);
+    debugln('Available FormatID=',dbgs(DbgFormatID), ' ', ClipboardFormatToMimeType(DbgFormatID));
+  until (DbgFormatID=0);
+  Windows.CloseClipboard;
+  {$ENDIF}
+  if FormatID=PredefinedClipboardFormat(pcfDelphiBitmap)
+    then FormatID := CF_BITMAP;
+  if (FormatID=0) or (Stream=nil) or
+    not Windows.IsClipboardFormatAvailable(FormatID) then exit;
+
+  if Windows.OpenClipboard(Windows.HWND(nil)) then
+    try
+      case FormatID of
+      Windows.CF_BITMAP:
+        begin
+          Bitmap:= TBitmap.Create;
+          Bitmap.TransparentColor := clNone;
+          DataHandle := Windows.GetClipboardData(FormatID);
+          Bitmap.SetHandles(DataHandle, 0);
+          Bitmap.SaveToStream(Stream);
+          Bitmap.Free;
+          Result := true;
+        end;
+      {$IFDEF WindowsUnicodeSupport}
+      { In the case of unicode text, it's necessary to
+        convert it from UTF-16 to UTF-8 }
+      Windows.CF_UNICODETEXT, Windows.CF_TEXT:
+        begin
+          BufferStream := TMemoryStream.Create;
+          try
+            Result := ReadClipboardToStream(BufferStream);
+
+            if Size>0 then
+            begin
+              BufferStream.Position := 0;
+              if FormatID=Windows.CF_UNICODETEXT then
+              begin;
+                SetLength(BufferWideString, Size div 2);
+                BufferStream.Read(BufferWideString[1], Size);
+                //BufferString may have pending #0 's (or garbage after a #0)
+                Size := Pos(#0, BufferWideString);
+                if Size > 0 then
+                  SetLength(BufferWideString, Size);
+                BufferString := UTF16ToUTF8(BufferWideString);
+              end
+              else
+              begin
+                SetLength(BufferString, Size - 1);
+                BufferStream.Read(BufferString[1], Size);
+                //BufferString may have pending #0 's (or garbage after a #0)
+                Size := Pos(#0, BufferString);
+                if Size > 0 then
+                  SetLength(BufferString, Size - 1);
+                BufferString := AnsiToUtf8(BufferString);
+              end;
+              Stream.Write(BufferString[1], Length(BufferString));
+            end;
+          finally
+            BufferStream.Free;
+          end;
+        end
+      {$ENDIF}
+      else
+        Result := ReadClipboardToStream(Stream)
+      end;
+    finally
+      Windows.CloseClipboard;
+    end;
 end;
 
-function TQtWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
-  FormatID: TClipboardFormat; Stream: TStream): boolean;
+{------------------------------------------------------------------------------
+  Method:  ClipboardGetFormats
+  Params:  ClipboardType - the type of clipboard operation (GTK only; ignored here)
+           Count         - the number of clipboard formats
+           List          - Pointer to an array of supported formats
+                           (you must free it yourself)
+  Returns: true on success
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
+  var Count: Integer; var List: PClipboardFormat): Boolean;
+var
+  FormatID: UINT;
+  c: integer;
 begin
-  Result := Clipboard.Getdata(ClipboardType, FormatID, Stream);
+  Result := false;
+  List := nil;
+  {$IFDEF VerboseWin32Clipbrd}
+  debugln('TWin32WidgetSet.ClipboardGetData ');
+  {$ENDIF}
+  if not Windows.OpenClipboard(HWND(AppHandle)) then begin
+    {$IFDEF VerboseWin32Clipbrd}
+    debugln('TWin32WidgetSet.ClipboardGetData OpenClipboard failed');
+    {$ENDIF}
+    exit;
+  end;
+  Count := CountClipboardFormats;
+  GetMem(List, Count * SizeOf(TClipboardFormat));
+  try
+    c := 0;
+    FormatID := 0;
+    repeat
+      FormatID := EnumClipboardFormats(FormatID);
+      if (FormatID<>0) then begin
+        List[c] := FormatID;
+        inc(c);
+      end;
+    until (c>=Count) or (FormatID=0);
+    Count := c;
+  finally
+    Windows.CloseClipboard;
+  end;
+
+  Result := true;
 end;
 
-function TQtWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
-  var Count: integer; var List: PClipboardFormat): boolean;
+{------------------------------------------------------------------------------
+  Method:  ClipboardGetOwnerShip
+  Params:  ClipboardType - Type of clipboard, the win32 interface only handles
+                           ctClipBoard
+           OnRequestProc - TClipboardRequestEvent is defined in LCLType.pp
+                           If OnRequestProc is nil the onwership will end.
+           FormatCount - number of formats
+           Formats - array of TClipboardFormat. The supported formats the owner
+                      provides.
+
+  Returns: true on success
+
+  Sets the supported formats and requests ownership for the clipboard.
+  The OnRequestProc is used to get the data from the LCL and to put it on the
+  clipboard.
+  If someone else requests the ownership, the OnRequestProc will be executed
+  with the invalid FormatID 0 to notify the old owner of the lost of ownership.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+  OnRequestProc: TClipboardRequestEvent; FormatCount: Integer;
+  Formats: PClipboardFormat): Boolean;
+
+  procedure WriteStreamToClipBoard(FormatID: integer; SourceStream: TStream);
+  var
+    DataHandle : THandle;//Windows.HGLOBAL;
+    DataPtr: pointer;
+  begin
+    DataHandle := Windows.GlobalAlloc(Windows.GMEM_MOVEABLE, SourceStream.Size);
+    if (DataHandle=HWND(0)) then begin
+      debugln('TWin32WidgetSet.ClipboardGetOwnerShip DataHandle=',dbgs(DataHandle),' DataSize=',dbgs(SourceStream.Size));
+      Result := false;
+      exit;
+    end;
+    DataPtr := GlobalLock(DataHandle);
+    try
+      SourceStream.Read(DataPtr^, SourceStream.Size);
+    finally
+      Windows.GlobalUnlock(DataHandle);
+    end;
+    Windows.SetClipboardData(FormatID, DataHandle);
+  end;
+
+  procedure PutOnClipBoard(FormatID: integer);
+  var
+    DataStream, BufferStream: TStream;
+    Bitmap: TBitmap;
+    {$IFDEF WindowsUnicodeSupport}
+    BufferWideString: widestring;
+    BufferString: ansistring;
+    {$ENDIF}
+    ScreenDC, MemDC: HDC;
+    OldBitmap, NewBitmap, Mask: HBitmap;
+  begin
+    DataStream := TMemoryStream.Create;
+    BufferStream := TMemoryStream.Create;
+    try
+      OnClipBoardRequest(FormatID, DataStream);
+      DataStream.Position:=0;
+      case FormatID of
+      CF_BITMAP:
+        begin
+          Bitmap:= TBitmap.Create;
+          try
+            Bitmap.LoadFromStream(DataStream);
+            ScreenDC := GetDC(0);
+            try
+              MemDC := Windows.CreateCompatibleDC(ScreenDC);
+              NewBitmap := Windows.CreateCompatibleBitmap(ScreenDC, Bitmap.Width, Bitmap.Height);
+              OldBitmap := Windows.SelectObject(MemDC, NewBitmap);
+              if Bitmap.Masked then
+                Mask := Bitmap.MaskHandle
+              else
+                Mask := 0;
+              StretchMaskBlt(MemDC, 0, 0, Bitmap.Width, Bitmap.Height,
+                Bitmap.Canvas.Handle, 0, 0, Bitmap.Width, Bitmap.Height,
+                Mask, 0, 0, SRCCOPY);
+              Windows.SelectObject(MemDC, OldBitmap);
+              Windows.DeleteDC(MemDC);
+              Windows.SetClipboardData(FormatID, NewBitmap);
+              // GDI objects count does not vary if we delete it or not
+              // DeleteObject(NewBitmap);
+            finally
+              ReleaseDC(0, ScreenDC);
+            end;
+          finally
+            Bitmap.Free;
+          end;
+        end;
+     {$IFDEF WindowsUnicodeSupport}
+      Windows.CF_UNICODETEXT, Windows.CF_TEXT:
+        // CF_UNICODETEXT is used by UnicodeEnabledOS, CF_TEXT by others
+        // we need to convert it from UTF8 to UTF16 or Ansi
+        begin
+          if DataStream.Size>0 then begin
+            SetLength(BufferString, DataStream.Size);
+            DataStream.Read(BufferString[1], DataStream.Size);
+            if FormatID=Windows.CF_UNICODETEXT then
+            begin
+              BufferWideString := UTF8ToUTF16(BufferString);
+              if BufferWideString<>'' then  // bufferstring may contain invalid UTF8
+                BufferStream.Write(BufferWideString[1], Length(BufferWideString) * 2);
+            end
+            else
+            begin
+              BufferString := Utf8ToAnsi(BufferString);
+              if BufferString<>'' then  // original string may contain invalid UTF8
+                BufferStream.Write(BufferString[1], Length(BufferString));
+            end;
+            BufferStream.Position := 0;
+          end;
+          WriteStreamToClipBoard(FormatID, BufferStream);
+        end
+     {$ELSE}
+        // no clipboard support without unicode anymore
+     {$ENDIF}
+      else
+        begin
+          WriteStreamToClipBoard(FormatID, DataStream);
+        end;
+      end;
+    finally
+      DataStream.Free;
+      BufferStream.Free;
+    end;
+  end;
+
+var
+  I: Integer;
 begin
-  Result := Clipboard.GetFormats(ClipboardType, Count, List);
+  Result := false;
+
+  {$IFDEF VerboseWin32Clipbrd}
+  debugln('TWin32WidgetSet.ClipboardGetOwnerShip START FormatCount=',dbgs(FormatCount),' OnRequestProc=',dbgs(OnRequestProc=nil));
+  {$ENDIF}
+
+  if ClipboardType<>ctClipBoard then begin
+  { the win32 interface does not support this kind of clipboard,
+    so the application can have the ownership at any time.
+    The TClipboard in clipbrd.pp has an internal cache system, so that an
+    application can use all types of clipboards even if the underlying
+    platform does not support it.
+    Of course this will only be a local clipboard, invisible to other
+    applications. }
+    {$IFDEF VerboseWin32Clipbrd}
+    debugln('TWin32WidgetSet.ClipboardGetOwnerShip unsupported ClipboardType under win32');
+    {$ENDIF}
+    Result := true;
+    exit;
+  end;
+
+  if (FormatCount=0) or (OnRequestProc=nil) then begin
+  { The LCL indicates it doesn't have the clipboard data anymore
+    and the interface can't use the OnRequestProc anymore.}
+    {$IFDEF VerboseWin32Clipbrd}
+    debugln('TWin32WidgetSet.ClipboardGetOwnerShip clearing OnClipBoardRequest');
+    {$ENDIF}
+    OnClipBoardRequest := nil;
+    Result := true;
+  end else begin
+  { clear OnClipBoardRequest to prevent destroying the LCL clipboard,
+    when emptying the clipboard}
+    OnClipBoardRequest := nil;
+    if not Windows.OpenClipboard(FAppHandle) then begin
+      {$IFDEF VerboseWin32Clipbrd}
+      debugln('TWin32WidgetSet.ClipboardGetOwnerShip A OpenClipboard failed');
+      {$ENDIF}
+      exit;
+    end;
+    try
+      if not Windows.EmptyClipboard then begin
+        debugln('TWin32WidgetSet.ClipboardGetOwnerShip A EmptyClipboard failed');
+        exit;
+      end;
+      Result := true;
+      OnClipBoardRequest := OnRequestProc;
+      for I := 0 To FormatCount-1 do begin
+        {$IFDEF VerboseWin32Clipbrd}
+        debugln('TWin32WidgetSet.ClipboardGetOwnerShip A Formats['+dbgs(i)+']=',dbgs(Formats[i]));
+        {$ENDIF}
+        PutOnClipBoard(Formats[i]);
+      end;
+    finally
+      if not Windows.CloseClipboard then begin
+        debugln('TWin32WidgetSet.ClipboardGetOwnerShip A CloseClipboard failed');
+      end;
+    end;
+  end;
 end;
 
-function TQtWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
-  OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
-  Formats: PClipboardFormat): boolean;
+{------------------------------------------------------------------------------
+  Method:  ClipboardRegisterFormat
+  Params:  AMimeType - a string (usually a MIME type) identifying a new format
+                       type to register
+  Returns: the registered Format identifier (TClipboardFormat)
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.ClipboardRegisterFormat(Const AMimeType: String): TClipboardFormat;
 begin
-  Result := Clipboard.GetOwnerShip(ClipboardType, OnRequestProc, FormatCount, Formats);
+  if AMimeType=PredefinedClipboardMimeTypes[pcfText] then
+  {$IFDEF WindowsUnicodeSupport}
+    if UnicodeEnabledOS
+      then Result := Windows.CF_UNICODETEXT
+      else Result := Windows.CF_TEXT
+  {$ELSE}
+    Result := Windows.CF_TEXT
+  {$ENDIF}
+  else if (AMimeType=PredefinedClipboardMimeTypes[pcfBitmap]) then
+    Result := Windows.CF_BITMAP
+  else
+    Result := Windows.RegisterClipboardFormat(PChar(AMimeType));
+  {$IFDEF VerboseWin32Clipbrd}
+  debugln('TWin32WidgetSet.ClipboardRegisterFormat AMimeType="',AMimeType,'" Result=',dbgs(Result));
+  {$ENDIF}
 end;
-
-function TQtWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
-begin
-  Result := Clipboard.RegisterFormat(AMimeType);
-end;
-
 
 {------------------------------------------------------------------------------
   Function: CombineRgn
@@ -233,1059 +749,373 @@ end;
       ComplexRegion
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;
-var
-  RDest,RSrc1,RSrc2: QRegionH;
+function TWin32WidgetSet.CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;
 begin
-  result:=ERROR;
-
-  if not IsValidGDIObject(Dest) or not IsValidGDIObject(Src1) then
-    exit
-  else
-  begin
-    RDest := TQtRegion(Dest).FHandle;
-    RSrc1 := TQtRegion(Src1).FHandle;
-  end;
-
-  if (fnCombineMode<>RGN_COPY) and not IsValidGDIObject(Src2) then
-    exit
-  else
-    RSrc2 := TQtRegion(Src2).FHandle;
-
-  case fnCombineMode of
-    RGN_AND:
-      QRegion_intersected(RSrc1, RDest, RSrc2);
-    RGN_COPY:
-      begin
-        // union of Src1 with a null region
-        RSrc2 := QRegion_create;
-        QRegion_united(RSrc1, RDest, RSrc2);
-        QRegion_destroy(RSrc2);
-      end;
-    RGN_DIFF:
-      QRegion_subtracted(RSrc1, RDest, RSrc2);
-    RGN_OR:
-      QRegion_united(RSrc1, RDest, RSrc2);
-    RGN_XOR:
-      QRegion_xored(RSrc1, RDest, RSrc2);
-  end;
-
-  if QRegion_isEmpty(RDest) then
-    Result := NULLREGION
-  else
-  begin
-    if TQtRegion(Dest).IsPolyRegion or (TQtRegion(Dest).numRects > 0) then
-      Result := COMPLEXREGION
-    else
-      Result := SIMPLEREGION;
-  end;
+  Result := Windows.CombineRgn(Dest, Src1, Src2, fnCombineMode);
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.CreateCompatibleBitmap
-  Params: HDC, Width & Height
-  Returns: HBITMAP
+  Method:  CreateBitmap
+  Params:  Width      - bitmap width, in pixels
+           Height     - bitmap height, in pixels
+           Planes     - number of color planes
+           BitCount   - number of bits required to identify a color
+           BitmapBits - pointer to array containing color data
+  Returns: A handle to a bitmap
 
+  The CreateBitmap function creates a bitmap with the specified width, height,
+  and color format (color planes and bits per pixel).
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
-var
-  QtDC: TQtDeviceContext;
-  Format: QImageFormat = QImageFormat_ARGB32;
-  ADevice: QPaintDeviceH = nil;
-  ADesktop: QDesktopWidgetH = nil;
+function TWin32WidgetSet.CreateBitmap(Width, Height: Integer; Planes, BitCount: LongInt; BitmapBits: Pointer): HBITMAP;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI CreateCompatibleBitmap]',
-     ' DC:', dbghex(DC),
-     ' Width:', dbgs(Width),
-     ' Height:', dbgs(Height));
-  {$endif}
-  Result := 0;
-  if IsValidDC(DC) then
-  begin
-    QtDC := TQtDeviceContext(DC);
-    case QtDC.getDepth of
-      1: Format := QImageFormat_Mono;
-      15, 16: Format := QImageFormat_RGB16;
-      24: Format := QImageFormat_RGB32;
-      32: Format := QImageFormat_ARGB32;
-    end;
-  end else
-  begin
-    ADesktop := QApplication_desktop();
-    if ADesktop <> nil then
-      ADevice := QWidget_to_QPaintDevice(ADesktop);
-    if ADevice <> nil then
-    begin
-      case QPaintDevice_depth(ADevice) of
-        1: Format := QImageFormat_Mono;
-        15, 16: Format := QImageFormat_RGB16;
-        24: Format := QImageFormat_RGB32;
-        32: Format := QImageFormat_ARGB32;
-      end;
-    end;
-  end;
-  Result := HBitmap(TQtImage.Create(nil, Width, Height, Format));
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI CreateCompatibleBitmap] Bitmap:', dbghex(Result));
-  {$endif}
+  Result := Windows.CreateBitmap(Width, Height, Planes, BitCount, BitmapBits);
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.CreateBitmap
-  Params:
-  Returns:
+  Method:   CreateBrushIndirect
+  Params:  LogBrush - record describing brush
+  Returns: identifier of a logical brush
 
-  This functions is for TBitmap support.
-  Specifically it´s utilized on when a handle for a bitmap is needed
+  The CreateBrushIndirect function creates a logical brush that has the
+  specified style, color, and pattern.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateBitmap(Width, Height: Integer;
-  Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
+function TWin32WidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 var
-  Format: QImageFormat;
-  NewBits: PByte;
-  NewBitsSize: PtrUInt;
-  ARowStride, RSS: Integer;
+  LB: Windows.LogBrush;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI CreateBitmap]',
-     ' Width:', dbgs(Width),
-     ' Height:', dbgs(Height),
-     ' Planes:', dbgs(Planes),
-     ' BitCount:', dbgs(BitCount),
-     ' BitmapBits: ', dbgs(BitmapBits));
-  {$endif}
-
-  // for win32 data is aligned to WORD
-  // for qt we must realign data to DWORD
-
-  case BitCount of
-    1: Format := QImageFormat_Mono;
-    15, 16: Format := QImageFormat_RGB16;
-    24: Format := QImageFormat_RGB32;
-    32: Format := QImageFormat_ARGB32;
-  else
-    Format := QImageFormat_ARGB32;
-  end;
-
-  RSS := GetBytesPerLine(Width, BitCount, rileWordBoundary);
-  if BitmapBits <> nil then
-  begin
-    ARowStride := GetBytesPerLine(Width, BitCount, rileDWordBoundary);
-    if not CopyImageData(Width, Height, RSS, BitCount, BitmapBits, Rect(0, 0, Width, Height),
-      riloBottomToTop, riloBottomToTop, rileDWordBoundary, NewBits, NewBitsSize) then
-    begin
-      // this was never tested
-      ARowStride := RSS;
-      NewBits := AllocMem(RSS * Height);
-      Move(BitmapBits^, NewBits^, RSS * Height);
-    end;
-    Result := HBitmap(TQtImage.Create(NewBits, Width, Height, ARowStride, Format, True));
-  end
-  else
-    Result := HBitmap(TQtImage.Create(nil, Width, Height, Format));
-
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI CreateBitmap] Bitmap:', dbghex(Result));
-  {$endif}
+  LB.lbStyle := LogBrush.lbStyle;
+  LB.lbColor := ColorToRGB(TColor(LogBrush.lbColor));
+  LB.lbHatch := LogBrush.lbHatch;
+  Result := Windows.CreateBrushIndirect(LB);
 end;
 
-
 {------------------------------------------------------------------------------
-  Function:  CreateBrushIndirect
-  Params:  none
-  Returns: Nothing
+  Method:  CreateCaret
+  Params:  Handle - handle to owner window
+           Bitmap - handle to bitmap for caret shape
+           Width  - caret width
+           Height - caret height
+  Returns: Whether the function succeeded
+
+  Creates a new shape for the system caret and assigns ownership of the caret
+  to the specified window
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
-var
-  QtBrush: TQtBrush;
-  Color: TQColor;
+function TWin32WidgetSet.CreateCaret(Handle: HWND; Bitmap: HBITMAP; Width, Height: Integer): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn(Format('Trace:> [WinAPI CreateBrushIndirect]  Style: %d, Color: %8x (%s)',
-      [LogBrush.lbStyle, LogBrush.lbColor, ColorToString(LogBrush.lbColor)]));
-  {$endif}
-
-  Result := 0;
-
-  QtBrush := TQtBrush.Create(True);
-
-  try
-    case LogBrush.lbStyle of
-      BS_NULL: QtBrush.Style := QtNoBrush; // Same as BS_HOLLOW.
-      BS_SOLID: QtBrush.Style := QtSolidPattern;
-
-      BS_HATCHED: // Hatched brushes.
-      begin
-        case LogBrush.lbHatch of
-          HS_BDIAGONAL: QtBrush.Style := QtBDiagPattern;
-          HS_CROSS: QtBrush.Style := QtCrossPattern;
-          HS_DIAGCROSS: QtBrush.Style := QtDiagCrossPattern;
-          HS_FDIAGONAL: QtBrush.Style := QtFDiagPattern;
-          HS_HORIZONTAL: QtBrush.Style := QtHorPattern;
-          HS_VERTICAL: QtBrush.Style := QtVerPattern;
-        else
-          QtBrush.Style := QtSolidPattern;
-        end;
-      end;
-
-      BS_DIBPATTERN,     // A pattern brush defined by a device-independent
-             // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERN, the
-             // lbHatch member contains a handle to a packed DIB.Windows 95:
-             // Creating brushes from bitmaps or DIBs larger than 8x8 pixels
-             // is not supported. If a larger bitmap is given, only a portion
-             // of the bitmap is used.
-      BS_DIBPATTERN8X8,  // Same as BS_DIBPATTERN.
-      BS_DIBPATTERNPT,   // A pattern brush defined by a device-independent
-             // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERNPT, the
-             // lbHatch member contains a pointer to a packed DIB.
-      BS_PATTERN,        // Pattern brush defined by a memory bitmap.
-      BS_PATTERN8X8:     // Same as BS_PATTERN.
-      begin
-        QtBrush.setTextureImage(TQtImage(LogBrush.lbHatch).FHandle);
-        QtBrush.Style := QtTexturePattern;
-      end;
-    else
-      DebugLn(Format('Unsupported Style %d',[LogBrush.lbStyle]));
-    end;
-
-    {
-      Other non-utilized Qt brushes:
-        QtDense1Pattern,
-        QtDense2Pattern,
-        QtDense3Pattern,
-        QtDense4Pattern,
-        QtDense5Pattern,
-        QtDense6Pattern,
-        QtDense7Pattern,
-        QtLinearGradientPattern,
-        QtRadialGradientPattern,
-        QtConicalGradientPattern
-    }
-
-    // set brush color
-    Color := QBrush_Color(QtBrush.FHandle)^;
-    ColorRefToTQColor(ColorToRGB(TColor(logBrush.lbColor)), Color);
-    QtBrush.setColor(@Color);
-    Result := HBRUSH(QtBrush);
-  except
-    Result := 0;
-    DebugLn('TQtWidgetSet.CreateBrushIndirect: Failed');
-  end;
-
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI CreateBrushIndirect] Result: ', dbghex(Result));
-  {$endif}
-end;
-
-function TQtWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width, Height: Integer): Boolean;
-begin
-  Result := (Handle <> 0) and
-    QtCaret.CreateCaret(TQtWidget(Handle), Bitmap, Width, Height);
+{$ifdef DEBUG_CARET}
+  DebugLn('[CreateCaret] for window ', IntToHex(Handle, 8));
+{$endif}
+  Result := Boolean(Windows.CreateCaret(Handle, Bitmap, Width, Height));
 end;
 
 {------------------------------------------------------------------------------
-  Function: CreateCompatibleDC
+  Method:  CreateCompatibleBitmap
+  Params: DC     - handle to device context
+          Width  - width of bitmap, in pixels
+          Height - height of bitmap, in pixels
+  Returns: a handle to the bitmap
+
+  Creates a bitmap compatible with the specified device context.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
+begin
+  Result := Windows.CreateCompatibleBitmap(DC, Width, Height);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  CreateCompatibleDC
   Params:  DC - handle to memory device context
   Returns: handle to a memory device context
 
   Creates a memory device context (DC) compatible with the specified device.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
+function TWin32WidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI CreateCompatibleDC] DC: ', dbghex(DC));
-  {$endif}
-  Result := HDC(TQtDeviceContext.Create(nil, True));
+  Result := Windows.CreateCompatibleDC(DC);
 end;
 
 {------------------------------------------------------------------------------
-  Function: CreateEllipticRgn
-  Params:  p1 - X position of the top-left corner
-           p2 - Y position of the top-left corner
-           p3 - X position of the bottom-right corner
-           p4 - Y position of the bottom-right corner
-  Returns: HRGN
+  Method:  CreateFontIndirect
+  Params:  LogFont - logical font record
+  Returns: a handle to a logical font
+
+  Creates a logical font that has the characteristics specified in the
+  specified record.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
+function TWin32WidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 var
-  QtRegion: TQtRegion;
+{$ifdef WindowsUnicodeSupport}
+  TempLogFontW: TLogFontW;
+  TempLogFont: TLogFontA absolute TempLogFontW;
+{$else}
+  TempLogFont: TLogFont;
+{$endif}
+  FontName: String;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI CreateEllipticRgn] ');
-  {$endif}
-  QtRegion := TQtRegion.Create(True, p1, p2, p3, p4, QRegionEllipse);
-  Result := HRGN(QtRegion);
-end;
+  FontName := LogFont.lfFaceName;
 
-{------------------------------------------------------------------------------
-  Function: CreateFontIndirect
-  Params:  const LogFont: TLogFont
-  Returns: HFONT
-
-  Creates a font GDIObject.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
-begin
-  Result := CreateFontIndirectEx(LogFont, '');
-end;
-
-{------------------------------------------------------------------------------
-  Function: CreateFontIndirectEx
-  Params:  const LogFont: TLogFont
-  Returns: HFONT
-
-  Creates a font GDIObject.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT;
-var
-  QtFont: TQtFont;
-  FamilyName: string;
-const
-  QStyleStategy: array [DEFAULT_QUALITY..CLEARTYPE_NATURAL_QUALITY] of QFontStyleStrategy = (
- { DEFAULT_QUALITY           } QFontPreferDefault,
- { DRAFT_QUALITY             } QFontPreferMatch,
- { PROOF_QUALITY             } QFontPreferQuality,
- { NONANTIALIASED_QUALITY    } QFontNoAntialias,
- { ANTIALIASED_QUALITY       } QFontPreferAntialias,
- { CLEARTYPE_QUALITY         } QFontPreferAntialias,
- { CLEARTYPE_NATURAL_QUALITY } QFontPreferAntialias
-  );
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI CreateFontIndirectEx] FontName: ' + LongFontName);
-  {$endif}
-
-  Result := 0;
-
-  QtFont := TQtFont.Create(True);
-  try
-    // -1 has different meaning - it means that font height was set using setPointSize
-    if LogFont.lfHeight <> -1 then
-      QtFont.setPixelSize(Abs(LogFont.lfHeight));
-
-    // Some values at available on Qt documentation at a table
-    // Others are guesses. The best would be to test different values for those
-    // See: http://doc.trolltech.com/4.1/qfont.html#Weight-enum
-    case LogFont.lfWeight of
-      FW_THIN       : QtFont.setWeight(10);
-      FW_EXTRALIGHT : QtFont.setWeight(15);
-      FW_LIGHT      : QtFont.setWeight(25);
-      FW_NORMAL     : QtFont.setWeight(50);
-      FW_MEDIUM     : QtFont.setWeight(55);
-      FW_SEMIBOLD   : QtFont.setWeight(63);
-      FW_BOLD       : QtFont.setWeight(75);
-      FW_EXTRABOLD  : QtFont.setWeight(80);
-      FW_HEAVY      : QtFont.setWeight(87);
-    end;
-
-    QtFont.Angle := LogFont.lfEscapement;
-
-    //LogFont.lfOrientation;
-
-    QtFont.setItalic(LogFont.lfItalic = High(Byte));
-    QtFont.setUnderline(LogFont.lfUnderline = High(Byte));
-    QtFont.setStrikeOut(LogFont.lfStrikeOut = High(Byte));
-
-    FamilyName := StrPas(LogFont.lfFaceName);
-
-    if (CompareText(FamilyName, 'default') <> 0) then
-      QtFont.setFamily(FamilyName)
+  TempLogFont := LogFont;
+  if FontName = DefFontData.Name then
+  begin
+    {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      TempLogFontW.lfFaceName := UTF8ToUTF16(FMetrics.lfMessageFont.lfFaceName) // FMetrics must be UTF16
     else
-      QtFont.setFamily(UTF16ToUTF8(GetDefaultAppFontName));
-
-    if (LogFont.lfQuality >= Low(QStyleStategy)) and (LogFont.lfQuality <= High(QStyleStategy)) then
-      QtFont.setStyleStrategy(QStyleStategy[LogFont.lfQuality]);
-    Result := HFONT(QtFont);
-  except
-    Result := 0;
-    DebugLn('TQtWidgetSet.CreateFontIndirectEx: Failed');
-  end;
-end;
-
-function TQtWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
-var
-  AIcon: TQtIcon;
-  APixmap, ATemp: QPixmapH;
-  AMask: QBitmapH;
-begin
-  Result := 0;
-  if IsValidGDIObject(IconInfo^.hbmColor) then
-  begin
-    APixmap := QPixmap_create();
-    QPixmap_fromImage(APixmap, TQtImage(IconInfo^.hbmColor).FHandle);
-    if IconInfo^.hbmMask <> 0 then
-    begin
-      ATemp := QPixmap_create();
-      QPixmap_fromImage(ATemp, TQtImage(IconInfo^.hbmMask).FHandle);
-      AMask := QBitmap_create(ATemp);
-      QPixmap_setMask(APixmap, AMask);
-      QPixmap_destroy(ATemp);
-      QBitmap_destroy(AMask);
-    end;
-    if IconInfo^.fIcon then
-    begin
-      AIcon := TQtIcon.Create;
-      AIcon.addPixmap(APixmap);
-      Result := HICON(AIcon);
-    end else
-      Result := HCURSOR(TQtCursor.Create(APixmap, IconInfo^.xHotspot, IconInfo^.yHotspot));
-    QPixmap_destroy(APixmap);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Function:  CreatePatternBrush
-  Params:  HBITMAP
-  Returns: HBRUSH
- ------------------------------------------------------------------------------}
-
-function TQtWidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
-var
-  Image: QImageH;
-  QtBrush: TQtBrush;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI CreatePatternBrush]',' Bitmap=', dbghex(ABitmap));
-  {$endif}
-  Result := 0;
-  if ABitmap = 0 then
-    exit;
-  QtBrush := TQtBrush.Create(True);
-  Image := QImage_create(TQtImage(ABitmap).FHandle);
-  try
-    QtBrush.setTextureImage(Image);
-  finally
-    QImage_destroy(Image);
-  end;
-
-  Result := HBRUSH(QtBrush);
-end;
-
-{------------------------------------------------------------------------------
-  Function:  CreatePenIndirect
-  Params:  none
-  Returns: HPEN
- ------------------------------------------------------------------------------}
-
-function TQtWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
-var
-  QtPen: TQtPen;
-  color: TQColor;
-begin
-  Result := 0;
-  QtPen := TQtPen.Create(True);
-  with LogPen do
-  begin
-    case lopnStyle and PS_STYLE_MASK of
-      PS_SOLID: QtPen.setStyle(QtSolidLine);
-      PS_DASH: QtPen.setStyle(QtDashLine);
-      PS_DOT: QtPen.setStyle(QtDotLine);
-      PS_DASHDOT: QtPen.setStyle(QtDashDotLine);
-      PS_DASHDOTDOT: QtPen.setStyle(QtDashDotDotLine);
-      PS_NULL: QtPen.setStyle(QtNoPen);
-    else
-      QtPen.setStyle(QtSolidLine);
-    end;
-
-    if lopnWidth.X <= 0 then
-      QtPen.setCosmetic(True)
-    else
-    begin
-      QtPen.setCosmetic(False);
-      QtPen.setWidth(lopnWidth.X);
-    end;
-
-    QPen_Color(QtPen.FHandle, @Color);
-    ColorRefToTQColor(ColorToRGB(TColor(lopnColor)), Color);
-    QPen_setColor(QtPen.FHandle, @Color);
-  end;
-
-  Result := HPEN(QtPen);
-end;
-
-{------------------------------------------------------------------------------
-  Function: CreatePolygonRgn
-  Params:  none
-  Returns: HRGN
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN;
-var
-  QtRegion: TQtRegion;
-  QtPoints: PQtPoint;
-  i: Integer;
-  Poly: QPolygonH;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace: [WinAPI CreatePolygonRgn] ');
-  {$endif}
-  GetMem(QtPoints, NumPts * SizeOf(TQtPoint));
-  for i := 0 to NumPts - 1 do
-    QtPoints[i] := QtPoint(Points[i].x, Points[i].y);
-  Poly := QPolygon_create(NumPts, PInteger(QtPoints));
-  FreeMem(QtPoints);
-  try
-    {fillmode can be ALTERNATE or WINDING as msdn says}
-    if FillMode = ALTERNATE then
-      QtRegion := TQtRegion.Create(True, Poly, QtOddEvenFill)
-    else
-      QtRegion := TQtRegion.Create(True, Poly, QtWindingFill);
-    Result := HRGN(QtRegion);
-  finally
-    QPolygon_destroy(Poly);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Function: CreateRectRgn
-  Params:  none
-  Returns: HRGN
-
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
-var
-  QtRegion: TQtRegion;
-begin
-  QtRegion := TQtRegion.Create(True, X1, Y1, X2, Y2);
-  Result := HRGN(QtRegion);
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace: [WinAPI CreateRectRgn] Result: ', dbghex(Result),
-     ' QRegionH: ', dbghex(PtrInt(QtRegion.Widget)));
-  {$endif}
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: DeleteCriticalSection
-  Params:  var CritSection: TCriticalSection
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
-var
-  ACritSec: System.PRTLCriticalSection;
-begin
-  ACritSec:=System.PRTLCriticalSection(CritSection);
-  System.DoneCriticalsection(ACritSec^);
-  Dispose(ACritSec);
-  CritSection:=0;
-end;
-
-{------------------------------------------------------------------------------
-  Function: DeleteDC
-  Params:  none
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.DeleteDC(hDC: HDC): Boolean;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI DeleteDC] Handle: ', dbghex(hDC));
-  {$endif}
-
-  Result := False;
-  if not IsValidDC(hDC) then exit;
-
-  TQtDeviceContext(hDC).Free;
-end;
-
-{------------------------------------------------------------------------------
-  Function: DeleteObject
-  Params:  none
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
-var
-  aObject: TObject;
-  APaintEngine: QPaintEngineH;
-  APainter: QPainterH;
-  {$ifdef VerboseQtWinAPI}
-    ObjType: string;
-  {$endif}
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI DeleteObject] GDIObject: ', dbghex(GDIObject));
-    ObjType := 'Unidentifyed';
-  {$endif}
-
-  Result := False;
-
-  if GDIObject = 0 then
-    Exit(True);
-
-  if not IsValidGDIObject(GDIObject) then
-    Exit;
-
-  aObject := TObject(GDIObject);
-
-  if (aObject is TQtResource) and TQtResource(aObject).FShared then
-    Exit(True);
-
-  {------------------------------------------------------------------------------
-    Font
-   ------------------------------------------------------------------------------}
-  if aObject is TQtFont then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Font';
+      Move(FMetrics.lfMessageFont.lfFaceName, TempLogFont.lfFaceName, LF_FACESIZE);
+    {$else}
+    Move(FMetrics.lfMessageFont.lfFaceName, TempLogFont.lfFaceName, LF_FACESIZE);
     {$endif}
+    if TempLogFont.lfHeight = 0 then
+      TempLogFont.lfHeight := FMetrics.lfMessageFont.lfHeight;
   end
-  {------------------------------------------------------------------------------
-    Brush
-   ------------------------------------------------------------------------------}
-  else if aObject is TQtBrush then
+  else
   begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Brush';
-    {$endif}
-  end
-  {------------------------------------------------------------------------------
-    Image
-   ------------------------------------------------------------------------------}
-  else if aObject is TQtImage then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Image';
-    {$endif}
-
-    // we must stop paintdevice before destroying
-
-    APaintEngine := QImage_paintEngine(TQtImage(AObject).FHandle);
-
-    if (APaintEngine <> nil) and QPaintEngine_isActive(APaintEngine) then
-    begin
-      APainter := QPaintEngine_painter(APaintEngine);
-      if APainter <> nil then
-        QPainter_end(APainter);
-    end;
-  end
-  {------------------------------------------------------------------------------
-    Region
-   ------------------------------------------------------------------------------}
-  else if aObject is TQtRegion then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Region';
-    {$endif}
-  end
-
-  {------------------------------------------------------------------------------
-    Pen
-   ------------------------------------------------------------------------------}
-  else if aObject is TQtPen then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Pen';
-    {$endif}
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    TempLogFontW.lfFaceName := UTF8ToUTF16(FontName)
+  else
+    TempLogFont.lfFaceName := Utf8ToAnsi(FontName);
+  {$endif}
   end;
-
-  if AObject is TQtResource then
-    if TQtResource(AObject).Owner <> nil then
-    begin
-      // this is an owned (default) resource, let owner free it
-      DebugLn('WARNING: Trying to Free a default resource');
-      AObject := nil;
-    end;
-
-  if AObject <> nil then
-  begin
-    //WriteLn('Delete object: ', PtrUInt(AObject));
-    FreeThenNil(AObject);
-  end;
-
-  Result := True;
-
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI DeleteObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    Result := Windows.CreateFontIndirectW(@TempLogFontW)
+  else
+    Result := Windows.CreateFontIndirectA(@TempLogFont)
+  {$else}
+  Result := Windows.CreateFontIndirect(@TempLogFont);
   {$endif}
 end;
 
-function TQtWidgetSet.DestroyCaret(Handle: HWND): Boolean;
-begin
-  Result := (Handle <> 0) and QtCaret.DestroyCaret;
-end;
-
 {------------------------------------------------------------------------------
-  Method:  DestroyIcon
-  Params:  Handle
-  Returns: Result of destroying
- ------------------------------------------------------------------------------}
+  Method:  CreateIconIndirect
+  Params:  IconInfo - pointer to Icon/Cursor Information record
+  Returns: handle to a created icon/cursor
 
-function TQtWidgetSet.DestroyIcon(Handle: HICON): Boolean;
-begin
-  Result := (Handle <> 0) and
-            (
-              (TObject(Handle) is TQtIcon) or
-              (TObject(Handle) is TQtCursor)
-            );
-  if Result then
-    TObject(Handle).Free;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  DPtoLP
-  Params:  DC: HDC; var Points; Count: Integer
-  Returns: Boolean
+  Creates an icon or cursor by color and mask bitmaps and other info.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
+function TWin32WidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
 var
-  P: PPoint;
-  QtPoint: TQtPoint;
-  Matrix: QTransformH;
-  MatrixInv: QTransformH;
-  QtDC: TQtDeviceContext;
-  Inverted: Boolean;
+  bmp: Windows.TBitmap;
+  hbm1, hbm2: HBITMAP;
+  SrcDataSize, DataSize: PtrUInt;
+  SrcData, Data: PByte;
+  Res: Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI DPtoLP] ');
-  {$endif}
+  // if we pass the XOR mask as color then we need to move it at the end of AND mask
+  // correct passed values
+  if (IconInfo^.hbmColor <> 0) and
+     (GetObject(IconInfo^.hbmColor, SizeOf(bmp), @bmp) = SizeOf(bmp)) and
+     (bmp.bmBitsPixel = 1) then
+  begin
+    // we must create one mask bitmap where top part of it is IMAGE and bottom is MASK
+    DataSize := bmp.bmWidthBytes * abs(bmp.bmHeight) shl 1;
+    Data := GetMem(DataSize);
 
-  Result := False;
-
-  if not IsValidDC(DC) then
-    Exit;
-
-  QtDC := TQtDeviceContext(DC);
-
-  Matrix := QTransform_create;
-  MatrixInv := QTransform_create;
-  QPainter_combinedTransform(QtDC.Widget, Matrix);
-  P := @Points;
-  try
-    while Count > 0 do
+    Res := GetBitmapBytes(bmp, IconInfo^.hbmMask, Rect(0, 0, bmp.bmWidth, bmp.bmHeight), rileWordBoundary, riloTopToBottom, SrcData, SrcDataSize);
+    if Res then
     begin
-      Dec(Count);
-      Inverted := QTransform_isInvertible(Matrix);
-      QTransform_inverted(Matrix, MatrixInv, @Inverted);
-      QtPoint.X := P^.X;
-      QtPoint.Y := P^.Y;
-      QTransform_map(MatrixInv, PQtPoint(@QtPoint), PQtPoint(@QtPoint));
-      P^.X := QtPoint.X;
-      P^.Y := QtPoint.Y;
-      Inc(P);
+      Move(SrcData^, Data^, SrcDataSize);
+      FreeMem(SrcData);
     end;
 
-    Result := True;
-  finally
-    QTransform_destroy(MatrixInv);
-    QTransform_destroy(Matrix);
-  end;
+    Res := Res and GetBitmapBytes(bmp, IconInfo^.hbmColor, Rect(0, 0, bmp.bmWidth, bmp.bmHeight), rileWordBoundary, riloTopToBottom, SrcData, SrcDataSize);
+    if Res then
+    begin
+      Move(SrcData^, Data[DataSize shr 1], SrcDataSize);
+      FreeMem(SrcData);
+    end;
+
+    if Res then
+    begin
+      hbm1 := CreateBitmap(bmp.bmWidth, bmp.bmHeight shl 1, bmp.bmPlanes, 1, Data);
+      IconInfo^.hbmColor := 0;
+      IconInfo^.hbmMask := hbm1;
+    end;
+
+    FreeMem(Data);
+  end
+  else
+    hbm1 := 0;
+
+  if (IconInfo^.hbmMask = 0) and (IconInfo^.hbmColor <> 0) and (GetObject(IconInfo^.hbmColor, SizeOf(bmp), @bmp) = SizeOf(bmp)) then
+  begin
+    hbm2 := CreateBitmap(bmp.bmWidth, bmp.bmHeight, bmp.bmPlanes, 1, nil);
+    IconInfo^.hbmMask := hbm2;
+  end
+  else
+    hbm2 := 0;
+
+  Result := Windows.CreateIconIndirect(IconInfo);
+
+  if hbm1 <> 0 then
+    DeleteObject(hbm1);
+
+  if hbm2 <> 0 then
+    DeleteObject(hbm2);
+end;
+
+function TWin32WidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
+begin
+  Result := Windows.CreatePatternBrush(ABitmap);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  CreatePenIndirect
+  Params:  LogPen - record that defines the style, width, and color of a pen
+  Returns: a handle that identifies a logical cosmetic pen
+
+  Creates a logical cosmetic pen that has the style, width, and color specified
+  in a record.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.CreatePenIndirect(Const LogPen: TLogPen): HPEN;
+var
+  LP: TLogPen;
+begin
+  LP := LogPen;
+  Lp.lopnColor := ColorToRGB(TColor(Lp.lopnColor));
+  Result := Windows.CreatePenIndirect(Windows.LOGPEN(LP));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  CreatePolygonRgn
+  Params:  Points, NumPts, FillMode
+  Returns: the handle to the region
+
+  Creates a Polygon, a closed many-sided shaped region. The Points parameter is
+  an array of points that give the vertices of the polygon. FillMode=Winding
+  determines what points are going to be included in the region. When Winding
+  is True, points are selected by using the Winding fill algorithm. When Winding
+  is False, points are selected by using using the even-odd (alternative) fill
+  algorithm. NumPts indicates the number of points to use.
+  The first point is always connected to the last point.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
+  FillMode: integer): HRGN;
+begin
+  Result := Windows.CreatePolygonRgn(LPPOINT(Points)^, NumPts, FillMode);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  CreateRectRgn
+  Params:  X1 - x-coordinate of region's upper-left corner
+           Y1 - y-coordinate of region's upper-left corner
+           X2 - x-coordinate of region's lower-right corner
+           Y2 - y-coordinate of region's lower-right corner
+  Returns: the handle to the region
+
+  Creates a rectangular region.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN;
+begin
+  Result := Windows.CreateRectRgn(X1, Y1, X2, Y2);
+end;
+
+function TWin32WidgetSet.CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse,
+  nHeightEllipse: Integer): HRGN;
+begin
+  Result := Windows.CreateRoundRectRgn(X1, Y1, X2, Y2, nWidthEllipse,
+    nHeightEllipse);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  DeleteDC
+  Params:  HDC - handle to device context
+  Returns: If the function succeeds.
+
+  Deletes the specified device context (DC).
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.DeleteDC(HDC: HDC): Boolean;
+begin
+  Result := Boolean(Windows.DeleteDC(HDC));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  DeleteObject
+  Params:  GDIObject - handle to graphic object
+  Returns: If the function succeeds.
+
+  Deletes a graphic object, freeing all system resources associated with the
+  object.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
+begin
+  { Find out if we want to release internal GDI object }
+  Result := Boolean(Windows.DeleteObject(GDIObject));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  DestroyCaret
+  Params:  Handle - handle to the window with a caret (on Windows, there is
+           only one, global caret, so this parameter is ignored)
+  Returns: If the function succeeds
+
+  Destroys the caret but doesn't free the bitmap.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.DestroyCaret(Handle: HWND): Boolean;
+begin
+{$ifdef DEBUG_CARET}
+  DebugLn('[DestroyCaret] for window ', IntToHex(Handle, 8));
+{$endif}
+  Result := Boolean(Windows.DestroyCaret);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  DestroyCursor
+  Params:  Handle - handle to the cursor object
+  Returns: If the function succeeds
+
+  Destroys the cursor
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.DestroyCursor(Handle: hCursor): Boolean;
+begin
+  Result := Boolean(Windows.DestroyCursor(Handle));
+end;
+
+function TWin32WidgetSet.DestroyIcon(Handle: HICON): Boolean;
+begin
+  Result := Windows.DestroyIcon(Handle);
+end;
+
+function TWin32WidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
+begin
+  Result := Windows.DPtoLP(DC, Points, Count);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  DrawFrameControl
+  Params: DC     - handle to device context
+          Rect   - bounding rectangle
+          UType  - frame-control type
+          UState - frame-control state
+  Returns: If the function succeeds
+
+  Draws a frame control of the specified type and style.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; UType, UState: Cardinal): Boolean;
+begin
+  Result := Boolean(Windows.DrawFrameControl(DC, @Rect, UType, UState));
+end;
+
+function TWin32WidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+begin
+  Result:= Windows.DrawFocusRect(DC, PRect(@Rect)^);
 end;
 
 {------------------------------------------------------------------------------
   Method:  DrawEdge
-  Params: DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal
-  Returns: Boolean
+  Params: DC       - handle to device context
+          Rect     - rectangle coordinates
+          Edge     - type of inner and outer edge to draw
+          GrfFlags - type of border
+  Returns: If the function succeeds.
+
+  Draws one or more edges of a rectangle, not including the
+  right and bottom edge.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean;
-var
-  Brush: HBRUSH;
-  ColorDark, ColorLight: TColorRef;
-  ClientRect: TRect;
-  QtDC: TQtDeviceContext;
-
-  procedure InternalDrawEdge(Outer: Boolean; const R: TRect);
-  var
-    X1, Y1, X2, Y2: Integer;
-    ColorLeftTop, ColorRightBottom: TColor;
-    EdgeQtColor: TQColor;
-    APen, OldPen: TQtPen;
-  begin
-    X1 := R.Left;
-    Y1 := R.Top;
-    X2 := R.Right;
-    Y2 := R.Bottom;
-
-    ColorLeftTop := clNone;
-    ColorRightBottom := clNone;
-
-    if Outer then
-    begin
-      if Edge and BDR_RAISEDOUTER <> 0 then
-      begin
-        ColorLeftTop := ColorLight;
-        ColorRightBottom := ColorDark;
-      end
-      else if Edge and BDR_SUNKENOUTER <> 0 then
-      begin
-        ColorLeftTop := ColorDark;
-        ColorRightBottom := ColorLight;
-      end;
-    end
-    else
-    begin
-      if Edge and BDR_RAISEDINNER <> 0 then
-      begin
-        ColorLeftTop := ColorLight;
-        ColorRightBottom := ColorDark;
-      end
-      else if Edge and BDR_SUNKENINNER <> 0 then
-      begin
-        ColorLeftTop := ColorDark;
-        ColorRightBottom := ColorLight;
-      end;
-    end;
-
-    if grfFlags and BF_DIAGONAL = 0 then
-    begin
-
-      APen := TQtPen.Create(True);
-      ColorRefToTQColor(TColorRef(ColorLeftTop), EdgeQtColor);
-      APen.setColor(EdgeQtColor);
-      OldPen := QtDC.setPen(APen);
-
-      if grfFlags and BF_LEFT <> 0 then
-        QtDC.DrawLine(X1, Y1, X1, Y2);
-      if grfFlags and BF_TOP <> 0 then
-        QtDC.DrawLine(X1, Y1, X2, Y1);
-
-      QtDC.setPen(OldPen);
-      APen.Free;
-      APen := TQtPen.Create(True);
-
-      ColorRefToTQColor(TColorRef(ColorRightBottom), EdgeQtColor);
-      APen.setColor(EdgeQtColor);
-      OldPen := QtDC.SetPen(APen);
-
-      if grfFlags and BF_RIGHT <> 0 then
-        QtDC.DrawLine(X2, Y1, X2, Y2);
-      if grfFlags and BF_BOTTOM <> 0 then
-        QtDC.DrawLine(X1, Y2, X2, Y2);
-      QtDC.SetPen(OldPen);
-      APen.Free;
-    end
-    else
-    begin
-
-      APen := TQtPen.Create(True);
-      ColorRefToTQColor(TColorRef(ColorLeftTop), EdgeQtColor);
-      APen.setColor(EdgeQtColor);
-      OldPen := QtDC.setPen(APen);
-
-      if (grfFlags and BF_DIAGONAL_ENDTOPLEFT = BF_DIAGONAL_ENDTOPLEFT) or
-         (grfFlags and BF_DIAGONAL_ENDBOTTOMRIGHT = BF_DIAGONAL_ENDBOTTOMRIGHT) then
-        QtDC.DrawLine(X1, Y1, X2, Y2)
-      else
-        QtDC.DrawLine(X1, Y2, X2, Y1);
-      QtDC.setPen(OldPen);
-      APen.Free;
-    end;
-  end;
-
+function TWin32WidgetSet.DrawEdge(DC: HDC; Var Rect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI DrawEdge] ');
-  {$endif}
-
-  Result := False;
-  if not IsValidDC(DC) or IsRectEmpty(Rect) then exit;
-
-  QtDC := TQtDeviceContext(DC);
-
-  ClientRect := Rect;
-  Dec(ClientRect.Right, 1);
-  Dec(ClientRect.Bottom, 1);
-  QtDC.save;
-  try
-    ColorDark := ColorToRGB(cl3DDkShadow);
-    ColorLight := ColorToRGB(cl3DLight);
-    if grfFlags and BF_FLAT <> 0 then
-      ColorLight := clSilver;
-    if grfFlags and BF_MONO <> 0 then
-    begin
-      ColorDark := TColorRef(clBlack);
-      ColorLight := TColorRef(clWhite);
-    end;
-    try
-      if Edge and (BDR_SUNKENOUTER or BDR_RAISEDOUTER) <> 0 then
-        InternalDrawEdge(True, ClientRect);
-      InflateRect(ClientRect, -1, -1);
-      if grfFlags and BF_MONO = 0 then
-      begin
-        ColorLight := ColorToRGB(clBtnHiLight);
-        ColorDark := ColorToRGB(clBtnShadow);
-      end;
-      if Edge and (BDR_SUNKENINNER or BDR_RAISEDINNER) <> 0 then
-      begin
-        InternalDrawEdge(False, ClientRect);
-        InflateRect(ClientRect, -1, -1);
-      end;
-    finally
-    end;
-
-    inc(ClientRect.Right);
-    inc(ClientRect.Bottom);
-
-    if grfFlags and BF_MIDDLE <> 0 then
-    begin
-      Brush := CreateSolidBrush(TColorRef(clBtnFace));
-      try
-        FillRect(DC, ClientRect, Brush);
-      finally
-        DeleteObject(Brush);
-      end;
-    end;
-
-    if grfFlags and BF_ADJUST <> 0 then
-      Rect := ClientRect;
-
-    Result := True;
-  finally
-    QtDC.Restore;
-  end;
-
-end;
-
-{------------------------------------------------------------------------------
-  Method: DrawFocusRect
-  Params: DC: HDC; const Rect: TRect
-  Returns: Boolean
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
-var
-  StyleOption: QStyleOptionFocusRectH;
-  QtDC: TQtDeviceContext;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[TQtWidgetSet.DrawFocusRect] Handle: ', dbghex(DC));
-  {$endif}
-  Result := False;
-
-  if not IsValidDC(DC) then exit;
-
-  QtDC := TQtDeviceContext(DC);
-  StyleOption := QStyleOptionFocusRect_create;
-  QtDC.save;
-  try
-    QStyleOption_setRect(StyleOption, @Rect);
-    if not QtDC.getClipping then
-      QtDC.setClipRect(Rect);
-    QStyle_drawPrimitive(QApplication_style, QStylePE_FrameFocusRect, StyleOption, QtDC.Widget, QtDC.Parent);
-    Result := True;
-  finally
-    QStyleOptionFocusRect_destroy(StyleOption);
-    QtDC.restore;
-  end;
-end;
-
-function TQtWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
-  uState: Cardinal): Boolean;
-var
-  QtDC: TQtDeviceContext;
-  Painter: QPainterH;
-  Widget: QWidgetH;
-
-  function uStatetoQStyleState: QStyleState;
-  begin
-    Result := QStyleState_None;
-    if (uState and DFCS_INACTIVE = 0) then
-      Result := Result or QStyleState_Enabled;
-
-    if (uState and DFCS_PUSHED <> 0) then
-      Result := Result or QStyleState_MouseOver or QStyleState_Sunken
-    else
-      Result := Result or QStyleState_Raised;
-
-    if (uState and DFCS_CHECKED <> 0) then
-      Result := Result or QStyleState_On
-    else
-      Result := Result or QStyleState_Off;
-
-    if ((uState and DFCS_HOT <> 0) or (uState and DFCS_PUSHED <> 0)) then
-      Result := Result or QStyleState_MouseOver or QStyleState_Active;
-
-    if (uType <> DFC_BUTTON) and
-      ((uState and DFCS_FLAT <> 0) and not (uState and DFCS_PUSHED <> 0)) then
-      Result := Result and not QStyleState_Raised;
-
-    // DFCS_TRANSPARENT = 2048;
-    //DFCS_ADJUSTRECT = 8192;
-    //DFCS_FLAT = 16384;
-    //DFCS_MONO = 32768;
-  end;
-
-  procedure DrawButton;
-  var
-    Opt: QStyleOptionButtonH;
-    Element: QStyleControlElement;
-    State: QStyleState;
-    Features: QStyleOptionButtonButtonFeatures;
-  begin
-    State := uStatetoQStyleState;
-    if uState and DFCS_FLAT <> 0 then
-      Features := QStyleOptionButtonFlat
-    else
-      Features := QStyleOptionButtonNone;
-    if (uState and $1F) in [DFCS_BUTTONCHECK, DFCS_BUTTON3STATE] then
-      Element := QStyleCE_CheckBox
-    else
-    if (DFCS_BUTTONRADIO and uState) <> 0 then
-      Element := QStyleCE_RadioButton
-    else
-    if (DFCS_BUTTONPUSH and uState) <> 0 then
-      Element := QStyleCE_PushButton
-    else
-    if (DFCS_BUTTONRADIOIMAGE and uState) <> 0 then
-      Element := QStyleCE_RadioButton
-      //TODO: what to implement here ?
-    else
-    if (DFCS_BUTTONRADIOMASK and uState) <> 0 then
-      Element := QStyleCE_RadioButton
-      //TODO: what to implement here ?
-    ;
-
-    Opt := QStyleOptionButton_create();
-    QStyleOptionButton_setFeatures(Opt, Features);
-    QStyleOption_setRect(Opt, @Rect);
-    QStyleOption_setState(Opt, State);
-    QStyle_drawControl(QApplication_style(), Element, Opt, Painter, Widget);
-    QStyleOptionButton_destroy(Opt);
-  end;
-
-  procedure DrawScrollBarArrows;
-  var
-    Opt: QStyleOptionH;
-    Element: QStylePrimitiveElement;
-    State: QStyleState;
-  begin
-    //TODO: DFCS_SCROLLCOMBOBOX and DFCS_SCROLLSIZEGRIP
-    State := uStatetoQStyleState;
-    Element := QStylePE_CustomBase;
-    if (uState and $1F) in [DFCS_SCROLLUP] then
-      Element := QStylePE_IndicatorArrowUp
-    else
-    if (uState and $1F) in [DFCS_SCROLLDOWN] then
-      Element := QStylePE_IndicatorArrowDown
-    else
-    if (uState and $1F) in [DFCS_SCROLLLEFT] then
-      Element := QStylePE_IndicatorArrowLeft
-    else
-    if (uState and $1F) in [DFCS_SCROLLRIGHT] then
-      Element := QStylePE_IndicatorArrowRight;
-
-    if Element = QStylePE_CustomBase then
-      exit;
-    Opt := QStyleOption_create(1, 0);
-    QStyleOption_setRect(Opt, @Rect);
-    QStyleOption_setState(Opt, State);
-    QStyle_drawPrimitive(QApplication_style(), Element, Opt, Painter, Widget);
-    QStyleOption_destroy(Opt);
-  end;
-
-begin
-  Result := False;
-  if not IsValidDC(DC) then
-    exit;
-  QtDC := TQtDeviceContext(DC);
-  Painter := QtDC.Widget;
-  Widget := QtDC.Parent;
-  case uType of
-    DFC_BUTTON: DrawButton;
-    DFC_CAPTION: ; // title bar captions
-    DFC_MENU: ; // menu
-    DFC_SCROLL: DrawScrollBarArrows;
-  end;
+  Result := Boolean(Windows.DrawEdge(DC, @Rect, edge, grfFlags));
 end;
 
 {------------------------------------------------------------------------------
@@ -1293,1244 +1123,485 @@ end;
   Params:  DC, Str, Count, Rect, Flags
   Returns: If the string was drawn, or CalcRect run
 
-  if DT_CALCRECT is one of the Flags passed to this function, then:
-
-  * DrawText should not draw the text, but determine the size that would be required to write it.
-  * If there are multiple lines of text, this function will keep Rect.Width fixed and
-    expand Rect.Height to fit the text.
-  * If there is one line of text, Rect is reduced or expanded to fit it.
-  * The result will the height of the text.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
-  var ARect: TRect; Flags: Cardinal): Integer;
+function TWin32WidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+{$ifdef WindowsUnicodeSupport}
 var
-  WideStr: WideString;
-  R: TRect;
-  QtDC: TQtDeviceContext;
-  F: Integer;
-  Pt: TPoint;
-  ClipRect: TRect;
-  B: Boolean;
-  S: String;
-  i: Integer;
-
-  procedure CalculateOffsetWithAngle(const AFontAngle: Integer;
-    var TextLeft,TextTop: Integer);
-  var
-    OffsX, OffsY: integer;
-    Angle: Integer;
-    Size: TSize;
-  begin
-    OffsX := R.Right - R.Left;
-    OffsY := R.Bottom - R.Top;
-    Size.cX := OffsX;
-    Size.cy := OffsY;
-    Angle := AFontAngle div 10;
-    if Angle < 0 then
-      Angle := 360 + Angle;
-
-    if Angle <= 90 then
-    begin
-      OffsX := 0;
-      OffsY := Trunc(Size.cx * sin(Angle * Pi / 180));
-    end else
-    if Angle <= 180 then
-    begin
-      OffsX := Trunc(Size.cx * -cos(Angle * Pi / 180));
-      OffsY := Trunc(Size.cx * sin(Angle * Pi / 180) +
-         Size.cy * cos((180 - Angle) * Pi / 180));
-    end else
-    if Angle <= 270 then
-    begin
-      OffsX := Trunc(Size.cx * -cos(Angle * Pi / 180) +
-        Size.cy * sin((Angle - 180) * Pi / 180));
-      OffsY := Trunc(Size.cy * sin((270 - Angle) * Pi / 180));
-    end else
-    if Angle <= 360 then
-    begin
-      OffsX := Trunc(Size.cy * sin((360 - Angle) * Pi / 180));
-      OffsY := 0;
-    end;
-    TextTop := OffsY;
-    TextLeft := OffsX;
-  end;
-
+  s: AnsiString;
+  w: WideString;
+{$endif}
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI DrawText] DC: ', dbghex(DC), ' Str: ', string(Str),
-     ' CalcRect: ', dbgs((Flags and DT_CALCRECT) = DT_CALCRECT),' ARect ',dbgs(ARect));
-  {$endif}
-
-  Result := 0;
-
-  if not IsValidDC(DC) then
-    Exit;
-
-  QtDC :=TQtDeviceContext(DC);
-
-  if Count >= 0 then
-    WideStr := GetUtf8String(Copy(Str, 1, Count))
+ {$ifdef WindowsUnicodeSupport}
+  // use temp buffer, if count is set, there might be no null terminator
+  if count = -1 then
+    s := str
   else
-    WideStr := GetUtf8String(Str);
-
-
-  B := QtDC.getClipping;
-  if B and
-    (Flags and DT_NOCLIP = DT_NOCLIP) and
-    (Flags and DT_WORDBREAK = DT_WORDBREAK) then
   begin
-    ClipRect := QtDC.getClipRegion.getBoundingRect;
-    //this is just to get same behaviour as gtk2 and win32
-    //IMO, we should change ARect.Left and/or ARect.Top if smaller than
-    //clip rect (map to clipRect). Then multiline text is drawn ok.
-    //look at issue http://bugs.freepascal.org/view.php?id=17678 . zeljko.
-    if (ARect.Left < ClipRect.Left) or (ARect.Top < ClipRect.Top) then
-    begin
-      {$note remove ifdef if I'm wrong about DT_WORDBREAK OBSERVATION}
-      {$IFDEF QT_DRAWTEXT_MAP_TO_CLIPRECT}
-      if ARect.Left < ClipRect.Left then
-        ARect.Left := ClipRect.Left;
-      if ARect.Top < ClipRect.Top then
-        ARect.Top := ClipRect.Top;
-      {$ELSE}
-      Flags := Flags and not DT_WORDBREAK;
-      {$ENDIF}
-    end;
+    SetLength(s, count);
+    move(str^, PChar(s)^, count);
   end;
-
-  F := DTFlagsToQtFlags(Flags);
-
-  QtDC.Metrics.BoundingRect(@R, @ARect, F, @WideStr);
-
-  //TODO: result should be different when DT_VCENTER or DT_BOTTOM is set
-  Result := R.Bottom - R.Top;
-
-  if (Flags and DT_CALCRECT) = DT_CALCRECT then
+  // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
+  if UnicodeEnabledOS then
   begin
-    if (Flags and DT_WORDBREAK = DT_WORDBREAK) and
-    ((R.Bottom - R.Top) > (ARect.Bottom - ARect.Top)) then
-      // MSDN says do not touch rect width when we have DT_WORDBREAK flag
-      // and new text is multiline (if R height > ARect height).See #17329.
-    else
-      ARect.Right := ARect.Left + R.Right - R.Left;
-    ARect.Bottom := ARect.Top + R.Bottom - R.Top;
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('[WinAPI DrawText] Rect=', dbgs(ARect));
-    {$endif}
-    Exit;
-  end;
-
-  // if our Font.Orientation <> 0 we must recalculate X,Y offset
-  // also it works only with DT_TOP DT_LEFT. Qt can handle multiline
-  // text in this case too.
-  Pt := Point(0, 0);
-  if (QtDC.Font.Angle <> 0) and
-    (Flags and DT_VCENTER = 0) and (Flags and DT_CENTER = 0) and
-    (Flags and DT_RIGHT = 0) and (Flags and  DT_BOTTOM = 0) then
+    W := UTF8ToUTF16(s);
+    Result := Windows.DrawTextW(DC, PWideChar(W), Length(W), @Rect, Flags);
+  end
+  else
   begin
-    Pt := Point(ARect.Left, ARect.Top);
-    CalculateOffsetWithAngle(QtDC.font.Angle, Pt.X, Pt.Y);
+    S := Utf8ToAnsi(S);
+    Result := Windows.DrawText(DC, PChar(S), Length(S), @Rect, Flags);
   end;
-
-  // we cannot fit into rectangle, so use DT_SINGLELINE.See #17329.
-  // http://msdn.microsoft.com/en-us/library/dd162498%28v=VS.85%29.aspx
-  if B and
-    (Flags and DT_NOCLIP = DT_NOCLIP) and
-    (Flags and DT_WORDBREAK = DT_WORDBREAK) and
-    (Flags and DT_SINGLELINE = DT_SINGLELINE) and
-    ((R.Bottom - R.Top) >= (ARect.Bottom - ARect.Top)) then
-  begin
-    Flags := Flags and not DT_WORDBREAK;
-    F := DTFlagsToQtFlags(Flags);
-  end;
-
-  {$warning HARDCODED WORKAROUND for qt-4.7.1 QPainter bug.}
-  { Bug triggers when we try to paint multiline text which contains 1
-   space. eg "Save project\nCtrl+S". In this case QPainter draws
-   Save
-   project (in two lines, so Ctrl+S is invisible. See issue #18631.
-   But does not trigger with qt-4.6.XX and maybe with 4.7.0.
-   Opened nokia issue: http://bugreports.qt.nokia.com/browse/QTBUG-17020
-   UPDATE: it's fixed in qt-4.7.4 git and qt-4.8}
-  if (QtVersionMajor = 4) and (QtVersionMinor = 7) and (QtVersionMicro < 4) and
-   (Flags and DT_WORDBREAK = DT_WORDBREAK) and
-   ((Flags and DT_VCENTER = DT_VCENTER) or (Flags and DT_CENTER = DT_CENTER))
-    and not (Flags and DT_NOCLIP = DT_NOCLIP) and
-    not (Flags and DT_MODIFYSTRING = DT_MODIFYSTRING) and
-    not (Flags and DT_END_ELLIPSIS = DT_END_ELLIPSIS) then
-  begin
-    S := StrPas(Str);
-    if length(S) > 0 then
-    begin
-      i := Pos(' ', S);
-      if (AnsiPos(LineEnding, S) > i) and
-        (S[length(S)] <> LineEnding) then
-      begin
-        Flags := Flags and not DT_WORDBREAK;
-        F := DTFlagsToQtFlags(Flags);
-      end;
-    end;
-  end;
-
-  if (Flags and DT_MODIFYSTRING = DT_MODIFYSTRING) and
-  (Flags and DT_END_ELLIPSIS = DT_END_ELLIPSIS) and
-  (Flags and DT_WORDBREAK = 0) then
-  begin
-    // windows are removing trailing spaces in this case
-    // and we are doing same thing too.
-    WideStr := TrimLeft(WideStr);
-    with ARect do
-      WideStr := QtDC.Metrics.elidedText(WideStr, QtElideRight, Right - Left, 0);
-  end;
-
-  with ARect do
-    QtDC.DrawText(Left + Pt.X, Top + Pt.Y, Right-Left, Bottom-Top, F, @WideStr);
+ {$else}
+  Result := Windows.DrawText(DC, Str, Count, @Rect, Flags);
+ {$endif} 
 end;
 
 {------------------------------------------------------------------------------
   Method:   Ellipse
-  Params:   X1, Y1, X2, Y2
-  Returns:  Nothing
+  Params:
+            DC - handle to device context
+            X1 - x-coord. of bounding rectangle's upper-left corner
+            Y1 - y-coord. of bounding rectangle's upper-left corner
+            X2 - x-coord. of bounding rectangle's lower-right corner
+            Y2 - y-coord. of bounding rectangle's lower-right corner
+  Returns:  If the function succeeds
 
   Use Ellipse to draw a filled circle or ellipse.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
-var
-  R: TRect;
+function TWin32WidgetSet.Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 begin
-  if not IsValidDC(DC) then Exit(False);
-  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
-  if IsRectEmpty(R) then Exit(True);
-
-  TQtDeviceContext(DC).drawEllipse(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1);
-  Result := True;
-end;
-
-function TQtWidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
-begin
-  {maybe we can put creating of scrollbar here instead of SetScrollInfo() }
-  Result := False;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.EnableScrollbar] missing implementation ');
-  {$endif}
-end;
-
-function TQtWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI EnableWindow] ');
-  {$endif}
-  Result := False;
-  if HWND <> 0 then
-  begin
-    Result := not TQtWidget(hwnd).getEnabled;
-    TQtWidget(hWnd).setEnabled(bEnable);
-  end;
+  Result := Boolean(Windows.Ellipse(DC, X1, Y1, X2, Y2));
 end;
 
 {------------------------------------------------------------------------------
-  Function: EndPaint
-  Params:
-  Returns:
+  Method:  EmptyClipBoard
+  Params: none
+  Returns: If the function succeeds
 
+  Empties the clipboard, frees handles to data in the clipboard, and ssigns
+  ownership of the clipboard to the window that currently has the clipboard
+  open.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer;
+function TWin32WidgetSet.EmptyClipBoard: Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI EndPaint] Handle: ', dbghex(Handle),
-     ' PS.HDC: ', dbghex(PS.HDC));
-  {$endif}
-
-  Result := 1;
-
-  if IsValidDC(PS.HDC) and (TObject(PS.HDC) is TQtDeviceContext) then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('Freeing resources');
-    {$endif}
-    TQtDeviceContext(PS.HDC).Free;
-  end;
+  Result := Boolean(Windows.EmptyClipboard);
 end;
 
 {------------------------------------------------------------------------------
-  Procedure: EnterCriticalSection
-  Params:  var CritSection: TCriticalSection
+  Method:  EnableScrollBar
+  Params:  Wnd      - handle to window or scroll bar
+           WSBFlags - scroll bar type flag
+           WArrows  - scroll bar arrow flag
   Returns: Nothing
+
+
  ------------------------------------------------------------------------------}
-procedure TQtWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
-var
-  ACritSec: System.PRTLCriticalSection;
+function TWin32WidgetSet.EnableScrollBar(Wnd: HWND; WSBFlags, WArrows: Cardinal): Boolean;
 begin
-  ACritSec:=System.PRTLCriticalSection(CritSection);
-  System.EnterCriticalsection(ACritSec^);
-end;
-
-function TQtWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
-  lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
-var
-  i: integer;
-  Desktop: QDesktopWidgetH;
-begin
-  Desktop := QApplication_desktop();
-  Result := True;
-  for i := 0 to QDesktopWidget_numScreens(Desktop) - 1 do
-  begin
-    Result := Result and lpfnEnum(i + 1, 0, nil, dwData);
-    if not Result then break;
-  end;
-end;
-
-
-function CharsetToQtCharSet(const ALCLCharset: Byte): QFontDatabaseWritingSystem;
-begin
-  Result := QFontDatabaseAny;
-  case ALCLCharset of
-    SYMBOL_CHARSET: Result := QFontDatabaseSymbol;
-    FCS_ISO_8859_1 .. FCS_ISO_8859_4,
-    FCS_ISO_8859_9,FCS_ISO_8859_10,
-    FCS_ISO_8859_15,
-    EASTEUROPE_CHARSET: Result := QFontDatabaseLatin;
-    FCS_ISO_8859_5,
-    RUSSIAN_CHARSET: Result := QFontDatabaseCyrillic;
-    FCS_ISO_8859_6,
-    ARABIC_CHARSET: Result := QFontDatabaseArabic;
-    FCS_ISO_8859_7,
-    GREEK_CHARSET: Result := QFontDatabaseGreek;
-    FCS_ISO_8859_8,
-    HEBREW_CHARSET: Result := QFontDatabaseHebrew;
-    SHIFTJIS_CHARSET: Result := QFontDatabaseJapanese;
-    HANGEUL_CHARSET: Result := QFontDatabaseKorean;
-    GB2312_CHARSET: Result := QFontDatabaseSimplifiedChinese;
-    CHINESEBIG5_CHARSET: Result := QFontDatabaseTraditionalChinese;
-    THAI_CHARSET: Result := QFontDatabaseThai;
-  end;
-end;
-
-function QtCharsetToCharset(AWritingSystem: QFontDatabaseWritingSystem;
-  AList: TFPList): Byte;
-begin
-  Result := DEFAULT_CHARSET;
-  case AWritingSystem of
-    QFontDatabaseAny:
-    begin
-      Result := FCS_ISO_10646_1;
-      AList.Add(TObject(PtrUInt(Result)));
-    end;
-    QFontDatabaseSymbol:
-    begin
-      Result := SYMBOL_CHARSET;
-      AList.Add(TObject(PtrUInt(Result)));
-    end;
-    QFontDatabaseThai:
-    begin
-      Result := THAI_CHARSET;
-      AList.Add(TObject(PtrUInt(Result)));
-    end;
-    QFontDatabaseTraditionalChinese:
-    begin
-      Result := CHINESEBIG5_CHARSET;
-      AList.Add(TObject(PtrUInt(Result)));
-    end;
-    QFontDatabaseSimplifiedChinese:
-    begin
-      Result := GB2312_CHARSET;
-      AList.Add(TObject(PtrUInt(Result)));
-    end;
-    QFontDatabaseKorean:
-    begin
-      Result := HANGEUL_CHARSET;
-      AList.Add(TObject(PtrUInt(Result)));
-    end;
-    QFontDatabaseJapanese:
-    begin
-      Result := SHIFTJIS_CHARSET;
-      AList.Add(TObject(PtrUInt(Result)));
-    end;
-    QFontDatabaseHebrew:
-    begin
-      Result := HEBREW_CHARSET;
-      AList.Add(TObject(PtrUInt(Result)));
-      AList.Add(TObject(PtrUInt(FCS_ISO_8859_8)));
-    end;
-    QFontDatabaseGreek:
-    begin
-      Result := GREEK_CHARSET;
-      AList.Add(TObject(PtrUInt(Result)));
-      AList.Add(TObject(PtrUInt(FCS_ISO_8859_7)));
-    end;
-    QFontDatabaseArabic:
-    begin
-      Result := ARABIC_CHARSET;
-      AList.Add(TObject(PtrUInt(Result)));
-    end;
-    QFontDatabaseCyrillic:
-    begin
-      Result := RUSSIAN_CHARSET;
-      AList.Add(TObject(PtrUInt(Result)));
-      AList.Add(TObject(PtrUInt(FCS_ISO_8859_5)));
-    end;
-    QFontDatabaseLatin:
-    begin
-      Result := FCS_ISO_10646_1;
-      AList.Add(TObject(PtrUInt(Result)));
-      AList.Add(TObject(PtrUInt(ANSI_CHARSET)));
-      AList.Add(TObject(PtrUInt(FCS_ISO_8859_1)));
-      AList.Add(TObject(PtrUInt(FCS_ISO_8859_2)));
-      AList.Add(TObject(PtrUInt(FCS_ISO_8859_3)));
-      AList.Add(TObject(PtrUInt(FCS_ISO_8859_4)));
-      AList.Add(TObject(PtrUInt(FCS_ISO_8859_9)));
-      AList.Add(TObject(PtrUInt(FCS_ISO_8859_10)));
-      AList.Add(TObject(PtrUInt(FCS_ISO_8859_15)));
-      AList.Add(TObject(PtrUInt(EASTEUROPE_CHARSET)));
-    end;
-  end;
+  Result := Boolean(Windows.EnableScrollBar(Wnd, WSBFlags, WArrows));
 end;
 
 {------------------------------------------------------------------------------
-  Function: EnumFontFamiliesEx
-  Params:
-    hdc
-        [in] Handle to the device context.
-    lpLogfont
-        [in] Pointer to a LOGFONT structure that contains information about the
-        fonts to enumerate. The function examines the following members.
+  Method:  EnableWindow
+  Params: HWnd    - handle to window
+          BEnable -  whether to enable the window
+  Returns: If the window was previously disabled
 
-        Member 	Description
-        lfCharset 	If set to DEFAULT_CHARSET, the function enumerates all fonts
-                    in all character sets. If set to a valid character set value,
-                    the function enumerates only fonts in the specified character
-                    set.
-        lfFaceName 	If set to an empty string, the function enumerates one font
-                    in each available typeface name. If set to a valid typeface
-                    name, the function enumerates all fonts with the
-                    specified name.
-
-        lfPitchAndFamily 	Must be set to zero for all language versions of
-                          the operating system.
-
-    lpEnumFontFamExProc
-        [in] Pointer to the application definedcallback function. For more
-             information, see the EnumFontFamExProc function.
-    lParam
-        [in] Specifies an applicationdefined value. The function passes this value
-             to the callback function along with font information.
-    dwFlags
-        This parameter is not used and must be zero.
-
-  Returns:
-
-  The return value is the last value returned by the callback function.
-  This value depends on which font families are available for the
-  specified device.
-
+  Enables or disables mouse and keyboard input to the specified window or
+  control.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
-var
-  EnumLogFont: TEnumLogFontEx;
-  Metric: TNewTextMetricEx;
-  FontList: TStringList;
-  FontType: Integer;
-  FontDB: QFontDatabaseH;
-  i: Integer;
-  y: Integer;
-  AStyle: String;
-  StylesCount: Integer;
-  StylesList: QStringListH;
-  ScriptList: QStringListH;
-  CharsetList: TFPList;
-
-  function QtGetFontFamiliesDefault(var List:TStringList;
-    const AWritingSystem: QFontDatabaseWritingSystem = QFontDatabaseAny):integer;
-  var
-    StrLst: QStringlistH;
-    WStr: WideString;
-    j: integer;
-  begin
-    Result := -1;
-    StrLst := QStringList_create;
-    try
-      QFontDatabase_families(FontDB, StrLst, AWritingSystem);
-      Result := QStringList_size(StrLst);
-      for j := 0 to Result - 1 do
-      begin
-        QStringList_at(StrLst, @WStr, j);
-        List.Add(UTF16ToUTF8(WStr));
-      end;
-    finally
-      QStringList_destroy(StrLst);
-    end;
-  end;
-
-  function QtGetFontFamilies(var List: TStringList;
-    const APitch: Byte;
-    const AFamilyName: String;
-    const AWritingSystem: QFontDatabaseWritingSystem = QFontDatabaseAny): Integer;
-  var
-    StrLst: QStringlistH;
-    NewList: QStringListH;
-    WStr: WideString;
-    j: integer;
-  begin
-    Result := -1;
-    StrLst := QStringList_create();
-    NewList := QStringList_create();
-
-    try
-      QFontDatabase_families(FontDB, StrLst, AWritingSystem);
-      for j := 0 to QStringList_size(StrLst) - 1 do
-      begin
-        QStringList_at(StrLst, @WStr, j);
-        if APitch <> DEFAULT_PITCH then
-        begin
-          case APitch of
-            FIXED_PITCH, MONO_FONT:
-            begin
-              if QFontDatabase_isFixedPitch(FontDB, @WStr) then
-                QStringList_append(NewList, @WStr);
-            end;
-            VARIABLE_PITCH:
-            begin
-              if QFontDatabase_isScalable(FontDB, @WStr) then
-                QStringList_append(NewList, @WStr);
-            end;
-          end;
-        end else
-          QStringList_append(NewList, @WStr);
-      end;
-
-      if AFamilyName <> '' then
-      begin
-        for j := QStringList_size(NewList) - 1 downto 0 do
-        begin
-          QStringList_at(NewList, @WStr, j);
-          if UTF16ToUTF8(WStr) <> AFamilyName then
-            QStringList_removeAt(NewList, j);
-        end;
-      end;
-      for j := 0 to QStringList_size(NewList) - 1 do
-      begin
-        QStringList_at(NewList, @WStr, j);
-        List.Add(UTF16ToUTF8(WStr));
-      end;
-      Result := List.Count;
-    finally
-      QStringList_destroy(StrLst);
-      QStringList_destroy(NewList);
-    end;
-  end;
-
-  function GetStyleAt(AIndex: Integer): String;
-  var
-    WStr: WideString;
-  begin
-    Result := '';
-    if (AIndex >= 0) and (AIndex < QStringList_size(StylesList)) then
-    begin
-      QStringList_at(StylesList, @WStr, AIndex);
-      Result := UTF16ToUTF8(WStr);
-    end;
-  end;
-
-  function GetWritingSystems(AFontName: String; AList: QStringListH;
-    ACharsetList: TFPList): Boolean;
-  var
-    WStr: WideString;
-    Arr: TPtrIntArray;
-    j: Integer;
-  begin
-    Result := False;
-    QStringList_clear(AList);
-    if Assigned(CharSetList) then
-      CharSetList.Clear;
-    WStr := UTF8ToUTF16(AFontName);
-    QFontDatabase_writingSystems(FontDB, @Arr, @WStr);
-    Result := length(Arr) > 0;
-    for j := 0 to High(Arr) do
-    begin
-      if Assigned(ACharsetList) then
-        QtCharsetToCharset(QFontDatabaseWritingSystem(Arr[j]), ACharsetList);
-      QFontDatabase_writingSystemName(@WStr, QFontDatabaseWritingSystem(Arr[j]));
-      QStringList_append(AList, @WStr);
-    end;
-  end;
-
-  function FillLogFontA(AFontName: String; var ALogFontA: TLogFontA;
-    var AMetric: TNewTextMetricEx; var AFontType: Integer;
-    out AStyle: String): Integer;
-  var
-    Font: QFontH;
-    WStr: WideString;
-  begin
-    WStr := UTF8ToUTF16(AFontName);
-    Font := QFont_create(@WStr);
-    ALogFontA.lfItalic := Byte(QFont_italic(Font));
-    ALogFontA.lfWeight := QFont_weight(Font);
-    ALogFontA.lfHeight := QFont_pointSize(Font);
-    ALogFontA.lfUnderline := Byte(QFont_underline(Font));
-    ALogFontA.lfStrikeOut := Byte(QFont_strikeOut(Font));
-
-    if QFont_styleStrategy(Font) = QFontPreferBitmap then
-      AFontType := AFontType  or RASTER_FONTTYPE;
-    if QFont_styleStrategy(Font) = QFontPreferDevice then
-      AFontType := AFontType  or DEVICE_FONTTYPE;
-
-    if not (QFont_styleStrategy(Font) = QFontPreferDefault) then
-      AFontType := AFontType and not TRUETYPE_FONTTYPE;
-
-    QStringList_clear(StylesList);
-    QFontDatabase_styles(FontDB, StylesList, @WStr);
-    AStyle := '';
-    Result := QStringList_size(StylesList);
-
-    if Result > 0 then
-      AStyle := GetStyleAt(0);
-    // fill script and charset list
-    GetWritingSystems(AFontName, ScriptList, CharsetList);
-
-    QFont_destroy(Font);
-  end;
-
+function TWin32WidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-  WriteLn('[WinAPI EnumFontFamiliesEx] Charset=',lpLogFont^.lfCharSet,
-  ' face ',lpLogFont^.lfFaceName,' pitchAndFamily=',lpLogFont^.lfPitchAndFamily);
-  {$endif}
-  Result := 0;
-  Metric.ntmentm.ntmAvgWidth := 0; // just to shutup compiler
-  FontDB := QFontDatabase_create();
-  try
-    if (lpLogFont^.lfCharSet = DEFAULT_CHARSET) and
-       (lpLogFont^.lfFaceName= '') and
-       (lpLogFont^.lfPitchAndFamily = 0) then
-    begin
-      FontType := 0;
-      FontList := TStringList.create;
-      try
-        if QtGetFontFamiliesDefault(FontList) > 0 then
-        begin
-          for i := 0 to FontList.Count - 1 do
-          begin
-            EnumLogFont.elfLogFont.lfFaceName := FontList[i];
-            Result := Callback(EnumLogFont, Metric, FontType, LParam);
-          end;
-        end;
-      finally
-        FontList.free;
-      end;
-    end else
-    begin
-      Result := 0;
-      FontType := TRUETYPE_FONTTYPE;
-      FontList := TStringList.create;
-      StylesList := QStringList_create();
-      ScriptList := QStringList_create();
-      CharsetList := TFPList.Create;
-      try
-        if QtGetFontFamilies(FontList, lpLogFont^.lfPitchAndFamily,
-          lpLogFont^.lfFaceName, CharsetToQtCharSet(lpLogFont^.lfCharSet)) > 0 then
-        begin
-          StylesList := QStringList_create();
-          for i := 0 to FontList.Count - 1 do
-          begin
-            EnumLogFont.elfLogFont.lfFaceName := FontList[i];
-            EnumLogFont.elfLogFont.lfPitchAndFamily := lpLogFont^.lfPitchAndFamily;
-            EnumLogFont.elfFullName := FontList[i];
-
-            StylesCount := FillLogFontA(FontList[i], EnumLogFont.elfLogFont, Metric, FontType,
-              AStyle);
-            EnumLogFont.elfStyle := AStyle;
-            if CharSetList.Count > 0 then
-              EnumLogFont.elfLogFont.lfCharSet := PtrUInt(CharsetList.Items[0]);
-            Result := Callback(EnumLogFont, Metric, FontType, LParam);
-            for y := 1 to StylesCount - 1 do
-            begin
-              AStyle := GetStyleAt(y);
-              EnumLogFont.elfStyle := AStyle;
-              Result := Callback(EnumLogFont, Metric, FontType, LParam);
-            end;
-            for y := 1 to CharsetList.Count - 1 do
-            begin
-              EnumLogFont.elfLogFont.lfCharSet := PtrUInt(CharsetList.Items[y]);
-              Result := Callback(EnumLogFont, Metric, FontType, LParam);
-            end;
-          end;
-        end;
-      finally
-        FontList.free;
-        QStringList_destroy(StylesList);
-        CharSetList.Free;
-      end;
-    end;
-  finally
-    QFontDatabase_destroy(FontDB);
-  end;
+  Result := Boolean(Windows.EnableWindow(HWnd, BEnable));
 end;
 
+{------------------------------------------------------------------------------
+  Method:  EndPaint
+  Params:  Handle        - Handle to window
+           PS            - PAINTSTRUCT variable with painting information
+  Returns: always nonzero.
+
+  The EndPaint function marks the end of painting in the specified window.
+  This function is required for each call to the BeginPaint function, but only
+  after painting is complete.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+begin
+  Result := Integer(Windows.EndPaint(Handle, @PS));
+end;
+
+function TWin32WidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
+begin
+  Result := MultiMon.EnumDisplayMonitors(hdc, lprcClip, lpfnEnum, dwData);
+end;
+
+function TWin32WidgetSet.EnumFontFamilies(DC: HDC; Family: Pchar;
+  EnumFontFamProc: FontEnumProc; LParam: Lparam): longint;
+begin
+  // TODO: do as EnumFontFamiliesEx
+  Result := Windows.EnumFontFamilies(DC, Family,
+    Windows.FontEnumProc(EnumFontFamProc), LParam);
+end;
+
+{$ifdef WindowsUnicodeSupport}
+type
+  TProcRedirRec = record
+    LParam: LParam;
+    CallBack: FontEnumExProc;
+  end;
+  PProcRedirRec = ^TProcRedirRec;
+
+function EnumExProcRedirW(var ELogFont: TEnumLogFontExW; var Metric: TNewTextMetricEx;
+    FontType: Longint; Data: LParam): Longint; stdcall;
+var
+  Rec: PProcRedirRec absolute Data;
+  ALogFont: TEnumLogFontExA;
+begin
+  Move(ELogFont.elfLogFont, ALogFont.elfLogFont, SizeOf(ALogFont.elfLogFont) - SizeOf(ALogFont.elfLogFont.lfFaceName));
+  ALogFont.elfLogFont.lfFaceName := UTF16ToUTF8(ELogFont.elfLogFont.lfFaceName);
+  ALogFont.elfFullName := UTF16ToUTF8(ELogFont.elfFullName);
+  ALogFont.elfStyle := UTF16ToUTF8(ELogFont.elfStyle);
+  ALogFont.elfScript := UTF16ToUTF8(ELogFont.elfScript);
+
+  Result := Rec^.CallBack(ALogFont, Metric, FontType, Rec^.LParam);
+end;
+
+function EnumExProcRedirA(var ELogFont: TEnumLogFontExA; var Metric: TNewTextMetricEx;
+    FontType: Longint; Data: LParam): Longint; stdcall;
+var
+  Rec: PProcRedirRec absolute Data;
+  ALogFont: TEnumLogFontExA;
+begin
+  ALogFont := ELogFont;
+  ALogFont.elfLogFont.lfFaceName := AnsiToUtf8(ELogFont.elfLogFont.lfFaceName);
+  ALogFont.elfFullName := AnsiToUtf8(ELogFont.elfFullName);
+  ALogFont.elfStyle := AnsiToUtf8(ELogFont.elfStyle);
+  ALogFont.elfScript := AnsiToUtf8(ELogFont.elfScript);
+
+  Result := Rec^.CallBack(ALogFont, Metric, FontType, Rec^.LParam);
+end;
+{$endif}
+
+function TWin32WidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
+  Callback: FontEnumExProc; LParam: Lparam; flags: DWord): longint;
+{$ifdef WindowsUnicodeSupport}
+var
+  FontName: String;
+  LFW: LogFontW;
+  LFA: LogFontA absolute LFW;
+  Rec: TProcRedirRec;
+{$endif}
+begin
+{$ifdef WindowsUnicodeSupport}
+  FontName := lpLogFont^.lfFaceName;
+  ZeroMemory(@LFW, SizeOf(LFW));
+  LFW.lfCharSet := lpLogFont^.lfCharSet;
+  LFW.lfPitchAndFamily := lpLogFont^.lfPitchAndFamily;
+  Rec.LParam := LParam;
+  Rec.CallBack := CallBack;
+  if UnicodeEnabledOS then
+  begin
+    LFW.lfFaceName := UTF8ToUTF16(FontName);
+    Result := LongInt(Windows.EnumFontFamiliesExW(DC,
+      LFW, windows.FontEnumExProc(@EnumExProcRedirW), Windows.LParam(@Rec), Flags));
+  end
+  else
+  begin
+    LFA.lfFaceName := Utf8ToAnsi(FontName);
+    Result := LongInt(Windows.EnumFontFamiliesExA(DC,
+      LFA, windows.FontEnumExProc(@EnumExProcRedirA), Windows.LParam(@Rec), Flags));
+  end;
+{$else}
+  Result := Windows.EnumFontFamiliesEx(DC,
+    windows.LPLOGFONT(lpLogFont),
+    windows.FontEnumExProc(Callback), LParam, Flags);
+{$endif}
+end;
 
 {------------------------------------------------------------------------------
   Function: ExcludeClipRect
-  Params:  none
-  Returns: Nothing
+  Params:  dc, Left, Top, Right, Bottom
+  Returns: integer
+
+  Subtracts all intersecting points of the passed bounding rectangle
+  (Left, Top, Right, Bottom) from the Current clipping region in the
+  device context (dc).
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer;
-var
-  Region: QRegionH;
-  ClipRegion: QRegionH;
-  ExRegion: QRegionH;
-  QtDC: TQtDeviceContext;
-  R: TRect;
+function TWin32WidgetSet.ExcludeClipRect(dc: hdc;
+  Left, Top, Right, Bottom : Integer) : Integer;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI ExcludeClipRect]');
-  {$endif}
-
-  Result := ERROR;
-  if not IsValidDC(DC) then Exit;
-
-  QtDC := TQtDeviceContext(DC);
-
-  {ExcludeClipRect on X11 paint engine is pretty slow with complex regions
-   eg. setting clipRegion with hundreds of rects (usually created by
-   calling ExcludeClipRect for many children on widget) dramatically kills
-   performance of our application.
-   To get rid of it we are using trick from webkit. If numRects is over
-   25 then create an new rect region with boundsRect of NewRegion.
-   see issue http://bugs.freepascal.org/view.php?id=19698.
-   If you want accurate ExcludeClipRect use graphicssystem Raster or
-   see comment in TQtWidgetSet.ExtSelectClipRgn}
-  ExRegion := QRegion_create(Left, Top, Right - Left, Bottom - Top, QRegionRectangle);
-  Region := QRegion_create;
-  ClipRegion := QRegion_create;
-  try
-    QPainter_clipRegion(QtDC.Widget, ClipRegion);
-    QRegion_subtracted(ClipRegion, Region, ExRegion);
-
-    // only for X11 paintEngine.
-    if (QPaintEngine_type(QtDC.PaintEngine) = QPaintEngineX11) and
-      not QRegion_isEmpty(Region) and
-      (QRegion_numRects(Region) > 25) then
-    begin
-      QRegion_boundingRect(Region, @R);
-      QRegion_setRects(Region, @R, 1);
-    end;
-
-    QtDC.setClipRegion(Region);
-    QtDC.setClipping(True);
-    if QRegion_isEmpty(Region) then
-      Result := NULLREGION
-    else
-    if QRegion_numRects(Region) = 1 then
-      Result := SIMPLEREGION
-    else
-      Result := COMPLEXREGION;
-
-  finally
-    QRegion_destroy(ClipRegion);
-    QRegion_destroy(Region);
-    QRegion_destroy(ExRegion);
-  end;
+  Result := Windows.ExcludeClipRect(dc, Left, Top, Right, Bottom);
 end;
 
-function TQtWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
+function TWin32WidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
   const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
 var
-  QtPen: TQtPen;
-  color: TQColor;
+  LB: Windows.LogBrush;
 begin
-  Result := 0;
-  QtPen := TQtPen.Create(True);
-  QtPen.IsExtPen := True;
-
-  case dwPenStyle and PS_STYLE_MASK of
-    PS_SOLID: QtPen.setStyle(QtSolidLine);
-    PS_DASH: QtPen.setStyle(QtDashLine);
-    PS_DOT: QtPen.setStyle(QtDotLine);
-    PS_DASHDOT: QtPen.setStyle(QtDashDotLine);
-    PS_DASHDOTDOT: QtPen.setStyle(QtDashDotDotLine);
-    PS_USERSTYLE: QtPen.setStyle(QtCustomDashLine);
-    PS_NULL: QtPen.setStyle(QtNoPen);
-  end;
-
-  QtPen.setCosmetic((dwPenStyle and PS_TYPE_MASK) = PS_COSMETIC);
-  if (dwPenStyle and PS_TYPE_MASK) = PS_GEOMETRIC then
-  begin
-    QtPen.setWidth(dwWidth);
-    case dwPenStyle and PS_JOIN_MASK of
-      PS_JOIN_ROUND: QtPen.setJoinStyle(QtRoundJoin);
-      PS_JOIN_BEVEL: QtPen.setJoinStyle(QtBevelJoin);
-      PS_JOIN_MITER: QtPen.setJoinStyle(QtMiterJoin);
-    end;
-
-    case dwPenStyle and PS_ENDCAP_MASK of
-      PS_ENDCAP_ROUND: QtPen.setCapStyle(QtRoundCap);
-      PS_ENDCAP_SQUARE: QtPen.setCapStyle(QtSquareCap);
-      PS_ENDCAP_FLAT: QtPen.setCapStyle(QtFlatCap);
-    end;
-  end;
-
-  if (dwPenStyle and PS_STYLE_MASK) = PS_USERSTYLE then
-    QtPen.setDashPattern(lpStyle, dwStyleCount);
-
-  QPen_Color(QtPen.FHandle, @Color);
-  ColorRefToTQColor(ColorToRGB(TColor(lplb.lbColor)), Color);
-  QPen_setColor(QtPen.FHandle, @Color);
-
-  Result := HPEN(QtPen);
+  LB.lbStyle := lplb.lbStyle;
+  LB.lbColor := ColorToRGB(TColor(lplb.lbColor));
+  LB.lbHatch := lplb.lbHatch;
+  Result := Windows.ExtCreatePen(dwPenStyle, dwWidth, LB, dwStyleCount, lpStyle);
 end;
 
-function TQtWidgetSet.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
+{------------------------------------------------------------------------------
+  Method:  ExtTextOut
+  Params:  DC      - handle to device context
+           X       - x-coordinate of reference point
+           Y       - x-coordinate of reference point
+           Options - text-output options
+           Rect    - optional clipping and/or opaquing rectangle
+           Str     - character string to be drawn
+           Count   - number of characters in string
+           Dx      - pointer to array of intercharacter spacing values
+  Returns: If the string was drawn.
+
+  Draws a character string by using the currently selected font.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+{$ifdef WindowsUnicodeSupport}
 var
-  Clip: HRGN = 0;
-  Tmp : hRGN;
-  DCOrigin: TPoint;
-  QtWidget: TQtWidget = nil;
-  QtDC: TQtDeviceContext;
-  QtRgn: TQtRegion;
+  s: AnsiString;
+  w: WideString;
+{$ENDIF}
+begin
+{$ifdef WindowsUnicodeSupport}
+  // use temp buffer, if count is set, there might be no null terminator
+  if count = -1 then
+   s := str
+  else
+  begin
+    SetLength(s, count);
+    move(str^, PChar(s)^, count);
+  end;
+  // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
+  if UnicodeEnabledOS 
+  then
+  begin
+    // TODO: use the real number of chars (and not the lenght)
+    W := UTF8ToUTF16(S);
+    Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), Dx);
+  end                                        
+  else
+  begin
+    S := Utf8ToAnsi(S);
+    Result := Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), PChar(S), Length(S), Dx);
+  end;
+ {$else}
+  Result := Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), Str, Count, Dx);
+ {$endif}
+end;
+
+{------------------------------------------------------------------------------
+  Function: ExtSelectClipRGN
+  Params:  dc, RGN, Mode
+  Returns: integer
+
+  Combines the passed Region with the current clipping region in the device
+  context (dc), using the specified mode.
+
+  The Combine Mode can be one of the following:
+      RGN_AND  : all points which are in both regions
+
+      RGN_COPY : an exact copy of the source region, same as SelectClipRGN
+
+      RGN_DIFF : all points which are in the Clipping Region but
+                 but not in the Source.(Clip - RGN)
+
+      RGN_OR   : all points which are in either the Clip Region or
+                 in the Source.(Clip + RGN)
+
+      RGN_XOR  : all points which are in either the Clip Region
+                 or in the Source, but not in both.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
+begin
+  Result := Windows.ExtSelectClipRGN(DC, RGN, Mode);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  FillRect
+  Params:  DC    - handle to device context
+           Rect  - record with rectangle
+           Brush - handle to brush
+  Returns: If the function succeeds
+
+  The FillRect function fills a rectangle by using the specified brush.
+  This function includes the left and top borders, but excludes the right and
+  bottom borders of the rectangle.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.FillRect(DC: HDC; Const Rect: TRect; Brush: HBRUSH): Boolean;
+var
   R: TRect;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI TQtWidgetSet.ExtSelectClipRGN]');
-  {$endif}
-  if not IsValidDC(DC) then
-  begin
-    Result := ERROR;
-    exit;
-  end else
-    Result := SIMPLEREGION;
-
-  QtDC := TQtDeviceContext(DC);
-
-  if Assigned(QtDC.Parent) then
-    QtWidget := QtObjectFromWidgetH(QtDC.Parent);
-
-  if Assigned(QtWidget) or
-    (not Assigned(QtWidget) and Assigned(QtDC.vImage)) then
-  begin
-    // there is no clipping region in the DC
-    case Mode of
-      RGN_COPY: Result := SelectClipRGN(DC, RGN);
-      RGN_OR,
-      RGN_XOR,
-      RGN_AND:
-        begin
-          // as MSDN says only RGN_COPY allows NULL RGN param.
-          if not IsValidGDIObject(RGN) then
-          begin
-            Result := ERROR;
-            exit;
-          end;
-          // get existing clip
-          QtRgn := QtDC.getClipRegion;
-
-          if (QtRgn = nil) or (QtRgn.GetRegionType = NULLREGION) then
-          begin
-            Result := SelectClipRGN(DC, RGN);
-            exit;
-          end;
-
-          // get transformation
-          GetWindowOrgEx(DC, @DCOrigin);
-          R := QtRgn.getBoundingRect;
-          Clip := CreateRectRGN(0, 0, R.Right - R.Left, R.Bottom - R.Top);
-          TQtRegion(Clip).translate(DCOrigin.X, DCOrigin.Y);
-
-          // create target clip
-          Tmp := CreateEmptyRegion;
-          // combine
-          Result := CombineRGN(Tmp, Clip, RGN, Mode);
-          // commit
-          SelectClipRGN(DC, Tmp);
-          // clean up
-          DeleteObject(Clip);
-          DeleteObject(Tmp);
-        end;
-      RGN_DIFF:
-      begin
-        // when substracting we must have active clipregion
-        // with all of its rects.
-        QtRgn := QtDC.getClipRegion;
-        if (QtRgn = nil) or (QtRgn.GetRegionType = NULLREGION) then
-        begin
-          Result := SelectClipRGN(DC, RGN);
-          exit;
-        end;
-
-        Tmp := CreateEmptyRegion;
-        Result := CombineRGN(Tmp, HRGN(QtRgn), RGN, MODE);
-
-        // X11 paintEngine comment only !
-        // we'll NOT reset num of rects here (performance problem) like we do
-        // in ExcludeClipRect, because this function must be correct,
-        // if someone want accurate ExcludeClipRect with X11 then
-        // use code from intfbasewinapi.inc TWidgetSet.ExcludeClipRect()
-        // which calls this function and then combineRgn.
-        SelectClipRGN(DC, Tmp);
-        DeleteObject(Tmp);
-      end;
-    end;
-  end
-  else
-    Result := inherited ExtSelectClipRGN(DC, RGN, Mode);
+  R := Rect;
+  Result := Boolean(Windows.FillRect(DC, Windows.RECT(R), Brush));
 end;
 
 {------------------------------------------------------------------------------
-  Function: ExtTextOut
+  Method:  FillRgn
+  Params:  DC        - handle to device context
+           RegionHnd - handle to region
+           Brush     - handle to brush
+  Returns: If the function succeeds
+
+  The FillRgn function fills a region by using the specified brush.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): BOOL;
+begin
+  Result := Windows.FillRgn(DC, RegionHnd, hbr);
+end;
+
+function TWin32WidgetSet.FloodFill(DC: HDC; X, Y: Integer;
+  Color: TGraphicsColor; FillStyle: TGraphicsFillStyle; Brush: HBRUSH): Boolean;
+const
+  FillType : array[TGraphicsFillStyle] of UINT =
+    (FLOODFILLSURFACE, FLOODFILLBORDER);
+var
+  OldBrush: HGDIOBJ;
+begin
+  OldBrush := Windows.SelectObject(DC, Brush);
+  Result := Boolean(Windows.ExtFloodFill(DC, X, Y, ColorToRGB(Color), FillType[FillStyle]));
+  Windows.SelectObject(DC, OldBrush);
+end;
+
+{------------------------------------------------------------------------------
+  Method: Frame3D
+  Params: DC         - handle to device context
+          Rect       - bounding rectangle
+          FrameWidth - width of the frame (ignored on win32)
+          Style      - frame style
+  Returns: Whether the function was successful
+
+  Draws a 3D border in win32 native style.
+  NOTE: This function is mapped to DrawEdge on Windows.
+------------------------------------------------------------------------------}
+function TWin32WidgetSet.Frame3D(DC: HDC; var ARect: TRect;
+  const FrameWidth: Integer; const Style: TBevelCut): Boolean;
+const
+  Edge: array[TBevelCut] of Integer =
+  (
+{bvNone   } 0,
+{bvLowered} BDR_SUNKENOUTER,
+{bvRaised } BDR_RAISEDINNER,
+{bvSpace  } 0
+  );
+var
+  I: Integer;
+begin
+  for I := 0 to FrameWidth - 1 do
+    Result := Boolean(DrawEdge(DC, ARect, Edge[Style], BF_RECT or BF_ADJUST));
+end;
+
+function TWin32WidgetSet.FrameRect(DC: HDC; const ARect: TRect;
+  hBr: HBRUSH) : integer;
+begin
+  Result := Windows.FrameRect(DC, PRect(@ARect)^, hBr);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetActiveWindow
+  Params: none
+  Returns: The handle to the active window
+
+  Retrieves the window handle to the active window associated with the thread
+  that calls the function.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetActiveWindow: HWND;
+begin
+  Result := Windows.GetActiveWindow;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetCapture
   Params:  none
-  Returns: Nothing
+  Returns: the handle of the capture window
 
-
+  Retrieves the handle of the window (if any) that has captured the mouse.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
-  Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+function TWin32WidgetSet.GetCapture: HWND;
+begin
+  Result := Windows.GetCapture;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetCaretPos
+  Params:  LPPoint - record to receive coordinates
+  Returns: If the function succeeds
+
+  Gets the caret's position, in client coordinates.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetCaretPos(Var LPPoint: TPoint): Boolean;
+begin
+  Result := Boolean(Windows.GetCaretPos(@LPPoint));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetCharABCWidths
+  Params:  DC         - handle of device context
+           P2         - first character in range to query
+           P3         - last character in range to query
+           ABCStructs - character-width record
+  Returns: If the function succeeds
+
+  Retrieves the widths, in logical units, of consecutive characters in a given
+  range from the current TrueType font.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetCharABCWidths(DC: HDC; P2, P3: UINT; Const ABCStructs): Boolean;
+begin
+  Result := Boolean(Windows.GetCharABCWidths(DC, P2, P3, ABCStructs));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetClientBounds
+  Params: Handle - handle of window
+          Rect   - record for client coordinates
+  Returns: If the function succeeds
+
+  Retrieves the coordinates of a window's client area.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetClientBounds(Handle: HWND; var Rect: TRect): Boolean;
 var
-  WideStr: WideString;
-  QtDC: TQtDeviceContext absolute DC;
-  B: Boolean;
+  ARect: TRect;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI ExtTextOut]');
-  {$endif}
-
-  Result := False;
-
-  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
-    exit;
-
-  if not IsValidDC(DC) then Exit;
-
-   if ((Options and ETO_OPAQUE) <> 0) then
-     QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
-
-  if Str <> nil then
-  begin
-    if Count >= 0 then
-      WideStr := GetUtf8String(Copy(Str, 1, Count))
-    else
-      WideStr := GetUtf8String(Str);
-
-    if (Options and ETO_CLIPPED <> 0) then
-    begin
-      B := QtDC.getClipping;
-      if not B then
-      begin
-        QtDC.save;
-        QtDC.setClipRect(Rect^);
-      end;
-      QtDC.drawText(X, Y, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top, 0, @WideStr);
-      if not B then
-        QtDC.restore;
-    end else
-      QtDC.drawText(X, Y, @WideStr);
-  end;
-
-  Result := True;
+  Result := Boolean(Windows.GetClientRect(Handle, @Rect));
+  if not Result then exit;
+  if not GetLCLClientBoundsOffset(Handle, ARect) then exit;
+  Inc(Rect.Left, ARect.Left);
+  Inc(Rect.Top, ARect.Top);
+  Inc(Rect.Right, ARect.Right);
+  Inc(Rect.Bottom, ARect.Bottom);
 end;
 
 {------------------------------------------------------------------------------
-  Function: FillRect
-  Params:  none
-  Returns: Nothing
+  Method:  GetClientRect
+  Params: Handle - handle of window
+          Rect   - record for client coordinates
+  Returns: If the function succeeds
 
-
+  Retrieves the dimension of a window's client area.
+  Left and Top are always 0,0
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
+function TWin32WidgetSet.GetClientRect(Handle: HWND; var Rect: TRect): Boolean;
 begin
-  Result := False;
-
-  {$ifdef VerboseQtWinAPI}
-    DebugLn('[WinAPI FillRect Rect=', dbgs(Rect),' Brush=', dbghex(Brush));
-  {$endif}
-
-  if not IsValidDC(DC) then
-    exit;
-  if not IsValidGdiObject(Brush) then
-    exit;
-
-  TQtDeviceContext(DC).fillRect(@Rect, TQtBrush(Brush).FHandle);
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
-  Function: FillRgn
-  Params:  DC: HDC; RegionHnd: HRGN; hbr: HBRUSH
-  Returns: Boolean
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool;
-var
-  OldRgn: TQtRegion;
-  R: TRect;
-  hasClipping: Boolean;
-  QtDC: TQtDeviceContext;
-begin
-  {$ifdef VerboseQtWinAPI}
-    DebugLn('[WinAPI FillRgn Rgn=', dbgs(RegionHnd),' Brush=', dbghex(hbr));
-  {$endif}
-
-  Result := False;
-
-  if not IsValidDC(DC) then exit;
-
-  QtDC := TQtDeviceContext(DC);
-
-  HasClipping := QtDC.getClipping;
-  QtDC.save;
-  if HasClipping then
-    OldRgn := TQtRegion.Create(True);
-  try
-    if HasClipping then
-      QPainter_clipRegion(QtDC.Widget, OldRgn.FHandle);
-    if SelectClipRgn(DC, RegionHnd) <> ERROR then
-    begin
-      R := TQtRegion(RegionHnd).getBoundingRect;
-      QtDC.fillRect(@R, TQtBrush(hbr).FHandle);
-      if HasClipping then
-        SelectClipRgn(DC, HRGN(OldRgn));
-      Result := True;
-    end;
-  finally
-    if HasClipping then
-      OldRgn.Free;
-    QtDC.restore;
-  end;
-
-end;
-
-{------------------------------------------------------------------------------
-  Function: Frame
-  Params:  none
-  Returns: Nothing
-
-  Draws the border of a rectangle.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.Frame(DC: HDC; const ARect: TRect): Integer;
-begin
-  Result := 0;
-
-  if not IsValidDC(DC) then Exit;
-
-  TQtDeviceContext(DC).drawRect(ARect.Left, ARect.Top,
-   ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
-
-  Result := 1;
-end;
-
-{------------------------------------------------------------------------------
-  Function: Frame3D
-  Params:  none
-  Returns: Nothing
-
-  Draws a 3d border in Qt native style.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
-  const FrameWidth : integer; const Style : TBevelCut) : boolean;
-var
-  QtDC: TQtDeviceContext;
-begin
-  {$ifdef VerboseQtWinAPI}
-    DebugLn('[TQtWidgetSet.Frame3d Rect=', dbgs(ARect));
-  {$endif}
-
-  Result := False;
-
-  if not IsValidDC(DC) then exit;
-
-  QtDC := TQtDeviceContext(DC);
-
-  case Style of
-    bvNone: ;
-    bvLowered: QtDC.qDrawWinPanel(ARect.Left, ARect.Top,
-      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, True, FrameWidth);
-    bvRaised: QtDC.qDrawWinPanel(ARect.Left, ARect.Top,
-      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, False, FrameWidth);
-    bvSpace: QtDC.qDrawPlainRect(ARect.Left, ARect.Top,
-      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, FrameWidth);
-  end;
-
-  InflateRect(ARect, -FrameWidth, -FrameWidth);
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
-  Function: FrameRect
-  Params:  none
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.FrameRect(DC: HDC; const ARect: TRect;
-  hBr: HBRUSH): Integer;
-begin
-  Result := 0;
-
-  if not IsValidDC(DC) then Exit;
-
-  TQtDeviceContext(DC).qDrawPLainRect(ARect.Left, ARect.Top,
-   ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
-
-  Result := 1;
-end;
-
-function TQtWidgetSet.GetActiveWindow: HWND;
-var
-  Widget: QWidgetH;
-  W: TQtWidget;
-  SubW: TQtWidget;
-  Area: QMdiAreaH;
-begin
-  Widget := QApplication_activeWindow;
-  if Widget <> nil then
-  begin
-    W := QtObjectFromWidgetH(Widget);
-    if W <> nil then
-    begin
-      if TQtMainWindow(W).MDIAreaHandle <> nil then
-      begin
-        Area := QMdiAreaH(TQtMainWindow(W).MDIAreaHandle.Widget);
-        SubW := QtObjectFromWidgetH(QMdiArea_activeSubWindow(Area));
-        if SubW <> nil then
-          Result := HWND(SubW)
-        else
-          Result := HWND(W);
-      end else
-        Result := HWND(W);
-    end;
-  end else
-    Result := 0;
-end;
-
-
-{------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.GetBitmapBits
-  Params:  none
-  Returns:
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
-var
-  Image: QImageH;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetBitmapBits]',' Bitmap=', dbghex(Bitmap),' Count=',Count);
-  {$endif}
-
-  Result := 0;
-
-  if (Bitmap = 0) or (Count <= 0) then
-    Exit;
-
-  Image := QImage_create(TQtImage(Bitmap).FHandle);
-  try
-    Result := (QImage_width(Image) * QImage_height(Image) * QImage_depth(Image) + 7) div 8;
-    if Count < Result then
-      Result := Count;
-    if Result > 0 then
-      Move(QImage_bits(Image)^, Bits^, Result);
-  finally
-    QImage_destroy(Image);
-  end;
-end;
-
-function TQtWidgetSet.GetBkColor(DC: HDC): TColorRef;
-var
-  QtDC: TQtDeviceContext;
-begin
-  Result := CLR_INVALID;
-  if not IsValidDC(DC) then Exit;
-  QtDC := TQtDeviceContext(DC);
-  Result := QtDC.GetBkColor;
-end;
-
-function TQtWidgetSet.GetCapture: HWND;
-var
-  w: QWidgetH;
-  Widget: TQtWidget;
-  {$IFDEF MSWINDOWS}
-  AWin: HWND;
-  {$ENDIF}
-begin
-  {$IFDEF MSWINDOWS}
-  AWin := Windows.GetCapture;
-  if AWin <> 0 then
-    w := QWidget_find(AWin)
-  else
-    w := nil;
-
-  if (w = nil) and (QApplication_mouseButtons() > 0) then
-    w := QApplication_focusWidget()
-  else
-    if w <> QWidget_mouseGrabber then
-      w := QWidget_mouseGrabber;
-
-  {$ELSE}
-  w := QWidget_mouseGrabber();
-  {$ENDIF}
-
-  if w <> nil then
-  begin
-    // Capture widget can be child of complex control. In any case we should return TQtWidget as result.
-    // So we will look for parent while not found apropriate LCL handle.
-    Widget := GetFirstQtObjectFromWidgetH(w);
-    Result := HWND(Widget);
-  end
-  else
-    Result := 0;
-  {$ifdef VerboseQtWinAPI}
-  WriteLn('[WinAPI GetCapture] Capture = ', Result);
-  {$endif}
-end;
-
-function TQtWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
-begin
-  Result := QtCaret.GetCaretPos(lpPoint);
-end;
-
-function TQtWidgetSet.GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean;
-begin
-  ShowHideOnFocus := QtCaret.GetQtCaretRespondToFocus;
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
-  Function: GetClientBounds
-  Params: handle:
-          Result:
-  Returns: true on success
-
-  Returns the client bounds of a control. The client bounds is the rectangle of
-  the inner area of a control, where the child controls are visible. The
-  coordinates are relative to the control's left and top.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetClientBounds]');
-  {$endif}
-  if Handle = 0 then
-    Exit(False);
-  ARect := TQtWidget(handle).getClientBounds;
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
-  Function: GetClientRect
-  Params: handle:
-          Result:
-  Returns: true on success
-
-  Returns the client bounds of a control. The client bounds is the rectangle of
-  the inner area of a control, where the child controls are visible. The
-  coordinates are relative to the control's left and top.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetClientRect]');
-  {$endif}
-
-  GetClientBounds(Handle, ARect);
-  OffsetRect(ARect, -ARect.Left, -ARect.Top);
-
-  Result := True;
+  Result := GetClientBounds(Handle, Rect);
+  OffsetRect(Rect, -Rect.Left, -Rect.Top);
 end;
 
 {------------------------------------------------------------------------------
@@ -2539,68 +1610,19 @@ end;
   Returns: Integer
 
   Returns the smallest rectangle which includes the entire current
-  Clipping Region, or if no Clipping Region is set, the current
-  dimensions of the Drawable.
+  Clipping Region.
 
   The result can be one of the following constants
       Error
       NullRegion
       SimpleRegion
       ComplexRegion
+
+
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
-var
-  ARegion: QRegionH;
-  Pt: TPoint;
+function TWin32WidgetSet.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
 begin
-  Result := NULLREGION;
-  if lpRect <> nil then
-    lpRect^ := Rect(0,0,0,0);
-
-  if not IsValidDC(DC) then
-    Result := ERROR;
-
-  if Result <> ERROR then
-  with TQtDeviceContext(DC) do
-  begin
-    {$ifdef VerboseQtWinAPI}
-      Writeln('TQtWidgetSet.GetClipBox FastClip=',
-       ((vClipRect <> nil) and not vClipRectDirty) );
-    {$endif}
-
-    // the most correct way to get a clipbox if through
-    // region.boundingrect, but it's slower.
-
-    // TODO: remove "and false" below when vClipRectDirty is implemented
-    //       it should be "true" when user set a custom clip rect
-    //       and "false" on beginpaint
-    if (vClipRect<>nil) and not vClipRectDirty and false then
-      lpRect^ := vClipRect^
-    else
-    if getClipping then
-    begin
-      ARegion := QRegion_Create;
-      try
-        QPainter_clipRegion(Widget, ARegion);
-        GetWindowOrgEx(DC, @Pt);
-        if (Pt.X <> 0) or (Pt.Y <> 0) then
-          SetWindowOrgEx(DC, Pt.X, Pt.Y, @Pt);
-        QRegion_boundingRect(ARegion, lpRect);
-      finally
-        QRegion_destroy(ARegion);
-      end;
-      Result := SIMPLEREGION;
-    end
-    else
-      if vImage <> nil then
-      begin
-        lpRect^ := Rect(0, 0, vImage.width, vImage.height);
-        Result := SIMPLEREGION;
-      end;
-    {$ifdef VerboseQtWinAPI}
-    WriteLn('TQtWidgetSet.GetClipBox Rect=', dbgs(lprect^));
-    {$endif}
-  end;
+  Result := Windows.GetClipBox(DC, Windows.LPRECT(lpRect));
 end;
 
 {------------------------------------------------------------------------------
@@ -2608,79 +1630,19 @@ end;
   Params: dc, rgn
   Returns: Integer
 
-  Returns a copy of the current Clipping Region.
+  Returns the current Clipping Region.
 
   The result can be one of the following constants
-     0 = no clipping set
-     1 = ok
-    -1 = error
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN): Longint;
-begin
-  {$ifdef VerboseQtWinAPI}
-    Writeln('Trace: [WinAPI GetClipRgn]',
-     ' DC: ', dbghex(DC),
-     ' RGN: ', dbghex(Rgn));
-    if RGN<>0 then
-      WriteLn(' QRegionH=', PtrInt(TQtRegion(Rgn).Widget))
-    else
-      WriteLn(' Rgn=0');
-  {$endif}
-  // it assumes that clipregion object has been created some other place
-  Result := -1;
-  if not IsValidDC(DC) then
-    exit;
-  if Rgn = 0 then
-    exit;
-  if not TQtDeviceContext(DC).getClipping then
-    Result := 0
-  else
-  begin
-    // if our TQtRegion contains widget then
-    // first destroy it because QPainter creates
-    // new reference.
-    if TQtRegion(Rgn).FHandle <> nil then
-    begin
-      QRegion_destroy(TQtRegion(Rgn).FHandle);
-      TQtRegion(Rgn).FHandle := QRegion_create;
-    end;
-    QPainter_clipRegion(TQtDeviceContext(DC).Widget, TQtRegion(Rgn).FHandle);
-    Result := 1;
-  end;
-end;
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
 
-function TQtWidgetSet.GetCmdLineParamDescForInterface: string;
-  function b(const s: string): string;
-  begin
-    Result:=BreakString(s,75,22)+LineEnding+LineEnding;
-  end;
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetClipRGN(DC : hDC; RGN : hRGN) : Integer;
 begin
-  Result:=
-     b(rsqtOptionNoGrab)
-    +b(rsqtOptionDoGrab)
-    +b(rsqtOptionSync)
-    +b(rsqtOptionStyle)
-    +b(rsqtOptionStyleSheet)
-    +b(rsqtOptionGraphicsStyle)
-    +b(rsqtOptionSession)
-    +b(rsqtOptionWidgetCount)
-    +b(rsqtOptionReverse)
-    {$IFDEF HASX11}
-    +b(rsqtOptionX11Display)
-    +b(rsqtOptionX11Geometry)
-    +b(rsqtOptionX11Font)
-    +b(rsqtOptionX11BgColor)
-    +b(rsqtOptionX11FgColor)
-    +b(rsqtOptionX11BtnColor)
-    +b(rsqtOptionX11Name)
-    +b(rsqtOptionX11Title)
-    +b(rsqtOptionX11Visual)
-    +b(rsqtOptionX11NCols)
-    +b(rsqtOptionX11CMap)
-    +b(rsqtOptionX11IM)
-    +b(rsqtOptionX11InputStyle)
-    {$ENDIF}
-    ;
+  Result := Windows.GetClipRGN(DC, RGN);
 end;
 
 {------------------------------------------------------------------------------
@@ -2692,55 +1654,39 @@ end;
     If the function fails, the return value is NULL.
  ------------------------------------------------------------------------------}
 
-function TQtWidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
-var
-  QtDC: TQtDeviceContext absolute DC;
+function TWin32WidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
 begin
-  Result := 0;
-  if not QtWidgetSet.IsValidDC(DC) then
-    Exit;
-  case uObjectType of
-    OBJ_BITMAP: Result := HGDIOBJ(QtDC.vImage);
-    OBJ_BRUSH: Result := HGDIOBJ(QtDC.vBrush);
-    OBJ_FONT: Result := HGDIOBJ(QtDC.vFont);
-    OBJ_PEN: Result := HGDIOBJ(QtDC.vPen);
-  end;
+  Result := Windows.GetCurrentObject(DC, uObjectType);
 end;
 
 {------------------------------------------------------------------------------
-  Function: GetCursorPos
-  Params:  lpPoint: The cursorposition
-  Returns: True if succesful
+  Method:  GetCursorPos
+  Params:  LPPoint - record to receive coordinates
+  Returns: True if the function succeeds
 
+  Gets the cursor position, in screen coordinates.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
-var
-  vPoint: TQtPoint;
+function TWin32WidgetSet.GetCursorPos(Var LPPoint: TPoint): Boolean;
 begin
-  QCursor_pos(@vPoint);
-
-  lpPoint.x := vPoint.x;
-  lpPoint.y := vPoint.y;
-
-  Result := True;
+  Result := Boolean(Windows.GetCursorPos(@LPPoint));
 end;*)
 
 {------------------------------------------------------------------------------
-  Function: GetDC
-  Params:  hWnd is any widget.
-  Returns: Nothing
+  Method:  GetDC
+  Params:  HWND - handle of window
+  Returns: value identifying the device context for the given window's client
+           area
 
-  This function is Called:
-  - Once on app startup with hWnd = 0
-  - Twice for every TLabel on the TCustomLabel.CalcSize function
+  Retrieves a handle of a display device context (DC) for the client area of
+  the specified window.
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetDC(hWnd: HWND): HDC;
 var
   lWindowInfo: PWindowInfo;
 begin
-//  {$ifdef VerboseQtWinAPI}
-//    WriteLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
-//  {$endif}
+  {$ifdef VerboseCDWinAPI}
+  DebugLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
+  {$endif}
 
   Result := 0;
 
@@ -2758,97 +1704,131 @@ begin
 //  end else
 //    Result := HDC(QtScreenContext);
 
-//  {$ifdef VerboseQtWinAPI}
-//    WriteLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
-//  {$endif}
+  {$ifdef VerboseCDWinAPI}
+  DebugLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
+  {$endif}
+end;
+{var
+  ORect: TRect;
+begin
+  Result := Windows.GetDC(HWnd);
+  if (Result <> 0) and (HWnd <> 0) and GetLCLClientBoundsOffset(HWnd, ORect) then
+    MoveWindowOrgEx(Result, ORect.Left, ORect.Top);
+end;}
+(*
+{------------------------------------------------------------------------------
+  Method: GetDeviceCaps
+  Params: DC - display device context
+          Index - index of needed capability
+
+  Returns device specific information
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+begin
+  Result := Windows.GetDeviceCaps(DC, Index);
 end;
 
-(*function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
+function TWin32WidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 var
-  QtDC: TQtDeviceContext absolute PaintDC;
-  Matrix: QTransformH;
-  P: TPoint;
+  DCOrg, winOrg: Windows.POINT;
+  ORect: TRect;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetDCOriginRelativeToWindow] PaintDC ' + dbghex(PaintDC));
-  {$endif}
-  Result := IsValidDC(PaintDC);
-  if not Result then
-    exit;
-  Matrix := QPainter_transform(QtDC.Widget);
-  OriginDiff := Point(0, 0);
-  P := Point(0, 0);
-  if WindowHandle <> 0 then
-    P := TQtWidget(WindowHandle).getClientOffset;
-  if Matrix <> nil then
-  begin
-    OriginDiff.X := Round(QTransform_Dx(Matrix)) - P.X;
-    OriginDiff.Y := Round(QTransform_Dy(Matrix)) - P.Y;
+  OriginDiff.X := 0;
+  OriginDiff.Y := 0;
+  // there is no way to get offset for memory or metafile DC => assume it 0
+  Result := GetObjectType(PaintDC) = OBJ_DC;
+  if not Result then Exit;
+  Result := Windows.GetDCOrgEx(PaintDC, DCOrg);
+  if not Result then Exit;
+  winOrg.X := 0;
+  winOrg.Y := 0;
+  Result := Windows.ClientToScreen(WindowHandle, winOrg);
+  if not Result then exit;
+  Result := GetLCLClientBoundsOffset(WindowHandle, ORect);
+  if not Result then exit;
+  OriginDiff.X := DCOrg.X - winOrg.X - ORect.Left;
+  OriginDiff.Y := DCOrg.Y - winOrg.Y - ORect.Top;
+  Result := Windows.GetWindowOrgEx(PaintDC, winOrg);
+  if not Result then exit;
+  dec(OriginDiff.X, winOrg.X);
+  dec(OriginDiff.Y, winOrg.Y);
+end;
+
+function TWin32WidgetSet.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
+var
+  hBitmap: HGDIOBJ;
+  hWindow: HWND;
+  BitmapInfo: BITMAP;
+  ClientRect: TRect;
+begin
+  // check if memory dc with bitmap
+  Result := false;
+  case GetObjectType(DC) of
+    OBJ_MEMDC:
+      begin
+        hBitmap := GetCurrentObject(DC, OBJ_BITMAP);
+        if hBitmap <> HGDIOBJ(nil) then
+        begin
+          GetObject(hBitmap, SizeOf(BITMAP), @BitmapInfo);
+          P.x := BitmapInfo.bmWidth;
+          P.y := BitmapInfo.bmHeight;
+          Result := true;
+        end;
+      end;
+    OBJ_DC:
+      begin
+        hWindow := WindowFromDC(DC);
+        if hWindow <> HWND(nil) then
+        begin
+          Result := GetClientRect(hWindow, ClientRect);
+          P.x := ClientRect.Right;
+          P.y := ClientRect.Bottom;
+        end;
+      end;
+  else
   end;
+
+  if not Result then
+  begin
+    // do default
+    Result := inherited GetDeviceSize(DC, P);
+  end;
+end;
+
+function TWin32WidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
+begin
+  Result := Windows.GetDIBits(DC, Bitmap, StartScan, NumScans, Bits, Windows.PBitmapInfo(@BitInfo)^, Usage)
+end;
+
+function TWin32WidgetSet.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
+begin
+  Result := Windows.GetBitmapBits(Bitmap, Count, Bits);
+end;
+
+function TWin32WidgetSet.GetBkColor(DC: HDC): TColorRef;
+begin
+  Result := TColorRef(Windows.GetBkColor(DC));
+end;
+
+
+function TWin32WidgetSet.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
+  var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP;
+begin
+  Result := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@p2)^,  p3, p4, p5, p6)
 end;
 
 {------------------------------------------------------------------------------
-  Function: GetDeviceCaps
-  Params: DC: HDC; Index: Integer
-  Returns: Integer
+  Method:  CreateEllipticRgn
+  Params:  p1, p2 = X1 and Y1 top-left position of the ellipse
+  Params:  p3, p4 = X2 and Y2 bottom-right position of the ellipse
+  Returns: The handle of the region created
 
+  Creates an elliptic region.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
-var
-  QtDC: TQtDeviceContext;
-  PaintDevice: QPaintDeviceH;
-  PaintEngine: QPaintEngineH;
+function TWin32WidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetDeviceCaps] DC ' + dbghex(DC));
-  {$endif}
-
-  Result := 0;
-  if DC = 0 then
-    DC := HDC(QtScreenContext);
-
-  if not IsValidDC(DC) then exit;
-
-  QtDC := TQtDeviceContext(DC);
-
-  PaintEngine := QtDC.PaintEngine;
-  if PaintEngine = nil then
-    exit;
-  PaintDevice := QPaintEngine_paintDevice(PaintEngine);
-
-  case Index of
-    HORZSIZE:
-      Result := QPaintDevice_widthMM(PaintDevice);
-    VERTSIZE:
-      Result := QPaintDevice_heightMM(PaintDevice);
-    HORZRES:
-      Result := QPaintDevice_width(PaintDevice);
-    BITSPIXEL:
-      Result := QPaintDevice_depth(PaintDevice);
-    PLANES:
-      Result := 1;
-    SIZEPALETTE:
-      Result := QPaintDevice_numColors(PaintDevice);
-    LOGPIXELSX:
-      Result := QPaintDevice_logicalDpiX(PaintDevice);
-    LOGPIXELSY:
-      Result := QPaintDevice_logicalDpiY(PaintDevice);
-    VERTRES:
-      Result := QPaintDevice_height(PaintDevice);
-    NUMRESERVED:
-      Result := 0;
-    else
-      Result := 0;
-  end;
-end;
-
-function TQtWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
-begin
-  Result := 0;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetDIBits] missing implementation ');
-  {$endif}
+  Result := Windows.CreateEllipticRgn(p1, p2, p3, p4);
 end;
 
 {------------------------------------------------------------------------------
@@ -2857,1427 +1837,375 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetDoubleClickTime: UINT;
+function TWin32WidgetSet.GetDoubleClickTime: UINT;
 begin
-  Result := QApplication_doubleClickInterval;
+  Result := Windows.GetDoubleClickTime;
 end;
 
 {------------------------------------------------------------------------------
-  Function: GetFocus
-  Params:  None
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetFocus: HWND;
-var
-  W: QWidgetH;
- {$ifdef VerboseFocus}
- Obj: TQtWidget;
- {$endif}
-begin
-  Result := 0;
-  W := QApplication_FocusWidget();
-  if W <> nil then
-  begin
-    Result := HwndFromWidgetH(W);
-    {$ifdef VerboseFocus}
-    Obj := TQtWidget(Result);
-    Write('TQtWidgetSet.GetFocus: WidgetH=',dbghex(ptruint(W)), ' QtWidget=', dbgsname(Obj));
-    if Obj<>nil then
-      WriteLn(' LclObject=', dbgsname(Obj.LCLObject))
-    else
-      WriteLn;
-    {$endif}
-  end;
-end;
-
-function TQtWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
-const
-  StateDown    = SmallInt($FF80);
-  {StateToggled = SmallInt($0001);}
-begin
-  Result := 0;
-
-  case nVirtKey of
-    VK_LSHIFT:   nVirtKey := VK_SHIFT;
-    VK_LCONTROL: nVirtKey := VK_CONTROL;
-    VK_LMENU:    nVirtKey := VK_MENU;
-  end;
-
-  // where to track toggle state?
-
-  case nVirtKey of
-    VK_LBUTTON:
-      if (QApplication_mouseButtons and QtLeftButton) > 0 then
-        Result := Result or StateDown;
-    VK_RBUTTON:
-      if (QApplication_mouseButtons and QtRightButton) > 0 then
-        Result := Result or StateDown;
-    VK_MBUTTON:
-      if (QApplication_mouseButtons and QtMidButton) > 0 then
-        Result := Result or StateDown;
-    VK_XBUTTON1:
-      if (QApplication_mouseButtons and QtXButton1) > 0 then
-        Result := Result or StateDown;
-    VK_XBUTTON2:
-      if (QApplication_mouseButtons and QtXButton2) > 0 then
-        Result := Result or StateDown;
-    VK_MENU:
-      if (QApplication_keyboardModifiers and QtAltModifier) > 0 then
-        Result := Result or StateDown;
-    VK_SHIFT:
-      if (QApplication_keyboardModifiers and QtShiftModifier) > 0 then
-        Result := Result or StateDown;
-    VK_CONTROL:
-      if (QApplication_keyboardModifiers and QtControlModifier) > 0 then
-        Result := Result or StateDown;
-    VK_LWIN, VK_RWIN:
-      if (QApplication_keyboardModifiers and QtMetaModifier) > 0 then
-        Result := Result or StateDown;
-   {$ifdef VerboseQtWinAPI}
-    else
-      DebugLn('TQtWidgetSet.GetKeyState TODO ', DbgSVKCode(Word(nVirtkey)));
-   {$endif}
-  end;
-end;
-
-function TQtWidgetSet.GetMapMode(DC: HDC): Integer;
-begin
-  if IsValidDC(DC) then
-    Result := TQtDeviceContext(DC).vMapMode
-  else
-    Result := 0;
-end;
-
-function TQtWidgetSet.GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean;
-var
-  Desktop: QDesktopWidgetH;
-begin
-  Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo)) or (Monitor = 0);
-  if not Result then Exit;
-  Desktop := QApplication_desktop();
-  Dec(Monitor);
-  Result := (Monitor >= 0) and (Monitor < PtrUInt(QDesktopWidget_numScreens(Desktop)));
-  if not Result then Exit;
-  QDesktopWidget_screenGeometry(Desktop, @lpmi^.rcMonitor, Monitor);
-  QDesktopWidget_availableGeometry(Desktop, @lpmi^.rcWork, Monitor);
-  if PtrUInt(QDesktopWidget_primaryScreen(Desktop)) = Monitor then
-    lpmi^.dwFlags := MONITORINFOF_PRIMARY
-  else
-    lpmi^.dwFlags := 0;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.GetDeviceSize
+  Method:  GetFocus
   Params:  none
-  Returns: True if successful
+  Returns: The handle of the window with focus
 
-  Return the size of a device
+  The GetFocus function retrieves the handle of the window that has the focus.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
+function TWin32WidgetSet.GetFocus: HWND;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetDeviceSize]');
-  {$endif}
-
-  Result := False;
-
-  P.X := 0;
-  P.Y := 0;
-
-  if not IsValidDC(DC) then Exit;
-
-  if (TObject(DC) is TQtDeviceContext) then
-    P := TQtDeviceContext(DC).getDeviceSize;
-
-  Result := True;
+  Result := Windows.GetFocus;
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.GetObject
+  Method:  GetForegroundWindow
   Params:  none
-  Returns: The size written to the buffer
+  Returns: The handle of the foreground window
 
-  Necessary for TBitmap support
+  The GetForegroundWindow function returns the window that the user is
+  currently working with, session wide.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
-const
-  QtPenStyleToWinStyleMap: array[QtPenStyle] of UINT =
-  (
- { QtNoPen          } PS_NULL,
- { QtSolidLine      } PS_SOLID,
- { QtDashLine       } PS_DASH,
- { QtDotLine        } PS_DOT,
- { QtDashDotLine    } PS_DASHDOT,
- { QtDashDotDotLine } PS_DASHDOTDOT,
- { QtCustomDashLine } PS_USERSTYLE
-  );
-var
-  aObject: TObject;
-  AFont: TQtFont absolute aObject;
-  APen: TQtPen absolute aObject;
-  ABrush: TQtBrush absolute aObject;
-  BitmapSection : TDIBSECTION;
-  ALogFont: PLogFont absolute Buf;
-  ALogPen: PLogPen absolute Buf;
-  AExtLogPen: PExtLogPen absolute Buf;
-  ALogBrush: PLogBrush absolute Buf;
-  Dashes: TQRealArray;
-  i: integer;
-  {$ifdef VerboseQtWinAPI}
-    ObjType: string;
-  {$endif}
+function TWin32WidgetSet.GetForegroundWindow: HWND;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI GetObject] GDIObj: ' + dbghex(GDIObj));
-    ObjType := '';
-  {$endif}
+  Result := Windows.GetForegroundWindow;
+end;
 
-  Result := 0;
+function TWin32WidgetSet.GetIconInfo(AIcon: HICON; AIconInfo: PIconInfo): Boolean;
+begin
+  Result := Windows.GetIconInfo(AIcon, AIconInfo);
+end;
 
-  if not IsValidGDIObject(GDIObj) then
+{------------------------------------------------------------------------------
+  Method:  GetKeyState
+  Params:  NVirtKey - The requested key
+  Returns: If the function succeeds, the return value specifies the status of
+           the given virtual key. If the high-order bit is 1, the key is down;
+           otherwise, it is up. If the low-order bit is 1, the key is toggled.
+
+  The GetKeyState function retrieves the status of the specified virtual key.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
+begin
+  Result := Windows.GetKeyState(nVirtKey);
+end;
+
+{------------------------------------------------------------------------------
+  Method: GetMapMode
+  Params: DC - display device context
+
+  Returns mapping mode for the device context or zero if unsuccessfull
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetMapMode(DC: HDC): Integer;
+begin
+  Result := Windows.GetMapMode(DC);
+end;
+
+function TWin32WidgetSet.GetMonitorInfo(hMonitor: HMONITOR; lpmi: LCLType.PMonitorInfo): Boolean;
+{$IFDEF WindowsUnicodeSupport}
+var
+  LocalInfo: TMonitorInfoExW;
+{$ENDIF}
+begin
+  {$IFDEF WindowsUnicodeSupport}
+  if (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfoEx)) then
   begin
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('Trace:< [WinAPI GetObject] Invalid GDI Object');
-    {$endif}
-
-    Exit;
-  end;
-
-  aObject := TObject(GDIObj);
-
-  {------------------------------------------------------------------------------
-    Font
-   ------------------------------------------------------------------------------}
-  if aObject is TQtFont then
-  begin
-    if Buf = nil then
-      Result := SizeOf(TLogFont)
-    else
-    if BufSize >= SizeOf(TLogFont) then
+    if UnicodeEnabledOS then
     begin
-      Result := SizeOf(TLogFont);
-
-      FillChar(ALogFont^, SizeOf(ALogFont^), 0);
-      ALogFont^.lfHeight := AFont.getPixelSize;
-      ALogFont^.lfEscapement := AFont.Angle;
-      case AFont.getWeight of
-        10: ALogFont^.lfWeight := FW_THIN;
-        15: ALogFont^.lfWeight := FW_EXTRALIGHT;
-        25: ALogFont^.lfWeight := FW_LIGHT;
-        50: ALogFont^.lfWeight := FW_NORMAL;
-        55: ALogFont^.lfWeight := FW_MEDIUM;
-        63: ALogFont^.lfWeight := FW_SEMIBOLD;
-        75: ALogFont^.lfWeight := FW_BOLD;
-        80: ALogFont^.lfWeight := FW_EXTRABOLD;
-        87: ALogFont^.lfWeight := FW_HEAVY;
-      end;
-
-      ALogFont^.lfItalic := Ord(AFont.getItalic) * High(Byte);
-      ALogFont^.lfUnderline := Ord(AFont.getUnderline) * High(Byte);
-      ALogFont^.lfStrikeOut := Ord(AFont.getStrikeOut) * High(Byte);
-      ALogFont^.lfCharSet := DEFAULT_CHARSET;
-      case AFont.getStyleStategy of
-        QFontPreferMatch: ALogFont^.lfQuality := DRAFT_QUALITY;
-        QFontPreferQuality: ALogFont^.lfQuality := PROOF_QUALITY;
-        QFontNoAntialias: ALogFont^.lfQuality := NONANTIALIASED_QUALITY;
-        QFontPreferAntialias: ALogFont^.lfQuality := ANTIALIASED_QUALITY;
-      else
-        ALogFont^.lfQuality := DEFAULT_QUALITY;
-      end;
-      ALogFont^.lfFaceName := UTF16ToUTF8(AFont.getFamily);
-    end;
+      LocalInfo.cbSize := SizeOf(TMonitorInfoExW);
+      Result := MultiMon.GetMonitorInfo(hMonitor, @LocalInfo);
+      lpmi^.rcMonitor := LocalInfo.rcMonitor;
+      lpmi^.rcWork := LocalInfo.rcWork;
+      lpmi^.dwFlags := LocalInfo.dwFlags;
+      PMonitorInfoEx(lpmi)^.szDevice := UTF16ToUTF8(LocalInfo.szDevice);
+    end
+    else
+      PMonitorInfoEx(lpmi)^.szDevice := AnsiToUtf8(PMonitorInfoEx(lpmi)^.szDevice);
   end
-  {------------------------------------------------------------------------------
-    Pen
-   ------------------------------------------------------------------------------}
   else
-  if aObject is TQtPen then
+  {$ENDIF}
+    Result := MultiMon.GetMonitorInfo(hMonitor, LPMonitorInfo(lpmi));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetObject
+  Params:  GDIObj  - handle to graphics object of interest
+           BufSize - size of buffer for object information
+           Buf     - pointer to buffer for object information
+  Returns: the number of bytes stored into the buffer
+
+  Gets information about a specified graphics object.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
+{$ifdef WindowsUnicodeSupport}
+var
+  LF: PLogFontA absolute Buf;
+  LFW: TLogFontW;
+{$endif}
+begin
+  {$ifdef WindowsUnicodeSupport}
+  if GetObjectType(GDIObj) = OBJ_FONT then
   begin
-    if not APen.IsExtPen then
+    if (UnicodeEnabledOS) and (BufSize = Sizeof(LOGFONTA)) then
     begin
-      if Buf = nil then
-        Result := SizeOf(TLogPen)
-      else
-      if BufSize >= SizeOf(TLogPen) then
-      begin
-        Result := SizeOf(TLogPen);
-        TQColorToColorRef(APen.getColor, ALogPen^.lopnColor);
-        if APen.getCosmetic then
-          ALogPen^.lopnWidth := Point(1, 0)
-        else
-          ALogPen^.lopnWidth := Point(APen.getWidth, 0);
-        ALogPen^.lopnStyle := QtPenStyleToWinStyleMap[APen.getStyle];
-      end;
+      BufSize := SizeOf(LogFontW);
+      Result := Windows.GetObjectW(GDIObj, BufSize, @LFW);
+      Move(LFW, LF^, SizeOf(LogFontA) - SizeOf(LOGFONTA.lfFaceName));
+      LF^.lfFaceName := UTF16ToUTF8(LFW.lfFaceName);
     end
     else
     begin
-      i := SizeOf(TExtLogPen);
-      if APen.getStyle = QtCustomDashLine then
-      begin
-        Dashes := APen.getDashPattern;
-        inc(i, (Length(Dashes) - 1) * SizeOf(DWord));
-      end
-      else
-        Dashes := nil;
-      if Buf = nil then
-        Result := i
-      else
-      if BufSize >= i then
-      begin
-        Result := i;
-        AExtLogPen^.elpPenStyle := QtPenStyleToWinStyleMap[APen.getStyle];
-
-        if not APen.getCosmetic then
-        begin
-          AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_GEOMETRIC;
-
-          case APen.getJoinStyle of
-            QtMiterJoin: AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_JOIN_MITER;
-            QtBevelJoin: AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_JOIN_BEVEL;
-            QtRoundJoin: AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_JOIN_ROUND;
-          end;
-
-          case APen.getCapStyle of
-            QtFlatCap: AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_ENDCAP_FLAT;
-            QtSquareCap: AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_ENDCAP_SQUARE;
-            QtRoundCap: AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_ENDCAP_ROUND;
-          end;
-
-          AExtLogPen^.elpWidth := APen.getWidth;
-        end
-        else
-          AExtLogPen^.elpWidth := 1;
-
-        AExtLogPen^.elpBrushStyle := BS_SOLID;
-        TQColorToColorRef(APen.getColor, AExtLogPen^.elpColor);
-        AExtLogPen^.elpHatch := 0;
-
-        AExtLogPen^.elpNumEntries := Length(Dashes);
-        if AExtLogPen^.elpNumEntries > 0 then
-        begin
-          for i := 0 to AExtLogPen^.elpNumEntries - 1 do
-            PDword(@AExtLogPen^.elpStyleEntry)[i] := Trunc(Dashes[i]);
-        end
-        else
-          AExtLogPen^.elpStyleEntry[0] := 0;
-      end;
+      Result := Windows.GetObject(GDIObj, BufSize, Buf);
+      if (BufSize >= Sizeof(LOGFONTA)) and (Result <= BufSize) then
+        LF^.lfFaceName := AnsiToUtf8(LF^.lfFaceName);
     end;
   end
-  {------------------------------------------------------------------------------
-    Region
-   ------------------------------------------------------------------------------}
   else
-  if aObject is TQtRegion then
-  begin
-    {TODO: implement Region}
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Region';
-    {$endif}
-  end else
-  {------------------------------------------------------------------------------
-    Brush
-   ------------------------------------------------------------------------------}
-  if aObject is TQtBrush then
-  begin
-    if Buf = nil then
-      Result := SizeOf(TLogBrush)
-    else
-    if BufSize >= SizeOf(TLogBrush) then
-    begin
-      Result := SizeOf(TLogBrush);
-      TQColorToColorRef(ABrush.getColor^, ALogBrush^.lbColor);
-      ABrush.GetLbStyle(ALogBrush^.lbStyle, ALogBrush^.lbHatch);
-    end;
-  end
-  {------------------------------------------------------------------------------
-    Image
-   ------------------------------------------------------------------------------}
-  else
-  if aObject is TQtImage then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Image';
-    {$endif}
-
-    if Buf = nil then
-      Result := SizeOf(TDIBSECTION)
-    else
-    begin
-      BitmapSection.dsOffset := 0;
-      FillChar(BitmapSection, SizeOf(TDIBSECTION), 0);
-
-      with TQtImage(aObject) do
-      begin
-        {dsBM - BITMAP}
-        BitmapSection.dsBm.bmType := $4D42;
-        BitmapSection.dsBm.bmWidth := width;
-        BitmapSection.dsBm.bmHeight := height;
-        BitmapSection.dsBm.bmWidthBytes := bytesPerLine;
-        BitmapSection.dsBm.bmPlanes := 1;//Does Bitmap Format support more?
-        BitmapSection.dsBm.bmBitsPixel := depth;
-        BitmapSection.dsBm.bmBits := bits;
-
-        {dsBmih - BITMAPINFOHEADER}
-        BitmapSection.dsBmih.biSize := 40;
-        BitmapSection.dsBmih.biWidth := BitmapSection.dsBm.bmWidth;
-        BitmapSection.dsBmih.biHeight := BitmapSection.dsBm.bmHeight;
-        BitmapSection.dsBmih.biPlanes := BitmapSection.dsBm.bmPlanes;
-        BitmapSection.dsBmih.biBitCount := BitmapSection.dsBm.bmBitsPixel;
-
-        BitmapSection.dsBmih.biCompression := 0;
-
-        BitmapSection.dsBmih.biSizeImage := numBytes;
-        BitmapSection.dsBmih.biXPelsPerMeter := dotsPerMeterX;
-        BitmapSection.dsBmih.biYPelsPerMeter := dotsPerMeterY;
-
-        BitmapSection.dsBmih.biClrUsed := 0;
-        BitmapSection.dsBmih.biClrImportant := 0;
-      end;
-
-      if BufSize >= SizeOf(BitmapSection) then
-      begin
-        PDIBSECTION(Buf)^ := BitmapSection;
-        Result := SizeOf(TDIBSECTION);
-      end
-      else if BufSize > 0 then
-      begin
-        Move(BitmapSection, Buf^, BufSize);
-        Result := BufSize;
-      end;
-    end;
-  end;
-
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI GetObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
   {$endif}
-end;
-
-function TQtWidgetSet.GetParent(Handle : HWND): HWND;
-var
-  QtWidget: TQtWidget;
-begin
-  {$ifdef VerboseQtWinAPI}
-  writeln('Trace:> [WinAPI GetParent] Handle: ' + dbghex(Handle));
-  {$endif}
-  Result := 0;
-  if Handle = 0 then
-    exit;
-
-  QtWidget := TQtWidget(Handle);
-
-  Result := HwndFromWidgetH(QtWidget.GetParent);
-
-  {$ifdef VerboseQtWinAPI}
-  writeln('Trace:< [WinAPI GetParent] : ' + dbghex(Result));
-  {$endif}
-end;
-
-function TQtWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
-begin
-  if Handle<>0 then
-    result := TQtWidget(Handle).Props[str]
-  else
-    result := nil;
-end;
-
-function TQtWidgetSet.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
-var
-  R: TRect;
-begin
-  {$ifdef VerboseQtWinAPI}
-  writeln('Trace:> [WinAPI GetRgnBox] Handle: ' + dbghex(RGN));
-  {$endif}
-  Result := SIMPLEREGION;
-  if lpRect <> nil then
-    lpRect^ := Rect(0,0,0,0);
-  if not IsValidGDIObject(RGN) then
-    Result := ERROR
-  else
-  begin
-    Result := TQtRegion(RGN).GetRegionType;
-    if not (Result in [ERROR, NULLREGION]) and (lpRect <> nil) then
-    begin
-      R := TQtRegion(RGN).getBoundingRect;
-      with lpRect^ do
-      begin
-        Left   := R.Left;
-        Top    := R.Top;
-        Right  := R.Left + R.Right;
-        Bottom := R.Top + R.Bottom;
-      end;
-    end;
-  end;
-end;
-
-function TQtWidgetSet.GetROP2(DC: HDC): Integer;
-var
-  QtDC: TQtDeviceContext absolute DC;
-begin
-  {$ifdef VerboseQtWinAPI}
-  writeln('> TQtWidgetSet.GetROP2() DC ',dbghex(DC));
-  {$endif}
-  Result := R2_COPYPEN;
-  if not IsValidDC(DC) then
-    exit;
-  Result := QtDC.Rop2;
-  {$ifdef VerboseQtWinAPI}
-  writeln('< TQtWidgetSet.GetROP2() DC ',dbghex(DC),' Result ',Result);
-  {$endif}
-end;
-
-function TQtWidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
-var
-  w: TQtWidget;
-  ScrollBar: TQtScrollBar;
-begin
-	{$ifdef VerboseQtWinAPI}
-  writeln('Trace:> [WinAPI GetScrollBarSize] Handle: ' + dbghex(Handle),' BarKind: ',BarKind);
-  {$endif}
-  Result := 0;
-  if Handle = 0 then exit;
-
-  w := TQtWidget(Handle);
-
-  {TODO: find out what to do with TCustomForm descendants }
-  if w is TQtAbstractScrollArea then
-  begin
-    if BarKind in [SM_CXVSCROLL, SM_CYVSCROLL] then
-      ScrollBar := TQtAbstractScrollArea(w).verticalScrollBar
-    else
-      ScrollBar := TQtAbstractScrollArea(w).horizontalScrollBar;
-  end else
-  if w is TQtScrollBar then
-    ScrollBar := TQtScrollBar(w)
-  else
-    ScrollBar := nil;
-  if ScrollBar <> nil then
-  begin
-    if BarKind in [SM_CXHSCROLL, SM_CYVSCROLL] then
-      Result := ScrollBar.getWidth
-    else
-      Result := ScrollBar.getHeight;
-  end;
-end;
-
-function TQtWidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
-var
-  w: TQtWidget;
-  ScrollBar: TQtScrollBar;
-begin
-	{$ifdef VerboseQtWinAPI}
-  writeln('Trace:> [WinAPI GetScrollBarVisible] Handle: ' + dbghex(Handle),' SBStyle: ',SBStyle);
-  {$endif}
-  Result := False;
-  if Handle = 0 then exit;
-
-  w := TQtWidget(Handle);
-
-  {TODO: find out what to do with TCustomForm descendants }
-  if w is TQtAbstractScrollArea then
-  begin
-    if SBStyle = SB_VERT then
-      ScrollBar := TQtAbstractScrollArea(w).verticalScrollBar
-    else
-      ScrollBar := TQtAbstractScrollArea(w).horizontalScrollBar;
-  end else
-  if w is TQtScrollBar then
-    ScrollBar := TQtScrollBar(w)
-  else
-    ScrollBar := nil;
-
-  if ScrollBar <> nil then
-    Result := ScrollBar.getVisible;
+  Result := Windows.GetObject(GDIObj, BufSize, Buf);
 end;
 
 {------------------------------------------------------------------------------
-  Function: GetScrollInfo
-  Params: BarFlag
-           SB_CTL Retrieves the parameters for a scroll bar control. The hwnd
-           parameter must be the handle to the scroll bar control.
-           SB_HORZ Retrieves the parameters for the window's standard horizontal
-           scroll bar.
-           SB_VERT Retrieves the parameters for the window's standard vertical
-           scroll bar.
+  Method:  GetParent
+  Params: Handle - handle of child window
+  Returns: the handle of the parent window
 
-          ScrollInfo returns TScrollInfo structure.
-
-  Returns: boolean
-
+  Retrieves the handle of the specified child window's parent window.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean;
-var
-  QtScrollBar: TQtScrollBar;
+function TWin32WidgetSet.GetParent(Handle: HWND): HWND;
 begin
-  Result := False;
-
-  if Handle = 0 then exit;
-
-  if (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) or
-   (csFreeNotification in TQtWidget(Handle).LCLObject.ComponentState) then
-    exit;
-
-  QtScrollBar := nil;
-
-  if not TQtWidget(Handle).LCLObject.InheritsFrom(TCustomScrollBar) then
-  begin
-    if (TQtWidget(Handle) is TQtAbstractScrollArea) then
-    begin
-      case BarFlag of
-        SB_HORZ: QtScrollBar := TQtAbstractScrollArea(Handle).horizontalScrollBar;
-        SB_VERT: QtScrollBar := TQtAbstractScrollArea(Handle).verticalScrollBar;
-      end;
-    end else
-      Result := False;
-  end
-  else
-    QtScrollBar := TQtScrollBar(TScrollBar(TQtWidget(Handle).LCLObject).Handle);
-
-  if Assigned(QtScrollBar) then
-  begin
-    // POS
-    if (ScrollInfo.fMask and SIF_POS) <> 0 then
-    begin
-      if QtScrollBar.ChildOfComplexWidget = ccwAbstractScrollArea then
-        ScrollInfo.nPos := QtScrollBar.getSliderPosition
-      else
-        ScrollInfo.nPos := QtScrollBar.getValue;
-    end;
-
-    // RANGE
-    if (ScrollInfo.fMask and SIF_RANGE) <> 0 then
-    begin
-      ScrollInfo.nMin:= QtScrollBar.getMin;
-      ScrollInfo.nMax:= QtScrollBar.getMax + QtScrollBar.getPageStep;
-    end;
-    // PAGE
-    if (ScrollInfo.fMask and SIF_PAGE) <> 0 then
-      ScrollInfo.nPage := QtScrollBar.getPageStep;
-
-    // TRACKPOS
-    if (ScrollInfo.fMask and SIF_TRACKPOS) <> 0 then
-      ScrollInfo.nTrackPos := QtScrollBar.getSliderPosition;
-
-    Result := True;
-  end;
+  Result := Windows.GetParent(Handle);
 end;
 
-function TQtWidgetSet.GetStockObject(Value: Integer): THandle;
+
+{------------------------------------------------------------------------------
+  Method:  GetProp
+  Params: Handle - handle of window
+          Str    - string
+  Returns: the associated data
+
+  Retrieves a pointer to data from the property list of the given window.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetProp(Handle: HWND; Str: PChar): Pointer;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI GetStockObject] Value: ', Value);
-  {$endif}
+  Result := Pointer(Windows.GetProp(Handle, Str));
+end;
 
-  Result := 0;
 
-  case Value of
-    BLACK_BRUSH:         // Black brush.
-      Result := FStockBlackBrush;
-    DKGRAY_BRUSH:        // Dark gray brush.
-      Result := FStockDKGrayBrush;
-    GRAY_BRUSH:          // Gray brush.
-      Result := FStockGrayBrush;
-    LTGRAY_BRUSH:        // Light gray brush.
-      Result := FStockLtGrayBrush;
-    NULL_BRUSH:          // Null brush (equivalent to HOLLOW_BRUSH).
-      Result := FStockNullBrush;
-    WHITE_BRUSH:         // White brush.
-      Result := FStockWhiteBrush;
+{------------------------------------------------------------------------------
+  Method:  GetROP2
+  Params: DC - Handle of the device context
 
-    BLACK_PEN:           // Black pen.
-      Result := FStockBlackPen;
-    NULL_PEN:            // Null pen.
-      Result := FStockNullPen;
-    WHITE_PEN:           // White pen.
-      Result := FStockWhitePen;
+  Returns: 0 if unsuccessful, the current Foreground Mixing Mode if successul
 
-    {System font. By default, Windows uses the system font to draw menus,
-     dialog box controls, and text. In Windows versions 3.0 and later,
-     the system font is a proportionally spaced font; earlier versions of
-     Windows used a monospace system font.}
-    DEFAULT_GUI_FONT, SYSTEM_FONT:
-      begin
+  Retrieves the current Foreground Mixing Mode in the given device context
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetROP2(DC: HDC): Integer;
+begin
+	Result := Windows.GetROP2(DC);
+end;
 
-        If FStockSystemFont <> 0 then
-        begin
-          DeleteObject(FStockSystemFont);
-          FStockSystemFont := 0;
-        end;
-
-        If FStockSystemFont = 0 then
-          FStockSystemFont := CreateDefaultFont;
-        Result := FStockSystemFont;
-      end;
-
-  {$ifdef VerboseQtWinAPI}
-    else
-    WriteLn('[WinAPI GetStockObject] UNHANDLED Value: ', Value);
-  {$endif}
-  end;
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI GetStockObject] Value: ', Value);
-  {$endif}
+function TWin32WidgetSet.GetRGNBox(Rgn: HRGN; lpRect: PRect): Longint;
+begin
+  Result:= Windows.GetRgnBox(Rgn, Windows.LPRECT(lpRect));
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtWidgetSet.GetSysColor
-  Params:   index to the syscolors array
+  Method:  GetScrollInfo
+  Params:  Handle     - handle of window with scroll bar
+           BarFlag    - scroll bar flag
+           ScrollInfo - record for scroll parameters
+  Returns: If the function retrieved any values.
+
+  Retrieves the parameters of a scroll bar.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean;
+begin
+  ScrollInfo.cbSize := SizeOf(ScrollInfo);
+  Result := Boolean(Windows.GetScrollInfo(Handle, BarFlag, @ScrollInfo));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetStockObject
+  Params:  Value - type of stock object
+  Returns: a value identifying the logical object requested
+
+  Retrieves a handle to one of the predefined stock objects.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetStockObject(Value: Integer): THandle;
+begin
+  Result := Windows.GetStockObject(Value);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetSysColor
+  Params:   NIndex - display element whose color is to be retrieved
   Returns:  RGB value
 
+  Retrieves the current color of the specified display element.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
-
-  function GetColor(Group: QPaletteColorGroup; Role: QPaletteColorRole; ClassName: PAnsiChar = nil): TColor;
-  var
-    Handle: QPaletteH;
-    QColor: PQColor;
-    QC: QColorH;
-  begin
-    Handle := QPalette_create;
-    if ClassName = nil then
-      QApplication_palette(Handle)
-    else
-      QApplication_palette(Handle, ClassName);
-
-    QColor := QPalette_color(Handle, Group, Role);
-    QC := QColor_create(QColor);
-    try
-      Result := (QColor_red(QC) and $00FF) or ((QColor_green(QC) and $00FF) shl 8) or ((QColor_blue(QC) and $00FF) shl 16);
-    finally
-      QColor_destroy(QC);
-    end;
-
-    QPalette_destroy(Handle);
-  end;
-
+function TWin32WidgetSet.GetSysColor(NIndex: Integer): DWORD;
 begin
-  if (nIndex < 0) or (nIndex > MAX_SYS_COLORS) then
+  if NIndex = COLOR_FORM then
+    NIndex := COLOR_BTNFACE;
+  Result := Windows.GetSysColor(nIndex);
+end;
+
+function TWin32WidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
+begin
+  if NIndex = COLOR_FORM then
+    NIndex := COLOR_BTNFACE;
+  Result := Windows.GetSysColorBrush(nIndex);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetSystemMetrics
+  Params: NIndex - system metric to retrieve
+  Returns: the requested system metric
+
+  Retrieves various system metrics.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetSystemMetrics(NIndex: Integer): Integer;
+begin
+  Result := Windows.GetSystemMetrics(NIndex);
+end;
+
+function TWin32WidgetSet.GetTextColor(DC: HDC): TColorRef;
+begin
+  Result := TColorRef(Windows.GetTextColor(DC));
+end;
+
+// MaxCount is provided in the number of UTF-8 characters, not bytes
+function TWin32WidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
+  Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize): Boolean;
+var
+  LCLStr: string;
+  s: AnsiString;
+  w: WideString;
+begin
+  // use temp buffer, if count is set, there might be no null terminator
+  if count = -1 then
+    LCLStr := Str
+  else
   begin
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('Trace:Unknown lcl system color: [TQtWidgetSet.GetSysColor]');
-    {$endif}
-    Result := 0;
-    Exit;
+    SetLength(LCLStr, count);
+    move(str^, PChar(LCLStr)^, count);
   end;
-
-  if FCachedColors[nIndex] = nil then
+  // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
+  if UnicodeEnabledOS then
   begin
-    case nIndex of
-      COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteButton);
-      COLOR_BACKGROUND              : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-      COLOR_WINDOW                  : Result:=GetColor(QPaletteInActive, QPaletteBase);
-      COLOR_WINDOWFRAME             : Result:=GetColor(QPaletteActive,   QPaletteShadow);
-      COLOR_WINDOWTEXT              : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
-      COLOR_ACTIVEBORDER            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-      COLOR_INACTIVEBORDER          : Result:=GetColor(QPaletteInactive, QPaletteWindow);
-      COLOR_APPWORKSPACE            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-      COLOR_HIGHLIGHT               : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
-      COLOR_HIGHLIGHTTEXT           : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
-      COLOR_BTNFACE                 : Result:=GetColor(QPaletteActive,   QPaletteButton);
-      COLOR_BTNSHADOW               : Result:=GetColor(QPaletteActive,   QPaletteDark);
-      COLOR_GRAYTEXT                : Result:=GetColor(QPaletteDisabled,   QPaletteText);
-      COLOR_BTNTEXT                 : Result:=GetColor(QPaletteActive,   QPaletteButtonText);
-      COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteLight);
-      COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
-      COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMidlight);
-      COLOR_INFOTEXT                : Result:=GetColor(QPaletteInActive, QPaletteToolTipText);
-      COLOR_INFOBK                  : Result:=GetColor(QPaletteInActive, QPaletteToolTipBase);
-      COLOR_HOTLIGHT                : Result:=GetColor(QPaletteActive,   QPaletteLight);
-
-      // qt does not provide any methods to retrieve titlebar colors
-    {$IFNDEF MSWINDOWS}
-      COLOR_ACTIVECAPTION           : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
-      COLOR_INACTIVECAPTION         : Result:=GetColor(QPaletteInActive, QPaletteHighlight);
-      COLOR_CAPTIONTEXT             : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
-      COLOR_INACTIVECAPTIONTEXT     : Result:=GetColor(QPaletteInactive, QPaletteHighlightedText);
-      COLOR_GRADIENTACTIVECAPTION   : Result:=GetColor(QPaletteActive,   QPaletteBase);
-      COLOR_GRADIENTINACTIVECAPTION : Result:=GetColor(QPaletteInactive, QPaletteBase);
-    {$ELSE}
-      COLOR_ACTIVECAPTION           : Result:=Windows.GetSysColor(COLOR_ACTIVECAPTION);
-      COLOR_INACTIVECAPTION         : Result:=Windows.GetSysColor(COLOR_INACTIVECAPTION);
-      COLOR_CAPTIONTEXT             : Result:=Windows.GetSysColor(COLOR_CAPTIONTEXT);
-      COLOR_INACTIVECAPTIONTEXT     : Result:=Windows.GetSysColor(COLOR_INACTIVECAPTIONTEXT);
-      COLOR_GRADIENTACTIVECAPTION   : Result:=Windows.GetSysColor(COLOR_GRADIENTACTIVECAPTION);
-      COLOR_GRADIENTINACTIVECAPTION : Result:=Windows.GetSysColor(COLOR_GRADIENTINACTIVECAPTION);
-    {$ENDIF}
-      COLOR_MENU                    : Result:=GetColor(QPaletteActive,   QPaletteButton, 'QMenu');
-      COLOR_MENUTEXT                : Result:=GetColor(QPaletteActive,   QPaletteButtonText, 'QMenu');
-      COLOR_MENUHILIGHT             : Result:=GetColor(QPaletteDisabled, QPaletteHighlight, 'QMenu');
-      COLOR_MENUBAR                 : Result:=GetColor(QPaletteActive,   QPaletteButton, 'QMenu');
-      COLOR_FORM                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-    else
-      Result:=0;
-    end;
-    FCachedColors[nIndex] := getMem(SizeOf(LongWord));
-    FCachedColors[nIndex]^ := Result;
+    // TODO: use the real number of chars (and not the length)
+    w := UTF8ToUTF16(LCLStr);
+    Result := Windows.GetTextExtentExPointW(DC, PWideChar(W), Length(W),
+      MaxWidth, MaxCount, PartialWidths, Size);
   end
   else
-    Result := FCachedColors[nIndex]^;
+  begin
+    s := Utf8ToAnsi(LCLStr);
+    Result := Windows.GetTextExtentExPoint(DC, pchar(s), length(s),
+      MaxWidth, MaxCount, PartialWidths, Size);
+  end;
 end;
 
-function TQtWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
+{------------------------------------------------------------------------------
+  Method:  GetTextExtentPoint
+  Params:  DC    - handle of device context
+           Str   - text string encoded in UTF-8
+           Count - number of bytes in the string
+           Size  - TSize record in which the dimensions of the string are to be
+                   returned
+  Returns: If the function succeeded
 
-  function GetBrush(Group: QPaletteColorGroup; Role: QPaletteColorRole; ClassName: PAnsiChar = nil): HBrush;
-  var
-    Handle: QPaletteH;
-  begin
-    Handle := QPalette_create;
-    if ClassName = nil then
-      QApplication_palette(Handle)
-    else
-      QApplication_palette(Handle, ClassName);
-    if FSysColorBrushes[nIndex] = 0 then
-      Result := HBrush(TQtBrush.Create(False))
-    else
-      Result := FSysColorBrushes[nIndex];
-    TQtBrush(Result).FHandle := QBrush_create(QPalette_brush(Handle, Group, Role));
-    TQtBrush(Result).FShared := True;
-
-    QPalette_destroy(Handle);
-  end;
-
-  function GetSolidBrush(AColor: TColor): HBrush;
-  var
-    Color: TQColor;
-  begin
-    if FSysColorBrushes[nIndex] = 0 then
-      Result := HBrush(TQtBrush.Create(True))
-    else
-      Result := FSysColorBrushes[nIndex];
-    Color := QBrush_Color(TQtBrush(Result).FHandle)^;
-    ColorRefToTQColor(ColorToRGB(AColor), Color);
-    QBrush_setColor(TQtBrush(Result).FHandle, @Color);
-    TQtBrush(Result).FShared := True;
-  end;
-
+  Computes the width and height of the specified string of text.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
+{$ifdef WindowsUnicodeSupport}
+var
+  s: AnsiString;
+  w: WideString;
+{$ENDIF}
 begin
-  if (nIndex < 0) or (nIndex > MAX_SYS_COLORS) then
-  begin
-    Result := 0;
-    Exit;
-  end;
-
-  if (FSysColorBrushes[nIndex] = 0) or
-    (
-    (FSysColorBrushes[nIndex] <> 0) and
-    (TQtBrush(FSysColorBrushes[nIndex]).FHandle = nil)
-    ) then
-  begin
-    case nIndex of
-      COLOR_SCROLLBAR               : Result:=GetBrush(QPaletteActive,   QPaletteButton);
-      COLOR_BACKGROUND              : Result:=GetBrush(QPaletteActive,   QPaletteWindow);
-      COLOR_WINDOW                  : Result:=GetBrush(QPaletteInActive, QPaletteBase);
-      COLOR_WINDOWFRAME             : Result:=GetBrush(QPaletteActive,   QPaletteShadow);
-      COLOR_WINDOWTEXT              : Result:=GetBrush(QPaletteActive,   QPaletteWindowText);
-      COLOR_ACTIVEBORDER            : Result:=GetBrush(QPaletteActive,   QPaletteWindow);
-      COLOR_INACTIVEBORDER          : Result:=GetBrush(QPaletteInactive, QPaletteWindow);
-      COLOR_APPWORKSPACE            : Result:=GetBrush(QPaletteActive,   QPaletteWindow);
-      COLOR_HIGHLIGHT               : Result:=GetBrush(QPaletteActive,   QPaletteHighlight);
-      COLOR_HIGHLIGHTTEXT           : Result:=GetBrush(QPaletteActive,   QPaletteHighlightedText);
-      COLOR_BTNFACE                 : Result:=GetBrush(QPaletteActive,   QPaletteButton);
-      COLOR_BTNSHADOW               : Result:=GetBrush(QPaletteActive,   QPaletteDark);
-      COLOR_GRAYTEXT                : Result:=GetBrush(QPaletteActive,   QPaletteText);
-      COLOR_BTNTEXT                 : Result:=GetBrush(QPaletteActive,   QPaletteButtonText);
-      COLOR_BTNHIGHLIGHT            : Result:=GetBrush(QPaletteActive,   QPaletteLight);
-      COLOR_3DDKSHADOW              : Result:=GetBrush(QPaletteActive,   QPaletteShadow);
-      COLOR_3DLIGHT                 : Result:=GetBrush(QPaletteActive,   QPaletteMidlight);
-      COLOR_INFOTEXT                : Result:=GetBrush(QPaletteInActive, QPaletteToolTipText);
-      COLOR_INFOBK                  : Result:=GetBrush(QPaletteInActive, QPaletteToolTipBase);
-      COLOR_HOTLIGHT                : Result:=GetBrush(QPaletteActive,   QPaletteLight);
-
-      // qt does not provide any methods to retrieve titlebar colors
-    {$IFNDEF MSWINDOWS}
-      COLOR_ACTIVECAPTION           : Result:=GetBrush(QPaletteActive,   QPaletteHighlight);
-      COLOR_INACTIVECAPTION         : Result:=GetBrush(QPaletteInActive, QPaletteHighlight);
-      COLOR_CAPTIONTEXT             : Result:=GetBrush(QPaletteActive,   QPaletteHighlightedText);
-      COLOR_INACTIVECAPTIONTEXT     : Result:=GetBrush(QPaletteInactive, QPaletteHighlightedText);
-      COLOR_GRADIENTACTIVECAPTION   : Result:=GetBrush(QPaletteActive,   QPaletteBase);
-      COLOR_GRADIENTINACTIVECAPTION : Result:=GetBrush(QPaletteInactive, QPaletteBase);
-    {$ELSE}
-      COLOR_ACTIVECAPTION           : Result:=GetSolidBrush(Windows.GetSysColor(COLOR_ACTIVECAPTION));
-      COLOR_INACTIVECAPTION         : Result:=GetSolidBrush(Windows.GetSysColor(COLOR_INACTIVECAPTION));
-      COLOR_CAPTIONTEXT             : Result:=GetSolidBrush(Windows.GetSysColor(COLOR_CAPTIONTEXT));
-      COLOR_INACTIVECAPTIONTEXT     : Result:=GetSolidBrush(Windows.GetSysColor(COLOR_INACTIVECAPTIONTEXT));
-      COLOR_GRADIENTACTIVECAPTION   : Result:=GetSolidBrush(Windows.GetSysColor(COLOR_GRADIENTACTIVECAPTION));
-      COLOR_GRADIENTINACTIVECAPTION : Result:=GetSolidBrush(Windows.GetSysColor(COLOR_GRADIENTINACTIVECAPTION));
-    {$ENDIF}
-      COLOR_MENU                    : Result:=GetBrush(QPaletteActive,   QPaletteButton, 'QMenu');
-      COLOR_MENUTEXT                : Result:=GetBrush(QPaletteActive,   QPaletteButtonText, 'QMenu');
-      COLOR_MENUHILIGHT             : Result:=GetBrush(QPaletteDisabled, QPaletteHighlight, 'QMenu');
-      COLOR_MENUBAR                 : Result:=GetBrush(QPaletteActive,   QPaletteButton, 'QMenu');
-      COLOR_FORM                    : Result:=GetBrush(QPaletteActive,   QPaletteWindow);
-    else
-      Result:=0;
-    end;
-    FSysColorBrushes[nIndex] := Result;
-  end
+{$ifdef WindowsUnicodeSupport}
+  // use temp buffer, if count is set, there might be no null terminator
+  if count = -1 then
+    s := str
   else
-    Result := FSysColorBrushes[nIndex];
-end;
-
-{------------------------------------------------------------------------------
-  Function: GetSystemMetrics
-  Params:
-  Returns: Nothing
-
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
-var
-  R: TRect;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn(Format('Trace:> [TQtWidgetSet.GetSystemMetrics] %d', [nIndex]));
-  {$endif}
-  Result := 0;
-  case nIndex of
-    SM_ARRANGE:
-      begin
-        {$ifdef VerboseQtWinAPI}
-          WriteLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_ARRANGE          ');
-        {$endif}
-      end;
-    SM_CLEANBOOT:
-      begin
-        {$ifdef VerboseQtWinAPI}
-          WriteLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CLEANBOOT          ');
-        {$endif}
-      end;
-    SM_CMONITORS:
-      Result := QDesktopWidget_numScreens(QApplication_desktop());
-    SM_CMOUSEBUTTONS:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CMOUSEBUTTONS    ');
-      end;
-    SM_CXBORDER, SM_CYBORDER:
-      begin
-        // size of frame around controls
-        Result := QStyle_pixelMetric(QApplication_style(),
-                    QStylePM_DefaultFrameWidth, nil, nil);
-      end;
-    SM_CXCURSOR:
-      begin
-        Result := 32; // recomended in docs
-      end;
-    SM_CYCURSOR:
-      begin
-        Result := 32; // recomended in docs
-      end;
-    SM_CXDOUBLECLK:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXDOUBLECLK      ');
-      end;
-    SM_CYDOUBLECLK:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYDOUBLECLK      ');
-      end;
-    SM_CXDRAG:
-      begin
-        Result := 2;
-      end;
-    SM_CYDRAG:
-      begin
-        Result := 2;
-      end;
-    SM_CXEDGE:
-      begin
-        Result := 2;
-      end;
-    SM_CYEDGE:
-      begin
-        Result := 2;
-      end;
-    SM_CXFIXEDFRAME:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXFIXEDFRAME     ');
-      end;
-    SM_CYFIXEDFRAME:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYFIXEDFRAME     ');
-      end;
-    SM_CXFULLSCREEN:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXFULLSCREEN     ');
-      end;
-    SM_CYFULLSCREEN:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYFULLSCREEN     ');
-      end;
-    SM_CXHTHUMB:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXHTHUMB         ');
-      end;
-    SM_CXICON,
-    SM_CYICON:
-      begin
-        Result := 32;
-      end;
-    SM_CXICONSPACING:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXICONSPACING    ');
-      end;
-    SM_CYICONSPACING:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYICONSPACING    ');
-      end;
-    SM_CXMAXIMIZED:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMAXIMIZED      ');
-      end;
-    SM_CYMAXIMIZED:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMAXIMIZED      ');
-      end;
-    SM_CXMAXTRACK:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMAXTRACK       ');
-      end;
-    SM_CYMAXTRACK:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMAXTRACK       ');
-      end;
-    SM_CXMENUCHECK:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMENUCHECK      ');
-      end;
-    SM_CYMENUCHECK:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMENUCHECK      ');
-      end;
-    SM_CXMENUSIZE:
-      begin
-        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth, nil, nil);
-      end;
-    SM_CYMENUSIZE:
-      begin
-        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorHeight, nil, nil);
-      end;
-    SM_CXMIN:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMIN            ');
-      end;
-    SM_CYMIN:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMIN            ');
-      end;
-    SM_CXMINIMIZED:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMINIMIZED      ');
-      end;
-    SM_CYMINIMIZED:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMINIMIZED      ');
-      end;
-    SM_CXMINSPACING:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMINSPACING     ');
-      end;
-    SM_CYMINSPACING:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMINSPACING     ');
-      end;
-    SM_CXMINTRACK:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMINTRACK       ');
-      end;
-    SM_CYMINTRACK:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMINTRACK       ');
-      end;
-    SM_CXSCREEN:
-      begin
-        QDesktopWidget_screenGeometry(QApplication_desktop(), @R, QDesktopWidget_primaryScreen(QApplication_desktop()));
-        Result := R.Right - R.Left;
-      end;
-    SM_CYSCREEN:
-      begin
-        QDesktopWidget_screenGeometry(QApplication_desktop(), @R, QDesktopWidget_primaryScreen(QApplication_desktop()));
-        Result := R.Bottom - R.Top;
-      end;
-    SM_CXSIZE:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXSIZE           ');
-      end;
-    SM_CYSIZE:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSIZE           ');
-      end;
-    SM_CXSIZEFRAME,
-    SM_CYSIZEFRAME:
-      begin
-        Result := QStyle_pixelMetric(QApplication_style(), QStylePM_MDIFrameWidth, nil, nil);
-      end;
-    SM_CXSMICON,
-    SM_CYSMICON:
-      begin
-        Result := 16
-      end;
-    SM_CXSMSIZE:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXSMSIZE         ');
-      end;
-    SM_CYSMSIZE:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSMSIZE         ');
-      end;
-    SM_CXVIRTUALSCREEN:
-      begin
-        Result := QWidget_width(QApplication_desktop);
-      end;
-    SM_CYVIRTUALSCREEN:
-      begin
-        Result := QWidget_height(QApplication_desktop);
-      end;
-    SM_CXVSCROLL,
-    SM_CYVSCROLL,
-    SM_CXHSCROLL,
-    SM_CYHSCROLL:
-      begin
-        Result := QStyle_pixelMetric(QApplication_Style, QStylePM_ScrollBarExtent, nil, nil);
-      end;
-    SM_CYCAPTION:
-      begin
-        Result := QStyle_pixelMetric(QApplication_Style, QStylePM_TitleBarHeight, nil, nil);
-      end;
-    SM_CYKANJIWINDOW:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYKANJIWINDOW    ');
-      end;
-    SM_CYMENU:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMENU           ');
-      end;
-    SM_CYSMCAPTION:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSMCAPTION      ');
-      end;
-    SM_CYVTHUMB:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYVTHUMB         ');
-      end;
-    SM_DBCSENABLED:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_DBCSENABLED      ');
-      end;
-    SM_DEBUG:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_DEBUG            ');
-      end;
-    SM_MENUDROPALIGNMENT:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_MENUDROPALIGNMENT');
-      end;
-    SM_MIDEASTENABLED:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_MIDEASTENABLED   ');
-      end;
-    SM_MOUSEPRESENT:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_MOUSEPRESENT     ');
-      end;
-    SM_MOUSEWHEELPRESENT:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_MOUSEWHEELPRESENT');
-      end;
-    SM_NETWORK:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_NETWORK          ');
-      end;
-    SM_PENWINDOWS:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_PENWINDOWS       ');
-      end;
-    SM_SECURE:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SECURE           ');
-      end;
-    SM_SHOWSOUNDS:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SHOWSOUNDS       ');
-      end;
-    SM_SLOWMACHINE:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SLOWMACHINE      ');
-      end;
-    SM_SWAPBUTTON:
-      begin
-        //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
-      end;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Function: GetTextColor
-  Params:  DC     - A device context
-  Returns: TColorRef
-
-  Gets the Font Color currently assigned to the Device Context
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetTextColor(DC: HDC) : TColorRef;
-var
-  Color: TQColor;
-  QtDC: TQtDeviceContext;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetTextColor]');
-  {$endif}
-
-  Result := 0;
-
-  if IsValidDC(DC) then
   begin
-    QtDC := TQtDeviceContext(DC);
-    ColorRefToTQColor(TColorRef(QtDC.vTextColor), Color);
-    TQColorToColorRef(Color, Result);
+    SetLength(s, count);
+    move(str^, PChar(s)^, count);
   end;
-end;
-
-{------------------------------------------------------------------------------
-  Function: GetTextExtentExPoint
-  Params: http://msdn.microsoft.com/en-us/library/dd144935%28VS.85%29.aspx
-  Returns: True on success
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar; Count,
-  MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize
-  ): Boolean;
-var
-  i: Integer;
-  w: Integer;
-  AStr: WideString;
-  Accu: Integer;
-begin
-  Result := False;
-  if not IsValidDC(DC) then Exit;
-  with TQtDeviceContext(DC) do
+  // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
+  if UnicodeEnabledOS then
   begin
-    AStr := GetUtf8String(Str);
-    Size.cx := 0;
-    Size.cY := Font.Metrics.Height;
-    if PartialWidths = nil then
-    begin
-      if MaxCount <> nil then
-      begin
-        Size.cx := Font.Metrics.width(@AStr);
-        Accu := 0;
-        if MaxWidth <= 0 then
-          MaxCount^ := 0
-        else
-          for i := 0 to Count - 1 do
-          begin
-            W := QFontMetrics_charWidth(Font.Metrics.FHandle, @AStr, i);
-            Accu := Accu + W;
-            if Accu <= MaxWidth then
-              MaxCount^ := i + 1
-            else
-              break;
-          end;
-      end;
-    end else
-    begin
-      if MaxCount <> nil then
-        MaxCount^ := 0;
-      for i := 0 to Count - 1 do
-      begin
-        w := QFontMetrics_charWidth(Font.Metrics.FHandle, @AStr, i);
-        Inc(Size.cx, w);
-        if MaxCount <> nil then
-        begin
-          if Size.cx <= MaxWidth then
-          begin
-            inc(MaxCount^);
-            PartialWidths[i] := Size.cx;
-          end else
-          begin
-            Dec(Size.cx, w);
-            break;
-          end;
-        end else
-          PartialWidths[i] := Size.cx;
-      end;
-    end;
-  end;
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
-  Function: GetTextExtentPoint
-  Params:  none
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
-var
-  WideStr: WideString;
-  QtDC: TQtDeviceContext absolute DC;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetTextExtentPoint]');
-  {$endif}
-
-  Result := False;
-
-  if not IsValidDC(DC) then Exit;
-
-  WideStr := GetUtf8String(Str);
-  Size.cx := QtDC.Metrics.width(@WideStr, Count);
-  Size.cy := QtDC.Metrics.height;
-
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
-  Function: GetTextMetrics
-  Params:  DC     - A device context with a font selected
-           TM     - The structure to receive the font information
-  Returns: If successfull
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
-var
-  QtFontMetrics: TQtFontMetrics;
-  FontFamily: WideString;
-  QtDC: TQtDeviceContext absolute DC;
-  FontWeight: Integer;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetTextMetrics]');
-  {$endif}
-
-  Result := IsValidDC(DC);
-
-  if Result then
-  begin
-    QtFontMetrics := QtDC.Metrics;
-    TM.tmHeight := QtFontMetrics.height;
-    TM.tmAscent := QtFontMetrics.ascent;
-    TM.tmDescent := QtFontMetrics.descent;
-    TM.tmInternalLeading := 0;
-    TM.tmExternalLeading := QtFontMetrics.leading;
-    {this is due qt bug in fontmetrics::averageCharWidth() under Mac
-     http://trolltech.com/developer/task-tracker/index_html?method=entry&id=169440 }
-    {$IFDEF DARWIN}
-    TM.tmAveCharWidth := QtFontMetrics.charWidth('x',0);
-    {$ELSE}
-    TM.tmAveCharWidth := QtFontMetrics.averageCharWidth;
-    {$ENDIF}
-
-    TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
-    FontWeight := QtDC.font.getWeight;
-    case FontWeight of
-      25: TM.tmWeight := FW_LIGHT;
-      50: TM.tmWeight := FW_NORMAL;
-      63: TM.tmWeight := FW_SEMIBOLD;
-      75: TM.tmWeight := FW_BOLD;
-      87: TM.tmWeight := FW_HEAVY;
-      else
-        TM.tmWeight := Round(FontWeight * 9.5);
-    end;
-    TM.tmOverhang := 0;
-    TM.tmDigitizedAspectX := 0;
-    TM.tmDigitizedAspectY := 0;
-    TM.tmFirstChar := 'a';
-    TM.tmLastChar := 'z';
-    TM.tmDefaultChar := 'x';
-    TM.tmBreakChar := '?';
-    TM.tmItalic := Ord(QtDC.Font.getItalic);
-    TM.tmUnderlined := Ord(QtDC.Font.getUnderline);
-    TM.tmStruckOut := Ord(QtDC.Font.getStrikeOut);
-
-    QtDC.font.family(@FontFamily);
-
-    { Defaults to a TrueType font.
-      Note that the meaning of the FIXED_PITCH constant is the opposite of
-      the name implies, according to MSDN docs. Just a small inconsistency
-      on Windows API that we have to mimic. }
-    if QtDC.font.fixedPitch then
-      TM.tmPitchAndFamily := TRUETYPE_FONTTYPE
-    else
-      TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
-
-    TM.tmCharSet := DEFAULT_CHARSET;
-  end;
-end;
-
-function TQtWidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
-var
-  R: TRect;
-begin
-  if IsValidDC(DC) and (Size <> nil) then
-  begin
-    QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
-    Size^.cx := R.Right - R.Left;
-    Size^.cy := R.Bottom - R.Top;
-    Result := Integer(True);
+    // TODO: use the real number of chars (and not the length)
+    w := UTF8ToUTF16(S);
+    Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W), @Size);
   end else
-    Result := Integer(False);
-end;
-
-function TQtWidgetSet.GetViewPortOrgEx(DC: HDC; P: PPoint): Integer;
-var
-  R: TRect;
-begin
-  if IsValidDC(DC) and (P <> nil) then
   begin
-    QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
-    P^ := R.TopLeft;
-    Result := Integer(True);
-  end else
-    Result := Integer(False);
+    // Important: Althougth the MSDN Docs point that GetTextExtentPoint32W
+    // works under Windows 9x, tests showed that this function produces
+    // a wrong output
+    s := Utf8ToAnsi(s);
+    Result := Windows.GetTextExtentPoint32(DC, pchar(s), length(s), @Size);
+  end;
+{$else}
+    Result := Windows.GetTextExtentPoint32(DC, Str, Count, @Size);
+{$endif}
 end;
 
-function TQtWidgetSet.GetWindowExtEx(DC: HDC; Size: PSize): Integer;
-var
-  R: TRect;
+{------------------------------------------------------------------------------
+  Method:  GetTextMetrics
+  Params:  DC - handle of device context
+           TM - text metrics record
+  Returns: If the function succeeds
+
+  Fills the specified buffer with the metrics for the currently selected font.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean;
 begin
-  if IsValidDC(DC) and (Size <> nil) then
-  begin
-    QPainter_Window(TQtDeviceContext(DC).Widget, @R);
-    Size^.cx := R.Right - R.Left;
-    Size^.cy := R.Bottom - R.Top;
-    Result := Integer(True);
-  end else
-    Result := Integer(False);
+  Result := Boolean(Windows.GetTextMetrics(DC, @TM));
 end;
 
-function TQtWidgetSet.GetWindowLong(Handle : hwnd; int: Integer): PtrInt;
+function TWin32WidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
 begin
-  Result := 0;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.GetWindowLong] missing implementation ');
-  {$endif}
+  Result := Integer(Windows.GetViewPortExtEx(DC, LPSize(Size)));
+end;
+
+function TWin32WidgetSet.GetViewPortOrgEx(DC: HDC; P: PPoint): Integer;
+begin
+  Result := Integer(Windows.GetViewPortOrgEx(DC, LPPoint(P)));
+end;
+
+function TWin32WidgetSet.GetWindowExtEx(DC: HDC; Size: PSize): Integer;
+begin
+  Result := Integer(Windows.GetWindowExtEx(DC, LPSize(Size)));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  GetWindowLong
+  Params:  Handle - handle of window
+           Int    - value to retrieve
+  Returns: the requested 32-bit value
+
+  Retrieves information about the specified window.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.GetWindowLong(Handle: HWND; Int: Integer): PtrInt;
+begin
+  if UnicodeEnabledOS then
+    Result := Windows.GetWindowLongPtrW(Handle, int)
+  else
+    Result := Windows.GetWindowLongPtr(Handle, int);
 end;
 
 {------------------------------------------------------------------------------
   Method:  GetWindowOrgEx
-  Params:  DC    -
-  Returns:
+  Params:  DC - handle of device context
+           P  - record receiving the window origin
+  Returns: 0 if the function fails; non-zero integer otherwise
+
+  Retrieves the x-coordinates and y-coordinates of the window origin for the
+  specified device context.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
-var
-  Matrix: QTransformH;
+function TWin32WidgetSet.GetWindowOrgEx(DC: HDC; P: PPoint): Integer;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace: > [WinAPI GetWindowOrgEx]');
-  {$endif}
-  Result := 0;
-  if not IsValidDC(DC) and (P<>nil) then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('Trace: < [WinAPI GetWindowOrgEx] No valid DC or P is nil');
-    {$endif}
-    exit;
-  end;
-
-  Matrix := QPainter_transform(TQtDeviceContext(DC).Widget);
-  if Matrix <> nil then
-  begin
-    P^.X := -Trunc(QTransform_Dx(Matrix));
-    P^.Y := -Trunc(QTransform_Dy(Matrix));
-    Result := 1;
-  end;
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace: < [WinAPI GetWindowOrgEx] Result=', dbgs(p^));
-  {$endif}
+  Result := Integer(Windows.GetWindowOrgEx(DC, LPPoint(P)));
 end;
-
 
 {------------------------------------------------------------------------------
   Method:  GetWindowRect
@@ -4288,25 +2216,9 @@ end;
 
   Retrieves the dimensions of the bounding rectangle of the specified window.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowRect(Handle: HWND; var ARect: TRect): Integer;
-var
-  APos: TQtPoint;
-  R: TRect;
+function TWin32WidgetSet.GetWindowRect(Handle: HWND; Var Rect: TRect): Integer;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetWindowRect]');
-  {$endif}
-
-  Result := 0;
-  if not IsValidHandle(Handle) then
-    exit;
-  APos := QtPoint(0,0);
-  QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APos, @APos);
-
-  R := TQtWidget(Handle).getFrameGeometry;
-  ARect := Bounds(APos.X,APos.Y,R.Right-R.Left,R.Bottom-R.Top);
-
-  Result := -1;
+  Result := Integer(Windows.GetWindowRect(Handle, @Rect));
 end;
 
 {------------------------------------------------------------------------------
@@ -4317,20 +2229,40 @@ end;
   returns the current widget Left, Top, relative to the client origin of its
   parent
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
+function TWin32WidgetSet.GetWindowRelativePosition(Handle: HWND;
+  var Left, Top: Integer): Boolean;
 var
+  LeftTop:TPoint;
   R: TRect;
+  WindowPlacement: TWINDOWPLACEMENT;
+  ParentHandle: THandle;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetWindowRelativePosition]');
-  {$endif}
-  if Handle = 0 then
-    Exit(False);
-  R := TQtWidget(Handle).getFrameGeometry;
-  Left := R.Left;
-  Top := R.Top;
+  Result := False;
+
+  WindowPlacement.length := SizeOf(WindowPlacement);
+  if IsIconic(Handle) and GetWindowPlacement(Handle, @WindowPlacement) then
+    R := WindowPlacement.rcNormalPosition
+  else
+  if not Windows.GetWindowRect(Handle, @R) then Exit;
+
+  LeftTop.X := R.Left;
+  LeftTop.Y := R.Top;
+  if (GetWindowLong(Handle, GWL_STYLE) and WS_CHILD) <> 0 then
+  begin
+    ParentHandle := Windows.GetParent(Handle);
+    if ParentHandle <> 0 then
+    begin
+      if not Windows.ScreenToClient(ParentHandle, @LeftTop) then Exit;
+      if not GetLCLClientBoundsOffset(ParentHandle, R) then
+        Exit;
+      Dec(LeftTop.X, R.Left);
+      Dec(LeftTop.Y, R.Top);
+    end;
+  end;
+  Left := LeftTop.X;
+  Top := LeftTop.Y;
   Result := True;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetWindowSize
@@ -4339,640 +2271,529 @@ end;
 
   Returns the current widget Width and Height
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetWindowSize]');
-  {$endif}
-  if Handle = 0 then
-    Exit(False);
+function TCDWidgetSet.GetWindowSize(Handle : hwnd;
+  var Width, Height: integer): boolean;
+var
+  WP: WINDOWPLACEMENT;
+  R: TRect;
+  WindowInfo: PWindowInfo;
+  Info: tagWINDOWINFO;
 
-  with TQtWidget(Handle).getSize do
+  procedure ExcludeCaption; inline;
   begin
-    Height := cy;
-    Width := cx;
-  end;
-
-  Result := True;
-
-  // Here we should convert top level lcl window coordinaties to qt coord
-  // Due to borders and etc
-  // ?
-end;
-
-{------------------------------------------------------------------------------
-  Function: GradientFill
-  Params: DC - DeviceContext to perform on
-          Vertices - array of Points W/Color & Alpha
-          NumVertices - Number of Vertices
-          Meshes - array of Triangle or Rectangle Meshes,
-                   each mesh representing one Gradient Fill
-          NumMeshes - Number of Meshes
-          Mode - Gradient Type, either Triangle,
-                 Vertical Rect, Horizontal Rect
-
-  Returns: true on success
-
-  Performs multiple Gradient Fills, either a Three way Triangle Gradient,
-  or a two way Rectangle Gradient, each Vertex point also supports optional
-  Alpha/Transparency for more advanced Gradients.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
-  NumVertices : Longint;
-  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): boolean;
-
-  function DoFillTriangle: Boolean; inline;
-  begin
-    Result := (Mode and GRADIENT_FILL_TRIANGLE) = GRADIENT_FILL_TRIANGLE;
-  end;
-
-  function DoFillVRect: Boolean; inline;
-  begin
-    Result := (Mode and GRADIENT_FILL_RECT_V) = GRADIENT_FILL_RECT_V;
-  end;
-
-  function VertexToColor(AVertex: tagTRIVERTEX): TQColor;
-  var
-    TheAlpha: Byte;
-  begin
-    TheAlpha := AVertex.Alpha shr 8;
-    if TheAlpha = 0 then
-      TheAlpha := 255;
-    with AVertex do
-      QColor_fromRgb(@Result, Red shr 8, Green shr 8, Blue shr 8, TheAlpha);
-  end;
-
-  function FillTriMesh(Mesh: tagGradientTriangle) : Boolean;
-  var
-    V1, V2, V3: tagTRIVERTEX;
-    C1, C2, C3: TQColor;
-    Grad: QConicalGradientH;
-    Brush: QBrushH;
-    Triangle: QPolygonH;
-    R: TRect;
-    Painter: QPainterH;
-    Rgn: QRegionH;
-  begin
-    with Mesh do
-    begin
-      Result :=
-        (Vertex1 < Cardinal(NumVertices)) and (Vertex2 >= 0) and
-        (Vertex2 < Cardinal(NumVertices)) and (Vertex2 >= 0) and
-        (Vertex3 < Cardinal(NumVertices)) and (Vertex3 >= 0);
-
-      if (Vertex1 = Vertex2) or
-        (Vertex1 = Vertex3) or
-        (Vertex2 = Vertex3) or not Result then
-        Exit;
-
-      V1 := Vertices[Vertex1];
-      V2 := Vertices[Vertex2];
-      V3 := Vertices[Vertex3];
-
-      Painter := TQtDeviceContext(DC).Widget;
-      QPainter_save(Painter);
-      Triangle := QPolygon_create(3);
-      QPolygon_setPoint(Triangle, 0, V1.X, V1.Y);
-      QPolygon_setPoint(Triangle, 1, V2.X, V2.Y);
-      QPolygon_setPoint(Triangle, 2, V3.X, V3.Y);
-      QPolygon_boundingRect(Triangle, @R);
-
-      Dec(R.Bottom);
-      Dec(R.Right);
-
-      Rgn := QRegion_create(@R);
-
-      // make our poly clip region , so gradient center is at real center
-      QPainter_setClipRegion(Painter, Rgn, QtIntersectClip);
-
-      Grad := QConicalGradient_create(R.Right div 2, R.Bottom div 2, 90);
-      C1 := VertexToColor(V1);
-      C2 := VertexToColor(V2);
-      C3 := VertexToColor(V3);
-
-      QGradient_setColorAt(Grad, 0.0, @C1); // open
-      QGradient_setColorAt(Grad, 0.33, @C2); // left corner
-      QGradient_setColorAt(Grad, 0.66, @C3); // right corner
-      QGradient_setColorAt(Grad, 1.0, @C1); // close
-
-
-      Brush := QBrush_create(Grad);
-      QPainter_setPen(Painter, QtNoPen);
-      QPainter_setBrush(Painter, Brush);
-
-      // move center point down, so we remove reflections of C2 and C3
-      // TODO: C1 reflection is still visible
-      QPainter_setBrushOrigin(Painter, 0, R.Bottom div 5);
-      QPainter_drawPolygon(Painter, Triangle);
-
-      //TODO: now me must make it look "softer" because reflection look of
-      // first color is ugly.
-
-      QBrush_destroy(Brush);
-      QPolygon_destroy(Triangle);
-      QGradient_destroy(Grad);
-      QRegion_destroy(Rgn);
-      QPainter_restore(Painter);
-
-    end;
-  end;
-
-  function FillRectMesh(Mesh: tagGradientRect) : boolean;
-  var
-    TL,BR: tagTRIVERTEX;
-    StartColor, EndColor, SwapColor: TQColor;
-    Swap: Longint;
-    SwapColors: Boolean;
-    Grad: QGradientH;
-    Brush: QBrushH;
-  begin
-    with Mesh do
-    begin
-      Result :=
-        (UpperLeft < Cardinal(NumVertices)) and (UpperLeft >= 0) and
-        (LowerRight < Cardinal(NumVertices)) and (LowerRight >= 0);
-      if (LowerRight = UpperLeft) or not Result then
-        Exit;
-
-      TL := Vertices[UpperLeft];
-      BR := Vertices[LowerRight];
-      SwapColors := (BR.Y < TL.Y) and (BR.X < TL.X);
-      if BR.X < TL.X then
-      begin
-        Swap := BR.X;
-        BR.X := TL.X;
-        TL.X := Swap;
-      end;
-      if BR.Y < TL.Y then
-      begin
-        Swap := BR.Y;
-        BR.Y := TL.Y;
-        TL.Y := Swap;
-      end;
-      StartColor := VertexToColor(TL);
-      EndColor := VertexToColor(BR);
-      if SwapColors then
-      begin
-        SwapColor := StartColor;
-        StartColor := EndColor;
-        EndColor := SwapColor;
-      end;
-      if DoFillVRect then
-        Grad := QLinearGradient_create(TL.X, TL.Y, TL.X, BR.Y)
+    if (Info.dwStyle and (WS_CHILD or WS_CAPTION)) = WS_CAPTION then
+      if (Info.dwExStyle and WS_EX_TOOLWINDOW) <> 0 then
+        Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
       else
-        Grad := QLinearGradient_create(TL.X, TL.Y, BR.X, TL.Y);
-      QGradient_setColorAt(Grad, 0, @StartColor);
-      QGradient_setColorAt(Grad, 1, @EndColor);
-      Brush := QBrush_create(Grad);
-      TQtDeviceContext(DC).fillRect(TL.X, TL.Y, BR.X - TL.X, BR.Y - TL.Y, Brush);
-      QGradient_destroy(Grad);
-      QBrush_destroy(Brush);
-    end;
+        Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
   end;
 
-const
-  MeshSize: Array[Boolean] of Integer = (
-    SizeOf(tagGradientRect), SizeOf(tagGradientTriangle));
-var
-  i : Integer;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('***** [WinAPI TQtWidgetSet.GradientFill] ');
-  {$endif}
 
-  //Currently Alpha blending is ignored... Ideas anyone?
-  Result := (Meshes <> nil) and (NumMeshes >= 1) and (NumVertices >= 2)
-            and (Vertices <> nil);
-  if Result and DoFillTriangle then
-    Result := NumVertices >= 3;
-  if Result then
-  begin
-    Result := False;
+  WP.length := SizeOf(WP);
+  Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
 
-    //Sanity Checks For Vertices Size vs. Count
-    if MemSize(Vertices) < PtrUInt(SizeOf(tagTRIVERTEX)*NumVertices) then
-      exit;
-
-    //Sanity Checks For Meshes Size vs. Count
-    if MemSize(Meshes) < PtrUInt(MeshSize[DoFillTriangle]*NumMeshes) then
-      exit;
-
-    for I := 0 to NumMeshes - 1 do
-    begin
-      if DoFillTriangle then
-      begin
-        if not FillTriMesh(PGradientTriangle(Meshes)[I]) then
-          exit;
-      end
-      else
-      begin
-        if not FillRectMesh(PGradientRect(Meshes)[I]) then
-          exit;
-      end;
-    end;
-    Result := True;
-  end;
-end;
-
-function TQtWidgetSet.HideCaret(hWnd: HWND): Boolean;
-begin
-  Result := (hWnd <> 0) and QtCaret.HideCaret(TQtWidget(hWnd));
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: InitializeCriticalSection
-  Params: var CritSection: TCriticalSection
-  Returns:
- ------------------------------------------------------------------------------}
-procedure TQtWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
-var
-  ACritSec: System.PRTLCriticalSection;
-begin
-  New(ACritSec);
-  System.InitCriticalSection(ACritSec^);
-  CritSection:=TCriticalSection(ACritSec);
-end;
-
-function TQtWidgetSet.IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
-var
-  QtDC: TQtDeviceContext absolute dc;
-  IntersectRgn, Rgn: QRegionH;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI TQtWidgetSet.IntersectClipRect] L ',Left,' T ',Top,' R ',Right,' B ',Bottom);
-  {$endif}
-  Result := ERROR;
-  if not IsValidDC(DC) then exit;
-
-  IntersectRgn := QRegion_create(Left, Top, Right - Left, Bottom - Top);
-  try
-    if QtDC.getClipping then
-    begin
-      Rgn := QRegion_create;
-      try
-        QPainter_clipRegion(QtDC.Widget, Rgn);
-        if QRegion_isEmpty(Rgn) then
-          QtDC.setClipRegion(IntersectRgn)
-        else
-          QtDC.setClipRegion(IntersectRgn, QtIntersectClip);
-        QtDC.setClipping(True);
-        // recreate Rgn
-        QRegion_destroy(Rgn);
-        Rgn := QRegion_create;
-        QPainter_clipRegion(QtDC.Widget, Rgn);
-        Result := QtDC.GetRegionType(Rgn);
-      finally
-        QRegion_destroy(Rgn);
-      end;
-    end else
-    begin
-      QtDC.setClipRegion(InterSectRgn);
-      QtDC.setClipping(True);
-      Result := QtDC.GetRegionType(InterSectRgn);
-    end;
-  finally
-    QRegion_destroy(IntersectRgn);
-  end;
-end;
-
-function TQtWidgetSet.IsIconic(Handle: HWND): boolean;
-begin
-  Result := TQtWidget(Handle).isMinimized;
-end;
-
-function TQtWidgetSet.IsWindow(handle: HWND): boolean;
-begin
-  Result := IsValidHandle(Handle);
-end;
-
-function TQtWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
-begin
-  Result := TQtWidget(Handle).getEnabled;
-end;
-
-function TQtWidgetSet.IsWindowVisible(Handle: HWND): boolean;
-begin
-  Result := TQtWidget(Handle).getVisible;
-end;
-
-function TQtWidgetSet.IsZoomed(Handle: HWND): boolean;
-begin
-  Result := TQtWidget(Handle).isMaximized;
-end;
-
-{------------------------------------------------------------------------------
-  Function: InvalidateRect
-  Params: aHandle:
-          Rect:
-          bErase:
-  Returns:
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI InvalidateRect]');
-  {$endif}
-  if AHandle = 0 then
-    exit(False);
-  if Rect <> nil then
-  begin
-    with TQtWidget(aHandle).getClientOffset do
-      OffsetRect(Rect^, x, y);
-    // no need to handle bErase. Qt automatically erase rect on paint event according to docs
-    TQtWidget(aHandle).Update(Rect);
-  end else
-    TQtWidget(aHandle).Update;
-
-  Result := True;
-end;
-
-{------------------------------------------------------------------------------
-  Function: InvalidateRgn
-  Params: aHandle:
-          Rect:
-          bErase:
-  Returns: True if invalidate is successfull.
-  Invalidates region of widget.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.InvalidateRgn(aHandle: HWND; Rgn: HRGN; Erase: Boolean
-  ): Boolean;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI InvalidateRgn]');
-  {$endif}
-  if aHandle = 0 then
-    exit(False);
-  if IsValidGDIObject(Rgn) and (TQtRegion(Rgn).FHandle <> nil) then
-    TQtWidget(aHandle).UpdateRegion(TQtRegion(Rgn).FHandle)
-  else
-    TQtWidget(aHandle).Update;
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: LeaveCriticalSection
-  Params:  var CritSection: TCriticalSection
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
-var
-  ACritSec: System.PRTLCriticalSection;
-begin
-  ACritSec:=System.PRTLCriticalSection(CritSection);
-  System.LeaveCriticalsection(ACritSec^);
-end;
-
-{------------------------------------------------------------------------------
-  Function: LineTo
-  Params:  none
-  Returns: Nothing
-
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
-var
-  PenPos, LastPos: TPoint;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI LineTo]');
-  {$endif}
-
-  Result := False;
-
-  if not IsValidDC(DC) then Exit;
-
-  TQtDeviceContext(DC).getPenPos(@PenPos);
-  LastPos := Point(X, Y);
-  if TQtDeviceContext(DC).pen.getCosmetic then
-    LastPos := TQtDeviceContext(DC).GetLineLastPixelPos(PenPos, LastPos);
-  TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y);
-  MoveToEx(DC, X, Y, nil);
-
-  Result := True;
-end;
-
-function TQtWidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
-var
-  P: PPoint;
-  QtPoint: TQtPoint;
-  Matrix: QTransformH;
-  QtDC: TQtDeviceContext;
-begin
-  Result := False;
-
-  if not IsValidDC(DC) then
+  if not Result then
     Exit;
 
-  QtDC := TQtDeviceContext(DC);
-
-  Matrix := QPainter_transform(QtDC.Widget);
-  P := @Points;
-  while Count > 0 do
+  if (WP.showCmd = SW_MINIMIZE) or (WP.showCmd = SW_SHOWMINIMIZED) then
   begin
-    Dec(Count);
-    QtPoint.X := P^.X;
-    QtPoint.Y := P^.Y;
-    QTransform_map(Matrix, PQtPoint(@QtPoint), PQtPoint(@QtPoint));
-    P^.X := QtPoint.X;
-    P^.Y := QtPoint.Y;
-    Inc(P);
+    Width := 0;
+    Height := 0;
+    Exit;
   end;
 
-  Result := True;
-end;
+  // if it is a top level window then you can't use the normal size:
+  // maximized or aero snap windows will have problems
+  if (GetWindowLong(Handle, GWL_STYLE) and WS_CHILD = 0) then
+  begin
+    FillChar(Info, SizeOf(Info), 0);
+    Info.cbSize := SizeOf(Info);
+{    Result := Windows.GetWindowInfo(Handle, @Info);
+    if Result then
+    begin
+      with Info.rcWindow do
+      begin
+        Width := Right - Left;
+        Height := Bottom - Top;
+      end;
+      Width := Width - 2 * Integer(Info.cxWindowBorders);
+      Height := Height - 2 * Integer(Info.cyWindowBorders);
+      ExcludeCaption;
+      //WriteLn('W = ', Width, ' H = ', Height);
+      Exit;
+    end;     }
+    Result := Boolean(Windows.GetWindowRect(Handle, @R));
+    with R do
+    begin
+      Width := Right - Left;
+      Height := Bottom - Top;
+    end;
+  end
+  else
+    with WP.rcNormalPosition do
+    begin
+      Width := Right - Left;
+      Height := Bottom - Top;
+    end;
 
-function TQtWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
-var
-  Str: WideString;
-  TitleStr: WideString;
-  OkStr: WideString;
+  WindowInfo := GetWindowInfo(Handle);
+
+  // convert top level lcl window coordinaties to win32 coord
+  Info.dwStyle := DWORD(GetWindowLong(Handle, GWL_STYLE));
+  Info.dwExStyle := DWORD(GetWindowLong(Handle, GWL_EXSTYLE));
+  if (Info.dwStyle and (WS_CHILD or WS_THICKFRAME)) = WS_THICKFRAME then
+  begin
+    // thick, sizing border
+    // add twice, top+bottom border
+    Dec(Width, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
+    Dec(Height, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
+  end else
+  if (Info.dwStyle and (WS_CHILD or WS_BORDER)) = WS_BORDER then
+  begin
+    // thin, non-sizing border
+    Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
+    Dec(Height, 2*Windows.GetSystemMetrics(SM_CYFIXEDFRAME));
+  end;
+
+  ExcludeCaption;
+end;
+(*
+function TWin32WidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
+  NumVertices: Longint; Meshes: Pointer; NumMeshes: Longint; Mode: Longint): Boolean;
 begin
-  //TODO: Finish full implementation of MessageBox
-  Str := GetUtf8String('TQtWidgetSet.MessageBox - not implemented');
-  TitleStr := GetUtf8String(lpCaption);
-  OkStr := GetUtf8String('Ok');
-  Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr);
+  Result := Win32Extra.GradientFill(DC, Windows.PTRIVERTEX(Vertices),
+    NumVertices, Meshes, NumMeshes, Mode);
 end;
 
 {------------------------------------------------------------------------------
-  Function: MoveToEx
-  Params:  none
-  Returns: Nothing
+  Method:  HideCaret
+  Params:  HWnd - handle to the window with the caret
+  Returns: Whether the window owns the caret
 
-
+  Removes the caret from the screen.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
+function TWin32WidgetSet.HideCaret(HWnd: HWND): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI MoveToEx]',
-     ' DC:', dbghex(DC),
-     ' X:', dbgs(X),
-     ' Y:', dbgs(Y));
-  {$endif}
-
-  Result := False;
-
-  if not IsValidDC(DC) then Exit;
-
-  if (OldPoint <> nil) then TQtDeviceContext(DC).getPenPos(OldPoint);
-
-  TQtDeviceContext(DC).setPenPos(X, Y);
-
-  Result := True;
+{$ifdef DEBUG_CARET}
+  DebugLn('[HideCaret] for window ', IntToHex(HWnd, 8));
+{$endif}
+  Result := Boolean(Windows.HideCaret(hWnd));
 end;
 
-function TQtWidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
+{------------------------------------------------------------------------------
+  Method:  InvalidateRect
+  Params: AHandle - handle of window with changed update region
+          Rect    - address of rectangle coordinates
+          BErase  - specifies whether the background is to be erased
+  Returns: if the function succeeds
+
+  Adds a rectangle to the specified window's update region.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.InvalidateRect(aHandle: HWND; Rect: PRect; BErase: Boolean): Boolean;
 var
-  QtRgn: QRegionH;
+  Flags: UINT;
+  ORect: TRect;
 begin
-  Result := ERROR;
-
-  if not IsValidGDIObject(RGN) then
-    Exit
-  else
-    QtRgn := TQtRegion(RGN).FHandle;
-
-  QRegion_translate(QtRgn, nXOffset, nYOffset);
-
-  if QRegion_isEmpty(QtRgn) then
-    Result := NULLREGION
-  else
+  Flags := RDW_INVALIDATE or RDW_ALLCHILDREN;
+  if BErase then
+    Flags := Flags or RDW_ERASE;
+  if Rect <> nil then
   begin
-    if TQtRegion(RGN).IsPolyRegion or (TQtRegion(RGN).numRects > 0) then
-      Result := COMPLEXREGION
+    GetLCLClientBoundsOffset(aHandle, ORect);
+    OffsetRect(Rect^, ORect.Left, ORect.Top);
+  end;
+  Result := Boolean(Windows.RedrawWindow(aHandle, Rect, 0, Flags));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  InvalidateRgn
+  Params:  Handle - handle of window with changed update region
+           Rgn    - handle to region to invalidate
+           Erase  - specifies whether the background is to be erased
+  Returns: if the function succeeds
+
+  Adds a region to the specified window's update region.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.InvalidateRgn(Handle: HWND; Rgn: HRGN; Erase: Boolean): Boolean;
+begin
+  Result := Boolean(Windows.InvalidateRgn(Handle, Rgn, Erase));
+end;
+
+function TWin32WidgetSet.IsIconic(handle: HWND): boolean;
+begin
+  Result := Windows.IsIconic(handle);
+end;
+
+{------------------------------------------------------------------------------
+  Function: IntersectClipRect
+  Params:  dc, Left, Top, Right, Bottom
+  Returns: Integer
+
+  Shrinks the clipping region in the device context dc to a region of all
+  intersecting points between the boundary defined by Left, Top, Right,
+  Bottom , and the Current clipping region.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.IntersectClipRect(dc: hdc;
+  Left, Top, Right, Bottom: Integer): Integer;
+begin
+  Result := Windows.IntersectClipRect(DC, Left, Top, Right, Bottom);
+end;
+
+{------------------------------------------------------------------------------
+  Method: IsWindowEnabled
+  Params: handle - window handle
+  Returns: true if handle is window, false otherwise
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.IsWindow(handle: HWND): boolean;
+begin
+  Result := Boolean(Windows.IsWindow(Handle));
+end;
+
+{------------------------------------------------------------------------------
+  Method: IsWindowEnabled
+  Params: handle - window handle
+  Returns: true if window is enabled, false otherwise
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.IsWindowEnabled(handle: HWND): boolean;
+begin
+  Result := Boolean(Windows.IsWindowEnabled(handle));
+end;
+
+{------------------------------------------------------------------------------
+  Method: IsWindowVisible
+  Params: handle - window handle
+  Returns: true if window is visible, false otherwise
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.IsWindowVisible(handle: HWND): boolean;
+begin
+  Result := Boolean(Windows.IsWindowVisible(handle));
+end;
+
+function TWin32WidgetSet.IsZoomed(handle: HWND): boolean;
+begin
+  Result := Windows.IsZoomed(handle);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  LineTo
+  Params:  DC - device context handle
+           X  - x-coordinate of line's ending point
+           Y  - y-coordinate of line's ending point
+  Returns: if the function succeeds
+
+  Draws a line from the current position up to, but not including, the specified point.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
+begin
+  Result := Boolean(Windows.LineTo(DC, X, Y));
+end;
+
+function TWin32WidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
+begin
+  Result := Windows.LPtoDP(DC, Points, Count);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  MaskBlt
+  Params:  DestDC        - The destination device context
+           X, Y          - The left/top corner of the destination rectangle
+           Width, Height - The size of the destination rectangle
+           SrcDC         - The source device context
+           XSrc, YSrc    - The left/top corner of the source rectangle
+           Mask          - The handle of a monochrome bitmap
+           XMask, YMask  - The left/top corner of the mask rectangle
+           Rop           - The raster operation to be performed
+  Returns: True if succesful
+
+  The MaskBlt function copies a bitmap from a source context into a destination
+  context using the specified mask and raster operation.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
+begin
+  Result := Boolean(Windows.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop));
+end;
+
+function TWin32WidgetSet.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
+begin
+  Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width, Height, Mask, XMask, YMask, SRCCOPY);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  MessageBox
+  Params:  HWnd      - The handle of parent window
+           LPText    - text in message box
+           LPCaption - title of message box
+           UType     - style of message box
+  Returns: 0 if not successful (out of memory), otherwise one of the defined
+           values:
+             IDABORT
+             IDCANCEL
+             IDIGNORE
+             IDNO
+             IDOK
+             IDRETRY
+             IDYES
+
+ The MessageBox function displays a modal dialog, with text and caption defined,
+ and includes buttons.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.MessageBox(HWnd: HWND; LPText, LPCaption: PChar; UType: Cardinal): Integer;
+{$ifdef WindowsUnicodeSupport}
+var
+  WideLPText, WideLPCaption: widestring;
+{$endif}
+begin
+  {$ifdef WindowsUnicodeSupport}
+  WideLPText := UTF8ToUTF16(string(LPText));
+  WideLPCaption := UTF8ToUTF16(string(LPCaption));
+
+  Result := Windows.MessageBoxW(HWnd, PWideChar(WideLPText),
+    PWideChar(WideLPCaption), UType);
+  {$else}
+  Result := Windows.MessageBox(HWnd, LPText, LPCaption, UType);
+  {$endif}
+end;
+
+function TWin32WidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
+begin
+  Result := MultiMon.MonitorFromPoint(ptScreenCoords, dwFlags);
+end;
+
+function TWin32WidgetSet.MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR;
+begin
+  Result := MultiMon.MonitorFromRect(lprcScreenCoords, dwFlags);
+end;
+
+function TWin32WidgetSet.MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR;
+begin
+  Result := MultiMon.MonitorFromWindow(hWnd, dwFlags);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  MoveToEx
+  Params:  DC       - handle of device context
+           X        - x-coordinate of new current position
+           Y        - x-coordinate of new current position
+           OldPoint - address of old current position
+  Returns: If the function succeeds.
+
+  Updates the current position to the specified point.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
+begin
+  Result := Boolean(Windows.MoveToEx(DC, X, Y, LPPOINT(OldPoint)));
+end;
+
+function TWin32WidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
+begin
+  Result := Windows.OffsetRgn(RGN, nXOffset, nYOffset);
+end;
+
+
+{------------------------------------------------------------------------------
+  Method:  PeekMessage
+  Params:  LPMsg         - Where it should put the message
+           Handle        - Handle of the window (thread)
+           WMsgFilterMin - Lowest MSG to grab
+           WMsgFilterMax - Highest MSG to grab
+           WRemoveMsg    - Should message be pulled out of the queue
+  Returns: Boolean if an event was there
+
+  Checks a thread message queue for a message.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.PeekMessage(Var LPMsg: TMsg; Handle: HWND; WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean;
+begin
+  {$IFDEF WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      Result := Boolean(Windows.PeekMessageW(@LPMsg, Handle, WMsgFilterMin, WMsgFilterMax, WRemoveMsg))
     else
-      Result := SIMPLEREGION;
-  end;
+      Result := Boolean(Windows.PeekMessage(@LPMsg, Handle, WMsgFilterMin, WMsgFilterMax, WRemoveMsg));
+  {$ELSE}
+    Result := Boolean(Windows.PeekMessage(@LPMsg, Handle, WMsgFilterMin, WMsgFilterMax, WRemoveMsg));
+  {$ENDIF}
 end;
 
-function TQtWidgetSet.PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
+function TWin32WidgetSet.Pie(DC: HDC; EllipseX1, EllipseY1, EllipseX2,
+  EllipseY2, StartX, StartY, EndX, EndY: Integer): Boolean;
 begin
-  Result := False;
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.PeekMessage] missing implementation ');
-  {$endif}
+  Result := Boolean(Windows.Pie(DC,EllipseX1, EllipseY1, EllipseX2, EllipseY2,
+                                   StartX, StartY, EndX, EndY));
 end;
 
 {------------------------------------------------------------------------------
-  Function: PolyBezier
-  Params:  DC: HDC; Points: PPoint; NumPts: Integer; Filled: Boolean;
-           Continuous: Boolean
-  Returns: Nothing
+  Method:  PolyBezier
+  Params:  DC, Points, NumPts, Filled, Continous
+  Returns: Boolean
+
+  Use Polybezier to draw cubic Bézier curves. The first curve is drawn from the
+  first point to the fourth point with the second and third points being the
+  control points. If the Continuous flag is TRUE then each subsequent curve
+  requires three more points, using the end-point of the previous Curve as its
+  starting point, the first and second points being used as its control points,
+  and the third point its end-point. If the continous flag is set to FALSE,
+  then each subsequent Curve requires 4 additional points, which are used
+  excatly as in the first curve. Any additonal points which do not add up to
+  a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at
+  least 4 points for an drawing to occur. If the Filled Flag is set to TRUE
+  then the resulting Poly-Bézier will be drawn as a Polygon.
+
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
+function TWin32WidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: Boolean): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI PolyBezier] DC: ', dbghex(DC));
-  {$endif}
-  Result := inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
+  If Filled or (not Continuous) then
+    Result := Inherited PolyBezier(DC,Points,NumPts, Filled, Continuous)
+  else
+    Result := Boolean(Windows.PolyBezier(DC, LPPOINT(Points)^, NumPts));
 end;
 
 {------------------------------------------------------------------------------
-  Function: Polygon
-  Params:  DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean
-  Returns: Nothing
+  Method:  Polygon
+  Params:  DC - handle to device context
+           Points - pointer to polygon's vertices
+           NumPts - count of polygon's vertices
+           Winding
+  Returns: If the function succeeds
+
+  Use Polygon to draw a closed, many-sided shape on the canvas, using the value
+  of Pen. After drawing the complete shape, Polygon fills the shape using the
+  value of Brush.
+  The Points parameter is an array of points that give the vertices of the
+  polygon.
+  Winding determines how the polygon is filled.
+  When Winding is True, Polygon
+  fills the shape using the Winding fill algorithm. When Winding is False,
+  Polygon uses the even-odd (alternative) fill algorithm.
+  NumPts indicates the number of points to use.
+  The first point is always connected to the last point.
+  To draw a polygon on the canvas, without filling it, use the Polyline method,
+  specifying the first point a second time at the end.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
-  Winding: Boolean): boolean;
+function TWin32WidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean): Boolean;
 var
-  QtPoints: PQtPoint;
-  i: integer;
+  PFMode : Longint;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI Polygon] DC: ', dbghex(DC));
-  {$endif}
-  Result := IsValidDC(DC);
-  if Result then
-  begin
-    GetMem(QtPoints, NumPts * SizeOf(TQtPoint));
-    for i := 0 to NumPts - 1 do
-      QtPoints[i] := QtPoint(Points[i].x, Points[i].y);
-    if Winding then
-      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtWindingFill)
-    else
-      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtOddEvenFill);
-    FreeMem(QtPoints);
-  end;
+  If Winding then
+    PFMode := SetPolyFillMode(DC, Windows.WINDING)
+  else
+    PFMode := SetPolyFillMode(DC, Windows.ALTERNATE);
+  Result := Boolean(Windows.Polygon(DC, LPPOINT(Points)^, NumPts));
+  SetPolyFillMode(DC, PFMode);
 end;
 
 {------------------------------------------------------------------------------
-  Function: Polyline
-  Params:  DC: HDC; Points: PPoint; NumPts: Integer
-  Returns: Nothing
+  Method:  Polyline
+  Params:  DC - handle of device context
+           Points - address of array containing endpoints
+           NumPts - number of points in the array
+  Returns: If the function succeeds
+
+  Draws a series of line segments by connecting the points in the specified
+  array.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
+function TWin32WidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI Polyline] DC: ', dbghex(DC));
-  {$endif}
-  Result := IsValidDC(DC) and (NumPts > 0);
-  if Result then
-    TQtDeviceContext(DC).DrawPolyLine(Points, NumPts);
-end;
-
-function TQtWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean;
-var
-  Widget: TQtWidget absolute Handle;
-  Event: QLCLMessageEventH;
-begin
-  Result := False;
-  if Handle <> 0 then
-  begin
-    Event := QLCLMessageEvent_create(QEventLCLMessage, Msg, wParam, lParam, 0);
-    QCoreApplication_postEvent(Widget.Widget, Event, 1 {high priority});
-    Result := True;
-  end;
-end;
-
-function TQtWidgetSet.PtInRegion(RGN: HRGN; X, Y: Integer): Boolean;
-begin
-  Result := False;
-
-  if not IsValidGDIObject(RGN) then
-    exit;
-
-  Result := TQtRegion(RGN).containsPoint(X, Y);
+  Result := Boolean(Windows.Polyline(DC, LPPOINT(Points)^, NumPts));
 end;
 
 {------------------------------------------------------------------------------
-  Function: Rectangle
-  Params:  DC: HDC; X1, Y1, X2, Y2: Integer
-  Returns: Nothing
+  Method:  PostMessage
+  Params: Handle - handle of destination window
+          Msg - message to post
+          WParam - first message parameter
+          LParam - second message parameter
+  Returns: True if succesful
+
+  The PostMessage function places (posts) a message in the message queue and
+  then returns without waiting.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): Boolean;
+begin
+  Result := Boolean(Windows.PostMessage(Handle, Msg, WParam, LParam));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  PtInRegion
+  Params:  Rgn  - handle of region
+           X, Y - Point coordinates to test
+  Returns: If the specified point lies in the region
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.PtInRegion(Rgn: HRGN; X, Y: Integer): Boolean;
+begin
+  Result := Boolean(Windows.PtInRegion(Rgn, X, Y));
+end;
+
+{------------------------------------------------------------------------------
+  Method:   RadialArc
+  Params:   DC, left, top, right, bottom, sx, sy, ex, ey
+  Returns:  Nothing
+
+  Use RadialArc to draw an elliptically curved line with the current Pen. The
+  values sx,sy, and ex,ey represent the starting and ending radial-points
+  between which the Arc is drawn.
+
+------------------------------------------------------------------------------}
+function TWin32WidgetSet.RadialArc(DC: HDC; left, top, right, bottom, sx, sy, ex, ey: Integer): Boolean;
+begin
+  Result := Boolean(Windows.Arc(DC, left, top, right, bottom, sx, sy, ex, ey));
+end;
+
+{------------------------------------------------------------------------------
+  Method:   RadialChord
+  Params:   DC, x1, y1, x2, y2, sx, sy, ex, ey
+  Returns:  Nothing
+
+  Use RadialChord to draw a filled Chord-shape on the canvas. The values sx,sy,
+  and ex,ey represent the starting and ending radial-points between which
+  the bounding-Arc is drawn.
+
+------------------------------------------------------------------------------}
+function TWin32WidgetSet.RadialChord(DC: HDC; x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
+begin
+  Result := Boolean(Windows.Chord(DC, x1, y1, x2, y2, sx, sy, ex, ey));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  RealizePalette
+  Params:  DC - handle of device context
+  Returns: number of entries in the logical palette mapped to the system
+           palette
+
+  Maps palette entries from the current logical palette to the system palette.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.RealizePalette(DC: HDC): Cardinal;
+begin
+  Result := Windows.RealizePalette(DC);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  Rectangle
+  Params:  DC - handle of device context
+           X1 - x-coordinate of bounding rectangle's upper-left corner
+           Y1 - y-coordinate of bounding rectangle's upper-left corner
+           X2 - x-coordinate of bounding rectangle's lower-right corner
+           Y2 - y-coordinate of bounding rectangle's lower-right corner
+  Returns: If the function succeeds
 
   The Rectangle function draws a rectangle. The rectangle is outlined by using
   the current pen and filled by using the current brush.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
-var
-  R: TRect;
+function TWin32WidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI Rectangle] DC: ', dbghex(DC));
-  {$endif}
-
-  if not IsValidDC(DC) then Exit(False);
-
-  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
-  if IsRectEmpty(R) then Exit(True);
-
-  TQtDeviceContext(DC).drawRect(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1);
-  Result := True;
+  Result := Boolean(Windows.Rectangle(DC, X1, Y1, X2, Y2));
 end;
 
-function TQtWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
-var
-  QtDC: TQtDeviceContext;
+function TWin32WidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-  writeln('[WinAPI RectVisible] ');
-  {$endif}
-  Result := False;
-  if not IsValidDC(DC) then Exit;
-  QtDC := TQtDeviceContext(DC);
-  // as MSDN says only clipping region can play here
-  if QtDC.getClipping then
-    Result := QtDC.getClipRegion.containsRect(ARect);
+  Result := Windows.RectVisible(DC, LPRECT(@ARect)^);
 end;
 
 {------------------------------------------------------------------------------
@@ -4984,190 +2805,102 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean;
-var
-  QtWidget: TQtWidget;
-  Region: TQtRegion;
+function TWin32WidgetSet.RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean;
 begin
-  if not IsValidHandle(Wnd) then
-    Exit(False);
-
-  QtWidget := TQtWidget(Wnd);
-  if IsValidGDIObject(hrgnUpdate) then
-    Region := TQtRegion(hrgnUpdate)
-  else
-    Region := nil;
-  if (lprcUpdate = nil) and (hrgnUpdate = 0) then
-  begin
-    QtWidget.Update(nil);
-    Exit(True);
-  end;
-
-  if Region = nil then
-    Result := InvalidateRect(Wnd, lprcUpdate, False)
-  else
-    QtWidget.UpdateRegion(Region.FHandle);
-
-  Result := True;
-end;
-
-function TQtWidgetSet.ReleaseCapture: Boolean;
-var
-  w: TQtWidget;
-begin
-  w := TQtWidget(GetCapture);
-  Result := w <> nil;
-  if Result then
-  begin
-    {$IFDEF MSWINDOWS}
-    if w is TQtMainWindow then
-      w.releaseMouse()
-    else
-      windows.ReleaseCapture;
-    {$ELSE}
-    w.releaseMouse();
-    {$ENDIF}
-  end;
-  {$ifdef VerboseQtWinAPI}
-  WriteLn('[WinAPI ReleaseCapture] Capture = ', THandle(w));
-  {$endif}
+  Result := Windows.RedrawWindow(Wnd,lprcUpdate,hrgnUpdate,flags);
 end;
 
 {------------------------------------------------------------------------------
-  Function: ReleaseDC
-  Params:     hWnd:       Handle to the window whose DC is to be released.
-              hDC:        Handle to the DC to be released.
-  Returns:
+  Function: RemoveProp
+  Params: Handle: Handle of the object
+          Str: Name of the property to remove
+  Returns: The handle of the property (0=failure)
+
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
+function TWin32WidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI ReleaseDC]',
-     ' hWnd: ', dbghex(hWnd),
-     ' DC: ', dbghex(DC));
-  {$endif}
-
-  Result := 0;
-
-  if IsValidDC(DC) then Exit;
-
-  Result := 1;
-end;
-
-
-{------------------------------------------------------------------------------
-  Function: RestoreDC: Restore a previously saved DC state
-  Params:
-    DC: Handle to a DeviceContext
-    SavedDC: Index of saved state that needs to be restored
-  Returns: True if state was successfuly restored.
--------------------------------------------------------------------------------}
-function TQtWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
-var
-  DCData: PQtDCData;
-begin
-  {$ifdef VerboseQTWinAPI}
-  WriteLn('Trace:> [WinAPI RestoreDC] DC=', dbghex(DC),' SavedDC=',SavedDC);
-  {$Endif}
-  // if SavedDC is positive, it represents the wished saved dc instance
-  // if SavedDC is negative, it's a relative number from last pushed state
-  Result := False;
-  if SavedDCList=nil then
-  begin
-    {$ifdef VerboseQTWinAPI}
-    WriteLn('Trace:< [WinAPI RestoreDC] there is no List yet, result=', result);
-    {$Endif}
-    exit;
-  end;
-
-  if SavedDC < 0 then
-    SavedDC := SavedDC + SavedDCList.Count;
-
-  // check index
-  Result := (SavedDC > 0) and (SavedDC < SavedDCList.Count);
-  if Result then
-  begin
-    Result := true;
-    while SavedDC > 0 do
-    begin
-      DCData := PQtDcData(SavedDCList[SavedDC]);
-      SavedDCList.Delete(SavedDC);
-      Result := TQtDeviceContext(DC).RestoreDCData(DCData);
-      Dec(SavedDC);
-    end;
-  end;
-  {$ifdef VerboseQTWinAPI}
-  WriteLn('Trace:< [WinAPI RestoreDC]');
-  {$Endif}
-end;
-
-function TQtWidgetSet.RoundRect(DC: hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
-begin
-  Result := False;
-  if not IsValidDC(DC) then
-  begin
-    {$ifdef VerboseQTWinAPI}
-    WriteLn('Trace:< [WinAPI RoundRect] DC Invalid, result=', result);
-    {$Endif}
-    Exit;
-  end;
-  Result := inherited RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
-end;
-{------------------------------------------------------------------------------
-  Function: SaveDC: save DC state information to a stack
-  Params:  DC
-  Returns: The index assigned to the or 0 if DC is not valid
--------------------------------------------------------------------------------}
-function TQtWidgetSet.SaveDC(DC: HDC): Integer;
-var
-  DCData: PQtDCData;
-begin
-  {$ifdef VerboseQTWinAPI}
-  WriteLn('Trace:> [WinAPI SaveDC] DC=', dbghex(DC));
-  {$Endif}
-
-  result:=0;
-
-  if not IsValidDC(DC) then
-  begin
-    {$ifdef VerboseQTWinAPI}
-    WriteLn('Trace:< [WinAPI SaveDC] DC Invalid, result=', result);
-    {$Endif}
-    exit;
-  end;
-
-  if SavedDCList=nil then
-  begin
-    SavedDCList := TFPList.Create;
-    SavedDCList.Add(nil); // start at index 1, 0 is an invalid saved state
-  end;
-
-  DCData := TQtDeviceContext(DC).CreateDCData;
-  Result := 1;
-  SavedDCList.Insert(Result, DCData);
-
-  {$ifdef VerboseQTWinAPI}
-  WriteLn('Trace:< [WinAPI SaveDC] result=', Result);
-  {$Endif}
+  Result := Windows.RemoveProp(Handle, Str);
 end;
 
 {------------------------------------------------------------------------------
-  Function: ScreenToClient
-  Params:  Handle: HWND; var P: TPoint
-  Returns:
--------------------------------------------------------------------------------}
-function TQtWidgetSet.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
-var
-  APoint: TQtPoint;
+  Method:  ReleaseCapture
+  Params:  none
+  Returns: True if succesful
+
+  The ReleaseCapture function releases the mouse capture from a window
+  and restores normal mouse input processing.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.ReleaseCapture: Boolean;
 begin
-  Result := 0;
-  if IsValidHandle(Handle) then
-  begin
-    APoint := QtPoint(P.X, P.Y);
-    QWidget_mapFromGlobal(TQtWidget(Handle).GetContainerWidget, @APoint, @APoint);
-    P := Point(APoint.x, APoint.y);
-    Result := 1;
-  end;
+  Result := Boolean(Windows.ReleaseCapture);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  ReleaseDC
+  Params:  HWnd - handle of window
+           DC   - handle of device context
+  Returns: 1 if the device context was released or 0 if it wasn't
+
+  Releases a device context (DC), freeing it for use by other applications.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.ReleaseDC(Window: HWND; DC: HDC): Integer;
+begin
+  Result := Windows.ReleaseDC(Window, DC);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  RestoreDC
+  Params:  DC - handle of device context
+           SavedDC - state to be restored
+  Returns: if the function succeeds
+
+  Restores a device context (DC) to the specified state.
+-------------------------------------------------------------------------------}
+function TWin32WidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
+begin
+  Result := Boolean(Windows.RestoreDC(DC, SavedDC));
+end;
+
+{------------------------------------------------------------------------------
+  Method:   RoundRect
+  Params:   DC, X1, Y1, X2, Y2, RX, RY
+  Returns:  true if succesfull, false otherwise
+
+  Draws a Rectangle with optional rounded corners. RY is the radial height
+  of the corner arcs, RX is the radial width.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.RoundRect(DC: HDC; X1, Y1, X2, Y2: Integer; RX, RY : Integer): Boolean;
+begin
+  Result := Windows.RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SaveDC
+  Params:  DC - a DC to save
+  Returns: 0 if the functions fails otherwise a positive integer identifing
+           the saved DC
+
+  The SaveDC function saves the current state of the specified device
+  context (DC) by copying its elements to a context stack.
+-------------------------------------------------------------------------------}
+function TWin32WidgetSet.SaveDC(DC: HDC): Integer;
+begin
+  Result := Windows.SaveDC(DC);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  ScreenToClient
+  Params: Handle - window handle for source coordinates
+          P      - record containing coordinates
+  Returns: if the function succeeds, the return value is nonzero; if the
+           function fails, the return value is zero
+
+  Converts the screen coordinates of a specified point on the screen to client
+  coordinates.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.ScreenToClient(Handle: HWND; Var P: TPoint): Integer;
+begin
+  Result := Integer(Windows.ScreenToClient(Handle, @P));
 end;
 
 {------------------------------------------------------------------------------
@@ -5186,43 +2919,9 @@ end;
   The ScrollWindowEx function scrolls the content of the specified window's
   client area
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll,
-  PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect; Flags: UINT): Boolean;
-var
-  R: TRect;
-  W: TQtWidget;
+function TWin32WidgetSet.ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll, PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect; Flags: UINT): Boolean;
 begin
-  Result := False;
-  if (HWND = 0) then exit;
-
-  W := TQtWidget(HWND);
-  if ((Flags and SW_SCROLLCHILDREN) <> 0) then
-    W.scroll(dx, dy, nil)
-  else
-  if (PrcScroll = nil) then
-  begin
-    R := W.getClientBounds;
-    W.scroll(dx, dy, @R);
-  end
-  else
-    W.scroll(dx, dy, PRcScroll);
-
-  if ((Flags and SW_INVALIDATE) <> 0) then
-  begin
-    if IsValidGDIObject(HRgnUpdate) then
-    begin
-      R := TQtRegion(HRgnUpdate).getBoundingRect;
-      PRcUpdate := @R;
-      W.Update(@R);
-    end else
-    if PRcClip <> nil then
-    begin
-      PRcUpdate := PRcClip;
-      W.Update(PrcClip);
-    end;
-  end;
-
-  Result := True;
+  Result := Windows.ScrollWindowEx(HWnd, DX, DY, Windows.RECT(PRcScroll^), Windows.RECT(PRcClip^), HRgnUpdate, LPRECT(PRcUpdate), Flags) <> ERROR;
 end;
 
 {------------------------------------------------------------------------------
@@ -5240,277 +2939,149 @@ end;
       ComplexRegion
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
-var
-  QtDC: TQtDeviceContext;
-  EmptyRegion: QRegionH;
-  P: TPoint;
+function TWin32WidgetSet.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 begin
-  Result := ERROR;
-  if IsValidDC(DC) then
-  begin
-    QtDC := TQtDeviceContext(DC);
-    if IsValidGDIObject(RGN) then
-    begin
-      Result := TQtRegion(Rgn).GetRegionType;
-      // RGN is in Device coordinates. Qt expects logical coordinates
-      // so we need to convert RGN coords.
-      GetWindowOrgEx(DC, @P);
-      TQtRegion(Rgn).translate(P.X, P.Y);
-      QtDC.setClipRegion(TQtRegion(Rgn).FHandle);
-    end else
-    begin
-      EmptyRegion := QRegion_create;
-      try
-        QtDC.setClipRegion(EmptyRegion, QtNoClip);
-      finally
-        QRegion_destroy(EmptyRegion);
-      end;
-      Result := NULLREGION;
-    end;
-  end;
+  Result := Windows.SelectClipRGN(DC, RGN);
 end;
 
 {------------------------------------------------------------------------------
-  Function: SelectObject
-  Params:  none
-  Returns: The GDI object of the same type previously associated with the DC
+  Method:  SelectObject
+  Params:  DC - handle of device context
+           GDIObj - handle of object
+  Returns: he handle of the object being replaced
 
-  Changes one of the GDI objects (Font, Brush, etc) of a Device Context;
+  Selects an object into the specified device context.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
-var
-  aObject: TObject;
-  {$ifdef VerboseQtWinAPI}
-    ObjType: string;
-  {$endif}
+function TWin32WidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI SelectObject]',
-    ' DC=', dbghex(DC),
-    ' GDIObj=', dbghex(GDIObj));
-  {$endif}
-
-  Result := 0;
-
-  if not IsValidDC(DC) then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('Trace:< [WinAPI SelectObject] Invalid DC');
-    {$endif}
-
-    Exit;
-  end;
-
-  if not IsValidGDIObject(GDIObj) then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('Trace:< [WinAPI SelectObject] Invalid GDI Object');
-    {$endif}
-
-    Exit;
-  end;
-
-  aObject := TObject(GDIObj);
-
-  if aObject is TQtFont then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Font';
-    {$endif}
-
-    Result := HGDIOBJ(TQtDeviceContext(DC).font);
-
-    TQtDeviceContext(DC).setFont(TQtFont(aObject));
-  end
-  else if aObject is TQtPen then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Pen'      ;
-    {$endif}
-    result := HGDIOBJ(TQtDeviceContext(DC).pen);
-
-    TQtDeviceContext(DC).setPen(TQtPen(aObject));
-  end
-  else if aObject is TQtBrush then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Brush';
-    {$endif}
-
-    Result := HGDIOBJ(TQtDeviceContext(DC).brush);
-
-    TQtDeviceContext(DC).setBrush(TQtBrush(aObject));
-  end
-  else if aObject is TQtImage then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Image';
-    {$endif}
-
-    Result := HGDIOBJ(TQtDeviceContext(DC).vImage);
-
-    // TODO: is this also saved in qpainter_save?
-    TQtDeviceContext(DC).setImage(TQtImage(aObject));
-  end else
-  if AObject is TQtRegion then
-  begin
-    Result := HGDIOBJ(TQtDeviceContext(DC).getClipRegion);
-    SelectClipRGN(DC, HRGN(GDIObj));
-  end;
-
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI SelectObject] Result=', dbghex(Result), ' ObjectType=', ObjType);
-  {$endif}
-end;
-
-function TQtWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal;
-  WParam: WParam; LParam: LParam): LResult;
-var
-  Widget: TQtWidget absolute HandleWnd;
-  Event: QLCLMessageEventH;
-begin
-  Result := 0;
-  if (HandleWnd <> 0) and (Widget.Widget <> nil) then
-  begin
-    Event := QLCLMessageEvent_create(QEventLCLMessage, Msg, wParam, lParam, 0);
-    try
-      QCoreApplication_sendEvent(Widget.Widget, Event);
-      Result := QLCLMessageEvent_getMsgResult(Event);
-    finally
-      QLCLMessageEvent_destroy(Event);
-    end;
-  end;
-end;
-
-function TQtWidgetSet.SetActiveWindow(Handle: HWND): HWND;
-begin
-  Result := GetActiveWindow;
-
-  if Handle <> 0 then
-    TQtWidget(Handle).Activate
-  else
-    Result := 0; // error
+  Result := Windows.SelectObject(DC, GDIObj);
 end;
 
 {------------------------------------------------------------------------------
-  Function: SetBKColor
-  Params: X:
-          Y:
-  Returns:
+  Method:  SelectPalette
+  Params:  DC - handle of device context
+           Palette - handle of logical color palette
+           ForceBackground - whether the logical palette is forced to be a
+                             background palette
+  Returns: the device context's previous logical palette
 
+  Selects the specified logical palette into a device context.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
+function TWin32WidgetSet.SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI SetBkColor]',
-     ' DC: ', dbghex(DC),
-     ' Color: ', dbgs(Color));
-  {$endif}
+  Result := Windows.SelectPalette(DC, Palette, ForceBackground);
+end;
 
-  Result := 0;
+{------------------------------------------------------------------------------
+  Method:  SendMessage
+  Params: HandleWnd   - handle of destination window
+          Msg         - message to send
+          WParam      - first message parameter
+          LParam      - second message parameter
+  Returns: the result of the message processing
 
-  if not IsValidDC(DC) then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('Trace:< [WinAPI SetBkColor] Invalid DC');
-    {$endif}
+  The SendMessage function sends the specified message to a window or windows.
+  The function calls the window procedure for the specified window and does
+  not return until the window procedure has processed the message.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
+begin
+  Result := Windows.SendMessage(HandleWnd, Msg, WParam, LParam);
+end;
 
-    Exit;
-  end;
+{------------------------------------------------------------------------------
+  Method:  SetActiveWindow
+  Params:  Window - Window to focus
+  Returns: Old active window
 
-  Result := TQtDeviceContext(DC).SetBkColor(TColorRef(Color));
+  Sets focus to the specified window, if the current process is on top
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetActiveWindow(Window: HWND): HWND;
+begin
+  Result := Windows.SetActiveWindow(Window);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetBkColor
+  Params:  DC    - Device context to change the text background color
+           Color - background color value
+  Returns: Old Background color
+
+  Sets the current background color to the specified color value.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
+begin
+  Result := TColorRef(Windows.SetBkColor(DC, ColorToRGB(TColor(Color))));
 end;
 
 {------------------------------------------------------------------------------
   Method:  SetBkMode
-  Params:  DC    -
-  Returns:
+  Params: DC     - handle of device context
+          BkMode - flag specifying background mode
+  Returns: the previous background mode
+
+  Sets the background mix mode of the specified device context.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetBkMode(DC: HDC; bkMode: Integer): Integer;
+function TWin32WidgetSet.SetBkMode(DC: HDC; BkMode: Integer): Integer;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI SetBkMode] DC=', dbghex(DC), ' BkMode=', dbgs(bkMode));
-  {$endif}
-
-  Result := 0;
-
-  if not IsValidDC(DC) then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('Trace:< [WinAPI SetBkMode] Invalid DC');
-    {$endif}
-
-    Exit;
-  end;
-
-  Result := TQtDeviceContext(DC).SetBkMode(bkMode);
+  // Your code here
+  Result := Windows.SetBkMode(DC, BkMode);
 end;
 
-function TQtWidgetSet.SetCapture(AHandle: HWND): HWND;
-var
-  Message: TLMessage;
+function TWin32WidgetSet.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth,
+  MinItemsHeight, MinItemCount: integer): boolean;
 begin
-  Result := GetCapture;
-  if Result <> AHandle then
-  begin
-    if Result <> 0 then
-      ReleaseCapture;
-    if AHandle <> 0 then
-     {$IFDEF MSWINDOWS}
-      Windows.SetCapture(AHandle);
-     {$ELSE}
-      TQtWidget(AHandle).grabMouse();
-     {$ENDIF}
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('[WinAPI SetCapture] Capture = ', Result, ' New capture = ', AHandle);
-    {$endif}
-    if Result <> 0 then
-    begin
-      Message.Msg := 0;
-      FillChar(Message, SizeOf(Message), 0);
-      Message.msg := LM_CAPTURECHANGED;
-      Message.wParam := 0;
-      Message.lParam := Result;
-      LCLMessageGlue.DeliverMessage(TQtWidget(AHandle).LCLObject, Message);
-    end;
-  end;
-end;
-
-function TQtWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
-begin
-  Result := QtCaret.SetCaretPos(X, Y);
-end;
-
-function TQtWidgetSet.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
-begin
-  Result := QtCaret.SetCaretPos(X, Y);
-end;
-
-function TQtWidgetSet.SetCaretRespondToFocus(handle: HWND;
-  ShowHideOnFocus: boolean): Boolean;
-begin
-  Result := True;
-  QtCaret.SetQtCaretRespondToFocus(ShowHideOnFocus);
+  Result:= ThemeServices.ThemesEnabled and
+    boolean(Windows.SendMessage(Handle, CB_SETMINVISIBLE, MinItemCount, 0));
 end;
 
 {------------------------------------------------------------------------------
-  Function: SetCursor
-  Params: ACursor - HCursor (TQtCursor)
-  Returns:
-       previous global cursor
+  Method:  SetCapture
+  Params:  Value - Handle of window to capture
+  Returns: the handle of the window that had previously captured the mouse
+
+  Sets the mouse capture to the specified window.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetCursor(ACursor: HCURSOR): HCURSOR;
+function TWin32WidgetSet.SetCapture(Value: HWND): HWND;
 begin
-  Result := HCURSOR(OverrideCursor);
+  Result := Windows.SetCapture(Value);
+end;
 
-  if Result = ACursor then
-    Exit;
+{------------------------------------------------------------------------------
+  Method:  SetCaretPos
+  Params:  new position x, y
+  Returns: true on success
 
-  if Screen.Cursors[crDefault] = ACursor then
-    OverrideCursor := nil
-  else
-    OverrideCursor := TQtCursor(ACursor);
+  Moves the caret to the specified coordinates.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetCaretPos(X, Y: Integer): Boolean;
+begin
+{$ifdef DEBUG_CARET}
+  DebugLn('[SetCaretPos]');
+{$endif}
+  Result := Boolean(Windows.SetCaretPos(X, Y));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetCaretPosEx
+  Params:  Handle - handle of window
+           X      - horizontal mouse coordinate
+           Y      - vertical mouse coordinate
+  Returns: true on success
+
+  Moves the caret to the specified coordinates in the specified window.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetCaretPosEx(Handle: HWND; X, Y: Integer): Boolean;
+begin
+{$ifdef DEBUG_CARET}
+  DebugLn('[SetCaretPosEx] for window ', IntToHex(Handle, 8));
+{$endif}
+  Result := Windows.SetCaretPos(X, Y);
+end;
+
+function TWin32WidgetSet.SetCursor(hCursor: HICON): HCURSOR;
+begin
+  Result := Windows.SetCursor(hCursor);
 end;
 
 {------------------------------------------------------------------------------
@@ -5520,241 +3091,206 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetCursorPos(X, Y: Integer): Boolean;
+function TWin32WidgetSet.SetCursorPos(X, Y: Integer): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetCursorPos]');
-  {$endif}
-
-  QCursor_setPos(X, Y);
-
+  Result := False;
+  Windows.SetCursorPos(X, Y);
   Result := True;
 end;
 
 {------------------------------------------------------------------------------
-  Function: SetFocus
-  Params: hWnd   - Window handle to be focused
-  Returns:
+  Method:  SetFocus
+  Params:  HWnd - Handle of new focus window
+  Returns: The old focus window
 
+  The SetFocus function sets the keyboard focus to the specified window
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetFocus(hWnd: HWND): HWND;
-var
-  W: TQtWidget;
+function TWin32WidgetSet.SetFocus(HWnd: HWND): HWND;
 begin
-  Result := 0;
-  if hwnd<>0 then
+{
+  if Windows.GetFocus <> HWnd then
   begin
-    {$ifdef VerboseFocus}
-    WriteLn('*********  TQtWidgetSet.SetFocus INIT focusing ', TQtWidget(hwnd).lclobject.name);
-    {$endif}
-    Result := GetFocus;
-    W := TQtWidget(HWND).getWindow;
-    if (W <> nil) and W.getVisible and not W.IsActiveWindow and
-      not TQtMainWindow(W).Blocked then
-        W.Activate;
-    TQtWidget(hWnd).setFocus;
-    {$ifdef VerboseFocus}
-    DebugLn('********* TQtWidgetSet.SetFocus END was %x now is %x',[result,hwnd]);
-    {$endif}
+    DebugLn(['TWin32WidgetSet.SetFocus ', ' Wnd = ', WndClassName(HWnd), ' LCLObject = ', dbgsName(GetLCLOwnerObject(HWnd))]);
+    DumpStack;
   end;
+}
+  Result := Windows.SetFocus(HWnd);
 end;
 
-function TQtWidgetSet.GetForegroundWindow: HWND;
-var
-  W: QWidgetH;
+{------------------------------------------------------------------------------
+  Method:  SetForegroundWindow
+  Params:  HWnd - The handle of the window
+  Returns: True if succesful
+
+  The SetForegroundWindow function brings the specified window to top
+    (highest z-index level).
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
 begin
-  {$IFDEF HASX11}
-  if WindowManagerName = 'metacity' then
-    W := X11GetActivewindow
+  Result := Windows.SetForegroundWindow(HWnd);
+end;
+
+function TWin32WidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
+begin
+  Result := Windows.SetMenu(AWindowHandle, AMenuHandle);
+  AddToChangedMenus(AWindowHandle);
+end;
+
+function TWin32WidgetSet.SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
+begin
+  Result := Windows.SetParent(hWndchild, hWndParent);
+end;
+
+
+{------------------------------------------------------------------------------
+  Method:  SetMapMode
+  Params:  DC			- Device Context
+           fnMapMode		- Mapping mode
+
+  Returns: 0 if unsuccessful or the old Mode if successful
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetMapMode(DC: HDC; fnMapMode : Integer): Integer;
+begin
+  Result := Windows.SetMapMode(DC, fnMapMode);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetProp
+  Params:  Handle - handle of window
+           Str    - string
+           Data   - pointer to data
+  Returns: Whether the string and data were successfully added to the property
+           list.
+
+  Adds a new entry or changes an existing entry in the property list of the
+  specified window.
+
+  NOTE: LCLLinux has no RemoveProp function but Windows API requires all set
+  properties to be removed, so I'm keeping a list of windows with properties
+  for a properties-enumeration function that's called when the program is quit.
+
+  MWE: that is not really needed anymore since the RemoveProp is now implemented
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetProp(Handle: HWND; Str: PChar; Data: Pointer): Boolean;
+begin
+  Result := Boolean(Windows.SetProp(Handle, Str, Windows.HANDLE(Data)));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetROP2
+  Params:  DC			- Device Context
+           Mode		- Foreground mixing mode
+
+  Returns: 0 if unsuccessful or the old Mode if successful
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
+begin
+  result := Windows.SetROP2(DC, Mode);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetScrollInfo
+  Params:  Handle     - handle of window with scroll bar
+           SBStyle    - scroll bar flag
+           ScrollInfo - record with scroll parameters
+           BRedraw    - is the scroll bar is redrawn?
+  Returns: The new position value
+
+  Sets the parameters of a scroll bar.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer;
+begin
+  ScrollInfo.cbSize:=sizeof(ScrollInfo);
+  if (ScrollInfo.fMask and SIF_Range > 0) then
+    ScrollInfo.nMax := Max(ScrollInfo.nMin, ScrollInfo.nMax - 1);
+  Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetStretchBltMode
+  Params:  DC          - handle of device context
+           StretchMode - strech mode
+  Returns: 0 if unsuccesful
+
+  The SetStretchBltMode function sets the StrechBlt mode.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetStretchBltMode(DC: HDC; StretchMode: Integer): Integer;
+begin
+  Result := Windows.SetStretchBltMode(DC, StretchMode);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetSysColors
+  Params:  CElements    - the number of elements
+           LPAElements  - array with element numbers
+           LPARGBValues - array with colors
+  Returns: 0 if unsuccesful
+
+  The SetSysColors function sets the colors for one or more display elements.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetSysColors(CElements: Integer; Const LPAElements; Const LPARGBValues): Boolean;
+begin
+  Result := Boolean(Windows.SetSysColors(CElements, PInteger(@LPAElements)^, LPColorRef(@LPARGBValues)^));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetTextCharacterExtra
+  Params: _HDC       - handle of device context
+          NCharExtra - extra-space value
+  Returns: the previous intercharacter spacing
+
+  Sets the intercharacter spacing.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetTextCharacterExtra(_HDC: HDC; NCharExtra: Integer): Integer;
+begin
+  // Your code here
+  Result := Windows.SetTextCharacterExtra(_HDC, NCharExtra);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetTextColor
+  Params:  DC    - Identifies the device context.
+           Color - Specifies the color of the text.
+  Returns: The previous color if succesful, CLR_INVALID otherwise
+
+  The SetTextColor function sets the text color for the specified device
+  context to the specified color.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
+begin
+  Result := TColorRef(Windows.SetTextColor(DC, ColorToRGB(TColor(Color))));
+end;
+
+function TWin32WidgetSet.SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean;
+begin
+  Result := Boolean(Windows.SetViewPortExtEx(DC, XExtent, YExtent, LPSize(OldSize)));
+end;
+
+function TWin32WidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
+begin
+  Result := Boolean(Windows.SetViewPortOrgEx(DC, NewX, NewY, LPPoint(OldPoint)));
+end;
+
+function TWin32WidgetSet.SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean;
+begin
+  Result := Boolean(Windows.SetWindowExtEx(DC, XExtent, YExtent, LPSize(OldSize)));
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: GetWindowLong
+  Params:  Handle  - handle of window
+           Idx     - value to set
+           NewLong - new value
+  Returns: Nothing
+
+  Changes an attribute of the specified window.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt;
+begin
+  if UnicodeEnabledOS then
+    Result := Windows.SetWindowLongPtrW(Handle, Idx, NewLong)
   else
-    W := QApplication_activeWindow();
-  {$ELSE}
-  W := QApplication_activeWindow();
-  {$ENDIF}
-  Result := HwndFromWidgetH(W);
-end;
-
-function TQtWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
-begin
-  Result := False;
-  if HWND <> 0 then
-  begin
-    Result := TQtWidget(HWND).IsActiveWindow;
-    TQtWidget(HWnd).Activate;
-  end;
-end;
-
-function TQtWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
-var
-  AWidget, AMenuWidget: TQtWidget;
-  QtMainWindow: TQtMainWindow absolute AWidget;
-  QtMenuBar: TQtMenuBar absolute AMenuWidget;
-  R, R1: TRect;
-begin
-  AWidget := TQtWidget(AWindowHandle);
-  Result := AWidget is TQtMainWindow;
-  if Result then
-  begin
-    AMenuWidget := TQtWidget(AMenuHandle);
-    if AMenuWidget is TQtMenuBar then
-    begin
-      R := AWidget.LCLObject.ClientRect;
-      R1 := QtMainWindow.MenuBar.getGeometry;
-      R1.Right := R.Right;
-      QtMenuBar.setGeometry(R1);
-      QtMainWindow.setMenuBar(QMenuBarH(QtMenuBar.Widget));
-    end
-    else
-      QtMainWindow.setMenuBar(QMenuBarH(QtMainWindow.MenuBar.Widget));
-  end;
-end;
-
-function TQtWidgetSet.SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
-var
-  OldVisible: Boolean;
-  Flags: QtWindowFlags;
-  W: TQtWidget;
-begin
-  {$ifdef VerboseQtWinAPI}
-  writeln('[WinApi SetParent] child: ',dbgHex(PtrUInt(hwndChild)),
-    ' parent: ',dbgHex(PtrUInt(hWndParent)));
-  {$endif}
-  Result := 0;
-  if not IsValidHandle(hwndChild) then
-    exit;
-  Result := GetParent(hWndChild);
-  if (Result = hwndParent) then
-    exit;
-  W := TQtWidget(hWndChild);
-  OldVisible := W.getVisible;
-  Flags := W.windowFlags;
-  if IsValidHandle(hWndParent) then
-    W.setParent(TQtWidget(hWndParent).GetContainerWidget)
-  else
-  begin
-    W.setParent(nil);
-    W.setWindowFlags(Flags);
-  end;
-  W.setVisible(OldVisible);
-end;
-
-function TQtWidgetSet.SetMapMode(DC: HDC; fnMapMode : Integer): Integer;
-var
-  AWindowExt: TPoint;
-  R: TRect;
-begin
-  if IsValidDC(DC) then
-  begin
-    if fnMapMode <> TQtDeviceContext(DC).vMapMode then
-    begin
-      case fnMapMode of
-        MM_ANISOTROPIC:; // user's choice
-        MM_ISOTROPIC:; // adjusted after each SetViewPortExtEx call (see MSDN for details)
-        MM_HIENGLISH: AWindowExt := Point(1000, -1000);
-        MM_HIMETRIC: AWindowExt := Point(2540, -2540);
-        MM_LOENGLISH: AWindowExt := Point(100, -100);
-        MM_LOMETRIC: AWindowExt := Point(254, -254);
-        MM_TWIPS: AWindowExt := Point(1440, -1440);
-      else
-        fnMapMode := MM_TEXT;
-      end;
-      TQtDeviceContext(DC).vMapMode := fnMapMode;
-      QPainter_setViewTransformEnabled(TQtDeviceContext(DC).Widget, fnMapMode <> MM_TEXT);
-      if not (fnMapMode in [MM_TEXT, MM_ANISOTROPIC, MM_ISOTROPIC]) then
-      begin
-        QPainter_Window(TQtDeviceContext(DC).Widget, @R);
-        R.BottomRight := AWindowExt;
-        QPainter_setWindow(TQtDeviceContext(DC).Widget, @R);
-        QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
-        R.Right := QtWidgetSet.GetDeviceCaps(DC, LOGPIXELSX);
-        R.Bottom := QtWidgetSet.GetDeviceCaps(DC, LOGPIXELSX);
-        QPainter_setViewPort(TQtDeviceContext(DC).Widget, @R);
-      end;
-    end;
-    Result := Integer(True);
-  end else
-    Result := Integer(False);
-end;
-
-function TQtWidgetSet.SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean;
-var
-  R, RW: TRect;
-  Ratio: Single;
-begin
-  Result := False;
-  if IsValidDC(DC) then
-  begin
-    QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
-    if OldSize <> nil then
-    begin
-      OldSize^.cx := R.Right - R.Left;
-      OldSize^.cy := R.Bottom - R.Top;
-    end;
-    if (XExtent <> R.Right) or (YExtent <> R.Bottom) then
-    begin
-      case TQtDeviceContext(DC).vMapMode of
-        MM_ANISOTROPIC, MM_ISOTROPIC:
-        begin
-          if TQtDeviceContext(DC).vMapMode = MM_ISOTROPIC then
-          begin
-            // TK: Is here also an adjustment on Windows if DPIX and DPIY are different?
-            QPainter_Window(TQtDeviceContext(DC).Widget, @RW);
-            Ratio := RW.Right / RW.Bottom; // no check, programmer cannot put nonsense
-            if YExtent * Ratio > XExtent then
-              YExtent := RoundToInt(XExtent / Ratio)
-            else if YExtent * Ratio < XExtent then
-              XExtent := RoundToInt(YExtent * Ratio)
-          end;
-          QPainter_setViewPort(TQtDeviceContext(DC).Widget, R.Left, R.Top, XExtent, YExtent);
-          Result := True;
-        end;
-      end;
-    end;
-  end;
-end;
-
-function TQtWidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
-var
-  R: TRect;
-begin
-  Result := False;
-  if IsValidDC(DC) then
-  begin
-    QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
-    if OldPoint <> nil then
-      OldPoint^ := R.TopLeft;
-    if (TQtDeviceContext(DC).vMapMode <> MM_TEXT) and (NewX <> R.Left) or (NewY <> R.Top) then
-    begin
-      QPainter_setViewPort(TQtDeviceContext(DC).Widget, NewX, NewY, R.Right - R.Left, R.Bottom - R.Top);
-      Result := True;
-    end;
-  end;
-end;
-
-function TQtWidgetSet.SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean;
-var
-  R: TRect;
-begin
-  Result := False;
-  if IsValidDC(DC) then
-  begin
-    QPainter_Window(TQtDeviceContext(DC).Widget, @R);
-    if OldSize <> nil then
-    begin
-      OldSize^.cx := R.Right - R.Left;
-      OldSize^.cy := R.Bottom - R.Top;
-    end;
-    if (XExtent <> R.Right) or (YExtent <> R.Bottom) then
-    begin
-      case TQtDeviceContext(DC).vMapMode of
-        MM_ANISOTROPIC, MM_ISOTROPIC:
-        begin
-          QPainter_setWindow(TQtDeviceContext(DC).Widget, R.Left, R.Top, XExtent, YExtent);
-          Result := True;
-        end;
-      end;
-    end;
-  end;
+    Result := Windows.SetWindowLongPtr(Handle, Idx, NewLong);
 end;
 
 {------------------------------------------------------------------------------
@@ -5767,27 +3303,10 @@ end;
 
   Sets the window origin of the device context by using the specified coordinates.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean;
-var
-  P: TPoint;
+function TWin32WidgetSet.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
+  OldPoint: PPoint): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetWindowOrgEx] DC: ', dbghex(DC), ' NewX: ', dbgs(NewX), ' NewY: ', dbgs(NewY));
-  {$endif}
-
-  Result := False;
-
-  if IsValidDC(DC) then
-  begin
-    GetWindowOrgEx(DC, @P);
-    // restore 0, 0
-    if (P.X <> 0) or (P.Y <> 0) then
-      TQtDeviceContext(DC).translate(P.X, P.Y);
-    if OldPoint <> nil then
-      OldPoint^ := P;
-    TQtDeviceContext(DC).translate(-NewX, -NewY);
-    Result := True;
-  end;
+  Result := Boolean(Windows.SetWindowOrgEx(DC, NewX, NewY, LPPoint(OldPoint)));
 end;
 
 {------------------------------------------------------------------------------
@@ -5804,418 +3323,95 @@ end;
   Changes the size, position, and Z order of a child, pop-up, or top-level
   window.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND; X, Y, cx,
-  cy: Integer; uFlags: UINT): Boolean;
+function TWin32WidgetSet.SetWindowPos(HWnd: HWND; HWndInsertAfter: HWND; X, Y, CX, CY: Integer; UFlags: UINT): Boolean;
 var
-  DisableUpdates: boolean;
+  Style, ExStyle: PtrInt;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetWindowPos] Handle: ', dbghex(hWnd),
-      ' hWndInsertAfter: ',dbghex(hWnd));
-  {$endif}
-  Result := hWnd <> 0;
-  if not Result then
-    exit;
-
-  DisableUpdates := (SWP_NOREDRAW and uFlags) <> 0;
-  if DisableUpdates then
-    TQtWidget(Hwnd).setUpdatesEnabled(False);
-  try
-    if (SWP_NOMOVE and uFlags) = 0 then
-      TQtWidget(Hwnd).move(X, Y);
-
-    if (SWP_NOSIZE and uFlags) = 0 then
-      TQtWidget(Hwnd).resize(CX, CY);
-
-    if (SWP_NOZORDER and uFlags) = 0 then
-    begin
-      case hWndInsertAfter of
-        HWND_TOP:
-          begin
-            TQtWidget(hWnd).raiseWidget;
-            if (SWP_NOACTIVATE and uFlags) = 0 then
-              TQtWidget(hWnd).Activate;
-          end;
-        HWND_BOTTOM: TQtWidget(hWnd).lowerWidget;
-        {TODO: HWND_TOPMOST ,HWND_NOTOPMOST}
-      end;
-    end;
-  finally
-    if DisableUpdates then
-      TQtWidget(Hwnd).setUpdatesEnabled(True);
+  Style := GetWindowLong(HWnd, GWL_STYLE);
+  ExStyle := GetWindowLong(HWnd, GWL_EXSTYLE);
+  if (Style and WS_BORDER) <> 0 then
+  begin
+    // convert top level lcl window coordinaties to win32 coord
+    // add twice, top+bottom border
+    Inc(CX, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
+    Inc(CY, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
   end;
+  if (Style and WS_CAPTION) <> 0 then
+    if (ExStyle and WS_EX_TOOLWINDOW) <> 0 then
+      Inc(CY, Windows.GetSystemMetrics(SM_CYSMCAPTION))
+    else
+      Inc(CY, Windows.GetSystemMetrics(SM_CYCAPTION));
+  Result := Boolean(Windows.SetWindowPos(HWnd, HWndInsertAfter, X, Y, CX, CY, UFlags));
 end;
 
 {------------------------------------------------------------------------------
   Method:  SetWindowRgn
-  Params:  hWnd    - handle of the widget
-           hRgn    - handle of the region
-           bRedraw - ?
-  Returns: 0 if the call failed, any other value if it was successful
+  Params:  HWnd - handle of window with caret
+  Returns: 0 if failed, another number otherwise
 
-  Makes the region specifyed in hRgn be the only part of the window which is
-  visible.
+  Defines the part of the window which is visible and received input
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetWindowRgn(hWnd: HWND;
- hRgn: HRGN; bRedraw: Boolean):longint;
-var
-  w: TQtWidget;
-  r: TQtRegion;
+function TWin32WidgetSet.SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean):longint;
 begin
-  Result := 0;
-
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetWindowRgn] Handle: ', dbghex(hWnd));
-  {$endif}
-
-  // Basic checks
-  if (hWnd = 0) or (hRgn = 0) then Exit;
-
-  w := TQtWidget(hWnd);
-  r := TQtRegion(hRgn);
-
-  // Now set the mask in the widget
-  w.setMask(r.FHandle);
-
-  Result := 1;
-end;
-
-function TQtWidgetSet.ShowCaret(hWnd: HWND): Boolean;
-begin
-  Result := (hWnd <> 0) and (QtCaret.ShowCaret(TQtWidget(hWnd)));
+  Result := Windows.SetWindowRgn(hWnd, hRgn, bRedraw);
 end;
 
 {------------------------------------------------------------------------------
-  Method:  SetProp
-  Params:  Handle -
-  Returns:
+  Method:  ShowCaret
+  Params:  HWnd - handle of window with caret
+  Returns: if the function succeeds
+
+  Makes the caret visible on the screen at the caret's current position.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean;
+function TWin32WidgetSet.ShowCaret(HWnd: HWND): Boolean;
 begin
-  if Handle<>0 then
+//writeln('[TWin32WidgetSet.ShowCaret] A');
+{$ifdef DEBUG_CARET}
+  DebugLn('[ShowCaret] for window ', IntToHex(HWnd, 8));
+{$endif}
+  Result := Boolean(Windows.ShowCaret(HWnd));
+end;
+
+{------------------------------------------------------------------------------
+  Method:   ShowScrollBar
+  Params:  Handle - handle of window with scroll bar
+           WBar   - scroll bar flag
+           BShow  - is the scroll bar visible?
+  Returns: If the function succeeds
+
+  Shows or hides the specified scroll bar.
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.ShowScrollBar(Handle: HWND; WBar: Integer; BShow: Boolean): Boolean;
+begin
+  Result := Boolean(Windows.ShowScrollBar(Handle, WBar, BShow));
+  if BShow and Result and ThemeServices.ThemesAvailable then
   begin
-    TQtWidget(Handle).Props[str] := Data;
-    Result := (TQtWidget(Handle).Props[str]=Data);
-    {$ifdef VerboseQtWinApi}
-    DebugLn('[WinAPI SetProp win=%s str=%s data=%x',[dbgsname(TQtWidget(Handle)), str, ptrint(data)]);
-    {$endif}
-  end else
-    Result := False;
-end;
-
-{------------------------------------------------------------------------------
-  Function: SetROP2
-  Params:  HDC, Raster OP mode
-  Returns: Old Raster OP mode
-
-  Please note that the bitwise raster operation modes, denoted with a
-  RasterOp prefix, are only natively supported in the X11 and
-  raster paint engines.
-  This means that the only way to utilize these modes on the Mac is
-  via a QImage.
-  The RasterOp denoted blend modes are not supported for pens and brushes
-  with alpha components. Also, turning on the QPainter::Antialiasing render
-  hint will effectively disable the RasterOp modes.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
-var
-  QtDC: TQtDeviceContext absolute DC;
-begin
-  {$ifdef VerboseQtWinAPI}
-  writeln('TQtWidgetSet.SetROP2() DC ',dbghex(DC),' Mode ',Mode);
-  {$endif}
-  Result := R2_COPYPEN;
-  if not IsValidDC(DC) then
-    exit;
-  Result := QtDC.Rop2;
-  QtDC.Rop2 := Mode;
-end;
-
-{------------------------------------------------------------------------------
-  Function: SetScrollInfo
-  Params:  none
-  Returns: The new position value
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
-  ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
-var
-  Control: TWinControl;
-  ScrollBar: TQtScrollBar;
-
-  function UpdateScrollInfo: Integer;
-  var
-    iReCountMax: Integer;
-    SBUpdatesCount: Integer;
-    i: Integer;
-    WheelLines: Integer;
-  begin
-    Result := 0;
-    SBUpdatesCount := 0;
-
-    if (ScrollInfo.FMask and SIF_RANGE) <> 0 then
-    begin
-      inc(SBUpdatesCount);
-      ScrollBar.setMinimum(ScrollInfo.nMin);
-
-      // we must recount ScrollBar.Max since invalid value raises AV
-      iRecountMax := ScrollInfo.nMax - ScrollInfo.nPage;
-      if iRecountMax < ScrollInfo.nMin then
-        iRecountMax := ScrollInfo.nMin;
-
-      ScrollBar.setMaximum(iRecountMax);
-    end;
-
-    if (ScrollInfo.FMask and SIF_PAGE) <> 0 then
-    begin
-      // segfaults if we don't check Enabled property
-      if ScrollBar.getEnabled then
-      begin
-        inc(SBUpdatesCount);
-        ScrollBar.setPageStep(ScrollInfo.nPage);
-        WheelLines := QApplication_wheelScrollLines();
-        with Scrollbar do
-        begin
-          i := Max(1, floor((GetPageStep / WheelLines) / 6));
-          setSingleStep(i);
-        end;
-      end;
-    end;
-
-    if (ScrollInfo.FMask and SIF_UPDATEPOLICY) <> 0 then
-      ScrollBar.setTracking(ScrollInfo.nTrackPos <> SB_POLICY_DISCONTINUOUS);
-
-    if (ScrollInfo.FMask and SIF_POS) <> 0 then
-    begin
-      inc(SBUpdatesCount);
-
-      if SBUpdatesCount = 1 then
-        ScrollBar.BeginUpdate;
-      try
-        if not (ScrollBar.getTracking and ScrollBar.getSliderDown) then
-        begin
-          {do not setValue() if values are equal, since it calls
-           signalValueChanged() which sends unneeded LM_SCROLL msgs }
-          if (ScrollBar.getValue = ScrollInfo.nPos) then
-            SBUpdatesCount := 0;
-
-          if (ScrollInfo.nPos < ScrollBar.getMin) then
-            ScrollInfo.nPos := ScrollBar.getMin
-          else
-          if (ScrollInfo.nPos > ScrollBar.getMax) then
-            ScrollInfo.nPos := ScrollBar.getMax;
-
-          if (SBUpdatesCount > 0) then
-            ScrollBar.setValue(ScrollInfo.nPos);
-        end;
-      finally
-        if ScrollBar.InUpdate then
-          ScrollBar.EndUpdate;
-      end;
-    end;
-
-    if (ScrollInfo.FMask and SIF_TRACKPOS) <> 0 then
-    begin
-      ScrollBar.TrackPos := ScrollInfo.nTrackPos;
-      // from MSDN: the SetScrollInfo function ignores this member
-      // ScrollBar.setSliderPosition(ScrollInfo.nTrackPos);
-    end;
-
-    Result := ScrollBar.getValue;
+    // sometimes on xp scrollbars does not invalidate themself and look as they are unthemed
+    // force window frame (scrollbars are not in the client area) to redraw
+    Windows.RedrawWindow(Handle, nil, 0, RDW_INVALIDATE or RDW_FRAME or RDW_NOCHILDREN);
   end;
-
-begin
-  // bRedraw is useles with qt
-
-  Result := 0;
-
-  if (Handle = 0) then exit;
-
-  ScrollBar := nil;
-  case SBStyle of
-    SB_BOTH:
-    begin
-      {TODO: SB_BOTH fixme }
-      //writeln('TODO: ############## SB_BOTH CALLED HERE .... #################');
-    end; {SB_BOTH}
-
-    SB_CTL:
-    begin
-      {HWND is always TScrollBar, but seem that Create ScrollBar should be called here }
-      if (csReading in TQtWidget(Handle).LCLObject.ComponentState) or
-      (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then exit;
-
-      ScrollBar := TQtScrollBar(Handle);
-
-      if not Assigned(ScrollBar) then exit;
-    end; {SB_CTL}
-
-    SB_HORZ:
-    begin
-      if (csReading in TQtWidget(Handle).LCLObject.ComponentState) or
-         (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
-        exit;
-
-      if TQtWidget(Handle) is TQtAbstractScrollArea then
-      begin
-        ScrollBar := TQtAbstractScrollArea(Handle).horizontalScrollBar;
-      end else
-      begin
-        {do not localize !}
-        Control := TWinControl(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_HSCROLLBAR'));
-        if (Control <> nil) and (Control.HandleAllocated) then
-          ScrollBar := TQtScrollBar(Control.Handle)
-      end;
-    end; {SB_HORZ}
-
-    SB_VERT:
-    begin
-      if (csReading in TQtWidget(Handle).LCLObject.ComponentState) or
-        (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then
-        exit;
-
-      if TQtWidget(Handle) is TQtAbstractScrollArea then
-      begin
-        ScrollBar := TQtAbstractScrollArea(Handle).verticalScrollBar;
-      end else
-      begin
-        {do not localize !}
-        Control := TWinControl(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_VSCROLLBAR'));
-        if (Control <> nil) and (Control.HandleAllocated) then
-          ScrollBar := TQtScrollBar(Control.Handle)
-      end;
-    end; {SB_VERT}
-
-  end;
-
-  if Assigned(ScrollBar) then
-    Result := UpdateScrollInfo;
 end;
 
 {------------------------------------------------------------------------------
-  Method:  SetTextColor
-  Params:  Handle -
-  Returns:
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetTextColor] DC: ', dbghex(DC));
-  {$endif}
-  Result := CLR_INVALID;
-  if not IsValidDC(DC) then begin
-    {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetTextColor] Invalid DC');
-    {$endif}
-    exit;
-  end;
-  Result := TQtDeviceContext(DC).vTextColor;
-  TQtDeviceContext(DC).vTextColor := ColorToRGB(TColor(Color)); // be sure we get TColorRef
-end;
-
-{------------------------------------------------------------------------------
-  function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
-  Params  Handle: HWND; wBar: Integer; bShow: Boolean
-  Result
+  Method: ShowWindow
+  Params: hWnd     - Window handle
+          nCmdShow - (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED)
+  Returns: If the function succeeds
 ------------------------------------------------------------------------------}
-function TQtWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
-var
-  w: TQtWidget;
-  ScrollArea: TQtAbstractScrollArea;
+function TWin32WidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI ShowScrollBar] Handle: ', dbghex(Handle),' wBar: ',wBar);
-  {$endif}
-
-  Result := (Handle <> 0);
-
-  if not Result then exit;
-
-  w := TQtWidget(Handle);
-
-  if w is TQtAbstractScrollArea then
-  begin
-    ScrollArea := TQtAbstractScrollArea(w);
-    case wBar of
-      SB_BOTH:
-      begin
-        if bShow then
-          ScrollArea.setScrollStyle(ssBoth)
-        else
-          ScrollArea.setScrollStyle(ssNone);
-      end;
-
-      SB_HORZ:
-      begin
-        if bShow then
-          ScrollArea.setScrollStyle(ssHorizontal)
-        else
-          ScrollArea.ScrollBarPolicy[False] := QtScrollBarAlwaysOff;
-      end;
-
-      SB_VERT:
-      begin
-        if bShow then
-          ScrollArea.setScrollStyle(ssVertical)
-        else
-          ScrollArea.ScrollBarPolicy[True] := QtScrollBarAlwaysOff;
-      end;
-
-      SB_CTL:
-      begin
-        if bShow then
-          ScrollArea.Show
-        else
-          ScrollArea.Hide;
-      end;
-    end;
-
-  end else
-    Result := False;
+  Result := Boolean(Windows.ShowWindow(hWnd, nCmdShow));
 end;
 
 {------------------------------------------------------------------------------
-  function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
-
-  nCmdShow:
-    SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
-------------------------------------------------------------------------------}
-function TQtWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
-var
-  Widget: TQtWidget;
-begin
-  {$ifdef VerboseQtWinAPI}
-  WriteLn('[WinAPI ShowWindow] hwnd ',dbgHex(PtrUInt(hWnd)),' nCmdShow ',nCmdShow);
-  {$endif}
-
-  Result := False;
-
-  Widget := TQtWidget(hWnd);
-
-  if Widget <> nil then
-  begin
-    case nCmdShow of
-      SW_SHOW: Widget.setVisible(True);
-      SW_SHOWNORMAL: Widget.ShowNormal;
-      SW_MINIMIZE: Widget.setWindowState(QtWindowMinimized);
-      SW_SHOWMINIMIZED: Widget.ShowMinimized;
-      SW_SHOWMAXIMIZED: Widget.ShowMaximized;
-      SW_SHOWFULLSCREEN: Widget.ShowFullScreen;
-      SW_HIDE: Widget.setVisible(False);
-    end;
-    Result := True;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Function: StretchBlt
-  Params:  DestDC:                The destination devicecontext
-           X, Y:                  The left/top corner of the destination rectangle
-           Width, Height:         The size of the destination rectangle
-           SrcDC:                 The source devicecontext
-           XSrc, YSrc:            The left/top corner of the source rectangle
-           SrcWidth, SrcHeight:   The size of the source rectangle
-           ROp:                   The raster operation to be performed
+  Method:  StretchBlt
+  Params:  DestDC              - The destination device context
+           X, Y                - The left/top corner of the destination rectangle
+           Width, Height       - The size of the destination rectangle
+           SrcDC               - The source device context
+           XSrc, YSrc          - The left/top corner of the source rectangle
+           SrcWidth, SrcHeight - The size of the source rectangle
+           Rop                 - The raster operation to be performed
   Returns: True if succesful
 
   The StretchBlt function copies a bitmap from a source rectangle into a
@@ -6223,19 +3419,17 @@ end;
   resizes the bitmap to fit the dimensions of the destination rectangle.
   Sizing is done according to the stretching mode currently set in the
   destination device context.
-  If SrcDC contains a mask the pixmap will be copied with this transparency.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
-  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean;
+function TWin32WidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
 begin
-  Result := StretchMaskBlt(DestDC,X,Y,Width,Height,
-                          SrcDC,XSrc,YSrc,SrcWidth,SrcHeight,
-                          0,0,0,
-                          ROp);
+  // use stretchmaskblt for alpha images, since that one is customized for alpha
+  if IsAlphaDC(DestDC) or IsAlphaDC(SrcDC)
+  then Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, 0, 0, 0, Rop)
+  else Result := Windows.StretchBlt(DestDc, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
 end;
 
 {------------------------------------------------------------------------------
-  Function: StretchMaskBlt
+  Method:  StretchMaskBlt
   Params:  DestDC:                The destination devicecontext
            X, Y:                  The left/top corner of the destination rectangle
            Width, Height:         The size of the destination rectangle
@@ -6244,128 +3438,185 @@ end;
            SrcWidth, SrcHeight:   The size of the source rectangle
            Mask:                  The handle of a monochrome bitmap
            XMask, YMask:          The left/top corner of the mask rectangle
-           ROp:                   The raster operation to be performed
+           Rop:                   The raster operation to be performed
   Returns: True if succesful
 
   The StretchMaskBlt function copies a bitmap from a source rectangle into a
-  destination rectangle using the specified mask and raster operation. If needed
-  it resizes the bitmap to fit the dimensions of the destination rectangle.
-  Sizing is done according to the stretching mode currently set in the
-  destination device context.
+  destination rectangle using the specified mask and raster operations. If
+  needed it resizes the bitmap to fit the dimensions of the destination
+  rectangle.  Sizing is done according to the stretching mode currently set in
+  the destination device context.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
-  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
-  XMask, YMask: Integer; Rop: DWORD): Boolean;
+function TWin32WidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
+
+  function CreatePremultipliedBitmap(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; out AAlphaBmp: HBITMAP): Boolean;
+  var
+    Data: Pointer;
+    Pixel: PRGBAQuad;
+    ByteCount: PtrUInt;
+    Header: Windows.TBitmapInfoHeader;
+    HasAlpha0, HasAlphaN, HasAlpha255: Boolean;
+  begin
+    // todo, process only requested rectangle
+    Result := False;
+    if not GetBitmapBytes(AWinBmp, ABitmap, Rect(0, 0, AWinBmp.bmWidth, AWinBmp.bmHeight), rileDWordBoundary, riloTopToBottom, Data, ByteCount)
+    then Exit;
+
+    HasAlpha0 := False;
+    HasAlphaN := False;
+    HasAlpha255 := False;
+    Pixel := Data;
+    ByteCount := ByteCount shr 2;
+    while ByteCount > 0 do
+    begin
+      case Pixel^.Alpha of
+        0: begin
+          Pixel^.Red   := 0;
+          Pixel^.Green := 0;
+          Pixel^.Blue  := 0;
+          HasAlpha0 := True;
+        end;
+        255: begin
+          HasAlpha255 := True;
+        end;
+      else
+        Pixel^.Red   := (Pixel^.Red   * Pixel^.Alpha) div 255;
+        Pixel^.Green := (Pixel^.Green * Pixel^.Alpha) div 255;
+        Pixel^.Blue  := (Pixel^.Blue  * Pixel^.Alpha) div 255;
+        HasAlphaN := True;
+      end;
+      Inc(Pixel);
+      Dec(ByteCount);
+    end;
+
+    // only create bitmap when not opaque or not fully transparent
+    // (all zero alpha is unlikly for alpha bitmap, so it is probably a bitmap without alpha channel)
+    Result := HasAlphaN or (HasAlpha0 and HasAlpha255);
+    if Result
+    then begin
+      FillChar(Header, SizeOf(Header), 0);
+      Header.biSize := SizeOf(Header);
+      Header.biWidth := AWinBmp.bmWidth;
+      Header.biHeight := -AWinBmp.bmHeight;
+      Header.biPlanes := 1;
+      Header.biBitCount := 32;
+      Header.biCompression := BI_RGB;
+
+      AAlphaBmp := Windows.CreateDIBitmap(SrcDC, Header, CBM_INIT, Data, Windows.TBitmapInfo((@Header)^), DIB_RGB_COLORS);
+    end;
+    Freemem(Data);
+  end;
 var
-  SrcQDC: TQtDeviceContext absolute SrcDC;
-  DstQDC: TQtDeviceContext absolute DestDC;
-  SrcRect, DstRect, MaskRect: TRect;
-  Image, TmpImage, QMask, TmpMask: QImageH;
-  TmpPixmap: QPixmapH;
-  SrcMatrix: QTransformH;
-  dx, dy: integer;
+  MaskDC, CopyDC, AlphaDC: HDC;
+  MaskObj, CopyObj, AlphaObj: HGDIOBJ;
+  PrevTextColor, PrevBkColor: COLORREF;
+  WinBmp: Windows.TBitmap;
+  Bmp, CopyBmp, AlphaBmp: HBITMAP;
+  HasAlpha: Boolean;
+  Blend: TBlendFunction;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI StretchMaskBlt]',
-     ' DestDC:', dbghex(DestDC),
-     ' SrcDC:', dbghex(SrcDC),
-     ' Image:', dbghex(PtrInt(Image)),
-     ' X:', dbgs(X), ' Y:', dbgs(Y),
-     ' W:', dbgs(Width), ' H:', dbgs(Height),
-     ' XSrc:', dbgs(XSrc), ' YSrc:', dbgs(YSrc),
-     ' WSrc:', dbgs(SrcWidth), ' HSrc:', dbgs(SrcHeight));
-  {$endif}
+  //DbgDumpBitmap(Mask, 'StretchMaskBlt - Mask');
 
-  Result := False;
+  // check if the Src has an alpha channel
+  Bmp := Windows.GetCurrentObject(SrcDC, OBJ_BITMAP);
+  // get info
+  HasAlpha := (Windows.GetObject(bmp, SizeOf(WinBmp), @WinBmp) <> 0)
+          and (WinBmp.bmBitsPixel = 32)
+          and CreatePremultipliedBitmap(WinBmp, Bmp, AlphaBmp);
 
-  SrcMatrix := QPainter_transform(SrcQDC.Widget);
-  if SrcQDC.vImage = nil then
-  begin
-    if SrcQDC.Parent <> nil then
-    begin
-      with SrcQDC.getDeviceSize do
-        TmpPixmap := QPixmap_create(x, y);
-      QPixmap_grabWindow(TmpPixmap, QWidget_winId(SrcQDC.Parent), 0, 0);
-      Image := QImage_create();
-      QPixmap_toImage(TmpPixmap, Image);
-      QPixmap_destroy(TmpPixmap);
-    end
-    else
-      Exit;
-  end
-  else
-    Image := SrcQDC.vImage.FHandle;
+  if HasAlpha
+  then begin
+    AlphaDC := Windows.CreateCompatibleDC(SrcDC);
+    AlphaObj := Windows.SelectObject(AlphaDC, AlphaBmp);
 
-  QTransform_map(SrcMatrix, XSrc, YSrc, @XSrc, @YSrc);
-  // our map can have some transformations
-  if XSrc < 0 then // we cannot draw from negative coord, so we will draw from zero with shift
-  begin
-    dx := -XSrc;
-    XSrc := 0;
-  end
-  else
-    dx := 0;
-
-  if YSrc < 0 then
-  begin
-    dy := -YSrc;
-    YSrc := 0;
-  end
-  else
-    dy := 0;
-
-  if dx <> 0 then // apply shifts
-  begin
-    inc(X, dx);        // shift destination
-    dec(Width, dx);    // substract width
-    dec(SrcWidth, dx); // and do not forget about SrcWidth or we will get unneeded stretching
+    // init blendfunction
+    Blend.BlendOp := AC_SRC_OVER;
+    Blend.BlendFlags := 0;
+    Blend.SourceConstantAlpha := 255;
+    Blend.AlphaFormat := AC_SRC_ALPHA;
   end;
 
-  if dy <> 0 then
+  Windows.SetStretchBltMode(DestDC, STRETCH_HALFTONE);
+  Windows.SetBrushOrgEx(DestDC, 0, 0, nil);
+  if Mask = 0 then
   begin
-    inc(Y, dy);
-    dec(Height, dy);
-    dec(SrcHeight, dy);
+    if HasAlpha
+    then begin
+      Win32Extra.AlphaBlend(DestDC, X, Y, Width, Height, AlphaDC, XSrc, YSrc, SrcWidth, SrcHeight, Blend);
+    end
+    else begin
+      if (Width = SrcWidth) and (Height = SrcHeight) then
+      begin
+        Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
+      end
+      else begin
+        Result := Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
+      end;
+    end;
+  end
+  else begin
+    MaskDC := Windows.CreateCompatibleDC(DestDC);
+    MaskObj := Windows.SelectObject(MaskDC, Mask);
+
+    PrevTextColor := Windows.SetTextColor(DestDC, $00000000);
+    PrevBkColor := Windows.SetBkColor(DestDC, $00FFFFFF);
+
+    if HasAlpha
+    then begin
+      // create copy of masked destination
+      CopyDC := Windows.CreateCompatibleDC(DestDC);
+      CopyBmp := Windows.CreateCompatibleBitmap(DestDC, Width, Height);
+      CopyObj := Windows.SelectObject(CopyDC, CopyBmp);
+      Windows.BitBlt(CopyDC, 0, 0, Width, Height, DestDC, X, Y, SRCCOPY);
+      // wipe non masked area -> white
+      Windows.SetTextColor(CopyDC, $00FFFFFF);
+      Windows.SetBkColor(CopyDC, $00000000);
+      if (Width = SrcWidth) and (Height = SrcHeight)
+      then Windows.BitBlt(CopyDC, 0, 0, Width, Height, MaskDC, XSrc, YSrc, SRCPAINT)
+      else Windows.StretchBlt(CopyDC, 0, 0, Width, Height, MaskDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCPAINT);
+
+      // copy source
+      Win32Extra.AlphaBlend(DestDC, X, Y, Width, Height, AlphaDC, XSrc, YSrc, SrcWidth, SrcHeight, Blend);
+      // wipe masked area -> white
+      if (Width = SrcWidth) and (Height = SrcHeight)
+      then Windows.BitBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SRCPAINT)
+      else Windows.StretchBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCPAINT);
+
+      // paint copied destination
+      Windows.BitBlt(DestDC, X, Y, Width, Height, CopyDC, 0, 0, SRCAND);
+
+      // Restore stuff
+      Windows.SelectObject(CopyDC, CopyObj);
+      Windows.DeleteObject(CopyBmp);
+      Windows.DeleteDC(CopyDC);
+    end
+    else begin
+      if (Width = SrcWidth) and (Height = SrcHeight) then
+      begin
+        Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
+        Windows.BitBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SRCAND);
+        Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
+      end
+      else begin
+        Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SrcWidth, SrcHeight, SRCINVERT);
+        Windows.StretchBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCAND);
+        Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SrcWidth, SrcHeight, SRCINVERT);
+      end;
+    end;
+    Windows.SetTextColor(DestDC, PrevTextColor);
+    Windows.SetBkColor(DestDC, PrevBkColor);
+    Windows.SelectObject(MaskDC, MaskObj);
+    Windows.DeleteDC(MaskDC);
+  end;
+  
+  if HasAlpha
+  then begin
+    Windows.SelectObject(AlphaDC, AlphaObj);
+    Windows.DeleteObject(AlphaBmp);
+    Windows.DeleteDC(AlphaDC);
   end;
 
-  DstRect := Bounds(X, Y, Width, Height);
-  SrcRect := Bounds(XSrc, YSrc, SrcWidth, SrcHeight);
-  MaskRect := Bounds(XMask, YMask, SrcWidth, SrcHeight);
-  // #0011187 - makes painting wrong
-  //DstQDC.CorrectCoordinates(DstRect);
-  //DstQDC.CorrectCoordinates(SrcRect);
-  //DstQDC.CorrectCoordinates(MaskRect);
-  if Mask <> 0 then
-    QMask := TQtImage(Mask).FHandle
-  else
-    QMask := nil;
-
-  if (DstRect.Right < DstRect.Left) or (DstRect.Bottom < DstRect.Top) then
-  begin
-    // Right < Left mean horizontal flip, Bottom < Top - vertical
-    TmpImage := QImage_create();
-    QImage_mirrored(Image, TmpImage, DstRect.Right < DstRect.Left, DstRect.Bottom < DstRect.Top);
-    if QMask <> nil then
-    begin
-      TmpMask := QImage_create();
-      QImage_mirrored(QMask, TmpMask, DstRect.Right < DstRect.Left, DstRect.Bottom < DstRect.Top);
-    end
-    else
-      TmpMask := QMask;
-    DstRect := NormalizeRect(DstRect);
-    MaskRect := NormalizeRect(MaskRect);
-    DstQDC.drawImage(@DstRect, TmpImage, @SrcRect, TmpMask, @MaskRect);
-    QImage_destroy(TmpImage);
-    if TmpMask <> nil then
-      QImage_destroy(TmpMask);
-  end
-  else
-    DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
-
-  if SrcQDC.vImage = nil then
-    QImage_destroy(Image);
-
-  Result := True;
+  Result := true;
 end;
 
 {------------------------------------------------------------------------------
@@ -6377,170 +3628,103 @@ end;
   Returns: True if the function succeeds
   retrieves or sets the value of one of the system-wide parameters
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool;
+function TWin32WidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool;
 begin
-  case uiAction of
-    SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := QApplication_wheelScrollLines;
-    SPI_GETWORKAREA: begin
-      TRect(pvParam^):=Bounds(GetSystemMetrics(SM_XVIRTUALSCREEN),
-                              GetSystemMetrics(SM_YVIRTUALSCREEN),
-                              GetSystemMetrics(SM_CXVIRTUALSCREEN),
-                              GetSystemMetrics(SM_CYVIRTUALSCREEN));
-      Result:=True;
-    end;
-  else
-    Result := False;
-  end
+  Result := Windows.SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
 end;
 
 {------------------------------------------------------------------------------
-  Function: TextOut
-  Params: DC:
-          X:
-          Y:
-          Str:
-          Count:
-  Returns:
+  Method:  TextOut
+  Params: DC    - handle of device context
+          X     - x-coordinate of starting position
+          Y     - y-coordinate of starting position
+          Str   - string
+          Count - number of characters in string
+  Returns: If the function succeeds
 
+  Writes a character string at the specified location, using the currently
+  selected font.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : PChar; Count: Integer) : Boolean;
+function TWin32WidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;
+{$ifdef WindowsUnicodeSupport}
 var
-  WideStr: WideString;
+  ws: widestring;
+{$endif}
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI TextOut]');
-  {$endif}
-
-  Result := False;
-
-  if not IsValidDC(DC) then Exit;
-
-  if Count >= 0 then
-    WideStr := GetUtf8String(Copy(Str, 1, Count))
-  else
-    WideStr := GetUtf8String(Str);
-
-  TQtDeviceContext(DC).drawText(X, Y, @WideStr);
-
-  Result := True;
+{$ifdef WindowsUnicodeSupport}
+  ws := UTF8ToUTF16(copy(str,1,Count));
+  Result := Boolean(Windows.TextOutW(DC, X, Y, PWideChar(ws), length(ws)));
+{$else}
+  Result := Boolean(Windows.TextOut(DC, X, Y, Str, Count));
+{$endif}
 end;
 
-{------------------------------------------------------------------------------
-  Method:  UpdateWindow
-  Params:  Handle
-  Returns:
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.UpdateWindow(Handle: HWND): Boolean;
+function TWin32WidgetSet.UpdateWindow(Handle: HWND): Boolean;
 begin
- {$ifdef VerboseQtWinAPI}
-   WriteLn('[WinAPI UpdateWindow]');
- {$endif}
-  Result := False;
-  if Handle <> 0 then
-  begin
-    TQtWidget(Handle).Update;
-    Result := True;
-  end;
+  Result:=Windows.UpdateWindow(Handle);
 end;
 
 {------------------------------------------------------------------------------
   Method:  WindowFromPoint
-  Params:  TPoint
-  Returns: The return value is a handle to the window that contains the param
-  point.
-  If no window exists at the given point, the return value is 0.
-  If the point is over a static text control,
-  the return value is a handle to the window under the static text control.
+  Params: Point: Specifies the x and y Coords
+  Returns: The handle of the window.
+
+  Retrieves the handle of the window that contains the specified point.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.WindowFromPoint(APoint: TPoint): HWND;
+function TWin32WidgetSet.WindowFromPoint(Point: TPoint): HWND;
 var
-  Widget: QWidgetH;
+  ProcessID: DWORD;
 begin
-  // we use cachedresults instead of calling very expensive widgetAt
-  if (FLastWFPResult <> 0) then
+  Result := Windows.WindowFromPoint(Windows.POINT(Point));
+  // check if window created by this process
+  Windows.GetWindowThreadProcessId(Result, @ProcessID);
+  if ProcessID <> Windows.GetCurrentProcessID then
+    Result := 0;
+end;
+
+
+{We interprete CritSection as a pointer to a LPCRITICAL_SECTION structure}
+procedure TWin32WidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
+var
+  Crit : LPCRITICAL_SECTION;
+begin
+  { An OS Compatible TCriticalSection needs to be defined}
+  If CritSection <> 0 then
+    DeleteCriticalSection(CritSection);
+  New(Crit);
+  Windows.InitializeCriticalSection(Crit);
+  CritSection := TCriticalSection(Crit);
+end;
+
+procedure TWin32WidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
+begin
+  { An OS Compatible TCriticalSection needs to be defined}
+  Windows.EnterCriticalSection(LPCRITICAL_SECTION(CritSection));
+end;
+
+procedure TWin32WidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
+begin
+  { An OS Compatible TCriticalSection needs to be defined}
+  Windows.LeaveCriticalSection(LPCRITICAL_SECTION(CritSection));
+end;
+
+procedure TWin32WidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
+begin
+  { An OS Compatible TCriticalSection needs to be defined}
+  if CritSection<>0 then
   begin
-    if not IsValidWidgetAtCachePointer then
-      FLastWFPResult := 0
-    else
-    if (APoint.X = FLastWFPMousePos.X) and (APoint.Y = FLastWFPMousePos.Y) and
-      TQtWidget(FLastWFPResult).getVisible and
-      TQtWidget(FLastWFPResult).getEnabled then
-    begin
-      // return from cache
-      exit(FLastWFPResult);
+    Windows.DeleteCriticalSection(LPCRITICAL_SECTION(CritSection));
+    Try
+      Dispose(LPCRITICAL_SECTION(CritSection));
+    finally
+      CritSection := 0;
     end;
   end;
+end;
 
-  Result := 0;
-  Widget := QApplication_widgetAt(APoint.x, APoint.y);
+//##apiwiz##eps##   // Do not remove
 
-  if (Widget = nil) then
-  begin
-    if (APoint.X = FLastWFPMousePos.X) and (APoint.Y = FLastWFPMousePos.Y) then
-    begin
-      FLastWFPMousePos := Point(MaxInt, MaxInt);
-      FLastWFPResult := 0;
-    end;
-    exit;
-  end;
+*)
 
-  // according to MSDN disabled widget shouldn't be in result
-  // but win32 returns first enabled and visible parent !
-  if not QWidget_isEnabled(Widget) or not QWidget_isVisible(Widget) then
-  begin
-    while Widget <> nil do
-    begin
-      Widget := QWidget_parentWidget(Widget);
-      if (Widget <> nil) and QWidget_IsVisible(Widget) and
-        QWidget_isEnabled(Widget) then
-          break;
-    end;
-    if Widget = nil then
-      exit;
-  end;
 
-  Result := HwndFromWidgetH(Widget);
 
-  // return from cache if we are same TQtWidget, just update point
-  if IsValidWidgetAtCachePointer and (Result = FLastWFPResult) then
-  begin
-    FLastWFPMousePos := APoint;
-    exit(FLastWFPResult);
-  end;
-
-  // maybe we are viewport of native QAbstractScrollArea (eg. QTextEdit).
-  if (Result = 0) then
-  begin
-    if QWidget_parentWidget(Widget) <> nil then
-    begin
-      while (Widget <> nil) do
-      begin
-        Widget := QWidget_parentWidget(Widget);
-        if Widget <> nil then
-          Result := HwndFromWidgetH(Widget);
-        if Result <> 0 then
-          break;
-      end;
-    end;
-  end;
-
-  if (Result <> 0) and
-    not (TQtWidget(Result) is TQtMainWindow) then
-  begin
-    if TQtWidget(Result).getOwner <> nil then
-      Result := HWND(TQtWidget(Result).getOwner);
-  end else
-  begin
-    Widget := QApplication_topLevelAt(APoint.x, APoint.y);
-    if (Widget <> nil) and QWidget_isEnabled(Widget) then
-      Result := HwndFromWidgetH(Widget)
-    else
-      Result := 0;
-  end;
-
-  // add to cache
-  FLastWFPResult := Result;
-  FLastWFPMousePos := APoint;
-end;*)
-
-//##apiwiz##eps##   // Do not remove, no wizard declaration after this line

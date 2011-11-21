@@ -37,8 +37,8 @@ uses
    //CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaTextLayout, CocoaProc,
   // LCL
   InterfaceBase, Translations,
-  Controls,  Forms, lclproc, IntfGraphics,
-  {Buttons, Dialogs, GraphMath, GraphType, LCLIntf,}
+  Controls,  Forms, lclproc, IntfGraphics, GraphType,
+  {Buttons, Dialogs, GraphMath, LCLIntf,}
   LCLType, LMessages, lazcanvas{, StdCtrls, Graphics, Menus };
 
 type

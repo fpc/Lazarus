@@ -4940,9 +4940,13 @@ function TCDWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   LazDC: TLazCanvas absolute DC;
 begin
-//  {$ifdef VerboseQtWinAPI}
-//    WriteLn('[WinAPI Rectangle] DC: ', dbghex(DC));
-//  {$endif}
+  if DC = 0 then Exit;
+
+  {$ifdef VerboseCDWinAPI}
+//  DebugLn(Format('[WinAPI Rectangle] DC=%s DC.Width=%d DC.Height=%d', [dbghex(DC), LazDC.Width, LazDC.Height]));
+  DebugLn(Format('[WinAPI Rectangle] DC=%s', [dbghex(DC)]));
+  DebugLn(Format('[WinAPI Rectangle] DC.Width=%d DC.Height=%d', [LazDC.Width, LazDC.Height]));
+  {$endif}
 
   //if not IsValidDC(DC) then Exit(False);
   LazDC.Rectangle(X1, Y1, X2, Y2);

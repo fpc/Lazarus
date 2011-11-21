@@ -217,6 +217,7 @@ Var
     parLeft, parTop: integer;
     needParentPaint: boolean;
     BufferWasSaved: Boolean;
+    lRawImage: TRawImage;
   begin
     if lWinControl = nil then exit;
 
@@ -228,10 +229,6 @@ Var
     needParentPaint := False;
 
     GetWindowSize(Window, WindowWidth, WindowHeight);
-
-    // Prepare the non-native Canvas if necessary
-    if (WindowInfo^.Image = nil) then WindowInfo^.Image := TLazIntfImage.Create(WindowWidth, WindowHeight);
-    if (WindowInfo^.Canvas = nil) then WindowInfo^.Canvas := TLazCanvas.Create(WindowInfo^.Image);
 
     // Start the double buffering by checking if we need to increase the buffer
     if (WindowInfo^.BitmapWidth < WindowWidth) or (WindowInfo^.BitmapHeight < WindowHeight) then
@@ -253,6 +250,15 @@ Var
       WindowInfo^.DCBitmapOld := Windows.SelectObject(WindowInfo^.BitmapDC, WindowInfo^.Bitmap);
       Windows.ReleaseDC(0, DC);
     end;
+
+    // Prepare the non-native Canvas if necessary
+    if (WindowInfo^.Image = nil) then
+    begin
+      WinProc_RawImage_FromBitmap(lRawImage, WindowInfo^.Bitmap, 0);
+      WindowInfo^.Image := TLazIntfImage.Create(WindowWidth, WindowHeight);
+      WindowInfo^.Image.SetRawImage(lRawImage);
+    end;
+    if (WindowInfo^.Canvas = nil) then WindowInfo^.Canvas := TLazCanvas.Create(WindowInfo^.Image);
 
     // main processing
     WinProcess := false;
