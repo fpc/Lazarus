@@ -113,16 +113,7 @@ begin
   EraseBkgndStack := (EraseBkgndStack shl EraseBkgndStackShift) or dword(Ord(Command));
 end;
 
-type
-  TDoubleBuffer = record
-    DC: HDC;
-    Bitmap: HBITMAP;
-    BitmapWidth: integer;
-    BitmapHeight: integer;
-  end;
-
 var
-  CurDoubleBuffer: TDoubleBuffer = (DC: 0; Bitmap: 0; BitmapWidth: 0; BitmapHeight: 0);
   DisabledForms: TList = nil;
 
 function CheckMouseMovement: boolean;
@@ -201,9 +192,17 @@ Var
 
   function GetIsNativeControl(AWindow: HWND): Boolean;
   begin
-    Result := WndClassName(AWindow) <> ClsName;
+    Result := False;//WndClassName(AWindow) <> ClsName;
   end;
 
+  { Differences with LCL-Win32:
+
+  * Here there are zero native controls
+  * Here nothing needs parent paint
+  * The double buffering from LCL-Win32 is not used, instead we have a different
+  architecture where double buffering is always on, it is impossible to turn it
+  off because all drawings are done to the temporary image first
+  }
   procedure SendPaintMessage(ControlDC: HDC);
   var
     DC: HDC;
@@ -213,125 +212,66 @@ Var
     PaintMsg: TLMPaint;
     ORect: TRect;
     WindowOrg: Windows.POINT;
-    ParentPaintWindow: HWND;
     WindowWidth, WindowHeight: Integer;
     DCIndex: integer;
     parLeft, parTop: integer;
-    useDoubleBuffer: boolean;
-    isNativeControl: boolean;
     needParentPaint: boolean;
-    lNotebookFound: boolean;
     BufferWasSaved: Boolean;
-    BackupBuffer: TDoubleBuffer;
   begin
-    // note: ignores the received DC
-    // do not use default deliver message
-    if lWinControl = nil then
-    begin
-      lWinControl := GetWindowInfo(Window)^.PWinControl;
-      if lWinControl = nil then exit;
-    end;
+    if lWinControl = nil then exit;
 
     {$IFDEF DEBUG_WINCE_LABELS}
     DebugLn(Format('[SendPaintMessage]: Control:%s', [lWinControl.Name]));
     {$ENDIF}
 
     // create a paint message
-    isNativeControl := GetIsNativeControl(Window);
-    ParentPaintWindow := 0;
-    needParentPaint := False;{GetNeedParentPaint(WindowInfo, lWinControl);}
-    // if needParentPaint and not isTabPage then background will be drawn in
-    // WM_ERASEBKGND and WM_CTLCOLORSTATIC for native controls
-    // sent by default paint handler
-    if {WindowInfo^.isTabPage or} (needParentPaint
-      and (not isNativeControl or (ControlDC <> 0))) then
+    needParentPaint := False;
+
+    GetWindowSize(Window, WindowWidth, WindowHeight);
+
+    // Prepare the non-native Canvas if necessary
+    if (WindowInfo^.Image = nil) then WindowInfo^.Image := TLazIntfImage.Create(WindowWidth, WindowHeight);
+    if (WindowInfo^.Canvas = nil) then WindowInfo^.Canvas := TLazCanvas.Create(WindowInfo^.Image);
+
+    // Start the double buffering by checking if we need to increase the buffer
+    if (WindowInfo^.BitmapWidth < WindowWidth) or (WindowInfo^.BitmapHeight < WindowHeight) then
     begin
-      ParentPaintWindow := Window;
-      lNotebookFound := false;
-      while (ParentPaintWindow <> 0) and not lNotebookFound do
+      // first release old objects
+      if WindowInfo^.BitmapDC <> 0 then
       begin
-        // notebook is parent of window that has istabpage
-{        if GetWindowInfo(ParentPaintWindow)^.isTabPage then
-          lNotebookFound := true;}
-        ParentPaintWindow := Windows.GetParent(ParentPaintWindow);
+        Windows.SelectObject(WindowInfo^.BitmapDC, WindowInfo^.DCBitmapOld);
+        Windows.DeleteObject(WindowInfo^.BitmapDC);
       end;
+      if WindowInfo^.Bitmap <> 0 then Windows.DeleteObject(WindowInfo^.Bitmap);
+
+      // And now create the new ones
+      DC := Windows.GetDC(0);
+      WindowInfo^.BitmapDC := Windows.CreateCompatibleDC(0);
+      WindowInfo^.BitmapWidth := WindowWidth;
+      WindowInfo^.BitmapHeight := WindowHeight;
+      WindowInfo^.Bitmap := Windows.CreateCompatibleBitmap(DC, WindowWidth, WindowHeight);
+      WindowInfo^.DCBitmapOld := Windows.SelectObject(WindowInfo^.BitmapDC, WindowInfo^.Bitmap);
+      Windows.ReleaseDC(0, DC);
     end;
 
-    // if painting background of some control for tabpage, don't handle erase background
-    // in parent of tabpage
-{    if WindowInfo^.isTabPage then
-      PushEraseBkgndCommand(ecDiscard);}
-
-    // check if double buffering is requested
-    useDoubleBuffer := (ControlDC = 0) and (lWinControl.DoubleBuffered);
-    if useDoubleBuffer then
-    begin
-      if CurDoubleBuffer.DC <> 0 then
-      begin
-        // we've been called from another paint handler. To prevent killing of
-        // not own DC and HBITMAP lets save then and restore on exit
-        BackupBuffer := CurDoubleBuffer;
-        FillChar(CurDoubleBuffer, SizeOf(CurDoubleBuffer), 0);
-        BufferWasSaved := True;
-      end
-      else
-        BufferWasSaved := False;
-      CurDoubleBuffer.DC := Windows.CreateCompatibleDC(0);
-      LCLIntf.GetWindowSize(Window, WindowWidth, WindowHeight);
-      if (CurDoubleBuffer.BitmapWidth < WindowWidth) or (CurDoubleBuffer.BitmapHeight < WindowHeight) then
-      begin
-        DC := Windows.GetDC(0);
-        if CurDoubleBuffer.Bitmap <> 0 then
-          Windows.DeleteObject(CurDoubleBuffer.Bitmap);
-        CurDoubleBuffer.BitmapWidth := WindowWidth;
-        CurDoubleBuffer.BitmapHeight := WindowHeight;
-        CurDoubleBuffer.Bitmap := Windows.CreateCompatibleBitmap(DC, WindowWidth, WindowHeight);
-        Windows.ReleaseDC(0, DC);
-      end;
-      DoubleBufferBitmapOld := Windows.SelectObject(CurDoubleBuffer.DC, CurDoubleBuffer.Bitmap);
-      PaintMsg.DC := CurDoubleBuffer.DC;
-    end;
-
+    // main processing
     WinProcess := false;
     try
       if ControlDC = 0 then
       begin
         // ignore first erase background on themed control, paint will do everything
         DC := Windows.BeginPaint(Window, @PS);
-        if useDoubleBuffer then
-        begin
-          PaintRegion := CreateRectRgn(0, 0, 1, 1);
-     {     if GetRandomRgn(DC, PaintRegion, SYSRGN) = 1 then
-          begin
-            // winnt returns in screen coordinates
-            // win9x returns in window coordinates
-            if Win32Platform = VER_PLATFORM_WIN32_NT then
-            begin
-              WindowOrg.X := 0;
-              WindowOrg.Y := 0;
-              Windows.ClientToScreen(Window, WindowOrg);
-              Windows.OffsetRgn(PaintRegion, -WindowOrg.X, -WindowOrg.Y);
-            end;
-            Windows.SelectClipRgn(DoubleBufferDC, PaintRegion);
-          end;}
-          // a copy of the region is selected into the DC, so we
-          // can free our region immediately
-          Windows.DeleteObject(PaintRegion);
-        end;
       end else begin
         DC := ControlDC;
         PaintRegion := 0;
       end;
-      if ParentPaintWindow <> 0 then
-        GetWin32ControlPos(Window, ParentPaintWindow, parLeft, parTop);
       //Is not necessary to check the result of GetLCLClientBoundsOffset since
       //the false condition (lWincontrol = nil or lWincontrol <> TWinControl) is never met
       //The rect is always initialized with 0
       GetLCLClientBoundsOffset(lWinControl, ORect);
       PaintMsg.Msg := LM_PAINT;
       PaintMsg.PaintStruct := @PS;
-      if not useDoubleBuffer then
-        PaintMsg.DC := DC;
+      PaintMsg.DC := DC;
       if not needParentPaint then
       begin
         // send through message to allow message override, moreover use SendMessage
@@ -339,22 +279,6 @@ Var
         Include(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
         Windows.SendMessageW(lWinControl.Handle, WM_ERASEBKGND, Windows.WPARAM(PaintMsg.DC), 0);
         Exclude(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
-      end;
-      if ParentPaintWindow <> 0 then
-      begin
-        // tabpage parent and got a dc to draw in, divert paint to parent
-        DCIndex := Windows.SaveDC(PaintMsg.DC);
-
-        {$ifdef DEBUG_WINDOW_ORG}
-        LCLIntf.GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
-        DebugLn(
-          Format(':> [SendPaintMessage 1] Control=%s DC=%d Moving WindowOrg from %d,%d by DX=%d DY=%d',
-          [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y, -parLeft, -parTop]));
-        {$endif}
-
-        MoveWindowOrgEx(PaintMsg.DC, -parLeft, -parTop);
-        Windows.SendMessageW(ParentPaintWindow, WM_PAINT, Windows.WParam(PaintMsg.DC), 0);
-        Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
       if (ControlDC = 0) or not needParentPaint then
       begin
@@ -378,23 +302,12 @@ Var
           [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y]));
         {$endif}
       end;
-      if useDoubleBuffer then
-        Windows.BitBlt(DC, 0, 0, WindowWidth, WindowHeight, CurDoubleBuffer.DC, 0, 0, SRCCOPY);
+
+      Windows.BitBlt(DC, 0, 0, WindowWidth, WindowHeight, WindowInfo^.BitmapDC, 0, 0, SRCCOPY);
+
       if ControlDC = 0 then
         Windows.EndPaint(Window, @PS);
     finally
-      if useDoubleBuffer then
-      begin
-        SelectObject(CurDoubleBuffer.DC, DoubleBufferBitmapOld);
-        DeleteDC(CurDoubleBuffer.DC);
-        CurDoubleBuffer.DC := 0;
-        if BufferWasSaved then
-        begin
-          if CurDoubleBuffer.Bitmap <> 0 then
-            DeleteObject(CurDoubleBuffer.Bitmap);
-          CurDoubleBuffer := BackupBuffer;
-        end;
-      end;
     end;
     {$ifdef DEBUG_WINDOW_ORG}
     DebugLn(':< [SendPaintMessage] Finish');
@@ -760,11 +673,6 @@ begin
       eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
       if eraseBkgndCommand = ecDoubleBufferNoRemove then
       begin
-        if CurDoubleBuffer.DC <> 0 then
-          WParam := Windows.WParam(CurDoubleBuffer.DC);
-{        if WindowInfo^.isTabPage then
-          EraseBkgndStack := (EraseBkgndStack and not ((1 shl EraseBkgndStackShift)-1))
-            or dword(ecDiscardNoRemove);}
       end
       else
       if eraseBkgndCommand <> ecDiscardNoRemove then

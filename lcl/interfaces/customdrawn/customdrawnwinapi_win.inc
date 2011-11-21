@@ -2723,7 +2723,7 @@ begin
   lpPoint.y := vPoint.y;
 
   Result := True;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetDC
@@ -2734,29 +2734,36 @@ end;
   - Once on app startup with hWnd = 0
   - Twice for every TLabel on the TCustomLabel.CalcSize function
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetDC(hWnd: HWND): HDC;
+function TCDWidgetSet.GetDC(hWnd: HWND): HDC;
 var
-  Widget: TQtWidget;
+  lWindowInfo: PWindowInfo;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
-  {$endif}
+//  {$ifdef VerboseQtWinAPI}
+//    WriteLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
+//  {$endif}
 
-  if QtWidgetSet.IsValidHandle(hWnd) then
-  begin
-    Widget := TQtWidget(hWnd);
-    Result := Widget.Context;
-    if Result = 0 then
-      Result := HDC(QtDefaultContext);
-  end else
-    Result := HDC(QtScreenContext);
+  Result := 0;
 
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
-  {$endif}
+  // screenshot taking
+  if hWnd = 0 then Exit;
+
+  lWindowInfo := GetWindowInfo(hWNd);
+  Result := HDC(lWindowInfo^.Canvas);
+//  if QtWidgetSet.IsValidHandle(hWnd) then
+//  begin
+//    Widget := TQtWidget(hWnd);
+//    Result := Widget.Context;
+//    if Result = 0 then
+//      Result := HDC(QtDefaultContext);
+//  end else
+//    Result := HDC(QtScreenContext);
+
+//  {$ifdef VerboseQtWinAPI}
+//    WriteLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
+//  {$endif}
 end;
 
-function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
+(*function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 var
   QtDC: TQtDeviceContext absolute PaintDC;
@@ -4926,7 +4933,7 @@ begin
     exit;
 
   Result := TQtRegion(RGN).containsPoint(X, Y);
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: Rectangle
@@ -4936,23 +4943,23 @@ end;*)
   The Rectangle function draws a rectangle. The rectangle is outlined by using
   the current pen and filled by using the current brush.
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
+function TQtWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
-  LazDC: TLazCanvas absolute DC;
+  R: TRect;
 begin
-//  {$ifdef VerboseQtWinAPI}
-//    WriteLn('[WinAPI Rectangle] DC: ', dbghex(DC));
-//  {$endif}
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI Rectangle] DC: ', dbghex(DC));
+  {$endif}
 
-  //if not IsValidDC(DC) then Exit(False);
-  LazDC.Rectangle(X1, Y1, X2, Y2);
-{  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
+  if not IsValidDC(DC) then Exit(False);
+
+  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
   if IsRectEmpty(R) then Exit(True);
 
-  TQtDeviceContext(DC).drawRect(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1);}
+  TQtDeviceContext(DC).drawRect(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1);
   Result := True;
 end;
-(*
+
 function TQtWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 var
   QtDC: TQtDeviceContext;

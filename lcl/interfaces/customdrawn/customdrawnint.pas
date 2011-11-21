@@ -37,9 +37,9 @@ uses
    //CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaTextLayout, CocoaProc,
   // LCL
   InterfaceBase, Translations,
-  Controls,  Forms, lclproc,
+  Controls,  Forms, lclproc, IntfGraphics,
   {Buttons, Dialogs, GraphMath, GraphType, LCLIntf,}
-  LCLType, LMessages{, StdCtrls, Graphics, Menus };
+  LCLType, LMessages, lazcanvas{, StdCtrls, Graphics, Menus };
 
 type
   {$ifdef CD_Windows}
@@ -204,6 +204,7 @@ uses
 {$ifdef CD_Windows}
   {$include wincallback.inc}
   {$I customdrawnobject_win.inc}
+  {$I customdrawnwinapi_win.inc}
 {$endif}
 {$ifdef CD_Cocoa}
   {$I customdrawnobject_cocoa.inc}

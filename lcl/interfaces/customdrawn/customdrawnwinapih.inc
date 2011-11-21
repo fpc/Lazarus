@@ -104,9 +104,9 @@ function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
 function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
 function GetCmdLineParamDescForInterface: string; override;
 function GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ; override;
-function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
+function GetCursorPos(var lpPoint: TPoint ): Boolean; override;*)
 function GetDC(hWnd: HWND): HDC; override;
-function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
+(*function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
 function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
@@ -170,9 +170,9 @@ function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): bo
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;
 function PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean; override;
 function PtInRegion(RGN: HRGN; X, Y: Integer) : Boolean; override;
-
+*)
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
-function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
+(*function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
 function RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean; override;
 function ReleaseCapture : Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;

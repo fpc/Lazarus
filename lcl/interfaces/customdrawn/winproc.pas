@@ -28,7 +28,7 @@ uses
   Windows, CTypes, Classes, SysUtils,
   // LCL
   LCLType, Interfacebase, LMessages, lclintf, LCLMessageGlue, LCLProc,
-  Controls, Forms, graphtype, Menus;
+  Controls, Forms, graphtype, Menus, IntfGraphics, lazcanvas;
 
 type
   MCHITTESTINFO = record
@@ -96,13 +96,18 @@ type
     DefWndProc: WNDPROC;
     ParentPanel: HWND;        // if non-zero, is the tabsheet window, for the pagecontrol hack
     WinControl: TWinControl;
-    PWinControl: TWinControl; // control to paint for
-    AWinControl: TWinControl; // control associated with (for buddy controls)
     List: TStrings;
     StayOnTopList: TList;     // a list of windows that were normalized when showing modal
     {needParentPaint: boolean; // has a tabpage as parent, and is winxp themed}
     MaxLength: dword;
     MouseX, MouseY: word; // noticing spurious WM_MOUSEMOVE messages
+    // CD additions
+    Image: TLazIntfImage;
+    Canvas: TLazCanvas;
+    Bitmap: HBITMAP;
+    BitmapWidth: integer;
+    BitmapHeight: integer;
+    BitmapDC, DCBitmapOld: HDC;
   end;
 
   PStayOnTopWindowsInfo = ^TStayOnTopWindowsInfo;
