@@ -1,4 +1,4 @@
-{%MainUnit qtint.pas}
+{%MainUnit customdrawnint.pas}
 
 {******************************************************************************
   All QT Winapi related stuff goes here.

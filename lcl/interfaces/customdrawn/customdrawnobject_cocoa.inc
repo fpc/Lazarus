@@ -170,6 +170,11 @@ begin
   NSApp.activateIgnoringOtherApps(True);
 end;
 
+procedure TCDWidgetSet.AppSetIcon(const Small, Big: HICON);
+begin
+
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCDWidgetSet.AppSetTitle
   Params:  ATitle - New application title
@@ -188,6 +193,23 @@ begin
     NSApp.dockTile.setBadgeLabel(NSStringUtf8(ATitle));
     ns.release;
   end;}
+end;
+
+procedure TCDWidgetSet.AppSetVisible(const AVisible: Boolean);
+begin
+end;
+
+function TCDWidgetSet.AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
+begin
+end;
+
+function TCDWidgetSet.AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
+begin
+end;
+
+procedure TCDWidgetSet.AppSetMainFormOnTaskBar(const DoSet: Boolean);
+begin
+
 end;
 
 function TCDWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;

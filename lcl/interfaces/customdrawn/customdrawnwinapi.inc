@@ -1,11 +1,6 @@
-{%MainUnit qtint.pp}
-{ $Id: qtwinapi.inc 33607 2011-11-18 08:04:42Z zeljko $ }
+{%MainUnit customdrawnint.pp}
 {******************************************************************************
-  All QT Winapi implementations.
-  This are the implementations of the overrides of the QT Interface for the
-  methods defined in the
-  lcl/include/winapi.inc
-
+  All CustomDrawn backend independent Winapi implementations.
 
   !! Keep alphabetical !!
 

@@ -3,16 +3,19 @@
 {$modeswitch objectivec1}
 {$endif}
 
-// Choosing the default backend
-//{$ifndef CD_OPENGL} <- for the future
-{$ifdef Windows}
-  {$define CD_WINDOWS}
-{$endif}
-{$ifdef UNIX}
-  {$ifdef Darwin}
-    {$define CD_Cocoa}
-  {$else}
-    {$define CD_X11}
+// Check if a backend is already defined
+{$if defined(CD_X11)}
+{$else}
+  // Choosing the default backend
+  {$ifdef Windows}
+    {$define CD_WINDOWS}
+  {$endif}
+  {$ifdef UNIX}
+    {$ifdef Darwin}
+      {$define CD_Cocoa}
+    {$else}
+      {$define CD_X11}
+    {$endif}
   {$endif}
 {$endif}
 

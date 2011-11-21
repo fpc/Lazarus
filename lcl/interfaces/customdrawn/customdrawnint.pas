@@ -209,6 +209,7 @@ uses
 {$endif}
 {$ifdef CD_Cocoa}
   {$I customdrawnobject_cocoa.inc}
+  {$I customdrawnwinapi_cocoa.inc}
 {$endif}
 {$ifdef CD_X11}
   {$I customdrawnobject_x11.inc}

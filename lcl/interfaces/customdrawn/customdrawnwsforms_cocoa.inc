@@ -93,7 +93,7 @@ class function TCDWSCustomForm.GetClientBounds(const AWinControl: TWinControl; v
 begin
   Result:=AWinControl.Handle<>0;
   if not Result then Exit;
-  ARect:=NSObject(AWinControl.Handle).lclClientFrame;
+  ARect:=LCLObjectExtension(NSObject(AWinControl.Handle)).lclClientFrame;
 end;
 
 class function TCDWSCustomForm.GetClientRect(const AWinControl: TWinControl; var ARect: TRect): Boolean;
@@ -102,9 +102,9 @@ var
 begin
   Result:=AWinControl.Handle<>0;
   if not Result then Exit;
-  ARect:=NSObject(AWinControl.Handle).lclClientFrame;
+  ARect:=LCLObjectExtension(NSObject(AWinControl.Handle)).lclClientFrame;
   x:=0;y:=0;
-  NSObject(AWinControl.Handle).lclLocalToScreen(x,y);
+  LCLObjectExtension(NSObject(AWinControl.Handle)).lclLocalToScreen(x,y);
   MoveRect(ARect, x,y);
 end;
 
@@ -114,7 +114,7 @@ begin
   if AWinControl.Handle=0 then Exit;
   {todo: setFrame_display(, true)? }
   //sf:=NSScreen.mainScreen.frame;
-  NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
+  LCLObjectExtension(NSObject(AWinControl.Handle)).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
 
   //LCLToCocoaRect( GetNSRect(ALeft,ATop,AWidth,AHeight), sf, wf);
   //NSWindow(AWinControl.Handle).setFrame_display(wf, false);
