@@ -47,6 +47,9 @@ type
     procedure Execute (x,y,w,h : integer); override;
   end;
 
+  TLazCanvas = class(TFPImageCanvas)
+  end;
+
 implementation
 
 { TFPWindowsSharpInterpolation }
