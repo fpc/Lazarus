@@ -28,10 +28,10 @@
 //##apiwiz##sps##   // Do not remove, no wizard declaration before this line
 (*
 function Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean; override;
-function AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean; override;
+function AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean; override;*)
 
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
-function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
+(*function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 
 function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
 function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer; override;
@@ -52,9 +52,9 @@ function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  o
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;
-function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
+function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;*)
 function CreateCompatibleDC(DC: HDC): HDC; override;
-function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; override;
+(*function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
 function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;

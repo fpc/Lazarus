@@ -260,6 +260,10 @@ Var
     end;
     if (WindowInfo^.Canvas = nil) then WindowInfo^.Canvas := TLazCanvas.Create(WindowInfo^.Image);
 
+    {$ifdef VerboseCDWinAPI}
+    DebugLn(Format('[SendPaintMessage] WindowInfo^.Canvas=%s', [dbghex(PtrInt(WindowInfo^.Canvas))]));
+    {$endif}
+
     // main processing
     WinProcess := false;
     try
@@ -277,32 +281,32 @@ Var
       GetLCLClientBoundsOffset(lWinControl, ORect);
       PaintMsg.Msg := LM_PAINT;
       PaintMsg.PaintStruct := @PS;
-      PaintMsg.DC := DC;
+      PaintMsg.DC := HDC(WindowInfo^.Canvas);
       if not needParentPaint then
       begin
         // send through message to allow message override, moreover use SendMessage
         // to allow subclass window proc override this message too
         Include(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
-        Windows.SendMessageW(lWinControl.Handle, WM_ERASEBKGND, Windows.WPARAM(PaintMsg.DC), 0);
+        Windows.SendMessageW(lWinControl.Handle, WM_ERASEBKGND, Windows.WPARAM(DC), 0);
         Exclude(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
       end;
       if (ControlDC = 0) or not needParentPaint then
       begin
-        DCIndex := Windows.SaveDC(PaintMsg.DC);
+        DCIndex := Windows.SaveDC(DC);
 
         {$ifdef DEBUG_WINDOW_ORG}
-        LCLIntf.GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
+        LCLIntf.GetWindowOrgEx(DC, @WindowOrg);
         DebugLn(
           Format(':> [SendPaintMessage 2] Control=%s DC=%d Moving WindowOrg from %d,%d by DX=%d DY=%d',
           [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y, -parLeft, -parTop]));
         {$endif}
 
-        MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
+        MoveWindowOrgEx(DC, ORect.Left, ORect.Top);
         DeliverMessage(lWinControl, PaintMsg);
-        Windows.RestoreDC(PaintMsg.DC, DCIndex);
+        Windows.RestoreDC(DC, DCIndex);
 
         {$ifdef DEBUG_WINDOW_ORG}
-        LCLIntf.GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
+        LCLIntf.GetWindowOrgEx(DC, @WindowOrg);
         DebugLn(
           Format(':> [SendPaintMessage 3] Control=%s DC=%d WindowOrg=%d,%d',
           [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y]));

@@ -64,7 +64,7 @@ begin
   Result := IsValidDC(DC);
   if Result then
     QPainter_drawChord(TQtDeviceContext(DC).Widget, x1, y1, x2, y2, Angle1, Angle2);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: BeginPaint
@@ -74,15 +74,14 @@ end;
   This function is Called:
   - Once on every OnPaint event
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct): hdc;
+function TCDWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct): hdc;
 var
-  Widget: TQtWidget;
-  DC: TQtDeviceContext;
+  DC: TLazCanvas;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI BeginPaint] Handle=', dbghex(Handle));
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('Trace:> [WinAPI BeginPaint] Handle=', dbghex(Handle));
   {$endif}
-  Widget := TQtWidget(Handle);
+(*  Widget := TQtWidget(Handle);
   if Widget <> nil then
     DC := TQtDeviceContext.Create(Widget.PaintData.PaintWidget, True)
   else
@@ -113,9 +112,9 @@ begin
 
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI BeginPaint] Result=', dbghex(Result));
-  {$endif}
+  {$endif}*)
 end;
-
+(*
 function TQtWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
@@ -482,7 +481,7 @@ function TQtWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width, Height: 
 begin
   Result := (Handle <> 0) and
     QtCaret.CreateCaret(TQtWidget(Handle), Bitmap, Width, Height);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: CreateCompatibleDC
@@ -491,14 +490,14 @@ end;
 
   Creates a memory device context (DC) compatible with the specified device.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
+function TCDWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
-  {$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseCDWinAPI}
     WriteLn('[WinAPI CreateCompatibleDC] DC: ', dbghex(DC));
   {$endif}
-  Result := HDC(TQtDeviceContext.Create(nil, True));
+  Result := 0;//HDC(TQtDeviceContext.Create(nil, True));
 end;
-
+(*
 {------------------------------------------------------------------------------
   Function: CreateEllipticRgn
   Params:  p1 - X position of the top-left corner
