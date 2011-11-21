@@ -1053,7 +1053,7 @@ msgstr "Anterior"
 
 #: lclstrconsts.rspromptonreplace
 msgid "Prompt on replace"
-msgstr ""
+msgstr "Perguntar antes de substituir"
 
 #: lclstrconsts.rspropertydoesnotexist
 msgid "Property %s does not exist"

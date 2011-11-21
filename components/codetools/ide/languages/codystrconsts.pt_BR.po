@@ -10,19 +10,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: codystrconsts.crsaddassignmethod
-#, fuzzy
 #| msgid "Add Assign method"
 msgid "Add Assign Method"
 msgstr "Adicionar método \"Assign\""
 
 #: codystrconsts.crsaddassignmethod2
-#, fuzzy
 #| msgid "Add Assign method ..."
 msgid "Add Assign Method ..."
 msgstr "Adicionar método \"Assign\" ..."
 
 #: codystrconsts.crsaddawithblock
-#, fuzzy
 #| msgid "Add a \"With\" block"
 msgid "Add a \"With\" Block"
 msgstr "Adicionar um bloco \"With\""
@@ -45,7 +42,7 @@ msgstr "Já definido em %s"
 
 #: codystrconsts.crsandmoreidentifiers
 msgid "... and %s more identifiers"
-msgstr ""
+msgstr "... e mais %s identificadores"
 
 #: codystrconsts.crsbtncancel
 msgid "Cancel"
@@ -165,13 +162,12 @@ msgstr "Informação Nó de Código"
 
 #: codystrconsts.crscodyidentifierdictionary
 msgid "Cody Identifier Dictionary"
-msgstr ""
+msgstr "Dicionário de identificadores do \"Cody\""
 
 #: codystrconsts.crscopydeclarationtoclipboard
-#, fuzzy
 #| msgid "Copy declaration to clipboard"
 msgid "Copy declaration to Clipboard"
-msgstr "Copiar declaração para área transferência"
+msgstr "Copiar declaração para área de transferência"
 
 #: codystrconsts.crscount
 msgid "Count"
@@ -194,10 +190,9 @@ msgid "Select file to insert at cursor"
 msgstr "Selecionar arquivo à inserir na posição do cursor"
 
 #: codystrconsts.crscutdeclarationtoclipboard
-#, fuzzy
 #| msgid "Cut declaration to clipboard"
 msgid "Cut declaration to Clipboard"
-msgstr "Recortar declaração para área transferência"
+msgstr "Recortar declaração para área de transferência"
 
 #: codystrconsts.crscuthefileseemstobeabinaryproceed
 msgid "The file seems to be a binary. Proceed?"
@@ -237,10 +232,9 @@ msgstr "\"%s\" é uma palavra-chave."
 
 #: codystrconsts.crserror
 msgid "Error: %s"
-msgstr ""
+msgstr "Erro: %s"
 
 #: codystrconsts.crsexplodeawithblock
-#, fuzzy
 #| msgid "Explode a \"With\" block"
 msgid "Explode a \"With\" Block"
 msgstr "Expandir um bloco \"With\""
@@ -255,7 +249,7 @@ msgstr "Arquivo"
 
 #: codystrconsts.crsfilter
 msgid "(Filter)"
-msgstr ""
+msgstr "(Filtro)"
 
 #: codystrconsts.crsflags
 msgid "Flags"
@@ -282,7 +276,6 @@ msgid "In interface"
 msgstr "Na interface"
 
 #: codystrconsts.crsinsertfileatcursor
-#, fuzzy
 #| msgid "Insert file at cursor ..."
 msgid "Insert File at Cursor ..."
 msgstr "Inserir arquivo na posição do cursor ..."
@@ -349,7 +342,7 @@ msgstr "Pacote"
 
 #: codystrconsts.crspackagesunitsidentifiersfile
 msgid "Packages: %s, Units: %s, Identifiers: %s%sFile: %s"
-msgstr ""
+msgstr "Pacotes: %s, Unidades: %s, Identificadores: %s%sArquivo: %s"
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
@@ -396,7 +389,6 @@ msgid "Project has no main source file."
 msgstr "Projeto não tem arquivo fonte principal."
 
 #: codystrconsts.crsprojectoutput
-#, fuzzy
 #| msgid "Project output"
 msgid "Project Output"
 msgstr "Saída do Projeto"
@@ -430,17 +422,15 @@ msgid "Select expression"
 msgstr "Selecionar expressão"
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
-#, fuzzy
 #| msgid "Show CodeTools node info ..."
 msgid "Show CodeTools Node Info ..."
-msgstr "Exibir info do nó CodeTools ..."
+msgstr "Exibir info. do nó das ferramentas de código ..."
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."
-msgstr ""
+msgstr "Exibir Unidade / Dicionário de Identificadores ..."
 
 #: codystrconsts.crsshowusedppufiles
-#, fuzzy
 #| msgid "Show used .ppu files ..."
 msgid "Show Used .ppu Files ..."
 msgstr "Exibir arquivos .ppu usados ..."
@@ -502,7 +492,6 @@ msgid "Uses"
 msgstr "\"Uses\""
 
 #: codystrconsts.crsvirtualunit
-#, fuzzy
 #| msgid "Virtual unit"
 msgid "Virtual Unit"
 msgstr "Unidade Virtual"
