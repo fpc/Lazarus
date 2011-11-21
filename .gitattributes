@@ -1185,6 +1185,7 @@ components/jcf2/IdePlugin/lazarus/jcfideregister.pas svneol=native#text/pascal
 components/jcf2/IdePlugin/lazarus/jcfsettings.lpi svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/jcfuiconsts.pas svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/languages/jcfideregister.de.po svneol=native#text/plain
+components/jcf2/IdePlugin/lazarus/languages/jcfideregister.es.po svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/languages/jcfideregister.fr.po svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/languages/jcfideregister.it.po svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/languages/jcfideregister.lt.po svneol=native#text/plain
