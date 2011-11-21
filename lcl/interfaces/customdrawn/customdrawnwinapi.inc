@@ -4948,6 +4948,7 @@ begin
   {$endif}
 
   //if not IsValidDC(DC) then Exit(False);
+  LazDC.Brush.FPColor := colWhite;
   LazDC.Rectangle(X1, Y1, X2, Y2);
 {  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
   if IsRectEmpty(R) then Exit(True);

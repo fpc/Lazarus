@@ -30,6 +30,7 @@ interface
 uses
   // RTL
   Types, Classes, SysUtils, Math,
+  fpimage, fpcanvas,
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, {unitxft, Xft font support}{$endif}

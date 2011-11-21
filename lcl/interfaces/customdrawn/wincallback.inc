@@ -292,7 +292,7 @@ Var
       end;
       if (ControlDC = 0) or not needParentPaint then
       begin
-        DCIndex := Windows.SaveDC(DC);
+        //DCIndex := Windows.SaveDC(DC);
 
         {$ifdef DEBUG_WINDOW_ORG}
         LCLIntf.GetWindowOrgEx(DC, @WindowOrg);
@@ -301,9 +301,9 @@ Var
           [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y, -parLeft, -parTop]));
         {$endif}
 
-        MoveWindowOrgEx(DC, ORect.Left, ORect.Top);
+        //MoveWindowOrgEx(DC, ORect.Left, ORect.Top);  <- substitute with a non-native window org change
         DeliverMessage(lWinControl, PaintMsg);
-        Windows.RestoreDC(DC, DCIndex);
+        //Windows.RestoreDC(DC, DCIndex);
 
         {$ifdef DEBUG_WINDOW_ORG}
         LCLIntf.GetWindowOrgEx(DC, @WindowOrg);
@@ -313,6 +313,7 @@ Var
         {$endif}
       end;
 
+      // Now convert the rawimage to a HBITMAP and draw it to the screen
       WindowInfo^.Image.GetRawImage(lRawImage);
       WinProc_RawImage_CreateBitmaps(lRawImage, lBitmap, lMask, True);
       Windows.SelectObject(WindowInfo^.BitmapDC, lBitmap);
