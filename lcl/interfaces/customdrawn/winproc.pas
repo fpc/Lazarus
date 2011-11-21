@@ -160,6 +160,7 @@ function CreateDIBSectionFromDescription(ADC: HDC; const ADesc: TRawImageDescrip
 procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
 procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc: TRawImageDescription);
 function WinProc_RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
+function WinProc_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
 
 function GetBitmapOrder(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP):TRawImageLineOrder;
 function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; ALineOrder: TRawImageLineOrder; out AData: Pointer; out ADataSize: PtrUInt): Boolean;
@@ -689,6 +690,155 @@ begin
   else begin
     ARawImage.Description.MaskBitsPerPixel := 0;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: RawImage_CreateBitmaps
+  Params: ARawImage:
+          ABitmap:
+          AMask:
+          ASkipMask: When set there is no mask created
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function WinProc_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
+var
+  ADesc: TRawImageDescription absolute ARawImage.Description;
+
+  function DoBitmap: Boolean;
+  var
+    DC: HDC;
+    Info: record
+      Header: Windows.TBitmapInfoHeader;
+      Colors: array[0..1] of Cardinal; // reserve extra color for mono bitmaps
+    end;
+    DstLinePtr, SrcLinePtr: PByte;
+    SrcPixelPtr, DstPixelPtr: PByte;
+    DstLineSize, SrcLineSize: PtrUInt;
+    x, y: Integer;
+    Ridx, Gidx, Bidx, Aidx, Align, SrcBytes, DstBpp: Byte;
+  begin
+    if (ADesc.BitsPerPixel = 1) and (ADesc.LineEnd = rileWordBoundary)
+    then begin
+      // default BW, word aligned bitmap
+      ABitmap := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Data);
+      Exit(ABitmap <> 0);
+    end;
+
+    // for 24 bits images, BPP can be 24 or 32
+    // 32 shouldn't be use since we don't fill the alpha channel
+
+    if ADesc.Depth = 24
+    then DstBpp := 24
+    else DstBpp := ADesc.BitsPerPixel;
+
+    FillChar(Info, SizeOf(Info), 0);
+    Info.Header.biSize := SizeOf(Info.Header);
+    Info.Header.biWidth := ADesc.Width;
+    if ADesc.LineOrder = riloTopToBottom
+    then Info.Header.biHeight := -ADesc.Height // create top to bottom
+    else Info.Header.biHeight := ADesc.Height; // create bottom to top
+    Info.Header.biPlanes := 1;
+    Info.Header.biBitCount := DstBpp;
+    Info.Header.biCompression := BI_RGB;
+    {Info.Header.biSizeImage := 0;}
+    { first color is black, second color is white, for monochrome bitmap }
+    Info.Colors[1] := $FFFFFFFF;
+
+    DC := Windows.GetDC(0);
+    // Use createDIBSection, since only devicedepth bitmaps can be selected into a DC
+    // when they are created with createDIBitmap
+    //  ABitmap := Windows.CreateDIBitmap(DC, Info.Header, CBM_INIT, ARawImage.Data, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS);
+    ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, DstLinePtr, 0, 0);
+    Windows.ReleaseDC(0, DC);
+
+    if ABitmap = 0
+    then begin
+      DebugLn('Windows.CreateDIBSection returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
+      Exit(False);
+    end;
+    if DstLinePtr = nil then Exit(False);
+
+    DstLineSize := Windows.MulDiv(DstBpp, ADesc.Width, 8);
+    // align to DWord
+    Align := DstLineSize and 3;
+    if Align > 0
+    then Inc(DstLineSize, 4 - Align);
+
+    SrcLinePtr := ARawImage.Data;
+    SrcLineSize := ADesc.BytesPerLine;
+
+    // copy the image data
+    if ADesc.Depth >= 24
+    then begin
+      // check if a pixel copy is needed
+      // 1) Windows uses alpha channel in 32 bpp modes, despite documentation statement that it is ignored. Tested under Windows XP SP3
+      // Wine also relies on this undocumented behaviour!
+      // So, we need to cut unused A-channel, otherwise we would get black image
+      //
+      // 2) incompatible channel order
+      ADesc.GetRGBIndices(Ridx, Gidx, Bidx, Aidx);
+
+      if ((ADesc.BitsPerPixel = 32) and (ADesc.Depth = 24))
+      or (Bidx <> 0) or (Gidx <> 1) or (Ridx <> 2)
+      then begin
+        // copy pixels
+        SrcBytes := ADesc.BitsPerPixel div 8;
+
+        for y := 0 to ADesc.Height - 1 do
+        begin
+          DstPixelPtr := DstLinePtr;
+          SrcPixelPtr := SrcLinePtr;
+          for x := 0 to ADesc.Width - 1 do
+          begin
+            DstPixelPtr[0] := SrcPixelPtr[Bidx];
+            DstPixelPtr[1] := SrcPixelPtr[Gidx];
+            DstPixelPtr[2] := SrcPixelPtr[Ridx];
+
+            Inc(DstPixelPtr, 3); //move to the next dest RGB triple
+            Inc(SrcPixelPtr, SrcBytes);
+          end;
+
+          Inc(DstLinePtr, DstLineSize);
+          Inc(SrcLinePtr, SrcLineSize);
+        end;
+
+        Exit(True);
+      end;
+    end;
+
+    // no pixelcopy needed
+    // check if we can move using one call
+    if ADesc.LineEnd = rileDWordBoundary
+    then begin
+      Move(SrcLinePtr^, DstLinePtr^, DstLineSize * ADesc.Height);
+      Exit(True);
+    end;
+
+    //Can't use just one move, as different alignment
+    for y := 0 to ADesc.Height - 1 do
+    begin
+      Move(SrcLinePtr^, DstLinePtr^, DstLineSize);
+      Inc(DstLinePtr, DstLineSize);
+      Inc(SrcLinePtr, SrcLineSize);
+    end;
+
+    Result := True;
+  end;
+
+begin
+  AMask := 0;
+  Result := DoBitmap;
+  if not Result then Exit;
+
+  //DbgDumpBitmap(ABitmap, 'CreateBitmaps - Image');
+  if ASkipMask then Exit;
+
+  AMask := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Mask);
+  if AMask = 0 then
+    DebugLn('Windows.CreateBitmap returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
+  Result := AMask <> 0;
+  //DbgDumpBitmap(AMask, 'CreateBitmaps - Mask');
 end;
 
 function CreateDIBSectionFromDescription(ADC: HDC; const ADesc: TRawImageDescription; out ABitsPtr: Pointer): HBITMAP;

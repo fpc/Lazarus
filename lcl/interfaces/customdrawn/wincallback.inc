@@ -206,7 +206,7 @@ Var
   procedure SendPaintMessage(ControlDC: HDC);
   var
     DC: HDC;
-    DoubleBufferBitmapOld: HBITMAP;
+    lBitmap, lMask: HBITMAP;
     PaintRegion: HRGN;
     PS : TPaintStruct;
     PaintMsg: TLMPaint;
@@ -313,7 +313,12 @@ Var
         {$endif}
       end;
 
+      WindowInfo^.Image.GetRawImage(lRawImage);
+      WinProc_RawImage_CreateBitmaps(lRawImage, lBitmap, lMask, True);
+      Windows.SelectObject(WindowInfo^.BitmapDC, lBitmap);
       Windows.BitBlt(DC, 0, 0, WindowWidth, WindowHeight, WindowInfo^.BitmapDC, 0, 0, SRCCOPY);
+      Windows.SelectObject(WindowInfo^.BitmapDC, WindowInfo^.Bitmap);
+      Windows.DeleteObject(lBitmap);
 
       if ControlDC = 0 then
         Windows.EndPaint(Window, @PS);
