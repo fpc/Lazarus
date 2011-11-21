@@ -296,15 +296,32 @@ end;
 class procedure TQtWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
 var
   SystemTrayIcon: TQtSystemTrayIcon;
+  AIcon: QIconH;
 begin
   if (ATrayIcon.Handle = 0) then Exit;
 
   SystemTrayIcon := TQtSystemTrayIcon(ATrayIcon.Handle);
-
-  if Assigned(ATrayIcon.Icon) and (ATrayIcon.Icon.HandleAllocated) then
-    SystemTrayIcon.setIcon(TQtIcon(ATrayIcon.Icon.Handle).Handle)
-  else
-    SystemTrayIcon.setIcon(nil);
+  if Assigned(ATrayIcon.Icon) then
+  begin
+    // normal icon
+    if (ATrayIcon.Icon.HandleAllocated) then
+      SystemTrayIcon.setIcon(TQtIcon(ATrayIcon.Icon.Handle).Handle)
+    else
+    // image list (animate)
+    if (ATrayIcon.Icon.BitmapHandle <> 0) then
+      SystemTrayIcon.setIcon(TQtImage(ATrayIcon.Icon.BitmapHandle).AsIcon)
+    else
+    begin
+      AIcon := QIcon_create;
+      SystemTrayIcon.setIcon(AIcon);
+      QIcon_destroy(AIcon);
+    end;
+  end else
+  begin
+    AIcon := QIcon_create;
+    SystemTrayIcon.setIcon(AIcon);
+    QIcon_destroy(AIcon);
+  end;
 
 
   { PopUpMenu }
