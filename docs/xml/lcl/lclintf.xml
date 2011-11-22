@@ -801,7 +801,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="DestroyIcon">
-        <short></short>
+        <short>Destroys an icon.</short>
         <descr>
         </descr>
         <errors>
@@ -810,40 +810,39 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         </seealso>
       </element>
       <element name="DestroyIcon.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="DestroyIcon.Handle">
         <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="DPtoLP">
-        <short></short>
+        <short>Converts an array of Device Points (coordinates) into Logical Points.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="DPtoLP.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="DPtoLP.DC">
-        <short/>
+        <short>The device context, containing the coordinate mapping information.</short>
       </element>
       <element name="DPtoLP.Points">
-        <short/>
+        <short>An array of points.</short>
       </element>
       <element name="DPtoLP.Count">
-        <short/>
+        <short>The number of points to convert.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="DrawFrameControl">
-        <short></short>
+        <short>Draws a window frame control, of the specified type and style.
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="DrawFrameControl.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="DrawFrameControl.DC">
         <short/>
@@ -859,7 +858,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="DrawFocusRect">
-        <short></short>
+        <short>Shows or hides a floating rectangle.</short>
         <descr>
         </descr>
         <errors>
@@ -878,7 +877,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="DrawEdge">
-        <short/>
+        <short>Draws one or more edges of a rectangle.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -900,7 +899,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="DrawText">
-        <short/>
+        <short>Draws formatted text within a rectangle.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -931,7 +930,9 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="EnableScrollBar">
-        <short/>
+        <short>Enables or disables the arrows of a scrollbar control,
+          or of the scrollbars of a window.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -954,7 +955,8 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="EnableWindow">
-        <short/>
+        <short>Enables or disables mouse and keyboard input to the specified window or control.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -973,7 +975,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="EndPaint">
-        <short/>
+        <short>Ends painting a window, started with BeginPaint.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -992,7 +994,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- procedure Visibility: default -->
       <element name="EnterCriticalSection">
-        <short/>
+        <short>Enters a critical section.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1002,7 +1004,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="EnumDisplayMonitors">
-        <short></short>
+        <short>Invokes a callback function for every available display monitor.</short>
         <descr>
         </descr>
         <errors>
@@ -1027,7 +1029,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="EnumFontFamilies">
-        <short></short>
+        <short>Invokes a callback function for every font available on a specified device.</short>
         <descr>
         </descr>
         <errors>
@@ -1052,7 +1054,8 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="EnumFontFamiliesEx">
-        <short></short>
+        <short>Invokes a callback function for every available font that matches certain criteria.
+        </short>
         <descr>
         </descr>
         <errors>
@@ -1080,69 +1083,58 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="Ellipse">
-        <short/>
+        <short>Draws a filled circle or ellipse, bounded by a rectangle.</short>
         <descr/>
         <errors/>
-        <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="Ellipse.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="Ellipse.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="Ellipse.x1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="Ellipse.y1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="Ellipse.x2">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="Ellipse.y2">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ExcludeClipRect">
-        <short/>
+        <short>Excludes a rectangle from the clipping region,
+          i.e. allows to paint within the rectangle.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ExcludeClipRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExcludeClipRect.dc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExcludeClipRect.Left">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExcludeClipRect.Top">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExcludeClipRect.Right">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExcludeClipRect.Bottom">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ExtCreatePen">
-        <short></short>
+        <short>Creates an logical pen, selectable into any DC.</short>
         <descr>
         </descr>
         <errors>
@@ -1170,216 +1162,175 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="ExtTextOut">
-        <short/>
+        <short>Draws an string without formatting (single line).</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ExtTextOut.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtTextOut.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtTextOut.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtTextOut.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtTextOut.Options">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtTextOut.Rect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtTextOut.Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtTextOut.Count">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtTextOut.Dx">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ExtSelectClipRGN">
-        <short/>
+        <short>Combines the passed Region with the current clipping region.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ExtSelectClipRGN.Result">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtSelectClipRGN.dc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtSelectClipRGN.rgn">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ExtSelectClipRGN.Mode">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="FillRect">
-        <short/>
+        <short>Fills a rectangle by using the specified brush.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="FillRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FillRect.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FillRect.Rect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FillRect.Brush">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="FillRgn">
-        <short/>
+        <short>Fills a region using the specified brush.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="FillRgn.Result">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FillRgn.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FillRgn.RegionHnd">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FillRgn.hbr">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="FloodFill">
-        <short/>
+        <short>Fills an area of the display surface with the current brush.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="FloodFill.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FloodFill.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FloodFill.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FloodFill.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FloodFill.Color">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FloodFill.FillStyle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FloodFill.Brush">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="FrameRect">
-        <short>Draws the border of a rectangle with the brush.</short>
+        <short>Draws a border around a rectangle.</short>
         <descr>
         </descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="FrameRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FrameRect.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FrameRect.ARect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="FrameRect.hBr">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetActiveWindow">
-        <short/>
+        <short>Returns the Handle of the active window of the calling thread.
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetActiveWindow.Result">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetBitmapBits">
-        <short/>
+        <short>Fills an buffer with the bitmap bits.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetBitmapBits.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetBitmapBits.Bitmap">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetBitmapBits.Count">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetBitmapBits.Bits">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetBkColor">
-        <short></short>
+        <short>Returns the background color of an device context.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -1391,27 +1342,24 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetCapture">
-        <short/>
+        <short>Returns the window that captures mouse messages.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetCapture.Result">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetCaretPos">
-        <short/>
+        <short>Returns the caret position, in client coordinates.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetCaretPos.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetCaretPos.lpPoint">
         <short/>
       </element>
@@ -1440,39 +1388,34 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetClipBox">
-        <short/>
+        <short>Returns the smallest rectangle
+          which includes the entire clipping region of an device context.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetClipBox.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetClipBox.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetClipBox.lpRect">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetClipRGN">
-        <short/>
+        <short>Returns the clipping region of an device context.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetClipRGN.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetClipRGN.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetClipRGN.RGN">
         <short/>
       </element>
@@ -1491,7 +1434,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetCurrentObject">
-        <short></short>
+        <short>Returns an currently selected object in an device context.</short>
         <descr>
         </descr>
         <errors>
@@ -1510,49 +1453,43 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetCharABCWidths">
-        <short/>
+        <short>Returns the ABC widths of an range of character codes.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetCharABCWidths.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetCharABCWidths.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetCharABCWidths.p2">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetCharABCWidths.p3">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetCharABCWidths.ABCStructs">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetDC">
-        <short/>
+        <short>Returns the handle of an Device Context (DC) for the client area of a window.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetDC.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetDC.hWnd">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetDeviceCaps">
-        <short/>
+        <short>Returns various device specific informations.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1581,40 +1518,32 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetDIBits">
-        <short/>
+        <short>Fills an buffer with the bitmap bits.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetDIBits.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetDIBits.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetDIBits.Bitmap">
-        <short/>
+        <short>The (device dependent) bitmap handle.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetDIBits.StartScan">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetDIBits.NumScans">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetDIBits.Bits">
-        <short/>
+        <short>Pointer to the output buffer, or Nil to get the required dimensions.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetDIBits.BitInfo">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetDIBits.Usage">
         <short/>
       </element>
