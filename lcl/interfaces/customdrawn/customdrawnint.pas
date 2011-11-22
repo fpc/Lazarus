@@ -33,7 +33,7 @@ uses
   fpimage, fpcanvas, ctypes,
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll,{$endif}
-  {$ifdef CD_X11}X, XLib, XUtil, {unitxft, Xft font support}{$endif}
+  {$ifdef CD_X11}X, XLib, XUtil, X11Proc,{unitxft, Xft font support}{$endif}
   // Widgetset
    //CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaTextLayout, CocoaProc,
   // LCL
@@ -130,12 +130,13 @@ type
     FWMDeleteWindow: TAtom;	  // Atom for "WM_DELETE_WINDOW"
     FWMHints: TAtom;		  // Atom for "_MOTIF_WM_HINTS"
 
-    WindowList: TFPList;
+    WindowList: TFPList;    // list of X.TWindow
+    WindowInfoList: TFPList;// list of TX11WindowInfo
     function RectToXRect(const ARect: TRect): TXRectangle;
     function XRectToRect(const ARect: TXRectangle): TRect;
     function XButtonToMouseButton(const XButton: cint; var MouseButton: TMouseButton): Boolean;
     function GetXEventName(Event: LongInt): String;
-    function FindWindowByXID(XWindowID: X.TWindow): TWinControl;
+    function FindWindowByXID(XWindowID: X.TWindow; out AIndex: Integer): TWinControl;
     {$endif}
   protected
     {function CreateThemeServices: TThemeServices; override;}
@@ -195,6 +196,7 @@ implementation
 uses
   WsControls, lclintf,
   CustomDrawnWSFactory,
+  CustomDrawnWSForms,
 {  Win32WSButtons,
   Win32WSMenus,
   Win32WSStdCtrls,

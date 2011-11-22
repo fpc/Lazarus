@@ -34,12 +34,12 @@ uses
   SysUtils, Classes, types, ctypes,
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate, CocoaUtils,{$endif}
-  {$ifdef CD_X11}X, XLib, XUtil, XAtom,{unitxft, Xft font support}{$endif}
+  {$ifdef CD_X11}X, XLib, XUtil, XAtom, x11proc,{unitxft, Xft font support}{$endif}
   // LCL
-  Controls, LCLType, Forms, LCLProc,
+  Controls, LCLType, Forms, LCLProc, GraphType,
   // Widgetset
   InterfaceBase, WSForms, WSProc, WSLCLClasses, LCLMessageGlue,
-  customdrawnwscontrols, customdrawnint;
+  customdrawnwscontrols, customdrawnint, customdrawnproc;
 
 type
   { TCDWSScrollingWinControl }
@@ -73,7 +73,7 @@ type
   { TCDWSCustomForm }
 
   TCDWSCustomForm = class(TWSCustomForm)
-  private
+  public
     {$ifdef CD_Windows}
     class function CalcBorderIconsFlags(const AForm: TCustomForm): dword;
     class function CalcBorderIconsFlagsEx(const AForm: TCustomForm): DWORD;
@@ -91,6 +91,8 @@ type
     class procedure SetPosition(const AWinControl: TWinControl; const APosition: TPoint);
     class procedure SetSize(const AWinControl: TWinControl; const ASize: TSize);
     class procedure SetMinMaxSize(const AWinControl: TWinControl; const AMinSize, AMaxSize: TSize);
+    // Event handling
+    class procedure EvPaint(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
     {$endif}
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;

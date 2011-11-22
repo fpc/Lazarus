@@ -67,19 +67,23 @@ begin
     Result := '#' + IntToStr(Event);
 end;
 
-function TCDWidgetSet.FindWindowByXID(XWindowID: X.TWindow): TWinControl;
+function TCDWidgetSet.FindWindowByXID(XWindowID: X.TWindow; out AIndex: Integer): TWinControl;
 var
   i: Integer;
   EndSubSearch: Boolean; { Necessary to quit the recursion }
 begin
+  AIndex := -1;
+  Result := nil;
+
   { Loops througth all windows on the application }
   for i := 0 to WindowList.Count - 1 do
   begin
     Result := TWinControl(WindowList[i]);
+    AIndex := i;
 
-    if X.TWindow(Result.Handle) = XWindowID then exit;
+    if X.TWindow(Result.Handle) = XWindowID then Break;
   end;
-  Result := nil;
+  if (Result <> nil) and (X.TWindow(Result.Handle) <> XWindowID) then Result := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -92,6 +96,7 @@ end;
 procedure TCDWidgetSet.BackendCreate;
 begin
   WindowList := TFPList.Create();
+  WindowInfoList := TFPList.Create();
 end;
 
 {------------------------------------------------------------------------------
@@ -103,6 +108,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendDestroy;
 begin
+  WindowInfoList.Free;
   WindowList.Free;
 end;
 
@@ -151,6 +157,7 @@ var
   Sum: Integer;
   NewEvent: TXEvent;
   DoBreakRun: Boolean = False;
+  lWindowListIndex: Integer;
 begin
   while (DoBreakRun = False) do
   begin
@@ -174,7 +181,7 @@ begin
     // According to a comment in X.h, the valid event types start with 2!
     if XEvent._type >= 2 then
     begin
-      WindowEntry := FindWindowByXID(XEvent.XAny.Window);
+      WindowEntry := FindWindowByXID(XEvent.XAny.Window, lWindowListIndex);
 
       if not Assigned(WindowEntry) then
       begin
@@ -187,7 +194,8 @@ begin
       case XEvent._type of
        X.DestroyNotify:
        begin
-         WindowList.Remove(WindowEntry);
+         WindowList.Delete(lWindowListIndex);
+         WindowInfoList.Delete(lWindowListIndex);
        end;
        X.KeyPress:
        begin
@@ -267,26 +275,26 @@ begin
 //           WindowEntry.EvHide();
          end;
        X.ReparentNotify:
-         begin
+       begin
 //           WindowEntry.EvCreate();
-         end;
+       end;
        X.Expose:
+       begin
+         {$Note We can do performance tuning here by looking at Count.
+           For now we are just ignoring all expose messages where Count <> 0 }
+         if XEvent.xexpose.count = 0 then
          begin
-           {$Note We can do performance tuning here by looking at Count.
-             For now we are just ignoring all expose messages where Count <> 0 }
-{           if XEvent.xexpose.count = 0 then
-           begin
-             WindowEntry.EvPaint();
-           end;}
+           TCDWSCustomForm.EvPaint(WindowEntry, TX11WindowInfo(WindowInfoList.Items[lWindowListIndex]));
          end;
+       end;
        X.ConfigureNotify:
-         begin
+       begin
 //           WindowEntry.Dispatch(XEvent);
-         end;
+       end;
        X.ClientMessage:
-         begin
+       begin
 //           WindowEntry.Dispatch(XEvent);
-         end;
+       end;
       else
         DebugLn('LCL-CustomDrawn-X11: Unhandled X11 event received: ', GetXEventName(XEvent._type));
       end;

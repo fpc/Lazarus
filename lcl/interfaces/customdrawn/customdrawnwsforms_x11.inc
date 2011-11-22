@@ -187,6 +187,44 @@ begin
   XFree(SizeHints);
 end;
 
+class procedure TCDWSCustomForm.EvPaint(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
+var
+  struct : TPaintStruct;
+  lWidth, lHeight: Integer;
+  lBitmap, lMask: HBITMAP;
+  lRawImage: TRawImage;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn(Format('[TCDWSCustomForm.EvPaint] AWindowInfo: %x', [PtrInt(AWindowInfo)]));
+  {$ENDIF}
+  if (AWinControl = nil) or (AWindowInfo = nil) then Exit;
+
+  lWidth := Round(AWinControl.width);
+  lHeight := Round(AWinControl.height);
+
+  FillChar(struct, SizeOf(TPaintStruct), 0);
+
+  // Prepare the non-native image and canvas
+  UpdateControlLazImageAndCanvas(AWindowInfo.Image,
+    AWindowInfo.Canvas, lWidth, lHeight);
+
+  struct.hdc := HDC(AWindowInfo.Canvas);
+
+  // Send the paint message to the LCL
+  {$IFDEF VerboseWinAPI}
+    DebugLn(Format('[TCDWSCustomForm.EvPaint] OnPaint event started context: %x', [struct.hdc]));
+  {$ENDIF}
+  LCLSendPaintMsg(AWinControl, struct.hdc, @struct);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('[TCDWSCustomForm.EvPaint] OnPaint event ended');
+  {$ENDIF}
+
+  // Now render it into the control
+  AWindowInfo.Image.GetRawImage(lRawImage);
+  //Cocoa_RawImage_CreateBitmaps(lRawImage, lBitmap, lMask, True);
+  //Context.DrawBitmap(0, 0, TCocoaBitmap(lBitmap));
+end;
+
 {------------------------------------------------------------------------------
   Method: TCDWSCustomForm.CreateHandle
   Params:  None
@@ -342,16 +380,18 @@ end;
 class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
   lWindow: TWindow;
+  lIndex: Integer;
 begin
   lWindow := TWindow(AWinControl.Handle);
   if AWinControl.Visible then
   begin
     XMapRaised(CDWidgetSet.FDisplay, lWindow);
     CDWidgetset.WindowList.Add(AWinControl);
+    CDWidgetset.WindowInfoList.Add(TX11WindowInfo.Create);
   end
   else
   begin
-    CDWidgetset.WindowList.Remove(AWinControl);
+    // Don't remove it here, wait for a X11 Destroy event
   end;
 end;
 
