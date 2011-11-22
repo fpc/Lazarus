@@ -31,10 +31,10 @@ interface
 
 uses
   // RTL
-  SysUtils, Classes,
+  SysUtils, Classes, ctypes,
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate, CocoaUtils,{$endif}
-  {$ifdef CD_X11}X, XLib, XUtil, {unitxft, Xft font support}{$endif}
+  {$ifdef CD_X11}X, XLib, XUtil, XAtom,{unitxft, Xft font support}{$endif}
   // LCL
   Controls, LCLType, Forms, LCLProc,
   // Widgetset
@@ -92,37 +92,27 @@ type
 
     class procedure SetBounds(const AWinControl: TWinControl;
       const ALeft, ATop, AWidth, AHeight: Integer); override;
-    {$if defined(CD_Windows) or defined(CD_X11)}
     class procedure SetBorderIcons(const AForm: TCustomForm;
                                    const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
+//    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); override;
+//    class procedure SetPopupParent(const ACustomForm: TCustomForm;
+//       const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
-    {$endif}
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
-    {$ifdef CD_Cocoa}
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
-    {$endif}
-{    class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
 
+{    class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
-    class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
-    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); override;
-    class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
-    class procedure SetPopupParent(const ACustomForm: TCustomForm;
-       const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
-    class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
-    class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
-    class procedure ShowModal(const ACustomForm: TCustomForm); override;
-    class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm;
        const AlphaBlend: Boolean; const Alpha: Byte); override;}
   end;

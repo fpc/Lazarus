@@ -153,6 +153,57 @@ begin
 end;
 
 class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
+var
+  lWindow: TWindow;
+begin
+  lWindow := TWindow(AWinControl.Handle);
+  if AWinControl.Visible then
+    XMapRaised(CDWidgetSet.FDisplay, lWindow);
+end;
+
+class function TCDWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+var
+  s: PChar;
+  lWindow: TWindow;
+begin
+  lWindow := TWindow(AWinControl.Handle);
+  XFetchName(CDWidgetSet.FDisplay, lWindow, @s);
+  AText := s;
+  XFree(s);
+end;
+
+class function TCDWSCustomForm.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;
+var
+  lText: string;
+begin
+  Result := GetText(AWinControl, lText);
+  ALength := Length(lText);
+end;
+
+class procedure TCDWSCustomForm.SetText(const AWinControl: TWinControl; const AText: String);
+var
+  tp: TXTextProperty;
+  lWindow: TWindow;
+begin
+  lWindow := TWindow(AWinControl.Handle);
+
+  tp.value    := PCUChar(AText);
+  tp.encoding := XA_WM_NAME;
+  tp.format   := 8;
+  tp.nitems   := UTF8Length(AText);
+
+  XSetWMName(CDWidgetSet.FDisplay, lWindow, @tp);
+  XStoreName(CDWidgetSet.FDisplay, lWindow, PChar(AText));
+  XSetIconName(CDWidgetSet.FDisplay, lWindow, PChar(AText));
+  XSetWMIconName(CDWidgetSet.FDisplay, lWindow, @tp);
+end;
+
+class function TCDWSCustomForm.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
 begin
 end;
+
+class function TCDWSCustomForm.GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
+begin
+end;
+
 
