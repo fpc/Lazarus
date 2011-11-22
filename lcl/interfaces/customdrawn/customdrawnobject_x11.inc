@@ -402,7 +402,27 @@ begin
 end;
 
 
+procedure TCDWidgetSet.AppSetIcon(const Small, Big: HICON);
+begin
+end;
+
 procedure TCDWidgetSet.AppSetTitle(const ATitle: string);
+begin
+end;
+
+procedure TCDWidgetSet.AppSetVisible(const AVisible: Boolean);
+begin
+end;
+
+function TCDWidgetSet.AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
+begin
+end;
+
+function TCDWidgetSet.AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
+begin
+end;
+
+procedure TCDWidgetSet.AppSetMainFormOnTaskBar(const DoSet: Boolean);
 begin
 end;
 

@@ -213,6 +213,7 @@ uses
 {$endif}
 {$ifdef CD_X11}
   {$I customdrawnobject_x11.inc}
+  {$I customdrawnwinapi_x11.inc}
 {$endif}
 
 initialization
