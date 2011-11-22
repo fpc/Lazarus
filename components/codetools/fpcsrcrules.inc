@@ -19,6 +19,7 @@ Add('packages/regexpr/src/old');
 Add('packages/amunits/src/otherlibs');
 Add('packages/httpd20/examples');
 Add('packages/httpd22/examples');
+Add('packages/cocoaint/utils/cocoa-skel/src');
 
 Score:=10;
 Targets:='wince';
