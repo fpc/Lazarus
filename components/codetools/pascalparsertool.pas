@@ -3900,8 +3900,6 @@ begin
     CreateChildNode;
     if ClassDesc=ctnClass then
       CurNode.Desc:=ctnClassPublished
-    else if ClassDesc=ctnObjCProtocol then
-      CurNode.Desc:=ctnClassRequired
     else
       CurNode.Desc:=ctnClassPublic;
     CurNode.StartPos:=LastAtoms.GetValueAt(0).EndPos;
@@ -3978,7 +3976,8 @@ begin
   CreateChildNode;
   CurNode.Desc:=IntfDesc;
   CurNode.StartPos:=IntfAtomPos.StartPos;
-  // find end of interface
+
+  // read content
   ReadNextAtom;
   if (CurPos.Flag<>cafSemicolon) then begin
     if CurPos.Flag=cafWord then begin
@@ -4001,11 +4000,15 @@ begin
     end else
       UndoReadNextAtom;
     ReadNextAtom;
+    if IntfDesc=ctnObjCProtocol then begin
+      // start the first class section (the one without a keyword)
+      CreateChildNode;
+      CurNode.Desc:=ctnClassRequired;
+    end;
     if CurPos.Flag=cafEdgedBracketOpen then
       ReadGUID;
     // parse till "end" of interface
     repeat
-      // ObjCProtocol can have 'OPTIONAL' and 'REQUIRED' sections
       if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
       begin
         if CurPos.Flag<>cafEnd then
@@ -4014,6 +4017,14 @@ begin
       end;
       ReadNextAtom;
     until false;
+    // end last sub section
+    if CurNode.Desc in AllClassSubSections then begin
+      CurNode.EndPos:=CurPos.StartPos;
+      EndChildNode;
+    end;
+    // end last class section (public, private, ...)
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
   end else begin
     // forward definition
     CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;
