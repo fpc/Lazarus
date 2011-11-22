@@ -422,7 +422,7 @@ end;
 
 function TPascalParserTool.ParseInnerClass(StartPos, WordLen: integer
   ): boolean;
-// KeyWordFunctions for parsing in a class/object/record
+// KeyWordFunctions for parsing in a class/object/record/interface
 var
   p: PChar;
 begin
@@ -3984,6 +3984,14 @@ begin
       ReadGUID;
     // parse till "end" of interface
     repeat
+      // ObjCProtocol can have 'OPTIONAL' and 'REQUIRED' sections
+      if (IntfDesc=ctnObjCProtocol) and (CurPos.Flag=cafWord) then begin
+        if UpAtomIs('OPTIONAL') then
+          ReadNextAtom
+        else
+        if UpAtomIs('REQUIRED') then
+          ReadNextAtom;
+      end;
       if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
       begin
         if CurPos.Flag<>cafEnd then

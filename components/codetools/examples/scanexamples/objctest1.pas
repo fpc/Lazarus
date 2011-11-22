@@ -35,9 +35,11 @@ type
   private
   end;
 
-  NSAlertDelegateProtocol = objcprotocol external name 'NSAlertDelegate'
+  NSDockTilePlugInProtocol = objcprotocol external name 'NSDockTilePlugIn'
+  required
+    procedure setDockTile(dockTile: NSDockTile); message 'setDockTile:';
   optional
-    function alertShowHelp(alert: NSAlert): Boolean; message 'alertShowHelp:';
+    function dockMenu: NSMenu; message 'dockMenu';
   end;
 
 implementation
