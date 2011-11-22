@@ -34,12 +34,7 @@ uses
   SysUtils, Classes, types, ctypes,
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate, CocoaUtils,{$endif}
-  {$ifdef CD_X11}
-    {$ifdef CD_X11_USE_XSHM}
-    XShm,
-    {$endif}
-    X, XLib, XUtil, XAtom, x11proc,{unitxft, Xft font support}
-  {$endif}
+  {$ifdef CD_X11}XShm, X, XLib, XUtil, XAtom, x11proc,{unitxft, Xft font support}{$endif}
   // LazUtils
   lazutf8sysutils,
   // LCL
@@ -100,6 +95,13 @@ type
     class procedure SetMinMaxSize(const AWinControl: TWinControl; const AMinSize, AMaxSize: TSize);
     class procedure CreateX11Canvas(AWindowInfo: TX11WindowInfo);
     class procedure DrawRawImageToGC(ARawImage: TRawImage;
+      ADestWindowInfo: TX11WindowInfo; ADestX, ADestY, ADestWidth, ADestHeight: Integer);
+    class function alloc_xshm_image(dpy: PDisplay; vis: PVisual;
+      width, height, depth: Integer; out shminfo: TXShmSegmentInfo): PXImage;
+    class procedure destroy_xshm_image(img: PXImage; var shminfo: TXShmSegmentInfo);
+    class procedure DrawRawImageToGC_XShmPutImage(ARawImage: TRawImage;
+      ADestWindowInfo: TX11WindowInfo; ADestX, ADestY, ADestWidth, ADestHeight: Integer);
+    class procedure DrawRawImageToGC_XPutImage(ARawImage: TRawImage;
       ADestWindowInfo: TX11WindowInfo; ADestX, ADestY, ADestWidth, ADestHeight: Integer);
     // Event handling
     class procedure EvPaint(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);

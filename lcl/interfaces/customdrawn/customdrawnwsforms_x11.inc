@@ -237,45 +237,191 @@ begin
   end;}
 end;
 
+(*
+ * Error handling.
+ */
+static int ErrorFlag = 0;
+  static int HandleXError( Display *dpy, XErrorEvent *event )
+  {
+      ErrorFlag = 1;
+      return 0;
+  *)
+
+{
+ There are 2 ways to put an image into a X11 Window which everyone uses, even OpenGL:
+
+ XPutImage and XShmPutImage
+
+ Because XPutImage is so slow as to be unusable, we will always try to use XShmPutImage
+}
 class procedure TCDWSCustomForm.DrawRawImageToGC(ARawImage: TRawImage;
   ADestWindowInfo: TX11WindowInfo; ADestX, ADestY, ADestWidth, ADestHeight: Integer);
 var
-  Image: XLib.PXImage;
+  UsePutImage: Boolean = False;
+  major, minor, ignore: cint;
   {$IFDEF VerboseCDPaintProfiler}
   lTimeStart: TDateTime;
   {$ENDIF}
+  pixmaps: cint;
 begin
   {$IFDEF VerboseCDPaintProfiler}
   lTimeStart := NowUTC();
   {$ENDIF}
 
+  // First check if XShm is available
+  UsePutImage := True;
+{  if not XQueryExtension(CDWidgetSet.FDisplay, 'MIT-SHM', @ignore, @ignore, @ignore) then UsePutImage := True
+  else if not XShmQueryVersion(CDWidgetSet.FDisplay, @major, @minor, @pixmaps) then UsePutImage := True;
+  if pixmaps <> 2 then UsePutImage := True;}
+
+  if UsePutImage then DrawRawImageToGC_XPutImage(ARawImage, ADestWindowInfo, ADestX, ADestY, ADestWidth, ADestHeight)
+  else DrawRawImageToGC_XShmPutImage(ARawImage, ADestWindowInfo, ADestX, ADestY, ADestWidth, ADestHeight);
+
+  {$IFDEF VerboseCDPaintProfiler}
+  DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC] Paint duration: %d ms', [DateTimeToMilliseconds(NowUTC() - lTimeStart)]));
+  {$ENDIF}
+end;
+
+class function TCDWSCustomForm.alloc_xshm_image(dpy: PDisplay; vis: PVisual;
+  width, height, depth: Integer; out shminfo: TXShmSegmentInfo): PXImage;
+var
+  img: XLib.PXImage;
+  ctx: TGC;
+begin
+  Result := nil;
+
+  {
+  * We have to do a _lot_ of error checking here to be sure we can
+  * really use the XSHM extension.  It seems different servers trigger
+  * errors at different points if the extension won't work.  Therefore
+  * we have to be very careful...
+  }
+
+  img := XShmCreateImage(dpy, vis, depth,
+                        ZPixmap, nil, @shminfo,
+                        width, height );
+  if (img = nil) then
+  begin
+   DebugLn('XShmCreateImage failed!');
+   Exit;
+  end;
+
+(*  shminfo.shmid := shmget( IPC_PRIVATE, img^.bytes_per_line
+  		       * img->height, IPC_CREAT or 0777 );
+  if (shminfo.shmid < 0) then
+  begin
+   DebugLn('error in shmget. alloc_back_buffer: Shared memory error (shmget), disabling.');
+   XDestroyImage( img );
+   //c->shm = 0;
+   Exit;
+  end;
+
+  img^.data := shmat( shminfo.shmid, 0, 0 );
+  shminfo.shmaddr := img^.data;
+  (*   if (shminfo.shmaddr == (char * ) -1) {
+    perror("alloc_back_buffer");
+    XDestroyImage( img );
+    img = NULL;
+    printf("shmat failed\n");
+    return NULL;
+  }
+
+  shminfo.readOnly = False;
+  ErrorFlag = 0;
+  XSetErrorHandler( HandleXError );
+  // This may trigger the X protocol error we're ready to catch: */
+  XShmAttach( dpy, &shminfo );
+  XSync( dpy, False );
+
+  if (ErrorFlag) {
+    /* we are on a remote display, this error is normal, don't print it */
+    XFlush( dpy );
+    ErrorFlag = 0;
+    XDestroyImage( img );
+    shmdt( shminfo.shmaddr );
+    shmctl( shminfo.shmid, IPC_RMID, 0 );
+    return NULL;
+  }
+
+  shmctl( shminfo.shmid, IPC_RMID, 0 ); // nobody else needs it*)*)
+
+(*#ifdef OPTIONAL_PART
+   /* An error may still occur upon the first XShmPutImage.  So it's a */
+   /* good idea to test it here.  However, we need a window to put the */
+   /* image into, etc.... */
+   gc = XCreateGC( dpy, window, 0, NULL );
+   XShmPutImage( dpy, window, gc,
+  	       img, 0, 0, 0, 0, 1, 1 /*one pixel*/, False );
+   XSync( dpy, False );
+   XFreeGC( dpy, gc );
+   XSetErrorHandler( NULL );
+   if (ErrorFlag) {
+      XFlush( dpy );
+      ErrorFlag = 0;
+      XDestroyImage( img );
+      shmdt( shminfo.shmaddr );
+      shmctl( shminfo.shmid, IPC_RMID, 0 );
+      return NULL;
+   }
+#endif*)
+
+  Result := img;
+end;
+
+class procedure TCDWSCustomForm.destroy_xshm_image(img: PXImage; var shminfo: TXShmSegmentInfo);
+begin
+   XShmDetach(CDWidgetSet.FDisplay, @shminfo );
+   XDestroyImage( img );
+//   shmdt( shminfo.shmaddr );
+end;
+
+class procedure TCDWSCustomForm.DrawRawImageToGC_XShmPutImage(ARawImage: TRawImage;
+  ADestWindowInfo: TX11WindowInfo; ADestX, ADestY, ADestWidth, ADestHeight: Integer);
+var
+  img: XLib.PXImage;
+  shminfo: TXShmSegmentInfo;
+begin
+  // make shared XImage
+  img := alloc_xshm_image(CDWidgetSet.FDisplay, ADestWindowInfo.Attr.visual, ADestWidth, ADestHeight, ADestWindowInfo.ColorDepth, shminfo);
+  if (img = nil) then
+  begin
+    DebugLn('[TCDWSCustomForm.DrawRawImageToGC_XShmPutImage] couldn''t allocate shared XImage');
+    Exit;
+  end;
+
+  // Now you can render into the img->data buffer
+  // ???
+
+  // Draw the image in the window
+  XShmPutImage(CDWidgetSet.FDisplay, ADestWindowInfo.Window, ADestWindowInfo.GC,
+    img, 0, 0, ADestX, ADestY, ADestWidth, ADestHeight, False);
+
+  // Destroy image
+  destroy_xshm_image(img, shminfo);
+end;
+
+class procedure TCDWSCustomForm.DrawRawImageToGC_XPutImage(ARawImage: TRawImage;
+  ADestWindowInfo: TX11WindowInfo; ADestX, ADestY, ADestWidth, ADestHeight: Integer);
+var
+  Image: XLib.PXImage;
+begin
   // Create a native Image
   Image := XCreateImage(CDWidgetSet.FDisplay, ADestWindowInfo.Attr.Visual,
     ADestWindowInfo.ColorDepth, XYPixmap, 0, PChar(ARawImage.Data),
     ADestWidth, ADestHeight, 32, (ADestWindowInfo.Canvas.Width*ADestWindowInfo.ColorDepth) div 8);
 
   {$IFDEF VerboseCDWindow}
-    DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC] Image=%x Data=%x',
+    DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC_XPutImage] Image=%x Data=%x',
       [PtrInt(Image), PtrInt(ARawImage.Data)]));
   {$ENDIF}
 
-  {$ifdef CD_X11_USE_XSHM}
-  // Draw the image in the window
-  XShmPutImage(CDWidgetSet.FDisplay, ADestWindowInfo.Window, ADestWindowInfo.GC,
-    Image, 0, 0, ADestX, ADestY, ADestWidth, ADestHeight, False);
-  {$else}
   // XPutImage is ridiculously slow, really unusable.
   XPutImage(CDWidgetSet.FDisplay, ADestWindowInfo.Window, ADestWindowInfo.GC,
     Image, 0, 0, ADestX, ADestY, ADestWidth, ADestHeight);
-  {$endif}
 
   // Free the native image
   Image^.data := nil;
   XDestroyImage(Image);
-
-  {$IFDEF VerboseCDPaintProfiler}
-  DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC] Paint duration: %d ms', [DateTimeToMilliseconds(NowUTC() - lTimeStart)]));
-  {$ENDIF}
 end;
 
 class procedure TCDWSCustomForm.EvPaint(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
