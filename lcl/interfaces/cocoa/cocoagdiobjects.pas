@@ -8,8 +8,8 @@ interface
 {$modeswitch objectivec1}
 
 uses
-  MacOSAll, // for CGContextRef
-  LCLtype,
+  SysUtils, MacOSAll, // for CGContextRef
+  LCLtype, LCLProc,
   CocoaAll, CocoaUtils,
   Classes, Types;
 
@@ -203,6 +203,7 @@ type
     procedure TextOut(X,Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
     function GetTextExtentPoint(AStr: PChar; ACount: Integer; var Size: TSize): Boolean;
     function GetTextMetrics(var TM: TTextMetric): Boolean;
+    procedure DrawBitmap(X,Y: Integer; ABitmap: TCocoaBitmap);
     procedure SetOrigin(X,Y: Integer);
     procedure GetOrigin(var X,Y: Integer);
     function CGContext: CGContextRef; virtual;
@@ -280,6 +281,11 @@ var
   HasAlpha: Boolean;
   BitmapFormat: NSBitmapFormat;
 begin
+  {$ifdef VerboseBitmaps}
+  DebugLn(Format('[TCocoaBitmap.Create] AWidth=%d AHeight=%d ADepth=%d ABitsPerPixel=%d'
+    + ' AAlignment=%d AType=%d AData=? ACopyData=%d',
+    [AWidth, AHeight, ADepth, ABitsPerPixel, Integer(AAlignment), Integer(AType), Integer(ACopyData)]));
+  {$endif}
   SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel, AAlignment, AType);
 
   // Copy the image data, if necessary
@@ -303,6 +309,10 @@ begin
   if AType = cbtARGB then
     BitmapFormat := BitmapFormat or NSAlphaFirstBitmapFormat;
 
+  {$ifdef VerboseBitmaps}
+  DebugLn(Format('[TCocoaBitmap.Create] NSBitmapImageRep.alloc HasAlpha=%d',
+    [Integer(HasAlpha)]));
+  {$endif}
   // Create the associated NSImageRep
   imagerep := NSBitmapImageRep(NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
     @FData, // planes, BitmapDataPlanes
@@ -767,6 +777,14 @@ begin
   TM.tmCharSet := DEFAULT_CHARSET;
 
   Result := True;
+end;
+
+procedure TCocoaContext.DrawBitmap(X,Y:Integer; ABitmap: TCocoaBitmap);
+begin
+  NSGraphicsContext.saveGraphicsState();
+  NSGraphicsContext.setCurrentContext(ctx);
+  ABitmap.imagerep.drawAtPoint(NSMakePoint(X, Y));
+  NSGraphicsContext.restoreGraphicsState();
 end;
 
 procedure TCocoaContext.SetOrigin(X,Y:Integer);
