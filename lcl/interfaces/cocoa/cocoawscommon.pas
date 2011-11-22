@@ -23,18 +23,19 @@ type
 
   { TLCLCommonCallback }
 
-  TLCLCommonCallback = class(TCommonCallback)
+  TLCLCommonCallback = class(TObject, ICommonCallBack)
   public
+    Owner: NSObject;
     Target  : TControl;
     Context : TCocoaContext;
-    constructor Create(AOwner: NSObject; ATarget: TControl);
+    constructor Create(AOwner: NSObject; ATarget: TControl); virtual;
     destructor Destroy; override;
-    procedure MouseDown(x,y: Integer); override;
-    procedure MouseUp(x,y: Integer); override;
-    procedure MouseClick(clickCount: Integer); override;
-    procedure MouseMove(x,y: Integer); override;
-    procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); override;
-    function ResetCursorRects: Boolean; override;
+    procedure MouseDown(x,y: Integer); virtual;
+    procedure MouseUp(x,y: Integer); virtual;
+    procedure MouseClick(clickCount: Integer); virtual;
+    procedure MouseMove(x,y: Integer); virtual;
+    procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
+    function ResetCursorRects: Boolean; virtual;
   end;
 
   { TCocoaWSWinControl }
@@ -110,8 +111,9 @@ end;
 
 constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TControl);
 begin
-  inherited Create(AOwner);
-  Target:=ATarget;
+  inherited Create;
+  Owner := AOwner;
+  Target := ATarget;
 end;
 
 destructor TLCLCommonCallback.Destroy;

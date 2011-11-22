@@ -107,6 +107,7 @@ begin
 
   {  Creates the AutoreleasePool }
   pool := NSAutoreleasePool(NSAutoreleasePool.alloc).init;
+  InitStockItems;
 end;
 
 {------------------------------------------------------------------------------
@@ -117,6 +118,8 @@ end;
 destructor TCocoaWidgetSet.Destroy;
 begin
   inherited Destroy;
+  FreeStockItems;
+
   CocoaWidgetSet := nil;
 
   {  Releases the AutoreleasePool }
@@ -242,6 +245,72 @@ begin
   end;
   if not Result then Exit;
   NSTimer(obj).invalidate;
+end;
+
+procedure TCocoaWidgetSet.InitStockItems;
+var
+  LogBrush: TLogBrush;
+  logPen : TLogPen;
+begin
+  FillChar(LogBrush,SizeOf(TLogBrush),0);
+  LogBrush.lbStyle := BS_NULL;
+  FStockNullBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
+
+  LogBrush.lbStyle := BS_SOLID;
+  LogBrush.lbColor := $000000;
+  FStockBlackBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
+
+  LogBrush.lbColor := $C0C0C0;
+  FStockLtGrayBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
+
+  LogBrush.lbColor := $808080;
+  FStockGrayBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
+
+  LogBrush.lbColor := $404040;
+  FStockDkGrayBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
+
+  LogBrush.lbColor := $FFFFFF;
+  FStockWhiteBrush := HBrush(TCocoaBrush.Create(LogBrush, True));
+
+{  LogPen.lopnStyle := PS_NULL;
+  LogPen.lopnWidth := Point(0, 0); // create cosmetic pens
+  LogPen.lopnColor := $FFFFFF;
+  FStockNullPen := CreatePenIndirect(LogPen);
+  TQtPen(FStockNullPen).FShared := True;
+
+  LogPen.lopnStyle := PS_SOLID;
+  FStockWhitePen := CreatePenIndirect(LogPen);
+  TQtPen(FStockWhitePen).FShared := True;
+
+  LogPen.lopnColor := $000000;
+  FStockBlackPen := CreatePenIndirect(LogPen);
+  TQtPen(FStockBlackPen).FShared := True;
+  }
+end;
+
+procedure TCocoaWidgetSet.FreeStockItems;
+
+  procedure DeleteAndNilObject(var h: HGDIOBJ);
+  begin
+    if h <> 0 then
+      TCocoaGDIObject(h).Global := False;
+    DeleteObject(h);
+    h := 0;
+  end;
+
+begin
+  DeleteAndNilObject(FStockNullBrush);
+  DeleteAndNilObject(FStockBlackBrush);
+  DeleteAndNilObject(FStockLtGrayBrush);
+  DeleteAndNilObject(FStockGrayBrush);
+  DeleteAndNilObject(FStockDkGrayBrush);
+  DeleteAndNilObject(FStockWhiteBrush);
+
+  DeleteAndNilObject(FStockNullPen);
+  DeleteAndNilObject(FStockBlackPen);
+  DeleteAndNilObject(FStockWhitePen);
+
+  DeleteAndNilObject(FStockSystemFont);
 end;
 
 {------------------------------------------------------------------------------

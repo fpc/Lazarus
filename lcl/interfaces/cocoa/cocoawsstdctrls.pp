@@ -31,7 +31,7 @@ uses
   // Libs
   MacOSAll, CocoaAll,
   // LCL
-  Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, Classes,
+  Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, LCLMessageGlue, Classes,
   // Widgetset
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
@@ -52,6 +52,15 @@ type
   TCocoaWSCustomGroupBox = class(TWSCustomGroupBox)
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+  end;
+
+  { TLCLComboboxCallback }
+
+  TLCLComboboxCallback = class(TLCLCommonCallback, IComboBoxCallback)
+    procedure ComboBoxWillPopUp;
+    procedure ComboBoxWillDismiss;
+    procedure ComboBoxSelectionDidChange;
+    procedure ComboBoxSelectionIsChanging;
   end;
 
   { TCocoaWSCustomComboBox }
@@ -229,6 +238,30 @@ begin
     Result.initWithFrame(CreateParamsToNSRect(AParams));
     SetNSText(Result.currentEditor, AParams.Caption);
   end;
+end;
+
+{ TLCLComboboxCallback }
+
+procedure TLCLComboboxCallback.ComboBoxWillPopUp;
+begin
+  LCLSendDropDownMsg(Target);
+end;
+
+procedure TLCLComboboxCallback.ComboBoxWillDismiss;
+begin
+  LCLSendCloseUpMsg(Target);
+end;
+
+procedure TLCLComboboxCallback.ComboBoxSelectionDidChange;
+begin
+  // todo: send correct messages here. LM_CHANGED must be sent on editbox change
+  SendSimpleMessage(Target, LM_CHANGED);
+  SendSimpleMessage(Target, LM_SELCHANGE);
+end;
+
+procedure TLCLComboboxCallback.ComboBoxSelectionIsChanging;
+begin
+
 end;
 
 
@@ -610,10 +643,11 @@ begin
     Exit;
   end;
 
-  cmb.callback:=TLCLCommonCallback.Create(cmb, AWinControl);
+  cmb.callback:=TLCLComboboxCallback.Create(cmb, AWinControl);
   cmb.list:=TCocoaComboBoxList.Create(cmb);
   cmb.setUsesDataSource(true);
   cmb.setDataSource(cmb);
+  cmb.setDelegate(cmb);
   Result:=TLCLIntfHandle(cmb);
   //todo: 26 pixels is the height of 'normal' combobox. The value is taken from the Interface Builder!
   //      use the correct way to set the size constraints

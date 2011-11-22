@@ -70,6 +70,18 @@ type
     FNSApp    : NSApplication;
     delegate  : TCocoaAppDelegate;
   protected
+    FStockNullBrush: HBRUSH;
+    FStockBlackBrush: HBRUSH;
+    FStockLtGrayBrush: HBRUSH;
+    FStockGrayBrush: HBRUSH;
+    FStockDkGrayBrush: HBRUSH;
+    FStockWhiteBrush: HBRUSH;
+
+    FStockNullPen: HPEN;
+    FStockBlackPen: HPEN;
+    FStockWhitePen: HPEN;
+    FStockSystemFont: HFONT;
+
     function GetAppHandle: THandle; override;
   public
     constructor Create; override;
@@ -90,6 +102,9 @@ type
 
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
+
+    procedure InitStockItems;
+    procedure FreeStockItems;
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;

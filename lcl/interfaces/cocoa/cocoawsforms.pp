@@ -40,15 +40,13 @@ uses
 type
   { TLCLWindowCallback }
 
-  TLCLWindowCallback=class(TWindowCallback)
+  TLCLWindowCallback=class(TLCLCommonCallBack, IWindowCallback)
   public
-    Target  : TControl;
-    constructor Create(AOwner: NSWindow; ATarget: TControl);
-    procedure Activate; override;
-    procedure Deactivate; override;
-    procedure CloseQuery(var CanClose: Boolean); override;
-    procedure Close; override;
-    procedure Resize; override;
+    procedure Activate; virtual;
+    procedure Deactivate; virtual;
+    procedure CloseQuery(var CanClose: Boolean); virtual;
+    procedure Close; virtual;
+    procedure Resize; virtual;
   end;
 
 
@@ -148,12 +146,6 @@ implementation
 
 { TLCLWindowCallback }
 
-constructor TLCLWindowCallback.Create(AOwner: NSWindow; ATarget: TControl);
-begin
-  inherited Create(AOwner);
-  Target:=ATarget;
-end;
-
 procedure TLCLWindowCallback.Activate;
 begin
   LCLSendActivateMsg(Target, True, false);
@@ -180,7 +172,7 @@ var
   sz  : NSSize;
   r   : TRect;
 begin
-  sz := Owner.frame.size;
+  sz := NSWindow(Owner).frame.size;
   TCocoaWSCustomForm.GetClientBounds(TWinControl(Target), r);
   if Assigned(Target) then
     LCLSendSizeMsg(Target, Round(sz.width), Round(sz.height), SIZENORMAL);
@@ -216,8 +208,7 @@ begin
 
   win:=TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
   win.enableCursorRects;
-  TCocoaWindow(win).callback:=TLCLCommonCallback.Create(win, AWinControl);
-  TCocoaWindow(win).wincallback:=TLCLWindowCallback.Create(win, AWinControl);
+  TCocoaWindow(win).callback:=TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
   ns:=NSStringUtf8(AWinControl.Caption);
   win.setTitle(ns);

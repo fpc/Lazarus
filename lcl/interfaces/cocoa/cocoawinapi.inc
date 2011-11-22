@@ -103,12 +103,8 @@ begin
 end;
 
 function TCocoaWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
-var
-  b     : TCocoaBrush;
 begin
-  b:=TCocoaBrush.Create;
-  with b do ColorToRGBFloat(LogBrush.lbColor, R, G, B);
-  Result:=HBRUSH(b);
+  Result := HBrush(TCocoaBrush.Create(LogBrush));
 end;
 
 function TCocoaWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
@@ -151,7 +147,7 @@ function TCocoaWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
 var
   cf  : TCocoaFont;
 begin
-  cf:=TCocoaFont.Create;
+  cf:=TCocoaFont.Create(False);
   cf.Size:=LogFont.lfHeight;
   cf.Name:=LongFontName;
   if LogFont.lfWeight>FW_NORMAL then Include(cf.Style, cfs_Bold);
@@ -281,9 +277,19 @@ function TCocoaWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 var
   gdi: TCocoaGDIObject;
 begin
-  Result:=True;
-  gdi:=CheckGDIOBJ(GdiObject);
-  if Assigned(gdi) then gdi.Release;
+  Result := False;
+  if GDIObject = 0 then
+    Exit(True);
+
+  gdi := CheckGDIOBJ(GdiObject);
+
+  if not Assigned(gdi) then
+    Exit;
+
+  if gdi.Global then
+    Exit;
+
+  if gdi.RefCount = 0 then gdi.Destroy;
 end;
 
 function TCocoaWidgetSet.DestroyIcon(Handle: HICON): Boolean;
@@ -572,6 +578,51 @@ begin
   Result:=False;
 end;
 
+function TCocoaWidgetSet.GetStockObject(Value: Integer): THandle;
+begin
+  Result := 0;
+
+  case Value of
+    BLACK_BRUSH:         // Black brush.
+      Result := FStockBlackBrush;
+    DKGRAY_BRUSH:        // Dark gray brush.
+      Result := FStockDKGrayBrush;
+    GRAY_BRUSH:          // Gray brush.
+      Result := FStockGrayBrush;
+    LTGRAY_BRUSH:        // Light gray brush.
+      Result := FStockLtGrayBrush;
+    NULL_BRUSH:          // Null brush (equivalent to HOLLOW_BRUSH).
+      Result := FStockNullBrush;
+    WHITE_BRUSH:         // White brush.
+      Result := FStockWhiteBrush;
+
+    BLACK_PEN:           // Black pen.
+      Result := FStockBlackPen;
+    NULL_PEN:            // Null pen.
+      Result := FStockNullPen;
+    WHITE_PEN:           // White pen.
+      Result := FStockWhitePen;
+
+    {System font. By default, Windows uses the system font to draw menus,
+     dialog box controls, and text. In Windows versions 3.0 and later,
+     the system font is a proportionally spaced font; earlier versions of
+     Windows used a monospace system font.}
+{    DEFAULT_GUI_FONT, SYSTEM_FONT:
+      begin
+
+        If FStockSystemFont <> 0 then
+        begin
+          DeleteObject(FStockSystemFont);
+          FStockSystemFont := 0;
+        end;
+
+        If FStockSystemFont = 0 then
+          FStockSystemFont := CreateDefaultFont;
+        Result := FStockSystemFont;
+      end;}
+  end;
+end;
+
 function TCocoaWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
 begin
   Result:=0;
@@ -737,7 +788,7 @@ begin
     Result := HFONT(dc.Font);
     dc.Font := TCocoaFont(gdi);
   end else if gdi is TCocoaRegion then begin // select region
-    Result := HBRUSH(dc.Region);
+    Result := HRGN(dc.Region);
     dc.Region := TCocoaRegion(gdi);
   end else if gdi is TCocoaBitmap then begin // select bitmap
     {if not (ADC is TCarbonBitmapContext) then

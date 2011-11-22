@@ -22,6 +22,7 @@ unit CocoaPrivate;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$interfaces corba}
 
 interface
 
@@ -82,31 +83,25 @@ type
     function lclClientFrame: TRect; message 'lclClientFrame'; reintroduce;
   end;
 
-  { TCommonCallback }
+  { ICommonCallback }
 
-  TCommonCallback = class(TObject)
-  public
-    Owner : NSObject;
-    constructor Create(AOwner: NSObject);
-    procedure MouseDown(x,y: Integer); virtual; abstract;
-    procedure MouseUp(x,y: Integer); virtual; abstract;
-    procedure MouseClick(ClickCount: Integer); virtual; abstract;
-    procedure MouseMove(x,y: Integer); virtual; abstract;
-    procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect); virtual; abstract;
-    function ResetCursorRects: Boolean; virtual; abstract;
+  ICommonCallback = interface
+    procedure MouseDown(x,y: Integer);
+    procedure MouseUp(x,y: Integer);
+    procedure MouseClick(ClickCount: Integer);
+    procedure MouseMove(x,y: Integer);
+    procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+    function ResetCursorRects: Boolean;
   end;
 
-  { TWindowCallback }
+  { IWindowCallback }
 
-  TWindowCallback = class(TObject)
-  public
-    Owner : NSWindow;
-    constructor Create(AOwner: NSWindow);
-    procedure Activate; virtual; abstract;
-    procedure Deactivate; virtual; abstract;
-    procedure CloseQuery(var CanClose: Boolean); virtual; abstract;
-    procedure Close; virtual; abstract;
-    procedure Resize; virtual; abstract;
+  IWindowCallback = interface(ICommonCallBack)
+    procedure Activate;
+    procedure Deactivate;
+    procedure CloseQuery(var CanClose: Boolean);
+    procedure Close;
+    procedure Resize;
   end;
 
   { TCocoaMenu }
@@ -129,7 +124,7 @@ type
   protected
     procedure actionButtonClick(sender: NSObject); message 'actionButtonClick:';
   public
-    callback  : TCommonCallback;
+    callback  : ICommonCallback;
     function initWithFrame(frameRect: NSRect): id; override;
     function acceptsFirstResponder: Boolean; override;
     procedure mouseDown(event: NSEvent); override;
@@ -144,7 +139,7 @@ type
   { TCocoaTextField }
 
   TCocoaTextField = objcclass(NSTextField)
-    callback  : TCommonCallback;
+    callback  : ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
     procedure resetCursorRects; override;
   end;
@@ -152,7 +147,7 @@ type
   { TCocoaSecureTextField }
 
   TCocoaSecureTextField = objcclass(NSSecureTextField)
-    callback  : TCommonCallback;
+    callback  : ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
     procedure resetCursorRects; override;
   end;
@@ -161,7 +156,7 @@ type
   { TCocoaTextView }
 
   TCocoaTextView = objcclass(NSTextView)
-    callback  : TCommonCallback;
+    callback  : ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
     procedure resetCursorRects; override;
   end;
@@ -176,8 +171,7 @@ type
     procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
     procedure windowDidResize(notification: NSNotification); message 'windowDidResize:';
   public
-    callback      : TCommonCallback;
-    wincallback   : TWindowCallback;
+    callback      : IWindowCallback;
     function acceptsFirstResponder: Boolean; override;
     procedure mouseUp(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
@@ -190,7 +184,7 @@ type
   { TCocoaCustomControl }
 
   TCocoaCustomControl = objcclass(NSControl)
-    callback  : TCommonCallback;
+    callback  : ICommonCallback;
     procedure drawRect(dirtyRect: NSRect); override;
     procedure resetCursorRects; override;
   end;
@@ -198,7 +192,7 @@ type
   { TCocoaScrollView }
 
   TCocoaScrollView = objcclass(NSScrollView)
-    callback  : TCommonCallback;
+    callback  : ICommonCallback;
     procedure resetCursorRects; override;
   end;
 
@@ -217,10 +211,17 @@ type
     property Owner: TCocoaComboBox read fOwner;
   end;
 
+  IComboboxCallBack = interface(ICommonCallBack)
+    procedure ComboBoxWillPopUp;
+    procedure ComboBoxWillDismiss;
+    procedure ComboBoxSelectionDidChange;
+    procedure ComboBoxSelectionIsChanging;
+  end;
+
   { TCocoaComboBox }
 
-  TCocoaComboBox = objcclass(NSComboBox, NSComboBoxDataSourceProtocol)
-    callback  : TCommonCallback;
+  TCocoaComboBox = objcclass(NSComboBox, NSComboBoxDataSourceProtocol, NSComboBoxDelegateProtocol)
+    callback  : IComboboxCallBack;
     list      : TCocoaComboBoxList;
     resultNS  : NSString;  //use to return values to combo
     function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id;
@@ -229,12 +230,16 @@ type
       message 'numberOfItemsInComboBox:';
     procedure dealloc; override;
     procedure resetCursorRects; override;
+    procedure comboBoxWillPopUp(notification: NSNotification); message 'comboBoxWillPopUp:';
+    procedure comboBoxWillDismiss(notification: NSNotification); message 'comboBoxWillDismiss:';
+    procedure comboBoxSelectionDidChange(notification: NSNotification); message 'comboBoxSelectionDidChange:';
+    procedure comboBoxSelectionIsChanging(notification: NSNotification); message 'comboBoxSelectionIsChanging:';
   end;
 
   { TCocoaScrollBar }
 
   TCocoaScrollBar = objcclass(NSScroller)
-    callback  : TCommonCallback;
+    callback  : ICommonCallback;
     procedure resetCursorRects; override;
   end;
 
@@ -253,7 +258,7 @@ type
   { TCocoaListView }
 
   TCocoaListView = objcclass(NSTableView, NSTableViewDataSourceProtocol)
-    callback  : TCommonCallback;
+    callback  : ICommonCallback;
     list      : TCocoaStringList;
     resultNS  : NSString;  //use to return values to combo
     function numberOfRowsInTableView(aTableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
@@ -267,7 +272,7 @@ type
   { TCocoaGroupBox }
 
   TCocoaGroupBox = objcclass(NSBox)
-    callback  : TCommonCallback;
+    callback  : ICommonCallback;
     procedure resetCursorRects; override;
   end;
 
@@ -399,28 +404,28 @@ var
   canClose : Boolean;
 begin
   canClose:=true;
-  wincallback.CloseQuery(canClose);
+  callback.CloseQuery(canClose);
   Result:=canClose;
 end;
 
 procedure TCocoaWindow.windowWillClose(notification: NSNotification);
 begin
-  wincallback.Close;
+  callback.Close;
 end;
 
 procedure TCocoaWindow.windowDidBecomeKey(notification: NSNotification);
 begin
-  wincallback.Activate;
+  callback.Activate;
 end;
 
 procedure TCocoaWindow.windowDidResignKey(notification: NSNotification);
 begin
-  wincallback.Deactivate;
+  callback.Deactivate;
 end;
 
 procedure TCocoaWindow.windowDidResize(notification: NSNotification);
 begin
-  wincallback.Resize;
+  callback.Resize;
 end;
 
 function TCocoaWindow.acceptsFirstResponder: Boolean;
@@ -478,13 +483,6 @@ begin
   inherited mouseExited(event);
 end;
 
-{ TCommonCallback }
-
-constructor TCommonCallback.Create(AOwner: NSObject);
-begin
-  Owner:=AOwner;
-end;
-
 { TCocoaSecureTextField }
 
 function TCocoaSecureTextField.acceptsFirstResponder: Boolean;
@@ -496,13 +494,6 @@ procedure TCocoaSecureTextField.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
-end;
-
-{ TWindowCallback }
-
-constructor TWindowCallback.Create(AOwner: NSWindow);
-begin
-  Owner:=AOwner;
 end;
 
 { TCocoaCustomControl }
@@ -813,6 +804,26 @@ procedure TCocoaComboBox.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
+end;
+
+procedure TCocoaComboBox.comboBoxWillPopUp(notification: NSNotification);
+begin
+  callback.ComboBoxWillPopUp;
+end;
+
+procedure TCocoaComboBox.comboBoxWillDismiss(notification: NSNotification);
+begin
+  callback.ComboBoxWillDismiss;
+end;
+
+procedure TCocoaComboBox.comboboxSelectionDidChange(notification: NSNotification);
+begin
+  callback.ComboBoxSelectionDidChange;
+end;
+
+procedure TCocoaComboBox.comboBoxSelectionIsChanging(notification: NSNotification);
+begin
+  callback.ComboBoxSelectionIsChanging;
 end;
 
 { TCocoaMenu }
