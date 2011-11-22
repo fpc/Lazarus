@@ -3846,7 +3846,7 @@ begin
           ReadNextAtom;
         end;
       end
-      else if UpAtomIs('EXTERNAL') and (ClassDesc in [ctnObjCClass,ctnObjCCategory,ctnObjCProtocol]) then
+      else if UpAtomIs('EXTERNAL') and (ClassDesc in [ctnObjCClass,ctnObjCCategory]) then
       begin
         CreateChildNode;
         CurNode.Desc:=ctnClassExternal;
@@ -3960,6 +3960,20 @@ begin
   // find end of interface
   ReadNextAtom;
   if (CurPos.Flag<>cafSemicolon) then begin
+    if CurPos.Flag=cafWord then begin
+      if UpAtomIs('EXTERNAL') and (IntfDesc=ctnObjCProtocol) then
+      begin
+        CreateChildNode;
+        CurNode.Desc:=ctnClassExternal;
+        ReadNextAtom;
+        if UpAtomIs('NAME') then begin
+          ReadNextAtom;
+          ReadConstant(true,false,[]);
+        end;
+        CurNode.EndPos:=CurPos.StartPos;
+        EndChildNode;
+      end;
+    end;
     if (CurPos.Flag=cafRoundBracketOpen) then begin
       // read inheritage brackets
       ReadClassInheritance(true);
