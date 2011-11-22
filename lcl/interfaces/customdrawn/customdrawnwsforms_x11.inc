@@ -249,7 +249,7 @@ begin
   // !!!: Add support for XF86 4 and XShm etc. to speed this up!
   Image := XCreateImage(CDWidgetSet.FDisplay, ADestWindowInfo.Attr.Visual,
     ADestWindowInfo.ColorDepth, XYPixmap, 0, PChar(ARawImage.Data),
-    ADestWidth, ADestHeight, 32, ADestWindowInfo.Canvas.Width*(ADestWindowInfo.ColorDepth div 8));
+    ADestWidth, ADestHeight, 32, (ADestWindowInfo.Canvas.Width*ADestWindowInfo.ColorDepth) div 8);
 
   {$IFDEF VerboseCDWindow}
     DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC] Image=%x Data=%x',
