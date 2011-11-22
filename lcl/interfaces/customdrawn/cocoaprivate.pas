@@ -15,7 +15,7 @@ uses
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   //
-  Controls, LCLMessageGlue, WSControls, LCLType, LCLProc;
+  Controls, LCLMessageGlue, WSControls, LCLType, LCLProc, GraphType;
 
 type
   { LCLObjectExtension }
@@ -180,9 +180,98 @@ type
 function AllocCustomControl(const AWinControl: TWinControl): TCocoaCustomControl;
 procedure SetViewDefaults(AView: NSView);
 
+function Cocoa_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
+function RawImage_DescriptionToBitmapType(ADesc: TRawImageDescription; out bmpType: TCocoaBitmapType): Boolean;
+
 implementation
 
 uses customdrawnwsforms;
+
+function Cocoa_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
+const
+  ALIGNMAP: array[TRawImageLineEnd] of TCocoaBitmapAlignment = (cbaByte, cbaByte, cbaWord, cbaDWord, cbaQWord, cbaDQWord);
+var
+  ADesc: TRawImageDescription absolute ARawImage.Description;
+  bmpType: TCocoaBitmapType;
+begin
+  Result := RawImage_DescriptionToBitmapType(ADesc, bmpType);
+  if not Result then begin
+    debugln(['TCarbonWidgetSet.RawImage_CreateBitmaps TODO Depth=',ADesc.Depth,' alphaprec=',ADesc.AlphaPrec,' byteorder=',ord(ADesc.ByteOrder),' alpha=',ADesc.AlphaShift,' red=',ADesc.RedShift,' green=',adesc.GreenShift,' blue=',adesc.BlueShift]);
+    exit;
+  end;
+  ABitmap := HBITMAP(TCocoaBitmap.Create(ADesc.Width, ADesc.Height, ADesc.Depth, ADesc.BitsPerPixel, ALIGNMAP[ADesc.LineEnd], bmpType, ARawImage.Data));
+
+  if ASkipMask or (ADesc.MaskBitsPerPixel = 0)
+  then AMask := 0
+  else AMask := HBITMAP(TCocoaBitmap.Create(ADesc.Width, ADesc.Height, 1, ADesc.MaskBitsPerPixel, ALIGNMAP[ADesc.MaskLineEnd], cbtMask, ARawImage.Mask));
+
+  Result := True;
+end;
+
+function RawImage_DescriptionToBitmapType(
+  ADesc: TRawImageDescription;
+  out bmpType: TCocoaBitmapType): Boolean;
+begin
+  Result := False;
+
+  if ADesc.Format = ricfGray
+  then
+  begin
+    if ADesc.Depth = 1 then bmpType := cbtMono
+    else bmpType := cbtGray;
+  end
+  else if ADesc.Depth = 1
+  then bmpType := cbtMono
+  else if ADesc.AlphaPrec <> 0
+  then begin
+    if ADesc.ByteOrder = riboMSBFirst
+    then begin
+      if  (ADesc.AlphaShift = 24)
+      and (ADesc.RedShift   = 16)
+      and (ADesc.GreenShift = 8 )
+      and (ADesc.BlueShift  = 0 )
+      then bmpType := cbtARGB
+      else
+      if  (ADesc.AlphaShift = 0)
+      and (ADesc.RedShift   = 24)
+      and (ADesc.GreenShift = 16 )
+      and (ADesc.BlueShift  = 8 )
+      then bmpType := cbtRGBA
+      else
+      if  (ADesc.AlphaShift = 0 )
+      and (ADesc.RedShift   = 8 )
+      and (ADesc.GreenShift = 16)
+      and (ADesc.BlueShift  = 24)
+      then bmpType := cbtBGRA
+      else Exit;
+    end
+    else begin
+      if  (ADesc.AlphaShift = 24)
+      and (ADesc.RedShift   = 16)
+      and (ADesc.GreenShift = 8 )
+      and (ADesc.BlueShift  = 0 )
+      then bmpType := cbtBGRA
+      else
+      if  (ADesc.AlphaShift = 0 )
+      and (ADesc.RedShift   = 8 )
+      and (ADesc.GreenShift = 16)
+      and (ADesc.BlueShift  = 24)
+      then bmpType := cbtARGB
+      else
+      if  (ADesc.AlphaShift = 24 )
+      and (ADesc.RedShift   = 0 )
+      and (ADesc.GreenShift = 8)
+      and (ADesc.BlueShift  = 16)
+      then bmpType := cbtRGBA
+      else Exit;
+    end;
+  end
+  else begin
+    bmpType := cbtRGB;
+  end;
+
+  Result := True;
+end;
 
 { TCocoaWindow }
 
@@ -582,6 +671,8 @@ procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
 var
   struct : TPaintStruct;
   lWidth, lHeight: Integer;
+  lBitmap, lMask: HBITMAP;
+  lRawImage: TRawImage;
 begin
   if not Assigned(Context) then Context:=TCocoaContext.Create;
 
@@ -590,6 +681,7 @@ begin
   lHeight := Round(bounds.size.height);
   if Context.InitDraw(lWidth, lHeight) then
   begin
+    // Prepare the non-native image and canvas
     FillChar(struct, SizeOf(TPaintStruct), 0);
 
     UpdateControlLazImageAndCanvas(TCocoaCustomControl(Owner).Image,
@@ -597,13 +689,19 @@ begin
 
     struct.hdc := HDC(TCocoaCustomControl(Owner).Canvas);
 
+    // Send the paint message to the LCL
     {$IFDEF VerboseWinAPI}
-      DebugLn(Format('[TLCLCommonCallback.Draw] OnPaint event started context: %x', [HDC(context)]));
+      DebugLn(Format('[TLCLCommonCallback.Draw] OnPaint event started context: %x', [struct.hdc]));
     {$ENDIF}
-    LCLSendPaintMsg(Target, HDC(Context), @struct);
+    LCLSendPaintMsg(Target, struct.hdc, @struct);
     {$IFDEF VerboseWinAPI}
       DebugLn('[TLCLCommonCallback.Draw] OnPaint event ended');
     {$ENDIF}
+
+    // Now render it into the control
+    TCocoaCustomControl(Owner).Image.GetRawImage(lRawImage);
+    Cocoa_RawImage_CreateBitmaps(lRawImage, lBitmap, lMask, True);
+    //Context. <- ToDo Render the HBITMAP
   end;
 end;
 

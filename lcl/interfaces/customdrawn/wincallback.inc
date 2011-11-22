@@ -260,7 +260,7 @@ Var
     end;
     if (WindowInfo^.Canvas = nil) then WindowInfo^.Canvas := TLazCanvas.Create(WindowInfo^.Image);
 
-    {$ifdef VerboseCDWinAPI}
+    {$ifdef VerboseWinAPI}
     DebugLn(Format('[SendPaintMessage] WindowInfo^.Canvas=%s', [dbghex(PtrInt(WindowInfo^.Canvas))]));
     {$endif}
 

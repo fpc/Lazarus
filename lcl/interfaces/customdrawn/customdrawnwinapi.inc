@@ -4938,7 +4938,7 @@ var
 begin
   if DC = 0 then Exit;
 
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseWinAPI}
 //  DebugLn(Format('[WinAPI Rectangle] DC=%s DC.Width=%d DC.Height=%d', [dbghex(DC), LazDC.Width, LazDC.Height]));
   DebugLn(Format('[WinAPI Rectangle] DC=%s', [dbghex(DC)]));
   DebugLn(Format('[WinAPI Rectangle] DC.Width=%d DC.Height=%d', [LazDC.Width, LazDC.Height]));

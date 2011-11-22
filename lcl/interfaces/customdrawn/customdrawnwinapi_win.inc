@@ -1684,7 +1684,7 @@ function TCDWidgetSet.GetDC(hWnd: HWND): HDC;
 var
   lWindowInfo: PWindowInfo;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseWinAPI}
   DebugLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
   {$endif}
 
@@ -1704,7 +1704,7 @@ begin
 //  end else
 //    Result := HDC(QtScreenContext);
 
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseWinAPI}
   DebugLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
   {$endif}
 end;

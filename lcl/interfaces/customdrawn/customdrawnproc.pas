@@ -22,6 +22,10 @@ procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
 var
   lRawImage: TRawImage;
 begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn(Format(':>[UpdateControlLazImageAndCanvas] Input Image: %x Canvas: %x',
+      [PtrInt(AImage), PtrInt(ACanvas)]));
+  {$ENDIF}
   // Check if the image needs update
   if (AImage = nil) or (AWidth <> AImage.Width) or (AHeight <> AImage.Height) then
   begin
@@ -37,6 +41,10 @@ begin
     if (ACanvas <> nil) then ACanvas.Free;
     ACanvas := TLazCanvas.Create(AImage);
   end;
+  {$IFDEF VerboseWinAPI}
+    DebugLn(Format(':<[UpdateControlLazImageAndCanvas] Output Image: %x Canvas: %x',
+      [PtrInt(AImage), PtrInt(ACanvas)]));
+  {$ENDIF}
 end;
 
 end.
