@@ -512,6 +512,8 @@ var
   Item: TUDIdentifier;
   s: String;
   Found: Integer;
+  GroupNode: TAVLTreeNode;
+  Group: TUDUnitGroup;
 begin
   Filter:=GetFilterEditText;
   FilterP:=PChar(Filter);
@@ -526,7 +528,14 @@ begin
         inc(Found);
         if Found<MaxItems then begin
           Item:=TUDIdentifier(Node.Data);
-          s:=Item.Name+' in '+Item.DUnit.Name;
+          GroupNode:=Item.DUnit.UnitGroups.FindLowest;
+          while GroupNode<>nil do begin
+            Group:=TUDUnitGroup(GroupNode.Data);
+            s:=Item.Name+' in '+Item.DUnit.Name;
+            if Group.Name<>'' then
+              s:=s+' of '+Group.Name;
+            GroupNode:=Item.DUnit.UnitGroups.FindSuccessor(GroupNode);
+          end;
           sl.Add(s);
         end;
       end;

@@ -8,11 +8,12 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
   ClientHeight = 300
   ClientWidth = 428
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '0.9.31'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 264
+    Height = 42
+    Top = 252
     Width = 416
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -41,7 +42,7 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 22
+    Height = 26
     Top = 35
     Width = 416
     Anchors = [akTop, akLeft, akRight]
@@ -61,14 +62,16 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 201
-    Top = 57
+    Height = 185
+    Top = 61
     Width = 416
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     ItemHeight = 0
+    ScrollWidth = 414
     TabOrder = 2
+    TopIndex = -1
   end
 end
