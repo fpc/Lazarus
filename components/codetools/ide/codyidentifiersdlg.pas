@@ -344,7 +344,7 @@ end;
 
 function TCodyUnitDictionary.GetFilename: string;
 begin
-  Result:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+'codyunitdictionary.gz';
+  Result:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+'codyunitdictionary.txt';
 end;
 
 function TCodyUnitDictionary.StartLoadSaveThread: boolean;

@@ -77,6 +77,15 @@ begin
     raise Exception.Create('cody: command category '+CommandCategoryViewName+' not found');
 
 
+  // Project menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  // show ppu list of project
+  PPUListCommand:=RegisterIDECommand(CmdCatProjectMenu, 'ShowPPUList',
+    crsShowUsedPpuFiles,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowPPUList);
+  RegisterIDEMenuCommand(itmProjectWindowSection,'PPUList',crsShowUsedPpuFiles,
+    nil,nil,PPUListCommand);
+
   // Source menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // insert file at cursor
@@ -85,13 +94,6 @@ begin
     CleanIDEShortCut,CleanIDEShortCut,nil,@InsertFileAtCursor);
   RegisterIDEMenuCommand(SrcEditSubMenuSource,'InsertFileAtCursor',
     crsInsertFileAtCursor,nil,nil,InsertFileAtCursorCommand);
-
-  // show ppu list of project
-  PPUListCommand:=RegisterIDECommand(CmdCatProjectMenu, 'ShowPPUList',
-    crsShowUsedPpuFiles,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowPPUList);
-  RegisterIDEMenuCommand(itmProjectWindowSection,'PPUList',crsShowUsedPpuFiles,
-    nil,nil,PPUListCommand);
 
   // add call inherited
   AddCallInheritedCommand:=RegisterIDECommand(CmdCatCodeTools, 'AddCallInherited',
@@ -106,6 +108,14 @@ begin
     CleanIDEShortCut,CleanIDEShortCut,nil,@ShowDeclareVariableDialog);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor, 'DeclareVariable',
     crsDeclareVariable2, nil, nil, DeclareVariableCommand);
+
+  // Show unit / identifier dictionary
+  InitUnitDictionary;
+  ShowIdentifierDictionaryCommand:=RegisterIDECommand(CmdCatCodeTools, 'ShowUnitDictionary',
+    crsShowUnitIdentifierDictionary,
+    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowUnitDictionaryDialog);
+  RegisterIDEMenuCommand(SrcEditSubMenuSource, 'ShowIdentifierDictionary',
+    crsShowUnitIdentifierDictionary, nil, nil, ShowIdentifierDictionaryCommand);
 
 
   // Refactor menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -153,14 +163,6 @@ begin
   RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'ShowCodeNodeInfo',
     crsShowCodeToolsNodeInfo, nil, nil, ShowCodeNodeInfoCommand);
 
-  // Show unit / identifier dictionary
-  InitUnitDictionary;
-  ShowIdentifierDictionaryCommand:=RegisterIDECommand(CmdCatCodeTools, 'ShowUnitDictionary',
-    crsShowUnitIdentifierDictionary,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@ShowUnitDictionaryDialog);
-  RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'ShowIdentifierDictionary',
-    crsShowUnitIdentifierDictionary, nil, nil, ShowIdentifierDictionaryCommand);
-
   // View menu - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ViewCodyWindowCommand:=RegisterIDECommand(CmdCatView, 'Cody',
     'Cody', CleanIDEShortCut, CleanIDEShortCut, nil, @ShowCodyWindow);
@@ -169,7 +171,6 @@ begin
   {$IFNDEF EnableCodyExperiments}
    .Visible:=false
   {$ENDIF};
-
 
   // Components - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   TVIconRes:=LazarusResources.Find('TTreeView');
@@ -180,7 +181,7 @@ begin
   CodyWindowCreator:=IDEWindowCreators.Add(CodyWindowName,@CreateCodyWindow,nil,
     '80%','50%','+18%','+25%','CodeExplorer',alBottom);
 
-  // Options
+  // Options - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   CodyMiscOptionID:=RegisterIDEOptionsEditor(GroupCodetools,
       TCodyMiscOptionsFrame,CodyMiscOptionID)^.Index;
   CodyOptions.Apply;
