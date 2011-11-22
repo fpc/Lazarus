@@ -701,7 +701,7 @@ begin
     // Now render it into the control
     TCocoaCustomControl(Owner).Image.GetRawImage(lRawImage);
     Cocoa_RawImage_CreateBitmaps(lRawImage, lBitmap, lMask, True);
-    //Context. <- ToDo Render the HBITMAP
+    Context.DrawBitmap(0, 0, TCocoaBitmap(lBitmap));
   end;
 end;
 

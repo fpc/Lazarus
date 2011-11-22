@@ -8,8 +8,8 @@ interface
 {$modeswitch objectivec1}
 
 uses
-  MacOSAll, // for CGContextRef
-  LCLtype,
+  SysUtils, MacOSAll, // for CGContextRef
+  LCLtype, LCLProc,
   CocoaAll, CocoaUtils,
   Classes, Types;
 
@@ -172,6 +172,7 @@ type
     procedure TextOut(X,Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
     function GetTextExtentPoint(AStr: PChar; ACount: Integer; var Size: TSize): Boolean;
     function GetTextMetrics(var TM: TTextMetric): Boolean;
+    procedure DrawBitmap(X,Y: Integer; ABitmap: TCocoaBitmap);
     procedure SetOrigin(X,Y: Integer);
     procedure GetOrigin(var X,Y: Integer);
     function CGContext: CGContextRef; virtual;
@@ -239,7 +240,15 @@ type
 constructor TCocoaBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
   AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType;
   AData: Pointer; ACopyData: Boolean);
+var
+  HasAlpha: Boolean;
+  BitmapFormat: NSBitmapFormat;
 begin
+  {$ifdef VerboseBitmaps}
+  DebugLn(Format('[TCocoaBitmap.Create] AWidth=%d AHeight=%d ADepth=%d ABitsPerPixel=%d'
+    + ' AAlignment=%d AType=%d AData=? ACopyData=%d',
+    [AWidth, AHeight, ADepth, ABitsPerPixel, Integer(AAlignment), Integer(AType), Integer(ACopyData)]));
+  {$endif}
   SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel, AAlignment, AType);
 
   // Copy the image data, if necessary
@@ -258,6 +267,15 @@ begin
     FFreeData := False;
   end;
 
+  HasAlpha := AType in [cbtARGB, cbtRGBA, cbtBGRA];
+  BitmapFormat := NSAlphaNonpremultipliedBitmapFormat;
+  if AType = cbtARGB then
+    BitmapFormat := BitmapFormat or NSAlphaFirstBitmapFormat;
+
+  {$ifdef VerboseBitmaps}
+  DebugLn(Format('[TCocoaBitmap.Create] NSBitmapImageRep.alloc HasAlpha=%d',
+    [Integer(HasAlpha)]));
+  {$endif}
   // Create the associated NSImageRep
   imagerep := NSBitmapImageRep(NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
     @FData, // planes, BitmapDataPlanes
@@ -265,10 +283,10 @@ begin
     FHeight,// height, PixelsHigh
     FbitsPerSample,// bitsPerSample, bps
     FsamplesPerPixel, // samplesPerPixel, sps
-    False, // hasAlpha
+    HasAlpha, // hasAlpha
     False, // isPlanar
     NSCalibratedRGBColorSpace, // colorSpaceName
-    NSAlphaNonpremultipliedBitmapFormat, // bitmapFormat
+    BitmapFormat, // bitmapFormat
     FBytesPerRow, // bytesPerRow
     FBitsPerPixel //bitsPerPixel
     ));
@@ -681,6 +699,14 @@ begin
   TM.tmCharSet := DEFAULT_CHARSET;
 
   Result := True;
+end;
+
+procedure TCocoaContext.DrawBitmap(X,Y:Integer; ABitmap: TCocoaBitmap);
+begin
+  NSGraphicsContext.saveGraphicsState();
+  NSGraphicsContext.setCurrentContext(ctx);
+  ABitmap.imagerep.drawAtPoint(NSMakePoint(X, Y));
+  NSGraphicsContext.restoreGraphicsState();
 end;
 
 procedure TCocoaContext.SetOrigin(X,Y:Integer);
