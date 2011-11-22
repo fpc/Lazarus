@@ -255,6 +255,10 @@ var
   mask: longword;
   AForm: TCustomForm absolute AWinControl;
 begin
+  {$ifdef VerboseCDWindow}
+  DebugLn(Format(':>[TCDWSCustomForm.CreateHandle] AWinControl=%x Name=%s: %s',
+    [PtrInt(AWinControl), AWinControl.Name, AWinControl.ClassName]));
+  {$endif}
   Colormap := XDefaultColormap(CDWidgetSet.FDisplay, XDefaultScreen(CDWidgetSet.FDisplay));
   Attr.Colormap := Colormap;
 
@@ -344,6 +348,11 @@ begin
   // for modal windows, this is necessary
 //  if (woModal in WindowOptions) then
 //    XSetTransientForHint(GFApplication.Handle, Handle, Handle);
+
+  {$ifdef VerboseCDWindow}
+  DebugLn(Format(':<[TCDWSCustomForm.CreateHandle] Result=%x',
+    [Result]));
+  {$endif}
 end;
 
 class procedure TCDWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
@@ -360,6 +369,10 @@ end;
 class procedure TCDWSCustomForm.SetBounds(const AWinControl: TWinControl;
     const ALeft, ATop, AWidth, AHeight: Integer);
 begin
+  {$ifdef VerboseCDWindow}
+  DebugLn(Format('[TCDWSCustomForm.SetBounds] AWinControl=%x ALeft=%d ATop=%d AWidth=%d AHeight=%d',
+    [PtrInt(AWinControl), ALeft, ATop, AWidth, AHeight]));
+  {$endif}
   SetPosition(AWinControl, Point(ALeft, ATop));
   SetSize(AWinControl, Size(AWidth, AHeight));
 end;
@@ -381,16 +394,26 @@ class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
   lWindow: TWindow;
   lIndex: Integer;
+  lWindowInfo: TX11WindowInfo;
 begin
   lWindow := TWindow(AWinControl.Handle);
   if AWinControl.Visible then
   begin
+    {$ifdef VerboseCDWindow}
+    DebugLn(Format('[TCDWSCustomForm.ShowHide] Visible=True AWinControl=%x Handle=%x',
+      [PtrInt(AWinControl), PtrInt(AWinControl.Handle)]));
+    {$endif}
     XMapRaised(CDWidgetSet.FDisplay, lWindow);
-    CDWidgetset.WindowList.Add(AWinControl);
-    CDWidgetset.WindowInfoList.Add(TX11WindowInfo.Create);
+    lWindowInfo := TX11WindowInfo.Create;
+    lWindowInfo.Window := lWindow;
+    lWindowInfo.LCLControl := AWinControl;
+    CDWidgetset.WindowList.Add(lWindowInfo);
   end
   else
   begin
+    {$ifdef VerboseCDWindow}
+    DebugLn(Format('[TCDWSCustomForm.ShowHide] Visible=False AWinControl=%x', [PtrInt(AWinControl)]));
+    {$endif}
     // Don't remove it here, wait for a X11 Destroy event
   end;
 end;

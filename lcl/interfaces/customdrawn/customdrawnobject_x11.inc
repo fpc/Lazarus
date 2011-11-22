@@ -71,19 +71,30 @@ function TCDWidgetSet.FindWindowByXID(XWindowID: X.TWindow; out AIndex: Integer)
 var
   i: Integer;
   EndSubSearch: Boolean; { Necessary to quit the recursion }
+  lWindowInfo: TX11WindowInfo;
 begin
+  {$ifdef VerboseFindX11Window}
+  DbgOut(Format('[TCDWidgetSet.FindWindowByXID] XWindowID=%x', [PtrInt(XWindowID)]));
+  {$endif}
   AIndex := -1;
   Result := nil;
 
   { Loops througth all windows on the application }
   for i := 0 to WindowList.Count - 1 do
   begin
-    Result := TWinControl(WindowList[i]);
+    lWindowInfo := TX11WindowInfo(WindowList[i]);
+    Result := lWindowInfo.LCLControl;
     AIndex := i;
 
-    if X.TWindow(Result.Handle) = XWindowID then Break;
+    {$ifdef VerboseFindX11Window}
+    DbgOut(Format(' Item %d Window=%x', [i, PtrInt(lWindowInfo.Window)]));
+    {$endif}
+    if lWindowInfo.Window = XWindowID then Break;
   end;
-  if (Result <> nil) and (X.TWindow(Result.Handle) <> XWindowID) then Result := nil;
+  if (Result <> nil) and (lWindowInfo.Window <> XWindowID) then Result := nil;
+  {$ifdef VerboseFindX11Window}
+  DebugLn('');
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -96,7 +107,6 @@ end;
 procedure TCDWidgetSet.BackendCreate;
 begin
   WindowList := TFPList.Create();
-  WindowInfoList := TFPList.Create();
 end;
 
 {------------------------------------------------------------------------------
@@ -108,7 +118,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendDestroy;
 begin
-  WindowInfoList.Free;
   WindowList.Free;
 end;
 
@@ -185,20 +194,21 @@ begin
 
       if not Assigned(WindowEntry) then
       begin
-        DebugLn('LCL-CustomDrawn-X11: Received X event "', GetXEventName(XEvent._type), '" for unknown window');
+        DebugLn('LCL-CustomDrawn-X11: Received X event "%s" for unknown window %x',
+          [GetXEventName(XEvent._type), PtrInt(XEvent.XAny.Window)]);
         Continue;
       end;
 
-//      WindowEntry.FXEvent := @XEvent;
+      TX11WindowInfo(WindowList.Items[lWindowListIndex]).XEvent := @XEvent;
 
       case XEvent._type of
        X.DestroyNotify:
        begin
          WindowList.Delete(lWindowListIndex);
-         WindowInfoList.Delete(lWindowListIndex);
        end;
        X.KeyPress:
        begin
+         //TCDWSCustomForm.EvKeyPressed(WindowEntry, TX11WindowInfo(WindowList.Items[lWindowListIndex]));
          //WindowEntry.EvKeyPressed(XEvent.xkey.keycode);
        end;
        X.KeyRelease:
@@ -271,9 +281,9 @@ begin
 //           WindowEntry.EvShow();
        end;
        X.UnmapNotify:
-         begin
+       begin
 //           WindowEntry.EvHide();
-         end;
+       end;
        X.ReparentNotify:
        begin
 //           WindowEntry.EvCreate();
@@ -284,7 +294,7 @@ begin
            For now we are just ignoring all expose messages where Count <> 0 }
          if XEvent.xexpose.count = 0 then
          begin
-           TCDWSCustomForm.EvPaint(WindowEntry, TX11WindowInfo(WindowInfoList.Items[lWindowListIndex]));
+           TCDWSCustomForm.EvPaint(WindowEntry, TX11WindowInfo(WindowList.Items[lWindowListIndex]));
          end;
        end;
        X.ConfigureNotify:

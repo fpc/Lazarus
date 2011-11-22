@@ -8,6 +8,7 @@ uses
   // rtl+ftl
   Types, Classes, SysUtils,
   fpimage, fpcanvas,
+  X, XLib,
   // Custom Drawn Canvas
   IntfGraphics, lazcanvas,
   //
@@ -16,6 +17,9 @@ uses
 type
   TX11WindowInfo = class
   public
+    Window: X.TWindow;
+    LCLControl: TWinControl;
+    XEvent: PXEvent;
     Image: TLazIntfImage;
     Canvas: TLazCanvas;
   end;
