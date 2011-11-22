@@ -248,11 +248,12 @@ begin
 
   // !!!: Add support for XF86 4 and XShm etc. to speed this up!
   Image := XCreateImage(CDWidgetSet.FDisplay, ADestWindowInfo.Attr.Visual,
-    32, ZPixmap, 0, PChar(ARawImage.Data),
-    ADestWidth, ADestHeight, 32, ADestWindowInfo.Canvas.Width*4);
+    ADestWindowInfo.ColorDepth, XYPixmap, 0, PChar(ARawImage.Data),
+    ADestWidth, ADestHeight, 32, ADestWindowInfo.Canvas.Width*(ADestWindowInfo.ColorDepth div 8));
 
   {$IFDEF VerboseCDWindow}
-    DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC] Image=%x', [PtrInt(Image)]));
+    DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC] Image=%x Data=%x',
+      [PtrInt(Image), PtrInt(ARawImage.Data)]));
   {$ENDIF}
 
 (*  { Here its necessary to alloc an extra byte, otherwise it will fail on 32-bits
@@ -304,8 +305,8 @@ begin
   FillChar(struct, SizeOf(TPaintStruct), 0);
 
   // Prepare the non-native image and canvas
-  UpdateControlLazImageAndCanvas(AWindowInfo.Image, AWindowInfo.Canvas, lWidth, lHeight);
-{  // Check if the image needs update
+//  UpdateControlLazImageAndCanvas(AWindowInfo.Image, AWindowInfo.Canvas, lWidth, lHeight);
+  // Check if the image needs update
   if (AWindowInfo.Image = nil) or (lWidth <> AWindowInfo.Image.Width) or (lHeight <> AWindowInfo.Image.Height) then
   begin
     if (AWindowInfo.Image <> nil) then AWindowInfo.Image.Free;
@@ -319,7 +320,7 @@ begin
 
     if (AWindowInfo.Canvas <> nil) then AWindowInfo.Canvas.Free;
     AWindowInfo.Canvas := TLazCanvas.Create(AWindowInfo.Image);
-  end;        }
+  end;
 
   struct.hdc := HDC(AWindowInfo.Canvas);
 
@@ -468,6 +469,7 @@ begin
   lWindowInfo.LCLControl := AWinControl;
   XGetWindowAttributes(CDWidgetSet.FDisplay, Result, @lWindowInfo.Attr);
   lWindowInfo.Colormap := XDefaultColormap(CDWidgetSet.FDisplay, XDefaultScreen(CDWidgetSet.FDisplay));
+  lWindowInfo.ColorDepth := lWindowInfo.Attr.depth;
   CreateX11Canvas(lWindowInfo);
   CDWidgetset.WindowList.Add(lWindowInfo);
 

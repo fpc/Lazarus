@@ -25,6 +25,7 @@ type
     Attr: XLib.TXWindowAttributes;
     Colormap: TColormap;
     GC: TGC;
+    ColorDepth: Byte;
     // painting objects
     Image: TLazIntfImage;
     Canvas: TLazCanvas;
