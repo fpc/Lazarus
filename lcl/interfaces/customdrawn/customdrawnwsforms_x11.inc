@@ -241,7 +241,13 @@ class procedure TCDWSCustomForm.DrawRawImageToGC(ARawImage: TRawImage;
   ADestWindowInfo: TX11WindowInfo; ADestX, ADestY, ADestWidth, ADestHeight: Integer);
 var
   Image: XLib.PXImage;
+  {$IFDEF VerboseCDPaintProfiler}
+  lTimeStart: TDateTime;
+  {$ENDIF}
 begin
+  {$IFDEF VerboseCDPaintProfiler}
+  lTimeStart := NowUTC();
+  {$ENDIF}
 (*  {$IFDEF VerboseFPGUI}
     WriteLn('>: DoDrawImageRect');
   {$ENDIF}*)
@@ -285,6 +291,9 @@ begin
 //  FreeMem(Image^.data);
 //  Image^.data := nil;
 //  XDestroyImage(Image);
+  {$IFDEF VerboseCDPaintProfiler}
+  DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC] Paint duration: %d ms', [DateTimeToMilliseconds(NowUTC() - lTimeStart)]));
+  {$ENDIF}
 end;
 
 class procedure TCDWSCustomForm.EvPaint(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
@@ -293,7 +302,13 @@ var
   lWidth, lHeight: Integer;
   lBitmap, lMask: HBITMAP;
   lRawImage: TRawImage;
+  {$IFDEF VerboseCDPaintProfiler}
+  lTimeStart: TDateTime;
+  {$ENDIF}
 begin
+  {$IFDEF VerboseCDPaintProfiler}
+  lTimeStart := NowUTC();
+  {$ENDIF}
   {$IFDEF VerboseCDWindow}
     DebugLn(Format('[TCDWSCustomForm.EvPaint] AWindowInfo: %x', [PtrInt(AWindowInfo)]));
   {$ENDIF}
@@ -336,6 +351,10 @@ begin
   // Now render it into the control
   AWindowInfo.Image.GetRawImage(lRawImage);
   DrawRawImageToGC(lRawImage, AWindowInfo, 0, 0, lWidth, lHeight);
+
+  {$IFDEF VerboseCDPaintProfiler}
+  DebugLn(Format('[TCDWSCustomForm.EvPaint] Paint duration: %d ms', [DateTimeToMilliseconds(NowUTC() - lTimeStart)]));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

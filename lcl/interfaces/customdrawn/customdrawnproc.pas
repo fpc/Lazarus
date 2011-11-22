@@ -14,6 +14,7 @@ uses
   GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc;
 
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage; var ACanvas: TLazCanvas; AWidth, AHeight: Integer);
+function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
 
 implementation
 
@@ -45,6 +46,16 @@ begin
     DebugLn(Format(':<[UpdateControlLazImageAndCanvas] Output Image: %x Canvas: %x',
       [PtrInt(AImage), PtrInt(ACanvas)]));
   {$ENDIF}
+end;
+
+function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
+var
+  TimeStamp: TTimeStamp;
+begin
+  {Call DateTimeToTimeStamp to convert DateTime to TimeStamp:}
+  TimeStamp:= DateTimeToTimeStamp (aDateTime);
+  {Multiply and add to complete the conversion:}
+  Result:= TimeStamp.Time;
 end;
 
 end.
