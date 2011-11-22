@@ -462,14 +462,20 @@ begin
         end;
     end;
   'R':
-    if CompareSrcIdentifiers(p,'REQUIRED') then exit(KeyWordFuncClassSection);
+    if CompareSrcIdentifiers(p,'REQUIRED')
+    and (CurNode.Parent.Desc=ctnObjCProtocol)
+    and ([cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches<>[])
+    then exit(KeyWordFuncClassSection);
   'S':
     if CompareSrcIdentifiers(p,'STATIC') then exit(KeyWordFuncClassMethod)
     else if CompareSrcIdentifiers(p,'STRICT') then exit(KeyWordFuncClassSection);
   'T':
     if CompareSrcIdentifiers(p,'TYPE') then exit(KeyWordFuncClassTypeSection);
   'O':
-    if CompareSrcIdentifiers(p,'OPTIONAL') then exit(KeyWordFuncClassSection);
+    if CompareSrcIdentifiers(p,'OPTIONAL')
+    and (CurNode.Parent.Desc=ctnObjCProtocol)
+    and ([cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches<>[])
+    then exit(KeyWordFuncClassSection);
   'V':
     if CompareSrcIdentifiers(p,'VAR') then exit(KeyWordFuncClassVarSection);
   '(','[':
@@ -968,15 +974,11 @@ begin
     NewSubSection:=ctnClassProtected
   else if UpAtomIs('PUBLISHED') then
     NewSubSection:=ctnClassPublished
-  else if UpAtomIs('REQUIRED') then begin
-    if [cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches=[] then
-      exit(false);
-    NewSubSection:=ctnClassRequired;
-  end else if UpAtomIs('OPTIONAL') then begin
-    if [cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches=[] then
-      exit(false);
-    NewSubSection:=ctnClassOptional;
-  end else
+  else if UpAtomIs('REQUIRED') then
+    NewSubSection:=ctnClassRequired
+  else if UpAtomIs('OPTIONAL') then
+    NewSubSection:=ctnClassOptional
+  else
     RaiseStringExpectedButAtomFound('public');
   OldSubSection:=ctnNone;
   if CurNode.Desc in AllClassSubSections then begin
