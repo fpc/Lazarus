@@ -102,8 +102,10 @@ const
   ctnClassProtected     = 47;
   ctnClassPublic        = 48;
   ctnClassPublished     = 49;
-  ctnProperty           = 50; // child of visibility section or AllClassInterfaces
-  ctnMethodMap          = 51; // child of visibility section or AllClassInterfaces
+  ctnClassRequired      = 50;
+  ctnClassOptional      = 51;
+  ctnProperty           = 52; // child of visibility section or AllClassInterfaces
+  ctnMethodMap          = 53; // child of visibility section or AllClassInterfaces
   
   ctnProcedure          = 60;  // children: ctnProcedureHead, sections, ctnBeginBlock/ctnAsmBlock
   ctnProcedureHead      = 61;  // children: ctnParameterList, operator: ctnVarDefinition, operator/function: ctnIdentifier
@@ -154,7 +156,8 @@ const
   AllCodeSections = AllSourceTypes
      + [ctnInterface, ctnImplementation, ctnInitialization, ctnFinalization];
   AllClassBaseSections =
-     [ctnClassPublic,ctnClassPublished,ctnClassPrivate,ctnClassProtected];
+     [ctnClassPublic,ctnClassPublished,ctnClassPrivate,ctnClassProtected,
+      ctnClassRequired,ctnClassOptional];
   AllClassSubSections =
      [ctnConstSection, ctnTypeSection, ctnVarSection, ctnClassClassVar];
   AllClassSections =
@@ -348,10 +351,12 @@ begin
 
   ctnClassInheritance: Result:='Class inheritance';
   ctnClassGUID: Result:='GUID';
-  ctnClassPublished: Result:='Published';
   ctnClassPrivate: Result:='Private';
   ctnClassProtected: Result:='Protected';
   ctnClassPublic: Result:='Public';
+  ctnClassPublished: Result:='Published';
+  ctnClassRequired: Result:='Required section';
+  ctnClassOptional: Result:='Optional section';
   ctnClassClassVar: Result:='Class Var';
   ctnClassAbstract: Result:='abstract';
   ctnClassSealed: Result:='sealed';

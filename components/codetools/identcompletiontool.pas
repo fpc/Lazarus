@@ -1655,6 +1655,11 @@ begin
       Add('procedure');
       Add('function');
       Add('property');
+      if [cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches<>[] then
+      begin
+        Add('required');
+        Add('optional');
+      end;
       if (Node.Desc=ctnClass) or (Node.Parent.Desc=ctnClass) then begin
         Add('constructor');
         Add('destructor');

@@ -461,11 +461,15 @@ begin
         'S': if CompareSrcIdentifiers(p,'PUBLISHED') then exit(KeyWordFuncClassSection);
         end;
     end;
+  'R':
+    if CompareSrcIdentifiers(p,'REQUIRED') then exit(KeyWordFuncClassSection);
   'S':
     if CompareSrcIdentifiers(p,'STATIC') then exit(KeyWordFuncClassMethod)
     else if CompareSrcIdentifiers(p,'STRICT') then exit(KeyWordFuncClassSection);
   'T':
     if CompareSrcIdentifiers(p,'TYPE') then exit(KeyWordFuncClassTypeSection);
+  'O':
+    if CompareSrcIdentifiers(p,'OPTIONAL') then exit(KeyWordFuncClassSection);
   'V':
     if CompareSrcIdentifiers(p,'VAR') then exit(KeyWordFuncClassVarSection);
   '(','[':
@@ -947,33 +951,46 @@ begin
 end;
 
 function TPascalParserTool.KeyWordFuncClassSection: boolean;
-// change section in a class (public, private, protected, published)
+// change section in a class (public, private, protected, published, optional, required)
 var
   OldSubSection: TCodeTreeNodeDesc;
+  NewSubSection: TCodeTreeNodeDesc;
+  SectionStart: Integer;
 begin
+  SectionStart:=CurPos.StartPos;
+  NewSubSection:=ctnNone;
+  if UpAtomIs('STRICT') then ReadNextAtom;
+  if UpAtomIs('PUBLIC') then
+    NewSubSection:=ctnClassPublic
+  else if UpAtomIs('PRIVATE') then
+    NewSubSection:=ctnClassPrivate
+  else if UpAtomIs('PROTECTED') then
+    NewSubSection:=ctnClassProtected
+  else if UpAtomIs('PUBLISHED') then
+    NewSubSection:=ctnClassPublished
+  else if UpAtomIs('REQUIRED') then begin
+    if [cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches=[] then
+      exit(false);
+    NewSubSection:=ctnClassRequired;
+  end else if UpAtomIs('OPTIONAL') then begin
+    if [cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches=[] then
+      exit(false);
+    NewSubSection:=ctnClassOptional;
+  end else
+    RaiseStringExpectedButAtomFound('public');
   OldSubSection:=ctnNone;
   if CurNode.Desc in AllClassSubSections then begin
     // end sub section
     OldSubSection:=CurNode.Desc;
-    CurNode.EndPos:=CurPos.StartPos;
+    CurNode.EndPos:=SectionStart;
     EndChildNode;
   end;
   // end last visibility section
-  CurNode.EndPos:=CurPos.StartPos;
+  CurNode.EndPos:=SectionStart;
   EndChildNode;
   // start new section
   CreateChildNode;
-  if UpAtomIs('STRICT') then ReadNextAtom;
-  if UpAtomIs('PUBLIC') then
-    CurNode.Desc:=ctnClassPublic
-  else if UpAtomIs('PRIVATE') then
-    CurNode.Desc:=ctnClassPrivate
-  else if UpAtomIs('PROTECTED') then
-    CurNode.Desc:=ctnClassProtected
-  else if UpAtomIs('PUBLISHED') then
-    CurNode.Desc:=ctnClassPublished
-  else
-    RaiseStringExpectedButAtomFound('public');
+  CurNode.Desc:=NewSubSection;
   if (OldSubSection<>ctnNone)
   and (Scanner.CompilerMode=cmOBJFPC)
   and (Scanner.Values.IsDefined('VER2_4')) then begin
@@ -3877,10 +3894,12 @@ begin
       end;
     end;
   end else begin
-    // start the first class section (always published/public)
+    // start the first class section (the one without a keyword)
     CreateChildNode;
-    if ClassDesc = ctnClass then
+    if ClassDesc=ctnClass then
       CurNode.Desc:=ctnClassPublished
+    else if ClassDesc=ctnObjCProtocol then
+      CurNode.Desc:=ctnClassRequired
     else
       CurNode.Desc:=ctnClassPublic;
     CurNode.StartPos:=LastAtoms.GetValueAt(0).EndPos;
@@ -3985,13 +4004,6 @@ begin
     // parse till "end" of interface
     repeat
       // ObjCProtocol can have 'OPTIONAL' and 'REQUIRED' sections
-      if (IntfDesc=ctnObjCProtocol) and (CurPos.Flag=cafWord) then begin
-        if UpAtomIs('OPTIONAL') then
-          ReadNextAtom
-        else
-        if UpAtomIs('REQUIRED') then
-          ReadNextAtom;
-      end;
       if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
       begin
         if CurPos.Flag<>cafEnd then
