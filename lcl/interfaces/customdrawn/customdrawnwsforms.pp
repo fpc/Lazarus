@@ -34,7 +34,12 @@ uses
   SysUtils, Classes, types, ctypes,
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate, CocoaUtils,{$endif}
-  {$ifdef CD_X11}X, XLib, XUtil, XAtom, x11proc,{unitxft, Xft font support}{$endif}
+  {$ifdef CD_X11}
+    {$ifdef CD_X11_USE_XSHM}
+    XShm,
+    {$endif}
+    X, XLib, XUtil, XAtom, x11proc,{unitxft, Xft font support}
+  {$endif}
   // LazUtils
   lazutf8sysutils,
   // LCL

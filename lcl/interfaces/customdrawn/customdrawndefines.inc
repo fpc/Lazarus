@@ -15,6 +15,7 @@
       {$define CD_Cocoa}
     {$else}
       {$define CD_X11}
+      {$define CD_X11_USE_XSHM}
     {$endif}
   {$endif}
 {$endif}

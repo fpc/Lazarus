@@ -248,11 +248,8 @@ begin
   {$IFDEF VerboseCDPaintProfiler}
   lTimeStart := NowUTC();
   {$ENDIF}
-(*  {$IFDEF VerboseFPGUI}
-    WriteLn('>: DoDrawImageRect');
-  {$ENDIF}*)
 
-  // !!!: Add support for XF86 4 and XShm etc. to speed this up!
+  // Create a native Image
   Image := XCreateImage(CDWidgetSet.FDisplay, ADestWindowInfo.Attr.Visual,
     ADestWindowInfo.ColorDepth, XYPixmap, 0, PChar(ARawImage.Data),
     ADestWidth, ADestHeight, 32, (ADestWindowInfo.Canvas.Width*ADestWindowInfo.ColorDepth) div 8);
@@ -262,35 +259,20 @@ begin
       [PtrInt(Image), PtrInt(ARawImage.Data)]));
   {$ENDIF}
 
-(*  { Here its necessary to alloc an extra byte, otherwise it will fail on 32-bits
-   machines, but still work on 64-bits machines. The cause of this is unknown. }
-  Image^.data := GetMem(Image^.bytes_per_line * (ASourceRect.Bottom - ASourceRect.Top) + 1);
-
-  if (AImage.PixelFormat.FormatType = ftMono) and
-    Self.InheritsFrom(TX11MonoPixmapCanvas) then
-    // mirror the bits within all image data bytes...:
-    FlipMonoImageBits(ASourceRect, TX11Bitmap(AImage).Data,
-      TX11Bitmap(AImage).Stride, 0, 0, Image^.data, Image^.bytes_per_line)
-  else
-  begin
-    ConvertFormat := PixelFormat;
-
-     { !!!: The following is a workaround: At least the XFree86 X server for
-        ATI graphics adapters uses 32 bit padding per pixel for 24 bpp
-       images...?!? To be checked: Is this always the case or only for ATI? }
-    if ConvertFormat.FormatType = ftRGB24 then
-     ConvertFormat.FormatType := ftRGB32;
-
-    ConvertImage(ASourceRect, AImage.PixelFormat, AImage.Palette,
-      TX11Bitmap(AImage).Data, TX11Bitmap(AImage).Stride,
-      0, 0, ConvertFormat, Image^.data, Image^.bytes_per_line);
-  end;*)
+  {$ifdef CD_X11_USE_XSHM}
+  // Draw the image in the window
+  XShmPutImage(CDWidgetSet.FDisplay, ADestWindowInfo.Window, ADestWindowInfo.GC,
+    Image, 0, 0, ADestX, ADestY, ADestWidth, ADestHeight, False);
+  {$else}
+  // XPutImage is ridiculously slow, really unusable.
   XPutImage(CDWidgetSet.FDisplay, ADestWindowInfo.Window, ADestWindowInfo.GC,
     Image, 0, 0, ADestX, ADestY, ADestWidth, ADestHeight);
+  {$endif}
 
-//  FreeMem(Image^.data);
-//  Image^.data := nil;
-//  XDestroyImage(Image);
+  // Free the native image
+  Image^.data := nil;
+  XDestroyImage(Image);
+
   {$IFDEF VerboseCDPaintProfiler}
   DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC] Paint duration: %d ms', [DateTimeToMilliseconds(NowUTC() - lTimeStart)]));
   {$ENDIF}
