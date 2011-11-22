@@ -19,7 +19,13 @@ type
   public
     Window: X.TWindow;
     LCLControl: TWinControl;
+    // Used and valid only during event processing
     XEvent: PXEvent;
+    // X11 extra objects
+    Attr: XLib.TXWindowAttributes;
+    Colormap: TColormap;
+    GC: TGC;
+    // painting objects
     Image: TLazIntfImage;
     Canvas: TLazCanvas;
   end;

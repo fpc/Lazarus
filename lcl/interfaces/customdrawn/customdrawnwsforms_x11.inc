@@ -187,6 +187,105 @@ begin
   XFree(SizeHints);
 end;
 
+class procedure TCDWSCustomForm.CreateX11Canvas(AWindowInfo: TX11WindowInfo);
+var
+  DummyWnd: PWindow;
+  DummyInt: LongInt;
+  GCValues: XLib.TXGCValues;
+  FWidth, FHeight: Integer;
+begin
+  XGetGeometry(CDWidgetSet.FDisplay, AWindowInfo.Window, @DummyWnd, @DummyInt, @DummyInt,
+    @FWidth, @FHeight, @DummyInt, @DummyInt);
+
+  GCValues.graphics_exposures := 0;
+  AWindowInfo.GC := XCreateGC(CDWidgetSet.FDisplay, AWindowInfo.Window, GCGraphicsExposures, @GCValues);
+//  if not Assigned(GC) then
+//    raise EX11Error.Create(SGCCreationFailed);
+
+//  XSetLineAttributes(GFApplication.Handle, GC, 0,
+//    LineSolid, CapNotLast, JoinMiter);
+
+//  FFont := AFont;
+//  FXftDraw := XftDrawCreate(CDWidgetSet.FDisplay, AWindowInfo.Window,
+//    XDefaultVisual(CDWidgetSet.FDisplay, XDefaultScreen(CDWidgetSet.FDisplay)),
+//    XDefaultColormap(CDWidgetSet.FDisplay, XDefaultScreen(CDWidgetSet.FDisplay)));
+
+//  FRegion := XCreateRegion;
+//  Resized(Width, Height);	// Set up a proper clipping region
+
+  //
+
+{  XGetWindowAttributes(CDWidgetSet.FDisplay, AWindowInfo.Window, @Attr);
+  FVisual := Attr.Visual;
+
+  case Attr.Depth of
+    1: PixelFormat.FormatType := ftMono;
+    4: PixelFormat.FormatType := ftPal4;
+    8: PixelFormat.FormatType := ftPal8;
+    16: PixelFormat.FormatType := ftRGB16;
+    24: PixelFormat.FormatType := ftRGB24;
+    32: PixelFormat.FormatType := ftRGB32;
+    else
+      raise EX11Error.CreateFmt(SWindowUnsupportedPixelFormat, [Attr.Depth]);
+  end;
+
+  if Attr.Depth >= 16 then
+  begin
+    PixelFormat.RedMask   := Visual^.red_mask;
+    PixelFormat.GreenMask := Visual^.green_mask;
+    PixelFormat.BlueMask  := Visual^.blue_mask;
+  end;}
+end;
+
+class procedure TCDWSCustomForm.DrawRawImageToGC(ARawImage: TRawImage;
+  ADestWindowInfo: TX11WindowInfo; ADestX, ADestY, ADestWidth, ADestHeight: Integer);
+var
+  Image: XLib.PXImage;
+begin
+(*  {$IFDEF VerboseFPGUI}
+    WriteLn('>: DoDrawImageRect');
+  {$ENDIF}*)
+
+  // !!!: Add support for XF86 4 and XShm etc. to speed this up!
+  Image := XCreateImage(CDWidgetSet.FDisplay, ADestWindowInfo.Attr.Visual,
+    32, ZPixmap, 0, PChar(ARawImage.Data),
+    ADestWidth, ADestHeight, 32, ADestWindowInfo.Canvas.Width*4);
+
+  {$IFDEF VerboseCDWindow}
+    DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC] Image=%x', [PtrInt(Image)]));
+  {$ENDIF}
+
+(*  { Here its necessary to alloc an extra byte, otherwise it will fail on 32-bits
+   machines, but still work on 64-bits machines. The cause of this is unknown. }
+  Image^.data := GetMem(Image^.bytes_per_line * (ASourceRect.Bottom - ASourceRect.Top) + 1);
+
+  if (AImage.PixelFormat.FormatType = ftMono) and
+    Self.InheritsFrom(TX11MonoPixmapCanvas) then
+    // mirror the bits within all image data bytes...:
+    FlipMonoImageBits(ASourceRect, TX11Bitmap(AImage).Data,
+      TX11Bitmap(AImage).Stride, 0, 0, Image^.data, Image^.bytes_per_line)
+  else
+  begin
+    ConvertFormat := PixelFormat;
+
+     { !!!: The following is a workaround: At least the XFree86 X server for
+        ATI graphics adapters uses 32 bit padding per pixel for 24 bpp
+       images...?!? To be checked: Is this always the case or only for ATI? }
+    if ConvertFormat.FormatType = ftRGB24 then
+     ConvertFormat.FormatType := ftRGB32;
+
+    ConvertImage(ASourceRect, AImage.PixelFormat, AImage.Palette,
+      TX11Bitmap(AImage).Data, TX11Bitmap(AImage).Stride,
+      0, 0, ConvertFormat, Image^.data, Image^.bytes_per_line);
+  end;*)
+  XPutImage(CDWidgetSet.FDisplay, ADestWindowInfo.Window, ADestWindowInfo.GC,
+    Image, 0, 0, ADestX, ADestY, ADestWidth, ADestHeight);
+
+//  FreeMem(Image^.data);
+//  Image^.data := nil;
+//  XDestroyImage(Image);
+end;
+
 class procedure TCDWSCustomForm.EvPaint(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
 var
   struct : TPaintStruct;
@@ -194,7 +293,7 @@ var
   lBitmap, lMask: HBITMAP;
   lRawImage: TRawImage;
 begin
-  {$IFDEF VerboseWinAPI}
+  {$IFDEF VerboseCDWindow}
     DebugLn(Format('[TCDWSCustomForm.EvPaint] AWindowInfo: %x', [PtrInt(AWindowInfo)]));
   {$ENDIF}
   if (AWinControl = nil) or (AWindowInfo = nil) then Exit;
@@ -205,24 +304,37 @@ begin
   FillChar(struct, SizeOf(TPaintStruct), 0);
 
   // Prepare the non-native image and canvas
-  UpdateControlLazImageAndCanvas(AWindowInfo.Image,
-    AWindowInfo.Canvas, lWidth, lHeight);
+  UpdateControlLazImageAndCanvas(AWindowInfo.Image, AWindowInfo.Canvas, lWidth, lHeight);
+{  // Check if the image needs update
+  if (AWindowInfo.Image = nil) or (lWidth <> AWindowInfo.Image.Width) or (lHeight <> AWindowInfo.Image.Height) then
+  begin
+    if (AWindowInfo.Image <> nil) then AWindowInfo.Image.Free;
+
+    lRawImage.Init;
+    lRawImage.Description.Init_BPP24_B8G8R8_BIO_TTB(lWidth, lHeight);
+    lRawImage.CreateData(True);
+
+    AWindowInfo.Image := TLazIntfImage.Create(lWidth, lHeight);
+    AWindowInfo.Image.SetRawImage(lRawImage);
+
+    if (AWindowInfo.Canvas <> nil) then AWindowInfo.Canvas.Free;
+    AWindowInfo.Canvas := TLazCanvas.Create(AWindowInfo.Image);
+  end;        }
 
   struct.hdc := HDC(AWindowInfo.Canvas);
 
   // Send the paint message to the LCL
-  {$IFDEF VerboseWinAPI}
+  {$IFDEF VerboseCDWindow}
     DebugLn(Format('[TCDWSCustomForm.EvPaint] OnPaint event started context: %x', [struct.hdc]));
   {$ENDIF}
   LCLSendPaintMsg(AWinControl, struct.hdc, @struct);
-  {$IFDEF VerboseWinAPI}
+  {$IFDEF VerboseCDWindow}
     DebugLn('[TCDWSCustomForm.EvPaint] OnPaint event ended');
   {$ENDIF}
 
   // Now render it into the control
   AWindowInfo.Image.GetRawImage(lRawImage);
-  //Cocoa_RawImage_CreateBitmaps(lRawImage, lBitmap, lMask, True);
-  //Context.DrawBitmap(0, 0, TCocoaBitmap(lBitmap));
+  DrawRawImageToGC(lRawImage, AWindowInfo, 0, 0, lWidth, lHeight);
 end;
 
 {------------------------------------------------------------------------------
@@ -253,6 +365,7 @@ var
   ClassHint: PXClassHint;
   lParentHandle: X.TWindow;
   mask: longword;
+  lWindowInfo: TX11WindowInfo;
   AForm: TCustomForm absolute AWinControl;
 begin
   {$ifdef VerboseCDWindow}
@@ -349,10 +462,24 @@ begin
 //  if (woModal in WindowOptions) then
 //    XSetTransientForHint(GFApplication.Handle, Handle, Handle);
 
+  // Add the window to the list of windows
+  lWindowInfo := TX11WindowInfo.Create;
+  lWindowInfo.Window := TWindow(Result);
+  lWindowInfo.LCLControl := AWinControl;
+  XGetWindowAttributes(CDWidgetSet.FDisplay, Result, @lWindowInfo.Attr);
+  lWindowInfo.Colormap := XDefaultColormap(CDWidgetSet.FDisplay, XDefaultScreen(CDWidgetSet.FDisplay));
+  CreateX11Canvas(lWindowInfo);
+  CDWidgetset.WindowList.Add(lWindowInfo);
+
   {$ifdef VerboseCDWindow}
   DebugLn(Format(':<[TCDWSCustomForm.CreateHandle] Result=%x',
     [Result]));
   {$endif}
+end;
+
+class procedure TCDWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
+begin
+
 end;
 
 class procedure TCDWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
@@ -404,10 +531,6 @@ begin
       [PtrInt(AWinControl), PtrInt(AWinControl.Handle)]));
     {$endif}
     XMapRaised(CDWidgetSet.FDisplay, lWindow);
-    lWindowInfo := TX11WindowInfo.Create;
-    lWindowInfo.Window := lWindow;
-    lWindowInfo.LCLControl := AWinControl;
-    CDWidgetset.WindowList.Add(lWindowInfo);
   end
   else
   begin

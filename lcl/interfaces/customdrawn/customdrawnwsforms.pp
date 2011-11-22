@@ -36,7 +36,7 @@ uses
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate, CocoaUtils,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, XAtom, x11proc,{unitxft, Xft font support}{$endif}
   // LCL
-  Controls, LCLType, Forms, LCLProc, GraphType,
+  Controls, LCLType, Forms, LCLProc, GraphType, IntfGraphics, lazcanvas,
   // Widgetset
   InterfaceBase, WSForms, WSProc, WSLCLClasses, LCLMessageGlue,
   customdrawnwscontrols, customdrawnint, customdrawnproc;
@@ -91,12 +91,15 @@ type
     class procedure SetPosition(const AWinControl: TWinControl; const APosition: TPoint);
     class procedure SetSize(const AWinControl: TWinControl; const ASize: TSize);
     class procedure SetMinMaxSize(const AWinControl: TWinControl; const AMinSize, AMaxSize: TSize);
+    class procedure CreateX11Canvas(AWindowInfo: TX11WindowInfo);
+    class procedure DrawRawImageToGC(ARawImage: TRawImage;
+      ADestWindowInfo: TX11WindowInfo; ADestX, ADestY, ADestWidth, ADestHeight: Integer);
     // Event handling
     class procedure EvPaint(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
     {$endif}
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-//    class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class procedure SetBounds(const AWinControl: TWinControl;
       const ALeft, ATop, AWidth, AHeight: Integer); override;
