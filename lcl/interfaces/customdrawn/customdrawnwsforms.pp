@@ -31,7 +31,7 @@ interface
 
 uses
   // RTL
-  SysUtils, Classes, ctypes,
+  SysUtils, Classes, types, ctypes,
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate, CocoaUtils,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, XAtom,{unitxft, Xft font support}{$endif}
@@ -85,6 +85,12 @@ type
     class function CalcBorderStyleFlags(const AForm: TCustomForm): DWORD;
     class function CalcBorderStyleFlagsEx(const AForm: TCustomForm): DWORD;
     class procedure AdjustFormBounds(const AForm: TCustomForm; out SizeRect: TRect);
+    {$endif}
+    {$ifdef CD_X11}
+    class procedure UpdateMotifWMHints(const AWinControl: TWinControl; CanMaximize: Boolean);
+    class procedure SetPosition(const AWinControl: TWinControl; const APosition: TPoint);
+    class procedure SetSize(const AWinControl: TWinControl; const ASize: TSize);
+    class procedure SetMinMaxSize(const AWinControl: TWinControl; const AMinSize, AMaxSize: TSize);
     {$endif}
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;

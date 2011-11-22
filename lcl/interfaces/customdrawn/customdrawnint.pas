@@ -30,7 +30,7 @@ interface
 uses
   // RTL
   Types, Classes, SysUtils, Math,
-  fpimage, fpcanvas,
+  fpimage, fpcanvas, ctypes,
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, {unitxft, Xft font support}{$endif}
@@ -129,6 +129,13 @@ type
     FWMProtocols: TAtom;	  // Atom for "WM_PROTOCOLS"
     FWMDeleteWindow: TAtom;	  // Atom for "WM_DELETE_WINDOW"
     FWMHints: TAtom;		  // Atom for "_MOTIF_WM_HINTS"
+
+    WindowList: TFPList;
+    function RectToXRect(const ARect: TRect): TXRectangle;
+    function XRectToRect(const ARect: TXRectangle): TRect;
+    function XButtonToMouseButton(const XButton: cint; var MouseButton: TMouseButton): Boolean;
+    function GetXEventName(Event: LongInt): String;
+    function FindWindowByXID(XWindowID: X.TWindow): TWinControl;
     {$endif}
   protected
     {function CreateThemeServices: TThemeServices; override;}

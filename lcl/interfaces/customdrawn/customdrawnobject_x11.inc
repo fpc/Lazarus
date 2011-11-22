@@ -18,6 +18,70 @@
  *****************************************************************************
 }
 
+function TCDWidgetSet.RectToXRect(const ARect: TRect): TXRectangle;
+begin
+  Result.x      := ARect.Left;
+  Result.y      := ARect.Top;
+  Result.width  := ARect.Right - ARect.Left;
+  Result.height := ARect.Bottom - ARect.Top;
+end;
+
+function TCDWidgetSet.XRectToRect(const ARect: TXRectangle): TRect;
+begin
+  Result.Left   := ARect.x;
+  Result.Top    := ARect.y;
+  Result.Right  := ARect.x + ARect.width;
+  Result.Bottom := ARect.y + ARect.height;
+end;
+
+{ Returns True if the button is indeed a mouse button
+  and False if it's the mouse wheel }
+function TCDWidgetSet.XButtonToMouseButton(const XButton: cint; var MouseButton: TMouseButton): Boolean;
+const
+  ButtonTable: array[1..3] of TMouseButton = (mbLeft, mbMiddle, mbRight);
+begin
+  Result := False;
+
+  if (XButton > 3) or (XButton < 1) then Exit;
+
+  MouseButton := ButtonTable[XButton];
+
+  Result := True;
+end;
+
+function TCDWidgetSet.GetXEventName(Event: LongInt): String;
+const
+  EventNames: array[2..34] of String = (
+    'KeyPress', 'KeyRelease', 'ButtonPress', 'ButtonRelease', 'MotionNotify',
+    'EnterNotify', 'LeaveNotify', 'FocusIn', 'FocusOut', 'KeymapNotify',
+    'Expose', 'GraphicsExpose', 'NoExpose', 'VisibilityNotify', 'CreateNotify',
+    'DestroyNotify', 'UnmapNotify', 'MapNotify', 'MapRequest', 'ReparentNotify',
+    'ConfigureNotify', 'ConfigureRequest', 'GravityNotify', 'ResizeRequest',
+    'CirculateNotify', 'CirculateRequest', 'PropertyNotify', 'SelectionClear',
+    'SelectionRequest', 'SelectionNotify', 'ColormapNotify', 'ClientMessage',
+    'MappingNotify');
+begin
+  if (Event >= Low(EventNames)) and (Event <= High(EventNames)) then
+    Result := EventNames[Event]
+  else
+    Result := '#' + IntToStr(Event);
+end;
+
+function TCDWidgetSet.FindWindowByXID(XWindowID: X.TWindow): TWinControl;
+var
+  i: Integer;
+  EndSubSearch: Boolean; { Necessary to quit the recursion }
+begin
+  { Loops througth all windows on the application }
+  for i := 0 to WindowList.Count - 1 do
+  begin
+    Result := TWinControl(WindowList[i]);
+
+    if X.TWindow(Result.Handle) = XWindowID then exit;
+  end;
+  Result := nil;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCDWidgetSet.Create
   Params:  None
@@ -27,6 +91,7 @@
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendCreate;
 begin
+  WindowList := TFPList.Create();
 end;
 
 {------------------------------------------------------------------------------
@@ -38,6 +103,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendDestroy;
 begin
+  WindowList.Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -80,7 +146,7 @@ end;
 procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 var
   XEvent: TXEvent;
-//  WindowEntry: TX11Window;
+  WindowEntry: TWinControl;
   MouseButton: TMouseButton;
   Sum: Integer;
   NewEvent: TXEvent;
@@ -108,31 +174,31 @@ begin
     // According to a comment in X.h, the valid event types start with 2!
     if XEvent._type >= 2 then
     begin
-//      WindowEntry := TX11Window(FindWindowByXID(XEvent.XAny.Window));
+      WindowEntry := FindWindowByXID(XEvent.XAny.Window);
 
-//      if not Assigned(WindowEntry) then
-//      begin
-//        WriteLn('fpGFX/X11: Received X event "', GetXEventName(XEvent._type), '" for unknown window');
-//        continue;
-//      end;
+      if not Assigned(WindowEntry) then
+      begin
+        DebugLn('LCL-CustomDrawn-X11: Received X event "', GetXEventName(XEvent._type), '" for unknown window');
+        Continue;
+      end;
 
 //      WindowEntry.FXEvent := @XEvent;
 
       case XEvent._type of
        X.DestroyNotify:
-         begin
-//           Forms.Remove(WindowEntry);
-         end;
+       begin
+         WindowList.Remove(WindowEntry);
+       end;
        X.KeyPress:
-         begin
-//           WindowEntry.EvKeyPressed(XEvent.xkey.keycode);
-         end;
+       begin
+         //WindowEntry.EvKeyPressed(XEvent.xkey.keycode);
+       end;
        X.KeyRelease:
-         begin
+       begin
 //           WindowEntry.EvKeyReleased(XEvent.xkey.keycode);
-         end;
+       end;
        X.ButtonPress:
-         begin
+       begin
 {           if XButtonToMouseButton(XEvent.xbutton.button, MouseButton) then
             WindowEntry.EvMousePressed(MouseButton,
              Point(XEvent.xbutton.x, XEvent.xbutton.y))
@@ -157,9 +223,9 @@ begin
              WindowEntry.EvMouseWheel(
               Sum, Point(XEvent.xbutton.x, XEvent.xbutton.y));
            end;}
-         end;
+       end;
        X.ButtonRelease:
-         begin
+       begin
            { Release events are only for mouse buttons, and not mouse wheel moviments }
 {           if (XEvent.xbutton.button >= 1) and (XEvent.xbutton.button <= 3) then
            begin
@@ -169,33 +235,33 @@ begin
               MouseButton,
               Point(XEvent.xbutton.x, XEvent.xbutton.y));
            end;}
-         end;
+       end;
        X.EnterNotify:
-         begin
+       begin
 //           WindowEntry.EvMouseEnter(
 //            Point(XEvent.xbutton.x, XEvent.xbutton.y));
-         end;
+       end;
        X.LeaveNotify:
-         begin
+       begin
 //           WindowEntry.EvMouseLeave();
-         end;
+       end;
        X.MotionNotify:
-         begin
+       begin
 //           WindowEntry.EvMouseMove(
 //            Point(XEvent.xbutton.x, XEvent.xbutton.y));
-         end;
+       end;
        X.FocusIn:
-         begin
+       begin
 //           WindowEntry.EvFocusIn();
-         end;
+       end;
        X.FocusOut:
-         begin
+       begin
 //           WindowEntry.EvFocusOut();
-         end;
+       end;
        X.MapNotify:
-         begin
+       begin
 //           WindowEntry.EvShow();
-         end;
+       end;
        X.UnmapNotify:
          begin
 //           WindowEntry.EvHide();
@@ -222,7 +288,7 @@ begin
 //           WindowEntry.Dispatch(XEvent);
          end;
       else
-//        WriteLn('fpGFX/X11: Unhandled X11 event received: ', GetXEventName(XEvent._type));
+        DebugLn('LCL-CustomDrawn-X11: Unhandled X11 event received: ', GetXEventName(XEvent._type));
       end;
 
     end;
