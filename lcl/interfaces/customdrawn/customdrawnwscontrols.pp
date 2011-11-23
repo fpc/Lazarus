@@ -60,7 +60,7 @@ type
 
   TCDWSWinControl = class(TWSWinControl)
   published
-    class procedure AddControl(const AControl: TControl); override;
+    //class procedure AddControl(const AControl: TControl); override;
 
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -159,7 +159,7 @@ implementation
   {$include customdrawnwscontrols_win.inc}
 {$endif}
 {$ifdef CD_Cocoa}
-  {$include customdrawnwscontrols_cocoa.inc}
+  {$include customdrawnwscontrols.inc}
 {$endif}
 {$ifdef CD_X11}
   {$include customdrawnwscontrols_x11.inc}

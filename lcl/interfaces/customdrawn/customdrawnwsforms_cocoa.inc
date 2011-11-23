@@ -43,6 +43,46 @@ begin
   Result := TLCLIntfHandle(win);
 end;
 
+class procedure TCDWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
+begin
+end;
+
+class procedure TCDWSCustomForm.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  if AWinControl.Handle=0 then Exit;
+  {todo: setFrame_display(, true)? }
+  //sf:=NSScreen.mainScreen.frame;
+  LCLObjectExtension(NSObject(AWinControl.Handle)).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
+
+  //LCLToCocoaRect( GetNSRect(ALeft,ATop,AWidth,AHeight), sf, wf);
+  //NSWindow(AWinControl.Handle).setFrame_display(wf, false);
+  //NSWindow(AWinControl.Handle).setFrame_display( GetNSRect(ALeft,ATop, AWidth, AHeight), false);
+  //NSWindow(AWinControl.Handle).setFrameTopLeftPoint( GetNSPoint(ALeft, ATop));
+end;
+
+class procedure TCDWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
+                               const ABorderIcons: TBorderIcons);
+begin
+end;
+
+class procedure TCDWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
+                         const AFormBorderStyle: TFormBorderStyle);
+begin
+end;
+
+class procedure TCDWSCustomForm.SetIcon(const AForm: TCustomForm; const Small, Big: HICON);
+begin
+end;
+
+class procedure TCDWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar);
+begin
+end;
+
+class procedure TCDWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+begin
+end;
+
 class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
   win : NSWindow;
@@ -106,19 +146,5 @@ begin
   x:=0;y:=0;
   LCLObjectExtension(NSObject(AWinControl.Handle)).lclLocalToScreen(x,y);
   MoveRect(ARect, x,y);
-end;
-
-class procedure TCDWSCustomForm.SetBounds(const AWinControl: TWinControl;
-  const ALeft, ATop, AWidth, AHeight: Integer);
-begin
-  if AWinControl.Handle=0 then Exit;
-  {todo: setFrame_display(, true)? }
-  //sf:=NSScreen.mainScreen.frame;
-  LCLObjectExtension(NSObject(AWinControl.Handle)).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
-
-  //LCLToCocoaRect( GetNSRect(ALeft,ATop,AWidth,AHeight), sf, wf);
-  //NSWindow(AWinControl.Handle).setFrame_display(wf, false);
-  //NSWindow(AWinControl.Handle).setFrame_display( GetNSRect(ALeft,ATop, AWidth, AHeight), false);
-  //NSWindow(AWinControl.Handle).setFrameTopLeftPoint( GetNSPoint(ALeft, ATop));
 end;
 
