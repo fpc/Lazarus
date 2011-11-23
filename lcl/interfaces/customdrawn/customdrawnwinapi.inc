@@ -657,51 +657,47 @@ begin
   end;
 
   Result := HBRUSH(QtBrush);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function:  CreatePenIndirect
   Params:  none
   Returns: HPEN
  ------------------------------------------------------------------------------}
-
-function TQtWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
+function TCDWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 var
-  QtPen: TQtPen;
-  color: TQColor;
+  lPen: TFPCustomPen;
 begin
-  Result := 0;
-  QtPen := TQtPen.Create(True);
-  with LogPen do
-  begin
-    case lopnStyle and PS_STYLE_MASK of
-      PS_SOLID: QtPen.setStyle(QtSolidLine);
-      PS_DASH: QtPen.setStyle(QtDashLine);
-      PS_DOT: QtPen.setStyle(QtDotLine);
-      PS_DASHDOT: QtPen.setStyle(QtDashDotLine);
-      PS_DASHDOTDOT: QtPen.setStyle(QtDashDotDotLine);
-      PS_NULL: QtPen.setStyle(QtNoPen);
-    else
-      QtPen.setStyle(QtSolidLine);
-    end;
+  {$ifdef VerboseWinAPI}
+    DebugLn(Format(':>[TCDWidgetSet.CreatePenIndirect]  Style: %d, Color: %8x',
+      [LogPen.lopnStyle, LogPen.lopnColor]));
+  {$endif}
 
-    if lopnWidth.X <= 0 then
-      QtPen.setCosmetic(True)
-    else
-    begin
-      QtPen.setCosmetic(False);
-      QtPen.setWidth(lopnWidth.X);
-    end;
+  lPen := TFPCustomPen.Create;
+  Result := HBRUSH(lPen);
+  lPen.FPColor := TColorToFPColor(LogPen.lopnColor);
 
-    QPen_Color(QtPen.FHandle, @Color);
-    ColorRefToTQColor(ColorToRGB(TColor(lopnColor)), Color);
-    QPen_setColor(QtPen.FHandle, @Color);
+  case LogPen.lopnStyle and PS_STYLE_MASK of
+    PS_SOLID:     lPen.Style := psSolid;
+    PS_DASH:      lPen.Style := psDash;
+    PS_DOT:       lPen.Style := psDot;
+    PS_DASHDOT:   lPen.Style := psDashDot;
+    PS_DASHDOTDOT:lPen.Style := psDashDotDot;
+    PS_NULL:      lPen.Style := psClear;
+  else
+    lPen.Style := psSolid;
   end;
 
-  Result := HPEN(QtPen);
+(*  if lopnWidth.X <= 0 then
+      QtPen.setCosmetic(True)
+    else
+    begin*)
+//      QtPen.setCosmetic(False);
+
+  lPen.Width := LogPen.lopnWidth.X;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: CreatePolygonRgn
   Params:  none
   Returns: HRGN
@@ -815,30 +811,30 @@ begin
   aObject := TObject(GDIObject);
 
 (*  if (aObject is TQtResource) and TQtResource(aObject).FShared then
-    Exit(True);
+    Exit(True);*)
 
   {------------------------------------------------------------------------------
     Font
    ------------------------------------------------------------------------------}
-  if aObject is TQtFont then
+  if aObject is TFPCustomFont then
   begin
-    {$ifdef VerboseQtWinAPI}
+    {$ifdef VerboseWinAPI}
       ObjType := 'Font';
     {$endif}
   end
   {------------------------------------------------------------------------------
     Brush
    ------------------------------------------------------------------------------}
-  else if aObject is TQtBrush then
+  else if aObject is TFPCustomBrush then
   begin
-    {$ifdef VerboseQtWinAPI}
+    {$ifdef VerboseWinAPI}
       ObjType := 'Brush';
     {$endif}
   end
   {------------------------------------------------------------------------------
     Image
    ------------------------------------------------------------------------------}
-  else if aObject is TQtImage then
+(*  else if aObject is TQtImage then
   begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Image';
@@ -863,31 +859,30 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Region';
     {$endif}
-  end
-
+  end               *)
   {------------------------------------------------------------------------------
     Pen
    ------------------------------------------------------------------------------}
-  else if aObject is TQtPen then
+  else if aObject is TFPCustomPen then
   begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Pen';
     {$endif}
   end;
 
-  if AObject is TQtResource then
+(*  if AObject is TQtResource then
     if TQtResource(AObject).Owner <> nil then
     begin
       // this is an owned (default) resource, let owner free it
       DebugLn('WARNING: Trying to Free a default resource');
       AObject := nil;
-    end;
+    end;*)
 
   if AObject <> nil then
   begin
     //WriteLn('Delete object: ', PtrUInt(AObject));
     FreeThenNil(AObject);
-  end;*)
+  end;
 
   Result := True;
 
@@ -5282,6 +5277,7 @@ end;*)
 function TCDWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 var
   aObject: TObject;
+  lPen: TFPCustomPen absolute AObject;
   lBrush: TFPCustomBrush absolute AObject;
   lOrigBrush: TFPCustomBrush;
   {$ifdef VerboseWinAPI}
@@ -5325,16 +5321,15 @@ begin
 
     TQtDeviceContext(DC).setFont(TQtFont(aObject));
   end
-  else if aObject is TQtPen then
+  else*) if aObject is TFPCustomPen then
   begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Pen'      ;
-    {$endif}
-    result := HGDIOBJ(TQtDeviceContext(DC).pen);
+    {$ifdef VerboseWinAPI}ObjType := 'Pen';{$endif}
 
-    TQtDeviceContext(DC).setPen(TQtPen(aObject));
+    Result := HGDIOBJ(TLazCanvas(DC).AssignedPen);
+    TLazCanvas(DC).AssignPenData(lPen); // := doesn't work
+    TLazCanvas(DC).AssignedPen := lPen;
   end
-  else*) if aObject is TFPCustomBrush then
+  else if aObject is TFPCustomBrush then
   begin
     {$ifdef VerboseWinAPI}ObjType := 'Brush';{$endif}
 
