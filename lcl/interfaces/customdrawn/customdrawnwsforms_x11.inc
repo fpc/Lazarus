@@ -2,9 +2,12 @@
 
 { TCDWSCustomForm }
 
-class procedure TCDWSCustomForm.BackendAddChildRegionToForm(const AForm: TCustomForm; ARegion: TLazRegionWithChilds);
+class procedure TCDWSCustomForm.BackendAddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
+var
+  lWindowInfo: TX11WindowInfo;
 begin
-
+  lWindowInfo := TX11WindowInfo(AForm.Handle);
+  lWindowInfo.CDWinControl := ACDWinControl;
 end;
 
 class procedure TCDWSCustomForm.UpdateMotifWMHints(const AWinControl: TWinControl; CanMaximize: Boolean);
@@ -729,7 +732,7 @@ begin
   Attr.Colormap := Colormap;
 
   SizeHints.flags     := XUtil.PSize;
-  SizeHints.x         := 0;
+  SizeHints.x         := 0; // If it doesnt start with zero, setting bounds later on fails, no idea why
   SizeHints.y         := 0;
   SizeHints.width     := 200;
   SizeHints.height    := 200;
@@ -773,7 +776,7 @@ begin
   if lWindow = 0 then
     raise Exception.Create('[TCDWSCustomForm.CreateHandle] Window creation failed');
 
-  XSelectInput(CDWidgetSet.FDisplay, Result, KeyPressMask or KeyReleaseMask
+  XSelectInput(CDWidgetSet.FDisplay, lWindow, KeyPressMask or KeyReleaseMask
     or ButtonPressMask or ButtonReleaseMask
     or EnterWindowMask or LeaveWindowMask
     or ButtonMotionMask or PointerMotionMask
@@ -785,16 +788,16 @@ begin
 
 //  if (not (woX11SkipWMHints in WindowOptions)) and (woWindow in WindowOptions) then
 //  begin
-    XSetStandardProperties(CDWidgetSet.FDisplay, Result, nil, nil, 0,
+    XSetStandardProperties(CDWidgetSet.FDisplay, lWindow, nil, nil, 0,
      argv, argc, @SizeHints);
 
-    XSetWMNormalHints(CDWidgetSet.FDisplay, Result, @SizeHints);
+    XSetWMNormalHints(CDWidgetSet.FDisplay, lWindow, @SizeHints);
 
     WindowHints.flags := WindowGroupHint;
     WindowHints.window_group := CDWidgetSet.LeaderWindow;
-    XSetWMHints(CDWidgetSet.FDisplay, Result, @WindowHints);
+    XSetWMHints(CDWidgetSet.FDisplay, lWindow, @WindowHints);
 
-    XChangeProperty(CDWidgetSet.FDisplay, Result, CDWidgetSet.ClientLeaderAtom, 33, 32,
+    XChangeProperty(CDWidgetSet.FDisplay, lWindow, CDWidgetSet.ClientLeaderAtom, 33, 32,
      PropModeReplace, @CDWidgetSet.LeaderWindow, 1);
 
      // We want to get a Client Message when the user tries to close this window
@@ -804,7 +807,7 @@ begin
      CDWidgetSet.FWMDeleteWindow := XInternAtom(CDWidgetSet.FDisplay, 'WM_DELETE_WINDOW', False);
 
      // send close event instead of quitting the whole application...
-     XSetWMProtocols(CDWidgetSet.FDisplay, Result, @CDWidgetSet.FWMDeleteWindow, 1);
+     XSetWMProtocols(CDWidgetSet.FDisplay, lWindow, @CDWidgetSet.FWMDeleteWindow, 1);
 //   end;
 
   { Child windows do not appear until parent (lParentHandle) is mapped }
@@ -819,7 +822,7 @@ begin
   lWindowInfo := TX11WindowInfo.Create;
   lWindowInfo.Window := lWindow;
   lWindowInfo.LCLControl := AWinControl;
-  XGetWindowAttributes(CDWidgetSet.FDisplay, Result, @lWindowInfo.Attr);
+  XGetWindowAttributes(CDWidgetSet.FDisplay, lWindow, @lWindowInfo.Attr);
   lWindowInfo.Colormap := XDefaultColormap(CDWidgetSet.FDisplay, XDefaultScreen(CDWidgetSet.FDisplay));
   lWindowInfo.ColorDepth := lWindowInfo.Attr.depth;
   CreateX11Canvas(lWindowInfo);

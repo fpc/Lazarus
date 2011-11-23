@@ -18,7 +18,7 @@
  *****************************************************************************
 }
 
-function TCDWidgetSet.FindWindowByXID(XWindowID: X.TWindow; out AIndex: Integer): TWinControl;
+function TCDWidgetSet.FindWindowByXID(XWindowID: X.TWindow; out AWindowInfo: TX11WindowInfo): TWinControl;
 var
   i: Integer;
   EndSubSearch: Boolean; { Necessary to quit the recursion }
@@ -27,7 +27,7 @@ begin
   {$ifdef VerboseFindX11Window}
   DbgOut(Format('[TCDWidgetSet.FindWindowByXID] XWindowID=%x', [PtrInt(XWindowID)]));
   {$endif}
-  AIndex := -1;
+  AWindowInfo := nil;
   Result := nil;
 
   { Loops througth all windows on the application }
@@ -35,7 +35,7 @@ begin
   begin
     lWindowInfo := TX11WindowInfo(Screen.Forms[i].Handle);
     Result := lWindowInfo.LCLControl;
-    AIndex := i;
+    AWindowInfo := lWindowInfo;
 
     {$ifdef VerboseFindX11Window}
     DbgOut(Format(' Item %d Window=%x', [i, PtrInt(lWindowInfo.Window)]));
@@ -57,7 +57,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendCreate;
 begin
-  WindowList := TFPList.Create();
+
 end;
 
 {------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendDestroy;
 begin
-  WindowList.Free;
+
 end;
 
 {------------------------------------------------------------------------------
@@ -116,7 +116,6 @@ var
   Sum: Integer;
   NewEvent: TXEvent;
   DoBreakRun: Boolean = False;
-  lWindowListIndex: Integer;
   CurWindowInfo: TX11WindowInfo;
 begin
   while (DoBreakRun = False) do
@@ -136,7 +135,7 @@ begin
     // According to a comment in X.h, the valid event types start with 2!
     if XEvent._type >= 2 then
     begin
-      WindowEntry := FindWindowByXID(XEvent.XAny.Window, lWindowListIndex);
+      WindowEntry := FindWindowByXID(XEvent.XAny.Window, CurWindowInfo);
 
       if not Assigned(WindowEntry) then
       begin
@@ -145,13 +144,12 @@ begin
         Continue;
       end;
 
-      CurWindowInfo := TX11WindowInfo(WindowList.Items[lWindowListIndex]);
       CurWindowInfo.XEvent := @XEvent;
 
       case XEvent._type of
        X.DestroyNotify:
        begin
-         WindowList.Delete(lWindowListIndex);
+         //WindowList.Delete(lWindowListIndex);
        end;
        X.KeyPress:
        begin

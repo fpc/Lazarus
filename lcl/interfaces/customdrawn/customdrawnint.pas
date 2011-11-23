@@ -130,7 +130,7 @@ type
     FWMDeleteWindow: TAtom;	  // Atom for "WM_DELETE_WINDOW"
     FWMHints: TAtom;		  // Atom for "_MOTIF_WM_HINTS"
 
-    function FindWindowByXID(XWindowID: X.TWindow; out AIndex: Integer): TWinControl;
+    function FindWindowByXID(XWindowID: X.TWindow; out AWindowInfo: TX11WindowInfo): TWinControl;
     {$endif}
   protected
     {function CreateThemeServices: TThemeServices; override;}

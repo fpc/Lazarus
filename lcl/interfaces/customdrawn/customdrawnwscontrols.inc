@@ -84,14 +84,15 @@ end;
 class function TCDWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  lRegion: TLazRegionWithChilds;
+  lCDWinControl: TCDWinControl;
 begin
-  lRegion := TLazRegionWithChilds.Create;
-  lRegion.AddRectangle(Bounds(AParams.Left, AParams.Right, AParams.Width, AParams.Height));
-  BackendAddChildRegionToForm(AWinControl, lRegion);
-  //AddRectangle(ARect: TRect);
-  //property ClipRect : TRect read GetClipRect write SetClipRect;
-  //property Clipping : boolean read GetClipping write SetClipping;
+  lCDWinControl := TCDWinControl.Create;
+  lCDWinControl.WinControl := AWinControl;
+  lCDWinControl.Region := TLazRegionWithChilds.Create;
+  lCDWinControl.Region.AddRectangle(Bounds(AWinControl.Left, AWinControl.Top, AParams.Width, AParams.Height));
+  lCDWinControl.Region.IsSimpleRectRegion := True;
+
+  TCDWSCustomForm.BackendAddCDWinControlToForm(TCustomForm(AWinControl.Parent), lCDWinControl);
 end;
 
 class procedure TCDWSWinControl.DestroyHandle(const AWinControl: TWinControl);

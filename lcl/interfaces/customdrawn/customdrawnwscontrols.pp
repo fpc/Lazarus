@@ -35,7 +35,8 @@ uses
   Controls, LCLType, LCLProc, Forms, Graphics,
   lazcanvas, lazregions,
   // Widgetset
-  InterfaceBase, WSProc, WSControls, WSLCLClasses, customdrawnint;
+  InterfaceBase, WSProc, WSControls, WSLCLClasses, customdrawnint,
+  customdrawnproc;
 
 type
 
@@ -157,6 +158,8 @@ procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreate
 
 implementation
 
+uses customdrawnwsforms;
+
 {$ifdef CD_Windows}
   {$include customdrawnwscontrols_win.inc}
 {$endif}
@@ -164,7 +167,7 @@ implementation
   {$include customdrawnwscontrols.inc}
 {$endif}
 {$ifdef CD_X11}
-  {$include customdrawnwscontrols_x11.inc}
+  {$include customdrawnwscontrols.inc}
 {$endif}
 
 end.

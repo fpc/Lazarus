@@ -9,12 +9,18 @@ uses
   Types, Classes, SysUtils,
   fpimage, fpcanvas,
   // Custom Drawn Canvas
-  IntfGraphics, lazcanvas,
+  IntfGraphics, lazcanvas, lazregions,
   //
   GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc;
 
 type
   TUpdateLazImageFormat = (clfRGB24, clfBGR24, clfBGRA32);
+
+  TCDWinControl = class
+  public
+    Region: TLazRegionWithChilds;
+    WinControl: TWinControl;
+  end;
 
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat);

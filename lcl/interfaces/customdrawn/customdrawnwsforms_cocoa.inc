@@ -2,7 +2,7 @@
 
 { TCDWSCustomForm }
 
-class procedure TCDWSCustomForm.BackendAddChildRegionToForm(const AForm: TCustomForm; ARegion: TLazRegionWithChilds);
+class procedure TCDWSCustomForm.BackendAddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
 begin
 
 end;

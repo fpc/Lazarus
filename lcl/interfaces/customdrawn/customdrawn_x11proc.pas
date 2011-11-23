@@ -12,13 +12,15 @@ uses
   // Custom Drawn Canvas
   IntfGraphics, lazcanvas,
   //
-  GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc;
+  GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc,
+  customdrawnproc;
 
 type
   TX11WindowInfo = class
   public
     Window: X.TWindow;
     LCLControl: TWinControl;
+    CDWinControl: TCDWinControl;
     // Used and valid only during event processing
     XEvent: PXEvent;
     // X11 extra objects

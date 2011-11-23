@@ -77,7 +77,7 @@ type
 
   TCDWSCustomForm = class(TWSCustomForm)
   public
-    class procedure BackendAddChildRegionToForm(const AForm: TCustomForm; ARegion: TLazRegionWithChilds);
+    class procedure BackendAddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
     {$ifdef CD_Windows}
     class function CalcBorderIconsFlags(const AForm: TCustomForm): dword;
     class function CalcBorderIconsFlagsEx(const AForm: TCustomForm): DWORD;
