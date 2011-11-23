@@ -1,0 +1,2140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fpdoc-descriptions>
+<package name="fcl">
+
+<!--
+  ====================================================================
+    fpvectorial
+  ====================================================================
+-->
+
+<module name="fpvectorial">
+<short>A vectorial graphics library</short>
+<descr>Fpvectorial allows one to create, modify, save and render vectorial images. It supports many formats,
+supports paths including Bézier curves and straight lines, supports pen, brush and fonts, supports
+geometrical, textual and some engineering elements (for example dimension measures).
+FPVectorial is almost entirely 2D, but it has a minimal 3D support which was added for use in
+milling machines to signal when the drill should go up and down. Except for this use
+case, FPVectorial should be used as a 2D library.
+See also the website wiki.lazarus.freepascal.org/fpvectorial for more help about this unit
+</descr>
+
+<!-- enumeration type Visibility: default -->
+<element name="TvVectorialFormat">
+<short>Indicates a vectorial format</short>
+<descr>Indicates a vectorial format
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TvVectorialFormat.vfPDF">
+<short>Portable Document Format</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TvVectorialFormat.vfSVG">
+<short>SVG from W3C</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TvVectorialFormat.vfCorelDrawCDR">
+<short>CorelDraw CDR</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TvVectorialFormat.vfWindowsMetafileWMF">
+<short>Windows Metafile</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TvVectorialFormat.vfDXF">
+<short>Document eXchange Format from AutoCad</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TvVectorialFormat.vfPostScript">
+<short>PostScript</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TvVectorialFormat.vfEncapsulatedPostScript">
+<short>Encapsulated PostScript</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TvVectorialFormat.vfGCodeAvisoCNCPrototipoV5">
+<short>G-Code for a particular machine</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TvVectorialFormat.vfGCodeAvisoCNCPrototipoV6">
+<short>G-Code for a particular machine</short>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="STR_PDF_EXTENSION">
+<short>The extension of PDF files</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="STR_POSTSCRIPT_EXTENSION">
+<short>The extension of PostScript files</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="STR_SVG_EXTENSION">
+<short>The extension of SVG files</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="STR_CORELDRAW_EXTENSION">
+<short>The extension of CorelDraw files</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="STR_WINMETAFILE_EXTENSION">
+<short>The extension of Windows metafiles</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="STR_AUTOCAD_EXCHANGE_EXTENSION">
+<short>The extension of AutoCad Data eXchange Format (DXF) files</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="STR_ENCAPSULATEDPOSTSCRIPT_EXTENSION">
+<short>The extension of Encapsulated PostScript files</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TvPen">
+<short>A vectorial drawing Pen</short>
+<descr>Utilized to draw lines
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TvPen.Color">
+<short>The color of the Pen</short>
+<descr>The color of the Pen
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TvPen.Style">
+<short>The Pen style</short>
+<descr>The Pen style
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TvPen.Width">
+<short>The Pen Width</short>
+<descr>Zero will be ignored as drawn as 1. Use the style psClear to make invisible lines instead.
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TvBrush">
+<short>A vectorial drawing Brush</short>
+<descr>Utilized to fill areas
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TvBrush.Color">
+<short>The color of the brush</short>
+<descr>The color of the brush
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TvBrush.Style">
+<short>The style of the brush</short>
+<descr>The style of the brush
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TvFont">
+<short>A vectorial drawing Font</short>
+<descr>A vectorial drawing Font
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TvFont.Color">
+<short>The color of the font</short>
+<descr>The color of the font
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TvFont.Size">
+<short>The size in points of the font</short>
+<descr>The size in points of the font
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TvFont.Name">
+<short>The name of the font</short>
+<descr>The name of the font. This is passed without changes to the LCL when rendering
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TvFont.Orientation">
+<short>The orientation of the font</short>
+<descr>Font orientation is measured in degrees and uses the
+      same direction as the LCL TFont.orientation, which is counter-clockwise.
+      Zero is the normal, horizontal, orientation, directed to the right.
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="T3DPoint">
+<short>A vectorial image Point</short>
+<descr>FPVectorial is really a 2D library, but a minimal 3D support is available
+for use in milling machines to signal when to take the drill up and down. For this
+reason to main point type is 3D.
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="T3DPoint.X">
+<short>The X coordinate of the point</short>
+<descr>Measured in milimiters</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="T3DPoint.Y">
+<short>The Y coordinate of the point</short>
+<descr>Measured in milimiters</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="T3DPoint.Z">
+<short>The Z coordinate of the point</short>
+<descr>Measured in milimiters</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TPathSegment">
+<short>A generic path segment</short>
+<descr>The coordinates in fpvectorial are given in millimiters and
+    the starting point is in the bottom-left corner of the document.
+    The X grows to the right and the Y grows to the top.
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TPathSegment.SegmentType">
+<short>The type of the segment</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TPathSegment.Previous">
+<short>Pointer to the previous segment in the linked list or nil if it is the first segment.</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TPathSegment.Next">
+<short>Pointer to the next segment in the linked list or nil if it is the last segment.</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="T2DSegment">
+<short>A generic 2D segment</short>
+<descr>In a 2D segment, the X and Y coordinates represent always the
+    final point of the segment, being that it starts where the previous
+    segment ends. The exception is for the first segment of all, which simply
+    holds the starting point for the drawing and should always be of the type
+    stMoveTo.
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T2DSegment.X">
+<short>The X coordinates in milimiters of the end of the segment</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T2DSegment.Y">
+<short>The Y coordinates in milimiters of the end of the segment</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="T2DSegmentWithPen">
+<short>This is a 2D line segment which overrides the Pen of the path so that it can have its own pen color and pen stype</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T2DSegmentWithPen.Pen">
+<short>The Pen of a T2DSegmentWithPen</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="T2DBezierSegment">
+<short>A 2D Bézier segment</short>
+<descr>In Bezier segments, we remain using the X and Y coordinates for the ending point.
+    The starting point is where the previous segment ended, so that the intermediary
+    bezier control points are [X2, Y2] and [X3, Y3].
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T2DBezierSegment.X2">
+<short>The X coodinate of the first control point of the Bézier</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T2DBezierSegment.Y2">
+<short>The Y coodinate of the first control point of the Bézier</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T2DBezierSegment.X3">
+<short>The X coodinate of the second control point of the Bézier</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T2DBezierSegment.Y3">
+<short>The Y coodinate of the second control point of the Bézier</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="T3DSegment">
+<short>A 3D line segment</short>
+<descr>This class is provided only for 3D documents, don't use it
+to create 2D documents. In a 3D segment, the X, Y and Z coordinates represent always the
+    final point of the segment, being that it starts where the previous
+    segment ends. The exception is for the first segment of all, which simply
+    holds the starting point for the drawing and should always be of the type
+    stMoveTo.
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T3DSegment.X">
+<short>The X coordinates in milimiters of the end of the segment</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T3DSegment.Y">
+<short>The Y coordinates in milimiters of the end of the segment</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T3DSegment.Z">
+<short>The Z coordinates in milimiters of the end of the segment</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="T3DBezierSegment">
+<short>A 3D Bézier</short>
+<descr>This class is provided only for usage in milling machines, don't use it
+for actually creating 3D documents as fpvectorial is currently a 2D library.
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T3DBezierSegment.X2">
+<short>The X coodinate of the first control point of the Bézier</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T3DBezierSegment.Y2">
+<short>The Y coodinate of the first control point of the Bézier</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T3DBezierSegment.Z2">
+<short>The Z coodinate of the first control point of the Bézier</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T3DBezierSegment.X3">
+<short>The X coodinate of the second control point of the Bézier</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T3DBezierSegment.Y3">
+<short>The Y coodinate of the second control point of the Bézier</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="T3DBezierSegment.Z3">
+<short>The Z coodinate of the second control point of the Bézier</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TvEntity">
+<short>An element of a vectorial document</short>
+<descr>All elements should derive from TvEntity, regardless of whatever properties
+    they might contain.
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvEntity.Pen">
+<short>The Pen of the entity</short>
+<descr>The global Pen for the entire entity. In the case of paths, individual
+        elements might be able to override this setting.
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvEntity.Brush">
+<short>The Brush of the entity</short>
+<descr>The global Brush for the entire entity. In the case of paths, individual
+        elements might be able to override this setting.
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TvEntity.Create">
+<short>Creates a new entity</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TvClipMode">
+<short>Describes the clip modes available for vectorial images</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TvClipMode.vcmNonzeroWindingRule">
+<short>This is an algorithm to determine which regions of a path are inside it or not. This is used to determine which parts of the drawing are inside the clip path or not. See http://en.wikipedia.org/wiki/Nonzero-rule for details</short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TvClipMode.vcmEvenOddRule">
+<short>This is an algorithm to determine which regions of a path are inside it or not. This is used to determine which parts of the drawing are inside the clip path or not. See http://en.wikipedia.org/wiki/Even-odd_rule for details</short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TPath">
+<short>A path entity</short>
+<descr>The most important type of entity. It contains a number of segments which are stored in a linked list.
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TPath.Len">
+<short>The number of segments in the Path</short>
+<descr>
+</descr>
+<seealso>
+  <link id="TPath.Points"/>
+  <link id="TPath.PointsEnd"/>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TPath.Points">
+<short>Pointer to the first segment of the path.</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+  <link id="TPath.Len"/>
+  <link id="TPath.PointsEnd"/>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TPath.PointsEnd">
+<short>Pointer to the last segment of the path</short>
+<descr>
+</descr>
+<seealso>
+  <link id="TPath.Len"/>
+  <link id="TPath.Points"/>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TPath.CurPoint">
+<short>This field is used internally by TPath.PrepareForSequentialReading and TPath.Next. Dont use it directly.</short>
+<descr>
+</descr>
+<seealso>
+  <link id="TPath.PrepareForSequentialReading"/>
+  <link id="TPath.Next"/>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TPath.ClipPath">
+<short>The clipping path associated with a path.</short>
+<descr>If a path has a clipping path then only its parts which are inside the clipping path will be drawn. See TvClipMode for more details.
+</descr>
+<seealso>
+  <link id="TPath.ClipMode"/>
+  <link id="TvClipMode"/>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TPath.ClipMode">
+<short>The clipping mode of a path</short>
+<descr>See TvClipMode for more details
+</descr>
+<seealso>
+  <link id="TPath.ClipPath"/>
+  <link id="TvClipMode"/>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TPath.Assign">
+<short>Deletes all contents of this path and copies all contents from another path</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TPath.Assign.ASource">
+<short>The path to be copied</short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="TPath.PrepareForSequentialReading">
+<short>Starts a sequential reading of all segments in a path</short>
+<descr>To obtain in sequence all segments of a path first call MyPath.PrepareForSequentialReading and start a for loop with the condition "for j := 0 to MyPath.Len - 1 do" and in the beginning of the loop call "CurSegment := TPathSegment(CurPath.Next());"
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="TPath.CurPoint"/>
+  <link id="TPath.Next"/>
+</seealso>
+</element>
+
+<!-- function Visibility: default -->
+<element name="TPath.Next">
+<short>Used for reading segments in sequence</short>
+<descr>See TPath.PrepareForSequentialReading for more information
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="TPath.PrepareForSequentialReading"/>
+  <link id="TPath.Next"/>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TPath.Next.Result">
+<short>The segment obtained or nil if no more segments are available</short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TvText">
+<short>A text entity</short>
+<descr>A text entity, rendering using a TvFont
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="TvFont"/>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvText.X">
+<short>The X coordinate in milimiters of the bottom-left corner of a text</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvText.Y">
+<short>The Y coordinate in milimiters of the bottom-left corner of a text</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvText.Z">
+<short>The Z coordinate in milimiters of the bottom-left corner of a text</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvText.Value">
+<short>The text itself</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvText.Font">
+<short>The font associated with the text</short>
+<descr>
+</descr>
+<seealso>
+  <link id="TvFont"/>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TvCircle">
+<short>A circle entity</short>
+<descr>The Angles are measured in degrees in relation to the positive X axis
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvCircle.Radius">
+<short>The Radius of the circle</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TvCircularArc">
+<short>A circular arc entity</short>
+<descr>The Angles are measured in degrees in relation to the positive X axis
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvCircularArc.Radius">
+<short>The radius of the circular arc</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvCircularArc.StartAngle">
+<short>The start angle of the arc</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvCircularArc.EndAngle">
+<short>The end angle of the arc</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TvEllipse">
+<short>An ellipse entity</short>
+<descr>The Angles are measured in degrees in relation to the positive X axis
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvEllipse.MajorHalfAxis">
+<short>The length in milimiters of the major half axis of the ellipse</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvEllipse.MinorHalfAxis">
+<short>The length in milimiters of the minor half axis of the ellipse</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvEllipse.Angle">
+<short>The rotation angle of the ellipse in degrees in relation to the positive X axis</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TvAlignedDimension">
+<short>An entity which represents aligned dimensions</short>
+<descr>An entity which represents aligned dimensions
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvAlignedDimension.BaseLeft">
+<short>The position of the left base of the dimension</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvAlignedDimension.BaseRight">
+<short>The position of the right base of the dimension</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvAlignedDimension.DimensionLeft">
+<short>The position of the left text area of the dimension</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvAlignedDimension.DimensionRight">
+<short>The position of the right text area of the dimension</short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TvRasterImage">
+<short>An entity which contains a raster image</short>
+<descr>Vectorial images can contain raster images inside them and this entity
+   represents this.
+
+   If the Width and Height differ from the same data in the image, then
+   the raster image will be stretched.
+
+   Note that TFPCustomImage does not implement a storage, so the property
+   RasterImage should be filled with either a FPImage.TFPMemoryImage or with
+   a TLazIntfImage. The property RasterImage might be nil.
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvRasterImage.RasterImage">
+<short>A raster image element</short>
+<descr>Raster images can be inserted inside vectorial documented
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvRasterImage.Top">
+<short>The top coordinate in milimiters of the image in the drawing</short>
+<descr>
+</descr>
+<seealso>
+  <link id="TvRasterImage.Left"/>
+  <link id="TvRasterImage.Height"/>
+  <link id="TvRasterImage.Width"/>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvRasterImage.Left">
+<short>The Left coordinate in milimiters of the image in the drawing</short>
+<descr>
+</descr>
+<seealso>
+  <link id="TvRasterImage.Top"/>
+  <link id="TvRasterImage.Height"/>
+  <link id="TvRasterImage.Width"/>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvRasterImage.Width">
+<short>The Width with which render the raster image</short>
+<descr>
+</descr>
+<seealso>
+  <link id="TvRasterImage.Top"/>
+  <link id="TvRasterImage.Left"/>
+  <link id="TvRasterImage.Height"/>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvRasterImage.Height">
+<short>The Height with which render the raster image</short>
+<descr>
+</descr>
+<seealso>
+  <link id="TvRasterImage.Top"/>
+  <link id="TvRasterImage.Left"/>
+  <link id="TvRasterImage.Width"/>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TvVectorialDocument">
+<short>The main class from fpvectorial representing a vectorial document</short>
+<descr>The main class from fpvectorial representing a vectorial document
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvVectorialDocument.Width">
+<short>The width of the document</short>
+<descr>Measured in milimiters
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvVectorialDocument.Height">
+<short>The height of the document</short>
+<descr>Measured in milimiters
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvVectorialDocument.Name">
+<short>The title of the vectorial document</short>
+<descr>The title of the vectorial document
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvVectorialDocument.ZoomLevel">
+<short>The zoom level in which the document is currently displayed</short>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvVectorialDocument.SelectedvElement">
+<short>The currently selected element</short>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TvVectorialDocument.Create">
+<short>Constructor</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TvVectorialDocument.Destroy">
+<short>Destructor</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.Assign">
+<short>Copies all data from another vectorial document</short>
+<descr>Any previously existing data in this object will be lost.
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.Assign.ASource">
+<short>The document to be copied</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.AssignTo">
+<short>Copies itself to another instance of this class</short>
+<descr>Copies itself to another instance of this class
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.AssignTo.ADest">
+<short>The destination of the copy</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.WriteToFile">
+<short>Writes the document to a file.</short>
+<descr>Writes the document to a file.
+
+  If the file doesn't exist, it will be created.
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="ReadFromFile"/>
+  <link id="WriteToStream"/>
+  <link id="WriteToStrings"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.WriteToFile.AFileName">
+<short>The full path to the destination file</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.WriteToFile.AFormat">
+<short>The destination file format</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.WriteToStream">
+<short>Writes the document to a stream</short>
+<descr>Writes the document to a stream
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="ReadFromStream"/>
+  <link id="WriteToFile"/>
+  <link id="WriteToStrings"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.WriteToStream.AStream">
+<short>The destionation stream, should be already instantiated</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.WriteToStream.AFormat">
+<short>The destination file format</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.WriteToStrings">
+<short>Writes a vectorial document to a TStrings</short>
+<descr>Only use this together with textual formats, never binary formats.
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="ReadFromStrings"/>
+  <link id="WriteToFile"/>
+  <link id="WriteToStream"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.WriteToStrings.AStrings">
+<short>The destination TStrings instance</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.WriteToStrings.AFormat">
+<short>The destination file format</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.ReadFromFile">
+<short>Reads the document from a file</short>
+<descr>Reads the document from a file.
+  Any current contents in this object will be removed.
+  The variant without the parameter AFormat auto-detects the format based on the
+  extension and other factors.
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="WriteToFile"/>
+  <link id="ReadFromStream"/>
+  <link id="ReadFromStrings"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.ReadFromFile.AFileName">
+<short>The full path of the file to read</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.ReadFromFile.AFormat">
+<short>The source file format</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.ReadFromStream">
+<short>Reads the document from a stream</short>
+<descr>Reads the document from a stream.
+
+  Any current contents in this object will be removed.
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="WriteToStream"/>
+  <link id="ReadFromFile"/>
+  <link id="ReadFromStrings"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.ReadFromStream.AStream">
+<short>The source TStream instance</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.ReadFromStream.AFormat">
+<short>The source file format</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.ReadFromStrings">
+<short>Reads a vectorial document from a TStrings</short>
+<descr>Not all readers might support this. This should only be used for reading
+textual, human-readable, formats, for example: SVG, DXF, G-Code, PDF, PostScript, Encapsulated PostScript.
+Never use this routine to reading binary formats.
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="WriteToStrings"/>
+  <link id="ReadFromFile"/>
+  <link id="ReadFromStream"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.ReadFromStrings.AStrings">
+<short>The source TStrings instance</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.ReadFromStrings.AFormat">
+<short>The source file format</short>
+</element>
+
+<!-- class function Visibility: default -->
+<element name="TvVectorialDocument.GetFormatFromExtension">
+<short>Returns the vectorial file format from a filename</short>
+<descr>If the extension is not recognized, an exception will be raised.
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TvVectorialDocument.GetFormatFromExtension.Result">
+<short>The result of the operation GetFormatFromExtension</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialDocument.GetFormatFromExtension.AFileName">
+<short>The file name to be analized</short>
+</element>
+
+<!-- class function Visibility: default -->
+<element name="TvVectorialDocument.GetDetailedFileFormat">
+<short>Returns an extended description of the file format</short>
+<descr>Returns an extended description of the file format</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class function Visibility: default -->
+<element name="TvVectorialDocument.GuessDocumentSize">
+<short>Tries to guess the size of the document</short>
+<descr>Tries to guess the size of the document. Usefull for formats which don't provide this information.
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- class function Visibility: default -->
+<element name="TvVectorialDocument.GuessGoodZoomLevel">
+<short>Tries to guess the best zoom to display the document</short>
+<descr></descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.Clear">
+<short>Clears all data in the document</short>
+<descr>Removes all entities, removes all paths and resets all other data.
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.GetPage">
+<short>Returns one of the pages of the document</short>
+<descr>Returns a page from the document given a zero-based index to it as input
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="GetPageCount"/>
+  <link id="GetCurrentPage"/>
+  <link id="SetCurrentPage"/>
+  <link id="AddPage"/>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.GetPage.AIndex">
+<short>The zero-based index to the page</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.GetPageCount">
+<short>Returns the number of pages in the document</short>
+<descr>Returns the number of pages in the document
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="GetPage"/>
+  <link id="GetCurrentPage"/>
+  <link id="SetCurrentPage"/>
+  <link id="AddPage"/>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.GetPage.AIndex">
+<short>The zero-based index to the page</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.GetCurrentPage">
+<short>Returns the currently selected page</short>
+<descr>Returns the currently selected page
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="GetPage"/>
+  <link id="GetPageCount"/>
+  <link id="SetCurrentPage"/>
+  <link id="AddPage"/>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.SetCurrentPage">
+<short>Selects a page in the document</short>
+<descr>Selects a page in the document
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="GetPage"/>
+  <link id="ReadFromFile"/>
+  <link id="GetCurrentPage"/>
+  <link id="AddPage"/>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.SetCurrentPage.AIndex">
+<short>The zero-based index to the page</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialDocument.AddPage">
+<short>Adds a new page to the document</short>
+<descr>Adds a new page to the the document
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="GetPage"/>
+  <link id="ReadFromFile"/>
+  <link id="GetCurrentPage"/>
+  <link id="SetCurrentPage"/>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TvVectorialPage">
+<short>Represents a page from a vectorial document</short>
+<descr>Represents a page from a vectorial document
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvVectorialPage.Width">
+<short>The width of the page</short>
+<descr>Measured in milimiters
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: public -->
+<element name="TvVectorialPage.Height">
+<short>The height of the page</short>
+<descr>Measured in milimiters
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TvVectorialPage.Create">
+<short>Constructor</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TvVectorialPage.Destroy">
+<short>Destructor</short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TvVectorialPage.GetEntity">
+<short>Returns an entity by it's index</short>
+<descr>Returns an entity by it's index. Use it together with GetEntitiesCount to
+iterate through all entities in a page. Paths are also entitites. The Index is zero-based
+and goes from zero to GetEntitiesCount() - 1
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="GetEntitiesCount"/>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TvVectorialPage.GetEntity.Result">
+<short>The entity</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.GetEntity.ANum">
+<short>The zero-based index to the entity</short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TvVectorialPage.GetEntitiesCount">
+<short>Returns the number of entities in the page</short>
+<descr>Use this method together with GetEntity to iterate through all entities in a page.
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="GetEntity"/>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TvVectorialPage.GetEntitiesCount.Result">
+<short>The number of entities in the page</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.Clear">
+<short>Clears all data in the page</short>
+<descr>Removes all entities, removes all paths and resets all other data.
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.AddEntity">
+<short>Adds an entity to the document</short>
+<descr>Adds an entity to the document. It can be any object descending from TvEntity.
+Do not release the object added like this, because a reference to it will be added,
+not a copy.
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="AddPathCopyMem"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddEntity.AEntity">
+<short>The entity to be added</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.AddPathCopyMem">
+<short>Adds a new path to the document</short>
+<descr>This method will copy the path provided and add this copy to the document.
+Therefore one should take care of releasing a path after adding it to the document
+with this method. To add a path by reference use AddEntity.
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="AddEntity"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddPathCopyMem.APath">
+<short>The path to be copied and added</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.StartPath">
+<short>Starts writing a Path in multiple steps</short>
+<descr>Starts writing a Path in multiple steps.
+  Should be followed by zero or more calls to AddPointToPath
+  and by a call to EndPath to effectively add the data.
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="EndPath"/>
+  <link id="AddMoveToPath"/>
+  <link id="AddLineToPath"/>
+  <link id="AddBezierToPath"/>
+  <link id="GetCurrentPathPenPos"/>
+  <link id="SetBrushColor"/>
+  <link id="SetBrushStyle"/>
+  <link id="SetPenColor"/>
+  <link id="SetPenStyle"/>
+  <link id="SetPenWidth"/>
+  <link id="SetClipPath"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.StartPath.AX">
+<short>The X coodinate of the begining of the path</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.StartPath.AY">
+<short>The Y coodinate of the begining of the path</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.AddMoveToPath">
+<short>Adds a move segment to the current temporary path</short>
+<descr>This is similar to a invisible line segment.
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddMoveToPath.AX">
+<short>The final X coordinate of the MoveTo</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddMoveToPath.AY">
+<short>The final Y coordinate of the MoveTo</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.AddLineToPath">
+<short>Adds a line segment to the current temporary path</short>
+<descr>Adds one more point to the end of a Path being
+  writing in multiple steps.
+
+  Does nothing if not called between StartPath and EndPath.
+
+  Can be called multiple times to add multiple points.
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="StartPath"/>
+  <link id="EndPath"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddLineToPath.AX">
+<short>The final X coordinate of the line</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddLineToPath.AY">
+<short>The final Y coordinate of the line</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddLineToPath.AColor">
+<short>The color of the line</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddLineToPath.AZ">
+<short>The final Z coordinate of the line</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.GetCurrentPathPenPos">
+<short>Gets the current Pen Pos in the temporary path</short>
+<descr>Gets the current Pen Pos in the temporary path
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="StartPath"/>
+  <link id="EndPath"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.GetCurrentPathPenPos.AX">
+<short>The X coodinate of the pen position</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.GetCurrentPathPenPos.AY">
+<short>The Y coodinate of the pen position</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.AddBezierToPath">
+<short>Adds a bezier element to the current temporary path</short>
+<descr>Adds a bezier element to the current temporary path. It starts where the previous element ended
+  and it goes throw the control points [AX1, AY1] and [AX2, AY2] and ends
+  in [AX3, AY3].
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="StartPath"/>
+  <link id="EndPath"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddBezierToPath.AX1">
+<short>The X coordinate of the first control point of the Bézier</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddBezierToPath.AY1">
+<short>The Y coordinate of the first control point of the Bézier</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddBezierToPath.AX2">
+<short>The X coordinate of the second control point of the Bézier</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddBezierToPath.AY2">
+<short>The Y coordinate of the second control point of the Bézier</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddBezierToPath.AX3">
+<short>The X coordinate of the destination point of the Bézier</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddBezierToPath.AY3">
+<short>The Y coordinate of the destination point of the Bézier</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddBezierToPath.AZ1">
+<short>The Z coordinate of the first control point of the Bézier</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddBezierToPath.AZ2">
+<short>The Z coordinate of the second control point of the Bézier</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddBezierToPath.AZ3">
+<short>The Z coordinate of the destination point of the Bézier</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.SetBrushColor">
+<short>Sets the brush color for the current temporary path</short>
+<descr>Sets the brush color for the current temporary path
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="StartPath"/>
+  <link id="EndPath"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.SetBrushColor.AColor">
+<short>The color to be set for the brush</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.SetBrushStyle">
+<short>Sets the brush style for the current temporary path</short>
+<descr>Sets the brush style for the current temporary path
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="StartPath"/>
+  <link id="EndPath"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.SetBrushStyle.AStyle">
+<short>The style to be set for the brush</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.SetPenColor">
+<short>Sets the pen color for the current temporary path</short>
+<descr>Sets the pen color for the current temporary path
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="StartPath"/>
+  <link id="EndPath"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.SetPenColor.AColor">
+<short>The color to be set for the Pen</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.SetPenStyle">
+<short>Sets the pen style for the current temporary path</short>
+<descr>Sets the pen style for the current temporary path
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="StartPath"/>
+  <link id="EndPath"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.SetPenStyle.AStyle">
+<short>The style to be set for the pen</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.SetPenWidth">
+<short>Sets the pen width for the current temporary path</short>
+<descr>Sets the pen width for the current temporary path
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="StartPath"/>
+  <link id="EndPath"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.SetPenWidth.AWidth">
+<short>The width to be set for the pen</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.SetClipPath">
+<short>Defines a clipping path for the current temporary path</short>
+<descr>Defines a clipping path for the current temporary path
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="StartPath"/>
+  <link id="EndPath"/>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.SetClipPath.AClipPath">
+<short>The path to be set as clipping path</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.SetClipPath.AClipMode">
+<short>The clipping mode</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.EndPath">
+<short>Finishes writing a Path</short>
+<descr>Finishes writing a Path, which was created in multiple
+  steps using StartPath and AddPointToPath,
+  to the document.
+
+  Does nothing if there wasn't a previous correspondent call to
+  StartPath.
+</descr>
+<errors>
+</errors>
+<seealso>
+  <link id="StartPath"/>
+  <link id="AddMoveToPath"/>
+  <link id="AddLineToPath"/>
+  <link id="AddBezierToPath"/>
+  <link id="GetCurrentPathPenPos"/>
+  <link id="SetBrushColor"/>
+  <link id="SetBrushStyle"/>
+  <link id="SetPenColor"/>
+  <link id="SetPenStyle"/>
+  <link id="SetPenWidth"/>
+  <link id="SetClipPath"/>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.AddText">
+<short>Adds a new text element</short>
+<descr>Adds a new text element
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddText.AX">
+<short>The X coordinate of the bottom-left corner of the text</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddText.AY">
+<short>The Y coordinate of the bottom-left corner of the text</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddText.AZ">
+<short>The Z coordinate of the bottom-left corner of the text</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddText.FontName">
+<short>The font name to be used in the text</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddText.FontSize">
+<short>The font size for the text</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddText.AText">
+<short>The text to be added</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddText.AStr">
+<short>The text to be added</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.AddCircle">
+<short>Adds a circle element</short>
+<descr>Adds a circle element
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddCircle.ACenterX">
+<short>The X coordinate of the center of the circle</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddCircle.ACenterY">
+<short>The Y coordinate of the center of the circle</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddCircle.ACenterZ">
+<short>The Z coordinate of the center of the circle</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddCircle.ARadius">
+<short>The radius of the circle in milimiters</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.AddCircularArc">
+<short>Adds a circular arc to the drawing</short>
+<descr>This arc is really circular, not elliptical like TCanvas.Arc
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddCircularArc.ACenterX">
+<short>The X coordinate of the center of the circular arc</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddCircularArc.ACenterY">
+<short>The Y coordinate of the center of the circular arc</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddCircularArc.ACenterZ">
+<short>The Z coordinate of the center of the circular arc</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddCircularArc.ARadius">
+<short>The radius of the circular arc in milimiters</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddCircularArc.AStartAngle">
+<short>The start angle of the arc in degrees relative to the positive X axis</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddCircularArc.AEndAngle">
+<short>The end angle of the arc in degrees relative to the positive X axis</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddCircularArc.AColor">
+<short>The color of the arc</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.AddEllipse">
+<short>Adds a new ellipse element</short>
+<descr>Adds a new ellipse element
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddEllipse.CenterX">
+<short>The X coordinate of the center of the ellipse</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddEllipse.CenterY">
+<short>The Y coordinate of the center of the ellipse</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddEllipse.CenterZ">
+<short>The Z coordinate of the center of the ellipse</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddEllipse.MajorHalfAxis">
+<short>The length of the major half axis of the ellipse</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddEllipse.MinorHalfAxis">
+<short>The length of the minor half axis of the ellipse</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddEllipse.Angle">
+<short>The rotation angle of the ellipse in degrees in relation to the positive X axis</short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TvVectorialPage.AddAlignedDimension">
+<short>Adds a new aligned dimension element</short>
+<descr>Adds a new aligned dimension element
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddAlignedDimension.BaseLeft">
+<short>The position of the left base</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddAlignedDimension.BaseRight">
+<short>The position of the right base</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddAlignedDimension.DimLeft">
+<short>The position of the left text are</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TvVectorialPage.AddAlignedDimension.DimRight">
+<short>The position of the right text area</short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="RegisterVectorialReader">
+<short>Registers a new reader for a format</short>
+<descr>Registers a new reader for a format</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RegisterVectorialReader.AReaderClass">
+<short>The class to be registered</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RegisterVectorialReader.AFormat">
+<short>The format associated with the class</short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="RegisterVectorialWriter">
+<short>Registers a new writer for a format</short>
+<descr>Registers a new writer for a format
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RegisterVectorialWriter.AWriterClass">
+<short>The class to be registered</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="RegisterVectorialWriter.AFormat">
+<short>The format associated with the class</short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="Make2DPoint">
+<short>Convenience function to create a 2D point</short>
+<descr>Convenience function to create a 2D point
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="Make2DPoint.Result">
+<short>The generated vectorial point</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Make2DPoint.AX">
+<short>The X coordinate of the point</short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="Make2DPoint.AY">
+<short>The Y coordinate of the point</short>
+</element>
+
+<element name="TvCustomVectorialReader">
+<short>Base class for new reader modules</short>
+</element>
+
+<element name="TvCustomVectorialWriter">
+<short>Base class for new writer modules</short>
+</element>
+
+</module> <!-- fpvectorial -->
+
+</package>
+</fpdoc-descriptions>
