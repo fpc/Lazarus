@@ -11,7 +11,7 @@ uses
   MacOSAll, // for CGContextRef
   LCLtype, LCLProc, Graphics,
   CocoaAll, CocoaUtils,
-  Classes, Types;
+  Classes, Types, Math;
 
 type
   TCocoaBitmapAlignment = (
@@ -113,19 +113,42 @@ type
     constructor CreateDefault;
     constructor Create(const ALogBrush: TLogBrush; const AGlobal: Boolean = False);
     destructor Destroy; override;
-    procedure Apply(ADC: TCocoaContext);
+    procedure Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
   end;
+
+const
+  // use the same pen shapes that are used for carbon
+  CocoaDashStyle: Array [0..1] of Single = (3, 1);
+  CocoaDotStyle: Array [0..1] of Single = (1, 1);
+  CocoaDashDotStyle: Array [0..3] of Single = (3, 1, 1, 1);
+  CocoaDashDotDotStyle: Array [0..5] of Single = (3, 1, 1, 1, 1, 1);
+
+type
+  TCocoaDashes = array of Float32;
 
   { TCocoaPen }
 
-  TCocoaPen = class(TCocoaGDIObject)
-  public
-    Style : Integer;
-    Width : Integer;
-    R,G,B : Single;
-    procedure Apply(cg: CGContextRef);
+  TCocoaPen = class(TCocoaColorObject)
+  private
+    FWidth: Integer;
+    FStyle: LongWord;
+    FIsExtPen: Boolean;
+    FIsGeometric: Boolean;
+    FEndCap: CGLineCap;
+    FJoinStyle: CGLineJoin;
+   public
+    Dashes: TCocoaDashes;
     constructor CreateDefault;
-    constructor Create;
+    constructor Create(const ALogPen: TLogPen; const AGlobal: Boolean = False);
+    constructor Create(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord);
+    procedure Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
+
+    property Width: Integer read FWidth;
+    property Style: LongWord read FStyle;
+    property IsExtPen: Boolean read FIsExtPen;
+    property IsGeometric: Boolean read FIsGeometric;
+    property JoinStyle: CGLineJoin read FJoinStyle;
+    property CapStyle: CGLineCap read FEndCap;
   end;
 
   { TCocoaFont }
@@ -574,18 +597,25 @@ end;
 
 function TCocoaContext.CGContext:CGContextRef;
 begin
-  Result:=CGContextRef(ctx.graphicsPort);
+  Result := CGContextRef(ctx.graphicsPort);
 end;
 
 procedure TCocoaContext.SetBitmap(const AValue: TCocoaBitmap);
 begin
-  fBitmap:=AValue;
+  if FBitmap <> AValue then
+  begin
+    FBitmap:=AValue;
+
+  end;
 end;
 
 procedure TCocoaContext.SetBrush(const AValue: TCocoaBrush);
 begin
-  FBrush := AValue;
-  if Assigned(FBrush) then FBrush.Apply(Self);
+  if FBrush <> AValue then
+  begin
+    FBrush := AValue;
+    if Assigned(FBrush) then FBrush.Apply(Self);
+  end;
 end;
 
 procedure TCocoaContext.SetFont(const AValue: TCocoaFont);
@@ -595,13 +625,20 @@ end;
 
 procedure TCocoaContext.SetPen(const AValue: TCocoaPen);
 begin
-  fPen:=AValue;
-  if Assigned(fPen) then fPen.Apply(CGContext);
+  if FPen <> AValue then
+  begin
+    FPen := AValue;
+    if Assigned(FPen) then FPen.Apply(Self);
+  end;
 end;
 
 procedure TCocoaContext.SetRegion(const AValue: TCocoaRegion);
 begin
-  fRegion:=AValue;
+  if FRegion <> AValue then
+  begin
+    FRegion := AValue;
+
+  end;
 end;
 
 constructor TCocoaContext.Create;
@@ -618,6 +655,24 @@ end;
 
 destructor TCocoaContext.Destroy;
 begin
+  if Assigned(FBrush) then
+  begin
+    FBrush.Release;
+    if FBrush.RefCount = 0 then
+      FBrush.Free;
+  end;
+  if Assigned(FPen) then
+  begin
+    FPen.Release;
+    if FPen.RefCount = 0 then
+      FPen.Free;
+  end;
+  if Assigned(FFont) then
+  begin
+    FFont.Release;
+    if FFont.RefCount = 0 then
+      FFont.Free;
+  end;
   FText.Free;
   inherited Destroy;
 end;
@@ -1212,24 +1267,151 @@ end;
 
 { TCocoaPen }
 
-procedure TCocoaPen.Apply(cg:CGContextRef);
+procedure TCocoaPen.Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
+
+  function GetDashes(Source: TCocoaDashes): TCocoaDashes;
+  var
+    i: Integer;
+  begin
+    Result := Source;
+    for i := Low(Result) to High(Result) do
+      Result[i] := Result[i] * FWidth;
+  end;
+
+var
+  AR, AG, AB, AA: Single;
+  AROP2: Integer;
+  ADashes: TCocoaDashes;
 begin
-  if not Assigned(cg) then Exit;
-  CGContextSetRGBStrokeColor(cg, r, g, b, 1);
-  CGContextSetLineWidth(cg, Width);
-  //todo: style
+  if ADC = nil then Exit;
+  if ADC.CGContext = nil then Exit;
+
+  {if UseROP2 then
+    AROP2 := ADC.ROP2
+  else}
+    AROP2 := R2_COPYPEN;
+
+  GetRGBA(AROP2, AR, AG, AB, AA);
+
+  if AROP2 <> R2_NOT then
+    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeNormal)
+  else
+    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
+
+  CGContextSetRGBStrokeColor(ADC.CGContext, AR, AG, AB, AA);
+  CGContextSetLineWidth(ADC.CGContext, FWidth);
+
+  if IsExtPen then
+  begin
+    if IsGeometric then
+    begin
+      CGContextSetLineCap(ADC.CGContext, FEndCap);
+      CGContextSetLineJoin(ADC.CGContext, FJoinStyle);
+    end;
+  end;
+
+  case FStyle of
+    PS_DASH:
+      begin
+        ADashes := GetDashes(CocoaDashStyle);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+      end;
+    PS_DOT:
+      begin
+        ADashes := GetDashes(CocoaDotStyle);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+      end;
+    PS_DASHDOT:
+      begin
+        ADashes := GetDashes(CocoaDashDotStyle);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+      end;
+    PS_DASHDOTDOT:
+      begin
+        ADashes := GetDashes(CocoaDashDotDotStyle);
+        CGContextSetLineDash(ADC.CGContext, 0, @ADashes[0], Length(ADashes));
+      end;
+    PS_USERSTYLE:
+      CGContextSetLineDash(ADC.CGContext, 0, @Dashes[0], Length(Dashes));
+  else
+    CGContextSetLineDash(ADC.CGContext, 0, nil, 0);
+  end;
 end;
 
 constructor TCocoaPen.CreateDefault;
 begin
-  inherited Create(False);
-  Width := 1;
+  inherited Create(clBlack, True, False);
+  FStyle := PS_SOLID;
+  FWidth := 1;
+  FIsExtPen := False;
+  Dashes := nil;
 end;
 
-constructor TCocoaPen.Create;
+constructor TCocoaPen.Create(const ALogPen: TLogPen; const AGlobal: Boolean = False);
 begin
-  inherited Create(False);
-  Width:=1;
+  case ALogPen.lopnStyle of
+    PS_SOLID..PS_DASHDOTDOT,
+    PS_INSIDEFRAME:
+      begin
+        inherited Create(ColorToRGB(TColor(ALogPen.lopnColor)), True, AGlobal);
+        FWidth := Max(1, ALogPen.lopnWidth.x);
+      end;
+    else
+    begin
+      inherited Create(ColorToRGB(TColor(ALogPen.lopnColor)), False, AGlobal);
+      FWidth := 1;
+    end;
+  end;
+
+  FStyle := ALogPen.lopnStyle;
+end;
+
+constructor TCocoaPen.Create(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush;
+  dwStyleCount: DWord; lpStyle: PDWord);
+var
+  i: integer;
+begin
+  case dwPenStyle and PS_STYLE_MASK of
+    PS_SOLID..PS_DASHDOTDOT,
+    PS_USERSTYLE:
+      begin
+        inherited Create(ColorToRGB(TColor(lplb.lbColor)), True, False);
+      end;
+    else
+    begin
+      inherited Create(ColorToRGB(TColor(lplb.lbColor)), False, False);
+    end;
+  end;
+
+  FIsExtPen := True;
+  FIsGeometric := (dwPenStyle and PS_TYPE_MASK) = PS_GEOMETRIC;
+
+  if IsGeometric then
+  begin
+    case dwPenStyle and PS_JOIN_MASK of
+      PS_JOIN_ROUND: FJoinStyle := kCGLineJoinRound;
+      PS_JOIN_BEVEL: FJoinStyle := kCGLineJoinBevel;
+      PS_JOIN_MITER: FJoinStyle := kCGLineJoinMiter;
+    end;
+
+    case dwPenStyle and PS_ENDCAP_MASK of
+      PS_ENDCAP_ROUND: FEndCap := kCGLineCapRound;
+      PS_ENDCAP_SQUARE: FEndCap := kCGLineCapSquare;
+      PS_ENDCAP_FLAT: FEndCap := kCGLineCapButt;
+    end;
+    FWidth := Max(1, dwWidth);
+  end
+  else
+    FWidth := 1;
+
+  if (dwPenStyle and PS_STYLE_MASK) = PS_USERSTYLE then
+  begin
+    SetLength(Dashes, dwStyleCount);
+    for i := 0 to dwStyleCount - 1 do
+      Dashes[i] := lpStyle[i];
+  end;
+
+  FStyle := dwPenStyle and PS_STYLE_MASK;
 end;
 
 { TCocoaBrush }
@@ -1333,7 +1515,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TCocoaBrush.Apply(ADC: TCocoaContext);
+procedure TCocoaBrush.Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
 var
   RGBA: array[0..3] of Single;
   AROP2: Integer;
@@ -1344,15 +1526,15 @@ begin
 
 {  if UseROP2 then
     AROP2 := ADC.ROP2
-  else
-    AROP2 := R2_COPYPEN;}
+  else}
+    AROP2 := R2_COPYPEN;
 
   GetRGBA(AROP2, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
 
-//  if AROP2 <> R2_NOT then
-    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeNormal);
-//  else
-//    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
+  if AROP2 <> R2_NOT then
+    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeNormal)
+  else
+    CGContextSetBlendMode(ADC.CGContext, kCGBlendModeDifference);
 
   if FCGPattern <> nil then
   begin

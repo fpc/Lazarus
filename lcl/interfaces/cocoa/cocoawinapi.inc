@@ -227,21 +227,8 @@ begin
 end;
 
 function TCocoaWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
-var
-  p   : TCocoaPen;
-  cl  : DWORD;
 begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.CreatePenIndirect');
-  {$ENDIF}
-  p:=TCocoaPen.Create;
-  if LogPen.lopnWidth.x>0 then p.Width:=LogPen.lopnWidth.x;
-  p.Style:=LogPen.lopnStyle;
-  if LogPen.lopnColor and $8000000 > 0 then cl:=GetSysColor(LogPen.lopnColor)
-  else cl:=LogPen.lopnColor;
-  //todo:!
-  ColorToRGBFloat(cl, p.R, p.G, p.B);
-  Result := HPEN(p);//TCocoaPen.Create(LogPen));
+  Result := HPen(TCocoaPen.Create(LogPen));
 end;
 
 {------------------------------------------------------------------------------
@@ -368,6 +355,12 @@ begin
     Result := Result and lpfnEnum(HMONITOR(NSScreen.screens.objectAtIndex(i)), 0, nil, dwData);
     if not Result then break;
   end;
+end;
+
+function TCocoaWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
+  const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
+begin
+  Result := HPEN(TCocoaPen.Create(dwPenStyle, dwWidth, lplb, dwStyleCount, lpStyle));
 end;
 
 function TCocoaWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
@@ -778,19 +771,24 @@ begin
   gdi:=CheckGDIOBJ(GDIObj);
   if not Assigned(dc) then Exit;
 
-  if gdi is TCocoaBrush then begin // select brush
+  if gdi is TCocoaBrush then
+  begin // select brush
     Result := HBRUSH(dc.Brush);
     dc.Brush := TCocoaBrush(gdi);
-  end else if gdi is TCocoaPen then begin // select pen
+  end else if gdi is TCocoaPen then
+  begin // select pen
     Result := HPEN(dc.Pen);
     dc.Pen := TCocoaPen(gdi);
-  end else if gdi is TCocoaFont then begin // select font
+  end else if gdi is TCocoaFont then
+  begin // select font
     Result := HFONT(dc.Font);
     dc.Font := TCocoaFont(gdi);
-  end else if gdi is TCocoaRegion then begin // select region
+  end else if gdi is TCocoaRegion then
+  begin // select region
     Result := HRGN(dc.Region);
     dc.Region := TCocoaRegion(gdi);
-  end else if gdi is TCocoaBitmap then begin // select bitmap
+  end else if gdi is TCocoaBitmap then
+  begin // select bitmap
     {if not (ADC is TCarbonBitmapContext) then
     begin
       DebugLn(SName + ' Error - The specified device context is not bitmap context!');
