@@ -673,6 +673,8 @@ var
   lWidth, lHeight: Integer;
   lBitmap, lMask: HBITMAP;
   lRawImage: TRawImage;
+  AImage: TLazIntfImage;
+  ACanvas: TLazCanvas;
 begin
   if not Assigned(Context) then Context:=TCocoaContext.Create;
 
@@ -685,7 +687,7 @@ begin
     FillChar(struct, SizeOf(TPaintStruct), 0);
 
     UpdateControlLazImageAndCanvas(TCocoaCustomControl(Owner).Image,
-      TCocoaCustomControl(Owner).Canvas, lWidth, lHeight);
+      TCocoaCustomControl(Owner).Canvas, lWidth, lHeight, clfRGB24);
 
     struct.hdc := HDC(TCocoaCustomControl(Owner).Canvas);
 

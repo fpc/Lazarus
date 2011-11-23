@@ -13,7 +13,11 @@ uses
   //
   GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc;
 
-procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage; var ACanvas: TLazCanvas; AWidth, AHeight: Integer);
+type
+  TUpdateLazImageFormat = (clfRGB24, clfBGR24, clfBGRA32);
+
+procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
+  var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat);
 function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
 function IsValidDC(ADC: HDC): Boolean;
 function IsValidGDIObject(AGDIObj: HGDIOBJ): Boolean;
@@ -21,7 +25,7 @@ function IsValidGDIObject(AGDIObj: HGDIOBJ): Boolean;
 implementation
 
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
-  var ACanvas: TLazCanvas; AWidth, AHeight: Integer);
+  var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat);
 var
   lRawImage: TRawImage;
 begin
@@ -35,7 +39,11 @@ begin
     if (AImage <> nil) then AImage.Free;
 
     lRawImage.Init;
-    lRawImage.Description.Init_BPP32_B8G8R8A8_BIO_TTB(AWidth, AHeight);
+    case AFormat of
+    clfRGB24:  lRawImage.Description.Init_BPP24_R8G8B8_BIO_TTB(AWidth, AHeight);
+    clfBGR24:  lRawImage.Description.Init_BPP24_B8G8R8_BIO_TTB(AWidth, AHeight);
+    clfBGRA32: lRawImage.Description.Init_BPP32_B8G8R8A8_BIO_TTB(AWidth, AHeight);
+    end;
     lRawImage.CreateData(True);
 
     AImage := TLazIntfImage.Create(AWidth, AHeight);

@@ -784,7 +784,7 @@ begin
   if not IsValidDC(hDC) then exit;
 
   TQtDeviceContext(hDC).Free;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: DeleteObject
@@ -792,31 +792,29 @@ end;
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
+function TCDWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 var
   aObject: TObject;
-  APaintEngine: QPaintEngineH;
-  APainter: QPainterH;
-  {$ifdef VerboseQtWinAPI}
+//  APaintEngine: QPaintEngineH;
+//  APainter: QPainterH;
+  {$ifdef VerboseWinAPI}
     ObjType: string;
   {$endif}
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI DeleteObject] GDIObject: ', dbghex(GDIObject));
+  {$ifdef VerboseWinAPI}
+    DebugLn('Trace:> [WinAPI DeleteObject] GDIObject: ', dbghex(GDIObject));
     ObjType := 'Unidentifyed';
   {$endif}
 
   Result := False;
 
-  if GDIObject = 0 then
-    Exit(True);
+  if GDIObject = 0 then Exit(True);
 
-  if not IsValidGDIObject(GDIObject) then
-    Exit;
+  if not IsValidGDIObject(GDIObject) then Exit;
 
   aObject := TObject(GDIObject);
 
-  if (aObject is TQtResource) and TQtResource(aObject).FShared then
+(*  if (aObject is TQtResource) and TQtResource(aObject).FShared then
     Exit(True);
 
   {------------------------------------------------------------------------------
@@ -889,16 +887,16 @@ begin
   begin
     //WriteLn('Delete object: ', PtrUInt(AObject));
     FreeThenNil(AObject);
-  end;
+  end;*)
 
   Result := True;
 
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI DeleteObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
+  {$ifdef VerboseWinAPI}
+    DebugLn('Trace:< [WinAPI DeleteObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
   {$endif}
 end;
 
-function TQtWidgetSet.DestroyCaret(Handle: HWND): Boolean;
+(*function TQtWidgetSet.DestroyCaret(Handle: HWND): Boolean;
 begin
   Result := (Handle <> 0) and QtCaret.DestroyCaret;
 end;
@@ -4710,7 +4708,7 @@ var
 begin
   ACritSec:=System.PRTLCriticalSection(CritSection);
   System.LeaveCriticalsection(ACritSec^);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: LineTo
@@ -4719,28 +4717,29 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
+function TCDWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
   PenPos, LastPos: TPoint;
+  LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI LineTo]');
+  {$ifdef VerboseWinAPI}
+    DebugLn('[TCDWidgetSet.LineTo]');
   {$endif}
 
   Result := False;
 
   if not IsValidDC(DC) then Exit;
 
-  TQtDeviceContext(DC).getPenPos(@PenPos);
+(*  TQtDeviceContext(DC).getPenPos(@PenPos);
   LastPos := Point(X, Y);
   if TQtDeviceContext(DC).pen.getCosmetic then
     LastPos := TQtDeviceContext(DC).GetLineLastPixelPos(PenPos, LastPos);
   TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y);
-  MoveToEx(DC, X, Y, nil);
+  MoveToEx(DC, X, Y, nil);*)
 
   Result := True;
 end;
-
+(*
 function TQtWidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
 var
   P: PPoint;
@@ -4782,19 +4781,19 @@ begin
   TitleStr := GetUtf8String(lpCaption);
   OkStr := GetUtf8String('Ok');
   Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: MoveToEx
   Params:  none
   Returns: Nothing
-
-
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
+function TCDWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
+var
+  LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI MoveToEx]',
+  {$ifdef VerboseWinAPI}
+    DebugLn('[WinAPI MoveToEx]',
      ' DC:', dbghex(DC),
      ' X:', dbgs(X),
      ' Y:', dbgs(Y));
@@ -4804,14 +4803,14 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  if (OldPoint <> nil) then TQtDeviceContext(DC).getPenPos(OldPoint);
+  if (OldPoint <> nil) then OldPoint^ := LazDC.PenPos;
 
-  TQtDeviceContext(DC).setPenPos(X, Y);
+  LazDC.PenPos := Types.Point(X, Y);
 
   Result := True;
 end;
 
-function TQtWidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
+(*function TQtWidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
 var
   QtRgn: QRegionH;
 begin
@@ -4937,8 +4936,6 @@ function TCDWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   LazDC: TLazCanvas absolute DC;
 begin
-  if DC = 0 then Exit;
-
   {$ifdef VerboseWinAPI}
   DebugLn(Format(':>[WinAPI Rectangle] DC=%s', [dbghex(DC)]));
   {$endif}
@@ -4955,11 +4952,12 @@ begin
   DebugLn(Format('::[WinAPI Rectangle] DC.Width=%d DC.Height=%d', [LazDC.Width, LazDC.Height]));
   {$endif}
 
-  LazDC.Rectangle(X1, Y1, X2, Y2);
+  // ToDo: Normalize the rectangle, or improve TLazCanvas so that it accepts invalid coordinates
 {  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
-  if IsRectEmpty(R) then Exit(True);
+  if IsRectEmpty(R) then Exit(True);}
 
-  TQtDeviceContext(DC).drawRect(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1);}
+  LazDC.Rectangle(X1, Y1, X2, Y2);
+
   Result := True;
 end;
 (*
