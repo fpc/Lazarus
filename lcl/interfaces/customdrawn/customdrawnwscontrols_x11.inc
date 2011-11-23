@@ -1,6 +1,6 @@
 {$MainUnit customdrawnwscontrols.pp}
 
-class procedure TCDWSWinControl.AddControl(const AControl: TControl);
+(*class procedure TCDWSWinControl.AddControl(const AControl: TControl);
 {var
   ParentPanelHandle, ParentHandle, ChildHandle: HWND;}
 begin
@@ -18,7 +18,7 @@ begin
   if ParentPanelHandle <> 0 then
     ChildHandle := ParentPanelHandle;
   SetParent(ChildHandle, ParentHandle);}
-end;
+end; *)
 
 class function  TCDWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 begin

@@ -404,18 +404,29 @@ class procedure TCDWSCustomForm.DrawRawImageToGC_XPutImage(ARawImage: TRawImage;
   ADestWindowInfo: TX11WindowInfo; ADestX, ADestY, ADestWidth, ADestHeight: Integer);
 var
   Image: XLib.PXImage;
+  lScanlineSize: cint;
+  lScreen: cint;
+  lVisual: PVisual;
+  lDepth: cint;
 begin
+  lScanlineSize := (ADestWindowInfo.Canvas.Width*ADestWindowInfo.ColorDepth) div 8;
+  lScreen := DefaultScreen(CDWidgetSet.FDisplay);
+  lVisual := {DefaultVisual(CDWidgetSet.FDisplay, lScreen); //} ADestWindowInfo.Attr.Visual;
+  lDepth := {DefaultDepth(CDWidgetSet.FDisplay, lScreen); //} ADestWindowInfo.ColorDepth;
+
   // Create a native Image
-  Image := XCreateImage(CDWidgetSet.FDisplay, ADestWindowInfo.Attr.Visual,
-    ADestWindowInfo.ColorDepth, XYPixmap, 0, PChar(ARawImage.Data),
-    ADestWidth, ADestHeight, 32, (ADestWindowInfo.Canvas.Width*ADestWindowInfo.ColorDepth) div 8);
+  Image := XCreateImage(CDWidgetSet.FDisplay, lVisual,
+    lDepth, ZPixmap, 0, PChar(ARawImage.Data),
+    ADestWidth, ADestHeight, 8, 0);
 
   {$IFDEF VerboseCDWindow}
-    DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC_XPutImage] Image=%x Data=%x',
-      [PtrInt(Image), PtrInt(ARawImage.Data)]));
+    DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC_XPutImage] Image=%x Data=%x'
+      + ' ColorDepth:%d Width=%d Height=%d ScanlineSize=%d',
+      [PtrInt(Image), PtrInt(ARawImage.Data), lDepth,
+       ADestWidth, ADestHeight, lScanlineSize]));
   {$ENDIF}
 
-  // XPutImage is ridiculously slow, really unusable.
+  // Note that XPutImage is slow
   XPutImage(CDWidgetSet.FDisplay, ADestWindowInfo.Window, ADestWindowInfo.GC,
     Image, 0, 0, ADestX, ADestY, ADestWidth, ADestHeight);
 
@@ -448,22 +459,20 @@ begin
   FillChar(struct, SizeOf(TPaintStruct), 0);
 
   // Prepare the non-native image and canvas
-//  UpdateControlLazImageAndCanvas(AWindowInfo.Image, AWindowInfo.Canvas, lWidth, lHeight);
-  // Check if the image needs update
-  if (AWindowInfo.Image = nil) or (lWidth <> AWindowInfo.Image.Width) or (lHeight <> AWindowInfo.Image.Height) then
-  begin
-    if (AWindowInfo.Image <> nil) then AWindowInfo.Image.Free;
-
-    lRawImage.Init;
-    lRawImage.Description.Init_BPP24_B8G8R8_BIO_TTB(lWidth, lHeight);
-    lRawImage.CreateData(True);
-
-    AWindowInfo.Image := TLazIntfImage.Create(lWidth, lHeight);
-    AWindowInfo.Image.SetRawImage(lRawImage);
-
-    if (AWindowInfo.Canvas <> nil) then AWindowInfo.Canvas.Free;
-    AWindowInfo.Canvas := TLazCanvas.Create(AWindowInfo.Image);
-  end;
+  {$IFDEF VerboseCDWindow}
+    DebugLn(Format('[TCDWSCustomForm.EvPaint] Visual: Red-Mask: %x Green-Mask: %x Blue-Mask: %x'
+      + ' bits_per_rgb=%d c_class=%d',
+      [AWindowInfo.Attr.visual^.red_mask, AWindowInfo.Attr.visual^.green_mask, AWindowInfo.Attr.visual^.blue_mask,
+       AWindowInfo.Attr.Visual^.bits_per_rgb, AWindowInfo.Attr.Visual^.c_class]));
+   { c_class values:
+   StaticGray = 0;
+   GrayScale = 1;
+   StaticColor = 2;
+   PseudoColor = 3;
+   TrueColor = 4;
+   DirectColor = 5;}
+  {$ENDIF}
+  UpdateControlLazImageAndCanvas(AWindowInfo.Image, AWindowInfo.Canvas, lWidth, lHeight, clfRGB24);
 
   struct.hdc := HDC(AWindowInfo.Canvas);
 
