@@ -34,7 +34,7 @@ uses
   // RTL
   Classes, SysUtils,
   // FCL-Image
-  fpimgcanv, fpcanvas, fpimage,
+  fpimgcanv, fpcanvas, fpimage, clipping,
   // regions
   lazregions;
 
@@ -55,10 +55,14 @@ type
   private
     FAssignedBrush: TFPCustomBrush;
     FAssignedPen: TFPCustomPen;
+    FBaseWindowOrg: TPoint;
     FUseSimpleRectClipping: Boolean;
     FLazClipRegion: TLazRegion;
+    FWindowOrg: TPoint; // already in absolute coords with BaseWindowOrg summed up
     function GetAssignedBrush: TFPCustomBrush;
     function GetAssignedPen: TFPCustomPen;
+    function GetWindowOrg: TPoint;
+    procedure SetWindowOrg(AValue: TPoint);
   protected
     procedure SetColor (x,y:integer; const AValue:TFPColor); override;
   public
@@ -72,7 +76,10 @@ type
     property AssignedPen: TFPCustomPen read GetAssignedPen write FAssignedPen;
     property AssignedBrush: TFPCustomBrush read GetAssignedBrush write FAssignedBrush;
     //
+    // SetWindowOrg operations will be relative to BaseWindowOrg, useful for customdrawn wincontrols
+    property BaseWindowOrg: TPoint read FBaseWindowOrg write FBaseWindowOrg;
     property UseSimpleRectClipping: Boolean read FUseSimpleRectClipping write FUseSimpleRectClipping;
+    property WindowOrg: TPoint read GetWindowOrg write SetWindowOrg;
   end;
 
 implementation
@@ -95,9 +102,24 @@ begin
     Result := FAssignedPen;
 end;
 
-procedure TLazCanvas.SetColor(x, y: integer; const AValue: TFPColor);
+function TLazCanvas.GetWindowOrg: TPoint;
 begin
-  inherited SetColor(x, y, AValue);
+  Result := Point(FWindowOrg.X-FBaseWindowOrg.X, FWindowOrg.Y-FBaseWindowOrg.Y)
+end;
+
+procedure TLazCanvas.SetWindowOrg(AValue: TPoint);
+begin
+  FWindowOrg.X := AValue.X+FBaseWindowOrg.X;
+  FWindowOrg.Y := AValue.Y+FBaseWindowOrg.Y;
+end;
+
+procedure TLazCanvas.SetColor(x, y: integer; const AValue: TFPColor);
+var
+  lx, ly: Integer;
+begin
+  lx := x + FWindowOrg.X;
+  ly := y + FWindowOrg.Y;
+  inherited SetColor(lx, ly, AValue);
 end;
 
 constructor TLazCanvas.create(AnImage: TFPCustomImage);
