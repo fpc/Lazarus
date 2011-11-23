@@ -47,10 +47,48 @@ type
     procedure Execute (x,y,w,h : integer); override;
   end;
 
+  { TLazCanvas }
+
   TLazCanvas = class(TFPImageCanvas)
+  private
+    FAssignedBrush: TFPCustomBrush;
+    function GetAssignedBrush: TFPCustomBrush;
+  public
+    constructor create (AnImage : TFPCustomImage);
+    destructor destroy; override;
+    // Utilized by LCLIntf.SelectObject
+    procedure AssignBrushData(ABrush: TFPCustomBrush);
+    // These properties are utilized to implement LCLIntf.SelectObject
+    property AssignedBrush: TFPCustomBrush read GetAssignedBrush write FAssignedBrush;
   end;
 
 implementation
+
+{ TLazCanvas }
+
+function TLazCanvas.GetAssignedBrush: TFPCustomBrush;
+begin
+  if FAssignedBrush = nil then
+    Result := TFPEmptyBrush.Create
+  else
+    Result := FAssignedBrush;
+end;
+
+constructor TLazCanvas.create(AnImage: TFPCustomImage);
+begin
+  inherited Create(AnImage);
+end;
+
+destructor TLazCanvas.destroy;
+begin
+  if FAssignedBrush <> nil then FAssignedBrush.Free;
+  inherited destroy;
+end;
+
+procedure TLazCanvas.AssignBrushData(ABrush: TFPCustomBrush);
+begin
+  Brush.FPColor := ABrush.FPColor;
+end;
 
 { TFPWindowsSharpInterpolation }
 
