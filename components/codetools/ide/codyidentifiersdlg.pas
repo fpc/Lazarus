@@ -48,7 +48,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, LResources, LCLProc, avl_tree, Forms, Controls,
-  Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls,
+  Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
   PackageIntf, LazIDEIntf,
   BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
   CodyStrConsts;
@@ -113,21 +113,32 @@ type
     FilterEdit: TEdit;
     InfoLabel: TLabel;
     ItemsListBox: TListBox;
+    PackageLabel: TLabel;
+    UnitLabel: TLabel;
     procedure FileLabelClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
     procedure FilterEditExit(Sender: TObject);
+    procedure FilterEditKeyDown(Sender: TObject; var Key: Word;
+      {%H-}Shift: TShiftState);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure ItemsListBoxClick(Sender: TObject);
+    procedure ItemsListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
   private
     FLastFilter: string;
     FIdleConnected: boolean;
     FMaxItems: integer;
     FNoFilterText: string;
+    FItems: TStringList;
     procedure SetIdleConnected(AValue: boolean);
     procedure SetMaxItems(AValue: integer);
+    procedure UpdateGeneralInfo;
     procedure UpdateItemsList;
-    procedure UpdateInfo;
+    procedure UpdateIdentifierInfo;
     function GetFilterEditText: string;
+    function FindSelectedItem(out Identifier, UnitFilename,
+      GroupFilename: string): boolean;
   public
     procedure Init;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -467,18 +478,56 @@ begin
     FilterEdit.Text:=FNoFilterText;
 end;
 
+procedure TCodyIdentifiersDlg.FilterEditKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  i: Integer;
+begin
+  i:=ItemsListBox.ItemIndex;
+  case Key of
+  VK_DOWN:
+    if i<0 then
+      ItemsListBox.ItemIndex:=0
+    else if i<ItemsListBox.Count-1 then
+      ItemsListBox.ItemIndex:=i+1;
+  VK_UP:
+    if i<0 then
+      ItemsListBox.ItemIndex:=ItemsListBox.Count-1
+    else if i>0 then
+      ItemsListBox.ItemIndex:=i-1;
+  end;
+end;
+
+procedure TCodyIdentifiersDlg.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  FreeAndNil(FItems);
+end;
+
 procedure TCodyIdentifiersDlg.FormCreate(Sender: TObject);
 begin
   Caption:=crsCodyIdentifierDictionary;
   FMaxItems:=20;
   FNoFilterText:=crsFilter;
+  FItems:=TStringList.Create;
+end;
+
+procedure TCodyIdentifiersDlg.ItemsListBoxClick(Sender: TObject);
+begin
+
+end;
+
+procedure TCodyIdentifiersDlg.ItemsListBoxSelectionChange(Sender: TObject;
+  User: boolean);
+begin
+  UpdateIdentifierInfo;
 end;
 
 procedure TCodyIdentifiersDlg.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   if not CodyUnitDictionary.Loaded then begin
     CodyUnitDictionary.Load;
-    UpdateInfo;
+    UpdateGeneralInfo;
   end;
   if FLastFilter<>GetFilterEditText then
     UpdateItemsList;
@@ -517,6 +566,7 @@ var
 begin
   Filter:=GetFilterEditText;
   FilterP:=PChar(Filter);
+  FItems.Clear;
   sl:=TStringList.Create;
   try
     Found:=0;
@@ -534,9 +584,10 @@ begin
             s:=Item.Name+' in '+Item.DUnit.Name;
             if Group.Name<>'' then
               s:=s+' of '+Group.Name;
+            FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Filename);
+            sl.Add(s);
             GroupNode:=Item.DUnit.UnitGroups.FindSuccessor(GroupNode);
           end;
-          sl.Add(s);
         end;
       end;
       Node:=CodyUnitDictionary.Identifiers.FindSuccessor(Node);
@@ -546,12 +597,32 @@ begin
       sl.Add(Format(crsAndMoreIdentifiers, [IntToStr(Found-sl.Count)]));
 
     ItemsListBox.Items.Assign(sl);
+    if Found>0 then
+      ItemsListBox.ItemIndex:=0;
+    UpdateIdentifierInfo;
   finally
     sl.Free;
   end;
 end;
 
-procedure TCodyIdentifiersDlg.UpdateInfo;
+procedure TCodyIdentifiersDlg.UpdateIdentifierInfo;
+var
+  Identifier: string;
+  UnitFilename: string;
+  GroupFilename: string;
+begin
+  if FindSelectedItem(Identifier, UnitFilename, GroupFilename) then begin
+    if GroupFilename<>'' then
+      UnitFilename:=CreateRelativePath(UnitFilename,ExtractFilePath(GroupFilename));
+    UnitLabel.Caption:='Unit: '+UnitFilename;
+    PackageLabel.Caption:='Package: '+GroupFilename;
+  end else begin
+    UnitLabel.Caption:='Unit: none selected';
+    PackageLabel.Caption:='Package: none selected';
+  end;
+end;
+
+procedure TCodyIdentifiersDlg.UpdateGeneralInfo;
 var
   s: String;
 begin
@@ -573,9 +644,37 @@ begin
     Result:='';
 end;
 
+function TCodyIdentifiersDlg.FindSelectedItem(out Identifier, UnitFilename,
+  GroupFilename: string): boolean;
+var
+  i: Integer;
+  s: String;
+  p: SizeInt;
+begin
+  Result:=false;
+  i:=ItemsListBox.ItemIndex;
+  if (i<0) or (i>=FItems.Count) then exit;
+  s:=FItems[i];
+  p:=Pos(#10,s);
+  if p<1 then exit;
+  Identifier:=copy(s,1,p-1);
+  System.Delete(s,1,p);
+  p:=Pos(#10,s);
+  if p<1 then begin
+    UnitFilename:=s;
+    GroupFilename:='';
+  end else begin
+    UnitFilename:=copy(s,1,p-1);
+    System.Delete(s,1,p);
+    GroupFilename:=s;
+  end;
+  //debugln(['TCodyIdentifiersDlg.FindSelectedItem ',Identifier,' Unit=',UnitFilename,' Pkg=',GroupFilename]);
+  Result:=true;
+end;
+
 procedure TCodyIdentifiersDlg.Init;
 begin
-  UpdateInfo;
+  UpdateGeneralInfo;
   FilterEdit.Text:=FNoFilterText;
   FLastFilter:='...'; // force one update
   IdleConnected:=true;

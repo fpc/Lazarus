@@ -2,11 +2,12 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
   Left = 250
   Height = 300
   Top = 250
-  Width = 428
+  Width = 521
   ActiveControl = FilterEdit
   Caption = 'CodyIdentifiersDlg'
   ClientHeight = 300
-  ClientWidth = 428
+  ClientWidth = 521
+  OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.31'
@@ -14,7 +15,7 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     Left = 6
     Height = 42
     Top = 252
-    Width = 416
+    Width = 509
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -44,13 +45,14 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     Left = 6
     Height = 26
     Top = 35
-    Width = 416
+    Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 10
     BorderSpacing.Right = 6
     OnChange = FilterEditChange
     OnExit = FilterEditExit
+    OnKeyDown = FilterEditKeyDown
     TabOrder = 1
     Text = 'FilterEdit'
   end
@@ -60,18 +62,44 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ButtonPanel1
+    AnchorSideBottom.Control = UnitLabel
     Left = 6
-    Height = 185
+    Height = 149
     Top = 61
-    Width = 416
+    Width = 509
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
+    BorderSpacing.Bottom = 1
     ItemHeight = 0
-    ScrollWidth = 414
+    OnClick = ItemsListBoxClick
+    OnSelectionChange = ItemsListBoxSelectionChange
+    ScrollWidth = 507
     TabOrder = 2
     TopIndex = -1
+  end
+  object UnitLabel: TLabel
+    AnchorSideLeft.Control = InfoLabel
+    AnchorSideBottom.Control = PackageLabel
+    Left = 8
+    Height = 17
+    Top = 211
+    Width = 59
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 1
+    Caption = 'UnitLabel'
+    ParentColor = False
+  end
+  object PackageLabel: TLabel
+    AnchorSideLeft.Control = InfoLabel
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 8
+    Height = 17
+    Top = 229
+    Width = 84
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 1
+    Caption = 'PackageLabel'
+    ParentColor = False
   end
 end
