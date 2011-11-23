@@ -3,8 +3,21 @@
 { TCDWSCustomForm }
 
 class procedure TCDWSCustomForm.BackendAddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
+var
+  lwin: TCocoaWindow;
 begin
+  lwin := TCocoaWindow(AForm.Handle);
+  if lwin.Children = nil then lwin.Children := TFPList.Create;
+  lwin.Children.Add(ACDWinControl);
+end;
 
+class function TCDWSCustomForm.BackendGetCDWinControlList(const AForm: TCustomForm): TFPList;
+var
+  lwin: TCocoaWindow;
+begin
+  lwin := TCocoaWindow(AForm.Handle);
+  if lwin.Children = nil then lwin.Children := TFPList.Create;
+  Result := lwin.Children;
 end;
 
 {------------------------------------------------------------------------------

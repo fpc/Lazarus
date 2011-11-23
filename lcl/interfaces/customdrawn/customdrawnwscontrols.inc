@@ -92,6 +92,8 @@ begin
   lCDWinControl.Region.AddRectangle(Bounds(AWinControl.Left, AWinControl.Top, AParams.Width, AParams.Height));
   lCDWinControl.Region.IsSimpleRectRegion := True;
 
+  Result := HWND(lCDWinControl);
+
   TCDWSCustomForm.BackendAddCDWinControlToForm(TCustomForm(AWinControl.Parent), lCDWinControl);
 end;
 

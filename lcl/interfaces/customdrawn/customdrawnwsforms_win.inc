@@ -11,6 +11,13 @@ begin
 
 end;
 
+class function TCDWSCustomForm.BackendGetCDWinControlList(const AForm: TCustomForm): TFPList;
+begin
+{  lwin := TCocoaWindow(AForm.Handle);
+  if lwin.Children = nil then lwin.Children := TFPList.Create;
+  Result := lwin.Children;}
+end;
+
 class function TCDWSCustomForm.CalcBorderIconsFlags(const AForm: TCustomForm): dword;
 var
   BorderIcons: TBorderIcons;

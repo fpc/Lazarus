@@ -10,6 +10,13 @@ begin
   lWindowInfo.CDWinControl := ACDWinControl;
 end;
 
+class function TCDWSCustomForm.BackendGetCDWinControlList(const AForm: TCustomForm): TFPList;
+begin
+{  lwin := TCocoaWindow(AForm.Handle);
+  if lwin.Children = nil then lwin.Children := TFPList.Create;
+  Result := lwin.Children;}
+end;
+
 class procedure TCDWSCustomForm.UpdateMotifWMHints(const AWinControl: TWinControl; CanMaximize: Boolean);
 type
   PMotifWmHints = ^TMotifWmHints;

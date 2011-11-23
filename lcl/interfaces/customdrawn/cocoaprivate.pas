@@ -15,7 +15,7 @@ uses
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   //
-  Controls, LCLMessageGlue, WSControls, LCLType, LCLProc, GraphType;
+  Forms, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc, GraphType;
 
 type
   { LCLObjectExtension }
@@ -105,6 +105,7 @@ type
   public
     callback      : TCommonCallback;
     wincallback   : TWindowCallback;
+    Children: TFPList; // TCDWinControl
     function acceptsFirstResponder: Boolean; override;
     procedure mouseUp(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
@@ -687,7 +688,7 @@ begin
     FillChar(struct, SizeOf(TPaintStruct), 0);
 
     UpdateControlLazImageAndCanvas(TCocoaCustomControl(Owner).Image,
-      TCocoaCustomControl(Owner).Canvas, lWidth, lHeight, clfRGB24);
+      TCocoaCustomControl(Owner).Canvas, lWidth, lHeight, clfRGB24UpsideDown);
 
     struct.hdc := HDC(TCocoaCustomControl(Owner).Canvas);
 
@@ -699,6 +700,11 @@ begin
     {$IFDEF VerboseWinAPI}
       DebugLn('[TLCLCommonCallback.Draw] OnPaint event ended');
     {$ENDIF}
+
+    // Now render all child wincontrols
+    RenderChildWinControls(TCocoaCustomControl(Owner).Image,
+      TCocoaCustomControl(Owner).Canvas,
+      TCDWSCustomForm.BackendGetCDWinControlList(TCustomForm(Target)));
 
     // Now render it into the control
     TCocoaCustomControl(Owner).Image.GetRawImage(lRawImage);
