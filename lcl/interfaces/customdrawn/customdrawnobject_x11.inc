@@ -162,11 +162,11 @@ procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 var
   XEvent: TXEvent;
   WindowEntry: TWinControl;
-  MouseButton: TMouseButton;
   Sum: Integer;
   NewEvent: TXEvent;
   DoBreakRun: Boolean = False;
   lWindowListIndex: Integer;
+  CurWindowInfo: TX11WindowInfo;
 begin
   while (DoBreakRun = False) do
   begin
@@ -182,11 +182,6 @@ begin
     else}
       XNextEvent(FDisplay, @XEvent);
 
-    // if the event filter returns true then it ate the message
-    //if Assigned(FEventFilter) and FEventFilter(XEvent) then continue;
-
-    //if Forms.Count = 0 then continue;
-
     // According to a comment in X.h, the valid event types start with 2!
     if XEvent._type >= 2 then
     begin
@@ -199,7 +194,12 @@ begin
         Continue;
       end;
 
-      TX11WindowInfo(WindowList.Items[lWindowListIndex]).XEvent := @XEvent;
+      CurWindowInfo := TX11WindowInfo(WindowList.Items[lWindowListIndex]);
+      CurWindowInfo.XEvent := @XEvent;
+
+      {$ifdef VerboseCDEvents}
+      DebugLn('LCL-CustomDrawn-X11: X11 event received: ', GetXEventName(XEvent._type));
+      {$endif}
 
       case XEvent._type of
        X.DestroyNotify:
@@ -208,73 +208,39 @@ begin
        end;
        X.KeyPress:
        begin
-         //TCDWSCustomForm.EvKeyPressed(WindowEntry, TX11WindowInfo(WindowList.Items[lWindowListIndex]));
-         //WindowEntry.EvKeyPressed(XEvent.xkey.keycode);
+         TCDWSCustomForm.EvKeyPressed(WindowEntry, CurWindowInfo, XEvent.xkey);
        end;
        X.KeyRelease:
        begin
-//           WindowEntry.EvKeyReleased(XEvent.xkey.keycode);
+         TCDWSCustomForm.EvKeyReleased(WindowEntry, CurWindowInfo, XEvent.xkey);
        end;
        X.ButtonPress:
        begin
-{           if XButtonToMouseButton(XEvent.xbutton.button, MouseButton) then
-            WindowEntry.EvMousePressed(MouseButton,
-             Point(XEvent.xbutton.x, XEvent.xbutton.y))
-           else
-           begin
-             if XEvent.xbutton.button = 4 then Sum := -1
-             else Sum := 1;
-
-             // Check for other mouse wheel messages in the queue
-             while XCheckTypedWindowEvent(GFApplication.Handle,
-              WindowEntry.Handle, X.ButtonPress, @NewEvent) do
-             begin
-	       if NewEvent.xbutton.Button = 4 then Dec(Sum)
-               else if NewEvent.xbutton.Button = 5 then Inc(Sum)
-               else
-               begin
-                 XPutBackEvent(GFApplication.Handle, @NewEvent);
-                 break;
-               end;
-             end;
-
-             WindowEntry.EvMouseWheel(
-              Sum, Point(XEvent.xbutton.x, XEvent.xbutton.y));
-           end;}
+         TCDWSCustomForm.EvMousePressed(WindowEntry, CurWindowInfo, XEvent.xbutton);
        end;
        X.ButtonRelease:
        begin
-           { Release events are only for mouse buttons, and not mouse wheel moviments }
-{           if (XEvent.xbutton.button >= 1) and (XEvent.xbutton.button <= 3) then
-           begin
-             XButtonToMouseButton(XEvent.xbutton.button, MouseButton);
-
-             WindowEntry.EvMouseReleased(
-              MouseButton,
-              Point(XEvent.xbutton.x, XEvent.xbutton.y));
-           end;}
+         TCDWSCustomForm.EvMouseReleased(WindowEntry, CurWindowInfo, XEvent.xbutton);
        end;
        X.EnterNotify:
        begin
-//           WindowEntry.EvMouseEnter(
-//            Point(XEvent.xbutton.x, XEvent.xbutton.y));
+         TCDWSCustomForm.EvMouseEnter(WindowEntry, CurWindowInfo);
        end;
        X.LeaveNotify:
        begin
-//           WindowEntry.EvMouseLeave();
+         TCDWSCustomForm.EvMouseLeave(WindowEntry, CurWindowInfo);
        end;
        X.MotionNotify:
        begin
-//           WindowEntry.EvMouseMove(
-//            Point(XEvent.xbutton.x, XEvent.xbutton.y));
+         TCDWSCustomForm.EvMouseMove(WindowEntry, CurWindowInfo, XEvent.xmotion);
        end;
        X.FocusIn:
        begin
-//           WindowEntry.EvFocusIn();
+         TCDWSCustomForm.EvFocusIn(WindowEntry, CurWindowInfo);
        end;
        X.FocusOut:
        begin
-//           WindowEntry.EvFocusOut();
+         TCDWSCustomForm.EvFocusOut(WindowEntry, CurWindowInfo);
        end;
        X.MapNotify:
        begin
@@ -294,22 +260,24 @@ begin
            For now we are just ignoring all expose messages where Count <> 0 }
          if XEvent.xexpose.count = 0 then
          begin
-           TCDWSCustomForm.EvPaint(WindowEntry, TX11WindowInfo(WindowList.Items[lWindowListIndex]));
+           TCDWSCustomForm.EvPaint(WindowEntry, CurWindowInfo);
          end;
        end;
        X.ConfigureNotify:
        begin
-//           WindowEntry.Dispatch(XEvent);
+         TCDWSCustomForm.EvConfigureNotify(WindowEntry, CurWindowInfo, XEvent.xconfigure);
        end;
        X.ClientMessage:
        begin
-//           WindowEntry.Dispatch(XEvent);
+         TCDWSCustomForm.EvClientMessage(WindowEntry, CurWindowInfo, XEvent.xclient);
        end;
       else
         DebugLn('LCL-CustomDrawn-X11: Unhandled X11 event received: ', GetXEventName(XEvent._type));
       end;
 
     end;
+
+    DoBreakRun := Application.Terminated;
   end;
   DoBreakRun := False;
 end;

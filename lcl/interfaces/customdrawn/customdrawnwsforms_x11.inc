@@ -470,6 +470,101 @@ begin
 //  XDestroyImage(Image);
 end;
 
+class procedure TCDWSCustomForm.EvKeyPressed(const AWinControl: TWinControl;
+  AWindowInfo: TX11WindowInfo; var Event: TXKeyEvent);
+{var
+  KeySym: TKeySym;}
+begin
+{  KeySym := StartComposing(FXEvent^);
+
+  inherited EvKeyPressed(AKey);
+
+  if (FXEvent^.xkey.state and (ControlMask or Mod1Mask)) = 0 then EndComposing;}
+end;
+
+class procedure TCDWSCustomForm.EvKeyReleased(const AWinControl: TWinControl;
+  AWindowInfo: TX11WindowInfo; var Event: TXKeyEvent);
+{var
+  KeySym: TKeySym;}
+begin
+{  KeySym := StartComposing(FXEvent^);
+
+  inherited EvKeyReleased(AKey);
+
+  // Do not call EndComposing, as this would generate duplicate KeyChar events!}
+end;
+
+class procedure TCDWSCustomForm.EvMousePressed(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
+  var Event: TXButtonEvent);
+var
+  MouseButton: TMouseButton;
+begin
+  if XButtonToMouseButton(Event.button, MouseButton) then
+  begin
+    LCLSendMouseDownMsg(AWinControl, Event.x, Event.y, MouseButton, []);
+  end
+  else
+  begin
+{   if Event.button = 4 then Sum := -1
+   else Sum := 1;
+
+   // Check for other mouse wheel messages in the queue
+   while XCheckTypedWindowEvent(GFApplication.Handle,
+    WindowEntry.Handle, X.ButtonPress, @NewEvent) do
+   begin
+   if NewEvent.xbutton.Button = 4 then Dec(Sum)
+     else if NewEvent.xbutton.Button = 5 then Inc(Sum)
+     else
+     begin
+       XPutBackEvent(GFApplication.Handle, @NewEvent);
+       break;
+     end;
+   end;
+
+   WindowEntry.EvMouseWheel(
+    Sum, Point(XEvent.xbutton.x, XEvent.xbutton.y));}
+  end;
+end;
+
+class procedure TCDWSCustomForm.EvMouseReleased(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
+  var Event: TXButtonEvent);
+var
+  MouseButton: TMouseButton;
+begin
+  { Release events are only for mouse buttons, and not mouse wheel moviments }
+  if (Event.button >= 1) and (Event.button <= 3) then
+  begin
+    XButtonToMouseButton(Event.button, MouseButton);
+
+    LCLSendMouseUpMsg(AWinControl, Event.x, Event.y, MouseButton, []);
+    LCLSendClickedMsg(AWinControl);
+  end;
+end;
+
+class procedure TCDWSCustomForm.EvMouseEnter(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
+begin
+end;
+
+class procedure TCDWSCustomForm.EvMouseLeave(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
+begin
+end;
+
+class procedure TCDWSCustomForm.EvMouseMove(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
+  var Event: TXMotionEvent);
+begin
+  LCLSendMouseMoveMsg(AWinControl, Event.x, Event.y, []);
+end;
+
+class procedure TCDWSCustomForm.EvFocusIn(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
+begin
+  LCLSendActivateMsg(AWinControl, True, false);
+end;
+
+class procedure TCDWSCustomForm.EvFocusOut(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
+begin
+  LCLSendDeactivateStartMsg(AWinControl);
+end;
+
 class procedure TCDWSCustomForm.EvPaint(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
 var
   struct : TPaintStruct;
@@ -527,6 +622,50 @@ begin
   {$IFDEF VerboseCDPaintProfiler}
   DebugLn(Format('[TCDWSCustomForm.EvPaint] Paint duration: %d ms', [DateTimeToMilliseconds(NowUTC() - lTimeStart)]));
   {$ENDIF}
+end;
+
+class procedure TCDWSCustomForm.EvConfigureNotify(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
+  var Event: TXConfigureEvent);
+begin
+  // Remove other repeated events
+  //while XCheckTypedWindowEvent(CDWidget.FDisplay, AWindowInfo.Window, X.ConfigureNotify, @Event) do;
+
+{  // Move event
+  if (Event.x <> AWinControl.Left) or (Event.y <> AWinControl.Top) then
+  begin
+    LCLSendMoveMsg(AWinControl, Event.x, Event.y);
+  end;
+  // Size event
+  if (Event.Width <> AWinControl.Width) or (Event.Height <> AWinControl.Height) then
+  begin
+    //SIZENORMAL, SIZEICONIC, SIZEFULLSCREEN, SIZEZOOMSHOW, SIZEZOOMHIDE.
+    LCLSendSizeMsg(AWinControl, Event.Width, Event.Height, SIZENORMAL);
+//    TX11Canvas(Canvas).Resized(ClientWidth, ClientHeight);
+  end;}
+end;
+
+class procedure TCDWSCustomForm.EvClientMessage(const AWinControl: TWinControl;
+  AWindowInfo: TX11WindowInfo; var Event: TXClientMessageEvent);
+var
+  CanClose: Boolean;
+begin
+  if Event.message_type = CDWidgetset.FWMProtocols then
+  begin
+    if Event.Data.l[0] = CDWidgetset.FWMDeleteWindow then
+    begin
+      // Message results : 0 - do nothing, 1 - destroy window (felipe: is this comment correct? taken from lcl-cocoa)
+      CanClose:=LCLSendCloseQueryMsg(AWinControl)>0;
+      if {CanClose} True then // CanClose is returning false -> ToDo: find out why
+      begin
+        LCLSendCloseUpMsg(AWinControl);
+        XDestroyWindow(CDWidgetset.FDisplay, AWinControl.Handle);
+      end;
+    end
+    else
+      DebugLn(Format('LCL-CustomDrawn-X11: Unknown client protocol message: %d', [Event.Data.l[0]]));
+  end
+  else
+    DebugLn(Format('LCL-CustomDrawn-X11: Unknown client message: %d', [Event.message_type]));
 end;
 
 {------------------------------------------------------------------------------

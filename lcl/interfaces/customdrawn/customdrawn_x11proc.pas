@@ -7,7 +7,7 @@ interface
 uses
   // rtl+ftl
   Types, Classes, SysUtils,
-  fpimage, fpcanvas,
+  fpimage, fpcanvas, ctypes,
   X, XLib,
   // Custom Drawn Canvas
   IntfGraphics, lazcanvas,
@@ -31,7 +31,24 @@ type
     Canvas: TLazCanvas;
   end;
 
+function XButtonToMouseButton(const XButton: cint; var MouseButton: TMouseButton): Boolean;
+
 implementation
+
+{ Returns True if the button is indeed a mouse button
+  and False if it's the mouse wheel }
+function XButtonToMouseButton(const XButton: cint; var MouseButton: TMouseButton): Boolean;
+const
+  ButtonTable: array[1..3] of TMouseButton = (mbLeft, mbMiddle, mbRight);
+begin
+  Result := False;
+
+  if (XButton > 3) or (XButton < 1) then Exit;
+
+  MouseButton := ButtonTable[XButton];
+
+  Result := True;
+end;
 
 end.
 

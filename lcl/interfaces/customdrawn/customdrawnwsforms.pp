@@ -104,7 +104,25 @@ type
     class procedure DrawRawImageToGC_XPutImage(ARawImage: TRawImage;
       ADestWindowInfo: TX11WindowInfo; ADestX, ADestY, ADestWidth, ADestHeight: Integer);
     // Event handling
+    class procedure EvKeyPressed(const AWinControl: TWinControl;
+      AWindowInfo: TX11WindowInfo; var Event: TXKeyEvent);
+    class procedure EvKeyReleased(const AWinControl: TWinControl;
+      AWindowInfo: TX11WindowInfo; var Event: TXKeyEvent);
+    class procedure EvMousePressed(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
+      var Event: TXButtonEvent);
+    class procedure EvMouseReleased(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
+      var Event: TXButtonEvent);
+    class procedure EvMouseEnter(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
+    class procedure EvMouseLeave(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
+    class procedure EvMouseMove(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
+      var Event: TXMotionEvent);
+    class procedure EvFocusIn(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
+    class procedure EvFocusOut(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
     class procedure EvPaint(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
+    class procedure EvConfigureNotify(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
+      var Event: TXConfigureEvent);
+    class procedure EvClientMessage(const AWinControl: TWinControl;
+      AWindowInfo: TX11WindowInfo; var Event: TXClientMessageEvent);
     {$endif}
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
