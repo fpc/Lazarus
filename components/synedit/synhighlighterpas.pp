@@ -401,6 +401,7 @@ type
     function Func112: TtkTokenKind;  // "requires"
     function Func117: TtkTokenKind;
     function Func122: TtkTokenKind; // "otherwise"
+    function Func124: TtkTokenKind;
     function Func126: TtkTokenKind;
     function Func128: TtkTokenKind;
     function Func129: TtkTokenKind;
@@ -754,6 +755,7 @@ begin
   fIdentFuncTable[112] := @Func112; // "requires"
   fIdentFuncTable[117] := @Func117;
   fIdentFuncTable[122] := @Func122;
+  fIdentFuncTable[124] := @Func124;
   fIdentFuncTable[126] := @Func126;
   fIdentFuncTable[128] := @Func128;
   fIdentFuncTable[129] := @Func129;
@@ -834,6 +836,7 @@ begin
   fIdentFuncTable[105] := Func105;
   fIdentFuncTable[106] := Func106;
   fIdentFuncTable[117] := Func117;
+  fIdentFuncTable[124] := Func124;
   fIdentFuncTable[126] := Func126;
   fIdentFuncTable[129] := Func129;
   fIdentFuncTable[132] := Func132;
@@ -1938,6 +1941,21 @@ end;
 function TSynPasSyn.Func122: TtkTokenKind;
 begin
   if KeyComp('Otherwise') then Result := tkKey else Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func124: TtkTokenKind;
+begin
+  if KeyComp('ObjcCategory') then
+  begin
+    Result := tkKey;
+    if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
+    begin
+      fRange := fRange + [rsAtClass];
+      StartPascalCodeFoldBlock(cfbtClass);
+    end;
+  end
+  else
+    Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func126: TtkTokenKind;
