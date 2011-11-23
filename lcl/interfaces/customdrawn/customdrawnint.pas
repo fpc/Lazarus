@@ -131,10 +131,6 @@ type
     FWMHints: TAtom;		  // Atom for "_MOTIF_WM_HINTS"
 
     WindowList: TFPList;// list of TX11WindowInfo
-    function RectToXRect(const ARect: TRect): TXRectangle;
-    function XRectToRect(const ARect: TXRectangle): TRect;
-    function XButtonToMouseButton(const XButton: cint; var MouseButton: TMouseButton): Boolean;
-    function GetXEventName(Event: LongInt): String;
     function FindWindowByXID(XWindowID: X.TWindow; out AIndex: Integer): TWinControl;
     {$endif}
   protected

@@ -555,6 +555,9 @@ begin
   LCLSendMouseMoveMsg(AWinControl, Event.x, Event.y, []);
 end;
 
+// Top-level windows receive LM_ACTIVATE while constrols receive LM_SETFOCUS
+// See http://blogs.msdn.com/b/jfoscoding/archive/2006/08/02/686141.aspx
+// Here we have 1 handle per window, so the X11 backend should only send LM_ACTIVATE
 class procedure TCDWSCustomForm.EvFocusIn(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
 begin
   LCLSendActivateMsg(AWinControl, True, false);
@@ -627,10 +630,14 @@ end;
 class procedure TCDWSCustomForm.EvConfigureNotify(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
   var Event: TXConfigureEvent);
 begin
-  // Remove other repeated events
-  //while XCheckTypedWindowEvent(CDWidget.FDisplay, AWindowInfo.Window, X.ConfigureNotify, @Event) do;
+  // Without this while, it will get stuck in a loop resizing endlessly
+  while XCheckTypedWindowEvent(CDWidgetset.FDisplay, AWindowInfo.Window, X.ConfigureNotify, @Event) do;
 
-{  // Move event
+  {$ifdef VerboseCDEvents}
+  DebugLn(Format('LCL-CustomDrawn-X11: X11 event received: %s X=%d Y=%d', [GetXEventName(Event._type), Event.x, Event.y]));
+  {$endif}
+
+  // Move event
   if (Event.x <> AWinControl.Left) or (Event.y <> AWinControl.Top) then
   begin
     LCLSendMoveMsg(AWinControl, Event.x, Event.y);
@@ -640,8 +647,9 @@ begin
   begin
     //SIZENORMAL, SIZEICONIC, SIZEFULLSCREEN, SIZEZOOMSHOW, SIZEZOOMHIDE.
     LCLSendSizeMsg(AWinControl, Event.Width, Event.Height, SIZENORMAL);
-//    TX11Canvas(Canvas).Resized(ClientWidth, ClientHeight);
-  end;}
+
+    //    TX11Canvas(Canvas).Resized(ClientWidth, ClientHeight); seams unnecessary here
+  end;
 end;
 
 class procedure TCDWSCustomForm.EvClientMessage(const AWinControl: TWinControl;
