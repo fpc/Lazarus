@@ -5285,6 +5285,7 @@ function TCDWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 var
   aObject: TObject;
   lBrush: TFPCustomBrush absolute AObject;
+  lOrigBrush: TFPCustomBrush;
   {$ifdef VerboseWinAPI}
   ObjType: string;
   {$endif}
@@ -5339,9 +5340,9 @@ begin
   begin
     {$ifdef VerboseWinAPI}ObjType := 'Brush';{$endif}
 
-    //Result := HGDIOBJ(TQtDeviceContext(DC).brush);
-
-    TLazCanvas(DC).Brush.FPColor := lBrush.FPColor;
+    Result := HGDIOBJ(TLazCanvas(DC).AssignedBrush);
+    TLazCanvas(DC).AssignBrushData(lBrush); // := doesn't work
+    TLazCanvas(DC).AssignedBrush := lBrush;
   end(*
   else if aObject is TQtImage then
   begin
