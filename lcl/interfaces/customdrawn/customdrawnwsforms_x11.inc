@@ -125,19 +125,9 @@ var
 begin
   lWindow := TWindow(AWinControl.Handle);
 
-  ChangeMask := 0;
-
-  if ASize.cx <> AWinControl.ClientWidth then
-  begin
-    ChangeMask := CWWidth;
-    Changes.Width := ASize.cx;
-  end;
-
-  if ASize.cy <> AWinControl.ClientHeight then
-  begin
-    ChangeMask := ChangeMask or CWHeight;
-    Changes.Height := ASize.cy;
-  end;
+  ChangeMask := CWWidth or CWHeight;
+  Changes.Width := ASize.cx;
+  Changes.Height := ASize.cy;
 
   if ChangeMask <> 0 then
     XConfigureWindow(CDWidgetSet.FDisplay, lWindow, ChangeMask, @Changes);
@@ -411,8 +401,8 @@ var
 begin
   lScanlineSize := (ADestWindowInfo.Canvas.Width*ADestWindowInfo.ColorDepth) div 8;
   lScreen := DefaultScreen(CDWidgetSet.FDisplay);
-  lVisual := {DefaultVisual(CDWidgetSet.FDisplay, lScreen); //} ADestWindowInfo.Attr.Visual;
-  lDepth := {DefaultDepth(CDWidgetSet.FDisplay, lScreen); //} ADestWindowInfo.ColorDepth;
+  lVisual := DefaultVisual(CDWidgetSet.FDisplay, lScreen); // ADestWindowInfo.Attr.Visual;
+  lDepth := ADestWindowInfo.ColorDepth;
 
   // Create a native Image
   Image := XCreateImage(CDWidgetSet.FDisplay, lVisual,
@@ -420,7 +410,7 @@ begin
     ADestWidth, ADestHeight, 8, 0);
 
   {$IFDEF VerboseCDWindow}
-    DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC_XPutImage] Image=%x Data=%x'
+    DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC_XPutImage] XImage=%x Data=%x'
       + ' ColorDepth:%d Width=%d Height=%d ScanlineSize=%d',
       [PtrInt(Image), PtrInt(ARawImage.Data), lDepth,
        ADestWidth, ADestHeight, lScanlineSize]));
