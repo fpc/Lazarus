@@ -4007,7 +4007,7 @@ begin
     end;
     if CurPos.Flag=cafEdgedBracketOpen then
       ReadGUID;
-    // parse till "end" of interface
+    // parse till "end" of interface/dispinterface/objcprotocol
     repeat
       if not ParseInnerClass(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
       begin
@@ -4023,8 +4023,10 @@ begin
       EndChildNode;
     end;
     // end last class section (public, private, ...)
-    CurNode.EndPos:=CurPos.StartPos;
-    EndChildNode;
+    if CurNode.Desc in AllClassSections then begin
+      CurNode.EndPos:=CurPos.StartPos;
+      EndChildNode;
+    end;
   end else begin
     // forward definition
     CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;
