@@ -115,6 +115,7 @@ type
     procedure BuildFormDestroy(Sender: TObject);
     procedure EOutputButtonClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure Sgsourcesdblclick(Sender: Tobject);
   private
     FFileName: String;
     OldBuf: String;
@@ -308,6 +309,7 @@ procedure TBuildForm.ASourceDeleteExecute(Sender: TObject);
 begin
   if Sender=nil then ;
   DeleteSource(CurrentSourceIndex);
+  DisplaySources; //Update GUI with changes
 end;
 
 procedure TBuildForm.ASourceDeleteUpdate(Sender: TObject);
@@ -419,6 +421,12 @@ procedure TBuildForm.FormResize(Sender: TObject);
 begin
   EOutput.Width:= Panel1.Left - EOutput.ButtonWidth - 12;
 end;
+
+procedure Tbuildform.Sgsourcesdblclick(Sender: Tobject);
+begin
+  // Allow editing of contents by doubleclick
+  ASourceEditExecute(nil);
+End;
 
 { ---------------------------------------------------------------------
   general loading and saving of form.
@@ -592,7 +600,7 @@ end;
 function TBuildForm.AddSource(const ASource, AOptions: String): Integer;
 begin
   Result:=FOptions.Add(ASource+'='+AOptions);
-  DisplaySources;
+  DisplaySources; //Update GUI with changes
 end;
 
 Procedure TBuildForm.SetSourceOptions(Index : Integer; const ASource, AOptions: String);
