@@ -487,6 +487,10 @@ msgstr "Unidade de bibliotecas estáticas"
 msgid "Used by"
 msgstr "Usado por"
 
+#: codystrconsts.crsuseidentifier
+msgid "Use identifier"
+msgstr ""
+
 #: codystrconsts.crsuses
 msgid "Uses"
 msgstr "\"Uses\""

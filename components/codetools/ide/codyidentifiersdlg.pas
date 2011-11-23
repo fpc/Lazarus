@@ -27,11 +27,7 @@
   ToDo:
     -quickfix for identifier not found
       -show dialog
-      -list with units and packages
-      -show hint about full unit file name and package file name
-      -check if unit still exists
       -check if identifier still exists
-      -check if package still exist
       -check if unit conflicts with another unit in path
       -buttons: add unit to interface, add unit to implementation
       -add unit to uses
@@ -115,6 +111,7 @@ type
     ItemsListBox: TListBox;
     PackageLabel: TLabel;
     UnitLabel: TLabel;
+    procedure ButtonPanel1OKButtonClick(Sender: TObject);
     procedure FileLabelClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
     procedure FilterEditExit(Sender: TObject);
@@ -472,6 +469,12 @@ begin
 
 end;
 
+procedure TCodyIdentifiersDlg.ButtonPanel1OKButtonClick(Sender: TObject);
+begin
+  // todo
+  ShowMessage('not yet implemented');
+end;
+
 procedure TCodyIdentifiersDlg.FilterEditExit(Sender: TObject);
 begin
   if GetFilterEditText='' then
@@ -507,6 +510,8 @@ end;
 procedure TCodyIdentifiersDlg.FormCreate(Sender: TObject);
 begin
   Caption:=crsCodyIdentifierDictionary;
+  ButtonPanel1.OKButton.Caption:=crsUseIdentifier;
+  ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OKButtonClick;
   FMaxItems:=20;
   FNoFilterText:=crsFilter;
   FItems:=TStringList.Create;
@@ -578,15 +583,21 @@ begin
         inc(Found);
         if Found<MaxItems then begin
           Item:=TUDIdentifier(Node.Data);
-          GroupNode:=Item.DUnit.UnitGroups.FindLowest;
-          while GroupNode<>nil do begin
-            Group:=TUDUnitGroup(GroupNode.Data);
-            s:=Item.Name+' in '+Item.DUnit.Name;
-            if Group.Name<>'' then
-              s:=s+' of '+Group.Name;
-            FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Filename);
-            sl.Add(s);
-            GroupNode:=Item.DUnit.UnitGroups.FindSuccessor(GroupNode);
+          if FileExistsCached(Item.DUnit.Filename) then begin
+            GroupNode:=Item.DUnit.UnitGroups.FindLowest;
+            while GroupNode<>nil do begin
+              Group:=TUDUnitGroup(GroupNode.Data);
+              if (Group.Filename='')
+              or (FileExistsCached(Group.Filename)) then begin
+                s:=Item.Name+' in '+Item.DUnit.Name;
+                if Group.Name<>'' then begin
+                  s:=s+' of '+Group.Name;
+                end;
+                FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Filename);
+                sl.Add(s);
+              end;
+              GroupNode:=Item.DUnit.UnitGroups.FindSuccessor(GroupNode);
+            end;
           end;
         end;
       end;
@@ -616,9 +627,11 @@ begin
       UnitFilename:=CreateRelativePath(UnitFilename,ExtractFilePath(GroupFilename));
     UnitLabel.Caption:='Unit: '+UnitFilename;
     PackageLabel.Caption:='Package: '+GroupFilename;
+    ButtonPanel1.OKButton.Enabled:=true;
   end else begin
     UnitLabel.Caption:='Unit: none selected';
     PackageLabel.Caption:='Package: none selected';
+    ButtonPanel1.OKButton.Enabled:=false;
   end;
 end;
 

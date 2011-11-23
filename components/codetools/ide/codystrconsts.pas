@@ -164,6 +164,7 @@ resourcestring
   crsOptions = 'Options';
   crsRefresh = 'Refresh';
   crsFilter = '(Filter)';
+  crsUseIdentifier = 'Use identifier';
   crsAndMoreIdentifiers = '... and %s more identifiers';
   crsCodyIdentifierDictionary = 'Cody Identifier Dictionary';
   crsPackagesUnitsIdentifiersFile = 'Packages: %s, Units: %s, Identifiers: %s%'

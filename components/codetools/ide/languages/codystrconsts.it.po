@@ -482,6 +482,10 @@ msgstr ""
 msgid "Used by"
 msgstr "Usato da"
 
+#: codystrconsts.crsuseidentifier
+msgid "Use identifier"
+msgstr ""
+
 #: codystrconsts.crsuses
 msgid "Uses"
 msgstr ""

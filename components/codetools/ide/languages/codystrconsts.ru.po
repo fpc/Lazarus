@@ -488,6 +488,10 @@ msgstr "Статические библиотеки модулей"
 msgid "Used by"
 msgstr "Используется"
 
+#: codystrconsts.crsuseidentifier
+msgid "Use identifier"
+msgstr ""
+
 #: codystrconsts.crsuses
 msgid "Uses"
 msgstr "Использует"
