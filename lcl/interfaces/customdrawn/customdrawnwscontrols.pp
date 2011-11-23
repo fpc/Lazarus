@@ -30,8 +30,10 @@ interface
 uses
   // LCL
   SysUtils, Classes, Types,
+  //
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
   Controls, LCLType, LCLProc, Forms, Graphics,
+  lazcanvas, lazregions,
   // Widgetset
   InterfaceBase, WSProc, WSControls, WSLCLClasses, customdrawnint;
 

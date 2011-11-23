@@ -2,6 +2,11 @@
 
 { TCDWSCustomForm }
 
+class procedure TCDWSCustomForm.BackendAddChildRegionToForm(const AForm: TCustomForm; ARegion: TLazRegionWithChilds);
+begin
+
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCDWSCustomForm.CreateHandle
   Params:  AWinControl - LCL control

@@ -130,7 +130,6 @@ type
     FWMDeleteWindow: TAtom;	  // Atom for "WM_DELETE_WINDOW"
     FWMHints: TAtom;		  // Atom for "_MOTIF_WM_HINTS"
 
-    WindowList: TFPList;// list of TX11WindowInfo
     function FindWindowByXID(XWindowID: X.TWindow; out AIndex: Integer): TWinControl;
     {$endif}
   protected

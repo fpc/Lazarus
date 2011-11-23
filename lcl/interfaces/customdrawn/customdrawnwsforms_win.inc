@@ -6,6 +6,11 @@ type
 
 { TCDWSCustomForm }
 
+class procedure TCDWSCustomForm.BackendAddChildRegionToForm(const AForm: TCustomForm; ARegion: TLazRegionWithChilds);
+begin
+
+end;
+
 class function TCDWSCustomForm.CalcBorderIconsFlags(const AForm: TCustomForm): dword;
 var
   BorderIcons: TBorderIcons;

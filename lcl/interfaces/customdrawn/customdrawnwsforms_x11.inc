@@ -2,6 +2,11 @@
 
 { TCDWSCustomForm }
 
+class procedure TCDWSCustomForm.BackendAddChildRegionToForm(const AForm: TCustomForm; ARegion: TLazRegionWithChilds);
+begin
+
+end;
+
 class procedure TCDWSCustomForm.UpdateMotifWMHints(const AWinControl: TWinControl; CanMaximize: Boolean);
 type
   PMotifWmHints = ^TMotifWmHints;
@@ -33,8 +38,10 @@ var
   Hints: PMotifWmHints;
   NewHints: TMotifWmHints;
   lWindow: TWindow;
+  lWindowInfo: TX11WindowInfo;
 begin
-  lWindow := TWindow(AWinControl.Handle);
+  lWindowInfo := TX11WindowInfo(AWinControl.Handle);
+  lWindow := lWindowInfo.Window;
 
   if CDWidgetSet.FWMHints = 0 then
     CDWidgetSet.FWMHints :=
@@ -82,8 +89,10 @@ var
   lx, ly: integer;
   cw : PWindow;
   lWindow: TWindow;
+  lWindowInfo: TX11WindowInfo;
 begin
-  lWindow := TWindow(AWinControl.Handle);
+  lWindowInfo := TX11WindowInfo(AWinControl.Handle);
+  lWindow := lWindowInfo.Window;
 
   if AWinControl.Parent = nil then
   begin
@@ -122,8 +131,10 @@ var
   ChangeMask: Cardinal;
   Changes: TXWindowChanges;
   lWindow: TWindow;
+  lWindowInfo: TX11WindowInfo;
 begin
-  lWindow := TWindow(AWinControl.Handle);
+  lWindowInfo := TX11WindowInfo(AWinControl.Handle);
+  lWindow := lWindowInfo.Window;
 
   ChangeMask := CWWidth or CWHeight;
   Changes.Width := ASize.cx;
@@ -137,10 +148,12 @@ class procedure TCDWSCustomForm.SetMinMaxSize(const AWinControl: TWinControl; co
 var
   Supplied: PtrInt;
   SizeHints: PXSizeHints;
-  lWindow: TWindow;
   CanMaximize: Boolean;
+  lWindow: TWindow;
+  lWindowInfo: TX11WindowInfo;
 begin
-  lWindow := TWindow(AWinControl.Handle);
+  lWindowInfo := TX11WindowInfo(AWinControl.Handle);
+  lWindow := lWindowInfo.Window;
 
   CanMaximize := (AMaxSize.cx = 0) or (AMaxSize.cy = 0) or
     (AMaxSize.cx > AMinSize.cx) or (AMaxSize.cy > AMinSize.cy);
@@ -705,6 +718,7 @@ var
   lParentHandle: X.TWindow;
   mask: longword;
   lWindowInfo: TX11WindowInfo;
+  lWindow: TWindow;
   AForm: TCustomForm absolute AWinControl;
 begin
   {$ifdef VerboseCDWindow}
@@ -744,7 +758,7 @@ begin
     mask := CWColormap;
   end;
 
-  Result := XCreateWindow(
+  lWindow := XCreateWindow(
     CDWidgetSet.FDisplay,
     lParentHandle,                      // parent
     SizeHints.x, SizeHints.x,           // position (top, left)
@@ -756,7 +770,7 @@ begin
     mask,
     @Attr);
 
-  if Result = 0 then
+  if lWindow = 0 then
     raise Exception.Create('[TCDWSCustomForm.CreateHandle] Window creation failed');
 
   XSelectInput(CDWidgetSet.FDisplay, Result, KeyPressMask or KeyReleaseMask
@@ -803,13 +817,13 @@ begin
 
   // Add the window to the list of windows
   lWindowInfo := TX11WindowInfo.Create;
-  lWindowInfo.Window := TWindow(Result);
+  lWindowInfo.Window := lWindow;
   lWindowInfo.LCLControl := AWinControl;
   XGetWindowAttributes(CDWidgetSet.FDisplay, Result, @lWindowInfo.Attr);
   lWindowInfo.Colormap := XDefaultColormap(CDWidgetSet.FDisplay, XDefaultScreen(CDWidgetSet.FDisplay));
   lWindowInfo.ColorDepth := lWindowInfo.Attr.depth;
   CreateX11Canvas(lWindowInfo);
-  CDWidgetset.WindowList.Add(lWindowInfo);
+  Result := TLCLIntfHandle(lWindowInfo);
 
   {$ifdef VerboseCDWindow}
   DebugLn(Format(':<[TCDWSCustomForm.CreateHandle] Result=%x',
@@ -859,11 +873,13 @@ end;
 
 class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
-  lWindow: TWindow;
   lIndex: Integer;
+  lWindow: TWindow;
   lWindowInfo: TX11WindowInfo;
 begin
-  lWindow := TWindow(AWinControl.Handle);
+  lWindowInfo := TX11WindowInfo(AWinControl.Handle);
+  lWindow := lWindowInfo.Window;
+
   if AWinControl.Visible then
   begin
     {$ifdef VerboseCDWindow}
@@ -885,8 +901,11 @@ class function TCDWSCustomForm.GetText(const AWinControl: TWinControl; var AText
 var
   s: PChar;
   lWindow: TWindow;
+  lWindowInfo: TX11WindowInfo;
 begin
-  lWindow := TWindow(AWinControl.Handle);
+  lWindowInfo := TX11WindowInfo(AWinControl.Handle);
+  lWindow := lWindowInfo.Window;
+
   XFetchName(CDWidgetSet.FDisplay, lWindow, @s);
   AText := s;
   XFree(s);
@@ -904,8 +923,10 @@ class procedure TCDWSCustomForm.SetText(const AWinControl: TWinControl; const AT
 var
   tp: TXTextProperty;
   lWindow: TWindow;
+  lWindowInfo: TX11WindowInfo;
 begin
-  lWindow := TWindow(AWinControl.Handle);
+  lWindowInfo := TX11WindowInfo(AWinControl.Handle);
+  lWindow := lWindowInfo.Window;
 
   tp.value    := PCUChar(AText);
   tp.encoding := XA_WM_NAME;

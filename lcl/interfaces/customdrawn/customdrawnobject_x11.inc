@@ -31,9 +31,9 @@ begin
   Result := nil;
 
   { Loops througth all windows on the application }
-  for i := 0 to WindowList.Count - 1 do
+  for i := 0 to Screen.FormCount - 1 do
   begin
-    lWindowInfo := TX11WindowInfo(WindowList[i]);
+    lWindowInfo := TX11WindowInfo(Screen.Forms[i].Handle);
     Result := lWindowInfo.LCLControl;
     AIndex := i;
 

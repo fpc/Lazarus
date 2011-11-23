@@ -39,6 +39,7 @@ uses
   lazutf8sysutils,
   // LCL
   Controls, LCLType, Forms, LCLProc, GraphType, IntfGraphics, lazcanvas,
+  lazregions,
   // Widgetset
   InterfaceBase, WSForms, WSProc, WSLCLClasses, LCLMessageGlue,
   customdrawnwscontrols, customdrawnint, customdrawnproc;
@@ -76,6 +77,7 @@ type
 
   TCDWSCustomForm = class(TWSCustomForm)
   public
+    class procedure BackendAddChildRegionToForm(const AForm: TCustomForm; ARegion: TLazRegionWithChilds);
     {$ifdef CD_Windows}
     class function CalcBorderIconsFlags(const AForm: TCustomForm): dword;
     class function CalcBorderIconsFlagsEx(const AForm: TCustomForm): DWORD;
