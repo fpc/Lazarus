@@ -328,6 +328,10 @@ type
     Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean) of object;
 
   TSynHomeMode = (synhmDefault, synhmFirstWord);
+
+  TSynCoordinateMappingFlag = (scmLimitToLines, scmIncludePartVisible);
+  TSynCoordinateMappingFlags = set of TSynCoordinateMappingFlag;
+
   { TCustomSynEdit }
 
   TCustomSynEdit = class(TSynEditBase)
@@ -802,9 +806,9 @@ type
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure PasteFromClipboard;
-    function PixelsToRowColumn(Pixels: TPoint): TPoint;
+    function PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags = [scmLimitToLines]): TPoint;
     function PixelsToLogicalPos(const Pixels: TPoint): TPoint;
-    function ScreenRowToRow(ScreenRow: integer): integer;
+    function ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer;
     function RowToScreenRow(PhysicalRow: integer): integer;
     procedure Redo;
     procedure RegisterCommandHandler(AHandlerProc: THookedCommandEvent;
@@ -1418,7 +1422,7 @@ begin
     PrimarySelection.OnRequest:=nil;
 end;
 
-function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint): TPoint;
+function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags = [scmLimitToLines]): TPoint;
 // converts the client area coordinate
 // to Caret position (screen position, (1,1) based)
 // To get the text/physical position use PixelsToLogicalPos
@@ -1430,12 +1434,12 @@ begin
           - TextLeftPixelOffset
          ) / fCharWidth
        )+1;
-  // don't return a partially visible last line
-  if Pixels.Y >= fLinesInWindow * fTextHeight then begin
+  if (not(scmIncludePartVisible in aFlags)) and (Pixels.Y >= fLinesInWindow * fTextHeight) then begin
+    // don't return a partially visible last line
     Pixels.Y := fLinesInWindow * fTextHeight - 1;
     if Pixels.Y < 0 then Pixels.Y := 0;
   end;
-  Result := Point(RoundOff(f), ScreenRowToRow(Pixels.Y div fTextHeight));
+  Result := Point(RoundOff(f), ScreenRowToRow(Pixels.Y div fTextHeight, scmLimitToLines in aFlags));
   {$IFDEF SYN_MBCSSUPPORT}
   if (Result.Y >= 1) and (Result.Y <= Lines.Count) then begin
     s := Lines[Result.Y - 1];
@@ -1454,11 +1458,13 @@ begin
   Result:=PhysicalToLogicalPos(PixelsToRowColumn(Pixels));
 end;
 
-function TCustomSynEdit.ScreenRowToRow(ScreenRow: integer): integer;
+function TCustomSynEdit.ScreenRowToRow(ScreenRow: integer; LimitToLines: Boolean = True): integer;
 // ScreenRow is 0-base
 // result is 1-based
 begin
   Result := FFoldedLinesView.ScreenLineToTextIndex(ScreenRow)+1;
+  if LimitToLines and (Result >= Lines.Count) then
+    Result := Lines.Count;
 //  DebugLn(['=== SrceenRow TO Row   In:',ScreenRow,'  out:',Result, ' topline=',TopLine, '  view topline=',FFoldedLinesView.TopLine]);
 end;
 

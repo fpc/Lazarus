@@ -2906,8 +2906,6 @@ end;
 
 function TSynEditFoldedView.ViewPosToTextIndex(aViewPos : Integer) : Integer;
 begin
-  if aViewPos > Count then
-    aViewPos := Count;
   result := aViewPos - 1 + fFoldTree.FindFoldForFoldedLine(aViewPos).FoldedBefore;
 end;
 
