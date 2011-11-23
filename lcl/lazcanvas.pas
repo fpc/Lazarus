@@ -52,13 +52,17 @@ type
   TLazCanvas = class(TFPImageCanvas)
   private
     FAssignedBrush: TFPCustomBrush;
+    FAssignedPen: TFPCustomPen;
     function GetAssignedBrush: TFPCustomBrush;
+    function GetAssignedPen: TFPCustomPen;
   public
     constructor create (AnImage : TFPCustomImage);
     destructor destroy; override;
     // Utilized by LCLIntf.SelectObject
+    procedure AssignPenData(APen: TFPCustomPen);
     procedure AssignBrushData(ABrush: TFPCustomBrush);
     // These properties are utilized to implement LCLIntf.SelectObject
+    property AssignedPen: TFPCustomPen read GetAssignedPen write FAssignedPen;
     property AssignedBrush: TFPCustomBrush read GetAssignedBrush write FAssignedBrush;
   end;
 
@@ -74,6 +78,14 @@ begin
     Result := FAssignedBrush;
 end;
 
+function TLazCanvas.GetAssignedPen: TFPCustomPen;
+begin
+  if FAssignedPen = nil then
+    Result := TFPEmptyPen.Create
+  else
+    Result := FAssignedPen;
+end;
+
 constructor TLazCanvas.create(AnImage: TFPCustomImage);
 begin
   inherited Create(AnImage);
@@ -85,9 +97,17 @@ begin
   inherited destroy;
 end;
 
+procedure TLazCanvas.AssignPenData(APen: TFPCustomPen);
+begin
+  Pen.FPColor := APen.FPColor;
+  Pen.Style := APen.Style;
+  Pen.Width := APen.Width;
+end;
+
 procedure TLazCanvas.AssignBrushData(ABrush: TFPCustomBrush);
 begin
   Brush.FPColor := ABrush.FPColor;
+  Brush.Style := ABrush.Style;
 end;
 
 { TFPWindowsSharpInterpolation }
