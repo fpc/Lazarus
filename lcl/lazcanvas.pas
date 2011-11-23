@@ -34,7 +34,9 @@ uses
   // RTL
   Classes, SysUtils,
   // FCL-Image
-  fpimgcanv, fpcanvas, fpimage;
+  fpimgcanv, fpcanvas, fpimage,
+  // regions
+  lazregions;
 
 type
 
@@ -53,17 +55,24 @@ type
   private
     FAssignedBrush: TFPCustomBrush;
     FAssignedPen: TFPCustomPen;
+    FUseSimpleRectClipping: Boolean;
+    FLazClipRegion: TLazRegion;
     function GetAssignedBrush: TFPCustomBrush;
     function GetAssignedPen: TFPCustomPen;
+  protected
+    procedure SetColor (x,y:integer; const AValue:TFPColor); override;
   public
     constructor create (AnImage : TFPCustomImage);
     destructor destroy; override;
+    procedure SetLazClipRegion(ARegion: TLazRegion);
     // Utilized by LCLIntf.SelectObject
     procedure AssignPenData(APen: TFPCustomPen);
     procedure AssignBrushData(ABrush: TFPCustomBrush);
     // These properties are utilized to implement LCLIntf.SelectObject
     property AssignedPen: TFPCustomPen read GetAssignedPen write FAssignedPen;
     property AssignedBrush: TFPCustomBrush read GetAssignedBrush write FAssignedBrush;
+    //
+    property UseSimpleRectClipping: Boolean read FUseSimpleRectClipping write FUseSimpleRectClipping;
   end;
 
 implementation
@@ -86,15 +95,31 @@ begin
     Result := FAssignedPen;
 end;
 
+procedure TLazCanvas.SetColor(x, y: integer; const AValue: TFPColor);
+begin
+  inherited SetColor(x, y, AValue);
+end;
+
 constructor TLazCanvas.create(AnImage: TFPCustomImage);
 begin
   inherited Create(AnImage);
+  FUseSimpleRectClipping := True;
 end;
 
 destructor TLazCanvas.destroy;
 begin
   if FAssignedBrush <> nil then FAssignedBrush.Free;
   inherited destroy;
+end;
+
+procedure TLazCanvas.SetLazClipRegion(ARegion: TLazRegion);
+begin
+  if ARegion.IsSimpleRectRegion then
+  begin
+    Clipping := True;
+    ClipRect := TLazRegionRect(ARegion.Parts.Items[0]).Rect;
+    FLazClipRegion := ARegion;
+  end;
 end;
 
 procedure TLazCanvas.AssignPenData(APen: TFPCustomPen);

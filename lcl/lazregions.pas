@@ -36,6 +36,7 @@ type
     // these areas should be removed from all parts of the region
     // There is no z-order for the parts, they are all validly inside the region area
     Parts: TFPList; // of TLazRegionPart
+    IsSimpleRectRegion: Boolean; // Indicates whether this region has only 1 rectangular part
     constructor Create; virtual;
     destructor Destroy; override;
     procedure AddRectangle(ARect: TRect);
@@ -52,7 +53,7 @@ type
     // The order in this list is also the Z-Order of the sub regions inside it
     // The element with index zero is the bottom-most one
     Childs: TFPList; // of TLazRegionWithChilds
-    Owner: TObject; // link to for example a owner TWinControl
+    UserData: TObject; // available link to another object
     constructor Create; override;
     destructor Destroy; override;
     function IsPointInRegion(AX, AY: Integer): TLazRegionWithChilds; virtual;
