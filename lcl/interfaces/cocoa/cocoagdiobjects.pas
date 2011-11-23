@@ -104,6 +104,7 @@ type
   TCocoaBrush = class(TCocoaColorObject)
     FCGPattern: CGPatternRef;
     FColored: Boolean;
+    FBitmap: TCocoaBitmap;
     FImage: CGImageRef;
   protected
     procedure SetHatchStyle(AHatch: PtrInt);
@@ -160,6 +161,7 @@ type
   public
     image: NSImage;
     imagerep: NSBitmapImageRep;
+    constructor Create(ABitmap: TCocoaBitmap);
     constructor Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
       AAlignment: TCocoaBitmapAlignment; AType: TCocoaBitmapType;
       AData: Pointer; ACopyData: Boolean = True);
@@ -529,6 +531,12 @@ begin
     Result := NSCalibratedWhiteColorSpace
   else
     Result := NSCalibratedRGBColorSpace;
+end;
+
+constructor TCocoaBitmap.Create(ABitmap: TCocoaBitmap);
+begin
+  Create(ABitmap.Width, ABitmap.Height, ABitmap.Depth, ABitmap.FBitsPerPixel,
+    ABitmap.FAlignment, ABitmap.FType, ABitmap.Data);
 end;
 
 { TCocoaCursor }
@@ -1249,15 +1257,13 @@ const
   );
 var
   ACallBacks: CGPatternCallbacks;
-  ABitmap: TCocoaBitmap;
 begin
   if AHatch in [HS_HORIZONTAL..HS_DIAGCROSS] then
   begin
     FillChar(ACallBacks, SizeOf(ACallBacks), 0);
     ACallBacks.drawPattern := @DrawBitmapPattern;
-    ABitmap := TCocoaBitmap.Create(8, 8, 1, 1, cbaByte, cbtMask, @HATCH_DATA[AHatch]);
-    FImage := ABitmap.ImageRep.CGImageForProposedRect_context_hints(nil, nil, nil);
-    ABitmap.Free;
+    FBitmap := TCocoaBitmap.Create(8, 8, 1, 1, cbaByte, cbtMask, @HATCH_DATA[AHatch]);
+    FImage := FBitmap.ImageRep.CGImageForProposedRect_context_hints(nil, nil, nil);
     FColored := False;
     FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, 8, 8),
       CGAffineTransformIdentity, 8, 8, kCGPatternTilingConstantSpacing,
@@ -1274,7 +1280,8 @@ begin
   AHeight := ABitmap.Height;
   FillChar(ACallBacks, SizeOf(ACallBacks), 0);
   ACallBacks.drawPattern := @DrawBitmapPattern;
-  FImage := ABitmap.imageRep.CGImageForProposedRect_context_hints(nil, nil, nil);
+  FBitmap := TCocoaBitmap.Create(ABitmap);
+  FImage := FBitmap.imageRep.CGImageForProposedRect_context_hints(nil, nil, nil);
   FColored := True;
   FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, AWidth, AHeight),
     CGAffineTransformIdentity, AWidth, AHeight, kCGPatternTilingConstantSpacing,
@@ -1284,11 +1291,15 @@ end;
 constructor TCocoaBrush.CreateDefault;
 begin
   inherited Create(clWhite, True, False);
+  FBitmap := nil;
+  FImage := nil;
+  FCGPattern := nil;
 end;
 
 constructor TCocoaBrush.Create(const ALogBrush: TLogBrush; const AGlobal: Boolean = False);
 begin
   FCGPattern := nil;
+  FBitmap := nil;
   FImage := nil;
   case ALogBrush.lbStyle of
     BS_SOLID:
@@ -1316,6 +1327,7 @@ destructor TCocoaBrush.Destroy;
 begin
   if FCGPattern <> nil then
     CGPatternRelease(FCGPattern);
+  FBitmap.Free;
   if FImage <> nil then
     CGImageRelease(FImage);
   inherited Destroy;
