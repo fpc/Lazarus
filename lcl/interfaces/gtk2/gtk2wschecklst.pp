@@ -100,10 +100,8 @@ var
   TreeView: PGtkTreeView;
   ListStore: PGtkTreeModel;
   Path: PGtkTreePath;
+  AState: TCheckBoxState;
 begin
-  gtk_cell_renderer_toggle_set_active(cellrenderertoggle,
-    not gtk_cell_renderer_toggle_get_active(cellrenderertoggle));
-
   {$IFDEF EventTrace}
   EventTrace('Gtk2WS_CheckListBoxToggle', WidgetInfo^.LCLObject);
   {$ENDIF}
@@ -113,9 +111,13 @@ begin
   ListStore := gtk_tree_view_get_model(TreeView);
 
   if gtk_tree_model_iter_nth_child(ListStore, @Iter, nil, Param) then
-    gtk_list_store_set(ListStore, @Iter, [gtk2CLBState,
-      Byte(gtk_cell_renderer_toggle_get_active(cellrenderertoggle)), -1]);
+    begin
+      TCustomCheckListBox(WidgetInfo^.LCLObject).Toggle(Param);
+      AState:=TCustomCheckListBox(WidgetInfo^.LCLObject).State[Param];
 
+      gtk_list_store_set(ListStore, @Iter, [gtk2CLBState,
+        Byte(AState), -1]);
+    end;
 
 
   Path := gtk_tree_path_new_from_indices(Param, -1);
