@@ -259,6 +259,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function InitDraw(width, height: Integer): Boolean;
+
     procedure MoveTo(x,y: Integer);
     procedure LineTo(x,y: Integer);
     procedure Polygon(const Points: array of TPoint; NumPts: Integer; Winding: boolean);
@@ -272,6 +273,8 @@ type
     procedure SetOrigin(X,Y: Integer);
     procedure GetOrigin(var X,Y: Integer);
     function CGContext: CGContextRef; virtual;
+    procedure SetAntialiasing(AValue: Boolean);
+
     property Brush: TCocoaBrush read FBrush write SetBrush;
     property Pen: TCocoaPen read FPen write SetPen;
     property Font: TCocoaFont read FFont write SetFont;
@@ -325,6 +328,11 @@ type
   NSBitmapImageRepFix = objccategory external(NSBitmapImageRep)
     function initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bytesPerRow_bitsPerPixel(planes: PPByte; width: NSInteger; height: NSInteger; bps: NSInteger; spp: NSInteger; alpha: Boolean; isPlanar_: Boolean; colorSpaceName_: NSString; rBytes: NSInteger; pBits: NSInteger): id; message 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bytesPerRow:bitsPerPixel:';
     function initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(planes: PPByte; width: NSInteger; height: NSInteger; bps: NSInteger; spp: NSInteger; alpha: Boolean; isPlanar_: Boolean; colorSpaceName_: NSString; bitmapFormat_: NSBitmapFormat; rBytes: NSInteger; pBits: NSInteger): id; message 'initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bitmapFormat:bytesPerRow:bitsPerPixel:';
+  end;
+
+  NSGraphicsContextFix = objccategory external(NSGraphicsContext)
+    procedure setImageInterpolation(interpolation: NSImageInterpolation); message 'setImageInterpolation:';
+    procedure setShouldAntialias(antialias: Boolean); message 'setShouldAntialias:';
   end;
 
 { TCocoaFont }
@@ -600,6 +608,15 @@ begin
   Result := CGContextRef(ctx.graphicsPort);
 end;
 
+procedure TCocoaContext.SetAntialiasing(AValue: Boolean);
+begin
+  if not AValue then
+    ctx.setImageInterpolation(NSImageInterpolationNone)
+  else
+    ctx.setImageInterpolation(NSImageInterpolationDefault);
+  ctx.setShouldAntialias(AValue);
+end;
+
 procedure TCocoaContext.SetBitmap(const AValue: TCocoaBitmap);
 begin
   if FBitmap <> AValue then
@@ -620,7 +637,11 @@ end;
 
 procedure TCocoaContext.SetFont(const AValue: TCocoaFont);
 begin
-  fFont:=AValue;
+  if FFont <> AValue then
+  begin
+    FFont := AValue;
+
+  end;
 end;
 
 procedure TCocoaContext.SetPen(const AValue: TCocoaPen);

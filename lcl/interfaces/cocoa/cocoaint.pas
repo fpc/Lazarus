@@ -100,6 +100,8 @@ type
     procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
 
+    function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
+
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
 

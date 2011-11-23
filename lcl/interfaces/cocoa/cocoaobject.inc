@@ -208,6 +208,22 @@ begin
   end;
 end;
 
+function TCocoaWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
+begin
+  case ACapability of
+    lcCanDrawOutsideOnPaint,
+    lcNeedMininimizeAppWithMainForm,
+    lcApplicationTitle,
+    lcFormIcon,
+    lcReceivesLMClearCutCopyPasteReliably:
+      Result := LCL_CAPABILITY_NO;
+    lcAntialiasingEnabledByDefault:
+      Result := LCL_CAPABILITY_YES;
+  else
+    Result := inherited;
+  end;
+end;
+
 function TCocoaWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;
 var
   timer : NSTimer;
@@ -334,12 +350,14 @@ end;
 
 procedure TCocoaWidgetSet.DCRedraw(CanvasHandle: HDC);
 begin
-
+  if CanvasHandle <> 0 then
+    TCocoaContext(CanvasHandle).ctx.flushGraphics;
 end;
 
 procedure TCocoaWidgetSet.DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean);
 begin
-  inherited DCSetAntialiasing(CanvasHandle, AEnabled);
+  if CanvasHandle <> 0 then
+    TCocoaContext(CanvasHandle).SetAntialiasing(AEnabled);
 end;
 
 procedure TCocoaWidgetSet.SetDesigning(AComponent: TComponent);
