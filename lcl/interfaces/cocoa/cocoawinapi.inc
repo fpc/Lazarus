@@ -530,13 +530,14 @@ end;
 
 function TCocoaWidgetSet.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean): Boolean;
 begin
-  if aHandle<>0 then begin
-    Result:=True;
-    if Assigned(Rect)
-      then NSObject(aHandle).lclInvalidateRect(Rect^)
-      else NSObject(aHandle).lclInvalidate;
-  end else
-    Result:=False;
+  Result := aHandle <> 0;
+  if Result then
+  begin
+    if Assigned(Rect) then
+      NSObject(aHandle).lclInvalidateRect(Rect^)
+    else
+      NSObject(aHandle).lclInvalidate;
+  end;
 end;
 
 function TCocoaWidgetSet.UpdateWindow(Handle: HWND): Boolean;

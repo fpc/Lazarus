@@ -573,11 +573,14 @@ var
   b: NSRect;
 begin
   if not Assigned(view) then Exit;
-  b:=view.bounds;
-  Result.origin.x:=r.Left;
-  Result.origin.y:=b.size.height-r.Top;
-  Result.size.width:=r.Right-r.Left;
-  Result.size.height:=r.Bottom-r.Top;
+  b := view.bounds;
+  with r do
+  begin
+    Result.origin.x := Left;
+    Result.origin.y := b.size.height - Bottom;
+    Result.size.width := Right - Left;
+    Result.size.height := Bottom - Top;
+  end;
 end;
 
 function LCLControlExtension.lclIsEnabled:Boolean;
@@ -635,15 +638,18 @@ begin
   setFrame(ns);
 end;
 
-function LCLViewExtension.lclClientFrame:TRect;
+function LCLViewExtension.lclClientFrame: TRect;
 var
   r: NSRect;
 begin
-  r:=bounds;
-  Result.Left:=0;
-  Result.Top:=0;
-  Result.Right:=Round(r.size.width);
-  Result.Bottom:=Round(r.size.height);
+  r := bounds;
+  with Result do
+  begin
+    Left := 0;
+    Top := 0;
+    Right := Round(r.size.width);
+    Bottom := Round(r.size.height);
+  end;
 end;
 
 { LCLWindowExtension }
@@ -653,7 +659,7 @@ begin
   Result:=isVisible;
 end;
 
-procedure LCLWindowExtension.lclInvalidateRect(const r:TRect);
+procedure LCLWindowExtension.lclInvalidateRect(const r: TRect);
 begin
   contentView.lclInvalidateRect(r);
 end;
