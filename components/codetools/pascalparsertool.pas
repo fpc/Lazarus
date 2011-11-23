@@ -960,24 +960,24 @@ function TPascalParserTool.KeyWordFuncClassSection: boolean;
 // change section in a class (public, private, protected, published, optional, required)
 var
   OldSubSection: TCodeTreeNodeDesc;
-  NewSubSection: TCodeTreeNodeDesc;
+  NewSection: TCodeTreeNodeDesc;
   SectionStart: Integer;
 begin
   SectionStart:=CurPos.StartPos;
-  NewSubSection:=ctnNone;
+  NewSection:=ctnNone;
   if UpAtomIs('STRICT') then ReadNextAtom;
   if UpAtomIs('PUBLIC') then
-    NewSubSection:=ctnClassPublic
+    NewSection:=ctnClassPublic
   else if UpAtomIs('PRIVATE') then
-    NewSubSection:=ctnClassPrivate
+    NewSection:=ctnClassPrivate
   else if UpAtomIs('PROTECTED') then
-    NewSubSection:=ctnClassProtected
+    NewSection:=ctnClassProtected
   else if UpAtomIs('PUBLISHED') then
-    NewSubSection:=ctnClassPublished
+    NewSection:=ctnClassPublished
   else if UpAtomIs('REQUIRED') then
-    NewSubSection:=ctnClassRequired
+    NewSection:=ctnClassRequired
   else if UpAtomIs('OPTIONAL') then
-    NewSubSection:=ctnClassOptional
+    NewSection:=ctnClassOptional
   else
     RaiseStringExpectedButAtomFound('public');
   OldSubSection:=ctnNone;
@@ -987,12 +987,12 @@ begin
     CurNode.EndPos:=SectionStart;
     EndChildNode;
   end;
-  // end last visibility section
+  // end last section
   CurNode.EndPos:=SectionStart;
   EndChildNode;
   // start new section
   CreateChildNode;
-  CurNode.Desc:=NewSubSection;
+  CurNode.Desc:=NewSection;
   if (OldSubSection<>ctnNone)
   and (Scanner.CompilerMode=cmOBJFPC)
   and (Scanner.Values.IsDefined('VER2_4')) then begin
@@ -3143,6 +3143,7 @@ begin
       ReadNextAtom;
     end;
     if (CurNode.Parent.Desc=ctnVarSection)
+    and (CurNode.Parent.Parent.Desc in AllCodeSections)
     and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL') or UpAtomIs('CVAR')) then
     begin
       // examples:
@@ -3179,7 +3180,6 @@ begin
         RaiseCharExpectedButAtomFound(';');
     end else
       UndoReadNextAtom;
-
   end else if CurPos.Flag=cafEND then begin
     UndoReadNextAtom;
   end else begin

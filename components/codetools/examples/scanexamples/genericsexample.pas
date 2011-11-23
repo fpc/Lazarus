@@ -20,6 +20,18 @@ type
     function DoSomething(Arg: T1): T2;
     function Test(Arg: Intf): Intf;
   end;
+
+  generic TGen<_T> = class
+  public
+    type
+      T_TArray = array of _T;
+  private
+    var
+      w: T_TArray;
+  public
+    constructor Create(Value: _T);
+  end;
+
 const
   RecLongInt: TRecG<longint> = (F:0);
 
