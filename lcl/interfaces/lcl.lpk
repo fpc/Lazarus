@@ -110,7 +110,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="377">
+    <Files Count="380">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1750,9 +1750,9 @@ end;"/>
         <Type Value="Include"/>
       </Item351>
       <Item352>
-        <Filename Value="customdrawn/winproc.pas"/>
+        <Filename Value="customdrawn/customdrawn_winproc.pas"/>
         <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="WinProc"/>
+        <UnitName Value="customdrawn_winproc"/>
       </Item352>
       <Item353>
         <Filename Value="customdrawn/alllclintfunits.pas"/>
@@ -1868,6 +1868,19 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="customdrawnproc"/>
       </Item377>
+      <Item378>
+        <Filename Value="customdrawn/customdrawn_x11proc.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawn_x11proc"/>
+      </Item378>
+      <Item379>
+        <Filename Value="customdrawn/customdrawnwscontrols.inc"/>
+        <Type Value="Include"/>
+      </Item379>
+      <Item380>
+        <Filename Value="customdrawn/customdrawnwinapi_x11.inc"/>
+        <Type Value="Include"/>
+      </Item380>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>

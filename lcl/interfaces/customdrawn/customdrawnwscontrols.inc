@@ -84,6 +84,7 @@ end;
 class function TCDWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 begin
+
 end;
 
 class procedure TCDWSWinControl.DestroyHandle(const AWinControl: TWinControl);

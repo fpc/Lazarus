@@ -33,7 +33,7 @@ uses
   fpimage, fpcanvas, fpimgcanv, ctypes,
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll,{$endif}
-  {$ifdef CD_X11}X, XLib, XUtil, X11Proc,{unitxft, Xft font support}{$endif}
+  {$ifdef CD_X11}X, XLib, XUtil, customdrawn_x11proc,{unitxft, Xft font support}{$endif}
   // Widgetset
   customdrawnproc,
   // LCL

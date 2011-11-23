@@ -1,4 +1,4 @@
-unit x11proc;
+unit customdrawn_x11proc;
 
 {$mode objfpc}{$H+}
 
