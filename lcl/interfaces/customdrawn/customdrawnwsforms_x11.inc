@@ -272,6 +272,8 @@ begin
   {$ENDIF}
 end;
 
+// XShm tutorial:
+// http://personales.mundivia.es/jap/xshm.htm
 class function TCDWSCustomForm.alloc_xshm_image(dpy: PDisplay; vis: PVisual;
   width, height, depth: Integer; out shminfo: TXShmSegmentInfo): PXImage;
 var
@@ -394,6 +396,7 @@ class procedure TCDWSCustomForm.DrawRawImageToGC_XPutImage(ARawImage: TRawImage;
   ADestWindowInfo: TX11WindowInfo; ADestX, ADestY, ADestWidth, ADestHeight: Integer);
 var
   Image: XLib.PXImage;
+  XImage: XLib.TXImage;
   lScanlineSize: cint;
   lScreen: cint;
   lVisual: PVisual;
@@ -401,28 +404,70 @@ var
 begin
   lScanlineSize := (ADestWindowInfo.Canvas.Width*ADestWindowInfo.ColorDepth) div 8;
   lScreen := DefaultScreen(CDWidgetSet.FDisplay);
-  lVisual := DefaultVisual(CDWidgetSet.FDisplay, lScreen); // ADestWindowInfo.Attr.Visual;
+  lVisual := {DefaultVisual(CDWidgetSet.FDisplay, lScreen); //} ADestWindowInfo.Attr.Visual;
   lDepth := ADestWindowInfo.ColorDepth;
 
-  // Create a native Image
-  Image := XCreateImage(CDWidgetSet.FDisplay, lVisual,
-    lDepth, ZPixmap, 0, PChar(ARawImage.Data),
-    ADestWidth, ADestHeight, 8, 0);
+  XImage.Width := ADestWidth;
+  XImage.Height := ADestHeight;
+  XImage.xoffset        := 0;
+  XImage.obdata         := #0;
+  XImage.byte_order     := LSBFirst;
+  XImage.bitmap_bit_order := MSBFirst;
+  XImage.bitmap_pad     := 32;
+  XImage.bytes_per_line := 0;
+
+  {     if acolordepth = 1 then
+       begin
+         format         := XYBitmap;
+         bitmap_unit    := 8;
+         depth          := 1;
+         bits_per_pixel := 1;
+         red_mask       := 1;
+         green_mask     := 0;
+         blue_mask      := 0;
+       end
+      else
+    begin}
+  XImage.format      := ZPixmap;
+  XImage.bitmap_unit := 32;
+
+  // only truecolor 24/32 displays supported now, otherwise color conversion required!
+  // this must be match for the display !!!
+  XImage.depth := ADestWindowInfo.ColorDepth;
+  XImage.bits_per_pixel := 24;
+
+  // Pixel mask
+  XImage.red_mask   := lVisual^.red_mask;
+  XImage.green_mask := lVisual^.green_mask;
+  XImage.blue_mask  := lVisual^.blue_mask;
+
+  XImage.Data := PChar(ARawImage.Data);
+
+  XInitImage(@XImage);
+
+// Create a native Image
+// No idea why but using XCreateImage it ends up using a format which I have no idea which is,
+// and the missmatch criples the image, XInitImage works fine
+//  Image := XCreateImage(CDWidgetSet.FDisplay, lVisual,
+//    lDepth, ZPixmap, 0, PChar(ARawImage.Data),
+//    ADestWidth, ADestHeight, 8, 0);
 
   {$IFDEF VerboseCDWindow}
     DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC_XPutImage] XImage=%x Data=%x'
-      + ' ColorDepth:%d Width=%d Height=%d ScanlineSize=%d',
+      + ' ColorDepth:%d Width=%d Height=%d ScanlineSize=%d'
+      + ' red_mask=%x green_mask=%x blue_mask=%x',
       [PtrInt(Image), PtrInt(ARawImage.Data), lDepth,
-       ADestWidth, ADestHeight, lScanlineSize]));
+       ADestWidth, ADestHeight, lScanlineSize,
+       XImage.red_mask, XImage.green_mask, XImage.blue_mask]));
   {$ENDIF}
 
   // Note that XPutImage is slow
   XPutImage(CDWidgetSet.FDisplay, ADestWindowInfo.Window, ADestWindowInfo.GC,
-    Image, 0, 0, ADestX, ADestY, ADestWidth, ADestHeight);
+    @XImage, 0, 0, ADestX, ADestY, ADestWidth, ADestHeight);
 
-  // Free the native image
-  Image^.data := nil;
-  XDestroyImage(Image);
+  // Free the native image -> Used only together with XCreateImage
+//  Image.data := nil;
+//  XDestroyImage(Image);
 end;
 
 class procedure TCDWSCustomForm.EvPaint(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
@@ -462,7 +507,7 @@ begin
    TrueColor = 4;
    DirectColor = 5;}
   {$ENDIF}
-  UpdateControlLazImageAndCanvas(AWindowInfo.Image, AWindowInfo.Canvas, lWidth, lHeight, clfRGB24);
+  UpdateControlLazImageAndCanvas(AWindowInfo.Image, AWindowInfo.Canvas, lWidth, lHeight, clfBGR24);
 
   struct.hdc := HDC(AWindowInfo.Canvas);
 
