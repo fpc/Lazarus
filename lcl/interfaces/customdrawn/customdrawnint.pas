@@ -30,17 +30,17 @@ interface
 uses
   // RTL
   Types, Classes, SysUtils, Math,
-  fpimage, fpcanvas, ctypes,
+  fpimage, fpcanvas, fpimgcanv, ctypes,
   {$ifdef CD_Windows}Windows, WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, X11Proc,{unitxft, Xft font support}{$endif}
   // Widgetset
-   //CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaTextLayout, CocoaProc,
+  customdrawnproc,
   // LCL
   InterfaceBase, Translations,
   Controls,  Forms, lclproc, IntfGraphics, GraphType,
   {Buttons, Dialogs, GraphMath, LCLIntf,}
-  LCLType, LMessages, lazcanvas{, StdCtrls, Graphics, Menus };
+  LCLType, LMessages, lazcanvas{, StdCtrls}, Graphics{, Menus };
 
 type
   {$ifdef CD_Windows}

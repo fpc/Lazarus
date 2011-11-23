@@ -15,6 +15,8 @@ uses
 
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage; var ACanvas: TLazCanvas; AWidth, AHeight: Integer);
 function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
+function IsValidDC(ADC: HDC): Boolean;
+function IsValidGDIObject(AGDIObj: HGDIOBJ): Boolean;
 
 implementation
 
@@ -56,6 +58,16 @@ begin
   TimeStamp:= DateTimeToTimeStamp (aDateTime);
   {Multiply and add to complete the conversion:}
   Result:= TimeStamp.Time;
+end;
+
+function IsValidDC(ADC: HDC): Boolean;
+begin
+  Result := ADC <> 0;
+end;
+
+function IsValidGDIObject(AGDIObj: HGDIOBJ): Boolean;
+begin
+  Result := AGDIObj <> 0;
 end;
 
 end.

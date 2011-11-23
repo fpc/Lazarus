@@ -384,7 +384,7 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI CreateBitmap] Bitmap:', dbghex(Result));
   {$endif}
-end;
+end;*)
 
 
 {------------------------------------------------------------------------------
@@ -392,19 +392,20 @@ end;
   Params:  none
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
+function TCDWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 var
-  QtBrush: TQtBrush;
-  Color: TQColor;
+  lBrush: TFPCustomBrush;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn(Format('Trace:> [WinAPI CreateBrushIndirect]  Style: %d, Color: %8x (%s)',
-      [LogBrush.lbStyle, LogBrush.lbColor, ColorToString(LogBrush.lbColor)]));
+  {$ifdef VerboseWinAPI}
+    DebugLn(Format(':>[TCDWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x',
+      [LogBrush.lbStyle, LogBrush.lbColor]));
   {$endif}
 
-  Result := 0;
+  lBrush := TFPCustomBrush.Create;
+  Result := HBRUSH(lBrush);
+  lBrush.FPColor := TColorToFPColor(LogBrush.lbColor);
 
-  QtBrush := TQtBrush.Create(True);
+(*  QtBrush := TQtBrush.Create(True);
 
   try
     case LogBrush.lbStyle of
@@ -467,14 +468,14 @@ begin
   except
     Result := 0;
     DebugLn('TQtWidgetSet.CreateBrushIndirect: Failed');
-  end;
+  end;*)
 
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI CreateBrushIndirect] Result: ', dbghex(Result));
+  {$ifdef VerboseWinAPI}
+    DebugLn(':<[WinAPI CreateBrushIndirect] Result: ', dbghex(Result));
   {$endif}
 end;
 
-function TQtWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width, Height: Integer): Boolean;
+(*function TQtWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width, Height: Integer): Boolean;
 begin
   Result := (Handle <> 0) and
     QtCaret.CreateCaret(TQtWidget(Handle), Bitmap, Width, Height);
@@ -4939,13 +4940,21 @@ begin
   if DC = 0 then Exit;
 
   {$ifdef VerboseWinAPI}
-//  DebugLn(Format('[WinAPI Rectangle] DC=%s DC.Width=%d DC.Height=%d', [dbghex(DC), LazDC.Width, LazDC.Height]));
-  DebugLn(Format('[WinAPI Rectangle] DC=%s', [dbghex(DC)]));
-  DebugLn(Format('[WinAPI Rectangle] DC.Width=%d DC.Height=%d', [LazDC.Width, LazDC.Height]));
+  DebugLn(Format(':>[WinAPI Rectangle] DC=%s', [dbghex(DC)]));
   {$endif}
 
-  //if not IsValidDC(DC) then Exit(False);
-  LazDC.Brush.FPColor := colWhite;
+  if not IsValidDC(DC) then
+  begin
+    {$ifdef VerboseWinAPI}
+    DebugLn(':<[WinAPI Rectangle] Invalid DC!');
+    {$endif}
+    Exit(False);
+  end;
+
+  {$ifdef VerboseWinAPI}
+  DebugLn(Format('::[WinAPI Rectangle] DC.Width=%d DC.Height=%d', [LazDC.Width, LazDC.Height]));
+  {$endif}
+
   LazDC.Rectangle(X1, Y1, X2, Y2);
 {  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
   if IsRectEmpty(R) then Exit(True);
@@ -5263,7 +5272,7 @@ begin
       Result := NULLREGION;
     end;
   end;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: SelectObject
@@ -5272,17 +5281,17 @@ end;
 
   Changes one of the GDI objects (Font, Brush, etc) of a Device Context;
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
+function TCDWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 var
   aObject: TObject;
-  {$ifdef VerboseQtWinAPI}
-    ObjType: string;
+  lBrush: TFPCustomBrush absolute AObject;
+  {$ifdef VerboseWinAPI}
+  ObjType: string;
   {$endif}
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI SelectObject]',
-    ' DC=', dbghex(DC),
-    ' GDIObj=', dbghex(GDIObj));
+  {$ifdef VerboseWinAPI}
+    DebugLn(Format(':>[TCDWidgetSet.SelectObject] DC=%s GDIObj=%s',
+      [dbghex(DC), dbghex(GDIObj)]));
   {$endif}
 
   Result := 0;
@@ -5290,7 +5299,7 @@ begin
   if not IsValidDC(DC) then
   begin
     {$ifdef VerboseQtWinAPI}
-      WriteLn('Trace:< [WinAPI SelectObject] Invalid DC');
+      DebugLn(':<[TCDWidgetSet.SelectObject] Invalid DC');
     {$endif}
 
     Exit;
@@ -5299,7 +5308,7 @@ begin
   if not IsValidGDIObject(GDIObj) then
   begin
     {$ifdef VerboseQtWinAPI}
-      WriteLn('Trace:< [WinAPI SelectObject] Invalid GDI Object');
+      DebugLn(':<[TCDWidgetSet.SelectObject] Invalid GDI Object');
     {$endif}
 
     Exit;
@@ -5307,7 +5316,7 @@ begin
 
   aObject := TObject(GDIObj);
 
-  if aObject is TQtFont then
+(*  if aObject is TQtFont then
   begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Font';
@@ -5326,16 +5335,14 @@ begin
 
     TQtDeviceContext(DC).setPen(TQtPen(aObject));
   end
-  else if aObject is TQtBrush then
+  else*) if aObject is TFPCustomBrush then
   begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Brush';
-    {$endif}
+    {$ifdef VerboseWinAPI}ObjType := 'Brush';{$endif}
 
-    Result := HGDIOBJ(TQtDeviceContext(DC).brush);
+    //Result := HGDIOBJ(TQtDeviceContext(DC).brush);
 
-    TQtDeviceContext(DC).setBrush(TQtBrush(aObject));
-  end
+    TLazCanvas(DC).Brush.FPColor := lBrush.FPColor;
+  end(*
   else if aObject is TQtImage then
   begin
     {$ifdef VerboseQtWinAPI}
@@ -5351,14 +5358,14 @@ begin
   begin
     Result := HGDIOBJ(TQtDeviceContext(DC).getClipRegion);
     SelectClipRGN(DC, HRGN(GDIObj));
-  end;
+  end*);
 
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI SelectObject] Result=', dbghex(Result), ' ObjectType=', ObjType);
+  {$ifdef VerboseWinAPI}
+    DebugLn(':<[TCDWidgetSet.SelectObject] Result=', dbghex(Result), ' ObjectType=', ObjType);
   {$endif}
 end;
 
-function TQtWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal;
+(*function TQtWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal;
   WParam: WParam; LParam: LParam): LResult;
 var
   Widget: TQtWidget absolute HandleWnd;

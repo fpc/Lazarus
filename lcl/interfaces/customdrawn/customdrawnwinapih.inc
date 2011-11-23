@@ -49,9 +49,9 @@ function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
 function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; override;
 
 function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;
-function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
+function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;*)
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
-function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;
+(*function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;*)
 function CreateCompatibleDC(DC: HDC): HDC; override;
 (*function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; override;
@@ -182,9 +182,9 @@ function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
 function SaveDC(DC: HDC): Integer; override;
 function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;
 function ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll, PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect; Flags: UINT): Boolean; override;
-function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
+function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;*)
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
-function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;
+(*function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;
 function SetActiveWindow(Handle: HWND): HWND; override;
 function SetBKColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
