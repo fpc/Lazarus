@@ -580,7 +580,7 @@ begin
   AddBitBtn.Caption:='';
   RemoveBitBtn.Caption:='';
   OptionsBitBtn.Caption:='';
-  OpenBitBtn.Hint:=lisOpenFile;
+  OpenBitBtn.Hint:=lisOpenFile2;
   AddBitBtn.Hint:=lisCodeTemplAdd;
   RemoveBitBtn.Hint:=lisExtToolRemove;
   OptionsBitBtn.Hint:=dlgFROpts;

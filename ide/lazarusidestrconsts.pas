@@ -794,7 +794,8 @@ resourcestring
   listInfoBuildAutoCloseOnSuccess = '&Automatically close on success';
 
   // file dialogs
-  lisOpenFile = 'Open file';
+  lisOpenFile = 'Open File';
+  lisOpenFile2 = 'Open file';
   lisProjectSRaisedExceptionClassS = 'Project %s raised exception class ''%s''.';
   lisProjectSRaisedExceptionClassSWithMessageSS = 'Project %s raised '
     +'exception class ''%s'' with message:%s%s';
