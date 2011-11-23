@@ -64,12 +64,12 @@ type
   private
     FShape: HIShapeRef;
   public
-    constructor Create;
+    constructor CreateDefault;
     constructor Create(const X1, Y1, X2, Y2: Integer);
     constructor Create(Points: PPoint; NumPts: Integer; isAlter: Boolean);
     destructor Destroy; override;
 
-    procedure Apply(cg: CGContextRef);
+    procedure Apply(ADC: TCocoaContext);
     function GetBounds: TRect;
     function GetType: TCocoaRegionType;
     function ContainsPoint(const P: TPoint): Boolean;
@@ -658,7 +658,7 @@ begin
   if FRegion <> AValue then
   begin
     FRegion := AValue;
-
+    if Assigned(FRegion) then FRegion.Apply(Self);
   end;
 end;
 
@@ -671,6 +671,8 @@ begin
   FPen.AddRef;
   FFont := TCocoaFont.CreateDefault;
   FFont.AddRef;
+  FRegion := TCocoaRegion.CreateDefault;
+  FRegion.AddRef;
   FText := TextLayoutClass.Create;
 end;
 
@@ -693,6 +695,12 @@ begin
     FFont.Release;
     if FFont.RefCount = 0 then
       FFont.Free;
+  end;
+  if Assigned(FRegion) then
+  begin
+    FRegion.Release;
+    if FRegion.RefCount = 0 then
+      FRegion.Free;
   end;
   FText.Free;
   inherited Destroy;
@@ -1030,7 +1038,7 @@ end;
 
   Creates a new empty Cocoa region
  ------------------------------------------------------------------------------}
-constructor TCocoaRegion.Create;
+constructor TCocoaRegion.CreateDefault;
 begin
   inherited Create(False);
 
@@ -1190,12 +1198,13 @@ end;
   Applies region to the specified context
   Note: Clipping region is only reducing
  ------------------------------------------------------------------------------}
-procedure TCocoaRegion.Apply(cg: CGContextRef);
+procedure TCocoaRegion.Apply(ADC: TCocoaContext);
 begin
-  if not Assigned(cg) then Exit;
-  if HIShapeIsEmpty(FShape) or (HIShapeReplacePathInCGContext(FShape, cg)<>noErr) then
+  if ADC = nil then Exit;
+  if ADC.CGContext = nil then Exit;
+  if HIShapeIsEmpty(FShape) or (HIShapeReplacePathInCGContext(FShape, ADC.CGContext) <> noErr) then
     Exit;
-  CGContextClip(cg);
+  CGContextClip(ADC.CGContext);
 end;
 
 {------------------------------------------------------------------------------
