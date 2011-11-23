@@ -24,29 +24,27 @@
 }
 
 //##apiwiz##sps##   // Do not remove, no wizard declaration before this line
-(*
+
 {------------------------------------------------------------------------------
   Function: Arc
   Params: DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer
   Returns: Boolean
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean;
+function TCDWidgetSet.Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean;
 var
-  R: TRect;
+  LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI Arc] DC: ', dbghex(DC));
+  {$ifdef VerboseWinAPI}
+  DebugLn(Format(':>[WinAPI Polygon] DC=%s', [dbghex(DC)]));
   {$endif}
-  Result := IsValidDC(DC);
 
-  if Result then
-  begin
-    R := Rect(Left, Top, Right, Bottom);
-    QPainter_drawArc(TQtDeviceContext(DC).Widget, @R, Angle1, Angle2);
-  end;
+  if not IsValidDC(DC) then Exit(False);
+
+  //LazDC.Arc(...);
+  Result := True;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: AngleChord
   Params: DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer
   Returns: Boolean
@@ -1475,7 +1473,7 @@ begin
 
   with ARect do
     QtDC.DrawText(Left + Pt.X, Top + Pt.Y, Right-Left, Bottom-Top, F, @WideStr);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:   Ellipse
@@ -1484,19 +1482,31 @@ end;
 
   Use Ellipse to draw a filled circle or ellipse.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
+function TCDWidgetSet.Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
+  LazDC: TLazCanvas absolute DC;
   R: TRect;
 begin
-  if not IsValidDC(DC) then Exit(False);
-  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
-  if IsRectEmpty(R) then Exit(True);
+  {$ifdef VerboseWinAPI}
+  DebugLn(Format(':>[WinAPI Ellipse] DC=%s', [dbghex(DC)]));
+  {$endif}
 
-  TQtDeviceContext(DC).drawEllipse(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1);
+  if not IsValidDC(DC) then
+  begin
+    {$ifdef VerboseWinAPI}
+    DebugLn(':<[WinAPI Rectangle] Invalid DC!');
+    {$endif}
+    Exit(False);
+  end;
+
+//  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
+//  if IsRectEmpty(R) then Exit(True);
+
+  LazDC.Ellipse(X1, Y1, X2, Y2);
   Result := True;
 end;
 
-function TQtWidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
+(*function TQtWidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
   {maybe we can put creating of scrollbar here instead of SetScrollInfo() }
   Result := False;
@@ -2215,20 +2225,21 @@ begin
   end;
 
   Result := True;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: FillRect
   Params:  none
   Returns: Nothing
-
-
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
+function TCDWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
+var
+  LazDC: TLazCanvas absolute DC;
+  lOldBrush: HGDIOBJ;
 begin
   Result := False;
 
-  {$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseWinAPI}
     DebugLn('[WinAPI FillRect Rect=', dbgs(Rect),' Brush=', dbghex(Brush));
   {$endif}
 
@@ -2237,11 +2248,14 @@ begin
   if not IsValidGdiObject(Brush) then
     exit;
 
-  TQtDeviceContext(DC).fillRect(@Rect, TQtBrush(Brush).FHandle);
+  lOldBrush := SelectObject(DC, Brush);
+  LazDC.FillRect(Rect);
+  SelectObject(DC, lOldBrush);
+
   Result := True;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: FillRgn
   Params:  DC: HDC; RegionHnd: HRGN; hbr: HBRUSH
   Returns: Boolean
@@ -4732,6 +4746,8 @@ begin
   TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y);
   MoveToEx(DC, X, Y, nil);*)
 
+  LazDC.LineTo(X, Y);
+
   Result := True;
 end;
 (*
@@ -4835,7 +4851,7 @@ begin
   {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
     WriteLn('***** [WinAPI TQtWidgetSet.PeekMessage] missing implementation ');
   {$endif}
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: PolyBezier
@@ -4843,10 +4859,10 @@ end;
            Continuous: Boolean
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
+function TCDWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: Boolean): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseWinAPI}
     WriteLn('[WinAPI PolyBezier] DC: ', dbghex(DC));
   {$endif}
   Result := inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
@@ -4857,27 +4873,25 @@ end;
   Params:  DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
+function TCDWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: Boolean): boolean;
 var
-  QtPoints: PQtPoint;
-  i: integer;
+  LazDC: TLazCanvas absolute DC;
+  lPoints: array of TPoint;
+  i: Integer;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI Polygon] DC: ', dbghex(DC));
+  {$ifdef VerboseWinAPI}
+  DebugLn(Format(':>[WinAPI Polygon] DC=%s', [dbghex(DC)]));
   {$endif}
-  Result := IsValidDC(DC);
-  if Result then
-  begin
-    GetMem(QtPoints, NumPts * SizeOf(TQtPoint));
-    for i := 0 to NumPts - 1 do
-      QtPoints[i] := QtPoint(Points[i].x, Points[i].y);
-    if Winding then
-      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtWindingFill)
-    else
-      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtOddEvenFill);
-    FreeMem(QtPoints);
-  end;
+
+  if not IsValidDC(DC) then Exit(False);
+
+  SetLength(lPoints, NumPts);
+  for i := 0 to NumPts-1 do
+    lPoints[i] := Points[i];
+
+  LazDC.Polygon(lPoints);
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -4885,17 +4899,27 @@ end;
   Params:  DC: HDC; Points: PPoint; NumPts: Integer
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
+function TCDWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
+var
+  LazDC: TLazCanvas absolute DC;
+  lPoints: array of TPoint;
+  i: Integer;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI Polyline] DC: ', dbghex(DC));
+  {$ifdef VerboseWinAPI}
+  DebugLn(Format(':>[WinAPI Polygon] DC=%s', [dbghex(DC)]));
   {$endif}
-  Result := IsValidDC(DC) and (NumPts > 0);
-  if Result then
-    TQtDeviceContext(DC).DrawPolyLine(Points, NumPts);
+
+  if not IsValidDC(DC) then Exit(False);
+
+  SetLength(lPoints, NumPts);
+  for i := 0 to NumPts-1 do
+    lPoints[i] := Points[i];
+
+  LazDC.Polyline(lPoints);
+  Result := True;
 end;
 
-function TQtWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean;
+(*function TQtWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean;
 var
   Widget: TQtWidget absolute Handle;
   Event: QLCLMessageEventH;
@@ -4942,10 +4966,6 @@ begin
     {$endif}
     Exit(False);
   end;
-
-  {$ifdef VerboseWinAPI}
-  DebugLn(Format('::[WinAPI Rectangle] DC.Width=%d DC.Height=%d', [LazDC.Width, LazDC.Height]));
-  {$endif}
 
   // ToDo: Normalize the rectangle, or improve TLazCanvas so that it accepts invalid coordinates
 {  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
