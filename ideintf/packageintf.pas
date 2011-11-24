@@ -227,7 +227,7 @@ type
 
     function GetPackageCount: integer; virtual; abstract;
     function GetPackages(Index: integer): TIDEPackage; virtual; abstract;
-    function FindPackageWithName(const PkgName: string): TIDEPackage; virtual; abstract;
+    function FindPackageWithName(const PkgName: string; IgnorePackage: TIDEPackage = nil): TIDEPackage; virtual; abstract;
     function RedirectPackageDependency(APackage: TIDEPackage): TIDEPackage; virtual; abstract;
 
     // package editors

@@ -238,7 +238,7 @@ type
     procedure LazarusSrcDirChanged; override;
     function GetPackageCount: integer; override;
     function GetPackages(Index: integer): TIDEPackage; override;
-    function FindPackageWithName(const PkgName: string): TIDEPackage; override;
+    function FindPackageWithName(const PkgName: string; IgnorePackage: TIDEPackage = nil): TIDEPackage; override;
     function RedirectPackageDependency(APackage: TIDEPackage): TIDEPackage; override;
 
     // project
@@ -2535,17 +2535,15 @@ begin
   Result:=PackageGraph.Packages[Index];
 end;
 
-function TPkgManager.FindPackageWithName(const PkgName: string): TIDEPackage;
+function TPkgManager.FindPackageWithName(const PkgName: string;
+  IgnorePackage: TIDEPackage): TIDEPackage;
 var
-  ID: TLazPackageID;
+  Pkg: TLazPackage;
 begin
-  ID:=TLazPackageID.Create;
-  try
-    ID.Name:=PkgName;
-    Result:=PackageGraph.FindPackageWithIDMask(ID);
-  finally
-    ID.Free;
-  end;
+  Pkg:=nil;
+  if (IgnorePackage<>nil) then
+    Pkg:=IgnorePackage as TLazPackage;
+  Result:=PackageGraph.FindPackageWithName(PkgName,Pkg);
 end;
 
 function TPkgManager.RedirectPackageDependency(APackage: TIDEPackage): TIDEPackage;
