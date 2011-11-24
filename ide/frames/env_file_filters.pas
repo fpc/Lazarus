@@ -18,6 +18,8 @@ type
 
   TFileFiltersOptionsFrame = class(TAbstractIDEOptionsEditor)
     grdFileFilters: TStringGrid;
+    MenuItem1: TMenuItem;
+    SetDefaultMenuItem: TMenuItem;
     pmGrid: TPopupMenu;
     pmiAddRow: TMenuItem;
     pmiDelRow: TMenuItem;
@@ -27,6 +29,7 @@ type
     procedure pmiAddRowClick(Sender: TObject);
     procedure pmiDelRowClick(Sender: TObject);
     procedure pmiInsRowClick(Sender: TObject);
+    procedure SetDefaultMenuItemClick(Sender: TObject);
   private
     FList: TStringList;
     fLoaded: boolean;
@@ -45,7 +48,9 @@ type
 procedure LoadFileDialogFilter;
 procedure SaveFileDialogFilter;
 function GetDefaultFileDialogFilter: string;
-
+function GetFileDialogFilterFromGrid(Grid: TStringGrid): string;
+procedure LoadGridFromFileDialogFilter(Grid: TStringGrid; Filter: string;
+                                       AddEmptyRow: boolean);
 
 implementation
 
@@ -152,6 +157,88 @@ begin
     + '|' + lisLazarusOtherFile + ' (*.inc;*.lrs;*.lpl)|*.inc;*.lrs;*.lpl';
 end;
 
+function GetFileDialogFilterFromGrid(Grid: TStringGrid): string;
+var
+  i: Integer;
+  CurCaption: String;
+  CurMask: String;
+begin
+  Result:='';
+  for i := 1 to Grid.RowCount-1 do
+  begin
+    CurCaption:=Grid.Cells[1, i];
+    CurMask:=Grid.Cells[2, i];
+    CurCaption:=StringReplace(CurCaption,'|',',',[rfReplaceAll]);
+    CurMask:=StringReplace(CurMask,'|',',',[rfReplaceAll]);
+    if (CurCaption='') or (CurMask='') then continue;
+    if Result<>'' then
+      Result:=Result+'|';
+    Result:=Result+CurCaption+'|'+CurMask;
+  end;
+end;
+
+procedure LoadGridFromFileDialogFilter(Grid: TStringGrid; Filter: string;
+  AddEmptyRow: boolean);
+
+  procedure ReadList(var Cnt: integer; Scan: boolean);
+  var
+    p: PChar;
+    CaptionStart: PChar;
+    CurCaption: String;
+    MaskStart: PChar;
+    CurMask: String;
+  begin
+    Cnt:=0;
+    if Filter<>'' then begin
+      p:=PChar(Filter);
+      while p^<>#0 do
+      begin
+        // caption
+        CaptionStart:=p;
+        while not (p^ in ['|',#0]) do inc(p);
+        if p^=#0 then break;
+        CurCaption:=copy(Filter,CaptionStart-PChar(Filter)+1,p-CaptionStart);
+        // parse masks
+        repeat
+          inc(p);
+          MaskStart:=p;
+          while not (p^ in ['|',#0]) do inc(p);
+          if p>MaskStart then begin
+            CurMask:=copy(Filter,MaskStart-PChar(Filter)+1,p-MaskStart);
+            inc(Cnt);
+            if not Scan then begin
+              Grid.Cells[1, Cnt] := CurCaption;
+              Grid.Cells[2, Cnt] := CurMask;
+            end;
+          end;
+          if p^='|' then break;
+        until p^=#0;
+        inc(p);
+      end;
+    end;
+
+  end;
+
+var
+  Cnt: Integer;
+begin
+  Cnt:=0;
+  ReadList(Cnt,true);
+  Grid.BeginUpdate;
+  try
+    inc(Cnt,Grid.FixedRows);
+    if AddEmptyRow then inc(Cnt);
+    Grid.RowCount := Cnt;
+    if AddEmptyRow then begin
+      Grid.Cells[1, Cnt-1] := '';
+      Grid.Cells[2, Cnt-1] := '';
+    end;
+    ReadList(Cnt,false);
+  finally
+    Grid.EndUpdate(true);
+  end;
+end;
+
 { TFileFiltersOptionsFrame }
 
 procedure TFileFiltersOptionsFrame.grdFileFiltersKeyDown(Sender: TObject; var Key: Word;
@@ -174,6 +261,14 @@ end;
 procedure TFileFiltersOptionsFrame.pmiInsRowClick(Sender: TObject);
 begin
   grdFileFilters.InsertColRow(False, grdFileFilters.Row);
+end;
+
+procedure TFileFiltersOptionsFrame.SetDefaultMenuItemClick(Sender: TObject);
+begin
+  if MessageDlg(lisConfirm,
+    lisResetAllFileFiltersToDefaults, mtConfirmation, [mbCancel, mbOK], 0)<>mrOk
+  then exit;
+  LoadGridFromFileDialogFilter(grdFileFilters,GetDefaultFileDialogFilter,false);
 end;
 
 constructor TFileFiltersOptionsFrame.Create(TheOwner: TComponent);
@@ -208,86 +303,21 @@ begin
 end;
 
 procedure TFileFiltersOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-
-  procedure AddRowItem(const ARow: integer; const AName, AMask: String);
-  begin
-    grdFileFilters.Cells[1, ARow] := AName;
-    grdFileFilters.Cells[2, ARow] := AMask;
-  end;
-
-  procedure ReadList(Filter: String; var Cnt: integer; Scan: boolean);
-  var
-    p: PChar;
-    CaptionStart: PChar;
-    CurCaption: String;
-    MaskStart: PChar;
-    CurMask: String;
-  begin
-    Cnt:=0;
-    if Filter<>'' then begin
-      p:=PChar(Filter);
-      while p^<>#0 do
-      begin
-        // caption
-        CaptionStart:=p;
-        while not (p^ in ['|',#0]) do inc(p);
-        if p^=#0 then break;
-        CurCaption:=copy(Filter,CaptionStart-PChar(Filter)+1,p-CaptionStart);
-        // parse masks
-        repeat
-          inc(p);
-          MaskStart:=p;
-          while not (p^ in ['|',#0]) do inc(p);
-          if p>MaskStart then begin
-            CurMask:=copy(Filter,MaskStart-PChar(Filter)+1,p-MaskStart);
-            inc(Cnt);
-            if not Scan then
-              AddRowItem(Cnt,CurCaption,CurMask);
-          end;
-          if p^='|' then break;
-        until p^=#0;
-        inc(p);
-      end;
-    end;
-
-  end;
-
-var
-  Filter: String;
-  Cnt: Integer;
 begin
   if fLoaded then exit;
   fLoaded:=true;
 
-  Filter:=EnvironmentOptions.FileDialogFilter;
-  Cnt:=0;
-  ReadList(Filter,Cnt,true);
-  grdFileFilters.RowCount := Cnt+2; // +1 for header, +1 for a new item
-  ReadList(Filter,Cnt,false);
+  LoadGridFromFileDialogFilter(grdFileFilters,EnvironmentOptions.FileDialogFilter,false);
 end;
 
 procedure TFileFiltersOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   Filter: String;
-  i: Integer;
-  CurCaption: String;
-  CurMask: String;
 begin
   if fSaved then exit;
   fSaved:=true;
 
-  Filter:='';
-  for i := 1 to grdFileFilters.RowCount-1 do
-  begin
-    CurCaption:=grdFileFilters.Cells[1, i];
-    CurMask:=grdFileFilters.Cells[2, i];
-    CurCaption:=StringReplace(CurCaption,'|',',',[rfReplaceAll]);
-    CurMask:=StringReplace(CurMask,'|',',',[rfReplaceAll]);
-    if (CurCaption='') or (CurMask='') then continue;
-    if Filter<>'' then
-      Filter:=Filter+'|';
-    Filter:=Filter+CurCaption+'|'+CurMask;
-  end;
+  Filter:=GetFileDialogFilterFromGrid(grdFileFilters);
 
   if EnvironmentOptions.FileDialogFilter<>Filter then begin
     //debugln(['TFileFiltersOptionsFrame.WriteSettings ']);

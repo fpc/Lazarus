@@ -5360,6 +5360,8 @@ resourcestring
   // File Filters - Environment options
   lisFileFiltersTitle ='These are file filters that will appear in all File Open dialogs';
   lisFileFilters = 'File Filters';
+  lisConfirm = 'Confirm';
+  lisResetAllFileFiltersToDefaults = 'Reset all file filters to defaults?';
   lisFileFiltersName = 'Name';
   lisFileFiltersMask = 'File mask';
   lisFileFiltersAddRow = 'Add Row';

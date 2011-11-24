@@ -17,10 +17,12 @@ inherited FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     Columns = <    
       item
         Title.Caption = 'Name'
+        Title.PrefixOption = poNone
         Width = 130
       end    
       item
         Title.Caption = 'File mask'
+        Title.PrefixOption = poNone
         Width = 300
       end>
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goThumbTracking, goSmoothScroll, goFixedRowNumbering]
@@ -31,9 +33,9 @@ inherited FileFiltersOptionsFrame: TFileFiltersOptionsFrame
   end
   object lblTitle: TLabel[1]
     Left = 8
-    Height = 18
+    Height = 17
     Top = 9
-    Width = 41
+    Width = 43
     Caption = 'lblTitle'
     ParentColor = False
   end
@@ -51,6 +53,13 @@ inherited FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     object pmiInsRow: TMenuItem
       Caption = 'Insert row'
       OnClick = pmiInsRowClick
+    end
+    object MenuItem1: TMenuItem
+      Caption = '-'
+    end
+    object SetDefaultMenuItem: TMenuItem
+      Caption = 'Set defaults'
+      OnClick = SetDefaultMenuItemClick
     end
   end
 end
