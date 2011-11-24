@@ -2249,7 +2249,9 @@ begin
     exit;
 
   lOldBrush := SelectObject(DC, Brush);
+  {$ifndef ver2_4}
   LazDC.FillRect(Rect);
+  {$endif}
   SelectObject(DC, lOldBrush);
 
   Result := True;
