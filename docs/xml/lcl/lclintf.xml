@@ -836,7 +836,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="DrawFrameControl">
-        <short>Draws a window frame control, of the specified type and style.
+        <short>Draws a window frame control, of the specified type and style.</short>
         <descr/>
         <seealso/>
       </element>
@@ -1299,7 +1299,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetActiveWindow">
-        <short>Returns the Handle of the active window of the calling thread.
+        <short>Returns the Handle of the active window of the calling thread.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1505,7 +1505,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetDoubleClickTime">
-        <short></short>
+        <short>Returns the double-click time, in milliseconds.</short>
         <descr>
         </descr>
         <errors>
@@ -1549,33 +1549,31 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetFocus">
-        <short/>
+        <short>Returns the handle of the window that has the focus in the current thread.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetFocus.Result">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetFontLanguageInfo">
-        <short/>
+        <short>Returns language information about the currently selected font.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetFontLanguageInfo.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetFontLanguageInfo.DC">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetForegroundWindow">
-        <short></short>
+        <short>Returns the window that the user is currently working with, session wide.</short>
         <descr>
         </descr>
         <errors>
@@ -1586,8 +1584,9 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       <element name="GetForegroundWindow.Result">
         <short></short>
       </element>
+      <!-- function Visibility: default -->
       <element name="GetIconInfo">
-        <short></short>
+        <short>Returns information about an Icon or Cursor.</short>
         <descr>
         </descr>
         <errors>
@@ -1606,7 +1605,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetKeyState">
-        <short/>
+        <short>The status of a virtual key.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1621,7 +1620,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetMapMode">
-        <short/>
+        <short>Returns the mapping mode of an device context.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1636,7 +1635,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetMonitorInfo">
-        <short></short>
+        <short>Returns information about an display monitor.</short>
         <descr>
         </descr>
         <errors>
@@ -1655,110 +1654,94 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetObject">
-        <short/>
+        <short>Returns information about a graphics object.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetObject.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetObject.GDIObject">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetObject.BufSize">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetObject.Buf">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetPaletteEntries">
-        <short/>
+        <short>Retrieves an range of color entries from a logical palette.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetPaletteEntries.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetPaletteEntries.Palette">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetPaletteEntries.StartIndex">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetPaletteEntries.NumEntries">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetPaletteEntries.PaletteEntries">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetParent">
-        <short/>
+        <short>Returns the parent window of a window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetParent.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetParent.Handle">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetProp">
-        <short/>
+        <short>Retrieves an property value for a window.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetProp.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetProp.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetProp.Str">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetRgnBox">
-        <short/>
+        <short>Returns the bounding rectangle of a region, containing the entire region.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetRgnBox.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetRgnBox.RGN">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetRgnBox.lpRect">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetROP2">
-        <short></short>
+        <short>The current Foreground Mixing Mode in an device context.</short>
         <descr>
         </descr>
         <errors>
@@ -1794,42 +1777,37 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         </short>
       </element>
       <element name="GetScrollInfo.ScrollInfo">
-        <short>Initialize ScrollInfo.fMask with the flags for the desired values.
-        </short>
+        <short>Recieves the values indicated in fMask.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="GetStockObject">
-        <short/>
+        <short>Retrieves a handle to one of the predefined graphic objects.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetStockObject.Result">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetStockObject.Value">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: default -->
       <element name="GetSysColor">
-        <short/>
+        <short>Retrieves the system color for standard display elements.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetSysColor.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetSysColor.nIndex">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetSysColorBrush">
-        <short></short>
+        <short>Retrieves a system brush for standard display elements.</short>
         <descr>
         </descr>
         <errors>
@@ -1845,176 +1823,144 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetSystemPaletteEntries">
-        <short/>
+        <short>Retrieves an range of color entries from the system palette for a device.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetSystemPaletteEntries.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetSystemPaletteEntries.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetSystemPaletteEntries.StartIndex">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetSystemPaletteEntries.NumEntries">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetSystemPaletteEntries.PaletteEntries">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetSystemMetrics">
-        <short/>
+        <short>Retrieves various system metrics.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetSystemMetrics.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetSystemMetrics.nIndex">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetTextColor">
-        <short/>
+        <short>The current text color in an device context.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetTextColor.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextColor.DC">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetTextExtentExPoint">
-        <short/>
+        <short>Calculates the number of characters, that fit into some horizontal space.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetTextExtentExPoint.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentExPoint.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentExPoint.Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentExPoint.Count">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentExPoint.MaxWidth">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentExPoint.MaxCount">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentExPoint.PartialWidths">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentExPoint.Size">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetTextExtentPoint">
-        <short/>
+        <short>Computes the display width and height of an string.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetTextExtentPoint.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentPoint.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentPoint.Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentPoint.Count">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentPoint.Size">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetTextExtentPoint32">
-        <short/>
+        <short>Computes the display width and height of an string.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetTextExtentPoint32.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentPoint32.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentPoint32.Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentPoint32.Count">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextExtentPoint32.Size">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetTextMetrics">
-        <short/>
+        <short>Retrieves the metrics for the currently selected font.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetTextMetrics.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextMetrics.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetTextMetrics.TM">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetViewPortExtEx">
-        <short></short>
+        <short>Returns the size of the viewport of an device context.</short>
         <descr>
         </descr>
         <errors>
@@ -2033,11 +1979,9 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetViewPortOrgEx">
-        <short></short>
+        <short>Returns the origin of the viewport of an device context.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -2052,58 +1996,40 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetWindowExtEx">
-      <short></short>
-      <descr>
-      </descr>
-      <errors>
-      </errors>
-      <seealso>
-      </seealso>
+        <short>Returns the extent of a window, in logical units.</short>
+        <descr>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="GetWindowExtEx.Result">
-      <short></short>
+        <short></short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="GetWindowExtEx.DC">
-      <short></short>
+        <short></short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="GetWindowExtEx.Size">
-      <short></short>
+        <short></short>
       </element>
-
       <!-- function Visibility: default -->
       <element name="GetWindowLong">
-        <short/>
+        <short>Returns attributes of a window.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetWindowLong.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetWindowLong.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetWindowLong.int">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GetWindowRect">
-        <short>After the call, ARect will be the control area in screen coordinates.
+        <short>Retrieves the bounding rectangle of a window, in screen coordinates.
         </short>
-        <descr>That means, Left and Top will be the screen coordinates of
-          the TopLeft pixel of the Handle object and Right and Bottom
-          will be the screens coordinate of the BottomRight pixel.
-        </descr>
-        <errors/>
         <seealso/>
       </element>
       <element name="GetWindowRect.Result">
@@ -2117,7 +2043,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetWindowSize">
-        <short>Returns the Width and Height of the window.</short>
+        <short>Returns the [client?] Width and Height of the window.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2136,77 +2062,65 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetWindowOrgEx">
-        <short/>
+        <short>Retrieves the window origin of an device context, in logical units.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GetWindowOrgEx.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetWindowOrgEx.dc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GetWindowOrgEx.P">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="GradientFill">
-        <short/>
+        <short>Fills rectangle or triangle areas with gradient colors.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="GradientFill.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GradientFill.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GradientFill.Vertices">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GradientFill.NumVertices">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GradientFill.Meshes">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GradientFill.NumMeshes">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="GradientFill.Mode">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="HideCaret">
-        <short/>
+        <short>Removes the caret from the screen.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="HideCaret.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="HideCaret.hWnd">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="IntersectClipRect">
-        <short>Shrinks the clipping region in an Device Context
-          to the boundary defined by Left, Top, Right, Bottom.
+        <short>
+          Shrinks the clipping region of an Device Context
+          to a rectangular boundary, e.g. a text area.
         </short>
         <descr>The result can be one of the following constants:<br/>
           Error
@@ -2240,30 +2154,26 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="InvalidateRect">
-        <short/>
+        <short>Marks a display area for repaint.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="InvalidateRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="InvalidateRect.aHandle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="InvalidateRect.ARect">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="InvalidateRect.bErase">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="InvalidateRgn">
-        <short></short>
+        <short>Marks a display area for repaint.</short>
         <descr>
         </descr>
         <errors>
@@ -2290,17 +2200,15 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="IsDBCSLeadByte.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="IsDBCSLeadByte.TestChar">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="IsIconic">
-        <short></short>
+        <short>True when the window is minimized.</short>
         <descr>
         </descr>
         <errors>
@@ -2316,7 +2224,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="IsWindow">
-        <short></short>
+        <short>Checks whether a handle refers to a window.</short>
         <descr>
         </descr>
         <errors>
@@ -2332,11 +2240,9 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="IsWindowEnabled">
-        <short></short>
+        <short>Determines whether a window can receive mouse and keyboard input.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -2348,22 +2254,20 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="IsWindowVisible">
-        <short/>
+        <short>The definite Visible state of a window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="IsWindowVisible.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="IsWindowVisible.handle">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="IsZoomed">
-        <short></short>
+        <short>True when the window is maximized.</short>
         <descr>
         </descr>
         <errors>
@@ -2379,52 +2283,46 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- procedure Visibility: default -->
       <element name="InitializeCriticalSection">
-        <short/>
+        <short>Initializes a Critical Section object.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="InitializeCriticalSection.CritSection">
         <short/>
       </element>
       <!-- procedure Visibility: default -->
       <element name="LeaveCriticalSection">
-        <short/>
+        <short>Releases a critical section, for use by other threads.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="LeaveCriticalSection.CritSection">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="LineTo">
-        <short/>
+        <short>Draws a line from the current position up to, but not including, the specified point.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="LineTo.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="LineTo.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="LineTo.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="LineTo.Y">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="LPtoDP">
-        <short></short>
+        <short>Converts logical coordinates into device coordinates.</short>
         <descr>
         </descr>
         <errors>
@@ -2446,152 +2344,95 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="MaskBlt">
-        <short/>
-        <descr/>
+        <short>Copies part of an source DC into an destination DC,
+          using the specified foreground and background raster operations.
+        </short>
+        <descr>
+          <p>
+            MaskBlt behaves like BitBlt when no mask bitmap is specified.
+            It does a SRCOPY operation when also no Rop is specified.
+            See BitBlt for general information about raster operations.
+          </p><p>
+            Rop contains both a foreground and a background raster operation
+            (see MakeROP4).
+            When a (monochrome) mask bitmap is present, its bits select
+            either the foreground (1) or background (0) raster operation.
+          </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="BitBlt"/>
+          <link id="MakeROP4"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="MaskBlt.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MaskBlt.DestDC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MaskBlt.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MaskBlt.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MaskBlt.Width">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MaskBlt.Height">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MaskBlt.SrcDC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MaskBlt.XSrc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MaskBlt.YSrc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MaskBlt.Mask">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MaskBlt.XMask">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MaskBlt.YMask">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MaskBlt.Rop">
         <short/>
       </element>
       <!-- function Visibility: default -->
-      <element name="MaskBlt">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="MaskBlt.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskBlt.DestDC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskBlt.X">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskBlt.Y">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskBlt.Width">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskBlt.Height">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskBlt.SrcDC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskBlt.XSrc">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskBlt.YSrc">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskBlt.Mask">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskBlt.XMask">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MaskBlt.YMask">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
       <element name="MessageBox">
-        <short/>
+        <short>The MessageBox function displays an modal dialog,
+          with the given text, caption, icon and buttons.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="MessageBox.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MessageBox.hWnd">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MessageBox.lpText">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MessageBox.lpCaption">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MessageBox.uType">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="MonitorFromPoint">
-        <short></short>
+        <short>Finds an monitor from screen coordinates.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -2605,15 +2446,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short></short>
       </element>
       <!-- function Visibility: default -->
-      <element name="MonitorFromRect">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
+      <element name="MonitorFromRect" link="#lcl.InterfaceBase.MonitorFromRect"/>
       <element name="MonitorFromRect.Result">
         <short></short>
       </element>
@@ -2624,12 +2457,10 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <short></short>
       </element>
       <!-- function Visibility: default -->
-      <element name="MonitorFromWindow">
-        <short></short>
+      <element name="MonitorFromWindow" link="#lcl.InterfaceBase.MonitorFromWindow">
+        <short>Finds the monitor covering most of a window.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -2644,7 +2475,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="MoveToEx">
-        <short/>
+        <short>Moves the current position to the specified point.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2666,7 +2497,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="OffsetRgn">
-        <short></short>
+        <short>Moves a region relative.</short>
         <descr>
         </descr>
         <errors>
@@ -2719,16 +2550,14 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="Pie">
-        <short/>
+        <short>Draws a filled pie-shaped wedge, from an ellipse and two radials.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="Pie.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="Pie.DC">
         <short/>
       </element>
@@ -2808,34 +2637,31 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
   Winding determines how the polygon is filled. When Winding is True, Polygon
   fills the shape using the Winding fill algorithm. When Winding is False,
   Polygon uses the even-odd (alternative) fill algorithm.
+<!-- does not apply[?]
   StartIndex gives the index of the first point in the array to use. All points
   before this are ignored.
   NumPts indicates the number of points to use, starting at StartIndex.
   If NumPts is -1 (the default), Polygon uses all points from StartIndex to the
   end of the array.
+-->
   The first point is always connected to the last point.
   To draw a polygon on the canvas, without filling it, use the Polyline method,
   specifying the first point a second time at the end.</descr>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="Polygon.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="Polygon.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="Polygon.Points">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="Polygon.NumPts">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="Polygon.Winding">
         <short/>
       </element>
@@ -2845,9 +2671,11 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <descr>Use Polyline to connect a set of points on the canvas. If you specify only two
   points, Polyline draws a single line.
   The Points parameter is an array of points to be connected.
+<!-- does not apply[?]
   StartIndex identifies the first point in the array to use.
   NumPts indicates the number of points to use. If NumPts is -1 (the default),
   PolyLine uses all the points from StartIndex to the end of the array.
+-->
   Calling the MoveTo function with the value of the first point, and then
   repeatedly calling LineTo with all subsequent points will draw the same image
   on the canvas. However, unlike LineTo, Polyline does not change the value of
@@ -2991,7 +2819,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="RedrawWindow">
-        <short></short>
+        <short>Redraws (part of) a window.</short>
         <descr>
         </descr>
         <errors>
@@ -3016,7 +2844,9 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="ReleaseCapture">
-        <short></short>
+        <short>Restores normal mouse input processing,
+          after <link id="SetCapture"/>.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3044,7 +2874,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="RemoveProp">
-        <short></short>
+        <short>Removes a named property from a window.</short>
         <descr>
         </descr>
         <errors>
@@ -3068,69 +2898,56 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="RoundRect.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RoundRect.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RoundRect.X1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RoundRect.Y1">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RoundRect.X2">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RoundRect.Y2">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RoundRect.RX">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RoundRect.RY">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="RestoreDC">
-        <short/>
+        <short>Restores an Device Context (DC) to an previously saved state.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="RestoreDC.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RestoreDC.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="RestoreDC.SavedDC">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SaveDC">
-        <short/>
+        <short>Saves the state of an Device Context in the context stack.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SaveDC.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SaveDC.DC">
         <short/>
       </element>
@@ -3198,9 +3015,14 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="SendMessage">
-<short>Sends a message directed to a window to the message pool of the application</short>
-        <descr><p>This method is a thread-safe solution to send messages to windows. Those messages will be handled in the message loop of the application and therefore can be sent from any thread. They are not immediate, but they will awake the main thread if it is waiting for messages. These messages can be handled by procedures with the keyword message in the class of a form for example. One would then use the handle of this form as the HandleWnd parameter of this routine. Custom messages should always have an identification number (represented by the parameter Msg) larger then the constant LM_USER. The two parameters WParam and LParam will be passed along to the window together with the Msg identification number.</p>
-        <p>The difference between SendMessage and PostMessage is the way that they return control to the calling thread. With SendMessage control is not returned until the window that the message was sent to has completed processing the sent message, however with PostMessage control is returned immediately.</p></descr>        <errors/>
+        <short>Sends a message directed to a window to the message pool of the application
+        </short>
+        <descr><p>This method is a thread-safe solution to send messages to windows.
+          Those messages will be handled in the message loop of the application and therefore can be sent from any thread.
+          They are not immediate, but they will awake the main thread if it is waiting for messages. These messages can be handled by procedures with the keyword message in the class of a form for example. One would then use the handle of this form as the HandleWnd parameter of this routine. Custom messages should always have an identification number (represented by the parameter Msg) larger then the constant LM_USER. The two parameters WParam and LParam will be passed along to the window together with the Msg identification number.</p>
+          <p>The difference between SendMessage and PostMessage is the way that they return control to the calling thread. With SendMessage control is not returned until the window that the message was sent to has completed processing the sent message, however with PostMessage control is returned immediately.</p>
+        </descr>
+        <errors/>
         <seealso>
           <link id="#lcl.LCLIntf.PostMessage">LCLIntf.PostMessage</link>
         </seealso>
@@ -4766,7 +4588,9 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <short>Scrolls the content of a window, by a number of pixels.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="ScrollWindowEx"/>
+        </seealso>
       </element>
       <element name="ScrollWindow.Result">
         <short/>
@@ -4775,10 +4599,10 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
         <short/>
       </element>
       <element name="ScrollWindow.XAmount">
-        <short>Horizontal distance (positive to scroll down)</short>
+        <short>Horizontal distance (positive to scroll right)</short>
       </element>
       <element name="ScrollWindow.YAmount">
-        <short>Vertical distance (positive to scroll right)</short>
+        <short>Vertical distance (positive to scroll down)</short>
       </element>
       <element name="ScrollWindow.Rect">
         <short>The part of the window, that is to be scrolled.

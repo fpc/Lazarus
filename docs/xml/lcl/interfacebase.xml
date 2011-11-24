@@ -973,13 +973,14 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.BitBlt">
-        <short>Copies a bitmap from a source DC into a destination DC,
+        <short>Copies part of an source DC into an destination DC,
           using the specified raster operation.
         </short>
         <descr>
           <p>
             This routine implements the equivalent Windows GDI API
             of the same name in all platforms supported by Lazarus.
+          </p><p>
             It copies a section of a Canvas to another one, without any stretching.
             It allows to select the kind of operation which should be
             performed to draw the pixels into the destination in the parameter ROP.
@@ -1527,15 +1528,17 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DeleteCriticalSection">
-        <short>Deletes an unowned crititcal section.</short>
+        <short>Deletes an unowned critical section.</short>
         <descr/>
         <errors>Results are unpredictable when the section is owned,
           i.e. has been entered but not yet left.
         </errors>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.InitializeCriticalSection"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.DeleteCriticalSection.CritSection">
-        <short/>
+        <short>The critical section object.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DeleteDC">
@@ -1827,12 +1830,16 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.EnterCriticalSection">
         <short>Enters a critical section.</short>
-        <descr>[describe critical sections where?]</descr>
-        <errors/>
-        <seealso/>
+        <descr>The call returns only when the calling thread has obtained ownership of the critical section.
+          See TryEnterCriticalSection for testing the ownership of the critical section.
+        </descr>
+        <seealso>
+          <link id="TWidgetSet.InitializeCriticalSection"/>
+          <link id="TWidgetSet.TryEnterCriticalSection"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.EnterCriticalSection.CritSection">
-        <short/>
+        <short>The critical section object.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.EnumDisplayMonitors">
@@ -1943,7 +1950,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ExcludeClipRect">
         <short>Excludes a rectangle from the clipping region,
-          i.e. allows to paint within the rectangle.
+          i.e. prevents painting within the rectangle.
         </short>
         <descr/>
         <errors/>
@@ -2459,7 +2466,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetDoubleClickTime">
-        <short></short>
+        <short>Returns the double-click time, in milliseconds.</short>
         <descr>
         </descr>
         <errors>
@@ -2472,43 +2479,48 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetFocus">
-        <short/>
+        <short>Returns the handle of the window that has the focus in the current thread.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetFocus.Result">
-        <short/>
+        <short>The window handle, zero if no window has the focus.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetFontLanguageInfo">
-        <short/>
-        <descr/>
+        <short>Returns language information about the currently selected font.</short>
+        <descr>
+          <p>The following flags are supported:</p>
+          <ul>
+            <li>GCP_DBCS - the character set is double-byte (DBCS).
+            </li>
+          </ul>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetFontLanguageInfo.Result">
-        <short/>
+        <short>Font flags, zero for Latin font alikes.</short>
       </element>
       <element name="TWidgetSet.GetFontLanguageInfo.DC">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetForegroundWindow">
-        <short></short>
+        <short>Returns the window that the user is currently working with, session wide.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.GetForegroundWindow.Result">
-        <short></short>
+        <short>The window handle, zero when no such window exists.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetIconInfo">
-        <short></short>
+        <short>Returns information about an Icon or Cursor.</short>
         <descr>
         </descr>
         <errors>
@@ -2520,145 +2532,188 @@
         <short></short>
       </element>
       <element name="TWidgetSet.GetIconInfo.AIcon">
-        <short></short>
+        <short>The item handle.</short>
       </element>
       <element name="TWidgetSet.GetIconInfo.AIconInfo">
-        <short></short>
+        <short>Receives the information.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetKeyState">
-        <short/>
-        <descr/>
+        <short>The status of a virtual key.</short>
+        <descr>
+          <p>
+            The result reflects the message processing state,
+            at the time of the last seen key message.
+          </p><p>
+            A key can be up, down or toggled.
+          </p><p>
+            The high order bit of the result is the up/down state,
+            1 for down.
+          </p><p>
+            The low order bit of the result is the toggled state,
+            applicable to e.g. the caps-lock key.
+            The bit is set if the key is toggled (active).
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetKeyState.Result">
-        <short/>
+        <short>The key state flags.</short>
       </element>
       <element name="TWidgetSet.GetKeyState.nVirtKey">
-        <short/>
+        <short>The virtual key code.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetMapMode">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Returns the mapping mode of an device context.</short>
+        <descr>
+          <p>
+            The mapping mode specifies the correspondence between logical and physical units.
+            Supported modes are:
+          </p>
+          <ul>
+            <li>
+              MM_ANISOTROPIC - arbitrary mapping
+            </li><li>
+              MM_HIENGLISH - 0.001 inch
+            </li><li>
+              MM_HIMETRIC - 0.01 mm
+            </li><li>
+              MM_ISOTROPIC - arbitrary mapping, same for X and Y axis
+            </li><li>
+              MM_LOENGLISH - 0.01 inch
+            </li><li>
+              MM_LOMETRIC - 0.1 mm
+            </li><li>
+              MM_TEXT - 1 device pixel
+            </li><li>
+              MM_TWIPS - 1/20th point (twip, 1/1440 inch)
+            </li>
+          </ul>
+          <p>
+            Positive X is right, except for (an)isotropic mappings.
+            Positive Y is up, except for (an)isotropic and MM_TEXT mappings.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetMapMode.Result">
-        <short/>
+        <short>The mapping mode, zero on failure.</short>
       </element>
       <element name="TWidgetSet.GetMapMode.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetMonitorInfo">
-        <short></short>
+        <short>Returns information about an display monitor.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.GetMonitorInfo.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.GetMonitorInfo.hMonitor">
-        <short></short>
+        <short>The monitor handle.</short>
       </element>
       <element name="TWidgetSet.GetMonitorInfo.lpmi">
-        <short></short>
+        <short>Receives the information.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetObject">
-        <short/>
-        <descr/>
+        <short>Returns information about a graphics object.</short>
+        <descr>The returned information depends on the object type
+          [to be found out how?]
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetObject.Result">
-        <short/>
+        <short>The number of bytes written into the buffer.</short>
       </element>
       <element name="TWidgetSet.GetObject.GDIObject">
-        <short/>
+        <short>The Handle of the object.</short>
       </element>
       <element name="TWidgetSet.GetObject.BufSize">
-        <short/>
+        <short>The bytecount of the buffer.</short>
       </element>
       <element name="TWidgetSet.GetObject.Buf">
-        <short/>
+        <short>Receives the information. Nil means to return the required buffer size.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetPaletteEntries">
-        <short/>
+        <short>Retrieves an range of color entries from a logical palette.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetPaletteEntries.Result">
-        <short/>
+        <short>The number of entries copied.</short>
       </element>
       <element name="TWidgetSet.GetPaletteEntries.Palette">
-        <short/>
+        <short>The palette handle.</short>
       </element>
       <element name="TWidgetSet.GetPaletteEntries.StartIndex">
-        <short/>
+        <short>The first entry.</short>
       </element>
       <element name="TWidgetSet.GetPaletteEntries.NumEntries">
-        <short/>
+        <short>The number of entries to retrieve.</short>
       </element>
       <element name="TWidgetSet.GetPaletteEntries.PaletteEntries">
-        <short/>
+        <short>Array of PALETTEENTRY records, receiving the information.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetParent">
-        <short/>
+        <short>Returns the parent window of a window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetParent.Result">
-        <short/>
+        <short>The parent window handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.GetParent.Handle">
-        <short/>
+        <short>The window handle.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetProp">
-        <short/>
+        <short>Retrieves an property value for a window.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.SetProp"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.GetProp.Result">
-        <short/>
+        <short>Nil on failure.</short>
       </element>
       <element name="TWidgetSet.GetProp.Handle">
-        <short/>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.GetProp.Str">
-        <short/>
+        <short>The property name.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetRgnBox">
-        <short/>
+        <short>Returns the bounding rectangle of a region, containing the entire region.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetRgnBox.Result">
-        <short/>
+        <short>The region kind.</short>
       </element>
       <element name="TWidgetSet.GetRgnBox.RGN">
-        <short/>
+        <short>The region handle.</short>
       </element>
       <element name="TWidgetSet.GetRgnBox.lpRect">
-        <short/>
+        <short>Receives the coordinates.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetROP2">
-        <short></short>
+        <short>The current Foreground Mixing Mode in an device context.</short>
         <descr>
         </descr>
         <errors>
@@ -2667,398 +2722,713 @@
         </seealso>
       </element>
       <element name="TWidgetSet.GetROP2.Result">
-        <short></short>
+        <short>The mode, zero on failure.</short>
       </element>
       <element name="TWidgetSet.GetROP2.DC">
-        <short></short>
+        <short>The device context.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetScrollInfo">
-        <short/>
+        <short>Returns all or selected information about a ScrollBar.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetScrollInfo.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.GetScrollInfo.Handle">
-        <short/>
+        <short>The ScrollBar or window handle.</short>
       </element>
       <element name="TWidgetSet.GetScrollInfo.SBStyle">
-        <short/>
+        <short>The ScrollBar kind.</short>
       </element>
       <element name="TWidgetSet.GetScrollInfo.ScrollInfo">
-        <short/>
+        <short>Recieves the values indicated in fMask.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetStockObject">
-        <short/>
-        <descr/>
+        <short>Retrieves a handle to one of the predefined graphic objects.</short>
+        <descr>
+          <p>These are the predefined stock objects:
+            [todo: fill in the details?]
+          </p>
+          <ul>
+            <li>
+              BLACK_BRUSH
+            </li><li>
+              DKGRAY_BRUSH
+            </li><li>
+              DC_BRUSH
+            </li><li>
+              GRAY_BRUSH
+            </li><li>
+              HOLLOW_BRUSH
+            </li><li>
+              LTGRAY_BRUSH
+            </li><li>
+              NULL_BRUSH
+            </li><li>
+              WHITE_BRUSH
+            </li><li>
+              BLACK_PEN
+            </li><li>
+              DC_PEN
+            </li><li>
+              WHITE_PEN
+            </li><li>
+              ANSI_FIXED_FONT
+            </li><li>
+              ANSI_VAR_FONT
+            </li><li>
+              DEVICE_DEFAULT_FONT
+            </li><li>
+              DEFAULT_GUI_FONT
+            </li><li>
+              OEM_FIXED_FONT
+            </li><li>
+              SYSTEM_FONT
+            </li><li>
+              SYSTEM_FIXED_FONT
+            </li><li>
+              DEFAULT_PALETTE
+            </li>
+          </ul>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetStockObject.Result">
-        <short/>
+        <short>The handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.GetStockObject.Value">
-        <short/>
+        <short>The object kind.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetSysColor">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Retrieves the system color for standard display elements.</short>
+        <descr>
+          <p>These are the available display elements:
+            [todo: fill in details?]
+          </p>
+          <ul>
+            <li>
+              COLOR_3DDKSHADOW
+            </li><li>
+              COLOR_3DFACE, COLOR_BTNFACE
+            </li><li>
+              COLOR_3DHIGHLIGHT, COLOR_3DHILIGHT, COLOR_BTNHILIGHT, COLOR_BTNHIGHLIGHT
+            </li><li>
+              COLOR_3DLIGHT
+            </li><li>
+              COLOR_3DSHADOW, COLOR_BTNSHADOW
+            </li><li>
+              COLOR_ACTIVEBORDER
+            </li><li>
+              COLOR_ACTIVECAPTION
+            </li><li>
+              COLOR_APPWORKSPACE
+            </li><li>
+              COLOR_BACKGROUND, COLOR_DESKTOP
+            </li><li>
+              COLOR_BTNTEXT
+            </li><li>
+              COLOR_CAPTIONTEXT
+            </li><li>
+              COLOR_GRADIENTACTIVECAPTION
+            </li><li>
+              COLOR_GRADIENTINACTIVECAPTION
+            </li><li>
+              COLOR_GRAYTEXT
+            </li><li>
+              COLOR_HIGHLIGHT
+            </li><li>
+              COLOR_HIGHLIGHTTEXT
+            </li><li>
+              COLOR_HOTLIGHT
+            </li><li>
+              COLOR_INACTIVEBORDER
+            </li><li>
+              COLOR_INACTIVECAPTION
+            </li><li>
+              COLOR_INACTIVECAPTIONTEXT
+            </li><li>
+              COLOR_INFOBK
+            </li><li>
+              COLOR_INFOTEXT
+            </li><li>
+              COLOR_MENU
+            </li><li>
+              COLOR_MENUHILIGHT
+            </li><li>
+              COLOR_MENUBAR
+            </li><li>
+              COLOR_MENUTEXT
+            </li><li>
+              COLOR_SCROLLBAR
+            </li><li>
+              COLOR_WINDOW
+            </li><li>
+              COLOR_WINDOWFRAME
+            </li><li>
+              COLOR_WINDOWTEXT
+            </li>
+          </ul>
+          <p>
+            Since all returned values are valid colors, errors cannot be detected.
+            GetSysColorBrush instead returns a zero handle on failure.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWidgetSet.GetSysColorBrush"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.GetSysColor.Result">
-        <short/>
+        <short>The RGB color.</short>
       </element>
       <element name="TWidgetSet.GetSysColor.nIndex">
-        <short/>
+        <short>The system color type.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetSysColorBrush">
-        <short></short>
+        <short>Retrieves a system brush for standard display elements.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TWidgetSet.GetSysColor"/>
         </seealso>
       </element>
       <element name="TWidgetSet.GetSysColorBrush.Result">
-        <short></short>
+        <short>The brush handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.GetSysColorBrush.nIndex">
-        <short></short>
+        <short>The system color type.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetSystemPaletteEntries">
-        <short/>
+        <short>Retrieves an range of color entries from the system palette for a device.</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.GetPaletteEntries"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.GetSystemPaletteEntries.Result">
-        <short/>
+        <short>The number of entries copied, zero on failure.</short>
       </element>
       <element name="TWidgetSet.GetSystemPaletteEntries.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.GetSystemPaletteEntries.StartIndex">
-        <short/>
+        <short>The first entry to retrieve.</short>
       </element>
       <element name="TWidgetSet.GetSystemPaletteEntries.NumEntries">
-        <short/>
+        <short>The number of requested entries.</short>
       </element>
       <element name="TWidgetSet.GetSystemPaletteEntries.PaletteEntries">
-        <short/>
+        <short>Receives the color information. When Nil, the total number of palette entries is returned.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetSystemMetrics">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Retrieves various system metrics.</short>
+        <descr>
+          <p>
+            All dimensions are measured in pixels.
+          </p><p>
+            These are available items:
+            [todo: insert details?]
+          </p>
+          <ul>
+            <li>
+              SM_ARRANGE
+            </li><li>
+              SM_CLEANBOOT
+            </li><li>
+              SM_CMONITORS
+            </li><li>
+              SM_CMOUSEBUTTONS
+            </li><li>
+              SM_CXBORDER, SM_CYBORDER
+            </li><li>
+              SM_CXCURSOR, SM_CYCURSOR
+            </li><li>
+              SM_CXDLGFRAME, SM_CYDLGFRAME
+            </li><li>
+              SM_CXDOUBLECLK, SM_CYDOUBLECLK
+            </li><li>
+              SM_CXDRAG, SM_CYDRAG
+            </li><li>
+              SM_CXEDGE, SM_CYEDGE
+            </li><li>
+              SM_CXFIXEDFRAME, SM_CYFIXEDFRAME
+            </li><li>
+              (sm_cxfocusborder)
+            </li><li>
+              SM_CXFRAME, SM_CYFRAME
+            </li><li>
+              SM_CXFULLSCREEN, SM_CYFULLSCREEN
+            </li><li>
+              SM_CXHSCROLL, SM_CYHSCROLL
+            </li><li>
+              SM_CXHTHUMB
+            </li><li>
+              SM_CXICON, SM_CYICON
+            </li><li>
+              SM_CXICONSPACING, SM_CYICONSPACING
+            </li><li>
+              SM_CXMAXIMIZED, SM_CYMAXIMIZED
+            </li><li>
+              SM_CXMAXTRACK, SM_CYMAXTRACK
+            </li><li>
+              SM_CXMENUCHECK, SM_CYMENUCHECK
+            </li><li>
+              SM_CXMENUSIZE, SM_CYMENUSIZE
+            </li><li>
+              SM_CXMIN, SM_CYMIN
+            </li><li>
+              SM_CXMINIMIZED, SM_CYMINIMIZED
+            </li><li>
+              SM_CXMINSPACING, SM_CYMINSPACING
+            </li><li>
+              SM_CXMINTRACK, SM_CYMINTRACK
+            </li><li>
+              SM_CXSCREEN, SM_CYSCREEN
+            </li><li>
+              SM_CXSIZE, SM_CYSIZE
+            </li><li>
+              SM_CXSIZEFRAME, SM_CYSIZEFRAME
+            </li><li>
+              SM_CXSMICON, SM_CYSMICON
+            </li><li>
+              SM_CXSMSIZE, SM_CYSMSIZE
+            </li><li>
+              SM_CXVIRTUALSCREEN, SM_CYVIRTUALSCREEN
+            </li><li>
+              SM_CXVSCROLL, SM_CYVSCROLL
+            </li><li>
+              SM_CYCAPTION
+            </li><li>
+              SM_CYKANJIWINDOW
+            </li><li>
+              SM_CYMENU
+            </li><li>
+              SM_CYSMCAPTION
+            </li><li>
+              SM_CYVTHUMB
+            </li><li>
+              SM_DBCSENABLED
+            </li><li>
+              SM_DEBUG
+            </li><li>
+              sm_imeenabled
+              sm_mediacenter
+            </li><li>
+              SM_MENUDROPALIGNMENT
+            </li><li>
+              SM_MIDEASTENABLED
+            </li><li>
+              SM_MOUSEPRESENT
+            </li><li>
+              SM_MOUSEWHEELPRESENT
+            </li><li>
+              SM_NETWORK
+            </li><li>
+              SM_PENWINDOWS
+            </li><li>
+              sm_remotecontrol
+              sm_remotesession
+            </li><li>
+              SM_SECURE
+            </li><li>
+              SM_SAMEDISPLAYFORMAT
+            </li><li>
+              SM_SHOWSOUNDS
+            </li><li>
+              sm_shuttingdown
+            </li><li>
+              SM_SLOWMACHINE
+            </li><li>
+              SM_SWAPBUTTON
+            </li><li>
+              sm_tabletpc
+            </li><li>
+              SM_XVIRTUALSCREEN, SM_YVIRTUALSCREEN
+            </li>
+          </ul>
+          <p>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetSystemMetrics.Result">
-        <short/>
+        <short>Depends on the requested item.</short>
       </element>
       <element name="TWidgetSet.GetSystemMetrics.nIndex">
-        <short/>
+        <short>The requested item.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetTextColor">
-        <short/>
+        <short>The current text color in an device context.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetTextColor.Result">
-        <short/>
+        <short>The RGB color.</short>
       </element>
       <element name="TWidgetSet.GetTextColor.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetTextExtentExPoint">
-        <short/>
+        <short>Calculates the number of characters, that fit into some horizontal space.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.Str">
-        <short/>
+        <short>The string containing the characters.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.Count">
-        <short/>
+        <short>The number of logical characters in Str, -1 for automatic detection.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.MaxWidth">
-        <short/>
+        <short>The maximum display width, in logical units.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.MaxCount">
-        <short/>
+        <short>Receives the number of <b>logical</b> (UTF) characters that can be displayed.
+          When Nil, MaxWidth is ignored.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.PartialWidths">
-        <short/>
+        <short>Receives the widths for every partial sequence of characters. Can be Nil.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.Size">
-        <short/>
+        <short>Receives the total width and height of the display area.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetTextExtentPoint">
-        <short/>
+        <short>Computes the display width and height of an string.</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <errors>May not work properly without Unicode support.
+        </errors>
+        <seealso>
+          <link id="TWidgetSet.GetTextExtentExPoint"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint.DC">
-        <short/>
+        <short>The display DC.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint.Str">
-        <short/>
+        <short>The text.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint.Count">
-        <short/>
+        <short>The number of <b>bytes</b> in Str, -1 for automatic detection.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentPoint.Size">
-        <short/>
+        <short>Receives the total width and height of the required display area.</short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.GetTextExtentPoint32">
-        <short/>
+      <element name="TWidgetSet.GetTextExtentPoint32" link="TWidgetSet.GetTextExtentPoint">
+        <short>Computes the display width and height of an string.</short>
         <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWidgetSet.GetTextExtentPoint32.Result">
-        <short/>
-      </element>
-      <element name="TWidgetSet.GetTextExtentPoint32.DC">
-        <short/>
-      </element>
-      <element name="TWidgetSet.GetTextExtentPoint32.Str">
-        <short/>
-      </element>
-      <element name="TWidgetSet.GetTextExtentPoint32.Count">
-        <short/>
-      </element>
-      <element name="TWidgetSet.GetTextExtentPoint32.Size">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TWidgetSet.GetTextMetrics">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TWidgetSet.GetTextMetrics.Result">
-        <short/>
-      </element>
-      <element name="TWidgetSet.GetTextMetrics.DC">
-        <short/>
-      </element>
-      <element name="TWidgetSet.GetTextMetrics.TM">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TWidgetSet.GetViewPortExtEx">
-        <short></short>
-        <descr>
-        </descr>
         <errors>
         </errors>
         <seealso>
+          <link id="TWidgetSet.GetTextExtentPoint"/>
+          <link id="TWidgetSet.GetTextExtentExPoint"/>
+        </seealso>
+      </element>
+      <element name="TWidgetSet.GetTextExtentPoint32.Result">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetTextExtentPoint32.DC">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetTextExtentPoint32.Str">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetTextExtentPoint32.Count">
+        <short></short>
+      </element>
+      <element name="TWidgetSet.GetTextExtentPoint32.Size">
+        <short></short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetTextMetrics">
+        <short>Retrieves the metrics for the currently selected font.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TWidgetSet.GetTextMetrics.Result">
+        <short>False on failure.</short>
+      </element>
+      <element name="TWidgetSet.GetTextMetrics.DC">
+        <short>The device context, where the font is selected.</short>
+      </element>
+      <element name="TWidgetSet.GetTextMetrics.TM">
+        <short>Receives the information.</short>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWidgetSet.GetViewPortExtEx">
+        <short>Returns the size of the viewport of an device context.</short>
+        <descr>
+        </descr>
+        <seealso>
+          <link id="TWidgetSet.SetViewPortExtEx"/>
+          <link id="TWidgetSet.GetViewPortOrgEx"/>
         </seealso>
       </element>
       <element name="TWidgetSet.GetViewPortExtEx.Result">
-        <short></short>
+        <short>False (zero) on failure.</short>
       </element>
       <element name="TWidgetSet.GetViewPortExtEx.DC">
         <short></short>
       </element>
       <element name="TWidgetSet.GetViewPortExtEx.Size">
-        <short></short>
+        <short>Receives the viewport size.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetViewPortOrgEx">
-        <short></short>
+        <short>Returns the origin of the viewport of an device context.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TWidgetSet.SetViewPortOrgEx"/>
+          <link id="TWidgetSet.GetViewPortExtEx"/>
         </seealso>
       </element>
       <element name="TWidgetSet.GetViewPortOrgEx.Result">
-        <short></short>
+        <short>False (zero) on failure.</short>
       </element>
       <element name="TWidgetSet.GetViewPortOrgEx.DC">
         <short></short>
       </element>
       <element name="TWidgetSet.GetViewPortOrgEx.P">
-        <short></short>
+        <short>Receives the viewport origin.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetWindowExtEx">
-        <short></short>
+        <short>Returns the extent of a window, in logical units.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.GetWindowExtEx.Result">
-        <short></short>
+        <short>False (zero) on failure.</short>
       </element>
       <element name="TWidgetSet.GetWindowExtEx.DC">
         <short></short>
       </element>
       <element name="TWidgetSet.GetWindowExtEx.Size">
-        <short></short>
+        <short>Receives the window extent.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetWindowLong">
-        <short/>
-        <descr/>
+        <short>Returns attributes of a window.</short>
+        <descr>
+          <p>The following attributes are defined:
+          </p>
+          <ul>
+            <li>
+              GWL_EXSTYLE - extended window style flags. See CreateWindowEx.
+            </li><li>
+              GWL_STYLE - window style flags.
+            </li><li>
+              GWL_WNDPROC - the window procedure (address or handle). See CallWindowProc.
+            </li><li>
+              GWL_HINSTANCE - handle of the application instance.
+            </li><li>
+              GWL_HWNDPARENT - handle of the parent window.
+            </li><li>
+              GWL_ID - the identifier of the window.
+            </li><li>
+              GWL_USERDATA - user data associated with the window.
+            </li>
+          </ul>
+          <p>The following attributes are also available when the window is a dialog box:
+          </p>
+          <ul>
+            <li>
+              DWL_DLGPROC - the dialog box procedure (address or handle).
+            </li><li>
+              DWL_MSGRESULT - the return value of a message processed in the dialog box procedure.
+            </li><li>
+              DWL_USER - extra application information.
+            </li>
+          </ul>
+          <p>
+            GWL_USERDATA and DWL_USER are the base offsets of user added attributes.
+            The second user attribute can be access with an additional offset of 4,
+            and so on.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetWindowLong.Result">
-        <short/>
+        <short>The sttribute.</short>
       </element>
       <element name="TWidgetSet.GetWindowLong.Handle">
-        <short/>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.GetWindowLong.int">
-        <short/>
+        <short>Offset of the attribute.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetWindowRect">
-        <short/>
+        <short>Retrieves the bounding rectangle of a window, in screen coordinates.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetWindowRect.Result">
-        <short/>
+        <short>Zero on failure.</short>
       </element>
       <element name="TWidgetSet.GetWindowRect.Handle">
-        <short/>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.GetWindowRect.Rect">
-        <short/>
+        <short>Receives the window bounds.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetWindowSize">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Returns the [client?] Width and Height of the window.</short>
+        <descr>Even from the implementation it's unclear what exactly is calculated[!?]
+        </descr>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetWindowSize.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.GetWindowSize.Handle">
-        <short/>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.GetWindowSize.Width">
-        <short/>
+        <short>The [client?] width.</short>
       </element>
       <element name="TWidgetSet.GetWindowSize.Height">
-        <short/>
+        <short>The [client?] height.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetWindowOrgEx">
-        <short/>
+        <short>Retrieves the window origin of an device context, in logical units.</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.SetWindowOrgEx"/>
+          <link id="TWidgetSet.GetViewPortOrgEx"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetWindowOrgEx.Result">
-        <short/>
+        <short>Zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetWindowOrgEx.dc">
-        <short/>
+        <short>The device context</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetWindowOrgEx.P">
-        <short/>
+        <short>Receives the origin.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GradientFill">
-        <short/>
+        <short>Fills rectangle or triangle areas with gradient colors.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.GradientFill.Result">
-        <short/>
+        <short>False on failure</short>
       </element>
       <element name="TWidgetSet.GradientFill.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.GradientFill.Vertices">
-        <short/>
+        <short>[?]</short>
       </element>
       <element name="TWidgetSet.GradientFill.NumVertices">
         <short/>
       </element>
       <element name="TWidgetSet.GradientFill.Meshes">
-        <short/>
+        <short>[?]</short>
       </element>
       <element name="TWidgetSet.GradientFill.NumMeshes">
         <short/>
       </element>
       <element name="TWidgetSet.GradientFill.Mode">
-        <short/>
+        <short>E.g. GRADIENT_FILL_RECT_H.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.HideCaret">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Removes the caret from the screen.</short>
+        <descr>Calls are cumulative,
+          for every HideCaret a call to ShowCaret is required.
+        </descr>
         <seealso/>
       </element>
       <element name="TWidgetSet.HideCaret.Result">
-        <short/>
+        <short>False on failure[?]</short>
       </element>
       <element name="TWidgetSet.HideCaret.hWnd">
-        <short/>
+        <short>The window handle, can be zero.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.InitializeCriticalSection">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Initializes a Critical Section object.</short>
+        <descr>
+          <p>
+            Critical sections are thread synchronization elements,
+            typically used to prevent concurrent access to a shared resource.
+          </p><p>
+            Only one thread can own a critical section at the same time,
+            other requests (to enter the same critical section)
+            are delayed until the owner has left the critical section.
+          </p><p>
+            The TCriticalSection type is platform specific,
+            treat it like a Handle.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWidgetSet.EnterCriticalSection"/>
+          <link id="TWidgetSet.TryEnterCriticalSection"/>
+          <link id="TWidgetSet.LeaveCriticalSection"/>
+          <link id="TWidgetSet.DeleteCriticalSection"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.InitializeCriticalSection.CritSection">
-        <short/>
+        <short>The critical section object.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IntersectClipRect">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>
+          Shrinks the clipping region of an Device Context
+          to a rectangular boundary, e.g. a text area.
+        </short>
+        <descr>
+          <p>
+            Use this method before painting into a rectangle in an DC,
+            to clip everything outside the rectangle
+            <b>and</b> outside the current clipping region of the DC.
+          </p><p>
+            The result can be one of the following constants:<br/>
+            Error
+            NullRegion
+            SimpleRegion
+            ComplexRegion
+            Region_Error
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TWidgetSet.IntersectClipRect.Result">
-        <short/>
+        <short>The region type, zero on failure.</short>
       </element>
       <element name="TWidgetSet.IntersectClipRect.dc">
         <short/>
@@ -3077,61 +3447,62 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.InvalidateRect">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Marks a display area for repaint.</short>
+        <descr>
+        </descr>
+        <seealso>
+          <link id="TWidgetSet.InvalidateRgn"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.InvalidateRect.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.InvalidateRect.aHandle">
-        <short/>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.InvalidateRect.ARect">
-        <short/>
+        <short>The client coordinates of the area.</short>
       </element>
       <element name="TWidgetSet.InvalidateRect.bErase">
-        <short/>
+        <short>True forces a repaint of the background, before further painting.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.InvalidateRgn">
-        <short></short>
+        <short>Marks a display area for repaint.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TWidgetSet.InvalidateRect"/>
         </seealso>
       </element>
       <element name="TWidgetSet.InvalidateRgn.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.InvalidateRgn.Handle">
-        <short></short>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.InvalidateRgn.Rgn">
-        <short></short>
+        <short>The region to repaint.</short>
       </element>
       <element name="TWidgetSet.InvalidateRgn.Erase">
-        <short></short>
+        <short>True forces a repaint of the background, before further painting.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsDBCSLeadByte">
-        <short/>
+        <short>[not implemented?]</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+        </seealso>
       </element>
       <element name="TWidgetSet.IsDBCSLeadByte.Result">
-        <short/>
+        <short>True when the character code is the first of a double-byte character sequence [of which codepage?]</short>
       </element>
       <element name="TWidgetSet.IsDBCSLeadByte.TestChar">
-        <short/>
+        <short>The character code to test.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsIconic">
-        <short></short>
+        <short>True when the window is minimized.</short>
         <descr>
         </descr>
         <errors>
@@ -3140,333 +3511,445 @@
         </seealso>
       </element>
       <element name="TWidgetSet.IsIconic.Result">
-        <short></short>
+        <short>True when the window is minimized.</short>
       </element>
       <element name="TWidgetSet.IsIconic.handle">
-        <short></short>
+        <short>The window handle.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsWindow">
-        <short></short>
+        <short>Checks whether a handle refers to a window.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.IsWindow.Result">
-        <short></short>
+        <short>True when handle is a valid window handle.</short>
       </element>
       <element name="TWidgetSet.IsWindow.handle">
-        <short></short>
+        <short>The handle to test.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsWindowEnabled">
-        <short></short>
+        <short>Determines whether a window can receive mouse and keyboard input.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.IsWindowEnabled.Result">
-        <short></short>
+        <short>True when the window is enabled (and visible).</short>
       </element>
       <element name="TWidgetSet.IsWindowEnabled.handle">
-        <short></short>
+        <short>The window handle.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsWindowVisible">
-        <short/>
+        <short>The definite Visible state of a window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.IsWindowVisible.Result">
-        <short/>
+        <short>True when the window and all its parents are visible.</short>
       </element>
       <element name="TWidgetSet.IsWindowVisible.handle">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsZoomed">
-        <short></short>
+        <short>True when the window is maximized.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TWidgetSet.IsIconic"/>
         </seealso>
       </element>
       <element name="TWidgetSet.IsZoomed.Result">
-        <short></short>
+        <short>True when the window is maximized.</short>
       </element>
       <element name="TWidgetSet.IsZoomed.handle">
-        <short></short>
+        <short>The window handle.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.LeaveCriticalSection">
-        <short/>
+        <short>Releases a critical section, for use by other threads.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.InitializeCriticalSection"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.LeaveCriticalSection.CritSection">
-        <short/>
+        <short>The critical section object.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.LineTo">
-        <short/>
-        <descr/>
+        <short>Draws a line from the current position up to, but not including, the specified point.</short>
+        <descr>The current position is set to the given endpoint.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.LineTo.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.LineTo.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.LineTo.X">
-        <short/>
+        <short>The endpoint in logical units.</short>
       </element>
       <element name="TWidgetSet.LineTo.Y">
-        <short/>
+        <short>The endpoint in logical units.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.LPtoDP">
-        <short></short>
+        <short>Converts logical coordinates into device coordinates.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.LPtoDP.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.LPtoDP.DC">
-        <short></short>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.LPtoDP.Points">
-        <short></short>
+        <short>Holds and receives the transformed coordinates.</short>
       </element>
       <element name="TWidgetSet.LPtoDP.Count">
-        <short></short>
+        <short>The number of points in Points.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MaskBlt">
-        <short/>
-        <descr/>
+        <short>Copies part of an source DC into an destination DC,
+          using the specified foreground and background raster operations.
+        </short>
+        <descr>
+          <p>
+            MaskBlt behaves like BitBlt when no mask bitmap is specified.
+            It does a SRCOPY operation when also no Rop is specified.
+            See BitBlt for general information about raster operations.
+          </p><p>
+            Rop contains both a foreground and a background raster operation
+            (see MakeROP4).
+            When a (monochrome) mask bitmap is present, its bits select
+            either the foreground (1) or background (0) raster operation.
+          </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.BitBlt"/>
+          <link id="TWidgetSet.StretchBlt"/>
+          <link id="#lcl.LCLIntf.MakeROP4"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.MaskBlt.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.MaskBlt.DestDC">
-        <short/>
+        <short>The destination device context.</short>
       </element>
       <element name="TWidgetSet.MaskBlt.X">
-        <short/>
+        <short>The origin of the destination rectangle.</short>
       </element>
       <element name="TWidgetSet.MaskBlt.Y">
-        <short/>
+        <short>The origin of the destination rectangle.</short>
       </element>
       <element name="TWidgetSet.MaskBlt.Width">
-        <short/>
+        <short>The size of the destination rectangle.</short>
       </element>
       <element name="TWidgetSet.MaskBlt.Height">
-        <short/>
+        <short>The size of the destination rectangle.</short>
       </element>
       <element name="TWidgetSet.MaskBlt.SrcDC">
-        <short/>
+        <short>The source device context.</short>
       </element>
       <element name="TWidgetSet.MaskBlt.XSrc">
-        <short/>
+        <short>The origin of the source rectangle.</short>
       </element>
       <element name="TWidgetSet.MaskBlt.YSrc">
-        <short/>
+        <short>The origin of the source rectangle.</short>
       </element>
       <element name="TWidgetSet.MaskBlt.Mask">
-        <short/>
+        <short>The monochrome mask bitmap handle, can be zero.</short>
       </element>
       <element name="TWidgetSet.MaskBlt.XMask">
-        <short/>
+        <short>The origin of the mask rectangle.</short>
       </element>
       <element name="TWidgetSet.MaskBlt.YMask">
-        <short/>
+        <short>The origin of the mask rectangle.</short>
       </element>
       <element name="TWidgetSet.MaskBlt.Rop">
-        <short/>
+        <short>The raster operations (optional).</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MessageBox">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>The MessageBox function displays an modal dialog,
+          with the given text, caption, icon and buttons.
+        </short>
+        <descr>
+          <p>
+            uType is a combination of flags from the following lists.
+          </p><p>
+            The shown buttons are selected by one of:
+          </p>
+          <ul>
+            <li>
+              MB_ABORTRETRYIGNORE - Abort, Retry, and Ignore.
+            </li><li>
+              MB_CANCELTRYCONTINUE - Cancel, Try Again, Continue.
+               Use this message box type instead of MB_ABORTRETRYIGNORE.
+            </li><li>
+              MB_OK - OK.
+            </li><li>
+              MB_OKCANCEL - OK and Cancel.
+            </li><li>
+              MB_RETRYCANCEL - Retry and Cancel.
+            </li><li>
+              MB_YESNO - Yes and No.
+            </li><li>
+              MB_YESNOCANCEL - Yes, No, and Cancel.
+            </li>
+          </ul>
+          <p>
+             Add MB_HELP for an Help button.
+             When the user clicks the Help button or presses F1,
+             the owner window receives a WM_HELP message.
+          </p><p>
+            An icon can be added by one of:
+          </p>
+          <ul>
+            <li>
+              MB_ICONEXCLAMATION,
+              MB_ICONWARNING - exclamation-point icon
+            </li><li>
+              MB_ICONINFORMATION,
+              MB_ICONASTERISK - letter i in a circle
+            </li><li>
+              MB_ICONQUESTION - question-mark icon
+            </li><li>
+              MB_ICONSTOP,
+              MB_ICONERROR,
+              MB_ICONHAND - stop-sign icon
+            </li>
+          </ul>
+          <p>
+            The default button number, activated when the user presses Enter,
+             can be indicated by one of:<br/>
+              MB_DEFBUTTON1
+              MB_DEFBUTTON2
+              MB_DEFBUTTON3
+              MB_DEFBUTTON4
+          </p>
+          <p>
+            Further Windows MessageBox specific options
+            are not (yet) implemented on other platforms.
+          </p><p>
+            The function result corresponds to the pressed button:<br/>
+            IDABORT
+            IDCANCEL
+            IDCONTINUE
+            IDIGNORE
+            IDNO
+            IDOK
+            IDRETRY
+            IDTRYAGAIN
+            IDYES
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TWidgetSet.MessageBox.Result">
-        <short/>
+        <short>The pressed button, or zero on failure.</short>
       </element>
       <element name="TWidgetSet.MessageBox.hWnd">
-        <short/>
+        <short>The handle of the window that owns the MessageBox.</short>
       </element>
       <element name="TWidgetSet.MessageBox.lpText">
-        <short/>
+        <short>The text displayed in the MessageBox.</short>
       </element>
       <element name="TWidgetSet.MessageBox.lpCaption">
-        <short/>
+        <short>The caption of the MessageBox.</short>
       </element>
       <element name="TWidgetSet.MessageBox.uType">
-        <short/>
+        <short>Style flags specifiying the shown buttons etc.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MonitorFromPoint">
-        <short></short>
+        <short>Finds an monitor from screen coordinates.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.MonitorFromPoint.Result">
-        <short></short>
+        <short><p>The monitor handle.</p>
+          <p>When no monitor applies, <var>dwFlags</var> determines the result:</p>
+          <ul>
+            <li>
+              MONITOR_DEFAULTTONEAREST - the nearest monitor.
+            </li>
+            <li>
+              MONITOR_DEFAULTTONULL - zero.
+            </li>
+            <li>
+              MONITOR_DEFAULTTOPRIMARY - the primary monitor.
+            </li>
+          </ul>
+        </short>
       </element>
       <element name="TWidgetSet.MonitorFromPoint.ptScreenCoords">
-        <short></short>
+        <short>The point in screen coordinates.</short>
       </element>
       <element name="TWidgetSet.MonitorFromPoint.dwFlags">
-        <short></short>
+        <short>How coordinates outside any monitor are handled,
+          see <link id="TWidgetSet.MonitorFromPoint.Result">MonitorFromPoint.Result</link>.
+        </short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.MonitorFromRect">
-        <short></short>
+      <element name="TWidgetSet.MonitorFromRect" link="TWidgetSet.MonitorFromPoint">
+        <short>Finds the monitor covering most of a rectangle.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.MonitorFromRect.Result">
-        <short></short>
+        <short>The monitor handle,
+          see <link id="TWidgetSet.MonitorFromPoint.Result"> dwFlags</link>.
+        </short>
       </element>
       <element name="TWidgetSet.MonitorFromRect.lprcScreenCoords">
-        <short></short>
+        <short>The logical screen coordinates.</short>
       </element>
       <element name="TWidgetSet.MonitorFromRect.dwFlags">
-        <short></short>
+        <short>How coordinates outside any monitor are handled,
+          see <link id="TWidgetSet.MonitorFromPoint.Result">MonitorFromPoint.Result</link>.
+        </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MonitorFromWindow">
-        <short></short>
+        <short>Finds the monitor covering most of a window.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.MonitorFromWindow.Result">
-        <short></short>
+        <short>The monitor handle,
+          see <link id="TWidgetSet.MonitorFromPoint.Result">MonitorFromPoint.Result</link>.
+        </short>
       </element>
       <element name="TWidgetSet.MonitorFromWindow.hWnd">
-        <short></short>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.MonitorFromWindow.dwFlags">
-        <short></short>
+        <short>How coordinates outside any monitor are handled,
+          see <link id="TWidgetSet.MonitorFromPoint.Result">MonitorFromPoint.Result</link>.
+        </short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MoveToEx">
-        <short/>
+        <short>Moves the current position to the specified point.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.MoveToEx.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.MoveToEx.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.MoveToEx.X">
-        <short/>
+        <short>The new logical position.</short>
       </element>
       <element name="TWidgetSet.MoveToEx.Y">
-        <short/>
+        <short>The new logical position.</short>
       </element>
       <element name="TWidgetSet.MoveToEx.OldPoint">
-        <short/>
+        <short>Receives the old position, can be Nil if not required.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.OffsetRgn">
-        <short></short>
+        <short>Moves a region relative.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.OffsetRgn.Result">
-        <short></short>
+        <short>The new region kind, zero on failure.</short>
       </element>
       <element name="TWidgetSet.OffsetRgn.RGN">
-        <short></short>
+        <short>The Region to move.</short>
       </element>
       <element name="TWidgetSet.OffsetRgn.nXOffset">
-        <short></short>
+        <short>The relative distance to move.</short>
       </element>
       <element name="TWidgetSet.OffsetRgn.nYOffset">
-        <short></short>
+        <short>The relative distance to move.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.PeekMessage">
-        <short/>
+        <short>Checks the thread's message queue for a message.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.PeekMessage.Result">
-        <short/>
+        <short></short>
       </element>
       <element name="TWidgetSet.PeekMessage.lpMsg">
-        <short/>
+        <short>Receives the message.</short>
       </element>
       <element name="TWidgetSet.PeekMessage.Handle">
-        <short/>
+        <short>The target window handle of the message.
+          Zero for any window, INVALID_HANDLE_VALUE for thread messages.
+        </short>
       </element>
       <element name="TWidgetSet.PeekMessage.wMsgFilterMin">
-        <short/>
+        <short>The lowest message ID to retrieve.</short>
       </element>
       <element name="TWidgetSet.PeekMessage.wMsgFilterMax">
-        <short/>
+        <short>The highest message ID to retrieve, zero for all messages.</short>
       </element>
       <element name="TWidgetSet.PeekMessage.wRemoveMsg">
-        <short/>
+        <short>PM_REMOVE will remove the message from the queue.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.Pie">
-        <short/>
-        <descr/>
+        <short>Draws a filled pie-shaped wedge, from an ellipse and two radials.
+        </short>
+        <descr>
+          <p>
+            The ellipse is bounded by a rectangle x1..y2.
+          </p><p>
+            Each radial is defined by the center of the rectangle an point,
+            which must not necessarily reside on the ellipse.
+          </p><p>
+            The bounding arc goes counter-clockwise from the Start to the End radial.
+          </p><p>
+            The pie is outlined with the current pen and filled with the current brush.
+          </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.Chord"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.Pie.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.Pie.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.Pie.x1">
-        <short></short>
+        <short>The bounding rectangle.</short>
       </element>
       <element name="TWidgetSet.Pie.y1">
         <short></short>
@@ -3478,232 +3961,382 @@
         <short></short>
       </element>
       <element name="TWidgetSet.Pie.sx">
-        <short></short>
+        <short>The starting radial.</short>
       </element>
       <element name="TWidgetSet.Pie.sy">
         <short></short>
       </element>
       <element name="TWidgetSet.Pie.ex">
-        <short></short>
+        <short>The ending radial.</short>
       </element>
       <element name="TWidgetSet.Pie.ey">
         <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.PolyBezier">
-        <short/>
-        <descr/>
+        <short>Draws Bézier curves.</short>
+        <descr>
+          <p>
+            Use Polybezier to draw cubic Bézier curves.
+          </p><p>
+            The first curve is drawn from the first point to the fourth point
+            with the second and third points being the control points.
+          </p><p>
+            If the Continuous flag is TRUE then each subsequent curve
+            requires three more points, using the end-point of the previous Curve
+            as its starting point.
+          </p><p>
+            If the Continous flag is set to FALSE, then each subsequent Curve
+            requires 4 additional points, which are used exactly as in the first curve.
+          </p><p>
+            Any additonal points which do not add up to a full
+            bezier (4 for Continuous, 3 otherwise) are ignored.
+            There must be at least 4 points for an drawing to occur.
+          </p><p>
+            If the Filled Flag is TRUE then the resulting Poly-Bézier
+            will be drawn as a Polygon.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.PolyBezier.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.PolyBezier.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.PolyBezier.Points">
-        <short/>
+        <short>The array of points.</short>
       </element>
       <element name="TWidgetSet.PolyBezier.NumPts">
-        <short/>
+        <short>The number of points in Points.</short>
       </element>
       <element name="TWidgetSet.PolyBezier.Filled">
-        <short/>
+        <short>True draws a Polygon.</short>
       </element>
       <element name="TWidgetSet.PolyBezier.Continuous">
-        <short/>
+        <short>True uses the end-point as the starting point of the next segment.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.Polygon">
-        <short/>
-        <descr/>
+        <short>Draws a filled Polygon.</short>
+        <descr>
+          <p>
+            Use Polygon to draw a closed, many-sided shape on the canvas,
+            outlined with the current Pen and filled with the current Brush.
+          </p><p>
+            The Points parameter is an array of the vertices of the polygon.
+          </p><p>
+            Winding determines how the polygon is filled.
+            When Winding is True, Polygon fills the shape using the Winding fill algorithm.
+            When Winding is False, Polygon uses the even-odd (alternative) fill algorithm.
+          </p><p>
+            The first point is always connected to the last point.
+          </p><p>
+            To draw an unfilled polygon use the Polyline method,
+            specifying the first point a second time at the end.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.Polygon.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.Polygon.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.Polygon.Points">
-        <short/>
+        <short>The array of vertices.</short>
       </element>
       <element name="TWidgetSet.Polygon.NumPts">
-        <short/>
+        <short>The number of vertices.</short>
       </element>
       <element name="TWidgetSet.Polygon.Winding">
-        <short/>
+        <short>Selects the fill algorithm.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.Polyline">
-        <short/>
-        <descr/>
+        <short>Draws a sequence of lines.</short>
+        <descr>
+          <p>
+            Use Polyline to connect a set of points on the canvas.
+          </p><p>
+            The Points parameter is an array of points to be connected.
+          </p><p>
+            If you specify only two points, Polyline draws a single line.
+          </p><p>
+            Calling the MoveTo function with the value of the first point,
+            and then repeatedly calling LineTo with all subsequent points
+            will draw the same image on the canvas.
+            However, unlike LineTo, Polyline does not change the value of PenPos.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.Polyline.Result">
-        <short/>
+        <short></short>
       </element>
       <element name="TWidgetSet.Polyline.DC">
-        <short/>
+        <short></short>
       </element>
       <element name="TWidgetSet.Polyline.Points">
-        <short/>
+        <short></short>
       </element>
       <element name="TWidgetSet.Polyline.NumPts">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.PostMessage">
-        <short/>
-        <descr/>
+        <short>Sends a message to a window, without waiting for the message result.
+        </short>
+        <descr>
+          <remark>
+            This section was copied from LCLIntf, and may not apply to all platforms.
+          </remark>
+          <p>
+            This method is a thread-safe solution to send messages to windows.
+            Those messages will be handled in the message loop of the application
+            and therefore can be sent from any thread.
+            They are not immediate, but they will awake the main thread if it
+            is waiting for messages.
+          </p><p>
+            These messages can be handled by procedures with the keyword message
+            in the class of a form for example.
+            One would then use the handle of this form as the Handle parameter
+            of this routine.
+          </p><p>
+            Custom messages should always have an identification number
+            (represented by the parameter Msg) larger then the constant LM_USER.
+          </p><p>
+            The two parameters WParam and LParam will be passed along to the
+            window together with the Msg identification number.
+          </p><p>
+            The difference between SendMessage and PostMessage is the way that
+            they return control to the calling thread.
+            With SendMessage control is not returned until the window that the
+            message was sent to has completed processing the sent message,
+            however with PostMessage control is returned immediately.
+          </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.SendMessage"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.PostMessage.Result">
-        <short/>
+        <short>Zero on failure.</short>
       </element>
       <element name="TWidgetSet.PostMessage.Handle">
-        <short/>
+        <short>The target window handle.</short>
       </element>
       <element name="TWidgetSet.PostMessage.Msg">
-        <short/>
+        <short>The message ID.</short>
       </element>
       <element name="TWidgetSet.PostMessage.WParam">
-        <short/>
+        <short></short>
       </element>
       <element name="TWidgetSet.PostMessage.LParam">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.PtInRegion">
-        <short/>
+        <short>Tests whether a point lies in a region.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.PtInRegion.Result">
-        <short/>
+        <short>True when the point lies in the region.</short>
       </element>
       <element name="TWidgetSet.PtInRegion.RGN">
-        <short/>
+        <short>The region.</short>
       </element>
       <element name="TWidgetSet.PtInRegion.X">
-        <short/>
+        <short>The point coordinate.</short>
       </element>
       <element name="TWidgetSet.PtInRegion.Y">
-        <short/>
+        <short>The point coordinate.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RealizePalette">
-        <short/>
+        <short>Maps palette entries from the current logical palette to the system palette.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.RealizePalette.Result">
-        <short/>
+        <short>The number of mapped entries.</short>
       </element>
       <element name="TWidgetSet.RealizePalette.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.Rectangle">
-        <short/>
-        <descr/>
+        <short>Draws a filled rectangle.</short>
+          <p>
+            The rectangle is outlined with the current Pen, and filled with the current Brush.
+          </p><p>
+            The bottom and right edges are not part of the rectangle.
+          </p>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.Rectangle.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.Rectangle.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.Rectangle.X1">
-        <short/>
+        <short></short>
       </element>
       <element name="TWidgetSet.Rectangle.Y1">
-        <short/>
+        <short></short>
       </element>
       <element name="TWidgetSet.Rectangle.X2">
-        <short/>
+        <short></short>
       </element>
       <element name="TWidgetSet.Rectangle.Y2">
         <short/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RectVisible">
-        <short/>
+        <short>Checks whether the clipping region contains (part of) a rectangle.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.RectVisible.Result">
-        <short/>
+        <short>True when (part of) the rectangle is visible.</short>
       </element>
       <element name="TWidgetSet.RectVisible.dc">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.RectVisible.ARect">
-        <short/>
+        <short>The rectangle.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RedrawWindow">
-        <short></short>
+        <short>Redraws (part of) a window.</short>
         <descr>
+          <p>
+            All invalidated parts of a window, which deserve an update,
+            are collected in the update region.
+            When this region is not empty, WM_ERASEBKGND, WM_PAINT and WM_NCPAINT messages
+            are sent to the window, as soon as the application is (almost) idle.
+            RedrawWindow can be used to force an immediate redraw instead.
+          </p><p>
+            WM_ERASEBKGND is optional, erases the background before painting.
+            WM_NCPAINT paints the non-client areas (borders, caption...),
+            without assistance by user code.
+          </p><p>
+            When neither lprcUpdate nor hrgnUpdate are specified,
+            the whole client area [only?] of the window is affected.
+            Otherwise the region takes precedence over the rectangle.
+          </p><p>
+            Flags specify how the window is invalidated or validated,
+            and when repainting occurs.
+            To invalidate specify RDW_INVALIDATE, and optionally one of:
+          </p>
+          <ul>
+            <li>
+              RDW_ERASE - forces a WM_ERASEBKGND message before painting.
+            </li><li>
+              RDW_FRAME - also redraws the window frame, as covered by the update region.
+            </li><li>
+              RDW_INTERNALPAINT - force WM_PAINT even if the update region is empty.
+            </li><li>
+            </li>
+          </ul>
+          <p>
+            To validate specify RDW_VALIDATE, and optionally one of:
+          </p>
+          <ul>
+            <li>
+              RDW_NOERASE - suppress all pending WM_ERASEBKGND messages.
+            </li><li>
+              RDW_NOFRAME - suppress all pending WM_NCPAINT messages.
+            </li><li>
+              RDW_NOINTERNALPAINT - suppress all pending internal WM_PAINT messages.
+            </li>
+          </ul>
+          <p>
+            These flags specify <b>when</b> repainting will occur:
+          </p>
+          <ul>
+            <li>
+              RDW_ERASENOW - send WM_ERASEBKGND messages before returning.
+            </li><li>
+              RDW_UPDATENOW - send WM_PAINT messages before returning.
+            </li>
+          </ul>
+          <p>
+            The handling of child windows normally depends on the
+            WS_CLIPCHILDREN window style flag.
+            Clipped child windows are not normally affected by RedrawWindow.
+            These flags override:
+          </p>
+          <ul>
+            <li>
+              RDW_ALLCHILDREN - include all child windows.
+            </li><li>
+              RDW_NOCHILDREN - exclude all child windows.
+            </li>
+          </ul>
+          <p>
+          </p>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TWidgetSet.InvalidateRect"/>
+          <link id="TWidgetSet.InvalidateRgn"/>
         </seealso>
       </element>
       <element name="TWidgetSet.RedrawWindow.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.RedrawWindow.Wnd">
-        <short></short>
+        <short>The window to redraw.</short>
       </element>
       <element name="TWidgetSet.RedrawWindow.lprcUpdate">
-        <short></short>
+        <short>The rectangle to redraw, ignored when a region is given.</short>
       </element>
       <element name="TWidgetSet.RedrawWindow.hrgnUpdate">
-        <short></short>
+        <short>The region to redraw, can be zero.</short>
       </element>
       <element name="TWidgetSet.RedrawWindow.flags">
-        <short></short>
+        <short>How the redraw works.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ReleaseCapture">
-        <short/>
+        <short>Restores normal mouse input processing,
+          after <link id="TWidgetSet.SetCapture">SetCapture</link>.
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.ReleaseCapture.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ReleaseDC">
-        <short/>
+        <short>Releases an Device Context obtained by GetDC.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.ReleaseDC.Result">
-        <short/>
+        <short>Zero on failure.</short>
       </element>
       <element name="TWidgetSet.ReleaseDC.hWnd">
-        <short/>
+        <short>The handle of the window, whose DC is released.</short>
       </element>
       <element name="TWidgetSet.ReleaseDC.DC">
-        <short/>
+        <short>The device context to release.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RemoveProp">
-        <short></short>
+        <short>Removes a named property from a window.</short>
         <descr>
         </descr>
         <errors>
@@ -3712,45 +4345,48 @@
         </seealso>
       </element>
       <element name="TWidgetSet.RemoveProp.Result">
-        <short></short>
+        <short>The handle of the removed data, zero on failure.</short>
       </element>
       <element name="TWidgetSet.RemoveProp.Handle">
-        <short></short>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.RemoveProp.Str">
-        <short></short>
+        <short>The name of the property to remove.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RestoreDC">
-        <short/>
+        <short>Restores an Device Context (DC) to an previously
+          <link id="TWidgetSet.SaveDC">saved</link> state.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.SaveDC"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.RestoreDC.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.RestoreDC.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.RestoreDC.SavedDC">
-        <short/>
+        <short>The index returned by SaveDC, or -1 for the most recently saved state.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.RoundRect">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Draws a filled rectangle with rounded corners.</short>
+        <descr>The rectangle is outlined with the current Pen, and filled with the current Brush.
+        </descr>
         <seealso/>
       </element>
       <element name="TWidgetSet.RoundRect.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.RoundRect.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.RoundRect.X1">
-        <short/>
+        <short>The rectangle coordinates.</short>
       </element>
       <element name="TWidgetSet.RoundRect.Y1">
         <short/>
@@ -3762,93 +4398,112 @@
         <short/>
       </element>
       <element name="TWidgetSet.RoundRect.RX">
-        <short/>
+        <short>The extent of the ellipse, used for the rounded corners.</short>
       </element>
       <element name="TWidgetSet.RoundRect.RY">
-        <short/>
+        <short>The extent of the ellipse, used for the rounded corners.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SaveDC">
-        <short/>
+        <short>Saves the state of an Device Context in the context stack.</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.RestoreDC"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.SaveDC.Result">
-        <short/>
+        <short>The index of the saved DC, zero on failure.</short>
       </element>
       <element name="TWidgetSet.SaveDC.DC">
-        <short/>
+        <short>The device context to save.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ScreenToClient">
-        <short/>
+        <short>Converts absolute Screen coordinates into Client relative coordinates.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.ScreenToClient.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.ScreenToClient.Handle">
-        <short/>
+        <short>The handle of the window with the client area.</short>
       </element>
       <element name="TWidgetSet.ScreenToClient.P">
-        <short/>
+        <short>The point to convert.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ScrollWindowEx">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Scrolls the content of a window, by a number of pixels.</short>
+        <descr>
+          <p>The following flags are defined:
+          </p>
+          <ul>
+            <li>
+              SW_ERASE - when used with SW_INVALIDATE sends WM_ERASEBKGND messages
+              for the invalidated parts of the window.
+            </li><li>
+              SW_INVALIDATE - invalidates the resulting hrgnUpdate region.
+            </li><li>
+              SW_SCROLLCHILDREN - also scrolls child windows within the scroll rect.
+              Beware: also scrolls <b>parts</b> of the child windows!
+            </li><li>
+              SW_SMOOTHSCROLL - set HIWORD of <var>flags</var> to the time for the scrolling operation.
+            </li>
+          </ul>
+        </descr>
+        <seealso>
+        </seealso>
       </element>
       <element name="TWidgetSet.ScrollWindowEx.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.ScrollWindowEx.hWnd">
-        <short/>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.ScrollWindowEx.dx">
-        <short/>
+        <short>Horizontal distance (positive to scroll right)</short>
       </element>
       <element name="TWidgetSet.ScrollWindowEx.dy">
-        <short/>
+        <short>Vertical distance (positive to scroll down)</short>
       </element>
       <element name="TWidgetSet.ScrollWindowEx.prcScroll">
-        <short/>
+        <short>The part of the window, that is to be scrolled. Nil means the entire client area.
+        </short>
       </element>
       <element name="TWidgetSet.ScrollWindowEx.prcClip">
-        <short/>
+        <short>Pixels falling outside this rectangle are lost. Nil means the entire client area.</short>
       </element>
       <element name="TWidgetSet.ScrollWindowEx.hrgnUpdate">
-        <short/>
+        <short>The invalidated parts of the window are added to this region (can be zero).</short>
       </element>
       <element name="TWidgetSet.ScrollWindowEx.prcUpdate">
-        <short/>
+        <short>Receives the boundary of the invalidated part of the window (can be Nil).</short>
       </element>
       <element name="TWidgetSet.ScrollWindowEx.flags">
-        <short/>
+        <short>Control flags.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SelectClipRGN">
-        <short/>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.SelectClipRGN.Result">
-        <short/>
+        <short></short>
       </element>
       <element name="TWidgetSet.SelectClipRGN.DC">
-        <short/>
+        <short></short>
       </element>
       <element name="TWidgetSet.SelectClipRGN.RGN">
-        <short/>
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SelectObject">
-        <short/>
+        <short></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3883,10 +4538,42 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SendMessage">
-        <short/>
-        <descr/>
+        <short>Sends a message directed to a window to the message pool of the application
+        </short>
+        <descr>
+          <remark>
+            This section was copied from LCLIntf, and may not apply to all platforms.
+          </remark>
+          <p>
+            This method is a thread-safe solution to send messages to windows.[?]
+          </p><p>
+            Those messages will be handled in the message loop of the application
+            and therefore can be sent from any thread.
+            They are not immediate, but they will awake the main thread if it
+            is waiting for messages.
+          </p><p>
+            These messages can be handled by procedures with the keyword message
+            in the class of a form for example.
+            One would then use the handle of this form as the HandleWnd parameter
+            of this routine.
+          </p><p>
+            Custom messages should always have an identification number
+            (represented by the parameter Msg) larger then the constant LM_USER.
+          </p><p>
+            The two parameters WParam and LParam will be passed along to the
+            window together with the Msg identification number.
+          </p><p>
+            The difference between SendMessage and PostMessage is the way that
+            they return control to the calling thread.
+            With SendMessage control is not returned until the window that the
+            message was sent to has completed processing the sent message,
+            however with PostMessage control is returned immediately.
+          </p>
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.PostMessage"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.SendMessage.Result">
         <short/>

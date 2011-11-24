@@ -79,9 +79,9 @@ searching for missing references and tracking of fixed errors.
 Common errors result from a mix of plain text with paragraphs, remarks, pre,
 code, lists or tables. Then you get "#text" error messages for such dangling text.
 
-"Warning: Target ID of <link> is unknown: ..." often result from protected items,
-which are not normally part of the RTL and FCL documentation. Try to link to a
-public property instead, if one exists.
+"Warning: Target ID of <link> is unknown: ..." often result from protected or
+private items, which are not normally part of the RTL and FCL documentation.
+Try to link to a public property instead, if one exists.
 
 Unmatched beginning and ending tags are hard to find. It often helps to insert
 an dummy tag of the missing or excess type, somewhere in the xml source, run again
@@ -118,12 +118,19 @@ quoted procedure names etc.!
 The following applies in detail to HTML output format.
 ------------------------------------------------------
 
-Use links to identical items, this simplifies the document maintenance a lot.
-(See TDragObject descendants and TDrag...Event handlers)
-<element name=TDerived.Override.Param link="TBase.Method.Param"/>
-
 Describe properties only once, and link fields, getters and setters to the
 property description:
 <element name=TClass.FProp link="TClass.Property"/>
 <element name=TClass.SetProp link="TClass.Property"/>
+
+Links behave a bit strange, sometimes.
+Links to e.g. parameters or result of a function lead to the entire function
+description, not to the particular entry, because no such file exists.
+
+Parameters can only have a short description with no paragraphs,
+but the <short> Result description can be detailed like a <descr>.
+
+Use links to identical items, this simplifies the document maintenance a lot.
+(See TDragObject descendants and TDrag...Event handlers)
+<element name=TDerived.Override.Param link="TBase.Method.Param"/>
 
