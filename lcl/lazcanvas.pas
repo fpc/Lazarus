@@ -117,12 +117,16 @@ end;
 procedure TLazCanvas.SetColor(x, y: integer; const AValue: TFPColor);
 var
   lx, ly: Integer;
+  OldClipping: Boolean;
 begin
   lx := x + FWindowOrg.X;
   ly := y + FWindowOrg.Y;
   if Clipping and FUseRegionClipping and (not FLazClipRegion.IsPointInRegion(lx, ly)) then
     Exit;
+  OldClipping := Clipping;
+  Clipping := False; // Work around to FImage being private in FPC 2.6 or inferior =(
   inherited SetColor(lx, ly, AValue);
+  Clipping := OldClipping;
 end;
 
 constructor TLazCanvas.create(AnImage: TFPCustomImage);
