@@ -221,8 +221,8 @@ Var
   begin
     if lWinControl = nil then exit;
 
-    {$IFDEF DEBUG_WINCE_LABELS}
-    DebugLn(Format('[SendPaintMessage]: Control:%s', [lWinControl.Name]));
+    {$IFDEF VerboseCDMessages}
+    DebugLn(Format('[SendPaintMessage]: Control:%s:%s', [lWinControl.Name, lWinControl.ClassName]));
     {$ENDIF}
 
     // create a paint message
@@ -260,7 +260,7 @@ Var
     end;
     if (WindowInfo^.Canvas = nil) then WindowInfo^.Canvas := TLazCanvas.Create(WindowInfo^.Image);
 
-    {$ifdef VerboseWinAPI}
+    {$ifdef VerboseCDMessages}
     DebugLn(Format('[SendPaintMessage] WindowInfo^.Canvas=%s', [dbghex(PtrInt(WindowInfo^.Canvas))]));
     {$endif}
 
@@ -282,36 +282,26 @@ Var
       PaintMsg.Msg := LM_PAINT;
       PaintMsg.PaintStruct := @PS;
       PaintMsg.DC := HDC(WindowInfo^.Canvas);
-      if not needParentPaint then
-      begin
-        // send through message to allow message override, moreover use SendMessage
-        // to allow subclass window proc override this message too
-        Include(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
-        Windows.SendMessageW(lWinControl.Handle, WM_ERASEBKGND, Windows.WPARAM(DC), 0);
-        Exclude(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
-      end;
-      if (ControlDC = 0) or not needParentPaint then
-      begin
-        //DCIndex := Windows.SaveDC(DC);
 
-        {$ifdef DEBUG_WINDOW_ORG}
-        LCLIntf.GetWindowOrgEx(DC, @WindowOrg);
-        DebugLn(
-          Format(':> [SendPaintMessage 2] Control=%s DC=%d Moving WindowOrg from %d,%d by DX=%d DY=%d',
-          [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y, -parLeft, -parTop]));
-        {$endif}
+      // send through message to allow message override, moreover use SendMessage
+      // to allow subclass window proc override this message too
+{      Include(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
+      Windows.SendMessageW(lWinControl.Handle, WM_ERASEBKGND, Windows.WPARAM(DC), 0);
+      Exclude(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);}
 
-        //MoveWindowOrgEx(DC, ORect.Left, ORect.Top);  <- substitute with a non-native window org change
-        DeliverMessage(lWinControl, PaintMsg);
-        //Windows.RestoreDC(DC, DCIndex);
+      //DCIndex := Windows.SaveDC(DC);
 
-        {$ifdef DEBUG_WINDOW_ORG}
-        LCLIntf.GetWindowOrgEx(DC, @WindowOrg);
-        DebugLn(
-          Format(':> [SendPaintMessage 3] Control=%s DC=%d WindowOrg=%d,%d',
-          [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y]));
-        {$endif}
-      end;
+      {$ifdef VerboseCDMessages}
+      DebugLn(Format(':> [SendPaintMessage 2] Before OnPaint Control=%s DC=%x', [lWinControl.Name, PaintMsg.DC]));
+      {$endif}
+
+      //MoveWindowOrgEx(DC, ORect.Left, ORect.Top);  <- substitute with a non-native window org change
+      DeliverMessage(lWinControl, PaintMsg);
+      //Windows.RestoreDC(DC, DCIndex);
+
+      {$ifdef VerboseCDMessages}
+      DebugLn(':> [SendPaintMessage 3] After OnPaint');
+      {$endif}
 
       // Now draw all child controls
       RenderChildWinControls(WindowInfo^.Image, WindowInfo^.Canvas,
@@ -329,7 +319,7 @@ Var
         Windows.EndPaint(Window, @PS);
     finally
     end;
-    {$ifdef DEBUG_WINDOW_ORG}
+    {$ifdef VerboseCDMessages}
     DebugLn(':< [SendPaintMessage] Finish');
     {$endif}
   end;
@@ -502,9 +492,9 @@ begin
 
   lWinControl := WindowInfo^.WinControl;
 
-{$ifdef CD_MSG_DEBUG}
-  DebugLn('WindowProc lWinControl: ',DbgSName(lWinControl),' MSG=',WM_To_String(Msg));
-{$endif}
+  {$ifdef VerboseCDMessages}
+    DebugLn('WindowProc lWinControl: ',DbgSName(lWinControl),' MSG=',WM_To_String(Msg));
+  {$endif}
   if (IgnoreNextCharWindow <> 0) and ((Msg = WM_CHAR) or (Msg = WM_SYSCHAR)) then
   begin
     if IgnoreNextCharWindow = Window then

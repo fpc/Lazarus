@@ -140,6 +140,48 @@ begin
     False, CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm));
 end;
 
+class procedure TCDWSCustomForm.WSWinControl_SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  IntfLeft, IntfTop, IntfWidth, IntfHeight: integer;
+  suppressMove: boolean;
+  Handle: HWND;
+  WindowPlacement: TWINDOWPLACEMENT;
+begin
+  {$ifdef VerboseCDForms}
+  DebugLn(Format('[TCDWSCustomForm.WSWinControl_SetBounds] AWinControl=%x'
+    + ' ALeft=%d ATop=%d AWidth=%d AHeight=%d',
+    [PtrInt(AWinControl), ALeft, ATop, AWidth, AHeight]));
+  {$endif}
+
+  IntfLeft := ALeft;
+  IntfTop := ATop;
+  IntfWidth := AWidth;
+  IntfHeight := AHeight;
+  LCLBoundsToWin32Bounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight);
+  {$IFDEF VerboseCDForms}
+  DebugLn('[TCDWSCustomForm.WSWinControl_SetBounds] A ', dbgsName(AWinControl),
+    ' LCL=',Format('%d, %d, %d, %d', [ALeft,ATop,AWidth,AHeight]),
+    ' Win32=',Format('%d, %d, %d, %d', [IntfLeft,IntfTop,IntfWidth,IntfHeight])
+    );
+  {$ENDIF}
+  suppressMove := False;
+  AdaptBounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight, suppressMove);
+  if not suppressMove then
+  begin
+    Handle := AWinControl.Handle;
+    WindowPlacement.length := SizeOf(WindowPlacement);
+    if IsIconic(Handle) and GetWindowPlacement(Handle, @WindowPlacement) then
+    begin
+      WindowPlacement.rcNormalPosition := Bounds(IntfLeft, IntfTop, IntfWidth, IntfHeight);
+      SetWindowPlacement(Handle, @WindowPlacement);
+    end
+    else
+      Windows.SetWindowPos(Handle, 0, IntfLeft, IntfTop, IntfWidth, IntfHeight, SWP_NOZORDER or SWP_NOACTIVATE);
+  end;
+  LCLControlSizeNeedsUpdate(AWinControl, True);
+end;
+
 {------------------------------------------------------------------------------
   Method: TCDWSCustomForm.CreateHandle
   Params:  None
@@ -155,6 +197,11 @@ var
   Bounds: TRect;
   SystemMenu: HMenu;
 begin
+  {$ifdef VerboseCDForms}
+  DebugLn(Format(':>[TCDWSCustomForm.CreateHandle] AWincontrol=%x left=%d Top=%d'
+    + ' Width=%d Height=%d', [PtrInt(AWincontrol), AWinControl.Top, AWinControl.Left,
+    AParams.Width, AParams.Height]));
+  {$endif}
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
@@ -223,7 +270,12 @@ begin
   // initialize all root windows with this message
   if WindowsVersion >= wv2000 then
     Windows.SendMessage(Result, WM_CHANGEUISTATE,
-      MakeWParam(UIS_INITIALIZE, UISF_HIDEFOCUS or UISF_HIDEACCEL), 0)
+      MakeWParam(UIS_INITIALIZE, UISF_HIDEFOCUS or UISF_HIDEACCEL), 0);
+
+  {$ifdef VerboseCDForms}
+  DebugLn(Format(':<[TCDWSCustomForm.CreateHandle] Result=%x',
+    [PtrInt(Result)]));
+  {$endif}
 end;
 (*var
   Params: TCreateWindowExParams;
@@ -361,6 +413,11 @@ var
   CurRect, SizeRect: Windows.RECT;
   L, T, W, H: Integer;
 begin
+  {$ifdef VerboseCDForms}
+  DebugLn(Format('[TCDWSCustomForm.SetBounds] AWinControl=%x'
+    + ' ALeft=%d ATop=%d AWidth=%d AHeight=%d',
+    [PtrInt(AWinControl), ALeft, ATop, AWidth, AHeight]));
+  {$endif}
   // the LCL defines the size of a form without border, win32 with.
   // -> adjust size according to BorderStyle
   SizeRect := Bounds(ALeft, ATop, AWidth, AHeight);
@@ -395,7 +452,7 @@ begin
   end;
 
   // rect adjusted, pass to inherited to do real work
-  TCDWSWinControl.SetBounds(AWinControl, L, T, W, H);
+  WSWinControl_SetBounds(AWinControl, L, T, W, H);
 end;
 (*var
   SizeRect: Windows.RECT;
@@ -476,8 +533,11 @@ begin
 end;
 
 class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
+const
+  VisibilityToFlag: array[Boolean] of UINT = (SWP_HIDEWINDOW, SWP_SHOWWINDOW);
 begin
-  TCDWSWinControl.ShowHide(AWinControl);
+  Windows.SetWindowPos(AWinControl.Handle, 0, 0, 0, 0, 0,
+    SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible])
 end;
 
 class function TCDWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
@@ -504,6 +564,11 @@ end;
 class function TCDWSCustomForm.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
 begin
   Result := LCLIntf.GetClientBounds(AWincontrol.Handle, ARect);
+  {$ifdef VerboseCDForms}
+  DebugLn(Format('[TCDWSCustomForm.GetClientBounds] AWincontrol=%x Rect.left=%d Rect.Top=%d'
+    + ' Rect.Width=%d Rect.Height=%d', [PtrInt(AWincontrol), ARect.Top, ARect.Left,
+    ARect.Right-ARect.Left, ARect.Bottom-ARect.Top]));
+  {$endif}
 end;
 
 class function TCDWSCustomForm.GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean;

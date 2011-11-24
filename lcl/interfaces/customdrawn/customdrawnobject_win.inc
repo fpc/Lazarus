@@ -160,8 +160,8 @@ var
   DC: HDC;
 //  Flags : integer;
 begin
-  {$ifdef VerboseWinCE}
-  DebugLn('TWinCEWidgetSet.AppInit');
+  {$ifdef VerboseCDApplication}
+  DebugLn('TCDWidgetSet.AppInit');
   {$endif}
 
   // WinRegister
@@ -227,6 +227,9 @@ procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
 var
   AMessage: TMsg;
 begin
+  {$ifdef VerboseCDApplication}
+  DebugLn('[TCDWidgetSet.AppRun]');
+  {$endif}
 //  inherited AppRun(ALoop);
 
   while Windows.GetMessage(@AMessage, 0, 0, 0) do

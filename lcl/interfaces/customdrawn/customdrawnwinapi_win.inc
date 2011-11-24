@@ -2274,6 +2274,9 @@ var
   end;
 
 begin
+  {$ifdef VerboseWinAPI}
+  DebugLn(Format(':>[TCDWidgetSet.GetWindowSize] Handle=%x', [Handle]));
+  {$endif}
 
   WP.length := SizeOf(WP);
   Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
@@ -2342,6 +2345,10 @@ begin
   end;
 
   ExcludeCaption;
+
+  {$ifdef VerboseWinAPI}
+  DebugLn(Format(':<[TCDWidgetSet.GetWindowSize] Width=%d Height=%d', [Width, Height]));
+  {$endif}
 end;
 (*
 function TWin32WidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;

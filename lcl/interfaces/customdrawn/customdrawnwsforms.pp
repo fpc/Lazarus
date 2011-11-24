@@ -90,6 +90,8 @@ type
     class function CalcBorderStyleFlags(const AForm: TCustomForm): DWORD;
     class function CalcBorderStyleFlagsEx(const AForm: TCustomForm): DWORD;
     class procedure AdjustFormBounds(const AForm: TCustomForm; out SizeRect: TRect);
+    class procedure WSWinControl_SetBounds(const AWinControl: TWinControl;
+      const ALeft, ATop, AWidth, AHeight: Integer);
     {$endif}
     {$ifdef CD_X11}
     class procedure UpdateMotifWMHints(const AWinControl: TWinControl; CanMaximize: Boolean);
