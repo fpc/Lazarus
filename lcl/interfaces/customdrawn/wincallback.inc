@@ -161,6 +161,7 @@ Var
   TargetObject: TObject;
   WinProcess: Boolean;
   NotifyUserInput: Boolean;
+  WindowPlacement: TWINDOWPLACEMENT;
   OverlayWindow: HWND;
   TargetWindow: HWND;
   eraseBkgndCommand: TEraseBkgndCommand;
@@ -249,6 +250,12 @@ Var
       WindowInfo^.Bitmap := Windows.CreateCompatibleBitmap(DC, WindowWidth, WindowHeight);
       WindowInfo^.DCBitmapOld := Windows.SelectObject(WindowInfo^.BitmapDC, WindowInfo^.Bitmap);
       Windows.ReleaseDC(0, DC);
+
+      // Reset the image and canvas
+      WindowInfo^.Canvas.Free;
+      WindowInfo^.Canvas := nil;
+      WindowInfo^.Image.Free;
+      WindowInfo^.Image := nil;
     end;
 
     // Prepare the non-native Canvas if necessary
@@ -1193,71 +1200,91 @@ begin
         Msg := LM_MOVE;
         // MoveType := WParam;   WParam is not defined!
         MoveType := Move_SourceIsInterface;
-        if (lWinControl is TCustomForm)
-        and (TCustomForm(lWinControl).Parent=nil) then
+        if GetWindowLong(Window, GWL_STYLE) and WS_CHILD = 0 then
         begin
-          if Windows.GetWindowRect(Window,@R) then
+          WindowPlacement.length := SizeOf(WindowPlacement);
+          if IsIconic(Window) and GetWindowPlacement(Window, @WindowPlacement) then
+          begin
+            with WindowPlacement.rcNormalPosition do
+            begin
+              XPos := Left;
+              YPos := Top;
+            end;
+          end
+          else
+          if Windows.GetWindowRect(Window, @R) then
           begin
             XPos := R.Left;
             YPos := R.Top;
-          end else begin
+          end
+          else
             Msg := LM_NULL;
-          end;
-        end else begin
-          if GetWindowRelativePosition(Window,NewLeft,NewTop) then
+        end else
+        begin
+          if GetWindowRelativePosition(Window, NewLeft, NewTop) then
           begin
             XPos := NewLeft;
             YPos := NewTop;
-          end else begin
+          end
+          else
             Msg := LM_NULL;
-          end;
         end;
-        if lWinControl <> nil then begin
+        if lWinControl <> nil then
+        begin
           {$IFDEF VerboseSizeMsg}
-          DebugLn('WinCECallBack WM_MOVE ', dbgsName(lWinControl),
+          DebugLn('Win32CallBack WM_MOVE ', dbgsName(lWinControl),
             ' NewPos=',dbgs(XPos),',',dbgs(YPos));
           {$ENDIF}
-          if (lWinControl.Left=XPos) and (lWinControl.Top=YPos) then
-            exit;
+          if (lWinControl.Left = XPos) and (lWinControl.Top = YPos) then
+            Exit;
         end;
       end;
     end;
     WM_SIZE:
     begin
-      with TLMSize(LMessage) Do
+      with TLMSize(LMessage) do
       begin
         Msg := LM_SIZE;
         SizeType := WParam or Size_SourceIsInterface;
-        if Window = TCDWidgetSet(WidgetSet).AppHandle then
+        if Window = CDWidgetSet.AppHandle then
         begin
-          lWinControl := Application.MainForm;
-          Window := Application.MainForm.Handle;
+          if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+          begin
+            lWinControl := Application.MainForm;
+            Window := Application.MainFormHandle;
+          end;
         end;
         GetWindowSize(Window, NewWidth, NewHeight);
         Width := NewWidth;
         Height := NewHeight;
-        if lWinControl <> nil then
+        if Assigned(lWinControl) then
         begin
           {$IFDEF VerboseSizeMsg}
           GetClientRect(Window,R);
-          DebugLn('WinCECallback: WM_SIZE '+ dbgsName(lWinControl)+
-            ' NewSize='+ dbgs(Width)+','+dbgs(Height)+
+          DebugLn('Win32Callback: WM_SIZE '+ dbgsName(lWinControl)+
+            ' NewSize=', dbgs(Width)+','+dbgs(Height)+
+            ' HasVScroll='+dbgs((GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0)+
+            ' HasHScroll='+dbgs((GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0)+
             ' OldClientSize='+dbgs(lWinControl.CachedClientWidth)+','+dbgs(lWinControl.CachedClientHeight)+
             ' NewClientSize='+dbgs(R.Right)+','+dbgs(R.Bottom));
           {$ENDIF}
-          if (lWinControl.Width<>Width) or (lWinControl.Height<>Height)
-              or lWinControl.ClientRectNeedsInterfaceUpdate then
-          begin
-            lWinControl.DoAdjustClientRectChange;
-          end;
+          if (lWinControl.Width <> Width) or
+             (lWinControl.Height <> Height) or
+             lWinControl.ClientRectNeedsInterfaceUpdate then
+            lWinControl.DoAdjustClientRectChange
+          else
+          // If we get form size message then we probably changed it state
+          // (minimized/maximized -> normal). Form adjust its clientrect in the
+          // second WM_SIZE but WM_MOVE also updates clientrect without adjustment
+          // thus we need to call DoAdjustClientRectChange. It is safe since this
+          // methods checks whether it need to adjust something really.
+          if (lWinControl is TCustomForm) and (lWinControl.Parent = nil) and
+             (WParam = Size_Restored) then
+            lWinControl.DoAdjustClientRectChange(False);
         end;
-        OverlayWindow := GetWindowInfo(Window)^.Overlay;
-        if OverlayWindow <> 0 then
-          Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, NewWidth, NewHeight, SWP_NOMOVE);
       end;
     end;
 
-    //roozbeh : do not have these on ce!
     {WM_ENDSESSION:
     begin
       if (Application<>nil) and (TWinCEWidgetSet(WidgetSet).AppHandle=Window) and
@@ -1267,9 +1294,9 @@ begin
         Application.IntfEndSession();
         LMessage.Result := 0;
       end;
-    end;
+    end;}
 
-    WM_QUERYENDSESSION:
+    {WM_QUERYENDSESSION:
     begin
       if (Application<>nil) and (TWinCEWidgetSet(WidgetSet).AppHandle=Window) and
          (LParam=0) then

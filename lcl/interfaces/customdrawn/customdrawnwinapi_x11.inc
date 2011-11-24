@@ -4294,7 +4294,7 @@ begin
   ARect := Bounds(APos.X,APos.Y,R.Right-R.Left,R.Bottom-R.Top);
 
   Result := -1;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetWindowRelativePosition
@@ -4304,20 +4304,20 @@ end;
   returns the current widget Left, Top, relative to the client origin of its
   parent
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
+function TCDWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
 var
   R: TRect;
 begin
-  {$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseWinAPI}
     WriteLn('[WinAPI GetWindowRelativePosition]');
   {$endif}
-  if Handle = 0 then
+{  if Handle = 0 then}
     Exit(False);
-  R := TQtWidget(Handle).getFrameGeometry;
+{  R := TQtWidget(Handle).getFrameGeometry;
   Left := R.Left;
   Top := R.Top;
-  Result := True;
-end;*)
+  Result := True;}
+end;
 
 {------------------------------------------------------------------------------
   Function: GetWindowSize

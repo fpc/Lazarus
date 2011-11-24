@@ -501,18 +501,18 @@ begin
     Result:=HWND(NSObject(Handle).lclParent)
   else
     Result:=0;
-end;
+end;*)
 
-function TCocoaWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean;
+function TCDWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean;
 begin
   if Handle<>0 then begin
     Result:=True;
-    NSObject(handle).lclRelativePos(Left, Top);
+    LCLObjectExtension(NSObject(handle)).lclRelativePos(Left, Top);
   end else
     Result:=False;
 end;
 
-function TCocoaWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
+(*function TCocoaWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
 var
   r   : TRect;
 begin

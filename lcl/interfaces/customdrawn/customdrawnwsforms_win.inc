@@ -563,9 +563,12 @@ end;
 
 class function TCDWSCustomForm.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
 begin
+  {$ifdef VerboseCDForms}
+  DebugLn(':>[TCDWSCustomForm.GetClientBounds]');
+  {$endif}
   Result := LCLIntf.GetClientBounds(AWincontrol.Handle, ARect);
   {$ifdef VerboseCDForms}
-  DebugLn(Format('[TCDWSCustomForm.GetClientBounds] AWincontrol=%x Rect.left=%d Rect.Top=%d'
+  DebugLn(Format(':<[TCDWSCustomForm.GetClientBounds] AWincontrol=%x Rect.left=%d Rect.Top=%d'
     + ' Rect.Width=%d Rect.Height=%d', [PtrInt(AWincontrol), ARect.Top, ARect.Left,
     ARect.Right-ARect.Left, ARect.Bottom-ARect.Top]));
   {$endif}
@@ -573,6 +576,9 @@ end;
 
 class function TCDWSCustomForm.GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
 begin
+  {$ifdef VerboseCDForms}
+  DebugLn('[TCDWSCustomForm.GetClientRect]');
+  {$endif}
   Result := LCLIntf.GetClientRect(AWincontrol.Handle, ARect);
 end;
 

@@ -2508,12 +2508,14 @@ end;*)
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 begin
-  {$ifdef VerboseWinAPI}
-    WriteLn('[WinAPI GetClientBounds]');
-  {$endif}
   // ToDO check if the window is native or not and process accordingly
   // For now just assume it is native
   Result := BackendGetClientBounds(Handle, ARect);
+  {$ifdef VerboseWinAPI}
+  DebugLn(Format('[WinAPI GetClientBounds] ARect.Left=%d ARect.Top=%d'
+    + ' ARect.Right=%d ARect.Bottom=%d',
+    [ARect.Left, ARect.Top, ARect.Right, ARect.Bottom]));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -2525,13 +2527,13 @@ end;
   Returns the client bounds of a control. The client bounds is the rectangle of
   the inner area of a control, where the child controls are visible. The
   coordinates are relative to the control's left and top.
+  Left and Top are always 0,0
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 begin
   {$ifdef VerboseWinAPI}
-    WriteLn('[WinAPI GetClientRect]');
+  DebugLn('[WinAPI GetClientRect]');
   {$endif}
-
   GetClientBounds(Handle, ARect);
   OffsetRect(ARect, -ARect.Left, -ARect.Top);
 

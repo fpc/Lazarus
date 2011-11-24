@@ -138,8 +138,8 @@ function GetViewPortOrgEx(DC: HDC; P: PPoint): Integer; override;
 function GetWindowExtEx(DC: HDC; Size: PSize): Integer; override;
 function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;
 function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; override;
-function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;
-function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean; override;*)
+function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;*)
+function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean; override;
 function GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean; override;
 (*function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; override;

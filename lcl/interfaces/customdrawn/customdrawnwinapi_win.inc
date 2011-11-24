@@ -2204,7 +2204,7 @@ end;
 function TWin32WidgetSet.GetWindowRect(Handle: HWND; Var Rect: TRect): Integer;
 begin
   Result := Integer(Windows.GetWindowRect(Handle, @Rect));
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetWindowRelativePosition
@@ -2214,7 +2214,7 @@ end;
   returns the current widget Left, Top, relative to the client origin of its
   parent
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetWindowRelativePosition(Handle: HWND;
+function TCDWidgetSet.GetWindowRelativePosition(Handle: HWND;
   var Left, Top: Integer): Boolean;
 var
   LeftTop:TPoint;
@@ -2247,7 +2247,7 @@ begin
   Left := LeftTop.X;
   Top := LeftTop.Y;
   Result := True;
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: GetWindowSize
@@ -2282,12 +2282,20 @@ begin
   Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
 
   if not Result then
+  begin
+    {$ifdef VerboseWinAPI}
+    DebugLn(':<[TCDWidgetSet.GetWindowSize] GetWindowPlacement failed');
+    {$endif}
     Exit;
+  end;
 
   if (WP.showCmd = SW_MINIMIZE) or (WP.showCmd = SW_SHOWMINIMIZED) then
   begin
     Width := 0;
     Height := 0;
+    {$ifdef VerboseWinAPI}
+    DebugLn(':<[TCDWidgetSet.GetWindowSize] Minimized');
+    {$endif}
     Exit;
   end;
 

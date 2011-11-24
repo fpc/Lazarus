@@ -236,6 +236,7 @@ begin
   begin
     Windows.TranslateMessage(@AMessage);
     Windows.DispatchMessage(@AMessage);
+    if Application.Terminated then Break;
   end;
 end;
 
