@@ -670,7 +670,9 @@ end;
 destructor TTabControl.Destroy;
 begin
   BeginUpdate;
+  {$ifdef LCL_NEW_TABCONTROL}
   FCanvas.Free;
+  {$endif}
   FreeThenNil(FTabs);
   FreeThenNil(FImageChangeLink);
   inherited Destroy;

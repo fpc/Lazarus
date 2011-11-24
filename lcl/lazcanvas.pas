@@ -69,6 +69,11 @@ type
     constructor create (AnImage : TFPCustomImage);
     destructor destroy; override;
     procedure SetLazClipRegion(ARegion: TLazRegion);
+    // Compatibility with older FPC versions
+    {$if defined(ver2_4) or defined(ver2_5)}
+    procedure FillRect(const ARect: TRect);
+    procedure FillRect(X1,Y1,X2,Y2: Integer);
+    {$endif}
     // Utilized by LCLIntf.SelectObject
     procedure AssignPenData(APen: TFPCustomPen);
     procedure AssignBrushData(ABrush: TFPCustomBrush);
@@ -149,6 +154,25 @@ begin
     FLazClipRegion := ARegion;
   end;
 end;
+
+{$if defined(ver2_4) or defined(ver2_5)}
+procedure TLazCanvas.FillRect(const ARect: TRect);
+begin
+  if (Brush.style <> bsClear) then
+    begin
+    //if not (brush is TFPCustomDrawBrush) then
+      DoRectangleFill (ARect)
+    //else
+    //  with ARect do
+    //    TFPCustomDrawBrush(Brush).Rectangle (left,top,right,bottom);
+    end;
+end;
+
+procedure TLazCanvas.FillRect(X1, Y1, X2, Y2: Integer);
+begin
+  FillRect (Rect(X1,Y1,X2,Y2));
+end;
+{$endif}
 
 procedure TLazCanvas.AssignPenData(APen: TFPCustomPen);
 begin
