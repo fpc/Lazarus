@@ -56,6 +56,8 @@ type
     BackupOtherGroupLabel:TLabel;
     procedure BakTypeRadioGroupClick(Sender: TObject);
   private
+    fLoaded: Boolean;
+    FSaved: Boolean;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -204,6 +206,8 @@ end;
 
 procedure TBackupOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TEnvironmentOptions do
   begin
     with BackupInfoProjectFiles do
@@ -253,6 +257,8 @@ end;
 
 procedure TBackupOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TEnvironmentOptions do 
   begin
     with BackupInfoProjectFiles do

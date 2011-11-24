@@ -60,6 +60,8 @@ type
     procedure SrcPathButtonClick(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
+    fLoaded: Boolean;
+    FSaved: Boolean;
     procedure VisualizeIndentEnabled;
   public
     function GetTitle: String; override;
@@ -179,6 +181,8 @@ end;
 procedure TCodetoolsGeneralOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TCodeToolsOptions do
   begin
     SrcPathEdit.Text := SrcPath;
@@ -197,6 +201,8 @@ end;
 procedure TCodetoolsGeneralOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TCodeToolsOptions do
   begin
     SrcPath := SrcPathEdit.Text;

@@ -37,6 +37,8 @@ type
     ModeRadioGroup: TRadioGroup;
     RefreshRadioGroup: TRadioGroup;
   private
+    fLoaded: Boolean;
+    FSaved: Boolean;
     { private declarations }
   public
     function GetTitle: String; override;
@@ -81,6 +83,8 @@ end;
 procedure TCodeExplorerUpdateOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TCodeExplorerOptions do
   begin
     case Refresh of
@@ -105,6 +109,8 @@ end;
 procedure TCodeExplorerUpdateOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TCodeExplorerOptions do
   begin
     case RefreshRadioGroup.ItemIndex of
