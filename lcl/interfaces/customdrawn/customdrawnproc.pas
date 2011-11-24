@@ -20,12 +20,15 @@ type
   public
     Region: TLazRegionWithChilds;
     WinControl: TWinControl;
+    //CDControl: TCDControl;
   end;
 
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat);
 procedure RenderChildWinControls(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDControlsList: TFPList);
+//procedure RenderWinControl(var AImage: TLazIntfImage;
+//  var ACanvas: TLazCanvas; ACDControlsList: TFPList);
 function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
 function IsValidDC(ADC: HDC): Boolean;
 function IsValidGDIObject(AGDIObj: HGDIOBJ): Boolean;
@@ -87,14 +90,17 @@ begin
     lCDWinControl := TCDWinControl(ACDControlsList.Items[i]);
     lWinControl := lCDWinControl.WinControl;
     {$ifdef VerboseCDWinControl}
-    DebugLn(Format('[RenderChildWinControls] i=%d lWinControl=%x', [i, PtrInt(lWinControl)]));
+    DebugLn(Format('[RenderChildWinControls] i=%d lWinControl=%x Left=%d'
+      + ' Top=%d Width=%d Height=%d', [i, PtrInt(lWinControl),
+      lWinControl.Left, lWinControl.Top, lWinControl.Width, lWinControl.Height]));
     {$endif}
     if lWinControl.Visible = False then Continue;
 
     // Prepare the clippping
     ACanvas.Clipping := True;
-    ACanvas.ClipRect := Bounds(lWinControl.Left, lWinControl.Top, lWinControl.Width, lWinControl.Height);
-    ACanvas.UseSimpleRectClipping := True;
+    lCDWinControl.Region.Rect := Bounds(lWinControl.Left, lWinControl.Top, lWinControl.Width, lWinControl.Height);
+    ACanvas.ClipRegion := lCDWinControl.Region;
+    ACanvas.UseRegionClipping := True;
     ACanvas.WindowOrg := Point(lWinControl.Left, lWinControl.Top);
 
     {$ifdef VerboseCDWinControl}
