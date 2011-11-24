@@ -76,7 +76,8 @@ begin
             + '|' + lisLazarusProject + ' (*.lpi)|*.lpi'
             + '|' + lisLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm'
             + '|' + lisLazarusPackage + ' (*.lpk)|*.lpk'
-            + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr';
+            + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr'
+            + '|' + lisLazarusOtherFile + ' (*.inc;*.lrs;*.lpl)|*.inc;*.lrs;*.lpl'
     end
     else
     begin
@@ -85,7 +86,8 @@ begin
       begin
         lName := cfg.GetValue(Format(KeyFilter, [i]) + '/' + KeyFilterName, '');
         lMask := cfg.GetValue(Format(KeyFilter, [i]) + '/' +  KeyFilterMask, '*');
-        EnvironmentOptions.FileFilters.Add(Format(cFilter, [lName, lMask, lMask]));
+        if (lName<>'') and (lMask<>'') then
+          EnvironmentOptions.FileFilters.Add(Format(cFilter, [lName, lMask, lMask]));
       end;
     end;
   finally

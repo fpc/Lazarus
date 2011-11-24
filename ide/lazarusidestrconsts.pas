@@ -1263,6 +1263,7 @@ resourcestring
   lisLazarusForm = 'Lazarus form';
   lisLazarusPackage = 'Lazarus package';
   lisLazarusProjectSource = 'Lazarus project source';
+  lisLazarusOtherFile = 'Lazarus other file';
 
   dlgUndoGroupOptions = 'Undo / Redo';
   dlgScrollGroupOptions = 'Scrolling';
