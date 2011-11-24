@@ -451,7 +451,7 @@ function TCDWidgetSet.BackendGetClientBounds(handle : HWND; var ARect : TRect) :
 begin
   if Handle<>0 then begin
     Result:=True;
-    ARect:=NSObject(handle).lclClientFrame;
+    ARect:=LCLObjectExtension(NSObject(handle)).lclClientFrame;
   end else
     Result:=False;
 end;

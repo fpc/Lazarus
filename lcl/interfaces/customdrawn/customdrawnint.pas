@@ -32,7 +32,7 @@ uses
   Types, Classes, SysUtils, Math,
   fpimage, fpcanvas, fpimgcanv, ctypes,
   {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
-  {$ifdef CD_Cocoa}MacOSAll, CocoaAll,{$endif}
+  {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, customdrawn_x11proc,{unitxft, Xft font support}{$endif}
   // Widgetset
   customdrawnproc,
