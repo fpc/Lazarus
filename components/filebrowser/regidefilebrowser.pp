@@ -59,7 +59,7 @@ const
 
 resourcestring
   SFileBrowserIDEMenu = 'IDEFileBrowser';
-  SFileBrowserIDEMenuCaption = 'File Browser window';
+  SFileBrowserIDEMenuCaption = 'File Browser';
 
 
 { TFileBrowserController }
@@ -92,6 +92,7 @@ var
   D: string;
 begin
   FWindow := TFileBrowserForm.Create(Self);
+  FWindow.Caption:=SFileBrowserIDEMenuCaption;
   FWindow.FreeNotification(Self);
   FWindow.OnOpenFile := @DoOpenFile;
   FWindow.OnConfigure := @DoConfig;
