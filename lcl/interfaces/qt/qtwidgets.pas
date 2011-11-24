@@ -637,6 +637,7 @@ type
   public
     function CheckState: QtCheckState;
     procedure setCheckState(state: QtCheckState);
+    procedure setTriState(AAllowGrayed: Boolean);
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -5935,6 +5936,11 @@ end;
 procedure TQtCheckBox.setCheckState(state: QtCheckState);
 begin
   QCheckBox_setCheckState(QCheckBoxH(Widget), state);
+end;
+
+procedure TQtCheckBox.setTriState(AAllowGrayed: Boolean);
+begin
+  QCheckBox_setTristate(QCheckBoxH(Widget), AAllowGrayed);
 end;
 
 procedure TQtCheckBox.AttachEvents;

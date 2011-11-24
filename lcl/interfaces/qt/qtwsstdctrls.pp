@@ -1175,6 +1175,7 @@ begin
   //enclose the call between Begin/EndUpdate to avoid send LM_CHANGE message
   QtCheckBox := TQtCheckBox(ACustomCheckBox.Handle);
   QtCheckBox.BeginUpdate;
+  QtCheckBox.setTriState(ACustomCheckBox.AllowGrayed);
   case NewState of
     cbGrayed: QtCheckBox.setCheckState(QtPartiallyChecked);
     cbChecked: QtCheckBox.setCheckState(QtChecked);
@@ -1196,6 +1197,7 @@ var
   QtCheckBox: TQtCheckBox;
 begin
   QtCheckBox := TQtCheckBox.Create(AWinControl, AParams);
+  QtCheckBox.setTriState(TCustomCheckBox(AWinControl).AllowGrayed);
   QtCheckBox.AttachEvents;
 
   Result := TLCLIntfHandle(QtCheckBox);
