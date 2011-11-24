@@ -70,6 +70,8 @@ type
     procedure ShowLineNumbersCheckBoxClick(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
+    fLoaded: Boolean;
+    FSaved: Boolean;
     FUpdatingFontSizeRange: Boolean;
     function FontSizeNegativeToPositive(NegativeSize: Integer): Integer;
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
@@ -353,6 +355,8 @@ end;
 
 procedure TEditorDisplayOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TEditorOptions do
   begin
     // init the spin-edit first, since it does not trigger on change,
@@ -377,6 +381,8 @@ end;
 
 procedure TEditorDisplayOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TEditorOptions do
   begin
     VisibleRightMargin := VisibleRightMarginCheckBox.Checked;

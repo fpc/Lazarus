@@ -726,11 +726,10 @@ procedure TBuildModesEditorFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   PCOptions: TProjectCompilerOptions;
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
-
   //debugln(['TBuildModesEditorFrame.ReadSettings ',DbgSName(AOptions)]);
   if AOptions is TProjectCompilerOptions then begin
+    if fLoaded then exit;
+    fLoaded:=true;
     PCOptions:=TProjectCompilerOptions(AOptions);
     FProject:=PCOptions.LazProject;
     FMacroValues:=FProject.ActiveBuildMode.MacroValues;
@@ -751,9 +750,9 @@ end;
 
 procedure TBuildModesEditorFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   if AOptions is TProjectCompilerOptions then begin
+    if FSaved then exit;
+    FSaved:=true;
     SaveMacros(false);
   end;
 end;

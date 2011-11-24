@@ -25,6 +25,8 @@ type
     procedure chkUseMsgFileChange(Sender: TObject);
     procedure editMsgFilterChange(Sender: TObject);
   private
+    fLoaded: Boolean;
+    FSaved: Boolean;
     { private declarations }
     TempMessages: TCompilerMessagesList;
     procedure UpdateMessages;
@@ -175,6 +177,8 @@ end;
 
 procedure TCompilerMessagesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TBaseCompilerOptions do 
   begin
     TempMessages.Assign(CompilerMessages);
@@ -184,6 +188,8 @@ end;
 
 procedure TCompilerMessagesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TBaseCompilerOptions do
   begin
     UseMsgFile:=True;

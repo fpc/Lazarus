@@ -83,10 +83,10 @@ end;
 procedure TCodeExplorerUpdateOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   with AOptions as TCodeExplorerOptions do
   begin
+    if fLoaded then exit;
+    fLoaded:=true;
     case Refresh of
       cerManual: RefreshRadioGroup.ItemIndex := 0;
       cerSwitchEditorPage: RefreshRadioGroup.ItemIndex := 1;
@@ -109,10 +109,10 @@ end;
 procedure TCodeExplorerUpdateOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TCodeExplorerOptions do
   begin
+    if FSaved then exit;
+    FSaved:=true;
     case RefreshRadioGroup.ItemIndex of
       0: Refresh := cerManual;
       1: Refresh := cerSwitchEditorPage;

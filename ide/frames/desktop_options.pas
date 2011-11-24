@@ -78,6 +78,8 @@ type
     procedure SaveDesktopSettingsToFileButtonClick(Sender: TObject);
     procedure LoadDesktopSettingsFromFileButtonClick(Sender: TObject);
   private
+    fLoaded: Boolean;
+    FSaved: Boolean;
     function LangIDToCaption(const LangID: string): string;
     function CaptionToLangID(const ACaption: string): string;
 
@@ -160,6 +162,8 @@ end;
 
 procedure TDesktopOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TEnvironmentOptions do
   begin
     // language
@@ -200,6 +204,8 @@ end;
 
 procedure TDesktopOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TEnvironmentOptions do
   begin
     // language

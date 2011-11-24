@@ -25,6 +25,8 @@ type
     procedure LazDocListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure LazDocPathEditChange(Sender: TObject);
   private
+    fLoaded: Boolean;
+    FSaved: Boolean;
     { private declarations }
   public
     function GetTitle: string; override;
@@ -89,12 +91,16 @@ end;
 
 procedure TProjectLazDocOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TProject do
     SplitString(LazDocPaths, ';', LazDocListBox.Items, True);
 end;
 
 procedure TProjectLazDocOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TProject do
     LazDocPaths := StringListToText(LazDocListBox.Items, ';', True);
 end;
