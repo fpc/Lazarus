@@ -1312,7 +1312,7 @@ begin
   ExternalTools.OnNeedsOutputFilter := @OnExtToolNeedsOutputFilter;
   ExternalTools.OnFreeOutputFilter := @OnExtToolFreeOutputFilter;
   UpdateDefaultPascalFileExtensions;
-  LoadFileFiltersList;
+  LoadFileDialogFilter;
 
   EditorOpts := TEditorOptions.Create;
   EditorOpts.OnBeforeRead := @DoEditorOptionsBeforeRead;
@@ -2846,7 +2846,7 @@ begin
     if Assigned(AnUnitInfo) and (not AnUnitInfo.IsVirtual) then
       OpenDialog.InitialDir:=ExtractFilePath(AnUnitInfo.Filename);
 
-    Filter := EnvironmentOptions.FileFilters.Text;
+    Filter := EnvironmentOptions.FileDialogFilter;
 
     // append a filter for all file types of the open files in the source editor
     CreateFileDialogFilterForSourceEditorFiles(Filter,AllEditorMask,AllMask);

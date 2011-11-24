@@ -5,11 +5,17 @@ unit env_file_filters;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Grids,
-  EnvironmentOpts, IDEOptionDefs,
-  IDEOptionsIntf, Controls, Menus, StdCtrls;
+  Classes, SysUtils, FileUtil, LResources, Forms, Grids, Dialogs, Controls,
+  LCLProc, LCLType, Menus, StdCtrls, LazConfigStorage,
+  IDEOptionsIntf, BaseIDEIntf,
+  EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts;
 
+const
+  FileDialogFilterConfigFile = 'filefilters.xml';
 type
+
+  { TFileFiltersOptionsFrame }
+
   TFileFiltersOptionsFrame = class(TAbstractIDEOptionsEditor)
     grdFileFilters: TStringGrid;
     pmGrid: TPopupMenu;
@@ -23,6 +29,8 @@ type
     procedure pmiInsRowClick(Sender: TObject);
   private
     FList: TStringList;
+    fLoaded: boolean;
+    fSaved: boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -34,65 +42,114 @@ type
   end;
 
 
-procedure LoadFileFiltersList;
+procedure LoadFileDialogFilter;
+procedure SaveFileDialogFilter;
+function GetDefaultFileDialogFilter: string;
 
 
 implementation
 
 {$R *.lfm}
 
-uses
-  LazarusIDEStrConsts,
-  BaseIDEIntf,
-  LazConfigStorage,
-  LCLType;
-
 const
-  cSettingsFile     = 'filefilters.xml';
-  KeyFilter         = 'Filter%2.2d';
+  KeyFilter         = 'Filter';
   KeyFilterCount    = 'Count';
   KeyFilterName     = 'Name';
   KeyFilterMask     = 'Mask';
 
 
-procedure LoadFileFiltersList;
+procedure LoadFileDialogFilter;
 const
   cFilter = '%s (%s)|%s|';            // each filter is seperated by another | sign
 var
   cfg: TConfigStorage;
-  c: integer;
+  cnt: integer;
   i: integer;
   lName, lMask: string;
+  Filter: String;
 begin
-  EnvironmentOptions.FileFilters.Clear;
-  cfg := GetIDEConfigStorage(cSettingsFile, True);
+  Filter:='';
+  cfg := GetIDEConfigStorage(FileDialogFilterConfigFile, True);
   try
-    c := cfg.GetValue(KeyFilterCount, 0);
-    if c = 0 then
+    cnt := cfg.GetValue(KeyFilterCount, 0);
+    if cnt = 0 then
     begin
       // create default values
-      EnvironmentOptions.FileFilters.Text:=
-            lisLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp'
-            + '|' + lisLazarusProject + ' (*.lpi)|*.lpi'
-            + '|' + lisLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm'
-            + '|' + lisLazarusPackage + ' (*.lpk)|*.lpk'
-            + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr'
-            + '|' + lisLazarusOtherFile + ' (*.inc;*.lrs;*.lpl)|*.inc;*.lrs;*.lpl'
+      Filter:=GetDefaultFileDialogFilter;
     end
     else
     begin
       // read values
-      for i := 1 to c do
+      for i := 1 to cnt do
       begin
-        lName := cfg.GetValue(Format(KeyFilter, [i]) + '/' + KeyFilterName, '');
-        lMask := cfg.GetValue(Format(KeyFilter, [i]) + '/' +  KeyFilterMask, '*');
-        if (lName<>'') and (lMask<>'') then
-          EnvironmentOptions.FileFilters.Add(Format(cFilter, [lName, lMask, lMask]));
+        lName := cfg.GetValue(KeyFilter+IntToStr(i) + '/' + KeyFilterName, '');
+        lMask := cfg.GetValue(KeyFilter+IntToStr(i) + '/' + KeyFilterMask, '*');
+        if (lName='') or (lMask='') then continue;
+        if Filter<>'' then
+          Filter:=Filter+'|';
+        Filter:=Filter+lName+'|'+lMask;
       end;
     end;
   finally
     cfg.Free;
   end;
+  EnvironmentOptions.FileDialogFilter:=Filter;
+end;
+
+procedure SaveFileDialogFilter;
+var
+  cfg: TConfigStorage;
+  Cnt: Integer;
+  p: PChar;
+  MaskStart: PChar;
+  CaptionStart: PChar;
+  Filter: String;
+  Caption: String;
+  CurMask: String;
+begin
+  Filter:=EnvironmentOptions.FileDialogFilter;
+  if Filter=GetDefaultFileDialogFilter then
+    Filter:='';
+  cfg := GetIDEConfigStorage(FileDialogFilterConfigFile,false);
+  try
+    Cnt:=0;
+    if Filter<>'' then begin
+      p:=PChar(Filter);
+      while p^<>#0 do
+      begin
+        // caption
+        CaptionStart:=p;
+        while not (p^ in ['|',#0]) do inc(p);
+        if p^=#0 then break;
+        Caption:=copy(Filter,CaptionStart-PChar(Filter)+1,p-CaptionStart);
+        // parse masks
+        inc(p);
+        MaskStart:=p;
+        while not (p^ in ['|',#0]) do inc(p);
+        if p>MaskStart then begin
+          inc(Cnt);
+          CurMask:=copy(Filter,MaskStart-PChar(Filter)+1,p-MaskStart);
+          cfg.SetValue(KeyFilter+IntToStr(Cnt) + '/' + KeyFilterName, Caption);
+          cfg.SetValue(KeyFilter+IntToStr(Cnt) + '/' + KeyFilterMask, CurMask);
+        end;
+        inc(p);
+      end;
+    end;
+    cfg.SetValue(KeyFilterCount, Cnt);
+    cfg.WriteToDisk;
+  finally
+    cfg.Free;
+  end;
+end;
+
+function GetDefaultFileDialogFilter: string;
+begin
+  Result := lisLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp'
+    + '|' + lisLazarusProject + ' (*.lpi)|*.lpi'
+    + '|' + lisLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm'
+    + '|' + lisLazarusPackage + ' (*.lpk)|*.lpk'
+    + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr'
+    + '|' + lisLazarusOtherFile + ' (*.inc;*.lrs;*.lpl)|*.inc;*.lrs;*.lpl';
 end;
 
 { TFileFiltersOptionsFrame }
@@ -151,11 +208,6 @@ begin
 end;
 
 procedure TFileFiltersOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  cfg: TConfigStorage;
-  c: integer;
-  i: integer;
-  lName, lMask: string;
 
   procedure AddRowItem(const ARow: integer; const AName, AMask: String);
   begin
@@ -163,57 +215,85 @@ var
     grdFileFilters.Cells[2, ARow] := AMask;
   end;
 
-begin
-  grdFileFilters.RowCount := 1;   { don't call Clear because it will remove fixed columns too }
-  cfg := GetIDEConfigStorage(cSettingsFile, True);
-  try
-    c := cfg.GetValue(KeyFilterCount, 0);
-    if c = 0 then
-    begin
-      // create default vaulues
-      grdFileFilters.RowCount := grdFileFilters.RowCount + 7;
-      AddRowItem(1, lisLazarusFile, '*.lpi;*.lpr;*.lpk;*.pas;*.pp;*.inc;*.lfm;*.dfm');
-      AddRowItem(2, lisLazarusUnit, '*.pas;*.pp');
-      AddRowItem(3, lisLazarusProject, '*.lpi');
-      AddRowItem(4, lisLazarusForm, '*.lfm;*.dfm');
-      AddRowItem(5, lisLazarusPackage, '*.lpk');
-      AddRowItem(6, lisLazarusProjectSource, '*.lpr');
-    end
-    else
-    begin
-      // read values
-      grdFileFilters.RowCount := c+1;
-      for i := 1 to c do
+  procedure ReadList(Filter: String; var Cnt: integer; Scan: boolean);
+  var
+    p: PChar;
+    CaptionStart: PChar;
+    CurCaption: String;
+    MaskStart: PChar;
+    CurMask: String;
+  begin
+    Cnt:=0;
+    if Filter<>'' then begin
+      p:=PChar(Filter);
+      while p^<>#0 do
       begin
-        lName := cfg.GetValue(Format(KeyFilter, [i]) + '/' + KeyFilterName, 'N' + IntToStr(i));  // N1, N2 etc if no name specified
-        lMask := cfg.GetValue(Format(KeyFilter, [i]) + '/' +  KeyFilterMask, AllFilesMask);
-        AddRowItem(i, lName, lMask);
+        // caption
+        CaptionStart:=p;
+        while not (p^ in ['|',#0]) do inc(p);
+        if p^=#0 then break;
+        CurCaption:=copy(Filter,CaptionStart-PChar(Filter)+1,p-CaptionStart);
+        // parse masks
+        repeat
+          inc(p);
+          MaskStart:=p;
+          while not (p^ in ['|',#0]) do inc(p);
+          if p>MaskStart then begin
+            CurMask:=copy(Filter,MaskStart-PChar(Filter)+1,p-MaskStart);
+            inc(Cnt);
+            if not Scan then
+              AddRowItem(Cnt,CurCaption,CurMask);
+          end;
+          if p^='|' then break;
+        until p^=#0;
+        inc(p);
       end;
     end;
-  finally
-    cfg.Free;
+
   end;
-  LoadFileFiltersList;
+
+var
+  Filter: String;
+  Cnt: Integer;
+begin
+  if fLoaded then exit;
+  fLoaded:=true;
+
+  Filter:=EnvironmentOptions.FileDialogFilter;
+  Cnt:=0;
+  ReadList(Filter,Cnt,true);
+  grdFileFilters.RowCount := Cnt+2; // +1 for header, +1 for a new item
+  ReadList(Filter,Cnt,false);
 end;
 
 procedure TFileFiltersOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  cfg: TConfigStorage;
-  i: integer;
+  Filter: String;
+  i: Integer;
+  CurCaption: String;
+  CurMask: String;
 begin
-  cfg := GetIDEConfigStorage(cSettingsFile, False);
-  try
-    cfg.SetValue(KeyFilterCount, grdFileFilters.RowCount-1);
-    for i := 1 to grdFileFilters.RowCount-1 do
-    begin
-      cfg.SetValue(Format(KeyFilter, [i]) + '/' + KeyFilterName, grdFileFilters.Cells[1, i]);
-      cfg.SetValue(Format(KeyFilter, [i]) + '/' + KeyFilterMask, grdFileFilters.Cells[2, i]);
-    end;
-    cfg.WriteToDisk;
-  finally
-    cfg.Free;
+  if fSaved then exit;
+  fSaved:=true;
+
+  Filter:='';
+  for i := 1 to grdFileFilters.RowCount-1 do
+  begin
+    CurCaption:=grdFileFilters.Cells[1, i];
+    CurMask:=grdFileFilters.Cells[2, i];
+    CurCaption:=StringReplace(CurCaption,'|',',',[rfReplaceAll]);
+    CurMask:=StringReplace(CurMask,'|',',',[rfReplaceAll]);
+    if (CurCaption='') or (CurMask='') then continue;
+    if Filter<>'' then
+      Filter:=Filter+'|';
+    Filter:=Filter+CurCaption+'|'+CurMask;
   end;
-  LoadFileFiltersList;
+
+  if EnvironmentOptions.FileDialogFilter<>Filter then begin
+    //debugln(['TFileFiltersOptionsFrame.WriteSettings ']);
+    EnvironmentOptions.FileDialogFilter:=Filter;
+    SaveFileDialogFilter;
+  end;
 end;
 
 class function TFileFiltersOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

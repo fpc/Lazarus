@@ -314,7 +314,7 @@ type
     // 'new items'
     FNewFormTemplate: string;
     FNewUnitTemplate: string;
-    FFileFilters: TStringList;
+    FFileDialogFilter: string;
 
     function GetDebuggerEventLogColors(AIndex: TDBGEventType): TDebuggerEventLogColor;
     procedure SetCompilerFilename(const AValue: string);
@@ -573,7 +573,7 @@ type
     property NewUnitTemplate: string read FNewUnitTemplate write FNewUnitTemplate;
     property NewFormTemplate: string read FNewFormTemplate write FNewFormTemplate;
 
-    property FileFilters: TStringList read FFileFilters write FFileFilters;
+    property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
   end;
 
 var
@@ -836,15 +836,12 @@ begin
 
   // lazdoc
   FLazDocPaths:=SetDirSeparators(DefaultLazDocPath);
-
-  FFileFilters := TStringList.Create;
 end;
 
 destructor TEnvironmentOptions.Destroy;
 var
   i: Integer;
 begin
-  FreeAndNil(FFileFilters);
   FreeAndNil(fExternalTools);
   FreeAndNil(FRecentOpenFiles);
   FreeAndNil(FRecentProjectFiles);
