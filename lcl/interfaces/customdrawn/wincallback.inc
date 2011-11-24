@@ -313,6 +313,10 @@ Var
         {$endif}
       end;
 
+      // Now draw all child controls
+      RenderChildWinControls(WindowInfo^.Image, WindowInfo^.Canvas,
+        TCDWSCustomForm.BackendGetCDWinControlList(TCustomForm(lWinControl)));
+
       // Now convert the rawimage to a HBITMAP and draw it to the screen
       WindowInfo^.Image.GetRawImage(lRawImage);
       WinProc_RawImage_CreateBitmaps(lRawImage, lBitmap, lMask, True);

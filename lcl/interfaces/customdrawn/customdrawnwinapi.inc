@@ -2492,7 +2492,7 @@ function TQtWidgetSet.GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: 
 begin
   ShowHideOnFocus := QtCaret.GetQtCaretRespondToFocus;
   Result := True;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetClientBounds
@@ -2504,15 +2504,14 @@ end;
   the inner area of a control, where the child controls are visible. The
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
+function TCDWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseWinAPI}
     WriteLn('[WinAPI GetClientBounds]');
   {$endif}
-  if Handle = 0 then
-    Exit(False);
-  ARect := TQtWidget(handle).getClientBounds;
-  Result := True;
+  // ToDO check if the window is native or not and process accordingly
+  // For now just assume it is native
+  Result := BackendGetClientBounds(Handle, ARect);
 end;
 
 {------------------------------------------------------------------------------
@@ -2525,9 +2524,9 @@ end;
   the inner area of a control, where the child controls are visible. The
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
+function TCDWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseWinAPI}
     WriteLn('[WinAPI GetClientRect]');
   {$endif}
 
@@ -2537,7 +2536,7 @@ begin
   Result := True;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: GetClipBox
   Params: dc, lprect
   Returns: Integer

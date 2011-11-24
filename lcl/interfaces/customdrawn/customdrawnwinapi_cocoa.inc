@@ -445,9 +445,9 @@ begin
   if Handle<>0
     then Result:=NSObject(Handle).lclIsVisible
     else Result:=False;
-end;
+end;*)
 
-function TCocoaWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
+function TCDWidgetSet.BackendGetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 begin
   if Handle<>0 then begin
     Result:=True;
@@ -456,7 +456,7 @@ begin
     Result:=False;
 end;
 
-function TCocoaWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
+(*function TCocoaWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 var
   dx, dy: Integer;
 begin

@@ -1566,7 +1566,7 @@ end;
 function TWin32WidgetSet.GetCharABCWidths(DC: HDC; P2, P3: UINT; Const ABCStructs): Boolean;
 begin
   Result := Boolean(Windows.GetCharABCWidths(DC, P2, P3, ABCStructs));
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  GetClientBounds
@@ -1576,35 +1576,20 @@ end;
 
   Retrieves the coordinates of a window's client area.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetClientBounds(Handle: HWND; var Rect: TRect): Boolean;
+function TCDWidgetSet.BackendGetClientBounds(Handle: HWND; var ARect: TRect): Boolean;
 var
-  ARect: TRect;
+  LRect: TRect;
 begin
-  Result := Boolean(Windows.GetClientRect(Handle, @Rect));
+  Result := Boolean(Windows.GetClientRect(Handle, @ARect));
   if not Result then exit;
-  if not GetLCLClientBoundsOffset(Handle, ARect) then exit;
-  Inc(Rect.Left, ARect.Left);
-  Inc(Rect.Top, ARect.Top);
-  Inc(Rect.Right, ARect.Right);
-  Inc(Rect.Bottom, ARect.Bottom);
+  if not GetLCLClientBoundsOffset(Handle, LRect) then exit;
+  Inc(ARect.Left, LRect.Left);
+  Inc(ARect.Top, LRect.Top);
+  Inc(ARect.Right, LRect.Right);
+  Inc(ARect.Bottom, LRect.Bottom);
 end;
 
-{------------------------------------------------------------------------------
-  Method:  GetClientRect
-  Params: Handle - handle of window
-          Rect   - record for client coordinates
-  Returns: If the function succeeds
-
-  Retrieves the dimension of a window's client area.
-  Left and Top are always 0,0
- ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetClientRect(Handle: HWND; var Rect: TRect): Boolean;
-begin
-  Result := GetClientBounds(Handle, Rect);
-  OffsetRect(Rect, -Rect.Left, -Rect.Top);
-end;
-
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: GetClipBox
   Params: dc, lprect
   Returns: Integer

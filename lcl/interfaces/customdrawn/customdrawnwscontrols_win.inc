@@ -106,7 +106,7 @@ begin
   end;
 end;
 
-class procedure TCDWSWinControl.AddControl(const AControl: TControl);
+(*class procedure TCDWSWinControl.AddControl(const AControl: TControl);
 var
   ParentPanelHandle, ParentHandle, ChildHandle: HWND;
 begin
@@ -295,7 +295,7 @@ const
 begin
   Windows.SetWindowPos(AWinControl.Handle, 0, 0, 0, 0, 0,
     SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible])
-end;
+end;*)
 (*var
   Handle: HWND;
 //  ParentPanel: HWND;

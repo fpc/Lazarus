@@ -97,10 +97,11 @@ function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint
 function GetBkColor(DC: HDC): TColorRef; override;
 function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
-function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;
+function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;*)
 function GetClientBounds(handle : HWND; var ARect : TRect) : Boolean; override;
+function BackendGetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
-function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
+(*function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
 function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
 function GetCmdLineParamDescForInterface: string; override;
 function GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ; override;

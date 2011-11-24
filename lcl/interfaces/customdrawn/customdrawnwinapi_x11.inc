@@ -2484,7 +2484,7 @@ function TQtWidgetSet.GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: 
 begin
   ShowHideOnFocus := QtCaret.GetQtCaretRespondToFocus;
   Result := True;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetClientBounds
@@ -2496,18 +2496,15 @@ end;
   the inner area of a control, where the child controls are visible. The
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
+function TCDWidgetSet.BackendGetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetClientBounds]');
-  {$endif}
-  if Handle = 0 then
+(*  if Handle = 0 then
     Exit(False);
-  ARect := TQtWidget(handle).getClientBounds;
+  ARect := TQtWidget(handle).getClientBounds;*)
   Result := True;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: GetClientRect
   Params: handle:
           Result:

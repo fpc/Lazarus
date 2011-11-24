@@ -31,7 +31,7 @@ uses
   // LCL
   SysUtils, Classes, Types,
   //
-  {$ifdef CD_Windows}Windows, WinProc,{$endif}
+  {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
   Controls, LCLType, LCLProc, Forms, Graphics,
   lazcanvas, lazregions,
   // Widgetset
@@ -162,6 +162,7 @@ uses customdrawnwsforms;
 
 {$ifdef CD_Windows}
   {$include customdrawnwscontrols_win.inc}
+  {$include customdrawnwscontrols.inc}
 {$endif}
 {$ifdef CD_Cocoa}
   {$include customdrawnwscontrols.inc}

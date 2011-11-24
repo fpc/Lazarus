@@ -112,7 +112,7 @@ type
     WinControl: TWinControl;
     List: TStrings;
     StayOnTopList: TList;     // a list of windows that were normalized when showing modal
-    {needParentPaint: boolean; // has a tabpage as parent, and is winxp themed}
+    Children: TFPList;
     MaxLength: dword;
     MouseX, MouseY: word; // noticing spurious WM_MOUSEMOVE messages
     // CD additions

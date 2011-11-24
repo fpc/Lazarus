@@ -7,15 +7,21 @@ type
 { TCDWSCustomForm }
 
 class procedure TCDWSCustomForm.BackendAddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
+var
+  WindowInfo: PWindowInfo;
 begin
-
+  WindowInfo := GetWindowInfo(AForm.Handle);
+  if WindowInfo^.Children = nil then WindowInfo^.Children := TFPList.Create;
+  WindowInfo^.Children.Add(ACDWinControl);
 end;
 
 class function TCDWSCustomForm.BackendGetCDWinControlList(const AForm: TCustomForm): TFPList;
+var
+  WindowInfo: PWindowInfo;
 begin
-{  lwin := TCocoaWindow(AForm.Handle);
-  if lwin.Children = nil then lwin.Children := TFPList.Create;
-  Result := lwin.Children;}
+  WindowInfo := GetWindowInfo(AForm.Handle);
+  if WindowInfo^.Children = nil then WindowInfo^.Children := TFPList.Create;
+  Result := WindowInfo^.Children;
 end;
 
 class function TCDWSCustomForm.CalcBorderIconsFlags(const AForm: TCustomForm): dword;
@@ -331,6 +337,10 @@ begin
   {$endif}
 end;   *)
 
+class procedure TCDWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
+begin
+end;
+
 class procedure TCDWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
  const ABorderIcons: TBorderIcons);
 begin
@@ -368,7 +378,7 @@ begin
   // if position is default it will be changed to designed. We do not want this.
   if wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags then
   begin
-    if GetWindowRect(AForm.Handle, CurRect) then
+    if Windows.GetWindowRect(AForm.Handle, CurRect) then
     begin
       if AForm.Position in [poDefault, poDefaultPosOnly] then
       begin
@@ -444,8 +454,8 @@ class procedure TCDWSCustomForm.SetIcon(const AForm: TCustomForm; const Small, B
 begin
   if not WSCheckHandleAllocated(AForm, 'SetIcon') then
     Exit;
-  SendMessage(AForm.Handle, WM_SETICON, ICON_SMALL, LPARAM(Small));
-  SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, LPARAM(Big));
+  Windows.SendMessage(AForm.Handle, WM_SETICON, ICON_SMALL, LPARAM(Small));
+  Windows.SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, LPARAM(Big));
 end;
 
 class procedure TCDWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
@@ -461,12 +471,44 @@ end;
 
 class procedure TCDWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
-  ShowWindow(ACustomForm.Handle, SW_SHOW);
-  BringWindowToTop(ACustomForm.Handle);
+  Windows.ShowWindow(ACustomForm.Handle, SW_SHOW);
+  Windows.BringWindowToTop(ACustomForm.Handle);
 end;
 
 class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
 begin
   TCDWSWinControl.ShowHide(AWinControl);
 end;
+
+class function TCDWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+begin
+  AText := '';
+end;
+
+class function TCDWSCustomForm.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;
+var
+  S: String;
+begin
+  Result := GetText(AWinControl, S);
+  if Result
+  then ALength := Length(S);
+end;
+
+class procedure TCDWSCustomForm.SetText(const AWinControl: TWinControl; const AText: String);
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText') then Exit;
+
+  Windows.SetWindowTextW(AWinControl.Handle, PWideChar(UTF8Decode(AText)));
+end;
+
+class function TCDWSCustomForm.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
+begin
+  Result := LCLIntf.GetClientBounds(AWincontrol.Handle, ARect);
+end;
+
+class function TCDWSCustomForm.GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
+begin
+  Result := LCLIntf.GetClientRect(AWincontrol.Handle, ARect);
+end;
+
 
