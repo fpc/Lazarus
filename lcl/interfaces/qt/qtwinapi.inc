@@ -5013,7 +5013,8 @@ begin
   if Result then
   begin
     {$IFDEF MSWINDOWS}
-    if w is TQtMainWindow then
+    if (w is TQtMainWindow) or
+      (w.ChildOfComplexWidget in [ccwCustomControl, ccwScrollingWinControl]) then
       w.releaseMouse()
     else
       windows.ReleaseCapture;
@@ -5449,12 +5450,18 @@ begin
   begin
     if Result <> 0 then
       ReleaseCapture;
-    if AHandle <> 0 then
-     {$IFDEF MSWINDOWS}
-      Windows.SetCapture(AHandle);
-     {$ELSE}
+    if IsValidHandle(AHandle) then
+    begin
+      {$IFDEF MSWINDOWS}
+      if TQtWidget(AHandle).ChildOfComplexWidget in
+          [ccwCustomControl, ccwScrollingWinControl] then
+        TQtWidget(AHandle).grabMouse()
+      else
+        Windows.SetCapture(AHandle);
+      {$ELSE}
       TQtWidget(AHandle).grabMouse();
-     {$ENDIF}
+      {$ENDIF}
+    end;
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI SetCapture] Capture = ', Result, ' New capture = ', AHandle);
     {$endif}
