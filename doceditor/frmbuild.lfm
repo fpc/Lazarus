@@ -276,6 +276,7 @@ object BuildForm: TBuildForm
         RowCount = 2
         TabOrder = 1
         TitleStyle = tsNative
+		OnDblClick = SGSourcesDblClick
         ColWidths = (
           242
           119
