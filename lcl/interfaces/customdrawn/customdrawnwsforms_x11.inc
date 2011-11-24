@@ -7,14 +7,17 @@ var
   lWindowInfo: TX11WindowInfo;
 begin
   lWindowInfo := TX11WindowInfo(AForm.Handle);
-  lWindowInfo.CDWinControl := ACDWinControl;
+  if lWindowInfo.Children = nil then lWindowInfo.Children := TFPList.Create;
+  lWindowInfo.Children.Add(ACDWinControl);
 end;
 
 class function TCDWSCustomForm.BackendGetCDWinControlList(const AForm: TCustomForm): TFPList;
+var
+  lWindowInfo: TX11WindowInfo;
 begin
-{  lwin := TCocoaWindow(AForm.Handle);
-  if lwin.Children = nil then lwin.Children := TFPList.Create;
-  Result := lwin.Children;}
+  lWindowInfo := TX11WindowInfo(AForm.Handle);
+  if lWindowInfo.Children = nil then lWindowInfo.Children := TFPList.Create;
+  Result := lWindowInfo.Children;
 end;
 
 class procedure TCDWSCustomForm.UpdateMotifWMHints(const AWinControl: TWinControl; CanMaximize: Boolean);
@@ -640,6 +643,10 @@ begin
   {$IFDEF VerboseCDWindow}
     DebugLn('[TCDWSCustomForm.EvPaint] OnPaint event ended');
   {$ENDIF}
+
+  // Now paint all child win controls
+  RenderChildWinControls(AWindowInfo.Image, AWindowInfo.Canvas,
+    BackendGetCDWinControlList(TCustomForm(AWinControl)));
 
   // Now render it into the control
   AWindowInfo.Image.GetRawImage(lRawImage);

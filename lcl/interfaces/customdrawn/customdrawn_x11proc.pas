@@ -20,7 +20,7 @@ type
   public
     Window: X.TWindow;
     LCLControl: TWinControl;
-    CDWinControl: TCDWinControl;
+    Children: TFPList; // of TCDWinControl;
     // Used and valid only during event processing
     XEvent: PXEvent;
     // X11 extra objects
