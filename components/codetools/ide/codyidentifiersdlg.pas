@@ -46,8 +46,9 @@ uses
   Classes, SysUtils, FileProcs, LResources, LCLProc, avl_tree, Forms, Controls,
   Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
   PackageIntf, LazIDEIntf,
-  BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
-  CodyStrConsts;
+  CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
+  CodeTree,
+  CodyStrConsts, CodyUtils;
 
 type
   TCodyUnitDictionary = class;
@@ -137,7 +138,16 @@ type
     function FindSelectedItem(out Identifier, UnitFilename,
       GroupFilename: string): boolean;
   public
-    procedure Init;
+    CurInitError: TCUParseError;
+    CurTool: TCodeTool;
+    CurCleanPos: integer;
+    CurNode: TCodeTreeNode;
+    CurCodePos: TCodeXYPosition;
+    NewIdentifier: string;
+    NewUnitFilename: string;
+    NewGroupFilename: string;
+    function Init: boolean;
+    procedure UseIdentifier;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     property MaxItems: integer read FMaxItems write SetMaxItems;
   end;
@@ -158,8 +168,9 @@ var
 begin
   CodyIdentifiersDlg:=TCodyIdentifiersDlg.Create(nil);
   try
-    CodyIdentifiersDlg.Init;
-    CodyIdentifiersDlg.ShowModal;
+    if not CodyIdentifiersDlg.Init then exit;
+    if CodyIdentifiersDlg.ShowModal=mrOk then
+      CodyIdentifiersDlg.UseIdentifier;
   finally
     CodyIdentifiersDlg.Free;
   end;
@@ -471,8 +482,10 @@ end;
 
 procedure TCodyIdentifiersDlg.ButtonPanel1OKButtonClick(Sender: TObject);
 begin
-  // todo
-  ShowMessage('not yet implemented');
+  if FindSelectedItem(NewIdentifier, NewUnitFilename, NewGroupFilename) then
+    ModalResult:=mrOk
+  else
+    ModalResult:=mrNone;
 end;
 
 procedure TCodyIdentifiersDlg.FilterEditExit(Sender: TObject);
@@ -685,12 +698,22 @@ begin
   Result:=true;
 end;
 
-procedure TCodyIdentifiersDlg.Init;
+function TCodyIdentifiersDlg.Init: boolean;
+var
+  ErrorHandled: boolean;
 begin
+  Result:=true;
+  CurInitError:=ParseTilCursor(CurTool, CurCleanPos, CurNode, ErrorHandled, false, @CurCodePos);
+
   UpdateGeneralInfo;
   FilterEdit.Text:=FNoFilterText;
   FLastFilter:='...'; // force one update
   IdleConnected:=true;
+end;
+
+procedure TCodyIdentifiersDlg.UseIdentifier;
+begin
+  ShowMessage('ToDo: use '+NewIdentifier);
 end;
 
 finalization
