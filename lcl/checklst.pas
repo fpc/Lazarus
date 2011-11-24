@@ -207,9 +207,9 @@ procedure TCustomCheckListBox.Toggle(AIndex: Integer);
 const
   NextStateMap: array[TCheckBoxState] of array[Boolean] of TCheckBoxState =
   (
-{cbUnchecked} (cbChecked, cbChecked),
-{cbChecked  } (cbUnChecked, cbGrayed),
-{cbGrayed   } (cbUnChecked, cbUnChecked)
+{cbUnchecked} (cbChecked, cbGrayed),
+{cbChecked  } (cbUnChecked, cbUnChecked),
+{cbGrayed   } (cbChecked, cbChecked)
   );
 begin
   State[AIndex] := NextStateMap[State[AIndex]][AllowGrayed];
