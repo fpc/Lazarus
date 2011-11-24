@@ -170,5 +170,8 @@ uses customdrawnwsforms;
 {$ifdef CD_X11}
   {$include customdrawnwscontrols.inc}
 {$endif}
+{$ifdef CD_Android}
+  {$include customdrawnwscontrols.inc}
+{$endif}
 
 end.

@@ -34,6 +34,7 @@ uses
   {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, customdrawn_x11proc,{unitxft, Xft font support}{$endif}
+  {$ifdef CD_Android}customdrawn_androidproc,{$endif}
   // Widgetset
   customdrawnproc,
   // LCL
@@ -217,6 +218,10 @@ uses
 {$ifdef CD_X11}
   {$I customdrawnobject_x11.inc}
   {$I customdrawnwinapi_x11.inc}
+{$endif}
+{$ifdef CD_Android}
+  {$I customdrawnobject_android.inc}
+  {$I customdrawnwinapi_android.inc}
 {$endif}
 
 initialization

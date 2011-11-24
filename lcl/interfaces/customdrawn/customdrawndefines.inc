@@ -14,7 +14,11 @@
     {$ifdef Darwin}
       {$define CD_Cocoa}
     {$else}
-      {$define CD_X11}
+      {$ifdef Android}
+        {$define CD_Android}
+      {$else}
+        {$define CD_X11}
+      {$endif}
     {$endif}
   {$endif}
 {$endif}

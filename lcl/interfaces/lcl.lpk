@@ -110,7 +110,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="380">
+    <Files Count="384">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1881,6 +1881,23 @@ end;"/>
         <Filename Value="customdrawn/customdrawnwinapi_x11.inc"/>
         <Type Value="Include"/>
       </Item380>
+      <Item381>
+        <Filename Value="customdrawn/customdrawn_androidproc.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="customdrawn_androidproc"/>
+      </Item381>
+      <Item382>
+        <Filename Value="customdrawn/customdrawnobject_android.inc"/>
+        <Type Value="Include"/>
+      </Item382>
+      <Item383>
+        <Filename Value="customdrawn/customdrawnwinapi_android.inc"/>
+        <Type Value="Include"/>
+      </Item383>
+      <Item384>
+        <Filename Value="customdrawn/customdrawnwsforms_android.inc"/>
+        <Type Value="Include"/>
+      </Item384>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>

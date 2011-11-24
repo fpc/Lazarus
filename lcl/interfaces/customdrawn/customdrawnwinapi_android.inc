@@ -1,6 +1,6 @@
 {%MainUnit customdrawnint.pp}
 {******************************************************************************
-  All CustomDrawn backend independent Winapi implementations.
+  All CustomDrawn X11 specific Winapi implementations.
 
   !! Keep alphabetical !!
 
@@ -24,27 +24,29 @@
 }
 
 //##apiwiz##sps##   // Do not remove, no wizard declaration before this line
-
+(*
 {------------------------------------------------------------------------------
   Function: Arc
   Params: DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer
   Returns: Boolean
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean;
+function TQtWidgetSet.Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean;
 var
-  LazDC: TLazCanvas absolute DC;
+  R: TRect;
 begin
-  {$ifdef VerboseWinAPI}
-  DebugLn(Format(':>[WinAPI Polygon] DC=%s', [dbghex(DC)]));
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI Arc] DC: ', dbghex(DC));
   {$endif}
+  Result := IsValidDC(DC);
 
-  if not IsValidDC(DC) then Exit(False);
-
-  //LazDC.Arc(...);
-  Result := True;
+  if Result then
+  begin
+    R := Rect(Left, Top, Right, Bottom);
+    QPainter_drawArc(TQtDeviceContext(DC).Widget, @R, Angle1, Angle2);
+  end;
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: AngleChord
   Params: DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer
   Returns: Boolean
@@ -57,7 +59,7 @@ begin
   Result := IsValidDC(DC);
   if Result then
     QPainter_drawChord(TQtDeviceContext(DC).Widget, x1, y1, x2, y2, Angle1, Angle2);
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: BeginPaint
@@ -109,7 +111,7 @@ begin
     WriteLn('Trace:< [WinAPI BeginPaint] Result=', dbghex(Result));
   {$endif}*)
 end;
-(*
+
 function TQtWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
@@ -382,7 +384,7 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI CreateBitmap] Bitmap:', dbghex(Result));
   {$endif}
-end;*)
+end;
 
 
 {------------------------------------------------------------------------------
@@ -390,20 +392,19 @@ end;*)
   Params:  none
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
+function TQtWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 var
-  lBrush: TFPCustomBrush;
+  QtBrush: TQtBrush;
+  Color: TQColor;
 begin
-  {$ifdef VerboseWinAPI}
-    DebugLn(Format(':>[TCDWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x',
-      [LogBrush.lbStyle, LogBrush.lbColor]));
+  {$ifdef VerboseQtWinAPI}
+    WriteLn(Format('Trace:> [WinAPI CreateBrushIndirect]  Style: %d, Color: %8x (%s)',
+      [LogBrush.lbStyle, LogBrush.lbColor, ColorToString(LogBrush.lbColor)]));
   {$endif}
 
-  lBrush := TFPCustomBrush.Create;
-  Result := HBRUSH(lBrush);
-  lBrush.FPColor := TColorToFPColor(LogBrush.lbColor);
+  Result := 0;
 
-(*  QtBrush := TQtBrush.Create(True);
+  QtBrush := TQtBrush.Create(True);
 
   try
     case LogBrush.lbStyle of
@@ -466,18 +467,18 @@ begin
   except
     Result := 0;
     DebugLn('TQtWidgetSet.CreateBrushIndirect: Failed');
-  end;*)
+  end;
 
-  {$ifdef VerboseWinAPI}
-    DebugLn(':<[WinAPI CreateBrushIndirect] Result: ', dbghex(Result));
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:< [WinAPI CreateBrushIndirect] Result: ', dbghex(Result));
   {$endif}
 end;
 
-(*function TQtWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width, Height: Integer): Boolean;
+function TQtWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width, Height: Integer): Boolean;
 begin
   Result := (Handle <> 0) and
     QtCaret.CreateCaret(TQtWidget(Handle), Bitmap, Width, Height);
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: CreateCompatibleDC
@@ -493,7 +494,7 @@ begin
   {$endif}
   Result := 0;//HDC(TQtDeviceContext.Create(nil, True));
 end;
-(*
+
 {------------------------------------------------------------------------------
   Function: CreateEllipticRgn
   Params:  p1 - X position of the top-left corner
@@ -655,47 +656,51 @@ begin
   end;
 
   Result := HBRUSH(QtBrush);
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function:  CreatePenIndirect
   Params:  none
   Returns: HPEN
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
+
+function TQtWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 var
-  lPen: TFPCustomPen;
+  QtPen: TQtPen;
+  color: TQColor;
 begin
-  {$ifdef VerboseWinAPI}
-    DebugLn(Format(':>[TCDWidgetSet.CreatePenIndirect]  Style: %d, Color: %8x',
-      [LogPen.lopnStyle, LogPen.lopnColor]));
-  {$endif}
+  Result := 0;
+  QtPen := TQtPen.Create(True);
+  with LogPen do
+  begin
+    case lopnStyle and PS_STYLE_MASK of
+      PS_SOLID: QtPen.setStyle(QtSolidLine);
+      PS_DASH: QtPen.setStyle(QtDashLine);
+      PS_DOT: QtPen.setStyle(QtDotLine);
+      PS_DASHDOT: QtPen.setStyle(QtDashDotLine);
+      PS_DASHDOTDOT: QtPen.setStyle(QtDashDotDotLine);
+      PS_NULL: QtPen.setStyle(QtNoPen);
+    else
+      QtPen.setStyle(QtSolidLine);
+    end;
 
-  lPen := TFPCustomPen.Create;
-  Result := HBRUSH(lPen);
-  lPen.FPColor := TColorToFPColor(LogPen.lopnColor);
-
-  case LogPen.lopnStyle and PS_STYLE_MASK of
-    PS_SOLID:     lPen.Style := psSolid;
-    PS_DASH:      lPen.Style := psDash;
-    PS_DOT:       lPen.Style := psDot;
-    PS_DASHDOT:   lPen.Style := psDashDot;
-    PS_DASHDOTDOT:lPen.Style := psDashDotDot;
-    PS_NULL:      lPen.Style := psClear;
-  else
-    lPen.Style := psSolid;
-  end;
-
-(*  if lopnWidth.X <= 0 then
+    if lopnWidth.X <= 0 then
       QtPen.setCosmetic(True)
     else
-    begin*)
-//      QtPen.setCosmetic(False);
+    begin
+      QtPen.setCosmetic(False);
+      QtPen.setWidth(lopnWidth.X);
+    end;
 
-  lPen.Width := LogPen.lopnWidth.X;
+    QPen_Color(QtPen.FHandle, @Color);
+    ColorRefToTQColor(ColorToRGB(TColor(lopnColor)), Color);
+    QPen_setColor(QtPen.FHandle, @Color);
+  end;
+
+  Result := HPEN(QtPen);
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: CreatePolygonRgn
   Params:  none
   Returns: HRGN
@@ -778,7 +783,7 @@ begin
   if not IsValidDC(hDC) then exit;
 
   TQtDeviceContext(hDC).Free;
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: DeleteObject
@@ -786,53 +791,55 @@ end;*)
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
+function TQtWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 var
   aObject: TObject;
-//  APaintEngine: QPaintEngineH;
-//  APainter: QPainterH;
-  {$ifdef VerboseWinAPI}
+  APaintEngine: QPaintEngineH;
+  APainter: QPainterH;
+  {$ifdef VerboseQtWinAPI}
     ObjType: string;
   {$endif}
 begin
-  {$ifdef VerboseWinAPI}
-    DebugLn('Trace:> [WinAPI DeleteObject] GDIObject: ', dbghex(GDIObject));
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:> [WinAPI DeleteObject] GDIObject: ', dbghex(GDIObject));
     ObjType := 'Unidentifyed';
   {$endif}
 
   Result := False;
 
-  if GDIObject = 0 then Exit(True);
+  if GDIObject = 0 then
+    Exit(True);
 
-  if not IsValidGDIObject(GDIObject) then Exit;
+  if not IsValidGDIObject(GDIObject) then
+    Exit;
 
   aObject := TObject(GDIObject);
 
-(*  if (aObject is TQtResource) and TQtResource(aObject).FShared then
-    Exit(True);*)
+  if (aObject is TQtResource) and TQtResource(aObject).FShared then
+    Exit(True);
 
   {------------------------------------------------------------------------------
     Font
    ------------------------------------------------------------------------------}
-  if aObject is TFPCustomFont then
+  if aObject is TQtFont then
   begin
-    {$ifdef VerboseWinAPI}
+    {$ifdef VerboseQtWinAPI}
       ObjType := 'Font';
     {$endif}
   end
   {------------------------------------------------------------------------------
     Brush
    ------------------------------------------------------------------------------}
-  else if aObject is TFPCustomBrush then
+  else if aObject is TQtBrush then
   begin
-    {$ifdef VerboseWinAPI}
+    {$ifdef VerboseQtWinAPI}
       ObjType := 'Brush';
     {$endif}
   end
   {------------------------------------------------------------------------------
     Image
    ------------------------------------------------------------------------------}
-(*  else if aObject is TQtImage then
+  else if aObject is TQtImage then
   begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Image';
@@ -857,24 +864,25 @@ begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Region';
     {$endif}
-  end               *)
+  end
+
   {------------------------------------------------------------------------------
     Pen
    ------------------------------------------------------------------------------}
-  else if aObject is TFPCustomPen then
+  else if aObject is TQtPen then
   begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Pen';
     {$endif}
   end;
 
-(*  if AObject is TQtResource then
+  if AObject is TQtResource then
     if TQtResource(AObject).Owner <> nil then
     begin
       // this is an owned (default) resource, let owner free it
       DebugLn('WARNING: Trying to Free a default resource');
       AObject := nil;
-    end;*)
+    end;
 
   if AObject <> nil then
   begin
@@ -884,12 +892,12 @@ begin
 
   Result := True;
 
-  {$ifdef VerboseWinAPI}
-    DebugLn('Trace:< [WinAPI DeleteObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:< [WinAPI DeleteObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
   {$endif}
 end;
 
-(*function TQtWidgetSet.DestroyCaret(Handle: HWND): Boolean;
+function TQtWidgetSet.DestroyCaret(Handle: HWND): Boolean;
 begin
   Result := (Handle <> 0) and QtCaret.DestroyCaret;
 end;
@@ -1473,7 +1481,7 @@ begin
 
   with ARect do
     QtDC.DrawText(Left + Pt.X, Top + Pt.Y, Right-Left, Bottom-Top, F, @WideStr);
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Method:   Ellipse
@@ -1482,31 +1490,19 @@ end;*)
 
   Use Ellipse to draw a filled circle or ellipse.
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
+function TQtWidgetSet.Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
-  LazDC: TLazCanvas absolute DC;
   R: TRect;
 begin
-  {$ifdef VerboseWinAPI}
-  DebugLn(Format(':>[WinAPI Ellipse] DC=%s', [dbghex(DC)]));
-  {$endif}
+  if not IsValidDC(DC) then Exit(False);
+  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
+  if IsRectEmpty(R) then Exit(True);
 
-  if not IsValidDC(DC) then
-  begin
-    {$ifdef VerboseWinAPI}
-    DebugLn(':<[WinAPI Rectangle] Invalid DC!');
-    {$endif}
-    Exit(False);
-  end;
-
-//  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
-//  if IsRectEmpty(R) then Exit(True);
-
-  LazDC.Ellipse(X1, Y1, X2, Y2);
+  TQtDeviceContext(DC).drawEllipse(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1);
   Result := True;
 end;
 
-(*function TQtWidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
+function TQtWidgetSet.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
   {maybe we can put creating of scrollbar here instead of SetScrollInfo() }
   Result := False;
@@ -2225,21 +2221,20 @@ begin
   end;
 
   Result := True;
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: FillRect
   Params:  none
   Returns: Nothing
+
+
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
-var
-  LazDC: TLazCanvas absolute DC;
-  lOldBrush: HGDIOBJ;
+function TQtWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 begin
   Result := False;
 
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseQtWinAPI}
     DebugLn('[WinAPI FillRect Rect=', dbgs(Rect),' Brush=', dbghex(Brush));
   {$endif}
 
@@ -2248,14 +2243,11 @@ begin
   if not IsValidGdiObject(Brush) then
     exit;
 
-  lOldBrush := SelectObject(DC, Brush);
-  LazDC.FillRect(Rect);
-  SelectObject(DC, lOldBrush);
-
+  TQtDeviceContext(DC).fillRect(@Rect, TQtBrush(Brush).FHandle);
   Result := True;
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: FillRgn
   Params:  DC: HDC; RegionHnd: HRGN; hbr: HBRUSH
   Returns: Boolean
@@ -2504,19 +2496,15 @@ end;*)
   the inner area of a control, where the child controls are visible. The
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
+function TCDWidgetSet.BackendGetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 begin
-  // ToDO check if the window is native or not and process accordingly
-  // For now just assume it is native
-  Result := BackendGetClientBounds(Handle, ARect);
-  {$ifdef VerboseWinAPI}
-  DebugLn(Format('[WinAPI GetClientBounds] ARect.Left=%d ARect.Top=%d'
-    + ' ARect.Right=%d ARect.Bottom=%d',
-    [ARect.Left, ARect.Top, ARect.Right, ARect.Bottom]));
-  {$endif}
+(*  if Handle = 0 then
+    Exit(False);
+  ARect := TQtWidget(handle).getClientBounds;*)
+  Result := True;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: GetClientRect
   Params: handle:
           Result:
@@ -2525,20 +2513,20 @@ end;
   Returns the client bounds of a control. The client bounds is the rectangle of
   the inner area of a control, where the child controls are visible. The
   coordinates are relative to the control's left and top.
-  Left and Top are always 0,0
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
+function TQtWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 begin
-  {$ifdef VerboseWinAPI}
-  DebugLn('[WinAPI GetClientRect]');
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI GetClientRect]');
   {$endif}
+
   GetClientBounds(Handle, ARect);
   OffsetRect(ARect, -ARect.Left, -ARect.Top);
 
   Result := True;
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: GetClipBox
   Params: dc, lprect
   Returns: Integer
@@ -2728,7 +2716,7 @@ begin
   lpPoint.y := vPoint.y;
 
   Result := True;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetDC
@@ -2739,29 +2727,30 @@ end;
   - Once on app startup with hWnd = 0
   - Twice for every TLabel on the TCustomLabel.CalcSize function
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetDC(hWnd: HWND): HDC;
-var
-  Widget: TQtWidget;
+function TCDWidgetSet.GetDC(hWnd: HWND): HDC;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
+  {$ifdef VerboseWinAPI}
+    DebugLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
   {$endif}
+  Result := 0;
 
-  if QtWidgetSet.IsValidHandle(hWnd) then
+  if hWnd = 0 then Exit;
+
+{  if QtWidgetSet.IsValidHandle(hWnd) then
   begin
     Widget := TQtWidget(hWnd);
     Result := Widget.Context;
     if Result = 0 then
       Result := HDC(QtDefaultContext);
   end else
-    Result := HDC(QtScreenContext);
+    Result := HDC(QtScreenContext);}
 
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
+  {$ifdef VerboseWinAPI}
+    DebugLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
   {$endif}
 end;
 
-function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
+(*function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 var
   QtDC: TQtDeviceContext absolute PaintDC;
@@ -4305,7 +4294,7 @@ begin
   ARect := Bounds(APos.X,APos.Y,R.Right-R.Left,R.Bottom-R.Top);
 
   Result := -1;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetWindowRelativePosition
@@ -4315,19 +4304,19 @@ end;
   returns the current widget Left, Top, relative to the client origin of its
   parent
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
+function TCDWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
 var
   R: TRect;
 begin
-  {$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseWinAPI}
     WriteLn('[WinAPI GetWindowRelativePosition]');
   {$endif}
-  if Handle = 0 then
+{  if Handle = 0 then}
     Exit(False);
-  R := TQtWidget(Handle).getFrameGeometry;
+{  R := TQtWidget(Handle).getFrameGeometry;
   Left := R.Left;
   Top := R.Top;
-  Result := True;
+  Result := True;}
 end;
 
 {------------------------------------------------------------------------------
@@ -4337,27 +4326,22 @@ end;
 
   Returns the current widget Width and Height
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
+function TCDWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseWinAPI}
     WriteLn('[WinAPI GetWindowSize]');
   {$endif}
-  if Handle = 0 then
-    Exit(False);
+  if Handle = 0 then Exit(False);
 
-  with TQtWidget(Handle).getSize do
+{  with TQtWidget(Handle).getSize do
   begin
     Height := cy;
     Width := cx;
-  end;
+  end;}
 
   Result := True;
-
-  // Here we should convert top level lcl window coordinaties to qt coord
-  // Due to borders and etc
-  // ?
 end;
-
+(*
 {------------------------------------------------------------------------------
   Function: GradientFill
   Params: DC - DeviceContext to perform on
@@ -4718,7 +4702,7 @@ var
 begin
   ACritSec:=System.PRTLCriticalSection(CritSection);
   System.LeaveCriticalsection(ACritSec^);
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: LineTo
@@ -4727,31 +4711,28 @@ end;*)
 
 
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
+function TQtWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
   PenPos, LastPos: TPoint;
-  LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseWinAPI}
-    DebugLn('[TCDWidgetSet.LineTo]');
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI LineTo]');
   {$endif}
 
   Result := False;
 
   if not IsValidDC(DC) then Exit;
 
-(*  TQtDeviceContext(DC).getPenPos(@PenPos);
+  TQtDeviceContext(DC).getPenPos(@PenPos);
   LastPos := Point(X, Y);
   if TQtDeviceContext(DC).pen.getCosmetic then
     LastPos := TQtDeviceContext(DC).GetLineLastPixelPos(PenPos, LastPos);
   TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y);
-  MoveToEx(DC, X, Y, nil);*)
-
-  LazDC.LineTo(X, Y);
+  MoveToEx(DC, X, Y, nil);
 
   Result := True;
 end;
-(*
+
 function TQtWidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
 var
   P: PPoint;
@@ -4793,19 +4774,19 @@ begin
   TitleStr := GetUtf8String(lpCaption);
   OkStr := GetUtf8String('Ok');
   Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr);
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: MoveToEx
   Params:  none
   Returns: Nothing
+
+
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
-var
-  LazDC: TLazCanvas absolute DC;
+function TQtWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
-  {$ifdef VerboseWinAPI}
-    DebugLn('[WinAPI MoveToEx]',
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI MoveToEx]',
      ' DC:', dbghex(DC),
      ' X:', dbgs(X),
      ' Y:', dbgs(Y));
@@ -4815,14 +4796,14 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  if (OldPoint <> nil) then OldPoint^ := LazDC.PenPos;
+  if (OldPoint <> nil) then TQtDeviceContext(DC).getPenPos(OldPoint);
 
-  LazDC.PenPos := Types.Point(X, Y);
+  TQtDeviceContext(DC).setPenPos(X, Y);
 
   Result := True;
 end;
 
-(*function TQtWidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
+function TQtWidgetSet.OffsetRgn(RGN: HRGN; nXOffset, nYOffset: Integer): Integer;
 var
   QtRgn: QRegionH;
 begin
@@ -4852,7 +4833,7 @@ begin
   {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
     WriteLn('***** [WinAPI TQtWidgetSet.PeekMessage] missing implementation ');
   {$endif}
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: PolyBezier
@@ -4860,10 +4841,10 @@ end;*)
            Continuous: Boolean
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
+function TQtWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: Boolean): Boolean;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI PolyBezier] DC: ', dbghex(DC));
   {$endif}
   Result := inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
@@ -4874,25 +4855,27 @@ end;
   Params:  DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
+function TQtWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: Boolean): boolean;
 var
-  LazDC: TLazCanvas absolute DC;
-  lPoints: array of TPoint;
-  i: Integer;
+  QtPoints: PQtPoint;
+  i: integer;
 begin
-  {$ifdef VerboseWinAPI}
-  DebugLn(Format(':>[WinAPI Polygon] DC=%s', [dbghex(DC)]));
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI Polygon] DC: ', dbghex(DC));
   {$endif}
-
-  if not IsValidDC(DC) then Exit(False);
-
-  SetLength(lPoints, NumPts);
-  for i := 0 to NumPts-1 do
-    lPoints[i] := Points[i];
-
-  LazDC.Polygon(lPoints);
-  Result := True;
+  Result := IsValidDC(DC);
+  if Result then
+  begin
+    GetMem(QtPoints, NumPts * SizeOf(TQtPoint));
+    for i := 0 to NumPts - 1 do
+      QtPoints[i] := QtPoint(Points[i].x, Points[i].y);
+    if Winding then
+      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtWindingFill)
+    else
+      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtOddEvenFill);
+    FreeMem(QtPoints);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -4900,27 +4883,17 @@ end;
   Params:  DC: HDC; Points: PPoint; NumPts: Integer
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
-var
-  LazDC: TLazCanvas absolute DC;
-  lPoints: array of TPoint;
-  i: Integer;
+function TQtWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
 begin
-  {$ifdef VerboseWinAPI}
-  DebugLn(Format(':>[WinAPI Polygon] DC=%s', [dbghex(DC)]));
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI Polyline] DC: ', dbghex(DC));
   {$endif}
-
-  if not IsValidDC(DC) then Exit(False);
-
-  SetLength(lPoints, NumPts);
-  for i := 0 to NumPts-1 do
-    lPoints[i] := Points[i];
-
-  LazDC.Polyline(lPoints);
-  Result := True;
+  Result := IsValidDC(DC) and (NumPts > 0);
+  if Result then
+    TQtDeviceContext(DC).DrawPolyLine(Points, NumPts);
 end;
 
-(*function TQtWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean;
+function TQtWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam; lParam: LParam): Boolean;
 var
   Widget: TQtWidget absolute Handle;
   Event: QLCLMessageEventH;
@@ -4942,7 +4915,7 @@ begin
     exit;
 
   Result := TQtRegion(RGN).containsPoint(X, Y);
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: Rectangle
@@ -4956,27 +4929,24 @@ function TCDWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   LazDC: TLazCanvas absolute DC;
 begin
+  if DC = 0 then Exit;
+
   {$ifdef VerboseWinAPI}
-  DebugLn(Format(':>[WinAPI Rectangle] DC=%s', [dbghex(DC)]));
+//  DebugLn(Format('[WinAPI Rectangle] DC=%s DC.Width=%d DC.Height=%d', [dbghex(DC), LazDC.Width, LazDC.Height]));
+  DebugLn(Format('[WinAPI Rectangle] DC=%s', [dbghex(DC)]));
+  DebugLn(Format('[WinAPI Rectangle] DC.Width=%d DC.Height=%d', [LazDC.Width, LazDC.Height]));
   {$endif}
 
-  if not IsValidDC(DC) then
-  begin
-    {$ifdef VerboseWinAPI}
-    DebugLn(':<[WinAPI Rectangle] Invalid DC!');
-    {$endif}
-    Exit(False);
-  end;
-
-  // ToDo: Normalize the rectangle, or improve TLazCanvas so that it accepts invalid coordinates
-{  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
-  if IsRectEmpty(R) then Exit(True);}
-
+  //if not IsValidDC(DC) then Exit(False);
+  LazDC.Brush.FPColor := colWhite;
   LazDC.Rectangle(X1, Y1, X2, Y2);
+{  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
+  if IsRectEmpty(R) then Exit(True);
 
+  TQtDeviceContext(DC).drawRect(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1);}
   Result := True;
 end;
-(*
+
 function TQtWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 var
   QtDC: TQtDeviceContext;
@@ -5286,7 +5256,7 @@ begin
       Result := NULLREGION;
     end;
   end;
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: SelectObject
@@ -5295,19 +5265,17 @@ end;*)
 
   Changes one of the GDI objects (Font, Brush, etc) of a Device Context;
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
+function TQtWidgetSet.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 var
   aObject: TObject;
-  lPen: TFPCustomPen absolute AObject;
-  lBrush: TFPCustomBrush absolute AObject;
-  lOrigBrush: TFPCustomBrush;
-  {$ifdef VerboseWinAPI}
-  ObjType: string;
+  {$ifdef VerboseQtWinAPI}
+    ObjType: string;
   {$endif}
 begin
-  {$ifdef VerboseWinAPI}
-    DebugLn(Format(':>[TCDWidgetSet.SelectObject] DC=%s GDIObj=%s',
-      [dbghex(DC), dbghex(GDIObj)]));
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:> [WinAPI SelectObject]',
+    ' DC=', dbghex(DC),
+    ' GDIObj=', dbghex(GDIObj));
   {$endif}
 
   Result := 0;
@@ -5315,7 +5283,7 @@ begin
   if not IsValidDC(DC) then
   begin
     {$ifdef VerboseQtWinAPI}
-      DebugLn(':<[TCDWidgetSet.SelectObject] Invalid DC');
+      WriteLn('Trace:< [WinAPI SelectObject] Invalid DC');
     {$endif}
 
     Exit;
@@ -5324,7 +5292,7 @@ begin
   if not IsValidGDIObject(GDIObj) then
   begin
     {$ifdef VerboseQtWinAPI}
-      DebugLn(':<[TCDWidgetSet.SelectObject] Invalid GDI Object');
+      WriteLn('Trace:< [WinAPI SelectObject] Invalid GDI Object');
     {$endif}
 
     Exit;
@@ -5332,7 +5300,7 @@ begin
 
   aObject := TObject(GDIObj);
 
-(*  if aObject is TQtFont then
+  if aObject is TQtFont then
   begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Font';
@@ -5342,22 +5310,25 @@ begin
 
     TQtDeviceContext(DC).setFont(TQtFont(aObject));
   end
-  else*) if aObject is TFPCustomPen then
+  else if aObject is TQtPen then
   begin
-    {$ifdef VerboseWinAPI}ObjType := 'Pen';{$endif}
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Pen'      ;
+    {$endif}
+    result := HGDIOBJ(TQtDeviceContext(DC).pen);
 
-    Result := HGDIOBJ(TLazCanvas(DC).AssignedPen);
-    TLazCanvas(DC).AssignPenData(lPen); // := doesn't work
-    TLazCanvas(DC).AssignedPen := lPen;
+    TQtDeviceContext(DC).setPen(TQtPen(aObject));
   end
-  else if aObject is TFPCustomBrush then
+  else if aObject is TQtBrush then
   begin
-    {$ifdef VerboseWinAPI}ObjType := 'Brush';{$endif}
+    {$ifdef VerboseQtWinAPI}
+      ObjType := 'Brush';
+    {$endif}
 
-    Result := HGDIOBJ(TLazCanvas(DC).AssignedBrush);
-    TLazCanvas(DC).AssignBrushData(lBrush); // := doesn't work
-    TLazCanvas(DC).AssignedBrush := lBrush;
-  end(*
+    Result := HGDIOBJ(TQtDeviceContext(DC).brush);
+
+    TQtDeviceContext(DC).setBrush(TQtBrush(aObject));
+  end
   else if aObject is TQtImage then
   begin
     {$ifdef VerboseQtWinAPI}
@@ -5373,14 +5344,14 @@ begin
   begin
     Result := HGDIOBJ(TQtDeviceContext(DC).getClipRegion);
     SelectClipRGN(DC, HRGN(GDIObj));
-  end*);
+  end;
 
-  {$ifdef VerboseWinAPI}
-    DebugLn(':<[TCDWidgetSet.SelectObject] Result=', dbghex(Result), ' ObjectType=', ObjType);
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('Trace:< [WinAPI SelectObject] Result=', dbghex(Result), ' ObjectType=', ObjType);
   {$endif}
 end;
 
-(*function TQtWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal;
+function TQtWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal;
   WParam: WParam; LParam: LParam): LResult;
 var
   Widget: TQtWidget absolute HandleWnd;
