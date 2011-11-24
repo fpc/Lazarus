@@ -1040,6 +1040,7 @@ type
 
   TQtAbstractItemView = class(TQtAbstractScrollArea)
   private
+    FAllowGrayed: boolean;
     FSavedEvent: QMouseEventH;
     FSavedEventTimer: QTimerH;
     FSavedEventTimerHook: QTimer_hookH;
@@ -1062,6 +1063,8 @@ type
     procedure setIconSize(const AValue: TSize);
     procedure SetOwnerDrawn(const AValue: Boolean);
   protected
+    function GetItemFlags(AIndex: Integer): QtItemFlags; virtual;
+    procedure SetItemFlags(AIndex: Integer; AValue: QtItemFlags); virtual;
     procedure OwnerDataNeeded(ARect: TRect); virtual;
     procedure PostponedMouseRelease(AEvent: QEventH); virtual;
     procedure PostponedMouseReleaseTimerEvent(); cdecl; virtual;
@@ -1092,9 +1095,11 @@ type
     procedure setSelectionMode(AMode: QAbstractItemViewSelectionMode);
     procedure setSelectionBehavior(ABehavior: QAbstractItemViewSelectionBehavior);
     procedure setWordWrap(const AValue: Boolean); virtual;
+    property AllowGrayed: boolean read FAllowGrayed write FAllowGrayed;
     property Checkable: boolean read FCheckable write FCheckable;
     property HideSelection: Boolean read FHideSelection write FHideSelection;
     property IconSize: TSize read getIconSize write setIconSize;
+    property ItemFlags[AIndex: Integer]: QtItemFlags read GetItemFlags write SetItemFlags;
     property OwnerDrawn: Boolean read GetOwnerDrawn write SetOwnerDrawn;
     property OwnerData: Boolean read FOwnerData write FOwnerData;
     property SyncingItems: Boolean read FSyncingItems write FSyncingItems;
@@ -1133,21 +1138,29 @@ type
 
   TQtListWidget = class(TQtListView)
   private
+    FCheckBoxClicked: Boolean;
     FSavedSelection: TPtrIntArray;
     FCurrentItemChangedHook: QListWidget_hookH;
     FSelectionChangeHook: QListWidget_hookH;
     FItemClickedHook: QListWidget_hookH;
     FItemTextChangedHook: QListWidget_hookH;
     FDontPassSelChange: Boolean;
+    function GetItemChecked(AIndex: Integer): Boolean;
     function getItemCount: Integer;
     function GetItemEnabled(AIndex: Integer): Boolean;
     function GetSelected(AIndex: Integer): Boolean;
+    procedure SetItemChecked(AIndex: Integer; AValue: Boolean);
     procedure setItemCount(const AValue: Integer);
     procedure SetItemEnabled(AIndex: Integer; AValue: Boolean);
     procedure SetSelected(AIndex: Integer; AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     procedure OwnerDataNeeded(ARect: TRect); override;
+    function GetItemFlags(AIndex: Integer): QtItemFlags; override;
+    procedure SetItemFlags(AIndex: Integer; AValue: QtItemFlags); override;
+    function GetItemLastCheckState(AItem: QListWidgetItemH): QtCheckState;
+    procedure SetItemLastCheckState(AItem: QListWidgetItemH);
+    procedure SetNextStateMap(AItem: QListWidgetItemH); virtual;
   public
     FList: TStrings;
   public
@@ -1192,6 +1205,7 @@ type
     procedure ExchangeItems(const AIndex1, AIndex2: Integer);
     procedure MoveItem(const AFromIndex, AToIndex: Integer);
     property ItemCount: Integer read getItemCount write setItemCount;
+    property ItemChecked[AIndex: Integer]: Boolean read GetItemChecked write SetItemChecked;
     property Enabled[AIndex: Integer]: Boolean read GetItemEnabled write SetItemEnabled;
     property Selected[AIndex: Integer]: Boolean read GetSelected write SetSelected;
   end;
@@ -1205,6 +1219,7 @@ type
     procedure SetItemCheckState(AIndex: Integer; AValue: QtCheckState);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    procedure SetNextStateMap(AItem: QListWidgetItemH); override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -1290,11 +1305,13 @@ type
     FSelectionChangedHook: QTreeWidget_hookH;
     function getColCount: Integer;
     function getHeader: TQtHeaderView;
+    function GetItemChecked(AIndex: Integer): Boolean;
     function getItemCount: Integer;
     function getMaxColSize(ACol: Integer): Integer;
     function getMinColSize(ACol: Integer): Integer;
     function getSortEnabled: Boolean;
     procedure setColCount(const AValue: Integer);
+    procedure SetItemChecked(AIndex: Integer; AValue: Boolean);
     procedure setItemCount(const AValue: Integer);
     procedure setMaxColSize(ACol: Integer; const AValue: Integer);
     procedure setMinColSize(ACol: Integer; const AValue: Integer);
@@ -1359,6 +1376,7 @@ type
     {$ENDIF}
     property ColCount: Integer read getColCount write setColCount;
     property Header: TQtHeaderView read getHeader;
+    property ItemChecked[AIndex: Integer]: Boolean read GetItemChecked write SetItemChecked;
     property ItemCount: Integer read getItemCount write setItemCount;
     property MaxColSize[ACol: Integer]: Integer read getMaxColSize write setMaxColSize;
     property MinColSize[ACol: Integer]: Integer read getMinColSize write setMinColSize;
@@ -1719,6 +1737,8 @@ const
 {taRightJustify} QtAlignRight,
 {taCenter      } QtAlignHCenter
   );
+
+  QtCheckStateRole = Ord(QtUserRole) + 1;
 
 implementation
 
@@ -9384,6 +9404,16 @@ begin
   Result := QListWidget_count(QListWidgetH(Widget));
 end;
 
+function TQtListWidget.GetItemChecked(AIndex: Integer): Boolean;
+var
+  AItem: QListWidgetItemH;
+begin
+  Result := False;
+  AItem := getItem(AIndex);
+  if Assigned(AItem) then
+    Result := QListWidgetItem_checkState(AItem) = QtChecked;
+end;
+
 function TQtListWidget.GetItemEnabled(AIndex: Integer): Boolean;
 var
   AItem: QListWidgetItemH;
@@ -9402,6 +9432,21 @@ begin
   AItem := getItem(AIndex);
   if Assigned(AItem) then
     Result := getItemSelected(AItem);
+end;
+
+procedure TQtListWidget.SetItemChecked(AIndex: Integer; AValue: Boolean);
+var
+  AItem: QListWidgetItemH;
+begin
+  AItem := getItem(AIndex);
+  if Assigned(AItem) then
+  begin
+    if AValue then
+      QListWidgetItem_setCheckState(AItem, QtChecked)
+    else
+      QListWidgetItem_setCheckState(AItem, QtUnChecked);
+    SetItemLastCheckState(AItem);
+  end;
 end;
 
 procedure TQtListWidget.setItemCount(const AValue: Integer);
@@ -9449,11 +9494,48 @@ begin
     setItemSelected(getItem(AIndex), AValue);
 end;
 
+function TQtListWidget.GetItemLastCheckState(AItem: QListWidgetItemH
+  ): QtCheckState;
+var
+  v: QVariantH;
+  ok: Boolean;
+begin
+  Result := QtUnChecked;
+  if AItem = nil then
+    exit;
+  v := QVariant_create();
+  QListWidgetItem_data(AItem, v,  QtCheckStateRole);
+  ok := False;
+  if QVariant_isValid(v) then
+    Result := QtCheckState(QVariant_toInt(v, @Ok));
+  QVariant_destroy(v);
+end;
+
+procedure TQtListWidget.SetItemLastCheckState(AItem: QListWidgetItemH);
+var
+  v: QVariantH;
+  AState: QtCheckState;
+begin
+  if AItem = nil then
+    exit;
+  AState := QListWidgetItem_checkState(AItem);
+  v := QVariant_create(Ord(AState));
+  QListWidgetItem_setData(AItem, QtCheckStateRole, v);
+  QVariant_destroy(v);
+end;
+
+procedure TQtListWidget.SetNextStateMap(AItem: QListWidgetItemH);
+begin
+  // does the job only for TQtCheckListBox
+end;
+
 function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
+  FCheckBoxClicked := False;
   SetLength(FSavedSelection, 0);
+  AllowGrayed := False;
   FSavedEvent := nil;
   FSavedEventTimer := nil;
   FSavedEventTimerHook := nil;
@@ -9547,6 +9629,26 @@ begin
       inc(i, RowHeight);
     end;
   end;
+end;
+
+function TQtListWidget.GetItemFlags(AIndex: Integer): QtItemFlags;
+var
+  AItem: QListWidgetItemH;
+begin
+  Result := inherited GetItemFlags(AIndex);
+  AItem := getItem(AIndex);
+  if Assigned(AItem) then
+    Result := QListWidgetItem_flags(AItem);
+end;
+
+procedure TQtListWidget.SetItemFlags(AIndex: Integer; AValue: QtItemFlags);
+var
+  AItem: QListWidgetItemH;
+begin
+  inherited SetItemFlags(AIndex, AValue);
+  AItem := getItem(AIndex);
+  if Assigned(AItem) then
+    QListWidgetItem_setFlags(AItem, AValue);
 end;
 
 procedure TQtListWidget.AttachEvents;
@@ -9705,8 +9807,11 @@ begin
             x := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth,
               nil, Widget);
             if ((MousePos.X > 2) and (MousePos.X < (X + 2))) then
+            begin
+              FCheckBoxClicked := True;
+              SetItemLastCheckState(Item);
               {signalItemClicked() fires !}
-            else
+            end else
               SendEventToParent;
           end else
             SendEventToParent;
@@ -10282,6 +10387,7 @@ function TQtCheckListBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
+  FCheckBoxClicked := False;
   FSavedEvent := nil;
   FSavedEventTimer := nil;
   FSavedEventTimerHook := nil;
@@ -10297,6 +10403,22 @@ begin
   else
     Parent := nil;
   Result := QListWidget_create(Parent);
+end;
+
+procedure TQtCheckListBox.SetNextStateMap(AItem: QListWidgetItemH);
+var
+  ACurrState: QtCheckState;
+begin
+  inherited SetNextStateMap(AItem);
+  if (AItem = nil) or not AllowGrayed then
+    exit;
+  ACurrState := GetItemLastCheckState(AItem);
+
+  case ACurrState of
+    QtUnchecked: ItemCheckState[GetRow(AItem)] := QtPartiallyChecked;
+    QtPartiallyChecked: ItemCheckState[GetRow(AItem)] := QtChecked;
+    QtChecked: ItemCheckState[GetRow(AItem)] := QtUnChecked;
+  end;
 end;
 
 procedure TQtCheckListBox.AttachEvents;
@@ -10362,6 +10484,14 @@ begin
     QApplication_keyboardModifiers());
   SlotMouse(Widget, AMouseEvent);
   QMouseEvent_destroy(AMouseEvent);
+  {$note seem that we have qtbug with tristate listwidget items, so
+   we must handle statemap somehow}
+  //TODO try to fix nextstatemap
+  if FCheckBoxClicked then
+  begin
+    FCheckBoxClicked := False;
+    SetNextStateMap(item);
+  end;
 
   AMouseEvent := QMouseEvent_create(QEventMouseButtonRelease, @APos,
     @AGlobalPos, QtLeftButton, QtLeftButton,
@@ -10409,6 +10539,7 @@ begin
   begin
     AItem := QListWidget_item(QListWidgetH(Widget), AIndex);
     QListWidgetItem_setCheckState(AItem, AValue);
+    SetItemLastCheckState(AItem);
   end;
 end;
 
@@ -10670,6 +10801,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
+  AllowGrayed := False;
   FSelection := TFPList.Create;
   FSavedEvent := nil;
   FSavedEventTimer := nil;
@@ -10885,6 +11017,16 @@ begin
   Result := FHeader;
 end;
 
+function TQtTreeWidget.GetItemChecked(AIndex: Integer): Boolean;
+var
+  AItem: QTreeWidgetItemH;
+begin
+  Result := False;
+  AItem := topLevelItem(AIndex);
+  if AItem <> nil then
+    Result := QTreeWidgetItem_checkState(AItem, 0) = QtChecked;
+end;
+
 function TQtTreeWidget.getItemCount: Integer;
 begin
   Result := QTreeWidget_topLevelItemCount(QTreeWidgetH(Widget));
@@ -10915,6 +11057,20 @@ end;
 procedure TQtTreeWidget.setColCount(const AValue: Integer);
 begin
   QTreeWidget_setColumnCount(QTreeWidgetH(Widget), AValue);
+end;
+
+procedure TQtTreeWidget.SetItemChecked(AIndex: Integer; AValue: Boolean);
+var
+  AItem: QTreeWidgetItemH;
+begin
+  AItem := topLevelItem(AIndex);
+  if AItem <> nil then
+  begin
+    if AValue then
+      QTreeWidgetItem_setCheckState(AItem, 0, QtChecked)
+    else
+      QTreeWidgetItem_setCheckState(AItem, 0, QtUnChecked);
+  end;
 end;
 
 procedure TQtTreeWidget.setItemCount(const AValue: Integer);
@@ -13936,9 +14092,20 @@ begin
   QAbstractItemView_iconSize(QAbstractItemViewH(Widget), @Result);
 end;
 
+function TQtAbstractItemView.GetItemFlags(AIndex: Integer): QtItemFlags;
+begin
+  Result := QtNoItemFlags;
+end;
+
 procedure TQtAbstractItemView.setIconSize(const AValue: TSize);
 begin
   QAbstractItemView_setIconSize(QAbstractItemViewH(Widget), @AValue);
+end;
+
+procedure TQtAbstractItemView.SetItemFlags(AIndex: Integer; AValue: QtItemFlags
+  );
+begin
+  // must be overrided !
 end;
 
 procedure TQtAbstractItemView.SetOwnerDrawn(const AValue: Boolean);

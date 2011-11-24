@@ -96,6 +96,7 @@ begin
     SelMode := QAbstractItemViewSingleSelection;
 
   QtListWidget.setSelectionMode(SelMode);
+  QtListWidget.AllowGrayed := TCustomCheckListBox(AWinControl).AllowGrayed;
 
   QtListWidget.AttachEvents;
 
@@ -127,6 +128,7 @@ begin
   if not WSCheckHandleAllocated(ACheckListBox, 'GetState') then
     Exit;
   QtListWidget := TQtCheckListBox(ACheckListBox.Handle);
+  QtListWidget.AllowGrayed := ACheckListBox.AllowGrayed;
   Result := QtCheckStateToLCLCheckStateMap[QtListWidget.ItemCheckState[AIndex]];
 end;
 
@@ -151,6 +153,7 @@ begin
   if not WSCheckHandleAllocated(ACheckListBox, 'SetState') then
     Exit;
   QtListWidget := TQtCheckListBox(ACheckListBox.Handle);
+  QtListWidget.AllowGrayed := ACheckListBox.AllowGrayed;
   QtListWidget.BeginUpdate;
   QtListWidget.ItemCheckState[AIndex] := LCLCheckStateToQtCheckStateMap[AState];
   QtListWidget.EndUpdate;

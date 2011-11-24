@@ -563,21 +563,52 @@ procedure TQtListStrings.Put(Index: Integer; const S: string);
 begin
   inherited Put(Index, S);
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+  begin
     FOwner.setItemText(Index, S);
+    if FOwner is TQtCheckListBox then
+    begin
+      FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] or QtItemIsUserCheckable;
+      if TQtCheckListBox(FOwner).AllowGrayed then
+        FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] or QtItemIsTristate
+      else
+        FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] and not QtItemIsTristate;
+    end;
+  end;
 end;
 
 procedure TQtListStrings.InsertItem(Index: Integer; const S: string);
 begin
   inherited InsertItem(Index, S);
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+  begin
     FOwner.insertItem(Index, S);
+    if FOwner is TQtCheckListBox then
+    begin
+      FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] or QtItemIsUserCheckable;
+      if TQtCheckListBox(FOwner).AllowGrayed then
+        FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] or QtItemIsTristate
+      else
+        FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] and not QtItemIsTristate;
+    end;
+  end;
 end;
 
 procedure TQtListStrings.InsertItem(Index: Integer; const S: string; O: TObject);
 begin
   inherited InsertItem(Index, S, O);
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+  begin
     FOwner.insertItem(Index, S);
+
+    if FOwner is TQtCheckListBox then
+    begin
+      FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] or QtItemIsUserCheckable;
+      if TQtCheckListBox(FOwner).AllowGrayed then
+        FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] or QtItemIsTristate
+      else
+        FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] and not QtItemIsTristate;
+    end;
+  end;
 end;
 
 constructor TQtListStrings.Create(AWinControl: TWinControl;
@@ -589,11 +620,24 @@ begin
 end;
 
 procedure TQtListStrings.Assign(Source: TPersistent);
+var
+  i: Integer;
 begin
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
   begin
     FOwner.BeginUpdate;
     inherited Assign(Source);
+    if FOwner is TQtCheckListBox then
+    begin
+      for i := 0 to TQtCheckListBox(FOwner).ItemCount - 1 do
+      begin
+        FOwner.ItemFlags[i] := FOwner.ItemFlags[i] or QtItemIsUserCheckable;
+        if TQtCheckListBox(FOwner).AllowGrayed then
+          FOwner.ItemFlags[i] := FOwner.ItemFlags[i] or QtItemIsTristate
+        else
+          FOwner.ItemFlags[i] := FOwner.ItemFlags[i] and not QtItemIsTristate;
+      end;
+    end;
     FOwner.EndUpdate;
   end;
 end;

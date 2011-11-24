@@ -1310,9 +1310,7 @@ class procedure TQtWSCustomListView.ItemSetChecked(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean);
 var
   QtListWidget: TQtListWidget;
-  LWI: QListWidgetItemH;
   QtTreeWidget: TQtTreeWidget;
-  TWI: QTreeWidgetItemH;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetChecked') then
     Exit;
@@ -1323,19 +1321,11 @@ begin
   if IsIconView(ALV) then
   begin
     QtListWidget := TQtListWidget(ALV.Handle);
-    LWI := QtListWidget.getItem(AIndex);
-    if AChecked then
-      QListWidgetItem_setCheckState(LWI, QtChecked)
-    else
-      QListWidgetItem_setCheckState(LWI, QtUnChecked);
+    QtListWidget.ItemChecked[AIndex] := AChecked;
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
-    TWI := QtTreeWidget.topLevelItem(AIndex);
-    if AChecked then
-      QTreeWidgetItem_setCheckState(TWI, 0, QtChecked)
-    else
-      QTreeWidgetItem_setCheckState(TWI, 0, QtUnChecked);
+    QtTreeWidget.ItemChecked[AIndex] := AChecked;
   end;
 end;
 
