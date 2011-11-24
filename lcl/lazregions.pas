@@ -37,9 +37,11 @@ type
     // There is no z-order for the parts, they are all validly inside the region area
     Parts: TFPList; // of TLazRegionPart
     IsSimpleRectRegion: Boolean; // Indicates whether this region has only 1 rectangular part
+    Rect: TRect; // Used for performance increase when IsSimpleRectRegion is on
     constructor Create; virtual;
     destructor Destroy; override;
     procedure AddRectangle(ARect: TRect);
+    procedure SetAsSimpleRectRegion(ARect: TRect);
     function IsPointInRegion(AX, AY: Integer): Boolean; virtual;
   end;
 
@@ -83,6 +85,7 @@ constructor TLazRegion.Create;
 begin
   inherited Create;
   Parts := TFPList.Create;
+  IsSimpleRectRegion := True;
 end;
 
 destructor TLazRegion.Destroy;
@@ -100,6 +103,12 @@ begin
   Parts.Add(lNewRect);
 end;
 
+procedure TLazRegion.SetAsSimpleRectRegion(ARect: TRect);
+begin
+  IsSimpleRectRegion := True;
+  Rect := ARect;
+end;
+
 {
   Checks if a point is inside this region
 }
@@ -107,13 +116,22 @@ function TLazRegion.IsPointInRegion(AX, AY: Integer): Boolean;
 var
   i: Integer;
 begin
-  Result := False;
-  for i := 0 to Parts.Count-1 do
+  if IsSimpleRectRegion then
   begin
-    if TLazRegionPart(Parts.Items[i]).IsPointInPart(AX, AY) then
+    Result := (AX >= Rect.Left) and (AX < Rect.Right) and
+      (AY >= Rect.Top) and (AY < Rect.Bottom);
+  end
+  else
+  begin
+    Result := False;
+    for i := 0 to Parts.Count-1 do
     begin
-      Result := True;
-      Exit;
+      // being inside 1 subpart is enough
+      if TLazRegionPart(Parts.Items[i]).IsPointInPart(AX, AY) then
+      begin
+        Result := True;
+        Exit;
+      end;
     end;
   end;
 end;

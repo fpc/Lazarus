@@ -56,7 +56,7 @@ type
     FAssignedBrush: TFPCustomBrush;
     FAssignedPen: TFPCustomPen;
     FBaseWindowOrg: TPoint;
-    FUseSimpleRectClipping: Boolean;
+    FUseRegionClipping: Boolean;
     FLazClipRegion: TLazRegion;
     FWindowOrg: TPoint; // already in absolute coords with BaseWindowOrg summed up
     function GetAssignedBrush: TFPCustomBrush;
@@ -78,7 +78,8 @@ type
     //
     // SetWindowOrg operations will be relative to BaseWindowOrg, useful for customdrawn wincontrols
     property BaseWindowOrg: TPoint read FBaseWindowOrg write FBaseWindowOrg;
-    property UseSimpleRectClipping: Boolean read FUseSimpleRectClipping write FUseSimpleRectClipping;
+    property ClipRegion: TLazRegion read FLazClipRegion write FLazClipRegion;
+    property UseRegionClipping: Boolean read FUseRegionClipping write FUseRegionClipping; // when false ClipRect is used
     property WindowOrg: TPoint read GetWindowOrg write SetWindowOrg;
   end;
 
@@ -119,13 +120,14 @@ var
 begin
   lx := x + FWindowOrg.X;
   ly := y + FWindowOrg.Y;
+  if Clipping and FUseRegionClipping and (not FLazClipRegion.IsPointInRegion(lx, ly)) then
+    Exit;
   inherited SetColor(lx, ly, AValue);
 end;
 
 constructor TLazCanvas.create(AnImage: TFPCustomImage);
 begin
   inherited Create(AnImage);
-  FUseSimpleRectClipping := True;
 end;
 
 destructor TLazCanvas.destroy;
