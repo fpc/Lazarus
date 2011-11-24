@@ -670,6 +670,7 @@ end;
 destructor TTabControl.Destroy;
 begin
   BeginUpdate;
+  FCanvas.Free;
   FreeThenNil(FTabs);
   FreeThenNil(FImageChangeLink);
   inherited Destroy;
