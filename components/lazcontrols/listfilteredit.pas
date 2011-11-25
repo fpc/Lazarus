@@ -17,15 +17,15 @@ type
 
   TListFilterEdit = class(TCustomControlFilterEdit)
   private
-    fFilteredListbox: TListbox;      // A control showing the (filtered) data.
-    fSelectionList: TStringList;     // Store/restore the old selections here.
+    fFilteredListbox: TCustomListbox; // A control showing the (filtered) data.
+    fSelectionList: TStringList;      // Store/restore the old selections here.
     // Data supplied by caller through Data property.
     fOriginalData: TStringList;
     // Data sorted for viewing.
     fSortedData: TStringList;
     function CompareFNs(AFilename1,AFilename2: string): integer;
     function GetFirstSelected: Integer;
-    procedure SetFilteredListbox(const AValue: TListBox);
+    procedure SetFilteredListbox(const AValue: TCustomListBox);
     procedure UnselectAll;
   protected
     procedure MoveNext; override;
@@ -42,7 +42,7 @@ type
     property SelectionList: TStringList read fSelectionList;
     property Data: TStringList read fOriginalData;
   published
-    property FilteredListbox: TListBox read fFilteredListbox write SetFilteredListbox;
+    property FilteredListbox: TCustomListBox read fFilteredListbox write SetFilteredListbox;
   end;
 
 var
@@ -51,6 +51,8 @@ var
 procedure Register;
 
 implementation
+
+uses CheckLst;
 
 procedure Register;
 begin
@@ -81,7 +83,7 @@ begin
   Result := ListFilterGlyph;
 end;
 
-procedure TListFilterEdit.SetFilteredListbox(const AValue: TListBox);
+procedure TListFilterEdit.SetFilteredListbox(const AValue: TCustomListBox);
 begin
   if fFilteredListbox = AValue then Exit;
   fFilteredListbox:=AValue;
@@ -91,18 +93,33 @@ end;
 
 procedure TListFilterEdit.ApplyFilterCore;
 var
-  i: Integer;
-  FileN: string;
+  i, j: Integer;
+  s: string;
+  clb: TCustomCheckListBox;
+  TempOnItemClick: TCheckListClicked;
 begin
+  clb:=Nil;
+  TempOnItemClick:=Nil;
+  if fFilteredListbox is TCustomCheckListBox then begin
+    clb:=TCustomCheckListBox(fFilteredListbox);
+    if Assigned(clb.OnItemClick) then begin
+      TempOnItemClick:=clb.OnItemClick;
+      clb.OnItemClick:=Nil;            // Disable OnItemClick temporarily.
+    end;
+  end;
   fFilteredListbox.Clear;
   fFilteredListbox.Items.BeginUpdate;
   for i:=0 to fSortedData.Count-1 do begin
-    FileN:=fSortedData[i];
-    fFilteredListbox.Items.AddObject(FileN, fSortedData.Objects[i]);
+    s:=fSortedData[i];
+    j:=fFilteredListbox.Items.AddObject(s, fSortedData.Objects[i]);
     if Assigned(fSelectedPart) then
       fFilteredListbox.Selected[i]:=fSelectedPart=fSortedData.Objects[i];
+    if Assigned(clb) and Assigned(OnCheckItem) then
+      clb.Checked[j]:=OnCheckItem(fSortedData.Objects[i]);
   end;
   fFilteredListbox.Items.EndUpdate;
+  if Assigned(TempOnItemClick) then
+    clb.OnItemClick:=TempOnItemClick;  // Restore OnItemClick.
 end;
 
 function TListFilterEdit.CompareFNs(AFilename1,AFilename2: string): integer;
@@ -117,18 +134,27 @@ procedure TListFilterEdit.SortAndFilter;
 // Copy data from fOriginalData to fSortedData in sorted order
 var
   Origi, i: Integer;
-  FileN: string;
+  s: string;
+  Pass, Done, Checked: Boolean;
 begin
+  Done:=False;
   fSortedData.Clear;
   for Origi:=0 to fOriginalData.Count-1 do begin
-    FileN:=fOriginalData[Origi];
-    if (Filter='') or (Pos(Filter,lowercase(FileN))>0) then begin
+    s:=fOriginalData[Origi];
+    // Filter with event handler if there is one.
+    Pass:=False;
+    if Assigned(OnFilterItem) then
+      Pass:=OnFilterItem(fOriginalData.Objects[Origi], Done);
+    // Filter by item's title text if needed.
+    if not (Pass or Done) then
+      Pass:=(Filter='') or (Pos(Filter,lowercase(s))>0);
+    if Pass then begin
       i:=fSortedData.Count-1;
       while i>=0 do begin
-        if CompareFNs(FileN,fSortedData[i])>=0 then break;
+        if CompareFNs(s,fSortedData[i])>=0 then break;
         dec(i);
       end;
-      fSortedData.InsertObject(i+1,FileN, fOriginalData.Objects[Origi]);
+      fSortedData.InsertObject(i+1, s, fOriginalData.Objects[Origi]);
     end;
   end;
 end;
@@ -138,20 +164,18 @@ var
   i: Integer;
 begin
   fSelectionList.Clear;
-  for i := 0 to fFilteredListbox.Count-1 do begin
+  for i := 0 to fFilteredListbox.Count-1 do
     if fFilteredListbox.Selected[i] then
       fSelectionList.Add(fFilteredListbox.Items[i]);
-  end;
 end;
 
 procedure TListFilterEdit.RestoreSelection;
 var
   i: Integer;
 begin
-  for i := 0 to fFilteredListbox.Count-1 do begin
+  for i := 0 to fFilteredListbox.Count-1 do
     if fSelectionList.IndexOf(fFilteredListbox.Items[i])>0 then
       fFilteredListbox.Selected[i]:=True;
-  end;
 end;
 
 function TListFilterEdit.GetFirstSelected: Integer;

@@ -151,6 +151,14 @@ type
     property Visible;
   end;
 
+  // Called when an item is filtered. Returns true if the item passes the filter.
+  // Done=False means the data should also be filtered by its title string.
+  // Done=True means no other filtering is needed.
+  TFilterItemEvent = function (Item: TObject; out Done: Boolean): Boolean of object;
+
+  // Can be used only for items that have a checkbox. Returns true if checked.
+  TCheckItemEvent = function (Item: TObject): Boolean of object;
+
   { TCustomControlFilterEdit }
 
   // An abstract base class for edit controls which filter data in
@@ -167,6 +175,8 @@ type
     fNeedUpdate: Boolean;
     fIsFirstUpdate: Boolean;
     fSelectedPart: TObject;         // Select this node on next update
+    fOnFilterItem: TFilterItemEvent;
+    fOnCheckItem: TCheckItemEvent;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure Change; override;
     procedure DoEnter; override;
@@ -190,6 +200,8 @@ type
     property SortData: Boolean read fSortData write fSortData;
     property SelectedPart: TObject read fSelectedPart write fSelectedPart;
   published
+    property OnFilterItem: TFilterItemEvent read fOnFilterItem write fOnFilterItem;
+    property OnCheckItem: TCheckItemEvent read fOnCheckItem write fOnCheckItem;
     // TEditButton properties.
     property ButtonWidth;
     property DirectInput;

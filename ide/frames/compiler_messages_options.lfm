@@ -1,63 +1,67 @@
 inherited CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
   Height = 455
-  Width = 626
+  Width = 631
   ClientHeight = 455
-  ClientWidth = 626
-  TabOrder = 0
-  DesignLeft = 287
-  DesignTop = 181
+  ClientWidth = 631
+  DesignLeft = 239
+  DesignTop = 167
   object grpCompilerMessages: TGroupBox[0]
     Left = 0
     Height = 455
     Top = 0
-    Width = 626
+    Width = 631
     Align = alClient
     Caption = 'grpCompilerMessages'
-    ClientHeight = 436
-    ClientWidth = 622
+    ClientHeight = 437
+    ClientWidth = 627
     TabOrder = 0
-    object editMsgFilter: TEdit
-      AnchorSideLeft.Control = lblFilter
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = grpCompilerMessages
-      Left = 56
-      Height = 21
-      Top = 6
-      Width = 558
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
-      OnChange = editMsgFilterChange
-      TabOrder = 0
-      Text = 'editMsgFilter'
-    end
     object chklistCompMsg: TCheckListBox
       AnchorSideLeft.Control = grpCompilerMessages
-      AnchorSideTop.Control = editMsgFilter
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = grpCompilerMessages
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = grpCompilerMessages
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 397
-      Top = 33
-      Width = 610
+      Height = 399
+      Top = 32
+      Width = 615
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 0
       OnItemClick = chklistCompMsgItemClick
       Sorted = True
-      TabOrder = 1
+      TabOrder = 0
     end
     object lblFilter: TLabel
+      AnchorSideTop.Control = editMsgFilter
+      AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 16
-      Top = 8
-      Width = 44
+      Height = 15
+      Top = 9
+      Width = 41
       Caption = 'lblFilter'
       ParentColor = False
+    end
+    object editMsgFilter: TListFilterEdit
+      AnchorSideLeft.Control = lblFilter
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = grpCompilerMessages
+      Left = 53
+      Height = 20
+      Top = 6
+      Width = 534
+      OnCheckItem = CheckItem
+      ButtonWidth = 23
+      NumGlyphs = 0
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      MaxLength = 0
+      ParentFont = False
+      TabOrder = 1
+      FilteredListbox = chklistCompMsg
     end
   end
 end
