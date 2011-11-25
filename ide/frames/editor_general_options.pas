@@ -99,8 +99,10 @@ type
   private
     FDefaultBookmarkImages: TImageList;
     FDialog: TAbstractOptionsEditorDialog;
+    fLoaded: Boolean;
     FPasExtendedKeywordsMode: Boolean;
     FPasStringKeywordMode: TSynPasStringMode;
+    FSaved: Boolean;
     function DefaultBookmarkImages: TImageList;
     procedure SetExtendedKeywordsMode(const AValue: Boolean);
     procedure SetStringKeywordMode(const AValue: TSynPasStringMode);
@@ -189,6 +191,8 @@ procedure TEditorGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions)
 var
   i: integer;
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TEditorOptions do
   begin
     SetComboBoxText(BlockIndentComboBox, IntToStr(BlockIndent), cstCaseInsensitive);
@@ -254,6 +258,8 @@ procedure TEditorGeneralOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions
 var
   i: integer;
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TEditorOptions do
   begin
     // undo

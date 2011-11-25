@@ -23,7 +23,9 @@ type
     procedure FrameClick(Sender: TObject);
     procedure POOutDirButtonClick(Sender: TObject);
   private
+    fLoaded: Boolean;
     FProject: TProject;
+    FSaved: Boolean;
     procedure Enablei18nInfo(Usei18n: boolean);
   public
     function GetTitle: string; override;
@@ -87,6 +89,8 @@ procedure TProjectI18NOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   AFilename: String;
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   FProject := AOptions as TProject;
   with FProject do
   begin
@@ -104,6 +108,8 @@ procedure TProjectI18NOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   AFilename: String;
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TProject do
   begin
     AFilename := ChompPathDelim(TrimFilename(POOutDirEdit.Text));

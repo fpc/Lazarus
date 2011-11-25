@@ -52,6 +52,8 @@ type
     SetPropertyVariablenameEdit: TEdit;
     SetPropertyVariablenameLabel: TLabel;
   private
+    fLoaded: Boolean;
+    FSaved: Boolean;
     { private declarations }
   public
     function GetTitle: String; override;
@@ -113,6 +115,9 @@ end;
 procedure TCodetoolsClassCompletionOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
+
   with AOptions as TCodetoolsOptions do
   begin
     case ClassPartInsertPolicy of
@@ -149,6 +154,8 @@ end;
 procedure TCodetoolsClassCompletionOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TCodetoolsOptions do
   begin
     case ClassPartInsertPolicyRadioGroup.ItemIndex of

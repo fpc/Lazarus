@@ -18,6 +18,9 @@ type
     grpAsmStyle: TRadioGroup;
     grpSyntaxMode: TGroupBox;
     grpSyntaxOptions: TCheckGroup;
+  private
+    fLoaded: Boolean;
+    FSaved: Boolean;
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -115,6 +118,8 @@ end;
 
 procedure TCompilerParsingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TBaseCompilerOptions do
   begin
     if (AssemblerStyle in [1,2,3]) then
@@ -140,6 +145,8 @@ end;
 
 procedure TCompilerParsingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TBaseCompilerOptions do
   begin
     AssemblerStyle := grpAsmStyle.ItemIndex;

@@ -72,6 +72,8 @@ type
     FLayouts: TSimpleWindowLayoutList;
     FLayout: TSimpleWindowLayout;
     FDivider: TSimpleWindowLayoutDividerPos;
+    fLoaded: Boolean;
+    FSaved: Boolean;
     FShowSimpleLayout: boolean;
     function GetPlacementRadioButtons(APlacement: TIDEWindowPlacement): TRadioButton;
     procedure SetLayout(const AValue: TSimpleWindowLayout);
@@ -125,6 +127,8 @@ var
   i: Integer;
   j: Integer;
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TEnvironmentOptions do
   begin
     // window minimizing and hiding
@@ -183,6 +187,8 @@ end;
 
 procedure TWindowOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   SaveLayout;
   IDEWindowCreators.SimpleLayoutStorage.Assign(FLayouts);
 

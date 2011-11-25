@@ -21,7 +21,9 @@ type
     memCustomOptions: TMemo;
     procedure chkCustomConfigFileClick(Sender: TObject);
   private
+    fLoaded: Boolean;
     FOptions: TBaseCompilerOptions;
+    FSaved: Boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     function Check: Boolean; override;
@@ -101,6 +103,8 @@ end;
 
 procedure TCompilerOtherOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   if FOptions = nil then
     FOptions := AOptions as TBaseCompilerOptions;
   with AOptions as TBaseCompilerOptions do
@@ -115,6 +119,8 @@ end;
 
 procedure TCompilerOtherOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TBaseCompilerOptions do
   begin
     DontUseConfigFile := not chkConfigFile.Checked;

@@ -41,6 +41,8 @@ type
   private
     BeautifyCodeOptions: TBeautifyCodeOptions;
     FHighlighter: TPreviewPasSyn;
+    fLoaded: Boolean;
+    FSaved: Boolean;
     procedure UpdateSpaceExample;
     procedure UpdatePreviewSettings;
     procedure WriteBeautifyCodeOptions(Options: TBeautifyCodeOptions);
@@ -172,6 +174,8 @@ end;
 procedure TCodetoolsSpaceOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TCodetoolsOptions do
   begin
     SetAtomCheckBoxes(DoInsertSpaceInFront, DoInsertSpaceInFrontGroupBox);
@@ -182,6 +186,8 @@ end;
 procedure TCodetoolsSpaceOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TCodetoolsOptions do
   begin
     DoInsertSpaceInFront := ReadAtomCheckBoxes(DoInsertSpaceInFrontGroupBox);

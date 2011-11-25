@@ -39,6 +39,8 @@ type
     ICAddSemicolonCheckBox: TCheckBox;
     ICShowHelpCheckBox: TCheckBox;
   private
+    fLoaded: Boolean;
+    FSaved: Boolean;
     { private declarations }
   public
     function GetTitle: String; override;
@@ -73,6 +75,8 @@ end;
 procedure TCodetoolsIndentifierCompletionOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TCodeToolsOptions do
   begin
     ICAddSemicolonCheckBox.Checked := IdentComplAddSemicolon;
@@ -86,6 +90,8 @@ end;
 procedure TCodetoolsIndentifierCompletionOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TCodeToolsOptions do
   begin
     IdentComplAddSemicolon := ICAddSemicolonCheckBox.Checked;

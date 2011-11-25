@@ -116,6 +116,8 @@ type
     procedure ComboBoxOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure tglGlobalChange(Sender: TObject);
   private
+    fLoaded: Boolean;
+    FSaved: Boolean;
     FTempColorSchemeSettings: TColorSchemeFactory;
 
     FDialog: TAbstractOptionsEditorDialog;
@@ -1374,6 +1376,8 @@ var
   i: integer;
   Item: TMenuItem;
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   // here we are sure that Setup has been called for every frame =>
   // we can assign events to every registered preview control
 
@@ -1422,6 +1426,8 @@ procedure TEditorColorOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   i, j: Integer;
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TEditorOptions do
   begin
     UseSyntaxHighlight := UseSyntaxHighlightCheckBox.Down;
