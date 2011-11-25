@@ -9301,11 +9301,6 @@ begin
   // check if symlink and ask user open the real file instead
   ChooseSymlink(AFilename);
 
-  if DirectoryExistsUTF8(AFileName) then begin
-    debugln(['TMainIDE.DoOpenEditorFile skipping directory ',AFileName]);
-    exit(mrCancel);
-  end;
-
   FilenameNoPath:=ExtractFilename(AFilename);
 
   // check to not open directories
@@ -9313,6 +9308,10 @@ begin
   begin
     DebugLn(['TMainIDE.DoOpenEditorFile ignoring special file: ',AFilename]);
     exit;
+  end;
+  if DirectoryExistsUTF8(AFileName) then begin
+    debugln(['TMainIDE.DoOpenEditorFile skipping directory ',AFileName]);
+    exit(mrCancel);
   end;
 
   if ([ofAddToRecent,ofRevert,ofVirtualFile]*Flags=[ofAddToRecent])
