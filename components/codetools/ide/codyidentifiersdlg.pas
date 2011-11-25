@@ -45,7 +45,7 @@ interface
 uses
   Classes, SysUtils, FileProcs, LResources, LCLProc, avl_tree, Forms, Controls,
   Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
-  PackageIntf, LazIDEIntf,
+  PackageIntf, LazIDEIntf, SrcEditorIntf,
   CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
   CodeTree,
   CodyStrConsts, CodyUtils;
@@ -712,8 +712,15 @@ begin
 end;
 
 procedure TCodyIdentifiersDlg.UseIdentifier;
+var
+  SrcEdit: TSourceEditorInterface;
 begin
-  ShowMessage('ToDo: use '+NewIdentifier);
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
+  if SrcEdit=nil then exit;
+  SrcEdit.BeginUndoBlock;
+  SrcEdit.Selection:=NewIdentifier;
+
+  SrcEdit.EndUndoBlock;
 end;
 
 finalization
