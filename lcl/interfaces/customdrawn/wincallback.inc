@@ -193,8 +193,8 @@ Var
 
   // CustomDrawn specific
   lEventReceiver: TWinControl;
-  lEventX: Integer = 0;
-  lEventY: Integer = 0;
+  lEventX: Integer = -1;
+  lEventY: Integer = -1;
 
   function GetIsNativeControl(AWindow: HWND): Boolean;
   begin
@@ -785,6 +785,8 @@ begin
         XPos := SmallInt(Lo(LParam));
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
+        lEventX := XPos;
+        lEventY := YPos;
       end;
     end;
     WM_LBUTTONDOWN:
@@ -825,9 +827,9 @@ begin
         XPos := SmallInt(Lo(LParam));
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
+        lEventX := XPos;
+        lEventY := YPos;
       end;
-      lEventX := SmallInt(Lo(LParam));
-      lEventY := SmallInt(Hi(LParam));
 
       // focus window
       if (Windows.GetFocus <> Window) and
@@ -847,6 +849,8 @@ begin
         XPos := SmallInt(Lo(LParam));
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
+        lEventX := XPos;
+        lEventY := YPos;
       end;
     end;
     WM_MBUTTONDBLCLK:
@@ -859,6 +863,8 @@ begin
         XPos := SmallInt(Lo(LParam));
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
+        lEventX := XPos;
+        lEventY := YPos;
       end;
     end;
     WM_MBUTTONDOWN:
@@ -871,6 +877,8 @@ begin
         XPos := SmallInt(Lo(LParam));
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
+        lEventX := XPos;
+        lEventY := YPos;
       end;
     end;
     WM_MBUTTONUP:
@@ -883,6 +891,8 @@ begin
         XPos := SmallInt(Lo(LParam));
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
+        lEventX := XPos;
+        lEventY := YPos;
       end;
     end;
     WM_MOUSEHOVER:
@@ -931,6 +941,8 @@ begin
         // check if mouse cursor within this window, otherwise send message to window the mouse is hovering over
         P.X := X;
         P.Y := Y;
+        lEventX := X;
+        lEventY := Y;
         TargetWindow := TCDWidgetSet(WidgetSet).WindowFromPoint(P);
         if TargetWindow = HWND(nil) then
           exit;
@@ -1348,11 +1360,18 @@ begin
 
   if (lWinControl <> nil) and (PLMsg^.Msg <> LM_NULL) then
   begin
-    lEventReceiver := FindControlWhichReceivedEvent(
-      TCustomForm(lWinControl),
-      TCDWSCustomForm.BackendGetCDWinControlList(TCustomForm(lWinControl)),
-      lEventX, lEventY);
-    DeliverMessage(lEventReceiver, PLMsg^);
+    if (lEventX < 0) or (lEventY < 0) then
+    begin
+      DeliverMessage(lWinControl, PLMsg^);
+    end
+    else
+    begin
+      lEventReceiver := FindControlWhichReceivedEvent(
+        TCustomForm(lWinControl),
+        TCDWSCustomForm.BackendGetCDWinControlList(TCustomForm(lWinControl)),
+        lEventX, lEventY);
+      DeliverMessage(lEventReceiver, PLMsg^);
+    end;
   end;
 
   // respond to result of LCL handling the message
