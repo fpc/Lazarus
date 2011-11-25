@@ -48,6 +48,8 @@ end else if LCLWidgetType='fpgui' then begin
              +base+'corelib;'
              +base+'corelib/'+fpGUIPlatform;
   IncPath := UnitPath;
+end else if LCLWidgetType='customdrawn' then begin
+  UnitPath := base+'android;'
 end;
 
 // linker options
@@ -110,7 +112,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="384">
+    <Files Count="398">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1898,6 +1900,76 @@ end;"/>
         <Filename Value="customdrawn/customdrawnwsforms_android.inc"/>
         <Type Value="Include"/>
       </Item384>
+      <Item385>
+        <Filename Value="customdrawn/android/android_native_app_glue.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="android_native_app_glue"/>
+      </Item385>
+      <Item386>
+        <Filename Value="customdrawn/android/asset_manager.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="asset_manager"/>
+      </Item386>
+      <Item387>
+        <Filename Value="customdrawn/android/configuration.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="configuration"/>
+      </Item387>
+      <Item388>
+        <Filename Value="customdrawn/android/egl.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="egl"/>
+      </Item388>
+      <Item389>
+        <Filename Value="customdrawn/android/eglplatform.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="eglplatform"/>
+      </Item389>
+      <Item390>
+        <Filename Value="customdrawn/android/gles.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="gles"/>
+      </Item390>
+      <Item391>
+        <Filename Value="customdrawn/android/input.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="input"/>
+      </Item391>
+      <Item392>
+        <Filename Value="customdrawn/android/jni.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="jni"/>
+      </Item392>
+      <Item393>
+        <Filename Value="customdrawn/android/keycodes.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="keycodes"/>
+      </Item393>
+      <Item394>
+        <Filename Value="customdrawn/android/log.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="log"/>
+      </Item394>
+      <Item395>
+        <Filename Value="customdrawn/android/looper.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="looper"/>
+      </Item395>
+      <Item396>
+        <Filename Value="customdrawn/android/native_activity.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="native_activity"/>
+      </Item396>
+      <Item397>
+        <Filename Value="customdrawn/android/native_window.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="native_window"/>
+      </Item397>
+      <Item398>
+        <Filename Value="customdrawn/android/rect.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="rect"/>
+      </Item398>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
