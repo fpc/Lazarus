@@ -62,10 +62,16 @@ end;
 procedure TCompilerMessagesOptionsFrame.chklistCompMsgItemClick(Sender: TObject; Index: integer);
 const
   BoolToMessageState: array[Boolean] of TCompilerMessageState = (msOff, msOn);
+var
+  m: TCompilerMessageConfig;
 begin
-  if (Index >= 0) and (Index < chklistCompMsg.Items.Count) then
-    if not chklistCompMsg.Checked[Index] <> TCompilerMessageConfig(chklistCompMsg.Items.Objects[Index]).DefIgnored then
-      TCompilerMessageConfig(chklistCompMsg.Items.Objects[Index]).State := BoolToMessageState[chklistCompMsg.Checked[Index]];
+  if (Index >= 0) and (Index < chklistCompMsg.Items.Count) then begin
+    m := TCompilerMessageConfig(chklistCompMsg.Items.Objects[Index]);
+    if (m.DefIgnored <> chklistCompMsg.Checked[Index]) then
+      m.State := msDefault
+    else
+      m.State := BoolToMessageState[chklistCompMsg.Checked[Index]];
+  end;
 end;
 
 procedure TCompilerMessagesOptionsFrame.btnBrowseMsgClick(Sender: TObject);
