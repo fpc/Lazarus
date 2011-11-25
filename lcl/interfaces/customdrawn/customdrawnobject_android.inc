@@ -103,7 +103,7 @@ begin
    engine^.height := h;
    engine^.state.angle := 0;
 
-   UpdateControlLazImageAndCanvas(engine^.Image, engine^.Canvas, engine^.width, engine^.height, clfBGRA32);
+   UpdateControlLazImageAndCanvas(engine^.Image, engine^.Canvas, engine^.width, engine^.height, clfRGB16_R5G6B5);
    engine^.Image.GetRawImage(engine^.RawImage);
    engine^.Canvas.Brush.FPColor := colRed;
    engine^.Canvas.Rectangle(0, 0, 100, 100);
@@ -136,7 +136,8 @@ begin
 
    glGenTextures(1, @texture);
    glBindTexture(GL_TEXTURE_2D, texture);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, engine^.width, engine^.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, Pointer(engine^.RawImage.Data));
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, engine^.width, engine^.height, 0,
+     GL_RGBA, GL_UNSIGNED_SHORT_5_6_5, Pointer(engine^.RawImage.Data));
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

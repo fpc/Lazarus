@@ -150,6 +150,9 @@ type
     // don't use a contructor here, it will break compatebility with a record
     procedure Init;
 
+    // 16-bits formats
+    procedure Init_BPP16_R5G6B5(AWidth, AHeight: integer);
+
     // Formats in RGB order
     procedure Init_BPP24_R8G8B8_BIO_TTB(AWidth, AHeight: integer);
     procedure Init_BPP24_R8G8B8_BIO_TTB_UpsideDown(AWidth, AHeight: integer);
@@ -572,6 +575,30 @@ end;
 procedure TRawImageDescription.Init;
 begin
   FillChar(Self, SizeOf(Self), 0);
+end;
+
+procedure TRawImageDescription.Init_BPP16_R5G6B5(AWidth, AHeight: integer);
+begin
+  // setup an artificial ScanLineImage with format RGB 24 bit, 24bit depth format
+  FillChar(Self, SizeOf(Self), 0);
+
+  Format := ricfRGBA;
+  Depth := 16; // used bits per pixel
+  Width := AWidth;
+  Height := AHeight;
+  BitOrder := riboBitsInOrder;
+  ByteOrder := riboLSBFirst;
+  LineOrder := riloTopToBottom;
+  BitsPerPixel := 24; // bits per pixel. can be greater than Depth.
+  LineEnd := rileDWordBoundary;
+  RedPrec := 5; // red precision. bits for red
+  RedShift := 0;
+  GreenPrec := 6;
+  GreenShift := 5; // bitshift. Direction: from least to most significant
+  BluePrec := 5;
+  BlueShift:=11;
+//  AlphaPrec:=0;
+//  MaskBitsPerPixel:=0;
 end;
 
 procedure TRawImageDescription.Init_BPP24_R8G8B8_BIO_TTB(AWidth, AHeight: integer);

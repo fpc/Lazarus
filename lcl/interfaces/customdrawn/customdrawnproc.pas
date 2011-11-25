@@ -15,7 +15,9 @@ uses
   Forms;
 
 type
-  TUpdateLazImageFormat = (clfRGB24,clfRGB24UpsideDown, clfBGR24, clfBGRA32);
+  TUpdateLazImageFormat = (
+    clfRGB16_R5G6B5,
+    clfRGB24, clfRGB24UpsideDown, clfBGR24, clfBGRA32);
 
   TCDWinControl = class
   public
@@ -54,6 +56,7 @@ begin
 
     lRawImage.Init;
     case AFormat of
+    clfRGB16_R5G6B5:  lRawImage.Description.Init_BPP16_R5G6B5(AWidth, AHeight);
     clfRGB24:  lRawImage.Description.Init_BPP24_R8G8B8_BIO_TTB(AWidth, AHeight);
     clfRGB24UpsideDown: lRawImage.Description.Init_BPP24_R8G8B8_BIO_TTB_UpsideDown(AWidth, AHeight);
     clfBGR24:  lRawImage.Description.Init_BPP24_B8G8R8_BIO_TTB(AWidth, AHeight);
