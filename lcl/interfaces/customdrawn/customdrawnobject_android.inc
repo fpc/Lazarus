@@ -17,7 +17,7 @@
  *                                                                           *
  *****************************************************************************
 }
-(*
+
 type
   Psaved_state = ^Tsaved_state;
   Tsaved_state = packed record
@@ -202,7 +202,94 @@ begin
    end
    else
       result := 0;
-end;       *)
+end;
+
+procedure android_main(state: Pandroid_app); cdecl; export;
+var engine: Tengine;
+    ident,events: cint;
+    source: Pandroid_poll_source;
+    val: cint;
+begin
+   // Make sure glue isn't stripped.
+   app_dummy();
+   LOGW('Android main!');
+
+   FillChar(engine, sizeof(Tengine), 0);
+   LOGW('Android main 2!');
+
+   state^.userData := @engine;
+   state^.onAppCmd := @engine_handle_cmd;
+   state^.onInputEvent := @engine_handle_input;
+   engine.app := state;
+   LOGW('Android main 3!');
+
+   if state^.savedState <> nil then
+      // We are starting with a previous saved state; restore from it.
+      engine.state := Psaved_state(state^.savedState)^;
+
+   LOGW('Entering loop');
+   // loop waiting for stuff to do.
+
+   while true do
+   begin// Read all pending events.
+      // If not animating, we will block forever waiting for events.
+      // If animating, we loop until all events are read, then continue
+      // to draw the next frame of animation.
+
+      if engine.animating<>0 then
+         val := 0
+      else
+         val := -1;
+      ident := ALooper_pollAll(val, nil, @events,@source);
+      while (ident >= 0) do
+      begin
+         // Process this event.
+         if (source <> nil) then
+            source^.process(state, source);
+
+         // If a sensor has data, process it now.
+         if (ident = LOOPER_ID_USER) then
+         begin
+            {if (engine.accelerometerSensor != nil) then
+            begin
+               ASensorEvent event;
+               while (ASensorEventQueue_getEvents(engine.sensorEventQueue, &event, 1) > 0) do
+               begin
+                  LOGI("accelerometer: x=%f y=%f z=%f",
+                          [event.acceleration.x, event.acceleration.y,
+                          event.acceleration.z]);
+               end;
+            end;}
+         end;
+
+         // Check if we are exiting.
+         if (state^.destroyRequested <> 0) then
+         begin
+            LOGW('Destroy requested');
+            engine_term_display(@engine);
+            exit;
+         end;
+
+         if engine.animating<>0 then
+            val := 0
+         else
+            val := -1;
+         ident := ALooper_pollAll(val, nil, @events,@source);
+      end;
+
+      if engine.animating <> 0 then
+      begin
+         // Done with events; draw next animation frame.
+         engine.state.angle := engine.state.angle + 0.01;
+         if (engine.state.angle > 1) then
+            engine.state.angle := 0;
+      end;
+
+      // Drawing is throttled to the screen update rate, so there
+      // is no need to do timing here.
+      engine_draw_frame(@engine);
+   end;
+end;
 
 {------------------------------------------------------------------------------
   Method: TCDWidgetSet.Create
@@ -236,102 +323,17 @@ end;
   initialize Windows
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
-{var engine: Tengine;
-    ident,events: cint;
-    source: Pandroid_poll_source;
-    val: cint;}
 begin
    {$ifdef VerboseCDApplication}
    //DebugLn('TCDWidgetSet.AppInit');
    {$endif}
-{   // Make sure glue isn't stripped.
-   app_dummy();
-   LOGW('Android main!');
-
-   FillChar(engine, sizeof(Tengine), 0);
-   LOGW('Android main 2!');
-
-   state^.userData := @engine;
-   state^.onAppCmd := @engine_handle_cmd;
-   state^.onInputEvent := @engine_handle_input;
-   engine.app := state;
-   LOGW('Android main 3!');
-
-   if state^.savedState <> nil then
-      // We are starting with a previous saved state; restore from it.
-      engine.state := Psaved_state(state^.savedState)^;  }
 end;
 
 procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
-{var engine: Tengine;
-    ident,events: cint;
-    source: Pandroid_poll_source;
-    val: cint;}
 begin
   {$ifdef VerboseCDApplication}
   DebugLn('TCDWidgetSet.AppRun');
   {$endif}
-(*  LOGW('Entering loop');
-  // loop waiting for stuff to do.
-
-  while true do
-  begin// Read all pending events.
-  // If not animating, we will block forever waiting for events.
-  // If animating, we loop until all events are read, then continue
-  // to draw the next frame of animation.
-
-  if engine.animating<>0 then
-    val := 0
-  else
-    val := -1;
-  ident := ALooper_pollAll(val, nil, @events,@source);
-  while (ident >= 0) do
-  begin
-    // Process this event.
-    if (source <> nil) then
-       source^.process(state, source);
-
-    // If a sensor has data, process it now.
-    if (ident = LOOPER_ID_USER) then
-    begin
-       {if (engine.accelerometerSensor != nil) then
-       begin
-          ASensorEvent event;
-          while (ASensorEventQueue_getEvents(engine.sensorEventQueue, &event, 1) > 0) do
-          begin
-             LOGI("accelerometer: x=%f y=%f z=%f",
-                     [event.acceleration.x, event.acceleration.y,
-                     event.acceleration.z]);
-          end;
-       end;}
-    end;
-
-    // Check if we are exiting.
-    if (state^.destroyRequested <> 0) then
-    begin
-       LOGW('Destroy requested');
-       engine_term_display(@engine);
-       exit;
-    end;
-
-    if engine.animating<>0 then
-       val := 0
-    else
-       val := -1;
-    ident := ALooper_pollAll(val, nil, @events,@source);
-  end;
-
-  if engine.animating <> 0 then
-  begin
-    // Done with events; draw next animation frame.
-    engine.state.angle := engine.state.angle + 0.01;
-    if (engine.state.angle > 1) then
-       engine.state.angle := 0;
-  end;
-
-  // Drawing is throttled to the screen update rate, so there
-  // is no need to do timing here.
-  engine_draw_frame(@engine);*)
 end;
 
 (*

@@ -34,7 +34,18 @@ uses
   {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, customdrawn_x11proc,{unitxft, Xft font support}{$endif}
-  {$ifdef CD_Android}customdrawn_androidproc,{$endif}
+  {$ifdef CD_Android}
+  customdrawn_androidproc,
+  cmem,
+  gles,
+  egl,
+  native_activity,
+  native_window,
+  looper,
+  input,
+  android_native_app_glue,
+  log,
+  {$endif}
   // Widgetset
   customdrawnproc,
   // LCL
