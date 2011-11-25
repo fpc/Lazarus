@@ -5,7 +5,7 @@ unit ListFilterEdit;
 interface
 
 uses
-  Classes, SysUtils, Forms, LResources, Graphics, Controls, StdCtrls, ComCtrls,
+  Classes, SysUtils, Forms, LResources, Graphics, Controls, StdCtrls,
   LCLProc, EditBtn, FileUtil;
 
 type
