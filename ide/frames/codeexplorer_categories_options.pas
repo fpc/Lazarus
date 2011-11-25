@@ -34,6 +34,9 @@ type
 
   TCodeExplorerCategoriesOptionsFrame = class(TAbstractIDEOptionsEditor)
     CategoriesCheckGroup: TCheckGroup;
+  private
+    fLoaded: Boolean;
+    FSaved: Boolean;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -68,6 +71,8 @@ procedure TCodeExplorerCategoriesOptionsFrame.ReadSettings(
 var
   c: TCodeExplorerCategory;
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TCodeExplorerOptions do
     for c := FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
       CategoriesCheckGroup.Checked[ord(c) - 1] := c in Categories;
@@ -79,6 +84,8 @@ var
   NewCategories: TCodeExplorerCategories;
   c: TCodeExplorerCategory;
 begin
+  if FSaved then exit;
+  FSaved:=true;
   NewCategories:=[];
   for c := FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
     if CategoriesCheckGroup.Checked[ord(c) - 1] then

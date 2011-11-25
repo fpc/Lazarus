@@ -40,6 +40,8 @@ type
     PascalFileExtRadiogroup: TRadioGroup;
     UnitReferencesRadioGroup: TRadioGroup;
   private
+    fLoaded: Boolean;
+    FSaved: Boolean;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -130,6 +132,8 @@ procedure TNamingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   i: integer;
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TEnvironmentOptions do
   begin
     for i := 0 to PascalFileExtRadiogroup.Items.Count-1 do
@@ -146,6 +150,8 @@ end;
 
 procedure TNamingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TEnvironmentOptions do
   begin
     if PascalFileExtRadiogroup.ItemIndex >= 0 then

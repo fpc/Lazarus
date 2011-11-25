@@ -52,6 +52,8 @@ type
   private
     FCategoryCheckBoxes: array [TCEObserverCategory] of TCheckBox;
     FGroupCheckBoxes: array [TCEObserverCategoryGroup] of TCheckBox;
+    fLoaded: Boolean;
+    FSaved: Boolean;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -166,6 +168,8 @@ var
   c: TCEObserverCategory;
   Tmp: TStrings;
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with TCodeExplorerOptions(AOptions) do
   begin
     for c := Low(c) to High(c) do
@@ -191,6 +195,8 @@ var
   NewCategories: TCEObserverCategories;
   c: TCEObserverCategory;
 begin
+  if FSaved then exit;
+  FSaved:=true;
   NewCategories := [];
   for c := Low(c) to high(c) do
     if FCategoryCheckBoxes[c].Checked then

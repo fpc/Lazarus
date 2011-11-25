@@ -45,6 +45,9 @@ type
     TargetCPUComboBox: TComboBox;
     TargetOSComboBox: TComboBox;
     TargetProcessorProcComboBox: TComboBox;
+  private
+    fLoaded: Boolean;
+    FSaved: Boolean;
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -219,6 +222,8 @@ procedure TCompilerCodegenOptionsFrame.ReadSettings(AOptions: TAbstractIDEOption
 var
   i: longint;
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TBaseCompilerOptions do
   begin
     chkSmartLinkUnit.Checked := SmartLinkUnit;
@@ -267,6 +272,8 @@ var
   NewTargetOS: string;
   NewTargetCPU: string;
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TBaseCompilerOptions do
   begin
     SmartLinkUnit := chkSmartLinkUnit.Checked;

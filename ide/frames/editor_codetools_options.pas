@@ -49,6 +49,9 @@ type
     AutoToolTipSymbToolsCheckBox: TCheckBox;
     AutoRemoveEmptyMethodsOnSave: TCheckBox;
     procedure AutoDelayTrackBarChange(Sender: TObject);
+  private
+    fLoaded: Boolean;
+    FSaved: Boolean;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -95,6 +98,8 @@ end;
 
 procedure TEditorCodetoolsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TEditorOptions do
   begin
     AutoCompleteBlockCheckBox.Checked := AutoBlockCompletion;
@@ -113,6 +118,8 @@ end;
 
 procedure TEditorCodetoolsOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TEditorOptions do
   begin
     AutoBlockCompletion := AutoCompleteBlockCheckBox.Checked;

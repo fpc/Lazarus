@@ -35,6 +35,8 @@ type
     procedure FPCDocHTMLBrowseButtonClick(Sender: TObject);
     procedure ViewersListBoxSelectionChange(Sender: TObject; User: boolean);
   private
+    fLoaded: Boolean;
+    FSaved: Boolean;
     ViewersPropertiesGrid: TCustomPropertiesGrid;
     DatabasesPropertiesGrid: TCustomPropertiesGrid;
     procedure FillViewersList;
@@ -195,6 +197,8 @@ end;
 
 procedure THelpGeneralOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as THelpOptions do
   begin
     FPCDocHTMLEdit.Text := FPCDocsHTMLDirectory;
@@ -207,6 +211,8 @@ end;
 
 procedure THelpGeneralOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as THelpOptions do
   begin
     FPCDocsHTMLDirectory := FPCDocHTMLEdit.Text;

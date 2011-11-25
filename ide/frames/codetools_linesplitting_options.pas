@@ -42,6 +42,8 @@ type
   private
     BeautifyCodeOptions: TBeautifyCodeOptions;
     FHighlighter: TPreviewPasSyn;
+    fLoaded: Boolean;
+    FSaved: Boolean;
     procedure UpdateSplitLineExample;
     procedure UpdatePreviewSettings;
     procedure WriteBeautifyCodeOptions(Options: TBeautifyCodeOptions);
@@ -171,6 +173,8 @@ end;
 procedure TCodetoolsLineSplittingOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TCodetoolsOptions do
   begin
     LineLengthEdit.Text := IntToStr(LineLength);
@@ -182,6 +186,8 @@ end;
 procedure TCodetoolsLineSplittingOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TCodetoolsOptions do
   begin
     LineLength := StrToIntDef(LineLengthEdit.Text, 80);
