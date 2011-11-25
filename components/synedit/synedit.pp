@@ -88,12 +88,6 @@ uses
   ;
 
 const
-  DIGIT = ['0'..'9'];
-// ALPHA            = ['A'..'Z', 'a'..'z'];
-// break these up because we exceed the 4 byte limit when combined.
-  ALPHA_UC = ['A'..'Z'];
-  ALPHA_LC = ['a'..'z'];
-
   ScrollBarWidth=0;
 
   // SynDefaultFont is determined in InitSynDefaultFont()
@@ -6081,7 +6075,6 @@ end;
 procedure TCustomSynEdit.ExecuteCommand(Command: TSynEditorCommand;
   const AChar: TUTF8Char; Data: pointer);
 const
-  ALPHANUMERIC = DIGIT + ALPHA_UC + ALPHA_LC;
   SEL_MODE: array[ecNormalSelect..ecLineSelect] of TSynSelectionMode = (
     smNormal, smColumn, smLine);
 var
