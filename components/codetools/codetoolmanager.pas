@@ -1243,9 +1243,9 @@ begin
     Result:=NewFile;
   end;
   if (not FilenameHasSourceExt(Result.Filename)) then begin
-    Result:=FindCodeOfMainUnitHint(Result);
+    NewFile:=FindCodeOfMainUnitHint(Result);
+    if NewFile<>nil then Result:=NewFile;
   end;
-  if Result=nil then exit;
   CreateScanner(Result);
 end;
 
@@ -1306,6 +1306,7 @@ begin
   if Code=nil then exit;
   //DebugLn('TCodeToolManager.FindCodeOfMainUnitHint ',Code.Filename);
   if not FindMainUnitHint(Code.Source,MainUnitFilename) then exit;
+  if MainUnitFilename='' then exit;
   MainUnitFilename:=TrimFilename(MainUnitFilename);
   if (not FilenameIsAbsolute(MainUnitFilename))
   and (not Code.IsVirtual) then
