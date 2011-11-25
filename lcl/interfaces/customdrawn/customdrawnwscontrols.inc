@@ -89,6 +89,7 @@ begin
   lCDWinControl := TCDWinControl.Create;
   lCDWinControl.WinControl := AWinControl;
   lCDWinControl.Region := TLazRegionWithChilds.Create;
+  lCDWinControl.Region.UserData := AWinControl;
   lCDWinControl.Region.SetAsSimpleRectRegion(Bounds(AWinControl.Left, AWinControl.Top, AParams.Width, AParams.Height));
 
   Result := HWND(lCDWinControl);

@@ -191,6 +191,11 @@ Var
   Info: SHRGINFO; // used by SHRecognizeGesture in WM_LBUTTONDOWN
   {$endif}
 
+  // CustomDrawn specific
+  lEventReceiver: TWinControl;
+  lEventX: Integer = 0;
+  lEventY: Integer = 0;
+
   function GetIsNativeControl(AWindow: HWND): Boolean;
   begin
     Result := False;//WndClassName(AWindow) <> ClsName;
@@ -821,6 +826,8 @@ begin
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
       end;
+      lEventX := SmallInt(Lo(LParam));
+      lEventY := SmallInt(Hi(LParam));
 
       // focus window
       if (Windows.GetFocus <> Window) and
@@ -1340,7 +1347,13 @@ begin
     NotifyApplicationUserInput(PLMsg^.Msg);
 
   if (lWinControl <> nil) and (PLMsg^.Msg <> LM_NULL) then
-    DeliverMessage(lWinControl, PLMsg^);
+  begin
+    lEventReceiver := FindControlWhichReceivedEvent(
+      TCustomForm(lWinControl),
+      TCDWSCustomForm.BackendGetCDWinControlList(TCustomForm(lWinControl)),
+      lEventX, lEventY);
+    DeliverMessage(lEventReceiver, PLMsg^);
+  end;
 
   // respond to result of LCL handling the message
   case PLMsg^.Msg of

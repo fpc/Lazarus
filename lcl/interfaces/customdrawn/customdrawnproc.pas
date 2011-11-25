@@ -11,7 +11,8 @@ uses
   // Custom Drawn Canvas
   IntfGraphics, lazcanvas, lazregions,
   //
-  GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc;
+  GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc,
+  Forms;
 
 type
   TUpdateLazImageFormat = (clfRGB24,clfRGB24UpsideDown, clfBGR24, clfBGRA32);
@@ -29,6 +30,8 @@ procedure RenderChildWinControls(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDControlsList: TFPList);
 //procedure RenderWinControl(var AImage: TLazIntfImage;
 //  var ACanvas: TLazCanvas; ACDControlsList: TFPList);
+function FindControlWhichReceivedEvent(AForm: TCustomForm;
+  AControlsList: TFPList; AX, AY: Integer): TWinControl;
 function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
 function IsValidDC(ADC: HDC): Boolean;
 function IsValidGDIObject(AGDIObj: HGDIOBJ): Boolean;
@@ -111,6 +114,29 @@ begin
 
   ACanvas.Clipping := False;
   ACanvas.WindowOrg := Point(0, 0);
+end;
+
+function FindControlWhichReceivedEvent(AForm: TCustomForm;
+  AControlsList: TFPList; AX, AY: Integer): TWinControl;
+var
+  i: Integer;
+  lRegionOfEvent: TLazRegionWithChilds;
+  lCurCDControl: TCDWinControl;
+begin
+  Result := AForm;
+  for i := 0 to AControlsList.Count-1 do
+  begin
+    lCurCDControl := TCDWinControl(AControlsList.Items[i]);
+    if lCurCDControl.Region = nil then Continue;
+    lRegionOfEvent := lCurCDControl.Region.IsPointInRegion(AX, AY);
+    if lRegionOfEvent <> nil then
+    begin
+      if lRegionOfEvent.UserData = nil then
+        raise Exception.Create('[FindControlWhichReceivedEvent] Malformed tree of regions');
+      Result := TWinControl(lRegionOfEvent.UserData);
+      Exit;
+    end;
+  end;
 end;
 
 function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;

@@ -161,6 +161,7 @@ var
   i: Integer;
   lIsInside: Boolean;
 begin
+  Result := nil;
   // First check if it is inside itself
   lIsInside := inherited IsPointInRegion(AX, AY);
 
