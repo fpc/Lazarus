@@ -2017,20 +2017,21 @@
             </li>
           </ul>
         </descr>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.ExtUTF8Out"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.ExtTextOut.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.ExtTextOut.DC">
-        <short></short>
+        <short>The Device Context.</short>
       </element>
       <element name="TWidgetSet.ExtTextOut.X">
-        <short>The reference point, used to position the string.</short>
+        <short>The reference point, used to position the text.</short>
       </element>
       <element name="TWidgetSet.ExtTextOut.Y">
-        <short>The reference point, used to position the string.</short>
+        <short>The reference point, used to position the text.</short>
       </element>
       <element name="TWidgetSet.ExtTextOut.Options">
         <short>Output options.</short>
@@ -2568,38 +2569,13 @@
       <element name="TWidgetSet.GetMapMode">
         <short>Returns the mapping mode of an device context.</short>
         <descr>
-          <p>
-            The mapping mode specifies the correspondence between logical and physical units.
-            Supported modes are:
-          </p>
-          <ul>
-            <li>
-              MM_ANISOTROPIC - arbitrary mapping
-            </li><li>
-              MM_HIENGLISH - 0.001 inch
-            </li><li>
-              MM_HIMETRIC - 0.01 mm
-            </li><li>
-              MM_ISOTROPIC - arbitrary mapping, same for X and Y axis
-            </li><li>
-              MM_LOENGLISH - 0.01 inch
-            </li><li>
-              MM_LOMETRIC - 0.1 mm
-            </li><li>
-              MM_TEXT - 1 device pixel
-            </li><li>
-              MM_TWIPS - 1/20th point (twip, 1/1440 inch)
-            </li>
-          </ul>
-          <p>
-            Positive X is right, except for (an)isotropic mappings.
-            Positive Y is up, except for (an)isotropic and MM_TEXT mappings.
-          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.SetMapMode"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.GetMapMode.Result">
-        <short>The mapping mode, zero on failure.</short>
+        <short>The <link id="TWidgetSet.SetMapMode">mapping mode</link>, zero on failure.</short>
       </element>
       <element name="TWidgetSet.GetMapMode.DC">
         <short>The device context.</short>
@@ -2678,8 +2654,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetProp">
-        <short>Retrieves an property value for a window.
-        </short>
+        <short>Retrieves an property value for a window.</short>
         <descr/>
         <seealso>
           <link id="TWidgetSet.SetProp"/>
@@ -2716,9 +2691,9 @@
         <short>The current Foreground Mixing Mode in an device context.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TWidgetSet.SetROP2"/>
+          <link id="#lcl.LCLType.R2_COPYPEN"/>
         </seealso>
       </element>
       <element name="TWidgetSet.GetROP2.Result">
@@ -2732,25 +2707,27 @@
         <short>Returns all or selected information about a ScrollBar.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.SetScrollInfo"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.GetScrollInfo.Result">
         <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.GetScrollInfo.Handle">
-        <short>The ScrollBar or window handle.</short>
+        <short>The handle of a ScrollBar, or of a window containing scrollbars.</short>
       </element>
       <element name="TWidgetSet.GetScrollInfo.SBStyle">
         <short>The ScrollBar kind.</short>
       </element>
       <element name="TWidgetSet.GetScrollInfo.ScrollInfo">
-        <short>Recieves the values indicated in fMask.</short>
+        <short>Receives the values indicated in fMask.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetStockObject">
         <short>Retrieves a handle to one of the predefined graphic objects.</short>
         <descr>
-          <p>These are the predefined stock objects:
+          <p>These are the predefined (Windows) stock objects:
             [todo: fill in the details?]
           </p>
           <ul>
@@ -4487,59 +4464,63 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SelectClipRGN">
-        <short></short>
+        <short>Sets the ClipRegion of an DeviceContext.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.SelectClipRGN.Result">
-        <short></short>
+        <short>The region kind.</short>
       </element>
       <element name="TWidgetSet.SelectClipRGN.DC">
-        <short></short>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.SelectClipRGN.RGN">
-        <short></short>
+        <short>The region to copy, zero for an empty region.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SelectObject">
-        <short></short>
+        <short>Selects an object into an device context.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.SelectObject.Result">
-        <short/>
+        <short>The previously selected object, for a region the new region type.</short>
       </element>
       <element name="TWidgetSet.SelectObject.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.SelectObject.GDIObj">
-        <short/>
+        <short>The object to select.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SelectPalette">
-        <short/>
-        <descr/>
+        <short>Selects a logical palette into an device context.</short>
+        <descr>A foreground palette becomes the palette of the device, when the
+          application is in the foreground.
+          A background palette instead is mapped to the closest
+          colors in the palette of the physical device.
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.SelectPalette.Result">
-        <short/>
+        <short>The handle of the previously selected palette.</short>
       </element>
       <element name="TWidgetSet.SelectPalette.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.SelectPalette.Palette">
-        <short/>
+        <short>The palette to select.</short>
       </element>
       <element name="TWidgetSet.SelectPalette.ForceBackground">
-        <short/>
+        <short>True to select the background palette.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SendMessage">
-        <short>Sends a message directed to a window to the message pool of the application
-        </short>
+        <short>Sends a message to a window.</short>
         <descr>
           <remark>
             This section was copied from LCLIntf, and may not apply to all platforms.
@@ -4547,21 +4528,15 @@
           <p>
             This method is a thread-safe solution to send messages to windows.[?]
           </p><p>
-            Those messages will be handled in the message loop of the application
+            The messages will be handled in the message loop of the application
             and therefore can be sent from any thread.
-            They are not immediate, but they will awake the main thread if it
+            They are not immediate[?], but they will awake the main thread if it
             is waiting for messages.
           </p><p>
-            These messages can be handled by procedures with the keyword message
-            in the class of a form for example.
-            One would then use the handle of this form as the HandleWnd parameter
-            of this routine.
+            Custom messages should always have an ID higher than the constant LM_USER.
           </p><p>
-            Custom messages should always have an identification number
-            (represented by the parameter Msg) larger then the constant LM_USER.
-          </p><p>
-            The two parameters WParam and LParam will be passed along to the
-            window together with the Msg identification number.
+            The two parameters WParam and LParam will be passed to the
+            message handler, together with the message ID.
           </p><p>
             The difference between SendMessage and PostMessage is the way that
             they return control to the calling thread.
@@ -4576,841 +4551,1132 @@
         </seealso>
       </element>
       <element name="TWidgetSet.SendMessage.Result">
-        <short/>
+        <short>The result depends on the message type.</short>
       </element>
       <element name="TWidgetSet.SendMessage.HandleWnd">
-        <short/>
+        <short>The handle of the target window.</short>
       </element>
       <element name="TWidgetSet.SendMessage.Msg">
-        <short/>
+        <short>The message ID.</short>
       </element>
       <element name="TWidgetSet.SendMessage.WParam">
-        <short/>
+        <short>Message parameter.</short>
       </element>
       <element name="TWidgetSet.SendMessage.LParam">
-        <short/>
+        <short>Message parameter.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetActiveWindow">
-        <short/>
+        <short>Sets focus to the specified window, if the application is on top.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.SetActiveWindow.Result">
-        <short/>
+        <short>The handle of the window that lost the focus, zero on failure.</short>
       </element>
       <element name="TWidgetSet.SetActiveWindow.Handle">
-        <short/>
+        <short>The window handle to activate.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetBkColor">
-        <short/>
+        <short>Sets the current background color of an decice context.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.SetBkColor.Result">
-        <short/>
+        <short>The old background color, CLR_INVALID on failure.</short>
       </element>
       <element name="TWidgetSet.SetBkColor.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.SetBkColor.Color">
-        <short/>
+        <short>The new background color.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetBkMode">
-        <short/>
-        <descr/>
+        <short>Sets the background mix mode (transparency) of an device context.</short>
+        <descr>
+          <p>
+            The background mode specifies the handling of non-solid painting objects,
+            like text, hatched brushes or dotted pens.
+          </p>
+          <ul>
+            <li>
+              OPAQUE mode fills the affected painting area with the background color
+              before painting the foreground.
+            </li><li>
+              TRANSPARENT mode leaves the background unchanged.
+            </li>
+          </ul>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.SetBkMode.Result">
-        <short/>
+        <short>The previous background mode, zero on failure.</short>
       </element>
       <element name="TWidgetSet.SetBkMode.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.SetBkMode.bkMode">
-        <short/>
+        <short>The new background mode.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetCapture">
-        <short/>
-        <descr/>
+        <short>Sets the mouse capture to the specified window.</short>
+        <descr>The window will receive all mouse messages, until capture
+          is released again.
+        </descr>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.ReleaseCapture"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.SetCapture.Result">
-        <short/>
+        <short>The handle of the previous capture window, zero if none.</short>
       </element>
       <element name="TWidgetSet.SetCapture.AHandle">
-        <short></short>
+        <short>The handle of the capturing window.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetCaretPos">
-        <short/>
+        <short>Moves the Caret to the specified coordinates.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.CreateCaret"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.SetCaretPos.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.SetCaretPos.X">
-        <short/>
+        <short>The new caret position.</short>
       </element>
       <element name="TWidgetSet.SetCaretPos.Y">
-        <short/>
+        <short>The new caret position.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetCaretPosEx">
-        <short/>
+        <short>Moves the Caret into a window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.SetCaretPosEx.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.SetCaretPosEx.handle">
-        <short/>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.SetCaretPosEx.X">
-        <short/>
+        <short>The new caret position.</short>
       </element>
       <element name="TWidgetSet.SetCaretPosEx.Y">
-        <short/>
+        <short>The new caret position.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetCursor">
-        <short/>
+        <short>Changes the shape of the mouse cursor.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.Controls.TCursor"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.SetCursor.Result">
-        <short/>
+        <short>The handle of the previous cursor, zero if none.</short>
       </element>
       <element name="TWidgetSet.SetCursor.hCursor">
-        <short/>
+        <short>The new cursor handle.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetCursorPos">
-        <short></short>
+        <short>Changes the position of the mouse cursor.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.SetCursorPos.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.SetCursorPos.X">
-        <short></short>
+        <short>The new screen coordinates.</short>
       </element>
       <element name="TWidgetSet.SetCursorPos.Y">
-        <short></short>
+        <short>The new screen coordinates.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetFocus">
-        <short/>
+        <short>Sets the keyboard input focus to the specified window.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
       <element name="TWidgetSet.SetFocus.Result">
-        <short/>
+        <short>The handle of the previously focused window, zero if none.</short>
       </element>
       <element name="TWidgetSet.SetFocus.hWnd">
-        <short/>
+        <short>The handle of the window receiving the focus.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetForegroundWindow">
-        <short></short>
+        <short>Moves a window in front of all other windows, and activates it.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.SetForegroundWindow.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.SetForegroundWindow.hWnd">
-        <short></short>
+        <short>The window handle.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetMapMode">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Sets the mapping mode of an device context.</short>
+        <descr>
+          <p>
+            The mapping mode specifies the correspondence between logical and physical units.
+            Supported modes are:
+          </p>
+          <ul>
+            <li>
+              MM_ANISOTROPIC - arbitrary mapping
+            </li><li>
+              MM_HIENGLISH - 0.001 inch
+            </li><li>
+              MM_HIMETRIC - 0.01 mm
+            </li><li>
+              MM_ISOTROPIC - arbitrary mapping, same for X and Y axis
+            </li><li>
+              MM_LOENGLISH - 0.01 inch
+            </li><li>
+              MM_LOMETRIC - 0.1 mm
+            </li><li>
+              MM_TEXT - 1 device pixel
+            </li><li>
+              MM_TWIPS - 1/20th point (twip, 1/1440 inch)
+            </li>
+          </ul>
+          <p>
+            Positive X is right, except for (an)isotropic mappings.
+            Positive Y is up, except for (an)isotropic and MM_TEXT mappings.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWidgetSet.GetMapMode"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.SetMapMode.Result">
-        <short/>
+        <short>The old mapping mode.</short>
       </element>
       <element name="TWidgetSet.SetMapMode.DC">
-        <short/>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.SetMapMode.fnMapMode">
-        <short/>
+        <short>The new mapping mode.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetMenu">
-        <short></short>
+        <short>Assigns a menu to a window.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.SetMenu.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.SetMenu.AWindowHandle">
-        <short></short>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.SetMenu.AMenuHandle">
-        <short></short>
+        <short>The menu handle.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetParent">
-        <short></short>
+        <short>Changes the parent of a window.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.SetParent.Result">
-        <short></short>
+        <short>The handle of the previous parent window, zero if none or failure.</short>
       </element>
       <element name="TWidgetSet.SetParent.hWndChild">
-        <short></short>
+        <short>The handle of the child window.</short>
       </element>
       <element name="TWidgetSet.SetParent.hWndParent">
-        <short></short>
+        <short>The handle of the new parent window, zero for the desktop window.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetProp">
-        <short/>
+        <short>Adds a property to a window.</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.GetProp"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.SetProp.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.SetProp.Handle">
-        <short/>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.SetProp.Str">
-        <short/>
+        <short>The property name.</short>
       </element>
       <element name="TWidgetSet.SetProp.Data">
-        <short/>
+        <short>Pointer to the property data.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetROP2">
-        <short></short>
+        <short>Sets the Foreground Mixing Mode in an device context.</short>
         <descr>
+          <p>
+            The raster operation specifies how foreground painting (Brush, Pen)
+            is combined with the current pixels in the DC.
+          </p><p>
+            The operation combines bitwise the distinct red, green and blue values of the pixel colors.
+          </p><p>
+            There exist 16 raster operations, according to the possible combinations
+            of two (boolean) values:
+          </p>
+          <ul>
+            <li>
+              R2_BLACK - all black (0).
+            </li><li>
+              R2_COPYPEN - Pen color.
+            </li><li>
+              R2_MASKNOTPEN - Dst and not Pen.
+            </li><li>
+              R2_MASKPEN - Dst and Pen.
+            </li><li>
+              R2_MASKPENNOT - (not Dst) and Pen.
+            </li><li>
+              R2_MERGENOTPEN - Dst or not Pen.
+            </li><li>
+              R2_MERGEPEN - Dst or Pen.
+            </li><li>
+              R2_MERGEPENNOT - (not Dst) or Pen.
+            </li><li>
+              R2_NOP - Dst (unchanged).
+            </li><li>
+              R2_NOT - not Dst.
+            </li><li>
+              R2_NOTCOPYPEN - not Pen.
+            </li><li>
+              R2_NOTMASKPEN - not (Dst and Pen).
+            </li><li>
+              R2_NOTMERGEPEN - not (Dst or Pen).
+            </li><li>
+              R2_NOTXORPEN - not (Dst xor Pen).
+            </li><li>
+              R2_WHITE - all white.
+            </li><li>
+              R2_XORPEN - Dst xor Pen.
+            </li>
+          </ul>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TWidgetSet.GetROP2"/>
+          <link id="#lcl.LCLType.R2_COPYPEN"/>
         </seealso>
       </element>
       <element name="TWidgetSet.SetROP2.Result">
-        <short></short>
+        <short>The old mode, zero on failure.</short>
       </element>
       <element name="TWidgetSet.SetROP2.DC">
-        <short></short>
+        <short>The device context.</short>
       </element>
       <element name="TWidgetSet.SetROP2.Mode">
-        <short></short>
+        <short>The new mode.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetScrollInfo">
-        <short/>
+        <short>Sets (selected) parameters of a scroll bar.</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.GetScrollInfo"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.SetScrollInfo.Result">
-        <short/>
+        <short>The (new) slider position.</short>
       </element>
       <element name="TWidgetSet.SetScrollInfo.Handle">
-        <short/>
+        <short>The handle of a ScrollBar, or of a window containing scrollbars.</short>
       </element>
       <element name="TWidgetSet.SetScrollInfo.SBStyle">
-        <short/>
+        <short>The ScrollBar kind.</short>
       </element>
       <element name="TWidgetSet.SetScrollInfo.ScrollInfo">
-        <short/>
+        <short>Contains the new values.</short>
       </element>
       <element name="TWidgetSet.SetScrollInfo.Redraw">
-        <short/>
+        <short>True forces a repaint of the ScrollBar.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetStretchBltMode">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Sets the StrechBlt mode for an device context.</short>
+        <descr>
+          <p>
+            The following modes are defined:
+          </p>
+          <ul>
+            <li>
+              BLACKONWHITE - preserves black pixels in a monchrome bitmap.
+            </li><li>
+              COLORONCOLOR
+            </li><li>
+              HALFTONE, STRETCH_HALFTONE
+            </li><li>
+              WHITEONBLACK - preserves white pixels in a monchrome bitmap.
+            </li>
+          </ul>
+        </descr>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetStretchBltMode.Result">
-        <short/>
+        <short>The previous mode, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetStretchBltMode.DC">
-        <short/>
+        <short>The Device Context.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetStretchBltMode.StretchMode">
-        <short/>
+        <short>The new mode.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetSysColors">
-        <short/>
+        <short>Sets the colors for one or more display elements of window borders and desktop.</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.GetSysColor">GetSysColor</link> for the element identifiers.
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetSysColors.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetSysColors.cElements">
-        <short/>
+        <short>The number of colors to change, size of the arrays.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetSysColors.lpaElements">
-        <short/>
+        <short>Array of element identifiers.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetSysColors.lpaRgbValues">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TWidgetSet.SetTextAlign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TWidgetSet.SetTextAlign.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.SetTextAlign.DC">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TWidgetSet.SetTextAlign.Flags">
-        <short/>
+        <short>Array of RGB colors.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetTextCharacterExtra">
-        <short/>
+        <short>Sets extra intercharacter spacing in text output.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetTextCharacterExtra.Result">
-        <short/>
+        <short>The previous spacing, $80000000 on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetTextCharacterExtra._hdc">
-        <short/>
+        <short>The device context.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetTextCharacterExtra.nCharExtra">
-        <short/>
+        <short>The additional spacing, in logical units.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetTextColor">
-        <short/>
+        <short>Sets the text color in an device context.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetTextColor.Result">
-        <short/>
+        <short>The previous color, CLR_INVALID on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetTextColor.DC">
-        <short/>
+        <short>The Device Context.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetTextColor.Color">
-        <short/>
+        <short>The new text color.</short>
       </element>
-
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetViewPortExtEx">
-        <short></short>
+        <short>Sets the extent of the viewport for a device context.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TWidgetSet.SetViewPortOrgEx"/>
+          <link id="TWidgetSet.SetWindowExtEx"/>
         </seealso>
       </element>
       <element name="TWidgetSet.SetViewPortExtEx.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.SetViewPortExtEx.DC">
-        <short></short>
+        <short>The Device Context.</short>
       </element>
       <element name="TWidgetSet.SetViewPortExtEx.XExtent">
-        <short></short>
+        <short>The extent in device units.</short>
       </element>
       <element name="TWidgetSet.SetViewPortExtEx.YExtent">
-        <short></short>
+        <short>The extent in device units.</short>
       </element>
       <element name="TWidgetSet.SetViewPortExtEx.OldSize">
-        <short></short>
+        <short>Receives the previous extent, if not Nil.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetViewPortOrgEx">
-        <short></short>
+        <short>Sets the device origin corresponding to the window origin (0,0) in an device context.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TWidgetSet.SetViewPortExtEx"/>
+          <link id="TWidgetSet.SetWindowOrgEx"/>
         </seealso>
       </element>
       <element name="TWidgetSet.SetViewPortOrgEx.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.SetViewPortOrgEx.DC">
-        <short></short>
+        <short>The Device Context.</short>
       </element>
       <element name="TWidgetSet.SetViewPortOrgEx.NewX">
-        <short></short>
+        <short>The coordinates in device units.</short>
       </element>
       <element name="TWidgetSet.SetViewPortOrgEx.NewY">
-        <short></short>
+        <short>The coordinates in device units.</short>
       </element>
       <element name="TWidgetSet.SetViewPortOrgEx.OldPoint">
-        <short></short>
+        <short>Receives the previous origin, if not Nil.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetWindowExtEx">
-        <short></short>
+        <short>Sets the extent of the window for an device context.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TWidgetSet.SetViewPortExtEx"/>
+          <link id="TWidgetSet.SetWindowOrgEx"/>
         </seealso>
       </element>
       <element name="TWidgetSet.SetWindowExtEx.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.SetWindowExtEx.DC">
-        <short></short>
+        <short>The Device Context.</short>
       </element>
       <element name="TWidgetSet.SetWindowExtEx.XExtent">
-        <short></short>
+        <short>The extent in logical units.</short>
       </element>
       <element name="TWidgetSet.SetWindowExtEx.YExtent">
-        <short></short>
+        <short>The extent in logical units.</short>
       </element>
       <element name="TWidgetSet.SetWindowExtEx.OldSize">
-        <short></short>
+        <short>Receives the previous extent, if not Nil.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetWindowLong">
-        <short/>
+        <short>Sets an attribute of a window.</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.GetWindowLong"/>
+        </seealso>
       </element>
       <element name="TWidgetSet.SetWindowLong.Result">
-        <short/>
+        <short>The previous value, zero on failure.</short>
       </element>
       <element name="TWidgetSet.SetWindowLong.Handle">
-        <short/>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.SetWindowLong.Idx">
-        <short/>
+        <short>The attribute offset.</short>
       </element>
       <element name="TWidgetSet.SetWindowLong.NewLong">
-        <short/>
+        <short>The new value.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetWindowOrgEx">
-        <short/>
+        <short>Specifies which window point maps to the viewport origin (0,0).</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetWindowOrgEx.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowOrgEx.dc">
-        <short/>
+        <short>The device context.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowOrgEx.NewX">
-        <short/>
+        <short>The origin in logical units.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowOrgEx.NewY">
-        <short/>
+        <short>The origin in logical units.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowOrgEx.OldPoint">
-        <short/>
+        <short>Receives the previous origin, if not Nil.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetWindowPos">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Changes the size, position, and Z order of a window.</short>
+        <descr>
+          <p>
+            The Z order can be changed to just behind another window, or:
+          </p>
+          <ul>
+            <li>
+              HWND_BOTTOM - behind all other windows.
+            </li><li>
+              HWND_NOTOPMOST - behind all topmost windows.
+            </li><li>
+              HWND_TOP - above all other windows.
+            </li><li>
+              HWND_TOPMOST - above all other non-topmost windows.
+            </li>
+          </ul>
+          <p>
+            The general placement can be a combination of:
+          </p>
+          <ul>
+            <li>
+              SWP_ASYNCWINDOWPOS - don't block the calling thread
+                when the window is owned by an different thread.
+            </li><li>
+              SWP_DEFERERASE - suppress WM_SYNCPAINT message.
+            </li><li>
+              SWP_DRAWFRAME - draw the window frame.
+            </li><li>
+              SWP_FRAMECHANGED - apply new frame style.
+            </li><li>
+              SWP_HIDEWINDOW - hides the window.
+            </li><li>
+              SWP_NOACTIVATE - don't activate the window.
+            </li><li>
+              SWP_NOCOPYBITS - invalidate the entire client area.
+                If not set, the window content moves together with the window.
+            </li><li>
+              SWP_NOMOVE - the position is not changed (ignores X, Y).
+            </li><li>
+              SWP_NOREPOSITION,
+              SWP_NOOWNERZORDER - the Z order of the owner window is unchanged.
+            </li><li>
+              SWP_NOREDRAW - nothing is redrawn automatically,
+                not even uncovered parts of the window.
+            </li><li>
+            </li><li>
+              SWP_NOSENDCHANGING - no WM_WINDOWPOSCHANGING message.
+            </li><li>
+              SWP_NOSIZE - the size is unchanged (ignores cx, cy).
+            </li><li>
+              SWP_NOZORDER - the Z order is unchanged (ignores hWndInsertAfter)
+            </li><li>
+              SWP_SHOWWINDOW - unhide the window.
+            </li>
+          </ul>
+          <p>
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.SetWindowPos.Result">
-        <short/>
+        <short>Zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowPos.hWnd">
-        <short/>
+        <short>The window handle.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowPos.hWndInsertAfter">
-        <short/>
+        <short>The window handle or Z order position.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowPos.X">
-        <short/>
+        <short>The window origin.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowPos.Y">
-        <short/>
+        <short>The window origin.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowPos.cx">
-        <short/>
+        <short>The window extent.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowPos.cy">
-        <short/>
+        <short>The window extent.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.SetWindowPos.uFlags">
-        <short/>
+        <short>General placement flags.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetWindowRgn">
-        <short></short>
+        <short>Restricts the visible part of the entire window.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.SetWindowRgn.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.SetWindowRgn.hWnd">
-        <short></short>
+        <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.SetWindowRgn.hRgn">
-        <short></short>
+        <short>The window region handle.</short>
       </element>
       <element name="TWidgetSet.SetWindowRgn.bRedraw">
-        <short></short>
+        <short>True forces a repaint of the window.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ShowCaret">
-        <short/>
+        <short>Shows the Caret (text cursor).</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.HideCaret"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.ShowCaret.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ShowCaret.hWnd">
-        <short/>
+        <short>The window handle.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ShowScrollBar">
-        <short/>
+        <short>Shows or hides a ScrollBar.</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.EnableScrollBar"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.ShowScrollBar.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ShowScrollBar.Handle">
-        <short/>
+        <short>The window or ScrollBar handle.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ShowScrollBar.wBar">
-        <short/>
+        <short>The scrollbar type (SB_CTL, SB_HORZ...).</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ShowScrollBar.bShow">
-        <short/>
+        <short>True shows, False hides the ScrollBar.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ShowWindow">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Shows a window in an specific state.</short>
+        <descr>
+          <p>
+            These are available options:
+          </p>
+          <ul>
+            <li>
+              sw_forceminimize
+            </li><li>
+              SW_HIDE - hides the window.
+            </li><li>
+              SW_MAXIMIZE - maximizes the window.
+            </li><li>
+              SW_MINIMIZE - minimizes the window.
+            </li><li>
+              SW_RESTORE - activates and restores from minimized/maximized to normal state.
+            </li><li>
+              SW_SHOW - activates and shows the window.
+            </li><li>
+              SW_SHOWMAXIMIZED - activates and maximizes the window.
+            </li><li>
+              SW_SHOWMINIMIZED - activates and minimizes the window.
+            </li><li>
+              SW_SHOWMINNOACTIVE - minimizes the window.
+            </li><li>
+              SW_SHOWNA - shows the window.
+            </li><li>
+              SW_SHOWNOACTIVATE - shows the window as designed.
+            </li><li>
+              SW_SHOWNORMAL - activates and shows the window as designed.
+            </li>
+          </ul>
+        </descr>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.ShowWindow.Result">
-        <short/>
+        <short>True when the window was already visible.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ShowWindow.hWnd">
-        <short/>
+        <short>The window handle.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ShowWindow.nCmdShow">
-        <short/>
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.Sleep">
-        <short/>
+        <short>Suspends the current thread for a certain time interval.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.Sleep.dwMilliseconds">
-        <short/>
+        <short>The time interval in milliseconds.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.StretchBlt">
-        <short/>
+        <short>Copies a rectangular region into an device context,
+          shrinking or stretching it as required.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.StretchMaskBlt"/>
+          <link id="TWidgetSet.SetStretchBltMode"/>
+          <link id="TWidgetSet.BitBlt"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.StretchBlt.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchBlt.DestDC">
-        <short/>
+        <short>The destination device context.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchBlt.X">
-        <short/>
+        <short>The destination origin.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchBlt.Y">
-        <short/>
+        <short>The destination origin.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchBlt.Width">
-        <short/>
+        <short>The destination extent.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchBlt.Height">
-        <short/>
+        <short>The destination extent.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchBlt.SrcDC">
-        <short/>
+        <short>The source device context.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchBlt.XSrc">
-        <short/>
+        <short>The source origin.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchBlt.YSrc">
-        <short/>
+        <short>The source origin.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchBlt.SrcWidth">
-        <short/>
+        <short>The source extent.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchBlt.SrcHeight">
-        <short/>
+        <short>The source extent.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchBlt.Rop">
-        <short/>
+        <short>The raster opcode (see BitBlt).</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.StretchDIBits">
-        <short/>
+        <short>Copies a rectangular region from a DIB into an device context,
+          shrinking or stretching it as required.
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.StretchMaskBlt"/>
+          <link id="TWidgetSet.StretchBlt"/>
+          <link id="TWidgetSet.StretchMaskBlt"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.Result">
-        <short/>
+        <short></short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.DC">
-        <short/>
+        <short>The destination Device Context.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.DestX">
-        <short/>
+        <short>The destination origin.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.DestY">
-        <short/>
+        <short>The destination origin.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.DestWidth">
-        <short/>
+        <short>The destination extent.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.DestHeight">
-        <short/>
+        <short>The destination extent.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.SrcX">
-        <short/>
+        <short>The source origin.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.SrcY">
-        <short/>
+        <short>The source origin.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.SrcWidth">
-        <short/>
+        <short>The source extent.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.SrcHeight">
-        <short/>
+        <short>The source extent.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.Bits">
-        <short/>
+        <short>The device independent bitmap bits.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.BitsInfo">
-        <short/>
+        <short>The bitmap info structure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.Usage">
-        <short/>
+        <short>The color mode.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.StretchDIBits.Rop">
-        <short/>
+        <short>The raster operation.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SystemParametersInfo">
-        <short></short>
+        <short>Retrieves or sets one of the system-wide parameters.</short>
         <descr>
+          <p>
+            Most of the parameters are Windows platform specific.
+          </p><p>
+            SPI_GETACCESSTIMEOUT
+            SPI_GETFILTERKEYS
+            SPI_GETFOCUSBORDERHEIGHT
+            SPI_GETFOCUSBORDERWIDTH
+            SPI_GETHIGHCONTRAST
+            SPI_GETMOUSECLICKLOCK
+            SPI_GETMOUSECLICKLOCKTIME
+            SPI_GETMOUSEKEYS
+            SPI_GETMOUSESONAR
+            SPI_GETMOUSEVANISH
+            SPI_GETSCREENREADER
+            SPI_GETSERIALKEYS
+            SPI_GETSHOWSOUNDS
+            SPI_GETSOUNDSENTRY
+            SPI_GETSTICKYKEYS
+            SPI_GETTOGGLEKEYS
+
+            SPI_SETACCESSTIMEOUT
+            SPI_SETFILTERKEYS
+            SPI_SETFOCUSBORDERHEIGHT
+            SPI_SETFOCUSBORDERWIDTH
+            SPI_SETHIGHCONTRAST
+            SPI_SETMOUSECLICKLOCK
+            SPI_SETMOUSECLICKLOCKTIME
+            SPI_SETMOUSEKEYS
+            SPI_SETMOUSESONAR
+            SPI_SETMOUSEVANISH
+            SPI_SETSCREENREADER
+            SPI_SETSERIALKEYS
+            SPI_SETSHOWSOUNDS
+            SPI_SETSOUNDSENTRY
+            SPI_SETSTICKYKEYS
+            SPI_SETTOGGLEKEYS
+          </p><p>
+            SPI_GETDESKWALLPAPER
+            SPI_GETDROPSHADOW
+            SPI_GETFLATMENU
+            SPI_GETFONTSMOOTHING
+            SPI_GETFONTSMOOTHINGCONTRAST
+            SPI_GETFONTSMOOTHINGTYPE
+            SPI_GETWORKAREA
+
+            SPI_SETCURSORS
+            SPI_SETDESKPATTERN
+            SPI_SETDESKWALLPAPER
+            SPI_SETDROPSHADOW
+            SPI_SETFLATMENU
+            SPI_SETFONTSMOOTHING
+            SPI_SETFONTSMOOTHINGCONTRAST
+            SPI_SETFONTSMOOTHINGTYPE
+            SPI_SETWORKAREA
+          </p><p>
+            SPI_GETICONMETRICS
+            SPI_GETICONTITLELOGFONT
+            SPI_GETICONTITLEWRAP
+            SPI_ICONHORIZONTALSPACING
+            SPI_ICONVERTICALSPACING
+
+            SPI_SETICONMETRICS
+            SPI_SETICONS
+            SPI_SETICONTITLELOGFONT
+            SPI_SETICONTITLEWRAP
+          </p><p>
+            SPI_GETBEEP
+            SPI_GETBLOCKSENDINPUTRESETS
+            SPI_GETDEFAULTINPUTLANG
+            SPI_GETKEYBOARDCUES
+            SPI_GETKEYBOARDDELAY
+            SPI_GETKEYBOARDPREF
+            SPI_GETKEYBOARDSPEED
+            SPI_GETMOUSE
+            SPI_GETMOUSEHOVERHEIGHT
+            SPI_GETMOUSEHOVERTIME
+            SPI_GETMOUSEHOVERWIDTH
+            SPI_GETMOUSESPEED
+            SPI_GETMOUSETRAILS
+            SPI_GETSNAPTODEFBUTTON
+            SPI_GETWHEELSCROLLLINES
+
+            SPI_SETBEEP
+            SPI_SETBLOCKSENDINPUTRESETS
+            SPI_SETDEFAULTINPUTLANG
+            SPI_SETDOUBLECLICKTIME
+            SPI_SETDOUBLECLKHEIGHT
+            SPI_SETDOUBLECLKWIDTH
+            SPI_SETKEYBOARDCUES
+            SPI_SETKEYBOARDDELAY
+            SPI_SETKEYBOARDPREF
+            SPI_SETKEYBOARDSPEED
+            SPI_SETLANGTOGGLE
+            SPI_SETMOUSE
+            SPI_SETMOUSEBUTTONSWAP
+            SPI_SETMOUSEHOVERHEIGHT
+            SPI_SETMOUSEHOVERTIME
+            SPI_SETMOUSEHOVERWIDTH
+            SPI_SETMOUSESPEED
+            SPI_SETMOUSETRAILS
+            SPI_SETSNAPTODEFBUTTON
+            SPI_SETWHEELSCROLLLINES
+          </p><p>
+            SPI_GETMENUDROPALIGNMENT
+            SPI_GETMENUFADE
+            SPI_GETMENUSHOWDELAY
+
+            SPI_SETMENUDROPALIGNMENT
+            SPI_SETMENUFADE
+            SPI_SETMENUSHOWDELAY
+          </p><p>
+            SPI_GETLOWPOWERACTIVE
+            SPI_GETLOWPOWERTIMEOUT
+            SPI_GETPOWEROFFACTIVE
+            SPI_GETPOWEROFFTIMEOUT
+
+            SPI_SETLOWPOWERACTIVE
+            SPI_SETLOWPOWERTIMEOUT
+            SPI_SETPOWEROFFACTIVE
+            SPI_SETPOWEROFFTIMEOUT
+          </p><p>
+            SPI_GETSCREENSAVEACTIVE
+            SPI_GETSCREENSAVERRUNNING
+            SPI_GETSCREENSAVETIMEOUT
+
+            SPI_SETSCREENSAVEACTIVE
+            SPI_SETSCREENSAVERRUNNING
+            SPI_SETSCREENSAVETIMEOUT
+          </p><p>
+            SPI_GETCOMBOBOXANIMATION
+            SPI_GETCURSORSHADOW
+            SPI_GETGRADIENTCAPTIONS
+            SPI_GETHOTTRACKING
+            SPI_GETLISTBOXSMOOTHSCROLLING
+            SPI_GETMENUANIMATION
+            SPI_GETMENUUNDERLINES
+            SPI_GETSELECTIONFADE
+            SPI_GETTOOLTIPANIMATION
+            SPI_GETTOOLTIPFADE
+            SPI_GETUIEFFECTS
+
+            SPI_SETCOMBOBOXANIMATION
+            SPI_SETCURSORSHADOW
+            SPI_SETGRADIENTCAPTIONS
+            SPI_SETHOTTRACKING
+            SPI_SETLISTBOXSMOOTHSCROLLING
+            SPI_SETMENUANIMATION
+            SPI_SETMENUUNDERLINES
+            SPI_SETSELECTIONFADE
+            SPI_SETTOOLTIPANIMATION
+            SPI_SETTOOLTIPFADE
+            SPI_SETUIEFFECTS
+          </p><p>
+            SPI_GETACTIVEWINDOWTRACKING
+            SPI_GETACTIVEWNDTRKZORDER
+            SPI_GETACTIVEWNDTRKTIMEOUT
+            SPI_GETANIMATION
+            SPI_GETBORDER
+            SPI_GETCARETWIDTH
+            SPI_GETDRAGFULLWINDOWS
+            SPI_GETFOREGROUNDFLASHCOUNT
+            SPI_GETFOREGROUNDLOCKTIMEOUT
+            SPI_GETMINIMIZEDMETRICS
+            SPI_GETNONCLIENTMETRICS
+            SPI_GETSHOWIMEUI
+
+            SPI_SETACTIVEWINDOWTRACKING
+            SPI_SETACTIVEWNDTRKZORDER
+            SPI_SETACTIVEWNDTRKTIMEOUT
+            SPI_SETANIMATION
+            SPI_SETBORDER
+            SPI_SETCARETWIDTH
+            SPI_SETDRAGFULLWINDOWS
+            SPI_SETDRAGWIDTH
+            SPI_SETDRAGWIDTH
+            SPI_SETFOREGROUNDFLASHCOUNT
+            SPI_SETFOREGROUNDLOCKTIMEOUT
+            SPI_SETMINIMIZEDMETRICS
+            SPI_SETNONCLIENTMETRICS
+            SPI_SETSHOWIMEUI
+          </p><p>
+            SPI_GETWINDOWSEXTENSION
+            SPI_SETPENWINDOWS
+          </p><p>
+            Additional actions (zero for none):<br/>
+            spif_updateinifile
+            spif_sendchange
+            spif_sendwindowinichange
+          </p>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.SystemParametersInfo.Result">
-        <short></short>
+        <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.SystemParametersInfo.uiAction">
-        <short></short>
+        <short>The parameter and action.</short>
       </element>
       <element name="TWidgetSet.SystemParametersInfo.uiParam">
-        <short></short>
+        <short>Depends on uiAction.</short>
       </element>
       <element name="TWidgetSet.SystemParametersInfo.pvParam">
-        <short></short>
+        <short>Depends on uiAction.</short>
       </element>
       <element name="TWidgetSet.SystemParametersInfo.fWinIni">
-        <short></short>
+        <short>Additional actions.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.TextOut">
-        <short/>
+        <short>Draws an string without formatting (single line).</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.ExtTextOut"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.TextOut.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.TextOut.DC">
-        <short/>
+        <short>The Device Context.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.TextOut.X">
-        <short/>
+        <short>The text origin in logical coordinates.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.TextOut.Y">
-        <short/>
+        <short>The text origin in logical coordinates.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.TextOut.Str">
-        <short/>
+        <short>The text.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.TextOut.Count">
-        <short/>
+        <short>The number of (Wide)Chars in the string.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.UpdateWindow">
-        <short/>
+        <short>Forces an immediate repaint of a window, if required.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.UpdateWindow.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.UpdateWindow.Handle">
-        <short/>
+        <short>The window handle.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.WindowFromPoint">
-        <short/>
+        <short>Finds the window containing the specified point.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.WindowFromPoint.Result">
-        <short/>
+        <short>The window handle, zero on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.WindowFromPoint.Point">
-        <short/>
+        <short>The screen coordinates.</short>
       </element>
 
       <!-- function Visibility: public -->
@@ -5852,63 +6118,56 @@
         <short></short>
       </element>
       <!-- function Visibility: public -->
-      <element name="TWidgetSet.ExtUTF8Out">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TWidgetSet.ExtUTF8Out" link="TWidgetSet.ExtTextOut">
+        <short>Draws an UTF-8 string without formatting (single line).</short>
+        <descr>The intercharacter spacing array (Dx) must have one element for
+          every Char (byte) in the UTF-8 text.
+          For multi-byte character codes the values of all Dx elements are summed up.
+        </descr>
+        <seealso>
+          <link id="TWidgetSet.ExtTextOut"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.ExtUTF8Out.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtUTF8Out.DC">
-        <short/>
+        <short>The Device Context.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtUTF8Out.X">
-        <short/>
+        <short>The reference point, used to position the text.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtUTF8Out.Y">
-        <short/>
+        <short>The reference point, used to position the text.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtUTF8Out.Options">
-        <short/>
+        <short>Output options.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtUTF8Out.Rect">
-        <short/>
+        <short>The bounding rectangle.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtUTF8Out.Str">
-        <short/>
+        <short>The text.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtUTF8Out.Count">
-        <short/>
+        <short>The number of Chars in the string.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.ExtUTF8Out.Dx">
-        <short/>
+        <short>Pointer to an array of intercharacter spacing values, can be Nil.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.FontCanUTF8">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>True if font recognizes Unicode UTF8 encoding.</short>
+        <descr>[How is a font involved in UTF-8 encoding?]</descr>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.FontCanUTF8.Result">
-        <short/>
+        <short>True when Unicode is supported.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.FontCanUTF8.Font">
-        <short/>
+        <short>The font handle.</short>
       </element>
+      <!-- function Visibility: public -->
       <element name="TWidgetSet.FontIsMonoSpace">
         <short></short>
         <descr>

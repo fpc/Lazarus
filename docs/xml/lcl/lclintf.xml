@@ -1777,7 +1777,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
         </short>
       </element>
       <element name="GetScrollInfo.ScrollInfo">
-        <short>Recieves the values indicated in fMask.</short>
+        <short>Receives the values indicated in fMask.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="GetStockObject">
@@ -2701,7 +2701,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="PostMessage">
-        <short>Sends a message directed to a window to the message pool of the application</short>
+        <short>Sends a message to a window.</short>
         <descr><p>This method is a thread-safe solution to send messages to windows. Those messages will be handled in the message loop of the application and therefore can be sent from any thread. They are not immediate, but they will awake the main thread if it is waiting for messages. These messages can be handled by procedures with the keyword message in the class of a form for example. One would then use the handle of this form as the Handle parameter of this routine. Custom messages should always have an identification number (represented by the parameter Msg) larger then the constant LM_USER. The two parameters WParam and LParam will be passed along to the window together with the Msg identification number.</p>
         <p>The difference between SendMessage and PostMessage is the way that they return control to the calling thread. With SendMessage control is not returned until the window that the message was sent to has completed processing the sent message, however with PostMessage control is returned immediately.</p></descr>
         <errors/>
@@ -3027,158 +3027,131 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
           <link id="#lcl.LCLIntf.PostMessage">LCLIntf.PostMessage</link>
         </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SendMessage.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SendMessage.HandleWnd">
         <short>The handle of the window to receive the message.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SendMessage.Msg">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SendMessage.WParam">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SendMessage.LParam">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetActiveWindow">
-        <short/>
+        <short>Sets focus to the specified window, if the application is on top.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetActiveWindow.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetActiveWindow.Handle">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetBkColor">
-        <short/>
+        <short>Sets the current background color of an decice context.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetBkColor.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetBkColor.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetBkColor.Color">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetBkMode">
-        <short/>
+        <short>Sets the background mix mode (transparency) of an device context.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetBkMode.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetBkMode.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetBkMode.bkMode">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetCapture">
-        <short/>
+        <short>Sets the mouse capture to the specified window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetCapture.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetCapture.AHandle">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetCaretPos">
-        <short/>
+        <short>Moves the Caret to the specified coordinates.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetCaretPos.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetCaretPos.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetCaretPos.Y">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetCaretPosEx">
-        <short/>
+        <short>Moves the Caret into a window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetCaretPosEx.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetCaretPosEx.handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetCaretPosEx.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetCaretPosEx.Y">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetCursor">
-        <short/>
+        <short>Changes the shape of the mouse cursor.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetCursor.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetCursor.hCursor">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetCursorPos">
-        <short></short>
+        <short>Changes the position of the mouse cursor.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -3193,7 +3166,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="SetMapMode">
-        <short/>
+        <short>Sets the mapping mode of an device context.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3209,11 +3182,9 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="SetMenu">
-        <short></short>
+        <short>Assigns a menu to a window.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -3228,11 +3199,9 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="SetParent">
-        <short></short>
+        <short>Changes the parent of a window.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -3248,34 +3217,28 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
 
       <!-- function Visibility: default -->
       <element name="SetProp">
-        <short/>
+        <short>Adds a property to a window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetProp.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetProp.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetProp.Str">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetProp.Data">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetROP2">
-        <short></short>
+        <short>Sets the Foreground Mixing Mode in an device context.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -3290,39 +3253,33 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="SelectClipRGN">
-        <short/>
+        <short>Sets the ClipRegion of an DeviceContext.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SelectClipRGN.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SelectClipRGN.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SelectClipRGN.RGN">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SelectObject">
-        <short/>
+        <short>Selects an object into an device context.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SelectObject.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SelectObject.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SelectObject.GDIObj">
         <short/>
       </element>
@@ -3351,26 +3308,23 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="SetFocus">
-        <short/>
+        <short>Sets the keyboard input focus to the specified window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetFocus.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetFocus.hWnd">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetForegroundWindow">
-        <short></short>
+        <short>Moves a window in front of all other windows, and activates it.
+        </short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -3409,68 +3363,55 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="SetStretchBltMode">
-        <short/>
+        <short>Sets the StrechBlt mode for an device context.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetStretchBltMode.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetStretchBltMode.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetStretchBltMode.StretchMode">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetSysColors">
-        <short/>
+        <short>Sets the colors for one or more display elements of window borders and desktop.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetSysColors.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetSysColors.cElements">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetSysColors.lpaElements">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetSysColors.lpaRgbValues">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetTextCharacterExtra">
-        <short/>
+        <short>Sets extra intercharacter spacing in text output.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetTextCharacterExtra.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetTextCharacterExtra._hdc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetTextCharacterExtra.nCharExtra">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetTextColor">
-        <short/>
+        <short>Sets the text color in an device context.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3489,11 +3430,9 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="SetViewPortExtEx">
-        <short></short>
+        <short>Sets the extent of the viewport for a device context.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
@@ -3514,7 +3453,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="SetViewPortOrgEx">
-        <short></short>
+        <short>Sets the device origin corresponding to the window origin (0,0) in an device context.</short>
         <descr>
         </descr>
         <errors>
@@ -3539,7 +3478,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="SetWindowExtEx">
-        <short></short>
+        <short>Sets the extent of the window for an device context.</short>
         <descr>
         </descr>
         <errors>
@@ -3564,90 +3503,73 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="SetWindowLong">
-        <short/>
+        <short>Sets an attribute of a window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetWindowLong.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowLong.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowLong.Idx">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowLong.NewLong">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetWindowOrgEx">
-        <short/>
+        <short>Specifies which window point maps to the viewport origin (0,0).</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetWindowOrgEx.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowOrgEx.dc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowOrgEx.NewX">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowOrgEx.NewY">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowOrgEx.OldPoint">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SetWindowPos">
-        <short/>
+        <short>Changes the size, position, and Z order of a window.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="SetWindowPos.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowPos.hWnd">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowPos.hWndInsertAfter">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowPos.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowPos.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowPos.cx">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowPos.cy">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="SetWindowPos.uFlags">
         <short/>
       </element>
@@ -3678,182 +3600,150 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- function Visibility: default -->
       <element name="ShowCaret">
-        <short/>
+        <short>Shows the Caret (text cursor).</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ShowCaret.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ShowCaret.hWnd">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ShowScrollBar">
-        <short/>
+        <short>Shows or hides a ScrollBar.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ShowScrollBar.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ShowScrollBar.Handle">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ShowScrollBar.wBar">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ShowScrollBar.bShow">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="ShowWindow">
-        <short/>
+        <short>Shows a window in an specific state.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="ShowWindow.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ShowWindow.hWnd">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="ShowWindow.nCmdShow">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="StretchBlt">
-        <short/>
+        <short>Copies a rectangular region into an device context,
+          shrinking or stretching it as required.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="StretchBlt.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchBlt.DestDC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchBlt.X">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchBlt.Y">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchBlt.Width">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchBlt.Height">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchBlt.SrcDC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchBlt.XSrc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchBlt.YSrc">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchBlt.SrcWidth">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchBlt.SrcHeight">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchBlt.Rop">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="StretchDIBits">
-        <short/>
+        <short>Copies a rectangular region from a DIB into an device context,
+          shrinking or stretching it as required.
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="StretchDIBits.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchDIBits.DC">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchDIBits.DestX">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchDIBits.DestY">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchDIBits.DestWidth">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchDIBits.DestHeight">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchDIBits.SrcX">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchDIBits.SrcY">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchDIBits.SrcWidth">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchDIBits.SrcHeight">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchDIBits.Bits">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchDIBits.BitsInfo">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchDIBits.Usage">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StretchDIBits.Rop">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="SystemParametersInfo">
-        <short></short>
+        <short>Retrieves or sets one of the system-wide parameters.</short>
         <descr>
         </descr>
         <errors>
@@ -3878,7 +3768,7 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- function Visibility: default -->
       <element name="TextOut">
-        <short/>
+        <short>Draws an string without formatting (single line).</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3909,31 +3799,27 @@ See also the wiki documentation: http://wiki.lazarus.freepascal.org/LCL_Tips#Cre
       </element>
       <!-- function Visibility: default -->
       <element name="UpdateWindow">
-        <short/>
+        <short>Forces an immediate repaint of a window, if required.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="UpdateWindow.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="UpdateWindow.Handle">
         <short/>
       </element>
       <!-- function Visibility: default -->
       <element name="WindowFromPoint">
-        <short/>
+        <short>Finds the window containing the specified point.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="WindowFromPoint.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="WindowFromPoint.Point">
         <short/>
       </element>
