@@ -468,8 +468,8 @@ begin
   WaitForThread;
   IdleConnected:=false;
   FreeAndNil(fQueuedTools);
-  DoneCriticalsection(fCritSec);
   inherited Destroy;
+  DoneCriticalsection(fCritSec);
 end;
 
 procedure TCodyUnitDictionary.Load;
