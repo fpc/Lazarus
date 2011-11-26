@@ -1336,7 +1336,7 @@ var
   StartTop: LongInt;
 begin
   {$IFDEF VerboseCTCfgScript}
-  debugln(['TCTConfigScriptEngine.ParseStatement Atom=',GetAtom]);
+  debugln(['TCTConfigScriptEngine.RunStatement Atom=',GetAtom]);
   {$ENDIF}
   StartTop:=FStack.Top;
   case AtomStart^ of
@@ -1403,8 +1403,8 @@ begin
   BeginStart:=AtomStart;
   StartTop:=FStack.Top;
   FStack.Push(ctcssBegin,AtomStart);
+  ReadRawNextPascalAtom(Src,AtomStart);
   repeat
-    ReadRawNextPascalAtom(Src,AtomStart);
     if (AtomStart^=#0) then begin
       ErrorMissingEnd;
       break;
@@ -1412,8 +1412,9 @@ begin
       FStack.Pop;
       ReadRawNextPascalAtom(Src,AtomStart);
       break;
-    end else if AtomStart=';' then begin
+    end else if AtomStart^=';' then begin
       // skip
+      ReadRawNextPascalAtom(Src,AtomStart);
     end else begin
       RunStatement(Skip);
     end;
