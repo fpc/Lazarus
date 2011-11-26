@@ -15,8 +15,10 @@ type
 
   TManageExamplesForm = class(TForm)
     BuildAllSelectedButton: TBitBtn;
+    SelectPanel: TPanel;
     RelativeCheckBox: TCheckBox;
     DescriptionMemo: TMemo;
+    Splitter1: TSplitter;
     TestCaseCheckBox: TCheckBox;
     ExamplesCheckBox: TCheckBox;
     DirectoryComboBox: TComboBox;
