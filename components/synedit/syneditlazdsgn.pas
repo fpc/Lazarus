@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils,
   SynGutter, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
-  SynGutterMarks, SynGutterBase, SynGutterLineOverview,
+  SynGutterMarks, SynGutterBase, SynGutterLineOverview, SynEditMouseCmds,
   SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
   SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
   SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
@@ -236,6 +236,8 @@ begin
 
   RegisterPropertyEditor(ClassTypeInfo(TSynGutterPartListBase), nil,
     '', TSynPropertyEditGutterPartList);
+  RegisterPropertyEditor(TypeInfo(TSynEditorMouseCommand), nil,
+    '', TSynMouseCommandPropertyEditor);
 
   RegisterGutterPartClass(TSynGutterLineNumber, syndsLineNumbers);
   RegisterGutterPartClass(TSynGutterCodeFolding, syndsCodeFolding);

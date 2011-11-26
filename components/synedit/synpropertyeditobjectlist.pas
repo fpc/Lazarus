@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc,
-  SynGutterBase, SynEditMiscClasses,
+  SynGutterBase, SynEditMiscClasses, SynEditMouseCmds,
   PropEdits, PropEditUtils, Forms, StdCtrls, ComCtrls, Dialogs,
   ObjInspStrConsts, Controls, IDEImagesIntf, typinfo, FormEditingIntf;
 
@@ -93,6 +93,16 @@ type
     property PropertyName: String read FPropertyName;
   end;
 
+  { TSynMouseCommandPropertyEditor }
+
+  TSynMouseCommandPropertyEditor = class(TIntegerPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const NewValue: ansistring); override;
+  end;
+
   procedure RegisterGutterPartClass(AClass: TSynGutterPartBaseClass; AName: String);
 implementation
 
@@ -107,6 +117,40 @@ begin
   if KnownSynGutterPartClasses = nil then
     KnownSynGutterPartClasses := TStringList.Create;
   KnownSynGutterPartClasses.AddObject(AName, TObject(Pointer(AClass)));
+end;
+
+{ TSynMouseCommandPropertyEditor }
+
+function TSynMouseCommandPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paValueList, paRevertable];
+  if GetDefaultOrdValue <> NoDefaultValue then
+    Result := Result + [paHasDefaultValue];
+end;
+
+function TSynMouseCommandPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
+begin
+  if not SynMouseCmdToIdent(OrdValue, Result) then
+    Result := inherited OrdValueToVisualValue(OrdValue);
+end;
+
+procedure TSynMouseCommandPropertyEditor.GetValues(Proc: TGetStrProc);
+var
+  CValue: Integer;
+  CName: String;
+  i: TSynEditorMouseCommand;
+begin
+  if not IdentToSynMouseCmd(GetVisualValue, CValue) then Proc(GetVisualValue);
+  for i := 0 to emcMax do
+    if SynMouseCmdToIdent(i, CName) then Proc(CName);
+end;
+
+procedure TSynMouseCommandPropertyEditor.SetValue(const NewValue: ansistring);
+var
+  CValue: Integer;
+begin
+  if IdentToSynMouseCmd(NewValue, CValue) then SetOrdValue(CValue)
+  else inherited SetValue(NewValue);
 end;
 
 { TSynObjectPartListPropertyEditorForm }

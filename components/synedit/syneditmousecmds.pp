@@ -38,64 +38,6 @@ uses
   Classes, Controls, SysUtils, SynEditStrConst, SynEditPointClasses, Dialogs,
   LCLProc;
 
-const
-  // EditorMouseCommands
-
-  emcNone                     =  0;
-  emcStartSelections          =  1;    // Start BlockSelection (Default Left Mouse Btn)
-  emcStartColumnSelections    =  3;    // Column BlockSelection (Default Alt - Left Mouse Btn)
-  emcStartLineSelections      =  4;    // Line BlockSelection (Default Alt - Left Mouse Btn)
-
-  emcSelectWord               =  6;
-  emcSelectLine               =  7;
-  emcSelectPara               =  8;
-
-  emcStartDragMove            =  9;
-  emcPasteSelection           = 10;
-  emcMouseLink                = 11;
-
-  emcContextMenu              = 12;
-
-  emcOnMainGutterClick        = 13;    // OnGutterClick
-
-  emcCodeFoldCollaps          = 14;
-  emcCodeFoldExpand           = 15;
-  emcCodeFoldContextMenu      = 16;
-
-  emcSynEditCommand           = 17;    // Key-Commands
-
-  emcMax = 17;
-
-  emcPluginFirst = 20000;
-
-  // Options
-  emcoSelectionStart          = 0;
-  emcoSelectionContinue       = 1;
-
-  emcoSelectLineSmart         =  0;
-  emcoSelectLineFull          =  1;
-  emcoMouseLinkShow           =  0;
-  emcoMouseLinkHide           =  1;
-
-  emcoCodeFoldCollapsOne      = 0;
-  emcoCodeFoldCollapsAll      = 1;
-  emcoCodeFoldCollapsAtCaret  = 2;
-  emcoCodeFoldCollapsPreCaret = 3;
-  emcoCodeFoldExpandOne       = 0;
-  emcoCodeFoldExpandAll       = 1;
-
-  // menu, and caret move
-  emcoSelectionCaretMoveNever     = 0;
-  emcoSelectionCaretMoveOutside   = 1; // click is outside selected area
-  emcoSelectionCaretMoveAlways    = 2;
-
-// Plugins don't know of other plugins, so they need to map the codes
-// Plugins all start at ecPluginFirst (overlapping)
-// If ask by SynEdit they add an offset
-
-// Return the next offset
-function AllocatePluginMouseRange(Count: Integer): integer;
-
 type
 
   TSynEditorMouseCommand = type word;
@@ -148,15 +90,15 @@ type
     function Conflicts(Other: TSynEditMouseAction): Boolean;
     function Equals(Other: TSynEditMouseAction; IgnoreCmd: Boolean = False): Boolean; reintroduce;
   published
-    property Shift: TShiftState read FShift write SetShift;
-    property ShiftMask: TShiftState read FShiftMask write SetShiftMask;
-    property Button: TMouseButton read FButton write SetButton;
-    property ClickCount: TSynMAClickCount read FClickCount write SetClickCount;
-    property ClickDir: TSynMAClickDir read FClickDir write SetClickDir;
+    property Shift: TShiftState read FShift write SetShift                      default [];
+    property ShiftMask: TShiftState read FShiftMask write SetShiftMask          default [];
+    property Button: TMouseButton read FButton write SetButton                  default mbLeft;
+    property ClickCount: TSynMAClickCount read FClickCount write SetClickCount  default ccSingle;
+    property ClickDir: TSynMAClickDir read FClickDir write SetClickDir          default cdUp;
     property Command: TSynEditorMouseCommand read FCommand write SetCommand;
-    property MoveCaret: Boolean read FMoveCaret write SetMoveCaret;
-    property Option: TSynEditorMouseCommandOpt read FOption write SetOption;
-    property Priority: TSynEditorMouseCommandOpt read FPriority write SetPriority;
+    property MoveCaret: Boolean read FMoveCaret write SetMoveCaret              default False;
+    property Option: TSynEditorMouseCommandOpt read FOption write SetOption     default 0;
+    property Priority: TSynEditorMouseCommandOpt read FPriority write SetPriority default 0;
   end;
 
   { TSynEditMouseActions }
@@ -236,14 +178,100 @@ type
                                   var AnInfo: TSynEditMouseActionInfo): Boolean;
   end;
 
+const
+  // EditorMouseCommands
 
-  function MouseCommandName(emc: TSynEditorMouseCommand): String;
-  function MouseCommandConfigName(emc: TSynEditorMouseCommand): String;
+  emcNone                     =  TSynEditorMouseCommand(0);
+  emcStartSelections          =  TSynEditorMouseCommand(1);    // Start BlockSelection (Default Left Mouse Btn)
+  emcStartColumnSelections    =  TSynEditorMouseCommand(3);    // Column BlockSelection (Default Alt - Left Mouse Btn)
+  emcStartLineSelections      =  TSynEditorMouseCommand(4);    // Line BlockSelection (Default Alt - Left Mouse Btn)
+
+  emcSelectWord               =  TSynEditorMouseCommand(6);
+  emcSelectLine               =  TSynEditorMouseCommand(7);
+  emcSelectPara               =  TSynEditorMouseCommand(8);
+
+  emcStartDragMove            =  TSynEditorMouseCommand(9);
+  emcPasteSelection           = TSynEditorMouseCommand(10);
+  emcMouseLink                = TSynEditorMouseCommand(11);
+
+  emcContextMenu              = TSynEditorMouseCommand(12);
+
+  emcOnMainGutterClick        = TSynEditorMouseCommand(13);    // OnGutterClick
+
+  emcCodeFoldCollaps          = TSynEditorMouseCommand(14);
+  emcCodeFoldExpand           = TSynEditorMouseCommand(15);
+  emcCodeFoldContextMenu      = TSynEditorMouseCommand(16);
+
+  emcSynEditCommand           = TSynEditorMouseCommand(17);    // Key-Commands
+
+  emcMax = 17;
+
+  emcPluginFirst = 20000;
+
+  // Options
+  emcoSelectionStart          = 0;
+  emcoSelectionContinue       = 1;
+
+  emcoSelectLineSmart         =  0;
+  emcoSelectLineFull          =  1;
+  emcoMouseLinkShow           =  0;
+  emcoMouseLinkHide           =  1;
+
+  emcoCodeFoldCollapsOne      = 0;
+  emcoCodeFoldCollapsAll      = 1;
+  emcoCodeFoldCollapsAtCaret  = 2;
+  emcoCodeFoldCollapsPreCaret = 3;
+  emcoCodeFoldExpandOne       = 0;
+  emcoCodeFoldExpandAll       = 1;
+
+  // menu, and caret move
+  emcoSelectionCaretMoveNever     = 0;
+  emcoSelectionCaretMoveOutside   = 1; // click is outside selected area
+  emcoSelectionCaretMoveAlways    = 2;
+
+// Plugins don't know of other plugins, so they need to map the codes
+// Plugins all start at ecPluginFirst (overlapping)
+// If ask by SynEdit they add an offset
+
+// Return the next offset
+function AllocatePluginMouseRange(Count: Integer): integer;
+
+function MouseCommandName(emc: TSynEditorMouseCommand): String;
+function MouseCommandConfigName(emc: TSynEditorMouseCommand): String;
+
+function SynMouseCmdToIdent(SynMouseCmd: Longint; out Ident: String): Boolean;
+function IdentToSynMouseCmd(const Ident: string; out SynMouseCmd: Longint): Boolean;
 
 const
   SYNEDIT_LINK_MODIFIER = {$IFDEF LCLcarbon}ssMeta{$ELSE}ssCtrl{$ENDIF};
 
 implementation
+
+const
+  SynMouseCommandNames: array [0..15] of TIdentMapEntry = (
+    (Value: emcNone; Name: 'emcNone'),
+    (Value: emcStartSelections; Name: 'emcStartSelections'),
+    (Value: emcStartColumnSelections; Name: 'emcStartColumnSelections'),
+    (Value: emcStartLineSelections; Name: 'emcStartLineSelections'),
+
+    (Value: emcSelectWord; Name: 'emcSelectWord'),
+    (Value: emcSelectLine; Name: 'emcSelectLine'),
+    (Value: emcSelectPara; Name: 'emcSelectPara'),
+
+    (Value: emcStartDragMove; Name: 'emcStartDragMove'),
+    (Value: emcPasteSelection; Name: 'emcPasteSelection'),
+    (Value: emcMouseLink; Name: 'emcMouseLink'),
+
+    (Value: emcContextMenu; Name: 'emcContextMenu'),
+
+    (Value: emcOnMainGutterClick; Name: 'emcOnMainGutterClick'),
+
+    (Value: emcCodeFoldCollaps; Name: 'emcCodeFoldCollaps'),
+    (Value: emcCodeFoldExpand; Name: 'emcCodeFoldExpand'),
+    (Value: emcCodeFoldContextMenu; Name: 'emcCodeFoldContextMenu'),
+
+    (Value: emcSynEditCommand; Name: 'emcSynEditCommand')
+  );
 
 function AllocatePluginMouseRange(Count: Integer): integer;
 const
@@ -256,25 +284,25 @@ end;
 function MouseCommandName(emc: TSynEditorMouseCommand): String;
 begin
   case emc of
-    emcNone:    Result := SYNS_emcNone;
-    emcStartSelections:    Result := SYNS_emcStartSelection;
-    emcStartColumnSelections:    Result := SYNS_emcStartColumnSelections;
-    emcStartLineSelections: Result := SYNS_emcStartLineSelections;
-    emcSelectWord: Result := SYNS_emcSelectWord;
-    emcSelectLine: Result := SYNS_emcSelectLine;
-    emcSelectPara: Result := SYNS_emcSelectPara;
-    emcStartDragMove:  Result := SYNS_emcStartDragMove;
-    emcPasteSelection: Result := SYNS_emcPasteSelection;
-    emcMouseLink:   Result := SYNS_emcMouseLink;
-    emcContextMenu: Result := SYNS_emcContextMenu;
+    emcNone:                  Result := SYNS_emcNone;
+    emcStartSelections:       Result := SYNS_emcStartSelection;
+    emcStartColumnSelections: Result := SYNS_emcStartColumnSelections;
+    emcStartLineSelections:   Result := SYNS_emcStartLineSelections;
+    emcSelectWord:            Result := SYNS_emcSelectWord;
+    emcSelectLine:            Result := SYNS_emcSelectLine;
+    emcSelectPara:            Result := SYNS_emcSelectPara;
+    emcStartDragMove:         Result := SYNS_emcStartDragMove;
+    emcPasteSelection:        Result := SYNS_emcPasteSelection;
+    emcMouseLink:             Result := SYNS_emcMouseLink;
+    emcContextMenu:           Result := SYNS_emcContextMenu;
 
-    emcOnMainGutterClick: Result := SYNS_emcBreakPointToggle;
+    emcOnMainGutterClick:     Result := SYNS_emcBreakPointToggle;
 
-    emcCodeFoldCollaps:     Result := SYNS_emcCodeFoldCollaps;
-    emcCodeFoldExpand:      Result := SYNS_emcCodeFoldExpand;
-    emcCodeFoldContextMenu: Result := SYNS_emcCodeFoldContextMenu;
+    emcCodeFoldCollaps:       Result := SYNS_emcCodeFoldCollaps;
+    emcCodeFoldExpand:        Result := SYNS_emcCodeFoldExpand;
+    emcCodeFoldContextMenu:   Result := SYNS_emcCodeFoldContextMenu;
 
-    emcSynEditCommand:      Result := SYNS_emcSynEditCommand;
+    emcSynEditCommand:        Result := SYNS_emcSynEditCommand;
 
     else Result := ''
   end;
@@ -293,6 +321,16 @@ begin
     emcContextMenu:  Result := SYNS_emcContextMenuCaretMove_opt;
     else Result := ''
   end;
+end;
+
+function SynMouseCmdToIdent(SynMouseCmd: Longint; out Ident: String): Boolean;
+begin
+  Result := IntToIdent(SynMouseCmd, Ident, SynMouseCommandNames);
+end;
+
+function IdentToSynMouseCmd(const Ident: string; out SynMouseCmd: Longint): Boolean;
+begin
+  Result := IdentToInt(Ident, SynMouseCmd, SynMouseCommandNames);
 end;
 
 { TSynEditMouseAction }
@@ -705,6 +743,9 @@ begin
   while NextDownIndex(i) and (not Result) do
     Result := TSynEditMouseActionExecProc(Items[i])(AnAction, AnInfo);
 end;
+
+initialization
+  RegisterIntegerConsts(TypeInfo(TSynEditorMouseCommand), TIdentToInt(@IdentToSynMouseCmd), TIntToIdent(@SynMouseCmdToIdent));
 
 end.
 

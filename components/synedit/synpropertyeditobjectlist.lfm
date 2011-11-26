@@ -13,7 +13,7 @@ object SynObjectPartListPropertyEditorForm: TSynObjectPartListPropertyEditorForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDefaultPosOnly
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object ToolBar1: TToolBar
     AnchorSideTop.Control = ClassComboBox
     AnchorSideTop.Side = asrBottom
@@ -61,8 +61,8 @@ object SynObjectPartListPropertyEditorForm: TSynObjectPartListPropertyEditorForm
   end
   object SynObjectPartsListBox: TListBox
     Left = 0
-    Height = 237
-    Top = 63
+    Height = 235
+    Top = 65
     Width = 190
     Align = alClient
     ItemHeight = 0
@@ -71,16 +71,13 @@ object SynObjectPartListPropertyEditorForm: TSynObjectPartListPropertyEditorForm
   end
   object ClassComboBox: TComboBox
     AnchorSideTop.Control = ToolBar1
-    AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 21
+    Height = 23
     Top = 42
     Width = 190
     Align = alTop
     Anchors = []
-    AutoComplete = False
-    ItemHeight = 13
-    ItemWidth = 0
+    ItemHeight = 15
     Style = csDropDownList
     TabOrder = 2
   end
