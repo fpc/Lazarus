@@ -5945,6 +5945,10 @@ msgstr ""
 msgid "Configure Lazarus IDE"
 msgstr ""
 
+#: lazarusidestrconsts.lisconfirm
+msgid "Confirm"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
 msgstr ""
@@ -8005,6 +8009,10 @@ msgctxt "lazarusidestrconsts.lisfilefiltersname"
 msgid "Name"
 msgstr "Naam"
 
+#: lazarusidestrconsts.lisfilefilterssetdefaults
+msgid "Set defaults"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr ""
@@ -9690,6 +9698,10 @@ msgstr "Lazarus taal naam (Engels, Duits, etc.)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [opties] <project-bestandsnaam>"
+
+#: lazarusidestrconsts.lislazarusotherfile
+msgid "Lazarus other file"
+msgstr ""
 
 #: lazarusidestrconsts.lislazaruspackage
 msgid "Lazarus package"
@@ -12018,6 +12030,16 @@ msgid "Open existing file"
 msgstr "Open bestannd bestand"
 
 #: lazarusidestrconsts.lisopenfile
+#, fuzzy
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile"
+msgid "Open File"
+msgstr "Open bestand"
+
+#: lazarusidestrconsts.lisopenfile2
+#, fuzzy
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "Open bestand"
 
@@ -14113,6 +14135,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
+msgstr ""
+
+#: lazarusidestrconsts.lisresetallfilefilterstodefaults
+msgid "Reset all file filters to defaults?"
 msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror

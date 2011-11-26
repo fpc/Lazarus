@@ -6050,6 +6050,10 @@ msgstr "%sLazarus構築 %s を設定"
 msgid "Configure Lazarus IDE"
 msgstr ""
 
+#: lazarusidestrconsts.lisconfirm
+msgid "Confirm"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
 msgstr "Lazarusは次のプロファイルで再構築されます::%s 続けますか？"
@@ -8141,6 +8145,10 @@ msgctxt "lazarusidestrconsts.lisfilefiltersname"
 msgid "Name"
 msgstr "名前"
 
+#: lazarusidestrconsts.lisfilefilterssetdefaults
+msgid "Set defaults"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr ""
@@ -9868,6 +9876,10 @@ msgstr "Lazarus言語名(例: english, deutsch)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "Lazarus [オプション]<プロジェクト-ファイル名>"
+
+#: lazarusidestrconsts.lislazarusotherfile
+msgid "Lazarus other file"
+msgstr ""
 
 #: lazarusidestrconsts.lislazaruspackage
 msgid "Lazarus package"
@@ -12252,6 +12264,16 @@ msgid "Open existing file"
 msgstr "既存のファイルを開く"
 
 #: lazarusidestrconsts.lisopenfile
+#, fuzzy
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile"
+msgid "Open File"
+msgstr "ファイルを開く"
+
+#: lazarusidestrconsts.lisopenfile2
+#, fuzzy
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "ファイルを開く"
 
@@ -14352,6 +14374,10 @@ msgstr "FPC バージョン2.4 以上が必要です。"
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
 msgstr "最スキャン"
+
+#: lazarusidestrconsts.lisresetallfilefilterstodefaults
+msgid "Reset all file filters to defaults?"
+msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"

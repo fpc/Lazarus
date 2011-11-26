@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-11-22 00:30+0400\n"
+"PO-Revision-Date: 2011-11-26 19:52+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5929,6 +5929,10 @@ msgstr "Параметры %sСборки Lazarus%s"
 msgid "Configure Lazarus IDE"
 msgstr "Настройка Lazarus"
 
+#: lazarusidestrconsts.lisconfirm
+msgid "Confirm"
+msgstr "Подтверждение"
+
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
 msgstr "Lazarus будет пересобран по следующим профилям:%sПродолжить?"
@@ -8001,6 +8005,10 @@ msgctxt "lazarusidestrconsts.lisfilefiltersname"
 msgid "Name"
 msgstr "Имя"
 
+#: lazarusidestrconsts.lisfilefilterssetdefaults
+msgid "Set defaults"
+msgstr "Установить значения по умолчанию"
+
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr "Эти файловые фильтры появятся во всех диалогах открытия файлов"
@@ -9705,6 +9713,10 @@ msgstr "Название языка Lazarus (пример: английский,
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [параметры] <имя файла проекта>"
+
+#: lazarusidestrconsts.lislazarusotherfile
+msgid "Lazarus other file"
+msgstr "Иной файл Lazarus"
 
 #: lazarusidestrconsts.lislazaruspackage
 msgid "Lazarus package"
@@ -11966,6 +11978,14 @@ msgid "Open existing file"
 msgstr "Открыть существующий файл"
 
 #: lazarusidestrconsts.lisopenfile
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile"
+msgid "Open File"
+msgstr "Открыть файл"
+
+#: lazarusidestrconsts.lisopenfile2
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "Открыть файл"
 
@@ -14050,6 +14070,10 @@ msgstr "Требует FPC версии 2.4 либо выше. Аналог ре
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
 msgstr "Пересмотреть"
+
+#: lazarusidestrconsts.lisresetallfilefilterstodefaults
+msgid "Reset all file filters to defaults?"
+msgstr "Установить значения файловых фильтров по умолчанию?"
 
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"

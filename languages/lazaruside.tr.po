@@ -5797,6 +5797,10 @@ msgstr ""
 msgid "Configure Lazarus IDE"
 msgstr ""
 
+#: lazarusidestrconsts.lisconfirm
+msgid "Confirm"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
 msgstr ""
@@ -7845,6 +7849,10 @@ msgctxt "lazarusidestrconsts.lisfilefiltersname"
 msgid "Name"
 msgstr ""
 
+#: lazarusidestrconsts.lisfilefilterssetdefaults
+msgid "Set defaults"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr ""
@@ -9540,6 +9548,10 @@ msgstr "Lazarus dil adı (Ör: Türkçe, Almanca)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [seçenekler] <proje-dosyası>"
+
+#: lazarusidestrconsts.lislazarusotherfile
+msgid "Lazarus other file"
+msgstr ""
 
 #: lazarusidestrconsts.lislazaruspackage
 msgid "Lazarus package"
@@ -11850,6 +11862,16 @@ msgid "Open existing file"
 msgstr ""
 
 #: lazarusidestrconsts.lisopenfile
+#, fuzzy
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile"
+msgid "Open File"
+msgstr "Dosya aç"
+
+#: lazarusidestrconsts.lisopenfile2
+#, fuzzy
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "Dosya aç"
 
@@ -12095,7 +12117,7 @@ msgstr ""
 #: lazarusidestrconsts.lispckeditcompopts
 msgctxt "lazarusidestrconsts.lispckeditcompopts"
 msgid "Compiler Options"
-msgstr ""
+msgstr "Derleyici seçenekleri"
 
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
@@ -13909,6 +13931,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
+msgstr ""
+
+#: lazarusidestrconsts.lisresetallfilefilterstodefaults
+msgid "Reset all file filters to defaults?"
 msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
@@ -17195,7 +17221,7 @@ msgstr ""
 #: lazarusidestrconsts.srkmecselectall
 msgctxt "lazarusidestrconsts.srkmecselectall"
 msgid "Select All"
-msgstr ""
+msgstr "Tümünü seç"
 
 #: lazarusidestrconsts.srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"

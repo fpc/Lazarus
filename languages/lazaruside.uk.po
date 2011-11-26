@@ -5979,6 +5979,10 @@ msgstr "Налаштувати %sПобудову Lazarus%s"
 msgid "Configure Lazarus IDE"
 msgstr "Налаштувати Lazarus IDE"
 
+#: lazarusidestrconsts.lisconfirm
+msgid "Confirm"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
 msgstr ""
@@ -8050,6 +8054,10 @@ msgctxt "lazarusidestrconsts.lisfilefiltersname"
 msgid "Name"
 msgstr "Назва"
 
+#: lazarusidestrconsts.lisfilefilterssetdefaults
+msgid "Set defaults"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr ""
@@ -9756,6 +9764,10 @@ msgstr "Назва мови для Lazarus (напр. english, deutsch, ukrainai
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [параметри] <назва файлу проекту>"
+
+#: lazarusidestrconsts.lislazarusotherfile
+msgid "Lazarus other file"
+msgstr ""
 
 #: lazarusidestrconsts.lislazaruspackage
 msgid "Lazarus package"
@@ -12063,6 +12075,16 @@ msgid "Open existing file"
 msgstr "Відкрити існуючий файл"
 
 #: lazarusidestrconsts.lisopenfile
+#, fuzzy
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile"
+msgid "Open File"
+msgstr "Відкрити файл"
+
+#: lazarusidestrconsts.lisopenfile2
+#, fuzzy
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "Відкрити файл"
 
@@ -14153,6 +14175,10 @@ msgstr ""
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
 msgstr "Пересканувати"
+
+#: lazarusidestrconsts.lisresetallfilefilterstodefaults
+msgid "Reset all file filters to defaults?"
+msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"

@@ -341,10 +341,9 @@ msgid "Package"
 msgstr "Пакет"
 
 #: codystrconsts.crspackagesunitsidentifiersfile
-#, fuzzy
 #| msgid "Packages: %s, Units: %s, Identifiers: %s%sFile: %s"
 msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
-msgstr "Пакетов: %s, Модулей: %s, Идентификаторов: %s%sФайл: %s"
+msgstr "Пакетов: %s, Модулей: %s, Идентификаторов: %s%sБаза данных: %s"
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
@@ -492,7 +491,7 @@ msgstr "Используется"
 
 #: codystrconsts.crsuseidentifier
 msgid "Use identifier"
-msgstr ""
+msgstr "Использовать идентификатор"
 
 #: codystrconsts.crsuses
 msgid "Uses"

@@ -6029,6 +6029,10 @@ msgstr "Configurar %sConstruir Lazarus%s"
 msgid "Configure Lazarus IDE"
 msgstr ""
 
+#: lazarusidestrconsts.lisconfirm
+msgid "Confirm"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
 msgstr "Lazarus será reconstruido con los perfiles siguientes:%s¿Continuar?"
@@ -8117,6 +8121,10 @@ msgctxt "lazarusidestrconsts.lisfilefiltersname"
 msgid "Name"
 msgstr "Nombre"
 
+#: lazarusidestrconsts.lisfilefilterssetdefaults
+msgid "Set defaults"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr ""
@@ -9842,6 +9850,10 @@ msgstr "Nombre de idioma de Lazarus (por ejemplo: inglés, holandés)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [opciones] <nombre-proyecto>"
+
+#: lazarusidestrconsts.lislazarusotherfile
+msgid "Lazarus other file"
+msgstr ""
 
 #: lazarusidestrconsts.lislazaruspackage
 msgid "Lazarus package"
@@ -12205,6 +12217,16 @@ msgid "Open existing file"
 msgstr "Abrir archivo existente"
 
 #: lazarusidestrconsts.lisopenfile
+#, fuzzy
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile"
+msgid "Open File"
+msgstr "Abrir archivo"
+
+#: lazarusidestrconsts.lisopenfile2
+#, fuzzy
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "Abrir archivo"
 
@@ -14305,6 +14327,10 @@ msgstr "Requiere FPC 2.4 o superior. Al igual que los recursos de Delphi"
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
 msgstr "Escanear de nuevo"
+
+#: lazarusidestrconsts.lisresetallfilefilterstodefaults
+msgid "Reset all file filters to defaults?"
+msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"

@@ -5759,6 +5759,10 @@ msgstr ""
 msgid "Configure Lazarus IDE"
 msgstr ""
 
+#: lazarusidestrconsts.lisconfirm
+msgid "Confirm"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
 msgstr ""
@@ -7803,6 +7807,10 @@ msgctxt "lazarusidestrconsts.lisfilefiltersname"
 msgid "Name"
 msgstr ""
 
+#: lazarusidestrconsts.lisfilefilterssetdefaults
+msgid "Set defaults"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr ""
@@ -9467,6 +9475,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
+msgstr ""
+
+#: lazarusidestrconsts.lislazarusotherfile
+msgid "Lazarus other file"
 msgstr ""
 
 #: lazarusidestrconsts.lislazaruspackage
@@ -11655,6 +11667,12 @@ msgid "Open existing file"
 msgstr ""
 
 #: lazarusidestrconsts.lisopenfile
+msgctxt "lazarusidestrconsts.lisopenfile"
+msgid "Open File"
+msgstr ""
+
+#: lazarusidestrconsts.lisopenfile2
+msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr ""
 
@@ -13716,6 +13734,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
+msgstr ""
+
+#: lazarusidestrconsts.lisresetallfilefilterstodefaults
+msgid "Reset all file filters to defaults?"
 msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
@@ -16996,7 +17018,7 @@ msgstr ""
 #: lazarusidestrconsts.srkmecselectall
 msgctxt "lazarusidestrconsts.srkmecselectall"
 msgid "Select All"
-msgstr ""
+msgstr "Kies alles"
 
 #: lazarusidestrconsts.srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"

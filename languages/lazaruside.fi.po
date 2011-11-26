@@ -5905,6 +5905,10 @@ msgstr "Konfiguroi %sLazaruksen käännös%s"
 msgid "Configure Lazarus IDE"
 msgstr "Konfiguroi Lazarus IDE"
 
+#: lazarusidestrconsts.lisconfirm
+msgid "Confirm"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfirmbuildallprofiles
 msgid "Lazarus will be rebuilt with the following profiles:%sContinue?"
 msgstr "Lazarus käännetään uudelleen käyttäen profiilia:%sJatketaanko?"
@@ -7970,6 +7974,10 @@ msgctxt "lazarusidestrconsts.lisfilefiltersname"
 msgid "Name"
 msgstr "Nimi"
 
+#: lazarusidestrconsts.lisfilefilterssetdefaults
+msgid "Set defaults"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr ""
@@ -9675,6 +9683,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
+msgstr ""
+
+#: lazarusidestrconsts.lislazarusotherfile
+msgid "Lazarus other file"
 msgstr ""
 
 #: lazarusidestrconsts.lislazaruspackage
@@ -11964,6 +11976,16 @@ msgid "Open existing file"
 msgstr "Avaa tiedosto"
 
 #: lazarusidestrconsts.lisopenfile
+#, fuzzy
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile"
+msgid "Open File"
+msgstr "Avaa tiedosto"
+
+#: lazarusidestrconsts.lisopenfile2
+#, fuzzy
+#| msgid "Open file"
+msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "Avaa tiedosto"
 
@@ -14034,6 +14056,10 @@ msgstr ""
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
 msgstr "Lue uudelleen"
+
+#: lazarusidestrconsts.lisresetallfilefilterstodefaults
+msgid "Reset all file filters to defaults?"
+msgstr ""
 
 #: lazarusidestrconsts.lisresourceloaderror
 msgid "Resource load error"
