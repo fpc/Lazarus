@@ -37,8 +37,8 @@ unit EvaluateDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLType, Forms, Controls, Graphics, Dialogs,
-  IDEWindowIntf, IDEOptionDefs,
+  Classes, SysUtils, LCLType, Forms,
+  IDEWindowIntf,
   ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager,
   InputHistory, Debugger;
 

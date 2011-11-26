@@ -28,8 +28,7 @@ unit ExceptionDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ButtonPanel, StdCtrls, Buttons, LazarusIDEStrConsts;
+  Classes, Forms, StdCtrls, Buttons, LazarusIDEStrConsts;
 
 type
   

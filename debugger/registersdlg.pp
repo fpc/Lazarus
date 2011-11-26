@@ -36,8 +36,8 @@ unit RegistersDlg;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  BaseDebugManager, IDEWindowIntf, IDEOptionDefs, DebuggerStrConst,
+  SysUtils, Classes, Controls, Forms,
+  BaseDebugManager, IDEWindowIntf, DebuggerStrConst,
   ComCtrls, ActnList, Menus, Debugger, DebuggerDlg,
   LazarusIDEStrConsts, IDEImagesIntf;
 

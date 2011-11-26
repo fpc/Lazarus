@@ -33,10 +33,10 @@ unit DebugEventsForm;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, ExtCtrls, ComCtrls, ActnList,
-  BaseDebugManager, IDEWindowIntf, IDEOptionDefs,
+  Classes, SysUtils, Controls, ComCtrls, ActnList,
+  BaseDebugManager, IDEWindowIntf,
   StdActns, ClipBrd, Menus, Dialogs, FileUtil, Debugger, DebuggerDlg,
-  LazarusIDEStrConsts, EnvironmentOpts, InputHistory, IDEOptionsIntf,
+  LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
   IDEImagesIntf, LazIDEIntf, debugger_eventlog_options;
 
 type

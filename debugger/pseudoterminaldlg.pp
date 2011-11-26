@@ -5,9 +5,8 @@ unit PseudoTerminalDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil,
-  IDEWindowIntf, IDEOptionDefs,
-  Forms, Controls, Graphics, Dialogs, StdCtrls, DebuggerDlg, BaseDebugManager, LCLType;
+  IDEWindowIntf,
+  Forms, StdCtrls, DebuggerDlg, BaseDebugManager, LCLType;
 
 type
 

@@ -5,10 +5,10 @@ unit AssemblerDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  IDEWindowIntf, IDEOptionDefs,
-  ComCtrls, StdCtrls, Grids, ExtCtrls, LclType, LCLIntf, DebuggerDlg, Debugger,
-  BaseDebugManager, EditorOptions, Maps, Math, types, LCLProc, Menus, Clipbrd, ActnList,
+  Classes, SysUtils, Forms, Controls, Graphics,
+  IDEWindowIntf,
+  ComCtrls, StdCtrls, ExtCtrls, LclType, LCLIntf, DebuggerDlg, Debugger,
+  BaseDebugManager, EditorOptions, Math, types, LCLProc, Menus, Clipbrd, ActnList,
   IDECommands, IDEImagesIntf, CodeToolManager, CodeCache, SourceEditor;
 
 type

@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, ComCtrls, Debugger, DebuggerDlg, LazarusIDEStrConsts, Forms,
-  IDEWindowIntf, IDEOptionDefs, DebuggerStrConst,
-  BaseDebugManager, MainBase, IDEImagesIntf, Clipbrd, Dialogs;
+  IDEWindowIntf, DebuggerStrConst,
+  BaseDebugManager, IDEImagesIntf, Dialogs;
 
 type
 

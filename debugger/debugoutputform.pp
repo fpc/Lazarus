@@ -43,11 +43,11 @@ unit DebugOutputForm;
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, Dialogs, Clipbrd,
-  IDEWindowIntf, IDEOptionDefs,
-  BaseDebugManager, Buttons, StdCtrls, Menus, ExtCtrls, DebuggerDlg
+  Classes, Controls, Forms, Clipbrd,
+  IDEWindowIntf,
+  BaseDebugManager, StdCtrls, Menus, ExtCtrls, DebuggerDlg
   {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
-  , GDBMIDebugger, CmdLineDebugger
+  , CmdLineDebugger
   {$ENDIF}
   ;
 

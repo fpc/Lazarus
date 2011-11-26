@@ -39,10 +39,8 @@ unit WatchPropertyDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, Extctrls, Menus, ButtonPanel,
-  IDEHelpIntf,
-  IDEContextHelpEdit, Debugger, BaseDebugManager;
+  Classes, Forms, StdCtrls, Extctrls, ButtonPanel,
+  IDEHelpIntf, Debugger, BaseDebugManager;
 
 type
 

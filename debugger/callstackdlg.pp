@@ -36,10 +36,10 @@ unit CallStackDlg;
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  IDEWindowIntf, IDEOptionDefs, DebuggerStrConst,
-  ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls, Spin,
-  ActnList, MainIntf, MainBase, IDEImagesIntf, IDECommands;
+  SysUtils, Classes, Controls, Forms,
+  IDEWindowIntf, DebuggerStrConst,
+  ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls,
+  ActnList, IDEImagesIntf, IDECommands;
 
 type
 
@@ -148,7 +148,7 @@ implementation
 {$R *.lfm}
 
 uses
-  BaseDebugManager, LCLProc, LazarusIDEStrConsts;
+  BaseDebugManager, LazarusIDEStrConsts;
 
 var
   imgSourceLine: Integer;

@@ -37,7 +37,7 @@ unit SSHGDBMIDebugger;
 interface
 
 uses
-  Classes, SysUtils, Dialogs, Controls, LazConf, GDBMIDebugger, DebugUtils,
+  Classes, SysUtils, Dialogs, Controls, GDBMIDebugger,
   BaseDebugManager, Debugger, PropEdits, Graphics, LCLProc, LazarusIDEStrConsts;
   
 type

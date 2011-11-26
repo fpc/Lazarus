@@ -32,7 +32,7 @@ unit GDBMIMiscClasses;
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils,
   {$IFDEF DBG_ENABLE_TERMINAL}
   IDEMiniLibC,
   {$ENDIF}

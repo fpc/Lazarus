@@ -40,7 +40,7 @@ unit GDBMIDebugger;
 interface
 
 uses
-  Classes, SysUtils, Controls, Math, Variants, LCLProc, Dialogs, LazConf, DebugUtils,
+  Classes, SysUtils, Controls, Math, Variants, LCLProc, Dialogs, DebugUtils,
   Debugger, FileUtil, CmdLineDebugger, GDBTypeInfo, Maps, LCLIntf,
 {$IFdef MSWindows}
   Windows,
