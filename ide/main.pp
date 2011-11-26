@@ -3257,7 +3257,7 @@ begin
         DoBuildProject(crCompile, []);
     end;
 
-  ecBuild: DoBuildProject(crBuild, [pbfCleanCompile, pbfCompileDependenciesClean]);
+  ecBuild: DoBuildProject(crBuild, [pbfCleanCompile]);
   ecCleanUpCompiled: mnuCleanUpCompiledProjectClicked(nil);
   ecQuickCompile: DoQuickCompile;
   ecAbortBuild: DoAbortBuild;
