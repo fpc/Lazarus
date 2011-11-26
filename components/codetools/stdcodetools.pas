@@ -1826,7 +1826,7 @@ begin
   {$IFDEF VerboseFindUnusedUnits}
   DebugLn(['TStandardCodeTool.FindUnusedUnits START']);
   {$ENDIF}
-  BuildTree(lsrImplementationUsesSectionEnd);
+  BuildTree(lsrEnd);
   Identifiers:=nil;
   try
     CheckUsesSection(FindMainUsesSection,false);
