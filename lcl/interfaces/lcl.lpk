@@ -49,7 +49,7 @@ end else if LCLWidgetType='fpgui' then begin
              +base+'corelib/'+fpGUIPlatform;
   IncPath := UnitPath;
 end else if LCLWidgetType='customdrawn' then begin
-  UnitPath := base+'android;'
+  UnitPath := base+'android;';
 end;
 
 // linker options
