@@ -47,9 +47,11 @@ uses
   Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
   PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf,
   CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
-  CodeTree, LinkScanner,
+  CodeTree, LinkScanner, DefineTemplates,
   CodyStrConsts, CodyUtils;
 
+const
+  PackageNameFPCSrcDir = 'FPCSrcDir';
 type
   TCodyUnitDictionary = class;
 
@@ -140,6 +142,7 @@ type
     procedure GetCurOwnerOfUnit;
     procedure AddToUsesSection;
     procedure UpdateTool;
+    function GetFPCSrcDir(const Directory: string): string;
   public
     CurIdentifier: string;
     CurIdentStart: integer;
@@ -282,6 +285,7 @@ var
   UDGroup: TUDUnitGroup;
   ok: Boolean;
   OldChangeStamp: Int64;
+  UnitSet: TFPCUnitSetCache;
 begin
   // check without critical section if currently loading/saving
   if fLoadSaveThread<>nil then
@@ -325,6 +329,23 @@ begin
             EndCritSec;
           end;
         end;
+
+        // check if in FPC source directory
+        UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
+        if (UnitSet<>nil) and (UnitSet.FPCSourceDirectory<>'')
+        and FileIsInPath(fParsingTool.MainFilename,UnitSet.FPCSourceDirectory)
+        then begin
+          BeginCritSec;
+          try
+            UDGroup:=AddUnitGroup(
+              AppendPathDelim(UnitSet.FPCSourceDirectory)+PackageNameFPCSrcDir+'.lpk',
+              PackageNameFPCSrcDir);
+            UDGroup.AddUnit(UDUnit);
+          finally
+            EndCritSec;
+          end;
+        end;
+
         if ChangeStamp<>OldChangeStamp then begin
           if fTimer=nil then begin
             fTimer:=TTimer.Create(nil);
@@ -591,6 +612,9 @@ var
   Found: Integer;
   GroupNode: TAVLTreeNode;
   Group: TUDUnitGroup;
+  FPCSrcDir: String;
+  Dir: String;
+  UseGroup: Boolean;
 begin
   Filter:=GetFilterEditText;
   FilterP:=PChar(Filter);
@@ -598,6 +622,7 @@ begin
   sl:=TStringList.Create;
   try
     Found:=0;
+    FPCSrcDir:=ChompPathDelim(GetFPCSrcDir(''));
     Node:=CodyUnitDictionary.Identifiers.FindLowest;
     //debugln(['TCodyIdentifiersDlg.UpdateItemsList Filter="',Filter,'"']);
     while Node<>nil do begin
@@ -606,21 +631,32 @@ begin
         inc(Found);
         if Found<MaxItems then begin
           Item:=TUDIdentifier(Node.Data);
-          if FileExistsCached(Item.DUnit.Filename) then begin
-            GroupNode:=Item.DUnit.UnitGroups.FindLowest;
-            while GroupNode<>nil do begin
-              Group:=TUDUnitGroup(GroupNode.Data);
-              if (Group.Filename='')
-              or (FileExistsCached(Group.Filename)) then begin
-                s:=Item.Name+' in '+Item.DUnit.Name;
-                if Group.Name<>'' then begin
-                  s:=s+' of '+Group.Name;
-                end;
+          GroupNode:=Item.DUnit.UnitGroups.FindLowest;
+          while GroupNode<>nil do begin
+            Group:=TUDUnitGroup(GroupNode.Data);
+            UseGroup:=false;
+            if Group.Name='' then begin
+              // it's a unit without package
+              UseGroup:=true
+            end else if Group.Name=PackageNameFPCSrcDir then begin
+              // it's a FPC source directory
+              // => check if it is the current one
+              Dir:=ExtractFilePath(Group.Filename);
+              UseGroup:=CompareFilenames(Dir,FPCSrcDir)=0;
+            end else if FileExistsCached(Group.Filename) then begin
+              // lpk exists
+              UseGroup:=true;
+            end;
+            if UseGroup then begin
+              s:=Item.Name+' in '+Item.DUnit.Name;
+              if Group.Name<>'' then
+                s:=s+' of '+Group.Name;
+              if FileExistsCached(Item.DUnit.Filename) then begin
                 FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Filename);
                 sl.Add(s);
               end;
-              GroupNode:=Item.DUnit.UnitGroups.FindSuccessor(GroupNode);
             end;
+            GroupNode:=Item.DUnit.UnitGroups.FindSuccessor(GroupNode);
           end;
         end;
       end;
@@ -820,6 +856,16 @@ begin
   except
   end;
   CurNode:=CurTool.FindDeepestNodeAtPos(CurCleanPos,false);
+end;
+
+function TCodyIdentifiersDlg.GetFPCSrcDir(const Directory: string): string;
+var
+  UnitSet: TFPCUnitSetCache;
+begin
+  Result:='';
+  UnitSet:=CodeToolBoss.GetUnitSetForDirectory(Directory);
+  if (UnitSet<>nil) then
+    Result:=ChompPathDelim(UnitSet.FPCSourceDirectory);
 end;
 
 finalization
