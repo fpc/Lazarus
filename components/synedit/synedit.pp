@@ -181,44 +181,47 @@ type
   TSynStateFlags = set of TSynStateFlag;
 
   TSynEditorOption = (
-    eoAltSetsColumnMode,       // DEPRECATED, now controlled vie MouseActions
-                               // Holding down the Alt Key will put the selection mode into columnar format
     eoAutoIndent,              // Will indent the caret on new lines with the same amount of leading white space as the preceding line
-    eoAutoSizeMaxScrollWidth,  //TODO Automatically resizes the MaxScrollWidth property when inserting text
-    eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
-    eoDragDropEditing,         // DEPRECATED, now controlled vie MouseActions
-                               // Allows you to select a block of text and drag it within the document to another location
-    eoDropFiles,               //TODO Allows the editor accept file drops
+    eoAutoIndentOnPaste,       // Indent text inserted from clipboard
+    eoBracketHighlight,        // Highlight matching bracket
     eoEnhanceHomeKey,          // home key jumps to line start if nearer, similar to visual studio
     eoGroupUndo,               // When undoing/redoing actions, handle all continous changes of the same kind in one call instead undoing/redoing each command separately
     eoHalfPageScroll,          // When scrolling with page-up and page-down commands, only scroll a half page at a time
-    eoHideShowScrollbars,      //TODO if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
+    eoHideRightMargin,         // Hides the right margin line
     eoKeepCaretX,              // When moving through lines w/o Cursor Past EOL, keeps the X position of the cursor
     eoNoCaret,                 // Makes it so the caret is never visible
     eoNoSelection,             // Disables selecting text
-    eoRightMouseMovesCursor,   // DEPRECATED, now controlled vie MouseActions
-                               // When clicking with the right mouse for a popup menu, move the cursor to that location
+    eoPersistentCaret,         // Do not hide caret when focus lost // TODO: Windows may hide it, if another component sets up a caret
     eoScrollByOneLess,         // Forces scrolling to be one less
-    eoScrollHintFollows,       //TODO The scroll hint follows the mouse when scrolling vertically
     eoScrollPastEof,           // Allows the cursor to go past the end of file marker
     eoScrollPastEol,           // Allows the cursor to go past the last character into the white space at the end of a line
+    eoScrollHintFollows,       // The scroll hint follows the mouse when scrolling vertically
     eoShowScrollHint,          // Shows a hint of the visible line numbers when scrolling vertically
     eoShowSpecialChars,        // Shows the special Characters
-    eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
     eoSmartTabs,               // When tabbing, the cursor will go to the next non-white space character of the previous line
-    //eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
+    eoSpacesToTabs,            // Converts space characters to tabs and spaces
     eoTabIndent,               // When active <Tab> and <Shift><Tab> act as block indent, unindent when text is selected
     eoTabsToSpaces,            // Converts a tab character to a specified number of space characters
     eoTrimTrailingSpaces,      // Spaces at the end of lines will be trimmed and not saved
-    eoBracketHighlight,        // Highlight matching bracket
+
+    // Not implemented
+    eoAutoSizeMaxScrollWidth,  //TODO Automatically resizes the MaxScrollWidth property when inserting text
+    eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
+    eoHideShowScrollbars,      //TODO if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
+    eoDropFiles,               //TODO Allows the editor accept file drops
+    eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
+    //eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
+
+    // Only for compatibility, moved to TSynEditorMouseOptions
+    eoAltSetsColumnMode,       // DEPRECATED, now in TSynEditorMouseOption
+    eoDragDropEditing,         // DEPRECATED, now controlled vie MouseActions
+                               // Allows you to select a block of text and drag it within the document to another location
+    eoRightMouseMovesCursor,   // DEPRECATED, now controlled vie MouseActions
+                               // When clicking with the right mouse for a popup menu, move the cursor to that location
     eoDoubleClickSelectsLine,  // DEPRECATED
                                // Select line on double click
-    eoHideRightMargin,         // Hides the right margin line
-    eoPersistentCaret,         // Do not hide caret when focus lost // TODO: Windows may hide it, if another component sets up a caret
-    eoShowCtrlMouseLinks,      // DEPRECATED, now controlled vie MouseActions
+    eoShowCtrlMouseLinks       // DEPRECATED, now controlled vie MouseActions
                                // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
-    eoAutoIndentOnPaste,       // Indent text inserted from clipboard
-    eoSpacesToTabs             // Converts space characters to tabs and spaces
     );
   TSynEditorOptions = set of TSynEditorOption;
 
@@ -233,6 +236,12 @@ type
     eoAutoHideCursor           // Hide the mouse cursor, on keyboard action
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
+
+  //TSynEditorMouseOption = (
+  //  eoAltSetsColumnMode,       // Holding down the Alt Key will put the selection mode into columnar format
+  //
+  //);
+  //TSynEditorMouseOptions = set of TSynEditorMouseOption;
 
   // options for textbuffersharing
   TSynEditorShareOption = (
@@ -261,7 +270,6 @@ const
     eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
     eoDropFiles,               //TODO Allows the editor accept file drops
     eoHideShowScrollbars,      //TODO if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
-    eoScrollHintFollows,       //TODO The scroll hint follows the mouse when scrolling vertically
     eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
     ////eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
     eoAutoIndentOnPaste,       // Indent text inserted from clipboard
@@ -4769,20 +4777,15 @@ begin
             ScrollHint.Visible := TRUE;
           end;
           s := Format('line %d', [TopLine]);
-{$IFDEF SYN_COMPILER_3_UP}
           rc := ScrollHint.CalcHintRect(200, s, nil);
-{$ELSE}
-          rc := Rect(0, 0, ScrollHint.Canvas.TextWidth(s) + 6,
-            ScrollHint.Canvas.TextHeight(s) + 4);
-{$ENDIF}
           pt := ClientToScreen(Point(
                 ClientWidth-ScrollBarWidth
                         - rc.Right - 4, 10));
+          if eoScrollHintFollows in fOptions then
+            pt.y := Mouse.CursorPos.y - (rc.Bottom div 2);
           OffsetRect(rc, pt.x, pt.y);
           ScrollHint.ActivateHint(rc, s);
-{$IFNDEF SYN_COMPILER_3_UP}
           ScrollHint.Invalidate;
-{$ENDIF}
           ScrollHint.Update;
         end;
       end;
