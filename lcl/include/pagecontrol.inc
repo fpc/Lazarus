@@ -108,13 +108,6 @@ begin
   Result := inherited DoUndockClientMsg(NewTarget, Client);
 end;
 
-procedure TPageControl.DoChange;
-begin
-  inherited DoChange;
-  if Assigned(OnChange) then
-    OnChange(Self);
-end;
-
 function TPageControl.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   Result:=(ChildClass<>nil) and (ChildClass.InheritsFrom(PageClass));

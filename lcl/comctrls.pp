@@ -515,7 +515,6 @@ type
                        State: TDragState; var Accept: Boolean); override;
     procedure DoRemoveDockClient(Client: TControl); override;
     function DoUndockClientMsg(NewTarget, Client: TControl):boolean; override;
-    procedure DoChange; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
