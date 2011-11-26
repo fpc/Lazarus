@@ -197,8 +197,11 @@ type
   TCTCfgScriptError = class
   public
     Msg: string;
-    ErrorPos: PChar;
-    constructor Create(const aMsg: string; anErrorPos: PChar);
+    Position: integer;
+    Line: integer;
+    Column: integer;
+    constructor Create(const aMsg: string; aPos, aLine, aCol: integer);
+    constructor Create(const aMsg: string);
   end;
 
   { TCTConfigScriptEngine }
@@ -1291,11 +1294,21 @@ end;
 procedure TCTConfigScriptEngine.AddError(const aMsg: string; ErrorPos: PChar);
 var
   Err: TCTCfgScriptError;
+  Position: Integer;
+  Line: Integer;
+  Column: Integer;
 begin
   {$IFDEF VerboseCTCfgScript}
   WriteDebugReportStack('ERROR: '+aMsg);
   {$ENDIF}
-  Err:=TCTCfgScriptError.Create(aMsg,ErrorPos);
+  Position:=-1;
+  Line:=0;
+  Column:=0;
+  if (ErrorPos<>nil) then begin
+    Position:=ErrorPos-Src;
+    PosToLineCol(ErrorPos,Line,Column);
+  end;
+  Err:=TCTCfgScriptError.Create(aMsg,Position,Line,Column);
   FErrors.Add(Err);
   if ErrorCount>=MaxErrorCount then
     raise Exception.Create(GetErrorStr(ErrorCount-1));
@@ -1382,6 +1395,7 @@ var
 
   procedure ErrorMissingEnd;
   begin
+    //debugln(['ErrorMissingEnd BeginStart=',BeginStart]);
     AddError(Format(ctsBeginAtWithoutEnd, [PosToStr(BeginStart)]));
   end;
 
@@ -1669,8 +1683,10 @@ begin
       begin
         inc(p);
         StartPos:=p;
-        while not (p^ in ['''',#0]) do
+        while not (p^ in ['''',#10,#13,#0]) do
           inc(p);
+        if p^<>'''' then
+          AddError('missing end apostrophe of string constant');
         Add(StartPos,p-StartPos);
         if p^='''' then
           inc(p);
@@ -2308,7 +2324,7 @@ begin
     on E: Exception do begin
       // too many errors
       if ErrorCount=0 then begin
-        Err:=TCTCfgScriptError.Create(E.Message,nil);
+        Err:=TCTCfgScriptError.Create(E.Message);
         FErrors.Add(Err);
       end;
     end;
@@ -2391,13 +2407,11 @@ end;
 function TCTConfigScriptEngine.GetErrorStr(Index: integer): string;
 var
   Err: TCTCfgScriptError;
-  s: String;
 begin
   Err:=Errors[Index];
   Result:='Error: ';
-  s:=PosToStr(Err.ErrorPos);
-  if s<>'' then
-    Result:=Result+s+' ';
+  if Err.Line>0 then
+    Result:=Result+'('+IntToStr(Err.Line)+','+IntToStr(Err.Column)+') ';
   Result:=Result+Err.Msg;
 end;
 
@@ -2552,10 +2566,21 @@ end;
 
 { TCTCfgScriptError }
 
-constructor TCTCfgScriptError.Create(const aMsg: string; anErrorPos: PChar);
+constructor TCTCfgScriptError.Create(const aMsg: string; aPos, aLine,
+  aCol: integer);
 begin
   Msg:=aMsg;
-  ErrorPos:=anErrorPos;
+  Position:=aPos;
+  Line:=aLine;
+  Column:=aCol;
+end;
+
+constructor TCTCfgScriptError.Create(const aMsg: string);
+begin
+  Msg:=aMsg;
+  Position:=-1;
+  Line:=0;
+  Column:=0;
 end;
 
 end.
