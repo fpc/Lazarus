@@ -138,31 +138,51 @@ const
      1.0, 1.0);
 var
   texture: GLuint;
+  lError: GLenum;
 begin
-   LOGW('[engine_draw_frame]');
+   if engine^.display = nil then exit;
 
-   if engine^.display = nil then
-      exit;
+   LOGW('[engine_draw_frame]');
 
    // Set a projection which matches the screen size
 
    glMatrixMode(GL_PROJECTION);
+   lError := glGetError();
+   if lError <> GL_NO_ERROR then LOGW(PChar('[engine_draw_frame] 1 Error='+IntToStr(Integer(lError))));
    glLoadIdentity();
+   lError := glGetError();
+   if lError <> GL_NO_ERROR then LOGW(PChar('[engine_draw_frame] 2 Error='+IntToStr(Integer(lError))));
    glOrthof(0, engine^.width, engine^.height, 0, 0, 1);
+   lError := glGetError();
+   if lError <> GL_NO_ERROR then LOGW(PChar('[engine_draw_frame] 3 Error='+IntToStr(Integer(lError))));
    glMatrixMode(GL_MODELVIEW);
+   lError := glGetError();
+   if lError <> GL_NO_ERROR then LOGW(PChar('[engine_draw_frame] 4 Error='+IntToStr(Integer(lError))));
    glLoadIdentity();
+   lError := glGetError();
+   if lError <> GL_NO_ERROR then LOGW(PChar('[engine_draw_frame] 5 Error='+IntToStr(Integer(lError))));
 
    // Displacement trick for exact pixelization
    glTranslatef(0.357, 0.357, 0);
+   lError := glGetError();
+   if lError <> GL_NO_ERROR then LOGW(PChar('[engine_draw_frame] 6 Error='+IntToStr(Integer(lError))));
 
    // Turn on 2D mode
 
    glDisable(GL_DEPTH_TEST);
+   lError := glGetError();
+   if lError <> GL_NO_ERROR then LOGW(PChar('[engine_draw_frame] 7 Error='+IntToStr(Integer(lError))));
    glClear(GL_COLOR_BUFFER_BIT);
+   lError := glGetError();
+   if lError <> GL_NO_ERROR then LOGW(PChar('[engine_draw_frame] 8 Error='+IntToStr(Integer(lError))));
 
    // Draw a square
    glVertexPointer(2, GL_FLOAT, 0, @vertices[0]);
+   lError := glGetError();
+   if lError <> GL_NO_ERROR then LOGW(PChar('[engine_draw_frame] 9 Error='+IntToStr(Integer(lError))));
    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+   lError := glGetError();
+   if lError <> GL_NO_ERROR then LOGW(PChar('[engine_draw_frame] 10 Error='+IntToStr(Integer(lError))));
 
 {   glEnableClientState(GL_VERTEX_ARRAY);
    glEnableClientState(GL_NORMAL_ARRAY);
@@ -194,6 +214,8 @@ begin
    //glClear(GL_COLOR_BUFFER_BIT);}
 
    eglSwapBuffers(engine^.display, engine^.surface);
+   lError := glGetError();
+   if lError <> GL_NO_ERROR then LOGW(PChar('[engine_draw_frame] 11 Error='+IntToStr(Integer(lError))));
 end;
 
 
