@@ -103,7 +103,8 @@ begin
    engine^.height := h;
    engine^.state.angle := 0;
 
-   UpdateControlLazImageAndCanvas(engine^.Image, engine^.Canvas, engine^.width, engine^.height, clfRGB16_R5G6B5);
+   UpdateControlLazImageAndCanvas(engine^.Image, engine^.Canvas,
+     128, 128, clfRGB16_R5G6B5);
    engine^.Image.GetRawImage(engine^.RawImage);
    engine^.Canvas.Brush.FPColor := colRed;
    engine^.Canvas.Rectangle(0, 0, 100, 100);
@@ -119,24 +120,58 @@ end;
 
 procedure engine_draw_frame(engine: Pengine);
 const
-  vertices: array[0..7] of GLfloat = (-1.0, 1.0,  1.0, 1.0,  -1.0, -1.0,   1.0, -1.0);
-  normals: array[0..11] of GLfloat = (0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0);
-  textureCoords: array[0..7] of GLfloat = (0.0, 0.0,   1.0, 0.0,   0.0, 1.0,   1.0, 1.0);
+  vertices: array[0..7] of GLfloat =
+//      (-1.0, 1.0,  1.0, 1.0,  -1.0, -1.0,   1.0, -1.0);
+    (0, 300,
+     300, 300,
+     0, 0,
+     300, 0);
+  normals: array[0..11] of GLfloat =
+    (0.0, 0.0, 1.0,
+     0.0, 0.0, 1.0,
+     0.0, 0.0, 1.0,
+     0.0, 0.0, 1.0);
+  textureCoords: array[0..7] of GLfloat =
+    (0.0, 0.0,
+     1.0, 0.0,
+     0.0, 1.0,
+     1.0, 1.0);
 var
   texture: GLuint;
 begin
+   LOGW('[engine_draw_frame]');
+
    if engine^.display = nil then
       exit;
 
-   // Draw the currently visible form
+   // Set a projection which matches the screen size
 
-   glEnableClientState(GL_VERTEX_ARRAY);
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   glOrthof(0, engine^.width, engine^.height, 0, 0, 1);
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+
+   // Displacement trick for exact pixelization
+   glTranslatef(0.357, 0.357, 0);
+
+   // Turn on 2D mode
+
+   glDisable(GL_DEPTH_TEST);
+   glClear(GL_COLOR_BUFFER_BIT);
+
+   // Draw a square
+   glVertexPointer(2, GL_FLOAT, 0, @vertices[0]);
+   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+{   glEnableClientState(GL_VERTEX_ARRAY);
    glEnableClientState(GL_NORMAL_ARRAY);
    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
    glGenTextures(1, @texture);
    glBindTexture(GL_TEXTURE_2D, texture);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, engine^.width, engine^.height, 0,
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+     128, 128, 0,//engine^.width, engine^.height, 0,
      GL_RGBA, GL_UNSIGNED_SHORT_5_6_5, Pointer(engine^.RawImage.Data));
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -145,21 +180,18 @@ begin
    glVertexPointer(2, GL_FLOAT, 0, @vertices[0]);
    glNormalPointer(GL_FLOAT, 0, @normals[0]);
    glTexCoordPointer(2, GL_FLOAT, 0, @textureCoords[0]);
-   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-   glMatrixMode(GL_PROJECTION);
-   glLoadIdentity();
-   glOrthof(-5.0, 5.0, -7.5, 7.5, -1, 1);
-   glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
 
    glEnable(GL_TEXTURE_2D);
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
    // Just fill the screen with a color.
    //glClearColor(engine^.state.x/engine^.width, engine^.state.angle, engine^.state.y/engine^.height, 1);
-   //glClear(GL_COLOR_BUFFER_BIT);
+   //glClear(GL_COLOR_BUFFER_BIT);}
 
    eglSwapBuffers(engine^.display, engine^.surface);
 end;
