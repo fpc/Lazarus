@@ -81,6 +81,7 @@ type
     fCritSec: TRTLCriticalSection;
     fLoaded: boolean; // has loaded the file
     fStartTime: TDateTime;
+    fClosing: boolean;
     procedure SetIdleConnected(AValue: boolean);
     procedure SetLoadAfterStartInS(AValue: integer);
     procedure SetLoadSaveError(AValue: string);
@@ -90,6 +91,7 @@ type
     procedure WaitForThread;
     procedure OnTimer(Sender: TObject);
     function StartLoadSaveThread: boolean;
+    procedure OnIDEClose(Sender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
@@ -347,13 +349,13 @@ begin
         end;
 
         if ChangeStamp<>OldChangeStamp then begin
-          if fTimer=nil then begin
+          if (fTimer=nil) and (not fClosing) then begin
             fTimer:=TTimer.Create(nil);
             fTimer.Interval:=SaveIntervalInS*1000;
             fTimer.OnTimer:=@OnTimer;
           end;
-          //debugln(['TCodyUnitDictionary.OnIdle starting timer: ms=',fTimer.Interval]);
-          fTimer.Enabled:=true;
+          if fTimer<>nil then
+            fTimer.Enabled:=true;
         end;
       end;
     finally
@@ -389,7 +391,8 @@ end;
 procedure TCodyUnitDictionary.OnTimer(Sender: TObject);
 begin
   if StartLoadSaveThread then
-    fTimer.Enabled:=false;
+    if fTimer<>nil then
+      fTimer.Enabled:=false;
 end;
 
 function TCodyUnitDictionary.GetFilename: string;
@@ -400,6 +403,7 @@ end;
 function TCodyUnitDictionary.StartLoadSaveThread: boolean;
 begin
   Result:=false;
+  if (Self=nil) or fClosing then exit;
   if (Application=nil) or (CodyUnitDictionary=nil) then exit;
   //debugln(['TCodyUnitDictionary.StartLoadSaveThread ',fLoadSaveThread<>nil]);
   BeginCritSec;
@@ -414,6 +418,12 @@ begin
   fLoadSaveThread.Dictionary:=Self;
   fLoadSaveThread.Filename:=GetFilename;
   fLoadSaveThread.Start;
+end;
+
+procedure TCodyUnitDictionary.OnIDEClose(Sender: TObject);
+begin
+  fClosing:=true;
+  FreeAndNil(fTimer);
 end;
 
 procedure TCodyUnitDictionary.SetIdleConnected(AValue: boolean);
@@ -459,10 +469,12 @@ begin
   InitCriticalSection(fCritSec);
   fQueuedTools:=TAVLTree.Create;
   CodeToolBoss.AddHandlerToolTreeChanging(@ToolTreeChanged);
+  LazarusIDE.AddHandlerOnIDEClose(@OnIDEClose);
 end;
 
 destructor TCodyUnitDictionary.Destroy;
 begin
+  fClosing:=true;
   CodeToolBoss.RemoveHandlerToolTreeChanging(@ToolTreeChanged);
   FreeAndNil(fTimer);
   WaitForThread;
