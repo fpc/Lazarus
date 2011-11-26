@@ -47,7 +47,7 @@ uses
   Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
   PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf,
   CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
-  CodeTree,
+  CodeTree, LinkScanner,
   CodyStrConsts, CodyUtils;
 
 type
@@ -139,8 +139,11 @@ type
       GroupFilename: string): boolean;
     procedure GetCurOwnerOfUnit;
     procedure AddToUsesSection;
+    procedure UpdateTool;
   public
     CurIdentifier: string;
+    CurIdentStart: integer;
+    CurIdentEnd: integer;
     CurInitError: TCUParseError;
     CurTool: TCodeTool;
     CurCleanPos: integer;
@@ -709,18 +712,18 @@ function TCodyIdentifiersDlg.Init: boolean;
 var
   ErrorHandled: boolean;
   Line: String;
-  IdentStart: integer;
-  IdentEnd: integer;
 begin
   Result:=true;
   CurInitError:=ParseTilCursor(CurTool, CurCleanPos, CurNode, ErrorHandled, false, @CurCodePos);
 
   CurIdentifier:='';
+  CurIdentStart:=0;
+  CurIdentEnd:=0;
   if (CurCodePos.Code<>nil) then begin
     Line:=CurCodePos.Code.GetLine(CurCodePos.Y-1);
-    GetIdentStartEndAtPosition(Line,CurCodePos.X,IdentStart,IdentEnd);
-    if IdentStart<IdentEnd then
-      CurIdentifier:=copy(Line,IdentStart,IdentEnd-IdentStart);
+    GetIdentStartEndAtPosition(Line,CurCodePos.X,CurIdentStart,CurIdentEnd);
+    if CurIdentStart<CurIdentEnd then
+      CurIdentifier:=copy(Line,CurIdentStart,CurIdentEnd-CurIdentStart);
   end;
 
   UpdateGeneralInfo;
@@ -738,6 +741,10 @@ begin
   if CurSrcEdit=nil then exit;
   CurSrcEdit.BeginUndoBlock;
   try
+    // insert or replace identifier
+    if (not CurSrcEdit.SelectionAvailable)
+    and (CurIdentStart<CurIdentEnd) then
+      CurSrcEdit.SelectText(CurCodePos.Y,CurIdentStart,CurCodePos.Y,CurIdentEnd);
     CurSrcEdit.Selection:=NewIdentifier;
 
     if CurTool<>nil then begin
@@ -788,7 +795,9 @@ var
   NewUnitCode: TCodeBuffer;
   NewUnitName: String;
 begin
-  if (CurNode=nil) or (NewUnitFilename='') then exit;
+  if (CurTool=nil) or (NewUnitFilename='') then exit;
+  UpdateTool;
+  if (CurNode=nil) then exit;
 
   // get unit name
   NewUnitCode:=CodeToolBoss.LoadFile(NewUnitFilename,true,false);
@@ -800,6 +809,17 @@ begin
   if (CurNode.Desc in [ctnUnit,ctnUsesSection]) then exit;
   // add to uses section
   CodeToolBoss.AddUnitToMainUsesSection(CurMainCode,NewUnitName,'');
+end;
+
+procedure TCodyIdentifiersDlg.UpdateTool;
+begin
+  if (CurTool=nil) or (NewUnitFilename='') then exit;
+  if not LazarusIDE.BeginCodeTools then exit;
+  try
+    CurTool.BuildTree(lsrEnd);
+  except
+  end;
+  CurNode:=CurTool.FindDeepestNodeAtPos(CurCleanPos,false);
 end;
 
 finalization
