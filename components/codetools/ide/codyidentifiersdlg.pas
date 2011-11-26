@@ -30,7 +30,7 @@
       -check if identifier still exists
       -check if unit conflicts with another unit in path
       -buttons: add unit to interface, add unit to implementation
-      -add unit to uses
+      -button: jump to identifier
       -add dependency to owner
     -clean up old entries
       -When, How?

@@ -2657,7 +2657,14 @@ function TCodeHelpManager.GetFPDocNodeAsHTML(FPDocFile: TLazFPDocFile;
       else if Node.NodeName='seealso' then
         Result:=Result+'<div class="title">'+'See also'+'</div>';
       Result:=Result+'<div class="'+Node.NodeName+'">'+s+'</div>'+LineEnding;
-    end else if (Node.NodeName='p') or (Node.NodeName='b')
+    end else if (Node.NodeName='p')
+    or (Node.NodeName='b')
+    or (Node.NodeName='pre')
+    or (Node.NodeName='table')
+    or (Node.NodeName='th')
+    or (Node.NodeName='tr')
+    or (Node.NodeName='td')
+    or (Node.NodeName='hr')
     then begin
       Result:=Result+'<'+Node.NodeName+'>'+AddChilds(Node)+'</'+Node.NodeName+'>';
     end else if (Node.NodeName='var') then begin
