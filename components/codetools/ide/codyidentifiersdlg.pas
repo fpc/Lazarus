@@ -45,7 +45,7 @@ interface
 uses
   Classes, SysUtils, FileProcs, LResources, LCLProc, avl_tree, Forms, Controls,
   Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
-  PackageIntf, LazIDEIntf, SrcEditorIntf,
+  PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf,
   CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
   CodeTree,
   CodyStrConsts, CodyUtils;
@@ -137,12 +137,18 @@ type
     function GetFilterEditText: string;
     function FindSelectedItem(out Identifier, UnitFilename,
       GroupFilename: string): boolean;
+    procedure GetCurOwnerOfUnit;
+    procedure AddToUsesSection;
   public
     CurInitError: TCUParseError;
     CurTool: TCodeTool;
     CurCleanPos: integer;
     CurNode: TCodeTreeNode;
     CurCodePos: TCodeXYPosition;
+    CurSrcEdit: TSourceEditorInterface;
+    CurMainFilename: string; // if CurSrcEdit is an include file, then CurMainFilename<>CurSrcEdit.Filename
+    CurMainCode: TCodeBuffer;
+    CurOwner: TObject;
     NewIdentifier: string;
     NewUnitFilename: string;
     NewGroupFilename: string;
@@ -712,15 +718,73 @@ begin
 end;
 
 procedure TCodyIdentifiersDlg.UseIdentifier;
-var
-  SrcEdit: TSourceEditorInterface;
 begin
-  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
-  if SrcEdit=nil then exit;
-  SrcEdit.BeginUndoBlock;
-  SrcEdit.Selection:=NewIdentifier;
+  CurSrcEdit:=SourceEditorManagerIntf.ActiveEditor;
+  if CurSrcEdit=nil then exit;
+  CurSrcEdit.BeginUndoBlock;
+  try
+    CurSrcEdit.Selection:=NewIdentifier;
 
-  SrcEdit.EndUndoBlock;
+    if CurTool<>nil then begin
+      CurMainFilename:=CurTool.MainFilename;
+      CurMainCode:=TCodeBuffer(CurTool.Scanner.MainCode);
+    end else begin
+      CurMainFilename:=CurSrcEdit.FileName;
+      CurMainCode:=TCodeBuffer(CurSrcEdit.CodeToolsBuffer);
+    end;
+    GetCurOwnerOfUnit;
+
+    if CurOwner<>nil then begin
+      // ToDo: add dependency
+
+    end;
+
+    AddToUsesSection;
+  finally
+    CurSrcEdit.EndUndoBlock;
+  end;
+end;
+
+procedure TCodyIdentifiersDlg.GetCurOwnerOfUnit;
+
+  procedure GetBest(OwnerList: TFPList);
+  var
+    i: Integer;
+  begin
+    if OwnerList=nil then exit;
+    for i:=0 to OwnerList.Count-1 do begin
+      if (TObject(OwnerList[i]) is TLazProject)
+      or ((TObject(OwnerList[i]) is TIDEPackage) and (CurOwner=nil)) then
+        CurOwner:=TObject(OwnerList[i]);
+    end;
+    OwnerList.Free;
+  end;
+
+begin
+  if CurMainFilename='' then exit;
+  GetBest(PackageEditingInterface.GetOwnersOfUnit(CurMainFilename));
+  if CurOwner=nil then
+    GetBest(PackageEditingInterface.GetPossibleOwnersOfUnit(CurMainFilename,
+             [piosfIncludeSourceDirectories]));
+end;
+
+procedure TCodyIdentifiersDlg.AddToUsesSection;
+var
+  NewUnitCode: TCodeBuffer;
+  NewUnitName: String;
+begin
+  if (CurNode=nil) or (NewUnitFilename='') then exit;
+
+  // get unit name
+  NewUnitCode:=CodeToolBoss.LoadFile(NewUnitFilename,true,false);
+  if NewUnitCode=nil then exit;
+  NewUnitName:=CodeToolBoss.GetSourceName(NewUnitCode,false);
+  if NewUnitName='' then
+    NewUnitName:=ExtractFileNameOnly(NewUnitFilename);
+
+  if (CurNode.Desc in [ctnUnit,ctnUsesSection]) then exit;
+  // add to uses section
+  CodeToolBoss.AddUnitToMainUsesSection(CurMainCode,NewUnitName,'');
 end;
 
 finalization
