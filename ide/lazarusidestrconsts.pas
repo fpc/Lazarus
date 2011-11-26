@@ -5367,6 +5367,7 @@ resourcestring
   lisFileFiltersAddRow = 'Add Row';
   lisFileFiltersDeleteRow = 'Delete Row';
   lisFileFiltersInsertRow = 'Insert Row';
+  lisFileFiltersSetDefaults = 'Set defaults';
 
 implementation
 

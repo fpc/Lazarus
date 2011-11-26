@@ -300,6 +300,8 @@ begin
   pmiAddRow.Caption := lisFileFiltersAddRow;
   pmiDelRow.Caption := lisFileFiltersDeleteRow;
   pmiInsRow.Caption := lisFileFiltersInsertRow;
+
+  SetDefaultMenuItem.Caption := lisFileFiltersSetDefaults;
 end;
 
 procedure TFileFiltersOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
