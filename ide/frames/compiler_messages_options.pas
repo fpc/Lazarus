@@ -5,9 +5,8 @@ unit compiler_messages_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, ListFilterEdit, Forms, StdCtrls, CheckLst,
-  LCLProc, Dialogs, IDEOptionsIntf, Project, LazarusIDEStrConsts,
-  EnvironmentOpts, CompilerOptions, IDEMsgIntf, EditBtn;
+  Classes, SysUtils, FileUtil, ListFilterEdit, StdCtrls, CheckLst, IDEOptionsIntf,
+  LazarusIDEStrConsts, EnvironmentOpts, CompilerOptions, IDEMsgIntf;
 
 type
 
