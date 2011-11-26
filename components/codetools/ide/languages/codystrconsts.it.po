@@ -335,7 +335,7 @@ msgid "Package"
 msgstr "Pacchetto"
 
 #: codystrconsts.crspackagesunitsidentifiersfile
-msgid "Packages: %s, Units: %s, Identifiers: %s%sFile: %s"
+msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
 msgstr ""
 
 #: codystrconsts.crspleaseopenaprojectfirst

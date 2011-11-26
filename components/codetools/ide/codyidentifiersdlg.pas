@@ -140,6 +140,7 @@ type
     procedure GetCurOwnerOfUnit;
     procedure AddToUsesSection;
   public
+    CurIdentifier: string;
     CurInitError: TCUParseError;
     CurTool: TCodeTool;
     CurCleanPos: integer;
@@ -707,13 +708,27 @@ end;
 function TCodyIdentifiersDlg.Init: boolean;
 var
   ErrorHandled: boolean;
+  Line: String;
+  IdentStart: integer;
+  IdentEnd: integer;
 begin
   Result:=true;
   CurInitError:=ParseTilCursor(CurTool, CurCleanPos, CurNode, ErrorHandled, false, @CurCodePos);
 
+  CurIdentifier:='';
+  if (CurCodePos.Code<>nil) then begin
+    Line:=CurCodePos.Code.GetLine(CurCodePos.Y-1);
+    GetIdentStartEndAtPosition(Line,CurCodePos.X,IdentStart,IdentEnd);
+    if IdentStart<IdentEnd then
+      CurIdentifier:=copy(Line,IdentStart,IdentEnd-IdentStart);
+  end;
+
   UpdateGeneralInfo;
-  FilterEdit.Text:=FNoFilterText;
   FLastFilter:='...'; // force one update
+  if CurIdentifier='' then
+    FilterEdit.Text:=FNoFilterText
+  else
+    FilterEdit.Text:=CurIdentifier;
   IdleConnected:=true;
 end;
 

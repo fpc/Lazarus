@@ -168,7 +168,7 @@ resourcestring
   crsAndMoreIdentifiers = '... and %s more identifiers';
   crsCodyIdentifierDictionary = 'Cody Identifier Dictionary';
   crsPackagesUnitsIdentifiersFile = 'Packages: %s, Units: %s, Identifiers: %s%'
-    +'sFile: %s';
+    +'sDatabase: %s';
   crsError = 'Error: %s';
 
 implementation

@@ -341,7 +341,9 @@ msgid "Package"
 msgstr "Pacote"
 
 #: codystrconsts.crspackagesunitsidentifiersfile
-msgid "Packages: %s, Units: %s, Identifiers: %s%sFile: %s"
+#, fuzzy
+#| msgid "Packages: %s, Units: %s, Identifiers: %s%sFile: %s"
+msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
 msgstr "Pacotes: %s, Unidades: %s, Identificadores: %s%sArquivo: %s"
 
 #: codystrconsts.crspleaseopenaprojectfirst
