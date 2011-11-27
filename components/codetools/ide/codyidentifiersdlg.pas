@@ -45,7 +45,7 @@ interface
 uses
   Classes, SysUtils, FileProcs, LResources, LCLProc, avl_tree, Forms, Controls,
   Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
-  PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf, CompOptsIntf,
+  PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf, CompOptsIntf, IDEDialogs,
   CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
   CodeTree, LinkScanner, DefineTemplates,
   CodyStrConsts, CodyUtils;
@@ -143,11 +143,10 @@ type
     procedure UpdateIdentifierInfo;
     function GetFilterEditText: string;
     function FindSelectedItem(out Identifier, UnitFilename,
-      GroupFilename: string): boolean;
+      GroupName, GroupFilename: string): boolean;
     procedure UpdateCurOwnerOfUnit;
     procedure AddToUsesSection;
     procedure UpdateTool;
-    function GetFPCSrcDir(const Directory: string): string;
   public
     CurIdentifier: string;
     CurIdentStart: integer; // column
@@ -166,6 +165,7 @@ type
 
     NewIdentifier: string;
     NewUnitFilename: string;
+    NewGroupName: string;
     NewGroupFilename: string;
 
     function Init: boolean;
@@ -532,7 +532,7 @@ end;
 
 procedure TCodyIdentifiersDlg.ButtonPanel1OKButtonClick(Sender: TObject);
 begin
-  if FindSelectedItem(NewIdentifier, NewUnitFilename, NewGroupFilename) then
+  if FindSelectedItem(NewIdentifier, NewUnitFilename, NewGroupName, NewGroupFilename) then
     ModalResult:=mrOk
   else
     ModalResult:=mrNone;
@@ -640,6 +640,8 @@ var
   Group: TUDUnitGroup;
   FPCSrcDir: String;
   Dir: String;
+  UnitSet: TFPCUnitSetCache;
+  FPCSrcFilename: String;
 begin
   FLastFilter:=GetFilterEditText;
   FilterP:=PChar(FLastFilter);
@@ -650,7 +652,11 @@ begin
   sl:=TStringList.Create;
   try
     Found:=0;
-    FPCSrcDir:=ChompPathDelim(GetFPCSrcDir(''));
+    UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
+    FPCSrcDir:='';
+    if (UnitSet<>nil) then begin
+      FPCSrcDir:=ChompPathDelim(UnitSet.FPCSourceDirectory);
+    end;
     Node:=CodyUnitDictionary.Identifiers.FindLowest;
     //debugln(['TCodyIdentifiersDlg.UpdateItemsList Filter="',Filter,'"']);
     while Node<>nil do begin
@@ -678,7 +684,10 @@ begin
               // => check if it is the current one
               Dir:=ExtractFilePath(Group.Filename);
               if CompareFilenames(Dir,FPCSrcDir)<>0 then continue;
-              // ToDo: check if ppu is there
+              FPCSrcFilename:=UnitSet.GetUnitSrcFile(Item.DUnit.Name);
+              if (FPCSrcFilename<>'')
+              and (CompareFilenames(FPCSrcFilename,Item.DUnit.Filename)<>0)
+              then continue; // this is not the source for this target platform
             end else if FileExistsCached(Group.Filename) then begin
               // lpk exists
             end;
@@ -686,7 +695,7 @@ begin
             if Group.Name<>'' then
               s:=s+' of '+Group.Name;
             if FileExistsCached(Item.DUnit.Filename) then begin
-              FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Filename);
+              FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Name+#10+Group.Filename);
               sl.Add(s);
             end;
           end;
@@ -711,9 +720,9 @@ procedure TCodyIdentifiersDlg.UpdateIdentifierInfo;
 var
   Identifier: string;
   UnitFilename: string;
-  GroupFilename: string;
+  GroupName, GroupFilename: string;
 begin
-  if FindSelectedItem(Identifier, UnitFilename, GroupFilename) then begin
+  if FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename) then begin
     if GroupFilename<>'' then
       UnitFilename:=CreateRelativePath(UnitFilename,ExtractFilePath(GroupFilename));
     UnitLabel.Caption:='Unit: '+UnitFilename;
@@ -749,13 +758,17 @@ begin
 end;
 
 function TCodyIdentifiersDlg.FindSelectedItem(out Identifier, UnitFilename,
-  GroupFilename: string): boolean;
+  GroupName, GroupFilename: string): boolean;
 var
   i: Integer;
   s: String;
   p: SizeInt;
 begin
   Result:=false;
+  Identifier:='';
+  UnitFilename:='';
+  GroupName:='';
+  GroupFilename:='';
   i:=ItemsListBox.ItemIndex;
   if (i<0) or (i>=FItems.Count) then exit;
   s:=FItems[i];
@@ -766,9 +779,11 @@ begin
   p:=Pos(#10,s);
   if p<1 then begin
     UnitFilename:=s;
-    GroupFilename:='';
   end else begin
     UnitFilename:=copy(s,1,p-1);
+    System.Delete(s,1,p);
+    p:=Pos(#10,s);
+    GroupName:=copy(s,1,p-1);
     System.Delete(s,1,p);
     GroupFilename:=s;
   end;
@@ -805,9 +820,55 @@ begin
 end;
 
 procedure TCodyIdentifiersDlg.UseIdentifier;
+var
+  UnitSet: TFPCUnitSetCache;
+  NewUnitInPath: Boolean;
+  FPCSrcFilename: String;
 begin
   CurSrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if CurSrcEdit=nil then exit;
+
+  UpdateCurOwnerOfUnit;
+
+  // check if adding unit is possible
+  NewUnitInPath:=false;
+  if CompareFilenames(CurMainFilename,NewUnitFilename)=0 then
+    NewUnitInPath:=true; // same file
+  if (not NewUnitInPath)
+  and (CompareFilenames(ExtractFilePath(CurMainFilename),
+                        ExtractFilePath(NewUnitFilename))=0)
+  then
+    NewUnitInPath:=true; // same directory
+  if (not NewUnitInPath) and (CurUnitPath<>'')
+  and FilenameIsAbsolute(CurMainFilename)
+  and (FindPathInSearchPath(PChar(CurUnitPath),length(CurUnitPath),
+                            PChar(CurMainFilename),length(CurMainFilename))<>nil)
+  then
+    NewUnitInPath:=true; // in unit search path
+
+  UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
+  if not NewUnitInPath then begin
+    // new unit is not in the projects/package unit path
+    if NewGroupName=PackageNameFPCSrcDir then begin
+      // new unit is a FPC unit
+      FPCSrcFilename:=UnitSet.GetUnitSrcFile(ExtractFileNameOnly(NewUnitFilename));
+      if FPCSrcFilename='' then begin
+        // a FPC unit without a ppu file
+        // => ask for confirmation
+        if IDEQuestionDialog('FPC unit without ppu',
+          'This unit is located in the Free Pascal sources, but no ppu file is installed.'
+          +' Maybe this unit is not available for this target platform.',
+          mtConfirmation,[mrOk,'Extend unit path',mrCancel])<>mrOk then exit;
+      end else
+        NewUnitInPath:=true;
+    end else if NewGroupName<>'' then begin
+      // new unit is part of a package
+
+    end else begin
+      // new unit is a rogue unit (no package)
+    end;
+  end;
+
   CurSrcEdit.BeginUndoBlock;
   try
     // insert or replace identifier
@@ -823,11 +884,12 @@ begin
       CurMainFilename:=CurSrcEdit.FileName;
       CurMainCode:=TCodeBuffer(CurSrcEdit.CodeToolsBuffer);
     end;
-    UpdateCurOwnerOfUnit;
 
     if CurOwner<>nil then begin
-      // ToDo: add dependency
+      // ToDo: add dependency or extend unit path
+      if not NewUnitInPath then begin
 
+      end;
     end;
 
     AddToUsesSection;
@@ -901,16 +963,6 @@ begin
   except
   end;
   CurNode:=CurTool.FindDeepestNodeAtPos(CurCleanPos,false);
-end;
-
-function TCodyIdentifiersDlg.GetFPCSrcDir(const Directory: string): string;
-var
-  UnitSet: TFPCUnitSetCache;
-begin
-  Result:='';
-  UnitSet:=CodeToolBoss.GetUnitSetForDirectory(Directory);
-  if (UnitSet<>nil) then
-    Result:=ChompPathDelim(UnitSet.FPCSourceDirectory);
 end;
 
 finalization

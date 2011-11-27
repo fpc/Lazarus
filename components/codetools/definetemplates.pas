@@ -842,7 +842,7 @@ type
     function GetSourceDuplicates(AutoUpdate: boolean): TStringToStringTree; // unit to semicolon separated list of files
     function GetUnitSrcFile(const AnUnitName: string;
                             MustHavePPU: boolean = true;
-                            SkipPPUCheckIfNoneExists: boolean = true): string;
+                            SkipPPUCheckIfTargetIsSourceOnly: boolean = true): string;
     function GetCompiledUnitFile(const AUnitName: string): string;
     property ChangeStamp: integer read FChangeStamp;
     class function GetInvalidChangeStamp: integer;
@@ -8291,7 +8291,7 @@ begin
 end;
 
 function TFPCUnitSetCache.GetUnitSrcFile(const AnUnitName: string;
-  MustHavePPU: boolean; SkipPPUCheckIfNoneExists: boolean): string;
+  MustHavePPU: boolean; SkipPPUCheckIfTargetIsSourceOnly: boolean): string;
 var
   Tree: TStringToStringTree;
   ConfigCache: TFPCTargetConfigCache;
@@ -8319,7 +8319,7 @@ begin
         {$IFDEF ShowTriedUnits}
         debugln(['TFPCUnitSetCache.GetUnitSrcFile Unit="',AnUnitName,'" there are no ppu files for this target']);
         {$ENDIF}
-        if not SkipPPUCheckIfNoneExists then
+        if not SkipPPUCheckIfTargetIsSourceOnly then
           exit;
         // => search directly in the sources
         // this allows cross editing even if FPC is not installed for this target
