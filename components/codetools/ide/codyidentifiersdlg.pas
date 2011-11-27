@@ -112,6 +112,7 @@ type
   TCodyIdentifiersDlg = class(TForm)
     ButtonPanel1: TButtonPanel;
     FilterEdit: TEdit;
+    HideOtherProjectsCheckBox: TCheckBox;
     InfoLabel: TLabel;
     ItemsListBox: TListBox;
     PackageLabel: TLabel;
@@ -124,11 +125,13 @@ type
       {%H-}Shift: TShiftState);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure HideOtherProjectsCheckBoxChange(Sender: TObject);
     procedure ItemsListBoxClick(Sender: TObject);
     procedure ItemsListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
   private
     FLastFilter: string;
+    FLastHideOtherProjects: boolean;
     FIdleConnected: boolean;
     FMaxItems: integer;
     FNoFilterText: string;
@@ -147,8 +150,8 @@ type
     function GetFPCSrcDir(const Directory: string): string;
   public
     CurIdentifier: string;
-    CurIdentStart: integer;
-    CurIdentEnd: integer;
+    CurIdentStart: integer; // column
+    CurIdentEnd: integer; // column
     CurInitError: TCUParseError;
     CurTool: TCodeTool;
     CurCleanPos: integer;
@@ -571,6 +574,12 @@ begin
   FMaxItems:=20;
   FNoFilterText:=crsFilter;
   FItems:=TStringList.Create;
+  HideOtherProjectsCheckBox.Checked:=true;
+end;
+
+procedure TCodyIdentifiersDlg.HideOtherProjectsCheckBoxChange(Sender: TObject);
+begin
+  IdleConnected:=true;
 end;
 
 procedure TCodyIdentifiersDlg.ItemsListBoxClick(Sender: TObject);
@@ -590,7 +599,8 @@ begin
     CodyUnitDictionary.Load;
     UpdateGeneralInfo;
   end;
-  if FLastFilter<>GetFilterEditText then
+  if (FLastFilter<>GetFilterEditText)
+  or (FLastHideOtherProjects<>HideOtherProjectsCheckBox.Checked) then
     UpdateItemsList;
   IdleConnected:=false;
 end;
@@ -629,7 +639,11 @@ var
   UseGroup: Boolean;
 begin
   Filter:=GetFilterEditText;
+  FLastFilter:=Filter;
   FilterP:=PChar(Filter);
+
+  FLastHideOtherProjects:=HideOtherProjectsCheckBox.Checked;
+
   FItems.Clear;
   sl:=TStringList.Create;
   try
@@ -655,6 +669,7 @@ begin
               // => check if it is the current one
               Dir:=ExtractFilePath(Group.Filename);
               UseGroup:=CompareFilenames(Dir,FPCSrcDir)=0;
+              // ToDo: check if ppu is there
             end else if FileExistsCached(Group.Filename) then begin
               // lpk exists
               UseGroup:=true;
@@ -774,6 +789,7 @@ begin
       CurIdentifier:=copy(Line,CurIdentStart,CurIdentEnd-CurIdentStart);
   end;
 
+  GetCurOwnerOfUnit;
   UpdateGeneralInfo;
   FLastFilter:='...'; // force one update
   if CurIdentifier='' then
@@ -831,11 +847,19 @@ procedure TCodyIdentifiersDlg.GetCurOwnerOfUnit;
   end;
 
 begin
+  CurOwner:=nil;
   if CurMainFilename='' then exit;
   GetBest(PackageEditingInterface.GetOwnersOfUnit(CurMainFilename));
   if CurOwner=nil then
     GetBest(PackageEditingInterface.GetPossibleOwnersOfUnit(CurMainFilename,
              [piosfIncludeSourceDirectories]));
+  if CurOwner<>nil then begin
+    if CurOwner is TLazProject then begin
+      //TLazProject(CurOwner).LazCompilerOptions.GetUnitOutputDirectory();
+    end else if CurOwner is TIDEPackage then begin
+      //TIDEPackage(CurOwner);
+    end;
+  end;
 end;
 
 procedure TCodyIdentifiersDlg.AddToUsesSection;
