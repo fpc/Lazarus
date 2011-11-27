@@ -5419,6 +5419,7 @@ lcl/interfaces/customdrawn/Makefile.fpc svneol=native#text/plain
 lcl/interfaces/customdrawn/alllclintfunits.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/android/android_native_app_glue.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/android/asset_manager.pas svneol=native#text/pascal
+lcl/interfaces/customdrawn/android/bitmap.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/android/configuration.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/android/egl.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/android/eglplatform.pas svneol=native#text/pascal

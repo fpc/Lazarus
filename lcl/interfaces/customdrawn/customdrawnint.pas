@@ -35,8 +35,9 @@ uses
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, customdrawn_x11proc,{unitxft, Xft font support}{$endif}
   {$ifdef CD_Android}
-  customdrawn_androidproc,
   cmem,
+  customdrawn_androidproc,
+  {$ifdef CD_Android_NativeApp}
   gles,
   egl,
   native_activity,
@@ -44,6 +45,10 @@ uses
   looper,
   input,
   android_native_app_glue,
+  {$else}
+  jni,
+  bitmap,
+  {$endif}
   log,
   {$endif}
   // Widgetset
@@ -195,6 +200,15 @@ var
 {$ifdef CD_WINDOWS}
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult; stdcall;
+{$endif}
+
+{$ifndef CD_Android_NATIVEAPP}
+function Java_com_pascal_jnitest_AndroidJNITest_stringFromJNI(env:PJNIEnv;this:jobject):jstring; cdecl;
+function Java_com_pascal_jnitest_AndroidJNITest_intFromJNI(env:PJNIEnv;this:jobject): jint; cdecl;
+function Java_com_pascal_jnitest_AndroidJNITest_LCLDrawToBitmap(
+    env:PJNIEnv;this:jobject; width, height: jint; abitmap: jobject): jint; cdecl;
+function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
+procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;
 {$endif}
 
 implementation
