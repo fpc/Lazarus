@@ -267,6 +267,10 @@ msgstr "Gbytes"
 msgid "&Help"
 msgstr "&Ajuda"
 
+#: codystrconsts.crshideunitsofotherprojects
+msgid "Hide units of other projects"
+msgstr ""
+
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
 msgstr "Na implementação"

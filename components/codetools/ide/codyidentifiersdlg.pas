@@ -45,7 +45,7 @@ interface
 uses
   Classes, SysUtils, FileProcs, LResources, LCLProc, avl_tree, Forms, Controls,
   Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
-  PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf,
+  PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf, CompOptsIntf,
   CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
   CodeTree, LinkScanner, DefineTemplates,
   CodyStrConsts, CodyUtils;
@@ -144,7 +144,7 @@ type
     function GetFilterEditText: string;
     function FindSelectedItem(out Identifier, UnitFilename,
       GroupFilename: string): boolean;
-    procedure GetCurOwnerOfUnit;
+    procedure UpdateCurOwnerOfUnit;
     procedure AddToUsesSection;
     procedure UpdateTool;
     function GetFPCSrcDir(const Directory: string): string;
@@ -160,10 +160,14 @@ type
     CurSrcEdit: TSourceEditorInterface;
     CurMainFilename: string; // if CurSrcEdit is an include file, then CurMainFilename<>CurSrcEdit.Filename
     CurMainCode: TCodeBuffer;
+
     CurOwner: TObject;
+    CurUnitPath: String; // depends on CurOwner
+
     NewIdentifier: string;
     NewUnitFilename: string;
     NewGroupFilename: string;
+
     function Init: boolean;
     procedure UseIdentifier;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -575,6 +579,7 @@ begin
   FNoFilterText:=crsFilter;
   FItems:=TStringList.Create;
   HideOtherProjectsCheckBox.Checked:=true;
+  HideOtherProjectsCheckBox.Caption:=crsHideUnitsOfOtherProjects;
 end;
 
 procedure TCodyIdentifiersDlg.HideOtherProjectsCheckBoxChange(Sender: TObject);
@@ -625,7 +630,6 @@ end;
 
 procedure TCodyIdentifiersDlg.UpdateItemsList;
 var
-  Filter: String;
   Node: TAVLTreeNode;
   FilterP: PChar;
   sl: TStringList;
@@ -636,11 +640,9 @@ var
   Group: TUDUnitGroup;
   FPCSrcDir: String;
   Dir: String;
-  UseGroup: Boolean;
 begin
-  Filter:=GetFilterEditText;
-  FLastFilter:=Filter;
-  FilterP:=PChar(Filter);
+  FLastFilter:=GetFilterEditText;
+  FilterP:=PChar(FLastFilter);
 
   FLastHideOtherProjects:=HideOtherProjectsCheckBox.Checked;
 
@@ -660,30 +662,33 @@ begin
           GroupNode:=Item.DUnit.UnitGroups.FindLowest;
           while GroupNode<>nil do begin
             Group:=TUDUnitGroup(GroupNode.Data);
-            UseGroup:=false;
+            GroupNode:=Item.DUnit.UnitGroups.FindSuccessor(GroupNode);
+            if not FilenameIsAbsolute(Item.DUnit.Filename) then continue;
             if Group.Name='' then begin
               // it's a unit without package
-              UseGroup:=true
+              if FLastHideOtherProjects then begin
+                // check if unit is in unit path of current owner
+                if CurUnitPath='' then continue;
+                if FindPathInSearchPath(PChar(CurUnitPath),length(CurUnitPath),
+                    PChar(CurUnitPath),length(CurUnitPath))=nil
+                then continue;
+              end;
             end else if Group.Name=PackageNameFPCSrcDir then begin
               // it's a FPC source directory
               // => check if it is the current one
               Dir:=ExtractFilePath(Group.Filename);
-              UseGroup:=CompareFilenames(Dir,FPCSrcDir)=0;
+              if CompareFilenames(Dir,FPCSrcDir)<>0 then continue;
               // ToDo: check if ppu is there
             end else if FileExistsCached(Group.Filename) then begin
               // lpk exists
-              UseGroup:=true;
             end;
-            if UseGroup then begin
-              s:=Item.Name+' in '+Item.DUnit.Name;
-              if Group.Name<>'' then
-                s:=s+' of '+Group.Name;
-              if FileExistsCached(Item.DUnit.Filename) then begin
-                FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Filename);
-                sl.Add(s);
-              end;
+            s:=Item.Name+' in '+Item.DUnit.Name;
+            if Group.Name<>'' then
+              s:=s+' of '+Group.Name;
+            if FileExistsCached(Item.DUnit.Filename) then begin
+              FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Filename);
+              sl.Add(s);
             end;
-            GroupNode:=Item.DUnit.UnitGroups.FindSuccessor(GroupNode);
           end;
         end;
       end;
@@ -789,7 +794,7 @@ begin
       CurIdentifier:=copy(Line,CurIdentStart,CurIdentEnd-CurIdentStart);
   end;
 
-  GetCurOwnerOfUnit;
+  UpdateCurOwnerOfUnit;
   UpdateGeneralInfo;
   FLastFilter:='...'; // force one update
   if CurIdentifier='' then
@@ -818,7 +823,7 @@ begin
       CurMainFilename:=CurSrcEdit.FileName;
       CurMainCode:=TCodeBuffer(CurSrcEdit.CodeToolsBuffer);
     end;
-    GetCurOwnerOfUnit;
+    UpdateCurOwnerOfUnit;
 
     if CurOwner<>nil then begin
       // ToDo: add dependency
@@ -831,7 +836,7 @@ begin
   end;
 end;
 
-procedure TCodyIdentifiersDlg.GetCurOwnerOfUnit;
+procedure TCodyIdentifiersDlg.UpdateCurOwnerOfUnit;
 
   procedure GetBest(OwnerList: TFPList);
   var
@@ -846,6 +851,8 @@ procedure TCodyIdentifiersDlg.GetCurOwnerOfUnit;
     OwnerList.Free;
   end;
 
+var
+  CompOpts: TLazCompilerOptions;
 begin
   CurOwner:=nil;
   if CurMainFilename='' then exit;
@@ -854,11 +861,13 @@ begin
     GetBest(PackageEditingInterface.GetPossibleOwnersOfUnit(CurMainFilename,
              [piosfIncludeSourceDirectories]));
   if CurOwner<>nil then begin
+    CompOpts:=nil;
     if CurOwner is TLazProject then begin
-      //TLazProject(CurOwner).LazCompilerOptions.GetUnitOutputDirectory();
+      CompOpts:=TLazProject(CurOwner).LazCompilerOptions;
     end else if CurOwner is TIDEPackage then begin
-      //TIDEPackage(CurOwner);
+      CompOpts:=TIDEPackage(CurOwner).LazCompilerOptions;
     end;
+    CurUnitPath:=CompOpts.GetUnitPath(false);
   end;
 end;
 

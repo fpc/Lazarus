@@ -267,6 +267,10 @@ msgstr "ГБ"
 msgid "&Help"
 msgstr "&Справка"
 
+#: codystrconsts.crshideunitsofotherprojects
+msgid "Hide units of other projects"
+msgstr ""
+
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
 msgstr "В секции Implementation"

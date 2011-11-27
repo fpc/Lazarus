@@ -164,6 +164,7 @@ resourcestring
   crsOptions = 'Options';
   crsRefresh = 'Refresh';
   crsFilter = '(Filter)';
+  crsHideUnitsOfOtherProjects = 'Hide units of other projects';
   crsUseIdentifier = 'Use identifier';
   crsAndMoreIdentifiers = '... and %s more identifiers';
   crsCodyIdentifierDictionary = 'Cody Identifier Dictionary';

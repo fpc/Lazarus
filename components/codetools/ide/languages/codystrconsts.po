@@ -253,6 +253,10 @@ msgstr ""
 msgid "&Help"
 msgstr ""
 
+#: codystrconsts.crshideunitsofotherprojects
+msgid "Hide units of other projects"
+msgstr ""
+
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
 msgstr ""
