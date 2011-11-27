@@ -298,7 +298,10 @@ type
     class function InvalidChangeStamp: int64;
     procedure AddOnChangedHandler(const Handler: TNotifyEvent);
     procedure RemoveOnChangedHandler(const Handler: TNotifyEvent);
-
+  public
+    function GetEffectiveTargetOS: string; virtual; abstract;
+    function GetEffectiveTargetCPU: string; virtual; abstract;
+  public
     // search paths:
     property IncludePath: String read GetIncludePaths write SetIncludePaths; // alias IncPath
     property Libraries: String read GetLibraryPaths write SetLibraryPaths; // alias LibraryPath

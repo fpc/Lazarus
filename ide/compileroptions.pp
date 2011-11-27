@@ -524,8 +524,8 @@ type
     function GetDefaultMainSourceFileName: string; virtual;
     function CanBeDefaulForProject: boolean; virtual;
     function NeedsLinkerOpts: boolean;
-    function GetEffectiveTargetOS: string;
-    function GetEffectiveTargetCPU: string;
+    function GetEffectiveTargetOS: string; override;
+    function GetEffectiveTargetCPU: string; override;
     function GetUnitPath(RelativeToBaseDir: boolean;
                          Parsed: TCompilerOptionsParseType = coptParsed;
                          WithBaseDir: boolean = true): string;
