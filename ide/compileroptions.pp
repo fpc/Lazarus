@@ -222,12 +222,6 @@ type
   TLocalSubstitutionEvent = function(const s: string;
                                 PlatformIndependent: boolean): string of object;
 
-  TCompilerOptionsParseType = (
-    coptUnparsed,  // no macros resolved
-    coptParsed,    // all macros resolved
-    coptParsedPlatformIndependent // all but platform macros resolved
-    );
-    
   TInheritedCompOptsParseTypesStrings =
     array[TCompilerOptionsParseType] of TInheritedCompOptsStrings;
 
@@ -528,25 +522,25 @@ type
     function GetEffectiveTargetCPU: string; override;
     function GetUnitPath(RelativeToBaseDir: boolean;
                          Parsed: TCompilerOptionsParseType = coptParsed;
-                         WithBaseDir: boolean = true): string;
+                         WithBaseDir: boolean = true): string; override;
     function GetIncludePath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed;
-                            WithBaseDir: boolean = true): string;
+                            WithBaseDir: boolean = true): string; override;
     function GetSrcPath(RelativeToBaseDir: boolean;
                         Parsed: TCompilerOptionsParseType = coptParsed;
-                        WithBaseDir: boolean = true): string;
+                        WithBaseDir: boolean = true): string; override;
     function GetDebugPath(RelativeToBaseDir: boolean;
                           Parsed: TCompilerOptionsParseType = coptParsed;
-                          WithBaseDir: boolean = true): string;
+                          WithBaseDir: boolean = true): string; override;
     function GetLibraryPath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed;
-                            WithBaseDir: boolean = true): string;
+                            WithBaseDir: boolean = true): string; override;
     function GetUnitOutputDirectory(RelativeToBaseDir: boolean): string; override;
     function GetUnitOutPath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetObjectPath(RelativeToBaseDir: boolean;
                            Parsed: TCompilerOptionsParseType = coptParsed;
-                           WithBaseDir: boolean = true): string;
+                           WithBaseDir: boolean = true): string; override;
     function GetPath(Option: TParsedCompilerOptString;
                      InheritedOption: TInheritedCompilerOption;
                      RelativeToBaseDir: boolean;

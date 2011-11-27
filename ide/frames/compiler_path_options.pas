@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Dialogs, Graphics,
   Buttons, StdCtrls, LCLType, InterfaceBase,
-  IDEOptionsIntf, MacroIntf, IDEDialogs,
+  IDEOptionsIntf, MacroIntf, IDEDialogs, CompOptsIntf,
   Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg, LazConf,
   IDEProcs, CheckCompilerOpts, ShowCompilerOpts, MainIntf;
 

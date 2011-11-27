@@ -36,7 +36,9 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, FileUtil, IDEProcs, CodeToolManager,
-  DefineTemplates, CompilerOptions, TransferMacros, LinkScanner,
+  DefineTemplates, LinkScanner,
+  CompOptsIntf,
+  CompilerOptions, TransferMacros,
   LazarusIDEStrConsts;
 
 

@@ -91,6 +91,12 @@ type
 
   TCompilerDbgSymbolType = (dsAuto, dsStabs, dsDwarf2, dsDwarf2Set, dsDwarf3);
 
+  TCompilerOptionsParseType = (
+    coptUnparsed,  // no macros resolved
+    coptParsed,    // all macros resolved
+    coptParsedPlatformIndependent // all but platform macros resolved
+    );
+
 const
   crAll = [crCompile, crBuild, crRun];
 
@@ -301,6 +307,24 @@ type
   public
     function GetEffectiveTargetOS: string; virtual; abstract;
     function GetEffectiveTargetCPU: string; virtual; abstract;
+    function GetUnitPath(RelativeToBaseDir: boolean;
+                         Parsed: TCompilerOptionsParseType = coptParsed;
+                         WithBaseDir: boolean = true): string; virtual; abstract;
+    function GetIncludePath(RelativeToBaseDir: boolean;
+                            Parsed: TCompilerOptionsParseType = coptParsed;
+                            WithBaseDir: boolean = true): string; virtual; abstract;
+    function GetSrcPath(RelativeToBaseDir: boolean;
+                        Parsed: TCompilerOptionsParseType = coptParsed;
+                        WithBaseDir: boolean = true): string; virtual; abstract;
+    function GetDebugPath(RelativeToBaseDir: boolean;
+                          Parsed: TCompilerOptionsParseType = coptParsed;
+                          WithBaseDir: boolean = true): string; virtual; abstract;
+    function GetLibraryPath(RelativeToBaseDir: boolean;
+                            Parsed: TCompilerOptionsParseType = coptParsed;
+                            WithBaseDir: boolean = true): string; virtual; abstract;
+    function GetObjectPath(RelativeToBaseDir: boolean;
+                           Parsed: TCompilerOptionsParseType = coptParsed;
+                           WithBaseDir: boolean = true): string; virtual; abstract;
   public
     // search paths:
     property IncludePath: String read GetIncludePaths write SetIncludePaths; // alias IncPath
