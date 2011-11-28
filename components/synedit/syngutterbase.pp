@@ -76,7 +76,7 @@ type
       default 0;
     property RightOffset: integer read FRightOffset write SetRightOffset
       default 0;
-property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
   public
     property Parts: TSynGutterPartListBase read FGutterPartList write SetGutterParts;
