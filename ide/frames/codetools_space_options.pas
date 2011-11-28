@@ -108,15 +108,11 @@ end;
 
 procedure TCodetoolsSpaceOptionsFrame.WriteBeautifyCodeOptions(
   Options: TBeautifyCodeOptions);
-var
-  ACodeToolsOptions: TCodeToolsOptions;
 begin
-  ACodeToolsOptions := TCodeToolsOptions.Create;
-  try
-    WriteSettings(ACodeToolsOptions);
-    Options.Assign(ACodeToolsOptions);
-  finally
-    ACodeToolsOptions.Free;
+  with Options do
+  begin
+    DoInsertSpaceInFront := ReadAtomCheckBoxes(DoInsertSpaceInFrontGroupBox);
+    DoInsertSpaceAfter := ReadAtomCheckBoxes(DoInsertSpaceAfterGroupBox);
   end;
 end;
 
