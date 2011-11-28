@@ -147,6 +147,7 @@ type
     procedure UpdateCurOwnerOfUnit;
     procedure AddToUsesSection;
     procedure UpdateTool;
+    function GetCurOwnerCompilerOptions: TLazCompilerOptions;
   public
     CurIdentifier: string;
     CurIdentStart: integer; // column
@@ -824,6 +825,37 @@ var
   UnitSet: TFPCUnitSetCache;
   NewUnitInPath: Boolean;
   FPCSrcFilename: String;
+  CompOpts: TLazCompilerOptions;
+  UnitPathAdd: String;
+  Pkg: TIDEPackage;
+
+  function AddDependency: boolean;
+  // returns false to abort
+  var
+    Pkg: TIDEPackage;
+  begin
+    Result:=true;
+    Pkg:=PackageEditingInterface.FindPackageWithName(NewGroupName);
+    if (Pkg=nil) or (CompareFilenames(Pkg.Filename,NewGroupFilename)<>0) then
+    begin
+      if PackageEditingInterface.DoOpenPackageFile(NewGroupFilename,
+        [pofDoNotOpenEditor],false)<>mrOK
+      then begin
+        debugln(['TCodyIdentifiersDlg.UseIdentifier: DoOpenPackageFile faield']);
+        exit(false);
+      end;
+      Pkg:=PackageEditingInterface.FindPackageWithName(NewGroupName);
+      if Pkg=nil then begin
+        IDEMessageDialog('Package not found',
+          'Package "'+NewGroupName+'" not found. It should be in "'+NewGroupFilename+'".',
+          mtError,[mbCancel]);
+        exit(false);
+      end;
+    end;
+    // ToDo add dependency
+
+  end;
+
 begin
   CurSrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if CurSrcEdit=nil then exit;
@@ -832,6 +864,10 @@ begin
 
   // check if adding unit is possible
   NewUnitInPath:=false;
+  UnitPathAdd:=ChompPathDelim(
+    CreateRelativePath(ExtractFilePath(CurMainFilename),
+                       ExtractFilePath(NewUnitFilename)));
+
   if CompareFilenames(CurMainFilename,NewUnitFilename)=0 then
     NewUnitInPath:=true; // same file
   if (not NewUnitInPath)
@@ -863,7 +899,25 @@ begin
         NewUnitInPath:=true;
     end else if NewGroupName<>'' then begin
       // new unit is part of a package
-
+      Pkg:=PackageEditingInterface.FindPackageWithName(NewGroupName);
+      if (Pkg<>nil) and (CompareFilenames(Pkg.Filename,NewGroupFilename)<>0) then
+      begin
+        if Pkg=CurOwner then begin
+          IDEMessageDialog('Impossible dependency',
+            'The unit "'+CurMainFilename+'"'#13
+            +' is part of "'+Pkg.Filename+'".'#13
+            +'It can not use another package with the same name:'#13
+            +'"'+NewGroupFilename+'"',mtError,[mbCancel]);
+          exit;
+        end;
+        if IDEQuestionDialog('Package with same name',
+          'There is already another package loaded with the same name.'#13
+          +'Open package: '+Pkg.Filename+#13
+          +'New package: '+NewGroupFilename+#13
+          +'Only one package can be loaded at a time.',
+          mtConfirmation,[mrCancel,'Cancel',mrOk,'Close other package and open new'])<>mrOk
+        then exit;
+      end;
     end else begin
       // new unit is a rogue unit (no package)
     end;
@@ -885,10 +939,17 @@ begin
       CurMainCode:=TCodeBuffer(CurSrcEdit.CodeToolsBuffer);
     end;
 
-    if CurOwner<>nil then begin
-      // ToDo: add dependency or extend unit path
-      if not NewUnitInPath then begin
-
+    if (CurOwner<>nil) and (not NewUnitInPath) then begin
+      if (NewGroupName<>'') and (NewGroupName<>PackageNameFPCSrcDir) then begin
+        // add dependency
+        if not AddDependency then exit;
+      end else if FilenameIsAbsolute(NewUnitFilename)
+      and FilenameIsAbsolute(CurMainFilename) then begin
+        // extend unit path
+        CompOpts:=GetCurOwnerCompilerOptions;
+        if CompOpts<>nil then begin
+          CompOpts.OtherUnitFiles:=CompOpts.OtherUnitFiles+';'+UnitPathAdd;
+        end;
       end;
     end;
 
@@ -923,13 +984,9 @@ begin
     GetBest(PackageEditingInterface.GetPossibleOwnersOfUnit(CurMainFilename,
              [piosfIncludeSourceDirectories]));
   if CurOwner<>nil then begin
-    CompOpts:=nil;
-    if CurOwner is TLazProject then begin
-      CompOpts:=TLazProject(CurOwner).LazCompilerOptions;
-    end else if CurOwner is TIDEPackage then begin
-      CompOpts:=TIDEPackage(CurOwner).LazCompilerOptions;
-    end;
-    CurUnitPath:=CompOpts.GetUnitPath(false);
+    CompOpts:=GetCurOwnerCompilerOptions;
+    if CompOpts<>nil then
+      CurUnitPath:=CompOpts.GetUnitPath(false);
   end;
 end;
 
@@ -963,6 +1020,16 @@ begin
   except
   end;
   CurNode:=CurTool.FindDeepestNodeAtPos(CurCleanPos,false);
+end;
+
+function TCodyIdentifiersDlg.GetCurOwnerCompilerOptions: TLazCompilerOptions;
+begin
+  if CurOwner is TLazProject then
+    Result:=TLazProject(CurOwner).LazCompilerOptions
+  else if CurOwner is TIDEPackage then
+    Result:=TIDEPackage(CurOwner).LazCompilerOptions
+  else
+    Result:=nil;
 end;
 
 finalization
