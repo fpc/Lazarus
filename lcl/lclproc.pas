@@ -357,10 +357,16 @@ procedure LCLGetLanguageIDs(var Lang, FallbackLang: String);
 function CreateFirstIdentifier(const Identifier: string): string;
 function CreateNextIdentifier(const Identifier: string): string;
 
+type
+  TDebugLnProc = procedure (s: string) of object;
+
 var
   DebugLnMaxNestPrefixLen: Integer = 15;
   DebugLnNestLvlIndent: Integer = 2;
   DebugText: ^Text;
+
+  DebugLnProc: TDebugLnProc = nil;
+  DebugOutProc: TDebugLnProc = nil;
 
 implementation
 
@@ -1482,6 +1488,14 @@ begin
   else
     DbgAppendToFile(ExtractFilePath(ParamStr(0)) + Str_LCL_Debug_File, s);
   {$else}
+  // First of all verify if a widgetset has override DebugLn
+  if DebugLnProc <> nil then
+  begin
+    DebugLnProc(s);
+    Exit;
+  end;
+
+  // Now the default code
   if not Assigned(DebugText) then exit;
   if DebugNestAtBOL and (s <> '') then
     write(DebugText^, DebugNestPrefix);
@@ -1714,6 +1728,12 @@ begin
     DbgAppendToFileWithoutLn(ExtractFilePath(ParamStr(0)) + Str_LCL_Debug_File, DebugNestPrefix);
   DbgAppendToFileWithoutLn(ExtractFilePath(ParamStr(0)) + Str_LCL_Debug_File, s);
   {$else}
+  if DebugOutProc <> nil then
+  begin
+    DebugOutProc(s);
+    Exit;
+  end;
+
   if Assigned(DebugText) then begin
     if DebugNestAtBOL and (s <> '') then
       write(DebugText^, DebugNestPrefix);
