@@ -3,6 +3,13 @@
 {$modeswitch objectivec1}
 {$endif}
 
+// For now default to Android for arm-linux,
+// because LCL-CustomDrawn is our main Android widgetset.
+// Remove this when Android gets it's own target
+{$ifdef UNIX}{$ifndef Darwin}{$ifdef ARM}
+  {$define Android}
+{$endif}{$endif}{$endif}
+
 // Check if a backend is already defined
 {$if defined(CD_X11)}
 {$else}

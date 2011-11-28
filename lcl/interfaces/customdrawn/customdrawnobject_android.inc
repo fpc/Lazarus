@@ -31,6 +31,7 @@ end;}
 const
   ACTION_DOWN = 0;
   ACTION_UP = 1;
+  ACTION_MOVE = 2;
 
 function Java_com_pascal_lclproject_LCLActivity_LCLOnTouch(env:PJNIEnv;this:jobject; x, y: single; action: jint): jint; cdecl;
 var
@@ -39,7 +40,9 @@ var
 begin
   eventResult := 0;
 
-  __android_log_write(ANDROID_LOG_INFO,'nativetest','LCLOnTouch called');
+  {$ifdef VerboseCDEvents}
+  __android_log_write(ANDROID_LOG_INFO,'lclproject',PChar(Format('LCLOnTouch called x=%f y=%f action=%d', [x, y, action])));
+  {$endif}
 {  curJavaClass := env^^.GetObjectClass(env, this);
   __android_log_write(ANDROID_LOG_INFO,'nativetest','LCLOnTouch after GetObjectClass');}
   curJavaObject := this;
@@ -55,6 +58,7 @@ begin
       LCLSendMouseUpMsg(lTarget, Round(X), Round(Y), mbLeft, []);
       LCLSendClickedMsg(lTarget);
     end;
+    ACTION_MOVE: LCLSendMouseMoveMsg(lTarget, Round(X), Round(Y), []);
   end;
 
   Result := eventResult;
@@ -82,8 +86,8 @@ begin
     {$IFDEF VerboseCDPaintProfiler}
     //lTimeStart := NowUTC();
     {$ENDIF}
-    {$IFDEF VerboseCDForms}
-     //DebugLn(Format('[TCDWSCustomForm.EvPaint] AWindowInfo: %x', [PtrInt(AWindowInfo)]));
+    {$IFDEF VerboseCDPaintEvent}
+    DebugLn(Format('[Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap] lCurForm:TCDNonNativeForm=%x', [PtrInt(lCurForm)]));
     {$ENDIF}
 
     FillChar(struct, SizeOf(TPaintStruct), 0);
@@ -94,12 +98,12 @@ begin
     struct.hdc := HDC(lCurForm.Canvas);
 
     // Send the paint message to the LCL
-    {$IFDEF VerboseCDForms}
-     //DebugLn(Format('[TCDWSCustomForm.EvPaint] OnPaint event started context: %x', [struct.hdc]));
+    {$IFDEF VerboseCDPaintEvent}
+    //DebugLn(Format('[TCDWSCustomForm.EvPaint] OnPaint event started context: %x', [struct.hdc]));
     {$ENDIF}
     LCLSendPaintMsg(lCurForm.LCLForm, struct.hdc, @struct);
-    {$IFDEF VerboseCDForms}
-     //DebugLn('[TCDWSCustomForm.EvPaint] OnPaint event ended');
+    {$IFDEF VerboseCDPaintEvent}
+    //DebugLn('[TCDWSCustomForm.EvPaint] OnPaint event ended');
     {$ENDIF}
 
     // Now paint all child win controls
