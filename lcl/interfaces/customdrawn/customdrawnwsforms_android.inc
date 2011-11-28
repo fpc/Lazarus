@@ -33,14 +33,14 @@ var
   lWindowInfo: TAndroidWindowInfo;
   AForm: TCustomForm absolute AWinControl;
 begin
-  {$ifdef VerboseCDWindow}
+  {$ifdef VerboseCDForms}
   DebugLn(Format(':>[TCDWSCustomForm.CreateHandle] AWinControl=%x Name=%s: %s',
     [PtrInt(AWinControl), AWinControl.Name, AWinControl.ClassName]));
   {$endif}
 
   Result := TLCLIntfhandle(AddNewForm(TCustomForm(AWinControl)));
 
-  {$ifdef VerboseCDWindow}
+  {$ifdef VerboseCDForms}
   DebugLn(Format(':<[TCDWSCustomForm.CreateHandle] Result=%x',
     [Result]));
   {$endif}
@@ -65,7 +65,7 @@ end;
 class procedure TCDWSCustomForm.SetBounds(const AWinControl: TWinControl;
     const ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  {$ifdef VerboseCDWindow}
+  {$ifdef VerboseCDForms}
   DebugLn(Format('[TCDWSCustomForm.SetBounds] AWinControl=%x ALeft=%d ATop=%d AWidth=%d AHeight=%d',
     [PtrInt(AWinControl), ALeft, ATop, AWidth, AHeight]));
   {$endif}
@@ -88,7 +88,7 @@ class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
 begin
   if AWinControl.Visible then
   begin
-    {$ifdef VerboseCDWindow}
+    {$ifdef VerboseCDForms}
     DebugLn(Format('[TCDWSCustomForm.ShowHide] Visible=True AWinControl=%x Handle=%x',
       [PtrInt(AWinControl), PtrInt(AWinControl.Handle)]));
     {$endif}
@@ -96,7 +96,7 @@ begin
   end
   else
   begin
-    {$ifdef VerboseCDWindow}
+    {$ifdef VerboseCDForms}
     DebugLn(Format('[TCDWSCustomForm.ShowHide] Visible=False AWinControl=%x', [PtrInt(AWinControl)]));
     {$endif}
     HideForm(TCDNonNativeForm(AWinControl.Handle));

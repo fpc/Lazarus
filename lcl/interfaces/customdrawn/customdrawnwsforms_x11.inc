@@ -478,7 +478,7 @@ begin
 //    lDepth, ZPixmap, 0, PChar(ARawImage.Data),
 //    ADestWidth, ADestHeight, 8, 0);
 
-  {$IFDEF VerboseCDWindow}
+  {$IFDEF VerboseCDForms}
     DebugLn(Format('[TCDWSCustomForm.DrawRawImageToGC_XPutImage] XImage=%x Data=%x'
       + ' ColorDepth:%d Width=%d Height=%d ScanlineSize=%d'
       + ' red_mask=%x green_mask=%x blue_mask=%x',
@@ -607,7 +607,7 @@ begin
   {$IFDEF VerboseCDPaintProfiler}
   lTimeStart := NowUTC();
   {$ENDIF}
-  {$IFDEF VerboseCDWindow}
+  {$IFDEF VerboseCDForms}
     DebugLn(Format('[TCDWSCustomForm.EvPaint] AWindowInfo: %x', [PtrInt(AWindowInfo)]));
   {$ENDIF}
   if (AWinControl = nil) or (AWindowInfo = nil) then Exit;
@@ -618,7 +618,7 @@ begin
   FillChar(struct, SizeOf(TPaintStruct), 0);
 
   // Prepare the non-native image and canvas
-  {$IFDEF VerboseCDWindow}
+  {$IFDEF VerboseCDForms}
     DebugLn(Format('[TCDWSCustomForm.EvPaint] Visual: Red-Mask: %x Green-Mask: %x Blue-Mask: %x'
       + ' bits_per_rgb=%d c_class=%d',
       [AWindowInfo.Attr.visual^.red_mask, AWindowInfo.Attr.visual^.green_mask, AWindowInfo.Attr.visual^.blue_mask,
@@ -636,11 +636,11 @@ begin
   struct.hdc := HDC(AWindowInfo.Canvas);
 
   // Send the paint message to the LCL
-  {$IFDEF VerboseCDWindow}
+  {$IFDEF VerboseCDForms}
     DebugLn(Format('[TCDWSCustomForm.EvPaint] OnPaint event started context: %x', [struct.hdc]));
   {$ENDIF}
   LCLSendPaintMsg(AWinControl, struct.hdc, @struct);
-  {$IFDEF VerboseCDWindow}
+  {$IFDEF VerboseCDForms}
     DebugLn('[TCDWSCustomForm.EvPaint] OnPaint event ended');
   {$ENDIF}
 
@@ -738,7 +738,7 @@ var
   lWindow: TWindow;
   AForm: TCustomForm absolute AWinControl;
 begin
-  {$ifdef VerboseCDWindow}
+  {$ifdef VerboseCDForms}
   DebugLn(Format(':>[TCDWSCustomForm.CreateHandle] AWinControl=%x Name=%s: %s',
     [PtrInt(AWinControl), AWinControl.Name, AWinControl.ClassName]));
   {$endif}
@@ -842,7 +842,7 @@ begin
   CreateX11Canvas(lWindowInfo);
   Result := TLCLIntfHandle(lWindowInfo);
 
-  {$ifdef VerboseCDWindow}
+  {$ifdef VerboseCDForms}
   DebugLn(Format(':<[TCDWSCustomForm.CreateHandle] Result=%x',
     [Result]));
   {$endif}
@@ -867,7 +867,7 @@ end;
 class procedure TCDWSCustomForm.SetBounds(const AWinControl: TWinControl;
     const ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  {$ifdef VerboseCDWindow}
+  {$ifdef VerboseCDForms}
   DebugLn(Format('[TCDWSCustomForm.SetBounds] AWinControl=%x ALeft=%d ATop=%d AWidth=%d AHeight=%d',
     [PtrInt(AWinControl), ALeft, ATop, AWidth, AHeight]));
   {$endif}
@@ -899,7 +899,7 @@ begin
 
   if AWinControl.Visible then
   begin
-    {$ifdef VerboseCDWindow}
+    {$ifdef VerboseCDForms}
     DebugLn(Format('[TCDWSCustomForm.ShowHide] Visible=True AWinControl=%x Handle=%x',
       [PtrInt(AWinControl), PtrInt(AWinControl.Handle)]));
     {$endif}
@@ -907,7 +907,7 @@ begin
   end
   else
   begin
-    {$ifdef VerboseCDWindow}
+    {$ifdef VerboseCDForms}
     DebugLn(Format('[TCDWSCustomForm.ShowHide] Visible=False AWinControl=%x', [PtrInt(AWinControl)]));
     {$endif}
     // Don't remove it here, wait for a X11 Destroy event

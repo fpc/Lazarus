@@ -82,7 +82,7 @@ begin
     {$IFDEF VerboseCDPaintProfiler}
     //lTimeStart := NowUTC();
     {$ENDIF}
-    {$IFDEF VerboseCDWindow}
+    {$IFDEF VerboseCDForms}
      //DebugLn(Format('[TCDWSCustomForm.EvPaint] AWindowInfo: %x', [PtrInt(AWindowInfo)]));
     {$ENDIF}
 
@@ -94,11 +94,11 @@ begin
     struct.hdc := HDC(lCurForm.Canvas);
 
     // Send the paint message to the LCL
-    {$IFDEF VerboseCDWindow}
+    {$IFDEF VerboseCDForms}
      //DebugLn(Format('[TCDWSCustomForm.EvPaint] OnPaint event started context: %x', [struct.hdc]));
     {$ENDIF}
     LCLSendPaintMsg(lCurForm.LCLForm, struct.hdc, @struct);
-    {$IFDEF VerboseCDWindow}
+    {$IFDEF VerboseCDForms}
      //DebugLn('[TCDWSCustomForm.EvPaint] OnPaint event ended');
     {$ENDIF}
 
