@@ -98,18 +98,19 @@ begin
   lFormInfo.LCLForm := AForm;
   lFormInfo.Children := TFPList.Create;
   NonNativeForms.Insert(0, lFormInfo);
+  Result := lFormInfo;
 end;
 
 procedure ShowForm(ACDForm: TCDNonNativeForm);
 var
   lCount, lCurIndex: Integer;
 begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('ShowForm');
-  {$ENDIF}
   InitNonNativeForms();
   lCount := NonNativeForms.Count;
   lCurIndex := NonNativeForms.IndexOf(ACDForm);
+  {$IFDEF VerboseWinAPI}
+    DebugLn(Format('ShowForm lOldIndex=%d lNewIndex=%d', [lCurIndex, lCount-1]));
+  {$ENDIF}
   NonNativeForms.Move(lCurIndex, lCount-1);
 end;
 
@@ -120,6 +121,9 @@ begin
   InitNonNativeForms();
   lCount := NonNativeForms.Count;
   lCurIndex := NonNativeForms.IndexOf(ACDForm);
+  {$IFDEF VerboseWinAPI}
+    DebugLn(Format('HideForm lOldIndex=%d lNewIndex=0', [lCurIndex]));
+  {$ENDIF}
   NonNativeForms.Move(lCurIndex, 0);
 end;
 
