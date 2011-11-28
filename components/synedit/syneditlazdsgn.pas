@@ -234,6 +234,10 @@ begin
   RegisterClasses([TSynGutterPartList, TSynGutterSeparator, TSynGutterCodeFolding,
                   TSynGutterLineNumber, TSynGutterChanges, TSynGutterMarks]);
 
+  // property editor, with filter for deprecated values
+  RegisterPropertyEditor(TypeInfo(TSynEditorOptions), nil,
+    '', TSynEdOptionsPropertyEditor);
+
   RegisterPropertyEditor(ClassTypeInfo(TSynGutterPartListBase), nil,
     '', TSynPropertyEditGutterPartList);
   RegisterPropertyEditor(TypeInfo(TSynEditorMouseCommand), nil,

@@ -182,7 +182,6 @@ type
 
   TSynEditorOption = (
     eoAutoIndent,              // Will indent the caret on new lines with the same amount of leading white space as the preceding line
-    eoAutoIndentOnPaste,       // Indent text inserted from clipboard
     eoBracketHighlight,        // Highlight matching bracket
     eoEnhanceHomeKey,          // home key jumps to line start if nearer, similar to visual studio
     eoGroupUndo,               // When undoing/redoing actions, handle all continous changes of the same kind in one call instead undoing/redoing each command separately
@@ -199,7 +198,6 @@ type
     eoShowScrollHint,          // Shows a hint of the visible line numbers when scrolling vertically
     eoShowSpecialChars,        // Shows the special Characters
     eoSmartTabs,               // When tabbing, the cursor will go to the next non-white space character of the previous line
-    eoSpacesToTabs,            // Converts space characters to tabs and spaces
     eoTabIndent,               // When active <Tab> and <Shift><Tab> act as block indent, unindent when text is selected
     eoTabsToSpaces,            // Converts a tab character to a specified number of space characters
     eoTrimTrailingSpaces,      // Spaces at the end of lines will be trimmed and not saved
@@ -210,6 +208,8 @@ type
     eoHideShowScrollbars,      //TODO if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
     eoDropFiles,               //TODO Allows the editor accept file drops
     eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
+    eoSpacesToTabs,            // Converts space characters to tabs and spaces
+    eoAutoIndentOnPaste,       // Indent text inserted from clipboard
     //eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
 
     // Only for compatibility, moved to TSynEditorMouseOptions

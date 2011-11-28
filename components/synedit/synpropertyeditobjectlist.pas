@@ -24,11 +24,18 @@ interface
 
 uses
   Classes, SysUtils, LCLProc,
-  SynGutterBase, SynEditMiscClasses, SynEditMouseCmds,
+  SynEdit, SynGutterBase, SynEditMiscClasses, SynEditMouseCmds,
   PropEdits, PropEditUtils, Forms, StdCtrls, ComCtrls, Dialogs,
   ObjInspStrConsts, Controls, IDEImagesIntf, typinfo, FormEditingIntf;
 
 type
+
+  { TSynEdOptionsPropertyEditor }
+
+  TSynEdOptionsPropertyEditor = class(TSetPropertyEditor)
+  public
+    procedure GetProperties(Proc: TGetPropEditProc); override;
+  end;
 
   { TSynPropertEditClassList }
 
@@ -117,6 +124,19 @@ begin
   if KnownSynGutterPartClasses = nil then
     KnownSynGutterPartClasses := TStringList.Create;
   KnownSynGutterPartClasses.AddObject(AName, TObject(Pointer(AClass)));
+end;
+
+{ TSynEdOptionsPropertyEditor }
+
+procedure TSynEdOptionsPropertyEditor.GetProperties(Proc: TGetPropEditProc);
+var
+  I: Integer;
+begin
+  with GetTypeData(GetTypeData(GetPropType)^.CompType)^ do
+    for I := MinValue to MaxValue do
+      if not(TSynEditorOption(I) in SYNEDIT_UNIMPLEMENTED_OPTIONS)
+      then
+        Proc(TSetElementPropertyEditor.Create(Self, I));
 end;
 
 { TSynMouseCommandPropertyEditor }
