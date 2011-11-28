@@ -40,7 +40,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="androidlcltest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -53,6 +53,10 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mainform"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="android/src/com/pascal/lcltest/LCLActivity.java"/>
+        <IsPartOfProject Value="True"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -72,7 +76,9 @@
     </CodeGeneration>
     <Linking>
       <Debugging>
+        <GenerateDebugInfo Value="False"/>
         <DebugInfoType Value="dsDwarf2"/>
+        <UseLineInfoUnit Value="False"/>
         <StripSymbols Value="True"/>
       </Debugging>
       <Options>

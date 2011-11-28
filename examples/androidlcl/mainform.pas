@@ -30,10 +30,12 @@ implementation
 
 procedure TForm1.FormPaint(Sender: TObject);
 begin
-  Canvas.Brush.Color := clWhite;
-  Canvas.Rectangle(10, 10, 100, 100);
   Canvas.Brush.Color := clRed;
-  Canvas.Rectangle(100, 100, 100, 100);
+  Canvas.Rectangle(10, 10, 100, 100);
+  Canvas.Brush.Color := clGreen;
+  Canvas.Rectangle(100, 100, 200, 200);
+  Canvas.Brush.Color := clBlue;
+  Canvas.Rectangle(200, 200, 300, 300);
 end;
 
 end.
