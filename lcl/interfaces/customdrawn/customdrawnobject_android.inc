@@ -395,7 +395,7 @@ end;
 const curClass:JClass=nil;
       nativeCodeLoaded:JfieldID=nil;
 
-function Java_com_pascal_jnitest_AndroidJNITest_stringFromJNI(env:PJNIEnv;this:jobject):jstring; cdecl;
+function Java_com_pascal_lclproject_LCLActivity_stringFromJNI(env:PJNIEnv;this:jobject):jstring; cdecl;
 var x:single;
 begin
 {  __android_log_write(ANDROID_LOG_INFO,'nativetest','Java_com_bero_nativetest_Main_stringFromJNI entered');
@@ -405,37 +405,85 @@ begin
   __android_log_write(ANDROID_LOG_INFO,'nativetest','Java_com_bero_nativetest_Main_stringFromJNI exited');}
 end;
 
-function Java_com_pascal_jnitest_AndroidJNITest_intFromJNI(env:PJNIEnv;this:jobject): jint; cdecl;
+function Java_com_pascal_lclproject_LCLActivity_intFromJNI(env:PJNIEnv;this:jobject): jint; cdecl;
 begin
   Result := 8;
 end;
 
-function Java_com_pascal_jnitest_AndroidJNITest_LCLDrawToBitmap(
+function Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap(
     env:PJNIEnv;this:jobject; width, height: jint; abitmap: jobject): jint; cdecl;
 var
   pixels: PCardinal;
+  lCurForm: TCDNonNativeForm;
+
+  struct : TPaintStruct;
+  lWidth, lHeight: Integer;
+  lBitmap, lMask: HBITMAP;
+  lRawImage: TRawImage;
+  {$IFDEF VerboseCDPaintProfiler}
+  lTimeStart: TDateTime;
+  {$ENDIF}
 begin
   Result := 0;
   AndroidBitmap_lockPixels(env, abitmap, @pixels);
+
+  // debug info to check if we are painting
   pixels[30*width+30] := $FFFFFFFF;
   pixels[30*width+31] := $FFFFFFFF;
   pixels[30*width+32] := $FFFFFFFF;
   pixels[30*width+33] := $FFFFFFFF;
   pixels[30*width+34] := $FFFFFFFF;
   pixels[30*width+35] := $FFFFFFFF;
+
+  lCurForm := GetCurrentForm();
+  if lCurForm <> nil then
+  begin
+    {$IFDEF VerboseCDPaintProfiler}
+    //lTimeStart := NowUTC();
+    {$ENDIF}
+    {$IFDEF VerboseCDWindow}
+     //DebugLn(Format('[TCDWSCustomForm.EvPaint] AWindowInfo: %x', [PtrInt(AWindowInfo)]));
+    {$ENDIF}
+    //if (AWinControl = nil) or (AWindowInfo = nil) then Exit;
+
+    lWidth := 200;//Round(AWinControl.width);
+    lHeight := 200;//Round(AWinControl.height);
+
+    FillChar(struct, SizeOf(TPaintStruct), 0);
+
+    // Prepare the non-native image and canvas
+    UpdateControlLazImageAndCanvas(lCurForm.Image, lCurForm.Canvas, lWidth, lHeight, clfBGRA32, pixels);
+
+    struct.hdc := HDC(lCurForm.Canvas);
+
+    // Send the paint message to the LCL
+    {$IFDEF VerboseCDWindow}
+     //DebugLn(Format('[TCDWSCustomForm.EvPaint] OnPaint event started context: %x', [struct.hdc]));
+    {$ENDIF}
+    LCLSendPaintMsg(lCurForm.LCLForm, struct.hdc, @struct);
+    {$IFDEF VerboseCDWindow}
+     //DebugLn('[TCDWSCustomForm.EvPaint] OnPaint event ended');
+    {$ENDIF}
+
+    // Now paint all child win controls
+    //RenderChildWinControls(AWindowInfo.Image, AWindowInfo.Canvas,
+     //BackendGetCDWinControlList(TCustomForm(AWinControl)));
+  end;
+
+  // Now returns the bitmap buffer to LCLActivity so that it can render it
   AndroidBitmap_unlockPixels(env, abitmap);
 end;
 
 const NativeMethods: array[0..2] of JNINativeMethod=
        ((name:'stringFromJNI';
          signature:'()Ljava/lang/String;';
-         fnPtr:@Java_com_pascal_jnitest_AndroidJNITest_stringFromJNI;),
+         fnPtr:@Java_com_pascal_lclproject_LCLActivity_stringFromJNI;),
         (name:'intFromJNI';
          signature:'()I';
-         fnPtr:@Java_com_pascal_jnitest_AndroidJNITest_intFromJNI;),
+         fnPtr:@Java_com_pascal_lclproject_LCLActivity_intFromJNI;),
         (name:'LCLDrawToBitmap';
          signature:'(IILandroid/graphics/Bitmap;)I';
-         fnPtr:@Java_com_pascal_jnitest_AndroidJNITest_LCLDrawToBitmap;)
+         fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap;)
        );
 
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
@@ -449,7 +497,7 @@ begin
   __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM^=%x', [PtrInt(CurVM^)])));
   __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM^^.reserved0=%x', [PtrInt(CurVM^^.reserved0)])));
   __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM^^.GetEnv=%x', [PtrInt(Pointer(@CurVM^^.GetEnv))])));
-  if curVM^^.GetEnv(curVM,@curEnv,JNI_VERSION_1_4)<>JNI_OK then begin //<<<--- THIS CRASHES
+{  if curVM^^.GetEnv(curVM,@curEnv,JNI_VERSION_1_4)<>JNI_OK then begin //<<<--- THIS CRASHES
     __android_log_write(ANDROID_LOG_INFO{FATAL},'nativetest','curVM^.GetEnv failed');
 //    result:=JNI_ERR;
 //    exit;
@@ -473,7 +521,7 @@ begin
   __android_log_write(ANDROID_LOG_FATAL,'nativetest','curEnv^.GetFieldID failed');
   result:=JNI_ERR;
   exit;
-  end;
+  end;         }
 
   result:=JNI_VERSION_1_4;// 1_6?
 end;
@@ -483,6 +531,17 @@ begin
 end;
 
 {$endif}
+
+procedure TCDWidgetSet.AndroidDebugLn(AStr: string);
+begin
+  __android_log_write(ANDROID_LOG_INFO, 'lclproject', PChar(AccumulatedStr+AStr));
+  AccumulatedStr := '';
+end;
+
+procedure TCDWidgetSet.AccumulatingDebugOut(AStr: string);
+begin
+  AccumulatedStr := AccumulatedStr + AStr;
+end;
 
 {------------------------------------------------------------------------------
   Method: TCDWidgetSet.Create
@@ -517,9 +576,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 begin
-   {$ifdef VerboseCDApplication}
-   //DebugLn('TCDWidgetSet.AppInit');
-   {$endif}
+  {$ifdef VerboseCDApplication}
+  DebugLn('TCDWidgetSet.AppInit');
+  {$endif}
 end;
 
 procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);

@@ -29,6 +29,10 @@ begin
   CDWidgetSet := Self;
   FTerminating := False;
 
+  // Setup DebugLn
+  DebugLnProc := @AndroidDebugLn;
+  DebugOutProc := @AccumulatingDebugOut;
+
   BackendCreate;
 end;
 

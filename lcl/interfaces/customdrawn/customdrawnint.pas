@@ -149,6 +149,13 @@ type
 
     function FindWindowByXID(XWindowID: X.TWindow; out AWindowInfo: TX11WindowInfo): TWinControl;
     {$endif}
+    {$ifdef CD_Android}
+    procedure AndroidDebugLn(AStr: string);
+    {$endif}
+  // For unusual implementations of DebugLn/DebugOut
+  public
+    AccumulatedStr: string;
+    procedure AccumulatingDebugOut(AStr: string);
   protected
     {function CreateThemeServices: TThemeServices; override;}
     {function GetAppHandle: THandle; override;
@@ -203,9 +210,9 @@ function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 {$endif}
 
 {$ifndef CD_Android_NATIVEAPP}
-function Java_com_pascal_jnitest_AndroidJNITest_stringFromJNI(env:PJNIEnv;this:jobject):jstring; cdecl;
-function Java_com_pascal_jnitest_AndroidJNITest_intFromJNI(env:PJNIEnv;this:jobject): jint; cdecl;
-function Java_com_pascal_jnitest_AndroidJNITest_LCLDrawToBitmap(
+function Java_com_pascal_lclproject_LCLActivity_stringFromJNI(env:PJNIEnv;this:jobject):jstring; cdecl;
+function Java_com_pascal_lclproject_LCLActivity_intFromJNI(env:PJNIEnv;this:jobject): jint; cdecl;
+function Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap(
     env:PJNIEnv;this:jobject; width, height: jint; abitmap: jobject): jint; cdecl;
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;

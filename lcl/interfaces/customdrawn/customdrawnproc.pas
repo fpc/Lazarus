@@ -26,24 +26,109 @@ type
     //CDControl: TCDControl;
   end;
 
+  TCDNonNativeForm = class
+  public
+    LCLForm: TCustomForm;
+    Children: TFPList; // of TCDWinControl;
+    // painting objects
+    Image: TLazIntfImage;
+    Canvas: TLazCanvas;
+  end;
+
+// Routines for non-native form
+
+procedure InitNonNativeForms();
+function GetCurrentForm(): TCDNonNativeForm;
+function AddNewForm(AForm: TCustomForm): TCDNonNativeForm;
+procedure ShowForm(ACDForm: TCDNonNativeForm);
+procedure HideForm(ACDForm: TCDNonNativeForm);
+
+// Routines for non-native wincontrol
+
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
-  var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat);
+  var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat;
+  AData: Pointer = nil);
 procedure RenderChildWinControls(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDControlsList: TFPList);
 //procedure RenderWinControl(var AImage: TLazIntfImage;
 //  var ACanvas: TLazCanvas; ACDControlsList: TFPList);
 function FindControlWhichReceivedEvent(AForm: TCustomForm;
   AControlsList: TFPList; AX, AY: Integer): TWinControl;
+
+// Other routines
+
 function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
 function IsValidDC(ADC: HDC): Boolean;
 function IsValidGDIObject(AGDIObj: HGDIOBJ): Boolean;
 
 implementation
 
+// List with the Z-order of non-native forms, index=0 is the bottom-most form
+var
+  NonNativeForms: TFPList = nil;
+
+procedure InitNonNativeForms();
+begin
+  if NonNativeForms <> nil then Exit;
+  NonNativeForms := TFPList.Create;
+end;
+
+function GetCurrentForm(): TCDNonNativeForm;
+var
+  lCount: Integer;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('GetCurrentForm');
+  {$ENDIF}
+  InitNonNativeForms();
+  lCount := NonNativeForms.Count;
+  if lCount = 0 then Result := nil
+  else Result := TCDNonNativeForm(NonNativeForms.Items[lCount-1]);
+end;
+
+function AddNewForm(AForm: TCustomForm): TCDNonNativeForm;
+var
+  lFormInfo: TCDNonNativeForm;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('AddNewForm');
+  {$ENDIF}
+  InitNonNativeForms();
+  lFormInfo := TCDNonNativeForm.Create;
+  lFormInfo.LCLForm := AForm;
+  lFormInfo.Children := TFPList.Create;
+  NonNativeForms.Insert(0, lFormInfo);
+end;
+
+procedure ShowForm(ACDForm: TCDNonNativeForm);
+var
+  lCount, lCurIndex: Integer;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('ShowForm');
+  {$ENDIF}
+  InitNonNativeForms();
+  lCount := NonNativeForms.Count;
+  lCurIndex := NonNativeForms.IndexOf(ACDForm);
+  NonNativeForms.Move(lCurIndex, lCount-1);
+end;
+
+procedure HideForm(ACDForm: TCDNonNativeForm);
+var
+  lCount, lCurIndex: Integer;
+begin
+  InitNonNativeForms();
+  lCount := NonNativeForms.Count;
+  lCurIndex := NonNativeForms.IndexOf(ACDForm);
+  NonNativeForms.Move(lCurIndex, 0);
+end;
+
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
-  var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat);
+  var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat;
+  AData: Pointer = nil);
 var
   lRawImage: TRawImage;
+  lPixelSize: Byte;
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn(Format(':>[UpdateControlLazImageAndCanvas] Input Image: %x Canvas: %x',
@@ -62,7 +147,22 @@ begin
     clfBGR24:  lRawImage.Description.Init_BPP24_B8G8R8_BIO_TTB(AWidth, AHeight);
     clfBGRA32: lRawImage.Description.Init_BPP32_B8G8R8A8_BIO_TTB(AWidth, AHeight);
     end;
-    lRawImage.CreateData(True);
+
+    // Now connect the pixel buffer or create one
+    if AData = nil then lRawImage.CreateData(True)
+    else
+    begin
+      case AFormat of
+      clfRGB16_R5G6B5:    lPixelSize := 2;
+      clfRGB24:           lPixelSize := 3;
+      clfRGB24UpsideDown: lPixelSize := 3;
+      clfBGR24:           lPixelSize := 3;
+      clfBGRA32:          lPixelSize := 4;
+      end;
+
+      lRawImage.Data := AData;
+      lRawImage.DataSize := AWidth * lPixelSize * AHeight;
+    end;
 
     AImage := TLazIntfImage.Create(AWidth, AHeight);
     AImage.SetRawImage(lRawImage);
