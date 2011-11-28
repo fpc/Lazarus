@@ -48,7 +48,7 @@ procedure HideForm(ACDForm: TCDNonNativeForm);
 
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat;
-  AData: Pointer = nil);
+  AData: Pointer = nil; AForceUpdate: Boolean = False; AFreeImageOnUpdate: Boolean = True);
 procedure RenderChildWinControls(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDControlsList: TFPList);
 //procedure RenderWinControl(var AImage: TLazIntfImage;
@@ -128,9 +128,10 @@ begin
   NonNativeForms.Move(lCurIndex, 0);
 end;
 
+// If AForceUpdate=True then it will update even if the width and height remain the same
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat;
-  AData: Pointer = nil);
+  AData: Pointer = nil; AForceUpdate: Boolean = False; AFreeImageOnUpdate: Boolean = True);
 var
   lRawImage: TRawImage;
   lPixelSize: Byte;
@@ -140,9 +141,10 @@ begin
       [PtrInt(AImage), PtrInt(ACanvas)]));
   {$ENDIF}
   // Check if the image needs update
-  if (AImage = nil) or (AWidth <> AImage.Width) or (AHeight <> AImage.Height) then
+  if (AImage = nil) or (AWidth <> AImage.Width) or (AHeight <> AImage.Height)
+    or AForceUpdate then
   begin
-    if (AImage <> nil) then AImage.Free;
+    if (AImage <> nil) and AFreeImageOnUpdate then AImage.Free;
 
     lRawImage.Init;
     case AFormat of

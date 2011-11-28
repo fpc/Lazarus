@@ -93,7 +93,7 @@ begin
     FillChar(struct, SizeOf(TPaintStruct), 0);
 
     // Prepare the non-native image and canvas
-    UpdateControlLazImageAndCanvas(lCurForm.Image, lCurForm.Canvas, Width, Height, clfRGBA32, pixels);
+    UpdateControlLazImageAndCanvas(lCurForm.Image, lCurForm.Canvas, Width, Height, clfRGBA32, pixels, True, False);
 
     struct.hdc := HDC(lCurForm.Canvas);
 

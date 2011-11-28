@@ -35,7 +35,7 @@ uses
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, customdrawn_x11proc,{unitxft, Xft font support}{$endif}
   {$ifdef CD_Android}
-  cmem,  customdrawn_androidproc, jni, bitmap, log,
+  cmem, customdrawn_androidproc, jni, bitmap, log,
   {$endif}
   // Widgetset
   customdrawnproc,
