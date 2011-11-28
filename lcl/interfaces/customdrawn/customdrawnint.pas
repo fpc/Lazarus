@@ -35,21 +35,7 @@ uses
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, customdrawn_x11proc,{unitxft, Xft font support}{$endif}
   {$ifdef CD_Android}
-  cmem,
-  customdrawn_androidproc,
-  {$ifdef CD_Android_NativeApp}
-  gles,
-  egl,
-  native_activity,
-  native_window,
-  looper,
-  input,
-  android_native_app_glue,
-  {$else}
-  jni,
-  bitmap,
-  {$endif}
-  log,
+  cmem,  customdrawn_androidproc, jni, bitmap, log,
   {$endif}
   // Widgetset
   customdrawnproc,
@@ -209,7 +195,7 @@ function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult; stdcall;
 {$endif}
 
-{$ifndef CD_Android_NATIVEAPP}
+{$ifdef CD_Android}
 function Java_com_pascal_lclproject_LCLActivity_stringFromJNI(env:PJNIEnv;this:jobject):jstring; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_intFromJNI(env:PJNIEnv;this:jobject): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap(

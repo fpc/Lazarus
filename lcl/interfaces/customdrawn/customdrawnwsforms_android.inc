@@ -3,21 +3,21 @@
 { TCDWSCustomForm }
 
 class procedure TCDWSCustomForm.BackendAddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
-{var
-  lWindowInfo: TX11WindowInfo;}
+var
+  lWindowInfo: TCDNonNativeForm;
 begin
-{  lWindowInfo := TX11WindowInfo(AForm.Handle);
+  lWindowInfo := TCDNonNativeForm(AForm.Handle);
   if lWindowInfo.Children = nil then lWindowInfo.Children := TFPList.Create;
-  lWindowInfo.Children.Add(ACDWinControl);}
+  lWindowInfo.Children.Add(ACDWinControl);
 end;
 
 class function TCDWSCustomForm.BackendGetCDWinControlList(const AForm: TCustomForm): TFPList;
-{var
-  lWindowInfo: TX11WindowInfo;}
+var
+  lWindowInfo: TCDNonNativeForm;
 begin
-{  lWindowInfo := TX11WindowInfo(AForm.Handle);
+  lWindowInfo := TCDNonNativeForm(AForm.Handle);
   if lWindowInfo.Children = nil then lWindowInfo.Children := TFPList.Create;
-  Result := lWindowInfo.Children;}
+  Result := lWindowInfo.Children;
 end;
 
 {------------------------------------------------------------------------------
