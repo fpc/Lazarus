@@ -19,6 +19,7 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    procedure FormClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormPaint(Sender: TObject);
   private
@@ -26,6 +27,7 @@ type
   public
     { public declarations }
     SubControl: TSubControl;
+    ClickCounter: Integer;
   end; 
 
 var
@@ -44,6 +46,11 @@ end;
 {$R *.lfm}
 
 { TForm1 }
+
+procedure TForm1.FormClick(Sender: TObject);
+begin
+  Caption := Format('Form click #%d', [ClickCounter]);
+end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
