@@ -208,6 +208,7 @@ var
   curJavaClass: JClass = nil;
   curJavaObject: jobject = nil;
   nativeCodeLoaded:JfieldID=nil;
+  eventResult: Integer = 0;
 {$endif}
 
 implementation

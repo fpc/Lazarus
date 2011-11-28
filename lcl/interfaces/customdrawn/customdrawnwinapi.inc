@@ -34,7 +34,7 @@ function TCDWidgetSet.Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer
 var
   LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
   DebugLn(Format(':>[WinAPI Polygon] DC=%s', [dbghex(DC)]));
   {$endif}
 
@@ -69,7 +69,7 @@ end;*)
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct): hdc;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     DebugLn('Trace:> [WinAPI BeginPaint] Handle=', dbghex(Handle));
   {$endif}
   Result := 0;
@@ -394,7 +394,7 @@ function TCDWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 var
   lBrush: TFPCustomBrush;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     DebugLn(Format(':>[TCDWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x',
       [LogBrush.lbStyle, LogBrush.lbColor]));
   {$endif}
@@ -468,7 +468,7 @@ begin
     DebugLn('TQtWidgetSet.CreateBrushIndirect: Failed');
   end;*)
 
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     DebugLn(':<[WinAPI CreateBrushIndirect] Result: ', dbghex(Result));
   {$endif}
 end;
@@ -488,7 +488,7 @@ end;*)
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     WriteLn('[WinAPI CreateCompatibleDC] DC: ', dbghex(DC));
   {$endif}
   Result := 0;//HDC(TQtDeviceContext.Create(nil, True));
@@ -666,7 +666,7 @@ function TCDWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 var
   lPen: TFPCustomPen;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     DebugLn(Format(':>[TCDWidgetSet.CreatePenIndirect]  Style: %d, Color: %8x',
       [LogPen.lopnStyle, LogPen.lopnColor]));
   {$endif}
@@ -791,11 +791,11 @@ var
   aObject: TObject;
 //  APaintEngine: QPaintEngineH;
 //  APainter: QPainterH;
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     ObjType: string;
   {$endif}
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     DebugLn('Trace:> [WinAPI DeleteObject] GDIObject: ', dbghex(GDIObject));
     ObjType := 'Unidentifyed';
   {$endif}
@@ -816,7 +816,7 @@ begin
    ------------------------------------------------------------------------------}
   if aObject is TFPCustomFont then
   begin
-    {$ifdef VerboseWinAPI}
+    {$ifdef VerboseCDWinAPI}
       ObjType := 'Font';
     {$endif}
   end
@@ -825,7 +825,7 @@ begin
    ------------------------------------------------------------------------------}
   else if aObject is TFPCustomBrush then
   begin
-    {$ifdef VerboseWinAPI}
+    {$ifdef VerboseCDWinAPI}
       ObjType := 'Brush';
     {$endif}
   end
@@ -884,7 +884,7 @@ begin
 
   Result := True;
 
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     DebugLn('Trace:< [WinAPI DeleteObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
   {$endif}
 end;
@@ -1487,13 +1487,13 @@ var
   LazDC: TLazCanvas absolute DC;
   R: TRect;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
   DebugLn(Format(':>[WinAPI Ellipse] DC=%s', [dbghex(DC)]));
   {$endif}
 
   if not IsValidDC(DC) then
   begin
-    {$ifdef VerboseWinAPI}
+    {$ifdef VerboseCDWinAPI}
     DebugLn(':<[WinAPI Rectangle] Invalid DC!');
     {$endif}
     Exit(False);
@@ -2239,7 +2239,7 @@ var
 begin
   Result := False;
 
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     DebugLn('[WinAPI FillRect Rect=', dbgs(Rect),' Brush=', dbghex(Brush));
   {$endif}
 
@@ -2509,7 +2509,7 @@ begin
   // ToDO check if the window is native or not and process accordingly
   // For now just assume it is native
   Result := BackendGetClientBounds(Handle, ARect);
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
   DebugLn(Format('[WinAPI GetClientBounds] ARect.Left=%d ARect.Top=%d'
     + ' ARect.Right=%d ARect.Bottom=%d',
     [ARect.Left, ARect.Top, ARect.Right, ARect.Bottom]));
@@ -2529,7 +2529,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
   DebugLn('[WinAPI GetClientRect]');
   {$endif}
   GetClientBounds(Handle, ARect);
@@ -4732,7 +4732,7 @@ var
   PenPos, LastPos: TPoint;
   LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     DebugLn('[TCDWidgetSet.LineTo]');
   {$endif}
 
@@ -4804,7 +4804,7 @@ function TCDWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolea
 var
   LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     DebugLn('[WinAPI MoveToEx]',
      ' DC:', dbghex(DC),
      ' X:', dbgs(X),
@@ -4863,7 +4863,7 @@ end;*)
 function TCDWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: Boolean): Boolean;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     WriteLn('[WinAPI PolyBezier] DC: ', dbghex(DC));
   {$endif}
   Result := inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
@@ -4881,7 +4881,7 @@ var
   lPoints: array of TPoint;
   i: Integer;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
   DebugLn(Format(':>[WinAPI Polygon] DC=%s', [dbghex(DC)]));
   {$endif}
 
@@ -4906,7 +4906,7 @@ var
   lPoints: array of TPoint;
   i: Integer;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
   DebugLn(Format(':>[WinAPI Polygon] DC=%s', [dbghex(DC)]));
   {$endif}
 
@@ -4956,13 +4956,13 @@ function TCDWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
   DebugLn(Format(':>[WinAPI Rectangle] DC=%s', [dbghex(DC)]));
   {$endif}
 
   if not IsValidDC(DC) then
   begin
-    {$ifdef VerboseWinAPI}
+    {$ifdef VerboseCDWinAPI}
     DebugLn(':<[WinAPI Rectangle] Invalid DC!');
     {$endif}
     Exit(False);
@@ -5301,11 +5301,11 @@ var
   lPen: TFPCustomPen absolute AObject;
   lBrush: TFPCustomBrush absolute AObject;
   lOrigBrush: TFPCustomBrush;
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
   ObjType: string;
   {$endif}
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     DebugLn(Format(':>[TCDWidgetSet.SelectObject] DC=%s GDIObj=%s',
       [dbghex(DC), dbghex(GDIObj)]));
   {$endif}
@@ -5314,7 +5314,7 @@ begin
 
   if not IsValidDC(DC) then
   begin
-    {$ifdef VerboseQtWinAPI}
+    {$ifdef VerboseCDWinAPI}
       DebugLn(':<[TCDWidgetSet.SelectObject] Invalid DC');
     {$endif}
 
@@ -5344,7 +5344,7 @@ begin
   end
   else*) if aObject is TFPCustomPen then
   begin
-    {$ifdef VerboseWinAPI}ObjType := 'Pen';{$endif}
+    {$ifdef VerboseCDWinAPI}ObjType := 'Pen';{$endif}
 
     Result := HGDIOBJ(TLazCanvas(DC).AssignedPen);
     TLazCanvas(DC).AssignPenData(lPen); // := doesn't work
@@ -5352,7 +5352,7 @@ begin
   end
   else if aObject is TFPCustomBrush then
   begin
-    {$ifdef VerboseWinAPI}ObjType := 'Brush';{$endif}
+    {$ifdef VerboseCDWinAPI}ObjType := 'Brush';{$endif}
 
     Result := HGDIOBJ(TLazCanvas(DC).AssignedBrush);
     TLazCanvas(DC).AssignBrushData(lBrush); // := doesn't work
@@ -5375,7 +5375,7 @@ begin
     SelectClipRGN(DC, HRGN(GDIObj));
   end*);
 
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     DebugLn(':<[TCDWidgetSet.SelectObject] Result=', dbghex(Result), ' ObjectType=', ObjType);
   {$endif}
 end;

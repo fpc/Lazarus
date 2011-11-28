@@ -144,10 +144,10 @@ function GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean; overr
 (*function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; override;
 
-function HideCaret(hWnd: HWND): Boolean; override;
+function HideCaret(hWnd: HWND): Boolean; override;*)
 
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
-function InvalidateRgn(aHandle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; override;
+(*function InvalidateRgn(aHandle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; override;
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 function IsIconic(Handle: HWND): boolean; override;

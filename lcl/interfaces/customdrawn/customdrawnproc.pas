@@ -78,7 +78,7 @@ function GetCurrentForm(): TCDNonNativeForm;
 var
   lCount: Integer;
 begin
-  {$IFDEF VerboseWinAPI}
+  {$IFDEF VerboseCDWindow}
     DebugLn('GetCurrentForm');
   {$ENDIF}
   InitNonNativeForms();
@@ -91,7 +91,7 @@ function AddNewForm(AForm: TCustomForm): TCDNonNativeForm;
 var
   lFormInfo: TCDNonNativeForm;
 begin
-  {$IFDEF VerboseWinAPI}
+  {$IFDEF VerboseCDWindow}
     DebugLn('AddNewForm');
   {$ENDIF}
   InitNonNativeForms();
@@ -109,7 +109,7 @@ begin
   InitNonNativeForms();
   lCount := NonNativeForms.Count;
   lCurIndex := NonNativeForms.IndexOf(ACDForm);
-  {$IFDEF VerboseWinAPI}
+  {$IFDEF VerboseCDWindow}
     DebugLn(Format('ShowForm lOldIndex=%d lNewIndex=%d', [lCurIndex, lCount-1]));
   {$ENDIF}
   NonNativeForms.Move(lCurIndex, lCount-1);
@@ -122,7 +122,7 @@ begin
   InitNonNativeForms();
   lCount := NonNativeForms.Count;
   lCurIndex := NonNativeForms.IndexOf(ACDForm);
-  {$IFDEF VerboseWinAPI}
+  {$IFDEF VerboseCDWindow}
     DebugLn(Format('HideForm lOldIndex=%d lNewIndex=0', [lCurIndex]));
   {$ENDIF}
   NonNativeForms.Move(lCurIndex, 0);
@@ -135,7 +135,7 @@ var
   lRawImage: TRawImage;
   lPixelSize: Byte;
 begin
-  {$IFDEF VerboseWinAPI}
+  {$IFDEF VerboseCDWindow}
     DebugLn(Format(':>[UpdateControlLazImageAndCanvas] Input Image: %x Canvas: %x',
       [PtrInt(AImage), PtrInt(ACanvas)]));
   {$ENDIF}
@@ -178,7 +178,7 @@ begin
     if (ACanvas <> nil) then ACanvas.Free;
     ACanvas := TLazCanvas.Create(AImage);
   end;
-  {$IFDEF VerboseWinAPI}
+  {$IFDEF VerboseCDWindow}
     DebugLn(Format(':<[UpdateControlLazImageAndCanvas] Output Image: %x Canvas: %x',
       [PtrInt(AImage), PtrInt(ACanvas)]));
   {$ENDIF}

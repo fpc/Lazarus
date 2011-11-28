@@ -693,11 +693,11 @@ begin
     struct.hdc := HDC(TCocoaCustomControl(Owner).Canvas);
 
     // Send the paint message to the LCL
-    {$IFDEF VerboseWinAPI}
+    {$IFDEF VerboseCDWinAPI}
       DebugLn(Format('[TLCLCommonCallback.Draw] OnPaint event started context: %x', [struct.hdc]));
     {$ENDIF}
     LCLSendPaintMsg(Target, struct.hdc, @struct);
-    {$IFDEF VerboseWinAPI}
+    {$IFDEF VerboseCDWinAPI}
       DebugLn('[TLCLCommonCallback.Draw] OnPaint event ended');
     {$ENDIF}
 

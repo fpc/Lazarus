@@ -1669,7 +1669,7 @@ function TCDWidgetSet.GetDC(hWnd: HWND): HDC;
 var
   lWindowInfo: PWindowInfo;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
   DebugLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
   {$endif}
 
@@ -1689,7 +1689,7 @@ begin
 //  end else
 //    Result := HDC(QtScreenContext);
 
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
   DebugLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
   {$endif}
 end;
@@ -2274,7 +2274,7 @@ var
   end;
 
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
   DebugLn(Format(':>[TCDWidgetSet.GetWindowSize] Handle=%x', [Handle]));
   {$endif}
 
@@ -2283,7 +2283,7 @@ begin
 
   if not Result then
   begin
-    {$ifdef VerboseWinAPI}
+    {$ifdef VerboseCDWinAPI}
     DebugLn(':<[TCDWidgetSet.GetWindowSize] GetWindowPlacement failed');
     {$endif}
     Exit;
@@ -2293,7 +2293,7 @@ begin
   begin
     Width := 0;
     Height := 0;
-    {$ifdef VerboseWinAPI}
+    {$ifdef VerboseCDWinAPI}
     DebugLn(':<[TCDWidgetSet.GetWindowSize] Minimized');
     {$endif}
     Exit;
@@ -2354,7 +2354,7 @@ begin
 
   ExcludeCaption;
 
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
   DebugLn(Format(':<[TCDWidgetSet.GetWindowSize] Width=%d Height=%d', [Width, Height]));
   {$endif}
 end;

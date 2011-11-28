@@ -2729,7 +2729,7 @@ end;*)
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetDC(hWnd: HWND): HDC;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     DebugLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
   {$endif}
   Result := 0;
@@ -2745,7 +2745,7 @@ begin
   end else
     Result := HDC(QtScreenContext);}
 
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     DebugLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
   {$endif}
 end;
@@ -4308,7 +4308,7 @@ function TCDWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: int
 var
   R: TRect;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     WriteLn('[WinAPI GetWindowRelativePosition]');
   {$endif}
 {  if Handle = 0 then}
@@ -4328,7 +4328,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
 begin
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
     WriteLn('[WinAPI GetWindowSize]');
   {$endif}
   if Handle = 0 then Exit(False);
@@ -4640,7 +4640,7 @@ end;
 function TQtWidgetSet.IsZoomed(Handle: HWND): boolean;
 begin
   Result := TQtWidget(Handle).isMaximized;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: InvalidateRect
@@ -4650,26 +4650,27 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
+function TCDWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI InvalidateRect]');
+  {$ifdef VerboseCDWinAPI}
+    WriteLn('[TCDWidgetSet.InvalidateRect]');
   {$endif}
-  if AHandle = 0 then
-    exit(False);
-  if Rect <> nil then
+  if AHandle = 0 then exit(False);
+
+  eventResult := eventResult or 1;
+(*  if Rect <> nil then
   begin
     with TQtWidget(aHandle).getClientOffset do
       OffsetRect(Rect^, x, y);
     // no need to handle bErase. Qt automatically erase rect on paint event according to docs
     TQtWidget(aHandle).Update(Rect);
   end else
-    TQtWidget(aHandle).Update;
+    TQtWidget(aHandle).Update;*)
 
   Result := True;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: InvalidateRgn
   Params: aHandle:
           Rect:
@@ -4931,7 +4932,7 @@ var
 begin
   if DC = 0 then Exit;
 
-  {$ifdef VerboseWinAPI}
+  {$ifdef VerboseCDWinAPI}
 //  DebugLn(Format('[WinAPI Rectangle] DC=%s DC.Width=%d DC.Height=%d', [dbghex(DC), LazDC.Width, LazDC.Height]));
   DebugLn(Format('[WinAPI Rectangle] DC=%s', [dbghex(DC)]));
   DebugLn(Format('[WinAPI Rectangle] DC.Width=%d DC.Height=%d', [LazDC.Width, LazDC.Height]));
@@ -4951,7 +4952,7 @@ function TQtWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 var
   QtDC: TQtDeviceContext;
 begin
-  {$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseCDWinAPI}
   writeln('[WinAPI RectVisible] ');
   {$endif}
   Result := False;

@@ -15,6 +15,11 @@
 }
 //---------------------------------------------------------------
 
+procedure TCDWidgetSet.AccumulatingDebugOut(AStr: string);
+begin
+  AccumulatedStr := AccumulatedStr + AStr;
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWidgetSet.Create
   Params:  None
@@ -28,10 +33,6 @@ begin
 
   CDWidgetSet := Self;
   FTerminating := False;
-
-  // Setup DebugLn
-  DebugLnProc := @AndroidDebugLn;
-  DebugOutProc := @AccumulatingDebugOut;
 
   BackendCreate;
 end;

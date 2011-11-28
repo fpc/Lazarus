@@ -75,7 +75,7 @@ function TCocoaWidgetSet.CreateBitmap(Width, Height: Integer;
 var
   bmpType: TCocoaBitmapType;
 begin
-  {$IFDEF VerboseWinAPI}
+  {$IFDEF VerboseCDWinAPI}
     DebugLn('TCocoaWidgetSet.CreateBitmap');
   {$ENDIF}
 

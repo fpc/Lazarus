@@ -37,7 +37,7 @@ var
   lCurForm: TCDNonNativeForm;
   lTarget: TWinControl;
 begin
-  Result := 0;
+  eventResult := 0;
 
   __android_log_write(ANDROID_LOG_INFO,'nativetest','LCLOnTouch called');
 {  curJavaClass := env^^.GetObjectClass(env, this);
@@ -56,6 +56,8 @@ begin
       LCLSendClickedMsg(lTarget);
     end;
   end;
+
+  Result := eventResult;
 end;
 
 function Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap(
@@ -164,11 +166,6 @@ begin
   AccumulatedStr := '';
 end;
 
-procedure TCDWidgetSet.AccumulatingDebugOut(AStr: string);
-begin
-  AccumulatedStr := AccumulatedStr + AStr;
-end;
-
 {------------------------------------------------------------------------------
   Method: TCDWidgetSet.Create
   Params:  None
@@ -178,7 +175,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendCreate;
 begin
-
+  // Setup DebugLn
+  DebugLnProc := @AndroidDebugLn;
+  DebugOutProc := @AccumulatingDebugOut;
 end;
 
 {------------------------------------------------------------------------------
