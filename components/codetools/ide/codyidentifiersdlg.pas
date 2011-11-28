@@ -26,12 +26,9 @@
 
   ToDo:
     -quickfix for identifier not found
-      -show dialog
-      -check if identifier still exists
-      -check if unit conflicts with another unit in path
-      -buttons: add unit to interface, add unit to implementation
-      -button: jump to identifier
-      -add dependency to owner
+    -check if identifier still exists
+    -buttons: add unit to interface, add unit to implementation
+    -button: jump to identifier
     -clean up old entries
       -When, How?
     -gzip? lot of cpu, may be faster on first load

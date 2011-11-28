@@ -227,6 +227,8 @@ end;
 
 procedure TCodyMiscOptionsFrame.UDSaveButtonClick(Sender: TObject);
 begin
+  // make sure the old db is loaded
+  CodyUnitDictionary.Load;
   CodyUnitDictionary.Save;
 end;
 
