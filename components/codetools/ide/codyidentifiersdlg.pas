@@ -173,6 +173,7 @@ type
     procedure UseIdentifier;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     property MaxItems: integer read FMaxItems write SetMaxItems;
+    function OwnerToString(AnOwner: TObject): string;
   end;
 
 var
@@ -523,6 +524,7 @@ end;
 
 procedure TCodyIdentifiersDlg.FilterEditChange(Sender: TObject);
 begin
+  if FItems=nil then exit;
   IdleConnected:=true;
 end;
 
@@ -541,6 +543,7 @@ end;
 
 procedure TCodyIdentifiersDlg.FilterEditExit(Sender: TObject);
 begin
+  if FItems=nil then exit;
   if GetFilterEditText='' then
     FilterEdit.Text:=FNoFilterText;
 end;
@@ -585,17 +588,20 @@ end;
 
 procedure TCodyIdentifiersDlg.HideOtherProjectsCheckBoxChange(Sender: TObject);
 begin
+  if FItems=nil then exit;
   IdleConnected:=true;
 end;
 
 procedure TCodyIdentifiersDlg.ItemsListBoxClick(Sender: TObject);
 begin
+  if FItems=nil then exit;
 
 end;
 
 procedure TCodyIdentifiersDlg.ItemsListBoxSelectionChange(Sender: TObject;
   User: boolean);
 begin
+  if FItems=nil then exit;
   UpdateIdentifierInfo;
 end;
 
@@ -663,8 +669,9 @@ begin
     while Node<>nil do begin
       if ComparePrefixIdent(FilterP,PChar(Pointer(TUDIdentifier(Node.Data).Name)))
       then begin
-        inc(Found);
-        if Found<MaxItems then begin
+        if Found>MaxItems then begin
+          inc(Found); // only count, do not check
+        end else begin
           Item:=TUDIdentifier(Node.Data);
           GroupNode:=Item.DUnit.UnitGroups.FindLowest;
           while GroupNode<>nil do begin
@@ -696,8 +703,11 @@ begin
             if Group.Name<>'' then
               s:=s+' of '+Group.Name;
             if FileExistsCached(Item.DUnit.Filename) then begin
-              FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Name+#10+Group.Filename);
-              sl.Add(s);
+              inc(Found);
+              if Found<MaxItems then begin
+                FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Name+#10+Group.Filename);
+                sl.Add(s);
+              end;
             end;
           end;
         end;
@@ -770,6 +780,7 @@ begin
   UnitFilename:='';
   GroupName:='';
   GroupFilename:='';
+  if FItems=nil then exit;
   i:=ItemsListBox.ItemIndex;
   if (i<0) or (i>=FItems.Count) then exit;
   s:=FItems[i];
@@ -810,6 +821,18 @@ begin
       CurIdentifier:=copy(Line,CurIdentStart,CurIdentEnd-CurIdentStart);
   end;
 
+  CurSrcEdit:=SourceEditorManagerIntf.ActiveEditor;
+  if CurTool<>nil then begin
+    CurMainFilename:=CurTool.MainFilename;
+    CurMainCode:=TCodeBuffer(CurTool.Scanner.MainCode);
+  end else if CurSrcEdit<>nil then begin
+    CurMainFilename:=CurSrcEdit.FileName;
+    CurMainCode:=TCodeBuffer(CurSrcEdit.CodeToolsBuffer);
+  end else begin
+    CurMainFilename:='';
+    CurMainCode:=nil;
+  end;
+
   UpdateCurOwnerOfUnit;
   UpdateGeneralInfo;
   FLastFilter:='...'; // force one update
@@ -828,13 +851,18 @@ var
   CompOpts: TLazCompilerOptions;
   UnitPathAdd: String;
   Pkg: TIDEPackage;
+  CurUnitName: String;
+  NewUnitName: String;
+  SameUnitName: boolean;
 
   function AddDependency: boolean;
   // returns false to abort
   var
     Pkg: TIDEPackage;
     DepOwner: TObject;
+    OwnerList: TFPList;
   begin
+    debugln(['TCodyIdentifiersDlg.UseIdentifier not in unit path, connecting package "'+NewGroupName+'", "'+NewGroupFilename+'" ...']);
     Result:=true;
     Pkg:=PackageEditingInterface.FindPackageWithName(NewGroupName);
     if (Pkg=nil) or (CompareFilenames(Pkg.Filename,NewGroupFilename)<>0) then
@@ -842,7 +870,7 @@ var
       if PackageEditingInterface.DoOpenPackageFile(NewGroupFilename,
         [pofDoNotOpenEditor],false)<>mrOK
       then begin
-        debugln(['TCodyIdentifiersDlg.UseIdentifier: DoOpenPackageFile faield']);
+        debugln(['TCodyIdentifiersDlg.UseIdentifier: DoOpenPackageFile failed']);
         exit(false);
       end;
       Pkg:=PackageEditingInterface.FindPackageWithName(NewGroupName);
@@ -856,14 +884,32 @@ var
     if PackageEditingInterface.IsOwnerDependingOnPkg(CurOwner,NewGroupName,DepOwner)
     then begin
       // already depending on package name
+      debugln(['TCodyIdentifiersDlg.UseIdentifier owner is already using "'+NewGroupName+'"']);
+      // ToDo: check version
       exit(true);
     end;
-    // ToDo add dependency
-
+    // add dependency
+    OwnerList:=TFPList.Create;
+    try
+      OwnerList.Add(CurOwner);
+      if PackageEditingInterface.AddDependencyToOwners(OwnerList,Pkg,true)<>mrOK
+      then begin
+        debugln(['TCodyIdentifiersDlg.UseIdentifier checking via AddDependencyToOwners failed for new package "'+NewGroupName+'"']);
+        exit(false);
+      end;
+      if PackageEditingInterface.AddDependencyToOwners(OwnerList,Pkg,false)<>mrOK
+      then begin
+        debugln(['TCodyIdentifiersDlg.UseIdentifier AddDependencyToOwners failed for new package "'+NewGroupName+'"']);
+        exit(false);
+      end;
+      debugln(['TCodyIdentifiersDlg.UseIdentifier added dependency "'+NewGroupName+'"']);
+    finally
+      OwnerList.Free;
+    end;
+    Result:=true;
   end;
 
 begin
-  CurSrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if CurSrcEdit=nil then exit;
 
   UpdateCurOwnerOfUnit;
@@ -874,25 +920,47 @@ begin
     CreateRelativePath(ExtractFilePath(CurMainFilename),
                        ExtractFilePath(NewUnitFilename)));
 
-  if CompareFilenames(CurMainFilename,NewUnitFilename)=0 then
-    NewUnitInPath:=true; // same file
-  if (not NewUnitInPath)
-  and (CompareFilenames(ExtractFilePath(CurMainFilename),
+  CurUnitName:=ExtractFileNameOnly(CurMainFilename);
+  NewUnitName:=ExtractFileNameOnly(NewUnitFilename);
+  SameUnitName:=CompareDottedIdentifiers(PChar(CurUnitName),PChar(NewUnitName))=0;
+  if SameUnitName and (CompareFilenames(CurMainFilename,NewUnitFilename)<>0)
+  then begin
+    // another unit with same name
+    IDEMessageDialog('Unit name clash',
+      'The target unit has the same name as the current unit.'#13
+      +' Free Pascal does not support that.',
+      mtError,[mbCancel]);
+    exit;
+  end;
+
+  if CompareFilenames(CurMainFilename,NewUnitFilename)=0 then begin
+    // same file
+    NewUnitInPath:=true;
+    debugln(['TCodyIdentifiersDlg.UseIdentifier same unit']);
+  end
+  else if (CompareFilenames(ExtractFilePath(CurMainFilename),
                         ExtractFilePath(NewUnitFilename))=0)
-  then
-    NewUnitInPath:=true; // same directory
-  if (not NewUnitInPath) and (CurUnitPath<>'')
+  then begin
+    // same directory
+    debugln(['TCodyIdentifiersDlg.UseIdentifier same directory']);
+    NewUnitInPath:=true;
+  end
+  else if (CurUnitPath<>'')
   and FilenameIsAbsolute(CurMainFilename)
   and (FindPathInSearchPath(PChar(CurUnitPath),length(CurUnitPath),
                             PChar(CurMainFilename),length(CurMainFilename))<>nil)
-  then
-    NewUnitInPath:=true; // in unit search path
+  then begin
+    // in unit search path
+    debugln(['TCodyIdentifiersDlg.UseIdentifier in unit search path of owner']);
+    NewUnitInPath:=true;
+  end;
 
   UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
   if not NewUnitInPath then begin
     // new unit is not in the projects/package unit path
     if NewGroupName=PackageNameFPCSrcDir then begin
       // new unit is a FPC unit
+      debugln(['TCodyIdentifiersDlg.UseIdentifier in FPCSrcDir']);
       FPCSrcFilename:=UnitSet.GetUnitSrcFile(ExtractFileNameOnly(NewUnitFilename));
       if FPCSrcFilename='' then begin
         // a FPC unit without a ppu file
@@ -905,6 +973,7 @@ begin
         NewUnitInPath:=true;
     end else if NewGroupName<>'' then begin
       // new unit is part of a package
+      debugln(['TCodyIdentifiersDlg.UseIdentifier unit is part of a package in "'+NewGroupFilename+'"']);
       Pkg:=PackageEditingInterface.FindPackageWithName(NewGroupName);
       if (Pkg<>nil) and (CompareFilenames(Pkg.Filename,NewGroupFilename)<>0) then
       begin
@@ -926,6 +995,7 @@ begin
       end;
     end else begin
       // new unit is a rogue unit (no package)
+      debugln(['TCodyIdentifiersDlg.UseIdentifier unit is not in a package']);
     end;
   end;
 
@@ -937,15 +1007,9 @@ begin
       CurSrcEdit.SelectText(CurCodePos.Y,CurIdentStart,CurCodePos.Y,CurIdentEnd);
     CurSrcEdit.Selection:=NewIdentifier;
 
-    if CurTool<>nil then begin
-      CurMainFilename:=CurTool.MainFilename;
-      CurMainCode:=TCodeBuffer(CurTool.Scanner.MainCode);
-    end else begin
-      CurMainFilename:=CurSrcEdit.FileName;
-      CurMainCode:=TCodeBuffer(CurSrcEdit.CodeToolsBuffer);
-    end;
-
+    debugln(['TCodyIdentifiersDlg.UseIdentifier CurOwner=',DbgSName(CurOwner),' ',NewUnitInPath]);
     if (CurOwner<>nil) and (not NewUnitInPath) then begin
+      debugln(['TCodyIdentifiersDlg.UseIdentifier not in unit path, connecting ...']);
       if (NewGroupName<>'') and (NewGroupName<>PackageNameFPCSrcDir) then begin
         // add dependency
         if not AddDependency then exit;
@@ -959,10 +1023,20 @@ begin
       end;
     end;
 
-    AddToUsesSection;
+    if not SameUnitName then
+      AddToUsesSection;
   finally
     CurSrcEdit.EndUndoBlock;
   end;
+end;
+
+function TCodyIdentifiersDlg.OwnerToString(AnOwner: TObject): string;
+begin
+  Result:='nil';
+  if AnOwner is TLazProject then
+    Result:='project'
+  else if AnOwner is TIDEPackage then
+    Result:=TIDEPackage(AnOwner).Name;
 end;
 
 procedure TCodyIdentifiersDlg.UpdateCurOwnerOfUnit;
@@ -985,6 +1059,7 @@ var
 begin
   CurOwner:=nil;
   if CurMainFilename='' then exit;
+  //debugln(['TCodyIdentifiersDlg.UpdateCurOwnerOfUnit CurMainFilename=',CurMainFilename]);
   GetBest(PackageEditingInterface.GetOwnersOfUnit(CurMainFilename));
   if CurOwner=nil then
     GetBest(PackageEditingInterface.GetPossibleOwnersOfUnit(CurMainFilename,
@@ -1000,6 +1075,7 @@ procedure TCodyIdentifiersDlg.AddToUsesSection;
 var
   NewUnitCode: TCodeBuffer;
   NewUnitName: String;
+  CurUnitName: String;
 begin
   if (CurTool=nil) or (NewUnitFilename='') then exit;
   UpdateTool;
@@ -1011,9 +1087,17 @@ begin
   NewUnitName:=CodeToolBoss.GetSourceName(NewUnitCode,false);
   if NewUnitName='' then
     NewUnitName:=ExtractFileNameOnly(NewUnitFilename);
+  CurUnitName:=ExtractFileNameOnly(CurMainFilename);
+  if CompareDottedIdentifiers(PChar(CurUnitName),PChar(NewUnitName))=0 then
+    exit; // is the same unit
 
-  if (CurNode.Desc in [ctnUnit,ctnUsesSection]) then exit;
+  if (CurNode.Desc in [ctnUnit,ctnUsesSection]) then begin
+    debugln(['TCodyIdentifiersDlg.AddToUsesSection identifier in uses section, not adding unit to uses section']);
+    exit;
+  end;
+
   // add to uses section
+  debugln(['TCodyIdentifiersDlg.AddToUsesSection adding to uses section']);
   CodeToolBoss.AddUnitToMainUsesSection(CurMainCode,NewUnitName,'');
 end;
 
