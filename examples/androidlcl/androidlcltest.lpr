@@ -6,20 +6,13 @@ library androidlcltest;
 uses
   {$ifdef Android}
   cmem,
-  {$ifdef CD_Android_NativeApp}
-  android_native_app_glue,
-  {$else}
   customdrawnint,
-  {$endif}
   {$endif}
   Interfaces,
   Forms,
   mainform;
 
-{$ifdef CD_Android_NativeApp}
-exports //android_main name 'android_main',
-  ANativeActivity_onCreate name 'ANativeActivity_onCreate';
-{$else}
+{$ifdef Android}
 exports
   Java_com_pascal_lclproject_LCLActivity_stringFromJNI name 'Java_com_pascal_lcltest_LCLActivity_stringFromJNI',
   Java_com_pascal_lclproject_LCLActivity_intFromJNI name 'Java_com_pascal_lcltest_LCLActivity_intFromJNI',

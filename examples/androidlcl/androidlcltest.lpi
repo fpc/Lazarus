@@ -89,7 +89,7 @@
       <CompilerMessages>
         <UseMsgFile Value="True"/>
       </CompilerMessages>
-      <CustomOptions Value="-dANDROID -Xd -Cccdecl"/>
+      <CustomOptions Value="-dANDROID -Xd"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

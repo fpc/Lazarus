@@ -9,14 +9,23 @@ uses
 
 type
 
+  { TSubControl }
+
+  TSubControl = class(TCustomControl)
+  public
+    procedure Paint; override;
+  end;
+
   { TForm1 }
 
   TForm1 = class(TForm)
+    procedure FormCreate(Sender: TObject);
     procedure FormPaint(Sender: TObject);
   private
     { private declarations }
   public
     { public declarations }
+    SubControl: TSubControl;
   end; 
 
 var
@@ -24,9 +33,27 @@ var
 
 implementation
 
+{ TSubControl }
+
+procedure TSubControl.Paint;
+begin
+  Canvas.Brush.Color := clBlue;
+  Canvas.Rectangle(0, 0, Width, Height);
+end;
+
 {$R *.lfm}
 
 { TForm1 }
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  SubControl := TSubControl.Create(Self);
+  SubControl.Left := 100;
+  SubControl.Top := 100;
+  SubControl.Width := 100;
+  SubControl.Height := 100;
+  SubControl.Parent := Self;
+end;
 
 procedure TForm1.FormPaint(Sender: TObject);
 begin
