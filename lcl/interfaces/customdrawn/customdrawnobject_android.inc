@@ -439,14 +439,20 @@ const NativeMethods: array[0..2] of JNINativeMethod=
        );
 
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
+var
+  curVM:PJavaVM=nil;
+  curEnv:PJNIEnv=nil;
 begin
   curVM:=vm;
   __android_log_write(ANDROID_LOG_INFO,'nativetest','JNI_OnLoad called');
   __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM=%x', [PtrInt(CurVM)])));
-  if curVM^^.GetEnv(curVM,@curEnv,JNI_VERSION_1_6)<>JNI_OK then begin //<<<--- THIS CRASHES
-  __android_log_write(ANDROID_LOG_FATAL,'nativetest','curVM^.GetEnv failed');
-  result:=JNI_ERR;
-  exit;
+  __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM^=%x', [PtrInt(CurVM^)])));
+  __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM^^.reserved0=%x', [PtrInt(CurVM^^.reserved0)])));
+  __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM^^.GetEnv=%x', [PtrInt(Pointer(@CurVM^^.GetEnv))])));
+  if curVM^^.GetEnv(curVM,@curEnv,JNI_VERSION_1_4)<>JNI_OK then begin //<<<--- THIS CRASHES
+    __android_log_write(ANDROID_LOG_INFO{FATAL},'nativetest','curVM^.GetEnv failed');
+//    result:=JNI_ERR;
+//    exit;
   end;
 
   __android_log_write(ANDROID_LOG_INFO,'nativetest','Reading curClass');
@@ -469,7 +475,7 @@ begin
   exit;
   end;
 
-  result:=JNI_VERSION_1_6;
+  result:=JNI_VERSION_1_4;// 1_6?
 end;
 
 procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;
