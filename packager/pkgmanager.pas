@@ -215,6 +215,8 @@ type
     function GetPossibleOwnersOfUnit(const UnitFilename: string;
                                      Flags: TPkgIntfOwnerSearchFlags): TFPList; override;
     function GetPackageOfCurrentSourceEditor(out APackage: TLazPackage): TPkgFile;
+    function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
+                                   out DependencyOwner: TObject): boolean; override;
     function AddDependencyToOwners(OwnerList: TFPList; APackage: TLazPackage;
                    OnlyTestIfPossible: boolean = false): TModalResult; override;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
@@ -3188,6 +3190,34 @@ begin
       exit;
   end;
   APackage:=nil;
+end;
+
+function TPkgManager.IsOwnerDependingOnPkg(AnOwner: TObject;
+  const PkgName: string; out DependencyOwner: TObject): boolean;
+var
+  FirstDep: TPkgDependency;
+  Dep: TPkgDependency;
+begin
+  Result:=false;
+  DependencyOwner:=nil;
+  if (AnOwner=nil) or (PkgName='') then exit;
+  if AnOwner is TProject then
+    FirstDep:=TProject(AnOwner).FirstRequiredDependency
+  else if AnOwner is TLazPackage then begin
+    if CompareDottedIdentifiers(PChar(TLazPackage(AnOwner).Name),
+      PChar(PkgName))=0
+    then begin
+      DependencyOwner:=AnOwner;
+      exit(true);
+    end;
+    FirstDep:=TLazPackage(AnOwner).FirstRequiredDependency;
+  end else
+    exit(false);
+  if PackageGraph=nil then exit;
+  Dep:=PackageGraph.FindDependencyRecursively(FirstDep,PkgName);
+  if Dep=nil then exit;
+  DependencyOwner:=Dep.Owner;
+  Result:=true;
 end;
 
 function TPkgManager.AddDependencyToOwners(OwnerList: TFPList;

@@ -216,6 +216,8 @@ type
                          ): TModalResult; virtual; abstract;
     function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
 
+    function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
+                                   out DependencyOwner: TObject): boolean; virtual; abstract;
     function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
                          ComponentClassnames: TStrings;
                          Quiet: boolean = false): TModalResult; virtual; abstract;
