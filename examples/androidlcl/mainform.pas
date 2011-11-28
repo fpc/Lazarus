@@ -27,6 +27,7 @@ type
   TForm1 = class(TForm)
     procedure FormClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure FormPaint(Sender: TObject);
   private
     { private declarations }
@@ -72,7 +73,7 @@ end;
 
 procedure TForm1.FormClick(Sender: TObject);
 begin
-  DebugLn('Form click #%d', [ClickCounter]);
+  DebugLn(Format('Form click #%d', [ClickCounter]));
   Inc(ClickCounter);
 //  Invalidate;
 end;
@@ -87,9 +88,17 @@ begin
   SubControl.Parent := Self;
 end;
 
+procedure TForm1.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  DebugLn(Format('MouseMove x=%d y=%d', [x, y]));
+end;
+
 procedure TForm1.FormPaint(Sender: TObject);
 begin
-  Canvas.Brush.Color := RGBToColor(255-ClickCounter, 0, 0);
+//  Canvas.Brush.Color := clWhite;
+//  Canvas.Rectangle(0, 0, Width, Height);
+  Canvas.Brush.Color := clRed;//RGBToColor(255-ClickCounter, 0, 0);
   Canvas.Rectangle(10, 10, 100, 100);
   Canvas.Brush.Color := clGreen;
   Canvas.Rectangle(100, 100, 200, 200);
