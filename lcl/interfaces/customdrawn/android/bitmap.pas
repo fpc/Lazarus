@@ -26,6 +26,8 @@ uses
 {#include <stdint.h>
 #include <jni.h>}
 
+{$linklib jnigraphics}
+
 const
   libname='libjnigraphics.so';
 

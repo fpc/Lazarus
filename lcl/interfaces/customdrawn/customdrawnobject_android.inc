@@ -426,7 +426,7 @@ begin
   AndroidBitmap_unlockPixels(env, abitmap);
 end;
 
-const NativeMethods:array[0..2] of JNINativeMethod=
+const NativeMethods: array[0..2] of JNINativeMethod=
        ((name:'stringFromJNI';
          signature:'()Ljava/lang/String;';
          fnPtr:@Java_com_pascal_jnitest_AndroidJNITest_stringFromJNI;),
@@ -442,32 +442,32 @@ function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 begin
   curVM:=vm;
   __android_log_write(ANDROID_LOG_INFO,'nativetest','JNI_OnLoad called');
-(*  __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM=%x', [PtrInt(CurVM)])));
-  if curVM^.GetEnv(curVM,@curEnv,JNI_VERSION_1_6)<>JNI_OK then begin <<<--- THIS CRASHES
+  __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM=%x', [PtrInt(CurVM)])));
+  if curVM^^.GetEnv(curVM,@curEnv,JNI_VERSION_1_6)<>JNI_OK then begin //<<<--- THIS CRASHES
   __android_log_write(ANDROID_LOG_FATAL,'nativetest','curVM^.GetEnv failed');
   result:=JNI_ERR;
   exit;
   end;
 
   __android_log_write(ANDROID_LOG_INFO,'nativetest','Reading curClass');
-  curClass:=curEnv^.FindClass(curEnv,'com/pascal/jnitest/AndroidJNITest');
+  curClass:=curEnv^^.FindClass(curEnv,'com/pascal/lcltest/LCLActivity');
   if not assigned(curClass) then begin
   __android_log_write(ANDROID_LOG_FATAL,'nativetest','curEnv^.FindClass failed');
   result:=JNI_ERR;
   exit;
   end;
-  if curEnv^.RegisterNatives(curEnv,curClass,@NativeMethods[0],length(NativeMethods))<0 then begin
+  if curEnv^^.RegisterNatives(curEnv,curClass,@NativeMethods[0],length(NativeMethods))<0 then begin
   __android_log_write(ANDROID_LOG_FATAL,'nativetest','curEnv^.RegisterNatives failed');
   result:=JNI_ERR;
   exit;
   end;
 
-  nativeCodeLoaded:=curEnv^.GetFieldID(curEnv,curClass,'nativeCodeLoaded','J');
+  nativeCodeLoaded:=curEnv^^.GetFieldID(curEnv,curClass,'nativeCodeLoaded','J');
   if not assigned(nativeCodeLoaded) then begin
   __android_log_write(ANDROID_LOG_FATAL,'nativetest','curEnv^.GetFieldID failed');
   result:=JNI_ERR;
   exit;
-  end;*)
+  end;
 
   result:=JNI_VERSION_1_6;
 end;
