@@ -5,7 +5,8 @@ unit mainform;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs; 
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  LCLProc;
 
 type
 
@@ -13,6 +14,11 @@ type
 
   TSubControl = class(TCustomControl)
   public
+    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+ {   procedure MouseEnter; virtual;
+    procedure MouseLeave; virtual;}
     procedure Paint; override;
   end;
 
@@ -37,6 +43,23 @@ implementation
 
 { TSubControl }
 
+procedure TSubControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  DebugLn('TSubControl.MouseDown');
+end;
+
+procedure TSubControl.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  DebugLn('TSubControl.MouseMove');
+end;
+
+procedure TSubControl.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  DebugLn('TSubControl.MouseUp');
+end;
+
 procedure TSubControl.Paint;
 begin
   Canvas.Brush.Color := clBlue;
@@ -49,7 +72,9 @@ end;
 
 procedure TForm1.FormClick(Sender: TObject);
 begin
-  Caption := Format('Form click #%d', [ClickCounter]);
+  DebugLn('Form click #%d', [ClickCounter]);
+  Inc(ClickCounter);
+//  Invalidate;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -64,7 +89,7 @@ end;
 
 procedure TForm1.FormPaint(Sender: TObject);
 begin
-  Canvas.Brush.Color := clRed;
+  Canvas.Brush.Color := RGBToColor(255-ClickCounter, 0, 0);
   Canvas.Rectangle(10, 10, 100, 100);
   Canvas.Brush.Color := clGreen;
   Canvas.Rectangle(100, 100, 200, 200);
