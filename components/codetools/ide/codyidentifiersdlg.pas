@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, LResources, LCLProc, avl_tree, Forms, Controls,
-  Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
+  Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType, Buttons,
   PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf, CompOptsIntf, IDEDialogs,
   CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
   CodeTree, LinkScanner, DefineTemplates,
@@ -104,6 +104,11 @@ type
     property LoadSaveError: string read FLoadSaveError write SetLoadSaveError;
   end;
 
+  TCodyIdentifierDlgAction = (
+    cidaUseIdentifier,
+    cidaJumpToIdentifier
+    );
+
   { TCodyIdentifiersDlg }
 
   TCodyIdentifiersDlg = class(TForm)
@@ -120,6 +125,7 @@ type
     procedure FilterEditExit(Sender: TObject);
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
+    procedure JumpButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure HideOtherProjectsCheckBoxChange(Sender: TObject);
@@ -127,12 +133,15 @@ type
     procedure ItemsListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
   private
+    FDlgAction: TCodyIdentifierDlgAction;
+    FJumpButton: TBitBtn;
     FLastFilter: string;
     FLastHideOtherProjects: boolean;
     FIdleConnected: boolean;
     FMaxItems: integer;
     FNoFilterText: string;
     FItems: TStringList;
+    procedure SetDlgAction(NewAction: TCodyIdentifierDlgAction);
     procedure SetIdleConnected(AValue: boolean);
     procedure SetMaxItems(AValue: integer);
     procedure UpdateGeneralInfo;
@@ -144,6 +153,7 @@ type
     procedure UpdateCurOwnerOfUnit;
     procedure AddToUsesSection;
     procedure UpdateTool;
+    function AddButton: TBitBtn;
     function GetCurOwnerCompilerOptions: TLazCompilerOptions;
   public
     CurIdentifier: string;
@@ -168,9 +178,11 @@ type
 
     function Init: boolean;
     procedure UseIdentifier;
+    procedure JumpToIdentifier;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     property MaxItems: integer read FMaxItems write SetMaxItems;
     function OwnerToString(AnOwner: TObject): string;
+    property DlgAction: TCodyIdentifierDlgAction read FDlgAction;
   end;
 
 var
@@ -190,8 +202,12 @@ begin
   CodyIdentifiersDlg:=TCodyIdentifiersDlg.Create(nil);
   try
     if not CodyIdentifiersDlg.Init then exit;
-    if CodyIdentifiersDlg.ShowModal=mrOk then
-      CodyIdentifiersDlg.UseIdentifier;
+    if CodyIdentifiersDlg.ShowModal=mrOk then begin
+      case CodyIdentifiersDlg.DlgAction of
+      cidaUseIdentifier: CodyIdentifiersDlg.UseIdentifier;
+      cidaJumpToIdentifier: CodyIdentifiersDlg.JumpToIdentifier;
+      end;
+    end;
   finally
     CodyIdentifiersDlg.Free;
   end;
@@ -532,10 +548,7 @@ end;
 
 procedure TCodyIdentifiersDlg.ButtonPanel1OKButtonClick(Sender: TObject);
 begin
-  if FindSelectedItem(NewIdentifier, NewUnitFilename, NewGroupName, NewGroupFilename) then
-    ModalResult:=mrOk
-  else
-    ModalResult:=mrNone;
+  SetDlgAction(cidaUseIdentifier);
 end;
 
 procedure TCodyIdentifiersDlg.FilterEditExit(Sender: TObject);
@@ -565,6 +578,11 @@ begin
   end;
 end;
 
+procedure TCodyIdentifiersDlg.JumpButtonClick(Sender: TObject);
+begin
+  SetDlgAction(cidaJumpToIdentifier);
+end;
+
 procedure TCodyIdentifiersDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
@@ -581,6 +599,11 @@ begin
   FItems:=TStringList.Create;
   HideOtherProjectsCheckBox.Checked:=true;
   HideOtherProjectsCheckBox.Caption:=crsHideUnitsOfOtherProjects;
+
+  FJumpButton:=AddButton;
+  FJumpButton.Name:='JumpButton';
+  FJumpButton.OnClick:=@JumpButtonClick;
+  FJumpButton.Caption:='Jump to';
 end;
 
 procedure TCodyIdentifiersDlg.HideOtherProjectsCheckBoxChange(Sender: TObject);
@@ -623,6 +646,17 @@ begin
     Application.AddOnIdleHandler(@OnIdle)
   else
     Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
+procedure TCodyIdentifiersDlg.SetDlgAction(NewAction: TCodyIdentifierDlgAction);
+begin
+  FDlgAction:=NewAction;
+  if FindSelectedItem(NewIdentifier, NewUnitFilename, NewGroupName,
+    NewGroupFilename)
+  then
+    ModalResult:=mrOk
+  else
+    ModalResult:=mrNone;
 end;
 
 procedure TCodyIdentifiersDlg.SetMaxItems(AValue: integer);
@@ -1027,6 +1061,41 @@ begin
   end;
 end;
 
+procedure TCodyIdentifiersDlg.JumpToIdentifier;
+var
+  NewUnitCode: TCodeBuffer;
+  NewCode: TCodeBuffer;
+  NewX: integer;
+  NewY: integer;
+  NewTopLine: integer;
+begin
+  if not FileExistsUTF8(NewUnitFilename) then begin
+    IDEMessageDialog('File not found',
+      'File "'+NewUnitFilename+'" does not exist anymore.',
+      mtError,[mbCancel]);
+    exit;
+  end;
+  NewUnitCode:=CodeToolBoss.LoadFile(NewUnitFilename,true,false);
+  if NewUnitCode=nil then begin
+    IDEMessageDialog('File read error',
+      'Unable to read file "'+NewUnitFilename+'".',
+      mtError,[mbCancel]);
+    exit;
+  end;
+
+  if not CodeToolBoss.FindDeclarationOfPropertyPath(NewUnitCode,NewIdentifier,
+    NewCode, NewX, NewY, NewTopLine)
+  then begin
+    IDEMessageDialog('Identifir not found',
+      'Identifier "'+NewIdentifier+'" not found in unit "'+NewUnitFilename+'"',
+      mtError,[mbCancel]);
+    exit;
+  end;
+
+  LazarusIDE.DoOpenFileAndJumpToPos(NewCode.Filename,Point(NewX,NewY),NewTopLine,
+    -1,-1,[ofDoNotLoadResource]);
+end;
+
 function TCodyIdentifiersDlg.OwnerToString(AnOwner: TObject): string;
 begin
   Result:='nil';
@@ -1107,6 +1176,16 @@ begin
   except
   end;
   CurNode:=CurTool.FindDeepestNodeAtPos(CurCleanPos,false);
+end;
+
+function TCodyIdentifiersDlg.AddButton: TBitBtn;
+begin
+  Result := TBitBtn.Create(Self);
+  Result.Align := alCustom;
+  Result.Default := false;
+  Result.Constraints.MinWidth:=25;
+  Result.AutoSize := true;
+  Result.Parent := ButtonPanel1;
 end;
 
 function TCodyIdentifiersDlg.GetCurOwnerCompilerOptions: TLazCompilerOptions;
