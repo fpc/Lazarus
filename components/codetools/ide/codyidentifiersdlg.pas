@@ -833,6 +833,7 @@ var
   // returns false to abort
   var
     Pkg: TIDEPackage;
+    DepOwner: TObject;
   begin
     Result:=true;
     Pkg:=PackageEditingInterface.FindPackageWithName(NewGroupName);
@@ -851,6 +852,11 @@ var
           mtError,[mbCancel]);
         exit(false);
       end;
+    end;
+    if PackageEditingInterface.IsOwnerDependingOnPkg(CurOwner,NewGroupName,DepOwner)
+    then begin
+      // already depending on package name
+      exit(true);
     end;
     // ToDo add dependency
 

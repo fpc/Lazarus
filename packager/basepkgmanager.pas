@@ -74,8 +74,6 @@ type
                           IsPartOfProject: boolean): TModalResult; virtual; abstract;
     function FindIncludeFileInProjectDependencies(Project1: TProject;
                           const Filename: string): string; virtual; abstract;
-    function AddDependencyToOwners(OwnerList: TFPList; APackage: TLazPackage;
-                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
     function SearchFile(const AFilename: string;
                         SearchFlags: TSearchIDEFileFlags;
                         InObject: TObject): TPkgFile; virtual; abstract;

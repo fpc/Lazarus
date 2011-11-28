@@ -218,6 +218,8 @@ type
 
     function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
                                    out DependencyOwner: TObject): boolean; virtual; abstract;
+    function AddDependencyToOwners(OwnerList: TFPList; APackage: TIDEPackage;
+                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
     function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
                          ComponentClassnames: TStrings;
                          Quiet: boolean = false): TModalResult; virtual; abstract;

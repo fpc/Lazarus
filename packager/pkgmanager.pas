@@ -217,7 +217,7 @@ type
     function GetPackageOfCurrentSourceEditor(out APackage: TLazPackage): TPkgFile;
     function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
                                    out DependencyOwner: TObject): boolean; override;
-    function AddDependencyToOwners(OwnerList: TFPList; APackage: TLazPackage;
+    function AddDependencyToOwners(OwnerList: TFPList; APackage: TIDEPackage;
                    OnlyTestIfPossible: boolean = false): TModalResult; override;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function FindVirtualUnitSource(PkgFile: TPkgFile): string;
@@ -3221,14 +3221,16 @@ begin
 end;
 
 function TPkgManager.AddDependencyToOwners(OwnerList: TFPList;
-  APackage: TLazPackage; OnlyTestIfPossible: boolean): TModalResult;
+  APackage: TIDEPackage; OnlyTestIfPossible: boolean): TModalResult;
 var
   i: Integer;
   Item: TObject;
   NewDependency: TPkgDependency;
   ADependency: TPkgDependency;
   r: TModalResult;
+  Pkg: TLazPackage;
 begin
+  Pkg:=APackage as TLazPackage;
   if not OnlyTestIfPossible then begin
     Result:=AddDependencyToOwners(OwnerList,APackage,true);
     if Result<>mrOk then exit;
@@ -3239,7 +3241,7 @@ begin
     Item:=TObject(OwnerList[i]);
     if Item=APackage then continue;
     if Item is TProject then begin
-      Result:=AddProjectDependency(TProject(Item),APackage,OnlyTestIfPossible);
+      Result:=AddProjectDependency(TProject(Item),Pkg,OnlyTestIfPossible);
       if Result<>mrOk then exit;
     end else if Item is TLazPackage then begin
       NewDependency:=TPkgDependency.Create;
