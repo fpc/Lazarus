@@ -417,7 +417,6 @@ var
   lCurForm: TCDNonNativeForm;
 
   struct : TPaintStruct;
-  lWidth, lHeight: Integer;
   lBitmap, lMask: HBITMAP;
   lRawImage: TRawImage;
   {$IFDEF VerboseCDPaintProfiler}
@@ -446,13 +445,10 @@ begin
     {$ENDIF}
     //if (AWinControl = nil) or (AWindowInfo = nil) then Exit;
 
-    lWidth := 200;//Round(AWinControl.width);
-    lHeight := 200;//Round(AWinControl.height);
-
     FillChar(struct, SizeOf(TPaintStruct), 0);
 
     // Prepare the non-native image and canvas
-    UpdateControlLazImageAndCanvas(lCurForm.Image, lCurForm.Canvas, lWidth, lHeight, clfBGRA32, pixels);
+    UpdateControlLazImageAndCanvas(lCurForm.Image, lCurForm.Canvas, Width, Height, clfRGBA32, pixels);
 
     struct.hdc := HDC(lCurForm.Canvas);
 

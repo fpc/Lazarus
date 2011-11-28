@@ -17,7 +17,8 @@ uses
 type
   TUpdateLazImageFormat = (
     clfRGB16_R5G6B5,
-    clfRGB24, clfRGB24UpsideDown, clfBGR24, clfBGRA32);
+    clfRGB24, clfRGB24UpsideDown, clfBGR24,
+    clfBGRA32, clfRGBA32, clfARGB32);
 
   TCDWinControl = class
   public
@@ -150,6 +151,8 @@ begin
     clfRGB24UpsideDown: lRawImage.Description.Init_BPP24_R8G8B8_BIO_TTB_UpsideDown(AWidth, AHeight);
     clfBGR24:  lRawImage.Description.Init_BPP24_B8G8R8_BIO_TTB(AWidth, AHeight);
     clfBGRA32: lRawImage.Description.Init_BPP32_B8G8R8A8_BIO_TTB(AWidth, AHeight);
+    clfRGBA32: lRawImage.Description.Init_BPP32_R8G8B8A8_BIO_TTB(AWidth, AHeight);
+    clfARGB32: lRawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(AWidth, AHeight);
     end;
 
     // Now connect the pixel buffer or create one
@@ -157,11 +160,12 @@ begin
     else
     begin
       case AFormat of
-      clfRGB16_R5G6B5:    lPixelSize := 2;
-      clfRGB24:           lPixelSize := 3;
-      clfRGB24UpsideDown: lPixelSize := 3;
-      clfBGR24:           lPixelSize := 3;
-      clfBGRA32:          lPixelSize := 4;
+      clfRGB16_R5G6B5:
+        lPixelSize := 2;
+      clfRGB24, clfRGB24UpsideDown, clfBGR24:
+        lPixelSize := 3;
+      clfBGRA32, clfRGBA32, clfARGB32:
+        lPixelSize := 4;
       end;
 
       lRawImage.Data := AData;
