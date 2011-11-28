@@ -196,12 +196,18 @@ function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 {$endif}
 
 {$ifdef CD_Android}
-function Java_com_pascal_lclproject_LCLActivity_stringFromJNI(env:PJNIEnv;this:jobject):jstring; cdecl;
-function Java_com_pascal_lclproject_LCLActivity_intFromJNI(env:PJNIEnv;this:jobject): jint; cdecl;
+function Java_com_pascal_lclproject_LCLActivity_LCLOnTouch(env:PJNIEnv;this:jobject; x, y: single; action: jint): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap(
     env:PJNIEnv;this:jobject; width, height: jint; abitmap: jobject): jint; cdecl;
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;
+
+var
+  curVM: PJavaVM=nil;
+  curEnv: PJNIEnv=nil;
+  curJavaClass: JClass = nil;
+  curJavaObject: jobject = nil;
+  nativeCodeLoaded:JfieldID=nil;
 {$endif}
 
 implementation

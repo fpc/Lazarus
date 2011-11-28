@@ -17,23 +17,45 @@
  *                                                                           *
  *****************************************************************************
 }
-var
-  curClass:JClass=nil;
-  nativeCodeLoaded:JfieldID=nil;
 
-function Java_com_pascal_lclproject_LCLActivity_stringFromJNI(env:PJNIEnv;this:jobject):jstring; cdecl;
+{function Java_com_pascal_lclproject_LCLActivity_stringFromJNI(env:PJNIEnv;this:jobject):jstring; cdecl;
 var x:single;
 begin
-{  __android_log_write(ANDROID_LOG_INFO,'nativetest','Java_com_bero_nativetest_Main_stringFromJNI entered');
+  __android_log_write(ANDROID_LOG_INFO,'nativetest','Java_com_bero_nativetest_Main_stringFromJNI entered');
   curEnv^.SetLongField(curEnv,curClass,nativeCodeLoaded,1);
   x:=8;
   result:=env^.NewStringUTF(env,pchar('Hello from native free pascal code by BeRo to the java world on the android platform ! '+floattostr(x*0.5)));
-  __android_log_write(ANDROID_LOG_INFO,'nativetest','Java_com_bero_nativetest_Main_stringFromJNI exited');}
-end;
+  __android_log_write(ANDROID_LOG_INFO,'nativetest','Java_com_bero_nativetest_Main_stringFromJNI exited');
+end;}
 
-function Java_com_pascal_lclproject_LCLActivity_intFromJNI(env:PJNIEnv;this:jobject): jint; cdecl;
+const
+  ACTION_DOWN = 0;
+  ACTION_UP = 1;
+
+function Java_com_pascal_lclproject_LCLActivity_LCLOnTouch(env:PJNIEnv;this:jobject; x, y: single; action: jint): jint; cdecl;
+var
+  lCurForm: TCDNonNativeForm;
+  lTarget: TWinControl;
 begin
-  Result := 8;
+  Result := 0;
+
+  __android_log_write(ANDROID_LOG_INFO,'nativetest','LCLOnTouch called');
+{  curJavaClass := env^^.GetObjectClass(env, this);
+  __android_log_write(ANDROID_LOG_INFO,'nativetest','LCLOnTouch after GetObjectClass');}
+  curJavaObject := this;
+  curEnv := env;
+
+  lCurForm := GetCurrentForm();
+  lTarget := FindControlWhichReceivedEvent(lCurForm.LCLForm, lCurForm.Children, Round(X), Round(Y));
+
+  case action of
+    ACTION_DOWN: LCLSendMouseDownMsg(lTarget, Round(X), Round(Y), mbLeft, []);
+    ACTION_UP:
+    begin
+      LCLSendMouseUpMsg(lTarget, Round(X), Round(Y), mbLeft, []);
+      LCLSendClickedMsg(lTarget);
+    end;
+  end;
 end;
 
 function Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap(
@@ -51,14 +73,6 @@ var
 begin
   Result := 0;
   AndroidBitmap_lockPixels(env, abitmap, @pixels);
-
-  // debug info to check if we are painting
-  pixels[30*width+30] := $FFFFFFFF;
-  pixels[30*width+31] := $FFFFFFFF;
-  pixels[30*width+32] := $FFFFFFFF;
-  pixels[30*width+33] := $FFFFFFFF;
-  pixels[30*width+34] := $FFFFFFFF;
-  pixels[30*width+35] := $FFFFFFFF;
 
   lCurForm := GetCurrentForm();
   if lCurForm <> nil then
@@ -94,33 +108,27 @@ begin
   AndroidBitmap_unlockPixels(env, abitmap);
 end;
 
-const NativeMethods: array[0..2] of JNINativeMethod=
-       ((name:'stringFromJNI';
-         signature:'()Ljava/lang/String;';
-         fnPtr:@Java_com_pascal_lclproject_LCLActivity_stringFromJNI;),
-        (name:'intFromJNI';
-         signature:'()I';
-         fnPtr:@Java_com_pascal_lclproject_LCLActivity_intFromJNI;),
-        (name:'LCLDrawToBitmap';
+const NativeMethods: array[0..1] of JNINativeMethod=
+       ((name:'LCLDrawToBitmap';
          signature:'(IILandroid/graphics/Bitmap;)I';
-         fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap;)
+         fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap;),
+        (name:'LCLOnTouch';
+         signature:'(FFI)I';
+         fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnTouch;)
        );
 
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
-var
-  curVM:PJavaVM=nil;
-  curEnv:PJNIEnv=nil;
 begin
   curVM:=vm;
-  __android_log_write(ANDROID_LOG_INFO,'nativetest','JNI_OnLoad called');
+{  __android_log_write(ANDROID_LOG_INFO,'nativetest','JNI_OnLoad called');
   __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM=%x', [PtrInt(CurVM)])));
   __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM^=%x', [PtrInt(CurVM^)])));
   __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM^^.reserved0=%x', [PtrInt(CurVM^^.reserved0)])));
   __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM^^.GetEnv=%x', [PtrInt(Pointer(@CurVM^^.GetEnv))])));
-{  if curVM^^.GetEnv(curVM,@curEnv,JNI_VERSION_1_4)<>JNI_OK then begin //<<<--- THIS CRASHES
+  if vm^^.GetEnv(curVM,@curEnv,JNI_VERSION_1_4)<>JNI_OK then begin //<<<--- THIS CRASHES
     __android_log_write(ANDROID_LOG_INFO{FATAL},'nativetest','curVM^.GetEnv failed');
-//    result:=JNI_ERR;
-//    exit;
+    result:=JNI_ERR;
+    exit;
   end;
 
   __android_log_write(ANDROID_LOG_INFO,'nativetest','Reading curClass');

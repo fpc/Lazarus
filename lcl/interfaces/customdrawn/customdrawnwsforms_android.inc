@@ -117,7 +117,15 @@ begin
 end;
 
 class procedure TCDWSCustomForm.SetText(const AWinControl: TWinControl; const AText: String);
+//var
+//  javamethod: jmethodID;
 begin
+{  javamethod := CurEnv->GetMethodID(clazz, "callFromCPP", "()V");
+  if (javamethod == 0) {
+      LOGI("GetMethodID error");
+      return;
+  }
+  env->CallVoidMethod(obj, javamethod);  }
 end;
 
 class function TCDWSCustomForm.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean;

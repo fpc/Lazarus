@@ -460,7 +460,7 @@ type va_list=pointer;
       GetObjectRefType:function(Env:PJNIEnv;AObject:JObject):jobjectRefType;{$ifdef mswindows}stdcall;{$else}cdecl;{$endif}
      end;
 
-     JNIInvokeInterface={$ifdef packedrecords}packed{$endif} record
+     JNIInvokeInterface=packed record
       reserved0:pointer;
       reserved1:pointer;
       reserved2:pointer;
@@ -472,7 +472,7 @@ type va_list=pointer;
       AttachCurrentThreadAsDaemon:function(PVM:PJavaVM;PEnv:PPJNIEnv;Args:pointer):JInt;{$ifdef mswindows}stdcall;{$else}cdecl;{$endif}
      end;
 
-     JavaVMAttachArgs={$ifdef packedrecords}packed{$endif} record
+     JavaVMAttachArgs=packed record
       version:jint;  // must be >= JNI_VERSION_1_2
       name:pchar;    // NULL or name of thread as modified UTF-8 str
       group:jobject; // global ref of a ThreadGroup object, or NULL
