@@ -112,7 +112,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="398">
+    <Files Count="400">
       <Item1>
         <Filename Value="android/androidint.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1970,6 +1970,16 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="rect"/>
       </Item398>
+      <Item399>
+        <Filename Value="customdrawn/customdrawnwsarrow.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CustomDrawnWSArrow"/>
+      </Item399>
+      <Item400>
+        <Filename Value="customdrawn/android/bitmap.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="bitmap"/>
+      </Item400>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
