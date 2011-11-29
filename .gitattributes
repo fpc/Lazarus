@@ -3357,6 +3357,7 @@ examples/androidlcl/android/res/drawable-hdpi/icon.png -text svneol=unset#image/
 examples/androidlcl/android/res/drawable-ldpi/icon.png -text svneol=unset#image/png
 examples/androidlcl/android/res/drawable-mdpi/icon.png -text svneol=unset#image/png
 examples/androidlcl/android/res/values/strings.xml svneol=native#text/plain
+examples/androidlcl/android/src/com/pascal/lcltest/LCLActivity.java svneol=native#text/java
 examples/androidlcl/androidlcltest.lpi svneol=native#text/plain
 examples/androidlcl/androidlcltest.lpr svneol=native#text/pascal
 examples/androidlcl/mainform.lfm svneol=native#text/plain
