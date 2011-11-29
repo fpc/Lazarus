@@ -11,6 +11,10 @@ unit customdrawncontrols;
 
 {$mode objfpc}{$H+}
 
+{$if defined(LCLWin32)}
+  {$define CDControlsDoDoubleBuffer}
+{$endif}
+
 interface
 
 uses
@@ -801,6 +805,7 @@ begin
 
   PrepareCurrentDrawer();
 
+  {$ifdef CDControlsDoDoubleBuffer}
   ABmp := TBitmap.Create;
   try
     ABmp.Width := Width;
@@ -815,6 +820,14 @@ begin
   finally
     ABmp.Free;
   end;
+  {$else}
+  lSize := Size(Width, Height);
+  lControlId := GetControlId();
+  PrepareControlState;
+  PrepareControlStateEx;
+  FDrawer.DrawControl(Canvas, Point(0, 0),
+    lSize, lControlId, FState, FStateEx);
+  {$endif}
 end;
 
 procedure TCDControl.MouseEnter;
