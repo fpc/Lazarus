@@ -172,7 +172,10 @@ end;
 
 procedure TCDWidgetSet.AppSetIcon(const Small, Big: HICON);
 begin
-
+  if Big <> 0 then
+    NSApp.setApplicationIconImage(TCocoaBitmap(Big).image)
+  else
+    NSApp.setApplicationIconImage(nil);
 end;
 
 {------------------------------------------------------------------------------

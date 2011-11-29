@@ -98,8 +98,8 @@ function RegisterCustomRubberBand: Boolean;
 
 implementation
 uses
-{ WinCEWSArrow,
- WinCEWSButtons,
+ CustomDrawnWSArrow,
+{ WinCEWSButtons,
  WinCEWSCalendar,
  WinCEWSCheckLst,
  WinCEWSComCtrls,}
@@ -450,8 +450,8 @@ end;
 // Arrow
 function RegisterArrow: Boolean; alias : 'WSRegisterArrow';
 begin
-//  RegisterWSComponent(TArrow, TWinCEWSArrow);
-  Result := False;
+  RegisterWSComponent(TArrow, TCDWSArrow);
+  Result := True;
 end;
 
 // CheckLst

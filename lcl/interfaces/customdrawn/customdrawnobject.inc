@@ -484,6 +484,14 @@ function TCDWidgetSet.GetLCLCapability(ACapability: TLCLCapability): PtrUInt;
 begin
   case ACapability of
     lcCanDrawOutsideOnPaint: Result := LCL_CAPABILITY_NO;
+    {$ifdef CD_Cocoa}
+    lcNeedMininimizeAppWithMainForm,
+    lcApplicationTitle,
+    lcFormIcon,
+    lcReceivesLMClearCutCopyPasteReliably:
+      Result := LCL_CAPABILITY_NO;
+    {$endif}
+    lcAntialiasingEnabledByDefault: Result := LCL_CAPABILITY_NO;
   else
     Result := inherited GetLCLCapability(ACapability);
   end;

@@ -523,20 +523,20 @@ begin
     Height:=R.Bottom-R.Top;
   end else
     Result:=False;
-end;
+end;*)
 
-function TCocoaWidgetSet.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean): Boolean;
+function TCDWidgetSet.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean): Boolean;
 begin
-  if aHandle<>0 then begin
+(*  if aHandle<>0 then begin
     Result:=True;
     if Assigned(Rect)
       then NSObject(aHandle).lclInvalidateRect(Rect^)
       else NSObject(aHandle).lclInvalidate;
-  end else
+  end else*)
     Result:=False;
 end;
 
-function TCocoaWidgetSet.UpdateWindow(Handle: HWND): Boolean;
+(*function TCocoaWidgetSet.UpdateWindow(Handle: HWND): Boolean;
 begin
   Result:=InvalidateRect(Handle, nil, false);
 end;

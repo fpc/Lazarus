@@ -6,7 +6,7 @@ uses
   //win32wsdialogs,
   //win32extra,
   //win32wsextdlgs,
-  //win32wsarrow,
+  customdrawnwsarrow,
   //win32wschecklst,
   //win32wsstdctrls,
   //win32wscalendar,
