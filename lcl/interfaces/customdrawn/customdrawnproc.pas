@@ -218,15 +218,24 @@ begin
     lCDWinControl.Region.Rect := Bounds(lWinControl.Left, lWinControl.Top, lWinControl.Width, lWinControl.Height);
     ACanvas.ClipRegion := lCDWinControl.Region;
     ACanvas.UseRegionClipping := True;
-    ACanvas.WindowOrg := Point(lWinControl.Left, lWinControl.Top);
+    ACanvas.BaseWindowOrg := Point(lWinControl.Left, lWinControl.Top);
+    ACanvas.WindowOrg := Point(0, 0);
+
+    // Save the Canvas state
+    ACanvas.SaveState;
+    ACanvas.ResetCanvasState;
 
     {$ifdef VerboseCDWinControl}
     DebugLn(Format('[RenderChildWinControls] i=%d before LCLSendPaintMsg', [i]));
     {$endif}
     LCLSendPaintMsg(lCDWinControl.WinControl, struct.hdc, @struct);
+
+    // Now restore it
+    ACanvas.RestoreState;
   end;
 
   ACanvas.Clipping := False;
+  ACanvas.BaseWindowOrg := Point(0, 0);
   ACanvas.WindowOrg := Point(0, 0);
 end;
 

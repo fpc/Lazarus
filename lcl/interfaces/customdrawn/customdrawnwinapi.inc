@@ -4889,10 +4889,19 @@ begin
 
   SetLength(lPoints, NumPts);
   for i := 0 to NumPts-1 do
+  begin
+    {$ifdef VerboseCDWinAPI}
+    LCLProc.DbgOut(Format(' P=%d,%d', [Points[i].X, Points[i].Y]));
+    {$endif}
     lPoints[i] := Points[i];
+  end;
 
   LazDC.Polygon(lPoints);
   Result := True;
+
+  {$ifdef VerboseCDWinAPI}
+  DebugLn('');
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -5347,7 +5356,7 @@ begin
     {$ifdef VerboseCDWinAPI}ObjType := 'Pen';{$endif}
 
     Result := HGDIOBJ(TLazCanvas(DC).AssignedPen);
-    TLazCanvas(DC).AssignPenData(lPen); // := doesn't work
+    TLazCanvas(DC).AssignPenData(lPen); // := doesn't work and Assign() raises exceptions
     TLazCanvas(DC).AssignedPen := lPen;
   end
   else if aObject is TFPCustomBrush then
@@ -5355,7 +5364,7 @@ begin
     {$ifdef VerboseCDWinAPI}ObjType := 'Brush';{$endif}
 
     Result := HGDIOBJ(TLazCanvas(DC).AssignedBrush);
-    TLazCanvas(DC).AssignBrushData(lBrush); // := doesn't work
+    TLazCanvas(DC).AssignBrushData(lBrush); // := doesn't work and Assign() raises exceptions
     TLazCanvas(DC).AssignedBrush := lBrush;
   end(*
   else if aObject is TQtImage then

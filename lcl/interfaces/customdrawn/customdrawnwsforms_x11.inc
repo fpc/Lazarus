@@ -524,10 +524,13 @@ class procedure TCDWSCustomForm.EvMousePressed(const AWinControl: TWinControl; A
   var Event: TXButtonEvent);
 var
   MouseButton: TMouseButton;
+  lTarget: TWinControl;
 begin
+  lTarget := FindControlWhichReceivedEvent(TCustomForm(AWinControl), AWindowInfo.Children, Event.x, Event.y);
+
   if XButtonToMouseButton(Event.button, MouseButton) then
   begin
-    LCLSendMouseDownMsg(AWinControl, Event.x, Event.y, MouseButton, []);
+    LCLSendMouseDownMsg(lTarget, Event.x, Event.y, MouseButton, []);
   end
   else
   begin
@@ -556,14 +559,17 @@ class procedure TCDWSCustomForm.EvMouseReleased(const AWinControl: TWinControl; 
   var Event: TXButtonEvent);
 var
   MouseButton: TMouseButton;
+  lTarget: TWinControl;
 begin
+  lTarget := FindControlWhichReceivedEvent(TCustomForm(AWinControl), AWindowInfo.Children, Event.x, Event.y);
+
   { Release events are only for mouse buttons, and not mouse wheel moviments }
   if (Event.button >= 1) and (Event.button <= 3) then
   begin
     XButtonToMouseButton(Event.button, MouseButton);
 
-    LCLSendMouseUpMsg(AWinControl, Event.x, Event.y, MouseButton, []);
-    LCLSendClickedMsg(AWinControl);
+    LCLSendMouseUpMsg(lTarget, Event.x, Event.y, MouseButton, []);
+    LCLSendClickedMsg(lTarget);
   end;
 end;
 
@@ -577,8 +583,12 @@ end;
 
 class procedure TCDWSCustomForm.EvMouseMove(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
   var Event: TXMotionEvent);
+var
+  lTarget: TWinControl;
 begin
-  LCLSendMouseMoveMsg(AWinControl, Event.x, Event.y, []);
+  lTarget := FindControlWhichReceivedEvent(TCustomForm(AWinControl), AWindowInfo.Children, Event.x, Event.y);
+
+  LCLSendMouseMoveMsg(lTarget, Event.x, Event.y, []);
 end;
 
 // Top-level windows receive LM_ACTIVATE while constrols receive LM_SETFOCUS
