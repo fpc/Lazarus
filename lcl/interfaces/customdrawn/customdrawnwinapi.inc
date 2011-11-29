@@ -4733,12 +4733,16 @@ var
   LazDC: TLazCanvas absolute DC;
 begin
   {$ifdef VerboseCDWinAPI}
-    DebugLn('[TCDWidgetSet.LineTo]');
+    DebugLn(Format('[TCDWidgetSet.LineTo] DC=%x X=%d Y=%d', [DC, X, Y]));
   {$endif}
 
   Result := False;
 
-  if not IsValidDC(DC) then Exit;
+  if not IsValidDC(DC) then
+  begin
+    DebugLn('[TCDWidgetSet.LineTo] Invalid DC');
+    Exit;
+  end;
 
 (*  TQtDeviceContext(DC).getPenPos(@PenPos);
   LastPos := Point(X, Y);
