@@ -6,9 +6,29 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  LCLProc;
+  LCLProc, Arrow;
 
 type
+  TSubControl = class;
+
+  { TForm1 }
+
+  TForm1 = class(TForm)
+    Arrow1: TArrow;
+    procedure Arrow1Click(Sender: TObject);
+    procedure Arrow1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure FormClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure FormPaint(Sender: TObject);
+  private
+    { private declarations }
+  public
+    { public declarations }
+    SubControl: TSubControl;
+    ClickCounter: Integer;
+  end; 
 
   { TSubControl }
 
@@ -21,21 +41,6 @@ type
     procedure MouseLeave; virtual;}
     procedure Paint; override;
   end;
-
-  { TForm1 }
-
-  TForm1 = class(TForm)
-    procedure FormClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure FormPaint(Sender: TObject);
-  private
-    { private declarations }
-  public
-    { public declarations }
-    SubControl: TSubControl;
-    ClickCounter: Integer;
-  end; 
 
 var
   Form1: TForm1; 
@@ -78,6 +83,18 @@ begin
 //  Invalidate;
 end;
 
+procedure TForm1.Arrow1Click(Sender: TObject);
+begin
+  Caption := 'Clicked Arrow';
+  DebugLn('Clicked Arrow');
+end;
+
+procedure TForm1.Arrow1MouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  DebugLn('Arrow Mouse Down');
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   SubControl := TSubControl.Create(Self);
@@ -95,15 +112,24 @@ begin
 end;
 
 procedure TForm1.FormPaint(Sender: TObject);
+var
+  lPoints: array[0..2] of TPoint;
 begin
-//  Canvas.Brush.Color := clWhite;
-//  Canvas.Rectangle(0, 0, Width, Height);
-  Canvas.Brush.Color := clRed;//RGBToColor(255-ClickCounter, 0, 0);
+  Canvas.Brush.Color := clWhite;
+  Canvas.Rectangle(0, 0, 300, 300);
+
+  Canvas.Brush.Color := clRed;
+  lPoints[0] := Point(67,57);
+  lPoints[1] := Point(11,29);
+  lPoints[2] := Point(67,1);
+  Canvas.Polygon(lPoints);
+
+{  Canvas.Brush.Color := clRed;
   Canvas.Rectangle(10, 10, 100, 100);
   Canvas.Brush.Color := clGreen;
   Canvas.Rectangle(100, 100, 200, 200);
   Canvas.Brush.Color := clBlue;
-  Canvas.Rectangle(200, 200, 300, 300);
+  Canvas.Rectangle(200, 200, 300, 300);}
 end;
 
 end.

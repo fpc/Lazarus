@@ -4,9 +4,19 @@ object Form1: TForm1
   Top = 186
   Width = 320
   Caption = 'Form1'
+  ClientHeight = 240
+  ClientWidth = 320
   OnClick = FormClick
   OnCreate = FormCreate
   OnMouseMove = FormMouseMove
   OnPaint = FormPaint
   LCLVersion = '0.9.31'
+  object Arrow1: TArrow
+    Left = 136
+    Height = 58
+    Top = 8
+    Width = 79
+    OnClick = Arrow1Click
+    OnMouseDown = Arrow1MouseDown
+  end
 end
