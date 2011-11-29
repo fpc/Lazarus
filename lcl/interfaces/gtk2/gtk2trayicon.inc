@@ -314,13 +314,54 @@ begin
     vwsTrayIcon.PopUpMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
 end;
 
+function button_press_cb_statusicon(status_icon: PGtkStatusIcon;
+  event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
+var
+  vwsTrayIcon: TCustomTrayIcon absolute user_data;
+begin
+  Result := False;
+
+  if (PGdkEventButton(event)^._type = GDK_2BUTTON_PRESS) and Assigned(vwsTrayIcon.OnDblClick) then
+   vwsTrayIcon.OnDblClick(vwsTrayIcon)
+  else
+  begin
+    case PGdkEventButton(event)^.button of
+      1: if Assigned(vwsTrayIcon.OnMouseDown) then
+          vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbLeft, [], Round(PGdkEventButton(event)^.X), Round(PGdkEventButton(event)^.Y));
+
+      2: if Assigned(vwsTrayIcon.OnMouseDown) then
+          vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbMiddle, [], Round(PGdkEventButton(event)^.X), Round(PGdkEventButton(event)^.Y));
+
+      3: if Assigned(vwsTrayIcon.OnMouseDown) then
+          vwsTrayIcon.OnMouseDown(vwsTrayIcon, mbRight, [], Round(PGdkEventButton(event)^.X), Round(PGdkEventButton(event)^.Y));
+    end;
+  end;
+end;
+
 function button_release_cb_statusicon(status_icon: PGtkStatusIcon;
   event: PGdkEvent; user_data: gpointer): gboolean; cdecl;
 var
   vwsTrayIcon: TCustomTrayIcon absolute user_data;
 begin
-  if Assigned(vwsTrayIcon.OnClick) then
-    vwsTrayIcon.OnClick(vwsTrayIcon);
+  case PGdkEventButton(event)^.button of
+    1:
+    begin
+      if Assigned(vwsTrayIcon.OnClick) then vwsTrayIcon.OnClick(vwsTrayIcon);
+      if Assigned(vwsTrayIcon.OnMouseUp) then
+       vwsTrayIcon.OnMouseUp(vwsTrayIcon, mbLeft, [], Round(PGdkEventButton(event)^.X), Round(PGdkEventButton(event)^.Y));
+    end;
+    
+    2: if Assigned(vwsTrayIcon.OnMouseUp) then
+        vwsTrayIcon.OnMouseUp(vwsTrayIcon, mbMiddle, [], Round(PGdkEventButton(event)^.X), Round(PGdkEventButton(event)^.Y));
+
+    3:
+    begin
+      if Assigned(vwsTrayIcon.OnMouseUp) then
+       vwsTrayIcon.OnMouseUp(vwsTrayIcon, mbRight, [], Round(PGdkEventButton(event)^.X), Round(PGdkEventButton(event)^.Y));
+      if Assigned(vwsTrayIcon.PopUpMenu) then
+       vwsTrayIcon.PopUpMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+     end;
+  end;
 end;
 
 {$endif}
@@ -340,6 +381,7 @@ begin
 
     g_signal_connect(FStatusIcon, 'activate', TGCallback(@activate_cb_statusicon), fTrayIcon);
     g_signal_connect(FStatusIcon, 'popup-menu', TGCallback(@popup_cb_statusicon), fTrayIcon);
+    g_signal_connect(FStatusIcon, 'button-press-event', TGCallback(@button_press_cb_statusicon), fTrayIcon);
     g_signal_connect(FStatusIcon, 'button-release-event', TGCallback(@button_release_cb_statusicon), fTrayIcon);
   end
   else
@@ -375,6 +417,7 @@ begin
 {$ifdef UseStatusIcon}
   if FStatusIcon <> nil then
   begin
+    gtk_status_icon_set_visible(FStatusIcon, False);
     g_object_unref(FStatusIcon);
     FStatusIcon := nil;
   end
