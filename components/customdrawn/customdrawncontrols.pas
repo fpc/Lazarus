@@ -679,7 +679,6 @@ begin
   FBottomScrollBar.Parent := Self;
 
   FSpacer := TCDControl.Create(nil);
-  PrepareCurrentDrawer();
   FSpacer.Color := FDrawer.Palette.BtnFace;
   FSpacer.Visible := False;
   FSpacer.Parent := Self;
@@ -841,6 +840,7 @@ constructor TCDControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   CreateControlStateEx;
+  PrepareCurrentDrawer();
 end;
 
 destructor TCDControl.Destroy;
@@ -1473,8 +1473,6 @@ begin
   FCaretTimer.OnTimer := @HandleCaretTimer;
   FCaretTimer.Interval := 500;
   FCaretTimer.Enabled := False;
-
-  PrepareCurrentDrawer();
 end;
 
 destructor TCDEdit.Destroy;
@@ -1498,8 +1496,6 @@ begin
   ControlStyle := ControlStyle - [csAcceptsControls];
   AutoSize := True;
   FHasOnOffStates := True;
-
-  PrepareCurrentDrawer();
 end;
 
 destructor TCDCheckBox.Destroy;
@@ -1541,7 +1537,6 @@ begin
   Height := 25;
   ParentFont := True;
   FGlyph := TBitmap.Create;
-  PrepareCurrentDrawer();
 end;
 
 destructor TCDButton.Destroy;
@@ -1569,7 +1564,6 @@ begin
   FIsGrouped := True;
   FGroupIndex := -2; // special value for TCDRadioButton
   DoCheckIfFirstButtonInGroup();
-  PrepareCurrentDrawer();
 end;
 
 destructor TCDRadioButton.Destroy;
@@ -1977,8 +1971,6 @@ begin
   Height := 25;
   Width := 100;
 
-  PrepareCurrentDrawer();
-
   TabStop := True;
 end;
 
@@ -2075,7 +2067,6 @@ begin
   Height := 20;
   FMax := 100;
   TabStop := False;
-  PrepareCurrentDrawer();
 end;
 
 destructor TCDProgressBar.Destroy;
@@ -2147,8 +2138,6 @@ begin
   FShowColumnHeader := True;
 //  FProperties: TListViewProperties;
 //  FViewStyle: TViewStyle;
-
-  PrepareCurrentDrawer();
 
   ScrollBars := ssBoth;
 end;
@@ -2382,8 +2371,6 @@ begin
   Width := 232;
   Height := 184;
   TabStop := True;
-
-  PrepareCurrentDrawer();
 
   ParentColor := True;
   ParentFont := True;
