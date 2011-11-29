@@ -78,7 +78,6 @@ type
   protected
     procedure SetColor (x,y:integer; const AValue:TFPColor); override;
     // Routines broken in FPC
-    function IsPointInPolygon(AX, AY: Integer; const APolygon: array of TPoint): Boolean;
     procedure DoPolygonFill (const points:array of TPoint); override;
   public
     constructor create (AnImage : TFPCustomImage);
@@ -167,57 +166,6 @@ begin
   Clipping := False; // Work around to FImage being private in FPC 2.6 or inferior =(
   inherited SetColor(lx, ly, AValue);
   Clipping := OldClipping;
-end;
-
-//  The function will return True if the point x,y is inside the polygon, or
-//  False if it is not.
-//
-//  Original C code: http://www.visibone.com/inpoly/inpoly.c.txt
-//
-//  Translation from C by Felipe Monteiro de Carvalho
-//
-//  License: Public Domain
-function TLazCanvas.IsPointInPolygon(AX, AY: Integer; const APolygon: array of TPoint): Boolean;
-var
-  xnew, ynew: Cardinal;
-  xold,yold: Cardinal;
-  x1,y1: Cardinal;
-  x2,y2: Cardinal;
-  i, npoints: Integer;
-  inside: Integer = 0;
-begin
-  Result := False;
-  npoints := Length(APolygon);
-  if (npoints < 3) then Exit;
-  xold := APolygon[npoints-1].X;
-  yold := APolygon[npoints-1].Y;
-  for i := 0 to npoints - 1 do
-  begin
-    xnew := APolygon[i].X;
-    ynew := APolygon[i].Y;
-    if (xnew > xold) then
-    begin
-      x1:=xold;
-      x2:=xnew;
-      y1:=yold;
-      y2:=ynew;
-    end
-    else
-    begin
-      x1:=xnew;
-      x2:=xold;
-      y1:=ynew;
-      y2:=yold;
-    end;
-    if (((xnew < AX) = (AX <= xold))         // edge "open" at left end
-      and ((AY-y1)*(x2-x1) < (y2-y1)*(AX-x1))) then
-    begin
-      inside := not inside;
-    end;
-    xold:=xnew;
-    yold:=ynew;
-  end;
-  Result := inside <> 0;
 end;
 
 procedure TLazCanvas.DoPolygonFill(const points: array of TPoint);

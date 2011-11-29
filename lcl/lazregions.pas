@@ -61,8 +61,60 @@ type
     function IsPointInRegion(AX, AY: Integer): TLazRegionWithChilds; virtual;
   end;
 
+function IsPointInPolygon(AX, AY: Integer; const APolygon: array of TPoint): Boolean;
 
 implementation
+
+//  The function will return True if the point x,y is inside the polygon, or
+//  False if it is not.
+//
+//  Original C code: http://www.visibone.com/inpoly/inpoly.c.txt
+//
+//  Translation from C by Felipe Monteiro de Carvalho
+//
+//  License: Public Domain
+function IsPointInPolygon(AX, AY: Integer; const APolygon: array of TPoint): Boolean;
+var
+  xnew, ynew: Cardinal;
+  xold,yold: Cardinal;
+  x1,y1: Cardinal;
+  x2,y2: Cardinal;
+  i, npoints: Integer;
+  inside: Integer = 0;
+begin
+  Result := False;
+  npoints := Length(APolygon);
+  if (npoints < 3) then Exit;
+  xold := APolygon[npoints-1].X;
+  yold := APolygon[npoints-1].Y;
+  for i := 0 to npoints - 1 do
+  begin
+    xnew := APolygon[i].X;
+    ynew := APolygon[i].Y;
+    if (xnew > xold) then
+    begin
+      x1:=xold;
+      x2:=xnew;
+      y1:=yold;
+      y2:=ynew;
+    end
+    else
+    begin
+      x1:=xnew;
+      x2:=xold;
+      y1:=ynew;
+      y2:=yold;
+    end;
+    if (((xnew < AX) = (AX <= xold))         // edge "open" at left end
+      and ((AY-y1)*(x2-x1) < (y2-y1)*(AX-x1))) then
+    begin
+      inside := not inside;
+    end;
+    xold:=xnew;
+    yold:=ynew;
+  end;
+  Result := inside <> 0;
+end;
 
 { TLazRegionPart }
 
