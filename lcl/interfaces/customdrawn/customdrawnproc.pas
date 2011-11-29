@@ -189,19 +189,20 @@ end;
 procedure RenderChildWinControls(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDControlsList: TFPList);
 var
-  i: Integer;
+  i, lChildrenCount: Integer;
   lCDWinControl: TCDWinControl;
   lWinControl: TWinControl;
   struct : TPaintStruct;
 begin
+  lChildrenCount := ACDControlsList.Count;
   {$ifdef VerboseCDWinControl}
-  DebugLn(Format('[RenderChildWinControls] ACanvas=%x ACDControlsList=%x',
-    [PtrInt(ACanvas), PtrInt(ACDControlsList)]));
+  DebugLn(Format('[RenderChildWinControls] ACanvas=%x ACDControlsList=%x lChildrenCount=%d',
+    [PtrInt(ACanvas), PtrInt(ACDControlsList), lChildrenCount]));
   {$endif}
   FillChar(struct, SizeOf(TPaintStruct), 0);
   struct.hdc := HDC(ACanvas);
 
-  for i := 0 to ACDControlsList.Count-1 do
+  for i := 0 to lChildrenCount-1 do
   begin
     lCDWinControl := TCDWinControl(ACDControlsList.Items[i]);
     lWinControl := lCDWinControl.WinControl;
