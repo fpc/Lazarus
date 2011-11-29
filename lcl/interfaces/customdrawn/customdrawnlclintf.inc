@@ -1,14 +1,10 @@
-{%MainUnit qtint.pp}
-{ $Id: qtlclintf.inc 33289 2011-11-04 10:31:30Z zeljko $ }
-
+{%MainUnit customdrawnint.pp}
 {******************************************************************************
-                  All QT interface support routines
+                  All CustomDrawn interface support routines
                    Initial Revision  : Sat Jan 17 19:00:00 2004
 
 
   !! Keep alphabetical !!
-
-  Support routines go to qtproc.pp
 
  ******************************************************************************
  Implementation
@@ -30,35 +26,7 @@
 
 //##apiwiz##sps##   // Do not remove
 
-{
-  This is the common cdecl callback function used for Qt4
-  QSocketNotifier activated.
-}
 (*
-
-procedure TQtWidgetSet.SocketNotifierRead_cb(aSocket: Integer); cdecl;
-var
-  wheh: PWaitHandleEventHandler;
-begin
-  if FSocketEventMap.GetData(aSocket, wheh) then
-    wheh^.user_callback(wheh^.udata, EVE_IO_READ);
-end;
-
-procedure TQtWidgetSet.SocketNotifierWrite_cb(aSocket: Integer); cdecl;
-var
-  wheh: PWaitHandleEventHandler;
-begin
-  if FSocketEventMap.GetData(aSocket, wheh) then
-    wheh^.user_callback(wheh^.udata, EVE_IO_WRITE);
-end;
-
-procedure TQtWidgetSet.SocketNotifierError_cb(aSocket: Integer); cdecl;
-var
-  wheh: PWaitHandleEventHandler;
-begin
-  if FSocketEventMap.GetData(aSocket, wheh) then
-    wheh^.user_callback(wheh^.udata, EVE_IO_ERROR);
-end;
 
 function TQtWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword;
   AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
@@ -195,7 +163,7 @@ begin
   finally
     QtMessageBox.Free;
   end;
-end;
+end;*)
 
 
 {------------------------------------------------------------------------------
@@ -203,12 +171,12 @@ end;
   Params:
   Returns: valid empty region
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateEmptyRegion: hRGN;
+function TCDWidgetSet.CreateEmptyRegion: hRGN;
 begin
-  Result:= HRGN(TQtRegion.Create(True));
+  Result:= HRGN(TLazRegion.Create());
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: CreateStandardCursor
   Params:
   Returns:
@@ -433,7 +401,7 @@ begin
   Result := IsValidDC(DC);
   if Result then
     QPainter_drawPie(TQtDeviceContext(DC).Widget, x1, y1, x2, y2, Angle1, Angle2);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: RawImage_CreateBitmaps
@@ -448,42 +416,37 @@ end;
   The memory allocation code was added because it is necessary for
   TBitmap.LoadFromDevice support. For other operations it isnt needed
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
+function TCDWidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
 var
-  Desc: TRawImageDescription absolute ARawImage.Description;
   NewData: PByte;
-  ImageFormat: QImageFormat;
+  lRawImage: TRawImage;
+  lBitmap: TCDBitmap;
 begin
   Result := False;
   ABitmap := 0;
   AMask := 0;
 
-  //MWE: shouldn't the memory get copied at the place where it is needed,
-  //     its not really oo if the bitmap (or thisr party) needs this to do it here.
   if ARawImage.DataSize > 0 then
   begin
     NewData := GetMem(ARawImage.DataSize);
-    Move(ARawImage.Data^, NewData^, ARawImage.DataSize);
+    System.Move(ARawImage.Data^, NewData^, ARawImage.DataSize);
   end
   else
     NewData := nil;
     
   // this is only a rough implementation, there is no check against bitsperpixel
-  case Desc.Depth of
-    1: ImageFormat := QImageFormat_Mono;
-    //2..14: ;
-    15, 16: ImageFormat := QImageFormat_RGB16;
-    24: ImageFormat := QImageFormat_RGB32;
-    32: ImageFormat := QImageFormat_ARGB32;
-  else
-    ImageFormat := QImageFormat_ARGB32;
-  end;
-  ABitmap := HBitmap(TQtImage.Create(NewData, Desc.Width, Desc.Height, ImageFormat, True));
+  lBitmap := TCDBitmap.Create;
+  ABitmap := HBITMAP(lBitmap);
+  lRawImage := ARawImage;
+  lRawImage.Data := NewData;
+  lBitmap.Image := TLazIntfImage.Create(lRawImage, True);
   Result := ABitmap <> 0;
   
   if ASkipMask then Exit;
 
-  if (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
+  AMask := 0;
+
+{  if (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
   begin
     NewData := GetMem(ARawImage.MaskSize);
     Move(ARawImage.Mask^, NewData^, ARawImage.MaskSize);
@@ -491,7 +454,7 @@ begin
   else
     NewData := nil;
     
-  AMask := HBitmap(TQtImage.Create(NewData, Desc.Width, Desc.Height, QImageFormat_Mono, True));
+  AMask := HBitmap(TQtImage.Create(NewData, Desc.Width, Desc.Height, QImageFormat_Mono, True));}
 end;
 
 {------------------------------------------------------------------------------
@@ -500,97 +463,27 @@ end;
           ADesc:
   Returns:
 
-  Describes the inner format utilized by Qt + the specific information for this image
+  Describes the inner format utilized by CustomDrawn + the specific information for this image
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
-const
-  QImageFormatToDepth: array[QImageFormat] of integer =
-  (
- { QImageFormat_Invalid              } 0,
- { QImageFormat_Mono                 } 1,
- { QImageFormat_MonoLSB              } 1,
- { QImageFormat_Indexed8             } 8,
- { QImageFormat_RGB32                } 24,
- { QImageFormat_ARGB32               } 32,
- { QImageFormat_ARGB32_Premultiplied } 32,
- { QImageFormat_RGB16                } 16,
-  { QImageFormat_ARGB8565_Premultiplied         } 24,
-  { QImageFormat_RGB666                         } 24,
-  { QImageFormat_ARGB6666_Premultiplied         } 24,
-  { QImageFormat_RGB555                         } 16,
-  { QImageFormat_ARGB8555_Premultiplied         } 24,
-  { QImageFormat_RGB888                         } 24,
-  { QImageFormat_RGB444                         } 16,
-  { QImageFormat_ARGB4444_Premultiplied         } 16,
- { QImageNImageFormats               } 0
-  );
+function TCDWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
 var
-  Image: TQtImage absolute ABitmap;
+  CDBitmap: TCDBitmap;
+  lRawImage: TRawImage;
 begin
-  Result := CheckBitmap(ABitmap, 'RawImage_DescriptionFromBitmap');
-  if not Result then Exit;
-
-  //FillStandardDescription(ADesc);
-  ADesc.Init;
-  ADesc.Width := Image.Width;
-  ADesc.Height := Image.Height;
-
-  ADesc.BitOrder := riboReversedBits;
-  ADesc.ByteOrder := riboLSBFirst;
-  ADesc.LineOrder := riloTopToBottom;
-  ADesc.LineEnd := rileDWordBoundary;
-
-  ADesc.Depth := QImageFormatToDepth[Image.getFormat];
-  ADesc.BitsPerPixel := ADesc.Depth;
-  if ADesc.BitsPerPixel = 24 then
-    ADesc.BitsPerPixel := 32;
-
-  ADesc.Format := ricfRGBA;
-  case ADesc.Depth of
-    1, 8:
-      begin
-        ADesc.Format := ricfGray;
-
-        ADesc.RedPrec := ADesc.BitsPerPixel;
-      end;
-    16:
-      begin
-        ADesc.Depth := 15;
-
-        ADesc.RedPrec := 5;
-        ADesc.GreenPrec := 5;
-        ADesc.BluePrec := 5;
-
-        ADesc.RedShift := 10;
-        ADesc.GreenShift := 5;
-        ADesc.BlueShift := 0;
-      end;
-    24:
-      begin
-        ADesc.RedPrec := 8;
-        ADesc.GreenPrec := 8;
-        ADesc.BluePrec := 8;
-
-        ADesc.RedShift := 16;
-        ADesc.GreenShift := 8;
-        ADesc.BlueShift := 0;
-      end;
-    32:
-      begin
-        ADesc.AlphaPrec := 8;
-        ADesc.RedPrec := 8;
-        ADesc.GreenPrec := 8;
-        ADesc.BluePrec := 8;
-
-        ADesc.AlphaShift := 24;
-        ADesc.RedShift := 16;
-        ADesc.GreenShift := 8;
-        ADesc.BlueShift := 0;
-      end;
+  Result := IsValidBitmap(ABitmap);
+  if not Result then
+  begin
+    DebugLn('[RawImage_DescriptionFromBitmap] Invalid ABitmap');
+    Exit;
   end;
+
+  CDBitmap := TCDBitmap(ABitmap);
+
+  CDBitmap.Image.GetRawImage(lRawImage);
+  ADesc := lRawImage.Description;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: RawImage_DescriptionFromDevice
   Params: ADC:
           ADesc:
@@ -603,7 +496,7 @@ begin
   Result := true;
 
   FillStandardDescription(ADesc);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: RawImage_FromBitmap
@@ -615,8 +508,22 @@ end;
 
   Creates a raw image from a bitmap
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
+function TCDWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean;
 var
+  CDBitmap: TCDBitmap;
+begin
+  Result := IsValidBitmap(ABitmap);
+  if not Result then
+  begin
+    DebugLn('[RawImage_FromBitmap] Invalid ABitmap');
+    Exit;
+  end;
+
+  CDBitmap := TCDBitmap(ABitmap);
+
+  CDBitmap.Image.GetRawImage(ARawImage);
+end;
+(*var
   Desc: TRawImageDescription absolute ARawImage.Description;
   Image: TQtImage absolute ABitmap;
   Mask: TQtImage absolute AMask;
@@ -805,7 +712,7 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI GetRawImageFromDevice]');
   {$endif}
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: RawImage_QueryDescription
@@ -814,17 +721,12 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean;
+function TCDWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean;
 begin
   Result := inherited RawImage_QueryDescription(AFlags, ADesc);
-  if ADesc.BitsPerPixel > 8 then
-    ADesc.BitsPerPixel := 32
-  else
-  if ADesc.BitsPerPixel > 1 then
-    ADesc.BitsPerPixel := 8;
 end;
 
-function TQtWidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
+(*function TQtWidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
 begin
   Result := 1;
 end;

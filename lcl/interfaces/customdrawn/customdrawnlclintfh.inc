@@ -1,14 +1,10 @@
-{%MainUnit qtint.pp}
-{ $Id: qtlclintfh.inc 32264 2011-09-10 20:33:57Z zeljko $ }
-
+{%MainUnit customdrawnint.pp}
 {******************************************************************************
-                  All QT interface communication implementations.
+                All CustomDrawn interface communication implementations.
                    Initial Revision  : Sat Jan 17 19:00:00 2004
 
 
   !! Keep alphabetical !!
-
-  Support routines go to qtproc.pp
 
  ******************************************************************************
  Interface
@@ -30,9 +26,6 @@
 
 //##apiwiz##sps##   // Do not remove
 (*
-procedure SocketNotifierRead_cb(aSocket: Integer); cdecl; // internal callback, don't use!
-procedure SocketNotifierWrite_cb(aSocket: Integer); cdecl; // internal callback, don't use!
-procedure SocketNotifierError_cb(aSocket: Integer); cdecl; // internal callback, don't use!
 function AddEventHandler(AHandle: THandle; AFlags: dword;
   AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler; override;
 function AddPipeEventHandler(AHandle: THandle;
@@ -40,10 +33,10 @@ function AddPipeEventHandler(AHandle: THandle;
 function AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
 function AskUser(const DialogCaption, DialogMessage: string; DialogType:
-   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt; override;
+   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt; override;*)
 
 function CreateEmptyRegion: hRGN; override;
-function CreateStandardCursor(ACursor: SmallInt): HCURSOR; override;
+(*function CreateStandardCursor(ACursor: SmallInt): HCURSOR; override;
 function CreateRubberBand(const ARect: TRect; const ABrush: HBrush = 0): HWND; override;
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
 procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
@@ -65,16 +58,16 @@ function PromptUser(const DialogCaption : string;
                           DefaultIndex  : LongInt;
                           EscapeResult  : LongInt) : LongInt; override;
 
-function RadialPie(DC: HDC; x1, y1, x2, y2, Angle1, Angle2: Integer): Boolean; override;
+function RadialPie(DC: HDC; x1, y1, x2, y2, Angle1, Angle2: Integer): Boolean; override;*)
 function RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean = False): Boolean; override;
 
 function RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean; override;
-function RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean; override;
+//function RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean; override;
 
 function RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect = nil): Boolean; override;
-function RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean; override;
+//function RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean; override;
 function RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean; override;
-function ReleaseDesignerDC(Window: HWND; DC: HDC): Integer; override;
+(*function ReleaseDesignerDC(Window: HWND; DC: HDC): Integer; override;
 
 procedure RemoveEventHandler(var AHandler: PEventHandler); override;
 procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;

@@ -14,17 +14,6 @@ uses
   GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc,
   customdrawnproc;
 
-type
-  TAndroidWindowInfo = class
-  public
-//    Window: X.TWindow;
-    LCLControl: TWinControl;
-    Children: TFPList; // of TCDWinControl;
-    // painting objects
-    Image: TLazIntfImage;
-    Canvas: TLazCanvas;
-  end;
-
 implementation
 
 end.

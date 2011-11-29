@@ -36,6 +36,11 @@ type
     Canvas: TLazCanvas;
   end;
 
+  TCDBitmap = class
+  public
+    Image: TLazIntfImage;
+  end;
+
 // Routines for non-native form
 
 procedure InitNonNativeForms();
@@ -61,6 +66,7 @@ function FindControlWhichReceivedEvent(AForm: TCustomForm;
 function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
 function IsValidDC(ADC: HDC): Boolean;
 function IsValidGDIObject(AGDIObj: HGDIOBJ): Boolean;
+function IsValidBitmap(ABitmap: HBITMAP): Boolean;
 
 implementation
 
@@ -280,6 +286,11 @@ end;
 function IsValidGDIObject(AGDIObj: HGDIOBJ): Boolean;
 begin
   Result := AGDIObj <> 0;
+end;
+
+function IsValidBitmap(ABitmap: HBITMAP): Boolean;
+begin
+  Result := ABitmap <> 0;
 end;
 
 end.

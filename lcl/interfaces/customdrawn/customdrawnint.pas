@@ -40,10 +40,10 @@ uses
   // Widgetset
   customdrawnproc,
   // LCL
+  lazcanvas, lazregions,
   InterfaceBase, Translations,
   Controls,  Forms, lclproc, IntfGraphics, GraphType,
-  {Buttons, Dialogs, GraphMath, LCLIntf,}
-  LCLType, LMessages, lazcanvas{, StdCtrls}, Graphics{, Menus };
+  LCLType, LMessages, Graphics;
 
 type
   {$ifdef CD_Windows}
