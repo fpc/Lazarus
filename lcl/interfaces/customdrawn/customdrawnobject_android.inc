@@ -37,7 +37,6 @@ function Java_com_pascal_lclproject_LCLActivity_LCLOnTouch(env:PJNIEnv;this:jobj
 var
   lCurForm: TCDNonNativeForm;
   lTarget: TWinControl;
-  lTarget: TWinControl;
   lEventPos: TPoint;
 begin
   eventResult := 0;
