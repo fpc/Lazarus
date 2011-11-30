@@ -31,7 +31,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="288">
+    <Files Count="291">
       <Item1>
         <Filename Value="barchart.pp"/>
         <UnitName Value="BarChart"/>
@@ -1190,6 +1190,18 @@
         <Filename Value="lazregions.pas"/>
         <UnitName Value="lazregions"/>
       </Item288>
+      <Item289>
+        <Filename Value="customdrawn_common.pas"/>
+        <UnitName Value="customdrawn_common"/>
+      </Item289>
+      <Item290>
+        <Filename Value="customdrawncontrols.pas"/>
+        <UnitName Value="customdrawncontrols"/>
+      </Item290>
+      <Item291>
+        <Filename Value="customdrawndrawers.pas"/>
+        <UnitName Value="customdrawndrawers"/>
+      </Item291>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>

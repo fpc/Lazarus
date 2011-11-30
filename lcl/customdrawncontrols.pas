@@ -505,6 +505,7 @@ type
   protected
     procedure RealSetText(const Value: TCaption); override; // to update on caption changes
     procedure SetParent(NewParent: TWinControl); override; // For being created by the LCL resource reader
+  public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure EraseBackground(DC: HDC); override;
@@ -2091,7 +2092,7 @@ end;
 
 function TCDListView.GetProperty(AIndex: Integer): Boolean;
 begin
-
+  Result := False;
 end;
 
 procedure TCDListView.SetColumns(AValue: TListColumns);

@@ -17,7 +17,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="12">
+    <Files Count="9">
       <Item1>
         <Filename Value="customdrawnextras.pas"/>
         <HasRegisterProc Value="True"/>
@@ -28,45 +28,33 @@
         <UnitName Value="customdrawnutils"/>
       </Item2>
       <Item3>
-        <Filename Value="customdrawncontrols.pas"/>
-        <UnitName Value="customdrawncontrols"/>
-      </Item3>
-      <Item4>
         <Filename Value="customdrawn_wince.pas"/>
         <UnitName Value="customdrawn_wince"/>
-      </Item4>
-      <Item5>
+      </Item3>
+      <Item4>
         <Filename Value="customdrawn_win2000.pas"/>
         <UnitName Value="customdrawn_win2000"/>
-      </Item5>
-      <Item6>
+      </Item4>
+      <Item5>
         <Filename Value="customdrawn_winxp.pas"/>
         <UnitName Value="customdrawn_winxp"/>
-      </Item6>
-      <Item7>
+      </Item5>
+      <Item6>
         <Filename Value="customdrawn_android.pas"/>
         <UnitName Value="customdrawn_android"/>
-      </Item7>
-      <Item8>
+      </Item6>
+      <Item7>
         <Filename Value="customdrawn_extra1.pas"/>
         <UnitName Value="customdrawn_extra1"/>
-      </Item8>
-      <Item9>
+      </Item7>
+      <Item8>
         <Filename Value="customdrawn_kde.pas"/>
         <UnitName Value="customdrawn_kde"/>
-      </Item9>
-      <Item10>
+      </Item8>
+      <Item9>
         <Filename Value="customdrawn_gnome.pas"/>
         <UnitName Value="customdrawn_gnome"/>
-      </Item10>
-      <Item11>
-        <Filename Value="customdrawn_common.pas"/>
-        <UnitName Value="customdrawn_common"/>
-      </Item11>
-      <Item12>
-        <Filename Value="customdrawndrawers.pas"/>
-        <UnitName Value="customdrawndrawers"/>
-      </Item12>
+      </Item9>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
