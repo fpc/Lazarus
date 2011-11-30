@@ -104,18 +104,6 @@ begin
   end;
 end;
 
-procedure TWidgetSet.DebugLogLn(const s: string);
-begin
-  if Assigned(LCLProc.DebugText) then
-    WriteLn(LCLProc.DebugText^, s);
-end;
-
-procedure TWidgetSet.DebugLog(const s: string);
-begin
-  if Assigned(LCLProc.DebugText) then
-    Write(LCLProc.DebugText^, s);
-end;
-
 procedure TWidgetSet.DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean);
 begin
 end;

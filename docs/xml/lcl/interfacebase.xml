@@ -687,32 +687,6 @@
       <element name="TWidgetSet.GetLCLCapability.ACapability">
         <short></short>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TWidgetSet.DebugLogLn">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TWidgetSet.DebugLogLn.s">
-        <short></short>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TWidgetSet.DebugLog">
-        <short></short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="TWidgetSet.DebugLog.s">
-        <short></short>
-      </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DCGetPixel">
         <short></short>

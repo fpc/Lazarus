@@ -162,9 +162,6 @@ type
     function  LCLPlatform: TLCLPlatform; virtual; abstract;
     function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; virtual;
 
-    procedure DebugLogLn(const s: string); virtual;
-    procedure DebugLog(const s: string); virtual;
-
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; virtual; abstract;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); virtual; abstract;
     procedure DCRedraw(CanvasHandle: HDC); virtual; abstract;
