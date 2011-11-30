@@ -1,14 +1,10 @@
-{%MainUnit win32int.pp}
-{ $Id: win32winapi.inc 33552 2011-11-16 05:52:31Z paul $ }
-
+{%MainUnit customdrawnint.pp}
 {******************************************************************************
-                         All Windows API implementations.
+                         All CustomDrawn API implementations.
                    Initial Revision : Sat Nov 13 12:53:53 1999
 
 
   !! Keep alphabetical !!
-
-  Support routines go to win32proc.pp
 
  ******************************************************************************
  Implementation
@@ -2379,7 +2375,7 @@ begin
   DebugLn('[HideCaret] for window ', IntToHex(HWnd, 8));
 {$endif}
   Result := Boolean(Windows.HideCaret(hWnd));
-end;
+end; *)
 
 {------------------------------------------------------------------------------
   Method:  InvalidateRect
@@ -2390,7 +2386,7 @@ end;
 
   Adds a rectangle to the specified window's update region.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.InvalidateRect(aHandle: HWND; Rect: PRect; BErase: Boolean): Boolean;
+function TCDWidgetSet.BackendInvalidateRect(aHandle: HWND; Rect: PRect; BErase: Boolean): Boolean;
 var
   Flags: UINT;
   ORect: TRect;
@@ -2406,7 +2402,7 @@ begin
   Result := Boolean(Windows.RedrawWindow(aHandle, Rect, 0, Flags));
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method:  InvalidateRgn
   Params:  Handle - handle of window with changed update region
            Rgn    - handle to region to invalidate

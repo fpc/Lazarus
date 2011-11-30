@@ -525,7 +525,7 @@ begin
     Result:=False;
 end;*)
 
-function TCDWidgetSet.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean): Boolean;
+function TCDWidgetSet.BackendInvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean): Boolean;
 begin
 (*  if aHandle<>0 then begin
     Result:=True;

@@ -41,6 +41,7 @@ uses
   // LCL
   Controls, LCLType, Forms, LCLProc, GraphType, IntfGraphics, lazcanvas,
   lazregions, LCLIntf,
+  customdrawncontrols,
   // Widgetset
   InterfaceBase, WSForms, WSProc, WSLCLClasses, LCLMessageGlue,
   customdrawnwscontrols, customdrawnint, customdrawnproc;

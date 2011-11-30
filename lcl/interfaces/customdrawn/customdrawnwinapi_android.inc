@@ -4658,14 +4658,6 @@ begin
   if AHandle = 0 then exit(False);
 
   eventResult := eventResult or 1;
-(*  if Rect <> nil then
-  begin
-    with TQtWidget(aHandle).getClientOffset do
-      OffsetRect(Rect^, x, y);
-    // no need to handle bErase. Qt automatically erase rect on paint event according to docs
-    TQtWidget(aHandle).Update(Rect);
-  end else
-    TQtWidget(aHandle).Update;*)
 
   Result := True;
 end;
