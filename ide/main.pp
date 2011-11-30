@@ -18423,16 +18423,16 @@ var
 begin
   // check that the currently focus is on the MainIDEBar or on the SourceEditor
   CurFocusControl:=FindOwnerControl(GetFocus);
-  if (CurFocusControl<>nil) then begin
-    CurFocusControl:=GetParentForm(CurFocusControl);
-    if (CurFocusControl<>MainIDEBar) and not(CurFocusControl is TSourceNotebook) then
+  while (CurFocusControl<>nil) do begin
+    if (CurFocusControl=MainIDEBar) or (CurFocusControl is TSourceNotebook) then
     begin
-      // continue processing shortcut, not handled yet
-      MainIDEBar.mnuMainMenu.ShortcutHandled := false;
+      DoCommand(EditorCommand);
       exit;
     end;
+    CurFocusControl:=CurFocusControl.Parent;
   end;
-  DoCommand(EditorCommand);
+  // continue processing shortcut, not handled yet
+  MainIDEBar.mnuMainMenu.ShortcutHandled := false;
 end;
 
 procedure TMainIDE.DoInsertGUID;
