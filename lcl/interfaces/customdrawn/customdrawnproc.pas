@@ -10,9 +10,9 @@ uses
   fpimage, fpcanvas,
   // Custom Drawn Canvas
   IntfGraphics, lazcanvas, lazregions,
-  //
+  // LCL
   GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc,
-  Forms;
+  Forms, Graphics, customdrawncontrols;
 
 type
   TUpdateLazImageFormat = (
@@ -24,7 +24,7 @@ type
   public
     Region: TLazRegionWithChilds;
     WinControl: TWinControl;
-    //CDControl: TCDControl;
+    CDControl: TCDControl;
   end;
 
   TCDNonNativeForm = class
@@ -199,6 +199,7 @@ var
   lCDWinControl: TCDWinControl;
   lWinControl: TWinControl;
   struct : TPaintStruct;
+  lCanvas: TCanvas;
 begin
   lChildrenCount := ACDControlsList.Count;
   {$ifdef VerboseCDWinControl}
@@ -231,10 +232,26 @@ begin
     ACanvas.SaveState;
     ACanvas.ResetCanvasState;
 
-    {$ifdef VerboseCDWinControl}
-    DebugLn(Format('[RenderChildWinControls] i=%d before LCLSendPaintMsg', [i]));
-    {$endif}
-    LCLSendPaintMsg(lCDWinControl.WinControl, struct.hdc, @struct);
+    // For custom controls
+    if lCDWinControl.CDControl = nil then
+    begin
+      {$ifdef VerboseCDWinControl}
+      DebugLn(Format('[RenderChildWinControls] i=%d before LCLSendPaintMsg', [i]));
+      {$endif}
+      LCLSendPaintMsg(lCDWinControl.WinControl, struct.hdc, @struct);
+    end
+    // For LCL native controls
+    else
+    begin
+      lCanvas := TCanvas.Create;
+      try
+        lCanvas.Handle := struct.hdc;
+        lCDWinControl.CDControl.DrawToCanvas(lCanvas);
+      finally
+        lCanvas.Handle := 0;
+        lCanvas.Free;
+      end;
+    end;
 
     // Now restore it
     ACanvas.RestoreState;

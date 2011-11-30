@@ -819,7 +819,6 @@ end;
 
 procedure TCDControl.DrawToCanvas(ACanvas: TCanvas);
 var
-  ABmp: TBitmap;
   lSize: TSize;
   lControlId: TCDControlID;
 begin
@@ -829,7 +828,7 @@ begin
   lControlId := GetControlId();
   PrepareControlState;
   PrepareControlStateEx;
-  FDrawer.DrawControl(Canvas, lSize, lControlId, FState, FStateEx);
+  FDrawer.DrawControl(ACanvas, lSize, lControlId, FState, FStateEx);
 end;
 
 procedure TCDControl.MouseEnter;

@@ -40,6 +40,7 @@ uses
   // Widgetset
   customdrawnproc,
   // LCL
+  customdrawn_common,
   lazcanvas, lazregions,
   InterfaceBase, Translations,
   Controls,  Forms, lclproc, IntfGraphics, GraphType,

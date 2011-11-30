@@ -5480,6 +5480,7 @@ lcl/interfaces/customdrawn/customdrawnwsforms_android.inc svneol=native#text/pas
 lcl/interfaces/customdrawn/customdrawnwsforms_cocoa.inc svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwsforms_win.inc svneol=native#text/pascal
 lcl/interfaces/customdrawn/customdrawnwsforms_x11.inc svneol=native#text/pascal
+lcl/interfaces/customdrawn/customdrawnwsstdctrls.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/interfaces.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/wincallback.inc svneol=native#text/pascal
 lcl/interfaces/fpgui/Makefile.compiled svneol=native#text/plain

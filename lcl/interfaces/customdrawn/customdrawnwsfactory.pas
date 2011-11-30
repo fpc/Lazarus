@@ -106,11 +106,11 @@ uses
  CustomDrawnWSControls,
 { WinCEWSDialogs,
  WinCEWSExtCtrls,}
- CustomDrawnWSForms{,
- WinCEWSImgList,
+ CustomDrawnWSForms,
+{ WinCEWSImgList,
  WinCEWSMenus,
- WinCEWSSpin,
- WinCEWSStdCtrls,
+ WinCEWSSpin,}
+ CustomDrawnWSStdCtrls{,
  WinCEWSGrids};
 
 // imglist
@@ -296,8 +296,8 @@ end;
 
 function RegisterCustomButton: Boolean; alias : 'WSRegisterCustomButton';
 begin
-//  RegisterWSComponent(TCustomButton, TWinCEWSButton);
-  Result := False;
+  RegisterWSComponent(TCustomButton, TCDWSButton);
+  Result := True;
 end;
 
 function RegisterCustomCheckBox: Boolean; alias : 'WSRegisterCustomCheckBox';
