@@ -34,7 +34,7 @@ uses
   // RTL
   Classes, SysUtils, contnrs, Math,
   // FCL-Image
-  fpimgcanv, fpcanvas, fpimage, clipping,
+  fpimgcanv, fpcanvas, fpimage, clipping, pixtools, fppixlcanv,
   // regions
   lazregions;
 
@@ -77,8 +77,10 @@ type
     procedure SetWindowOrg(AValue: TPoint);
   protected
     procedure SetColor (x,y:integer; const AValue:TFPColor); override;
-    // Routines broken in FPC
+    // Routines broken/unimplemented in FPC
     procedure DoPolygonFill (const points:array of TPoint); override;
+    // Routines which don't work with out extended clipping in TFPImageCanvas
+    procedure DoLine (x1,y1,x2,y2:integer); override;
   public
     constructor create (AnImage : TFPCustomImage);
     destructor destroy; override;
@@ -189,6 +191,61 @@ begin
     begin
       if IsPointInPolygon(X, Y, Points) then SetColor(X, Y, Brush.FPColor);
     end;
+end;
+
+procedure TLazCanvas.DoLine(x1, y1, x2, y2: integer);
+  procedure DrawOneLine (xx1,yy1, xx2,yy2:integer);
+  begin
+    if Clipping then
+      CheckLineClipping (ClipRect, xx1,yy1, xx2,yy2);
+    DrawSolidLine (self, xx1,yy1, xx2,yy2, Pen.FPColor);
+  end;
+
+  procedure SolidThickLine;
+  var w1, w2, r : integer;
+      MoreHor : boolean;
+  begin
+    // determine lines above and under
+    w1 := pen.width div 2;
+    w2 := w1;
+    if w1+w2 = pen.width then
+      dec (w1);
+    // determine slanting
+    MoreHor := (abs(x2-x1) < abs(y2-y1));
+    if MoreHor then
+      begin  // add lines left/right
+      for r := 1 to w1 do
+        DrawOneLine (x1-r,y1, x2-r,y2);
+      for r := 1 to w2 do
+        DrawOneLine (x1+r,y1, x2+r,y2);
+      end
+    else
+      begin  // add lines above/under
+      for r := 1 to w1 do
+        DrawOneLine (x1,y1-r, x2,y2-r);
+      for r := 1 to w2 do
+        DrawOneLine (x1,y1+r, x2,y2+r);
+      end;
+  end;
+
+begin
+{ We can are not clip here because we clip in each drawn pixel
+  or introduce a more complex algorithm to take into account lazregions
+  if Clipping then
+    CheckLineClipping (ClipRect, x1,y1, x2,y2);}
+  case Pen.style of
+    psSolid :
+      begin
+      DrawSolidLine (self, x1,y1, x2,y2, Pen.FPColor);
+      if pen.width > 1 then
+        SolidThickLine;
+      end;
+    psPattern:
+      DrawPatternLine (self, x1,y1, x2,y2, pen.pattern);
+      // Patterned lines have width always at 1
+    psDash, psDot, psDashDot, psDashDotDot :
+      DrawPatternLine (self, x1,y1, x2,y2, PenPatterns[Pen.Style]);
+  end;
 end;
 
 constructor TLazCanvas.create(AnImage: TFPCustomImage);
