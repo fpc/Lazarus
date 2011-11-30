@@ -541,7 +541,7 @@ type
     function IsEqual(AFont: TFont): boolean; virtual;
     property IsMonoSpace: boolean read GetIsMonoSpace;
     procedure SetDefault;
-    property CanUTF8: boolean read GetCanUTF8;
+    property CanUTF8: boolean read GetCanUTF8; deprecated;
     property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
     property Reference: TWSFontReference read GetReference;
   published
