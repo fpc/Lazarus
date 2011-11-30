@@ -28,7 +28,6 @@
     -quickfix for identifier not found
     -check if identifier still exists
     -buttons: add unit to interface, add unit to implementation
-    -button: jump to identifier
     -clean up old entries
       -When, How?
     -gzip? lot of cpu, may be faster on first load
@@ -1068,6 +1067,7 @@ var
   NewX: integer;
   NewY: integer;
   NewTopLine: integer;
+  Pkg: TIDEPackage;
 begin
   if not FileExistsUTF8(NewUnitFilename) then begin
     IDEMessageDialog('File not found',
@@ -1075,6 +1075,20 @@ begin
       mtError,[mbCancel]);
     exit;
   end;
+
+  // open package to get proper settings
+  if (NewGroupName<>'') and (NewGroupName<>PackageNameFPCSrcDir) then begin
+    Pkg:=PackageEditingInterface.FindPackageWithName(NewGroupName);
+    if (Pkg=nil) or (CompareFilenames(Pkg.Filename,NewGroupFilename)<>0) then
+    begin
+      if PackageEditingInterface.DoOpenPackageFile(NewGroupFilename,
+        [pofAddToRecent],true)=mrAbort
+      then
+        exit;
+    end;
+  end;
+
+  // load file
   NewUnitCode:=CodeToolBoss.LoadFile(NewUnitFilename,true,false);
   if NewUnitCode=nil then begin
     IDEMessageDialog('File read error',
@@ -1086,7 +1100,7 @@ begin
   if not CodeToolBoss.FindDeclarationOfPropertyPath(NewUnitCode,NewIdentifier,
     NewCode, NewX, NewY, NewTopLine)
   then begin
-    IDEMessageDialog('Identifir not found',
+    IDEMessageDialog('Identifier not found',
       'Identifier "'+NewIdentifier+'" not found in unit "'+NewUnitFilename+'"',
       mtError,[mbCancel]);
     exit;
