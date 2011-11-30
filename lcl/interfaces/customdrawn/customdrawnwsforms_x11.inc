@@ -530,7 +530,7 @@ begin
 
   if XButtonToMouseButton(Event.button, MouseButton) then
   begin
-    LCLSendMouseDownMsg(lTarget, Event.x, Event.y, MouseButton, []);
+    LCLSendMouseDownMsg(lTarget, Event.x, Event.y, MouseButton, [])
   end
   else
   begin

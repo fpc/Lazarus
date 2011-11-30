@@ -4650,7 +4650,7 @@ end;*)
   Returns:
 
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
+function TCDWidgetSet.BackendInvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
 begin
   {$ifdef VerboseCDWinAPI}
     WriteLn('[TCDWidgetSet.InvalidateRect]');

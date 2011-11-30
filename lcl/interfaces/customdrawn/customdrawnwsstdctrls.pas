@@ -199,6 +199,7 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 //    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortcut); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TCDWSCustomCheckBox }
@@ -1083,7 +1084,22 @@ var
 begin
   Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
   lCDWinControl := TCDWinControl(Result);
-  lCDWinControl.CDControl := TCDButton.Create(nil);
+end;
+
+class procedure TCDWSButton.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+
+  TCDWSWinControl.ShowHide(AWinControl);
+
+  if lCDWinControl.CDControl = nil then
+  begin
+    lCDWinControl.CDControl := TCDButton.Create(AWinControl);
+    lCDWinControl.CDControl.Parent := AWinControl;
+    lCDWinControl.CDControl.Align := alClient;
+  end;
 end;
 
 (*class procedure TCDWSButton.SetDefault(const AButton: TCustomButton;

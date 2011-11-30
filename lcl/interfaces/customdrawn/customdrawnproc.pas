@@ -25,6 +25,7 @@ type
     Region: TLazRegionWithChilds;
     WinControl: TWinControl;
     CDControl: TCDControl;
+    Children: TFPList;
   end;
 
   TCDNonNativeForm = class
@@ -197,9 +198,10 @@ procedure RenderChildWinControls(var AImage: TLazIntfImage;
 var
   i, lChildrenCount: Integer;
   lCDWinControl: TCDWinControl;
-  lWinControl: TWinControl;
+  lWinControl, lParentControl: TWinControl;
   struct : TPaintStruct;
   lCanvas: TCanvas;
+  lBaseWindowOrg: TPoint;
 begin
   lChildrenCount := ACDControlsList.Count;
   {$ifdef VerboseCDWinControl}
@@ -214,44 +216,47 @@ begin
     lCDWinControl := TCDWinControl(ACDControlsList.Items[i]);
     lWinControl := lCDWinControl.WinControl;
     {$ifdef VerboseCDWinControl}
-    DebugLn(Format('[RenderChildWinControls] i=%d lWinControl=%x Left=%d'
-      + ' Top=%d Width=%d Height=%d', [i, PtrInt(lWinControl),
+    DebugLn(Format('[RenderChildWinControls] i=%d lWinControl=%x Name=%s:%s Left=%d'
+      + ' Top=%d Width=%d Height=%d', [i, PtrInt(lWinControl), lWinControl.Name, lWinControl.ClassName,
       lWinControl.Left, lWinControl.Top, lWinControl.Width, lWinControl.Height]));
     {$endif}
     if lWinControl.Visible = False then Continue;
 
-    // Prepare the clippping
+    // lBaseWindowOrg makes debugging easier
+    // Iterate to find the appropriate BaseWindowOrg relative to the parent control
+    lBaseWindowOrg := Point(lWinControl.Left, lWinControl.Top);
+    lParentControl := lWinControl.Parent;
+    while (lParentControl <> nil) and not (lParentControl is TCustomForm) do
+    begin
+      lBaseWindowOrg.X := lBaseWindowOrg.X + lParentControl.Left;
+      lBaseWindowOrg.Y := lBaseWindowOrg.Y + lParentControl.Top;
+      lParentControl := lParentControl.Parent;
+    end;
+    ACanvas.BaseWindowOrg := lBaseWindowOrg;
+    ACanvas.WindowOrg := Point(0, 0);
+
+    // Prepare the clippping relative to the form
     ACanvas.Clipping := True;
-    lCDWinControl.Region.Rect := Bounds(lWinControl.Left, lWinControl.Top, lWinControl.Width, lWinControl.Height);
+    lCDWinControl.Region.Rect := Bounds(lBaseWindowOrg.X, lBaseWindowOrg.Y, lWinControl.Width, lWinControl.Height);
     ACanvas.ClipRegion := lCDWinControl.Region;
     ACanvas.UseRegionClipping := True;
-    ACanvas.BaseWindowOrg := Point(lWinControl.Left, lWinControl.Top);
-    ACanvas.WindowOrg := Point(0, 0);
 
     // Save the Canvas state
     ACanvas.SaveState;
     ACanvas.ResetCanvasState;
 
-    // For custom controls
-    if lCDWinControl.CDControl = nil then
-    begin
-      {$ifdef VerboseCDWinControl}
-      DebugLn(Format('[RenderChildWinControls] i=%d before LCLSendPaintMsg', [i]));
-      {$endif}
-      LCLSendPaintMsg(lCDWinControl.WinControl, struct.hdc, @struct);
-    end
-    // For LCL native controls
-    else
-    begin
-      lCanvas := TCanvas.Create;
-      try
-        lCanvas.Handle := struct.hdc;
-        lCDWinControl.CDControl.DrawToCanvas(lCanvas);
-      finally
-        lCanvas.Handle := 0;
-        lCanvas.Free;
-      end;
-    end;
+    {$ifdef VerboseCDWinControl}
+    DebugLn(Format('[RenderChildWinControls] i=%d before LCLSendPaintMsg', [i]));
+    {$endif}
+    LCLSendPaintMsg(lCDWinControl.WinControl, struct.hdc, @struct);
+
+    // Now Draw all sub-controls
+    if lCDWinControl.Children <> nil then
+      RenderChildWinControls(AImage, ACanvas, lCDWinControl.Children);
+
+    {$ifdef VerboseCDWinControl}
+    DebugLn(Format('[RenderChildWinControls] i=%d Finished child controls', [i]));
+    {$endif}
 
     // Now restore it
     ACanvas.RestoreState;
@@ -280,6 +285,11 @@ begin
       if lRegionOfEvent.UserData = nil then
         raise Exception.Create('[FindControlWhichReceivedEvent] Malformed tree of regions');
       Result := TWinControl(lRegionOfEvent.UserData);
+
+      // If it is a native LCL control, redirect to the CDControl
+      if lCurCDControl.CDControl <> nil then
+        Result := lCurCDControl.CDControl;
+
       Exit;
     end;
   end;

@@ -4650,21 +4650,12 @@ end;*)
   Returns:
 
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
+function TCDWidgetSet.BackendInvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
+var
+  lFormHandle: TX11WindowInfo;
 begin
-  {$ifdef VerboseCDWinAPI}
-    WriteLn('[WinAPI InvalidateRect]');
-  {$endif}
-  if AHandle = 0 then
-    exit(False);
-{  if Rect <> nil then
-  begin
-    with TQtWidget(aHandle).getClientOffset do
-      OffsetRect(Rect^, x, y);
-    // no need to handle bErase. Qt automatically erase rect on paint event according to docs
-    TQtWidget(aHandle).Update(Rect);
-  end else
-    TQtWidget(aHandle).Update;}
+  lFormHandle := TX11WindowInfo(AHandle);
+  TCDWSCustomForm.EvPaint(lFormHandle.LCLControl, lFormHandle);
 
   Result := True;
 end;

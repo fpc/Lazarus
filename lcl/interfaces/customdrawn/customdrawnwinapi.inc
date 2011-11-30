@@ -4656,7 +4656,7 @@ end;
 function TQtWidgetSet.IsZoomed(Handle: HWND): boolean;
 begin
   Result := TQtWidget(Handle).isMaximized;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: InvalidateRect
@@ -4666,26 +4666,39 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
+function TCDWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
+var
+  lHandle: TObject;
+  lControlHandle: TCDWinControl;
+  lControl: TWinControl;
 begin
-  {$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseCDWinAPI}
     WriteLn('[WinAPI InvalidateRect]');
   {$endif}
-  if AHandle = 0 then
-    exit(False);
-  if Rect <> nil then
+  if AHandle = 0 then exit(False);
+
+  lHandle := TObject(AHandle);
+
+  // Invalidate on a child control
+  if lHandle is TCDWinControl then
   begin
-    with TQtWidget(aHandle).getClientOffset do
-      OffsetRect(Rect^, x, y);
-    // no need to handle bErase. Qt automatically erase rect on paint event according to docs
-    TQtWidget(aHandle).Update(Rect);
-  end else
-    TQtWidget(aHandle).Update;
+    lControlHandle := TCDWinControl(lHandle);
+    lControl := lControlHandle.WinControl;
+    while (lControl <> nil) and not (lControl is TCustomForm) do
+      lControl := lControl.Parent;
+
+    Result := BackendInvalidateRect(lControl.Handle, Rect, BErase);
+  end
+  // Invalidate on a form
+  else
+  begin
+    Result := BackendInvalidateRect(AHandle, Rect, BErase);
+  end;
 
   Result := True;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: InvalidateRgn
   Params: aHandle:
           Rect:

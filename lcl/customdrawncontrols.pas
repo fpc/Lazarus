@@ -64,6 +64,7 @@ type
     destructor Destroy; override;
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
+    // Methods for use by LCL-CustomDrawn
     procedure DrawToCanvas(ACanvas: TCanvas);
   end;
   TCDControlClass = class of TCDControl;

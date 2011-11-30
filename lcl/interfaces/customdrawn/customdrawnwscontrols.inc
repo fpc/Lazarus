@@ -84,7 +84,7 @@ end;
 class function TCDWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  lCDWinControl: TCDWinControl;
+  lCDWinControl, lCDParent: TCDWinControl;
 begin
   lCDWinControl := TCDWinControl.Create;
   lCDWinControl.WinControl := AWinControl;
@@ -94,7 +94,18 @@ begin
 
   Result := HWND(lCDWinControl);
 
-  TCDWSCustomForm.BackendAddCDWinControlToForm(TCustomForm(AWinControl.Parent), lCDWinControl);
+  // Adding on a form
+  if AWinControl.Parent is TCustomForm then
+  begin
+    TCDWSCustomForm.BackendAddCDWinControlToForm(TCustomForm(AWinControl.Parent), lCDWinControl);
+  end
+  // Adding on another control
+  else if AWinControl.Parent is TWinControl then
+  begin
+    lCDParent := TCDWinControl(AWinControl.Parent.Handle);
+    if lCDParent.Children = nil then lCDParent.Children := TFPList.Create;
+    lCDParent.Children.Add(lCDWinControl);
+  end;
 end;
 
 class procedure TCDWSWinControl.DestroyHandle(const AWinControl: TWinControl);
@@ -104,7 +115,7 @@ end;
 class procedure TCDWSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
   // lpRect = nil updates entire client area of window
-  //InvalidateRect(AWinControl.Handle, nil, true);
+  CDWidgetset.InvalidateRect(AWinControl.Handle, nil, true);
 end;
 
 class procedure TCDWSWinControl.ShowHide(const AWinControl: TWinControl);

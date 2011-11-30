@@ -492,6 +492,7 @@ begin
       Result := LCL_CAPABILITY_NO;
     {$endif}
     lcAntialiasingEnabledByDefault: Result := LCL_CAPABILITY_NO;
+    lcAllowChildControlsInNativeControls: Result := LCL_CAPABILITY_YES
   else
     Result := inherited GetLCLCapability(ACapability);
   end;

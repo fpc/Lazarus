@@ -253,6 +253,7 @@ function TCustomButton.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   // no children
   Result:=false;
+  if Widgetset.GetLCLCapability(lcAllowChildControlsInNativeControls) = LCL_CAPABILITY_YES then Result := True;
 end;
 
 class function TCustomButton.GetControlClassDefaultSize: TSize;
