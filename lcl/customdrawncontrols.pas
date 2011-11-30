@@ -60,11 +60,11 @@ type
     //
     property DrawStyle: TCDDrawStyle read FDrawStyle write SetDrawStyle;
   public
-    //
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
+    procedure DrawToCanvas(ACanvas: TCanvas);
   end;
   TCDControlClass = class of TCDControl;
 
@@ -799,35 +799,37 @@ end;
 procedure TCDControl.Paint;
 var
   ABmp: TBitmap;
-  lSize: TSize;
-  lControlId: TCDControlID;
 begin
   inherited Paint;
-
-  PrepareCurrentDrawer();
 
   {$ifdef CDControlsDoDoubleBuffer}
   ABmp := TBitmap.Create;
   try
     ABmp.Width := Width;
     ABmp.Height := Height;
-    lSize := Size(Width, Height);
-    lControlId := GetControlId();
-    PrepareControlState;
-    PrepareControlStateEx;
-    FDrawer.DrawControl(ABmp.Canvas, Point(0, 0),
-      lSize, lControlId, FState, FStateEx);
+    DrawToCanvas(ABmp.Canvas);
     Canvas.Draw(0, 0, ABmp);
   finally
     ABmp.Free;
   end;
   {$else}
+  DrawToCanvas(Canvas);
+  {$endif}
+end;
+
+procedure TCDControl.DrawToCanvas(ACanvas: TCanvas);
+var
+  ABmp: TBitmap;
+  lSize: TSize;
+  lControlId: TCDControlID;
+begin
+  PrepareCurrentDrawer();
+
   lSize := Size(Width, Height);
   lControlId := GetControlId();
   PrepareControlState;
   PrepareControlStateEx;
   FDrawer.DrawControl(Canvas, lSize, lControlId, FState, FStateEx);
-  {$endif}
 end;
 
 procedure TCDControl.MouseEnter;
