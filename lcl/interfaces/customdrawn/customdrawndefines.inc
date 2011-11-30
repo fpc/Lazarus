@@ -6,7 +6,7 @@
 // For now default to Android for arm-linux,
 // because LCL-CustomDrawn is our main Android widgetset.
 // Remove this when Android gets it's own target
-{$ifdef UNIX}{$ifndef Darwin}{$ifdef ARM}
+{$ifdef UNIX}{$ifndef Darwin}{$ifdef CPUARM}
   {$define Android}
 {$endif}{$endif}{$endif}
 
