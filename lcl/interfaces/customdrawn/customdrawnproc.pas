@@ -61,6 +61,8 @@ procedure RenderChildWinControls(var AImage: TLazIntfImage;
 //  var ACanvas: TLazCanvas; ACDControlsList: TFPList);
 function FindControlWhichReceivedEvent(AForm: TCustomForm;
   AControlsList: TFPList; AX, AY: Integer): TWinControl;
+function FindControlPositionRelativeToTheForm(ALCLControl: TWinControl): TPoint;
+function FormPosToControlPos(ALCLControl: TWinControl; AX, AY: Integer): TPoint;
 
 // Other routines
 
@@ -224,14 +226,7 @@ begin
 
     // lBaseWindowOrg makes debugging easier
     // Iterate to find the appropriate BaseWindowOrg relative to the parent control
-    lBaseWindowOrg := Point(lWinControl.Left, lWinControl.Top);
-    lParentControl := lWinControl.Parent;
-    while (lParentControl <> nil) and not (lParentControl is TCustomForm) do
-    begin
-      lBaseWindowOrg.X := lBaseWindowOrg.X + lParentControl.Left;
-      lBaseWindowOrg.Y := lBaseWindowOrg.Y + lParentControl.Top;
-      lParentControl := lParentControl.Parent;
-    end;
+    lBaseWindowOrg := FindControlPositionRelativeToTheForm(lWinControl);
     ACanvas.BaseWindowOrg := lBaseWindowOrg;
     ACanvas.WindowOrg := Point(0, 0);
 
@@ -293,6 +288,30 @@ begin
       Exit;
     end;
   end;
+end;
+
+function FindControlPositionRelativeToTheForm(ALCLControl: TWinControl): TPoint;
+var
+  lParentControl: TWinControl;
+begin
+  // Iterate to find the appropriate BaseWindowOrg relative to the parent control
+  Result := Point(ALCLControl.Left, ALCLControl.Top);
+  lParentControl := ALCLControl.Parent;
+  while (lParentControl <> nil) and not (lParentControl is TCustomForm) do
+  begin
+    Result.X := Result.X + lParentControl.Left;
+    Result.Y := Result.Y + lParentControl.Top;
+    lParentControl := lParentControl.Parent;
+  end;
+end;
+
+function FormPosToControlPos(ALCLControl: TWinControl; AX, AY: Integer): TPoint;
+var
+  lControlPos: TPoint;
+begin
+  lControlPos := FindControlPositionRelativeToTheForm(ALCLControl);
+  Result.X := AX - lControlPos.X;
+  Result.Y := AY - lControlPos.Y;
 end;
 
 function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;

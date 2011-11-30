@@ -250,6 +250,4 @@ uses
   {$I customdrawnwinapi_android.inc}
 {$endif}
 
-initialization
-  SystemCharSetIsUTF8:=true;
 end.

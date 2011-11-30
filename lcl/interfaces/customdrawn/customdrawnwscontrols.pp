@@ -249,12 +249,14 @@ class function TCDWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   lCDWinControl, lCDParent: TCDWinControl;
+  lControlPosInForm: TPoint;
 begin
   lCDWinControl := TCDWinControl.Create;
   lCDWinControl.WinControl := AWinControl;
   lCDWinControl.Region := TLazRegionWithChilds.Create;
   lCDWinControl.Region.UserData := AWinControl;
-  lCDWinControl.Region.SetAsSimpleRectRegion(Bounds(AWinControl.Left, AWinControl.Top, AParams.Width, AParams.Height));
+  lControlPosInForm := FindControlPositionRelativeToTheForm(AWinControl);
+  lCDWinControl.Region.SetAsSimpleRectRegion(Bounds(lControlPosInForm.X, lControlPosInForm.Y, AParams.Width, AParams.Height));
 
   Result := HWND(lCDWinControl);
 
@@ -269,6 +271,7 @@ begin
     lCDParent := TCDWinControl(AWinControl.Parent.Handle);
     if lCDParent.Children = nil then lCDParent.Children := TFPList.Create;
     lCDParent.Children.Add(lCDWinControl);
+    lCDParent.Region.Childs.Add(lCDWinControl.Region);
   end;
 end;
 

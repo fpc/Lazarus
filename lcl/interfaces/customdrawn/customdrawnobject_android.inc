@@ -37,6 +37,8 @@ function Java_com_pascal_lclproject_LCLActivity_LCLOnTouch(env:PJNIEnv;this:jobj
 var
   lCurForm: TCDNonNativeForm;
   lTarget: TWinControl;
+  lTarget: TWinControl;
+  lEventPos: TPoint;
 begin
   eventResult := 0;
 
@@ -50,15 +52,16 @@ begin
 
   lCurForm := GetCurrentForm();
   lTarget := FindControlWhichReceivedEvent(lCurForm.LCLForm, lCurForm.Children, Round(X), Round(Y));
+  lEventPos := FormPosToControlPos(lTarget, Round(X), Round(Y));
 
   case action of
-    ACTION_DOWN: LCLSendMouseDownMsg(lTarget, Round(X), Round(Y), mbLeft, []);
+    ACTION_DOWN: LCLSendMouseDownMsg(lTarget, lEventPos.X, lEventPos.Y, mbLeft, []);
     ACTION_UP:
     begin
-      LCLSendMouseUpMsg(lTarget, Round(X), Round(Y), mbLeft, []);
+      LCLSendMouseUpMsg(lTarget, lEventPos.X, lEventPos.Y, mbLeft, []);
       LCLSendClickedMsg(lTarget);
     end;
-    ACTION_MOVE: LCLSendMouseMoveMsg(lTarget, Round(X), Round(Y), []);
+    ACTION_MOVE: LCLSendMouseMoveMsg(lTarget, lEventPos.X, lEventPos.Y, []);
   end;
 
   Result := eventResult;

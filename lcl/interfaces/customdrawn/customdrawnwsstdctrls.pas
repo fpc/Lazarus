@@ -192,6 +192,15 @@ type
   published
   end;
 
+  { TCDIntfButton }
+
+  TCDIntfButton = class(TCDButton)
+  public
+    LCLButton: TButton;
+    constructor Create(AOwner: TComponent); override;
+    procedure HandleOnClick(Sender: TObject);
+  end;
+
   { TCDWSButton }
 
   TCDWSButton = class(TWSButton)
@@ -265,6 +274,19 @@ type
 
 
 implementation
+
+{ TCDIntfButton }
+
+constructor TCDIntfButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  OnClick := @HandleOnClick;
+end;
+
+procedure TCDIntfButton.HandleOnClick(Sender: TObject);
+begin
+  LCLButton.OnClick(LCLButton);
+end;
 
 { TCDWSScrollBar }
 
@@ -1096,7 +1118,8 @@ begin
 
   if lCDWinControl.CDControl = nil then
   begin
-    lCDWinControl.CDControl := TCDButton.Create(AWinControl);
+    lCDWinControl.CDControl := TCDIntfButton.Create(AWinControl);
+    TCDIntfButton(lCDWinControl.CDControl).LCLButton := TButton(AWinControl);
     lCDWinControl.CDControl.Parent := AWinControl;
     lCDWinControl.CDControl.Align := alClient;
   end;

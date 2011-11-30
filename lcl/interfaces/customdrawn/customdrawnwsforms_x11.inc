@@ -560,15 +560,17 @@ class procedure TCDWSCustomForm.EvMouseReleased(const AWinControl: TWinControl; 
 var
   MouseButton: TMouseButton;
   lTarget: TWinControl;
+  lEventPos: TPoint;
 begin
   lTarget := FindControlWhichReceivedEvent(TCustomForm(AWinControl), AWindowInfo.Children, Event.x, Event.y);
+  lEventPos := FormPosToControlPos(lTarget, Event.x, Event.y);
 
   { Release events are only for mouse buttons, and not mouse wheel moviments }
   if (Event.button >= 1) and (Event.button <= 3) then
   begin
     XButtonToMouseButton(Event.button, MouseButton);
 
-    LCLSendMouseUpMsg(lTarget, Event.x, Event.y, MouseButton, []);
+    LCLSendMouseUpMsg(lTarget, lEventPos.x, lEventPos.y, MouseButton, []);
     LCLSendClickedMsg(lTarget);
   end;
 end;
