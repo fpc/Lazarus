@@ -826,8 +826,7 @@ begin
   lControlId := GetControlId();
   PrepareControlState;
   PrepareControlStateEx;
-  FDrawer.DrawControl(Canvas, Point(0, 0),
-    lSize, lControlId, FState, FStateEx);
+  FDrawer.DrawControl(Canvas, lSize, lControlId, FState, FStateEx);
   {$endif}
 end;
 

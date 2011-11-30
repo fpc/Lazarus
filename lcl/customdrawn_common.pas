@@ -44,13 +44,13 @@ type
     // Extra buttons drawing routines
     procedure DrawSmallCloseButton(ADest: TCanvas; ADestPos: TPoint); override;
     // TCDControl
-    procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // ===================================
     // Standard Tab
     // ===================================
     // TCDButton
-    procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawButton(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); override;
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -59,47 +59,47 @@ type
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     procedure DrawCaret(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
-    procedure DrawEdit(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawEdit(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); override;
     // TCDCheckBox
     procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
-    procedure DrawCheckBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawCheckBox(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDRadioButton
     procedure DrawRadioButtonCircle(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
-    procedure DrawRadioButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawRadioButton(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDScrollBar
-    procedure DrawScrollBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); override;
     // TCDGroupBox
-    procedure DrawGroupBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawGroupBox(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // ===================================
     // Additional Tab
     // ===================================
-    procedure DrawStaticText(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawStaticText(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // ===================================
     // Common Controls Tab
     // ===================================
     // TCDTrackBar
-    procedure DrawTrackBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawTrackBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); override;
     // TCDProgressBar
-    procedure DrawProgressBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawProgressBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDProgressBarStateEx); override;
     // TCDListView
-    procedure DrawListView(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawListView(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDListViewStateEx); override;
     procedure DrawReportListView(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDListViewStateEx); override;
     procedure DrawReportListViewItem(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       ACurItem: TCDListItems; AState: TCDControlState; AStateEx: TCDListViewStateEx); override;
     // TCDCustomTabControl
-    procedure DrawCTabControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawCTabControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
     procedure DrawCTabControlFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); override;
@@ -498,7 +498,7 @@ begin
   ADest.Pen.Width := 1;
 end;
 
-procedure TCDDrawerCommon.DrawControl(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawControl(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
   lColor: TColor;
@@ -512,7 +512,7 @@ begin
   ADest.FillRect(0, 0, ASize.cx, ASize.cy);
 end;
 
-procedure TCDDrawerCommon.DrawButton(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawButton(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDButtonStateEx);
 var
   Str: string;
@@ -659,7 +659,7 @@ begin
   ADest.Line(lCaretPixelPos, lTextTopSpacing, lCaretPixelPos, lTextTopSpacing+lCaptionHeight);
 end;
 
-procedure TCDDrawerCommon.DrawEdit(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawEdit(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDEditStateEx);
 var
   lVisibleText, lControlText: TCaption;
@@ -669,7 +669,7 @@ var
   lTextLeftSpacing, lTextRightSpacing, lTextTopSpacing, lTextBottomSpacing: Integer;
 begin
   // Background
-  DrawEditBackground(ADest, ADestPos, ASize, AState, AStateEx);
+  DrawEditBackground(ADest, Point(0, 0), ASize, AState, AStateEx);
 
   lControlText := AStateEx.Caption;
   lControlTextLen := UTF8Length(AStateEx.Caption);
@@ -728,10 +728,10 @@ begin
   end;
 
   // And the caret
-  DrawCaret(ADest, ADestPos, ASize, AState, AStateEx);
+  DrawCaret(ADest, Point(0, 0), ASize, AState, AStateEx);
 
   // In the end the frame, because it must be on top of everything
-  DrawEditFrame(ADest, ADestPos, ASize, AState, AStateEx);
+  DrawEditFrame(ADest, Point(0, 0), ASize, AState, AStateEx);
 end;
 
 procedure TCDDrawerCommon.DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint;
@@ -768,7 +768,7 @@ begin
   end;}
 end;
 
-procedure TCDDrawerCommon.DrawCheckBox(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawCheckBox(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
   lColor: TColor;
@@ -784,7 +784,7 @@ begin
   ADest.FillRect(0, 0, ASize.cx, ASize.cy);
 
   // The checkbox item itself
-  DrawCheckBoxSquare(ADest, ADestPos, ASize, AState, AStateEx);
+  DrawCheckBoxSquare(ADest, Point(0, 0), ASize, AState, AStateEx);
 
   // The Tickmark
   if csfOn in AState then
@@ -893,7 +893,7 @@ begin
   end;
 end;
 
-procedure TCDDrawerCommon.DrawRadioButton(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawRadioButton(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
   lColor: TColor;
@@ -909,7 +909,7 @@ begin
   ADest.FillRect(0, 0, ASize.cx, ASize.cy);
 
   // The radiobutton circle itself
-  DrawRadioButtonCircle(ADest, ADestPos, ASize, AState, AStateEx);
+  DrawRadioButtonCircle(ADest, Point(0, 0), ASize, AState, AStateEx);
 
   // The text selection
   if csfHasFocus in AState then
@@ -922,7 +922,7 @@ begin
   ADest.TextOut(lCircleHeight+5, 0, AStateEx.Caption);
 end;
 
-procedure TCDDrawerCommon.DrawScrollBar(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawScrollBar(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDPositionedCStateEx);
 var
   lPos: TPoint;
@@ -937,7 +937,7 @@ begin
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
 
   // Left/Top button
-  lPos := ADestPos;
+  lPos := Point(0, 0);
 
   if csfHorizontal in AState then
     lSize := Size(GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH), ASize.CY)
@@ -1010,7 +1010,7 @@ begin
   DrawRaisedFrame(ADest, lPos, lSize);
 end;
 
-procedure TCDDrawerCommon.DrawGroupBox(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawGroupBox(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
   FCaptionMiddle: integer;
@@ -1054,7 +1054,7 @@ begin
   ADest.TextOut(FCaptionMiddle+3, 0, lCaption);
 end;
 
-procedure TCDDrawerCommon.DrawStaticText(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawStaticText(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
   lColor: TColor;
@@ -1072,7 +1072,7 @@ begin
   ADest.TextOut(0, 0, AStateEx.Caption);
 end;
 
-procedure TCDDrawerCommon.DrawTrackBar(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawTrackBar(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDPositionedCStateEx);
 var
   StepsCount, i: Integer;
@@ -1105,14 +1105,14 @@ begin
   // Draws the frame and its inner white area
   if csfHorizontal in AState then
   begin
-    lPoint := Point(ADestPos.X + GetMeasures(TCDTRACKBAR_LEFT_SPACING),
-       ADestPos.Y + GetMeasures(TCDTRACKBAR_TOP_SPACING));
+    lPoint := Point(GetMeasures(TCDTRACKBAR_LEFT_SPACING),
+       GetMeasures(TCDTRACKBAR_TOP_SPACING));
     lSize := Size(ASize.CX - CDBarSpacing, GetMeasures(TCDTRACKBAR_FRAME_HEIGHT));
   end
   else
   begin
-    lPoint := Point(ADestPos.X + GetMeasures(TCDTRACKBAR_TOP_SPACING),
-       ADestPos.Y + GetMeasures(TCDTRACKBAR_LEFT_SPACING));
+    lPoint := Point(GetMeasures(TCDTRACKBAR_TOP_SPACING),
+       GetMeasures(TCDTRACKBAR_LEFT_SPACING));
     lSize := Size(GetMeasures(TCDTRACKBAR_FRAME_HEIGHT), ASize.CY - CDBarSpacing);
   end;
   ADest.Brush.Color := Palette.Window;
@@ -1146,12 +1146,12 @@ begin
   // Draw the focus
   if csfHasFocus in AState then
     DrawFocusRect(ADest,
-      Point(ADestPos.X + 1, ADestPos.Y + 1),
+      Point(1, 1),
       Size(ASize.CX - 2, ASize.CY - 2));
 end;
 
 // Felipe: Smooth=False is not supported for now
-procedure TCDDrawerCommon.DrawProgressBar(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawProgressBar(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDProgressBarStateEx);
 var
   lProgPos, lProgMult: TPoint;
@@ -1165,30 +1165,30 @@ begin
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
 
   // The Frame
-  DrawShallowSunkenFrame(ADest, ADestPos, ASize);
+  DrawShallowSunkenFrame(ADest, Point(0, 0), ASize);
 
   // Preparations to have 1 code for all orientations
   lProgSize := Size(ASize.cx-4, ASize.cy-4);
   if csfHorizontal in AState then
   begin
-    lProgPos := Point(ADestPos.X+2, ADestPos.Y+2);
+    lProgPos := Point(2, 2);
     lProgMult := Point(1, 0);
     lProgWidth := lProgSize.cx;
   end
   else if csfVertical in AState then
   begin
-    lProgPos := Point(ADestPos.X+2, ADestPos.Y+ASize.cy-2);
+    lProgPos := Point(2, ASize.cy-2);
     lProgMult := Point(0, -1);
     lProgWidth := lProgSize.cy;
   end else if csfRightToLeft in AState then
   begin
-    lProgPos := Point(ADestPos.X+ASize.cx-2, ADestPos.Y+2);
+    lProgPos := Point(ASize.cx-2, 2);
     lProgMult := Point(-1, 0);
     lProgWidth := lProgSize.cx;
   end
   else
   begin
-    lProgPos := Point(ADestPos.X+2, ADestPos.Y+2);
+    lProgPos := Point(2, 2);
     lProgMult := Point(0, 1);
     lProgWidth := lProgSize.cy;
   end;
@@ -1206,7 +1206,7 @@ begin
     lProgPos.Y+lProgWidth*lProgMult.Y+lProgSize.cy*Abs(lProgMult.X));
 end;
 
-procedure TCDDrawerCommon.DrawListView(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawListView(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDListViewStateEx);
 begin
   // Inside area, there is no background because the control occupies the entire area
@@ -1216,11 +1216,11 @@ begin
   ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
 
   // The frame
-  DrawSunkenFrame(ADest, ADestPos, ASize);
+  DrawSunkenFrame(ADest, Point(0, 0), ASize);
 
   // The contents depend on the view style
   case AStateEx.ViewStyle of
-  vsReport: DrawReportListView(ADest, ADestPos, ASize, AState, AStateEx);
+  vsReport: DrawReportListView(ADest, Point(0, 0), ASize, AState, AStateEx);
   end;
 end;
 
@@ -1316,7 +1316,7 @@ begin
     ACurItem.Caption);
 end;
 
-procedure TCDDrawerCommon.DrawCTabControl(ADest: TCanvas; ADestPos: TPoint;
+procedure TCDDrawerCommon.DrawCTabControl(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
 begin
   // Background
@@ -1324,14 +1324,14 @@ begin
   ADest.Pen.Color := AStateEx.ParentRGBColor;
   ADest.Brush.Style := bsSolid;
   ADest.Brush.Color := AStateEx.ParentRGBColor;
-  ADest.Rectangle(ADestPos.X, ADestPos.Y, ADestPos.X+ASize.cx, ADestPos.Y+ASize.cy);
+  ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
 
   // frame
-  DrawCTabControlFrame(ADest, ADestPos, ASize, AState, AStateEx);
+  DrawCTabControlFrame(ADest, Point(0, 0), ASize, AState, AStateEx);
 
   // Tabs
   ADest.Font.Assign(AStateEx.Font);
-  DrawTabs(ADest, ADestPos, ASize, AState, AStateEx);
+  DrawTabs(ADest, Point(0, 0), ASize, AState, AStateEx);
 end;
 
 procedure TCDDrawerCommon.DrawCTabControlFrame(ADest: TCanvas;

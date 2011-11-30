@@ -269,7 +269,8 @@ type
     function GetColor(AColorID: Integer): TColor; virtual; abstract;
     function GetClientArea(ADest: TCanvas; ASize: TSize; AControlId: TCDControlID;
       AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; virtual; abstract;
-    procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    // To set a different position to draw the control then (0, 0) use the window org of the canvas
+    procedure DrawControl(ADest: TCanvas; ASize: TSize;
       AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx);
     // General drawing routines
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
@@ -282,10 +283,10 @@ type
     // Extra buttons drawing routines
     procedure DrawSmallCloseButton(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
     // TCDControl
-    procedure DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDButton
-    procedure DrawButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawButton(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDButtonStateEx); virtual; abstract;
     // TCDEdit
     procedure DrawEditBackground(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
@@ -294,47 +295,47 @@ type
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
     procedure DrawCaret(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
-    procedure DrawEdit(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawEdit(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDEditStateEx); virtual; abstract;
     // TCDCheckBox
     procedure DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
-    procedure DrawCheckBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawCheckBox(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDRadioButton
     procedure DrawRadioButtonCircle(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
-    procedure DrawRadioButton(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawRadioButton(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDScrollBar
-    procedure DrawScrollBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawScrollBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); virtual; abstract;
     // TCDGroupBox
-    procedure DrawGroupBox(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawGroupBox(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // ===================================
     // Additional Tab
     // ===================================
-    procedure DrawStaticText(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawStaticText(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // ===================================
     // Common Controls Tab
     // ===================================
     // TCDTrackBar
-    procedure DrawTrackBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawTrackBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); virtual; abstract;
     // TCDProgressBar
-    procedure DrawProgressBar(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawProgressBar(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDProgressBarStateEx); virtual; abstract;
     // TCDListView
-    procedure DrawListView(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawListView(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDListViewStateEx); virtual; abstract;
     procedure DrawReportListView(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDListViewStateEx); virtual; abstract;
     procedure DrawReportListViewItem(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       ACurItem: TCDListItems; AState: TCDControlState; AStateEx: TCDListViewStateEx); virtual; abstract;
     // TCDCustomTabControl
-    procedure DrawCTabControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawCTabControl(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
     procedure DrawCTabControlFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDCTabControlStateEx); virtual; abstract;
@@ -562,26 +563,26 @@ begin
   end;
 end;
 
-procedure TCDDrawer.DrawControl(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+procedure TCDDrawer.DrawControl(ADest: TCanvas; ASize: TSize;
   AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx
     );
 begin
   case AControl of
-  cidControl:    DrawControl(ADest, ADestPos, ASize, AState, AStateEx);
+  cidControl:    DrawControl(ADest, ASize, AState, AStateEx);
   //
-  cidButton:     DrawButton(ADest, ADestPos, ASize, AState, TCDButtonStateEx(AStateEx));
-  cidEdit:       DrawEdit(ADest, ADestPos, ASize, AState, TCDEditStateEx(AStateEx));
-  cidCheckBox:   DrawCheckBox(ADest, ADestPos, ASize, AState, AStateEx);
-  cidRadioButton:DrawRadioButton(ADest, ADestPos, ASize, AState, AStateEx);
-  cidScrollBar:  DrawScrollBar(ADest, ADestPos, ASize, AState, TCDPositionedCStateEx(AStateEx));
-  cidGroupBox:   DrawGroupBox(ADest, ADestPos, ASize, AState, AStateEx);
+  cidButton:     DrawButton(ADest, ASize, AState, TCDButtonStateEx(AStateEx));
+  cidEdit:       DrawEdit(ADest, ASize, AState, TCDEditStateEx(AStateEx));
+  cidCheckBox:   DrawCheckBox(ADest, ASize, AState, AStateEx);
+  cidRadioButton:DrawRadioButton(ADest, ASize, AState, AStateEx);
+  cidScrollBar:  DrawScrollBar(ADest, ASize, AState, TCDPositionedCStateEx(AStateEx));
+  cidGroupBox:   DrawGroupBox(ADest, ASize, AState, AStateEx);
   //
-  cidStaticText: DrawStaticText(ADest, ADestPos, ASize, AState, AStateEx);
+  cidStaticText: DrawStaticText(ADest, ASize, AState, AStateEx);
   //
-  cidTrackBar:   DrawTrackBar(ADest, ADestPos, ASize, AState, TCDPositionedCStateEx(AStateEx));
-  cidProgressBar:DrawProgressBar(ADest, ADestPos, ASize, AState, TCDProgressBarStateEx(AStateEx));
-  cidListView:   DrawListView(ADest, ADestPos, ASize, AState, TCDListViewStateEx(AStateEx));
-  cidCTabControl:DrawCTabControl(ADest, ADestPos, ASize, AState, TCDCTabControlStateEx(AStateEx));
+  cidTrackBar:   DrawTrackBar(ADest, ASize, AState, TCDPositionedCStateEx(AStateEx));
+  cidProgressBar:DrawProgressBar(ADest, ASize, AState, TCDProgressBarStateEx(AStateEx));
+  cidListView:   DrawListView(ADest, ASize, AState, TCDListViewStateEx(AStateEx));
+  cidCTabControl:DrawCTabControl(ADest, ASize, AState, TCDCTabControlStateEx(AStateEx));
   end;
 end;
 
