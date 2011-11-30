@@ -923,6 +923,7 @@ begin
   end;
   CompilerComboBox.Text:=Filename;
   UpdateCompilerNote;
+  UpdateFPCSrcDirNote;
 end;
 
 procedure TInitialSetupDialog.FormDestroy(Sender: TObject);
@@ -977,8 +978,7 @@ begin
       PropertiesTreeView.Selected:=PropertiesTreeView.Items.TopLvlItems[i];
 end;
 
-procedure TInitialSetupDialog.PropertiesTreeViewSelectionChanged(Sender: TObject
-  );
+procedure TInitialSetupDialog.PropertiesTreeViewSelectionChanged(Sender: TObject);
 begin
   if PropertiesTreeView.Selected=nil then
     SelectPage(TVNodeLazarus.Text)
