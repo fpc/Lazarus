@@ -513,7 +513,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppInit">
         <short>Initializes the application on the platform, returns Screen information.</short>
-        <descr/>
+        <descr>Called by Application.Initialize. Don't use this directly, the LCL will use it when adequate.<descr/>
         <errors/>
         <seealso/>
       </element>
@@ -522,9 +522,8 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppRun">
-        <short></short>
-        <descr>
-        </descr>
+        <short>Enters a state in which the application waits for system messages</short>
+        <descr>Called by Application.Run. Don't use this directly, the LCL will use it when adequate.<descr/>
         <errors>
         </errors>
         <seealso>
@@ -536,8 +535,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppWaitMessage">
         <short>Waits for arrival of a message.</short>
-        <descr>
-        </descr>
+        <descr>Don't use this directly, the LCL will use it when adequate.<descr/>
         <errors>
         </errors>
         <seealso>
@@ -546,8 +544,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppProcessMessages">
         <short>Handles all pending messages.</short>
-        <descr>
-        </descr>
+        <descr>Called by Application.ProcessMessages. Don't use this directly, the LCL will use it when adequate.<descr/>
         <errors>
         </errors>
         <seealso>
@@ -555,15 +552,15 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppTerminate">
-        <short>Release system resources[?]</short>
-        <descr></descr>
+        <short>Terminates the application.</short>
+        <descr>Called by Application.Terminate. Don't use this directly, the LCL will use it when adequate.<descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppMinimize">
         <short>Minimizes the whole application to the taskbar.</short>
-        <descr/>
+        <descr>Called by Application.Minimize. Don't use this directly, the LCL will use it when adequate.<descr/>
         <seealso>
           <link id="TWidgetSet.AppRestore"/>
         </seealso>
@@ -571,8 +568,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppRestore">
         <short>Restore application previously minimized to the taskbar.</short>
-        <descr>
-        </descr>
+        <descr>Called by Application.Restore. Don't use this directly, the LCL will use it when adequate.<descr/>
         <seealso>
           <link id="TWidgetSet.AppMinimize"/>
         </seealso>
@@ -580,14 +576,13 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppBringToFront">
         <short>Brings the entire application on top of all other non-topmost programs.</short>
-        <descr/>
+        <descr>Called by Application.BringToFront. Don't use this directly, the LCL will use it when adequate.<descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetIcon">
         <short>Set the icon of the taskbar button.</short>
-        <descr>
-        </descr>
+        <descr>Don't use this directly, the LCL will use it when adequate.<descr/>
         <seealso>
         </seealso>
       </element>
@@ -600,8 +595,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetTitle">
         <short></short>
-        <descr>
-        </descr>
+        <descr>Don't use this directly, the LCL will use it when adequate.<descr/>
         <errors>
         </errors>
         <seealso>
@@ -613,8 +607,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetVisible">
         <short>Change the visibility of the application window.</short>
-        <descr>
-        </descr>
+        <descr>Don't use this directly, the LCL will use it when adequate.<descr/>
         <seealso>
         </seealso>
       </element>
@@ -624,16 +617,15 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AppRemoveStayOnTopFlags">
         <short>Resets all StayOnTop windows to NoTopmost.</short>
-        <descr>
-        </descr>
+        <descr>Don't use this directly, the LCL will use it when adequate.<descr/>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.AppRemoveStayOnTopFlags.Result">
-        <short>False on failure[?]</short>
+        <short>False on failure</short>
       </element>
       <element name="TWidgetSet.AppRemoveStayOnTopFlags.ASystemTopAlso">
-        <short>Also system-wide StayOnTop windows?</short>
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AppRestoreStayOnTopFlags">
@@ -647,11 +639,11 @@
         <short></short>
       </element>
       <element name="TWidgetSet.AppRestoreStayOnTopFlags.ASystemTopAlso">
-        <short>Also system-wide StayOnTop windows?</short>
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetMainFormOnTaskBar">
-        <short>Make the MainForm (in)visible in the TaskBar (exchange with application window).</short>
+        <short>Shows/Hides the MainForm taskbar icon.</short>
         <descr>
         </descr>
         <errors>
@@ -682,7 +674,7 @@
         </seealso>
       </element>
       <element name="TWidgetSet.GetLCLCapability.Result">
-        <short>LCL_CAPABILITY_NO, LCL_CAPABILITY_YES, or a pointer[?]</short>
+        <short>Can be either LCL_CAPABILITY_NO or LCL_CAPABILITY_YES</short>
       </element>
       <element name="TWidgetSet.GetLCLCapability.ACapability">
         <short></short>
@@ -782,7 +774,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsHelpKey">
-        <short>[?]</short>
+        <short></short>
         <descr>
         </descr>
         <errors>
@@ -835,8 +827,8 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TWidgetSet.AppHandle">
-        <short>Handle to which application messages can be sent[?]</short>
-        <descr>
+        <short>Native handle for TApplication</short>
+        <descr>The meaning of the handle changes from widgetset to widgetset
         </descr>
         <seealso>
         </seealso>
@@ -846,7 +838,7 @@
         <short>Use Arc to draw an elliptically curved line with the current Pen.</short>
         <descr>
           <p>
-            The arc is (part of) an ellipse in a bounding rectangle.
+            The arc is part of the ellipse inscribed in the bounding rectangle.
           </p><p>
             The angles angle1 and angle2 are 1/16th of a degree. For example, a full
             circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
@@ -1033,10 +1025,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CallNextHookEx">
         <short>Calls the next procedure in the hook chain.</short>
-        <descr>Useless without SetWindowsHookEx().
-          [How to install an system Hook?]
-          [Which hook types exist?]
-        </descr>
+        <descr><descr/>
         <errors/>
         <seealso/>
       </element>
@@ -1246,7 +1235,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateDIBitmap">
         <short>Creates a Device Dependent Bitmap (DDB) from a Device Independent Bitmap (DIB).</short>
-        <descr>[not implemented?]</descr>
+        <descr></descr>
         <errors/>
         <seealso/>
       </element>
@@ -1260,16 +1249,16 @@
         <short/>
       </element>
       <element name="TWidgetSet.CreateDIBitmap.dwUsage">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="TWidgetSet.CreateDIBitmap.InitBits">
         <short>An array containing the bitmap pixels.</short>
       </element>
       <element name="TWidgetSet.CreateDIBitmap.InitInfo">
-        <short>CBM_INIT when InitBits contains valid data, else zero.[?]</short>
+        <short>CBM_INIT when InitBits contains valid data, else zero.</short>
       </element>
       <element name="TWidgetSet.CreateDIBitmap.wUsage">
-        <short>[?]</short>
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateDIBSection">
@@ -1829,16 +1818,16 @@
         <short>False on failure.</short>
       </element>
       <element name="TWidgetSet.EnumDisplayMonitors.hdc">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="TWidgetSet.EnumDisplayMonitors.lprcClip">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="TWidgetSet.EnumDisplayMonitors.lpfnEnum">
         <short>The callback function.</short>
       </element>
       <element name="TWidgetSet.EnumDisplayMonitors.dwData">
-        <short>Data passed to the callback function[?]</short>
+        <short>Data passed to the callback function</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.EnumFontFamilies">
@@ -1891,7 +1880,7 @@
         <short>Data passed to the callback function.</short>
       </element>
       <element name="TWidgetSet.EnumFontFamiliesEx.Flags">
-        <short>[unused?]</short>
+        <short></short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.Ellipse">
@@ -2328,7 +2317,7 @@
         <short>The device context.</short>
       </element>
       <element name="TWidgetSet.GetCharABCWidths.p2">
-        <short>The first character code [Unicode?]</short>
+        <short>The first character code</short>
       </element>
       <element name="TWidgetSet.GetCharABCWidths.p3">
         <short>The last character code.</short>
@@ -2575,7 +2564,6 @@
       <element name="TWidgetSet.GetObject">
         <short>Returns information about a graphics object.</short>
         <descr>The returned information depends on the object type
-          [to be found out how?]
         </descr>
         <errors/>
         <seealso/>
@@ -2702,7 +2690,6 @@
         <short>Retrieves a handle to one of the predefined graphic objects.</short>
         <descr>
           <p>These are the predefined (Windows) stock objects:
-            [todo: fill in the details?]
           </p>
           <ul>
             <li>
@@ -2760,7 +2747,6 @@
         <short>Retrieves the system color for standard display elements.</short>
         <descr>
           <p>These are the available display elements:
-            [todo: fill in details?]
           </p>
           <ul>
             <li>
@@ -2886,7 +2872,6 @@
             All dimensions are measured in pixels.
           </p><p>
             These are available items:
-            [todo: insert details?]
           </p>
           <ul>
             <li>
@@ -3253,9 +3238,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetWindowSize">
-        <short>Returns the [client?] Width and Height of the window.</short>
-        <descr>Even from the implementation it's unclear what exactly is calculated[!?]
-        </descr>
+        <short>Returns the Width and Height of the window.</short>
+        <descr>The size is the client width and height for forms or the total size for sub-controls</descr>
         <seealso/>
       </element>
       <element name="TWidgetSet.GetWindowSize.Result">
@@ -3265,10 +3249,10 @@
         <short>The window handle.</short>
       </element>
       <element name="TWidgetSet.GetWindowSize.Width">
-        <short>The [client?] width.</short>
+        <short>The width.</short>
       </element>
       <element name="TWidgetSet.GetWindowSize.Height">
-        <short>The [client?] height.</short>
+        <short>The height.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetWindowOrgEx">
@@ -3302,13 +3286,13 @@
         <short>The device context.</short>
       </element>
       <element name="TWidgetSet.GradientFill.Vertices">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="TWidgetSet.GradientFill.NumVertices">
         <short/>
       </element>
       <element name="TWidgetSet.GradientFill.Meshes">
-        <short>[?]</short>
+        <short></short>
       </element>
       <element name="TWidgetSet.GradientFill.NumMeshes">
         <short/>
@@ -3325,7 +3309,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.HideCaret.Result">
-        <short>False on failure[?]</short>
+        <short>False on failure</short>
       </element>
       <element name="TWidgetSet.HideCaret.hWnd">
         <short>The window handle, can be zero.</short>
@@ -3440,13 +3424,13 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsDBCSLeadByte">
-        <short>[not implemented?]</short>
+        <short></short>
         <descr/>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.IsDBCSLeadByte.Result">
-        <short>True when the character code is the first of a double-byte character sequence [of which codepage?]</short>
+        <short>True when the character code is the first of a double-byte character sequence</short>
       </element>
       <element name="TWidgetSet.IsDBCSLeadByte.TestChar">
         <short>The character code to test.</short>
@@ -4184,7 +4168,7 @@
             without assistance by user code.
           </p><p>
             When neither lprcUpdate nor hrgnUpdate are specified,
-            the whole client area [only?] of the window is affected.
+            the whole client area of the window is affected.
             Otherwise the region takes precedence over the rectangle.
           </p><p>
             Flags specify how the window is invalidated or validated,
@@ -4500,11 +4484,11 @@
             This section was copied from LCLIntf, and may not apply to all platforms.
           </remark>
           <p>
-            This method is a thread-safe solution to send messages to windows.[?]
+            This method is a thread-safe solution to send messages to windows.
           </p><p>
             The messages will be handled in the message loop of the application
             and therefore can be sent from any thread.
-            They are not immediate[?], but they will awake the main thread if it
+            They are not immediate, but they will awake the main thread if it
             is waiting for messages.
           </p><p>
             Custom messages should always have an ID higher than the constant LM_USER.
@@ -6131,8 +6115,8 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.FontCanUTF8">
-        <short>True if font recognizes Unicode UTF8 encoding.</short>
-        <descr>[How is a font involved in UTF-8 encoding?]</descr>
+        <short>Obsolete option, don't use it. It will be removed.</short>
+        <descr></descr>
         <seealso/>
       </element>
       <element name="TWidgetSet.FontCanUTF8.Result">
