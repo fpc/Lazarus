@@ -7016,7 +7016,7 @@ var
   c: TUTF8Char;
 begin
   //debugln('TWinControl.CNChar B ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
-  if not IntfSendsUTF8KeyPress then
+  if Widgetset.GetLCLCapability(lcSendsUTF8KeyPress) = LCL_CAPABILITY_NO then
   begin
     // current interface does not (yet) send UTF8 key press notifications
     // -> emulate
