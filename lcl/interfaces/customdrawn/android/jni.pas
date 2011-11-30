@@ -133,9 +133,10 @@ type va_list=pointer;
       functions:PJNINativeInterface;
      end;
 
-     _JavaVM={$ifdef packedrecords}packed{$endif} record
+     _JavaVM= record
       functions:PJNIInvokeInterface;
      end;
+     P_JavaVM = ^_JavaVM;
 
      C_JNIEnv=^JNINativeInterface;
      JNIEnv=^JNINativeInterface;
@@ -460,7 +461,7 @@ type va_list=pointer;
       GetObjectRefType:function(Env:PJNIEnv;AObject:JObject):jobjectRefType;{$ifdef mswindows}stdcall;{$else}cdecl;{$endif}
      end;
 
-     JNIInvokeInterface=packed record
+     JNIInvokeInterface= record
       reserved0:pointer;
       reserved1:pointer;
       reserved2:pointer;
@@ -512,8 +513,9 @@ function JNI_GetCreatedJavaVMs(vm:PPJavaVM;ASize:jsize;p:Pjsize):jint;{$ifdef ms
  * called by JNI, not provided by JNI.
  *)
 
-const curVM:PJavaVM=nil;
-      curEnv:PJNIEnv=nil;
+var
+  curVM:PJavaVM=nil;
+  curEnv:PJNIEnv=nil;
       
 (*
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint;{$ifdef mswindows}stdcall;{$else}cdecl;{$endif}

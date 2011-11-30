@@ -30,7 +30,6 @@ end;
 class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  lWindowInfo: TAndroidWindowInfo;
   AForm: TCustomForm absolute AWinControl;
 begin
   {$ifdef VerboseCDForms}
