@@ -125,13 +125,10 @@ procedure TForm1.FormPaint(Sender: TObject);
 var
   lPoints: array[0..2] of TPoint;
 begin
-  Canvas.Brush.Color := clWhite;
-  Canvas.Rectangle(0, 0, 300, 300);
-
   Canvas.Brush.Color := clRed;
-  lPoints[0] := Point(67,157);
-  lPoints[1] := Point(11,129);
-  lPoints[2] := Point(67,101);
+  lPoints[0] := Point(67,57);
+  lPoints[1] := Point(11,29);
+  lPoints[2] := Point(67,1);
   Canvas.Polygon(lPoints);
 
 {  Canvas.Brush.Color := clRed;
