@@ -27,7 +27,8 @@
   ToDo:
     -quickfix for identifier not found
     -check if identifier still exists
-    -buttons: add unit to interface, add unit to implementation
+    -use identifier: check package version
+    -resourcestrings
     -clean up old entries
       -When, How?
     -gzip? lot of cpu, may be faster on first load
