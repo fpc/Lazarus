@@ -50,7 +50,6 @@ type
     procedure CallbackCloseQuery(var CanClose: Boolean); message 'CallbackCloseQuery:';
     procedure CallbackResize; message 'CallbackResize';
     //
-    procedure CallbackMouseDown(x, y: Integer); message 'CallbackMouseDown:y:';
     procedure CallbackMouseUp(x, y: Integer); message 'CallbackMouseUp:y:';
     procedure CallbackMouseClick(clickCount: Integer); message 'CallbackMouseClick:';
     procedure CallbackMouseMove(x, y: Integer); message 'CallbackMouseMove:y:';
@@ -223,10 +222,17 @@ end;
 procedure TCocoaWindow.mouseDown(event: NSEvent);
 var
   mp : NSPoint;
+  lTarget: TWinControl;
+  lx, ly: Integer;
 begin
   mp:=event.locationInWindow;
   mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
-  callbackMouseDown(round(mp.x), round(mp.y));
+
+  lx := round(mp.x);
+  ly := round(mp.y);
+  lTarget := FindControlWhichReceivedEvent(LCLForm, Children, lx, ly);
+  LCLSendMouseDownMsg(lTarget, lx, ly, mbLeft, []);
+
   inherited mouseDown(event);
 end;
 
@@ -343,14 +349,12 @@ begin
     LCLSendSizeMsg(LCLForm, Round(sz.width), Round(sz.height), SIZENORMAL);
 end;
 
-procedure TCocoaWindow.CallbackMouseDown(x, y: Integer);
-begin
-  LCLSendMouseDownMsg(LCLForm,x,y,mbLeft, []);
-end;
-
 procedure TCocoaWindow.CallbackMouseUp(x, y: Integer);
+var
+  lTarget: TWinControl;
 begin
-  LCLSendMouseUpMsg(LCLForm,x,y,mbLeft, []);
+  lTarget := FindControlWhichReceivedEvent(LCLForm, Children, x, y);
+  LCLSendMouseUpMsg(lTarget, x, y, mbLeft, []);
 end;
 
 procedure TCocoaWindow.CallbackMouseClick(clickCount: Integer);
@@ -359,7 +363,10 @@ begin
 end;
 
 procedure TCocoaWindow.CallbackMouseMove(x, y: Integer);
+var
+  lTarget: TWinControl;
 begin
+  lTarget := FindControlWhichReceivedEvent(LCLForm, Children, x, y);
   LCLSendMouseMoveMsg(LCLForm, x,y, []);
 end;
 

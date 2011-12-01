@@ -527,12 +527,12 @@ end;*)
 
 function TCDWidgetSet.BackendInvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean): Boolean;
 begin
-(*  if aHandle<>0 then begin
+  if aHandle<>0 then begin
     Result:=True;
     if Assigned(Rect)
-      then NSObject(aHandle).lclInvalidateRect(Rect^)
-      else NSObject(aHandle).lclInvalidate;
-  end else*)
+      then TCocoaWindow(aHandle).lclInvalidateRect(Rect^)
+      else TCocoaWindow(aHandle).lclInvalidate;
+  end else
     Result:=False;
 end;
 
