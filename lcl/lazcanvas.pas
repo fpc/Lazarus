@@ -82,6 +82,7 @@ type
     // Routines which don't work with out extended clipping in TFPImageCanvas
     procedure DoLine (x1,y1,x2,y2:integer); override;
   public
+    HasNoImage: Boolean;
     constructor create (AnImage : TFPCustomImage);
     destructor destroy; override;
     procedure SetLazClipRegion(ARegion: TLazRegion);
@@ -252,6 +253,7 @@ constructor TLazCanvas.create(AnImage: TFPCustomImage);
 begin
   inherited Create(AnImage);
   GraphicStateStack := TObjectStack.Create;
+  HasNoImage := AnImage = nil;
 end;
 
 destructor TLazCanvas.destroy;
