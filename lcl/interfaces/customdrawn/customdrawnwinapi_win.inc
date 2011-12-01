@@ -1346,7 +1346,7 @@ begin
   LB.lbColor := ColorToRGB(TColor(lplb.lbColor));
   LB.lbHatch := lplb.lbHatch;
   Result := Windows.ExtCreatePen(dwPenStyle, dwWidth, LB, dwStyleCount, lpStyle);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  ExtTextOut
@@ -1362,14 +1362,11 @@ end;
 
   Draws a character string by using the currently selected font.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
-{$ifdef WindowsUnicodeSupport}
+function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   s: AnsiString;
   w: WideString;
-{$ENDIF}
 begin
-{$ifdef WindowsUnicodeSupport}
   // use temp buffer, if count is set, there might be no null terminator
   if count = -1 then
    s := str
@@ -1379,24 +1376,12 @@ begin
     move(str^, PChar(s)^, count);
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
-  if UnicodeEnabledOS 
-  then
-  begin
-    // TODO: use the real number of chars (and not the lenght)
-    W := UTF8ToUTF16(S);
-    Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), Dx);
-  end                                        
-  else
-  begin
-    S := Utf8ToAnsi(S);
-    Result := Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), PChar(S), Length(S), Dx);
-  end;
- {$else}
-  Result := Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), Str, Count, Dx);
- {$endif}
+  // TODO: use the real number of chars (and not the lenght)
+  W := UTF8ToUTF16(S);
+  Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), Dx);
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: ExtSelectClipRGN
   Params:  dc, RGN, Mode
   Returns: integer
@@ -2082,7 +2067,7 @@ begin
     Result := Windows.GetTextExtentExPoint(DC, pchar(s), length(s),
       MaxWidth, MaxCount, PartialWidths, Size);
   end;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  GetTextExtentPoint
@@ -2095,14 +2080,11 @@ end;
 
   Computes the width and height of the specified string of text.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
-{$ifdef WindowsUnicodeSupport}
+function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 var
   s: AnsiString;
   w: WideString;
-{$ENDIF}
 begin
-{$ifdef WindowsUnicodeSupport}
   // use temp buffer, if count is set, there might be no null terminator
   if count = -1 then
     s := str
@@ -2112,22 +2094,9 @@ begin
     move(str^, PChar(s)^, count);
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
-  if UnicodeEnabledOS then
-  begin
-    // TODO: use the real number of chars (and not the length)
-    w := UTF8ToUTF16(S);
-    Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W), @Size);
-  end else
-  begin
-    // Important: Althougth the MSDN Docs point that GetTextExtentPoint32W
-    // works under Windows 9x, tests showed that this function produces
-    // a wrong output
-    s := Utf8ToAnsi(s);
-    Result := Windows.GetTextExtentPoint32(DC, pchar(s), length(s), @Size);
-  end;
-{$else}
-    Result := Windows.GetTextExtentPoint32(DC, Str, Count, @Size);
-{$endif}
+  // TODO: use the real number of chars (and not the length)
+  w := UTF8ToUTF16(S);
+  Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W), @Size);
 end;
 
 {------------------------------------------------------------------------------
@@ -2138,12 +2107,12 @@ end;
 
   Fills the specified buffer with the metrics for the currently selected font.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean;
+function TCDWidgetSet.GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean;
 begin
   Result := Boolean(Windows.GetTextMetrics(DC, @TM));
 end;
 
-function TWin32WidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
+(*function TWin32WidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
 begin
   Result := Integer(Windows.GetViewPortExtEx(DC, LPSize(Size)));
 end;
@@ -3627,7 +3596,7 @@ end;
 function TWin32WidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool;
 begin
   Result := Windows.SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  TextOut
@@ -3641,21 +3610,15 @@ end;
   Writes a character string at the specified location, using the currently
   selected font.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;
-{$ifdef WindowsUnicodeSupport}
+function TCDWidgetSet.TextOut(DC: HDC; X, Y: Integer; Str: PChar; Count: Integer): Boolean;
 var
   ws: widestring;
-{$endif}
 begin
-{$ifdef WindowsUnicodeSupport}
   ws := UTF8ToUTF16(copy(str,1,Count));
   Result := Boolean(Windows.TextOutW(DC, X, Y, PWideChar(ws), length(ws)));
-{$else}
-  Result := Boolean(Windows.TextOut(DC, X, Y, Str, Count));
-{$endif}
 end;
 
-function TWin32WidgetSet.UpdateWindow(Handle: HWND): Boolean;
+(*function TWin32WidgetSet.UpdateWindow(Handle: HWND): Boolean;
 begin
   Result:=Windows.UpdateWindow(Handle);
 end;

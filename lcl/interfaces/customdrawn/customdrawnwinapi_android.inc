@@ -1,6 +1,6 @@
 {%MainUnit customdrawnint.pp}
 {******************************************************************************
-  All CustomDrawn X11 specific Winapi implementations.
+  All CustomDrawn Android specific Winapi implementations.
 
   !! Keep alphabetical !!
 
@@ -2168,7 +2168,7 @@ begin
   end
   else
     Result := inherited ExtSelectClipRGN(DC, RGN, Mode);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: ExtTextOut
@@ -2177,20 +2177,20 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
+function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
-var
+{var
   WideStr: WideString;
   QtDC: TQtDeviceContext absolute DC;
-  B: Boolean;
+  B: Boolean;      }
 begin
-  {$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseCDWinAPI}
     WriteLn('[WinAPI ExtTextOut]');
   {$endif}
 
   Result := False;
 
-  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
+{  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
     exit;
 
   if not IsValidDC(DC) then Exit;
@@ -2220,10 +2220,10 @@ begin
       QtDC.drawText(X, Y, @WideStr);
   end;
 
-  Result := True;
+  Result := True;}
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: FillRect
   Params:  none
   Returns: Nothing
@@ -4084,29 +4084,29 @@ begin
     end;
   end;
   Result := True;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetTextExtentPoint
   Params:  none
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
-var
+function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
+{var
   WideStr: WideString;
-  QtDC: TQtDeviceContext absolute DC;
+  QtDC: TQtDeviceContext absolute DC;}
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetTextExtentPoint]');
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[WinAPI GetTextExtentPoint]');
   {$endif}
 
   Result := False;
 
   if not IsValidDC(DC) then Exit;
 
-  WideStr := GetUtf8String(Str);
+{  WideStr := GetUtf8String(Str);
   Size.cx := QtDC.Metrics.width(@WideStr, Count);
-  Size.cy := QtDC.Metrics.height;
+  Size.cy := QtDC.Metrics.height;}
 
   Result := True;
 end;
@@ -4117,20 +4117,20 @@ end;
            TM     - The structure to receive the font information
   Returns: If successfull
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
-var
+function TCDWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
+{var
   QtFontMetrics: TQtFontMetrics;
   FontFamily: WideString;
   QtDC: TQtDeviceContext absolute DC;
-  FontWeight: Integer;
+  FontWeight: Integer;}
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetTextMetrics]');
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[WinAPI GetTextMetrics]');
   {$endif}
 
   Result := IsValidDC(DC);
 
-  if Result then
+(*  if Result then
   begin
     QtFontMetrics := QtDC.Metrics;
     TM.tmHeight := QtFontMetrics.height;
@@ -4180,10 +4180,10 @@ begin
       TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
 
     TM.tmCharSet := DEFAULT_CHARSET;
-  end;
+  end;        *)
 end;
 
-function TQtWidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
+(*function TQtWidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
 var
   R: TRect;
 begin
@@ -6371,7 +6371,7 @@ begin
   else
     Result := False;
   end
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: TextOut
@@ -6383,29 +6383,27 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : PChar; Count: Integer) : Boolean;
-var
-  WideStr: WideString;
+function TCDWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : PChar; Count: Integer) : Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI TextOut]');
+    DebugLn('[WinAPI TextOut]');
   {$endif}
 
   Result := False;
 
   if not IsValidDC(DC) then Exit;
 
-  if Count >= 0 then
+{  if Count >= 0 then
     WideStr := GetUtf8String(Copy(Str, 1, Count))
   else
     WideStr := GetUtf8String(Str);
 
   TQtDeviceContext(DC).drawText(X, Y, @WideStr);
 
-  Result := True;
+  Result := True;}
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method:  UpdateWindow
   Params:  Handle
   Returns:

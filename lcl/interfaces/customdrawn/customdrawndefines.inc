@@ -3,6 +3,8 @@
 {$modeswitch objectivec1}
 {$endif}
 
+{$define CD_Android_DontUsePascalToJNI}
+
 // For now default to Android for arm-linux,
 // because LCL-CustomDrawn is our main Android widgetset.
 // Remove this when Android gets it's own target
@@ -10,7 +12,8 @@
   {$define Android}
 {$endif}{$endif}{$endif}
 
-// Check if a backend is already defined
+
+// Check if a backend which can be utilized in multiple-systems is already defined
 {$if defined(CD_X11)}
 {$else}
   // Choosing the default backend

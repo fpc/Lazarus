@@ -133,38 +133,56 @@ const NativeMethods: array[0..1] of JNINativeMethod=
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 begin
   curVM:=vm;
-{  __android_log_write(ANDROID_LOG_INFO,'nativetest','JNI_OnLoad called');
-  __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM=%x', [PtrInt(CurVM)])));
-  __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM^=%x', [PtrInt(CurVM^)])));
-  __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM^^.reserved0=%x', [PtrInt(CurVM^^.reserved0)])));
-  __android_log_write(ANDROID_LOG_INFO,'nativetest',PChar(Format('CurVM^^.GetEnv=%x', [PtrInt(Pointer(@CurVM^^.GetEnv))])));
-  if vm^^.GetEnv(curVM,@curEnv,JNI_VERSION_1_4)<>JNI_OK then begin //<<<--- THIS CRASHES
-    __android_log_write(ANDROID_LOG_INFO{FATAL},'nativetest','curVM^.GetEnv failed');
+
+  {
+    vm^^.GetEnv crashes HTC Wildfire, Alcatel and the Emulator for unknown reasons,
+    see: http://groups.google.com/group/android-ndk/browse_thread/thread/ba542483f062a828/ef9077617794e0f5
+
+    This prevents using Pascal to Java calls completely in those platforms.
+    To turn on a work around one can use CD_Android_DontUsePascalToJNI
+    and then try to implement the missing functionality by other means.
+
+    Not that Java to Pascal calls always work
+  }
+  {$ifndef CD_Android_DontUsePascalToJNI}
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'JNI_OnLoad called');
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('CurVM=%x', [PtrInt(CurVM)])));
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('CurVM^=%x', [PtrInt(CurVM^)])));
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('CurVM^^.reserved0=%x', [PtrInt(CurVM^^.reserved0)])));
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('CurVM^^.GetEnv=%x', [PtrInt(Pointer(@CurVM^^.GetEnv))])));
+
+  if vm^^.GetEnv(curVM,@curEnv,JNI_VERSION_1_4)<>JNI_OK then
+  begin
+    __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'curVM^.GetEnv failed');
     result:=JNI_ERR;
     exit;
   end;
 
-  __android_log_write(ANDROID_LOG_INFO,'nativetest','Reading curClass');
-  curClass:=curEnv^^.FindClass(curEnv,'com/pascal/lcltest/LCLActivity');
-  if not assigned(curClass) then begin
-  __android_log_write(ANDROID_LOG_FATAL,'nativetest','curEnv^.FindClass failed');
-  result:=JNI_ERR;
-  exit;
+  __android_log_write(ANDROID_LOG_INFO,'lclapp','Reading curClass');
+  curJavaClass:=curEnv^^.FindClass(curEnv,'com/pascal/lcltest/LCLActivity');
+  if not assigned(curJavaClass) then
+  begin
+    __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'curEnv^.FindClass failed');
+    result:=JNI_ERR;
+    exit;
   end;
-  if curEnv^^.RegisterNatives(curEnv,curClass,@NativeMethods[0],length(NativeMethods))<0 then begin
-  __android_log_write(ANDROID_LOG_FATAL,'nativetest','curEnv^.RegisterNatives failed');
-  result:=JNI_ERR;
-  exit;
+  if curEnv^^.RegisterNatives(curEnv, curJavaClass, @NativeMethods[0],length(NativeMethods))<0 then
+  begin
+    __android_log_write(ANDROID_LOG_FATAL, 'nativetest', 'curEnv^.RegisterNatives failed');
+    result:=JNI_ERR;
+    exit;
   end;
 
-  nativeCodeLoaded:=curEnv^^.GetFieldID(curEnv,curClass,'nativeCodeLoaded','J');
-  if not assigned(nativeCodeLoaded) then begin
-  __android_log_write(ANDROID_LOG_FATAL,'nativetest','curEnv^.GetFieldID failed');
-  result:=JNI_ERR;
-  exit;
-  end;         }
+  nativeCodeLoaded:=curEnv^^.GetFieldID(curEnv, curJavaClass, 'nativeCodeLoaded','J');
+  if not assigned(nativeCodeLoaded) then
+  begin
+    __android_log_write(ANDROID_LOG_FATAL, 'nativetest', 'curEnv^.GetFieldID failed');
+    result:=JNI_ERR;
+    exit;
+  end;
+  {$endif}
 
-  result:=JNI_VERSION_1_4;// 1_6?
+  result:=JNI_VERSION_1_4;// 1_6 is another option
 end;
 
 procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;

@@ -890,7 +890,7 @@ begin
     Exit;
   end;
   with ctx do Result:=RGBToColorFloat(TR, TG, TB);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  GetTextExtentPoint
@@ -902,19 +902,19 @@ end;
 
   Computes the width and height of the specified string of text
  ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
+function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 var
   ctx : TCocoaContext;
 begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('[TCocoaWidgetSet.GetTextExtentPoint] DC: %x Str: %s Count: %d', [DC, Str, Count]);
+  {$IFDEF VerboseCDWinAPI}
+    DebugLn('[TCDWidgetSet.GetTextExtentPoint] DC: %x Str: %s Count: %d', [DC, Str, Count]);
   {$ENDIF}
-  ctx:=CheckDC(DC);
+{  ctx:=CheckDC(DC);
   Result:=Assigned(ctx);
   if not Assigned(ctx) then Exit(False);
-  Result := ctx.GetTextExtentPoint(Str, Count, Size);
-  {$IFDEF VerboseWinAPI}
-    DebugLn('[TCocoaWidgetSet.GetTextExtentPoint] Size: %d,%d', [Size.cx, Size.cy]);
+  Result := ctx.GetTextExtentPoint(Str, Count, Size);}
+  {$IFDEF VerboseCDWinAPI}
+    DebugLn('[TCDWidgetSet.GetTextExtentPoint] Size: %d,%d', [Size.cx, Size.cy]);
   {$ENDIF}
 end;
 
@@ -933,26 +933,26 @@ var
 begin
   Result := False;
 
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.GetTextMetrics DC: ' + DbgS(DC));
+  {$IFDEF VerboseCDWinAPI}
+    DebugLn('TCDWidgetSet.GetTextMetrics DC: ' + DbgS(DC));
   {$ENDIF}
 
-  ctx:=CheckDC(DC);
+{  ctx:=CheckDC(DC);
   if not Assigned(ctx) then Exit(False);
-  Result := ctx.GetTextMetrics(TM);
+  Result := ctx.GetTextMetrics(TM);}
 
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCocoaWidgetSet.GetTextMetrics Result: ' + DbgS(Result) +
+  {$IFDEF VerboseCDWinAPI}
+    DebugLn('TCDWidgetSet.GetTextMetrics Result: ' + DbgS(Result) +
       ' TextMetric: ' + DbgS(TM));
   {$ENDIF}
 end;
 
-function TCocoaWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
+function TCDWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
-  Result:=ExtTextOut(DC, X, Y, 0, nil, Str, Count, nil);
+  //Result:=ExtTextOut(DC, X, Y, 0, nil, Str, Count, nil);
 end;
 
-function TCocoaWidgetSet.SaveDC(DC: HDC): Integer;
+(*function TCocoaWidgetSet.SaveDC(DC: HDC): Integer;
 var
   ctx : TCocoaContext;
   cg  : CGContextRef;
