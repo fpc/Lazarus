@@ -871,8 +871,6 @@ type
     procedure Paint; virtual;
     procedure AdjustDisplayRectWithBorder(var ARect: TRect); virtual;
     procedure AdjustClientRect(var ARect: TRect); override;
-    class function GetWSComponentClass(ASelf: TLCLComponent): TWSLCLComponentClass; override;
-    procedure DoCreateWnd; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;

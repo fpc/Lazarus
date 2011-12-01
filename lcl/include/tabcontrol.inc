@@ -633,20 +633,6 @@ begin
   AdjustDisplayRect(ARect);
 end;
 
-{$ifdef LCL_NEW_TABCONTROL}
-class function TTabControl.GetWSComponentClass(ASelf: TLCLComponent
-  ): TWSLCLComponentClass;
-begin
-  Result:= FindWSComponentClass(TCustomControl);
-end;
-
-procedure TTabControl.DoCreateWnd;
-begin
-
-end;
-
-{$endif}
-
 constructor TTabControl.Create(TheOwner: TComponent);
 begin
   FTabControlCreating:=true;
