@@ -1028,6 +1028,13 @@ begin
   Select;
 end;
 
+procedure TCustomComboBox.KeyUpAfterInterface(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyUpAfterInterface(Key, Shift);
+  if Key = VK_RETURN then
+    EditingDone;
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomComboBox.CNCommand(var TheMessage: TLMCommand);
 

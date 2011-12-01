@@ -297,6 +297,7 @@ type
     procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
     procedure LMMeasureItem(var TheMessage: TLMMeasureItem); message LM_MeasureItem;
     procedure LMSelChange(var TheMessage); message LM_SelChange;
+    procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); override;
     procedure CNCommand(var TheMessage: TLMCommand); message CN_Command;
     procedure SetReadOnly(const AValue: Boolean);
     procedure UpdateSorted;
