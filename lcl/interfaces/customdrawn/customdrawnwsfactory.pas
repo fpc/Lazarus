@@ -101,8 +101,8 @@ uses
  CustomDrawnWSArrow,
 { WinCEWSButtons,
  WinCEWSCalendar,
- WinCEWSCheckLst,
- WinCEWSComCtrls,}
+ WinCEWSCheckLst,}
+ CustomDrawnWSComCtrls,
  CustomDrawnWSControls,
 { WinCEWSDialogs,
  WinCEWSExtCtrls,}
@@ -173,8 +173,8 @@ end;
 
 function RegisterCustomProgressBar: Boolean; alias : 'WSRegisterCustomProgressBar';
 begin
-//  RegisterWSComponent(TCustomProgressBar, TWinCEWSProgressBar);
-  Result := False;
+  RegisterWSComponent(TCustomProgressBar, TCDWSProgressBar);
+  Result := True;
 end;
 
 function RegisterCustomUpDown: Boolean; alias : 'WSRegisterCustomUpDown';

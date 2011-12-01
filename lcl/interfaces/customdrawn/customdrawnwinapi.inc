@@ -2746,7 +2746,7 @@ var
   lFormHandle: HWND;
 begin
   {$ifdef VerboseCDWinAPI}
-    WriteLn(':>[WinAPI GetDC] hWnd: ', dbghex(hWnd));
+    DebugLn(':>[WinAPI GetDC] hWnd: ', dbghex(hWnd));
   {$endif}
 
   if HWnd = 0 then
@@ -2772,7 +2772,7 @@ begin
   Result := BackendGetDC(lFormHandle);
 
   {$ifdef VerboseCDWinAPI}
-    WriteLn(':<[WinAPI GetDC] Result: ', dbghex(Result));
+    DebugLn(':<[WinAPI GetDC] Result: ', dbghex(Result));
   {$endif}
 end;
 

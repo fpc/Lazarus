@@ -42,7 +42,7 @@ begin
   eventResult := 0;
 
   {$ifdef VerboseCDEvents}
-  __android_log_write(ANDROID_LOG_INFO,'lclproject',PChar(Format('LCLOnTouch called x=%f y=%f action=%d', [x, y, action])));
+  __android_log_write(ANDROID_LOG_INFO,'lclapp',PChar(Format('LCLOnTouch called x=%f y=%f action=%d', [x, y, action])));
   {$endif}
 {  curJavaClass := env^^.GetObjectClass(env, this);
   __android_log_write(ANDROID_LOG_INFO,'nativetest','LCLOnTouch after GetObjectClass');}
@@ -134,13 +134,15 @@ function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 begin
   curVM:=vm;
 
-  {$ifndef CD_Android_DontUsePascalToJNI}
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'JNI_OnLoad called');
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('CurVM=%x', [PtrInt(CurVM)])));
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('CurVM^=%x', [PtrInt(CurVM^)])));
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('CurVM^^.reserved0=%x', [PtrInt(CurVM^^.reserved0)])));
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('CurVM^^.GetEnv=%x', [PtrInt(Pointer(@CurVM^^.GetEnv))])));
-
+  {
+    vm^^.GetEnv crashes HTC Wildfire, Alcatel and the Emulator if you don't build your project with -CpARMV6
+    see: http://groups.google.com/group/android-ndk/browse_thread/thread/ba542483f062a828/ef9077617794e0f5
+  }
   if vm^^.GetEnv(curVM,@curEnv,JNI_VERSION_1_4)<>JNI_OK then
   begin
     __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'curVM^.GetEnv failed');
@@ -158,7 +160,7 @@ begin
   end;
   if curEnv^^.RegisterNatives(curEnv, curJavaClass, @NativeMethods[0],length(NativeMethods))<0 then
   begin
-    __android_log_write(ANDROID_LOG_FATAL, 'nativetest', 'curEnv^.RegisterNatives failed');
+    __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'curEnv^.RegisterNatives failed');
     result:=JNI_ERR;
     exit;
   end;
@@ -166,11 +168,10 @@ begin
   nativeCodeLoaded:=curEnv^^.GetFieldID(curEnv, curJavaClass, 'nativeCodeLoaded','J');
   if not assigned(nativeCodeLoaded) then
   begin
-    __android_log_write(ANDROID_LOG_FATAL, 'nativetest', 'curEnv^.GetFieldID failed');
+    __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'curEnv^.GetFieldID failed');
     result:=JNI_ERR;
     exit;
   end;
-  {$endif}
 
   result:=JNI_VERSION_1_4;// 1_6 is another option
 end;
@@ -181,7 +182,7 @@ end;
 
 procedure TCDWidgetSet.AndroidDebugLn(AStr: string);
 begin
-  __android_log_write(ANDROID_LOG_INFO, 'lclproject', PChar(AccumulatedStr+AStr));
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(AccumulatedStr+AStr));
   AccumulatedStr := '';
 end;
 
