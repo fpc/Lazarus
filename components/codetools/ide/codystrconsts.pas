@@ -165,12 +165,40 @@ resourcestring
   crsRefresh = 'Refresh';
   crsFilter = '(Filter)';
   crsHideUnitsOfOtherProjects = 'Hide units of other projects';
+  crsJumpTo = 'Jump to';
   crsUseIdentifier = 'Use identifier';
   crsAndMoreIdentifiers = '... and %s more identifiers';
   crsCodyIdentifierDictionary = 'Cody Identifier Dictionary';
+  crsUnableToRenameTo = 'unable to rename "%s" to "%s"';
   crsPackagesUnitsIdentifiersFile = 'Packages: %s, Units: %s, Identifiers: %s%'
     +'sDatabase: %s';
+  crsNoneSelected = 'none selected';
   crsError = 'Error: %s';
+  crsPackageNotFound = 'Package not found';
+  crsPackageNotFoundItShouldBeIn = 'Package "%s" not found. It should be in "%'
+    +'s".';
+  crsUnitNameClash = 'Unit name clash';
+  crsTheTargetUnitHasTheSameNameAsTheCurrentUnitFreePas = 'The target unit has'
+    +' the same name as the current unit.%s Free Pascal does not support that.';
+  crsFPCUnitWithoutPpu = 'FPC unit without ppu';
+  crsThisUnitIsLocatedInTheFreePascalSourcesButNoPpuFil = 'This unit is '
+    +'located in the Free Pascal sources, but no ppu file is installed. Maybe '
+    +'this unit is not available for this target platform.';
+  crsExtendUnitPath = 'Extend unit path';
+  crsImpossibleDependency = 'Impossible dependency';
+  crsTheUnitIsPartOfItCanNotUseAnotherPackageWithTheSam = 'The unit "%s"%sis '
+    +'part of "%s".%sIt can not use another package with the same name:%s"%s"';
+  crsPackageWithSameName = 'Package with same name';
+  crsThereIsAlreadyAnotherPackageLoadedWithTheSameNameO = 'There is already '
+    +'another package loaded with the same name.%sOpen package: %s%sNew '
+    +'package: %s%sOnly one package can be loaded at a time.';
+  crsCloseOtherPackageAndOpenNew = 'Close other package and open new';
+  crsFileNotFound = 'File not found';
+  crsFileDoesNotExistAnymore = 'File "%s" does not exist anymore.';
+  crsFileReadError = 'File read error';
+  crsUnableToReadFile = 'Unable to read file "%s".';
+  crsIdentifierNotFound = 'Identifier not found';
+  crsIdentifierNotFoundInUnit = 'Identifier "%s" not found in unit "%s"';
 
 implementation
 

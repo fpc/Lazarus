@@ -154,6 +154,10 @@ msgstr ""
 msgid "&Close"
 msgstr "&Chiudi"
 
+#: codystrconsts.crscloseotherpackageandopennew
+msgid "Close other package and open new"
+msgstr ""
+
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
 msgstr ""
@@ -238,8 +242,24 @@ msgstr ""
 msgid "Expression"
 msgstr ""
 
+#: codystrconsts.crsextendunitpath
+msgid "Extend unit path"
+msgstr ""
+
 #: codystrconsts.crsfile
 msgid "File"
+msgstr ""
+
+#: codystrconsts.crsfiledoesnotexistanymore
+msgid "File \"%s\" does not exist anymore."
+msgstr ""
+
+#: codystrconsts.crsfilenotfound
+msgid "File not found"
+msgstr ""
+
+#: codystrconsts.crsfilereaderror
+msgid "File read error"
 msgstr ""
 
 #: codystrconsts.crsfilter
@@ -248,6 +268,10 @@ msgstr ""
 
 #: codystrconsts.crsflags
 msgid "Flags"
+msgstr ""
+
+#: codystrconsts.crsfpcunitwithoutppu
+msgid "FPC unit without ppu"
 msgstr ""
 
 #: codystrconsts.crsframeworks
@@ -266,6 +290,18 @@ msgstr ""
 msgid "Hide units of other projects"
 msgstr ""
 
+#: codystrconsts.crsidentifiernotfound
+msgid "Identifier not found"
+msgstr ""
+
+#: codystrconsts.crsidentifiernotfoundinunit
+msgid "Identifier \"%s\" not found in unit \"%s\""
+msgstr ""
+
+#: codystrconsts.crsimpossibledependency
+msgid "Impossible dependency"
+msgstr ""
+
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
 msgstr ""
@@ -276,6 +312,10 @@ msgstr ""
 
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert File at Cursor ..."
+msgstr ""
+
+#: codystrconsts.crsjumpto
+msgid "Jump to"
 msgstr ""
 
 #: codystrconsts.crskbytes
@@ -305,6 +345,10 @@ msgstr ""
 #: codystrconsts.crsmissing
 msgid "missing ..."
 msgstr "mancante..."
+
+#: codystrconsts.crsnoneselected
+msgid "none selected"
+msgstr ""
 
 #: codystrconsts.crsnoproject
 msgid "No project"
@@ -338,8 +382,20 @@ msgstr ""
 msgid "Package"
 msgstr "Pacchetto"
 
+#: codystrconsts.crspackagenotfound
+msgid "Package not found"
+msgstr ""
+
+#: codystrconsts.crspackagenotfounditshouldbein
+msgid "Package \"%s\" not found. It should be in \"%s\"."
+msgstr ""
+
 #: codystrconsts.crspackagesunitsidentifiersfile
 msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
+msgstr ""
+
+#: codystrconsts.crspackagewithsamename
+msgid "Package with same name"
 msgstr ""
 
 #: codystrconsts.crspleaseopenaprojectfirst
@@ -450,12 +506,36 @@ msgstr "Sorgente: %s"
 msgid "The identifier \"%s\" is already defined."
 msgstr ""
 
+#: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
+msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
+msgstr ""
+
+#: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
+msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
+msgstr ""
+
+#: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
+msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
+msgstr ""
+
+#: codystrconsts.crsthisunitislocatedinthefreepascalsourcesbutnoppufil
+msgid "This unit is located in the Free Pascal sources, but no ppu file is installed. Maybe this unit is not available for this target platform."
+msgstr ""
+
 #: codystrconsts.crstotal
 msgid "Total"
 msgstr "Totale"
 
 #: codystrconsts.crstype
 msgid "Type"
+msgstr ""
+
+#: codystrconsts.crsunabletoreadfile
+msgid "Unable to read file \"%s\"."
+msgstr ""
+
+#: codystrconsts.crsunabletorenameto
+msgid "unable to rename \"%s\" to \"%s\""
 msgstr ""
 
 #: codystrconsts.crsunit
@@ -465,6 +545,10 @@ msgstr ""
 #: codystrconsts.crsunit2
 msgid "Unit: %s"
 msgstr "Unit: %s"
+
+#: codystrconsts.crsunitnameclash
+msgid "Unit name clash"
+msgstr ""
 
 #: codystrconsts.crsunitobjectfiles
 msgid "Unit object files"

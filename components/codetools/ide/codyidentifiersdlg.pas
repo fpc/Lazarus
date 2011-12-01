@@ -28,7 +28,6 @@
     -quickfix for identifier not found
     -check if identifier still exists
     -use identifier: check package version
-    -resourcestrings
     -clean up old entries
       -When, How?
     -gzip? lot of cpu, may be faster on first load
@@ -266,14 +265,15 @@ begin
         TempFilename:=FileProcs.GetTempFilename(Filename,'unitdictionary');
         UncompressedMS.SaveToFile(TempFilename);
         if not RenameFileUTF8(TempFilename,Filename) then
-          raise Exception.Create('unable to rename "'+TempFilename+'" to "'+Filename+'"');
+          raise Exception.Create(Format(crsUnableToRenameTo, [TempFilename,
+            Filename]));
       finally
         UncompressedMS.Free;
       end;
     end;
   except
     on E: Exception do begin
-      debugln('TCodyUDLoadSaveThread.Execute '+E.Message);
+      debugln('WARNING: TCodyUDLoadSaveThread.Execute '+E.Message);
       Dictionary.LoadSaveError:=E.Message;
     end;
   end;
@@ -603,7 +603,7 @@ begin
   FJumpButton:=AddButton;
   FJumpButton.Name:='JumpButton';
   FJumpButton.OnClick:=@JumpButtonClick;
-  FJumpButton.Caption:='Jump to';
+  FJumpButton.Caption:= crsJumpTo;
 end;
 
 procedure TCodyIdentifiersDlg.HideOtherProjectsCheckBoxChange(Sender: TObject);
@@ -771,8 +771,8 @@ begin
     PackageLabel.Caption:='Package: '+GroupFilename;
     ButtonPanel1.OKButton.Enabled:=true;
   end else begin
-    UnitLabel.Caption:='Unit: none selected';
-    PackageLabel.Caption:='Package: none selected';
+    UnitLabel.Caption:= 'Unit: '+ crsNoneSelected;
+    PackageLabel.Caption:= 'Package: '+ crsNoneSelected;
     ButtonPanel1.OKButton.Enabled:=false;
   end;
 end;
@@ -906,8 +906,9 @@ var
       end;
       Pkg:=PackageEditingInterface.FindPackageWithName(NewGroupName);
       if Pkg=nil then begin
-        IDEMessageDialog('Package not found',
-          'Package "'+NewGroupName+'" not found. It should be in "'+NewGroupFilename+'".',
+        IDEMessageDialog(crsPackageNotFound,
+          Format(crsPackageNotFoundItShouldBeIn, [NewGroupName, NewGroupFilename
+            ]),
           mtError,[mbCancel]);
         exit(false);
       end;
@@ -957,9 +958,8 @@ begin
   if SameUnitName and (CompareFilenames(CurMainFilename,NewUnitFilename)<>0)
   then begin
     // another unit with same name
-    IDEMessageDialog('Unit name clash',
-      'The target unit has the same name as the current unit.'#13
-      +' Free Pascal does not support that.',
+    IDEMessageDialog(crsUnitNameClash,
+      Format(crsTheTargetUnitHasTheSameNameAsTheCurrentUnitFreePas, [#13]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -996,10 +996,9 @@ begin
       if FPCSrcFilename='' then begin
         // a FPC unit without a ppu file
         // => ask for confirmation
-        if IDEQuestionDialog('FPC unit without ppu',
-          'This unit is located in the Free Pascal sources, but no ppu file is installed.'
-          +' Maybe this unit is not available for this target platform.',
-          mtConfirmation,[mrOk,'Extend unit path',mrCancel])<>mrOk then exit;
+        if IDEQuestionDialog(crsFPCUnitWithoutPpu,
+          crsThisUnitIsLocatedInTheFreePascalSourcesButNoPpuFil,
+          mtConfirmation, [mrOk, crsExtendUnitPath, mrCancel])<> mrOk then exit;
       end else
         NewUnitInPath:=true;
     end else if NewGroupName<>'' then begin
@@ -1009,19 +1008,17 @@ begin
       if (Pkg<>nil) and (CompareFilenames(Pkg.Filename,NewGroupFilename)<>0) then
       begin
         if Pkg=CurOwner then begin
-          IDEMessageDialog('Impossible dependency',
-            'The unit "'+CurMainFilename+'"'#13
-            +' is part of "'+Pkg.Filename+'".'#13
-            +'It can not use another package with the same name:'#13
-            +'"'+NewGroupFilename+'"',mtError,[mbCancel]);
+          IDEMessageDialog(crsImpossibleDependency,
+            Format(crsTheUnitIsPartOfItCanNotUseAnotherPackageWithTheSam, [
+              CurMainFilename, #13, Pkg.Filename, #13, #13, NewGroupFilename]),
+              mtError, [mbCancel]);
           exit;
         end;
-        if IDEQuestionDialog('Package with same name',
-          'There is already another package loaded with the same name.'#13
-          +'Open package: '+Pkg.Filename+#13
-          +'New package: '+NewGroupFilename+#13
-          +'Only one package can be loaded at a time.',
-          mtConfirmation,[mrCancel,'Cancel',mrOk,'Close other package and open new'])<>mrOk
+        if IDEQuestionDialog(crsPackageWithSameName,
+          Format(crsThereIsAlreadyAnotherPackageLoadedWithTheSameNameO, [#13,
+            Pkg.Filename, #13, NewGroupFilename, #13]),
+          mtConfirmation, [mrCancel, crsBTNCancel, mrOk,
+            crsCloseOtherPackageAndOpenNew])<> mrOk
         then exit;
       end;
     end else begin
@@ -1071,8 +1068,8 @@ var
   Pkg: TIDEPackage;
 begin
   if not FileExistsUTF8(NewUnitFilename) then begin
-    IDEMessageDialog('File not found',
-      'File "'+NewUnitFilename+'" does not exist anymore.',
+    IDEMessageDialog(crsFileNotFound,
+      Format(crsFileDoesNotExistAnymore, [NewUnitFilename]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -1092,8 +1089,8 @@ begin
   // load file
   NewUnitCode:=CodeToolBoss.LoadFile(NewUnitFilename,true,false);
   if NewUnitCode=nil then begin
-    IDEMessageDialog('File read error',
-      'Unable to read file "'+NewUnitFilename+'".',
+    IDEMessageDialog(crsFileReadError,
+      Format(crsUnableToReadFile, [NewUnitFilename]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -1101,8 +1098,8 @@ begin
   if not CodeToolBoss.FindDeclarationOfPropertyPath(NewUnitCode,NewIdentifier,
     NewCode, NewX, NewY, NewTopLine)
   then begin
-    IDEMessageDialog('Identifier not found',
-      'Identifier "'+NewIdentifier+'" not found in unit "'+NewUnitFilename+'"',
+    IDEMessageDialog(crsIdentifierNotFound,
+      Format(crsIdentifierNotFoundInUnit, [NewIdentifier, NewUnitFilename]),
       mtError,[mbCancel]);
     exit;
   end;

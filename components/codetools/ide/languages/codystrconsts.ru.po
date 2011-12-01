@@ -156,6 +156,10 @@ msgstr "%s, записывается свойством %s"
 msgid "&Close"
 msgstr "&Закрыть"
 
+#: codystrconsts.crscloseotherpackageandopennew
+msgid "Close other package and open new"
+msgstr ""
+
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
 msgstr "Сведения об элементе кода"
@@ -243,9 +247,25 @@ msgstr "Раскрыть блок \"With\""
 msgid "Expression"
 msgstr "Выражение"
 
+#: codystrconsts.crsextendunitpath
+msgid "Extend unit path"
+msgstr ""
+
 #: codystrconsts.crsfile
 msgid "File"
 msgstr "Файл"
+
+#: codystrconsts.crsfiledoesnotexistanymore
+msgid "File \"%s\" does not exist anymore."
+msgstr ""
+
+#: codystrconsts.crsfilenotfound
+msgid "File not found"
+msgstr ""
+
+#: codystrconsts.crsfilereaderror
+msgid "File read error"
+msgstr ""
 
 #: codystrconsts.crsfilter
 msgid "(Filter)"
@@ -254,6 +274,10 @@ msgstr "(Фильтр)"
 #: codystrconsts.crsflags
 msgid "Flags"
 msgstr "Флаги"
+
+#: codystrconsts.crsfpcunitwithoutppu
+msgid "FPC unit without ppu"
+msgstr ""
 
 #: codystrconsts.crsframeworks
 msgid "Frameworks"
@@ -271,6 +295,18 @@ msgstr "&Справка"
 msgid "Hide units of other projects"
 msgstr ""
 
+#: codystrconsts.crsidentifiernotfound
+msgid "Identifier not found"
+msgstr ""
+
+#: codystrconsts.crsidentifiernotfoundinunit
+msgid "Identifier \"%s\" not found in unit \"%s\""
+msgstr ""
+
+#: codystrconsts.crsimpossibledependency
+msgid "Impossible dependency"
+msgstr ""
+
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
 msgstr "В секции Implementation"
@@ -283,6 +319,10 @@ msgstr "В секции Interface"
 #| msgid "Insert file at cursor ..."
 msgid "Insert File at Cursor ..."
 msgstr "Вставить содержимое файла в месте расположения курсора ..."
+
+#: codystrconsts.crsjumpto
+msgid "Jump to"
+msgstr ""
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -311,6 +351,10 @@ msgstr "Элемент секции %s в %s %s"
 #: codystrconsts.crsmissing
 msgid "missing ..."
 msgstr "отсутствует ..."
+
+#: codystrconsts.crsnoneselected
+msgid "none selected"
+msgstr ""
 
 #: codystrconsts.crsnoproject
 msgid "No project"
@@ -344,10 +388,22 @@ msgstr "Прочие статические библиотеки"
 msgid "Package"
 msgstr "Пакет"
 
+#: codystrconsts.crspackagenotfound
+msgid "Package not found"
+msgstr ""
+
+#: codystrconsts.crspackagenotfounditshouldbein
+msgid "Package \"%s\" not found. It should be in \"%s\"."
+msgstr ""
+
 #: codystrconsts.crspackagesunitsidentifiersfile
 #| msgid "Packages: %s, Units: %s, Identifiers: %s%sFile: %s"
 msgid "Packages: %s, Units: %s, Identifiers: %s%sDatabase: %s"
 msgstr "Пакетов: %s, Модулей: %s, Идентификаторов: %s%sБаза данных: %s"
+
+#: codystrconsts.crspackagewithsamename
+msgid "Package with same name"
+msgstr ""
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
@@ -457,6 +513,22 @@ msgstr "Файл исходного кода: %s"
 msgid "The identifier \"%s\" is already defined."
 msgstr "Идентификатор \"%s\" уже объявлен."
 
+#: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
+msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
+msgstr ""
+
+#: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
+msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
+msgstr ""
+
+#: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
+msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
+msgstr ""
+
+#: codystrconsts.crsthisunitislocatedinthefreepascalsourcesbutnoppufil
+msgid "This unit is located in the Free Pascal sources, but no ppu file is installed. Maybe this unit is not available for this target platform."
+msgstr ""
+
 #: codystrconsts.crstotal
 msgid "Total"
 msgstr "Всего"
@@ -465,6 +537,14 @@ msgstr "Всего"
 msgid "Type"
 msgstr "Тип"
 
+#: codystrconsts.crsunabletoreadfile
+msgid "Unable to read file \"%s\"."
+msgstr ""
+
+#: codystrconsts.crsunabletorenameto
+msgid "unable to rename \"%s\" to \"%s\""
+msgstr ""
+
 #: codystrconsts.crsunit
 msgid "Unit"
 msgstr "Модуль"
@@ -472,6 +552,10 @@ msgstr "Модуль"
 #: codystrconsts.crsunit2
 msgid "Unit: %s"
 msgstr "Модуль: %s"
+
+#: codystrconsts.crsunitnameclash
+msgid "Unit name clash"
+msgstr ""
 
 #: codystrconsts.crsunitobjectfiles
 msgid "Unit object files"
