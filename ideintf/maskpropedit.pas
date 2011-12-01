@@ -384,7 +384,7 @@ end;
 initialization
   RegisterPropertyEditor(TypeInfo(string), TCustomMaskEdit, 'EditMask',
                          TEditMaskProperty);
-  RegisterComponentEditor(TCustomMaskEdit, TMaskEditEditor);
+  RegisterComponentEditor(TMaskEdit, TMaskEditEditor);
 
 end.
 
