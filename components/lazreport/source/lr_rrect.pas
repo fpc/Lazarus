@@ -26,7 +26,7 @@ interface
 {$I lr_vers.inc}
 
 uses
-  Classes, SysUtils, LResources,
+  Classes, SysUtils, LResources, GraphMath,
   Graphics, Controls, Forms, Dialogs,Buttons,
   StdCtrls, Menus,ClipBrd,
 
@@ -374,6 +374,51 @@ begin
   end;
 end;
 
+type
+  TCorner = (ctTL,ctTR,ctBL,ctBR);
+  TCornerSet = set of TCorner;
+
+procedure MixRoundRect(Canvas:TCanvas; X1, Y1, X2, Y2: integer; RX, RY: integer;
+  SqrCorners: TCornerSet);
+var
+  Bezier: TBezier;
+  Pts: PPoint;
+  c: Integer;
+  rx3,ry3: Extended;
+
+  procedure AddCorner(Ax,Ay,Bx,By,Cx,Cy,Dx,Dy: Extended; Px,Py:Integer; Square: boolean);
+  begin
+    if Square then begin
+      ReallocMem(Pts, SizeOf(TPoint)*(c+3));
+      Pts[c].x:=trunc(ax);  Pts[c].y:=Trunc(ay);  inc(c);
+      Pts[c].x:=Px;         Pts[c].y:=Py;         inc(c);
+      Pts[c].x:=Trunc(dx);  Pts[c].y:=Trunc(dy);  inc(c);
+    end else begin
+      Bezier[0].X:=ax; Bezier[0].Y:=ay;
+      Bezier[1].X:=bx; Bezier[1].Y:=by;
+      Bezier[2].X:=cx; Bezier[2].Y:=cy;
+      Bezier[3].X:=dx; Bezier[3].Y:=dy;
+      Bezier2PolyLine(Bezier, Pts, c);
+    end;
+  end;
+
+begin
+  ry3 := ry/6;
+  rx3 := rx/6;
+  x2 := x2-1;
+  y2 := y2-1;
+  rx := rx div 2;
+  ry := ry div 2;
+  Pts := nil;
+  c := 0;
+  AddCorner(x1+rx,y1,x1+rx3,y1,x1,y1+ry3,x1,y1+ry,x1,y1,ctTL in SqrCorners);
+  AddCorner(x1,y2-ry,x1,y2-ry3,x1+rx3,y2,x1+rx,y2,x1,y2,ctBL in SqrCorners);
+  AddCorner(x2-rx,y2,x2-rx3,y2,x2,y2-ry3,x2,y2-ry,x2,y2,ctBR in SqrCorners);
+  AddCorner(x2,y1+ry,x2,y1+ry3,x2-rx3,y1,x2-rx,y1,x2,y1,ctTR in SqrCorners);
+  Canvas.Polygon(Pts, c);
+  ReallocMem(Pts, 0);
+end;
+
 function TfrRoundRectView.GetRoundRect: boolean;
 begin
   Result:=fCadre.sCurve;
@@ -587,7 +632,10 @@ begin
     FCU := Round(fCadre.wCurve * ScaleY);
 
     if fCadre.sCurve then
-      RoundRect(x + FSW, y + FSW, x + dx + 1, y + dy + 1, FCu, Fcu)
+    begin
+      RoundRect(x + FSW, y + FSW, x + dx + 1, y + dy + 1, FCu, Fcu);
+      //MixRoundRect(Canvas, x + FSW, y + FSW, x + dx + 1, y + dy + 1, FCu, Fcu, [ctTL,ctBR]);
+    end
     else
       Rectangle(x + FSW, y + FSW, x + dx + 1, y + dy + 1);
 
@@ -601,7 +649,10 @@ begin
 
     Brush.Color := FillColor;
     if fCadre.sCurve then
-      RoundRect(x, y, x + dx + 1 - FSW, y + dy + 1 - FSW, FCu, Fcu)
+    begin
+      RoundRect(x, y, x + dx + 1 - FSW, y + dy + 1 - FSW, FCu, Fcu);
+      //MixRoundRect(Canvas, x, y, x + dx + 1 - FSW, y + dy + 1 - FSW, FCu, Fcu,[ctTL,ctBR]);
+    end
     else
       Rectangle(x, y, x + dx + 1 - FSW, y + dy + 1 - FSW);
   end;
