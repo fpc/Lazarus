@@ -76,13 +76,15 @@ type
   end;
 
   { TMaskEditEditor }
+  TCustomMaskEditAccess = class(TCustomMaskEdit)
+  end; //Hack to get access to EditMask
 
   TMaskEditEditor = class(TDefaultComponentEditor)
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
-    function MaskEdit: TCustomMaskEdit; virtual;
+    function MaskEdit: TCustomMaskEditAccess; virtual;
   end;
 
 implementation
@@ -376,9 +378,9 @@ begin
   Result := 1;
 end;
 
-function TMaskEditEditor.MaskEdit: TCustomMaskEdit;
+function TMaskEditEditor.MaskEdit: TCustomMaskEditAccess;
 begin
-  Result := TCustomMaskEdit(GetComponent)
+  Result := TCustomMaskEditAccess(GetComponent)
 end;
 
 initialization

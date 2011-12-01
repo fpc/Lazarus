@@ -201,7 +201,7 @@ type
     Function  MaskToChar(Value : tMaskedType) : Char;
     Function  IsMaskChar(Ch : Char) : Boolean;
     Function  IsLiteral(Ch: Char): Boolean;
-    function  TextIsValid(Value: String): Boolean;
+    function  TextIsValid(const Value: String): Boolean;
     function  CharMatchesMask(const Ch: Char; const Position: Integer): Boolean;
     function  ClearChar(Position : Integer) : Char;
 
@@ -244,6 +244,7 @@ type
     property SpaceChar: Char read FSpaceChar write SetSpaceChar;
     property MaxLength: Integer read GetMaxLength write SetMaxLength;
     property CharCase: TEditCharCase read GetCharCase write SetCharCase;
+    property EditMask: string read FRealMask write SetMask;
   public
     procedure CutToClipBoard; override;
     procedure PasteFromClipBoard; override;
@@ -251,7 +252,6 @@ type
     constructor Create(Aowner : TComponent); override;
     procedure Clear;
     procedure ValidateEdit; virtual;
-    property EditMask: string read FRealMask write SetMask;
     property Text: TCaption read GetText write SetText;
   end;
 
@@ -848,7 +848,7 @@ end;
 
 
 //Return if Value matches the EditMask
-function TCustomMaskEdit.TextIsValid(Value: String): Boolean;
+function TCustomMaskEdit.TextIsValid(const Value: String): Boolean;
 var
   i: Integer;
 begin
