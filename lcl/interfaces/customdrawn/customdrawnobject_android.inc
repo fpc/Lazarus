@@ -54,9 +54,14 @@ begin
   lEventPos := FormPosToControlPos(lTarget, Round(X), Round(Y));
 
   case action of
-    ACTION_DOWN: LCLSendMouseDownMsg(lTarget, lEventPos.X, lEventPos.Y, mbLeft, []);
+    ACTION_DOWN:
+    begin
+      lCurForm.LastMouseDownControl := lTarget;
+      LCLSendMouseDownMsg(lTarget, lEventPos.X, lEventPos.Y, mbLeft, []);
+    end;
     ACTION_UP:
     begin
+      if lCurForm.LastMouseDownControl <> nil then lTarget := lCurForm.LastMouseDownControl;
       LCLSendMouseUpMsg(lTarget, lEventPos.X, lEventPos.Y, mbLeft, []);
       LCLSendClickedMsg(lTarget);
     end;

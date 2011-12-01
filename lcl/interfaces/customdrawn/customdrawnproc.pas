@@ -32,6 +32,8 @@ type
   public
     LCLForm: TCustomForm;
     Children: TFPList; // of TCDWinControl;
+    //
+    LastMouseDownControl: TWinControl; // Stores the control which should receive the next MouseUp
     // painting objects
     Image: TLazIntfImage;
     Canvas: TLazCanvas;

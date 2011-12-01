@@ -527,6 +527,7 @@ var
   lTarget: TWinControl;
 begin
   lTarget := FindControlWhichReceivedEvent(TCustomForm(AWinControl), AWindowInfo.Children, Event.x, Event.y);
+  AWindowInfo.LastMouseDownControl := lTarget;
 
   if XButtonToMouseButton(Event.button, MouseButton) then
   begin
@@ -562,7 +563,9 @@ var
   lTarget: TWinControl;
   lEventPos: TPoint;
 begin
-  lTarget := FindControlWhichReceivedEvent(TCustomForm(AWinControl), AWindowInfo.Children, Event.x, Event.y);
+  lTarget := AWindowInfo.LastMouseDownControl;
+  if lTarget = nil then
+    lTarget := FindControlWhichReceivedEvent(TCustomForm(AWinControl), AWindowInfo.Children, Event.x, Event.y);
   lEventPos := FormPosToControlPos(lTarget, Event.x, Event.y);
 
   { Release events are only for mouse buttons, and not mouse wheel moviments }

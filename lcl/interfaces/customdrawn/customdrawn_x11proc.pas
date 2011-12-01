@@ -21,6 +21,8 @@ type
     Window: X.TWindow;
     LCLControl: TWinControl;
     Children: TFPList; // of TCDWinControl;
+    //
+    LastMouseDownControl: TWinControl; // Stores the control which should receive the next MouseUp
     // Used and valid only during event processing
     XEvent: PXEvent;
     // X11 extra objects
