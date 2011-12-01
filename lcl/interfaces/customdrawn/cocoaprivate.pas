@@ -18,81 +18,6 @@ uses
   Forms, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc, GraphType;
 
 type
-  { LCLObjectExtension }
-
-  LCLObjectExtension = objccategory(NSObject)
-    function lclIsEnabled: Boolean; message 'lclIsEnabled';
-    procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:';
-    function lclIsVisible: Boolean; message 'lclIsVisible';
-
-    procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
-    procedure lclInvalidate; message 'lclInvalidate';
-    procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::';
-    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::';
-    function lclParent: id; message 'lclParent';
-    function lclFrame: TRect; message 'lclFrame';
-    procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
-    function lclClientFrame: TRect; message 'lclClientFrame';
-  end;
-
-  { LCLViewExtension }
-
-  LCLViewExtension = objccategory(NSView)
-    function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;
-    procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
-    procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
-    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::'; reintroduce;
-    function lclParent: id; message 'lclParent'; reintroduce;
-    function lclFrame: TRect; message 'lclFrame'; reintroduce;
-    procedure lclSetFrame(const r: TRect); message 'lclSetFrame:'; reintroduce;
-    function lclClientFrame: TRect; message 'lclClientFrame'; reintroduce;
-  end;
-
-  { LCLControlExtension }
-
-  LCLControlExtension = objccategory(NSControl)
-    function lclIsEnabled: Boolean; message 'lclIsEnabled'; reintroduce;
-    procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:'; reintroduce;
-  end;
-
-  { LCLWindowExtension }
-
-  LCLWindowExtension = objccategory(NSWindow)
-    function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;
-    procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
-    procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
-    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::'; reintroduce;
-    function lclFrame: TRect; message 'lclFrame'; reintroduce;
-    procedure lclSetFrame(const r: TRect); message 'lclSetFrame:'; reintroduce;
-    function lclClientFrame: TRect; message 'lclClientFrame'; reintroduce;
-  end;
-
-  { TCommonCallback }
-
-  TCommonCallback = class(TObject)
-  public
-    Owner : NSObject;
-    constructor Create(AOwner: NSObject);
-    procedure MouseDown(x,y: Integer); virtual; abstract;
-    procedure MouseUp(x,y: Integer); virtual; abstract;
-    procedure MouseClick(ClickCount: Integer); virtual; abstract;
-    procedure MouseMove(x,y: Integer); virtual; abstract;
-    procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect); virtual; abstract;
-  end;
-
-  { TWindowCallback }
-
-  TWindowCallback = class(TObject)
-  public
-    Owner : NSWindow;
-    constructor Create(AOwner: NSWindow);
-    procedure Activate; virtual; abstract;
-    procedure Deactivate; virtual; abstract;
-    procedure CloseQuery(var CanClose: Boolean); virtual; abstract;
-    procedure Close; virtual; abstract;
-    procedure Resize; virtual; abstract;
-  end;
-
   { TCocoaWindow }
 
   TCocoaWindow = objcclass(NSWindow, NSWindowDelegateProtocol)
@@ -103,8 +28,7 @@ type
     procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
     procedure windowDidResize(notification: NSNotification); message 'windowDidResize:';
   public
-    callback      : TCommonCallback;
-    wincallback   : TWindowCallback;
+    LCLForm: TCustomForm;
     Children: TFPList; // TCDWinControl
     function acceptsFirstResponder: Boolean; override;
     procedure mouseUp(event: NSEvent); override;
@@ -113,72 +37,48 @@ type
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
+    function lclIsVisible: Boolean; message 'lclIsVisible';
+    procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
+    procedure lclInvalidate; message 'lclInvalidate';
+    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::';
+    function lclFrame: TRect; message 'lclFrame';
+    procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
+    function lclClientFrame: TRect; message 'lclClientFrame';
+    // callback routines
+    procedure CallbackActivate; message 'CallbackActivate';
+    procedure CallbackDeactivate; message 'CallbackDeactivate';
+    procedure CallbackCloseQuery(var CanClose: Boolean); message 'CallbackCloseQuery:';
+    procedure CallbackResize; message 'CallbackResize';
+    //
+    procedure CallbackMouseDown(x, y: Integer); message 'CallbackMouseDown:y:';
+    procedure CallbackMouseUp(x, y: Integer); message 'CallbackMouseUp:y:';
+    procedure CallbackMouseClick(clickCount: Integer); message 'CallbackMouseClick:';
+    procedure CallbackMouseMove(x, y: Integer); message 'CallbackMouseMove:y:';
   end;
 
   { TCocoaCustomControl }
 
   TCocoaCustomControl = objcclass(NSControl)
-    callback  : TCommonCallback;
+    //callback  : TCommonCallback;
     Image: TLazIntfImage;
     Canvas: TLazCanvas;
-    procedure drawRect(dirtyRect: NSRect); override;
-  end;
-
-  TLCLWindowCallback=class(TWindowCallback)
-  public
-    Target  : TControl;
-    constructor Create(AOwner: NSWindow; ATarget: TControl);
-    procedure Activate; override;
-    procedure Deactivate; override;
-    procedure CloseQuery(var CanClose: Boolean); override;
-    procedure Close; override;
-    procedure Resize; override;
-  end;
-
-  { TLCLCommonCallback }
-
-  TLCLCommonCallback = class(TCommonCallback)
-  public
-    Target  : TControl;
     Context : TCocoaContext;
-    constructor Create(AOwner: NSObject; ATarget: TControl);
-    destructor Destroy; override;
-    procedure MouseDown(x,y: Integer); override;
-    procedure MouseUp(x,y: Integer); override;
-    procedure MouseClick(clickCount: Integer); override;
-    procedure MouseMove(x,y: Integer); override;
-    procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); override;
-  end;
-
-  { TCocoaWSWinControl }
-
-  TCocoaWSWinControl=class(TWSWinControl)
-  published
-    class function CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
-    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    class function GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; override;
-
-    class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
-    class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
-    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
-  end;
-
-
-  { TCocoaWSCustomControl }
-
-  TCocoaWSCustomControl=class(TWSCustomControl)
-  published
-    class function CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
-  end;
-
-  LCLWSViewExtension = objccategory(NSView)
+    LCLForm: TCustomForm;
+    procedure drawRect(dirtyRect: NSRect); override;
+    procedure Draw(ControlContext: NSGraphicsContext; const Abounds, dirty:NSRect); message 'draw:Context:bounds:';
+  public
     function lclInitWithCreateParams(const AParams: TCreateParams): id; message 'lclInitWithCreateParams:';
+    //
+    function lclIsVisible: Boolean; message 'lclIsVisible';
+    procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
+    procedure lclInvalidate; message 'lclInvalidate';
+    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::';
+    function lclParent: id; message 'lclParent';
+    function lclFrame: TRect; message 'lclFrame';
+    procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
+    function lclClientFrame: TRect; message 'lclClientFrame';
   end;
 
-function AllocCustomControl(const AWinControl: TWinControl): TCocoaCustomControl;
 procedure SetViewDefaults(AView: NSView);
 
 function Cocoa_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
@@ -281,28 +181,28 @@ var
   canClose : Boolean;
 begin
   canClose:=true;
-  wincallback.CloseQuery(canClose);
+  CallbackCloseQuery(canClose);
   Result:=canClose;
 end;
 
 procedure TCocoaWindow.windowWillClose(notification: NSNotification);
 begin
-  wincallback.Close;
+  LCLSendCloseUpMsg(LCLForm);
 end;
 
 procedure TCocoaWindow.windowDidBecomeKey(notification: NSNotification);
 begin
-  wincallback.Activate;
+  CallbackActivate;
 end;
 
 procedure TCocoaWindow.windowDidResignKey(notification: NSNotification);
 begin
-  wincallback.Deactivate;
+  CallbackDeactivate;
 end;
 
 procedure TCocoaWindow.windowDidResize(notification: NSNotification);
 begin
-  wincallback.Resize;
+  CallbackResize;
 end;
 
 function TCocoaWindow.acceptsFirstResponder: Boolean;
@@ -316,7 +216,7 @@ var
 begin
   mp:=event.locationInWindow;
   mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
-  callback.MouseUp(round(mp.x), round(mp.y));
+  callbackMouseUp(round(mp.x), round(mp.y));
   inherited mouseUp(event);
 end;
 
@@ -326,7 +226,7 @@ var
 begin
   mp:=event.locationInWindow;
   mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
-  callback.MouseDown(round(mp.x), round(mp.y));
+  callbackMouseDown(round(mp.x), round(mp.y));
   inherited mouseDown(event);
 end;
 
@@ -336,7 +236,7 @@ var
 begin
   mp:=event.locationInWindow;
   mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
-  callback.MouseMove(round(mp.x), round(mp.y));
+  callbackMouseMove(round(mp.x), round(mp.y));
   inherited mouseMoved(event);
 end;
 
@@ -346,7 +246,7 @@ var
 begin
   mp:=event.locationInWindow;
   mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
-  callback.MouseMove(round(mp.x), round(mp.y));
+  callbackMouseMove(round(mp.x), round(mp.y));
   inherited mouseMoved(event);
 end;
 
@@ -360,182 +260,22 @@ begin
   inherited mouseExited(event);
 end;
 
-{ TCommonCallback }
-
-constructor TCommonCallback.Create(AOwner: NSObject);
-begin
-  Owner:=AOwner;
-end;
-
-{ TWindowCallback }
-
-constructor TWindowCallback.Create(AOwner: NSWindow);
-begin
-  Owner:=AOwner;
-end;
-
-{ TCocoaCustomControl }
-
-procedure TCocoaCustomControl.drawRect(dirtyRect:NSRect);
-begin
-  inherited drawRect(dirtyRect);
-  callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
-end;
-
-{ LCLObjectExtension }
-
-function LCLObjectExtension.lclIsEnabled:Boolean;
-begin
-  Result:=False;
-end;
-
-procedure LCLObjectExtension.lclSetEnabled(AEnabled:Boolean);
-begin
-end;
-
-function LCLObjectExtension.lclIsVisible:Boolean;
-begin
-  Result:=False;
-end;
-
-procedure LCLObjectExtension.lclInvalidateRect(const r:TRect);
-begin
-
-end;
-
-procedure LCLObjectExtension.lclInvalidate;
-begin
-
-end;
-
-procedure LCLObjectExtension.lclRelativePos(var Left,Top:Integer);
-begin
-
-end;
-
-procedure LCLObjectExtension.lclLocalToScreen(var X,Y:Integer);
-begin
-
-end;
-
-function LCLObjectExtension.lclParent:id;
-begin
-  Result:=nil;
-end;
-
-function LCLObjectExtension.lclFrame:TRect;
-begin
-  FillChar(Result, sizeof(Result), 0);
-end;
-
-procedure LCLObjectExtension.lclSetFrame(const r:TRect);
-begin
-
-end;
-
-function LCLObjectExtension.lclClientFrame:TRect;
-begin
-  FillChar(Result, sizeof(Result), 0);
-end;
-
-{ LCLControlExtension }
-
-function RectToViewCoord(view: NSView; const r: TRect): NSRect;
-var
-  b: NSRect;
-begin
-  if not Assigned(view) then Exit;
-  b:=view.bounds;
-  Result.origin.x:=r.Left;
-  Result.origin.y:=b.size.height-r.Top;
-  Result.size.width:=r.Right-r.Left;
-  Result.size.height:=r.Bottom-r.Top;
-end;
-
-function LCLControlExtension.lclIsEnabled:Boolean;
-begin
-  Result:=IsEnabled;
-end;
-
-procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
-begin
-  SetEnabled(AEnabled);
-end;
-
-function LCLViewExtension.lclIsVisible:Boolean;
-begin
-  Result:=not isHidden;
-end;
-
-procedure LCLViewExtension.lclInvalidateRect(const r:TRect);
-begin
-  setNeedsDisplayInRect(RectToViewCoord(Self, r));
-end;
-
-procedure LCLViewExtension.lclInvalidate;
-begin
-  setNeedsDisplay_(True);
-end;
-
-procedure LCLViewExtension.lclLocalToScreen(var X,Y:Integer);
-begin
-
-end;
-
-function LCLViewExtension.lclParent:id;
-begin
-  Result:=superView;
-end;
-
-function LCLViewExtension.lclFrame: TRect;
-var
-  v : NSView;
-begin
-  v:=superview;
-  if Assigned(v)
-    then NSToLCLRect(frame, v.frame.size.height, Result)
-    else NSToLCLRect(frame, Result);
-end;
-
-procedure LCLViewExtension.lclSetFrame(const r:TRect);
-var
-  ns : NSRect;
-begin
-  if Assigned(superview)
-    then LCLToNSRect(r, superview.frame.size.height, ns)
-    else LCLToNSRect(r, ns);
-  setFrame(ns);
-end;
-
-function LCLViewExtension.lclClientFrame:TRect;
-var
-  r: NSRect;
-begin
-  r:=bounds;
-  Result.Left:=0;
-  Result.Top:=0;
-  Result.Right:=Round(r.size.width);
-  Result.Bottom:=Round(r.size.height);
-end;
-
-{ LCLWindowExtension }
-
-function LCLWindowExtension.lclIsVisible:Boolean;
+function TCocoaWindow.lclIsVisible:Boolean;
 begin
   Result:=isVisible;
 end;
 
-procedure LCLWindowExtension.lclInvalidateRect(const r:TRect);
+procedure TCocoaWindow.lclInvalidateRect(const r:TRect);
 begin
   contentView.lclInvalidateRect(r);
 end;
 
-procedure LCLWindowExtension.lclInvalidate;
+procedure TCocoaWindow.lclInvalidate;
 begin
   contentView.lclInvalidate;
 end;
 
-procedure LCLWindowExtension.lclLocalToScreen(var X,Y:Integer);
+procedure TCocoaWindow.lclLocalToScreen(var X,Y:Integer);
 var
   f   : NSRect;
 begin
@@ -546,14 +286,14 @@ begin
   end;
 end;
 
-function LCLWindowExtension.lclFrame:TRect;
+function TCocoaWindow.lclFrame:TRect;
 begin
   if Assigned(screen)
     then NSToLCLRect(frame, screen.frame.size.height, Result)
     else NSToLCLRect(frame, Result);
 end;
 
-procedure LCLWindowExtension.lclSetFrame(const r:TRect);
+procedure TCocoaWindow.lclSetFrame(const r:TRect);
 var
   ns : NSREct;
 begin
@@ -563,7 +303,7 @@ begin
   setFrame_display(ns, isVisible);
 end;
 
-function LCLWindowExtension.lclClientFrame:TRect;
+function TCocoaWindow.lclClientFrame:TRect;
 var
   wr  : NSRect;
   b   : CGGeometry.CGRect;
@@ -576,99 +316,63 @@ begin
   Result.Bottom:=Round(Result.Top+b.size.height);
 end;
 
-{ TLCLWindowCallback }
-
-constructor TLCLWindowCallback.Create(AOwner: NSWindow; ATarget: TControl);
+procedure TCocoaWindow.CallbackActivate;
 begin
-  inherited Create(AOwner);
-  Target:=ATarget;
+  LCLSendActivateMsg(LCLForm, True, false);
 end;
 
-procedure TLCLWindowCallback.Activate;
+procedure TCocoaWindow.CallbackDeactivate;
 begin
-  LCLSendActivateMsg(Target, True, false);
+  LCLSendDeactivateStartMsg(LCLForm);
 end;
 
-procedure TLCLWindowCallback.Deactivate;
-begin
-  LCLSendDeactivateStartMsg(Target);
-end;
-
-procedure TLCLWindowCallback.CloseQuery(var CanClose: Boolean);
+procedure TCocoaWindow.CallbackCloseQuery(var CanClose: Boolean);
 begin
   // Message results : 0 - do nothing, 1 - destroy window
-  CanClose:=LCLSendCloseQueryMsg(Target)>0;
+  CanClose:=LCLSendCloseQueryMsg(LCLForm)>0;
 end;
 
-procedure TLCLWindowCallback.Close;
-begin
-  LCLSendCloseUpMsg(Target);
-end;
-
-procedure TLCLWindowCallback.Resize;
+procedure TCocoaWindow.CallbackResize;
 var
   sz  : NSSize;
   r   : TRect;
 begin
-  sz := Owner.frame.size;
-  TCDWSCustomForm.GetClientBounds(TWinControl(Target), r);
-  if Assigned(Target) then
-    LCLSendSizeMsg(Target, Round(sz.width), Round(sz.height), SIZENORMAL);
+  sz := frame.size;
+  TCDWSCustomForm.GetClientBounds(TWinControl(LCLForm), r);
+  if Assigned(LCLForm) then
+    LCLSendSizeMsg(LCLForm, Round(sz.width), Round(sz.height), SIZENORMAL);
 end;
 
-function AllocCustomControl(const AWinControl: TWinControl): TCocoaCustomControl;
+procedure TCocoaWindow.CallbackMouseDown(x, y: Integer);
 begin
-  if not Assigned(AWinControl) then begin
-    Result:=nil;
-    Exit;
-  end;
-  Result:=TCocoaCustomControl(TCocoaCustomControl.alloc).init;
-  Result.callback:=TLCLCommonCallback.Create(Result, AWinControl);
+  LCLSendMouseDownMsg(LCLForm,x,y,mbLeft, []);
 end;
 
-procedure SetViewDefaults(AView:NSView);
+procedure TCocoaWindow.CallbackMouseUp(x, y: Integer);
 begin
-  if not Assigned(AView) then Exit;
-  AView.setAutoresizingMask(NSViewMinYMargin or NSViewMaxXMargin);
+  LCLSendMouseUpMsg(LCLForm,x,y,mbLeft, []);
 end;
 
-
-{ TLCLCommonCallback }
-
-constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TControl);
+procedure TCocoaWindow.CallbackMouseClick(clickCount: Integer);
 begin
-  inherited Create(AOwner);
-  Target:=ATarget;
+  LCLSendClickedMsg(LCLForm);
 end;
 
-destructor TLCLCommonCallback.Destroy;
+procedure TCocoaWindow.CallbackMouseMove(x, y: Integer);
 begin
-  Context.Free;
-  inherited Destroy;
+  LCLSendMouseMoveMsg(LCLForm, x,y, []);
 end;
 
-procedure TLCLCommonCallback.MouseDown(x, y: Integer);
+{ TCocoaCustomControl }
+
+procedure TCocoaCustomControl.drawRect(dirtyRect:NSRect);
 begin
-  LCLSendMouseDownMsg(Target,x,y,mbLeft, []);
+  inherited drawRect(dirtyRect);
+  Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 end;
 
-procedure TLCLCommonCallback.MouseUp(x, y: Integer);
-begin
-  LCLSendMouseUpMsg(Target,x,y,mbLeft, []);
-end;
-
-procedure TLCLCommonCallback.MouseClick(clickCount: Integer);
-begin
-  LCLSendClickedMsg(Target);
-end;
-
-procedure TLCLCommonCallback.MouseMove(x, y: Integer);
-begin
-  LCLSendMouseMoveMsg(Target, x,y, []);
-end;
-
-procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
-  const bounds, dirty:NSRect);
+procedure TCocoaCustomControl.Draw(ControlContext: NSGraphicsContext;
+  const Abounds, dirty:NSRect);
 var
   struct : TPaintStruct;
   lWidth, lHeight: Integer;
@@ -687,119 +391,44 @@ begin
     // Prepare the non-native image and canvas
     FillChar(struct, SizeOf(TPaintStruct), 0);
 
-    UpdateControlLazImageAndCanvas(TCocoaCustomControl(Owner).Image,
-      TCocoaCustomControl(Owner).Canvas, lWidth, lHeight, clfRGB24UpsideDown);
+    UpdateControlLazImageAndCanvas(Image,
+      Canvas, lWidth, lHeight, clfRGB24UpsideDown);
 
-    struct.hdc := HDC(TCocoaCustomControl(Owner).Canvas);
+    struct.hdc := HDC(Canvas);
 
     // Send the paint message to the LCL
     {$IFDEF VerboseCDWinAPI}
       DebugLn(Format('[TLCLCommonCallback.Draw] OnPaint event started context: %x', [struct.hdc]));
     {$ENDIF}
-    LCLSendPaintMsg(Target, struct.hdc, @struct);
+    LCLSendPaintMsg(LCLForm, struct.hdc, @struct);
     {$IFDEF VerboseCDWinAPI}
       DebugLn('[TLCLCommonCallback.Draw] OnPaint event ended');
     {$ENDIF}
 
     // Now render all child wincontrols
-    RenderChildWinControls(TCocoaCustomControl(Owner).Image,
-      TCocoaCustomControl(Owner).Canvas,
-      TCDWSCustomForm.BackendGetCDWinControlList(TCustomForm(Target)));
+    RenderChildWinControls(Image, Canvas,
+      TCDWSCustomForm.BackendGetCDWinControlList(LCLForm));
 
     // Now render it into the control
-    TCocoaCustomControl(Owner).Image.GetRawImage(lRawImage);
+    Image.GetRawImage(lRawImage);
     Cocoa_RawImage_CreateBitmaps(lRawImage, lBitmap, lMask, True);
     Context.DrawBitmap(0, 0, TCocoaBitmap(lBitmap));
   end;
 end;
 
-{ TCocoaWSWinControl }
-
-class function TCocoaWSWinControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
-begin
-  Result:=TCocoaWSCustomControl.CreateHandle(AWinControl, AParams);
-end;
-
-class procedure TCocoaWSWinControl.SetText(const AWinControl: TWinControl; const AText: String);
+function RectToViewCoord(view: NSView; const r: TRect): NSRect;
 var
-  obj : NSObject;
+  b: NSRect;
 begin
-  // sanity check
-  obj:=NSObject(AWinControl.Handle);
-  if not Assigned(obj) or not obj.isKindOfClass_(NSControl) then Exit;
-
-  SetNSControlValue(NSControl(obj), AText);
+  if not Assigned(view) then Exit;
+  b:=view.bounds;
+  Result.origin.x:=r.Left;
+  Result.origin.y:=b.size.height-r.Top;
+  Result.size.width:=r.Right-r.Left;
+  Result.size.height:=r.Bottom-r.Top;
 end;
 
-class function TCocoaWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
-var
-  obj   : NSObject;
-begin
-  Result:=false;
-
-  // sanity check
-  obj:=NSObject(AWinControl.Handle);
-  Result:=Assigned(obj) and obj.isKindOfClass_(NSControl);
-  if not Result then Exit;
-
-  AText:=GetNSControlValue(NSControl(obj));
-  Result:=true;
-end;
-
-class function TCocoaWSWinControl.GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean;
-var
-  obj : NSObject;
-  s   : NSString;
-begin
-  Result:=false;
-
-  // sanity check
-  obj:=NSObject(AWinControl.Handle);
-  Result:= Assigned(obj) and obj.isKindOfClass_(NSControl);
-  if not Result then Exit;
-
-  s:=NSControl(obj).stringValue;
-  if Assigned(s) then ALength:=s.length
-  else ALength:=0
-end;
-
-class function TCocoaWSWinControl.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
-begin
-  Result:=(AWinControl.Handle<>0);
-  if not Result then Exit;
-  ARect:=NSObject(AWinControl.Handle).lclClientFrame;
-end;
-
-class function TCocoaWSWinControl.GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
-begin
-  Result:=(AWinControl.Handle<>0);
-  if not Result then Exit;
-  ARect:=NSObject(AWinControl.Handle).lclClientFrame;
-end;
-
-class procedure TCocoaWSWinControl.SetBounds(const AWinControl: TWinControl;
-  const ALeft, ATop, AWidth, AHeight: Integer);
-begin
-  if (AWinControl.Handle<>0) then
-    NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
-end;
-
-{ TCocoaWSCustomControl }
-
-class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
-var
-  ctrl  : TCocoaCustomControl;
-begin
-  ctrl:=TCocoaCustomControl( NSView(TCocoaCustomControl.alloc).lclInitWithCreateParams(AParams));
-  ctrl.callback:=TLCLCommonCallback.Create(ctrl, AWinControl);
-  Result:=TLCLIntfHandle(ctrl);
-end;
-
-{ LCLWSViewExtension }
-
-function LCLWSViewExtension.lclInitWithCreateParams(const AParams:TCreateParams): id;
+function TCocoaCustomControl.lclInitWithCreateParams(const AParams:TCreateParams): id;
 var
   p: NSView;
   ns: NSRect;
@@ -821,6 +450,68 @@ begin
 
   if Assigned(p) then p.addSubview(Self);
   SetViewDefaults(Self);
+end;
+
+function TCocoaCustomControl.lclIsVisible:Boolean;
+begin
+  Result:=not isHidden;
+end;
+
+procedure TCocoaCustomControl.lclInvalidateRect(const r:TRect);
+begin
+  setNeedsDisplayInRect(RectToViewCoord(Self, r));
+end;
+
+procedure TCocoaCustomControl.lclInvalidate;
+begin
+  setNeedsDisplay_(True);
+end;
+
+procedure TCocoaCustomControl.lclLocalToScreen(var X,Y:Integer);
+begin
+
+end;
+
+function TCocoaCustomControl.lclParent:id;
+begin
+  Result:=superView;
+end;
+
+function TCocoaCustomControl.lclFrame: TRect;
+var
+  v : NSView;
+begin
+  v:=superview;
+  if Assigned(v)
+    then NSToLCLRect(frame, v.frame.size.height, Result)
+    else NSToLCLRect(frame, Result);
+end;
+
+procedure TCocoaCustomControl.lclSetFrame(const r:TRect);
+var
+  ns : NSRect;
+begin
+  if Assigned(superview)
+    then LCLToNSRect(r, superview.frame.size.height, ns)
+    else LCLToNSRect(r, ns);
+  setFrame(ns);
+end;
+
+function TCocoaCustomControl.lclClientFrame:TRect;
+var
+  r: NSRect;
+begin
+  r:=bounds;
+  Result.Left:=0;
+  Result.Top:=0;
+  Result.Right:=Round(r.size.width);
+  Result.Bottom:=Round(r.size.height);
+end;
+
+procedure SetViewDefaults(AView:NSView);
+begin
+  if not Assigned(AView) then Exit;
+  AView.setAutoresizingMask(NSViewMinYMargin or NSViewMaxXMargin);
 end;
 
 end.

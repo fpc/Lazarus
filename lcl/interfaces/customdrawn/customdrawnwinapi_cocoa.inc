@@ -451,7 +451,7 @@ function TCDWidgetSet.BackendGetClientBounds(handle : HWND; var ARect : TRect) :
 begin
   if Handle<>0 then begin
     Result:=True;
-    ARect:=LCLObjectExtension(NSObject(handle)).lclClientFrame;
+    ARect:= TCocoaWindow(handle).lclClientFrame;
   end else
     Result:=False;
 end;
@@ -507,7 +507,7 @@ function TCDWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left, Top: Int
 begin
   if Handle<>0 then begin
     Result:=True;
-    LCLObjectExtension(NSObject(handle)).lclRelativePos(Left, Top);
+    //TCocoaWindow(handle).lclRelativePos(Left, Top);
   end else
     Result:=False;
 end;

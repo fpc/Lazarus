@@ -46,8 +46,9 @@ begin
   end;
 
   win:=TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
-  TCocoaWindow(win).callback:=TLCLCommonCallback.Create(win, AWinControl);
-  TCocoaWindow(win).wincallback:=TLCLWindowCallback.Create(win, AWinControl);
+  //TCocoaWindow(win).callback:=TLCLCommonCallback.Create(win, AWinControl);
+  //TCocoaWindow(win).wincallback:=TLCLWindowCallback.Create(win, AWinControl);
+  TCocoaWindow(win).LCLForm := TCustomForm(AWinControl);
   win.setDelegate(win);
   ns:=NSStringUtf8(AWinControl.Caption);
   win.setTitle(ns);
@@ -55,7 +56,7 @@ begin
   win.setAcceptsMouseMovedEvents(True);
 
   cnt:=TCocoaCustomControl.alloc.init;
-  cnt.callback:=TCocoaWindow(win).callback;
+  cnt.LCLForm := TCustomForm(AWinControl);
   win.setContentView(cnt);
 
   Result := TLCLIntfHandle(win);
@@ -71,7 +72,7 @@ begin
   if AWinControl.Handle=0 then Exit;
   {todo: setFrame_display(, true)? }
   //sf:=NSScreen.mainScreen.frame;
-  LCLObjectExtension(NSObject(AWinControl.Handle)).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
+  TCocoaWindow(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
 
   //LCLToCocoaRect( GetNSRect(ALeft,ATop,AWidth,AHeight), sf, wf);
   //NSWindow(AWinControl.Handle).setFrame_display(wf, false);
@@ -151,7 +152,7 @@ class function TCDWSCustomForm.GetClientBounds(const AWinControl: TWinControl; v
 begin
   Result:=AWinControl.Handle<>0;
   if not Result then Exit;
-  ARect:=LCLObjectExtension(NSObject(AWinControl.Handle)).lclClientFrame;
+  ARect:= TCocoaWindow(AWinControl.Handle).lclClientFrame;
 end;
 
 class function TCDWSCustomForm.GetClientRect(const AWinControl: TWinControl; var ARect: TRect): Boolean;
@@ -160,9 +161,9 @@ var
 begin
   Result:=AWinControl.Handle<>0;
   if not Result then Exit;
-  ARect:=LCLObjectExtension(NSObject(AWinControl.Handle)).lclClientFrame;
+  ARect:= TCocoaWindow(AWinControl.Handle).lclClientFrame;
   x:=0;y:=0;
-  LCLObjectExtension(NSObject(AWinControl.Handle)).lclLocalToScreen(x,y);
+  TCocoaWindow(AWinControl.Handle).lclLocalToScreen(x,y);
   MoveRect(ARect, x,y);
 end;
 
