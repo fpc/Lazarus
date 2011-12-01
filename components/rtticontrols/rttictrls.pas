@@ -1450,6 +1450,9 @@ procedure Register;
 
 implementation
 
+uses
+  ComponentEditors, MaskPropEdit;
+
 procedure SaveActivePropertyLink(AForm: TCustomForm);
 var
   CurControl: TWinControl;
@@ -4089,5 +4092,5 @@ initialization
   // property editor for TMultiPropertyLink.TIObject
   RegisterPropertyEditor(ClassTypeInfo(TPersistent),
     TMultiPropertyLink, 'TIObject', TTIObjectPropertyEditor);
-
+  RegisterComponentEditor(TTIMaskEdit, TMaskEditEditor);
 end.
