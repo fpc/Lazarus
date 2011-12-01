@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  LCLProc, Arrow;
+  LCLProc, Arrow, StdCtrls, ComCtrls;
 
 type
   TSubControl = class;
@@ -15,9 +15,13 @@ type
 
   TForm1 = class(TForm)
     Arrow1: TArrow;
+    Button1: TButton;
+    ProgressBar1: TProgressBar;
+    TrackBar1: TTrackBar;
     procedure Arrow1Click(Sender: TObject);
     procedure Arrow1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure Button1Click(Sender: TObject);
     procedure FormClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -95,14 +99,20 @@ begin
   DebugLn('Arrow Mouse Down');
 end;
 
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  DebugLn('Button1Click');
+  ProgressBar1.Position := ProgressBar1.Position + 10;
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  SubControl := TSubControl.Create(Self);
+{  SubControl := TSubControl.Create(Self);
   SubControl.Left := 100;
   SubControl.Top := 100;
   SubControl.Width := 100;
   SubControl.Height := 100;
-  SubControl.Parent := Self;
+  SubControl.Parent := Self;}
 end;
 
 procedure TForm1.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -119,9 +129,9 @@ begin
   Canvas.Rectangle(0, 0, 300, 300);
 
   Canvas.Brush.Color := clRed;
-  lPoints[0] := Point(67,57);
-  lPoints[1] := Point(11,29);
-  lPoints[2] := Point(67,1);
+  lPoints[0] := Point(67,157);
+  lPoints[1] := Point(11,129);
+  lPoints[2] := Point(67,101);
   Canvas.Polygon(lPoints);
 
 {  Canvas.Brush.Color := clRed;
