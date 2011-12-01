@@ -52,6 +52,7 @@ type
     procedure CallbackResize; message 'CallbackResize';
     //
     procedure CallbackMouseUp(x, y: Integer); message 'CallbackMouseUp:y:';
+    procedure CallbackMouseDown(x, y: Integer); message 'CallbackMouseDown:y:';
     procedure CallbackMouseClick(clickCount: Integer); message 'CallbackMouseClick:';
     procedure CallbackMouseMove(x, y: Integer); message 'CallbackMouseMove:y:';
   end;
@@ -223,18 +224,10 @@ end;
 procedure TCocoaWindow.mouseDown(event: NSEvent);
 var
   mp : NSPoint;
-  lTarget: TWinControl;
-  lx, ly: Integer;
 begin
   mp:=event.locationInWindow;
   mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
-
-  lx := round(mp.x);
-  ly := round(mp.y);
-  lTarget := FindControlWhichReceivedEvent(LCLForm, Children, lx, ly);
-  LastMouseDownControl := lTarget;
-  LCLSendMouseDownMsg(lTarget, lx, ly, mbLeft, []);
-
+  callbackMouseDown(round(mp.x), round(mp.y));
   inherited mouseDown(event);
 end;
 
@@ -354,10 +347,23 @@ end;
 procedure TCocoaWindow.CallbackMouseUp(x, y: Integer);
 var
   lTarget: TWinControl;
+  lEventPos: TPoint;
 begin
   lTarget := LastMouseDownControl;
   if lTarget = nil then lTarget := FindControlWhichReceivedEvent(LCLForm, Children, x, y);
-  LCLSendMouseUpMsg(lTarget, x, y, mbLeft, []);
+  lEventPos := FormPosToControlPos(lTarget, x, y);
+  LCLSendMouseUpMsg(lTarget, lEventPos.x, lEventPos.y, mbLeft, []);
+end;
+
+procedure TCocoaWindow.CallbackMouseDown(x, y: Integer);
+var
+  lTarget: TWinControl;
+  lEventPos: TPoint;
+begin
+  lTarget := FindControlWhichReceivedEvent(LCLForm, Children, x, y);
+  LastMouseDownControl := lTarget;
+  lEventPos := FormPosToControlPos(lTarget, x, y);
+  LCLSendMouseDownMsg(lTarget, lEventPos.x, lEventPos.y, mbLeft, []);
 end;
 
 procedure TCocoaWindow.CallbackMouseClick(clickCount: Integer);
@@ -368,9 +374,11 @@ end;
 procedure TCocoaWindow.CallbackMouseMove(x, y: Integer);
 var
   lTarget: TWinControl;
+  lEventPos: TPoint;
 begin
   lTarget := FindControlWhichReceivedEvent(LCLForm, Children, x, y);
-  LCLSendMouseMoveMsg(LCLForm, x,y, []);
+  lEventPos := FormPosToControlPos(lTarget, x, y);
+  LCLSendMouseMoveMsg(LCLForm, lEventPos.x, lEventPos.y, []);
 end;
 
 { TCocoaCustomControl }
@@ -403,6 +411,7 @@ begin
 
     UpdateControlLazImageAndCanvas(Image,
       Canvas, lWidth, lHeight, clfRGB24UpsideDown);
+    DrawFormBackground(Image, Canvas);
 
     struct.hdc := HDC(Canvas);
 

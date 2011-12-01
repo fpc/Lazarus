@@ -358,20 +358,20 @@ begin
     Result := Result and lpfnEnum(HMONITOR(NSScreen.screens.objectAtIndex(i)), 0, nil, dwData);
     if not Result then break;
   end;
-end;
+end;*)
 
-function TCocoaWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
+function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   ctx : TCocoaContext;
 begin
-  ctx:=CheckDC(DC);
+{  ctx:=CheckDC(DC);
   Result:=Assigned(ctx);
   if not Assigned(ctx) then Exit;
-  ctx.TextOut(X,Y, Str, Count, Dx);
+  ctx.TextOut(X,Y, Str, Count, Dx);}
 end;
 
-function TCocoaWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
+(*function TCocoaWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 var
   ctx : TCocoaContext;
   br  : TCocoaGDIObject;
@@ -934,7 +934,7 @@ end;
   Fills the specified buffer with the metrics for the currently selected font
   TODO: get exact max. and av. char width, pitch and charset
  ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
+function TCDWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
   ctx : TCocoaContext;
 begin
