@@ -899,6 +899,7 @@ end;
 procedure TInitialSetupDialog.CompilerComboBoxChange(Sender: TObject);
 begin
   UpdateCompilerNote;
+  UpdateFPCSrcDirNote;
 end;
 
 procedure TInitialSetupDialog.CompilerBrowseButtonClick(Sender: TObject);
@@ -944,11 +945,13 @@ begin
   if Dir='' then exit;
   FPCSrcDirComboBox.Text:=Dir;
   UpdateFPCSrcDirNote;
+  UpdateCompilerNote;
 end;
 
 procedure TInitialSetupDialog.FPCSrcDirComboBoxChange(Sender: TObject);
 begin
   UpdateFPCSrcDirNote;
+  UpdateCompilerNote;
 end;
 
 procedure TInitialSetupDialog.LazDirBrowseButtonClick(Sender: TObject);
@@ -1098,6 +1101,7 @@ begin
   FDirs[sddtCompilerFilename]:=Files;
   FillComboboxWithFileInfoList(CompilerComboBox,Files);
   UpdateCompilerNote;
+  UpdateFPCSrcDirNote;
 end;
 
 procedure TInitialSetupDialog.InitFPCSrcDir;
@@ -1109,6 +1113,7 @@ begin
   Dirs:=SearchFPCSrcDirCandidates(false,LazDirComboBox.Text,FPCVer);
   FDirs[sddtFPCSrcDir]:=Dirs;
   FillComboboxWithFileInfoList(FPCSrcDirComboBox,Dirs);
+  UpdateCompilerNote;
   UpdateFPCSrcDirNote;
 end;
 
@@ -1138,6 +1143,7 @@ begin
   if FFPCVer=AValue then exit;
   FFPCVer:=AValue;
   FFPCSrcNeedsUpdate:=true;
+  FCompilerNeedsUpdate:=true;
 end;
 
 procedure TInitialSetupDialog.SetIdleConnected(const AValue: boolean);
