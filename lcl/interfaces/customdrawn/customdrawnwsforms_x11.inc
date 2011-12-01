@@ -525,13 +525,15 @@ class procedure TCDWSCustomForm.EvMousePressed(const AWinControl: TWinControl; A
 var
   MouseButton: TMouseButton;
   lTarget: TWinControl;
+  lEventPos: TPoint;
 begin
   lTarget := FindControlWhichReceivedEvent(TCustomForm(AWinControl), AWindowInfo.Children, Event.x, Event.y);
   AWindowInfo.LastMouseDownControl := lTarget;
+  lEventPos := FormPosToControlPos(lTarget, Event.x, Event.y);
 
   if XButtonToMouseButton(Event.button, MouseButton) then
   begin
-    LCLSendMouseDownMsg(lTarget, Event.x, Event.y, MouseButton, [])
+    LCLSendMouseDownMsg(lTarget, lEventPos.x, lEventPos.y, MouseButton, [])
   end
   else
   begin
@@ -590,10 +592,13 @@ class procedure TCDWSCustomForm.EvMouseMove(const AWinControl: TWinControl; AWin
   var Event: TXMotionEvent);
 var
   lTarget: TWinControl;
+  lEventPos: TPoint;
 begin
   lTarget := FindControlWhichReceivedEvent(TCustomForm(AWinControl), AWindowInfo.Children, Event.x, Event.y);
 
-  LCLSendMouseMoveMsg(lTarget, Event.x, Event.y, []);
+  lEventPos := FormPosToControlPos(lTarget, Event.x, Event.y);
+
+  LCLSendMouseMoveMsg(lTarget, lEventPos.x, lEventPos.y, []);
 end;
 
 // Top-level windows receive LM_ACTIVATE while constrols receive LM_SETFOCUS
@@ -647,6 +652,7 @@ begin
    DirectColor = 5;}
   {$ENDIF}
   UpdateControlLazImageAndCanvas(AWindowInfo.Image, AWindowInfo.Canvas, lWidth, lHeight, clfBGR24);
+  DrawFormBackground(AWindowInfo.Image, AWindowInfo.Canvas);
 
   struct.hdc := HDC(AWindowInfo.Canvas);
 

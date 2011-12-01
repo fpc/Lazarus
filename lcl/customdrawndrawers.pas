@@ -219,6 +219,8 @@ type
     cidTrackBar, cidProgressBar, cidListView, cidCTabControl
     );
 
+  { TCDColorPalette }
+
   TCDColorPalette = class
   public
     ScrollBar, Background, ActiveCaption, InactiveCaption,
@@ -229,6 +231,7 @@ type
     //
     HotLight, GradientActiveCaption, GradientInactiveCaption,
     MenuHighlight, MenuBar, Form: TColor;
+    procedure Assign(AFrom: TCDColorPalette);
   end;
 
   { There are 5 possible sources of input for color palettes:
@@ -247,6 +250,7 @@ type
   protected
   public
     Palette: TCDColorPalette;
+    FallbackPalette: TCDColorPalette;
     constructor Create; virtual;
     destructor Destroy; override;
     procedure CreateResources; virtual;
@@ -383,6 +387,44 @@ end;
 var
   i: Integer;
 
+{ TCDColorPalette }
+
+procedure TCDColorPalette.Assign(AFrom: TCDColorPalette);
+begin
+  ScrollBar := AFrom.ScrollBar;
+  Background := AFrom.Background;
+  ActiveCaption := AFrom.ActiveCaption;
+  InactiveCaption := AFrom.InactiveCaption;
+  Menu := AFrom.Menu;
+  Window := AFrom.Window;
+  WindowFrame := AFrom.WindowFrame;
+  MenuText := AFrom.MenuText;
+  WindowText := AFrom.WindowText;
+  CaptionText := AFrom.CaptionText;
+  ActiveBorder := AFrom.ActiveBorder;
+  InactiveBorder := AFrom.InactiveBorder;
+  AppWorkspace := AFrom.AppWorkspace;
+  Highlight := AFrom.Highlight;
+  HighlightText := AFrom.HighlightText;
+  BtnFace := AFrom.BtnFace;
+  BtnShadow := AFrom.BtnShadow;
+  GrayText := AFrom.GrayText;
+  BtnText := AFrom.BtnText;
+  InactiveCaptionText := AFrom.InactiveCaptionText;
+  BtnHighlight := AFrom.BtnHighlight;
+  color3DDkShadow := AFrom.color3DDkShadow;
+  color3DLight := AFrom.color3DLight;
+  InfoText := AFrom.InfoText;
+  InfoBk := AFrom.InfoBk;
+  //
+  HotLight := AFrom.HotLight;
+  GradientActiveCaption := AFrom.GradientActiveCaption;
+  GradientInactiveCaption := AFrom.GradientInactiveCaption;
+  MenuHighlight := AFrom.MenuHighlight;
+  MenuBar := AFrom.MenuBar;
+  Form := AFrom.Form;
+end;
+
 { TCDListItems }
 
 procedure TCDListItems.DoFreeItem(data, arg: pointer);
@@ -430,6 +472,9 @@ begin
   inherited Create;
 
   Palette := TCDColorPalette.Create;
+  SetPaletteKind(palFallback);
+  FallbackPalette := TCDColorPalette.Create;
+  FallbackPalette.Assign(Palette);
   SetPaletteKind(palDefault);
 
   CreateResources;

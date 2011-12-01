@@ -3530,105 +3530,63 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI GetStockObject] Value: ', Value);
   {$endif}
-end;
+end;*)
 
 {------------------------------------------------------------------------------
-  Function: TQtWidgetSet.GetSysColor
+  Function: TCDWidgetSet.GetSysColor
   Params:   index to the syscolors array
   Returns:  RGB value
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
-
-  function GetColor(Group: QPaletteColorGroup; Role: QPaletteColorRole; ClassName: PAnsiChar = nil): TColor;
-  var
-    Handle: QPaletteH;
-    QColor: PQColor;
-    QC: QColorH;
-  begin
-    Handle := QPalette_create;
-    if ClassName = nil then
-      QApplication_palette(Handle)
-    else
-      QApplication_palette(Handle, ClassName);
-
-    QColor := QPalette_color(Handle, Group, Role);
-    QC := QColor_create(QColor);
-    try
-      Result := (QColor_red(QC) and $00FF) or ((QColor_green(QC) and $00FF) shl 8) or ((QColor_blue(QC) and $00FF) shl 16);
-    finally
-      QColor_destroy(QC);
-    end;
-
-    QPalette_destroy(Handle);
-  end;
-
+function TCDWidgetSet.GetSysColor(nIndex: Integer): DWORD;
 begin
   if (nIndex < 0) or (nIndex > MAX_SYS_COLORS) then
   begin
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('Trace:Unknown lcl system color: [TQtWidgetSet.GetSysColor]');
-    {$endif}
+    DebugLn('[TCDWidgetSet.GetSysColor] Unknown lcl system color: ');
     Result := 0;
     Exit;
   end;
 
-  if FCachedColors[nIndex] = nil then
-  begin
-    case nIndex of
-      COLOR_SCROLLBAR               : Result:=GetColor(QPaletteActive,   QPaletteButton);
-      COLOR_BACKGROUND              : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-      COLOR_WINDOW                  : Result:=GetColor(QPaletteInActive, QPaletteBase);
-      COLOR_WINDOWFRAME             : Result:=GetColor(QPaletteActive,   QPaletteShadow);
-      COLOR_WINDOWTEXT              : Result:=GetColor(QPaletteActive,   QPaletteWindowText);
-      COLOR_ACTIVEBORDER            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-      COLOR_INACTIVEBORDER          : Result:=GetColor(QPaletteInactive, QPaletteWindow);
-      COLOR_APPWORKSPACE            : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-      COLOR_HIGHLIGHT               : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
-      COLOR_HIGHLIGHTTEXT           : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
-      COLOR_BTNFACE                 : Result:=GetColor(QPaletteActive,   QPaletteButton);
-      COLOR_BTNSHADOW               : Result:=GetColor(QPaletteActive,   QPaletteDark);
-      COLOR_GRAYTEXT                : Result:=GetColor(QPaletteDisabled,   QPaletteText);
-      COLOR_BTNTEXT                 : Result:=GetColor(QPaletteActive,   QPaletteButtonText);
-      COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteLight);
-      COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
-      COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMidlight);
-      COLOR_INFOTEXT                : Result:=GetColor(QPaletteInActive, QPaletteToolTipText);
-      COLOR_INFOBK                  : Result:=GetColor(QPaletteInActive, QPaletteToolTipBase);
-      COLOR_HOTLIGHT                : Result:=GetColor(QPaletteActive,   QPaletteLight);
-
-      // qt does not provide any methods to retrieve titlebar colors
-    {$IFNDEF MSWINDOWS}
-      COLOR_ACTIVECAPTION           : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
-      COLOR_INACTIVECAPTION         : Result:=GetColor(QPaletteInActive, QPaletteHighlight);
-      COLOR_CAPTIONTEXT             : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
-      COLOR_INACTIVECAPTIONTEXT     : Result:=GetColor(QPaletteInactive, QPaletteHighlightedText);
-      COLOR_GRADIENTACTIVECAPTION   : Result:=GetColor(QPaletteActive,   QPaletteBase);
-      COLOR_GRADIENTINACTIVECAPTION : Result:=GetColor(QPaletteInactive, QPaletteBase);
-    {$ELSE}
-      COLOR_ACTIVECAPTION           : Result:=Windows.GetSysColor(COLOR_ACTIVECAPTION);
-      COLOR_INACTIVECAPTION         : Result:=Windows.GetSysColor(COLOR_INACTIVECAPTION);
-      COLOR_CAPTIONTEXT             : Result:=Windows.GetSysColor(COLOR_CAPTIONTEXT);
-      COLOR_INACTIVECAPTIONTEXT     : Result:=Windows.GetSysColor(COLOR_INACTIVECAPTIONTEXT);
-      COLOR_GRADIENTACTIVECAPTION   : Result:=Windows.GetSysColor(COLOR_GRADIENTACTIVECAPTION);
-      COLOR_GRADIENTINACTIVECAPTION : Result:=Windows.GetSysColor(COLOR_GRADIENTINACTIVECAPTION);
-    {$ENDIF}
-      COLOR_MENU                    : Result:=GetColor(QPaletteActive,   QPaletteButton, 'QMenu');
-      COLOR_MENUTEXT                : Result:=GetColor(QPaletteActive,   QPaletteButtonText, 'QMenu');
-      COLOR_MENUHILIGHT             : Result:=GetColor(QPaletteDisabled, QPaletteHighlight, 'QMenu');
-      COLOR_MENUBAR                 : Result:=GetColor(QPaletteActive,   QPaletteButton, 'QMenu');
-      COLOR_FORM                    : Result:=GetColor(QPaletteActive,   QPaletteWindow);
-    else
-      Result:=0;
-    end;
-    FCachedColors[nIndex] := getMem(SizeOf(LongWord));
-    FCachedColors[nIndex]^ := Result;
-  end
+  case nIndex of
+    COLOR_SCROLLBAR               : Result:=GetDefaultDrawer().FallbackPalette.ScrollBar;
+    COLOR_BACKGROUND              : Result:=GetDefaultDrawer().FallbackPalette.Background;
+    COLOR_ACTIVECAPTION           : Result:=GetDefaultDrawer().FallbackPalette.ActiveCaption;
+    COLOR_INACTIVECAPTION         : Result:=GetDefaultDrawer().FallbackPalette.InactiveCaption;
+    COLOR_MENU                    : Result:=GetDefaultDrawer().FallbackPalette.Menu;
+    COLOR_WINDOW                  : Result:=GetDefaultDrawer().FallbackPalette.Window;
+    COLOR_WINDOWFRAME             : Result:=GetDefaultDrawer().FallbackPalette.WindowFrame;
+    COLOR_MENUTEXT                : Result:=GetDefaultDrawer().FallbackPalette.MenuText;
+    COLOR_WINDOWTEXT              : Result:=GetDefaultDrawer().FallbackPalette.WindowText;
+    COLOR_CAPTIONTEXT             : Result:=GetDefaultDrawer().FallbackPalette.CaptionText;
+    COLOR_ACTIVEBORDER            : Result:=GetDefaultDrawer().FallbackPalette.ActiveBorder;
+    COLOR_INACTIVEBORDER          : Result:=GetDefaultDrawer().FallbackPalette.InactiveBorder;
+    COLOR_APPWORKSPACE            : Result:=GetDefaultDrawer().FallbackPalette.AppWorkspace;
+    COLOR_HIGHLIGHT               : Result:=GetDefaultDrawer().FallbackPalette.Highlight;
+    COLOR_HIGHLIGHTTEXT           : Result:=GetDefaultDrawer().FallbackPalette.HighlightText;
+    COLOR_BTNFACE                 : Result:=GetDefaultDrawer().FallbackPalette.BtnFace;
+    COLOR_BTNSHADOW               : Result:=GetDefaultDrawer().FallbackPalette.BtnShadow;
+    COLOR_GRAYTEXT                : Result:=GetDefaultDrawer().FallbackPalette.GrayText;
+    COLOR_BTNTEXT                 : Result:=GetDefaultDrawer().FallbackPalette.BtnText;
+    COLOR_INACTIVECAPTIONTEXT     : Result:=GetDefaultDrawer().FallbackPalette.InactiveCaptionText;
+    COLOR_BTNHIGHLIGHT            : Result:=GetDefaultDrawer().FallbackPalette.BtnHighlight;
+    COLOR_3DDKSHADOW              : Result:=GetDefaultDrawer().FallbackPalette.color3DDkShadow;
+    COLOR_3DLIGHT                 : Result:=GetDefaultDrawer().FallbackPalette.color3DLight;
+    COLOR_INFOTEXT                : Result:=GetDefaultDrawer().FallbackPalette.InfoText;
+    COLOR_INFOBK                  : Result:=GetDefaultDrawer().FallbackPalette.InfoBk;
+    //
+    COLOR_HOTLIGHT                : Result:=GetDefaultDrawer().FallbackPalette.HotLight;
+    COLOR_GRADIENTACTIVECAPTION   : Result:=GetDefaultDrawer().FallbackPalette.GradientActiveCaption;
+    COLOR_GRADIENTINACTIVECAPTION : Result:=GetDefaultDrawer().FallbackPalette.GradientInactiveCaption;
+    COLOR_MENUHILIGHT             : Result:=GetDefaultDrawer().FallbackPalette.MenuHighlight;
+    COLOR_MENUBAR                 : Result:=GetDefaultDrawer().FallbackPalette.MenuBar;
+    //
+    COLOR_FORM                    : Result:=GetDefaultDrawer().FallbackPalette.Form;
   else
-    Result := FCachedColors[nIndex]^;
+    Result:=0;
+  end;
 end;
 
-function TQtWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
+(*function TQtWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
 
   function GetBrush(Group: QPaletteColorGroup; Role: QPaletteColorRole; ClassName: PAnsiChar = nil): HBrush;
   var

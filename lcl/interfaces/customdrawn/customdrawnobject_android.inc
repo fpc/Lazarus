@@ -101,6 +101,7 @@ begin
 
     // Prepare the non-native image and canvas
     UpdateControlLazImageAndCanvas(lCurForm.Image, lCurForm.Canvas, Width, Height, clfRGBA32, pixels, True, False);
+    DrawFormBackground(lCurForm.Image, lCurForm.Canvas);
 
     struct.hdc := HDC(lCurForm.Canvas);
 

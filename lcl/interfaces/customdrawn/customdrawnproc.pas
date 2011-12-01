@@ -57,6 +57,7 @@ procedure HideForm(ACDForm: TCDNonNativeForm);
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat;
   AData: Pointer = nil; AForceUpdate: Boolean = False; AFreeImageOnUpdate: Boolean = True);
+procedure DrawFormBackground(var AImage: TLazIntfImage; var ACanvas: TLazCanvas);
 procedure RenderChildWinControls(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDControlsList: TFPList);
 //procedure RenderWinControl(var AImage: TLazIntfImage;
@@ -201,6 +202,16 @@ begin
     DebugLn(Format(':<[UpdateControlLazImageAndCanvas] Output Image: %x Canvas: %x',
       [PtrInt(AImage), PtrInt(ACanvas)]));
   {$ENDIF}
+end;
+
+procedure DrawFormBackground(var AImage: TLazIntfImage; var ACanvas: TLazCanvas);
+begin
+  ACanvas.SaveState;
+  ACanvas.ResetCanvasState;
+  ACanvas.Brush.FPColor := TColorToFPColor(ColorToRGB(clForm));
+  ACanvas.Pen.FPColor := TColorToFPColor(ColorToRGB(clForm));
+  ACanvas.Rectangle(0, 0, AImage.Width, AImage.Height);
+  ACanvas.RestoreState;
 end;
 
 procedure RenderChildWinControls(var AImage: TLazIntfImage;
