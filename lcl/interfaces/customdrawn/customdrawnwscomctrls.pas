@@ -230,12 +230,15 @@ type
   { TCDWSTrackBar }
 
   TCDWSTrackBar = class(TWSTrackBar)
+  public
+    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
-{    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
-    class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation); override;}
+    class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation); override;
   end;
 
   { TCDWSCustomTreeView }
@@ -269,42 +272,50 @@ begin
   QtToolBar.setFocusPolicy(QtTabFocus);
   QtToolBar.AttachEvents;
   Result := TLCLIntfHandle(QtToolBar);
-end;
+end;*)
 
 { TCDWSTrackBar }
 
-class function TCDWSTrackBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
-var
-  QtTrackBar: TQtTrackBar;
+class procedure TCDWSTrackBar.CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
-  QtTrackBar := TQtTrackBar.Create(AWinControl, AParams);
-  QtTrackBar.AttachEvents;
-
-  Result := TLCLIntfHandle(QtTrackBar);
+  ACDControlField := TCDTrackBar.Create(AWinControl);
+//    TCDIntfButton(lCDWinControl.CDControl).LCLButton := TButton(AWinControl);
+  ACDControlField.Parent := AWinControl;
+  ACDControlField.Align := alClient;
 end;
 
-function TrackBarReversed(const ATrackBar: TCustomTrackBar;
-  const AQtTrackBar: TQtTrackBar): Boolean;
+class function TCDWSTrackBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  lCDWinControl: TCDWinControl;
 begin
-  Result :=
-    ((ATrackBar.Orientation = trHorizontal) and
-    (AQtTrackbar.getInvertedAppereance <> ATrackBar.Reversed))
-    or
-    ((ATrackBar.Orientation = trVertical) and
-    (AQtTrackbar.getInvertedAppereance <> not ATrackBar.Reversed))
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
+end;
+
+class procedure TCDWSTrackBar.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+
+  TCDWSWinControl.ShowHide(AWinControl);
+
+  if lCDWinControl.CDControl = nil then
+    CreateCDControl(AWinControl, lCDWinControl.CDControl);
 end;
 
 class procedure TCDWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 var
-  QtTrackBar: TQtTrackBar;
+  lCDWinControl: TCDWinControl;
 begin
+  lCDWinControl := TCDWinControl(ATrackBar.Handle);
 
-  if not WSCheckHandleAllocated(ATrackBar, 'ApplyChanges') then
-    Exit;
+  if lCDWinControl.CDControl = nil then
+    CreateCDControl(ATrackBar, lCDWinControl.CDControl);
 
-  QtTrackBar := TQtTrackBar(ATrackBar.Handle);
+  TCDTrackBar(lCDWinControl.CDControl).Position := ATrackBar.Position;
 
-  QtTrackBar.BeginUpdate;
+{  QtTrackBar.BeginUpdate;
   try
     QtTrackBar.setRange(ATrackBar.Min, ATrackBar.Max);
 
@@ -336,41 +347,37 @@ begin
     end;
   finally
     QtTrackBar.EndUpdate;
-  end;
+  end;}
 end;
 
 class function  TCDWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
 var
-  QtTrackBar: TQtTrackBar;
+  lCDWinControl: TCDWinControl;
 begin
-  Result := 0;
-  if not WSCheckHandleAllocated(ATrackBar, 'GetPosition') then
-    Exit;
-  QtTrackBar := TQtTrackBar(ATrackBar.Handle);
-  Result := QtTrackBar.getSliderPosition;
+  lCDWinControl := TCDWinControl(ATrackBar.Handle);
+
+  if lCDWinControl.CDControl = nil then
+    CreateCDControl(ATrackBar, lCDWinControl.CDControl);
+
+  Result := TCDTrackBar(lCDWinControl.CDControl).Position;
 end;
 
 class procedure TCDWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);
 var
-  QtTrackBar: TQtTrackBar;
+  lCDWinControl: TCDWinControl;
 begin
-  if not WSCheckHandleAllocated(ATrackBar, 'SetPosition') then
-    Exit;
-  QtTrackBar := TQtTrackBar(ATrackBar.Handle);
-  QtTrackBar.BeginUpdate;
-  try
-    QtTrackBar.setSliderPosition(NewPosition);
-  finally
-    QtTrackBar.EndUpdate;
-  end;
+  lCDWinControl := TCDWinControl(ATrackBar.Handle);
+
+  if lCDWinControl.CDControl = nil then
+    CreateCDControl(ATrackBar, lCDWinControl.CDControl);
+
+  TCDTrackBar(lCDWinControl.CDControl).Position := NewPosition;
 end;
 
 class procedure TCDWSTrackBar.SetOrientation(const ATrackBar: TCustomTrackBar;
   const AOrientation: TTrackBarOrientation);
-var
-  QtTrackBar: TQtTrackBar;
 begin
-  if not WSCheckHandleAllocated(ATrackBar, 'SetOrientation') then
+{  if not WSCheckHandleAllocated(ATrackBar, 'SetOrientation') then
     Exit;
   QtTrackBar := TQtTrackBar(ATrackBar.Handle);
   QtTrackBar.BeginUpdate;
@@ -391,8 +398,8 @@ begin
     end;
   finally
     QtTrackBar.EndUpdate;
-  end;
-end;*)
+  end;}
+end;
 
 { TCDWSProgressBar }
 
