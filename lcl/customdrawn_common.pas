@@ -244,15 +244,17 @@ begin
   // In the LCL TEdit AutoSizes only its Height, so follow this here
   cidEdit: PreferredHeight := GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx)+5;
   cidCheckBox, cidRadioButton:
-  begin
-    if AStateEx.AutoSize then
-      PreferredWidth := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT)
-        + GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx) + 6;
+    begin
+      if AStateEx.AutoSize then begin
+        PreferredWidth := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
+        PreferredWidth := PreferredWidth
+          + GetMeasuresEx(ADest, TCDCONTROL_CAPTION_WIDTH, AState, AStateEx) + 6;
+      end;
 
-    PreferredHeight :=
-      Max(GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx),
-       GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT));
-  end;
+      PreferredHeight :=
+        Max(GetMeasuresEx(ADest, TCDCONTROL_CAPTION_HEIGHT, AState, AStateEx),
+         GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT));
+    end;
   end;
 end;
 
