@@ -302,8 +302,8 @@ end;
 
 function RegisterCustomCheckBox: Boolean; alias : 'WSRegisterCustomCheckBox';
 begin
-//  RegisterWSComponent(TCustomCheckBox, TWinCEWSCustomCheckBox);
-  Result := False;
+  RegisterWSComponent(TCustomCheckBox, TCDWSCustomCheckBox);
+  Result := True;
 end;
 
 function RegisterToggleBox: Boolean; alias : 'WSRegisterToggleBox';

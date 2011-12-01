@@ -676,13 +676,20 @@ end;*)
 
 {------------------------------- DEVICE CONTEXT -------------------------------}
 
-function TCDWidgetSet.GetDC(hWnd: HWND): HDC;
+function TCDWidgetSet.BackendGetDC(hWnd: HWND): HDC;
+{var
+  lFormHandle: TCDNonNativeForm;}
 begin
+//  lFormHandle := TCDNonNativeForm(hWnd);
+
   Result := 0;
 
-  {$IFDEF VerboseWinAPI}
-    DebugLn('[TCocoaWidgetSet.GetDC] hWnd: %x Result: %x', [hWnd, Result]);
-  {$ENDIF}
+  // Screen DC
+  if hWnd = 0 then Exit;
+
+{  // Form DC
+  if lFormHandle.Canvas = nil then lFormHandle.Canvas := TLazCanvas.create(nil);
+  Result := HDC(lFormHandle.Canvas);}
 end;
 
 function TCDWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;

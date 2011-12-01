@@ -2727,27 +2727,20 @@ end;*)
   - Once on app startup with hWnd = 0
   - Twice for every TLabel on the TCustomLabel.CalcSize function
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.GetDC(hWnd: HWND): HDC;
+function TCDWidgetSet.BackendGetDC(hWnd: HWND): HDC;
+var
+  lFormHandle: TCDNonNativeForm;
 begin
-  {$ifdef VerboseCDWinAPI}
-    DebugLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
-  {$endif}
+  lFormHandle := TCDNonNativeForm(hWnd);
+
   Result := 0;
 
+  // Screen DC
   if hWnd = 0 then Exit;
 
-{  if QtWidgetSet.IsValidHandle(hWnd) then
-  begin
-    Widget := TQtWidget(hWnd);
-    Result := Widget.Context;
-    if Result = 0 then
-      Result := HDC(QtDefaultContext);
-  end else
-    Result := HDC(QtScreenContext);}
-
-  {$ifdef VerboseCDWinAPI}
-    DebugLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
-  {$endif}
+  // Form DC
+  if lFormHandle.Canvas = nil then lFormHandle.Canvas := TLazCanvas.create(nil);
+  Result := HDC(lFormHandle.Canvas);
 end;
 
 (*function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;

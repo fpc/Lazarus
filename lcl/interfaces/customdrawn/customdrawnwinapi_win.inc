@@ -1646,9 +1646,10 @@ end;*)
   Retrieves a handle of a display device context (DC) for the client area of
   the specified window.
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.GetDC(hWnd: HWND): HDC;
+function TCDWidgetSet.BackendGetDC(hWnd: HWND): HDC;
 var
   lWindowInfo: PWindowInfo;
+  //  ORect: TRect;
 begin
   {$ifdef VerboseCDWinAPI}
   DebugLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
@@ -1659,30 +1660,22 @@ begin
   // screenshot taking
   if hWnd = 0 then Exit;
 
+  // Form Canvas
   lWindowInfo := GetWindowInfo(hWNd);
+  if lWindowInfo^.Canvas = nil then lWindowInfo^.Canvas := TLazCanvas.create(nil);
   Result := HDC(lWindowInfo^.Canvas);
-//  if QtWidgetSet.IsValidHandle(hWnd) then
-//  begin
-//    Widget := TQtWidget(hWnd);
-//    Result := Widget.Context;
-//    if Result = 0 then
-//      Result := HDC(QtDefaultContext);
-//  end else
-//    Result := HDC(QtScreenContext);
+
+  {  Result := Windows.GetDC(HWnd);
+    if (Result <> 0) and (HWnd <> 0) and GetLCLClientBoundsOffset(HWnd, ORect) then
+      MoveWindowOrgEx(Result, ORect.Left, ORect.Top);}
 
   {$ifdef VerboseCDWinAPI}
   DebugLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
   {$endif}
 end;
-{var
-  ORect: TRect;
 begin
-  Result := Windows.GetDC(HWnd);
-  if (Result <> 0) and (HWnd <> 0) and GetLCLClientBoundsOffset(HWnd, ORect) then
-    MoveWindowOrgEx(Result, ORect.Left, ORect.Top);
-end;}
-(*
-{------------------------------------------------------------------------------
+
+(*{------------------------------------------------------------------------------
   Method: GetDeviceCaps
   Params: DC - display device context
           Index - index of needed capability

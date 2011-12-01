@@ -107,6 +107,7 @@ function GetCmdLineParamDescForInterface: string; override;
 function GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ; override;
 function GetCursorPos(var lpPoint: TPoint ): Boolean; override;*)
 function GetDC(hWnd: HWND): HDC; override;
+function BackendGetDC(hWnd: HWND): HDC;
 (*function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
 function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;

@@ -2728,7 +2728,7 @@ begin
   lpPoint.y := vPoint.y;
 
   Result := True;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetDC
@@ -2739,29 +2739,44 @@ end;
   - Once on app startup with hWnd = 0
   - Twice for every TLabel on the TCustomLabel.CalcSize function
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetDC(hWnd: HWND): HDC;
+function TCDWidgetSet.GetDC(hWnd: HWND): HDC;
 var
-  Widget: TQtWidget;
+  lObject: TObject;
+  lWinControl: TWinControl;
+  lFormHandle: HWND;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI GetDC] hWnd: ', dbghex(hWnd));
+  {$ifdef VerboseCDWinAPI}
+    WriteLn(':>[WinAPI GetDC] hWnd: ', dbghex(hWnd));
   {$endif}
 
-  if QtWidgetSet.IsValidHandle(hWnd) then
+  if HWnd = 0 then
   begin
-    Widget := TQtWidget(hWnd);
-    Result := Widget.Context;
-    if Result = 0 then
-      Result := HDC(QtDefaultContext);
-  end else
-    Result := HDC(QtScreenContext);
+    Result := BackendGetDC(0);
+    Exit;
+  end;
 
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
+  if not IsValidDC(HWnd) then Exit;
+
+  lObject := TObject(HWnd);
+
+  if lObject is TCDWinControl then
+  begin
+    lWinControl := TCDWinControl(lObject).WinControl;
+    while (lWinControl <> nil) and (not (lWinControl is TCustomForm)) do
+      lWinControl := lWinControl.Parent;
+    lFormHandle := lWinControl.Handle;
+  end
+  else
+    lFormHandle := hWnd;
+
+  Result := BackendGetDC(lFormHandle);
+
+  {$ifdef VerboseCDWinAPI}
+    WriteLn(':<[WinAPI GetDC] Result: ', dbghex(Result));
   {$endif}
 end;
 
-function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
+(*function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 var
   QtDC: TQtDeviceContext absolute PaintDC;

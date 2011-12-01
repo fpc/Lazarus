@@ -156,6 +156,12 @@ begin
     or AForceUpdate then
   begin
     if (AImage <> nil) and AFreeImageOnUpdate then AImage.Free;
+    // Free the canvas and create a new one if it is a dummy Canvas created for text metrics reading by GetDC(control)
+    if (ACanvas <> nil) and ACanvas.HasNoImage then
+    begin
+      ACanvas.Free;
+      ACanvas := nil;
+    end;
 
     lRawImage.Init;
     case AFormat of

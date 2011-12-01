@@ -134,16 +134,6 @@ function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 begin
   curVM:=vm;
 
-  {
-    vm^^.GetEnv crashes HTC Wildfire, Alcatel and the Emulator for unknown reasons,
-    see: http://groups.google.com/group/android-ndk/browse_thread/thread/ba542483f062a828/ef9077617794e0f5
-
-    This prevents using Pascal to Java calls completely in those platforms.
-    To turn on a work around one can use CD_Android_DontUsePascalToJNI
-    and then try to implement the missing functionality by other means.
-
-    Not that Java to Pascal calls always work
-  }
   {$ifndef CD_Android_DontUsePascalToJNI}
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'JNI_OnLoad called');
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('CurVM=%x', [PtrInt(CurVM)])));
