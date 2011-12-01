@@ -30,6 +30,7 @@ type
   public
     LCLForm: TCustomForm;
     Children: TFPList; // TCDWinControl
+    LastMouseDownControl: TWinControl; // Stores the control which should receive the next MouseUp
     function acceptsFirstResponder: Boolean; override;
     procedure mouseUp(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
@@ -231,6 +232,7 @@ begin
   lx := round(mp.x);
   ly := round(mp.y);
   lTarget := FindControlWhichReceivedEvent(LCLForm, Children, lx, ly);
+  LastMouseDownControl := lTarget;
   LCLSendMouseDownMsg(lTarget, lx, ly, mbLeft, []);
 
   inherited mouseDown(event);
@@ -353,7 +355,8 @@ procedure TCocoaWindow.CallbackMouseUp(x, y: Integer);
 var
   lTarget: TWinControl;
 begin
-  lTarget := FindControlWhichReceivedEvent(LCLForm, Children, x, y);
+  lTarget := LastMouseDownControl;
+  if lTarget = nil then lTarget := FindControlWhichReceivedEvent(LCLForm, Children, x, y);
   LCLSendMouseUpMsg(lTarget, x, y, mbLeft, []);
 end;
 
