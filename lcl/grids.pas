@@ -104,7 +104,9 @@ type
     goHeaderPushedLook,   // Header cells looks pushed when clicked
     goSelectionActive,    // Setting grid.Selection moves also cell cursor
     goFixedColSizing,     // Allow to resize fixed columns
-    goDontScrollPartCell  // clicking partially visible cells will not scroll
+    goDontScrollPartCell, // clicking partially visible cells will not scroll
+    goCellHints,          // show individual cell hints
+    goTruncCellHints      // show cell hints if cell text is too long
   );
   TGridOptions = set of TGridOption;
 
@@ -333,6 +335,9 @@ type
 
   THeaderSizingEvent = procedure(sender: TObject; const IsColumn: boolean;
                                     const aIndex, aSize: Integer) of object;
+
+  TGetCellHintEvent = procedure (Sender: TObject; ACol, ARow: Integer;
+                                 var HintText: String) of object;
 
   { TVirtualGrid }
 
@@ -628,6 +633,7 @@ type
       PushedMouse: TPoint;    // mouse Coords of the cell being pushed
       ClickCellPushed: boolean;   // Header Cell is currently pushed?
       FullVisibleGrid: TRect; // visible cells excluding partially visible cells
+      MouseCell: TPoint;      // Cell which contains the mouse
     end;
 
 type
@@ -719,6 +725,8 @@ type
     FSizing: TSizingRec;
     FRowAutoInserted: Boolean;
     FMouseWheelOption: TMouseWheelOption;
+    FSavedHint: String;
+    FOnGetCellHint: TGetCellHintEvent;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CancelSelection;
@@ -845,6 +853,7 @@ type
     procedure CheckLimits(var aCol,aRow: Integer);
     procedure CheckLimitsWithError(const aCol, aRow: Integer);
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
+    procedure CMMouseEnter(var Message: TLMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); virtual;
     procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); virtual;
@@ -919,6 +928,7 @@ type
     function  FixedGrid: boolean;
     procedure FontChanged(Sender: TObject); override;
     procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); virtual;
+    function  GetCellHintText(ACol, ARow: Integer): string; virtual;
     function  GetCells(ACol, ARow: Integer): string; virtual;
     function  GetColumnAlignment(Column: Integer; ForTitle: Boolean): TAlignment;
     function  GetColumnColor(Column: Integer; ForTitle: Boolean): TColor;
@@ -956,6 +966,7 @@ type
     procedure HeaderClick(IsColumn: Boolean; index: Integer); virtual;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); virtual;
     procedure HeaderSizing(const IsColumn:boolean; const AIndex,ASize:Integer); virtual;
+    procedure HideCellHintWindow;
     procedure InternalSetColCount(ACount: Integer);
     procedure InvalidateCell(aCol, aRow: Integer; Redraw: Boolean); overload;
     procedure InvalidateFromCol(ACol: Integer);
@@ -970,7 +981,7 @@ type
     procedure LockEditor;
     function  MouseButtonAllowed(Button: TMouseButton): boolean; virtual;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
-    procedure MouseMove(Shift: TShiftState; X,Y: Integer);override;
+    procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     function  MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
     function  MoveNextAuto(const Inverse: boolean): boolean;
@@ -1004,6 +1015,7 @@ type
     procedure SetFixedcolor(const AValue: TColor); virtual;
     procedure SetFixedCols(const AValue: Integer); virtual;
     procedure SetSelectedColor(const AValue: TColor); virtual;
+    procedure ShowCellHintWindow(APoint: TPoint);
     procedure SizeChanged(OldColCount, OldRowCount: Integer); virtual;
     procedure Sort(ColSorting: Boolean; index,IndxFrom,IndxTo:Integer); virtual;
     procedure TopLeftChanged; virtual;
@@ -1108,6 +1120,8 @@ type
     function FlipRect(ARect: TRect): TRect;
     function FlipPoint(P: TPoint): TPoint;
     function FlipX(X: Integer): Integer;
+    // Hint-related
+    property OnGetCellHint : TGetCellHintEvent read FOnGetCellHint write FOnGetCellHint;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -1614,6 +1628,7 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnGetCellHint;
     property OnGetCheckboxState;
     property OnGetEditMask;
     property OnGetEditText;
@@ -3494,6 +3509,64 @@ procedure TCustomGrid.HeaderSizing(const IsColumn: boolean; const AIndex,
 begin
 end;
 
+procedure TCustomGrid.ShowCellHintWindow(APoint: TPoint);
+var
+  cell: TPoint;
+  txt1, txt2, txt: String;
+  w: Integer;
+  gds: TGridDrawState;
+begin
+  cell := MouseToCell(APoint);
+
+  txt := '';
+  txt1 := '';
+  txt2 := '';
+  if (goCellHints in Options) and Assigned(FOnGetCellHint) then
+    FOnGetCellHint(Self, cell.x, cell.y, txt1);
+  if (goTruncCellHints in Options) and (cell.y >= 0) and (cell.y >= 0) then begin
+    txt2 := GetCellHintText(cell.x, cell.y);
+    if (txt2 <> '') then begin
+      gds := [];
+      if (cell.x < FFixedCols) or (cell.y < FFixedRows) then
+        include(gds, gdFixed)
+      else begin
+        if (cell.x=FCol) and (cell.y=FRow) then
+          gds := gds + [gdFocused, gdSelected]
+        else
+        if IsCellSelected[cell.x, cell.y] then
+          include(gds, gdSelected);
+      end;
+      with FGCache do begin
+        if (cell.x=HotCell.x) and (cell.y=HotCell.y) and not IsPushCellActive() then
+          include(gds, gdHot);
+        if ClickCellPushed and (cell.x=PushedCell.x) and (cell.y=PushedCell.y) then
+          include(gds, gdPushed);
+      end;
+      PrepareCanvas(cell.x, cell.y, gds);
+      w := Canvas.TextWidth(txt2) + constCellPadding*2;
+      if w < ColWidths[cell.x] then
+        txt2 := '';
+    end;
+  end;
+  if (txt1 <> '') and (txt2 <> '') then
+    txt := txt1 + #13 + txt2
+  else if txt1 <> '' then
+    txt := txt1
+  else if txt2 <> '' then
+    txt := txt2;
+
+  if (txt <> '') and not EditorMode and not (csDesigning in ComponentState) then begin
+    Hint := txt;
+    Application.ActivateHint(APoint, true);
+  end else
+    HideCellHintWindow;
+end;
+
+procedure TCustomGrid.HideCellHintWindow;
+begin
+  Hint := FSavedHint;
+  Application.CancelHint;
+end;
 
 function TCustomGrid.SelectCell(ACol, ARow: Integer): Boolean;
 begin
@@ -5883,6 +5956,14 @@ begin
 
         if goRowSizing in Options then
           doRowSizing(X,Y);
+
+        p := MouseCoord(X, Y);
+        with FGCache do
+          if (MouseCell.X <> p.X) or (MouseCell.Y <> p.Y) then begin
+            Application.CancelHint;
+            ShowCellHintWindow(Point(X,Y));
+            MouseCell := p;
+          end;
       end;
   end;
 end;
@@ -6946,8 +7027,18 @@ begin
   inherited CMBidiModeChanged(Message);
 end;
 
+procedure TCustomGrid.CMMouseEnter(var Message: TLMessage);
+var
+  pt: TPoint;
+begin
+  inherited;
+  FSavedHint := Hint;
+end;
+
 procedure TCustomGrid.CMMouseLeave(var Message: TLMessage);
 begin
+  if [goCellHints, goTruncCellHints] * Options <> [] then
+    Hint := FSavedHint;
   ResetHotCell;
   inherited CMMouseLeave(Message);
 end;
@@ -7360,6 +7451,11 @@ begin
       APriority := 1;
   end else
     APriority := 1;
+end;
+
+function TCustomGrid.GetCellHintText(ACol, ARow: Integer): string;
+begin
+  result := GetCells(ACol, ARow);
 end;
 
 function TCustomGrid.GetCells(ACol, ARow: Integer): string;
