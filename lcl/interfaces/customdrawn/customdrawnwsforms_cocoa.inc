@@ -2,24 +2,6 @@
 
 { TCDWSCustomForm }
 
-class procedure TCDWSCustomForm.BackendAddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
-var
-  lwin: TCocoaWindow;
-begin
-  lwin := TCocoaWindow(AForm.Handle);
-  if lwin.Children = nil then lwin.Children := TFPList.Create;
-  lwin.Children.Add(ACDWinControl);
-end;
-
-class function TCDWSCustomForm.BackendGetCDWinControlList(const AForm: TCustomForm): TFPList;
-var
-  lwin: TCocoaWindow;
-begin
-  lwin := TCocoaWindow(AForm.Handle);
-  if lwin.Children = nil then lwin.Children := TFPList.Create;
-  Result := lwin.Children;
-end;
-
 {------------------------------------------------------------------------------
   Method:  TCDWSCustomForm.CreateHandle
   Params:  AWinControl - LCL control
@@ -32,23 +14,26 @@ end;
 class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  win : TCocoaWindow;
+  win : TCocoaForm;
+  winhandle: TCocoaWindow;
   cnt : TCocoaCustomControl;
   ns  : NSString;
 const
   WinMask = NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask;
 begin
-  win := TCocoaWindow(TCocoaWindow.alloc);
+  win := TCocoaForm(TCocoaForm.alloc);
 
-  if not Assigned(win) then begin
+  if not Assigned(win) then
+  begin
     Result:=0;
     Exit;
   end;
 
-  win:=TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
-  //TCocoaWindow(win).callback:=TLCLCommonCallback.Create(win, AWinControl);
-  //TCocoaWindow(win).wincallback:=TLCLWindowCallback.Create(win, AWinControl);
-  TCocoaWindow(win).LCLForm := TCustomForm(AWinControl);
+  winhandle := TCocoaWindow.Create;
+  winhandle.LCLForm := TCustomForm(AWinControl);
+
+  win:=TCocoaForm(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
+  win.WindowHandle := winhandle;
   win.setDelegate(win);
   ns:=NSStringUtf8(AWinControl.Caption);
   win.setTitle(ns);
@@ -56,10 +41,11 @@ begin
   win.setAcceptsMouseMovedEvents(True);
 
   cnt:=TCocoaCustomControl.alloc.init;
-  cnt.LCLForm := TCustomForm(AWinControl);
+  cnt.WindowHandle := winhandle;
   win.setContentView(cnt);
 
-  Result := TLCLIntfHandle(win);
+  winhandle.CocoaForm := win;
+  Result := TLCLIntfHandle(winhandle);
 end;
 
 class procedure TCDWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
@@ -72,7 +58,7 @@ begin
   if AWinControl.Handle=0 then Exit;
   {todo: setFrame_display(, true)? }
   //sf:=NSScreen.mainScreen.frame;
-  TCocoaWindow(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
+  TCocoaWindow(AWinControl.Handle).CocoaForm.lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
 
   //LCLToCocoaRect( GetNSRect(ALeft,ATop,AWidth,AHeight), sf, wf);
   //NSWindow(AWinControl.Handle).setFrame_display(wf, false);
@@ -104,15 +90,15 @@ end;
 
 class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
-  win : NSWindow;
+  win: TCocoaWindow;
 begin
-  win:=NSWindow(AWinControl.Handle);
+  win := TCocoaWindow(AWinControl.Handle);
   if not Assigned(win) then Exit;
 
   if AWinControl.Visible then
-    win.orderFrontRegardless
+    win.CocoaForm.orderFrontRegardless
   else
-    win.orderOut(nil);
+    win.CocoaForm.orderOut(nil);
 end;
 
 class function TCDWSCustomForm.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
@@ -122,7 +108,7 @@ begin
   win:=TCocoaWindow(AWinControl.Handle);
   Result:=Assigned(win);
   if not Result then Exit;
-  AText:=NSStringToString(win.title);
+  AText:=NSStringToString(win.CocoaForm.title);
   Result:=true;
 end;
 
@@ -133,7 +119,7 @@ begin
   win:=TCocoaWindow(AWinControl.Handle);
   Result:=Assigned(win);
   if not Result then Exit;
-  ALength:=win.title.length;
+  ALength:=win.CocoaForm.title.length;
 end;
 
 class procedure TCDWSCustomForm.SetText(const AWinControl: TWinControl; const AText: String);
@@ -144,7 +130,7 @@ begin
   win:=TCocoaWindow(AWinControl.Handle);
   if not Assigned(win) then Exit;
   ns:=NSStringUtf8(AText);
-  win.setTitle(ns);
+  win.CocoaForm.setTitle(ns);
   ns.release;
 end;
 
@@ -152,7 +138,7 @@ class function TCDWSCustomForm.GetClientBounds(const AWinControl: TWinControl; v
 begin
   Result:=AWinControl.Handle<>0;
   if not Result then Exit;
-  ARect:= TCocoaWindow(AWinControl.Handle).lclClientFrame;
+  ARect:= TCocoaWindow(AWinControl.Handle).CocoaForm.lclClientFrame;
 end;
 
 class function TCDWSCustomForm.GetClientRect(const AWinControl: TWinControl; var ARect: TRect): Boolean;
@@ -161,9 +147,9 @@ var
 begin
   Result:=AWinControl.Handle<>0;
   if not Result then Exit;
-  ARect:= TCocoaWindow(AWinControl.Handle).lclClientFrame;
+  ARect:= TCocoaWindow(AWinControl.Handle).CocoaForm.lclClientFrame;
   x:=0;y:=0;
-  TCocoaWindow(AWinControl.Handle).lclLocalToScreen(x,y);
+  TCocoaWindow(AWinControl.Handle).CocoaForm.lclLocalToScreen(x,y);
   MoveRect(ARect, x,y);
 end;
 

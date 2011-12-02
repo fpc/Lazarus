@@ -18,9 +18,16 @@ uses
   Forms, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc, GraphType;
 
 type
-  { TCocoaWindow }
+  TCocoaForm = objcclass;
 
-  TCocoaWindow = objcclass(NSWindow, NSWindowDelegateProtocol)
+  TCocoaWindow = class(TCDForm)
+  public
+    CocoaForm: TCocoaForm;
+  end;
+
+  { TCocoaForm }
+
+  TCocoaForm = objcclass(NSWindow, NSWindowDelegateProtocol)
   protected
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
@@ -28,9 +35,7 @@ type
     procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
     procedure windowDidResize(notification: NSNotification); message 'windowDidResize:';
   public
-    LCLForm: TCustomForm;
-    Children: TFPList; // TCDWinControl
-    LastMouseDownControl: TWinControl; // Stores the control which should receive the next MouseUp
+    WindowHandle: TCocoaWindow;
     function acceptsFirstResponder: Boolean; override;
     procedure mouseUp(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
@@ -61,10 +66,8 @@ type
 
   TCocoaCustomControl = objcclass(NSControl)
     //callback  : TCommonCallback;
-    Image: TLazIntfImage;
-    Canvas: TLazCanvas;
+    WindowHandle: TCocoaWindow;
     Context : TCocoaContext;
-    LCLForm: TCustomForm;
     procedure drawRect(dirtyRect: NSRect); override;
     procedure Draw(ControlContext: NSGraphicsContext; const Abounds, dirty:NSRect); message 'draw:Context:bounds:';
   public
@@ -175,9 +178,9 @@ begin
   Result := True;
 end;
 
-{ TCocoaWindow }
+{ TCocoaForm }
 
-function TCocoaWindow.windowShouldClose(sender: id): LongBool;
+function TCocoaForm.windowShouldClose(sender: id): LongBool;
 var
   canClose : Boolean;
 begin
@@ -186,32 +189,32 @@ begin
   Result:=canClose;
 end;
 
-procedure TCocoaWindow.windowWillClose(notification: NSNotification);
+procedure TCocoaForm.windowWillClose(notification: NSNotification);
 begin
-  LCLSendCloseUpMsg(LCLForm);
+  LCLSendCloseUpMsg(WindowHandle.LCLForm);
 end;
 
-procedure TCocoaWindow.windowDidBecomeKey(notification: NSNotification);
+procedure TCocoaForm.windowDidBecomeKey(notification: NSNotification);
 begin
   CallbackActivate;
 end;
 
-procedure TCocoaWindow.windowDidResignKey(notification: NSNotification);
+procedure TCocoaForm.windowDidResignKey(notification: NSNotification);
 begin
   CallbackDeactivate;
 end;
 
-procedure TCocoaWindow.windowDidResize(notification: NSNotification);
+procedure TCocoaForm.windowDidResize(notification: NSNotification);
 begin
   CallbackResize;
 end;
 
-function TCocoaWindow.acceptsFirstResponder: Boolean;
+function TCocoaForm.acceptsFirstResponder: Boolean;
 begin
   Result:=true;
 end;
 
-procedure TCocoaWindow.mouseUp(event: NSEvent);
+procedure TCocoaForm.mouseUp(event: NSEvent);
 var
   mp : NSPoint;
 begin
@@ -221,7 +224,7 @@ begin
   inherited mouseUp(event);
 end;
 
-procedure TCocoaWindow.mouseDown(event: NSEvent);
+procedure TCocoaForm.mouseDown(event: NSEvent);
 var
   mp : NSPoint;
 begin
@@ -231,7 +234,7 @@ begin
   inherited mouseDown(event);
 end;
 
-procedure TCocoaWindow.mouseDragged(event: NSEvent);
+procedure TCocoaForm.mouseDragged(event: NSEvent);
 var
   mp : NSPoint;
 begin
@@ -241,7 +244,7 @@ begin
   inherited mouseMoved(event);
 end;
 
-procedure TCocoaWindow.mouseMoved(event: NSEvent);
+procedure TCocoaForm.mouseMoved(event: NSEvent);
 var
   mp : NSPoint;
 begin
@@ -251,32 +254,32 @@ begin
   inherited mouseMoved(event);
 end;
 
-procedure TCocoaWindow.mouseEntered(event: NSEvent);
+procedure TCocoaForm.mouseEntered(event: NSEvent);
 begin
   inherited mouseEntered(event);
 end;
 
-procedure TCocoaWindow.mouseExited(event: NSEvent);
+procedure TCocoaForm.mouseExited(event: NSEvent);
 begin
   inherited mouseExited(event);
 end;
 
-function TCocoaWindow.lclIsVisible:Boolean;
+function TCocoaForm.lclIsVisible:Boolean;
 begin
   Result:=isVisible;
 end;
 
-procedure TCocoaWindow.lclInvalidateRect(const r:TRect);
+procedure TCocoaForm.lclInvalidateRect(const r:TRect);
 begin
   contentView.lclInvalidateRect(r);
 end;
 
-procedure TCocoaWindow.lclInvalidate;
+procedure TCocoaForm.lclInvalidate;
 begin
   contentView.lclInvalidate;
 end;
 
-procedure TCocoaWindow.lclLocalToScreen(var X,Y:Integer);
+procedure TCocoaForm.lclLocalToScreen(var X,Y:Integer);
 var
   f   : NSRect;
 begin
@@ -287,14 +290,14 @@ begin
   end;
 end;
 
-function TCocoaWindow.lclFrame:TRect;
+function TCocoaForm.lclFrame:TRect;
 begin
   if Assigned(screen)
     then NSToLCLRect(frame, screen.frame.size.height, Result)
     else NSToLCLRect(frame, Result);
 end;
 
-procedure TCocoaWindow.lclSetFrame(const r:TRect);
+procedure TCocoaForm.lclSetFrame(const r:TRect);
 var
   ns : NSREct;
 begin
@@ -304,7 +307,7 @@ begin
   setFrame_display(ns, isVisible);
 end;
 
-function TCocoaWindow.lclClientFrame:TRect;
+function TCocoaForm.lclClientFrame:TRect;
 var
   wr  : NSRect;
   b   : CGGeometry.CGRect;
@@ -317,68 +320,69 @@ begin
   Result.Bottom:=Round(Result.Top+b.size.height);
 end;
 
-procedure TCocoaWindow.CallbackActivate;
+procedure TCocoaForm.CallbackActivate;
 begin
-  LCLSendActivateMsg(LCLForm, True, false);
+  LCLSendActivateMsg(WindowHandle.LCLForm, True, false);
 end;
 
-procedure TCocoaWindow.CallbackDeactivate;
+procedure TCocoaForm.CallbackDeactivate;
 begin
-  LCLSendDeactivateStartMsg(LCLForm);
+  LCLSendDeactivateStartMsg(WindowHandle.LCLForm);
 end;
 
-procedure TCocoaWindow.CallbackCloseQuery(var CanClose: Boolean);
+procedure TCocoaForm.CallbackCloseQuery(var CanClose: Boolean);
 begin
   // Message results : 0 - do nothing, 1 - destroy window
-  CanClose:=LCLSendCloseQueryMsg(LCLForm)>0;
+  CanClose:=LCLSendCloseQueryMsg(WindowHandle.LCLForm)>0;
 end;
 
-procedure TCocoaWindow.CallbackResize;
+procedure TCocoaForm.CallbackResize;
 var
   sz  : NSSize;
   r   : TRect;
 begin
   sz := frame.size;
-  TCDWSCustomForm.GetClientBounds(TWinControl(LCLForm), r);
-  if Assigned(LCLForm) then
-    LCLSendSizeMsg(LCLForm, Round(sz.width), Round(sz.height), SIZENORMAL);
+  TCDWSCustomForm.GetClientBounds(TWinControl(WindowHandle.LCLForm), r);
+  if Assigned(WindowHandle.LCLForm) then
+    LCLSendSizeMsg(WindowHandle.LCLForm, Round(sz.width), Round(sz.height), SIZENORMAL);
 end;
 
-procedure TCocoaWindow.CallbackMouseUp(x, y: Integer);
+procedure TCocoaForm.CallbackMouseUp(x, y: Integer);
 var
   lTarget: TWinControl;
   lEventPos: TPoint;
 begin
-  lTarget := LastMouseDownControl;
-  if lTarget = nil then lTarget := FindControlWhichReceivedEvent(LCLForm, Children, x, y);
+  lTarget := WindowHandle.LastMouseDownControl;
+  if lTarget = nil then lTarget := FindControlWhichReceivedEvent(
+    WindowHandle.LCLForm, WindowHandle.Children, x, y);
   lEventPos := FormPosToControlPos(lTarget, x, y);
   LCLSendMouseUpMsg(lTarget, lEventPos.x, lEventPos.y, mbLeft, []);
 end;
 
-procedure TCocoaWindow.CallbackMouseDown(x, y: Integer);
+procedure TCocoaForm.CallbackMouseDown(x, y: Integer);
 var
   lTarget: TWinControl;
   lEventPos: TPoint;
 begin
-  lTarget := FindControlWhichReceivedEvent(LCLForm, Children, x, y);
-  LastMouseDownControl := lTarget;
+  lTarget := FindControlWhichReceivedEvent(WindowHandle.LCLForm, WindowHandle.Children, x, y);
+  WindowHandle.LastMouseDownControl := lTarget;
   lEventPos := FormPosToControlPos(lTarget, x, y);
   LCLSendMouseDownMsg(lTarget, lEventPos.x, lEventPos.y, mbLeft, []);
 end;
 
-procedure TCocoaWindow.CallbackMouseClick(clickCount: Integer);
+procedure TCocoaForm.CallbackMouseClick(clickCount: Integer);
 begin
-  LCLSendClickedMsg(LCLForm);
+  LCLSendClickedMsg(WindowHandle.LCLForm);
 end;
 
-procedure TCocoaWindow.CallbackMouseMove(x, y: Integer);
+procedure TCocoaForm.CallbackMouseMove(x, y: Integer);
 var
   lTarget: TWinControl;
   lEventPos: TPoint;
 begin
-  lTarget := FindControlWhichReceivedEvent(LCLForm, Children, x, y);
+  lTarget := FindControlWhichReceivedEvent(WindowHandle.LCLForm, WindowHandle.Children, x, y);
   lEventPos := FormPosToControlPos(lTarget, x, y);
-  LCLSendMouseMoveMsg(LCLForm, lEventPos.x, lEventPos.y, []);
+  LCLSendMouseMoveMsg(WindowHandle.LCLForm, lEventPos.x, lEventPos.y, []);
 end;
 
 { TCocoaCustomControl }
@@ -409,27 +413,27 @@ begin
     // Prepare the non-native image and canvas
     FillChar(struct, SizeOf(TPaintStruct), 0);
 
-    UpdateControlLazImageAndCanvas(Image,
-      Canvas, lWidth, lHeight, clfRGB24UpsideDown);
-    DrawFormBackground(Image, Canvas);
+    UpdateControlLazImageAndCanvas(WindowHandle.Image,
+      WindowHandle.Canvas, lWidth, lHeight, clfRGB24UpsideDown);
+    DrawFormBackground(WindowHandle.Image, WindowHandle.Canvas);
 
-    struct.hdc := HDC(Canvas);
+    struct.hdc := HDC(WindowHandle.Canvas);
 
     // Send the paint message to the LCL
     {$IFDEF VerboseCDWinAPI}
       DebugLn(Format('[TLCLCommonCallback.Draw] OnPaint event started context: %x', [struct.hdc]));
     {$ENDIF}
-    LCLSendPaintMsg(LCLForm, struct.hdc, @struct);
+    LCLSendPaintMsg(WindowHandle.LCLForm, struct.hdc, @struct);
     {$IFDEF VerboseCDWinAPI}
       DebugLn('[TLCLCommonCallback.Draw] OnPaint event ended');
     {$ENDIF}
 
     // Now render all child wincontrols
-    RenderChildWinControls(Image, Canvas,
-      TCDWSCustomForm.BackendGetCDWinControlList(LCLForm));
+    RenderChildWinControls(WindowHandle.Image, WindowHandle.Canvas,
+      GetCDWinControlList(WindowHandle.LCLForm));
 
     // Now render it into the control
-    Image.GetRawImage(lRawImage);
+    WindowHandle.Image.GetRawImage(lRawImage);
     Cocoa_RawImage_CreateBitmaps(lRawImage, lBitmap, lMask, True);
     Context.DrawBitmap(0, 0, TCocoaBitmap(lBitmap));
   end;

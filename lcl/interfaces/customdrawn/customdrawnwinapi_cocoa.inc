@@ -449,10 +449,12 @@ end;*)
 
 function TCDWidgetSet.BackendGetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 begin
-  if Handle<>0 then begin
+  if Handle<>0 then
+  begin
     Result:=True;
-    ARect:= TCocoaWindow(handle).lclClientFrame;
-  end else
+    ARect:= TCocoaWindow(handle).CocoaForm.lclClientFrame;
+  end
+  else
     Result:=False;
 end;
 
@@ -505,10 +507,12 @@ end;*)
 
 function TCDWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean;
 begin
-  if Handle<>0 then begin
+  if Handle<>0 then
+  begin
     Result:=True;
     //TCocoaWindow(handle).lclRelativePos(Left, Top);
-  end else
+  end
+  else
     Result:=False;
 end;
 
@@ -527,12 +531,15 @@ end;*)
 
 function TCDWidgetSet.BackendInvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean): Boolean;
 begin
-  if aHandle<>0 then begin
+  if aHandle<>0 then
+  begin
     Result:=True;
-    if Assigned(Rect)
-      then TCocoaWindow(aHandle).lclInvalidateRect(Rect^)
-      else TCocoaWindow(aHandle).lclInvalidate;
-  end else
+    if Assigned(Rect) then
+      TCocoaWindow(aHandle).CocoaForm.lclInvalidateRect(Rect^)
+    else
+      TCocoaWindow(aHandle).CocoaForm.lclInvalidate;
+  end
+  else
     Result:=False;
 end;
 
