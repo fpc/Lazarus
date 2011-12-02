@@ -723,10 +723,14 @@ begin
 end;
 
 procedure TCDControl.PrepareCurrentDrawer;
+var
+  OldDrawer: TCDDrawer;
 begin
+  OldDrawer := FDrawer;
   FDrawer := GetDrawer(FDrawStyle);
   if FDrawer = nil then FDrawer := GetDrawer(dsCommon); // avoid exceptions in the object inspector if an invalid drawer is selected
   if FDrawer = nil then raise Exception.Create('No registered drawers were found');
+  if OldDrawer <> FDrawer then FDrawer.LoadPalette();
 end;
 
 procedure TCDControl.SetDrawStyle(const AValue: TCDDrawStyle);

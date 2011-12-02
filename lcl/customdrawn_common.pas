@@ -22,6 +22,7 @@ type
 
   TCDDrawerCommon = class(TCDDrawer)
   public
+    function  PalDefaultUsesNativePalette: Boolean; override;
     procedure LoadFallbackPaletteColors; override;
     // General
     function GetMeasures(AMeasureID: Integer): Integer; override;
@@ -128,6 +129,15 @@ const
   WIN2000_FORM    = WIN2000_BTNFACE;
 
 { TCDDrawerCommon }
+
+function TCDDrawerCommon.PalDefaultUsesNativePalette: Boolean;
+begin
+  {$ifdef MSWindows}
+  Result := True;
+  {$else}
+  Result := False;
+  {$endif}
+end;
 
 procedure TCDDrawerCommon.LoadFallbackPaletteColors;
 begin

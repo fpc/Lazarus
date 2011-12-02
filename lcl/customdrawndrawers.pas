@@ -251,15 +251,17 @@ type
   public
     Palette: TCDColorPalette;
     FallbackPalette: TCDColorPalette;
+    PaletteKind: TCDPaletteKind;
     constructor Create; virtual;
     destructor Destroy; override;
     procedure CreateResources; virtual;
     procedure LoadResources; virtual;
     procedure FreeResources; virtual;
     procedure ScaleRasterImage(ARasterImage: TRasterImage; ASourceDPI, ADestDPI: Word);
-    procedure SetPaletteKind(APaletteKind: TCDPaletteKind);
+    procedure LoadPalette;
     procedure LoadNativePaletteColors;
     procedure LoadFallbackPaletteColors; virtual;
+    function  PalDefaultUsesNativePalette: Boolean; virtual;
     function GetDrawStyle: TCDDrawStyle; virtual;
     // GetControlDefaultColor is used by customdrawncontrols to resolve clDefault
     function GetControlDefaultColor(AControlId: TCDControlID): TColor;
@@ -471,11 +473,13 @@ constructor TCDDrawer.Create;
 begin
   inherited Create;
 
+  // We never load the system palette at creation because we might get created
+  // before the Widgetset is constructed
   Palette := TCDColorPalette.Create;
-  SetPaletteKind(palFallback);
+  LoadFallbackPaletteColors();
   FallbackPalette := TCDColorPalette.Create;
   FallbackPalette.Assign(Palette);
-  SetPaletteKind(palDefault);
+  PaletteKind := palDefault;
 
   CreateResources;
   LoadResources;
@@ -515,24 +519,12 @@ begin
   ARasterImage.Height := lNewHeight;
 end;
 
-procedure TCDDrawer.SetPaletteKind(APaletteKind: TCDPaletteKind);
-var
-  lIsOnNativeSystem: Boolean = False;
-  lStyle: TCDDrawStyle;
+procedure TCDDrawer.LoadPalette;
 begin
-  case APaletteKind of
+  case PaletteKind of
   palDefault:
   begin
-    lStyle := GetDrawStyle();
-    case lStyle of
-    dsWinCE: lIsOnNativeSystem := {$ifdef WinCE}True{$else}False{$endif};
-    dsCommon, dsWin2000, dsWinXP:
-      lIsOnNativeSystem := {$ifdef MSWindows}True{$else}False{$endif};
-    else
-      lIsOnNativeSystem := False;
-    end;
-
-    if lIsOnNativeSystem then LoadNativePaletteColors()
+    if PalDefaultUsesNativePalette() then LoadNativePaletteColors()
     else LoadFallbackPaletteColors();
   end;
   palNative:   LoadNativePaletteColors();
@@ -580,6 +572,11 @@ end;
 procedure TCDDrawer.LoadFallbackPaletteColors;
 begin
 
+end;
+
+function TCDDrawer.PalDefaultUsesNativePalette: Boolean;
+begin
+  Result := False;
 end;
 
 function TCDDrawer.GetDrawStyle: TCDDrawStyle;
