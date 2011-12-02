@@ -2179,23 +2179,45 @@ end;*)
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
-{var
-  WideStr: WideString;
-  QtDC: TQtDeviceContext absolute DC;
-  B: Boolean;      }
+var
+  lJavaString: jstring;
 begin
-  {$ifdef VerboseCDWinAPI}
-    WriteLn('[WinAPI ExtTextOut]');
+  {$ifdef VerboseCDText}
+    DebugLn(Format('[WinAPI ExtTextOut] DC=%x javaEnvRef=%x Str=%s', [DC, PtrInt(javaEnvRef), StrPas(Str)]));
   {$endif}
 
   Result := False;
 
-{  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
+  if (Str = nil) or (Str = '') then Exit;
+
+  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
     exit;
 
   if not IsValidDC(DC) then Exit;
 
-   if ((Options and ETO_OPAQUE) <> 0) then
+  if (javaEnvRef = nil) then Exit;
+
+  // Prepare the input
+  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
+  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+
+  // Call the method
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
+
+  // Call the method
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoDrawText);
+
+{  // Read the output
+  Size.cx := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclwidth);
+  Size.cy := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclheight);}
+
+  {$ifdef VerboseCDText}
+    DebugLn('[WinAPI ExtTextOut]');
+  {$endif}
+
+  Result := True;
+
+{   if ((Options and ETO_OPAQUE) <> 0) then
      QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
 
   if Str <> nil then
@@ -4129,8 +4151,8 @@ function TCDWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
   QtDC: TQtDeviceContext absolute DC;
   FontWeight: Integer;}
 begin
-  {$ifdef VerboseCDWinAPI}
-    DebugLn('[WinAPI GetTextMetrics]');
+  {$ifdef VerboseCDText}
+    DebugLn(Format('[WinAPI GetTextMetrics] DC=%x javaEnvRef=%x', [DC, PtrInt(javaEnvRef)]));
   {$endif}
 
   Result := IsValidDC(DC);

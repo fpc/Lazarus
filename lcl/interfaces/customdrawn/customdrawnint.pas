@@ -219,6 +219,7 @@ var
 
   // Methods of our Activity
   javaMethod_LCLDoGetTextBounds: jmethodid = nil;
+  javaMethod_LCLDoDrawText: jmethodid = nil;
 
   // This is utilized to store the information such as invalidate requests in events
   eventResult: jint;

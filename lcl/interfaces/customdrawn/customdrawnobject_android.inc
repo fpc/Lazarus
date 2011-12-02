@@ -171,6 +171,7 @@ begin
 
   // Read all method IDs
   javaMethod_LCLDoGetTextBounds := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoGetTextBounds', '()V');
+  javaMethod_LCLDoDrawText := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoDrawText', '()V');
 
   result:=JNI_VERSION_1_4;// 1_6 is another option
 end;
