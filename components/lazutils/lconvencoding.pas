@@ -18,15 +18,9 @@ unit LConvEncoding;
 
 interface
 
-{$DEFINE DisableIconv}
-
-{$IFNDEF DisableIconv}
-{$IFDEF UNIX}{$IF not defined(VER2_2_0) and not defined(VER2_2_2)}{$DEFINE HasIconvEnc}{$ENDIF}{$ENDIF}
-{$ENDIF}
-
 uses
   SysUtils, Classes, dos, LazUTF8
-  {$IFDEF HasIconvEnc},iconvenc{$ENDIF};
+  {$IFDEF EnableIconvEnc},iconvenc{$ENDIF};
 const
   EncodingUTF8 = 'utf8';
   EncodingAnsi = 'ansi';
@@ -6344,7 +6338,7 @@ function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
 var
   AFrom, ATo, SysEnc : String;
   Encoded : Boolean;
-  {$ifdef HasIconvEnc}
+  {$ifdef EnableIconvEnc}
   Dummy: String;
   {$endif}
 begin
@@ -6655,7 +6649,7 @@ begin
   end;
 
   Result:=s;
-  {$ifdef HasIconvEnc}
+  {$ifdef EnableIconvEnc}
   try
     if not IconvLibFound and not InitIconv(Dummy) then
     begin
