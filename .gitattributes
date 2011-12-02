@@ -6124,6 +6124,7 @@ test/codetoolstests/testcompleteblock.pas svneol=native#text/plain
 test/codetoolstests/testcth2pas.pas svneol=native#text/pascal
 test/codetoolstests/testctrangescan.pas svneol=native#text/plain
 test/codetoolstests/testctxmlfixfragments.pas svneol=native#text/pascal
+test/codetoolstests/teststdcodetools.pas svneol=native#text/plain
 test/customdrawn/cd_test_all.ico -text
 test/customdrawn/cd_test_all.lpi svneol=native#text/plain
 test/customdrawn/cd_test_all.lpr svneol=native#text/plain
