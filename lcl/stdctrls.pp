@@ -542,8 +542,7 @@ type
     procedure SetSelected(Index: integer; Val: boolean);
     procedure SetSorted(Val: boolean); virtual;
     procedure SetStyle(Val: TListBoxStyle); virtual;
-    procedure DrawItem(Index: Integer; ARect: TRect;
-      State: TOwnerDrawState); virtual;
+    procedure DrawItem(Index: Integer; ARect: TRect; State: TOwnerDrawState); virtual;
     procedure DoSelectionChange(User: Boolean); virtual;
     procedure SendItemIndex;
   public
@@ -591,8 +590,7 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-    property OnMeasureItem: TMeasureItemEvent
-                                       read FOnMeasureItem write FOnMeasureItem;
+    property OnMeasureItem: TMeasureItemEvent read FOnMeasureItem write FOnMeasureItem;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
