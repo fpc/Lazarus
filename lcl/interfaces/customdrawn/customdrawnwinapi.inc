@@ -6416,7 +6416,7 @@ begin
   else
     Result := False;
   end
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: TextOut
@@ -6428,29 +6428,12 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : PChar; Count: Integer) : Boolean;
-var
-  WideStr: WideString;
+function TCDWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI TextOut]');
-  {$endif}
-
-  Result := False;
-
-  if not IsValidDC(DC) then Exit;
-
-  if Count >= 0 then
-    WideStr := GetUtf8String(Copy(Str, 1, Count))
-  else
-    WideStr := GetUtf8String(Str);
-
-  TQtDeviceContext(DC).drawText(X, Y, @WideStr);
-
-  Result := True;
+  Result:=ExtTextOut(DC, X, Y, 0, nil, Str, Count, nil);
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method:  UpdateWindow
   Params:  Handle
   Returns:

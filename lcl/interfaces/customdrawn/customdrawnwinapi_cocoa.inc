@@ -365,6 +365,9 @@ function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
 var
   ctx : TCocoaContext;
 begin
+  {$ifdef VerboseCDText}
+    DebugLn(Format('[WinAPI ExtTextOut] DC=%x X=%d Y=%d Str=%s Count=%d', [DC, X, Y, StrPas(Str), Count]));
+  {$endif}
 {  ctx:=CheckDC(DC);
   Result:=Assigned(ctx);
   if not Assigned(ctx) then Exit;
@@ -918,16 +921,22 @@ end;*)
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
+  lazdc: TLazCanvas;
 begin
-  {$IFDEF VerboseCDWinAPI}
+  {$IFDEF VerboseCDText}
     DebugLn('[TCDWidgetSet.GetTextExtentPoint] DC: %x Str: %s Count: %d', [DC, Str, Count]);
   {$ENDIF}
-{  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx);
-  if not Assigned(ctx) then Exit(False);
-  Result := ctx.GetTextExtentPoint(Str, Count, Size);}
-  {$IFDEF VerboseCDWinAPI}
+
+  if not IsValidDC(DC) then Exit;
+
+  lazdc := TLazCanvas(DC);
+  if lazdc.NativeDC = 0 then Exit;
+  ctx := TCocoaContext(lazdc.NativeDC);
+
+  Result := ctx.GetTextExtentPoint(Str, Count, Size);
+
+  {$IFDEF VerboseCDText}
     DebugLn('[TCDWidgetSet.GetTextExtentPoint] Size: %d,%d', [Size.cx, Size.cy]);
   {$ENDIF}
 end;
@@ -943,27 +952,27 @@ end;
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
+  lazdc: TLazCanvas;
 begin
   Result := False;
 
-  {$IFDEF VerboseCDWinAPI}
+  {$IFDEF VerboseCDText}
     DebugLn('TCDWidgetSet.GetTextMetrics DC: ' + DbgS(DC));
   {$ENDIF}
 
-{  ctx:=CheckDC(DC);
-  if not Assigned(ctx) then Exit(False);
-  Result := ctx.GetTextMetrics(TM);}
+  if not IsValidDC(DC) then Exit;
 
-  {$IFDEF VerboseCDWinAPI}
+  lazdc := TLazCanvas(DC);
+  if lazdc.NativeDC = 0 then Exit;
+  ctx := TCocoaContext(lazdc.NativeDC);
+
+  Result := ctx.GetTextMetrics(TM);
+
+  {$IFDEF VerboseCDText}
     DebugLn('TCDWidgetSet.GetTextMetrics Result: ' + DbgS(Result) +
       ' TextMetric: ' + DbgS(TM));
   {$ENDIF}
-end;
-
-function TCDWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
-begin
-  //Result:=ExtTextOut(DC, X, Y, 0, nil, Str, Count, nil);
 end;
 
 (*function TCocoaWidgetSet.SaveDC(DC: HDC): Integer;

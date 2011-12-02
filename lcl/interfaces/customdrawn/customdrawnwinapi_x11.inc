@@ -6359,38 +6359,6 @@ begin
   end
 end;*)
 
-{------------------------------------------------------------------------------
-  Function: TextOut
-  Params: DC:
-          X:
-          Y:
-          Str:
-          Count:
-  Returns:
-
- ------------------------------------------------------------------------------}
-function TCDWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : PChar; Count: Integer) : Boolean;
-//var
-//  WideStr: WideString;
-begin
-//  {$ifdef VerboseQtWinAPI}
-//    WriteLn('[WinAPI TextOut]');
-//  {$endif}
-
-  Result := False;
-{
-  if not IsValidDC(DC) then Exit;
-
-  if Count >= 0 then
-    WideStr := GetUtf8String(Copy(Str, 1, Count))
-  else
-    WideStr := GetUtf8String(Str);
-
-  TQtDeviceContext(DC).drawText(X, Y, @WideStr);
-
-  Result := True;}
-end;
-
 (*{------------------------------------------------------------------------------
   Method:  UpdateWindow
   Params:  Handle

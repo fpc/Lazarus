@@ -121,6 +121,7 @@ type
     pool      : NSAutoreleasePool;
     NSApp     : NSApplication;
     delegate  : TCDAppDelegate;
+    ScreenBitmap: TCocoaBitmap;
     {$endif}
   public
     {$ifdef CD_X11}
@@ -151,7 +152,13 @@ type
     procedure BackendCreate;
     procedure BackendDestroy;
   public
+    // ScreenDC and Image for doing Canvas operations outside the Paint event
+    // and also for text drawing operations
     ScreenDC: TLazCanvas;
+    ScreenBitmapRawImage: TRawImage;
+    ScreenBitmapHeight: Integer;
+    ScreenBitmapWidth: Integer;
+
     constructor Create; override;
     destructor Destroy; override;
 

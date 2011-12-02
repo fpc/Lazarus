@@ -416,6 +416,7 @@ begin
     UpdateControlLazImageAndCanvas(WindowHandle.Image,
       WindowHandle.Canvas, lWidth, lHeight, clfRGB24UpsideDown);
     DrawFormBackground(WindowHandle.Image, WindowHandle.Canvas);
+    WindowHandle.Canvas.NativeDC := PtrInt(Context);
 
     struct.hdc := HDC(WindowHandle.Canvas);
 

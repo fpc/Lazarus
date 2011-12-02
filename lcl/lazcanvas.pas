@@ -83,6 +83,7 @@ type
     procedure DoLine (x1,y1,x2,y2:integer); override;
   public
     HasNoImage: Boolean;
+    NativeDC: PtrInt; // Utilized by LCL-CustomDrawn
     constructor create (AnImage : TFPCustomImage);
     destructor destroy; override;
     procedure SetLazClipRegion(ARegion: TLazRegion);
