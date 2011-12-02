@@ -2,24 +2,6 @@
 
 { TCDWSCustomForm }
 
-class procedure TCDWSCustomForm.BackendAddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
-var
-  lWindowInfo: TX11WindowInfo;
-begin
-  lWindowInfo := TX11WindowInfo(AForm.Handle);
-  if lWindowInfo.Children = nil then lWindowInfo.Children := TFPList.Create;
-  lWindowInfo.Children.Add(ACDWinControl);
-end;
-
-class function TCDWSCustomForm.BackendGetCDWinControlList(const AForm: TCustomForm): TFPList;
-var
-  lWindowInfo: TX11WindowInfo;
-begin
-  lWindowInfo := TX11WindowInfo(AForm.Handle);
-  if lWindowInfo.Children = nil then lWindowInfo.Children := TFPList.Create;
-  Result := lWindowInfo.Children;
-end;
-
 class procedure TCDWSCustomForm.UpdateMotifWMHints(const AWinControl: TWinControl; CanMaximize: Boolean);
 type
   PMotifWmHints = ^TMotifWmHints;
@@ -667,7 +649,7 @@ begin
 
   // Now paint all child win controls
   RenderChildWinControls(AWindowInfo.Image, AWindowInfo.Canvas,
-    BackendGetCDWinControlList(TCustomForm(AWinControl)));
+    GetCDWinControlList(TCustomForm(AWinControl)));
 
   // Now render it into the control
   AWindowInfo.Image.GetRawImage(lRawImage);
@@ -856,7 +838,7 @@ begin
   // Add the window to the list of windows
   lWindowInfo := TX11WindowInfo.Create;
   lWindowInfo.Window := lWindow;
-  lWindowInfo.LCLControl := AWinControl;
+  lWindowInfo.LCLForm := TCustomForm(AWinControl);
   XGetWindowAttributes(CDWidgetSet.FDisplay, lWindow, @lWindowInfo.Attr);
   lWindowInfo.Colormap := XDefaultColormap(CDWidgetSet.FDisplay, XDefaultScreen(CDWidgetSet.FDisplay));
   lWindowInfo.ColorDepth := lWindowInfo.Attr.depth;

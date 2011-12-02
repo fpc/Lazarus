@@ -2716,7 +2716,7 @@ begin
   lpPoint.y := vPoint.y;
 
   Result := True;
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: GetDC
@@ -2743,7 +2743,7 @@ begin
   Result := HDC(lFormHandle.Canvas);
 end;
 
-(*function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
+function TQtWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 var
   QtDC: TQtDeviceContext absolute PaintDC;
@@ -4643,7 +4643,7 @@ var
   lFormHandle: TX11WindowInfo;
 begin
   lFormHandle := TX11WindowInfo(AHandle);
-  TCDWSCustomForm.EvPaint(lFormHandle.LCLControl, lFormHandle);
+  TCDWSCustomForm.EvPaint(lFormHandle.LCLForm, lFormHandle);
 
   Result := True;
 end;

@@ -28,7 +28,7 @@ type
     Children: TFPList;
   end;
 
-  TCDNonNativeForm = class
+  TCDForm = class
   public
     LCLForm: TCustomForm;
     Children: TFPList; // of TCDWinControl;
@@ -39,12 +39,19 @@ type
     Canvas: TLazCanvas;
   end;
 
+  TCDNonNativeForm = class(TCDForm)
+  public
+  end;
+
   TCDBitmap = class
   public
     Image: TLazIntfImage;
   end;
 
-// Routines for non-native form
+// Routines for form managing (both native and non-native)
+
+procedure AddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
+function GetCDWinControlList(const AForm: TCustomForm): TFPList;
 
 procedure InitNonNativeForms();
 function GetCurrentForm(): TCDNonNativeForm;
@@ -79,6 +86,24 @@ implementation
 // List with the Z-order of non-native forms, index=0 is the bottom-most form
 var
   NonNativeForms: TFPList = nil;
+
+procedure AddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
+var
+  lWindowInfo: TCDForm;
+begin
+  lWindowInfo := TCDForm(AForm.Handle);
+  if lWindowInfo.Children = nil then lWindowInfo.Children := TFPList.Create;
+  lWindowInfo.Children.Add(ACDWinControl);
+end;
+
+function GetCDWinControlList(const AForm: TCustomForm): TFPList;
+var
+  lWindowInfo: TCDForm;
+begin
+  lWindowInfo := TCDForm(AForm.Handle);
+  if lWindowInfo.Children = nil then lWindowInfo.Children := TFPList.Create;
+  Result := lWindowInfo.Children;
+end;
 
 procedure InitNonNativeForms();
 begin

@@ -33,6 +33,7 @@ begin
 
   CDWidgetSet := Self;
   FTerminating := False;
+  ScreenDC := TLazCanvas.Create(nil);
 
   BackendCreate;
 end;
@@ -48,6 +49,7 @@ destructor TCDWidgetSet.Destroy;
 begin
   BackendDestroy;
   CDWidgetSet := nil;
+  ScreenDC.Free;
   inherited Destroy;
 end;
 

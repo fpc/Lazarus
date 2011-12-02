@@ -1635,7 +1635,7 @@ end;
 function TWin32WidgetSet.GetCursorPos(Var LPPoint: TPoint): Boolean;
 begin
   Result := Boolean(Windows.GetCursorPos(@LPPoint));
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Method:  GetDC
@@ -1675,7 +1675,7 @@ begin
 end;
 begin
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Method: GetDeviceCaps
   Params: DC - display device context
           Index - index of needed capability

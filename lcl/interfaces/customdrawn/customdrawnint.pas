@@ -151,6 +151,7 @@ type
     procedure BackendCreate;
     procedure BackendDestroy;
   public
+    ScreenDC: TLazCanvas;
     constructor Create; override;
     destructor Destroy; override;
 

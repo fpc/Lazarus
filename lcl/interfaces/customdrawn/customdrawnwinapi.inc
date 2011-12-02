@@ -2743,33 +2743,43 @@ function TCDWidgetSet.GetDC(hWnd: HWND): HDC;
 var
   lObject: TObject;
   lWinControl: TWinControl;
-  lFormHandle: HWND;
+  lFormHandle: TCDForm;
 begin
   {$ifdef VerboseCDWinAPI}
     DebugLn(':>[WinAPI GetDC] hWnd: ', dbghex(hWnd));
   {$endif}
 
-  if HWnd = 0 then
-  begin
-    Result := BackendGetDC(0);
-    Exit;
-  end;
+  Result := 0;
 
+  // Screen DC
+  if HWnd = 0 then Result := HDC(CDWidgetset.ScreenDC);
+
+  // Invalid DC
   if not IsValidDC(HWnd) then Exit;
 
   lObject := TObject(HWnd);
 
+  // Control DC -> Search for the corresponding form
   if lObject is TCDWinControl then
   begin
     lWinControl := TCDWinControl(lObject).WinControl;
     while (lWinControl <> nil) and (not (lWinControl is TCustomForm)) do
       lWinControl := lWinControl.Parent;
-    lFormHandle := lWinControl.Handle;
+    lFormHandle := TCDForm(lWinControl.Handle);
   end
+  // Form DC
+  else if lObject is TCDForm then
+    lFormHandle := TCDForm(hWnd)
   else
-    lFormHandle := hWnd;
+    raise Exception.Create('Invalid handle for GetDC');
 
-  Result := BackendGetDC(lFormHandle);
+  // Now get Form DC
+  Result := HDC(lFormHandle.Canvas);
+
+  // If the Form DC doesn't yet exist, just give the ScreenDC
+  // Anyone asking for a DC outside the Paint event can't expect
+  // to receive something which can be drawn to anyway
+  if Result = 0 then Result := HDC(CDWidgetset.ScreenDC);
 
   {$ifdef VerboseCDWinAPI}
     DebugLn(':<[WinAPI GetDC] Result: ', dbghex(Result));

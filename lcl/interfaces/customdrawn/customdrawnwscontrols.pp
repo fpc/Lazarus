@@ -263,7 +263,7 @@ begin
   // Adding on a form
   if AWinControl.Parent is TCustomForm then
   begin
-    TCDWSCustomForm.BackendAddCDWinControlToForm(TCustomForm(AWinControl.Parent), lCDWinControl);
+    AddCDWinControlToForm(TCustomForm(AWinControl.Parent), lCDWinControl);
   end
   // Adding on another control
   else if AWinControl.Parent is TWinControl then

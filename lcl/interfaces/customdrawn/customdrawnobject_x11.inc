@@ -34,7 +34,7 @@ begin
   for i := 0 to Screen.FormCount - 1 do
   begin
     lWindowInfo := TX11WindowInfo(Screen.Forms[i].Handle);
-    Result := lWindowInfo.LCLControl;
+    Result := lWindowInfo.LCLForm;
     AWindowInfo := lWindowInfo;
 
     {$ifdef VerboseFindX11Window}

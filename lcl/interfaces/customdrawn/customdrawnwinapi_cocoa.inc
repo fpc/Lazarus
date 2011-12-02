@@ -672,7 +672,7 @@ procedure TCocoaWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection
 begin
   if CritSection=0 then Exit;
   NSRecursiveLock(CritSection).unlock;
-end;*)
+end;
 
 {------------------------------- DEVICE CONTEXT -------------------------------}
 
@@ -690,7 +690,7 @@ begin
 {  // Form DC
   if lFormHandle.Canvas = nil then lFormHandle.Canvas := TLazCanvas.create(nil);
   Result := HDC(lFormHandle.Canvas);}
-end;
+end;       *)
 
 function TCDWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
 begin

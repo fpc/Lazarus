@@ -16,13 +16,9 @@ uses
   customdrawnproc;
 
 type
-  TX11WindowInfo = class
+  TX11WindowInfo = class(TCDForm)
   public
     Window: X.TWindow;
-    LCLControl: TWinControl;
-    Children: TFPList; // of TCDWinControl;
-    //
-    LastMouseDownControl: TWinControl; // Stores the control which should receive the next MouseUp
     // Used and valid only during event processing
     XEvent: PXEvent;
     // X11 extra objects
@@ -30,9 +26,6 @@ type
     Colormap: TColormap;
     GC: TGC;
     ColorDepth: Byte;
-    // painting objects
-    Image: TLazIntfImage;
-    Canvas: TLazCanvas;
   end;
 
 function RectToXRect(const ARect: TRect): TXRectangle;

@@ -2,24 +2,6 @@
 
 { TCDWSCustomForm }
 
-class procedure TCDWSCustomForm.BackendAddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
-var
-  lWindowInfo: TCDNonNativeForm;
-begin
-  lWindowInfo := TCDNonNativeForm(AForm.Handle);
-  if lWindowInfo.Children = nil then lWindowInfo.Children := TFPList.Create;
-  lWindowInfo.Children.Add(ACDWinControl);
-end;
-
-class function TCDWSCustomForm.BackendGetCDWinControlList(const AForm: TCustomForm): TFPList;
-var
-  lWindowInfo: TCDNonNativeForm;
-begin
-  lWindowInfo := TCDNonNativeForm(AForm.Handle);
-  if lWindowInfo.Children = nil then lWindowInfo.Children := TFPList.Create;
-  Result := lWindowInfo.Children;
-end;
-
 {------------------------------------------------------------------------------
   Method: TCDWSCustomForm.CreateHandle
   Params:  None
