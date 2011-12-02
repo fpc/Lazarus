@@ -4887,6 +4887,7 @@ function TStandardCodeTool.FindBlockStart(const CursorPos: TCodeXYPosition;
 // jump to beginning of current block
 // e.g. bracket open, 'begin', 'repeat', ...
 var CleanCursorPos: integer;
+  CursorOnStart: Boolean;
 begin
   Result:=false;
   // scan code
@@ -4899,29 +4900,33 @@ begin
   ReadNextAtom;
   try
     repeat
-      ReadPriorAtom;
+      //debugln(['TStandardCodeTool.FindBlockStart AAA1 ',CleanPosToStr(CurPos.StartPos),' ',GetAtom]);
       if (CurPos.StartPos<0) then begin
         // start of source found -> this is always a block start
         CurPos.StartPos:=1;
-        Result:=true;
-        exit;
+        exit(true);
       end
       else if Src[CurPos.StartPos] in [')',']','}'] then begin
         // jump backward to matching bracket
+        CursorOnStart:=(CleanCursorPos=CurPos.StartPos);
         if not ReadBackwardTilAnyBracketClose then exit;
+        if CursorOnStart then exit(true);
       end
       else if WordIsBlockStatementStart.DoItCaseInsensitive(Src,
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
       begin
         // block start found
-        Result:=true;
-        exit;
+        exit(true);
       end else if UpAtomIs('END') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
       or UpAtomIs('UNTIL') then
       begin
         // read backward till BEGIN, CASE, ASM, RECORD, REPEAT
+        CursorOnStart:=(CleanCursorPos>=CurPos.StartPos)
+                   and (CleanCursorPos<CurPos.EndPos);
         ReadBackTilBlockEnd(true);
+        if CursorOnStart then exit(true);
       end;
+      ReadPriorAtom;
     until false;
   finally
     if Result then begin

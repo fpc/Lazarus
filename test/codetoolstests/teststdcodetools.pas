@@ -36,9 +36,9 @@ var
      'program TestStdCodeTools;'+LineEnding
     +'begin'+LineEnding
     +'  if true then {begin1}begin'+LineEnding
-    +'    {try}try'+LineEnding
+    +'    {try1}try'+LineEnding
     +'      writeln;'+LineEnding
-    +'    finally'+LineEnding
+    +'    {try1finally}finally'+LineEnding
     +'      writeln;'+LineEnding
     +'    {try1end}end;'+LineEnding
     +'    writeln;'+LineEnding
@@ -69,31 +69,34 @@ var
     Result:=dbgs(XY)+': '+copy(Line,1,XY.X-1)+'|'+copy(Line,XY.X,length(Line));
   end;
 
-var
-  Tool: TCodeTool;
-  BlockStart: TPoint;
-  BlockEnd: TPoint;
-  NewCode: TCodeBuffer;
-  NewX: integer;
-  NewY: integer;
-  NewTopline: integer;
+  procedure Test(aTitle, StartMarker,EndMarker: string);
+  var
+    BlockStart: TPoint;
+    BlockEnd: TPoint;
+    NewCode: TCodeBuffer;
+    NewX: integer;
+    NewY: integer;
+    NewTopline: integer;
+  begin
+    BlockStart:=GetMarker(StartMarker);
+    BlockEnd:=GetMarker(EndMarker);
+    //debugln(['TTestCTStdCodetools.TestCTStdFindBlockStart BlockStart=',GetInfo(BlockStart),' BlockEnd=',GetInfo(BlockEnd)]);
+    if not CodeToolBoss.FindBlockStart(Code,BlockEnd.X,BlockEnd.Y,NewCode,NewX,NewY,NewTopline)
+    then
+      AssertEquals(aTitle+': '+CodeToolBoss.ErrorMessage,true,false)
+    else
+      AssertEquals(aTitle,GetInfo(BlockStart),GetInfo(Point(NewX,NewY)))
+  end;
+
 begin
   Code:=CodeToolBoss.CreateFile('TestStdCodeTools.pas');
-  Tool:=CodeToolBoss.GetCodeToolForSource(Code,false,true) as TCodeTool;
 
   // scan source
   Code.Source:=GetSource();
-  Tool.BuildTree(lsrEnd);
 
-  BlockStart:=GetMarker('{begin1}');
-  BlockEnd:=GetMarker('{begin1end}');
-  debugln(['TTestCTStdCodetools.TestCTStdFindBlockStart BlockStart=',GetInfo(BlockStart),' BlockEnd=',GetInfo(BlockEnd)]);
-  if not CodeToolBoss.FindBlockStart(Code,BlockEnd.X,BlockEnd.Y,NewCode,NewX,NewY,NewTopline)
-  then
-    AssertEquals('CodeToolBoss.FindBlockStart: begin,try,finally,end|end: '+CodeToolBoss.ErrorMessage,true,false)
-  else
-    AssertEquals('CodeToolBoss.FindBlockStart: begin,try,finally,end|end:',GetInfo(BlockStart),GetInfo(Point(NewX,NewY)))
-
+  Test('begin,try,finally,end|end','begin1','begin1end');
+  Test('begin,try,finally,|end,end','try1finally','try1end');
+  Test('begin,try,finally,|end,end','try1','try1finally');
 end;
 
 initialization
