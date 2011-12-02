@@ -30,7 +30,8 @@ uses
   TestLpi, BugTestCase,
   bug8432, testfileutil, testfileproc,
   // codetools
-  TestBasicCodetools,
+  TestBasicCodetools, TestCTXMLFixFragments, TestCTRangeScan, TestCTH2Pas,
+  TestCompleteBlock, TestStdCodetools,
   // lcltests
   testunicode, testpen, TestPreferredSize
   {$IFNDEF NoSemiAutomatedTests}

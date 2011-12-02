@@ -39,7 +39,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="12">
+    <Units Count="13">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -100,10 +100,15 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestCTH2Pas"/>
       </Unit11>
+      <Unit12>
+        <Filename Value="codetoolstests\teststdcodetools.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestStdCodetools"/>
+      </Unit12>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <SearchPaths>
       <OtherUnitFiles Value="bugs;lcltests;codetoolstests"/>
@@ -129,12 +134,6 @@
         <StackChecks Value="True"/>
       </Checks>
     </CodeGeneration>
-    <Linking>
-      <Debugging>
-        <GenerateDebugInfo Value="True"/>
-        <DebugInfoType Value="dsAuto"/>
-      </Debugging>
-    </Linking>
     <Other>
       <CompilerMessages>
         <UseMsgFile Value="True"/>
