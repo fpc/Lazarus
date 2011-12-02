@@ -111,6 +111,7 @@ end;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnCreate(
     env:PJNIEnv; this:jobject; alclactivity: jobject): jint; cdecl;
 begin
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'LCLOnCreate called by LCLActivity.onCreate');
   Result := 0;
   javaActivityObject := alclactivity;
 end;
@@ -173,6 +174,7 @@ begin
   javaMethod_LCLDoGetTextBounds := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoGetTextBounds', '()V');
   javaMethod_LCLDoDrawText := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoDrawText', '()V');
 
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'JNI_OnLoad finished');
   result:=JNI_VERSION_1_4;// 1_6 is another option
 end;
 

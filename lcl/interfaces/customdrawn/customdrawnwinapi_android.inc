@@ -2174,8 +2174,6 @@ end;*)
   Function: ExtTextOut
   Params:  none
   Returns: Nothing
-
-
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
