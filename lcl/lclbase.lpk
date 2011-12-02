@@ -31,7 +31,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="291">
+    <Files Count="290">
       <Item1>
         <Filename Value="barchart.pp"/>
         <UnitName Value="BarChart"/>
@@ -1149,59 +1149,55 @@
         <UnitName Value="AsyncProcess"/>
       </Item278>
       <Item279>
-        <Filename Value="avglvltree.pas"/>
-        <UnitName Value="AvgLvlTree"/>
-      </Item279>
-      <Item280>
         <Filename Value="buttonpanel.pas"/>
         <UnitName Value="ButtonPanel"/>
-      </Item280>
-      <Item281>
+      </Item279>
+      <Item280>
         <Filename Value="buttons.pp"/>
         <UnitName Value="Buttons"/>
-      </Item281>
-      <Item282>
+      </Item280>
+      <Item281>
         <Filename Value="calendar.pp"/>
         <UnitName Value="Calendar"/>
-      </Item282>
-      <Item283>
+      </Item281>
+      <Item282>
         <Filename Value="registerlcl.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="RegisterLCL"/>
-      </Item283>
-      <Item284>
+      </Item282>
+      <Item283>
         <Filename Value="include/lclcolordialog.inc"/>
         <Type Value="Include"/>
-      </Item284>
-      <Item285>
+      </Item283>
+      <Item284>
         <Filename Value="valedit.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="ValEdit"/>
-      </Item285>
-      <Item286>
+      </Item284>
+      <Item285>
         <Filename Value="lazcanvas.pas"/>
         <UnitName Value="lazcanvas"/>
-      </Item286>
-      <Item287>
+      </Item285>
+      <Item286>
         <Filename Value="lazdialogs.pas"/>
         <UnitName Value="lazdialogs"/>
-      </Item287>
-      <Item288>
+      </Item286>
+      <Item287>
         <Filename Value="lazregions.pas"/>
         <UnitName Value="lazregions"/>
-      </Item288>
-      <Item289>
+      </Item287>
+      <Item288>
         <Filename Value="customdrawn_common.pas"/>
         <UnitName Value="customdrawn_common"/>
-      </Item289>
-      <Item290>
+      </Item288>
+      <Item289>
         <Filename Value="customdrawncontrols.pas"/>
         <UnitName Value="customdrawncontrols"/>
-      </Item290>
-      <Item291>
+      </Item289>
+      <Item290>
         <Filename Value="customdrawndrawers.pas"/>
         <UnitName Value="customdrawndrawers"/>
-      </Item291>
+      </Item290>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>

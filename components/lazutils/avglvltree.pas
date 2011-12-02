@@ -31,7 +31,7 @@ unit AvgLvlTree;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds;
+  Classes, SysUtils;
 
 type
   TAvgLvlTree = class;
@@ -102,7 +102,7 @@ type
     procedure FreeAndDelete(ANode: TAvgLvlTreeNode);
     property Count: integer read FCount;
     function ConsistencyCheck: integer;
-    procedure WriteReportToStream(s: TStream; var StreamSize: TStreamSeekType);
+    procedure WriteReportToStream(s: TStream);
     function ReportAsString: string;
     property NodeMemManager: TAvgLvlTreeNodeMemManager read FNodeMemManager write FNodeMemManager;
     constructor Create(OnCompareMethod: TListSortCompare);
@@ -1120,15 +1120,13 @@ begin
   OldData.Free;
 end;
 
-procedure TAvgLvlTree.WriteReportToStream(s: TStream;
-  var StreamSize: TStreamSeekType);
+procedure TAvgLvlTree.WriteReportToStream(s: TStream);
 var h: string;
 
   procedure WriteStr(const Txt: string);
   begin
     if s<>nil then
       s.Write(Txt[1],length(Txt));
-    inc(StreamSize,length(Txt));
   end;
 
   procedure WriteTreeNode(ANode: TAvgLvlTreeNode; const Prefix: string);
@@ -1153,21 +1151,15 @@ end;
 
 function TAvgLvlTree.ReportAsString: string;
 var ms: TMemoryStream;
-  StreamSize: TStreamSeekType;
 begin
   Result:='';
   ms:=TMemoryStream.Create;
   try
-    StreamSize:=0;
-    WriteReportToStream(nil,StreamSize);
-    ms.Size:=StreamSize;
-    if StreamSize>0 then begin
-      StreamSize:=0;
-      WriteReportToStream(ms,StreamSize);
-      ms.Position:=0;
-      SetLength(Result,StreamSize);
-      ms.Read(Result[1],TMemStreamSeekType(StreamSize));
-    end;
+    WriteReportToStream(ms);
+    ms.Position:=0;
+    SetLength(Result,ms.Size);
+    if Result<>'' then
+      ms.Read(Result[1],length(Result));
   finally
     ms.Free;
   end;

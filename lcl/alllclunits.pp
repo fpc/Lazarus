@@ -24,9 +24,9 @@ uses
   WSControls, WSDesigner, WSDialogs, WSExtCtrls, WSExtDlgs, WSFactory, 
   WSForms, WSGrids, WSImgList, WSLCLClasses, WSMenus, WSPairSplitter, WSProc, 
   WSReferences, WSSpin, WSStdCtrls, WSToolwin, ActnList, Arrow, AsyncProcess, 
-  AvgLvlTree, ButtonPanel, Buttons, Calendar, RegisterLCL, ValEdit, lazcanvas, 
-  lazdialogs, lazregions, customdrawn_common, customdrawncontrols, 
-  customdrawndrawers, LazarusPackageIntf;
+  ButtonPanel, Buttons, Calendar, RegisterLCL, ValEdit, lazcanvas, lazdialogs, 
+  lazregions, customdrawn_common, customdrawncontrols, customdrawndrawers, 
+  LazarusPackageIntf;
 
 implementation
 
