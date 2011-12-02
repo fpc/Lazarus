@@ -29,6 +29,7 @@ unit Interfaces;
 interface 
 
 uses
+  paswstring,
   InterfaceBase;
 
 implementation

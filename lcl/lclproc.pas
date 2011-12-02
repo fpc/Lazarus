@@ -33,10 +33,7 @@ interface
 uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
   Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
-  LCLStrConsts, LCLType, WSReferences, LazMethodList, LazUTF8
-  {$IFDEF EnablePasWString}, paswstring{$ENDIF}
-  {$IFNDEF DisableCWString}{$ifdef unix}{$ifndef DisableIconv}, cwstring{$endif}{$endif}{$ENDIF}
-  ;
+  LCLStrConsts, LCLType, WSReferences, LazMethodList, LazUTF8;
 
 type
   TMethodList = LazMethodList.TMethodList;

@@ -32,6 +32,7 @@ unit Interfaces;
 interface
 
 uses 
+  {$IFNDEF DisableCWString}cwstring,{$ENDIF}
   InterfaceBase;
 
 implementation

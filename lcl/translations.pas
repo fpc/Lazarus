@@ -70,8 +70,7 @@ unit Translations;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, StringHashList, LConvEncoding
-  {$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF};
+  Classes, SysUtils, LCLProc, FileUtil, StringHashList, LConvEncoding;
 
 type
   TStringsType = (stLrt, stRst);
