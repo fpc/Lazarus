@@ -233,7 +233,7 @@ begin
     Exit;
   TabWidget := TQtTabWidget(ATabControl.Handle);
   TabWidget.BeginUpdate;
-  TabWidget.setCurrentIndex(AIndex);
+  TabWidget.setCurrentWidget(TQtWidget(ATabControl.Page[AIndex].Handle));
   TabWidget.EndUpdate;
 end;
 
