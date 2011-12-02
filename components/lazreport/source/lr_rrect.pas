@@ -381,40 +381,63 @@ type
 procedure MixRoundRect(Canvas:TCanvas; X1, Y1, X2, Y2: integer; RX, RY: integer;
   SqrCorners: TCornerSet);
 var
-  Bezier: TBezier;
   Pts: PPoint;
   c: Integer;
-  rx3,ry3: Extended;
+  Mx,My: Integer;
 
-  procedure AddCorner(Ax,Ay,Bx,By,Cx,Cy,Dx,Dy: Extended; Px,Py:Integer; Square: boolean);
+  procedure Corner(Ax,Ay,Bx,By,Cx,Cy:Integer);
   begin
-    if Square then begin
-      ReallocMem(Pts, SizeOf(TPoint)*(c+3));
-      Pts[c].x:=trunc(ax);  Pts[c].y:=Trunc(ay);  inc(c);
-      Pts[c].x:=Px;         Pts[c].y:=Py;         inc(c);
-      Pts[c].x:=Trunc(dx);  Pts[c].y:=Trunc(dy);  inc(c);
-    end else begin
-      Bezier[0].X:=ax; Bezier[0].Y:=ay;
-      Bezier[1].X:=bx; Bezier[1].Y:=by;
-      Bezier[2].X:=cx; Bezier[2].Y:=cy;
-      Bezier[3].X:=dx; Bezier[3].Y:=dy;
-      Bezier2PolyLine(Bezier, Pts, c);
-    end;
+    ReallocMem(Pts, SizeOf(TPoint)*(c+3));
+    Pts[c].x:=ax; Pts[c].y:=ay; inc(c);
+    Pts[c].x:=bx; Pts[c].y:=by; inc(c);
+    Pts[c].x:=cx; Pts[c].y:=cy; inc(c);
   end;
 
 begin
-  ry3 := ry/6;
-  rx3 := rx/6;
-  x2 := x2-1;
-  y2 := y2-1;
-  rx := rx div 2;
-  ry := ry div 2;
-  Pts := nil;
+
+  X2 := X2-1;
+  Y2 := Y2-1;
+
+  // basic checks
+  if X1>X2 then
+  begin
+    c :=X2;
+    X2 := X1;
+    X1 := c;
+  end;
+  if Y1>Y2 then
+  begin
+    c := Y2;
+    Y2 := Y1;
+    Y1 := c;
+  end;
+  if RY>(Y2-Y1) then
+    RY:=(Y2-Y1);
+  if RX>(X2-X1) then
+    RX :=(X2-X1);
+
+  MX := RX div 2;
+  MY := RY div 2;
+
   c := 0;
-  AddCorner(x1+rx,y1,x1+rx3,y1,x1,y1+ry3,x1,y1+ry,x1,y1,ctTL in SqrCorners);
-  AddCorner(x1,y2-ry,x1,y2-ry3,x1+rx3,y2,x1+rx,y2,x1,y2,ctBL in SqrCorners);
-  AddCorner(x2-rx,y2,x2-rx3,y2,x2,y2-ry3,x2,y2-ry,x2,y2,ctBR in SqrCorners);
-  AddCorner(x2,y1+ry,x2,y1+ry3,x2-rx3,y1,x2-rx,y1,x2,y1,ctTR in SqrCorners);
+  Pts := nil;
+  if ctTL in SqrCorners then
+    Corner(X1+MX,Y1, X1,Y1, X1,Y1+MY)
+  else
+    BezierArcPoints(X1,Y1,RX,RY, 90*16, 90*16, 0, Pts, c);
+  if ctBL in SqrCorners then
+    Corner(X1,Y2-MY,X1,Y2,X1+MX,Y2)
+  else
+    BezierArcPoints(X1,Y2-RY,RX,RY, 180*16, 90*16, 0, Pts, c);
+  if ctBR in SqrCorners then
+    Corner(X2-MX,Y2, X2,Y2, X2, Y2-MY)
+  else
+    BezierArcPoints(X2-RX,Y2-RY,RX,RY, 270*16, 90*16, 0, Pts, c);
+  if ctTR in SqrCorners then
+    Corner(X2,Y1+MY, X2,Y1, X2-MX,Y1)
+  else
+    BezierArcPoints(X2-RX,Y1,RX,RY, 0, 90*16, 0, Pts, c);
+
   Canvas.Polygon(Pts, c);
   ReallocMem(Pts, 0);
 end;
