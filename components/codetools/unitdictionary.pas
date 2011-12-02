@@ -297,15 +297,17 @@ begin
   if Units.FindPointer(NewUnit)<>nil then exit;
   Units.Add(Result);
   Result.UnitGroups.Add(Self);
-  if Dictionary.NoGroup<>Self then
-    Result.UnitGroups.Remove(Dictionary.NoGroup);
+  if (Dictionary.NoGroup<>Self) then
+    Dictionary.NoGroup.RemoveUnit(NewUnit);
   Dictionary.IncreaseChangeStamp;
 end;
 
 procedure TUDUnitGroup.RemoveUnit(TheUnit: TUDUnit);
 begin
+  if Units.FindPointer(TheUnit)=nil then exit;
   Units.RemovePointer(TheUnit);
   TheUnit.UnitGroups.RemovePointer(Self);
+  Dictionary.IncreaseChangeStamp;
 end;
 
 { TUDFileItem }
@@ -369,6 +371,8 @@ var
   Group: TUDUnitGroup;
   Item: TUDIdentifier;
   SubAVLNode: TAVLTreeNode;
+  LastUnit: TUDUnit;
+  LastGroup: TUDUnitGroup;
 begin
   if NoGroup=nil then
     e('DefaultGroup=nil');
@@ -378,8 +382,18 @@ begin
   if UnitsByFilename.Count<>UnitsByName.Count then
     e('UnitsByFilename.Count<>UnitsByName.Count');
 
-  // check FUnitsByName
-  AVLNode:=FUnitsByName.FindLowest;
+  if UnitGroupsByFilename.ConsistencyCheck<>0 then
+    e('UnitGroupsByFilename.ConsistencyCheck<>0');
+  if UnitGroupsByName.ConsistencyCheck<>0 then
+    e('UnitGroupsByName.ConsistencyCheck<>0');
+  if UnitsByName.ConsistencyCheck<>0 then
+    e('UnitsByName.ConsistencyCheck<>0');
+  if UnitsByFilename.ConsistencyCheck<>0 then
+    e('UnitsByFilename.ConsistencyCheck<>0');
+
+  // check UnitsByName
+  AVLNode:=UnitsByName.FindLowest;
+  LastUnit:=nil;
   while AVLNode<>nil do begin
     CurUnit:=TUDUnit(AVLNode.Data);
     if CurUnit.Name='' then
@@ -390,27 +404,43 @@ begin
       e('unit '+CurUnit.Name+' in FUnitsByName not in FUnitsByFilename');
     if CurUnit.UnitGroups.Count=0 then
       e('unit '+CurUnit.Name+' has not group');
+    if CurUnit.UnitGroups.ConsistencyCheck<>0 then
+      e('unit '+CurUnit.Name+' UnitGroups.ConsistencyCheck<>0');
+    if (LastUnit<>nil)
+    and (CompareFilenames(LastUnit.Filename,CurUnit.Filename)=0) then
+      e('unit '+CurUnit.Name+' exists twice: '+CurUnit.Filename);
     SubAVLNode:=CurUnit.UnitGroups.FindLowest;
+    LastGroup:=nil;
     while SubAVLNode<>nil do begin
       Group:=TUDUnitGroup(SubAVLNode.Data);
       if Group.Units.FindPointer(CurUnit)=nil then
-        e('unit '+CurUnit.Name+' not in group '+Group.Name);
+        e('unit '+CurUnit.Name+' not in group '+Group.Filename);
+      if LastGroup=Group then
+        e('unit '+CurUnit.Name+' twice in group '+Group.Filename);
+      LastGroup:=Group;
       SubAVLNode:=CurUnit.UnitGroups.FindSuccessor(SubAVLNode);
     end;
-    AVLNode:=FUnitsByName.FindSuccessor(AVLNode);
+    LastUnit:=CurUnit;
+    AVLNode:=UnitsByName.FindSuccessor(AVLNode);
   end;
 
-  // FUnitsByFilename
-  AVLNode:=FUnitsByFilename.FindLowest;
+  // UnitsByFilename
+  AVLNode:=UnitsByFilename.FindLowest;
+  LastUnit:=nil;
   while AVLNode<>nil do begin
     CurUnit:=TUDUnit(AVLNode.Data);
     if FUnitsByName.FindPointer(CurUnit)=nil then
       e('unit '+CurUnit.Name+' in FUnitsByFilename not in FUnitsByName');
-    AVLNode:=FUnitsByFilename.FindSuccessor(AVLNode);
+    if (LastUnit<>nil)
+    and (CompareFilenames(LastUnit.Filename,CurUnit.Filename)=0) then
+      e('unit '+CurUnit.Name+' exists twice: '+CurUnit.Filename);
+    LastUnit:=CurUnit;
+    AVLNode:=UnitsByFilename.FindSuccessor(AVLNode);
   end;
 
-  // check FUnitGroupsByName
-  AVLNode:=FUnitGroupsByName.FindLowest;
+  // check UnitGroupsByName
+  AVLNode:=UnitGroupsByName.FindLowest;
+  LastGroup:=nil;
   while AVLNode<>nil do begin
     Group:=TUDUnitGroup(AVLNode.Data);
     if (Group.Name='') and (Group<>NoGroup) then
@@ -419,27 +449,42 @@ begin
       e('group '+Group.Name+' without filename');
     if FUnitGroupsByFilename.FindPointer(Group)=nil then
       e('group '+Group.Name+' in FUnitGroupsByName not in FUnitGroupsByFilename');
+    if Group.Units.ConsistencyCheck<>0 then
+      e('group '+Group.Name+' Group.Units.ConsistencyCheck<>0');
+    if (LastGroup<>nil)
+    and (CompareFilenames(LastGroup.Filename,Group.Filename)=0) then
+      e('group '+Group.Name+' exists twice: '+Group.Filename);
     SubAVLNode:=Group.Units.FindLowest;
+    LastUnit:=nil;
     while SubAVLNode<>nil do begin
       CurUnit:=TUDUnit(SubAVLNode.Data);
       if CurUnit.UnitGroups.FindPointer(Group)=nil then
         e('group '+Group.Name+' has not the unit '+CurUnit.Name);
+      if LastUnit=CurUnit then
+        e('group '+Group.Name+' has unit twice '+CurUnit.Filename);
+      LastUnit:=CurUnit;
       SubAVLNode:=Group.Units.FindSuccessor(SubAVLNode);
     end;
-    AVLNode:=FUnitGroupsByName.FindSuccessor(AVLNode);
+    LastGroup:=Group;
+    AVLNode:=UnitGroupsByName.FindSuccessor(AVLNode);
   end;
 
-  // FUnitGroupsByFilename
-  AVLNode:=FUnitGroupsByFilename.FindLowest;
+  // UnitGroupsByFilename
+  AVLNode:=UnitGroupsByFilename.FindLowest;
+  LastGroup:=nil;
   while AVLNode<>nil do begin
     Group:=TUDUnitGroup(AVLNode.Data);
     if FUnitGroupsByName.FindPointer(Group)=nil then
       e('group '+Group.Name+' in FUnitGroupsByFilename not in FUnitGroupsByName');
-    AVLNode:=FUnitGroupsByFilename.FindSuccessor(AVLNode);
+    if (LastGroup<>nil)
+    and (CompareFilenames(LastGroup.Filename,Group.Filename)=0) then
+      e('group '+Group.Name+' exists twice: '+Group.Filename);
+    LastGroup:=Group;
+    AVLNode:=UnitGroupsByFilename.FindSuccessor(AVLNode);
   end;
 
-  // FIdentifiers
-  AVLNode:=FIdentifiers.FindLowest;
+  // Identifiers
+  AVLNode:=Identifiers.FindLowest;
   while AVLNode<>nil do begin
     Item:=TUDIdentifier(AVLNode.Data);
     if Item.Name='' then
@@ -448,9 +493,8 @@ begin
       e('identifier '+Item.Name+' without unit');
     if not Item.DUnit.HasIdentifier(Item) then
       e('identifier '+Item.Name+' not in unit '+Item.DUnit.Name);
-    AVLNode:=FIdentifiers.FindSuccessor(AVLNode);
+    AVLNode:=Identifiers.FindSuccessor(AVLNode);
   end;
-
 end;
 
 procedure TUnitDictionary.SaveToFile(const Filename: string);

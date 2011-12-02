@@ -334,6 +334,7 @@ begin
       except
         // parse error
       end;
+      //ConsistencyCheck;
       if Ok then begin
         OwnerList:=PackageEditingInterface.GetPossibleOwnersOfUnit(
           fParsingTool.MainFilename,[piosfIncludeSourceDirectories]);
@@ -345,8 +346,13 @@ begin
                 Pkg:=TIDEPackage(OwnerList[i]);
                 if Pkg.IsVirtual then continue;
                 UDGroup:=AddUnitGroup(Pkg.Filename,Pkg.Name);
-                //debugln(['TCodyUnitDictionary.OnIdle Pkg=',Pkg.Filename]);
+                //debugln(['TCodyUnitDictionary.OnIdle Pkg=',Pkg.Filename,' Name=',Pkg.Name]);
+                if UDGroup=nil then begin
+                  debugln(['ERROR: TCodyUnitDictionary.OnIdle unable to AddUnitGroup: File=',Pkg.Filename,' Name=',Pkg.Name]);
+                  exit;
+                end;
                 UDGroup.AddUnit(UDUnit);
+                //ConsistencyCheck;
               end;
             end;
           finally
