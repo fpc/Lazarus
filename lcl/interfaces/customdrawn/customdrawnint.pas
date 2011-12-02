@@ -158,6 +158,7 @@ type
     ScreenBitmapRawImage: TRawImage;
     ScreenBitmapHeight: Integer;
     ScreenBitmapWidth: Integer;
+    ScreenImage: TLazIntfImage;
 
     constructor Create; override;
     destructor Destroy; override;

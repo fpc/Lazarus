@@ -3471,6 +3471,8 @@ end;
   containing the alpha channel. White pixels in the alpha channel will correspond
   to the source image pixel being fully drawn, grey ones are merged and
   black ones ignored.
+
+  If ASourceAlpha = nil then it will utilize the alpha channel from ASource
 }
 procedure TLazIntfImage.AlphaBlend(ASource, ASourceAlpha: TLazIntfImage;
   const ADestX, ADestY: Integer);
@@ -3493,9 +3495,11 @@ begin
       // Never draw outside the destination
       if (CurX < 0) or (CurY < 0) then Continue;
 
-      // All channels in the Alpha should have the same value
-      // So getting any of them should be enough
-      MaskValue := ASourceAlpha.Colors[x, y].red;
+      if ASourceAlpha = nil then
+        MaskValue := ASourceAlpha.Colors[x, y].alpha
+      else
+        MaskValue := ASource.Colors[x, y].alpha;
+
       InvMaskValue := $FFFF - MaskValue;
 
       if MaskValue = $FFFF then

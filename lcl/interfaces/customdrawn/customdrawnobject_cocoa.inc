@@ -106,10 +106,6 @@ begin
 
   { Prepares the Native DC for the ScreenDC }
 
-  ScreenBitmapHeight := 100;
-  ScreenBitmapWidth := 100;
-  ScreenBitmapRawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(ScreenBitmapWidth, ScreenBitmapHeight);
-  ScreenBitmapRawImage.CreateData(True);
   ScreenBitmap := TCocoaBitmap.Create(ScreenBitmapWidth, ScreenBitmapHeight,
     32, 4, cbaDWord, cbtARGB, ScreenBitmapRawImage.Data);
   ScreenDC.NativeDC := PtrInt(TCocoaContext.Create);

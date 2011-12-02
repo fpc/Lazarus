@@ -363,15 +363,25 @@ end;*)
 function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
+  lazdc: TLazCanvas;
 begin
   {$ifdef VerboseCDText}
     DebugLn(Format('[WinAPI ExtTextOut] DC=%x X=%d Y=%d Str=%s Count=%d', [DC, X, Y, StrPas(Str), Count]));
   {$endif}
-{  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx);
-  if not Assigned(ctx) then Exit;
-  ctx.TextOut(X,Y, Str, Count, Dx);}
+
+  if not IsValidDC(DC) then Exit;
+
+  lazdc := TLazCanvas(ScreenDC);
+  if lazdc.NativeDC = 0 then Exit;
+  ctx := TCocoaContext(lazdc.NativeDC);
+
+  // Native TextOut
+  ctx.TextOut(X,Y, Str, Count, Dx);
+
+  // Now blend it into our DC
+  lazdc := TLazCanvas(DC);
+  lazdc.AlphaBlend(ScreenDC, X, Y, 0, 0, ScreenBitmapWidth, ScreenBitmapHeight);
 end;
 
 (*function TCocoaWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
