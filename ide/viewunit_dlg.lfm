@@ -27,7 +27,6 @@ object ViewUnitDialog: TViewUnitDialog
     OnDrawItem = ListboxDrawItem
     OnKeyDown = ListboxKeyDown
     PopupMenu = popListBox
-    ScrollWidth = 362
     Style = lbOwnerDrawFixed
     TabOrder = 0
   end
@@ -37,12 +36,16 @@ object ViewUnitDialog: TViewUnitDialog
     Top = 346
     Width = 366
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     CancelButton.OnClick = CancelButtonClick
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
@@ -80,7 +83,6 @@ object ViewUnitDialog: TViewUnitDialog
       Height = 23
       Top = 2
       Width = 324
-      FilteredListbox = Listbox
       ButtonWidth = 23
       NumGlyphs = 0
       Anchors = [akTop, akLeft, akRight]
@@ -88,6 +90,7 @@ object ViewUnitDialog: TViewUnitDialog
       MaxLength = 0
       ParentFont = False
       TabOrder = 0
+      FilteredListbox = Listbox
     end
   end
   object popListBox: TPopupMenu

@@ -197,7 +197,11 @@ procedure TViewUnitDialog.ListboxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_RETURN then
-    OKButtonClick(nil);
+    OKButtonClick(nil)
+  // A hack to prevent 'O' working as shortcut for OK-button.
+  // Should be removed when issue #20599 is resolved.
+  else if (Key = VK_O) and (Shift = []) then
+    Key:=VK_UNKNOWN;
 end;
 
 procedure TViewUnitDialog.MultiselectCheckBoxClick(Sender :TObject);

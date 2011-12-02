@@ -19,11 +19,15 @@ object UseUnitDialog: TUseUnitDialog
     Top = 384
     Width = 351
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     HelpButton.Enabled = False
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 4
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
@@ -77,10 +81,9 @@ object UseUnitDialog: TUseUnitDialog
     ItemHeight = 0
     OnDblClick = UnitsListBoxDblClick
     OnDrawItem = UnitsListBoxDrawItem
-    ScrollWidth = 347
+    OnKeyDown = UnitsListBoxKeyDown
     Style = lbOwnerDrawFixed
     TabOrder = 1
-    TopIndex = -1
   end
   object AllUnitsCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -103,7 +106,6 @@ object UseUnitDialog: TUseUnitDialog
     Height = 20
     Top = 6
     Width = 320
-    FilteredListbox = UnitsListBox
     ButtonWidth = 23
     NumGlyphs = 0
     Anchors = [akTop, akLeft, akRight]
@@ -112,5 +114,6 @@ object UseUnitDialog: TUseUnitDialog
     MaxLength = 0
     ParentFont = False
     TabOrder = 0
+    FilteredListbox = UnitsListBox
   end
 end

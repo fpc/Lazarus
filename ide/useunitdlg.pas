@@ -53,6 +53,8 @@ type
     procedure UnitsListBoxDblClick(Sender: TObject);
     procedure UnitsListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
+    procedure UnitsListBoxKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     UnitImgInd: Integer;
     FMainUsedUnits: TStrings;
@@ -192,6 +194,15 @@ begin
     IDEImages.Images_16.Draw(Canvas, 1, ARect.Top, UnitImgInd, ena);
     Canvas.TextRect(ARect, ARect.Left + 20, ARect.Top, Items[Index]);
   end;
+end;
+
+procedure TUseUnitDialog.UnitsListBoxKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  // A hack to prevent 'O' working as shortcut for OK-button.
+  // Should be removed when issue #20599 is resolved.
+  if (Key = VK_O) and (Shift = []) then
+    Key:=VK_UNKNOWN;
 end;
 
 function TUseUnitDialog.GetAvailableProjUnits(SrcEdit: TSourceEditor): TModalResult;
