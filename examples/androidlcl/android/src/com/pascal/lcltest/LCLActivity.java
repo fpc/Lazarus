@@ -50,20 +50,36 @@ public class LCLActivity extends Activity
   {
     super.onCreate(savedInstanceState);
           
-//        TextView  tv = new TextView(this);
-//        tv.setText( Integer.toString(intFromJNI()) );
-//        setContentView(tv);
     LCLSurface lclsurface = new LCLSurface(this);
     setContentView(lclsurface);
     lclsurface.postInvalidate();
+    // Tell the LCL that an OnCreate has happened and what is our instance
+    LCLOnCreate(this);
   }
   
-  // JNI table of functions  
+  // JNI table of Pascal functions
   public native int LCLDrawToBitmap(int width, int height, Bitmap bitmap);
   public native int LCLOnTouch(float x, float y, int action);
+  public native int LCLOnCreate(LCLActivity lclactivity);
 
-  public long nativeCodeLoaded=0;
-    
+  // Functions exported to the Pascal side
+
+  // input: String lcltext
+  // output: int lclwidth, int lclheight
+  public void LCLDoGetTextBounds()
+  {
+    Paint paint = new Paint();
+    Rect bounds = new Rect();
+    paint.getTextBounds(lcltext, 0, lcltext.length(), bounds);
+    lclwidth = bounds.width();
+    lclheight = bounds.height();
+  }
+
+  // Fields exported to the Pascal side for easier data communication
+  public String lcltext;
+  public int lclwidth;
+  public int lclheight;
+
   static
   {
     try 

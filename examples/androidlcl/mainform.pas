@@ -16,6 +16,7 @@ type
   TForm1 = class(TForm)
     Arrow1: TArrow;
     Button1: TButton;
+    CheckBox1: TCheckBox;
     ProgressBar1: TProgressBar;
     TrackBar1: TTrackBar;
     procedure Arrow1Click(Sender: TObject);

@@ -148,7 +148,7 @@ type va_list=pointer;
      PPJavaVM=^PJavaVM;
      PJavaVM=^JavaVM;
 
-     JNINativeInterface={$ifdef packedrecords}packed{$endif} record
+     JNINativeInterface= record
       reserved0:pointer;
       reserved1:pointer;
       reserved2:pointer;
@@ -513,9 +513,9 @@ function JNI_GetCreatedJavaVMs(vm:PPJavaVM;ASize:jsize;p:Pjsize):jint;{$ifdef ms
  * called by JNI, not provided by JNI.
  *)
 
-var
+{var
   curVM:PJavaVM=nil;
-  curEnv:PJNIEnv=nil;
+  curEnv:PJNIEnv=nil;}
       
 (*
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint;{$ifdef mswindows}stdcall;{$else}cdecl;{$endif}
@@ -523,7 +523,7 @@ procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer);{$ifdef mswindows}stdcall;{$
 *)
 implementation
 
-function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint;{$ifdef mswindows}stdcall;{$else}cdecl;{$endif}
+(*function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint;{$ifdef mswindows}stdcall;{$else}cdecl;{$endif}
 begin
  curVM:=vm;
  result:=JNI_VERSION_1_6;
@@ -531,7 +531,7 @@ end;
 
 procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer);{$ifdef mswindows}stdcall;{$else}cdecl;{$endif}
 begin
-end;
+end;*)
 
 end.
 

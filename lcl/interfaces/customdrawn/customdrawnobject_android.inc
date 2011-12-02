@@ -18,16 +18,6 @@
  *****************************************************************************
 }
 
-{function Java_com_pascal_lclproject_LCLActivity_stringFromJNI(env:PJNIEnv;this:jobject):jstring; cdecl;
-var x:single;
-begin
-  __android_log_write(ANDROID_LOG_INFO,'nativetest','Java_com_bero_nativetest_Main_stringFromJNI entered');
-  curEnv^.SetLongField(curEnv,curClass,nativeCodeLoaded,1);
-  x:=8;
-  result:=env^.NewStringUTF(env,pchar('Hello from native free pascal code by BeRo to the java world on the android platform ! '+floattostr(x*0.5)));
-  __android_log_write(ANDROID_LOG_INFO,'nativetest','Java_com_bero_nativetest_Main_stringFromJNI exited');
-end;}
-
 const
   ACTION_DOWN = 0;
   ACTION_UP = 1;
@@ -39,15 +29,10 @@ var
   lTarget: TWinControl;
   lEventPos: TPoint;
 begin
-  eventResult := 0;
-
   {$ifdef VerboseCDEvents}
   __android_log_write(ANDROID_LOG_INFO,'lclapp',PChar(Format('LCLOnTouch called x=%f y=%f action=%d', [x, y, action])));
   {$endif}
-{  curJavaClass := env^^.GetObjectClass(env, this);
-  __android_log_write(ANDROID_LOG_INFO,'nativetest','LCLOnTouch after GetObjectClass');}
-  curJavaObject := this;
-  curEnv := env;
+  eventResult := 0;
 
   lCurForm := GetCurrentForm();
   lTarget := FindControlWhichReceivedEvent(lCurForm.LCLForm, lCurForm.Children, Round(X), Round(Y));
@@ -68,6 +53,7 @@ begin
     ACTION_MOVE: LCLSendMouseMoveMsg(lTarget, lEventPos.X, lEventPos.Y, []);
   end;
 
+  // This sends messages like Invalidate requests
   Result := eventResult;
 end;
 
@@ -122,6 +108,13 @@ begin
   AndroidBitmap_unlockPixels(env, abitmap);
 end;
 
+function Java_com_pascal_lclproject_LCLActivity_LCLOnCreate(
+    env:PJNIEnv; this:jobject; alclactivity: jobject): jint; cdecl;
+begin
+  Result := 0;
+  javaActivityObject := alclactivity;
+end;
+
 const NativeMethods: array[0..1] of JNINativeMethod=
        ((name:'LCLDrawToBitmap';
          signature:'(IILandroid/graphics/Bitmap;)I';
@@ -133,46 +126,51 @@ const NativeMethods: array[0..1] of JNINativeMethod=
 
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 begin
-  curVM:=vm;
+  javaVMRef := vm;
 
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'JNI_OnLoad called');
-  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('CurVM=%x', [PtrInt(CurVM)])));
-  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('CurVM^=%x', [PtrInt(CurVM^)])));
-  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('CurVM^^.reserved0=%x', [PtrInt(CurVM^^.reserved0)])));
-  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('CurVM^^.GetEnv=%x', [PtrInt(Pointer(@CurVM^^.GetEnv))])));
+{  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('vm=%x', [PtrInt(vm)])));
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('vm^=%x', [PtrInt(vm^)])));
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('vm^^.reserved0=%x', [PtrInt(vm^^.reserved0)])));
+  __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(Format('vm^^.GetEnv=%x', [PtrInt(Pointer(@vm^^.GetEnv))])));  }
   {
     vm^^.GetEnv crashes HTC Wildfire, Alcatel and the Emulator if you don't build your project with -CpARMV6
     see: http://groups.google.com/group/android-ndk/browse_thread/thread/ba542483f062a828/ef9077617794e0f5
   }
-  if vm^^.GetEnv(curVM,@curEnv,JNI_VERSION_1_4)<>JNI_OK then
+  if vm^^.GetEnv(vm,@javaEnvRef,JNI_VERSION_1_4)<>JNI_OK then
   begin
     __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'curVM^.GetEnv failed');
-    result:=JNI_ERR;
-    exit;
+    Exit(JNI_ERR);
   end;
 
-  __android_log_write(ANDROID_LOG_INFO,'lclapp','Reading curClass');
-  curJavaClass:=curEnv^^.FindClass(curEnv,'com/pascal/lcltest/LCLActivity');
-  if not assigned(curJavaClass) then
+  // Find our activity class
+  __android_log_write(ANDROID_LOG_INFO,'lclapp','Reading our Activity Class');
+  javaActivityClass := javaEnvRef^^.FindClass(javaEnvRef,'com/pascal/lcltest/LCLActivity');
+  if not assigned(javaActivityClass) then
   begin
-    __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'curEnv^.FindClass failed');
-    result:=JNI_ERR;
-    exit;
-  end;
-  if curEnv^^.RegisterNatives(curEnv, curJavaClass, @NativeMethods[0],length(NativeMethods))<0 then
-  begin
-    __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'curEnv^.RegisterNatives failed');
-    result:=JNI_ERR;
-    exit;
+    __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'javaEnvRef^.FindClass failed');
+    Exit(JNI_ERR);
   end;
 
-  nativeCodeLoaded:=curEnv^^.GetFieldID(curEnv, curJavaClass, 'nativeCodeLoaded','J');
-  if not assigned(nativeCodeLoaded) then
+  // Register Pascal exported calls
+  if javaEnvRef^^.RegisterNatives(javaEnvRef, javaActivityClass, @NativeMethods[0],length(NativeMethods))<0 then
   begin
-    __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'curEnv^.GetFieldID failed');
-    result:=JNI_ERR;
-    exit;
+    __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'javaEnvRef^.RegisterNatives failed');
+    Exit(JNI_ERR);
   end;
+
+  // Read all field IDs
+  JavaField_lcltext := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltext', 'Ljava/lang/String;');
+  JavaField_lclwidth := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclwidth', 'I');
+  JavaField_lclheight := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclheight', 'I');
+  if not assigned(JavaField_lcltext) then
+  begin
+    __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'javaEnvRef^.GetFieldID failed for lcltext');
+    Exit(JNI_ERR);
+  end;
+
+  // Read all method IDs
+  javaMethod_LCLDoGetTextBounds := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoGetTextBounds', '()V');
 
   result:=JNI_VERSION_1_4;// 1_6 is another option
 end;

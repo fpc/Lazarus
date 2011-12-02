@@ -4085,21 +4085,33 @@ end;*)
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
-{var
-  WideStr: WideString;
-  QtDC: TQtDeviceContext absolute DC;}
+var
+  lJavaString: jstring;
 begin
-  {$ifdef VerboseCDWinAPI}
-    DebugLn('[WinAPI GetTextExtentPoint]');
+  {$ifdef VerboseCDText}
+    DebugLn(Format('[WinAPI GetTextExtentPoint] DC=%x javaEnvRef=%x', [DC, PtrInt(javaEnvRef)]));
   {$endif}
 
   Result := False;
 
   if not IsValidDC(DC) then Exit;
 
-{  WideStr := GetUtf8String(Str);
-  Size.cx := QtDC.Metrics.width(@WideStr, Count);
-  Size.cy := QtDC.Metrics.height;}
+  if (javaEnvRef = nil) then Exit;
+
+  // Prepare the input
+  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
+  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+
+  // Call the method
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
+
+  // Read the output
+  Size.cx := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclwidth);
+  Size.cy := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclheight);
+
+  {$ifdef VerboseCDText}
+    DebugLn(Format('[WinAPI GetTextExtentPoint] Size=%d, %d', [Size.cx, Size.cy]));
+  {$endif}
 
   Result := True;
 end;

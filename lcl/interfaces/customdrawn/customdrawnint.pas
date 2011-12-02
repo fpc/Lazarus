@@ -201,16 +201,27 @@ function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnTouch(env:PJNIEnv;this:jobject; x, y: single; action: jint): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap(
     env:PJNIEnv;this:jobject; width, height: jint; abitmap: jobject): jint; cdecl;
+function Java_com_pascal_lclproject_LCLActivity_LCLOnCreate(
+    env:PJNIEnv; this:jobject; alclactivity: jobject): jint; cdecl;
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;
 
 var
-  curVM: PJavaVM=nil;
-  curEnv: PJNIEnv=nil;
-  curJavaClass: JClass = nil;
-  curJavaObject: jobject = nil;
-  nativeCodeLoaded:JfieldID=nil;
-  eventResult: Integer = 0;
+  javaVMRef: PJavaVM=nil;
+  javaEnvRef: PJNIEnv=nil;
+  javaActivityClass: JClass = nil;
+  javaActivityObject: jobject = nil;
+
+  // Fields of our Activity
+  javaField_lcltext: JfieldID=nil;
+  javaField_lclwidth: JfieldID=nil;
+  javaField_lclheight: JfieldID=nil;
+
+  // Methods of our Activity
+  javaMethod_LCLDoGetTextBounds: jmethodid = nil;
+
+  // This is utilized to store the information such as invalidate requests in events
+  eventResult: jint;
 {$endif}
 
 implementation
