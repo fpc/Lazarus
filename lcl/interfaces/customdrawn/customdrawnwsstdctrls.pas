@@ -204,6 +204,8 @@ type
   { TCDWSButton }
 
   TCDWSButton = class(TWSButton)
+  public
+    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 //    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
@@ -214,6 +216,8 @@ type
   { TCDWSCustomCheckBox }
 
   TCDWSCustomCheckBox = class(TWSCustomCheckBox)
+  public
+    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -1093,6 +1097,15 @@ end;*)
 
 { TCDWSButton }
 
+class procedure TCDWSButton.CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+begin
+  ACDControlField := TCDIntfButton.Create(AWinControl);
+  TCDIntfButton(ACDControlField).LCLButton := TButton(AWinControl);
+  ACDControlField.Caption := AWinControl.Caption;
+  ACDControlField.Parent := AWinControl;
+  ACDControlField.Align := alClient;
+end;
+
 {------------------------------------------------------------------------------
   Function: TCDWSButton.CreateHandle
   Params:  None
@@ -1118,12 +1131,7 @@ begin
   TCDWSWinControl.ShowHide(AWinControl);
 
   if lCDWinControl.CDControl = nil then
-  begin
-    lCDWinControl.CDControl := TCDIntfButton.Create(AWinControl);
-    TCDIntfButton(lCDWinControl.CDControl).LCLButton := TButton(AWinControl);
-    lCDWinControl.CDControl.Parent := AWinControl;
-    lCDWinControl.CDControl.Align := alClient;
-  end;
+    CreateCDControl(AWinControl, lCDWinControl.CDControl);
 end;
 
 (*class procedure TCDWSButton.SetDefault(const AButton: TCustomButton;
@@ -1142,59 +1150,18 @@ begin
   if not WSCheckHandleAllocated(AButton, 'SetShortcut') then Exit;
   
   TQtPushButton(AButton.Handle).setShortcut(ShortCutK1, ShortCutK2);
-end;
+end;*)
 
 { TCDWSCustomCheckBox }
 
-{------------------------------------------------------------------------------
-  Method: TCDWSCustomCheckBox.RetrieveState
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class function TCDWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+class procedure TCDWSCustomCheckBox.CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
-  case TQtCheckBox(ACustomCheckBox.Handle).CheckState of
-    QtPartiallyChecked: Result := cbGrayed;
-    QtChecked: Result := cbChecked;
-  else
-    Result := cbUnchecked;
-  end;
+  ACDControlField := TCDCheckBox.Create(AWinControl);
+//    TCDIntfButton(lCDWinControl.CDControl).LCLButton := TButton(AWinControl);
+  ACDControlField.Parent := AWinControl;
+  ACDControlField.Caption := AWinControl.Caption;
+  ACDControlField.Align := alClient;
 end;
-
-{------------------------------------------------------------------------------
-  Method: TCDWSCustomCheckBox.SetShortCut
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TCDWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
-  const ShortCutK1, ShortCutK2: TShortCut);
-begin
-  if not WSCheckHandleAllocated(ACustomCheckBox, 'SetShortcut') then Exit;
-
-  TQtCheckBox(ACustomCheckBox.Handle).setShortcut(ShortCutK1, ShortCutK2);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCDWSCustomCheckBox.SetState
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TCDWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
-var
-  QtCheckBox: TQtCheckBox;
-begin
-  //enclose the call between Begin/EndUpdate to avoid send LM_CHANGE message
-  QtCheckBox := TQtCheckBox(ACustomCheckBox.Handle);
-  QtCheckBox.BeginUpdate;
-  QtCheckBox.setTriState(ACustomCheckBox.AllowGrayed);
-  case NewState of
-    cbGrayed: QtCheckBox.setCheckState(QtPartiallyChecked);
-    cbChecked: QtCheckBox.setCheckState(QtChecked);
-  else
-    QtCheckBox.setCheckState(QtUnchecked);
-  end;
-  QtCheckBox.EndUpdate;
-end;  *)
 
 {------------------------------------------------------------------------------
   Method: TCDWSCustomCheckBox.CreateHandle
@@ -1220,12 +1187,7 @@ begin
   TCDWSWinControl.ShowHide(AWinControl);
 
   if lCDWinControl.CDControl = nil then
-  begin
-    lCDWinControl.CDControl := TCDCheckBox.Create(AWinControl);
-//    TCDIntfButton(lCDWinControl.CDControl).LCLButton := TButton(AWinControl);
-    lCDWinControl.CDControl.Parent := AWinControl;
-    lCDWinControl.CDControl.Align := alClient;
-  end;
+    CreateCDControl(AWinControl, lCDWinControl.CDControl);
 end;
 
 { TCDWSRadioButton }
