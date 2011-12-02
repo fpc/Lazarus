@@ -1558,8 +1558,8 @@ end;
 procedure TAnchorDockMaster.OnIdle(Sender: TObject; var Done: Boolean);
 begin
   if Done then ;
-  Restoring:=false;
   IdleConnected:=false;
+  Restoring:=false;
 end;
 
 procedure TAnchorDockMaster.AsyncSimplify(Data: PtrInt);
