@@ -2217,6 +2217,10 @@ msgstr "Senkrecht,Waagerecht,Elliptisch,Rechteckig,Horiz.-Zentr.,Vert.-Zentr."
 msgid "Variables ..."
 msgstr "Variablen ..."
 
+#: lr_const.sroundrectsqrcorners
+msgid "Squared corners"
+msgstr ""
+
 #: lr_const.srtffile
 msgid "Rich Text file"
 msgstr "RTF-Datei"

@@ -2206,6 +2206,10 @@ msgstr "Vertical,Horizontal,Elíptica,Rectángulo,Centro_Horiz.,Centro_Vert."
 msgid "Variables ..."
 msgstr ""
 
+#: lr_const.sroundrectsqrcorners
+msgid "Squared corners"
+msgstr "Esquinas cuadradas"
+
 #: lr_const.srtffile
 msgid "Rich Text file"
 msgstr "Archivo Rich Text"

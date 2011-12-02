@@ -34,6 +34,7 @@ resourcestring
   sRoundRectFormStyle='Style';
   sRoundRectFormStyleDif='Vertical,Horizontal,Elliptic,Rectangle,Horiz._Center,Vert._Center';
   sRoundRectFormHint='Click here to define the shadow color or gradian colors';
+  sRoundRectSqrCorners='Squared corners';
 
 //--- PgoptForm resources -----------------------------------------------------
   sPgoptFormCapt = 'Page options';

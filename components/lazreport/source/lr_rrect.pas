@@ -53,7 +53,14 @@ type
     wShadow   : Integer;   // Width of shadow
     sCurve    : Boolean;   // RoundRect On/Off
     wCurve    : Integer;   // Curve size
+    SqrTL     : Boolean;   // Squared top left corner
+    SqrBL     : Boolean;   // Squared bottom left corner
+    SqrBR     : Boolean;   // Squared bottom right corner
+    SqrTR     : Boolean;   // Squared top rigth corner
   end;
+
+  TCorner = (ctTL,ctTR,ctBL,ctBR);
+  TCornerSet = set of TCorner;
 
   { TfrRoundRectView }
 
@@ -67,12 +74,21 @@ type
     function GetShadowColor: TColor;
     function GetShadowWidth: Integer;
     function GetShowGrad: Boolean;
+    function GetSqrBottomLeft: boolean;
+    function GetSqrBottomRight: boolean;
+    function GetSqrTopLeft: boolean;
+    function GetSqrTopRight: boolean;
     procedure SetGradStyle(const AValue: TGradientStyle);
     procedure SetRoundRect(const AValue: boolean);
     procedure SetRoundRectCurve(const AValue: Integer);
     procedure SetShadowColor(const AValue: TColor);
     procedure SetShadowWidth(const AValue: Integer);
     procedure SetShowGrad(const AValue: Boolean);
+    procedure SetSqrBottomLeft(AValue: boolean);
+    procedure SetSqrBottomRight(AValue: boolean);
+    procedure SetSqrTopLeft(AValue: boolean);
+    procedure SetSqrTopRight(AValue: boolean);
+    function  GetCorners: TCornerSet;
   public
     constructor Create; override;
     procedure Assign(From: TfrView); override;
@@ -91,10 +107,22 @@ type
     property ShadowWidth : Integer read GetShadowWidth write SetShadowWidth;
     property RoundRect   : boolean read GetRoundRect write SetRoundRect;
     property RoundRectCurve : Integer read GetRoundRectCurve write SetRoundRectCurve;
+    property SquaredTopLeft: boolean read GetSqrTopLeft write SetSqrTopLeft;
+    property SquaredBottomLeft: boolean read GetSqrBottomLeft write SetSqrBottomLeft;
+    property SquaredBottomRight: boolean read GetSqrBottomRight write SetSqrBottomRight;
+    property SquaredTopRight: boolean read GetSqrTopRight write SetSqrTopRight;
   end;
 
   // Editeur de propriétés
+
+  { TfrRoundRectForm }
+
   TfrRoundRectForm = class(TfrObjEditorForm)
+    chkTL: TCheckBox;
+    chkTR: TCheckBox;
+    chkBL: TCheckBox;
+    chkBR: TCheckBox;
+    lblSqrCorners: TLabel;
     M1: TMemo;
     Button5: TButton;
     Button6: TButton;
@@ -123,6 +151,7 @@ type
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure bColorClick(Sender: TObject);
+    procedure chkTLClick(Sender: TObject);
     procedure ShWidthChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure cbCadreClick(Sender: TObject);
@@ -141,6 +170,7 @@ type
     
     procedure ChgColorButton(S: TObject; C: TColor);
     procedure UpdateSample;
+    function  GetCorners: TCornerSet;
   public
     { Déclarations publiques }
     procedure ShowEditor(t: TfrView); override;
@@ -374,11 +404,7 @@ begin
   end;
 end;
 
-type
-  TCorner = (ctTL,ctTR,ctBL,ctBR);
-  TCornerSet = set of TCorner;
-
-procedure MixRoundRect(Canvas:TCanvas; X1, Y1, X2, Y2: integer; RX, RY: integer;
+procedure MixedRoundRect(Canvas:TCanvas; X1, Y1, X2, Y2: integer; RX, RY: integer;
   SqrCorners: TCornerSet);
 var
   Pts: PPoint;
@@ -472,34 +498,103 @@ begin
   Result:=fCadre.SGradian;
 end;
 
+function TfrRoundRectView.GetSqrBottomLeft: boolean;
+begin
+  result := fCadre.SqrBL;
+end;
+
+function TfrRoundRectView.GetSqrBottomRight: boolean;
+begin
+  result := fCadre.SqrBR;
+end;
+
+function TfrRoundRectView.GetSqrTopLeft: boolean;
+begin
+  result := fCadre.SqrTL;
+end;
+
+function TfrRoundRectView.GetSqrTopRight: boolean;
+begin
+  result := fCadre.SqrTR;
+end;
+
 procedure TfrRoundRectView.SetGradStyle(const AValue: TGradientStyle);
 begin
+  BeforeChange;
   fCadre.GradStyle:=aValue;
+  AfterChange;
 end;
 
 procedure TfrRoundRectView.SetRoundRect(const AValue: boolean);
 begin
+  BeforeChange;
   fCadre.sCurve:=aValue;
+  AfterChange;
 end;
 
 procedure TfrRoundRectView.SetRoundRectCurve(const AValue: Integer);
 begin
+  BeforeChange;
   fCadre.wCurve:=aValue;
+  AfterChange;
 end;
 
 procedure TfrRoundRectView.SetShadowColor(const AValue: TColor);
 begin
+  BeforeChange;
   fCadre.SdColor:=aValue;
+  AfterChange;
 end;
 
 procedure TfrRoundRectView.SetShadowWidth(const AValue: Integer);
 begin
+  BeforeChange;
   fCadre.wShadow:=aValue;
+  AfterChange;
 end;
 
 procedure TfrRoundRectView.SetShowGrad(const AValue: Boolean);
 begin
+  BeforeChange;
   fCadre.SGradian:=aValue;
+  AfterChange;
+end;
+
+procedure TfrRoundRectView.SetSqrBottomLeft(AValue: boolean);
+begin
+  BeforeChange;
+  fCadre.SqrBL:=AValue;
+  AfterChange;
+end;
+
+procedure TfrRoundRectView.SetSqrBottomRight(AValue: boolean);
+begin
+  BeforeChange;
+  fCadre.SqrBR:=AValue;
+  AfterChange;
+end;
+
+procedure TfrRoundRectView.SetSqrTopLeft(AValue: boolean);
+begin
+  BeforeChange;
+  fCadre.SqrTL:=AValue;
+  AfterChange;
+end;
+
+procedure TfrRoundRectView.SetSqrTopRight(AValue: boolean);
+begin
+  BeforeChange;
+  fCadre.SqrTR:=AValue;
+  AfterChange;
+end;
+
+function TfrRoundRectView.GetCorners: TCornerSet;
+begin
+  result := [];
+  if fCadre.SqrTL then Include(result, ctTL);
+  if fCadre.SqrBL then Include(result, ctBL);
+  if fCadre.SqrBR then Include(result, ctBR);
+  if fCadre.SqrTR then Include(result, ctTR);
 end;
 
 (********************************************************)
@@ -519,6 +614,10 @@ begin
     fCadre.wShadow := 6;
     fCadre.sCurve := True;
     fCadre.wCurve := 10;
+    fCadre.SqrTL := false;
+    fCadre.SqrBL := false;
+    fCadre.SqrBR := false;
+    fCadre.SqrTR := false;
   finally
     Endupdate;
   end;
@@ -552,6 +651,10 @@ begin
   RestoreProperty('ShadowWidth',XML.GetValue(Path+'Data/ShadowWidth/Value',''));
   RestoreProperty('RoundRect',XML.GetValue(Path+'Data/RoundRect/Value',''));
   RestoreProperty('RoundRectCurve',XML.GetValue(Path+'Data/RoundRectCurve/Value',''));
+  RestoreProperty('SquaredTopLeft',XML.GetValue(Path+'Data/SquaredTopLeft/Value',''));
+  RestoreProperty('SquaredBottomLeft',XML.GetValue(Path+'Data/SquaredBottomLeft/Value',''));
+  RestoreProperty('SquaredBottomRight',XML.GetValue(Path+'Data/SquaredBottomRight/Value',''));
+  RestoreProperty('SquaredTopRight',XML.GetValue(Path+'Data/SquaredTopRight/Value',''));
 end;
 
 procedure TfrRoundRectView.SaveToXML(XML: TLrXMLConfig; const Path: String);
@@ -564,8 +667,10 @@ begin
   XML.SetValue(Path+'Data/ShadowWidth/Value', GetSaveProperty('ShadowWidth'));
   XML.SetValue(Path+'Data/RoundRect/Value', GetSaveProperty('RoundRect'));
   XML.SetValue(Path+'Data/RoundRectCurve/Value', GetSaveProperty('RoundRectCurve'));
-
-
+  XML.SetValue(Path+'Data/SquaredTopLeft/Value', GetSaveProperty('SquaredTopLeft'));
+  XML.SetValue(Path+'Data/SquaredBottomLeft/Value',GetSaveProperty('SquaredBottomLeft'));
+  XML.SetValue(Path+'Data/SquaredBottomRight/Value', GetSaveProperty('SquaredBottomRight'));
+  XML.SetValue(Path+'Data/SquaredTopRight/Value',GetSaveProperty('SquaredTopRight'));
 end;
 
 procedure TfrRoundRectView.CalcGaps;
@@ -656,8 +761,7 @@ begin
 
     if fCadre.sCurve then
     begin
-      RoundRect(x + FSW, y + FSW, x + dx + 1, y + dy + 1, FCu, Fcu);
-      //MixRoundRect(Canvas, x + FSW, y + FSW, x + dx + 1, y + dy + 1, FCu, Fcu, [ctTL,ctBR]);
+      MixedRoundRect(Canvas, x + FSW, y + FSW, x + dx + 1, y + dy + 1, FCu, Fcu, GetCorners);
     end
     else
       Rectangle(x + FSW, y + FSW, x + dx + 1, y + dy + 1);
@@ -673,8 +777,7 @@ begin
     Brush.Color := FillColor;
     if fCadre.sCurve then
     begin
-      RoundRect(x, y, x + dx + 1 - FSW, y + dy + 1 - FSW, FCu, Fcu);
-      //MixRoundRect(Canvas, x, y, x + dx + 1 - FSW, y + dy + 1 - FSW, FCu, Fcu,[ctTL,ctBR]);
+      MixedRoundRect(Canvas, x, y, x + dx + 1 - FSW, y + dy + 1 - FSW, FCu, Fcu, GetCorners);
     end
     else
       Rectangle(x, y, x + dx + 1 - FSW, y + dy + 1 - FSW);
@@ -706,6 +809,7 @@ begin
   bColor3.Hint      := bColor3.Hint;
   BOk.Caption       := sOk;
   bCancel.Caption   := sCancel;
+  lblSqrCorners.Caption := sRoundRectSqrCorners;
 
   cbStyle.Items.CommaText := sRoundRectFormStyleDif;
   for i := 0 to cbStyle.Items.Count - 1 do
@@ -828,8 +932,8 @@ begin
     CC.Brush.Color := fShadowColor;
 
     if cmShadow.Checked then
-      CC.RoundRect(0 + FSW, 0 + FSW, imgSample.Width, imgSample.Height,
-        FCu, FCu)
+      MixedRoundRect(CC,0 + FSW, 0 + FSW, imgSample.Width, imgSample.Height,
+        FCu, FCu, GetCorners)
     else
       CC.Rectangle(0 + FSW, 0 + FSW, imgSample.Width, imgSample.Height);
 
@@ -841,14 +945,23 @@ begin
 
     CC.Brush.Color := fNormalColor;
     if cmShadow.Checked then
-      CC.RoundRect(0, 0, imgSample.Width - FSW, imgSample.Height - FSW,
-        FCu, FCu)
+      MixedRoundRect(CC,0, 0, imgSample.Width - FSW, imgSample.Height - FSW,
+        FCu, FCu, GetCorners)
     else
       CC.Rectangle(0, 0, imgSample.Width - FSW, imgSample.Height - FSW);
   end;
 
   imgSample.Picture.Assign(BM);
   BM.Free;
+end;
+
+function TfrRoundRectForm.GetCorners: TCornerSet;
+begin
+  result := [];
+  if chkTL.Checked then Include(result, ctTL);
+  if chkBL.Checked then Include(result, ctBL);
+  if chkBR.Checked then Include(result, ctBR);
+  if chkTR.Checked then Include(result, ctTR);
 end;
 
 procedure TfrRoundRectForm.bColorClick(Sender: TObject);
@@ -860,6 +973,12 @@ begin
     ChgColorButton(Sender, ColorDlg.Color);
     UpdateSample;
   end;
+end;
+
+procedure TfrRoundRectForm.chkTLClick(Sender: TObject);
+begin
+  //
+  UpdateSample;
 end;
 
 procedure TfrRoundRectForm.ShWidthChange(Sender: TObject);
@@ -933,6 +1052,10 @@ begin
       cbCadre.Checked := (t.Frames<>[]);
       cmShadow.Checked := fCadre.sCurve;
       sCurve.Text := IntToStr(fCadre.wCurve);
+      chkTL.Checked := fCadre.SqrTL;
+      chkBL.Checked := fCadre.SqrBL;
+      chkBR.Checked := fCadre.SqrBR;
+      chkTR.Checked := fCadre.SqrTR;
     end
     else
     begin //Gradian
@@ -959,6 +1082,11 @@ begin
       except
         fCadre.wShadow := 6;
       end;
+
+      fCadre.SqrTL := chkTL.Checked;
+      fCadre.SqrBL := chkBL.Checked;
+      fCadre.SqrBR := chkBR.Checked;
+      fCadre.SqrTR := chkTR.Checked;
 
       fCadre.SGradian:=cbGradian.checked;
       

@@ -1,7 +1,7 @@
 object frRoundRectForm: TfrRoundRectForm
-  Left = 262
+  Left = 162
   Height = 284
-  Top = 162
+  Top = 182
   Width = 562
   ActiveControl = panGrad
   BorderStyle = bsDialog
@@ -14,12 +14,12 @@ object frRoundRectForm: TfrRoundRectForm
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object lblSample: TLabel
     Left = 360
-    Height = 15
+    Height = 14
     Top = 8
-    Width = 44
+    Width = 35
     Caption = 'Sample'
     ParentColor = False
   end
@@ -44,7 +44,7 @@ object frRoundRectForm: TfrRoundRectForm
   end
   object imgSample: TImage
     Left = 360
-    Height = 105
+    Height = 76
     Top = 24
     Width = 193
   end
@@ -100,9 +100,9 @@ object frRoundRectForm: TfrRoundRectForm
   end
   object cbGradian: TCheckBox
     Left = 360
-    Height = 22
-    Top = 136
-    Width = 73
+    Height = 17
+    Top = 104
+    Width = 58
     Caption = 'Gradian '
     OnChange = cbGradianChange
     OnClick = cbGradianClick
@@ -110,43 +110,43 @@ object frRoundRectForm: TfrRoundRectForm
   end
   object panCurve: TPanel
     Left = 360
-    Height = 117
-    Top = 160
+    Height = 149
+    Top = 128
     Width = 197
     BevelInner = bvRaised
     BevelOuter = bvLowered
-    ClientHeight = 117
+    ClientHeight = 149
     ClientWidth = 197
     FullRepaint = False
     TabOrder = 6
     object lblSWidth: TLabel
-      Left = 9
-      Height = 15
-      Top = 41
-      Width = 114
+      Left = 12
+      Height = 14
+      Top = 36
+      Width = 93
       Caption = 'Largeur de l''ombre '
       ParentColor = False
     end
     object lblSColor: TLabel
       Left = 8
-      Height = 15
-      Top = 67
-      Width = 49
+      Height = 14
+      Top = 103
+      Width = 41
       Caption = 'Couleur '
       ParentColor = False
     end
     object bcolor: TImage
-      Left = 128
+      Left = 136
       Height = 25
-      Top = 64
-      Width = 57
+      Top = 100
+      Width = 49
       OnClick = bColorClick
     end
     object cmShadow: TCheckBox
       Left = 8
-      Height = 22
-      Top = 15
-      Width = 57
+      Height = 17
+      Top = 8
+      Width = 47
       Caption = 'Curve'
       Checked = True
       OnClick = cmShadowClick
@@ -155,8 +155,8 @@ object frRoundRectForm: TfrRoundRectForm
     end
     object sCurve: TEdit
       Left = 136
-      Height = 20
-      Top = 12
+      Height = 21
+      Top = 8
       Width = 49
       OnChange = ShWidthChange
       TabOrder = 1
@@ -164,8 +164,8 @@ object frRoundRectForm: TfrRoundRectForm
     end
     object ShWidth: TEdit
       Left = 136
-      Height = 20
-      Top = 37
+      Height = 21
+      Top = 33
       Width = 49
       OnChange = ShWidthChange
       TabOrder = 2
@@ -173,14 +173,54 @@ object frRoundRectForm: TfrRoundRectForm
     end
     object cbCadre: TCheckBox
       Left = 8
-      Height = 22
-      Top = 90
-      Width = 108
+      Height = 17
+      Top = 126
+      Width = 87
       Caption = 'Zone encadr e'
       Checked = True
       OnClick = cbCadreClick
       State = cbChecked
       TabOrder = 3
+    end
+    object lblSqrCorners: TLabel
+      Left = 13
+      Height = 14
+      Top = 68
+      Width = 65
+      Caption = 'lblSqrCorners'
+      ParentColor = False
+    end
+    object chkTL: TCheckBox
+      Left = 140
+      Height = 17
+      Top = 60
+      Width = 18
+      OnClick = chkTLClick
+      TabOrder = 4
+    end
+    object chkTR: TCheckBox
+      Left = 160
+      Height = 17
+      Top = 60
+      Width = 18
+      OnClick = chkTLClick
+      TabOrder = 5
+    end
+    object chkBL: TCheckBox
+      Left = 140
+      Height = 17
+      Top = 77
+      Width = 18
+      OnClick = chkTLClick
+      TabOrder = 6
+    end
+    object chkBR: TCheckBox
+      Left = 160
+      Height = 17
+      Top = 77
+      Width = 18
+      OnClick = chkTLClick
+      TabOrder = 7
     end
   end
   object panGrad: TPanel
@@ -196,9 +236,9 @@ object frRoundRectForm: TfrRoundRectForm
     TabOrder = 7
     object Label1: TLabel
       Left = 8
-      Height = 15
+      Height = 14
       Top = 77
-      Width = 54
+      Width = 45
       Caption = 'End color'
       ParentColor = False
     end
@@ -211,9 +251,9 @@ object frRoundRectForm: TfrRoundRectForm
     end
     object Label2: TLabel
       Left = 8
-      Height = 15
+      Height = 14
       Top = 49
-      Width = 61
+      Width = 51
       Caption = 'Start color'
       ParentColor = False
     end
@@ -227,18 +267,18 @@ object frRoundRectForm: TfrRoundRectForm
     end
     object Label3: TLabel
       Left = 8
-      Height = 15
+      Height = 14
       Top = 16
-      Width = 29
+      Width = 25
       Caption = 'Style'
       ParentColor = False
     end
     object cbStyle: TComboBox
       Left = 64
-      Height = 29
+      Height = 21
       Top = 12
       Width = 121
-      ItemHeight = 0
+      ItemHeight = 13
       Items.Strings = (
         'Vertical'
         'Horizontal'

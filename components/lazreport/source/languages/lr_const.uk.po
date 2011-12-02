@@ -2206,6 +2206,10 @@ msgstr "Вертикальний, Горизонтальний, Еліптичн
 msgid "Variables ..."
 msgstr "Змінні ..."
 
+#: lr_const.sroundrectsqrcorners
+msgid "Squared corners"
+msgstr ""
+
 #: lr_const.srtffile
 msgid "Rich Text file"
 msgstr "Файл Rich Text"
