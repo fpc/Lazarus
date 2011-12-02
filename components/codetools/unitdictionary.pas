@@ -255,7 +255,7 @@ end;
 
 function TUDUnit.IsInGroup(Group: TUDUnitGroup): boolean;
 begin
-  Result:=UnitGroups.FindPointer(Group)<>nil;
+  Result:=AVLFindPointer(UnitGroups,Group)<>nil;
 end;
 
 function TUDUnit.GetDictionary: TUnitDictionary;
@@ -294,7 +294,7 @@ end;
 function TUDUnitGroup.AddUnit(NewUnit: TUDUnit): TUDUnit;
 begin
   Result:=NewUnit;
-  if Units.FindPointer(NewUnit)<>nil then exit;
+  if AVLFindPointer(Units,NewUnit)<>nil then exit;
   Units.Add(Result);
   Result.UnitGroups.Add(Self);
   if (Dictionary.NoGroup<>Self) then
@@ -304,7 +304,7 @@ end;
 
 procedure TUDUnitGroup.RemoveUnit(TheUnit: TUDUnit);
 begin
-  if Units.FindPointer(TheUnit)=nil then exit;
+  if AVLFindPointer(Units,TheUnit)=nil then exit;
   Units.RemovePointer(TheUnit);
   TheUnit.UnitGroups.RemovePointer(Self);
   Dictionary.IncreaseChangeStamp;
@@ -400,7 +400,7 @@ begin
       e('unit without name');
     if CurUnit.Filename='' then
       e('unit '+CurUnit.Name+' without filename');
-    if FUnitsByFilename.FindPointer(CurUnit)=nil then
+    if AVLFindPointer(FUnitsByFilename,CurUnit)=nil then
       e('unit '+CurUnit.Name+' in FUnitsByName not in FUnitsByFilename');
     if CurUnit.UnitGroups.Count=0 then
       e('unit '+CurUnit.Name+' has not group');
@@ -413,7 +413,7 @@ begin
     LastGroup:=nil;
     while SubAVLNode<>nil do begin
       Group:=TUDUnitGroup(SubAVLNode.Data);
-      if Group.Units.FindPointer(CurUnit)=nil then
+      if AVLFindPointer(Group.Units,CurUnit)=nil then
         e('unit '+CurUnit.Name+' not in group '+Group.Filename);
       if LastGroup=Group then
         e('unit '+CurUnit.Name+' twice in group '+Group.Filename);
@@ -429,7 +429,7 @@ begin
   LastUnit:=nil;
   while AVLNode<>nil do begin
     CurUnit:=TUDUnit(AVLNode.Data);
-    if FUnitsByName.FindPointer(CurUnit)=nil then
+    if AVLFindPointer(FUnitsByName,CurUnit)=nil then
       e('unit '+CurUnit.Name+' in FUnitsByFilename not in FUnitsByName');
     if (LastUnit<>nil)
     and (CompareFilenames(LastUnit.Filename,CurUnit.Filename)=0) then
@@ -447,7 +447,7 @@ begin
       e('group without name');
     if (Group.Filename='') and (Group<>NoGroup) then
       e('group '+Group.Name+' without filename');
-    if FUnitGroupsByFilename.FindPointer(Group)=nil then
+    if AVLFindPointer(FUnitGroupsByFilename,Group)=nil then
       e('group '+Group.Name+' in FUnitGroupsByName not in FUnitGroupsByFilename');
     if Group.Units.ConsistencyCheck<>0 then
       e('group '+Group.Name+' Group.Units.ConsistencyCheck<>0');
@@ -458,7 +458,7 @@ begin
     LastUnit:=nil;
     while SubAVLNode<>nil do begin
       CurUnit:=TUDUnit(SubAVLNode.Data);
-      if CurUnit.UnitGroups.FindPointer(Group)=nil then
+      if AVLFindPointer(CurUnit.UnitGroups,Group)=nil then
         e('group '+Group.Name+' has not the unit '+CurUnit.Name);
       if LastUnit=CurUnit then
         e('group '+Group.Name+' has unit twice '+CurUnit.Filename);
@@ -474,7 +474,7 @@ begin
   LastGroup:=nil;
   while AVLNode<>nil do begin
     Group:=TUDUnitGroup(AVLNode.Data);
-    if FUnitGroupsByName.FindPointer(Group)=nil then
+    if AVLFindPointer(FUnitGroupsByName,Group)=nil then
       e('group '+Group.Name+' in FUnitGroupsByFilename not in FUnitGroupsByName');
     if (LastGroup<>nil)
     and (CompareFilenames(LastGroup.Filename,Group.Filename)=0) then

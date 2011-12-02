@@ -290,6 +290,11 @@ function CompareFilenameAndFilenameToStringTreeItemI(Key, Data: Pointer): intege
 
 function CompareAnsiStringPtrs(Data1, Data2: Pointer): integer;
 
+{$IF FPC_FULLVERSION<20701}
+  {$DEFINE EnableAVLFindPointerFix}
+{$ENDIF}
+function AVLFindPointer(Tree: TAVLTree; Data: Pointer): TAVLTreeNode; {$IFDEF EnableAVLFindPointerFix}inline;{$ENDIF}
+
 implementation
 
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;
@@ -402,6 +407,21 @@ end;
 function CompareAnsiStringPtrs(Data1, Data2: Pointer): integer;
 begin
   Result:=CompareStr(AnsiString(Data1),AnsiString(Data2));
+end;
+
+function AVLFindPointer(Tree: TAVLTree; Data: Pointer): TAVLTreeNode;
+begin
+  {$IFDEF EnableAVLFindPointerFix}
+  Result:=Tree.FindLeftMost(Data);
+  while (Result<>nil) do begin
+    if Result.Data=Data then break;
+    Result:=Tree.FindSuccessor(Result);
+    if Result=nil then exit;
+    if Tree.OnCompare(Data,Result.Data)<>0 then exit(nil);
+  end;
+  {$ELSE}
+  Result:=Tree.FindPointer(Data);
+  {$ENDIF}
 end;
 
 constructor TMTAVLTree.Create(OnCompareMethod: TListSortCompare);
