@@ -923,7 +923,8 @@ begin
   while (Result<>nil) do begin
     if Result.Data=Data then break;
     Result:=FindSuccessor(Result);
-    if Compare(Data,Result.Data)<>0 then Result:=nil;
+    if Result=nil then exit(nil);
+    if Compare(Data,Result.Data)<>0 then exit(nil);
   end;
 end;
 
