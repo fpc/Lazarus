@@ -377,7 +377,7 @@ begin
   ctx := TCocoaContext(lazdc.NativeDC);
 
   // Native TextOut
-  ctx.TextOut(X,Y, Str, Count, Dx);
+  ctx.TextOut(0, 0, Str, Count, Dx, 0);
 
   // Now blend it into our DC
   lazdc := TLazCanvas(DC);

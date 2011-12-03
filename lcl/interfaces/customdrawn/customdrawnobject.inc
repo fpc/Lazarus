@@ -34,13 +34,6 @@ begin
   CDWidgetSet := Self;
   FTerminating := False;
 
-  ScreenBitmapHeight := 100;
-  ScreenBitmapWidth := 100;
-  ScreenBitmapRawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(ScreenBitmapWidth, ScreenBitmapHeight);
-  ScreenBitmapRawImage.CreateData(True);
-  ScreenImage := TLazIntfImage.Create(ScreenBitmapRawImage, True);
-  ScreenDC := TLazCanvas.Create(ScreenImage);
-
   BackendCreate;
 end;
 
@@ -56,7 +49,6 @@ begin
   BackendDestroy;
 
   CDWidgetSet := nil;
-  ScreenDC.Free;
   inherited Destroy;
 end;
 

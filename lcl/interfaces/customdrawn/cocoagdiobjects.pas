@@ -204,6 +204,7 @@ type
   public
     ContextSize : TSize;
     ctx      : NSGraphicsContext;
+    cgctx    : CGContextRef;
     PenPos   : TPoint;
     Stack    : Integer;
     TR,TG,TB : Single;
@@ -216,7 +217,7 @@ type
     procedure Polyline(const Points: array of TPoint; NumPts: Integer);
     procedure Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
-    procedure TextOut(X,Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
+    procedure TextOut(X,Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger; BackgroundAlpha: Single);
     function GetTextExtentPoint(AStr: PChar; ACount: Integer; var Size: TSize): Boolean;
     function GetTextMetrics(var TM: TTextMetric): Boolean;
     procedure DrawBitmap(X,Y: Integer; ABitmap: TCocoaBitmap);
@@ -295,6 +296,7 @@ constructor TCocoaBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
 var
   HasAlpha: Boolean;
   BitmapFormat: NSBitmapFormat;
+  DataPointer: Pointer;
 begin
   {$ifdef VerboseBitmaps}
   DebugLn(Format('[TCocoaBitmap.Create] AWidth=%d AHeight=%d ADepth=%d ABitsPerPixel=%d'
@@ -304,7 +306,7 @@ begin
   SetInfo(AWidth, AHeight, ADepth, ABitsPerPixel, AAlignment, AType);
 
   // Copy the image data, if necessary
-  if (AData = nil) or ACopyData then
+  if ACopyData then
   begin
     System.GetMem(FData, FDataSize);
     FFreeData := True;
@@ -312,11 +314,19 @@ begin
       System.Move(AData^, FData^, FDataSize) // copy data
     else
       FillDWord(FData^, FDataSize shr 2, 0); // clear bitmap
+    DataPointer := @FData;
+  end
+  else if (AData = nil) then
+  begin
+    FData := AData;
+    FFreeData := False;
+    DataPointer := nil;
   end
   else
   begin
     FData := AData;
     FFreeData := False;
+    DataPointer := @FData;
   end;
 
   HasAlpha := AType in [cbtARGB, cbtRGBA, cbtBGRA];
@@ -330,7 +340,7 @@ begin
   {$endif}
   // Create the associated NSImageRep
   imagerep := NSBitmapImageRep(NSBitmapImageRep.alloc.initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
-    @FData, // planes, BitmapDataPlanes
+    DataPointer, // planes, BitmapDataPlanes
     FWidth, // width, pixelsWide
     FHeight,// height, PixelsHigh
     FbitsPerSample,// bitsPerSample, bps
@@ -648,7 +658,8 @@ end;
 
 function TCocoaContext.CGContext:CGContextRef;
 begin
-  Result:=CGContextRef(ctx.graphicsPort);
+  if ctx = nil then Result := cgctx
+  else Result:=CGContextRef(ctx.graphicsPort);
 end;
 
 procedure TCocoaContext.SetBitmap(const AValue: TCocoaBitmap);
@@ -860,25 +871,36 @@ begin
   CGContextDrawPath(CGContext, kCGPathFillStroke);
 end;
 
+// for BackgroundAlpha 1 = opaque 0 = transparent
 procedure TCocoaContext.TextOut(X,Y:Integer;UTF8Chars:PChar;Count:Integer;
-  CharsDelta:PInteger);
+  CharsDelta:PInteger; BackgroundAlpha: Single);
 var
-  cg      : CGContextRef;
+  cg: CGContextRef;
+  ns: NSString;
+  dic: NSDictionary;
 begin
-  {cg:=CGContext;
+{  // Text rendering with Cocoa only
+  ns:=NSStringUtf8(UTF8Chars);
+//  dic := NSDictionary.dictionary();
+  ns.drawAtPoint_withAttributes(GetNSPoint(10, 10), nil);
+//  dic.release;
+  ns.release;}
+
+  // Text rendering with Carbon mixed (but it doesn't seam to work because cg returns nil)
+  cg:=CGContext;
   if not Assigned(cg) then Exit;
 
   CGContextScaleCTM(cg, 1, -1);
   CGContextTranslateCTM(cg, 0, -ContextSize.cy);
 
-  CGContextSetRGBFillColor(cg, TR, TG, TB, 1);
+  CGContextSetRGBFillColor(cg, TR, TG, TB, BackgroundAlpha);
   fText.SetText(UTF8Chars, Count);
   fText.Draw(cg, X, ContextSize.cy-Y, CharsDelta);
 
   if Assigned(fBrush) then fBrush.Apply(cg);
 
   CGContextTranslateCTM(cg, 0, ContextSize.cy);
-  CGContextScaleCTM(cg, 1, -1);}
+  CGContextScaleCTM(cg, 1, -1);
 end;
 
 {------------------------------------------------------------------------------

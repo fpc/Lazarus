@@ -121,7 +121,6 @@ type
     pool      : NSAutoreleasePool;
     NSApp     : NSApplication;
     delegate  : TCDAppDelegate;
-    ScreenBitmap: TCocoaBitmap;
     {$endif}
   public
     {$ifdef CD_X11}

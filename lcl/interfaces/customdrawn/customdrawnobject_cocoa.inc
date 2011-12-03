@@ -100,16 +100,45 @@ end;
   Constructor for the class
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendCreate;
+var
+  ScreenBitmapContext: CGContextRef;
 begin
   {  Creates the AutoreleasePool }
   pool := NSAutoreleasePool(NSAutoreleasePool.alloc).init;
 
   { Prepares the Native DC for the ScreenDC }
 
-  ScreenBitmap := TCocoaBitmap.Create(ScreenBitmapWidth, ScreenBitmapHeight,
-    32, 4, cbaDWord, cbtARGB, ScreenBitmapRawImage.Data);
+  { NSImage / NSBitmapImageRep are very limited. They simply don't support
+    drawing to the image representation. You can draw to the NSImage, but
+    that doesn't modify the raw pixels =(
+    They also don't support us sending our own buffer. If we do so, then it
+    will create another buffer internally and never draw to our own buffer.
+
+    So CoreGraphics is the best choice here
+
+    see: http://www.cocoabuilder.com/archive/cocoa/89523-drawing-into-nsbitmapimagerep.html
+
+    CoreGraphics also has problems, it doesn't support non-premultiplied Alpha for example:
+
+    see: http://lists.apple.com/archives/carbon-dev/2006/Jan/msg01055.html
+  }
+  ScreenBitmapHeight := 100;
+  ScreenBitmapWidth := 100;
+  ScreenBitmapRawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(ScreenBitmapWidth, ScreenBitmapHeight);
+  ScreenBitmapRawImage.CreateData(True);
+  ScreenBitmapContext := CGBitmapContextCreate(
+   ScreenBitmapRawImage.Data,
+   ScreenBitmapWidth,
+   ScreenBitmapHeight,
+   8,
+   ScreenBitmapWidth * 4,
+   CGColorSpaceCreateDeviceRGB(),
+   kCGImageAlphaNoneSkipFirst//,kCGImageAlphaPremultipliedFirst
+   );
+  ScreenImage := TLazIntfImage.Create(ScreenBitmapRawImage, True);
+  ScreenDC := TLazCanvas.Create(ScreenImage);
   ScreenDC.NativeDC := PtrInt(TCocoaContext.Create);
-  TCocoaContext(ScreenDC.NativeDC).ctx := NSGraphicsContext.graphicsContextWithBitmapImageRep(ScreenBitmap.imagerep);
+  TCocoaContext(ScreenDC.NativeDC).cgctx := ScreenBitmapContext; //NSGraphicsContext.graphicsContextWithBitmapImageRep(ScreenBitmap.imagerep);
 end;
 
 {------------------------------------------------------------------------------
@@ -121,6 +150,11 @@ procedure TCDWidgetSet.BackendDestroy;
 begin
   {  Releases the AutoreleasePool }
   pool.release;
+
+  { Release the screen DC and Image}
+  ScreenDC.Free;
+  ScreenImage.Free;
+//  ScreenBitmap.Free;
 end;
 
 {------------------------------------------------------------------------------
