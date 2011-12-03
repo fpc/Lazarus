@@ -7451,7 +7451,9 @@ begin
   exit;
   {$ENDIF}
   // prcScroll, prcClip are not supported under gdk yet
-  if (hWnd = 0) or (prcScroll <> nil) or (prcClip <> nil) then Exit;
+  if (hWnd = 0) then
+    exit;
+  // or (prcScroll <> nil) or (prcClip <> nil) then Exit;
 
   Widget := pgtkwidget(hWnd);
   Widget := GetFixedWidget(Widget);
@@ -7477,13 +7479,28 @@ begin
     end;
   end;
 
+  if PrcScroll <> nil then
+  begin
+    Rect1.x := PrcScroll^.Left;
+    Rect1.y := PrcScroll^.Top;
+    Rect1.width := PrcScroll^.Right - PrcScroll^.Left;
+    Rect1.height := PrcScroll^.Bottom - PrcScroll^.Top;
+  end;
   Region := gdk_region_rectangle(@Rect1);
   gdk_window_move_region(Window, Region, dx, dy);
 
   // Rect2 includes the Area at the scroll-in side of Rect1
   // gdk_window_move_region is supposed to have invalidated it, but some
   // implementations seem not to do this. (bug 14297)
-  if dy <> 0 then
+  if (prcScroll <> nil) then
+  begin
+    if prcClip <> nil then
+      Rect1 := GdkRectFromRect(prcClip^)
+    else
+      Rect1 := GdkRectFromRect(prcScroll^);
+    gtk_widget_draw(Widget, @Rect1);
+  end else
+  if (dy <> 0) then
     InvalidateRect(hWnd, @Rect2, false);
   {$ELSE}
   gdk_window_scroll(Window, dx, dy);
