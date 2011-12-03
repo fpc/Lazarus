@@ -891,15 +891,14 @@ var
   CurUnitName: String;
   NewUnitName: String;
   SameUnitName: boolean;
+  PkgDependencyAdded: boolean;
 
-  function AddDependency: boolean;
+  function OpenDependency: boolean;
   // returns false to abort
   var
-    Pkg: TIDEPackage;
     DepOwner: TObject;
-    OwnerList: TFPList;
   begin
-    debugln(['TCodyIdentifiersDlg.UseIdentifier not in unit path, connecting package "'+NewGroupName+'", "'+NewGroupFilename+'" ...']);
+    debugln(['TCodyIdentifiersDlg.UseIdentifier not in unit path, loading package "'+NewGroupName+'", "'+NewGroupFilename+'" ...']);
     Result:=true;
     Pkg:=PackageEditingInterface.FindPackageWithName(NewGroupName);
     if (Pkg=nil) or (CompareFilenames(Pkg.Filename,NewGroupFilename)<>0) then
@@ -922,10 +921,19 @@ var
     if PackageEditingInterface.IsOwnerDependingOnPkg(CurOwner,NewGroupName,DepOwner)
     then begin
       // already depending on package name
+      PkgDependencyAdded:=true;
       debugln(['TCodyIdentifiersDlg.UseIdentifier owner is already using "'+NewGroupName+'"']);
       // ToDo: check version
-      exit(true);
     end;
+  end;
+
+  function AddDependency: boolean;
+  // returns false to abort
+  var
+    OwnerList: TFPList;
+  begin
+    if PkgDependencyAdded then exit;
+    PkgDependencyAdded:=true;
     // add dependency
     OwnerList:=TFPList.Create;
     try
@@ -952,14 +960,17 @@ begin
 
   UpdateCurOwnerOfUnit;
 
-  // check if adding unit is possible
+  // do some sanity checks
   NewUnitInPath:=false;
   UnitPathAdd:=ChompPathDelim(
     CreateRelativePath(ExtractFilePath(CurMainFilename),
                        ExtractFilePath(NewUnitFilename)));
-
   CurUnitName:=ExtractFileNameOnly(CurMainFilename);
   NewUnitName:=ExtractFileNameOnly(NewUnitFilename);
+  FPCSrcFilename:='';
+  Pkg:=nil;
+  PkgDependencyAdded:=false;
+
   SameUnitName:=CompareDottedIdentifiers(PChar(CurUnitName),PChar(NewUnitName))=0;
   if SameUnitName and (CompareFilenames(CurMainFilename,NewUnitFilename)<>0)
   then begin
@@ -998,7 +1009,8 @@ begin
     if NewGroupName=PackageNameFPCSrcDir then begin
       // new unit is a FPC unit
       debugln(['TCodyIdentifiersDlg.UseIdentifier in FPCSrcDir']);
-      FPCSrcFilename:=UnitSet.GetUnitSrcFile(ExtractFileNameOnly(NewUnitFilename));
+      if UnitSet<>nil then
+        FPCSrcFilename:=UnitSet.GetUnitSrcFile(ExtractFileNameOnly(NewUnitFilename));
       if FPCSrcFilename='' then begin
         // a FPC unit without a ppu file
         // => ask for confirmation
@@ -1032,6 +1044,15 @@ begin
       debugln(['TCodyIdentifiersDlg.UseIdentifier unit is not in a package']);
     end;
   end;
+
+  // open package to get the compiler settings to parse the unit
+  if (CurOwner<>nil) and (not NewUnitInPath)
+  and (NewGroupName<>'') and (NewGroupName<>PackageNameFPCSrcDir) then begin
+    if not OpenDependency then exit;
+  end;
+
+  // check if identifier is still exists
+  // ToDo
 
   CurSrcEdit.BeginUndoBlock;
   try
