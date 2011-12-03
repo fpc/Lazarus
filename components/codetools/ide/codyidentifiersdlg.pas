@@ -26,10 +26,12 @@
 
   ToDo:
     -quickfix for identifier not found
-    -check if identifier still exists
     -use identifier: check package version
     -clean up old entries
       -When, How?
+      -maximum number of units
+      -when package file not found delete package and all units only in this package
+      -when file not found delete unit
     -gzip? lot of cpu, may be faster on first load
 }
 unit CodyIdentifiersDlg;
@@ -43,7 +45,7 @@ uses
   Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType, Buttons,
   PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf, CompOptsIntf, IDEDialogs,
   CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
-  CodeTree, LinkScanner, DefineTemplates,
+  CodeTree, LinkScanner, DefineTemplates, CodeToolsStructs,
   CodyStrConsts, CodyUtils;
 
 const
@@ -78,6 +80,8 @@ type
     fLoaded: boolean; // has loaded the file
     fStartTime: TDateTime;
     fClosing: boolean;
+    fCheckFiles: TStringToStringTree;
+    procedure CheckFiles;
     procedure SetIdleConnected(AValue: boolean);
     procedure SetLoadAfterStartInS(AValue: integer);
     procedure SetLoadSaveError(AValue: string);
@@ -100,6 +104,7 @@ type
     property LoadAfterStartInS: integer read FLoadAfterStartInS write SetLoadAfterStartInS;
     procedure BeginCritSec;
     procedure EndCritSec;
+    procedure CheckFileAsync(aFilename: string);
     property LoadSaveError: string read FLoadSaveError write SetLoadSaveError;
   end;
 
@@ -390,6 +395,8 @@ begin
       fParsingTool:=nil;
       OwnerList.Free;
     end;
+  end else if fCheckFiles<>nil then begin
+    CheckFiles;
   end else begin
     // nothing to do, maybe it's time to load the database
     if fStartTime=0 then
@@ -465,6 +472,39 @@ begin
     Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
+procedure TCodyUnitDictionary.CheckFiles;
+var
+  aFilename: String;
+  StrItem: PStringToStringTreeItem;
+  List: TStringList;
+  UDGroup: TUDUnitGroup;
+  CurUnit: TUDUnit;
+begin
+  List:=TStringList.Create;
+  try
+    for StrItem in fCheckFiles do
+      List.Add(StrItem^.Name);
+    FreeAndNil(fCheckFiles);
+    for aFilename in List do begin
+      if FileExistsCached(aFilename) then continue;
+      BeginCritSec;
+      try
+        UDGroup:=FindGroupWithFilename(aFilename);
+        if UDGroup<>nil then
+          DeleteGroup(UDGroup,true);
+        CurUnit:=FindUnitWithFilename(aFilename);
+        if CurUnit<>nil then begin
+
+        end;
+      finally
+        EndCritSec;
+      end;
+    end;
+  finally
+    List.Free;
+  end;
+end;
+
 procedure TCodyUnitDictionary.SetLoadAfterStartInS(AValue: integer);
 begin
   if FLoadAfterStartInS=AValue then Exit;
@@ -503,6 +543,7 @@ end;
 destructor TCodyUnitDictionary.Destroy;
 begin
   fClosing:=true;
+  FreeAndNil(fCheckFiles);
   CodeToolBoss.RemoveHandlerToolTreeChanging(@ToolTreeChanged);
   FreeAndNil(fTimer);
   WaitForThread;
@@ -537,6 +578,16 @@ end;
 procedure TCodyUnitDictionary.EndCritSec;
 begin
   LeaveCriticalsection(fCritSec);
+end;
+
+procedure TCodyUnitDictionary.CheckFileAsync(aFilename: string);
+begin
+  if fClosing then exit;
+  if (aFilename='') or (not FilenameIsAbsolute(aFilename)) then exit;
+  if fCheckFiles=nil then
+    fCheckFiles:=TStringToStringTree.Create(false);
+  fCheckFiles[aFilename]:='1';
+  IdleConnected:=true;
 end;
 
 { TCodyIdentifiersDlg }
@@ -735,6 +786,9 @@ begin
               then continue; // this is not the source for this target platform
             end else if FileExistsCached(Group.Filename) then begin
               // lpk exists
+            end else begin
+              // lpk does not exist
+              CodyUnitDictionary.BeginCritSec;
             end;
             s:=Item.Name+' in '+Item.DUnit.Name;
             if Group.Name<>'' then
@@ -892,6 +946,11 @@ var
   NewUnitName: String;
   SameUnitName: boolean;
   PkgDependencyAdded: boolean;
+  NewUnitCode: TCodeBuffer;
+  NewCode: TCodeBuffer;
+  NewX: integer;
+  NewY: integer;
+  NewTopLine: integer;
 
   function OpenDependency: boolean;
   // returns false to abort
@@ -1051,8 +1110,24 @@ begin
     if not OpenDependency then exit;
   end;
 
-  // check if identifier is still exists
-  // ToDo
+  // check if target unit is readable
+  NewUnitCode:=CodeToolBoss.LoadFile(NewUnitFilename,true,false);
+  if NewUnitCode=nil then begin
+    IDEMessageDialog(crsFileReadError,
+      Format(crsUnableToReadFile, [NewUnitFilename]),
+      mtError,[mbCancel]);
+    exit;
+  end;
+
+  // check if identifier still exist
+  if not CodeToolBoss.FindDeclarationOfPropertyPath(NewUnitCode,NewIdentifier,
+    NewCode, NewX, NewY, NewTopLine)
+  then begin
+    IDEMessageDialog(crsIdentifierNotFound,
+      Format(crsIdentifierNotFoundInUnit, [NewIdentifier, NewUnitFilename]),
+      mtError,[mbCancel]);
+    exit;
+  end;
 
   CurSrcEdit.BeginUndoBlock;
   try

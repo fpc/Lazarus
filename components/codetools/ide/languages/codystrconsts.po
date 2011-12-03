@@ -286,7 +286,7 @@ msgid "Identifier not found"
 msgstr ""
 
 #: codystrconsts.crsidentifiernotfoundinunit
-msgid "Identifier \"%s\" not found in unit \"%s\""
+msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
 msgstr ""
 
 #: codystrconsts.crsimpossibledependency

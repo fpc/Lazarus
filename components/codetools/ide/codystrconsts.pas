@@ -198,7 +198,9 @@ resourcestring
   crsFileReadError = 'File read error';
   crsUnableToReadFile = 'Unable to read file "%s".';
   crsIdentifierNotFound = 'Identifier not found';
-  crsIdentifierNotFoundInUnit = 'Identifier "%s" not found in unit "%s"';
+  crsIdentifierNotFoundInUnit = 'Identifier "%s" not found in unit "%s".'
+    +' Maybe the identifier does not exist for this platform or maybe the'
+    +' identifier was deleted/renamed.';
 
 implementation
 

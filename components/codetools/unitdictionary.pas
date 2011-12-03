@@ -125,6 +125,7 @@ type
     // groups
     function AddUnitGroup(Group: TUDUnitGroup): TUDUnitGroup; overload;
     function AddUnitGroup(aFilename: string; aName: string = ''): TUDUnitGroup; overload;
+    procedure DeleteGroup(Group: TUDUnitGroup; DeleteUnitsWithoutGroup: boolean);
     property NoGroup: TUDUnitGroup read FNoGroup;
     property UnitGroupsByName: TMTAVLTree read FUnitGroupsByName;
     property UnitGroupsByFilename: TMTAVLTree read FUnitGroupsByFilename;
@@ -969,6 +970,12 @@ begin
     // create new group
     Result:=AddUnitGroup(TUDUnitGroup.Create(aName,aFilename));
   end;
+end;
+
+procedure TUnitDictionary.DeleteGroup(Group: TUDUnitGroup;
+  DeleteUnitsWithoutGroup: boolean);
+begin
+
 end;
 
 function TUnitDictionary.FindGroupWithFilename(const aFilename: string
