@@ -232,6 +232,10 @@ begin
   if not WSCheckHandleAllocated(ATabControl, 'SetPageIndex') then
     Exit;
   TabWidget := TQtTabWidget(ATabControl.Handle);
+
+  if (AIndex < 0) or (AIndex > TabWidget.getCount - 1) then
+    exit;
+
   TabWidget.BeginUpdate;
   TabWidget.setCurrentWidget(TQtWidget(ATabControl.Page[AIndex].Handle));
   TabWidget.EndUpdate;

@@ -849,6 +849,7 @@ type
     function indexOf(const AWidget: QWidgetH): integer;
     function insertTab(index: Integer; page: QWidgetH; p2: WideString): Integer; overload;
     function insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: WideString): Integer; overload;
+    function getCount: Integer;
     function getClientBounds: TRect; override;
     function getCurrentIndex: Integer;
     function GetLCLPageIndex(AIndex: Integer): Integer;
@@ -8071,7 +8072,7 @@ function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2
 var
   UseAdd: Boolean;
 begin
-  UseAdd := Index > QTabWidget_count(QTabWidgetH(Widget)) - 1;
+  UseAdd := Index > getCount - 1;
   if icon <> nil then
   begin
     if UseAdd then
@@ -8085,6 +8086,11 @@ begin
     else
       Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, @p2);
   end;
+end;
+
+function TQtTabWidget.getCount: Integer;
+begin
+  Result := QTabWidget_count(QTabWidgetH(Widget));
 end;
 
 function TQtTabWidget.getClientBounds: TRect;
