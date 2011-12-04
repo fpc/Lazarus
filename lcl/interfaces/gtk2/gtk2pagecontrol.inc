@@ -470,6 +470,8 @@ class procedure TGtk2WSCustomTabControl.SetPageIndex(
   const ATabControl: TCustomTabControl; const AIndex: integer);
 var
   GtkNotebook: PGtkNotebook;
+  ANewIndex: Integer;
+  Page: PGtkWidget;
 begin
   if not WSCheckHandleAllocated(ATabControl, 'SetPageIndex') then
     Exit;
@@ -477,8 +479,15 @@ begin
   GtkNotebook := PGtkNoteBook(ATabControl.Handle);
   if gtk_notebook_get_current_page(GtkNotebook) <> AIndex then
   begin
-    gtk_object_set_data(PGtkObject(GtkNotebook), LCL_NotebookManualPageSwitchKey, ATabControl);
-    gtk_notebook_set_page(GtkNotebook, AIndex);
+    // gtk2 cannot set page if some tab in between tabvisible=false, so
+    // we must compare page handles.
+    if ATabControl.Page[AIndex].HandleAllocated then
+    begin
+      Page := PGtkWidget(ATabControl.Page[AIndex].Handle);
+      ANewIndex := gtk_notebook_page_num(GtkNoteBook, Page);
+      gtk_object_set_data(PGtkObject(GtkNotebook), LCL_NotebookManualPageSwitchKey, ATabControl);
+      gtk_notebook_set_page(GtkNotebook, ANewIndex);
+    end;
   end;
   UpdateNoteBookClientWidget(ATabControl);
 end;
