@@ -34,27 +34,27 @@ type
 
   { TSynEditMouseActionsGutterFold }
 
-  TSynEditMouseActionsGutterFold = class(TSynEditMouseActions)
-  public
-    procedure ResetDefaults; override;
+  TSynEditMouseActionsGutterFold = class(TSynEditMouseInternalActions)
+  protected
+    procedure InitForOptions(AnOptions: TSynEditorMouseOptions); override;
   end;
 
   // Line with [-] => ALL nodes expanded
 
   { TSynEditMouseActionsGutterFoldExpanded }
 
-  TSynEditMouseActionsGutterFoldExpanded = class(TSynEditMouseActions)
-  public
-    procedure ResetDefaults; override;
+  TSynEditMouseActionsGutterFoldExpanded = class(TSynEditMouseInternalActions)
+  protected
+    procedure InitForOptions(AnOptions: TSynEditorMouseOptions); override;
   end;
 
   // Line with [+] => at LEAST ONE node collapsed
 
   { TSynEditMouseActionsGutterFoldCollapsed }
 
-  TSynEditMouseActionsGutterFoldCollapsed = class(TSynEditMouseActions)
-  public
-    procedure ResetDefaults; override;
+  TSynEditMouseActionsGutterFoldCollapsed = class(TSynEditMouseInternalActions)
+  protected
+    procedure InitForOptions(AnOptions: TSynEditorMouseOptions); override;
   end;
 
   TDrawNodeSymbolOptions = set of (nsoSubtype, nsoLostHl, nsoBlockSel);
@@ -63,13 +63,15 @@ type
 
   TSynGutterCodeFolding = class(TSynGutterPartBase)
   private
-    FMouseActionsCollapsed: TSynEditMouseActions;
-    FMouseActionsExpanded: TSynEditMouseActions;
+    FMouseActionsCollapsed: TSynEditMouseInternalActions;
+    FMouseActionsExpanded: TSynEditMouseInternalActions;
     FPopUp: TPopupMenu;
     FMenuInf: Array of TFoldViewNodeInfo;
     FIsFoldHidePreviousLine: Boolean;
     FPopUpImageList: TImageList;
     FReversePopMenuOrder: Boolean;
+    function GetMouseActionsCollapsed: TSynEditMouseActions;
+    function GetMouseActionsExpanded: TSynEditMouseActions;
     procedure SetMouseActionsCollapsed(const AValue: TSynEditMouseActions);
     procedure SetMouseActionsExpanded(const AValue: TSynEditMouseActions);
     function  FoldTypeForLine(AScreenLine: Integer): TSynEditFoldLineCapability;
@@ -83,6 +85,7 @@ type
     function  PreferedWidth: Integer; override;
     procedure CreatePopUpMenuEntries(var APopUp: TPopupMenu; ALine: Integer); virtual;
     procedure PopClicked(Sender: TObject);
+    function CreateMouseActions: TSynEditMouseInternalActions; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -97,9 +100,9 @@ type
   published
     property MarkupInfo;
     property MouseActionsExpanded: TSynEditMouseActions
-      read FMouseActionsExpanded write SetMouseActionsExpanded;
+      read GetMouseActionsExpanded write SetMouseActionsExpanded;
     property MouseActionsCollapsed: TSynEditMouseActions
-      read FMouseActionsCollapsed write SetMouseActionsCollapsed;
+      read GetMouseActionsCollapsed write SetMouseActionsCollapsed;
     property ReversePopMenuOrder: Boolean
       read FReversePopMenuOrder write FReversePopMenuOrder default True;
   end;
@@ -116,18 +119,22 @@ var
 
 procedure TSynGutterCodeFolding.SetMouseActionsCollapsed(const AValue: TSynEditMouseActions);
 begin
-  if AValue = nil then
-    FMouseActionsCollapsed.Clear
-  else
-    FMouseActionsCollapsed.Assign(AValue);
+  FMouseActionsCollapsed.UserActions := AValue;
+end;
+
+function TSynGutterCodeFolding.GetMouseActionsCollapsed: TSynEditMouseActions;
+begin
+  Result := FMouseActionsCollapsed.UserActions;
+end;
+
+function TSynGutterCodeFolding.GetMouseActionsExpanded: TSynEditMouseActions;
+begin
+  Result := FMouseActionsExpanded.UserActions;
 end;
 
 procedure TSynGutterCodeFolding.SetMouseActionsExpanded(const AValue: TSynEditMouseActions);
 begin
-  if AValue = nil then
-    FMouseActionsExpanded.Clear
-  else
-    FMouseActionsExpanded.Assign(AValue);
+  FMouseActionsExpanded.UserActions := AValue;
 end;
 
 function TSynGutterCodeFolding.FoldTypeForLine(AScreenLine: Integer): TSynEditFoldLineCapability;
@@ -312,12 +319,8 @@ end;
 constructor TSynGutterCodeFolding.Create(AOwner: TComponent);
 begin
   FReversePopMenuOrder := true;
-  FMouseActions := TSynEditMouseActionsGutterFold.Create(self);
   FMouseActionsExpanded := TSynEditMouseActionsGutterFoldExpanded.Create(self);
   FMouseActionsCollapsed := TSynEditMouseActionsGutterFoldCollapsed.Create(self);
-  FMouseActions.ResetDefaults;
-  FMouseActionsCollapsed.ResetDefaults;
-  FMouseActionsExpanded.ResetDefaults;
 
   inherited Create(AOwner);
 
@@ -328,7 +331,6 @@ end;
 
 destructor TSynGutterCodeFolding.Destroy;
 begin
-  FreeAndNil(FMouseActions);
   FreeAndNil(FMouseActionsCollapsed);
   FreeAndNil(FMouseActionsExpanded);
   FreeAndNil(FPopUp);
@@ -354,6 +356,11 @@ begin
    end;
 end;
 
+function TSynGutterCodeFolding.CreateMouseActions: TSynEditMouseInternalActions;
+begin
+  Result := TSynEditMouseActionsGutterFold.Create(self);
+end;
+
 procedure TSynGutterCodeFolding.DoOnGutterClick(X, Y : integer);
 begin
   // Do Nothing
@@ -368,13 +375,13 @@ begin
   tmp := FoldTypeForLine(FoldView.TextIndexToScreenLine(AnInfo.NewCaret.LinePos-1));
   case tmp of
     cfCollapsedFold, cfCollapsedHide:
-      Result := HandleActionProc(MouseActionsCollapsed, AnInfo);
+      Result := HandleActionProc(FMouseActionsCollapsed.GetActionsForOptions(TCustomSynEdit(SynEdit).MouseOptions), AnInfo);
     cfFoldStart, cfHideStart:
-      Result := HandleActionProc(MouseActionsExpanded, AnInfo);
+      Result := HandleActionProc(FMouseActionsExpanded.GetActionsForOptions(TCustomSynEdit(SynEdit).MouseOptions), AnInfo);
   end;
 
   if not Result then
-    Result := HandleActionProc(MouseActions, AnInfo);
+    Result := inherited MaybeHandleMouseAction(AnInfo, HandleActionProc);
 end;
 
 function TSynGutterCodeFolding.DoHandleMouseAction(AnAction: TSynEditMouseAction;
@@ -692,18 +699,24 @@ end;
 
 { TSynEditMouseActionsGutterFold }
 
-procedure TSynEditMouseActionsGutterFold.ResetDefaults;
+procedure TSynEditMouseActionsGutterFold.InitForOptions(AnOptions: TSynEditorMouseOptions);
+var
+  rmc: Boolean;
 begin
   Clear;
-  AddCommand(emcCodeFoldContextMenu, False, mbRight, ccSingle, cdUp, [], []);
-  AddCommand(emcCodeFoldCollaps, False, mbMiddle, ccAny, cdDown, [], [ssShift], emcoCodeFoldCollapsOne);
-  AddCommand(emcCodeFoldCollaps, False, mbMiddle, ccAny, cdDown, [ssShift], [ssShift], emcoCodeFoldCollapsAll);
-  AddCommand(emcNone, False, mbLeft, ccAny, cdDown, [], []);
+  rmc := (emRightMouseMovesCursor in AnOptions);
+
+  AddCommand(emcNone,                False,  mbLeft, ccAny, cdDown, [], []);
+
+  AddCommand(emcCodeFoldCollaps,     False, mbMiddle, ccAny, cdDown, [], [ssShift], emcoCodeFoldCollapsOne);
+  AddCommand(emcCodeFoldCollaps,     False, mbMiddle, ccAny, cdDown, [ssShift], [ssShift], emcoCodeFoldCollapsAll);
+
+  AddCommand(emcCodeFoldContextMenu, rmc,   mbRight, ccSingle, cdUp, [], []);
 end;
 
 { TSynEditMouseActionsGutterFoldExpanded }
 
-procedure TSynEditMouseActionsGutterFoldExpanded.ResetDefaults;
+procedure TSynEditMouseActionsGutterFoldExpanded.InitForOptions(AnOptions: TSynEditorMouseOptions);
 begin
   Clear;
   AddCommand(emcCodeFoldCollaps, False, mbLeft, ccAny, cdDown, [], [], emcoCodeFoldCollapsOne);
@@ -711,12 +724,13 @@ end;
 
 { TSynEditMouseActionsGutterFoldCollapsed }
 
-procedure TSynEditMouseActionsGutterFoldCollapsed.ResetDefaults;
+procedure TSynEditMouseActionsGutterFoldCollapsed.InitForOptions(AnOptions: TSynEditorMouseOptions);
 begin
   Clear;
   AddCommand(emcCodeFoldExpand, False, mbLeft, ccAny, cdDown, [ssCtrl], [ssCtrl], emcoCodeFoldExpandOne);
   AddCommand(emcCodeFoldExpand, False, mbLeft, ccAny, cdDown, [], [ssCtrl], emcoCodeFoldExpandAll);
 end;
+
 
 finalization
   FreeAndNil(GlobalPopUpImageList);

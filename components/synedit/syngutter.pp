@@ -27,6 +27,7 @@ type
       mark: TSynEditMark); override;
     function CreatePartList: TSynGutterPartListBase; override;
     procedure CreateDefaultGutterParts; virtual;
+    function CreateMouseActions: TSynEditMouseInternalActions; override;
   public
     constructor Create(AOwner : TSynEditBase; ASide: TSynGutterSide;
                       ATextDrawer: TheTextDrawer);
@@ -37,7 +38,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer);
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     function  MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
-                         HandleActionProc: TSynEditMouseActionHandler): Boolean;
+                         HandleActionProc: TSynEditMouseActionHandler): Boolean; override;
     function DoHandleMouseAction(AnAction: TSynEditMouseAction;
                                  var AnInfo: TSynEditMouseActionInfo): Boolean;
     procedure DoOnGutterClick(X, Y: integer);
@@ -85,9 +86,9 @@ type
 
   { TSynEditMouseActionsGutter }
 
-  TSynEditMouseActionsGutter = class(TSynEditMouseActions)
-  public
-    procedure ResetDefaults; override;
+  TSynEditMouseActionsGutter = class(TSynEditMouseInternalActions)
+  protected
+    procedure InitForOptions(AnOptions: TSynEditorMouseOptions); override;
   end;
 
 
@@ -101,10 +102,6 @@ constructor TSynGutter.Create(AOwner: TSynEditBase; ASide: TSynGutterSide;
   ATextDrawer: TheTextDrawer);
 begin
   inherited;
-
-  FMouseActions := TSynEditMouseActionsGutter.Create(self);
-  FMouseActions.ResetDefaults;
-
   if not(csLoading in AOwner.ComponentState) then
     CreateDefaultGutterParts;
 end;
@@ -113,7 +110,6 @@ destructor TSynGutter.Destroy;
 begin
   OnChange := nil;
   OnResize := nil;
-  FreeAndNil(FMouseActions);
   inherited Destroy;
 end;
 
@@ -133,6 +129,11 @@ begin
     Name := 'SynGutterSeparator1';
   with TSynGutterCodeFolding.Create(Parts) do
     Name := 'SynGutterCodeFolding1';
+end;
+
+function TSynGutter.CreateMouseActions: TSynEditMouseInternalActions;
+begin
+  Result := TSynEditMouseActionsGutter.Create(self);
 end;
 
 function TSynGutter.PixelToPartIndex(X: Integer): Integer;
@@ -247,7 +248,7 @@ begin
   MouseDownPart := PixelToPartIndex(AnInfo.MouseX);
   Result := Parts[MouseDownPart].MaybeHandleMouseAction(AnInfo, HandleActionProc);
   if not Result then
-    Result := HandleActionProc(MouseActions, AnInfo);
+    Result := inherited MaybeHandleMouseAction(AnInfo, HandleActionProc);
 end;
 
 function TSynGutter.DoHandleMouseAction(AnAction: TSynEditMouseAction;
@@ -361,11 +362,15 @@ end;
 
 { TSynEditMouseActionsGutter }
 
-procedure TSynEditMouseActionsGutter.ResetDefaults;
+procedure TSynEditMouseActionsGutter.InitForOptions(AnOptions: TSynEditorMouseOptions);
+var
+  rmc: Boolean;
 begin
   Clear;
-  AddCommand(emcOnMainGutterClick, False, mbLeft, ccAny, cdDown, [], []);
-  AddCommand(emcContextMenu, False, mbRight, ccSingle, cdUp, [], []);
+  rmc := (emRightMouseMovesCursor in AnOptions);
+
+  AddCommand(emcOnMainGutterClick, False, mbLeft,  ccAny, cdDown, [], []);
+  AddCommand(emcContextMenu,       rmc,   mbRight, ccSingle, cdUp, [], []);
 end;
 
 end.

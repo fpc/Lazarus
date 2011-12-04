@@ -36,6 +36,42 @@ It also allows to insert code like the begin and end of a multiline comment "(*"
       <element name="TCustomSynEdit.EndUpdate">
         <short>Enable updates  internal data strucures, and applies all changes since BeginUpdate</short>
       </element>
+      <element name="TCustomSynEdit.MouseOptions">
+        <short>Controls the behaviour of the mouse (mouse-clicks)</short>
+        <seealso>
+          <link id="#SynEdit.SynEdit.TSynEdit.Options">Options</link>
+        </seealso>
+      </element>
+      <element name="TCustomSynEdit.Options">
+        <short>General options to change the SynEdits behaviour</short>
+        <descr>
+          <p>
+            <u>About old/deprecated values for controlling the mouse:</u>
+          </p>
+          <p>They have been moved to <link id="#SynEdit.SynEdit.TSynEdit.MouseOptions">MouseOptions</link>
+          </p>
+          <p>If a new value is set to Options, then MouseOptions are updated only if any of them changed compared to their previous  value in this property (Options), otherwise their value in MouseOptions is kept.
+</p>
+          <p>If MouseOptions is assigned a new value, it will forward clearing any flag that it receives, but not forward setting any flags.
+</p>
+          <p>This means:
+<ul>
+              <li>As long as you only use Options both properties are kept in sync.</li>
+              <li>If you use MouseOptions instead, then you should leave the old flags in this property cleared. Which will allow you to set/change all other flags in this property, without interfering with MouseOptions.</li>
+            </ul>
+          </p>
+        </descr>
+        <seealso>
+          <link id="#SynEdit.SynEdit.TSynEdit.Options2">Options2</link>
+          <link id="#SynEdit.SynEdit.TSynEdit.MouseOptions">MouseOptions</link>
+        </seealso>
+      </element>
+      <element name="TCustomSynEdit.Options2">
+        <seealso>
+          <link id="#SynEdit.SynEdit.TSynEdit.Options">Options</link>
+        </seealso>
+        <short>More general options to change the SynEdits behaviour</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>

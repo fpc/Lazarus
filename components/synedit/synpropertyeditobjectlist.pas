@@ -24,8 +24,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc,
-  SynEdit, SynGutterBase, SynEditMiscClasses, SynEditMouseCmds,
-  PropEdits, PropEditUtils, Forms, StdCtrls, ComCtrls, Dialogs,
+  SynEdit, SynGutterBase, SynEditMiscClasses, SynEditMouseCmds, SynDesignStringConstants,
+  PropEdits, PropEditUtils, Forms, StdCtrls, ComCtrls, Dialogs, ComponentEditors,
   ObjInspStrConsts, Controls, IDEImagesIntf, typinfo, FormEditingIntf;
 
 type
@@ -110,7 +110,17 @@ type
     procedure SetValue(const NewValue: ansistring); override;
   end;
 
+  { TSynEditComponentEditor }
+
+  TSynEditComponentEditor = class(TDefaultComponentEditor)
+  public
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb(Index: Integer); override;
+  end;
+
   procedure RegisterGutterPartClass(AClass: TSynGutterPartBaseClass; AName: String);
+
 implementation
 
 {$R *.lfm}
@@ -124,6 +134,40 @@ begin
   if KnownSynGutterPartClasses = nil then
     KnownSynGutterPartClasses := TStringList.Create;
   KnownSynGutterPartClasses.AddObject(AName, TObject(Pointer(AClass)));
+end;
+
+{ TSynEditComponentEditor }
+
+function TSynEditComponentEditor.GetVerbCount: Integer;
+begin
+  Result := inherited GetVerbCount;
+  Result := Result + 1;
+end;
+
+function TSynEditComponentEditor.GetVerb(Index: Integer): string;
+begin
+  case Index - (inherited GetVerbCount) of
+    0: Result := syndsResetMouseActions;
+    else
+      Result := inherited GetVerb(Index);
+  end;
+end;
+
+procedure TSynEditComponentEditor.ExecuteVerb(Index: Integer);
+var
+  Hook: TPropertyEditorHook;
+begin
+  case Index - (inherited GetVerbCount) of
+    0: begin
+        if (Component <> nil) and (Component is TCustomSynEdit) then
+          TCustomSynEdit(Component).ResetMouseActions;
+        Modified;
+        GetHook(Hook);
+        if Assigned(Hook) then Hook.Modified(Self);
+      end;
+    else
+      inherited GetVerb(Index);
+  end;
 end;
 
 { TSynEdOptionsPropertyEditor }

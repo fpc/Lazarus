@@ -40,6 +40,16 @@ uses
 
 type
 
+  TSynEditorMouseOption = (
+    emUseMouseActions,
+    emAltSetsColumnMode,       // Alt modifier, triggers column mode selection
+    emDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
+    emRightMouseMovesCursor,   // When clicking with the right mouse for a popup menu, move the cursor to that location
+    emDoubleClickSelectsLine,  // Select line on double click
+    emShowCtrlMouseLinks       // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
+  );
+  TSynEditorMouseOptions = set of TSynEditorMouseOption;
+
   TSynEditorMouseCommand = type word;
   TSynEditorMouseCommandOpt = type word;
   TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad, ccAny);
@@ -136,19 +146,26 @@ type
       write SetItem; default;
   end;
 
-  { TSynEditMouseTextActions }
+  { TSynEditMouseInternalActions }
 
-  TSynEditMouseTextActions = class(TSynEditMouseActions)
+  TSynEditMouseInternalActions = class(TSynEditMouseActions)
+  private
+    FOptions, FInternOptions: TSynEditorMouseOptions;
+    FUserActions: TSynEditMouseActions;
+    procedure SetOptions(AValue: TSynEditorMouseOptions);
+    procedure SetUserActions(AValue: TSynEditMouseActions);
+  protected
+    procedure InitForOptions(AnOptions: TSynEditorMouseOptions); virtual;
   public
+    constructor Create(AOwner: TPersistent);
+    destructor Destroy; override;
     procedure ResetDefaults; override;
+    procedure ResetUserActions;
+    function  GetActionsForOptions(AnOptions: TSynEditorMouseOptions): TSynEditMouseActions;
+    property  Options: TSynEditorMouseOptions read FOptions write SetOptions;
+    property  UserActions: TSynEditMouseActions read FUserActions write SetUserActions;
   end;
 
-  { TSynEditSelMouseActions }
-
-  TSynEditMouseSelActions = class(TSynEditMouseActions)
-  public
-    procedure ResetDefaults; override;
-  end;
 
   TSynEditMouseActionHandler = function(AnActionList: TSynEditMouseActions;
     AnInfo: TSynEditMouseActionInfo): Boolean of object;
@@ -331,6 +348,73 @@ end;
 function IdentToSynMouseCmd(const Ident: string; out SynMouseCmd: Longint): Boolean;
 begin
   Result := IdentToInt(Ident, SynMouseCmd, SynMouseCommandNames);
+end;
+
+{ TSynEditMouseInternalActions }
+
+procedure TSynEditMouseInternalActions.SetOptions(AValue: TSynEditorMouseOptions);
+begin
+  FOptions := AValue;
+  if emUseMouseActions in FOptions then exit;
+
+  AValue := AValue - [emUseMouseActions];
+  if (FInternOptions = AValue) and (Count > 0) then exit;
+  FInternOptions := AValue;
+  InitForOptions(FInternOptions);
+end;
+
+procedure TSynEditMouseInternalActions.SetUserActions(AValue: TSynEditMouseActions);
+begin
+  if AValue =nil then
+    FUserActions.Clear
+  else
+    FUserActions.Assign(AValue);
+end;
+
+procedure TSynEditMouseInternalActions.InitForOptions(AnOptions: TSynEditorMouseOptions);
+begin
+  Clear;
+end;
+
+constructor TSynEditMouseInternalActions.Create(AOwner: TPersistent);
+begin
+  FOptions := [];
+  FUserActions := TSynEditMouseActions.Create(AOwner);
+  inherited Create(AOwner);
+end;
+
+destructor TSynEditMouseInternalActions.Destroy;
+begin
+  FreeAndNil(FUserActions);
+  inherited Destroy;
+end;
+
+procedure TSynEditMouseInternalActions.ResetDefaults;
+begin
+  InitForOptions(FOptions);
+end;
+
+procedure TSynEditMouseInternalActions.ResetUserActions;
+begin
+  if emUseMouseActions in FOptions then begin
+    if (FInternOptions <> FOptions - [emUseMouseActions]) or (Count = 0) then begin
+      FInternOptions := FOptions - [emUseMouseActions];
+      InitForOptions(FInternOptions);
+    end;
+    FUserActions.Assign(Self);
+  end
+  else begin
+    FUserActions.Clear;
+  end;
+end;
+
+function TSynEditMouseInternalActions.GetActionsForOptions(AnOptions: TSynEditorMouseOptions): TSynEditMouseActions;
+begin
+  Options := AnOptions;
+  if emUseMouseActions in FOptions then
+    Result := FUserActions
+  else
+    Result := Self;
 end;
 
 { TSynEditMouseAction }
@@ -688,34 +772,6 @@ begin
     if Items[Result].Equals(MAction, IgnoreCmd) then exit;
     Dec(Result);
   end;
-end;
-
-{ TSynEditSelMouseActions }
-
-procedure TSynEditMouseSelActions.ResetDefaults;
-begin
-  Clear;
-  AddCommand(emcStartDragMove, False, mbLeft, ccSingle, cdDown, [], []);
-end;
-
-{ TSynEditMouseTextActions }
-
-procedure TSynEditMouseTextActions.ResetDefaults;
-begin
-  Clear;
-  AddCommand(emcStartSelections, True,    mbLeft, ccSingle, cdDown, [],        [ssShift, ssAlt], emcoSelectionStart);
-  AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [ssShift], [ssShift, ssAlt], emcoSelectionContinue);
-  AddCommand(emcStartColumnSelections, True,    mbLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt], emcoSelectionStart);
-  AddCommand(emcStartColumnSelections, True, mbLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt], emcoSelectionContinue);
-  AddCommand(emcContextMenu, False, mbRight, ccSingle, cdUp, [], [], emcoSelectionCaretMoveNever);
-
-  AddCommand(emcSelectWord, True, mbLeft, ccDouble, cdDown, [], []);
-  AddCommand(emcSelectLine, True, mbLeft, ccTriple, cdDown, [], []);
-  AddCommand(emcSelectPara, True, mbLeft, ccQuad, cdDown, [], []);
-
-  AddCommand(emcPasteSelection, True, mbMiddle, ccSingle, cdDown, [], []);
-
-  AddCommand(emcMouseLink, False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
 end;
 
 { TSynEditMouseActionSearchList }

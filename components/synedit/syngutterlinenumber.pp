@@ -10,7 +10,7 @@ uses
 
 type
 
-  TSynEditMouseActionsLineNum = class(TSynEditMouseActions)
+  TSynEditMouseActionsLineNum = class(TSynEditMouseInternalActions)
   public  // empty by default
   end;
 
@@ -38,6 +38,7 @@ type
     procedure BufferChanged(Sender: TObject);
     procedure FontChanged(Sender: TObject);
     procedure SetAutoSize(const AValue : boolean); override;
+    function CreateMouseActions: TSynEditMouseInternalActions; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -62,9 +63,6 @@ uses
 
 constructor TSynGutterLineNumber.Create(AOwner: TComponent);
 begin
-  FMouseActions := TSynEditMouseActionsLineNum.Create(self);
-  FMouseActions.ResetDefaults;
-
   FDigitCount := 2;
   FAutoSizeDigitCount := FDigitCount;
   FShowOnlyLineNumbersMultiplesOf := 1;
@@ -87,7 +85,6 @@ destructor TSynGutterLineNumber.Destroy;
 begin
   TSynEditStringList(TextBuffer).RemoveHanlders(self);
   FTextDrawer.UnRegisterOnFontChangeHandler({$IFDEF FPC}@{$ENDIF}FontChanged);
-  FreeAndNil(FMouseActions);
   inherited Destroy;
 end;
 
@@ -212,6 +209,11 @@ procedure TSynGutterLineNumber.SetAutoSize(const AValue: boolean);
 begin
   inherited SetAutoSize(AValue);
   if AValue then LineCountChanged(nil, 0, 0);
+end;
+
+function TSynGutterLineNumber.CreateMouseActions: TSynEditMouseInternalActions;
+begin
+  Result := TSynEditMouseActionsLineNum.Create(self);
 end;
 
 procedure TSynGutterLineNumber.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);

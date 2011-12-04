@@ -15,6 +15,8 @@ resourcestring
   syndsSeparator = 'Separator';
   syndsLineOverview = 'Line Overview';
 
+  syndsResetMouseActions = 'Reset mouse actions';
+
 
 implementation
 

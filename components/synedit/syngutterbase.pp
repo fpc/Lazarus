@@ -37,7 +37,9 @@ type
     FNeedOnChange, FNeedOnResize: Boolean;
     FOnResize: TNotifyEvent;
     FOnChange: TNotifyEvent;
+    FMouseActions: TSynEditMouseInternalActions;
 
+    function GetMouseActions: TSynEditMouseActions;
     procedure SetAutoSize(const AValue: boolean);
     procedure SetColor(const Value: TColor);
     procedure SetGutterParts(const AValue: TSynGutterPartListBase);
@@ -47,7 +49,6 @@ type
     procedure SetVisible(const AValue: boolean);
     procedure SetWidth(Value: integer);
   protected
-    FMouseActions: TSynEditMouseActions;
     procedure DoAutoSize;
     procedure SetChildBounds;
     procedure DoChange(Sender: TObject);
@@ -59,12 +60,15 @@ type
     procedure RegisterNewGutterPartList(APartList: TSynGutterPartListBase);
     function  PartCount: integer;
     function  CreatePartList: TSynGutterPartListBase; virtual; abstract;
+    function  CreateMouseActions: TSynEditMouseInternalActions; virtual;
     procedure Clear;
   public
     constructor Create(AOwner : TSynEditBase; ASide: TSynGutterSide; ATextDrawer: TheTextDrawer);
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure RecalcBounds;
+    function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
+                 HandleActionProc: TSynEditMouseActionHandler): Boolean; virtual;
     property Left: Integer read FLeft;
     property Top: Integer read FTop;
     property Height:Integer read FHeight;
@@ -86,7 +90,7 @@ type
     property TextDrawer: TheTextDrawer read FTextDrawer;
     property Color: TColor read FColor write SetColor default clBtnFace;
     property MouseActions: TSynEditMouseActions
-      read FMouseActions write SetMouseActions;
+      read GetMouseActions write SetMouseActions;
   end;
 
   { TSynGutterPartListBase }
@@ -145,12 +149,14 @@ type
     FCursor: TCursor;
     FOnChange: TNotifyEvent;
     FOnGutterClick: TGutterClickEvent;
+    FMouseActions: TSynEditMouseInternalActions;
     function GetFoldView: TSynEditFoldedView;
     function GetGutterParts: TSynGutterPartListBase;
+    function GetMouseActions: TSynEditMouseActions;
     procedure SetMarkupInfo(const AValue: TSynSelectedColor);
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
   protected
-    FMouseActions: TSynEditMouseActions;
+    function  CreateMouseActions: TSynEditMouseInternalActions; virtual;
     function  PreferedWidth: Integer; virtual;
     procedure SetBounds(ALeft, ATop, AHeight: Integer);
     procedure DoAutoSize;
@@ -194,7 +200,7 @@ type
     property Width: integer read FWidth write SetWidth default 10;
     property Visible: boolean read FVisible write SetVisible default True;
     property MouseActions: TSynEditMouseActions
-      read FMouseActions write SetMouseActions;
+      read GetMouseActions write SetMouseActions;
   end;
 
 
@@ -210,6 +216,7 @@ begin
   FSide := ASide;
   FSynEdit := AOwner;
   CreatePartList;
+  FMouseActions := CreateMouseActions;
 
   FInDoChange := False;
   FChangeLock := 0;
@@ -227,6 +234,7 @@ begin
   FOnChange := nil;
   FOnResize := nil;
   FreeAndNil(FGutterPartList);
+  FreeAndNil(FMouseActions);
   inherited Destroy;
 end;
 
@@ -284,6 +292,12 @@ begin
   end;
 end;
 
+function TSynGutterBase.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
+  HandleActionProc: TSynEditMouseActionHandler): Boolean;
+begin
+  Result := HandleActionProc(FMouseActions.GetActionsForOptions(TCustomSynEdit(SynEdit).MouseOptions), AnInfo);
+end;
+
 procedure TSynGutterBase.SetColor(const Value: TColor);
 begin
   if FColor <> Value then
@@ -299,6 +313,11 @@ begin
   FAutoSize := AValue;
   if FAutoSize then
     DoAutoSize;
+end;
+
+function TSynGutterBase.GetMouseActions: TSynEditMouseActions;
+begin
+  Result := FMouseActions.UserActions;
 end;
 
 procedure TSynGutterBase.SetGutterParts(const AValue: TSynGutterPartListBase);
@@ -317,10 +336,7 @@ end;
 
 procedure TSynGutterBase.SetMouseActions(const AValue: TSynEditMouseActions);
 begin
-  if AValue = nil then
-    FMouseActions.Clear
-  else
-    FMouseActions.Assign(AValue);
+  FMouseActions.UserActions := AValue;
 end;
 
 procedure TSynGutterBase.SetRightOffset(const AValue: integer);
@@ -383,6 +399,11 @@ begin
     result := FGutterPartList.Count
   else
     Result := 0;
+end;
+
+function TSynGutterBase.CreateMouseActions: TSynEditMouseInternalActions;
+begin
+  Result := TSynEditMouseInternalActions.Create(Self);
 end;
 
 procedure TSynGutterBase.DoChange(Sender: TObject);
@@ -465,6 +486,11 @@ begin
   Result := TSynGutterPartListBase(Owner);
 end;
 
+function TSynGutterPartBase.GetMouseActions: TSynEditMouseActions;
+begin
+  Result := FMouseActions.UserActions;
+end;
+
 function TSynGutterPartBase.GetFoldView: TSynEditFoldedView;
 begin
   Result := TSynEditFoldedView(FoldedTextBuffer);
@@ -477,10 +503,7 @@ end;
 
 procedure TSynGutterPartBase.SetMouseActions(const AValue: TSynEditMouseActions);
 begin
-  if AValue = nil then
-    FMouseActions.Clear
-  else
-    FMouseActions.Assign(AValue);
+  FMouseActions.UserActions := AValue;
 end;
 
 function TSynGutterPartBase.PreferedWidth: Integer;
@@ -539,6 +562,11 @@ begin
     FOnChange(Self);
 end;
 
+function TSynGutterPartBase.CreateMouseActions: TSynEditMouseInternalActions;
+begin
+  Result := TSynEditMouseInternalActions.Create(Self);
+end;
+
 constructor TSynGutterPartBase.Create(AOwner: TComponent);
 begin
   FMarkupInfo := TSynSelectedColor.Create;
@@ -546,6 +574,8 @@ begin
   FMarkupInfo.Foreground := clNone;
   FMarkupInfo.FrameColor := clNone;
   FMarkupInfo.OnChange := {$IFDEF FPC}@{$ENDIF}DoChange;
+
+  FMouseActions := CreateMouseActions;
 
   FVisible := True;
   FAutoSize := True;
@@ -569,6 +599,7 @@ end;
 destructor TSynGutterPartBase.Destroy;
 begin
   inherited Destroy;
+  FreeAndNil(FMouseActions);
   FreeAndNil(FMarkupInfo);
 end;
 
@@ -609,9 +640,7 @@ end;
 function TSynGutterPartBase.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
   HandleActionProc: TSynEditMouseActionHandler): Boolean;
 begin
-  Result := False;
-  if assigned(FMouseActions) then
-    Result := HandleActionProc(MouseActions, AnInfo);
+  Result := HandleActionProc(FMouseActions.GetActionsForOptions(TCustomSynEdit(SynEdit).MouseOptions), AnInfo);
 end;
 
 function TSynGutterPartBase.DoHandleMouseAction(AnAction: TSynEditMouseAction;

@@ -213,15 +213,12 @@ type
     //eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
 
     // Only for compatibility, moved to TSynEditorMouseOptions
-    eoAltSetsColumnMode,       // DEPRECATED, now in TSynEditorMouseOption
-    eoDragDropEditing,         // DEPRECATED, now controlled vie MouseActions
-                               // Allows you to select a block of text and drag it within the document to another location
-    eoRightMouseMovesCursor,   // DEPRECATED, now controlled vie MouseActions
-                               // When clicking with the right mouse for a popup menu, move the cursor to that location
-    eoDoubleClickSelectsLine,  // DEPRECATED
-                               // Select line on double click
-    eoShowCtrlMouseLinks       // DEPRECATED, now controlled vie MouseActions
-                               // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
+    // keep in one block
+    eoAltSetsColumnMode,       //
+    eoDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
+    eoRightMouseMovesCursor,   // When clicking with the right mouse for a popup menu, move the cursor to that location
+    eoDoubleClickSelectsLine,  // Select line on double click
+    eoShowCtrlMouseLinks       // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
     );
   TSynEditorOptions = set of TSynEditorOption;
 
@@ -237,11 +234,14 @@ type
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
 
-  //TSynEditorMouseOption = (
-  //  eoAltSetsColumnMode,       // Holding down the Alt Key will put the selection mode into columnar format
-  //
-  //);
-  //TSynEditorMouseOptions = set of TSynEditorMouseOption;
+  TSynEditorMouseOption = SynEditMouseCmds.TSynEditorMouseOption;
+    //emUseMouseActions,
+    //emAltSetsColumnMode,       // Alt modifier, triggers column mode selection
+    //emDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
+    //emRightMouseMovesCursor,   // When clicking with the right mouse for a popup menu, move the cursor to that location
+    //emDoubleClickSelectsLine,  // Select line on double click
+    //emShowCtrlMouseLinks       // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
+  TSynEditorMouseOptions = SynEditMouseCmds.TSynEditorMouseOptions;
 
   // options for textbuffersharing
   TSynEditorShareOption = (
@@ -252,8 +252,7 @@ type
   TSynVisibleSpecialChars = SynEditTypes.TSynVisibleSpecialChars;
 
 const
-  // MouseAction related options will have no effect (as default), unless they
-  // are also updated in the Constructor of the MouseAction-class
+  // MouseAction related options MUST NOT be included here
   SYNEDIT_DEFAULT_OPTIONS = [
     eoAutoIndent,
     eoScrollPastEol,
@@ -276,6 +275,22 @@ const
     eoSpacesToTabs             // Converts space characters to tabs and spaces
   ];
 
+  SYNEDIT_OLD_MOUSE_OPTIONS = [
+    eoAltSetsColumnMode,       //
+    eoDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
+    eoRightMouseMovesCursor,   // When clicking with the right mouse for a popup menu, move the cursor to that location
+    eoDoubleClickSelectsLine,  // Select line on double click
+    eoShowCtrlMouseLinks       // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
+  ];
+
+  SYNEDIT_OLD_MOUSE_OPTIONS_MAP: array [eoAltSetsColumnMode..eoShowCtrlMouseLinks] of TSynEditorMouseOption = (
+    emAltSetsColumnMode,       // eoAltSetsColumnMode
+    emDragDropEditing,         // eoDragDropEditing
+    emRightMouseMovesCursor,   // eoRightMouseMovesCursor
+    emDoubleClickSelectsLine,  // eoDoubleClickSelectsLine
+    emShowCtrlMouseLinks       // eoShowCtrlMouseLinks
+  );
+
   SYNEDIT_DEFAULT_SHARE_OPTIONS = [
     eosShareMarks
   ];
@@ -284,6 +299,8 @@ const
     eoFoldedCopyPaste,
     eoOverwriteBlock
   ];
+
+  SYNEDIT_DEFAULT_MOUSE_OPTIONS = [];
 
   SYNEDIT_DEFAULT_VISIBLESPECIALCHARS = [
     vscSpace,
@@ -431,7 +448,7 @@ type
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
     FKeyStrokes, FLastKeyStrokes: TSynEditKeyStrokes;
-    FMouseActions, FMouseSelActions: TSynEditMouseActions;
+    FMouseActions, FMouseSelActions: TSynEditMouseInternalActions;
     FMouseActionSearchHandlerList: TSynEditMouseActionSearchList;
     FMouseActionExecHandlerList: TSynEditMouseActionExecList;
     FMarkList: TSynEditMarkList;
@@ -443,8 +460,9 @@ type
     fTextDrawer: TheTextDrawer;
     FPaintLineColor, FPaintLineColor2: TSynSelectedColor;
     fStateFlags: TSynStateFlags;
-    fOptions: TSynEditorOptions;
-    fOptions2: TSynEditorOptions2;
+    FOptions: TSynEditorOptions;
+    FOptions2: TSynEditorOptions2;
+    FMouseOptions: TSynEditorMouseOptions;
     fStatusChanges: TSynStatusChanges;
     fTSearch: TSynEditSearch;
     fHookedCommandHandlers: TList;
@@ -479,6 +497,8 @@ type
     function GetDefSelectionMode: TSynSelectionMode;
     function GetFoldState: String;
     function GetModified: Boolean;
+    function GetMouseActions: TSynEditMouseActions;
+    function GetMouseSelActions: TSynEditMouseActions;
     function GetPaintLockOwner: TSynEditBase;
     function GetPlugin(Index: Integer): TSynEditPlugin;
     function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
@@ -585,6 +605,8 @@ type
     procedure UpdateOptions;
     procedure SetOptions2(const Value: TSynEditorOptions2);
     procedure UpdateOptions2;
+    procedure SetMouseOptions(AValue: TSynEditorMouseOptions);
+    procedure UpdateMouseOptions;
     procedure SetOverwriteCaret(const Value: TSynEditCaretType);
     procedure SetRightEdge(Value: Integer);
     procedure SetRightEdgeColor(Value: TColor);
@@ -843,6 +865,7 @@ type
     procedure SetUseIncrementalColor(const AValue : Boolean);
     procedure SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
     procedure SetDefaultKeystrokes; virtual;
+    procedure ResetMouseActions;  // set mouse-actions according to current Options / may clear them
     procedure SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
     procedure Undo;
     function GetLineState(ALine: Integer): TSynLineState;
@@ -928,14 +951,16 @@ type
     property Keystrokes: TSynEditKeyStrokes
       read FKeystrokes write SetKeystrokes;
     property MouseActions: TSynEditMouseActions
-      read FMouseActions write SetMouseActions;
+      read GetMouseActions write SetMouseActions;
     property MouseSelActions: TSynEditMouseActions // Mouseactions, if mouse is over selection => fallback to normal
-      read FMouseSelActions write SetMouseSelActions;
+      read GetMouseSelActions write SetMouseSelActions;
     property MaxUndo: Integer read GetMaxUndo write SetMaxUndo default 1024;
-    property Options: TSynEditorOptions read fOptions write SetOptions          // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
+    property Options: TSynEditorOptions read FOptions write SetOptions          // See SYNEDIT_UNIMPLEMENTED_OPTIONS for deprecated Values
       default SYNEDIT_DEFAULT_OPTIONS;
-    property Options2: TSynEditorOptions2 read fOptions2 write SetOptions2
+    property Options2: TSynEditorOptions2 read FOptions2 write SetOptions2
       default SYNEDIT_DEFAULT_OPTIONS2;
+    property MouseOptions: TSynEditorMouseOptions read FMouseOptions write SetMouseOptions
+      default SYNEDIT_DEFAULT_MOUSE_OPTIONS;
     property ShareOptions: TSynEditorShareOptions read FShareOptions write SetShareOptions
       default SYNEDIT_DEFAULT_SHARE_OPTIONS; experimental;
     property VisibleSpecialChars: TSynVisibleSpecialChars read FVisibleSpecialChars write SetVisibleSpecialChars;
@@ -1065,6 +1090,7 @@ type
     property MaxUndo;
     property Options;
     property Options2;
+    property MouseOptions;
     property VisibleSpecialChars;
     property OverwriteCaret;
     property ReadOnly;
@@ -1179,6 +1205,32 @@ type
     constructor Create(APosY, EPosY: Integer; AText: String);
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
+
+  { TSynEditMouseTextActions }
+
+  TSynEditMouseTextActions = class(TSynEditMouseInternalActions)
+  protected
+    procedure InitForOptions(AnOptions: TSynEditorMouseOptions); override;
+  end;
+
+  { TSynEditMouseSelActions }
+
+  TSynEditMouseSelActions = class(TSynEditMouseInternalActions)
+  protected
+    procedure InitForOptions(AnOptions: TSynEditorMouseOptions); override;
+  end;
+
+  { THookedCommandHandlerEntry }
+
+  THookedCommandHandlerEntry = class(TObject)
+  private
+    fEvent: THookedCommandEvent;
+    fData: pointer;
+    function Equals(AEvent: THookedCommandEvent): boolean; reintroduce;
+  public
+    constructor Create(AEvent: THookedCommandEvent; AData: pointer);
+  end;
+
 
 { TSynEditUndoCaret }
 
@@ -1298,17 +1350,57 @@ begin
   end;
 end;
 
-{ THookedCommandHandlerEntry }
+{ TSynEditMouseTextActions }
 
-type
-  THookedCommandHandlerEntry = class(TObject)
-  private
-    fEvent: THookedCommandEvent;
-    fData: pointer;
-    function Equals(AEvent: THookedCommandEvent): boolean; reintroduce;
-  public
-    constructor Create(AEvent: THookedCommandEvent; AData: pointer);
+procedure TSynEditMouseTextActions.InitForOptions(AnOptions: TSynEditorMouseOptions);
+var
+  rmc: Boolean;
+begin
+  Clear;
+  rmc := (emRightMouseMovesCursor in AnOptions);
+  //// eoRightMouseMovesCursor
+  //if (eoRightMouseMovesCursor in ChangedOptions) then begin
+  //  for i := FMouseActions.Count-1 downto 0 do
+  //    if FMouseActions[i].Button = mbRight then
+  //      FMouseActions[i].MoveCaret := (eoRightMouseMovesCursor in fOptions);
+  //end;
+
+  AddCommand(emcStartSelections,       True,  mbLeft, ccSingle, cdDown, [],        [ssShift, ssAlt], emcoSelectionStart);
+  AddCommand(emcStartSelections,       True,  mbLeft, ccSingle, cdDown, [ssShift], [ssShift, ssAlt], emcoSelectionContinue);
+  if (emAltSetsColumnMode in AnOptions) then begin
+    AddCommand(emcStartColumnSelections, True,  mbLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt], emcoSelectionStart);
+    AddCommand(emcStartColumnSelections, True,  mbLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt], emcoSelectionContinue);
   end;
+  if (emShowCtrlMouseLinks in AnOptions) then
+    AddCommand(emcMouseLink,             False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
+
+  if (emDoubleClickSelectsLine in AnOptions) then begin
+    AddCommand(emcSelectLine,            True,  mbLeft, ccDouble, cdDown, [], []);
+    AddCommand(emcSelectPara,            True,  mbLeft, ccTriple, cdDown, [], []);
+  end
+  else begin
+    AddCommand(emcSelectWord,            True,  mbLeft, ccDouble, cdDown, [], []);
+    AddCommand(emcSelectLine,            True,  mbLeft, ccTriple, cdDown, [], []);
+  end;
+  AddCommand(emcSelectPara,            True,  mbLeft, ccQuad,   cdDown, [], []);
+
+  AddCommand(emcContextMenu,           rmc,   mbRight, ccSingle, cdUp, [], [], emcoSelectionCaretMoveNever);
+
+  AddCommand(emcPasteSelection,        True,  mbMiddle, ccSingle, cdDown, [], []);
+end;
+
+{ TSynEditMouseSelActions }
+
+procedure TSynEditMouseSelActions.InitForOptions(AnOptions: TSynEditorMouseOptions);
+begin
+  Clear;
+  //rmc := (eoRightMouseMovesCursor in AnOptions);
+
+  if (emDragDropEditing in AnOptions) then
+    AddCommand(emcStartDragMove, False, mbLeft, ccSingle, cdDown, [], []);
+end;
+
+{ THookedCommandHandlerEntry }
 
 constructor THookedCommandHandlerEntry.Create(AEvent: THookedCommandEvent;
   AData: pointer);
@@ -1387,6 +1479,16 @@ end;
 function TCustomSynEdit.GetModified: Boolean;
 begin
   Result := TSynEditStringList(FLines).Modified;
+end;
+
+function TCustomSynEdit.GetMouseActions: TSynEditMouseActions;
+begin
+  Result := FMouseActions.UserActions;
+end;
+
+function TCustomSynEdit.GetMouseSelActions: TSynEditMouseActions;
+begin
+  Result := FMouseSelActions.UserActions;
 end;
 
 function TCustomSynEdit.GetPaintLockOwner: TSynEditBase;
@@ -1719,12 +1821,11 @@ begin
   if assigned(Owner) and not (csLoading in Owner.ComponentState) then begin
     SetDefaultKeystrokes;
   end;
-  FMouseActions := TSynEditMouseTextActions.Create(Self);
+
+  FMouseActions    := TSynEditMouseTextActions.Create(Self);
   FMouseSelActions := TSynEditMouseSelActions.Create(Self);
-  FMouseActions.ResetDefaults;
-  FMouseSelActions.ResetDefaults;
   FMouseActionSearchHandlerList := TSynEditMouseActionSearchList.Create;
-  FMouseActionExecHandlerList := TSynEditMouseActionExecList.Create;
+  FMouseActionExecHandlerList  := TSynEditMouseActionExecList.Create;
 
   fRightEdgeColor := clSilver;
 {$IFDEF SYN_MBCSSUPPORT}
@@ -1744,11 +1845,13 @@ begin
   fTSearch := TSynEditSearch.Create;
   FOptions := SYNEDIT_DEFAULT_OPTIONS;
   FOptions2 := SYNEDIT_DEFAULT_OPTIONS2;
+  FMouseOptions := SYNEDIT_DEFAULT_MOUSE_OPTIONS;
   FShareOptions := SYNEDIT_DEFAULT_SHARE_OPTIONS;
   FVisibleSpecialChars := SYNEDIT_DEFAULT_VISIBLESPECIALCHARS;
   fMarkupSpecialChar.VisibleSpecialChars := SYNEDIT_DEFAULT_VISIBLESPECIALCHARS;
   UpdateOptions;
   UpdateOptions2;
+  UpdateMouseOptions;
   fScrollTimer := TTimer.Create(Self);
   fScrollTimer.Enabled := False;
   fScrollTimer.Interval := 100;
@@ -2513,6 +2616,8 @@ begin
     // Gutter
     if not Result then
       Result := FLeftGutter.DoHandleMouseAction(AnAction, AnInfo);
+    if not Result then
+      Result := FRightGutter.DoHandleMouseAction(AnAction, AnInfo);
 
     if Result then begin
       if (not AnInfo.CaretDone) and AnAction.MoveCaret then
@@ -2674,9 +2779,9 @@ begin
        //(x < ClientWidth - TextRightPixelOffset - ScrollBarWidth) and
        IsPointInSelection(FInternalCaret.LineBytePos)
     then
-      if DoHandleMouseAction(FMouseSelActions, Info) then
+      if DoHandleMouseAction(FMouseSelActions.GetActionsForOptions(FMouseOptions), Info) then
         exit;
-    DoHandleMouseAction(FMouseActions, Info);
+    DoHandleMouseAction(FMouseActions.GetActionsForOptions(FMouseOptions), Info);
   finally
     if Info.IgnoreUpClick then
       include(fStateFlags, sfIgnoreUpClick);
@@ -5284,18 +5389,12 @@ end;
 
 procedure TCustomSynEdit.SetMouseActions(const AValue: TSynEditMouseActions);
 begin
-  if AValue = nil then
-    FMouseActions.Clear
-  else
-    FMouseActions.Assign(AValue);
+  FMouseActions.UserActions := AValue;
 end;
 
 procedure TCustomSynEdit.SetMouseSelActions(const AValue: TSynEditMouseActions);
 begin
-  if AValue = nil then
-    FMouseSelActions.Clear
-  else
-    FMouseSelActions.Assign(AValue);
+  FMouseSelActions.UserActions := AValue;
 end;
 
 procedure TCustomSynEdit.SetPaintLockOwner(const AValue: TSynEditBase);
@@ -6025,6 +6124,17 @@ end;
 procedure TCustomSynEdit.SetDefaultKeystrokes;
 begin
   FKeystrokes.ResetDefaults;
+end;
+
+procedure TCustomSynEdit.ResetMouseActions;
+var
+  i: Integer;
+begin
+  FMouseActions.Options := FMouseOptions;
+  FMouseActions.ResetUserActions;
+  FMouseSelActions.Options := FMouseOptions;
+  FMouseSelActions.ResetUserActions;
+
 end;
 
 procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
@@ -7293,96 +7403,51 @@ procedure TCustomSynEdit.SetOptions(Value: TSynEditorOptions);
 var
   ChangedOptions: TSynEditorOptions;
   i: Integer;
+  m: TSynEditorOption;
+  MOpt: TSynEditorMouseOptions;
+  f: Boolean;
 begin
   Value := Value - SYNEDIT_UNIMPLEMENTED_OPTIONS;
-  if (Value <> fOptions) then begin
-    ChangedOptions:=(fOptions-Value)+(Value-fOptions);
-    fOptions := Value;
-    UpdateOptions;
-    if not (eoScrollPastEol in Options) then
-      LeftChar := LeftChar;
-    if (eoScrollPastEol in Options) or (eoScrollPastEof in Options) then begin
-      UpdateScrollBars;
-      TopLine := TopLine;
-    end;
-    // (un)register HWND as drop target
-    if (eoDropFiles in ChangedOptions) and not (csDesigning in ComponentState) and HandleAllocated then
-      ; // ToDo DragAcceptFiles
-    if (eoPersistentCaret in ChangedOptions) and HandleAllocated then
-      UpdateCaret;
-    if (eoShowSpecialChars in ChangedOptions) and HandleAllocated then
-      Invalidate;
-    fMarkupSpecialChar.Enabled := (eoShowSpecialChars in fOptions);
+  if (Value = FOptions) then exit;
 
-    (* Deal with deprecated values
-       Those are all controlled by mouse-actions.
-       As long as the default mouse actions are set, the below will act as normal
-    *)
-    // eoShowCtrlMouseLinks
-    if (eoShowCtrlMouseLinks in ChangedOptions) then begin
-      if (eoShowCtrlMouseLinks in fOptions) then begin
-        try
-          FMouseActions.AddCommand(emcMouseLink, False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
-        except
-        end;
-      end else begin
-        for i := FMouseActions.Count-1 downto 0 do
-          if FMouseActions[i].Command = emcMouseLink then
-            FMouseActions.Delete(i);
-      end;
-      if assigned(fMarkupCtrlMouse) then
-        fMarkupCtrlMouse.UpdateCtrlMouse;
-      UpdateCursor;
-    end;
-    // eoDragDropEditing
-    if (eoDragDropEditing in ChangedOptions) then begin
-      if (eoDragDropEditing in fOptions) then begin
-        try
-          FMouseSelActions.AddCommand(emcStartDragMove, False, mbLeft, ccSingle, cdDown, [], []);
-        except
-        end;
-      end else begin
-        for i := FMouseActions.Count-1 downto 0 do
-          if FMouseActions[i].Command = emcStartDragMove then
-            FMouseActions.Delete(i);
-      end;
-    end;
-    // eoRightMouseMovesCursor
-    if (eoRightMouseMovesCursor in ChangedOptions) then begin
-      for i := FMouseActions.Count-1 downto 0 do
-        if FMouseActions[i].Button = mbRight then
-          FMouseActions[i].MoveCaret := (eoRightMouseMovesCursor in fOptions);
-    end;
-    // eoDoubleClickSelectsLine
-    if (eoDoubleClickSelectsLine in ChangedOptions) then begin
-      for i := FMouseActions.Count-1 downto 0 do
-        if (FMouseActions[i].Button = mbLeft) and
-           (FMouseActions[i].ClickCount = ccDouble) and
-           (FMouseActions[i].IsMatchingShiftState([])) and
-           ( (FMouseActions[i].Command = emcSelectWord) or
-             (FMouseActions[i].Command = emcSelectLine) )
-        then begin
-          if (eoDoubleClickSelectsLine in fOptions)
-          then FMouseActions[i].Command := emcSelectLine
-          else FMouseActions[i].Command := emcSelectWord;
-        end
-    end;
-    // eoAltSetsColumnMode
-    if (eoAltSetsColumnMode in ChangedOptions) then begin
-      if (eoAltSetsColumnMode in fOptions) then begin
-        try
-          FMouseActions.AddCommand(emcStartColumnSelections, True, mbLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt], emcoSelectionStart);
-          FMouseActions.AddCommand(emcStartColumnSelections, True, mbLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt], emcoSelectionContinue);
-        except
-        end;
-      end else begin
-        for i := FMouseActions.Count-1 downto 0 do
-          if FMouseActions[i].Command = emcStartColumnSelections then
-            FMouseActions.Delete(i);
-      end;
-    end;
+  ChangedOptions:=(FOptions-Value)+(Value-FOptions);
+  FOptions := Value;
+  UpdateOptions;
 
+  if not (eoScrollPastEol in Options) then
+    LeftChar := LeftChar;
+  if (eoScrollPastEol in Options) or (eoScrollPastEof in Options) then begin
+    UpdateScrollBars;
+    TopLine := TopLine;
   end;
+  // (un)register HWND as drop target
+  if (eoDropFiles in ChangedOptions) and not (csDesigning in ComponentState) and HandleAllocated then
+    ; // ToDo DragAcceptFiles
+  if (eoPersistentCaret in ChangedOptions) and HandleAllocated then
+    UpdateCaret;
+  if (eoShowSpecialChars in ChangedOptions) and HandleAllocated then
+    Invalidate;
+  fMarkupSpecialChar.Enabled := (eoShowSpecialChars in fOptions);
+
+  (* Deal with deprecated Mouse values
+     Those are all controlled by mouse-actions.
+     As long as the default mouse actions are set, the below will act as normal
+  *)
+
+  MOpt := FMouseOptions;
+  f := False;
+  for m := low(SYNEDIT_OLD_MOUSE_OPTIONS_MAP) to high(SYNEDIT_OLD_MOUSE_OPTIONS_MAP) do
+    if (m in SYNEDIT_OLD_MOUSE_OPTIONS) and (m in ChangedOptions) then begin
+      f := True;
+      if (m in FOptions)
+      then MOpt := MOpt + [SYNEDIT_OLD_MOUSE_OPTIONS_MAP[m]]
+      else MOpt := MOpt - [SYNEDIT_OLD_MOUSE_OPTIONS_MAP[m]];
+    end;
+  if f then
+    MouseOptions := MOpt;
+
+  FOptions := Value; // undo changes applied by MouseOptions
+
 end;
 
 procedure TCustomSynEdit.UpdateOptions;
@@ -7413,6 +7478,37 @@ procedure TCustomSynEdit.UpdateOptions2;
 begin
   FBlockSelection.Persistent := eoPersistentBlock in fOptions2;
   FCaret.SkipTabs := (eoCaretSkipTab in fOptions2);
+end;
+
+procedure TCustomSynEdit.SetMouseOptions(AValue: TSynEditorMouseOptions);
+var
+  ChangedOptions: TSynEditorMouseOptions;
+  m: TSynEditorOption;
+  f: Boolean;
+begin
+  if FMouseOptions = AValue then Exit;
+
+  ChangedOptions := (FMouseOptions-AValue)+(AValue-FMouseOptions);
+  FMouseOptions := AValue;
+  // changes take effect when MouseActions are accessed
+
+  for m := low(SYNEDIT_OLD_MOUSE_OPTIONS_MAP) to high(SYNEDIT_OLD_MOUSE_OPTIONS_MAP) do
+    if (m in SYNEDIT_OLD_MOUSE_OPTIONS) and
+       (SYNEDIT_OLD_MOUSE_OPTIONS_MAP[m] in ChangedOptions) and
+       not(SYNEDIT_OLD_MOUSE_OPTIONS_MAP[m] in FMouseOptions)
+    then
+      FOptions := FOptions - [m];
+
+  if (emShowCtrlMouseLinks in ChangedOptions) then begin
+    if assigned(fMarkupCtrlMouse) then
+      fMarkupCtrlMouse.UpdateCtrlMouse;
+    UpdateCursor;
+  end;
+end;
+
+procedure TCustomSynEdit.UpdateMouseOptions;
+begin
+  //
 end;
 
 procedure TCustomSynEdit.SetOptionFlag(Flag: TSynEditorOption; Value: boolean);

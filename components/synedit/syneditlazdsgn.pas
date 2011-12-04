@@ -43,7 +43,7 @@ uses
   SynHighlighterPython, SynHighlighterVB, SynHighlighterAny, SynHighlighterDiff,
   SynHighlighterBat, SynHighlighterIni,
   SynPropertyEditObjectList, SynDesignStringConstants,
-  LazarusPackageIntf, LResources, PropEdits;
+  LazarusPackageIntf, LResources, PropEdits, ComponentEditors;
 
 procedure Register;
 
@@ -233,6 +233,8 @@ begin
 
   RegisterClasses([TSynGutterPartList, TSynGutterSeparator, TSynGutterCodeFolding,
                   TSynGutterLineNumber, TSynGutterChanges, TSynGutterMarks]);
+
+  RegisterComponentEditor(TCustomSynEdit, TSynEditComponentEditor);
 
   // property editor, with filter for deprecated values
   RegisterPropertyEditor(TypeInfo(TSynEditorOptions), nil,
