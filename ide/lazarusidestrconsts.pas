@@ -1032,9 +1032,7 @@ resourcestring
   lisPEFilename = 'Filename:';
   lisPEUnitname = 'Unitname:';
   lisPVUTheUnitnameIsUsedWhenTheIDEExtendsUsesClauses = 'The unitname is used '
-    +'when the IDE extends uses clauses.';
-  lisPETheUnitnameIsUsedWhenTheIDEExtendsUsesClauses = 'The unitname is used '
-    +'when the IDE extends uses clauses.';
+    +'when the IDE extends uses clauses';
   lisPEInvalidUnitFilename = 'Invalid unit filename';
   lisPVUAPascalUnitMustHaveTheExtensionPpOrPas = 'A pascal unit must have the '
     +'extension .pp or .pas';
