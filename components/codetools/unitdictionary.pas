@@ -307,8 +307,8 @@ end;
 procedure TUDUnitGroup.RemoveUnit(TheUnit: TUDUnit);
 begin
   if AVLFindPointer(Units,TheUnit)=nil then exit;
-  Units.RemovePointer(TheUnit);
-  TheUnit.Groups.RemovePointer(Self);
+  AVLRemovePointer(Units,TheUnit);
+  AVLRemovePointer(TheUnit.Groups,Self);
   Dictionary.IncreaseChangeStamp;
 end;
 
@@ -324,7 +324,7 @@ end;
 
 procedure TUnitDictionary.RemoveIdentifier(Item: TUDIdentifier);
 begin
-  FIdentifiers.RemovePointer(Item);
+  AVLRemovePointer(FIdentifiers,Item);
 end;
 
 constructor TUnitDictionary.Create;
@@ -1035,7 +1035,6 @@ procedure TUnitDictionary.DeleteUnit(TheUnit: TUDUnit;
 var
   Node: TAVLTreeNode;
   Group: TUDUnitGroup;
-  Item: TUDIdentifier;
 begin
   Node:=TheUnit.Groups.FindLowest;
   // remove unit from groups
@@ -1049,12 +1048,7 @@ begin
   end;
   TheUnit.Groups.Clear;
   // free identifiers
-  while TheUnit.FirstIdentifier<>nil do begin
-    Item:=TheUnit.FirstIdentifier;
-    AVLRemovePointer(Identifiers,Item);
-    Item.Free;
-    TheUnit.FirstIdentifier:=Item.NextInUnit;
-  end;
+  TheUnit.ClearIdentifiers;
   // remove unit from dictionary
   AVLRemovePointer(UnitsByFilename,TheUnit);
   AVLRemovePointer(UnitsByName,TheUnit);

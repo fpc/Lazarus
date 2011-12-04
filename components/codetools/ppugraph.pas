@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, dynlibs, PPUParser, CodeTree, AVL_Tree, FileProcs,
-  BasicCodeTools, CodeGraph, CodeToolManager;
+  BasicCodeTools, CodeGraph, CodeToolManager, CodeToolsStructs;
 
 const
   FPCPPUGroupPrefix = 'fpc_';
@@ -262,7 +262,7 @@ end;
 procedure TPPUGroup.InternalRemoveMember(AMember: TPPUMember);
 begin
   FUnitGraph.DeleteGraphNode(AMember.KeyNode);
-  FMembers.RemovePointer(AMember);
+  AVLRemovePointer(FMembers,AMember);
   if Groups<>nil then
     Groups.InternalRemoveMember(AMember);
 end;
@@ -558,12 +558,12 @@ end;
 
 procedure TPPUGroups.InternalRemoveMember(AMember: TPPUMember);
 begin
-  FMembers.RemovePointer(AMember);
+  AVLRemovePointer(FMembers,AMember);
 end;
 
 procedure TPPUGroups.InternalRemoveGroup(AGroup: TPPUGroup);
 begin
-  FGroups.RemovePointer(AGroup);
+  AVLRemovePointer(FGroups,AGroup);
 end;
 
 procedure TPPUGroups.UpdateTopologicalSortedList;

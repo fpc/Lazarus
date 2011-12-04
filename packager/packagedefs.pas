@@ -1793,7 +1793,7 @@ procedure TPkgDependency.SetPackageName(const AValue: string);
 begin
   if FPackageName=AValue then exit;
   if (PackageDependencies<>nil) and (FPackageName<>'') then
-    PackageDependencies.RemovePointer(Self);
+    AVLRemovePointer(PackageDependencies,Self);
   FPackageName:=AValue;
   if (PackageDependencies<>nil) and (FPackageName<>'') then
     PackageDependencies.Add(Self);

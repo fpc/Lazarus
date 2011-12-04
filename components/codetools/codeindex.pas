@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, CodeAtom, CodeTree, CodeCache,
-  FileProcs, StdCodeTools;
+  FileProcs, StdCodeTools, CodeToolsStructs;
 
 type
   TCodeBrowserUnit = class;
@@ -285,7 +285,7 @@ procedure TCodeBrowserUnit.DeleteNode(var Node: TCodeBrowserNode);
 begin
   if Node=nil then exit;
   if ChildNodes<>nil then
-    FChildNodes.RemovePointer(Node);
+    AVLRemovePointer(FChildNodes,Node);
   FreeAndNil(Node);
 end;
 

@@ -40,8 +40,8 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileProcs, CodeToolManager,
-  CodeCache, LCLProc, FileUtil, MacroIntf, PackageIntf, IDEProcs, DialogProcs,
-  EnvironmentOpts, PackageDefs, LazConf;
+  CodeCache, CodeToolsStructs, LCLProc, FileUtil, MacroIntf, PackageIntf,
+  IDEProcs, DialogProcs, EnvironmentOpts, PackageDefs, LazConf;
   
 const
   PkgLinksFileVersion = 2;
@@ -603,8 +603,8 @@ begin
       //debugln('TPackageLinks.RemoveOldUserLinks',
       // ' Newer=',NewPkgLink.IDAsString,'=',dbgs(Pointer(NewPkgLink)),
       // ' Older=',OldPkgLink.IDAsString,'=',dbgs(Pointer(OldPkgLink)));
-      FUserLinksSortID.RemovePointer(OldPkgLink);
-      FUserLinksSortFile.RemovePointer(OldPkgLink);
+      AVLRemovePointer(FUserLinksSortID,OldPkgLink);
+      AVLRemovePointer(FUserLinksSortFile,OldPkgLink);
       OldPkgLink.Release;
     end;
     ANode:=NextNode;
@@ -956,7 +956,7 @@ begin
     if ANode<>nil then begin
       OldLink:=TPackageLink(ANode.Data);
       FUserLinksSortID.Delete(ANode);
-      FUserLinksSortFile.RemovePointer(OldLink);
+      AVLRemovePointer(FUserLinksSortFile,OldLink);
       OldLink.Release;
       Modified:=true;
     end;
