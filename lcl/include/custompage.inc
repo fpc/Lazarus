@@ -244,13 +244,12 @@ begin
     //List := TCustomTabControl(Parent).PageList;
     notebook := TCustomTabControl(Parent);
     i := 0;
-    repeat
-      if i = notebook.PageCount then exit(-1);
+    for i := 0 to notebook.PageCount - 1 do
+    begin
+      if (csDesigning in ComponentState) or notebook.Page[i].TabVisible then
+        inc(Result);
       if notebook.Page[i] = Self then exit;
-      if (csDesigning in ComponentState) or notebook.Page[i].TabVisible
-      then inc(Result);
-      inc(i);
-    until False;
+    end;
   end;
 // else
   Result := -1;
