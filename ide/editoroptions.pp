@@ -4062,6 +4062,7 @@ begin
     end;
   end;
 
+  ASynEdit.MouseOptions := [emUseMouseActions];
   ASynEdit.MouseActions.Assign(FUserMouseSettings.MainActions);
   ASynEdit.MouseSelActions.Assign(FUserMouseSettings.SelActions);
   ASynEdit.Gutter.MouseActions.Assign(FUserMouseSettings.GutterActions);
