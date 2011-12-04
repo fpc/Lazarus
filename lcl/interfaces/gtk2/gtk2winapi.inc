@@ -9333,7 +9333,8 @@ begin
   if GTK_WIDGET_DRAWABLE(CurWidget) then begin
     //DebugLn(['TGtk2WidgetSet.UpdateWindow DRAWING']);
     gtk_widget_queue_draw(CurWidget);
-    gdk_window_process_updates(CurWidget^.window,TRUE);
+    if GDK_IS_WINDOW(CurWidget^.Window) then
+      gdk_window_process_updates(CurWidget^.window,TRUE);
     Result:=true;
   end else
     Result:=false;
