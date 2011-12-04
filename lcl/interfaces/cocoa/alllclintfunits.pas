@@ -9,6 +9,7 @@ uses
   cocoawsstdctrls,
   interfaces,
   cocoautils,
+  cocoawsarrow,
   cocoawsextctrls,
   cocoagdiobjects,
   cocoawsforms,

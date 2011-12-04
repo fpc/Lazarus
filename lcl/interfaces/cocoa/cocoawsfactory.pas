@@ -9,6 +9,7 @@ uses
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus,
   WSLCLClasses,
   CocoaWSCommon,
+  CocoaWSArrow,
   CocoaWSButtons,
   CocoaWSExtCtrls,
   CocoaWSForms,
@@ -434,7 +435,8 @@ end;
 // Arrow
 function RegisterArrow: Boolean; alias : 'WSRegisterArrow';
 begin
-  Result := False;
+  RegisterWSComponent(TArrow, TCocoaWSArrow);
+  Result := True;
 end;
 
 // CheckLst

@@ -5422,6 +5422,7 @@ lcl/interfaces/cocoa/cocoatrayicon.inc svneol=native#text/pascal
 lcl/interfaces/cocoa/cocoautils.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoawinapi.inc svneol=native#text/pascal
 lcl/interfaces/cocoa/cocoawinapih.inc svneol=native#text/pascal
+lcl/interfaces/cocoa/cocoawsarrow.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoawsbuttons.pp svneol=native#text/pascal
 lcl/interfaces/cocoa/cocoawscommon.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoawsextctrls.pas svneol=native#text/plain
