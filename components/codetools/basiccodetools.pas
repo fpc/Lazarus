@@ -97,8 +97,7 @@ procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
 function GetIdentStartPosition(const Source:string; Position:integer): integer;
 function GetIdentLen(Identifier: PChar): integer;
 function GetIdentifier(Identifier: PChar): string;
-function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer
-    ): integer;
+function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer): integer;
 function FindNextIdentifierSkipStrings(const Source: string;
     StartPos, MaxPos: integer): integer;
 function IsValidIdentPair(const NamePair: string): boolean;
@@ -3206,8 +3205,7 @@ begin
   end;
 end;
 
-function CompareAnsiStringIgnoringSpaceIgnoreCase(Txt1, Txt2: pointer
-  ): integer;
+function CompareAnsiStringIgnoringSpaceIgnoreCase(Txt1, Txt2: pointer): integer;
 // Txt1, Txt2 are type casted AnsiString
 begin
   Result:=CompareTextIgnoringSpace(Txt1,length(AnsiString(Txt1)),

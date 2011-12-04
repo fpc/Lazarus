@@ -133,8 +133,7 @@ type
     fNewMainUsesSectionUnits: TAVLTree; // tree of AnsiString
     procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
         const TheClassName: string);
-    procedure CheckForOverrideAndAddInheritedCode(
-       ANodeExt: TCodeTreeNodeExtension);
+    procedure CheckForOverrideAndAddInheritedCode(ANodeExt: TCodeTreeNodeExtension);
     function CompleteProperty(PropNode: TCodeTreeNode): boolean;
     procedure SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
     procedure SetCodeCompleteSrcChgCache(const AValue: TSourceChangeCache);
@@ -412,8 +411,7 @@ begin
   end;
 end;
 
-procedure TCodeCompletionCodeTool.SetCodeCompleteClassNode(
-  const AClassNode: TCodeTreeNode);
+procedure TCodeCompletionCodeTool.SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
 const
   Identifiers = AllIdentifierDefinitions+[ctnProperty,ctnProcedure,ctnClassGUID];
 begin
@@ -7093,8 +7091,7 @@ var
     {$ENDIF}
     ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                  ProcCode,Indent,ANodeExt.ExtTxt3='');
-    ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
-      ProcCode);
+    ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,ProcCode);
     if FJumpToProcName='' then begin
       // remember one proc body to jump to after the completion
       FJumpToProcName:=ANodeExt.Txt;
@@ -7717,8 +7714,7 @@ begin
     FCodeCompleteClassNode:=FindClassNode(CursorNode,CurClassName,true,false);
     if CodeCompleteClassNode=nil then
       RaiseException('oops, I lost your class');
-    ProcNode:=FindProcNode(CursorNode,FJumpToProcName,
-                           [phpInUpperCase,phpIgnoreForwards]);
+    ProcNode:=FindProcNode(CursorNode,FJumpToProcName,[phpInUpperCase,phpIgnoreForwards]);
     if ProcNode=nil then
       RaiseException(ctsNewProcBodyNotFound);
     Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
