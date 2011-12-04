@@ -22,6 +22,10 @@ type
     procedure Arrow1Click(Sender: TObject);
     procedure Arrow1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure Arrow1MouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer
+      );
+    procedure Arrow1MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure Button1Click(Sender: TObject);
     procedure FormClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -42,8 +46,8 @@ type
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
- {   procedure MouseEnter; virtual;
-    procedure MouseLeave; virtual;}
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
     procedure Paint; override;
   end;
 
@@ -57,18 +61,28 @@ implementation
 procedure TSubControl.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
-  DebugLn('TSubControl.MouseDown');
+  DebugLn(Format('TSubControl.Mouse Down X=%d Y=%d', [X, Y]));
 end;
 
 procedure TSubControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  DebugLn('TSubControl.MouseMove');
+  DebugLn(Format('TSubControl.Mouse Move X=%d Y=%d', [X, Y]));
 end;
 
 procedure TSubControl.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
-  DebugLn('TSubControl.MouseUp');
+  DebugLn(Format('TSubControl.Mouse Up X=%d Y=%d', [X, Y]));
+end;
+
+procedure TSubControl.MouseEnter;
+begin
+  DebugLn('TSubControl.Mouse Enter');
+end;
+
+procedure TSubControl.MouseLeave;
+begin
+  DebugLn('TSubControl.Mouse Leave');
 end;
 
 procedure TSubControl.Paint;
@@ -97,7 +111,19 @@ end;
 procedure TForm1.Arrow1MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  DebugLn('Arrow Mouse Down');
+  DebugLn(Format('Arrow Mouse Down X=%d Y=%d', [X, Y]));
+end;
+
+procedure TForm1.Arrow1MouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  DebugLn(Format('Arrow Mouse Move X=%d Y=%d', [X, Y]));
+end;
+
+procedure TForm1.Arrow1MouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  DebugLn(Format('Arrow Mouse Up X=%d Y=%d', [X, Y]));
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -108,12 +134,12 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-{  SubControl := TSubControl.Create(Self);
-  SubControl.Left := 100;
-  SubControl.Top := 100;
+  SubControl := TSubControl.Create(Self);
+  SubControl.Left := 40;
+  SubControl.Top := 160;
   SubControl.Width := 100;
   SubControl.Height := 100;
-  SubControl.Parent := Self;}
+  SubControl.Parent := Self;
 end;
 
 procedure TForm1.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
