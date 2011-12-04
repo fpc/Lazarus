@@ -233,11 +233,12 @@ begin
     Exit;
   TabWidget := TQtTabWidget(ATabControl.Handle);
 
-  if (AIndex < 0) or (AIndex > TabWidget.getCount - 1) then
+  if (AIndex < 0) or (AIndex > ATabControl.PageCount - 1) then
     exit;
 
   TabWidget.BeginUpdate;
-  TabWidget.setCurrentWidget(TQtWidget(ATabControl.Page[AIndex].Handle));
+  if ATabControl.Page[AIndex].HandleAllocated then
+    TabWidget.setCurrentWidget(TQtWidget(ATabControl.Page[AIndex].Handle));
   TabWidget.EndUpdate;
 end;
 
