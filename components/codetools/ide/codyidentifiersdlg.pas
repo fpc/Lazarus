@@ -124,7 +124,6 @@ type
     PackageLabel: TLabel;
     UnitLabel: TLabel;
     procedure ButtonPanel1OKButtonClick(Sender: TObject);
-    procedure FileLabelClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
     procedure FilterEditExit(Sender: TObject);
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word;
@@ -597,11 +596,6 @@ begin
   IdleConnected:=true;
 end;
 
-procedure TCodyIdentifiersDlg.FileLabelClick(Sender: TObject);
-begin
-
-end;
-
 procedure TCodyIdentifiersDlg.ButtonPanel1OKButtonClick(Sender: TObject);
 begin
   SetDlgAction(cidaUseIdentifier);
@@ -829,12 +823,12 @@ begin
   if FindSelectedItem(Identifier, UnitFilename, GroupName, GroupFilename) then begin
     if GroupFilename<>'' then
       UnitFilename:=CreateRelativePath(UnitFilename,ExtractFilePath(GroupFilename));
-    UnitLabel.Caption:='Unit: '+UnitFilename;
-    PackageLabel.Caption:='Package: '+GroupFilename;
+    UnitLabel.Caption:=Format(crsUnit2, [UnitFilename]);
+    PackageLabel.Caption:=Format(crsPackage2, [GroupFilename]);
     ButtonPanel1.OKButton.Enabled:=true;
   end else begin
-    UnitLabel.Caption:= 'Unit: '+ crsNoneSelected;
-    PackageLabel.Caption:= 'Package: '+ crsNoneSelected;
+    UnitLabel.Caption:= Format(crsUnit2, [crsNoneSelected]);
+    PackageLabel.Caption:= Format(crsPackage2, [crsNoneSelected]);
     ButtonPanel1.OKButton.Enabled:=false;
   end;
 end;
