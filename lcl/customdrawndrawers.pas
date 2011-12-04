@@ -489,6 +489,7 @@ destructor TCDDrawer.Destroy;
 begin
   FreeResources;
   Palette.Free;
+  FallbackPalette.Free;
 
   inherited Destroy;
 end;
