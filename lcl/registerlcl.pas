@@ -1,3 +1,8 @@
+{
+  Abstract:
+    This unit registers all LCL components in a predefined order.
+    It is called by ide/formeditor.pp
+}
 unit RegisterLCL;
 
 {$mode objfpc}{$H+}
