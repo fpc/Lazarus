@@ -1122,7 +1122,7 @@ begin
   end;
 
   // check if identifier still exist
-  if not CodeToolBoss.FindDeclarationOfPropertyPath(NewUnitCode,NewIdentifier,
+  if not CodeToolBoss.FindDeclarationInInterface(NewUnitCode,NewIdentifier,
     NewCode, NewX, NewY, NewTopLine)
   then begin
     IDEMessageDialog(crsIdentifierNotFound,
@@ -1199,7 +1199,7 @@ begin
     exit;
   end;
 
-  if not CodeToolBoss.FindDeclarationOfPropertyPath(NewUnitCode,NewIdentifier,
+  if not CodeToolBoss.FindDeclarationInInterface(NewUnitCode,NewIdentifier,
     NewCode, NewX, NewY, NewTopLine)
   then begin
     IDEMessageDialog(crsIdentifierNotFound,
