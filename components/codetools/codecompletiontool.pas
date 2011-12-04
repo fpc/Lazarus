@@ -7067,26 +7067,26 @@ begin
     finally
       Params.Free;
     end;
+    ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpAddClassname,
+                                        phpWithVarModifiers,phpWithParameterNames,
+                                        phpWithResultType,phpWithCallingSpecs]);
+    FullCall:='';
+    if InclProcCall then begin
+      ProcCall:='inherited '+ExtractProcHead(ProcNode,[phpWithoutClassName,
+                                        phpWithParameterNames,phpWithoutParamTypes]);
+      for i:=1 to length(ProcCall)-1 do
+        if ProcCall[i]=';' then
+          ProcCall[i]:=',';
+      if ProcCall[length(ProcCall)]<>';' then
+        ProcCall:=ProcCall+';';
+      if NodeIsFunction(ProcNode) then
+        ProcCall:=Beauty.BeautifyIdentifier('Result')+':='+ProcCall;
+      FullCall:=GetIndentStr(Beauty.Indent)+ProcCall;
+    end;
+    ProcCode:=ProcCode+Beauty.LineEnd+'begin'+Beauty.LineEnd+FullCall+Beauty.LineEnd+'end;';
+    ProcCode:=Beauty.BeautifyProc(ProcCode,0,false);
+    ANodeExt.ExtTxt3:=ProcCode;
   end;
-  ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpAddClassname,
-                                      phpWithVarModifiers,phpWithParameterNames,
-                                      phpWithResultType,phpWithCallingSpecs]);
-  FullCall:='';
-  if InclProcCall then begin
-    ProcCall:='inherited '+ExtractProcHead(ProcNode,[phpWithoutClassName,
-                                      phpWithParameterNames,phpWithoutParamTypes]);
-    for i:=1 to length(ProcCall)-1 do
-      if ProcCall[i]=';' then
-        ProcCall[i]:=',';
-    if ProcCall[length(ProcCall)]<>';' then
-      ProcCall:=ProcCall+';';
-    if NodeIsFunction(ProcNode) then
-      ProcCall:=Beauty.BeautifyIdentifier('Result')+':='+ProcCall;
-    FullCall:=GetIndentStr(Beauty.Indent)+ProcCall;
-  end;
-  ProcCode:=ProcCode+Beauty.LineEnd+'begin'+Beauty.LineEnd+FullCall+Beauty.LineEnd+'end;';
-  ProcCode:=Beauty.BeautifyProc(ProcCode,0,false);
-  ANodeExt.ExtTxt3:=ProcCode;
 end;
 
 function TCodeCompletionCodeTool.CreateMissingProcBodies: boolean;
@@ -7123,6 +7123,23 @@ var
       {$IFDEF CTDEBUG}
       DebugLn('CreateMissingProcBodies FJumpToProcName="',FJumpToProcName,'"');
       {$ENDIF}
+    end;
+  end;
+
+  procedure CreateCodeForMissingProcBody(TheNodeExt: TCodeTreeNodeExtension;
+    Indent: integer);
+  var
+    ANode: TCodeTreeNode;
+    ProcCode: string;
+  begin
+    CheckForOverrideAndAddInheritedCode(TheNodeExt);
+    if (TheNodeExt.ExtTxt1='') and (TheNodeExt.ExtTxt3='') then begin
+      ANode:=TheNodeExt.Node;
+      if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
+        ProcCode:=ExtractProcHead(ANode,ProcAttrDefToBody);
+        TheNodeExt.ExtTxt3:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
+                     ProcCode,Indent,true);
+      end;
     end;
   end;
 
@@ -7562,7 +7579,7 @@ begin
       MissingNode:=ClassProcs.FindHighest;
       while (MissingNode<>nil) do begin
         ANodeExt:=TCodeTreeNodeExtension(MissingNode.Data);
-        CheckForOverrideAndAddInheritedCode(ANodeExt);
+        CreateCodeForMissingProcBody(ANodeExt,Indent);
         InsertProcBody(ANodeExt,InsertPos,Indent);
         MissingNode:=ClassProcs.FindPrecessor(MissingNode);
       end;
@@ -7652,7 +7669,7 @@ begin
               end;
             end;
           end;
-          CheckForOverrideAndAddInheritedCode(ANodeExt);
+          CreateCodeForMissingProcBody(ANodeExt,Indent);
           InsertProcBody(ANodeExt,InsertPos,Indent);
         end;
         MissingNode:=ClassProcs.FindPrecessor(MissingNode);

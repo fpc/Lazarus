@@ -1467,7 +1467,7 @@ begin
         NewNode:=CursorNode;
         CleanCursorPos:=GetIdentStartPosition(Src,CleanCursorPos);
         if CursorNode.Desc=ctnVarDefinition then begin
-          // if this is is a parameter, try to find the corresponding declaration
+          // if this is a parameter, try to find the corresponding declaration
           NewNode:=FindCorrespondingProcParamNode(NewNode);
           if (NewNode<>nil) and (NewNode.StartPos<CursorNode.StartPos) then
             CleanCursorPos:=NewNode.StartPos
@@ -5450,8 +5450,7 @@ begin
   if (WithVarExpr.Desc<>xtContext)
   or (WithVarExpr.Context.Node=nil)
   or (WithVarExpr.Context.Node=OldInput.ContextNode)
-  or (not (WithVarExpr.Context.Node.Desc
-           in (AllClasses+[ctnEnumerationType])))
+  or (not (WithVarExpr.Context.Node.Desc in (AllClasses+[ctnEnumerationType])))
   then begin
     MoveCursorToCleanPos(WithVarNode.StartPos);
     RaiseException(ctsExprTypeMustBeClassOrRecord);
