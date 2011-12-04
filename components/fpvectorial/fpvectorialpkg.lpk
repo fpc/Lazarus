@@ -4,7 +4,7 @@
     <Name Value="fpvectorialpkg"/>
     <AddToProjectUsesSection Value="True"/>
     <CompilerOptions>
-      <Version Value="10"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
@@ -12,7 +12,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="12">
+    <Files Count="13">
       <Item1>
         <Filename Value="svgvectorialwriter.pas"/>
         <UnitName Value="svgvectorialwriter"/>
@@ -61,6 +61,10 @@
         <Filename Value="fpvutils.pas"/>
         <UnitName Value="fpvutils"/>
       </Item12>
+      <Item13>
+        <Filename Value="lasvectorialreader.pas"/>
+        <UnitName Value="lasvectorialreader"/>
+      </Item13>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
@@ -69,7 +73,7 @@
       </Item1>
       <Item2>
         <PackageName Value="FCL"/>
-        <MinVersion Major="1" Release="1" Valid="True"/>
+        <MinVersion Major="1" Valid="True" Release="1"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>

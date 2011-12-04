@@ -976,6 +976,7 @@ components/fpvectorial/fpvectorialpkg.lpk svneol=native#text/plain
 components/fpvectorial/fpvectorialpkg.pas svneol=native#text/plain
 components/fpvectorial/fpvtocanvas.pas svneol=native#text/plain
 components/fpvectorial/fpvutils.pas svneol=native#text/plain
+components/fpvectorial/lasvectorialreader.pas svneol=native#text/plain
 components/fpvectorial/pdfvectorialreader.pas svneol=native#text/plain
 components/fpvectorial/pdfvrlexico.pas svneol=native#text/plain
 components/fpvectorial/pdfvrsemantico.pas svneol=native#text/plain

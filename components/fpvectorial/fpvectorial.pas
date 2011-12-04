@@ -35,6 +35,8 @@ type
     vfPDF, vfSVG, vfCorelDrawCDR, vfWindowsMetafileWMF,
     { CAD formats }
     vfDXF,
+    { Geospatial formats }
+    vfLAS,
     { Printing formats }
     vfPostScript, vfEncapsulatedPostScript,
     { GCode formats }
@@ -50,6 +52,7 @@ const
   STR_WINMETAFILE_EXTENSION = '.wmf';
   STR_AUTOCAD_EXCHANGE_EXTENSION = '.dxf';
   STR_ENCAPSULATEDPOSTSCRIPT_EXTENSION = '.eps';
+  STR_LAS_EXTENSION = '.las';
 
 type
   { Pen, Brush and Font }
@@ -1299,6 +1302,7 @@ begin
   else if AnsiCompareText(lExt, STR_WINMETAFILE_EXTENSION) = 0 then Result := vfWindowsMetafileWMF
   else if AnsiCompareText(lExt, STR_AUTOCAD_EXCHANGE_EXTENSION) = 0 then Result := vfDXF
   else if AnsiCompareText(lExt, STR_ENCAPSULATEDPOSTSCRIPT_EXTENSION) = 0 then Result := vfEncapsulatedPostScript
+  else if AnsiCompareText(lExt, STR_LAS_EXTENSION) = 0 then Result := vfLAS
   else
     raise Exception.Create('TvVectorialDocument.GetFormatFromExtension: The extension (' + lExt + ') doesn''t match any supported formats.');
 end;
