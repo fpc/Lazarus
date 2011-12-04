@@ -74,7 +74,7 @@ uses
   AllSynEdit, SynEditKeyCmds, SynBeautifier, SynEditMarks,
   // IDE interface
   IDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, PropEditUtils,
-  MacroIntf, IDECommands, IDEWindowIntf,
+  MacroIntf, IDECommands, IDEWindowIntf, ComponentReg, FormEditingIntf,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
   PackageIntf, ProjectIntf, CompOptsIntf, MenuIntf, LazIDEIntf, IDEDialogs,
   IDEOptionsIntf, IDEImagesIntf,
@@ -89,7 +89,7 @@ uses
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, IDEHelpManager, CodeHelp, HelpOptions,
   // designer
-  JITForms, ComponentPalette, ComponentList, ComponentReg, FormEditingIntf,
+  JITForms, ComponentPalette, ComponentList,
   ObjInspExt, Designer, FormEditor, CustomFormEditor,
   ControlSelection, AnchorEditor, TabOrderDlg, MenuEditorForm,
   // LRT stuff

@@ -59,8 +59,7 @@ uses
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDEProcs, LazConf, TransferMacros,
   DialogProcs, IDETranslations, CompilerOptions, PackageLinks, PackageDefs,
-  ComponentReg, ProjectIntf,
-  FCLLaz, AllLCLUnits, allsynedit, LazControls;
+  ComponentReg, ProjectIntf;
   
 type
   TFindPackageFlag = (
@@ -79,10 +78,6 @@ const
     [fpfSearchInInstalledPckgs,fpfSearchInAutoInstallPckgs,
      fpfSearchInPckgsWithEditor,fpfSearchInPkgLinks,fpfSearchInLoadedPkgs];
   fpfSearchAllExisting = fpfSearchEverywhere+[fpfPkgLinkMustExist];
-
-  LCLCompPriority: TComponentPriority = (Category: cpBase; Level: 10);
-  FCLCompPriority: TComponentPriority = (Category: cpBase; Level: 9);
-  IDEIntfCompPriority: TComponentPriority = (Category: cpBase; Level: 8);
 
 type
   TPkgUninstallFlag = (

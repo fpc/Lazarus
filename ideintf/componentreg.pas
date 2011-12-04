@@ -47,7 +47,10 @@ type
 const
   ComponentPriorityNormal: TComponentPriority = (Category: cpNormal; Level:0);
 
-    
+  LCLCompPriority: TComponentPriority = (Category: cpBase; Level: 10);
+  FCLCompPriority: TComponentPriority = (Category: cpBase; Level: 9);
+  IDEIntfCompPriority: TComponentPriority = (Category: cpBase; Level: 8);
+
 type
   TBaseComponentPage = class;
   TBaseComponentPalette = class;

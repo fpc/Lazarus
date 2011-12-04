@@ -32,6 +32,9 @@ interface
 
 uses
   Classes, LCLProc, Controls, Forms, Buttons, SysUtils, Graphics,
+  // register IDE base packages
+  RegisterLCL, FCLLaz, allsynedit, LazControls, LazarusPackageIntf,
+  // IDE
   ObjectInspector, Designer, IDECommands, FormEditingIntf, CustomFormEditor;
 
 type
@@ -129,5 +132,13 @@ begin
   else
     Result:=nil;
 end;
+
+procedure Register;
+begin
+  RegisterUnit('RegisterLCL', @RegisterLCL.Register);
+end;
+
+initialization
+  RegisterPackage('LCLBase', @Register);
 
 end.
