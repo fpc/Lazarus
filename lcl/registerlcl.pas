@@ -18,6 +18,7 @@ uses
   UTF8Process, ShellCtrls, ValEdit;
 
 procedure Register;
+procedure RegisterLCLBase;
 
 implementation
 
@@ -60,6 +61,11 @@ begin
   RegisterUnit('UTF8Process', @UTF8Process.Register);
   RegisterUnit('ShellCtrls', @ShellCtrls.Register);
   RegisterUnit('ValEdit', @ValEdit.Register);
+end;
+
+procedure RegisterLCLBase;
+begin
+  RegisterPackage('LCLBase', @Register);
 end;
 
 end.

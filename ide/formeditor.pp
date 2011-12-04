@@ -133,12 +133,7 @@ begin
     Result:=nil;
 end;
 
-procedure Register;
-begin
-  RegisterUnit('RegisterLCL', @RegisterLCL.Register);
-end;
-
 initialization
-  RegisterPackage('LCLBase', @Register);
+  RegisterLCLBase;
 
 end.
