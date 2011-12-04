@@ -33,8 +33,7 @@ implementation
 procedure Register; 
 begin
   RegisterUnit('RegisterLCL', @RegisterLCL.Register); 
-  RegisterUnit('ValEdit', @ValEdit.Register); 
-end; 
+end;
 
 initialization
   RegisterPackage('LCLBase', @Register); 

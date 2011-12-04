@@ -54,7 +54,7 @@ begin
   RegisterUnit('AsyncProcess', @AsyncProcess.Register);
   RegisterUnit('UTF8Process', @UTF8Process.Register);
   RegisterUnit('ShellCtrls', @ShellCtrls.Register);
-  //RegisterUnit('ValEdit', @ValEdit.Register);  Doesn't work here, must be added to LCLBase package.
+  RegisterUnit('ValEdit', @ValEdit.Register);
 end;
 
 end.

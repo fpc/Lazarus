@@ -1171,7 +1171,6 @@
       </Item283>
       <Item284>
         <Filename Value="valedit.pas"/>
-        <HasRegisterProc Value="True"/>
         <UnitName Value="ValEdit"/>
       </Item284>
       <Item285>
