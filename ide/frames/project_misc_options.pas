@@ -31,8 +31,6 @@ type
     UseFPCResourcesRadioButton: TRadioButton;
     UseLRSFilesRadioButton: TRadioButton;
   private
-    fLoaded: Boolean;
-    FSaved: Boolean;
     { private declarations }
   public
     function GetTitle: string; override;
@@ -76,8 +74,6 @@ end;
 
 procedure TProjectMiscOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   with AOptions as TProject do
   begin
     MainUnitIsPascalSourceCheckBox.Checked := (pfMainUnitIsPascalSource in Flags);
@@ -116,8 +112,6 @@ var
   end;
 
 begin
-  if FSaved then exit;
-  FSaved:=true;
   NewFlags := Project.Flags;
   SetProjectFlag(pfMainUnitIsPascalSource,
                  MainUnitIsPascalSourceCheckBox.Checked);

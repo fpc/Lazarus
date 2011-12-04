@@ -54,8 +54,6 @@ type
     procedure KeyMappingTreeViewSelectionChanged(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
-    fLoaded: Boolean;
-    FSaved: Boolean;
     KeyMapNameFilter: string;
     EditingKeyMap: TKeyCommandRelationList;
     KeyMapKeyFilter: TIDEShortCut;
@@ -300,8 +298,6 @@ procedure TEditorKeymappingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptio
 var
   i: integer;
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   with AOptions as TEditorOptions do
     EditingKeyMap.Assign(KeyMap);
   FillKeyMappingTreeView;
@@ -314,8 +310,6 @@ end;
 
 procedure TEditorKeymappingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TEditorOptions do
     KeyMap.Assign(EditingKeyMap);
 end;

@@ -87,9 +87,7 @@ type
     procedure ResetAllButtonClick(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
-    fLoaded: Boolean;
     FOptions: TAbstractIDEOptions;
-    FSaved: Boolean;
     FTempMouseSettings: TEditorMouseOptions;
     FInClickHandler: Integer;
     procedure UpdateButtons;
@@ -337,8 +335,6 @@ procedure TEditorMouseOptionsFrame.ReadSettings(
 var
   i: Integer;
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   Inc(FInClickHandler);
   FOptions := AOptions;
   FTempMouseSettings := TEditorOptions(AOptions).TempMouseSettings;
@@ -384,8 +380,6 @@ end;
 procedure TEditorMouseOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   TEditorOptions(AOptions).UserMouseSettings.Assign(FTempMouseSettings);
   with TEditorOptions(AOptions) do begin
     if HideMouseCheckBox.Checked then

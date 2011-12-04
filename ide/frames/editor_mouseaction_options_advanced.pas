@@ -81,8 +81,6 @@ type
     procedure BtnExportClick(Sender: TObject);
     procedure BtnImportClick(Sender: TObject);
   private
-    fLoaded: Boolean;
-    FSaved: Boolean;
     FTempMouseSettings: TEditorMouseOptions;
     FKeyMap: TKeyCommandRelationList;
 
@@ -712,8 +710,6 @@ end;
 procedure TEditorMouseOptionsAdvFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   FTempMouseSettings := TEditorOptions(AOptions).TempMouseSettings;
   FTempMouseSettings.Assign(TEditorOptions(AOptions).UserMouseSettings);
 
@@ -728,8 +724,6 @@ end;
 procedure TEditorMouseOptionsAdvFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   TEditorOptions(AOptions).UserMouseSettings.Assign(FTempMouseSettings);
 end;
 

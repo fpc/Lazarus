@@ -46,8 +46,6 @@ type
     procedure LazDocListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure LazDocPathEditChange(Sender: TObject);
   private
-    fLoaded: Boolean;
-    FSaved: Boolean;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -78,16 +76,12 @@ end;
 
 procedure TFpDocOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   with AOptions as TEnvironmentOptions do
     SplitString(LazDocPaths, ';', LazDocListBox.Items);
 end;
 
 procedure TFpDocOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TEnvironmentOptions do
     LazDocPaths := StringListToText(LazDocListBox.Items, ';', true);
 end;

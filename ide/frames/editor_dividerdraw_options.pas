@@ -65,8 +65,6 @@ type
     FCurHighlighter: TSrcIDEHighlighter;
     FCurDividerConf: TSynDividerDrawConfig;
     FCurDivInfo: TEditorOptionsDividerRecord;
-    fLoaded: Boolean;
-    FSaved: Boolean;
   protected
     function GetHighlighter(SynType: TLazSyntaxHighlighter;
       CreateIfNotExists: Boolean): TSrcIDEHighlighter;
@@ -281,8 +279,6 @@ var
   i: Integer;
   rd: TEditorOptionsDividerRecord;
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   with AOptions as TEditorOptions do
   begin
     with LanguageComboBox.Items do begin
@@ -304,8 +300,6 @@ procedure TEditorDividerDrawOptionsFrame.WriteSettings(
 var
   i: TLazSyntaxHighlighter;
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TEditorOptions do
   begin
     for i := low(TLazSyntaxHighlighter) to high(TLazSyntaxHighlighter) do begin

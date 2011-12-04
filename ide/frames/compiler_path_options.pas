@@ -39,8 +39,6 @@ type
   private
     FDialog: TAbstractOptionsEditorDialog;
     FCompilerOpts: TBaseCompilerOptions;
-    fLoaded: Boolean;
-    FSaved: Boolean;
     OtherUnitsPathEditBtn: TPathEditorButton;
     IncludeFilesPathEditBtn: TPathEditorButton;
     OtherSourcesPathEditBtn: TPathEditorButton;
@@ -746,9 +744,6 @@ end;
 procedure TCompilerPathOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   if not (AOptions is TBaseCompilerOptions) then exit;
-  if fLoaded then exit;
-  fLoaded:=true;
-
   FCompilerOpts := TBaseCompilerOptions(AOptions);
 
   if AOptions is TProjectCompilerOptions then
@@ -782,11 +777,6 @@ end;
 
 procedure TCompilerPathOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if not (AOptions is TBaseCompilerOptions) then exit;
-
-  if FSaved then exit;
-  FSaved:=true;
-
   if AOptions is TProjectCompilerOptions then begin
     TProjectCompilerOptions(AOptions).TargetFilename:=ProjTargetFileEdit.Text;
     TProjectCompilerOptions(AOptions).TargetFilenameApplyConventions:=ProjTargetApplyConventionsCheckBox.Checked;

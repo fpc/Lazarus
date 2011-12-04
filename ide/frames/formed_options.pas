@@ -74,7 +74,6 @@ type
     procedure FrameResize(Sender: TObject);
   private
     FLoaded: Boolean;
-    FSaved: Boolean;
     procedure ChangeColor(AIndex: Integer; NewColor: TColor);
   public
     function GetTitle: String; override;
@@ -151,7 +150,6 @@ end;
 
 procedure TFormEditorOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  if fLoaded then exit;
   with AOptions as TEnvironmentOptions do
   begin
     // read colors
@@ -186,8 +184,6 @@ end;
 
 procedure TFormEditorOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TEnvironmentOptions do
   begin
     // write colors

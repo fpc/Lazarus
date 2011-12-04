@@ -34,8 +34,6 @@ type
     MajorVersionSpinEdit: TSpinEdit;
     procedure UseVersionInfoCheckBoxChange(Sender: TObject);
   private
-    fLoaded: Boolean;
-    FSaved: Boolean;
     FVersionInfo: TProjectVersionInfo;
     procedure EnableVersionInfo(UseVersionInfo: boolean);
   public
@@ -129,9 +127,6 @@ procedure TProjectVersionInfoOptionsFrame.ReadSettings(AOptions: TAbstractIDEOpt
 var
   i: integer;
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
-
   FVersionInfo := TProjectVersionInfo((AOptions as TProject).ProjResources[TProjectVersionInfo]);
 
   UseVersionInfoCheckBox.Checked := FVersionInfo.UseVersionInfo;
@@ -169,9 +164,6 @@ var
   i: integer;
   t: TProjectVersionStringTable;
 begin
-  if FSaved then exit;
-  FSaved:=true;
-
   VersionInfo := TProjectVersionInfo((AOptions as TProject).ProjResources[TProjectVersionInfo]);
   VersionInfo.UseVersionInfo := UseVersionInfoCheckBox.Checked;
   VersionInfo.AutoIncrementBuild := AutomaticallyIncreaseBuildCheckBox.Checked;

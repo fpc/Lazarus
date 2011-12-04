@@ -88,7 +88,6 @@ type
     procedure ColorsListBoxSelectionChange(Sender: TObject; User: boolean);
   private
     FLoaded: Boolean;
-    FSaved: Boolean;
     procedure ChangeColor(AIndex: Integer; NewColor: TColor);
     procedure ApplyOISettings(ASettings: TSpeedOISettings);
   public
@@ -252,8 +251,6 @@ procedure TOIOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   ASettings: TSpeedOISettings;
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   with AOptions as TEnvironmentOptions do
   begin
     ASettings.Colors[ocBackground] := ObjectInspectorOptions.GridBackgroundColor;
@@ -283,8 +280,6 @@ end;
 
 procedure TOIOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TEnvironmentOptions do
   begin
     ObjectInspectorOptions.GridBackgroundColor := ColorsListBox.Colors[Ord(ocBackground)];

@@ -60,10 +60,8 @@ type
     procedure listAccessTypeKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure radioAccessOrderEditChange(Sender: TObject);
   private
-    fLoaded: Boolean;
     { private declarations }
     FMultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList;
-    FSaved: Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -143,8 +141,6 @@ procedure TEditorMultiWindowOptionsFrame.ReadSettings(
 var
   i: Integer;
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   with TEditorOptions(AOptions) do begin
     chkHideSingleTab.Checked := HideSingleTabInWindow;
     chkShowNumbers.Checked := ShowTabNumbers;
@@ -169,8 +165,6 @@ end;
 procedure TEditorMultiWindowOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   TEditorOptions(AOptions).MultiWinEditAccessOrder.Assign(FMultiWinEditAccessOrder);
   with TEditorOptions(AOptions) do begin
     HideSingleTabInWindow := chkHideSingleTab.Checked;

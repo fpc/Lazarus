@@ -201,10 +201,11 @@ end;
 
 procedure TEditorMarkupOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
+
   with AOptions as TEditorOptions do
   begin
-    if fLoaded then exit;
-    fLoaded:=true;
     MarkupWordTimeTrackBar.Position := MarkupCurWordTime;
     MarkupWordFullLenSpin. Value := MarkupCurWordFullLen;
     MarkupWordNoKeyword.Checked := MarkupCurWordNoKeyword;
@@ -224,10 +225,11 @@ end;
 
 procedure TEditorMarkupOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
+
   with AOptions as TEditorOptions do
   begin
-    if FSaved then exit;
-    FSaved:=true;
     MarkupCurWordTime := MarkupWordTimeTrackBar.Position;
     MarkupCurWordFullLen := MarkupWordFullLenSpin.Value;
     MarkupCurWordNoKeyword := MarkupWordNoKeyword.Checked;

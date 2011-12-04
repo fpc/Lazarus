@@ -58,9 +58,7 @@ type
     FHighlighters: array[TLazSyntaxHighlighter] of TSrcIDEHighlighter;
     FCurHighlighter: TSrcIDEHighlighter;
     FCurFoldInfo: TEditorOptionsFoldRecord;
-    fLoaded: Boolean;
     FModeLock: Boolean;
-    FSaved: Boolean;
     procedure UpdateFoldHideRadio;
   protected
     function GetHighlighter(SynType: TLazSyntaxHighlighter;
@@ -251,8 +249,6 @@ var
   i: Integer;
   rf: TEditorOptionsFoldRecord;
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   FModeLock := False;
   with AOptions as TEditorOptions do
   begin
@@ -279,8 +275,6 @@ procedure TEditorCodefoldingOptionsFrame.WriteSettings(
 var
   i: TLazSyntaxHighlighter;
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TEditorOptions do
   begin
     UseCodeFolding := chkCodeFoldingEnabled.Checked;

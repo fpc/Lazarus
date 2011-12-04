@@ -19,9 +19,7 @@ type
     SaveSessionLocationRadioGroup: TRadioGroup;
     procedure SaveSessionLocationRadioGroupClick(Sender: TObject);
   private
-    fLoaded: Boolean;
     fProject: TProject;
-    FSaved: Boolean;
     function GetSessionLocation: TProjectSessionStorage;
   public
     function GetTitle: string; override;
@@ -96,8 +94,6 @@ end;
 procedure TProjectSaveOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   if not (AOptions is TProject) then exit;
-  if fLoaded then exit;
-  fLoaded:=true;
   fProject:=TProject(AOptions);
   with AOptions as TProject do
   begin
@@ -112,8 +108,6 @@ var
   AFlags: TProjectFlags;
 begin
   if not (AOptions is TProject) then exit;
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TProject do
   begin
     AFlags := Flags;

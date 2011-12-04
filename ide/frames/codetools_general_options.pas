@@ -181,10 +181,10 @@ end;
 procedure TCodetoolsGeneralOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if fLoaded then exit;
+  fLoaded:=true;
   with AOptions as TCodeToolsOptions do
   begin
-    if fLoaded then exit;
-    fLoaded:=true;
     SrcPathEdit.Text := SrcPath;
     AdjustTopLineDueToCommentCheckBox.Checked := AdjustTopLineDueToComment;
     JumpCenteredCheckBox.Checked := JumpCentered;
@@ -201,10 +201,10 @@ end;
 procedure TCodetoolsGeneralOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
+  if FSaved then exit;
+  FSaved:=true;
   with AOptions as TCodeToolsOptions do
   begin
-    if FSaved then exit;
-    FSaved:=true;
     SrcPath := SrcPathEdit.Text;
     AdjustTopLineDueToComment := AdjustTopLineDueToCommentCheckBox.Checked;
     JumpCentered := JumpCenteredCheckBox.Checked;

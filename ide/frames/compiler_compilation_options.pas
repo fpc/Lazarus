@@ -45,8 +45,6 @@ type
     lblRunIfExecAfter: TLabel;
     lblRunIfExecBefore: TLabel;
   private
-    fLoaded: Boolean;
-    FSaved: Boolean;
     { private declarations }
   public
     function GetTitle: string; override;
@@ -112,8 +110,6 @@ procedure TCompilerCompilationOptionsFrame.ReadSettings(AOptions: TAbstractIDEOp
 var
   Options: TBaseCompilerOptions absolute AOptions;
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   chkCreateMakefile.Checked := Options.CreateMakefileOnBuild;
 
   ExecuteBeforeCommandEdit.Text := Options.ExecuteBefore.Command;
@@ -216,8 +212,6 @@ procedure TCompilerCompilationOptionsFrame.WriteSettings(
 var
   Options: TBaseCompilerOptions absolute AOptions;
 begin
-  if FSaved then exit;
-  FSaved:=true;
   Options.CreateMakefileOnBuild := chkCreateMakefile.Checked;
 
   Options.ExecuteBefore.Command := ExecuteBeforeCommandEdit.Text;

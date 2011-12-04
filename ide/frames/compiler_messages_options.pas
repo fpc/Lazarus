@@ -20,8 +20,6 @@ type
     procedure chklistCompMsgItemClick(Sender: TObject; Index: integer);
     function CheckItem(Item: TObject): Boolean;
   private
-    fLoaded: Boolean;
-    FSaved: Boolean;
     TempMessages: TCompilerMessagesList;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -100,8 +98,6 @@ var
   m: TCompilerMessageConfig;
   s: String;
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   TempMessages.Assign((AOptions as TBaseCompilerOptions).CompilerMessages);
   topidx := chklistCompMsg.TopIndex;
   if FileExistsUTF8(EnvironmentOptions.CompilerMessagesFilename) then begin
@@ -131,8 +127,6 @@ end;
 
 procedure TCompilerMessagesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TBaseCompilerOptions do
   begin
     UseMsgFile:=True;

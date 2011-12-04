@@ -52,8 +52,6 @@ type
     InhTreeView: TTreeView;
     procedure InhTreeViewSelectionChanged(Sender: TObject);
   private
-    fLoaded: Boolean;
-    FSaved: Boolean;
     ImageIndexInherited: Integer;
     ImageIndexRequired: Integer;
     ImageIndexPackage: Integer;
@@ -100,15 +98,11 @@ end;
 
 procedure TCompilerInheritedOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   UpdateInheritedTree(AOptions as TBaseCompilerOptions);
 end;
 
 procedure TCompilerInheritedOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
 
 end;
 

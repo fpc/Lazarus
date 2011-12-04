@@ -36,8 +36,6 @@ type
     IdentifierPolicyRadioGroup: TRadioGroup;
     KeyWordPolicyRadioGroup: TRadioGroup;
   private
-    fLoaded: Boolean;
-    FSaved: Boolean;
     { private declarations }
   public
     function GetTitle: String; override;
@@ -89,8 +87,6 @@ end;
 procedure TCodetoolsWordPolicyOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   with AOptions as TCodetoolsOptions do
   begin
     case KeyWordPolicy of
@@ -121,8 +117,6 @@ end;
 procedure TCodetoolsWordPolicyOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TCodetoolsOptions do
   begin
     case KeyWordPolicyRadioGroup.ItemIndex of

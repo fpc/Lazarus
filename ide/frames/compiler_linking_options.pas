@@ -33,9 +33,6 @@ type
     lblDbgSymbolType: TLabel;
     TargetSpecificsGrpBox: TGroupBox;
     procedure chkDebugGDBChange(Sender: TObject);
-  private
-    fLoaded: Boolean;
-    FSaved: Boolean;
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -129,8 +126,6 @@ end;
 
 procedure TCompilerLinkingOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   with AOptions as TBaseCompilerOptions do
   begin
     chkDebugGDB.Checked := GenerateDebugInfo;
@@ -158,8 +153,6 @@ end;
 
 procedure TCompilerLinkingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TBaseCompilerOptions do
   begin
     GenerateDebugInfo := chkDebugGDB.Checked;

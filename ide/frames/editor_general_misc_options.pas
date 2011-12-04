@@ -41,8 +41,6 @@ type
     procedure EditorOptionsGroupBoxItemClick(Sender: TObject; Index: integer);
   private
     FDialog: TAbstractOptionsEditorDialog;
-    fLoaded: Boolean;
-    FSaved: Boolean;
     function GeneralPage: TEditorGeneralOptionsFrame; inline;
   public
     function GetTitle: String; override;
@@ -98,8 +96,6 @@ procedure TEditorGeneralMiscOptionsFrame.ReadSettings(AOptions: TAbstractIDEOpti
 const
   TabPosToIndex : Array [TTabPosition] of Integer = (0, 1, 2, 3);
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   with AOptions as TEditorOptions do
   begin
     with EditorOptionsGroupBox do
@@ -129,8 +125,6 @@ procedure TEditorGeneralMiscOptionsFrame.WriteSettings(AOptions: TAbstractIDEOpt
 const
   TabIndexToPos : Array [0..3] of TTabPosition = (tpTop, tpBottom, tpLeft, tpRight);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TEditorOptions do
   begin
     UpdateOptionFromBool(EditorOptionsGroupBox.Checked[0], eoShowSpecialChars);

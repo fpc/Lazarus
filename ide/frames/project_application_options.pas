@@ -40,9 +40,7 @@ type
     procedure SaveIconButtonClick(Sender: TObject);
     procedure UseXPManifestCheckBoxChange(Sender: TObject);
   private
-    fLoaded: Boolean;
     FProject: TProject;
-    FSaved: Boolean;
     procedure SetIconFromStream(Value: TStream);
     function GetIconAsStream: TStream;
   public
@@ -214,8 +212,6 @@ procedure TProjectApplicationOptionsFrame.ReadSettings(AOptions: TAbstractIDEOpt
 var
   AStream: TStream;
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   FProject := AOptions as TProject;
   with FProject do
   begin
@@ -237,8 +233,6 @@ procedure TProjectApplicationOptionsFrame.WriteSettings(AOptions: TAbstractIDEOp
 var
   AStream: TStream;
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TProject do
   begin
     Title := TitleEdit.Text;
