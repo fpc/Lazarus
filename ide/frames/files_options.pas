@@ -64,13 +64,11 @@ type
     procedure DirectoriesButtonClick(Sender: TObject);
     procedure ShowCompileDialogCheckBoxChange(Sender: TObject);
   private
-    fLoaded: Boolean;
     FOldLazarusDir: string;
     FOldCompilerFilename: string;
     FOldFPCSourceDir: string;
     FOldMakeFilename: string;
     FOldTestDir: string;
-    FSaved: Boolean;
     function CheckLazarusDir: boolean;
     function IsFPCSourceDir: boolean;
     function CheckTestDir: boolean;
@@ -272,8 +270,6 @@ end;
 
 procedure TFilesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   with AOptions as TEnvironmentOptions do
   begin
     LazarusDirComboBox.Items.Assign(LazarusDirHistory);
@@ -314,8 +310,6 @@ end;
 
 procedure TFilesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TEnvironmentOptions do
   begin
     LazarusDirectory:=LazarusDirComboBox.Text;

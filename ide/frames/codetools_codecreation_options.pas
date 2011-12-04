@@ -37,8 +37,6 @@ type
     ForwardProcsKeepOrderCheckBox: TCheckBox;
     UsesInsertPolicyRadioGroup: TRadioGroup;
   private
-    fLoaded: Boolean;
-    FSaved: Boolean;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -92,8 +90,6 @@ end;
 procedure TCodetoolsCodeCreationOptionsFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   with AOptions as TCodetoolsOptions do
   begin
     case ForwardProcBodyInsertPolicy of
@@ -121,8 +117,6 @@ end;
 procedure TCodetoolsCodeCreationOptionsFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   with AOptions as TCodetoolsOptions do
   begin
     case ForwardProcsInsertPolicyRadioGroup.ItemIndex of

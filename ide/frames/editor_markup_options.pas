@@ -65,8 +65,6 @@ type
   private
     { private declarations }
     FDialog: TAbstractOptionsEditorDialog;
-    fLoaded: Boolean;
-    FSaved: Boolean;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -201,9 +199,6 @@ end;
 
 procedure TEditorMarkupOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
-
   with AOptions as TEditorOptions do
   begin
     MarkupWordTimeTrackBar.Position := MarkupCurWordTime;
@@ -225,9 +220,6 @@ end;
 
 procedure TEditorMarkupOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
-
   with AOptions as TEditorOptions do
   begin
     MarkupCurWordTime := MarkupWordTimeTrackBar.Position;

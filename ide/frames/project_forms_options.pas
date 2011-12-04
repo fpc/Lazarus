@@ -29,8 +29,6 @@ type
     procedure FormsMoveAutoCreatedFormUpBtnClick(Sender: TObject);
     procedure FormsRemoveFromAutoCreatedFormsBtnClick(Sender: TObject);
   private
-    fLoaded: Boolean;
-    FSaved: Boolean;
     function FirstAutoCreateFormSelected: Integer;
     function FirstAvailFormSelected: Integer;
     procedure SelectOnlyThisAutoCreateForm(Index: integer);
@@ -259,8 +257,6 @@ var
   end;
 
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   FillAutoCreateFormsListbox;
   FillAvailFormsListBox;
 
@@ -271,8 +267,6 @@ procedure TProjectFormsOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions)
 var
   Project: TProject absolute AOptions;
 begin
-  if FSaved then exit;
-  FSaved:=true;
   Project.AutoCreateForms := FormsAutoCreateNewFormsCheckBox.Checked;
   Project.TmpAutoCreatedForms := FormsAutoCreatedListBox.Items;
 end;

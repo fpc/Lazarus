@@ -105,9 +105,7 @@ type
     FBuildMacros: TIDEBuildMacros;
     FIdleConnected: Boolean;
     FIsPackage: boolean;
-    fLoaded: Boolean;
     FMacrosOwner: TObject;
-    FSaved: Boolean;
     FStatusMessage: string;
     fVarImgID: LongInt;
     fValueImgID: LongInt;
@@ -1015,8 +1013,6 @@ end;
 
 procedure TCompOptBuildMacrosFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
   if AOptions is TBaseCompilerOptions then
     LoadFromOptions(TBaseCompilerOptions(AOptions));
 end;
@@ -1032,8 +1028,6 @@ end;
 
 procedure TCompOptBuildMacrosFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   if AOptions is TBaseCompilerOptions then
     SaveToOptions(TBaseCompilerOptions(AOptions));
 end;

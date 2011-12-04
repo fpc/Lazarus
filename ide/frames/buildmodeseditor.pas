@@ -72,11 +72,9 @@ type
     procedure BuildModesStringGridValidateEntry(sender: TObject; aCol,
       aRow: Integer; const OldValue: string; var NewValue: String);
   private
-    fLoaded: Boolean;
     FLoadShowSessionFromProject: boolean;
     FMacroValues: TProjectBuildMacros;
     FProject: TProject;
-    FSaved: Boolean;
     FShowSession: boolean;
     FSwitchingMode: boolean;
     fModeActiveCol: integer;
@@ -726,9 +724,6 @@ procedure TBuildModesEditorFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   PCOptions: TProjectCompilerOptions;
 begin
-  if fLoaded then exit;
-  fLoaded:=true;
-
   //debugln(['TBuildModesEditorFrame.ReadSettings ',DbgSName(AOptions)]);
   if AOptions is TProjectCompilerOptions then begin
     PCOptions:=TProjectCompilerOptions(AOptions);
@@ -751,8 +746,6 @@ end;
 
 procedure TBuildModesEditorFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if FSaved then exit;
-  FSaved:=true;
   if AOptions is TProjectCompilerOptions then begin
     SaveMacros(false);
   end;
