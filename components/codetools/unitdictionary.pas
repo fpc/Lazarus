@@ -75,7 +75,7 @@ type
     FileAge: longint;
     ToolStamp: integer;
     FirstIdentifier, LastIdentifier: TUDIdentifier;
-    UnitGroups: TMTAVLTree; // tree of TUDUnitGroup sorted with CompareIDItems
+    Groups: TMTAVLTree; // tree of TUDUnitGroup sorted with CompareIDItems
     constructor Create(const aName, aFilename: string);
     destructor Destroy; override;
     function AddIdentifier(Item: TUDIdentifier): TUDIdentifier;
@@ -133,6 +133,7 @@ type
 
     // units
     function AddUnit(const aFilename: string; aName: string = ''; Group: TUDUnitGroup = nil): TUDUnit; overload;
+    procedure DeleteUnit(TheUnit: TUDUnit; DeleteEmptyGroups: boolean);
     function ParseUnit(UnitFilename: string; Group: TUDUnitGroup = nil): TUDUnit; overload;
     function ParseUnit(Code: TCodeBuffer; Group: TUDUnitGroup = nil): TUDUnit; overload;
     function ParseUnit(Tool: TCodeTool; Group: TUDUnitGroup = nil): TUDUnit; overload;
@@ -216,13 +217,13 @@ begin
   ToolStamp:=CTInvalidChangeStamp;
   IDCheckUnitNameAndFilename(aName,aFilename);
   inherited Create(aName,aFilename);
-  UnitGroups:=TMTAVLTree.Create(@CompareIDItems);
+  Groups:=TMTAVLTree.Create(@CompareIDItems);
 end;
 
 destructor TUDUnit.Destroy;
 begin
   // the groups are freed by the TUnitDictionary
-  FreeAndNil(UnitGroups);
+  FreeAndNil(Groups);
   inherited Destroy;
 end;
 
@@ -256,12 +257,12 @@ end;
 
 function TUDUnit.IsInGroup(Group: TUDUnitGroup): boolean;
 begin
-  Result:=AVLFindPointer(UnitGroups,Group)<>nil;
+  Result:=AVLFindPointer(Groups,Group)<>nil;
 end;
 
 function TUDUnit.GetDictionary: TUnitDictionary;
 begin
-  Result:=TUDUnitGroup(UnitGroups.Root.Data).Dictionary;
+  Result:=TUDUnitGroup(Groups.Root.Data).Dictionary;
 end;
 
 function TUDUnit.HasIdentifier(Item: TUDIdentifier): boolean;
@@ -297,7 +298,7 @@ begin
   Result:=NewUnit;
   if AVLFindPointer(Units,NewUnit)<>nil then exit;
   Units.Add(Result);
-  Result.UnitGroups.Add(Self);
+  Result.Groups.Add(Self);
   if (Dictionary.NoGroup<>Self) then
     Dictionary.NoGroup.RemoveUnit(NewUnit);
   Dictionary.IncreaseChangeStamp;
@@ -307,7 +308,7 @@ procedure TUDUnitGroup.RemoveUnit(TheUnit: TUDUnit);
 begin
   if AVLFindPointer(Units,TheUnit)=nil then exit;
   Units.RemovePointer(TheUnit);
-  TheUnit.UnitGroups.RemovePointer(Self);
+  TheUnit.Groups.RemovePointer(Self);
   Dictionary.IncreaseChangeStamp;
 end;
 
@@ -403,14 +404,14 @@ begin
       e('unit '+CurUnit.Name+' without filename');
     if AVLFindPointer(FUnitsByFilename,CurUnit)=nil then
       e('unit '+CurUnit.Name+' in FUnitsByName not in FUnitsByFilename');
-    if CurUnit.UnitGroups.Count=0 then
+    if CurUnit.Groups.Count=0 then
       e('unit '+CurUnit.Name+' has not group');
-    if CurUnit.UnitGroups.ConsistencyCheck<>0 then
+    if CurUnit.Groups.ConsistencyCheck<>0 then
       e('unit '+CurUnit.Name+' UnitGroups.ConsistencyCheck<>0');
     if (LastUnit<>nil)
     and (CompareFilenames(LastUnit.Filename,CurUnit.Filename)=0) then
       e('unit '+CurUnit.Name+' exists twice: '+CurUnit.Filename);
-    SubAVLNode:=CurUnit.UnitGroups.FindLowest;
+    SubAVLNode:=CurUnit.Groups.FindLowest;
     LastGroup:=nil;
     while SubAVLNode<>nil do begin
       Group:=TUDUnitGroup(SubAVLNode.Data);
@@ -419,7 +420,7 @@ begin
       if LastGroup=Group then
         e('unit '+CurUnit.Name+' twice in group '+Group.Filename);
       LastGroup:=Group;
-      SubAVLNode:=CurUnit.UnitGroups.FindSuccessor(SubAVLNode);
+      SubAVLNode:=CurUnit.Groups.FindSuccessor(SubAVLNode);
     end;
     LastUnit:=CurUnit;
     AVLNode:=UnitsByName.FindSuccessor(AVLNode);
@@ -459,7 +460,7 @@ begin
     LastUnit:=nil;
     while SubAVLNode<>nil do begin
       CurUnit:=TUDUnit(SubAVLNode.Data);
-      if AVLFindPointer(CurUnit.UnitGroups,Group)=nil then
+      if AVLFindPointer(CurUnit.Groups,Group)=nil then
         e('group '+Group.Name+' has not the unit '+CurUnit.Name);
       if LastUnit=CurUnit then
         e('group '+Group.Name+' has unit twice '+CurUnit.Filename);
@@ -974,8 +975,32 @@ end;
 
 procedure TUnitDictionary.DeleteGroup(Group: TUDUnitGroup;
   DeleteUnitsWithoutGroup: boolean);
+var
+  Node: TAVLTreeNode;
+  CurUnit: TUDUnit;
 begin
-
+  if Group=NoGroup then
+    raise Exception.Create('The default group can not be deleted');
+  // remove units
+  Node:=Group.Units.FindLowest;
+  while Node<>nil do begin
+    CurUnit:=TUDUnit(Node.Data);
+    AVLRemovePointer(CurUnit.Groups,Group);
+    if CurUnit.Groups.Count=0 then begin
+      if DeleteUnitsWithoutGroup then
+        DeleteUnit(CurUnit,false)
+      else
+        NoGroup.AddUnit(CurUnit);
+    end;
+    Node:=Group.Units.FindSuccessor(Node);
+  end;
+  Group.Units.Clear;
+  // remove group from trees
+  AVLRemovePointer(UnitGroupsByFilename,Group);
+  AVLRemovePointer(UnitGroupsByName,Group);
+  // free group
+  Group.Free;
+  IncreaseChangeStamp;
 end;
 
 function TUnitDictionary.FindGroupWithFilename(const aFilename: string
@@ -1003,6 +1028,39 @@ begin
     IncreaseChangeStamp;
   end;
   Group.AddUnit(Result);
+end;
+
+procedure TUnitDictionary.DeleteUnit(TheUnit: TUDUnit;
+  DeleteEmptyGroups: boolean);
+var
+  Node: TAVLTreeNode;
+  Group: TUDUnitGroup;
+  Item: TUDIdentifier;
+begin
+  Node:=TheUnit.Groups.FindLowest;
+  // remove unit from groups
+  while Node<>nil do begin
+    Group:=TUDUnitGroup(Node.Data);
+    AVLRemovePointer(Group.Units,TheUnit);
+    if DeleteEmptyGroups and (Group.Units.Count=0)
+    and (Group<>NoGroup) then
+      DeleteGroup(Group,false);
+    Node:=TheUnit.Groups.FindSuccessor(Node);
+  end;
+  TheUnit.Groups.Clear;
+  // free identifiers
+  while TheUnit.FirstIdentifier<>nil do begin
+    Item:=TheUnit.FirstIdentifier;
+    AVLRemovePointer(Identifiers,Item);
+    Item.Free;
+    TheUnit.FirstIdentifier:=Item.NextInUnit;
+  end;
+  // remove unit from dictionary
+  AVLRemovePointer(UnitsByFilename,TheUnit);
+  AVLRemovePointer(UnitsByName,TheUnit);
+  // free unit
+  TheUnit.Free;
+  IncreaseChangeStamp;
 end;
 
 function TUnitDictionary.ParseUnit(UnitFilename: string; Group: TUDUnitGroup
@@ -1102,6 +1160,7 @@ begin
           Result.FirstIdentifier:=NextItem;
         if Result.LastIdentifier=CurItem then
           Result.LastIdentifier:=PrevItem;
+        AVLRemovePointer(Identifiers,CurItem);
         CurItem.Free;
         CurItem:=NextItem;
       end;

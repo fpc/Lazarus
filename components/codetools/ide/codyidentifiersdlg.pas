@@ -104,7 +104,7 @@ type
     property LoadAfterStartInS: integer read FLoadAfterStartInS write SetLoadAfterStartInS;
     procedure BeginCritSec;
     procedure EndCritSec;
-    procedure CheckFileAsync(aFilename: string);
+    procedure CheckFileAsync(aFilename: string); // check eventually if file exists and delete unit/group
     property LoadSaveError: string read FLoadSaveError write SetLoadSaveError;
   end;
 
@@ -493,9 +493,8 @@ begin
         if UDGroup<>nil then
           DeleteGroup(UDGroup,true);
         CurUnit:=FindUnitWithFilename(aFilename);
-        if CurUnit<>nil then begin
-
-        end;
+        if CurUnit<>nil then
+          DeleteUnit(CurUnit,true);
       finally
         EndCritSec;
       end;
@@ -761,10 +760,10 @@ begin
           inc(Found); // only count, do not check
         end else begin
           Item:=TUDIdentifier(Node.Data);
-          GroupNode:=Item.DUnit.UnitGroups.FindLowest;
+          GroupNode:=Item.DUnit.Groups.FindLowest;
           while GroupNode<>nil do begin
             Group:=TUDUnitGroup(GroupNode.Data);
-            GroupNode:=Item.DUnit.UnitGroups.FindSuccessor(GroupNode);
+            GroupNode:=Item.DUnit.Groups.FindSuccessor(GroupNode);
             if not FilenameIsAbsolute(Item.DUnit.Filename) then continue;
             if Group.Name='' then begin
               // it's a unit without package
@@ -787,8 +786,8 @@ begin
             end else if FileExistsCached(Group.Filename) then begin
               // lpk exists
             end else begin
-              // lpk does not exist
-              CodyUnitDictionary.BeginCritSec;
+              // lpk does not exist any more
+              CodyUnitDictionary.CheckFileAsync(Group.Filename);
             end;
             s:=Item.Name+' in '+Item.DUnit.Name;
             if Group.Name<>'' then
@@ -799,6 +798,9 @@ begin
                 FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Name+#10+Group.Filename);
                 sl.Add(s);
               end;
+            end else begin
+              // unit does not exist any more
+              CodyUnitDictionary.CheckFileAsync(Item.DUnit.Filename);
             end;
           end;
         end;

@@ -293,7 +293,8 @@ function CompareAnsiStringPtrs(Data1, Data2: Pointer): integer;
 {$IF FPC_FULLVERSION<20701}
   {$DEFINE EnableAVLFindPointerFix}
 {$ENDIF}
-function AVLFindPointer(Tree: TAVLTree; Data: Pointer): TAVLTreeNode; {$IFDEF EnableAVLFindPointerFix}inline;{$ENDIF}
+function AVLFindPointer(Tree: TAVLTree; Data: Pointer): TAVLTreeNode; {$IFNDEF EnableAVLFindPointerFix}inline;{$ENDIF}
+procedure AVLRemovePointer(Tree: TAVLTree; Data: Pointer); {$IFNDEF EnableAVLFindPointerFix}inline;{$ENDIF}
 
 implementation
 
@@ -421,6 +422,21 @@ begin
   end;
   {$ELSE}
   Result:=Tree.FindPointer(Data);
+  {$ENDIF}
+end;
+
+procedure AVLRemovePointer(Tree: TAVLTree; Data: Pointer);
+{$IFDEF EnableAVLFindPointerFix}
+var
+  Node: TAVLTreeNode;
+{$ENDIF}
+begin
+  {$IFDEF EnableAVLFindPointerFix}
+  Node:=AVLFindPointer(Tree,Data);
+  if Node<>nil then
+    Tree.Delete(Node);
+  {$ELSE}
+  Tree.RemovePointer(Data);
   {$ENDIF}
 end;
 
