@@ -400,12 +400,15 @@ begin
         end;
       end;
       QWidget_setParent(Widget.Widget, W);
-      QWidget_setWindowFlags(Widget.Widget, QtDialog);
       {$endif}
-      {$ifdef darwin}
-      QWidget_setWindowFlags(Widget.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint
-        or QtWindowTitleHint or QtWindowCloseButtonHint);
-      {$endif}
+
+      QWidget_setWindowFlags(Widget.Widget, QtDialog or
+        {$ifdef darwin}
+        QtWindowSystemMenuHint or
+        {$endif}
+        GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
+          TCustomForm(AWinControl).BorderIcons));
+
       Widget.setWindowModality(QtApplicationModal);
     end;
 
@@ -447,6 +450,11 @@ begin
         Flags := Flags or QtWindowStaysOnTopHint;
         Widget.setWindowFlags(Flags);
       end;
+      if not (fsModal in TForm(AWinControl).FormState) and
+        (TForm(AWinControl).FormStyle <> fsMDIChild) and
+        (QApplication_activeModalWidget() <> nil) then
+          TQtMainWindow(Widget).setPopupParent(pmExplicit,
+            QApplication_activeModalWidget());
     end else
     begin
       if (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop)
@@ -754,6 +762,9 @@ begin
     bsDialog: ABorderIcons := ABorderIcons - [biMaximize, biMinimize];
     bsToolWindow, bsSizeToolWin: ABorderIcons := ABorderIcons - [biMaximize, biMinimize, biHelp];
   end;
+
+  Result := QtCustomizeWindowHint
+        or QtWindowTitleHint or QtWindowCloseButtonHint;
 
   if (biSystemMenu in ABorderIcons) then
     Result := Result or QtWindowSystemMenuHint;
