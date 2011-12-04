@@ -12979,11 +12979,6 @@ msgctxt "lazarusidestrconsts.lispetheunitnameisnotavalidpascalidentifier"
 msgid "The unitname is not a valid pascal identifier."
 msgstr "Der Unitname ist kein gültiger Pascal-Bezeichner."
 
-#: lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses
-msgctxt "lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
-msgstr "Der Unitname wird gebraucht, wenn die IDE die Uses-Anweisung erweitert."
-
 #: lazarusidestrconsts.lispeunitname
 msgid "Unitname:"
 msgstr "Unit-Name:"
@@ -14146,8 +14141,10 @@ msgid "The unitname is not a valid pascal identifier."
 msgstr "Der Unit-Name ist kein gültiger Pascal-Bezeichner."
 
 #: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
+#, fuzzy
+#| msgid "The unitname is used when the IDE extends uses clauses."
 msgctxt "lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
+msgid "The unitname is used when the IDE extends uses clauses"
 msgstr "Der Unit-Name wird beim Erweitern der Uses-Klausel von der IDE verwendet."
 
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni

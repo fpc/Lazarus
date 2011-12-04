@@ -12705,11 +12705,6 @@ msgctxt "lazarusidestrconsts.lispetheunitnameisnotavalidpascalidentifier"
 msgid "The unitname is not a valid pascal identifier."
 msgstr ""
 
-#: lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses
-msgctxt "lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
-msgstr "Käännösyksikön nimeä käytetään kun Lazarus laajentaa uses-lauseketta."
-
 #: lazarusidestrconsts.lispeunitname
 msgid "Unitname:"
 msgstr "Käännösyksikön nimi:"
@@ -13858,8 +13853,10 @@ msgid "The unitname is not a valid pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
+#, fuzzy
+#| msgid "The unitname is used when the IDE extends uses clauses."
 msgctxt "lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
+msgid "The unitname is used when the IDE extends uses clauses"
 msgstr "Käännösyksikön nimeä käytetään kun Lazarus laajentaa uses-lauseketta."
 
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni

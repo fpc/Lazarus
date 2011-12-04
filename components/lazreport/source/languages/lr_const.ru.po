@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-01-12 03:27+0300\n"
+"PO-Revision-Date: 2011-12-04 16:51+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -2208,7 +2208,7 @@ msgstr "Переменные..."
 
 #: lr_const.sroundrectsqrcorners
 msgid "Squared corners"
-msgstr ""
+msgstr "Прямые углы"
 
 #: lr_const.srtffile
 msgid "Rich Text file"

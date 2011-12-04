@@ -13003,11 +13003,6 @@ msgctxt "lazarusidestrconsts.lispetheunitnameisnotavalidpascalidentifier"
 msgid "The unitname is not a valid pascal identifier."
 msgstr "そのユニット名は有効なpascal識別子ではありません。"
 
-#: lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses
-msgctxt "lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
-msgstr "そのユニット名はIDEがuses節を拡張する際に使われています。"
-
 #: lazarusidestrconsts.lispeunitname
 msgid "Unitname:"
 msgstr "ユニット名"
@@ -14174,8 +14169,10 @@ msgid "The unitname is not a valid pascal identifier."
 msgstr "そのユニット名は有効なpascal識別子ではありません。"
 
 #: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
+#, fuzzy
+#| msgid "The unitname is used when the IDE extends uses clauses."
 msgctxt "lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
+msgid "The unitname is used when the IDE extends uses clauses"
 msgstr "そのユニット名はIDEがuses節を拡張するときに用いられます。"
 
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni

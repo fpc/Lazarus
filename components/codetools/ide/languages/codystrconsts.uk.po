@@ -393,6 +393,10 @@ msgstr "Інші статичні бібліотеки"
 msgid "Package"
 msgstr "Пакунок"
 
+#: codystrconsts.crspackage2
+msgid "Package: %s"
+msgstr ""
+
 #: codystrconsts.crspackagenotfound
 msgid "Package not found"
 msgstr ""

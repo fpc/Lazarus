@@ -12816,11 +12816,6 @@ msgctxt "lazarusidestrconsts.lispetheunitnameisnotavalidpascalidentifier"
 msgid "The unitname is not a valid pascal identifier."
 msgstr ""
 
-#: lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses
-msgctxt "lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
-msgstr ""
-
 #: lazarusidestrconsts.lispeunitname
 msgid "Unitname:"
 msgstr "Назва Модуля"
@@ -13977,8 +13972,10 @@ msgid "The unitname is not a valid pascal identifier."
 msgstr "Назва модуля не є правильним ідентифікатором pascal. "
 
 #: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
+#, fuzzy
+#| msgid "The unitname is used when the IDE extends uses clauses."
 msgctxt "lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
+msgid "The unitname is used when the IDE extends uses clauses"
 msgstr "Назва модуля використана графічною оболонкою при розширенні користувацьких виразів."
 
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni

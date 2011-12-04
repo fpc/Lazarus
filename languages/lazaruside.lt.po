@@ -12934,11 +12934,6 @@ msgctxt "lazarusidestrconsts.lispetheunitnameisnotavalidpascalidentifier"
 msgid "The unitname is not a valid pascal identifier."
 msgstr "Modulio pavadinimas nėra paskalio identifikatorius."
 
-#: lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses
-msgctxt "lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
-msgstr "Modulio pavadinimas naudojamas kai IKA praplečia naudojamų modulių sąrašą."
-
 #: lazarusidestrconsts.lispeunitname
 msgid "Unitname:"
 msgstr "Modulio pavadinimas:"
@@ -14103,8 +14098,10 @@ msgid "The unitname is not a valid pascal identifier."
 msgstr "Modulio pavadinimas nėra paskalio identifikatorius."
 
 #: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
+#, fuzzy
+#| msgid "The unitname is used when the IDE extends uses clauses."
 msgctxt "lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
+msgid "The unitname is used when the IDE extends uses clauses"
 msgstr "Modulio pavadinimas naudojamas kai IKA praplečia naudojamų modulių sąrašą."
 
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni

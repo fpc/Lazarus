@@ -373,6 +373,10 @@ msgstr ""
 msgid "Package"
 msgstr ""
 
+#: codystrconsts.crspackage2
+msgid "Package: %s"
+msgstr ""
+
 #: codystrconsts.crspackagenotfound
 msgid "Package not found"
 msgstr ""

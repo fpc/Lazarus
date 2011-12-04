@@ -12975,11 +12975,6 @@ msgctxt "lazarusidestrconsts.lispetheunitnameisnotavalidpascalidentifier"
 msgid "The unitname is not a valid pascal identifier."
 msgstr "שם יחידה זה אינו שם חוקי של מזהה פסקל."
 
-#: lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses
-msgctxt "lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
-msgstr "שם היחידה בשימוש כאשר ה IDE פורש את סעיף ה \"משתמש ב\" ."
-
 #: lazarusidestrconsts.lispeunitname
 msgid "Unitname:"
 msgstr "שם יחידה:"
@@ -14146,8 +14141,10 @@ msgid "The unitname is not a valid pascal identifier."
 msgstr "שם יחידה זה אינו שם חוקי של מזהה פסקל."
 
 #: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
+#, fuzzy
+#| msgid "The unitname is used when the IDE extends uses clauses."
 msgctxt "lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
+msgid "The unitname is used when the IDE extends uses clauses"
 msgstr "שם היחידה בשימוש כאשר ה IDE פורש את סעיף ה \"משתמש ב\" ."
 
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni

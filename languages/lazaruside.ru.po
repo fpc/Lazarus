@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-11-26 19:52+0400\n"
+"PO-Revision-Date: 2011-12-04 17:36+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -7895,7 +7895,7 @@ msgstr "Выражение:"
 
 #: lazarusidestrconsts.lisextendunitpath
 msgid "Extend unit path?"
-msgstr "Расширить пути к модулям?"
+msgstr "Дополнить пути к модулям?"
 
 #: lazarusidestrconsts.lisextract
 msgid "Extract"
@@ -12705,11 +12705,6 @@ msgctxt "lazarusidestrconsts.lispetheunitnameisnotavalidpascalidentifier"
 msgid "The unitname is not a valid pascal identifier."
 msgstr "Имя модуля не является корректным идентификатором Паскаля."
 
-#: lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses
-msgctxt "lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
-msgstr "Имя модуля используется при раскрытии IDE выражений uses"
-
 #: lazarusidestrconsts.lispeunitname
 msgid "Unitname:"
 msgstr "Имя модуля:"
@@ -13871,9 +13866,10 @@ msgid "The unitname is not a valid pascal identifier."
 msgstr "Имя модуля не является корректным идентификатором Паскаля."
 
 #: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
+#| msgid "The unitname is used when the IDE extends uses clauses."
 msgctxt "lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
-msgstr "Имя модуля используется при раскрытии IDE выражений uses"
+msgid "The unitname is used when the IDE extends uses clauses"
+msgstr "Имя модуля используется при дополнении IDE выражений Uses"
 
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
 msgctxt "lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni"

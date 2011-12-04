@@ -12815,11 +12815,6 @@ msgctxt "lazarusidestrconsts.lispetheunitnameisnotavalidpascalidentifier"
 msgid "The unitname is not a valid pascal identifier."
 msgstr "Jméno jednotky není platný pascalovský identifikátor."
 
-#: lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses
-msgctxt "lazarusidestrconsts.lispetheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
-msgstr "Jméno jednotky je použito, když IDE rozšiřuje definici uses."
-
 #: lazarusidestrconsts.lispeunitname
 msgid "Unitname:"
 msgstr "Jméno jednotky:"
@@ -13974,8 +13969,10 @@ msgid "The unitname is not a valid pascal identifier."
 msgstr "Jméno jednotky není platný pascalovský identifikátor."
 
 #: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
+#, fuzzy
+#| msgid "The unitname is used when the IDE extends uses clauses."
 msgctxt "lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses"
-msgid "The unitname is used when the IDE extends uses clauses."
+msgid "The unitname is used when the IDE extends uses clauses"
 msgstr "Jméno jednotky je použito, když IDE rozšiřuje definici uses."
 
 #: lazarusidestrconsts.lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni

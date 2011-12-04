@@ -388,6 +388,10 @@ msgstr "Outras bibliotecas estáticas"
 msgid "Package"
 msgstr "Pacote"
 
+#: codystrconsts.crspackage2
+msgid "Package: %s"
+msgstr ""
+
 #: codystrconsts.crspackagenotfound
 msgid "Package not found"
 msgstr ""

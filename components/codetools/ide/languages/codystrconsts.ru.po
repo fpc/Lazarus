@@ -158,7 +158,7 @@ msgstr "&Закрыть"
 
 #: codystrconsts.crscloseotherpackageandopennew
 msgid "Close other package and open new"
-msgstr ""
+msgstr "Закрыть другой пакет и открыть новый"
 
 #: codystrconsts.crscodenodeinformation
 msgid "Code Node Information"
@@ -249,7 +249,7 @@ msgstr "Выражение"
 
 #: codystrconsts.crsextendunitpath
 msgid "Extend unit path"
-msgstr ""
+msgstr "Дополнить пути к модулям"
 
 #: codystrconsts.crsfile
 msgid "File"
@@ -257,15 +257,15 @@ msgstr "Файл"
 
 #: codystrconsts.crsfiledoesnotexistanymore
 msgid "File \"%s\" does not exist anymore."
-msgstr ""
+msgstr "Файл \"%s\" больше не существует."
 
 #: codystrconsts.crsfilenotfound
 msgid "File not found"
-msgstr ""
+msgstr "Файл не найден"
 
 #: codystrconsts.crsfilereaderror
 msgid "File read error"
-msgstr ""
+msgstr "Ошибка чтения файла"
 
 #: codystrconsts.crsfilter
 msgid "(Filter)"
@@ -277,7 +277,7 @@ msgstr "Флаги"
 
 #: codystrconsts.crsfpcunitwithoutppu
 msgid "FPC unit without ppu"
-msgstr ""
+msgstr "Модуль FPC без соответствующего файла PPU"
 
 #: codystrconsts.crsframeworks
 msgid "Frameworks"
@@ -293,19 +293,19 @@ msgstr "&Справка"
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
-msgstr ""
+msgstr "Скрывать модули других проектов"
 
 #: codystrconsts.crsidentifiernotfound
 msgid "Identifier not found"
-msgstr ""
+msgstr "Идентификатор не найден"
 
 #: codystrconsts.crsidentifiernotfoundinunit
 msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
-msgstr ""
+msgstr "Идентификатор \"%s\" не найден в модуле \"%s\". Вероятно, идентификатор не существует на данной платформе либо был удалён или перемещён."
 
 #: codystrconsts.crsimpossibledependency
 msgid "Impossible dependency"
-msgstr ""
+msgstr "Недопустимая зависимость"
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
@@ -322,7 +322,7 @@ msgstr "Вставить содержимое файла в месте расп�
 
 #: codystrconsts.crsjumpto
 msgid "Jump to"
-msgstr ""
+msgstr "Перейти"
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
@@ -354,7 +354,7 @@ msgstr "отсутствует ..."
 
 #: codystrconsts.crsnoneselected
 msgid "none selected"
-msgstr ""
+msgstr "не выбран"
 
 #: codystrconsts.crsnoproject
 msgid "No project"
@@ -388,13 +388,17 @@ msgstr "Прочие статические библиотеки"
 msgid "Package"
 msgstr "Пакет"
 
+#: codystrconsts.crspackage2
+msgid "Package: %s"
+msgstr "Пакет: %s"
+
 #: codystrconsts.crspackagenotfound
 msgid "Package not found"
-msgstr ""
+msgstr "Пакет не найден"
 
 #: codystrconsts.crspackagenotfounditshouldbein
 msgid "Package \"%s\" not found. It should be in \"%s\"."
-msgstr ""
+msgstr "Пакет \"%s\" не найден. Он должен быть в \"%s\"."
 
 #: codystrconsts.crspackagesunitsidentifiersfile
 #| msgid "Packages: %s, Units: %s, Identifiers: %s%sFile: %s"
@@ -403,7 +407,7 @@ msgstr "Пакетов: %s, Модулей: %s, Идентификаторов: 
 
 #: codystrconsts.crspackagewithsamename
 msgid "Package with same name"
-msgstr ""
+msgstr "Пакет с тем же именем"
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
@@ -515,19 +519,19 @@ msgstr "Идентификатор \"%s\" уже объявлен."
 
 #: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
 msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
-msgstr ""
+msgstr "Пакет с таким же именем уже загружен.%sОткрытый пакет: %s%sНовый пакет: %s%sМожет быть загружен только один такой пакет."
 
 #: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
 msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
-msgstr ""
+msgstr "Целевой модуль имеет имя, совпадающее с именем текущего модуля.%s Free Pascal не поддерживает такую возможность."
 
 #: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
 msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
-msgstr ""
+msgstr "Модуль \"%s\"%sвходит в \"%s\".%sОн не может использовать другой пакет с тем же именем:%s\"%s\""
 
 #: codystrconsts.crsthisunitislocatedinthefreepascalsourcesbutnoppufil
 msgid "This unit is located in the Free Pascal sources, but no ppu file is installed. Maybe this unit is not available for this target platform."
-msgstr ""
+msgstr "Модуль расположен в каталогах с исходным кодом Free Pascal, но соответствующий файл PPU не установлен. Возможно, модуль недоступен для выбранной платформы."
 
 #: codystrconsts.crstotal
 msgid "Total"
@@ -539,11 +543,11 @@ msgstr "Тип"
 
 #: codystrconsts.crsunabletoreadfile
 msgid "Unable to read file \"%s\"."
-msgstr ""
+msgstr "Невозможно прочитать файл \"%s\"."
 
 #: codystrconsts.crsunabletorenameto
 msgid "unable to rename \"%s\" to \"%s\""
-msgstr ""
+msgstr "невозможно переименовать \"%s\" в \"%s\""
 
 #: codystrconsts.crsunit
 msgid "Unit"
@@ -555,7 +559,7 @@ msgstr "Модуль: %s"
 
 #: codystrconsts.crsunitnameclash
 msgid "Unit name clash"
-msgstr ""
+msgstr "Конфликт имён модулей"
 
 #: codystrconsts.crsunitobjectfiles
 msgid "Unit object files"
