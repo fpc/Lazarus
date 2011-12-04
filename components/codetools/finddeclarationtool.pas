@@ -59,7 +59,6 @@ interface
 { $DEFINE ShowTriedUnits}
 { $DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
-{ $DEFINE ShowInterfaceCache}
 { $DEFINE ShowNodeCache}
 { $DEFINE ShowBaseTypeCache}
 { $DEFINE ShowCacheDependencies}
@@ -1799,51 +1798,15 @@ end;
 function TFindDeclarationTool.FindDeclarationNodeInInterface(
   const Identifier: string; BuildTheTree: Boolean): TCodeTreeNode;
 var
-  StartNode: TCodeTreeNode;
-  SectionNode: TCodeTreeNode;
-  Node: TCodeTreeNode;
-  BestNodeIsForwardDeclaration: Boolean;
-  CurNodeIsForwardDeclaration: Boolean;
-  BestNode: TCodeTreeNode;
-  NameNode: TCodeTreeNode;
+  CacheEntry: PInterfaceIdentCacheEntry;
 begin
   Result:=nil;
   if Identifier='' then exit;
-  if BuildTheTree then BuildTree(lsrImplementationStart);
-  if Tree.Root=nil then exit;
-  if Tree.Root.Desc=ctnUnit then
-    StartNode:=FindInterfaceNode
-  else
-    StartNode:=Tree.Root;
-  if StartNode=nil then exit;
-  SectionNode:=StartNode.FirstChild;
-  if SectionNode=nil then exit;
-  BestNode:=nil;
-  BestNodeIsForwardDeclaration:=false;
-  while SectionNode<>nil do begin
-    if SectionNode.Desc in AllDefinitionSections then begin
-      Node:=SectionNode.FirstChild;
-      while Node<>nil do begin
-        if Node.Desc in AllIdentifierDefinitions then begin
-          NameNode:=Node;
-          if Node.Desc=ctnGenericType then
-            NameNode:=NameNode.FirstChild;
-          if (NameNode<>nil)
-          and CompareSrcIdentifiers(NameNode.StartPos,PChar(Pointer(Identifier)))
-          then begin
-            CurNodeIsForwardDeclaration:=NodeIsForwardDeclaration(Node);
-            if (BestNode=nil) or BestNodeIsForwardDeclaration then begin
-              BestNode:=Node;
-              BestNodeIsForwardDeclaration:=CurNodeIsForwardDeclaration;
-            end;
-          end;
-        end;
-        Node:=Node.NextBrother;
-      end;
-    end;
-    SectionNode:=SectionNode.NextBrother;
-  end;
-  Result:=BestNode;
+  if BuildTheTree and (not BuildInterfaceIdentifierCache(true)) then
+    exit;
+  CacheEntry:=FInterfaceIdentifierCache.FindIdentifier(PChar(Identifier));
+  if CacheEntry=nil then exit;
+  Result:=CacheEntry^.Node;
 end;
 
 function TFindDeclarationTool.FindMainUsesSection(UseContainsSection: boolean
