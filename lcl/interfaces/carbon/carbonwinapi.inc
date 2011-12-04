@@ -43,6 +43,7 @@ end;
 function TCarbonWidgetSet.BeginPaint(Handle: hWnd; var PS: TPaintStruct): hdc;
 begin
   Result:=inherited BeginPaint(Handle, PS);
+  PS.hdc:=Result;
 end;
 
 {------------------------------------------------------------------------------
