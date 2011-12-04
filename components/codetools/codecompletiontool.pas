@@ -7032,40 +7032,61 @@ procedure TCodeCompletionCodeTool.CheckForOverrideAndAddInheritedCode(
   ANodeExt: TCodeTreeNodeExtension);
 // check for 'override' directive and add 'inherited' code to body
 var
-  ProcCode, ProcCall: string;
-  ProcNode: TCodeTreeNode;
+  ProcCode, ProcCall, FullCall: string;
+  ProcNode, ClassNode: TCodeTreeNode;
   i: integer;
-  BeautifyCodeOptions: TBeautifyCodeOptions;
+  InclProcCall: Boolean;
+  Beauty: TBeautifyCodeOptions;
+  Params: TFindDeclarationParams;
 begin
   if not AddInheritedCodeToOverrideMethod then exit;
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeCompletionCodeTool.CheckForOverrideAndAddInheritedCode]');
   {$ENDIF}
-  BeautifyCodeOptions:=ASourceChangeCache.BeautifyCodeOptions;
+  Beauty:=ASourceChangeCache.BeautifyCodeOptions;
   ProcNode:=ANodeExt.Node;
-  if (ProcNode<>nil) and (ANodeExt.ExtTxt3='')
-  and (ProcNodeHasSpecifier(ProcNode,psOVERRIDE)) then begin
-    ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,
-                    phpAddClassname,phpWithVarModifiers,phpWithParameterNames,
-                    phpWithResultType,phpWithCallingSpecs]);
+  if (ProcNode=nil) and (ANodeExt.ExtTxt3<>'') then Exit;
+  InclProcCall:=False;
+  if (ProcNodeHasSpecifier(ProcNode,psOVERRIDE)) then begin
+    // Check for ancestor abstract method.
+    Params:=TFindDeclarationParams.Create;
+    try
+      ClassNode:=CodeCompleteClassNode;
+      while FindAncestorOfClass(ClassNode,Params,True) do begin
+        ClassNode:=Params.NewNode;
+        Params.ContextNode:=ClassNode;
+        Params.IdentifierTool:=Params.NewCodeTool;
+        // FirstChild skips keyword 'procedure' or 'function'
+        Params.SetIdentifier(Self,@Src[ProcNode.FirstChild.StartPos],nil);
+        if FindIdentifierInContext(Params) then // Found ancestor definition.
+          if Params.NewNode<>nil then begin
+            InclProcCall:=not ProcNodeHasSpecifier(Params.NewNode,psABSTRACT);
+            Break;
+          end;
+      end;
+    finally
+      Params.Free;
+    end;
+  end;
+  ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpAddClassname,
+                                      phpWithVarModifiers,phpWithParameterNames,
+                                      phpWithResultType,phpWithCallingSpecs]);
+  FullCall:='';
+  if InclProcCall then begin
     ProcCall:='inherited '+ExtractProcHead(ProcNode,[phpWithoutClassName,
-                                 phpWithParameterNames,phpWithoutParamTypes]);
+                                      phpWithParameterNames,phpWithoutParamTypes]);
     for i:=1 to length(ProcCall)-1 do
-      if ProcCall[i]=';' then ProcCall[i]:=',';
+      if ProcCall[i]=';' then
+        ProcCall[i]:=',';
     if ProcCall[length(ProcCall)]<>';' then
       ProcCall:=ProcCall+';';
     if NodeIsFunction(ProcNode) then
-      ProcCall:=BeautifyCodeOptions.BeautifyIdentifier('Result')
-                +':='+ProcCall;
-    ProcCode:=ProcCode+BeautifyCodeOptions.LineEnd
-                +'begin'+BeautifyCodeOptions.LineEnd
-                +GetIndentStr(BeautifyCodeOptions.Indent)
-                  +ProcCall+BeautifyCodeOptions.LineEnd
-                +'end;';
-    ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-               ProcCode,0,false);
-    ANodeExt.ExtTxt3:=ProcCode;
+      ProcCall:=Beauty.BeautifyIdentifier('Result')+':='+ProcCall;
+    FullCall:=GetIndentStr(Beauty.Indent)+ProcCall;
   end;
+  ProcCode:=ProcCode+Beauty.LineEnd+'begin'+Beauty.LineEnd+FullCall+Beauty.LineEnd+'end;';
+  ProcCode:=Beauty.BeautifyProc(ProcCode,0,false);
+  ANodeExt.ExtTxt3:=ProcCode;
 end;
 
 function TCodeCompletionCodeTool.CreateMissingProcBodies: boolean;
@@ -7102,23 +7123,6 @@ var
       {$IFDEF CTDEBUG}
       DebugLn('CreateMissingProcBodies FJumpToProcName="',FJumpToProcName,'"');
       {$ENDIF}
-    end;
-  end;
-
-  procedure CreateCodeForMissingProcBody(TheNodeExt: TCodeTreeNodeExtension;
-    Indent: integer);
-  var
-    ANode: TCodeTreeNode;
-    ProcCode: string;
-  begin
-    CheckForOverrideAndAddInheritedCode(TheNodeExt);
-    if (TheNodeExt.ExtTxt1='') and (TheNodeExt.ExtTxt3='') then begin
-      ANode:=TheNodeExt.Node;
-      if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
-        ProcCode:=ExtractProcHead(ANode,ProcAttrDefToBody);
-        TheNodeExt.ExtTxt3:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-                     ProcCode,Indent,true);
-      end;
     end;
   end;
 
@@ -7558,7 +7562,7 @@ begin
       MissingNode:=ClassProcs.FindHighest;
       while (MissingNode<>nil) do begin
         ANodeExt:=TCodeTreeNodeExtension(MissingNode.Data);
-        CreateCodeForMissingProcBody(ANodeExt,Indent);
+        CheckForOverrideAndAddInheritedCode(ANodeExt);
         InsertProcBody(ANodeExt,InsertPos,Indent);
         MissingNode:=ClassProcs.FindPrecessor(MissingNode);
       end;
@@ -7648,7 +7652,7 @@ begin
               end;
             end;
           end;
-          CreateCodeForMissingProcBody(ANodeExt,Indent);
+          CheckForOverrideAndAddInheritedCode(ANodeExt);
           InsertProcBody(ANodeExt,InsertPos,Indent);
         end;
         MissingNode:=ClassProcs.FindPrecessor(MissingNode);
