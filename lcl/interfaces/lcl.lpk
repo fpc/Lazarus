@@ -114,7 +114,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="383">
+    <Files Count="382">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1725,184 +1725,179 @@ end;"/>
         <UnitName Value="customdrawnwsforms_win"/>
       </Item345>
       <Item346>
-        <Filename Value="customdrawn/customdrawnwscontrols_win.inc"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="customdrawnwscontrols_win"/>
-      </Item346>
-      <Item347>
         <Filename Value="customdrawn/customdrawnwsforms_x11.inc"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="customdrawnwsforms_x11"/>
-      </Item347>
-      <Item348>
+      </Item346>
+      <Item347>
         <Filename Value="customdrawn/customdrawnobject_x11.inc"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="customdrawnobject_x11"/>
-      </Item348>
-      <Item349>
+      </Item347>
+      <Item348>
         <Filename Value="customdrawn/cocoagdiobjects.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaGDIObjects"/>
-      </Item349>
-      <Item350>
+      </Item348>
+      <Item349>
         <Filename Value="customdrawn/cocoaprivate.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoaprivate"/>
-      </Item350>
-      <Item351>
+      </Item349>
+      <Item350>
         <Filename Value="customdrawn/cocoautils.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaUtils"/>
+      </Item350>
+      <Item351>
+        <Filename Value="customdrawn/customdrawnlclintf.inc"/>
+        <Type Value="Include"/>
       </Item351>
       <Item352>
-        <Filename Value="customdrawn/customdrawnlclintf.inc"/>
+        <Filename Value="customdrawn/customdrawnlclintfh.inc"/>
         <Type Value="Include"/>
       </Item352>
       <Item353>
-        <Filename Value="customdrawn/customdrawnlclintfh.inc"/>
+        <Filename Value="customdrawn/customdrawnwinapi_cocoa.inc"/>
         <Type Value="Include"/>
       </Item353>
       <Item354>
-        <Filename Value="customdrawn/customdrawnwinapi_cocoa.inc"/>
+        <Filename Value="customdrawn/customdrawnwinapi_win.inc"/>
         <Type Value="Include"/>
       </Item354>
       <Item355>
-        <Filename Value="customdrawn/customdrawnwinapi_win.inc"/>
+        <Filename Value="customdrawn/customdrawnwinapi.inc"/>
         <Type Value="Include"/>
       </Item355>
       <Item356>
-        <Filename Value="customdrawn/customdrawnwinapi.inc"/>
+        <Filename Value="customdrawn/customdrawnwinapih.inc"/>
         <Type Value="Include"/>
       </Item356>
       <Item357>
-        <Filename Value="customdrawn/customdrawnwinapih.inc"/>
+        <Filename Value="customdrawn/customdrawnwsforms_cocoa.inc"/>
         <Type Value="Include"/>
       </Item357>
       <Item358>
-        <Filename Value="customdrawn/customdrawnwsforms_cocoa.inc"/>
-        <Type Value="Include"/>
-      </Item358>
-      <Item359>
         <Filename Value="customdrawn/customdrawnproc.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="customdrawnproc"/>
-      </Item359>
-      <Item360>
+      </Item358>
+      <Item359>
         <Filename Value="customdrawn/customdrawn_x11proc.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="customdrawn_x11proc"/>
-      </Item360>
-      <Item361>
+      </Item359>
+      <Item360>
         <Filename Value="customdrawn/customdrawnwinapi_x11.inc"/>
         <Type Value="Include"/>
-      </Item361>
-      <Item362>
+      </Item360>
+      <Item361>
         <Filename Value="customdrawn/customdrawn_androidproc.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="customdrawn_androidproc"/>
+      </Item361>
+      <Item362>
+        <Filename Value="customdrawn/customdrawnobject_android.inc"/>
+        <Type Value="Include"/>
       </Item362>
       <Item363>
-        <Filename Value="customdrawn/customdrawnobject_android.inc"/>
+        <Filename Value="customdrawn/customdrawnwinapi_android.inc"/>
         <Type Value="Include"/>
       </Item363>
       <Item364>
-        <Filename Value="customdrawn/customdrawnwinapi_android.inc"/>
+        <Filename Value="customdrawn/customdrawnwsforms_android.inc"/>
         <Type Value="Include"/>
       </Item364>
       <Item365>
-        <Filename Value="customdrawn/customdrawnwsforms_android.inc"/>
-        <Type Value="Include"/>
-      </Item365>
-      <Item366>
         <Filename Value="customdrawn/android/android_native_app_glue.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="android_native_app_glue"/>
-      </Item366>
-      <Item367>
+      </Item365>
+      <Item366>
         <Filename Value="customdrawn/android/asset_manager.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="asset_manager"/>
-      </Item367>
-      <Item368>
+      </Item366>
+      <Item367>
         <Filename Value="customdrawn/android/configuration.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="configuration"/>
-      </Item368>
-      <Item369>
+      </Item367>
+      <Item368>
         <Filename Value="customdrawn/android/egl.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="egl"/>
-      </Item369>
-      <Item370>
+      </Item368>
+      <Item369>
         <Filename Value="customdrawn/android/eglplatform.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="eglplatform"/>
-      </Item370>
-      <Item371>
+      </Item369>
+      <Item370>
         <Filename Value="customdrawn/android/gles.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="gles"/>
-      </Item371>
-      <Item372>
+      </Item370>
+      <Item371>
         <Filename Value="customdrawn/android/input.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="input"/>
-      </Item372>
-      <Item373>
+      </Item371>
+      <Item372>
         <Filename Value="customdrawn/android/jni.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="jni"/>
-      </Item373>
-      <Item374>
+      </Item372>
+      <Item373>
         <Filename Value="customdrawn/android/keycodes.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="keycodes"/>
-      </Item374>
-      <Item375>
+      </Item373>
+      <Item374>
         <Filename Value="customdrawn/android/log.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="log"/>
-      </Item375>
-      <Item376>
+      </Item374>
+      <Item375>
         <Filename Value="customdrawn/android/looper.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="looper"/>
-      </Item376>
-      <Item377>
+      </Item375>
+      <Item376>
         <Filename Value="customdrawn/android/native_activity.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="native_activity"/>
-      </Item377>
-      <Item378>
+      </Item376>
+      <Item377>
         <Filename Value="customdrawn/android/native_window.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="native_window"/>
-      </Item378>
-      <Item379>
+      </Item377>
+      <Item378>
         <Filename Value="customdrawn/android/rect.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="rect"/>
-      </Item379>
-      <Item380>
+      </Item378>
+      <Item379>
         <Filename Value="customdrawn/customdrawnwsarrow.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CustomDrawnWSArrow"/>
-      </Item380>
-      <Item381>
+      </Item379>
+      <Item380>
         <Filename Value="customdrawn/android/bitmap.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="bitmap"/>
-      </Item381>
-      <Item382>
+      </Item380>
+      <Item381>
         <Filename Value="customdrawn/customdrawnwsstdctrls.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CustomDrawnWSStdCtrls"/>
-      </Item382>
-      <Item383>
+      </Item381>
+      <Item382>
         <Filename Value="customdrawn/customdrawnwscomctrls.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CustomDrawnWSComCtrls"/>
-      </Item383>
+      </Item382>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>

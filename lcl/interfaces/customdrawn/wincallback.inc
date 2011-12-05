@@ -332,30 +332,6 @@ Var
     {$endif}
   end;
 
-  procedure SendParentPaintMessage(Window, Parent: HWND; ControlDC: HDC);
-  {$ifdef DEBUG_WINDOW_ORG}
-  var
-    Point: TPoint;
-  {$endif}
-  begin
-    GetWin32ControlPos(Window, Parent, P.X, P.Y);
-
-    {$ifdef DEBUG_WINDOW_ORG}
-    LCLIntf.GetWindowOrgEx(ControlDC, @Point);
-    DebugLn(
-      Format(':> [SendParentPaintMessage] DC=%d Moving WindowsOrg From %d,%d By DX=%d DY=%d',
-      [ControlDC, Point.X, Point.Y, P.X, P.Y]));
-    {$endif}
-
-    MoveWindowOrgEx(ControlDC, -P.X, -P.Y);
-    SendPaintMessage(ControlDC);
-    MoveWindowOrgEx(ControlDC, P.X, P.Y);
-
-    {$ifdef DEBUG_WINDOW_ORG}
-    DebugLn(':< [SendParentPaintMessage] Finish');
-    {$endif}
-  end;
-
   procedure HandleSetCursor;
   var
     lControl: TControl;
