@@ -35,6 +35,15 @@ begin
   WindowClass.LPSzClassName := @ClsName;
   Result := Windows.RegisterClassW(@WindowClass) <> 0;
 
+  {$ifdef VerboseCDForms}
+  DebugLn(Format('[TCDWidgetSet.WinRegister] Registered ClsName=%x', [PtrInt(Result)]));
+  {$endif}
+{  WindowInfo := TWindowInfo.Create;
+  WindowInfo.LCLForm := TCustomForm(AWinControl);
+  WindowInfo.NativeHandle := Window;
+
+  AddFormWithCDHandle(WindowInfo);}
+
   if Result then
   begin
     WindowClass.style := WindowClass.style or CS_SAVEBITS;
@@ -44,6 +53,9 @@ begin
     WindowClass.hbrBackground := 0;
     WindowClass.LPSzClassName := @ClsHintName;
     Result := Windows.RegisterClassW(@WindowClass) <> 0;
+    {$ifdef VerboseCDForms}
+    DebugLn(Format('[TCDWidgetSet.WinRegister] Registered ClsHintName=%x', [PtrInt(Result)]));
+    {$endif}
   end;
 end;
 
@@ -57,6 +69,9 @@ begin
     0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
     0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
     0, 0, HWND(nil), HMENU(nil), HInstance, nil);
+  {$ifdef VerboseCDForms}
+  DebugLn(Format('[TCDWidgetSet.CreateAppHandle] FAppHandle=%x', [PtrInt(FAppHandle)]));
+  {$endif}
 //  AllocWindowInfo(FAppHandle);
   // remove useless menuitems from sysmenu
   SysMenu := Windows.GetSystemMenu(FAppHandle, False);

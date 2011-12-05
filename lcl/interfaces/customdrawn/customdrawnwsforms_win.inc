@@ -134,8 +134,9 @@ class procedure TCDWSCustomForm.WSWinControl_SetBounds(const AWinControl: TWinCo
 var
   IntfLeft, IntfTop, IntfWidth, IntfHeight: integer;
   suppressMove: boolean;
-  Handle: HWND;
   WindowPlacement: TWINDOWPLACEMENT;
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 begin
   {$ifdef VerboseCDForms}
   DebugLn(Format('[TCDWSCustomForm.WSWinControl_SetBounds] AWinControl=%x'
@@ -158,15 +159,18 @@ begin
   AdaptBounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight, suppressMove);
   if not suppressMove then
   begin
-    Handle := AWinControl.Handle;
+    lWindowInfo := TWindowInfo(AWinControl.Handle);
+    lHandle := lWindowInfo.NativeHandle;
     WindowPlacement.length := SizeOf(WindowPlacement);
-    if IsIconic(Handle) and GetWindowPlacement(Handle, @WindowPlacement) then
+    if Windows.IsIconic(lHandle) and
+      Windows.GetWindowPlacement(lHandle, @WindowPlacement) then
     begin
       WindowPlacement.rcNormalPosition := Bounds(IntfLeft, IntfTop, IntfWidth, IntfHeight);
-      SetWindowPlacement(Handle, @WindowPlacement);
+      Windows.SetWindowPlacement(lHandle, @WindowPlacement);
     end
     else
-      Windows.SetWindowPos(Handle, 0, IntfLeft, IntfTop, IntfWidth, IntfHeight, SWP_NOZORDER or SWP_NOACTIVATE);
+      Windows.SetWindowPos(lHandle, 0,
+        IntfLeft, IntfTop, IntfWidth, IntfHeight, SWP_NOZORDER or SWP_NOACTIVATE);
   end;
   LCLControlSizeNeedsUpdate(AWinControl, True);
 end;
@@ -276,7 +280,7 @@ begin
   //SetStdBiDiModeParams(AWinControl, Params);
   // create window
 
-  Window := CreateWindowExW(FlagsEx, PWideChar(WideString(pClassName)),
+  Window := CreateWindowExW(FlagsEx, pClassName,
     PWideChar(WindowTitle), Flags,
     Left, Top, Width, Height, Parent, 0, HInstance, @NCCreateParams);
 
@@ -290,8 +294,8 @@ begin
   WindowInfo.LCLForm := TCustomForm(AWinControl);
   WindowInfo.NativeHandle := Window;
 
-  //AWinControl.Handle := HWND(WindowInfo);
   AddFormWithCDHandle(WindowInfo);
+  AWinControl.Handle := HWND(WindowInfo);
   Result := HWND(WindowInfo);
 
   // remove system menu items for bsDialog
@@ -435,8 +439,13 @@ end;
 
 class procedure TCDWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
  const ABorderIcons: TBorderIcons);
+var
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 begin
-  UpdateWindowStyle(AForm.Handle, CalcBorderIconsFlags(AForm),
+  lWindowInfo := TWindowInfo(AForm.Handle);
+  lHandle := lWindowInfo.NativeHandle;
+  UpdateWindowStyle(lHandle, CalcBorderIconsFlags(AForm),
     WS_SYSMENU or WS_MINIMIZEBOX or WS_MAXIMIZEBOX);
 end;
 
@@ -452,6 +461,8 @@ var
   AForm: TCustomForm absolute AWinControl;
   CurRect, SizeRect: Windows.RECT;
   L, T, W, H: Integer;
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 begin
   {$ifdef VerboseCDForms}
   DebugLn(Format('[TCDWSCustomForm.SetBounds] AWinControl=%x'
@@ -461,6 +472,9 @@ begin
   // the LCL defines the size of a form without border, win32 with.
   // -> adjust size according to BorderStyle
   SizeRect := Bounds(ALeft, ATop, AWidth, AHeight);
+
+  lWindowInfo := TWindowInfo(AWinControl.Handle);
+  lHandle := lWindowInfo.NativeHandle;
 
   Windows.AdjustWindowRectEx(@SizeRect, CalcBorderStyleFlags(AForm) or CalcBorderIconsFlags(AForm),
     False, CalcBorderStyleFlagsEx(AForm) or CalcBorderIconsFlagsEx(AForm));
@@ -475,7 +489,7 @@ begin
   // if position is default it will be changed to designed. We do not want this.
   if wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags then
   begin
-    if Windows.GetWindowRect(AForm.Handle, CurRect) then
+    if Windows.GetWindowRect(lHandle, CurRect) then
     begin
       if AForm.Position in [poDefault, poDefaultPosOnly] then
       begin
@@ -548,11 +562,16 @@ begin
 end;   *)
 
 class procedure TCDWSCustomForm.SetIcon(const AForm: TCustomForm; const Small, Big: HICON);
+var
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 begin
   if not WSCheckHandleAllocated(AForm, 'SetIcon') then
     Exit;
-  Windows.SendMessage(AForm.Handle, WM_SETICON, ICON_SMALL, LPARAM(Small));
-  Windows.SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, LPARAM(Big));
+  lWindowInfo := TWindowInfo(AForm.Handle);
+  lHandle := lWindowInfo.NativeHandle;
+  Windows.SendMessage(lHandle, WM_SETICON, ICON_SMALL, LPARAM(Small));
+  Windows.SendMessage(lHandle, WM_SETICON, ICON_BIG, LPARAM(Big));
 end;
 
 class procedure TCDWSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
@@ -567,16 +586,26 @@ begin
 end;
 
 class procedure TCDWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+var
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 begin
-  Windows.ShowWindow(ACustomForm.Handle, SW_SHOW);
-  Windows.BringWindowToTop(ACustomForm.Handle);
+  lWindowInfo := TWindowInfo(ACustomForm.Handle);
+  lHandle := lWindowInfo.NativeHandle;
+  Windows.ShowWindow(lHandle, SW_SHOW);
+  Windows.BringWindowToTop(lHandle);
 end;
 
 class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
 const
   VisibilityToFlag: array[Boolean] of UINT = (SWP_HIDEWINDOW, SWP_SHOWWINDOW);
+var
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 begin
-  Windows.SetWindowPos(AWinControl.Handle, 0, 0, 0, 0, 0,
+  lWindowInfo := TWindowInfo(AWinControl.Handle);
+  lHandle := lWindowInfo.NativeHandle;
+  Windows.SetWindowPos(lHandle, 0, 0, 0, 0, 0,
     SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible])
 end;
 
@@ -595,18 +624,28 @@ begin
 end;
 
 class procedure TCDWSCustomForm.SetText(const AWinControl: TWinControl; const AText: String);
+var
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText') then Exit;
+  lWindowInfo := TWindowInfo(AWinControl.Handle);
+  lHandle := lWindowInfo.NativeHandle;
 
-  Windows.SetWindowTextW(AWinControl.Handle, PWideChar(UTF8Decode(AText)));
+  Windows.SetWindowTextW(lHandle, PWideChar(UTF8Decode(AText)));
 end;
 
 class function TCDWSCustomForm.GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
+var
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 begin
   {$ifdef VerboseCDForms}
   DebugLn(':>[TCDWSCustomForm.GetClientBounds]');
   {$endif}
-  Result := LCLIntf.GetClientBounds(AWincontrol.Handle, ARect);
+  lWindowInfo := TWindowInfo(AWinControl.Handle);
+  lHandle := lWindowInfo.NativeHandle;
+  Result := LCLIntf.GetClientBounds(lHandle, ARect);
   {$ifdef VerboseCDForms}
   DebugLn(Format(':<[TCDWSCustomForm.GetClientBounds] AWincontrol=%x Rect.left=%d Rect.Top=%d'
     + ' Rect.Width=%d Rect.Height=%d', [PtrInt(AWincontrol), ARect.Top, ARect.Left,

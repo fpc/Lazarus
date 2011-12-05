@@ -1560,10 +1560,15 @@ end;*)
 function TCDWidgetSet.BackendGetClientBounds(Handle: HWND; var ARect: TRect): Boolean;
 var
   LRect: TRect;
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 begin
-  Result := Boolean(Windows.GetClientRect(Handle, @ARect));
+  lWindowInfo := TWindowInfo(Handle);
+  lHandle := lWindowInfo.NativeHandle;
+
+  Result := Boolean(Windows.GetClientRect(lHandle, @ARect));
   if not Result then exit;
-  if not GetLCLClientBoundsOffset(Handle, LRect) then exit;
+  if not GetLCLClientBoundsOffset(lWindowInfo, LRect) then exit;
   Inc(ARect.Left, LRect.Left);
   Inc(ARect.Top, LRect.Top);
   Inc(ARect.Right, LRect.Right);
@@ -2172,27 +2177,32 @@ end;*)
   returns the current widget Left, Top, relative to the client origin of its
   parent
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.GetWindowRelativePosition(Handle: HWND;
+function TCDWidgetSet.BackendGetWindowRelativePosition(Handle: HWND;
   var Left, Top: Integer): Boolean;
 var
   LeftTop:TPoint;
   R: TRect;
   WindowPlacement: TWINDOWPLACEMENT;
   ParentHandle: THandle;
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 begin
   Result := False;
 
+  lWindowInfo := TWindowInfo(Handle);
+  lHandle := lWindowInfo.NativeHandle;
+
   WindowPlacement.length := SizeOf(WindowPlacement);
-  if IsIconic(Handle) and GetWindowPlacement(Handle, @WindowPlacement) then
+  if Windows.IsIconic(lHandle) and Windows.GetWindowPlacement(lHandle, @WindowPlacement) then
     R := WindowPlacement.rcNormalPosition
   else
-  if not Windows.GetWindowRect(Handle, @R) then Exit;
+  if not Windows.GetWindowRect(lHandle, @R) then Exit;
 
   LeftTop.X := R.Left;
   LeftTop.Y := R.Top;
-  if (GetWindowLong(Handle, GWL_STYLE) and WS_CHILD) <> 0 then
+{  if (Windows.GetWindowLong(lHandle, GWL_STYLE) and WS_CHILD) <> 0 then
   begin
-    ParentHandle := Windows.GetParent(Handle);
+    ParentHandle := Windows.GetParent(lHandle);
     if ParentHandle <> 0 then
     begin
       if not Windows.ScreenToClient(ParentHandle, @LeftTop) then Exit;
@@ -2201,7 +2211,7 @@ begin
       Dec(LeftTop.X, R.Left);
       Dec(LeftTop.Y, R.Top);
     end;
-  end;
+  end;  }
   Left := LeftTop.X;
   Top := LeftTop.Y;
   Result := True;
@@ -2214,12 +2224,14 @@ end;
 
   Returns the current widget Width and Height
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.GetWindowSize(Handle : hwnd;
+function TCDWidgetSet.BackendGetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
 var
   WP: WINDOWPLACEMENT;
   R: TRect;
   Info: tagWINDOWINFO;
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 
   procedure ExcludeCaption; inline;
   begin
@@ -2231,12 +2243,17 @@ var
   end;
 
 begin
+  lWindowInfo := TWindowInfo(Handle);
+  lHandle := lWindowInfo.NativeHandle;
+
   {$ifdef VerboseCDWinAPI}
-  DebugLn(Format(':>[TCDWidgetSet.GetWindowSize] Handle=%x', [Handle]));
+  DebugLn(Format(':>[TCDWidgetSet.GetWindowSize] Handle=%x NativeHandle=%x', [Handle, lHandle]));
+  if lWindowInfo.LCLForm <> nil then
+    DebugLn(Format(':[TCDWidgetSet.GetWindowSize] lWindowInfo.LCLForm.Name=%s', [lWindowInfo.LCLForm.Name]));
   {$endif}
 
   WP.length := SizeOf(WP);
-  Result := Boolean(Windows.GetWindowPlacement(Handle, WP));
+  Result := Boolean(Windows.GetWindowPlacement(lHandle, WP));
 
   if not Result then
   begin
@@ -2258,7 +2275,7 @@ begin
 
   // if it is a top level window then you can't use the normal size:
   // maximized or aero snap windows will have problems
-  if (GetWindowLong(Handle, GWL_STYLE) and WS_CHILD = 0) then
+  if (GetWindowLong(lHandle, GWL_STYLE) and WS_CHILD = 0) then
   begin
     FillChar(Info, SizeOf(Info), 0);
     Info.cbSize := SizeOf(Info);
@@ -2276,7 +2293,7 @@ begin
       //WriteLn('W = ', Width, ' H = ', Height);
       Exit;
     end;     }
-    Result := Boolean(Windows.GetWindowRect(Handle, @R));
+    Result := Boolean(Windows.GetWindowRect(lHandle, @R));
     with R do
     begin
       Width := Right - Left;
@@ -2291,8 +2308,8 @@ begin
     end;
 
   // convert top level lcl window coordinaties to win32 coord
-  Info.dwStyle := DWORD(GetWindowLong(Handle, GWL_STYLE));
-  Info.dwExStyle := DWORD(GetWindowLong(Handle, GWL_EXSTYLE));
+  Info.dwStyle := DWORD(GetWindowLong(lHandle, GWL_STYLE));
+  Info.dwExStyle := DWORD(GetWindowLong(lHandle, GWL_EXSTYLE));
   if (Info.dwStyle and (WS_CHILD or WS_THICKFRAME)) = WS_THICKFRAME then
   begin
     // thick, sizing border
@@ -2349,16 +2366,20 @@ function TCDWidgetSet.BackendInvalidateRect(aHandle: HWND; Rect: PRect; BErase: 
 var
   Flags: UINT;
   ORect: TRect;
+  lWindowInfo: TWindowInfo;
+  lHandle: HWND;
 begin
+  lWindowInfo := TWindowInfo(AHandle);
+  lHandle := lWindowInfo.NativeHandle;
   Flags := RDW_INVALIDATE or RDW_ALLCHILDREN;
   if BErase then
     Flags := Flags or RDW_ERASE;
   if Rect <> nil then
   begin
-    GetLCLClientBoundsOffset(aHandle, ORect);
+    GetLCLClientBoundsOffset(lWindowInfo, ORect);
     OffsetRect(Rect^, ORect.Left, ORect.Top);
   end;
-  Result := Boolean(Windows.RedrawWindow(aHandle, Rect, 0, Flags));
+  Result := Boolean(Windows.RedrawWindow(lHandle, Rect, 0, Flags));
 end;
 
 (*{------------------------------------------------------------------------------

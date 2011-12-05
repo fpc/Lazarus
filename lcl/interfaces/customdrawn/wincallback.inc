@@ -230,7 +230,7 @@ Var
     // create a paint message
     needParentPaint := False;
 
-    GetWindowSize(Window, WindowWidth, WindowHeight);
+    LCLIntf.GetWindowSize(HWND(WindowInfo), WindowWidth, WindowHeight);
 
     // Start the double buffering by checking if we need to increase the buffer
     if (WindowInfo.BitmapWidth < WindowWidth) or (WindowInfo.BitmapHeight < WindowHeight) then
@@ -502,12 +502,12 @@ begin
 
   //DebugLn('Trace:WindowProc - Getting Object with Callback Procedure');
   WindowInfo := GetWindowInfo(Window);
-
   lWinControl := WindowInfo.LCLForm;
 
   {$ifdef VerboseCDMessages}
     DebugLn('WindowProc lWinControl: ',DbgSName(lWinControl));
   {$endif}
+
   if (IgnoreNextCharWindow <> 0) and ((Msg = WM_CHAR) or (Msg = WM_SYSCHAR)) then
   begin
     if IgnoreNextCharWindow = Window then
@@ -1239,7 +1239,7 @@ begin
             Msg := LM_NULL;
         end else
         begin
-          if GetWindowRelativePosition(Window, NewLeft, NewTop) then
+          if LCLIntf.GetWindowRelativePosition(HWND(WindowInfo), NewLeft, NewTop) then
           begin
             XPos := NewLeft;
             YPos := NewTop;
@@ -1272,7 +1272,7 @@ begin
             Window := Application.MainFormHandle;
           end;
         end;
-        GetWindowSize(Window, NewWidth, NewHeight);
+        LCLIntf.GetWindowSize(HWND(WindowInfo), NewWidth, NewHeight);
         Width := NewWidth;
         Height := NewHeight;
         if Assigned(lWinControl) then
@@ -1338,7 +1338,7 @@ begin
   // are expected.
   if (PLMsg = @LMMouseMove) and not (lWinControl is TScrollingWinControl) then
   begin
-    if GetLCLClientBoundsOffset(Window, R) then
+    if GetLCLClientBoundsOffset(WindowInfo, R) then
     begin
       Dec(LMMouseMove.XPos, R.Left);
       Dec(LMMouseMove.YPos, R.Top);
@@ -1346,7 +1346,7 @@ begin
   end else
   if (PLMsg = @LMMouse) and not (lWinControl is TScrollingWinControl) then
   begin
-    if GetLCLClientBoundsOffset(Window, R) then
+    if GetLCLClientBoundsOffset(WindowInfo, R) then
     begin
       Dec(LMMouse.XPos, R.Left);
       Dec(LMMouse.YPos, R.Top);

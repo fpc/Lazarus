@@ -170,7 +170,7 @@ function LCLControlSizeNeedsUpdate(Sender: TWinControl;
   SendSizeMsgOnDiff: boolean): boolean;
 
 function GetLCLClientBoundsOffset(Sender: TObject; var ORect: TRect): boolean;
-function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
+function GetLCLClientBoundsOffset(Handle: TWindowInfo; var Rect: TRect): boolean;
 procedure LCLBoundsToWin32Bounds(Sender: TObject;
   var Left, Top, Width, Height: Integer);
 procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
@@ -1210,7 +1210,7 @@ begin
   Result := True;
 end;
 
-function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
+function GetLCLClientBoundsOffset(Handle: TWindowInfo; var Rect: TRect): boolean;
 var
   OwnerObject: TObject;
 begin

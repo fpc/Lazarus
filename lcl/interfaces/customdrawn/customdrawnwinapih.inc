@@ -140,7 +140,9 @@ function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;
 function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; override;
 function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;*)
 function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean; override;
+function BackendGetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean;
 function GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean; override;
+function BackendGetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
 (*function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; override;
 

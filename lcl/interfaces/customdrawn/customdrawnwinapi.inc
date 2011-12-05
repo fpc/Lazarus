@@ -887,7 +887,7 @@ begin
 
   Result := True;
 
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     DebugLn('Trace:< [WinAPI DeleteObject] Result=', dbgs(Result), ' ObjectType=', ObjType);
   {$endif}
 end;
@@ -2508,12 +2508,25 @@ end;*)
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
+var
+  lObject: TObject;
 begin
+  {$ifdef VerboseCDWinAPI}
+  DebugLn(Format(':>[WinAPI GetClientBounds] Handle=%x', [Handle]));
+  {$endif}
   // ToDO check if the window is native or not and process accordingly
   // For now just assume it is native
-  Result := BackendGetClientBounds(Handle, ARect);
+  Result := False;
+  if Handle=0 then Exit;
+  lObject := TObject(Handle);
+  if lObject is TCDForm then
+    Result := BackendGetClientBounds(Handle, ARect)
+  else
+  begin
+    ARect := TCDWinControl(lObject).WinControl.BoundsRect;
+  end;
   {$ifdef VerboseCDWinAPI}
-  DebugLn(Format('[WinAPI GetClientBounds] ARect.Left=%d ARect.Top=%d'
+  DebugLn(Format(':<[WinAPI GetClientBounds] ARect.Left=%d ARect.Top=%d'
     + ' ARect.Right=%d ARect.Bottom=%d',
     [ARect.Left, ARect.Top, ARect.Right, ARect.Bottom]));
   {$endif}
@@ -2533,7 +2546,7 @@ end;
 function TCDWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 begin
   {$ifdef VerboseCDWinAPI}
-  DebugLn('[WinAPI GetClientRect]');
+  DebugLn(Format('[WinAPI GetClientRect] Handle=%x', [Handle]));
   {$endif}
   GetClientBounds(Handle, ARect);
   OffsetRect(ARect, -ARect.Left, -ARect.Top);
@@ -4291,7 +4304,7 @@ begin
   ARect := Bounds(APos.X,APos.Y,R.Right-R.Left,R.Bottom-R.Top);
 
   Result := -1;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetWindowRelativePosition
@@ -4301,19 +4314,22 @@ end;
   returns the current widget Left, Top, relative to the client origin of its
   parent
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
+function TCDWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
 var
-  R: TRect;
+  lObject: TObject;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetWindowRelativePosition]');
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[WinAPI GetWindowRelativePosition]');
   {$endif}
-  if Handle = 0 then
-    Exit(False);
-  R := TQtWidget(Handle).getFrameGeometry;
-  Left := R.Left;
-  Top := R.Top;
-  Result := True;
+  if Handle = 0 then Exit(False);
+  lObject := TObject(Handle);
+  if lObject is TCDForm then
+  begin
+    Result := BackendGetWindowRelativePosition(Handle, Left, Top);
+    Exit;
+  end
+  else
+    Result := inherited GetWindowRelativePosition(Handle, Left, Top);
 end;
 
 {------------------------------------------------------------------------------
@@ -4323,28 +4339,25 @@ end;
 
   Returns the current widget Width and Height
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
+function TCDWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
+var
+  lObject: TObject;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetWindowSize]');
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[WinAPI GetWindowSize]');
   {$endif}
-  if Handle = 0 then
-    Exit(False);
-
-  with TQtWidget(Handle).getSize do
+  if Handle = 0 then Exit(False);
+  lObject := TObject(Handle);
+  if lObject is TCDForm then
   begin
-    Height := cy;
-    Width := cx;
-  end;
-
-  Result := True;
-
-  // Here we should convert top level lcl window coordinaties to qt coord
-  // Due to borders and etc
-  // ?
+    Result := BackendGetWindowSize(Handle, Width, Height);
+    Exit;
+  end
+  else
+    Result := inherited GetWindowSize(Handle, Width, Height);
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: GradientFill
   Params: DC - DeviceContext to perform on
           Vertices - array of Points W/Color & Alpha
