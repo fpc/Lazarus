@@ -41,6 +41,7 @@ type
                          HandleActionProc: TSynEditMouseActionHandler): Boolean; override;
     function DoHandleMouseAction(AnAction: TSynEditMouseAction;
                                  var AnInfo: TSynEditMouseActionInfo): Boolean;
+    procedure ResetMouseActions; override; // set mouse-actions according to current Options / may clear them
     procedure DoOnGutterClick(X, Y: integer);
     property  OnGutterClick: TGutterClickEvent
       read FOnGutterClick write FOnGutterClick;
@@ -277,6 +278,16 @@ begin
         end;
       end;
   end;
+end;
+
+procedure TSynGutter.ResetMouseActions;
+var
+  i: integer;
+begin
+  for i := 0 to Parts.Count - 1 do
+    Parts[i].ResetMouseActions;
+
+  inherited;
 end;
 
 function TSynGutter.LineNumberPart(Index: Integer = 0): TSynGutterLineNumber;

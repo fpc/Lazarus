@@ -6134,7 +6134,8 @@ begin
   FMouseActions.ResetUserActions;
   FMouseSelActions.Options := FMouseOptions;
   FMouseSelActions.ResetUserActions;
-
+  FLeftGutter.ResetMouseActions;
+  FRightGutter.ResetMouseActions;
 end;
 
 procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;

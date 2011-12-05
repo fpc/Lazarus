@@ -69,6 +69,7 @@ type
     procedure RecalcBounds;
     function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                  HandleActionProc: TSynEditMouseActionHandler): Boolean; virtual;
+    procedure ResetMouseActions; virtual; // set mouse-actions according to current Options / may clear them
     property Left: Integer read FLeft;
     property Top: Integer read FTop;
     property Height:Integer read FHeight;
@@ -189,6 +190,7 @@ type
                  HandleActionProc: TSynEditMouseActionHandler): Boolean; virtual;
     function DoHandleMouseAction(AnAction: TSynEditMouseAction;
                                  var AnInfo: TSynEditMouseActionInfo): Boolean; virtual;
+    procedure ResetMouseActions; virtual; // set mouse-actions according to current Options / may clear them
     procedure DoOnGutterClick(X, Y: integer);  virtual;
     property OnGutterClick: TGutterClickEvent
       read FOnGutterClick write FOnGutterClick;
@@ -296,6 +298,12 @@ function TSynGutterBase.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionIn
   HandleActionProc: TSynEditMouseActionHandler): Boolean;
 begin
   Result := HandleActionProc(FMouseActions.GetActionsForOptions(TCustomSynEdit(SynEdit).MouseOptions), AnInfo);
+end;
+
+procedure TSynGutterBase.ResetMouseActions;
+begin
+  FMouseActions.Options := TCustomSynEdit(SynEdit).MouseOptions;
+  FMouseActions.ResetUserActions;
 end;
 
 procedure TSynGutterBase.SetColor(const Value: TColor);
@@ -647,6 +655,12 @@ function TSynGutterPartBase.DoHandleMouseAction(AnAction: TSynEditMouseAction;
   var AnInfo: TSynEditMouseActionInfo): Boolean;
 begin
   Result := False;
+end;
+
+procedure TSynGutterPartBase.ResetMouseActions;
+begin
+  FMouseActions.Options := TCustomSynEdit(SynEdit).MouseOptions;
+  FMouseActions.ResetUserActions;
 end;
 
 procedure TSynGutterPartBase.DoOnGutterClick(X, Y : integer);

@@ -97,6 +97,7 @@ type
                HandleActionProc: TSynEditMouseActionHandler): Boolean; override;
     function DoHandleMouseAction(AnAction: TSynEditMouseAction;
                                  var AnInfo: TSynEditMouseActionInfo): Boolean; override;
+    procedure ResetMouseActions; override; // set mouse-actions according to current Options / may clear them
   published
     property MarkupInfo;
     property MouseActionsExpanded: TSynEditMouseActions
@@ -462,6 +463,15 @@ begin
     else
       Result := False;
   end;
+end;
+
+procedure TSynGutterCodeFolding.ResetMouseActions;
+begin
+  inherited;
+  FMouseActionsExpanded.Options := TCustomSynEdit(SynEdit).MouseOptions;
+  FMouseActionsExpanded.ResetUserActions;
+  FMouseActionsCollapsed.Options := TCustomSynEdit(SynEdit).MouseOptions;
+  FMouseActionsCollapsed.ResetUserActions;
 end;
 
 procedure TSynGutterCodeFolding.DrawNodeSymbol(Canvas: TCanvas; Rect: TRect;
