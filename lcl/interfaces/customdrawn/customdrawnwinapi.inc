@@ -6312,7 +6312,7 @@ begin
 
   Result := False;
 
-  DstLazDC.AlphaBlend(SrcLazDC, X, Y, XSrc, YSrc, SrcWidth, SrcHeight);
+  DstLazDC.CanvasCopyRect(SrcLazDC, X, Y, XSrc, YSrc, SrcWidth, SrcHeight);
 
 (*  SrcMatrix := QPainter_transform(SrcQDC.Widget);
   if SrcQDC.vImage = nil then

@@ -498,7 +498,7 @@ begin
   ADesc := lRawImage.Description;
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: RawImage_DescriptionFromDevice
   Params: ADC:
           ADesc:
@@ -506,12 +506,12 @@ end;
 
   Describes the standard format utilized by Qt
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean;
+function TCDWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean;
 begin
   Result := true;
 
-  FillStandardDescription(ADesc);
-end;*)
+  ADesc.Init_BPP32_A8R8G8B8_BIO_TTB(100, 100);
+end;
 
 {------------------------------------------------------------------------------
   Function: RawImage_FromBitmap

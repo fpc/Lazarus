@@ -95,6 +95,8 @@ type
     // Alpha blending operations
     procedure AlphaBlend(ASource: TLazCanvas;
       const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
+    procedure CanvasCopyRect(ASource: TLazCanvas;
+      const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
     // Compatibility with older FPC versions
     {$if defined(ver2_4) or defined(ver2_5)}
     procedure FillRect(const ARect: TRect);
@@ -358,6 +360,37 @@ begin
 
         Self.Colors[CurX, CurY] := CurColor;
       end;
+    end;
+  end;
+end;
+
+procedure TLazCanvas.CanvasCopyRect(ASource: TLazCanvas; const ADestX, ADestY,
+  ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
+var
+  x, y, CurDestX, CurDestY, CurSrcX, CurSrcY: Integer;
+  MaskValue, InvMaskValue: Word;
+  CurColor: TFPColor;
+  lDrawWidth, lDrawHeight: Integer;
+begin
+  // Take care not to draw outside the source and also not outside the destination area
+  lDrawWidth := Min(Self.Width - ADestX, ASource.Width - ASourceX);
+  lDrawHeight := Min(Self.Height - ADestY, ASource.Height - ASourceY);
+  lDrawWidth := Min(lDrawWidth, ASourceWidth);
+  lDrawHeight := Min(lDrawHeight, ASourceHeight);
+
+  for y := 0 to lDrawHeight - 1 do
+  begin
+    for x := 0 to lDrawWidth - 1 do
+    begin
+      CurDestX := ADestX + x;
+      CurDestY := ADestY + y;
+      CurSrcX := ASourceX + x;
+      CurSrcY := ASourceY + y;
+
+      // Never draw outside the destination
+      if (CurDestX < 0) or (CurDestY < 0) then Continue;
+
+      Self.Colors[CurDestX, CurDestY] := ASource.Colors[CurSrcX, CurSrcY];
     end;
   end;
 end;
