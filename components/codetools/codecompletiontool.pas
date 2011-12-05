@@ -7009,8 +7009,7 @@ begin
       if FindNodeInTree(ClassProcs,ANodeExt.Txt)=nil then begin
         NewNodeExt:=TCodeTreeNodeExtension.Create;
         with NewNodeExt do begin
-          Txt:=UpperCaseStr(TheClassName)+'.'
-                +ANodeExt.Txt;       // Name+ParamTypeList
+          Txt:=UpperCaseStr(TheClassName)+'.'+ANodeExt.Txt; // Name+ParamTypeList
           ExtTxt1:=ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
              ANodeExt.ExtTxt1,TheClassName,''); // complete proc head code
           ExtTxt3:=ANodeExt.ExtTxt3;
@@ -7032,7 +7031,7 @@ procedure TCodeCompletionCodeTool.CheckForOverrideAndAddInheritedCode(
   ANodeExt: TCodeTreeNodeExtension);
 // check for 'override' directive and add 'inherited' code to body
 var
-  ProcCode, ProcCall, FullCall: string;
+  ProcCode, ProcCall: string;
   ProcNode, ClassNode: TCodeTreeNode;
   i: integer;
   InclProcCall: Boolean;
@@ -7058,20 +7057,20 @@ begin
         Params.IdentifierTool:=Params.NewCodeTool;
         // FirstChild skips keyword 'procedure' or 'function'
         Params.SetIdentifier(Self,@Src[ProcNode.FirstChild.StartPos],nil);
-        if FindIdentifierInContext(Params) then // Found ancestor definition.
-          if Params.NewNode<>nil then begin
+        // Found ancestor definition.
+        if FindIdentifierInContext(Params) then begin
+          if Params.NewNode<>nil then
             InclProcCall:=not ProcNodeHasSpecifier(Params.NewNode,psABSTRACT);
-            Break;
-          end;
+          Break;
+        end;
       end;
     finally
       Params.Free;
     end;
-    ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpAddClassname,
-                                        phpWithVarModifiers,phpWithParameterNames,
-                                        phpWithResultType,phpWithCallingSpecs]);
-    FullCall:='';
     if InclProcCall then begin
+      ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpAddClassname,
+                                          phpWithVarModifiers,phpWithParameterNames,
+                                          phpWithResultType,phpWithCallingSpecs]);
       ProcCall:='inherited '+ExtractProcHead(ProcNode,[phpWithoutClassName,
                                         phpWithParameterNames,phpWithoutParamTypes]);
       for i:=1 to length(ProcCall)-1 do
@@ -7081,11 +7080,11 @@ begin
         ProcCall:=ProcCall+';';
       if NodeIsFunction(ProcNode) then
         ProcCall:=Beauty.BeautifyIdentifier('Result')+':='+ProcCall;
-      FullCall:=GetIndentStr(Beauty.Indent)+ProcCall;
+      ProcCode:=ProcCode+Beauty.LineEnd+'begin'+Beauty.LineEnd
+                     +GetIndentStr(Beauty.Indent)+ProcCall+Beauty.LineEnd+'end;';
+      ProcCode:=Beauty.BeautifyProc(ProcCode,0,false);
+      ANodeExt.ExtTxt3:=ProcCode;
     end;
-    ProcCode:=ProcCode+Beauty.LineEnd+'begin'+Beauty.LineEnd+FullCall+Beauty.LineEnd+'end;';
-    ProcCode:=Beauty.BeautifyProc(ProcCode,0,false);
-    ANodeExt.ExtTxt3:=ProcCode;
   end;
 end;
 
