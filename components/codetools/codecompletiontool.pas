@@ -7056,12 +7056,13 @@ begin
         Tool:=Params.NewCodeTool;
         ClassNode:=Params.NewNode;
         Params.ContextNode:=ClassNode;
-        Params.IdentifierTool:=Tool;
+        Params.IdentifierTool:=Self;
         // FirstChild skips keyword 'procedure' or 'function'
         Params.SetIdentifier(Self,@Src[ProcNode.FirstChild.StartPos],nil);
-        // Found ancestor definition.
         if Tool.FindIdentifierInContext(Params) then begin
-          if Params.NewNode<>nil then
+          // Found ancestor definition.
+          if (Params.NewNode<>nil)
+          and (Params.NewNode.Desc in [ctnProcedure,ctnProcedureHead]) then
             InclProcCall:=not Tool.ProcNodeHasSpecifier(Params.NewNode,psABSTRACT);
           Break;
         end;
