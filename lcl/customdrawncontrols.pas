@@ -351,6 +351,23 @@ type
     property TabStop default False;
   end;
 
+  { TCDPanel }
+
+  TCDPanel = class(TCDControl)
+  private
+    function GetControlId: TCDControlID; override;
+  protected
+    procedure RealSetText(const Value: TCaption); override; // to update on caption changes
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    //property AutoSize;
+    property DrawStyle;
+    property Caption;
+    property TabStop default False;
+  end;
+
   // ===================================
   // Additional Tab
   // ===================================
@@ -618,6 +635,33 @@ implementation
 
 resourcestring
   sTABSHEET_DEFAULT_NAME = 'CTabSheet';
+
+{ TCDPanel }
+
+function TCDPanel.GetControlId: TCDControlID;
+begin
+  Result := cidPanel;
+end;
+
+procedure TCDPanel.RealSetText(const Value: TCaption);
+begin
+  inherited RealSetText(Value);
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+constructor TCDPanel.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Width := 170;
+  Height := 50;
+  TabStop := False;
+  AutoSize := False;
+end;
+
+destructor TCDPanel.Destroy;
+begin
+  inherited Destroy;
+end;
 
 { TCDScrollableControl }
 

@@ -78,6 +78,9 @@ type
     // TCDGroupBox
     procedure DrawGroupBox(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+    // TCDPanel
+    procedure DrawPanel(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // ===================================
     // Additional Tab
     // ===================================
@@ -1064,6 +1067,19 @@ begin
   ADest.Pen.Style := psClear;
   ADest.Brush.Style := bsClear;
   ADest.TextOut(FCaptionMiddle+3, 0, lCaption);
+end;
+
+procedure TCDDrawerCommon.DrawPanel(ADest: TCanvas; ASize: TSize;
+  AState: TCDControlState; AStateEx: TCDControlStateEx);
+begin
+  // Background
+  ADest.Brush.Color := Palette.BtnFace;
+  ADest.Brush.Style := bsSolid;
+  ADest.Pen.Style := psClear;
+  ADest.FillRect(0, 0, ASize.cx, ASize.cy);
+
+  // The frame
+  DrawRaisedFrame(ADest, Point(0, 0), ASize);
 end;
 
 procedure TCDDrawerCommon.DrawStaticText(ADest: TCanvas;

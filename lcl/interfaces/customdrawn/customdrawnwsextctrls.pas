@@ -34,7 +34,7 @@ uses
   ImgList,
   // Widgetset
   WSExtCtrls, WSProc, WSLCLClasses,
-  customdrawncontrols;
+  customdrawncontrols, customdrawnwscontrols, customdrawnproc;
 
 type
   { TCDWSPage }
@@ -139,6 +139,7 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TCDWSPanel }
@@ -218,7 +219,11 @@ end;          *)
 class procedure TCDWSCustomPanel.CreateCDControl(
   const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
-
+  ACDControlField := TCDPanel.Create(AWinControl);
+//  TCDIntfButton(ACDControlField).LCLButton := TButton(AWinControl);
+  ACDControlField.Caption := AWinControl.Caption;
+  ACDControlField.Parent := AWinControl;
+  ACDControlField.Align := alClient;
 end;
 
 {------------------------------------------------------------------------------
@@ -230,15 +235,23 @@ end;
  ------------------------------------------------------------------------------}
 class function TCDWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
+var
+  lCDWinControl: TCDWinControl;
 begin
-{  QtFrame := TQtFrame.Create(AWinControl, AParams);
-  QtFrame.AttachEvents;
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
+end;
 
-  // Set's initial properties
-  QtFrame.setFrameShape(TBorderStyleToQtFrameShapeMap[TCustomPanel(AWinControl).BorderStyle]);
+class procedure TCDWSCustomPanel.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
 
-  // Return the Handle
-  Result := TLCLIntfHandle(QtFrame);}
+  TCDWSWinControl.ShowHide(AWinControl);
+
+  if lCDWinControl.CDControl = nil then
+    CreateCDControl(AWinControl, lCDWinControl.CDControl);
 end;
 
 (*{ TCDWSCustomTrayIcon }

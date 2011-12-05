@@ -212,7 +212,7 @@ type
     cidControl,
     // Standard
     cidMenu, cidPopUp, cidButton, cidEdit, cidCheckBox, cidRadioButton,
-    cidListBox, cidComboBox, cidScrollBar, cidGroupBox,
+    cidListBox, cidComboBox, cidScrollBar, cidGroupBox, cidPanel,
     // Additional
     cidStaticText,
     // Common Controls
@@ -318,6 +318,9 @@ type
       AState: TCDControlState; AStateEx: TCDPositionedCStateEx); virtual; abstract;
     // TCDGroupBox
     procedure DrawGroupBox(ADest: TCanvas; ASize: TSize;
+      AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
+    // TCDPanel
+    procedure DrawPanel(ADest: TCanvas; ASize: TSize;
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // ===================================
     // Additional Tab
@@ -619,6 +622,7 @@ begin
   cidRadioButton:DrawRadioButton(ADest, ASize, AState, AStateEx);
   cidScrollBar:  DrawScrollBar(ADest, ASize, AState, TCDPositionedCStateEx(AStateEx));
   cidGroupBox:   DrawGroupBox(ADest, ASize, AState, AStateEx);
+  cidPanel:      DrawPanel(ADest, ASize, AState, AStateEx);
   //
   cidStaticText: DrawStaticText(ADest, ASize, AState, AStateEx);
   //
