@@ -31,6 +31,10 @@ msgstr "Numeri di riga"
 msgid "Line Overview"
 msgstr "Sommario riga"
 
+#: syndesignstringconstants.syndsresetmouseactions
+msgid "Reset mouse actions"
+msgstr ""
+
 #: syndesignstringconstants.syndsseparator
 msgid "Separator"
 msgstr "Separatore"

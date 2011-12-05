@@ -7037,6 +7037,7 @@ var
   InclProcCall: Boolean;
   Beauty: TBeautifyCodeOptions;
   Params: TFindDeclarationParams;
+  Tool: TFindDeclarationTool;
 begin
   if not AddInheritedCodeToOverrideMethod then exit;
   {$IFDEF CTDEBUG}
@@ -7052,15 +7053,16 @@ begin
     try
       ClassNode:=CodeCompleteClassNode;
       while FindAncestorOfClass(ClassNode,Params,True) do begin
+        Tool:=Params.NewCodeTool;
         ClassNode:=Params.NewNode;
         Params.ContextNode:=ClassNode;
-        Params.IdentifierTool:=Params.NewCodeTool;
+        Params.IdentifierTool:=Tool;
         // FirstChild skips keyword 'procedure' or 'function'
         Params.SetIdentifier(Self,@Src[ProcNode.FirstChild.StartPos],nil);
         // Found ancestor definition.
-        if FindIdentifierInContext(Params) then begin
+        if Tool.FindIdentifierInContext(Params) then begin
           if Params.NewNode<>nil then
-            InclProcCall:=not ProcNodeHasSpecifier(Params.NewNode,psABSTRACT);
+            InclProcCall:=not Tool.ProcNodeHasSpecifier(Params.NewNode,psABSTRACT);
           Break;
         end;
       end;

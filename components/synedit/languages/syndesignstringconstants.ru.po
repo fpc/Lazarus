@@ -29,6 +29,10 @@ msgstr "Номера строк"
 msgid "Line Overview"
 msgstr "Граница строк"
 
+#: syndesignstringconstants.syndsresetmouseactions
+msgid "Reset mouse actions"
+msgstr ""
+
 #: syndesignstringconstants.syndsseparator
 msgid "Separator"
 msgstr "Линия отделения поля (лев)"

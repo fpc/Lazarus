@@ -29,6 +29,10 @@ msgstr "Номери Рядків"
 msgid "Line Overview"
 msgstr "Огляд Ліній"
 
+#: syndesignstringconstants.syndsresetmouseactions
+msgid "Reset mouse actions"
+msgstr ""
+
 #: syndesignstringconstants.syndsseparator
 msgid "Separator"
 msgstr "Роздільник"

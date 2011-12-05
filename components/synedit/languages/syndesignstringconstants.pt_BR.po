@@ -29,6 +29,10 @@ msgstr "Números de Linha"
 msgid "Line Overview"
 msgstr "Resumo Linha"
 
+#: syndesignstringconstants.syndsresetmouseactions
+msgid "Reset mouse actions"
+msgstr ""
+
 #: syndesignstringconstants.syndsseparator
 msgid "Separator"
 msgstr "Separador"

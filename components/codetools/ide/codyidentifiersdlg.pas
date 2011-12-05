@@ -30,8 +30,6 @@
     -clean up old entries
       -When, How?
       -maximum number of units
-      -when package file not found delete package and all units only in this package
-      -when file not found delete unit
     -gzip? lot of cpu, may be faster on first load
 }
 unit CodyIdentifiersDlg;

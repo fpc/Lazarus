@@ -505,6 +505,14 @@ msgstr "Auswahl"
 msgid "IDE Command"
 msgstr "IDE-Kommando"
 
+#: syneditstrconst.syns_emcwheelscrolldown
+msgid "Wheel scroll down"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelscrollup
+msgid "Wheel scroll up"
+msgstr ""
+
 #: syneditstrconst.syns_exporterformathtml
 msgid "HTML"
 msgstr "HTML"
