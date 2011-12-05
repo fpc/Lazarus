@@ -31,6 +31,7 @@ type
       FrameWidth: Double;
       FrameColor: TColor;
       Radius: Single;
+      Corners: TCornerSet;
     end;
 
     TfrTNPDFExport = class(TComponent) // fake component
@@ -105,6 +106,7 @@ begin
     frstRoundRect:
       with TPRRect(CreateShape(TPRRect)) do begin
         Radius := Data.Radius;
+        SquaredCorners := TPdfCorners(Data.Corners);
       end;
 
     frstTriangle:
@@ -364,11 +366,12 @@ begin
   else
   begin
 
-    SWidth := Round((View.RoundRectCurve/2) * PDFEscx + 1);
+    SWidth := Round((View.RoundRectCurve/2) * PDFEscx);
     if View.RoundRect then
       Data.Radius := SWidth
     else
       Data.Radius := 0.0;
+    Data.Corners:=View.SquaredCorners;
 
     // draw shadow
     Data.ShapeType := frstRoundRect;
@@ -376,7 +379,7 @@ begin
     Data.FrameColor := Data.FillColor; //ColorToRGB(View.FrameColor);
     Data.FrameWidth := 0;
     Data.FrameStyle := frsSolid;
-    SWidth := Round(View.ShadowWidth * PDFEscx + 1);
+    SWidth := Round(View.ShadowWidth * PDFEscx);
     if View.ShadowWidth>0 then
       AddShape(Data, x + SWidth, y + SWidth, h - SWidth, w - SWidth);
 

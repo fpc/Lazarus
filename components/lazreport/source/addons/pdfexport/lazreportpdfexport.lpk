@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="lazreportpdfexport"/>
+    <AddToProjectUsesSection Value="True"/>
     <Author Value="Jesus Reyes A."/>
     <CompilerOptions>
-      <Version Value="9"/>
+      <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
@@ -44,7 +45,7 @@
       </Item2>
       <Item3>
         <PackageName Value="pack_powerpdf"/>
-        <MinVersion Minor="9" Release="6" Valid="True"/>
+        <MinVersion Minor="9" Valid="True" Release="7"/>
       </Item3>
       <Item4>
         <PackageName Value="lazreport"/>
