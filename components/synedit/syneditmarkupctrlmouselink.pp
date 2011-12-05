@@ -175,6 +175,26 @@ begin
     then
       exit(True);
   end;
+
+  for i := 0 to TCustomSynEdit(SynEdit).MouseTextActions.Count - 1 do begin
+    act := TCustomSynEdit(SynEdit).MouseTextActions.Items[i];
+    if (act.Command = emcMouseLink) and
+       ( (act.Option = emcoMouseLinkShow) or (not OnlyShowLink) ) and
+       act.IsMatchingShiftState(AShift)
+    then
+      exit(True);
+  end;
+
+  if not TCustomSynEdit(SynEdit).SelAvail then exit;
+
+  for i := 0 to TCustomSynEdit(SynEdit).MouseSelActions.Count - 1 do begin
+    act := TCustomSynEdit(SynEdit).MouseSelActions.Items[i];
+    if (act.Command = emcMouseLink) and
+       ( (act.Option = emcoMouseLinkShow) or (not OnlyShowLink) ) and
+       act.IsMatchingShiftState(AShift)
+    then
+      exit(True);
+  end;
 end;
 
 constructor TSynEditMarkupCtrlMouseLink.Create(ASynEdit: TSynEditBase);
