@@ -84,7 +84,8 @@ type
     FTempMouseSettings: TEditorMouseOptions;
     FKeyMap: TKeyCommandRelationList;
 
-    FMainNode, FSelNode: TTreeNode;
+    FGlobalNode: TTreeNode;
+    FTextNode, FSelNode: TTreeNode;
     FGutterNode: TTreeNode;
     FGutterFoldNode, FGutterFoldExpNode, FGutterFoldColNode: TTreeNode;
     FGutterLinesNode: TTreeNode;
@@ -574,8 +575,8 @@ begin
         FTempMouseSettings.ImportFromXml(xml, 'Lazarus/MouseSchemes/Scheme' + n+ '/');
     end;
     xml.Free;
-    ContextTree.Selected := FMainNode;
-    ContextTreeChange(nil, FMainNode);
+    ContextTree.Selected := FTextNode;
+    ContextTreeChange(nil, FTextNode);
   end;
 end;
 
@@ -600,13 +601,17 @@ procedure TEditorMouseOptionsAdvFrame.Setup(ADialog: TAbstractOptionsEditorDialo
 begin
   FTempMouseSettings := EditorOpts.TempMouseSettings;
   ContextTree.Items.Clear;
-  FMainNode := ContextTree.Items.Add(nil, dlgMouseOptNodeMain);
-  FMainNode.Data := FTempMouseSettings.MainActions;
+  FGlobalNode := ContextTree.Items.Add(nil, dlgMouseOptNodeAll);
+  FGlobalNode.Data := FTempMouseSettings.MainActions;
+
+  // Text
+  FTextNode := ContextTree.Items.AddChild(FGlobalNode, dlgMouseOptNodeMain);
+  FTextNode.Data := FTempMouseSettings.TextActions;
   // Selection
-  FSelNode := ContextTree.Items.AddChild(FMainNode, dlgMouseOptNodeSelect);
+  FSelNode := ContextTree.Items.AddChild(FTextNode, dlgMouseOptNodeSelect);
   FSelNode.Data := FTempMouseSettings.SelActions;
   // Gutter
-  FGutterNode := ContextTree.Items.AddChild(nil, dlgMouseOptNodeGutter);
+  FGutterNode := ContextTree.Items.AddChild(FGlobalNode, dlgMouseOptNodeGutter);
   FGutterNode.Data := FTempMouseSettings.GutterActions;
   // Gutter Fold
   FGutterFoldNode := ContextTree.Items.AddChild(FGutterNode, dlgMouseOptNodeGutterFold);
@@ -717,8 +722,8 @@ begin
   begin
     FKeyMap := KeyMap;
   end;
-  ContextTree.Selected := FMainNode;
-  ContextTreeChange(ContextTree, FMainNode);
+  ContextTree.Selected := FGlobalNode;
+  ContextTreeChange(ContextTree, FGlobalNode);
 end;
 
 procedure TEditorMouseOptionsAdvFrame.WriteSettings(
@@ -729,9 +734,9 @@ end;
 
 procedure TEditorMouseOptionsAdvFrame.RefreshSettings;
 begin
-  if (FMainNode = nil) or (FKeyMap = nil) then exit;
-  ContextTree.Selected := FMainNode;
-  ContextTreeChange(ContextTree, FMainNode);
+  if (FGlobalNode = nil) or (FKeyMap = nil) then exit;
+  ContextTree.Selected := FGlobalNode;
+  ContextTreeChange(ContextTree, FGlobalNode);
 end;
 
 class function TEditorMouseOptionsAdvFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

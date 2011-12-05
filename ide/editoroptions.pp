@@ -693,7 +693,7 @@ type
     FUserSchemes: TQuickStringlist;
   private
     FCustomSavedActions: Boolean;
-    FMainActions, FSelActions: TSynEditMouseActions;
+    FMainActions, FSelActions, FTextActions: TSynEditMouseActions;
     FName: String;
     FGutterActions: TSynEditMouseActions;
     FGutterActionsFold, FGutterActionsFoldExp, FGutterActionsFoldCol: TSynEditMouseActions;
@@ -735,6 +735,7 @@ type
 
     property MainActions: TSynEditMouseActions read FMainActions;
     property SelActions: TSynEditMouseActions read FSelActions;
+    property TextActions: TSynEditMouseActions read FTextActions;
     property GutterActions: TSynEditMouseActions read FGutterActions;
     property GutterActionsFold: TSynEditMouseActions read FGutterActionsFold;
     property GutterActionsFoldExp: TSynEditMouseActions read FGutterActionsFoldExp;
@@ -2273,6 +2274,7 @@ begin
   Reset;
   FMainActions          := TSynEditMouseActions.Create(nil);
   FSelActions           := TSynEditMouseActions.Create(nil);
+  FTextActions          := TSynEditMouseActions.Create(nil);
   FGutterActions        := TSynEditMouseActions.Create(nil);
   FGutterActionsFold    := TSynEditMouseActions.Create(nil);
   FGutterActionsFoldExp := TSynEditMouseActions.Create(nil);
@@ -2286,6 +2288,7 @@ begin
   ClearUserSchemes;
   FUserSchemes.Free;
   FMainActions.Free;
+  FTextActions.Free;
   FSelActions.Free;
   FGutterActions.Free;
   FGutterActionsFold.Free;
@@ -2370,8 +2373,9 @@ procedure TEditorMouseOptions.ResetTextToDefault;
 begin
   FMainActions.Clear;
   FSelActions.Clear;
+  FTextActions.Clear;
 
-  with FMainActions do begin
+  with FTextActions do begin
     if FAltColumnMode then begin
       AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [],        [ssShift, ssAlt], emcoSelectionStart);
       AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [ssShift], [ssShift, ssAlt], emcoSelectionContinue);
@@ -2415,12 +2419,17 @@ begin
     end;
   end;
 
+  with FMainActions do begin
+    AddCommand(emcWheelScrollDown,       False,  mbWheelDown, ccAny, cdDown, [], []);
+    AddCommand(emcWheelScrollUp,         False,  mbWheelUp, ccAny, cdDown, [], []);
+  end;
+
   if FTextDrag then
     with FSelActions do begin
       AddCommand(emcStartDragMove, False, mbLeft, ccSingle, cdDown, [], []);
     end;
 
-  with FMainActions do begin
+  with FTextActions do begin
     AddCommand(emcSynEditCommand, False, mbExtra1, ccAny, cdDown, [], [], ecJumpBack);
     AddCommand(emcSynEditCommand, False, mbExtra2, ccAny, cdDown, [], [], ecJumpForward);
   end;
@@ -2439,6 +2448,7 @@ procedure TEditorMouseOptions.AssignActions(Src: TEditorMouseOptions);
 begin
   FMainActions.Assign         (Src.MainActions);
   FSelActions.Assign          (Src.SelActions);
+  FTextActions.Assign         (Src.TextActions);
   FGutterActions.Assign       (Src.GutterActions);
   FGutterActionsFold.Assign   (Src.GutterActionsFold);
   FGutterActionsFoldExp.Assign(Src.GutterActionsFoldExp);
@@ -2495,6 +2505,7 @@ begin
   Result :=
     Temp.MainActions.Equals(self.MainActions) and
     Temp.SelActions.Equals (self.SelActions) and
+    Temp.TextActions.Equals (self.TextActions) and
     Temp.GutterActions.Equals       (self.GutterActions) and
     Temp.GutterActionsFold.Equals   (self.GutterActionsFold) and
     Temp.GutterActionsFoldCol.Equals(self.GutterActionsFoldCol) and
@@ -4065,6 +4076,7 @@ begin
   ASynEdit.MouseOptions := [emUseMouseActions];
   ASynEdit.MouseActions.Assign(FUserMouseSettings.MainActions);
   ASynEdit.MouseSelActions.Assign(FUserMouseSettings.SelActions);
+  ASynEdit.MouseTextActions.Assign(FUserMouseSettings.TextActions);
   ASynEdit.Gutter.MouseActions.Assign(FUserMouseSettings.GutterActions);
   if ASynEdit.Gutter.CodeFoldPart <> nil then begin
     ASynEdit.Gutter.CodeFoldPart.MouseActions.Assign(FUserMouseSettings.GutterActionsFold);

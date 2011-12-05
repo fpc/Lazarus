@@ -1338,6 +1338,7 @@ resourcestring
 
   dlgMouseOptions = 'Mouse';
   dlgMouseOptionsAdv = 'Advanced';
+  dlgMouseOptNodeAll = 'All';
   dlgMouseOptNodeMain = 'Text';
   dlgMouseOptNodeSelect = 'Selection';
   dlgMouseOptNodeGutter = 'Gutter';
@@ -1362,6 +1363,8 @@ resourcestring
   dlgMouseOptBtnRight  = 'Right';
   dlgMouseOptBtnExtra1 = 'Extra 1';
   dlgMouseOptBtnExtra2 = 'Extra 2';
+  dlgMouseOptBtnWheelUp = 'Wheel up';
+  dlgMouseOptBtnWheelDown = 'Wheel down';
   dlgMouseOptBtnDown = 'Down';
   dlgMouseOptBtnUp   = 'Up';
   dlgMouseOptBtn1   = 'Single';

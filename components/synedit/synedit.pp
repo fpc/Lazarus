@@ -365,9 +365,8 @@ type
     {$ENDIF}
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMExit(var Message: TLMExit); message LM_EXIT;
-    {$IFNDEF SYN_LAZARUS}
-    procedure WMMouseWheel(var Msg: TMessage); message WM_MOUSEWHEEL;
-    {$ENDIF}
+    procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
+    //procedure WMMouseWheel(var Msg: TMessage); message WM_MOUSEWHEEL;
     procedure WMSetFocus(var Msg: TLMSetFocus); message WM_SETFOCUS;
     procedure WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF}); message WM_VSCROLL;
   private
@@ -441,14 +440,12 @@ type
     fMouseDownX: integer;
     fMouseDownY: integer;
     fBookMarkOpt: TSynBookMarkOpt;
-    {$ifndef SYN_LAZARUS}
-    fMouseWheelAccumulator: integer;
-    {$endif}
+    FMouseWheelAccumulator: integer;
     fHideSelection: boolean;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
     FKeyStrokes, FLastKeyStrokes: TSynEditKeyStrokes;
-    FMouseActions, FMouseSelActions: TSynEditMouseInternalActions;
+    FMouseActions, FMouseSelActions, FMouseTextActions: TSynEditMouseInternalActions;
     FMouseActionSearchHandlerList: TSynEditMouseActionSearchList;
     FMouseActionExecHandlerList: TSynEditMouseActionExecList;
     FMarkList: TSynEditMarkList;
@@ -499,6 +496,7 @@ type
     function GetModified: Boolean;
     function GetMouseActions: TSynEditMouseActions;
     function GetMouseSelActions: TSynEditMouseActions;
+    function GetMouseTextActions: TSynEditMouseActions;
     function GetPaintLockOwner: TSynEditBase;
     function GetPlugin(Index: Integer): TSynEditPlugin;
     function GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
@@ -507,6 +505,7 @@ type
     procedure SetFoldState(const AValue: String);
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
     procedure SetMouseSelActions(const AValue: TSynEditMouseActions);
+    procedure SetMouseTextActions(AValue: TSynEditMouseActions);
     procedure SetPaintLockOwner(const AValue: TSynEditBase);
     procedure SetShareOptions(const AValue: TSynEditorShareOptions);
     procedure SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint; const AValue: String);
@@ -652,7 +651,7 @@ type
     procedure ScrollTimerHandler(Sender: TObject);
     procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); override;
 
-    procedure FindAndHandleMouseAction(AButton: TMouseButton; AShift: TShiftState;
+    procedure FindAndHandleMouseAction(AButton: TSynMouseButton; AShift: TShiftState;
                                 X, Y: Integer; ACCount:TSynMAClickCount;
                                 ADir: TSynMAClickDir);
     function DoHandleMouseAction(AnActionList: TSynEditMouseActions;
@@ -952,6 +951,8 @@ type
       read FKeystrokes write SetKeystrokes;
     property MouseActions: TSynEditMouseActions
       read GetMouseActions write SetMouseActions;
+    property MouseTextActions: TSynEditMouseActions
+      read GetMouseTextActions write SetMouseTextActions;
     property MouseSelActions: TSynEditMouseActions // Mouseactions, if mouse is over selection => fallback to normal
       read GetMouseSelActions write SetMouseSelActions;
     property MaxUndo: Integer read GetMaxUndo write SetMaxUndo default 1024;
@@ -1206,6 +1207,13 @@ type
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
 
+  { TSynEditMouseGlobalActions }
+
+  TSynEditMouseGlobalActions = class(TSynEditMouseInternalActions)
+  protected
+    procedure InitForOptions(AnOptions: TSynEditorMouseOptions); override;
+  end;
+
   { TSynEditMouseTextActions }
 
   TSynEditMouseTextActions = class(TSynEditMouseInternalActions)
@@ -1350,6 +1358,14 @@ begin
   end;
 end;
 
+{ TSynEditMouseGlobalActions }
+
+procedure TSynEditMouseGlobalActions.InitForOptions(AnOptions: TSynEditorMouseOptions);
+begin
+  AddCommand(emcWheelScrollDown,       False,  mbWheelDown, ccAny, cdDown, [], []);
+  AddCommand(emcWheelScrollUp,         False,  mbWheelUp, ccAny, cdDown, [], []);
+end;
+
 { TSynEditMouseTextActions }
 
 procedure TSynEditMouseTextActions.InitForOptions(AnOptions: TSynEditorMouseOptions);
@@ -1489,6 +1505,11 @@ end;
 function TCustomSynEdit.GetMouseSelActions: TSynEditMouseActions;
 begin
   Result := FMouseSelActions.UserActions;
+end;
+
+function TCustomSynEdit.GetMouseTextActions: TSynEditMouseActions;
+begin
+  Result := FMouseTextActions.UserActions;
 end;
 
 function TCustomSynEdit.GetPaintLockOwner: TSynEditBase;
@@ -1822,8 +1843,9 @@ begin
     SetDefaultKeystrokes;
   end;
 
-  FMouseActions    := TSynEditMouseTextActions.Create(Self);
-  FMouseSelActions := TSynEditMouseSelActions.Create(Self);
+  FMouseActions     := TSynEditMouseGlobalActions.Create(Self);
+  FMouseSelActions  := TSynEditMouseSelActions.Create(Self);
+  FMouseTextActions := TSynEditMouseTextActions.Create(Self);
   FMouseActionSearchHandlerList := TSynEditMouseActionSearchList.Create;
   FMouseActionExecHandlerList  := TSynEditMouseActionExecList.Create;
 
@@ -2062,6 +2084,7 @@ begin
   FreeAndNil(FMouseActionExecHandlerList);
   FreeAndNil(FMouseActions);
   FreeAndNil(FMouseSelActions);
+  FreeAndNil(FMouseTextActions);
   FreeAndNil(FLeftGutter);
   FreeAndNil(FRightGutter);
   FreeAndNil(FPaintLineColor);
@@ -2584,6 +2607,9 @@ var
   Handled: Boolean;
   AnAction: TSynEditMouseAction;
   ClipHelper: TSynClipboardStream;
+  i: integer;
+const
+  WHEEL_PAGESCROLL = MAXDWORD;
 begin
   AnAction := nil;
   Result := False;
@@ -2709,7 +2735,7 @@ begin
           if assigned(fMarkupCtrlMouse) and fMarkupCtrlMouse.IsMouseOverLink and
              assigned(FOnClickLink)
           then
-            FOnClickLink(Self, AnInfo.Button, AnInfo.Shift, AnInfo.MouseX, AnInfo.MouseY)
+            FOnClickLink(Self, SynMouseButtonBackMap[AnInfo.Button], AnInfo.Shift, AnInfo.MouseX, AnInfo.MouseY)
           else
             Result := False;
         end;
@@ -2730,6 +2756,20 @@ begin
             MoveCaret;
           CommandProcessor(AnAction.Option, #0, nil);
         end;
+      emcWheelScrollDown:
+        begin
+          i := Mouse.WheelScrollLines;
+          if (i = WHEEL_PAGESCROLL) or (i > fLinesInWindow) then
+            i := fLinesInWindow;
+          TopView := TopView - i;
+        end;
+      emcWheelScrollUp:
+        begin
+          i := Mouse.WheelScrollLines;
+          if (i = WHEEL_PAGESCROLL) or (i > fLinesInWindow) then
+            i := fLinesInWindow;
+          TopView := TopView + i;
+        end;
       else
         Result := False; // ACommand was not handled => Fallback to parent Context
     end;
@@ -2739,7 +2779,7 @@ begin
   end;
 end;
 
-procedure TCustomSynEdit.FindAndHandleMouseAction(AButton: TMouseButton;
+procedure TCustomSynEdit.FindAndHandleMouseAction(AButton: TSynMouseButton;
   AShift: TShiftState; X, Y: Integer; ACCount:TSynMAClickCount;
   ADir: TSynMAClickDir);
 var
@@ -2763,24 +2803,32 @@ begin
                                          {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction)
     then
       exit;
-    // mouse event occured in Gutter ?
+
     if FLeftGutter.Visible and (X < FLeftGutter.Width) then begin
-      FLeftGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction);
-      exit;
-      // No fallback to text actions
-    end;
-    if FRightGutter.Visible and (X > ClientWidth - FRightGutter.Width) then begin
-      FRightGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction);
-      exit;
-      // No fallback to text actions
-    end;
-    // mouse event occured in selected block ?
-    if SelAvail and (X >= TextLeftPixelOffset) and
-       //(x < ClientWidth - TextRightPixelOffset - ScrollBarWidth) and
-       IsPointInSelection(FInternalCaret.LineBytePos)
-    then
-      if DoHandleMouseAction(FMouseSelActions.GetActionsForOptions(FMouseOptions), Info) then
+      // mouse event occured in Gutter ?
+      if FLeftGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction) then
         exit;
+    end
+    else
+    if FRightGutter.Visible and (X > ClientWidth - FRightGutter.Width) then begin
+      // mouse event occured in Gutter ?
+      if FRightGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction) then
+        exit;
+    end
+    else
+    begin
+      // mouse event occured in selected block ?
+      if SelAvail and (X >= TextLeftPixelOffset) and
+         //(x < ClientWidth - TextRightPixelOffset - ScrollBarWidth) and
+         IsPointInSelection(FInternalCaret.LineBytePos)
+      then
+        if DoHandleMouseAction(FMouseSelActions.GetActionsForOptions(FMouseOptions), Info) then
+          exit;
+      // mouse event occured in text?
+      if DoHandleMouseAction(FMouseTextActions.GetActionsForOptions(FMouseOptions), Info) then
+        exit;
+    end;
+
     DoHandleMouseAction(FMouseActions.GetActionsForOptions(FMouseOptions), Info);
   finally
     if Info.IgnoreUpClick then
@@ -2838,7 +2886,7 @@ begin
       Include(fStateFlags, sfRightGutterClick);
       FRightGutter.MouseDown(Button, Shift, X, Y);
     end;
-    FindAndHandleMouseAction(Button, Shift, X, Y, CType, cdDown);
+    FindAndHandleMouseAction(SynMouseButtonMap[Button], Shift, X, Y, CType, cdDown);
   finally
     DecPaintLock;
   end;
@@ -3095,7 +3143,7 @@ begin
       FRightGutter.MouseUp(Button, Shift, X, Y);
       Exclude(fStateFlags, sfRightGutterClick);
     end;
-    FindAndHandleMouseAction(Button, Shift, X, Y, CType, cdUp);
+    FindAndHandleMouseAction(SynMouseButtonMap[Button], Shift, X, Y, CType, cdUp);
   finally
     DecPaintLock;
   end;
@@ -5397,6 +5445,11 @@ begin
   FMouseSelActions.UserActions := AValue;
 end;
 
+procedure TCustomSynEdit.SetMouseTextActions(AValue: TSynEditMouseActions);
+begin
+  FMouseTextActions.UserActions := AValue;
+end;
+
 procedure TCustomSynEdit.SetPaintLockOwner(const AValue: TSynEditBase);
 begin
   TSynEditStringList(FLines).PaintLockOwner := AValue;
@@ -6134,6 +6187,9 @@ begin
   FMouseActions.ResetUserActions;
   FMouseSelActions.Options := FMouseOptions;
   FMouseSelActions.ResetUserActions;
+  FMouseTextActions.Options := FMouseOptions;
+  FMouseTextActions.ResetUserActions;
+
   FLeftGutter.ResetMouseActions;
   FRightGutter.ResetMouseActions;
 end;
@@ -7125,44 +7181,45 @@ begin
   fRedoList.Unlock;
 end;
 
-{$IFNDEF SYN_LAZARUS}
-
-procedure TCustomSynEdit.WMMouseWheel(var Msg: TMessage);
+procedure TCustomSynEdit.WMMouseWheel(var Message: TLMMouseEvent);
 var
-  nDelta: integer;
-  nWheelClicks: integer;
-{$IFNDEF SYN_COMPILER_4_UP}
+  lState: TShiftState;
 const
-  LinesToScroll = 3;
   WHEEL_DELTA = 120;
-  WHEEL_PAGESCROLL = MAXDWORD;
-{$ENDIF}
 begin
-  if csDesigning in ComponentState then
-    exit;
+  if ((sfHorizScrollbarVisible in fStateFlags) and (Message.Y > ClientHeight)) or
+     ((sfVertScrollbarVisible in fStateFlags) and (Message.X > ClientWidth))
+   then begin
+     inherited;
+     exit;
+   end;
 
-  if GetKeyState(VK_CONTROL) >= 0 then
-{$IFDEF SYN_COMPILER_4_UP}
-    nDelta := Mouse.WheelScrollLines
-{$ELSE}
-    nDelta := LinesToScroll
-{$ENDIF}
-  else begin
-    nDelta := fLinesInWindow;
-    if (eoHalfPageScroll in fOptions) then nDelta :=nDelta div 2;
-    nDelta := Max(1, nDelta);
+  lState := Message.State - [ssCaps, ssNum, ssScroll]; // Remove unreliable states, see http://bugs.freepascal.org/view.php?id=20065
+  Inc(FMouseWheelAccumulator, Message.WheelDelta);
+
+  FMouseClickDoPopUp := False;
+  IncPaintLock;
+  try
+    while FMouseWheelAccumulator > WHEEL_DELTA do begin
+      dec(FMouseWheelAccumulator, WHEEL_DELTA);
+      FindAndHandleMouseAction(mbWheelDown, lState, Message.X, Message.Y, ccSingle, cdDown);
+    end;
+
+    while FMouseWheelAccumulator < WHEEL_DELTA do begin
+      inc(FMouseWheelAccumulator, WHEEL_DELTA);
+      FindAndHandleMouseAction(mbWheelUp, lState, Message.X, Message.Y, ccSingle, cdDown);
+    end;
+  finally
+    DecPaintLock;
   end;
 
-  Inc(fMouseWheelAccumulator, SmallInt(Msg.wParamHi));
-  nWheelClicks := fMouseWheelAccumulator div WHEEL_DELTA;
-  fMouseWheelAccumulator := fMouseWheelAccumulator mod WHEEL_DELTA;
-  if (nDelta = integer(WHEEL_PAGESCROLL)) or (nDelta > LinesInWindow) then
-    nDelta := LinesInWindow;
-  TopView := TopView - (nDelta * nWheelClicks);
-  Update;
-end;
+  if FMouseClickDoPopUp and (PopupMenu <> nil) then begin
+    PopupMenu.PopupComponent:=self;
+    PopupMenu.PopUp;
+  end;
 
-{$ENDIF}
+  Message.Result := 1 // handled, skip further handling by interface
+end;
 
 procedure TCustomSynEdit.SetWantTabs(const Value: boolean);
 begin

@@ -11,7 +11,7 @@ object MouseaActionDialog: TMouseaActionDialog
   ClientWidth = 362
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '0.9.31'
   object BtnLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ButtonBox
@@ -190,6 +190,7 @@ object MouseaActionDialog: TMouseaActionDialog
     BorderSpacing.Left = 6
     BorderSpacing.Top = 12
     ItemHeight = 15
+    OnChange = ButtonBoxChange
     Style = csDropDownList
     TabOrder = 3
   end
@@ -232,6 +233,14 @@ object MouseaActionDialog: TMouseaActionDialog
     Top = 225
     Width = 350
     Anchors = [akTop, akLeft, akRight, akBottom]
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 10
     ShowButtons = [pbOK, pbCancel]
   end

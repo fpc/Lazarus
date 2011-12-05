@@ -9,7 +9,7 @@ uses
   SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands;
 
 var
-  ButtonName: Array [TMouseButton] of String;
+  ButtonName: Array [TSynMouseButton] of String;
   ClickName: Array [TSynMAClickCount] of String;
   ButtonDirName: Array [TSynMAClickDir] of String;
 
@@ -37,6 +37,7 @@ type
     PriorSpin: TSpinEdit;
     procedure ActionBoxChange(Sender: TObject);
     procedure BtnDefaultClick(Sender: TObject);
+    procedure ButtonBoxChange(Sender: TObject);
     procedure CapturePanelMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
     procedure FormCreate(Sender: TObject);
@@ -57,9 +58,9 @@ implementation
 {$R *.lfm}
 
 const
-  BtnToIndex: array [mbLeft..mbExtra2] of Integer = (0, 1, 2, 3, 4);
+  BtnToIndex: array [TSynMouseButton] of Integer = (0, 1, 2, 3, 4, 5, 6);
   ClickToIndex: array [ccSingle..ccAny] of Integer = (0, 1, 2, 3, 4);
-  IndexToBtn: array [0..4] of TMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2);
+  IndexToBtn: array [0..6] of TSynMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2, mbWheelUp, mbWheelDown);
   IndexToClick: array [0..4] of TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad, ccAny);
 
 function KeyMapIndexOfCommand(AKeyMap: TKeyCommandRelationList; ACmd: Word): Integer;
@@ -78,7 +79,7 @@ procedure TMouseaActionDialog.FormCreate(Sender: TObject);
 var
   i: Integer;
   CName: String;
-  mb: TMouseButton;
+  mb: TSynMouseButton;
   cc: TSynMAClickCount;
 begin
   ButtonName[mbLeft]:=dlgMouseOptBtnLeft;
@@ -86,6 +87,8 @@ begin
   ButtonName[mbMiddle]:=dlgMouseOptBtnMiddle;
   ButtonName[mbExtra1]:=dlgMouseOptBtnExtra1;
   ButtonName[mbExtra2]:=dlgMouseOptBtnExtra2;
+  ButtonName[mbWheelUp]:=dlgMouseOptBtnWheelUp;
+  ButtonName[mbWheelDown]:=dlgMouseOptBtnWheelDown;
 
   ClickName[ccSingle]:=dlgMouseOptBtn1;
   ClickName[ccDouble]:=dlgMouseOptBtn2;
@@ -107,7 +110,7 @@ begin
       ActionBox.Items.AddObject(CName, TObject(ptrint(i)));
   end;
   ButtonBox.Clear;
-  for mb := low(TMouseButton) to high(TMouseButton) do
+  for mb := low(TSynMouseButton) to high(TSynMouseButton) do
     ButtonBox.Items.add(ButtonName[mb]);
   ClickBox.Clear;
   for cc:= low(TSynMAClickCount) to high(TSynMAClickCount) do
@@ -141,6 +144,11 @@ begin
   ShiftCheck.State := cbGrayed;
   AltCheck.State := cbGrayed;
   CtrlCheck.State := cbGrayed;
+end;
+
+procedure TMouseaActionDialog.ButtonBoxChange(Sender: TObject);
+begin
+  DirCheck.Enabled := not(IndexToBtn[ButtonBox.ItemIndex] in [mbWheelUp, mbWheelDown]);
 end;
 
 procedure TMouseaActionDialog.ActionBoxChange(Sender: TObject);
@@ -180,7 +188,7 @@ end;
 procedure TMouseaActionDialog.CapturePanelMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  ButtonBox.ItemIndex := BtnToIndex[Button];
+  ButtonBox.ItemIndex := BtnToIndex[SynMouseButtonMap[Button]];
   ClickBox.ItemIndex := 0;
   if ssDouble in Shift then ClickBox.ItemIndex := 1;
   if ssTriple in Shift then ClickBox.ItemIndex := 2;
@@ -206,6 +214,7 @@ begin
   PriorSpin.Value := MAct.Priority;
 
   ActionBoxChange(nil);
+  ButtonBoxChange(nil);
   if OptBox.Enabled then begin
     if MAct.Command =  emcSynEditCommand then
       OptBox.ItemIndex := OptBox.Items.IndexOfObject(TObject(Pointer(PtrUInt(MAct.Option))))
