@@ -70,7 +70,7 @@ begin
     DebugLn('Trace:CallDefaultWindowProc - Start');
   {$endif}
 
-  WindowInfo := TWindowInfo(FindFormWithNativeHandle(Window));
+  WindowInfo := GetWindowInfo(Window);
   PrevWndProc := WindowInfo.DefWndProc;
 
   if (PrevWndProc = nil) or (PrevWndProc = @WindowProc) // <- prevent recursion
@@ -495,13 +495,18 @@ begin
   WinProcess := True;
   NotifyUserInput := False;
 
+  {$ifdef VerboseCDMessages}
+    DebugLn(Format('WindowProc Window= %x FAppHandle=%x MSG=%s',
+      [Window, CDWidgetset.FAppHandle, WM_To_String(Msg)]));
+  {$endif}
+
   //DebugLn('Trace:WindowProc - Getting Object with Callback Procedure');
-  WindowInfo := TWindowInfo(FindFormWithNativeHandle(Window));
+  WindowInfo := GetWindowInfo(Window);
 
   lWinControl := WindowInfo.LCLForm;
 
   {$ifdef VerboseCDMessages}
-    DebugLn('WindowProc lWinControl: ',DbgSName(lWinControl),' MSG=',WM_To_String(Msg));
+    DebugLn('WindowProc lWinControl: ',DbgSName(lWinControl));
   {$endif}
   if (IgnoreNextCharWindow <> 0) and ((Msg = WM_CHAR) or (Msg = WM_SYSCHAR)) then
   begin

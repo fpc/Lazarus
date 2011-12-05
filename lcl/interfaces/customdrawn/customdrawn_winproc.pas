@@ -176,6 +176,8 @@ procedure LCLBoundsToWin32Bounds(Sender: TObject;
 procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 
+function GetWindowInfo(AWindow: HWND): TWindowInfo;
+
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
 function BorderStyleToWinAPIFlags(Style: TFormBorderStyle): DWORD;
 function BorderStyleToWinAPIFlagsEx(AForm: TCustomForm; Style: TFormBorderStyle): DWORD;
@@ -1257,6 +1259,12 @@ begin
   Top := winRect.Top - parRect.Top;
 end;
 
+function GetWindowInfo(AWindow: HWND): TWindowInfo;
+begin
+  Result := TWindowInfo(FindFormWithNativeHandle(AWindow));
+  if Result = nil then Result := DefaultWindowInfo;
+end;
+
 {
   Updates the window style of the window indicated by Handle.
   The new style is the Style parameter.
@@ -1704,7 +1712,7 @@ begin
 end;
 
 initialization
-  FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
+  DefaultWindowInfo := TWindowInfo.Create;
   WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
   ChangedMenus := TList.Create;
   UpdateWindowsVersion();
