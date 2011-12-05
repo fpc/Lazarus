@@ -3363,6 +3363,7 @@ examples/androidlcl/mainform.lfm svneol=native#text/plain
 examples/androidlcl/mainform.pas svneol=native#text/pascal
 examples/androidlcl/nonandroidtest.lpi svneol=native#text/plain
 examples/androidlcl/nonandroidtest.lpr svneol=native#text/pascal
+examples/androidlcl/runwindowsapp.bat svneol=native#text/plain
 examples/autosize/childsizinglayout/childsizinglayout.lpi svneol=native#text/plain
 examples/autosize/childsizinglayout/childsizinglayout.lpr svneol=native#text/plain
 examples/autosize/childsizinglayout/mainunit.lfm svneol=native#text/plain
