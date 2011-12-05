@@ -84,8 +84,8 @@ type
     class function CalcBorderIconsFlagsEx(const AForm: TCustomForm): DWORD;
     class procedure CalcFormWindowFlags(const AForm: TCustomForm;
       var Flags, FlagsEx: dword);
-    class procedure CalculateDialogPosition(var Params: TCreateWindowExParams;
-     Bounds: TRect; lForm: TCustomForm);
+    //class procedure CalculateDialogPosition(var Params: TCreateWindowExParams;
+     //Bounds: TRect; lForm: TCustomForm);
     class function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
     class function CalcBorderStyleFlags(const AForm: TCustomForm): DWORD;
     class function CalcBorderStyleFlagsEx(const AForm: TCustomForm): DWORD;

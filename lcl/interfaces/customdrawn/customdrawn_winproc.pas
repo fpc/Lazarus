@@ -28,7 +28,9 @@ uses
   Windows, CTypes, Classes, SysUtils,
   // LCL
   LCLType, Interfacebase, LMessages, lclintf, LCLMessageGlue, LCLProc,
-  Controls, Forms, graphtype, Menus, IntfGraphics, lazcanvas;
+  Controls, Forms, graphtype, Menus, IntfGraphics, lazcanvas,
+  //
+  customdrawnproc;
 
 type
   MCHITTESTINFO = record
@@ -103,21 +105,16 @@ var
 type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
 
-  PWindowInfo = ^TWindowInfo;
-  TWindowInfo = record
+  TWindowInfo = class(TCDForm)
     Overlay: HWND;            // overlay, transparent window on top, used by designer
     //PopupMenu: TPopupMenu;
     DefWndProc: WNDPROC;
     ParentPanel: HWND;        // if non-zero, is the tabsheet window, for the pagecontrol hack
-    WinControl: TWinControl;
     List: TStrings;
     StayOnTopList: TList;     // a list of windows that were normalized when showing modal
-    Children: TFPList;
     MaxLength: dword;
     MouseX, MouseY: word; // noticing spurious WM_MOUSEMOVE messages
     // CD additions
-    Image: TLazIntfImage;
-    Canvas: TLazCanvas;
     Bitmap: HBITMAP;
     BitmapWidth: integer;
     BitmapHeight: integer;
@@ -184,13 +181,10 @@ function BorderStyleToWinAPIFlags(Style: TFormBorderStyle): DWORD;
 function BorderStyleToWinAPIFlagsEx(AForm: TCustomForm; Style: TFormBorderStyle): DWORD;
 
 function GetFileVersion(FileName: string): dword;
-function AllocWindowInfo(Window: HWND): PWindowInfo;
-function DisposeWindowInfo(Window: HWND): boolean;
 
 procedure RemoveStayOnTopFlags(AppHandle: HWND; ASystemTopAlso: Boolean = False);
 procedure RestoreStayOnTopFlags(AppHandle: HWND);
 
-function GetWindowInfo(Window: HWND): PWindowInfo;
 procedure AddToChangedMenus(Window: HWnd);
 procedure RedrawMenus;
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
@@ -1218,7 +1212,7 @@ function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
 var
   OwnerObject: TObject;
 begin
-  OwnerObject := GetWindowInfo(Handle)^.WinControl;
+  OwnerObject := TWindowInfo(Handle).LCLForm;
   Result:=GetLCLClientBoundsOffset(OwnerObject, Rect);
 end;
 
@@ -1377,51 +1371,22 @@ begin
   end;
 end;
 
-function AllocWindowInfo(Window: HWND): PWindowInfo;
-var
-  WindowInfo: PWindowInfo;
-begin
-  New(WindowInfo);
-  FillChar(WindowInfo^, sizeof(WindowInfo^), 0);
-  {$ifdef win32}
-  Windows.SetPropW(Window, PWideChar(DWord(WindowInfoAtom)), DWord(WindowInfo));
-  {$else}
-  Windows.SetProp(Window, PWideChar(DWord(WindowInfoAtom)), DWord(WindowInfo));
-  {$endif}
-  Result := WindowInfo;
-end;
-
-function DisposeWindowInfo(Window: HWND): boolean;
-var
-  WindowInfo: PWindowInfo;
-begin
-  {$ifdef win32}
-  WindowInfo := PWindowInfo(Windows.GetPropW(Window, PWideChar(DWord(WindowInfoAtom))));
-  Result := Windows.RemovePropW(Window, PWideChar(DWord(WindowInfoAtom)))<>0;
-  {$else}
-  WindowInfo := PWindowInfo(Windows.GetProp(Window, PWideChar(DWord(WindowInfoAtom))));
-  Result := Windows.RemoveProp(Window, PWideChar(DWord(WindowInfoAtom)))<>0;
-  {$endif}
-  if Result then
-    Dispose(WindowInfo);
-end;
-
 function EnumStayOnTopRemove(Handle: HWND; Param: LPARAM): WINBOOL; stdcall;
 var
   StayOnTopWindowsInfo: PStayOnTopWindowsInfo absolute Param;
-  lWindowInfo: PWindowInfo;
+  lWindowInfo: TWindowInfo;
   lWinControl: TWinControl;
 begin
-  Result := True;
+{  Result := True;
   if ((GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_TOPMOST) <> 0) then
   begin
     // Don't remove system-wide stay on top, unless desired
     if not StayOnTopWindowsInfo^.SystemTopAlso then
     begin
-      lWindowInfo := GetWindowInfo(Handle);
+      lWindowInfo := TWindowInfo(FindFormWithNativeHandle(Handle));
       if Assigned(lWindowInfo) then
       begin
-        lWinControl := lWindowInfo^.WinControl;
+        lWinControl := lWindowInfo.LCLForm;
         if (lWinControl is TCustomForm) and
           (TCustomForm(lWinControl).FormStyle = fsSystemStayOnTop) then
         Exit;
@@ -1429,16 +1394,16 @@ begin
     end;
 
     StayOnTopWindowsInfo^.StayOnTopList.Add(Pointer(Handle));
-  end;
+  end;}
 end;
 
 procedure RemoveStayOnTopFlags(AppHandle: HWND; ASystemTopAlso: Boolean = False);
 var
   StayOnTopWindowsInfo: PStayOnTopWindowsInfo;
-  WindowInfo: PWindowInfo;
+  WindowInfo: TWindowInfo;
   I: Integer;
 begin
-  //WriteLn('RemoveStayOnTopFlags ', InRemoveStayOnTopFlags);
+{  //WriteLn('RemoveStayOnTopFlags ', InRemoveStayOnTopFlags);
   if InRemoveStayOnTopFlags = 0 then
   begin
     New(StayOnTopWindowsInfo);
@@ -1454,15 +1419,15 @@ begin
         SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_DRAWFRAME);
     Dispose(StayOnTopWindowsInfo);
   end;
-  inc(InRemoveStayOnTopFlags);
+  inc(InRemoveStayOnTopFlags);}
 end;
 
 procedure RestoreStayOnTopFlags(AppHandle: HWND);
 var
-  WindowInfo: PWindowInfo;
+  WindowInfo: TWindowInfo;
   I: integer;
 begin
-  //WriteLn('RestoreStayOnTopFlags ', InRemoveStayOnTopFlags);
+{  //WriteLn('RestoreStayOnTopFlags ', InRemoveStayOnTopFlags);
   if InRemoveStayOnTopFlags = 1 then
   begin
     WindowInfo := GetWindowInfo(AppHandle);
@@ -1476,18 +1441,7 @@ begin
     end;
   end;
   if InRemoveStayOnTopFlags > 0 then
-    dec(InRemoveStayOnTopFlags);
-end;
-
-function GetWindowInfo(Window: HWND): PWindowInfo;
-begin
-  {$ifdef win32}
-  Result := PWindowInfo(Windows.GetPropW(Window, PWideChar(DWord(WindowInfoAtom))));
-  {$else}
-  Result := PWindowInfo(Windows.GetProp(Window, PWideChar(DWord(WindowInfoAtom))));
-  {$endif}
-  if Result = nil then
-    Result := @DefaultWindowInfo;
+    dec(InRemoveStayOnTopFlags);}
 end;
 
 function WndClassName(Wnd: HWND): String; inline;

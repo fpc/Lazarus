@@ -4,25 +4,14 @@ type
   TWinControlAccess = class(TWinControl)
   end;
 
+  TNCCreateParams = record
+    WinControl: TWinControl;
+    DefWndProc: WNDPROC;
+    Handled: Boolean;
+  end;
+  PNCCreateParams = ^TNCCreateParams;
+
 { TCDWSCustomForm }
-
-class procedure TCDWSCustomForm.BackendAddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
-var
-  WindowInfo: PWindowInfo;
-begin
-  WindowInfo := GetWindowInfo(AForm.Handle);
-  if WindowInfo^.Children = nil then WindowInfo^.Children := TFPList.Create;
-  WindowInfo^.Children.Add(ACDWinControl);
-end;
-
-class function TCDWSCustomForm.BackendGetCDWinControlList(const AForm: TCustomForm): TFPList;
-var
-  WindowInfo: PWindowInfo;
-begin
-  WindowInfo := GetWindowInfo(AForm.Handle);
-  if WindowInfo^.Children = nil then WindowInfo^.Children := TFPList.Create;
-  Result := WindowInfo^.Children;
-end;
 
 class function TCDWSCustomForm.CalcBorderIconsFlags(const AForm: TCustomForm): dword;
 var
@@ -71,7 +60,7 @@ begin
   FlagsEx := FlagsEx or CalcBorderIconsFlagsEx(AForm);
 end;
 
-class procedure TCDWSCustomForm.CalculateDialogPosition(var Params: TCreateWindowExParams;
+{class procedure TCDWSCustomForm.CalculateDialogPosition(var Params: TCreateWindowExParams;
   Bounds: TRect; lForm: TCustomForm);
 begin
   if lForm.Position in [poDefault, poDefaultPosOnly] then
@@ -94,7 +83,7 @@ begin
     Params.Width := Bounds.Right - Bounds.Left;
     Params.Height := Bounds.Bottom - Bounds.Top;
   end;
-end;
+end;}
 
 class function TCDWSCustomForm.GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
 begin
@@ -192,72 +181,123 @@ end;
 class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  Params: TCreateWindowExParams;
   lForm: TCustomForm absolute AWinControl;
   Bounds: TRect;
   SystemMenu: HMenu;
+  // Create Params
+  Parent, Window: HWND;
+  Left, Top, Height, Width: integer;
+  WindowInfo, BuddyWindowInfo: TWindowInfo;
+  MenuHandle: HMENU;
+  Flags, FlagsEx: dword;
+  SubClassWndProc: pointer;
+  WindowTitle: widestring;
+  pClassName: PWideChar;
+  //
+  NCCreateParams: TNCCreateParams;
+  AErrorCode: DWORD;
 begin
   {$ifdef VerboseCDForms}
   DebugLn(Format(':>[TCDWSCustomForm.CreateHandle] AWincontrol=%x left=%d Top=%d'
     + ' Width=%d Height=%d', [PtrInt(AWincontrol), AWinControl.Top, AWinControl.Left,
     AParams.Width, AParams.Height]));
   {$endif}
+
+  NCCreateParams.DefWndProc := nil;
+  NCCreateParams.WinControl := AWinControl;
+  NCCreateParams.Handled := False;
+
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, AParams, Params);
+
+  //Fillchar(Params,Sizeof(Params),0);
+  Window := HWND(nil);
+  WindowTitle := UTF8ToUTF16(AParams.Caption);
+  //SubClassWndProc := @WindowProc;
+
+  Flags := AParams.Style;
+  FlagsEx := AParams.ExStyle;
+
+  // Never set the parent of a window to AppHandle,
+  // otherwise wince will really try to make it a child
+  Parent := AParams.WndParent;
+
+  Left := AParams.X;
+  Top := AParams.Y;
+  Width := AParams.Width;
+  Height := AParams.Height;
+
+  LCLBoundsToWin32Bounds(AWinControl, Left, Top, Width, Height);
+  //    if AWinControl is TCustomControl then
+  //      if TCustomControl(AWinControl).BorderStyle = bsSingle then
+  //        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+  //    SetStdBiDiModeParams(AWinControl, Params);
+
   // customization of Params
-  with Params do
+  if (Parent = 0) then
   begin
-    if (Parent = 0) then
+    if not Application.MainFormOnTaskBar then
+      Parent := CDWidgetSet.AppHandle
+    else
+    if (AWinControl <> Application.MainForm) then
     begin
-      if not Application.MainFormOnTaskBar then
-        Parent := CDWidgetSet.AppHandle
+      if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+        Parent := Application.MainFormHandle
       else
-      if (AWinControl <> Application.MainForm) then
-      begin
-        if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
-          Parent := Application.MainFormHandle
-        else
-          Parent := CDWidgetSet.AppHandle;
-      end;
+        Parent := CDWidgetSet.AppHandle;
     end;
-    CalcFormWindowFlags(lForm, Flags, FlagsEx);
-    pClassName := @ClsName[0];
-    WindowTitle := StrCaption;
-    AdjustFormBounds(lForm, Bounds);
-    if (lForm.Position in [poDefault, poDefaultPosOnly]) and not (csDesigning in lForm.ComponentState) then
-    begin
-      Left := CW_USEDEFAULT;
-      Top := CW_USEDEFAULT;
-    end
-    else
-    begin
-      Left := Bounds.Left;
-      Top := Bounds.Top;
-    end;
-    if (lForm.Position in [poDefault, poDefaultSizeOnly]) and not (csDesigning in lForm.ComponentState) then
-    begin
-      Width := CW_USEDEFAULT;
-      Height := CW_USEDEFAULT;
-    end
-    else
-    begin
-      Width := Bounds.Right - Bounds.Left;
-      Height := Bounds.Bottom - Bounds.Top;
-    end;
-    //SubClassWndProc := @CustomFormWndProc;
-    if not (csDesigning in lForm.ComponentState) and lForm.AlphaBlend then
-      FlagsEx := FlagsEx or WS_EX_LAYERED;
   end;
+  CalcFormWindowFlags(lForm, Flags, FlagsEx);
+  pClassName := @ClsName[0];
+  AdjustFormBounds(lForm, Bounds);
+  if (lForm.Position in [poDefault, poDefaultPosOnly]) and not (csDesigning in lForm.ComponentState) then
+  begin
+    Left := CW_USEDEFAULT;
+    Top := CW_USEDEFAULT;
+  end
+  else
+  begin
+    Left := Bounds.Left;
+    Top := Bounds.Top;
+  end;
+  if (lForm.Position in [poDefault, poDefaultSizeOnly]) and not (csDesigning in lForm.ComponentState) then
+  begin
+    Width := CW_USEDEFAULT;
+    Height := CW_USEDEFAULT;
+  end
+  else
+  begin
+    Width := Bounds.Right - Bounds.Left;
+    Height := Bounds.Bottom - Bounds.Top;
+  end;
+  //SubClassWndProc := @CustomFormWndProc;
+  if not (csDesigning in lForm.ComponentState) and lForm.AlphaBlend then
+    FlagsEx := FlagsEx or WS_EX_LAYERED;
+
   //SetStdBiDiModeParams(AWinControl, Params);
   // create window
-  FinishCreateWindow(AWinControl, Params, False);
 
-  Result := Params.Window;
+  Window := CreateWindowExW(FlagsEx, PWideChar(WideString(pClassName)),
+    PWideChar(WindowTitle), Flags,
+    Left, Top, Width, Height, Parent, 0, HInstance, @NCCreateParams);
+
+  if Window = 0 then
+  begin
+    AErrorCode := GetLastError;
+    DebugLn(['Failed to create win32 control, error: ', AErrorCode, ' : ', GetLastErrorText(AErrorCode)]);
+    raise Exception.Create('Failed to create win32 control, error: ' + IntToStr(AErrorCode) + ' : ' + GetLastErrorText(AErrorCode));
+  end;
+  WindowInfo := TWindowInfo.Create;
+  WindowInfo.LCLForm := TCustomForm(AWinControl);
+  WindowInfo.NativeHandle := Window;
+
+  //AWinControl.Handle := HWND(WindowInfo);
+  AddFormWithCDHandle(WindowInfo);
+  Result := HWND(WindowInfo);
 
   // remove system menu items for bsDialog
   if (lForm.BorderStyle = bsDialog) and not (csDesigning in lForm.ComponentState) then
   begin
-    SystemMenu := GetSystemMenu(Result, False);
+    SystemMenu := GetSystemMenu(Window, False);
     DeleteMenu(SystemMenu, SC_RESTORE, MF_BYCOMMAND);
     DeleteMenu(SystemMenu, SC_SIZE, MF_BYCOMMAND);
     DeleteMenu(SystemMenu, SC_MINIMIZE, MF_BYCOMMAND);
@@ -269,7 +309,7 @@ begin
   // rectangles and accelerator key indication. According to msdn we need to
   // initialize all root windows with this message
   if WindowsVersion >= wv2000 then
-    Windows.SendMessage(Result, WM_CHANGEUISTATE,
+    Windows.SendMessage(Window, WM_CHANGEUISTATE,
       MakeWParam(UIS_INITIALIZE, UISF_HIDEFOCUS or UISF_HIDEACCEL), 0);
 
   {$ifdef VerboseCDForms}

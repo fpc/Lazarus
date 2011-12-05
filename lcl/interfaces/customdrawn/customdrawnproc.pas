@@ -32,6 +32,7 @@ type
   public
     LCLForm: TCustomForm;
     Children: TFPList; // of TCDWinControl;
+    NativeHandle: HWND;
     //
     LastMouseDownControl: TWinControl; // Stores the control which should receive the next MouseUp
     // painting objects
@@ -56,6 +57,8 @@ function GetCDWinControlList(const AForm: TCustomForm): TFPList;
 procedure InitNonNativeForms();
 function GetCurrentForm(): TCDNonNativeForm;
 function AddNewForm(AForm: TCustomForm): TCDNonNativeForm;
+procedure AddFormWithCDHandle(AHandle: TCDForm);
+function FindFormWithNativeHandle(AHandle: HWND): TCDForm;
 procedure ShowForm(ACDForm: TCDNonNativeForm);
 procedure HideForm(ACDForm: TCDNonNativeForm);
 
@@ -131,12 +134,35 @@ begin
   {$IFDEF VerboseCDForms}
     DebugLn('AddNewForm');
   {$ENDIF}
-  InitNonNativeForms();
   lFormInfo := TCDNonNativeForm.Create;
   lFormInfo.LCLForm := AForm;
   lFormInfo.Children := TFPList.Create;
-  NonNativeForms.Insert(0, lFormInfo);
+  AddFormWithCDHandle(lFormInfo);
   Result := lFormInfo;
+end;
+
+procedure AddFormWithCDHandle(AHandle: TCDForm);
+begin
+  InitNonNativeForms();
+  NonNativeForms.Insert(0, AHandle);
+end;
+
+function FindFormWithNativeHandle(AHandle: HWND): TCDForm;
+var
+  lCDForm: TCDForm;
+  i: Integer;
+begin
+  Result := nil;
+  InitNonNativeForms();
+  for i := 0 to NonNativeForms.Count - 1 do
+  begin
+    lCDForm := TCDForm(NonNativeForms.Items[i]);
+    if lCDForm.NativeHandle = AHandle then
+    begin
+      Result := lCDForm;
+      Exit;
+    end;
+  end;
 end;
 
 procedure ShowForm(ACDForm: TCDNonNativeForm);

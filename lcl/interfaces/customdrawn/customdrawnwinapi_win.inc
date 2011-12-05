@@ -2219,7 +2219,6 @@ function TCDWidgetSet.GetWindowSize(Handle : hwnd;
 var
   WP: WINDOWPLACEMENT;
   R: TRect;
-  WindowInfo: PWindowInfo;
   Info: tagWINDOWINFO;
 
   procedure ExcludeCaption; inline;
@@ -2290,8 +2289,6 @@ begin
       Width := Right - Left;
       Height := Bottom - Top;
     end;
-
-  WindowInfo := GetWindowInfo(Handle);
 
   // convert top level lcl window coordinaties to win32 coord
   Info.dwStyle := DWORD(GetWindowLong(Handle, GWL_STYLE));
@@ -3589,7 +3586,7 @@ end;
 function TWin32WidgetSet.SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool;
 begin
   Result := Windows.SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Method:  TextOut
@@ -3611,7 +3608,7 @@ begin
   Result := Boolean(Windows.TextOutW(DC, X, Y, PWideChar(ws), length(ws)));
 end;
 
-(*function TWin32WidgetSet.UpdateWindow(Handle: HWND): Boolean;
+function TWin32WidgetSet.UpdateWindow(Handle: HWND): Boolean;
 begin
   Result:=Windows.UpdateWindow(Handle);
 end;

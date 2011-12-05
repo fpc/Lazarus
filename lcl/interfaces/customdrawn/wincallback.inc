@@ -64,14 +64,14 @@ function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 var
   PrevWndProc: Windows.WNDPROC;
   setComboWindow: boolean;
-  WindowInfo: PWindowInfo;
+  WindowInfo: TWindowInfo;
 begin
   {$ifdef MSG_DEBUG}
     DebugLn('Trace:CallDefaultWindowProc - Start');
   {$endif}
 
-  WindowInfo := GetWindowInfo(Window);
-  PrevWndProc := WindowInfo^.DefWndProc;
+  WindowInfo := TWindowInfo(FindFormWithNativeHandle(Window));
+  PrevWndProc := WindowInfo.DefWndProc;
 
   if (PrevWndProc = nil) or (PrevWndProc = @WindowProc) // <- prevent recursion
     then
@@ -151,8 +151,6 @@ function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult; {$ifdef win32}stdcall{$else}cdecl{$endif};
 Var
   LMessage: TLMessage;
-  menuItem: TObject;
-  menuHDC: HDC;
   PLMsg: PLMessage;
   R: TRect;
   P: TPoint;
@@ -164,10 +162,8 @@ Var
   WindowPlacement: TWINDOWPLACEMENT;
   OverlayWindow: HWND;
   TargetWindow: HWND;
-  eraseBkgndCommand: TEraseBkgndCommand;
-  WindowInfo: PWindowInfo;
+  WindowInfo: TWindowInfo;
   Flags: dword;
-  ChildWindowInfo: PWindowInfo;
   WindowColor: Integer;
 
   LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -237,43 +233,43 @@ Var
     GetWindowSize(Window, WindowWidth, WindowHeight);
 
     // Start the double buffering by checking if we need to increase the buffer
-    if (WindowInfo^.BitmapWidth < WindowWidth) or (WindowInfo^.BitmapHeight < WindowHeight) then
+    if (WindowInfo.BitmapWidth < WindowWidth) or (WindowInfo.BitmapHeight < WindowHeight) then
     begin
       // first release old objects
-      if WindowInfo^.BitmapDC <> 0 then
+      if WindowInfo.BitmapDC <> 0 then
       begin
-        Windows.SelectObject(WindowInfo^.BitmapDC, WindowInfo^.DCBitmapOld);
-        Windows.DeleteObject(WindowInfo^.BitmapDC);
+        Windows.SelectObject(WindowInfo.BitmapDC, WindowInfo.DCBitmapOld);
+        Windows.DeleteObject(WindowInfo.BitmapDC);
       end;
-      if WindowInfo^.Bitmap <> 0 then Windows.DeleteObject(WindowInfo^.Bitmap);
+      if WindowInfo.Bitmap <> 0 then Windows.DeleteObject(WindowInfo.Bitmap);
 
       // And now create the new ones
       DC := Windows.GetDC(0);
-      WindowInfo^.BitmapDC := Windows.CreateCompatibleDC(0);
-      WindowInfo^.BitmapWidth := WindowWidth;
-      WindowInfo^.BitmapHeight := WindowHeight;
-      WindowInfo^.Bitmap := Windows.CreateCompatibleBitmap(DC, WindowWidth, WindowHeight);
-      WindowInfo^.DCBitmapOld := Windows.SelectObject(WindowInfo^.BitmapDC, WindowInfo^.Bitmap);
+      WindowInfo.BitmapDC := Windows.CreateCompatibleDC(0);
+      WindowInfo.BitmapWidth := WindowWidth;
+      WindowInfo.BitmapHeight := WindowHeight;
+      WindowInfo.Bitmap := Windows.CreateCompatibleBitmap(DC, WindowWidth, WindowHeight);
+      WindowInfo.DCBitmapOld := Windows.SelectObject(WindowInfo.BitmapDC, WindowInfo.Bitmap);
       Windows.ReleaseDC(0, DC);
 
       // Reset the image and canvas
-      WindowInfo^.Canvas.Free;
-      WindowInfo^.Canvas := nil;
-      WindowInfo^.Image.Free;
-      WindowInfo^.Image := nil;
+      WindowInfo.Canvas.Free;
+      WindowInfo.Canvas := nil;
+      WindowInfo.Image.Free;
+      WindowInfo.Image := nil;
     end;
 
     // Prepare the non-native Canvas if necessary
-    if (WindowInfo^.Image = nil) then
+    if (WindowInfo.Image = nil) then
     begin
-      WinProc_RawImage_FromBitmap(lRawImage, WindowInfo^.Bitmap, 0);
-      WindowInfo^.Image := TLazIntfImage.Create(WindowWidth, WindowHeight);
-      WindowInfo^.Image.SetRawImage(lRawImage);
+      WinProc_RawImage_FromBitmap(lRawImage, WindowInfo.Bitmap, 0);
+      WindowInfo.Image := TLazIntfImage.Create(WindowWidth, WindowHeight);
+      WindowInfo.Image.SetRawImage(lRawImage);
     end;
-    if (WindowInfo^.Canvas = nil) then WindowInfo^.Canvas := TLazCanvas.Create(WindowInfo^.Image);
+    if (WindowInfo.Canvas = nil) then WindowInfo.Canvas := TLazCanvas.Create(WindowInfo.Image);
 
     {$ifdef VerboseCDMessages}
-    DebugLn(Format('[SendPaintMessage] WindowInfo^.Canvas=%s', [dbghex(PtrInt(WindowInfo^.Canvas))]));
+    DebugLn(Format('[SendPaintMessage] WindowInfo^.Canvas=%s', [dbghex(PtrInt(WindowInfo.Canvas))]));
     {$endif}
 
     // main processing
@@ -293,7 +289,7 @@ Var
       GetLCLClientBoundsOffset(lWinControl, ORect);
       PaintMsg.Msg := LM_PAINT;
       PaintMsg.PaintStruct := @PS;
-      PaintMsg.DC := HDC(WindowInfo^.Canvas);
+      PaintMsg.DC := HDC(WindowInfo.Canvas);
 
       // send through message to allow message override, moreover use SendMessage
       // to allow subclass window proc override this message too
@@ -316,15 +312,15 @@ Var
       {$endif}
 
       // Now draw all child controls
-      RenderChildWinControls(WindowInfo^.Image, WindowInfo^.Canvas,
-        TCDWSCustomForm.BackendGetCDWinControlList(TCustomForm(lWinControl)));
+      RenderChildWinControls(WindowInfo.Image, WindowInfo.Canvas,
+        GetCDWinControlList(TCustomForm(lWinControl)));
 
       // Now convert the rawimage to a HBITMAP and draw it to the screen
-      WindowInfo^.Image.GetRawImage(lRawImage);
+      WindowInfo.Image.GetRawImage(lRawImage);
       WinProc_RawImage_CreateBitmaps(lRawImage, lBitmap, lMask, True);
-      Windows.SelectObject(WindowInfo^.BitmapDC, lBitmap);
-      Windows.BitBlt(DC, 0, 0, WindowWidth, WindowHeight, WindowInfo^.BitmapDC, 0, 0, SRCCOPY);
-      Windows.SelectObject(WindowInfo^.BitmapDC, WindowInfo^.Bitmap);
+      Windows.SelectObject(WindowInfo.BitmapDC, lBitmap);
+      Windows.BitBlt(DC, 0, 0, WindowWidth, WindowHeight, WindowInfo.BitmapDC, 0, 0, SRCCOPY);
+      Windows.SelectObject(WindowInfo.BitmapDC, WindowInfo.Bitmap);
       Windows.DeleteObject(lBitmap);
 
       if ControlDC = 0 then
@@ -480,7 +476,7 @@ Var
   begin
     Result := false;
     UTF8Char := UTF8Encode(widestring(WideChar(AChar)));
-    lWinControl := WindowInfo^.WinControl;
+    lWinControl := WindowInfo.LCLForm;
     if Assigned(lWinControl) then
     begin
       Result:= lWinControl.IntfUTF8KeyPress(UTF8Char, 1, False);
@@ -500,9 +496,9 @@ begin
   NotifyUserInput := False;
 
   //DebugLn('Trace:WindowProc - Getting Object with Callback Procedure');
-  WindowInfo := GetWindowInfo(Window);
+  WindowInfo := TWindowInfo(FindFormWithNativeHandle(Window));
 
-  lWinControl := WindowInfo^.WinControl;
+  lWinControl := WindowInfo.LCLForm;
 
   {$ifdef VerboseCDMessages}
     DebugLn('WindowProc lWinControl: ',DbgSName(lWinControl),' MSG=',WM_To_String(Msg));
@@ -663,9 +659,6 @@ begin
     end;
     WM_DESTROY:
     begin
-      //DebugLn('Trace:WindowProc - Got WM_DESTROY');
-      if WindowInfo^.Overlay<>HWND(nil) then
-        Windows.DestroyWindow(WindowInfo^.Overlay);
       LMessage.Msg := LM_DESTROY;
     end;
     WM_DESTROYCLIPBOARD:
@@ -692,7 +685,7 @@ begin
     WM_ENTERIDLE: Application.Idle(False);
     WM_ERASEBKGND:
     begin
-      eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
+      {eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
       if eraseBkgndCommand = ecDoubleBufferNoRemove then
       begin
       end
@@ -713,7 +706,7 @@ begin
       begin
         SendPaintMessage(HDC(WParam));
         LMessage.Result := 1;
-      end;
+      end;}
       WinProcess := False;
     end;
 
@@ -916,17 +909,18 @@ begin
         YPos := SmallInt(Hi(LParam));
         Keys := WParam;
         // check if this is a spurious WM_MOUSEMOVE message, pos not actually changed
-        if (XPos = WindowInfo^.MouseX) and (YPos = WindowInfo^.MouseY) then
+        if (XPos = WindowInfo.MouseX) and (YPos = WindowInfo.MouseY) then
         begin
           // do not fire message after all (position not changed)
           Msg := LM_NULL;
           NotifyUserInput := false;
         end else
-        if WindowInfo <> @DefaultWindowInfo then
+        if (WindowInfo.MouseX <> DefaultWindowInfo.MouseX) or
+          (WindowInfo.MouseY <> DefaultWindowInfo.MouseY) then
         begin
           // position changed, update window info
-          WindowInfo^.MouseX := XPos;
-          WindowInfo^.MouseY := YPos;
+          WindowInfo.MouseX := XPos;
+          WindowInfo.MouseY := YPos;
         end;
       end;
     end;
@@ -1368,7 +1362,7 @@ begin
     begin
       lEventReceiver := FindControlWhichReceivedEvent(
         TCustomForm(lWinControl),
-        TCDWSCustomForm.BackendGetCDWinControlList(TCustomForm(lWinControl)),
+        GetCDWinControlList(TCustomForm(lWinControl)),
         lEventX, lEventY);
       DeliverMessage(lEventReceiver, PLMsg^);
     end;
@@ -1408,11 +1402,8 @@ begin
       end;
       WM_NCDESTROY:
       begin
-        //roozbeh : test this....
-         // free our own data associated with window
-        if DisposeWindowInfo(Window) then
-          WindowInfo := nil;
-        //EnumProps(Window, @PropEnumProc);
+        WindowInfo.Free;
+        WindowInfo := nil;
       end;
     end;
   end;

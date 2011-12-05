@@ -57,7 +57,7 @@ begin
     0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
     0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
     0, 0, HWND(nil), HMENU(nil), HInstance, nil);
-  AllocWindowInfo(FAppHandle);
+//  AllocWindowInfo(FAppHandle);
   // remove useless menuitems from sysmenu
   SysMenu := Windows.GetSystemMenu(FAppHandle, False);
   Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);

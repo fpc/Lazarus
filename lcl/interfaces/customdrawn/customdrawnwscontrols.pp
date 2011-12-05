@@ -31,7 +31,6 @@ uses
   // LCL
   SysUtils, Classes, Types,
   //
-  {$ifdef CD_Windows}Windows, customdrawn_WinProc,{$endif}
   Controls, LCLType, LCLProc, Forms, Graphics,
   lazcanvas, lazregions,
   // Widgetset
@@ -137,32 +136,9 @@ type
   published
   end;
 
-{$ifdef CD_Windows}
-type
-  TCreateWindowExParams = record
-    Buddy, Parent, Window: HWND;
-    Left, Top, Height, Width: integer;
-    WindowInfo, BuddyWindowInfo: PWindowInfo;
-    MenuHandle: HMENU;
-    Flags, FlagsEx: dword;
-    SubClassWndProc: pointer;
-    WindowTitle, StrCaption: String;
-    pClassName: PWideChar;
-  end;
-
-procedure PrepareCreateWindow(const AWinControl: TWinControl;
-  const CreateParams: TCreateParams; out Params: TCreateWindowExParams);
-procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams;
-  const AlternateCreateWindow: boolean);
-{$endif}
-
 implementation
 
 uses customdrawnwsforms;
-
-{$ifdef CD_Windows}
-  {$include customdrawnwscontrols_win.inc}
-{$endif}
 
 class function  TCDWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 begin
