@@ -5550,7 +5550,8 @@ begin
           {$IFDEF HASX11}
           // do not activate lazarus app if it wasn't active during
           // pager switch !
-          if (AOldState and QtWindowMinimized <> 0) and QtWidgetSet.FMinimizedByPager then
+          if (AOldState and QtWindowMinimized <> 0) and
+            QtWidgetSet.FMinimizedByPager then
               QtWidgetSet.FMinimizedByPager := False
           else
           {$ENDIF}
