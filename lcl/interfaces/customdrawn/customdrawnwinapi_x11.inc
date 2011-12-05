@@ -4292,12 +4292,12 @@ end;*)
   returns the current widget Left, Top, relative to the client origin of its
   parent
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.GetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
+function TCDWidgetSet.BackendGetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
 var
   R: TRect;
 begin
   {$ifdef VerboseCDWinAPI}
-    WriteLn('[WinAPI GetWindowRelativePosition]');
+    WriteLn('[WinAPI BackendGetWindowRelativePosition]');
   {$endif}
 {  if Handle = 0 then}
     Exit(False);
@@ -4314,10 +4314,10 @@ end;
 
   Returns the current widget Width and Height
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
+function TCDWidgetSet.BackendGetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
 begin
   {$ifdef VerboseCDWinAPI}
-    WriteLn('[WinAPI GetWindowSize]');
+    WriteLn('[WinAPI BackendGetWindowSize]');
   {$endif}
   if Handle = 0 then Exit(False);
 

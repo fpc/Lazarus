@@ -518,7 +518,7 @@ begin
     Result:=0;
 end;*)
 
-function TCDWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean;
+function TCDWidgetSet.BackendGetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean;
 begin
   if Handle<>0 then
   begin
@@ -529,18 +529,18 @@ begin
     Result:=False;
 end;
 
-(*function TCocoaWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
+function TCDWidgetSet.BackendGetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
 var
   r   : TRect;
 begin
-  if Handle<>0 then begin
+  {if Handle<>0 then begin
     Result:=True;
     r:=NSObject(Handle).lclFrame;
     Width:=R.Right-R.Left;
     Height:=R.Bottom-R.Top;
-  end else
+  end else   }
     Result:=False;
-end;*)
+end;
 
 function TCDWidgetSet.BackendInvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean): Boolean;
 begin
@@ -710,14 +710,9 @@ begin
 {  // Form DC
   if lFormHandle.Canvas = nil then lFormHandle.Canvas := TLazCanvas.create(nil);
   Result := HDC(lFormHandle.Canvas);}
-end;       *)
-
-function TCDWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
-begin
-
 end;
 
-(*function TCocoaWidgetSet.SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
+function TCocoaWidgetSet.SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 var
   dc: TCocoaContext;
   gdi: TCocoaGDIObject;
