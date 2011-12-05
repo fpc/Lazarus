@@ -434,7 +434,7 @@ type
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
     property ImageLayout: TButtonLayout read FImageLayout write SetImageLayout default blGlyphRight;
     property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
-    property PrefixOption: TPrefixOption read FPrefixOption write SetPrefixOption;
+    property PrefixOption: TPrefixOption read FPrefixOption write SetPrefixOption default poNone;
   end;
 
   { TGridColumn }
