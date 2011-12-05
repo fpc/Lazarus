@@ -1,4 +1,4 @@
-{%MainUnit customdrawnint.pp}
+{%MainUnit customdrawnint.pas}
 {******************************************************************************
                   All CustomDrawn interface support routines
                    Initial Revision  : Sat Jan 17 19:00:00 2004
@@ -422,10 +422,15 @@ var
   lRawImage: TRawImage;
   lBitmap: TCDBitmap;
 begin
+  {$ifdef VerboseCDBitmap}
+  DebugLn(Format(':>[TCDWidgetSet.RawImage_CreateBitmaps] ARawImage.Description=%s', [ARawImage.Description.AsString]));
+  {$endif}
+
   Result := False;
   ABitmap := 0;
   AMask := 0;
 
+  // Copy the data
   if ARawImage.DataSize > 0 then
   begin
     NewData := GetMem(ARawImage.DataSize);
@@ -437,14 +442,15 @@ begin
   // this is only a rough implementation, there is no check against bitsperpixel
   lBitmap := TCDBitmap.Create;
   ABitmap := HBITMAP(lBitmap);
-  lRawImage := ARawImage;
+  System.Move(ARawImage, lRawImage, SizeOf(TRawImage));
   lRawImage.Data := NewData;
   lBitmap.Image := TLazIntfImage.Create(lRawImage, True);
   Result := ABitmap <> 0;
-  
-  if ASkipMask then Exit;
 
-  AMask := 0;
+  // Currently we dont support the Mask
+  if not ASkipMask then
+  begin
+    AMask := 0;
 
 {  if (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
   begin
@@ -455,6 +461,11 @@ begin
     NewData := nil;
     
   AMask := HBitmap(TQtImage.Create(NewData, Desc.Width, Desc.Height, QImageFormat_Mono, True));}
+  end;
+
+  {$ifdef VerboseCDBitmap}
+  DebugLn(Format(':<[TCDWidgetSet.RawImage_CreateBitmaps] out ABitmap=%x AMask=%x', [ABitmap, AMask]));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -470,6 +481,10 @@ var
   CDBitmap: TCDBitmap;
   lRawImage: TRawImage;
 begin
+  {$ifdef VerboseCDBitmap}
+  DebugLn(Format('[TCDWidgetSet.RawImage_DescriptionFromBitmap] ABitmap=%x', [ABitmap]));
+  {$endif}
+
   Result := IsValidBitmap(ABitmap);
   if not Result then
   begin
@@ -512,6 +527,10 @@ function TCDWidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMa
 var
   CDBitmap: TCDBitmap;
 begin
+  {$ifdef VerboseCDBitmap}
+  DebugLn(Format('[TCDWidgetSet.RawImage_FromBitmap] ABitmap=%x', [ABitmap]));
+  {$endif}
+
   Result := IsValidBitmap(ABitmap);
   if not Result then
   begin
@@ -719,10 +738,14 @@ end;*)
   Params: AFlags:
           ADesc:
   Returns:
-
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean;
 begin
+  {$ifdef VerboseCDBitmap}
+  DebugLn(Format('[TCDWidgetSet.RawImage_QueryDescription] AFlags=%s', [RawImageQueryFlagsToString(AFlags)]));
+  {$endif}
+
+  // The default implementation is good enough, don't change this without a very good reason
   Result := inherited RawImage_QueryDescription(AFlags, ADesc);
 end;
 

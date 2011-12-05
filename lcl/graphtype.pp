@@ -285,6 +285,7 @@ function CopyImageData(AWidth, AHeight, ARowStride: Integer; ABPP: Word;
                        ASource: Pointer; const ARect: TRect; ASourceOrder: TRawImageLineOrder;
                        ADestinationOrder: TRawImageLineOrder; ADestinationEnd: TRawImageLineEnd;
                        out ADestination: Pointer; out ASize: PtrUInt): Boolean;
+function RawImageQueryFlagsToString(AFlags: TRawImageQueryFlags): string;
 
 var
   MissingBits: array[0..15] of array[0..7] of word;
@@ -293,7 +294,6 @@ implementation
 
 uses
   Math;
-
 
 {------------------------------------------------------------------------------
   Function: CopyImageData
@@ -453,6 +453,18 @@ begin
     Dec(LineCount);
   end;
   Result := True;
+end;
+
+function RawImageQueryFlagsToString(AFlags: TRawImageQueryFlags): string;
+begin
+  Result := '';
+  if riqfMono in AFlags then Result := Result + 'riqfMono ';
+  if riqfGrey in AFlags then Result := Result + 'riqfGrey ';
+  if riqfRGB in AFlags then Result := Result + 'riqfRGB ';
+  if riqfAlpha in AFlags then Result := Result + 'riqfAlpha ';
+  if riqfMask in AFlags then Result := Result + 'riqfMask ';
+  if riqfPalette in AFlags then Result := Result + 'riqfPalette ';
+  if riqfUpdate in AFlags then Result := Result + 'riqfUpdate ';
 end;
 
 {------------------------------------------------------------------------------
@@ -1041,7 +1053,6 @@ begin
   end;
   Result := True;
 end;
-
 
 { TRawImage }
 

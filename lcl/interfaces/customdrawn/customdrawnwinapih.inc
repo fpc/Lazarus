@@ -31,9 +31,9 @@ function Arc(DC: HDC; Left,Top,Right,Bottom,angle1,angle2 : Integer): Boolean; o
 (*function AngleChord(DC: HDC; x1, y1, x2, y2, angle1, angle2: Integer): Boolean; override;*)
 
 function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
-(*function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
+function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 
-function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
+(*function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
 function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer; override;
 function ClientToScreen(Handle: HWND; var P: TPoint) : Boolean; override;
 
@@ -214,13 +214,13 @@ function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
 function SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean):longint; override;
 function ShowCaret(hWnd: HWND): Boolean; override;
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;
-function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
+function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;*)
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean; override;
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
   XMask, YMask: Integer; Rop: DWORD): Boolean; override;
-function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool; override;*)
+(*function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool; override;*)
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
 (*function UpdateWindow(Handle: HWND): Boolean; override;

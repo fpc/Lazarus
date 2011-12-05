@@ -69,7 +69,7 @@ end;*)
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct): hdc;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     DebugLn('Trace:> [WinAPI BeginPaint] Handle=', dbghex(Handle));
   {$endif}
   Result := 0;
@@ -109,22 +109,22 @@ begin
     WriteLn('Trace:< [WinAPI BeginPaint] Result=', dbghex(Result));
   {$endif}*)
 end;
-(*
-function TQtWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
+
+function TCDWidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [TQtWidgetSet.BitBlt]');
+  {$ifdef VerboseCDDrawing}
+    WriteLn('Trace:> [TCDWidgetSet.BitBlt]');
   {$endif}
 
   Result := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width,
                        Height, ROP);
 
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [TQtWidgetSet.BitBlt]');
+  {$ifdef VerboseCDDrawing}
+    WriteLn('Trace:< [TCDWidgetSet.BitBlt]');
   {$endif}
 end;
 
-function TQtWidgetSet.CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer;
+(*function TQtWidgetSet.CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer;
 begin
   {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
   	WriteLn('***** [WinAPI TQtWidgetSet.CallNextHookEx] missing implementation ');
@@ -394,7 +394,7 @@ function TCDWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 var
   lBrush: TFPCustomBrush;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     DebugLn(Format(':>[TCDWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x',
       [LogBrush.lbStyle, LogBrush.lbColor]));
   {$endif}
@@ -468,7 +468,7 @@ begin
     DebugLn('TQtWidgetSet.CreateBrushIndirect: Failed');
   end;*)
 
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     DebugLn(':<[WinAPI CreateBrushIndirect] Result: ', dbghex(Result));
   {$endif}
 end;
@@ -485,16 +485,19 @@ end;*)
   Returns: handle to a memory device context
 
   Creates a memory device context (DC) compatible with the specified device.
+
+  This is utilized for example for creating a Canvas for a Bitmap, by later using
+  SelectObject to select the bitmap
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.CreateCompatibleDC(DC: HDC): HDC;
 begin
-  {$ifdef VerboseCDWinAPI}
-    WriteLn('[WinAPI CreateCompatibleDC] DC: ', dbghex(DC));
+  {$ifdef VerboseCDDrawing}
+    DebugLn('[WinAPI CreateCompatibleDC] DC: ', dbghex(DC));
   {$endif}
-  Result := 0;//HDC(TQtDeviceContext.Create(nil, True));
+  Result := HDC(TLazCanvas.Create(nil));
 end;
-(*
-{------------------------------------------------------------------------------
+
+(*{------------------------------------------------------------------------------
   Function: CreateEllipticRgn
   Params:  p1 - X position of the top-left corner
            p2 - Y position of the top-left corner
@@ -666,7 +669,7 @@ function TCDWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 var
   lPen: TFPCustomPen;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     DebugLn(Format(':>[TCDWidgetSet.CreatePenIndirect]  Style: %d, Color: %8x',
       [LogPen.lopnStyle, LogPen.lopnColor]));
   {$endif}
@@ -791,11 +794,11 @@ var
   aObject: TObject;
 //  APaintEngine: QPaintEngineH;
 //  APainter: QPainterH;
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     ObjType: string;
   {$endif}
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     DebugLn('Trace:> [WinAPI DeleteObject] GDIObject: ', dbghex(GDIObject));
     ObjType := 'Unidentifyed';
   {$endif}
@@ -816,7 +819,7 @@ begin
    ------------------------------------------------------------------------------}
   if aObject is TFPCustomFont then
   begin
-    {$ifdef VerboseCDWinAPI}
+    {$ifdef VerboseCDDrawing}
       ObjType := 'Font';
     {$endif}
   end
@@ -825,7 +828,7 @@ begin
    ------------------------------------------------------------------------------}
   else if aObject is TFPCustomBrush then
   begin
-    {$ifdef VerboseCDWinAPI}
+    {$ifdef VerboseCDDrawing}
       ObjType := 'Brush';
     {$endif}
   end
@@ -863,7 +866,7 @@ begin
    ------------------------------------------------------------------------------}
   else if aObject is TFPCustomPen then
   begin
-    {$ifdef VerboseQtWinAPI}
+    {$ifdef VerboseCDDrawing}
       ObjType := 'Pen';
     {$endif}
   end;
@@ -1487,13 +1490,13 @@ var
   LazDC: TLazCanvas absolute DC;
   R: TRect;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
   DebugLn(Format(':>[WinAPI Ellipse] DC=%s', [dbghex(DC)]));
   {$endif}
 
   if not IsValidDC(DC) then
   begin
-    {$ifdef VerboseCDWinAPI}
+    {$ifdef VerboseCDDrawing}
     DebugLn(':<[WinAPI Rectangle] Invalid DC!');
     {$endif}
     Exit(False);
@@ -2239,7 +2242,7 @@ var
 begin
   Result := False;
 
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     DebugLn('[WinAPI FillRect Rect=', dbgs(Rect),' Brush=', dbghex(Brush));
   {$endif}
 
@@ -2745,7 +2748,7 @@ var
   lWinControl: TWinControl;
   lFormHandle: TCDForm;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     DebugLn(':>[WinAPI GetDC] hWnd: ', dbghex(hWnd));
   {$endif}
 
@@ -2781,7 +2784,7 @@ begin
   // to receive something which can be drawn to anyway
   if Result = 0 then Result := HDC(CDWidgetset.ScreenDC);
 
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     DebugLn(':<[WinAPI GetDC] Result: ', dbghex(Result));
   {$endif}
 end;
@@ -4655,7 +4658,7 @@ var
   lControlHandle: TCDWinControl;
   lControl: TWinControl;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     WriteLn('[WinAPI InvalidateRect]');
   {$endif}
   if AHandle = 0 then exit(False);
@@ -4728,7 +4731,7 @@ var
   PenPos, LastPos: TPoint;
   LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     DebugLn(Format('[TCDWidgetSet.LineTo] DC=%x X=%d Y=%d', [DC, X, Y]));
   {$endif}
 
@@ -4804,7 +4807,7 @@ function TCDWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolea
 var
   LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     DebugLn('[WinAPI MoveToEx]',
      ' DC:', dbghex(DC),
      ' X:', dbgs(X),
@@ -4863,7 +4866,7 @@ end;*)
 function TCDWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: Boolean): Boolean;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     WriteLn('[WinAPI PolyBezier] DC: ', dbghex(DC));
   {$endif}
   Result := inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
@@ -4881,7 +4884,7 @@ var
   lPoints: array of TPoint;
   i: Integer;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
   DebugLn(Format(':>[WinAPI Polygon] DC=%s', [dbghex(DC)]));
   {$endif}
 
@@ -4890,7 +4893,7 @@ begin
   SetLength(lPoints, NumPts);
   for i := 0 to NumPts-1 do
   begin
-    {$ifdef VerboseCDWinAPI}
+    {$ifdef VerboseCDDrawing}
     LCLProc.DbgOut(Format(' P=%d,%d', [Points[i].X, Points[i].Y]));
     {$endif}
     lPoints[i] := Points[i];
@@ -4899,7 +4902,7 @@ begin
   LazDC.Polygon(lPoints);
   Result := True;
 
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
   DebugLn('');
   {$endif}
 end;
@@ -4915,7 +4918,7 @@ var
   lPoints: array of TPoint;
   i: Integer;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
   DebugLn(Format(':>[WinAPI Polygon] DC=%s', [dbghex(DC)]));
   {$endif}
 
@@ -4965,13 +4968,13 @@ function TCDWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
   DebugLn(Format(':>[WinAPI Rectangle] DC=%s', [dbghex(DC)]));
   {$endif}
 
   if not IsValidDC(DC) then
   begin
-    {$ifdef VerboseCDWinAPI}
+    {$ifdef VerboseCDDrawing}
     DebugLn(':<[WinAPI Rectangle] Invalid DC!');
     {$endif}
     Exit(False);
@@ -5310,11 +5313,11 @@ var
   lPen: TFPCustomPen absolute AObject;
   lBrush: TFPCustomBrush absolute AObject;
   lOrigBrush: TFPCustomBrush;
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
   ObjType: string;
   {$endif}
 begin
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     DebugLn(Format(':>[TCDWidgetSet.SelectObject] DC=%s GDIObj=%s',
       [dbghex(DC), dbghex(GDIObj)]));
   {$endif}
@@ -5323,7 +5326,7 @@ begin
 
   if not IsValidDC(DC) then
   begin
-    {$ifdef VerboseCDWinAPI}
+    {$ifdef VerboseCDDrawing}
       DebugLn(':<[TCDWidgetSet.SelectObject] Invalid DC');
     {$endif}
 
@@ -5332,7 +5335,7 @@ begin
 
   if not IsValidGDIObject(GDIObj) then
   begin
-    {$ifdef VerboseQtWinAPI}
+    {$ifdef VerboseCDDrawing}
       DebugLn(':<[TCDWidgetSet.SelectObject] Invalid GDI Object');
     {$endif}
 
@@ -5353,7 +5356,7 @@ begin
   end
   else*) if aObject is TFPCustomPen then
   begin
-    {$ifdef VerboseCDWinAPI}ObjType := 'Pen';{$endif}
+    {$ifdef VerboseCDDrawing}ObjType := 'Pen';{$endif}
 
     Result := HGDIOBJ(TLazCanvas(DC).AssignedPen);
     TLazCanvas(DC).AssignPenData(lPen); // := doesn't work and Assign() raises exceptions
@@ -5361,30 +5364,27 @@ begin
   end
   else if aObject is TFPCustomBrush then
   begin
-    {$ifdef VerboseCDWinAPI}ObjType := 'Brush';{$endif}
+    {$ifdef VerboseCDDrawing}ObjType := 'Brush';{$endif}
 
     Result := HGDIOBJ(TLazCanvas(DC).AssignedBrush);
     TLazCanvas(DC).AssignBrushData(lBrush); // := doesn't work and Assign() raises exceptions
     TLazCanvas(DC).AssignedBrush := lBrush;
-  end(*
-  else if aObject is TQtImage then
+  end
+  else if aObject is TCDBitmap then
   begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Image';
-    {$endif}
+    {$ifdef VerboseCDDrawing}ObjType := 'Bitmap';{$endif}
 
-    Result := HGDIOBJ(TQtDeviceContext(DC).vImage);
+    Result := HGDIOBJ(TLazCanvas(DC).Image);
 
-    // TODO: is this also saved in qpainter_save?
-    TQtDeviceContext(DC).setImage(TQtImage(aObject));
-  end else
+    TLazCanvas(DC).Image := TCDBitmap(aObject).Image;
+  end; (*else
   if AObject is TQtRegion then
   begin
     Result := HGDIOBJ(TQtDeviceContext(DC).getClipRegion);
     SelectClipRGN(DC, HRGN(GDIObj));
   end*);
 
-  {$ifdef VerboseCDWinAPI}
+  {$ifdef VerboseCDDrawing}
     DebugLn(':<[TCDWidgetSet.SelectObject] Result=', dbghex(Result), ' ObjectType=', ObjType);
   {$endif}
 end;
@@ -6230,7 +6230,7 @@ begin
     end;
     Result := True;
   end;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: StretchBlt
@@ -6250,7 +6250,7 @@ end;
   destination device context.
   If SrcDC contains a mask the pixmap will be copied with this transparency.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+function TCDWidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean;
 begin
   Result := StretchMaskBlt(DestDC,X,Y,Width,Height,
@@ -6278,32 +6278,30 @@ end;
   Sizing is done according to the stretching mode currently set in the
   destination device context.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+function TCDWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
   XMask, YMask: Integer; Rop: DWORD): Boolean;
 var
-  SrcQDC: TQtDeviceContext absolute SrcDC;
-  DstQDC: TQtDeviceContext absolute DestDC;
+  SrcLazDC: TLazCanvas absolute SrcDC;
+  DstLazDC: TLazCanvas absolute DestDC;
   SrcRect, DstRect, MaskRect: TRect;
-  Image, TmpImage, QMask, TmpMask: QImageH;
-  TmpPixmap: QPixmapH;
-  SrcMatrix: QTransformH;
-  dx, dy: integer;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI StretchMaskBlt]',
-     ' DestDC:', dbghex(DestDC),
-     ' SrcDC:', dbghex(SrcDC),
-     ' Image:', dbghex(PtrInt(Image)),
-     ' X:', dbgs(X), ' Y:', dbgs(Y),
-     ' W:', dbgs(Width), ' H:', dbgs(Height),
-     ' XSrc:', dbgs(XSrc), ' YSrc:', dbgs(YSrc),
-     ' WSrc:', dbgs(SrcWidth), ' HSrc:', dbgs(SrcHeight));
+  {$ifdef VerboseCDDrawing}
+    DebugLn('[WinAPI StretchMaskBlt]' +
+     ' DestDC:' + dbghex(DestDC) +
+     ' SrcDC:' + dbghex(SrcDC) +
+//     ' Image:', dbghex(PtrInt(Image)),
+     ' X:' + dbgs(X) + ' Y:' + dbgs(Y) +
+     ' W:' + dbgs(Width) + ' H:', dbgs(Height) +
+     ' XSrc:' + dbgs(XSrc) + ' YSrc:' + dbgs(YSrc) +
+     ' WSrc:' + dbgs(SrcWidth) + ' HSrc:' + dbgs(SrcHeight));
   {$endif}
 
   Result := False;
 
-  SrcMatrix := QPainter_transform(SrcQDC.Widget);
+  DstLazDC.AlphaBlend(SrcLazDC, X, Y, XSrc, YSrc, SrcWidth, SrcHeight);
+
+(*  SrcMatrix := QPainter_transform(SrcQDC.Widget);
   if SrcQDC.vImage = nil then
   begin
     if SrcQDC.Parent <> nil then
@@ -6388,12 +6386,12 @@ begin
     DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
 
   if SrcQDC.vImage = nil then
-    QImage_destroy(Image);
+    QImage_destroy(Image);  *)
 
   Result := True;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: SystemParametersInfo
   Params: uiAction: System-wide parameter to be retrieved or set
           uiParam: Depends on the system parameter being queried or set
