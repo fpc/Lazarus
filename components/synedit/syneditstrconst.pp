@@ -406,6 +406,14 @@ resourcestring
   SYNS_emcSynEditCommand           = 'IDE Command';
   SYNS_emcWheelScrollDown          = 'Wheel scroll down';
   SYNS_emcWheelScrollUp            = 'Wheel scroll up';
+  SYNS_emcWheelHorizScrollDown     = 'Wheel scroll down (Horizontal)';
+  SYNS_emcWheelHorizScrollUp       = 'Wheel scroll up (Horizontal)';
+  SYNS_emcWheelVertScrollDown      = 'Wheel scroll down (Vertical)';
+  SYNS_emcWheelVertScrollUp        = 'Wheel scroll up (Vertical)';
+  SYNS_emcWheelZoomOut             = 'Wheel zoom out';
+  SYNS_emcWheelZoomIn              = 'Wheel zoom in';
+  SYNS_emcWheelZoomNorm            = 'Wheel zoom default';
+
   SYNS_emcContextMenuCaretMove_opt = '"Move caret, when selection exists", Never, "Click outside", Always';
 
 implementation

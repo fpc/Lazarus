@@ -304,7 +304,7 @@ type
     constructor Create(AHandleOwner: TWinControl);
     destructor Destroy; override;
     procedure  Hide; // Keep visible = true
-    procedure  DestroyCaret;
+    procedure  DestroyCaret(SkipHide: boolean = False);
     procedure  Lock;
     procedure  UnLock;
     property HandleOwner: TWinControl read FHandleOwner;
@@ -1614,7 +1614,7 @@ begin
   HideCaret;
 end;
 
-procedure TSynEditScreenCaret.DestroyCaret;
+procedure TSynEditScreenCaret.DestroyCaret(SkipHide: boolean = False);
 begin
   if FCurrentCreated and HandleAllocated then begin
     {$IFDeF SynCaretDebug}
@@ -1624,7 +1624,8 @@ begin
   end;
   FCurrentCreated := False;
   FCurrentVisible := False;
-  FVisible := False;
+  if not SkipHide then
+    FVisible := False;
 end;
 
 procedure TSynEditScreenCaret.Lock;
@@ -1731,6 +1732,7 @@ begin
       end;
   end;
   CalcExtraLineChars;
+  DestroyCaret(True);
   UpdateDisplay;
 end;
 

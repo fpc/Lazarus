@@ -2401,7 +2401,7 @@ begin
       moTMIgnore: {nothing} ;
       moTMDeclarationJump:
         begin
-          AddCommand(emcMouseLink, False, mbMiddle, ccSingle, cdDown, [ssCtrl], [ssCtrl], emcoMouseLinkShow);
+          AddCommand(emcMouseLink, False, mbMiddle, ccSingle, cdDown, [ssCtrl], [ssCtrl], emcoMouseLinkShow, 999);
           AddCommand(emcMouseLink, False, mbMiddle, ccSingle, cdDown, [], [], emcoMouseLinkHide);
         end;
     end;
@@ -2417,11 +2417,17 @@ begin
           AddCommand(emcSynEditCommand, False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl], ecFindBlockOtherEnd, 1);
         end;
     end;
+
+    AddCommand(emcWheelZoomNorm,         False,  mbMiddle,    ccAny, cdDown, [ssCtrl], [ssCtrl]);
   end;
 
   with FMainActions do begin
     AddCommand(emcWheelScrollDown,       False,  mbWheelDown, ccAny, cdDown, [], []);
-    AddCommand(emcWheelScrollUp,         False,  mbWheelUp, ccAny, cdDown, [], []);
+    AddCommand(emcWheelScrollUp,         False,  mbWheelUp,   ccAny, cdDown, [], []);
+
+    AddCommand(emcWheelZoomOut,          False,  mbWheelDown, ccAny, cdDown, [ssCtrl], [ssCtrl]);
+    AddCommand(emcWheelZoomIn,           False,  mbWheelUp,   ccAny, cdDown, [ssCtrl], [ssCtrl]);
+    AddCommand(emcWheelZoomNorm,         False,  mbMiddle,    ccAny, cdDown, [ssCtrl], [ssCtrl]);
   end;
 
   if FTextDrag then

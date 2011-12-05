@@ -46,7 +46,8 @@ type
     emDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
     emRightMouseMovesCursor,   // When clicking with the right mouse for a popup menu, move the cursor to that location
     emDoubleClickSelectsLine,  // Select line on double click
-    emShowCtrlMouseLinks       // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
+    emShowCtrlMouseLinks,      // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
+    emCtrlWheelZoom
   );
   TSynEditorMouseOptions = set of TSynEditorMouseOption;
 
@@ -85,6 +86,7 @@ type
   private
     FClickDir: TSynMAClickDir;
     FOption: TSynEditorMouseCommandOpt;
+    FOption2: Integer;
     FPriority: TSynEditorMouseCommandOpt;
     FShift, FShiftMask: TShiftState;
     FButton: TSynMouseButton;
@@ -97,6 +99,7 @@ type
     procedure SetCommand(const AValue: TSynEditorMouseCommand);
     procedure SetMoveCaret(const AValue: Boolean);
     procedure SetOption(const AValue: TSynEditorMouseCommandOpt);
+    procedure SetOption2(AValue: Integer);
     procedure SetPriority(const AValue: TSynEditorMouseCommandOpt);
     procedure SetShift(const AValue: TShiftState);
     procedure SetShiftMask(const AValue: TShiftState);
@@ -120,6 +123,7 @@ type
     property Command: TSynEditorMouseCommand read FCommand write SetCommand;
     property MoveCaret: Boolean read FMoveCaret write SetMoveCaret              default False;
     property Option: TSynEditorMouseCommandOpt read FOption write SetOption     default 0;
+    property Option2: Integer read FOption2 write SetOption2                    default 0;
     property Priority: TSynEditorMouseCommandOpt read FPriority write SetPriority default 0;
   end;
 
@@ -152,7 +156,8 @@ type
              const AButton: TSynMouseButton; const AClickCount: TSynMAClickCount;
              const ADir: TSynMAClickDir; const AShift, AShiftMask: TShiftState;
              const AOpt: TSynEditorMouseCommandOpt = 0;
-             const APrior: Integer = 0);
+             const APrior: Integer = 0;
+             const AOpt2: integer = 0);
   public
     property Items[Index: Integer]: TSynEditMouseAction read GetItem
       write SetItem; default;
@@ -236,30 +241,44 @@ const
   emcWheelScrollDown          = TSynEditorMouseCommand(18);
   emcWheelScrollUp            = TSynEditorMouseCommand(19);
 
-  emcMax = 19;
+  emcWheelVertScrollDown      = TSynEditorMouseCommand(20);
+  emcWheelVertScrollUp        = TSynEditorMouseCommand(21);
+  emcWheelHorizScrollDown     = TSynEditorMouseCommand(22);
+  emcWheelHorizScrollUp       = TSynEditorMouseCommand(23);
+
+  emcWheelZoomOut             = TSynEditorMouseCommand(24);
+  emcWheelZoomIn              = TSynEditorMouseCommand(25);
+  emcWheelZoomNorm            = TSynEditorMouseCommand(26);
+
+  emcMax = 26;
 
   emcPluginFirst = 20000;
 
   // Options
-  emcoSelectionStart          = 0;
-  emcoSelectionContinue       = 1;
+  emcoSelectionStart          = TSynEditorMouseCommandOpt(0);
+  emcoSelectionContinue       = TSynEditorMouseCommandOpt(1);
 
-  emcoSelectLineSmart         =  0;
-  emcoSelectLineFull          =  1;
-  emcoMouseLinkShow           =  0;
-  emcoMouseLinkHide           =  1;
+  emcoSelectLineSmart         =  TSynEditorMouseCommandOpt(0);
+  emcoSelectLineFull          =  TSynEditorMouseCommandOpt(1);
+  emcoMouseLinkShow           =  TSynEditorMouseCommandOpt(0);
+  emcoMouseLinkHide           =  TSynEditorMouseCommandOpt(1);
 
-  emcoCodeFoldCollapsOne      = 0;
-  emcoCodeFoldCollapsAll      = 1;
-  emcoCodeFoldCollapsAtCaret  = 2;
-  emcoCodeFoldCollapsPreCaret = 3;
-  emcoCodeFoldExpandOne       = 0;
-  emcoCodeFoldExpandAll       = 1;
+  emcoCodeFoldCollapsOne      = TSynEditorMouseCommandOpt(0);
+  emcoCodeFoldCollapsAll      = TSynEditorMouseCommandOpt(1);
+  emcoCodeFoldCollapsAtCaret  = TSynEditorMouseCommandOpt(2);
+  emcoCodeFoldCollapsPreCaret = TSynEditorMouseCommandOpt(3);
+  emcoCodeFoldExpandOne       = TSynEditorMouseCommandOpt(0);
+  emcoCodeFoldExpandAll       = TSynEditorMouseCommandOpt(1);
 
   // menu, and caret move
-  emcoSelectionCaretMoveNever     = 0;
-  emcoSelectionCaretMoveOutside   = 1; // click is outside selected area
-  emcoSelectionCaretMoveAlways    = 2;
+  emcoSelectionCaretMoveNever     = TSynEditorMouseCommandOpt(0);
+  emcoSelectionCaretMoveOutside   = TSynEditorMouseCommandOpt(1); // click is outside selected area
+  emcoSelectionCaretMoveAlways    = TSynEditorMouseCommandOpt(2);
+
+  emcWheelScrollSystem         = TSynEditorMouseCommandOpt(0); // Opt2 > 0 ==> percentage
+  emcWheelScrollLines          = TSynEditorMouseCommandOpt(1); // Opt2 > 0 ==> amount of lines
+  emcWheelScrollPages          = TSynEditorMouseCommandOpt(2); // Opt2 > 0 ==> percentage
+  emcWheelScrollPagesLessOne   = TSynEditorMouseCommandOpt(3); // Opt2 > 0 ==> percentage
 
 // Plugins don't know of other plugins, so they need to map the codes
 // Plugins all start at ecPluginFirst (overlapping)
@@ -280,7 +299,7 @@ const
 implementation
 
 const
-  SynMouseCommandNames: array [0..17] of TIdentMapEntry = (
+  SynMouseCommandNames: array [0..24] of TIdentMapEntry = (
     (Value: emcNone; Name: 'emcNone'),
     (Value: emcStartSelections; Name: 'emcStartSelections'),
     (Value: emcStartColumnSelections; Name: 'emcStartColumnSelections'),
@@ -290,22 +309,30 @@ const
     (Value: emcSelectLine; Name: 'emcSelectLine'),
     (Value: emcSelectPara; Name: 'emcSelectPara'),
 
-    (Value: emcStartDragMove; Name: 'emcStartDragMove'),
+    (Value: emcStartDragMove;  Name: 'emcStartDragMove'),
     (Value: emcPasteSelection; Name: 'emcPasteSelection'),
-    (Value: emcMouseLink; Name: 'emcMouseLink'),
+    (Value: emcMouseLink;      Name: 'emcMouseLink'),
 
-    (Value: emcContextMenu; Name: 'emcContextMenu'),
+    (Value: emcContextMenu;    Name: 'emcContextMenu'),
 
-    (Value: emcOnMainGutterClick; Name: 'emcOnMainGutterClick'),
+    (Value: emcOnMainGutterClick;   Name: 'emcOnMainGutterClick'),
 
-    (Value: emcCodeFoldCollaps; Name: 'emcCodeFoldCollaps'),
-    (Value: emcCodeFoldExpand; Name: 'emcCodeFoldExpand'),
+    (Value: emcCodeFoldCollaps;     Name: 'emcCodeFoldCollaps'),
+    (Value: emcCodeFoldExpand;      Name: 'emcCodeFoldExpand'),
     (Value: emcCodeFoldContextMenu; Name: 'emcCodeFoldContextMenu'),
 
-    (Value: emcSynEditCommand; Name: 'emcSynEditCommand'),
+    (Value: emcSynEditCommand;  Name: 'emcSynEditCommand'),
 
-    (Value: emcWheelScrollDown; Name: 'emcWheelScrollDown'),
-    (Value: emcWheelScrollUp; Name: 'emcWheelScrollUp')
+    (Value: emcWheelScrollDown;       Name: 'emcWheelScrollDown'),
+    (Value: emcWheelScrollUp;         Name: 'emcWheelScrollUp'),
+    (Value: emcWheelVertScrollDown;   Name: 'emcWheelVertScrollDown'),
+    (Value: emcWheelVertScrollUp;     Name: 'emcWheelVertScrollUp'),
+    (Value: emcWheelHorizScrollDown;  Name: 'emcWheelHorizScrollDown'),
+    (Value: emcWheelHorizScrollUp;    Name: 'emcWheelHorizScrollUp'),
+
+    (Value: emcWheelZoomOut;     Name: 'emcWheelZoomOut'),
+    (Value: emcWheelZoomIn;      Name: 'emcWheelZoomIn'),
+    (Value: emcWheelZoomNorm;    Name: 'emcWheelZoomNorm')
 
   );
 
@@ -342,6 +369,14 @@ begin
 
     emcWheelScrollDown:       Result := SYNS_emcWheelScrollDown;
     emcWheelScrollUp:         Result := SYNS_emcWheelScrollUp;
+    emcWheelHorizScrollDown:  Result := SYNS_emcWheelHorizScrollDown;
+    emcWheelHorizScrollUp:    Result := SYNS_emcWheelHorizScrollUp;
+    emcWheelVertScrollDown:   Result := SYNS_emcWheelVertScrollDown;
+    emcWheelVertScrollUp:     Result := SYNS_emcWheelVertScrollUp;
+
+    emcWheelZoomOut:          Result := SYNS_emcWheelZoomOut;
+    emcWheelZoomIn:           Result := SYNS_emcWheelZoomIn;
+    emcWheelZoomNorm:         Result := SYNS_emcWheelZoomNorm;
 
     else Result := ''
   end;
@@ -494,6 +529,14 @@ begin
     TSynEditMouseActions(Collection).AssertNoConflict(self);
 end;
 
+procedure TSynEditMouseAction.SetOption2(AValue: Integer);
+begin
+  if FOption2 = AValue then Exit;
+  FOption2 := AValue;
+  if Collection <> nil then
+    TSynEditMouseActions(Collection).AssertNoConflict(self);
+end;
+
 procedure TSynEditMouseAction.SetPriority(const AValue: TSynEditorMouseCommandOpt);
 begin
   if FPriority = AValue then exit;
@@ -583,7 +626,8 @@ begin
         and (Other.Shift * self.ShiftMask = self.Shift * Other.ShiftMask)
         and ((Other.Command   <> self.Command) or  // Only conflicts, if Command differs
              (Other.MoveCaret <> self.MoveCaret) or
-             (Other.Option    <> self.Option) )
+             (Other.Option    <> self.Option) or
+             (Other.Option2   <> self.Option2) )
         and not(Other.IsFallback xor self.IsFallback)
         and (Other.Priority   = self.Priority);
 end;
@@ -599,6 +643,7 @@ begin
         and (Other.Priority   = self.Priority)
         and ((Other.Command   = self.Command) or IgnoreCmd)
         and ((Other.Option    = self.Option) or IgnoreCmd)
+        and ((Other.Option2   = self.Option2) or IgnoreCmd)
         and ((Other.MoveCaret = self.MoveCaret) or IgnoreCmd);
 end;
 
@@ -747,7 +792,7 @@ procedure TSynEditMouseActions.AddCommand(const ACmd: TSynEditorMouseCommand;
   const AMoveCaret: Boolean; const AButton: TSynMouseButton;
   const AClickCount: TSynMAClickCount; const ADir: TSynMAClickDir;
   const AShift, AShiftMask: TShiftState; const AOpt: TSynEditorMouseCommandOpt = 0;
-  const APrior: Integer = 0);
+  const APrior: Integer = 0; const AOpt2: integer = 0);
 var
   new: TSynEditMouseAction;
 begin
@@ -764,6 +809,7 @@ begin
       ShiftMask := AShiftMask;
       Option := AOpt;
       Priority := APrior;
+      Option2 := AOpt2;
     end;
   finally
     dec(FAssertLock);

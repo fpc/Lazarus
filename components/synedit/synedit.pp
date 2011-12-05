@@ -390,6 +390,7 @@ type
     fCharsInWindow: Integer;
     fCharWidth: Integer;
     fFontDummy: TFont;
+    FLastSetFontSize: Integer;
     {$IFDEF SYN_MBCSSUPPORT}
     fImeCount: Integer;
     fMBCSStepAside: Boolean;
@@ -1364,6 +1365,11 @@ procedure TSynEditMouseGlobalActions.InitForOptions(AnOptions: TSynEditorMouseOp
 begin
   AddCommand(emcWheelScrollDown,       False,  mbWheelDown, ccAny, cdDown, [], []);
   AddCommand(emcWheelScrollUp,         False,  mbWheelUp, ccAny, cdDown, [], []);
+
+  if emCtrlWheelZoom in AnOptions then begin
+    AddCommand(emcWheelZoomOut,        False,  mbWheelDown, ccAny, cdDown, [ssCtrl], [ssCtrl]);
+    AddCommand(emcWheelZoomIn,         False,  mbWheelUp,   ccAny, cdDown, [ssCtrl], [ssCtrl]);
+  end;
 end;
 
 { TSynEditMouseTextActions }
@@ -1821,6 +1827,7 @@ begin
   fFontDummy.Height := SynDefaultFontHeight;
   fFontDummy.Pitch := SynDefaultFontPitch;
   fFontDummy.Quality := SynDefaultFontQuality;
+  FLastSetFontSize := fFontDummy.Size;
   fLastMouseCaret := Point(-1,-1);
   FLastMousePoint := Point(-1,-1);
   fBlockIndent := 2;
@@ -2142,6 +2149,7 @@ end;
 
 procedure TCustomSynEdit.FontChanged(Sender: TObject);
 begin
+  FLastSetFontSize := Font.Size;
   RecalcCharExtent;
   SizeOrFontChanged(TRUE);
 end;
@@ -2595,6 +2603,7 @@ function TCustomSynEdit.DoHandleMouseAction(AnActionList: TSynEditMouseActions;
   AnInfo: TSynEditMouseActionInfo): Boolean;
 var
   CaretDone: Boolean;
+  AnAction: TSynEditMouseAction;
 
   procedure MoveCaret;
   begin
@@ -2602,14 +2611,49 @@ var
    CaretDone := True;
   end;
 
+  function GetWheelScrollAmount(APageSize: integer): integer;
+  const
+    WHEEL_PAGESCROLL = MAXDWORD;
+  begin
+    case AnAction.Option of
+      emcWheelScrollSystem:
+        begin
+          Result := Mouse.WheelScrollLines;
+          if (Result = WHEEL_PAGESCROLL) or (Result > APageSize) then
+            Result := APageSize;
+        end;
+      emcWheelScrollLines:
+        begin
+          Result := 1;
+          if AnAction.Option2 > 0 then
+            Result := AnAction.Option2;
+          if (Result > APageSize) then
+            Result := APageSize;
+          exit;
+        end;
+      emcWheelScrollPages:
+          Result := APageSize;
+      emcWheelScrollPagesLessOne:
+          Result := APageSize - 1;
+      else
+        begin
+          Result := Mouse.WheelScrollLines;
+          if (Result = WHEEL_PAGESCROLL) or (Result > APageSize) then
+            Result := APageSize;
+          exit;
+        end;
+    end;
+    if AnAction.Option2 > 0 then
+      Result := MulDiv(Result, AnAction.Option2, 100);
+    if (Result > APageSize) then
+      Result := APageSize;
+  end;
+
 var
   ACommand: TSynEditorMouseCommand;
   Handled: Boolean;
-  AnAction: TSynEditMouseAction;
   ClipHelper: TSynClipboardStream;
-  i: integer;
-const
-  WHEEL_PAGESCROLL = MAXDWORD;
+  i, j: integer;
 begin
   AnAction := nil;
   Result := False;
@@ -2654,6 +2698,22 @@ begin
     Result := True;
     CaretDone := AnInfo.CaretDone;
     MouseCapture := False;
+
+    if (ACommand = emcWheelScrollDown)
+    then begin
+      // sroll dependant on visible scrollbar / or not at all
+      if  (sfVertScrollbarVisible in fStateFlags) then ACommand := emcWheelVertScrollDown
+      else
+      if  (sfHorizScrollbarVisible in fStateFlags) then ACommand := emcWheelHorizScrollDown;
+    end;
+
+    if (ACommand = emcWheelScrollUp)
+    then begin
+      // sroll dependant on visible scrollbar / or not at all
+      if  (sfVertScrollbarVisible in fStateFlags) then ACommand := emcWheelVertScrollUp
+      else
+      if  (sfHorizScrollbarVisible in fStateFlags) then ACommand := emcWheelHorizScrollUp;
+    end;
 
     case ACommand of
       emcNone: ; // do nothing, but result := true
@@ -2756,19 +2816,38 @@ begin
             MoveCaret;
           CommandProcessor(AnAction.Option, #0, nil);
         end;
-      emcWheelScrollDown:
+      emcWheelHorizScrollDown, emcWheelHorizScrollUp:
         begin
-          i := Mouse.WheelScrollLines;
-          if (i = WHEEL_PAGESCROLL) or (i > fLinesInWindow) then
-            i := fLinesInWindow;
-          TopView := TopView - i;
+          i := GetWheelScrollAmount(fCharsInWindow);
+          if ACommand = emcWheelHorizScrollUp then i := -i;
+          LeftChar := LeftChar + i;
         end;
-      emcWheelScrollUp:
+      emcWheelVertScrollDown, emcWheelVertScrollUp:
         begin
-          i := Mouse.WheelScrollLines;
-          if (i = WHEEL_PAGESCROLL) or (i > fLinesInWindow) then
-            i := fLinesInWindow;
+          i := GetWheelScrollAmount(fLinesInWindow);
+          if ACommand = emcWheelVertScrollUp then i := -i;
           TopView := TopView + i;
+        end;
+      emcWheelZoomOut, emcWheelZoomIn:
+        begin
+          if ( (ACommand = emcWheelZoomOut) and (abs(Font.Size) < 3) ) or
+             ( (ACommand = emcWheelZoomIn) and (abs(Font.Size) > 50) )
+          then begin
+            Result := False;
+          end
+          else begin
+            j := 1;
+            if ACommand = emcWheelZoomIn then j := -1;
+            i := FLastSetFontSize;
+            if Font.Size < 0
+            then Font.Size := Font.Size + j
+            else Font.Size := Font.Size - j;
+            FLastSetFontSize := i;
+          end;
+        end;
+      emcWheelZoomNorm:
+        begin
+          Font.Size := FLastSetFontSize;
         end;
       else
         Result := False; // ACommand was not handled => Fallback to parent Context
@@ -7202,12 +7281,12 @@ begin
   try
     while FMouseWheelAccumulator > WHEEL_DELTA do begin
       dec(FMouseWheelAccumulator, WHEEL_DELTA);
-      FindAndHandleMouseAction(mbWheelDown, lState, Message.X, Message.Y, ccSingle, cdDown);
+      FindAndHandleMouseAction(mbWheelUp, lState, Message.X, Message.Y, ccSingle, cdDown);
     end;
 
     while FMouseWheelAccumulator < WHEEL_DELTA do begin
       inc(FMouseWheelAccumulator, WHEEL_DELTA);
-      FindAndHandleMouseAction(mbWheelUp, lState, Message.X, Message.Y, ccSingle, cdDown);
+      FindAndHandleMouseAction(mbWheelDown, lState, Message.X, Message.Y, ccSingle, cdDown);
     end;
   finally
     DecPaintLock;
