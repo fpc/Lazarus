@@ -104,8 +104,8 @@ uses
  WinCEWSCheckLst,}
  CustomDrawnWSComCtrls,
  CustomDrawnWSControls,
-{ WinCEWSDialogs,
- WinCEWSExtCtrls,}
+{ WinCEWSDialogs,}
+ CustomDrawnWSExtCtrls,
  CustomDrawnWSForms,
 { WinCEWSImgList,
  WinCEWSMenus,
@@ -384,8 +384,8 @@ end;
 
 function RegisterCustomPanel: Boolean; alias : 'WSRegisterCustomPanel';
 begin
-//  RegisterWSComponent(TCustomPanel, TWinCEWSCustomPanel);
-  Result := False;
+  RegisterWSComponent(TCustomPanel, TCDWSCustomPanel);
+  Result := True;
 end;
 
 function RegisterCustomTrayIcon: Boolean; alias : 'WSRegisterCustomTrayIcon';
