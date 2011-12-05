@@ -226,7 +226,7 @@ procedure TSynGutter.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: I
 begin
   FMouseDownPart := PixelToPartIndex(X);
   Parts[FMouseDownPart].MouseDown(Button, Shift, X, Y);
-  if (Button=mbLeft) then
+  if (Button=Controls.mbLeft) then
     DoOnGutterClick(X, Y);
 end;
 
@@ -246,7 +246,8 @@ var
   MouseDownPart: LongInt;
 begin
   MouseDownPart := PixelToPartIndex(AnInfo.MouseX);
-  Result := Parts[MouseDownPart].MaybeHandleMouseAction(AnInfo, HandleActionProc);
+  if MouseDownPart < PartCount then
+    Result := Parts[MouseDownPart].MaybeHandleMouseAction(AnInfo, HandleActionProc);
   if not Result then
     Result := inherited MaybeHandleMouseAction(AnInfo, HandleActionProc);
 end;
