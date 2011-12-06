@@ -53,6 +53,23 @@ msgstr "Nulovat všechna nastavení žlábku"
 msgid "Reset all text settings"
 msgstr "Nulovat všechna nastavení textu"
 
+#: lazarusidestrconsts.dlfmousesimplebuttondeclaration
+msgid "Jumps to implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttondeclarationblock
+msgid "Jumps to implementation/other block end"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonnothing
+msgid "Nothing/Default"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonpaste
+msgctxt "lazarusidestrconsts.dlfmousesimplebuttonpaste"
+msgid "Paste"
+msgstr "Vložit"
+
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
 msgstr "Tato stránka nezobrazuje aktuální nastavení. Viz stránka Rozšířené. Zde můžete nastavit výchozí hodnoty"
@@ -96,20 +113,6 @@ msgstr "Klávesa Alt aktivuje sloupcový mód"
 msgid "Ctrl Left Button"
 msgstr "Levé tlačítko Ctrl"
 
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump"
-msgid "jumps to implementation"
-msgstr "skoč na provedení"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjumporblock
-msgid "jumps to implementation/other block end"
-msgstr "skoč na provedení / konec dalšího bloku"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone"
-msgid "nothing"
-msgstr "nic"
-
 #: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
 #, fuzzy
 #| msgid "Double Click selects line"
@@ -122,23 +125,9 @@ msgstr "Dvojklik vybere řádek"
 msgid "Drag selection (copy/paste)"
 msgstr "Tažení výběru (kopírovat/vložit)"
 
-#: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
-msgid "jumps to implementation"
-msgstr "skoč na provedení"
-
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
 msgstr "Prostřední tlačítko"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectmidnone
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidnone"
-msgid "nothing"
-msgstr "nic"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectmidpaste
-msgid "paste selection"
-msgstr "vložit výběr"
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
@@ -2170,6 +2159,14 @@ msgctxt "lazarusidestrconsts.dlgmouseoptbtnup"
 msgid "Up"
 msgstr "Nahoru"
 
+#: lazarusidestrconsts.dlgmouseoptbtnwheeldown
+msgid "Wheel down"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnwheelup
+msgid "Wheel up"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptcapture
 msgid "Capture"
 msgstr "Zachytit"
@@ -2305,6 +2302,11 @@ msgstr "Shift"
 msgctxt "lazarusidestrconsts.dlgmouseoptmovemousetrue"
 msgid "Y"
 msgstr "A"
+
+#: lazarusidestrconsts.dlgmouseoptnodeall
+msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
+msgid "All"
+msgstr "Všechno"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
@@ -7487,6 +7489,7 @@ msgid "Working Directory:"
 msgstr "Pracovní složka:"
 
 #: lazarusidestrconsts.lisemdall
+msgctxt "lazarusidestrconsts.lisemdall"
 msgid "All"
 msgstr "Všechno"
 

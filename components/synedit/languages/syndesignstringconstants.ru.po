@@ -31,7 +31,7 @@ msgstr "Граница строк"
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"
-msgstr ""
+msgstr "Сбросить действия мыши"
 
 #: syndesignstringconstants.syndsseparator
 msgid "Separator"

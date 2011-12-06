@@ -51,6 +51,23 @@ msgstr "Réinitialiser tous les paramètres de la gouttière"
 msgid "Reset all text settings"
 msgstr "Réinitialiser toutes les préférences de texte"
 
+#: lazarusidestrconsts.dlfmousesimplebuttondeclaration
+msgid "Jumps to implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttondeclarationblock
+msgid "Jumps to implementation/other block end"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonnothing
+msgid "Nothing/Default"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonpaste
+msgctxt "lazarusidestrconsts.dlfmousesimplebuttonpaste"
+msgid "Paste"
+msgstr "Coller"
+
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
 msgstr "Cette page ne représente pas vos paramètres courants. Voir la page avancée. Utilisez cette page pour pour réinitialiser les modifications avancées"
@@ -94,20 +111,6 @@ msgstr "Touche Alt active le mode colonne"
 msgid "Ctrl Left Button"
 msgstr "Ctrl + Clic gauche ..."
 
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump"
-msgid "jumps to implementation"
-msgstr "va à l'implémentation"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjumporblock
-msgid "jumps to implementation/other block end"
-msgstr "saut vers la fin de l'implémentation/d'autres blocs"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone"
-msgid "nothing"
-msgstr "Rien"
-
 #: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
 #, fuzzy
 #| msgid "Double Click selects line"
@@ -120,23 +123,9 @@ msgstr "Double-cliquer sélectionne la ligne"
 msgid "Drag selection (copy/paste)"
 msgstr "Ctrl + souris copie/colle la sélection"
 
-#: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
-msgid "jumps to implementation"
-msgstr "va à l'implémentation"
-
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
 msgstr "La bouton du milieu ..."
-
-#: lazarusidestrconsts.dlfmousesimpletextsectmidnone
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidnone"
-msgid "nothing"
-msgstr "Rien"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectmidpaste
-msgid "paste selection"
-msgstr "colle la sélection"
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
@@ -2196,6 +2185,14 @@ msgctxt "lazarusidestrconsts.dlgmouseoptbtnup"
 msgid "Up"
 msgstr "Haut"
 
+#: lazarusidestrconsts.dlgmouseoptbtnwheeldown
+msgid "Wheel down"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnwheelup
+msgid "Wheel up"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptcapture
 msgid "Capture"
 msgstr "Capture"
@@ -2331,6 +2328,11 @@ msgstr "Shift"
 msgctxt "lazarusidestrconsts.dlgmouseoptmovemousetrue"
 msgid "Y"
 msgstr "Y"
+
+#: lazarusidestrconsts.dlgmouseoptnodeall
+msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
+msgid "All"
+msgstr "Tout"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
@@ -7579,6 +7581,7 @@ msgid "Working Directory:"
 msgstr "Répertoire de travail:"
 
 #: lazarusidestrconsts.lisemdall
+msgctxt "lazarusidestrconsts.lisemdall"
 msgid "All"
 msgstr "Tout"
 

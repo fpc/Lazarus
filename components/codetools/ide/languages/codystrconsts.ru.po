@@ -313,7 +313,7 @@ msgstr "В секции Interface"
 
 #: codystrconsts.crsinsertcallinherited
 msgid "Insert call inherited"
-msgstr ""
+msgstr "Вставить вызов унаследованного"
 
 #: codystrconsts.crsinsertfileatcursor
 #| msgid "Insert file at cursor ..."

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-04 17:36+0400\n"
+"PO-Revision-Date: 2011-12-07 00:59+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -50,6 +50,23 @@ msgstr "Сбросить все параметры поля (лев)"
 msgid "Reset all text settings"
 msgstr "Сбросить все параметры текста"
 
+#: lazarusidestrconsts.dlfmousesimplebuttondeclaration
+msgid "Jumps to implementation"
+msgstr "Перейти к реализации"
+
+#: lazarusidestrconsts.dlfmousesimplebuttondeclarationblock
+msgid "Jumps to implementation/other block end"
+msgstr "Перейти к реализации / концу другого блока"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonnothing
+msgid "Nothing/Default"
+msgstr "Ничего / по умолчанию"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonpaste
+msgctxt "lazarusidestrconsts.dlfmousesimplebuttonpaste"
+msgid "Paste"
+msgstr "Вставить"
+
 #: lazarusidestrconsts.dlfmousesimplediff
 #| msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
@@ -92,20 +109,6 @@ msgstr "Режим выделения столбца по кнопке Alt"
 msgid "Ctrl Left Button"
 msgstr "По Ctrl - левой кнопке мыши"
 
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump"
-msgid "jumps to implementation"
-msgstr "переходить к реализации"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjumporblock
-msgid "jumps to implementation/other block end"
-msgstr "переходить к реализации/другому концу блока"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone"
-msgid "nothing"
-msgstr "ничего не делать"
-
 #: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
 #| msgid "Double Click selects line"
 msgid "Double click selects line"
@@ -116,23 +119,9 @@ msgstr "Выделять строку двойным щелчком"
 msgid "Drag selection (copy/paste)"
 msgstr "Копировать/вставлять перетаскиванием"
 
-#: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
-msgid "jumps to implementation"
-msgstr "переходить к реализации"
-
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
 msgstr "По средней кнопке мыши"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectmidnone
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidnone"
-msgid "nothing"
-msgstr "ничего не делать"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectmidpaste
-msgid "paste selection"
-msgstr "вставлять выделенное"
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
@@ -2148,6 +2137,14 @@ msgctxt "lazarusidestrconsts.dlgmouseoptbtnup"
 msgid "Up"
 msgstr "Вверх"
 
+#: lazarusidestrconsts.dlgmouseoptbtnwheeldown
+msgid "Wheel down"
+msgstr "Колёсико назад"
+
+#: lazarusidestrconsts.dlgmouseoptbtnwheelup
+msgid "Wheel up"
+msgstr "Колёсико вперёд"
+
 #: lazarusidestrconsts.dlgmouseoptcapture
 msgid "Capture"
 msgstr "Область захвата"
@@ -2283,6 +2280,11 @@ msgstr "Shift"
 msgctxt "lazarusidestrconsts.dlgmouseoptmovemousetrue"
 msgid "Y"
 msgstr "Д"
+
+#: lazarusidestrconsts.dlgmouseoptnodeall
+msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
+msgid "All"
+msgstr "Все"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
@@ -7452,6 +7454,7 @@ msgid "Working Directory:"
 msgstr "Рабочий каталог:"
 
 #: lazarusidestrconsts.lisemdall
+msgctxt "lazarusidestrconsts.lisemdall"
 msgid "All"
 msgstr "Все"
 

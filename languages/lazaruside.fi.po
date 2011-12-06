@@ -42,6 +42,23 @@ msgstr "Nollaa kaikki reunapalkin asetukset"
 msgid "Reset all text settings"
 msgstr "Nollaa kaikki tekstin asetukset"
 
+#: lazarusidestrconsts.dlfmousesimplebuttondeclaration
+msgid "Jumps to implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttondeclarationblock
+msgid "Jumps to implementation/other block end"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonnothing
+msgid "Nothing/Default"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonpaste
+msgctxt "lazarusidestrconsts.dlfmousesimplebuttonpaste"
+msgid "Paste"
+msgstr "Liitä"
+
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
 msgstr ""
@@ -85,20 +102,6 @@ msgstr "Alt-näppäin asettaa sarake-moodin"
 msgid "Ctrl Left Button"
 msgstr "Ctrl Left näppäin"
 
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump"
-msgid "jumps to implementation"
-msgstr "hyppää toteutukseen"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjumporblock
-msgid "jumps to implementation/other block end"
-msgstr "hyppää toteutukseen/lohkon toiseen päähän"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone"
-msgid "nothing"
-msgstr "ei mitään"
-
 #: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
 #, fuzzy
 #| msgid "Double Click selects line"
@@ -111,23 +114,9 @@ msgstr "Kaksoisklikkaus valitsee rivin"
 msgid "Drag selection (copy/paste)"
 msgstr "Vedä valittua lohkoa (kopioi/liitä)"
 
-#: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
-msgid "jumps to implementation"
-msgstr "hyppää toteutukseen"
-
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
 msgstr "Keski-näppäin"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectmidnone
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidnone"
-msgid "nothing"
-msgstr "ei mitään"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectmidpaste
-msgid "paste selection"
-msgstr "liitä valittu lohko"
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
@@ -2133,6 +2122,14 @@ msgctxt "lazarusidestrconsts.dlgmouseoptbtnup"
 msgid "Up"
 msgstr "Ylös"
 
+#: lazarusidestrconsts.dlgmouseoptbtnwheeldown
+msgid "Wheel down"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnwheelup
+msgid "Wheel up"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptcapture
 msgid "Capture"
 msgstr ""
@@ -2268,6 +2265,11 @@ msgstr ""
 msgctxt "lazarusidestrconsts.dlgmouseoptmovemousetrue"
 msgid "Y"
 msgstr "K"
+
+#: lazarusidestrconsts.dlgmouseoptnodeall
+msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
+msgid "All"
+msgstr "Kaikki"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
@@ -7422,6 +7424,7 @@ msgid "Working Directory:"
 msgstr "Työhakemisto"
 
 #: lazarusidestrconsts.lisemdall
+msgctxt "lazarusidestrconsts.lisemdall"
 msgid "All"
 msgstr "Kaikki"
 

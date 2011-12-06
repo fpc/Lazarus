@@ -50,6 +50,23 @@ msgstr "Randleisten-Einstellungen zurücksetzen"
 msgid "Reset all text settings"
 msgstr "Text-Einstellungen zurücksetzen"
 
+#: lazarusidestrconsts.dlfmousesimplebuttondeclaration
+msgid "Jumps to implementation"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttondeclarationblock
+msgid "Jumps to implementation/other block end"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonnothing
+msgid "Nothing/Default"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonpaste
+msgctxt "lazarusidestrconsts.dlfmousesimplebuttonpaste"
+msgid "Paste"
+msgstr "Einfügen"
+
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
 msgstr "Diese Seite enthält nicht die derzeitigen Einstellungen. Sehen Sie in der erweiterten Seite nach und setzen Sie hier die vorgeschrittenen Änderungen zurück"
@@ -93,20 +110,6 @@ msgstr "Alt-Taste aktiviert Spaltenmodus"
 msgid "Ctrl Left Button"
 msgstr "Strg + linke Taste"
 
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump"
-msgid "jumps to implementation"
-msgstr "zur Implementierung springen"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjumporblock
-msgid "jumps to implementation/other block end"
-msgstr "springt zur Implemention/zum anderen Blockende"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone"
-msgid "nothing"
-msgstr "nichts"
-
 #: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
 #| msgid "Double Click selects line"
 msgid "Double click selects line"
@@ -117,23 +120,9 @@ msgstr "Doppelklick markiert Zeile"
 msgid "Drag selection (copy/paste)"
 msgstr "Auswahl verschieben (kopieren/einfügen)"
 
-#: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
-msgid "jumps to implementation"
-msgstr "zur Implementierung springen"
-
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
 msgstr "Mittlere Taste"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectmidnone
-msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidnone"
-msgid "nothing"
-msgstr "nichts"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectmidpaste
-msgid "paste selection"
-msgstr "Auswahl einfügen"
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
@@ -2161,6 +2150,14 @@ msgctxt "lazarusidestrconsts.dlgmouseoptbtnup"
 msgid "Up"
 msgstr "Hoch"
 
+#: lazarusidestrconsts.dlgmouseoptbtnwheeldown
+msgid "Wheel down"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnwheelup
+msgid "Wheel up"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmouseoptcapture
 msgid "Capture"
 msgstr "Einfangen"
@@ -2296,6 +2293,11 @@ msgstr "Umsch"
 msgctxt "lazarusidestrconsts.dlgmouseoptmovemousetrue"
 msgid "Y"
 msgstr "J"
+
+#: lazarusidestrconsts.dlgmouseoptnodeall
+msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
+msgid "All"
+msgstr "Alle"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
@@ -7499,6 +7501,7 @@ msgid "Working Directory:"
 msgstr "Arbeitsverzeichnis:"
 
 #: lazarusidestrconsts.lisemdall
+msgctxt "lazarusidestrconsts.lisemdall"
 msgid "All"
 msgstr "Alle"
 

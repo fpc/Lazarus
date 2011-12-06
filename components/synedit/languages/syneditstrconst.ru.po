@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-05-14 01:29+0300\n"
+"PO-Revision-Date: 2011-12-07 00:49+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -500,39 +500,39 @@ msgstr "Команда IDE"
 
 #: syneditstrconst.syns_emcwheelhorizscrolldown
 msgid "Wheel scroll down (Horizontal)"
-msgstr ""
+msgstr "Прокрутка колёсиком назад (горизонтальная)"
 
 #: syneditstrconst.syns_emcwheelhorizscrollup
 msgid "Wheel scroll up (Horizontal)"
-msgstr ""
+msgstr "Прокрутка колёсиком вперёд (горизонтальная)"
 
 #: syneditstrconst.syns_emcwheelscrolldown
 msgid "Wheel scroll down"
-msgstr ""
+msgstr "Прокрутка колёсиком назад"
 
 #: syneditstrconst.syns_emcwheelscrollup
 msgid "Wheel scroll up"
-msgstr ""
+msgstr "Прокрутка колёсиком вперёд"
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"
-msgstr ""
+msgstr "Прокрутка колёсиком назад (вертикальная)"
 
 #: syneditstrconst.syns_emcwheelvertscrollup
 msgid "Wheel scroll up (Vertical)"
-msgstr ""
+msgstr "Прокрутка колёсиком вперёд (вертикальная)"
 
 #: syneditstrconst.syns_emcwheelzoomin
 msgid "Wheel zoom in"
-msgstr ""
+msgstr "Увеличение масштаба колёсиком"
 
 #: syneditstrconst.syns_emcwheelzoomnorm
 msgid "Wheel zoom default"
-msgstr ""
+msgstr "Установка масштаба по умолчанию колёсиком"
 
 #: syneditstrconst.syns_emcwheelzoomout
 msgid "Wheel zoom out"
-msgstr ""
+msgstr "Уменьшение масштаба колёсиком"
 
 #: syneditstrconst.syns_exporterformathtml
 msgid "HTML"
