@@ -1123,7 +1123,7 @@ end;
 procedure TCDDrawerCommon.DrawPanel(ADest: TCanvas; ASize: TSize;
   AState: TCDControlState; AStateEx: TCDPanelStateEx);
 var
-  NextRectFactor: TBevelWidth = 0;
+  NextRectFactor: Integer = 0;
   //TS : TTextStyle;
 begin
   // Background
