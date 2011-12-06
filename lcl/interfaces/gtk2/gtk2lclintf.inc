@@ -987,7 +987,7 @@ begin
   end;
 
 
-  Dialog := gtk_message_dialog_new(nil, GTK_DIALOG_MODAL, GtkDialogType, Btns,
+  Dialog := gtk_message_dialog_new(PGtkWindow(GetDesktopWidget), GTK_DIALOG_MODAL, GtkDialogType, Btns,
      nil);
 
   gtk_message_dialog_set_markup(PGtkMessageDialog(Dialog), PGChar(DialogMessage));
@@ -1149,7 +1149,8 @@ begin
     if X = DefaultIndex then
       DefaultID := Buttons[X];
   end;
-  Dialog := gtk_message_dialog_new(nil, GTK_DIALOG_MODAL, GtkDialogType, Btns,
+
+  Dialog := gtk_message_dialog_new(PGtkWindow(GetDesktopWidget), GTK_DIALOG_MODAL, GtkDialogType, Btns,
     nil);
 
   // Can't pass message string to gtk_message_dialog_new, as % chars are interpreted
@@ -1240,7 +1241,6 @@ begin
     if ActiveWindow <> 0 then
       gtk_window_set_transient_for(PGtkWindow(Dialog), PGtkWindow(ActiveWindow));
   end;
-
   gtk_dialog_run(PGtkDialog(Dialog));
   gtk_widget_destroy(Dialog);
   Result := ADialogResult;

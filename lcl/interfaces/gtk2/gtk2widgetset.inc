@@ -1100,6 +1100,22 @@ begin
   im_context:=gtk_im_multicontext_new;
   g_signal_connect (G_OBJECT (im_context), 'commit',
     G_CALLBACK (@gtk_commit_cb), nil);
+  {$IFDEF HASX}
+  if GetWindowManager = 'kwin' then
+  begin
+    //kwin does it's own transient settings
+    UseTransientForModalWindows := False;
+    FDesktopWidget := gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_widget_set_parent_window(FDesktopWidget, gdk_get_default_root_window);
+    gtk_widget_set_uposition(FDesktopWidget, 0, 0);
+    gtk_widget_set_usize(FDesktopWidget, 1, 1);
+    //we must show it, so X11 maps this widget
+    gtk_widget_show(FDesktopWidget);
+    //hide it imediatelly, so it is really invisible widget
+    gtk_widget_hide(FDesktopWidget);
+  end else
+    FDesktopWidget := nil;
+  {$ENDIF}
 end;
 
 destructor TGtk2WidgetSet.Destroy;
@@ -1113,6 +1129,14 @@ begin
     StayOnTopList := nil;
   end;
   Gtk2Destroy;
+  {$IFDEF HASX}
+  if FDesktopWidget <> nil then
+  begin
+    gtk_widget_destroy(FDesktopWidget);
+    FDesktopWidget := nil;
+  end;
+  {$ENDIF}
+
   inherited Destroy;
 end;
 
@@ -1570,7 +1594,7 @@ procedure TGtk2WidgetSet.PassCmdLineOptions;
 
 begin
   gtk_init(@argc,@argv);
-  UseTransientForModalWindows:=not SearchOption('--lcl-no-transient',true);
+  UseTransientForModalWindows := not SearchOption('--lcl-no-transient',true);
 end;
 
 {------------------------------------------------------------------------------
@@ -4265,6 +4289,11 @@ begin
 end;
 
 {$IFDEF HASX}
+function TGtk2WidgetSet.GetDesktopWidget: PGtkWidget;
+begin
+  Result := FDesktopWidget;
+end;
+
 {function TGtk2WidgetSet.X11Raise(AHandle: HWND): boolean;
 var
    Display: PDisplay;
@@ -4296,11 +4325,75 @@ begin
 	      @XClient)<>0;
 end;}
 
+function TGtk2WidgetSet.GetWindowManager: String;
+{used to get window manager name, so we can handle different wm's behaviour
+ eg. kde vs. gnome}
+var
+  Display: PDisplay;
+  RootWin: TWindow;
+  WMAtom: TAtom;
+  WMWindow: TWindow;
+
+  typeReturned: TAtom;
+  formatReturned: Integer;
+  nitemsReturned: PtrInt;
+  unused: PtrInt;
+  data: Pointer;
+  Screen: PGdkScreen;
+begin
+  Result := '';
+
+  Display := gdk_x11_get_default_xdisplay;
+
+  if Display = nil then
+    exit;
+  Screen := gdk_screen_get_default;
+  RootWin := gdk_x11_get_default_root_xwindow;
+
+  WMAtom := XInternAtom(Display,'_NET_WM_DESKTOP', True);
+
+  if WMAtom > 0 then
+  begin
+    WMAtom := XInternAtom(Display,'_NET_SUPPORTING_WM_CHECK', False);
+    if WMAtom > 0 then
+    begin
+      data := nil;
+      WMWindow := 0;
+      if XGetWindowProperty(Display, RootWin, WMAtom, 0, 1024, False, XA_WINDOW,
+        @typeReturned, @formatReturned, @nitemsReturned,
+        @unused, @data) = Success then
+        begin
+          if (typeReturned = XA_WINDOW) and (formatReturned = 32) and
+            (Data <> nil) then
+          begin
+            // this is our window manager window
+            WMWindow := TWindow(Data^);
+            XFree(Data);
+            Data := nil;
+          end;
+          if WMWindow = 0 then
+            exit;
+          WMAtom := XInternAtom(Display,'UTF8_STRING', False);
+          if XGetWindowProperty(Display, WMWindow,
+            XInternAtom(Display,'_NET_WM_NAME', False), 0, 1024, False,
+            WMAtom, @typeReturned, @formatReturned, @nitemsReturned,
+            @unused, @data) = Success then
+          begin
+            if (typeReturned = WMAtom) and (formatReturned = 8) then
+              Result := LowerCase(StrPas(Data));
+            if Data <> nil then
+              XFree(Data);
+            Data := nil;
+          end;
+       end;
+    end;
+  end;
+end;
+
 function TGtk2WidgetSet.X11GetActivewindow: HWND;
 var
   Display: PDisplay;
   RootWin, ResultWindow: TWindow;
-  ScreenNum: Integer;
   WMAtom: TAtom;
   ActualTypeReturn: TAtom;
   ActualFormatReturn: LongInt;
@@ -4316,7 +4409,6 @@ begin
 
   if Display = nil then Exit;
 
-  ScreenNum := gdk_screen_get_number(screen);
   RootWin := gdk_x11_get_default_root_xwindow;
   WMAtom := XInternAtom(Display,'_NET_ACTIVE_WINDOW', False);
   Valid:=XGetWindowProperty(Display, RootWin, WMAtom, 0, 1, False,

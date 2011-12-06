@@ -815,6 +815,11 @@ begin
 
   if ModalWindows=nil then ModalWindows:=TFPList.Create;
   ModalWindows.Add(GtkWindow);
+  {$IFDEF HASX}
+  if Gtk2WidgetSet.GetDesktopWidget <> nil then
+    gtk_window_set_transient_for(GtkWindow, PGtkWindow(Gtk2WidgetSet.GetDesktopWidget));
+  // gtk_widget_set_parent(GtkWindow, Gtk2WidgetSet.GetDesktopWidget);
+  {$ENDIF}
   {$IFNDEF gtk_no_set_modal}
   gtk_window_set_modal(GtkWindow, true);
   {$ENDIF}
