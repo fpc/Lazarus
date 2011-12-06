@@ -31,7 +31,7 @@
     <RequiredPackages Count="4">
       <Item1>
         <PackageName Value="LCLBase"/>
-        <MinVersion Major="1" Release="1" Valid="True"/>
+        <MinVersion Major="1" Valid="True" Release="1"/>
       </Item1>
       <Item2>
         <PackageName Value="TAChartLazarusPkg"/>
@@ -61,7 +61,7 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
       <Filename Value="radialdemo"/>

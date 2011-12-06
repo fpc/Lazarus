@@ -119,7 +119,7 @@ begin
       case rgDataShape.ItemIndex of
         0: y := x;
         1: y := Sin(x);
-        2: if (x = 0) then y := 1 else y := Sin(x) / x;
+        2: if x = 0 then y := 1 else y := Sin(x) / x;
         3: y := Exp(-x / 3);
         4: y := Exp(-Sqr((x - 2.5) / 2.5));
         5: y := Exp(-Sqr((x - 2.5) / 2.5)) + 0.05 * (Random - 0.5);

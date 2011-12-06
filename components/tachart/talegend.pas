@@ -140,12 +140,12 @@ type
     laTopRight, laCenterRight, laBottomRight);
 
   TChartLegendDrawingData = record
+    FBounds: TRect;
+    FColCount: Integer;
     FDrawer: IChartDrawer;
     FItems: TChartLegendItems;
-    FColCount: Integer;
-    FRowCount: Integer;
     FItemSize: TPoint;
-    FBounds: TRect;
+    FRowCount: Integer;
   end;
 
   TLegendColumnCount = 1..MaxInt;
@@ -154,7 +154,7 @@ type
   { TChartLegend }
 
   TChartLegend = class(TChartElement)
-  private
+  strict private
     FAlignment: TLegendAlignment;
     FBackgroundBrush: TChartLegendBrush;
     FColumnCount: TLegendColumnCount;
@@ -170,6 +170,9 @@ type
     FSymbolWidth: TChartDistance;
     FUseSidebar: Boolean;
 
+    // Not includes the margins around item.
+    function MeasureItem(
+      ADrawer: IChartDrawer; AItems: TChartLegendItems): TPoint;
     procedure SetAlignment(AValue: TLegendAlignment);
     procedure SetBackgroundBrush(AValue: TChartLegendBrush);
     procedure SetColumnCount(AValue: TLegendColumnCount);
@@ -193,9 +196,6 @@ type
     procedure AddGroups(AItems: TChartLegendItems);
     procedure Assign(Source: TPersistent); override;
     procedure Draw(var AData: TChartLegendDrawingData);
-    // Not includes the margins around item.
-    function MeasureItem(
-      ADrawer: IChartDrawer; AItems: TChartLegendItems): TPoint;
     procedure Prepare(var AData: TChartLegendDrawingData; var AClipRect: TRect);
     procedure SortItemsByOrder(AItems: TChartLegendItems);
   published
