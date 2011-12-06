@@ -64,7 +64,6 @@ type
     lpfpGUI,
     lpNoGUI,
     lpCocoa,
-    lpAndroid,
     lpCustomDrawn
     );
     
@@ -197,7 +196,6 @@ const
       'fpgui',
       'nogui',
       'cocoa',
-      'android',
       'customdrawn'
     );
     

@@ -497,12 +497,40 @@ msgstr "Seleção"
 msgid "IDE Command"
 msgstr "Comando IDE"
 
+#: syneditstrconst.syns_emcwheelhorizscrolldown
+msgid "Wheel scroll down (Horizontal)"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelhorizscrollup
+msgid "Wheel scroll up (Horizontal)"
+msgstr ""
+
 #: syneditstrconst.syns_emcwheelscrolldown
 msgid "Wheel scroll down"
 msgstr ""
 
 #: syneditstrconst.syns_emcwheelscrollup
 msgid "Wheel scroll up"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelvertscrolldown
+msgid "Wheel scroll down (Vertical)"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelvertscrollup
+msgid "Wheel scroll up (Vertical)"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelzoomin
+msgid "Wheel zoom in"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelzoomnorm
+msgid "Wheel zoom default"
+msgstr ""
+
+#: syneditstrconst.syns_emcwheelzoomout
+msgid "Wheel zoom out"
 msgstr ""
 
 #: syneditstrconst.syns_exporterformathtml

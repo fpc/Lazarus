@@ -56,14 +56,13 @@ const
       'gtk (deprecated)',
       'gtk 2',
       'win32/win64',
-      'wince (beta)',
+      'wince',
       'carbon',
       'qt',
       'fpGUI (alpha)',
       'NoGUI',
       'cocoa (alpha)',
-      'android (pre-alpha)',
-      'customdraw (pre-alpha)'
+      'customdraw (alpha)'
     );
 
 { Config Path Functions }

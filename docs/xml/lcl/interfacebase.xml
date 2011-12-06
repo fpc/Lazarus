@@ -217,9 +217,6 @@
       <element name="TLCLPlatform.lpCocoa">
         <short></short>
       </element>
-      <element name="TLCLPlatform.lpAndroid">
-        <short></short>
-      </element>
       <element name="TLCLPlatform.lpCustomDrawn">
         <short></short>
       </element>
