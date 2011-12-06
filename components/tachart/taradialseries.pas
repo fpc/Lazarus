@@ -261,7 +261,7 @@ var
 begin
   case Legend.Multiplicity of
     lmSingle: begin
-      p := TLegendItemPie.Create(Title);
+      p := TLegendItemPie.Create(LegendTextSingle);
       for i := 0 to 2 do
         p.Colors[i] := SliceColor(i);
       AItems.Add(p);

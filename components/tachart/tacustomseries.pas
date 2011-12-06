@@ -76,6 +76,7 @@ type
 
   strict protected
     function GetIndex: Integer; override;
+    function LegendTextSingle: String;
     procedure SetIndex(AValue: Integer); override;
     function TitleIsStored: Boolean; virtual;
 
@@ -353,7 +354,7 @@ begin
   oldCount := AItems.Count;
   if Assigned(Legend.OnDraw) then
     for i := 0 to Legend.UserItemsCount - 1 do
-      AItems.Add(TLegendItemUserDrawn.Create(i, Legend.OnDraw, Title))
+      AItems.Add(TLegendItemUserDrawn.Create(i, Legend.OnDraw, LegendTextSingle))
   else
     GetLegendItems(AItems);
   for i := oldCount to AItems.Count - 1 do begin
@@ -426,6 +427,14 @@ begin
   Result :=
     (AxisIndexX >= 0) and FChart.AxisList[AxisIndexX].IsVertical and
     (AxisIndexY >= 0) and not FChart.AxisList[AxisIndexY].IsVertical;
+end;
+
+function TCustomChartSeries.LegendTextSingle: String;
+begin
+  if Legend.Format = '' then
+    Result := Title
+  else
+    Result := Format(Legend.Format, [Title, Index]);
 end;
 
 procedure TCustomChartSeries.ReadState(Reader: TReader);
@@ -918,7 +927,7 @@ var
 begin
   case Legend.Multiplicity of
     lmSingle:
-      AItems.Add(TLegendItemBrushRect.Create(ABrush, Title));
+      AItems.Add(TLegendItemBrushRect.Create(ABrush, LegendTextSingle));
     lmPoint:
       for i := 0 to Count - 1 do begin
         li := TLegendItemBrushRect.Create(ABrush, FormattedMark(i));

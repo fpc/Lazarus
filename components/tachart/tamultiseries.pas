@@ -551,7 +551,7 @@ end;
 
 procedure TOpenHighLowCloseSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  AItems.Add(TLegendItemOHLCLine.Create(LinePen, Title));
+  AItems.Add(TLegendItemOHLCLine.Create(LinePen, LegendTextSingle));
 end;
 
 function TOpenHighLowCloseSeries.GetSeriesColor: TColor;

@@ -70,7 +70,7 @@ type
   { TLegendItemUserDrawn }
 
   TLegendItemUserDrawn = class(TLegendItem)
-  private
+  strict private
     FIndex: Integer;
     FOnDraw: TLegendItemDrawEvent;
   public
@@ -83,7 +83,7 @@ type
   { TLegendItemLine }
 
   TLegendItemLine = class(TLegendItem)
-  private
+  strict private
     FPen: TFPCustomPen;
   public
     constructor Create(APen: TFPCustomPen; const AText: String);
@@ -93,7 +93,7 @@ type
   { TLegendItemLinePointer }
 
   TLegendItemLinePointer = class(TLegendItemLine)
-  protected
+  strict protected
     FPointer: TSeriesPointer;
   public
     constructor Create(
@@ -104,7 +104,7 @@ type
   { TLegendItemBrushRect }
 
   TLegendItemBrushRect = class(TLegendItem)
-  private
+  strict private
     FBrush: TFPCustomBrush;
   public
     constructor Create(ABrush: TFPCustomBrush; const AText: String);
@@ -120,7 +120,7 @@ type
   { TChartLegendItems }
 
   TChartLegendItems = class(TObjectList)
-  private
+  strict private
     function GetItem(AIndex: Integer): TLegendItem;
     procedure SetItem(AIndex: Integer; AValue: TLegendItem);
   public
@@ -234,13 +234,15 @@ type
   { TChartSeriesLegend }
 
   TChartSeriesLegend = class(TChartElement)
-  private
+  strict private
+    FFormat: String;
     FGroupIndex: Integer;
     FMultiplicity: TLegendMultiplicity;
     FOnCreate: TLegendItemCreateEvent;
     FOnDraw: TLegendItemDrawEvent;
     FOrder: Integer;
     FUserItemsCount: Integer;
+    procedure SetFormat(AValue: String);
     procedure SetGroupIndex(AValue: Integer);
     procedure SetMultiplicity(AValue: TLegendMultiplicity);
     procedure SetOnCreate(AValue: TLegendItemCreateEvent);
@@ -254,6 +256,7 @@ type
     procedure InitItem(
       AItem: TLegendItem; AIndex: Integer; ALegend: TChartLegend);
   published
+    property Format: String read FFormat write SetFormat;
     property GroupIndex: Integer
       read FGroupIndex write SetGroupIndex default LEGEND_ITEM_NO_GROUP;
     property Multiplicity: TLegendMultiplicity
@@ -761,6 +764,13 @@ begin
     AItem.GroupIndex := GroupIndex;
   if AItem.Order = LEGEND_ITEM_ORDER_AS_ADDED then
     AItem.Order := Order;
+end;
+
+procedure TChartSeriesLegend.SetFormat(AValue: String);
+begin
+  if FFormat = AValue then exit;
+  FFormat := AValue;
+  StyleChanged(Self);
 end;
 
 procedure TChartSeriesLegend.SetGroupIndex(AValue: Integer);

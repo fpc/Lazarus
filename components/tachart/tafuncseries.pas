@@ -677,7 +677,7 @@ end;
 
 procedure TFuncSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  AItems.Add(TLegendItemLine.Create(Pen, Title));
+  AItems.Add(TLegendItemLine.Create(Pen, LegendTextSingle));
 end;
 
 function TFuncSeries.GetNearestPoint(
@@ -828,7 +828,7 @@ end;
 
 procedure TBSplineSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  AItems.Add(TLegendItemLine.Create(Pen, Title));
+  AItems.Add(TLegendItemLine.Create(Pen, LegendTextSingle));
 end;
 
 procedure TBSplineSeries.SetDegree(AValue: TSplineDegree);
@@ -973,7 +973,7 @@ end;
 
 procedure TCubicSplineSeries.GetLegendItems(AItems: TChartLegendItems);
 begin
-  AItems.Add(TLegendItemLine.Create(Pen, Title));
+  AItems.Add(TLegendItemLine.Create(Pen, LegendTextSingle));
 end;
 
 function TCubicSplineSeries.GetNearestPoint(
@@ -1496,7 +1496,7 @@ var
   li: TLegendItemBrushRect;
 begin
   case Legend.Multiplicity of
-    lmSingle: AItems.Add(TLegendItemBrushRect.Create(Brush, Title));
+    lmSingle: AItems.Add(TLegendItemBrushRect.Create(Brush, LegendTextSingle));
     lmPoint:
       if ColorSource <> nil then begin
         prev := 0.0;

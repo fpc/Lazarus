@@ -542,7 +542,7 @@ begin
     p := nil;
   case Legend.Multiplicity of
     lmSingle:
-      AItems.Add(TLegendItemLinePointer.Create(lp, p, Title));
+      AItems.Add(TLegendItemLinePointer.Create(lp, p, LegendTextSingle));
     lmPoint: begin
       for i := 0 to Count - 1 do begin
         li := TLegendItemLinePointer.Create(lp, p, FormattedMark(i));
@@ -667,7 +667,7 @@ end;
 
 procedure TConstantLine.GetLegendItems(AItems: TChartLegendItems);
 begin
-  AItems.Add(TLegendItemLine.Create(Pen, Title));
+  AItems.Add(TLegendItemLine.Create(Pen, LegendTextSingle));
 end;
 
 function TConstantLine.GetNearestPoint(
