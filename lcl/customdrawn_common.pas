@@ -357,7 +357,7 @@ begin
         // white lines in the left and top
         ADest.Pen.Style := psSolid;
         ADest.Brush.Style := bsClear;
-        ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
+        ADest.Pen.Color := WIN2000_FRAME_GRAY;
         ADest.MoveTo(ARect.Left,  ARect.Bottom);
         ADest.LineTo(ARect.Left,  ARect.Top);
         ADest.LineTo(ARect.Right, ARect.Top);
@@ -377,7 +377,7 @@ begin
         ADest.LineTo(ARect.Left,  ARect.Top);
         ADest.LineTo(ARect.Right, ARect.Top);
         // Dark grey line on the right and bottom
-        ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
+        ADest.Pen.Color := WIN2000_FRAME_GRAY;
         ADest.MoveTo(ARect.Left,  ARect.Bottom);
         ADest.LineTo(ARect.Right, ARect.Bottom);
         ADest.LineTo(ARect.Right, ARect.Top);
