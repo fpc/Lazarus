@@ -2321,19 +2321,19 @@ begin
    ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
 
   Result := 1;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: Frame3D
   Params:  none
   Returns: Nothing
 
-  Draws a 3d border in Qt native style.
+  Draws a 3d border in the native drawer style.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
+function TCDWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
   const FrameWidth : integer; const Style : TBevelCut) : boolean;
 var
-  QtDC: TQtDeviceContext;
+  LazDC: TLazCanvas;
 begin
   {$ifdef VerboseQtWinAPI}
     DebugLn('[TQtWidgetSet.Frame3d Rect=', dbgs(ARect));
@@ -2343,23 +2343,17 @@ begin
 
   if not IsValidDC(DC) then exit;
 
-  QtDC := TQtDeviceContext(DC);
+  LazDC := TLazCanvas(DC);
 
-  case Style of
-    bvNone: ;
-    bvLowered: QtDC.qDrawWinPanel(ARect.Left, ARect.Top,
-      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, True, FrameWidth);
-    bvRaised: QtDC.qDrawWinPanel(ARect.Left, ARect.Top,
-      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, False, FrameWidth);
-    bvSpace: QtDC.qDrawPlainRect(ARect.Left, ARect.Top,
-      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, FrameWidth);
-  end;
+  GetDefaultDrawer().DrawFrame3D(LazDC, Point(ARect.Left, ARect.Top),
+    Size(ARect), FrameWidth, Style);
 
   InflateRect(ARect, -FrameWidth, -FrameWidth);
+
   Result := True;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: FrameRect
   Params:  none
   Returns: Nothing

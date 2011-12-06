@@ -5,7 +5,7 @@ unit customdrawndrawers;
 interface
 
 uses
-  Classes, SysUtils, Types,
+  Classes, SysUtils, Types, fpcanvas,
   // LCL for types
   Controls, Graphics, ComCtrls, ExtCtrls;
 
@@ -285,10 +285,10 @@ type
     // To set a different position to draw the control then (0, 0) use the window org of the canvas
     procedure DrawControl(ADest: TCanvas; ASize: TSize;
       AControl: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx);
-    // General drawing routines
+    // General drawing routines. The ones using TFPCustomCanvas are reusable in LCL-CustomDrawn
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
-    procedure DrawFrame3D(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawFrame3D(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
       const FrameWidth : integer; const Style : TBevelCut); virtual; abstract;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;

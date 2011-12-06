@@ -5,8 +5,8 @@ unit customdrawn_common;
 interface
 
 uses
-  // RTL
-  Classes, SysUtils, Types, Math,
+  // RTL / FCL
+  Classes, SysUtils, Types, Math, fpcanvas,
   // LazUtils
   lazutf8,
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
@@ -37,7 +37,7 @@ type
     // General drawing routines
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
-    procedure DrawFrame3D(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    procedure DrawFrame3D(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
       const FrameWidth : integer; const Style : TBevelCut); override;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
@@ -342,7 +342,7 @@ begin
   ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y-1);
 end;
 
-procedure TCDDrawerCommon.DrawFrame3D(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+procedure TCDDrawerCommon.DrawFrame3D(ADest: TFPCustomCanvas; ADestPos: TPoint; ASize: TSize;
     const FrameWidth : integer; const Style : TBevelCut);
 var
   i: Integer;
@@ -357,12 +357,12 @@ begin
         // white lines in the left and top
         ADest.Pen.Style := psSolid;
         ADest.Brush.Style := bsClear;
-        ADest.Pen.Color := WIN2000_FRAME_GRAY;
+        ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_GRAY);
         ADest.MoveTo(ARect.Left,  ARect.Bottom);
         ADest.LineTo(ARect.Left,  ARect.Top);
         ADest.LineTo(ARect.Right, ARect.Top);
         // Dark grey line on the right and bottom
-        ADest.Pen.Color := WIN2000_FRAME_WHITE;
+        ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_WHITE);
         ADest.MoveTo(ARect.Left,  ARect.Bottom);
         ADest.LineTo(ARect.Right, ARect.Bottom);
         ADest.LineTo(ARect.Right, ARect.Top);
@@ -372,12 +372,12 @@ begin
         // white lines in the left and top
         ADest.Pen.Style := psSolid;
         ADest.Brush.Style := bsClear;
-        ADest.Pen.Color := WIN2000_FRAME_WHITE;
+        ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_WHITE);
         ADest.MoveTo(ARect.Left,  ARect.Bottom);
         ADest.LineTo(ARect.Left,  ARect.Top);
         ADest.LineTo(ARect.Right, ARect.Top);
         // Dark grey line on the right and bottom
-        ADest.Pen.Color := WIN2000_FRAME_GRAY;
+        ADest.Pen.FPColor := TColorToFPColor(WIN2000_FRAME_GRAY);
         ADest.MoveTo(ARect.Left,  ARect.Bottom);
         ADest.LineTo(ARect.Right, ARect.Bottom);
         ADest.LineTo(ARect.Right, ARect.Top);

@@ -134,12 +134,10 @@ type
   { TCDWSCustomPanel }
 
   TCDWSCustomPanel = class(TWSCustomPanel)
-  public
-    class procedure CreateCDControl(const AWinControl: TCustomPanel; var ACDControlField: TCDControl);
+  // TPanel draws itself, so there is no need to inject a sub-control
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TCDWSPanel }
@@ -216,19 +214,6 @@ end;          *)
 
 { TCDWSCustomPanel }
 
-class procedure TCDWSCustomPanel.CreateCDControl(
-  const AWinControl: TCustomPanel; var ACDControlField: TCDControl);
-begin
-  ACDControlField := TCDPanel.Create(AWinControl);
-  //TCDIntfPanel(ACDControlField).LCLButton := TButton(AWinControl);
-  ACDControlField.Caption := AWinControl.Caption;
-  ACDControlField.Parent := AWinControl;
-  ACDControlField.Align := alClient;
-  TCDPanel(ACDControlField).BevelInner := AWinControl.BevelInner;
-  TCDPanel(ACDControlField).BevelOuter := AWinControl.BevelOuter;
-  TCDPanel(ACDControlField).BevelWidth := AWinControl.BevelWidth;
-end;
-
 {------------------------------------------------------------------------------
   Method: TCDWSCustomPanel.CreateHandle
   Params:  None
@@ -243,18 +228,6 @@ var
 begin
   Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
   lCDWinControl := TCDWinControl(Result);
-end;
-
-class procedure TCDWSCustomPanel.ShowHide(const AWinControl: TWinControl);
-var
-  lCDWinControl: TCDWinControl;
-begin
-  lCDWinControl := TCDWinControl(AWinControl.Handle);
-
-  TCDWSWinControl.ShowHide(AWinControl);
-
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(TCustomPanel(AWinControl), lCDWinControl.CDControl);
 end;
 
 (*{ TCDWSCustomTrayIcon }
