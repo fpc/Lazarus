@@ -291,6 +291,9 @@ Var
       PaintMsg.PaintStruct := @PS;
       PaintMsg.DC := HDC(WindowInfo.Canvas);
 
+      // Draws the background of the form
+      DrawFormBackground(WindowInfo.Image, WindowInfo.Canvas);
+
       // send through message to allow message override, moreover use SendMessage
       // to allow subclass window proc override this message too
 {      Include(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
