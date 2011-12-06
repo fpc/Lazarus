@@ -383,23 +383,27 @@ begin
       {$endif}
 
       {$ifdef HASX11}
-      W := nil;
-      ActiveWin := GetActiveWindow;
-      if ActiveWin <> 0 then
+      if IsOldKDEInstallation then
       begin
-        if Assigned(TQtWidget(ActiveWin).LCLObject) then
+        W := nil;
+        ActiveWin := GetActiveWindow;
+        if ActiveWin <> 0 then
         begin
-          if (TQtWidget(ActiveWin).LCLObject is TCustomForm) then
+          if Assigned(TQtWidget(ActiveWin).LCLObject) then
           begin
-            with TCustomForm(TQtWidget(ActiveWin).LCLObject) do
+            if (TQtWidget(ActiveWin).LCLObject is TCustomForm) then
             begin
-              if Visible and (FormStyle <> fsSplash) then
-                W := TQtWidget(Handle).Widget;
+              with TCustomForm(TQtWidget(ActiveWin).LCLObject) do
+              begin
+                if Visible and (FormStyle <> fsSplash) then
+                  W := TQtWidget(Handle).Widget;
+              end;
             end;
           end;
         end;
-      end;
-      QWidget_setParent(Widget.Widget, W);
+        QWidget_setParent(Widget.Widget, W);
+      end else
+        QWidget_setParent(Widget.Widget, QApplication_desktop());
       {$endif}
 
       QWidget_setWindowFlags(Widget.Widget, QtDialog or
