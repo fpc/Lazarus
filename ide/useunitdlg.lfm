@@ -64,6 +64,7 @@ object UseUnitDialog: TUseUnitDialog
       'Interface'
       'Implementation'
     )
+    OnClick = SectionRadioGroupClick
     TabOrder = 3
   end
   object UnitsListBox: TListBox

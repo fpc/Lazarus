@@ -59,13 +59,14 @@ type
     UnitImgInd: Integer;
     FMainUsedUnits: TStrings;
     FImplUsedUnits: TStrings;
-    FProjUnits: TStringList;
-    FOtherUnits: TStringList;
-    function GetAvailableProjUnits(SrcEdit: TSourceEditor): TModalResult;
+    FProjUnits, FOtherUnits: TStringList;
+    procedure AddImplUsedUnits;
+    procedure GetProjUnits(SrcEdit: TSourceEditor);
     procedure CreateOtherUnitsList;
     function SelectedUnit: string;
     function InterfaceSelected: Boolean;
     procedure DetermineUsesSection(ACode: TCodeBuffer; ACursorPos: TPoint);
+    procedure FillAvailableUnitsList;
   public
 
   end; 
@@ -89,23 +90,33 @@ begin
   SrcEdit:=SourceEditorManager.ActiveEditor;
   UseUnitDlg:=TUseUnitDialog.Create(nil);
   try
-    Result:=UseUnitDlg.GetAvailableProjUnits(SrcEdit);
-    if Result<>mrOK then exit;
+    UseUnitDlg.GetProjUnits(SrcEdit);
+    UseUnitDlg.FillAvailableUnitsList;
     // there is only main uses section in program/library/package
     if SrcEdit.GetProjectFile=Project1.MainUnitInfo then begin
       // only main (interface) section is available
       UseUnitDlg.SectionRadioGroup.Enabled := False
     end else begin
-      // automatic choise of dest uses-section by cursor position
+      // automatic choice of dest uses-section by cursor position
       UseUnitDlg.DetermineUsesSection(SrcEdit.CodeBuffer, SrcEdit.GetCursorTextXY);
     end;
+    if UseUnitDlg.FilterEdit.Data.Count = 0 then
+    begin
+      // no available units from current project => turn on "all units"
+      UseUnitDlg.AllUnitsCheckBox.Checked := True;
+    end;
+    if UseUnitDlg.FilterEdit.Data.Count = 0 then Exit(mrCancel);
+
     // Show the dialog.
     if UseUnitDlg.ShowModal=mrOk then begin
       s:=UseUnitDlg.SelectedUnit;
       if s <> '' then begin
-        if UseUnitDlg.InterfaceSelected then
-          CTRes:=CodeToolBoss.AddUnitToMainUsesSection(SrcEdit.CodeBuffer, s, '')
-        else
+        if UseUnitDlg.InterfaceSelected then begin
+          if UseUnitDlg.FImplUsedUnits.IndexOf(s) >= 0 then
+            CTRes := CodeToolBoss.RemoveUnitFromAllUsesSections(SrcEdit.CodeBuffer, s);
+          if CTRes then
+            CTRes := CodeToolBoss.AddUnitToMainUsesSection(SrcEdit.CodeBuffer, s, '');
+        end else
           CTRes:=CodeToolBoss.AddUnitToImplementationUsesSection(SrcEdit.CodeBuffer, s, '');
         if not CTRes then begin
           LazarusIDE.DoJumpToCodeToolBossError;
@@ -146,7 +157,18 @@ begin
 end;
 
 procedure TUseUnitDialog.SectionRadioGroupClick(Sender: TObject);
+var
+  i: Integer;
 begin
+  if not Assigned(FImplUsedUnits) then Exit;
+  if InterfaceSelected then
+    AddImplUsedUnits
+  else
+    with FilterEdit.Data do
+      for i := Count - 1 downto 0 do
+        if Objects[i] is TCodeTreeNode then
+          Delete(i);
+  FilterEdit.InvalidateFilter;
   if Visible then
     FilterEdit.SetFocus;
 end;
@@ -160,15 +182,16 @@ begin
     FilterEdit.Data.AddStrings(FOtherUnits);
   end
   else
-  with FilterEdit.Data do begin             // Remove other units
-    BeginUpdate;
-    try
-      for i := Count-1 downto 0 do
-        if Assigned(Objects[i]) then Delete(i);
-    finally
-      EndUpdate;
+    with FilterEdit.Data do begin             // Remove other units
+      BeginUpdate;
+      try
+        for i := Count-1 downto 0 do
+          if Objects[i] is TIdentifierListItem then
+            Delete(i);
+      finally
+        EndUpdate;
+      end;
     end;
-  end;
   if Visible then
     FilterEdit.SetFocus;
   FilterEdit.InvalidateFilter;
@@ -182,16 +205,28 @@ end;
 
 procedure TUseUnitDialog.UnitsListBoxDrawItem(Control: TWinControl;
   Index: Integer; ARect: TRect; State: TOwnerDrawState);
-var ena: Boolean;
+var
+  ena: Boolean;
 begin
   if Index < 0 then Exit;
   with UnitsListBox do
   begin
     Canvas.FillRect(ARect);
-    ena := not Assigned(Items.Objects[Index]);
+    ena := not Assigned(Items.Objects[Index]) or (Items.Objects[Index] is TCodeTreeNode);
     if not (ena or (odSelected in State)) then
       UnitsListBox.Canvas.Font.Color := clGreen;
     IDEImages.Images_16.Draw(Canvas, 1, ARect.Top, UnitImgInd, ena);
+    if Items.Objects[Index] is TCodeTreeNode then
+    begin
+      // unit for moving: implementation->interface
+      Canvas.Pen.Color := clBlue;
+      Canvas.Pen.Width := 2;
+      Canvas.MoveTo(ARect.Left + 13, ARect.Top + 16);
+      Canvas.LineTo(ARect.Left + 13, ARect.Top + 8);
+      Canvas.LineTo(ARect.Left + 10, ARect.Top + 11);
+      Canvas.MoveTo(ARect.Left + 13, ARect.Top + 8);
+      Canvas.LineTo(ARect.Left + 15, ARect.Top + 11);
+    end;
     Canvas.TextRect(ARect, ARect.Left + 20, ARect.Top, Items[Index]);
   end;
 end;
@@ -205,48 +240,78 @@ begin
     Key:=VK_UNKNOWN;
 end;
 
-function TUseUnitDialog.GetAvailableProjUnits(SrcEdit: TSourceEditor): TModalResult;
+procedure TUseUnitDialog.AddImplUsedUnits;
+var
+  i, j: Integer;
+  newUnit: string;
+  ImplNode: TObject;
+begin
+  if FImplUsedUnits.Count = 0 then Exit;
+  i := 0; j := 0;
+  ImplNode := FImplUsedUnits.Objects[0];
+  newUnit := FImplUsedUnits[j];
+  with FilterEdit.Data do
+  begin
+    BeginUpdate;
+    try
+      while i <= Count - 1 do
+      begin
+        if Assigned(Objects[i]) then Break;
+        if CompareStr(FImplUsedUnits[j], Strings[i]) <= 0 then
+        begin
+          InsertObject(i, newUnit, ImplNode);
+          Inc(j);
+          if j >= FImplUsedUnits.Count then Exit;
+          newUnit := FImplUsedUnits[j];
+        end;
+        Inc(i);
+      end;
+      if j < FImplUsedUnits.Count then
+        for j := j to FImplUsedUnits.Count - 1 do
+          if i < Count then
+            InsertObject(i, FImplUsedUnits[j], ImplNode)
+          else
+            AddObject(FImplUsedUnits[j], ImplNode);
+    finally
+      EndUpdate;
+    end;
+  end;
+end;
+
+procedure TUseUnitDialog.GetProjUnits(SrcEdit: TSourceEditor);
 var
   ProjFile: TUnitInfo;
   CurrentUnitName, s: String;
 begin
-  Result:=mrOk;
-  FMainUsedUnits:=nil;
-  FImplUsedUnits:=nil;
-  if SrcEdit=nil then exit;
+  FMainUsedUnits := nil;
+  FImplUsedUnits := nil;
+  if SrcEdit = nil then Exit;
   Assert(Assigned(SrcEdit.CodeBuffer));
   if not CodeToolBoss.FindUsedUnitNames(SrcEdit.CodeBuffer,
                                         FMainUsedUnits,FImplUsedUnits)
   then begin
     DebugLn(['ShowUseProjUnitDialog CodeToolBoss.FindUsedUnitNames failed']);
     LazarusIDE.DoJumpToCodeToolBossError;
-    exit(mrCancel);
+    Exit;
   end;
-  TStringList(FMainUsedUnits).CaseSensitive:=False;
-  TStringList(FImplUsedUnits).CaseSensitive:=False;
+  TStringList(FMainUsedUnits).CaseSensitive := False;
+  TStringList(FImplUsedUnits).CaseSensitive := False;
   if SrcEdit.GetProjectFile is TUnitInfo then
-    CurrentUnitName:=TUnitInfo(SrcEdit.GetProjectFile).Unit_Name
+    CurrentUnitName := TUnitInfo(SrcEdit.GetProjectFile).Unit_Name
   else
-    CurrentUnitName:='';
-  // Add available unit names to list.
+    CurrentUnitName := '';
+  // Add available unit names to list
   ProjFile:=Project1.FirstPartOfProject;
-  while ProjFile<>nil do begin
-    s:=ProjFile.Unit_Name;
-    if s=CurrentUnitName then       // current unit
-      s:='';
-    if (ProjFile<>Project1.MainUnitInfo) and (s<>'') then
-      if (FMainUsedUnits.IndexOf(s) < 0) and (FImplUsedUnits.IndexOf(s) < 0) then
+  while ProjFile <> nil do begin
+    s := ProjFile.Unit_Name;
+    if s = CurrentUnitName then       // current unit
+      s := '';
+    if (ProjFile <> Project1.MainUnitInfo) and (s <> '') then
+      if FMainUsedUnits.IndexOf(s) < 0 then
         FProjUnits.Add(s);
-    ProjFile:=ProjFile.NextPartOfProject;
+    ProjFile := ProjFile.NextPartOfProject;
   end;
-  FProjUnits.Sorted:=True;
-  FilterEdit.Data.Assign(FProjUnits);
-  if FilterEdit.Data.Count = 0 then
-  begin
-    AllUnitsCheckBox.Checked := True;
-    if FilterEdit.Data.Count = 0 then Exit(mrCancel);
-  end;
-  FilterEdit.InvalidateFilter;
+  FProjUnits.Sorted := True;
 end;
 
 procedure TUseUnitDialog.CreateOtherUnitsList;
@@ -268,9 +333,10 @@ begin
         begin
           curUnit := IdentifierList.FilteredItems[i].Identifier;
           if (FMainUsedUnits.IndexOf(curUnit) < 0)
-            and (FImplUsedUnits.IndexOf(curUnit) < 0)
-            and (FOtherUnits.IndexOf(curUnit) < 0) then
-              FOtherUnits.AddObject(IdentifierList.FilteredItems[i].Identifier, IdentifierList.FilteredItems[i]);
+          and (FImplUsedUnits.IndexOf(curUnit) < 0)
+          and (FOtherUnits.IndexOf(curUnit) < 0) then
+            FOtherUnits.AddObject(IdentifierList.FilteredItems[i].Identifier,
+                                  IdentifierList.FilteredItems[i]);
         end;
       end;
     FOtherUnits.Sort;
@@ -283,6 +349,7 @@ function TUseUnitDialog.SelectedUnit: string;
 var
   IdentItem: TIdentifierListItem;
   CodeBuf: TCodeBuffer;
+  s: String;
 begin
   with UnitsListBox do
     if ItemIndex >= 0 then
@@ -291,13 +358,13 @@ begin
       if Assigned(IdentItem) then
       begin
         Result := IdentItem.Identifier;
-        CodeBuf := CodeToolBoss.FindUnitSource(
-          SourceEditorManager.ActiveEditor.CodeBuffer, Result, '');
-        if CodeBuf = nil then
-          Exit(IdentItem.Identifier);
-        Result := CodeToolBoss.GetSourceName(CodeBuf, True);
-        if Result = '' then
-          Result := IdentItem.Identifier;
+        CodeBuf := CodeToolBoss.FindUnitSource(SourceEditorManager.ActiveEditor.CodeBuffer, Result, '');
+        if Assigned(CodeBuf) then
+        begin
+          s := CodeToolBoss.GetSourceName(CodeBuf, True);
+          if s <> '' then
+            Result := s;
+        end;
       end else
         Result := Items[ItemIndex];
     end else
@@ -314,6 +381,8 @@ var
   CursorPos: TCodeXYPosition;
   CleanCursorPos: Integer;
   CursorNode: TCodeTreeNode;
+  ImplUsesNode: TCodeTreeNode;
+  i: Integer;
 begin
   if not CodeToolBoss.InitCurCodeTool(ACode) then Exit;
   with CodeToolBoss.CurCodeTool do
@@ -324,15 +393,45 @@ begin
       // build code tree
       BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                  [btSetIgnoreErrorPos,btLoadDirtySource,btCursorPosOutAllowed]);
-      // find CodeTreeNode at cursor
       if (Tree.Root = nil) or (Tree.Root.StartPos > CleanCursorPos) then Exit;
+      ImplUsesNode := FindImplementationUsesSection;
+      if Assigned(ImplUsesNode) then
+        for i := 0 to FImplUsedUnits.Count - 1 do
+          FImplUsedUnits.Objects[i] := ImplUsesNode;
+      // find CodeTreeNode at cursor
       CursorNode := BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos, True);
       if CursorNode.HasParentOfType(ctnImplementation) then
         SectionRadioGroup.ItemIndex := 1;
+      SectionRadioGroup.OnClick(SectionRadioGroup);
     finally
       DeactivateGlobalWriteLock
     end;
   end;
+end;
+
+procedure TUseUnitDialog.FillAvailableUnitsList;
+var
+  curUnit: String;
+  i: Integer;
+begin
+  if not Assigned(FProjUnits) then Exit;
+  with FilterEdit.Data do
+  begin
+    BeginUpdate;
+    try
+      Clear;
+      for i := 0 to FProjUnits.Count - 1 do
+      begin
+        curUnit := FProjUnits[i];
+        if (FMainUsedUnits.IndexOf(curUnit) < 0)
+        and (FImplUsedUnits.IndexOf(curUnit) < 0) then
+          Add(FProjUnits[i]);
+      end;
+    finally
+      EndUpdate;
+    end;
+  end;
+  FilterEdit.InvalidateFilter;
 end;
 
 end.
