@@ -261,8 +261,8 @@ end;
 
 function RegisterCustomGroupBox: Boolean; alias : 'WSRegisterCustomGroupBox';
 begin
-//  RegisterWSComponent(TCustomGroupBox, TWinCEWSCustomGroupBox);
-  Result := False;
+  RegisterWSComponent(TCustomGroupBox, TCDWSCustomGroupBox);
+  Result := True;
 end;
 
 function RegisterCustomComboBox: Boolean; alias : 'WSRegisterCustomComboBox';

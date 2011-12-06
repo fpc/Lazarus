@@ -34,7 +34,8 @@ uses
   Classes, Types, StdCtrls, Controls, Forms, SysUtils, InterfaceBase, LCLType,
   customdrawncontrols,
   // Widgetset
-  WSProc, WSStdCtrls, WSLCLClasses, CustomDrawnWsControls, customdrawnproc;
+  WSProc, WSStdCtrls, WSLCLClasses, CustomDrawnWsControls, customdrawnproc,
+  customdrawnprivate;
 
 type
 
@@ -52,12 +53,15 @@ type
   { TCDWSCustomGroupBox }
 
   TCDWSCustomGroupBox = class(TWSCustomGroupBox)
+  public
+    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
-{    class function  CreateHandle(const AWinControl: TWinControl;
+    class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function GetDefaultClientRect(const AWinControl: TWinControl;
+{    class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;}
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TCDWSGroupBox }
@@ -192,15 +196,6 @@ type
   published
   end;
 
-  { TCDIntfButton }
-
-  TCDIntfButton = class(TCDButton)
-  public
-    LCLButton: TButton;
-    constructor Create(AOwner: TComponent); override;
-    procedure HandleOnClick(Sender: TObject);
-  end;
-
   { TCDWSButton }
 
   TCDWSButton = class(TWSButton)
@@ -279,19 +274,6 @@ type
 
 
 implementation
-
-{ TCDIntfButton }
-
-constructor TCDIntfButton.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  OnClick := @HandleOnClick;
-end;
-
-procedure TCDIntfButton.HandleOnClick(Sender: TObject);
-begin
-  LCLButton.OnClick(LCLButton);
-end;
 
 { TCDWSScrollBar }
 
@@ -1100,7 +1082,7 @@ end;*)
 class procedure TCDWSButton.CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
   ACDControlField := TCDIntfButton.Create(AWinControl);
-  TCDIntfButton(ACDControlField).LCLButton := TButton(AWinControl);
+  TCDIntfButton(ACDControlField).LCLControl := TButton(AWinControl);
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
@@ -1250,9 +1232,19 @@ begin
   QtRadioButton.AttachEvents;
 
   Result := TLCLIntfHandle(QtRadioButton);
-end;
+end;*)
 
 { TCDWSCustomGroupBox }
+
+class procedure TCDWSCustomGroupBox.CreateCDControl(
+  const AWinControl: TWinControl; var ACDControlField: TCDControl);
+begin
+  ACDControlField := TCDIntfGroupBox.Create(AWinControl);
+  TCDIntfButton(ACDControlField).LCLControl := TButton(AWinControl);
+  ACDControlField.Caption := AWinControl.Caption;
+  ACDControlField.Parent := AWinControl;
+  ACDControlField.Align := alClient;
+end;
 
 {------------------------------------------------------------------------------
   Method: TCDWSCustomGroupBox.CreateHandle
@@ -1264,15 +1256,13 @@ end;
 class function TCDWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  QtGroupBox: TQtGroupBox;
+  lCDWinControl: TCDWinControl;
 begin
-  QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
-  QtGroupBox.AttachEvents;
-
-  Result := TLCLIntfHandle(QtGroupBox);
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
 end;
 
-class function TCDWSCustomGroupBox.GetDefaultClientRect(
+(*class function TCDWSCustomGroupBox.GetDefaultClientRect(
   const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
   var aClientRect: TRect): boolean;
 var
@@ -1293,9 +1283,21 @@ begin
                  Max(0, aHeight - dy));
     Result:=true;
   end;
+end;*)
+
+class procedure TCDWSCustomGroupBox.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+
+  TCDWSWinControl.ShowHide(AWinControl);
+
+  if lCDWinControl.CDControl = nil then
+    CreateCDControl(AWinControl, lCDWinControl.CDControl);
 end;
 
-{ TCDWSCustomComboBox }
+(*{ TCDWSCustomComboBox }
 
 {------------------------------------------------------------------------------
   Method: TCDWSCustomComboBox.CreateHandle

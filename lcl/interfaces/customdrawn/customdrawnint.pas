@@ -181,12 +181,13 @@ type
     function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
     procedure AppSetMainFormOnTaskBar(const DoSet: Boolean); override;
 
-(*    function  InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean; override;
+    //function  InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean; override;
 
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCRedraw(CanvasHandle: HDC); override;
-    procedure SetDesigning(AComponent: TComponent); override;      *)
+    procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
+    procedure SetDesigning(AComponent: TComponent); override;
 
     // create and destroy
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
