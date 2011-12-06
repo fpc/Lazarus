@@ -476,9 +476,16 @@ begin
 
   {$IFDEF HASX11}
   if AWinControl.HandleObjectShouldBeVisible and
-    (fsModal in TForm(AWinControl).FormState) and
-    (QtWidgetSet.WindowManagerName = 'metacity') then
+    (fsModal in TForm(AWinControl).FormState) then
+  begin
+    if (Application.TaskBarBehavior <> tbSingleButton) then
+    begin
+      SetSkipX11Taskbar(Widget.Widget, True);
+      Widget.setShowInTaskBar(False);
+    end;
+    if (QtWidgetSet.WindowManagerName = 'metacity') then
       X11Raise(QWidget_winID(Widget.Widget));
+  end;
   {$ENDIF}
 
   {$IFDEF HASX11}
