@@ -355,14 +355,26 @@ type
 
   TCDPanel = class(TCDControl)
   private
-    function GetControlId: TCDControlID; override;
+    FBevelInner: TPanelBevel;
+    FBevelOuter: TPanelBevel;
+    FBevelWidth: TBevelWidth;
+    procedure SetBevelInner(AValue: TPanelBevel);
+    procedure SetBevelOuter(AValue: TPanelBevel);
+    procedure SetBevelWidth(AValue: TBevelWidth);
   protected
+    FPState: TCDPanelStateEx;
+    function GetControlId: TCDControlID; override;
+    procedure CreateControlStateEx; override;
+    procedure PrepareControlStateEx; override;
     procedure RealSetText(const Value: TCaption); override; // to update on caption changes
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     //property AutoSize;
+    property BevelInner: TPanelBevel read FBevelInner write SetBevelInner default bvNone;
+    property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvRaised;
+    property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
     property DrawStyle;
     property Caption;
     property TabStop default False;
@@ -641,6 +653,41 @@ resourcestring
 function TCDPanel.GetControlId: TCDControlID;
 begin
   Result := cidPanel;
+end;
+
+procedure TCDPanel.CreateControlStateEx;
+begin
+  FPState := TCDPanelStateEx.Create;
+  FStateEx := FPState;
+end;
+
+procedure TCDPanel.PrepareControlStateEx;
+begin
+  inherited PrepareControlStateEx;
+  FPState.BevelInner := FBevelInner;
+  FPState.BevelOuter := FBevelOuter;
+  FPState.BevelWidth := FBevelWidth;
+end;
+
+procedure TCDPanel.SetBevelInner(AValue: TPanelBevel);
+begin
+  if FBevelInner=AValue then Exit;
+  FBevelInner:=AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+procedure TCDPanel.SetBevelOuter(AValue: TPanelBevel);
+begin
+  if FBevelOuter=AValue then Exit;
+  FBevelOuter:=AValue;
+  if not (csLoading in ComponentState) then Invalidate;
+end;
+
+procedure TCDPanel.SetBevelWidth(AValue: TBevelWidth);
+begin
+  if FBevelWidth=AValue then Exit;
+  FBevelWidth:=AValue;
+  if not (csLoading in ComponentState) then Invalidate;
 end;
 
 procedure TCDPanel.RealSetText(const Value: TCaption);

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Types,
   // LCL for types
-  Graphics, ComCtrls;
+  Graphics, ComCtrls, ExtCtrls;
 
 const
   CDDRAWSTYLE_COUNT = 19;
@@ -152,6 +152,13 @@ type
     LeftTextMargin, RightTextMargin: Integer;
   end;
 
+  TCDPanelStateEx = class(TCDControlStateEx)
+  public
+    BevelInner: TPanelBevel;
+    BevelOuter: TPanelBevel;
+    BevelWidth: TBevelWidth;
+  end;
+
   TCDPositionedCStateEx = class(TCDControlStateEx)
   public
     PosCount: integer; // The number of positions, calculated as Max - Min + 1
@@ -281,6 +288,7 @@ type
     // General drawing routines
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
+    procedure DrawShallowRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
@@ -321,7 +329,7 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
     // TCDPanel
     procedure DrawPanel(ADest: TCanvas; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDControlStateEx); virtual; abstract;
+      AState: TCDControlState; AStateEx: TCDPanelStateEx); virtual; abstract;
     // ===================================
     // Additional Tab
     // ===================================
@@ -622,7 +630,7 @@ begin
   cidRadioButton:DrawRadioButton(ADest, ASize, AState, AStateEx);
   cidScrollBar:  DrawScrollBar(ADest, ASize, AState, TCDPositionedCStateEx(AStateEx));
   cidGroupBox:   DrawGroupBox(ADest, ASize, AState, AStateEx);
-  cidPanel:      DrawPanel(ADest, ASize, AState, AStateEx);
+  cidPanel:      DrawPanel(ADest, ASize, AState, TCDPanelStateEx(AStateEx));
   //
   cidStaticText: DrawStaticText(ADest, ASize, AState, AStateEx);
   //

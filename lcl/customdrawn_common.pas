@@ -37,6 +37,7 @@ type
     // General drawing routines
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawShallowRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
@@ -80,7 +81,7 @@ type
       AState: TCDControlState; AStateEx: TCDControlStateEx); override;
     // TCDPanel
     procedure DrawPanel(ADest: TCanvas; ASize: TSize;
-      AState: TCDControlState; AStateEx: TCDControlStateEx); override;
+      AState: TCDControlState; AStateEx: TCDPanelStateEx); override;
     // ===================================
     // Additional Tab
     // ===================================
@@ -338,6 +339,23 @@ begin
   ADest.MoveTo(ADestPos.X+1,          ADestPos.Y+ASize.cy-2);
   ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y+ASize.cy-2);
   ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y-1);
+end;
+
+procedure TCDDrawerCommon.DrawShallowRaisedFrame(ADest: TCanvas;
+  ADestPos: TPoint; ASize: TSize);
+begin
+  // white lines in the left and top
+  ADest.Pen.Style := psSolid;
+  ADest.Brush.Style := bsClear;
+  ADest.Pen.Color := WIN2000_FRAME_WHITE;
+  ADest.MoveTo(ADestPos.X, ADestPos.Y+ASize.cy-1);
+  ADest.LineTo(ADestPos.X, ADestPos.Y);
+  ADest.LineTo(ADestPos.X+ASize.cy-1, ADestPos.Y);
+  // Dark grey line on the right and bottom
+  ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
+  ADest.MoveTo(ADestPos.X,            ADestPos.Y+ASize.cy-1);
+  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y+ASize.cy-1);
+  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y);
 end;
 
 procedure TCDDrawerCommon.DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint;
@@ -1070,7 +1088,7 @@ begin
 end;
 
 procedure TCDDrawerCommon.DrawPanel(ADest: TCanvas; ASize: TSize;
-  AState: TCDControlState; AStateEx: TCDControlStateEx);
+  AState: TCDControlState; AStateEx: TCDPanelStateEx);
 begin
   // Background
   ADest.Brush.Color := Palette.BtnFace;
@@ -1078,8 +1096,10 @@ begin
   ADest.Pen.Style := psClear;
   ADest.FillRect(0, 0, ASize.cx, ASize.cy);
 
-  // The frame
-  DrawRaisedFrame(ADest, Point(0, 0), ASize);
+  // The outter frame
+  DrawShallowRaisedFrame(ADest, Point(0, 0), ASize);
+
+  // Now the inner frame
 end;
 
 procedure TCDDrawerCommon.DrawStaticText(ADest: TCanvas;
