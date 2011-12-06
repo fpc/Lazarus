@@ -13,10 +13,6 @@ msgstr ""
 msgid "Add a \"With\" Block"
 msgstr ""
 
-#: codystrconsts.crsaddcallinherited
-msgid "Add call inherited"
-msgstr ""
-
 #: codystrconsts.crsaddwithblock
 msgid "Add \"With\" Block"
 msgstr ""
@@ -299,6 +295,10 @@ msgstr ""
 
 #: codystrconsts.crsininterface
 msgid "In interface"
+msgstr ""
+
+#: codystrconsts.crsinsertcallinherited
+msgid "Insert call inherited"
 msgstr ""
 
 #: codystrconsts.crsinsertfileatcursor

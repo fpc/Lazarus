@@ -52,7 +52,7 @@ var
   InsertFileAtCursorCommand: TIDECommand;
   DeclareVariableCommand: TIDECommand;
   TVIconRes: TLResource;
-  AddCallInheritedCommand: TIDECommand;
+  InsertCallInheritedCommand: TIDECommand;
   ShowCodeNodeInfoCommand: TIDECommand;
   CmdCatView: TIDECommandCategory;
   ViewCodyWindowCommand: TIDECommand;
@@ -98,13 +98,13 @@ begin
     crsInsertFileAtCursor,nil,nil,InsertFileAtCursorCommand);
 
   // add call inherited
-  AddCallInheritedCommand:=RegisterIDECommand(CmdCatCodeTools, 'AddCallInherited',
-    crsAddCallInherited,
+  InsertCallInheritedCommand:=RegisterIDECommand(CmdCatCodeTools, 'AddCallInherited',
+    crsInsertCallInherited,
     CleanIDEShortCut,CleanIDEShortCut,nil,@AddCallInherited);
   RegisterIDEMenuCommand(SrcEditSubMenuSource, 'SrcEditAddCallInherited',
-    crsAddCallInherited, nil, nil, AddCallInheritedCommand);
-  RegisterIDEMenuCommand(itmSourceInsertions, 'AddCallInherited',
-    crsAddCallInherited, nil, nil, AddCallInheritedCommand);
+    crsInsertCallInherited, nil, nil, InsertCallInheritedCommand);
+  RegisterIDEMenuCommand(itmSourceInsertions, 'InsertCallInherited',
+    crsInsertCallInherited, nil, nil, InsertCallInheritedCommand);
 
   // declare variable
   DeclareVariableCommand:=RegisterIDECommand(CmdCatCodeTools, 'DeclareVariable',

@@ -25,10 +25,6 @@ msgstr "Додати метод Assign ..."
 msgid "Add a \"With\" Block"
 msgstr ""
 
-#: codystrconsts.crsaddcallinherited
-msgid "Add call inherited"
-msgstr "Додати виклик успадкованого"
-
 #: codystrconsts.crsaddwithblock
 msgid "Add \"With\" Block"
 msgstr ""
@@ -318,6 +314,10 @@ msgstr "В реалізації"
 #: codystrconsts.crsininterface
 msgid "In interface"
 msgstr "В інтерфейсі"
+
+#: codystrconsts.crsinsertcallinherited
+msgid "Insert call inherited"
+msgstr ""
 
 #: codystrconsts.crsinsertfileatcursor
 #, fuzzy
