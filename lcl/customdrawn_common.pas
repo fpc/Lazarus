@@ -14,7 +14,7 @@ uses
   // Others only for types
   StdCtrls, ComCtrls,
   //
-  customdrawndrawers;
+  customdrawndrawers, ExtCtrls;
 
 type
 
@@ -37,7 +37,8 @@ type
     // General drawing routines
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
-    procedure DrawShallowRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
+    procedure DrawFrame3D(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      const FrameWidth : integer; const Style : TBevelCut); override;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); override;
@@ -341,21 +342,53 @@ begin
   ADest.LineTo(ADestPos.X+ASize.cx-2, ADestPos.Y-1);
 end;
 
-procedure TCDDrawerCommon.DrawShallowRaisedFrame(ADest: TCanvas;
-  ADestPos: TPoint; ASize: TSize);
+procedure TCDDrawerCommon.DrawFrame3D(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+    const FrameWidth : integer; const Style : TBevelCut);
+var
+  i: Integer;
+  ARect: TRect;
 begin
-  // white lines in the left and top
-  ADest.Pen.Style := psSolid;
-  ADest.Brush.Style := bsClear;
-  ADest.Pen.Color := WIN2000_FRAME_WHITE;
-  ADest.MoveTo(ADestPos.X, ADestPos.Y+ASize.cy-1);
-  ADest.LineTo(ADestPos.X, ADestPos.Y);
-  ADest.LineTo(ADestPos.X+ASize.cy-1, ADestPos.Y);
-  // Dark grey line on the right and bottom
-  ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
-  ADest.MoveTo(ADestPos.X,            ADestPos.Y+ASize.cy-1);
-  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y+ASize.cy-1);
-  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y);
+  ARect := Bounds(ADestPos.X, ADestPos.Y, ASize.cx, ASize.cy);
+  for i := 0 to FrameWidth-1 do
+  begin
+    case Style of
+      bvLowered:
+      begin
+        // white lines in the left and top
+        ADest.Pen.Style := psSolid;
+        ADest.Brush.Style := bsClear;
+        ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
+        ADest.MoveTo(ARect.Left,  ARect.Bottom);
+        ADest.LineTo(ARect.Left,  ARect.Top);
+        ADest.LineTo(ARect.Right, ARect.Top);
+        // Dark grey line on the right and bottom
+        ADest.Pen.Color := WIN2000_FRAME_WHITE;
+        ADest.MoveTo(ARect.Left,  ARect.Bottom);
+        ADest.LineTo(ARect.Right, ARect.Bottom);
+        ADest.LineTo(ARect.Right, ARect.Top);
+      end;
+      bvRaised:
+      begin
+        // white lines in the left and top
+        ADest.Pen.Style := psSolid;
+        ADest.Brush.Style := bsClear;
+        ADest.Pen.Color := WIN2000_FRAME_WHITE;
+        ADest.MoveTo(ARect.Left,  ARect.Bottom);
+        ADest.LineTo(ARect.Left,  ARect.Top);
+        ADest.LineTo(ARect.Right, ARect.Top);
+        // Dark grey line on the right and bottom
+        ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
+        ADest.MoveTo(ARect.Left,  ARect.Bottom);
+        ADest.LineTo(ARect.Right, ARect.Bottom);
+        ADest.LineTo(ARect.Right, ARect.Top);
+      end;
+      bvSpace:
+      begin
+      end;
+    end;
+
+    InflateRect(ARect, -1, -1);
+  end;
 end;
 
 procedure TCDDrawerCommon.DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint;
@@ -1089,6 +1122,9 @@ end;
 
 procedure TCDDrawerCommon.DrawPanel(ADest: TCanvas; ASize: TSize;
   AState: TCDControlState; AStateEx: TCDPanelStateEx);
+var
+  NextRectFactor: TBevelWidth = 0;
+  //TS : TTextStyle;
 begin
   // Background
   ADest.Brush.Color := Palette.BtnFace;
@@ -1097,9 +1133,44 @@ begin
   ADest.FillRect(0, 0, ASize.cx, ASize.cy);
 
   // The outter frame
-  DrawShallowRaisedFrame(ADest, Point(0, 0), ASize);
 
-  // Now the inner frame
+  // if BevelOuter is set then draw a frame with BevelWidth
+  if (AStateEx.BevelOuter <> bvNone) and (AStateEx.BevelWidth > 0) then
+  begin
+    NextRectFactor := AStateEx.BevelWidth;
+    DrawFrame3d(ADest, Point(0, 0), ASize, AStateEx.BevelWidth, AStateEx.BevelOuter); // Note: Frame3D inflates ARect
+  end;
+
+  ASize.cx := ASize.cx - NextRectFactor*2;
+  ASize.cy := ASize.cy - NextRectFactor*2;
+
+  // if BevelInner is set then skip the BorderWidth and draw a frame with BevelWidth
+  if (AStateEx.BevelInner <> bvNone) and (AStateEx.BevelWidth > 0) then
+    DrawFrame3d(ADest, Point(NextRectFactor, NextRectFactor), ASize, AStateEx.BevelWidth, AStateEx.BevelInner); // Note: Frame3D inflates ARect
+
+  {if Caption <> '' then
+  begin
+    TS := Canvas.TextStyle;
+    TS.Alignment := BidiFlipAlignment(Self.Alignment, UseRightToLeftAlignment);
+    if BiDiMode<>bdLeftToRight then
+      TS.RightToLeft:= True;
+    TS.Layout:= tlCenter;
+    TS.Opaque:= false;
+    TS.Clipping:= false;
+    TS.SystemFont:=Canvas.Font.IsDefault;
+    if not Enabled then
+    begin
+      Canvas.Font.Color := clBtnHighlight;
+      OffsetRect(ARect, 1, 1);
+      Canvas.TextRect(ARect, ARect.Left, ARect.Top, Caption, TS);
+      Canvas.Font.Color := clBtnShadow;
+      OffsetRect(ARect, -1, -1);
+    end
+    else
+      Canvas.Font.Color := Font.Color;
+
+    Canvas.TextRect(ARect,ARect.Left,ARect.Top, Caption, TS);
+  end;}
 end;
 
 procedure TCDDrawerCommon.DrawStaticText(ADest: TCanvas;

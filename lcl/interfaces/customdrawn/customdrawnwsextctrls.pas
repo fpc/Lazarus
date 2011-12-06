@@ -135,7 +135,7 @@ type
 
   TCDWSCustomPanel = class(TWSCustomPanel)
   public
-    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
+    class procedure CreateCDControl(const AWinControl: TCustomPanel; var ACDControlField: TCDControl);
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -217,13 +217,16 @@ end;          *)
 { TCDWSCustomPanel }
 
 class procedure TCDWSCustomPanel.CreateCDControl(
-  const AWinControl: TWinControl; var ACDControlField: TCDControl);
+  const AWinControl: TCustomPanel; var ACDControlField: TCDControl);
 begin
   ACDControlField := TCDPanel.Create(AWinControl);
-//  TCDIntfButton(ACDControlField).LCLButton := TButton(AWinControl);
+  //TCDIntfPanel(ACDControlField).LCLButton := TButton(AWinControl);
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
+  TCDPanel(ACDControlField).BevelInner := AWinControl.BevelInner;
+  TCDPanel(ACDControlField).BevelOuter := AWinControl.BevelOuter;
+  TCDPanel(ACDControlField).BevelWidth := AWinControl.BevelWidth;
 end;
 
 {------------------------------------------------------------------------------
@@ -251,7 +254,7 @@ begin
   TCDWSWinControl.ShowHide(AWinControl);
 
   if lCDWinControl.CDControl = nil then
-    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+    CreateCDControl(TCustomPanel(AWinControl), lCDWinControl.CDControl);
 end;
 
 (*{ TCDWSCustomTrayIcon }

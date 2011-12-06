@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Types,
   // LCL for types
-  Graphics, ComCtrls, ExtCtrls;
+  Controls, Graphics, ComCtrls, ExtCtrls;
 
 const
   CDDRAWSTYLE_COUNT = 19;
@@ -288,7 +288,8 @@ type
     // General drawing routines
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
-    procedure DrawShallowRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
+    procedure DrawFrame3D(ADest: TCanvas; ADestPos: TPoint; ASize: TSize;
+      const FrameWidth : integer; const Style : TBevelCut); virtual; abstract;
     procedure DrawSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawShallowSunkenFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); virtual; abstract;
     procedure DrawTickmark(ADest: TCanvas; ADestPos: TPoint); virtual; abstract;
