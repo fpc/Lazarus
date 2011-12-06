@@ -676,17 +676,38 @@ type
 
   TEditorOptions = class;
   TMouseOptGutterLeftType = (moGLDownClick, moglUpClickAndSelect);
-  TMouseOptTextMiddleType = (moTMPaste, moTMIgnore, moTMDeclarationJump);
-  TMouseOptTextCtrlLeft = (moTCLJump, moTCLNone, moTCLJumpOrBlock);
+  TMouseOptButtonActionOld = (
+    mbaNone,
+    mbaPaste,
+    mbaDeclarationJump,
+    mbaDeclarationOrBlockJump,
 
+    // Old values, needed to load old config
+    moTCLNone, moTMIgnore,
+    moTMPaste,
+    moTMDeclarationJump, moTCLJump,
+    moTCLJumpOrBlock
+  );
+
+  TMouseOptButtonAction = mbaNone..mbaDeclarationJump;
+
+const
+  MouseOptButtonActionOld: Array [moTCLNone..moTCLJumpOrBlock] of TMouseOptButtonActionOld = (
+    mbaNone, mbaNone,
+    mbaPaste,
+    mbaDeclarationJump, mbaDeclarationJump,
+    mbaDeclarationOrBlockJump
+  );
+
+type
   { TEditorMouseOptions }
 
   TEditorMouseOptions = class(TPersistent)
   private
     FAltColumnMode: Boolean;
     FGutterLeft: TMouseOptGutterLeftType;
-    FTextMiddleClick: TMouseOptTextMiddleType;
-    FTextCtrlLeftClick: TMouseOptTextCtrlLeft;
+    FTextMiddleClick: TMouseOptButtonActionOld;
+    FTextCtrlLeftClick: TMouseOptButtonActionOld;
     FTextDoubleSelLine: Boolean;
     FTextDrag: Boolean;
     FTextRightMoveCaret: Boolean;
@@ -707,6 +728,8 @@ type
     procedure SetSelectedUserScheme(const AValue: String);
     procedure SetSelectedUserSchemeIndex(const AValue: Integer);
     procedure AssignActions(Src: TEditorMouseOptions);
+    procedure SetTextCtrlLeftClick(AValue: TMouseOptButtonActionOld);
+    procedure SetTextMiddleClick(AValue: TMouseOptButtonActionOld);
   public
     constructor Create;
     destructor Destroy; override;
@@ -742,13 +765,20 @@ type
     property GutterActionsFoldCol: TSynEditMouseActions read FGutterActionsFoldCol;
     property GutterActionsLines: TSynEditMouseActions read FGutterActionsLines;
   published
-    property GutterLeft: TMouseOptGutterLeftType read FGutterLeft write FGutterLeft;
-    property AltColumnMode: Boolean read FAltColumnMode write FAltColumnMode;
-    property TextDrag: Boolean read FTextDrag write FTextDrag;
-    property TextDoubleSelLine: Boolean read FTextDoubleSelLine write FTextDoubleSelLine;
-    property TextRightMoveCaret: Boolean read FTextRightMoveCaret  write FTextRightMoveCaret;
-    property TextMiddleClick: TMouseOptTextMiddleType read FTextMiddleClick write FTextMiddleClick;
-    property TextCtrlLeftClick: TMouseOptTextCtrlLeft read FTextCtrlLeftClick write FTextCtrlLeftClick;
+    property GutterLeft: TMouseOptGutterLeftType read FGutterLeft write FGutterLeft
+             default moGLDownClick;
+    property AltColumnMode: Boolean read FAltColumnMode write FAltColumnMode
+             default True;
+    property TextDrag: Boolean read FTextDrag write FTextDrag
+             default True;
+    property TextDoubleSelLine: Boolean read FTextDoubleSelLine write FTextDoubleSelLine
+             default False;
+    property TextRightMoveCaret: Boolean read FTextRightMoveCaret  write FTextRightMoveCaret
+             default False;
+    property TextMiddleClick: TMouseOptButtonActionOld read FTextMiddleClick write SetTextMiddleClick
+             default mbaPaste;
+    property TextCtrlLeftClick: TMouseOptButtonActionOld read FTextCtrlLeftClick write SetTextCtrlLeftClick
+             default mbaDeclarationJump;
     // the flag below is set by CalcCustomSavedActions
     property CustomSavedActions: Boolean read FCustomSavedActions write FCustomSavedActions;
     property SelectedUserScheme: String read FSelectedUserScheme write SetSelectedUserScheme;
@@ -2302,8 +2332,8 @@ procedure TEditorMouseOptions.Reset;
 begin
   FCustomSavedActions := False;
   FGutterLeft         := moGLDownClick;
-  FTextMiddleClick    := moTMPaste;
-  FTextCtrlLeftClick  := moTCLJump;
+  FTextMiddleClick    := mbaPaste;
+  FTextCtrlLeftClick  := mbaDeclarationJump;
   FTextDoubleSelLine  := False;
   FTextRightMoveCaret := False;
   FAltColumnMode      := True;
@@ -2353,7 +2383,8 @@ begin
     AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [ssAlt],   [ssAlt, ssCtrl], emcoCodeFoldCollapsOne);
     AddCommand(emcCodeFoldExpand,      False, mbLeft,   ccAny,    CDir, [ssCtrl],  [ssAlt, ssCtrl], emcoCodeFoldExpandAll);
     AddCommand(emcCodeFoldExpand,      False, mbLeft,   ccAny,    CDir, [],        [],              emcoCodeFoldExpandOne);
-    if FTextMiddleClick <> moTMIgnore then
+    // TODO: why depend on FTextMiddleClick?
+    if FTextMiddleClick <> mbaNone then
       AddCommand(emcCodeFoldCollaps,   False, mbMiddle, ccAny,    CDir, [],       [],               emcoCodeFoldCollapsOne);
     if CDir = cdUp then
       AddCommand(emcNone,              False, mbLeft,   ccAny,    cdDown, [], []);
@@ -2361,7 +2392,8 @@ begin
   with FGutterActionsFoldExp do begin
     AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [],       [ssCtrl], emcoCodeFoldCollapsOne);
     AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [ssCtrl], [ssCtrl], emcoCodeFoldCollapsAll);
-    if FTextMiddleClick <> moTMIgnore then
+    // TODO: why depend on FTextMiddleClick?
+    if FTextMiddleClick <> mbaNone then
       AddCommand(emcCodeFoldCollaps,   False, mbMiddle, ccAny,    CDir, [],       [],       emcoCodeFoldCollapsOne);
     if CDir = cdUp then
       AddCommand(emcNone,              False, mbLeft,   ccAny,    cdDown, [], []);
@@ -2370,20 +2402,25 @@ begin
 end;
 
 procedure TEditorMouseOptions.ResetTextToDefault;
+var
+  ModKeys: TShiftState;
 begin
   FMainActions.Clear;
   FSelActions.Clear;
   FTextActions.Clear;
 
   with FTextActions do begin
+    ModKeys := [ssShift];
+    if FTextCtrlLeftClick <> mbaNone then ModKeys := [ssShift, ssCtrl];
     if FAltColumnMode then begin
-      AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [],        [ssShift, ssAlt], emcoSelectionStart);
-      AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [ssShift], [ssShift, ssAlt], emcoSelectionContinue);
-      AddCommand(emcStartColumnSelections, True, mbLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt], emcoSelectionStart);
-      AddCommand(emcStartColumnSelections, True, mbLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt], emcoSelectionContinue);
+      ModKeys := ModKeys + [ssAlt];
+      AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [],        ModKeys, emcoSelectionStart);
+      AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [ssShift], ModKeys, emcoSelectionContinue);
+      AddCommand(emcStartColumnSelections, True, mbLeft, ccSingle, cdDown, [ssAlt],          ModKeys, emcoSelectionStart);
+      AddCommand(emcStartColumnSelections, True, mbLeft, ccSingle, cdDown, [ssShift, ssAlt], ModKeys, emcoSelectionContinue);
     end else begin
-      AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [],        [ssShift], emcoSelectionStart);
-      AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [ssShift], [ssShift], emcoSelectionContinue);
+      AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [],        ModKeys, emcoSelectionStart);
+      AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [ssShift], ModKeys, emcoSelectionContinue);
     end;
 
     if FTextDoubleSelLine then begin
@@ -2396,25 +2433,30 @@ begin
     AddCommand(emcSelectPara, True, mbLeft, ccQuad, cdDown, [], []);
 
     case FTextMiddleClick of
-      moTMPaste:
-        AddCommand(emcPasteSelection, True, mbMiddle, ccSingle, cdDown, [], []);
-      moTMIgnore: {nothing} ;
-      moTMDeclarationJump:
+      mbaNone: {nothing} ;
+      mbaPaste:
+          AddCommand(emcPasteSelection,   True,  mbMiddle, ccSingle, cdDown, [], []);
+      mbaDeclarationJump, mbaDeclarationOrBlockJump:
         begin
-          AddCommand(emcMouseLink, False, mbMiddle, ccSingle, cdDown, [ssCtrl], [ssCtrl], emcoMouseLinkShow, 999);
-          AddCommand(emcMouseLink, False, mbMiddle, ccSingle, cdDown, [], [], emcoMouseLinkHide);
+          AddCommand(emcMouseLink,        False, mbMiddle, ccSingle, cdUp, [ssCtrl], [ssCtrl], emcoMouseLinkShow, 999);
+          AddCommand(emcMouseLink,        False, mbMiddle, ccSingle, cdUp, [], [], emcoMouseLinkHide);
+          if FTextMiddleClick = mbaDeclarationOrBlockJump then
+            AddCommand(emcSynEditCommand, False, mbMiddle, ccSingle, cdUp, [], [], ecFindBlockOtherEnd, 1);
         end;
     end;
 
     AddCommand(emcContextMenu, FTextRightMoveCaret, mbRight, ccSingle, cdUp, [], [], emcoSelectionCaretMoveNever);
 
     case FTextCtrlLeftClick of
-      moTCLJump:
-        AddCommand(emcMouseLink, False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
-      moTCLNone: {nothing};
-      moTCLJumpOrBlock: begin
-          AddCommand(emcMouseLink, False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
-          AddCommand(emcSynEditCommand, False, mbLeft, ccSingle, cdUp, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl], ecFindBlockOtherEnd, 1);
+      mbaNone: {nothing};
+      mbaPaste:
+          AddCommand(emcPasteSelection, True,  mbLeft, ccSingle, cdDown, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
+          // TODOS act on up? but needs to prevent selection on down
+      mbaDeclarationJump:
+          AddCommand(emcMouseLink,      False, mbLeft, ccSingle, cdUp,   [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
+      mbaDeclarationOrBlockJump: begin
+          AddCommand(emcMouseLink,      False, mbLeft, ccSingle, cdUp,   [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
+          AddCommand(emcSynEditCommand, False, mbLeft, ccSingle, cdUp,   [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl], ecFindBlockOtherEnd, 1);
         end;
     end;
 
@@ -2460,6 +2502,24 @@ begin
   FGutterActionsFoldExp.Assign(Src.GutterActionsFoldExp);
   FGutterActionsFoldCol.Assign(Src.GutterActionsFoldCol);
   FGutterActionsLines.Assign  (Src.GutterActionsLines);
+end;
+
+procedure TEditorMouseOptions.SetTextCtrlLeftClick(AValue: TMouseOptButtonActionOld);
+begin
+  // upgrade old values
+  if AValue in [low(MouseOptButtonActionOld)..high(MouseOptButtonActionOld)] then
+    AValue := MouseOptButtonActionOld[AValue];
+  if FTextCtrlLeftClick = AValue then Exit;
+  FTextCtrlLeftClick := AValue;
+end;
+
+procedure TEditorMouseOptions.SetTextMiddleClick(AValue: TMouseOptButtonActionOld);
+begin
+  // upgrade old values
+  if AValue in [low(MouseOptButtonActionOld)..high(MouseOptButtonActionOld)] then
+    AValue := MouseOptButtonActionOld[AValue];
+  if FTextMiddleClick = AValue then Exit;
+  FTextMiddleClick := AValue;
 end;
 
 procedure TEditorMouseOptions.AssignEx(Src: TEditorMouseOptions; WithUserSchemes: Boolean);
@@ -2576,7 +2636,7 @@ begin
     aXMLConfig.DeleteValue(aOldPath + 'AltSetsColumnMode');
 
     if not aXMLConfig.GetValue(aOldPath + 'CtrlMouseLinks', True) then
-      TextCtrlLeftClick := moTCLNone;
+      TextCtrlLeftClick := mbaNone;
     aXMLConfig.DeleteValue(aOldPath + 'CtrlMouseLinks');
 
     if aXMLConfig.GetValue(aOldPath + 'DoubleClickSelectsLine', False) then

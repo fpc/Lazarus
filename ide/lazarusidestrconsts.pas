@@ -1323,13 +1323,12 @@ resourcestring
   dlfMouseSimpleTextSectDoubleSelLine = 'Double click selects line';
   dlfMouseSimpleRightMoveCaret = 'Right mouse includes caret move';
   dlfMouseSimpleTextSectMidLabel = 'Middle Button';
-  dlfMouseSimpleTextSectMidPaste = 'paste selection';
-  dlfMouseSimpleTextSectMidNone = 'nothing';
-  dlfMouseSimpleTextSectMidGoto = 'jumps to implementation';
   dlfMouseSimpleTextSectCtrlLeftLabel = 'Ctrl Left Button';
-  dlfMouseSimpleTextSectCtrlLeftRJump = 'jumps to implementation';
-  dlfMouseSimpleTextSectCtrlLeftRNone = 'nothing';
-  dlfMouseSimpleTextSectCtrlLeftRJumpOrBlock = 'jumps to implementation/other block end';
+  dlfMouseSimpleButtonNothing          = 'Nothing/Default';
+  dlfMouseSimpleButtonPaste            = 'Paste';
+  dlfMouseSimpleButtonDeclaration      = 'Jumps to implementation';
+  dlfMouseSimpleButtonDeclarationBlock = 'Jumps to implementation/other block end';
+
   dlfMouseSimpleWarning = 'You have unsaved changes. Using this page will undo changes made on the advanced page';
   dlfMouseSimpleDiff = 'This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes';
   dlfMouseResetAll = 'Reset all settings';

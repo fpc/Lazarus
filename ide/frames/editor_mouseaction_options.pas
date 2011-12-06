@@ -35,10 +35,9 @@ type
   TEditorMouseOptionsFrame = class(TAbstractIDEOptionsEditor)
     BottomDivider: TBevel;
     chkPredefinedScheme: TCheckBox;
+    dropMiddle: TComboBox;
+    dropCtrlLeft: TComboBox;
     CtrLLeftLabel: TLabel;
-    CtrlLeftRadio1: TRadioButton;
-    CtrlLeftRadio2: TRadioButton;
-    CtrlLeftRadio3: TRadioButton;
     DiffLabel: TLabel;
     dropUserSchemes: TComboBox;
     GenericDividerLabel: TLabel;
@@ -54,8 +53,6 @@ type
     pnlBottom: TPanel;
     PanelGutter: TPanel;
     PanelTextCheckBox: TPanel;
-    PanelTextCtrlLeft: TPanel;
-    PanelTextMiddle: TPanel;
     pnlAllGutter: TPanel;
     pnlAllText: TPanel;
     pnlUserSchemes: TPanel;
@@ -70,9 +67,6 @@ type
     TextDividerRight: TBevel;
     TextDoubleSelLine: TCheckBox;
     TextDrag: TCheckBox;
-    TextMidRadio1: TRadioButton;
-    TextMidRadio2: TRadioButton;
-    TextMidRadio3: TRadioButton;
     RadioGroup1: TRadioGroup;
     TextLeft: TCheckGroup;
     TextMiddle: TRadioGroup;
@@ -216,14 +210,8 @@ begin
     (FTempMouseSettings.TextDrag = TextDrag.Checked) and
     (FTempMouseSettings.TextRightMoveCaret = RightMoveCaret.Checked) and
     (FTempMouseSettings.TextDoubleSelLine = TextDoubleSelLine.Checked) and
-    ( (TextMidRadio1.Checked and (FTempMouseSettings.TextMiddleClick = moTMPaste)) or
-      (TextMidRadio2.Checked and (FTempMouseSettings.TextMiddleClick = moTMIgnore)) or
-      (TextMidRadio3.Checked and (FTempMouseSettings.TextMiddleClick = moTMDeclarationJump))
-    ) and
-    ( (CtrlLeftRadio1.Checked and (FTempMouseSettings.TextCtrlLeftClick = moTCLJump)) or
-      (CtrlLeftRadio2.Checked and (FTempMouseSettings.TextCtrlLeftClick = moTCLNone)) or
-      (CtrlLeftRadio3.Checked and (FTempMouseSettings.TextCtrlLeftClick = moTCLJumpOrBlock))
-    )
+    (FTempMouseSettings.TextCtrlLeftClick = TMouseOptButtonAction(dropCtrlLeft.ItemIndex)) and
+    (FTempMouseSettings.TextMiddleClick = TMouseOptButtonAction(dropMiddle.ItemIndex))
   );
 end;
 
@@ -259,19 +247,8 @@ begin
   FTempMouseSettings.TextRightMoveCaret := RightMoveCaret.Checked;
   FTempMouseSettings.TextDoubleSelLine := TextDoubleSelLine.Checked;
 
-  if TextMidRadio3.Checked then
-    FTempMouseSettings.TextMiddleClick := moTMDeclarationJump
-  else if TextMidRadio2.Checked then
-    FTempMouseSettings.TextMiddleClick := moTMIgnore
-  else
-    FTempMouseSettings.TextMiddleClick := moTMPaste;
-
-  if CtrlLeftRadio3.Checked then
-    FTempMouseSettings.TextCtrlLeftClick := moTCLJumpOrBlock
-  else if CtrlLeftRadio2.Checked then
-    FTempMouseSettings.TextCtrlLeftClick := moTCLNone
-  else
-    FTempMouseSettings.TextCtrlLeftClick := moTCLJump;
+  FTempMouseSettings.TextCtrlLeftClick := TMouseOptButtonAction(dropCtrlLeft.ItemIndex);
+  FTempMouseSettings.TextMiddleClick   := TMouseOptButtonAction(dropMiddle.ItemIndex);
 
   FTempMouseSettings.ResetTextToDefault;
   if FDialog.FindEditor(TEditorMouseOptionsAdvFrame) <> nil then
@@ -302,26 +279,36 @@ begin
 end;
 
 procedure TEditorMouseOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+  procedure SetupButtonCombo(ACombo: TComboBox);
+  begin
+    ACombo.Clear;
+    ACombo.Items.Add(dlfMouseSimpleButtonNothing);  // mbaNone,
+    ACombo.Items.Add(dlfMouseSimpleButtonPaste);  // mbaPaste,
+    ACombo.Items.Add(dlfMouseSimpleButtonDeclaration);  // mbaDeclarationJump,
+    ACombo.Items.Add(dlfMouseSimpleButtonDeclarationBlock);  // mbaDeclarationOrBlockJump,
+  end;
+
 begin
   FDialog := ADialog;
   chkPredefinedScheme.Caption := dlfMousePredefinedScheme;
   GenericDividerLabel.Caption := dlfMouseSimpleGenericSect;
+
   GutterDividerLabel.Caption := dlfMouseSimpleGutterSect;
   GutterLeftRadio1.Caption := dlfMouseSimpleGutterLeftDown;
   GutterLeftRadio2.Caption := dlfMouseSimpleGutterLeftUp;
+
   TextDividerLabel.Caption := dlfMouseSimpleTextSect;
   TextAltMode.Caption := dlfMouseSimpleTextSectAlt;
   TextDrag.Caption := dlfMouseSimpleTextSectDrag;
   TextDoubleSelLine.Caption := dlfMouseSimpleTextSectDoubleSelLine;
   RightMoveCaret.Caption := dlfMouseSimpleRightMoveCaret;
-  MiddleBtnLabel.Caption := dlfMouseSimpleTextSectMidLabel;
-  TextMidRadio1.Caption := dlfMouseSimpleTextSectMidPaste;
-  TextMidRadio2.Caption := dlfMouseSimpleTextSectMidNone;
-  TextMidRadio3.Caption := dlfMouseSimpleTextSectMidGoto;
+
   CtrLLeftLabel.Caption := dlfMouseSimpleTextSectCtrlLeftLabel;
-  CtrlLeftRadio1.Caption := dlfMouseSimpleTextSectCtrlLeftRJump;
-  CtrlLeftRadio2.Caption := dlfMouseSimpleTextSectCtrlLeftRNone;
-  CtrlLeftRadio3.Caption := dlfMouseSimpleTextSectCtrlLeftRJumpOrBlock;
+  SetupButtonCombo(dropCtrlLeft);
+
+  MiddleBtnLabel.Caption := dlfMouseSimpleTextSectMidLabel;
+  SetupButtonCombo(dropMiddle);
+
   WarnLabel.Caption := dlfMouseSimpleWarning;
   DiffLabel.Caption := dlfMouseSimpleDiff;
   ResetAllButton.Caption := dlfMouseResetAll;
@@ -361,16 +348,10 @@ begin
   TextDrag.Checked    := FTempMouseSettings.TextDrag;
   RightMoveCaret.Checked := FTempMouseSettings.TextRightMoveCaret;
   TextDoubleSelLine.Checked := FTempMouseSettings.TextDoubleSelLine;
-  case FTempMouseSettings.TextMiddleClick of
-    moTMPaste: TextMidRadio1.Checked := True;
-    moTMIgnore: TextMidRadio2.Checked := True;
-    moTMDeclarationJump: TextMidRadio3.Checked := True;
-  end;
-  case FTempMouseSettings.TextCtrlLeftClick of
-    moTCLJump: CtrlLeftRadio1.Checked := True;
-    moTCLNone: CtrlLeftRadio2.Checked := True;
-    moTCLJumpOrBlock: CtrlLeftRadio3.Checked := True;
-  end;
+
+  dropCtrlLeft.ItemIndex := ord(FTempMouseSettings.TextCtrlLeftClick);
+  dropMiddle.ItemIndex   := ord(FTempMouseSettings.TextMiddleClick);
+
   Dec(FInClickHandler);
   UpdateButtons;
 
