@@ -110,6 +110,7 @@ type
     FOnMove: TOnSourceLogMove;
     FChangeHooks: {$ifdef fpc}^{$else}array of {$endif}TOnSourceChange;
     FChangeHookCount: integer;
+    FChangeHookDelayed: boolean;
     FSource: string;
     FChangeStep: integer;
     FReadOnly: boolean;
@@ -123,8 +124,8 @@ type
     procedure SetReadOnly(const Value: boolean);
     function IndexOfChangeHook(AChangeHook: TOnSourceChange): integer;
   protected
-    procedure IncreaseChangeStep; virtual;
-    procedure DoSourceChanged; virtual;
+    procedure IncreaseChangeStep; virtual; // any change
+    procedure DoSourceChanged; virtual; // source change
     procedure DecodeLoaded(const AFilename: string;
                         var ASource, ADiskEncoding, AMemEncoding: string); virtual;
     procedure EncodeSaving(const AFilename: string; var ASource: string); virtual;
@@ -166,6 +167,7 @@ type
     function SaveToFile(const Filename: string): boolean; virtual;
     function GetLines(StartLine, EndLine: integer): string;
     function IsEqual(sl: TStrings): boolean;
+    function OldIsEqual(sl: TStrings): boolean;
     procedure Assign(sl: TStrings);
     procedure AssignTo(sl: TStrings; UseAddStrings: Boolean);
     procedure LoadFromStream(s: TStream);
@@ -433,9 +435,9 @@ begin
   Data:=nil;
   FReadOnly:=false;
   IncreaseChangeStep;
-  NotifyHooks(nil);
   if SourceChanged then
     DoSourceChanged;
+  NotifyHooks(nil);
 end;
 
 function TSourceLog.GetItems(Index: integer): TSourceLogEntry;
@@ -466,7 +468,11 @@ end;
 procedure TSourceLog.NotifyHooks(Entry: TSourceLogEntry);
 var i: integer;
 begin
-  if (FChangeHooks=nil) or (FChangeHookLock>0) then exit;
+  if (FChangeHooks=nil) or (FChangeHookLock>0) then begin
+    FChangeHookDelayed:=true;
+    exit;
+  end;
+  FChangeHookDelayed:=false;
   for i:=0 to FChangeHookCount-1 do
     FChangeHooks[i](Self,Entry);
 end;
@@ -480,7 +486,8 @@ procedure TSourceLog.DecreaseHookLock;
 begin
   if FChangeHookLock<=0 then exit;
   dec(FChangeHookLock);
-  if FChangeHookLock=0 then NotifyHooks(nil);
+  if (FChangeHookLock=0) and FChangeHookDelayed then
+    NotifyHooks(nil);
 end;
 
 procedure TSourceLog.SetSource(const NewSrc: string);
@@ -494,6 +501,7 @@ begin
       FSrcLen:=length(FSource);
       FLineCount:=-1;
       FReadOnly:=false;
+      DoSourceChanged;
     finally
       dec(FChangeHookLock);
     end;
@@ -520,7 +528,6 @@ begin
       NewSrcLogEntry.AdjustPosition(Markers[i].NewPosition);
   end;
   FModified:=true;
-  IncreaseChangeStep;
   DoSourceChanged;
 end;
 
@@ -546,7 +553,6 @@ begin
     end;
   end;
   FModified:=true;
-  IncreaseChangeStep;
   DoSourceChanged;
 end;
 
@@ -584,7 +590,6 @@ begin
     end;
   end;
   FModified:=true;
-  IncreaseChangeStep;
   DoSourceChanged;
 end;
 
@@ -615,7 +620,6 @@ begin
       NewSrcLogEntry.AdjustPosition(Markers[i].NewPosition);
   end;
   FModified:=true;
-  IncreaseChangeStep;
   DoSourceChanged;
 end;
 
@@ -859,6 +863,7 @@ end;
 
 procedure TSourceLog.DoSourceChanged;
 begin
+  IncreaseChangeStep;
   //debugln(['TSourceLog.DoSourceChanged ']);
 end;
 
@@ -925,6 +930,59 @@ begin
 end;
 
 function TSourceLog.IsEqual(sl: TStrings): boolean;
+var
+  p: PChar;
+  Line: String;
+  l: PChar;
+  y: Integer;
+begin
+  Result:=false;
+  if sl=nil then exit;
+  if (FSrcLen=0) and (sl.Count>0) then exit;
+  if (FLineCount>=0) and (sl.Count<>FLineCount) then exit;
+  p:=PChar(FSource);
+  y:=0;
+  while (y<sl.Count) do begin
+    Line:=sl[y];
+    if (Line<>'') then begin
+      l:=PChar(Line);
+      while (l^=p^) do begin
+        if (l^=#0) then begin
+          if l-PChar(Line)=length(Line) then begin
+            // end of Line
+            if (p-PChar(FSource)=FSrcLen) then begin
+              // end of source
+              Result:=y=sl.Count-1;
+              exit;
+            end;
+            break;
+          end else if p-PChar(FSource)=FSrcLen then begin
+            // not at end of Line, end of source
+            exit;
+          end;
+        end;
+        inc(p);
+        inc(l);
+      end;
+      if l^<>#0 then exit;
+    end;
+    // at end of Line
+    if not (p^ in [#10,#13]) then begin
+      // not between two lines in Source
+      Result:=(y=sl.Count-1) and (p-PChar(FSource)=FSrcLen);
+      exit;
+    end;
+    // skip line end
+    if (p[1] in [#10,#13]) and (p^<>p[1]) then
+      inc(p,2)
+    else
+      inc(p);
+    inc(y);
+  end;
+  Result:=p-PChar(FSource)=FSrcLen;
+end;
+
+function TSourceLog.OldIsEqual(sl: TStrings): boolean;
 var x,y,p,LineLen: integer;
   Line: string;
 begin
@@ -958,10 +1016,15 @@ begin
   if sl=nil then exit;
   if IsEqual(sl) then exit;
   IncreaseHookLock;
-  Clear;
-  fSource := sl.Text;
-  fSrcLen := Length(fSource);
-  DecreaseHookLock;
+  try
+    Clear;
+    fSource := sl.Text;
+    fSrcLen := Length(fSource);
+    DoSourceChanged;
+    NotifyHooks(nil);
+  finally
+    DecreaseHookLock;
+  end;
 end;
 
 procedure TSourceLog.AssignTo(sl: TStrings; UseAddStrings: Boolean);

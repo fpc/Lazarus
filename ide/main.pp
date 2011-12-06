@@ -14937,10 +14937,12 @@ function TMainIDE.SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInter
     AnUnitInfo := Project1.UnitWithEditorComponent(SaveEditor);
     if (AnUnitInfo<>nil) then
     begin
-      SaveSourceEditorChangesToCodeCache:=true;
+      //debugln(['SaveChanges ',AnUnitInfo.Filename,' ',SaveEditor.NeedsUpdateCodeBuffer]);
       if SaveEditor.NeedsUpdateCodeBuffer then
       begin
+        SaveSourceEditorChangesToCodeCache:=true;
         SaveEditor.UpdateCodeBuffer;
+        //debugln(['TMainIDE.SaveSourceEditorChangesToCodeCache.SaveChanges ',AnUnitInfo.Filename,' Step=',TCodeBuffer(SaveEditor.CodeToolsBuffer).ChangeStep]);
         AnUnitInfo.Modified:=true;
       end;
     end;
@@ -14950,6 +14952,7 @@ var
   i: integer;
 begin
   Result:=false;
+  //debugln(['TMainIDE.SaveSourceEditorChangesToCodeCache ']);
   if AEditor = nil then begin
     for i:=0 to SourceEditorManager.SourceEditorCount - 1 do
       SaveChanges(SourceEditorManager.SourceEditors[i]);
