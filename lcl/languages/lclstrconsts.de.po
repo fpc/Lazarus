@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-10-30 10:51+0100\n"
+"PO-Revision-Date: 2011-12-06 15:09+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -183,7 +183,7 @@ msgstr "NumLock"
 
 #: lclstrconsts.ifsvk_numpad
 msgid "Numpad %d"
-msgstr "Zahlenblock %s"
+msgstr "Zahlenblock %d"
 
 #: lclstrconsts.ifsvk_pause
 msgid "Pause key"
@@ -1462,10 +1462,9 @@ msgid "Invalid integer number: %s"
 msgstr "Ungültiger Integerzahl: %s"
 
 #: lclstrconsts.sparlocinfo
-#, fuzzy
 #| msgid " (at %d,%d, stream offset %.8x)"
 msgid " (at %d,%d, stream offset %d)"
-msgstr " (bei %d,%d, Stream-Offset %.8x)"
+msgstr " (bei %d,%d, Stream-Offset %d)"
 
 #: lclstrconsts.sparunterminatedbinvalue
 msgid "Unterminated byte value"
