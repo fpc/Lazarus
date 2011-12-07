@@ -872,6 +872,7 @@ type
 
   TQtComboBox = class(TQtWidget, IQtEdit)
   private
+    FMouseFixPos: TQtPoint;
     // hooks
     FChangeHook: QComboBox_hookH;
     FActivateHook: QComboBox_hookH;
@@ -940,6 +941,7 @@ type
     procedure SlotChange(p1: PWideString); cdecl;
     procedure SlotSelect(index: Integer); cdecl;
     procedure SlotDropListVisibility(AVisible: Boolean); cdecl;
+    procedure FixMouseUp; // qt eats MouseRelease event when popup is shown, so we'll fix it
   end;
 
   { TQtAbstractSpinBox}
@@ -8284,6 +8286,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtComboBox.Create');
   {$endif}
+  FMouseFixPos := QtPoint(-1, -1);
   FDropListVisibleInternal := False;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
@@ -8714,6 +8717,23 @@ begin
   end;
 end;
 
+{this routine is called ONLY from dropdown list viewport event filter
+ when QEventShow occurs.It sends MouseRelease event to LCL !
+ Should not be used in any other case.}
+procedure TQtComboBox.FixMouseUp;
+var
+  MouseEvent: QMouseEventH;
+begin
+  if (FMouseFixPos.x = -1) and (FMouseFixPos.y = -1) then
+    exit;
+  if QApplication_mouseButtons = QtLeftButton then
+  begin
+    MouseEvent := QMouseEvent_create(QEventMouseButtonRelease, @FMouseFixPos, QtLeftButton,
+      QtLeftButton, QApplication_keyboardModifiers());
+    QCoreApplication_postEvent(Widget, MouseEvent);
+  end;
+end;
+
 function TQtComboBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   R, R1: TRect;
@@ -8754,6 +8774,11 @@ begin
         QEvent_accept(Event);
       end;
     end;
+    QEventMouseButtonRelease:
+    begin
+      FMouseFixPos := QtPoint(-1, -1);
+      Result := inherited EventFilter(Sender, Event);
+    end;
     QEventMouseButtonPress:
     begin
       if not FDropListVisibleInternal and
@@ -8762,6 +8787,7 @@ begin
         // some themes have empty space around combo button !
 
         P := QMouseEvent_pos(QMouseEventH(Event))^;
+        FMouseFixPos := P;
 
         // our combo geometry
         R := getGeometry;
@@ -9768,7 +9794,11 @@ begin
   QEvent_accept(Event);
 
   if (FChildOfComplexWidget = ccwComboBox) and (FOwner <> nil) then
+  begin
+    if QEvent_type(Event) = QEventShow then
+      TQtComboBox(FOwner).FixMouseUp;
     exit;
+  end;
 
   if (LCLObject <> nil) then
   begin
