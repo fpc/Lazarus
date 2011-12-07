@@ -106,7 +106,8 @@ type
     goFixedColSizing,     // Allow to resize fixed columns
     goDontScrollPartCell, // clicking partially visible cells will not scroll
     goCellHints,          // show individual cell hints
-    goTruncCellHints      // show cell hints if cell text is too long
+    goTruncCellHints,     // show cell hints if cell text is too long
+    goCellEllipsis        // show "..." if cell text is too long
   );
   TGridOptions = set of TGridOption;
 
@@ -153,6 +154,11 @@ type
 
   TMouseWheelOption = (mwCursor, mwGrid);
 
+  TCellHintPriority = (chpAll, chpAllNoDefault, chpTruncOnly);
+  // The grid can display three types of hint: the default hint (Hint property),
+  // individual cell hints (OnCellHint event), and hints for truncated cells.
+  // TCellHintPriority determines how the overall hint is combined when more
+  // multiple hint texts are to be displayed.
 
 const
   soAll: TSaveOptions = [soDesign, soAttributes, soContent, soPosition];
@@ -726,6 +732,7 @@ type
     FRowAutoInserted: Boolean;
     FMouseWheelOption: TMouseWheelOption;
     FSavedHint: String;
+    FCellHintPriority: TCellHintPriority;
     FOnGetCellHint: TGetCellHintEvent;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
@@ -945,6 +952,7 @@ type
     function  GetDefaultColumnTitle(Column: Integer): string; virtual;
     function  GetDefaultEditor(Column: Integer): TWinControl; virtual;
     function  GetDefaultRowHeight: integer; virtual;
+    function  GetGridDrawState(ACol, ARow: Integer): TGridDrawState;
     function  GetImageForCheckBox(const aCol,aRow: Integer;
                                   CheckBoxView: TCheckBoxState): TBitmap; virtual;
     function  GetScrollBarPosition(Which: integer): Integer;
@@ -961,6 +969,7 @@ type
     function  GetLastVisibleRow: Integer;
     function  GetSelectedColor: TColor; virtual;
     function  GetTitleShowPrefix(Column: Integer): boolean;
+    function  GetTruncCellHintText(ACol, ARow: Integer): string; virtual;
     function  GridColumnFromColumnIndex(ColumnIndex: Integer): Integer;
     procedure GridMouseWheel(shift: TShiftState; Delta: Integer); virtual;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); virtual;
@@ -992,6 +1001,7 @@ type
     procedure Paint; override;
     procedure PickListItemSelected(Sender: TObject);
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); virtual;
+    procedure PrepareCellHints(ACol, ARow: Integer); virtual;
     procedure ResetEditor;
     procedure ResetOffset(chkCol, ChkRow: Boolean);
     procedure ResetSizes; virtual;
@@ -1021,6 +1031,7 @@ type
     procedure TopLeftChanged; virtual;
     function  TryMoveSelection(Relative: Boolean; var DCol, DRow: Integer): Boolean;
     procedure UnLockEditor;
+    procedure UnprepareCellHints; virtual;
     procedure UpdateHorzScrollBar(const aVisible: boolean; const aRange,aPage,aPos: Integer); virtual;
     procedure UpdateSelectionRange;
     procedure UpdateVertScrollbar(const aVisible: boolean; const aRange,aPage,aPos: Integer); virtual;
@@ -1040,6 +1051,7 @@ type
     property AutoFillColumns: boolean read FAutoFillColumns write SetAutoFillColumns default false;
     property BorderStyle:TBorderStyle read FGridBorderStyle write SetBorderStyle default bsSingle;
     property BorderColor: TColor read FBorderColor write SetBorderColor default cl3DDKShadow;
+    property CellHintPriority: TCellHintPriority read FCellHintPriority write FCellHintPriority default chpTruncOnly;
     property Col: Integer read FCol write SetCol;
     property ColCount: Integer read GetColCount write SetColCount default 5;
     property ColumnClickSorts: boolean read FColumnClickSorts write SetColumnClickSorts default false;
@@ -1566,6 +1578,7 @@ type
     property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
+    property CellHintPriority;
     property Color;
     property ColCount;
     property ColumnClickSorts;
@@ -3437,6 +3450,7 @@ begin
     CurrentTextStyle.Layout := GetColumnLayout(aCol, gdFixed in AState);
     CurrentTextStyle.ShowPrefix := ((gdFixed in aState) and (aRow < FFixedRows)) and GetTitleShowPrefix(aCol);
     CurrentTextStyle.RightToLeft := UseRightToLeftReading;
+    CurrentTextStyle.EndEllipsis := (goCellEllipsis in Options);
     Canvas.TextStyle := CurrentTextStyle;
   end else begin
     Canvas.TextStyle := DefaultTextStyle;
@@ -3445,6 +3459,14 @@ begin
   end;
 
   DoPrepareCanvas(aCol, aRow, aState);
+end;
+
+procedure TCustomGrid.PrepareCellHints(ACol, ARow: Integer);
+begin
+end;
+
+procedure TCustomGrid.UnprepareCellHints;
+begin
 end;
 
 procedure TCustomGrid.ResetEditor;
@@ -3516,44 +3538,49 @@ var
   w: Integer;
   gds: TGridDrawState;
 begin
+  if ([goCellHints, goTruncCellHints]*Options = []) then 
+    exit;
+
   cell := MouseToCell(APoint);
+  if (cell.x = -1) or (cell.y = -1) then
+    exit;
 
   txt := '';
   txt1 := '';
   txt2 := '';
-  if (goCellHints in Options) and Assigned(FOnGetCellHint) then
-    FOnGetCellHint(Self, cell.x, cell.y, txt1);
-  if (goTruncCellHints in Options) and (cell.y >= 0) and (cell.y >= 0) then begin
-    txt2 := GetCellHintText(cell.x, cell.y);
-    if (txt2 <> '') then begin
-      gds := [];
-      if (cell.x < FFixedCols) or (cell.y < FFixedRows) then
-        include(gds, gdFixed)
-      else begin
-        if (cell.x=FCol) and (cell.y=FRow) then
-          gds := gds + [gdFocused, gdSelected]
-        else
-        if IsCellSelected[cell.x, cell.y] then
-          include(gds, gdSelected);
-      end;
-      with FGCache do begin
-        if (cell.x=HotCell.x) and (cell.y=HotCell.y) and not IsPushCellActive() then
-          include(gds, gdHot);
-        if ClickCellPushed and (cell.x=PushedCell.x) and (cell.y=PushedCell.y) then
-          include(gds, gdPushed);
-      end;
+  PrepareCellHints(cell.x, cell.y); // in DBGrid, set the active record to cell.y
+  try
+    if (goCellHints in Options) then
+      txt1 := GetCellHintText(cell.x, cell.y);
+    if (goTruncCellHints in Options) then begin
+      txt2 := GetTruncCellHintText(cell.x, cell.y);
+      gds := GetGridDrawState(cell.x, cell.y);
       PrepareCanvas(cell.x, cell.y, gds);
       w := Canvas.TextWidth(txt2) + constCellPadding*2;
       if w < ColWidths[cell.x] then
         txt2 := '';
     end;
+  finally
+    UnprepareCellHints;
   end;
-  if (txt1 <> '') and (txt2 <> '') then
-    txt := txt1 + #13 + txt2
-  else if txt1 <> '' then
-    txt := txt1
-  else if txt2 <> '' then
-    txt := txt2;
+
+  if FCellHintPriority = chpTruncOnly then begin
+    if (txt2 <> '') then
+      txt := txt2
+    else
+      txt := txt1;
+  end else begin
+    if (txt1 <> '') and (txt2 <> '') then
+      txt := txt1 + #13 + txt2
+    else if txt1 <> '' then
+      txt := txt1
+    else if txt2 <> '' then
+      txt := txt2;
+    if (FCellHintPriority = chpAll) and (txt <> '') then
+      txt := FSavedHint + #13 + txt;
+  end;
+  if (txt = '') and (FSavedHint <> '') then
+    txt := FSavedHint;
 
   if (txt <> '') and not EditorMode and not (csDesigning in ComponentState) then begin
     Hint := txt;
@@ -3782,7 +3809,7 @@ end;
 
 procedure TCustomGrid.DrawRow(aRow: Integer);
 var
-  Gds: TGridDrawState;
+  gds: TGridDrawState;
   aCol: Integer;
   Rs: Boolean;
   R: TRect;
@@ -3795,11 +3822,11 @@ var
     with FGCache do begin
       if (aCol=HotCell.x) and (aRow=HotCell.y) and not IsPushCellActive() then begin
         Include(gds, gdHot);
-        HotCellPainted:=True;
+        HotCellPainted := True;
       end;
       if ClickCellPushed and (aCol=PushedCell.x) and (aRow=PushedCell.y) then begin
         Include(gds, gdPushed);
-       end;
+      end;
     end;
 
     Canvas.SaveHandleState;
@@ -3831,18 +3858,8 @@ begin
       ColRowToOffset(True, True, aCol, R.Left, R.Right);
       if (R.Left>=R.Right) or not HorizontalIntersect(R, ClipArea) then
         continue;
-      gds := [];
       Rs := (goRowSelect in Options);
-      if ARow<FFixedRows then
-        include(gds, gdFixed)
-      else begin
-        if (aCol=FCol)and(aRow=FRow) then
-          gds := gds + [gdFocused, gdSelected]
-        else
-        if IsCellSelected[aCol, aRow] then
-          include(gds, gdSelected);
-      end;
-
+      gds := GetGridDrawState(ACol, ARow);
       DoDrawCell;
     end;
 
@@ -5919,6 +5936,7 @@ end;
 procedure TCustomGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   p: TPoint;
+  obe: boolean;  // stored "AllowOutboundEvents"
 begin
   inherited MouseMove(Shift, X, Y);
 
@@ -5957,7 +5975,13 @@ begin
         if goRowSizing in Options then
           doRowSizing(X,Y);
 
-        p := MouseCoord(X, Y);
+        obe := AllowOutboundEvents;
+        AllowOutboundEvents := false;
+        try
+          p := MouseCoord(X, Y);
+        finally
+          AllowOutboundEvents := obe;
+        end;
         with FGCache do
           if (MouseCell.X <> p.X) or (MouseCell.Y <> p.Y) then begin
             Application.CancelHint;
@@ -7454,8 +7478,18 @@ begin
 end;
 
 function TCustomGrid.GetCellHintText(ACol, ARow: Integer): string;
+var
+  txt1: String;
+  txt2: String;
 begin
-  result := GetCells(ACol, ARow);
+  Result := '';
+  if Assigned(FOnGetCellHint) then
+    FOnGetCellHint(self, ACol, ARow, result);
+end;
+
+function TCustomGrid.GetTruncCellHintText(ACol, ARow: Integer): String;
+begin
+  Result := GetCells(ACol, ARow);
 end;
 
 function TCustomGrid.GetCells(ACol, ARow: Integer): string;
@@ -7983,6 +8017,26 @@ begin
     FreeWorkingCanvas(tmpCanvas);
 end;
 
+function TCustomGrid.GetGridDrawState(ACol, ARow: Integer): TGridDrawState;
+begin
+  Result := [];
+  if ARow < FFixedRows then
+    include(Result, gdFixed)
+  else begin
+    if (aCol = FCol) and (aRow = FRow) then
+      Result := Result + [gdFocused, gdSelected]
+    else
+    if IsCellSelected[aCol, aRow] then
+      include(Result, gdSelected);
+  end;
+  with FGCache do begin
+    if (ACol = HotCell.x) and (ARow = HotCell.y) and not IsPushCellActive()
+      then Include(Result, gdHot);
+    if ClickCellPushed and (ACol = PushedCell.x) and (ARow = PushedCell.y)
+      then Include(Result, gdPushed);
+  end;
+end;
+
 function TCustomGrid.GetScrollBarPosition(Which: integer): Integer;
 var
   ScrollInfo: TScrollInfo;
@@ -8425,6 +8479,8 @@ begin
   FDefaultTextStyle := Canvas.TextStyle;
   FDefaultTextStyle.Wordbreak := False;
   FDefaultTextStyle.SingleLine:= True;
+
+  FCellHintPriority := chpTruncOnly;
 
   FButtonEditor := TButtonCellEditor.Create(nil);
   FButtonEditor.Name:='ButtonEditor';

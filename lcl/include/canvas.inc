@@ -1171,8 +1171,13 @@ begin
     tlCenter : Options := Options or DT_VCENTER;
     tlBottom : Options := Options or DT_BOTTOM;
   end;
-  if Style.WordBreak then
+  if Style.EndEllipsis then
+    Options := Options or DT_END_ELLIPSIS;
+  if Style.WordBreak then begin
     Options := Options or DT_WORDBREAK;
+    if Style.EndEllipsis then
+      Options := Options and not DT_END_ELLIPSIS;
+  end;
 
   if Style.SingleLine then
     Options := Options or DT_SINGLELINE;

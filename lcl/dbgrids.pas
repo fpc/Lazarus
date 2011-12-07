@@ -69,7 +69,10 @@ type
     dgAutoSizeColumns,
     dgAnyButtonCanSelect,               // any mouse button can move selection
     dgDisableDelete,                    // disable deleting records with Ctrl+Delete
-    dgDisableInsert                     // disable inserting (or append) records
+    dgDisableInsert,                    // disable inserting (or append) records
+    dgCellHints,                        // show individual cell hints
+    dgTruncCellHints,                   // show cell hints if cell text is too long
+    dgCellEllipsis                      // show ... if cell text is truncated
   );
   TDbGridOptions = set of TDbGridOption;
 
@@ -115,6 +118,10 @@ type
   TDbGridCheckboxStateEvent =
     procedure(Sender: TObject; Column: TColumn;
               var AState: TCheckboxState) of object;
+
+  TDbGridCellHintEvent =
+    procedure(Sender: TObject; Column: TColumn; var AText: String) of object;
+
 type
 
   { TBMStringList }
@@ -308,6 +315,8 @@ type
     FOnPrepareCanvas: TPrepareDbGridCanvasEvent;
     FKeyBookmark: TBookmarkStr;
     FKeySign: Integer;
+    FSavedRecord: Integer;
+    FOnGetCellHint: TDbGridCellHintEvent;
     procedure EmptyGrid;
     function GetColumns: TDBGridColumns;
     function GetCurrentColumn: TColumn;
@@ -401,6 +410,7 @@ type
     function  FieldIndexFromGridColumn(AGridCol: Integer): Integer;
     function  FirstGridColumn: Integer; override;
     function  GetBufferCount: integer;
+    function  GetCellHintText(aCol, aRow: Integer): String; override;
     function  GetDefaultColumnAlignment(Column: Integer): TAlignment; override;
     function  GetDefaultColumnWidth(Column: Integer): Integer; override;
     function  GetDefaultColumnReadOnly(Column: Integer): boolean; override;
@@ -416,6 +426,7 @@ type
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; override;
     function  GetIsCellTitle(aCol,aRow: Integer): boolean; override;
     procedure GetSelectedState(AState: TGridDrawState; out IsSelected:boolean); override;
+    function  GetTruncCellHintText(aCol, aRow: Integer): string; override;
     function  GridCanModify: boolean;
     procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);override;
     procedure GetSBRanges(const HsbVisible,VsbVisible: boolean;
@@ -432,12 +443,14 @@ type
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); override;
+    procedure PrepareCellHints(aCol,aRow: Integer); override;
     procedure RemoveAutomaticColumns;
     procedure ResetSizes; override;
     procedure SelectEditor; override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SetFixedCols(const AValue: Integer); override;
     function  SelectCell(aCol, aRow: Integer): boolean; override;
+    procedure UnprepareCellHints; override;
     procedure UpdateActive; virtual;
     procedure UpdateAutoSizeColumns;
     procedure UpdateData; virtual;
@@ -465,6 +478,7 @@ type
     property OnColumnSized: TNotifyEvent read FOnColumnSized write FOnColumnSized;
     property OnDrawColumnCell: TDrawColumnCellEvent read FOnDrawColumnCell write FOnDrawColumnCell;
     property OnFieldEditMask: TGetDbEditMaskEvent read FOnFieldEditMask write FOnFieldEditMask;
+    property OnGetCellHint: TDbGridCellHintEvent read FOnGetCellHint write FOnGetCellHint;
     property OnPrepareCanvas: TPrepareDbGridCanvasEvent read FOnPrepareCanvas write FOnPrepareCanvas;
     property OnSelectEditor: TDbGridSelEditorEvent read FOnSelectEditor write FOnSelectEditor;
     property OnTitleClick: TDBGridClickEvent read FOnTitleClick write FOnTitleClick;
@@ -510,6 +524,7 @@ type
     property BiDiMode;
     property BorderSpacing;
     property BorderStyle;
+    property CellHintPriority;
     property Color;
     property Columns; // stored false;
     property Constraints;
@@ -563,6 +578,7 @@ type
     property OnEnter;
     property OnExit;
     property OnFieldEditMask;
+    property OnGetCellHint;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -1017,6 +1033,21 @@ begin
     else
       Exclude(OldOptions, goHeaderPushedLook);
 
+    if dgCellHints in FOptions then
+      Include(OldOptions, goCellHints)
+    else
+      Exclude(OldOptions, goCellHints);
+
+    if dgTruncCellHints in FOptions then
+      Include(OldOptions, goTruncCellHints)
+    else
+      Exclude(OldOptions, goTruncCellHints);
+
+    if dgCellEllipsis in FOptions then
+      Include(OldOptions, goCellEllipsis)
+    else
+      Exclude(OldOptions, goCellEllipsis);
+
     if (dgIndicator in ChangedOptions) then begin
       if (dgIndicator in FOptions) then
         FixedCols := FixedCols + 1
@@ -1291,6 +1322,46 @@ begin
     Result := 1
   else
     Result := 0;
+end;
+
+procedure TCustomDBGrid.PrepareCellHints(ACol, ARow: Integer);
+begin
+  FSavedRecord := DataLink.ActiveRecord;
+  DataLink.ActiveRecord := ARow - FixedRows;
+end;
+
+procedure TCustomDBGrid.UnprepareCellHints;
+begin
+  DataLink.ActiveRecord := FSavedRecord;
+end;
+
+function TCustomDBGrid.GetCellHintText(ACol, ARow: Integer): String;
+var
+  C: TColumn;
+begin
+  Result := '';
+  if (ARow < FixedRows) then 
+    exit;
+  if Assigned(FOnGetCellHint) then begin
+    C := ColumnFromGridColumn(ACol) as TColumn;
+    FOnGetCellHint(self, C, Result);
+  end;
+
+end;
+
+function TCustomDBGrid.GetTruncCellHintText(ACol, ARow: integer): String;
+var
+  F: TField;
+begin
+  Result := '';
+  if ARow < FixedRows then 
+    exit;
+  F := GetFieldFromGridColumn(ACol);
+  if (F <> nil) then
+    if (F.DataType <> ftBlob) then
+      Result := F.DisplayText
+    else
+      Result := '(blob)';
 end;
 
 // obtain the field either from a Db column or directly from dataset fields

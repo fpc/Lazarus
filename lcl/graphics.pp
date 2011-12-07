@@ -111,6 +111,7 @@ type
                              //    too fit between left and right boundaries
                              //    try to break into multiple lines between
                              //    words
+                             //    See also EndEllipsis.
 
     Opaque    : boolean;     // TextRect: Fills background with current Brush
                              // TextOut : Fills background with current
@@ -119,6 +120,12 @@ type
     SystemFont: Boolean;     // Use the system font instead of Canvas Font
     
     RightToLeft: Boolean;    //For RightToLeft text reading (Text Direction)
+
+    EndEllipsis: Boolean;    // TextRect Only: If line of text is too long
+                             //    to fit between left and right boundaries
+                             //    truncates the text and adds "..."
+                             //    If Wordbreak is set as well, Workbreak will
+                             //    dominate.
   end;
 
 const
