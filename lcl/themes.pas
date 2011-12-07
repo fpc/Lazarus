@@ -2349,6 +2349,12 @@ begin
     // set color here, otherwise SystemFont is wrong if the button was disabled before
   TXTStyle.SystemFont := Canvas.Font.IsDefault;//Match System Default Style
 
+  TXTStyle.Wordbreak := (Flags and DT_WORDBREAK) <> 0;
+  if not TXTStyle.Wordbreak then
+    TXTStyle.EndEllipsis := (Flags and DT_END_ELLIPSIS) <> 0
+  else
+    TXTStyle.EndEllipsis := False;
+
   OldColor := Canvas.Font.Color;
   if IsDisabled(Details) then
   begin
