@@ -149,6 +149,8 @@ type
     procedure SourceChanged(ASender: TObject); virtual;
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData); override;
+  strict protected
+    function LegendTextPoint(AIndex: Integer): String; inline;
   protected
     property Styles: TChartStyles read FStyles write SetStyles;
   public
@@ -185,7 +187,8 @@ type
     function Count: Integer; inline;
     procedure Delete(AIndex: Integer); virtual;
     function Extent: TDoubleRect; virtual;
-    function FormattedMark(AIndex: Integer; AYIndex: Integer = 0): String;
+    function FormattedMark(
+      AIndex: Integer; AFormat: String = ''; AYIndex: Integer = 0): String;
     function IsEmpty: Boolean; override;
     function ListSource: TListChartSource;
     property Source: TCustomChartSource
@@ -257,7 +260,7 @@ type
 implementation
 
 uses
-  Math, PropEdits, TAGeometry, TAMath, Types;
+  Math, PropEdits, StrUtils, TAGeometry, TAMath, Types;
 
 { TCustomChartSeries }
 
@@ -621,12 +624,14 @@ begin
   Result := Source.ExtentCumulative;
 end;
 
-function TChartSeries.FormattedMark(AIndex, AYIndex: Integer): String;
+function TChartSeries.FormattedMark(
+  AIndex: Integer; AFormat: String; AYIndex: Integer): String;
 begin
   if Assigned(FOnGetMark) then
     FOnGetMark(Result, AIndex)
   else
-    Result := Source.FormatItem(Marks.Format, AIndex, AYIndex);
+    Result := Source.FormatItem(
+      IfThen(AFormat = '', Marks.Format, AFormat), AIndex, AYIndex);
 end;
 
 procedure TChartSeries.GetBounds(var ABounds: TDoubleRect);
@@ -739,6 +744,11 @@ end;
 function TChartSeries.IsSourceStored: boolean;
 begin
   Result := FSource <> nil;
+end;
+
+function TChartSeries.LegendTextPoint(AIndex: Integer): String;
+begin
+  Result := FormattedMark(AIndex, Legend.Format);
 end;
 
 function TChartSeries.ListSource: TListChartSource;
@@ -881,7 +891,7 @@ begin
           (Marks.YIndex = MARKS_YINDEX_ALL) or (Marks.YIndex = si) and
           IsPointInViewPort(g)
         then
-          DrawLabel(FormattedMark(i, si), GraphToImage(g), ld);
+          DrawLabel(FormattedMark(i, '', si), GraphToImage(g), ld);
     end;
   end;
 end;
@@ -930,7 +940,7 @@ begin
       AItems.Add(TLegendItemBrushRect.Create(ABrush, LegendTextSingle));
     lmPoint:
       for i := 0 to Count - 1 do begin
-        li := TLegendItemBrushRect.Create(ABrush, FormattedMark(i));
+        li := TLegendItemBrushRect.Create(ABrush, LegendTextPoint(i));
         li.Color := GetColor(i);
         AItems.Add(li);
       end;

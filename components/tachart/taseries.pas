@@ -545,7 +545,7 @@ begin
       AItems.Add(TLegendItemLinePointer.Create(lp, p, LegendTextSingle));
     lmPoint: begin
       for i := 0 to Count - 1 do begin
-        li := TLegendItemLinePointer.Create(lp, p, FormattedMark(i));
+        li := TLegendItemLinePointer.Create(lp, p, LegendTextPoint(i));
         li.Color := GetColor(i);
         AItems.Add(li);
       end;

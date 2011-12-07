@@ -56,10 +56,11 @@ object Form1: TForm1
       Source = RandomChartSource1
     end
     object Chart1PieSeries1: TPieSeries
+      Legend.Format = '%2:s %1:.2f%%'
       Legend.GroupIndex = 0
       Legend.Multiplicity = lmPoint
-      Marks.Format = '%2:s %1:.2f%%'
-      Marks.Style = smsLabelPercent
+      Marks.Format = '%2:s'
+      Marks.Style = smsLabel
       Title = 'Pie'
       Exploded = True
       Source = ListChartSource2

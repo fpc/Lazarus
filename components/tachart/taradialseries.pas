@@ -268,7 +268,7 @@ begin
     end;
     lmPoint:
       for i := 0 to Count - 1 do begin
-        ps := TLegendItemPieSlice.Create(FormattedMark(i));
+        ps := TLegendItemPieSlice.Create(LegendTextPoint(i));
         ps.Color := SliceColor(i);
         AItems.Add(ps);
       end;
