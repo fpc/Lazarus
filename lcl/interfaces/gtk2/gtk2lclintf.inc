@@ -987,7 +987,8 @@ begin
   end;
 
 
-  Dialog := gtk_message_dialog_new(PGtkWindow(GetDesktopWidget), GTK_DIALOG_MODAL, GtkDialogType, Btns,
+  Dialog := gtk_message_dialog_new({$IFDEF HASX}PGtkWindow(GetDesktopWidget){$ELSE}nil{$ENDIF},
+    GTK_DIALOG_MODAL, GtkDialogType, Btns,
      nil);
 
   gtk_message_dialog_set_markup(PGtkMessageDialog(Dialog), PGChar(DialogMessage));
@@ -1150,7 +1151,8 @@ begin
       DefaultID := Buttons[X];
   end;
 
-  Dialog := gtk_message_dialog_new(PGtkWindow(GetDesktopWidget), GTK_DIALOG_MODAL, GtkDialogType, Btns,
+  Dialog := gtk_message_dialog_new({$IFDEF HASX}PGtkWindow(GetDesktopWidget){$ELSE}nil{$ENDIF},
+    GTK_DIALOG_MODAL, GtkDialogType, Btns,
     nil);
 
   // Can't pass message string to gtk_message_dialog_new, as % chars are interpreted
