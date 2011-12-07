@@ -681,6 +681,7 @@ type
     mbaPaste,
     mbaDeclarationJump,
     mbaDeclarationOrBlockJump,
+    mbaZoomReset,
 
     // Old values, needed to load old config
     moTCLNone, moTMIgnore,
@@ -689,7 +690,7 @@ type
     moTCLJumpOrBlock
   );
 
-  TMouseOptButtonAction = mbaNone..mbaDeclarationJump;
+  TMouseOptButtonAction = mbaNone..mbaZoomReset;
 
 const
   MouseOptButtonActionOld: Array [moTCLNone..moTCLJumpOrBlock] of TMouseOptButtonActionOld = (
@@ -700,6 +701,15 @@ const
   );
 
 type
+  TMouseOptWheelAction = (
+    mwaNone,
+    mwaScroll, mwaScrollSingleLine,
+    mwaScrollPage, mwaScrollPageLessOne, mwaScrollHalfPage,
+    mwaScrollHoriz, mwaScrollHorizSingleLine,
+    mwaScrollHorizPage, mwaScrollHorizPageLessOne, mwaScrollHorizHalfPage,
+    mwaZoom
+  );
+
   { TEditorMouseOptions }
 
   TEditorMouseOptions = class(TPersistent)
@@ -713,13 +723,18 @@ type
     FTextRightMoveCaret: Boolean;
     FUserSchemes: TQuickStringlist;
   private
+    FAltWheel: TMouseOptWheelAction;
+    FCtrlWheel: TMouseOptWheelAction;
     FCustomSavedActions: Boolean;
     FMainActions, FSelActions, FTextActions: TSynEditMouseActions;
+    FShiftWheel: TMouseOptWheelAction;
     FName: String;
     FGutterActions: TSynEditMouseActions;
     FGutterActionsFold, FGutterActionsFoldExp, FGutterActionsFoldCol: TSynEditMouseActions;
     FGutterActionsLines: TSynEditMouseActions;
     FSelectedUserScheme: String;
+    FTextCtrlMiddleClick: TMouseOptButtonAction;
+    FWheel: TMouseOptWheelAction;
     procedure ClearUserSchemes;
     function GetUserSchemeNames(Index: Integer): String;
     function GetUserSchemes(Index: String): TEditorMouseOptions;
@@ -775,10 +790,23 @@ type
              default False;
     property TextRightMoveCaret: Boolean read FTextRightMoveCaret  write FTextRightMoveCaret
              default False;
+
     property TextMiddleClick: TMouseOptButtonActionOld read FTextMiddleClick write SetTextMiddleClick
              default mbaPaste;
     property TextCtrlLeftClick: TMouseOptButtonActionOld read FTextCtrlLeftClick write SetTextCtrlLeftClick
              default mbaDeclarationJump;
+    property TextCtrlMiddleClick: TMouseOptButtonAction read FTextCtrlMiddleClick write FTextCtrlMiddleClick
+             default mbaZoomReset;
+
+    property Wheel: TMouseOptWheelAction read FWheel write FWheel
+             default mwaScroll;
+    property CtrlWheel: TMouseOptWheelAction read FCtrlWheel write FCtrlWheel
+             default mwaZoom;
+    property AltWheel: TMouseOptWheelAction read FAltWheel write FAltWheel
+             default mwaScrollPageLessOne;
+    property ShiftWheel: TMouseOptWheelAction read FShiftWheel write FShiftWheel
+             default mwaScrollSingleLine;
+
     // the flag below is set by CalcCustomSavedActions
     property CustomSavedActions: Boolean read FCustomSavedActions write FCustomSavedActions;
     property SelectedUserScheme: String read FSelectedUserScheme write SetSelectedUserScheme;
@@ -2330,14 +2358,19 @@ end;
 
 procedure TEditorMouseOptions.Reset;
 begin
-  FCustomSavedActions := False;
-  FGutterLeft         := moGLDownClick;
-  FTextMiddleClick    := mbaPaste;
-  FTextCtrlLeftClick  := mbaDeclarationJump;
-  FTextDoubleSelLine  := False;
-  FTextRightMoveCaret := False;
-  FAltColumnMode      := True;
-  FTextDrag           := True;
+  FCustomSavedActions  := False;
+  FGutterLeft          := moGLDownClick;
+  FTextMiddleClick     := mbaPaste;
+  FTextCtrlLeftClick   := mbaDeclarationJump;
+  FTextCtrlMiddleClick := mbaZoomReset;
+  FWheel               := mwaScroll;
+  FCtrlWheel           := mwaZoom;
+  FAltWheel            := mwaScrollPageLessOne;
+  FShiftWheel          := mwaScrollSingleLine;
+  FTextDoubleSelLine   := False;
+  FTextRightMoveCaret  := False;
+  FAltColumnMode       := True;
+  FTextDrag            := True;
 end;
 
 procedure TEditorMouseOptions.ResetGutterToDefault;
@@ -2402,6 +2435,74 @@ begin
 end;
 
 procedure TEditorMouseOptions.ResetTextToDefault;
+
+  procedure AddBtnClick(AnAction: TMouseOptButtonAction; const AButton: TSynMouseButton;
+    const AShift, AShiftMask: TShiftState; AddLinkDummy: Boolean = False);
+  begin
+    with FTextActions do begin
+      case AnAction of
+        mbaNone: {nothing};
+        mbaPaste:            // TODOS act on up? but needs to prevent selection on down
+            AddCommand(emcPasteSelection,   True,  AButton, ccSingle, cdDown,  AShift, AShiftMask);
+        mbaDeclarationJump,
+        mbaDeclarationOrBlockJump: begin
+            if AddLinkDummy then
+              AddCommand(emcMouseLink,      False, AButton, ccSingle, cdUp,    [SYNEDIT_LINK_MODIFIER], [SYNEDIT_LINK_MODIFIER], emcoMouseLinkShow, 999);
+            AddCommand(emcMouseLink,        False, AButton, ccSingle, cdUp,    AShift, AShiftMask);
+            if AnAction = mbaDeclarationOrBlockJump then
+              AddCommand(emcSynEditCommand, False, AButton, ccSingle, cdUp,    AShift, AShiftMask, ecFindBlockOtherEnd, 1);
+          end;
+        mbaZoomReset: begin
+            AddCommand(emcWheelZoomNorm,    False,  AButton, ccSingle, cdDown, AShift, AShiftMask);
+            FMainActions.AddCommand(emcWheelZoomNorm,    False,  AButton, ccSingle, cdDown, AShift, AShiftMask);
+          end;
+      end;
+    end;
+  end;
+
+  procedure AddWheelAct(AnAction: TMouseOptWheelAction; const AShift, AShiftMask: TShiftState);
+  var
+    opt: TSynEditorMouseCommandOpt;
+    opt2: integer;
+  begin
+    opt2 := 0;
+    with FMainActions do begin
+      case AnAction of
+        mwaNone: {nothing};
+        mwaScroll:                 opt := emcoWheelScrollSystem;
+        mwaScrollSingleLine:       opt := emcoWheelScrollLines;
+        mwaScrollPage:             opt := emcoWheelScrollPages;
+        mwaScrollPageLessOne:      opt := emcoWheelScrollPagesLessOne;
+        mwaScrollHalfPage: begin
+                                   opt := emcoWheelScrollPages;
+                                   opt2 := 50;
+          end;
+        mwaScrollHoriz:            opt := emcoWheelScrollSystem;
+        mwaScrollHorizSingleLine:  opt := emcoWheelScrollLines;
+        mwaScrollHorizPage:        opt := emcoWheelScrollPages;
+        mwaScrollHorizPageLessOne: opt := emcoWheelScrollPagesLessOne;
+        mwaScrollHorizHalfPage: begin
+                                   opt := emcoWheelScrollPages;
+                                   opt2 := 50;
+          end;
+        mwaZoom: begin
+            AddCommand(emcWheelZoomOut, False,  mbWheelDown, ccAny, cdDown, AShift, AShiftMask);
+            AddCommand(emcWheelZoomIn,  False,  mbWheelUp,   ccAny, cdDown, AShift, AShiftMask);
+          end;
+      end;
+
+      if AnAction in [mwaScroll, mwaScrollSingleLine, mwaScrollPage, mwaScrollPageLessOne, mwaScrollHalfPage] then begin
+        AddCommand(emcWheelVertScrollDown,       False,  mbWheelDown, ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
+        AddCommand(emcWheelVertScrollUp,         False,  mbWheelUp,   ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
+      end;
+      if AnAction in [mwaScrollHoriz, mwaScrollHorizSingleLine, mwaScrollHorizPage, mwaScrollHorizPageLessOne, mwaScrollHorizHalfPage] then begin
+        AddCommand(emcWheelHorizScrollDown,       False,  mbWheelDown, ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
+        AddCommand(emcWheelHorizScrollUp,         False,  mbWheelUp,   ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
+      end;
+
+    end;
+  end;
+
 var
   ModKeys: TShiftState;
 begin
@@ -2432,45 +2533,17 @@ begin
     end;
     AddCommand(emcSelectPara, True, mbLeft, ccQuad, cdDown, [], []);
 
-    case FTextMiddleClick of
-      mbaNone: {nothing} ;
-      mbaPaste:
-          AddCommand(emcPasteSelection,   True,  mbMiddle, ccSingle, cdDown, [], []);
-      mbaDeclarationJump, mbaDeclarationOrBlockJump:
-        begin
-          AddCommand(emcMouseLink,        False, mbMiddle, ccSingle, cdUp, [ssCtrl], [ssCtrl], emcoMouseLinkShow, 999);
-          AddCommand(emcMouseLink,        False, mbMiddle, ccSingle, cdUp, [], [], emcoMouseLinkHide);
-          if FTextMiddleClick = mbaDeclarationOrBlockJump then
-            AddCommand(emcSynEditCommand, False, mbMiddle, ccSingle, cdUp, [], [], ecFindBlockOtherEnd, 1);
-        end;
-    end;
+    AddBtnClick(FTextCtrlLeftClick,   mbLeft,   [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
+    AddBtnClick(FTextMiddleClick,     mbMiddle, [], [], FTextCtrlMiddleClick = mbaNone);
+    AddBtnClick(FTextCtrlMiddleClick, mbMiddle, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
 
     AddCommand(emcContextMenu, FTextRightMoveCaret, mbRight, ccSingle, cdUp, [], [], emcoSelectionCaretMoveNever);
-
-    case FTextCtrlLeftClick of
-      mbaNone: {nothing};
-      mbaPaste:
-          AddCommand(emcPasteSelection, True,  mbLeft, ccSingle, cdDown, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
-          // TODOS act on up? but needs to prevent selection on down
-      mbaDeclarationJump:
-          AddCommand(emcMouseLink,      False, mbLeft, ccSingle, cdUp,   [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
-      mbaDeclarationOrBlockJump: begin
-          AddCommand(emcMouseLink,      False, mbLeft, ccSingle, cdUp,   [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
-          AddCommand(emcSynEditCommand, False, mbLeft, ccSingle, cdUp,   [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl], ecFindBlockOtherEnd, 1);
-        end;
-    end;
-
-    AddCommand(emcWheelZoomNorm,         False,  mbMiddle,    ccAny, cdDown, [ssCtrl], [ssCtrl]);
   end;
 
-  with FMainActions do begin
-    AddCommand(emcWheelScrollDown,       False,  mbWheelDown, ccAny, cdDown, [], []);
-    AddCommand(emcWheelScrollUp,         False,  mbWheelUp,   ccAny, cdDown, [], []);
-
-    AddCommand(emcWheelZoomOut,          False,  mbWheelDown, ccAny, cdDown, [ssCtrl], [ssCtrl]);
-    AddCommand(emcWheelZoomIn,           False,  mbWheelUp,   ccAny, cdDown, [ssCtrl], [ssCtrl]);
-    AddCommand(emcWheelZoomNorm,         False,  mbMiddle,    ccAny, cdDown, [ssCtrl], [ssCtrl]);
-  end;
+  AddWheelAct(FWheel, [], []);
+  AddWheelAct(FCtrlWheel,  [ssCtrl],  [ssShift, ssAlt, ssCtrl]);
+  AddWheelAct(FAltWheel,   [ssAlt],   [ssShift, ssAlt, ssCtrl]);
+  AddWheelAct(FShiftWheel, [ssShift], [ssShift, ssAlt, ssCtrl]);
 
   if FTextDrag then
     with FSelActions do begin
@@ -2526,16 +2599,21 @@ procedure TEditorMouseOptions.AssignEx(Src: TEditorMouseOptions; WithUserSchemes
 var
   i: Integer;
 begin
-  FName               := Src.FName;
+  FName                 := Src.FName;
 
-  FAltColumnMode      := Src.AltColumnMode;
-  FGutterLeft         := Src.GutterLeft;
-  FTextMiddleClick    := Src.TextMiddleClick;
-  FTextCtrlLeftClick  := Src.TextCtrlLeftClick;
-  FTextDoubleSelLine  := Src.TextDoubleSelLine;
-  FTextDrag           := Src.TextDrag;
-  FTextRightMoveCaret := Src.TextRightMoveCaret;
-  FSelectedUserScheme := Src.FSelectedUserScheme;
+  FAltColumnMode        := Src.AltColumnMode;
+  FGutterLeft           := Src.GutterLeft;
+  FTextCtrlLeftClick    := Src.TextCtrlLeftClick;
+  FTextMiddleClick      := Src.TextMiddleClick;
+  FTextCtrlMiddleClick  := Src.TextCtrlMiddleClick;
+  FWheel                := Src.Wheel;
+  FCtrlWheel            := Src.CtrlWheel;
+  FAltWheel             := Src.AltWheel;
+  FShiftWheel           := Src.ShiftWheel;
+  FTextDoubleSelLine    := Src.TextDoubleSelLine;
+  FTextDrag             := Src.TextDrag;
+  FTextRightMoveCaret   := Src.TextRightMoveCaret;
+  FSelectedUserScheme   := Src.FSelectedUserScheme;
 
   AssignActions(Src);
 

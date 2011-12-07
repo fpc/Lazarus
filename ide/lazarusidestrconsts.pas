@@ -1323,11 +1323,31 @@ resourcestring
   dlfMouseSimpleTextSectDoubleSelLine = 'Double click selects line';
   dlfMouseSimpleRightMoveCaret = 'Right mouse includes caret move';
   dlfMouseSimpleTextSectMidLabel = 'Middle Button';
+  dlfMouseSimpleTextSectCtrlMidLabel = 'Ctrl Middle Button';
+  dlfMouseSimpleTextSectWheelLabel = 'Wheel';
+  dlfMouseSimpleTextSectCtrlWheelLabel = 'Ctrl Wheel';
+  dlfMouseSimpleTextSectAltWheelLabel = 'Alt Wheel';
+  dlfMouseSimpleTextShiftSectWheelLabel = 'Shift Wheel';
+
   dlfMouseSimpleTextSectCtrlLeftLabel = 'Ctrl Left Button';
   dlfMouseSimpleButtonNothing          = 'Nothing/Default';
   dlfMouseSimpleButtonPaste            = 'Paste';
   dlfMouseSimpleButtonDeclaration      = 'Jumps to implementation';
   dlfMouseSimpleButtonDeclarationBlock = 'Jumps to implementation/other block end';
+  dlfMouseSimpleButtonZoomReset        = 'Reset zoom';
+
+  dlfMouseSimpleWheelNothing           = 'Nothing/Default';
+  dlfMouseSimpleWheelSrollDef          = 'Scroll (System speed)';
+  dlfMouseSimpleWheelSrollLine         = 'Scroll (Single line)';
+  dlfMouseSimpleWheelSrollPage         = 'Scroll (Page)';
+  dlfMouseSimpleWheelSrollPageLess     = 'Scroll (Page, less one line)';
+  dlfMouseSimpleWheelSrollPageHalf     = 'Scroll (Half page)';
+  dlfMouseSimpleWheelHSrollDef         = 'Scroll horizontal (System speed)';
+  dlfMouseSimpleWheelHSrollLine        = 'Scroll horizontal (Single line)';
+  dlfMouseSimpleWheelHSrollPage        = 'Scroll horizontal (Page)';
+  dlfMouseSimpleWheelHSrollPageLess    = 'Scroll horizontal (Page, less one line)';
+  dlfMouseSimpleWheelHSrollPageHalf    = 'Scroll horizontal (Half page)';
+  dlfMouseSimpleWheelZoom              = 'Zoom';
 
   dlfMouseSimpleWarning = 'You have unsaved changes. Using this page will undo changes made on the advanced page';
   dlfMouseSimpleDiff = 'This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes';

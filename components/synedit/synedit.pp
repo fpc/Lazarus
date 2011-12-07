@@ -2616,13 +2616,13 @@ var
     WHEEL_PAGESCROLL = MAXDWORD;
   begin
     case AnAction.Option of
-      emcWheelScrollSystem:
+      emcoWheelScrollSystem:
         begin
           Result := Mouse.WheelScrollLines;
           if (Result = WHEEL_PAGESCROLL) or (Result > APageSize) then
             Result := APageSize;
         end;
-      emcWheelScrollLines:
+      emcoWheelScrollLines:
         begin
           Result := 1;
           if AnAction.Option2 > 0 then
@@ -2631,15 +2631,16 @@ var
             Result := APageSize;
           exit;
         end;
-      emcWheelScrollPages:
+      emcoWheelScrollPages:
           Result := APageSize;
-      emcWheelScrollPagesLessOne:
+      emcoWheelScrollPagesLessOne:
           Result := APageSize - 1;
       else
         begin
           Result := Mouse.WheelScrollLines;
           if (Result = WHEEL_PAGESCROLL) or (Result > APageSize) then
             Result := APageSize;
+          if (Result < 1) then Result := 1;
           exit;
         end;
     end;
@@ -2647,6 +2648,8 @@ var
       Result := MulDiv(Result, AnAction.Option2, 100);
     if (Result > APageSize) then
       Result := APageSize;
+    if (Result < 1) then
+      Result := 1;
   end;
 
 var

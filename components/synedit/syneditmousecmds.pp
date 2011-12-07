@@ -275,10 +275,10 @@ const
   emcoSelectionCaretMoveOutside   = TSynEditorMouseCommandOpt(1); // click is outside selected area
   emcoSelectionCaretMoveAlways    = TSynEditorMouseCommandOpt(2);
 
-  emcWheelScrollSystem         = TSynEditorMouseCommandOpt(0); // Opt2 > 0 ==> percentage
-  emcWheelScrollLines          = TSynEditorMouseCommandOpt(1); // Opt2 > 0 ==> amount of lines
-  emcWheelScrollPages          = TSynEditorMouseCommandOpt(2); // Opt2 > 0 ==> percentage
-  emcWheelScrollPagesLessOne   = TSynEditorMouseCommandOpt(3); // Opt2 > 0 ==> percentage
+  emcoWheelScrollSystem         = TSynEditorMouseCommandOpt(0); // Opt2 > 0 ==> percentage
+  emcoWheelScrollLines          = TSynEditorMouseCommandOpt(1); // Opt2 > 0 ==> amount of lines
+  emcoWheelScrollPages          = TSynEditorMouseCommandOpt(2); // Opt2 > 0 ==> percentage
+  emcoWheelScrollPagesLessOne   = TSynEditorMouseCommandOpt(3); // Opt2 > 0 ==> percentage
 
 // Plugins don't know of other plugins, so they need to map the codes
 // Plugins all start at ecPluginFirst (overlapping)
@@ -578,6 +578,7 @@ begin
     FShiftMask  := TSynEditMouseAction(Source).ShiftMask;
     FMoveCaret  := TSynEditMouseAction(Source).MoveCaret;
     FOption     := TSynEditMouseAction(Source).FOption;
+    FOption2    := TSynEditMouseAction(Source).FOption2;
     FPriority   := TSynEditMouseAction(Source).Priority;
   end else
     inherited Assign(Source);
