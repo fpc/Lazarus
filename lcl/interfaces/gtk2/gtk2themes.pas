@@ -452,13 +452,11 @@ to alternate splitter painting}
         Result.State := GTK_STATE_NORMAL;
         Result.Shadow := GTK_SHADOW_OUT;
         Result.Detail := 'notebook';
-        if Details.Part in [TABP_PANE, TABP_BODY] then
-        begin
-          {Result.GapSide := GTK_POS_TOP;
-          Result.GapX := 20;
-          Result.GapWidth := 40;}
+        if Details.Part = TABP_PANE then
+          Result.Painter := gptShadow
+        else
+        if Details.Part = TABP_BODY then
           Result.Painter := gptBox;
-        end;
       end;
     teToolTip:
       begin
