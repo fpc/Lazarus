@@ -756,9 +756,9 @@ end;
 procedure TRasterImage.CreateMask(AColor: TColor);
 var
   IntfImage: TLazIntfImage;
-  x, y, stopx, stopy: Integer;
+  x, y: Integer;
   ImgHandle, MskHandle: HBitmap;
-  TransColor: TColorRef;
+  TransColor: TFPColor;
 begin
   //DebugLn(['TRasterImage.CreateMask ',Width,'x',Height,' ',Transparent,' ',dbgs(ord(TransparentMode)),' ',dbgs(TransparentColor)]);
   if (Width = 0)
@@ -787,21 +787,16 @@ begin
     if not MaskHandleAllocated
     then DeleteObject(MskHandle);
     ImgHandle := 0;
-    
-    stopx := IntfImage.Width - 1;
-    stopy := IntfImage.Height - 1;
 
     if AColor = clDefault
     then begin
       if (FTransparentMode = tmFixed) and (FTransparentColor <> clDefault)
-      then TransColor := ColorToRGB(FTransparentColor)
-      else TransColor := FPColorToTColorRef(IntfImage.Colors[0, stopy]);
+      then TransColor := TColorToFPColor(ColorToRGB(FTransparentColor))
+      else TransColor := IntfImage.Colors[0, IntfImage.Height - 1];
     end
-    else TransColor := ColorToRGB(AColor);
+    else TransColor := TColorToFPColor(ColorToRGB(AColor));
 
-    for y := 0 to stopy do
-      for x := 0 to stopx do
-        IntfImage.Masked[x,y] := FPColorToTColorRef(IntfImage.Colors[x,y]) = TransColor;
+    IntfImage.Mask(TransColor);
 
     IntfImage.CreateBitmaps(ImgHandle, MskHandle);
     MaskHandle := MskHandle;

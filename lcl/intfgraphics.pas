@@ -252,6 +252,7 @@ type
                          AlphaMask: Boolean = False; AlphaTreshold: Word = 0); virtual;
     procedure AlphaBlend(ASource, ASourceAlpha: TLazIntfImage; const ADestX, ADestY: Integer);
     procedure AlphaFromMask(AKeepAlpha: Boolean = True);
+    procedure Mask(const AColor: TFPColor; AKeepOldMask: Boolean = False);
     procedure GetXYDataPosition(x, y: integer; out Position: TRawImagePosition);
     procedure GetXYMaskPosition(x, y: integer; out Position: TRawImagePosition);
     function  GetDataLineStart(y: integer): Pointer;// similar to Delphi TBitmap.ScanLine. Only works with lines aligned to whole bytes.
@@ -3270,6 +3271,20 @@ begin
         Colors[x,y] := Color;
       end;
   end;
+end;
+
+procedure TLazIntfImage.Mask(const AColor: TFPColor; AKeepOldMask: Boolean = False);
+var
+  x, y: Integer;
+begin
+  if AKeepOldMask then
+    for y := 0 to Height - 1 do
+      for x := 0 to Width - 1 do
+        Masked[x,y] := Masked[x,y] or (Colors[x,y] = AColor)
+  else
+    for y := 0 to Height - 1 do
+      for x := 0 to Width - 1 do
+        Masked[x,y] := Colors[x,y] = AColor;
 end;
 
 procedure TLazIntfImage.BeginUpdate;
