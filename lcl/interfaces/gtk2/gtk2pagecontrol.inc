@@ -115,17 +115,23 @@ begin
     begin
       // 1st we must find focused control (if any)
       ACtl := nil;
-      Pg := TCustomTabControl(Data).Page[LCLPageIndex];
-      for i := 0 to Pg.ControlCount - 1 do
+      if (LCLPageIndex >= 0) and (LCLPageIndex < TCustomTabControl(Data).PageCount) then
+        Pg := TCustomTabControl(Data).Page[LCLPageIndex]
+      else
+        Pg := nil;
+      if Assigned(Pg) then
       begin
-        if (pg.Controls[i] is TWinControl) and
-          (TWinControl(pg.Controls[i]).Focused) then
+        for i := 0 to Pg.ControlCount - 1 do
         begin
-          ACtl := TWinControl(pg.Controls[i]);
-          break;
+          if (pg.Controls[i] is TWinControl) and
+            (TWinControl(pg.Controls[i]).Focused) then
+          begin
+            ACtl := TWinControl(pg.Controls[i]);
+            break;
+          end;
         end;
       end;
-      if ACtl = nil then
+      if (ACtl = nil) and (Pg <> nil) then
         ACtl := AParentForm.ActiveControl;
     end else
       ACtl := nil;
@@ -142,12 +148,15 @@ begin
         if (Pg.Controls[i] is TWinControl) and (Pg.Controls[i] <> ACtl) then
         begin
           Info := GetWidgetInfo(PGtkWidget(TWinControl(Pg.Controls[i]).Handle));
-          if Info^.CoreWidget <> nil then
-            ChildWidget := Info^.CoreWidget
-          else
-            ChildWidget := Info^.ClientWidget;
-          GTK_WIDGET_UNSET_FLAGS(ChildWidget, GTK_CAN_FOCUS);
-          g_idle_add(@GtkRestoreFocusFix, ChildWidget);
+          if Info <> nil then
+          begin
+            if Info^.CoreWidget <> nil then
+              ChildWidget := Info^.CoreWidget
+            else
+              ChildWidget := Info^.ClientWidget;
+            GTK_WIDGET_UNSET_FLAGS(ChildWidget, GTK_CAN_FOCUS);
+            g_idle_add(@GtkRestoreFocusFix, ChildWidget);
+          end;
         end;
       end;
       g_idle_add(@GtkRestoreFocusFix, Widget);
@@ -203,15 +212,77 @@ begin
   ConnectSignalAfter(PGtkObject(AGtkWidget), 'switch_page', @GtkWSNotebook_AfterSwitchPage, AWidgetInfo^.LCLObject);
 end;
 
+class function TGtk2WSCustomTabControl.CreateTTabControlHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+begin
+  Widget := GTK2WidgetSet.CreateAPIWidget(AWinControl);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+
+  Result := THandle(PtrUInt(Widget));
+  if Result = 0 then Exit;
+
+  WidgetInfo := GetWidgetInfo(Widget); // Widget info already created in CreateAPIWidget
+  WidgetInfo^.Style := AParams.Style;
+  WidgetInfo^.ExStyle := AParams.ExStyle;
+  WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
+
+  // set allocation
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(Widget, @Allocation);
+
+  Set_RC_Name(AWinControl, Widget);
+
+  gtk_object_set_data(PGtkObject(WidgetInfo^.CoreWidget),'lcl_ttabcontrol', WidgetInfo^.CoreWidget);
+
+  TGtk2WSWinControl.SetCallbacks(GTK_OBJECT(Widget), AWinControl);
+
+  g_signal_connect_after(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'change-value',
+    TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+  g_signal_connect_after(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar, 'change-value',
+    TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+  g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'button-press-event',
+    TGCallback(@Gtk2RangeScrollPressCB), WidgetInfo);
+  g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'button-release-event',
+    TGCallback(@Gtk2RangeScrollReleaseCB), WidgetInfo);
+    g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar, 'button-press-event',
+    TGCallback(@Gtk2RangeScrollPressCB), WidgetInfo);
+  g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar, 'button-release-event',
+    TGCallback(@Gtk2RangeScrollReleaseCB), WidgetInfo);
+
+  g_signal_connect(Widget, 'scroll-event', TGCallback(@Gtk2ScrolledWindowScrollCB), WidgetInfo);
+end;
+
 class function TGtk2WSCustomTabControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   AWidget: PGtkNoteBook;
   WidgetInfo: PWidgetInfo;
 begin
+
+  if (AWinControl is TTabControl) then
+  begin
+    {$IFDEF NOTEBOOK_DEBUG}
+    DebugLn(['TGtk2WSCustomTabControl.CreateHandle CREATING TTABCONTROL !!! ',DbgSName(AWinControl)]);
+    {$ENDIF}
+    Result := CreateTTabControlHandle(AWinControl, AParams);
+    exit;
+  end;
+
+  {$IFDEF NOTEBOOK_DEBUG}
+  DebugLn(['TGtk2WSCustomTabControl.CreateHandle ',DbgSName(AWinControl)]);
+  {$ENDIF}
   if OldNoteBookButtonPress = nil then
     HookNoteBookClass;
-  //DebugLn(['TGtk2WSCustomTabControl.CreateHandle ',DbgSName(AWinControl)]);
+
 
   AWidget := PGtkNoteBook(gtk_notebook_new());
   WidgetInfo := CreateWidgetInfo(AWidget, AWinControl, AParams);
@@ -503,7 +574,12 @@ end;
 class procedure TGtk2WSCustomTabControl.ShowTabs(const ATabControl: TCustomTabControl;
   AShowTabs: boolean);
 begin
-  gtk_notebook_set_show_tabs(PGtkNotebook(ATabControl.Handle), AShowTabs);
+  if IsTTabControl(PGtkWidget(ATabControl.Handle)) then
+    {$IFDEF NOTEBOOK_DEBUG}
+    writeln('**** TGtk2WSCustomTabControl.ShowTabs DO NOT SHOW TABS ON CUSTOM CONTROL !')
+    {$ENDIF}
+  else
+    gtk_notebook_set_show_tabs(PGtkNotebook(ATabControl.Handle), AShowTabs);
 end;
 
 class procedure TGtk2WSCustomTabControl.UpdateProperties(const ATabControl: TCustomTabControl);

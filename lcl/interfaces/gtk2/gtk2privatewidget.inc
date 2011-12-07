@@ -97,7 +97,30 @@ class procedure TGtk2PrivateNotebook.UpdateCursor(AInfo: PWidgetInfo);
 var
   Widget: PGtkWidget;
   Window: PGdkWindow;
+
+  procedure UpdateCursorInternal(AInfo: PWidgetInfo);
+  var
+    Widget, FixWidget: PGtkWidget;
+    Window: PGdkWindow;
+  begin
+    Widget := AInfo^.CoreWidget;
+    FixWidget := GetFixedWidget(Widget);
+    Window := GetControlWindow(FixWidget);
+    if Window = nil then Exit;
+    // always recurse windows which do not accept controls.
+    // this way we will catch all widgets with double windows
+    if not (csAcceptsControls in TControl(AInfo^.LCLObject).ControlStyle) then
+      SetWindowCursor(Window, AInfo^.ControlCursor, True)
+    else
+      SetCursorForWindowsWithInfo(Window, AInfo);
+  end;
+
 begin
+  if IsTTabControl(AInfo^.CoreWidget) then
+  begin
+    UpdateCursorInternal(AInfo);
+    exit;
+  end;
   Widget := AInfo^.CoreWidget;
   Window := PGTkNotebook(Widget)^.event_window;
   if Window <> nil then

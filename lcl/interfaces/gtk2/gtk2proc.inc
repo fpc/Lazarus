@@ -4114,6 +4114,18 @@ begin
   //DebugLn(['DestroyWidget B']);
 end;
 
+function IsTTabControl(AWidget: PGtkWidget): Boolean;
+var
+  WidgetInfo: PWidgetInfo;
+begin
+  if AWidget = nil then
+    exit(False);
+  WidgetInfo := GetWidgetInfo(AWidget);
+  if (WidgetInfo = nil) or (WidgetInfo^.CoreWidget = nil) then
+    exit(False);
+  Result := gtk_object_get_data(PGtkObject(WidgetInfo^.CoreWidget),'lcl_ttabcontrol') <> nil;
+end;
+
 {-------------------------------------------------------------------------------
   function GetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook): PGtkWidget;
 

@@ -452,6 +452,7 @@ procedure PopulateFileAndDirectoryLists(FileSelection: PGtkFileSelection;
                                         const Mask: string);
 
 // notebook
+function IsTTabControl(AWidget: PGtkWidget): Boolean;
 function GetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook): PGtkWidget;
 procedure SetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook;
   DummyWidget: PGtkWidget);

@@ -76,6 +76,9 @@ type
   { TGtk2WSCustomTabControl }
 
   TGtk2WSCustomTabControl = class(TWSCustomTabControl)
+  private
+    class function CreateTTabControlHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): HWND;
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
