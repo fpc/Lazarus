@@ -55,7 +55,7 @@
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
@@ -67,10 +67,6 @@
       </SyntaxOptions>
     </Parsing>
     <Linking>
-      <Debugging>
-        <GenerateDebugInfo Value="True"/>
-        <DebugInfoType Value="dsAuto"/>
-      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
