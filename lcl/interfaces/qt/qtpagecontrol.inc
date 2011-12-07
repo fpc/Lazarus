@@ -86,18 +86,26 @@ end;
 class function TQtWSCustomTabControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtTabWidget: TQtTabWidget;
+  QtTTabCtl: TQtWidget;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWSCustomTabControl.CreateHandle');
   {$endif}
-  QtTabWidget := TQtTabWidget.Create(AWinControl, AParams);
-  QtTabWidget.setTabPosition(QTabWidgetTabPositionMap[TCustomTabControl(AWinControl).TabPosition]);
-  QtTabWidget.setTabsClosable(nboShowCloseButtons in TCustomTabControl(AWinControl).Options);
-  QtTabWidget.AttachEvents;
+  if AWinControl is TTabControl then
+  begin
+    QtTTabCtl := TQtWidget.Create(AWinControl, AParams);
+    QtTTabCtl.ChildOfComplexWidget := ccwTTabControl;
+    QtTTabCtl.AttachEvents;
+    Result := TLCLIntfHandle(QtTTabCtl);
+  end else
+  begin
+    QtTabWidget := TQtTabWidget.Create(AWinControl, AParams);
+    QtTabWidget.setTabPosition(QTabWidgetTabPositionMap[TCustomTabControl(AWinControl).TabPosition]);
+    QtTabWidget.setTabsClosable(nboShowCloseButtons in TCustomTabControl(AWinControl).Options);
+    QtTabWidget.AttachEvents;
+    Result := TLCLIntfHandle(QtTabWidget);
+  end;
 
-  // Returns the Handle
-
-  Result := TLCLIntfHandle(QtTabWidget);
 end;
 
 class procedure TQtWSCustomTabControl.AddPage(const ATabControl: TCustomTabControl;
@@ -265,9 +273,14 @@ class procedure TQtWSCustomTabControl.ShowTabs(const ATabControl: TCustomTabCont
 var
   TabWidget: TQtTabWidget;
 begin
-  TabWidget := TQtTabWidget(ATabControl.Handle);
-  if TabWidget.TabBar <> nil then
-    TabWidget.ShowTabs := AShowTabs;
+  if not WSCheckHandleAllocated(ATabControl, 'ShowTabs') then
+    Exit;
+  if TQtWidget(ATabControl.Handle).ChildOfComplexWidget <> ccwTTabControl then
+  begin
+    TabWidget := TQtTabWidget(ATabControl.Handle);
+    if TabWidget.TabBar <> nil then
+      TabWidget.ShowTabs := AShowTabs;
+  end;
 end;
 
 class procedure TQtWSCustomTabControl.UpdateProperties(const ATabControl: TCustomTabControl);

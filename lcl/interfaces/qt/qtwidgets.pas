@@ -55,7 +55,8 @@ type
                           ccwAbstractScrollArea,
                           ccwCustomControl,
                           ccwScrollingWinControl,
-                          ccwTabWidget);
+                          ccwTabWidget,
+                          ccwTTabControl);
 
   TQtGroupBoxType = (tgbtNormal,
                    tgbtCheckGroup,
