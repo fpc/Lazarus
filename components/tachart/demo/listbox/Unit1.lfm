@@ -18,6 +18,8 @@ object Form1: TForm1
         Minors = <        
           item
             Grid.Color = clSilver
+            Intervals.MinLength = 5
+            Intervals.Options = [aipUseCount, aipUseMinLength]
           end>
         Title.LabelFont.Orientation = 900
         Title.LabelFont.Style = [fsBold]
@@ -29,6 +31,8 @@ object Form1: TForm1
         Minors = <        
           item
             Grid.Color = clSilver
+            Intervals.MinLength = 5
+            Intervals.Options = [aipUseCount, aipUseMinLength]
           end>
         Title.LabelFont.Style = [fsBold]
         Title.Visible = True

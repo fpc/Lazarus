@@ -5,7 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, TASources, TASeries, TAGraph, CheckLst, Spin, ComCtrls,
+  Classes, SysUtils, TASources, TASeries, TAGraph, CheckLst, Spin,
   ExtCtrls, StdCtrls, FileUtil, Forms, Controls, Graphics, Dialogs,
   TAChartListbox, TACustomSeries, TALegend;
 
