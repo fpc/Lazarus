@@ -1685,14 +1685,18 @@ var
     Result := False;
 
     if (LastMouse.Down) and
-      (not (gdk_event_get_type(Event) in [gdk_2button_press, gdk_3button_press]))
+      (not (gdk_event_get_type(Event) in [GDK_BUTTON_PRESS, gdk_2button_press, gdk_3button_press]))
     then begin
       {$IFDEF VerboseMouseBugfix}
-      DebugLn(' NO CLICK: LastMouse.Down=',dbgs(LastMouse.Down),
+      DebugLn('DeliverMouseDownMessage: NO CLICK: LastMouse.Down=',dbgs(LastMouse.Down),
               ' Event^.theType=',dbgs(gdk_event_get_type(Event)));
       {$ENDIF}
       Exit;
     end;
+
+    if (LastMouse.Down) and (gdk_event_get_type(Event) = GDK_BUTTON_PRESS) and
+      (csDesigning in AWinControl.ComponentState) then
+        exit;
 
     MessI.Keys := MessI.Keys or BtnKey;
     IsMultiClick := TestIfMultiClick;
