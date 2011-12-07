@@ -412,17 +412,14 @@ begin
   R := Rect(0,0,Width,Height);
   with Canvas do
   begin
-    if IsEnabled then
-      Brush.Color := Self.Color
-    else
-      Brush.Color := clNone;
-    Font := Self.Font;
+    Brush.Color := Self.Color;
     if (Color<>clNone) and not Transparent then
     begin
       Brush.Style:=bsSolid;
       FillRect(R);
-    end else
-      Brush.Style:=bsClear;
+    end;
+    Brush.Style:=bsClear;
+    Font := Self.Font;
 {
     If BorderStyle <> sbsNone then begin
       InflateRect(R,-2,-2);
@@ -451,6 +448,8 @@ begin
     with TR do
     begin
       Alignment := BidiFlipAlignment(Self.Alignment, UseRightToLeftAlignment);
+      Layout := Self.Layout;
+      Opaque := (Color<>clNone) and not Transparent;
       WordBreak := wordWrap;
       SingleLine:= not WordWrap and not HasMultiLine;
       Clipping := True;
