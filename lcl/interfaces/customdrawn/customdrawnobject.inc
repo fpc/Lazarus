@@ -34,6 +34,18 @@ begin
   CDWidgetSet := Self;
   FTerminating := False;
 
+  {$ifndef CD_UseNativeText}
+  // Create the dummy screen DC
+  ScreenBitmapRawImage.Init;
+  ScreenBitmapHeight := 100;
+  ScreenBitmapWidth := 100;
+  ScreenBitmapRawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(ScreenBitmapWidth, ScreenBitmapHeight);
+  ScreenBitmapRawImage.CreateData(True);
+  ScreenImage := TLazIntfImage.Create(0, 0);
+  ScreenImage.SetRawImage(ScreenBitmapRawImage);
+  ScreenDC := TLazCanvas.Create(ScreenImage);
+  {$endif}
+
   BackendCreate;
 end;
 
@@ -47,6 +59,12 @@ end;
 destructor TCDWidgetSet.Destroy;
 begin
   BackendDestroy;
+
+  {$ifndef CD_UseNativeText}
+  // Free the dummy screen DC
+  ScreenImage.Free;
+  ScreenDC.Free;
+  {$endif}
 
   CDWidgetSet := nil;
   inherited Destroy;

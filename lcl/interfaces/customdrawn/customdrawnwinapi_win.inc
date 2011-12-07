@@ -1348,6 +1348,7 @@ begin
   Result := Windows.ExtCreatePen(dwPenStyle, dwWidth, LB, dwStyleCount, lpStyle);
 end;*)
 
+{$ifdef CD_UseNativeText}
 {------------------------------------------------------------------------------
   Method:  ExtTextOut
   Params:  DC      - handle to device context
@@ -1380,6 +1381,7 @@ begin
   W := UTF8ToUTF16(S);
   Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), Dx);
 end;
+{$ifdef CD_UseNativeText}
 
 (*{------------------------------------------------------------------------------
   Function: ExtSelectClipRGN
@@ -2067,6 +2069,7 @@ begin
   end;
 end;*)
 
+{$ifdef CD_UseNativeText}
 {------------------------------------------------------------------------------
   Method:  GetTextExtentPoint
   Params:  DC    - handle of device context
@@ -2109,6 +2112,7 @@ function TCDWidgetSet.GetTextMetrics(DC: HDC; Var TM: TTextMetric): Boolean;
 begin
   Result := Boolean(Windows.GetTextMetrics(DC, @TM));
 end;
+{$endif}
 
 (*function TWin32WidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
 begin

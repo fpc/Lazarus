@@ -304,7 +304,6 @@ begin
     ACanvas.Clipping := True;
     lCDWinControl.Region.Rect := Bounds(lBaseWindowOrg.X, lBaseWindowOrg.Y, lWinControl.Width, lWinControl.Height);
     ACanvas.ClipRegion := lCDWinControl.Region;
-    ACanvas.UseRegionClipping := True;
 
     // Save the Canvas state
     ACanvas.SaveState;

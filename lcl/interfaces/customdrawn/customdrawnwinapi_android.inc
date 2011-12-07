@@ -2170,6 +2170,7 @@ begin
     Result := inherited ExtSelectClipRGN(DC, RGN, Mode);
 end;*)
 
+{$ifdef CD_UseNativeText}
 {------------------------------------------------------------------------------
   Function: ExtTextOut
   Params:  none
@@ -2242,6 +2243,7 @@ begin
 
   Result := True;}
 end;
+{$endif}
 
 (*{------------------------------------------------------------------------------
   Function: FillRect
@@ -4099,6 +4101,7 @@ begin
   Result := True;
 end;*)
 
+{$ifdef CD_UseNativeText}
 {------------------------------------------------------------------------------
   Function: GetTextExtentPoint
   Params:  none
@@ -4207,6 +4210,7 @@ begin
     TM.tmCharSet := DEFAULT_CHARSET;
   end;        *)
 end;
+{$endif}
 
 (*function TQtWidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
 var

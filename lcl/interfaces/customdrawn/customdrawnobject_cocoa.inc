@@ -106,6 +106,7 @@ begin
   {  Creates the AutoreleasePool }
   pool := NSAutoreleasePool(NSAutoreleasePool.alloc).init;
 
+  {$ifdef CD_UseNativeText}
   { Prepares the Native DC for the ScreenDC }
 
   { NSImage / NSBitmapImageRep are very limited. They simply don't support
@@ -139,6 +140,7 @@ begin
   ScreenDC := TLazCanvas.Create(ScreenImage);
   ScreenDC.NativeDC := PtrInt(TCocoaContext.Create);
   TCocoaContext(ScreenDC.NativeDC).cgctx := ScreenBitmapContext; //NSGraphicsContext.graphicsContextWithBitmapImageRep(ScreenBitmap.imagerep);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -151,10 +153,12 @@ begin
   {  Releases the AutoreleasePool }
   pool.release;
 
+  {$ifdef CD_UseNativeText}
   { Release the screen DC and Image}
   ScreenDC.Free;
   ScreenImage.Free;
 //  ScreenBitmap.Free;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------

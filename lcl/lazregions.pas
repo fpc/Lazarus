@@ -170,8 +170,8 @@ var
 begin
   if IsSimpleRectRegion then
   begin
-    Result := (AX >= Rect.Left) and (AX < Rect.Right) and
-      (AY >= Rect.Top) and (AY < Rect.Bottom);
+    Result := (AX >= Rect.Left) and (AX <= Rect.Right) and
+      (AY >= Rect.Top) and (AY <= Rect.Bottom);
   end
   else
   begin

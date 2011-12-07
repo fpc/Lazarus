@@ -67,8 +67,9 @@ type
     FAssignedBrush: TFPCustomBrush;
     FAssignedPen: TFPCustomPen;
     FBaseWindowOrg: TPoint;
-    FUseRegionClipping: Boolean;
+    {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
     FLazClipRegion: TLazRegion;
+    {$endif}
     FWindowOrg: TPoint; // already in absolute coords with BaseWindowOrg summed up
     GraphicStateStack: TObjectStack; // TLazCanvasState
     function GetAssignedBrush: TFPCustomBrush;
@@ -117,8 +118,9 @@ type
     // because operations of SetWindowOrg inside a non-native wincontrol will be
     // based upon the BaseWindowOrg which is set relative to the Form canvas
     property BaseWindowOrg: TPoint read FBaseWindowOrg write FBaseWindowOrg;
+    {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
     property ClipRegion: TLazRegion read FLazClipRegion write FLazClipRegion;
-    property UseRegionClipping: Boolean read FUseRegionClipping write FUseRegionClipping; // when false ClipRect is used
+    {$endif}
     property WindowOrg: TPoint read GetWindowOrg write SetWindowOrg;
   end;
 
@@ -165,16 +167,20 @@ end;
 procedure TLazCanvas.SetColor(x, y: integer; const AValue: TFPColor);
 var
   lx, ly: Integer;
-  OldClipping: Boolean;
 begin
   lx := x + FWindowOrg.X;
   ly := y + FWindowOrg.Y;
-  if Clipping and FUseRegionClipping and (not FLazClipRegion.IsPointInRegion(lx, ly)) then
+  {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
+  if Clipping and (not FLazClipRegion.IsPointInRegion(lx, ly)) then
     Exit;
-  OldClipping := Clipping;
-  Clipping := False; // Work around to FImage being private in FPC 2.6 or inferior =(
-  inherited SetColor(lx, ly, AValue);
-  Clipping := OldClipping;
+  if (lx >= 0) and (lx < width) and (ly >= 0) and (ly < height) then
+      Image.Colors[lx,ly] := AValue;
+  {$else}
+  if Clipping and (not FClipRegion.IsPointInRegion(lx, ly)) then
+    Exit;
+  if (lx >= 0) and (lx < width) and (ly >= 0) and (ly < height) then
+      FImage.Colors[lx,ly] := AValue;
+  {$endif}
 end;
 
 procedure TLazCanvas.DoPolygonFill(const points: array of TPoint);
@@ -437,6 +443,7 @@ var
   srcx, srcy: Integer; // current coordinates in the source image
   dx, dy: Integer; // current coordinates in the destination canvas
   lWidth, lHeight: Integer; // Image size
+  lColor: TFPColor;
 begin
   if (w<=0) or (h<=0) or (image.Width=0) or (image.Height=0) then
     exit;
@@ -448,8 +455,9 @@ begin
    for dy := 0 to h-1 do
    begin
      srcx := Round((dx / w) * lWidth);
-     srcy := Round((dy / w) * lHeight);
-     Canvas.Colors[dx+x, dy+y] := Image.Colors[srcx, srcy];
+     srcy := Round((dy / h) * lHeight);
+     lColor := Image.Colors[srcx, srcy];
+     Canvas.Colors[dx+x, dy+y] := lColor;
    end;
 end;
 

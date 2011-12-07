@@ -2175,8 +2175,9 @@ begin
   end
   else
     Result := inherited ExtSelectClipRGN(DC, RGN, Mode);
-end;
+end;*)
 
+{$ifndef CD_UseNativeText}
 {------------------------------------------------------------------------------
   Function: ExtTextOut
   Params:  none
@@ -2184,20 +2185,20 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
+function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
-var
+{var
   WideStr: WideString;
   QtDC: TQtDeviceContext absolute DC;
-  B: Boolean;
+  B: Boolean; }
 begin
-  {$ifdef VerboseQtWinAPI}
+  {$ifdef VerboseCDWinAPI}
     WriteLn('[WinAPI ExtTextOut]');
   {$endif}
 
   Result := False;
 
-  if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
+  {if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
     exit;
 
   if not IsValidDC(DC) then Exit;
@@ -2225,10 +2226,11 @@ begin
         QtDC.restore;
     end else
       QtDC.drawText(X, Y, @WideStr);
-  end;
+  end;}
 
   Result := True;
-end;*)
+end;
+{$endif}
 
 {------------------------------------------------------------------------------
   Function: FillRect
@@ -4021,24 +4023,27 @@ begin
     ColorRefToTQColor(TColorRef(QtDC.vTextColor), Color);
     TQColorToColorRef(Color, Result);
   end;
-end;
+end;*)
 
+{$ifndef CD_UseNativeText}
 {------------------------------------------------------------------------------
   Function: GetTextExtentExPoint
   Params: http://msdn.microsoft.com/en-us/library/dd144935%28VS.85%29.aspx
   Returns: True on success
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar; Count,
+function TCDWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar; Count,
   MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize
   ): Boolean;
-var
+{var
   i: Integer;
   w: Integer;
   AStr: WideString;
-  Accu: Integer;
+  Accu: Integer;  }
 begin
-  Result := False;
-  if not IsValidDC(DC) then Exit;
+//  Result := False;
+  Result := inherited GetTextExtentExPoint(DC, Str, Count, MaxWidth,
+    MaxCount, PartialWidths, Size);
+  {if not IsValidDC(DC) then Exit;
   with TQtDeviceContext(DC) do
   begin
     AStr := GetUtf8String(Str);
@@ -4087,7 +4092,7 @@ begin
       end;
     end;
   end;
-  Result := True;
+  Result := True;}
 end;
 
 {------------------------------------------------------------------------------
@@ -4095,10 +4100,10 @@ end;
   Params:  none
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
-var
+function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
+{var
   WideStr: WideString;
-  QtDC: TQtDeviceContext absolute DC;
+  QtDC: TQtDeviceContext absolute DC;   }
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetTextExtentPoint]');
@@ -4106,11 +4111,11 @@ begin
 
   Result := False;
 
-  if not IsValidDC(DC) then Exit;
+ { if not IsValidDC(DC) then Exit;
 
   WideStr := GetUtf8String(Str);
   Size.cx := QtDC.Metrics.width(@WideStr, Count);
-  Size.cy := QtDC.Metrics.height;
+  Size.cy := QtDC.Metrics.height;  }
 
   Result := True;
 end;
@@ -4121,12 +4126,12 @@ end;
            TM     - The structure to receive the font information
   Returns: If successfull
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
-var
+function TCDWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
+{var
   QtFontMetrics: TQtFontMetrics;
   FontFamily: WideString;
   QtDC: TQtDeviceContext absolute DC;
-  FontWeight: Integer;
+  FontWeight: Integer;   }
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetTextMetrics]');
@@ -4134,7 +4139,7 @@ begin
 
   Result := IsValidDC(DC);
 
-  if Result then
+ (* if Result then
   begin
     QtFontMetrics := QtDC.Metrics;
     TM.tmHeight := QtFontMetrics.height;
@@ -4184,10 +4189,11 @@ begin
       TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
 
     TM.tmCharSet := DEFAULT_CHARSET;
-  end;
+  end;*)
 end;
+{$endif}
 
-function TQtWidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
+(*function TQtWidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
 var
   R: TRect;
 begin

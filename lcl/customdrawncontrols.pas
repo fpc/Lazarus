@@ -645,7 +645,7 @@ type
 
 implementation
 
-resourcestring
+const
   sTABSHEET_DEFAULT_NAME = 'CTabSheet';
 
 { TCDPanel }
