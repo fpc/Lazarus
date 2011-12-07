@@ -1827,7 +1827,7 @@ begin
   fFontDummy.Height := SynDefaultFontHeight;
   fFontDummy.Pitch := SynDefaultFontPitch;
   fFontDummy.Quality := SynDefaultFontQuality;
-  FLastSetFontSize := fFontDummy.Size;
+  FLastSetFontSize := fFontDummy.Height;
   fLastMouseCaret := Point(-1,-1);
   FLastMousePoint := Point(-1,-1);
   fBlockIndent := 2;
@@ -2149,7 +2149,7 @@ end;
 
 procedure TCustomSynEdit.FontChanged(Sender: TObject);
 begin
-  FLastSetFontSize := Font.Size;
+  FLastSetFontSize := Font.Height;
   RecalcCharExtent;
   SizeOrFontChanged(TRUE);
 end;
@@ -2833,8 +2833,8 @@ begin
         end;
       emcWheelZoomOut, emcWheelZoomIn:
         begin
-          if ( (ACommand = emcWheelZoomOut) and (abs(Font.Size) < 3) ) or
-             ( (ACommand = emcWheelZoomIn) and (abs(Font.Size) > 50) )
+          if ( (ACommand = emcWheelZoomOut) and (abs(Font.Height) < 3) ) or
+             ( (ACommand = emcWheelZoomIn) and (abs(Font.Height) > 50) )
           then begin
             Result := False;
           end
@@ -2842,15 +2842,15 @@ begin
             j := 1;
             if ACommand = emcWheelZoomIn then j := -1;
             i := FLastSetFontSize;
-            if Font.Size < 0
-            then Font.Size := Font.Size + j
-            else Font.Size := Font.Size - j;
+            if Font.Height < 0
+            then Font.Height := Font.Height + j
+            else Font.Height := Font.Height - j;
             FLastSetFontSize := i;
           end;
         end;
       emcWheelZoomNorm:
         begin
-          Font.Size := FLastSetFontSize;
+          Font.Height := FLastSetFontSize;
         end;
       else
         Result := False; // ACommand was not handled => Fallback to parent Context
