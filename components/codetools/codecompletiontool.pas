@@ -7052,7 +7052,8 @@ begin
     Params:=TFindDeclarationParams.Create;
     try
       ClassNode:=CodeCompleteClassNode;
-      while FindAncestorOfClass(ClassNode,Params,True) do begin
+      Tool:=Self;
+      while Tool.FindAncestorOfClass(ClassNode,Params,True) do begin
         Tool:=Params.NewCodeTool;
         ClassNode:=Params.NewNode;
         Params.ContextNode:=ClassNode;
