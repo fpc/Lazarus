@@ -162,7 +162,8 @@ end;
 
 function RegisterPageControl: Boolean; alias : 'WSRegisterPageControl';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomTabControl, TCDWSCustomTabControl);
+  Result := True;
 end;
 
 function RegisterCustomListView: Boolean; alias : 'WSRegisterCustomListView';

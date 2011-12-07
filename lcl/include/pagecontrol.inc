@@ -111,6 +111,7 @@ end;
 function TPageControl.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   Result:=(ChildClass<>nil) and (ChildClass.InheritsFrom(PageClass));
+  if Widgetset.GetLCLCapability(lcAllowChildControlsInNativeControls) = LCL_CAPABILITY_YES then Result := True;
 end;
 
 constructor TPageControl.Create(TheOwner: TComponent);

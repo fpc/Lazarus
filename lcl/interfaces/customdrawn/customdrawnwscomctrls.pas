@@ -50,9 +50,12 @@ type
   { TCDWSCustomTabControl }
 
   TCDWSCustomTabControl = class(TWSCustomTabControl)
+  public
+    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
-{    class function  CreateHandle(const AWinControl: TWinControl;
+    class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
 
     class procedure AddPage(const ATabControl: TCustomTabControl;
       const AChild: TCustomPage; const AIndex: integer); override;
@@ -69,7 +72,7 @@ type
     class procedure SetTabCaption(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const AText: string); override;
     class procedure SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ATabControl: TCustomTabControl; AShowTabs: boolean); override;
-    class procedure UpdateProperties(const ATabControl: TCustomTabControl); override;    }
+    class procedure UpdateProperties(const ATabControl: TCustomTabControl); override;
   end;
 
   { TCDWSStatusBar }
@@ -255,6 +258,119 @@ type
 
 
 implementation
+
+{ TCDWSCustomTabControl }
+
+class procedure TCDWSCustomTabControl.CreateCDControl(
+  const AWinControl: TWinControl; var ACDControlField: TCDControl);
+begin
+  ACDControlField := TCDPageControl.Create(AWinControl);
+//    TCDIntfButton(lCDWinControl.CDControl).LCLButton := TButton(AWinControl);
+  ACDControlField.Parent := AWinControl;
+  ACDControlField.Align := alClient;
+end;
+
+class function TCDWSCustomTabControl.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  lCDWinControl: TCDWinControl;
+begin
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
+end;
+
+class procedure TCDWSCustomTabControl.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+
+  TCDWSWinControl.ShowHide(AWinControl);
+
+  if lCDWinControl.CDControl = nil then
+    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+end;
+
+class procedure TCDWSCustomTabControl.AddPage(
+  const ATabControl: TCustomTabControl; const AChild: TCustomPage;
+  const AIndex: integer);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(ATabControl.Handle);
+
+  if lCDWinControl.CDControl = nil then
+    CreateCDControl(ATabControl, lCDWinControl.CDControl);
+
+  TCDPageControl(lCDWinControl.CDControl).InsertPage(AIndex, AChild.Caption);
+end;
+
+class procedure TCDWSCustomTabControl.MovePage(
+  const ATabControl: TCustomTabControl; const AChild: TCustomPage;
+  const NewIndex: integer);
+begin
+  inherited MovePage(ATabControl, AChild, NewIndex);
+end;
+
+class procedure TCDWSCustomTabControl.RemovePage(
+  const ATabControl: TCustomTabControl; const AIndex: integer);
+begin
+  inherited RemovePage(ATabControl, AIndex);
+end;
+
+class function TCDWSCustomTabControl.GetCapabilities: TCTabControlCapabilities;
+begin
+  Result:=inherited GetCapabilities;
+end;
+
+class function TCDWSCustomTabControl.GetDesignInteractive(
+  const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
+begin
+  Result:=inherited GetDesignInteractive(AWinControl, AClientPos);
+end;
+
+class function TCDWSCustomTabControl.GetTabIndexAtPos(
+  const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer;
+begin
+  Result:=inherited GetTabIndexAtPos(ATabControl, AClientPos);
+end;
+
+class function TCDWSCustomTabControl.GetTabRect(
+  const ATabControl: TCustomTabControl; const AIndex: Integer): TRect;
+begin
+  Result:=inherited GetTabRect(ATabControl, AIndex);
+end;
+
+class procedure TCDWSCustomTabControl.SetPageIndex(
+  const ATabControl: TCustomTabControl; const AIndex: integer);
+begin
+  inherited SetPageIndex(ATabControl, AIndex);
+end;
+
+class procedure TCDWSCustomTabControl.SetTabCaption(
+  const ATabControl: TCustomTabControl; const AChild: TCustomPage;
+  const AText: string);
+begin
+  inherited SetTabCaption(ATabControl, AChild, AText);
+end;
+
+class procedure TCDWSCustomTabControl.SetTabPosition(
+  const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
+begin
+  inherited SetTabPosition(ATabControl, ATabPosition);
+end;
+
+class procedure TCDWSCustomTabControl.ShowTabs(
+  const ATabControl: TCustomTabControl; AShowTabs: boolean);
+begin
+  inherited ShowTabs(ATabControl, AShowTabs);
+end;
+
+class procedure TCDWSCustomTabControl.UpdateProperties(
+  const ATabControl: TCustomTabControl);
+begin
+  inherited UpdateProperties(ATabControl);
+end;
 
 (*{ TCDWSToolBar }
 
