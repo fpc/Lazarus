@@ -281,8 +281,12 @@ begin
   if ARegion.IsSimpleRectRegion then
   begin
     Clipping := True;
+    {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
     ClipRect := TLazRegionRect(ARegion.Parts.Items[0]).Rect;
     FLazClipRegion := ARegion;
+    {$else}
+    ClipRegion := ARegion;
+    {$endif}
   end;
 end;
 
