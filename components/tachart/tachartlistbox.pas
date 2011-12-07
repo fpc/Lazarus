@@ -306,10 +306,15 @@ var
   x: Integer;
   ch: Boolean;
 begin
-  Unused(AState);
+  if Assigned(OnDrawItem) then begin
+    OnDrawItem(Self, AIndex, ARect, AState);
+    exit;
+  end;
+  if
+    (odPainted in AState) or (FChart = nil) or not InRange(AIndex, 0, Count - 1)
+  then exit;
 
-  if FChart = nil then exit;
-
+  Canvas.FillRect(ARect);
   CalcRects(ARect, rcb, ricon);
 
   if cloShowCheckboxes in Options then begin
