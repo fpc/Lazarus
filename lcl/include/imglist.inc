@@ -140,7 +140,8 @@ begin
     Result := Count;
     InsertMasked(Result, Image, MaskColor);
   except
-    on E: Exception do begin
+    on E: Exception do
+    begin
       DebugLn('TCustomImageList.AddMasked ',E.Message);
       Result := -1; // Ignore exceptions, just return -1
     end;
@@ -773,21 +774,26 @@ end;
 procedure TCustomImageList.InsertMasked(Index: Integer; AImage: TCustomBitmap;
   MaskColor: TColor);
 var
+  RawImg: TRawImage;
+  SourceImage, MaskedImage: TLazIntfImage;
   Bmp: TBitmap;
 begin
   if AImage = nil then Exit;
-
-  Bmp := TBitmap.Create;
-  with Bmp do
-  begin
-    Assign(AImage);
-    TransparentColor := MaskColor;
-    Transparent := True;
+  SourceImage := TLazIntfImage.Create(AImage.RawImage, False);
+  try
+    MaskedImage := TLazIntfImage.Create(0,0,[]);
+    try
+      MaskedImage.DataDescription := SourceImage.DataDescription;
+      MaskedImage.CopyPixels(SourceImage);
+      MaskedImage.Mask(TColorToFPColor(ColorToRGB(MaskColor)));
+      MaskedImage.GetRawImage(RawImg);
+      InternalInsert(Index, RawImg);
+    finally
+      MaskedImage.Free;
+    end;
+  finally
+    SourceImage.Free;
   end;
-  if Bmp.Masked
-  then InternalInsert(Index, Bmp.Handle, Bmp.MaskHandle, Bmp.Width, Bmp.Height)
-  else InternalInsert(Index, Bmp.Handle, 0, Bmp.Width, Bmp.Height);
-  Bmp.Free;
 end;
 
 {------------------------------------------------------------------------------
