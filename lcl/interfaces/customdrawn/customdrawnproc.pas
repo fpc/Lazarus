@@ -12,7 +12,7 @@ uses
   IntfGraphics, lazcanvas, lazregions,
   // LCL
   GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc,
-  Forms, Graphics, customdrawncontrols;
+  StdCtrls, ExtCtrls, Forms, Graphics, customdrawncontrols;
 
 type
   TUpdateLazImageFormat = (
@@ -309,10 +309,21 @@ begin
     ACanvas.SaveState;
     ACanvas.ResetCanvasState;
 
+    // Special drawing for some native controls
+    if lWinControl is TCustomPanel then
+    begin
+      // Erase the background of TPanel controls, since it can draw it's own border, but fails to draw it's own background
+      ACanvas.Brush.FPColor := TColorToFPColor((lWinControl as TCustomPanel).GetRGBColorResolvingParent());
+      ACanvas.Pen.FPColor := ACanvas.Brush.FPColor;
+      ACanvas.Rectangle(Bounds(0, 0, lWinControl.Width, lWinControl.Height));
+      ACanvas.ResetCanvasState;
+    end;
+
+    // Send the drawing message
     {$ifdef VerboseCDWinControl}
     DebugLn(Format('[RenderChildWinControls] i=%d before LCLSendPaintMsg', [i]));
     {$endif}
-    LCLSendPaintMsg(lCDWinControl.WinControl, struct.hdc, @struct);
+    LCLSendPaintMsg(lWinControl, struct.hdc, @struct);
 
     // Now Draw all sub-controls
     if lCDWinControl.Children <> nil then
