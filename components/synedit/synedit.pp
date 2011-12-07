@@ -7563,8 +7563,11 @@ begin
   // (un)register HWND as drop target
   if (eoDropFiles in ChangedOptions) and not (csDesigning in ComponentState) and HandleAllocated then
     ; // ToDo DragAcceptFiles
-  if (eoPersistentCaret in ChangedOptions) and HandleAllocated then
+  if (eoPersistentCaret in ChangedOptions) and HandleAllocated then begin
     UpdateCaret;
+    if not Focused then
+      FScreenCaret.Visible := (eoPersistentCaret in FOptions);
+  end;
   if (eoShowSpecialChars in ChangedOptions) and HandleAllocated then
     Invalidate;
   fMarkupSpecialChar.Enabled := (eoShowSpecialChars in fOptions);
