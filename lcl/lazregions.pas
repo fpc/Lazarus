@@ -10,7 +10,7 @@ unit lazregions;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, fpcanvas;
 
 type
 
@@ -29,7 +29,7 @@ type
     function IsPointInPart(AX, AY: Integer): Boolean; override;
   end;
 
-  TLazRegion = class
+  TLazRegion = class{$if defined(ver2_7) or defined(ver2_8) or defined(ver2_9)}(TFPCustomRegion){$endif}
   public
     // The parts of a region should all be inside valid areas of the region
     // so if a combination operation removes some areas of the region, then
@@ -42,7 +42,8 @@ type
     destructor Destroy; override;
     procedure AddRectangle(ARect: TRect);
     procedure SetAsSimpleRectRegion(ARect: TRect);
-    function IsPointInRegion(AX, AY: Integer): Boolean; virtual;
+    function GetBoundingRect: TRect; {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}virtual;{$else}override;{$endif}
+    function IsPointInRegion(AX, AY: Integer): Boolean; {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}virtual;{$else}override;{$endif}
   end;
 
   { This is a region which can hold other region holders inside it }
@@ -159,6 +160,11 @@ procedure TLazRegion.SetAsSimpleRectRegion(ARect: TRect);
 begin
   IsSimpleRectRegion := True;
   Rect := ARect;
+end;
+
+function TLazRegion.GetBoundingRect: TRect;
+begin
+  Result := Rect;
 end;
 
 {
