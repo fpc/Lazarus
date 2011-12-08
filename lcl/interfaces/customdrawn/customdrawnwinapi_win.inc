@@ -1381,7 +1381,7 @@ begin
   W := UTF8ToUTF16(S);
   Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), Dx);
 end;
-{$ifdef CD_UseNativeText}
+{$endif}
 
 (*{------------------------------------------------------------------------------
   Function: ExtSelectClipRGN
