@@ -25,8 +25,8 @@ unit editor_mouseaction_options;
 interface
 
 uses
-  math, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEdit,
-  StdCtrls, ExtCtrls, Classes, LCLProc, editor_mouseaction_options_advanced, Controls, Forms;
+  math, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEdit, DividerBevel, StdCtrls,
+  ExtCtrls, Classes, LCLProc, editor_mouseaction_options_advanced, Controls, Forms, ComCtrls;
 
 type
 
@@ -35,6 +35,11 @@ type
   TEditorMouseOptionsFrame = class(TAbstractIDEOptionsEditor)
     BottomDivider: TBevel;
     chkPredefinedScheme: TCheckBox;
+    ScrollBox1: TScrollBox;
+    ScrollBox2: TScrollBox;
+    TextDividerLabel: TDividerBevel;
+    GutterDividerLabel: TDividerBevel;
+    GenericDividerLabel: TDividerBevel;
     dropMiddle: TComboBox;
     dropCtrlLeft: TComboBox;
     CtrLLeftLabel: TLabel;
@@ -45,17 +50,17 @@ type
     dropAltWheel: TComboBox;
     dropShiftWheel: TComboBox;
     dropUserSchemes: TComboBox;
-    GenericDividerLabel: TLabel;
-    GenericDividerLeft: TBevel;
-    GenericDividerRight: TBevel;
-    GutterDividerLabel: TLabel;
-    GutterDividerLeft: TBevel;
-    GutterDividerRight: TBevel;
     GutterLeftRadio1: TRadioButton;
     GutterLeftRadio2: TRadioButton;
     HideMouseCheckBox: TCheckBox;
     MiddleBtnLabel: TLabel;
     CtrlMiddleBtnLabel: TLabel;
+    Notebook1: TNotebook;
+    Page1: TPage;
+    Page2: TPage;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
+    ToolButton2: TToolButton;
     WheelBtnLabel: TLabel;
     CtrlWheelBtnLabel: TLabel;
     AltWheelBtnLabel: TLabel;
@@ -70,11 +75,7 @@ type
     ResetGutterButton: TButton;
     ResetTextButton: TButton;
     RightMoveCaret: TCheckBox;
-    ScrollBox1: TScrollBox;
     TextAltMode: TCheckBox;
-    TextDividerLabel: TLabel;
-    TextDividerLeft: TBevel;
-    TextDividerRight: TBevel;
     TextDoubleSelLine: TCheckBox;
     TextDrag: TCheckBox;
     RadioGroup1: TRadioGroup;
@@ -89,6 +90,7 @@ type
     procedure ResetGutterButtonClick(Sender: TObject);
     procedure ResetTextButtonClick(Sender: TObject);
     procedure ResetAllButtonClick(Sender: TObject);
+    procedure ToolButton1Click(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
     FOptions: TAbstractIDEOptions;
@@ -205,6 +207,12 @@ begin
   SaveTextSettings;
   SaveUserScheme; // must be last
   UpdateButtons;
+end;
+
+procedure TEditorMouseOptionsFrame.ToolButton1Click(Sender: TObject);
+begin
+  if not(Sender is TToolButton) then exit;
+  Notebook1.PageIndex := TToolButton(Sender).Tag;
 end;
 
 function TEditorMouseOptionsFrame.IsUserSchemeChanged: Boolean;
@@ -341,6 +349,10 @@ begin
   TextDrag.Caption := dlfMouseSimpleTextSectDrag;
   TextDoubleSelLine.Caption := dlfMouseSimpleTextSectDoubleSelLine;
   RightMoveCaret.Caption := dlfMouseSimpleRightMoveCaret;
+
+  ToolButton1.Caption := dlfMouseSimpleTextSectPageBtn;
+  ToolButton2.Caption := dlfMouseSimpleTextSectPageWheel;
+  ToolBar1.AnchorSide[akTop].Side := asrBottom;
 
   CtrLLeftLabel.Caption      := dlfMouseSimpleTextSectCtrlLeftLabel;
   MiddleBtnLabel.Caption     := dlfMouseSimpleTextSectMidLabel;
