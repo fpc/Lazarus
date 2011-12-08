@@ -476,22 +476,27 @@ begin
 
   {$IFDEF HASX11}
   if AWinControl.HandleObjectShouldBeVisible and
-    (fsModal in TForm(AWinControl).FormState) then
+    not (csDesigning in TForm(AWinControl).ComponentState) and
+        (TForm(AWinControl).FormStyle <> fsMDIChild) then
   begin
-    if (Application.TaskBarBehavior <> tbSingleButton) then
+    if (fsModal in TForm(AWinControl).FormState) then
     begin
-      SetSkipX11Taskbar(Widget.Widget, True);
-      Widget.setShowInTaskBar(False);
+      if (Application.TaskBarBehavior <> tbSingleButton) then
+      begin
+        SetSkipX11Taskbar(Widget.Widget, True);
+        Widget.setShowInTaskBar(False);
+      end;
+      if (QtWidgetSet.WindowManagerName = 'metacity') then
+        X11Raise(QWidget_winID(Widget.Widget));
+    end else
+    if (TForm(AWinControl).FormStyle = fsSplash) then
+    begin
+      //process only qt sys events
+      QCoreApplication_processEvents(QEventLoopExcludeUserInputEvents);
+      //now send repaint to splash form
+      QWidget_repaint(Widget.Widget);
     end;
-    if (QtWidgetSet.WindowManagerName = 'metacity') then
-      X11Raise(QWidget_winID(Widget.Widget));
   end;
-  {$ENDIF}
-
-  {$IFDEF HASX11}
-  if (QtVersionMajor = 4) and (QtVersionMinor >= 6)
-    and (TForm(AWinControl).FormStyle <> fsMDIChild) then
-    QApplication_syncX();
   {$ENDIF}
 end;
 
