@@ -292,12 +292,12 @@ begin
       FCanvas.Font.Color := clHighlightText
     end else
     begin
-      FCanvas.Brush.Color := clWindow;
+      FCanvas.Brush.Color := GetColorResolvingParent;
       FCanvas.Font.Color := clWindowText;
     end;
     DrawItem(ItemID, Area, ItemState);
     if odFocused in ItemState then
-      {DrawFocusRect(hDC, rcItem)};
+      DrawFocusRect(DC, Area);
     FCanvas.Handle := 0;
   end;
 end;
