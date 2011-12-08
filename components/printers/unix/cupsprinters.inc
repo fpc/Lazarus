@@ -553,7 +553,7 @@ begin
               OptNames.Add(Choice^.choice);
           end;
 
-          //Not marked choise then the choice is default
+          //Not marked choice then the choice is default
           if (Result<0) and (Lst.Count>0) then begin
             Result:=Lst.IndexOf(OPtion^.defchoice);
             if (Result<0)and Assigned(OptNames) then
