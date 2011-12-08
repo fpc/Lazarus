@@ -70,8 +70,10 @@ procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
 procedure DrawFormBackground(var AImage: TLazIntfImage; var ACanvas: TLazCanvas);
 procedure RenderChildWinControls(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDControlsList: TFPList);
-//procedure RenderWinControl(var AImage: TLazIntfImage;
-//  var ACanvas: TLazCanvas; ACDControlsList: TFPList);
+function RenderWinControl(var AImage: TLazIntfImage;
+  var ACanvas: TLazCanvas; ACDWinControl: TCDWinControl): Boolean;
+procedure RenderWinControlAndChildren(var AImage: TLazIntfImage;
+  var ACanvas: TLazCanvas; ACDWinControl: TCDWinControl);
 function FindControlWhichReceivedEvent(AForm: TCustomForm;
   AControlsList: TFPList; AX, AY: Integer): TWinControl;
 function FindControlPositionRelativeToTheForm(ALCLControl: TWinControl): TPoint;
@@ -265,82 +267,108 @@ begin
   ACanvas.RestoreState;
 end;
 
+// This does not render the win control itself, only it's children
 // The WinControls themselves will render child TControls not descending from TWinControl
 procedure RenderChildWinControls(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDControlsList: TFPList);
 var
   i, lChildrenCount: Integer;
   lCDWinControl: TCDWinControl;
-  lWinControl, lParentControl: TWinControl;
-  struct : TPaintStruct;
-  lCanvas: TCanvas;
-  lBaseWindowOrg: TPoint;
 begin
   lChildrenCount := ACDControlsList.Count;
   {$ifdef VerboseCDWinControl}
   DebugLn(Format('[RenderChildWinControls] ACanvas=%x ACDControlsList=%x lChildrenCount=%d',
     [PtrInt(ACanvas), PtrInt(ACDControlsList), lChildrenCount]));
   {$endif}
-  FillChar(struct, SizeOf(TPaintStruct), 0);
-  struct.hdc := HDC(ACanvas);
 
   for i := 0 to lChildrenCount-1 do
   begin
+    {$ifdef VerboseCDWinControl}
+    DebugLn(Format('[RenderChildWinControls] i=%d', [i]));
+    {$endif}
+
     lCDWinControl := TCDWinControl(ACDControlsList.Items[i]);
-    lWinControl := lCDWinControl.WinControl;
-    {$ifdef VerboseCDWinControl}
-    DebugLn(Format('[RenderChildWinControls] i=%d lWinControl=%x Name=%s:%s Left=%d'
-      + ' Top=%d Width=%d Height=%d', [i, PtrInt(lWinControl), lWinControl.Name, lWinControl.ClassName,
-      lWinControl.Left, lWinControl.Top, lWinControl.Width, lWinControl.Height]));
-    {$endif}
-    if lWinControl.Visible = False then Continue;
 
-    // lBaseWindowOrg makes debugging easier
-    // Iterate to find the appropriate BaseWindowOrg relative to the parent control
-    lBaseWindowOrg := FindControlPositionRelativeToTheForm(lWinControl);
-    ACanvas.BaseWindowOrg := lBaseWindowOrg;
-    ACanvas.WindowOrg := Point(0, 0);
+    RenderWinControlAndChildren(AImage, ACanvas, lCDWinControl);
+  end;
+end;
 
-    // Prepare the clippping relative to the form
-    ACanvas.Clipping := True;
-    lCDWinControl.Region.Rect := Bounds(lBaseWindowOrg.X, lBaseWindowOrg.Y, lWinControl.Width, lWinControl.Height);
-    ACanvas.ClipRegion := lCDWinControl.Region;
+// Renders a WinControl, but not it's children
+// Returns if the control is visible and therefore if its children should be rendered
+function RenderWinControl(var AImage: TLazIntfImage; var ACanvas: TLazCanvas;
+  ACDWinControl: TCDWinControl): Boolean;
+var
+  lWinControl, lParentControl: TWinControl;
+  struct : TPaintStruct;
+  lCanvas: TCanvas;
+  lBaseWindowOrg: TPoint;
+begin
+  Result := False;
 
-    // Save the Canvas state
+  FillChar(struct, SizeOf(TPaintStruct), 0);
+  struct.hdc := HDC(ACanvas);
+
+  lWinControl := ACDWinControl.WinControl;
+
+  {$ifdef VerboseCDWinControl}
+  DebugLn(Format('[RenderWinControl] lWinControl=%x Name=%s:%s Left=%d'
+    + ' Top=%d Width=%d Height=%d', [PtrInt(lWinControl), lWinControl.Name, lWinControl.ClassName,
+    lWinControl.Left, lWinControl.Top, lWinControl.Width, lWinControl.Height]));
+  {$endif}
+
+  if lWinControl.Visible = False then Exit;
+
+  // Save the Canvas state
+  ACanvas.SaveState;
+  ACanvas.ResetCanvasState;
+
+  // lBaseWindowOrg makes debugging easier
+  // Iterate to find the appropriate BaseWindowOrg relative to the parent control
+  lBaseWindowOrg := FindControlPositionRelativeToTheForm(lWinControl);
+  ACanvas.BaseWindowOrg := lBaseWindowOrg;
+  ACanvas.WindowOrg := Point(0, 0);
+
+  // Prepare the clippping relative to the form
+  ACanvas.Clipping := True;
+  ACDWinControl.Region.Rect := Bounds(lBaseWindowOrg.X, lBaseWindowOrg.Y, lWinControl.Width, lWinControl.Height);
+  ACanvas.ClipRegion := ACDWinControl.Region;
+
+  // Special drawing for some native controls
+  if lWinControl is TCustomPanel then
+  begin
+    // Erase the background of TPanel controls, since it can draw it's own border, but fails to draw it's own background
     ACanvas.SaveState;
-    ACanvas.ResetCanvasState;
-
-    // Special drawing for some native controls
-    if lWinControl is TCustomPanel then
-    begin
-      // Erase the background of TPanel controls, since it can draw it's own border, but fails to draw it's own background
-      ACanvas.Brush.FPColor := TColorToFPColor((lWinControl as TCustomPanel).GetRGBColorResolvingParent());
-      ACanvas.Pen.FPColor := ACanvas.Brush.FPColor;
-      ACanvas.Rectangle(Bounds(0, 0, lWinControl.Width, lWinControl.Height));
-      ACanvas.ResetCanvasState;
-    end;
-
-    // Send the drawing message
-    {$ifdef VerboseCDWinControl}
-    DebugLn(Format('[RenderChildWinControls] i=%d before LCLSendPaintMsg', [i]));
-    {$endif}
-    LCLSendPaintMsg(lWinControl, struct.hdc, @struct);
-
-    // Now Draw all sub-controls
-    if lCDWinControl.Children <> nil then
-      RenderChildWinControls(AImage, ACanvas, lCDWinControl.Children);
-
-    {$ifdef VerboseCDWinControl}
-    DebugLn(Format('[RenderChildWinControls] i=%d Finished child controls', [i]));
-    {$endif}
-
-    // Now restore it
+    ACanvas.Brush.FPColor := TColorToFPColor((lWinControl as TCustomPanel).GetRGBColorResolvingParent());
+    ACanvas.Pen.FPColor := ACanvas.Brush.FPColor;
+    ACanvas.Rectangle(Bounds(0, 0, lWinControl.Width, lWinControl.Height));
     ACanvas.RestoreState;
   end;
 
-  ACanvas.Clipping := False;
-  ACanvas.BaseWindowOrg := Point(0, 0);
-  ACanvas.WindowOrg := Point(0, 0);
+  // Send the drawing message
+  {$ifdef VerboseCDWinControl}
+  DebugLn('[RenderWinControl] before LCLSendPaintMsg');
+  {$endif}
+  LCLSendPaintMsg(lWinControl, struct.hdc, @struct);
+  {$ifdef VerboseCDWinControl}
+  DebugLn('[RenderWinControl] after LCLSendPaintMsg');
+  {$endif}
+
+  // Now restore it
+  ACanvas.RestoreState;
+
+  Result := True;
+end;
+
+// Render a WinControl and all it's children
+procedure RenderWinControlAndChildren(var AImage: TLazIntfImage;
+  var ACanvas: TLazCanvas; ACDWinControl: TCDWinControl);
+begin
+  // Draw the control
+  if not RenderWinControl(AImage, ACanvas, ACDWinControl) then Exit;
+
+  // Now Draw all sub-controls
+  if ACDWinControl.Children <> nil then
+    RenderChildWinControls(AImage, ACanvas, ACDWinControl.Children);
 end;
 
 function FindControlWhichReceivedEvent(AForm: TCustomForm;

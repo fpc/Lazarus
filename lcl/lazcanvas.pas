@@ -57,6 +57,8 @@ type
     Pen: TFPCustomPen;
     BaseWindowOrg: TPoint;
     WindowOrg: TPoint;
+    Clipping: Boolean;
+    ClipRegion: TFPCustomRegion;
     destructor Destroy; override;
   end;
 
@@ -68,7 +70,7 @@ type
     FAssignedPen: TFPCustomPen;
     FBaseWindowOrg: TPoint;
     {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
-    FLazClipRegion: TLazRegion;
+    FLazClipRegion: TFPCustomRegion;
     {$endif}
     FWindowOrg: TPoint; // already in absolute coords with BaseWindowOrg summed up
     GraphicStateStack: TObjectStack; // TLazCanvasState
@@ -120,7 +122,7 @@ type
     // based upon the BaseWindowOrg which is set relative to the Form canvas
     property BaseWindowOrg: TPoint read FBaseWindowOrg write FBaseWindowOrg;
     {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
-    property ClipRegion: TLazRegion read FLazClipRegion write FLazClipRegion;
+    property ClipRegion: TFPCustomRegion read FLazClipRegion write FLazClipRegion;
     {$endif}
     property WindowOrg: TPoint read GetWindowOrg write SetWindowOrg;
   end;
@@ -338,16 +340,13 @@ end;
 
 procedure TLazCanvas.SetLazClipRegion(ARegion: TLazRegion);
 begin
-  if ARegion.IsSimpleRectRegion then
-  begin
-    Clipping := True;
-    {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
-    ClipRect := TLazRegionRect(ARegion.Parts.Items[0]).Rect;
-    FLazClipRegion := ARegion;
-    {$else}
-    ClipRegion := ARegion;
-    {$endif}
-  end;
+  Clipping := True;
+  {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
+  ClipRect := TLazRegionRect(ARegion.Parts.Items[0]).Rect;
+  FLazClipRegion := ARegion;
+  {$else}
+  ClipRegion := ARegion;
+  {$endif}
 end;
 
 procedure TLazCanvas.SaveState;
@@ -358,6 +357,9 @@ begin
 
   lState.Brush := Brush.CopyBrush;
   lState.Pen := Pen.CopyPen;
+  lState.BaseWindowOrg := BaseWindowOrg;
+  lState.WindowOrg := WindowOrg;
+  lState.Clipping := Clipping;
 
   GraphicStateStack.Push(lState);
 end;
@@ -371,6 +373,9 @@ begin
 
   AssignPenData(lState.Pen);
   AssignBrushData(lState.Brush);
+  BaseWindowOrg := lState.BaseWindowOrg;
+  WindowOrg := lState.WindowOrg;
+  Clipping := lState.Clipping;
 
   lState.Free;
 end;

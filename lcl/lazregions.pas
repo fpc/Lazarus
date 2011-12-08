@@ -29,7 +29,14 @@ type
     function IsPointInPart(AX, AY: Integer): Boolean; override;
   end;
 
-  TLazRegion = class{$if defined(ver2_7) or defined(ver2_8) or defined(ver2_9)}(TFPCustomRegion){$endif}
+  {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
+  TFPCustomRegion = class
+    function GetBoundingRect: TRect; virtual; abstract;
+    function IsPointInRegion(AX, AY: Integer): Boolean; virtual; abstract;
+  end;
+  {$endif}
+
+  TLazRegion = class(TFPCustomRegion)
   public
     // The parts of a region should all be inside valid areas of the region
     // so if a combination operation removes some areas of the region, then
@@ -42,8 +49,8 @@ type
     destructor Destroy; override;
     procedure AddRectangle(ARect: TRect);
     procedure SetAsSimpleRectRegion(ARect: TRect);
-    function GetBoundingRect: TRect; {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}virtual;{$else}override;{$endif}
-    function IsPointInRegion(AX, AY: Integer): Boolean; {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}virtual;{$else}override;{$endif}
+    function GetBoundingRect: TRect; override;
+    function IsPointInRegion(AX, AY: Integer): Boolean; override;
   end;
 
   { This is a region which can hold other region holders inside it }
