@@ -1332,8 +1332,12 @@ resourcestring
   dlfMouseSimpleTextSectPageBtn = 'Buttons';
   dlfMouseSimpleTextSectPageWheel = 'Wheel';
 
+  dlfMouseSimpleTextSectAltLeftLabel =  'Alt Left Button';
   dlfMouseSimpleTextSectCtrlLeftLabel = 'Ctrl Left Button';
   dlfMouseSimpleButtonNothing          = 'Nothing/Default';
+  dlfMouseSimpleButtonSelect           = 'Select text';
+  dlfMouseSimpleButtonSelectColumn     = 'Select text (Columns)';
+  dlfMouseSimpleButtonSelectLine       = 'Select text (Lines)';
   dlfMouseSimpleButtonPaste            = 'Paste';
   dlfMouseSimpleButtonDeclaration      = 'Jumps to implementation';
   dlfMouseSimpleButtonDeclarationBlock = 'Jumps to implementation/other block end';
