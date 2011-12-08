@@ -116,7 +116,8 @@ object Form1: TForm1
       OnPopulate = ChartListboxPopulate
       OnSeriesIconDblClick = ChartListboxSeriesIconDblClick
       Align = alClient
-      ItemHeight = 0
+      Color = clInfoBk
+      ItemHeight = 20
       TabOrder = 2
     end
   end
