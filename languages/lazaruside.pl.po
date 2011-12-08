@@ -59,6 +59,7 @@ msgid "Jumps to implementation/other block end"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
+msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
 msgid "Nothing/Default"
 msgstr ""
 
@@ -66,6 +67,22 @@ msgstr ""
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonpaste"
 msgid "Paste"
 msgstr "Wklej"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselect
+msgid "Select text"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselectcolumn
+msgid "Select text (Columns)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselectline
+msgid "Select text (Lines)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
+msgid "Reset zoom"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
 #, fuzzy
@@ -108,9 +125,25 @@ msgstr "Tekst"
 msgid "Alt-Key sets column mode"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimpletextsectaltleftlabel
+msgid "Alt Left Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectaltwheellabel
+msgid "Alt Wheel"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftlabel
 msgid "Ctrl Left Button"
 msgstr "Kombinacja  lewy przycisk + Ctrl"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlmidlabel
+msgid "Ctrl Middle Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlwheellabel
+msgid "Ctrl Wheel"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
 #, fuzzy
@@ -128,9 +161,76 @@ msgstr "Przeciągaj zaznaczenie (kopiuj/wklej)"
 msgid "Middle Button"
 msgstr "Środkowy klawisz"
 
+#: lazarusidestrconsts.dlfmousesimpletextsectpagebtn
+msgid "Buttons"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpagewheel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagewheel"
+msgid "Wheel"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectwheellabel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectwheellabel"
+msgid "Wheel"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextshiftsectwheellabel
+msgid "Shift Wheel"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
 msgstr "Posiadasz niezapisane zmiany. Użycie tej strony spowoduje cofnięcie zmian na stronie zaawansowane"
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrolldef
+msgid "Scroll horizontal (System speed)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrollline
+msgid "Scroll horizontal (Single line)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrollpage
+msgid "Scroll horizontal (Page)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrollpagehalf
+msgid "Scroll horizontal (Half page)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrollpageless
+msgid "Scroll horizontal (Page, less one line)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelnothing
+msgctxt "lazarusidestrconsts.dlfmousesimplewheelnothing"
+msgid "Nothing/Default"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrolldef
+msgid "Scroll (System speed)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrollline
+msgid "Scroll (Single line)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrollpage
+msgid "Scroll (Page)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrollpagehalf
+msgid "Scroll (Half page)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrollpageless
+msgid "Scroll (Page, less one line)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelzoom
+msgid "Zoom"
+msgstr ""
 
 #: lazarusidestrconsts.dlfnopredefinedscheme
 msgid "< None >"
@@ -926,7 +1026,7 @@ msgid "Strip symbols from executable"
 msgstr "Wyczyść z symboli plik wykonywalny"
 
 #: lazarusidestrconsts.dlgcosymboltype
-msgid "Chose type of debug info"
+msgid "Choose type of debug info"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypeauto
@@ -2370,6 +2470,10 @@ msgstr "Tekst"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
 msgid "Selection"
 msgstr "Wybór"
+
+#: lazarusidestrconsts.dlgmouseoptopt2label
+msgid "Opt"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptotheract
 msgid "Other actions using the same button"
@@ -14042,6 +14146,10 @@ msgstr "Otwórz projekt"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Otwórz poprzedni"
+
+#: lazarusidestrconsts.lispwviewexampleprojects
+msgid "View Example Projects"
+msgstr ""
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
 msgid "Create local variable"

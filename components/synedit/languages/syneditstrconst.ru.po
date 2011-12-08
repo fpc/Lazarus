@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-07 00:49+0400\n"
+"PO-Revision-Date: 2011-12-09 02:55+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -513,6 +513,10 @@ msgstr "Прокрутка колёсиком назад"
 #: syneditstrconst.syns_emcwheelscrollup
 msgid "Wheel scroll up"
 msgstr "Прокрутка колёсиком вперёд"
+
+#: syneditstrconst.syns_emcwheelscroll_opt
+msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
+msgstr "Скорость,\"Системные параметры\",Строки,Страницы,\"Страницы (минус одна строка)\""
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-07 00:59+0400\n"
+"PO-Revision-Date: 2011-12-09 03:06+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -59,6 +59,7 @@ msgid "Jumps to implementation/other block end"
 msgstr "Перейти к реализации / концу другого блока"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
+msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
 msgid "Nothing/Default"
 msgstr "Ничего / по умолчанию"
 
@@ -66,6 +67,22 @@ msgstr "Ничего / по умолчанию"
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonpaste"
 msgid "Paste"
 msgstr "Вставить"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselect
+msgid "Select text"
+msgstr "Выделить текст"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselectcolumn
+msgid "Select text (Columns)"
+msgstr "Выделить текст (столбцы)"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselectline
+msgid "Select text (Lines)"
+msgstr "Выделить текст (строки)"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
+msgid "Reset zoom"
+msgstr "Сбросить масштаб"
 
 #: lazarusidestrconsts.dlfmousesimplediff
 #| msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
@@ -105,9 +122,25 @@ msgstr "Текст"
 msgid "Alt-Key sets column mode"
 msgstr "Режим выделения столбца по кнопке Alt"
 
+#: lazarusidestrconsts.dlfmousesimpletextsectaltleftlabel
+msgid "Alt Left Button"
+msgstr "Alt - левая"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectaltwheellabel
+msgid "Alt Wheel"
+msgstr "Alt - колёсико"
+
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftlabel
 msgid "Ctrl Left Button"
-msgstr "По Ctrl - левой кнопке мыши"
+msgstr "Ctrl - левая"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlmidlabel
+msgid "Ctrl Middle Button"
+msgstr "Ctrl - средняя"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlwheellabel
+msgid "Ctrl Wheel"
+msgstr "Ctrl - колёсико"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
 #| msgid "Double Click selects line"
@@ -121,11 +154,78 @@ msgstr "Копировать/вставлять перетаскиванием"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
-msgstr "По средней кнопке мыши"
+msgstr "Средняя"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpagebtn
+msgid "Buttons"
+msgstr "Кнопки"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpagewheel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagewheel"
+msgid "Wheel"
+msgstr "Колёсико"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectwheellabel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectwheellabel"
+msgid "Wheel"
+msgstr "Колёсико"
+
+#: lazarusidestrconsts.dlfmousesimpletextshiftsectwheellabel
+msgid "Shift Wheel"
+msgstr "Shift - колёсико"
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
 msgstr "Имеются несохранённые изменения. Использование этой страницы сбросит изменения на странице расширенных параметров"
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrolldef
+msgid "Scroll horizontal (System speed)"
+msgstr "Прокрутить горизонтально (системная скорость)"
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrollline
+msgid "Scroll horizontal (Single line)"
+msgstr "Прокрутить горизонтально (одна строка)"
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrollpage
+msgid "Scroll horizontal (Page)"
+msgstr "Прокрутить горизонтально (страница)"
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrollpagehalf
+msgid "Scroll horizontal (Half page)"
+msgstr "Прокрутить горизонтально (полстраницы)"
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrollpageless
+msgid "Scroll horizontal (Page, less one line)"
+msgstr "Прокрутить горизонтально (страница минус одна строка)"
+
+#: lazarusidestrconsts.dlfmousesimplewheelnothing
+msgctxt "lazarusidestrconsts.dlfmousesimplewheelnothing"
+msgid "Nothing/Default"
+msgstr "Ничего / по умолчанию"
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrolldef
+msgid "Scroll (System speed)"
+msgstr "Прокрутить (системная скорость)"
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrollline
+msgid "Scroll (Single line)"
+msgstr "Прокрутить (одна строка)"
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrollpage
+msgid "Scroll (Page)"
+msgstr "Прокрутить (страница)"
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrollpagehalf
+msgid "Scroll (Half page)"
+msgstr "Прокрутить (полстраницы)"
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrollpageless
+msgid "Scroll (Page, less one line)"
+msgstr "Прокрутить (страница минус одна строка)"
+
+#: lazarusidestrconsts.dlfmousesimplewheelzoom
+msgid "Zoom"
+msgstr "Изменить масштаб"
 
 #: lazarusidestrconsts.dlfnopredefinedscheme
 msgid "< None >"
@@ -895,7 +995,8 @@ msgid "Strip symbols from executable"
 msgstr "Вырезать символы из исполнимого файла"
 
 #: lazarusidestrconsts.dlgcosymboltype
-msgid "Chose type of debug info"
+#| msgid "Chose type of debug info"
+msgid "Choose type of debug info"
 msgstr "Выбор типа отладочной информации"
 
 #: lazarusidestrconsts.dlgcosymboltypeauto
@@ -2316,6 +2417,10 @@ msgstr "Текст"
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
 msgid "Selection"
 msgstr "Выделение"
+
+#: lazarusidestrconsts.dlgmouseoptopt2label
+msgid "Opt"
+msgstr "Параметр"
 
 #: lazarusidestrconsts.dlgmouseoptotheract
 msgid "Other actions using the same button"
@@ -13896,6 +14001,10 @@ msgstr "Открыть проект"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Открыть недавний проект"
+
+#: lazarusidestrconsts.lispwviewexampleprojects
+msgid "View Example Projects"
+msgstr "Просмотреть примеры проектов"
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
 msgid "Create local variable"

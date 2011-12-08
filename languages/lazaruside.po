@@ -51,12 +51,29 @@ msgid "Jumps to implementation/other block end"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
+msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
 msgid "Nothing/Default"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonpaste
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonpaste"
 msgid "Paste"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselect
+msgid "Select text"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselectcolumn
+msgid "Select text (Columns)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselectline
+msgid "Select text (Lines)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
+msgid "Reset zoom"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplediff
@@ -94,8 +111,24 @@ msgstr ""
 msgid "Alt-Key sets column mode"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimpletextsectaltleftlabel
+msgid "Alt Left Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectaltwheellabel
+msgid "Alt Wheel"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftlabel
 msgid "Ctrl Left Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlmidlabel
+msgid "Ctrl Middle Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectctrlwheellabel
+msgid "Ctrl Wheel"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
@@ -110,8 +143,75 @@ msgstr ""
 msgid "Middle Button"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimpletextsectpagebtn
+msgid "Buttons"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpagewheel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagewheel"
+msgid "Wheel"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectwheellabel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectwheellabel"
+msgid "Wheel"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextshiftsectwheellabel
+msgid "Shift Wheel"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrolldef
+msgid "Scroll horizontal (System speed)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrollline
+msgid "Scroll horizontal (Single line)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrollpage
+msgid "Scroll horizontal (Page)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrollpagehalf
+msgid "Scroll horizontal (Half page)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelhsrollpageless
+msgid "Scroll horizontal (Page, less one line)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelnothing
+msgctxt "lazarusidestrconsts.dlfmousesimplewheelnothing"
+msgid "Nothing/Default"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrolldef
+msgid "Scroll (System speed)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrollline
+msgid "Scroll (Single line)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrollpage
+msgid "Scroll (Page)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrollpagehalf
+msgid "Scroll (Half page)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelsrollpageless
+msgid "Scroll (Page, less one line)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplewheelzoom
+msgid "Zoom"
 msgstr ""
 
 #: lazarusidestrconsts.dlfnopredefinedscheme
@@ -840,7 +940,7 @@ msgid "Strip symbols from executable"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltype
-msgid "Chose type of debug info"
+msgid "Choose type of debug info"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcosymboltypeauto
@@ -2214,6 +2314,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptnodeselect
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
 msgid "Selection"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptopt2label
+msgid "Opt"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptotheract
@@ -13456,6 +13560,10 @@ msgstr ""
 #: lazarusidestrconsts.lispwopenrecentproject
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open Recent Project"
+msgstr ""
+
+#: lazarusidestrconsts.lispwviewexampleprojects
+msgid "View Example Projects"
 msgstr ""
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable

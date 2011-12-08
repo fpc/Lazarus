@@ -508,6 +508,10 @@ msgstr ""
 msgid "Wheel scroll up"
 msgstr ""
 
+#: syneditstrconst.syns_emcwheelscroll_opt
+msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
+msgstr ""
+
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"
 msgstr ""
