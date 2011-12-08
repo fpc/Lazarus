@@ -387,13 +387,15 @@ begin
   case emc of
     emcStartSelections,
     emcStartColumnSelections,
-    emcStartLineSelections: Result := SYNS_emcSelection_opt;
-    emcSelectLine: Result := SYNS_emcSelectLine_opt;
-    emcMouseLink:   Result := SYNS_emcMouseLink_opt;
-    emcCodeFoldCollaps: Result := SYNS_emcCodeFoldCollaps_opt;
-    emcCodeFoldExpand:  Result := SYNS_emcCodeFoldExpand_opt;
-    emcContextMenu:  Result := SYNS_emcContextMenuCaretMove_opt;
-    else Result := ''
+    emcStartLineSelections:   Result := SYNS_emcSelection_opt;
+    emcSelectLine:            Result := SYNS_emcSelectLine_opt;
+    emcMouseLink:             Result := SYNS_emcMouseLink_opt;
+    emcCodeFoldCollaps:       Result := SYNS_emcCodeFoldCollaps_opt;
+    emcCodeFoldExpand:        Result := SYNS_emcCodeFoldExpand_opt;
+    emcContextMenu:           Result := SYNS_emcContextMenuCaretMove_opt;
+    emcWheelScrollDown..emcWheelVertScrollUp:
+                              Result := SYNS_emcWheelScroll_opt;
+    else                      Result := ''
   end;
 end;
 

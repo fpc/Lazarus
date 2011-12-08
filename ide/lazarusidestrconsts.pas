@@ -1329,6 +1329,9 @@ resourcestring
   dlfMouseSimpleTextSectAltWheelLabel = 'Alt Wheel';
   dlfMouseSimpleTextShiftSectWheelLabel = 'Shift Wheel';
 
+  dlfMouseSimpleTextSectPageBtn = 'Buttons';
+  dlfMouseSimpleTextSectPageWheel = 'Wheel';
+
   dlfMouseSimpleTextSectCtrlLeftLabel = 'Ctrl Left Button';
   dlfMouseSimpleButtonNothing          = 'Nothing/Default';
   dlfMouseSimpleButtonPaste            = 'Paste';
@@ -1413,6 +1416,7 @@ resourcestring
   dlgMouseOptBtnCancel  = 'Cancel';
   dlgMouseOptBtnModDef = 'Make Fallback';
   dlgMouseOptPriorLabel = 'Priority';
+  dlgMouseOptOpt2Label = 'Opt';
   dlgMouseOptDlgTitle = 'Edit Mouse';
   dlgMouseOptCapture = 'Capture';
   dlgMouseOptCaretMove = 'Move Caret (extra)';

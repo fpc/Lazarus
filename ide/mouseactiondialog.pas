@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Forms, Controls, ExtCtrls, StdCtrls, ButtonPanel, Spin,
-  SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands;
+  SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands, types;
 
 var
   ButtonName: Array [TSynMouseButton] of String;
@@ -27,12 +27,15 @@ type
     ButtonPanel1: TButtonPanel;
     CaretCheck: TCheckBox;
     ClickBox: TComboBox;
+    PaintBox1: TPaintBox;
     PriorLabel: TLabel;
     OptBox: TComboBox;
     CtrlCheck: TCheckBox;
     DirCheck: TCheckBox;
     CapturePanel: TPanel;
     OptLabel: TLabel;
+    Opt2Spin: TSpinEdit;
+    Opt2Label: TLabel;
     ShiftCheck: TCheckBox;
     PriorSpin: TSpinEdit;
     procedure ActionBoxChange(Sender: TObject);
@@ -41,6 +44,8 @@ type
     procedure CapturePanelMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
     procedure FormCreate(Sender: TObject);
+    procedure PaintBox1MouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer;
+      MousePos: TPoint; var Handled: Boolean);
   private
     FKeyMap: TKeyCommandRelationList;
   public
@@ -123,6 +128,7 @@ begin
   BtnLabel.Caption := dlgMouseOptDescButton;
   BtnDefault.Caption :=  dlgMouseOptBtnModDef;
   PriorLabel.Caption := dlgMouseOptPriorLabel;
+  Opt2Label.Caption := dlgMouseOptOpt2Label;
 end;
 
 procedure TMouseaActionDialog.ResetInputs;
@@ -193,9 +199,21 @@ begin
   if ssDouble in Shift then ClickBox.ItemIndex := 1;
   if ssTriple in Shift then ClickBox.ItemIndex := 2;
   if ssQuad in Shift then ClickBox.ItemIndex := 3;
-  ShiftCheck.Checked := ssShift in Shift ;
-  AltCheck.Checked   := ssAlt in Shift ;
-  CtrlCheck.Checked  := ssCtrl in Shift ;
+  ShiftCheck.Checked := ssShift in Shift;
+  AltCheck.Checked   := ssAlt in Shift;
+  CtrlCheck.Checked  := ssCtrl in Shift;
+end;
+
+procedure TMouseaActionDialog.PaintBox1MouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+  if WheelDelta > 0
+  then ButtonBox.ItemIndex := BtnToIndex[mbWheelUp]
+  else ButtonBox.ItemIndex := BtnToIndex[mbWheelDown];
+  ClickBox.ItemIndex := 4;
+  ShiftCheck.Checked := ssShift in Shift;
+  AltCheck.Checked   := ssAlt in Shift;
+  CtrlCheck.Checked  := ssCtrl in Shift;
 end;
 
 procedure TMouseaActionDialog.ReadFromAction(MAct: TSynEditMouseAction);
@@ -212,6 +230,7 @@ begin
   CtrlCheck.Checked := (ssCtrl in MAct.ShiftMask) and (ssCtrl in MAct.Shift);
   if not(ssCtrl in MAct.ShiftMask) then CtrlCheck.State := cbGrayed;
   PriorSpin.Value := MAct.Priority;
+  Opt2Spin.Value := MAct.Option2;
 
   ActionBoxChange(nil);
   ButtonBoxChange(nil);
@@ -241,6 +260,7 @@ begin
   if AltCheck.Checked then MAct.Shift := MAct.Shift + [ssAlt];
   if CtrlCheck.Checked then MAct.Shift := MAct.Shift + [ssCtrl];
   MAct.Priority := PriorSpin.Value;
+  MAct.Option2 := Opt2Spin.Value;
 
   if OptBox.Enabled then begin
     if MAct.Command =  emcSynEditCommand then begin

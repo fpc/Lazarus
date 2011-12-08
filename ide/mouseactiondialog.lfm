@@ -85,10 +85,21 @@ object MouseaActionDialog: TMouseaActionDialog
     BorderSpacing.Right = 6
     BevelOuter = bvLowered
     BevelWidth = 2
+    ClientHeight = 25
+    ClientWidth = 262
     Color = clBtnShadow
     ParentColor = False
     TabOrder = 2
     OnMouseDown = CapturePanelMouseDown
+    object PaintBox1: TPaintBox
+      Left = 2
+      Height = 21
+      Top = 2
+      Width = 258
+      Align = alClient
+      OnMouseDown = CapturePanelMouseDown
+      OnMouseWheel = PaintBox1MouseWheel
+    end
   end
   object ShiftCheck: TCheckBox
     AnchorSideLeft.Control = ButtonBox
@@ -226,8 +237,11 @@ object MouseaActionDialog: TMouseaActionDialog
     TabOrder = 0
   end
   object ButtonPanel1: TButtonPanel
+    AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = BtnDefault
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 36
     Top = 225
@@ -272,5 +286,36 @@ object MouseaActionDialog: TMouseaActionDialog
     BorderSpacing.Top = 6
     MaxValue = 3
     TabOrder = 12
+  end
+  object Opt2Spin: TSpinEdit
+    AnchorSideLeft.Control = OptLabel
+    AnchorSideTop.Control = OptBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 296
+    Height = 23
+    Top = 105
+    Width = 60
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    MaxValue = 999
+    TabOrder = 13
+  end
+  object Opt2Label: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Opt2Spin
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Opt2Spin
+    Left = 235
+    Height = 16
+    Top = 108
+    Width = 55
+    Anchors = [akTop, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    Caption = 'Opt2Label'
+    ParentColor = False
   end
 end
