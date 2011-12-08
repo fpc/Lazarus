@@ -51,6 +51,25 @@ type
 implementation
 
 const
+
+  // Button
+
+  WINXP_BUTTON_BODY_TOP = $00FFFFFF;
+  WINXP_BUTTON_BODY_BOTTOM = $00EAF0F0;
+
+  WINXP_BUTTON_BODY_LINES_PREPRELAST = $00E6EBEC;
+  WINXP_BUTTON_BODY_LINES_PRELAST = $00D6DFE2;
+  WINXP_BUTTON_BODY_LINES_LAST = $00C5D0D6;
+
+  WINXP_BUTTON_SUNKEN_BODY_BOTTOM = $00E3E9EA;
+
+  WINXP_BUTTON_FRAME_DARK_BLUE = $00743C00;
+  WINXP_BUTTON_FRAME_MED_DARK_BLUE = $00A27055;
+  WINXP_BUTTON_FRAME_MEDIUM_BLUE = $00A8957A;
+  WINXP_BUTTON_FRAME_LIGHT_BLUE = $00DDCFC0;
+
+  // CheckBox
+
   WINXP_CHECKBOX_GRADIENT_1 = $00D6DED6;
   WINXP_CHECKBOX_GRADIENT_2 = $00CED6D6;
   WINXP_CHECKBOX_GRADIENT_3 = $00D6DED6;
@@ -122,50 +141,73 @@ procedure TCDDrawerWinXP.DrawButton(ADest: TCanvas;
 var
   Str: string;
   lColor: TColor;
+  lRect: TRect;
 begin
+  // Background corners
+  lColor := AStateEx.ParentRGBColor;
+  ADest.Pixels[0, 0] := lColor;
+  ADest.Pixels[ASize.cx-1, 0] := lColor;
+  ADest.Pixels[0, ASize.cy-1] := lColor;
+  ADest.Pixels[ASize.cx-1, ASize.cy-1] := lColor;
+
+  // Main body
   if csfSunken in AState then
   begin
-    lColor := AStateEx.RGBColor;
-
     ADest.Brush.Style := bsSolid;
-    ADest.Brush.Color := lColor;
-    ADest.Pen.Color := lColor;
-    ADest.Rectangle(0, 0, ASize.cx, ASize.cy);
-    ADest.FillRect(0, 0, ASize.cx, ASize.cy);
-    ADest.Brush.Color := GetAColor(lColor, 93);
-    ADest.Pen.Color := GetAColor(lColor, 76);
-    ADest.RoundRect(0, 0, ASize.cx, ASize.cy, 8, 8);
+    ADest.Brush.Color := WINXP_BUTTON_SUNKEN_BODY_BOTTOM;
+    ADest.Pen.Color := WINXP_BUTTON_SUNKEN_BODY_BOTTOM;
+    ADest.Rectangle(1, 1, ASize.cx-1, ASize.cy-1);
   end
-  else
+  else if csfEnabled in AState then
   begin
-    if csfHasFocus in AState then
-      lColor := RGBToColor($FB, $FB, $FB)
-    else
-      lColor := AStateEx.RGBColor;
-
-    ADest.Brush.Color := lColor;
-    ADest.Brush.Style := bsSolid;
-    ADest.FillRect(0, 0, ASize.cx, ASize.cy);
-    ADest.Pen.Color := lColor;
-    ADest.RecTangle(0, 0, ASize.cx, ASize.cy);
-    ADest.Pen.Color := GetAColor(lColor, 86);
-    ADest.RoundRect(0, 0, ASize.cx, ASize.cy, 8, 8);
-    //    Pen.Color := aColor;
-    //    RecTangle(0, 6, Width, Height);
-    ADest.Pen.Color := GetAColor(lColor, 86);
-    ADest.Line(0, 3, 0, ASize.cy - 3);
-    ADest.Line(ASize.cx, 3, ASize.cx, ASize.cy - 3);
-    ADest.Line(3, ASize.cy - 1, ASize.cx - 3, ASize.cy - 1);
-    ADest.Line(2, ASize.cy - 2, ASize.cx - 2, ASize.cy - 2);
-    ADest.Pen.Color := GetAColor(lColor, 93);
-    ADest.Line(1, ASize.cy - 4, ASize.cx - 1, ASize.cy - 4);
-    ADest.Pen.Color := GetAColor(lColor, 91);
-    ADest.Line(1, ASize.cy - 3, ASize.cx - 1, ASize.cy - 3);
-    ADest.Pen.Color := GetAColor(lColor, 88);
-    ADest.Line(ASize.cx - 2, 4, ASize.cx - 2, ASize.cy - 3);
-    //Pen.Color := GetAColor(aColor, 94);
-    //Line(2, 2, 6, 2);
+    // First the gradient
+    lRect := Bounds(1, 1, ASize.cx-4, ASize.cy-5);
+    ADest.GradientFill(lRect, WINXP_BUTTON_BODY_TOP, WINXP_BUTTON_BODY_BOTTOM, gdVertical);
+    // Now the extra lines which make the bottom-right
+    ADest.Pen.Color := WINXP_BUTTON_BODY_LINES_PREPRELAST;
+    ADest.Line(1, ASize.cy-4, ASize.cx-3, ASize.cy-4);
+    ADest.Line(ASize.cx-3, ASize.cy-4, ASize.cx-3, 1);
+    ADest.Pen.Color := WINXP_BUTTON_BODY_LINES_PRELAST;
+    ADest.Line(2, ASize.cy-3, ASize.cx-2, ASize.cy-3);
+    ADest.Line(ASize.cx-2, ASize.cy-3, ASize.cx-2, 2);
+    ADest.Pen.Color := WINXP_BUTTON_BODY_LINES_LAST;
+    ADest.Line(3, ASize.cy-1, ASize.cx-3, ASize.cy-1);
+  end
+  else // disabled
+  begin
+    // ToDo
   end;
+
+  // Now the frame
+  ADest.Pixels[1, 0] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
+  ADest.Pixels[0, 1] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
+  ADest.Pixels[1, 1] := WINXP_BUTTON_FRAME_MED_DARK_BLUE;
+  ADest.Pixels[2, 1] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
+  ADest.Pixels[1, 2] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
+
+  ADest.Pixels[ASize.cx-2, 0] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
+  ADest.Pixels[ASize.cx-1, 1] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
+  ADest.Pixels[ASize.cx-2, 1] := WINXP_BUTTON_FRAME_MED_DARK_BLUE;
+  ADest.Pixels[ASize.cx-3, 1] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
+  ADest.Pixels[ASize.cx-2, 2] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
+
+  ADest.Pixels[1, ASize.cy-1] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
+  ADest.Pixels[0, ASize.cy-2] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
+  ADest.Pixels[1, ASize.cy-2] := WINXP_BUTTON_FRAME_MED_DARK_BLUE;
+  ADest.Pixels[2, ASize.cy-2] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
+  ADest.Pixels[1, ASize.cy-3] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
+
+  ADest.Pixels[ASize.cx-2, ASize.cy-1] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
+  ADest.Pixels[ASize.cx-1, ASize.cy-2] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
+  ADest.Pixels[ASize.cx-2, ASize.cy-2] := WINXP_BUTTON_FRAME_MED_DARK_BLUE;
+  ADest.Pixels[ASize.cx-3, ASize.cy-2] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
+  ADest.Pixels[ASize.cx-2, ASize.cy-3] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
+
+  ADest.Pen.Color := WINXP_BUTTON_FRAME_DARK_BLUE;
+  ADest.Line(2, 0, ASize.cx-2, 0);
+  ADest.Line(2, ASize.cy-1, ASize.cx-2, ASize.cy-1);
+  ADest.Line(0, 2, 0, ASize.cy-2);
+  ADest.Line(ASize.cx-1, 2, ASize.cx-1, ASize.cy-2);
 
   // Button text
   ADest.Font.Assign(AStateEx.Font);
