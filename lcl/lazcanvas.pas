@@ -78,7 +78,8 @@ type
     procedure SetWindowOrg(AValue: TPoint);
   protected
     procedure SetColor (x,y:integer; const AValue:TFPColor); override;
-    // Routines broken/unimplemented in FPC
+    // Routines broken/unimplemented/incompatible in FPC
+    procedure DoRectangle (const Bounds:TRect); override;
     procedure DoPolygonFill (const points:array of TPoint); override;
     // Routines which don't work with out extended clipping in TFPImageCanvas
     procedure DoLine (x1,y1,x2,y2:integer); override;
@@ -183,11 +184,70 @@ begin
   {$endif}
 end;
 
+// The coordinates utilized by DoRectangle in fcl-image are not TCanvas compatible
+// so we reimplement it here
+procedure TLazCanvas.DoRectangle (const Bounds:TRect);
+var pattern : longword;
+
+  procedure CheckLine (x1,y1, x2,y2 : integer);
+  begin
+//    if clipping then
+//      CheckLineClipping (ClipRect, x1,y1, x2,y2);
+    if x1 >= 0 then
+      DrawSolidLine (self, x1,y1, x2,y2, Pen.FPColor)
+  end;
+
+  procedure CheckPLine (x1,y1, x2,y2 : integer);
+  begin
+//    if clipping then
+//      CheckLineClipping (ClipRect, x1,y1, x2,y2);
+    if x1 >= 0 then
+      DrawPatternLine (self, x1,y1, x2,y2, pattern, Pen.FPColor)
+  end;
+
+var b : TRect;
+    r : integer;
+
+begin
+  b := bounds;
+  b.right := b.Right-1;
+  b.bottom := b.bottom-1;
+  if pen.style = psSolid then
+    for r := 1 to pen.width do
+      begin
+      with b do
+        begin
+        CheckLine (left,top,left,bottom);
+        CheckLine (left,bottom,right,bottom);
+        CheckLine (right,bottom,right,top);
+        CheckLine (right,top,left,top);
+        end;
+      DecRect (b);
+      end
+  else if pen.style <> psClear then
+    begin
+    if pen.style = psPattern then
+      pattern := Pen.pattern
+    else
+      pattern := PenPatterns[pen.style];
+    with b do
+      begin
+      CheckPLine (left,top,left,bottom);
+      CheckPLine (left,bottom,right,bottom);
+      CheckPLine (right,bottom,right,top);
+      CheckPLine (right,top,left,top);
+      end;
+    end;
+end;
+
+// unimplemented in FPC
 procedure TLazCanvas.DoPolygonFill(const points: array of TPoint);
 var
   lBoundingBox: TRect;
   x, y, i: integer;
 begin
+  if Brush.Style = bsClear then Exit;
+
   // Find the Bounding Box of the Polygon
   lBoundingBox := Rect(0, 0, 0, 0);
   for i := low(Points) to High(Points) do
@@ -381,6 +441,7 @@ var
   MaskValue, InvMaskValue: Word;
   CurColor: TFPColor;
   lDrawWidth, lDrawHeight: Integer;
+  lColor: TFPColor;
 begin
   // Take care not to draw outside the source and also not outside the destination area
   lDrawWidth := Min(Self.Width - ADestX, ASource.Width - ASourceX);
@@ -400,7 +461,8 @@ begin
       // Never draw outside the destination
       if (CurDestX < 0) or (CurDestY < 0) then Continue;
 
-      Self.Colors[CurDestX, CurDestY] := ASource.Colors[CurSrcX, CurSrcY];
+      lColor := ASource.Colors[CurSrcX, CurSrcY];
+      Self.Colors[CurDestX, CurDestY] := lColor;
     end;
   end;
 end;
@@ -445,7 +507,7 @@ procedure TFPSharpInterpolation.Execute(x, y, w, h: integer);
 // paint Image on Canvas at x,y,w*h
 var
   srcx, srcy: Integer; // current coordinates in the source image
-  dx, dy: Integer; // current coordinates in the destination canvas
+  dx, dy, dw, dh: Integer; // current coordinates in the destination canvas
   lWidth, lHeight: Integer; // Image size
   lColor: TFPColor;
 begin
@@ -454,12 +516,14 @@ begin
 
   lWidth := Image.Width-1;
   lHeight := Image.Height-1;
+  dw := w - 1;
+  dh := h - 1;
 
   for dx := 0 to w-1 do
    for dy := 0 to h-1 do
    begin
-     srcx := Round((dx / w) * lWidth);
-     srcy := Round((dy / h) * lHeight);
+     srcx := Round((dx / dw) * lWidth);
+     srcy := Round((dy / dh) * lHeight);
      lColor := Image.Colors[srcx, srcy];
      Canvas.Colors[dx+x, dy+y] := lColor;
    end;
