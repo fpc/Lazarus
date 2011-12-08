@@ -20,6 +20,18 @@ begin
   AccumulatedStr := AccumulatedStr + AStr;
 end;
 
+procedure TCDWidgetSet.CDSetFocusToControl(ALCLControl: TWinControl);
+begin
+  if (CDWidgetset.FocusedControl <> ALCLControl) then
+  begin
+    // First kill focus in the previous control
+    if CDWidgetset.FocusedControl <> nil then
+      LCLSendKillFocusMsg(CDWidgetset.FocusedControl);
+    CDWidgetset.FocusedControl := ALCLControl;
+    LCLSendSetFocusMsg(ALCLControl);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWidgetSet.Create
   Params:  None

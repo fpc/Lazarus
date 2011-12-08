@@ -513,6 +513,9 @@ begin
   AWindowInfo.LastMouseDownControl := lTarget;
   lEventPos := FormPosToControlPos(lTarget, Event.x, Event.y);
 
+  // If the target is focusable, a mouse up will give it focus
+  CDWidgetset.CDSetFocusToControl(lTarget);
+
   if XButtonToMouseButton(Event.button, MouseButton) then
   begin
     LCLSendMouseDownMsg(lTarget, lEventPos.x, lEventPos.y, MouseButton, [])

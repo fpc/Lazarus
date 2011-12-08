@@ -403,62 +403,44 @@ begin
   Result := HBRUSH(lBrush);
   lBrush.FPColor := TColorToFPColor(LogBrush.lbColor);
 
-(*  QtBrush := TQtBrush.Create(True);
-
-  try
-    case LogBrush.lbStyle of
-      BS_NULL: QtBrush.Style := QtNoBrush; // Same as BS_HOLLOW.
-      BS_SOLID: QtBrush.Style := QtSolidPattern;
-
-      BS_HATCHED: // Hatched brushes.
-      begin
-        case LogBrush.lbHatch of
-          HS_BDIAGONAL: QtBrush.Style := QtBDiagPattern;
-          HS_CROSS: QtBrush.Style := QtCrossPattern;
-          HS_DIAGCROSS: QtBrush.Style := QtDiagCrossPattern;
-          HS_FDIAGONAL: QtBrush.Style := QtFDiagPattern;
-          HS_HORIZONTAL: QtBrush.Style := QtHorPattern;
-          HS_VERTICAL: QtBrush.Style := QtVerPattern;
-        else
-          QtBrush.Style := QtSolidPattern;
-        end;
+  case LogBrush.lbStyle of
+    BS_NULL:  lBrush.Style := bsClear; // Same as BS_HOLLOW.
+    BS_SOLID: lBrush.Style := bsSolid;
+{    BS_HATCHED: // Hatched brushes.
+    begin
+      case LogBrush.lbHatch of
+        HS_BDIAGONAL: QtBrush.Style := QtBDiagPattern;
+        HS_CROSS: QtBrush.Style := QtCrossPattern;
+        HS_DIAGCROSS: QtBrush.Style := QtDiagCrossPattern;
+        HS_FDIAGONAL: QtBrush.Style := QtFDiagPattern;
+        HS_HORIZONTAL: QtBrush.Style := QtHorPattern;
+        HS_VERTICAL: QtBrush.Style := QtVerPattern;
+      else
+        QtBrush.Style := QtSolidPattern;
       end;
-
-      BS_DIBPATTERN,     // A pattern brush defined by a device-independent
-             // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERN, the
-             // lbHatch member contains a handle to a packed DIB.Windows 95:
-             // Creating brushes from bitmaps or DIBs larger than 8x8 pixels
-             // is not supported. If a larger bitmap is given, only a portion
-             // of the bitmap is used.
-      BS_DIBPATTERN8X8,  // Same as BS_DIBPATTERN.
-      BS_DIBPATTERNPT,   // A pattern brush defined by a device-independent
-             // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERNPT, the
-             // lbHatch member contains a pointer to a packed DIB.
-      BS_PATTERN,        // Pattern brush defined by a memory bitmap.
-      BS_PATTERN8X8:     // Same as BS_PATTERN.
-      begin
-        QtBrush.setTextureImage(TQtImage(LogBrush.lbHatch).FHandle);
-        QtBrush.Style := QtTexturePattern;
-      end;
-    else
-      DebugLn(Format('Unsupported Style %d',[LogBrush.lbStyle]));
     end;
 
-    {
-      Other non-utilized Qt brushes:
-        QtDense1Pattern,
-        QtDense2Pattern,
-        QtDense3Pattern,
-        QtDense4Pattern,
-        QtDense5Pattern,
-        QtDense6Pattern,
-        QtDense7Pattern,
-        QtLinearGradientPattern,
-        QtRadialGradientPattern,
-        QtConicalGradientPattern
-    }
+    BS_DIBPATTERN,     // A pattern brush defined by a device-independent
+           // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERN, the
+           // lbHatch member contains a handle to a packed DIB.Windows 95:
+           // Creating brushes from bitmaps or DIBs larger than 8x8 pixels
+           // is not supported. If a larger bitmap is given, only a portion
+           // of the bitmap is used.
+    BS_DIBPATTERN8X8,  // Same as BS_DIBPATTERN.
+    BS_DIBPATTERNPT,   // A pattern brush defined by a device-independent
+           // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERNPT, the
+           // lbHatch member contains a pointer to a packed DIB.
+    BS_PATTERN,        // Pattern brush defined by a memory bitmap.
+    BS_PATTERN8X8:     // Same as BS_PATTERN.
+    begin
+      QtBrush.setTextureImage(TQtImage(LogBrush.lbHatch).FHandle);
+      QtBrush.Style := QtTexturePattern;
+    end;  }
+  else
+    DebugLn(Format('Unsupported Brush Style %d',[LogBrush.lbStyle]));
+  end;
 
-    // set brush color
+(*    // set brush color
     Color := QBrush_Color(QtBrush.FHandle)^;
     ColorRefToTQColor(ColorToRGB(TColor(logBrush.lbColor)), Color);
     QtBrush.setColor(@Color);
@@ -2895,38 +2877,20 @@ end;
 function TQtWidgetSet.GetDoubleClickTime: UINT;
 begin
   Result := QApplication_doubleClickInterval;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetFocus
   Params:  None
   Returns: Nothing
-
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetFocus: HWND;
-var
-  W: QWidgetH;
- {$ifdef VerboseFocus}
- Obj: TQtWidget;
- {$endif}
+function TCDWidgetSet.GetFocus: HWND;
 begin
-  Result := 0;
-  W := QApplication_FocusWidget();
-  if W <> nil then
-  begin
-    Result := HwndFromWidgetH(W);
-    {$ifdef VerboseFocus}
-    Obj := TQtWidget(Result);
-    Write('TQtWidgetSet.GetFocus: WidgetH=',dbghex(ptruint(W)), ' QtWidget=', dbgsname(Obj));
-    if Obj<>nil then
-      WriteLn(' LclObject=', dbgsname(Obj.LCLObject))
-    else
-      WriteLn;
-    {$endif}
-  end;
+  if FocusedControl = nil then Result := 0
+  else Result := FocusedControl.Handle;
 end;
 
-function TQtWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
+(*function TQtWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 const
   StateDown    = SmallInt($FF80);
   {StateToggled = SmallInt($0001);}
@@ -3306,17 +3270,17 @@ begin
   {$ifdef VerboseQtWinAPI}
   writeln('Trace:< [WinAPI GetParent] : ' + dbghex(Result));
   {$endif}
-end;
+end;*)
 
-function TQtWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
+function TCDWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
 begin
   if Handle<>0 then
-    result := TQtWidget(Handle).Props[str]
+    result := TCDWinControl(Handle).Props[str]
   else
     result := nil;
 end;
 
-function TQtWidgetSet.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
+(*function TQtWidgetSet.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
 var
   R: TRect;
 begin
@@ -5921,27 +5885,27 @@ end;
 function TQtWidgetSet.ShowCaret(hWnd: HWND): Boolean;
 begin
   Result := (hWnd <> 0) and (QtCaret.ShowCaret(TQtWidget(hWnd)));
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  SetProp
   Params:  Handle -
   Returns:
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean;
+function TCDWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean;
 begin
   if Handle<>0 then
   begin
-    TQtWidget(Handle).Props[str] := Data;
-    Result := (TQtWidget(Handle).Props[str]=Data);
-    {$ifdef VerboseQtWinApi}
-    DebugLn('[WinAPI SetProp win=%s str=%s data=%x',[dbgsname(TQtWidget(Handle)), str, ptrint(data)]);
+    TCDBaseControl(Handle).Props[str] := Data;
+    Result := (TCDBaseControl(Handle).Props[str]=Data);
+    {$ifdef VerboseCDWinApi}
+    DebugLn('[WinAPI SetProp win=%s str=%s data=%x',[dbgsname(TCDWinControl(Handle)), str, ptrint(data)]);
     {$endif}
   end else
     Result := False;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: SetROP2
   Params:  HDC, Raster OP mode
   Returns: Old Raster OP mode

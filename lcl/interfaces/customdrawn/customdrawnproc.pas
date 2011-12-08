@@ -20,20 +20,32 @@ type
     clfRGB24, clfRGB24UpsideDown, clfBGR24,
     clfBGRA32, clfRGBA32, clfARGB32);
 
-  TCDWinControl = class
+  TCDBaseControl = class
+  private
+    FProps: TStringList;
+    function GetProps(AnIndex: String): pointer;
+    procedure SetProps(AnIndex: String; AValue: pointer);
+  public
+    Children: TFPList; // of TCDWinControl;
+    constructor Create; virtual;
+    destructor Destroy; override;
+    property Props[AnIndex:String]:pointer read GetProps write SetProps;
+  end;
+
+  { TCDWinControl }
+
+  TCDWinControl = class(TCDBaseControl)
   public
     Region: TLazRegionWithChilds;
     WinControl: TWinControl;
     CDControl: TCDControl;
-    Children: TFPList;
   end;
 
   { TCDForm }
 
-  TCDForm = class
+  TCDForm = class(TCDBaseControl)
   public
     LCLForm: TCustomForm;
-    Children: TFPList; // of TCDWinControl;
     NativeHandle: HWND;
     //
     LastMouseDownControl: TWinControl; // Stores the control which should receive the next MouseUp
@@ -480,6 +492,45 @@ end;
 function IsValidBitmap(ABitmap: HBITMAP): Boolean;
 begin
   Result := ABitmap <> 0;
+end;
+
+{ TCDBaseControl }
+
+function TCDBaseControl.GetProps(AnIndex: String): pointer;
+var
+  i: Integer;
+begin
+  i:=Fprops.IndexOf(AnIndex);
+  if i>=0 then
+  begin
+    result:=Fprops.Objects[i];
+    exit;
+  end;
+  result := nil;
+end;
+
+procedure TCDBaseControl.SetProps(AnIndex: String; AValue: pointer);
+var
+  i: Integer;
+begin
+  i := Fprops.IndexOf(AnIndex);
+  if i < 0 then
+    i := FProps.Add(AnIndex);
+  Fprops.Objects[i] := TObject(AValue);
+end;
+
+constructor TCDBaseControl.Create;
+begin
+  inherited Create;
+  FProps := TStringList.Create;
+  //FProps.CaseSensitive:=false; commented as in the qt widgetset
+  FProps.Sorted:=true;
+end;
+
+destructor TCDBaseControl.Destroy;
+begin
+  FProps.Free;
+  inherited Destroy;
 end;
 
 { TCDForm }

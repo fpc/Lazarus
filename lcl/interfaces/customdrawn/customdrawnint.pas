@@ -139,10 +139,16 @@ type
     {$ifdef CD_Android}
     procedure AndroidDebugLn(AStr: string);
     {$endif}
-  // For unusual implementations of DebugLn/DebugOut
+  // For generic methods added in customdrawn
+  // They are used internally in LCL-CustomDrawn, LCL app should not use them
   public
     AccumulatedStr: string;
+    // The currently focused control
+    FocusedControl: TWinControl;
+    // For unusual implementations of DebugLn/DebugOut
     procedure AccumulatingDebugOut(AStr: string);
+    procedure CDSetFocusToControl(ALCLControl: TWinControl);
+  //
   protected
     {function CreateThemeServices: TThemeServices; override;}
     {function GetAppHandle: THandle; override;

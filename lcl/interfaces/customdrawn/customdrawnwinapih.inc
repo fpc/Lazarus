@@ -111,16 +111,16 @@ function GetDC(hWnd: HWND): HDC; override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
 function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
-function GetDoubleClickTime: UINT; override;
+function GetDoubleClickTime: UINT; override;*)
 function GetFocus: HWND; override;
-function GetForegroundWindow: HWND; override;
+(*function GetForegroundWindow: HWND; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;
 function GetMapMode(DC: HDC): Integer; override;
 function GetMonitorInfo(Monitor: HMONITOR; lpmi: PMonitorInfo): Boolean; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
-function GetParent(Handle : HWND): HWND; override;
+function GetParent(Handle : HWND): HWND; override;*)
 function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
-function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
+(*function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
 function GetROP2(DC: HDC): Integer; override;
 function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
@@ -202,9 +202,9 @@ function SetFocus(hWnd: HWND): HWND; override;
 function SetForegroundWindow(HWnd: HWND): boolean; override;
 function SetMapMode(DC: HDC; fnMapMode : Integer): Integer; override;
 function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean; override;
-function SetParent(hWndChild: HWND; hWndParent: HWND): HWND; override;
+function SetParent(hWndChild: HWND; hWndParent: HWND): HWND; override;*)
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
-function SetROP2(DC: HDC; Mode: Integer): Integer; override;
+(*function SetROP2(DC: HDC; Mode: Integer): Integer; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean; override;

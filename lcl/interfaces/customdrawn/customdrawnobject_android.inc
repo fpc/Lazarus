@@ -49,6 +49,9 @@ begin
       if lCurForm.LastMouseDownControl <> nil then lTarget := lCurForm.LastMouseDownControl;
       LCLSendMouseUpMsg(lTarget, lEventPos.X, lEventPos.Y, mbLeft, []);
       LCLSendClickedMsg(lTarget);
+
+      // If the target is focusable, a mouse up will give it focus
+      CDWidgetset.CDSetFocusToControl(lTarget);
     end;
     ACTION_MOVE: LCLSendMouseMoveMsg(lTarget, lEventPos.X, lEventPos.Y, []);
   end;
