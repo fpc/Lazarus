@@ -2729,11 +2729,7 @@ begin
             emcStartColumnSelections:
               FMouseSelectionMode := smColumn;
             emcStartLineSelections:
-              begin
-                if ACommand = emcStartLineSelections then
-                  SetLineBlock(AnInfo.NewCaret.LineBytePos, True);
                 FMouseSelectionMode := smLine;
-              end;
             else
               FMouseSelectionMode := FBlockSelection.SelectionMode;
           end;
