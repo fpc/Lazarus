@@ -199,8 +199,11 @@ begin
        end;
        X.Expose:
        begin
-         {$Note We can do performance tuning here by looking at Count.
-           For now we are just ignoring all expose messages where Count <> 0 }
+         // This repeat really helps speeding up when maximized for example
+         repeat
+         until not XCheckTypedWindowEvent(FDisplay, XEvent.xexpose.window, X.Expose, @XEvent);
+         // This check for count=0 is a performance tunning documented in
+         // http://tronche.com/gui/x/xlib/events/exposure/expose.html
          if XEvent.xexpose.count = 0 then
          begin
            TCDWSCustomForm.EvPaint(WindowEntry, CurWindowInfo);

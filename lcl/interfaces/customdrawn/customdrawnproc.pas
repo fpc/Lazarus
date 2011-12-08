@@ -28,6 +28,8 @@ type
     Children: TFPList;
   end;
 
+  { TCDForm }
+
   TCDForm = class
   public
     LCLForm: TCustomForm;
@@ -35,9 +37,15 @@ type
     NativeHandle: HWND;
     //
     LastMouseDownControl: TWinControl; // Stores the control which should receive the next MouseUp
+    // Counter to keep track of when we requested Invalidate
+    // Some systems like X11 and Win32 will keep sending unnecessary paint messages
+    // so for them we just throw the previously painted image
+    InvalidateCount: Integer;
     // painting objects
     Image: TLazIntfImage;
     Canvas: TLazCanvas;
+    constructor Create; virtual;
+    procedure IncInvalidateCount;
   end;
 
   TCDNonNativeForm = class(TCDForm)
@@ -74,6 +82,8 @@ function RenderWinControl(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDWinControl: TCDWinControl): Boolean;
 procedure RenderWinControlAndChildren(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDWinControl: TCDWinControl);
+procedure RenderForm(var AImage: TLazIntfImage;
+  var ACanvas: TLazCanvas; AForm: TCustomForm);
 function FindControlWhichReceivedEvent(AForm: TCustomForm;
   AControlsList: TFPList; AX, AY: Integer): TWinControl;
 function FindControlPositionRelativeToTheForm(ALCLControl: TWinControl): TPoint;
@@ -371,6 +381,30 @@ begin
     RenderChildWinControls(AImage, ACanvas, ACDWinControl.Children);
 end;
 
+// Draws a form and all of its child controls
+procedure RenderForm(var AImage: TLazIntfImage; var ACanvas: TLazCanvas;
+  AForm: TCustomForm);
+var
+  struct : TPaintStruct;
+begin
+  DrawFormBackground(AImage, ACanvas);
+
+  FillChar(struct, SizeOf(TPaintStruct), 0);
+  struct.hdc := HDC(ACanvas);
+
+  // Send the paint message to the LCL
+  {$IFDEF VerboseCDForms}
+    DebugLn(Format('[RenderForm] OnPaint event started context: %x', [struct.hdc]));
+  {$ENDIF}
+  LCLSendPaintMsg(AForm, struct.hdc, @struct);
+  {$IFDEF VerboseCDForms}
+    DebugLn('[RenderForm] OnPaint event ended');
+  {$ENDIF}
+
+  // Now paint all child win controls
+  RenderChildWinControls(AImage, ACanvas, GetCDWinControlList(AForm));
+end;
+
 function FindControlWhichReceivedEvent(AForm: TCustomForm;
   AControlsList: TFPList; AX, AY: Integer): TWinControl;
 var
@@ -446,6 +480,19 @@ end;
 function IsValidBitmap(ABitmap: HBITMAP): Boolean;
 begin
   Result := ABitmap <> 0;
+end;
+
+{ TCDForm }
+
+constructor TCDForm.Create;
+begin
+  inherited Create;
+  InvalidateCount := 1;
+end;
+
+procedure TCDForm.IncInvalidateCount;
+begin
+  Inc(InvalidateCount);
 end;
 
 end.

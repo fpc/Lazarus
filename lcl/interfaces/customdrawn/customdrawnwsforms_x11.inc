@@ -598,12 +598,11 @@ end;
 
 class procedure TCDWSCustomForm.EvPaint(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo);
 var
-  struct : TPaintStruct;
   lWidth, lHeight: Integer;
   lBitmap, lMask: HBITMAP;
   lRawImage: TRawImage;
   {$IFDEF VerboseCDPaintProfiler}
-  lTimeStart: TDateTime;
+  lTimeStart, lCDTimeEnd, lNativeTimeStart: TDateTime;
   {$ENDIF}
 begin
   {$IFDEF VerboseCDPaintProfiler}
@@ -616,8 +615,6 @@ begin
 
   lWidth := Round(AWinControl.width);
   lHeight := Round(AWinControl.height);
-
-  FillChar(struct, SizeOf(TPaintStruct), 0);
 
   // Prepare the non-native image and canvas
   {$IFDEF VerboseCDForms}
@@ -634,29 +631,24 @@ begin
    DirectColor = 5;}
   {$ENDIF}
   UpdateControlLazImageAndCanvas(AWindowInfo.Image, AWindowInfo.Canvas, lWidth, lHeight, clfBGR24);
-  DrawFormBackground(AWindowInfo.Image, AWindowInfo.Canvas);
 
-  struct.hdc := HDC(AWindowInfo.Canvas);
+  RenderForm(AWindowInfo.Image, AWindowInfo.Canvas, TCustomForm(AWinControl));
 
-  // Send the paint message to the LCL
-  {$IFDEF VerboseCDForms}
-    DebugLn(Format('[TCDWSCustomForm.EvPaint] OnPaint event started context: %x', [struct.hdc]));
+  {$IFDEF VerboseCDPaintProfiler}
+  lCDTimeEnd := NowUTC();
+  lNativeTimeStart := NowUTC();
   {$ENDIF}
-  LCLSendPaintMsg(AWinControl, struct.hdc, @struct);
-  {$IFDEF VerboseCDForms}
-    DebugLn('[TCDWSCustomForm.EvPaint] OnPaint event ended');
-  {$ENDIF}
-
-  // Now paint all child win controls
-  RenderChildWinControls(AWindowInfo.Image, AWindowInfo.Canvas,
-    GetCDWinControlList(TCustomForm(AWinControl)));
 
   // Now render it into the control
   AWindowInfo.Image.GetRawImage(lRawImage);
   DrawRawImageToGC(lRawImage, AWindowInfo, 0, 0, lWidth, lHeight);
 
   {$IFDEF VerboseCDPaintProfiler}
-  DebugLn(Format('[TCDWSCustomForm.EvPaint] Paint duration: %d ms', [DateTimeToMilliseconds(NowUTC() - lTimeStart)]));
+  DebugLn(Format('[TCDWSCustomForm.EvPaint] Total Paint duration: %d ms of this CustomDrawn: %d ms Native: %d',
+    [DateTimeToMilliseconds(NowUTC() - lTimeStart),
+     DateTimeToMilliseconds(lCDTimeEnd - lTimeStart),
+     DateTimeToMilliseconds(NowUTC() - lNativeTimeStart)
+    ]));
   {$ENDIF}
 end;
 
