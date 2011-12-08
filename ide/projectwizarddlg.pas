@@ -81,6 +81,7 @@ begin
     Caption:=lisProjectWizard;
     btnNewProject.caption:=lisPWNewProject;
     btnOpenProject.caption:=lisPWOpenProject;
+    btnExamples.Caption:=lisPWViewExampleProjects;
     btnConvertProject.caption:=lisPWConvertProject;
     gbRecent.Caption:=lisPWOpenRecentProject;
     btnCloseIDE.caption:=lisQuitLazarus;

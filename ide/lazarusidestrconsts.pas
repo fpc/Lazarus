@@ -4764,6 +4764,7 @@ resourcestring
   lisPWNewProject = 'New Project';
   lisPWOpenProject = 'Open Project';
   lisPWOpenRecentProject = 'Open Recent Project';
+  lisPWViewExampleProjects = 'View Example Projects';
   lisPWConvertProject = 'Convert Delphi Project';
   lisInvalidCircle = 'Invalid circle';
   lisIsAThisCircleDependencyIsNotAllowed = '%s is a %s.%sThis circle '
