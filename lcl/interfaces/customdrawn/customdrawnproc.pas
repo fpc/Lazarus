@@ -265,6 +265,7 @@ begin
   ACanvas.RestoreState;
 end;
 
+// The WinControls themselves will render child TControls not descending from TWinControl
 procedure RenderChildWinControls(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDControlsList: TFPList);
 var

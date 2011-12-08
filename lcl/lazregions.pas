@@ -128,8 +128,8 @@ end;
 
 function TLazRegionRect.IsPointInPart(AX, AY: Integer): Boolean;
 begin
-  Result := (AX >= Rect.Left) and (AX < Rect.Right) and
-    (AY >= Rect.Top) and (AY < Rect.Bottom);
+  Result := (AX >= Rect.Left) and (AX <= Rect.Right) and
+    (AY >= Rect.Top) and (AY <= Rect.Bottom);
 end;
 
 { TLazRegion }

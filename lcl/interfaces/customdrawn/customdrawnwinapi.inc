@@ -2337,8 +2337,8 @@ function TCDWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
 var
   LazDC: TLazCanvas;
 begin
-  {$ifdef VerboseQtWinAPI}
-    DebugLn('[TQtWidgetSet.Frame3d Rect=', dbgs(ARect));
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[TCDWidgetSet.Frame3d Rect=', dbgs(ARect));
   {$endif}
 
   Result := False;
@@ -2347,8 +2347,8 @@ begin
 
   LazDC := TLazCanvas(DC);
 
-  GetDefaultDrawer().DrawFrame3D(LazDC, Point(ARect.Left, ARect.Top),
-    Size(ARect), FrameWidth, Style);
+  GetDefaultDrawer().DrawFrame3D(LazDC, Types.Point(ARect.Left, ARect.Top),
+    Types.Size(ARect), FrameWidth, Style);
 
   InflateRect(ARect, -FrameWidth, -FrameWidth);
 

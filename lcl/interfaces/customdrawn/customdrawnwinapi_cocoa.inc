@@ -360,6 +360,7 @@ begin
   end;
 end;*)
 
+{$ifdef CD_UseNativeText}
 function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
@@ -383,6 +384,7 @@ begin
   lazdc := TLazCanvas(DC);
   lazdc.AlphaBlend(ScreenDC, X, Y, 0, 0, ScreenBitmapWidth, ScreenBitmapHeight);
 end;
+{$endif}
 
 (*function TCocoaWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 var
@@ -914,6 +916,7 @@ begin
   with ctx do Result:=RGBToColorFloat(TR, TG, TB);
 end;*)
 
+{$ifdef CD_UseNativeText}
 {------------------------------------------------------------------------------
   Method:  GetTextExtentPoint
   Params:  DC    - Handle of device context
@@ -979,6 +982,7 @@ begin
       ' TextMetric: ' + DbgS(TM));
   {$ENDIF}
 end;
+{$endif}
 
 (*function TCocoaWidgetSet.SaveDC(DC: HDC): Integer;
 var
