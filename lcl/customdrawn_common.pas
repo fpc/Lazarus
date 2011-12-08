@@ -586,11 +586,7 @@ var
   lTextOutPos: TPoint;
   lGlyphCaptionHeight: Integer;
 begin
-  // Button shape -> This crashes in Gtk2
-  ADest.Brush.Color := AStateEx.RGBColor;
-  ADest.Brush.Style := bsSolid;
-  ADest.RoundRect(0, 0, ASize.cx, ASize.cy, 8, 8);
-
+  // background
   ADest.Brush.Style := bsSolid;
   ADest.Brush.Color := AStateEx.RGBColor;
   ADest.Pen.Color := clWhite;
@@ -632,13 +628,7 @@ begin
   end
   else if csfHasFocus in AState then
   begin
-    ADest.Brush.Style := bsClear;
-    ADest.Pen.Color := clWhite;
-    ADest.Pen.Style := psSolid;
-    ADest.Rectangle(3, 3, ASize.cx - 4, ASize.cy - 4);
-    ADest.Pen.Color := clBlack;
-    ADest.Pen.Style := psDot;
-    ADest.Rectangle(3, 3, ASize.cx - 4, ASize.cy - 4);
+    DrawFocusRect(ADest, Point(3, 3), Size(ASize.cx - 7, ASize.cy - 7));
   end;
 
   // Position calculations
