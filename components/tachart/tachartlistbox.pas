@@ -223,7 +223,8 @@ begin
   w := GetSystemMetrics(SM_CYMENUCHECK);
   x := 2;
   if cloShowCheckboxes in Options then begin
-    ACheckboxRect := Bounds(AItemRect.Left + 1, AItemRect.Top + 1, w, w);
+    with AItemRect do
+      ACheckboxRect := Bounds(Left + 1, (Top + Bottom - w) div 2, w, w);
     if cloShowIcons in Options then
       x += ACheckboxRect.Right;
   end
@@ -416,12 +417,12 @@ begin
     inherited KeyDown(AKey, AShift);
 end;
 
+// Item height is determined as maximum of:
+// checkbox height, text height, ItemHeight property value.
 procedure TChartListbox.MeasureItem(AIndex: Integer; var AHeight: Integer);
-{ inherited from ancestor: measures the height of a listbox item taking into
-  account the height of the checkbox }
 begin
-  Unused(AIndex);
-  AHeight := CalculateStandardItemHeight;
+  inherited MeasureItem(AIndex, AHeight);
+  AHeight := Max(CalculateStandardItemHeight, AHeight);
   if cloShowCheckboxes in Options then
     AHeight := Max(AHeight, GetSystemMetrics(SM_CYMENUCHECK) + 2);
 end;
