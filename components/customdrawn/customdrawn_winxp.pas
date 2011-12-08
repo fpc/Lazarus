@@ -68,6 +68,22 @@ const
   WINXP_BUTTON_FRAME_MEDIUM_BLUE = $00A8957A;
   WINXP_BUTTON_FRAME_LIGHT_BLUE = $00DDCFC0;
 
+  WINXP_BUTTON_DISABLED_BODY = $00EAF4F5;
+
+  WINXP_BUTTON_FRAME_DARK_DISABLED = $00BAC7C9;
+  WINXP_BUTTON_FRAME_MEDIUM_DISABLED = $00CAD6D8;
+  WINXP_BUTTON_FRAME_LIGHT_DISABLED = $00E2EDEE;
+
+  WINXP_BUTTON_FOCUS_TOP = $00FFE7CE;
+  WINXP_BUTTON_FOCUS_TOP_GRAD = $00F6D4BC;
+  WINXP_BUTTON_FOCUS_BOTTOM_GRAD = $00E4AD89;
+  WINXP_BUTTON_FOCUS_BOTTOM = $00EF8269;
+
+  WINXP_BUTTON_MOUSEOVER_TOP = $00CFF0FF;
+  WINXP_BUTTON_MOUSEOVER_TOP_GRAD = $0089D8FD;
+  WINXP_BUTTON_MOUSEOVER_BOTTOM_GRAD = $0030B3F8;
+  WINXP_BUTTON_MOUSEOVER_BOTTOM = $000097E5;
+
   // CheckBox
 
   WINXP_CHECKBOX_GRADIENT_1 = $00D6DED6;
@@ -142,6 +158,8 @@ var
   Str: string;
   lColor: TColor;
   lRect: TRect;
+  lFrameDark, lFrameMedDark, lFrameMedium, lFrameLight: TColor;
+  lSelTop, lSelTopGrad, lSelBottomGrad, lSelBottom: TColor;
 begin
   // Background corners
   lColor := AStateEx.ParentRGBColor;
@@ -175,41 +193,94 @@ begin
   end
   else // disabled
   begin
-    // ToDo
+    ADest.Brush.Style := bsSolid;
+    ADest.Brush.Color := WINXP_BUTTON_DISABLED_BODY;
+    ADest.Pen.Color := WINXP_BUTTON_DISABLED_BODY;
+    ADest.Rectangle(1, 1, ASize.cx-1, ASize.cy-1);
   end;
 
   // Now the frame
-  ADest.Pixels[1, 0] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
-  ADest.Pixels[0, 1] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
-  ADest.Pixels[1, 1] := WINXP_BUTTON_FRAME_MED_DARK_BLUE;
-  ADest.Pixels[2, 1] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
-  ADest.Pixels[1, 2] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
+  if csfEnabled in AState then
+  begin
+    lFrameDark := WINXP_BUTTON_FRAME_DARK_BLUE;
+    lFrameMedDark := WINXP_BUTTON_FRAME_MED_DARK_BLUE;
+    lFrameMedium := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
+    lFrameLight := WINXP_BUTTON_FRAME_LIGHT_BLUE;
+  end
+  else
+  begin
+    lFrameDark := WINXP_BUTTON_FRAME_DARK_DISABLED;
+    lFrameMedDark := WINXP_BUTTON_FRAME_MEDIUM_DISABLED;
+    lFrameMedium := WINXP_BUTTON_FRAME_MEDIUM_DISABLED;
+    lFrameLight := WINXP_BUTTON_FRAME_LIGHT_DISABLED;
+  end;
 
-  ADest.Pixels[ASize.cx-2, 0] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
-  ADest.Pixels[ASize.cx-1, 1] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
-  ADest.Pixels[ASize.cx-2, 1] := WINXP_BUTTON_FRAME_MED_DARK_BLUE;
-  ADest.Pixels[ASize.cx-3, 1] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
-  ADest.Pixels[ASize.cx-2, 2] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
+  ADest.Pixels[1, 0] := lFrameMedium;
+  ADest.Pixels[0, 1] := lFrameMedium;
+  ADest.Pixels[1, 1] := lFrameMedDark;
+  ADest.Pixels[2, 1] := lFrameLight;
+  ADest.Pixels[1, 2] := lFrameLight;
 
-  ADest.Pixels[1, ASize.cy-1] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
-  ADest.Pixels[0, ASize.cy-2] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
-  ADest.Pixels[1, ASize.cy-2] := WINXP_BUTTON_FRAME_MED_DARK_BLUE;
-  ADest.Pixels[2, ASize.cy-2] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
-  ADest.Pixels[1, ASize.cy-3] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
+  ADest.Pixels[ASize.cx-2, 0] := lFrameMedium;
+  ADest.Pixels[ASize.cx-1, 1] := lFrameMedium;
+  ADest.Pixels[ASize.cx-2, 1] := lFrameMedDark;
+  ADest.Pixels[ASize.cx-3, 1] := lFrameLight;
+  ADest.Pixels[ASize.cx-2, 2] := lFrameLight;
 
-  ADest.Pixels[ASize.cx-2, ASize.cy-1] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
-  ADest.Pixels[ASize.cx-1, ASize.cy-2] := WINXP_BUTTON_FRAME_MEDIUM_BLUE;
-  ADest.Pixels[ASize.cx-2, ASize.cy-2] := WINXP_BUTTON_FRAME_MED_DARK_BLUE;
-  ADest.Pixels[ASize.cx-3, ASize.cy-2] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
-  ADest.Pixels[ASize.cx-2, ASize.cy-3] := WINXP_BUTTON_FRAME_LIGHT_BLUE;
+  ADest.Pixels[1, ASize.cy-1] := lFrameMedium;
+  ADest.Pixels[0, ASize.cy-2] := lFrameMedium;
+  ADest.Pixels[1, ASize.cy-2] := lFrameMedDark;
+  ADest.Pixels[2, ASize.cy-2] := lFrameLight;
+  ADest.Pixels[1, ASize.cy-3] := lFrameLight;
 
-  ADest.Pen.Color := WINXP_BUTTON_FRAME_DARK_BLUE;
+  ADest.Pixels[ASize.cx-2, ASize.cy-1] := lFrameMedium;
+  ADest.Pixels[ASize.cx-1, ASize.cy-2] := lFrameMedium;
+  ADest.Pixels[ASize.cx-2, ASize.cy-2] := lFrameMedDark;
+  ADest.Pixels[ASize.cx-3, ASize.cy-2] := lFrameLight;
+  ADest.Pixels[ASize.cx-2, ASize.cy-3] := lFrameLight;
+
+  ADest.Pen.Color := lFrameDark;
   ADest.Line(2, 0, ASize.cx-2, 0);
   ADest.Line(2, ASize.cy-1, ASize.cx-2, ASize.cy-1);
   ADest.Line(0, 2, 0, ASize.cy-2);
   ADest.Line(ASize.cx-1, 2, ASize.cx-1, ASize.cy-2);
 
-  // Button text
+  // Now focus / mouseover indication, note that both disappear when sunked in WinXP
+  if ((csfHasFocus in AState) or (csfMouseOver in AState)) and not (csfSunken in AState) then
+  begin
+    if (csfHasFocus in AState) then
+    begin
+      lSelTop := WINXP_BUTTON_FOCUS_TOP;
+      lSelTopGrad := WINXP_BUTTON_FOCUS_TOP_GRAD;
+      lSelBottomGrad := WINXP_BUTTON_FOCUS_BOTTOM_GRAD;
+      lSelBottom := WINXP_BUTTON_FOCUS_BOTTOM;
+    end
+    else
+    begin
+      lSelTop := WINXP_BUTTON_MOUSEOVER_TOP;
+      lSelTopGrad := WINXP_BUTTON_MOUSEOVER_TOP_GRAD;
+      lSelBottomGrad := WINXP_BUTTON_MOUSEOVER_BOTTOM_GRAD;
+      lSelBottom := WINXP_BUTTON_MOUSEOVER_BOTTOM;
+    end;
+
+    // Top
+    ADest.Pen.Color := lSelTop;
+    ADest.Line(2, 1, ASize.cx-2, 1);
+    ADest.Pen.Color := lSelTopGrad;
+    ADest.Line(1, 2, ASize.cx-1, 2);
+    // Gradient
+    lRect := Bounds(1, 2, 2, ASize.cy-4);
+    ADest.GradientFill(lRect, lSelTopGrad, lSelBottomGrad, gdVertical);
+    lRect := Bounds(ASize.cx-3, 2, 2, ASize.cy-4);
+    ADest.GradientFill(lRect, lSelTopGrad, lSelBottomGrad, gdVertical);
+    // Bottom
+    ADest.Pen.Color := lSelBottomGrad;
+    ADest.Line(1, ASize.cy-3, ASize.cx-1, ASize.cy-3);
+    ADest.Pen.Color := lSelBottom;
+    ADest.Line(2, ASize.cy-2, ASize.cx-2, ASize.cy-2);
+  end;
+
+  // Button text, note that it doesn't move downwards when clicked in WinXP
   ADest.Font.Assign(AStateEx.Font);
   ADest.Brush.Style := bsClear;
   ADest.Pen.Style := psSolid;
