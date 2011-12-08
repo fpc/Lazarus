@@ -2731,6 +2731,7 @@ begin
   if CustomSavedActions then begin
     // Load
     LoadMouseAct(aPath + 'Main/',          MainActions);
+    LoadMouseAct(aPath + 'MainText/',      TextActions);
     LoadMouseAct(aPath + 'MainSelection/', SelActions);
     LoadMouseAct(aPath + 'Gutter/',        GutterActions);
     LoadMouseAct(aPath + 'GutterFold/',    GutterActionsFold);
@@ -2779,6 +2780,7 @@ begin
   if CustomSavedActions then begin
     // Save full settings / based on empty
     SaveMouseAct(aPath + 'Main/',          MainActions);
+    SaveMouseAct(aPath + 'MainText/',      TextActions);
     SaveMouseAct(aPath + 'MainSelection/', SelActions);
     SaveMouseAct(aPath + 'Gutter/',        GutterActions);
     SaveMouseAct(aPath + 'GutterFold/',    GutterActionsFold);
@@ -2830,6 +2832,7 @@ procedure TEditorMouseOptions.ImportFromXml(aXMLConfig: TRttiXMLConfig; aPath: S
 
 begin
   LoadMouseAct(aPath + 'Main/',          MainActions);
+  LoadMouseAct(aPath + 'MainText/',      TextActions);
   LoadMouseAct(aPath + 'MainSel/',       SelActions);
   LoadMouseAct(aPath + 'Gutter/',        GutterActions);
   LoadMouseAct(aPath + 'GutterFold/',    GutterActionsFold);
@@ -2859,6 +2862,7 @@ var
 begin
   MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
   SaveMouseAct(aPath + 'Main/',          MainActions);
+  SaveMouseAct(aPath + 'MainText/',      TextActions);
   SaveMouseAct(aPath + 'MainSel/',       SelActions);
   SaveMouseAct(aPath + 'Gutter/',        GutterActions);
   SaveMouseAct(aPath + 'GutterFold/',    GutterActionsFold);
