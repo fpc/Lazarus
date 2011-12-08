@@ -324,7 +324,7 @@ begin
   ADest.Pen.Color := WIN2000_FRAME_WHITE;
   ADest.MoveTo(ADestPos.X, ADestPos.Y+ASize.cy-1);
   ADest.LineTo(ADestPos.X, ADestPos.Y);
-  ADest.LineTo(ADestPos.X+ASize.cy-1, ADestPos.Y);
+  ADest.LineTo(ADestPos.X+ASize.cx-1, ADestPos.Y);
   // Grey line on the inside left and top
   ADest.Pen.Color := WIN2000_FRAME_LIGHT_GRAY;
   ADest.MoveTo(ADestPos.X+1, ADestPos.Y+ASize.cy-2);

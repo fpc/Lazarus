@@ -267,6 +267,8 @@ type
   TCDPositionedControl = class(TCDControl)
   private
     DragDropStarted: boolean;
+    FLastMouseDownPos: TPoint;
+    FPositionAtMouseDown: Integer;
     FButton: TCDControlState; // the button currently being clicked
     FBtnClickTimer: TTimer;
     // fields
@@ -284,9 +286,15 @@ type
   protected
     FSmallChange, FLargeChange: Integer;
     FPCState: TCDPositionedCStateEx;
+    // One can either move by dragging the slider
+    // or by putting the slider where the mouse is
+    FMoveByDragging: Boolean;
     function GetPositionFromMousePosWithMargins(X, Y, ALeftMargin, ARightMargin: Integer;
        AIsHorizontal, AAcceptMouseOutsideStrictArea: Boolean): integer;
     function GetPositionFromMousePos(X, Y: Integer): integer; virtual; abstract;
+    function GetPositionDisplacementWithMargins(AOldMousePos, ANewMousePos: TPoint;
+      ALeftMargin, ARightMargin: Integer; AIsHorizontal: Boolean): Integer;
+    function GetPositionDisplacement(AOldMousePos, ANewMousePos: TPoint): Integer; virtual; abstract;
     function GetButtonFromMousePos(X, Y: Integer): TCDControlState; virtual;
     procedure CreateControlStateEx; override;
     procedure PrepareControlStateEx; override;
@@ -318,6 +326,7 @@ type
   protected
     function GetPositionFromMousePos(X, Y: Integer): integer; override;
     function GetButtonFromMousePos(X, Y: Integer): TCDControlState; override;
+    function GetPositionDisplacement(AOldMousePos, ANewMousePos: TPoint): Integer; override;
     function GetControlId: TCDControlID; override;
     procedure PrepareControlState; override;
   public
@@ -416,6 +425,7 @@ type
     procedure SetOrientation(AValue: TTrackBarOrientation);
   protected
     function GetPositionFromMousePos(X, Y: Integer): integer; override;
+    function GetPositionDisplacement(AOldMousePos, ANewMousePos: TPoint): Integer; override;
     function GetControlId: TCDControlID; override;
     procedure PrepareControlState; override;
   public
@@ -1771,15 +1781,39 @@ begin
 
   if lCoord > lSize - ARightMargin then
   begin
-    if AAcceptMouseOutsideStrictArea then Result := FMax
-    else Exit;
+    if AAcceptMouseOutsideStrictArea then Result := FMax;
+    Exit;
   end
   else if lCoord < ALeftMargin then
   begin
-    if AAcceptMouseOutsideStrictArea then Result := FMin
-    else Exit;
+    if AAcceptMouseOutsideStrictArea then Result := FMin;
+    Exit;
   end
   else Result := FMin + (lCoord - ALeftMargin) * (FMax - FMin + 1) div (lSize - ARightMargin - ALeftMargin);
+
+  // sanity check
+  if Result > FMax then Result := FMax;
+  if Result < FMin then Result := FMin;
+end;
+
+function TCDPositionedControl.GetPositionDisplacementWithMargins(AOldMousePos,
+  ANewMousePos: TPoint; ALeftMargin, ARightMargin: Integer; AIsHorizontal: Boolean): Integer;
+var
+  lCoord, lSize: Integer;
+begin
+  if AIsHorizontal then
+  begin
+    lCoord := ANewMousePos.X-AOldMousePos.X;
+    lSize := Width;
+  end
+  else
+  begin
+    lCoord := ANewMousePos.Y-AOldMousePos.Y;
+    lSize := Height;
+  end;
+
+  Result := FMin + (lCoord - ALeftMargin) * (FMax - FMin + 1) div (lSize - ARightMargin - ALeftMargin);
+  Result := FPositionAtMouseDown + Result;
 
   // sanity check
   if Result > FMax then Result := FMax;
@@ -1843,9 +1877,18 @@ var
   NewPosition: Integer;
 begin
   SetFocus;
-  NewPosition := GetPositionFromMousePos(X, Y);
-  DragDropStarted := True;
-  if NewPosition >= 0 then Position := NewPosition;
+  if FMoveByDragging then
+  begin
+    FLastMouseDownPos := Point(X, Y);
+    FPositionAtMouseDown := Position;
+    DragDropStarted := True;
+  end
+  else
+  begin
+    NewPosition := GetPositionFromMousePos(X, Y);
+    DragDropStarted := True;
+    if NewPosition >= 0 then Position := NewPosition;
+  end;
 
   // Check if any buttons were clicked
   FButton := GetButtonFromMousePos(X, Y);
@@ -1865,8 +1908,16 @@ var
 begin
   if DragDropStarted then
   begin
-    NewPosition := GetPositionFromMousePos(X, Y);
-    if NewPosition > 0 then Position := NewPosition;
+    if FMoveByDragging then
+    begin
+      NewPosition := FPositionAtMouseDown + GetPositionDisplacement(FLastMouseDownPos, Point(X, Y));
+      Position := NewPosition;
+    end
+    else
+    begin
+      NewPosition := GetPositionFromMousePos(X, Y);
+      if NewPosition >= 0 then Position := NewPosition;
+    end;
   end;
   inherited MouseMove(Shift, X, Y);
 end;
@@ -1947,6 +1998,18 @@ begin
     FDrawer.GetMeasures(TCDSCROLLBAR_BUTTON_WIDTH)) then Result := [csfRightArrow];
 end;
 
+function TCDScrollBar.GetPositionDisplacement(AOldMousePos, ANewMousePos: TPoint
+  ): Integer;
+var
+  lLeftBorder, lRightBorder: Integer;
+begin
+  lLeftBorder := FDrawer.GetMeasures(TCDSCROLLBAR_LEFT_SPACING);
+  lRightBorder := FDrawer.GetMeasures(TCDSCROLLBAR_RIGHT_SPACING);
+
+  Result := GetPositionDisplacementWithMargins(AOldMousePos, ANewMousePos,
+    lLeftBorder, lRightBorder, FKind = sbHorizontal);
+end;
+
 function TCDScrollBar.GetControlId: TCDControlID;
 begin
   Result:= cidScrollBar;
@@ -1967,6 +2030,7 @@ begin
   Width := 121;
   Height := 17;
   FMax := 100;
+  FMoveByDragging := True;
 end;
 
 destructor TCDScrollBar.Destroy;
@@ -2059,6 +2123,12 @@ begin
   lRightBorder := FDrawer.GetMeasures(TCDTRACKBAR_RIGHT_SPACING);
 
   Result := GetPositionFromMousePosWithMargins(X, Y, lLeftBorder, lRightBorder, FOrientation = trHorizontal, True);
+end;
+
+function TCDTrackBar.GetPositionDisplacement(AOldMousePos, ANewMousePos: TPoint
+  ): Integer;
+begin
+  Result := 0; // not used anyway
 end;
 
 function TCDTrackBar.GetControlId: TCDControlID;
