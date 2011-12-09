@@ -21,15 +21,6 @@ type
     procedure HandleOnClick(Sender: TObject);
   end;
 
-  { TCDIntfGroupBox }
-
-  TCDIntfGroupBox = class(TCDGroupBox)
-  public
-    LCLControl: TGroupBox;
-    constructor Create(AOwner: TComponent); override;
-    procedure HandleOnClick(Sender: TObject);
-  end;
-
 // These are default message handlers which backends might use to simplify their code
 // They convert a message sent to the form into a message to the correct sub-control
 procedure CallbackMouseUp(AWindowHandle: TCDForm; x, y: Integer; Button: TMouseButton; ShiftState: TShiftState = []);
@@ -92,19 +83,6 @@ begin
 end;
 
 procedure TCDIntfButton.HandleOnClick(Sender: TObject);
-begin
-  LCLControl.OnClick(LCLControl);
-end;
-
-{ TCDIntfGroupBox }
-
-constructor TCDIntfGroupBox.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  OnClick := @HandleOnClick;
-end;
-
-procedure TCDIntfGroupBox.HandleOnClick(Sender: TObject);
 begin
   LCLControl.OnClick(LCLControl);
 end;

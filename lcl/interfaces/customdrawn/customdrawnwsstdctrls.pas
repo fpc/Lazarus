@@ -53,8 +53,6 @@ type
   { TCDWSCustomGroupBox }
 
   TCDWSCustomGroupBox = class(TWSCustomGroupBox)
-  public
-    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -1236,16 +1234,6 @@ end;*)
 
 { TCDWSCustomGroupBox }
 
-class procedure TCDWSCustomGroupBox.CreateCDControl(
-  const AWinControl: TWinControl; var ACDControlField: TCDControl);
-begin
-  ACDControlField := TCDIntfGroupBox.Create(AWinControl);
-  TCDIntfButton(ACDControlField).LCLControl := TButton(AWinControl);
-  ACDControlField.Caption := AWinControl.Caption;
-  ACDControlField.Parent := AWinControl;
-  ACDControlField.Align := alClient;
-end;
-
 {------------------------------------------------------------------------------
   Method: TCDWSCustomGroupBox.CreateHandle
   Params:  None
@@ -1293,8 +1281,8 @@ begin
 
   TCDWSWinControl.ShowHide(AWinControl);
 
-  if lCDWinControl.CDControl = nil then
-    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+// if lCDWinControl.CDControl = nil then
+//    CreateCDControl(AWinControl, lCDWinControl.CDControl);
 end;
 
 (*{ TCDWSCustomComboBox }
