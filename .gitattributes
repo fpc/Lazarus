@@ -1759,6 +1759,7 @@ components/lazutils/fileutil.inc svneol=native#text/pascal
 components/lazutils/fileutil.pas svneol=native#text/pascal
 components/lazutils/languages/lazutilsstrconsts.de.po svneol=native#text/plain
 components/lazutils/languages/lazutilsstrconsts.po svneol=native#text/plain
+components/lazutils/languages/lazutilsstrconsts.ru.po svneol=native#text/plain
 components/lazutils/languages/luresstrings.de.po svneol=native#text/plain
 components/lazutils/languages/luresstrings.po svneol=native#text/plain
 components/lazutils/languages/luresstrings.pt_BR.po svneol=native#text/plain
