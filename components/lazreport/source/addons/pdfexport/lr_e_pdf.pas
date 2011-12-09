@@ -406,6 +406,7 @@ begin
   Data.FrameStyle := View.FrameStyle;
   Data.FrameWidth := View.FrameWidth;
   Data.Radius := -1.0;
+  Data.Corners := [];
   AddShape(Data, x, y, h, w);
 end;
 
