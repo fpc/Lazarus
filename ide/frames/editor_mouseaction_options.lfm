@@ -1,12 +1,12 @@
 inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
-  Height = 523
+  Height = 583
   Width = 636
   HorzScrollBar.Page = 636
   VertScrollBar.Page = 523
   Align = alClient
   Anchors = [akTop]
   AutoSize = False
-  ClientHeight = 523
+  ClientHeight = 583
   ClientWidth = 636
   Visible = False
   DesignLeft = 366
@@ -25,7 +25,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     BevelOuter = bvNone
     ClientHeight = 23
     ClientWidth = 636
-    TabOrder = 3
+    TabOrder = 0
     Visible = False
     object chkPredefinedScheme: TCheckBox
       AnchorSideLeft.Control = pnlUserSchemes
@@ -72,7 +72,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'HideMouseCheckBox'
-    TabOrder = 4
+    TabOrder = 1
   end
   object pnlAllGutter: TPanel[2]
     AnchorSideLeft.Control = Owner
@@ -89,7 +89,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     BevelOuter = bvNone
     ClientHeight = 81
     ClientWidth = 636
-    TabOrder = 1
+    TabOrder = 2
     object PanelGutter: TPanel
       AnchorSideLeft.Control = pnlAllGutter
       AnchorSideTop.Control = pnlAllGutter
@@ -165,22 +165,22 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = pnlBottom
     Left = 0
-    Height = 273
+    Height = 333
     Top = 210
     Width = 636
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 273
+    ClientHeight = 333
     ClientWidth = 636
-    TabOrder = 2
+    TabOrder = 3
     object PanelTextCheckBox: TPanel
       AnchorSideLeft.Control = pnlAllText
       AnchorSideTop.Control = pnlAllText
       AnchorSideRight.Control = pnlAllText
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 57
+      Height = 38
       Top = 0
       Width = 624
       Anchors = [akTop, akLeft, akRight]
@@ -190,7 +190,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       BorderSpacing.Bottom = 6
       BevelOuter = bvNone
       ChildSizing.ControlsPerLine = 2
-      ClientHeight = 57
+      ClientHeight = 38
       ClientWidth = 624
       TabOrder = 0
       object TextDrag: TCheckBox
@@ -215,49 +215,56 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         OnChange = CheckOrRadioChange
         TabOrder = 1
       end
-      object TextDoubleSelLine: TCheckBox
-        AnchorSideLeft.Control = RightMoveCaret
-        AnchorSideTop.Control = RightMoveCaret
-        AnchorSideTop.Side = asrBottom
-        Left = 0
-        Height = 19
-        Top = 38
-        Width = 117
-        Caption = 'TextDoubleSelLine'
-        OnChange = CheckOrRadioChange
-        TabOrder = 2
-      end
     end
     object ToolBar1: TToolBar
       AnchorSideLeft.Control = pnlAllText
       AnchorSideTop.Control = PanelTextCheckBox
+      AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlAllText
       AnchorSideRight.Side = asrBottom
       Left = 0
       Height = 26
-      Top = 0
+      Top = 44
       Width = 636
       Align = alNone
       Anchors = [akTop, akLeft, akRight]
       Caption = 'ToolBar1'
       ShowCaptions = True
-      TabOrder = 2
-      object ToolButton1: TToolButton
-        Left = 1
+      TabOrder = 1
+      object ToolButtonMiddle: TToolButton
+        Tag = 2
+        Left = 230
         Top = 2
-        Caption = 'ToolButton1'
-        Down = True
+        Caption = 'ToolButtonMiddle'
         Grouped = True
-        OnClick = ToolButton1Click
+        OnClick = ToolButtonMiddleClick
         Style = tbsCheck
       end
-      object ToolButton2: TToolButton
-        Tag = 1
-        Left = 75
+      object ToolBtnWheel: TToolButton
+        Tag = 3
+        Left = 335
         Top = 2
-        Caption = 'ToolButton2'
+        Caption = 'ToolBtnWheel'
         Grouped = True
-        OnClick = ToolButton1Click
+        OnClick = ToolButtonMiddleClick
+        Style = tbsCheck
+      end
+      object ToolButtonLeftMod: TToolButton
+        Left = 1
+        Top = 2
+        Caption = 'ToolButtonLeftMod'
+        Down = True
+        Grouped = True
+        OnClick = ToolButtonMiddleClick
+        Style = tbsCheck
+      end
+      object ToolButtonLeftMulti: TToolButton
+        Tag = 1
+        Left = 114
+        Top = 2
+        Caption = 'ToolButtonLeftMulti'
+        Grouped = True
+        OnClick = ToolButtonMiddleClick
         Style = tbsCheck
       end
     end
@@ -270,7 +277,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideBottom.Side = asrBottom
       Left = 518
       Height = 25
-      Top = 242
+      Top = 302
       Width = 112
       Anchors = [akRight, akBottom]
       AutoSize = True
@@ -279,7 +286,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       BorderSpacing.Bottom = 6
       Caption = 'ResetTextButton'
       OnClick = ResetTextButtonClick
-      TabOrder = 1
+      TabOrder = 2
     end
     object Notebook1: TNotebook
       AnchorSideLeft.Control = pnlAllText
@@ -289,28 +296,47 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = ResetTextButton
       Left = 0
-      Height = 210
-      Top = 26
+      Height = 226
+      Top = 70
       Width = 636
       PageIndex = 0
       Anchors = [akTop, akLeft, akRight, akBottom]
       TabOrder = 3
       TabStop = True
-      object Page1: TPage
-        object ScrollBox1: TScrollBox
+      object PageLeftMod: TPage
+        object ScrollBox3: TScrollBox
           Left = 0
-          Height = 210
+          Height = 226
           Top = 0
           Width = 636
           HorzScrollBar.Page = 636
-          VertScrollBar.Page = 210
+          VertScrollBar.Page = 226
           Align = alClient
           BorderStyle = bsNone
-          ClientHeight = 210
+          ClientHeight = 226
           ClientWidth = 636
           TabOrder = 0
+          object dropCtrlLeft: TComboBox
+            AnchorSideLeft.Control = dropAltLeft
+            AnchorSideTop.Control = dropAltLeft
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBox3
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 35
+            Width = 490
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 0
+          end
           object CtrLLeftLabel: TLabel
-            AnchorSideLeft.Control = ScrollBox1
+            AnchorSideLeft.Control = ScrollBox3
             AnchorSideTop.Control = dropCtrlLeft
             AnchorSideTop.Side = asrCenter
             Left = 6
@@ -321,44 +347,61 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Caption = 'CtrLLeftLabel'
             ParentColor = False
           end
-          object dropCtrlLeft: TComboBox
-            AnchorSideLeft.Control = ScrollBox1
-            AnchorSideTop.Control = dropAltLeft
-            AnchorSideTop.Side = asrBottom
-            AnchorSideRight.Control = ScrollBox1
+          object dropAltLeft: TComboBox
+            AnchorSideLeft.Control = dropShiftLeft
+            AnchorSideTop.Control = ScrollBox3
+            AnchorSideRight.Control = ScrollBox3
             AnchorSideRight.Side = asrBottom
             Left = 140
             Height = 23
-            Top = 35
+            Top = 6
+            Width = 490
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 1
+          end
+          object AltLeftLabel: TLabel
+            AnchorSideLeft.Control = ScrollBox3
+            AnchorSideTop.Control = dropAltLeft
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 16
+            Top = 9
+            Width = 64
+            BorderSpacing.Left = 6
+            Caption = 'AltLeftLabel'
+            ParentColor = False
+          end
+          object dropShiftLeft: TComboBox
+            AnchorSideLeft.Control = ScrollBox3
+            AnchorSideTop.Control = dropAltCtrlLeft
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBox3
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 93
             Width = 490
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 140
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
+            DropDownCount = 12
             ItemHeight = 15
             OnChange = CheckOrRadioChange
             Style = csDropDownList
-            TabOrder = 0
+            TabOrder = 2
           end
-          object MiddleBtnLabel: TLabel
-            AnchorSideLeft.Control = ScrollBox1
-            AnchorSideTop.Control = dropMiddle
-            AnchorSideTop.Side = asrCenter
-            AnchorSideRight.Control = ScrollBox1
-            AnchorSideRight.Side = asrBottom
-            Left = 6
-            Height = 16
-            Top = 67
-            Width = 84
-            BorderSpacing.Left = 6
-            Caption = 'MiddleBtnLabel'
-            ParentColor = False
-          end
-          object dropMiddle: TComboBox
-            AnchorSideLeft.Control = dropCtrlLeft
+          object dropAltCtrlLeft: TComboBox
+            AnchorSideLeft.Control = dropAltLeft
             AnchorSideTop.Control = dropCtrlLeft
             AnchorSideTop.Side = asrBottom
-            AnchorSideRight.Control = ScrollBox1
+            AnchorSideRight.Control = ScrollBox3
             AnchorSideRight.Side = asrBottom
             Left = 140
             Height = 23
@@ -367,10 +410,377 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 3
+          end
+          object dropShiftAltLeft: TComboBox
+            AnchorSideLeft.Control = dropAltLeft
+            AnchorSideTop.Control = dropShiftLeft
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBox3
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 122
+            Width = 490
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 4
+          end
+          object dropShiftCtrlLeft: TComboBox
+            AnchorSideLeft.Control = dropAltLeft
+            AnchorSideTop.Control = dropShiftAltLeft
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBox3
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 151
+            Width = 490
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 5
+          end
+          object dropShiftAltCtrlLeft: TComboBox
+            AnchorSideLeft.Control = dropAltLeft
+            AnchorSideTop.Control = dropShiftCtrlLeft
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBox3
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 180
+            Width = 490
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 6
+          end
+          object ShiftLeftLabel: TLabel
+            AnchorSideLeft.Control = ScrollBox3
+            AnchorSideTop.Control = dropShiftLeft
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 16
+            Top = 96
+            Width = 73
+            BorderSpacing.Left = 6
+            Caption = 'ShiftLeftLabel'
+            ParentColor = False
+          end
+          object AltCtrlLeftLabel: TLabel
+            AnchorSideLeft.Control = ScrollBox3
+            AnchorSideTop.Control = dropAltCtrlLeft
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 16
+            Top = 67
+            Width = 83
+            BorderSpacing.Left = 6
+            Caption = 'AltCtrlLeftLabel'
+            ParentColor = False
+          end
+          object ShiftCtrlLeftLabel: TLabel
+            AnchorSideLeft.Control = ScrollBox3
+            AnchorSideTop.Control = dropShiftCtrlLeft
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 16
+            Top = 154
+            Width = 92
+            BorderSpacing.Left = 6
+            Caption = 'ShiftCtrlLeftLabel'
+            ParentColor = False
+          end
+          object ShiftAltLeftLabel: TLabel
+            AnchorSideLeft.Control = ScrollBox3
+            AnchorSideTop.Control = dropShiftAltLeft
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 16
+            Top = 125
+            Width = 88
+            BorderSpacing.Left = 6
+            Caption = 'ShiftAltLeftLabel'
+            ParentColor = False
+          end
+          object ShiftCtrlAltLeftLabel: TLabel
+            AnchorSideLeft.Control = ScrollBox3
+            AnchorSideTop.Control = dropShiftAltCtrlLeft
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 16
+            Top = 183
+            Width = 107
+            BorderSpacing.Left = 6
+            Caption = 'ShiftCtrlAltLeftLabel'
+            ParentColor = False
+          end
+        end
+      end
+      object PageLeftDbl: TPage
+        object ScrollBox4: TScrollBox
+          Left = 0
+          Height = 207
+          Top = 0
+          Width = 636
+          HorzScrollBar.Page = 636
+          VertScrollBar.Page = 207
+          Align = alClient
+          BorderStyle = bsNone
+          ClientHeight = 207
+          ClientWidth = 636
+          TabOrder = 0
+          object dropLeftTripple: TComboBox
+            AnchorSideLeft.Control = dropLeftDouble
+            AnchorSideTop.Control = dropLeftDouble
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBox4
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 35
+            Width = 490
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 0
+          end
+          object lblLeftTripple: TLabel
+            AnchorSideLeft.Control = ScrollBox4
+            AnchorSideTop.Control = dropLeftTripple
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 16
+            Top = 38
+            Width = 71
+            BorderSpacing.Left = 6
+            Caption = 'lblLeftTripple'
+            ParentColor = False
+          end
+          object dropLeftDouble: TComboBox
+            AnchorSideLeft.Control = ScrollBox4
+            AnchorSideTop.Control = ScrollBox4
+            AnchorSideRight.Control = ScrollBox4
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 6
+            Width = 490
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Left = 140
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 1
+          end
+          object lblLeftDouble: TLabel
+            AnchorSideLeft.Control = ScrollBox4
+            AnchorSideTop.Control = dropLeftDouble
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 16
+            Top = 9
+            Width = 72
+            BorderSpacing.Left = 6
+            Caption = 'lblLeftDouble'
+            ParentColor = False
+          end
+          object dropLeftQuad: TComboBox
+            AnchorSideLeft.Control = dropLeftDouble
+            AnchorSideTop.Control = dropLeftTripple
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBox4
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 64
+            Width = 490
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
             ItemHeight = 15
             OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 2
+          end
+          object dropLeftShiftDouble: TComboBox
+            AnchorSideLeft.Control = dropLeftDouble
+            AnchorSideTop.Control = dropLeftQuad
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBox4
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 93
+            Width = 490
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 3
+          end
+          object dropLeftAltDouble: TComboBox
+            AnchorSideLeft.Control = dropLeftDouble
+            AnchorSideTop.Control = dropLeftShiftDouble
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBox4
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 122
+            Width = 490
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 4
+          end
+          object dropLeftCtrlDouble: TComboBox
+            AnchorSideLeft.Control = dropLeftDouble
+            AnchorSideTop.Control = dropLeftAltDouble
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBox4
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 151
+            Width = 490
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 5
+          end
+          object lblLeftQuad: TLabel
+            AnchorSideLeft.Control = ScrollBox4
+            AnchorSideTop.Control = dropLeftQuad
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 16
+            Top = 67
+            Width = 63
+            BorderSpacing.Left = 6
+            Caption = 'lblLeftQuad'
+            ParentColor = False
+          end
+          object lblLeftDoubleShift: TLabel
+            AnchorSideLeft.Control = ScrollBox4
+            AnchorSideTop.Control = dropLeftShiftDouble
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 16
+            Top = 96
+            Width = 96
+            BorderSpacing.Left = 6
+            Caption = 'lblLeftDoubleShift'
+            ParentColor = False
+          end
+          object lblLeftDoubleAlt: TLabel
+            AnchorSideLeft.Control = ScrollBox4
+            AnchorSideTop.Control = dropLeftAltDouble
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 16
+            Top = 125
+            Width = 87
+            BorderSpacing.Left = 6
+            Caption = 'lblLeftDoubleAlt'
+            ParentColor = False
+          end
+          object lblLeftDoubleCtrl: TLabel
+            AnchorSideLeft.Control = ScrollBox4
+            AnchorSideTop.Control = dropLeftCtrlDouble
+            AnchorSideTop.Side = asrCenter
+            Left = 6
+            Height = 16
+            Top = 154
+            Width = 91
+            BorderSpacing.Left = 6
+            Caption = 'lblLeftDoubleCtrl'
+            ParentColor = False
+          end
+        end
+      end
+      object PageMiddle: TPage
+        object ScrollBox1: TScrollBox
+          Left = 0
+          Height = 226
+          Top = 0
+          Width = 636
+          HorzScrollBar.Page = 636
+          VertScrollBar.Page = 226
+          Align = alClient
+          BorderStyle = bsNone
+          ClientHeight = 226
+          ClientWidth = 636
+          TabOrder = 0
+          object MiddleBtnLabel: TLabel
+            AnchorSideLeft.Control = ScrollBox1
+            AnchorSideTop.Control = dropMiddle
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = ScrollBox1
+            AnchorSideRight.Side = asrBottom
+            Left = 6
+            Height = 16
+            Top = 9
+            Width = 84
+            BorderSpacing.Left = 6
+            Caption = 'MiddleBtnLabel'
+            ParentColor = False
+          end
+          object dropMiddle: TComboBox
+            AnchorSideLeft.Control = ScrollBox1
+            AnchorSideTop.Control = ScrollBox1
+            AnchorSideRight.Control = ScrollBox1
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 6
+            Width = 490
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Left = 140
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 1
           end
           object CtrlMiddleBtnLabel: TLabel
             AnchorSideLeft.Control = ScrollBox1
@@ -387,8 +797,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             ParentColor = False
           end
           object dropCtrlMiddle: TComboBox
-            AnchorSideLeft.Control = dropCtrlLeft
-            AnchorSideTop.Control = dropMiddle
+            AnchorSideTop.Control = dropAltMiddle
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -399,44 +808,80 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
+            DropDownCount = 12
             ItemHeight = 15
             OnChange = CheckOrRadioChange
             Style = csDropDownList
-            TabOrder = 1
+            TabOrder = 0
           end
-          object dropAltLeft: TComboBox
-            AnchorSideLeft.Control = ScrollBox1
-            AnchorSideTop.Control = ScrollBox1
+          object dropAltMiddle: TComboBox
+            AnchorSideTop.Control = dropShiftMiddle
+            AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
             Left = 140
             Height = 23
-            Top = 6
+            Top = 64
             Width = 490
             Anchors = [akTop, akLeft, akRight]
-            BorderSpacing.Left = 140
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 2
+          end
+          object AltMiddleBtnLabel: TLabel
+            AnchorSideLeft.Control = ScrollBox1
+            AnchorSideTop.Control = dropAltMiddle
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = ScrollBox1
+            AnchorSideRight.Side = asrBottom
+            Left = 6
+            Height = 16
+            Top = 67
+            Width = 99
+            BorderSpacing.Left = 6
+            Caption = 'AltMiddleBtnLabel'
+            ParentColor = False
+          end
+          object dropShiftMiddle: TComboBox
+            AnchorSideLeft.Control = dropMiddle
+            AnchorSideTop.Control = dropMiddle
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBox1
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 35
+            Width = 490
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
             ItemHeight = 15
             OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 3
           end
-          object AltLeftLabel: TLabel
+          object ShiftMiddleLabel: TLabel
             AnchorSideLeft.Control = ScrollBox1
-            AnchorSideTop.Control = dropAltLeft
+            AnchorSideTop.Control = dropShiftMiddle
             AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = ScrollBox1
+            AnchorSideRight.Side = asrBottom
             Left = 6
             Height = 16
-            Top = 9
-            Width = 64
+            Top = 38
+            Width = 71
             BorderSpacing.Left = 6
-            Caption = 'AltLeftLabel'
+            Caption = 'ShiftMiddleLabel'
             ParentColor = False
           end
         end
       end
-      object Page2: TPage
+      object PageWheel: TPage
         object ScrollBox2: TScrollBox
           Left = 0
           Height = 150
@@ -462,6 +907,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             BorderSpacing.Left = 140
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
+            DropDownCount = 12
             ItemHeight = 15
             OnChange = CheckOrRadioChange
             Style = csDropDownList
@@ -480,6 +926,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
+            DropDownCount = 12
             ItemHeight = 15
             OnChange = CheckOrRadioChange
             Style = csDropDownList
@@ -498,6 +945,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
+            DropDownCount = 12
             ItemHeight = 15
             OnChange = CheckOrRadioChange
             Style = csDropDownList
@@ -516,6 +964,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
+            DropDownCount = 12
             ItemHeight = 15
             OnChange = CheckOrRadioChange
             Style = csDropDownList
@@ -589,14 +1038,14 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 40
-    Top = 483
+    Top = 543
     Width = 636
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 40
     ClientWidth = 636
-    TabOrder = 0
+    TabOrder = 4
     object BottomDivider: TBevel
       AnchorSideLeft.Control = pnlBottom
       AnchorSideTop.Control = pnlBottom

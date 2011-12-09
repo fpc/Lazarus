@@ -679,9 +679,13 @@ type
   TMouseOptButtonActionOld = (
     mbaNone,
     mbaSelect, mbaSelectColumn, mbaSelectLine,
+    mbaSelectSetWord, mbaSelectSetLineSmart, mbaSelectSetLineFull, mbaSelectSetPara,
     mbaPaste,
     mbaDeclarationJump,
     mbaDeclarationOrBlockJump,
+    mbaAddHistoryPoint,
+    mbaHistoryBack, mbaHistoryForw,
+    mbaSetFreeBookmark,
     mbaZoomReset,
 
     // Old values, needed to load old config
@@ -716,9 +720,6 @@ type
   TEditorMouseOptions = class(TPersistent)
   private
     FGutterLeft: TMouseOptGutterLeftType;
-    FTextMiddleClick: TMouseOptButtonActionOld;
-    FTextCtrlLeftClick: TMouseOptButtonActionOld;
-    FTextDoubleSelLine: Boolean;
     FTextDrag: Boolean;
     FTextRightMoveCaret: Boolean;
     FUserSchemes: TQuickStringlist;
@@ -733,8 +734,28 @@ type
     FGutterActionsFold, FGutterActionsFoldExp, FGutterActionsFoldCol: TSynEditMouseActions;
     FGutterActionsLines: TSynEditMouseActions;
     FSelectedUserScheme: String;
+    // left multi click
+    FTextDoubleLeftClick: TMouseOptButtonActionOld;
+    FTextShiftMiddleClick: TMouseOptButtonAction;
+    FTextTrippleLeftClick: TMouseOptButtonActionOld;
+    FTextQuadLeftClick: TMouseOptButtonActionOld;
+    FTextShiftDoubleLeftClick: TMouseOptButtonActionOld;
+    FTextAltDoubleLeftClick: TMouseOptButtonActionOld;
+    FTextCtrlDoubleLeftClick: TMouseOptButtonActionOld;
+    // left + modifier click
+    FTextShiftLeftClick: TMouseOptButtonActionOld;
     FTextAltLeftClick: TMouseOptButtonActionOld;
+    FTextCtrlLeftClick: TMouseOptButtonActionOld;
+    FTextCtrlAltLeftClick: TMouseOptButtonActionOld;
+    FTextShiftAltLeftClick: TMouseOptButtonActionOld;
+    FTextShiftCtrlLeftClick: TMouseOptButtonActionOld;
+    FTextShiftCtrlAltLeftClick: TMouseOptButtonActionOld;
+    // middle click
+    FTextMiddleClick: TMouseOptButtonActionOld;
+    FTextAltMiddleClick: TMouseOptButtonAction;
     FTextCtrlMiddleClick: TMouseOptButtonAction;
+    // extra-1 click
+    // extra-2 click
     FWheel: TMouseOptWheelAction;
     procedure ClearUserSchemes;
     function GetUserSchemeNames(Index: Integer): String;
@@ -783,24 +804,49 @@ type
   published
     property GutterLeft: TMouseOptGutterLeftType read FGutterLeft write FGutterLeft
              default moGLDownClick;
-    //property AltColumnMode: Boolean read FAltColumnMode write FAltColumnMode
-    //         default True;
     property TextDrag: Boolean read FTextDrag write FTextDrag
              default True;
-    property TextDoubleSelLine: Boolean read FTextDoubleSelLine write FTextDoubleSelLine
-             default False;
     property TextRightMoveCaret: Boolean read FTextRightMoveCaret  write FTextRightMoveCaret
              default False;
-
+    // left multi click
+    property TextDoubleLeftClick: TMouseOptButtonActionOld read FTextDoubleLeftClick write FTextDoubleLeftClick
+             default mbaSelectSetWord;
+    property TextTrippleLeftClick: TMouseOptButtonActionOld read FTextTrippleLeftClick write FTextTrippleLeftClick
+             default mbaSelectSetLineSmart;
+    property TextQuadLeftClick: TMouseOptButtonActionOld read FTextQuadLeftClick write FTextQuadLeftClick
+             default mbaSelectSetPara;
+    property TextShiftDoubleLeftClick: TMouseOptButtonActionOld read FTextShiftDoubleLeftClick write FTextShiftDoubleLeftClick
+             default mbaNone;
+    property TextCtrlDoubleLeftClick: TMouseOptButtonActionOld read FTextCtrlDoubleLeftClick write FTextCtrlDoubleLeftClick
+             default mbaNone;
+    property TextAltDoubleLeftClick: TMouseOptButtonActionOld read FTextAltDoubleLeftClick write FTextAltDoubleLeftClick
+             default mbaNone;
+    // left + modifier click
+    property TextShiftLeftClick: TMouseOptButtonActionOld read FTextShiftLeftClick write FTextShiftLeftClick
+             default mbaNone;  // continue selection
     property TextCtrlLeftClick: TMouseOptButtonActionOld read FTextCtrlLeftClick write SetTextCtrlLeftClick
              default mbaDeclarationJump;
     property TextAltLeftClick: TMouseOptButtonActionOld read FTextAltLeftClick write FTextAltLeftClick
              default mbaSelectColumn;
-
+    property TextShiftCtrlLeftClick: TMouseOptButtonActionOld read FTextShiftCtrlLeftClick write FTextShiftCtrlLeftClick
+             default mbaNone;  // continue selection
+    property TextShiftAltLeftClick: TMouseOptButtonActionOld read FTextShiftAltLeftClick write FTextShiftAltLeftClick
+             default mbaNone;  // continue selection
+    property TextCtrlAltLeftClick: TMouseOptButtonActionOld read FTextCtrlAltLeftClick write FTextCtrlAltLeftClick
+             default mbaNone;
+    property TextShiftCtrlAltLeftClick: TMouseOptButtonActionOld read FTextShiftCtrlAltLeftClick write FTextShiftCtrlAltLeftClick
+             default mbaNone;
+    // middle click
     property TextMiddleClick: TMouseOptButtonActionOld read FTextMiddleClick write SetTextMiddleClick
              default mbaPaste;
+    property TextShiftMiddleClick: TMouseOptButtonAction read FTextShiftMiddleClick write FTextShiftMiddleClick
+             default mbaNone;
+    property TextAltMiddleClick: TMouseOptButtonAction read FTextAltMiddleClick write FTextAltMiddleClick
+             default mbaNone;
     property TextCtrlMiddleClick: TMouseOptButtonAction read FTextCtrlMiddleClick write FTextCtrlMiddleClick
              default mbaZoomReset;
+    // extra-1 click
+    // extra-2 click
 
     property Wheel: TMouseOptWheelAction read FWheel write FWheel
              default mwaScroll;
@@ -2364,15 +2410,27 @@ procedure TEditorMouseOptions.Reset;
 begin
   FCustomSavedActions  := False;
   FGutterLeft          := moGLDownClick;
+  FTextDoubleLeftClick       := mbaSelectSetWord;
+  FTextTrippleLeftClick      := mbaSelectSetLineSmart;
+  FTextQuadLeftClick         := mbaSelectSetPara;
+  FTextShiftDoubleLeftClick  := mbaNone;
+  FTextAltDoubleLeftClick    := mbaNone;
+  FTextCtrlDoubleLeftClick   := mbaNone;
+  FTextCtrlAltLeftClick      := mbaNone;
+  FTextShiftAltLeftClick     := mbaNone;
+  FTextShiftCtrlAltLeftClick := mbaNone;
+  FTextShiftCtrlLeftClick    := mbaNone;
+  FTextShiftLeftClick        := mbaNone;
   FTextCtrlLeftClick   := mbaDeclarationJump;
   FTextAltLeftClick    := mbaSelectColumn;
   FTextMiddleClick     := mbaPaste;
   FTextCtrlMiddleClick := mbaZoomReset;
+  FTextShiftMiddleClick := mbaNone;
+  FTextAltMiddleClick  := mbaNone;
   FWheel               := mwaScroll;
   FCtrlWheel           := mwaZoom;
   FAltWheel            := mwaScrollPageLessOne;
   FShiftWheel          := mwaScrollSingleLine;
-  FTextDoubleSelLine   := False;
   FTextRightMoveCaret  := False;
   FTextDrag            := True;
 end;
@@ -2434,14 +2492,15 @@ end;
 procedure TEditorMouseOptions.ResetTextToDefault;
 
   procedure AddBtnClick(AnAction: TMouseOptButtonAction; const AButton: TSynMouseButton;
-    AShift, AShiftMask: TShiftState; AddLinkDummy: Boolean = False; ASelContShift: TShiftState = []);
+    AShift, AShiftMask: TShiftState; AddLinkDummy: Boolean = False;
+    ASelContShift: TShiftState = []; AClickCount: TSynMAClickCount = ccSingle);
 
       procedure AddSelCommand(const ACmd: TSynEditorMouseCommand);
       begin
         AShiftMask := AShiftMask + ASelContShift;
-        FTextActions.AddCommand(  ACmd, True, AButton, ccSingle, cdDown, AShift,              AShiftMask, emcoSelectionStart);
+        FTextActions.AddCommand(  ACmd, True, AButton, AClickCount, cdDown, AShift,              AShiftMask, emcoSelectionStart);
         if ASelContShift <> [] then
-          FTextActions.AddCommand(ACmd, True, AButton, ccSingle, cdDown, AShift+ASelContShift, AShiftMask, emcoSelectionContinue);
+          FTextActions.AddCommand(ACmd, True, AButton, AClickCount, cdDown, AShift+ASelContShift, AShiftMask, emcoSelectionContinue);
       end;
 
   begin
@@ -2451,19 +2510,35 @@ procedure TEditorMouseOptions.ResetTextToDefault;
         mbaSelect:       AddSelCommand(emcStartSelections);
         mbaSelectColumn: AddSelCommand(emcStartColumnSelections);
         mbaSelectLine:   AddSelCommand(emcStartLineSelections);
+        mbaSelectSetWord:
+            AddCommand(emcSelectWord,       True,  AButton, AClickCount, cdUp, AShift, AShiftMask);
+        mbaSelectSetLineSmart:
+            AddCommand(emcSelectLine,       True,  AButton, AClickCount, cdUp, AShift, AShiftMask, emcoSelectLineSmart);
+        mbaSelectSetLineFull:
+            AddCommand(emcSelectLine,       True,  AButton, AClickCount, cdUp, AShift, AShiftMask, emcoSelectLineFull);
+        mbaSelectSetPara:
+            AddCommand(emcSelectPara,       True,  AButton, AClickCount, cdUp, AShift, AShiftMask);
         mbaPaste:            // TODOS act on up? but needs to prevent selection on down
-            AddCommand(emcPasteSelection,   True,  AButton, ccSingle, cdDown,  AShift, AShiftMask);
+            AddCommand(emcPasteSelection,   True,  AButton, AClickCount, cdDown,  AShift, AShiftMask, 0, 0, 0, True);
         mbaDeclarationJump,
         mbaDeclarationOrBlockJump: begin
             if AddLinkDummy then
-              AddCommand(emcMouseLink,      False, AButton, ccSingle, cdUp,    [SYNEDIT_LINK_MODIFIER], [SYNEDIT_LINK_MODIFIER], emcoMouseLinkShow, 999);
-            AddCommand(emcMouseLink,        False, AButton, ccSingle, cdUp,    AShift, AShiftMask);
+              AddCommand(emcMouseLink,      False, AButton, AClickCount, cdUp,    [SYNEDIT_LINK_MODIFIER], [SYNEDIT_LINK_MODIFIER], emcoMouseLinkShow, 999);
+            AddCommand(emcMouseLink,        False, AButton, AClickCount, cdUp,    AShift, AShiftMask);
             if AnAction = mbaDeclarationOrBlockJump then
-              AddCommand(emcSynEditCommand, False, AButton, ccSingle, cdUp,    AShift, AShiftMask, ecFindBlockOtherEnd, 1);
+              AddCommand(emcSynEditCommand, True,  AButton, AClickCount, cdUp,    AShift, AShiftMask, ecFindBlockOtherEnd, 1);
           end;
+        mbaAddHistoryPoint:
+          AddCommand(emcSynEditCommand,     True,  AButton, AClickCount, cdUp, AShift, AShiftMask, ecAddJumpPoint);
+        mbaHistoryBack:
+          AddCommand(emcSynEditCommand,     False, AButton, AClickCount, cdUp, AShift, AShiftMask, ecJumpBack);
+        mbaHistoryForw:
+          AddCommand(emcSynEditCommand,     False, AButton, AClickCount, cdUp, AShift, AShiftMask, ecJumpForward);
+        mbaSetFreeBookmark:
+          AddCommand(emcSynEditCommand,     True,  AButton, AClickCount, cdUp, AShift, AShiftMask, ecSetFreeBookmark);
         mbaZoomReset: begin
-            AddCommand(emcWheelZoomNorm,    False,  AButton, ccSingle, cdDown, AShift, AShiftMask);
-            FMainActions.AddCommand(emcWheelZoomNorm,    False,  AButton, ccSingle, cdDown, AShift, AShiftMask);
+            AddCommand(emcWheelZoomNorm,    False,  AButton, AClickCount, cdUp, AShift, AShiftMask);
+            FMainActions.AddCommand(emcWheelZoomNorm,    False,  AButton, AClickCount, cdUp, AShift, AShiftMask);
           end;
       end;
     end;
@@ -2513,7 +2588,7 @@ procedure TEditorMouseOptions.ResetTextToDefault;
   end;
 
 var
-  ModKeys: TShiftState;
+  ModKeys, SelKey: TShiftState;
 begin
   FMainActions.Clear;
   FSelActions.Clear;
@@ -2522,27 +2597,59 @@ begin
   with FTextActions do begin
     // Left Btn
     ModKeys := [ssShift];
-    if FTextCtrlLeftClick <> mbaNone then ModKeys := ModKeys + [ssCtrl];
-    if FTextAltLeftClick  <> mbaNone then ModKeys := ModKeys + [ssAlt];
+    if FTextAltLeftClick     <> mbaNone then ModKeys := ModKeys + [ssAlt];
+    if FTextCtrlLeftClick    <> mbaNone then ModKeys := ModKeys + [ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+    if FTextCtrlAltLeftClick <> mbaNone then ModKeys := ModKeys + [ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+    if FTextShiftAltLeftClick     <> mbaNone then ModKeys := ModKeys + [ssAlt];
+    if FTextShiftCtrlLeftClick    <> mbaNone then ModKeys := ModKeys + [ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+    if FTextShiftCtrlAltLeftClick <> mbaNone then ModKeys := ModKeys + [ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+    if FTextAltDoubleLeftClick     <> mbaNone then ModKeys := ModKeys + [ssAlt];
+    if FTextCtrlDoubleLeftClick    <> mbaNone then ModKeys := ModKeys + [ssCtrl] + [SYNEDIT_LINK_MODIFIER];
 
-    AddBtnClick(mbaSelect,            mbLeft,   [],                      ModKeys, False, [ssShift]);
-    AddBtnClick(FTextCtrlLeftClick,   mbLeft,   [SYNEDIT_LINK_MODIFIER], ModKeys, False, [ssShift]);
-    AddBtnClick(FTextAltLeftClick,    mbLeft,   [ssAlt],                 ModKeys, False, [ssShift]);
+    if FTextShiftLeftClick = mbaNone
+    then SelKey := [ssShift]
+    else SelKey := [];
+    AddBtnClick(mbaSelect,                  mbLeft,   [],                      ModKeys, False, SelKey);
+    AddBtnClick(FTextShiftLeftClick,        mbLeft,   [ssShift],               ModKeys, False, SelKey);
+
+    if FTextShiftCtrlLeftClick = mbaNone
+    then SelKey := [ssShift]
+    else SelKey := [];
+    AddBtnClick(FTextCtrlLeftClick,         mbLeft,   [SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
+    AddBtnClick(FTextShiftCtrlLeftClick,    mbLeft,   [ssShift, SYNEDIT_LINK_MODIFIER],               ModKeys, False, SelKey);
+
+    if FTextShiftAltLeftClick = mbaNone
+    then SelKey := [ssShift]
+    else SelKey := [];
+    AddBtnClick(FTextAltLeftClick,          mbLeft,   [ssAlt],                 ModKeys, False, SelKey);
+    AddBtnClick(FTextShiftAltLeftClick,     mbLeft,   [ssShift, ssAlt],               ModKeys, False, SelKey);
+
+    if FTextShiftCtrlAltLeftClick = mbaNone
+    then SelKey := [ssShift]
+    else SelKey := [];
+    AddBtnClick(FTextCtrlAltLeftClick,      mbLeft, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
+    AddBtnClick(FTextShiftCtrlAltLeftClick, mbLeft, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
+
+    SelKey := [];
+    AddBtnClick(FTextDoubleLeftClick,        mbLeft,   [], ModKeys, False, SelKey, ccDouble);
+    AddBtnClick(FTextTrippleLeftClick,       mbLeft,   [], ModKeys, False, SelKey, ccTriple);
+    AddBtnClick(FTextQuadLeftClick,          mbLeft,   [], ModKeys, False, SelKey, ccQuad);
+    AddBtnClick(FTextShiftDoubleLeftClick,   mbLeft,   [ssShift],               ModKeys, False, SelKey, ccDouble);
+    AddBtnClick(FTextCtrlDoubleLeftClick,    mbLeft,   [SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey, ccDouble);
+    AddBtnClick(FTextAltDoubleLeftClick,     mbLeft,   [ssAlt],                 ModKeys, False, SelKey, ccDouble);
 
 
-    AddBtnClick(FTextMiddleClick,     mbMiddle, [], [], FTextCtrlMiddleClick = mbaNone);
-    AddBtnClick(FTextCtrlMiddleClick, mbMiddle, [SYNEDIT_LINK_MODIFIER], [ssShift, ssAlt, ssCtrl]);
+    ModKeys := [];
+    if FTextShiftMiddleClick <> mbaNone then ModKeys := ModKeys + [ssShift];
+    if FTextCtrlMiddleClick <> mbaNone then ModKeys := ModKeys + [ssCtrl];
+    if FTextAltMiddleClick  <> mbaNone then ModKeys := ModKeys + [ssAlt];
+    AddBtnClick(FTextMiddleClick,     mbMiddle, [], ModKeys, FTextCtrlMiddleClick = mbaNone);
+    AddBtnClick(FTextShiftMiddleClick,mbMiddle, [ssShift], ModKeys);
+    AddBtnClick(FTextAltMiddleClick,  mbMiddle, [ssAlt], ModKeys);
+    AddBtnClick(FTextCtrlMiddleClick, mbMiddle, [SYNEDIT_LINK_MODIFIER], ModKeys);
 
     AddCommand(emcContextMenu, FTextRightMoveCaret, mbRight, ccSingle, cdUp, [], [], emcoSelectionCaretMoveNever);
 
-    if FTextDoubleSelLine then begin
-      AddCommand(emcSelectLine, True, mbLeft, ccDouble, cdDown, [], [], emcoSelectLineSmart);
-      AddCommand(emcSelectLine, True, mbLeft, ccTriple, cdDown, [], [], emcoSelectLineFull);
-    end else begin
-      AddCommand(emcSelectWord, True, mbLeft, ccDouble, cdDown, [], []);
-      AddCommand(emcSelectLine, True, mbLeft, ccTriple, cdDown, [], []);
-    end;
-    AddCommand(emcSelectPara, True, mbLeft, ccQuad, cdDown, [], []);
   end;
 
   AddWheelAct(FWheel, [], []);
@@ -2607,18 +2714,37 @@ begin
   FName                 := Src.FName;
 
   FGutterLeft           := Src.GutterLeft;
+
+    // left multi click
+  FTextDoubleLeftClick       := Src.TextDoubleLeftClick;
+  FTextTrippleLeftClick      := Src.TextTrippleLeftClick;
+  FTextQuadLeftClick         := Src.TextQuadLeftClick;
+  FTextShiftDoubleLeftClick  := Src.TextShiftDoubleLeftClick;
+  FTextAltDoubleLeftClick    := Src.TextAltDoubleLeftClick;
+  FTextCtrlDoubleLeftClick   := Src.TextCtrlDoubleLeftClick;
+    // left + modifier click
+  FTextAltLeftClick          := Src.TextAltLeftClick;
+  FTextCtrlAltLeftClick      := Src.TextCtrlAltLeftClick;
+  FTextShiftAltLeftClick     := Src.TextShiftAltLeftClick;
+  FTextShiftCtrlAltLeftClick := Src.TextShiftCtrlAltLeftClick;
+  FTextShiftCtrlLeftClick    := Src.TextShiftCtrlLeftClick;
+  FTextShiftLeftClick        := Src.TextShiftLeftClick;
   FTextCtrlLeftClick    := Src.TextCtrlLeftClick;
-  fTextAltLeftClick     := Src.TextAltLeftClick;
+  FTextAltLeftClick     := Src.TextAltLeftClick;
+    // middle click
+  FTextAltMiddleClick        := Src.TextAltMiddleClick;
+  FTextCtrlMiddleClick       := Src.TextCtrlMiddleClick;
   FTextMiddleClick      := Src.TextMiddleClick;
-  FTextCtrlMiddleClick  := Src.TextCtrlMiddleClick;
+  FTextShiftMiddleClick := Src.TextShiftMiddleClick;
   FWheel                := Src.Wheel;
   FCtrlWheel            := Src.CtrlWheel;
   FAltWheel             := Src.AltWheel;
   FShiftWheel           := Src.ShiftWheel;
-  FTextDoubleSelLine    := Src.TextDoubleSelLine;
   FTextDrag             := Src.TextDrag;
   FTextRightMoveCaret   := Src.TextRightMoveCaret;
   FSelectedUserScheme   := Src.FSelectedUserScheme;
+    // extra-1 click
+    // extra-2 click
 
   AssignActions(Src);
 
@@ -2707,9 +2833,11 @@ procedure TEditorMouseOptions.LoadFromXml(aXMLConfig: TRttiXMLConfig;
 
 var
   AltColumnMode: Boolean;
+  TextDoubleSelLine: Boolean;
 begin
   Reset;
   AltColumnMode := False;
+  TextDoubleSelLine := False;
   if aOldPath <> '' then begin
     // Read deprecated value
     // It is on by default, so only if a user switched it off, actions is required
@@ -2737,6 +2865,12 @@ begin
 
   if (not AltColumnMode) then
     TextAltLeftClick := mbaNone;
+
+  if aXMLConfig.GetValue(aPath + 'Default/TextDoubleSelLine', TextDoubleSelLine) then begin
+    FTextDoubleLeftClick       := mbaSelectSetLineSmart;
+    FTextTrippleLeftClick      := mbaSelectSetLineFull;
+  end;
+  aXMLConfig.DeleteValue(aPath + 'Default/TextDoubleSelLine');
 
   CustomSavedActions := False;
   aXMLConfig.ReadObject(aPath + 'Default/', Self);

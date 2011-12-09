@@ -25,7 +25,7 @@ unit editor_mouseaction_options;
 interface
 
 uses
-  math, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEdit, DividerBevel, StdCtrls,
+  math, sysutils, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEdit, DividerBevel, StdCtrls,
   ExtCtrls, Classes, LCLProc, editor_mouseaction_options_advanced, Controls, Forms, ComCtrls;
 
 type
@@ -33,12 +33,42 @@ type
   { TEditorMouseOptionsFrame }
 
   TEditorMouseOptionsFrame = class(TAbstractIDEOptionsEditor)
+    dropShiftMiddle: TComboBox;
+    lblLeftDouble: TLabel;
+    lblLeftTripple: TLabel;
+    lblLeftQuad: TLabel;
+    lblLeftDoubleShift: TLabel;
+    lblLeftDoubleAlt: TLabel;
+    lblLeftDoubleCtrl: TLabel;
+    dropLeftDouble: TComboBox;
+    dropLeftTripple: TComboBox;
+    dropLeftQuad: TComboBox;
+    dropLeftShiftDouble: TComboBox;
+    dropLeftAltDouble: TComboBox;
+    dropLeftCtrlDouble: TComboBox;
+    ShiftMiddleLabel: TLabel;
+    ShiftLeftLabel: TLabel;
+    AltCtrlLeftLabel: TLabel;
+    ShiftCtrlLeftLabel: TLabel;
+    ShiftAltLeftLabel: TLabel;
+    ShiftCtrlAltLeftLabel: TLabel;
     BottomDivider: TBevel;
     chkPredefinedScheme: TCheckBox;
     AltLeftLabel: TLabel;
+    AltMiddleBtnLabel: TLabel;
     dropAltLeft: TComboBox;
+    dropAltCtrlLeft: TComboBox;
+    dropShiftAltLeft: TComboBox;
+    dropShiftCtrlLeft: TComboBox;
+    dropShiftAltCtrlLeft: TComboBox;
+    dropShiftLeft: TComboBox;
+    dropAltMiddle: TComboBox;
+    PageLeftDbl: TPage;
+    PageLeftMod: TPage;
     ScrollBox1: TScrollBox;
     ScrollBox2: TScrollBox;
+    ScrollBox3: TScrollBox;
+    ScrollBox4: TScrollBox;
     TextDividerLabel: TDividerBevel;
     GutterDividerLabel: TDividerBevel;
     GenericDividerLabel: TDividerBevel;
@@ -58,11 +88,13 @@ type
     MiddleBtnLabel: TLabel;
     CtrlMiddleBtnLabel: TLabel;
     Notebook1: TNotebook;
-    Page1: TPage;
-    Page2: TPage;
+    PageMiddle: TPage;
+    PageWheel: TPage;
     ToolBar1: TToolBar;
-    ToolButton1: TToolButton;
-    ToolButton2: TToolButton;
+    ToolButtonMiddle: TToolButton;
+    ToolBtnWheel: TToolButton;
+    ToolButtonLeftMod: TToolButton;
+    ToolButtonLeftMulti: TToolButton;
     WheelBtnLabel: TLabel;
     CtrlWheelBtnLabel: TLabel;
     AltWheelBtnLabel: TLabel;
@@ -77,7 +109,6 @@ type
     ResetGutterButton: TButton;
     ResetTextButton: TButton;
     RightMoveCaret: TCheckBox;
-    TextDoubleSelLine: TCheckBox;
     TextDrag: TCheckBox;
     RadioGroup1: TRadioGroup;
     TextLeft: TCheckGroup;
@@ -91,7 +122,7 @@ type
     procedure ResetGutterButtonClick(Sender: TObject);
     procedure ResetTextButtonClick(Sender: TObject);
     procedure ResetAllButtonClick(Sender: TObject);
-    procedure ToolButton1Click(Sender: TObject);
+    procedure ToolButtonMiddleClick(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
     FOptions: TAbstractIDEOptions;
@@ -106,6 +137,8 @@ type
     procedure SaveGutterSettings;
   protected
     procedure SetVisible(Value: Boolean); override;
+    function IdxToDoubleMouseOptButtonAction(AIdx: integer): TMouseOptButtonAction;
+    procedure CheckForShiftChange(Sender: TObject);
   public
     //constructor Create(AOwner: TComponent); override;
     //destructor Destroy; override;
@@ -137,6 +170,8 @@ begin
   finally
     Dec(FInClickHandler);
   end;
+  if Sender <> nil then
+    CheckForShiftChange(Sender);
 end;
 
 procedure TEditorMouseOptionsFrame.UpdateButtons;
@@ -210,7 +245,7 @@ begin
   UpdateButtons;
 end;
 
-procedure TEditorMouseOptionsFrame.ToolButton1Click(Sender: TObject);
+procedure TEditorMouseOptionsFrame.ToolButtonMiddleClick(Sender: TObject);
 begin
   if not(Sender is TToolButton) then exit;
   Notebook1.PageIndex := TToolButton(Sender).Tag;
@@ -227,11 +262,27 @@ begin
   Result := not (
     (FTempMouseSettings.TextDrag      = TextDrag.Checked) and
     (FTempMouseSettings.TextRightMoveCaret = RightMoveCaret.Checked) and
-    (FTempMouseSettings.TextDoubleSelLine  = TextDoubleSelLine.Checked) and
-    (FTempMouseSettings.TextAltLeftClick    = TMouseOptButtonAction(dropAltLeft.ItemIndex)) and
-    (FTempMouseSettings.TextCtrlLeftClick   = TMouseOptButtonAction(dropCtrlLeft.ItemIndex)) and
-    (FTempMouseSettings.TextMiddleClick     = TMouseOptButtonAction(dropMiddle.ItemIndex)) and
-    (FTempMouseSettings.TextCtrlMiddleClick = TMouseOptButtonAction(dropCtrlMiddle.ItemIndex)) and
+
+    (FTempMouseSettings.TextAltLeftClick          = TMouseOptButtonAction(dropAltLeft.ItemIndex)) and
+    (FTempMouseSettings.TextCtrlLeftClick         = TMouseOptButtonAction(dropCtrlLeft.ItemIndex)) and
+    (FTempMouseSettings.TextCtrlAltLeftClick      = TMouseOptButtonAction(dropAltCtrlLeft.ItemIndex)) and
+    (FTempMouseSettings.TextShiftLeftClick        = TMouseOptButtonAction(dropShiftLeft.ItemIndex)) and
+    (FTempMouseSettings.TextShiftAltLeftClick     = TMouseOptButtonAction(dropShiftAltLeft.ItemIndex)) and
+    (FTempMouseSettings.TextShiftCtrlLeftClick    = TMouseOptButtonAction(dropShiftCtrlLeft.ItemIndex)) and
+    (FTempMouseSettings.TextShiftCtrlAltLeftClick = TMouseOptButtonAction(dropShiftAltCtrlLeft.ItemIndex)) and
+
+    (FTempMouseSettings.TextDoubleLeftClick      = IdxToDoubleMouseOptButtonAction(dropLeftDouble.ItemIndex)) and
+    (FTempMouseSettings.TextTrippleLeftClick     = IdxToDoubleMouseOptButtonAction(dropLeftTripple.ItemIndex)) and
+    (FTempMouseSettings.TextQuadLeftClick        = IdxToDoubleMouseOptButtonAction(dropLeftQuad.ItemIndex)) and
+    (FTempMouseSettings.TextShiftDoubleLeftClick = IdxToDoubleMouseOptButtonAction(dropLeftShiftDouble.ItemIndex)) and
+    (FTempMouseSettings.TextAltDoubleLeftClick   = IdxToDoubleMouseOptButtonAction(dropLeftAltDouble.ItemIndex)) and
+    (FTempMouseSettings.TextCtrlDoubleLeftClick  = IdxToDoubleMouseOptButtonAction(dropLeftCtrlDouble.ItemIndex)) and
+
+    (FTempMouseSettings.TextMiddleClick      = TMouseOptButtonAction(dropMiddle.ItemIndex)) and
+    (FTempMouseSettings.TextShiftMiddleClick = TMouseOptButtonAction(dropShiftMiddle.ItemIndex)) and
+    (FTempMouseSettings.TextAltMiddleClick   = TMouseOptButtonAction(dropAltMiddle.ItemIndex)) and
+    (FTempMouseSettings.TextCtrlMiddleClick  = TMouseOptButtonAction(dropCtrlMiddle.ItemIndex)) and
+
     (FTempMouseSettings.Wheel      = TMouseOptWheelAction(dropWheel.ItemIndex)) and
     (FTempMouseSettings.CtrlWheel  = TMouseOptWheelAction(dropCtrlWheel.ItemIndex)) and
     (FTempMouseSettings.AltWheel   = TMouseOptWheelAction(dropAltWheel.ItemIndex)) and
@@ -268,12 +319,27 @@ procedure TEditorMouseOptionsFrame.SaveTextSettings;
 begin
   FTempMouseSettings.TextDrag := TextDrag.Checked;
   FTempMouseSettings.TextRightMoveCaret := RightMoveCaret.Checked;
-  FTempMouseSettings.TextDoubleSelLine := TextDoubleSelLine.Checked;
 
-  FTempMouseSettings.TextAltLeftClick    := TMouseOptButtonAction(dropAltLeft.ItemIndex);
-  FTempMouseSettings.TextCtrlLeftClick   := TMouseOptButtonAction(dropCtrlLeft.ItemIndex);
-  FTempMouseSettings.TextMiddleClick     := TMouseOptButtonAction(dropMiddle.ItemIndex);
-  FTempMouseSettings.TextCtrlMiddleClick := TMouseOptButtonAction(dropCtrlMiddle.ItemIndex);
+  FTempMouseSettings.TextAltLeftClick          := TMouseOptButtonAction(dropAltLeft.ItemIndex);
+  FTempMouseSettings.TextCtrlLeftClick         := TMouseOptButtonAction(dropCtrlLeft.ItemIndex);
+  FTempMouseSettings.TextCtrlAltLeftClick      := TMouseOptButtonAction(dropAltCtrlLeft.ItemIndex);
+  FTempMouseSettings.TextShiftLeftClick        := TMouseOptButtonAction(dropShiftLeft.ItemIndex);
+  FTempMouseSettings.TextShiftAltLeftClick     := TMouseOptButtonAction(dropShiftAltLeft.ItemIndex);
+  FTempMouseSettings.TextShiftCtrlLeftClick    := TMouseOptButtonAction(dropShiftCtrlLeft.ItemIndex);
+  FTempMouseSettings.TextShiftCtrlAltLeftClick := TMouseOptButtonAction(dropShiftAltCtrlLeft.ItemIndex);
+
+  FTempMouseSettings.TextDoubleLeftClick      := IdxToDoubleMouseOptButtonAction(dropLeftDouble.ItemIndex);
+  FTempMouseSettings.TextTrippleLeftClick     := IdxToDoubleMouseOptButtonAction(dropLeftTripple.ItemIndex);
+  FTempMouseSettings.TextQuadLeftClick        := IdxToDoubleMouseOptButtonAction(dropLeftQuad.ItemIndex);
+  FTempMouseSettings.TextShiftDoubleLeftClick := IdxToDoubleMouseOptButtonAction(dropLeftShiftDouble.ItemIndex);
+  FTempMouseSettings.TextAltDoubleLeftClick   := IdxToDoubleMouseOptButtonAction(dropLeftAltDouble.ItemIndex);
+  FTempMouseSettings.TextCtrlDoubleLeftClick  := IdxToDoubleMouseOptButtonAction(dropLeftCtrlDouble.ItemIndex);
+
+  FTempMouseSettings.TextMiddleClick      := TMouseOptButtonAction(dropMiddle.ItemIndex);
+  FTempMouseSettings.TextShiftMiddleClick := TMouseOptButtonAction(dropShiftMiddle.ItemIndex);
+  FTempMouseSettings.TextAltMiddleClick   := TMouseOptButtonAction(dropAltMiddle.ItemIndex);
+  FTempMouseSettings.TextCtrlMiddleClick  := TMouseOptButtonAction(dropCtrlMiddle.ItemIndex);
+
   FTempMouseSettings.Wheel               := TMouseOptWheelAction(dropWheel.ItemIndex);
   FTempMouseSettings.CtrlWheel           := TMouseOptWheelAction(dropCtrlWheel.ItemIndex);
   FTempMouseSettings.AltWheel            := TMouseOptWheelAction(dropAltWheel.ItemIndex);
@@ -302,6 +368,37 @@ begin
     UpdateButtons;
 end;
 
+function TEditorMouseOptionsFrame.IdxToDoubleMouseOptButtonAction(AIdx: integer): TMouseOptButtonAction;
+begin
+  if AIdx <> 0 then AIdx := AIdx + 3;
+  Result := TMouseOptButtonAction(AIdx);
+end;
+
+procedure TEditorMouseOptionsFrame.CheckForShiftChange(Sender: TObject);
+begin
+  if (Sender = nil) then begin
+    dropShiftLeft.Items[0] := Format(dlfMouseSimpleButtonSelContinuePlain, [dlfMouseSimpleButtonSelect]);
+  end;
+  if (Sender = dropAltLeft) or (Sender = nil) then begin
+    if TMouseOptButtonAction(dropAltLeft.ItemIndex) in [mbaSelect..mbaSelectLine]
+    then dropShiftAltLeft.Items[0] := Format(dlfMouseSimpleButtonSelContinue,
+                                             [dropAltLeft.Items[dropAltLeft.ItemIndex], AltLeftLabel.Caption])
+    else dropShiftAltLeft.Items[0] := dlfMouseSimpleButtonNothing;
+  end;
+  if (Sender = dropCtrlLeft) or (Sender = nil) then begin
+    if TMouseOptButtonAction(dropCtrlLeft.ItemIndex) in [mbaSelect..mbaSelectLine]
+    then dropShiftCtrlLeft.Items[0] := Format(dlfMouseSimpleButtonSelContinue,
+                                             [dropCtrlLeft.Items[dropCtrlLeft.ItemIndex], CtrLLeftLabel.Caption])
+    else dropShiftCtrlLeft.Items[0] := dlfMouseSimpleButtonNothing;
+  end;
+  if (Sender = dropAltCtrlLeft) or (Sender = nil) then begin
+    if TMouseOptButtonAction(dropAltCtrlLeft.ItemIndex) in [mbaSelect..mbaSelectLine]
+    then dropShiftAltCtrlLeft.Items[0] := Format(dlfMouseSimpleButtonSelContinue,
+                                             [dropAltCtrlLeft.Items[dropAltCtrlLeft.ItemIndex], AltCtrlLeftLabel.Caption])
+    else dropShiftAltCtrlLeft.Items[0] := dlfMouseSimpleButtonNothing;
+  end;
+end;
+
 function TEditorMouseOptionsFrame.GetTitle: String;
 begin
   Result := dlgMouseOptions;
@@ -309,16 +406,27 @@ end;
 
 procedure TEditorMouseOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 
-  procedure SetupButtonCombo(ACombo: TComboBox);
+  procedure SetupButtonCombo(ACombo: TComboBox; ASkipSel: Boolean = False);
   begin
+    // must be in the order in which the mba* are declared
     ACombo.Clear;
     ACombo.Items.Add(dlfMouseSimpleButtonNothing);           // mbaNone,
-    ACombo.Items.Add(dlfMouseSimpleButtonSelect);            // mbaSelect,
-    ACombo.Items.Add(dlfMouseSimpleButtonSelectColumn);      // mbaSelectColumn,
-    ACombo.Items.Add(dlfMouseSimpleButtonSelectLine);        // mbaSelectLine,
+    if not ASkipSel then begin
+      ACombo.Items.Add(dlfMouseSimpleButtonSelect);            // mbaSelect,
+      ACombo.Items.Add(dlfMouseSimpleButtonSelectColumn);      // mbaSelectColumn,
+      ACombo.Items.Add(dlfMouseSimpleButtonSelectLine);        // mbaSelectLine,
+    end;
+    ACombo.Items.Add(dlfMouseSimpleButtonSetWord);           // mbaSelectSetWord,
+    ACombo.Items.Add(dlfMouseSimpleButtonSetLineSmart);      // mbaSelectSetLineSmart,
+    ACombo.Items.Add(dlfMouseSimpleButtonSetLineFull);       // mbaSelectSetLineFull,
+    ACombo.Items.Add(dlfMouseSimpleButtonSetPara);           // mbaSelectSetPara,
     ACombo.Items.Add(dlfMouseSimpleButtonPaste);             // mbaPaste,
     ACombo.Items.Add(dlfMouseSimpleButtonDeclaration);       // mbaDeclarationJump,
     ACombo.Items.Add(dlfMouseSimpleButtonDeclarationBlock);  // mbaDeclarationOrBlockJump,
+    ACombo.Items.Add(dlfMouseSimpleButtonAddHistoryPoint);   // mbaAddHistoryPoint,
+    ACombo.Items.Add(dlfMouseSimpleButtonHistBack);          // mbaHistoryBack,
+    ACombo.Items.Add(dlfMouseSimpleButtonHistForw);          // mbaHistoryForw,
+    ACombo.Items.Add(dlfMouseSimpleButtonSetFreeBookmark);   // mbaSetFreeBookmark,
     ACombo.Items.Add(dlfMouseSimpleButtonZoomReset);         // mbaZoomReset
   end;
 
@@ -350,26 +458,61 @@ begin
 
   TextDividerLabel.Caption := dlfMouseSimpleTextSect;
   TextDrag.Caption := dlfMouseSimpleTextSectDrag;
-  TextDoubleSelLine.Caption := dlfMouseSimpleTextSectDoubleSelLine;
   RightMoveCaret.Caption := dlfMouseSimpleRightMoveCaret;
 
-  ToolButton1.Caption := dlfMouseSimpleTextSectPageBtn;
-  ToolButton2.Caption := dlfMouseSimpleTextSectPageWheel;
+  ToolButtonLeftMod.Caption := dlfMouseSimpleTextSectPageLMod;
+  ToolButtonLeftMulti.Caption := dlfMouseSimpleTextSectPageLMulti;
+  ToolButtonMiddle.Caption := dlfMouseSimpleTextSectPageBtn;
+  ToolBtnWheel.Caption := dlfMouseSimpleTextSectPageWheel;
   ToolBar1.AnchorSide[akTop].Side := asrBottom;
 
-  AltLeftLabel.Caption       := dlfMouseSimpleTextSectAltLeftLabel;
-  CtrLLeftLabel.Caption      := dlfMouseSimpleTextSectCtrlLeftLabel;
+    // left multi click
+  lblLeftDouble.Caption        := dlfMouseSimpleTextSectLDoubleLabel;
+  lblLeftTripple.Caption       := dlfMouseSimpleTextSectLTrippleLabel;
+  lblLeftQuad.Caption          := dlfMouseSimpleTextSectLQuadLabel;
+  lblLeftDoubleShift.Caption   := dlfMouseSimpleTextSectLDoubleShiftLabel;
+  lblLeftDoubleCtrl.Caption    := dlfMouseSimpleTextSectLDoubleCtrlLabel;
+  lblLeftDoubleAlt.Caption     := dlfMouseSimpleTextSectLDoubleAltLabel;
+    // left + modifier click
+  AltLeftLabel.Caption          := dlfMouseSimpleTextSectAltLabel;
+  CtrLLeftLabel.Caption         := dlfMouseSimpleTextSectCtrlLabel;
+  AltCtrlLeftLabel.Caption      := dlfMouseSimpleTextSectAltCtrlLabel;
+  ShiftLeftLabel.Caption        := dlfMouseSimpleTextSectShiftLabel;
+  ShiftAltLeftLabel.Caption     := dlfMouseSimpleTextSectShiftAltLabel;
+  ShiftCtrlLeftLabel.Caption    := dlfMouseSimpleTextSectShiftCtrlLabel;
+  ShiftCtrlAltLeftLabel.Caption := dlfMouseSimpleTextSectShiftAltCtrlLabel;
+    // middle click
   MiddleBtnLabel.Caption     := dlfMouseSimpleTextSectMidLabel;
-  CtrlMiddleBtnLabel.Caption := dlfMouseSimpleTextSectCtrlMidLabel;
+  ShiftMiddleLabel.Caption   := dlfMouseSimpleTextSectShiftLabel;
+  AltMiddleBtnLabel.Caption  := dlfMouseSimpleTextSectAltLabel;
+  CtrlMiddleBtnLabel.Caption := dlfMouseSimpleTextSectCtrlLabel;
+    // wheel
   WheelBtnLabel.Caption      := dlfMouseSimpleTextSectWheelLabel;
   CtrlWheelBtnLabel.Caption  := dlfMouseSimpleTextSectCtrlWheelLabel;
   AltWheelBtnLabel.Caption   := dlfMouseSimpleTextSectAltWheelLabel;
   ShiftWheelBtnLabel.Caption := dlfMouseSimpleTextShiftSectWheelLabel;
 
+    // left multi click
+  SetupButtonCombo(dropLeftDouble, True);
+  SetupButtonCombo(dropLeftTripple, True);
+  SetupButtonCombo(dropLeftQuad, True);
+  SetupButtonCombo(dropLeftShiftDouble, True);
+  SetupButtonCombo(dropLeftAltDouble, True);
+  SetupButtonCombo(dropLeftCtrlDouble, True);
+    // left + modifier click
+  SetupButtonCombo(dropShiftLeft);
   SetupButtonCombo(dropAltLeft);
   SetupButtonCombo(dropCtrlLeft);
+  SetupButtonCombo(dropAltCtrlLeft);
+  SetupButtonCombo(dropShiftAltLeft);
+  SetupButtonCombo(dropShiftCtrlLeft);
+  SetupButtonCombo(dropShiftAltCtrlLeft);
+    // middle click
   SetupButtonCombo(dropMiddle);
+  SetupButtonCombo(dropShiftMiddle);
+  SetupButtonCombo(dropAltMiddle);
   SetupButtonCombo(dropCtrlMiddle);
+    // wheel
   SetupWheelCombo(dropWheel);
   SetupWheelCombo(dropCtrlWheel);
   SetupWheelCombo(dropAltWheel);
@@ -412,12 +555,28 @@ begin
   end;
   TextDrag.Checked    := FTempMouseSettings.TextDrag;
   RightMoveCaret.Checked := FTempMouseSettings.TextRightMoveCaret;
-  TextDoubleSelLine.Checked := FTempMouseSettings.TextDoubleSelLine;
 
-  dropAltLeft.ItemIndex    := ord(FTempMouseSettings.TextAltLeftClick);
-  dropCtrlLeft.ItemIndex   := ord(FTempMouseSettings.TextCtrlLeftClick);
-  dropMiddle.ItemIndex     := ord(FTempMouseSettings.TextMiddleClick);
-  dropCtrlMiddle.ItemIndex := ord(FTempMouseSettings.TextCtrlMiddleClick);
+  dropAltLeft.ItemIndex          := ord(FTempMouseSettings.TextAltLeftClick);
+  dropCtrlLeft.ItemIndex         := ord(FTempMouseSettings.TextCtrlLeftClick);
+  dropAltCtrlLeft.ItemIndex      := ord(FTempMouseSettings.TextCtrlAltLeftClick);
+  dropShiftLeft.ItemIndex        := ord(FTempMouseSettings.TextShiftLeftClick);
+  dropShiftAltLeft.ItemIndex     := ord(FTempMouseSettings.TextShiftAltLeftClick);
+  dropShiftCtrlLeft.ItemIndex    := ord(FTempMouseSettings.TextShiftCtrlLeftClick);
+  dropShiftAltCtrlLeft.ItemIndex := ord(FTempMouseSettings.TextShiftCtrlAltLeftClick);
+
+  // 1,2&3 are mouse selection, and not avail for double clicks
+  dropLeftDouble.ItemIndex      := Max(ord(FTempMouseSettings.TextDoubleLeftClick)-3,0);
+  dropLeftTripple.ItemIndex     := Max(ord(FTempMouseSettings.TextTrippleLeftClick)-3,0);
+  dropLeftQuad.ItemIndex        := Max(ord(FTempMouseSettings.TextQuadLeftClick)-3,0);
+  dropLeftShiftDouble.ItemIndex := Max(ord(FTempMouseSettings.TextShiftDoubleLeftClick)-3,0);
+  dropLeftAltDouble.ItemIndex   := Max(ord(FTempMouseSettings.TextAltDoubleLeftClick)-3,0);
+  dropLeftCtrlDouble.ItemIndex  := Max(ord(FTempMouseSettings.TextCtrlDoubleLeftClick)-3,0);
+
+  dropMiddle.ItemIndex      := ord(FTempMouseSettings.TextMiddleClick);
+  dropShiftMiddle.ItemIndex := ord(FTempMouseSettings.TextShiftMiddleClick);
+  dropAltMiddle.ItemIndex   := ord(FTempMouseSettings.TextAltMiddleClick);
+  dropCtrlMiddle.ItemIndex  := ord(FTempMouseSettings.TextCtrlMiddleClick);
+
   dropWheel.ItemIndex      := ord(FTempMouseSettings.Wheel);
   dropCtrlWheel.ItemIndex  := ord(FTempMouseSettings.CtrlWheel);
   dropAltWheel.ItemIndex   := ord(FTempMouseSettings.AltWheel);
@@ -427,6 +586,7 @@ begin
   UpdateButtons;
 
   HideMouseCheckBox.Checked := eoAutoHideCursor in TEditorOptions(AOptions).SynEditOptions2;
+  CheckForShiftChange(nil);
 end;
 
 procedure TEditorMouseOptionsFrame.WriteSettings(

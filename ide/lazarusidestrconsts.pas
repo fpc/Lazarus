@@ -1320,27 +1320,49 @@ resourcestring
   dlfMouseSimpleTextSect = 'Text';
   dlfMouseSimpleTextSectAlt = 'Alt-Key sets column mode';
   dlfMouseSimpleTextSectDrag = 'Drag selection (copy/paste)';
-  dlfMouseSimpleTextSectDoubleSelLine = 'Double click selects line';
   dlfMouseSimpleRightMoveCaret = 'Right mouse includes caret move';
   dlfMouseSimpleTextSectMidLabel = 'Middle Button';
-  dlfMouseSimpleTextSectCtrlMidLabel = 'Ctrl Middle Button';
   dlfMouseSimpleTextSectWheelLabel = 'Wheel';
   dlfMouseSimpleTextSectCtrlWheelLabel = 'Ctrl Wheel';
   dlfMouseSimpleTextSectAltWheelLabel = 'Alt Wheel';
   dlfMouseSimpleTextShiftSectWheelLabel = 'Shift Wheel';
 
-  dlfMouseSimpleTextSectPageBtn = 'Buttons';
+  dlfMouseSimpleTextSectPageLMod = 'Left button 1';
+  dlfMouseSimpleTextSectPageLMulti = 'Left button 2';
+  dlfMouseSimpleTextSectPageBtn = 'Middle button';
   dlfMouseSimpleTextSectPageWheel = 'Wheel';
 
-  dlfMouseSimpleTextSectAltLeftLabel =  'Alt Left Button';
-  dlfMouseSimpleTextSectCtrlLeftLabel = 'Ctrl Left Button';
+  dlfMouseSimpleTextSectLDoubleLabel      = 'Double';
+  dlfMouseSimpleTextSectLTrippleLabel     = 'Tripple';
+  dlfMouseSimpleTextSectLQuadLabel        = 'Quad';
+  dlfMouseSimpleTextSectLDoubleShiftLabel = 'Shift Double';
+  dlfMouseSimpleTextSectLDoubleAltLabel   = 'Alt Double';
+  dlfMouseSimpleTextSectLDoubleCtrlLabel  = 'Ctrl Double';
+  dlfMouseSimpleTextSectShiftLabel        = 'Shift Button';
+  dlfMouseSimpleTextSectAltLabel          = 'Alt Button';
+  dlfMouseSimpleTextSectCtrlLabel         = 'Ctrl Button';
+  dlfMouseSimpleTextSectAltCtrlLabel      = 'Alt-Ctrl Button';
+  dlfMouseSimpleTextSectShiftAltLabel     = 'Shift-Alt Button';
+  dlfMouseSimpleTextSectShiftCtrlLabel    = 'Shift-Ctrl Button';
+  dlfMouseSimpleTextSectShiftAltCtrlLabel = 'Shift-Alt-Ctrl Button';
+
   dlfMouseSimpleButtonNothing          = 'Nothing/Default';
+  dlfMouseSimpleButtonSelContinuePlain = 'Continue %0:s';
+  dlfMouseSimpleButtonSelContinue      = 'Continue %0:s (Bound to: %1:s)';
   dlfMouseSimpleButtonSelect           = 'Select text';
   dlfMouseSimpleButtonSelectColumn     = 'Select text (Columns)';
   dlfMouseSimpleButtonSelectLine       = 'Select text (Lines)';
+  dlfMouseSimpleButtonSetWord          = 'Select current Word';
+  dlfMouseSimpleButtonSetLineSmart     = 'Select current Line (Text)';
+  dlfMouseSimpleButtonSetLineFull      = 'Select current Line (Full)';
+  dlfMouseSimpleButtonSetPara          = 'Select current Paragraph';
   dlfMouseSimpleButtonPaste            = 'Paste';
   dlfMouseSimpleButtonDeclaration      = 'Jumps to implementation';
   dlfMouseSimpleButtonDeclarationBlock = 'Jumps to implementation/other block end';
+  dlfMouseSimpleButtonAddHistoryPoint  = 'Add history point';
+  dlfMouseSimpleButtonHistBack = 'History back';
+  dlfMouseSimpleButtonHistForw = 'History forward';
+  dlfMouseSimpleButtonSetFreeBookmark  = 'Set free bookmark';
   dlfMouseSimpleButtonZoomReset        = 'Reset zoom';
 
   dlfMouseSimpleWheelNothing           = 'Nothing/Default';

@@ -85,6 +85,7 @@ type
   TSynEditMouseAction = class(TCollectionItem)
   private
     FClickDir: TSynMAClickDir;
+    FIgnoreUpClick: Boolean;
     FOption: TSynEditorMouseCommandOpt;
     FOption2: Integer;
     FPriority: TSynEditorMouseCommandOpt;
@@ -97,6 +98,7 @@ type
     procedure SetClickCount(const AValue: TSynMAClickCount);
     procedure SetClickDir(AValue: TSynMAClickDir);
     procedure SetCommand(const AValue: TSynEditorMouseCommand);
+    procedure SetIgnoreUpClick(AValue: Boolean);
     procedure SetMoveCaret(const AValue: Boolean);
     procedure SetOption(const AValue: TSynEditorMouseCommandOpt);
     procedure SetOption2(AValue: Integer);
@@ -122,6 +124,7 @@ type
     property ClickDir: TSynMAClickDir read FClickDir write SetClickDir          default cdUp;
     property Command: TSynEditorMouseCommand read FCommand write SetCommand;
     property MoveCaret: Boolean read FMoveCaret write SetMoveCaret              default False;
+    property IgnoreUpClick: Boolean read FIgnoreUpClick write SetIgnoreUpClick  default False; // only for mouse down
     property Option: TSynEditorMouseCommandOpt read FOption write SetOption     default 0;
     property Option2: Integer read FOption2 write SetOption2                    default 0;
     property Priority: TSynEditorMouseCommandOpt read FPriority write SetPriority default 0;
@@ -157,7 +160,8 @@ type
              const ADir: TSynMAClickDir; const AShift, AShiftMask: TShiftState;
              const AOpt: TSynEditorMouseCommandOpt = 0;
              const APrior: Integer = 0;
-             const AOpt2: integer = 0);
+             const AOpt2: integer = 0;
+             const AIgnoreUpClick: Boolean = False);
   public
     property Items[Index: Integer]: TSynEditMouseAction read GetItem
       write SetItem; default;
@@ -515,6 +519,14 @@ begin
     TSynEditMouseActions(Collection).AssertNoConflict(self);
 end;
 
+procedure TSynEditMouseAction.SetIgnoreUpClick(AValue: Boolean);
+begin
+  if FIgnoreUpClick = AValue then Exit;
+  FIgnoreUpClick := AValue;
+  if Collection <> nil then
+    TSynEditMouseActions(Collection).AssertNoConflict(self);
+end;
+
 procedure TSynEditMouseAction.SetMoveCaret(const AValue: Boolean);
 begin
   if FMoveCaret = AValue then exit;
@@ -579,6 +591,7 @@ begin
     FShift      := TSynEditMouseAction(Source).Shift;
     FShiftMask  := TSynEditMouseAction(Source).ShiftMask;
     FMoveCaret  := TSynEditMouseAction(Source).MoveCaret;
+    FIgnoreUpClick := TSynEditMouseAction(Source).IgnoreUpClick;
     FOption     := TSynEditMouseAction(Source).FOption;
     FOption2    := TSynEditMouseAction(Source).FOption2;
     FPriority   := TSynEditMouseAction(Source).Priority;
@@ -599,6 +612,7 @@ begin
   FMoveCaret  := False;
   FOption     := 0;
   FPriority   := 0;
+  FIgnoreUpClick := False;
 end;
 
 function TSynEditMouseAction.IsMatchingShiftState(AShift: TShiftState): Boolean;
@@ -629,6 +643,7 @@ begin
         and (Other.Shift * self.ShiftMask = self.Shift * Other.ShiftMask)
         and ((Other.Command   <> self.Command) or  // Only conflicts, if Command differs
              (Other.MoveCaret <> self.MoveCaret) or
+             (Other.IgnoreUpClick <> self.IgnoreUpClick) or
              (Other.Option    <> self.Option) or
              (Other.Option2   <> self.Option2) )
         and not(Other.IsFallback xor self.IsFallback)
@@ -647,7 +662,8 @@ begin
         and ((Other.Command   = self.Command) or IgnoreCmd)
         and ((Other.Option    = self.Option) or IgnoreCmd)
         and ((Other.Option2   = self.Option2) or IgnoreCmd)
-        and ((Other.MoveCaret = self.MoveCaret) or IgnoreCmd);
+        and ((Other.MoveCaret = self.MoveCaret) or IgnoreCmd)
+        and ((Other.IgnoreUpClick = self.IgnoreUpClick) or IgnoreCmd);
 end;
 
 { TSynEditMouseActions }
@@ -795,7 +811,7 @@ procedure TSynEditMouseActions.AddCommand(const ACmd: TSynEditorMouseCommand;
   const AMoveCaret: Boolean; const AButton: TSynMouseButton;
   const AClickCount: TSynMAClickCount; const ADir: TSynMAClickDir;
   const AShift, AShiftMask: TShiftState; const AOpt: TSynEditorMouseCommandOpt = 0;
-  const APrior: Integer = 0; const AOpt2: integer = 0);
+  const APrior: Integer = 0; const AOpt2: integer = 0; const AIgnoreUpClick: Boolean = False);
 var
   new: TSynEditMouseAction;
 begin
@@ -813,6 +829,7 @@ begin
       Option := AOpt;
       Priority := APrior;
       Option2 := AOpt2;
+      IgnoreUpClick := AIgnoreUpClick;
     end;
   finally
     dec(FAssertLock);

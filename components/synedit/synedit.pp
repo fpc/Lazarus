@@ -2695,6 +2695,8 @@ begin
     if Result then begin
       if (not AnInfo.CaretDone) and AnAction.MoveCaret then
         MoveCaret;
+      if (AnAction.IgnoreUpClick) then
+        AnInfo.IgnoreUpClick := True;
       exit;
     end;
 
@@ -2854,6 +2856,8 @@ begin
 
     if Result and (not CaretDone) and AnAction.MoveCaret then
       MoveCaret;
+    if Result and (AnAction.IgnoreUpClick) then
+      AnInfo.IgnoreUpClick := True;
   end;
 end;
 
