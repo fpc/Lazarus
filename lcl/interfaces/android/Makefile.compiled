@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<CONFIG>
-  <Makefile Value="True"/>
-  <Params Value=" -MObjFPC -Scghi -O1 -gl -vewnhi -l -Fuandroid;../units/%(CPU_TARGET)-%(OS_TARGET);../../packager/units/%(CPU_TARGET)-%(OS_TARGET);. -Fiandroid lcl.pas"/>
-</CONFIG>
