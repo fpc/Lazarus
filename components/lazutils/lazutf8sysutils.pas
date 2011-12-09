@@ -76,7 +76,6 @@ Procedure EpochToLocal(epoch:longint;out year,month,day,hour,minute,second:Word)
 Var
   DateNum: LongInt;
 Begin
-  inc(Epoch,TZSeconds);
   Datenum:=(Epoch Div 86400) + c1970;
   JulianToGregorian(DateNum,Year,Month,day);
   Epoch:=Abs(Epoch Mod 86400);
