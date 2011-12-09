@@ -146,6 +146,7 @@ var
 begin
   Dlg:=TOpenDialog.Create(nil);
   try
+    Dlg.InitialDir:=GetCurrentDirUTF8;
     Dlg.Title:='Open layout file ...';
     Dlg.Filter:='*.xml|*.xml';
     Dlg.Options:=Dlg.Options+[ofFileMustExist];
@@ -173,6 +174,7 @@ var
 begin
   Dlg:=TSaveDialog.Create(nil);
   try
+    Dlg.InitialDir:=GetCurrentDirUTF8;
     Dlg.Title:='Save layout as ...';
     Dlg.Filter:='*.xml|*.xml';
     Dlg.Options:=Dlg.Options+[ofPathMustExist,ofHideReadOnly,ofOverwritePrompt];
