@@ -61,8 +61,9 @@ begin
     // SelStart was used and we should move to that location
     gtk_text_buffer_get_iter_at_offset(AStrings.FGtkBuf, @CursorIter, AStrings.FQueueCursorMove);
     gtk_text_buffer_place_cursor(AStrings.FGtkBuf, @CursorIter); // needed to move the cursor
+    TextMark := gtk_text_buffer_get_insert(AStrings.FGtkBuf);
   end;
-  gtk_text_view_scroll_to_iter(AStrings.FGtkText, @CursorIter, 0, False, 0, 0);
+  gtk_text_view_scroll_to_mark(AStrings.FGtkText, TextMark, 0, True, 0, 1);
 
   AStrings.FQueueCursorMove := 0;
 end;
