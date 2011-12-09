@@ -525,7 +525,6 @@ type
     procedure SetDefault(const ADefault: Boolean);
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    
     procedure SlotClicked; cdecl; virtual;
     procedure SlotToggled(AChecked: Boolean); cdecl; virtual;
   end;
@@ -4999,8 +4998,74 @@ procedure TQtPushButton.preferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   Size: TSize;
+
+  function AutoSizeButtonFromStyle(const ASize: TSize): TSize;
+  var
+    AOpt: QStyleOptionButtonH;
+    AText: WideString;
+    AMetrics: QFontMetricsH;
+    BtnWidth: Integer;
+    BtnHeight: Integer;
+    AIcon: QIconH;
+    IconSize: TSize;
+    {style pixel metrics}
+    BtnMargin, FocusH, FocusV, ShiftH, ShiftV: Integer;
+  begin
+    Result := ASize;
+    AOpt := QStyleOptionButton_create();
+    QStyleOption_initFrom(AOpt, Widget);
+    AText := getText;
+    QStyleOptionButton_setText(AOpt, @AText);
+    AMetrics := QFontMetrics_create(QWidget_font(Widget));
+    try
+      QStyleOption_fontMetrics(AOpt, AMetrics);
+      BtnWidth := QFontMetrics_width(AMetrics, PWideString(@AText));
+      BtnHeight := QFontMetrics_height(AMetrics);
+      Result.cx := BtnWidth;
+      Result.cy := BtnHeight;
+      BtnMargin := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonMargin, nil, Widget);
+      FocusV := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameVMargin, nil, Widget);
+      FocusH := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameHMargin, nil, Widget);
+      ShiftH := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonShiftHorizontal, nil, Widget);
+      ShiftV := QStyle_pixelMetric(QApplication_style(), QStylePM_ButtonShiftVertical, nil, Widget);
+
+      if ShiftH = 0 then
+        ShiftH := FocusH;
+
+      //writeln('ButtonSizeFromStyle:  Metrics W=',BtnWidth,' H=',BtnHeight,
+      //  ' BtnMargin ',BtnMargin,' FocusV ',FocusV,' FocusH ',FocusH,
+      //  ' ShiftH ',ShiftH,' ShiftV ',ShiftV);
+
+      Result.cx := Result.cx + BtnMargin + (FocusH * 2) + (ShiftH * 2);
+      Result.cy := Result.cy + BtnMargin + (FocusV * 2) + (ShiftV * 2);
+
+      // now check if we have icon
+      AIcon := QIcon_create();
+      try
+        QAbstractButton_icon(QPushButtonH(Widget), AIcon);
+        if not QIcon_isNull(AIcon) then
+        begin
+          QAbstractButton_iconSize(QPushButtonH(Widget), @IconSize);
+          Result.cx := Result.cx + IconSize.cx + (FocusH * 2) + (ShiftH * 2);
+          if IconSize.cy + BtnMargin + (FocusV * 2) + (ShiftV * 2) > Result.cy then
+            Result.cy := IconSize.cy + BtnMargin + (FocusV * 2) + (ShiftV * 2);
+        end;
+      finally
+        QIcon_destroy(AIcon);
+      end;
+
+    finally
+      QStyleOptionButton_destroy(AOpt);
+      QFontMetrics_destroy(AMetrics);
+    end;
+  end;
 begin
+  // qt doesn't return proper autosize for us.QSizePolicy class is missing.
   QPushButton_sizeHint(QPushButtonH(Widget), @Size);
+  {$note qtlcl implementation of buttons autosizing, replace if/when we
+   get QSizePolicy class into bindings}
+  if Assigned(LCLObject) and LCLObject.AutoSize then
+    Size := AutoSizeButtonFromStyle(Size);
   PreferredWidth := Size.cx;
   PreferredHeight := Size.cy;
 end;
