@@ -1,0 +1,15 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: lazutilsstrconsts.rsmodified
+msgid "  modified "
+msgstr ""
+
+#: lazutilsstrconsts.rssize
+msgid "  size "
+msgstr ""
+
+#: lazutilsstrconsts.sinvalidcharset
+msgid "The char set in mask \"%s\" is not valid!"
+msgstr ""
+

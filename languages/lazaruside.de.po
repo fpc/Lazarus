@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-06 18:49+0100\n"
+"PO-Revision-Date: 2011-12-09 15:59+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -52,7 +52,7 @@ msgstr "Text-Einstellungen zurücksetzen"
 
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
-msgstr ""
+msgstr "Zur Implementierung springen"
 
 #: lazarusidestrconsts.dlfmousesimplebuttondeclarationblock
 msgid "Jumps to implementation/other block end"
@@ -61,7 +61,7 @@ msgstr ""
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
 msgid "Nothing/Default"
-msgstr ""
+msgstr "Nichts / Vorgabe"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonpaste
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonpaste"
@@ -70,15 +70,15 @@ msgstr "Einfügen"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselect
 msgid "Select text"
-msgstr ""
+msgstr "Text markieren"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselectcolumn
 msgid "Select text (Columns)"
-msgstr ""
+msgstr "Text markieren (Spalten)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselectline
 msgid "Select text (Lines)"
-msgstr ""
+msgstr "Text markieren (Zeilen)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
@@ -125,7 +125,7 @@ msgstr "Alt-Taste aktiviert Spaltenmodus"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectaltleftlabel
 msgid "Alt Left Button"
-msgstr ""
+msgstr "Alt + linke Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectaltwheellabel
 msgid "Alt Wheel"
@@ -137,7 +137,7 @@ msgstr "Strg + linke Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlmidlabel
 msgid "Ctrl Middle Button"
-msgstr ""
+msgstr "Strg + mittlere Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlwheellabel
 msgid "Ctrl Wheel"
@@ -159,17 +159,17 @@ msgstr "Mittlere Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagebtn
 msgid "Buttons"
-msgstr ""
+msgstr "Tasten"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagewheel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagewheel"
 msgid "Wheel"
-msgstr ""
+msgstr "Rad"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectwheellabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectwheellabel"
 msgid "Wheel"
-msgstr ""
+msgstr "Rad"
 
 #: lazarusidestrconsts.dlfmousesimpletextshiftsectwheellabel
 msgid "Shift Wheel"
@@ -185,24 +185,24 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplewheelhsrollline
 msgid "Scroll horizontal (Single line)"
-msgstr ""
+msgstr "Horizontal scrollen (eine Zeile)"
 
 #: lazarusidestrconsts.dlfmousesimplewheelhsrollpage
 msgid "Scroll horizontal (Page)"
-msgstr ""
+msgstr "Horizontal scrollen (Seite)"
 
 #: lazarusidestrconsts.dlfmousesimplewheelhsrollpagehalf
 msgid "Scroll horizontal (Half page)"
-msgstr ""
+msgstr "Horizontal scrollen (halbe Seite)"
 
 #: lazarusidestrconsts.dlfmousesimplewheelhsrollpageless
 msgid "Scroll horizontal (Page, less one line)"
-msgstr ""
+msgstr "Horizontal scrollen (Seite, weniger eine Zeile)"
 
 #: lazarusidestrconsts.dlfmousesimplewheelnothing
 msgctxt "lazarusidestrconsts.dlfmousesimplewheelnothing"
 msgid "Nothing/Default"
-msgstr ""
+msgstr "Nichts / Vorgabe"
 
 #: lazarusidestrconsts.dlfmousesimplewheelsrolldef
 msgid "Scroll (System speed)"
@@ -210,19 +210,19 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplewheelsrollline
 msgid "Scroll (Single line)"
-msgstr ""
+msgstr "Scollen (eine Zeile)"
 
 #: lazarusidestrconsts.dlfmousesimplewheelsrollpage
 msgid "Scroll (Page)"
-msgstr ""
+msgstr "Scrollen (Seite)"
 
 #: lazarusidestrconsts.dlfmousesimplewheelsrollpagehalf
 msgid "Scroll (Half page)"
-msgstr ""
+msgstr "Scrollen (halbe Seite)"
 
 #: lazarusidestrconsts.dlfmousesimplewheelsrollpageless
 msgid "Scroll (Page, less one line)"
-msgstr ""
+msgstr "Scrollen (Seite, weniger eine Zeile)"
 
 #: lazarusidestrconsts.dlfmousesimplewheelzoom
 msgid "Zoom"
@@ -518,10 +518,9 @@ msgid "Selection"
 msgstr "Auswahl"
 
 #: lazarusidestrconsts.dlgblockindent
-#, fuzzy
 #| msgid "Block indent"
 msgid "Block indent (spaces)"
-msgstr "Blockeinrückung"
+msgstr "Blockeinrückung (Leerzeichen)"
 
 #: lazarusidestrconsts.dlgblockindenttype
 msgid "Indent method"
@@ -541,7 +540,7 @@ msgstr "Leerzeichen"
 
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
-msgstr ""
+msgstr "Blockeinrückung (Tabulatoren)"
 
 #: lazarusidestrconsts.dlgbp7cptb
 #| msgid "TP/BP 7.0 Compatible"
@@ -3094,7 +3093,7 @@ msgstr "Ursprung"
 
 #: lazarusidestrconsts.dlgstacksize
 msgid "Stack size"
-msgstr ""
+msgstr "Stack-Größe"
 
 #: lazarusidestrconsts.dlgstatickeyword
 #| msgid "Static Keyword in Objects"
@@ -7739,7 +7738,6 @@ msgid "The debugger file \"%s\" is not an executable."
 msgstr "Die Debugger-Datei »%s« ist nicht ausführbar."
 
 #: lazarusidestrconsts.lisenvoptdlginvalidfpcsrcdir
-#, fuzzy
 #| msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
 msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl/inc, packages/fcl-base, ... ."
 msgstr "Das FPC-Quellverzeichnis »%s« sieht verkehrt aus. Es sollte Verzeichnisse wie rtl, packages, compiler usw. enthalten ..."
@@ -7965,7 +7963,7 @@ msgstr "Beispieldatei:"
 
 #: lazarusidestrconsts.lisexamplesbuildallselected
 msgid "Build all selected"
-msgstr "Alle Ausgewählten erstellen"
+msgstr "Alle ausgewählten erstellen"
 
 #: lazarusidestrconsts.lisexamplesidentifiertmyenumenumunitnameidentifierpac
 msgid "Examples:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier"
@@ -7973,7 +7971,7 @@ msgstr "Beispiele:%sBezeichner%sTMyEnum.Enum%sUnitname.Bezeichner%s#PackageName.
 
 #: lazarusidestrconsts.lisexamplesopenfirstselected
 msgid "Open first selected"
-msgstr ""
+msgstr "Erstes ausgewähltes öffnen"
 
 #: lazarusidestrconsts.lisexceptiondialog
 msgid "Debugger Exception Notification"
@@ -8153,7 +8151,7 @@ msgstr "Zeile einfügen"
 
 #: lazarusidestrconsts.lisfilefiltersmask
 msgid "File mask"
-msgstr "Daeimaske"
+msgstr "Dateimaske"
 
 #: lazarusidestrconsts.lisfilefiltersname
 msgctxt "lazarusidestrconsts.lisfilefiltersname"
@@ -8178,7 +8176,7 @@ msgstr "Datei gehört zu keinem Projekt"
 
 #: lazarusidestrconsts.lisfileisdirectory
 msgid "File is directory"
-msgstr ""
+msgstr "Datei ist Verzeichnis"
 
 #: lazarusidestrconsts.lisfileisnotanexecutable
 msgid "File is not an executable"
@@ -8430,7 +8428,6 @@ msgid "Free Pascal Compiler not found"
 msgstr "Free-Pascal-Compiler nicht gefunden"
 
 #: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-#, fuzzy
 #| msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
 msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
 msgstr "Free-Pascal-Programm auf der Basis von TCustomApplication für das einfache Prüfen von Kommandozeileneinstellungen, Bearbeiten von Ausnahmen und so weiter. Die Programmdatei wird von Lazarus betreut."
@@ -8552,7 +8549,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisgroupemptydeletemore
 msgid "%sThere are %d more empty groups, delete all?"
-msgstr ""
+msgstr "%sEs gibt %d weitere leere Gruppen. Alle löschen?"
 
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
@@ -9337,7 +9334,6 @@ msgid "Config %sBuild File%s"
 msgstr "%sNeukompilieren der Datei%s einrichten"
 
 #: lazarusidestrconsts.liskmconfigurecustomcomponents
-#, fuzzy
 #| msgid "Configure custom components"
 msgid "Configure Custom Components"
 msgstr "Externe Komponenten einrichten"
@@ -9395,7 +9391,6 @@ msgid "Edit context sensitive help"
 msgstr "Kontextsensitive Hilfe bearbeiten"
 
 #: lazarusidestrconsts.liskmencloseselection
-#, fuzzy
 #| msgid "Enclose selection"
 msgid "Enclose Selection"
 msgstr "Bereich einschließen"
@@ -9672,7 +9667,6 @@ msgid "Set marker 9"
 msgstr "Markierung 9 setzen"
 
 #: lazarusidestrconsts.liskmstopprogram
-#, fuzzy
 #| msgid "Stop program"
 msgid "Stop Program"
 msgstr "Programm stoppen"
@@ -9876,7 +9870,7 @@ msgstr "lazarus [Einstellungen] <Projektdatei>"
 
 #: lazarusidestrconsts.lislazarusotherfile
 msgid "Lazarus other file"
-msgstr ""
+msgstr "Lazarus andere Datei"
 
 #: lazarusidestrconsts.lislazaruspackage
 msgid "Lazarus package"
@@ -9896,7 +9890,7 @@ msgstr "Lazarus-Projektquelltext"
 
 #: lazarusidestrconsts.lislazarussource
 msgid "Lazarus Source"
-msgstr ""
+msgstr "Lazarus Quellen"
 
 #: lazarusidestrconsts.lislazarusunit
 msgid "Lazarus unit"
@@ -10361,16 +10355,14 @@ msgid "Main unit has Application.CreateForm statements"
 msgstr "Die Haupt-Unit enthält die Anweisung »Application.CreateForm«."
 
 #: lazarusidestrconsts.lismainunithasapplicationtitlestatements
-#, fuzzy
 #| msgid "Main Unit has Application.Title statements"
 msgid "Main unit has Application.Title statements"
-msgstr "Die Haupt-Unit enthält die Anweisung »Application.Title«."
+msgstr "Die Haupt-Unit enthält  »Application.Title« Anweisungen."
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
-#, fuzzy
 #| msgid "Main Unit has Uses Section containing all Units of project"
 msgid "Main unit has Uses section containing all units of project"
-msgstr "Die Hauptunit enthält einen Uses-Abschnitt mit allen Units des Projekt"
+msgstr "Die Hauptunit enthält einen uses-Abschnitt mit allen Units des Projekts."
 
 #: lazarusidestrconsts.lismainunitispascalsource
 #, fuzzy
@@ -10487,7 +10479,6 @@ msgid "Add &Breakpoint"
 msgstr "Neuer Haltepunkt"
 
 #: lazarusidestrconsts.lismenuaddcurfiletopkg
-#, fuzzy
 #| msgid "Add active file to a package ..."
 msgid "Add Active File to Package ..."
 msgstr "Aktive Datei zu einem Package hinzufügen ..."
@@ -10499,16 +10490,14 @@ msgid "Add Jump Point to History"
 msgstr "Sprungmarke speichern"
 
 #: lazarusidestrconsts.lismenuaddtoproject
-#, fuzzy
 #| msgid "Add editor file to Project"
 msgid "Add Editor File to Project"
 msgstr "Datei im Editor ins Projekt aufnehmen"
 
 #: lazarusidestrconsts.lismenuaddwatch
-#, fuzzy
 #| msgid "Add watch ..."
 msgid "Add &Watch ..."
-msgstr "Überwachung hinzufügen..."
+msgstr "Überwachung hinzufügen ..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
 #| msgid "Break Lines in selection"
@@ -11172,7 +11161,6 @@ msgid "Reporting a Bug"
 msgstr "Fehler melden ..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
-#, fuzzy
 #| msgid "Rescan FPC source directory"
 msgid "Rescan FPC Source Directory"
 msgstr "FPC-Quelltextverzeichnis neu einlesen"
@@ -11545,7 +11533,6 @@ msgid "Event Log"
 msgstr "Debug-Ereignisse"
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
-#, fuzzy
 #| msgid "Debug output"
 msgid "Debug Output"
 msgstr "Debuggerausgaben"
@@ -11818,10 +11805,9 @@ msgid "Create a new empty text file."
 msgstr "Erzeugt eine neue leere Textdatei."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewgraphicalapplication
-#, fuzzy
 #| msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
 msgid "Create a new graphical application.%sThe application source is maintained by Lazarus."
-msgstr "Erzeugt eine neue grafische Applikation.%sDas Programm wird von Lazarus gewartet."
+msgstr "Erzeugt eine neue grafische Anwendung.%sDer Programmquelltext wird von Lazarus gewartet."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -12099,7 +12085,6 @@ msgid "No package selected"
 msgstr "Kein Package gewählt"
 
 #: lazarusidestrconsts.lisoipopenloadedpackage
-#, fuzzy
 #| msgid "Open loaded package"
 msgid "Open Loaded Package"
 msgstr "Geladenes Package öffnen"
@@ -12965,7 +12950,6 @@ msgid "Revert package?"
 msgstr "Package zurücknehmen?"
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
-#, fuzzy
 #| msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgstr "Die Datei %s%s%s%sbefindet sich derzeit nicht im Unitpfad des Packages.%s%s. %s%s%s in den Unitpfad aufnehmen?"
@@ -14045,7 +14029,6 @@ msgid "Invalid exclude filter"
 msgstr "Ungültiger Ausschlußfilter"
 
 #: lazarusidestrconsts.lispublprojinvalidincludefilter
-#, fuzzy
 #| msgid "Invalid Include filter"
 msgid "Invalid include filter"
 msgstr "Ungültiger Include-Filter"
@@ -14106,7 +14089,7 @@ msgstr "Wieder öffnen"
 
 #: lazarusidestrconsts.lispwviewexampleprojects
 msgid "View Example Projects"
-msgstr ""
+msgstr "Beispielprojekte anzeigen"
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
 msgid "Create local variable"
@@ -14497,7 +14480,7 @@ msgstr "Suche nach"
 
 #: lazarusidestrconsts.lissearchprojectsfrom
 msgid "Search projects from"
-msgstr ""
+msgstr "Suche Projekte in"
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"
@@ -15070,50 +15053,43 @@ msgid "The %s contains a star * character.%sLazarus uses this as normal characte
 msgstr "%s enthält das Zeichen Stern (*).%sLazarus verwendet es als normales Zeichen und erweitert es nicht zu einer Dateimaske."
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutablecho
-#, fuzzy
 #| msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
-msgstr "Der aktuelle Compilerdateiname %s%s%s%sist keine gültige ausführbare Datei.%sDrücken Sie »Ok«, um mit der Voreinstellung %s%s%szu arbeiten.%sSonst überprüfen Sie Einstellungen->Umgebungseinstellungen->Dateien"
+msgstr "Der aktuelle Compilerdateiname %s%s%s%sist keine gültige ausführbare Datei.%sDrücken Sie »OK«, um mit der Voreinstellung %s%s%szu arbeiten.%sSonst überprüfen Sie Einstellungen->Umgebung->Dateien"
 
 #: lazarusidestrconsts.listhecurrentcompilerfilenameisnotavalidexecutableplease
-#, fuzzy
 #| msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Tools -> Options -> Files"
-msgstr "Der aktuelle Compiler-Dateiname %s%s%s%sist keine gültige ausführbare Datei.%sBitte prüfen Sie Einstellungen -> Umgebungseinstellungen -> Dateien"
+msgstr "Der aktuelle Compiler-Dateiname %s%s%s%sist keine gültige ausführbare Datei.%sBitte prüfen Sie Einstellungen -> Umgebung -> Dateien"
 
 #: lazarusidestrconsts.listhecurrentfpchasnoconfigfileitwillprobablymisssome
 msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
 msgstr "Der aktuelle FPC hat keine Konfigurationsdatei. Er wird vermutlich einige Units nicht finden. Überprüfen Sie Ihre FPC-Installation."
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
-#, fuzzy
 #| msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
-msgstr "Das aktuelle Free Pascal-Quelltextverzeichnis %s%s%s%ssieht nicht richtig aus.%sMit »OK« wählen Sie die Voreinstellung %s%s%s.%sSonst überprüfen Sie Einstellungen -> Umgebungseinstellungen -> Dateien"
+msgstr "Das aktuelle Free Pascal-Quelltextverzeichnis %s%s%s%ssieht nicht richtig aus.%sMit »OK« wählen Sie die Voreinstellung %s%s%s.%sSonst überprüfen Sie Einstellungen -> Umgebung -> Dateien"
 
 #: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
-#, fuzzy
 #| msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Tools -> Options -> Files"
-msgstr "Das aktuelle Free Pascal-Quelltextverzeichnis %s%s%s%ssieht nicht richtig aus.%sÜberprüfen Sie Einstellungen -> Umgebungseinstellungen -> Dateien"
+msgstr "Das aktuelle Free Pascal-Quelltextverzeichnis %s%s%s%ssieht nicht richtig aus.%sÜberprüfen Sie Einstellungen -> Umgebung -> Dateien"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou
-#, fuzzy
 #| msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
-msgstr "Das aktuelle Lazarus-Verzeichnis %s%s%s%ssieht nicht richtig aus.%sOhne es können keine LCL-Programme geschrieben werden.%sMit »OK« setzen Sie die Voreinstellung %s%s%s.%sSonst überprüfen Sie Einstellungen -> Umgebungseinstellungen -> Dateien"
+msgstr "Das aktuelle Lazarus-Verzeichnis %s%s%s%ssieht nicht richtig aus.%sOhne es können keine LCL-Programme geschrieben werden.%sMit »OK« setzen Sie die Voreinstellung %s%s%s.%sSonst überprüfen Sie Einstellungen -> Umgebung -> Dateien"
 
 #: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou2
-#, fuzzy
 #| msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Environment -> Environment Options -> Files"
 msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sCheck Tools -> Options -> Files"
-msgstr "Das aktuelle Lazarus-Verzeichnis %s%s%s%ssieht nicht korrekt aus.%sOhne es können keine LCL-Programme geschrieben werden.%sÜberprüfen Sie Einstellungen -> Umgebungseinstellungen -> Dateien"
+msgstr "Das aktuelle Lazarus-Verzeichnis %s%s%s%ssieht nicht korrekt aus.%sOhne es können keine LCL-Programme geschrieben werden.%sÜberprüfen Sie Einstellungen -> Umgebung -> Dateien"
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-#, fuzzy
 #| msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
-msgstr "Der Debugger %s%s%s%sfehlt oder ist nicht ausführbar.%s%sSiehe: Umgebung -> Debuggereinstellungen"
+msgstr "Der Debugger %s%s%s%sfehlt oder ist nicht ausführbar.%s%sSiehe: Einstellungen -> Debugger"
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
 msgid "The destination directory%s%s%s%s does not exist."
@@ -15213,10 +15189,9 @@ msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended
 msgstr "Der Free Pascal-Compiler (Dateiname: %s) wurde nicht gefunden.%sEs wird empfohlen, FPC zu installieren."
 
 #: lazarusidestrconsts.listhefreepascalsourcedirectorywasnotfoundsomecodefun
-#, fuzzy
 #| msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
-msgstr "Das Free-Pascal-Quelltextverzeichnis wurde nicht gefunden.%sEinige Quelltextfunktionen werden nicht funktionieren.%sEs wird empfohlen, den FPC-Quelltext zu installieren und den Pfad darauf zu setzen, und zwar unter%sEinstellungen->Umgebungseinstellungen->Dateien"
+msgstr "Das Free-Pascal-Quelltextverzeichnis wurde nicht gefunden.%sEinige Quelltextfunktionen werden nicht funktionieren.%sEs wird empfohlen, den FPC-Quelltext zu installieren und den Pfad darauf zu setzen, und zwar unter%sEinstellungen -> Umgebung -> Dateien"
 
 #: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
@@ -15243,10 +15218,9 @@ msgid "The Lazarus directory contains the sources of the IDE and the package fil
 msgstr "Das Lazarus Verzeichnis enthält die Quellen der IDE und die Package-Dateien der LCL und vieler Standardpackages. Zum Beispiel enthält es die Datei \"ide%slazarus.lpi\". Die Übersetzungsdateien befinden sich hier ebenfalls."
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
-#, fuzzy
 #| msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
 msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Tools -> Options -> Files"
-msgstr "Das Lazarusverzeichnis wurde nicht gefunden.%sSie können keine LCL-Anwendungen erzeugen.%sBitte prüfen Sie Einstellungen -> Umgebungseinstellungen -> Dateien"
+msgstr "Das Lazarusverzeichnis wurde nicht gefunden.%sSie können keine LCL-Anwendungen erzeugen.%sBitte prüfen Sie Einstellungen -> Umgebung -> Dateien"
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
@@ -15345,7 +15319,6 @@ msgid "The project information file %s%s%s%shas changed on disk."
 msgstr "Die Projektinformationsdatei %s%s%s%sauf dem Datenträger hat sich geändert."
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
-#, fuzzy
 #| msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Das Projekt muß vor dem Kompilieren gesichert werden.%sWenn Sie das Testverzeichnis in den Umgebungseinstellungen setzen,%können Sie neue Projekte erzeugen und sofort kompilieren.%sProjekt speichern?"
@@ -15452,7 +15425,6 @@ msgid "The unit has this name"
 msgstr "Die Unit heißt"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-#, fuzzy
 #| msgid "The unit filename %s%s%s is not lowercase.%sThe FreePascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgstr "Der Unitdateiname %s%s%s ist nicht in Kleinbuchstaben.%sDer Free-Pascal-Compiler sucht nicht nach allen Schreibweisen. Es wird empfohlen, Dateinamen in Kleinbuchstaben zu verwenden.%s%sDatei in Kleinbuchstaben umbenennen?"
@@ -15891,7 +15863,6 @@ msgid "Unable to find file %s%s%s."
 msgstr "Datei %s%s%s kann nicht gefunden werden."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-#, fuzzy
 #| msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
 msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr "Kann die Datei %s%s%s nicht finden.%sFalls sie zum Projekt gehört, prüfen Sie den Suchpfad in der Startseite von%sProjekt->Compilereinstellungen ... unter Andere Unit-Dateien. Wenn die Datei zu einem Package gehört, müssen dessen Einstellungen geprüft werden. Falls die Datei zu Lazarus gehört, muß sichergestellt sein, daß die IDE sauber kompiliert ist. Gehört die Datei zu FPC muß die fpc.cfg überprüft werden. Bei Unklarheiten hilft der Button Test unter Projekt -> Compilereinstellungen ... -> Test"
@@ -16223,7 +16194,6 @@ msgid "User's home directory"
 msgstr "Heimatverzeichnis des Users"
 
 #: lazarusidestrconsts.lisuseunit
-#, fuzzy
 #| msgid "Add unit to uses section"
 msgctxt "lazarusidestrconsts.lisuseunit"
 msgid "Add Unit to Uses Section"
@@ -16607,7 +16577,6 @@ msgid "i18n Options"
 msgstr "i18n-Einstellungen"
 
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
-#, fuzzy
 #| msgid "Include Version Info in executable"
 msgid "Include version info in executable"
 msgstr "Versionsinfo in ausführbare Datei einfügen"
@@ -16639,7 +16608,7 @@ msgstr ""
 
 #: lazarusidestrconsts.rsiwpsplitterdefault
 msgid "Default Size"
-msgstr ""
+msgstr "Vorgabe-Größe"
 
 #: lazarusidestrconsts.rsiwpsplitterfollowwindow
 msgid "Restore with window"
@@ -16943,7 +16912,6 @@ msgid "abort build"
 msgstr "Kompiliervorgang abbrechen"
 
 #: lazarusidestrconsts.srkmecabstractmethods
-#, fuzzy
 #| msgid "Abstract methods ..."
 msgid "Abstract Methods ..."
 msgstr "Abstrakte Methoden ..."
@@ -16961,7 +16929,6 @@ msgid "add data/watchpoint"
 msgstr "Daten-/Überwachungspunkt hinzufügen"
 
 #: lazarusidestrconsts.srkmecaddjumppoint
-#, fuzzy
 #| msgid "Add jump point"
 msgid "Add Jump Point"
 msgstr "Neue Sprungmarke"

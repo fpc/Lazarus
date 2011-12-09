@@ -586,6 +586,7 @@ components/codetools/ide/codystrconsts.pas svneol=native#text/pascal
 components/codetools/ide/codyutils.pas svneol=native#text/pascal
 components/codetools/ide/declarevardlg.lfm svneol=native#text/plain
 components/codetools/ide/declarevardlg.pas svneol=native#text/pascal
+components/codetools/ide/languages/codystrconsts.de.po svneol=native#text/plain
 components/codetools/ide/languages/codystrconsts.it.po svneol=native#text/plain
 components/codetools/ide/languages/codystrconsts.po svneol=native#text/plain
 components/codetools/ide/languages/codystrconsts.pt_BR.po svneol=native#text/plain
@@ -913,6 +914,7 @@ components/fppkg/images/install.png -text
 components/fppkg/images/lazarus_pkg.png -text
 components/fppkg/images/package_manager.png -text
 components/fppkg/images/update.png -text
+components/fppkg/languages/fppkg_const.de.po svneol=native#text/plain
 components/fppkg/languages/fppkg_const.po svneol=native#text/plain
 components/fppkg/languages/fppkg_const.pt_BR.po svneol=native#text/plain
 components/fppkg/languages/fppkg_const.ru.po svneol=native#text/plain
@@ -1755,6 +1757,9 @@ components/lazutils/asiancodepages.inc svneol=native#text/pascal
 components/lazutils/avglvltree.pas svneol=native#text/pascal
 components/lazutils/fileutil.inc svneol=native#text/pascal
 components/lazutils/fileutil.pas svneol=native#text/pascal
+components/lazutils/languages/lazutilsstrconsts.de.po svneol=native#text/plain
+components/lazutils/languages/lazutilsstrconsts.po svneol=native#text/plain
+components/lazutils/languages/luresstrings.de.po svneol=native#text/plain
 components/lazutils/languages/luresstrings.po svneol=native#text/plain
 components/lazutils/languages/luresstrings.pt_BR.po svneol=native#text/plain
 components/lazutils/languages/luresstrings.ru.po svneol=native#text/plain
@@ -2040,6 +2045,7 @@ components/projecttemplates/frmtemplatesettings.pas svneol=native#text/plain
 components/projecttemplates/frmtemplatevariables.lfm svneol=native#text/plain
 components/projecttemplates/frmtemplatevariables.pas svneol=native#text/plain
 components/projecttemplates/idetemplateproject.pp svneol=native#text/plain
+components/projecttemplates/languages/frmtemplatesettings.de.po svneol=native#text/plain
 components/projecttemplates/languages/frmtemplatesettings.it.po svneol=native#text/plain
 components/projecttemplates/languages/frmtemplatesettings.po svneol=native#text/plain
 components/projecttemplates/languages/frmtemplatesettings.pt.po svneol=native#text/plain
