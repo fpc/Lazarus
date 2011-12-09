@@ -513,7 +513,7 @@ begin
   AWindowInfo.LastMouseDownControl := lTarget;
   lEventPos := FormPosToControlPos(lTarget, Event.x, Event.y);
 
-  // If the target is focusable, a mouse up will give it focus
+  // If the target is focusable, a mouse down will give it focus
   CDWidgetset.CDSetFocusToControl(lTarget);
 
   if XButtonToMouseButton(Event.button, MouseButton) then

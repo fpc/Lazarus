@@ -55,16 +55,12 @@ type
     procedure CallbackDeactivate; message 'CallbackDeactivate';
     procedure CallbackCloseQuery(var CanClose: Boolean); message 'CallbackCloseQuery:';
     procedure CallbackResize; message 'CallbackResize';
-    //
-    procedure CallbackMouseUp(x, y: Integer); message 'CallbackMouseUp:y:';
-    procedure CallbackMouseDown(x, y: Integer); message 'CallbackMouseDown:y:';
-    procedure CallbackMouseClick(clickCount: Integer); message 'CallbackMouseClick:';
-    procedure CallbackMouseMove(x, y: Integer); message 'CallbackMouseMove:y:';
   end;
 
   { TCocoaCustomControl }
 
   TCocoaCustomControl = objcclass(NSControl)
+  public
     //callback  : TCommonCallback;
     WindowHandle: TCocoaWindow;
     Context : TCocoaContext;
@@ -90,7 +86,7 @@ function RawImage_DescriptionToBitmapType(ADesc: TRawImageDescription; out bmpTy
 
 implementation
 
-uses customdrawnwsforms;
+uses customdrawnwsforms, customdrawnprivate;
 
 function Cocoa_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
 const
@@ -220,7 +216,7 @@ var
 begin
   mp:=event.locationInWindow;
   mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
-  callbackMouseUp(round(mp.x), round(mp.y));
+  callbackMouseUp(WindowHandle, round(mp.x), round(mp.y), mbLeft);
   inherited mouseUp(event);
 end;
 
@@ -230,7 +226,7 @@ var
 begin
   mp:=event.locationInWindow;
   mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
-  callbackMouseDown(round(mp.x), round(mp.y));
+  callbackMouseDown(WindowHandle, round(mp.x), round(mp.y), mbLeft);
   inherited mouseDown(event);
 end;
 
@@ -240,7 +236,7 @@ var
 begin
   mp:=event.locationInWindow;
   mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
-  callbackMouseMove(round(mp.x), round(mp.y));
+  callbackMouseMove(WindowHandle, round(mp.x), round(mp.y));
   inherited mouseMoved(event);
 end;
 
@@ -250,7 +246,7 @@ var
 begin
   mp:=event.locationInWindow;
   mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
-  callbackMouseMove(round(mp.x), round(mp.y));
+  callbackMouseMove(WindowHandle, round(mp.x), round(mp.y));
   inherited mouseMoved(event);
 end;
 
@@ -347,44 +343,6 @@ begin
     LCLSendSizeMsg(WindowHandle.LCLForm, Round(sz.width), Round(sz.height), SIZENORMAL);
 end;
 
-procedure TCocoaForm.CallbackMouseUp(x, y: Integer);
-var
-  lTarget: TWinControl;
-  lEventPos: TPoint;
-begin
-  lTarget := WindowHandle.LastMouseDownControl;
-  if lTarget = nil then lTarget := FindControlWhichReceivedEvent(
-    WindowHandle.LCLForm, WindowHandle.Children, x, y);
-  lEventPos := FormPosToControlPos(lTarget, x, y);
-  LCLSendMouseUpMsg(lTarget, lEventPos.x, lEventPos.y, mbLeft, []);
-end;
-
-procedure TCocoaForm.CallbackMouseDown(x, y: Integer);
-var
-  lTarget: TWinControl;
-  lEventPos: TPoint;
-begin
-  lTarget := FindControlWhichReceivedEvent(WindowHandle.LCLForm, WindowHandle.Children, x, y);
-  WindowHandle.LastMouseDownControl := lTarget;
-  lEventPos := FormPosToControlPos(lTarget, x, y);
-  LCLSendMouseDownMsg(lTarget, lEventPos.x, lEventPos.y, mbLeft, []);
-end;
-
-procedure TCocoaForm.CallbackMouseClick(clickCount: Integer);
-begin
-  LCLSendClickedMsg(WindowHandle.LCLForm);
-end;
-
-procedure TCocoaForm.CallbackMouseMove(x, y: Integer);
-var
-  lTarget: TWinControl;
-  lEventPos: TPoint;
-begin
-  lTarget := FindControlWhichReceivedEvent(WindowHandle.LCLForm, WindowHandle.Children, x, y);
-  lEventPos := FormPosToControlPos(lTarget, x, y);
-  LCLSendMouseMoveMsg(WindowHandle.LCLForm, lEventPos.x, lEventPos.y, []);
-end;
-
 { TCocoaCustomControl }
 
 procedure TCocoaCustomControl.drawRect(dirtyRect:NSRect);
@@ -396,7 +354,6 @@ end;
 procedure TCocoaCustomControl.Draw(ControlContext: NSGraphicsContext;
   const Abounds, dirty:NSRect);
 var
-  struct : TPaintStruct;
   lWidth, lHeight: Integer;
   lBitmap, lMask: HBITMAP;
   lRawImage: TRawImage;
@@ -411,27 +368,13 @@ begin
   if Context.InitDraw(lWidth, lHeight) then
   begin
     // Prepare the non-native image and canvas
-    FillChar(struct, SizeOf(TPaintStruct), 0);
-
     UpdateControlLazImageAndCanvas(WindowHandle.Image,
       WindowHandle.Canvas, lWidth, lHeight, clfRGB24UpsideDown);
     DrawFormBackground(WindowHandle.Image, WindowHandle.Canvas);
     WindowHandle.Canvas.NativeDC := PtrInt(Context);
 
-    struct.hdc := HDC(WindowHandle.Canvas);
-
-    // Send the paint message to the LCL
-    {$IFDEF VerboseCDWinAPI}
-      DebugLn(Format('[TLCLCommonCallback.Draw] OnPaint event started context: %x', [struct.hdc]));
-    {$ENDIF}
-    LCLSendPaintMsg(WindowHandle.LCLForm, struct.hdc, @struct);
-    {$IFDEF VerboseCDWinAPI}
-      DebugLn('[TLCLCommonCallback.Draw] OnPaint event ended');
-    {$ENDIF}
-
-    // Now render all child wincontrols
-    RenderChildWinControls(WindowHandle.Image, WindowHandle.Canvas,
-      GetCDWinControlList(WindowHandle.LCLForm));
+    // Draw the form
+    RenderForm(WindowHandle.Image, WindowHandle.Canvas, WindowHandle.LCLForm);
 
     // Now render it into the control
     WindowHandle.Image.GetRawImage(lRawImage);
