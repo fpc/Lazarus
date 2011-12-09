@@ -130,6 +130,7 @@ Type
     FDataFields: TList;  // Data Fields to lookup/edit
     FKeyFields: TList;   // Keyfields in lookup dataset
     FListField: TField;  // Result field in lookup dataset
+    FListKeys: array of Variant;
     FLookupList: TLookupList;
     FNullValueKey: TShortcut;
     FHasLookUpField: Boolean;
@@ -155,10 +156,11 @@ Type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Initialize(AControlDataLink: TFieldDataLink; AControlItems: TStrings);
+    function KeyFieldValue: Variant;
     function ListFieldValue: string;
-    procedure UpdateData(const AListFieldValue: string);
-    function  GetKeyValue(const AListFieldValue: string): Variant;
-    function  GetListValue(const AKeyValue: Variant; out ItemIndex:Integer): boolean;
+    procedure UpdateData(ValueIndex: Integer);
+    function  GetKeyValue(ValueIndex: Integer): Variant;
+    function  GetKeyIndex(const AKeyValue: Variant): Integer;
     property LookupCache: boolean read FLookupCache  write SetLookupCache;
     // properties to be published by owner control
     // these are not used where data control Field is dbLookup

@@ -32,7 +32,9 @@ end;
 
 procedure TDBLookupComboBox.UpdateData(Sender: TObject);
 begin
-  FLookup.UpdateData(Text);
+  //FLookup.UpdateData(Text);
+  if ItemIndex <> -1 then
+    FLookup.UpdateData(ItemIndex);
 end;
 
 procedure TDBLookupComboBox.ActiveChange(Sender: TObject);
@@ -42,7 +44,10 @@ end;
 
 procedure TDBLookupComboBox.DataChange(Sender: TObject);
 begin
-  Text := FLookup.ListFieldValue;
+  if FDatalink.Active then
+    ItemIndex := FLookup.GetKeyIndex(FLookup.KeyFieldValue)
+  else
+    ItemIndex := -1;
 end;
 
 procedure TDBLookupComboBox.KeyDown(var Key: Word; Shift: TShiftState);
@@ -69,7 +74,7 @@ end;
 
 function TDBLookupComboBox.GetKeyValue: variant;
 begin
-  result := FLookup.GetKeyValue(Text);
+  result := FLookup.GetKeyValue(ItemIndex);
 end;
 
 function TDBLookupComboBox.GetListField: string;
@@ -104,11 +109,8 @@ begin
 end;
 
 procedure TDBLookupComboBox.SetKeyValue(const AValue: variant);
-var
-  AItemIndex: Integer;
 begin
-  if FLookup.GetListValue(AValue, AItemIndex) then
-    ItemIndex := AItemIndex;
+  ItemIndex := FLookup.GetKeyIndex(AValue);
 end;
 
 procedure TDBLookupComboBox.SetListField(const Value: string);
@@ -145,7 +147,7 @@ begin
   if ([csLoading, csDestroying] * ComponentState) = [] then
   begin
     FLookup.Initialize(FDataLink, Items);
-    Text := FLookup.ListFieldValue;
+    ItemIndex := FLookup.GetKeyIndex(FLookup.KeyFieldValue);
   end;
 end;
 

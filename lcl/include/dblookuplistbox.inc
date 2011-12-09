@@ -33,7 +33,7 @@ procedure TDBLookupListBox.UpdateData(Sender: TObject);
 begin
   if (ItemIndex < 0) then
     Exit;
-  FLookup.UpdateData(Items[ItemIndex]);
+  FLookup.UpdateData(ItemIndex);
 end;
 
 procedure TDBLookupListBox.ActiveChange(Sender: TObject);
@@ -44,7 +44,7 @@ end;
 procedure TDBLookupListBox.DataChange(Sender: TObject);
 begin
   if FDatalink.Active then
-    ItemIndex := Items.IndexOf(FLookup.ListFieldValue)
+    ItemIndex := FLookup.GetKeyIndex(FLookup.KeyFieldValue)
   else
     ItemIndex := -1;
 end;
@@ -84,10 +84,7 @@ end;
 
 function TDBLookupListBox.GetKeyValue: Variant;
 begin
-  if ItemIndex<0 then
-    result := NULL
-  else
-    result := FLookup.GetKeyValue(Items[ItemIndex]);
+  Result := FLookup.GetKeyValue(ItemIndex);
 end;
 
 function TDBLookupListBox.GetListField: string;
@@ -122,11 +119,8 @@ begin
 end;
 
 procedure TDBLookupListBox.SetKeyValue(const AValue: Variant);
-var
-  AItemIndex: Integer;
 begin
-  if FLookup.GetListValue(AValue, AItemIndex) then
-    ItemIndex := AItemIndex;
+  ItemIndex := FLookup.GetKeyIndex(AValue);
 end;
 
 procedure TDBLookupListBox.SetListField(const Value: string);
@@ -163,7 +157,7 @@ begin
   if [csLoading, csDestroying] * ComponentState = [] then
   begin
     FLookup.Initialize(FDataLink, Items);
-    ItemIndex := Items.IndexOf(FLookup.ListFieldValue);
+    ItemIndex := FLookup.GetKeyIndex(FLookup.KeyFieldValue);
   end;
 end;
 

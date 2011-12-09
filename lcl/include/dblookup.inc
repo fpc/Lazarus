@@ -205,6 +205,7 @@ end;
 procedure TDBLookup.FetchLookupData;
 var
   s: String;
+  i: Integer;
 begin
   if not Assigned(FControlItems) then
     Exit;
@@ -216,12 +217,16 @@ begin
     if FLookupCache then
       FLookupList.Clear;
     FListLink.DataSet.First;
+    SetLength(FListKeys, FListLink.Dataset.RecordCount);
+    i := 0;
     while not FListLink.DataSet.EOF do
     begin
       if (FLookupCache and not FLookUpFieldIsCached) then
         FLookupList.Add(FListLink.DataSet.FieldValues[FKeyFieldNames],
           FListField.Value);
       s:=FListField.AsString;
+      FListKeys[i] := FListLink.DataSet.FieldValues[FKeyFieldNames];
+      Inc(i);
       FControlItems.Add(s);
       FListLink.DataSet.Next;
     end;
@@ -323,6 +328,14 @@ begin
   end;
 end;
 
+function TDBLookup.KeyFieldValue: Variant;
+begin
+  if Assigned(FControlLink) and FControlLink.Active and (FDataFieldNames <> '') then
+    Result := FControlLink.DataSet.FieldValues[FDataFieldNames]
+  else
+    Result := Null;
+end;
+
 function TDBLookup.ListFieldValue: string;
 var
   Key: Variant;
@@ -347,35 +360,33 @@ begin
   end;
   LinkGetBookMark;
   try
-    try
-      if FListLink.DataSet.Locate(FKeyFieldNames,
-        FControlLink.DataSet.FieldValues[FDataFieldNames], []) then
-        Result := FListField.AsString;
-    except
-      result := '';
-    end;
+    if FListLink.DataSet.Locate(FKeyFieldNames, Key, []) then
+      Result := FListField.AsString;
   finally
     LinkGotoBookMark;
   end;
 end;
 
-procedure TDBLookup.UpdateData(const AListFieldValue: string);
+procedure TDBLookup.UpdateData(ValueIndex: Integer);
 var
   I: Integer;
   Key: Variant;
 begin
-  if not FControlLink.Active or (AListFieldValue = FControlLink.Field.AsString) then
+  if not FControlLink.Active or (ValueIndex < 0) or (ValueIndex >= Length(FListKeys)) then
     Exit;
+  Key := FListKeys[ValueIndex];
   if FLookupCache and not FLookupFieldIsCached then
   begin
-    Key := FLookupList.FirstKeyByValue(AListFieldValue);
     if not VarIsNull(Key) then
     begin
       FControlLink.DataSet.Edit;
-      for I := 0 to FDataFields.Count -1 do
-        TField(FDataFields[I]).Value := Key[I];
-      if FHasLookupField then
-        FControlLink.Field.AsString := AListFieldValue;
+      if FDataFields.Count = 1 then
+        TField(FDataFields[0]).Value := Key
+      else
+      begin
+        for I := 0 to FDataFields.Count -1 do
+          TField(FDataFields[I]).Value := Key[I];
+      end;
     end;
     Exit;
   end;
@@ -383,78 +394,33 @@ begin
     Exit;
   LinkGetBookMark;
   try
-    if FListLink.DataSet.Locate(FListField.FieldName, VarArrayOf([AListFieldValue]), []) then
+    if FListLink.DataSet.Locate(FKeyFieldNames, Key, []) then
     begin
       FControlLink.DataSet.Edit;
       for I := 0 to FDataFields.Count -1 do
         TField(FDataFields[I]).Value := TField(FKeyFields[I]).Value;
-      if FHasLookupField then
-        FControlLink.Field.AsString := AListFieldValue;
     end;
   finally
     LinkGotoBookMark;
   end;
 end;
 
-function TDBLookup.GetKeyValue(const AListFieldValue: string): Variant;
+function TDBLookup.GetKeyValue(ValueIndex: Integer): Variant;
 begin
-  // Check first in LookupCache if enabled
-  if FLookupCache and not FLookupFieldIsCached then
-  begin
-    Result := FLookupList.FirstKeyByValue(AListFieldValue);
-    Exit;
-  end;
-
-  Result := NULL;
-  if not (Assigned(FListLink.DataSet) and Assigned(FListField) and
-          (FKeyFields.Count>0)) then
-    exit;
-
-  if FListField.AsString=AListFieldValue then
-  begin
-    result := TField(FKeyFields[0]).Value;
-    exit;
-  end;
-
-  LinkGetBookmark;
-  try
-    if FListLink.DataSet.Locate(FListFieldName, AListFieldValue, []) then
-      result := TField(FKeyFields[0]).Value;
-  finally
-    LinkGotoBookmark;
-  end;
-
+  if (ValueIndex < 0) or (ValueIndex >= Length(FListKeys)) then
+    Result := Null
+  else
+    Result := FListKeys[ValueIndex];
 end;
 
-function TDBLookup.GetListValue(const AKeyValue: Variant; out ItemIndex:Integer
-  ): boolean;
-var
-  AValue: Variant;
+function TDBLookup.GetKeyIndex(const AKeyValue: Variant): Integer;
 begin
-  // Check first in LookupCache if enabled
-  if FLookupCache and not FLookupFieldIsCached then
-    AValue := FLookupList.ValueOfKey(AKeyValue)
-  else begin
-    AValue := Null;
-    if Assigned(FListlink.Dataset) and Assigned(FListField) and
-       (FKeyFields.Count>0) then
-    begin
-      if TField(FKeyFields[0]).Value=AKeyValue then
-        AValue := FListField.Value
-      else
-      begin
-        LinkGetBookmark;
-        try
-          if FListLink.DataSet.Locate(FKeyFieldNames, AKeyValue, []) then
-            AValue := FListField.Value;
-        finally
-          LinkGotoBookmark;
-        end;
-      end;
-    end;
+  Result := 0;
+  while Result < Length(FListKeys) do
+  begin
+    if VarSameValue(AKeyValue, FListKeys[Result]) then
+      Exit;
+    Inc(Result);
   end;
-
-  result := not VarIsNull(AValue);
-  if Result then
-    ItemIndex := FControlItems.IndexOf(AValue);
+  Result := -1;
 end;
