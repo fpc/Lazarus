@@ -354,9 +354,9 @@ begin
   with UnitsListBox do
     if ItemIndex >= 0 then
     begin
-      IdentItem := TIdentifierListItem(Items.Objects[ItemIndex]);
-      if Assigned(IdentItem) then
+      if Items.Objects[ItemIndex] is TIdentifierListItem then
       begin
+        IdentItem := TIdentifierListItem(Items.Objects[ItemIndex]);
         Result := IdentItem.Identifier;
         CodeBuf := CodeToolBoss.FindUnitSource(SourceEditorManager.ActiveEditor.CodeBuffer, Result, '');
         if Assigned(CodeBuf) then
