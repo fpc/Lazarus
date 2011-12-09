@@ -3325,13 +3325,17 @@ begin
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.setalign'){$ENDIF};
   OldAlign := FAlign;
   FAlign := Value;
-  if not (csLoading in ComponentState) then
+  if (not (csLoading in ComponentState))
+  and (Align in [alLeft,alTop,alRight,alBottom,alClient]) then begin
+    // Align for alLeft,alTop,alRight,alBottom,alClient takes precedence
+    // over AnchorSides => clean up
     for a:=low(TAnchorKind) to High(TAnchorKind) do
     begin
       if not (a in AnchorAlign[FAlign]) then continue;
       AnchorSide[a].Control:=nil;
       AnchorSide[a].Side:=asrTop;
     end;
+  end;
   // Notes:
   // - if anchors had default values then change them to new default values
   //   This is done for Delphi compatibility.
