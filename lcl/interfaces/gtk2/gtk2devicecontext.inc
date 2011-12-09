@@ -34,12 +34,12 @@ end;
 function TGtkDeviceContext.GetGDIObjects(ID: TGDIType): PGdiObject;
 begin
   case ID of
-  gdiBitmap: Result:=CurrentBitmap;
-  gdiFont: Result:=CurrentFont;
-  gdiBrush: Result:=CurrentBrush;
-  gdiPen: Result:=CurrentPen;
-  gdiPalette: Result:=CurrentPalette;
-  gdiRegion: Result:=ClipRegion;
+    gdiBitmap: Result:=CurrentBitmap;
+    gdiFont: Result:=CurrentFont;
+    gdiBrush: Result:=CurrentBrush;
+    gdiPen: Result:=CurrentPen;
+    gdiPalette: Result:=CurrentPalette;
+    gdiRegion: Result:=ClipRegion;
   end;
 end;
 
@@ -70,8 +70,8 @@ function TGtkDeviceContext.GetOffset: TPoint;
 var
   Fixed: Pointer;
 begin
-  if Self = nil
-  then begin
+  if Self = nil then
+  begin
     Result.X := 0;
     Result.Y := 0;
     Exit;
@@ -107,8 +107,8 @@ end;
 procedure TGtkDeviceContext.SetCurrentBrush(const AValue: PGdiObject);
 begin
   ChangeGDIObject(FCurrentBrush,AValue);
-  if FSelectedColors = dcscBrush
-  then FSelectedColors := dcscCustom;
+  if FSelectedColors = dcscBrush then
+    FSelectedColors := dcscCustom;
 end;
 
 procedure TGtkDeviceContext.SetCurrentFont(const AValue: PGdiObject);
@@ -126,8 +126,8 @@ end;
 procedure TGtkDeviceContext.SetCurrentPen(const AValue: PGdiObject);
 begin
   ChangeGDIObject(FCurrentPen,AValue);
-  if FSelectedColors = dcscPen
-  then FSelectedColors := dcscCustom;
+  if FSelectedColors = dcscPen then
+    FSelectedColors := dcscCustom;
   if FHasTransf then
     TransfUpdatePen;
 end;
@@ -136,8 +136,8 @@ procedure TGtkDeviceContext.ChangeGDIObject(var GDIObject: PGdiObject;
   const NewValue: PGdiObject);
 begin
   if GdiObject = NewValue then exit;
-  if GdiObject <> nil
-  then begin
+  if GdiObject <> nil then
+  begin
     dec(GdiObject^.DCCount);
     if GdiObject^.DCCount < 0 then
       RaiseGDBException('');
@@ -146,8 +146,8 @@ begin
 
   GdiObject := NewValue;
 
-  if GdiObject <> nil
-  then begin
+  if GdiObject <> nil then
+  begin
     inc(GdiObject^.DCCount);
     ReferenceGDIObject(GDIObject);
   end;
@@ -298,9 +298,10 @@ end;
 
 procedure TGtkDeviceContext.SetTextMetricsValid(AValid: Boolean);
 begin
-  if AValid
-  then Include(FFlags, dcfTextMetricsValid)
-  else Exclude(FFlags, dcfTextMetricsValid);
+  if AValid then
+    Include(FFlags, dcfTextMetricsValid)
+  else
+    Exclude(FFlags, dcfTextMetricsValid);
 end;
 
 procedure TGtkDeviceContext.InvTransfPoint(var X1, Y1: Integer);
@@ -490,36 +491,36 @@ procedure TGtkDeviceContext.SetWidget(AWidget: PGtkWidget; AWindow: PGdkWindow;
 var
   ClientWidget: PGtkWidget;
 begin
-  if FWidget <> nil
-  then RaiseWidgetAlreadySet;
+  if FWidget <> nil then
+    RaiseWidgetAlreadySet;
 
   FWithChildWindows := AWithChildWindows;
   FWidget := AWidget;
 
-  if AWidget = nil
-  then begin
+  if AWidget = nil then
+  begin
     // screen: ToDo: multiple desktops
     FDrawable := gdk_screen_get_root_window(gdk_screen_get_default);
-  end
-  else begin
-    if ADoubleBuffer <> nil
-    then begin
+  end else
+  begin
+    if ADoubleBuffer <> nil then
+    begin
       Include(FFlags, dcfDoubleBuffer);
       FOriginalDrawable := AWindow;
       FDrawable := ADoubleBuffer;
-    end
-    else begin
+    end else
+    begin
       // create a new devicecontext for this window
       Exclude(FFlags, dcfDoubleBuffer);
 
-      if AWindow = nil
-      then begin
+      if AWindow = nil then
+      begin
         ClientWidget := GetFixedWidget(AWidget);
         if ClientWidget = nil then RaiseWidgetWithoutClientArea;
 
         AWindow := GetControlWindow(ClientWidget);
-        if AWindow = nil
-        then begin
+        if AWindow = nil then
+        begin
           //force creation
           gtk_widget_realize(ClientWidget);
           AWindow := GetControlWindow(ClientWidget);
@@ -527,8 +528,8 @@ begin
           // http://bugs.freepascal.org/view.php?id=14035
           //if AWindow = nil then RaiseUnableToRealize;
         end;
-      end
-      else begin
+      end else
+      begin
         ClientWidget := AWidget;
       end;
 
@@ -624,14 +625,14 @@ begin
   Result := (Self <> nil) and (ASource <> nil);
   if not Result then Exit;
 
-  if ARestore
-  then begin
-    if FWidget <> ASource.FWidget
-    then RaiseRestoreDifferentWidget;
-  end
-  else begin
-    if FWidget <> nil
-    then RaiseWidgetAlreadySet;
+  if ARestore then
+  begin
+    if FWidget <> ASource.FWidget then
+      RaiseRestoreDifferentWidget;
+  end else
+  begin
+    if FWidget <> nil then
+      RaiseWidgetAlreadySet;
     FWidget := ASource.FWidget;
   end;
 
@@ -639,16 +640,16 @@ begin
   FDrawable := ASource.FDrawable;
   FOriginalDrawable := ASource.FOriginalDrawable;
 
-  if FGC <> nil
-  then begin
+  if FGC <> nil then
+  begin
     // free old GC
     gdk_gc_unref(FGC);
     FGC := nil;
     Exclude(FFlags, dcfPenSelected);
   end;
 
-  if (ASource.FGC <> nil) and (FDrawable <> nil)
-  then begin
+  if (ASource.FGC <> nil) and (FDrawable <> nil) then
+  begin
     gdk_gc_get_values(ASource.FGC, @FGCValues);
     FGC := gdk_gc_new_with_values(FDrawable, @FGCValues,
       GDK_GC_FOREGROUND or GDK_GC_BACKGROUND or GDK_GC_SUBWINDOW);
@@ -659,8 +660,8 @@ begin
   FSpecialOrigin := ASource.FSpecialOrigin;
   PenPos := ASource.PenPos;
 
-  if dcfTextMetricsValid in ASource.Flags
-  then begin
+  if dcfTextMetricsValid in ASource.Flags then
+  begin
     Include(FFlags, dcfTextMetricsValid);
     DCTextMetric := ASource.DCTextMetric;
   end
@@ -673,17 +674,17 @@ begin
     if AClearSource then
       ASource.GDIObjects[g] := nil;
 
-    if AMoveGDIOwnerShip
-    then begin
-      if OwnedGDIObjects[g]<>nil
-      then begin
+    if AMoveGDIOwnerShip then
+    begin
+      if OwnedGDIObjects[g]<>nil then
+      begin
         DeleteObject(HGDIOBJ(PtrUInt(OwnedGDIObjects[g])));
       end;
 
       CurGDIObject := ASource.OwnedGDIObjects[g];
 
-      if CurGDIObject<>nil
-      then begin
+      if CurGDIObject<>nil then
+      begin
         ASource.OwnedGDIObjects[g] := nil;
         OwnedGDIObjects[g] := CurGDIObject;
       end;
@@ -795,8 +796,8 @@ begin
   if FCurrentFont <> nil then exit;
 
   // create font
-  if FWidget <> nil
-  then begin
+  if FWidget <> nil then
+  begin
     ClientWidget := GetFixedWidget(FWidget);
 
     NewFont := Gtk2Widgetset.NewGDIObject(gdiFont);
@@ -832,19 +833,19 @@ function TGtkDeviceContext.CreateGC: PGdkGC;
 begin
   // create GC
 
-  if Drawable <> nil
-  then begin
-    if FWithChildWindows
-    then begin
+  if Drawable <> nil then
+  begin
+    if FWithChildWindows then
+    begin
       FillChar(FGCValues, SizeOf(FGCValues), 0);
       FGCValues.subwindow_mode := GDK_INCLUDE_INFERIORS;
       Result := gdk_gc_new_with_values(Drawable, @FGCValues, GDK_GC_FUNCTION or GDK_GC_SUBWINDOW);
-    end
-    else begin
+    end else
+    begin
       Result := gdk_gc_new(Drawable);
     end;
-  end
-  else begin
+  end else
+  begin
     // create default GC
     Result := gdk_gc_new(gdk_screen_get_root_window(gdk_screen_get_default));
   end;
@@ -883,31 +884,31 @@ end;
 
 function TGtkDeviceContext.GetGC: pgdkGC;
 begin
-  if FGC = nil
-  then FGC := CreateGC;
+  if FGC = nil then
+    FGC := CreateGC;
   Result := FGC;
 end;
 
 function TGtkDeviceContext.GetFont: PGdiObject;
 begin
-  if FCurrentFont = nil
-  then CreateFont;
+  if FCurrentFont = nil then
+    CreateFont;
 
   Result := FCurrentFont;
 end;
 
 function TGtkDeviceContext.GetBrush: PGdiObject;
 begin
-  if FCurrentBrush = nil
-  then CreateBrush;
+  if FCurrentBrush = nil then
+    CreateBrush;
 
   Result := FCurrentBrush;
 end;
 
 function TGtkDeviceContext.GetPen: PGdiObject;
 begin
-  if FCurrentPen = nil
-  then CreatePen;
+  if FCurrentPen = nil then
+    CreatePen;
 
   Result := FCurrentPen;
 end;
@@ -999,8 +1000,8 @@ begin
   // no drawable: this is normal, when restoring the default bitmap (FreeDC)
   if NewDrawable = nil then Exit;
 
-  if FGC <> nil
-  then gdk_gc_unref(FGC);
+  if FGC <> nil then
+    gdk_gc_unref(FGC);
   FDrawable := NewDrawable;
   FGC := gdk_gc_new(FDrawable);
   gdk_gc_set_function(FGC, GDK_COPY);
@@ -1053,8 +1054,8 @@ begin
 
   CurrentPen := AGDIObject;
   Exclude(FFlags, dcfPenSelected);
-  if FGC <> nil
-  then SelectPenProps;
+  if FGC <> nil then
+    SelectPenProps;
   SelectedColors := dcscCustom;
 end;
 
@@ -1189,11 +1190,11 @@ begin
   gdk_gc_set_clip_region(FGC,  nil);
   gdk_gc_set_clip_rectangle(FGC,  nil);
 
-  if ClipRegion <> nil
-  then begin
+  if ClipRegion <> nil then
+  begin
     RGNType := RegionType(ClipRegion^.GDIRegionObject);
-    if (RGNType <> ERROR) and (RGNType <> NULLREGION)
-    then gdk_gc_set_clip_region(FGC,  ClipRegion^.GDIRegionObject);
+    if (RGNType <> ERROR) and (RGNType <> NULLREGION) then
+      gdk_gc_set_clip_region(FGC,  ClipRegion^.GDIRegionObject);
   end;
 
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
@@ -1214,8 +1215,8 @@ end;
 
 function TGtkDeviceContext.GetBitmap: PGdiObject;
 begin
-  if FCurrentBitmap = nil
-  then CreateBitmap;
+  if FCurrentBitmap = nil then
+    CreateBitmap;
 
   Result := FCurrentBitmap;
 end;
