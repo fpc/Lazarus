@@ -2283,7 +2283,7 @@ begin
   begin
     FillChar(Info, SizeOf(Info), 0);
     Info.cbSize := SizeOf(Info);
-{    Result := Windows.GetWindowInfo(Handle, @Info);
+    Result := customdrawn_winproc.GetWindowInfo(Handle, @Info);
     if Result then
     begin
       with Info.rcWindow do
@@ -2296,7 +2296,7 @@ begin
       ExcludeCaption;
       //WriteLn('W = ', Width, ' H = ', Height);
       Exit;
-    end;     }
+    end;
     Result := Boolean(Windows.GetWindowRect(lHandle, @R));
     with R do
     begin

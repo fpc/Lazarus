@@ -180,6 +180,9 @@ Var
 
   OrgCharCode: word; // used in WM_CHAR handling
 
+  // Message information
+  XPos, YPos: Integer;
+  WParamShiftState: TShiftState;
 
   NMHdr: PNMHdr absolute LParam; // used by WM_NOTIFY
   TmpSize: TSize; // used by WM_MEASUREITEM
@@ -212,7 +215,6 @@ Var
     PaintRegion: HRGN;
     PS : TPaintStruct;
     PaintMsg: TLMPaint;
-    ORect: TRect;
     WindowOrg: Windows.POINT;
     WindowWidth, WindowHeight: Integer;
     DCIndex: integer;
@@ -283,40 +285,9 @@ Var
         DC := ControlDC;
         PaintRegion := 0;
       end;
-      //Is not necessary to check the result of GetLCLClientBoundsOffset since
-      //the false condition (lWincontrol = nil or lWincontrol <> TWinControl) is never met
-      //The rect is always initialized with 0
-      GetLCLClientBoundsOffset(lWinControl, ORect);
-      PaintMsg.Msg := LM_PAINT;
-      PaintMsg.PaintStruct := @PS;
-      PaintMsg.DC := HDC(WindowInfo.Canvas);
 
-      // Draws the background of the form
-      DrawFormBackground(WindowInfo.Image, WindowInfo.Canvas);
-
-      // send through message to allow message override, moreover use SendMessage
-      // to allow subclass window proc override this message too
-{      Include(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
-      Windows.SendMessageW(lWinControl.Handle, WM_ERASEBKGND, Windows.WPARAM(DC), 0);
-      Exclude(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);}
-
-      //DCIndex := Windows.SaveDC(DC);
-
-      {$ifdef VerboseCDMessages}
-      DebugLn(Format(':> [SendPaintMessage 2] Before OnPaint Control=%s DC=%x', [lWinControl.Name, PaintMsg.DC]));
-      {$endif}
-
-      //MoveWindowOrgEx(DC, ORect.Left, ORect.Top);  <- substitute with a non-native window org change
-      DeliverMessage(lWinControl, PaintMsg);
-      //Windows.RestoreDC(DC, DCIndex);
-
-      {$ifdef VerboseCDMessages}
-      DebugLn(':> [SendPaintMessage 3] After OnPaint');
-      {$endif}
-
-      // Now draw all child controls
-      RenderChildWinControls(WindowInfo.Image, WindowInfo.Canvas,
-        GetCDWinControlList(TCustomForm(lWinControl)));
+      // Draw the form
+      RenderForm(WindowInfo.Image, WindowInfo.Canvas, TCustomForm(lWinControl));
 
       // Now convert the rawimage to a HBITMAP and draw it to the screen
       WindowInfo.Image.GetRawImage(lRawImage);
@@ -796,7 +767,8 @@ begin
       MouseDownFocusWindow := 0;
       MouseDownFocusStatus := mfFocusSense;
       GetCursorPos(MouseDownPos);
-      NotifyUserInput := True;
+
+{      NotifyUserInput := True;
       PLMsg:=@LMMouse;
       with LMMouse Do
       begin
@@ -806,13 +778,26 @@ begin
         Keys := WParam;
         lEventX := XPos;
         lEventY := YPos;
+      end;}
+
+      XPos := SmallInt(Lo(LParam));
+      YPos := SmallInt(Hi(LParam));
+      if GetLCLClientBoundsOffset(WindowInfo, R) then
+      begin
+        Dec(XPos, R.Left);
+        Dec(YPos, R.Top);
       end;
+      WParamShiftState := KeysToShiftState(WParam); //MsgKeyDataToShiftState
+
+      CallbackMouseDown(WindowInfo, XPos, YPos, mbLeft, WParamShiftState);
+      Result := 1;
 
       // focus window
       if (Windows.GetFocus <> Window) and
           ((lWinControl = nil) or (lWinControl.CanFocus)) then
         Windows.SetFocus(Window);
 
+      Exit;
     end;
     WM_LBUTTONUP:
     begin
@@ -846,7 +831,19 @@ begin
     end;
     WM_MBUTTONDOWN:
     begin
-      NotifyUserInput := True;
+      XPos := SmallInt(Lo(LParam));
+      YPos := SmallInt(Hi(LParam));
+      if GetLCLClientBoundsOffset(WindowInfo, R) then
+      begin
+        Dec(XPos, R.Left);
+        Dec(YPos, R.Top);
+      end;
+      WParamShiftState := KeysToShiftState(WParam); //MsgKeyDataToShiftState
+
+      CallbackMouseDown(WindowInfo, XPos, YPos, mbMiddle, WParamShiftState);
+      Result := 1;
+      Exit;
+{      NotifyUserInput := True;
       PLMsg:=@LMMouse;
       with LMMouse Do
       begin
@@ -856,7 +853,7 @@ begin
         Keys := WParam;
         lEventX := XPos;
         lEventY := YPos;
-      end;
+      end;}
     end;
     WM_MBUTTONUP:
     begin
@@ -884,7 +881,19 @@ begin
     end;
     WM_MOUSEMOVE:
     begin
-      NotifyUserInput := True;
+      XPos := SmallInt(Lo(LParam));
+      YPos := SmallInt(Hi(LParam));
+      if GetLCLClientBoundsOffset(WindowInfo, R) then
+      begin
+        Dec(XPos, R.Left);
+        Dec(YPos, R.Top);
+      end;
+      WParamShiftState := KeysToShiftState(WParam);
+
+      CallbackMouseMove(WindowInfo, XPos, YPos, WParamShiftState);
+      Result := 1;
+      Exit;
+      {NotifyUserInput := True;
       PLMsg:=@LMMouseMove;
       with LMMouseMove Do
       begin
@@ -906,7 +915,7 @@ begin
           WindowInfo.MouseX := XPos;
           WindowInfo.MouseY := YPos;
         end;
-      end;
+      end;}
     end;
     WM_MOUSEWHEEL:
     begin

@@ -55,6 +55,7 @@ type
     atomWindowType: ATOM;
     wCreatorVersion: WORD;
   end;
+  PTAGWINDOWINFO = ^tagWINDOWINFO;
 
 type
   { lazarus win32 Interface definition for additional timer data needed to find the callback}
@@ -76,6 +77,8 @@ function GetMonitorInfoW(hMonitor: HMONITOR; lpmi: PMonitorInfo): LongBool; stdc
 function MonitorFromWindow(hWnd: HWND; dwFlags: DWORD): HMONITOR; stdcall; external 'user32.dll' name 'MonitorFromWindow';
 function MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; stdcall; external 'user32.dll' name 'MonitorFromRect';
 function MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; stdcall; external 'user32.dll' name 'MonitorFromPoint';
+// from win32extra.pp
+function GetWindowInfo(hwnd: HWND; pwi: PTAGWINDOWINFO): BOOL; stdcall; external 'user32.dll' name 'GetWindowInfo';
 {$endif}
 
 type

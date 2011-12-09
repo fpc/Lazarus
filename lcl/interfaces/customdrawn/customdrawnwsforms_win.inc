@@ -138,12 +138,6 @@ var
   lWindowInfo: TWindowInfo;
   lHandle: HWND;
 begin
-  {$ifdef VerboseCDForms}
-  DebugLn(Format('[TCDWSCustomForm.WSWinControl_SetBounds] AWinControl=%x'
-    + ' ALeft=%d ATop=%d AWidth=%d AHeight=%d',
-    [PtrInt(AWinControl), ALeft, ATop, AWidth, AHeight]));
-  {$endif}
-
   IntfLeft := ALeft;
   IntfTop := ATop;
   IntfWidth := AWidth;

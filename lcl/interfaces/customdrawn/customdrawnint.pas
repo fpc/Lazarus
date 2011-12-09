@@ -251,7 +251,9 @@ uses
   Win32WSDialogs,
   Win32Themes,
 ////////////////////////////////////////////////////
-  Win32Extra,} LCLMessageGlue;
+  Win32Extra,}
+  customdrawnprivate,
+  LCLMessageGlue;
 
 
 {$I customdrawnobject.inc}

@@ -4306,19 +4306,35 @@ end;
 function TCDWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
 var
   lObject: TObject;
+  lCDWinControl: TCDWinControl;
 begin
   {$ifdef VerboseCDWinAPI}
-    DebugLn('[WinAPI GetWindowSize]');
+    DebugLn(':>[WinAPI GetWindowSize]');
   {$endif}
   if Handle = 0 then Exit(False);
   lObject := TObject(Handle);
   if lObject is TCDForm then
   begin
     Result := BackendGetWindowSize(Handle, Width, Height);
-    Exit;
+  end
+  else if lObject is TCDWinControl then
+  begin
+    lCDWinControl := lObject as TCDWinControl;
+    Width := lCDWinControl.WinControl.Width;
+    Height := lCDWinControl.WinControl.Height;
+    Result := True;
+    {$ifdef VerboseCDWinAPI}
+      DebugLn(Format(':[WinAPI GetWindowSize] WinControl %s:%s',
+        [lCDWinControl.WinControl.Name, lCDWinControl.WinControl.ClassName]));
+    {$endif}
   end
   else
-    Result := inherited GetWindowSize(Handle, Width, Height);
+    Result := False;
+
+  {$ifdef VerboseCDWinAPI}
+    DebugLn(Format(':<[WinAPI GetWindowSize] Result=%d Width=%d Height=%d',
+      [PtrInt(Result), Width, Height]));
+  {$endif}
 end;
 
 (*{------------------------------------------------------------------------------
