@@ -10363,10 +10363,14 @@ begin
   if FName='' then exit;
 
   // check if absolute filename
-  if FilenameIsAbsolute(FName) and FileExistsUTF8(FName) then
-    Found:=true;
+  if FilenameIsAbsolute(FName) then begin
+    if FileExistsUTF8(FName) then
+      Found:=true
+    else
+      exit;
+  end;
 
-  if (not Found) and (not FilenameIsAbsolute(FName)) then begin
+  if (not Found) then begin
     if IsIncludeDirective then begin
       // search include file
       SPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(BaseDir);
@@ -10384,6 +10388,15 @@ begin
         Found:=true;
         FName:=NewFilename;
       end;
+    end;
+  end;
+
+  if (not Found) then begin
+    // simple search relative to current unit
+    InFilename:=AppendPathDelim(BaseDir)+FName;
+    if FileExistsCached(InFilename) then begin
+      Found:=true;
+      FName:=InFilename;
     end;
   end;
 
