@@ -157,7 +157,6 @@ Type
     destructor Destroy; override;
     procedure Initialize(AControlDataLink: TFieldDataLink; AControlItems: TStrings);
     function KeyFieldValue: Variant;
-    function ListFieldValue: string;
     procedure UpdateData(ValueIndex: Integer);
     function  GetKeyValue(ValueIndex: Integer): Variant;
     function  GetKeyIndex(const AKeyValue: Variant): Integer;

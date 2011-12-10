@@ -336,37 +336,6 @@ begin
     Result := Null;
 end;
 
-function TDBLookup.ListFieldValue: string;
-var
-  Key: Variant;
-begin
-  Result := '';
-  if not (Assigned(FControlLink) and (FDataFieldNames<>'') and
-          Assigned(FListField) and FControlLink.Active) then
-    Exit;
-  Key := FControlLink.DataSet.FieldValues[FDataFieldNames];
-  if FHasLookupField then
-  begin
-    if (FLookupCache and not FLookUpFieldIsCached) then
-      Result := FLookupList.ValueOfKey(Key)
-    else
-      Result := FControlLink.Field.AsString;
-    Exit;
-  end;
-  if FLookupCache then
-  begin
-    Result := FLookupList.ValueOfKey(Key);
-    Exit;
-  end;
-  LinkGetBookMark;
-  try
-    if FListLink.DataSet.Locate(FKeyFieldNames, Key, []) then
-      Result := FListField.AsString;
-  finally
-    LinkGotoBookMark;
-  end;
-end;
-
 procedure TDBLookup.UpdateData(ValueIndex: Integer);
 var
   I: Integer;
