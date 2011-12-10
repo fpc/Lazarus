@@ -911,6 +911,7 @@ type
     procedure ClearItems;
     procedure setBorder(const ABorder: Boolean);
     function currentIndex: Integer;
+    function findText(AText: WideString): Integer;
     function getDroppedDown: Boolean;
     function getEditable: Boolean;
     function getMaxVisibleItems: Integer;
@@ -8501,6 +8502,11 @@ end;
 function TQtComboBox.currentIndex: Integer;
 begin
   Result := QComboBox_currentIndex(QComboBoxH(Widget));
+end;
+
+function TQtComboBox.findText(AText: WideString): Integer;
+begin
+  Result := QComboBox_findText(QComboBoxH(Widget), @AText);
 end;
 
 function TQtComboBox.getDroppedDown: Boolean;

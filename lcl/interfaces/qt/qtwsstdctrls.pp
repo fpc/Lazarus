@@ -1352,8 +1352,8 @@ var
   QtComboBox: TQtComboBox;
 begin
   Result := False;
-  if not ACustomComboBox.HandleAllocated then
-    exit;
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetDroppedDown') then
+    Exit;
   QtComboBox := TQtComboBox(ACustomComboBox.Handle);
   Result := QtComboBox.getDroppedDown;
 end;
@@ -1367,8 +1367,6 @@ class function TQtWSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
 var
   QtComboBox: TQtComboBox;
-  WStr: WideString;
-  i: Integer;
 begin
   Result := -1;
   if not WSCheckHandleAllocated(ACustomComboBox, 'GetItemIndex') then
@@ -1376,11 +1374,12 @@ begin
   QtComboBox := TQtComboBox(ACustomComboBox.Handle);
   if QtComboBox.getEditable then
   begin
-    WStr := QtComboBox.getText;
-    i := QComboBox_findText(QComboBoxH(QtComboBox.Widget), @WStr);
-    Result := i;
+    Result := QtComboBox.findText(QtComboBox.getText);
+    if Result = -1 then
+      exit;
+    Result := QtComboBox.currentIndex;
   end else
-    Result := TQtComboBox(ACustomComboBox.Handle).currentIndex;
+    Result := QtComboBox.currentIndex;
 end;
 
 class function TQtWSCustomComboBox.GetMaxLength(
@@ -1388,6 +1387,8 @@ class function TQtWSCustomComboBox.GetMaxLength(
 var
   LineEdit: TQtLineEdit;
 begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetMaxLength') then
+    Exit;
   LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
   if LineEdit <> nil then
   begin
@@ -1484,6 +1485,8 @@ end;
 class procedure TQtWSCustomComboBox.SetDropDownCount(
   const ACustomComboBox: TCustomComboBox; NewCount: Integer);
 begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetDropDownCount') then
+    Exit;
   TQtComboBox(ACustomComboBox.Handle).setMaxVisibleItems(NewCount);
 end;
 
@@ -1492,6 +1495,8 @@ class procedure TQtWSCustomComboBox.SetDroppedDown(
 var
   QtComboBox: TQtComboBox;
 begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetDroppedDown') then
+    Exit;
   QtComboBox := TQtComboBox(ACustomComboBox.Handle);
   QtComboBox.setDroppedDown(ADroppedDown);
 end;
@@ -1503,6 +1508,8 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer);
 begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetItemIndex') then
+    Exit;
   TQtComboBox(ACustomComboBox.Handle).setCurrentIndex(NewIndex);
 end;
 
@@ -1548,6 +1555,8 @@ class function TQtWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboB
 var
   ComboBox: TQtComboBox;
 begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetItems') then
+    Exit;
   ComboBox := TQtComboBox(ACustomComboBox.Handle);
   if not Assigned(ComboBox.FList) then
   begin
