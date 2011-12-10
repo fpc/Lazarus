@@ -58,6 +58,7 @@ interface
 { $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowTriedUnits}
 { $DEFINE ShowExprEval}
+{ $DEFINE ShowForInEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowNodeCache}
 { $DEFINE ShowBaseTypeCache}
@@ -69,6 +70,7 @@ interface
 {$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedContexts}{$DEFINE DebugPrefix}{$ENDIF}
+{$IFDEF ShowExprEval}{$DEFINE ShowForInEval}{$ENDIF}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -680,7 +682,8 @@ type
       CursorNode: TCodeTreeNode; Params: TFindDeclarationParams;
       out ExprType: TExpressionType): string;
     function FindEnumeratorOfClass(ClassNode: TCodeTreeNode;
-      ExceptionOnNotFound: boolean; out ExprType: TExpressionType): boolean;
+      ExceptionOnNotFound: boolean; out ExprType: TExpressionType;
+      AliasType: PFindContext = nil): boolean;
     function FindOperatorEnumerator(Node: TCodeTreeNode;
       ExprType: TExpressionType; Need: TFindOperatorEnumerator;
       out ResultExprType: TExpressionType): boolean;
@@ -9647,6 +9650,7 @@ var
   SetTool: TFindDeclarationTool;
   AliasType: TFindContext;
 begin
+  debugln(['TFindDeclarationTool.FindTermTypeAsString START']);
   {$IFDEF CheckNodeTool}CheckNodeTool(Params.ContextNode);{$ENDIF}
   Result:='';
   AliasType:=CleanFindContext;
@@ -9715,7 +9719,10 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
 var
   TermExprType: TExpressionType;
   OperatorExprType: TExpressionType;
+  AliasType: TFindContext;
 begin
+  Result:='';
+  AliasType:=CleanFindContext;
   ExprType:=CleanExpressionType;
   TermExprType:=CleanExpressionType;
   Params.ContextNode:=CursorNode;
@@ -9723,7 +9730,7 @@ begin
                  fdfTopLvlResolving,fdfFunctionResult];
   TermExprType:=FindExpressionResultType(Params,TermPos.StartPos,TermPos.EndPos);
 
-  {$IFDEF ShowExprEval}
+  {$IFDEF ShowForInEval}
   DebugLn('TFindDeclarationTool.FindForInTypeAsString TermExprType=',
     ExprTypeToString(TermExprType));
   {$ENDIF}
@@ -9731,7 +9738,7 @@ begin
   if FindOperatorEnumerator(CursorNode,TermExprType,foeEnumeratorCurrentExprType,
     OperatorExprType)
   then begin
-    {$IFDEF ShowExprEval}
+    {$IFDEF ShowForInEval}
     DebugLn(['TFindDeclarationTool.FindForInTypeAsString Operator=',ExprTypeToString(OperatorExprType)]);
     {$ENDIF}
     ExprType:=OperatorExprType;
@@ -9747,10 +9754,10 @@ begin
         ctnClass:
           begin
             if not TermExprType.Context.Tool.FindEnumeratorOfClass(
-              TermExprType.Context.Node,true,ExprType)
+              TermExprType.Context.Node,true,ExprType,@AliasType)
             then
               RaiseTermHasNoIterator;
-            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params);
+            Result:=FindExprTypeAsString(ExprType,TermPos.StartPos,Params,@AliasType);
           end;
         ctnSetType:
           if TermExprType.Context.Tool.FindEnumerationTypeOfSetType(
@@ -9831,7 +9838,8 @@ begin
 end;
 
 function TFindDeclarationTool.FindEnumeratorOfClass(ClassNode: TCodeTreeNode;
-  ExceptionOnNotFound: boolean; out ExprType: TExpressionType): boolean;
+  ExceptionOnNotFound: boolean; out ExprType: TExpressionType;
+  AliasType: PFindContext): boolean;
 var
   Params: TFindDeclarationParams;
   ProcTool: TFindDeclarationTool;
@@ -9842,6 +9850,8 @@ var
   CurrentContext: TFindContext;
 begin
   Result:=false;
+  if AliasType<>nil then
+    AliasType^:=CleanFindContext;
   ExprType:=CleanExpressionType;
   Params:=TFindDeclarationParams.Create;
   try
@@ -9849,13 +9859,19 @@ begin
     Params.ContextNode:=ClassNode;
     Params.Flags:=[fdfSearchInAncestors];
     Params.SetIdentifier(Self,'GetEnumerator',nil);
-    //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass searching GetEnumerator ...']);
+    {$IFDEF ShowForInEval}
+    DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass searching GetEnumerator for ',ExtractClassName(ClassNode,false),' ...']);
+    {$ENDIF}
     if not FindIdentifierInContext(Params) then begin
       if ExceptionOnNotFound then begin
         MoveCursorToCleanPos(ClassNode.StartPos);
         RaiseException(ctsFunctionGetEnumeratorNotFoundInThisClass);
-      end else
+      end else begin
+        {$IFDEF ShowForInEval}
+        debugln(['TFindDeclarationTool.FindEnumeratorOfClass GetEnumerator not found for ',ExtractClassName(ClassNode,false)]);
+        {$ENDIF}
         exit;
+      end;
     end;
     ProcTool:=Params.NewCodeTool;
     ProcNode:=Params.NewNode;
@@ -9864,14 +9880,20 @@ begin
       if ExceptionOnNotFound then begin
         MoveCursorToCleanPos(ClassNode.StartPos);
         RaiseException(ctsFunctionGetEnumeratorNotFoundInThisClass2);
-      end else
+      end else begin
+        {$IFDEF ShowForInEval}
+        debugln(['TFindDeclarationTool.FindEnumeratorOfClass GetEnumerator is not a proc, class=',ExtractClassName(ClassNode,false)]);
+        {$ENDIF}
         exit;
+      end;
     end;
     // search function type
     Params.Clear;
     Include(Params.Flags,fdfFunctionResult);
     EnumeratorContext:=ProcTool.FindBaseTypeOfNode(Params,ProcNode);
-    //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass EnumeratorContext=',FindContextToString(EnumeratorContext)]);
+    {$IFDEF ShowForInEval}
+    DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass EnumeratorContext=',FindContextToString(EnumeratorContext)]);
+    {$ENDIF}
     if (EnumeratorContext.Node=nil) or (EnumeratorContext.Node.Desc<>ctnClass)
     then begin
       if ExceptionOnNotFound then begin
@@ -9888,7 +9910,13 @@ begin
       Include(Params.Flags,fdfExceptionOnNotFound);
     Params.SetIdentifier(EnumeratorContext.Tool,'Current',nil);
     //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass search current ...']);
-    if not EnumeratorContext.Tool.FindIdentifierInContext(Params) then exit;
+    if not EnumeratorContext.Tool.FindIdentifierInContext(Params) then begin
+      {$IFDEF ShowForInEval}
+      DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass missing "current" in ',EnumeratorContext.Tool.ExtractClassName(EnumeratorContext.Node,false)]);
+      {$ENDIF}
+      exit;
+    end;
+    // check if "current" is a property
     PropTool:=Params.NewCodeTool;
     PropNode:=Params.NewNode;
     //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass PropNode=',PropNode.DescAsString]);
@@ -9896,18 +9924,24 @@ begin
       if ExceptionOnNotFound then begin
         EnumeratorContext.Tool.MoveCursorToCleanPos(EnumeratorContext.Node.StartPos);
         RaiseException(ctsPropertyCurrentNotFound);
-      end else
+      end else begin
+        {$IFDEF ShowForInEval}
+        DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass "current" is not a property']);
+        {$ENDIF}
         exit;
+      end;
     end;
     // search type of Current
     Params.Clear;
     if ExceptionOnNotFound then
       Include(Params.Flags,fdfExceptionOnNotFound);
     //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass searching property type ...']);
-    CurrentContext:=PropTool.FindBaseTypeOfNode(Params,PropNode);
+    CurrentContext:=PropTool.FindBaseTypeOfNode(Params,PropNode,AliasType);
     ExprType:=CurrentContext.Tool.ConvertNodeToExpressionType(
-                                                    CurrentContext.Node,Params);
-    //DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass ExprType=',ExprTypeToString(ExprType)]);
+                                          CurrentContext.Node,Params,AliasType);
+    {$IFDEF ShowForInEval}
+    DebugLn(['TFindDeclarationTool.FindEnumeratorOfClass exprtype of CURRENT: ExprType=',ExprTypeToString(ExprType),' Alias=',FindContextToString(AliasType)]);
+    {$ENDIF}
     Result:=ExprType.Desc<>xtNone;
   finally
     Params.Free;
@@ -9938,16 +9972,21 @@ begin
     Params.Flags:=[fdfSearchInParentNodes];
     Params.Data:=@ExprType;
     Params.SetIdentifier(Self,'Enumerator',@CheckOperatorEnumerator);
-    {$IFDEF ShowExprEval}
+    {$IFDEF ShowForInEval}
     DebugLn(['TFindDeclarationTool.FindOperatorEnumerator searching operator enumerator ...']);
     {$ENDIF}
-    if not FindIdentifierInContext(Params) then exit;
+    if not FindIdentifierInContext(Params) then begin
+      {$IFDEF ShowForInEval}
+      DebugLn(['TFindDeclarationTool.FindOperatorEnumerator operator enumerator not found']);
+      {$ENDIF}
+      exit;
+    end;
 
     // operator found
     // now check if it is valid
     OperatorTool:=Params.NewCodeTool;
     OperatorNode:=Params.NewNode;
-    {$IFDEF ShowExprEval}
+    {$IFDEF ShowForInEval}
     DebugLn(['TFindDeclarationTool.FindOperatorEnumerator Operator="',OperatorTool.ExtractNode(OperatorNode,[]),'"']);
     {$ENDIF}
     if Need=foeProcNode then begin
@@ -9960,11 +9999,11 @@ begin
     // search class node
     Params.Clear;
     Params.Flags:=[fdfFunctionResult];
-    {$IFDEF ShowExprEval}
+    {$IFDEF ShowForInEval}
     DebugLn(['TFindDeclarationTool.FindOperatorEnumerator searching operator result object ...']);
     {$ENDIF}
     ClassContext:=OperatorTool.FindBaseTypeOfNode(Params,OperatorNode);
-    {$IFDEF ShowExprEval}
+    {$IFDEF ShowForInEval}
     DebugLn(['TFindDeclarationTool.FindOperatorEnumerator ClassContext=',FindContextToString(ClassContext)]);
     {$ENDIF}
     case ClassContext.Node.Desc of
@@ -9984,7 +10023,7 @@ begin
     Params.ContextNode:=ClassContext.Node;
     Params.Flags:=[fdfSearchInAncestors,fdfCollect];
     Params.SetIdentifier(Self,'',@CheckModifierEnumeratorCurrent);
-    {$IFDEF ShowExprEval}
+    {$IFDEF ShowForInEval}
     DebugLn(['TFindDeclarationTool.FindOperatorEnumerator searching enumerator current ...']);
     {$ENDIF}
     if not ClassContext.Tool.FindIdentifierInContext(Params) then begin
@@ -10003,12 +10042,12 @@ begin
     // search expression type of 'enumerator current'
     Params.Clear;
     Params.Flags:=[fdfFunctionResult];
-    {$IFDEF ShowExprEval}
+    {$IFDEF ShowForInEval}
     DebugLn(['TFindDeclarationTool.FindOperatorEnumerator searching enumerator current result ...']);
     {$ENDIF}
     ResultExprType:=EnumeratorCurrentTool.ConvertNodeToExpressionType(
                                                   EnumeratorCurrentNode,Params);
-    {$IFDEF ShowExprEval}
+    {$IFDEF ShowForInEval}
     DebugLn(['TFindDeclarationTool.FindOperatorEnumerator enumerator current result=',ExprTypeToString(ResultExprType)]);
     {$ENDIF}
     Result:=true;
@@ -10416,7 +10455,7 @@ begin
 
         if Result='' then begin
           DebugLn('TFindDeclarationTool.FindExprTypeAsString ContextNode=',
-            FindContext.Node.DescAsString);
+            FindContext.Node.DescAsString,' ',dbgsFC(FindContext));
           RaiseTermNotSimple;
         end;
       end;
