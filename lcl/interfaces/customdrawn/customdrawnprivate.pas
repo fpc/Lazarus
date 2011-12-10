@@ -84,7 +84,8 @@ end;
 
 procedure TCDIntfButton.HandleOnClick(Sender: TObject);
 begin
-  LCLControl.OnClick(LCLControl);
+  if Assigned(LCLControl.OnClick) then
+    LCLControl.OnClick(LCLControl);
 end;
 
 end.
