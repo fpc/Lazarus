@@ -2737,7 +2737,8 @@ begin
   //  [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 
   if not IsValidDC(DC) then Exit(0);
-  if (Count < -1) or (IsRectEmpty(Rect) and ((Flags and DT_CALCRECT) = 0)) then Exit(0);
+  if (Count < -1) or (IsRectEmpty(Rect) and
+    ((Flags and DT_CALCRECT = 0) and (Flags and DT_NOCLIP = 0))) then Exit(0);
 
   // Don't try to use StrLen(Str) in cases count >= 0
   // In those cases str is NOT required to have a null terminator !
