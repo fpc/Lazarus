@@ -1900,10 +1900,6 @@ begin
   Result:=false;
   NamePos.StartPos:=-1;
   InPos.StartPos:=-1;
-  if not IsDottedIdentifier(AnUnitName) then begin
-    DebugLn(['TFindDeclarationTool.FindUnitInAllUsesSections invalid AnUnitName']);
-    exit;
-  end;
   BuildTree(lsrImplementationUsesSectionEnd);
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) and (SectionNode.Desc in [ctnProgram, ctnUnit,

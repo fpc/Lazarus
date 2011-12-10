@@ -1471,7 +1471,7 @@ begin
     //debugln('TPkgManager.AddUnitToProjectMainUsesSection B ',AnUnitName);
     if (AnUnitName<>'') then begin
       MainIDEInterface.SaveSourceEditorChangesToCodeCache(nil);
-      if CodeToolBoss.AddUnitToMainUsesSection(
+      if CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(
         AProject.MainUnitInfo.Source,AnUnitName,AnUnitInFilename)
       then
         AProject.MainUnitInfo.Modified:=true;

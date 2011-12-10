@@ -961,9 +961,6 @@ type
                                                          AName: string):boolean;
     function FormIsCreatedInProjectFile(const AClassname, AName:string):boolean;
     
-    // uses section
-    function UnitIsUsed(const ShortUnitName:string):boolean;
-    
     // resources
     function GetMainResourceFilename(AnUnitInfo: TUnitInfo): string;
     function GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer):TCodeBuffer;
@@ -3511,7 +3508,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProject.AddFile(ProjectFile: TLazProjectFile; AddToProjectUsesClause: boolean);
 var
-  ShortUnitName:string;
   NewIndex: integer;
   AnUnit: TUnitInfo;
 begin
@@ -3532,14 +3528,8 @@ begin
     MainUnitInfo.IncreaseAutoRevertLock;
 
   if AddToProjectUsesClause and (MainUnitID>=0) and (MainUnitID<>NewIndex) then
-  begin
-    // add unit to uses section
-    ShortUnitName:=AnUnit.Unit_Name;
-    if (ShortUnitName<>'') and (not UnitIsUsed(ShortUnitName)) then begin
-      CodeToolBoss.AddUnitToMainUsesSection(MainUnitInfo.Source,
-        ShortUnitName,'',true);
-    end;
-  end;
+    if AnUnit.Unit_Name<>'' then                // add unit to uses section
+      CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(MainUnitInfo.Source,AnUnit.Unit_Name,'',true);
   EndUpdate;
   UnitModified(AnUnit);
 end;
@@ -4067,14 +4057,6 @@ begin
   AnEditorInfo := EditorInfoWithEditorComponent(AEditor);
   if AnEditorInfo = nil then exit(nil);
   Result := AnEditorInfo.UnitInfo;
-end;
-
-function TProject.UnitIsUsed(const ShortUnitName:string):boolean;
-var NamePos, InPos: integer;
-begin
-  Result:=CodeToolBoss.FindUnitInAllUsesSections(MainUnitInfo.Source,
-              ShortUnitName,NamePos,InPos);
-  if (NamePos<1) or (InPos<1) then ;
 end;
 
 function TProject.GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer): TCodeBuffer;

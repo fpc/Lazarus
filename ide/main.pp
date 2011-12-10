@@ -17467,7 +17467,6 @@ var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   ShortUnitName: String;
-  Dummy: Boolean;
   DependencyAdded: boolean;
 begin
   Result:=mrOk;
@@ -17475,27 +17474,25 @@ begin
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   AnUnitInfo.IsPartOfProject:=true;
   DependencyAdded:=false;
-  if FilenameIsPascalUnit(AnUnitInfo.Filename) then
-    CheckDirIsInUnitSearchPath(AnUnitInfo,false,DependencyAdded)
-  else if CompareFileExt(AnUnitInfo.Filename,'inc',false)=0 then
-    CheckDirIsInIncludeSearchPath(AnUnitInfo,false,DependencyAdded);
-  if FilenameIsPascalUnit(AnUnitInfo.Filename)
-  and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
-  then begin
-    AnUnitInfo.ReadUnitNameFromSource(false);
-    ShortUnitName:=AnUnitInfo.Unit_Name;
-    if (ShortUnitName<>'') then begin
-      Dummy:=CodeToolBoss.AddUnitToMainUsesSection(
-                                 Project1.MainUnitInfo.Source,ShortUnitName,'');
-      ApplyCodeToolChanges;
-      if Dummy then begin
-        Project1.MainUnitInfo.Modified:=true;
-      end else begin
-        DoJumpToCodeToolBossError;
-        Result:=mrCancel;
+  if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
+    CheckDirIsInUnitSearchPath(AnUnitInfo,false,DependencyAdded);
+    if (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then begin
+      AnUnitInfo.ReadUnitNameFromSource(false);
+      ShortUnitName:=AnUnitInfo.Unit_Name;
+      if (ShortUnitName<>'') then begin
+        if CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(
+                       Project1.MainUnitInfo.Source,ShortUnitName,'') then begin
+          ApplyCodeToolChanges;
+          Project1.MainUnitInfo.Modified:=true;
+        end else begin
+          DoJumpToCodeToolBossError;
+          Result:=mrCancel;
+        end;
       end;
     end;
-  end;
+  end
+  else if CompareFileExt(AnUnitInfo.Filename,'inc',false)=0 then
+    CheckDirIsInIncludeSearchPath(AnUnitInfo,false,DependencyAdded);
   Project1.Modified:=true;
 end;
 
