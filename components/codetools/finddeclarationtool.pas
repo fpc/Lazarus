@@ -1896,10 +1896,18 @@ end;
 function TFindDeclarationTool.FindUnitInAllUsesSections(
   const AnUnitName: string; out NamePos, InPos: TAtomPosition): boolean;
 var SectionNode, UsesNode: TCodeTreeNode;
+
+  procedure RaiseInvalidUnitName;
+  begin
+    raise Exception.Create('invalid unit name '+AnUnitName);
+  end;
+
 begin
   Result:=false;
   NamePos.StartPos:=-1;
   InPos.StartPos:=-1;
+  if not IsDottedIdentifier(AnUnitName) then
+    RaiseInvalidUnitName;
   BuildTree(lsrImplementationUsesSectionEnd);
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) and (SectionNode.Desc in [ctnProgram, ctnUnit,
