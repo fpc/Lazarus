@@ -445,14 +445,6 @@ begin
   end;
 end;  {TQtWidgetSet.PromptUser}
 
-function TQtWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, Angle1, Angle2: Integer
-  ): Boolean;
-begin
-  Result := IsValidDC(DC);
-  if Result then
-    QPainter_drawPie(TQtDeviceContext(DC).Widget, x1, y1, x2, y2, Angle1, Angle2);
-end;
-
 {------------------------------------------------------------------------------
   Function: RawImage_CreateBitmaps
   Params: ARawImage:
