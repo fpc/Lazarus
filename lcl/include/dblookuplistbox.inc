@@ -44,7 +44,7 @@ end;
 procedure TDBLookupListBox.DataChange(Sender: TObject);
 begin
   if FDatalink.Active then
-    ItemIndex := FLookup.GetKeyIndex(FLookup.KeyFieldValue)
+    ItemIndex := FLookup.GetKeyIndex
   else
     ItemIndex := -1;
 end;
@@ -157,7 +157,7 @@ begin
   if [csLoading, csDestroying] * ComponentState = [] then
   begin
     FLookup.Initialize(FDataLink, Items);
-    ItemIndex := FLookup.GetKeyIndex(FLookup.KeyFieldValue);
+    ItemIndex := FLookup.GetKeyIndex;
   end;
 end;
 

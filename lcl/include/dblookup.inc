@@ -78,7 +78,6 @@ begin
   FDataFields.Destroy;
   FKeyFields.Destroy;
   FListLink.Destroy;
-  FLookupList.Free;
   inherited Destroy;
 end;
 
@@ -138,8 +137,6 @@ end;
 procedure TDBLookup.SetLookupCache(const Value: boolean);
 begin
   FLookupCache := Value;
-  if (Value and not Assigned(FLookupList)) then
-    FLookupList := TLookupList.Create;
 end;
 
 {
@@ -214,17 +211,12 @@ begin
     Exit;
   LinkGetBookMark;
   try
-    if FLookupCache then
-      FLookupList.Clear;
     FListLink.DataSet.First;
     SetLength(FListKeys, FListLink.Dataset.RecordCount);
     i := 0;
     while not FListLink.DataSet.EOF do
     begin
-      if (FLookupCache and not FLookUpFieldIsCached) then
-        FLookupList.Add(FListLink.DataSet.FieldValues[FKeyFieldNames],
-          FListField.Value);
-      s:=FListField.DisplayText;
+      s := FListField.DisplayText;
       FListKeys[i] := FListLink.DataSet.FieldValues[FKeyFieldNames];
       Inc(i);
       FControlItems.Add(s);
@@ -344,34 +336,15 @@ begin
   if not FControlLink.Active or (ValueIndex < 0) or (ValueIndex >= Length(FListKeys)) then
     Exit;
   Key := FListKeys[ValueIndex];
-  if FLookupCache and not FLookupFieldIsCached then
-  begin
-    if not VarIsNull(Key) then
+
+  FControlLink.Edit;
+    if FDataFields.Count = 1 then
+      TField(FDataFields[0]).Value := Key
+    else
     begin
-      FControlLink.DataSet.Edit;
-      if FDataFields.Count = 1 then
-        TField(FDataFields[0]).Value := Key
-      else
-      begin
-        for I := 0 to FDataFields.Count -1 do
-          TField(FDataFields[I]).Value := Key[I];
-      end;
-    end;
-    Exit;
-  end;
-  if not (Assigned(FListLink.DataSet) and Assigned(FListField)) then
-    Exit;
-  LinkGetBookMark;
-  try
-    if FListLink.DataSet.Locate(FKeyFieldNames, Key, []) then
-    begin
-      FControlLink.DataSet.Edit;
       for I := 0 to FDataFields.Count -1 do
-        TField(FDataFields[I]).Value := TField(FKeyFields[I]).Value;
+        TField(FDataFields[I]).Value := Key[I];
     end;
-  finally
-    LinkGotoBookMark;
-  end;
 end;
 
 function TDBLookup.GetKeyValue(ValueIndex: Integer): Variant;
@@ -380,6 +353,14 @@ begin
     Result := Null
   else
     Result := FListKeys[ValueIndex];
+end;
+
+function TDBLookup.GetKeyIndex: Integer;
+begin
+  if Assigned(FControlLink) and FControlLink.Active and (FDataFieldNames <> '') then
+    Result := GetKeyIndex(FControlLink.DataSet.FieldValues[FDataFieldNames])
+  else
+    Result := -1;
 end;
 
 function TDBLookup.GetKeyIndex(const AKeyValue: Variant): Integer;

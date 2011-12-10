@@ -131,7 +131,6 @@ Type
     FKeyFields: TList;   // Keyfields in lookup dataset
     FListField: TField;  // Result field in lookup dataset
     FListKeys: array of Variant;
-    FLookupList: TLookupList;
     FNullValueKey: TShortcut;
     FHasLookUpField: Boolean;
     FListLinkTmpSetActive: Boolean;
@@ -159,6 +158,7 @@ Type
     function KeyFieldValue: Variant;
     procedure UpdateData(ValueIndex: Integer);
     function  GetKeyValue(ValueIndex: Integer): Variant;
+    function  GetKeyIndex: Integer;
     function  GetKeyIndex(const AKeyValue: Variant): Integer;
     property LookupCache: boolean read FLookupCache  write SetLookupCache;
     // properties to be published by owner control

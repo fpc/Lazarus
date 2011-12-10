@@ -47,7 +47,7 @@ var
   i: Integer;
 begin
   if FDatalink.Active then
-    i := FLookup.GetKeyIndex(FLookup.KeyFieldValue)
+    i := FLookup.GetKeyIndex
   else
     i := -1;
   ItemIndex := i;
@@ -154,7 +154,7 @@ begin
   if ([csLoading, csDestroying] * ComponentState) = [] then
   begin
     FLookup.Initialize(FDataLink, Items);
-    i := FLookup.GetKeyIndex(FLookup.KeyFieldValue);
+    i := FLookup.GetKeyIndex;
     ItemIndex := i;
     if i = -1 then
       Text := '';
