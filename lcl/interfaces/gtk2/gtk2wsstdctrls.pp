@@ -1769,6 +1769,9 @@ begin
   Inc(WidgetInfo^.ChangeLock);
   gtk_combo_box_set_active(PGtkComboBox(p), NewIndex);
 
+  if (NewIndex = -1) and gtk_is_combo_box_entry(p) then
+    gtk_entry_set_text(PGtkEntry(GTK_BIN(p)^.child), PChar(''));
+
   LCLIndex := WidgetInfo^.UserData;
   if not Assigned(LCLIndex) then
   begin
