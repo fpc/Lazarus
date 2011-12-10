@@ -6264,6 +6264,7 @@ var
   TmpPixmap: QPixmapH;
   SrcMatrix: QTransformH;
   dx, dy: integer;
+  OldRop: Integer;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI StretchMaskBlt]',
@@ -6273,7 +6274,7 @@ begin
      ' X:', dbgs(X), ' Y:', dbgs(Y),
      ' W:', dbgs(Width), ' H:', dbgs(Height),
      ' XSrc:', dbgs(XSrc), ' YSrc:', dbgs(YSrc),
-     ' WSrc:', dbgs(SrcWidth), ' HSrc:', dbgs(SrcHeight));
+     ' WSrc:', dbgs(SrcWidth), ' HSrc:', dbgs(SrcHeight),' Rop: ',dbgs(Rop));
   {$endif}
 
   Result := False;
@@ -6354,13 +6355,32 @@ begin
       TmpMask := QMask;
     DstRect := NormalizeRect(DstRect);
     MaskRect := NormalizeRect(MaskRect);
-    DstQDC.drawImage(@DstRect, TmpImage, @SrcRect, TmpMask, @MaskRect);
+
+    OldRop := DstQDC.Rop2;
+    if Rop <> SRCCOPY then
+      DstQDC.Rop2 := Integer(Rop);
+    try
+      DstQDC.drawImage(@DstRect, TmpImage, @SrcRect, TmpMask, @MaskRect);
+    finally
+      if Rop <> SRCCOPY then
+        DstQDC.Rop2 := OldRop;
+    end;
+
     QImage_destroy(TmpImage);
     if TmpMask <> nil then
       QImage_destroy(TmpMask);
-  end
-  else
-    DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
+  end else
+  begin
+    OldRop := DstQDC.Rop2;
+    if Rop <> SRCCOPY then
+      DstQDC.Rop2 := Integer(Rop);
+    try
+      DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
+    finally
+      if Rop <> SRCCOPY then
+        DstQDC.Rop2 := OldRop;
+    end;
+  end;
 
   if SrcQDC.vImage = nil then
     QImage_destroy(Image);

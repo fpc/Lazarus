@@ -2613,18 +2613,49 @@ begin
 
   if not DeviceSupportsRasterOps then
     exit;
+  (*
+   IMPLEMENTED = +
+   NOT IMPLEMENTED = -
+   NOT SURE HOWTO IMPLEMENT = ?
+  +SRCCOPY     = $00CC0020;     { dest = source                    }
+  +SRCPAINT    = $00EE0086;     { dest = source OR dest            }
+  +SRCAND      = $008800C6;     { dest = source AND dest           }
+  +SRCINVERT   = $00660046;     { dest = source XOR dest           }
+  +SRCERASE    = $00440328;     { dest = source AND (NOT dest )    }
+  +NOTSRCCOPY  = $00330008;     { dest = (NOT source)              }
+  +NOTSRCERASE = $001100A6;     { dest = (NOT src) AND (NOT dest)  }
+  -MERGECOPY   = $00C000CA;     { dest = (source AND pattern)      }
+  +MERGEPAINT  = $00BB0226;     { dest = (NOT source) OR dest      }
+  -PATCOPY     = $00F00021;     { dest = pattern                   }
+  -PATPAINT    = $00FB0A09;     { dest = DPSnoo                    }
+  -PATINVERT   = $005A0049;     { dest = pattern XOR dest          }
+  +DSTINVERT   = $00550009;     { dest = (NOT dest)                }
+  ?BLACKNESS   = $00000042;     { dest = BLACK                     }
+  ?WHITENESS   = $00FF0062;     { dest = WHITE                     }
+  *)
 
   case AValue of
-
+    BLACKNESS,
     R2_BLACK: if DeviceSupportsComposition then
                 Result := QPainterCompositionMode_Clear;
 
+    SRCCOPY,
     R2_COPYPEN: Result := QPainterCompositionMode_SourceOver; // default
+
+    MERGEPAINT,
     R2_MASKNOTPEN: Result := QPainterRasterOp_NotSourceAndDestination;
+
+    SRCAND,
     R2_MASKPEN: Result := QPainterRasterOp_SourceAndDestination;
+
+    SRCERASE,
     R2_MASKPENNOT: Result := QPainterRasterOp_SourceAndNotDestination;
+
     R2_MERGENOTPEN: Result := QPainterCompositionMode_SourceOver; // unsupported
+
+    SRCPAINT,
     R2_MERGEPEN: Result := QPainterRasterOp_SourceOrDestination;
+
     R2_MERGEPENNOT: Result := QPainterCompositionMode_SourceOver; // unsupported
 
     R2_NOP: if DeviceSupportsComposition then
@@ -2632,14 +2663,21 @@ begin
     R2_NOT: if DeviceSupportsComposition then
               Result := QPainterCompositionMode_SourceOut; // unsupported
 
+    NOTSRCCOPY,
     R2_NOTCOPYPEN: Result := QPainterRasterOp_NotSource;
+
     R2_NOTMASKPEN: Result := QPainterRasterOp_NotSourceOrNotDestination;
+
+    NOTSRCERASE,
     R2_NOTMERGEPEN: Result := QPainterRasterOp_NotSourceAndNotDestination;
+
+    DSTINVERT,
     R2_NOTXORPEN: Result := QPainterRasterOp_NotSourceXorDestination;
 
+    WHITENESS,
     R2_WHITE: if DeviceSupportsComposition then
                 Result := QPainterCompositionMode_Screen;
-
+    SRCINVERT,
     R2_XORPEN: Result := QPainterRasterOp_SourceXorDestination;
   end;
 end;
@@ -2654,7 +2692,7 @@ begin
   {$ifdef VerboseQt}
   writeln('TQtDeviceContext.RestorePenColor() ');
   {$endif}
-  Qpainter_setPen(Widget, @PenColor);
+  QPainter_setPen(Widget, @PenColor);
 end;
 
 function TQtDeviceContext.GetRop: Integer;
