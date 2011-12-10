@@ -1443,8 +1443,16 @@ end;
   Instructs the widgtset to create an imagelist
  ------------------------------------------------------------------------------}
 function TCustomImageList.WSCreateReference(AParams: TCreateParams): PWSReference;
+var
+  ilc: TWSCustomImageListClass;
+  dt: PRGBAQuad;
 begin
-  FReference := TWSCustomImageListClass(WidgetSetClass).CreateReference(Self, FCount, FAllocBy, FWidth, FHeight, @FData[0]);
+  ilc := TWSCustomImageListClass(WidgetSetClass);
+  if FCount = 0 then
+    dt := nil
+  else
+    dt := @FData[0];
+  FReference := ilc.CreateReference(Self, FCount, FAllocBy, FWidth, FHeight, dt);
   Result := @FReference;
 end;
 

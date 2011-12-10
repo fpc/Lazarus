@@ -47,7 +47,8 @@ type
 
   TWin32WSCustomImageList = class(TWSCustomImageList)
   protected
-    class procedure AddData(AListHandle: TLCLIntfHandle; ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
+    class procedure AddData(AListHandle: TLCLIntfHandle;
+      ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
   published
     class procedure Clear(AList: TCustomImageList); override;
     class function CreateReference(AList: TCustomImageList; ACount, AGrow, AWidth,
@@ -55,9 +56,11 @@ type
     class procedure Delete(AList: TCustomImageList; AIndex: Integer); override;
     class procedure DestroyReference(AComponent: TComponent); override;
     class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
-      ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType); override;
+      ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect;
+      AStyle: TDrawingStyle; AImageType: TImageType); override;
     class procedure DrawToDC(AList: TCustomImageList; AIndex: Integer; ADC: HDC;
-      ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
+      ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect;
+      AStyle: TDrawingStyle; AImageType: TImageType);
     class procedure Insert(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
     class procedure Move(AList: TCustomImageList; ACurIndex, ANewIndex: Integer); override;
     class procedure Replace(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
@@ -106,7 +109,9 @@ begin
   ReleaseDC(0, DC);
 end;
 
-class procedure TWin32WSCustomImageList.AddData(AListHandle: TLCLIntfHandle; ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
+class procedure TWin32WSCustomImageList.AddData(AListHandle: TLCLIntfHandle;
+  ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
+
   procedure DoAddAlpha;
   var
     Info: Windows.TBitmapInfo;
@@ -253,8 +258,8 @@ begin
     end;
   end;
   Result._Init(ImageList_Create(AWidth, AHeight, Flags, ACount, AGrow));
-  if Result.Allocated
-  then AddData(Result._Handle, ACount, -1, AWidth, AHeight, AData);
+  if Result.Allocated and (ACount > 0) then
+    AddData(Result._Handle, ACount, -1, AWidth, AHeight, AData);
 end;
 
 class procedure TWin32WSCustomImageList.Delete(AList: TCustomImageList;
@@ -273,7 +278,8 @@ begin
 end;
 
 class procedure TWin32WSCustomImageList.Draw(AList: TCustomImageList; AIndex: Integer;
-  ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
+  ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor;
+  ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
 begin
   if not WSCheckReferenceAllocated(AList, 'Draw')
   then Exit;
