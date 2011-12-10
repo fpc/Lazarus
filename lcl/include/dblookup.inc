@@ -224,7 +224,7 @@ begin
       if (FLookupCache and not FLookUpFieldIsCached) then
         FLookupList.Add(FListLink.DataSet.FieldValues[FKeyFieldNames],
           FListField.Value);
-      s:=FListField.AsString;
+      s:=FListField.DisplayText;
       FListKeys[i] := FListLink.DataSet.FieldValues[FKeyFieldNames];
       Inc(i);
       FControlItems.Add(s);
