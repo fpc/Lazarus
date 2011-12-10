@@ -43,11 +43,16 @@ begin
 end;
 
 procedure TDBLookupComboBox.DataChange(Sender: TObject);
+var
+  i: Integer;
 begin
   if FDatalink.Active then
-    ItemIndex := FLookup.GetKeyIndex(FLookup.KeyFieldValue)
+    i := FLookup.GetKeyIndex(FLookup.KeyFieldValue)
   else
-    ItemIndex := -1;
+    i := -1;
+  ItemIndex := i;
+  if i = -1 then
+    Text := '';
 end;
 
 procedure TDBLookupComboBox.KeyDown(var Key: Word; Shift: TShiftState);
@@ -143,11 +148,16 @@ begin
 end;
 
 procedure TDBLookupComboBox.UpdateLookup;
+var
+  i: Integer;
 begin
   if ([csLoading, csDestroying] * ComponentState) = [] then
   begin
     FLookup.Initialize(FDataLink, Items);
-    ItemIndex := FLookup.GetKeyIndex(FLookup.KeyFieldValue);
+    i := FLookup.GetKeyIndex(FLookup.KeyFieldValue);
+    ItemIndex := i;
+    if i = -1 then
+      Text := '';
   end;
 end;
 
