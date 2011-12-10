@@ -914,90 +914,114 @@ function TStandardCodeTool.AddUnitToSpecificUsesSection(UsesSection: TUsesSectio
   const NewUnitName, NewUnitInFile: string; SourceChangeCache: TSourceChangeCache;
   AsLast: boolean; CheckSpecialUnits: boolean): boolean;
 var
-  UsesNode, SectionNode: TCodeTreeNode;
+  UsesNode, OtherUsesNode, SectionNode: TCodeTreeNode;
   NewUsesTerm: string;
   InsertPos: integer;
   Junk     : TAtomPosition;
 begin
   Result:=false;
   if not IsDottedIdentifier(NewUnitName) then exit;
-  if UsesSection=usMain then
-    BuildTree(lsrMainUsesSectionEnd)
-  else
-    BuildTree(lsrImplementationUsesSectionEnd);
-  SourceChangeCache.MainScanner:=Scanner;
-  case UsesSection Of
-    usMain: UsesNode:=FindMainUsesSection;
-    usImplementation: UsesNode:=FindImplementationUsesSection;
+  if UsesSection=usMain then begin
+    // quick check using only the main uses section
+    BuildTree(lsrMainUsesSectionEnd);
+    UsesNode:=FindMainUsesSection;
+    if (UsesNode<>nil)
+    and (FindUnitInUsesSection(UsesNode,NewUnitName,Junk,Junk)) then
+      exit(true); // unit already in main uses section
   end;
-  if UsesNode<>nil then begin
-    // add unit to existing uses section
-    if not (FindUnitInUsesSection(UsesNode,NewUnitName,Junk,Junk))
-    then begin
-      if not AddUnitToUsesSection(UsesNode,NewUnitName,NewUnitInFile,
-                                  SourceChangeCache,AsLast,CheckSpecialUnits)
-      then
-        exit;
+  if GetSourceType=ctnUnit then
+    BuildTree(lsrImplementationUsesSectionEnd)
+  else if UsesSection=usImplementation then begin
+    MoveCursorToNodeStart(Tree.Root);
+    RaiseException('can not add a unit to the implementation, because only a unit has one');
+  end;
+  SourceChangeCache.MainScanner:=Scanner;
+  SourceChangeCache.BeginUpdate;
+  try
+    UsesNode:=FindMainUsesSection;
+    OtherUsesNode:=FindImplementationUsesSection;
+    if UsesSection=usImplementation then begin
+      SectionNode:=UsesNode;
+      UsesNode:=OtherUsesNode;
+      OtherUsesNode:=SectionNode;
     end;
-  end else begin
-    // create a new uses section
-    if Tree.Root=nil then exit;
-    SectionNode:=Tree.Root;
-    InsertPos:=0;
-    NewUsesTerm:='';
-    if SectionNode.Desc=ctnUnit then begin
-      // unit
-      case UsesSection of
-      usMain: SectionNode:=FindInterfaceNode;
-      usImplementation: SectionNode:=FindImplementationNode;
+    // remove unit from other uses section
+    if (OtherUsesNode<>nil) then
+      RemoveUnitFromUsesSection(OtherUsesNode,NewUnitName,SourceChangeCache);
+
+    if UsesNode<>nil then begin
+      // add unit to existing uses section
+      if not (FindUnitInUsesSection(UsesNode,NewUnitName,Junk,Junk))
+      then begin
+        if not AddUnitToUsesSection(UsesNode,NewUnitName,NewUnitInFile,
+                                    SourceChangeCache,AsLast,CheckSpecialUnits)
+        then
+          exit;
       end;
-      if SectionNode<>nil then begin
-        // add uses to existing interface/implementation before any content
-        MoveCursorToNodeStart(SectionNode);
-        ReadNextAtom;
-        InsertPos := CurPos.EndPos;
-      end else begin
-        // section is missing => add it
-        SectionNode:=Tree.Root;
+    end else begin
+      // create a new uses section
+      if Tree.Root=nil then exit;
+      SectionNode:=Tree.Root;
+      InsertPos:=0;
+      NewUsesTerm:='';
+      if SectionNode.Desc=ctnUnit then begin
+        // unit
         case UsesSection of
-        usMain: NewUsesTerm:='interface';
-        usImplementation: NewUsesTerm:='implementation';
+        usMain: SectionNode:=FindInterfaceNode;
+        usImplementation: SectionNode:=FindImplementationNode;
         end;
-        NewUsesTerm:=SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(NewUsesTerm)
-                    +SourceChangeCache.BeautifyCodeOptions.LineEnd;
-        if SectionNode.FirstChild<>nil then begin
-          // unit not empty => add in front of first node
-          InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.FirstChild.StartPos,
+        if SectionNode<>nil then begin
+          // add uses to existing interface/implementation before any content
+          MoveCursorToNodeStart(SectionNode);
+          ReadNextAtom;
+          InsertPos := CurPos.EndPos;
+        end else begin
+          // section is missing => add it
+          SectionNode:=Tree.Root;
+          case UsesSection of
+          usMain: NewUsesTerm:='interface';
+          usImplementation: NewUsesTerm:='implementation';
+          end;
+          NewUsesTerm:=SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(NewUsesTerm)
+                      +SourceChangeCache.BeautifyCodeOptions.LineEnd;
+          if SectionNode.FirstChild<>nil then begin
+            // unit not empty => add in front of first node
+            InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.FirstChild.StartPos,
+              true);
+          end else begin
+            // unit empty => add at end
+            InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.EndPos,true);
+          end;
+        end;
+      end;
+      if InsertPos<1 then begin
+        // not a unit (i.e. program)
+        // => insert after title and directives
+        if SectionNode.Next<>nil then begin
+          InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.Next.StartPos,
             true);
         end else begin
-          // unit empty => add at end
+          // program empty => add at end
           InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.EndPos,true);
         end;
       end;
+      NewUsesTerm:=NewUsesTerm
+           +SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('uses')
+           +' '+NewUnitName;
+      if NewUnitInFile<>'' then
+        NewUsesTerm:=NewUsesTerm+' in '''+NewUnitInFile+''';'
+      else
+        NewUsesTerm:=NewUsesTerm+';';
+      if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
+        NewUsesTerm) then exit;
+      if not SourceChangeCache.Apply then exit;
     end;
-    if InsertPos<1 then begin
-      // not a unit (i.e. program)
-      // => insert after title and directives
-      if SectionNode.Next<>nil then begin
-        InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.Next.StartPos,
-          true);
-      end else begin
-        // program empty => add at end
-        InsertPos:=FindLineEndOrCodeInFrontOfPosition(SectionNode.EndPos,true);
-      end;
-    end;
-    NewUsesTerm:=NewUsesTerm
-         +SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('uses')
-         +' '+NewUnitName;
-    if NewUnitInFile<>'' then
-      NewUsesTerm:=NewUsesTerm+' in '''+NewUnitInFile+''';'
-    else
-      NewUsesTerm:=NewUsesTerm+';';
-    if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
-      NewUsesTerm) then exit;
-    if not SourceChangeCache.Apply then exit;
+    Result:=true;
+  finally
+    if not Result then
+      SourceChangeCache.Clear;
+    SourceChangeCache.EndUpdate;
   end;
-  Result:=true;
 end;
 
 function TStandardCodeTool.UnitExistsInUsesSection(UsesSection: TUsesSection;
