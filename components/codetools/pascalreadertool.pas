@@ -2555,6 +2555,7 @@ end;
 
 function TPascalReaderTool.ExtractUsedUnitNameAtCursor(InFilename: PAnsiString): string;
 begin
+  Result:='';
   if InFilename<>nil then
     InFilename^:='';
   while CurPos.Flag=cafWord do begin
