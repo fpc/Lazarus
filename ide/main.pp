@@ -11185,8 +11185,7 @@ begin
   else
     s:='"'+ActiveSourceEditor.PageName+'"';
   if (ActiveUnitInfo.Unit_Name<>'')
-  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.Unit_Name,
-      true,ActiveUnitInfo)>=0) then
+  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.Unit_Name,true,ActiveUnitInfo)>=0) then
   begin
     MessageDlg(Format(
       lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
@@ -11203,8 +11202,7 @@ begin
           MsgResult:=IDEQuestionDialog(lisAddPackageRequirement,
             Format(lisTheUnitBelongsToPackage, [APackage.IDAsString]),
             mtConfirmation, [mrYes, lisAddPackageToProject2,
-                            mrIgnore, lisAddUnitNotRecommended,
-                            mrCancel],'');
+                            mrIgnore, lisAddUnitNotRecommended, mrCancel],'');
           case MsgResult of
             mrYes:
               begin
@@ -11234,8 +11232,7 @@ begin
     end;
   end;
 
-  if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbYes,
-    mbCancel], 0) in [mrOk,mrYes]
+  if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbYes,mbCancel], 0) in [mrOk,mrYes]
   then begin
     DependencyAdded:=false;
     if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
@@ -11251,8 +11248,7 @@ begin
         ActiveUnitInfo.ReadUnitNameFromSource(false);
         ShortUnitName:=ActiveUnitInfo.CreateUnitName;
         if (ShortUnitName<>'') then begin
-          if CodeToolBoss.AddUnitToMainUsesSection(
-            Project1.MainUnitInfo.Source,ShortUnitName,'')
+          if CodeToolBoss.AddUnitToMainUsesSection(Project1.MainUnitInfo.Source,ShortUnitName,'')
           then
             Project1.MainUnitInfo.Modified:=true;
         end;

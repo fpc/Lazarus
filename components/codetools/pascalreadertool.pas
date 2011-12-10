@@ -786,8 +786,7 @@ begin
   end;
 end;
 
-function TPascalReaderTool.FindProcBody(ProcNode: TCodeTreeNode
-  ): TCodeTreeNode;
+function TPascalReaderTool.FindProcBody(ProcNode: TCodeTreeNode): TCodeTreeNode;
 begin
   Result:=ProcNode;
   if Result=nil then exit;
@@ -835,8 +834,7 @@ begin
   Result:=true;
 end;
 
-procedure TPascalReaderTool.MoveCursorToFirstProcSpecifier(
-  ProcNode: TCodeTreeNode);
+procedure TPascalReaderTool.MoveCursorToFirstProcSpecifier(ProcNode: TCodeTreeNode);
 // After the call,
 // CurPos will stand on the first proc specifier or on a semicolon
 begin
@@ -1057,8 +1055,7 @@ begin
   Result:=CleanPos<=CurPos.StartPos;
 end;
 
-function TPascalReaderTool.MoveCursorToPropType(PropNode: TCodeTreeNode
-  ): boolean;
+function TPascalReaderTool.MoveCursorToPropType(PropNode: TCodeTreeNode): boolean;
 begin
   Result:=false;
   if (PropNode=nil)
@@ -1083,8 +1080,7 @@ begin
   Result:=CurPos.Flag=cafWord;
 end;
 
-function TPascalReaderTool.MoveCursorToPropName(PropNode: TCodeTreeNode
-  ): boolean;
+function TPascalReaderTool.MoveCursorToPropName(PropNode: TCodeTreeNode): boolean;
 begin
   Result:=false;
   if (PropNode=nil)
@@ -1130,8 +1126,7 @@ begin
   Result:=MoveCursorToProcSpecifier(ProcNode,ProcSpec);
 end;
 
-function TPascalReaderTool.GetProcNameIdentifier(ProcNode: TCodeTreeNode
-  ): PChar;
+function TPascalReaderTool.GetProcNameIdentifier(ProcNode: TCodeTreeNode): PChar;
 begin
 
   // ToDo: ppu, dcu
@@ -1281,8 +1276,7 @@ begin
   Result:=GetExtraction(phpInUpperCase in Attr);
 end;
 
-function TPascalReaderTool.GetPropertyNameIdentifier(PropNode: TCodeTreeNode
-  ): PChar;
+function TPascalReaderTool.GetPropertyNameIdentifier(PropNode: TCodeTreeNode): PChar;
 begin
   // ToDo: ppu, dcu
 
@@ -1292,8 +1286,7 @@ begin
   Result:=@Src[CurPos.StartPos];
 end;
 
-function TPascalReaderTool.GetPropertyTypeIdentifier(PropNode: TCodeTreeNode
-  ): PChar;
+function TPascalReaderTool.GetPropertyTypeIdentifier(PropNode: TCodeTreeNode): PChar;
 begin
 
   // ToDo: ppu, dcu
@@ -1467,8 +1460,7 @@ begin
   end;
 end;
 
-function TPascalReaderTool.GetHintModifiers(Node: TCodeTreeNode
-  ): TPascalHintModifiers;
+function TPascalReaderTool.GetHintModifiers(Node: TCodeTreeNode): TPascalHintModifiers;
 
   function IsHintModifier: boolean;
   begin
@@ -1582,8 +1574,7 @@ begin
 end;
 
 function TPascalReaderTool.FindClassNode(StartNode: TCodeTreeNode;
-  const AClassName: string; IgnoreForwards, IgnoreNonForwards: boolean
-  ): TCodeTreeNode;
+  const AClassName: string; IgnoreForwards, IgnoreNonForwards: boolean): TCodeTreeNode;
 // search for class like types on same level
 var
   ANode, CurClassNode: TCodeTreeNode;
@@ -1639,8 +1630,7 @@ begin
 end;
 
 function TPascalReaderTool.FindClassNodeBackwards(StartNode: TCodeTreeNode;
-  const AClassName: string; IgnoreForwards, IgnoreNonForwards: boolean
-  ): TCodeTreeNode;
+  const AClassName: string; IgnoreForwards, IgnoreNonForwards: boolean): TCodeTreeNode;
 var
   ANode: TCodeTreeNode;
   CurClassNode: TCodeTreeNode;
@@ -1730,8 +1720,7 @@ begin
   end;
 end;
 
-function TPascalReaderTool.FindClassNode(CursorNode: TCodeTreeNode
-  ): TCodeTreeNode;
+function TPascalReaderTool.FindClassNode(CursorNode: TCodeTreeNode): TCodeTreeNode;
 // find class node of a node in a procedure (declaration or body)
 begin
   while CursorNode<>nil do begin
@@ -1868,8 +1857,7 @@ begin
   Result:=(Node<>nil) and (Node.Desc=ctnClass);
 end;
 
-function TPascalReaderTool.FindInheritanceNode(ClassNode: TCodeTreeNode
-  ): TCodeTreeNode;
+function TPascalReaderTool.FindInheritanceNode(ClassNode: TCodeTreeNode): TCodeTreeNode;
 begin
   Result:=ClassNode.FirstChild;
   while (Result<>nil) and (Result.Desc in [ctnClassSealed,ctnClassAbstract]) do
@@ -1878,8 +1866,7 @@ begin
     Result:=nil;
 end;
 
-function TPascalReaderTool.ExtractRecordCaseType(RecordCaseNode: TCodeTreeNode
-  ): string;
+function TPascalReaderTool.ExtractRecordCaseType(RecordCaseNode: TCodeTreeNode): string;
 //  case a:b.c of
 //  case a:(b,c) of
 var
@@ -1900,8 +1887,7 @@ begin
     Result:=ctnNone;
 end;
 
-function TPascalReaderTool.GetSourceNamePos(var NamePos: TAtomPosition
-  ): boolean;
+function TPascalReaderTool.GetSourceNamePos(var NamePos: TAtomPosition): boolean;
 begin
   Result:=false;
   NamePos.StartPos:=-1;
@@ -2057,8 +2043,7 @@ begin
   Result:=UpAtomIs('OPERATOR');
 end;
 
-function TPascalReaderTool.NodeIsResultIdentifier(Node: TCodeTreeNode
-  ): boolean;
+function TPascalReaderTool.NodeIsResultIdentifier(Node: TCodeTreeNode): boolean;
 begin
   Result:=(Node<>nil)
     and (Node.Desc=ctnVarDefinition)
@@ -2148,8 +2133,7 @@ begin
   Result:=CurPos.Flag=cafWord;
 end;
 
-function TPascalReaderTool.GetFirstGroupVarNode(VarNode: TCodeTreeNode
-  ): TCodeTreeNode;
+function TPascalReaderTool.GetFirstGroupVarNode(VarNode: TCodeTreeNode): TCodeTreeNode;
 begin
   Result:=VarNode;
   if (VarNode=nil) or (VarNode.Desc<>ctnVarDefinition) then exit;
@@ -2161,8 +2145,7 @@ begin
   end;
 end;
 
-function TPascalReaderTool.FindEndOfWithVar(WithVarNode: TCodeTreeNode
-  ): integer;
+function TPascalReaderTool.FindEndOfWithVar(WithVarNode: TCodeTreeNode): integer;
 begin
   MoveCursorToCleanPos(WithVarNode.StartPos);
   if not ReadTilVariableEnd(true,true) then exit(-1);
@@ -2170,8 +2153,7 @@ begin
   Result:=CurPos.EndPos;
 end;
 
-function TPascalReaderTool.NodeIsIdentifierInInterface(Node: TCodeTreeNode
-  ): boolean;
+function TPascalReaderTool.NodeIsIdentifierInInterface(Node: TCodeTreeNode): boolean;
 // true if identifier is visible from other units (without prefixing)
 begin
   case Node.Desc of
@@ -2195,8 +2177,7 @@ begin
   Result:=false;
 end;
 
-function TPascalReaderTool.NodeCanHaveForwardType(TypeNode: TCodeTreeNode
-  ): boolean;
+function TPascalReaderTool.NodeCanHaveForwardType(TypeNode: TCodeTreeNode): boolean;
 begin
   Result:=false;
   if (TypeNode=nil) or (TypeNode.Desc<>ctnTypeDefinition)
@@ -2365,8 +2346,7 @@ begin
   Result:=CachedSourceName;
 end;
 
-function TPascalReaderTool.PropertyIsDefault(PropertyNode: TCodeTreeNode
-  ): boolean;
+function TPascalReaderTool.PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
 begin
   Result:=false;
   if (PropertyNode=nil) or (PropertyNode.Desc<>ctnProperty) then exit;
@@ -2389,8 +2369,7 @@ begin
   Result:=(CurPos.Flag=cafEdgedBracketOpen);
 end;
 
-function TPascalReaderTool.PropNodeIsTypeLess(PropNode: TCodeTreeNode
-  ): boolean;
+function TPascalReaderTool.PropNodeIsTypeLess(PropNode: TCodeTreeNode): boolean;
 begin
 
   // ToDo: ppu, dcu
@@ -2457,8 +2436,7 @@ begin
   end;
 end;
 
-function TPascalReaderTool.ProcNodeHasParamList(ProcNode: TCodeTreeNode
-  ): boolean;
+function TPascalReaderTool.ProcNodeHasParamList(ProcNode: TCodeTreeNode): boolean;
 begin
 
   // ToDo: ppu, dcu
@@ -2552,8 +2530,7 @@ begin
   Result:=true;
 end;
 
-procedure TPascalReaderTool.ReadPriorUsedUnit(out UnitNameRange,
-  InAtom: TAtomPosition);
+procedure TPascalReaderTool.ReadPriorUsedUnit(out UnitNameRange,InAtom: TAtomPosition);
 begin
   ReadPriorAtom; // read unitname
   if AtomIsStringConstant then begin
@@ -2576,12 +2553,13 @@ begin
   until false;
 end;
 
-function TPascalReaderTool.ExtractUsedUnitNameAtCursor(InFilename: PAnsiString
-  ): string;
+function TPascalReaderTool.ExtractUsedUnitNameAtCursor(InFilename: PAnsiString): string;
 begin
-  if InFilename<>nil then InFilename^:='';
+  if InFilename<>nil then
+    InFilename^:='';
   while CurPos.Flag=cafWord do begin
-    if Result<>'' then Result:=Result+'.';
+    if Result<>'' then
+      Result:=Result+'.';
     Result:=Result+GetAtom;
     ReadNextAtom;
     if CurPos.Flag<>cafPoint then break;
@@ -2608,8 +2586,7 @@ begin
   Result:=ExtractUsedUnitNameAtCursor(InFilename);
 end;
 
-function TPascalReaderTool.ReadAndCompareUsedUnit(const AnUnitName: string
-  ): boolean;
+function TPascalReaderTool.ReadAndCompareUsedUnit(const AnUnitName: string): boolean;
 // after reading cursor is on atom behind unit name
 var
   p: PChar;

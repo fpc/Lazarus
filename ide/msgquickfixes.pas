@@ -312,8 +312,7 @@ begin
   end;
   if CodeBuf=nil then exit;
   LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
-  if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,
-    NamePos,InPos)
+  if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,NamePos,InPos)
   then begin
     DebugLn('QuickFixUnitNotFoundPosition failed due to syntax errors or '+MissingUnitname+' is not used in '+CodeBuf.Filename);
     //LazarusIDE.DoJumpToCodeToolBossError;

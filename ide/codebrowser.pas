@@ -1040,12 +1040,11 @@ begin
     SelectedUnitName:=CodeToolBoss.GetSourceName(SelectedCode, false);
 
     // add unit to uses section
-    if not CodeToolBoss.AddUnitToMainUsesSection(TargetCode, SelectedUnitName,
-      '') then
+    if not CodeToolBoss.AddUnitToMainUsesSection(TargetCode, SelectedUnitName,'') then
     begin
       DebugLn(['TCodeBrowserView.UseUnitInSrcEditor CodeToolBoss.'
-        +'AddUnitToMainUsesSection failed: TargetCode=', TargetCode.Filename, ' '
-          +'SelectedUnitName=', SelectedUnitName]);
+        +'AddUnitToMainUsesSection failed: TargetCode=', TargetCode.Filename,
+        ' SelectedUnitName=', SelectedUnitName]);
       LazarusIDE.DoJumpToCodeToolBossError;
     end;
 

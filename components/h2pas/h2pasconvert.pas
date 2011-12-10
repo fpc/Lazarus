@@ -3888,8 +3888,7 @@ function TPostH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
       if not IsValidIdent(UnitName) then
         raise Exception.Create('TPostH2PasTools.Execute.AddToUsesSection invalid unitname "'+UnitName+'"');
       Changed:=true;
-      if not CodeToolBoss.AddUnitToMainUsesSection(
-        TCodeBuffer(aText.CodeBuffer),UnitName,'')
+      if not CodeToolBoss.AddUnitToMainUsesSection(TCodeBuffer(aText.CodeBuffer),UnitName,'')
       then begin
         AssignCodeToolBossError;
         DebugLn(['TPostH2PasTools.Execute.AddToUsesSection failed ',CodeToolBoss.ErrorMessage]);
@@ -4943,8 +4942,7 @@ begin
     if (AUnitName='') then continue;
     if not IsValidIdent(AUnitName) then
       raise Exception.Create('TAddToUsesSection.Execute invalid unitname "'+AUnitName+'"');
-    if not CodeToolBoss.AddUnitToMainUsesSection(
-      TCodeBuffer(aText.CodeBuffer),AUnitName,'')
+    if not CodeToolBoss.AddUnitToMainUsesSection(TCodeBuffer(aText.CodeBuffer),AUnitName,'')
     then begin
       AssignCodeToolBossError;
       DebugLn(['TAddToUsesSection.Execute failed ',CodeToolBoss.ErrorMessage]);

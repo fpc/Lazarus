@@ -4212,7 +4212,8 @@ begin
   repeat
     if not IsIdentStartChar[p^] then exit;
     inc(p);
-    while IsIdentChar[p^] do inc(p);
+    while IsIdentChar[p^] do
+      inc(p);
     if p^<>'.' then break;
     inc(p);
   until false;

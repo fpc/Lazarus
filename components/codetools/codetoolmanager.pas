@@ -623,8 +623,8 @@ type
 
     // uses sections
     function FindUnitInAllUsesSections(Code: TCodeBuffer;
-          const AnUnitName: string;
-          out NamePos, InPos: integer; const IgnoreMissingIncludeFiles: Boolean = False): boolean;
+          const AnUnitName: string; out NamePos, InPos: integer;
+          const IgnoreMissingIncludeFiles: Boolean = False): boolean;
     function RenameUsedUnit(Code: TCodeBuffer;
           const OldUnitName, NewUnitName, NewUnitInFile: string): boolean;
     function ReplaceUsedUnits(Code: TCodeBuffer;
@@ -4396,8 +4396,8 @@ begin
 end;
 
 function TCodeToolManager.FindUnitInAllUsesSections(Code: TCodeBuffer;
-  const AnUnitName: string;
-  out NamePos, InPos: integer; const IgnoreMissingIncludeFiles: Boolean = False): boolean;
+  const AnUnitName: string; out NamePos, InPos: integer;
+  const IgnoreMissingIncludeFiles: Boolean = False): boolean;
 var
   NameAtomPos, InAtomPos: TAtomPosition;
   OldIgnoreMissingIncludeFiles: Boolean;

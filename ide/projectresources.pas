@@ -563,8 +563,7 @@ begin
         if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf, LazResourcesUnit) then
         begin
           Result := False;
-          Messages.Add(Format(lisCouldNotRemoveFromMainSource, ['"',
-            LazResourcesUnit, '"']));
+          Messages.Add(Format(lisCouldNotRemoveFromMainSource, ['"',LazResourcesUnit,'"']));
           debugln(['TProjectResources.UpdateMainSourceFile adding LResources to main source failed']);
         end;
       end;
@@ -575,8 +574,7 @@ begin
       if not CodeToolBoss.AddUnitToMainUsesSection(CodeBuf, LazResourcesUnit,'') then
       begin
         Result := False;
-        Messages.Add(Format(lisCouldNotAddToMainSource, ['"', LazResourcesUnit,
-          '"']));
+        Messages.Add(Format(lisCouldNotAddToMainSource, ['"',LazResourcesUnit,'"']));
         debugln(['TProjectResources.UpdateMainSourceFile adding LResources to main source failed']);
       end;
     end;
