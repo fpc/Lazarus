@@ -25,6 +25,7 @@
     Dialog to view and search the whole list.
 
   ToDo:
+    -put exact match at start
     -quickfix for identifier not found
     -use identifier: check package version
     -clean up old entries

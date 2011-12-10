@@ -48,9 +48,9 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeTree, CodeAtom, CodeCache, CustomCodeTool,
-  CodeToolsStrConsts, KeywordFuncLists, BasicCodeTools, LinkScanner,
-  AVL_Tree, CodeToolMemManager, DefineTemplates,
-  SourceChanger, FindDeclarationTool, PascalReaderTool, PascalParserTool;
+  CodeToolsStrConsts, KeywordFuncLists, BasicCodeTools, LinkScanner, AVL_Tree,
+  CodeToolMemManager, DefineTemplates, SourceChanger, FindDeclarationTool,
+  PascalReaderTool, PascalParserTool, CodeToolsStructs, ExprEval;
   
 type
   TIdentCompletionTool = class;
@@ -1948,11 +1948,37 @@ function TIdentCompletionTool.IsInCompilerDirective(CursorPos: TCodeXYPosition
     CurrentIdentifierList.Add(NewItem);
   end;
 
+  procedure AddMacros;
+  var
+    Macros: TStringToStringTree;
+    StrItem: PStringToStringTreeItem;
+
+    procedure Add(e: TExpressionEvaluator);
+    var
+      i: Integer;
+    begin
+      for i:=0 to e.Count-1 do
+        Macros[e.Names(i)]:=e.Values(i);
+    end;
+
+  begin
+    Macros:=TStringToStringTree.Create(false);
+    try
+      Add(Scanner.InitialValues);
+      Add(Scanner.Values);
+      for StrItem in Macros do
+        Key(StrItem^.Name);
+    finally
+      Macros.Free;
+    end;
+  end;
+
 var
   Line: String;
   p: Integer;
   EndPos: Integer;
   InnerStart: Integer;
+  Directive: String;
 begin
   Result:=false;
   Line:=CursorPos.Code.GetLine(CursorPos.Y-1);
@@ -1965,10 +1991,15 @@ begin
       // in a directive
       Result:=true;
       InnerStart:=p;
-      if Line[InnerStart]='{' then inc(InnerStart,2)
-      else inc(InnerStart,3);
+      if Line[InnerStart]='{' then
+        inc(InnerStart,2)
+      else
+        inc(InnerStart,3);
       //debugln(['TIdentCompletionTool.IsInCompilerDirective InnerStart=',InnerStart,' X=',CursorPos.X]);
-      if InnerStart=CursorPos.X then begin
+      if (InnerStart=CursorPos.X)
+      or ((CursorPos.X>=InnerStart) and (InnerStart<=length(Line))
+          and (CursorPos.X<=InnerStart+GetIdentLen(@Line[InnerStart])))
+      then begin
         Key('ALIGN');
         Key('ALIGNASSERTIONS');
         Key('ASMMODE');
@@ -2047,6 +2078,16 @@ begin
         Key('WARNING');
         Key('WARNINGS');
         Key('WRITABLECONST');
+      end else if InnerStart<=length(Line) then begin
+        Directive:=lowercase(GetIdentifier(@Line[InnerStart]));
+        if (Directive='ifdef')
+        or (Directive='ifndef')
+        or (Directive='if')
+        or (Directive='elseif')
+        or (Directive='ifc')
+        then begin
+          AddMacros;
+        end;
       end;
       exit;
     end;
