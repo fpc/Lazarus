@@ -1020,31 +1020,23 @@ var
   WideBuffer: widestring;
   {$endif}
 begin
+  // not necessary. Change is already done in TCustomComboBox.RealSetText
+  if TCustomComboBox(AWinControl).ReadOnly then
+    Exit;
   Handle := AWinControl.Handle;
   {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
     WideBuffer := UTF8ToUTF16(AText);
-
-    if TCustomComboBox(AWinControl).ReadOnly then
-      Windows.SendMessageW(Handle, CB_SELECTSTRING, -1, LPARAM(PWideChar(WideBuffer)))
-    else
-      Windows.SendMessageW(Handle, WM_SETTEXT, 0, LPARAM(PWideChar(WideBuffer)));
+    Windows.SendMessageW(Handle, WM_SETTEXT, 0, LPARAM(PWideChar(WideBuffer)));
   end
   else
   begin
     AnsiBuffer := UTF8ToAnsi(AText);
-
-    if TCustomComboBox(AWinControl).ReadOnly then
-      Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(PChar(AnsiBuffer)))
-    else
-      Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AnsiBuffer)));
+    Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AnsiBuffer)));
   end;
   {$else}
-  if TCustomComboBox(AWinControl).ReadOnly then
-    Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(PChar(AText)))
-  else
-    Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
+  Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
   {$endif}
 end;
 
