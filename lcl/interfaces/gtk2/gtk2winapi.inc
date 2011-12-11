@@ -7486,9 +7486,18 @@ begin
     Rect1.y := PrcScroll^.Top;
     Rect1.width := PrcScroll^.Right - PrcScroll^.Left;
     Rect1.height := PrcScroll^.Bottom - PrcScroll^.Top;
+    if (PrcClip <> nil) and EqualRect(PrcClip^, PrcScroll^) then
+      // do nothing
+    else
+    begin
+      Region := gdk_region_rectangle(@Rect1);
+      gdk_window_move_region(Window, Region, dx, dy);
+    end;
+  end else
+  begin
+    Region := gdk_region_rectangle(@Rect1);
+    gdk_window_move_region(Window, Region, dx, dy);
   end;
-  Region := gdk_region_rectangle(@Rect1);
-  gdk_window_move_region(Window, Region, dx, dy);
 
   // Rect2 includes the Area at the scroll-in side of Rect1
   // gdk_window_move_region is supposed to have invalidated it, but some
@@ -9153,12 +9162,31 @@ end;
 function TGtk2WidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 var
   GtkWindow: PGtkWindow;
+  GdkWindow: PGdkWindow;
   B: Boolean;
+  Widget: PGtkWidget;
 begin
   Result := False;
-  GtkWindow := PGtkWindow(hWnd);
-  if GtkWindow = nil then
+
+  Widget := PGtkWidget(HWND);
+
+  if Widget = nil then
     RaiseGDBException('TGtk2WidgetSet.ShowWindow  hWnd is nil');
+
+  if GTK_IS_WINDOW(Widget) then
+    GtkWindow := PGtkWindow(hWnd)
+  else
+  begin
+    // we are pure gtkwidget so only SW_SHOW AND SW_HIDE CAN GO
+    case nCmdShow of
+      SW_SHOWNORMAL,
+      SW_SHOW: gtk_widget_show(Widget);
+      SW_HIDE: gtk_widget_hide(Widget);
+    end;
+    Result := nCmdShow in [SW_SHOW, SW_HIDE];
+    exit;
+  end;
+
 
   B := (PGtkWidget(GtkWindow)^.parent <> nil) and
     (PGtkWidget(GtkWindow)^.parent^.window <> nil) and
