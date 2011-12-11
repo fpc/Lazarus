@@ -608,12 +608,20 @@ var
   AIcon: TQtIcon;
   APixmap, ATemp: QPixmapH;
   AMask: QBitmapH;
+  {$IFDEF DARWIN}
+  AImgFmt: QImageFormat;
+  {$ENDIF}
 begin
   Result := 0;
   if IsValidGDIObject(IconInfo^.hbmColor) then
   begin
     APixmap := QPixmap_create();
     QPixmap_fromImage(APixmap, TQtImage(IconInfo^.hbmColor).FHandle);
+    {$IFDEF DARWIN}
+    AImgFmt := TQtImage(IconInfo^.hbmColor).getFormat;
+    if (AImgFmt in [QImageFormat_Mono, QImageFormat_MonoLSB,
+      QImageFormat_Indexed8, QImageFormat_RGB32]) then
+    {$ENDIF}
     if IconInfo^.hbmMask <> 0 then
     begin
       ATemp := QPixmap_create();
