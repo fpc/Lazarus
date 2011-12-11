@@ -5,9 +5,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
   VertScrollBar.Page = 523
   Align = alClient
   Anchors = [akTop]
-  AutoSize = False
   ClientHeight = 583
   ClientWidth = 636
+  TabOrder = 0
   Visible = False
   DesignLeft = 366
   DesignTop = 237
@@ -17,13 +17,13 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 23
+    Height = 21
     Top = 0
     Width = 636
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 23
+    ClientHeight = 21
     ClientWidth = 636
     TabOrder = 0
     Visible = False
@@ -32,9 +32,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideTop.Control = dropUserSchemes
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 19
+      Height = 17
       Top = 2
-      Width = 138
+      Width = 123
       BorderSpacing.Left = 6
       Caption = 'chkPredefinedScheme'
       OnChange = chkPredefinedSchemeChange
@@ -46,14 +46,14 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideTop.Control = pnlUserSchemes
       AnchorSideRight.Control = pnlUserSchemes
       AnchorSideRight.Side = asrBottom
-      Left = 150
-      Height = 23
+      Left = 135
+      Height = 21
       Top = 0
       Width = 200
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       Constraints.MaxWidth = 200
-      ItemHeight = 15
+      ItemHeight = 13
       OnChange = dropUserSchemesChange
       OnExit = dropUserSchemesChange
       OnKeyDown = dropUserSchemesKeyDown
@@ -66,9 +66,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideTop.Control = GenericDividerLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
-    Top = 52
-    Width = 133
+    Height = 17
+    Top = 50
+    Width = 117
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'HideMouseCheckBox'
@@ -81,13 +81,13 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 81
-    Top = 100
+    Height = 75
+    Top = 96
     Width = 636
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 81
+    ClientHeight = 75
     ClientWidth = 636
     TabOrder = 2
     object PanelGutter: TPanel
@@ -96,7 +96,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Control = pnlAllGutter
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 44
+      Height = 40
       Top = 0
       Width = 624
       Anchors = [akTop, akLeft, akRight]
@@ -105,7 +105,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       BorderSpacing.Right = 6
       BorderSpacing.Bottom = 6
       BevelOuter = bvNone
-      ClientHeight = 44
+      ClientHeight = 40
       ClientWidth = 624
       TabOrder = 0
       object GutterLeftRadio1: TRadioButton
@@ -114,7 +114,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         AnchorSideRight.Control = PanelGutter
         AnchorSideRight.Side = asrBottom
         Left = 0
-        Height = 19
+        Height = 17
         Top = 0
         Width = 624
         Anchors = [akTop, akLeft, akRight]
@@ -129,8 +129,8 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         AnchorSideRight.Control = PanelGutter
         AnchorSideRight.Side = asrBottom
         Left = 0
-        Height = 19
-        Top = 19
+        Height = 17
+        Top = 17
         Width = 624
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Bottom = 6
@@ -144,10 +144,10 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlAllGutter
       AnchorSideRight.Side = asrBottom
-      Left = 507
-      Height = 25
-      Top = 50
-      Width = 123
+      Left = 513
+      Height = 23
+      Top = 46
+      Width = 117
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Right = 6
@@ -165,13 +165,13 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = pnlBottom
     Left = 0
-    Height = 333
-    Top = 210
+    Height = 345
+    Top = 200
     Width = 636
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 333
+    ClientHeight = 345
     ClientWidth = 636
     TabOrder = 3
     object PanelTextCheckBox: TPanel
@@ -180,7 +180,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Control = pnlAllText
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 38
+      Height = 34
       Top = 0
       Width = 624
       Anchors = [akTop, akLeft, akRight]
@@ -190,15 +190,15 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       BorderSpacing.Bottom = 6
       BevelOuter = bvNone
       ChildSizing.ControlsPerLine = 2
-      ClientHeight = 38
+      ClientHeight = 34
       ClientWidth = 624
       TabOrder = 0
       object TextDrag: TCheckBox
         AnchorSideLeft.Control = PanelTextCheckBox
         Left = 0
-        Height = 19
+        Height = 17
         Top = 0
-        Width = 67
+        Width = 63
         Caption = 'TextDrag'
         OnChange = CheckOrRadioChange
         TabOrder = 0
@@ -208,9 +208,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         AnchorSideTop.Control = TextDrag
         AnchorSideTop.Side = asrBottom
         Left = 0
-        Height = 19
-        Top = 19
-        Width = 106
+        Height = 17
+        Top = 17
+        Width = 96
         Caption = 'RightMoveCaret'
         OnChange = CheckOrRadioChange
         TabOrder = 1
@@ -224,7 +224,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 0
       Height = 26
-      Top = 44
+      Top = 40
       Width = 636
       Align = alNone
       Anchors = [akTop, akLeft, akRight]
@@ -233,7 +233,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       TabOrder = 1
       object ToolButtonMiddle: TToolButton
         Tag = 2
-        Left = 230
+        Left = 201
         Top = 2
         Caption = 'ToolButtonMiddle'
         Grouped = True
@@ -242,7 +242,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       end
       object ToolBtnWheel: TToolButton
         Tag = 3
-        Left = 335
+        Left = 291
         Top = 2
         Caption = 'ToolBtnWheel'
         Grouped = True
@@ -260,7 +260,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       end
       object ToolButtonLeftMulti: TToolButton
         Tag = 1
-        Left = 114
+        Left = 100
         Top = 2
         Caption = 'ToolButtonLeftMulti'
         Grouped = True
@@ -275,10 +275,10 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnlAllText
       AnchorSideBottom.Side = asrBottom
-      Left = 518
-      Height = 25
-      Top = 302
-      Width = 112
+      Left = 522
+      Height = 23
+      Top = 316
+      Width = 108
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Top = 6
@@ -296,8 +296,8 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = ResetTextButton
       Left = 0
-      Height = 226
-      Top = 70
+      Height = 244
+      Top = 66
       Width = 636
       PageIndex = 0
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -306,14 +306,14 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       object PageLeftMod: TPage
         object ScrollBox3: TScrollBox
           Left = 0
-          Height = 226
+          Height = 244
           Top = 0
           Width = 636
           HorzScrollBar.Page = 636
-          VertScrollBar.Page = 226
+          VertScrollBar.Page = 244
           Align = alClient
           BorderStyle = bsNone
-          ClientHeight = 226
+          ClientHeight = 244
           ClientWidth = 636
           TabOrder = 0
           object dropCtrlLeft: TComboBox
@@ -323,14 +323,14 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBox3
             AnchorSideRight.Side = asrBottom
             Left = 140
-            Height = 23
-            Top = 35
+            Height = 21
+            Top = 33
             Width = 490
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
-            ItemHeight = 15
+            ItemHeight = 13
             OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 0
@@ -340,9 +340,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideTop.Control = dropCtrlLeft
             AnchorSideTop.Side = asrCenter
             Left = 6
-            Height = 16
-            Top = 38
-            Width = 71
+            Height = 14
+            Top = 36
+            Width = 65
             BorderSpacing.Left = 6
             Caption = 'CtrLLeftLabel'
             ParentColor = False
@@ -353,14 +353,14 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBox3
             AnchorSideRight.Side = asrBottom
             Left = 140
-            Height = 23
+            Height = 21
             Top = 6
             Width = 490
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
-            ItemHeight = 15
+            ItemHeight = 13
             OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 1
@@ -370,9 +370,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideTop.Control = dropAltLeft
             AnchorSideTop.Side = asrCenter
             Left = 6
-            Height = 16
+            Height = 14
             Top = 9
-            Width = 64
+            Width = 58
             BorderSpacing.Left = 6
             Caption = 'AltLeftLabel'
             ParentColor = False
@@ -384,15 +384,15 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBox3
             AnchorSideRight.Side = asrBottom
             Left = 140
-            Height = 23
-            Top = 93
+            Height = 21
+            Top = 87
             Width = 490
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 140
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
-            ItemHeight = 15
+            ItemHeight = 13
             OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 2
@@ -404,14 +404,14 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBox3
             AnchorSideRight.Side = asrBottom
             Left = 140
-            Height = 23
-            Top = 64
+            Height = 21
+            Top = 60
             Width = 490
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
-            ItemHeight = 15
+            ItemHeight = 13
             OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 3
@@ -423,14 +423,14 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBox3
             AnchorSideRight.Side = asrBottom
             Left = 140
-            Height = 23
-            Top = 122
+            Height = 21
+            Top = 114
             Width = 490
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
-            ItemHeight = 15
+            ItemHeight = 13
             OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 4
@@ -442,14 +442,14 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBox3
             AnchorSideRight.Side = asrBottom
             Left = 140
-            Height = 23
-            Top = 151
+            Height = 21
+            Top = 141
             Width = 490
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
-            ItemHeight = 15
+            ItemHeight = 13
             OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 5
@@ -461,14 +461,14 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBox3
             AnchorSideRight.Side = asrBottom
             Left = 140
-            Height = 23
-            Top = 180
+            Height = 21
+            Top = 168
             Width = 490
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             DropDownCount = 12
-            ItemHeight = 15
+            ItemHeight = 13
             OnChange = CheckOrRadioChange
             Style = csDropDownList
             TabOrder = 6
@@ -478,9 +478,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideTop.Control = dropShiftLeft
             AnchorSideTop.Side = asrCenter
             Left = 6
-            Height = 16
-            Top = 96
-            Width = 73
+            Height = 14
+            Top = 90
+            Width = 67
             BorderSpacing.Left = 6
             Caption = 'ShiftLeftLabel'
             ParentColor = False
@@ -490,9 +490,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideTop.Control = dropAltCtrlLeft
             AnchorSideTop.Side = asrCenter
             Left = 6
-            Height = 16
-            Top = 67
-            Width = 83
+            Height = 14
+            Top = 63
+            Width = 75
             BorderSpacing.Left = 6
             Caption = 'AltCtrlLeftLabel'
             ParentColor = False
@@ -502,9 +502,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideTop.Control = dropShiftCtrlLeft
             AnchorSideTop.Side = asrCenter
             Left = 6
-            Height = 16
-            Top = 154
-            Width = 92
+            Height = 14
+            Top = 144
+            Width = 84
             BorderSpacing.Left = 6
             Caption = 'ShiftCtrlLeftLabel'
             ParentColor = False
@@ -514,9 +514,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideTop.Control = dropShiftAltLeft
             AnchorSideTop.Side = asrCenter
             Left = 6
-            Height = 16
-            Top = 125
-            Width = 88
+            Height = 14
+            Top = 117
+            Width = 80
             BorderSpacing.Left = 6
             Caption = 'ShiftAltLeftLabel'
             ParentColor = False
@@ -526,9 +526,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideTop.Control = dropShiftAltCtrlLeft
             AnchorSideTop.Side = asrCenter
             Left = 6
-            Height = 16
-            Top = 183
-            Width = 107
+            Height = 14
+            Top = 171
+            Width = 97
             BorderSpacing.Left = 6
             Caption = 'ShiftCtrlAltLeftLabel'
             ParentColor = False
@@ -548,7 +548,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
           ClientHeight = 207
           ClientWidth = 636
           TabOrder = 0
-          object dropLeftTripple: TComboBox
+          object dropLeftTriple: TComboBox
             AnchorSideLeft.Control = dropLeftDouble
             AnchorSideTop.Control = dropLeftDouble
             AnchorSideTop.Side = asrBottom
@@ -567,16 +567,16 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 0
           end
-          object lblLeftTripple: TLabel
+          object lblLeftTriple: TLabel
             AnchorSideLeft.Control = ScrollBox4
-            AnchorSideTop.Control = dropLeftTripple
+            AnchorSideTop.Control = dropLeftTriple
             AnchorSideTop.Side = asrCenter
             Left = 6
             Height = 16
             Top = 38
             Width = 71
             BorderSpacing.Left = 6
-            Caption = 'lblLeftTripple'
+            Caption = 'lblLeftTriple'
             ParentColor = False
           end
           object dropLeftDouble: TComboBox
@@ -612,7 +612,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
           end
           object dropLeftQuad: TComboBox
             AnchorSideLeft.Control = dropLeftDouble
-            AnchorSideTop.Control = dropLeftTripple
+            AnchorSideTop.Control = dropLeftTriple
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox4
             AnchorSideRight.Side = asrBottom
@@ -1037,13 +1037,13 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 40
-    Top = 543
+    Height = 38
+    Top = 545
     Width = 636
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 40
+    ClientHeight = 38
     ClientWidth = 636
     TabOrder = 4
     object BottomDivider: TBevel
@@ -1066,9 +1066,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Control = ResetAllButton
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 16
+      Height = 14
       Top = 15
-      Width = 514
+      Width = 521
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
@@ -1085,9 +1085,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Control = ResetAllButton
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 16
+      Height = 14
       Top = 15
-      Width = 514
+      Width = 521
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
@@ -1103,10 +1103,10 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Control = pnlBottom
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 526
-      Height = 25
+      Left = 533
+      Height = 23
       Top = 15
-      Width = 104
+      Width = 97
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Top = 6
@@ -1124,7 +1124,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 17
-    Top = 29
+    Top = 27
     Width = 624
     Caption = 'GenericDividerLabel'
     Anchors = [akTop, akLeft, akRight]
@@ -1140,7 +1140,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 17
-    Top = 77
+    Top = 73
     Width = 624
     Caption = 'GutterDividerLabel'
     Anchors = [akTop, akLeft, akRight]
@@ -1156,7 +1156,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 17
-    Top = 187
+    Top = 177
     Width = 624
     Caption = 'TextDividerLabel'
     Anchors = [akTop, akLeft, akRight]
