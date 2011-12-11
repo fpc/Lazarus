@@ -6,19 +6,19 @@ msgstr ""
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
-msgstr ""
+msgstr "Selain %s%s%s ei ole suoritettava ohjelma."
 
 #: lclstrconsts.hhshelpbrowsernotfound
 msgid "Browser %s%s%s not found."
-msgstr ""
+msgstr "Selainta %s%s%s ei löydy."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
 msgid "Error while executing %s%s%s:%s%s"
-msgstr ""
+msgstr "Virhe suoritettaessa %s%s%s:%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
-msgstr ""
+msgstr "HTML selainta ei löydy."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
@@ -132,23 +132,21 @@ msgstr ""
 
 #: lclstrconsts.ifsvk_lbutton
 msgid "Mouse Button Left"
-msgstr ""
+msgstr "Hiiren vasen nappi"
 
 #: lclstrconsts.ifsvk_left
-msgctxt "lclstrconsts.ifsvk_left"
 msgid "Left"
-msgstr ""
+msgstr "Vasen"
 
 #: lclstrconsts.ifsvk_lwin
 msgid "left windows key"
-msgstr ""
+msgstr "vasen windows nappi"
 
 #: lclstrconsts.ifsvk_mbutton
 msgid "Mouse Button Middle"
-msgstr ""
+msgstr "Hiiren keskinappi"
 
 #: lclstrconsts.ifsvk_menu
-msgctxt "lclstrconsts.ifsvk_menu"
 msgid "Menu"
 msgstr ""
 
@@ -158,12 +156,11 @@ msgstr ""
 
 #: lclstrconsts.ifsvk_modechange
 msgid "Mode Change"
-msgstr ""
+msgstr "Tilan vaihto"
 
 #: lclstrconsts.ifsvk_next
-msgctxt "lclstrconsts.ifsvk_next"
 msgid "Next"
-msgstr ""
+msgstr "Seuraava"
 
 #: lclstrconsts.ifsvk_nonconvert
 msgid "Nonconvert"
@@ -186,26 +183,24 @@ msgid "Print"
 msgstr ""
 
 #: lclstrconsts.ifsvk_prior
-msgctxt "lclstrconsts.ifsvk_prior"
 msgid "Prior"
-msgstr ""
+msgstr "Edellinen"
 
 #: lclstrconsts.ifsvk_rbutton
 msgid "Mouse Button Right"
-msgstr ""
+msgstr "Hiiren oikea nappi"
 
 #: lclstrconsts.ifsvk_return
 msgid "Return"
 msgstr ""
 
 #: lclstrconsts.ifsvk_right
-msgctxt "lclstrconsts.ifsvk_right"
 msgid "Right"
-msgstr ""
+msgstr "Oikea"
 
 #: lclstrconsts.ifsvk_rwin
 msgid "right windows key"
-msgstr ""
+msgstr "oikea windows nappi"
 
 #: lclstrconsts.ifsvk_scroll
 msgid "Scroll"
@@ -213,7 +208,7 @@ msgstr ""
 
 #: lclstrconsts.ifsvk_select
 msgid "Select"
-msgstr ""
+msgstr "Valitse"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
@@ -225,42 +220,40 @@ msgstr ""
 
 #: lclstrconsts.ifsvk_space
 msgid "Space key"
-msgstr ""
+msgstr "Välilyöntipainike"
 
 #: lclstrconsts.ifsvk_super
 msgid "Super"
 msgstr ""
 
 #: lclstrconsts.ifsvk_tab
-msgctxt "lclstrconsts.ifsvk_tab"
 msgid "Tab"
 msgstr ""
 
 #: lclstrconsts.ifsvk_unknown
 msgid "Unknown"
-msgstr ""
+msgstr "Tuntematon"
 
 #: lclstrconsts.ifsvk_up
-msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
-msgstr ""
+msgstr "Ylös"
 
 #: lclstrconsts.liscannotexecute
 msgid "can not execute %s"
-msgstr ""
+msgstr "ei voi suorittaa %s"
 
 #: lclstrconsts.liscefilter
 msgid "(Filter)"
-msgstr ""
+msgstr "(Suodatin)"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
-msgstr ""
+msgstr "Resurssia %s ei löydy"
 
 #: lclstrconsts.lisprogramfilenotfound
 msgid "program file not found %s"
-msgstr ""
+msgstr "ohjelmatiedostoa %s ei löydy"
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"
@@ -296,7 +289,7 @@ msgstr ""
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
-msgstr ""
+msgstr "Työpöytä"
 
 #: lclstrconsts.rsbackward
 msgid "Backward"
@@ -312,7 +305,7 @@ msgstr ""
 
 #: lclstrconsts.rsblank
 msgid "Blank"
-msgstr ""
+msgstr "Tyhjä"
 
 #: lclstrconsts.rsbluecolorcaption
 msgid "Blue"
@@ -341,7 +334,7 @@ msgstr "Laskin"
 #: lclstrconsts.rscancelrecordhint
 msgctxt "lclstrconsts.rscancelrecordhint"
 msgid "Cancel"
-msgstr ""
+msgstr "Peruuta"
 
 #: lclstrconsts.rscannotfocus
 msgid "Can not focus"
@@ -385,7 +378,7 @@ msgstr ""
 
 #: lclstrconsts.rsdefaultcolorcaption
 msgid "Default"
-msgstr ""
+msgstr "Oletus"
 
 #: lclstrconsts.rsdefaultfileinfovalue
 msgid "permissions user group size date time"
@@ -393,12 +386,12 @@ msgstr "oikeudet käyttäjä ryhmä koko päivä aika"
 
 #: lclstrconsts.rsdeleterecord
 msgid "Delete record?"
-msgstr ""
+msgstr "Poista tietue?"
 
 #: lclstrconsts.rsdeleterecordhint
 msgctxt "lclstrconsts.rsdeleterecordhint"
 msgid "Delete"
-msgstr ""
+msgstr "Poista"
 
 #: lclstrconsts.rsdirection
 msgid "Direction"
@@ -406,7 +399,7 @@ msgstr "Suunta"
 
 #: lclstrconsts.rsdirectory
 msgid "&Directory"
-msgstr ""
+msgstr "&Hakemisto"
 
 #: lclstrconsts.rsdocking
 msgid "Docking"
@@ -418,16 +411,15 @@ msgstr ""
 
 #: lclstrconsts.rseditrecordhint
 msgid "Edit"
-msgstr ""
+msgstr "Muokkaa"
 
 #: lclstrconsts.rsentirescope
 msgid "Search entire file"
-msgstr ""
+msgstr "Etsi koko tiedostosta"
 
 #: lclstrconsts.rserror
-msgctxt "lclstrconsts.rserror"
 msgid "Error"
-msgstr ""
+msgstr "Virhe"
 
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
@@ -435,7 +427,7 @@ msgstr ""
 
 #: lclstrconsts.rserrorinlcl
 msgid "ERROR in LCL: "
-msgstr ""
+msgstr "VIRHE LCL:ssä"
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
@@ -443,31 +435,31 @@ msgstr ""
 
 #: lclstrconsts.rserrorreadingproperty
 msgid "Error reading %s%s%s: %s"
-msgstr ""
+msgstr "Virhe luettaessa %s%s%s: %s"
 
 #: lclstrconsts.rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
-msgstr ""
+msgstr "Virhe talletettaessa bittikarttaa."
 
 #: lclstrconsts.rsexception
 msgid "Exception"
-msgstr ""
+msgstr "Poikkeus"
 
 #: lclstrconsts.rsfddirectorymustexist
 msgid "Directory must exist"
-msgstr ""
+msgstr "Hakemiston pitää olla olemassa"
 
 #: lclstrconsts.rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
-msgstr ""
+msgstr "Hakemistoa \"%s\" ei ole olemassa."
 
 #: lclstrconsts.rsfdfilealreadyexists
 msgid "The file \"%s\" already exists. Overwrite ?"
-msgstr ""
+msgstr "Tiedosto \"%s\" on jo olemassa. Kirjoitetaanko yli?"
 
 #: lclstrconsts.rsfdfilemustexist
 msgid "File must exist"
-msgstr "Tiedosto täytyy olla olemassa"
+msgstr "Tiedoston pitää olla olemassa"
 
 #: lclstrconsts.rsfdfilenotexist
 msgid "The file \"%s\" does not exist."
@@ -475,15 +467,15 @@ msgstr "Tiedostoa \"%s\" ei ole olemassa."
 
 #: lclstrconsts.rsfdfilereadonly
 msgid "The file \"%s\" is not writable."
-msgstr ""
+msgstr "Tiedostoon \"%s\" ei voi kirjoittaa."
 
 #: lclstrconsts.rsfdfilereadonlytitle
 msgid "File is not writable"
-msgstr ""
+msgstr "Tiedostoon ei voi kirjoittaa"
 
 #: lclstrconsts.rsfdfilesaveas
 msgid "Save file as"
-msgstr "Tallenna nimellä"
+msgstr "Tallenna tiedosto nimellä"
 
 #: lclstrconsts.rsfdopenfile
 msgid "Open existing file"
@@ -491,19 +483,19 @@ msgstr "Avaa tiedosto"
 
 #: lclstrconsts.rsfdoverwritefile
 msgid "Overwrite file ?"
-msgstr "Tallennetaanko vanhan päälle ?"
+msgstr "Tallennetaanko tiedoston päälle ?"
 
 #: lclstrconsts.rsfdpathmustexist
 msgid "Path must exist"
-msgstr ""
+msgstr "Polun pitää olla olemassa"
 
 #: lclstrconsts.rsfdpathnoexist
 msgid "The path \"%s\" does not exist."
-msgstr ""
+msgstr "Polkua \"%s\" ei ole olemassa."
 
 #: lclstrconsts.rsfdselectdirectory
 msgid "Select Directory"
-msgstr "Valitse kansio"
+msgstr "Valitse hakemisto"
 
 #: lclstrconsts.rsfileinfofilenotfound
 msgid "(file not found: \"%s\")"
@@ -519,11 +511,11 @@ msgstr "Etsi"
 
 #: lclstrconsts.rsfindmore
 msgid "Find more"
-msgstr ""
+msgstr "Etsi lisää"
 
 #: lclstrconsts.rsfirstrecordhint
 msgid "First"
-msgstr ""
+msgstr "Ensimmäinen"
 
 #: lclstrconsts.rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -535,7 +527,7 @@ msgstr "FixedRows ei voi olla suurempi kuin kaikkien rivien määrä (RowCount)"
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
-msgstr ""
+msgstr "Lomake"
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
@@ -651,7 +643,7 @@ msgstr ""
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"
-msgstr ""
+msgstr "%s: jo rekisteröity"
 
 #: lclstrconsts.rshelpcontextnotfound
 msgid "A help database was found for this topic, but this topic was not found"
@@ -814,7 +806,7 @@ msgstr ""
 
 #: lclstrconsts.rsinvaliddate
 msgid "Invalid Date : %s"
-msgstr "Laiton päivämäärä: %s"
+msgstr "Kelvoton päivämäärä: %s"
 
 #: lclstrconsts.rsinvaliddaterangehint
 msgid "Invalid Date: %s. Must be between %s and %s"
