@@ -50,12 +50,24 @@ msgstr "Randleisten-Einstellungen zurücksetzen"
 msgid "Reset all text settings"
 msgstr "Text-Einstellungen zurücksetzen"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonaddhistorypoint
+msgid "Add history point"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr "Zur Implementierung springen"
 
 #: lazarusidestrconsts.dlfmousesimplebuttondeclarationblock
 msgid "Jumps to implementation/other block end"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonhistback
+msgid "History back"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonhistforw
+msgid "History forward"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
@@ -68,6 +80,14 @@ msgctxt "lazarusidestrconsts.dlfmousesimplebuttonpaste"
 msgid "Paste"
 msgstr "Einfügen"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonselcontinue
+msgid "Continue %0:s (Bound to: %1:s)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselcontinueplain
+msgid "Continue %0:s"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonselect
 msgid "Select text"
 msgstr "Text markieren"
@@ -79,6 +99,26 @@ msgstr "Text markieren (Spalten)"
 #: lazarusidestrconsts.dlfmousesimplebuttonselectline
 msgid "Select text (Lines)"
 msgstr "Text markieren (Zeilen)"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetfreebookmark
+msgid "Set free bookmark"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetlinefull
+msgid "Select current Line (Full)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetlinesmart
+msgid "Select current Line (Text)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetpara
+msgid "Select current Paragraph"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetword
+msgid "Select current Word"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
@@ -123,48 +163,96 @@ msgstr "Text"
 msgid "Alt-Key sets column mode"
 msgstr "Alt-Taste aktiviert Spaltenmodus"
 
-#: lazarusidestrconsts.dlfmousesimpletextsectaltleftlabel
-msgid "Alt Left Button"
-msgstr "Alt + linke Taste"
+#: lazarusidestrconsts.dlfmousesimpletextsectaltctrllabel
+msgid "Alt-Ctrl Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectaltlabel
+msgid "Alt Button"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectaltwheellabel
 msgid "Alt Wheel"
 msgstr ""
 
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftlabel
-msgid "Ctrl Left Button"
-msgstr "Strg + linke Taste"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlmidlabel
-msgid "Ctrl Middle Button"
-msgstr "Strg + mittlere Taste"
+#: lazarusidestrconsts.dlfmousesimpletextsectctrllabel
+msgid "Ctrl Button"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlwheellabel
 msgid "Ctrl Wheel"
 msgstr ""
-
-#: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
-#| msgid "Double Click selects line"
-msgid "Double click selects line"
-msgstr "Doppelklick markiert Zeile"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdrag
 #| msgid "Drag Selection (copy/paste)"
 msgid "Drag selection (copy/paste)"
 msgstr "Auswahl verschieben (kopieren/einfügen)"
 
+#: lazarusidestrconsts.dlfmousesimpletextsectldoublealtlabel
+msgid "Alt Double"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectldoublectrllabel
+msgid "Ctrl Double"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectldoublelabel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectldoublelabel"
+msgid "Double"
+msgstr "Doppelt"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectldoubleshiftlabel
+msgid "Shift Double"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectlquadlabel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectlquadlabel"
+msgid "Quad"
+msgstr "Vierfach"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectltriplelabel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectltriplelabel"
+msgid "Triple"
+msgstr "Dreifach"
+
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
 msgstr "Mittlere Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagebtn
-msgid "Buttons"
+#, fuzzy
+#| msgid "Buttons"
+msgid "Middle button"
 msgstr "Tasten"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
+msgid "Left button 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpagelmulti
+msgid "Left button 2"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagewheel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagewheel"
 msgid "Wheel"
 msgstr "Rad"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrllabel
+msgid "Shift-Alt-Ctrl Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftaltlabel
+msgid "Shift-Alt Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftctrllabel
+msgid "Shift-Ctrl Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftlabel
+msgid "Shift Button"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectwheellabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectwheellabel"
@@ -2163,14 +2251,17 @@ msgid "Single"
 msgstr "Einfach"
 
 #: lazarusidestrconsts.dlgmouseoptbtn2
+msgctxt "lazarusidestrconsts.dlgmouseoptbtn2"
 msgid "Double"
 msgstr "Doppelt"
 
 #: lazarusidestrconsts.dlgmouseoptbtn3
+msgctxt "lazarusidestrconsts.dlgmouseoptbtn3"
 msgid "Triple"
 msgstr "Dreifach"
 
 #: lazarusidestrconsts.dlgmouseoptbtn4
+msgctxt "lazarusidestrconsts.dlgmouseoptbtn4"
 msgid "Quad"
 msgstr "Vierfach"
 
@@ -2503,6 +2594,10 @@ msgstr "Namensvergabe"
 msgid "No automatic renaming"
 msgstr "Kein automatisches Umbenennen"
 
+#: lazarusidestrconsts.dlgnoavailableunits
+msgid "No available units to add."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnobrackethighlight
 msgid "No Highlight"
 msgstr "Keine Hervorhebung"
@@ -2804,7 +2899,9 @@ msgid "Guide lines Right,Bottom"
 msgstr "Farbe für rechts unten"
 
 #: lazarusidestrconsts.dlgrightclickselects
-msgid "Right Click selects"
+#, fuzzy
+#| msgid "Right Click selects"
+msgid "Right click selects"
 msgstr "Rechtsklick wählt aus"
 
 #: lazarusidestrconsts.dlgrightmargin
@@ -5797,7 +5894,9 @@ msgid "Selected Node:"
 msgstr "Gewählter Knoten:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
+#, fuzzy
+#| msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
+msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
 msgstr "Das Free-Pascal-SVN-Quellverzeichnis. Nicht unbedingt benötigt. Diese Angaben verbessert das Finden von Deklarationen und das Debugging."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
@@ -16786,14 +16885,6 @@ msgstr "Wert"
 msgid "Version numbering"
 msgstr "Versionszählung"
 
-#: lazarusidestrconsts.srkmalreadyconnected
-msgid " The key \"%s\" is already connected to \"%s\"."
-msgstr " Der Taste »%s« ist bereits »%s« zugewiesen."
-
-#: lazarusidestrconsts.srkmalternkey
-msgid "Alternative key (or 2 keys combination)"
-msgstr "Alternative Taste (oder 2-Tastenkombination)"
-
 #: lazarusidestrconsts.srkmcarhelpmenu
 msgid "Help menu commands"
 msgstr "Befehle aus dem Menü 'Hilfe'"
@@ -17982,22 +18073,6 @@ msgstr "Taste für Befehl bearbeiten"
 #: lazarusidestrconsts.srkmeditkeys
 msgid "Edit Keys"
 msgstr "Editiertasten"
-
-#: lazarusidestrconsts.srkmgrabkey
-msgid "Grab key"
-msgstr "Taste fangen"
-
-#: lazarusidestrconsts.srkmgrabsecondkey
-msgid "Grab second key"
-msgstr "Zweite Taste fangen"
-
-#: lazarusidestrconsts.srkmkey
-msgid "Key (or 2 keys combination)"
-msgstr "Taste (oder 2-Tasten-Kombination)"
-
-#: lazarusidestrconsts.srkmpresskey
-msgid "Please press a key ..."
-msgstr "Beliebige Taste drücken ..."
 
 #: lazarusidestrconsts.synffoldcommentsinselection
 msgid "Fold comments in selection"

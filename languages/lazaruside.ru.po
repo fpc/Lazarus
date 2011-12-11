@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-09 03:06+0400\n"
+"PO-Revision-Date: 2011-12-11 20:27+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -50,6 +50,10 @@ msgstr "Сбросить все параметры поля (лев)"
 msgid "Reset all text settings"
 msgstr "Сбросить все параметры текста"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonaddhistorypoint
+msgid "Add history point"
+msgstr "Добавить точку перехода в историю"
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr "Перейти к реализации"
@@ -57,6 +61,14 @@ msgstr "Перейти к реализации"
 #: lazarusidestrconsts.dlfmousesimplebuttondeclarationblock
 msgid "Jumps to implementation/other block end"
 msgstr "Перейти к реализации / концу другого блока"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonhistback
+msgid "History back"
+msgstr "Перейти по истории назад"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonhistforw
+msgid "History forward"
+msgstr "Перейти по истории вперёд"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
@@ -67,6 +79,14 @@ msgstr "Ничего / по умолчанию"
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonpaste"
 msgid "Paste"
 msgstr "Вставить"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselcontinue
+msgid "Continue %0:s (Bound to: %1:s)"
+msgstr "Продолжение действия: %0:s (привязано к %1:s)"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselcontinueplain
+msgid "Continue %0:s"
+msgstr "Продолжение действия: %0:s"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselect
 msgid "Select text"
@@ -79,6 +99,26 @@ msgstr "Выделить текст (столбцы)"
 #: lazarusidestrconsts.dlfmousesimplebuttonselectline
 msgid "Select text (Lines)"
 msgstr "Выделить текст (строки)"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetfreebookmark
+msgid "Set free bookmark"
+msgstr "Установить свободную закладку"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetlinefull
+msgid "Select current Line (Full)"
+msgstr "Выделить текущую строку (всю)"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetlinesmart
+msgid "Select current Line (Text)"
+msgstr "Выделить текущую строку (текст)"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetpara
+msgid "Select current Paragraph"
+msgstr "Выделить текущий абзац"
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetword
+msgid "Select current Word"
+msgstr "Выделить текущее слово"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
@@ -122,48 +162,95 @@ msgstr "Текст"
 msgid "Alt-Key sets column mode"
 msgstr "Режим выделения столбца по кнопке Alt"
 
-#: lazarusidestrconsts.dlfmousesimpletextsectaltleftlabel
-msgid "Alt Left Button"
-msgstr "Alt - левая"
+#: lazarusidestrconsts.dlfmousesimpletextsectaltctrllabel
+msgid "Alt-Ctrl Button"
+msgstr "Alt-Ctrl - кнопка"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectaltlabel
+msgid "Alt Button"
+msgstr "Alt - кнопка"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectaltwheellabel
 msgid "Alt Wheel"
 msgstr "Alt - колёсико"
 
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftlabel
-msgid "Ctrl Left Button"
-msgstr "Ctrl - левая"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlmidlabel
-msgid "Ctrl Middle Button"
-msgstr "Ctrl - средняя"
+#: lazarusidestrconsts.dlfmousesimpletextsectctrllabel
+msgid "Ctrl Button"
+msgstr "Ctrl - кнопка"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlwheellabel
 msgid "Ctrl Wheel"
 msgstr "Ctrl - колёсико"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
-#| msgid "Double Click selects line"
-msgid "Double click selects line"
-msgstr "Выделять строку двойным щелчком"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdrag
 #| msgid "Drag Selection (copy/paste)"
 msgid "Drag selection (copy/paste)"
 msgstr "Копировать/вставлять перетаскиванием"
 
+#: lazarusidestrconsts.dlfmousesimpletextsectldoublealtlabel
+msgid "Alt Double"
+msgstr "Alt - двойной"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectldoublectrllabel
+msgid "Ctrl Double"
+msgstr "Ctrl - двойной"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectldoublelabel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectldoublelabel"
+msgid "Double"
+msgstr "Двойной"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectldoubleshiftlabel
+msgid "Shift Double"
+msgstr "Shift - двойной"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectlquadlabel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectlquadlabel"
+msgid "Quad"
+msgstr "Четверной"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectltriplelabel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectltriplelabel"
+msgid "Triple"
+msgstr "Тройной"
+
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
 msgstr "Средняя"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagebtn
-msgid "Buttons"
-msgstr "Кнопки"
+#| msgid "Buttons"
+msgid "Middle button"
+msgstr "Средняя кнопка"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
+msgid "Left button 1"
+msgstr "Левая кнопка 1"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpagelmulti
+msgid "Left button 2"
+msgstr "Левая кнопка 2"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagewheel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagewheel"
 msgid "Wheel"
 msgstr "Колёсико"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrllabel
+msgid "Shift-Alt-Ctrl Button"
+msgstr "Shift-Alt-Ctrl - кнопка"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftaltlabel
+msgid "Shift-Alt Button"
+msgstr "Shift-Alt - кнопка"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftctrllabel
+msgid "Shift-Ctrl Button"
+msgstr "Shift-Ctrl - кнопка"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftlabel
+msgid "Shift Button"
+msgstr "Shift - кнопка"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectwheellabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectwheellabel"
@@ -2150,14 +2237,17 @@ msgid "Single"
 msgstr "Одинарный"
 
 #: lazarusidestrconsts.dlgmouseoptbtn2
+msgctxt "lazarusidestrconsts.dlgmouseoptbtn2"
 msgid "Double"
 msgstr "Двойной"
 
 #: lazarusidestrconsts.dlgmouseoptbtn3
+msgctxt "lazarusidestrconsts.dlgmouseoptbtn3"
 msgid "Triple"
 msgstr "Тройной"
 
 #: lazarusidestrconsts.dlgmouseoptbtn4
+msgctxt "lazarusidestrconsts.dlgmouseoptbtn4"
 msgid "Quad"
 msgstr "Четверной"
 
@@ -2489,6 +2579,10 @@ msgstr "Именование"
 msgid "No automatic renaming"
 msgstr "Не переименовывать автоматически"
 
+#: lazarusidestrconsts.dlgnoavailableunits
+msgid "No available units to add."
+msgstr "Доступные для добавления модули отсутствуют."
+
 #: lazarusidestrconsts.dlgnobrackethighlight
 msgid "No Highlight"
 msgstr "Не подсвечивать"
@@ -2784,7 +2878,8 @@ msgid "Guide lines Right,Bottom"
 msgstr "Правая и нижняя линии позиционирования"
 
 #: lazarusidestrconsts.dlgrightclickselects
-msgid "Right Click selects"
+#| msgid "Right Click selects"
+msgid "Right click selects"
 msgstr "Выделять правым щелчком мыши"
 
 #: lazarusidestrconsts.dlgrightmargin
@@ -5748,7 +5843,8 @@ msgid "Selected Node:"
 msgstr "Выделить элемент:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
+#| msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
+msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
 msgstr "Каталог исходного кода Free Pascal из SVN. Не обязателен. Улучшит поиск объявлений и отладку."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
@@ -16699,14 +16795,6 @@ msgstr "Значение"
 msgid "Version numbering"
 msgstr "Номера версий"
 
-#: lazarusidestrconsts.srkmalreadyconnected
-msgid " The key \"%s\" is already connected to \"%s\"."
-msgstr " Клавиша \"%s\" уже сопоставлена с \"%s\"."
-
-#: lazarusidestrconsts.srkmalternkey
-msgid "Alternative key (or 2 keys combination)"
-msgstr "Альтернативная клавиша (или двухклавишная комбинация)"
-
 #: lazarusidestrconsts.srkmcarhelpmenu
 msgid "Help menu commands"
 msgstr "Команды меню Справка"
@@ -17894,22 +17982,6 @@ msgstr "Редактирование клавиш вызова команды"
 #: lazarusidestrconsts.srkmeditkeys
 msgid "Edit Keys"
 msgstr "Изменить клавиши"
-
-#: lazarusidestrconsts.srkmgrabkey
-msgid "Grab key"
-msgstr "Захватить клавишу"
-
-#: lazarusidestrconsts.srkmgrabsecondkey
-msgid "Grab second key"
-msgstr "Захватить вторую клавишу"
-
-#: lazarusidestrconsts.srkmkey
-msgid "Key (or 2 keys combination)"
-msgstr "Клавиша (или двухклавишная комбинация)"
-
-#: lazarusidestrconsts.srkmpresskey
-msgid "Please press a key ..."
-msgstr "Нажмите любую клавишу..."
 
 #: lazarusidestrconsts.synffoldcommentsinselection
 msgid "Fold comments in selection"

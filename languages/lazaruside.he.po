@@ -50,12 +50,24 @@ msgstr "אתחל את כל הגדרות קווי העזר"
 msgid "Reset all text settings"
 msgstr "אתחל את כל ההגדרות הטקסט"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonaddhistorypoint
+msgid "Add history point"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttondeclarationblock
 msgid "Jumps to implementation/other block end"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonhistback
+msgid "History back"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonhistforw
+msgid "History forward"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
@@ -68,6 +80,14 @@ msgctxt "lazarusidestrconsts.dlfmousesimplebuttonpaste"
 msgid "Paste"
 msgstr "הדבק"
 
+#: lazarusidestrconsts.dlfmousesimplebuttonselcontinue
+msgid "Continue %0:s (Bound to: %1:s)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonselcontinueplain
+msgid "Continue %0:s"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttonselect
 msgid "Select text"
 msgstr ""
@@ -78,6 +98,26 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselectline
 msgid "Select text (Lines)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetfreebookmark
+msgid "Set free bookmark"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetlinefull
+msgid "Select current Line (Full)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetlinesmart
+msgid "Select current Line (Text)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetpara
+msgid "Select current Paragraph"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimplebuttonsetword
+msgid "Select current Word"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
@@ -124,31 +164,25 @@ msgstr "טקסט"
 msgid "Alt-Key sets column mode"
 msgstr "לחצן Alt קובע את מצב העמודה"
 
-#: lazarusidestrconsts.dlfmousesimpletextsectaltleftlabel
-msgid "Alt Left Button"
+#: lazarusidestrconsts.dlfmousesimpletextsectaltctrllabel
+msgid "Alt-Ctrl Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectaltlabel
+msgid "Alt Button"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectaltwheellabel
 msgid "Alt Wheel"
 msgstr ""
 
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlleftlabel
-msgid "Ctrl Left Button"
-msgstr "לחצן שמאלי + Ctrl"
-
-#: lazarusidestrconsts.dlfmousesimpletextsectctrlmidlabel
-msgid "Ctrl Middle Button"
+#: lazarusidestrconsts.dlfmousesimpletextsectctrllabel
+msgid "Ctrl Button"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlwheellabel
 msgid "Ctrl Wheel"
 msgstr ""
-
-#: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
-#, fuzzy
-#| msgid "Double Click selects line"
-msgid "Double click selects line"
-msgstr "לחיצה כפולה בוחרת שורה"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdrag
 #, fuzzy
@@ -156,17 +190,68 @@ msgstr "לחיצה כפולה בוחרת שורה"
 msgid "Drag selection (copy/paste)"
 msgstr "גרור לבחירה (העתק/הדבק)"
 
+#: lazarusidestrconsts.dlfmousesimpletextsectldoublealtlabel
+msgid "Alt Double"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectldoublectrllabel
+msgid "Ctrl Double"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectldoublelabel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectldoublelabel"
+msgid "Double"
+msgstr "כפול "
+
+#: lazarusidestrconsts.dlfmousesimpletextsectldoubleshiftlabel
+msgid "Shift Double"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectlquadlabel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectlquadlabel"
+msgid "Quad"
+msgstr "מרובע"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectltriplelabel
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectltriplelabel"
+msgid "Triple"
+msgstr "משולש"
+
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
 msgstr "לחצן אמצעי"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagebtn
-msgid "Buttons"
+msgid "Middle button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
+msgid "Left button 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpagelmulti
+msgid "Left button 2"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagewheel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagewheel"
 msgid "Wheel"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrllabel
+msgid "Shift-Alt-Ctrl Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftaltlabel
+msgid "Shift-Alt Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftctrllabel
+msgid "Shift-Ctrl Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftlabel
+msgid "Shift Button"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectwheellabel
@@ -2185,14 +2270,17 @@ msgid "Single"
 msgstr "יחיד"
 
 #: lazarusidestrconsts.dlgmouseoptbtn2
+msgctxt "lazarusidestrconsts.dlgmouseoptbtn2"
 msgid "Double"
 msgstr "כפול "
 
 #: lazarusidestrconsts.dlgmouseoptbtn3
+msgctxt "lazarusidestrconsts.dlgmouseoptbtn3"
 msgid "Triple"
 msgstr "משולש"
 
 #: lazarusidestrconsts.dlgmouseoptbtn4
+msgctxt "lazarusidestrconsts.dlgmouseoptbtn4"
 msgid "Quad"
 msgstr "מרובע"
 
@@ -2525,6 +2613,10 @@ msgstr "מתן שם"
 msgid "No automatic renaming"
 msgstr "ללא מתן שמות אוטומטי"
 
+#: lazarusidestrconsts.dlgnoavailableunits
+msgid "No available units to add."
+msgstr ""
+
 #: lazarusidestrconsts.dlgnobrackethighlight
 msgid "No Highlight"
 msgstr "ללא הדגשה"
@@ -2836,7 +2928,9 @@ msgid "Guide lines Right,Bottom"
 msgstr "קוים מנחים ימין, למטה"
 
 #: lazarusidestrconsts.dlgrightclickselects
-msgid "Right Click selects"
+#, fuzzy
+#| msgid "Right Click selects"
+msgid "Right click selects"
 msgstr "לחיצה על לחצן ימני בוחרת"
 
 #: lazarusidestrconsts.dlgrightmargin
@@ -5838,7 +5932,9 @@ msgid "Selected Node:"
 msgstr "צומת נבחרת:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
+#, fuzzy
+#| msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
+msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
 msgstr "תיקיית קוד המקור של FPC SVN. לא נדרשת. זה ישפר את ניפוי השגיאות ואת חיפוש ההצהרות."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
@@ -16998,14 +17094,6 @@ msgstr "ערך"
 msgid "Version numbering"
 msgstr "מספור גרסאות"
 
-#: lazarusidestrconsts.srkmalreadyconnected
-msgid " The key \"%s\" is already connected to \"%s\"."
-msgstr "המקש \"%s\" כבר מקושר ל \"%s\""
-
-#: lazarusidestrconsts.srkmalternkey
-msgid "Alternative key (or 2 keys combination)"
-msgstr "מקש אלטרנטיבי (או צירוף של 2 מקשים)"
-
 #: lazarusidestrconsts.srkmcarhelpmenu
 msgid "Help menu commands"
 msgstr "פקודות תפריט עזרה"
@@ -18222,22 +18310,6 @@ msgstr "ערוך מקשים של פקודה"
 #: lazarusidestrconsts.srkmeditkeys
 msgid "Edit Keys"
 msgstr "ערוך מקש"
-
-#: lazarusidestrconsts.srkmgrabkey
-msgid "Grab key"
-msgstr "החזק מקש"
-
-#: lazarusidestrconsts.srkmgrabsecondkey
-msgid "Grab second key"
-msgstr "החזק מקש שני"
-
-#: lazarusidestrconsts.srkmkey
-msgid "Key (or 2 keys combination)"
-msgstr "מקש (או צרוף של שני מקשים)"
-
-#: lazarusidestrconsts.srkmpresskey
-msgid "Please press a key ..."
-msgstr "לחץ על מקש כלשהו ..."
 
 #: lazarusidestrconsts.synffoldcommentsinselection
 msgid "Fold comments in selection"

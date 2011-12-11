@@ -306,7 +306,7 @@ msgid "In interface"
 msgstr ""
 
 #: codystrconsts.crsinsertcallinherited
-msgid "Insert call inherited"
+msgid "Insert Call Inherited"
 msgstr ""
 
 #: codystrconsts.crsinsertfileatcursor

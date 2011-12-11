@@ -135,6 +135,7 @@ msgid "Mouse Button Left"
 msgstr "Hiiren vasen nappi"
 
 #: lclstrconsts.ifsvk_left
+msgctxt "lclstrconsts.ifsvk_left"
 msgid "Left"
 msgstr "Vasen"
 
@@ -147,6 +148,7 @@ msgid "Mouse Button Middle"
 msgstr "Hiiren keskinappi"
 
 #: lclstrconsts.ifsvk_menu
+msgctxt "lclstrconsts.ifsvk_menu"
 msgid "Menu"
 msgstr ""
 
@@ -159,6 +161,7 @@ msgid "Mode Change"
 msgstr "Tilan vaihto"
 
 #: lclstrconsts.ifsvk_next
+msgctxt "lclstrconsts.ifsvk_next"
 msgid "Next"
 msgstr "Seuraava"
 
@@ -183,6 +186,7 @@ msgid "Print"
 msgstr ""
 
 #: lclstrconsts.ifsvk_prior
+msgctxt "lclstrconsts.ifsvk_prior"
 msgid "Prior"
 msgstr "Edellinen"
 
@@ -195,6 +199,7 @@ msgid "Return"
 msgstr ""
 
 #: lclstrconsts.ifsvk_right
+msgctxt "lclstrconsts.ifsvk_right"
 msgid "Right"
 msgstr "Oikea"
 
@@ -227,6 +232,7 @@ msgid "Super"
 msgstr ""
 
 #: lclstrconsts.ifsvk_tab
+msgctxt "lclstrconsts.ifsvk_tab"
 msgid "Tab"
 msgstr ""
 
@@ -235,6 +241,7 @@ msgid "Unknown"
 msgstr "Tuntematon"
 
 #: lclstrconsts.ifsvk_up
+msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "Ylös"
 
@@ -418,6 +425,7 @@ msgid "Search entire file"
 msgstr "Etsi koko tiedostosta"
 
 #: lclstrconsts.rserror
+msgctxt "lclstrconsts.rserror"
 msgid "Error"
 msgstr "Virhe"
 
@@ -974,7 +982,7 @@ msgstr ""
 #: lclstrconsts.rsnextrecordhint
 msgctxt "lclstrconsts.rsnextrecordhint"
 msgid "Next"
-msgstr ""
+msgstr "Seuraava"
 
 #: lclstrconsts.rsnonecolorcaption
 msgid "None"
@@ -1029,7 +1037,7 @@ msgstr "%s%sPaina 'Ok'-näppäintä jos haluat ohittaa varoituksen ja ottaa risk
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
 msgid "Prior"
-msgstr ""
+msgstr "Edellinen"
 
 #: lclstrconsts.rspromptonreplace
 msgid "Prompt on replace"
@@ -1162,7 +1170,7 @@ msgstr "Korvaa kaikki"
 #: lclstrconsts.rsresourcenotfound
 msgctxt "lclstrconsts.rsresourcenotfound"
 msgid "Resource %s not found"
-msgstr ""
+msgstr "Resurssia %s ei löydy"
 
 #: lclstrconsts.rsscrollbarcolorcaption
 msgid "ScrollBar"
@@ -1378,7 +1386,7 @@ msgstr ""
 #: lclstrconsts.smkcleft
 msgctxt "lclstrconsts.smkcleft"
 msgid "Left"
-msgstr ""
+msgstr "Vasen"
 
 #: lclstrconsts.smkcmeta
 msgid "Meta+"
@@ -1395,7 +1403,7 @@ msgstr ""
 #: lclstrconsts.smkcright
 msgctxt "lclstrconsts.smkcright"
 msgid "Right"
-msgstr ""
+msgstr "Oikea"
 
 #: lclstrconsts.smkcshift
 msgid "Shift+"
@@ -1413,7 +1421,7 @@ msgstr ""
 #: lclstrconsts.smkcup
 msgctxt "lclstrconsts.smkcup"
 msgid "Up"
-msgstr ""
+msgstr "Ylös"
 
 #: lclstrconsts.snomdiform
 msgid "No MDI form present."
