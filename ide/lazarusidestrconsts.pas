@@ -1323,6 +1323,9 @@ resourcestring
   dlfMouseSimpleRightMoveCaret = 'Right mouse includes caret move';
   dlfMouseSimpleTextSectMidLabel = 'Middle Button';
   dlfMouseSimpleTextSectWheelLabel = 'Wheel';
+  dlfMouseSimpleTextSectRightLabel = 'Right Button';
+  dlfMouseSimpleTextSectExtra1Label = 'Extra-1 Button';
+  dlfMouseSimpleTextSectExtra2Label = 'Extra-2 Button';
   dlfMouseSimpleTextSectCtrlWheelLabel = 'Ctrl Wheel';
   dlfMouseSimpleTextSectAltWheelLabel = 'Alt Wheel';
   dlfMouseSimpleTextShiftSectWheelLabel = 'Shift Wheel';
@@ -1335,6 +1338,9 @@ resourcestring
   dlfMouseSimpleTextSectPageLMulti = 'Left 2';
   dlfMouseSimpleTextSectPageBtn = 'Middle';
   dlfMouseSimpleTextSectPageWheel = 'Wheel';
+  dlfMouseSimpleTextSectPageRight = 'Right';
+  dlfMouseSimpleTextSectPageExtra1 = 'Extra 1';
+  dlfMouseSimpleTextSectPageExtra2 = 'Extra 2';
 
   dlfMouseSimpleTextSectLDoubleLabel      = 'Double';
   dlfMouseSimpleTextSectLTripleLabel      = 'Triple';
@@ -1368,6 +1374,7 @@ resourcestring
   dlfMouseSimpleButtonHistForw = 'History forward';
   dlfMouseSimpleButtonSetFreeBookmark  = 'Set free bookmark';
   dlfMouseSimpleButtonZoomReset        = 'Reset zoom';
+  dlfMouseSimpleButtonContextMenu      = 'Context Menu';
 
   dlfMouseSimpleWheelNothing           = 'Nothing/Default';
   dlfMouseSimpleWheelSrollDef          = 'Scroll (System speed)';

@@ -687,6 +687,7 @@ type
     mbaHistoryBack, mbaHistoryForw,
     mbaSetFreeBookmark,
     mbaZoomReset,
+    mbaContextMenu,
 
     // Old values, needed to load old config
     moTCLNone, moTMIgnore,
@@ -695,7 +696,7 @@ type
     moTCLJumpOrBlock
   );
 
-  TMouseOptButtonAction = mbaNone..mbaZoomReset;
+  TMouseOptButtonAction = mbaNone..mbaContextMenu;
 
 const
   MouseOptButtonActionOld: Array [moTCLNone..moTCLJumpOrBlock] of TMouseOptButtonActionOld = (
@@ -755,8 +756,33 @@ type
     FTextShiftAltCtrlMiddleClick: TMouseOptButtonAction;
     FTextShiftCtrlMiddleClick: TMouseOptButtonAction;
     FTextShiftMiddleClick: TMouseOptButtonAction;
+    // right
+    FTextAltCtrlRightClick: TMouseOptButtonAction;
+    FTextAltRightClick: TMouseOptButtonAction;
+    FTextCtrlRightClick: TMouseOptButtonAction;
+    FTextRightClick: TMouseOptButtonAction;
+    FTextShiftAltCtrlRightClick: TMouseOptButtonAction;
+    FTextShiftAltRightClick: TMouseOptButtonAction;
+    FTextShiftCtrlRightClick: TMouseOptButtonAction;
+    FTextShiftRightClick: TMouseOptButtonAction;
     // extra-1 click
+    FTextAltCtrlExtra1Click: TMouseOptButtonAction;
+    FTextAltExtra1Click: TMouseOptButtonAction;
+    FTextCtrlExtra1Click: TMouseOptButtonAction;
+    FTextExtra1Click: TMouseOptButtonAction;
+    FTextShiftAltCtrlExtra1Click: TMouseOptButtonAction;
+    FTextShiftAltExtra1Click: TMouseOptButtonAction;
+    FTextShiftCtrlExtra1Click: TMouseOptButtonAction;
+    FTextShiftExtra1Click: TMouseOptButtonAction;
     // extra-2 click
+    FTextAltCtrlExtra2Click: TMouseOptButtonAction;
+    FTextAltExtra2Click: TMouseOptButtonAction;
+    FTextCtrlExtra2Click: TMouseOptButtonAction;
+    FTextExtra2Click: TMouseOptButtonAction;
+    FTextShiftAltCtrlExtra2Click: TMouseOptButtonAction;
+    FTextShiftAltExtra2Click: TMouseOptButtonAction;
+    FTextShiftCtrlExtra2Click: TMouseOptButtonAction;
+    FTextShiftExtra2Click: TMouseOptButtonAction;
     // wheel
     FWheel: TMouseOptWheelAction;
     FAltWheel: TMouseOptWheelAction;
@@ -766,7 +792,6 @@ type
     FShiftCtrlWheel: TMouseOptWheelAction;
     FAltCtrlWheel: TMouseOptWheelAction;
     FShiftAltCtrlWheel: TMouseOptWheelAction;
-
 
     procedure ClearUserSchemes;
     function GetUserSchemeNames(Index: Integer): String;
@@ -865,9 +890,57 @@ type
     property TextShiftAltCtrlMiddleClick: TMouseOptButtonAction read FTextShiftAltCtrlMiddleClick write FTextShiftAltCtrlMiddleClick
              default mbaNone;
     // right click
+    property TextRightClick: TMouseOptButtonAction read FTextRightClick write FTextRightClick
+             default mbaContextMenu;
+    property TextShiftRightClick: TMouseOptButtonAction read FTextShiftRightClick write FTextShiftRightClick
+             default mbaNone;
+    property TextAltRightClick: TMouseOptButtonAction read FTextAltRightClick write FTextAltRightClick
+             default mbaNone;
+    property TextCtrlRightClick: TMouseOptButtonAction read FTextCtrlRightClick write FTextCtrlRightClick
+             default mbaNone;
+    property TextShiftAltRightClick: TMouseOptButtonAction read FTextShiftAltRightClick write FTextShiftAltRightClick
+             default mbaNone;
+    property TextShiftCtrlRightClick: TMouseOptButtonAction read FTextShiftCtrlRightClick write FTextShiftCtrlRightClick
+             default mbaNone;
+    property TextAltCtrlRightClick: TMouseOptButtonAction read FTextAltCtrlRightClick write FTextAltCtrlRightClick
+             default mbaNone;
+    property TextShiftAltCtrlRightClick: TMouseOptButtonAction read FTextShiftAltCtrlRightClick write FTextShiftAltCtrlRightClick
+             default mbaNone;
     // extra-1 click
+    property TextExtra1Click: TMouseOptButtonAction read FTextExtra1Click write FTextExtra1Click
+             default mbaHistoryBack;
+    property TextShiftExtra1Click: TMouseOptButtonAction read FTextShiftExtra1Click write FTextShiftExtra1Click
+             default mbaNone;
+    property TextAltExtra1Click: TMouseOptButtonAction read FTextAltExtra1Click write FTextAltExtra1Click
+             default mbaNone;
+    property TextCtrlExtra1Click: TMouseOptButtonAction read FTextCtrlExtra1Click write FTextCtrlExtra1Click
+             default mbaNone;
+    property TextShiftAltExtra1Click: TMouseOptButtonAction read FTextShiftAltExtra1Click write FTextShiftAltExtra1Click
+             default mbaNone;
+    property TextShiftCtrlExtra1Click: TMouseOptButtonAction read FTextShiftCtrlExtra1Click write FTextShiftCtrlExtra1Click
+             default mbaNone;
+    property TextAltCtrlExtra1Click: TMouseOptButtonAction read FTextAltCtrlExtra1Click write FTextAltCtrlExtra1Click
+             default mbaNone;
+    property TextShiftAltCtrlExtra1Click: TMouseOptButtonAction read FTextShiftAltCtrlExtra1Click write FTextShiftAltCtrlExtra1Click
+             default mbaNone;
     // extra-2 click
-
+    property TextExtra2Click: TMouseOptButtonAction read FTextExtra2Click write FTextExtra2Click
+             default mbaHistoryForw;
+    property TextShiftExtra2Click: TMouseOptButtonAction read FTextShiftExtra2Click write FTextShiftExtra2Click
+             default mbaNone;
+    property TextAltExtra2Click: TMouseOptButtonAction read FTextAltExtra2Click write FTextAltExtra2Click
+             default mbaNone;
+    property TextCtrlExtra2Click: TMouseOptButtonAction read FTextCtrlExtra2Click write FTextCtrlExtra2Click
+             default mbaNone;
+    property TextShiftAltExtra2Click: TMouseOptButtonAction read FTextShiftAltExtra2Click write FTextShiftAltExtra2Click
+             default mbaNone;
+    property TextShiftCtrlExtra2Click: TMouseOptButtonAction read FTextShiftCtrlExtra2Click write FTextShiftCtrlExtra2Click
+             default mbaNone;
+    property TextAltCtrlExtra2Click: TMouseOptButtonAction read FTextAltCtrlExtra2Click write FTextAltCtrlExtra2Click
+             default mbaNone;
+    property TextShiftAltCtrlExtra2Click: TMouseOptButtonAction read FTextShiftAltCtrlExtra2Click write FTextShiftAltCtrlExtra2Click
+             default mbaNone;
+    //
     property Wheel: TMouseOptWheelAction read FWheel write FWheel
              default mwaScroll;
     property CtrlWheel: TMouseOptWheelAction read FCtrlWheel write FCtrlWheel
@@ -2446,18 +2519,18 @@ begin
   FTextAltDoubleLeftClick    := mbaNone;
   FTextCtrlDoubleLeftClick   := mbaNone;
   // left
+  FTextAltLeftClick          := mbaSelectColumn;
+  FTextCtrlLeftClick         := mbaDeclarationJump;
   FTextAltCtrlLeftClick      := mbaNone;
-  FTextShiftAltLeftClick     := mbaNone;
-  FTextShiftAltCtrlLeftClick := mbaNone;
-  FTextShiftCtrlLeftClick    := mbaNone;
   FTextShiftLeftClick        := mbaNone;
-  FTextCtrlLeftClick   := mbaDeclarationJump;
-  FTextAltLeftClick    := mbaSelectColumn;
+  FTextShiftAltLeftClick     := mbaNone;
+  FTextShiftCtrlLeftClick    := mbaNone;
+  FTextShiftAltCtrlLeftClick := mbaNone;
   // middle
   FTextMiddleClick             := mbaPaste;
+  FTextAltMiddleClick          := mbaNone;
   FTextCtrlMiddleClick         := mbaZoomReset;
   FTextShiftMiddleClick        := mbaNone;
-  FTextAltMiddleClick          := mbaNone;
   FTextAltCtrlMiddleClick      := mbaNone;
   FTextShiftAltMiddleClick     := mbaNone;
   FTextShiftAltCtrlMiddleClick := mbaNone;
@@ -2471,6 +2544,33 @@ begin
   FShiftCtrlWheel       := mwaNone;
   FShiftAltWheel    := mwaNone;
   FShiftAltCtrlWheel    := mwaNone;
+  // right
+  FTextRightClick := mbaContextMenu;
+  FTextAltCtrlRightClick := mbaNone;
+  FTextAltRightClick := mbaNone;
+  FTextCtrlRightClick := mbaNone;
+  FTextShiftAltCtrlRightClick := mbaNone;
+  FTextShiftAltRightClick := mbaNone;
+  FTextShiftCtrlRightClick := mbaNone;
+  FTextShiftRightClick := mbaNone;
+  // extra-1 click
+  FTextExtra1Click := mbaHistoryBack;
+  FTextAltCtrlExtra1Click := mbaNone;
+  FTextAltExtra1Click := mbaNone;
+  FTextCtrlExtra1Click := mbaNone;
+  FTextShiftAltCtrlExtra1Click := mbaNone;
+  FTextShiftAltExtra1Click := mbaNone;
+  FTextShiftCtrlExtra1Click := mbaNone;
+  FTextShiftExtra1Click := mbaNone;
+  // extra-2 click
+  FTextExtra2Click := mbaHistoryForw;
+  FTextAltCtrlExtra2Click := mbaNone;
+  FTextAltExtra2Click := mbaNone;
+  FTextCtrlExtra2Click := mbaNone;
+  FTextShiftAltCtrlExtra2Click := mbaNone;
+  FTextShiftAltExtra2Click := mbaNone;
+  FTextShiftCtrlExtra2Click := mbaNone;
+  FTextShiftExtra2Click := mbaNone;
 
 
   FTextRightMoveCaret  := False;
@@ -2535,7 +2635,8 @@ procedure TEditorMouseOptions.ResetTextToDefault;
 
   procedure AddBtnClick(AnAction: TMouseOptButtonAction; const AButton: TSynMouseButton;
     AShift, AShiftMask: TShiftState; AddLinkDummy: Boolean = False;
-    ASelContShift: TShiftState = []; AClickCount: TSynMAClickCount = ccSingle);
+    ASelContShift: TShiftState = []; AClickCount: TSynMAClickCount = ccSingle;
+    AMoveCaret: Boolean = True; ADir: TSynMAClickDir = cdUp);
 
       procedure AddSelCommand(const ACmd: TSynEditorMouseCommand);
       begin
@@ -2553,35 +2654,37 @@ procedure TEditorMouseOptions.ResetTextToDefault;
         mbaSelectColumn: AddSelCommand(emcStartColumnSelections);
         mbaSelectLine:   AddSelCommand(emcStartLineSelections);
         mbaSelectSetWord:
-            AddCommand(emcSelectWord,       True,  AButton, AClickCount, cdUp, AShift, AShiftMask);
+            AddCommand(emcSelectWord,       True,  AButton, AClickCount, ADir, AShift, AShiftMask);
         mbaSelectSetLineSmart:
-            AddCommand(emcSelectLine,       True,  AButton, AClickCount, cdUp, AShift, AShiftMask, emcoSelectLineSmart);
+            AddCommand(emcSelectLine,       True,  AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectLineSmart);
         mbaSelectSetLineFull:
-            AddCommand(emcSelectLine,       True,  AButton, AClickCount, cdUp, AShift, AShiftMask, emcoSelectLineFull);
+            AddCommand(emcSelectLine,       True,  AButton, AClickCount, ADir, AShift, AShiftMask, emcoSelectLineFull);
         mbaSelectSetPara:
-            AddCommand(emcSelectPara,       True,  AButton, AClickCount, cdUp, AShift, AShiftMask);
+            AddCommand(emcSelectPara,       True,  AButton, AClickCount, ADir, AShift, AShiftMask);
         mbaPaste:            // TODOS act on up? but needs to prevent selection on down
             AddCommand(emcPasteSelection,   True,  AButton, AClickCount, cdDown,  AShift, AShiftMask, 0, 0, 0, True);
         mbaDeclarationJump,
         mbaDeclarationOrBlockJump: begin
             if AddLinkDummy then
-              AddCommand(emcMouseLink,      False, AButton, AClickCount, cdUp,    [SYNEDIT_LINK_MODIFIER], [SYNEDIT_LINK_MODIFIER], emcoMouseLinkShow, 999);
-            AddCommand(emcMouseLink,        False, AButton, AClickCount, cdUp,    AShift, AShiftMask);
+              AddCommand(emcMouseLink,      False, AButton, AClickCount, ADir,    [SYNEDIT_LINK_MODIFIER], [SYNEDIT_LINK_MODIFIER], emcoMouseLinkShow, 999);
+            AddCommand(emcMouseLink,        False, AButton, AClickCount, ADir,    AShift, AShiftMask);
             if AnAction = mbaDeclarationOrBlockJump then
-              AddCommand(emcSynEditCommand, True,  AButton, AClickCount, cdUp,    AShift, AShiftMask, ecFindBlockOtherEnd, 1);
+              AddCommand(emcSynEditCommand, True,  AButton, AClickCount, ADir,    AShift, AShiftMask, ecFindBlockOtherEnd, 1);
           end;
         mbaAddHistoryPoint:
-          AddCommand(emcSynEditCommand,     True,  AButton, AClickCount, cdUp, AShift, AShiftMask, ecAddJumpPoint);
+          AddCommand(emcSynEditCommand,     True,  AButton, AClickCount, ADir, AShift, AShiftMask, ecAddJumpPoint);
         mbaHistoryBack:
-          AddCommand(emcSynEditCommand,     False, AButton, AClickCount, cdUp, AShift, AShiftMask, ecJumpBack);
+          AddCommand(emcSynEditCommand,     False, AButton, AClickCount, ADir, AShift, AShiftMask, ecJumpBack);
         mbaHistoryForw:
-          AddCommand(emcSynEditCommand,     False, AButton, AClickCount, cdUp, AShift, AShiftMask, ecJumpForward);
+          AddCommand(emcSynEditCommand,     False, AButton, AClickCount, ADir, AShift, AShiftMask, ecJumpForward);
         mbaSetFreeBookmark:
-          AddCommand(emcSynEditCommand,     True,  AButton, AClickCount, cdUp, AShift, AShiftMask, ecSetFreeBookmark);
+          AddCommand(emcSynEditCommand,     True,  AButton, AClickCount, ADir, AShift, AShiftMask, ecSetFreeBookmark);
         mbaZoomReset: begin
-            AddCommand(emcWheelZoomNorm,    False,  AButton, AClickCount, cdUp, AShift, AShiftMask);
-            FMainActions.AddCommand(emcWheelZoomNorm,    False,  AButton, AClickCount, cdUp, AShift, AShiftMask);
+            AddCommand(emcWheelZoomNorm,    False, AButton, AClickCount, ADir, AShift, AShiftMask);
+            FMainActions.AddCommand(emcWheelZoomNorm,    False,  AButton, AClickCount, ADir, AShift, AShiftMask);
           end;
+        mbaContextMenu:
+            AddCommand(emcContextMenu, AMoveCaret, AButton, AClickCount, ADir, [], [], emcoSelectionCaretMoveNever);
       end;
     end;
   end;
@@ -2698,9 +2801,60 @@ begin
   AddBtnClick(FTextShiftAltMiddleClick,     mbMiddle, [ssShift, ssAlt], ModKeys);
   AddBtnClick(FTextShiftAltCtrlMiddleClick, mbMiddle, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys);
 
-  with FTextActions do begin
-    AddCommand(emcContextMenu, FTextRightMoveCaret, mbRight, ccSingle, cdUp, [], [], emcoSelectionCaretMoveNever);
-  end;
+  SelKey := [];
+  ModKeys := [];
+  if FTextShiftRightClick         <> mbaNone then ModKeys := ModKeys + [ssShift];
+  if FTextCtrlRightClick          <> mbaNone then ModKeys := ModKeys + [ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  if FTextAltRightClick           <> mbaNone then ModKeys := ModKeys + [ssAlt];
+  if FTextAltCtrlRightClick       <> mbaNone then ModKeys := ModKeys + [ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  if FTextShiftCtrlRightClick     <> mbaNone then ModKeys := ModKeys + [ssShift, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  if FTextShiftAltRightClick      <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt];
+  if FTextShiftAltCtrlRightClick  <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  AddBtnClick(FTextRightClick,     mbRight, [], ModKeys, FTextCtrlRightClick = mbaNone, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextShiftRightClick,mbRight, [ssShift], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextAltRightClick,  mbRight, [ssAlt], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextCtrlRightClick, mbRight, [SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextAltCtrlRightClick,      mbRight, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextShiftCtrlRightClick,    mbRight, [ssShift, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextShiftAltRightClick,     mbRight, [ssShift, ssAlt], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextShiftAltCtrlRightClick, mbRight, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+
+  SelKey := [];
+  ModKeys := [];
+  if FTextShiftExtra1Click         <> mbaNone then ModKeys := ModKeys + [ssShift];
+  if FTextCtrlExtra1Click          <> mbaNone then ModKeys := ModKeys + [ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  if FTextAltExtra1Click           <> mbaNone then ModKeys := ModKeys + [ssAlt];
+  if FTextAltCtrlExtra1Click       <> mbaNone then ModKeys := ModKeys + [ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  if FTextShiftCtrlExtra1Click     <> mbaNone then ModKeys := ModKeys + [ssShift, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  if FTextShiftAltExtra1Click      <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt];
+  if FTextShiftAltCtrlExtra1Click  <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  AddBtnClick(FTextExtra1Click,     mbExtra1, [], ModKeys, FTextCtrlExtra1Click = mbaNone, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftExtra1Click,mbExtra1, [ssShift], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextAltExtra1Click,  mbExtra1, [ssAlt], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextCtrlExtra1Click, mbExtra1, [SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextAltCtrlExtra1Click,      mbExtra1, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftCtrlExtra1Click,    mbExtra1, [ssShift, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftAltExtra1Click,     mbExtra1, [ssShift, ssAlt], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftAltCtrlExtra1Click, mbExtra1, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+
+  // TODO: on w32 extra btn do not call mouse up
+  SelKey := [];
+  ModKeys := [];
+  if FTextShiftExtra2Click         <> mbaNone then ModKeys := ModKeys + [ssShift];
+  if FTextCtrlExtra2Click          <> mbaNone then ModKeys := ModKeys + [ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  if FTextAltExtra2Click           <> mbaNone then ModKeys := ModKeys + [ssAlt];
+  if FTextAltCtrlExtra2Click       <> mbaNone then ModKeys := ModKeys + [ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  if FTextShiftCtrlExtra2Click     <> mbaNone then ModKeys := ModKeys + [ssShift, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  if FTextShiftAltExtra2Click      <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt];
+  if FTextShiftAltCtrlExtra2Click  <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  AddBtnClick(FTextExtra2Click,     mbExtra2, [], ModKeys, FTextCtrlExtra2Click = mbaNone, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftExtra2Click,mbExtra2, [ssShift], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextAltExtra2Click,  mbExtra2, [ssAlt], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextCtrlExtra2Click, mbExtra2, [SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextAltCtrlExtra2Click,      mbExtra2, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftCtrlExtra2Click,    mbExtra2, [ssShift, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftAltExtra2Click,     mbExtra2, [ssShift, ssAlt], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftAltCtrlExtra2Click, mbExtra2, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
 
   ModKeys := [];
   if FShiftWheel         <> mwaNone then ModKeys := ModKeys + [ssShift];
@@ -2723,11 +2877,6 @@ begin
     with FSelActions do begin
       AddCommand(emcStartDragMove, False, mbLeft, ccSingle, cdDown, [], []);
     end;
-
-  with FTextActions do begin
-    AddCommand(emcSynEditCommand, False, mbExtra1, ccAny, cdDown, [], [], ecJumpBack);
-    AddCommand(emcSynEditCommand, False, mbExtra2, ccAny, cdDown, [], [], ecJumpForward);
-  end;
 end;
 
 procedure TEditorMouseOptions.ResetToUserScheme;
@@ -2789,18 +2938,17 @@ begin
   FTextCtrlDoubleLeftClick   := Src.TextCtrlDoubleLeftClick;
     // left + modifier click
   FTextAltLeftClick          := Src.TextAltLeftClick;
-  FTextAltCtrlLeftClick      := Src.TextAltCtrlLeftClick;
-  FTextShiftAltLeftClick     := Src.TextShiftAltLeftClick;
-  FTextShiftAltCtrlLeftClick := Src.TextShiftAltCtrlLeftClick;
-  FTextShiftCtrlLeftClick    := Src.TextShiftCtrlLeftClick;
-  FTextShiftLeftClick        := Src.TextShiftLeftClick;
   FTextCtrlLeftClick    := Src.TextCtrlLeftClick;
-  FTextAltLeftClick     := Src.TextAltLeftClick;
+  FTextAltCtrlLeftClick      := Src.TextAltCtrlLeftClick;
+  FTextShiftLeftClick        := Src.TextShiftLeftClick;
+  FTextShiftAltLeftClick     := Src.TextShiftAltLeftClick;
+  FTextShiftCtrlLeftClick    := Src.TextShiftCtrlLeftClick;
+  FTextShiftAltCtrlLeftClick := Src.TextShiftAltCtrlLeftClick;
     // middle click
   FTextMiddleClick           := Src.TextMiddleClick;
-  FTextShiftMiddleClick      := Src.TextShiftMiddleClick;
   FTextAltMiddleClick        := Src.TextAltMiddleClick;
   FTextCtrlMiddleClick       := Src.TextCtrlMiddleClick;
+  FTextShiftMiddleClick      := Src.TextShiftMiddleClick;
   FTextAltCtrlMiddleClick      := Src.TextAltCtrlMiddleClick;
   FTextShiftAltMiddleClick     := Src.TextShiftAltMiddleClick;
   FTextShiftCtrlMiddleClick    := Src.TextShiftCtrlMiddleClick;
@@ -2814,8 +2962,33 @@ begin
   FShiftCtrlWheel       := Src.ShiftCtrlWheel;
   FShiftAltWheel        := Src.ShiftAltWheel;
   FShiftAltCtrlWheel    := Src.ShiftAltCtrlWheel;
-    // extra-1 click
-    // extra-2 click
+  // right
+  FTextAltCtrlRightClick := Src.TextAltCtrlRightClick;
+  FTextAltRightClick := Src.TextAltRightClick;
+  FTextCtrlRightClick := Src.TextCtrlRightClick;
+  FTextRightClick := Src.TextRightClick;
+  FTextShiftAltCtrlRightClick := Src.TextShiftAltCtrlRightClick;
+  FTextShiftAltRightClick := Src.TextShiftAltRightClick;
+  FTextShiftCtrlRightClick := Src.TextShiftCtrlRightClick;
+  FTextShiftRightClick := Src.TextShiftRightClick;
+  // extra-1 click
+  FTextAltCtrlExtra1Click := Src.TextAltCtrlExtra1Click;
+  FTextAltExtra1Click := Src.TextAltExtra1Click;
+  FTextCtrlExtra1Click := Src.TextCtrlExtra1Click;
+  FTextExtra1Click := Src.TextExtra1Click;
+  FTextShiftAltCtrlExtra1Click := Src.TextShiftAltCtrlExtra1Click;
+  FTextShiftAltExtra1Click := Src.TextShiftAltExtra1Click;
+  FTextShiftCtrlExtra1Click := Src.TextShiftCtrlExtra1Click;
+  FTextShiftExtra1Click := Src.TextShiftExtra1Click;
+  // extra-2 click
+  FTextAltCtrlExtra2Click := Src.TextAltCtrlExtra2Click;
+  FTextAltExtra2Click := Src.TextAltExtra2Click;
+  FTextCtrlExtra2Click := Src.TextCtrlExtra2Click;
+  FTextExtra2Click := Src.TextExtra2Click;
+  FTextShiftAltCtrlExtra2Click := Src.TextShiftAltCtrlExtra2Click;
+  FTextShiftAltExtra2Click := Src.TextShiftAltExtra2Click;
+  FTextShiftCtrlExtra2Click := Src.TextShiftCtrlExtra2Click;
+  FTextShiftExtra2Click := Src.TextShiftExtra2Click;
 
 
 
