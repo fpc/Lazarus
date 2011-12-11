@@ -1142,7 +1142,7 @@ resourcestring
   dlgRightBottomClr = 'Guide lines Right,Bottom';
   dlgShowCaps = 'Show component captions';
   dlgShowEdrHints = 'Show editor hints';
-  dlgrightClickSelects = 'Right Click selects';
+  dlgrightClickSelects = 'Right click selects';
   lisOpenDesignerOnOpenUnit = 'Open designer on open unit';
   dlgCheckPackagesOnFormCreate = 'Check packages on form create';
   dlgGrabberColor = 'Grabber color';
@@ -2424,14 +2424,8 @@ resourcestring
   srkmConflicW = ' conflicts with ';
   srkmCommand1 = '    command1 "';
   srkmCommand2 = '    command2 "';
-  srkmEditForCmd='Edit keys of command';
+  srkmEditForCmd = 'Edit keys of command';
   lisChooseAKey = 'Choose a key ...';
-  srkmKey      = 'Key (or 2 keys combination)';
-  srkmGrabKey  = 'Grab key';
-  srkmGrabSecondKey  = 'Grab second key';
-  srkmPressKey = 'Please press a key ...';
-  srkmAlternKey= 'Alternative key (or 2 keys combination)';
-  srkmAlreadyConnected = ' The key "%s" is already connected to "%s".';
 
   //Commands
   srkmecWordLeft              = 'Move cursor word left';
@@ -3042,9 +3036,8 @@ resourcestring
     +'the Free Pascal compiler for this project. Only required if you set the '
     +'FPC SVN source below. Used to autocreate macros.';
   lisCodeToolsDefsFPCSVNSourceDirectory = 'FPC SVN source directory';
-  lisCodeToolsDefsTheFreePascalCVSSourceDirectory = 'The Free Pascal SVN '
-    +'source directory. Not required. This will improve find declarationand '
-    +'debugging.';
+  lisCodeToolsDefsTheFreePascalCVSSourceDirectory = 'The Free Pascal SVN source '
+    +'directory. Not required. This will improve find declaration and debugging.';
   lisCodeToolsDefsCreateDefinesForFreePascalCompiler = 'Create Defines for '
     +'Free Pascal Compiler';
   lisCodeToolsDefsThePathToTheFreePascalCompilerForThisSourceUsedToA = 'The path to '

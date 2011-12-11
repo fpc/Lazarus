@@ -148,7 +148,7 @@ resourcestring
 
   crsDeclareVariable = 'Declare Variable';
   crsDeclareVariable2 = 'Declare Variable ...';
-  crsInsertCallInherited = 'Insert call inherited';
+  crsInsertCallInherited = 'Insert Call Inherited';
 
   crsCUSelectFileToInsertAtCursor = 'Select file to insert at cursor';
   crsCUPascalPasPpPasPp = 'Pascal (*.pas;*.pp)|*.pas;*.pp';
