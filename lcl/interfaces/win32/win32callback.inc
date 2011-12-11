@@ -1287,7 +1287,8 @@ begin
               itemindex is updated, so set text manually }
             CBN_SELCHANGE:
             begin
-              UpdateComboBoxText(TCustomComboBox(lWinControl));
+              if TCustomComboBox(lWinControl).Style in [csSimple, csDropDown] then
+                UpdateComboBoxText(TCustomComboBox(lWinControl));
               SendSimpleMessage(lWinControl, LM_CHANGED);
               LMessage.Msg := LM_SELCHANGE;
             end;
