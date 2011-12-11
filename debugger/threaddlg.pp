@@ -5,8 +5,8 @@ unit ThreadDlg;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, Debugger, DebuggerDlg, Forms, LazarusIDEStrConsts,
-  IDEWindowIntf, DebuggerStrConst,
+  Classes, SysUtils, ComCtrls, LCLProc,
+  Debugger, DebuggerDlg, Forms, LazarusIDEStrConsts, IDEWindowIntf, DebuggerStrConst,
   BaseDebugManager, IDEImagesIntf;
 
 type
@@ -146,8 +146,8 @@ begin
   finally
     lvThreads.EndUpdate;
     EndUpdate;
-    {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataMonitor: <<EXIT: TThreadsDlg.ThreadsChanged']); end; {$ENDIF}
   end;
+  {$IFDEF DBG_DATA_MONITORS} finally DebugLnExit(['DebugDataMonitor: <<EXIT: TThreadsDlg.ThreadsChanged']); end; {$ENDIF}
 end;
 
 function TThreadsDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
