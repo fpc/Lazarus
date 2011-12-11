@@ -4155,7 +4155,10 @@ begin
     {this is due qt bug in fontmetrics::averageCharWidth() under Mac
      http://trolltech.com/developer/task-tracker/index_html?method=entry&id=169440 }
     {$IFDEF DARWIN}
-    TM.tmAveCharWidth := QtFontMetrics.charWidth('x',0);
+    if (QtVersionMajor = 4) and (QtVersionMinor >= 6) then
+      TM.tmAveCharWidth := QtFontMetrics.averageCharWidth
+    else
+      TM.tmAveCharWidth := QtFontMetrics.charWidth('x',0);
     {$ELSE}
     TM.tmAveCharWidth := QtFontMetrics.averageCharWidth;
     {$ENDIF}
