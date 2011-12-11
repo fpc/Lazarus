@@ -217,6 +217,8 @@ function Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap(
     env:PJNIEnv;this:jobject; width, height: jint; abitmap: jobject): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnCreate(
     env:PJNIEnv; this:jobject; alclactivity: jobject): jint; cdecl;
+function Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished(
+    env:PJNIEnv; this:jobject; AResult: jint): jint; cdecl;
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;
 
@@ -228,12 +230,18 @@ var
 
   // Fields of our Activity
   javaField_lcltext: JfieldID=nil;
+  javaField_lcltitle: JfieldID=nil;
+  javaField_lclpositivebutton: JfieldID=nil;
+  javaField_lclnegativebutton: JfieldID=nil;
+  javaField_lclneutralbutton: JfieldID=nil;
   javaField_lclwidth: JfieldID=nil;
   javaField_lclheight: JfieldID=nil;
+  javaField_lclconfig: JfieldID=nil;
 
   // Methods of our Activity
   javaMethod_LCLDoGetTextBounds: jmethodid = nil;
   javaMethod_LCLDoDrawText: jmethodid = nil;
+  javaMethod_LCLDoShowMessageBox: jmethodid = nil;
 
   // This is utilized to store the information such as invalidate requests in events
   eventResult: jint;

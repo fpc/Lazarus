@@ -4744,22 +4744,15 @@ begin
   end;
 
   Result := True;
-end;
+end;*)
 
-function TQtWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
-var
-  Str: WideString;
-  TitleStr: WideString;
-  OkStr: WideString;
+function TCDWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
 begin
-  //TODO: Finish full implementation of MessageBox
-  Str := GetUtf8String('TQtWidgetSet.MessageBox - not implemented');
-  TitleStr := GetUtf8String(lpCaption);
-  OkStr := GetUtf8String('Ok');
-  Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr);
+  // X11 has no native dialog, so just use the one installed by Dialogs.pas
+  Result := Application.MessageBox(lpText, lpCaption, uType);
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: MoveToEx
   Params:  none
   Returns: Nothing
@@ -6480,5 +6473,27 @@ begin
   FLastWFPResult := Result;
   FLastWFPMousePos := APoint;
 end;*)
+
+// In the end routines from customdrawnlclintfh.inc
+
+function TCDWidgetSet.AskUser(const DialogCaption, DialogMessage: string; DialogType:
+   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
+begin
+end;
+
+function TCDWidgetSet.PromptUser(const DialogCaption : string;
+                    const DialogMessage : string;
+                          DialogType    : LongInt;
+                          Buttons       : PLongInt;
+                          ButtonCount   : LongInt;
+                          DefaultIndex  : LongInt;
+                          EscapeResult  : LongInt) : LongInt;
+begin
+  {$ifdef VerboseCDWinAPI}
+    DebugLn(Format('[TCDWidgetSet.PromptUser] javaEnvRef=%x DialogCaption=%s '
+      + 'DialogMessage=%s DialogType=%d ButtonCount=%d',
+      [PtrInt(javaEnvRef), DialogCaption, DialogMessage, DialogType, ButtonCount]));
+  {$endif}
+end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

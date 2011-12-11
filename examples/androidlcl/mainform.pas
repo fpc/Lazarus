@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  LCLProc, Arrow, StdCtrls, ComCtrls;
+  LCLProc, Arrow, StdCtrls, ComCtrls, LCLType, LCLIntf;
 
 type
   TSubControl = class;
@@ -16,6 +16,7 @@ type
   TForm1 = class(TForm)
     Arrow1: TArrow;
     Button1: TButton;
+    Button2: TButton;
     CheckBox1: TCheckBox;
     ProgressBar1: TProgressBar;
     TrackBar1: TTrackBar;
@@ -27,6 +28,7 @@ type
     procedure Arrow1MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
     procedure FormClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -37,6 +39,7 @@ type
     { public declarations }
     SubControl: TSubControl;
     ClickCounter: Integer;
+    procedure HandleMessageBoxExecute(Sender: TObject; AResult: Integer);
   end; 
 
   { TSubControl }
@@ -132,13 +135,21 @@ begin
   ProgressBar1.Position := ProgressBar1.Position + 10;
 end;
 
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  Application.OnMessageBoxExecute := @HandleMessageBoxExecute;
+  DebugLn('Button2Click A');
+  LCLIntf.MessageBox(0, 'Text', 'Title', MB_ABORTRETRYIGNORE);
+  DebugLn('Button2Click B');
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   SubControl := TSubControl.Create(Self);
   SubControl.Left := 40;
   SubControl.Top := 160;
-  SubControl.Width := 100;
-  SubControl.Height := 100;
+  SubControl.Width := 50;
+  SubControl.Height := 50;
   SubControl.Parent := Self;
 end;
 
@@ -164,6 +175,11 @@ begin
   Canvas.Rectangle(100, 100, 200, 200);
   Canvas.Brush.Color := clBlue;
   Canvas.Rectangle(200, 200, 300, 300);}
+end;
+
+procedure TForm1.HandleMessageBoxExecute(Sender: TObject; AResult: Integer);
+begin
+  DebugLn(Format('[TForm1.HandleMessageBoxExecute] AResult=%d', [AResult]));
 end;
 
 end.

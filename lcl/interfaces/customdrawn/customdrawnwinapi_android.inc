@@ -4783,22 +4783,35 @@ begin
   end;
 
   Result := True;
-end;
+end;*)
 
-function TQtWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
+function TCDWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
 var
-  Str: WideString;
-  TitleStr: WideString;
-  OkStr: WideString;
+  lJavaString: jstring;
 begin
-  //TODO: Finish full implementation of MessageBox
-  Str := GetUtf8String('TQtWidgetSet.MessageBox - not implemented');
-  TitleStr := GetUtf8String(lpCaption);
-  OkStr := GetUtf8String('Ok');
-  Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr);
+  {$ifdef VerboseCDWinAPI}
+    DebugLn(Format('[TCDWidgetSet.MessageBox] HWND=%x javaEnvRef=%x lpText=%s lpCaption=%s uType=%d',
+      [HWND, PtrInt(javaEnvRef), StrPas(lpText), StrPas(lpCaption), uType]));
+  {$endif}
+
+  Result := 0; // The real result goes to Application.OnMessageDialogExecute
+
+  if (javaEnvRef = nil) then Exit;
+
+  // Prepare the input
+  // String fields
+  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, lpText);
+  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, lpCaption);
+  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltitle, lJavaString);
+  // int fields
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclconfig, uType);
+
+  // Call the method
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoShowMessageBox);
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: MoveToEx
   Params:  none
   Returns: Nothing
@@ -6519,5 +6532,58 @@ begin
   FLastWFPResult := Result;
   FLastWFPMousePos := APoint;
 end;*)
+
+// In the end routines from customdrawnlclintfh.inc
+
+function TCDWidgetSet.AskUser(const DialogCaption, DialogMessage: string; DialogType:
+   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
+begin
+  Result := 0;
+end;
+
+function TCDWidgetSet.PromptUser(const DialogCaption : string;
+                    const DialogMessage : string;
+                          DialogType    : LongInt;
+                          Buttons       : PLongInt;
+                          ButtonCount   : LongInt;
+                          DefaultIndex  : LongInt;
+                          EscapeResult  : LongInt) : LongInt;
+var
+  lJavaString: jstring;
+  BtnIndex, BtnKind: Integer;
+begin
+  {$ifdef VerboseCDWinAPI}
+    DebugLn(Format('[TCDWidgetSet.PromptUser] javaEnvRef=%x DialogCaption=%s '
+      + 'DialogMessage=%s DialogType=%d ButtonCount=%d',
+      [PtrInt(javaEnvRef), DialogCaption, DialogMessage, DialogType, ButtonCount]));
+  {$endif}
+
+  Result := 0; // The real result goes to Application.OnMessageDialogExecute
+
+  if (javaEnvRef = nil) then Exit;
+
+  // Prepare the input
+  // String fields
+  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(DialogMessage));
+  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(DialogMessage));
+  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltitle, lJavaString);
+
+  // Read the buttons
+  for BtnIndex := 0 to ButtonCount - 1 do
+  begin
+    BtnKind := Buttons[BtnIndex];
+    {$ifdef VerboseCDWinAPI}
+      DebugLn(Format(':[TCDWidgetSet.PromptUser] BtnKind=%d', [BtnKind]));
+    {$endif}
+
+  end;
+
+  // int fields
+  //javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclconfig, uType);
+
+  // Call the method
+  //javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoShowMessageBox);}
+end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

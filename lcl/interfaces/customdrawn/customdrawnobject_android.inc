@@ -119,14 +119,29 @@ begin
   javaActivityObject := alclactivity;
 end;
 
-const NativeMethods: array[0..1] of JNINativeMethod=
-       ((name:'LCLDrawToBitmap';
-         signature:'(IILandroid/graphics/Bitmap;)I';
-         fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap;),
-        (name:'LCLOnTouch';
-         signature:'(FFI)I';
-         fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnTouch;)
-       );
+function Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished(
+    env:PJNIEnv; this:jobject; AResult: jint): jint; cdecl;
+begin
+  //__android_log_write(ANDROID_LOG_INFO, 'lclapp', 'LCLOnCreate called by LCLActivity.onCreate');
+  Result := 0;
+  if Assigned(Application.OnMessageBoxExecute) then
+    Application.OnMessageBoxExecute(Application, AResult);
+end;
+
+const NativeMethods: array[0..3] of JNINativeMethod=
+  ((name:'LCLDrawToBitmap';
+    signature:'(IILandroid/graphics/Bitmap;)I';
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap;),
+   (name:'LCLOnTouch';
+    signature:'(FFI)I';
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnTouch;),
+   (name:'LCLOnCreate';
+    signature:'(Lcom/pascal/lcltest/LCLActivity;)I'; //android/app/Activity;
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnCreate;),
+   (name:'LCLOnMessageBoxFinished';
+    signature:'(I)I';
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished;)
+  );
 
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 begin
@@ -165,8 +180,13 @@ begin
 
   // Read all field IDs
   JavaField_lcltext := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltext', 'Ljava/lang/String;');
+  JavaField_lcltitle := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltitle', 'Ljava/lang/String;');
+  JavaField_lclpositivebutton := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclpositivebutton', 'Ljava/lang/String;');
+  JavaField_lclnegativebutton := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclnegativebutton', 'Ljava/lang/String;');
+  JavaField_lclneutralbutton := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclneutralbutton', 'Ljava/lang/String;');
   JavaField_lclwidth := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclwidth', 'I');
   JavaField_lclheight := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclheight', 'I');
+  JavaField_lclconfig := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclconfig', 'I');
   if not assigned(JavaField_lcltext) then
   begin
     __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'javaEnvRef^.GetFieldID failed for lcltext');
@@ -176,6 +196,7 @@ begin
   // Read all method IDs
   javaMethod_LCLDoGetTextBounds := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoGetTextBounds', '()V');
   javaMethod_LCLDoDrawText := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoDrawText', '()V');
+  javaMethod_LCLDoShowMessageBox := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoShowMessageBox', '()V');
 
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'JNI_OnLoad finished');
   result:=JNI_VERSION_1_4;// 1_6 is another option

@@ -1111,6 +1111,7 @@ type
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
   TOnUserInputEvent = procedure(Sender: TObject; Msg: Cardinal) of object;
   TDataEvent = procedure (Data: PtrInt) of object;
+  TOnMessageBoxExecute = procedure (Sender: TObject; AResult: Integer) of object;
 
   // application hint stuff
   TCMHintShow = record
@@ -1244,6 +1245,7 @@ type
     FMainFormOnTaskBar: Boolean;
     FModalLevel: Integer;
     FOnGetMainFormHandle: TGetHandleEvent;
+    FOnMessageBoxExecute: TOnMessageBoxExecute;
     FOnModalBegin: TNotifyEvent;
     FOnModalEnd: TNotifyEvent;
     FShowButtonGlyphs: TApplicationShowGlyphs;
@@ -1482,6 +1484,7 @@ type
     property OnEndSession: TNotifyEvent read FOnEndSession write FOnEndSession;
     property OnQueryEndSession: TQueryEndSessionEvent read FOnQueryEndSession write FOnQueryEndSession;
     property OnMinimize: TNotifyEvent read FOnMinimize write FOnMinimize;
+    property OnMessageBoxExecute: TOnMessageBoxExecute read FOnMessageBoxExecute write FOnMessageBoxExecute;
     property OnModalBegin: TNotifyEvent read FOnModalBegin write FOnModalBegin;
     property OnModalEnd: TNotifyEvent read FOnModalEnd write FOnModalEnd;
     property OnRestore: TNotifyEvent read FOnRestore write FOnRestore;

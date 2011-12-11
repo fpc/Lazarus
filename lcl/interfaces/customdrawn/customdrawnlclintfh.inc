@@ -31,9 +31,9 @@ function AddEventHandler(AHandle: THandle; AFlags: dword;
 function AddPipeEventHandler(AHandle: THandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; override;
 function AddProcessEventHandler(AHandle: THandle;
-  AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
+  AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;*)
 function AskUser(const DialogCaption, DialogMessage: string; DialogType:
-   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt; override;*)
+   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt; override;
 
 function CreateEmptyRegion: hRGN; override;
 (*function CreateStandardCursor(ACursor: SmallInt): HCURSOR; override;
@@ -48,7 +48,7 @@ function FontIsMonoSpace(Font: HFont): boolean; override;
 function GetDesignerDC(WindowHandle: HWND): HDC; override;
 
 function IntfSendsUTF8KeyPress: boolean; override;
-function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;
+function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;*)
 
 function PromptUser(const DialogCaption : string;
                     const DialogMessage : string;
@@ -58,7 +58,7 @@ function PromptUser(const DialogCaption : string;
                           DefaultIndex  : LongInt;
                           EscapeResult  : LongInt) : LongInt; override;
 
-function RadialPie(DC: HDC; x1, y1, x2, y2, Angle1, Angle2: Integer): Boolean; override;*)
+//function RadialPie(DC: HDC; x1, y1, x2, y2, Angle1, Angle2: Integer): Boolean; override;
 function RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean = False): Boolean; override;
 
 function RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean; override;
