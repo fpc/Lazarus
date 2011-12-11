@@ -2271,14 +2271,12 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TTabSheet.Create">
-        <short>
-          <var>Create</var> - constructor for <var>TTabSheet</var>: calls inherited <var>Create</var> and zeroes <var>ImageIndex</var>
+        <short>calls inherited <var>Create</var> and zeroes <var>ImageIndex</var>
         </short>
         <descr/>
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.ExtCtrls.TCustomPage.Create">TCustomPage.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2346,7 +2344,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.ImageIndex" link="#LCL.ExtCtrls.TCustomPage.ImageIndex">
+      <element name="TTabSheet.ImageIndex" link="TCustomPage.ImageIndex">
         <short/>
         <descr/>
         <seealso/>
@@ -2376,7 +2374,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.OnHide" link="#LCL.ExtCtrls.TCustomPage.OnHide">
+      <element name="TTabSheet.OnHide" link="TCustomPage.OnHide">
         <short/>
         <descr/>
         <seealso/>
@@ -2406,13 +2404,13 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.OnShow" link="#LCL.ExtCtrls.TCustomPage.OnShow">
+      <element name="TTabSheet.OnShow" link="TCustomPage.OnShow">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.PageIndex" link="#LCL.ExtCtrls.TCustomPage.PageIndex">
+      <element name="TTabSheet.PageIndex" link="TCustomPage.PageIndex">
         <short/>
         <descr/>
         <seealso/>
@@ -2442,7 +2440,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TTabSheet.TabVisible" link="#LCL.ExtCtrls.TCustomPage.TabVisible">
+      <element name="TTabSheet.TabVisible" link="TCustomPage.TabVisible">
         <short/>
         <descr/>
         <seealso/>
@@ -2579,7 +2577,7 @@
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
-          <link id="#LCL.ExtCtrls.TCustomTabControl.Create">TCustomTabControl.Create</link>
+          <link id="TCustomTabControl.Create">TCustomTabControl.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2658,7 +2656,7 @@
           <var>Pages</var> - the actual Pages (<var>TTabSheet</var>) that comprise the component</short>
         <descr/>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomTabControl.Pages">TCustomTabControl.Pages</link>
+          <link id="TCustomTabControl.Pages">TCustomTabControl.Pages</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -2713,7 +2711,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.Images" link="#LCL.ExtCtrls.TCustomTabControl.Images">
+      <element name="TPageControl.Images" link="TCustomTabControl.Images">
         <short/>
         <descr/>
         <seealso/>
@@ -2756,7 +2754,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.TabPosition" link="#LCL.ExtCtrls.TCustomTabControl.TabPosition">
+      <element name="TPageControl.TabPosition" link="TCustomTabControl.TabPosition">
         <short/>
         <descr/>
         <seealso/>
@@ -2804,7 +2802,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPageControl.OnGetImageIndex" link="#LCL.ExtCtrls.TCustomTabControl.OnGetImageIndex">
+      <element name="TPageControl.OnGetImageIndex" link="TCustomTabControl.OnGetImageIndex">
         <short/>
         <descr/>
         <seealso/>
@@ -13004,7 +13002,7 @@ Const
             <dd>if <var>Node1.Text&gt;Node2.Text</var>.</dd>
           </dl>
           <p>The comparision takes into account Ansi characters, i.e. it takes
-care of strange accented characters. Contrary to <link id="AnsiCompareText"/>,
+care of strange accented characters. Contrary to AnsiCompareText,
 the comparision is case sensitive.
 </p>
         </descr>
@@ -17321,8 +17319,8 @@ the comparision is case sensitive.
           <p>Use <var>TopItem</var> to get the topmost visible node. It is usually needed when tree view contains many nodes and scroll bar is requred to display them all. If you need the first node of the tree regardless of visibility use <var>Items</var>[0]</p>
         </descr>
         <seealso>
-          <link id="#lcl.ComCtrls.TCustomListview.Items">TCustomTreeView.Items</link>
-          <link id="#lcl.ComCtrls.TCustomListview.TCustomTreeView.GetNodeAtY">TCustomTreeView.GetNodeAtY</link>
+          <link id="TCustomTreeView.Items">Items</link>
+          <link id="TCustomTreeView.GetNodeAtY">GetNodeAtY</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -18512,7 +18510,7 @@ the comparision is case sensitive.
             <dd>if <var>Node1.Text&gt;Node2.Text</var>.</dd>
           </dl>
           <p>The comparision takes into account Ansi characters, i.e. it takes
-care of strange accented characters. Contrary to <link id="AnsiCompareText"/>,
+care of strange accented characters. Contrary to AnsiCompareText,
 the comparision is case sensitive.
 </p>
         </descr>
@@ -18567,10 +18565,7 @@ the comparision is case sensitive.
           <link id="#LCL.Controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
         </seealso>
       </element>
-      <element name="TCustomTreeView.DoDragMsg">
-        <short>
-          <var>DoDragMsg</var> generates system message to indicate object and position for dragging and returns Result of action</short>
-      </element>
+      <element name="TCustomTreeView.DoDragMsg" link="Controls.TWinControl.DoDragMsg"/>
       <element name="TTreeNode.GetTextPath">
         <short>
           <var>GetTextPath</var> - returns a string containing the path to the current node delimited by slash</short>

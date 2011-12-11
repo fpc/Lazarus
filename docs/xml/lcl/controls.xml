@@ -4110,7 +4110,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <element name="TControl.ConstrainedResize">
-        <short>Invokes the <link id="TControl.OnConstrainedResize"/> handler, allowing to modify the suggested Constraints.
+        <short>Invokes the <link id="#lcl.Controls.TControl.OnConstrainedResize"/> handler, allowing to modify the suggested Constraints.
         </short>
       </element>
       <element name="TControl.ConstrainedResize.MinWidth">
@@ -4158,21 +4158,21 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoOnResize">
-        <short>Invokes the <link id="TControl.OnResize">OnResize</link> notification handler.
+        <short>Invokes the <link id="#lcl.Controls.TControl.OnResize">OnResize</link> notification handler.
         </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoOnChangeBounds">
-        <short>Invokes the <link id="TControl.OnChangeBounds">OnChangeBounds</link> event handler</short>
+        <short>Invokes the <link id="#lcl.Controls.TControl.OnChangeBounds">OnChangeBounds</link> event handler</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CheckOnChangeBounds">
-        <short>Checks for changes and calls <link id="TControl.DoOnChangeBounds">DoOnChangeBounds</link> if needed.
+        <short>Checks for changes and calls <link id="#lcl.Controls.TControl.DoOnChangeBounds">DoOnChangeBounds</link> if needed.
         </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.Resize">
-        <short>Checks for changes and calls <link id="TControl.DoOnResize">DoOnResize</link> if needed.
+        <short>Checks for changes and calls <link id="#lcl.Controls.TControl.DoOnResize">DoOnResize</link> if needed.
         </short>
       </element>
       <!-- procedure Visibility: protected -->
@@ -5067,7 +5067,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoEndDock">
-        <short>Invokes the <link id="TControl.OnEndDock">OnEndDock</link> handler.</short>
+        <short>Invokes the <link id="#lcl.Controls.TControl.OnEndDock">OnEndDock</link> handler.</short>
       </element>
       <element name="TControl.DoEndDock.Target">
         <short/>
@@ -5080,7 +5080,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoEndDrag">
-        <short>Invokes the <link id="TControl.OnEndDrag">OnEndDrag</link> handler.</short>
+        <short>Invokes the <link id="#lcl.Controls.TControl.OnEndDrag">OnEndDrag</link> handler.</short>
       </element>
       <element name="TControl.DoEndDrag.Target">
         <short/>
@@ -5093,14 +5093,14 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoStartDock">
-        <short>Invokes the <link id="TControl.OnStartDock">OnStartDock</link> handler</short>
+        <short>Invokes the <link id="#lcl.Controls.TControl.OnStartDock">OnStartDock</link> handler</short>
       </element>
       <element name="TControl.DoStartDock.DragObject">
         <short/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoStartDrag">
-        <short>Invokes the <link id="TControl.OnStartDrag">OnStartDrag</link> handler</short>
+        <short>Invokes the <link id="#lcl.Controls.TControl.OnStartDrag">OnStartDrag</link> handler</short>
       </element>
       <element name="TControl.DoStartDrag.DragObject">
         <short/>
@@ -5175,26 +5175,26 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TControl.Click">
         <short>Invokes the
-          <link id="TControl.OnClick">OnClick</link>
+          <link id="#lcl.Controls.TControl.OnClick">OnClick</link>
           and ActionLink.Execute
           handlers.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DblClick">
         <short>Invokes the
-          <link id="TControl.OnDblClick">OnDblClick</link>
+          <link id="#lcl.Controls.TControl.OnDblClick">OnDblClick</link>
           handler.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.TripleClick">
         <short>Invokes the
-          <link id="TControl.OnTripleClick">OnTripleClick</link>
+          <link id="#lcl.Controls.TControl.OnTripleClick">OnTripleClick</link>
           handler.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.QuadClick">
         <short>Invokes the
-          <link id="TControl.OnQuadClick">OnQuadClick</link>
+          <link id="#lcl.Controls.TControl.OnQuadClick">OnQuadClick</link>
           handler.</short>
       </element>
       <!-- procedure Visibility: protected -->
@@ -5225,7 +5225,7 @@ dmFindTarget: find child control under the mouse
         <descr>
           <p>Called by the MouseMove message handler.
             The DragManager is notified while the control is being dragged.
-            Finally the <link id="TControl.OnMouseMove">OnMouseMove</link> handler is invoked.</p>
+            Finally the <link id="#lcl.Controls.TControl.OnMouseMove">OnMouseMove</link> handler is invoked.</p>
         </descr>
       </element>
       <element name="TControl.MouseMove.Shift">
@@ -5241,7 +5241,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseUp">
         <short>Invokes the
-          <link id="TControl.OnMouseUp">OnMouseUp</link> handler.</short>
+          <link id="#lcl.Controls.TControl.OnMouseUp">OnMouseUp</link> handler.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5263,7 +5263,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseEnter">
         <short>Invokes the
-          <link id="TControl.OnMouseEnter">OnMouseEnter</link> handler.</short>
+          <link id="#lcl.Controls.TControl.OnMouseEnter">OnMouseEnter</link> handler.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5271,7 +5271,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseLeave">
         <short>Invokes the
-          <link id="TControl.OnMouseLeave">OnMouseLeave</link> handler.</short>
+          <link id="#lcl.Controls.TControl.OnMouseLeave">OnMouseLeave</link> handler.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6198,8 +6198,8 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.GetColorResolvingParent">
         <short>Returns the color of the control while resolving clDefault and ParentColor</short>
         <descr>This convenience routine will allow to obtain the Color of the control while resolving clDefault.
-&#x9;&#x9;       It will never return clDefault, but it might return non-RGB color. To obtain a purely RGB result
-&#x9;&#x9;&#x9;   use GetRGBColorResolvingParent.</descr>
+          It will never return clDefault, but it might return non-RGB color. To obtain a purely RGB result
+          use GetRGBColorResolvingParent.</descr>
         <seealso>
           <link id="TControl.Color"/>
           <link id="TControl.GetDefaultColor"/>
@@ -6211,7 +6211,7 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.GetRGBColorResolvingParent">
         <short>Returns a RGB value for the color of the control</short>
         <descr>This convenience routine will allow to obtain the Color of the control while resolving clDefault,
-&#x9;&#x9;       ParentColor and system color indexes and returns a RGB TColor.</descr>
+          ParentColor and system color indexes and returns a RGB TColor.</descr>
         <seealso>
           <link id="TControl.Color"/>
           <link id="TControl.GetDefaultColor"/>
@@ -6542,7 +6542,6 @@ dmFindTarget: find child control under the mouse
         </descr>
         <seealso>
           <link id="#lcl.Controls.TControl.RealGetText">RealGetText</link>
-          <link id="#lcl.Controls.TControl.GetText">GetText</link>
         </seealso>
       </element>
       <element name="TControl.GetTextBuf.Result">
@@ -6575,7 +6574,6 @@ dmFindTarget: find child control under the mouse
         </descr>
         <seealso>
           <link id="#lcl.Controls.TControl.RealSetText">RealSetText</link>
-          <link id="#lcl.Controls.TControl.SetText">SetText</link>
         </seealso>
       </element>
       <element name="TControl.SetTextBuf.Buffer">
@@ -6983,9 +6981,9 @@ dmFindTarget: find child control under the mouse
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TAnchorSide"/>
-          <link id="#lcl.Controls.AnchorAsAlign"/>
-          <link id="#lcl.Controls.AnchorToNeighbour"/>
+          <link id="TAnchorSide"/>
+          <link id="TControl.AnchorAsAlign"/>
+          <link id="TControl.AnchorToNeighbour"/>
         </seealso>
       </element>
       <element name="TControl.AnchorSide.Kind">
@@ -7163,9 +7161,9 @@ dmFindTarget: find child control under the mouse
         <short>The background color of the control.</short>
         <descr>
           <p>The default Color is the same as the parent window Color. If the color is clDefault
-&#x9;&#x9;  then the result will need to be passed through GetDefaultColor to resolve clDefault.
-&#x9;&#x9;  Convenience routines which obtains the color resolving clDefault and ParentColor are also
-&#x9;&#x9;  provided as TControl.GetColorResolvingParent and TControl.GetRGBColorResolvingParent</p>
+            then the result will need to be passed through GetDefaultColor to resolve clDefault.
+            Convenience routines which obtains the color resolving clDefault and ParentColor are also
+            provided as TControl.GetColorResolvingParent and TControl.GetRGBColorResolvingParent</p>
         </descr>
         <seealso>
           <link id="TControl.ParentColor"/>
@@ -7606,10 +7604,10 @@ dmFindTarget: find child control under the mouse
         <descr>While this property is True, all changes to the Color of the parent will be 
           also done to the Color of the control, syncronizing them and keeping them with the same value. 
           If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
-&#x9;&#x9;  The combination of ParentColor with clDefault can cause problems in resolving clDefault. To obtain the Color
-&#x9;&#x9;  property of a control while taking into account clDefault and ParentColor one whould use TControl.GetColorResolvingParent.
-&#x9;&#x9;  This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use
-&#x9;&#x9;  TColor.GetRGBColorResolvingParent
+          The combination of ParentColor with clDefault can cause problems in resolving clDefault. To obtain the Color
+          property of a control while taking into account clDefault and ParentColor one whould use TControl.GetColorResolvingParent.
+          This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use
+          TColor.GetRGBColorResolvingParent
         </descr>
         <seealso>
           <link id="TControl.Color"/>
@@ -7664,7 +7662,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ShowHint">
-        <short>Enables the <link id="TControl.Hint">Hint</link> display.</short>
+        <short>Enables the <link id="#lcl.Controls.TControl.Hint">Hint</link> display.</short>
         <descr>
           <p>When True, the Hint text is shown when the mouse hovers over the control.
           </p>
@@ -7761,7 +7759,7 @@ dmFindTarget: find child control under the mouse
         <seealso>
           <link id="#lcl.Controls.TWndMethod">TWndMethod</link>
           <link id="#lcl.LMessages.TLMessage">TLMessage</link>
-          <link id="#lcl.Controls.Perform">Perform</link>
+          <link id="TControl.Perform">Perform</link>
         </seealso>
       </element>
       <!-- range type Visibility: default -->
@@ -8868,7 +8866,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CreateBrush">
-        <short>Creates the <link id="TWinControl.Brush">Brush</link>, if not already created.
+        <short>Creates the <link id="#lcl.Controls.TWinControl.Brush">Brush</link>, if not already created.
         </short>
         <descr/>
         <errors/>
@@ -8906,7 +8904,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMBiDiModeChanged">
         <short>Handler for
-          changed <link id="TWinControl.BiDiMode">BiDiMode</link>
+          changed <link id="#lcl.Controls.TControl.BiDiMode">BiDiMode</link>
           message.
           Notifies the widget and all child controls.
         </short>
@@ -8920,7 +8918,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMBorderChanged">
         <short>Handler for
-          changed <link id="TWinControl.Border">Border</link>
+          changed Border properties
           message.
           Adjusts and invalidates the control.
         </short>
@@ -8931,7 +8929,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMEnabledChanged">
         <short>Handler for
-          changed <link id="TWinControl.Enabled">Enabled</link>
+          changed <link id="#lcl.Controls.TControl.Enabled">Enabled</link>
           message.
           Notifies the widgetset.
         </short>
@@ -8973,7 +8971,7 @@ dmFindTarget: find child control under the mouse
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CMVisibleChanged">
         <short>Handler for
-          changed <link id="TWinControl.Visible">Visible</link>
+          changed <link id="#lcl.Controls.TControl.Visible">Visible</link>
           message.
           Handles Focus, forces UpdateControlState.
         </short>
@@ -9059,7 +9057,7 @@ dmFindTarget: find child control under the mouse
         <short>Handler for
           loosing Focus
           event.
-          Eventually triggers <link id="TControl.EditingDone"/>.
+          Eventually triggers <link id="#lcl.Controls.TControl.EditingDone"/>.
         </short>
         <descr/>
         <errors/>
@@ -9570,11 +9568,11 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoEnter">
-        <short>Invokes the <link id="TWinControl.OnEnter">OnEnter</link> event handler.</short>
+        <short>Invokes the <link id="#lcl.Controls.TWinControl.OnEnter">OnEnter</link> event handler.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoExit">
-        <short>Invoke the <link id="TWinControl.OnExit">OnExit</link> event handler.</short>
+        <short>Invoke the <link id="#lcl.Controls.TWinControl.OnExit">OnExit</link> event handler.</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoKeyDownBeforeInterface">
@@ -9637,7 +9635,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoKeyPress">
-        <short>Tries all <link id="TWinControl.OnKeyPress">OnKeyPress</link> handlers, of Parents first.
+        <short>Tries all <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> handlers, of Parents first.
         </short>
         <descr/>
         <errors/>
@@ -9740,7 +9738,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyDown">
-        <short>Invokes the <link id="TWinControl.OnKeyDown">OnKeyDown</link> handler.
+        <short>Invokes the <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> handler.
         </short>
         <descr/>
         <errors/>
@@ -9754,7 +9752,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyDownBeforeInterface">
-        <short>Invokes the <link id="TWinControl.OnKeyDown">OnKeyDown</link> handler.
+        <short>Invokes the <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> handler.
         </short>
         <descr/>
         <errors/>
@@ -9782,7 +9780,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyPress">
-        <short>Invokes the <link id="TWinControl.OnKeyPress">OnKeyPress</link> handler.
+        <short>Invokes the <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> handler.
         </short>
         <descr/>
         <errors/>
@@ -9793,7 +9791,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyUp">
-        <short>Invokes the <link id="TWinControl.OnKeyUp">OnKeyUp</link> handler.
+        <short>Invokes the <link id="#lcl.Controls.TWinControl.OnKeyUp">OnKeyUp</link> handler.
         </short>
         <descr/>
         <errors/>
@@ -9807,7 +9805,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyUpBeforeInterface">
-        <short>Invokes the <link id="TWinControl.OnKeyUp">OnKeyUp</link> handler.
+        <short>Invokes the <link id="#lcl.Controls.TWinControl.OnKeyUp">OnKeyUp</link> handler.
         </short>
         <descr/>
         <errors/>
@@ -9835,7 +9833,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.UTF8KeyPress">
-        <short>Invokes the <link id="TWinControl.OnUTF8KeyPress">OnUTF8KeyPress</link> handler.
+        <short>Invokes the <link id="#lcl.Controls.TWinControl.OnUTF8KeyPress">OnUTF8KeyPress</link> handler.
         </short>
         <descr/>
         <errors/>
@@ -11391,7 +11389,7 @@ End;
       </element>
       <!-- object Visibility: default -->
       <element name="TDockZone">
-        <short>Represents an node in an <link id="TDockTree"/>.</short>
+        <short>Represents an node in an <link id="#lcl.Controls.TDockTree">TDockTree</link>.</short>
         <descr>
           <p>It encapsulates a dock zone, containing either other zones or a single control.
           </p>
@@ -12339,7 +12337,6 @@ End;
         <descr/>
         <errors/>
         <seealso>
-          <link id="CaptureControl"/>
         </seealso>
       </element>
       <element name="SetCaptureControl.Control">
@@ -12360,7 +12357,6 @@ End;
         </descr>
         <errors/>
         <seealso>
-          <link id="CaptureControl"/>
         </seealso>
       </element>
       <element name="GetCaptureControl.Result">
@@ -12716,7 +12712,7 @@ End;
       <element name="TGetDockCaptionEvent.ACaption">
         <short/>
       </element>
-      <element link="TDragManager" name="TDragManagerDefault">
+      <element name="TDragManagerDefault" link="TDragManager">
         <short>Implementation of TDragManager.</short>
       </element>
       <!-- object Visibility: default -->
@@ -12729,7 +12725,6 @@ End;
         </descr>
         <errors/>
         <seealso>
-          <link id="TDragManagerDefault"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -13108,7 +13103,7 @@ End;
         <short></short>
       </element>
       <!-- Variables go here -->
-      <!-- variable Visibility: default -->
+      <!-- variable Visibility: implementation -->
       <element name="CaptureControl">
         <short>Hidden reference to the currently capturing control.</short>
         <descr>The interface knows, which TWinControl has the capture.
@@ -13129,7 +13124,7 @@ End;
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
-      <element link="TDragManager" name="DragManager">
+      <element name="DragManager" link="TDragManager">
         <short>The current DragManager (always TDragManagerDefault).</short>
         <descr>A DragManager can be implemented only in the Controls unit,
           because it must access private elements of the other classes,
@@ -13174,7 +13169,7 @@ End;
             <li>the Width and Height are bound by the <var>Constraints</var> properties. The Contraints can also be overriden by the widgetset. For example the winapi does not allow resizing the height of a combobox. And the gtk widgetset does not allow resizing the width of a vertical scrollbar</li>
           </ul>
           <p>The new size is calculated by the protected method <link id="#lcl.Controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>.
-&#x9;&#x9;&#x9;      This method asks the widgetset for an appropriate Width and Height. For example a <var>TButton</var> has preferred Width and Height. A <var>TComboBox</var> has only a preferred Height. The preferred Width is returned as 0 and so the LCL does not autosize the Width - it keeps the width unaltered. Finally a <var>TMemo</var> has no preferred Width or Height. Therefore AutoSize has no effect on a TMemo.</p>
+            This method asks the widgetset for an appropriate Width and Height. For example a <var>TButton</var> has preferred Width and Height. A <var>TComboBox</var> has only a preferred Height. The preferred Width is returned as 0 and so the LCL does not autosize the Width - it keeps the width unaltered. Finally a <var>TMemo</var> has no preferred Width or Height. Therefore AutoSize has no effect on a TMemo.</p>
           <p>Some controls override this method. For example the <var>TGraphicControl</var> descendants like <var>TLabel</var> have no window handle and so cannot query the widgetset. They must calculate their preferred Width and Height themselves.</p>
           <p>The widgetsets must override the <var>GetPreferredSize</var> method for each widget class that has a preferred size (Width or Height or both).</p>
           <p>
@@ -13194,8 +13189,10 @@ End;
           <p>If Parent=nil then Left, Top depend on the widgetset and the window manager. Till Lazarus 0.9.25 this is typically the screen coordinate of the left,top of the client area of the form. This is Delphi incompatible. It is planned to change this to the Left, Top of the window.</p>
           <p>Hint:</p>
           <p>Each time you change Left and Top the LCL moves instantly. If you want to change both Left and Top use instead:</p>
-          <code>with Button1 do
-&#x9;      SetBounds(NewLeft,NewTop,Width,Height);</code>
+          <code>
+  with Button1 do
+    SetBounds(NewLeft,NewTop,Width,Height);
+          </code>
           <ul>
             <li>Width</li>
             <li>Height</li>
@@ -13229,26 +13226,26 @@ End;
             <li>FBaseBoundsLock: integer</li>
           </ul>
           <p>Increased/Decreased by LockBaseBounds/UnlockBaseBounds.
-&#x9;&#x9;      Used to keep FBaseBounds during SetBounds calls.</p>
+            Used to keep FBaseBounds during SetBounds calls.</p>
           <ul>
             <li>FBaseParentClientSize: TPoint</li>
           </ul>
           <p>The Parent.ClientRect size valid for the FBaseBounds.
-&#x9;&#x9;      FBaseBounds and FBaseParentClientSize are used to calculate the distance for
-&#x9;&#x9;      akRight (akBottom).
-&#x9;&#x9;      When the parent is resized, the LCL knows what distance to keep.</p>
+            FBaseBounds and FBaseParentClientSize are used to calculate the distance for
+            akRight (akBottom).
+            When the parent is resized, the LCL knows what distance to keep.</p>
           <ul>
             <li>FBoundsRectForNewParent: TRect</li>
           </ul>
           <p>When changing the Parent of a control the Handle is recreated and many
-&#x9;&#x9;      things can happen. Especially for docking forms the process is too
-&#x9;&#x9;      unreliable. Therefore the BoundsRect is saved. The VCL uses a similar
-&#x9;&#x9;      mechanism.</p>
+            things can happen. Especially for docking forms the process is too
+            unreliable. Therefore the BoundsRect is saved. The VCL uses a similar
+            mechanism.</p>
           <ul>
             <li>FLastDoChangeBounds: TRect</li>
           </ul>
           <p>Used to avoid calling OnChangeBounds with the same coordinates. This reduces
-&#x9;&#x9;&#x9;&#x9;      user defined autosizing.</p>
+            user defined autosizing.</p>
           <ul>
             <li>FLastResizeClientHeight: integer</li>
             <li>FLastResizeClientWidth: integer</li>
@@ -13256,15 +13253,15 @@ End;
             <li>FLastResizeWidth: integer</li>
           </ul>
           <p>Used to avoid calling OnResize with the same coordinates. This reduces user
-&#x9;&#x9;&#x9;&#x9;      defined autosizing.</p>
+            defined autosizing.</p>
           <ul>
             <li>FLoadedClientSize: TPoint</li>
           </ul>
           <p>During loading many things are delayed and many things are set and worse: in
-&#x9;&#x9;&#x9;&#x9;      the wrong order. That's why SetClientWidth/SetClientHeight calls are stored
-&#x9;&#x9;&#x9;&#x9;      and set at end of loading again.
-&#x9;&#x9;&#x9;&#x9;      This way the LCL can restore the distances (e.g. akRight) used during
-&#x9;&#x9;&#x9;&#x9;      designing.</p>
+            the wrong order. That's why SetClientWidth/SetClientHeight calls are stored
+            and set at end of loading again.
+            This way the LCL can restore the distances (e.g. akRight) used during
+            designing.</p>
           <ul>
             <li>FReadBounds: TRect</li>
           </ul>
@@ -13291,8 +13288,8 @@ End;
             <li>procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;</li>
           </ul>
           <p>This is the internal SetBounds.
-&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;      Applies constraints, updates base bounds, calls OnChangeBound, OnResize,
-&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;      locks bounds.</p>
+            Applies constraints, updates base bounds, calls OnChangeBound, OnResize,
+            locks bounds.</p>
           <ul>
             <li>procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;</li>
           </ul>
@@ -13319,8 +13316,8 @@ End;
             <li>function GetChildsRect(Scrolled: boolean): TRect; virtual;</li>
           </ul>
           <p>Returns the Client rectangle relative to the control's Left, Top.
-&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;      If Scrolled is true, the rectangle is moved by the current scrolling values
-&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;      (for an example see TScrollingWincontrol).</p>
+            If Scrolled is true, the rectangle is moved by the current scrolling values
+            (for an example see TScrollingWincontrol).</p>
           <ul>
             <li>function GetClientScrollOffset: TPoint; virtual;</li>
           </ul>
@@ -13329,8 +13326,10 @@ End;
             <li>function GetControlOrigin: TPoint; virtual;</li>
           </ul>
           <p>Returns the screen coordinate of the topleft coordinate 0,0 of the control area. (The topleft pixel of the control on the screen)
-&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;      Note that this value is the position as stored in the interface and is not always in sync with the LCL. When a control is moved, the LCL sets the
-bounds to the wanted position and sends a move message to the interface. It is up to the interface to handle moves instantly or queued.</p>
+            Note that this value is the position as stored in the interface and is not always in sync with the LCL.
+            When a control is moved, the LCL sets the bounds to the wanted position
+            and sends a move message to the interface.
+            It is up to the interface to handle moves instantly or queued.</p>
         </descr>
       </topic>
       <topic name="Control coordinates">

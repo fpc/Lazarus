@@ -510,7 +510,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppInit">
         <short>Initializes the application on the platform, returns Screen information.</short>
-        <descr>Called by Application.Initialize. Don't use this directly, the LCL will use it when adequate.<descr/>
+        <descr>Called by Application.Initialize. Don't use this directly, the LCL will use it when adequate.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -520,7 +520,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppRun">
         <short>Enters a state in which the application waits for system messages</short>
-        <descr>Called by Application.Run. Don't use this directly, the LCL will use it when adequate.<descr/>
+        <descr>Called by Application.Run. Don't use this directly, the LCL will use it when adequate.</descr>
         <errors>
         </errors>
         <seealso>
@@ -532,7 +532,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppWaitMessage">
         <short>Waits for arrival of a message.</short>
-        <descr>Don't use this directly, the LCL will use it when adequate.<descr/>
+        <descr>Don't use this directly, the LCL will use it when adequate.</descr>
         <errors>
         </errors>
         <seealso>
@@ -541,7 +541,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppProcessMessages">
         <short>Handles all pending messages.</short>
-        <descr>Called by Application.ProcessMessages. Don't use this directly, the LCL will use it when adequate.<descr/>
+        <descr>Called by Application.ProcessMessages. Don't use this directly, the LCL will use it when adequate.</descr>
         <errors>
         </errors>
         <seealso>
@@ -550,14 +550,14 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppTerminate">
         <short>Terminates the application.</short>
-        <descr>Called by Application.Terminate. Don't use this directly, the LCL will use it when adequate.<descr/>
+        <descr>Called by Application.Terminate. Don't use this directly, the LCL will use it when adequate.</descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppMinimize">
         <short>Minimizes the whole application to the taskbar.</short>
-        <descr>Called by Application.Minimize. Don't use this directly, the LCL will use it when adequate.<descr/>
+        <descr>Called by Application.Minimize. Don't use this directly, the LCL will use it when adequate.</descr>
         <seealso>
           <link id="TWidgetSet.AppRestore"/>
         </seealso>
@@ -565,7 +565,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppRestore">
         <short>Restore application previously minimized to the taskbar.</short>
-        <descr>Called by Application.Restore. Don't use this directly, the LCL will use it when adequate.<descr/>
+        <descr>Called by Application.Restore. Don't use this directly, the LCL will use it when adequate.</descr>
         <seealso>
           <link id="TWidgetSet.AppMinimize"/>
         </seealso>
@@ -573,13 +573,13 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppBringToFront">
         <short>Brings the entire application on top of all other non-topmost programs.</short>
-        <descr>Called by Application.BringToFront. Don't use this directly, the LCL will use it when adequate.<descr/>
+        <descr>Called by Application.BringToFront. Don't use this directly, the LCL will use it when adequate.</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetIcon">
         <short>Set the icon of the taskbar button.</short>
-        <descr>Don't use this directly, the LCL will use it when adequate.<descr/>
+        <descr>Don't use this directly, the LCL will use it when adequate.</descr>
         <seealso>
         </seealso>
       </element>
@@ -592,7 +592,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetTitle">
         <short></short>
-        <descr>Don't use this directly, the LCL will use it when adequate.<descr/>
+        <descr>Don't use this directly, the LCL will use it when adequate.</descr>
         <errors>
         </errors>
         <seealso>
@@ -604,7 +604,7 @@
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.AppSetVisible">
         <short>Change the visibility of the application window.</short>
-        <descr>Don't use this directly, the LCL will use it when adequate.<descr/>
+        <descr>Don't use this directly, the LCL will use it when adequate.</descr>
         <seealso>
         </seealso>
       </element>
@@ -614,7 +614,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AppRemoveStayOnTopFlags">
         <short>Resets all StayOnTop windows to NoTopmost.</short>
-        <descr>Don't use this directly, the LCL will use it when adequate.<descr/>
+        <descr>Don't use this directly, the LCL will use it when adequate.</descr>
         <seealso>
         </seealso>
       </element>
@@ -771,22 +771,20 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IsHelpKey">
-        <short></short>
+        <short>Checks whether the widgetset uses the key to show help.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.IsHelpKey.Result">
-        <short></short>
+        <short>True when this is a Help key.</short>
       </element>
       <element name="TWidgetSet.IsHelpKey.Key">
-        <short></short>
+        <short>The virtual key.</short>
       </element>
       <element name="TWidgetSet.IsHelpKey.Shift">
-        <short></short>
+        <short>The modifier key state.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateTimer">
@@ -1022,7 +1020,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CallNextHookEx">
         <short>Calls the next procedure in the hook chain.</short>
-        <descr><descr/>
+        <descr/>
         <errors/>
         <seealso/>
       </element>
@@ -4170,6 +4168,8 @@
           </p><p>
             Flags specify how the window is invalidated or validated,
             and when repainting occurs.
+            Flags other than RDW_ERASE may not be supported by all platforms.
+          </p><p>
             To invalidate specify RDW_INVALIDATE, and optionally one of:
           </p>
           <ul>
@@ -4183,6 +4183,7 @@
             </li>
           </ul>
           <p>
+            Validation is not implemented for all platforms.
             To validate specify RDW_VALIDATE, and optionally one of:
           </p>
           <ul>
@@ -4636,9 +4637,9 @@
       <element name="TWidgetSet.SetCursor">
         <short>Changes the shape of the mouse cursor.</short>
         <descr/>
-        <errors/>
         <seealso>
           <link id="#lcl.Controls.TCursor"/>
+          <link id="TWidgetSet.CreateStandardCursor"/>
         </seealso>
       </element>
       <element name="TWidgetSet.SetCursor.Result">
@@ -5704,19 +5705,18 @@
         <short></short>
       </element>
       <element name="TWidgetSet.AllocateHWnd">
-        <short></short>
+        <short>Allocates an invisible window that can be used to receive messages.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TWidgetSet.DeallocateHWnd"/>
         </seealso>
       </element>
       <element name="TWidgetSet.AllocateHWnd.Result">
-        <short></short>
+        <short>The window handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.AllocateHWnd.Method">
-        <short></short>
+        <short>The callback method for the window. Can be Nil.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.AskUser">
@@ -5976,19 +5976,19 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateStandardCursor">
-        <short></short>
+        <short>Creates one of the standard cursors.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="#lcl.Controls.TCursor"/>
+          <link id="TWidgetSet.SetCursor"/>
         </seealso>
       </element>
       <element name="TWidgetSet.CreateStandardCursor.Result">
-        <short></short>
+        <short>The cursor handle, zero on failure.</short>
       </element>
       <element name="TWidgetSet.CreateStandardCursor.ACursor">
-        <short></short>
+        <short>The cursor shape.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.DCClipRegionValid">
@@ -6007,16 +6007,15 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DeallocateHWnd">
-        <short></short>
+        <short>Deletes a window created with AllocateHWnd.</short>
         <descr>
         </descr>
-        <errors>
-        </errors>
         <seealso>
+          <link id="TWidgetSet.AllocateHWnd"/>
         </seealso>
       </element>
       <element name="TWidgetSet.DeallocateHWnd.Wnd">
-        <short></short>
+        <short>The window handle.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DestroyRubberBand">
@@ -6033,19 +6032,21 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWidgetSet.DrawDefaultDockImage">
-        <short></short>
+        <short>Draws the DockRect during drag-dock operations.</short>
         <descr>
         </descr>
         <errors>
+          The Windows implementation doesn't cooperate with the DragManager.
+          [See Mantis 0018525?]
         </errors>
         <seealso>
         </seealso>
       </element>
       <element name="TWidgetSet.DrawDefaultDockImage.AOldRect">
-        <short></short>
+        <short>The old DockRect.</short>
       </element>
       <element name="TWidgetSet.DrawDefaultDockImage.ANewRect">
-        <short></short>
+        <short>The new DockRect.</short>
       </element>
       <element name="TWidgetSet.DrawDefaultDockImage.AOperation">
         <short></short>
@@ -6273,18 +6274,16 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetControlConstraints">
-        <short/>
+        <short>Updates the constraints object (e.g. TSizeConstraints) with interface specific bounds.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.GetControlConstraints.Result">
-        <short/>
+        <short>False on failure.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TWidgetSet.GetControlConstraints.Constraints">
-        <short/>
+        <short>Should be a TSizeConstraints.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetDCOriginRelativeToWindow">
@@ -6551,14 +6550,13 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.IntfSendsUTF8KeyPress">
-        <short/>
+        <short>Returns the interface capability to send UTF-8 characters[?]</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TWidgetSet.IntfSendsUTF8KeyPress.Result">
-        <short/>
+        <short>True when UTF-8 KeyPress messages are sent[?]</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.InvalidateFrame">

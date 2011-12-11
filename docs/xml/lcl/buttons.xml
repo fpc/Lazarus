@@ -579,19 +579,12 @@ bkYesToAll
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomBitBtn.Create">
-        <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.
-
-However, if you create the component by code don´t forget to free it when it is no longer needed.
-
-Constructors allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.
-</descr>
+        <short>Calls inherited <var>Create</var> then initialises layout, style and spacing, creates the Button Glyph</short>
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
           <link id="#LCL.StdCtrls.TCustomButton.Create">TCustomButton.Create</link>
         </seealso>
-        <short>
-          <var>Create</var> - constructor for <var>TCustomBitBtn</var>: calls inherited <var>Create</var> then initialises layout, style and spacing, creates the Button Glyph</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomBitBtn.Create.TheOwner">
@@ -599,26 +592,12 @@ Constructors allocate memory and system resources needed by the object. They als
       </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomBitBtn.Destroy">
-        <descr>If you call Destroy for an object which hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
-
-Take the following precautions when creating your own Destroy method:
-
-* Declare Destroy with the override directive, because it is a virtual method.
-
-* Always call 'inherited Destroy;' as the last thing on the destructor code.
-
-* An exception may be raised on the constructor in case there is not enought memory to create an object, or something else goes wrong. If the exception is not handled inside the constructor, the object will be only partially built. In this case Destroy will be called, so your destructor must check if the resources were really allocated before disposing of them.
-
-* Remember to call Free for all objects created on the constructor.
-</descr>
+        <short>frees Button Glyph then calls inherited <var>Destroy</var>
+        </short>
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
-          <link id="#LCL.StdCtrls.TCustomButton.Destroy">TCustomButton.Destroy</link>
         </seealso>
-        <short>
-          <var>Destroy</var> - destructor for <var>TCustomBitBtn</var>: frees Button Glyph then calls inherited <var>Destroy</var>
-        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitBtn.Glyph">
@@ -872,7 +851,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- property Visibility: published -->
       <element name="TBitBtn.ShowHint" link="#LCL.Controls.TControl.ShowHint">
         <descr>// standard properties, which should be supported by all descendants<br/>
-Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
+          Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control.
+          If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
 </descr>
         <seealso/>
       </element>

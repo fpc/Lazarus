@@ -265,7 +265,7 @@
       </element>
 <!-- object Visibility: default -->
       <element name="TCustomHintAction">
-        <short>Action taken when a new value is assigned to <link id="TApplication.Hint"/>,
+        <short>Action taken when a new value is assigned to <link id="#lcl.Forms.TApplication.Hint"/>,
           and no OnHint handler is available.
         </short>
         <descr>
@@ -322,7 +322,7 @@
       </element>
 <!-- object Visibility: default -->
       <element name="TControlScrollBar">
-        <short>Type of a scrollbar in a <link id="TScrollingWinControl"/>.
+        <short>Type of a scrollbar in a <link id="#lcl.Forms.TScrollingWinControl"/>.
         </short>
         <descr>
           <p>

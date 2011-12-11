@@ -666,7 +666,6 @@ and then check the result to see if the user made a valid choice and pressed the
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.Dialogs.TCommonDialog.Destroy">TCommonDialog.Destroy</link>
         </seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -1073,7 +1072,6 @@ if no file is specified, the Save File As dialog is invoked and the buffer is sa
         <descr>Select Directory Dialog: allows the user to select a directory when the directory structure is displayed as a tree.</descr>
         <errors/>
         <seealso>
-          <link id="#lcl.dirsel.tdirseldlg">TDirSelDlg</link>
           <link id="#lcl.editbtn.tdirectoryedit">TDirectoryEdit</link>
         </seealso>
       </element>
@@ -2172,7 +2170,7 @@ you need to use TReplaceDialog to do that<br/>
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TFindDialog.Destroy" link="#LCL.Dialogs.TCommonDialog.Destroy">
+      <element name="TFindDialog.Destroy">
         <short/>
         <descr/>
         <errors/>
@@ -3110,7 +3108,6 @@ If a valid directory is given, the selected directory in the tree will be set to
           <var>Destroy</var> - destructor for <var>TColorDialog</var>: frees custom colours then calls inherited <var>Destroy</var>
         </short>
         <seealso>
-          <link id="#LCL.Dialogs.TCommonDialog.Destroy">TCommonDialog.Destroy</link>
         </seealso>
       </element>
       <element name="TColorDialog.CustomColors">

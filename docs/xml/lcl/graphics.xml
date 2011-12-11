@@ -2843,21 +2843,18 @@ Default is psSolid
       <!-- property Visibility: published -->
       <element name="TBrush.Style">
         <short>
-          <var>Style</var> of the  
-          
-          
-          
-          <var>Brush</var>
+          <var>Style</var> of the <var>Brush</var>
         </short>
-        <descr>Enumerated type - default Solid
-</descr>
+        <descr>Enumerated type - default Solid</descr>
         <seealso>
           <link id="TBrushStyle"/>
         </seealso>
       </element>
+
       <!-- record type Visibility: default -->
       <element name="TRegionData">
         <short>The <var>Data</var> about the current <var>Region</var> on the <var>Screen</var> or <var>Canvas</var>
+          [found where???]
         </short>
         <descr>At present the Region can only be rectangular; the ability to define it as a Polygon is not yet implemented</descr>
       </element>
@@ -2889,7 +2886,13 @@ Default is psSolid
       </element>
       <!-- variable Visibility: default -->
       <element name="TRegionData.Winding">
-        <short>If True, use <var>Winding</var><var/> mode to construct the Polygon</short>
+        <short>If True, use <var>Winding</var> mode to construct the Polygon</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TRegionData.Reference">
+        <short>A <var>Reference</var> made to the current Region</short>
         <descr/>
         <seealso/>
       </element>
@@ -2897,14 +2900,7 @@ Default is psSolid
       <element name="TRegion">
         <short>A defined <var>Region</var> on the screen, in which text is written</short>
         <seealso>
-          <link id="TRegionData">TRegionData (in same Unit)</link>
         </seealso>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TRegion.FRegionData">
-        <short/>
-        <descr/>
-        <seealso/>
       </element>
       <!-- procedure Visibility: private -->
       <element name="TRegion.FreeHandle">
@@ -9522,12 +9518,6 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: default -->
-      <element name="TRegionData.Reference">
-        <short>A <var>Reference</var> made to the current Region</short>
-        <descr/>
-        <seealso/>
-      </element>
       <!-- procedure Visibility: private -->
       <element name="TRegion.FreeReference">
         <short/>
@@ -10149,7 +10139,6 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoMoveTo">TFPCustomCanvas.DoMoveTo</link>
-          <link id="#LCL.Graphics.TCanvas.MoveTo">TCanvas.MoveTo</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10170,7 +10159,6 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoLineTo">TFPCustomCanvas.DoLineTo</link>
-          <link id="#LCL.Graphics.TCanvas.LineTo">TCanvas.LineTo</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10190,7 +10178,6 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <errors/>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoLine">TFPCustomCanvas.DoLine</link>
-          <link id="#LCL.Graphics.TCanvas.Line">TCanvas.Line</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -10218,7 +10205,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         </short>
         <descr/>
         <errors>If <var>SrcCanvas</var> is not of type <var>TCanvas</var> then writes a warning to the debug output that copying is not supported
-</errors>
+        </errors>
         <seealso>
           <link id="#fcl.FPCanvas.TFPCustomCanvas.DoCopyRect">TFPCustomCanvas.DoCopyRect</link>
           <link id="#LCL.Graphics.TCanvas.CopyRect">TCanvas.CopyRect</link>

@@ -4066,7 +4066,7 @@
         <short/>
       </element>
       <element name="TWin32WidgetSet.IntfSendsUTF8KeyPress">
-        <short/>
+        <short>Returns the interface capability to send UTF-8 characters[?]</short>
         <descr/>
         <errors/>
         <seealso/>

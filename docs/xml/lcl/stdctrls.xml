@@ -2813,7 +2813,8 @@
 <!-- object Visibility: default -->
       <element name="TMemoScrollbar">
         <short>A ScrollBar for use in Memo Boxes.</short>
-        <descr>Scroll Bar specifically for use in Memo Boxes. Inherits most of its properties from its ancestor, <link id="#lcl.Forms.TControlScrollBar">TControlScrollBar</link>
+        <descr>Scroll Bar specifically for use in Memo Boxes.
+          Inherits most of its properties from its ancestor, <link id="#lcl.Forms.TControlScrollBar">TControlScrollBar</link>
         </descr>
       </element>
       <!-- function Visibility: protected -->
@@ -4493,7 +4494,8 @@
           </p><p>
             E.g. when you have a NameEdit1 control on a form, preceded by a label NameLabel1,
             you can set NameLabel1.FocusControl to NameEdit1, and NameLabel1.Caption to '&amp;Name'.
-            This makes the NameLabel1 displayed as '<b>N</b>ame' [should be underlined, but fpdoc errors on '<u>N</u>ame' ?].
+            This makes the NameLabel1 displayed as '<b>N</b>ame'.
+            <!-- should be underlined, but fpdoc errors on '<u>N</u>ame' -->
           </p>
         </descr>
         <seealso>

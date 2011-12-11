@@ -137,7 +137,7 @@
         <descr>
           <p>
             <var>TPage</var>: One of the pages in a tabbed Notebook</p>
-          <p>Inherits most of its properties from <link id="#lcl.ExtCtrls.TCustomPage">TCustomPage</link>
+          <p>Inherits most of its properties from TCustomPage
           </p>
         </descr>
         <seealso>
@@ -170,7 +170,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.ImageIndex" link="#LCL.ExtCtrls.TCustomPage.ImageIndex">
+      <element name="TPage.ImageIndex">
         <short/>
         <descr/>
         <seealso/>
@@ -242,7 +242,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPage.PageIndex" link="#LCL.ExtCtrls.TCustomPage.PageIndex">
+      <element name="TPage.PageIndex" link="#LCL.ComCtrls.TCustomPage.PageIndex">
         <short/>
         <descr/>
         <seealso/>
@@ -2245,16 +2245,7 @@
       <element name="TBevel">
         <short>A bevel placed around the edge of buttons and other components</short>
         <descr>
-          <p>
-            <var>TBevel</var>
-
-
-
-
-
-
- - a bevel placed around the edge of buttons and other components.</p>
-          <p>Its appearance is governed by <link id="#lcl.ExtCtrls.TBevelShape">TBevelShape</link>, <link id="#lcl.ExtCtrls.TBevelStyle">TBevelStyle</link> and <link id="#lcl.ExtCtrls.TBevelwidth">TBevelwidth</link>
+          <p>Its appearance is governed by <link id="TBevelShape"/> and <link id="TBevelStyle"/>
           </p>
         </descr>
       </element>
@@ -2350,7 +2341,6 @@
       <!-- property Visibility: published -->
       <element name="TBevel.Align" link="#LCL.Controls.TControl.Align">
         <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
           <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
@@ -2359,8 +2349,7 @@
       <!-- property Visibility: published -->
       <element name="TBevel.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Determines how the control is to be anchored to its parent control</p>
           <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
@@ -2369,7 +2358,6 @@
       <!-- property Visibility: published -->
       <element name="TBevel.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
         <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
           <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
           <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
@@ -2380,7 +2368,6 @@
       <!-- property Visibility: published -->
       <element name="TBevel.Constraints" link="#LCL.Controls.TControl.Constraints">
         <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
           <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
         <seealso/>
@@ -2400,7 +2387,7 @@
         <descr>
           <var>Name</var> is the name of the component. This name should be a valid
 identifier, i.e. must start with a letter, and can contain only letters,
-numbers and the underscore character. When attempting to set the name of a
+digits and the underscore character. When attempting to set the name of a
 component, the name will be checked for validity. Furthermore, when a
 component is owned by another component, the name must be either empty
 or must be unique among the child component names.
@@ -2450,16 +2437,12 @@ being raised.
       <!-- property Visibility: published -->
       <element name="TBevel.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
         <descr>
-          <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads or Writes flag if bounds are changed</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.OnResize" link="#LCL.Controls.TControl.OnResize">
-        <descr>// standard properties, which should be supported by all descendants<br/>
-Reads or Writes flag if control is re-sized.
-</descr>
+        <descr></descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -2499,18 +2482,15 @@ Reads or Writes flag if control is re-sized.
       <element name="TCustomRadioGroup">
         <short>
           <var>TCustomRadioGroup:</var>   the base type for 
-          
           <var>TRadioGroup</var>
         </short>
         <descr>
-          <p>
-            <var>TCustomRadioGroup:</var> the base type for 
-            
-            <var>TRadioGroup</var>
-          </p>
           <p>A group of related but mutually exclusive radio buttons,
-requiring the user to select one af a set of alternatives</p>
-          <p>This class defines <var>Items</var>, where the captions for individual radio boxes are stored, <var>Rows</var> and <var>Columns</var> for arranging the radio boxes, and ColumnLayout to determine whether the data are arranged down the columns first, or across the rows first.</p>
+            selectable by the user.</p>
+          <p>This class defines <var>Items</var>, where the captions of the individual radio boxes are stored,
+            <var>Rows</var> and <var>Columns</var> for arranging the radio boxes,
+            and ColumnLayout to determine whether the data are arranged
+            down the columns first, or across the rows first.</p>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -3253,7 +3233,7 @@ requiring the user to select one af a set of alternatives</p>
         <descr/>
         <errors/>
         <seealso>
-          <link id="#LCL.ExtCtrls.TCustomGroupBox.Create">TCustomGroupBox.Create</link>
+          <link id="#LCL.StdCtrls.TCustomGroupBox.Create">TCustomGroupBox.Create</link>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
