@@ -2937,7 +2937,6 @@ resourcestring
   lisLazBuildOptimizedIDE = 'Optimized IDE';
   lisLazCleanUpBuildAll = 'Clean Up + Build all';
 
-  lisLazBuildAdvancedBuildOptions = 'Advanced Build Options';
   lisLazBuildABOAction = 'Action';
   lisLazBuildABOChooseOutputDir = 'Choose output directory of the IDE executable ';
   lisLazBuildDefines = 'Defines';

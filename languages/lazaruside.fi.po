@@ -2660,7 +2660,7 @@ msgstr "Istunto"
 
 #: lazarusidestrconsts.dlgpotargetfilename
 msgid "Target file name:"
-msgstr "Tehtävän sovelluksen tiedostonimi:"
+msgstr "Kohteen tiedostonimi:"
 
 #: lazarusidestrconsts.dlgpotitle
 msgid "Title:"
@@ -3077,7 +3077,7 @@ msgstr "Kohde prosessori"
 
 #: lazarusidestrconsts.dlgtestprjdir
 msgid "Directory for building test projects"
-msgstr "Kansio testiprojektien koontaan"
+msgstr "Kansio testiprojektien kokoamiseen"
 
 #: lazarusidestrconsts.dlgtexttofind
 msgid "&Text to find"
@@ -4250,7 +4250,7 @@ msgstr "kokoa IDE paketteineen"
 
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
-msgstr "Lazaruksen koonta epäonnistui"
+msgstr "Lazaruksen kokoaminen epäonnistui"
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build Macros"
@@ -5676,7 +5676,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
-msgstr ""
+msgstr "Projektin %s hakemisto,%smissä ovat .dpr, dpk tiedostot."
 
 #: lazarusidestrconsts.liscodetoolsdefsundefine
 msgid "Undefine"
@@ -5918,11 +5918,11 @@ msgstr "Lazaruksen asetus-hakemisto"
 
 #: lazarusidestrconsts.lisconfigurebuild
 msgid "Configure Build %s"
-msgstr "Konfiguroi %s:n koonta"
+msgstr "Konfiguroi %s:n kokoaminen"
 
 #: lazarusidestrconsts.lisconfigurebuildlazarus
 msgid "Configure %sBuild Lazarus%s"
-msgstr "Konfiguroi %sLazaruksen koonta%s"
+msgstr "Konfiguroi %sLazaruksen kokoaminen%s"
 
 #: lazarusidestrconsts.lisconfigurelazaruside
 msgid "Configure Lazarus IDE"
@@ -8518,7 +8518,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisidebuildoptions
 msgid "IDE build options"
-msgstr "IDEn koonta-asetukset"
+msgstr "IDEn kokoamisen asetukset"
 
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
 msgid "Creating Makefile for package %s"
@@ -9063,7 +9063,7 @@ msgstr "Näppäin (tai 2 peräkkäistä yhdistelmää)"
 
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
-msgstr "Keskeytä koonta"
+msgstr "Keskeytä kokoaminen"
 
 #: lazarusidestrconsts.liskmaddbpaddress
 msgid "Add Address Breakpoint"
@@ -9095,7 +9095,7 @@ msgstr "Klassinen"
 
 #: lazarusidestrconsts.liskmcleanupcompiled
 msgid "Clean up build files"
-msgstr "Siivoa koontatiedostot"
+msgstr "Siivoa kokoamisen tiedostot"
 
 #: lazarusidestrconsts.liskmcloseall
 msgid "Close All"
@@ -9681,7 +9681,7 @@ msgstr "Lisää"
 
 #: lazarusidestrconsts.lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
-msgstr "Edistyneet koonta-asetukset"
+msgstr "Edistyneet kokoamisen asetukset"
 
 #: lazarusidestrconsts.lislazbuildareyousureyouwanttodeletethisbuildprofile
 msgid "Are you sure you want to delete this build profile?"
@@ -9739,7 +9739,7 @@ msgstr "Yleiset asetukset"
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
 msgid "Confirm before build"
-msgstr "Varmista ennen koontaa"
+msgstr "Varmista ennen kokoamista"
 
 #: lazarusidestrconsts.lislazbuildconfirmdeletion
 msgid "Confirm deletion"
@@ -14668,7 +14668,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
 msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
-msgstr ""
+msgstr "Tiedostoa %s%s%s%sei löydy.%sTahdotko etsiä sen itse ?%s"
 
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
@@ -14676,7 +14676,7 @@ msgstr "Tiedostoa %s%s%s%sei löytynyt.%sOhita-näppäimen nainallus jatkaa proj
 
 #: lazarusidestrconsts.listhefirstbuildmodeisthedefaultmodeandmustbestoredin
 msgid "The first build mode is the default mode and must be stored in the project, not in the session."
-msgstr ""
+msgstr "Ensimmäinen koontamoodi on oletusmoodi ja se pitää tallentaa projektiin, ei sessioon."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
@@ -14684,11 +14684,11 @@ msgstr "Seuraavia metodeja käyttää %s mutta niitä ei löydy lähdekoodista%s
 
 #: lazarusidestrconsts.listhefreepascalcompilerexecutabletypicallyhasthename
 msgid "The Free Pascal compiler executable typically has the name \"%s\". You can also use the target specific compiler like \"%s\". Please give the full file path."
-msgstr ""
+msgstr "Free Pascal kääntäjän nimi on tyypillisesti \"%s\". Se voi olla myös tietylle kohteelle tehty kääntäjä kuten \"%s\". Anna koko tiedostopolku."
 
 #: lazarusidestrconsts.listhefreepascalcompilerfilenamewasnotfounditisrecomm
 msgid "The Free Pascal compiler (filename: %s) was not found.%sIt is recommended that you install fpc."
-msgstr ""
+msgstr "Free Pascal kääntäjää (%s) ei löydy. On suositeltavaa asentaa fpc."
 
 #: lazarusidestrconsts.listhefreepascalsourcedirectorywasnotfoundsomecodefun
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sTools -> Options -> Files"
@@ -14716,11 +14716,11 @@ msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
 msgid "The Lazarus directory contains the sources of the IDE and the package files of LCL and many standard packages. For example it contains the file \"ide%slazarus.lpi\". The translation files are located there too."
-msgstr ""
+msgstr "Lazarus hakemistossa ovat IDEn lähdekoodit sekä LCL:n ja muiden pakettien tiedostot. Siellä on esimerkiksi tiedosto \"ide%slazarus.lpi\". Myös käännöstiedostot ovat siellä."
 
 #: lazarusidestrconsts.listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
 msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Tools -> Options -> Files"
-msgstr ""
+msgstr "Lazarus hakemistoa ei löydy.%sLCL sovellusten teko ei onnistu.%sTarkista Työkalut -> Asetukset -> Tiedostot"
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
@@ -14728,7 +14728,7 @@ msgstr "Lazaruksen lomake eli LFM-tiedosto sisältää vääränlaisia ominaisuu
 
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
-msgstr ""
+msgstr "Nimi %s%s%s ei ole kelvollinen pascal tunniste."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
@@ -14740,7 +14740,7 @@ msgstr "Tämä käännösyksikkö ei vielä ole hakupolussa.%sLisätäänkö kan
 
 #: lazarusidestrconsts.listheothersourcescontainsadirectorywhichisalreadyint
 msgid "The \"Other sources\" contains a directory which is already in the \"Other unit files\".%s%s"
-msgstr ""
+msgstr "\"Muut lähdekoodit\" sisältää hakemiston, mikä on jo kohdassa \"Muut käännösyksiköt\".%s%s"
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
 msgid "The output directory %s%s%s is missing."
@@ -14852,15 +14852,15 @@ msgstr "Projektissa on jo %s%s%s-niminen lomake (form)"
 
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
 msgid "There is already an IDE macro with the name \"%s\""
-msgstr ""
+msgstr "On jo \"%s\" niminen IDE makro."
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
-msgstr ""
+msgstr "On jo käännösyksikkö nimeltään %s%s%s. Pascalin tunnisteiden pitää olla yksilöllisiä."
 
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
-msgstr ""
+msgstr "Projektissa on käännösyksikkö nimeltään %s%s%s. Valitse toinen nimi"
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -14900,11 +14900,11 @@ msgstr "Näitä käännösyksikköjä ei löydy:"
 
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
-msgstr ""
+msgstr "Free Pascalin pakettien lähdekoodit tarvitaan niiden tutkimista ja koodin täydennystä varten. Niissä on mukana esim. tiedosto \"%s\"."
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeideopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
-msgstr ""
+msgstr "Testi hakemistoa ei löydy:%s%s%s%s%s(katso IDE asetukset)"
 
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
@@ -14924,7 +14924,7 @@ msgstr "Käännösyksiköllä on tämä nimi"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
 msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
-msgstr ""
+msgstr "Käännösyksikön nimi %s%s%s ei ole pienillä kirjaimilla.%sFree Pascal kääntäjä ei etsi kaikkia variaatioita. On suositeltavaa käyttää vain pieniä kirjaimia.%s%sVaihdetaanko tiedoston nimi?"
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
 msgid "The unit %s is used by other files.%sUpdate references automatically?"
@@ -14944,7 +14944,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
 msgid "This function needs an open .lfm file in the source editor."
-msgstr ""
+msgstr "Tämä ominaisuus vaatii .lfm tiedoston avoinna editorissa."
 
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
