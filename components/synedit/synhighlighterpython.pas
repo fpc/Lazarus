@@ -75,7 +75,7 @@ const
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,
-    tkString, tkSymbol, tkNonKeyword, tkTrippleQuotedString,
+    tkString, tkSymbol, tkNonKeyword, tkTripleQuotedString,
     tkSystemDefined, tkHex, tkOct, tkFloat, tkUnknown);
 
   TRangeState = (rsANil, rsComment, rsUnKnown, rsMultilineString, rsMultilineString2,
@@ -894,7 +894,7 @@ var fBackslashCount:integer;
 begin
   fTokenID := tkString;
   if (FLine[Run + 1] = '"') and (FLine[Run + 2] = '"') then begin
-    fTokenID := tkTrippleQuotedString;
+    fTokenID := tkTripleQuotedString;
     inc(Run, 3);
 
     fRange:=rsMultilineString2;
@@ -998,7 +998,7 @@ var fBackslashCount:integer;
 begin
   fTokenID := tkString;
   if (FLine[Run + 1] = #39) and (FLine[Run + 2] = #39) then begin
-    fTokenID := tkTrippleQuotedString;
+    fTokenID := tkTripleQuotedString;
     inc(Run, 3);
 
     fRange:=rsMultilineString;
@@ -1073,7 +1073,7 @@ begin
   if fRange = rsMultilineString3 then
     fTokenID := tkString
   else
-    fTokenID := tkTrippleQuotedString;
+    fTokenID := tkTripleQuotedString;
 
   case FLine[Run] of
     #0:
@@ -1217,7 +1217,7 @@ begin
     tkFloat: Result := fFloatAttri;
     tkSpace: Result := fSpaceAttri;
     tkString: Result := fStringAttri;
-    tkTrippleQuotedString: Result := fDocStringAttri;
+    tkTripleQuotedString: Result := fDocStringAttri;
     tkSymbol: Result := fSymbolAttri;
     tkUnknown: Result := fErrorAttri;
   else

@@ -139,7 +139,7 @@ const
 
   cfbtAll: TPascalCodeFoldBlockTypes =
     [low(TPascalCodeFoldBlockType)..high(TPascalCodeFoldBlockType)];
-  PascalWordTrippletRanges: TPascalCodeFoldBlockTypes =
+  PascalWordTripletRanges: TPascalCodeFoldBlockTypes =
     [cfbtBeginEnd, cfbtTopBeginEnd, cfbtProcedure, cfbtClass, cfbtProgram, cfbtRecord,
      cfbtTry, cfbtExcept, cfbtRepeat, cfbtAsm, cfbtCase
     ];
@@ -3571,7 +3571,7 @@ begin
       end;
     end;
   end;
-  if ABlockType in PascalWordTrippletRanges then
+  if ABlockType in PascalWordTripletRanges then
     Include(Node.FoldAction, sfaMarkup);
 end;
 

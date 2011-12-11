@@ -1333,7 +1333,7 @@ resourcestring
   dlfMouseSimpleTextSectPageWheel = 'Wheel';
 
   dlfMouseSimpleTextSectLDoubleLabel      = 'Double';
-  dlfMouseSimpleTextSectLTrippleLabel     = 'Tripple';
+  dlfMouseSimpleTextSectLTripleLabel      = 'Triple';
   dlfMouseSimpleTextSectLQuadLabel        = 'Quad';
   dlfMouseSimpleTextSectLDoubleShiftLabel = 'Shift Double';
   dlfMouseSimpleTextSectLDoubleAltLabel   = 'Alt Double';

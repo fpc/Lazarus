@@ -35,13 +35,13 @@ type
   TEditorMouseOptionsFrame = class(TAbstractIDEOptionsEditor)
     dropShiftMiddle: TComboBox;
     lblLeftDouble: TLabel;
-    lblLeftTripple: TLabel;
+    lblLeftTriple: TLabel;
     lblLeftQuad: TLabel;
     lblLeftDoubleShift: TLabel;
     lblLeftDoubleAlt: TLabel;
     lblLeftDoubleCtrl: TLabel;
     dropLeftDouble: TComboBox;
-    dropLeftTripple: TComboBox;
+    dropLeftTriple: TComboBox;
     dropLeftQuad: TComboBox;
     dropLeftShiftDouble: TComboBox;
     dropLeftAltDouble: TComboBox;
@@ -272,7 +272,7 @@ begin
     (FTempMouseSettings.TextShiftCtrlAltLeftClick = TMouseOptButtonAction(dropShiftAltCtrlLeft.ItemIndex)) and
 
     (FTempMouseSettings.TextDoubleLeftClick      = IdxToDoubleMouseOptButtonAction(dropLeftDouble.ItemIndex)) and
-    (FTempMouseSettings.TextTrippleLeftClick     = IdxToDoubleMouseOptButtonAction(dropLeftTripple.ItemIndex)) and
+    (FTempMouseSettings.TextTripleLeftClick      = IdxToDoubleMouseOptButtonAction(dropLeftTriple.ItemIndex)) and
     (FTempMouseSettings.TextQuadLeftClick        = IdxToDoubleMouseOptButtonAction(dropLeftQuad.ItemIndex)) and
     (FTempMouseSettings.TextShiftDoubleLeftClick = IdxToDoubleMouseOptButtonAction(dropLeftShiftDouble.ItemIndex)) and
     (FTempMouseSettings.TextAltDoubleLeftClick   = IdxToDoubleMouseOptButtonAction(dropLeftAltDouble.ItemIndex)) and
@@ -329,7 +329,7 @@ begin
   FTempMouseSettings.TextShiftCtrlAltLeftClick := TMouseOptButtonAction(dropShiftAltCtrlLeft.ItemIndex);
 
   FTempMouseSettings.TextDoubleLeftClick      := IdxToDoubleMouseOptButtonAction(dropLeftDouble.ItemIndex);
-  FTempMouseSettings.TextTrippleLeftClick     := IdxToDoubleMouseOptButtonAction(dropLeftTripple.ItemIndex);
+  FTempMouseSettings.TextTripleLeftClick      := IdxToDoubleMouseOptButtonAction(dropLeftTriple.ItemIndex);
   FTempMouseSettings.TextQuadLeftClick        := IdxToDoubleMouseOptButtonAction(dropLeftQuad.ItemIndex);
   FTempMouseSettings.TextShiftDoubleLeftClick := IdxToDoubleMouseOptButtonAction(dropLeftShiftDouble.ItemIndex);
   FTempMouseSettings.TextAltDoubleLeftClick   := IdxToDoubleMouseOptButtonAction(dropLeftAltDouble.ItemIndex);
@@ -468,7 +468,7 @@ begin
 
     // left multi click
   lblLeftDouble.Caption        := dlfMouseSimpleTextSectLDoubleLabel;
-  lblLeftTripple.Caption       := dlfMouseSimpleTextSectLTrippleLabel;
+  lblLeftTriple.Caption        := dlfMouseSimpleTextSectLTripleLabel;
   lblLeftQuad.Caption          := dlfMouseSimpleTextSectLQuadLabel;
   lblLeftDoubleShift.Caption   := dlfMouseSimpleTextSectLDoubleShiftLabel;
   lblLeftDoubleCtrl.Caption    := dlfMouseSimpleTextSectLDoubleCtrlLabel;
@@ -494,7 +494,7 @@ begin
 
     // left multi click
   SetupButtonCombo(dropLeftDouble, True);
-  SetupButtonCombo(dropLeftTripple, True);
+  SetupButtonCombo(dropLeftTriple, True);
   SetupButtonCombo(dropLeftQuad, True);
   SetupButtonCombo(dropLeftShiftDouble, True);
   SetupButtonCombo(dropLeftAltDouble, True);
@@ -566,7 +566,7 @@ begin
 
   // 1,2&3 are mouse selection, and not avail for double clicks
   dropLeftDouble.ItemIndex      := Max(ord(FTempMouseSettings.TextDoubleLeftClick)-3,0);
-  dropLeftTripple.ItemIndex     := Max(ord(FTempMouseSettings.TextTrippleLeftClick)-3,0);
+  dropLeftTriple.ItemIndex      := Max(ord(FTempMouseSettings.TextTripleLeftClick)-3,0);
   dropLeftQuad.ItemIndex        := Max(ord(FTempMouseSettings.TextQuadLeftClick)-3,0);
   dropLeftShiftDouble.ItemIndex := Max(ord(FTempMouseSettings.TextShiftDoubleLeftClick)-3,0);
   dropLeftAltDouble.ItemIndex   := Max(ord(FTempMouseSettings.TextAltDoubleLeftClick)-3,0);

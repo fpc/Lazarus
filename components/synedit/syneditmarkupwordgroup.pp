@@ -230,7 +230,7 @@ begin
   if (not (sfaInvalid in TmpNode.FoldAction)) and
      (TmpNode.LogXStart = Node2.LogXStart) and (TmpNode.LogXEnd = Node2.LogXEnd)
   then begin
-    // tripple node => 3rd start after current start
+    // triple node => 3rd start after current start
     TmpNode := FindStartNode(TmpNode, y2, i2);
     if (not (sfaInvalid in TmpNode.FoldAction)) then begin
       Node3 := Node2;
@@ -244,7 +244,7 @@ begin
     if (not (sfaInvalid in TmpNode.FoldAction)) and
        (TmpNode.LogXStart = Node2.LogXStart) and (TmpNode.LogXEnd = Node2.LogXEnd)
     then begin
-      // tripple node => 3rd start before current start
+      // triple node => 3rd start before current start
       TmpNode := FindStartNode(TmpNode, y2, i2);
       if (not (sfaInvalid in TmpNode.FoldAction)) then begin
         Node3 := Node2;

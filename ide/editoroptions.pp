@@ -737,7 +737,7 @@ type
     // left multi click
     FTextDoubleLeftClick: TMouseOptButtonActionOld;
     FTextShiftMiddleClick: TMouseOptButtonAction;
-    FTextTrippleLeftClick: TMouseOptButtonActionOld;
+    FTextTripleLeftClick: TMouseOptButtonActionOld;
     FTextQuadLeftClick: TMouseOptButtonActionOld;
     FTextShiftDoubleLeftClick: TMouseOptButtonActionOld;
     FTextAltDoubleLeftClick: TMouseOptButtonActionOld;
@@ -811,7 +811,7 @@ type
     // left multi click
     property TextDoubleLeftClick: TMouseOptButtonActionOld read FTextDoubleLeftClick write FTextDoubleLeftClick
              default mbaSelectSetWord;
-    property TextTrippleLeftClick: TMouseOptButtonActionOld read FTextTrippleLeftClick write FTextTrippleLeftClick
+    property TextTripleLeftClick: TMouseOptButtonActionOld read FTextTripleLeftClick write FTextTripleLeftClick
              default mbaSelectSetLineSmart;
     property TextQuadLeftClick: TMouseOptButtonActionOld read FTextQuadLeftClick write FTextQuadLeftClick
              default mbaSelectSetPara;
@@ -2411,7 +2411,7 @@ begin
   FCustomSavedActions  := False;
   FGutterLeft          := moGLDownClick;
   FTextDoubleLeftClick       := mbaSelectSetWord;
-  FTextTrippleLeftClick      := mbaSelectSetLineSmart;
+  FTextTripleLeftClick      := mbaSelectSetLineSmart;
   FTextQuadLeftClick         := mbaSelectSetPara;
   FTextShiftDoubleLeftClick  := mbaNone;
   FTextAltDoubleLeftClick    := mbaNone;
@@ -2632,7 +2632,7 @@ begin
 
     SelKey := [];
     AddBtnClick(FTextDoubleLeftClick,        mbLeft,   [], ModKeys, False, SelKey, ccDouble);
-    AddBtnClick(FTextTrippleLeftClick,       mbLeft,   [], ModKeys, False, SelKey, ccTriple);
+    AddBtnClick(FTextTripleLeftClick,       mbLeft,   [], ModKeys, False, SelKey, ccTriple);
     AddBtnClick(FTextQuadLeftClick,          mbLeft,   [], ModKeys, False, SelKey, ccQuad);
     AddBtnClick(FTextShiftDoubleLeftClick,   mbLeft,   [ssShift],               ModKeys, False, SelKey, ccDouble);
     AddBtnClick(FTextCtrlDoubleLeftClick,    mbLeft,   [SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey, ccDouble);
@@ -2717,7 +2717,7 @@ begin
 
     // left multi click
   FTextDoubleLeftClick       := Src.TextDoubleLeftClick;
-  FTextTrippleLeftClick      := Src.TextTrippleLeftClick;
+  FTextTripleLeftClick      := Src.TextTripleLeftClick;
   FTextQuadLeftClick         := Src.TextQuadLeftClick;
   FTextShiftDoubleLeftClick  := Src.TextShiftDoubleLeftClick;
   FTextAltDoubleLeftClick    := Src.TextAltDoubleLeftClick;
@@ -2868,7 +2868,7 @@ begin
 
   if aXMLConfig.GetValue(aPath + 'Default/TextDoubleSelLine', TextDoubleSelLine) then begin
     FTextDoubleLeftClick       := mbaSelectSetLineSmart;
-    FTextTrippleLeftClick      := mbaSelectSetLineFull;
+    FTextTripleLeftClick       := mbaSelectSetLineFull;
   end;
   aXMLConfig.DeleteValue(aPath + 'Default/TextDoubleSelLine');
 
