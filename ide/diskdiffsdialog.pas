@@ -213,8 +213,7 @@ end;
 
 procedure TDiskDiffsDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  EnvironmentOptions.CheckDiskChangesWithLoading:=
-                                    CheckDiskChangesWithLoadingCheckBox.Checked;
+  EnvironmentOptions.CheckDiskChangesWithLoading:=CheckDiskChangesWithLoadingCheckBox.Checked;
 end;
 
 procedure TDiskDiffsDlg.FillFilesListBox;
@@ -351,9 +350,7 @@ begin
   RevertAllButton.Caption:=lisDiskDiffRevertAll;
   IgnoreDiskChangesButton.Caption:=lisDiskDiffIgnoreDiskChanges;
   CheckDiskChangesWithLoadingCheckBox.Caption:=lisCheckChangesOnDiskWithLoading;
-  
-  CheckDiskChangesWithLoadingCheckBox.Checked:=
-                                 EnvironmentOptions.CheckDiskChangesWithLoading;
+  CheckDiskChangesWithLoadingCheckBox.Checked:=EnvironmentOptions.CheckDiskChangesWithLoading;
 end;
 
 destructor TDiskDiffsDlg.Destroy;
