@@ -155,7 +155,8 @@ begin
   lblMisc.Caption := dlgDesktopMisc;
   MsgViewDblClickJumpsCheckBox.Caption:=lisEnvJumpFromMessageToSrcOnDblClickOtherwiseSingleClick;
   MsgViewFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
-  CheckDiskChangesWithLoadingCheckBox.Caption := lisCheckChangesOnDiskWithLoading;
+  CheckDiskChangesWithLoadingCheckBox.Caption :=
+    lisCheckForDiskFileChangesViaContentRatherThanTimesta;
 end;
 
 procedure TDesktopOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

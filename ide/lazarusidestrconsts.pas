@@ -989,6 +989,8 @@ resourcestring
   dlgIDEOptions = 'IDE Options';
   dlgBakNoSubDirectory = '(no subdirectory)';
   dlgEOFocusMessagesAfterCompilation = 'Focus messages after compilation';
+  lisCheckForDiskFileChangesViaContentRatherThanTimesta = 'Check for disk file'
+    +' changes via content rather than timestamp';
   
   // Search dialog
   dlgSearchCaption = 'Searching ...';
@@ -1089,7 +1091,6 @@ resourcestring
   dlgDesktopMisc = 'Misc Options';
   lisSavedSuccessfully = 'Saved successfully';
   lisLoadedSuccessfully = 'Loaded successfully';
-  lisCheckChangesOnDiskWithLoading = 'Check changes on disk with loading';
 
   lisEnvJumpFromMessageToSrcOnDblClickOtherwiseSingleClick = 'Jump from '
     +'message to source line on double click (otherwise: single click)';
