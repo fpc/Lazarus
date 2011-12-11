@@ -93,19 +93,22 @@ begin
     UseUnitDlg.GetProjUnits(SrcEdit);
     UseUnitDlg.FillAvailableUnitsList;
     // there is only main uses section in program/library/package
-    if SrcEdit.GetProjectFile=Project1.MainUnitInfo then begin
+    if SrcEdit.GetProjectFile=Project1.MainUnitInfo then
       // only main (interface) section is available
       UseUnitDlg.SectionRadioGroup.Enabled := False
-    end else begin
+    else
       // automatic choice of dest uses-section by cursor position
       UseUnitDlg.DetermineUsesSection(SrcEdit.CodeBuffer, SrcEdit.GetCursorTextXY);
-    end;
+
     if UseUnitDlg.FilterEdit.Data.Count = 0 then
-    begin
       // no available units from current project => turn on "all units"
       UseUnitDlg.AllUnitsCheckBox.Checked := True;
+
+    if UseUnitDlg.FilterEdit.Data.Count = 0 then begin
+      // No available units. This may not be a pascal source file.
+      ShowMessage(dlgNoAvailableUnits);
+      Exit(mrCancel);
     end;
-    if UseUnitDlg.FilterEdit.Data.Count = 0 then Exit(mrCancel);
 
     // Show the dialog.
     if UseUnitDlg.ShowModal=mrOk then begin
@@ -164,10 +167,9 @@ begin
   if InterfaceSelected then
     AddImplUsedUnits
   else
-    with FilterEdit.Data do
-      for i := Count - 1 downto 0 do
-        if Objects[i] is TCodeTreeNode then
-          Delete(i);
+    for i := FilterEdit.Data.Count - 1 downto 0 do
+      if FilterEdit.Data.Objects[i] is TCodeTreeNode then
+        FilterEdit.Data.Delete(i);
   FilterEdit.InvalidateFilter;
   if Visible then
     FilterEdit.SetFocus;
@@ -177,21 +179,16 @@ procedure TUseUnitDialog.AllUnitsCheckBoxChange(Sender: TObject);
 var
   i: Integer;
 begin
+  if not (Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits)
+      and Assigned(FOtherUnits)) then Exit;
   if AllUnitsCheckBox.Checked then begin    // Add other units
     CreateOtherUnitsList;
     FilterEdit.Data.AddStrings(FOtherUnits);
   end
   else
-    with FilterEdit.Data do begin             // Remove other units
-      BeginUpdate;
-      try
-        for i := Count-1 downto 0 do
-          if Objects[i] is TIdentifierListItem then
-            Delete(i);
-      finally
-        EndUpdate;
-      end;
-    end;
+    for i := FilterEdit.Data.Count-1 downto 0 do
+      if FilterEdit.Data.Objects[i] is TIdentifierListItem then
+        FilterEdit.Data.Delete(i);
   if Visible then
     FilterEdit.SetFocus;
   FilterEdit.InvalidateFilter;
@@ -320,6 +317,7 @@ var
   SrcEdit: TSourceEditor;
 begin
   if Assigned(FOtherUnits) then Exit;
+  if not (Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits)) then Exit;
   Screen.Cursor:=crHourGlass;
   try
     FOtherUnits := TStringList.Create;
@@ -328,7 +326,6 @@ begin
       if GatherUnitNames(SrcEdit.CodeBuffer) then
       begin
         IdentifierList.Prefix := '';
-        Assert(Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits));
         for i := 0 to IdentifierList.GetFilteredCount - 1 do
         begin
           curUnit := IdentifierList.FilteredItems[i].Identifier;
@@ -414,22 +411,15 @@ var
   curUnit: String;
   i: Integer;
 begin
+  if not (Assigned(FMainUsedUnits) and Assigned(FImplUsedUnits)) then Exit;
   if not Assigned(FProjUnits) then Exit;
-  with FilterEdit.Data do
+  FilterEdit.Data.Clear;
+  for i := 0 to FProjUnits.Count - 1 do
   begin
-    BeginUpdate;
-    try
-      Clear;
-      for i := 0 to FProjUnits.Count - 1 do
-      begin
-        curUnit := FProjUnits[i];
-        if (FMainUsedUnits.IndexOf(curUnit) < 0)
-        and (FImplUsedUnits.IndexOf(curUnit) < 0) then
-          Add(FProjUnits[i]);
-      end;
-    finally
-      EndUpdate;
-    end;
+    curUnit := FProjUnits[i];
+    if (FMainUsedUnits.IndexOf(curUnit) < 0)
+    and (FImplUsedUnits.IndexOf(curUnit) < 0) then
+      FilterEdit.Data.Add(FProjUnits[i]);
   end;
   FilterEdit.InvalidateFilter;
 end;
