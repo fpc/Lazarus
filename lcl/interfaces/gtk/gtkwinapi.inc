@@ -9677,8 +9677,25 @@ end;
 function TGtkWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 var
   GtkWindow: PGtkWindow;
+  Widget: PGtkWidget;
 begin
   Result:=false;
+  Widget := PGtkWidget(hWND);
+  if Widget = nil then
+    RaiseGDBException('TGtkWidgetSet.ShowWindow  hWnd is nil');
+
+  if not GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then
+  begin
+    // we are pure gtkwidget so only SW_SHOW AND SW_HIDE CAN GO
+    case nCmdShow of
+      SW_SHOWNORMAL,
+      SW_SHOW: gtk_widget_show(Widget);
+      SW_HIDE: gtk_widget_hide(Widget);
+    end;
+    Result := nCmdShow in [SW_SHOW, SW_HIDE];
+    exit;
+  end;
+
   GtkWindow:=PGtkWindow(hWnd);
   if GtkWindow=nil then
     RaiseGDBException('TGtkWidgetSet.ShowWindow  hWnd is nil');
