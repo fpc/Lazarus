@@ -2715,10 +2715,10 @@ begin
   AddWheelAct(FCtrlWheel,  [ssCtrl],  ModKeys);
   AddWheelAct(FAltWheel,   [ssAlt],   ModKeys);
   AddWheelAct(FShiftWheel, [ssShift], ModKeys);
-  AddWheelAct(FAltCtrlWheel,      [ssShift], ModKeys);
-  AddWheelAct(FShiftCtrlWheel,    [ssShift], ModKeys);
-  AddWheelAct(FShiftAltWheel,     [ssShift], ModKeys);
-  AddWheelAct(FShiftAltCtrlWheel, [ssShift], ModKeys);
+  AddWheelAct(FAltCtrlWheel,      [ssAlt, ssCtrl], ModKeys);
+  AddWheelAct(FShiftCtrlWheel,    [ssShift, ssCtrl], ModKeys);
+  AddWheelAct(FShiftAltWheel,     [ssShift, ssAlt], ModKeys);
+  AddWheelAct(FShiftAltCtrlWheel, [ssShift, ssAlt, ssCtrl], ModKeys);
 
   if FTextDrag then
     with FSelActions do begin
