@@ -1326,6 +1326,10 @@ resourcestring
   dlfMouseSimpleTextSectCtrlWheelLabel = 'Ctrl Wheel';
   dlfMouseSimpleTextSectAltWheelLabel = 'Alt Wheel';
   dlfMouseSimpleTextShiftSectWheelLabel = 'Shift Wheel';
+  dlfMouseSimpleTextSectAltCtrlWheelLabel = 'Alt-Ctrl Wheel';
+  dlfMouseSimpleTextSectShiftAltWheelLabel = 'Shift-Alt Wheel';
+  dlfMouseSimpleTextSectShiftCtrlWheelLabel = 'Shift-Ctrl Wheel';
+  dlfMouseSimpleTextSectShiftAltCtrlWheelLabel = 'Shift-Alt-Ctrl';
 
   dlfMouseSimpleTextSectPageLMod = 'Left button 1';
   dlfMouseSimpleTextSectPageLMulti = 'Left button 2';

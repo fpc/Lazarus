@@ -724,39 +724,50 @@ type
     FTextRightMoveCaret: Boolean;
     FUserSchemes: TQuickStringlist;
   private
-    FAltWheel: TMouseOptWheelAction;
-    FCtrlWheel: TMouseOptWheelAction;
     FCustomSavedActions: Boolean;
     FMainActions, FSelActions, FTextActions: TSynEditMouseActions;
-    FShiftWheel: TMouseOptWheelAction;
     FName: String;
     FGutterActions: TSynEditMouseActions;
     FGutterActionsFold, FGutterActionsFoldExp, FGutterActionsFoldCol: TSynEditMouseActions;
     FGutterActionsLines: TSynEditMouseActions;
     FSelectedUserScheme: String;
     // left multi click
-    FTextDoubleLeftClick: TMouseOptButtonActionOld;
-    FTextShiftMiddleClick: TMouseOptButtonAction;
-    FTextTripleLeftClick: TMouseOptButtonActionOld;
-    FTextQuadLeftClick: TMouseOptButtonActionOld;
-    FTextShiftDoubleLeftClick: TMouseOptButtonActionOld;
-    FTextAltDoubleLeftClick: TMouseOptButtonActionOld;
-    FTextCtrlDoubleLeftClick: TMouseOptButtonActionOld;
+    FTextDoubleLeftClick: TMouseOptButtonAction;
+    FTextTripleLeftClick: TMouseOptButtonAction;
+    FTextQuadLeftClick: TMouseOptButtonAction;
+    FTextShiftDoubleLeftClick: TMouseOptButtonAction;
+    FTextAltDoubleLeftClick: TMouseOptButtonAction;
+    FTextCtrlDoubleLeftClick: TMouseOptButtonAction;
     // left + modifier click
-    FTextShiftLeftClick: TMouseOptButtonActionOld;
-    FTextAltLeftClick: TMouseOptButtonActionOld;
+    FTextShiftLeftClick: TMouseOptButtonAction;
+    FTextAltLeftClick: TMouseOptButtonAction;
     FTextCtrlLeftClick: TMouseOptButtonActionOld;
-    FTextCtrlAltLeftClick: TMouseOptButtonActionOld;
-    FTextShiftAltLeftClick: TMouseOptButtonActionOld;
-    FTextShiftCtrlLeftClick: TMouseOptButtonActionOld;
-    FTextShiftCtrlAltLeftClick: TMouseOptButtonActionOld;
+    FTextAltCtrlLeftClick: TMouseOptButtonAction;
+    FTextShiftAltLeftClick: TMouseOptButtonAction;
+    FTextShiftCtrlLeftClick: TMouseOptButtonAction;
+    FTextShiftAltCtrlLeftClick: TMouseOptButtonAction;
     // middle click
     FTextMiddleClick: TMouseOptButtonActionOld;
     FTextAltMiddleClick: TMouseOptButtonAction;
     FTextCtrlMiddleClick: TMouseOptButtonAction;
+    FTextAltCtrlMiddleClick: TMouseOptButtonAction;
+    FTextShiftAltMiddleClick: TMouseOptButtonAction;
+    FTextShiftAltCtrlMiddleClick: TMouseOptButtonAction;
+    FTextShiftCtrlMiddleClick: TMouseOptButtonAction;
+    FTextShiftMiddleClick: TMouseOptButtonAction;
     // extra-1 click
     // extra-2 click
+    // wheel
     FWheel: TMouseOptWheelAction;
+    FAltWheel: TMouseOptWheelAction;
+    FCtrlWheel: TMouseOptWheelAction;
+    FShiftWheel: TMouseOptWheelAction;
+    FShiftAltWheel: TMouseOptWheelAction;
+    FShiftCtrlWheel: TMouseOptWheelAction;
+    FAltCtrlWheel: TMouseOptWheelAction;
+    FShiftAltCtrlWheel: TMouseOptWheelAction;
+
+
     procedure ClearUserSchemes;
     function GetUserSchemeNames(Index: Integer): String;
     function GetUserSchemes(Index: String): TEditorMouseOptions;
@@ -809,32 +820,32 @@ type
     property TextRightMoveCaret: Boolean read FTextRightMoveCaret  write FTextRightMoveCaret
              default False;
     // left multi click
-    property TextDoubleLeftClick: TMouseOptButtonActionOld read FTextDoubleLeftClick write FTextDoubleLeftClick
+    property TextDoubleLeftClick: TMouseOptButtonAction read FTextDoubleLeftClick write FTextDoubleLeftClick
              default mbaSelectSetWord;
-    property TextTripleLeftClick: TMouseOptButtonActionOld read FTextTripleLeftClick write FTextTripleLeftClick
+    property TextTripleLeftClick: TMouseOptButtonAction read FTextTripleLeftClick write FTextTripleLeftClick
              default mbaSelectSetLineSmart;
-    property TextQuadLeftClick: TMouseOptButtonActionOld read FTextQuadLeftClick write FTextQuadLeftClick
+    property TextQuadLeftClick: TMouseOptButtonAction read FTextQuadLeftClick write FTextQuadLeftClick
              default mbaSelectSetPara;
-    property TextShiftDoubleLeftClick: TMouseOptButtonActionOld read FTextShiftDoubleLeftClick write FTextShiftDoubleLeftClick
+    property TextShiftDoubleLeftClick: TMouseOptButtonAction read FTextShiftDoubleLeftClick write FTextShiftDoubleLeftClick
              default mbaNone;
-    property TextCtrlDoubleLeftClick: TMouseOptButtonActionOld read FTextCtrlDoubleLeftClick write FTextCtrlDoubleLeftClick
+    property TextCtrlDoubleLeftClick: TMouseOptButtonAction read FTextCtrlDoubleLeftClick write FTextCtrlDoubleLeftClick
              default mbaNone;
-    property TextAltDoubleLeftClick: TMouseOptButtonActionOld read FTextAltDoubleLeftClick write FTextAltDoubleLeftClick
+    property TextAltDoubleLeftClick: TMouseOptButtonAction read FTextAltDoubleLeftClick write FTextAltDoubleLeftClick
              default mbaNone;
     // left + modifier click
-    property TextShiftLeftClick: TMouseOptButtonActionOld read FTextShiftLeftClick write FTextShiftLeftClick
+    property TextShiftLeftClick: TMouseOptButtonAction read FTextShiftLeftClick write FTextShiftLeftClick
              default mbaNone;  // continue selection
     property TextCtrlLeftClick: TMouseOptButtonActionOld read FTextCtrlLeftClick write SetTextCtrlLeftClick
              default mbaDeclarationJump;
-    property TextAltLeftClick: TMouseOptButtonActionOld read FTextAltLeftClick write FTextAltLeftClick
+    property TextAltLeftClick: TMouseOptButtonAction read FTextAltLeftClick write FTextAltLeftClick
              default mbaSelectColumn;
-    property TextShiftCtrlLeftClick: TMouseOptButtonActionOld read FTextShiftCtrlLeftClick write FTextShiftCtrlLeftClick
+    property TextShiftCtrlLeftClick: TMouseOptButtonAction read FTextShiftCtrlLeftClick write FTextShiftCtrlLeftClick
              default mbaNone;  // continue selection
-    property TextShiftAltLeftClick: TMouseOptButtonActionOld read FTextShiftAltLeftClick write FTextShiftAltLeftClick
+    property TextShiftAltLeftClick: TMouseOptButtonAction read FTextShiftAltLeftClick write FTextShiftAltLeftClick
              default mbaNone;  // continue selection
-    property TextCtrlAltLeftClick: TMouseOptButtonActionOld read FTextCtrlAltLeftClick write FTextCtrlAltLeftClick
+    property TextAltCtrlLeftClick: TMouseOptButtonAction read FTextAltCtrlLeftClick write FTextAltCtrlLeftClick
              default mbaNone;
-    property TextShiftCtrlAltLeftClick: TMouseOptButtonActionOld read FTextShiftCtrlAltLeftClick write FTextShiftCtrlAltLeftClick
+    property TextShiftAltCtrlLeftClick: TMouseOptButtonAction read FTextShiftAltCtrlLeftClick write FTextShiftAltCtrlLeftClick
              default mbaNone;
     // middle click
     property TextMiddleClick: TMouseOptButtonActionOld read FTextMiddleClick write SetTextMiddleClick
@@ -845,6 +856,15 @@ type
              default mbaNone;
     property TextCtrlMiddleClick: TMouseOptButtonAction read FTextCtrlMiddleClick write FTextCtrlMiddleClick
              default mbaZoomReset;
+    property TextShiftAltMiddleClick: TMouseOptButtonAction read FTextShiftAltMiddleClick write FTextShiftAltMiddleClick
+             default mbaNone;
+    property TextShiftCtrlMiddleClick: TMouseOptButtonAction read FTextShiftCtrlMiddleClick write FTextShiftCtrlMiddleClick
+             default mbaNone;
+    property TextAltCtrlMiddleClick: TMouseOptButtonAction read FTextAltCtrlMiddleClick write FTextAltCtrlMiddleClick
+             default mbaNone;
+    property TextShiftAltCtrlMiddleClick: TMouseOptButtonAction read FTextShiftAltCtrlMiddleClick write FTextShiftAltCtrlMiddleClick
+             default mbaNone;
+    // right click
     // extra-1 click
     // extra-2 click
 
@@ -856,6 +876,14 @@ type
              default mwaScrollPageLessOne;
     property ShiftWheel: TMouseOptWheelAction read FShiftWheel write FShiftWheel
              default mwaScrollSingleLine;
+    property ShiftAltWheel: TMouseOptWheelAction read FShiftAltWheel write FShiftAltWheel
+             default mwaNone;
+    property ShiftCtrlWheel: TMouseOptWheelAction read FShiftCtrlWheel write FShiftCtrlWheel
+             default mwaNone;
+    property AltCtrlWheel: TMouseOptWheelAction read FAltCtrlWheel write FAltCtrlWheel
+             default mwaNone;
+    property ShiftAltCtrlWheel: TMouseOptWheelAction read FShiftAltCtrlWheel write FShiftAltCtrlWheel
+             default mwaNone;
 
     // the flag below is set by CalcCustomSavedActions
     property CustomSavedActions: Boolean read FCustomSavedActions write FCustomSavedActions;
@@ -2410,27 +2438,41 @@ procedure TEditorMouseOptions.Reset;
 begin
   FCustomSavedActions  := False;
   FGutterLeft          := moGLDownClick;
+  // left multi
   FTextDoubleLeftClick       := mbaSelectSetWord;
   FTextTripleLeftClick      := mbaSelectSetLineSmart;
   FTextQuadLeftClick         := mbaSelectSetPara;
   FTextShiftDoubleLeftClick  := mbaNone;
   FTextAltDoubleLeftClick    := mbaNone;
   FTextCtrlDoubleLeftClick   := mbaNone;
-  FTextCtrlAltLeftClick      := mbaNone;
+  // left
+  FTextAltCtrlLeftClick      := mbaNone;
   FTextShiftAltLeftClick     := mbaNone;
-  FTextShiftCtrlAltLeftClick := mbaNone;
+  FTextShiftAltCtrlLeftClick := mbaNone;
   FTextShiftCtrlLeftClick    := mbaNone;
   FTextShiftLeftClick        := mbaNone;
   FTextCtrlLeftClick   := mbaDeclarationJump;
   FTextAltLeftClick    := mbaSelectColumn;
-  FTextMiddleClick     := mbaPaste;
-  FTextCtrlMiddleClick := mbaZoomReset;
-  FTextShiftMiddleClick := mbaNone;
-  FTextAltMiddleClick  := mbaNone;
+  // middle
+  FTextMiddleClick             := mbaPaste;
+  FTextCtrlMiddleClick         := mbaZoomReset;
+  FTextShiftMiddleClick        := mbaNone;
+  FTextAltMiddleClick          := mbaNone;
+  FTextAltCtrlMiddleClick      := mbaNone;
+  FTextShiftAltMiddleClick     := mbaNone;
+  FTextShiftAltCtrlMiddleClick := mbaNone;
+  FTextShiftCtrlMiddleClick    := mbaNone;
+  // wheel
   FWheel               := mwaScroll;
   FCtrlWheel           := mwaZoom;
   FAltWheel            := mwaScrollPageLessOne;
   FShiftWheel          := mwaScrollSingleLine;
+  FAltCtrlWheel     := mwaNone;
+  FShiftCtrlWheel       := mwaNone;
+  FShiftAltWheel    := mwaNone;
+  FShiftAltCtrlWheel    := mwaNone;
+
+
   FTextRightMoveCaret  := False;
   FTextDrag            := True;
 end;
@@ -2599,10 +2641,10 @@ begin
     ModKeys := [ssShift];
     if FTextAltLeftClick     <> mbaNone then ModKeys := ModKeys + [ssAlt];
     if FTextCtrlLeftClick    <> mbaNone then ModKeys := ModKeys + [ssCtrl] + [SYNEDIT_LINK_MODIFIER];
-    if FTextCtrlAltLeftClick <> mbaNone then ModKeys := ModKeys + [ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+    if FTextAltCtrlLeftClick <> mbaNone then ModKeys := ModKeys + [ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
     if FTextShiftAltLeftClick     <> mbaNone then ModKeys := ModKeys + [ssAlt];
     if FTextShiftCtrlLeftClick    <> mbaNone then ModKeys := ModKeys + [ssCtrl] + [SYNEDIT_LINK_MODIFIER];
-    if FTextShiftCtrlAltLeftClick <> mbaNone then ModKeys := ModKeys + [ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+    if FTextShiftAltCtrlLeftClick <> mbaNone then ModKeys := ModKeys + [ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
     if FTextAltDoubleLeftClick     <> mbaNone then ModKeys := ModKeys + [ssAlt];
     if FTextCtrlDoubleLeftClick    <> mbaNone then ModKeys := ModKeys + [ssCtrl] + [SYNEDIT_LINK_MODIFIER];
 
@@ -2624,11 +2666,11 @@ begin
     AddBtnClick(FTextAltLeftClick,          mbLeft,   [ssAlt],                 ModKeys, False, SelKey);
     AddBtnClick(FTextShiftAltLeftClick,     mbLeft,   [ssShift, ssAlt],               ModKeys, False, SelKey);
 
-    if FTextShiftCtrlAltLeftClick = mbaNone
+    if FTextShiftAltCtrlLeftClick = mbaNone
     then SelKey := [ssShift]
     else SelKey := [];
-    AddBtnClick(FTextCtrlAltLeftClick,      mbLeft, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
-    AddBtnClick(FTextShiftCtrlAltLeftClick, mbLeft, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
+    AddBtnClick(FTextAltCtrlLeftClick,      mbLeft, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
+    AddBtnClick(FTextShiftAltCtrlLeftClick, mbLeft, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
 
     SelKey := [];
     AddBtnClick(FTextDoubleLeftClick,        mbLeft,   [], ModKeys, False, SelKey, ccDouble);
@@ -2639,23 +2681,44 @@ begin
     AddBtnClick(FTextAltDoubleLeftClick,     mbLeft,   [ssAlt],                 ModKeys, False, SelKey, ccDouble);
 
 
+    SelKey := [];
     ModKeys := [];
-    if FTextShiftMiddleClick <> mbaNone then ModKeys := ModKeys + [ssShift];
-    if FTextCtrlMiddleClick <> mbaNone then ModKeys := ModKeys + [ssCtrl];
-    if FTextAltMiddleClick  <> mbaNone then ModKeys := ModKeys + [ssAlt];
+    if FTextShiftMiddleClick         <> mbaNone then ModKeys := ModKeys + [ssShift];
+    if FTextCtrlMiddleClick          <> mbaNone then ModKeys := ModKeys + [ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+    if FTextAltMiddleClick           <> mbaNone then ModKeys := ModKeys + [ssAlt];
+    if FTextAltCtrlMiddleClick       <> mbaNone then ModKeys := ModKeys + [ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+    if FTextShiftCtrlMiddleClick     <> mbaNone then ModKeys := ModKeys + [ssShift, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+    if FTextShiftAltMiddleClick      <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt];
+    if FTextShiftAltCtrlMiddleClick  <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
     AddBtnClick(FTextMiddleClick,     mbMiddle, [], ModKeys, FTextCtrlMiddleClick = mbaNone);
     AddBtnClick(FTextShiftMiddleClick,mbMiddle, [ssShift], ModKeys);
     AddBtnClick(FTextAltMiddleClick,  mbMiddle, [ssAlt], ModKeys);
     AddBtnClick(FTextCtrlMiddleClick, mbMiddle, [SYNEDIT_LINK_MODIFIER], ModKeys);
+    AddBtnClick(FTextAltCtrlMiddleClick,      mbMiddle, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys);
+    AddBtnClick(FTextShiftCtrlMiddleClick,    mbMiddle, [ssShift, SYNEDIT_LINK_MODIFIER], ModKeys);
+    AddBtnClick(FTextShiftAltMiddleClick,     mbMiddle, [ssShift, ssAlt], ModKeys);
+    AddBtnClick(FTextShiftAltCtrlMiddleClick, mbMiddle, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys);
 
     AddCommand(emcContextMenu, FTextRightMoveCaret, mbRight, ccSingle, cdUp, [], [], emcoSelectionCaretMoveNever);
 
   end;
 
+  ModKeys := [];
+  if FShiftWheel         <> mwaNone then ModKeys := ModKeys + [ssShift];
+  if FCtrlWheel          <> mwaNone then ModKeys := ModKeys + [ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  if FAltWheel           <> mwaNone then ModKeys := ModKeys + [ssAlt];
+  if FAltCtrlWheel       <> mwaNone then ModKeys := ModKeys + [ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  if FShiftCtrlWheel     <> mwaNone then ModKeys := ModKeys + [ssShift, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
+  if FShiftAltWheel      <> mwaNone then ModKeys := ModKeys + [ssShift, ssAlt];
+  if FShiftAltCtrlWheel  <> mwaNone then ModKeys := ModKeys + [ssShift, ssAlt, ssCtrl] + [SYNEDIT_LINK_MODIFIER];
   AddWheelAct(FWheel, [], []);
-  AddWheelAct(FCtrlWheel,  [ssCtrl],  [ssShift, ssAlt, ssCtrl]);
-  AddWheelAct(FAltWheel,   [ssAlt],   [ssShift, ssAlt, ssCtrl]);
-  AddWheelAct(FShiftWheel, [ssShift], [ssShift, ssAlt, ssCtrl]);
+  AddWheelAct(FCtrlWheel,  [ssCtrl],  ModKeys);
+  AddWheelAct(FAltWheel,   [ssAlt],   ModKeys);
+  AddWheelAct(FShiftWheel, [ssShift], ModKeys);
+  AddWheelAct(FAltCtrlWheel,      [ssShift], ModKeys);
+  AddWheelAct(FShiftCtrlWheel,    [ssShift], ModKeys);
+  AddWheelAct(FShiftAltWheel,     [ssShift], ModKeys);
+  AddWheelAct(FShiftAltCtrlWheel, [ssShift], ModKeys);
 
   if FTextDrag then
     with FSelActions do begin
@@ -2714,6 +2777,9 @@ begin
   FName                 := Src.FName;
 
   FGutterLeft           := Src.GutterLeft;
+  FTextDrag             := Src.TextDrag;
+  FTextRightMoveCaret   := Src.TextRightMoveCaret;
+  FSelectedUserScheme   := Src.FSelectedUserScheme;
 
     // left multi click
   FTextDoubleLeftClick       := Src.TextDoubleLeftClick;
@@ -2724,27 +2790,35 @@ begin
   FTextCtrlDoubleLeftClick   := Src.TextCtrlDoubleLeftClick;
     // left + modifier click
   FTextAltLeftClick          := Src.TextAltLeftClick;
-  FTextCtrlAltLeftClick      := Src.TextCtrlAltLeftClick;
+  FTextAltCtrlLeftClick      := Src.TextAltCtrlLeftClick;
   FTextShiftAltLeftClick     := Src.TextShiftAltLeftClick;
-  FTextShiftCtrlAltLeftClick := Src.TextShiftCtrlAltLeftClick;
+  FTextShiftAltCtrlLeftClick := Src.TextShiftAltCtrlLeftClick;
   FTextShiftCtrlLeftClick    := Src.TextShiftCtrlLeftClick;
   FTextShiftLeftClick        := Src.TextShiftLeftClick;
   FTextCtrlLeftClick    := Src.TextCtrlLeftClick;
   FTextAltLeftClick     := Src.TextAltLeftClick;
     // middle click
+  FTextMiddleClick           := Src.TextMiddleClick;
+  FTextShiftMiddleClick      := Src.TextShiftMiddleClick;
   FTextAltMiddleClick        := Src.TextAltMiddleClick;
   FTextCtrlMiddleClick       := Src.TextCtrlMiddleClick;
-  FTextMiddleClick      := Src.TextMiddleClick;
-  FTextShiftMiddleClick := Src.TextShiftMiddleClick;
+  FTextAltCtrlMiddleClick      := Src.TextAltCtrlMiddleClick;
+  FTextShiftAltMiddleClick     := Src.TextShiftAltMiddleClick;
+  FTextShiftCtrlMiddleClick    := Src.TextShiftCtrlMiddleClick;
+  FTextShiftAltCtrlMiddleClick := Src.TextShiftAltCtrlMiddleClick;
+  // wheel
   FWheel                := Src.Wheel;
   FCtrlWheel            := Src.CtrlWheel;
   FAltWheel             := Src.AltWheel;
   FShiftWheel           := Src.ShiftWheel;
-  FTextDrag             := Src.TextDrag;
-  FTextRightMoveCaret   := Src.TextRightMoveCaret;
-  FSelectedUserScheme   := Src.FSelectedUserScheme;
+  FAltCtrlWheel         := Src.AltCtrlWheel;
+  FShiftCtrlWheel       := Src.ShiftCtrlWheel;
+  FShiftAltWheel        := Src.ShiftAltWheel;
+  FShiftAltCtrlWheel    := Src.ShiftAltCtrlWheel;
     // extra-1 click
     // extra-2 click
+
+
 
   AssignActions(Src);
 

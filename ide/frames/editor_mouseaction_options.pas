@@ -33,6 +33,20 @@ type
   { TEditorMouseOptionsFrame }
 
   TEditorMouseOptionsFrame = class(TAbstractIDEOptionsEditor)
+    AltCtrlMiddleBtnLabel: TLabel;
+    AltCtrlWheelBtnLabel: TLabel;
+    ShiftAltWheelBtnLabel: TLabel;
+    ShiftCtrlWheelBtnLabel: TLabel;
+    ShiftAltCtrlWheelBtnLabel: TLabel;
+    dropAltCtrlWheel: TComboBox;
+    dropShiftAltWheel: TComboBox;
+    dropShiftCtrlWheel: TComboBox;
+    dropShiftAltCtrlWheel: TComboBox;
+    ShiftAltMiddleBtnLabel: TLabel;
+    dropAltCtrlMiddle: TComboBox;
+    dropShiftAltMiddle: TComboBox;
+    dropShiftCtrlMiddle: TComboBox;
+    dropShiftAltCtrlMiddle: TComboBox;
     dropShiftMiddle: TComboBox;
     lblLeftDouble: TLabel;
     lblLeftTriple: TLabel;
@@ -46,12 +60,14 @@ type
     dropLeftShiftDouble: TComboBox;
     dropLeftAltDouble: TComboBox;
     dropLeftCtrlDouble: TComboBox;
+    ShiftCtrlMiddleBtnLabel: TLabel;
+    ShiftAltCtrlMiddleBtnLabel: TLabel;
     ShiftMiddleLabel: TLabel;
     ShiftLeftLabel: TLabel;
     AltCtrlLeftLabel: TLabel;
     ShiftCtrlLeftLabel: TLabel;
     ShiftAltLeftLabel: TLabel;
-    ShiftCtrlAltLeftLabel: TLabel;
+    ShiftAltCtrlLeftLabel: TLabel;
     BottomDivider: TBevel;
     chkPredefinedScheme: TCheckBox;
     AltLeftLabel: TLabel;
@@ -265,11 +281,11 @@ begin
 
     (FTempMouseSettings.TextAltLeftClick          = TMouseOptButtonAction(dropAltLeft.ItemIndex)) and
     (FTempMouseSettings.TextCtrlLeftClick         = TMouseOptButtonAction(dropCtrlLeft.ItemIndex)) and
-    (FTempMouseSettings.TextCtrlAltLeftClick      = TMouseOptButtonAction(dropAltCtrlLeft.ItemIndex)) and
+    (FTempMouseSettings.TextAltCtrlLeftClick      = TMouseOptButtonAction(dropAltCtrlLeft.ItemIndex)) and
     (FTempMouseSettings.TextShiftLeftClick        = TMouseOptButtonAction(dropShiftLeft.ItemIndex)) and
     (FTempMouseSettings.TextShiftAltLeftClick     = TMouseOptButtonAction(dropShiftAltLeft.ItemIndex)) and
     (FTempMouseSettings.TextShiftCtrlLeftClick    = TMouseOptButtonAction(dropShiftCtrlLeft.ItemIndex)) and
-    (FTempMouseSettings.TextShiftCtrlAltLeftClick = TMouseOptButtonAction(dropShiftAltCtrlLeft.ItemIndex)) and
+    (FTempMouseSettings.TextShiftAltCtrlLeftClick = TMouseOptButtonAction(dropShiftAltCtrlLeft.ItemIndex)) and
 
     (FTempMouseSettings.TextDoubleLeftClick      = IdxToDoubleMouseOptButtonAction(dropLeftDouble.ItemIndex)) and
     (FTempMouseSettings.TextTripleLeftClick      = IdxToDoubleMouseOptButtonAction(dropLeftTriple.ItemIndex)) and
@@ -282,11 +298,19 @@ begin
     (FTempMouseSettings.TextShiftMiddleClick = TMouseOptButtonAction(dropShiftMiddle.ItemIndex)) and
     (FTempMouseSettings.TextAltMiddleClick   = TMouseOptButtonAction(dropAltMiddle.ItemIndex)) and
     (FTempMouseSettings.TextCtrlMiddleClick  = TMouseOptButtonAction(dropCtrlMiddle.ItemIndex)) and
+    (FTempMouseSettings.TextAltCtrlMiddleClick      = TMouseOptButtonAction(dropAltCtrlMiddle.ItemIndex)) and
+    (FTempMouseSettings.TextShiftAltMiddleClick     = TMouseOptButtonAction(dropShiftAltMiddle.ItemIndex)) and
+    (FTempMouseSettings.TextShiftCtrlMiddleClick    = TMouseOptButtonAction(dropShiftCtrlMiddle.ItemIndex)) and
+    (FTempMouseSettings.TextShiftAltCtrlMiddleClick = TMouseOptButtonAction(dropShiftAltCtrlMiddle.ItemIndex)) and
 
     (FTempMouseSettings.Wheel      = TMouseOptWheelAction(dropWheel.ItemIndex)) and
     (FTempMouseSettings.CtrlWheel  = TMouseOptWheelAction(dropCtrlWheel.ItemIndex)) and
     (FTempMouseSettings.AltWheel   = TMouseOptWheelAction(dropAltWheel.ItemIndex)) and
-    (FTempMouseSettings.ShiftWheel = TMouseOptWheelAction(dropShiftWheel.ItemIndex))
+    (FTempMouseSettings.ShiftWheel = TMouseOptWheelAction(dropShiftWheel.ItemIndex)) and
+    (FTempMouseSettings.AltCtrlWheel        = TMouseOptWheelAction(dropAltCtrlWheel.ItemIndex)) and
+    (FTempMouseSettings.ShiftAltWheel       = TMouseOptWheelAction(dropShiftAltWheel.ItemIndex)) and
+    (FTempMouseSettings.ShiftCtrlWheel      = TMouseOptWheelAction(dropShiftCtrlWheel.ItemIndex)) and
+    (FTempMouseSettings.ShiftAltCtrlWheel   = TMouseOptWheelAction(dropShiftAltCtrlWheel.ItemIndex))
   );
 end;
 
@@ -322,11 +346,11 @@ begin
 
   FTempMouseSettings.TextAltLeftClick          := TMouseOptButtonAction(dropAltLeft.ItemIndex);
   FTempMouseSettings.TextCtrlLeftClick         := TMouseOptButtonAction(dropCtrlLeft.ItemIndex);
-  FTempMouseSettings.TextCtrlAltLeftClick      := TMouseOptButtonAction(dropAltCtrlLeft.ItemIndex);
+  FTempMouseSettings.TextAltCtrlLeftClick      := TMouseOptButtonAction(dropAltCtrlLeft.ItemIndex);
   FTempMouseSettings.TextShiftLeftClick        := TMouseOptButtonAction(dropShiftLeft.ItemIndex);
   FTempMouseSettings.TextShiftAltLeftClick     := TMouseOptButtonAction(dropShiftAltLeft.ItemIndex);
   FTempMouseSettings.TextShiftCtrlLeftClick    := TMouseOptButtonAction(dropShiftCtrlLeft.ItemIndex);
-  FTempMouseSettings.TextShiftCtrlAltLeftClick := TMouseOptButtonAction(dropShiftAltCtrlLeft.ItemIndex);
+  FTempMouseSettings.TextShiftAltCtrlLeftClick := TMouseOptButtonAction(dropShiftAltCtrlLeft.ItemIndex);
 
   FTempMouseSettings.TextDoubleLeftClick      := IdxToDoubleMouseOptButtonAction(dropLeftDouble.ItemIndex);
   FTempMouseSettings.TextTripleLeftClick      := IdxToDoubleMouseOptButtonAction(dropLeftTriple.ItemIndex);
@@ -339,11 +363,19 @@ begin
   FTempMouseSettings.TextShiftMiddleClick := TMouseOptButtonAction(dropShiftMiddle.ItemIndex);
   FTempMouseSettings.TextAltMiddleClick   := TMouseOptButtonAction(dropAltMiddle.ItemIndex);
   FTempMouseSettings.TextCtrlMiddleClick  := TMouseOptButtonAction(dropCtrlMiddle.ItemIndex);
+  FTempMouseSettings.TextAltCtrlMiddleClick      := TMouseOptButtonAction(dropAltCtrlMiddle.ItemIndex);
+  FTempMouseSettings.TextShiftAltMiddleClick     := TMouseOptButtonAction(dropShiftAltMiddle.ItemIndex);
+  FTempMouseSettings.TextShiftCtrlMiddleClick    := TMouseOptButtonAction(dropShiftCtrlMiddle.ItemIndex);
+  FTempMouseSettings.TextShiftAltCtrlMiddleClick := TMouseOptButtonAction(dropShiftAltCtrlMiddle.ItemIndex);
 
   FTempMouseSettings.Wheel               := TMouseOptWheelAction(dropWheel.ItemIndex);
   FTempMouseSettings.CtrlWheel           := TMouseOptWheelAction(dropCtrlWheel.ItemIndex);
   FTempMouseSettings.AltWheel            := TMouseOptWheelAction(dropAltWheel.ItemIndex);
   FTempMouseSettings.ShiftWheel          := TMouseOptWheelAction(dropShiftWheel.ItemIndex);
+  FTempMouseSettings.AltCtrlWheel        := TMouseOptWheelAction(dropAltCtrlWheel.ItemIndex);
+  FTempMouseSettings.ShiftAltWheel       := TMouseOptWheelAction(dropShiftAltWheel.ItemIndex);
+  FTempMouseSettings.ShiftCtrlWheel      := TMouseOptWheelAction(dropShiftCtrlWheel.ItemIndex);
+  FTempMouseSettings.ShiftAltCtrlWheel   := TMouseOptWheelAction(dropShiftAltCtrlWheel.ItemIndex);
 
   FTempMouseSettings.ResetTextToDefault;
   if FDialog.FindEditor(TEditorMouseOptionsAdvFrame) <> nil then
@@ -464,7 +496,6 @@ begin
   ToolButtonLeftMulti.Caption := dlfMouseSimpleTextSectPageLMulti;
   ToolButtonMiddle.Caption := dlfMouseSimpleTextSectPageBtn;
   ToolBtnWheel.Caption := dlfMouseSimpleTextSectPageWheel;
-  ToolBar1.AnchorSide[akTop].Side := asrBottom;
 
     // left multi click
   lblLeftDouble.Caption        := dlfMouseSimpleTextSectLDoubleLabel;
@@ -480,17 +511,25 @@ begin
   ShiftLeftLabel.Caption        := dlfMouseSimpleTextSectShiftLabel;
   ShiftAltLeftLabel.Caption     := dlfMouseSimpleTextSectShiftAltLabel;
   ShiftCtrlLeftLabel.Caption    := dlfMouseSimpleTextSectShiftCtrlLabel;
-  ShiftCtrlAltLeftLabel.Caption := dlfMouseSimpleTextSectShiftAltCtrlLabel;
+  ShiftAltCtrlLeftLabel.Caption := dlfMouseSimpleTextSectShiftAltCtrlLabel;
     // middle click
   MiddleBtnLabel.Caption     := dlfMouseSimpleTextSectMidLabel;
   ShiftMiddleLabel.Caption   := dlfMouseSimpleTextSectShiftLabel;
   AltMiddleBtnLabel.Caption  := dlfMouseSimpleTextSectAltLabel;
   CtrlMiddleBtnLabel.Caption := dlfMouseSimpleTextSectCtrlLabel;
+  AltCtrlMiddleBtnLabel.Caption      := dlfMouseSimpleTextSectAltCtrlLabel;
+  ShiftAltMiddleBtnLabel.Caption     := dlfMouseSimpleTextSectShiftAltLabel;
+  ShiftCtrlMiddleBtnLabel.Caption    := dlfMouseSimpleTextSectShiftCtrlLabel;
+  ShiftAltCtrlMiddleBtnLabel.Caption := dlfMouseSimpleTextSectShiftAltCtrlLabel;
     // wheel
   WheelBtnLabel.Caption      := dlfMouseSimpleTextSectWheelLabel;
   CtrlWheelBtnLabel.Caption  := dlfMouseSimpleTextSectCtrlWheelLabel;
   AltWheelBtnLabel.Caption   := dlfMouseSimpleTextSectAltWheelLabel;
   ShiftWheelBtnLabel.Caption := dlfMouseSimpleTextShiftSectWheelLabel;
+  AltCtrlWheelBtnLabel.Caption      := dlfMouseSimpleTextSectAltCtrlWheelLabel;
+  ShiftAltWheelBtnLabel.Caption     := dlfMouseSimpleTextSectShiftAltWheelLabel;
+  ShiftCtrlWheelBtnLabel.Caption    := dlfMouseSimpleTextSectShiftCtrlWheelLabel;
+  ShiftAltCtrlWheelBtnLabel.Caption := dlfMouseSimpleTextSectShiftAltCtrlWheelLabel;
 
     // left multi click
   SetupButtonCombo(dropLeftDouble, True);
@@ -512,11 +551,19 @@ begin
   SetupButtonCombo(dropShiftMiddle);
   SetupButtonCombo(dropAltMiddle);
   SetupButtonCombo(dropCtrlMiddle);
+  SetupButtonCombo(dropAltCtrlMiddle);
+  SetupButtonCombo(dropShiftCtrlMiddle);
+  SetupButtonCombo(dropShiftAltMiddle);
+  SetupButtonCombo(dropShiftAltCtrlMiddle);
     // wheel
   SetupWheelCombo(dropWheel);
   SetupWheelCombo(dropCtrlWheel);
   SetupWheelCombo(dropAltWheel);
   SetupWheelCombo(dropShiftWheel);
+  SetupWheelCombo(dropAltCtrlWheel);
+  SetupWheelCombo(dropShiftAltWheel);
+  SetupWheelCombo(dropShiftCtrlWheel);
+  SetupWheelCombo(dropShiftAltCtrlWheel);
 
   WarnLabel.Caption := dlfMouseSimpleWarning;
   DiffLabel.Caption := dlfMouseSimpleDiff;
@@ -558,11 +605,11 @@ begin
 
   dropAltLeft.ItemIndex          := ord(FTempMouseSettings.TextAltLeftClick);
   dropCtrlLeft.ItemIndex         := ord(FTempMouseSettings.TextCtrlLeftClick);
-  dropAltCtrlLeft.ItemIndex      := ord(FTempMouseSettings.TextCtrlAltLeftClick);
+  dropAltCtrlLeft.ItemIndex      := ord(FTempMouseSettings.TextAltCtrlLeftClick);
   dropShiftLeft.ItemIndex        := ord(FTempMouseSettings.TextShiftLeftClick);
   dropShiftAltLeft.ItemIndex     := ord(FTempMouseSettings.TextShiftAltLeftClick);
   dropShiftCtrlLeft.ItemIndex    := ord(FTempMouseSettings.TextShiftCtrlLeftClick);
-  dropShiftAltCtrlLeft.ItemIndex := ord(FTempMouseSettings.TextShiftCtrlAltLeftClick);
+  dropShiftAltCtrlLeft.ItemIndex := ord(FTempMouseSettings.TextShiftAltCtrlLeftClick);
 
   // 1,2&3 are mouse selection, and not avail for double clicks
   dropLeftDouble.ItemIndex      := Max(ord(FTempMouseSettings.TextDoubleLeftClick)-3,0);
@@ -576,11 +623,19 @@ begin
   dropShiftMiddle.ItemIndex := ord(FTempMouseSettings.TextShiftMiddleClick);
   dropAltMiddle.ItemIndex   := ord(FTempMouseSettings.TextAltMiddleClick);
   dropCtrlMiddle.ItemIndex  := ord(FTempMouseSettings.TextCtrlMiddleClick);
+  dropAltCtrlMiddle.ItemIndex      := ord(FTempMouseSettings.TextAltCtrlMiddleClick);
+  dropShiftCtrlMiddle.ItemIndex    := ord(FTempMouseSettings.TextShiftCtrlMiddleClick);
+  dropShiftAltMiddle.ItemIndex     := ord(FTempMouseSettings.TextShiftAltMiddleClick);
+  dropShiftAltCtrlMiddle.ItemIndex := ord(FTempMouseSettings.TextShiftAltCtrlMiddleClick);
 
   dropWheel.ItemIndex      := ord(FTempMouseSettings.Wheel);
   dropCtrlWheel.ItemIndex  := ord(FTempMouseSettings.CtrlWheel);
   dropAltWheel.ItemIndex   := ord(FTempMouseSettings.AltWheel);
   dropShiftWheel.ItemIndex := ord(FTempMouseSettings.ShiftWheel);
+  dropAltCtrlWheel.ItemIndex      := ord(FTempMouseSettings.AltWheel);
+  dropShiftAltWheel.ItemIndex     := ord(FTempMouseSettings.ShiftAltWheel);
+  dropShiftCtrlWheel.ItemIndex    := ord(FTempMouseSettings.ShiftCtrlWheel);
+  dropShiftAltCtrlWheel.ItemIndex := ord(FTempMouseSettings.ShiftAltCtrlWheel);
 
   Dec(FInClickHandler);
   UpdateButtons;
