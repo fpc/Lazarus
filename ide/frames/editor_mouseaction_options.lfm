@@ -745,7 +745,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
           ClientHeight = 243
           ClientWidth = 636
           TabOrder = 0
-          object MiddleBtnLabel: TLabel
+          object lblMiddle: TLabel
             AnchorSideLeft.Control = ScrollBox1
             AnchorSideTop.Control = dropMiddle
             AnchorSideTop.Side = asrCenter
@@ -756,7 +756,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 9
             Width = 84
             BorderSpacing.Left = 6
-            Caption = 'MiddleBtnLabel'
+            Caption = 'lblMiddle'
             ParentColor = False
           end
           object dropMiddle: TComboBox
@@ -778,9 +778,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 1
           end
-          object CtrlMiddleBtnLabel: TLabel
+          object lblMiddleCtrl: TLabel
             AnchorSideLeft.Control = ScrollBox1
-            AnchorSideTop.Control = dropCtrlMiddle
+            AnchorSideTop.Control = dropMiddleCtrl
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -789,12 +789,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 96
             Width = 103
             BorderSpacing.Left = 6
-            Caption = 'CtrlMiddleBtnLabel'
+            Caption = 'lblMiddleCtrl'
             ParentColor = False
           end
-          object dropCtrlMiddle: TComboBox
+          object dropMiddleCtrl: TComboBox
             AnchorSideLeft.Control = dropMiddle
-            AnchorSideTop.Control = dropAltMiddle
+            AnchorSideTop.Control = dropMiddleAlt
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -811,9 +811,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 0
           end
-          object dropAltMiddle: TComboBox
+          object dropMiddleAlt: TComboBox
             AnchorSideLeft.Control = dropMiddle
-            AnchorSideTop.Control = dropShiftMiddle
+            AnchorSideTop.Control = dropMiddleShift
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -830,9 +830,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 2
           end
-          object AltMiddleBtnLabel: TLabel
+          object lblMiddleAlt: TLabel
             AnchorSideLeft.Control = ScrollBox1
-            AnchorSideTop.Control = dropAltMiddle
+            AnchorSideTop.Control = dropMiddleAlt
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -841,10 +841,10 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 67
             Width = 99
             BorderSpacing.Left = 6
-            Caption = 'AltMiddleBtnLabel'
+            Caption = 'lblMiddleAlt'
             ParentColor = False
           end
-          object dropShiftMiddle: TComboBox
+          object dropMiddleShift: TComboBox
             AnchorSideLeft.Control = dropMiddle
             AnchorSideTop.Control = dropMiddle
             AnchorSideTop.Side = asrBottom
@@ -863,9 +863,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 3
           end
-          object ShiftMiddleLabel: TLabel
+          object lblMiddleShift: TLabel
             AnchorSideLeft.Control = ScrollBox1
-            AnchorSideTop.Control = dropShiftMiddle
+            AnchorSideTop.Control = dropMiddleShift
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -874,12 +874,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 38
             Width = 90
             BorderSpacing.Left = 6
-            Caption = 'ShiftMiddleLabel'
+            Caption = 'lblMiddleShift'
             ParentColor = False
           end
-          object dropAltCtrlMiddle: TComboBox
+          object dropMiddleAltCtrl: TComboBox
             AnchorSideLeft.Control = dropMiddle
-            AnchorSideTop.Control = dropCtrlMiddle
+            AnchorSideTop.Control = dropMiddleCtrl
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -896,9 +896,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 4
           end
-          object dropShiftAltMiddle: TComboBox
+          object dropMiddleShiftAlt: TComboBox
             AnchorSideLeft.Control = dropMiddle
-            AnchorSideTop.Control = dropAltCtrlMiddle
+            AnchorSideTop.Control = dropMiddleAltCtrl
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -915,9 +915,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 5
           end
-          object dropShiftCtrlMiddle: TComboBox
+          object dropMiddleShiftCtrl: TComboBox
             AnchorSideLeft.Control = dropMiddle
-            AnchorSideTop.Control = dropShiftAltMiddle
+            AnchorSideTop.Control = dropMiddleShiftAlt
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -934,9 +934,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 6
           end
-          object dropShiftAltCtrlMiddle: TComboBox
+          object dropMiddleShiftAltCtrl: TComboBox
             AnchorSideLeft.Control = dropMiddle
-            AnchorSideTop.Control = dropShiftCtrlMiddle
+            AnchorSideTop.Control = dropMiddleShiftCtrl
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -953,9 +953,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 7
           end
-          object AltCtrlMiddleBtnLabel: TLabel
+          object lblMiddleAltCtrl: TLabel
             AnchorSideLeft.Control = ScrollBox1
-            AnchorSideTop.Control = dropAltCtrlMiddle
+            AnchorSideTop.Control = dropMiddleAltCtrl
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -964,12 +964,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 125
             Width = 118
             BorderSpacing.Left = 6
-            Caption = 'AltCtrlMiddleBtnLabel'
+            Caption = 'lblMiddleAltCtrl'
             ParentColor = False
           end
-          object ShiftAltMiddleBtnLabel: TLabel
+          object lblMiddleShiftAlt: TLabel
             AnchorSideLeft.Control = ScrollBox1
-            AnchorSideTop.Control = dropShiftAltMiddle
+            AnchorSideTop.Control = dropMiddleShiftAlt
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -978,12 +978,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 154
             Width = 123
             BorderSpacing.Left = 6
-            Caption = 'ShiftAltMiddleBtnLabel'
+            Caption = 'lblMiddleShiftAlt'
             ParentColor = False
           end
-          object ShiftCtrlMiddleBtnLabel: TLabel
+          object lblMiddleShiftCtrl: TLabel
             AnchorSideLeft.Control = ScrollBox1
-            AnchorSideTop.Control = dropShiftCtrlMiddle
+            AnchorSideTop.Control = dropMiddleShiftCtrl
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -992,12 +992,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 183
             Width = 127
             BorderSpacing.Left = 6
-            Caption = 'ShiftCtrlMiddleBtnLabel'
+            Caption = 'lblMiddleShiftCtrl'
             ParentColor = False
           end
-          object ShiftAltCtrlMiddleBtnLabel: TLabel
+          object lblMiddleShiftAltCtrl: TLabel
             AnchorSideLeft.Control = ScrollBox1
-            AnchorSideTop.Control = dropShiftAltCtrlMiddle
+            AnchorSideTop.Control = dropMiddleShiftAltCtrl
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox1
             AnchorSideRight.Side = asrBottom
@@ -1006,7 +1006,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 212
             Width = 142
             BorderSpacing.Left = 6
-            Caption = 'ShiftAltCtrlMiddleBtnLabel'
+            Caption = 'lblMiddleShiftAltCtrl'
             ParentColor = False
           end
         end
@@ -1043,9 +1043,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 0
           end
-          object dropCtrlWheel: TComboBox
+          object dropWheelCtrl: TComboBox
             AnchorSideLeft.Control = dropWheel
-            AnchorSideTop.Control = dropAltWheel
+            AnchorSideTop.Control = dropWheelAlt
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox2
             AnchorSideRight.Side = asrBottom
@@ -1062,9 +1062,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 1
           end
-          object dropAltWheel: TComboBox
+          object dropWheelAlt: TComboBox
             AnchorSideLeft.Control = dropWheel
-            AnchorSideTop.Control = dropShiftWheel
+            AnchorSideTop.Control = dropWheelShift
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox2
             AnchorSideRight.Side = asrBottom
@@ -1081,7 +1081,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 2
           end
-          object dropShiftWheel: TComboBox
+          object dropWheelShift: TComboBox
             AnchorSideLeft.Control = dropWheel
             AnchorSideTop.Control = dropWheel
             AnchorSideTop.Side = asrBottom
@@ -1100,7 +1100,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 3
           end
-          object WheelBtnLabel: TLabel
+          object lblWheel: TLabel
             AnchorSideLeft.Control = ScrollBox2
             AnchorSideTop.Control = dropWheel
             AnchorSideTop.Side = asrCenter
@@ -1111,12 +1111,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 9
             Width = 80
             BorderSpacing.Left = 6
-            Caption = 'WheelBtnLabel'
+            Caption = 'lblWheel'
             ParentColor = False
           end
-          object CtrlWheelBtnLabel: TLabel
+          object lblWheelCtrl: TLabel
             AnchorSideLeft.Control = ScrollBox2
-            AnchorSideTop.Control = dropCtrlWheel
+            AnchorSideTop.Control = dropWheelCtrl
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox2
             AnchorSideRight.Side = asrBottom
@@ -1125,12 +1125,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 96
             Width = 99
             BorderSpacing.Left = 6
-            Caption = 'CtrlWheelBtnLabel'
+            Caption = 'lblWheelCtrl'
             ParentColor = False
           end
-          object AltWheelBtnLabel: TLabel
+          object lblWheelAlt: TLabel
             AnchorSideLeft.Control = ScrollBox2
-            AnchorSideTop.Control = dropAltWheel
+            AnchorSideTop.Control = dropWheelAlt
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox2
             AnchorSideRight.Side = asrBottom
@@ -1139,12 +1139,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 67
             Width = 95
             BorderSpacing.Left = 6
-            Caption = 'AltWheelBtnLabel'
+            Caption = 'lblWheelAlt'
             ParentColor = False
           end
-          object ShiftWheelBtnLabel: TLabel
+          object lblWheelShift: TLabel
             AnchorSideLeft.Control = ScrollBox2
-            AnchorSideTop.Control = dropShiftWheel
+            AnchorSideTop.Control = dropWheelShift
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox2
             AnchorSideRight.Side = asrBottom
@@ -1153,12 +1153,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 38
             Width = 104
             BorderSpacing.Left = 6
-            Caption = 'ShiftWheelBtnLabel'
+            Caption = 'lblWheelShift'
             ParentColor = False
           end
-          object dropAltCtrlWheel: TComboBox
+          object dropWheelAltCtrl: TComboBox
             AnchorSideLeft.Control = dropWheel
-            AnchorSideTop.Control = dropCtrlWheel
+            AnchorSideTop.Control = dropWheelCtrl
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox2
             AnchorSideRight.Side = asrBottom
@@ -1175,9 +1175,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 4
           end
-          object dropShiftAltWheel: TComboBox
+          object dropWheelShiftAlt: TComboBox
             AnchorSideLeft.Control = dropWheel
-            AnchorSideTop.Control = dropAltCtrlWheel
+            AnchorSideTop.Control = dropWheelAltCtrl
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox2
             AnchorSideRight.Side = asrBottom
@@ -1194,9 +1194,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 5
           end
-          object dropShiftCtrlWheel: TComboBox
+          object dropWheelShiftCtrl: TComboBox
             AnchorSideLeft.Control = dropWheel
-            AnchorSideTop.Control = dropShiftAltWheel
+            AnchorSideTop.Control = dropWheelShiftAlt
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox2
             AnchorSideRight.Side = asrBottom
@@ -1213,9 +1213,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 6
           end
-          object dropShiftAltCtrlWheel: TComboBox
+          object dropWheelShiftAltCtrl: TComboBox
             AnchorSideLeft.Control = dropWheel
-            AnchorSideTop.Control = dropShiftCtrlWheel
+            AnchorSideTop.Control = dropWheelShiftCtrl
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = ScrollBox2
             AnchorSideRight.Side = asrBottom
@@ -1232,9 +1232,9 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Style = csDropDownList
             TabOrder = 7
           end
-          object AltCtrlWheelBtnLabel: TLabel
+          object lblWheelAltCtrl: TLabel
             AnchorSideLeft.Control = ScrollBox2
-            AnchorSideTop.Control = dropAltCtrlWheel
+            AnchorSideTop.Control = dropWheelAltCtrl
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox2
             AnchorSideRight.Side = asrBottom
@@ -1243,12 +1243,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 125
             Width = 114
             BorderSpacing.Left = 6
-            Caption = 'AltCtrlWheelBtnLabel'
+            Caption = 'lblWheelAltCtrl'
             ParentColor = False
           end
-          object ShiftAltWheelBtnLabel: TLabel
+          object lblWheelShiftAlt: TLabel
             AnchorSideLeft.Control = ScrollBox2
-            AnchorSideTop.Control = dropShiftAltWheel
+            AnchorSideTop.Control = dropWheelShiftAlt
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox2
             AnchorSideRight.Side = asrBottom
@@ -1257,12 +1257,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 154
             Width = 119
             BorderSpacing.Left = 6
-            Caption = 'ShiftAltWheelBtnLabel'
+            Caption = 'lblWheelShiftAlt'
             ParentColor = False
           end
-          object ShiftCtrlWheelBtnLabel: TLabel
+          object lblWheelShiftCtrl: TLabel
             AnchorSideLeft.Control = ScrollBox2
-            AnchorSideTop.Control = dropShiftCtrlWheel
+            AnchorSideTop.Control = dropWheelShiftCtrl
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox2
             AnchorSideRight.Side = asrBottom
@@ -1271,12 +1271,12 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 183
             Width = 123
             BorderSpacing.Left = 6
-            Caption = 'ShiftCtrlWheelBtnLabel'
+            Caption = 'lblWheelShiftCtrl'
             ParentColor = False
           end
-          object ShiftAltCtrlWheelBtnLabel: TLabel
+          object lblWheelShiftAltCtrl: TLabel
             AnchorSideLeft.Control = ScrollBox2
-            AnchorSideTop.Control = dropShiftAltCtrlWheel
+            AnchorSideTop.Control = dropWheelShiftAltCtrl
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = ScrollBox2
             AnchorSideRight.Side = asrBottom
@@ -1285,7 +1285,7 @@ inherited EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Top = 212
             Width = 138
             BorderSpacing.Left = 6
-            Caption = 'ShiftAltCtrlWheelBtnLabel'
+            Caption = 'lblWheelShiftAltCtrl'
             ParentColor = False
           end
         end

@@ -33,21 +33,38 @@ type
   { TEditorMouseOptionsFrame }
 
   TEditorMouseOptionsFrame = class(TAbstractIDEOptionsEditor)
-    AltCtrlMiddleBtnLabel: TLabel;
-    AltCtrlWheelBtnLabel: TLabel;
-    ShiftAltWheelBtnLabel: TLabel;
-    ShiftCtrlWheelBtnLabel: TLabel;
-    ShiftAltCtrlWheelBtnLabel: TLabel;
-    dropAltCtrlWheel: TComboBox;
-    dropShiftAltWheel: TComboBox;
-    dropShiftCtrlWheel: TComboBox;
-    dropShiftAltCtrlWheel: TComboBox;
-    ShiftAltMiddleBtnLabel: TLabel;
-    dropAltCtrlMiddle: TComboBox;
-    dropShiftAltMiddle: TComboBox;
-    dropShiftCtrlMiddle: TComboBox;
-    dropShiftAltCtrlMiddle: TComboBox;
-    dropShiftMiddle: TComboBox;
+    lblWheel: TLabel;
+    lblWheelAlt: TLabel;
+    lblWheelCtrl: TLabel;
+    lblWheelShift: TLabel;
+    lblWheelAltCtrl: TLabel;
+    lblWheelShiftAlt: TLabel;
+    lblWheelShiftCtrl: TLabel;
+    lblWheelShiftAltCtrl: TLabel;
+    dropWheel: TComboBox;
+    dropWheelAlt: TComboBox;
+    dropWheelCtrl: TComboBox;
+    dropWheelShift: TComboBox;
+    dropWheelAltCtrl: TComboBox;
+    dropWheelShiftAlt: TComboBox;
+    dropWheelShiftCtrl: TComboBox;
+    dropWheelShiftAltCtrl: TComboBox;
+    lblMiddle: TLabel;
+    lblMiddleAlt: TLabel;
+    lblMiddleCtrl: TLabel;
+    lblMiddleShift: TLabel;
+    lblMiddleAltCtrl: TLabel;
+    lblMiddleShiftAlt: TLabel;
+    lblMiddleShiftCtrl: TLabel;
+    lblMiddleShiftAltCtrl: TLabel;
+    dropMiddle: TComboBox;
+    dropMiddleAlt: TComboBox;
+    dropMiddleCtrl: TComboBox;
+    dropMiddleShift: TComboBox;
+    dropMiddleAltCtrl: TComboBox;
+    dropMiddleShiftAlt: TComboBox;
+    dropMiddleShiftCtrl: TComboBox;
+    dropMiddleShiftAltCtrl: TComboBox;
     lblLeftDouble: TLabel;
     lblLeftTriple: TLabel;
     lblLeftQuad: TLabel;
@@ -60,9 +77,6 @@ type
     dropLeftShiftDouble: TComboBox;
     dropLeftAltDouble: TComboBox;
     dropLeftCtrlDouble: TComboBox;
-    ShiftCtrlMiddleBtnLabel: TLabel;
-    ShiftAltCtrlMiddleBtnLabel: TLabel;
-    ShiftMiddleLabel: TLabel;
     ShiftLeftLabel: TLabel;
     AltCtrlLeftLabel: TLabel;
     ShiftCtrlLeftLabel: TLabel;
@@ -71,14 +85,12 @@ type
     BottomDivider: TBevel;
     chkPredefinedScheme: TCheckBox;
     AltLeftLabel: TLabel;
-    AltMiddleBtnLabel: TLabel;
     dropAltLeft: TComboBox;
     dropAltCtrlLeft: TComboBox;
     dropShiftAltLeft: TComboBox;
     dropShiftCtrlLeft: TComboBox;
     dropShiftAltCtrlLeft: TComboBox;
     dropShiftLeft: TComboBox;
-    dropAltMiddle: TComboBox;
     PageLeftDbl: TPage;
     PageLeftMod: TPage;
     ScrollBox1: TScrollBox;
@@ -88,21 +100,13 @@ type
     TextDividerLabel: TDividerBevel;
     GutterDividerLabel: TDividerBevel;
     GenericDividerLabel: TDividerBevel;
-    dropMiddle: TComboBox;
     dropCtrlLeft: TComboBox;
     CtrLLeftLabel: TLabel;
     DiffLabel: TLabel;
-    dropCtrlMiddle: TComboBox;
-    dropWheel: TComboBox;
-    dropCtrlWheel: TComboBox;
-    dropAltWheel: TComboBox;
-    dropShiftWheel: TComboBox;
     dropUserSchemes: TComboBox;
     GutterLeftRadio1: TRadioButton;
     GutterLeftRadio2: TRadioButton;
     HideMouseCheckBox: TCheckBox;
-    MiddleBtnLabel: TLabel;
-    CtrlMiddleBtnLabel: TLabel;
     Notebook1: TNotebook;
     PageMiddle: TPage;
     PageWheel: TPage;
@@ -111,10 +115,6 @@ type
     ToolBtnWheel: TToolButton;
     ToolButtonLeftMod: TToolButton;
     ToolButtonLeftMulti: TToolButton;
-    WheelBtnLabel: TLabel;
-    CtrlWheelBtnLabel: TLabel;
-    AltWheelBtnLabel: TLabel;
-    ShiftWheelBtnLabel: TLabel;
     pnlBottom: TPanel;
     PanelGutter: TPanel;
     PanelTextCheckBox: TPanel;
@@ -295,22 +295,22 @@ begin
     (FTempMouseSettings.TextCtrlDoubleLeftClick  = IdxToDoubleMouseOptButtonAction(dropLeftCtrlDouble.ItemIndex)) and
 
     (FTempMouseSettings.TextMiddleClick      = TMouseOptButtonAction(dropMiddle.ItemIndex)) and
-    (FTempMouseSettings.TextShiftMiddleClick = TMouseOptButtonAction(dropShiftMiddle.ItemIndex)) and
-    (FTempMouseSettings.TextAltMiddleClick   = TMouseOptButtonAction(dropAltMiddle.ItemIndex)) and
-    (FTempMouseSettings.TextCtrlMiddleClick  = TMouseOptButtonAction(dropCtrlMiddle.ItemIndex)) and
-    (FTempMouseSettings.TextAltCtrlMiddleClick      = TMouseOptButtonAction(dropAltCtrlMiddle.ItemIndex)) and
-    (FTempMouseSettings.TextShiftAltMiddleClick     = TMouseOptButtonAction(dropShiftAltMiddle.ItemIndex)) and
-    (FTempMouseSettings.TextShiftCtrlMiddleClick    = TMouseOptButtonAction(dropShiftCtrlMiddle.ItemIndex)) and
-    (FTempMouseSettings.TextShiftAltCtrlMiddleClick = TMouseOptButtonAction(dropShiftAltCtrlMiddle.ItemIndex)) and
+    (FTempMouseSettings.TextShiftMiddleClick = TMouseOptButtonAction(dropMiddleShift.ItemIndex)) and
+    (FTempMouseSettings.TextAltMiddleClick   = TMouseOptButtonAction(dropMiddleAlt.ItemIndex)) and
+    (FTempMouseSettings.TextCtrlMiddleClick  = TMouseOptButtonAction(dropMiddleCtrl.ItemIndex)) and
+    (FTempMouseSettings.TextAltCtrlMiddleClick      = TMouseOptButtonAction(dropMiddleAltCtrl.ItemIndex)) and
+    (FTempMouseSettings.TextShiftAltMiddleClick     = TMouseOptButtonAction(dropMiddleShiftAlt.ItemIndex)) and
+    (FTempMouseSettings.TextShiftCtrlMiddleClick    = TMouseOptButtonAction(dropMiddleShiftCtrl.ItemIndex)) and
+    (FTempMouseSettings.TextShiftAltCtrlMiddleClick = TMouseOptButtonAction(dropMiddleShiftAltCtrl.ItemIndex)) and
 
     (FTempMouseSettings.Wheel      = TMouseOptWheelAction(dropWheel.ItemIndex)) and
-    (FTempMouseSettings.CtrlWheel  = TMouseOptWheelAction(dropCtrlWheel.ItemIndex)) and
-    (FTempMouseSettings.AltWheel   = TMouseOptWheelAction(dropAltWheel.ItemIndex)) and
-    (FTempMouseSettings.ShiftWheel = TMouseOptWheelAction(dropShiftWheel.ItemIndex)) and
-    (FTempMouseSettings.AltCtrlWheel        = TMouseOptWheelAction(dropAltCtrlWheel.ItemIndex)) and
-    (FTempMouseSettings.ShiftAltWheel       = TMouseOptWheelAction(dropShiftAltWheel.ItemIndex)) and
-    (FTempMouseSettings.ShiftCtrlWheel      = TMouseOptWheelAction(dropShiftCtrlWheel.ItemIndex)) and
-    (FTempMouseSettings.ShiftAltCtrlWheel   = TMouseOptWheelAction(dropShiftAltCtrlWheel.ItemIndex))
+    (FTempMouseSettings.CtrlWheel  = TMouseOptWheelAction(dropWheelCtrl.ItemIndex)) and
+    (FTempMouseSettings.AltWheel   = TMouseOptWheelAction(dropWheelAlt.ItemIndex)) and
+    (FTempMouseSettings.ShiftWheel = TMouseOptWheelAction(dropWheelShift.ItemIndex)) and
+    (FTempMouseSettings.AltCtrlWheel        = TMouseOptWheelAction(dropWheelAltCtrl.ItemIndex)) and
+    (FTempMouseSettings.ShiftAltWheel       = TMouseOptWheelAction(dropWheelShiftAlt.ItemIndex)) and
+    (FTempMouseSettings.ShiftCtrlWheel      = TMouseOptWheelAction(dropWheelShiftCtrl.ItemIndex)) and
+    (FTempMouseSettings.ShiftAltCtrlWheel   = TMouseOptWheelAction(dropWheelShiftAltCtrl.ItemIndex))
   );
 end;
 
@@ -360,22 +360,22 @@ begin
   FTempMouseSettings.TextCtrlDoubleLeftClick  := IdxToDoubleMouseOptButtonAction(dropLeftCtrlDouble.ItemIndex);
 
   FTempMouseSettings.TextMiddleClick      := TMouseOptButtonAction(dropMiddle.ItemIndex);
-  FTempMouseSettings.TextShiftMiddleClick := TMouseOptButtonAction(dropShiftMiddle.ItemIndex);
-  FTempMouseSettings.TextAltMiddleClick   := TMouseOptButtonAction(dropAltMiddle.ItemIndex);
-  FTempMouseSettings.TextCtrlMiddleClick  := TMouseOptButtonAction(dropCtrlMiddle.ItemIndex);
-  FTempMouseSettings.TextAltCtrlMiddleClick      := TMouseOptButtonAction(dropAltCtrlMiddle.ItemIndex);
-  FTempMouseSettings.TextShiftAltMiddleClick     := TMouseOptButtonAction(dropShiftAltMiddle.ItemIndex);
-  FTempMouseSettings.TextShiftCtrlMiddleClick    := TMouseOptButtonAction(dropShiftCtrlMiddle.ItemIndex);
-  FTempMouseSettings.TextShiftAltCtrlMiddleClick := TMouseOptButtonAction(dropShiftAltCtrlMiddle.ItemIndex);
+  FTempMouseSettings.TextShiftMiddleClick := TMouseOptButtonAction(dropMiddleShift.ItemIndex);
+  FTempMouseSettings.TextAltMiddleClick   := TMouseOptButtonAction(dropMiddleAlt.ItemIndex);
+  FTempMouseSettings.TextCtrlMiddleClick  := TMouseOptButtonAction(dropMiddleCtrl.ItemIndex);
+  FTempMouseSettings.TextAltCtrlMiddleClick      := TMouseOptButtonAction(dropMiddleAltCtrl.ItemIndex);
+  FTempMouseSettings.TextShiftAltMiddleClick     := TMouseOptButtonAction(dropMiddleShiftAlt.ItemIndex);
+  FTempMouseSettings.TextShiftCtrlMiddleClick    := TMouseOptButtonAction(dropMiddleShiftCtrl.ItemIndex);
+  FTempMouseSettings.TextShiftAltCtrlMiddleClick := TMouseOptButtonAction(dropMiddleShiftAltCtrl.ItemIndex);
 
   FTempMouseSettings.Wheel               := TMouseOptWheelAction(dropWheel.ItemIndex);
-  FTempMouseSettings.CtrlWheel           := TMouseOptWheelAction(dropCtrlWheel.ItemIndex);
-  FTempMouseSettings.AltWheel            := TMouseOptWheelAction(dropAltWheel.ItemIndex);
-  FTempMouseSettings.ShiftWheel          := TMouseOptWheelAction(dropShiftWheel.ItemIndex);
-  FTempMouseSettings.AltCtrlWheel        := TMouseOptWheelAction(dropAltCtrlWheel.ItemIndex);
-  FTempMouseSettings.ShiftAltWheel       := TMouseOptWheelAction(dropShiftAltWheel.ItemIndex);
-  FTempMouseSettings.ShiftCtrlWheel      := TMouseOptWheelAction(dropShiftCtrlWheel.ItemIndex);
-  FTempMouseSettings.ShiftAltCtrlWheel   := TMouseOptWheelAction(dropShiftAltCtrlWheel.ItemIndex);
+  FTempMouseSettings.CtrlWheel           := TMouseOptWheelAction(dropWheelCtrl.ItemIndex);
+  FTempMouseSettings.AltWheel            := TMouseOptWheelAction(dropWheelAlt.ItemIndex);
+  FTempMouseSettings.ShiftWheel          := TMouseOptWheelAction(dropWheelShift.ItemIndex);
+  FTempMouseSettings.AltCtrlWheel        := TMouseOptWheelAction(dropWheelAltCtrl.ItemIndex);
+  FTempMouseSettings.ShiftAltWheel       := TMouseOptWheelAction(dropWheelShiftAlt.ItemIndex);
+  FTempMouseSettings.ShiftCtrlWheel      := TMouseOptWheelAction(dropWheelShiftCtrl.ItemIndex);
+  FTempMouseSettings.ShiftAltCtrlWheel   := TMouseOptWheelAction(dropWheelShiftAltCtrl.ItemIndex);
 
   FTempMouseSettings.ResetTextToDefault;
   if FDialog.FindEditor(TEditorMouseOptionsAdvFrame) <> nil then
@@ -513,23 +513,23 @@ begin
   ShiftCtrlLeftLabel.Caption    := dlfMouseSimpleTextSectShiftCtrlLabel;
   ShiftAltCtrlLeftLabel.Caption := dlfMouseSimpleTextSectShiftAltCtrlLabel;
     // middle click
-  MiddleBtnLabel.Caption     := dlfMouseSimpleTextSectMidLabel;
-  ShiftMiddleLabel.Caption   := dlfMouseSimpleTextSectShiftLabel;
-  AltMiddleBtnLabel.Caption  := dlfMouseSimpleTextSectAltLabel;
-  CtrlMiddleBtnLabel.Caption := dlfMouseSimpleTextSectCtrlLabel;
-  AltCtrlMiddleBtnLabel.Caption      := dlfMouseSimpleTextSectAltCtrlLabel;
-  ShiftAltMiddleBtnLabel.Caption     := dlfMouseSimpleTextSectShiftAltLabel;
-  ShiftCtrlMiddleBtnLabel.Caption    := dlfMouseSimpleTextSectShiftCtrlLabel;
-  ShiftAltCtrlMiddleBtnLabel.Caption := dlfMouseSimpleTextSectShiftAltCtrlLabel;
+  lblMiddle.Caption     := dlfMouseSimpleTextSectMidLabel;
+  lblMiddleShift.Caption   := dlfMouseSimpleTextSectShiftLabel;
+  lblMiddleAlt.Caption  := dlfMouseSimpleTextSectAltLabel;
+  lblMiddleCtrl.Caption := dlfMouseSimpleTextSectCtrlLabel;
+  lblMiddleAltCtrl.Caption      := dlfMouseSimpleTextSectAltCtrlLabel;
+  lblMiddleShiftAlt.Caption     := dlfMouseSimpleTextSectShiftAltLabel;
+  lblMiddleShiftCtrl.Caption    := dlfMouseSimpleTextSectShiftCtrlLabel;
+  lblMiddleShiftAltCtrl.Caption := dlfMouseSimpleTextSectShiftAltCtrlLabel;
     // wheel
-  WheelBtnLabel.Caption      := dlfMouseSimpleTextSectWheelLabel;
-  CtrlWheelBtnLabel.Caption  := dlfMouseSimpleTextSectCtrlWheelLabel;
-  AltWheelBtnLabel.Caption   := dlfMouseSimpleTextSectAltWheelLabel;
-  ShiftWheelBtnLabel.Caption := dlfMouseSimpleTextShiftSectWheelLabel;
-  AltCtrlWheelBtnLabel.Caption      := dlfMouseSimpleTextSectAltCtrlWheelLabel;
-  ShiftAltWheelBtnLabel.Caption     := dlfMouseSimpleTextSectShiftAltWheelLabel;
-  ShiftCtrlWheelBtnLabel.Caption    := dlfMouseSimpleTextSectShiftCtrlWheelLabel;
-  ShiftAltCtrlWheelBtnLabel.Caption := dlfMouseSimpleTextSectShiftAltCtrlWheelLabel;
+  lblWheel.Caption      := dlfMouseSimpleTextSectWheelLabel;
+  lblWheelCtrl.Caption  := dlfMouseSimpleTextSectCtrlWheelLabel;
+  lblWheelAlt.Caption   := dlfMouseSimpleTextSectAltWheelLabel;
+  lblWheelShift.Caption := dlfMouseSimpleTextShiftSectWheelLabel;
+  lblWheelAltCtrl.Caption      := dlfMouseSimpleTextSectAltCtrlWheelLabel;
+  lblWheelShiftAlt.Caption     := dlfMouseSimpleTextSectShiftAltWheelLabel;
+  lblWheelShiftCtrl.Caption    := dlfMouseSimpleTextSectShiftCtrlWheelLabel;
+  lblWheelShiftAltCtrl.Caption := dlfMouseSimpleTextSectShiftAltCtrlWheelLabel;
 
     // left multi click
   SetupButtonCombo(dropLeftDouble, True);
@@ -548,22 +548,22 @@ begin
   SetupButtonCombo(dropShiftAltCtrlLeft);
     // middle click
   SetupButtonCombo(dropMiddle);
-  SetupButtonCombo(dropShiftMiddle);
-  SetupButtonCombo(dropAltMiddle);
-  SetupButtonCombo(dropCtrlMiddle);
-  SetupButtonCombo(dropAltCtrlMiddle);
-  SetupButtonCombo(dropShiftCtrlMiddle);
-  SetupButtonCombo(dropShiftAltMiddle);
-  SetupButtonCombo(dropShiftAltCtrlMiddle);
+  SetupButtonCombo(dropMiddleShift);
+  SetupButtonCombo(dropMiddleAlt);
+  SetupButtonCombo(dropMiddleCtrl);
+  SetupButtonCombo(dropMiddleAltCtrl);
+  SetupButtonCombo(dropMiddleShiftCtrl);
+  SetupButtonCombo(dropMiddleShiftAlt);
+  SetupButtonCombo(dropMiddleShiftAltCtrl);
     // wheel
   SetupWheelCombo(dropWheel);
-  SetupWheelCombo(dropCtrlWheel);
-  SetupWheelCombo(dropAltWheel);
-  SetupWheelCombo(dropShiftWheel);
-  SetupWheelCombo(dropAltCtrlWheel);
-  SetupWheelCombo(dropShiftAltWheel);
-  SetupWheelCombo(dropShiftCtrlWheel);
-  SetupWheelCombo(dropShiftAltCtrlWheel);
+  SetupWheelCombo(dropWheelCtrl);
+  SetupWheelCombo(dropWheelAlt);
+  SetupWheelCombo(dropWheelShift);
+  SetupWheelCombo(dropWheelAltCtrl);
+  SetupWheelCombo(dropWheelShiftAlt);
+  SetupWheelCombo(dropWheelShiftCtrl);
+  SetupWheelCombo(dropWheelShiftAltCtrl);
 
   WarnLabel.Caption := dlfMouseSimpleWarning;
   DiffLabel.Caption := dlfMouseSimpleDiff;
@@ -620,22 +620,22 @@ begin
   dropLeftCtrlDouble.ItemIndex  := Max(ord(FTempMouseSettings.TextCtrlDoubleLeftClick)-3,0);
 
   dropMiddle.ItemIndex      := ord(FTempMouseSettings.TextMiddleClick);
-  dropShiftMiddle.ItemIndex := ord(FTempMouseSettings.TextShiftMiddleClick);
-  dropAltMiddle.ItemIndex   := ord(FTempMouseSettings.TextAltMiddleClick);
-  dropCtrlMiddle.ItemIndex  := ord(FTempMouseSettings.TextCtrlMiddleClick);
-  dropAltCtrlMiddle.ItemIndex      := ord(FTempMouseSettings.TextAltCtrlMiddleClick);
-  dropShiftCtrlMiddle.ItemIndex    := ord(FTempMouseSettings.TextShiftCtrlMiddleClick);
-  dropShiftAltMiddle.ItemIndex     := ord(FTempMouseSettings.TextShiftAltMiddleClick);
-  dropShiftAltCtrlMiddle.ItemIndex := ord(FTempMouseSettings.TextShiftAltCtrlMiddleClick);
+  dropMiddleShift.ItemIndex := ord(FTempMouseSettings.TextShiftMiddleClick);
+  dropMiddleAlt.ItemIndex   := ord(FTempMouseSettings.TextAltMiddleClick);
+  dropMiddleCtrl.ItemIndex  := ord(FTempMouseSettings.TextCtrlMiddleClick);
+  dropMiddleAltCtrl.ItemIndex      := ord(FTempMouseSettings.TextAltCtrlMiddleClick);
+  dropMiddleShiftCtrl.ItemIndex    := ord(FTempMouseSettings.TextShiftCtrlMiddleClick);
+  dropMiddleShiftAlt.ItemIndex     := ord(FTempMouseSettings.TextShiftAltMiddleClick);
+  dropMiddleShiftAltCtrl.ItemIndex := ord(FTempMouseSettings.TextShiftAltCtrlMiddleClick);
 
   dropWheel.ItemIndex      := ord(FTempMouseSettings.Wheel);
-  dropCtrlWheel.ItemIndex  := ord(FTempMouseSettings.CtrlWheel);
-  dropAltWheel.ItemIndex   := ord(FTempMouseSettings.AltWheel);
-  dropShiftWheel.ItemIndex := ord(FTempMouseSettings.ShiftWheel);
-  dropAltCtrlWheel.ItemIndex      := ord(FTempMouseSettings.AltWheel);
-  dropShiftAltWheel.ItemIndex     := ord(FTempMouseSettings.ShiftAltWheel);
-  dropShiftCtrlWheel.ItemIndex    := ord(FTempMouseSettings.ShiftCtrlWheel);
-  dropShiftAltCtrlWheel.ItemIndex := ord(FTempMouseSettings.ShiftAltCtrlWheel);
+  dropWheelCtrl.ItemIndex  := ord(FTempMouseSettings.CtrlWheel);
+  dropWheelAlt.ItemIndex   := ord(FTempMouseSettings.AltWheel);
+  dropWheelShift.ItemIndex := ord(FTempMouseSettings.ShiftWheel);
+  dropWheelAltCtrl.ItemIndex      := ord(FTempMouseSettings.AltWheel);
+  dropWheelShiftAlt.ItemIndex     := ord(FTempMouseSettings.ShiftAltWheel);
+  dropWheelShiftCtrl.ItemIndex    := ord(FTempMouseSettings.ShiftCtrlWheel);
+  dropWheelShiftAltCtrl.ItemIndex := ord(FTempMouseSettings.ShiftAltCtrlWheel);
 
   Dec(FInClickHandler);
   UpdateButtons;
