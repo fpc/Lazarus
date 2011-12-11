@@ -3417,10 +3417,23 @@ begin
         AMask := QBitmap_create(ATemp);
         try
           QPixmap_setMask(APixmap, AMask);
+
+          {$IFDEF DARWIN}
+          ScaledMask := QImage_create();
+          QPixmap_toImage(APixmap, ScaledMask);
+          if ScaledImage <> nil then
+            QPainter_drawImage(Widget, PRect(@LocalRect), image, @NewRect, flags)
+          else
+            QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+
+          QImage_destroy(ScaledMask);
+          {$ELSE}
           if ScaledImage <> nil then
             QPainter_drawPixmap(Widget, PRect(@LocalRect), APixmap, @NewRect)
           else
             QPainter_drawPixmap(Widget, PRect(@LocalRect), APixmap, sourceRect);
+          {$ENDIF}
+
         finally
           QBitmap_destroy(AMask);
         end;
