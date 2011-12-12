@@ -2186,7 +2186,6 @@ var
   lCanvas: TLazCanvas = nil;
   lWidth, lHeight: jint;
   lDestCanvas: TLazCanvas;
-  lDestX, lDestY: Integer;
 begin
   {$ifdef VerboseCDText}
     DebugLn(Format(':>[WinAPI ExtTextOut] DC=%x javaEnvRef=%x Str=%s X=%d Y=%d',
@@ -2203,8 +2202,6 @@ begin
   if not IsValidDC(DC) then Exit;
 
   lDestCanvas := TLazCanvas(DC);
-  lDestX := X + lDestCanvas.BaseWindowOrg.X;
-  lDestY := Y + lDestCanvas.BaseWindowOrg.Y;
 
   if (javaEnvRef = nil) then Exit;
 
@@ -2224,8 +2221,8 @@ begin
   lHeight := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclheight);
 
   {$ifdef VerboseCDText}
-    DebugLn(Format(':[WinAPI ExtTextOut] lDestX=%d lDestY=%d lWidth=%d lHeight=%d',
-      [lDestX, lDestY, lWidth, lHeight]));
+    DebugLn(Format(':[WinAPI ExtTextOut] lWidth=%d lHeight=%d',
+      [lWidth, lHeight]));
   {$endif}
 
   // ---------------------------
@@ -2236,20 +2233,17 @@ begin
   AndroidBitmap_lockPixels(javaEnvRef, lJavaBitmap, @pixels);
 
   // Prepare the non-native image and canvas
-  UpdateControlLazImageAndCanvas(lImage, lCanvas, lWidth, lHeight, clfRGBA32, pixels, True, False);
+  UpdateControlLazImageAndCanvas(lImage, lCanvas, lWidth, lHeight, clfRGBA32, pixels, True, False, False);
 
-  {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] Before CanvasCopyRect');{$endif}
   // Execute the copy
-  lDestCanvas.CanvasCopyRect(lCanvas, lDestX, lDestY, 0, 0, lWidth, lHeight); // try also AlphaBlend
+  lDestCanvas.AlphaBlend(lCanvas, X, Y, 0, 0, lWidth, lHeight);
 
-  {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] After CanvasCopyRect');{$endif}
-  // Release the bitmap lock
-  AndroidBitmap_unlockPixels(javaEnvRef, lJavaBitmap);
-  {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] After AndroidBitmap_unlockPixels');{$endif}
   lCanvas.Free;
   {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] B');{$endif}
-  //lImage.Free;
+  lImage.Free;
   {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] C');{$endif}
+  // Release the bitmap lock
+  AndroidBitmap_unlockPixels(javaEnvRef, lJavaBitmap);
 
   {$ifdef VerboseCDText}
     DebugLn(':<[WinAPI ExtTextOut]');

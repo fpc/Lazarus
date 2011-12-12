@@ -31,4 +31,8 @@
   {$endif}
 {$endif}
 
+// Default options for various backends
+{$ifdef CD_Android}
+  {$define CD_UseNativeText}
+{$endif}
 

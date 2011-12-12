@@ -86,7 +86,8 @@ procedure HideForm(ACDForm: TCDNonNativeForm);
 
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat;
-  AData: Pointer = nil; AForceUpdate: Boolean = False; AFreeImageOnUpdate: Boolean = True);
+  AData: Pointer = nil; AForceUpdate: Boolean = False;
+  AFreeImageOnUpdate: Boolean = True; ADataOwner: Boolean = True);
 procedure DrawFormBackground(var AImage: TLazIntfImage; var ACanvas: TLazCanvas);
 procedure RenderChildWinControls(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; ACDControlsList: TFPList);
@@ -219,7 +220,8 @@ end;
 // If AForceUpdate=True then it will update even if the width and height remain the same
 procedure UpdateControlLazImageAndCanvas(var AImage: TLazIntfImage;
   var ACanvas: TLazCanvas; AWidth, AHeight: Integer; AFormat: TUpdateLazImageFormat;
-  AData: Pointer = nil; AForceUpdate: Boolean = False; AFreeImageOnUpdate: Boolean = True);
+  AData: Pointer = nil; AForceUpdate: Boolean = False;
+  AFreeImageOnUpdate: Boolean = True; ADataOwner: Boolean = True);
 var
   lRawImage: TRawImage;
   lPixelSize: Byte;
@@ -269,7 +271,7 @@ begin
     end;
 
     AImage := TLazIntfImage.Create(AWidth, AHeight);
-    AImage.SetRawImage(lRawImage);
+    AImage.SetRawImage(lRawImage, ADataOwner);
 
     if (ACanvas <> nil) then ACanvas.Free;
     ACanvas := TLazCanvas.Create(AImage);

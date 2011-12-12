@@ -81,6 +81,7 @@ public class LCLActivity extends Activity
   {
     Paint localpaint = new Paint();
     Rect localbounds = new Rect();
+    localpaint.setTextSize(18);
     localpaint.getTextBounds(lcltext, 0, lcltext.length(), localbounds);
     lclwidth = localbounds.width();
     lclheight = localbounds.height();
@@ -93,7 +94,11 @@ public class LCLActivity extends Activity
     lclbitmap = Bitmap.createBitmap(lclwidth, lclheight, Bitmap.Config.ARGB_8888);
     Canvas localcanvas = new Canvas(lclbitmap);
     Paint localpaint = new Paint();
-    localcanvas.drawText(lcltext, 0, 0, localpaint);
+    localpaint.setColor(Color.BLACK);
+    localpaint.setTextSize(18);
+    localpaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+    localcanvas.drawColor(Color.TRANSPARENT); // TRANSPARENT
+    localcanvas.drawText(lcltext, 0, lclheight, localpaint);
   }
 
   // LCLType definitions
@@ -172,6 +177,7 @@ public class LCLActivity extends Activity
   public int lclbutton2;
   public int lclbutton3;
   public Bitmap lclbitmap;
+  public int lcltextsize;
 
   static
   {

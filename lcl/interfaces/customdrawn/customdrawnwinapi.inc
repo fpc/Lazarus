@@ -2175,7 +2175,7 @@ function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   B: Boolean; }
 begin
   {$ifdef VerboseCDWinAPI}
-    WriteLn('[WinAPI ExtTextOut]');
+    DebugLn('[WinAPI ExtTextOut]');
   {$endif}
 
   Result := False;

@@ -392,48 +392,57 @@ end;
 procedure TLazCanvas.AlphaBlend(ASource: TLazCanvas;
   const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
 var
-  x, y, CurX, CurY: Integer;
+  x, y, CurDestX, CurDestY, CurSrcX, CurSrcY: Integer;
   MaskValue, InvMaskValue: Word;
-  CurColor: TFPColor;
+  CurColor, SrcColor: TFPColor;
   lDrawWidth, lDrawHeight: Integer;
 begin
   // Take care not to draw outside the destination area
-  lDrawWidth := Min(Self.Width - ADestX, ASource.Width);
-  lDrawHeight := Min(Self.Height - ADestY, ASource.Height);
+  lDrawWidth := Min(Self.Width - ADestX, ASource.Width - ASourceX);
+  lDrawHeight := Min(Self.Height - ADestY, ASource.Height - ASourceY);
+  lDrawWidth := Min(lDrawWidth, ASourceWidth);
+  lDrawHeight := Min(lDrawHeight, ASourceHeight);
+  //DebugLn(Format('[TLazCanvas.AlphaBlend] lDrawWidth=%d lDrawHeight=%d',
+  //  [lDrawWidth, lDrawHeight]));
   for y := 0 to lDrawHeight - 1 do
   begin
     for x := 0 to lDrawWidth - 1 do
     begin
-      CurX := ADestX + x;
-      CurY := ADestY + y;
+      CurDestX := ADestX + x;
+      CurDestY := ADestY + y;
+      CurSrcX := ASourceX + x;
+      CurSrcY := ASourceY + y;
 
       // Never draw outside the destination
-      if (CurX < 0) or (CurY < 0) then Continue;
+      if (CurDestX < 0) or (CurDestY < 0) then Continue;
 
-      MaskValue := ASource.Colors[x, y].alpha;
+      MaskValue := ASource.Colors[CurSrcX, CurSrcY].alpha;
       InvMaskValue := $FFFF - MaskValue;
 
       if MaskValue = $FFFF then
       begin
-        Self.Colors[CurX, CurY] := ASource.Colors[x, y];
+        Self.Colors[CurDestX, CurDestY] := ASource.Colors[CurSrcX, CurSrcY];
       end
       else if MaskValue > $00 then
       begin
-        CurColor := Self.Colors[CurX, CurY];
+        CurColor := Self.Colors[CurDestX, CurDestY];
+        SrcColor := ASource.Colors[CurSrcX, CurSrcY];
 
         CurColor.Red := Round(
           CurColor.Red * InvMaskValue / $FFFF +
-          ASource.Colors[x, y].Red * MaskValue / $FFFF);
+          SrcColor.Red * MaskValue / $FFFF);
 
         CurColor.Green := Round(
           CurColor.Green * InvMaskValue / $FFFF +
-          ASource.Colors[x, y].Green * MaskValue / $FFFF);
+          SrcColor.Green * MaskValue / $FFFF);
 
         CurColor.Blue := Round(
           CurColor.Blue * InvMaskValue / $FFFF +
-          ASource.Colors[x, y].Blue * MaskValue / $FFFF);
+          SrcColor.Blue * MaskValue / $FFFF);
 
-        Self.Colors[CurX, CurY] := CurColor;
+        CurColor.alpha := alphaOpaque;
+
+        Self.Colors[CurDestX, CurDestY] := CurColor;
       end;
     end;
   end;
