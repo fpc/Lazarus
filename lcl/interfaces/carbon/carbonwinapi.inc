@@ -2990,11 +2990,11 @@ begin
       if prcClip <> nil then
       begin
         prcUpdate := prcClip;
-        Result := Self.InvalidateRect(hwnd, prcClip, flags and SW_ERASE <> 0)
+        Result := InvalidateRect(hwnd, prcClip, flags and SW_ERASE <> 0)
       end else
       begin
         prcUpdate := prcScroll;
-        Result := Self.InvalidateRect(hwnd, prcScroll, flags and SW_ERASE <> 0);
+        Result := InvalidateRect(hwnd, prcScroll, flags and SW_ERASE <> 0);
       end;
     end;
   end else
