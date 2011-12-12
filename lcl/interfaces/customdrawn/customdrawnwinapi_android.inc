@@ -2180,9 +2180,17 @@ function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   lJavaString: jstring;
+  lJavaBitmap: jobject;
+  pixels: PCardinal;
+  lImage: TLazIntfImage = nil;
+  lCanvas: TLazCanvas = nil;
+  lWidth, lHeight: jint;
+  lDestCanvas: TLazCanvas;
+  lDestX, lDestY: Integer;
 begin
   {$ifdef VerboseCDText}
-    DebugLn(Format('[WinAPI ExtTextOut] DC=%x javaEnvRef=%x Str=%s', [DC, PtrInt(javaEnvRef), StrPas(Str)]));
+    DebugLn(Format(':>[WinAPI ExtTextOut] DC=%x javaEnvRef=%x Str=%s X=%d Y=%d',
+      [DC, PtrInt(javaEnvRef), StrPas(Str), X, Y]));
   {$endif}
 
   Result := False;
@@ -2194,24 +2202,57 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
+  lDestCanvas := TLazCanvas(DC);
+  lDestX := X + lDestCanvas.BaseWindowOrg.X;
+  lDestY := Y + lDestCanvas.BaseWindowOrg.Y;
+
   if (javaEnvRef = nil) then Exit;
 
   // Prepare the input
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
 
-  // Call the method
+  // Call the method to measure the text
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
 
-  // Call the method
+  // Call the method to draw the text
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoDrawText);
 
-{  // Read the output
-  Size.cx := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclwidth);
-  Size.cy := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclheight);}
+  // Get the bitmap with the text
+  lJavaBitmap := javaEnvRef^^.GetObjectField(javaEnvRef, javaActivityObject, javaField_lclbitmap);
+  lWidth := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclwidth);
+  lHeight := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclheight);
 
   {$ifdef VerboseCDText}
-    DebugLn('[WinAPI ExtTextOut]');
+    DebugLn(Format(':[WinAPI ExtTextOut] lDestX=%d lDestY=%d lWidth=%d lHeight=%d',
+      [lDestX, lDestY, lWidth, lHeight]));
+  {$endif}
+
+  // ---------------------------
+  // Now copy it pixel per pixel
+  // ---------------------------
+
+  // Lock the
+  AndroidBitmap_lockPixels(javaEnvRef, lJavaBitmap, @pixels);
+
+  // Prepare the non-native image and canvas
+  UpdateControlLazImageAndCanvas(lImage, lCanvas, lWidth, lHeight, clfRGBA32, pixels, True, False);
+
+  {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] Before CanvasCopyRect');{$endif}
+  // Execute the copy
+  lDestCanvas.CanvasCopyRect(lCanvas, lDestX, lDestY, 0, 0, lWidth-1, lHeight-1); // try also AlphaBlend
+
+  {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] After CanvasCopyRect');{$endif}
+  // Release the bitmap lock
+  AndroidBitmap_unlockPixels(javaEnvRef, lJavaBitmap);
+  {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] After AndroidBitmap_unlockPixels');{$endif}
+  lCanvas.Free;
+  {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] B');{$endif}
+  lImage.Free;
+  {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] C');{$endif}
+
+  {$ifdef VerboseCDText}
+    DebugLn(':<[WinAPI ExtTextOut]');
   {$endif}
 
   Result := True;
@@ -4032,24 +4073,31 @@ begin
     ColorRefToTQColor(TColorRef(QtDC.vTextColor), Color);
     TQColorToColorRef(Color, Result);
   end;
-end;
+end;*)
 
+{$ifdef CD_UseNativeText}
 {------------------------------------------------------------------------------
   Function: GetTextExtentExPoint
   Params: http://msdn.microsoft.com/en-us/library/dd144935%28VS.85%29.aspx
   Returns: True on success
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar; Count,
+function TCDWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar; Count,
   MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize
   ): Boolean;
-var
+{var
   i: Integer;
   w: Integer;
   AStr: WideString;
-  Accu: Integer;
+  Accu: Integer;}
 begin
+  {$ifdef VerboseCDText}
+    DebugLn(Format('[WinAPI GetTextExtentExPoint] DC=%x javaEnvRef=%x Str=%s',
+      [DC, PtrInt(javaEnvRef), StrPas(Str)]));
+  {$endif}
   Result := False;
-  if not IsValidDC(DC) then Exit;
+  Size.cx := 200;
+  Size.cy := 200;
+{  if not IsValidDC(DC) then Exit;
   with TQtDeviceContext(DC) do
   begin
     AStr := GetUtf8String(Str);
@@ -4097,11 +4145,10 @@ begin
           PartialWidths[i] := Size.cx;
       end;
     end;
-  end;
+  end;}
   Result := True;
-end;*)
+end;
 
-{$ifdef CD_UseNativeText}
 {------------------------------------------------------------------------------
   Function: GetTextExtentPoint
   Params:  none

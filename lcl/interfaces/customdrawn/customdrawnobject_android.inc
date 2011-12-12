@@ -175,7 +175,7 @@ begin
   if javaEnvRef^^.RegisterNatives(javaEnvRef, javaActivityClass, @NativeMethods[0],length(NativeMethods))<0 then
   begin
     __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'javaEnvRef^.RegisterNatives failed');
-    Exit(JNI_ERR);
+    // Exit(JNI_ERR); Don't exit if exporting the native method fails because it works without this too
   end;
 
   // Read all field IDs
@@ -190,6 +190,7 @@ begin
   JavaField_lclbutton1 := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclbutton1', 'I');
   JavaField_lclbutton2 := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclbutton2', 'I');
   JavaField_lclbutton3 := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclbutton3', 'I');
+  JavaField_lclbitmap := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclbitmap', 'Landroid/graphics/Bitmap;');
   if not assigned(JavaField_lcltext) then
   begin
     __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'javaEnvRef^.GetFieldID failed for lcltext');
@@ -227,6 +228,18 @@ begin
   // Setup DebugLn
   DebugLnProc := @AndroidDebugLn;
   DebugOutProc := @AccumulatingDebugOut;
+
+  {$ifdef CD_UseNativeText}
+  // Create the dummy screen DC
+  ScreenBitmapRawImage.Init;
+  ScreenBitmapHeight := 100;
+  ScreenBitmapWidth := 100;
+  ScreenBitmapRawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(ScreenBitmapWidth, ScreenBitmapHeight);
+  ScreenBitmapRawImage.CreateData(True);
+  ScreenImage := TLazIntfImage.Create(0, 0);
+  ScreenImage.SetRawImage(ScreenBitmapRawImage);
+  ScreenDC := TLazCanvas.Create(ScreenImage);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -238,7 +251,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendDestroy;
 begin
-
+  {$ifdef CD_UseNativeText}
+  // Free the dummy screen DC
+  ScreenImage.Free;
+  ScreenDC.Free;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------

@@ -35,7 +35,7 @@ uses
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate, CocoaGDIObjects,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, customdrawn_x11proc,{unitxft, Xft font support}{$endif}
   {$ifdef CD_Android}
-  cmem, customdrawn_androidproc, jni, bitmap, log,
+  customdrawn_androidproc, jni, bitmap, log,
   {$endif}
   // Widgetset
   customdrawnproc,
@@ -241,6 +241,7 @@ var
   javaField_lclbutton1: JfieldID=nil;
   javaField_lclbutton2: JfieldID=nil;
   javaField_lclbutton3: JfieldID=nil;
+  javaField_lclbitmap: JfieldID=nil;
 
   // Methods of our Activity
   javaMethod_LCLDoGetTextBounds: jmethodid = nil;
