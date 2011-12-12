@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
-  Math, types, customdrawnutils, contnrs, componenteditors, LMessages, Messages,
+  Math, types, contnrs, componenteditors, LMessages, Messages,
   LCLProc, PropEdits, ExtCtrls, ImgList, Forms, Menus,
   customdrawncontrols,
   // fpimage

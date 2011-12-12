@@ -10,7 +10,7 @@ uses
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
   Graphics, Controls, LCLType,
   //
-  customdrawndrawers, customdrawn_common, customdrawnutils;
+  customdrawndrawers, customdrawn_common;
 
 type
 

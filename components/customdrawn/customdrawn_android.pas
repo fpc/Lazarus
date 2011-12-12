@@ -359,12 +359,12 @@ begin
     DrawAndroidAlternatedHorzLine(ADest, 1, ASize.cx-1, 2, ANDROID_BUTTON_SUNKEN_THIRD_LINE_A, ANDROID_BUTTON_SUNKEN_THIRD_LINE_B);
 
     // The central gradient
-    lRect := Bounds(0, 3, ASize.cx, (ASize.cy-6) div 3);
+    lRect := Bounds(0, 3, ASize.cx, (ASize.cy-6) div 3+1);
     DrawAndroidMixedVertGradientFill(ADest, lRect, ANDROID_BUTTON_SUNKEN_TOP_GRADIENT_A,
       ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_A, ANDROID_BUTTON_SUNKEN_TOP_GRADIENT_B, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_B);
-    lRect := Bounds(0, 3+(ASize.cy-6) div 3, ASize.cx, (ASize.cy-6) div 3);
+    lRect := Bounds(0, 3+(ASize.cy-6) div 3, ASize.cx, (ASize.cy-6) div 3+1);
     DrawAndroidMixedFill(ADest, lRect, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_A, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_B);
-    lRect := Bounds(0, 3+2*(ASize.cy-6) div 3, ASize.cx, (ASize.cy-6) div 3);
+    lRect := Bounds(0, 3+2*(ASize.cy-6) div 3, ASize.cx, (ASize.cy-6) div 3+1);
     DrawAndroidMixedVertGradientFill(ADest, lRect, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_A,
       ANDROID_BUTTON_SUNKEN_BOTTOM_GRADIENT_A, ANDROID_BUTTON_SUNKEN_MIDDLE_GRADIENT_B, ANDROID_BUTTON_SUNKEN_BOTTOM_GRADIENT_B);
 
@@ -381,12 +381,12 @@ begin
     DrawAndroidAlternatedHorzLine(ADest, 1, ASize.cx-1, 2, ANDROID_BUTTON_THIRD_LINE_A, ANDROID_BUTTON_THIRD_LINE_B);
 
     // The central gradient
-    lRect := Bounds(0, 3, ASize.cx, (ASize.cy-6) div 3);
+    lRect := Bounds(0, 3, ASize.cx, (ASize.cy-6) div 3+1);
     DrawAndroidMixedVertGradientFill(ADest, lRect, ANDROID_BUTTON_TOP_GRADIENT_A,
       ANDROID_BUTTON_MIDDLE_GRADIENT_A, ANDROID_BUTTON_TOP_GRADIENT_B, ANDROID_BUTTON_MIDDLE_GRADIENT_B);
-    lRect := Bounds(0, 3+(ASize.cy-6) div 3, ASize.cx, (ASize.cy-6) div 3);
+    lRect := Bounds(0, 3+(ASize.cy-6) div 3, ASize.cx, (ASize.cy-6) div 3+1);
     DrawAndroidMixedFill(ADest, lRect, ANDROID_BUTTON_MIDDLE_GRADIENT_A, ANDROID_BUTTON_MIDDLE_GRADIENT_B);
-    lRect := Bounds(0, 3+2*(ASize.cy-6) div 3, ASize.cx, (ASize.cy-6) div 3);
+    lRect := Bounds(0, 3+2*(ASize.cy-6) div 3, ASize.cx, (ASize.cy-6) div 3+1);
     DrawAndroidMixedVertGradientFill(ADest, lRect, ANDROID_BUTTON_MIDDLE_GRADIENT_A,
       ANDROID_BUTTON_BOTTOM_GRADIENT_A, ANDROID_BUTTON_MIDDLE_GRADIENT_B, ANDROID_BUTTON_BOTTOM_GRADIENT_B);
 

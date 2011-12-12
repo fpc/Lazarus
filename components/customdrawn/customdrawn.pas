@@ -7,7 +7,7 @@ unit customdrawn;
 interface
 
 uses
-  customdrawnextras, customdrawnutils, customdrawn_wince, customdrawn_win2000, 
+  customdrawnextras, customdrawn_wince, customdrawn_win2000, 
   customdrawn_winxp, customdrawn_android, customdrawn_extra1, customdrawn_kde, 
   customdrawn_gnome, LazarusPackageIntf;
 
