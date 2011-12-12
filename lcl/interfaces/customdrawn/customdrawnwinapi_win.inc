@@ -2504,7 +2504,7 @@ end;
 function TWin32WidgetSet.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
 begin
   Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width, Height, Mask, XMask, YMask, SRCCOPY);
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Method:  MessageBox
@@ -2536,7 +2536,7 @@ begin
     PWideChar(WideLPCaption), UType);
 end;
 
-(*function TWin32WidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
+function TWin32WidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
 begin
   Result := MultiMon.MonitorFromPoint(ptScreenCoords, dwFlags);
 end;
@@ -3689,28 +3689,6 @@ begin
     end;
   end;
 end;*)
-
-// In the end routines from customdrawnlclintfh.inc
-
-function TCDWidgetSet.AskUser(const DialogCaption, DialogMessage: string; DialogType:
-   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
-begin
-end;
-
-function TCDWidgetSet.PromptUser(const DialogCaption : string;
-                    const DialogMessage : string;
-                          DialogType    : LongInt;
-                          Buttons       : PLongInt;
-                          ButtonCount   : LongInt;
-                          DefaultIndex  : LongInt;
-                          EscapeResult  : LongInt) : LongInt;
-begin
-  {$ifdef VerboseCDWinAPI}
-    DebugLn(Format('[TCDWidgetSet.PromptUser] javaEnvRef=%x DialogCaption=%s '
-      + 'DialogMessage=%s DialogType=%d ButtonCount=%d',
-      [PtrInt(javaEnvRef), DialogCaption, DialogMessage, DialogType, ButtonCount]));
-  {$endif}
-end;
 
 //##apiwiz##eps##   // Do not remove
 

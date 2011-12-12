@@ -124,8 +124,8 @@ function Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished(
 begin
   //__android_log_write(ANDROID_LOG_INFO, 'lclapp', 'LCLOnCreate called by LCLActivity.onCreate');
   Result := 0;
-  if Assigned(Application.OnMessageBoxExecute) then
-    Application.OnMessageBoxExecute(Application, AResult);
+  if Assigned(Application.OnMessageDialogFinished) then
+    Application.OnMessageDialogFinished(Application, AResult);
 end;
 
 const NativeMethods: array[0..3] of JNINativeMethod=
@@ -181,12 +181,15 @@ begin
   // Read all field IDs
   JavaField_lcltext := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltext', 'Ljava/lang/String;');
   JavaField_lcltitle := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltitle', 'Ljava/lang/String;');
-  JavaField_lclpositivebutton := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclpositivebutton', 'Ljava/lang/String;');
-  JavaField_lclnegativebutton := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclnegativebutton', 'Ljava/lang/String;');
-  JavaField_lclneutralbutton := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclneutralbutton', 'Ljava/lang/String;');
+  JavaField_lclbutton1str := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclbutton1str', 'Ljava/lang/String;');
+  JavaField_lclbutton2str := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclbutton2str', 'Ljava/lang/String;');
+  JavaField_lclbutton3str := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclbutton3str', 'Ljava/lang/String;');
+  //
   JavaField_lclwidth := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclwidth', 'I');
   JavaField_lclheight := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclheight', 'I');
-  JavaField_lclconfig := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclconfig', 'I');
+  JavaField_lclbutton1 := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclbutton1', 'I');
+  JavaField_lclbutton2 := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclbutton2', 'I');
+  JavaField_lclbutton3 := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclbutton3', 'I');
   if not assigned(JavaField_lcltext) then
   begin
     __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'javaEnvRef^.GetFieldID failed for lcltext');

@@ -44,7 +44,7 @@ uses
   lazcanvas, lazregions,
   InterfaceBase, Translations,
   Controls,  Forms, lclproc, IntfGraphics, GraphType,
-  LCLType, LMessages, Graphics;
+  LCLType, LMessages, Graphics, LCLStrConsts;
 
 type
   {$ifdef CD_Windows}
@@ -229,14 +229,18 @@ var
   javaActivityObject: jobject = nil;
 
   // Fields of our Activity
+  // Strings
   javaField_lcltext: JfieldID=nil;
   javaField_lcltitle: JfieldID=nil;
-  javaField_lclpositivebutton: JfieldID=nil;
-  javaField_lclnegativebutton: JfieldID=nil;
-  javaField_lclneutralbutton: JfieldID=nil;
+  javaField_lclbutton1str: JfieldID=nil;
+  javaField_lclbutton2str: JfieldID=nil;
+  javaField_lclbutton3str: JfieldID=nil;
+  // Integers
   javaField_lclwidth: JfieldID=nil;
   javaField_lclheight: JfieldID=nil;
-  javaField_lclconfig: JfieldID=nil;
+  javaField_lclbutton1: JfieldID=nil;
+  javaField_lclbutton2: JfieldID=nil;
+  javaField_lclbutton3: JfieldID=nil;
 
   // Methods of our Activity
   javaMethod_LCLDoGetTextBounds: jmethodid = nil;

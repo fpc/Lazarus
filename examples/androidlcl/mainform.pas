@@ -39,7 +39,7 @@ type
     { public declarations }
     SubControl: TSubControl;
     ClickCounter: Integer;
-    procedure HandleMessageBoxExecute(Sender: TObject; AResult: Integer);
+    procedure HandleMessageDialogFinished(Sender: TObject; AResult: Integer);
   end; 
 
   { TSubControl }
@@ -137,9 +137,10 @@ end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
-  Application.OnMessageBoxExecute := @HandleMessageBoxExecute;
+  Application.OnMessageDialogFinished := @HandleMessageDialogFinished;
   DebugLn('Button2Click A');
-  LCLIntf.MessageBox(0, 'Text', 'Title', MB_ABORTRETRYIGNORE);
+//  LCLIntf.MessageBox(0, 'Text', 'Title', MB_ABORTRETRYIGNORE);
+  Application.MessageBox('Text', 'Title', MB_ABORTRETRYIGNORE);
   DebugLn('Button2Click B');
 end;
 
@@ -177,9 +178,9 @@ begin
   Canvas.Rectangle(200, 200, 300, 300);}
 end;
 
-procedure TForm1.HandleMessageBoxExecute(Sender: TObject; AResult: Integer);
+procedure TForm1.HandleMessageDialogFinished(Sender: TObject; AResult: Integer);
 begin
-  DebugLn(Format('[TForm1.HandleMessageBoxExecute] AResult=%d', [AResult]));
+  DebugLn(Format('[TForm1.HandleMessageDialogFinished] AResult=%d', [AResult]));
 end;
 
 end.

@@ -107,6 +107,7 @@ function DateTimeToMilliseconds(aDateTime: TDateTime): Int64;
 function IsValidDC(ADC: HDC): Boolean;
 function IsValidGDIObject(AGDIObj: HGDIOBJ): Boolean;
 function IsValidBitmap(ABitmap: HBITMAP): Boolean;
+function RemoveAccelChars(AStr: string): string;
 
 implementation
 
@@ -492,6 +493,12 @@ end;
 function IsValidBitmap(ABitmap: HBITMAP): Boolean;
 begin
   Result := ABitmap <> 0;
+end;
+
+function RemoveAccelChars(AStr: string): string;
+begin
+  // ToDo convert && to & and keep it
+  Result := StringReplace(AStr, '&', '', [rfReplaceAll]);
 end;
 
 { TCDBaseControl }

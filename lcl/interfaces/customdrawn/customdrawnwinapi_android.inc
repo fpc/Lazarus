@@ -4788,6 +4788,7 @@ end;*)
 function TCDWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
 var
   lJavaString: jstring;
+  BtnText: string;
 begin
   {$ifdef VerboseCDWinAPI}
     DebugLn(Format('[TCDWidgetSet.MessageBox] HWND=%x javaEnvRef=%x lpText=%s lpCaption=%s uType=%d',
@@ -4804,8 +4805,96 @@ begin
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, lpCaption);
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltitle, lJavaString);
-  // int fields
-  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclconfig, uType);
+
+  // Add all buttons
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, -1);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton2, -1);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton3, -1);
+  case utype of
+    MB_OK:
+    begin
+      // button1
+      BtnText := RemoveAccelChars(rsMbYes);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+      javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton1str, lJavaString);
+      javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, IDOK);
+    end;
+    MB_OKCANCEL:
+    begin
+      // button1
+      BtnText := RemoveAccelChars(rsMbYes);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+      javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton1str, lJavaString);
+      javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, IDOK);
+      // button2
+      BtnText := RemoveAccelChars(rsMbCancel);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+      javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton2str, lJavaString);
+      javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton2, IDCANCEL);
+    end;
+    MB_ABORTRETRYIGNORE:
+    begin
+      // button1
+      BtnText := RemoveAccelChars(rsMbAbort);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+      javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton1str, lJavaString);
+      javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, IDABORT);
+      // button2
+      BtnText := RemoveAccelChars(rsMbRetry);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+      javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton2str, lJavaString);
+      javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton2, IDRETRY);
+      // button3
+      BtnText := RemoveAccelChars(rsMbIgnore);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+      javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton3str, lJavaString);
+      javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton3, IDIGNORE);
+    end;
+    MB_YESNOCANCEL:
+    begin
+      // button1
+      BtnText := RemoveAccelChars(rsMbYes);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+      javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton1str, lJavaString);
+      javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, IDYES);
+      // button2
+      BtnText := RemoveAccelChars(rsMbNo);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+      javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton2str, lJavaString);
+      javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton2, IDNO);
+      // button3
+      BtnText := RemoveAccelChars(rsMbCancel);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+      javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton3str, lJavaString);
+      javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton3, IDCANCEL);
+    end;
+    MB_YESNO:
+    begin
+      // button1
+      BtnText := RemoveAccelChars(rsMbYes);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+      javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton1str, lJavaString);
+      javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, IDYES);
+      // button2
+      BtnText := RemoveAccelChars(rsMbNo);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+      javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton2str, lJavaString);
+      javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton2, IDNO);
+    end;
+    MB_RETRYCANCEL:
+    begin
+      // button1
+      BtnText := RemoveAccelChars(rsMbRetry);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+      javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton1str, lJavaString);
+      javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, IDRETRY);
+      // button2
+      BtnText := RemoveAccelChars(rsMbCancel);
+      lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+      javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton2str, lJavaString);
+      javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton2, IDCANCEL);
+    end;
+  end;
 
   // Call the method
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoShowMessageBox);
@@ -6551,6 +6640,7 @@ function TCDWidgetSet.PromptUser(const DialogCaption : string;
 var
   lJavaString: jstring;
   BtnIndex, BtnKind: Integer;
+  BtnText: string;
 begin
   {$ifdef VerboseCDWinAPI}
     DebugLn(Format('[TCDWidgetSet.PromptUser] javaEnvRef=%x DialogCaption=%s '
@@ -6566,24 +6656,54 @@ begin
   // String fields
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(DialogMessage));
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
-  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(DialogMessage));
+  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(DialogCaption));
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltitle, lJavaString);
 
   // Read the buttons
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, -1);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton2, -1);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton3, -1);
   for BtnIndex := 0 to ButtonCount - 1 do
   begin
     BtnKind := Buttons[BtnIndex];
     {$ifdef VerboseCDWinAPI}
       DebugLn(Format(':[TCDWidgetSet.PromptUser] BtnKind=%d', [BtnKind]));
     {$endif}
+    case BtnKind of
+      idButtonOK:      BtnText := RemoveAccelChars(rsMbOK);
+      idButtonCancel:  BtnText := RemoveAccelChars(rsMbCancel);
+      idButtonAbort:   BtnText := RemoveAccelChars(rsMbAbort);
+      idButtonRetry:   BtnText := RemoveAccelChars(rsMbRetry);
+      idButtonIgnore:  BtnText := RemoveAccelChars(rsMbIgnore);
+      idButtonYes:     BtnText := RemoveAccelChars(rsMbYes);
+      idButtonNo:      BtnText := RemoveAccelChars(rsMbNo);
+      idButtonAll:     BtnText := RemoveAccelChars(rsMbAll);
+      idButtonNoToAll: BtnText := RemoveAccelChars(rsMbNoToAll);
+      idButtonYesToAll:BtnText := RemoveAccelChars(rsMbYesToAll);
+    end;
 
+    lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
+    case BtnIndex of
+      0:
+      begin
+        javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton1str, lJavaString);
+        javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, BtnKind);
+      end;
+      1:
+      begin
+        javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton2str, lJavaString);
+        javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton2, BtnKind);
+      end;
+      2:
+      begin
+        javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton3str, lJavaString);
+        javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton3, BtnKind);
+      end;
+    end;
   end;
 
-  // int fields
-  //javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclconfig, uType);
-
   // Call the method
-  //javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoShowMessageBox);}
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoShowMessageBox);
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

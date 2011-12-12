@@ -712,14 +712,14 @@ begin
 {  // Form DC
   if lFormHandle.Canvas = nil then lFormHandle.Canvas := TLazCanvas.create(nil);
   Result := HDC(lFormHandle.Canvas);}
-end;*)
+end;
 
 function TCDWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
 begin
   Result := 0;
 end;
 
-(*function TCocoaWidgetSet.SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
+function TCocoaWidgetSet.SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 var
   dc: TCocoaContext;
   gdi: TCocoaGDIObject;
@@ -1029,27 +1029,5 @@ begin
     dec(ctx.Stack, cnt);
   end;
 end;*)
-
-// In the end routines from customdrawnlclintfh.inc
-
-function TCDWidgetSet.AskUser(const DialogCaption, DialogMessage: string; DialogType:
-   LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
-begin
-end;
-
-function TCDWidgetSet.PromptUser(const DialogCaption : string;
-                    const DialogMessage : string;
-                          DialogType    : LongInt;
-                          Buttons       : PLongInt;
-                          ButtonCount   : LongInt;
-                          DefaultIndex  : LongInt;
-                          EscapeResult  : LongInt) : LongInt;
-begin
-  {$ifdef VerboseCDWinAPI}
-    DebugLn(Format('[TCDWidgetSet.PromptUser] javaEnvRef=%x DialogCaption=%s '
-      + 'DialogMessage=%s DialogType=%d ButtonCount=%d',
-      [PtrInt(javaEnvRef), DialogCaption, DialogMessage, DialogType, ButtonCount]));
-  {$endif}
-end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

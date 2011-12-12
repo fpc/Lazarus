@@ -401,6 +401,7 @@ type
   TDropFilesEvent = procedure (Sender: TObject; const FileNames: Array of String) of object;
   THelpEvent = function(Command: Word; Data: PtrInt; var CallHelp: Boolean): Boolean of object;
   TShortCutEvent = procedure (var Msg: TLMKey; var Handled: Boolean) of object;
+  TModalDialogFinished = procedure (Sender: TObject; AResult: Integer) of object;
 
 
   TCustomForm = class(TScrollingWinControl)
@@ -421,6 +422,7 @@ type
     FFormHandlers: array[TFormHandlerType] of TMethodList;
     FHelpFile: string;
     FIcon: TIcon;
+    FOnShowModalFinished: TModalDialogFinished;
     FPopupMode: TPopupMode;
     FPopupParent: TCustomForm;
     FSmallIconHandle: HICON;
@@ -679,6 +681,7 @@ type
     property OnResize stored IsForm;
     property OnShortcut: TShortcutEvent read FOnShortcut write FOnShortcut;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
+    property OnShowModalFinished: TModalDialogFinished read FOnShowModalFinished write FOnShowModalFinished;
     property OnWindowStateChange: TNotifyEvent
                          read FOnWindowStateChange write FOnWindowStateChange;
     property ParentFont default False;
@@ -1111,7 +1114,6 @@ type
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
   TOnUserInputEvent = procedure(Sender: TObject; Msg: Cardinal) of object;
   TDataEvent = procedure (Data: PtrInt) of object;
-  TOnMessageBoxExecute = procedure (Sender: TObject; AResult: Integer) of object;
 
   // application hint stuff
   TCMHintShow = record
@@ -1245,7 +1247,7 @@ type
     FMainFormOnTaskBar: Boolean;
     FModalLevel: Integer;
     FOnGetMainFormHandle: TGetHandleEvent;
-    FOnMessageBoxExecute: TOnMessageBoxExecute;
+    FOnMessageDialogFinished: TModalDialogFinished;
     FOnModalBegin: TNotifyEvent;
     FOnModalEnd: TNotifyEvent;
     FShowButtonGlyphs: TApplicationShowGlyphs;
@@ -1484,7 +1486,7 @@ type
     property OnEndSession: TNotifyEvent read FOnEndSession write FOnEndSession;
     property OnQueryEndSession: TQueryEndSessionEvent read FOnQueryEndSession write FOnQueryEndSession;
     property OnMinimize: TNotifyEvent read FOnMinimize write FOnMinimize;
-    property OnMessageBoxExecute: TOnMessageBoxExecute read FOnMessageBoxExecute write FOnMessageBoxExecute;
+    property OnMessageDialogFinished: TModalDialogFinished read FOnMessageDialogFinished write FOnMessageDialogFinished;
     property OnModalBegin: TNotifyEvent read FOnModalBegin write FOnModalBegin;
     property OnModalEnd: TNotifyEvent read FOnModalEnd write FOnModalEnd;
     property OnRestore: TNotifyEvent read FOnRestore write FOnRestore;

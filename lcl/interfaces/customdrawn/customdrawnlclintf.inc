@@ -103,20 +103,22 @@ function TQtWidgetSet.AddProcessEventHandler(AHandle: THandle;
 begin
   // todo
   Result := nil;
-end;
+end;*)
 
-function TQtWidgetSet.AskUser(const DialogCaption, DialogMessage: string;
+// This code is for platforms which use the non-native dialogs
+{$ifndef CD_Android}
+function TCDWidgetSet.AskUser(const DialogCaption, DialogMessage: string;
   DialogType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
-const
+{const
   ButtonResults : array[mrNone..mrYesToAll] of Longint = (
     -1, idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry,
     idButtonIgnore, idButtonYes,idButtonNo, idButtonAll, idButtonNoToAll,
     idButtonYesToAll);
 var
   BtnIdx, BtnID: LongInt;
-  QtMessageBox: TQtMessageBox;
+  QtMessageBox: TQtMessageBox;}
 begin
-  ReleaseCapture;
+{  ReleaseCapture;
   QtMessageBox := TQtMessageBox.Create(nil);
   QtMessageBox.AttachEvents;
   try
@@ -162,9 +164,9 @@ begin
     Result := QtMessageBox.exec;
   finally
     QtMessageBox.Free;
-  end;
-end;*)
-
+  end;}
+end;
+{$endif}
 
 {------------------------------------------------------------------------------
   Function: CreateEmptyRegion
@@ -332,7 +334,7 @@ begin
   Result := (WindowHandle <> 0) and (TQtWidget(WindowHandle) is TQtDesignWidget);
   if Result then
     Result := TQtDesignWidget(WindowHandle).DesignContext = DC;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: PromptUser
@@ -341,18 +343,19 @@ end;
 
   Note: Qt appears to map Esc key to Cancel button, so no need for EscapeResult.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.PromptUser(const DialogCaption : string;
+{$ifndef CD_Android}
+function TCDWidgetSet.PromptUser(const DialogCaption : string;
                                  const DialogMessage : string;
                                        DialogType    : LongInt;
                                        Buttons       : PLongInt;
                                        ButtonCount   : LongInt;
                                        DefaultIndex  : LongInt;
                                        EscapeResult  : LongInt) : LongInt;
-var
+{var
   BtnIdx, BtnID: LongInt;
-  QtMessageBox: TQtMessageBox;
+  QtMessageBox: TQtMessageBox;}
 begin
-  ReleaseCapture;
+(*  ReleaseCapture;
   QtMessageBox := TQtMessageBox.Create(nil);
   QtMessageBox.AttachEvents;
   try
@@ -392,16 +395,17 @@ begin
     Result := QtMessageBox.exec;
   finally
     QtMessageBox.Free;
-  end;
-end;  {TQtWidgetSet.PromptUser}
+  end;*)
+end;
+{$endif}
 
-function TQtWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, Angle1, Angle2: Integer
+function TCDWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, Angle1, Angle2: Integer
   ): Boolean;
 begin
   Result := IsValidDC(DC);
-  if Result then
-    QPainter_drawPie(TQtDeviceContext(DC).Widget, x1, y1, x2, y2, Angle1, Angle2);
-end;*)
+{  if Result then
+    QPainter_drawPie(TQtDeviceContext(DC).Widget, x1, y1, x2, y2, Angle1, Angle2);}
+end;
 
 {------------------------------------------------------------------------------
   Function: RawImage_CreateBitmaps
