@@ -86,10 +86,15 @@ type
   { ICommonCallback }
 
   ICommonCallback = interface
+    // mouse events
     procedure MouseDown(x,y: Integer);
     procedure MouseUp(x,y: Integer);
     procedure MouseClick(ClickCount: Integer);
     procedure MouseMove(x,y: Integer);
+    // size,pos events
+    procedure frameDidChange;
+    procedure boundsDidChange;
+    // misc events
     procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     function ResetCursorRects: Boolean;
   end;
@@ -129,6 +134,8 @@ type
   TCocoaButton = objcclass(NSButton)
   protected
     procedure actionButtonClick(sender: NSObject); message 'actionButtonClick:';
+    procedure boundsDidChange(sender: NSNotification); message 'boundsDidChange:';
+    procedure frameDidChange(sender: NSNotification); message 'frameDidChange:';
   public
     callback: IButtonCallback;
     function initWithFrame(frameRect: NSRect): id; override;
@@ -316,6 +323,16 @@ begin
   callback.ButtonClick;
 end;
 
+procedure TCocoaButton.boundsDidChange(sender: NSNotification);
+begin
+  callback.boundsDidChange;
+end;
+
+procedure TCocoaButton.frameDidChange(sender: NSNotification);
+begin
+  callback.frameDidChange;
+end;
+
 function TCocoaButton.initWithFrame(frameRect: NSRect): id;
 begin
   Result := inherited initWithFrame(frameRect);
@@ -323,6 +340,10 @@ begin
   begin
     setTarget(Self);
     setAction(objcselector('actionButtonClick:'));
+    NSNotificationCenter.defaultCenter.addObserver_selector_name_object(Self, objcselector('boundsDidChange:'), NSViewBoundsDidChangeNotification, Result);
+    NSNotificationCenter.defaultCenter.addObserver_selector_name_object(Self, objcselector('frameDidChange:'), NSViewFrameDidChangeNotification, Result);
+    Result.setPostsBoundsChangedNotifications(True);
+    Result.setPostsFrameChangedNotifications(True);
   end;
 end;
 

@@ -10,7 +10,7 @@ uses
   MacOSAll, CocoaAll,
   Classes, Controls, SysUtils,
   //
-  WSControls, LCLType, LCLProc, Forms,
+  WSControls, LCLType, LMessages, LCLProc, Forms,
   CocoaPrivate, CocoaGDIObjects, CocoaUtils, LCLMessageGlue;
 
 type
@@ -26,14 +26,16 @@ type
   TLCLCommonCallback = class(TObject, ICommonCallBack)
   public
     Owner: NSObject;
-    Target  : TControl;
+    Target  : TWinControl;
     Context : TCocoaContext;
-    constructor Create(AOwner: NSObject; ATarget: TControl); virtual;
+    constructor Create(AOwner: NSObject; ATarget: TWinControl); virtual;
     destructor Destroy; override;
     procedure MouseDown(x,y: Integer); virtual;
     procedure MouseUp(x,y: Integer); virtual;
     procedure MouseClick(clickCount: Integer); virtual;
     procedure MouseMove(x,y: Integer); virtual;
+    procedure frameDidChange; virtual;
+    procedure boundsDidChange; virtual;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     function ResetCursorRects: Boolean; virtual;
   end;
@@ -111,7 +113,7 @@ end;
 
 { TLCLCommonCallback }
 
-constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TControl);
+constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TWinControl);
 begin
   inherited Create;
   Owner := AOwner;
@@ -142,6 +144,70 @@ end;
 procedure TLCLCommonCallback.MouseMove(x, y: Integer);
 begin
   LCLSendMouseMoveMsg(Target, x,y, []);
+end;
+
+procedure TLCLCommonCallback.frameDidChange;
+begin
+  boundsDidChange;
+end;
+
+procedure TLCLCommonCallback.boundsDidChange;
+var
+  NewBounds, OldBounds: TRect;
+  PosMsg: TLMWindowPosChanged;
+  Resized, Moved: Boolean;
+begin
+  NewBounds := Owner.lclFrame;
+  OldBounds := Target.BoundsRect;
+
+  Resized :=
+    (OldBounds.Right - OldBounds.Left <> NewBounds.Right - NewBounds.Left) or
+    (OldBounds.Bottom - OldBounds.Top <> NewBounds.Bottom - NewBounds.Top);
+  Moved :=
+    (OldBounds.Left <> NewBounds.Left) or
+    (OldBounds.Top <> NewBounds.Top);
+
+  // send window pos changed
+  if Resized or Moved then
+  begin
+    PosMsg.Msg := LM_WINDOWPOSCHANGED;
+    PosMsg.Result := 0;
+    New(PosMsg.WindowPos);
+    try
+      with PosMsg.WindowPos^ do
+      begin
+        hWndInsertAfter := 0;
+        x := NewBounds.Left;
+        y := NewBounds.Right;
+        cx := NewBounds.Right - NewBounds.Left;
+        cy := NewBounds.Bottom - NewBounds.Top;
+        flags := 0;
+      end;
+      DeliverMessage(Target, PosMsg);
+    finally
+      Dispose(PosMsg.WindowPos);
+    end;
+  end;
+
+  // update client rect
+  if Resized or Target.ClientRectNeedsInterfaceUpdate then
+  begin
+    Target.InvalidateClientRectCache(False);
+  end;
+
+  // then send a LM_SIZE message
+  if Resized then
+  begin
+    LCLSendSizeMsg(Target, NewBounds.Right - NewBounds.Left,
+      NewBounds.Bottom - NewBounds.Top, Size_SourceIsInterface);
+  end;
+
+  // then send a LM_MOVE message
+  if Moved then
+  begin
+    LCLSendMoveMsg(Target, NewBounds.Left,
+      NewBounds.Top, Move_SourceIsInterface);
+  end;
 end;
 
 procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
