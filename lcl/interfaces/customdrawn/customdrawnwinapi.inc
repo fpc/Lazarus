@@ -4776,20 +4776,22 @@ begin
   end;
 
   Result := True;
-end;
+end;*)
 
-function TQtWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
-var
+{$ifndef CD_Android}
+function TCDWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
+{var
   Str: WideString;
   TitleStr: WideString;
-  OkStr: WideString;
+  OkStr: WideString;}
 begin
-  //TODO: Finish full implementation of MessageBox
+{  //TODO: Finish full implementation of MessageBox
   Str := GetUtf8String('TQtWidgetSet.MessageBox - not implemented');
   TitleStr := GetUtf8String(lpCaption);
   OkStr := GetUtf8String('Ok');
-  Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr);
-end;*)
+  Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr);}
+end;
+{$endif}
 
 {------------------------------------------------------------------------------
   Function: MoveToEx
