@@ -94,6 +94,12 @@ type
     function ResetCursorRects: Boolean;
   end;
 
+  { IButtonCallback }
+
+  IButtonCallback = interface(ICommonCallback)
+    procedure ButtonClick;
+  end;
+
   { IWindowCallback }
 
   IWindowCallback = interface(ICommonCallBack)
@@ -124,7 +130,7 @@ type
   protected
     procedure actionButtonClick(sender: NSObject); message 'actionButtonClick:';
   public
-    callback  : ICommonCallback;
+    callback: IButtonCallback;
     function initWithFrame(frameRect: NSRect): id; override;
     function acceptsFirstResponder: Boolean; override;
     procedure mouseDown(event: NSEvent); override;
@@ -139,7 +145,7 @@ type
   { TCocoaTextField }
 
   TCocoaTextField = objcclass(NSTextField)
-    callback  : ICommonCallback;
+    callback: ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
     procedure resetCursorRects; override;
   end;
@@ -156,7 +162,7 @@ type
   { TCocoaTextView }
 
   TCocoaTextView = objcclass(NSTextView)
-    callback  : ICommonCallback;
+    callback: ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
     procedure resetCursorRects; override;
   end;
@@ -171,7 +177,7 @@ type
     procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
     procedure windowDidResize(notification: NSNotification); message 'windowDidResize:';
   public
-    callback      : IWindowCallback;
+    callback: IWindowCallback;
     function acceptsFirstResponder: Boolean; override;
     procedure mouseUp(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
@@ -184,7 +190,7 @@ type
   { TCocoaCustomControl }
 
   TCocoaCustomControl = objcclass(NSControl)
-    callback  : ICommonCallback;
+    callback: ICommonCallback;
     procedure drawRect(dirtyRect: NSRect); override;
     procedure resetCursorRects; override;
   end;
@@ -192,7 +198,7 @@ type
   { TCocoaScrollView }
 
   TCocoaScrollView = objcclass(NSScrollView)
-    callback  : ICommonCallback;
+    callback: ICommonCallback;
     procedure resetCursorRects; override;
   end;
 
@@ -203,7 +209,7 @@ type
 
   TCocoaComboBoxList = class(TStringList)
   private
-    fOwner  : TCocoaComboBox;
+    FOwner: TCocoaComboBox;
   protected
     procedure Changed; override;
   public
@@ -221,9 +227,9 @@ type
   { TCocoaComboBox }
 
   TCocoaComboBox = objcclass(NSComboBox, NSComboBoxDataSourceProtocol, NSComboBoxDelegateProtocol)
-    callback  : IComboboxCallBack;
-    list      : TCocoaComboBoxList;
-    resultNS  : NSString;  //use to return values to combo
+    callback: IComboboxCallBack;
+    list: TCocoaComboBoxList;
+    resultNS: NSString;  //use to return values to combo
     function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id;
       message 'comboBox:objectValueForItemAtIndex:';
     function numberOfItemsInComboBox(combo: TCocoaComboBox): NSInteger;
@@ -239,7 +245,7 @@ type
   { TCocoaScrollBar }
 
   TCocoaScrollBar = objcclass(NSScroller)
-    callback  : ICommonCallback;
+    callback: ICommonCallback;
     procedure resetCursorRects; override;
   end;
 
@@ -251,16 +257,16 @@ type
   protected
     procedure Changed; override;
   public
-    Owner : TCocoaListView;
+    Owner: TCocoaListView;
     constructor Create(AOwner: TCocoaListView);
   end;
 
   { TCocoaListView }
 
   TCocoaListView = objcclass(NSTableView, NSTableViewDataSourceProtocol)
-    callback  : ICommonCallback;
-    list      : TCocoaStringList;
-    resultNS  : NSString;  //use to return values to combo
+    callback: ICommonCallback;
+    list: TCocoaStringList;
+    resultNS: NSString;  //use to return values to combo
     function numberOfRowsInTableView(aTableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
     function tableView_objectValueForTableColumn_row(tableView: NSTableView;
       objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
@@ -272,7 +278,7 @@ type
   { TCocoaGroupBox }
 
   TCocoaGroupBox = objcclass(NSBox)
-    callback  : ICommonCallback;
+    callback: ICommonCallback;
     procedure resetCursorRects; override;
   end;
 
@@ -306,14 +312,15 @@ end;
 
 procedure TCocoaButton.actionButtonClick(sender: NSObject);
 begin
-  callback.MouseClick(1);
-  //todo: simulate MouseUp
+  // this is the action handler of button
+  callback.ButtonClick;
 end;
 
 function TCocoaButton.initWithFrame(frameRect: NSRect): id;
 begin
-  Result:=inherited initWithFrame(frameRect);
-  if Assigned(Result) then begin
+  Result := inherited initWithFrame(frameRect);
+  if Assigned(Result) then
+  begin
     setTarget(Self);
     setAction(objcselector('actionButtonClick:'));
   end;
@@ -321,14 +328,14 @@ end;
 
 function TCocoaButton.acceptsFirstResponder: Boolean;
 begin
-  Result:=true;
+  Result := True;
 end;
 
 procedure TCocoaButton.mouseUp(event: NSEvent);
 var
-  mp : NSPoint;
+  mp: NSPoint;
 begin
-  mp:=event.locationInWindow;
+  mp := event.locationInWindow;
   callback.MouseUp(round(mp.x), round(mp.y));
   inherited mouseUp(event);
 end;
@@ -343,7 +350,7 @@ procedure TCocoaButton.mouseDown(event: NSEvent);
 var
   mp : NSPoint;
 begin
-  mp:=event.locationInWindow;
+  mp := event.locationInWindow;
   callback.MouseDown(round(mp.x), round(mp.y));
   inherited mouseDown(event);
 end;

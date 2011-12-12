@@ -146,6 +146,14 @@ type
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
   end;
 
+  { TLCLButtonCallback }
+
+  TLCLButtonCallback = class(TLCLCommonCallback, IButtonCallback)
+  public
+    procedure ButtonClick; virtual;
+  end;
+  TLCLButtonCallBackClass = class of TLCLButtonCallBack;
+
   { TCocoaWSButton }
 
   TCocoaWSButton = class(TWSButton)
@@ -154,12 +162,19 @@ type
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
   end;
 
+  { TLCLCheckBoxCallback }
+
+  TLCLCheckBoxCallback = class(TLCLButtonCallBack)
+  public
+    procedure ButtonClick; override;
+  end;
+
   { TCocoaWSCustomCheckBox }
 
   TCocoaWSCustomCheckBox = class(TWSCustomCheckBox)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
   end;
 
@@ -188,20 +203,20 @@ type
   end;
 
 function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; fieldEditor: Boolean): NSTextView;
-function AllocButton(ATarget: TWinControl; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): NSButton;
+function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): NSButton;
 function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
 function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
 
 implementation
 
-function AllocButton(ATarget: TWinControl; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): NSButton;
+function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): NSButton;
 var
   cap: NSString;
 begin
-  Result:=TCocoaButton.alloc.lclInitWithCreateParams(AParams);
+  Result := TCocoaButton.alloc.lclInitWithCreateParams(AParams);
   if Assigned(Result) then
   begin
-    TCocoaButton(Result).callback:=TLCLCommonCallback.Create(Result, ATarget);
+    TCocoaButton(Result).callback := ACallBackClass.Create(Result, ATarget);
     Result.initWithFrame(CreateParamsToNSRect(AParams));
     cap := NSStringUTF8(AParams.Caption);
     Result.setTitle(cap);
@@ -238,6 +253,22 @@ begin
     Result.initWithFrame(CreateParamsToNSRect(AParams));
     SetNSText(Result.currentEditor, AParams.Caption);
   end;
+end;
+
+{ TLCLButtonCallback }
+
+procedure TLCLButtonCallback.ButtonClick;
+begin
+  SendSimpleMessage(Target, LM_CLICKED);
+end;
+
+{ TLCLCheckBoxCallback }
+
+procedure TLCLCheckBoxCallback.ButtonClick;
+begin
+  inherited;
+  SendSimpleMessage(Target, LM_CHANGED);
+  // todo: win32 has something about dbcheckbox handling here. so maybe we need to handle it special too
 end;
 
 { TLCLComboboxCallback }
@@ -278,9 +309,9 @@ end;
 class function TCocoaWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  btn : NSButton;
+  btn: NSButton;
 begin
-  btn:=AllocButton(AWinControl, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
+  btn := AllocButton(AWinControl, TLCLButtonCallback, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
   if Assigned(btn) then
     AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
   Result:=TLCLIntfHandle(btn);
@@ -320,12 +351,12 @@ end;
 class function TCocoaWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  btn : NSButton;
+  btn: NSButton;
 begin
-  btn:=AllocButton(AWinControl, AParams, 0, NSSwitchButton);
+  btn := AllocButton(AWinControl, TLCLCheckBoxCallBack, AParams, 0, NSSwitchButton);
   if Assigned(btn) then
-      AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
-  Result:=TLCLIntfHandle(btn);
+    AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
+  Result := TLCLIntfHandle(btn);
 end;
 
 {------------------------------------------------------------------------------
@@ -369,10 +400,10 @@ end;
 class function TCocoaWSRadioButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  btn : NSButton;
+  btn: NSButton;
 begin
-  btn:=AllocButton(AWinControl, AParams, 0, NSRadioButton);
-  Result:=TLCLIntfHandle(btn);
+  btn := AllocButton(AWinControl, TLCLCheckBoxCallBack, AParams, 0, NSRadioButton);
+  Result := TLCLIntfHandle(btn);
 end;
 
 { TCocoaWSCustomEdit }
@@ -709,13 +740,13 @@ end;
 class function TCocoaWSToggleBox.CreateHandle(const AWinControl:TWinControl;
   const AParams:TCreateParams):TLCLIntfHandle;
 var
-  btn : NSButton;
-  cl  : NSButtonCell;
+  btn: NSButton;
+  cl: NSButtonCell;
 begin
-  btn:=AllocButton(AWinControl, AParams, NSTexturedRoundedBezelStyle, NSToggleButton);
-  cl:=NSButtonCell(NSButton(btn).cell);
+  btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, NSTexturedRoundedBezelStyle, NSToggleButton);
+  cl := NSButtonCell(NSButton(btn).cell);
   cl.setShowsStateBy(cl.showsStateBy or NSContentsCellMask);
-  Result:=TLCLIntfHandle(btn);
+  Result := TLCLIntfHandle(btn);
 end;
 
 { TCocoaWSScrollBar }

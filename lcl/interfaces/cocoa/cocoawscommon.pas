@@ -38,6 +38,8 @@ type
     function ResetCursorRects: Boolean; virtual;
   end;
 
+  TLCLCommonCallBackClass = class of TLCLCommonCallBack;
+
   { TCocoaWSWinControl }
 
   TCocoaWSWinControl=class(TWSWinControl)

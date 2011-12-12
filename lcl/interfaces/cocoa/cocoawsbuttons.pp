@@ -34,7 +34,7 @@ uses
   // widgetset
   WSButtons, WSLCLClasses, WSProc,
   // LCL Carbon
-  CocoaWSStdCtrls, CocoaUtils;
+  CocoaWSCommon, CocoaWSStdCtrls, CocoaUtils;
 
 type
 
@@ -70,12 +70,12 @@ implementation
 class function TCocoaWSBitBtn.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  btn : NSButton;
+  btn: NSButton;
 begin
-  btn:=AllocButton(AWinControl, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
+  btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
   if Assigned(btn) then
     AddViewToNSObject(btn, NSObject(AParams.WndParent), AParams.X, AParams.Y);
-  Result:=TLCLIntfHandle(btn);
+  Result := TLCLIntfHandle(btn);
 end;
 
 {------------------------------------------------------------------------------
