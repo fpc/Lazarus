@@ -1041,6 +1041,10 @@ procedure TCarbonCustomControl.GetScrollInfo(SBStyle: Integer;
   var ScrollInfo: TScrollInfo);
 const
   SName = 'GetScrollInfo';
+var
+  AImageSize, AViewSize, ALineSize: HISize;
+  AOrigin: HIPoint;
+  Pt: TPoint;
 begin
   {$IFDEF VerboseScroll}
     DebugLn('TCarbonCustomControl.GetScrollInfo ' + LCLObject.Name +
@@ -1057,7 +1061,7 @@ begin
       ScrollInfo.nMax := FScrollSize.Y - FScrollMin.Y - 1;
   end;
 
-  if (SIF_POS and ScrollInfo.fMask) > 0 then
+  if ((SIF_POS and ScrollInfo.fMask) > 0) then
   begin
     if SBStyle = SB_HORZ then
       ScrollInfo.nPos := Trunc(FScrollOrigin.X) + FScrollMin.X;
@@ -1071,6 +1075,17 @@ begin
       ScrollInfo.nPage := FScrollPageSize.X;
     if SBStyle = SB_VERT then
       ScrollInfo.nPage := FScrollPageSize.Y;
+  end;
+
+  if ((SIF_TRACKPOS and ScrollInfo.fMask) > 0) then
+  begin
+    GetInfo(AImageSize, AViewSize, ALineSize, AOrigin);
+    Pt := HIPointToPoint(AOrigin);
+    if SBStyle = SB_HORZ then
+      ScrollInfo.nTrackPos := Pt.X
+    else
+    if SBStyle = SB_VERT then
+      ScrollInfo.nTrackPos := Pt.Y;
   end;
   
   {$IFDEF VerboseScroll}

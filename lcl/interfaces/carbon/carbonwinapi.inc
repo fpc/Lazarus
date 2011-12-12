@@ -2944,9 +2944,62 @@ end;
 function TCarbonWidgetSet.ScrollWindowEx(hWnd: HWND; dx, dy: Integer;
   prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT
   ): Boolean;
+const
+  SName = 'ScrollWindowEx';
+var
+  ACtl: TCarbonControl;
+  R, R1: CGRect;
+  RR: TRect;
 begin
-  Result:=inherited ScrollWindowEx(hWnd, dx, dy, prcScroll, prcClip,
-    hrgnUpdate, prcUpdate, flags);
+  {$IFDEF VerboseWinAPI}
+  DebugLn('TCarbonWidgetSet.ScrollWindowEx() HWnd=',dbgs(hWnd),' prcScroll ',prcScroll <> nil,
+    ' prcClip ',prcClip <> nil,' flags ',flags);
+  {$ENDIF}
+  if (hWnd <> 0) then
+  begin
+    ACtl := TCarbonControl(hWnd);
+    if (flags and SW_SCROLLCHILDREN <> 0) then
+    begin
+      // complete view scrolls
+      OSError(HIViewScrollRect(ACtl.Content, HiRectPtr(@R), CGFloat(dx), CGFloat(dy)),
+        ACtl, SName, 'HIViewScrollRect');
+      with ACtl.ScrollOffset do
+      begin
+        X := X + DX;
+        Y := Y + DY;
+      end;
+      Result := True;
+    end else
+    if (Flags = 0) then
+    begin
+      if (prcScroll <> nil) then
+      begin
+        R := RectToCGRect(prcScroll^);
+        // TODO: create CGRect
+        OSError(HIViewGetBounds(ACtl.Content, R1),
+          Self, SName, 'HIViewGetBounds');
+        RR := CGRectToRect(R1);
+        OSError(HIViewScrollRect(ACtl.Content, HiRectPtr(@R), CGFloat(dx), CGFloat(dy)),
+          ACtl, SName, 'HIViewScrollRect');
+        Result := True;
+      end;
+    end;
+
+    if flags and SW_INVALIDATE <> 0 then
+    begin
+      if prcClip <> nil then
+      begin
+        prcUpdate := prcClip;
+        Result := Self.InvalidateRect(hwnd, prcClip, flags and SW_ERASE <> 0)
+      end else
+      begin
+        prcUpdate := prcScroll;
+        Result := Self.InvalidateRect(hwnd, prcScroll, flags and SW_ERASE <> 0);
+      end;
+    end;
+  end else
+    Result:=inherited ScrollWindowEx(hWnd, dx, dy, prcScroll, prcClip,
+      hrgnUpdate, prcUpdate, flags);
 end;
 
 function TCarbonWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;

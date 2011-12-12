@@ -72,6 +72,7 @@ type
     function GetProperty(AIndex: String): Pointer;
     function GetScrollOffset: TPoint;
     procedure SetProperty(AIndex: String; const AValue: Pointer);
+    procedure SetScrollOffset(AValue: TPoint);
   protected
     procedure RegisterEvents; virtual; abstract;
     procedure CreateWidget(const AParams: TCreateParams); virtual; abstract;
@@ -144,7 +145,7 @@ type
      - processes track and draw event                  }
     property Content: ControlRef read GetContent;
     property Cursor: HCURSOR read FCursor;
-    property ScrollOffset: TPoint read GetScrollOffset; // scrolled offset of  ScrollingWinControl
+    property ScrollOffset: TPoint read GetScrollOffset write SetScrollOffset; // scrolled offset of  ScrollingWinControl
     property HasCaret: Boolean read FHasCaret write FHasCaret;
     property Painting: Boolean read GetPainting;
     property Properties[AIndex: String]: Pointer read GetProperty write SetProperty;
@@ -459,6 +460,11 @@ begin
   begin
     FProperties.AddObject(AIndex, TObject(AValue));
   end;
+end;
+
+procedure TCarbonWidget.SetScrollOffset(AValue: TPoint);
+begin
+  FScrollOffset := AValue;
 end;
 
 {------------------------------------------------------------------------------
