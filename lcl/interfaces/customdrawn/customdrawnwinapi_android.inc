@@ -2240,7 +2240,7 @@ begin
 
   {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] Before CanvasCopyRect');{$endif}
   // Execute the copy
-  lDestCanvas.CanvasCopyRect(lCanvas, lDestX, lDestY, 0, 0, lWidth-1, lHeight-1); // try also AlphaBlend
+  lDestCanvas.CanvasCopyRect(lCanvas, lDestX, lDestY, 0, 0, lWidth, lHeight); // try also AlphaBlend
 
   {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] After CanvasCopyRect');{$endif}
   // Release the bitmap lock
@@ -2248,7 +2248,7 @@ begin
   {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] After AndroidBitmap_unlockPixels');{$endif}
   lCanvas.Free;
   {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] B');{$endif}
-  lImage.Free;
+  //lImage.Free;
   {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] C');{$endif}
 
   {$ifdef VerboseCDText}
