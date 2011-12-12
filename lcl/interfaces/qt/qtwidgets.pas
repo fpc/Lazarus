@@ -914,6 +914,7 @@ type
     function findText(AText: WideString): Integer;
     function getDroppedDown: Boolean;
     function getEditable: Boolean;
+    function getItemText(AIndex: Integer): WideString;
     function getMaxVisibleItems: Integer;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
@@ -8517,6 +8518,12 @@ end;
 function TQtComboBox.getEditable: Boolean;
 begin
   Result := QComboBox_isEditable(QComboBoxH(Widget));
+end;
+
+function TQtComboBox.getItemText(AIndex: Integer): WideString;
+begin
+  Result := '';
+  QComboBox_itemText(QComboBoxH(Widget), @Result, AIndex);
 end;
 
 function TQtComboBox.getMaxVisibleItems: Integer;

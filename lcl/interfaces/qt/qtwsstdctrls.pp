@@ -267,6 +267,7 @@ type
 
 
 implementation
+uses qtint;
 
 const
   QtMaxEditLength = 32767;
@@ -1367,6 +1368,8 @@ class function TQtWSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
 var
   QtComboBox: TQtComboBox;
+  WStr, WStr2: WideString;
+  i: Integer;
 begin
   Result := -1;
   if not WSCheckHandleAllocated(ACustomComboBox, 'GetItemIndex') then
@@ -1374,10 +1377,30 @@ begin
   QtComboBox := TQtComboBox(ACustomComboBox.Handle);
   if QtComboBox.getEditable then
   begin
-    Result := QtComboBox.findText(QtComboBox.getText);
-    if Result = -1 then
-      exit;
-    Result := QtComboBox.currentIndex;
+    {$note this is workaround for qt bug. see issue #20863}
+    if (QtVersionMajor = 4) and (QtVersionMinor = 5) then
+    begin
+      WStr := QtComboBox.getText;
+      Result := QtComboBox.findText(WStr);
+      //if there are duplicates in the list, it will return always the
+      //first entry index //double check to avoid this situation
+      if Result <> -1 then
+      begin
+        i := QtComboBox.currentIndex;
+        if i <> -1 then
+        begin
+          WStr2 := QtComboBox.getItemText(i);
+          if WStr = WStr2 then
+            Result := i;
+        end;
+      end;
+    end else
+    begin
+      Result := QtComboBox.findText(QtComboBox.getText);
+      if Result = -1 then
+        exit;
+      Result := QtComboBox.currentIndex;
+    end;
   end else
     Result := QtComboBox.currentIndex;
 end;
