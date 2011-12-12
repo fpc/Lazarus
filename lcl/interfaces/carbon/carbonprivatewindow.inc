@@ -1860,6 +1860,12 @@ begin
   //DebugLn('TCarbonWindow.Show ' + DbgS(AShow));
 
   case AShow of
+  SW_SHOW, SW_HIDE:
+  begin
+    ShowHide(AShow = SW_SHOW);
+    Result := True;
+  end;
+
   SW_SHOWNORMAL, SW_SHOWMAXIMIZED, SW_SHOWFULLSCREEN:
   begin
     if IsWindowCollapsed(fWindowRef) then

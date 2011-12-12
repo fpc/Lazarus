@@ -3541,6 +3541,8 @@ end;
   Shows the window normal, minimized or maximized
 ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+var
+  ACtl: TCarbonControl;
 begin
   Result := False;
 
@@ -3548,10 +3550,23 @@ begin
     DebugLn('TCarbonWidgetSet.ShowWindow hWnd: ' + DbgS(hWnd) + ' nCmdShow: ' +
       DbgS(nCmdShow));
   {$ENDIF}
-  
-  if not CheckWidget(HWnd, 'ShowWindow', TCarbonWindow) then Exit;
 
-  Result := TCarbonWindow(HWnd).Show(nCmdShow);
+  if HWND = 0 then
+    exit;
+  ACtl := TCarbonControl(HWND);
+  if not (ACtl is TCarbonWindow) then
+  begin
+    if nCmdShow in [SW_SHOW, SW_HIDE] then
+    begin
+      ACtl.ShowHide(nCmdShow = SW_SHOW);
+      Result := True;
+    end;
+  end else
+  begin
+    if not CheckWidget(HWnd, 'ShowWindow', TCarbonWindow) then Exit;
+
+    Result := TCarbonWindow(HWnd).Show(nCmdShow);
+  end;
 end;
 
 {------------------------------------------------------------------------------
