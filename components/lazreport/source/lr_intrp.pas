@@ -308,7 +308,7 @@ procedure DoFuncId; forward;
       if c = 0 then break;
       Inc(i);
     end;
-    MemoErr.Add('Строка ' + IntToStr(i + 1) + '/' + IntToStr(j - 1) + ': ' + s);
+    MemoErr.Add('Line ' + IntToStr(i + 1) + '/' + IntToStr(j - 1) + ': ' + s);
   end;
 
   procedure ProcessBrackets(var i: Integer);
@@ -353,7 +353,7 @@ procedure DoFuncId; forward;
       goto 1;
     end
     else if Pos('END', bs) = 1 then cur := cur - Length(bs) + 3
-    else AddError('Здесь требуется ";" или "end"');
+    else AddError('Expected ";" or "end"');
   end;
 
   procedure DoIf;
@@ -386,7 +386,7 @@ procedure DoFuncId; forward;
         cur := nsm;
       end;
     end
-    else AddError('Здесь требуется "then"');
+    else AddError('Expected "then"');
   end;
 
   procedure DoRepeat;
@@ -410,7 +410,7 @@ procedure DoFuncId; forward;
       DoExpression;
       MemoTo.Add(ttIf + Chr(nl) + Chr(nl div 256) + CopyArr(nsm, cur - nsm));
     end
-     else AddError('Здесь требуется ";" или "until"');
+     else AddError('Expected ";" or "until"');
   end;
 
   procedure DoWhile;
@@ -429,7 +429,7 @@ procedure DoFuncId; forward;
       MemoTo.Add(ttGoto + Chr(nl) + Chr(nl div 256));
       bs := MemoTo[nl]; bs[2] := Chr(last); bs[3] := Chr(last div 256); MemoTo[nl] := bs;
     end
-    else AddError('Здесь требуется "do"');
+    else AddError('Expected "do"');
   end;
 
   procedure DoGoto;
@@ -440,7 +440,7 @@ procedure DoFuncId; forward;
     nsm := cur;
     lastp := cur;
     DoDigit;
-    if Error then AddError('Метка в goto должна быть числом');
+    if Error then AddError('Label in goto must be a number');
     MemoTo.Add(ttGoto + Trim(CopyArr(nsm, cur - nsm)));
   end;
 
@@ -476,7 +476,7 @@ procedure DoFuncId; forward;
       MemoTo.Add(s);
     end
     else
-      AddError('Здесь требуется ":="');
+      AddError('Expected ":="');
   end;
   {-------------------------------------}
   procedure DoExpression;
@@ -552,7 +552,7 @@ procedure DoFuncId; forward;
       SkipSpace;
       lastp := cur;
       if buf^[cur] = ')' then Inc(cur)
-      else AddError('Здесь требуется ")"');
+      else AddError('Expected ")"');
     end
     else if bs[1] = '[' then
     begin
@@ -561,7 +561,7 @@ procedure DoFuncId; forward;
       SkipSpace;
       lastp := cur;
       if buf^[cur] = ']' then Inc(cur)
-      else AddError('Здесь требуется "]"');
+      else AddError('Expected "]"');
     end
     else if (bs[1] = '+') or (bs[1] = '-') then
     begin
@@ -656,7 +656,7 @@ procedure DoFuncId; forward;
         goto 1;
       end
       else if buf^[cur] = ')' then Inc(cur)
-      else AddError('Здесь требуется "," или ")"');
+      else AddError('Expected "," or ")"');
     end;
   end;
 
