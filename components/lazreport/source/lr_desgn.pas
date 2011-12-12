@@ -93,6 +93,8 @@ type
     View2  : TfrView;
   end;
 
+  TViewAction = procedure(View: TFrView; Data:PtrInt) of object;
+
   { TfrObjectInspector }
   TfrObjectInspector = Class({$IFDEF EXTOI}TForm{$ELSE}TPanel{$ENDIF})
   private
@@ -522,6 +524,9 @@ type
     procedure StatusBar1DrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
       const Rect: TRect);
     {$endif}
+    procedure ViewsAction(OnlySel: boolean; TheAction: TViewAction; Data:Ptrint);
+    procedure ToggleFrames(View: TfrView; Data: PtrInt);
+    procedure DuplicateView(View: TfrView; Data: PtrInt);
   public
     constructor Create(aOwner : TComponent); override;
     destructor Destroy; override;
@@ -3056,6 +3061,7 @@ begin
   if (Chr(Key) = 'F') and (ssCtrl in Shift) and DelEnabled then
   begin
     FrB5.Click;
+    //ViewsAction(True, @ToggleFrames, 0);
     Key := 0;
   end;
   if (Chr(Key) = 'D') and (ssCtrl in Shift) and DelEnabled then
@@ -3587,6 +3593,37 @@ procedure TfrDesignerForm.StatusBar1DrawPanel(StatusBar: TStatusBar;
 begin
   if Panel.Index=1 then
     DrawStatusPanel(StatusBar.Canvas, Rect);
+end;
+
+procedure TfrDesignerForm.ViewsAction(OnlySel: boolean; TheAction: TViewAction;
+  Data: Ptrint);
+var
+  List: TFpList;
+  i: Integer;
+begin
+  if not assigned(TheAction) then
+    exit;
+  List := Objects;
+  for i:=List.Count-1 downto 0 do begin
+    if OnlySel and not TfrView(List[i]).Selected then
+      continue;
+    TheAction(TfrView(List[i]), Data);
+  end;
+end;
+
+procedure TfrDesignerForm.ToggleFrames(View: TfrView; Data: PtrInt);
+begin
+  if View.Frames<>[] then
+    View.Frames := []
+  else
+    View.Frames := [frbLeft, frbTop, frbRight, frbBottom];
+  if SelNum=1 then
+    LastFrames := View.Frames;
+end;
+
+procedure TfrDesignerForm.DuplicateView(View: TfrView; Data: PtrInt);
+begin
+
 end;
 
 {$endif}
