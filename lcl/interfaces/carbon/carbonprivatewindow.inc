@@ -116,6 +116,8 @@ const
   function GetMouseWheelDelta: Integer;
   var
     WheelDelta: SInt32;
+    CCtl: TCarbonCustomControl;
+    ScrollInfo: TScrollInfo;
   begin
     Result := 0;
     
@@ -127,7 +129,22 @@ const
     // Carbon's WheelDelta is the number of lines to be scrolled
     // LCL expects the delta to be 120 for each wheel step, which should scroll
     // Mouse.WheelScrollLines lines (defaults to three)
+    // Update: 20111212 by zeljko: All widgetsets sends WheelDelta +-120
+    // mac sends 1 or -1 so we just recalc that to wheel delta. see issue #20888
     Result := (120 * WheelDelta) div Mouse.WheelScrollLines;
+    if Widget.ClassType = TCarbonCustomControl then
+    begin
+      CCtl := TCarbonCustomControl(Widget);
+      if CCtl.GetScrollbarVisible(SB_VERT) then
+      begin
+        FillChar(ScrollInfo, SizeOf(ScrollInfo), #0);
+        ScrollInfo.fMask := SIF_TRACKPOS;
+        ScrollInfo.cbSize := SizeOf(ScrollInfo);
+        CCtl.GetScrollInfo(SB_VERT, ScrollInfo);
+        if (WheelDelta > 0) and (ScrollInfo.nTrackPos = 0) then
+          Result := 120;
+      end;
+    end;
     {$IFDEF VerboseMouse}
       DebugLn('GetMouseWheelDelta WheelDelta=', DbgS(WheelDelta), ' ', HexStr(WheelDelta, 8));
     {$ENDIF}

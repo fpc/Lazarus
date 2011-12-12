@@ -3277,6 +3277,9 @@ var
   MousePos: TQtPoint;
   Modifiers: QtKeyboardModifiers;
   ModifierState: PtrInt;
+  {$IFDEF DARWIN}
+  CCtl: TQtAbstractScrollArea;
+  {$ENDIF}
 begin
   Result := False;
   if not CanSendLCLMessage or (LCLObject = nil) then
@@ -3306,6 +3309,31 @@ begin
   Msg.Y := SmallInt(MousePos.Y);
 
   Msg.WheelDelta := QWheelEvent_delta(QWheelEventH(Event));
+
+  {$IFDEF DARWIN}
+  // LCL expects delta +-120, we must fix it. issue #20888
+  if (ChildOfComplexWidget in [ccwCustomControl, ccwAbstractScrollArea,
+      ccwScrollingWinControl]) then
+  begin
+    if (Msg.WheelDelta > 0) then
+      Msg.WheelDelta := 1
+    else
+      Msg.WheelDelta := -1;
+    Msg.WheelDelta := (120 * Msg.WheelDelta) div Mouse.WheelScrollLines;
+    if FOwner <> nil then
+      CCtl := TQtAbstractScrollArea(FOwner)
+    else
+      CCtl := TQtAbstractScrollArea(Self);
+    //now fix ugly behaviour.
+    if (Msg.WheelDelta > 0) and (CCtl.FVScrollbar.getVisible) and
+        ((CCtl.FVScrollBar = Self) or
+         (Assigned(CCtl.FVScrollbar) and (Self <> CCtl.FHScrollbar))) then
+    begin
+      if CCtl.FVScrollbar.getSliderPosition <= 1 then
+        Msg.WheelDelta := 120;
+    end;
+  end;
+  {$ENDIF}
 
   NotifyApplicationUserInput(Msg.Msg);
   Result := DeliverMessage(Msg) <> 0;
