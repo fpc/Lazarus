@@ -5,12 +5,11 @@ library androidlcltest;
 
 uses
   {$ifdef Android}
-  cmem,
   customdrawnint,
   {$endif}
   Interfaces,
   Forms,
-  mainform;
+  mainform, secondform;
 
 {$ifdef Android}
 exports
@@ -25,6 +24,7 @@ exports
 begin
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TForm2, Form2);
   Application.Run;
 end.
 

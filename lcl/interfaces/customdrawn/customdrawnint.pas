@@ -145,6 +145,9 @@ type
     AccumulatedStr: string;
     // The currently focused control
     FocusedControl: TWinControl;
+    // Default Fonts
+    DefaultFont: TFPCustomFont;
+    DefaultFontAndroidSize: Integer;
     // For unusual implementations of DebugLn/DebugOut
     procedure AccumulatingDebugOut(AStr: string);
     procedure CDSetFocusToControl(ALCLControl: TWinControl);
@@ -242,6 +245,13 @@ var
   javaField_lclbutton2: JfieldID=nil;
   javaField_lclbutton3: JfieldID=nil;
   javaField_lclbitmap: JfieldID=nil;
+  javaField_lcltextsize: JfieldID=nil;
+  // Text metrics
+  javaField_lcltextascent: JfieldID=nil;
+  javaField_lcltextbottom: JfieldID=nil;
+  javaField_lcltextdescent: JfieldID=nil;
+  javaField_lcltextleading: JfieldID=nil;
+  javaField_lcltexttop: JfieldID=nil;
 
   // Methods of our Activity
   javaMethod_LCLDoGetTextBounds: jmethodid = nil;

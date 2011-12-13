@@ -21,6 +21,7 @@ type
     CDButton3: TCDButton;
     CDButton4: TCDButton;
     CDButton5: TCDButton;
+    CDButton6: TCDButton;
     CDCheckBox1: TCDCheckBox;
     CDCheckBox2: TCDCheckBox;
     CDCheckBox3: TCDCheckBox;

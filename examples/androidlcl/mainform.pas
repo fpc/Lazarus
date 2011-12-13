@@ -17,7 +17,9 @@ type
     Arrow1: TArrow;
     Button1: TButton;
     Button2: TButton;
+    Button3: TButton;
     CheckBox1: TCheckBox;
+    Label1: TLabel;
     ProgressBar1: TProgressBar;
     TrackBar1: TTrackBar;
     procedure Arrow1Click(Sender: TObject);
@@ -29,6 +31,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
     procedure FormClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -58,6 +61,8 @@ var
   Form1: TForm1; 
 
 implementation
+
+uses secondform;
 
 { TSubControl }
 
@@ -142,6 +147,11 @@ begin
 //  LCLIntf.MessageBox(0, 'Text', 'Title', MB_ABORTRETRYIGNORE);
   Application.MessageBox('Text', 'Title', MB_ABORTRETRYIGNORE);
   DebugLn('Button2Click B');
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+  Form2.Show;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

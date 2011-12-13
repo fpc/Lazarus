@@ -40,7 +40,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="androidlcltest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -57,6 +57,13 @@
         <Filename Value="android/src/com/pascal/lcltest/LCLActivity.java"/>
         <IsPartOfProject Value="True"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="secondform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form2"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="secondform"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

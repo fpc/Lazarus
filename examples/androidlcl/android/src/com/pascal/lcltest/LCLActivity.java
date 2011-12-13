@@ -75,16 +75,26 @@ public class LCLActivity extends Activity
   // Functions exported to the Pascal side
   // -------------------------------------------
 
-  // input: String lcltext
-  // output: int lclwidth, int lclheight
+  // input: String lcltext, int lcltextsize
+  // output: int lclwidth, int lclheight, int lclascent, etc
   public void LCLDoGetTextBounds()
   {
     Paint localpaint = new Paint();
     Rect localbounds = new Rect();
-    localpaint.setTextSize(18);
+    localpaint.setTextSize(lcltextsize);
     localpaint.getTextBounds(lcltext, 0, lcltext.length(), localbounds);
     lclwidth = localbounds.width();
+    // Don't use just localbounds.height() from the source text
+    // because it will calculate the minimum necessary height,
+    // but we can't easily use that to draw text because it draws relative to the baseline
+    localpaint.getTextBounds("Íq", 0, 2, localbounds);
     lclheight = localbounds.height();
+    // Also get some measures
+    lcltextascent = (int) localpaint.getFontMetrics().ascent;
+    lcltextbottom = (int) localpaint.getFontMetrics().bottom;
+    lcltextdescent = (int) localpaint.getFontMetrics().descent;
+    lcltextleading = (int) localpaint.getFontMetrics().leading;
+    lcltexttop = (int) localpaint.getFontMetrics().top;
   }
 
   // input: String lcltext, int lclwidth, int lclheight
@@ -95,10 +105,12 @@ public class LCLActivity extends Activity
     Canvas localcanvas = new Canvas(lclbitmap);
     Paint localpaint = new Paint();
     localpaint.setColor(Color.BLACK);
-    localpaint.setTextSize(18);
+    localpaint.setTextSize(lcltextsize);
     localpaint.setFlags(Paint.ANTI_ALIAS_FLAG);
     localcanvas.drawColor(Color.TRANSPARENT); // TRANSPARENT
-    localcanvas.drawText(lcltext, 0, lclheight, localpaint);
+    // The Y coordinate is the lower baseline of letters like "abc"
+    // see http://code.google.com/p/android/issues/detail?id=393
+    localcanvas.drawText(lcltext, 0, lclheight - lcltextdescent, localpaint);
   }
 
   // LCLType definitions
@@ -178,6 +190,11 @@ public class LCLActivity extends Activity
   public int lclbutton3;
   public Bitmap lclbitmap;
   public int lcltextsize;
+  public int lcltextascent;
+  public int lcltextbottom;
+  public int lcltextdescent;
+  public int lcltextleading;
+  public int lcltexttop;
 
   static
   {

@@ -2208,6 +2208,7 @@ begin
   // Prepare the input
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, DefaultFontAndroidSize);
 
   // Call the method to measure the text
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
@@ -4166,13 +4167,14 @@ begin
   // Prepare the input
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, DefaultFontAndroidSize);
 
   // Call the method
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
 
   // Read the output
-  Size.cx := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclwidth);
-  Size.cy := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclheight);
+  Size.cx := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclwidth);
+  Size.cy := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclheight);
 
   {$ifdef VerboseCDText}
     DebugLn(Format('[WinAPI GetTextExtentPoint] Size=%d, %d', [Size.cx, Size.cy]));
@@ -4188,36 +4190,47 @@ end;
   Returns: If successfull
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
-{var
-  QtFontMetrics: TQtFontMetrics;
-  FontFamily: WideString;
-  QtDC: TQtDeviceContext absolute DC;
-  FontWeight: Integer;}
+var
+  lAverageCharWidth: Integer;
+  lJavaString: jstring;
 begin
   {$ifdef VerboseCDText}
     DebugLn(Format('[WinAPI GetTextMetrics] DC=%x javaEnvRef=%x', [DC, PtrInt(javaEnvRef)]));
   {$endif}
 
-  Result := IsValidDC(DC);
+  Result := False;
 
-(*  if Result then
-  begin
-    QtFontMetrics := QtDC.Metrics;
-    TM.tmHeight := QtFontMetrics.height;
-    TM.tmAscent := QtFontMetrics.ascent;
-    TM.tmDescent := QtFontMetrics.descent;
-    TM.tmInternalLeading := 0;
-    TM.tmExternalLeading := QtFontMetrics.leading;
-    {this is due qt bug in fontmetrics::averageCharWidth() under Mac
-     http://trolltech.com/developer/task-tracker/index_html?method=entry&id=169440 }
-    {$IFDEF DARWIN}
-    TM.tmAveCharWidth := QtFontMetrics.charWidth('x',0);
-    {$ELSE}
-    TM.tmAveCharWidth := QtFontMetrics.averageCharWidth;
-    {$ENDIF}
+  if not IsValidDC(DC) then Exit;
 
-    TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
-    FontWeight := QtDC.font.getWeight;
+  if (javaEnvRef = nil) then Exit;
+
+  // Prepare the input for getting the average width of a char
+  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar('x'));
+  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, DefaultFontAndroidSize);
+
+  // Call the method
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
+
+  lAverageCharWidth := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclwidth);
+
+  // Prepare the input for getting the max height of a text and other metrics
+  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar('Íą'));
+  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, DefaultFontAndroidSize);
+
+  // Call the method
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
+
+  // Read the output
+  TM.tmHeight := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclheight);
+  TM.tmAscent := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lcltextascent);
+  TM.tmDescent := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lcltextdescent);
+  TM.tmInternalLeading := 0;
+  TM.tmExternalLeading := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lcltextleading);
+  TM.tmAveCharWidth := lAverageCharWidth;
+  TM.tmMaxCharWidth := TM.tmAveCharWidth; // Just a not very good guess for now
+{    FontWeight := QtDC.font.getWeight;
     case FontWeight of
       25: TM.tmWeight := FW_LIGHT;
       50: TM.tmWeight := FW_NORMAL;
@@ -4226,31 +4239,30 @@ begin
       87: TM.tmWeight := FW_HEAVY;
       else
         TM.tmWeight := Round(FontWeight * 9.5);
-    end;
-    TM.tmOverhang := 0;
-    TM.tmDigitizedAspectX := 0;
-    TM.tmDigitizedAspectY := 0;
-    TM.tmFirstChar := 'a';
-    TM.tmLastChar := 'z';
-    TM.tmDefaultChar := 'x';
-    TM.tmBreakChar := '?';
-    TM.tmItalic := Ord(QtDC.Font.getItalic);
-    TM.tmUnderlined := Ord(QtDC.Font.getUnderline);
-    TM.tmStruckOut := Ord(QtDC.Font.getStrikeOut);
+    end;}
+  TM.tmOverhang := 0;
+  TM.tmDigitizedAspectX := 0;
+  TM.tmDigitizedAspectY := 0;
+  TM.tmFirstChar := 'a';
+  TM.tmLastChar := 'z';
+  TM.tmDefaultChar := 'x';
+  TM.tmBreakChar := '?';
+{  TM.tmItalic := Ord(QtDC.Font.getItalic);
+  TM.tmUnderlined := Ord(QtDC.Font.getUnderline);
+  TM.tmStruckOut := Ord(QtDC.Font.getStrikeOut);}
 
-    QtDC.font.family(@FontFamily);
+  { Defaults to a TrueType font.
+    Note that the meaning of the FIXED_PITCH constant is the opposite of
+    the name implies, according to MSDN docs. Just a small inconsistency
+    on Windows API that we have to mimic. }
+  {if QtDC.font.fixedPitch then
+    TM.tmPitchAndFamily := TRUETYPE_FONTTYPE
+  else}
+    TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
 
-    { Defaults to a TrueType font.
-      Note that the meaning of the FIXED_PITCH constant is the opposite of
-      the name implies, according to MSDN docs. Just a small inconsistency
-      on Windows API that we have to mimic. }
-    if QtDC.font.fixedPitch then
-      TM.tmPitchAndFamily := TRUETYPE_FONTTYPE
-    else
-      TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
+  TM.tmCharSet := DEFAULT_CHARSET;
 
-    TM.tmCharSet := DEFAULT_CHARSET;
-  end;        *)
+  Result := True;
 end;
 {$endif}
 

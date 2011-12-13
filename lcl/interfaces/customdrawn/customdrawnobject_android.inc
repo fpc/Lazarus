@@ -191,6 +191,13 @@ begin
   JavaField_lclbutton2 := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclbutton2', 'I');
   JavaField_lclbutton3 := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclbutton3', 'I');
   JavaField_lclbitmap := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclbitmap', 'Landroid/graphics/Bitmap;');
+  JavaField_lcltextsize := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltextsize', 'I');
+  // Text metrics
+  javaField_lcltextascent := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltextascent', 'I');
+  javaField_lcltextbottom := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltextbottom', 'I');
+  javaField_lcltextdescent := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltextdescent', 'I');
+  javaField_lcltextleading := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltextleading', 'I');
+  javaField_lcltexttop := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltexttop', 'I');
   if not assigned(JavaField_lcltext) then
   begin
     __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'javaEnvRef^.GetFieldID failed for lcltext');
@@ -239,6 +246,8 @@ begin
   ScreenImage := TLazIntfImage.Create(0, 0);
   ScreenImage.SetRawImage(ScreenBitmapRawImage);
   ScreenDC := TLazCanvas.Create(ScreenImage);
+
+  DefaultFontAndroidSize := 16;
   {$endif}
 end;
 

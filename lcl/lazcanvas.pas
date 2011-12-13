@@ -83,6 +83,7 @@ type
     procedure SetColor (x,y:integer; const AValue:TFPColor); override;
     // Routines broken/unimplemented/incompatible in FPC
     procedure DoRectangle (const Bounds:TRect); override;
+    procedure DoRectangleFill (const Bounds:TRect); override;
     procedure DoPolygonFill (const points:array of TPoint); override;
     // Routines which don't work with out extended clipping in TFPImageCanvas
     procedure DoLine (x1,y1,x2,y2:integer); override;
@@ -242,6 +243,42 @@ begin
       CheckPLine (right,bottom,right,top);
       CheckPLine (right,top,left,top);
       end;
+    end;
+end;
+
+procedure TLazCanvas.DoRectangleFill(const Bounds: TRect);
+var b : TRect;
+begin
+  b := Bounds;
+  SortRect (b);
+  if clipping then
+    CheckRectClipping (ClipRect, B);
+  with b do
+    case Brush.style of
+      bsSolid : FillRectangleColor (self, left,top, right,bottom);
+      bsPattern : FillRectanglePattern (self, left,top, right,bottom, brush.pattern);
+      bsImage :
+        if assigned (brush.image) then
+          if RelativeBrushImage then
+            FillRectangleImageRel (self, left,top, right,bottom, brush.image)
+          else
+            FillRectangleImage (self, left,top, right,bottom, brush.image)
+        else
+          raise PixelCanvasException.Create (sErrNoImage);
+      bsBDiagonal : FillRectangleHashDiagonal (self, b, HashWidth);
+      bsFDiagonal : FillRectangleHashBackDiagonal (self, b, HashWidth);
+      bsCross :
+        begin
+        FillRectangleHashHorizontal (self, b, HashWidth);
+        FillRectangleHashVertical (self, b, HashWidth);
+        end;
+      bsDiagCross :
+        begin
+        FillRectangleHashDiagonal (self, b, HashWidth);
+        FillRectangleHashBackDiagonal (self, b, HashWidth);
+        end;
+      bsHorizontal : FillRectangleHashHorizontal (self, b, HashWidth);
+      bsVertical : FillRectangleHashVertical (self, b, HashWidth);
     end;
 end;
 

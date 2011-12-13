@@ -60,7 +60,7 @@ object Form1: TForm1
     Height = 240
     Top = 40
     Width = 463
-    PageIndex = 13
+    PageIndex = 2
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 2
     TabStop = True
@@ -73,7 +73,7 @@ object Form1: TForm1
         Left = 119
         Height = 25
         Top = 16
-        Width = 75
+        Width = 91
         Caption = 'dsCommon'
         DrawStyle = dsCommon
         OnClick = HandleClick
@@ -84,7 +84,7 @@ object Form1: TForm1
         Left = 119
         Height = 25
         Top = 50
-        Width = 75
+        Width = 91
         Caption = 'dsWinCE'
         DrawStyle = dsWinCE
         OnClick = HandleClick
@@ -104,7 +104,7 @@ object Form1: TForm1
         Left = 119
         Height = 25
         Top = 88
-        Width = 75
+        Width = 91
         Caption = 'dsWin2000'
         DrawStyle = dsWin2000
         OnClick = HandleClick
@@ -115,11 +115,21 @@ object Form1: TForm1
         Left = 119
         Height = 25
         Top = 121
-        Width = 75
+        Width = 91
         Caption = 'dsWinXP'
         DrawStyle = dsWinXP
         OnClick = HandleClick
         TabOrder = 4
+        TabStop = True
+      end
+      object CDButton6: TCDButton
+        Left = 119
+        Height = 25
+        Top = 160
+        Width = 91
+        Caption = 'dsAndroid'
+        DrawStyle = dsAndroid
+        TabOrder = 5
         TabStop = True
       end
     end
@@ -338,6 +348,7 @@ object Form1: TForm1
           Height = 19
           Top = 27
           Width = 93
+          Checked = True
           DrawStyle = dsDefault
           Caption = 'dsCommon'
         end
