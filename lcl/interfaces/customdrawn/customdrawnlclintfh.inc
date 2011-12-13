@@ -74,8 +74,10 @@ procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
 procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;
 
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;
-procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect); override;
+procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect); override;*)
 
-function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;*)
+// No need to implement this one as the default is redirecting to ExtTextOut
+// which already handles UTF-8
+//function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

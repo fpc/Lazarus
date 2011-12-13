@@ -2222,8 +2222,8 @@ begin
   lHeight := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclheight);
 
   {$ifdef VerboseCDText}
-    DebugLn(Format(':[WinAPI ExtTextOut] lWidth=%d lHeight=%d',
-      [lWidth, lHeight]));
+    DebugLn(Format(':[WinAPI ExtTextOut] lWidth=%d lHeight=%d DestCanvasSize=%d, %d',
+      [lWidth, lHeight, lDestCanvas.Width, lDestCanvas.Height]));
   {$endif}
 
   // ---------------------------
@@ -2239,6 +2239,9 @@ begin
   // Execute the copy, pixel by pixel with Alpha blending
   // Simple AlphaBlend was showing redish areas in the emulator
   // because misteriously it read the target area pixels as red
+  //
+  // Don't apply WindowOrg to the dest pos because it is applied
+  // on each pixel drawing and was set via SetWindowOrg already
   lDestCanvas.AlphaBlendIgnoringDestPixels(lCanvas, X, Y, 0, 0, lWidth, lHeight);
 
   // Release the helper objects
@@ -2254,16 +2257,8 @@ begin
   Result := True;
 
 {   if ((Options and ETO_OPAQUE) <> 0) then
-     QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
-
-  if Str <> nil then
-  begin
-    if Count >= 0 then
-      WideStr := GetUtf8String(Copy(Str, 1, Count))
-    else
-      WideStr := GetUtf8String(Str);
-
-    if (Options and ETO_CLIPPED <> 0) then
+       QtDC.fillRect(Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);}
+{    if (Options and ETO_CLIPPED <> 0) then
     begin
       B := QtDC.getClipping;
       if not B then
@@ -2556,10 +2551,19 @@ end;*)
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.BackendGetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
+var
+  lForm: TCDForm;
 begin
-(*  if Handle = 0 then
-    Exit(False);
-  ARect := TQtWidget(handle).getClientBounds;*)
+  lForm := TCDForm(handle);
+
+  ARect.Left := 0;
+  ARect.Top := 0;
+
+  if lForm.Image = nil then Exit(False);
+
+  ARect.Right := lForm.Image.Width;
+  ARect.Bottom := lForm.Image.Height;
+
   Result := True;
 end;
 
@@ -4388,18 +4392,14 @@ end;*)
   parent
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.BackendGetWindowRelativePosition(Handle: HWND; var Left, Top: integer): boolean;
-var
-  R: TRect;
 begin
   {$ifdef VerboseCDWinAPI}
-    WriteLn('[WinAPI BackendGetWindowRelativePosition]');
+    DebugLn('[WinAPI BackendGetWindowRelativePosition]');
   {$endif}
-{  if Handle = 0 then}
-    Exit(False);
-{  R := TQtWidget(Handle).getFrameGeometry;
-  Left := R.Left;
-  Top := R.Top;
-  Result := True;}
+
+  Left := 0;
+  Top := 0;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -4410,22 +4410,23 @@ end;
   Returns the current widget Width and Height
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.BackendGetWindowSize(Handle: hwnd; var Width, Height: integer): boolean;
+var
+  lForm: TCDForm;
 begin
   {$ifdef VerboseCDWinAPI}
-    WriteLn('[WinAPI BackendGetWindowSize]');
+    DebugLn('[WinAPI BackendGetWindowSize]');
   {$endif}
   if Handle = 0 then Exit(False);
+  lForm := TCDForm(handle);
+  if lForm.Image = nil then Exit(False);
 
-{  with TQtWidget(Handle).getSize do
-  begin
-    Height := cy;
-    Width := cx;
-  end;}
+  Width := lForm.Image.Width;
+  Height := lForm.Image.Height;
 
   Result := True;
 end;
-(*
-{------------------------------------------------------------------------------
+
+(*{------------------------------------------------------------------------------
   Function: GradientFill
   Params: DC - DeviceContext to perform on
           Vertices - array of Points W/Color & Alpha
@@ -4736,7 +4737,7 @@ end;*)
 function TCDWidgetSet.BackendInvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
 begin
   {$ifdef VerboseCDWinAPI}
-    WriteLn('[TCDWidgetSet.InvalidateRect]');
+    DebugLn('[TCDWidgetSet.InvalidateRect]');
   {$endif}
   if AHandle = 0 then exit(False);
 

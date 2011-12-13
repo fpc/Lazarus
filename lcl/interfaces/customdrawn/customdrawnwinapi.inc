@@ -496,7 +496,7 @@ begin
   {$endif}
   QtRegion := TQtRegion.Create(True, p1, p2, p3, p4, QRegionEllipse);
   Result := HRGN(QtRegion);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: CreateFontIndirect
@@ -505,7 +505,7 @@ end;
 
   Creates a font GDIObject.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
+function TCDWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
   Result := CreateFontIndirectEx(LogFont, '');
 end;
@@ -517,11 +517,19 @@ end;
 
   Creates a font GDIObject.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT;
+function TCDWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT;
 var
-  QtFont: TQtFont;
-  FamilyName: string;
-const
+  lFont: TFPCustomFont;
+//  FamilyName: string;
+begin
+  {$ifdef VerboseCDDrawing}
+    DebugLn(Format('[TCDWidgetSet.CreateFontIndirectEx]  LongFontName: %s',
+      [LongFontName]));
+  {$endif}
+
+  lFont := TFPCustomFont.Create;
+  Result := HFONT(lFont);
+(*const
   QStyleStategy: array [DEFAULT_QUALITY..CLEARTYPE_NATURAL_QUALITY] of QFontStyleStrategy = (
  { DEFAULT_QUALITY           } QFontPreferDefault,
  { DRAFT_QUALITY             } QFontPreferMatch,
@@ -530,60 +538,47 @@ const
  { ANTIALIASED_QUALITY       } QFontPreferAntialias,
  { CLEARTYPE_QUALITY         } QFontPreferAntialias,
  { CLEARTYPE_NATURAL_QUALITY } QFontPreferAntialias
-  );
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI CreateFontIndirectEx] FontName: ' + LongFontName);
-  {$endif}
+  );*)
 
-  Result := 0;
+(*  // -1 has different meaning - it means that font height was set using setPointSize
+  if LogFont.lfHeight <> -1 then
+    QtFont.setPixelSize(Abs(LogFont.lfHeight));
 
-  QtFont := TQtFont.Create(True);
-  try
-    // -1 has different meaning - it means that font height was set using setPointSize
-    if LogFont.lfHeight <> -1 then
-      QtFont.setPixelSize(Abs(LogFont.lfHeight));
-
-    // Some values at available on Qt documentation at a table
-    // Others are guesses. The best would be to test different values for those
-    // See: http://doc.trolltech.com/4.1/qfont.html#Weight-enum
-    case LogFont.lfWeight of
-      FW_THIN       : QtFont.setWeight(10);
-      FW_EXTRALIGHT : QtFont.setWeight(15);
-      FW_LIGHT      : QtFont.setWeight(25);
-      FW_NORMAL     : QtFont.setWeight(50);
-      FW_MEDIUM     : QtFont.setWeight(55);
-      FW_SEMIBOLD   : QtFont.setWeight(63);
-      FW_BOLD       : QtFont.setWeight(75);
-      FW_EXTRABOLD  : QtFont.setWeight(80);
-      FW_HEAVY      : QtFont.setWeight(87);
-    end;
-
-    QtFont.Angle := LogFont.lfEscapement;
-
-    //LogFont.lfOrientation;
-
-    QtFont.setItalic(LogFont.lfItalic = High(Byte));
-    QtFont.setUnderline(LogFont.lfUnderline = High(Byte));
-    QtFont.setStrikeOut(LogFont.lfStrikeOut = High(Byte));
-
-    FamilyName := StrPas(LogFont.lfFaceName);
-
-    if (CompareText(FamilyName, 'default') <> 0) then
-      QtFont.setFamily(FamilyName)
-    else
-      QtFont.setFamily(UTF16ToUTF8(GetDefaultAppFontName));
-
-    if (LogFont.lfQuality >= Low(QStyleStategy)) and (LogFont.lfQuality <= High(QStyleStategy)) then
-      QtFont.setStyleStrategy(QStyleStategy[LogFont.lfQuality]);
-    Result := HFONT(QtFont);
-  except
-    Result := 0;
-    DebugLn('TQtWidgetSet.CreateFontIndirectEx: Failed');
+  // Some values at available on Qt documentation at a table
+  // Others are guesses. The best would be to test different values for those
+  // See: http://doc.trolltech.com/4.1/qfont.html#Weight-enum
+  case LogFont.lfWeight of
+    FW_THIN       : QtFont.setWeight(10);
+    FW_EXTRALIGHT : QtFont.setWeight(15);
+    FW_LIGHT      : QtFont.setWeight(25);
+    FW_NORMAL     : QtFont.setWeight(50);
+    FW_MEDIUM     : QtFont.setWeight(55);
+    FW_SEMIBOLD   : QtFont.setWeight(63);
+    FW_BOLD       : QtFont.setWeight(75);
+    FW_EXTRABOLD  : QtFont.setWeight(80);
+    FW_HEAVY      : QtFont.setWeight(87);
   end;
+
+  QtFont.Angle := LogFont.lfEscapement;
+
+  //LogFont.lfOrientation;
+
+  QtFont.setItalic(LogFont.lfItalic = High(Byte));
+  QtFont.setUnderline(LogFont.lfUnderline = High(Byte));
+  QtFont.setStrikeOut(LogFont.lfStrikeOut = High(Byte));
+
+  FamilyName := StrPas(LogFont.lfFaceName);
+
+  if (CompareText(FamilyName, 'default') <> 0) then
+    QtFont.setFamily(FamilyName)
+  else
+    QtFont.setFamily(UTF16ToUTF8(GetDefaultAppFontName));
+
+  if (LogFont.lfQuality >= Low(QStyleStategy)) and (LogFont.lfQuality <= High(QStyleStategy)) then
+    QtFont.setStyleStrategy(QStyleStategy[LogFont.lfQuality]);*)
 end;
 
-function TQtWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
+(*function TQtWidgetSet.CreateIconIndirect(IconInfo: PIconInfo): HICON;
 var
   AIcon: TQtIcon;
   APixmap, ATemp: QPixmapH;
@@ -3961,7 +3956,7 @@ begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
       end;
   end;
-end;
+end;  *)
 
 {------------------------------------------------------------------------------
   Function: GetTextColor
@@ -3970,24 +3965,22 @@ end;
 
   Gets the Font Color currently assigned to the Device Context
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetTextColor(DC: HDC) : TColorRef;
+function TCDWidgetSet.GetTextColor(DC: HDC) : TColorRef;
 var
-  Color: TQColor;
-  QtDC: TQtDeviceContext;
+  lFont: TFPCustomFont;
+  LazDC: TLazCanvas;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetTextColor]');
+  {$ifdef VerboseCDDrawing}
+    DebugLn(Format('[TCDWidgetSet.SetTextColor]  DC: %x', [DC]));
   {$endif}
 
   Result := 0;
+  if not IsValidDC(DC) then Exit;
+  LazDC := TLazCanvas(DC);
 
-  if IsValidDC(DC) then
-  begin
-    QtDC := TQtDeviceContext(DC);
-    ColorRefToTQColor(TColorRef(QtDC.vTextColor), Color);
-    TQColorToColorRef(Color, Result);
-  end;
-end;*)
+  if LazDC.Font <> nil then
+    Result := FPColorToTColor(LazDC.Font.FPColor);
+end;
 
 {$ifndef CD_UseNativeText}
 {------------------------------------------------------------------------------
@@ -4204,43 +4197,34 @@ begin
   {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
     WriteLn('***** [WinAPI TQtWidgetSet.GetWindowLong] missing implementation ');
   {$endif}
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  GetWindowOrgEx
   Params:  DC    -
   Returns:
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
+function TCDWidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
 var
-  Matrix: QTransformH;
+  LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace: > [WinAPI GetWindowOrgEx]');
+  {$ifdef VerboseCDDrawing}
+    DebugLn(Format(':>[WinAPI GetWindowOrgEx] DC=%s', [dbghex(DC)]));
   {$endif}
   Result := 0;
-  if not IsValidDC(DC) and (P<>nil) then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('Trace: < [WinAPI GetWindowOrgEx] No valid DC or P is nil');
-    {$endif}
-    exit;
-  end;
+  if not IsValidDC(DC) then Exit;
+  if P = nil then Exit;
 
-  Matrix := QPainter_transform(TQtDeviceContext(DC).Widget);
-  if Matrix <> nil then
-  begin
-    P^.X := -Trunc(QTransform_Dx(Matrix));
-    P^.Y := -Trunc(QTransform_Dy(Matrix));
-    Result := 1;
-  end;
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace: < [WinAPI GetWindowOrgEx] Result=', dbgs(p^));
+  P^.X := LazDC.WindowOrg.X - LazDC.BaseWindowOrg.X;
+  P^.Y := LazDC.WindowOrg.Y - LazDC.BaseWindowOrg.Y;
+  Result := 1; // any non-zero will do according to MSDN
+  {$ifdef VerboseCDDrawing}
+    DebugLn(':<[WinAPI GetWindowOrgEx] Result='+dbgs(p^));
   {$endif}
 end;
 
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method:  GetWindowRect
   Params:  Handle - handle of window
            Rect   - record for window coordinates
@@ -4249,7 +4233,7 @@ end;
 
   Retrieves the dimensions of the bounding rectangle of the specified window.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowRect(Handle: HWND; var ARect: TRect): Integer;
+function TCDWidgetSet.GetWindowRect(Handle: HWND; var ARect: TRect): Integer;
 var
   APos: TQtPoint;
   R: TRect;
@@ -4975,7 +4959,8 @@ begin
     Exit(False);
   end;
 
-  // ToDo: Normalize the rectangle, or improve TLazCanvas so that it accepts invalid coordinates
+  // ToDo: We can normalize the rectangle, but this is not necessary as
+  // TLazCanvas ignores invalid coordinates
 {  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
   if IsRectEmpty(R) then Exit(True);}
 
@@ -4983,23 +4968,23 @@ begin
 
   Result := True;
 end;
-(*
-function TQtWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
+
+function TCDWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 var
-  QtDC: TQtDeviceContext;
+  LazDC: TLazCanvas;
 begin
-  {$ifdef VerboseQtWinAPI}
-  writeln('[WinAPI RectVisible] ');
+  {$ifdef VerboseCDDrawing}
+  Debugln('[WinAPI RectVisible]');
   {$endif}
-  Result := False;
+  Result := True;
   if not IsValidDC(DC) then Exit;
-  QtDC := TQtDeviceContext(DC);
+  LazDC := TLazCanvas(DC);
   // as MSDN says only clipping region can play here
-  if QtDC.getClipping then
-    Result := QtDC.getClipRegion.containsRect(ARect);
+{  if QtDC.getClipping then
+    Result := QtDC.getClipRegion.containsRect(ARect);}
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: RedrawWindow
   Params: Wnd:
           lprcUpdate:
@@ -5696,210 +5681,6 @@ begin
     Result := Integer(False);
 end;
 
-function TQtWidgetSet.SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean;
-var
-  R, RW: TRect;
-  Ratio: Single;
-begin
-  Result := False;
-  if IsValidDC(DC) then
-  begin
-    QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
-    if OldSize <> nil then
-    begin
-      OldSize^.cx := R.Right - R.Left;
-      OldSize^.cy := R.Bottom - R.Top;
-    end;
-    if (XExtent <> R.Right) or (YExtent <> R.Bottom) then
-    begin
-      case TQtDeviceContext(DC).vMapMode of
-        MM_ANISOTROPIC, MM_ISOTROPIC:
-        begin
-          if TQtDeviceContext(DC).vMapMode = MM_ISOTROPIC then
-          begin
-            // TK: Is here also an adjustment on Windows if DPIX and DPIY are different?
-            QPainter_Window(TQtDeviceContext(DC).Widget, @RW);
-            Ratio := RW.Right / RW.Bottom; // no check, programmer cannot put nonsense
-            if YExtent * Ratio > XExtent then
-              YExtent := RoundToInt(XExtent / Ratio)
-            else if YExtent * Ratio < XExtent then
-              XExtent := RoundToInt(YExtent * Ratio)
-          end;
-          QPainter_setViewPort(TQtDeviceContext(DC).Widget, R.Left, R.Top, XExtent, YExtent);
-          Result := True;
-        end;
-      end;
-    end;
-  end;
-end;
-
-function TQtWidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
-var
-  R: TRect;
-begin
-  Result := False;
-  if IsValidDC(DC) then
-  begin
-    QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
-    if OldPoint <> nil then
-      OldPoint^ := R.TopLeft;
-    if (TQtDeviceContext(DC).vMapMode <> MM_TEXT) and (NewX <> R.Left) or (NewY <> R.Top) then
-    begin
-      QPainter_setViewPort(TQtDeviceContext(DC).Widget, NewX, NewY, R.Right - R.Left, R.Bottom - R.Top);
-      Result := True;
-    end;
-  end;
-end;
-
-function TQtWidgetSet.SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean;
-var
-  R: TRect;
-begin
-  Result := False;
-  if IsValidDC(DC) then
-  begin
-    QPainter_Window(TQtDeviceContext(DC).Widget, @R);
-    if OldSize <> nil then
-    begin
-      OldSize^.cx := R.Right - R.Left;
-      OldSize^.cy := R.Bottom - R.Top;
-    end;
-    if (XExtent <> R.Right) or (YExtent <> R.Bottom) then
-    begin
-      case TQtDeviceContext(DC).vMapMode of
-        MM_ANISOTROPIC, MM_ISOTROPIC:
-        begin
-          QPainter_setWindow(TQtDeviceContext(DC).Widget, R.Left, R.Top, XExtent, YExtent);
-          Result := True;
-        end;
-      end;
-    end;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  SetWindowOrgEx
-  Params:  DC    - handle of device context
-           NewX  - new x-coordinate of window origin
-           NewY  - new y-coordinate of window origin
-           Point - record receiving original origin
-  Returns: Whether the call was successful
-
-  Sets the window origin of the device context by using the specified coordinates.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean;
-var
-  P: TPoint;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetWindowOrgEx] DC: ', dbghex(DC), ' NewX: ', dbgs(NewX), ' NewY: ', dbgs(NewY));
-  {$endif}
-
-  Result := False;
-
-  if IsValidDC(DC) then
-  begin
-    GetWindowOrgEx(DC, @P);
-    // restore 0, 0
-    if (P.X <> 0) or (P.Y <> 0) then
-      TQtDeviceContext(DC).translate(P.X, P.Y);
-    if OldPoint <> nil then
-      OldPoint^ := P;
-    TQtDeviceContext(DC).translate(-NewX, -NewY);
-    Result := True;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  SetWindowPos
-  Params: HWnd            - handle of window
-          HWndInsertAfter - placement-order handle
-          X               - horizontal position
-          Y               - vertical position
-          CX              - width
-          CY              - height
-          UFlags          - window-positioning flags
-  Returns: If the function succeeds
-
-  Changes the size, position, and Z order of a child, pop-up, or top-level
-  window.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND; X, Y, cx,
-  cy: Integer; uFlags: UINT): Boolean;
-var
-  DisableUpdates: boolean;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetWindowPos] Handle: ', dbghex(hWnd),
-      ' hWndInsertAfter: ',dbghex(hWnd));
-  {$endif}
-  Result := hWnd <> 0;
-  if not Result then
-    exit;
-
-  DisableUpdates := (SWP_NOREDRAW and uFlags) <> 0;
-  if DisableUpdates then
-    TQtWidget(Hwnd).setUpdatesEnabled(False);
-  try
-    if (SWP_NOMOVE and uFlags) = 0 then
-      TQtWidget(Hwnd).move(X, Y);
-
-    if (SWP_NOSIZE and uFlags) = 0 then
-      TQtWidget(Hwnd).resize(CX, CY);
-
-    if (SWP_NOZORDER and uFlags) = 0 then
-    begin
-      case hWndInsertAfter of
-        HWND_TOP:
-          begin
-            TQtWidget(hWnd).raiseWidget;
-            if (SWP_NOACTIVATE and uFlags) = 0 then
-              TQtWidget(hWnd).Activate;
-          end;
-        HWND_BOTTOM: TQtWidget(hWnd).lowerWidget;
-        {TODO: HWND_TOPMOST ,HWND_NOTOPMOST}
-      end;
-    end;
-  finally
-    if DisableUpdates then
-      TQtWidget(Hwnd).setUpdatesEnabled(True);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  SetWindowRgn
-  Params:  hWnd    - handle of the widget
-           hRgn    - handle of the region
-           bRedraw - ?
-  Returns: 0 if the call failed, any other value if it was successful
-
-  Makes the region specifyed in hRgn be the only part of the window which is
-  visible.
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetWindowRgn(hWnd: HWND;
- hRgn: HRGN; bRedraw: Boolean):longint;
-var
-  w: TQtWidget;
-  r: TQtRegion;
-begin
-  Result := 0;
-
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetWindowRgn] Handle: ', dbghex(hWnd));
-  {$endif}
-
-  // Basic checks
-  if (hWnd = 0) or (hRgn = 0) then Exit;
-
-  w := TQtWidget(hWnd);
-  r := TQtRegion(hRgn);
-
-  // Now set the mask in the widget
-  w.setMask(r.FHandle);
-
-  Result := 1;
-end;
-
 function TQtWidgetSet.ShowCaret(hWnd: HWND): Boolean;
 begin
   Result := (hWnd <> 0) and (QtCaret.ShowCaret(TQtWidget(hWnd)));
@@ -6110,30 +5891,31 @@ begin
 
   if Assigned(ScrollBar) then
     Result := UpdateScrollInfo;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  SetTextColor
   Params:  Handle -
   Returns:
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
+function TCDWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
+var
+  lFont: TFPCustomFont;
+  LazDC: TLazCanvas;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetTextColor] DC: ', dbghex(DC));
+  {$ifdef VerboseCDDrawing}
+    DebugLn(Format('[TCDWidgetSet.SetTextColor]  DC: %x Color: %8x', [DC, Color]));
   {$endif}
+
   Result := CLR_INVALID;
-  if not IsValidDC(DC) then begin
-    {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI SetTextColor] Invalid DC');
-    {$endif}
-    exit;
-  end;
-  Result := TQtDeviceContext(DC).vTextColor;
-  TQtDeviceContext(DC).vTextColor := ColorToRGB(TColor(Color)); // be sure we get TColorRef
+  if not IsValidDC(DC) then Exit;
+  LazDC := TLazCanvas(DC);
+
+  if LazDC.Font <> nil then
+    LazDC.Font.FPColor := TColorToFPColor(Color);
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
   Params  Handle: HWND; wBar: Integer; bShow: Boolean
   Result
@@ -6192,6 +5974,207 @@ begin
 
   end else
     Result := False;
+end;
+
+function TQtWidgetSet.SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean;
+var
+  R, RW: TRect;
+  Ratio: Single;
+begin
+  Result := False;
+  if IsValidDC(DC) then
+  begin
+    QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
+    if OldSize <> nil then
+    begin
+      OldSize^.cx := R.Right - R.Left;
+      OldSize^.cy := R.Bottom - R.Top;
+    end;
+    if (XExtent <> R.Right) or (YExtent <> R.Bottom) then
+    begin
+      case TQtDeviceContext(DC).vMapMode of
+        MM_ANISOTROPIC, MM_ISOTROPIC:
+        begin
+          if TQtDeviceContext(DC).vMapMode = MM_ISOTROPIC then
+          begin
+            // TK: Is here also an adjustment on Windows if DPIX and DPIY are different?
+            QPainter_Window(TQtDeviceContext(DC).Widget, @RW);
+            Ratio := RW.Right / RW.Bottom; // no check, programmer cannot put nonsense
+            if YExtent * Ratio > XExtent then
+              YExtent := RoundToInt(XExtent / Ratio)
+            else if YExtent * Ratio < XExtent then
+              XExtent := RoundToInt(YExtent * Ratio)
+          end;
+          QPainter_setViewPort(TQtDeviceContext(DC).Widget, R.Left, R.Top, XExtent, YExtent);
+          Result := True;
+        end;
+      end;
+    end;
+  end;
+end;
+
+function TQtWidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
+var
+  R: TRect;
+begin
+  Result := False;
+  if IsValidDC(DC) then
+  begin
+    QPainter_ViewPort(TQtDeviceContext(DC).Widget, @R);
+    if OldPoint <> nil then
+      OldPoint^ := R.TopLeft;
+    if (TQtDeviceContext(DC).vMapMode <> MM_TEXT) and (NewX <> R.Left) or (NewY <> R.Top) then
+    begin
+      QPainter_setViewPort(TQtDeviceContext(DC).Widget, NewX, NewY, R.Right - R.Left, R.Bottom - R.Top);
+      Result := True;
+    end;
+  end;
+end;
+
+function TQtWidgetSet.SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean;
+var
+  R: TRect;
+begin
+  Result := False;
+  if IsValidDC(DC) then
+  begin
+    QPainter_Window(TQtDeviceContext(DC).Widget, @R);
+    if OldSize <> nil then
+    begin
+      OldSize^.cx := R.Right - R.Left;
+      OldSize^.cy := R.Bottom - R.Top;
+    end;
+    if (XExtent <> R.Right) or (YExtent <> R.Bottom) then
+    begin
+      case TQtDeviceContext(DC).vMapMode of
+        MM_ANISOTROPIC, MM_ISOTROPIC:
+        begin
+          QPainter_setWindow(TQtDeviceContext(DC).Widget, R.Left, R.Top, XExtent, YExtent);
+          Result := True;
+        end;
+      end;
+    end;
+  end;
+end;*)
+
+{------------------------------------------------------------------------------
+  Method:  SetWindowOrgEx
+  Params:  DC    - handle of device context
+           NewX  - new x-coordinate of window origin
+           NewY  - new y-coordinate of window origin
+           Point - record receiving original origin
+  Returns: Whether the call was successful
+
+  Sets the window origin of the device context by using the specified coordinates.
+ ------------------------------------------------------------------------------}
+function TCDWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean;
+var
+  P: TPoint;
+  LazDC: TLazCanvas absolute DC;
+begin
+  {$ifdef VerboseCDDrawing}
+    DebugLn(Format('[WinAPI SetWindowOrgEx] DC=%x  NewX=%d NewY=%d',
+      [DC, NewX, NewY]));
+  {$endif}
+
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+
+  GetWindowOrgEx(DC, @P);
+  if OldPoint <> nil then OldPoint^ := P;
+
+  LazDC.WindowOrg := Point(-NewX, -NewY);
+  Result := True;
+end;
+
+(*{------------------------------------------------------------------------------
+  Method:  SetWindowPos
+  Params: HWnd            - handle of window
+          HWndInsertAfter - placement-order handle
+          X               - horizontal position
+          Y               - vertical position
+          CX              - width
+          CY              - height
+          UFlags          - window-positioning flags
+  Returns: If the function succeeds
+
+  Changes the size, position, and Z order of a child, pop-up, or top-level
+  window.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND; X, Y, cx,
+  cy: Integer; uFlags: UINT): Boolean;
+var
+  DisableUpdates: boolean;
+begin
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI SetWindowPos] Handle: ', dbghex(hWnd),
+      ' hWndInsertAfter: ',dbghex(hWnd));
+  {$endif}
+  Result := hWnd <> 0;
+  if not Result then
+    exit;
+
+  DisableUpdates := (SWP_NOREDRAW and uFlags) <> 0;
+  if DisableUpdates then
+    TQtWidget(Hwnd).setUpdatesEnabled(False);
+  try
+    if (SWP_NOMOVE and uFlags) = 0 then
+      TQtWidget(Hwnd).move(X, Y);
+
+    if (SWP_NOSIZE and uFlags) = 0 then
+      TQtWidget(Hwnd).resize(CX, CY);
+
+    if (SWP_NOZORDER and uFlags) = 0 then
+    begin
+      case hWndInsertAfter of
+        HWND_TOP:
+          begin
+            TQtWidget(hWnd).raiseWidget;
+            if (SWP_NOACTIVATE and uFlags) = 0 then
+              TQtWidget(hWnd).Activate;
+          end;
+        HWND_BOTTOM: TQtWidget(hWnd).lowerWidget;
+        {TODO: HWND_TOPMOST ,HWND_NOTOPMOST}
+      end;
+    end;
+  finally
+    if DisableUpdates then
+      TQtWidget(Hwnd).setUpdatesEnabled(True);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  SetWindowRgn
+  Params:  hWnd    - handle of the widget
+           hRgn    - handle of the region
+           bRedraw - ?
+  Returns: 0 if the call failed, any other value if it was successful
+
+  Makes the region specifyed in hRgn be the only part of the window which is
+  visible.
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.SetWindowRgn(hWnd: HWND;
+ hRgn: HRGN; bRedraw: Boolean):longint;
+var
+  w: TQtWidget;
+  r: TQtRegion;
+begin
+  Result := 0;
+
+  {$ifdef VerboseQtWinAPI}
+    WriteLn('[WinAPI SetWindowRgn] Handle: ', dbghex(hWnd));
+  {$endif}
+
+  // Basic checks
+  if (hWnd = 0) or (hRgn = 0) then Exit;
+
+  w := TQtWidget(hWnd);
+  r := TQtRegion(hRgn);
+
+  // Now set the mask in the widget
+  w.setMask(r.FHandle);
+
+  Result := 1;
 end;
 
 {------------------------------------------------------------------------------

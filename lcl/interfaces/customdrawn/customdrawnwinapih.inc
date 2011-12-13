@@ -54,10 +54,10 @@ function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 (*function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;*)
 function CreateCompatibleDC(DC: HDC): HDC; override;
-(*function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; override;
+//function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
-function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
+(*function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
 function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; override;*)
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 (*function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;
@@ -128,17 +128,17 @@ function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollIn
 function GetStockObject(Value: Integer): THandle; override;*)
 function GetSysColor(nIndex: Integer): DWORD; override;
 (*function GetSysColorBrush(nIndex: Integer): HBrush; override;
-function GetSystemMetrics(nIndex: Integer): Integer; override;
-function GetTextColor(DC: HDC) : TColorRef; Override;*)
+function GetSystemMetrics(nIndex: Integer): Integer; override;*)
+function GetTextColor(DC: HDC) : TColorRef; Override;
 function GetTextExtentExPoint(DC: HDC; Str: PChar; Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize): Boolean; override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 (*function GetViewPortExtEx(DC: HDC; Size: PSize): Integer; override;
 function GetViewPortOrgEx(DC: HDC; P: PPoint): Integer; override;
 function GetWindowExtEx(DC: HDC; Size: PSize): Integer; override;
-function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;
+function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;*)
 function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; override;
-function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;*)
+//function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;
 function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean; override;
 function BackendGetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean;
 function GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean; override;
@@ -176,8 +176,8 @@ function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;
 function PtInRegion(RGN: HRGN; X, Y: Integer) : Boolean; override;
 *)
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
-(*function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
-function RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean; override;
+function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
+(*function RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean; override;
 function ReleaseCapture : Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
@@ -205,13 +205,13 @@ function SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean; override;
 function SetParent(hWndChild: HWND; hWndParent: HWND): HWND; override;*)
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
 (*function SetROP2(DC: HDC; Mode: Integer): Integer; override;
-function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
+function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;*)
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
-function SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean; override;
+(*function SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean; override;
 function SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean; override;
-function SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean; override;
+function SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean; override;*)
 function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
-function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
+(*function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
        X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  override;
 function SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean):longint; override;
 function ShowCaret(hWnd: HWND): Boolean; override;

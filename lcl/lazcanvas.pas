@@ -23,6 +23,12 @@
   Abstract:
     Classes and functions for extending TFPImageCanvas to support more stretching
     filters and to support all features from the LCL TCanvas
+
+    TLazCanvas also fixes various small problems and incompatibilities between
+    TFPImageCanvas versions, making the interface smoother for its users
+
+  Dont use anything from the LCL here as this unit should be kept strictly independent
+  only LCLProc for DebugLn is allowed, but only during debuging
 }
 unit lazcanvas;
 
@@ -56,6 +62,7 @@ type
   public
     Brush: TFPCustomBrush;
     Pen: TFPCustomPen;
+    Font: TFPCustomFont;
     BaseWindowOrg: TPoint;
     WindowOrg: TPoint;
     Clipping: Boolean;
@@ -68,6 +75,7 @@ type
   TLazCanvas = class(TFPImageCanvas)
   private
     FAssignedBrush: TFPCustomBrush;
+    FAssignedFont: TFPCustomFont;
     FAssignedPen: TFPCustomPen;
     FBaseWindowOrg: TPoint;
     {$if defined(ver2_4) or defined(ver2_5) or defined(ver2_6)}
@@ -77,6 +85,7 @@ type
     GraphicStateStack: TObjectStack; // TLazCanvasState
     function GetAssignedBrush: TFPCustomBrush;
     function GetAssignedPen: TFPCustomPen;
+    function GetAssignedFont: TFPCustomFont;
     function GetWindowOrg: TPoint;
     procedure SetWindowOrg(AValue: TPoint);
   protected
@@ -114,11 +123,13 @@ type
     // This needed to be added because Pen/Brush.Assign raises exceptions
     procedure AssignPenData(APen: TFPCustomPen);
     procedure AssignBrushData(ABrush: TFPCustomBrush);
+    procedure AssignFontData(AFont: TFPCustomFont);
     // These properties are utilized to implement LCLIntf.SelectObject
     // to keep track of which brush handle was assigned to this canvas
     // They are not utilized by TLazCanvas itself
     property AssignedPen: TFPCustomPen read GetAssignedPen write FAssignedPen;
     property AssignedBrush: TFPCustomBrush read GetAssignedBrush write FAssignedBrush;
+    property AssignedFont: TFPCustomFont read GetAssignedFont write FAssignedFont;
     //
     // SetWindowOrg operations will be relative to BaseWindowOrg,
     // This is very useful for implementing the non-native wincontrol,
@@ -158,6 +169,14 @@ begin
     Result := TFPEmptyPen.Create
   else
     Result := FAssignedPen;
+end;
+
+function TLazCanvas.GetAssignedFont: TFPCustomFont;
+begin
+  if FAssignedFont = nil then
+    Result := TFPEmptyFont.Create
+  else
+    Result := FAssignedFont;
 end;
 
 function TLazCanvas.GetWindowOrg: TPoint;
@@ -251,8 +270,8 @@ var b : TRect;
 begin
   b := Bounds;
   SortRect (b);
-  if clipping then
-    CheckRectClipping (ClipRect, B);
+//  if clipping then
+//    CheckRectClipping (ClipRect, B);
   with b do
     case Brush.style of
       bsSolid : FillRectangleColor (self, left,top, right,bottom);
@@ -397,6 +416,7 @@ begin
 
   lState.Brush := Brush.CopyBrush;
   lState.Pen := Pen.CopyPen;
+  lState.Font := Font.CopyFont;
   lState.BaseWindowOrg := BaseWindowOrg;
   lState.WindowOrg := WindowOrg;
   lState.Clipping := Clipping;
@@ -413,6 +433,7 @@ begin
 
   AssignPenData(lState.Pen);
   AssignBrushData(lState.Brush);
+  AssignFontData(lState.Font);
   BaseWindowOrg := lState.BaseWindowOrg;
   WindowOrg := lState.WindowOrg;
   Clipping := lState.Clipping;
@@ -511,8 +532,8 @@ begin
   lDrawHeight := Min(Self.Height - ADestY, ASource.Height - ASourceY);
   lDrawWidth := Min(lDrawWidth, ASourceWidth);
   lDrawHeight := Min(lDrawHeight, ASourceHeight);
-  //DebugLn(Format('[TLazCanvas.AlphaBlend] lDrawWidth=%d lDrawHeight=%d',
-  //  [lDrawWidth, lDrawHeight]));
+  //DebugLn(Format('[TLazCanvas.AlphaBlendIgnoringDestPixels] lDrawWidth=%d lDrawHeight=%d',
+    //[lDrawWidth, lDrawHeight]));
   for y := 0 to lDrawHeight - 1 do
   begin
     for x := 0 to lDrawWidth - 1 do
@@ -612,6 +633,18 @@ begin
   if ABrush = nil then Exit;
   Brush.FPColor := ABrush.FPColor;
   Brush.Style := ABrush.Style;
+end;
+
+procedure TLazCanvas.AssignFontData(AFont: TFPCustomFont);
+begin
+  if AFont = nil then Exit;
+  Font.FPColor := AFont.FPColor;
+  Font.Name := AFont.Name;
+  Font.Size := AFont.Size;
+  Font.Bold := AFont.Bold;
+  Font.Italic := AFont.Italic;
+  Font.Underline := AFont.Underline;
+  Font.StrikeTrough := AFont.StrikeTrough;
 end;
 
 { TFPWindowsSharpInterpolation }
