@@ -7967,21 +7967,6 @@ begin
           QWidget_grabMouse(Widget);
       end;
     end;
-
-    // now fix for pagecontrol design time, it never sends mouse release
-    // like under x11 and win32 - bug in Qt. Here we send dummy MouseRelease
-    if (QEvent_type(Event) = QEventMouseButtonPress) and Assigned(LCLObject) and
-      (csDesigning in LCLObject.ComponentState) then
-    begin
-      NewEvent := QMouseEvent_create(QEventMouseButtonRelease, @MousePos,
-          QMouseEvent_globalPos(QMouseEventH(Event)),
-          QMouseEvent_button(QMouseEventH(Event)),
-          QMouseEvent_buttons(QMouseEventH(Event)),
-          QInputEvent_modifiers(QInputEventH(Event))
-        );
-      SlotMouse(Sender, NewEvent);
-      QMouseEvent_destroy(NewEvent);
-    end;
     {$ENDIF}
 
   end else
@@ -15355,6 +15340,8 @@ var
   WidgetToNotify: QWidgetH;
   WSQtWidget: TWSWinControlClass;
   Action: QActionH;
+  ATabWidget: TQtTabWidget;
+  ATabIndex: Integer;
 begin
   Result := False;
   QEvent_Accept(Event);
@@ -15392,13 +15379,22 @@ begin
 
         if WSQtWidget.GetDesignInteractive(TWinControl(Control), Pt) then
         begin
-          MouseEvent := QMouseEvent_create(QEvent_type(Event), @p,
-            QMouseEvent_globalpos(QMouseEventH(Event)),
-            QMouseEvent_button(QMouseEventH(Event)),
-            QMouseEvent_buttons(QMouseEventH(Event)),
-            QInputEvent_modifiers(QInputEventH(Event))
-            );
-          QCoreApplication_postEvent(WidgetToNotify, MouseEvent, 1);
+          if Control is TCustomTabControl then
+          begin
+            ATabWidget := TQtTabWidget(TWinControl(Control).Handle);
+            ATabIndex := ATabWidget.tabAt(Pt);
+            if ATabIndex >= 0 then
+              ATabWidget.setCurrentIndex(ATabIndex);
+          end else
+          begin
+            MouseEvent := QMouseEvent_create(QEvent_type(Event), @p,
+              QMouseEvent_globalpos(QMouseEventH(Event)),
+              QMouseEvent_button(QMouseEventH(Event)),
+              QMouseEvent_buttons(QMouseEventH(Event)),
+              QInputEvent_modifiers(QInputEventH(Event))
+              );
+            QCoreApplication_postEvent(WidgetToNotify, MouseEvent, 1);
+          end;
         end;
       end else
       begin
