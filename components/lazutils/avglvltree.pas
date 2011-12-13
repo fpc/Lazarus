@@ -173,6 +173,56 @@ function ComparePointerWithPtrToPtrItem(Key, Data: Pointer): Integer;
 
 
 type
+  TStringMap = class;
+
+  TStringMapItem = record
+    Name: string;
+  end;
+  PStringMapItem = ^TStringMapItem;
+
+  { TStringMapEnumerator }
+
+  TStringMapEnumerator = class
+  protected
+    FTree: TAvgLvlTree;
+    FCurrent: TAvgLvlTreeNode;
+  public
+    constructor Create(Tree: TAvgLvlTree);
+    function MoveNext: boolean;
+    // "Current" is implemented by the descendant classes
+  end;
+
+  { TStringMap }
+
+  TStringMap = class
+  private
+    FCompareKeyItemFunc: TListSortCompare;
+    FTree: TAvgLvlTree;// tree of PStringMapItem
+    FCaseSensitive: boolean;
+    function GetCompareItemsFunc: TListSortCompare;
+    function FindNode(const s: string): TAvgLvlTreeNode;
+  protected
+    procedure DisposeItem(p: Pointer); virtual;
+    function ItemsAreEqual(p1, p2: Pointer): boolean; virtual;
+    procedure AssignItem(Src, Dest: Pointer); virtual;
+  public
+    constructor Create(TheCaseSensitive: boolean);
+    destructor Destroy; override;
+    procedure Clear; virtual;
+    function Contains(const s: string): boolean;
+    procedure GetNames(List: TStrings);
+    procedure Remove(const Name: string); virtual;
+    property CaseSensitive: boolean read FCaseSensitive;
+    property Tree: TAvgLvlTree read FTree; // tree of PStringMapItem
+    function Equals(OtherTree: TStringMap): boolean; reintroduce;
+    procedure Assign(Source: TStringMap); virtual; abstract;
+    property CompareItemsFunc: TListSortCompare read GetCompareItemsFunc;
+    property CompareKeyItemFunc: TListSortCompare read FCompareKeyItemFunc;
+    procedure SetCompareFuncs(
+            const NewCompareItemsFunc, NewCompareKeyItemFunc: TListSortCompare;
+            NewCaseSensitive: boolean);
+  end;
+
   { TStringToStringTree - Associative array }
 
   TStringToStringItem = record
@@ -180,6 +230,17 @@ type
     Value: string;
   end;
   PStringToStringItem = ^TStringToStringItem;
+
+  TStringToStringTree = class;
+
+  { TStringToStringTreeEnumerator }
+
+  TStringToStringTreeEnumerator = class(TStringMapEnumerator)
+  private
+    function GetCurrent: PStringToStringItem; inline;
+  public
+    property Current: PStringToStringItem read GetCurrent;
+  end;
 
   TStringToStringTree = class
   private
@@ -201,7 +262,7 @@ type
     procedure Delete(const Name: string);
     procedure Add(const Name, Value, Delimiter: string);
     procedure AddNameValues(List: TStrings);
-    procedure AddValues(List: TStrings);
+    procedure AddNames(List: TStrings);
     function GetFirst(out Name, Value: string): Boolean;
     function GetLast(out Name, Value: string): Boolean;
     function GetNext(const Name: string; out NextName, NextValue: string): Boolean;
@@ -242,24 +303,31 @@ end;
 
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;
 begin
-  Result:=CompareStr(PStringToStringItem(Data1)^.Name,
-                     PStringToStringItem(Data2)^.Name);
+  Result:=CompareStr(PStringMapItem(Data1)^.Name,
+                     PStringMapItem(Data2)^.Name);
 end;
 
 function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
 begin
-  Result:=CompareText(PStringToStringItem(Data1)^.Name,
-                      PStringToStringItem(Data2)^.Name);
+  Result:=CompareText(PStringMapItem(Data1)^.Name,
+                      PStringMapItem(Data2)^.Name);
 end;
 
 function ComparePAnsiStringWithStrToStrItem(Key, Data: Pointer): Integer;
 begin
-  Result:=CompareStr(PAnsiString(Key)^,PStringToStringItem(Data)^.Name);
+  Result:=CompareStr(PAnsiString(Key)^,PStringMapItem(Data)^.Name);
 end;
 
 function ComparePAnsiStringWithStrToStrItemI(Key, Data: Pointer): Integer;
 begin
-  Result:=CompareText(PAnsiString(Key)^,PStringToStringItem(Data)^.Name);
+  Result:=CompareText(PAnsiString(Key)^,PStringMapItem(Data)^.Name);
+end;
+
+{ TStringToStringTreeEnumerator }
+
+function TStringToStringTreeEnumerator.GetCurrent: PStringToStringItem;
+begin
+  Result:=PStringToStringItem(FCurrent.Data);
 end;
 
 
@@ -1488,7 +1556,7 @@ begin
     Values[List.Names[i]]:=List.ValueFromIndex[i];
 end;
 
-procedure TStringToStringTree.AddValues(List: TStrings);
+procedure TStringToStringTree.AddNames(List: TStrings);
 var
   i: Integer;
 begin
@@ -1659,6 +1727,152 @@ begin
   if Node<>nil then
     Node:=Tree.FindPrecessor(Node);
   Result:=GetNode(Node,PrevKey,PrevValue);
+end;
+
+{ TStringMapEnumerator }
+
+constructor TStringMapEnumerator.Create(Tree: TAvgLvlTree);
+begin
+  FTree:=Tree;
+end;
+
+function TStringMapEnumerator.MoveNext: boolean;
+begin
+  if FCurrent=nil then
+    FCurrent:=FTree.FindLowest
+  else
+    FCurrent:=FTree.FindSuccessor(FCurrent);
+  Result:=FCurrent<>nil;
+end;
+
+{ TStringMap }
+
+function TStringMap.GetCompareItemsFunc: TListSortCompare;
+begin
+  Result:=Tree.OnCompare;
+end;
+
+function TStringMap.FindNode(const s: string): TAvgLvlTreeNode;
+begin
+  Result:=FTree.FindKey(Pointer(s),FCompareKeyItemFunc);
+end;
+
+procedure TStringMap.DisposeItem(p: Pointer);
+var
+  Item: PStringMapItem absolute p;
+begin
+  Dispose(Item);
+end;
+
+function TStringMap.ItemsAreEqual(p1, p2: Pointer): boolean;
+var
+  Item1: PStringMapItem absolute p1;
+  Item2: PStringMapItem absolute p2;
+begin
+  Result:=Item1^.Name=Item2^.Name;
+end;
+
+procedure TStringMap.AssignItem(Src, Dest: Pointer);
+var
+  SrcItem: PStringMapItem absolute Src;
+  DestItem: PStringMapItem absolute Dest;
+begin
+  DestItem^.Name:=SrcItem^.Name;
+end;
+
+constructor TStringMap.Create(TheCaseSensitive: boolean);
+begin
+  FCaseSensitive:=TheCaseSensitive;
+  if CaseSensitive then begin
+    FCompareKeyItemFunc:=@ComparePAnsiStringWithStrToStrItem;
+    FTree:=TAvgLvlTree.Create(@CompareStringToStringItems);
+  end else begin
+    FCompareKeyItemFunc:=@ComparePAnsiStringWithStrToStrItemI;
+    FTree:=TAvgLvlTree.Create(@CompareStringToStringItemsI);
+  end;
+end;
+
+destructor TStringMap.Destroy;
+begin
+  Clear;
+  FTree.Free;
+  FTree:=nil;
+  inherited Destroy;
+end;
+
+procedure TStringMap.Clear;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FTree.FindLowest;
+  while Node<>nil do begin
+    DisposeItem(PStringMapItem(Node.Data));
+    Node:=FTree.FindSuccessor(Node);
+  end;
+  FTree.Clear;
+end;
+
+function TStringMap.Contains(const s: string): boolean;
+begin
+  Result:=FindNode(s)<>nil;
+end;
+
+procedure TStringMap.GetNames(List: TStrings);
+var
+  Node: TAvgLvlTreeNode;
+  Item: PStringMapItem;
+begin
+  Node:=Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringMapItem(Node.Data);
+    List.Add(Item^.Name);
+    Node:=Tree.FindSuccessor(Node);
+  end;
+end;
+
+procedure TStringMap.Remove(const Name: string);
+var
+  Node: TAvgLvlTreeNode;
+  Item: PStringMapItem;
+begin
+  Node:=FindNode(Name);
+  if Node<>nil then begin
+    Item:=PStringMapItem(Node.Data);
+    FTree.Delete(Node);
+    Dispose(Item);
+  end;
+end;
+
+function TStringMap.Equals(OtherTree: TStringMap): boolean;
+var
+  Node: TAvgLvlTreeNode;
+  OtherNode: TAvgLvlTreeNode;
+  OtherItem: PStringMapItem;
+  Item: PStringMapItem;
+begin
+  Result:=false;
+  if (OtherTree=nil) or (OtherTree.ClassType<>ClassType) then exit;
+  if Tree.Count<>OtherTree.Tree.Count then exit;
+  Node:=Tree.FindLowest;
+  OtherNode:=OtherTree.Tree.FindLowest;
+  while Node<>nil do begin
+    if OtherNode=nil then exit;
+    Item:=PStringMapItem(Node.Data);
+    OtherItem:=PStringMapItem(OtherNode.Data);
+    if not ItemsAreEqual(Item,OtherItem) then exit;
+    OtherNode:=OtherTree.Tree.FindSuccessor(OtherNode);
+    Node:=Tree.FindSuccessor(Node);
+  end;
+  if OtherNode<>nil then exit;
+  Result:=true;
+end;
+
+procedure TStringMap.SetCompareFuncs(const NewCompareItemsFunc,
+  NewCompareKeyItemFunc: TListSortCompare; NewCaseSensitive: boolean);
+begin
+  FCompareKeyItemFunc:=NewCompareKeyItemFunc;
+  Tree.OnCompare:=NewCompareItemsFunc;
+  FCaseSensitive:=NewCaseSensitive;
 end;
 
 end.
