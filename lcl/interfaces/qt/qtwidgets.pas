@@ -4014,18 +4014,24 @@ function TQtWidget.MapToGlobal(APt: TPoint;
   const AWithScrollOffset: Boolean = False): TPoint;
 var
   Pt: TQtPoint;
+  NewPt: TQtPoint;
 begin
   Pt := QtPoint(APt.X, APt.Y);
-  QWidget_mapToGlobal(GetContainerWidget, @Result, @Pt);
+  NewPt := QtPoint(0, 0);
+  QWidget_mapToGlobal(GetContainerWidget, @NewPt, @Pt);
+  Result := Point(NewPt.x, NewPt.y);
 end;
 
 function TQtWidget.MapFromGlobal(APt: TPoint;
   const AWithScrollOffset: Boolean = False): TPoint;
 var
   Pt: TQtPoint;
+  NewPt: TQtPoint;
 begin
   Pt := QtPoint(APt.X, APt.Y);
-  QWidget_mapFromGlobal(GetContainerWidget, @Result, @Pt);
+  NewPt := QtPoint(0, 0);
+  QWidget_mapFromGlobal(GetContainerWidget, @NewPt, @Pt);
+  Result := Point(NewPt.x, NewPt.y);
 end;
 
 procedure TQtWidget.move(ANewLeft, ANewTop: Integer);
