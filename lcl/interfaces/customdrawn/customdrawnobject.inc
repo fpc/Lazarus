@@ -151,4 +151,9 @@ begin
 
 end;
 
+function CDMessageBoxFunction(Text, Caption : PChar; Flags : Longint) : Integer;
+begin
+  Result := CDWidgetset.MessageBox(0, Text, Caption, Flags);
+end;
+
 //------------------------------------------------------------------------

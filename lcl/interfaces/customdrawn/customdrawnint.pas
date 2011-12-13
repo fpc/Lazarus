@@ -209,6 +209,8 @@ type
 var
   CDWidgetSet: TCDWidgetSet absolute WidgetSet;
 
+function CDMessageBoxFunction(Text, Caption : PChar; Flags : Longint) : Integer;
+
 {$ifdef CD_WINDOWS}
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult; stdcall;

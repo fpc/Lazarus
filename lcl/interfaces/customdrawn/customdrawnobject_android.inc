@@ -280,6 +280,8 @@ begin
   {$ifdef VerboseCDApplication}
   DebugLn('TCDWidgetSet.AppInit');
   {$endif}
+
+  Forms.MessageBoxFunction := @CDMessageBoxFunction;
 end;
 
 procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
