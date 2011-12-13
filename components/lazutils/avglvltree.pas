@@ -262,6 +262,7 @@ type
     procedure Delete(const Name: string);
     procedure Add(const Name, Value, Delimiter: string);
     procedure AddNameValues(List: TStrings);
+    procedure AddValues(List: TStrings); inline; deprecated;
     procedure AddNames(List: TStrings);
     function GetFirst(out Name, Value: string): Boolean;
     function GetLast(out Name, Value: string): Boolean;
@@ -1554,6 +1555,11 @@ var
 begin
   for i:=0 to List.Count-1 do
     Values[List.Names[i]]:=List.ValueFromIndex[i];
+end;
+
+procedure TStringToStringTree.AddValues(List: TStrings);
+begin
+  AddNames(List);
 end;
 
 procedure TStringToStringTree.AddNames(List: TStrings);

@@ -381,7 +381,7 @@ begin
     CleanUpFileList(PascalFiles);
 
     PascalFilenames:=CreateFilenameToStringTree;
-    PascalFilenames.AddValues(PascalFiles);
+    PascalFilenames.AddNames(PascalFiles);
     CodeHelpBoss.GetFPDocFilenamesForSources(PascalFilenames,true,FPDocFilenames);
     if FPDocFilenames=nil then begin
       DebugLn(['GatherFPDocReferences no fpdoc files found']);
