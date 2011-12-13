@@ -165,6 +165,11 @@ resourcestring
   crsRefresh = 'Refresh';
   crsFilter = '(Filter)';
   crsHideUnitsOfOtherProjects = 'Hide units of other projects';
+  lisAddUnitToImplementationUsesSection = 'Add unit to implementation uses '
+    +'section';
+  lisIfIdentifierIsAddedToTheImplementationSectionAndNe = 'If identifier is '
+    +'added to the implementation section and needed unit needs to be added, '
+    +'add to the uses section of the implementation';
   crsJumpTo = 'Jump to';
   crsUseIdentifier = 'Use identifier';
   crsAndMoreIdentifiers = '... and %s more identifiers';

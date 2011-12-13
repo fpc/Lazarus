@@ -1,12 +1,12 @@
 object CodyIdentifiersDlg: TCodyIdentifiersDlg
   Left = 250
-  Height = 305
+  Height = 324
   Top = 250
-  Width = 543
+  Width = 552
   ActiveControl = FilterEdit
   Caption = 'CodyIdentifiersDlg'
-  ClientHeight = 305
-  ClientWidth = 543
+  ClientHeight = 324
+  ClientWidth = 552
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
@@ -14,8 +14,8 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 42
-    Top = 257
-    Width = 531
+    Top = 276
+    Width = 540
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -45,7 +45,7 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     Left = 6
     Height = 26
     Top = 63
-    Width = 531
+    Width = 540
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 10
@@ -64,9 +64,9 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = UnitLabel
     Left = 6
-    Height = 126
+    Height = 120
     Top = 89
-    Width = 531
+    Width = 540
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -74,7 +74,7 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     ItemHeight = 0
     OnClick = ItemsListBoxClick
     OnSelectionChange = ItemsListBoxSelectionChange
-    ScrollWidth = 529
+    ScrollWidth = 538
     TabOrder = 2
     TopIndex = -1
   end
@@ -83,7 +83,7 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     AnchorSideBottom.Control = PackageLabel
     Left = 8
     Height = 17
-    Top = 216
+    Top = 210
     Width = 59
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 1
@@ -92,10 +92,10 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
   end
   object PackageLabel: TLabel
     AnchorSideLeft.Control = InfoLabel
-    AnchorSideBottom.Control = ButtonPanel1
+    AnchorSideBottom.Control = AddToImplementationUsesCheckBox
     Left = 8
     Height = 17
-    Top = 234
+    Top = 228
     Width = 84
     Anchors = [akLeft, akBottom]
     BorderSpacing.Bottom = 1
@@ -114,5 +114,20 @@ object CodyIdentifiersDlg: TCodyIdentifiersDlg
     Caption = 'HideOtherProjectsCheckBox'
     OnChange = HideOtherProjectsCheckBoxChange
     TabOrder = 3
+  end
+  object AddToImplementationUsesCheckBox: TCheckBox
+    AnchorSideLeft.Control = PackageLabel
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 8
+    Height = 22
+    Top = 248
+    Width = 246
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Top = 3
+    BorderSpacing.Bottom = 3
+    Caption = 'AddToImplementationUsesCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
   end
 end

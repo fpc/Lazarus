@@ -69,6 +69,7 @@ type
   private
     FLoadAfterStartInS: integer;
     FLoadSaveError: string;
+    FPreferImplementationUsesSection: boolean;
     FSaveIntervalInS: integer;
     fTimer: TTimer;
     FIdleConnected: boolean;
@@ -105,6 +106,8 @@ type
     procedure EndCritSec;
     procedure CheckFileAsync(aFilename: string); // check eventually if file exists and delete unit/group
     property LoadSaveError: string read FLoadSaveError write SetLoadSaveError;
+    property PreferImplementationUsesSection: boolean
+      read FPreferImplementationUsesSection write FPreferImplementationUsesSection;
   end;
 
   TCodyIdentifierDlgAction = (
@@ -115,6 +118,7 @@ type
   { TCodyIdentifiersDlg }
 
   TCodyIdentifiersDlg = class(TForm)
+    AddToImplementationUsesCheckBox: TCheckBox;
     ButtonPanel1: TButtonPanel;
     FilterEdit: TEdit;
     HideOtherProjectsCheckBox: TCheckBox;
@@ -169,6 +173,7 @@ type
     CurSrcEdit: TSourceEditorInterface;
     CurMainFilename: string; // if CurSrcEdit is an include file, then CurMainFilename<>CurSrcEdit.Filename
     CurMainCode: TCodeBuffer;
+    CurInImplementation: Boolean;
 
     CurOwner: TObject;
     CurUnitPath: String; // depends on CurOwner
@@ -635,6 +640,8 @@ end;
 procedure TCodyIdentifiersDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
+  CodyUnitDictionary.PreferImplementationUsesSection:=
+                                        AddToImplementationUsesCheckBox.Checked;
   FreeAndNil(FItems);
 end;
 
@@ -648,6 +655,10 @@ begin
   FItems:=TStringList.Create;
   HideOtherProjectsCheckBox.Checked:=true;
   HideOtherProjectsCheckBox.Caption:=crsHideUnitsOfOtherProjects;
+  AddToImplementationUsesCheckBox.Caption:=
+    lisAddUnitToImplementationUsesSection;
+  AddToImplementationUsesCheckBox.Hint:=
+    lisIfIdentifierIsAddedToTheImplementationSectionAndNe;
 
   FJumpButton:=AddButton;
   FJumpButton.Name:='JumpButton';
@@ -914,6 +925,13 @@ begin
     if CurIdentStart<CurIdentEnd then
       CurIdentifier:=copy(Line,CurIdentStart,CurIdentEnd-CurIdentStart);
   end;
+  CurInImplementation:=false;
+  if (CurNode<>nil) and (CurTool.FindImplementationNode.StartPos<=CurNode.StartPos)
+  then
+    CurInImplementation:=true;
+  AddToImplementationUsesCheckBox.Enabled:=CurInImplementation;
+  AddToImplementationUsesCheckBox.Checked:=
+                             CodyUnitDictionary.PreferImplementationUsesSection;
 
   CurSrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if CurTool<>nil then begin
@@ -1259,6 +1277,7 @@ var
   NewUnitCode: TCodeBuffer;
   NewUnitName: String;
   CurUnitName: String;
+  UsesNode: TCodeTreeNode;
 begin
   if (CurTool=nil) or (NewUnitFilename='') then exit;
   UpdateTool;
@@ -1279,9 +1298,22 @@ begin
     exit;
   end;
 
+  // check if already in uses section
+  UsesNode:=CurTool.FindMainUsesSection;
+  if (UsesNode<>nil) and (CurTool.FindNameInUsesSection(UsesNode,NewUnitName)<>nil)
+  then exit;
+  if CurInImplementation then begin
+    UsesNode:=CurTool.FindImplementationUsesSection;
+    if (UsesNode<>nil) and (CurTool.FindNameInUsesSection(UsesNode,NewUnitName)<>nil)
+    then exit;
+  end;
+
   // add to uses section
   debugln(['TCodyIdentifiersDlg.AddToUsesSection adding to uses section']);
-  CodeToolBoss.AddUnitToMainUsesSection(CurMainCode,NewUnitName,'');
+  if CurInImplementation and AddToImplementationUsesCheckBox.Checked then
+    CodeToolBoss.AddUnitToImplementationUsesSection(CurMainCode,NewUnitName,'')
+  else
+    CodeToolBoss.AddUnitToMainUsesSection(CurMainCode,NewUnitName,'');
 end;
 
 procedure TCodyIdentifiersDlg.UpdateTool;

@@ -605,6 +605,10 @@ msgstr "Віртуальний модуль"
 msgid "Where"
 msgstr "Розміщення"
 
+#: codystrconsts.lisaddunittoimplementationusessection
+msgid "Add unit to implementation uses section"
+msgstr ""
+
 #: codystrconsts.liscogeneral
 msgid "General"
 msgstr "Загальні"
@@ -612,4 +616,8 @@ msgstr "Загальні"
 #: codystrconsts.liscousespath
 msgid "Uses path"
 msgstr "Шлях Uses"
+
+#: codystrconsts.lisifidentifierisaddedtotheimplementationsectionandne
+msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
+msgstr ""
 

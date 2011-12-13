@@ -585,11 +585,19 @@ msgstr ""
 msgid "Where"
 msgstr ""
 
+#: codystrconsts.lisaddunittoimplementationusessection
+msgid "Add unit to implementation uses section"
+msgstr ""
+
 #: codystrconsts.liscogeneral
 msgid "General"
 msgstr ""
 
 #: codystrconsts.liscousespath
 msgid "Uses path"
+msgstr ""
+
+#: codystrconsts.lisifidentifierisaddedtotheimplementationsectionandne
+msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
 msgstr ""
 
