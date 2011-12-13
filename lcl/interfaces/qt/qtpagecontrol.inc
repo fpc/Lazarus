@@ -201,9 +201,13 @@ var
   TabWidget: TQtTabWidget;
   NewPos: TPoint;
   R: TRect;
+  TabOffset: TPoint;
 begin
   TabWidget := TQtTabWidget(ATabControl.Handle);
   NewPos := AClientPos;
+  TabOffset := TabWidget.TabBar.TabBarOffset;
+  Dec(NewPos.X, TabOffset.X);
+  Dec(NewPos.Y, TabOffset.Y);
   R := TabWidget.TabBar.getGeometry;
   case ATabControl.TabPosition of
     tpTop: if NewPos.Y < 0 then NewPos.Y := R.Bottom + NewPos.Y;

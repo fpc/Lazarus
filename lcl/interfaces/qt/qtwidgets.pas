@@ -820,6 +820,8 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     function GetTabRect(const AIndex: integer): TRect;
+    // under some themes tabs doesn't start at 0,0 (eg. MacOSX)
+    function TabBarOffset: TPoint;
     procedure SignalTabBarCurrentChanged(Index: Integer); cdecl;
     function SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -7815,8 +7817,42 @@ begin
 end;
 
 function TQtTabBar.GetTabRect(const AIndex: integer): TRect;
+var
+  Pt: TPoint;
 begin
   QTabBar_tabRect(QTabBarH(Widget), @Result, AIndex);
+  if Assigned(FOwner) then
+  begin
+    Pt := TabBarOffset;
+    OffsetRect(Result, Pt.X, Pt.Y);
+  end;
+end;
+
+function TQtTabBar.TabBarOffset: TPoint;
+var
+  R: TRect;
+begin
+  Result := Point(0, 0);
+  if Assigned(FOwner) then
+  begin
+    QWidget_geometry(Widget, @R);
+    case TQtTabWidget(FOwner).getTabPosition of
+      QTabWidgetNorth,
+      QTabWidgetSouth:
+        begin
+          if R.Left < 0 then
+            R.Left := 0;
+          Result.X := R.Left;
+        end;
+      QTabWidgetEast,
+      QTabWidgetWest:
+        begin
+          if R.Top < 0 then
+            R.Top := 0;
+          Result.Y := R.Top;
+        end;
+    end;
+  end;
 end;
 
 procedure TQtTabBar.SignalTabBarCurrentChanged(Index: Integer); cdecl;
