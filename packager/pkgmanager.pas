@@ -1377,7 +1377,7 @@ begin
     then begin
       if sl.IndexOf(Dependency.PackageName)<0 then begin
         sl.Add(Dependency.PackageName);
-        DebugLn('TPkgManager.SaveAutoInstallDependencies A ',Dependency.PackageName);
+        //DebugLn('TPkgManager.SaveAutoInstallDependencies A ',Dependency.PackageName);
       end;
     end;
     Dependency:=Dependency.NextRequiresDependency;
