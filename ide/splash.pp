@@ -76,7 +76,8 @@ const
       Wordbreak  : False;
       Opaque     : False;
       SystemFont : False;
-      RightToLeft: False
+      RightToLeft: False;
+      EndEllipsis: False;
     );
   VersionFontStyle: TFontStyles = [fsBold];
   VersionFontColor: TColor = clBlue;
