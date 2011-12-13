@@ -60,6 +60,7 @@ type
     function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
     procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
+    procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::'; reintroduce;
     procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::'; reintroduce;
     function lclParent: id; message 'lclParent'; reintroduce;
     function lclFrame: TRect; message 'lclFrame'; reintroduce;
@@ -85,6 +86,7 @@ type
     function lclWindowState: Integer; message 'lclWindowState'; reintroduce;
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
     procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
+    procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::'; reintroduce;
     procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::'; reintroduce;
     function lclFrame: TRect; message 'lclFrame'; reintroduce;
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:'; reintroduce;
@@ -586,7 +588,8 @@ end;
 
 procedure LCLObjectExtension.lclRelativePos(var Left,Top:Integer);
 begin
-
+  Left := 0;
+  Top := 0;
 end;
 
 procedure LCLObjectExtension.lclLocalToScreen(var X,Y:Integer);
@@ -633,7 +636,7 @@ end;
 
 function LCLControlExtension.lclIsEnabled:Boolean;
 begin
-  Result:=IsEnabled;
+  Result := IsEnabled;
 end;
 
 procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
@@ -643,7 +646,7 @@ end;
 
 function LCLViewExtension.lclIsVisible:Boolean;
 begin
-  Result:=not isHidden;
+  Result := not isHidden;
 end;
 
 procedure LCLViewExtension.lclInvalidateRect(const r:TRect);
@@ -656,6 +659,15 @@ begin
   setNeedsDisplay_(True);
 end;
 
+procedure LCLViewExtension.lclRelativePos(var Left, Top: Integer);
+begin
+  with frame.origin do
+  begin
+    Left := Round(x);
+    Top := Round(y);
+  end;
+end;
+
 procedure LCLViewExtension.lclLocalToScreen(var X,Y:Integer);
 begin
 
@@ -663,26 +675,28 @@ end;
 
 function LCLViewExtension.lclParent:id;
 begin
-  Result:=superView;
+  Result := superView;
 end;
 
 function LCLViewExtension.lclFrame: TRect;
 var
   v : NSView;
 begin
-  v:=superview;
-  if Assigned(v)
-    then NSToLCLRect(frame, v.frame.size.height, Result)
-    else NSToLCLRect(frame, Result);
+  v := superview;
+  if Assigned(v) then
+    NSToLCLRect(frame, v.frame.size.height, Result)
+  else
+    NSToLCLRect(frame, Result);
 end;
 
-procedure LCLViewExtension.lclSetFrame(const r:TRect);
+procedure LCLViewExtension.lclSetFrame(const r: TRect);
 var
   ns : NSRect;
 begin
-  if Assigned(superview)
-    then LCLToNSRect(r, superview.frame.size.height, ns)
-    else LCLToNSRect(r, ns);
+  if Assigned(superview)  then
+    LCLToNSRect(r, superview.frame.size.height, ns)
+  else
+    LCLToNSRect(r, ns);
   setFrame(ns);
 end;
 
@@ -704,7 +718,7 @@ end;
 
 function LCLWindowExtension.lclIsVisible:Boolean;
 begin
-  Result:=isVisible;
+  Result := isVisible;
 end;
 
 function LCLWindowExtension.lclWindowState: Integer;
@@ -728,54 +742,70 @@ begin
   contentView.lclInvalidate;
 end;
 
+procedure LCLWindowExtension.lclRelativePos(var Left, Top: Integer);
+begin
+  with frame.origin do
+  begin
+    Left := Round(x);
+    Top := Round(y);
+  end;
+end;
+
 procedure LCLWindowExtension.lclLocalToScreen(var X,Y:Integer);
 var
-  f   : NSRect;
+  f: NSRect;
 begin
-  if Assigned(screen) then begin
-    f:=frame;
-    x:=Round(f.origin.x+x);
-    y:=Round(screen.frame.size.height-f.size.height-f.origin.y);
+  if Assigned(screen) then
+  begin
+    f := frame;
+    x := Round(f.origin.x + x);
+    y := Round(screen.frame.size.height - f.size.height - f.origin.y);
   end;
 end;
 
 function LCLWindowExtension.lclFrame:TRect;
 begin
-  if Assigned(screen)
-    then NSToLCLRect(frame, screen.frame.size.height, Result)
-    else NSToLCLRect(frame, Result);
+  if Assigned(screen) then
+    NSToLCLRect(frame, screen.frame.size.height, Result)
+  else
+    NSToLCLRect(frame, Result);
 end;
 
 procedure LCLWindowExtension.lclSetFrame(const r:TRect);
 var
-  ns : NSREct;
+  ns: NSREct;
 begin
-  if Assigned(screen)
-    then LCLToNSRect(r, screen.frame.size.height, ns)
-    else LCLToNSRect(r, ns);
+  if Assigned(screen) then
+    LCLToNSRect(r, screen.frame.size.height, ns)
+  else
+    LCLToNSRect(r, ns);
   setFrame_display(ns, isVisible);
 end;
 
 function LCLWindowExtension.lclClientFrame:TRect;
 var
-  wr  : NSRect;
-  b   : CGGeometry.CGRect;
+  wr: NSRect;
+  b: CGGeometry.CGRect;
 begin
-  wr:=frame;
-  b:=contentView.frame;
-  Result.Left:=Round(b.origin.x);
-  Result.Top:=Round(wr.size.height-b.origin.y);
-  Result.Right:=Round(b.origin.x+b.size.width);
-  Result.Bottom:=Round(Result.Top+b.size.height);
+  wr := frame;
+  b := contentView.frame;
+  with Result do
+  begin
+    Left := Round(b.origin.x);
+    Top := Round(wr.size.height - b.origin.y);
+    Right := Round(b.origin.x + b.size.width);
+    Bottom := Round(Result.Top + b.size.height);
+  end;
 end;
 
 { TCocoaListView }
 
 function TCocoaListView.numberOfRowsInTableView(aTableView:NSTableView): NSInteger;
 begin
-  if Assigned(list)
-    then Result:=list.Count
-    else Result:=0;
+  if Assigned(list) then
+    Result := list.Count
+  else
+    Result := 0;
 end;
 
 function TCocoaListView.tableView_objectValueForTableColumn_row(tableView: NSTableView;
@@ -796,11 +826,7 @@ end;
 
 procedure TCocoaListView.dealloc;
 begin
-  if Assigned(list) then
-  begin
-    list.Free;
-    list:=nil;
-  end;
+  FreeAndNil(list);
   resultNS.release;
   inherited dealloc;
 end;

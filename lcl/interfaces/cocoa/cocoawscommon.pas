@@ -160,6 +160,26 @@ var
   SizeType: Integer;
 begin
   NewBounds := Owner.lclFrame;
+
+  // send window pos changed
+  PosMsg.Msg := LM_WINDOWPOSCHANGED;
+  PosMsg.Result := 0;
+  New(PosMsg.WindowPos);
+  try
+    with PosMsg.WindowPos^ do
+    begin
+      hWndInsertAfter := 0;
+      x := NewBounds.Left;
+      y := NewBounds.Right;
+      cx := NewBounds.Right - NewBounds.Left;
+      cy := NewBounds.Bottom - NewBounds.Top;
+      flags := 0;
+    end;
+    DeliverMessage(Target, PosMsg);
+  finally
+    Dispose(PosMsg.WindowPos);
+  end;
+
   OldBounds := Target.BoundsRect;
 
   Resized :=
@@ -170,28 +190,6 @@ begin
     (OldBounds.Top <> NewBounds.Top);
 
   ClientResized := False;
-
-  // send window pos changed
-  if Resized or Moved then
-  begin
-    PosMsg.Msg := LM_WINDOWPOSCHANGED;
-    PosMsg.Result := 0;
-    New(PosMsg.WindowPos);
-    try
-      with PosMsg.WindowPos^ do
-      begin
-        hWndInsertAfter := 0;
-        x := NewBounds.Left;
-        y := NewBounds.Right;
-        cx := NewBounds.Right - NewBounds.Left;
-        cy := NewBounds.Bottom - NewBounds.Top;
-        flags := 0;
-      end;
-      DeliverMessage(Target, PosMsg);
-    finally
-      Dispose(PosMsg.WindowPos);
-    end;
-  end;
 
   // update client rect
   if Resized or Target.ClientRectNeedsInterfaceUpdate then

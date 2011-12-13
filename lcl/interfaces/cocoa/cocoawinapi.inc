@@ -449,7 +449,7 @@ begin
     end;
     Result := 1;
   end else
-    Result:=0;
+    Result := 0;
 end;
 
 function TCocoaWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
@@ -474,17 +474,12 @@ begin
 end;
 
 function TCocoaWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
-var
-  dx, dy: Integer;
 begin
   Result := Handle <> 0;
   if Result then
   begin
     ARect := NSObject(handle).lclClientFrame;
-    dx := 0;
-    dy := 0;
-    NSObject(Handle).lclLocalToScreen(dx, dy);
-    MoveRect(ARect, dx, dy);
+    OffsetRect(ARect, -ARect.Left, -ARect.Top);
   end;
 end;
 
@@ -548,11 +543,9 @@ end;
 
 function TCocoaWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean;
 begin
-  if Handle<>0 then begin
-    Result:=True;
+  Result := Handle <> 0;
+  if Result then
     NSObject(handle).lclRelativePos(Left, Top);
-  end else
-    Result:=False;
 end;
 
 function TCocoaWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
