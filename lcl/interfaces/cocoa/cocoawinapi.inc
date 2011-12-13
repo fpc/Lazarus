@@ -357,6 +357,17 @@ begin
   end;
 end;
 
+function TCocoaWidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint): Integer;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  if Assigned(ctx) then
+    Result := ctx.SetClipRegion(TCocoaRegion(rgn), CocoaCombineMode(Mode))
+  else
+    Result := ERROR;
+end;
+
 function TCocoaWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
   const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
 begin
@@ -407,6 +418,8 @@ begin
       NSWindow(hwnd).orderOut(nil);
     SW_MINIMIZE:
       NSWindow(hwnd).miniaturize(nil);
+    SW_MAXIMIZE:
+      NSWindow(hwnd).zoom(nil);
   end;
   Result:=true;
 end;
@@ -424,14 +437,17 @@ function TCocoaWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
   dx, dy: Integer;
 begin
-  if Handle<>0 then begin
-    ARect:=NSObject(Handle).lclFrame;
-    if not NSObject(Handle).isKindOfClass_(NSWindow) then begin
-      dx:=0; dy:=0;
+  if Handle <> 0 then
+  begin
+    ARect := NSObject(Handle).lclFrame;
+    if not NSObject(Handle).isKindOfClass_(NSWindow) then
+    begin
+      dx := 0;
+      dy := 0;
       NSObject(Handle).lclLocalToScreen(dx, dx);
       MoveRect(ARect, dx, dy);
     end;
-    Result:=1;
+    Result := 1;
   end else
     Result:=0;
 end;
@@ -452,25 +468,49 @@ end;
 
 function TCocoaWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 begin
-  if Handle<>0 then begin
-    Result:=True;
-    ARect:=NSObject(handle).lclClientFrame;
-  end else
-    Result:=False;
+  Result := Handle <> 0;
+  if Result then
+    ARect := NSObject(handle).lclClientFrame;
 end;
 
 function TCocoaWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 var
   dx, dy: Integer;
 begin
-  if Handle<>0 then begin
-    Result:=True;
-    ARect:=NSObject(handle).lclClientFrame;
-    dx:=0; dy:=0;
+  Result := Handle <> 0;
+  if Result then
+  begin
+    ARect := NSObject(handle).lclClientFrame;
+    dx := 0;
+    dy := 0;
     NSObject(Handle).lclLocalToScreen(dx, dy);
     MoveRect(ARect, dx, dy);
-  end else
-    Result:=False;
+  end;
+end;
+
+function TCocoaWidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  if Assigned(ctx) and Assigned(lpRect) then
+  begin
+    lpRect^ := ctx.GetClipRect;
+    Result := COMPLEXREGION;
+  end
+  else
+    Result := ERROR;
+end;
+
+function TCocoaWidgetSet.GetClipRGN(DC: hDC; RGN: hRGN): Longint;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  if Assigned(ctx) and (RGN <> 0) then
+    Result := ctx.CopyClipRegion(TCocoaRegion(RGN))
+  else
+    Result := ERROR;
 end;
 
 function TCocoaWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
@@ -1025,43 +1065,29 @@ end;
 
 function TCocoaWidgetSet.SaveDC(DC: HDC): Integer;
 var
-  ctx : TCocoaContext;
-  cg  : CGContextRef;
+  ctx: TCocoaContext;
 begin
   ctx := CheckDC(DC);
-  if not Assigned(ctx) then begin
+  if Assigned(ctx) then
+    Result := ctx.SaveDC
+  else
     Result:=0;
-    Exit;
-  end;
-  cg:=ctx.CGContext;
-  if Assigned(cg) then begin
-    CGContextSaveGState(cg);
-    inc(ctx.Stack);
-    Result:=ctx.Stack;
-  end else
-    Result:=0;
+end;
+
+function TCocoaWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;
+begin
+  Result := ExtSelectClipRgn(DC, RGN, RGN_COPY);
 end;
 
 function TCocoaWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 var
-  ctx : TCocoaContext;
-  cg  : CGContextRef;
-  cnt : Integer;
-  i   : Integer;
+  ctx: TCocoaContext;
 begin
-  Result:=False;
   ctx := CheckDC(DC);
-  cg:=ctx.CGContext;
-  if not Assigned(ctx) or not Assigned(cg) then Exit;
-
-  if SavedDC<0 then cnt:=1
-  else cnt:=ctx.Stack-SavedDC+1;
-  Result:=cnt>0;
-
-  if Result then begin
-    for i:=1 to cnt do CGContextRestoreGState(cg);
-    dec(ctx.Stack, cnt);
-  end;
+  if Assigned(ctx) then
+    Result := ctx.RestoreDC(SavedDC)
+  else
+    Result := False;
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

@@ -11,7 +11,7 @@ uses
   MacOSAll, // for CGContextRef
   LCLtype, LCLProc, Graphics,
   CocoaAll, CocoaUtils,
-  Classes, Types, Math;
+  SysUtils, Classes, Contnrs, Types, Math;
 
 type
   TCocoaBitmapAlignment = (
@@ -235,29 +235,57 @@ type
   end;
   TCocoaTextLayoutClass = class of TCocoaTextLayout;
 
+  // device context data for SaveDC/RestoreDC
+  TCocoaDCData = class
+  public
+    CurrentFont: TCocoaFont;
+    CurrentBrush: TCocoaBrush;
+    CurrentPen: TCocoaPen;
+    CurrentRegion: TCocoaRegion;
+
+    {BkColor: TColor;
+    BkMode: Integer;
+    BkBrush: TCocoaBrush;
+
+    TextColor: TColor;
+    TextBrush: TCocoaBrush;
+
+    ROP2: Integer;}
+    PenPos: TPoint;
+  end;
+
   { TCocoaContext }
 
   TCocoaContext = class(TObject)
   private
-    FText    : TCocoaTextLayout;
-    FBrush   : TCocoaBrush;
-    FPen     : TCocoaPen;
-    FFont    : TCocoaFont;
-    FRegion  : TCocoaRegion;
-    FBitmap  : TCocoaBitmap;
+    FText   : TCocoaTextLayout;
+    FBrush  : TCocoaBrush;
+    FPen    : TCocoaPen;
+    FFont   : TCocoaFont;
+    FRegion : TCocoaRegion;
+    FBitmap : TCocoaBitmap;
+    FClipped: Boolean;
+    FClipRegion: TCocoaRegion;
+    FSavedDCList: TFPObjectList;
+    FPenPos: TPoint;
     procedure SetBitmap(const AValue: TCocoaBitmap);
     procedure SetBrush(const AValue: TCocoaBrush);
     procedure SetFont(const AValue: TCocoaFont);
     procedure SetPen(const AValue: TCocoaPen);
     procedure SetRegion(const AValue: TCocoaRegion);
+  protected
+    function SaveDCData: TCocoaDCData; virtual;
+    procedure RestoreDCData(const AData: TCocoaDCData); virtual;
   public
     ContextSize : TSize;
     ctx      : NSGraphicsContext;
-    PenPos   : TPoint;
-    Stack    : Integer;
     TR,TG,TB : Single;
     constructor Create;
     destructor Destroy; override;
+
+    function SaveDC: Integer;
+    function RestoreDC(ASavedDC: Integer): Boolean;
+
     function InitDraw(width, height: Integer): Boolean;
 
     procedure MoveTo(x,y: Integer);
@@ -275,6 +303,11 @@ type
     function CGContext: CGContextRef; virtual;
     procedure SetAntialiasing(AValue: Boolean);
 
+    function GetClipRect: TRect;
+    function SetClipRegion(AClipRegion: TCocoaRegion; Mode: TCocoaCombine): Integer;
+    function CopyClipRegion(ADstRegion: TCocoaRegion): Integer;
+
+    property PenPos: TPoint read FPenPos write FPenPos;
     property Brush: TCocoaBrush read FBrush write SetBrush;
     property Pen: TCocoaPen read FPen write SetPen;
     property Font: TCocoaFont read FFont write SetFont;
@@ -603,7 +636,7 @@ end;
 
 { TCocoaContext }
 
-function TCocoaContext.CGContext:CGContextRef;
+function TCocoaContext.CGContext: CGContextRef;
 begin
   Result := CGContextRef(ctx.graphicsPort);
 end;
@@ -615,6 +648,42 @@ begin
   else
     ctx.setImageInterpolation(NSImageInterpolationDefault);
   ctx.setShouldAntialias(AValue);
+end;
+
+function TCocoaContext.GetClipRect: TRect;
+begin
+  Result := CGRectToRect(CGContextGetClipBoundingBox(CGContext));
+end;
+
+function TCocoaContext.SetClipRegion(AClipRegion: TCocoaRegion; Mode: TCocoaCombine): Integer;
+begin
+  if FClipped then
+  begin
+    FClipped := False;
+    ctx.restoreGraphicsState;
+  end;
+
+  if not Assigned(AClipRegion) then
+  begin
+    HIShapeSetEmpty(FClipRegion.Shape);
+    Result := LCLType.NullRegion;
+  end
+  else
+  begin
+    ctx.saveGraphicsState;
+    FClipRegion.CombineWith(AClipRegion, Mode);
+    FClipRegion.Apply(Self);
+    FClipped := True;
+    Result := LCLType.ComplexRegion;
+  end;
+end;
+
+function TCocoaContext.CopyClipRegion(ADstRegion: TCocoaRegion): Integer;
+begin
+  if Assigned(ADstRegion) and ADstRegion.CombineWith(FClipRegion, cc_Copy) then
+    Result := LCLType.ComplexRegion
+  else
+    Result := LCLType.Error;
 end;
 
 procedure TCocoaContext.SetBitmap(const AValue: TCocoaBitmap);
@@ -662,6 +731,75 @@ begin
   end;
 end;
 
+function TCocoaContext.SaveDCData: TCocoaDCData;
+begin
+  Result := TCocoaDCData.Create;
+
+  Result.CurrentFont := FFont;
+  Result.CurrentBrush := FBrush;
+  Result.CurrentPen := FPen;
+  Result.CurrentRegion := FRegion;
+{
+  Result.BkColor := FBkColor;
+  Result.BkMode := FBkMode;
+  Result.BkBrush := FBkBrush;
+
+  Result.TextColor := FTextColor;
+  Result.TextBrush := FTextBrush;
+
+  Result.ROP2 := FROP2;}
+  Result.PenPos := FPenPos;
+end;
+
+procedure TCocoaContext.RestoreDCData(const AData: TCocoaDCData);
+begin
+  if (FFont <> AData.CurrentFont) then
+  begin
+    if (FFont <> nil) then
+      FFont.Release;
+    if (AData.CurrentFont <> nil) then
+      AData.CurrentFont.AddRef;
+  end;
+  FFont := AData.CurrentFont;
+
+  if (FBrush <> AData.CurrentBrush) then
+  begin
+    if (FBrush <> nil) then
+      FBrush.Release;
+    if (AData.CurrentBrush <> nil) then
+      AData.CurrentBrush.AddRef;
+  end;
+  FBrush := AData.CurrentBrush;
+
+  if (FPen <> AData.CurrentPen) then
+  begin
+    if (FPen <> nil) then
+      FPen.Release;
+    if (AData.CurrentPen <> nil) then
+      AData.CurrentPen.AddRef;
+  end;
+  FPen := AData.CurrentPen;
+
+  if (FRegion <> AData.CurrentRegion) then
+  begin
+    if (FRegion <> nil) then
+      FRegion.Release;
+    if (AData.CurrentRegion <> nil) then
+      AData.CurrentRegion.AddRef;
+  end;
+  FRegion := AData.CurrentRegion;
+
+{  FBkColor := AData.BkColor;
+  FBkMode := AData.BkMode;
+  FBkBrush := AData.BkBrush;
+
+  FTextColor := AData.TextColor;
+  FTextBrush := AData.TextBrush;
+
+  FROP2 := AData.ROP2;}
+  FPenPos := AData.PenPos;
+end;
+
 constructor TCocoaContext.Create;
 begin
   inherited Create;
@@ -673,7 +811,9 @@ begin
   FFont.AddRef;
   FRegion := TCocoaRegion.CreateDefault;
   FRegion.AddRef;
+  FClipRegion := FRegion;
   FText := TextLayoutClass.Create;
+  FClipped := False;
 end;
 
 destructor TCocoaContext.Destroy;
@@ -702,8 +842,60 @@ begin
     if FRegion.RefCount = 0 then
       FRegion.Free;
   end;
+  FClipRegion.Free;
+  FSavedDCList.Free;
   FText.Free;
   inherited Destroy;
+end;
+
+function TCocoaContext.SaveDC: Integer;
+begin
+  if FClipped then
+    ctx.restoreGraphicsState;
+
+  Result := 0;
+
+  if FSavedDCList = nil then
+    FSavedDCList := TFPObjectList.Create(True);
+
+  ctx.saveGraphicsState;
+  Result := FSavedDCList.Add(SaveDCData) + 1;
+
+  if FClipped then
+  begin
+    ctx.saveGraphicsState;
+    FClipRegion.Apply(Self);
+  end;
+end;
+
+function TCocoaContext.RestoreDC(ASavedDC: Integer): Boolean;
+begin
+  if FClipped then
+    ctx.restoreGraphicsState;
+
+  Result := False;
+  if (FSavedDCList = nil) or (ASavedDC <= 0) or (ASavedDC > FSavedDCList.Count) then
+    Exit;
+
+  while FSavedDCList.Count > ASavedDC do
+  begin
+    ctx.restoreGraphicsState;
+    FSavedDCList.Delete(FSavedDCList.Count - 1);
+  end;
+
+  ctx.restoreGraphicsState;
+  RestoreDCData(TCocoaDCData(FSavedDCList[ASavedDC - 1]));
+  FSavedDCList.Delete(ASavedDC - 1);
+  Result := True;
+
+  if FSavedDCList.Count = 0 then FreeAndNil(FSavedDCList);
+
+  if FClipped then
+  begin
+    FClipped := False;
+    FClipRegion.Shape := HIShapeCreateEmpty;
+  end;
+
 end;
 
 function TCocoaContext.InitDraw(width,height:Integer): Boolean;
@@ -719,17 +911,17 @@ begin
 
   CGContextTranslateCTM(cg, 0, height);
   CGContextScaleCTM(cg, 1, -1);
-  PenPos.x:=0;
-  PenPos.y:=0;
+  FPenPos.x := 0;
+  FPenPos.y := 0;
 end;
 
-procedure TCocoaContext.MoveTo(x,y:Integer);
+procedure TCocoaContext.MoveTo(x, y: Integer);
 begin
-  PenPos.x:=x;
-  PenPos.y:=y;
+  FPenPos.x := x;
+  FPenPos.y := y;
 end;
 
-procedure TCocoaContext.LineTo(x,y:Integer);
+procedure TCocoaContext.LineTo(x, y: Integer);
 var
   cg  : CGContextRef;
   p   : array [0..1] of CGPoint;
@@ -778,8 +970,8 @@ begin
   CGContextAddLines(cg, @p, 2);
   CGContextStrokePath(cg);
 
-  PenPos.x := X;
-  PenPos.y := Y;
+  FPenPos.x := X;
+  FPenPos.y := Y;
 end;
 
 procedure CGContextAddLCLPoints(cg: CGContextRef; const Points: array of TPoint;NumPts:Integer);

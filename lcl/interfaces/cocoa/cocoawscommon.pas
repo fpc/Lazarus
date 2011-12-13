@@ -44,7 +44,7 @@ type
 
   { TCocoaWSWinControl }
 
-  TCocoaWSWinControl=class(TWSWinControl)
+  TCocoaWSWinControl = class(TWSWinControl)
   published
     class function CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -54,6 +54,7 @@ type
 
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
   end;
@@ -61,7 +62,7 @@ type
 
   { TCocoaWSCustomControl }
 
-  TCocoaWSCustomControl=class(TWSCustomControl)
+  TCocoaWSCustomControl = class(TWSCustomControl)
   published
     class function CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -327,6 +328,27 @@ begin
   Result:=(AWinControl.Handle<>0);
   if not Result then Exit;
   ARect:=NSObject(AWinControl.Handle).lclClientFrame;
+end;
+
+class procedure TCocoaWSWinControl.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  Obj: NSObject;
+  Size: NSSize;
+begin
+  if (AWinControl.Handle <> 0) then
+  begin
+    Obj := NSObject(AWinControl.Handle);
+{
+    if Obj.isKindOfClass_(NSView) then
+    begin
+      Size := NSView(Obj).fittingSize;
+      PreferredWidth := Round(Size.width);
+      PreferredHeight := Round(Size.height);
+    end;
+}
+  end;
 end;
 
 class procedure TCocoaWSWinControl.SetBounds(const AWinControl: TWinControl;

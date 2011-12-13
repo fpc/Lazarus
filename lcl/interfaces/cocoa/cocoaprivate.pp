@@ -67,6 +67,10 @@ type
     function lclClientFrame: TRect; message 'lclClientFrame'; reintroduce;
   end;
 
+  NSViewFix = objccategory external (NSView)
+    function fittingSize: NSSize; message 'fittingSize';
+  end;
+
   { LCLControlExtension }
 
   LCLControlExtension = objccategory(NSControl)
