@@ -87,7 +87,7 @@ public class LCLActivity extends Activity
     // Don't use just localbounds.height() from the source text
     // because it will calculate the minimum necessary height,
     // but we can't easily use that to draw text because it draws relative to the baseline
-    localpaint.getTextBounds("Íq", 0, 2, localbounds);
+    localpaint.getTextBounds("Íqg", 0, 3, localbounds);
     lclheight = localbounds.height();
     // Also get some measures
     lcltextascent = (int) localpaint.getFontMetrics().ascent;
@@ -110,7 +110,7 @@ public class LCLActivity extends Activity
     localcanvas.drawColor(Color.TRANSPARENT); // TRANSPARENT
     // The Y coordinate is the lower baseline of letters like "abc"
     // see http://code.google.com/p/android/issues/detail?id=393
-    localcanvas.drawText(lcltext, 0, lclheight - lcltextdescent, localpaint);
+    localcanvas.drawText(lcltext, 0, lclheight - lcltextbottom, localpaint);
   }
 
   // LCLType definitions

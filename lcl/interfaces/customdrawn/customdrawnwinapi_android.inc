@@ -4215,7 +4215,7 @@ begin
   lAverageCharWidth := javaEnvRef^^.GetIntField(javaEnvRef, javaActivityObject, javaField_lclwidth);
 
   // Prepare the input for getting the max height of a text and other metrics
-  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar('Íą'));
+  lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar('Íg'));
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, DefaultFontAndroidSize);
 
