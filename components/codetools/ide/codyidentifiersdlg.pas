@@ -717,42 +717,32 @@ end;
 
 procedure TCodyIdentifiersDlg.UpdateItemsList;
 var
-  Node: TAVLTreeNode;
   FilterP: PChar;
   sl: TStringList;
-  Item: TUDIdentifier;
-  s: String;
   Found: Integer;
-  GroupNode: TAVLTreeNode;
-  Group: TUDUnitGroup;
   FPCSrcDir: String;
-  Dir: String;
   UnitSet: TFPCUnitSetCache;
-  FPCSrcFilename: String;
-begin
-  FLastFilter:=GetFilterEditText;
-  FilterP:=PChar(FLastFilter);
 
-  FLastHideOtherProjects:=HideOtherProjectsCheckBox.Checked;
-
-  FItems.Clear;
-  sl:=TStringList.Create;
-  try
-    Found:=0;
-    UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
-    FPCSrcDir:='';
-    if (UnitSet<>nil) then begin
-      FPCSrcDir:=ChompPathDelim(UnitSet.FPCSourceDirectory);
-    end;
+  procedure AddItems(AddExactMatches: boolean);
+  var
+    FPCSrcFilename: String;
+    Dir: String;
+    Group: TUDUnitGroup;
+    GroupNode: TAVLTreeNode;
+    s: String;
+    Item: TUDIdentifier;
+    Node: TAVLTreeNode;
+  begin
     Node:=CodyUnitDictionary.Identifiers.FindLowest;
     //debugln(['TCodyIdentifiersDlg.UpdateItemsList Filter="',Filter,'"']);
     while Node<>nil do begin
-      if ComparePrefixIdent(FilterP,PChar(Pointer(TUDIdentifier(Node.Data).Name)))
+      Item:=TUDIdentifier(Node.Data);
+      if ComparePrefixIdent(FilterP,PChar(Pointer(Item.Name)))
+      and (AddExactMatches=(CompareIdentifiers(FilterP,PChar(Pointer(Item.Name)))=0))
       then begin
         if Found>MaxItems then begin
           inc(Found); // only count, do not check
         end else begin
-          Item:=TUDIdentifier(Node.Data);
           GroupNode:=Item.DUnit.Groups.FindLowest;
           while GroupNode<>nil do begin
             Group:=TUDUnitGroup(GroupNode.Data);
@@ -800,7 +790,25 @@ begin
       end;
       Node:=CodyUnitDictionary.Identifiers.FindSuccessor(Node);
     end;
+  end;
 
+begin
+  FLastFilter:=GetFilterEditText;
+  FilterP:=PChar(FLastFilter);
+
+  FLastHideOtherProjects:=HideOtherProjectsCheckBox.Checked;
+
+  FItems.Clear;
+  sl:=TStringList.Create;
+  try
+    Found:=0;
+    UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
+    FPCSrcDir:='';
+    if (UnitSet<>nil) then begin
+      FPCSrcDir:=ChompPathDelim(UnitSet.FPCSourceDirectory);
+    end;
+    AddItems(true);
+    AddItems(false);
     if Found>sl.Count then
       sl.Add(Format(crsAndMoreIdentifiers, [IntToStr(Found-sl.Count)]));
 
