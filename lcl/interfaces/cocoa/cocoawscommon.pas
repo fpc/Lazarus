@@ -155,7 +155,8 @@ procedure TLCLCommonCallback.boundsDidChange;
 var
   NewBounds, OldBounds: TRect;
   PosMsg: TLMWindowPosChanged;
-  Resized, Moved: Boolean;
+  Resized, Moved, ClientResized: Boolean;
+  SizeType: Integer;
 begin
   NewBounds := Owner.lclFrame;
   OldBounds := Target.BoundsRect;
@@ -166,6 +167,8 @@ begin
   Moved :=
     (OldBounds.Left <> NewBounds.Left) or
     (OldBounds.Top <> NewBounds.Top);
+
+  ClientResized := False;
 
   // send window pos changed
   if Resized or Moved then
@@ -193,13 +196,14 @@ begin
   if Resized or Target.ClientRectNeedsInterfaceUpdate then
   begin
     Target.InvalidateClientRectCache(False);
+    ClientResized := True;
   end;
 
   // then send a LM_SIZE message
-  if Resized then
+  if Resized or ClientResized then
   begin
     LCLSendSizeMsg(Target, NewBounds.Right - NewBounds.Left,
-      NewBounds.Bottom - NewBounds.Top, Size_SourceIsInterface);
+      NewBounds.Bottom - NewBounds.Top, Owner.lclWindowState, True);
   end;
 
   // then send a LM_MOVE message

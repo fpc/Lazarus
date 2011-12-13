@@ -40,13 +40,14 @@ uses
 type
   { TLCLWindowCallback }
 
-  TLCLWindowCallback=class(TLCLCommonCallBack, IWindowCallback)
+  TLCLWindowCallback = class(TLCLCommonCallBack, IWindowCallback)
   public
     procedure Activate; virtual;
     procedure Deactivate; virtual;
     procedure CloseQuery(var CanClose: Boolean); virtual;
     procedure Close; virtual;
     procedure Resize; virtual;
+    procedure Move; virtual;
   end;
 
 
@@ -168,14 +169,13 @@ begin
 end;
 
 procedure TLCLWindowCallback.Resize;
-var
-  sz  : NSSize;
-  r   : TRect;
 begin
-  sz := NSWindow(Owner).frame.size;
-  TCocoaWSCustomForm.GetClientBounds(TWinControl(Target), r);
-  if Assigned(Target) then
-    LCLSendSizeMsg(Target, Round(sz.width), Round(sz.height), SIZENORMAL);
+  boundsDidChange;
+end;
+
+procedure TLCLWindowCallback.Move;
+begin
+  boundsDidChange;
 end;
 
 

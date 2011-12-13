@@ -31,7 +31,9 @@ uses
   Types, Classes, SysUtils,
   CGGeometry,
   // Libs
-  MacOSAll, CocoaAll, CocoaUtils;
+  MacOSAll, CocoaAll, CocoaUtils,
+  // LCL
+  LCLType;
 
 type
   { LCLObjectExtension }
@@ -40,6 +42,7 @@ type
     function lclIsEnabled: Boolean; message 'lclIsEnabled';
     procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:';
     function lclIsVisible: Boolean; message 'lclIsVisible';
+    function lclWindowState: Integer; message 'lclWindowState';
 
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
     procedure lclInvalidate; message 'lclInvalidate';
@@ -75,6 +78,7 @@ type
 
   LCLWindowExtension = objccategory(NSWindow)
     function lclIsVisible: Boolean; message 'lclIsVisible'; reintroduce;
+    function lclWindowState: Integer; message 'lclWindowState'; reintroduce;
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
     procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
     procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::'; reintroduce;
@@ -113,6 +117,7 @@ type
     procedure CloseQuery(var CanClose: Boolean);
     procedure Close;
     procedure Resize;
+    procedure Move;
   end;
 
   { TCocoaMenu }
@@ -183,6 +188,7 @@ type
     procedure windowDidBecomeKey(notification: NSNotification); message 'windowDidBecomeKey:';
     procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
     procedure windowDidResize(notification: NSNotification); message 'windowDidResize:';
+    procedure windowDidMove(notification: NSNotification); message 'windowDidMove:';
   public
     callback: IWindowCallback;
     function acceptsFirstResponder: Boolean; override;
@@ -456,6 +462,11 @@ begin
   callback.Resize;
 end;
 
+procedure TCocoaWindow.windowDidMove(notification: NSNotification);
+begin
+  callback.Move;
+end;
+
 function TCocoaWindow.acceptsFirstResponder: Boolean;
 begin
   Result:=true;
@@ -552,6 +563,11 @@ end;
 function LCLObjectExtension.lclIsVisible:Boolean;
 begin
   Result:=False;
+end;
+
+function LCLObjectExtension.lclWindowState: Integer;
+begin
+  Result := SIZENORMAL;
 end;
 
 procedure LCLObjectExtension.lclInvalidateRect(const r:TRect);
@@ -685,6 +701,17 @@ end;
 function LCLWindowExtension.lclIsVisible:Boolean;
 begin
   Result:=isVisible;
+end;
+
+function LCLWindowExtension.lclWindowState: Integer;
+begin
+  if isMiniaturized then
+    Result := SIZEICONIC
+  else
+  if isZoomed then
+    Result := SIZEFULLSCREEN
+  else
+    Result := SIZENORMAL;
 end;
 
 procedure LCLWindowExtension.lclInvalidateRect(const r: TRect);
