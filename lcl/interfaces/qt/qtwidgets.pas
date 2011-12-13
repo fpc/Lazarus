@@ -7889,10 +7889,7 @@ var
   R: TRect;
   R1: TRect;
   BaseHeight: Integer;
-  {$IFDEF DARWIN}
-  Hnd: HWND;
-  ForcedMouseGrab: Boolean; // issue #17393
-  {$ENDIF}
+  ForcedMouseGrab: Boolean;
 begin
   Result := False;
 
@@ -7938,36 +7935,19 @@ begin
         QInputEvent_modifiers(QInputEventH(Event))
       );
 
-    {$IFDEF DARWIN}
-    // LCL does not like how qt sets capture under MacOSX. issue #17393
     ForcedMouseGrab := False;
     if QEvent_type(Event) = QEventMouseButtonPress then
-    begin
-      Hnd := QtWidgetSet.GetCapture;
-      if not QtWidgetSet.IsValidHandle(Hnd) then
-      begin
-        ForcedMouseGrab := True;
-        QWidget_grabMouse(Widget);
-      end;
-    end;
-    {$ENDIF}
+      ForcedMouseGrab := not ((QWidget_mouseGrabber = Widget) or
+        (Assigned(FOwner) and (QWidget_mouseGrabber = FOwner.Widget)));
 
     SlotMouse(Sender, NewEvent);
     QMouseEvent_destroy(NewEvent);
 
-    {$IFDEF DARWIN}
-    // Second part of issue #17393
+    ForcedMouseGrab := ForcedMouseGrab and
+        (Assigned(FOwner) and (QWidget_mouseGrabber = FOwner.Widget));
+
     if ForcedMouseGrab then
-    begin
-      if (QWidget_mouseGrabber() = Widget) or
-        (Assigned(FOwner) and (QWidget_mouseGrabber() = FOwner.Widget)) then
-      begin
-        QWidget_releaseMouse(QWidget_mouseGrabber());
-        if Assigned(DragManager) and DragManager.IsDragging then
-          QWidget_grabMouse(Widget);
-      end;
-    end;
-    {$ENDIF}
+      QWidget_grabMouse(Widget);
 
   end else
     SlotMouse(Sender, Event);
