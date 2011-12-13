@@ -7853,6 +7853,10 @@ var
   R: TRect;
   R1: TRect;
   BaseHeight: Integer;
+  {$IFDEF DARWIN}
+  Hnd: HWND;
+  ForcedMouseGrab: Boolean; // issue #17393
+  {$ENDIF}
 begin
   Result := False;
 
@@ -7890,14 +7894,60 @@ begin
           MousePos.X := MousePos.X - BaseHeight;
         end;
     end;
+
     NewEvent := QMouseEvent_create(QEvent_type(Event), @MousePos,
         QMouseEvent_globalPos(QMouseEventH(Event)),
         QMouseEvent_button(QMouseEventH(Event)),
         QMouseEvent_buttons(QMouseEventH(Event)),
         QInputEvent_modifiers(QInputEventH(Event))
       );
+
+    {$IFDEF DARWIN}
+    // LCL does not like how qt sets capture under MacOSX. issue #17393
+    ForcedMouseGrab := False;
+    if QEvent_type(Event) = QEventMouseButtonPress then
+    begin
+      Hnd := QtWidgetSet.GetCapture;
+      if not QtWidgetSet.IsValidHandle(Hnd) then
+      begin
+        ForcedMouseGrab := True;
+        QWidget_grabMouse(Widget);
+      end;
+    end;
+    {$ENDIF}
+
     SlotMouse(Sender, NewEvent);
     QMouseEvent_destroy(NewEvent);
+
+    {$IFDEF DARWIN}
+    // Second part of issue #17393
+    if ForcedMouseGrab then
+    begin
+      if (QWidget_mouseGrabber() = Widget) or
+        (Assigned(FOwner) and (QWidget_mouseGrabber() = FOwner.Widget)) then
+      begin
+        QWidget_releaseMouse(QWidget_mouseGrabber());
+        if Assigned(DragManager) and DragManager.IsDragging then
+          QWidget_grabMouse(Widget);
+      end;
+    end;
+
+    // now fix for pagecontrol design time, it never sends mouse release
+    // like under x11 and win32 - bug in Qt. Here we send dummy MouseRelease
+    if (QEvent_type(Event) = QEventMouseButtonPress) and Assigned(LCLObject) and
+      (csDesigning in LCLObject.ComponentState) then
+    begin
+      NewEvent := QMouseEvent_create(QEventMouseButtonRelease, @MousePos,
+          QMouseEvent_globalPos(QMouseEventH(Event)),
+          QMouseEvent_button(QMouseEventH(Event)),
+          QMouseEvent_buttons(QMouseEventH(Event)),
+          QInputEvent_modifiers(QInputEventH(Event))
+        );
+      SlotMouse(Sender, NewEvent);
+      QMouseEvent_destroy(NewEvent);
+    end;
+    {$ENDIF}
+
   end else
     SlotMouse(Sender, Event);
 end;
