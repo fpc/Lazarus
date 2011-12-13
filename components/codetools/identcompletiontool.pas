@@ -114,7 +114,6 @@ type
 
   TIdentifierListItem = class
   private
-    FNext: TIdentifierListItem;
     FParamTypeList: string;
     FParamNameList: string;
     FNode: TCodeTreeNode;
@@ -500,78 +499,6 @@ begin
 
   //debugln('CompareIdentItemWithHistListItem ',HistItem.Identifier,'=',GetIdentifier(IdentItem.Identifier));
   Result:=SysUtils.CompareText(HistItem.ParamList,IdentItem.ParamTypeList);
-end;
-
-type
-  TIdentifierListItemMemManager = class(TCodeToolMemManager)
-  protected
-    procedure FreeFirstItem; override;
-  public
-    procedure DisposeIdentListItem(IdentListItem: TIdentifierListItem);
-    function NewIdentListItem(NewCompatibility: TIdentifierCompatibility;
-      NewHasChilds: boolean; NewHistoryIndex: integer;
-      NewIdentifier: PChar; NewLevel: integer;
-      NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
-      NewDefaultDesc: TCodeTreeNodeDesc): TIdentifierListItem;
-  end;
-  
-var
-  IdentifierListItemMemManager: TIdentifierListItemMemManager;
-
-{ TIdentifierListItemMemManager }
-
-procedure TIdentifierListItemMemManager.FreeFirstItem;
-var Item: TIdentifierListItem;
-begin
-  Item:=TIdentifierListItem(FFirstFree);
-  TIdentifierListItem(FFirstFree):=Item.FNext;
-  Item.Free;
-end;
-
-procedure TIdentifierListItemMemManager.DisposeIdentListItem(
-  IdentListItem: TIdentifierListItem);
-begin
-  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
-  begin
-    // add IdentListItem to Free list
-    IdentListItem.FNext:=TIdentifierListItem(FFirstFree);
-    TIdentifierListItem(FFirstFree):=IdentListItem;
-    inc(FFreeCount);
-  end else begin
-    // free list full -> free IdentListItem
-    IdentListItem.Free;
-    {$IFDEF DebugCTMemManager}
-    inc(FFreedCount);
-    {$ENDIF}
-  end;
-  dec(FCount);
-end;
-
-function TIdentifierListItemMemManager.NewIdentListItem(
-  NewCompatibility: TIdentifierCompatibility;
-  NewHasChilds: boolean; NewHistoryIndex: integer;
-  NewIdentifier: PChar; NewLevel: integer;
-  NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
-  NewDefaultDesc: TCodeTreeNodeDesc): TIdentifierListItem;
-begin
-  if FFirstFree<>nil then begin
-    // take from free list
-    Result:=TIdentifierListItem(FFirstFree);
-    // ToDo: set values
-    TIdentifierListItem(FFirstFree):=Result.FNext;
-    Result.FNext:=nil;
-    dec(FFreeCount);
-  end else begin
-    // free list empty -> create new node
-    Result:=TIdentifierListItem.Create(NewCompatibility,
-      NewHasChilds,NewHistoryIndex,NewIdentifier,NewLevel,
-      NewNode,NewTool,
-      NewDefaultDesc);
-    {$IFDEF DebugCTMemManager}
-    inc(FAllocatedCount);
-    {$ENDIF}
-  end;
-  inc(FCount);
 end;
 
 { TIdentifierList }
@@ -3481,13 +3408,6 @@ begin
   FreeAndNil(Params);
   inherited Destroy;
 end;
-
-initialization
-  IdentifierListItemMemManager:=TIdentifierListItemMemManager.Create;
-  
-finalization
-  IdentifierListItemMemManager.Free;
-  IdentifierListItemMemManager:=nil;
 
 end.
 
