@@ -259,10 +259,14 @@ type
   { TCDWSCustomStaticText }
 
   TCDWSCustomStaticText = class(TWSCustomStaticText)
+  public
+    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
-{    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
 
-    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
+{    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
     class procedure SetStaticBorderStyle(const ACustomStaticText: TCustomStaticText; const NewBorderStyle: TStaticBorderStyle); override;}
   end;
 
@@ -1033,9 +1037,19 @@ begin
   Widget := TQtWidget(ACustomEdit.Handle);
   if Supports(Widget, IQtEdit, QtEdit) then
     QtEdit.Undo;
-end;
+end;*)
 
 { TCDWSStaticText }
+
+class procedure TCDWSCustomStaticText.CreateCDControl(
+  const AWinControl: TWinControl; var ACDControlField: TCDControl);
+begin
+  ACDControlField := TCDStaticText.Create(AWinControl);
+//    TCDIntfButton(lCDWinControl.CDControl).LCLButton := TButton(AWinControl);
+  ACDControlField.Parent := AWinControl;
+  ACDControlField.Caption := AWinControl.Caption;
+  ACDControlField.Align := alClient;
+end;
 
 {------------------------------------------------------------------------------
   Method: TCDWSCustomStaticText.CreateHandle
@@ -1045,20 +1059,25 @@ end;
 class function TCDWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  QtStaticText: TQtStaticText;
+  lCDWinControl: TCDWinControl;
 begin
-  QtStaticText := TQtStaticText.Create(AWinControl, AParams);
-  QtStaticText.AttachEvents;
-  
-  QtStaticText.setAlignment(AlignmentMap[TCustomStaticText(AWinControl).Alignment]);
-  QtStaticText.setFrameShape(StaticBorderFrameShapeMap[TCustomStaticText(AWinControl).BorderStyle]);
-  QtStaticText.setFrameShadow(StaticBorderFrameShadowMap[TCustomStaticText(AWinControl).BorderStyle]);
-
-  // Returns the Handle
-  Result := TLCLIntfHandle(QtStaticText);
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
 end;
 
-{------------------------------------------------------------------------------
+class procedure TCDWSCustomStaticText.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+
+  TCDWSWinControl.ShowHide(AWinControl);
+
+  if lCDWinControl.CDControl = nil then
+    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+end;
+
+(*{------------------------------------------------------------------------------
   Method: TCDWSCustomStaticText.SetAlignment
   Params:  None
   Returns: Nothing

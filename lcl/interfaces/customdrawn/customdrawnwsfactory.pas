@@ -321,8 +321,8 @@ end;
 
 function RegisterCustomStaticText: Boolean; alias : 'WSRegisterCustomStaticText';
 begin
-//  RegisterWSComponent(TCustomStaticText, TWinCEWSCustomStaticText);
-  Result := False;
+  RegisterWSComponent(TCustomStaticText, TCDWSCustomStaticText);
+  Result := True;
 end;
 
 function RegisterCustomLabel: Boolean; alias : 'WSRegisterCustomLabel';
