@@ -62,6 +62,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure LCLWSCalculatePreferredSize(var PreferredWidth,
+      PreferredHeight: integer; WithThemeSpace, AAutoSize: Boolean);
     procedure EraseBackground(DC: HDC); override;
     procedure Paint; override;
     // Methods for use by LCL-CustomDrawn
@@ -967,6 +969,17 @@ destructor TCDControl.Destroy;
 begin
   FStateEx.Free;
   inherited Destroy;
+end;
+
+// A CalculatePreferredSize which is utilized by LCL-CustomDrawn
+procedure TCDControl.LCLWSCalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace, AAutoSize: Boolean);
+begin
+  PrepareControlState;
+  PrepareControlStateEx;
+  FStateEx.AutoSize := AAutoSize;
+  FDrawer.CalculatePreferredSize(Canvas, GetControlId(), FState, FStateEx,
+    PreferredWidth, PreferredHeight, WithThemeSpace);
 end;
 
 { TCDButtonDrawer }

@@ -117,6 +117,7 @@ begin
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'LCLOnCreate called by LCLActivity.onCreate');
   Result := 0;
   javaActivityObject := alclactivity;
+  Application.Run;
 end;
 
 function Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished(

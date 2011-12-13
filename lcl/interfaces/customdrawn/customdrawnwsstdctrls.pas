@@ -32,7 +32,7 @@ uses
   math,
   // LCL
   Classes, Types, StdCtrls, Controls, Forms, SysUtils, InterfaceBase, LCLType,
-  customdrawncontrols,
+  customdrawncontrols, LCLProc,
   // Widgetset
   WSProc, WSStdCtrls, WSLCLClasses, CustomDrawnWsControls, customdrawnproc,
   customdrawnprivate;
@@ -215,6 +215,8 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
+
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
 
 {    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
@@ -1168,6 +1170,22 @@ begin
 
   if lCDWinControl.CDControl = nil then
     CreateCDControl(AWinControl, lCDWinControl.CDControl);
+end;
+
+class procedure TCDWSCustomCheckBox.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+
+  if lCDWinControl.CDControl = nil then
+    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+
+  lCDWinControl.CDControl.LCLWSCalculatePreferredSize(
+    PreferredWidth, PreferredHeight, WithThemeSpace, AWinControl.AutoSize);
+  DebugLn(Format('[TCDWSCustomCheckBox.GetPreferredSize] Width=%d Height=%d', [PreferredWidth, PreferredHeight]));
 end;
 
 { TCDWSRadioButton }
