@@ -2238,7 +2238,7 @@ begin
   // Execute the copy, pixel by pixel with Alpha blending
   // Simple AlphaBlend was showing redish areas in the emulator
   // because misteriously it read the target area pixels as red
-  lDestCanvas.AlphaBlendIgnoringSrcPixels(lCanvas, X, Y, 0, 0, lWidth, lHeight);
+  lDestCanvas.AlphaBlendIgnoringDestPixels(lCanvas, X, Y, 0, 0, lWidth, lHeight);
 
   // Release the helper objects
   lCanvas.Free;

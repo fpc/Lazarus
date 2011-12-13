@@ -100,7 +100,7 @@ type
     // Alpha blending operations
     procedure AlphaBlend(ASource: TLazCanvas;
       const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
-    procedure AlphaBlendIgnoringSrcPixels(ASource: TLazCanvas;
+    procedure AlphaBlendIgnoringDestPixels(ASource: TLazCanvas;
       const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
     procedure CanvasCopyRect(ASource: TLazCanvas;
       const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
@@ -458,9 +458,9 @@ begin
   end;
 end;
 
-// This is a safer version in case one doesnt trust the source pixels
+// This is a safer version in case one doesnt trust the destination pixels
 // It will draw as if the target area contained opaque white
-procedure TLazCanvas.AlphaBlendIgnoringSrcPixels(ASource: TLazCanvas;
+procedure TLazCanvas.AlphaBlendIgnoringDestPixels(ASource: TLazCanvas;
   const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer
   );
 var
