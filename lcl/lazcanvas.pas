@@ -36,7 +36,8 @@ uses
   // FCL-Image
   fpimgcanv, fpcanvas, fpimage, clipping, pixtools, fppixlcanv,
   // regions
-  lazregions;
+  lazregions
+  {, LCLProc for debugging};
 
 type
 
@@ -98,6 +99,8 @@ type
     procedure ResetCanvasState;
     // Alpha blending operations
     procedure AlphaBlend(ASource: TLazCanvas;
+      const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
+    procedure AlphaBlendIgnoringSrcPixels(ASource: TLazCanvas;
       const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
     procedure CanvasCopyRect(ASource: TLazCanvas;
       const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
@@ -440,6 +443,65 @@ begin
           CurColor.Blue * InvMaskValue / $FFFF +
           SrcColor.Blue * MaskValue / $FFFF);
 
+        CurColor.alpha := alphaOpaque;
+
+        {DebugLn(Format('Alpha blending pixels Old=%d %d Src=%d %d New=%d %d alpha=%d',
+          [Self.Colors[CurDestX, CurDestY].Red, Self.Colors[CurDestX, CurDestY].Green,
+           SrcColor.Red, SrcColor.Green,
+           CurColor.Red, CurColor.Green,
+           MaskValue
+           ]));}
+
+        Self.Colors[CurDestX, CurDestY] := CurColor;
+      end;
+    end;
+  end;
+end;
+
+// This is a safer version in case one doesnt trust the source pixels
+// It will draw as if the target area contained opaque white
+procedure TLazCanvas.AlphaBlendIgnoringSrcPixels(ASource: TLazCanvas;
+  const ADestX, ADestY, ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer
+  );
+var
+  x, y, CurDestX, CurDestY, CurSrcX, CurSrcY: Integer;
+  MaskValue, InvMaskValue: Word;
+  CurColor, SrcColor: TFPColor;
+  lDrawWidth, lDrawHeight: Integer;
+begin
+  // Take care not to draw outside the destination area
+  lDrawWidth := Min(Self.Width - ADestX, ASource.Width - ASourceX);
+  lDrawHeight := Min(Self.Height - ADestY, ASource.Height - ASourceY);
+  lDrawWidth := Min(lDrawWidth, ASourceWidth);
+  lDrawHeight := Min(lDrawHeight, ASourceHeight);
+  //DebugLn(Format('[TLazCanvas.AlphaBlend] lDrawWidth=%d lDrawHeight=%d',
+  //  [lDrawWidth, lDrawHeight]));
+  for y := 0 to lDrawHeight - 1 do
+  begin
+    for x := 0 to lDrawWidth - 1 do
+    begin
+      CurDestX := ADestX + x;
+      CurDestY := ADestY + y;
+      CurSrcX := ASourceX + x;
+      CurSrcY := ASourceY + y;
+
+      // Never draw outside the destination
+      if (CurDestX < 0) or (CurDestY < 0) then Continue;
+
+      MaskValue := ASource.Colors[CurSrcX, CurSrcY].alpha;
+      InvMaskValue := $FFFF - MaskValue;
+
+      if MaskValue = $FFFF then
+      begin
+        Self.Colors[CurDestX, CurDestY] := ASource.Colors[CurSrcX, CurSrcY];
+      end
+      else if MaskValue > $00 then
+      begin
+        SrcColor := ASource.Colors[CurSrcX, CurSrcY];
+
+        CurColor.Red := InvMaskValue + (SrcColor.Red * MaskValue) div $FFFF;
+        CurColor.Green := InvMaskValue + (SrcColor.Green * MaskValue) div $FFFF;
+        CurColor.Blue := InvMaskValue + (SrcColor.Blue * MaskValue) div $FFFF;
         CurColor.alpha := alphaOpaque;
 
         Self.Colors[CurDestX, CurDestY] := CurColor;

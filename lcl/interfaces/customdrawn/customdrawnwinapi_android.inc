@@ -2190,7 +2190,7 @@ begin
   {$ifdef VerboseCDText}
     DebugLn(Format(':>[WinAPI ExtTextOut] DC=%x javaEnvRef=%x Str=%s X=%d Y=%d',
       [DC, PtrInt(javaEnvRef), StrPas(Str), X, Y]));
-  {$endif}
+  www.{$endif}
 
   Result := False;
 
@@ -2229,19 +2229,18 @@ begin
   // Now copy it pixel per pixel
   // ---------------------------
 
-  // Lock the
+  // Lock the bitmap
   AndroidBitmap_lockPixels(javaEnvRef, lJavaBitmap, @pixels);
 
   // Prepare the non-native image and canvas
   UpdateControlLazImageAndCanvas(lImage, lCanvas, lWidth, lHeight, clfRGBA32, pixels, True, False, False);
 
-  // Execute the copy
-  lDestCanvas.AlphaBlend(lCanvas, X, Y, 0, 0, lWidth, lHeight);
+  // Execute the copy, pixel by pixel with Alpha blending
+  lDestCanvas.AlphaBlendIgnoringSrcPixels(lCanvas, X, Y, 0, 0, lWidth, lHeight);
 
+  // Release the helper objects
   lCanvas.Free;
-  {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] B');{$endif}
   lImage.Free;
-  {$ifdef VerboseCDText}DebugLn(':[WinAPI ExtTextOut] C');{$endif}
   // Release the bitmap lock
   AndroidBitmap_unlockPixels(javaEnvRef, lJavaBitmap);
 
