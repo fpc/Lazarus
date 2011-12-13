@@ -4207,7 +4207,7 @@ var
   p: PChar;
 begin
   Result:=false;
-  if Identifier='' then exit;;
+  if Identifier='' then exit;
   p:=PChar(Identifier);
   repeat
     if not IsIdentStartChar[p^] then exit;

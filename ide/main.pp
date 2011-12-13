@@ -5562,7 +5562,7 @@ begin
       Result:=mrCancel;
       exit;
     end;
-    if not IsValidIdent(NewUnitName) then begin
+    if not IsDottedIdentifier(NewUnitName) then begin
       AlternativeUnitName:=NameToValidIdentifier(NewUnitName);
       Result:=IDEMessageDialogAb(lisInvalidPascalIdentifierCap,
         Format(lisInvalidPascalIdentifierText,[NewUnitName,AlternativeUnitName]),

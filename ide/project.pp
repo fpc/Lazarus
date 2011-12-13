@@ -52,7 +52,7 @@ uses
   FileUtil, Controls, Dialogs, InterfaceBase, maps,
   // codetools
   Laz_XMLCfg, CodeToolsConfig, ExprEval, FileProcs, DefineTemplates,
-  CodeToolsCfgScript, CodeToolManager, CodeCache,
+  BasicCodeTools, CodeToolsCfgScript, CodeToolManager, CodeCache,
   // IDEIntf
   PropEdits, CompOptsIntf, ProjectIntf, MacroIntf, LazIDEIntf,
   // IDE
@@ -4004,12 +4004,16 @@ end;
 function TProject.IndexOfUnitWithName(const AnUnitName:string; 
   OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo):integer;
 begin
+  if AnUnitName='' then exit(-1);
   Result:=UnitCount-1;
   while (Result>=0) do begin
     if ((OnlyProjectUnits and Units[Result].IsPartOfProject)
     or (not OnlyProjectUnits))
-    and (IgnoreUnit<>Units[Result]) then begin
-      if (AnsiCompareText(Units[Result].Unit_Name,AnUnitName)=0) then
+    and (IgnoreUnit<>Units[Result])
+    and (Units[Result].Unit_Name<>'')
+    then begin
+      if (CompareDottedIdentifiers(PChar(Units[Result].Unit_Name),PChar(AnUnitName))=0)
+      then
         exit;
     end;
     dec(Result);
