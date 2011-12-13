@@ -2190,7 +2190,7 @@ begin
   {$ifdef VerboseCDText}
     DebugLn(Format(':>[WinAPI ExtTextOut] DC=%x javaEnvRef=%x Str=%s X=%d Y=%d',
       [DC, PtrInt(javaEnvRef), StrPas(Str), X, Y]));
-  www.{$endif}
+  {$endif}
 
   Result := False;
 
@@ -2236,6 +2236,8 @@ begin
   UpdateControlLazImageAndCanvas(lImage, lCanvas, lWidth, lHeight, clfRGBA32, pixels, True, False, False);
 
   // Execute the copy, pixel by pixel with Alpha blending
+  // Simple AlphaBlend was showing redish areas in the emulator
+  // because misteriously it read the target area pixels as red
   lDestCanvas.AlphaBlendIgnoringSrcPixels(lCanvas, X, Y, 0, 0, lWidth, lHeight);
 
   // Release the helper objects
