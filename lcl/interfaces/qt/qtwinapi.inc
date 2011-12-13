@@ -158,18 +158,7 @@ var
 begin
   Result := IsValidHandle(Handle);
   if Result then
-  begin
-    APoint := QtPoint(P.X, P.Y);
-
-    QWidget_mapToGlobal(TQtWidget(Handle).GetContainerWidget, @APoint, @APoint);
-    if TQtWidget(Handle).ChildOfComplexWidget = ccwScrollingWinControl then
-    begin
-      Pt := TQtCustomControl(Handle).viewport.ScrolledOffset;
-      dec(APoint.X, Pt.X);
-      dec(APoint.Y, Pt.Y);
-    end;
-    P := Point(APoint.x, APoint.y);
-  end;
+    P := TQtWidget(Handle).MapToGlobal(P, True);
 end;
 
 
@@ -5168,9 +5157,7 @@ begin
   Result := 0;
   if IsValidHandle(Handle) then
   begin
-    APoint := QtPoint(P.X, P.Y);
-    QWidget_mapFromGlobal(TQtWidget(Handle).GetContainerWidget, @APoint, @APoint);
-    P := Point(APoint.x, APoint.y);
+    P := TQtWidget(Handle).MapFromGlobal(P);
     Result := 1;
   end;
 end;

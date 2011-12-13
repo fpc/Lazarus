@@ -255,6 +255,8 @@ type
     function isFullScreen: Boolean;
     function IsWindow: Boolean;
     procedure lowerWidget; virtual;
+    function MapToGlobal(APt: TPoint; const AWithScrollOffset: Boolean = False): TPoint; virtual;
+    function MapFromGlobal(APt: TPoint; const AWithScrollOffset: Boolean = False): TPoint; virtual;
     procedure move(ANewLeft, ANewTop: Integer); virtual;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
     procedure raiseWidget; virtual;
@@ -451,6 +453,8 @@ type
   public
     function CanAdjustClientRectOnResize: Boolean; override;
     function cornerWidget: TQtWidget;
+    function MapToGlobal(APt: TPoint; const AWithScrollOffset: Boolean = False): TPoint; override;
+    function MapFromGlobal(APt: TPoint; const AWithScrollOffset: Boolean = False): TPoint; override;
     function viewport: TQtViewPort;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure setCornerWidget(AWidget: TQtWidget);
@@ -4004,6 +4008,24 @@ end;
 procedure TQtWidget.lowerWidget;
 begin
   QWidget_lower(Widget);
+end;
+
+function TQtWidget.MapToGlobal(APt: TPoint;
+  const AWithScrollOffset: Boolean = False): TPoint;
+var
+  Pt: TQtPoint;
+begin
+  Pt := QtPoint(APt.X, APt.Y);
+  QWidget_mapToGlobal(GetContainerWidget, @Result, @Pt);
+end;
+
+function TQtWidget.MapFromGlobal(APt: TPoint;
+  const AWithScrollOffset: Boolean = False): TPoint;
+var
+  Pt: TQtPoint;
+begin
+  Pt := QtPoint(APt.X, APt.Y);
+  QWidget_mapFromGlobal(GetContainerWidget, @Result, @Pt);
 end;
 
 procedure TQtWidget.move(ANewLeft, ANewTop: Integer);
@@ -13569,6 +13591,27 @@ begin
     WriteLn('TQAbstractScrollArea.cornerWidget');
   {$endif}
   Result := FCornerWidget;
+end;
+
+function TQtCustomControl.MapToGlobal(APt: TPoint;
+  const AWithScrollOffset: Boolean = False): TPoint;
+var
+  Pt: TPoint;
+begin
+  Result := inherited MapToGlobal(APt);
+  if AWithScrollOffset and (ChildOfComplexWidget = ccwScrollingWinControl) then
+  begin
+    Pt := viewport.ScrolledOffset;
+    dec(Result.X, Pt.X);
+    dec(Result.Y, Pt.Y);
+  end;
+end;
+
+function TQtCustomControl.MapFromGlobal(APt: TPoint;
+  const AWithScrollOffset: Boolean = False): TPoint;
+begin
+  //TODO: see what to do with ccwScrollingWinControl
+  Result := inherited MapFromGlobal(APt);
 end;
 
 {------------------------------------------------------------------------------
