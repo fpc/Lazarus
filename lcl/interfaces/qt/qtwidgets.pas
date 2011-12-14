@@ -2706,6 +2706,22 @@ begin
   // so our keypress get wrong about key. issue #20896
   if (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Enter) and (length(Text) = 1) then
     Text := #13;
+
+  // set groupswitch for Shift+Option.
+  if (length(Text) = 1) and (Modifiers = QtAltModifier or QtShiftModifier) then
+  begin
+    ScanCode := QKeyEvent_key(QKeyEventH(Event));
+    // Arrow keys are reserved by macOSX keyboard commands
+    // http://support.apple.com/kb/ht1343
+    if (ScanCode <> QtKey_Left) and (ScanCode <> QtKey_Up) and
+      (ScanCode <> QtKey_Right) and (ScanCode <> QtKey_Down) then
+    begin
+      Modifiers := QtGroupSwitchModifier;
+      KeyMsg.KeyData := QtKeyModifiersToKeyState(Modifiers);
+      IsSysKey := False; // was true above
+    end;
+    ScanCode := 0;
+  end;
   {$ENDIF}
 
   {$IFDEF VerboseQtKeys}
