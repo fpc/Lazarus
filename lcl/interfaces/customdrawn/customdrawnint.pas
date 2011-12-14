@@ -229,6 +229,8 @@ function Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished(
 function Java_com_pascal_lclproject_LCLActivity_LCLOnKey(
     env:PJNIEnv; this:jobject; AKind: jint; AKeyCode: jint;
     AEvent: jobject; AChar: jchar): jint; cdecl;
+function Java_com_pascal_lclproject_LCLActivity_LCLOnTimer(
+    env:PJNIEnv; this:jobject; ATimer: jobject): jint; cdecl;
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;
 
@@ -259,11 +261,16 @@ var
   javaField_lcltextdescent: JfieldID=nil;
   javaField_lcltextleading: JfieldID=nil;
   javaField_lcltexttop: JfieldID=nil;
+  // Timer
+  javaField_lcltimerinterval: JfieldID=nil;
+  javaField_lcltimerid: JfieldID=nil;
 
   // Methods of our Activity
   javaMethod_LCLDoGetTextBounds: jmethodid = nil;
   javaMethod_LCLDoDrawText: jmethodid = nil;
   javaMethod_LCLDoShowMessageBox: jmethodid = nil;
+  javaMethod_LCLDoCreateTimer: jmethodid = nil;
+  javaMethod_LCLDoDestroyTimer: jmethodid = nil;
 
   // This is utilized to store the information such as invalidate requests in events
   eventResult: jint;

@@ -12,7 +12,8 @@ uses
   IntfGraphics, lazcanvas, lazregions,
   // LCL
   GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc,
-  StdCtrls, ExtCtrls, Forms, Graphics, customdrawncontrols;
+  StdCtrls, ExtCtrls, Forms, Graphics, customdrawncontrols,
+  InterfaceBase;
 
 type
   TUpdateLazImageFormat = (
@@ -70,6 +71,13 @@ type
     Image: TLazIntfImage;
   end;
 
+  TCDTimer = class
+  public
+    NativeHandle: PtrInt;
+    Interval: integer;
+    TimerFunc: TWSTimerProc;
+  end;
+
 // Routines for form managing (both native and non-native)
 
 procedure AddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
@@ -111,11 +119,21 @@ function IsValidGDIObject(AGDIObj: HGDIOBJ): Boolean;
 function IsValidBitmap(ABitmap: HBITMAP): Boolean;
 function RemoveAccelChars(AStr: string): string;
 
+// Timers list management (for platforms that need it)
+
+procedure InitTimersList();
+procedure AddTimer(ATimer: TCDTimer);
+procedure RemoveTimer(ATimer: TCDTimer);
+function FindTimerWithNativeHandle(ANativeHandle: PtrInt): TCDTimer;
+
 implementation
 
-// List with the Z-order of non-native forms, index=0 is the bottom-most form
 var
+  // List with the Z-order of non-native forms, index=0 is the bottom-most form
   NonNativeForms: TFPList = nil;
+
+  // List of timers
+  TimersList: TFPList = nil;
 
 procedure AddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
 var
@@ -502,6 +520,38 @@ function RemoveAccelChars(AStr: string): string;
 begin
   // ToDo convert && to & and keep it
   Result := StringReplace(AStr, '&', '', [rfReplaceAll]);
+end;
+
+procedure InitTimersList;
+begin
+  if TimersList = nil then TimersList := TFPList.Create;
+end;
+
+procedure AddTimer(ATimer: TCDTimer);
+begin
+  InitTimersList();
+  TimersList.Add(ATimer);
+end;
+
+procedure RemoveTimer(ATimer: TCDTimer);
+begin
+  InitTimersList();
+  TimersList.Remove(ATimer);
+end;
+
+function FindTimerWithNativeHandle(ANativeHandle: PtrInt): TCDTimer;
+var
+  lTimer: TCDTimer;
+  i: Integer;
+begin
+  Result := nil;
+  InitTimersList();
+  for i := 0 to TimersList.Count - 1 do
+  begin
+    lTimer := TCDTimer(TimersList.Items[i]);
+    if lTimer.NativeHandle = ANativeHandle then
+      Exit(lTimer);
+  end;
 end;
 
 { TCDBaseControl }

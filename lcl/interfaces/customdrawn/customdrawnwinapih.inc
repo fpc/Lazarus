@@ -1,8 +1,14 @@
 {%MainUnit customdrawnint.pas}
 
 {******************************************************************************
-  All QT Winapi related stuff goes here.
-  This are the overrides of the QT Interface for the methods defined in the
+  All CustomDrawn Winapi related stuff goes here.
+
+  Note the structure which allows multiple implementations of the same method:
+
+  customdrawnwinapi.inc -> Generic implementation
+  customdrawnwinapi_*.inc -> Backend specific implementations
+
+  This are the overrides of the CustomDrawn Interface for the methods defined in the
   lcl/include/winapih.inc
 
   !! Keep this alphabetical !!

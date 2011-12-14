@@ -62,7 +62,10 @@ public class LCLActivity extends Activity
       if ((eventResult | 1) != 0) postInvalidate();
       return true;
     }
-  }    
+  }
+
+  // Global objects
+  LCLSurface lclsurface;
 
   // -------------------------------------------
   // Activity Events
@@ -74,7 +77,7 @@ public class LCLActivity extends Activity
   {
     super.onCreate(savedInstanceState);
           
-    LCLSurface lclsurface = new LCLSurface(this);
+    lclsurface = new LCLSurface(this);
     setContentView(lclsurface);
     lclsurface.postInvalidate();
     // Tell the LCL that an OnCreate has happened and what is our instance
@@ -89,6 +92,7 @@ public class LCLActivity extends Activity
   public native int LCLOnCreate(LCLActivity lclactivity);
   public native int LCLOnMessageBoxFinished(int Result);
   public native int LCLOnKey(int kind, int keyCode, KeyEvent event, char AChar);
+  public native int LCLOnTimer(Runnable timerid);
 
   // -------------------------------------------
   // Functions exported to the Pascal side
@@ -192,7 +196,33 @@ public class LCLActivity extends Activity
     if (lclbutton2 >= 0) builder.setNeutralButton(lclbutton2str, dialogClickListener);
     if (lclbutton3 >= 0) builder.setNegativeButton(lclbutton3str, dialogClickListener);
     builder.show().setOnCancelListener(dialogCancelListener);
-  }
+  };
+
+  private Handler LocalHandler = new Handler();
+
+  // input:  int lcltimerinterval in milliseconds
+  // output:  Runnable lcltimerid
+  public void LCLDoCreateTimer()
+  {
+    lcltimerid = new Runnable()
+    {
+      public void run()
+      {
+        int eventResult = LCLOnTimer(this);
+        if (((eventResult | 1) != 0) && (lclsurface != null)) lclsurface.postInvalidate();
+        LocalHandler.postDelayed(this, lcltimerinterval);
+      }
+    };
+
+    LocalHandler.removeCallbacks(lcltimerid);
+    LocalHandler.postDelayed(lcltimerid, lcltimerinterval);
+  };
+
+  // input: Runnable lcltimerid
+  public void LCLDoDestroyTimer()
+  {
+    LocalHandler.removeCallbacks(lcltimerid);
+  };
 
   // -------------------------------------------
   // Fields exported to the Pascal side for easier data communication
@@ -202,18 +232,23 @@ public class LCLActivity extends Activity
   public String lclbutton1str;
   public String lclbutton2str;
   public String lclbutton3str;
+  //
   public int lclwidth;
   public int lclheight;
   public int lclbutton1;
   public int lclbutton2;
   public int lclbutton3;
   public Bitmap lclbitmap;
+  //
   public int lcltextsize;
   public int lcltextascent;
   public int lcltextbottom;
   public int lcltextdescent;
   public int lcltextleading;
   public int lcltexttop;
+  //
+  public int lcltimerinterval;
+  public Runnable lcltimerid;
 
   static
   {

@@ -182,7 +182,27 @@ begin
   Result := eventResult;
 end;
 
-const NativeMethods: array[0..4] of JNINativeMethod=
+function Java_com_pascal_lclproject_LCLActivity_LCLOnTimer(
+    env:PJNIEnv; this:jobject; ATimer: jobject): jint; cdecl;
+var
+  lTimer: TCDTimer;
+begin
+  {$ifdef VerboseCDEvents}
+  __android_log_write(ANDROID_LOG_INFO,'lclapp',PChar(
+    Format('LCLOnTimer called ATimer=%x', [PtrInt(ATimer)])));
+  {$endif}
+  eventResult := 0;
+
+  lTimer := FindTimerWithNativeHandle(PtrInt(ATimer));
+
+  if lTimer <> nil then lTimer.TimerFunc()
+  else DebugLn('[LCLOnTimer] OnTimer message sent to unknown timer!');
+
+  // This sends messages like Invalidate requests
+  Result := eventResult;
+end;
+
+const NativeMethods: array[0..5] of JNINativeMethod=
   ((name:'LCLDrawToBitmap';
     signature:'(IILandroid/graphics/Bitmap;)I';
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap;),
@@ -197,7 +217,10 @@ const NativeMethods: array[0..4] of JNINativeMethod=
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished;),
    (name:'LCLOnKey';
     signature:'(IILandroid/view/KeyEvent;C)I';
-    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnKey;)
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnKey;),
+   (name:'LCLOnTimer';
+    signature:'(Ljava/lang/Runnable;)I';
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnTimer;)
   );
 
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
@@ -255,6 +278,10 @@ begin
   javaField_lcltextdescent := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltextdescent', 'I');
   javaField_lcltextleading := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltextleading', 'I');
   javaField_lcltexttop := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltexttop', 'I');
+  // Timer
+  javaField_lcltimerinterval := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltimerinterval', 'I');
+  javaField_lcltimerid := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltimerid', 'Ljava/lang/Runnable;');
+  //
   if not assigned(JavaField_lcltext) then
   begin
     __android_log_write(ANDROID_LOG_FATAL, 'lclapp', 'javaEnvRef^.GetFieldID failed for lcltext');
@@ -265,6 +292,8 @@ begin
   javaMethod_LCLDoGetTextBounds := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoGetTextBounds', '()V');
   javaMethod_LCLDoDrawText := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoDrawText', '()V');
   javaMethod_LCLDoShowMessageBox := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoShowMessageBox', '()V');
+  javaMethod_LCLDoCreateTimer := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoCreateTimer', '()V');
+  javaMethod_LCLDoDestroyTimer := javaEnvRef^^.GetMethodID(javaEnvRef, javaActivityClass, 'LCLDoDestroyTimer', '()V');
 
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'JNI_OnLoad finished');
   result:=JNI_VERSION_1_4;// 1_6 is another option
@@ -300,13 +329,13 @@ begin
     AKEYCODE_8: Result := VK_8;
     AKEYCODE_9: Result := VK_9;
 {    AKEYCODE_STAR = 17;
-    AKEYCODE_POUND = 18;
-    AKEYCODE_DPAD_UP = 19;
-    AKEYCODE_DPAD_DOWN = 20;
-    AKEYCODE_DPAD_LEFT = 21;
-    AKEYCODE_DPAD_RIGHT = 22;
-    AKEYCODE_DPAD_CENTER = 23;
-    AKEYCODE_VOLUME_UP = 24;
+    AKEYCODE_POUND = 18;}
+    AKEYCODE_DPAD_UP:     Result := VK_UP;
+    AKEYCODE_DPAD_DOWN:   Result := VK_DOWN;
+    AKEYCODE_DPAD_LEFT:   Result := VK_LEFT;
+    AKEYCODE_DPAD_RIGHT:  Result := VK_RIGHT;
+    //AKEYCODE_DPAD_CENTER: Result := VK_CENTER;
+{    AKEYCODE_VOLUME_UP = 24;
     AKEYCODE_VOLUME_DOWN = 25;
     AKEYCODE_POWER = 26;
     AKEYCODE_CAMERA = 27;
@@ -337,15 +366,15 @@ begin
     AKEYCODE_X: Result := VK_X;
     AKEYCODE_Y: Result := VK_Y;
     AKEYCODE_Z: Result := VK_Z;
-{    AKEYCODE_COMMA = 55;
-    AKEYCODE_PERIOD = 56;
-    AKEYCODE_ALT_LEFT = 57;
+    //AKEYCODE_COMMA: Result := VK_?
+    //AKEYCODE_PERIOD = 56;
+{    AKEYCODE_ALT_LEFT = 57;
     AKEYCODE_ALT_RIGHT = 58;
     AKEYCODE_SHIFT_LEFT = 59;
-    AKEYCODE_SHIFT_RIGHT = 60;
-    AKEYCODE_TAB = 61;
-    AKEYCODE_SPACE = 62;
-    AKEYCODE_SYM = 63;
+    AKEYCODE_SHIFT_RIGHT = 60;}
+    //AKEYCODE_TAB: Result := VK_Z;
+    AKEYCODE_SPACE: Result := VK_SPACE;
+{    AKEYCODE_SYM = 63;
     AKEYCODE_EXPLORER = 64;
     AKEYCODE_ENVELOPE = 65;
     AKEYCODE_ENTER = 66;
@@ -393,6 +422,28 @@ begin
     AKEYCODE_BUTTON_START = 108;
     AKEYCODE_BUTTON_SELECT = 109;
     AKEYCODE_BUTTON_MODE = 110;}
+    // New since API level 11 from android.view.KeyEvent
+    AKEYCODE_NUMPAD_0: Result := VK_NUMPAD0;
+    AKEYCODE_NUMPAD_1: Result := VK_NUMPAD1;
+    AKEYCODE_NUMPAD_2: Result := VK_NUMPAD2;
+    AKEYCODE_NUMPAD_3: Result := VK_NUMPAD3;
+    AKEYCODE_NUMPAD_4: Result := VK_NUMPAD4;
+    AKEYCODE_NUMPAD_5: Result := VK_NUMPAD5;
+    AKEYCODE_NUMPAD_6: Result := VK_NUMPAD6;
+    AKEYCODE_NUMPAD_7: Result := VK_NUMPAD7;
+    AKEYCODE_NUMPAD_8: Result := VK_NUMPAD8;
+    AKEYCODE_NUMPAD_9: Result := VK_NUMPAD9;
+    AKEYCODE_NUMPAD_ADD: Result := VK_ADD;
+    {AKEYCODE_NUMPAD_COMMA = $0000009f;
+    AKEYCODE_NUMPAD_DIVIDE = $0000009a;
+    AKEYCODE_NUMPAD_DOT = $0000009e;
+    AKEYCODE_NUMPAD_ENTER = $000000a0;
+    AKEYCODE_NUMPAD_EQUALS = $000000a1;
+    AKEYCODE_NUMPAD_LEFT_PAREN = $000000a2;
+    AKEYCODE_NUMPAD_MULTIPLY = $0000009b;
+    AKEYCODE_NUMPAD_RIGHT_PAREN = $000000a3;
+    AKEYCODE_NUMPAD_SUBTRACT = $0000009c;
+    AKEYCODE_NUM_LOCK = $0000008f;}
   else
     Result := 0;
   end;
@@ -671,7 +722,27 @@ end;
     The TimerCallBackProc calls the TimerFunc.
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle;
+var
+  lTimer: TCDTimer;
 begin
+  lTimer := TCDTimer.Create;
+
+  Result := THandle(lTimer);
+
+  lTimer.Interval := Interval;
+  lTimer.TimerFunc := TimerFunc;
+
+  // Prepare the input
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltimerinterval, Interval);
+
+  // Call the method
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoCreateTimer);
+
+  // Read the output
+  lTimer.NativeHandle := PtrInt(javaEnvRef^^.GetObjectField(javaEnvRef, javaActivityObject, javaField_lcltimerid));
+
+  // Add it to our list
+  AddTimer(lTimer);
 end;
 
 {------------------------------------------------------------------------------
@@ -680,7 +751,25 @@ end;
   Returns:
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
+var
+  lTimer: TCDTimer;
 begin
+  Result := False;
+
+  lTimer := TCDTimer(TimerHandle);
+
+  if lTimer = nil then Exit;
+
+  // Prepare the input
+  javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, javaField_lcltimerid, jobject(lTimer.NativeHandle));
+
+  // Call the method
+  javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoDestroyTimer);
+
+  // Remove from the list
+  RemoveTimer(lTimer);
+
+  Result := True;
 end;
 (*
 procedure TWinCEWidgetSet.HandleWakeMainThread(Sender: TObject);
