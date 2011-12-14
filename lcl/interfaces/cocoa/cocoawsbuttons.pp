@@ -30,11 +30,11 @@ uses
   // libs
   MacOSAll, CocoaAll,
   // LCL
-  Classes, Controls, Buttons, LCLType, LCLProc, Graphics,
+  Classes, Controls, Buttons, LCLType, LCLProc, Graphics, GraphType,
   // widgetset
   WSButtons, WSLCLClasses, WSProc,
   // LCL Carbon
-  CocoaWSCommon, CocoaWSStdCtrls, CocoaUtils;
+  CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects, CocoaUtils;
 
 type
 
@@ -85,34 +85,23 @@ end;
 
   Sets the bitmap of bevel button in Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCocoaWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
-  const AValue: TButtonGlyph);
-{var
-  Img     : CGImageRef;
-  R       : TRect;}
+class procedure TCocoaWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph);
+var
+  Img: NSImage;
+  AGlyph: TBitmap;
+  AIndex: Integer;
+  AEffect: TGraphicsDrawEffect;
 begin
-{  if not CheckHandle(ABitBtn, Self, 'SetGlyph') then Exit;
-
   Img := nil;
-  if ABitBtn.CanShowGlyph and (AValue.Glyph <> nil) and (AValue.Glyph.Width > 0) and (AValue.Glyph.Height > 0) then
+  if ABitBtn.CanShowGlyph then
   begin
-    if TObject(AValue.Glyph.Handle) is TCarbonBitmap then
-    begin
-      if AValue.NumGlyphs <= 1 then
-        Img := TCarbonBitmap(AValue.Glyph.Handle).CreateMaskedImage(TCarbonBitmap(AValue.Glyph.MaskHandle))
-      else
-      begin
-        // TODO: consider button style (down, disabled)
-        R := Classes.Rect(0, 0, AValue.Glyph.Width div ABitBtn.NumGlyphs, AValue.Glyph.Height);
-        Img := TCarbonBitmap(AValue.Glyph.Handle).CreateMaskedImage(TCarbonBitmap(AValue.Glyph.MaskHandle), R);
-      end;
-    end;
+    AGlyph := TBitmap.Create;
+    AValue.GetImageIndexAndEffect(bsUp, AIndex, AEffect);
+    AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
+    Img := TCocoaBitmap(AGlyph.Handle).image;
+    NSButton(ABitBtn.Handle).setImage(Img);
+    AGlyph.Free;
   end;
-
-  {if ABitBtn.CanShowGlyph then
-    TCarbonBitBtn(ABitBtn.Handle).SetGlyph(AValue.Glyph)
-  else}
-  TCarbonBitBtn(ABitBtn.Handle).SetGlyph(Img);}
 end;
 
 {------------------------------------------------------------------------------
@@ -124,28 +113,22 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCocoaWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonLayout);
-{var
-  Placement: ControlButtonTextPlacement;
-  TextAlign: ControlButtonTextAlignment;}
+var
+  ImagePosition: NSCellImagePosition;
 begin
-{  if not CheckHandle(ABitBtn, Self, 'SetLayout') then Exit;
 
-  if (ABitBtn.CanShowGlyph) and (ABitBtn.Glyph <> nil) and (ABitBtn.Glyph.Width > 0) and (ABitBtn.Glyph.Height > 0) then
+  if (ABitBtn.CanShowGlyph) then
   begin
-    TextAlign := kControlBevelButtonAlignLeft;
     case AValue of
-      blGlyphLeft  : Placement := kControlBevelButtonPlaceToRightOfGraphic;
-      blGlyphRight : Placement := kControlBevelButtonPlaceToLeftOfGraphic;
-      blGlyphTop   : Placement := kControlBevelButtonPlaceBelowGraphic;
-      blGlyphBottom: Placement := kControlBevelButtonPlaceAboveGraphic;
+      blGlyphLeft  : ImagePosition := NSImageLeft;
+      blGlyphRight : ImagePosition := NSImageRight;
+      blGlyphTop   : ImagePosition := NSImageBelow;
+      blGlyphBottom: ImagePosition := NSImageAbove;
     end;
   end
-  else // if Glyph is empty, then align center
-  begin
-    TextAlign := kControlBevelButtonAlignTextCenter;
-    Placement := kControlBevelButtonPlaceNormally;
-  end;
-  TCarbonBitBtn(ABitBtn.Handle).SetLayout(Placement, TextAlign);}
+  else
+    ImagePosition := NSNoImage;
+  NSButton(ABitBtn.Handle).SetImagePosition(ImagePosition);
 end;
 
 end.
