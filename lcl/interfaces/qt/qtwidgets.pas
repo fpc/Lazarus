@@ -12733,6 +12733,7 @@ constructor TQtMenuBar.Create(const AParent: QWidgetH);
 begin
   Create;
   Widget := QMenuBar_create(AParent);
+  FOwnWidget := AParent = nil;
   FWidgetDefaultFont := TQtFont.Create(QWidget_font(Widget));
   FWidgetLCLFont := nil;
   FHeight := getHeight;
