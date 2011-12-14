@@ -5446,7 +5446,19 @@ begin
     end;
 
     // Main menu bar
+    {$IFDEF DARWIN}
+    // do not show menubar for empty menus
+    if (QtVersionMajor = 4) and (QtVersionMinor >= 6) then
+      QCoreApplication_setAttribute(QtAA_DontUseNativeMenuBar,
+        not Assigned(TCustomForm(LCLObject).Menu));
+    {$ENDIF}
+
     MenuBar := TQtMenuBar.Create(Result);
+
+    {$IFDEF DARWIN}
+    if (QtVersionMajor = 4) and (QtVersionMinor >= 6) then
+      QCoreApplication_setAttribute(QtAA_DontUseNativeMenuBar, False);
+    {$ENDIF}
 
     FCentralWidget := QWidget_create(Result);
     QWidget_setMouseTracking(FCentralWidget, True);
