@@ -2701,6 +2701,13 @@ begin
   // Loads the UTF-8 character associated with the keypress, if any
   QKeyEvent_text(QKeyEventH(Event), @Text);
 
+  {$IFDEF DARWIN}
+  // qt on mac passes #3 instead of #13 when QtKey_Enter (numpad) is pressed
+  // so our keypress get wrong about key. issue #20896
+  if (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Enter) and (length(Text) = 1) then
+    Text := #13;
+  {$ENDIF}
+
   {$IFDEF VerboseQtKeys}
   writeln('> TQtWidget.SlotKey dump begin event=',EventTypeToStr(Event));
 
