@@ -5,7 +5,7 @@ unit CustomDrawnWSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow, Spin,
-  Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, Grids,
+  Dialogs, ExtCtrls, Buttons, Forms, Menus,
   WSLCLClasses;
 
 // imglist

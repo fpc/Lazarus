@@ -17,9 +17,38 @@
     <MacroValues Count="1">
       <Macro1 Name="LCLWidgetType" Value="customdrawn"/>
     </MacroValues>
-    <BuildModes Count="3">
+    <BuildModes Count="4">
       <Item1 Name="CustomDrawn" Default="True"/>
-      <Item2 Name="NotCustomDrawn">
+      <Item2 Name="CustomDrawn-Release">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="customdrawn"/>
+        </MacroValues>
+        <CompilerOptions>
+          <Version Value="11"/>
+          <Target>
+            <Filename Value="nonandroidtest"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <GenerateDebugInfo Value="False"/>
+              <UseLineInfoUnit Value="False"/>
+              <StripSymbols Value="True"/>
+            </Debugging>
+            <LinkSmart Value="True"/>
+          </Linking>
+          <Other>
+            <CompilerMessages>
+              <UseMsgFile Value="True"/>
+            </CompilerMessages>
+            <CompilerPath Value="$(CompPath)"/>
+          </Other>
+        </CompilerOptions>
+      </Item2>
+      <Item3 Name="NotCustomDrawn">
         <MacroValues Count="1">
           <Macro1 Name="LCLWidgetType" Value="carbon"/>
         </MacroValues>
@@ -46,8 +75,8 @@
             <CompilerPath Value="$(CompPath)"/>
           </Other>
         </CompilerOptions>
-      </Item2>
-      <Item3 Name="Cocoa">
+      </Item3>
+      <Item4 Name="Cocoa">
         <MacroValues Count="1">
           <Macro1 Name="LCLWidgetType" Value="cocoa"/>
         </MacroValues>
@@ -74,7 +103,7 @@
             <CompilerPath Value="$(CompPath)"/>
           </Other>
         </CompilerOptions>
-      </Item3>
+      </Item4>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
