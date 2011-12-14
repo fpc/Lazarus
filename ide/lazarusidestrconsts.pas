@@ -5270,6 +5270,7 @@ resourcestring
   // Uses Unit dialog
   dlgAlreadyUsesAllOtherUnits = '"%s" already uses all the units in this project';
   dlgUseUnitCaption = 'Add unit to Uses section';
+  dlgShowAllUnits = 'Show all units';
   dlgInsertSection = 'Insert into Uses section of';
   dlgInsertInterface = 'Interface';
   dlgInsertImplementation = 'Implementation';

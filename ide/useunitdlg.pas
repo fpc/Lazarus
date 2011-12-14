@@ -140,6 +140,7 @@ procedure TUseUnitDialog.FormCreate(Sender: TObject);
 begin
   // Internationalization
   Caption := dlgUseUnitCaption;
+  AllUnitsCheckBox.Caption := dlgShowAllUnits;
   SectionRadioGroup.Caption := dlgInsertSection;
   SectionRadioGroup.Items.Clear;
   SectionRadioGroup.Items.Add(dlgInsertInterface);
