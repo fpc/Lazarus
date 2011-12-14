@@ -462,6 +462,7 @@ type
     property TabIndex: Integer read GetTabIndex;
   published
     property BorderWidth;
+    property BiDiMode;
     property Caption;
     property ChildSizing;
     property ClientHeight;
@@ -487,6 +488,7 @@ type
     property OnShow;
     property OnStartDrag;
     property PageIndex stored False;
+    property ParentBiDiMode;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -533,7 +535,7 @@ type
     property Align;
     property Anchors;
     property BorderSpacing;
-    //property BiDiMode;
+    property BiDiMode;
     property Constraints;
     property DockSite;
     property DragCursor;
@@ -545,7 +547,7 @@ type
     property Images;
     property MultiLine;
     //property OwnerDraw;
-    //property ParentBiDiMode;
+    property ParentBiDiMode;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -679,142 +681,6 @@ type
   public
     property NoteBook: TCustomTabControl read FNoteBook;
   end;
-  {$define LCL_NEW_TABCONTROL}
-  {$ifndef LCL_NEW_TABCONTROL}
-
-  { TTabControl }
-
-  TTabControl = class(TCustomControl)
-  private
-    FImageChangeLink: TChangeLink;
-    FImages: TCustomImageList;
-    FOnChange: TNotifyEvent;
-    FOnChangeNeeded: Boolean;
-    FOnChanging: TTabChangingEvent;
-    FOnDrawTab: TDrawTabEvent;
-    FOnGetImageIndex: TTabGetImageEvent;
-    FStyle: TTabStyle;
-    FTabControlCreating: Boolean;
-    FTabPosition: TTabPosition;
-    FTabs: TStrings;// this is a TTabControlNoteBookStrings
-    procedure AdjustDisplayRect(var ARect: TRect);
-    function GetDisplayRect: TRect;
-    function GetHotTrack: Boolean;
-    function GetMultiLine: Boolean;
-    function GetMultiSelect: Boolean;
-    function GetOwnerDraw: Boolean;
-    function GetRaggedRight: Boolean;
-    function GetScrollOpposite: Boolean;
-    function GetTabHeight: Smallint;
-    function GetTabIndex: Integer;
-    function GetTabRectWithBorder: TRect;
-    function GetTabWidth: Smallint;
-    procedure SetHotTrack(const AValue: Boolean);
-    procedure SetImages(const AValue: TCustomImageList);
-    procedure SetMultiLine(const AValue: Boolean);
-    procedure SetMultiSelect(const AValue: Boolean);
-    procedure SetOwnerDraw(const AValue: Boolean);
-    procedure SetRaggedRight(const AValue: Boolean);
-    procedure SetScrollOpposite(const AValue: Boolean);
-    procedure SetStyle(const AValue: TTabStyle);
-    procedure SetTabHeight(const AValue: Smallint);
-    procedure SetTabPosition(const AValue: TTabPosition);
-    procedure SetTabs(const AValue: TStrings);
-    procedure SetTabWidth(const AValue: Smallint);
-  protected
-    function CanChange: Boolean; virtual;
-    function CanShowTab(ATabIndex: Integer): Boolean; virtual;
-    procedure Change; virtual;
-    procedure DrawTab(ATabIndex: Integer; const Rect: TRect; Active: Boolean); virtual;
-    function GetImageIndex(ATabIndex: Integer): Integer; virtual;
-    procedure Loaded; override;
-    procedure CreateWnd; override;
-    procedure DestroyHandle; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure SetTabIndex(Value: Integer); virtual;
-    procedure UpdateTabImages;
-    procedure ImageListChange(Sender: TObject);
-    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
-    class function GetControlClassDefaultSize: TSize; override;
-    procedure Paint; override;
-    procedure AdjustDisplayRectWithBorder(var ARect: TRect); virtual;
-    procedure AdjustClientRect(var ARect: TRect); override;
-  public
-    constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
-    function IndexOfTabAt(X, Y: Integer): Integer;
-    function GetHitTestInfoAt(X, Y: Integer): THitTests;
-    function IndexOfTabWithCaption(const TabCaption: string): Integer;
-    function TabRect(Index: Integer): TRect;
-    function RowCount: Integer;
-    procedure ScrollTabs(Delta: Integer);
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    function IsUpdating: boolean;
-  public
-    property DisplayRect: TRect read GetDisplayRect;
-  published
-    property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
-    property Images: TCustomImageList read FImages write SetImages;
-    property MultiLine: Boolean read GetMultiLine write SetMultiLine default False;
-    property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property OnChanging: TTabChangingEvent read FOnChanging write FOnChanging;
-    property OnDrawTab: TDrawTabEvent read FOnDrawTab write FOnDrawTab;
-    property OnGetImageIndex: TTabGetImageEvent read FOnGetImageIndex
-                                                write FOnGetImageIndex;
-    property OwnerDraw: Boolean read GetOwnerDraw write SetOwnerDraw default False;
-    property RaggedRight: Boolean read GetRaggedRight write SetRaggedRight default False;
-    property ScrollOpposite: Boolean read GetScrollOpposite
-                                     write SetScrollOpposite default False;
-    property Style: TTabStyle read FStyle write SetStyle default tsTabs;
-    property TabHeight: Smallint read GetTabHeight write SetTabHeight default 0;
-    property TabPosition: TTabPosition read FTabPosition write SetTabPosition
-                                       default tpTop;
-    property TabWidth: Smallint read GetTabWidth write SetTabWidth default 0;
-    property TabIndex: Integer read GetTabIndex write SetTabIndex default -1;
-    property Tabs: TStrings read FTabs write SetTabs;
-    property TabStop default True;
-    //
-    property Align;
-    property Anchors;
-    property BorderSpacing;
-    property Constraints;
-    property DockSite;
-    property DragCursor;
-    property DragKind;
-    property DragMode;
-    property Enabled;
-    property Font;
-    property OnChangeBounds;
-    property OnContextPopup;
-    property OnDockDrop;
-    property OnDockOver;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDock;
-    property OnEndDrag;
-    property OnEnter;
-    property OnExit;
-    property OnGetSiteInfo;
-    property OnMouseDown;
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnResize;
-    property OnStartDock;
-    property OnStartDrag;
-    property OnUnDock;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property Visible;
-  end;
-
-{$else}
 
 (* This is the new TTabControl which replaces the one one.
   This new one is derived from TCustomTabControl.
@@ -908,6 +774,7 @@ type
     //
     property Align;
     property Anchors;
+    property BiDiMode;
     property BorderSpacing;
     property Constraints;
     property DockSite;
@@ -936,6 +803,7 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
+    property ParentBiDiMode;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -943,8 +811,6 @@ type
     property TabOrder;
     property Visible;
   end;
-
-{$endif}
 
   { Custom draw }
 

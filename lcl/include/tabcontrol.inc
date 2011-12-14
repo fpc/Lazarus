@@ -475,17 +475,6 @@ begin
     FOnChange(Self);
 end;
 
-{$ifndef LCL_NEW_TABCONTROL}
-procedure TTabControl.DrawTab(ATabIndex: Integer; const Rect: TRect;
-  Active: Boolean);
-begin
-  if Assigned(FOnDrawTab) then
-    FOnDrawTab(TCustomTabControl(Self),TabIndex,Rect,Active)
-  else
-    Canvas.FillRect(Rect);
-end;
-{$endif}
-
 function TTabControl.GetImageIndex(ATabIndex: Integer): Integer;
 begin
   Result := ATabIndex;
@@ -548,7 +537,6 @@ begin
   Result.CY := 150;
 end;
 
-{$ifdef LCL_NEW_TABCONTROL}
 procedure TTabControl.PaintWindow(DC: HDC);
 var
   DCChanged: boolean;
@@ -562,7 +550,6 @@ begin
     if DCChanged then FCanvas.Handle := 0;
   end;
 end;
-{$endif}
 
 procedure TTabControl.Paint;
 var
@@ -571,11 +558,7 @@ var
   Details: TThemedElementDetails;
   lCanvas: TCanvas;
 begin
-  {$ifdef LCL_NEW_TABCONTROL}
   lCanvas := FCanvas;
-  {$else}
-  lCanvas := Canvas;
-  {$endif}
 
   //DebugLn(['TTabControl.Paint Bounds=',dbgs(BoundsRect),' ClientRect=',dbgs(ClientRect),' CientOrigin=',dbgs(ClientOrigin)]);
   // clear only display area since button area is painted by another control
@@ -647,18 +630,15 @@ begin
     SetInitialBounds(0, 0, CX, CY);
   BorderWidth:=2;
   FTabControlCreating:=false;
-  {$ifdef LCL_NEW_TABCONTROL}
+
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  {$endif}
 end;
 
 destructor TTabControl.Destroy;
 begin
   BeginUpdate;
-  {$ifdef LCL_NEW_TABCONTROL}
   FCanvas.Free;
-  {$endif}
   FreeThenNil(FTabs);
   FreeThenNil(FImageChangeLink);
   inherited Destroy;
