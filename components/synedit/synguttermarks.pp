@@ -18,6 +18,7 @@ type
     FColumnWidth: Integer;
     FDebugMarksImageIndex: Integer;
     FInternalImage: TSynInternalImage;
+    FNoInternalImage: Boolean;
   protected
     FBookMarkOpt: TSynBookMarkOpt;
     procedure Init; override;
@@ -48,6 +49,7 @@ constructor TSynGutterMarks.Create(AOwner: TComponent);
 begin
   FInternalImage := nil;
   FDebugMarksImageIndex := -1;
+  FNoInternalImage := False;
   inherited Create(AOwner);
 end;
 
@@ -84,9 +86,14 @@ var
       // draw internal image
       if CurMark.ImageIndex in [0..9] then
       begin
-        if not Assigned(FInternalImage) then
-          FInternalImage := TSynInternalImage.Create('SynEditInternalImages',10);
-        FInternalImage.DrawMark(Canvas, CurMark.ImageIndex, aRect.Left, aRect.Top,
+        try
+          if (not Assigned(FInternalImage)) and (not FNoInternalImage) then
+            FInternalImage := TSynInternalImage.Create('SynEditInternalImages',10);
+        except
+          FNoInternalImage := True;
+        end;
+        if Assigned(FInternalImage) then
+          FInternalImage.DrawMark(Canvas, CurMark.ImageIndex, aRect.Left, aRect.Top,
                                 LineHeight);
       end;
     end
