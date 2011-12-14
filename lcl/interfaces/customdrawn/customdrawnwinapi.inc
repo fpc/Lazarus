@@ -2164,16 +2164,19 @@ end;*)
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
-{var
-  WideStr: WideString;
-  QtDC: TQtDeviceContext absolute DC;
-  B: Boolean; }
+var
+  LazDC: TLazCanvas absolute DC;
 begin
   {$ifdef VerboseCDWinAPI}
     DebugLn('[WinAPI ExtTextOut]');
   {$endif}
 
   Result := False;
+
+  if Rect <> nil then
+  begin
+    Rect^ := Bounds(0, 0, 0, 0);
+  end;
 
   {if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
     exit;
@@ -4058,21 +4061,19 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
-{var
-  WideStr: WideString;
-  QtDC: TQtDeviceContext absolute DC;   }
+var
+  LazDC: TLazCanvas absolute DC;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetTextExtentPoint]');
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[WinAPI GetTextExtentPoint]');
   {$endif}
 
   Result := False;
 
- { if not IsValidDC(DC) then Exit;
+  if not IsValidDC(DC) then Exit;
 
-  WideStr := GetUtf8String(Str);
-  Size.cx := QtDC.Metrics.width(@WideStr, Count);
-  Size.cy := QtDC.Metrics.height;  }
+  Size.cx := 0;
+  Size.cy := 0;
 
   Result := True;
 end;
@@ -4084,69 +4085,64 @@ end;
   Returns: If successfull
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
-{var
-  QtFontMetrics: TQtFontMetrics;
+var
+  LazDC: TLazCanvas absolute DC;
+{  QtFontMetrics: TQtFontMetrics;
   FontFamily: WideString;
-  QtDC: TQtDeviceContext absolute DC;
   FontWeight: Integer;   }
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetTextMetrics]');
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[WinAPI GetTextMetrics]');
   {$endif}
 
-  Result := IsValidDC(DC);
+  Result := False;
 
- (* if Result then
-  begin
-    QtFontMetrics := QtDC.Metrics;
-    TM.tmHeight := QtFontMetrics.height;
-    TM.tmAscent := QtFontMetrics.ascent;
-    TM.tmDescent := QtFontMetrics.descent;
-    TM.tmInternalLeading := 0;
-    TM.tmExternalLeading := QtFontMetrics.leading;
-    {this is due qt bug in fontmetrics::averageCharWidth() under Mac
-     http://trolltech.com/developer/task-tracker/index_html?method=entry&id=169440 }
-    {$IFDEF DARWIN}
-    TM.tmAveCharWidth := QtFontMetrics.charWidth('x',0);
-    {$ELSE}
-    TM.tmAveCharWidth := QtFontMetrics.averageCharWidth;
-    {$ENDIF}
+  if not IsValidDC(DC) then Exit;
 
-    TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
-    FontWeight := QtDC.font.getWeight;
-    case FontWeight of
-      25: TM.tmWeight := FW_LIGHT;
-      50: TM.tmWeight := FW_NORMAL;
-      63: TM.tmWeight := FW_SEMIBOLD;
-      75: TM.tmWeight := FW_BOLD;
-      87: TM.tmWeight := FW_HEAVY;
-      else
-        TM.tmWeight := Round(FontWeight * 9.5);
-    end;
-    TM.tmOverhang := 0;
-    TM.tmDigitizedAspectX := 0;
-    TM.tmDigitizedAspectY := 0;
-    TM.tmFirstChar := 'a';
-    TM.tmLastChar := 'z';
-    TM.tmDefaultChar := 'x';
-    TM.tmBreakChar := '?';
-    TM.tmItalic := Ord(QtDC.Font.getItalic);
-    TM.tmUnderlined := Ord(QtDC.Font.getUnderline);
-    TM.tmStruckOut := Ord(QtDC.Font.getStrikeOut);
+  //QtFontMetrics := QtDC.Metrics;
+  TM.tmHeight := 0;//QtFontMetrics.height;
+  TM.tmAscent := 0;//QtFontMetrics.ascent;
+  TM.tmDescent := 0;//QtFontMetrics.descent;
+  TM.tmInternalLeading := 0;
+{  TM.tmExternalLeading := QtFontMetrics.leading;
+  TM.tmAveCharWidth := QtFontMetrics.charWidth('x',0);
 
-    QtDC.font.family(@FontFamily);
-
-    { Defaults to a TrueType font.
-      Note that the meaning of the FIXED_PITCH constant is the opposite of
-      the name implies, according to MSDN docs. Just a small inconsistency
-      on Windows API that we have to mimic. }
-    if QtDC.font.fixedPitch then
-      TM.tmPitchAndFamily := TRUETYPE_FONTTYPE
+  TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
+  FontWeight := QtDC.font.getWeight;
+  case FontWeight of
+    25: TM.tmWeight := FW_LIGHT;
+    50: TM.tmWeight := FW_NORMAL;
+    63: TM.tmWeight := FW_SEMIBOLD;
+    75: TM.tmWeight := FW_BOLD;
+    87: TM.tmWeight := FW_HEAVY;
     else
-      TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
+      TM.tmWeight := Round(FontWeight * 9.5);
+  end;}
+  TM.tmOverhang := 0;
+  TM.tmDigitizedAspectX := 0;
+  TM.tmDigitizedAspectY := 0;
+  TM.tmFirstChar := 'a';
+  TM.tmLastChar := 'z';
+  TM.tmDefaultChar := 'x';
+  TM.tmBreakChar := '?';
+{  TM.tmItalic := Ord(QtDC.Font.getItalic);
+  TM.tmUnderlined := Ord(QtDC.Font.getUnderline);
+  TM.tmStruckOut := Ord(QtDC.Font.getStrikeOut);}
 
-    TM.tmCharSet := DEFAULT_CHARSET;
-  end;*)
+//  QtDC.font.family(@FontFamily);
+
+  { Defaults to a TrueType font.
+    Note that the meaning of the FIXED_PITCH constant is the opposite of
+    the name implies, according to MSDN docs. Just a small inconsistency
+    on Windows API that we have to mimic. }
+{  if QtDC.font.fixedPitch then
+    TM.tmPitchAndFamily := TRUETYPE_FONTTYPE
+  else}
+    TM.tmPitchAndFamily := FIXED_PITCH or TRUETYPE_FONTTYPE;
+
+  TM.tmCharSet := DEFAULT_CHARSET;
+
+  Result := True;
 end;
 {$endif}
 

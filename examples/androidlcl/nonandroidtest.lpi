@@ -91,7 +91,7 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="nonandroidtest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -105,6 +105,12 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mainform"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="secondform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <UnitName Value="secondform"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

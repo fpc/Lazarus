@@ -1,10 +1,10 @@
 object Form2: TForm2
   Left = 323
-  Height = 240
+  Height = 259
   Top = 171
   Width = 320
   Caption = 'Form2'
-  ClientHeight = 240
+  ClientHeight = 259
   ClientWidth = 320
   LCLVersion = '0.9.31'
   object Button1: TButton
