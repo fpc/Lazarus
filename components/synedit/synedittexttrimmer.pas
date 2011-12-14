@@ -240,6 +240,7 @@ begin
     ATokenLength := length(FTempLineStringForPChar);
     ATokenAttr := nil;
     FAtLineStart := False;
+    exit;
   end;
 
   // highlighter currently includes trimed spaces
