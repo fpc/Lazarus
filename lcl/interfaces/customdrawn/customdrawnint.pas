@@ -35,7 +35,7 @@ uses
   {$ifdef CD_Cocoa}MacOSAll, CocoaAll, CocoaPrivate, CocoaGDIObjects,{$endif}
   {$ifdef CD_X11}X, XLib, XUtil, customdrawn_x11proc,{unitxft, Xft font support}{$endif}
   {$ifdef CD_Android}
-  customdrawn_androidproc, jni, bitmap, log,
+  customdrawn_androidproc, jni, bitmap, log, keycodes,
   {$endif}
   // Widgetset
   customdrawnproc,
@@ -138,6 +138,7 @@ type
     {$endif}
     {$ifdef CD_Android}
     procedure AndroidDebugLn(AStr: string);
+    function AndroidKeyCodeToLCLKeyCode(AAndroidKeyCode: Integer): Word;
     {$endif}
   // For generic methods added in customdrawn
   // They are used internally in LCL-CustomDrawn, LCL app should not use them
@@ -150,6 +151,7 @@ type
     DefaultFontAndroidSize: Integer;
     // For unusual implementations of DebugLn/DebugOut
     procedure AccumulatingDebugOut(AStr: string);
+    //
     procedure CDSetFocusToControl(ALCLControl: TWinControl);
   //
   protected
@@ -224,6 +226,9 @@ function Java_com_pascal_lclproject_LCLActivity_LCLOnCreate(
     env:PJNIEnv; this:jobject; alclactivity: jobject): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished(
     env:PJNIEnv; this:jobject; AResult: jint): jint; cdecl;
+function Java_com_pascal_lclproject_LCLActivity_LCLOnKey(
+    env:PJNIEnv; this:jobject; AKind: jint; AKeyCode: jint;
+    AEvent: jobject; AChar: jchar): jint; cdecl;
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;
 

@@ -415,6 +415,7 @@ function TCustomEdit.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   // no children
   Result := False;
+  if Widgetset.GetLCLCapability(lcAllowChildControlsInNativeControls) = LCL_CAPABILITY_YES then Result := True;
 end;
 
 class function TCustomEdit.GetControlClassDefaultSize: TSize;

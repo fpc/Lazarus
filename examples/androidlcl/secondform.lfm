@@ -16,4 +16,12 @@ object Form2: TForm2
     OnClick = Button1Click
     TabOrder = 0
   end
+  object Edit1: TEdit
+    Left = 12
+    Height = 25
+    Top = 50
+    Width = 80
+    TabOrder = 1
+    Text = 'Edit1'
+  end
 end

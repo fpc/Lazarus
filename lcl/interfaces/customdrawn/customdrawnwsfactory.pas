@@ -280,8 +280,8 @@ end;
 
 function RegisterCustomEdit: Boolean; alias : 'WSRegisterCustomEdit';
 begin
-//  RegisterWSComponent(TCustomEdit, TWinCEWSCustomEdit);
-  Result := False;
+  RegisterWSComponent(TCustomEdit, TCDWSCustomEdit);
+  Result := True;
 end;
 
 function RegisterCustomMemo: Boolean; alias : 'WSRegisterCustomMemo';

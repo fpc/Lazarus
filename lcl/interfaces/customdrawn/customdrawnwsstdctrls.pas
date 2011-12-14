@@ -139,10 +139,13 @@ type
   { TCDWSCustomEdit }
 
   TCDWSCustomEdit = class(TWSCustomEdit)
+  public
+    class procedure CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
-{    class function CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
+{    class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
     class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
     class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
     class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
@@ -805,9 +808,19 @@ begin
   if not WSCheckHandleAllocated(ACustomMemo, 'SetWordWrap') then
     Exit;
   TQtTextEdit(ACustomMemo.Handle).setLineWrapMode(WordWrapMap[NewWordWrap]);
-end;
+end;*)
 
 { TCDWSCustomEdit }
+
+class procedure TCDWSCustomEdit.CreateCDControl(const AWinControl: TWinControl;
+  var ACDControlField: TCDControl);
+begin
+  ACDControlField := TCDEdit.Create(AWinControl);
+  //TCDIntfButton(ACDControlField).LCLControl := TButton(AWinControl);
+  ACDControlField.Caption := AWinControl.Caption;
+  ACDControlField.Parent := AWinControl;
+  ACDControlField.Align := alClient;
+end;
 
 {------------------------------------------------------------------------------
   Method: TCDWSCustomEdit.CreateHandle
@@ -817,17 +830,25 @@ end;
 class function TCDWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  QtLineEdit: TQtLineEdit;
+  lCDWinControl: TCDWinControl;
 begin
-  QtLineEdit := TQtLineEdit.Create(AWinControl, AParams);
-  QtLineEdit.setBorder(TCustomEdit(AWinControl).BorderStyle = bsSingle);
-  QtLineEdit.setAlignment(AlignmentMap[TCustomEdit(AWinControl).Alignment]);
-  QtLineEdit.AttachEvents;
-
-  Result := TLCLIntfHandle(QtLineEdit);
+  Result := TCDWSWinControl.CreateHandle(AWinControl, AParams);
+  lCDWinControl := TCDWinControl(Result);
 end;
 
-class procedure TCDWSCustomEdit.SetAlignment(const ACustomEdit: TCustomEdit;
+class procedure TCDWSCustomEdit.ShowHide(const AWinControl: TWinControl);
+var
+  lCDWinControl: TCDWinControl;
+begin
+  lCDWinControl := TCDWinControl(AWinControl.Handle);
+
+  TCDWSWinControl.ShowHide(AWinControl);
+
+  if lCDWinControl.CDControl = nil then
+    CreateCDControl(AWinControl, lCDWinControl.CDControl);
+end;
+
+(*class procedure TCDWSCustomEdit.SetAlignment(const ACustomEdit: TCustomEdit;
   const AAlignment: TAlignment);
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetAlignment') then

@@ -19,9 +19,16 @@
 }
 
 const
+  // Shared Mouse / Key constants
   ACTION_DOWN = 0;
   ACTION_UP = 1;
+
+  // Touch constants
   ACTION_MOVE = 2;
+
+  // Constants from android/view/KeyEvent up to level 8
+  ACTION_MULTIPLE = 2;
+  // Keys are in KeyCodes.pas
 
 function Java_com_pascal_lclproject_LCLActivity_LCLOnTouch(env:PJNIEnv;this:jobject; x, y: single; action: jint): jint; cdecl;
 var
@@ -129,7 +136,53 @@ begin
     Application.OnMessageDialogFinished(Application, AResult);
 end;
 
-const NativeMethods: array[0..3] of JNINativeMethod=
+function Java_com_pascal_lclproject_LCLActivity_LCLOnKey(
+    env:PJNIEnv; this:jobject; AKind: jint; AKeyCode: jint;
+    AEvent: jobject; AChar: jchar): jint; cdecl;
+var
+  lCurForm: TCDNonNativeForm;
+  lTarget: TWinControl;
+  lKey: Word;
+  AWideText: widestring;
+  AUTF8Text: string;
+  AUTF8Char: TUTF8Char;
+begin
+  {$ifdef VerboseCDEvents}
+  __android_log_write(ANDROID_LOG_INFO,'lclapp',PChar(
+    Format('LCLOnKey called AKind=%d AKeyCode=%x AChar=%s', [AKind, AKeyCode, UTF8Encode(WideChar(AChar))])));
+  {$endif}
+  eventResult := 0;
+
+  lCurForm := GetCurrentForm();
+  lTarget := lCurForm.GetFocusedControl();
+  lKey := CDWidgetset.AndroidKeyCodeToLCLKeyCode(AKeyCode);
+
+  case AKind of
+    ACTION_DOWN:
+    begin
+      LCLSendKeyDownEvent(lTarget, lKey, 0, False, False);
+    end;
+    ACTION_UP:
+    begin
+      LCLSendKeyUpEvent(lTarget, lKey, 0, False, False);
+      if AChar <> 0 then
+      begin
+        LCLSendCharEvent(lTarget, lKey, 0, False, False, True);
+        SetLength(AWideText, 1);
+        AWideText[1] := WideChar(AChar);
+        AUTF8Text := UTF16ToUTF8(AWideText);
+        AUTF8Char := AUTF8Text;
+        LCLSendUTF8KeyPress(lTarget, AUTF8Char, False);
+      end;
+    end;
+    //ACTION_MULTIPLE:
+  end;
+
+  // This sends messages like Invalidate requests
+  Result := eventResult;
+end;
+
+const NativeMethods: array[0..4] of JNINativeMethod=
   ((name:'LCLDrawToBitmap';
     signature:'(IILandroid/graphics/Bitmap;)I';
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap;),
@@ -141,7 +194,10 @@ const NativeMethods: array[0..3] of JNINativeMethod=
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnCreate;),
    (name:'LCLOnMessageBoxFinished';
     signature:'(I)I';
-    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished;)
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished;),
+   (name:'LCLOnKey';
+    signature:'(IILandroid/view/KeyEvent;C)I';
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnKey;)
   );
 
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
@@ -222,6 +278,124 @@ procedure TCDWidgetSet.AndroidDebugLn(AStr: string);
 begin
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', PChar(AccumulatedStr+AStr));
   AccumulatedStr := '';
+end;
+
+function TCDWidgetSet.AndroidKeyCodeToLCLKeyCode(AAndroidKeyCode: Integer): Word;
+begin
+  case AAndroidKeyCode of
+{    AKEYCODE_SOFT_LEFT = 1;
+    AKEYCODE_SOFT_RIGHT = 2;
+    AKEYCODE_HOME = 3;
+    AKEYCODE_BACK = 4;
+    AKEYCODE_CALL = 5;
+    AKEYCODE_ENDCALL = 6;}
+    AKEYCODE_0: Result := VK_0;
+    AKEYCODE_1: Result := VK_1;
+    AKEYCODE_2: Result := VK_2;
+    AKEYCODE_3: Result := VK_3;
+    AKEYCODE_4: Result := VK_4;
+    AKEYCODE_5: Result := VK_5;
+    AKEYCODE_6: Result := VK_6;
+    AKEYCODE_7: Result := VK_7;
+    AKEYCODE_8: Result := VK_8;
+    AKEYCODE_9: Result := VK_9;
+{    AKEYCODE_STAR = 17;
+    AKEYCODE_POUND = 18;
+    AKEYCODE_DPAD_UP = 19;
+    AKEYCODE_DPAD_DOWN = 20;
+    AKEYCODE_DPAD_LEFT = 21;
+    AKEYCODE_DPAD_RIGHT = 22;
+    AKEYCODE_DPAD_CENTER = 23;
+    AKEYCODE_VOLUME_UP = 24;
+    AKEYCODE_VOLUME_DOWN = 25;
+    AKEYCODE_POWER = 26;
+    AKEYCODE_CAMERA = 27;
+    AKEYCODE_CLEAR = 28;}
+    AKEYCODE_A: Result := VK_A;
+    AKEYCODE_B: Result := VK_B;
+    AKEYCODE_C: Result := VK_C;
+    AKEYCODE_D: Result := VK_D;
+    AKEYCODE_E: Result := VK_E;
+    AKEYCODE_F: Result := VK_F;
+    AKEYCODE_G: Result := VK_G;
+    AKEYCODE_H: Result := VK_H;
+    AKEYCODE_I: Result := VK_I;
+    AKEYCODE_J: Result := VK_J;
+    AKEYCODE_K: Result := VK_K;
+    AKEYCODE_L: Result := VK_L;
+    AKEYCODE_M: Result := VK_M;
+    AKEYCODE_N: Result := VK_N;
+    AKEYCODE_O: Result := VK_O;
+    AKEYCODE_P: Result := VK_P;
+    AKEYCODE_Q: Result := VK_Q;
+    AKEYCODE_R: Result := VK_R;
+    AKEYCODE_S: Result := VK_S;
+    AKEYCODE_T: Result := VK_T;
+    AKEYCODE_U: Result := VK_U;
+    AKEYCODE_V: Result := VK_V;
+    AKEYCODE_W: Result := VK_W;
+    AKEYCODE_X: Result := VK_X;
+    AKEYCODE_Y: Result := VK_Y;
+    AKEYCODE_Z: Result := VK_Z;
+{    AKEYCODE_COMMA = 55;
+    AKEYCODE_PERIOD = 56;
+    AKEYCODE_ALT_LEFT = 57;
+    AKEYCODE_ALT_RIGHT = 58;
+    AKEYCODE_SHIFT_LEFT = 59;
+    AKEYCODE_SHIFT_RIGHT = 60;
+    AKEYCODE_TAB = 61;
+    AKEYCODE_SPACE = 62;
+    AKEYCODE_SYM = 63;
+    AKEYCODE_EXPLORER = 64;
+    AKEYCODE_ENVELOPE = 65;
+    AKEYCODE_ENTER = 66;
+    AKEYCODE_DEL = 67;
+    AKEYCODE_GRAVE = 68;
+    AKEYCODE_MINUS = 69;
+    AKEYCODE_EQUALS = 70;
+    AKEYCODE_LEFT_BRACKET = 71;
+    AKEYCODE_RIGHT_BRACKET = 72;
+    AKEYCODE_BACKSLASH = 73;
+    AKEYCODE_SEMICOLON = 74;
+    AKEYCODE_APOSTROPHE = 75;
+    AKEYCODE_SLASH = 76;
+    AKEYCODE_AT = 77;
+    AKEYCODE_NUM = 78;
+    AKEYCODE_HEADSETHOOK = 79;
+    AKEYCODE_FOCUS = 80;  // *Camera* focus
+    AKEYCODE_PLUS = 81;
+    AKEYCODE_MENU = 82;
+    AKEYCODE_NOTIFICATION = 83;
+    AKEYCODE_SEARCH = 84;
+    AKEYCODE_MEDIA_PLAY_PAUSE = 85;
+    AKEYCODE_MEDIA_STOP = 86;
+    AKEYCODE_MEDIA_NEXT = 87;
+    AKEYCODE_MEDIA_PREVIOUS = 88;
+    AKEYCODE_MEDIA_REWIND = 89;
+    AKEYCODE_MEDIA_FAST_FORWARD = 90;
+    AKEYCODE_MUTE = 91;
+    AKEYCODE_PAGE_UP = 92;
+    AKEYCODE_PAGE_DOWN = 93;
+    AKEYCODE_PICTSYMBOLS = 94;
+    AKEYCODE_SWITCH_CHARSET = 95;
+    AKEYCODE_BUTTON_A = 96;
+    AKEYCODE_BUTTON_B = 97;
+    AKEYCODE_BUTTON_C = 98;
+    AKEYCODE_BUTTON_X = 99;
+    AKEYCODE_BUTTON_Y = 100;
+    AKEYCODE_BUTTON_Z = 101;
+    AKEYCODE_BUTTON_L1 = 102;
+    AKEYCODE_BUTTON_R1 = 103;
+    AKEYCODE_BUTTON_L2 = 104;
+    AKEYCODE_BUTTON_R2 = 105;
+    AKEYCODE_BUTTON_THUMBL = 106;
+    AKEYCODE_BUTTON_THUMBR = 107;
+    AKEYCODE_BUTTON_START = 108;
+    AKEYCODE_BUTTON_SELECT = 109;
+    AKEYCODE_BUTTON_MODE = 110;}
+  else
+    Result := 0;
+  end;
 end;
 
 {------------------------------------------------------------------------------

@@ -58,6 +58,7 @@ type
     Canvas: TLazCanvas;
     constructor Create; virtual;
     procedure IncInvalidateCount;
+    function GetFocusedControl: TWinControl;
   end;
 
   TCDNonNativeForm = class(TCDForm)
@@ -553,6 +554,12 @@ end;
 procedure TCDForm.IncInvalidateCount;
 begin
   Inc(InvalidateCount);
+end;
+
+function TCDForm.GetFocusedControl: TWinControl;
+begin
+  if LastMouseDownControl <> nil then Result := LastMouseDownControl
+  else Result := LCLForm;
 end;
 
 end.

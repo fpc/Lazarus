@@ -22,6 +22,9 @@ public class LCLActivity extends Activity
       setWillNotDraw(false);
       // We already double buffer, so no need for a second one
       setWillNotCacheDrawing(true);
+      // Set focus on us to get keyboard events
+      requestFocus();
+      setFocusableInTouchMode(true);
     }
 
     @Override protected void onDraw(Canvas canvas)
@@ -37,6 +40,21 @@ public class LCLActivity extends Activity
       canvas.drawBitmap(localbitmap, 0, 0, null);
     }
 
+    @Override public boolean onKeyDown (int keyCode, KeyEvent event)
+    {
+      //Log.v("lclproject", "LCLSurface.onKeyDown");
+      super.onKeyDown(keyCode, event);
+      int eventResult = LCLOnKey(KeyEvent.ACTION_DOWN, keyCode, event, (char) 0);
+      if ((eventResult | 1) != 0) postInvalidate();
+      return true;
+    }
+
+    @Override public boolean onKeyUp (int keyCode, KeyEvent event)
+    {
+      int eventResult = LCLOnKey(KeyEvent.ACTION_UP, keyCode, event, event.getDisplayLabel());
+      if ((eventResult | 1) != 0) postInvalidate();
+      return true;
+    }
 
     @Override public boolean onTouchEvent (MotionEvent event)
     {
@@ -70,6 +88,7 @@ public class LCLActivity extends Activity
   public native int LCLOnTouch(float x, float y, int action);
   public native int LCLOnCreate(LCLActivity lclactivity);
   public native int LCLOnMessageBoxFinished(int Result);
+  public native int LCLOnKey(int kind, int keyCode, KeyEvent event, char AChar);
 
   // -------------------------------------------
   // Functions exported to the Pascal side

@@ -69,6 +69,8 @@ function LCLSendConfigureEventMsg(const Target: TControl): PtrInt;
 function LCLSendPaintMsg(const Target: TControl;const  DC: HDC; const PaintStruct: PPaintStruct): PtrInt;
 function LCLSendKeyDownEvent(const Target: TControl; var CharCode: Word; KeyData: PtrInt; BeforeEvent, IsSysKey: Boolean): PtrInt;
 function LCLSendKeyUpEvent(const Target: TControl; var CharCode: Word; KeyData: PtrInt; BeforeEvent, IsSysKey: Boolean): PtrInt;
+function LCLSendCharEvent(const Target: TControl; var CharCode: Word; KeyData: PtrInt; BeforeEvent, IsSysKey, ANotifyUserInput: Boolean): PtrInt;
+function LCLSendUTF8KeyPress(const Target: TWinControl; AUTF8Char: TUTF8Char; IsSysKey: Boolean): PtrInt;
 function LCLSendTimerMsg(const Target: TControl; TimerID: WParam; TimerProc: LParam): PtrInt;
 function LCLSendExitMsg(const Target: TControl): PtrInt;
 function LCLSendCloseQueryMsg(const Target: TControl): PtrInt;
@@ -867,6 +869,38 @@ begin
   Mess.KeyData := KeyData;
   Result := DeliverMessage(Target, Mess);
   CharCode := Mess.CharCode;
+end;
+
+function LCLSendCharEvent(const Target: TControl; var CharCode: Word;
+  KeyData: PtrInt; BeforeEvent, IsSysKey, ANotifyUserInput: Boolean): PtrInt;
+var
+  Mess: TLMChar;
+begin
+  FillChar(Mess, SizeOf(Mess), 0);
+  if BeforeEvent then begin
+    if IsSysKey then
+      Mess.Msg := CN_SYSCHAR
+    else Mess.Msg := CN_CHAR;
+  end
+  else begin
+    if IsSysKey then
+      Mess.Msg := LM_SYSCHAR
+    else Mess.Msg := LM_CHAR;
+  end;
+  Mess.CharCode := CharCode;
+  Mess.KeyData := KeyData;
+  Result := DeliverMessage(Target, Mess);
+  CharCode := Mess.CharCode;
+
+  if ANotifyUserInput then NotifyApplicationUserInput(Mess.Msg);
+end;
+
+function LCLSendUTF8KeyPress(const Target: TWinControl; AUTF8Char: TUTF8Char;
+  IsSysKey: Boolean): PtrInt;
+begin
+  {if not IsControlKey then}
+  Target.IntfUTF8KeyPress(AUTF8Char, 1, IsSysKey);
+  Result := 1;
 end;
 
 {******************************************************************************
