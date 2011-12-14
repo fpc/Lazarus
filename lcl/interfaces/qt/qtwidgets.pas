@@ -2787,9 +2787,45 @@ begin
   end;
 
   {$note TQtWidget.SlotKey: this is workaround for Qt bug which reports
-   wrong keys with Shift+Ctrl pressed. Fixes #13450.
+   wrong keys with Shift+Ctrl pressed. Fixes #13470.
    LAST REVISION: Qt-4.7.4 20111023 fc14. zeljko}
   {$IFDEF UNIX}
+  {$IFDEF DARWIN}
+  // under darwin we must use nativeVirtualKey since nativeScanCode
+  // isn't returned under carbon and cocoa.
+  if (QtVersionMajor = 4) and (QtVersionMinor >= 6) and
+    (Modifiers = QtShiftModifier or QtControlModifier) then
+  begin
+    ScanCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
+    if ScanCode = 10 then
+      ScanCode := VK_UNDEFINED
+    else
+    if ScanCode in [18..21] then
+      ScanCode := ScanCode + 31
+    else
+    if ScanCode = 23 then
+      ScanCode := 53
+    else
+    if ScanCode = 22 then
+      ScanCode := 54
+    else
+    if ScanCode = 26 then
+      ScanCode := 55
+    else
+    if ScanCode = 28 then
+      ScanCode := 56
+    else
+    if ScanCode = 25 then
+      ScanCode := 57
+    else
+    if ScanCode = 29 then
+      ScanCode := 48;
+
+    KeyMsg.CharCode := Word(ScanCode);
+    if (Modifiers = QtShiftModifier or QtControlModifier) then
+      Text := '';
+  end;
+  {$ELSE}
   if (Modifiers = QtShiftModifier or QtControlModifier) or
     (Modifiers = QtShiftModifier) then
   begin
@@ -2805,6 +2841,7 @@ begin
         Text := '';
     end;
   end;
+  {$ENDIF}
   {$ENDIF}
 
   // Translates a Qt4 Key to a LCL VK_* key
