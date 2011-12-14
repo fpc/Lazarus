@@ -419,6 +419,14 @@ var
     {$ENDIF}
   end;
 
+  procedure PushPoint(const APoint: TPoint); inline;
+  begin
+    if pointCount > High(points) then
+      SetLength(points, Length(points) * 2);
+    points[pointCount] := APoint;
+    pointCount += 1;
+  end;
+
   procedure CacheLine(AA, AB: TDoublePoint);
   var
     ai, bi: TPoint;
@@ -434,11 +442,9 @@ var
     then begin
       breaks[breakCount] := pointCount;
       breakCount += 1;
-      points[pointCount] := ai;
-      pointCount += 1;
+      PushPoint(ai);
     end;
-    points[pointCount] := bi;
-    pointCount += 1;
+    PushPoint(bi);
   end;
 
   procedure DrawStep(const AP1, AP2: TDoublePoint);
@@ -463,7 +469,7 @@ var
     // For extremely long series (10000 points or more), the Canvas.Line call
     // becomes a bottleneck. So represent a serie as a sequence of polylines.
     // This achieves approximately 3x speedup for the typical case.
-    SetLength(points, 2 * Length(FGraphPoints));
+    SetLength(points, Length(FGraphPoints) + 1);
     SetLength(breaks, Length(FGraphPoints) + 1);
     pPrevNan := true;
     // Actually needed only for ltFromOrigin, but moved to silence a warning.
