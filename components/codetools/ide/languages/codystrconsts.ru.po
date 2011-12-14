@@ -601,7 +601,7 @@ msgstr "Расположение"
 
 #: codystrconsts.lisaddunittoimplementationusessection
 msgid "Add unit to implementation uses section"
-msgstr ""
+msgstr "Добавить модуль в выражение Uses секции Implementation"
 
 #: codystrconsts.liscogeneral
 msgid "General"
@@ -613,5 +613,5 @@ msgstr "Цепочка Uses"
 
 #: codystrconsts.lisifidentifierisaddedtotheimplementationsectionandne
 msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
-msgstr ""
+msgstr "Если при добавлении идентификатора в секцию Implementation требуется подключить необходимый модуль, подключать его в выражении Uses секции Implementation"
 

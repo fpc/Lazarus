@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-11 20:27+0400\n"
+"PO-Revision-Date: 2011-12-15 00:41+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -53,6 +53,10 @@ msgstr "Сбросить все параметры текста"
 #: lazarusidestrconsts.dlfmousesimplebuttonaddhistorypoint
 msgid "Add history point"
 msgstr "Добавить точку перехода в историю"
+
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenu
+msgid "Context Menu"
+msgstr "Контекстное меню"
 
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
@@ -166,6 +170,10 @@ msgstr "Режим выделения столбца по кнопке Alt"
 msgid "Alt-Ctrl Button"
 msgstr "Alt-Ctrl - кнопка"
 
+#: lazarusidestrconsts.dlfmousesimpletextsectaltctrlwheellabel
+msgid "Alt-Ctrl Wheel"
+msgstr "Alt-Ctrl - колёсико"
+
 #: lazarusidestrconsts.dlfmousesimpletextsectaltlabel
 msgid "Alt Button"
 msgstr "Alt - кнопка"
@@ -186,6 +194,14 @@ msgstr "Ctrl - колёсико"
 #| msgid "Drag Selection (copy/paste)"
 msgid "Drag selection (copy/paste)"
 msgstr "Копировать/вставлять перетаскиванием"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectextra1label
+msgid "Extra-1 Button"
+msgstr "Дополнительная-1"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectextra2label
+msgid "Extra-2 Button"
+msgstr "Дополнительная-2"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectldoublealtlabel
 msgid "Alt Double"
@@ -219,34 +235,68 @@ msgid "Middle Button"
 msgstr "Средняя"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagebtn
-#| msgid "Buttons"
-msgid "Middle button"
-msgstr "Средняя кнопка"
+#| msgid "Middle button"
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagebtn"
+msgid "Middle"
+msgstr "Средняя"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpageextra1
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageextra1"
+msgid "Extra 1"
+msgstr "Дополнительная 1"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpageextra2
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageextra2"
+msgid "Extra 2"
+msgstr "Дополнительная 2"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
-msgid "Left button 1"
-msgstr "Левая кнопка 1"
+#| msgid "Left button 1"
+msgid "Left 1"
+msgstr "Левая 1"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmulti
-msgid "Left button 2"
-msgstr "Левая кнопка 2"
+#| msgid "Left button 2"
+msgid "Left 2"
+msgstr "Левая 2"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpageright
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageright"
+msgid "Right"
+msgstr "Правая"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagewheel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagewheel"
 msgid "Wheel"
 msgstr "Колёсико"
 
+#: lazarusidestrconsts.dlfmousesimpletextsectrightlabel
+msgid "Right Button"
+msgstr "Правая"
+
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrllabel
 msgid "Shift-Alt-Ctrl Button"
 msgstr "Shift-Alt-Ctrl - кнопка"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrlwheellabel
+msgid "Shift-Alt-Ctrl"
+msgstr "Shift-Alt-Ctrl"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltlabel
 msgid "Shift-Alt Button"
 msgstr "Shift-Alt - кнопка"
 
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftaltwheellabel
+msgid "Shift-Alt Wheel"
+msgstr "Shift-Alt - колёсико"
+
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftctrllabel
 msgid "Shift-Ctrl Button"
 msgstr "Shift-Ctrl - кнопка"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftctrlwheellabel
+msgid "Shift-Ctrl Wheel"
+msgstr "Shift-Ctrl - колёсико"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftlabel
 msgid "Shift Button"
@@ -2281,10 +2331,12 @@ msgid "Export"
 msgstr "Экспорт"
 
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
 msgid "Extra 1"
 msgstr "Дополнительная 1"
 
 #: lazarusidestrconsts.dlgmouseoptbtnextra2
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra2"
 msgid "Extra 2"
 msgstr "Дополнительная 2"
 
@@ -3019,6 +3071,10 @@ msgstr "Установить элемент по умолчанию"
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "Переменная свойства"
+
+#: lazarusidestrconsts.dlgshowallunits
+msgid "Show all units"
+msgstr "Показывать все модули"
 
 #: lazarusidestrconsts.dlgshowcaps
 msgid "Show component captions"
@@ -5043,9 +5099,9 @@ msgstr "Символ"
 msgid "Character Map"
 msgstr "Таблица символов"
 
-#: lazarusidestrconsts.lischeckchangesondiskwithloading
-msgid "Check changes on disk with loading"
-msgstr "Проверять изменения на диске при загрузке"
+#: lazarusidestrconsts.lischeckfordiskfilechangesviacontentratherthantimesta
+msgid "Check for disk file changes via content rather than timestamp"
+msgstr "Проверять изменения файлов на диске по их содержимому (не по времени)"
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
@@ -9959,10 +10015,6 @@ msgstr "Выберите каталог для вывода исполнимог
 msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Добавить"
-
-#: lazarusidestrconsts.lislazbuildadvancedbuildoptions
-msgid "Advanced Build Options"
-msgstr "Расширенные параметры сборки"
 
 #: lazarusidestrconsts.lislazbuildareyousureyouwanttodeletethisbuildprofile
 msgid "Are you sure you want to delete this build profile?"

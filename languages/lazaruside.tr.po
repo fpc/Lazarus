@@ -51,6 +51,10 @@ msgstr ""
 msgid "Add history point"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenu
+msgid "Context Menu"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
@@ -160,6 +164,10 @@ msgstr ""
 msgid "Alt-Ctrl Button"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimpletextsectaltctrlwheellabel
+msgid "Alt-Ctrl Wheel"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpletextsectaltlabel
 msgid "Alt Button"
 msgstr ""
@@ -178,6 +186,14 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdrag
 msgid "Drag selection (copy/paste)"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectextra1label
+msgid "Extra-1 Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectextra2label
+msgid "Extra-2 Button"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectldoublealtlabel
@@ -212,15 +228,31 @@ msgid "Middle Button"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagebtn
-msgid "Middle button"
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagebtn"
+msgid "Middle"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpageextra1
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageextra1"
+msgid "Extra 1"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpageextra2
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageextra2"
+msgid "Extra 2"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
-msgid "Left button 1"
+msgid "Left 1"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmulti
-msgid "Left button 2"
+msgid "Left 2"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpageright
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageright"
+msgid "Right"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagewheel
@@ -228,16 +260,32 @@ msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagewheel"
 msgid "Wheel"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimpletextsectrightlabel
+msgid "Right Button"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrllabel
 msgid "Shift-Alt-Ctrl Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrlwheellabel
+msgid "Shift-Alt-Ctrl"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltlabel
 msgid "Shift-Alt Button"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftaltwheellabel
+msgid "Shift-Alt Wheel"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftctrllabel
 msgid "Shift-Ctrl Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftctrlwheellabel
+msgid "Shift-Ctrl Wheel"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftlabel
@@ -2199,10 +2247,12 @@ msgid "Export"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
 msgid "Extra 1"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtnextra2
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra2"
 msgid "Extra 2"
 msgstr ""
 
@@ -2916,6 +2966,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
+msgstr ""
+
+#: lazarusidestrconsts.dlgshowallunits
+msgid "Show all units"
 msgstr ""
 
 #: lazarusidestrconsts.dlgshowcaps
@@ -4914,8 +4968,8 @@ msgstr ""
 msgid "Character Map"
 msgstr ""
 
-#: lazarusidestrconsts.lischeckchangesondiskwithloading
-msgid "Check changes on disk with loading"
+#: lazarusidestrconsts.lischeckfordiskfilechangesviacontentratherthantimesta
+msgid "Check for disk file changes via content rather than timestamp"
 msgstr ""
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
@@ -9791,10 +9845,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Ekle"
-
-#: lazarusidestrconsts.lislazbuildadvancedbuildoptions
-msgid "Advanced Build Options"
-msgstr "Gelişmiş inşa seçenekleri"
 
 #: lazarusidestrconsts.lislazbuildareyousureyouwanttodeletethisbuildprofile
 msgid "Are you sure you want to delete this build profile?"

@@ -55,6 +55,10 @@ msgstr "Atkurti visas teksto nuostatas"
 msgid "Add history point"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimplebuttoncontextmenu
+msgid "Context Menu"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
 msgstr ""
@@ -169,6 +173,10 @@ msgstr "Alt klavišas nustato stulpelio veikseną"
 msgid "Alt-Ctrl Button"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimpletextsectaltctrlwheellabel
+msgid "Alt-Ctrl Wheel"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpletextsectaltlabel
 msgid "Alt Button"
 msgstr ""
@@ -190,6 +198,14 @@ msgstr ""
 #| msgid "Drag Selection (copy/paste)"
 msgid "Drag selection (copy/paste)"
 msgstr "Pažymėjimo vilkimas (kopijavimas/įdėjimas)"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectextra1label
+msgid "Extra-1 Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectextra2label
+msgid "Extra-2 Button"
+msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectldoublealtlabel
 msgid "Alt Double"
@@ -223,32 +239,64 @@ msgid "Middle Button"
 msgstr "Vidurinysis klavišas"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagebtn
-msgid "Middle button"
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagebtn"
+msgid "Middle"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimpletextsectpageextra1
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageextra1"
+msgid "Extra 1"
+msgstr "Papildoma 1"
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpageextra2
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageextra2"
+msgid "Extra 2"
+msgstr "Papildoma 2"
+
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
-msgid "Left button 1"
+msgid "Left 1"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmulti
-msgid "Left button 2"
+msgid "Left 2"
 msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectpageright
+msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageright"
+msgid "Right"
+msgstr "Dešinysis"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagewheel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagewheel"
 msgid "Wheel"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimpletextsectrightlabel
+msgid "Right Button"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrllabel
 msgid "Shift-Alt-Ctrl Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrlwheellabel
+msgid "Shift-Alt-Ctrl"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltlabel
 msgid "Shift-Alt Button"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftaltwheellabel
+msgid "Shift-Alt Wheel"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftctrllabel
 msgid "Shift-Ctrl Button"
+msgstr ""
+
+#: lazarusidestrconsts.dlfmousesimpletextsectshiftctrlwheellabel
+msgid "Shift-Ctrl Wheel"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftlabel
@@ -2318,10 +2366,12 @@ msgid "Export"
 msgstr "Eksportuoti"
 
 #: lazarusidestrconsts.dlgmouseoptbtnextra1
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra1"
 msgid "Extra 1"
 msgstr "Papildoma 1"
 
 #: lazarusidestrconsts.dlgmouseoptbtnextra2
+msgctxt "lazarusidestrconsts.dlgmouseoptbtnextra2"
 msgid "Extra 2"
 msgstr "Papildoma 2"
 
@@ -3074,6 +3124,10 @@ msgstr "Priskirti numatytą vertę"
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "„Set“ kintamojo pavadinimas"
+
+#: lazarusidestrconsts.dlgshowallunits
+msgid "Show all units"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowcaps
 msgid "Show component captions"
@@ -5134,9 +5188,9 @@ msgstr "Simbolis"
 msgid "Character Map"
 msgstr "Simbolių lentelė"
 
-#: lazarusidestrconsts.lischeckchangesondiskwithloading
-msgid "Check changes on disk with loading"
-msgstr "Įkeliant ieškoti pasikeitimų diske"
+#: lazarusidestrconsts.lischeckfordiskfilechangesviacontentratherthantimesta
+msgid "Check for disk file changes via content rather than timestamp"
+msgstr ""
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
@@ -10075,10 +10129,6 @@ msgstr "Nurodykite kuriame aplanke dėti IKA vykdomąjį failą "
 msgctxt "lazarusidestrconsts.lislazbuildadd"
 msgid "Add"
 msgstr "Pridėti"
-
-#: lazarusidestrconsts.lislazbuildadvancedbuildoptions
-msgid "Advanced Build Options"
-msgstr "Sudėtingesnės darymo parinktys"
 
 #: lazarusidestrconsts.lislazbuildareyousureyouwanttodeletethisbuildprofile
 msgid "Are you sure you want to delete this build profile?"
