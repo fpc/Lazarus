@@ -158,7 +158,7 @@ begin
   {$endif}
 
   // Creates the window
-  {$IFDEF UNIX}
+  {$IFDEF HASX11}
   if (QtVersionMajor = 4) and (QtVersionMinor >= 6) then
     QCoreApplication_setAttribute(QtAA_ImmediateWidgetCreation, True);
   {$ENDIF}
@@ -201,7 +201,7 @@ begin
     QtMainWindow.setPopupParent(AForm.PopupMode, PopupParent);
   end;
 
-  {$IFDEF UNIX}
+  {$IFDEF HASX11}
   if (QtVersionMajor = 4) and (QtVersionMinor >= 6) then
     QCoreApplication_setAttribute(QtAA_ImmediateWidgetCreation, False);
   {$ENDIF}
