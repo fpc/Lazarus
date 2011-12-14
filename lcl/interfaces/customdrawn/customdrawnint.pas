@@ -42,7 +42,7 @@ uses
   // LCL
   customdrawn_common, customdrawncontrols, customdrawndrawers,
   lazcanvas, lazregions,
-  InterfaceBase, Translations,
+  InterfaceBase,
   Controls,  Forms, lclproc, IntfGraphics, GraphType,
   LCLType, LMessages, Graphics, LCLStrConsts;
 
