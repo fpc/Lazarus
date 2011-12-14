@@ -1198,12 +1198,14 @@ type
     Cur: TAsyncCallQueue; // currently processing
     Next: TAsyncCallQueue; // new calls added to this queue
   end;
-  
+
+  // This identifies the kind of device where the application currently runs on
   TApplicationType = (
-    atDefault,
-    atDesktop,
-    atPDA,
-    atKeyPadDevice
+    atDefault,     // The widgetset will attempt to auto-detect the device type
+    atDesktop,     // For common desktops and notebooks
+    atPDA,         // For smartphones and other devices with touch screen and a small screen
+    atKeyPadDevice,// Devices without any pointing device, such as keypad feature phones or kiosk machines
+    atTablet       // Similar to a PDA/Smartphone, but with a large screen
   );
 
   TApplicationShowGlyphs = (
@@ -1216,6 +1218,15 @@ type
     tbDefault,      // widgetset dependent
     tbMultiButton,  // show buttons for Forms with ShowTaskBar = stDefault
     tbSingleButton  // hide buttons for Forms with ShowTaskBar = stDefault
+  );
+
+  TLayoutAdjustmentPolicy = (
+    lapDefault,     // widgetset dependent
+    lapFixedLayout, // A fixed absolute layout in all platforms
+    lapAutoAdjustWithoutHorizontalScrolling, // Smartphone platforms use this one,
+                                             // the x axis is stretched to fill the screen and
+                                             // the y is scaled to fit the DPI
+    lapAutoAdjustForDPI // For desktops using High DPI, scale x and y to fit the DPI
   );
 
   { TApplication }
@@ -1244,6 +1255,7 @@ type
     FHintWindow: THintWindow;
     FIcon: TIcon;
     FBigIconHandle: HICON;
+    FLayoutAdjustmentPolicy: TLayoutAdjustmentPolicy;
     FMainFormOnTaskBar: Boolean;
     FModalLevel: Integer;
     FOnGetMainFormHandle: TGetHandleEvent;
@@ -1469,6 +1481,7 @@ type
     property HintShortCuts: Boolean read FHintShortCuts write FHintShortCuts;
     property HintShortPause: Integer read FHintShortPause write FHintShortPause;
     property Icon: TIcon read FIcon write SetIcon;
+    property LayoutAdjustmentPolicy: TLayoutAdjustmentPolicy read FLayoutAdjustmentPolicy write FLayoutAdjustmentPolicy;
     property Navigation: TApplicationNavigationOptions read FNavigation write SetNavigation;
     property MainForm: TForm read FMainForm;
     property MainFormHandle: HWND read GetMainFormHandle;
