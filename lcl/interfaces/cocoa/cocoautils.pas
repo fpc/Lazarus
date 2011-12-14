@@ -49,10 +49,32 @@ function GetNSText(text: NSText): string; inline;
 procedure SetNSControlValue(c: NSControl; const S: String); inline;
 function GetNSControlValue(c: NSControl): String; inline;
 
+procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
+function RGBToColorFloat(r,g,b: Single): TColorRef; inline;
+function NSColorToRGB(const Color: NSColor): TColorRef; inline;
+
 implementation
 
 const
   DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
+
+procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
+begin
+  R:=(cl and $FF) / $FF;
+  G:=((cl shr 8) and $FF) / $FF;
+  B:=((cl shr 16) and $FF) / $FF;
+end;
+
+function RGBToColorFloat(r,g,b: Single): TColorRef; inline;
+begin
+  Result:=(Round(b*$FF) shl 16) or (Round(g*$FF) shl 8) or Round(r*$FF);
+end;
+
+function NSColorToRGB(const Color: NSColor): TColorRef; inline;
+begin
+  with Color do
+    Result := RGBToColorFloat(redComponent, greenComponent, blueComponent);
+end;
 
 function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;
 var

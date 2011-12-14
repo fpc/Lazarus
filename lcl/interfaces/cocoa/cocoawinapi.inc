@@ -26,18 +26,6 @@
 
 //##apiwiz##sps##   // Do not remove, no wizard declaration before this line
 
-procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
-begin
-  R:=(cl and $FF) / $FF;
-  G:=((cl shr 8) and $FF) / $FF;
-  B:=((cl shr 16) and $FF) / $FF;
-end;
-
-function RGBToColorFloat(r,g,b: Single): TColorRef; inline;
-begin
-  Result:=(Round(b*$FF) shl 16) or (Round(g*$FF) shl 8) or Round(r*$FF);
-end;
-
 function CocoaCombineMode(fnCombineMode: Integer): TCocoaCombine;
 begin
   case fnCombineMode of
@@ -648,6 +636,91 @@ begin
         Result := FStockSystemFont;
       end;}
   end;
+end;
+
+function SysColorToNSColor(nIndex: Integer): NSColor;
+begin
+  case NIndex of
+    COLOR_GRADIENTACTIVECAPTION, COLOR_ACTIVECAPTION,
+    COLOR_WINDOWFRAME, COLOR_ACTIVEBORDER:
+      Result := NSColor.windowFrameColor;
+    COLOR_GRADIENTINACTIVECAPTION, COLOR_INACTIVECAPTION, COLOR_INACTIVEBORDER:
+      Result := NSColor.windowBackgroundColor;
+    COLOR_CAPTIONTEXT,
+    COLOR_INACTIVECAPTIONTEXT:
+      Result := NSColor.windowFrameTextColor;
+    COLOR_BACKGROUND,
+    COLOR_WINDOW, COLOR_FORM:
+      Result := NSColor.windowBackgroundColor;
+    COLOR_MENU:
+      Result := NSColor.controlBackgroundColor;
+    COLOR_MENUTEXT:
+      Result := NSColor.controlTextColor;
+    COLOR_MENUBAR:
+      Result := NSColor.selectedTextBackgroundColor;
+    COLOR_MENUHILIGHT:
+      Result := NSColor.selectedMenuItemColor;
+    COLOR_INFOTEXT, COLOR_WINDOWTEXT:
+      Result := NSColor.controlTextColor;
+    COLOR_APPWORKSPACE:
+      Result := NSColor.windowBackgroundColor;
+    COLOR_HIGHLIGHT,
+    COLOR_HOTLIGHT:
+      Result := NSColor.alternateSelectedControlColor;
+    COLOR_HIGHLIGHTTEXT:
+      Result := NSColor.alternateSelectedControlTextColor;
+    COLOR_SCROLLBAR:
+      Result := NSColor.scrollBarColor;
+    COLOR_BTNFACE:
+      Result := NSColor.controlColor;
+    COLOR_BTNSHADOW:
+      Result := NSColor.controlShadowColor;
+    COLOR_BTNHIGHLIGHT:
+      Result := NSColor.controlHighlightColor;
+    COLOR_BTNTEXT:
+      Result := NSColor.controlTextColor;
+    COLOR_GRAYTEXT:
+      Result := NSColor.disabledControlTextColor;
+    COLOR_3DDKSHADOW:
+      Result := NSColor.controlDarkShadowColor;
+    COLOR_3DLIGHT:
+      Result := NSColor.controlLightHighlightColor;
+    COLOR_INFOBK:
+      Result := NSColor.colorWithCalibratedRed_green_blue_alpha(249 / $FF, 252 / $FF, 201 / $FF, 1);
+  else
+    Result := nil;
+  end;
+end;
+
+function TCocoaWidgetSet.GetSysColor(nIndex: Integer): DWORD;
+var
+  Color, RGBColor: NSColor;
+begin
+  Color := SysColorToNSColor(nIndex);
+  if Assigned(Color) then
+  begin
+    RGBColor := Color.colorUsingColorSpaceName(NSCalibratedRGBColorSpace);
+    // if color is a pattern it can't be converted
+    if RGBColor = nil then
+      Result := 0
+    else
+      Result := NSColorToRGB(RGBColor);
+  end
+  else
+    Result := 0;
+end;
+
+function TCocoaWidgetSet.GetSysColorBrush(nIndex: Integer): HBRUSH;
+begin
+  if (nIndex < 0) or (nIndex > MAX_SYS_COLORS) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+
+  if (FSysColorBrushes[nIndex] = 0) then
+    FSysColorBrushes[nIndex] := HBrush(TCocoaBrush.Create(SysColorToNSColor(nIndex), True));
+  Result := FSysColorBrushes[nIndex]
 end;
 
 function TCocoaWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;

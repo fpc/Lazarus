@@ -118,6 +118,8 @@ end;
 destructor TCocoaWidgetSet.Destroy;
 begin
   inherited Destroy;
+
+  FreeSysColorBrushes;
   FreeStockItems;
 
   CocoaWidgetSet := nil;
@@ -327,6 +329,24 @@ begin
   DeleteAndNilObject(FStockWhitePen);
 
   DeleteAndNilObject(FStockSystemFont);
+end;
+
+procedure TCocoaWidgetSet.FreeSysColorBrushes;
+
+  procedure DeleteAndNilObject(var h: HBrush);
+  begin
+    if h <> 0 then
+    begin
+      TCocoaBrush(h).Free;
+      h := 0;
+    end;
+  end;
+
+var
+  i: integer;
+begin
+  for i := Low(FSysColorBrushes) to High(FSysColorBrushes) do
+    DeleteAndNilObject(FSysColorBrushes[i]);
 end;
 
 {------------------------------------------------------------------------------

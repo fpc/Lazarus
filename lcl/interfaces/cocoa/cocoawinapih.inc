@@ -116,7 +116,8 @@ function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; override;
 function GetStockObject(Value: Integer): THandle; override;
-{function GetSysColor(nIndex: Integer): DWORD; override;}
+function GetSysColor(nIndex: Integer): DWORD; override;
+function GetSysColorBrush(nIndex: Integer): HBRUSH; override;
 function GetSystemMetrics(nIndex: Integer): Integer; override;
 function GetTextColor(DC: HDC) : TColorRef; Override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;

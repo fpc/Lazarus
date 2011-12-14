@@ -109,9 +109,11 @@ type
   protected
     procedure SetHatchStyle(AHatch: PtrInt);
     procedure SetBitmap(ABitmap: TCocoaBitmap);
+    procedure SetImage(AImage: NSImage);
   public
     constructor CreateDefault;
     constructor Create(const ALogBrush: TLogBrush; const AGlobal: Boolean = False);
+    constructor Create(const AColor: NSColor; const AGlobal: Boolean = False);
     destructor Destroy; override;
     procedure Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
   end;
@@ -1692,6 +1694,24 @@ begin
     Ord(FColored), ACallBacks);
 end;
 
+procedure TCocoaBrush.SetImage(AImage: NSImage);
+var
+  AWidth, AHeight: Single;
+  ACallBacks: CGPatternCallbacks;
+  Rect: CGRect;
+begin
+  FillChar(ACallBacks, SizeOf(ACallBacks), 0);
+  ACallBacks.drawPattern := @DrawBitmapPattern;
+  FImage := AImage.CGImageForProposedRect_context_hints(nil, nil, nil);
+  FColored := True;
+  Rect.origin.x := 0;
+  Rect.origin.y := 0;
+  Rect.size := CGSize(AImage.size);
+  FCGPattern := CGPatternCreate(Self, Rect,
+    CGAffineTransformIdentity, AImage.size.width, AImage.size.height, kCGPatternTilingConstantSpacing,
+    Ord(FColored), ACallBacks);
+end;
+
 constructor TCocoaBrush.CreateDefault;
 begin
   inherited Create(clWhite, True, False);
@@ -1724,6 +1744,29 @@ begin
       end
     else
       inherited Create(ColorToRGB(TColor(ALogBrush.lbColor)), False, AGlobal);
+  end;
+end;
+
+constructor TCocoaBrush.Create(const AColor: NSColor; const AGlobal: Boolean);
+var
+  RGBColor, PatternColor: NSColor;
+begin
+  FCGPattern := nil;
+  FBitmap := nil;
+  FImage := nil;
+  RGBColor := AColor.colorUsingColorSpaceName(NSCalibratedRGBColorSpace);
+  if Assigned(RGBColor) then
+    inherited Create(NSColorToRGB(RGBColor), True, AGlobal)
+  else
+  begin
+    PatternColor := AColor.colorUsingColorSpaceName(NSPatternColorSpace);
+    if Assigned(PatternColor) then
+    begin
+      inherited Create(0, False, AGlobal);
+      SetImage(PatternColor.patternImage);
+    end
+    else
+      inherited Create(0, True, AGlobal);
   end;
 end;
 

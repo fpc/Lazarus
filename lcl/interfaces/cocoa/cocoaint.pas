@@ -82,6 +82,8 @@ type
     FStockWhitePen: HPEN;
     FStockSystemFont: HFONT;
 
+    FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
+
     function GetAppHandle: THandle; override;
   public
     constructor Create; override;
@@ -107,6 +109,7 @@ type
 
     procedure InitStockItems;
     procedure FreeStockItems;
+    procedure FreeSysColorBrushes;
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
