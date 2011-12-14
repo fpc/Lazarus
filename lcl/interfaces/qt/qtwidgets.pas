@@ -2797,33 +2797,36 @@ begin
     (Modifiers = QtShiftModifier or QtControlModifier) then
   begin
     ScanCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
-    if ScanCode = 10 then
-      ScanCode := VK_UNDEFINED
-    else
-    if ScanCode in [18..21] then
-      ScanCode := ScanCode + 31
-    else
-    if ScanCode = 23 then
-      ScanCode := 53
-    else
-    if ScanCode = 22 then
-      ScanCode := 54
-    else
-    if ScanCode = 26 then
-      ScanCode := 55
-    else
-    if ScanCode = 28 then
-      ScanCode := 56
-    else
-    if ScanCode = 25 then
-      ScanCode := 57
-    else
-    if ScanCode = 29 then
-      ScanCode := 48;
+    if (length(Text) = 1) and (ScanCode in [10,18..23,25,26,28,29]) then
+    begin
+      if ScanCode = 10 then
+        ScanCode := VK_UNDEFINED
+      else
+      if ScanCode in [18..21] then
+        ScanCode := ScanCode + 31
+      else
+      if ScanCode = 23 then
+        ScanCode := 53
+      else
+      if ScanCode = 22 then
+        ScanCode := 54
+      else
+      if ScanCode = 26 then
+        ScanCode := 55
+      else
+      if ScanCode = 28 then
+        ScanCode := 56
+      else
+      if ScanCode = 25 then
+        ScanCode := 57
+      else
+      if ScanCode = 29 then
+        ScanCode := 48;
 
-    KeyMsg.CharCode := Word(ScanCode);
-    if (Modifiers = QtShiftModifier or QtControlModifier) then
-      Text := '';
+      KeyMsg.CharCode := Word(ScanCode);
+      if (Modifiers = QtShiftModifier or QtControlModifier) then
+        Text := '';
+    end;
   end;
   {$ELSE}
   if (Modifiers = QtShiftModifier or QtControlModifier) or
@@ -5363,14 +5366,7 @@ begin
 
     Result := QMainWindow_create(nil, QtWindow);
 
-    {$ifdef darwin}
-      if csDesigning in LCLObject.ComponentState then
-        MenuBar := TQtMenuBar.Create(nil)
-      else
-        MenuBar := TQtMenuBar.Create(Result);
-    {$else}
-      MenuBar := TQtMenuBar.Create(Result);
-    {$endif}
+    MenuBar := TQtMenuBar.Create(Result);
 
     if not (csDesigning in LCLObject.ComponentState) then
       MenuBar.FIsApplicationMainMenu := True;
@@ -5433,11 +5429,7 @@ begin
     end;
 
     // Main menu bar
-    {$ifdef darwin}
-      MenuBar := TQtMenuBar.Create(nil);
-    {$else}
-      MenuBar := TQtMenuBar.Create(Result);
-    {$endif}
+    MenuBar := TQtMenuBar.Create(Result);
 
     FCentralWidget := QWidget_create(Result);
     QWidget_setMouseTracking(FCentralWidget, True);
