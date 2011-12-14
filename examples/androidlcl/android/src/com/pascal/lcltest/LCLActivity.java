@@ -53,7 +53,10 @@ public class LCLActivity extends Activity
     {
       int eventResult = LCLOnKey(KeyEvent.ACTION_UP, keyCode, event, event.getDisplayLabel());
       if ((eventResult | 1) != 0) postInvalidate();
-      return true;
+
+      // Handling of the Back hardware key
+      if ((eventResult | 2) != 0) return false;
+      else return true;
     }
 
     @Override public boolean onTouchEvent (MotionEvent event)

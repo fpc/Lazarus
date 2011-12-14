@@ -13,7 +13,7 @@ uses
   // LCL
   GraphType, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc,
   StdCtrls, ExtCtrls, Forms, Graphics, customdrawncontrols,
-  InterfaceBase;
+  InterfaceBase, LCLIntf;
 
 type
   TUpdateLazImageFormat = (
@@ -64,6 +64,7 @@ type
 
   TCDNonNativeForm = class(TCDForm)
   public
+    Visible: Boolean;
   end;
 
   TCDBitmap = class
@@ -83,6 +84,7 @@ type
 procedure AddCDWinControlToForm(const AForm: TCustomForm; ACDWinControl: TCDWinControl);
 function GetCDWinControlList(const AForm: TCustomForm): TFPList;
 
+// Routines for non-native form managing
 procedure InitNonNativeForms();
 function GetCurrentForm(): TCDNonNativeForm;
 function AddNewForm(AForm: TCustomForm): TCDNonNativeForm;
@@ -90,6 +92,9 @@ procedure AddFormWithCDHandle(AHandle: TCDForm);
 function FindFormWithNativeHandle(AHandle: HWND): TCDForm;
 procedure ShowForm(ACDForm: TCDNonNativeForm);
 procedure HideForm(ACDForm: TCDNonNativeForm);
+procedure BringFormToFront(ACDForm: TCDNonNativeForm);
+procedure SendFormToBack(ACDForm: TCDNonNativeForm);
+function FindTopMostVisibleForm: TCDNonNativeForm;
 
 // Routines for non-native wincontrol
 
@@ -131,6 +136,7 @@ implementation
 var
   // List with the Z-order of non-native forms, index=0 is the bottom-most form
   NonNativeForms: TFPList = nil;
+  lCurrentForm: TCDNonNativeForm = nil;
 
   // List of timers
   TimersList: TFPList = nil;
@@ -160,16 +166,11 @@ begin
 end;
 
 function GetCurrentForm(): TCDNonNativeForm;
-var
-  lCount: Integer;
 begin
   {$IFDEF VerboseCDForms}
     DebugLn('GetCurrentForm');
   {$ENDIF}
-  InitNonNativeForms();
-  lCount := NonNativeForms.Count;
-  if lCount = 0 then Result := nil
-  else Result := TCDNonNativeForm(NonNativeForms.Items[lCount-1]);
+  Result := lCurrentForm;
 end;
 
 function AddNewForm(AForm: TCustomForm): TCDNonNativeForm;
@@ -211,6 +212,24 @@ begin
 end;
 
 procedure ShowForm(ACDForm: TCDNonNativeForm);
+begin
+  ACDForm.Visible := True;
+  BringFormToFront(ACDForm);
+  lCurrentForm := ACDForm;
+end;
+
+procedure HideForm(ACDForm: TCDNonNativeForm);
+begin
+  ACDForm.Visible := False;
+  // update the Current Form if required, and invalidate too
+  if lCurrentForm = ACDForm then
+  begin
+    lCurrentForm := FindTopMostVisibleForm();
+    LCLIntf.InvalidateRect(lCurrentForm.NativeHandle, nil, True);
+  end;
+end;
+
+procedure BringFormToFront(ACDForm: TCDNonNativeForm);
 var
   lCount, lCurIndex: Integer;
 begin
@@ -218,22 +237,43 @@ begin
   lCount := NonNativeForms.Count;
   lCurIndex := NonNativeForms.IndexOf(ACDForm);
   {$IFDEF VerboseCDForms}
-    DebugLn(Format('ShowForm lOldIndex=%d lNewIndex=%d', [lCurIndex, lCount-1]));
+    DebugLn(Format('BringFormToFront lOldIndex=%d lNewIndex=%d', [lCurIndex, lCount-1]));
   {$ENDIF}
   NonNativeForms.Move(lCurIndex, lCount-1);
 end;
 
-procedure HideForm(ACDForm: TCDNonNativeForm);
+procedure SendFormToBack(ACDForm: TCDNonNativeForm);
 var
   lCount, lCurIndex: Integer;
 begin
+  // Hide the form
+  ACDForm.Visible := False;
+
   InitNonNativeForms();
   lCount := NonNativeForms.Count;
   lCurIndex := NonNativeForms.IndexOf(ACDForm);
   {$IFDEF VerboseCDForms}
-    DebugLn(Format('HideForm lOldIndex=%d lNewIndex=0', [lCurIndex]));
+    DebugLn(Format('SendFormToBack lOldIndex=%d lNewIndex=0', [lCurIndex]));
   {$ENDIF}
   NonNativeForms.Move(lCurIndex, 0);
+end;
+
+function FindTopMostVisibleForm: TCDNonNativeForm;
+var
+  lCount: Integer;
+  lForm: TCDNonNativeForm;
+  i: Integer;
+begin
+  Result := nil;
+  InitNonNativeForms();
+  // Iterate starting from Count to zero until we find a visible form
+  lCount := NonNativeForms.Count;
+
+  for i := lCount-1 downto 0 do
+  begin
+    lForm := TCDNonNativeForm(NonNativeForms.Items[i]);
+    if lForm.Visible then Exit(lForm);
+  end;
 end;
 
 // If AForceUpdate=True then it will update even if the width and height remain the same

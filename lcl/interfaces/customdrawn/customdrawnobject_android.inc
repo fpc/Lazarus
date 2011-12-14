@@ -127,6 +127,7 @@ begin
   Application.Run;
 end;
 
+// This one is for all simple dialogs: MessageBox, PromptUser (MessageDlg) and AskUser
 function Java_com_pascal_lclproject_LCLActivity_LCLOnMessageBoxFinished(
     env:PJNIEnv; this:jobject; AResult: jint): jint; cdecl;
 begin
@@ -146,6 +147,7 @@ var
   AWideText: widestring;
   AUTF8Text: string;
   AUTF8Char: TUTF8Char;
+  lForm: TCDNonNativeForm;
 begin
   {$ifdef VerboseCDEvents}
   __android_log_write(ANDROID_LOG_INFO,'lclapp',PChar(
@@ -173,6 +175,17 @@ begin
         AUTF8Text := UTF16ToUTF8(AWideText);
         AUTF8Char := AUTF8Text;
         LCLSendUTF8KeyPress(lTarget, AUTF8Char, False);
+      end;
+
+      // Handle the Back hardware key
+      if AKeyCode = AKEYCODE_BACK then
+      begin
+        // The back hardware key hides the current form and shows the one bellow it
+        lForm := GetCurrentForm();
+        HideForm(lForm);
+        // If all forms got hidden, exit the application
+        lForm := GetCurrentForm();
+        if lForm = nil then eventResult := eventResult or 2;
       end;
     end;
     //ACTION_MULTIPLE:
