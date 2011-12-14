@@ -133,7 +133,8 @@ type
     fNewMainUsesSectionUnits: TAVLTree; // tree of AnsiString
     procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
         const TheClassName: string);
-    procedure CheckForOverrideAndAddInheritedCode(ANodeExt: TCodeTreeNodeExtension);
+    procedure CheckForOverrideAndAddInheritedCode(
+      ANodeExt: TCodeTreeNodeExtension; Indent: integer);
     function CompleteProperty(PropNode: TCodeTreeNode): boolean;
     procedure SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
     procedure SetCodeCompleteSrcChgCache(const AValue: TSourceChangeCache);
@@ -7028,7 +7029,7 @@ begin
 end;
 
 procedure TCodeCompletionCodeTool.CheckForOverrideAndAddInheritedCode(
-  ANodeExt: TCodeTreeNodeExtension);
+  ANodeExt: TCodeTreeNodeExtension; Indent: integer);
 // check for 'override' directive and add 'inherited' code to body
 var
   ProcCode, ProcCall: string;
@@ -7086,7 +7087,7 @@ begin
         ProcCall:=Beauty.BeautifyIdentifier('Result')+':='+ProcCall;
       ProcCode:=ProcCode+Beauty.LineEnd+'begin'+Beauty.LineEnd
                      +GetIndentStr(Beauty.Indent)+ProcCall+Beauty.LineEnd+'end;';
-      ProcCode:=Beauty.BeautifyProc(ProcCode,0,false);
+      ProcCode:=Beauty.BeautifyProc(ProcCode,Indent,false);
       ANodeExt.ExtTxt3:=ProcCode;
     end;
   end;
@@ -7135,7 +7136,7 @@ var
     ANode: TCodeTreeNode;
     ProcCode: string;
   begin
-    CheckForOverrideAndAddInheritedCode(TheNodeExt);
+    CheckForOverrideAndAddInheritedCode(TheNodeExt,Indent);
     if (TheNodeExt.ExtTxt1='') and (TheNodeExt.ExtTxt3='') then begin
       ANode:=TheNodeExt.Node;
       if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
@@ -7575,7 +7576,7 @@ begin
       DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Starting class in implementation ');
       {$ENDIF}
       FindInsertPointForNewClass(InsertPos,Indent);
-      //debugln(['TCodeCompletionCodeTool.CreateMissingProcBodies InsertPos=',dbgstr(copy(Src,InsertPos-10,10)),'|',dbgstr(copy(Src,InsertPos,10))]);
+      //debugln(['TCodeCompletionCodeTool.CreateMissingProcBodies Indent=',Indent,' InsertPos=',dbgstr(copy(Src,InsertPos-10,10)),'|',dbgstr(copy(Src,InsertPos,10))]);
       InsertClassMethodsComment(InsertPos,Indent);
 
       // insert all proc bodies
@@ -7673,7 +7674,7 @@ begin
             end;
           end;
           CreateCodeForMissingProcBody(ANodeExt,Indent);
-          InsertProcBody(ANodeExt,InsertPos,Indent);
+          InsertProcBody(ANodeExt,InsertPos,0);
         end;
         MissingNode:=ClassProcs.FindPrecessor(MissingNode);
       end;

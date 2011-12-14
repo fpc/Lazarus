@@ -25,12 +25,9 @@
     Dialog to view and search the whole list.
 
   ToDo:
-    -put exact match at start
     -quickfix for identifier not found
     -use identifier: check package version
-    -clean up old entries
-      -When, How?
-      -maximum number of units
+    -check for unit conflict
     -gzip? lot of cpu, may be faster on first load
 }
 unit CodyIdentifiersDlg;
