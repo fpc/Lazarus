@@ -51,7 +51,7 @@ uses
   SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr,
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   SynEditMiscClasses, SynEditMarkupHighAll, SynEditMarks,
-  SynBeautifier, SynEditTextBase,
+  SynBeautifier, SynEditTextBase, LazSynEditText,
   SynPluginSyncronizedEditBase, SourceSynEditor,
   // Intf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,

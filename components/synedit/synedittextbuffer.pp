@@ -39,11 +39,16 @@ unit SynEditTextBuffer;
 
 {$I synedit.inc}
 
+{$IFOPT C+}
+  {$DEFINE SynAssert}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLIntf, LCLType,
-  SynEditTextBase, SynEditMiscProcs, SynEditMiscClasses;
+  Classes, SysUtils, Graphics, LCLProc, LCLIntf, LCLType,
+  SynEditTypes, LazSynEditText, SynEditTextBase, SynEditMiscProcs, SynEditMiscClasses,
+  SynEditHighlighter;
 
 type
   TSynEditFlagsClass = class end; // For Register
@@ -103,11 +108,29 @@ type
     property Flags[Index: Integer]: TSynEditStringFlags read GetFlags write SetFlags;
   end;
 
+  TSynEditStringList = class;
+
+  { TLazSynDisplayBuffer }
+
+  TLazSynDisplayBuffer = class(TLazSynDisplayViewEx)
+  private
+    FBuffer: TSynEditStringList;
+    FAtLineStart: Boolean;
+  public
+    constructor Create(ABuffer: TSynEditStringList);
+    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
+    function  GetNextHighlighterToken(out ATokenStart: PChar; out ATokenLength: integer;
+                                      out ATokenAttr: TSynHighlighterAttributes
+                                     ): Boolean; override;
+    function GetDrawDividerInfo: TSynDividerDrawConfigSetting; override;
+  end;
+
   { TSynEditStringList }
 
   TSynEditStringList = class(TSynEditStrings)
   private
     FList: TSynEditStringMemory;
+    FDisplayView: TLazSynDisplayBuffer;
 
     FAttachedSynEditList: TFPList;
     FNotifyLists: Array [TSynEditNotifyReason] of TSynMethodList;
@@ -170,6 +193,8 @@ type
     procedure UndoEditLinesDelete(LogY, ACount: Integer);
     procedure IncreaseTextChangeStamp;
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
+
+    function GetDisplayView: TLazSynDisplayView; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -312,8 +337,59 @@ type
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
 
+{ TLazSynDisplayBuffer }
+
+constructor TLazSynDisplayBuffer.Create(ABuffer: TSynEditStringList);
+begin
+  inherited Create;
+  FBuffer := ABuffer;
+end;
+
+procedure TLazSynDisplayBuffer.SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx);
+begin
+  CurrentTokenLine := ALine;
+  ARealLine := ALine;
+  FAtLineStart := True;
+end;
+
+function TLazSynDisplayBuffer.GetNextHighlighterToken(out ATokenStart: PChar; out
+  ATokenLength: integer; out ATokenAttr: TSynHighlighterAttributes): Boolean;
+begin
+  Result := False;
+  if not Initialized then exit;
+
+  if CurrentTokenHighlighter = nil then begin
+    Result := FAtLineStart;
+    if not Result then exit;
+    ATokenStart := FBuffer.GetPChar(CurrentTokenLine, ATokenLength);
+    ATokenAttr := nil;
+    FAtLineStart := False;
+  end
+  else begin
+    if FAtLineStart then
+      CurrentTokenHighlighter.StartAtLineIndex(CurrentTokenLine);
+    FAtLineStart := False;
+
+    Result := not CurrentTokenHighlighter.GetEol;
+    if not Result then exit;
+
+    CurrentTokenHighlighter.GetTokenEx(ATokenStart, ATokenLength);
+    ATokenAttr := CurrentTokenHighlighter.GetTokenAttribute;
+    CurrentTokenHighlighter.Next;
+  end;
+end;
+
+function TLazSynDisplayBuffer.GetDrawDividerInfo: TSynDividerDrawConfigSetting;
+begin
+  if CurrentTokenHighlighter <> nil then
+    Result := CurrentTokenHighlighter.DrawDivider[CurrentTokenLine]
+  else
+    Result.Color := clNone;
+end;
+
 { TSynEditUndoTxtInsert }
- function TSynEditUndoTxtInsert.DebugString: String;
+
+function TSynEditUndoTxtInsert.DebugString: String;
 begin
   Result := 'X='+dbgs(FPosX) + ' Y='+ dbgs(FPosY) + ' len=' + dbgs(FLen);
 end;
@@ -452,6 +528,7 @@ var
   r: TSynEditNotifyReason;
 begin
   fList := TSynEditStringMemory.Create;
+  FDisplayView := TLazSynDisplayBuffer.Create(Self);
 
   FAttachedSynEditList := TFPList.Create;
   FUndoList := TSynEditUndoList.Create;
@@ -495,6 +572,7 @@ begin
   FreeAndNil(FRedoList);
   FreeAndNil(FAttachedSynEditList);
 
+  FreeAndNil(FDisplayView);
   FreeAndNil(fList);
 end;
 
@@ -746,6 +824,11 @@ begin
     dec(j);
     inc(PWidths);
   end;
+end;
+
+function TSynEditStringList.GetDisplayView: TLazSynDisplayView;
+begin
+  Result := FDisplayView;
 end;
 
 procedure TSynEditStringList.AttachSynEdit(AEdit: TSynEditBase);

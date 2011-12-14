@@ -40,7 +40,7 @@ unit SynBeautifier;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, SynEditMiscClasses, SynEditTextBase, SynEditPointClasses,
+  Classes, SysUtils, LCLProc, SynEditMiscClasses, LazSynEditText, SynEditPointClasses,
   SynEditKeyCmds;
 
 type

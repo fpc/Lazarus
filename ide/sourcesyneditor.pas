@@ -41,7 +41,7 @@ uses
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
   SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
   SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark,
-  SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase,
+  SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
   SynPluginTemplateEdit, SynPluginSyncroEdit,
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas;
 

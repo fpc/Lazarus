@@ -40,7 +40,7 @@ uses
   {$IFDEF SYN_MBCSSUPPORT}
   Imm,
   {$ENDIF}
-  SynEditTextBase, SynEditTypes, SynEditMiscProcs;//, SynEditTextBuffer;
+  LazSynEditText, SynEditTypes, SynEditMiscProcs;//, SynEditTextBuffer;
 
 type
 

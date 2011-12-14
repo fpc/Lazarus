@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, Graphics, Controls, LCLProc, LCLType, LCLIntf, FPCanvas, sysutils, math,
-  SynGutterBase, SynEditTypes, SynEditTextBase, SynEditTextBuffer, SynEditMarks,
+  SynGutterBase, SynEditTypes, LazSynEditText, SynEditTextBuffer, SynEditMarks,
   SynEditMiscClasses;
 
 type

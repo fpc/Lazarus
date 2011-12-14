@@ -11,7 +11,7 @@ unit SynEditMarks;
 interface
 
 uses
-  Classes, Controls, SysUtils, math, SynEditMiscClasses, SynEditTextBase, LCLProc;
+  Classes, Controls, SysUtils, math, SynEditMiscClasses, LazSynEditText, LCLProc;
 
 type
 

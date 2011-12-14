@@ -28,13 +28,31 @@ interface
 
 uses
 LCLProc,
-  Classes, SysUtils, SynEditTextBase,
+  Classes, SysUtils, LazSynEditText, SynEditTextBase, SynEditTypes, SynEditHighlighter,
   SynEditPointClasses, SynEditMiscProcs;
 
 type
 
   TSynEditStringTrimmingType = (settLeaveLine, settEditLine, settMoveCaret,
                                 settIgnoreAll);
+
+  TSynEditStringTrimmingList = class;
+
+  { TLazSynDisplayTrim }
+
+  TLazSynDisplayTrim = class(TLazSynDisplayViewEx)
+  private
+    FTrimer: TSynEditStringTrimmingList;
+    FTempLineStringForPChar: String;
+    FAtLineStart: Boolean;
+  public
+    constructor Create(ATrimer: TSynEditStringTrimmingList);
+    procedure FinishHighlighterTokens; override;
+    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
+    function  GetNextHighlighterToken(out ATokenStart: PChar; out ATokenLength: integer;
+                                      out ATokenAttr: TSynHighlighterAttributes
+                                     ): Boolean; override;
+  end;
 
   { TSynEditStringTrimmingList }
 
@@ -53,6 +71,7 @@ type
     FLineEdited: Boolean;
     FTempLineStringForPChar: String; // experimental; used by GetPChar;
     FViewChangeStamp: int64;
+    FDisplayView: TLazSynDisplayTrim;
     procedure DoCaretChanged(Sender : TObject);
     procedure ListCleared(Sender: TObject);
     Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
@@ -79,6 +98,7 @@ type
     procedure Put(Index: integer; const S: string); override;
     procedure PutObject(Index: integer; AObject: TObject); override;
     function  GetPCharSpaces(ALineIndex: Integer; out ALen: Integer): PChar; // experimental
+    function GetDisplayView: TLazSynDisplayView; override;
   public
     constructor Create(ASynStringSource: TSynEditStrings; ACaret: TSynEditCaret);
     destructor Destroy; override;
@@ -183,6 +203,48 @@ type
     constructor Create(APosY: Integer; AText: String);
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
+
+{ TLazSynDisplayTrim }
+
+constructor TLazSynDisplayTrim.Create(ATrimer: TSynEditStringTrimmingList);
+begin
+  inherited Create;
+  FTrimer := ATrimer;
+end;
+
+procedure TLazSynDisplayTrim.FinishHighlighterTokens;
+begin
+  inherited FinishHighlighterTokens;
+  FTempLineStringForPChar := '';
+end;
+
+procedure TLazSynDisplayTrim.SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx);
+begin
+  CurrentTokenLine := ALine;
+  FAtLineStart := True;
+  inherited SetHighlighterTokensLine(ALine, ARealLine);
+end;
+
+function TLazSynDisplayTrim.GetNextHighlighterToken(out ATokenStart: PChar; out
+  ATokenLength: integer; out ATokenAttr: TSynHighlighterAttributes): Boolean;
+begin
+  Result := False;
+  if not Initialized then exit;
+
+  if (CurrentTokenHighlighter = nil) and (FTrimer.Spaces(CurrentTokenLine) <> '') then begin
+    Result := FAtLineStart;
+    if not Result then exit;
+
+    FTempLineStringForPChar := FTrimer[CurrentTokenLine];
+    ATokenStart := PChar(FTempLineStringForPChar);
+    ATokenLength := length(FTempLineStringForPChar);
+    ATokenAttr := nil;
+    FAtLineStart := False;
+  end;
+
+  // highlighter currently includes trimed spaces
+  Result := inherited GetNextHighlighterToken(ATokenStart, ATokenLength, ATokenAttr);
+end;
 
 { TSynEditUndoTrimMoveTo }
 
@@ -344,6 +406,8 @@ begin
   fCaret := ACaret;
   fCaret.AddChangeHandler(@DoCaretChanged);
   fLockList := TStringList.Create;
+  FDisplayView := TLazSynDisplayTrim.Create(Self);
+  FDisplayView.NextView := ASynStringSource.DisplayView;
   fLineIndex:= -1;
   fSpaces := '';
   fEnabled:=false;
@@ -363,6 +427,7 @@ begin
   fSynStrings.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LinesChanged);
   fSynStrings.RemoveNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}ListCleared);
   fCaret.RemoveChangeHandler(@DoCaretChanged);
+  FreeAndNil(FDisplayView);
   FreeAndNil(fLockList);
   inherited Destroy;
 end;
@@ -738,6 +803,11 @@ begin
   FTempLineStringForPChar := Get(ALineIndex);
   ALen := length(FTempLineStringForPChar);
   Result := PChar(FTempLineStringForPChar);
+end;
+
+function TSynEditStringTrimmingList.GetDisplayView: TLazSynDisplayView;
+begin
+  Result := FDisplayView;
 end;
 
 function TSynEditStringTrimmingList.GetPChar(ALineIndex: Integer; out ALen: Integer): PChar;

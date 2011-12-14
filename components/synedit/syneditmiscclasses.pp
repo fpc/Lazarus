@@ -44,7 +44,7 @@ interface
 uses
   LCLIntf, LCLType, LCLProc,
   Classes, Graphics, Controls, SysUtils, Clipbrd,
-  SynEditMiscProcs, SynEditTypes, SynEditTextBase, SynEditPointClasses;
+  SynEditMiscProcs, SynEditTypes, LazSynEditText, SynEditPointClasses;
 
 type
 

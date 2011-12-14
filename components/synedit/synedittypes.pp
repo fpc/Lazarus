@@ -55,6 +55,9 @@ type
 
   TSynIdentChars = set of char;
 
+  TLinePos = type integer; // 1..high(Integer);
+  TLineIdx = type integer; // 0..high(Integer);
+
   {$IFDEF SYN_LAZARUS}
   // NOTE: the note below is not valid for the LCL which uses UTF-8
   {$ELSE}

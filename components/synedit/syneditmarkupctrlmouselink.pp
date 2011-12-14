@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses,
-  SynEditMouseCmds, SynEditTextBase, Controls, LCLProc;
+  SynEditMouseCmds, LazSynEditText, Controls, LCLProc;
 
 type
 

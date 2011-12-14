@@ -72,15 +72,18 @@ uses
   {$ENDIF}
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMouseCmds, SynEditMiscProcs,
   SynEditPointClasses, SynBeautifier, SynEditMarks,
+  // Markup
   SynEditMarkup, SynEditMarkupHighAll, SynEditMarkupBracket, SynEditMarkupWordGroup,
   SynEditMarkupCtrlMouseLink, SynEditMarkupSpecialLine, SynEditMarkupSelection,
   SynEditMarkupSpecialChar,
-  SynEditTextBase, SynEditTextTrimmer, SynEditFoldedView, SynEditTextTabExpander,
-  SynEditTextDoubleWidthChars,
+  // Lines
+  SynEditTextBase, LazSynEditText, SynEditTextBuffer, SynEditLines,
+  SynEditTextTrimmer, SynEditTextTabExpander, SynEditTextDoubleWidthChars,
+  SynEditFoldedView,
+  // Gutter
   SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
   SynGutterLineNumber, SynGutterMarks, SynGutterLineOverview,
-  SynEditMiscClasses, SynEditTextBuffer, SynEditHighlighter, SynTextDrawer,
-  SynEditLines,
+  SynEditMiscClasses, SynEditHighlighter, SynTextDrawer,
   LResources, Clipbrd
   {$IFDEF SYN_COMPILER_4_UP}
   , StdActns
@@ -413,6 +416,7 @@ type
     FLines: TSynEditStrings;          // The real (un-mapped) line-buffer
     FStrings: TStrings;               // External TStrings based interface to the Textbuffer
     FTopLinesView: TSynEditStrings;   // The linesview that holds the real line-buffer/FLines
+    FDisplayView: TLazSynDisplayView;
 
     fExtraCharSpacing: integer;
     fLinesInWindow: Integer;// MG: fully visible lines in window
@@ -1720,14 +1724,18 @@ begin
   // ftab, currently has LengthOfLongestLine, therefore must be after DoubleWidthChar
   FTabbedLinesView := TSynEditStringTabExpander.Create(FDoubleWidthChrLinesView);
 
-  FFoldedLinesView := TSynEditFoldedView.Create(FTabbedLinesView, fCaret);
-  FFoldedLinesView.OnFoldChanged := {$IFDEF FPC}@{$ENDIF}FoldChanged;
-  FFoldedLinesView.OnLineInvalidate := {$IFDEF FPC}@{$ENDIF}InvalidateGutterLines;
-
   // Pointer to the First/Lowest View
   // TODO: this should be Folded...
   FTheLinesView := FTabbedLinesView;
   FTopLinesView := FTrimmedLinesView;
+
+  FFoldedLinesView := TSynEditFoldedView.Create(FTheLinesView, fCaret);
+  FFoldedLinesView.OnFoldChanged := {$IFDEF FPC}@{$ENDIF}FoldChanged;
+  FFoldedLinesView.OnLineInvalidate := {$IFDEF FPC}@{$ENDIF}InvalidateGutterLines;
+  FFoldedLinesView.DisplayView.NextView := FTheLinesView.DisplayView;
+
+  FDisplayView := FFoldedLinesView.DisplayView;
+
   // External Accessor
   FStrings := TSynEditLines.Create(TSynEditStringList(FLines), {$IFDEF FPC}@{$ENDIF}MarkTextAsSaved);
 
@@ -3370,7 +3378,7 @@ end;
 
 procedure TCustomSynEdit.PaintTextLines(AClip: TRect; FirstLine, LastLine,
   FirstCol, LastCol: integer);
-// FirstLine, LastLine are based 1
+// FirstLine, LastLine are based 0
 // FirstCol, LastCol are screen based 1 without scrolling (physical position).
 //  i.e. the real screen position is fTextOffset+Pred(FirstCol)*CharWidth
 var
@@ -3863,6 +3871,7 @@ var
     function CharToByteLen(aCharLen: Integer) : Integer;
     begin
       if not UseUTF8 then exit(aCharLen);
+      // tabs and double-width chars are padded with spaces
       Result := UTF8CharToByteIndex(sToken, nTokenByteLen, aCharLen);
       if Result < 0 then begin
         debugln('ERROR: Could not convert CharLen (',dbgs(aCharLen),') to byteLen (maybe invalid UTF8?)',' len ',dbgs(nTokenByteLen),' Line ',dbgs(CurLine),' PhysPos ',dbgs(CurPhysPos));
@@ -4000,27 +4009,22 @@ var
     attr: TSynHighlighterAttributes;
     ypos: Integer;
     DividerInfo: TSynDividerDrawConfigSetting;
-    cl: Integer;
+    TV, cl: Integer;
   begin
     // Initialize rcLine for drawing. Note that Top and Bottom are updated
     // inside the loop. Get only the starting point for this.
     rcLine := AClip;
     rcLine.Bottom := FirstLine * fTextHeight;
-    // Make sure the token accumulator string doesn't get reassigned to often.
-    if Assigned(fHighlighter) then begin
-      TokenAccu.MaxLen := Max(128, fCharsInWindow * 4);
-      SetTokenAccuLength;
-    end;
+
+    TV := TopView - 1;
 
     // Now loop through all the lines. The indices are valid for Lines.
     CurLine := FirstLine-1;
     while CurLine<LastLine do begin
       inc(CurLine);
-      CurTextIndex := FFoldedLinesView.TextIndex[CurLine];
+//      CurTextIndex := FFoldedLinesView.TextIndex[CurLine];
       //CharWidths := FFoldedLinesView.GetPhysicalCharWidths(CurLine);
-      CharWidths := FTheLinesView.GetPhysicalCharWidths(CurTextIndex);
 
-      fMarkupManager.PrepareMarkupForRow(CurTextIndex+1);
       // Get the line.
       // Update the rcLine rect to this line.
       rcLine.Top := rcLine.Bottom;
@@ -4039,41 +4043,25 @@ var
       rcLine.Left := DrawLeft;
       ForceEto := False;
 
-      if not Assigned(fHighlighter) then begin
-        sLine := FFoldedLinesView[CurLine];
-        DrawHiLightMarkupToken(nil, PChar(Pointer(sLine)), Length(sLine));
-      end else begin
-        // draw splitter line
-        DividerInfo := fHighlighter.DrawDivider[CurTextIndex];
-        if (DividerInfo.Color <> clNone) and (nRightEdge > TextLeftPixelOffset(False) - 1) then
-        begin
-          ypos := rcToken.Bottom - 1;
-          cl := DividerInfo.Color;
-          if cl = clDefault then
-            cl := fRightEdgeColor;
-          fTextDrawer.DrawLine(nRightEdge, ypos, TextLeftPixelOffset(False) - 1, ypos, cl);
-          dec(rcToken.Bottom);
-        end;
-        // Initialize highlighter with line text and range info. It is
-        // necessary because we probably did not scan to the end of the last
-        // line - the internal highlighter range might be wrong.
-        fHighlighter.StartAtLineIndex(CurTextIndex);
-        // Try to concatenate as many tokens as possible to minimize the count
-        // of ExtTextOut calls necessary. This depends on the selection state
-        // or the line having special colors. For spaces the foreground color
-        // is ignored as well.
-        //debugln('>>>> PaintLines Line=',dbgs(CurLine),' rect=',dbgs(rcToken));
-        while not fHighlighter.GetEol do begin
-          fHighlighter.GetTokenEx(sToken,nTokenLen);
-          attr := fHighlighter.GetTokenAttribute;
-          // Add Markup to the token and append it to the TokenAccu
-          // record. This will paint any chars already stored if there is
-          // a (visible) change in the attributes.
-          DrawHiLightMarkupToken(attr,sToken,nTokenLen);
-          // Let the highlighter scan the next token.
-          fHighlighter.Next;
-        end;
+      FDisplayView.SetHighlighterTokensLine(TV + CurLine, CurTextIndex);
+      CharWidths := FTheLinesView.GetPhysicalCharWidths(CurTextIndex);
+      fMarkupManager.PrepareMarkupForRow(CurTextIndex+1);
+
+      DividerInfo := FDisplayView.GetDrawDividerInfo;
+      if (DividerInfo.Color <> clNone) and (nRightEdge > TextLeftPixelOffset(False) - 1) then
+      begin
+        ypos := rcToken.Bottom - 1;
+        cl := DividerInfo.Color;
+        if cl = clDefault then
+          cl := fRightEdgeColor;
+        fTextDrawer.DrawLine(nRightEdge, ypos, TextLeftPixelOffset(False) - 1, ypos, cl);
+        dec(rcToken.Bottom);
       end;
+
+      while FDisplayView.GetNextHighlighterToken(sToken, nTokenLen, attr) do begin
+        DrawHiLightMarkupToken(attr,sToken,nTokenLen);
+      end;
+
       // Draw anything that's left in the TokenAccu record. Fill to the end
       // of the invalid area with the correct colors.
       PaintHighlightToken(TRUE);
@@ -4091,11 +4079,8 @@ begin
 
   //DebugLn(['TCustomSynEdit.PaintTextLines ',dbgs(AClip)]);
   CurLine:=-1;
-  FillChar(TokenAccu,SizeOf(TokenAccu),0);
   //DebugLn('TCustomSynEdit.PaintTextLines ',DbgSName(Self),' TopLine=',dbgs(TopLine),' AClip=',dbgs(AClip));
   colEditorBG := Color;
-  if Assigned(fHighlighter) then
-    fHighlighter.CurrentLines := FTheLinesView;
   // If the right edge is visible and in the invalid area, prepare to paint it.
   // Do this first to realize the pen when getting the dc variable.
   bDoRightEdge := FALSE;
@@ -4126,12 +4111,24 @@ begin
     // necessary information about the selected area: is there any visible
     // selected area, and what are its lines / columns?
     // Moved to two local procedures to make it easier to read.
+
+    FillChar(TokenAccu,SizeOf(TokenAccu),0);
+    if Assigned(fHighlighter) then begin
+      fHighlighter.CurrentLines := FTheLinesView;
+      // Make sure the token accumulator string doesn't get reassigned to often.
+      TokenAccu.MaxLen := Max(128, fCharsInWindow * 4);
+      SetTokenAccuLength;
+    end;
+
+    FDisplayView.InitHighlighterTokens(FHighlighter);
     fTextDrawer.Style := Font.Style;
     fTextDrawer.BeginDrawing(dc);
     try
       PaintLines;
     finally
       fTextDrawer.EndDrawing;
+      FDisplayView.FinishHighlighterTokens;
+      ReAllocMem(TokenAccu.p,0);
     end;
   end;
 
@@ -4151,7 +4148,6 @@ begin
   end;
 
   fMarkupManager.EndMarkup;
-  ReAllocMem(TokenAccu.p,0);
 end;
 
 procedure TCustomSynEdit.StartPaintBuffer(const ClipRect: TRect);

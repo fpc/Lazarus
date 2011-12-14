@@ -46,7 +46,7 @@ interface
 
 uses
   LCLProc, Graphics,
-  Classes, SysUtils, SynEditTextBase, SynEditTypes, SynEditMiscClasses,
+  Classes, SysUtils, LazSynEditText, SynEditTypes, SynEditMiscClasses,
   SynEditMiscProcs, SynEditPointClasses,
   SynEditHighlighter, SynEditHighlighterFoldBase;
 
@@ -317,6 +317,19 @@ type
     property FoldsAvailable: Boolean read GetFoldsAvailable;
   end;
 
+  TSynEditFoldedView = class;
+
+  { TLazSynDisplayFold }
+
+  TLazSynDisplayFold = class(TLazSynDisplayView)
+  private
+    FFoldView: TSynEditFoldedView;
+  public
+    constructor Create(AFoldView: TSynEditFoldedView);
+    procedure InitHighlighterTokens(AHighlighter: TSynCustomHighlighter); override;
+    procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
+  end;
+
   { TSynTextFoldedView
       *Line      = Line (0-based) on Screen (except TopLine which should be TopViewPos)
       *ViewPos   = Line (1-based) in the array of viewable/visible lines
@@ -325,7 +338,7 @@ type
 
   { TSynEditFoldedView }
 
-  TSynEditFoldedView = class // TODO: class(TSynEditStringsLinked)
+  TSynEditFoldedView = class
   private
     fCaret: TSynEditCaret;
     FBlockSelection: TSynEditSelection;
@@ -343,8 +356,10 @@ type
     fNeedFixFrom, fNeedFixMinEnd : Integer;
     fNeedCaretCheck : Boolean;
     FInTopLineChanged: Boolean;
+    FDisplayView: TLazSynDisplayFold;
 
     function GetCount : integer;
+    function GetDisplayView: TLazSynDisplayView;
     function GetFoldClasifications(index : Integer): TFoldNodeClassifications;
     function GetHighLighter: TSynCustomHighlighter;
     function GetLines(index : Integer) : String;
@@ -488,6 +503,8 @@ type
     property HighLighter: TSynCustomHighlighter read GetHighLighter
                                                 write SetHighLighter;
     property FoldProvider: TSynEditFoldProvider read FFoldProvider;
+
+    property DisplayView: TLazSynDisplayView read GetDisplayView;
   end;
   
 implementation
@@ -624,6 +641,24 @@ begin
   end;
   for i := 1 to length(NumEncode86Chars) do
     NumEncode86Values[NumEncode86Chars[i]] := i - 1;
+end;
+
+{ TLazSynDisplayFold }
+
+constructor TLazSynDisplayFold.Create(AFoldView: TSynEditFoldedView);
+begin
+  inherited Create;
+  FFoldView := AFoldView;
+end;
+
+procedure TLazSynDisplayFold.InitHighlighterTokens(AHighlighter: TSynCustomHighlighter);
+begin
+  inherited InitHighlighterTokens(AHighlighter);
+end;
+
+procedure TLazSynDisplayFold.SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx);
+begin
+  inherited SetHighlighterTokensLine(FFoldView.ViewPosToTextIndex(ALine + 1), ARealLine);
 end;
 
 { TSynEditFoldExportStream }
@@ -2828,6 +2863,7 @@ begin
   fCaret.AddChangeHandler({$IFDEF FPC}@{$ENDIF}DoCaretChanged);
   fFoldTree := TSynTextFoldAVLTree.Create;
   FFoldProvider := TSynEditFoldProvider.Create(aTextView, fFoldTree);
+  FDisplayView := TLazSynDisplayFold.Create(Self);
 
   FMarkupInfoFoldedCode := TSynSelectedColor.Create;
   FMarkupInfoFoldedCode.Background := clNone;
@@ -2845,6 +2881,7 @@ begin
   fLines.RemoveNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}LinesCleared);
   fLines.RemoveEditHandler({$IFDEF FPC}@{$ENDIF}LineEdited);
   fCaret.RemoveChangeHandler({$IFDEF FPC}@{$ENDIF}DoCaretChanged);
+  FreeAndNil(FDisplayView);
   fFoldTree.Free;
   fTextIndexList := nil;
   fFoldTypeList := nil;
@@ -2982,6 +3019,11 @@ end;
 function TSynEditFoldedView.GetCount : integer;
 begin
   Result := fLines.Count - fFoldTree.FindLastFold.FoldedBefore;
+end;
+
+function TSynEditFoldedView.GetDisplayView: TLazSynDisplayView;
+begin
+  Result := FDisplayView;
 end;
 
 function TSynEditFoldedView.GetFoldClasifications(index : Integer): TFoldNodeClassifications;

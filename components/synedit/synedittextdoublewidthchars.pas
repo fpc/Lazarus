@@ -33,7 +33,7 @@ unit SynEditTextDoubleWidthChars;
 interface
 
 uses
-  Classes, SysUtils, SynEditTextBase;
+  Classes, SysUtils, LazSynEditText;
 
 type
 
