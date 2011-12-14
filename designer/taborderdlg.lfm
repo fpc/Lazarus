@@ -48,7 +48,7 @@ object TabOrderDialog: TTabOrderDialog
     Width = 267
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    DefaultItemHeight = 17
+    DefaultItemHeight = 16
     HideSelection = False
     ReadOnly = True
     RightClickSelect = True
@@ -58,10 +58,14 @@ object TabOrderDialog: TTabOrderDialog
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
   object SortByPositionButton: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 279
     Height = 25
     Top = 232
     Width = 25
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
     GlyphShowMode = gsmAlways
     OnClick = SortByPositionButtonClick
     ParentShowHint = False
