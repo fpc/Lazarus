@@ -799,6 +799,10 @@ type
     QtAA_NativeWindows = 3,
     QtAA_DontCreateNativeWidgetSiblings = 4,
     QtAA_MacPluginApplication = 5,
+    {$IFDEF DARWIN}
+    QtAA_DontUseNativeMenuBar = 6, {$note QtAA_DontUseNativeMenuBar added for darwin and wince qt >=4.6 compat issue #20897}
+    QtAA_MacDontSwapCtrlAndMeta = 7, {$note QtAA_MacDontSwapCtrlAndMeta added for darwin qt >=4.6 compat issue #20897}
+    {$ENDIF}
     QtAA_AttributeCount );
 
 type

@@ -103,6 +103,11 @@ begin
     QtX11InitializePalettes;
   FWindowManagerName := LowerCase(GetWindowManager);
   {$ENDIF}
+  {$IFDEF DARWIN}
+  // do not swap meta and ctrl keys, issue #20897
+  if (QtVersionMajor = 4) and (QtVersionMinor > 5) then
+    QCoreApplication_setAttribute(QtAA_MacDontSwapCtrlAndMeta, True);
+  {$ENDIF}
   FGlobalActions := TFPList.Create;
 end;
 
