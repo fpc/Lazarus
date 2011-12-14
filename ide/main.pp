@@ -8179,7 +8179,7 @@ begin
 
         // check program name
         NewProgramName:=ExtractFileNameOnly(AFilename);
-        if (NewProgramName='') or (not IsValidIdent(NewProgramName)) then begin
+        if (NewProgramName='') or (not IsDottedIdentifier(NewProgramName)) then begin
           Result:=MessageDlg(lisInvalidProjectFilename,
             Format(lisisAnInvalidProjectNamePleaseChooseAnotherEGProject, ['"',
               SaveDialog.Filename, '"', #13]),

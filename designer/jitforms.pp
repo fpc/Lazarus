@@ -42,10 +42,9 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, AvgLvlTree, TypInfo, LCLProc, LResources, Forms, Controls,
-  LCLMemManager, LCLIntf, Dialogs,
-  PropEditUtils, PropEdits, IDEProcs,
-  BasePkgManager;
+  Classes, SysUtils, AvgLvlTree, BasicCodeTools, TypInfo, LCLProc, LResources,
+  Forms, Controls, LCLMemManager, LCLIntf, Dialogs, PropEditUtils, PropEdits,
+  IDEProcs, BasePkgManager;
 
 type
   //----------------------------------------------------------------------------
@@ -1259,7 +1258,7 @@ begin
   if IndexOf(JITComponent)<0 then
     raise Exception.Create('TJITComponentList.RenameComponentUnitname JITComponent.ClassName='+
       JITComponent.ClassName);
-  if (NewUnitName='') or (not IsValidIdent(NewUnitName)) then
+  if (NewUnitName='') or (not IsDottedIdentifier(NewUnitName)) then
     raise Exception.Create('TJITComponentList.RenameComponentUnitname invalid name: "'+NewUnitName+'"');
   DoRenameUnitNameOfClass(JITComponent.ClassType,NewUnitName);
 end;
@@ -1423,7 +1422,7 @@ begin
     raise Exception.Create('CreateNewClass NewClassName is not a valid identifier');
   if NewUnitName='' then
     raise Exception.Create('CreateNewClass NewUnitName empty');
-  if not IsValidIdent(NewUnitName) then
+  if not IsDottedIdentifier(NewUnitName) then
     raise Exception.Create('CreateNewClass NewUnitName is not a valid identifier');
   Result:=nil;
 
