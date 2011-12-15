@@ -18,7 +18,12 @@
  *****************************************************************************
 }
 
-function TCDWidgetSet.FindWindowByXID(XWindowID: X.TWindow; out AWindowInfo: TX11WindowInfo): TWinControl;
+
+// redefines:
+
+function XOpenIM(para1: PDisplay; para2: PXrmHashBucketRec; para3: Pchar; para4: Pchar): PXIM; cdecl; external;
+function XCreateIC(para1: PXIM; para2: array of const): PXIC; cdecl; external;function TCDWidgetSet.FindWindowByXID(XWindowID: X.TWindow; out AWindowInfo: TX11WindowInfo): TWinControl;
+
 var
   i: Integer;
   EndSubSearch: Boolean; { Necessary to quit the recursion }
@@ -70,6 +75,15 @@ procedure TCDWidgetSet.BackendDestroy;
 begin
 end;
 
+procedure TCDWidgetSet.BackendInit;
+begin
+  InputMethod := XOpenIM(FDisplay, nil, nil, nil);
+  if InputMethod <> nil then
+    InputContext := XCreateIC(InputMethod, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, nil]);
+
+  if InputContext = nil then DebugLn('[TCDWidgetSet.BackendInit] Failed to initialize the Keyboard handling!');
+end;
+
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppInit
   Params:  None
@@ -93,6 +107,8 @@ begin
 
   if not Assigned(FDisplay) then
     raise Exception.Create('[TCDWidgetSet.AppInit] XOpenDisplay failed');
+
+  BackendInit();
 
   //if (not (woX11SkipWMHints in WindowOptions)) and (woWindow in WindowOptions) then
   //begin

@@ -30,6 +30,8 @@ type
     procedure Arrow1MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure Button1Click(Sender: TObject);
+    procedure Button1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
+      );
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure FormClick(Sender: TObject);
@@ -138,6 +140,13 @@ procedure TForm1.Button1Click(Sender: TObject);
 begin
   DebugLn('Button1Click');
   ProgressBar1.Position := ProgressBar1.Position + 10;
+end;
+
+procedure TForm1.Button1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  DebugLn('[TForm1.Button1KeyDown] '+ LCLProc.DbgsVKCode(Key));
+  Caption := LCLProc.DbgsVKCode(Key);
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);

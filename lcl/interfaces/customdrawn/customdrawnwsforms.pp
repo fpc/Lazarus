@@ -44,7 +44,7 @@ uses
   customdrawncontrols,
   // Widgetset
   InterfaceBase, WSForms, WSProc, WSLCLClasses, LCLMessageGlue,
-  customdrawnwscontrols, customdrawnint, customdrawnproc;
+  customdrawnwscontrols, customdrawnint, customdrawnproc, customdrawnprivate;
 
 type
   { TCDWSScrollingWinControl }
@@ -128,6 +128,9 @@ type
       var Event: TXConfigureEvent);
     class procedure EvClientMessage(const AWinControl: TWinControl;
       AWindowInfo: TX11WindowInfo; var Event: TXClientMessageEvent);
+    // Key routines
+    class function StartComposing(const Event: TXKeyEvent): TKeySym;
+    class function X11KeyToLCLKey(AX11Key: TKeySym): Word;
     {$endif}
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;

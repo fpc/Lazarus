@@ -20,7 +20,7 @@ begin
   AccumulatedStr := AccumulatedStr + AStr;
 end;
 
-procedure TCDWidgetSet.CDSetFocusToControl(ALCLControl: TWinControl);
+procedure TCDWidgetSet.CDSetFocusToControl(ALCLControl, AIntfControl: TWinControl);
 begin
   if (CDWidgetset.FocusedControl <> ALCLControl) then
   begin
@@ -29,6 +29,12 @@ begin
       LCLSendKillFocusMsg(CDWidgetset.FocusedControl);
     CDWidgetset.FocusedControl := ALCLControl;
     LCLSendSetFocusMsg(ALCLControl);
+
+    // The same for intf controls
+    if CDWidgetset.FocusedIntfControl <> nil then
+      LCLSendKillFocusMsg(CDWidgetset.FocusedIntfControl);
+    CDWidgetset.FocusedIntfControl := AIntfControl;
+    if AIntfControl <> nil then LCLSendSetFocusMsg(AIntfControl);
   end;
 end;
 

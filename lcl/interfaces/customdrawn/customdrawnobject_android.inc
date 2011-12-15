@@ -42,25 +42,17 @@ begin
   eventResult := 0;
 
   lCurForm := GetCurrentForm();
-  lTarget := FindControlWhichReceivedEvent(lCurForm.LCLForm, lCurForm.Children, Round(X), Round(Y));
-  lEventPos := FormPosToControlPos(lTarget, Round(X), Round(Y));
 
   case action of
     ACTION_DOWN:
     begin
-      lCurForm.LastMouseDownControl := lTarget;
-      LCLSendMouseDownMsg(lTarget, lEventPos.X, lEventPos.Y, mbLeft, []);
+      CallbackMouseDown(lCurForm, Round(X), Round(Y), mbLeft, []);
     end;
     ACTION_UP:
     begin
-      if lCurForm.LastMouseDownControl <> nil then lTarget := lCurForm.LastMouseDownControl;
-      LCLSendMouseUpMsg(lTarget, lEventPos.X, lEventPos.Y, mbLeft, []);
-      LCLSendClickedMsg(lTarget);
-
-      // If the target is focusable, a mouse up will give it focus
-      CDWidgetset.CDSetFocusToControl(lTarget);
+      CallbackMouseUp(lCurForm, Round(X), Round(Y), mbLeft, []);
     end;
-    ACTION_MOVE: LCLSendMouseMoveMsg(lTarget, lEventPos.X, lEventPos.Y, []);
+    ACTION_MOVE: CallbackMouseMove(lCurForm, Round(X), Round(Y), []);
   end;
 
   // This sends messages like Invalidate requests
@@ -156,36 +148,33 @@ begin
   eventResult := 0;
 
   lCurForm := GetCurrentForm();
-  lTarget := lCurForm.GetFocusedControl();
   lKey := CDWidgetset.AndroidKeyCodeToLCLKeyCode(AKeyCode);
 
   case AKind of
-    ACTION_DOWN:
-    begin
-      LCLSendKeyDownEvent(lTarget, lKey, 0, False, False);
-    end;
+    ACTION_DOWN: CallbackKeyDown(lCurForm, lKey);
     ACTION_UP:
     begin
-      LCLSendKeyUpEvent(lTarget, lKey, 0, False, False);
+      CallbackKeyUp(lCurForm, lKey);
       if AChar <> 0 then
       begin
-        LCLSendCharEvent(lTarget, lKey, 0, False, False, True);
         SetLength(AWideText, 1);
         AWideText[1] := WideChar(AChar);
         AUTF8Text := UTF16ToUTF8(AWideText);
         AUTF8Char := AUTF8Text;
-        LCLSendUTF8KeyPress(lTarget, AUTF8Char, False);
+        CallbackKeyChar(lCurForm, lKey, AUTF8Char);
       end;
 
       // Handle the Back hardware key
       if AKeyCode = AKEYCODE_BACK then
       begin
         // The back hardware key hides the current form and shows the one bellow it
-        lForm := GetCurrentForm();
-        HideForm(lForm);
-        // If all forms got hidden, exit the application
-        lForm := GetCurrentForm();
-        if lForm = nil then eventResult := eventResult or 2;
+        lForm := lCurForm;
+        //DebugLn(Format('CallbackKeyUp D lForm=%x', [PtrInt(lForm)]));
+        // If this is the main form, then go back to desktop
+        if (Application.MainForm <> nil) and (lForm = TCDForm(Application.MainForm.Handle)) then
+          eventResult := eventResult or 2
+        // for other forms, hide them
+        else HideForm(lForm);
       end;
     end;
     //ACTION_MULTIPLE:
@@ -405,9 +394,9 @@ begin
     AKEYCODE_NUM = 78;
     AKEYCODE_HEADSETHOOK = 79;
     AKEYCODE_FOCUS = 80;  // *Camera* focus
-    AKEYCODE_PLUS = 81;
-    AKEYCODE_MENU = 82;
-    AKEYCODE_NOTIFICATION = 83;
+    AKEYCODE_PLUS = 81;}
+    AKEYCODE_MENU: Result := VK_MENU;
+{    AKEYCODE_NOTIFICATION = 83;
     AKEYCODE_SEARCH = 84;
     AKEYCODE_MEDIA_PLAY_PAUSE = 85;
     AKEYCODE_MEDIA_STOP = 86;
@@ -504,6 +493,11 @@ begin
   ScreenImage.Free;
   ScreenDC.Free;
   {$endif}
+end;
+
+procedure TCDWidgetSet.BackendInit;
+begin
+
 end;
 
 {------------------------------------------------------------------------------

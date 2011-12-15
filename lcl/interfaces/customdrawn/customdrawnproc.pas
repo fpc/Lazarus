@@ -50,6 +50,7 @@ type
     NativeHandle: HWND;
     //
     LastMouseDownControl: TWinControl; // Stores the control which should receive the next MouseUp
+    FocusedControl: TWinControl; // The control focused in the form
     // Counter to keep track of when we requested Invalidate
     // Some systems like X11 and Win32 will keep sending unnecessary paint messages
     // so for them we just throw the previously painted image
@@ -225,7 +226,7 @@ begin
   if lCurrentForm = ACDForm then
   begin
     lCurrentForm := FindTopMostVisibleForm();
-    LCLIntf.InvalidateRect(lCurrentForm.NativeHandle, nil, True);
+    LCLIntf.InvalidateRect(HWND(lCurrentForm), nil, True);
   end;
 end;
 
@@ -648,7 +649,7 @@ end;
 
 function TCDForm.GetFocusedControl: TWinControl;
 begin
-  if LastMouseDownControl <> nil then Result := LastMouseDownControl
+  if FocusedControl <> nil then Result := FocusedControl
   else Result := LCLForm;
 end;
 

@@ -1,5 +1,9 @@
 {$MainForm customdrawnwsforms.pp}
 
+// redefines:
+function XmbLookupString(p1: PXIC; ev: PXKeyPressedEvent; str: PChar; len: longword; ks: PKeySym; stat: PStatus): longint; cdecl; external;
+function Xutf8LookupString(p1: PXIC; ev: PXKeyPressedEvent; str: PChar; len: longword; ks: PKeySym; stat: PStatus): longint; cdecl; external;
+
 { TCDWSCustomForm }
 
 class procedure TCDWSCustomForm.UpdateMotifWMHints(const AWinControl: TWinControl; CanMaximize: Boolean);
@@ -480,14 +484,18 @@ end;
 
 class procedure TCDWSCustomForm.EvKeyPressed(const AWinControl: TWinControl;
   AWindowInfo: TX11WindowInfo; var Event: TXKeyEvent);
-{var
-  KeySym: TKeySym;}
+var
+  lKey: Word;
+  lForm: TCDForm;
+  KeySym: TKeySym;
 begin
-{  KeySym := StartComposing(FXEvent^);
+  lForm := TCDForm(AWinControl.Handle);
+  KeySym := StartComposing(Event);
 
-  inherited EvKeyPressed(AKey);
+  lKey := X11KeyToLCLKey(KeySym);
+  CallbackKeyDown(lForm, lKey);
 
-  if (FXEvent^.xkey.state and (ControlMask or Mod1Mask)) = 0 then EndComposing;}
+  //if (FXEvent^.xkey.state and (ControlMask or Mod1Mask)) = 0 then EndComposing;
 end;
 
 class procedure TCDWSCustomForm.EvKeyReleased(const AWinControl: TWinControl;
@@ -506,19 +514,10 @@ class procedure TCDWSCustomForm.EvMousePressed(const AWinControl: TWinControl; A
   var Event: TXButtonEvent);
 var
   MouseButton: TMouseButton;
-  lTarget: TWinControl;
-  lEventPos: TPoint;
 begin
-  lTarget := FindControlWhichReceivedEvent(TCustomForm(AWinControl), AWindowInfo.Children, Event.x, Event.y);
-  AWindowInfo.LastMouseDownControl := lTarget;
-  lEventPos := FormPosToControlPos(lTarget, Event.x, Event.y);
-
-  // If the target is focusable, a mouse down will give it focus
-  CDWidgetset.CDSetFocusToControl(lTarget);
-
   if XButtonToMouseButton(Event.button, MouseButton) then
   begin
-    LCLSendMouseDownMsg(lTarget, lEventPos.x, lEventPos.y, MouseButton, [])
+    CallbackMouseDown(TCDForm(AWinControl.Handle), Event.x, Event.y, MouseButton, []);
   end
   else
   begin
@@ -702,6 +701,184 @@ begin
   end
   else
     DebugLn(Format('LCL-CustomDrawn-X11: Unknown client message: %d', [Event.message_type]));
+end;
+
+class function TCDWSCustomForm.StartComposing(const Event: TXKeyEvent): TKeySym;
+var
+  len: integer;
+begin
+  SetLength(CDWidgetset.ComposeBuffer, 20);
+  // Xutf8LookupString returns the size of FComposeBuffer in bytes.
+  len := Xutf8LookupString(CDWidgetset.InputContext, @Event, @CDWidgetset.ComposeBuffer[1],
+      Length(CDWidgetset.ComposeBuffer), @Result, @CDWidgetset.ComposeStatus);
+  SetLength(CDWidgetset.ComposeBuffer, len);
+  // if overflow occured, then previous SetLength() would have fixed the buffer
+  // size, so run Xutf8LookupString again to read correct value.
+  if CDWidgetset.ComposeStatus = XBufferOverflow then
+    Xutf8LookupString(CDWidgetset.InputContext, @Event, @CDWidgetset.ComposeBuffer[1],
+      Length(CDWidgetset.ComposeBuffer), @Result, @CDWidgetset.ComposeStatus);
+end;
+
+class function TCDWSCustomForm.X11KeyToLCLKey(AX11Key: TKeySym): Word;
+{const
+  Table_20aX: array[$20a0..$20ac] of Word = (keyEcuSign, keyColonSign,
+     keyCruzeiroSign, keyFFrancSign, keyLiraSign, keyMillSign, keyNairaSign,
+     keyPesetaSign, keyRupeeSign, keyWonSign, keyNewSheqelSign, keyDongSign,
+     keyEuroSign);
+ Table_feXX: array[$fe50..$fe60] of Word = (keyDeadGrave, keyDeadAcute,
+    keyDeadCircumflex, keyDeadTilde, keyDeadMacron,keyDeadBreve,
+    keyDeadAbovedot, keyDeadDiaeresis, keyDeadRing, keyDeadDoubleacute,
+    keyDeadCaron, keyDeadCedilla, keyDeadOgonek, keyDeadIota,
+    keyDeadVoicedSound, keyDeadSemivoicedSound, keyDeadBelowdot);
+ Table_ff5X: array[$ff50..$ff58] of Word = (keyHome, keyLeft, keyUp, keyRight,
+    keyDown, keyPrior, keyNext, keyEnd, keyBegin);
+ Table_ff6X: array[$ff60..$ff6b] of Word = (keySelect, keyPrintScreen,
+     keyExecute, keyInsert, keyNIL, keyUndo, keyRedo, keyMenu, keyFind,
+     keyCancel, keyHelp, keyBreak);
+  Table_ff9X: array[$ff91..$ff9f] of Word = (keyPF1, keyPF2, keyPF3, keyPF4,
+     keyP7, keyP4, keyP8, keyP6, keyP2, keyP9, keyP3, keyP1, keyP5, keyP0,
+   keyPDecimal);
+  Table_ffeX: array[$ffe1..$ffee] of Word = (keyShiftL, keyShiftR, keyCtrlL,
+  keyCtrlR, keyCapsLock, keyShiftLock, keyMetaL, keyMetaR, keyAltL, keyAltR,
+     keySuperL, keySuperR, keyHyperL, keyHyperR);  }
+begin
+ case AX11Key of
+   $20: Result := VK_SPACE;
+{ 0x0021   U0021   .   # exclam
+ 0x0022   U0022   .   # quotedbl
+ 0x0023   U0023   .   # numbersign
+ 0x0024   U0024   .   # dollar
+ 0x0025   U0025   .   # percent
+ 0x0026   U0026   .   # ampersand
+ 0x0027   U0027   .   # apostrophe
+ 0x0027   U0027   .   # quoteright	/* deprecated */
+ 0x0028   U0028   .   # parenleft
+ 0x0029   U0029   .   # parenright
+ 0x002a   U002a   .   # asterisk
+ 0x002b   U002b   .   # plus
+ 0x002c   U002c   .   # comma
+ 0x002d   U002d   .   # minus
+ 0x002e   U002e   .   # period
+ 0x002f   U002f   .   # slash
+ 0x0030   U0030   .   # 0
+ 0x0031   U0031   .   # 1
+ 0x0032   U0032   .   # 2
+ 0x0033   U0033   .   # 3
+ 0x0034   U0034   .   # 4
+ 0x0035   U0035   .   # 5
+ 0x0036   U0036   .   # 6
+ 0x0037   U0037   .   # 7
+ 0x0038   U0038   .   # 8
+ 0x0039   U0039   .   # 9
+ 0x003a   U003a   .   # colon
+ 0x003b   U003b   .   # semicolon
+ 0x003c   U003c   .   # less
+ 0x003d   U003d   .   # equal
+ 0x003e   U003e   .   # greater
+ 0x003f   U003f   .   # question
+ 0x0040   U0040   .   # at      }
+    $41: Result := VK_A;
+{ 0x0042   U0042   .   # B
+ 0x0043   U0043   .   # C
+ 0x0044   U0044   .   # D
+ 0x0045   U0045   .   # E
+ 0x0046   U0046   .   # F
+ 0x0047   U0047   .   # G
+ 0x0048   U0048   .   # H
+ 0x0049   U0049   .   # I
+ 0x004a   U004a   .   # J
+ 0x004b   U004b   .   # K
+ 0x004c   U004c   .   # L
+ 0x004d   U004d   .   # M
+ 0x004e   U004e   .   # N
+ 0x004f   U004f   .   # O
+ 0x0050   U0050   .   # P
+ 0x0051   U0051   .   # Q
+ 0x0052   U0052   .   # R
+ 0x0053   U0053   .   # S
+ 0x0054   U0054   .   # T
+ 0x0055   U0055   .   # U
+ 0x0056   U0056   .   # V
+ 0x0057   U0057   .   # W
+ 0x0058   U0058   .   # X
+ 0x0059   U0059   .   # Y
+ 0x005a   U005a   .   # Z     }
+{ 0x005b   U005b   .   # bracketleft
+ 0x005c   U005c   .   # backslash
+ 0x005d   U005d   .   # bracketright
+ 0x005e   U005e   .   # asciicircum
+ 0x005f   U005f   .   # underscore
+ 0x0060   U0060   .   # grave
+ 0x0060   U0060   .   # quoteleft	/* deprecated */ }
+    $61: Result := VK_A;
+{ 0x0062   U0062   .   # b
+ 0x0063   U0063   .   # c
+ 0x0064   U0064   .   # d
+ 0x0065   U0065   .   # e
+ 0x0066   U0066   .   # f
+ 0x0067   U0067   .   # g
+ 0x0068   U0068   .   # h
+ 0x0069   U0069   .   # i
+ 0x006a   U006a   .   # j
+ 0x006b   U006b   .   # k
+ 0x006c   U006c   .   # l
+ 0x006d   U006d   .   # m
+ 0x006e   U006e   .   # n
+ 0x006f   U006f   .   # o
+ 0x0070   U0070   .   # p
+ 0x0071   U0071   .   # q
+ 0x0072   U0072   .   # r
+ 0x0073   U0073   .   # s
+ 0x0074   U0074   .   # t
+ 0x0075   U0075   .   # u
+ 0x0076   U0076   .   # v
+ 0x0077   U0077   .   # w
+ 0x0078   U0078   .   # x
+ 0x0079   U0079   .   # y
+ 0x007a   U007a   .   # z      }
+ {   0..Ord('a')-1, Ord('z')+1..$bf, $f7:
+ 826       Result := KeySym;
+ 827     Ord('a')..Ord('z'), $c0..$f6, $f8..$ff:
+ 828       Result := KeySym - 32;  // ignore case: convert lowercase a-z to A-Z keysyms;
+ 829     $20a0..$20ac: Result := Table_20aX[KeySym];
+ 830     $fe20: Result := keyTab;
+ 831     $fe50..$fe60: Result := Table_feXX[KeySym];
+ 832     XK_BackSpace:   Result := keyBackspace;
+ 833     XK_Tab:         Result := keyTab;
+ 834     XK_Linefeed:    Result := keyLinefeed;
+ 835     $ff0b: Result := keyClear;
+ 836     $ff0d: Result := keyReturn;
+ 837     $ff13: Result := keyPause;
+ 838     $ff14: Result := keyScrollLock;
+ 839     $ff15: Result := keySysRq;
+ 840     $ff1b: Result := keyEscape;
+ 841     $ff50..$ff58: Result := Table_ff5X[KeySym];
+ 842     $ff60..$ff6b: Result := Table_ff6X[KeySym];
+ 843     $ff7e: Result := keyModeSwitch;
+ 844     $ff7f: Result := keyNumLock;
+ 845     $ff80: Result := keyPSpace;
+ 846     $ff89: Result := keyPTab;
+ 847     $ff8d: Result := keyPEnter;
+ 848     $ff91..$ff9f: Result := Table_ff9X[KeySym];
+ 849     $ffaa: Result := keyPAsterisk;
+ 850     $ffab: Result := keyPPlus;
+ 851     $ffac: Result := keyPSeparator;
+ 852     $ffad: Result := keyPMinus;
+ 853     $ffae: Result := keyPDecimal;
+ 854     $ffaf: Result := keyPSlash;
+ 855     $ffb0..$ffb9: Result := keyP0 + KeySym - $ffb0;
+ 856     $ffbd: Result := keyPEqual;
+ 857     $ffbe..$ffe0: Result := keyF1 + KeySym - $ffbe;
+ 858     $ffe1..$ffee: Result := Table_ffeX[KeySym];
+ 859     $ffff: Result := keyDelete;  }
+ else
+   Result := 0;
+ end;
+
+ (*864 {$IFDEF Debug}
+ 865   if Result = keyNIL then
+ 866     WriteLn('fpGFX/X11: Unknown KeySym: $', IntToHex(KeySym, 4));
+ 867 {$ENDIF}*)
 end;
 
 {------------------------------------------------------------------------------

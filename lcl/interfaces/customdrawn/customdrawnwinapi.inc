@@ -2884,8 +2884,9 @@ end;*)
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.GetFocus: HWND;
 begin
-  if FocusedControl = nil then Result := 0
-  else Result := FocusedControl.Handle;
+  Result := 0;
+  if FocusedIntfControl <> nil then Result := FocusedIntfControl.Handle
+  else if FocusedControl <> nil then Result := FocusedControl.Handle;
 end;
 
 (*function TQtWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
@@ -4632,7 +4633,7 @@ var
   lControl: TWinControl;
 begin
   {$ifdef VerboseCDDrawing}
-    WriteLn('[WinAPI InvalidateRect]');
+    DebugLn('[WinAPI InvalidateRect]');
   {$endif}
   if AHandle = 0 then exit(False);
 

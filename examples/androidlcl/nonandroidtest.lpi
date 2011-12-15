@@ -49,9 +49,6 @@
         </CompilerOptions>
       </Item2>
       <Item3 Name="NotCustomDrawn">
-        <MacroValues Count="1">
-          <Macro1 Name="LCLWidgetType" Value="carbon"/>
-        </MacroValues>
         <CompilerOptions>
           <Version Value="11"/>
           <Target>

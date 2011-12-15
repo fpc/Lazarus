@@ -8,6 +8,7 @@ object Form1: TForm1
   ClientWidth = 220
   OnClick = FormClick
   OnCreate = FormCreate
+  OnKeyDown = Button1KeyDown
   OnMouseMove = FormMouseMove
   OnPaint = FormPaint
   LCLVersion = '0.9.31'
@@ -28,6 +29,7 @@ object Form1: TForm1
     Width = 116
     Caption = 'Move Progress'
     OnClick = Button1Click
+    OnKeyDown = Button1KeyDown
     TabOrder = 1
   end
   object ProgressBar1: TProgressBar

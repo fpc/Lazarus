@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls;
+  ComCtrls, ExtCtrls;
 
 type
 
@@ -15,6 +15,7 @@ type
   TForm2 = class(TForm)
     Button1: TButton;
     Edit1: TEdit;
+    Image1: TImage;
     procedure Button1Click(Sender: TObject);
   private
     { private declarations }

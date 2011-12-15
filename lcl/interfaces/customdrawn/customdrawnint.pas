@@ -134,6 +134,13 @@ type
     FWMDeleteWindow: TAtom;	  // Atom for "WM_DELETE_WINDOW"
     FWMHints: TAtom;		  // Atom for "_MOTIF_WM_HINTS"
 
+    // For composing character events
+    ComposeBuffer: string;
+    ComposeStatus: TStatus;
+    InputMethod: xlib.PXIM;
+    InputContext: PXIC;
+    LastKeySym: TKeySym;   // Used for KeyRelease event
+
     function FindWindowByXID(XWindowID: X.TWindow; out AWindowInfo: TX11WindowInfo): TWinControl;
     {$endif}
     {$ifdef CD_Android}
@@ -146,13 +153,14 @@ type
     AccumulatedStr: string;
     // The currently focused control
     FocusedControl: TWinControl;
+    FocusedIntfControl: TWinControl;
     // Default Fonts
     DefaultFont: TFPCustomFont;
     DefaultFontAndroidSize: Integer;
     // For unusual implementations of DebugLn/DebugOut
     procedure AccumulatingDebugOut(AStr: string);
     //
-    procedure CDSetFocusToControl(ALCLControl: TWinControl);
+    procedure CDSetFocusToControl(ALCLControl, AIntfControl: TWinControl);
   //
   protected
     {function CreateThemeServices: TThemeServices; override;}
@@ -161,6 +169,7 @@ type
     //
     procedure BackendCreate;
     procedure BackendDestroy;
+    procedure BackendInit;
   public
     // ScreenDC and Image for doing Canvas operations outside the Paint event
     // and also for text drawing operations
