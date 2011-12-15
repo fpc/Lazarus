@@ -1925,6 +1925,7 @@ procedure TCustomFormEditor.OnDesignerMenuItemClick(Sender: TObject);
 var
   CompEditor: TBaseComponentEditor;
   MenuItem: TMenuItem;
+  CompClassName: String;
 begin
   if (Sender=nil) or (not (Sender is TMenuItem)) then exit;
   MenuItem:=TMenuItem(Sender);
@@ -1932,14 +1933,24 @@ begin
 
   CompEditor:=GetComponentEditor(TComponent(Sender));
   if CompEditor=nil then exit;
+  CompClassName:=CompEditor.ClassName;
   try
     CompEditor.Edit;
   except
     on E: Exception do begin
-      DebugLn('TCustomFormEditor.OnDesignerMenuItemClick ERROR: ',E.Message);
-      MessageDlg(Format(lisErrorIn, [CompEditor.ClassName]),
-        Format(lisCFETheComponentEditorOfClassHasCreatedTheError, [CompEditor.
-          ClassName, #13, E.Message]),
+      DebugLn('TCustomFormEditor.OnDesignerMenuItemClick ERROR on CompEditor.Edit: ',E.Message);
+      MessageDlg(Format(lisErrorIn, [CompClassName]),
+        Format(lisCFETheComponentEditorOfClassHasCreatedTheError, [CompClassName, #13, E.Message]),
+        mtError,[mbOk],0);
+    end;
+  end;
+  try
+    CompEditor.Free;
+  except
+    on E: Exception do begin
+      DebugLn('TCustomFormEditor.OnDesignerMenuItemClick ERROR on CompEditor.Free: ',E.Message);
+      MessageDlg(Format(lisErrorIn, [CompClassName]),
+        Format(lisCFETheComponentEditorOfClassHasCreatedTheError, [CompClassName, #13, E.Message]),
         mtError,[mbOk],0);
     end;
   end;
