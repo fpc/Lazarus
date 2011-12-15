@@ -91,7 +91,7 @@ end;
 
 procedure TDBLookup.EditingChange(Sender: TObject);
 begin
-  if not (FListLink.Editing) then
+  if FListLink.Active and not (FListLink.Editing) then
     FetchLookupData;
 end;
 
