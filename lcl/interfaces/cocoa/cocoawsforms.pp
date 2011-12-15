@@ -193,30 +193,31 @@ end;
 class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  win : TCocoaWindow;
-  cnt : TCocoaCustomControl;
-  ns  : NSString;
+  win: TCocoaWindow;
+  cnt: TCocoaCustomControl;
+  ns: NSString;
 const
   WinMask = NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask;
 begin
   win := TCocoaWindow(TCocoaWindow.alloc);
 
-  if not Assigned(win) then begin
-    Result:=0;
+  if not Assigned(win) then
+  begin
+    Result := 0;
     Exit;
   end;
 
-  win:=TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
+  win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(CreateParamsToNSRect(AParams), WinMask, NSBackingStoreBuffered, False));
   win.enableCursorRects;
   TCocoaWindow(win).callback:=TLCLWindowCallback.Create(win, AWinControl);
   win.setDelegate(win);
-  ns:=NSStringUtf8(AWinControl.Caption);
+  ns := NSStringUtf8(AWinControl.Caption);
   win.setTitle(ns);
   ns.release;
   win.setAcceptsMouseMovedEvents(True);
 
-  cnt:=TCocoaCustomControl.alloc.init;
-  cnt.callback:=TCocoaWindow(win).callback;
+  cnt := TCocoaCustomControl.alloc.init;
+  cnt.callback := TCocoaWindow(win).callback;
   win.setContentView(cnt);
 
   Result := TLCLIntfHandle(win);

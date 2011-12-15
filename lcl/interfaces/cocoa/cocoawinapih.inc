@@ -34,9 +34,9 @@
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 
 function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
-function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer; override;
+function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer; override;}
 function ClientToScreen(Handle: HWND; var P: TPoint) : Boolean; override;
-
+{
 function ClipboardFormatToMimeType(FormatID: TClipboardFormat): string; override;
 function ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean; override;
@@ -62,7 +62,7 @@ function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;
 function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
 procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
-{function DeleteDC(hDC: HDC): Boolean; override;}
+function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
 {function DestroyCaret(Handle : HWND): Boolean; override;}
 function DestroyIcon(Handle: HICON): Boolean; override;
@@ -159,7 +159,7 @@ function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 {function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean; override;}
 
 function SaveDC(DC: HDC): Integer; override;
-{function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;}
+function ScreenToClient(Handle: HWND; var P: TPoint): Integer; override;
 function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
 {function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;

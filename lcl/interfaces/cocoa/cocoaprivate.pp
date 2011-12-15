@@ -47,7 +47,8 @@ type
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
     procedure lclInvalidate; message 'lclInvalidate';
     procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::';
-    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::';
+    procedure lclLocalToScreen(var X, Y: Integer); message 'lclLocalToScreen::';
+    procedure lclScreenToLocal(var X, Y: Integer); message 'lclScreenToLocal::';
     function lclParent: id; message 'lclParent';
     function lclFrame: TRect; message 'lclFrame';
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
@@ -61,7 +62,8 @@ type
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
     procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
     procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::'; reintroduce;
-    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::'; reintroduce;
+    procedure lclLocalToScreen(var X, Y: Integer); message 'lclLocalToScreen::'; reintroduce;
+    procedure lclScreenToLocal(var X, Y: Integer); message 'lclScreenToLocal::'; reintroduce;
     function lclParent: id; message 'lclParent'; reintroduce;
     function lclFrame: TRect; message 'lclFrame'; reintroduce;
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:'; reintroduce;
@@ -87,7 +89,8 @@ type
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:'; reintroduce;
     procedure lclInvalidate; message 'lclInvalidate'; reintroduce;
     procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::'; reintroduce;
-    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::'; reintroduce;
+    procedure lclLocalToScreen(var X, Y: Integer); message 'lclLocalToScreen::'; reintroduce;
+    procedure lclScreenToLocal(var X, Y: Integer); message 'lclScreenToLocal::'; reintroduce;
     function lclFrame: TRect; message 'lclFrame'; reintroduce;
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:'; reintroduce;
     function lclClientFrame: TRect; message 'lclClientFrame'; reintroduce;
@@ -211,6 +214,12 @@ type
   TCocoaCustomControl = objcclass(NSControl)
     callback: ICommonCallback;
     procedure drawRect(dirtyRect: NSRect); override;
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseEntered(event: NSEvent); override;
+    procedure mouseExited(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
     procedure resetCursorRects; override;
   end;
 
@@ -441,11 +450,11 @@ end;
 
 function TCocoaWindow.windowShouldClose(sender: id): LongBool;
 var
-  canClose : Boolean;
+  canClose: Boolean;
 begin
-  canClose:=true;
+  canClose := True;
   callback.CloseQuery(canClose);
-  Result:=canClose;
+  Result := canClose;
 end;
 
 procedure TCocoaWindow.windowWillClose(notification: NSNotification);
@@ -475,45 +484,45 @@ end;
 
 function TCocoaWindow.acceptsFirstResponder: Boolean;
 begin
-  Result:=true;
+  Result := True;
 end;
 
 procedure TCocoaWindow.mouseUp(event: NSEvent);
 var
-  mp : NSPoint;
+  mp: NSPoint;
 begin
-  mp:=event.locationInWindow;
-  mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
+  mp := event.locationInWindow;
+  mp.y := NSView(event.window.contentView).bounds.size.height-mp.y;
   callback.MouseUp(round(mp.x), round(mp.y));
   inherited mouseUp(event);
 end;
 
 procedure TCocoaWindow.mouseDown(event: NSEvent);
 var
-  mp : NSPoint;
+  mp: NSPoint;
 begin
-  mp:=event.locationInWindow;
-  mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
+  mp := event.locationInWindow;
+  mp.y := NSView(event.window.contentView).bounds.size.height-mp.y;
   callback.MouseDown(round(mp.x), round(mp.y));
   inherited mouseDown(event);
 end;
 
 procedure TCocoaWindow.mouseDragged(event: NSEvent);
 var
-  mp : NSPoint;
+  mp: NSPoint;
 begin
-  mp:=event.locationInWindow;
-  mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
+  mp := event.locationInWindow;
+  mp.y := NSView(event.window.contentView).bounds.size.height - mp.y;
   callback.MouseMove(round(mp.x), round(mp.y));
   inherited mouseMoved(event);
 end;
 
 procedure TCocoaWindow.mouseMoved(event: NSEvent);
 var
-  mp : NSPoint;
+  mp: NSPoint;
 begin
-  mp:=event.locationInWindow;
-  mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
+  mp := event.locationInWindow;
+  mp.y := NSView(event.window.contentView).bounds.size.height - mp.y;
   callback.MouseMove(round(mp.x), round(mp.y));
   inherited mouseMoved(event);
 end;
@@ -547,6 +556,36 @@ procedure TCocoaCustomControl.drawRect(dirtyRect:NSRect);
 begin
   inherited drawRect(dirtyRect);
   callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+end;
+
+procedure TCocoaCustomControl.mouseDown(event: NSEvent);
+begin
+  inherited mouseDown(event);
+end;
+
+procedure TCocoaCustomControl.mouseDragged(event: NSEvent);
+begin
+  inherited mouseDragged(event);
+end;
+
+procedure TCocoaCustomControl.mouseEntered(event: NSEvent);
+begin
+  inherited mouseEntered(event);
+end;
+
+procedure TCocoaCustomControl.mouseExited(event: NSEvent);
+begin
+  inherited mouseExited(event);
+end;
+
+procedure TCocoaCustomControl.mouseMoved(event: NSEvent);
+begin
+  inherited mouseMoved(event);
+end;
+
+procedure TCocoaCustomControl.mouseUp(event: NSEvent);
+begin
+  inherited mouseUp(event);
 end;
 
 procedure TCocoaCustomControl.resetCursorRects;
@@ -588,13 +627,14 @@ end;
 
 procedure LCLObjectExtension.lclRelativePos(var Left,Top:Integer);
 begin
-  Left := 0;
-  Top := 0;
 end;
 
 procedure LCLObjectExtension.lclLocalToScreen(var X,Y:Integer);
 begin
+end;
 
+procedure LCLObjectExtension.lclScreenToLocal(var X, Y: Integer);
+begin
 end;
 
 function LCLObjectExtension.lclParent:id;
@@ -668,9 +708,40 @@ begin
   end;
 end;
 
-procedure LCLViewExtension.lclLocalToScreen(var X,Y:Integer);
+procedure LCLViewExtension.lclLocalToScreen(var X, Y:Integer);
+var
+  P: NSPoint;
 begin
+  // 1. convert to window base
+  P.x := X;
+  P.y := Y;
+  P := convertPoint_ToView(P, nil);
+  // 2. convert to screen
+  with window.frame.origin do
+  begin
+    P.x := P.x + x;
+    P.y := P.y + y;
+  end;
+  X := Round(P.x);
+  Y := Round(window.screen.frame.size.height - P.y);
+end;
 
+procedure LCLViewExtension.lclScreenToLocal(var X, Y: Integer);
+var
+  P: NSPoint;
+begin
+  // 1. convert from screen to window
+  P.x := X;
+  P.y := window.screen.frame.size.height - Y;
+  with window.frame.origin do
+  begin
+    P.x := P.x - x;
+    P.y := P.y - y;
+  end;
+  // 2. convert from window to local
+  P := convertPoint_FromView(P, nil);
+  X := Round(P.x);
+  Y := Round(P.y);
 end;
 
 function LCLViewExtension.lclParent:id;
@@ -751,15 +822,27 @@ begin
   end;
 end;
 
-procedure LCLWindowExtension.lclLocalToScreen(var X,Y:Integer);
+procedure LCLWindowExtension.lclLocalToScreen(var X, Y:Integer);
 var
   f: NSRect;
 begin
   if Assigned(screen) then
   begin
     f := frame;
-    x := Round(f.origin.x + x);
-    y := Round(screen.frame.size.height - f.size.height - f.origin.y);
+    inc(X, Round(f.origin.x));
+    inc(Y, Round(screen.frame.size.height - f.size.height - f.origin.y));
+  end;
+end;
+
+procedure LCLWindowExtension.lclScreenToLocal(var X, Y: Integer);
+var
+  f: NSRect;
+begin
+  if Assigned(screen) then
+  begin
+    f := frame;
+    dec(X, Round(f.origin.x));
+    dec(Y, Round(screen.frame.size.height - f.size.height - f.origin.y));
   end;
 end;
 
@@ -782,19 +865,18 @@ begin
   setFrame_display(ns, isVisible);
 end;
 
-function LCLWindowExtension.lclClientFrame:TRect;
+function LCLWindowExtension.lclClientFrame: TRect;
 var
-  wr: NSRect;
-  b: CGGeometry.CGRect;
+  wFrame, cFrame: NSRect;
 begin
-  wr := frame;
-  b := contentView.frame;
+  wFrame := frame;
+  cFrame := contentRectForFrameRect(wFrame);
   with Result do
   begin
-    Left := Round(b.origin.x);
-    Top := Round(wr.size.height - b.origin.y);
-    Right := Round(b.origin.x + b.size.width);
-    Bottom := Round(Result.Top + b.size.height);
+    Left := Round(cFrame.origin.x - wFrame.origin.x);
+    Top := Round(wFrame.origin.y + wFrame.size.height - cFrame.origin.y - cFrame.size.height);
+    Right := Left + Round(cFrame.size.width);
+    Bottom := Top + Round(cFrame.size.height);
   end;
 end;
 

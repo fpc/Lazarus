@@ -38,8 +38,24 @@ begin
   end;
 end;
 
-function TCocoaWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;
-  fnCombineMode: Longint): Longint;
+function TCocoaWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
+begin
+  Result := Handle <> 0;
+
+  if Result then
+  begin
+    // 1. convert client to window
+    with NSObject(Handle).lclClientFrame do
+    begin
+      inc(P.X, Left);
+      inc(P.Y, Top);
+    end;
+    // 2. convert window to screen
+    NSObject(Handle).lclLocalToScreen(P.X, P.Y);
+  end;
+end;
+
+function TCocoaWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;
 begin
   Result := LCLType.Error;
   if (Dest = 0) or (Src1 = 0) or (fnCombineMode<RGN_AND) or (fnCombineMode>RGN_COPY) then Exit;
@@ -293,9 +309,9 @@ end;
 
 function TCocoaWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
-  if hWnd<>0
-    then NSObject(hWnd).lclSetEnabled(bEnable)
-    else Result:=False;
+  Result := hWnd <> 0;
+  if Result then
+    NSObject(hWnd).lclSetEnabled(bEnable)
 end;
 
 function TCocoaWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
@@ -817,6 +833,13 @@ begin
   CritSection:=0;
 end;
 
+function TCocoaWidgetSet.DeleteDC(hDC: HDC): Boolean;
+begin
+  Result := hDC <> 0;
+  if Result then
+    TCocoaContext(hDC).Free;
+end;
+
 procedure TCocoaWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
 begin
   if CritSection=0 then Exit;
@@ -1138,6 +1161,23 @@ begin
     Result := ctx.SaveDC
   else
     Result:=0;
+end;
+
+function TCocoaWidgetSet.ScreenToClient(Handle: HWND; var P: TPoint): Integer;
+begin
+  Result := Ord(Handle <> 0);
+
+  if Result = 1 then
+  begin
+    // 1. convert screen to window
+    NSObject(Handle).lclScreenToLocal(P.X, P.Y);
+    // 2. convert window to client
+    with NSObject(Handle).lclClientFrame do
+    begin
+      dec(P.X, Left);
+      dec(P.Y, Top);
+    end;
+  end;
 end;
 
 function TCocoaWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;

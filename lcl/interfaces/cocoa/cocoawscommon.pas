@@ -338,14 +338,14 @@ begin
   if (AWinControl.Handle <> 0) then
   begin
     Obj := NSObject(AWinControl.Handle);
-{
+  {
     if Obj.isKindOfClass_(NSView) then
     begin
       Size := NSView(Obj).fittingSize;
       PreferredWidth := Round(Size.width);
       PreferredHeight := Round(Size.height);
     end;
-}
+  }
   end;
 end;
 
