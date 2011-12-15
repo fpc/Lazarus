@@ -42,7 +42,7 @@ uses
   PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf, CompOptsIntf, IDEDialogs,
   CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
   CodeTree, LinkScanner, DefineTemplates, CodeToolsStructs,
-  CodyStrConsts, CodyUtils;
+  CodyStrConsts, CodyUtils, CodyOpts;
 
 const
   PackageNameFPCSrcDir = 'FPCSrcDir';
@@ -66,7 +66,6 @@ type
   private
     FLoadAfterStartInS: integer;
     FLoadSaveError: string;
-    FPreferImplementationUsesSection: boolean;
     FSaveIntervalInS: integer;
     fTimer: TTimer;
     FIdleConnected: boolean;
@@ -89,6 +88,7 @@ type
     procedure OnTimer(Sender: TObject);
     function StartLoadSaveThread: boolean;
     procedure OnIDEClose(Sender: TObject);
+    procedure OnApplyOptions(Sender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
@@ -103,8 +103,6 @@ type
     procedure EndCritSec;
     procedure CheckFileAsync(aFilename: string); // check eventually if file exists and delete unit/group
     property LoadSaveError: string read FLoadSaveError write SetLoadSaveError;
-    property PreferImplementationUsesSection: boolean
-      read FPreferImplementationUsesSection write FPreferImplementationUsesSection;
   end;
 
   TCodyIdentifierDlgAction = (
@@ -461,6 +459,12 @@ begin
   FreeAndNil(fTimer);
 end;
 
+procedure TCodyUnitDictionary.OnApplyOptions(Sender: TObject);
+begin
+  LoadAfterStartInS:=CodyOptions.UDLoadDelayInS;
+  SaveIntervalInS:=CodyOptions.UDSaveIntervalInS;
+end;
+
 procedure TCodyUnitDictionary.SetIdleConnected(AValue: boolean);
 begin
   if FIdleConnected=AValue then Exit;
@@ -537,11 +541,13 @@ begin
   fQueuedTools:=TAVLTree.Create;
   CodeToolBoss.AddHandlerToolTreeChanging(@ToolTreeChanged);
   LazarusIDE.AddHandlerOnIDEClose(@OnIDEClose);
+  CodyOptions.AddHandlerApply(@OnApplyOptions);
 end;
 
 destructor TCodyUnitDictionary.Destroy;
 begin
   fClosing:=true;
+  CodyOptions.RemoveHandlerApply(@OnApplyOptions);
   FreeAndNil(fCheckFiles);
   CodeToolBoss.RemoveHandlerToolTreeChanging(@ToolTreeChanged);
   FreeAndNil(fTimer);
@@ -637,7 +643,7 @@ end;
 procedure TCodyIdentifiersDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
-  CodyUnitDictionary.PreferImplementationUsesSection:=
+  CodyOptions.PreferImplementationUsesSection:=
                                         AddToImplementationUsesCheckBox.Checked;
   FreeAndNil(FItems);
 end;
@@ -928,7 +934,7 @@ begin
     CurInImplementation:=true;
   AddToImplementationUsesCheckBox.Enabled:=CurInImplementation;
   AddToImplementationUsesCheckBox.Checked:=
-                             CodyUnitDictionary.PreferImplementationUsesSection;
+                                    CodyOptions.PreferImplementationUsesSection;
 
   CurSrcEdit:=SourceEditorManagerIntf.ActiveEditor;
   if CurTool<>nil then begin

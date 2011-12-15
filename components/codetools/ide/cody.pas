@@ -10,14 +10,14 @@ uses
   PPUListDlg, CodyStrConsts, AddAssignMethodDlg, CodyCtrls, CodyFrm, 
   CodyRegistration, DeclareVarDlg, CodyUtils, CodyNodeInfoDlg, 
   CodyCopyDeclaration, AddWithBlockDlg, CodyIdentifiersDlg, CodyMiscOptsFrame, 
-  LazarusPackageIntf;
+  CodyOpts, LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
   RegisterUnit('CodyRegistration', @CodyRegistration.Register); 
-end;
+end; 
 
 initialization
   RegisterPackage('Cody', @Register); 

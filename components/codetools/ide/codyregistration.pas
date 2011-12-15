@@ -34,7 +34,7 @@ uses
   IDECommands, MenuIntf, IDEWindowIntf, SrcEditorIntf, IDEOptionsIntf,
   CodyStrConsts, CodyCtrls, PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg,
   CodyUtils, CodyNodeInfoDlg, CodyFrm, DeclareVarDlg, CodyCopyDeclaration,
-  CodyIdentifiersDlg, CodyMiscOptsFrame;
+  CodyIdentifiersDlg, CodyMiscOptsFrame, CodyOpts;
 
 procedure Register;
 

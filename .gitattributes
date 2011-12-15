@@ -581,6 +581,7 @@ components/codetools/ide/codymiscoptsframe.lfm svneol=native#text/plain
 components/codetools/ide/codymiscoptsframe.pas svneol=native#text/plain
 components/codetools/ide/codynodeinfodlg.lfm svneol=native#text/plain
 components/codetools/ide/codynodeinfodlg.pas svneol=native#text/plain
+components/codetools/ide/codyopts.pas svneol=native#text/plain
 components/codetools/ide/codyregistration.pas svneol=native#text/plain
 components/codetools/ide/codystrconsts.pas svneol=native#text/pascal
 components/codetools/ide/codyutils.pas svneol=native#text/pascal
