@@ -599,6 +599,7 @@ var
   i: TSynFrameSide;
 begin
   inherited AssignFrom(Src);
+  if not (Src is TSynHighlighterAttributes) then exit;
   FStartX := TSynSelectedColor(Src).FStartX;
   FEndX   := TSynSelectedColor(Src).FEndX;
   for i := low(TSynFrameSide) to high(TSynFrameSide) do begin

@@ -982,6 +982,7 @@ end;
 procedure TSynHighlighterAttributes.AssignFrom(Src: TLazSynCustomTextAttributes);
 begin
   inherited AssignFrom(Src);
+  if not (Src is TSynHighlighterAttributes) then exit;
   FName      := TSynHighlighterAttributes(Src).FName;
   FStoredName:= TSynHighlighterAttributes(Src).FStoredName;
   FFeatures  := TSynHighlighterAttributes(Src).FFeatures;
