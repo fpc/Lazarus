@@ -3316,10 +3316,11 @@ end;
 procedure TQtDeviceContext.setClipRegion(ARegion: QRegionH;
   AOperation: QtClipOperation = QtReplaceClip);
 begin
-  {with QPaintEngine11 QtNoClip & empty region makes disaster}
-  if (AOperation = QtNoClip) and QRegion_isEmpty(ARegion)
-     and (QPaintEngine_type(PaintEngine) = QPaintEngineX11) then
-    setClipping(False)
+  {X11 and mac does not like QtNoClip & empty region.It makes disaster}
+  if (AOperation = QtNoClip) and QRegion_isEmpty(ARegion) and
+  (QPaintEngine_type(PaintEngine) in [QPaintEngineX11,QPaintEngineQuickDraw,
+    QPaintEngineCoreGraphics,QPaintEngineMacPrinter]) then
+      setClipping(False)
   else
     QPainter_SetClipRegion(Widget, ARegion, AOperation);
 end;
