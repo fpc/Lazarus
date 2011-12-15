@@ -774,7 +774,7 @@ var
             end else if Group.Name=PackageNameFPCSrcDir then begin
               // it's a FPC source directory
               // => check if it is the current one
-              Dir:=ExtractFilePath(Group.Filename);
+              Dir:=ChompPathDelim(ExtractFilePath(Group.Filename));
               if CompareFilenames(Dir,FPCSrcDir)<>0 then continue;
               FPCSrcFilename:=UnitSet.GetUnitSrcFile(Item.DUnit.Name);
               if (FPCSrcFilename<>'')
@@ -1286,6 +1286,18 @@ begin
   UpdateTool;
   if (CurNode=nil) then exit;
 
+  // check if already in uses section
+  NewUnitName:=ExtractFileNameOnly(NewUnitFilename);
+  if CurTool.IsHiddenUsedUnit(PChar(NewUnitName)) then exit;
+  UsesNode:=CurTool.FindMainUsesSection;
+  if (UsesNode<>nil) and (CurTool.FindNameInUsesSection(UsesNode,NewUnitName)<>nil)
+  then exit;
+  if CurInImplementation then begin
+    UsesNode:=CurTool.FindImplementationUsesSection;
+    if (UsesNode<>nil) and (CurTool.FindNameInUsesSection(UsesNode,NewUnitName)<>nil)
+    then exit;
+  end;
+
   // get unit name
   NewUnitCode:=CodeToolBoss.LoadFile(NewUnitFilename,true,false);
   if NewUnitCode=nil then exit;
@@ -1299,16 +1311,6 @@ begin
   if (CurNode.Desc in [ctnUnit,ctnUsesSection]) then begin
     debugln(['TCodyIdentifiersDlg.AddToUsesSection identifier in uses section, not adding unit to uses section']);
     exit;
-  end;
-
-  // check if already in uses section
-  UsesNode:=CurTool.FindMainUsesSection;
-  if (UsesNode<>nil) and (CurTool.FindNameInUsesSection(UsesNode,NewUnitName)<>nil)
-  then exit;
-  if CurInImplementation then begin
-    UsesNode:=CurTool.FindImplementationUsesSection;
-    if (UsesNode<>nil) and (CurTool.FindNameInUsesSection(UsesNode,NewUnitName)<>nil)
-    then exit;
   end;
 
   // add to uses section

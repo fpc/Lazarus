@@ -810,6 +810,7 @@ type
           out NamePos, InPos: TAtomPosition): boolean;
     function GetUnitNameForUsesSection(TargetTool: TFindDeclarationTool): string;
     function GetUnitForUsesSection(TargetTool: TFindDeclarationTool): string; deprecated;
+    function IsHiddenUsedUnit(TheUnitName: PChar): boolean;
 
     function FindUnitSource(const AnUnitName,
       AnUnitInFilename: string; ExceptionOnNotFound: boolean): TCodeBuffer;
@@ -1936,17 +1937,7 @@ begin
   if Result='' then exit;
 
   // check if system unit
-  if (CompareIdentifiers(PChar(Result),'system')=0)
-  or ((Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
-    and (Scanner.PascalCompiler=pcFPC)
-    and (CompareIdentifiers(PChar(Result),'ObjPas')=0))
-  or ((Scanner.CompilerMode=cmMacPas)
-    and (Scanner.PascalCompiler=pcFPC)
-    and (CompareIdentifiers(PChar(Result),'MacPas')=0))
-  or ((cmsObjectiveC1 in Scanner.CompilerModeSwitches)
-    and ((CompareIdentifiers(PChar(Result),'ObjC')=0)
-        or (CompareIdentifiers(PChar(Result),'ObjCBase')=0)))
-  then begin
+  if IsHiddenUsedUnit(PChar(Result)) then begin
     Result:='';
     exit;
   end;
@@ -1977,6 +1968,24 @@ function TFindDeclarationTool.GetUnitForUsesSection(
   TargetTool: TFindDeclarationTool): string;
 begin
   Result:=GetUnitNameForUsesSection(TargetTool);
+end;
+
+function TFindDeclarationTool.IsHiddenUsedUnit(TheUnitName: PChar): boolean;
+begin
+  if (CompareIdentifiers(TheUnitName,'system')=0)
+  or ((Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
+    and (Scanner.PascalCompiler=pcFPC)
+    and (CompareIdentifiers(TheUnitName,'ObjPas')=0))
+  or ((Scanner.CompilerMode=cmMacPas)
+    and (Scanner.PascalCompiler=pcFPC)
+    and (CompareIdentifiers(TheUnitName,'MacPas')=0))
+  or (([cmsObjectiveC1,cmsObjectiveC2]*Scanner.CompilerModeSwitches<>[])
+    and ((CompareIdentifiers(TheUnitName,'ObjC')=0)
+        or (CompareIdentifiers(TheUnitName,'ObjCBase')=0)))
+  then begin
+    exit(true);
+  end;
+  Result:=false;
 end;
 
 function TFindDeclarationTool.FindInitializationSection: TCodeTreeNode;
