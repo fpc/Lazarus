@@ -7225,7 +7225,7 @@ begin
   if SrcEdit = nil then
     Exit;
   CurFont:=SrcEdit.EditorComponent.Font;
-  if (not CurFont.CanUTF8) and SystemCharSetIsUTF8
+  if SystemCharSetIsUTF8
   and ((EditorOpts.DoNotWarnForFont='')
        or (EditorOpts.DoNotWarnForFont<>CurFont.Name))
   then begin
