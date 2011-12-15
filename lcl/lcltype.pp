@@ -386,7 +386,8 @@ const
 // Virtual keys
 //-------------
 //
-// Source: http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/WinUI/WindowsUserInterface/UserInput/VirtualKeyCodes.asp
+// Basic keys up to $FF have values and meaning compatible with the Windows API as described here:
+// http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/WinUI/WindowsUserInterface/UserInput/VirtualKeyCodes.asp
 //
   VK_UNKNOWN    = 0; // defined by LCL
   VK_LBUTTON    = 1;
@@ -395,13 +396,14 @@ const
   VK_MBUTTON    = 4;
   VK_XBUTTON1   = 5;
   VK_XBUTTON2   = 6;
-  VK_BACK       = 8;
+  VK_BACK       = 8;  // The "Backspace" key, dont confuse with the
+                      // Android BACK key which is mapped to VK_ESCAPE
   VK_TAB        = 9;
   VK_CLEAR      = 12;
-  VK_RETURN     = 13;
-  VK_SHIFT      = 16;
-  VK_CONTROL    = 17;
-  VK_MENU       = 18;
+  VK_RETURN     = 13; // The "Enter" key, also used for a keypad center press
+  VK_SHIFT      = 16; // See also VK_LSHIFT, VK_RSHIFT
+  VK_CONTROL    = 17; // See also VK_LCONTROL, VK_RCONTROL
+  VK_MENU       = 18; // The ALT key. Also called "Option" in Mac OS X. See also VK_LMENU, VK_RMENU
   VK_PAUSE      = 19;
   VK_CAPITAL    = 20;
   VK_KANA       = 21;
@@ -410,14 +412,14 @@ const
   VK_FINAL      = 24;
   VK_HANJA      = 25;
   VK_KANJI      = 25;
-  VK_ESCAPE     = 27;
+  VK_ESCAPE     = 27; // Also used for the hardware Back key in Android
   VK_CONVERT    = 28;
   VK_NONCONVERT = 29;
   VK_ACCEPT     = 30;
   VK_MODECHANGE = 31;
   VK_SPACE      = 32;
-  VK_PRIOR      = 33;
-  VK_NEXT       = 34;
+  VK_PRIOR      = 33; // Page Up
+  VK_NEXT       = 34; // Page Down
   VK_END        = 35;
   VK_HOME       = 36;
   VK_LEFT       = 37;
@@ -469,8 +471,8 @@ const
   VK_Y          = $59;
   VK_Z          = $5A;
 
-  VK_LWIN       = $5B;
-  VK_RWIN       = $5C;
+  VK_LWIN       = $5B; // In Mac OS X this is the Apple, or Command key
+  VK_RWIN       = $5C; // In Mac OS X this is the Apple, or Command key
   VK_APPS       = $5D;
   // $5E reserved
   VK_SLEEP      = $5F;
@@ -541,8 +543,8 @@ const
   VK_RSHIFT     = $A1;
   VK_LCONTROL   = $A2;
   VK_RCONTROL   = $A3;
-  VK_LMENU      = $A4;
-  VK_RMENU      = $A5;
+  VK_LMENU      = $A4; // Left ALT key (also named Option in Mac OS X)
+  VK_RMENU      = $A5; // Right ALT key (also named Option in Mac OS X)
 
   VK_BROWSER_BACK        = $A6;
   VK_BROWSER_FORWARD     = $A7;
