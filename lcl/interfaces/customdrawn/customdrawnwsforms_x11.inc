@@ -1,6 +1,7 @@
 {$MainForm customdrawnwsforms.pp}
 
 // redefines:
+// The version from FreePascal crash except in FPC 2.7.1+ from 10 Dec 2011 +
 function XmbLookupString(p1: PXIC; ev: PXKeyPressedEvent; str: PChar; len: longword; ks: PKeySym; stat: PStatus): longint; cdecl; external;
 function Xutf8LookupString(p1: PXIC; ev: PXKeyPressedEvent; str: PChar; len: longword; ks: PKeySym; stat: PStatus): longint; cdecl; external;
 
@@ -491,8 +492,10 @@ var
 begin
   lForm := TCDForm(AWinControl.Handle);
   KeySym := StartComposing(Event);
-
   lKey := X11KeyToLCLKey(KeySym);
+  CDWidgetset.LastKeySym := KeySym;
+  CDWidgetset.LastKey := lKey;
+
   CallbackKeyDown(lForm, lKey);
 
   //if (FXEvent^.xkey.state and (ControlMask or Mod1Mask)) = 0 then EndComposing;
@@ -500,12 +503,15 @@ end;
 
 class procedure TCDWSCustomForm.EvKeyReleased(const AWinControl: TWinControl;
   AWindowInfo: TX11WindowInfo; var Event: TXKeyEvent);
-{var
-  KeySym: TKeySym;}
+var
+  lKey: Word;
+  lForm: TCDForm;
 begin
-{  KeySym := StartComposing(FXEvent^);
+  // Send back the last pressed key as a KeyUp event
+  lForm := TCDForm(AWinControl.Handle);
 
-  inherited EvKeyReleased(AKey);
+  lKey := CDWidgetset.LastKey;
+  CallbackKeyUp(lForm, lKey);
 
   // Do not call EndComposing, as this would generate duplicate KeyChar events!}
 end;
@@ -1903,9 +1909,9 @@ begin
     $FF7F: Result := VK_NUMLOCK;
 //    0xff7f   U0000   f   # Num_Lock
     $FF80: Result := VK_SPACE;
-{    0xff89   U0009   f   # KP_Tab
-    0xff8d   U000d   f   # KP_Enter	/* enter */
-    0xff91   U0000   f   # KP_F1
+    $FF89: Result := VK_TAB;
+    $FF8D: Result := VK_RETURN; // KP_Enter	/* enter */
+{    0xff91   U0000   f   # KP_F1
     0xff92   U0000   f   # KP_F2
     0xff93   U0000   f   # KP_F3
     0xff94   U0000   f   # KP_F4

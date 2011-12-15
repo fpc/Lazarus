@@ -139,7 +139,8 @@ type
     ComposeStatus: TStatus;
     InputMethod: xlib.PXIM;
     InputContext: PXIC;
-    LastKeySym: TKeySym;   // Used for KeyRelease event
+    LastKeySym: TKeySym; // Used for KeyRelease event
+    LastKey: Word;       // Used for KeyRelease event
 
     function FindWindowByXID(XWindowID: X.TWindow; out AWindowInfo: TX11WindowInfo): TWinControl;
     {$endif}
