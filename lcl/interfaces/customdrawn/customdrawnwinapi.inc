@@ -6077,7 +6077,7 @@ begin
   GetWindowOrgEx(DC, @P);
   if OldPoint <> nil then OldPoint^ := P;
 
-  LazDC.WindowOrg := Point(-NewX, -NewY);
+  LazDC.WindowOrg := Types.Point(-NewX, -NewY);
   Result := True;
 end;
 

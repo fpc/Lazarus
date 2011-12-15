@@ -37,12 +37,18 @@ type
   public
     WindowHandle: TCocoaWindow;
     function acceptsFirstResponder: Boolean; override;
+    // Mouse events
     procedure mouseUp(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
+    // Keyboard events
+    procedure keyDown(theEvent: NSEvent); override;
+    procedure keyUp(theEvent: NSEvent); override;
+    function MacKeyCodeToLCLKey(AKey: Word; var SendKeyUpDown, SendChar: Boolean): Word; message 'MacKeyCodeToLCLKey:sendkey:sendchar:';
+    //
     function lclIsVisible: Boolean; message 'lclIsVisible';
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
     procedure lclInvalidate; message 'lclInvalidate';
@@ -87,6 +93,99 @@ function RawImage_DescriptionToBitmapType(ADesc: TRawImageDescription; out bmpTy
 implementation
 
 uses customdrawnwsforms, customdrawnprivate;
+
+(*
+About Mac Key codes:
+unfortunately, mac key codes are keyboard specific:
+that is, there is no universal VK_A, but every keyboard has its code for VK_A
+Key codes depend on physical key position on the keyboard: considering a
+QWERTY keyboard and an AZERTY one, keycode(Q) of first one = keycode(A) of
+the second one, and so on.
+For "printable" keys we can rely on kEventParamKeyMacCharCodes and
+kEventParamKeyUnicodes event parameters to obtain an ascii/unicode value
+that we can translate to the appropriate VK_ code
+For non printable keys (Function, ins, arrow and so on...) we use the raw
+keycodes, since it looks like they are constant across all keyboards
+
+So, here are constants for non-printable keys (MK means "Mac Key").
+These constants were extracted using KeyCodes program by Peter Maurer
+(http://www.petermaurer.de/nasi.php?section=keycodes)
+
+Some keys were taken from the ancient "Macintosh Toolbox Essentials", page 87
+http://developer.apple.com/documentation/mac/pdf/MacintoshToolboxEssentials.pdf
+*)
+
+const
+  MK_ENTER     = $24;
+  MK_SPACE     = $31;
+  MK_ESC       = $35;
+  MK_F1        = $7A;
+  MK_F2        = $78;
+  MK_F3        = $63;
+  MK_F4        = $76;
+  MK_F5        = $60;
+  MK_F6        = $61;
+  MK_F7        = $62;
+  MK_F8        = $64;
+  MK_F9        = $65;
+  MK_F10       = $6D;
+  MK_F11       = $67;
+  MK_F12       = $6F;
+  MK_F13       = $69; MK_PRNSCR  = MK_F13;  //Print screen = F13
+  MK_F14       = $6B; MK_SCRLOCK = MK_F14;  //Scroll Lock = F14
+  MK_F15       = $71; MK_PAUSE   = MK_F15;  //Pause = F15
+  MK_POWER     = $7F7F;
+  MK_TAB       = $30;
+  MK_INS       = $72; MK_HELP    = MK_INS;  //old macs call this key "help"
+  MK_DEL       = $75;
+  MK_HOME      = $73;
+  MK_END       = $77;
+  MK_PAGUP     = $74;
+  MK_PAGDN     = $79;
+  MK_UP        = $7E;
+  MK_DOWN      = $7D;
+  MK_LEFT      = $7B;
+  MK_RIGHT     = $7C;
+  MK_NUMLOCK   = $47;
+  MK_NUMPAD0   = $52;
+  MK_NUMPAD1   = $53;
+  MK_NUMPAD2   = $54;
+  MK_NUMPAD3   = $55;
+  MK_NUMPAD4   = $56;
+  MK_NUMPAD5   = $57;
+  MK_NUMPAD6   = $58;
+  MK_NUMPAD7   = $59;
+  MK_NUMPAD8   = $5b;
+  MK_NUMPAD9   = $5c;
+  MK_PADEQUALS = $51; //only present in old mac keyboards?
+  MK_PADDIV    = $4B;
+  MK_PADMULT   = $43;
+  MK_PADSUB    = $4E;
+  MK_PADADD    = $45;
+  MK_PADDEC    = $41;
+  MK_PADENTER  = $4C; //enter on numeric keypad
+  MK_BACKSPACE = $33;
+  MK_CAPSLOCK  = $39;
+
+
+//Modifiers codes - you'll never get these directly
+
+  MK_SHIFTKEY  = $38;
+  MK_CTRL      = $3B;
+  MK_ALT       = $3A; MK_OPTION = MK_ALT;
+  MK_COMMAND   = $37; MK_APPLE  = MK_COMMAND;
+
+  MK_TILDE        = 50; // `/~ key
+  MK_MINUS        = 27; // -/_ key
+  MK_EQUAL        = 24; // =/+ key
+  MK_BACKSLASH    = 42; // \ | key
+  MK_LEFTBRACKET  = 33; // [ { key
+  MK_RIGHTBRACKET = 30; // ] } key
+  MK_SEMICOLON    = 41; // ; : key
+  MK_QUOTE        = 39; // ' " key
+  MK_COMMA        = 43; // , < key
+  MK_PERIOD       = 47; // . > key
+  MK_SLASH        = 44; // / ? key
 
 function Cocoa_RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
 const
@@ -248,6 +347,253 @@ begin
   mp.y:=NSView(event.window.contentView).bounds.size.height-mp.y;
   callbackMouseMove(WindowHandle, round(mp.x), round(mp.y));
   inherited mouseMoved(event);
+end;
+
+procedure TCocoaForm.keyDown(theEvent: NSEvent);
+var
+  lKey: Word;
+  lSendKey, lSendChar: Boolean;
+begin
+  inherited keyDown(theEvent);
+  lKey := MacKeyCodeToLCLKey(theEvent.keyCode(), lSendKey, lSendChar);
+  DebugLn('KeyDown='+IntToHex(theEvent.keyCode(), 4));
+  if lSendKey then CallbackKeyDown(WindowHandle, lKey);
+end;
+
+procedure TCocoaForm.keyUp(theEvent: NSEvent);
+var
+  lKey: Word;
+  lUTF8Char: TUTF8Char;
+  lSendKey, lSendChar: Boolean;
+begin
+  inherited keyUp(theEvent);
+  lKey := MacKeyCodeToLCLKey(theEvent.keyCode(), lSendKey, lSendChar);
+  if lSendKey then CallbackKeyUp(WindowHandle, lKey);
+  if lSendChar then CallbackKeyChar(WindowHandle, 0, lUTF8Char);
+end;
+
+function TCocoaForm.MacKeyCodeToLCLKey(AKey: Word; var SendKeyUpDown, SendChar: Boolean): Word;
+(*var
+  KeyCode, DeadKeys: UInt32;
+  TextLen : UInt32;
+  CharLen : integer;
+  widebuf: array[1..2] of widechar;
+  U: Cardinal;
+  Layout: UCKeyboardLayoutPtr;
+  KeyboardLayout: KeyboardLayoutRef;*)
+begin
+  SendKeyUpDown := False;
+  SendChar := False;
+  Result := VK_UNKNOWN;
+
+//  KeyData:=GetCarbonMsgKeyState;
+//  IsSysKey:=(GetCurrentEventKeyModifiers and cmdKey)>0;
+
+{  if OSError(GetEventParameter(AEvent, kEventParamKeyCode, typeUInt32, nil,
+      Sizeof(KeyCode), nil, @KeyCode), SName, AGetEvent,
+    'kEventParamKeyCode') then Exit;}
+
+  //non-printable keys (see mackeycodes.inc)
+  //for these keys, only send keydown/keyup (not char or UTF8KeyPress)
+  case AKey of
+    MK_F1       : Result:=VK_F1;
+    MK_F2       : Result:=VK_F2;
+    MK_F3       : Result:=VK_F3;
+    MK_F4       : Result:=VK_F4;
+    MK_F5       : Result:=VK_F5;
+    MK_F6       : Result:=VK_F6;
+    MK_F7       : Result:=VK_F7;
+    MK_F8       : Result:=VK_F8;
+    MK_F9       : Result:=VK_F9;
+    MK_F10      : Result:=VK_F10;
+    MK_F11      : Result:=VK_F11;
+    MK_F12      : Result:=VK_F12;
+{    MK_F13      : Result:=VK_SNAPSHOT;
+    MK_F14      : Result:=VK_SCROLL;
+    MK_F15      : Result:=VK_PAUSE;}
+    MK_POWER    : Result:=VK_POWER;
+    MK_TAB      : Result:=VK_TAB; //strangely enough, tab is "non printable"
+    MK_INS      : Result:=VK_INSERT;
+    MK_DEL      : Result:=VK_DELETE;
+    MK_HOME     : Result:=VK_HOME;
+    MK_END      : Result:=VK_END;
+    MK_PAGUP    : Result:=VK_PRIOR;
+    MK_PAGDN    : Result:=VK_NEXT;
+    MK_UP       : Result:=VK_UP;
+    MK_DOWN     : Result:=VK_DOWN;
+    MK_LEFT     : Result:= VK_LEFT;
+    MK_RIGHT    : Result:= VK_RIGHT;
+    MK_NUMLOCK  : Result:= VK_NUMLOCK;
+  end;
+
+  if Result<>VK_UNKNOWN then
+  begin
+    //stop here, we won't send char or UTF8KeyPress
+    SendKeyUpDown:=true;
+    Exit;
+  end;
+
+(*  // get untranslated key (key without modifiers)
+  OSError(KLGetCurrentKeyboardLayout(KeyboardLayout), SName, 'KLGetCurrentKeyboardLayout');
+  OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLuchrData, Layout), SName, 'KLGetKeyboardLayoutProperty');
+  {$IFDEF VerboseKeyboard}
+  DebugLn('[Keyboard layout] UCHR layout = ', DbgS(Layout));
+  {$ENDIF}
+
+  TextLen:=0;
+  DeadKeys:=0;
+  UTF8VKCharacter:='';
+  VKKeyChar:=#0;
+  CharLen:=0;
+
+  if Layout <> nil then
+  begin
+    OSError(UCKeyTranslate(Layout^, KeyCode, kUCKeyActionDisplay,
+        0, LMGetKbdType,
+        kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @WideBuf[1]), SName, 'UCKeyTranslate');
+
+    if TextLen>0 then begin
+      u:=UTF16CharacterToUnicode(@WideBuf[1],CharLen);
+      if CharLen>0 then begin
+        UTF8VKCharacter:=UnicodeToUTF8(u);
+        if (UTF8VKCharacter<>'') and (ord(Utf8VKCharacter[1])<=127) then //It's (true) ascii.
+          VKKeyChar:=Utf8VKCharacter[1]
+        else //not ascii, get the Mac character.
+          OSError(
+            GetEventParameter(AEvent, kEventParamKeyMacCharCodes, typeChar, nil,
+              Sizeof(VKKeyChar), nil, @VKKeyChar), SName, AGetEvent,
+            'kEventParamKeyMacCharCodes');
+      end;
+    end;
+
+    TextLen := 0;
+
+    if IsSysKey then
+    begin // workaround for Command modifier suppressing shift
+      DeadKeys := 0;
+      OSError(UCKeyTranslate(Layout^, KeyCode, kUCKeyActionDisplay,
+          (GetCurrentEventKeyModifiers and not cmdkey) shr 8, LMGetKbdType,
+          kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @WideBuf[1]), SName, 'UCKeyTranslate');
+      {$IFDEF VerboseKeyboard}
+      debugln(['TranslateMacKeyCode IsSysKey: TextLen=',TextLen,' CharLen=',CharLen,' UTF8VKCharacter=',UTF8VKCharacter]);
+      {$ENDIF}
+    end;
+  end
+  else
+  begin
+    // uchr style keyboard layouts not always available - fall back to older style
+    OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLKCHRData, Layout), SName, 'KLGetKeyboardLayoutProperty');
+    {$IFDEF VerboseKeyboard}
+     DebugLn('[Keyboard layout] KCHR layout = ', DbgS(Layout));
+    {$ENDIF}
+    VKKeyChar := Char(KeyTranslate(Layout, KeyCode, DeadKeys) and 255);
+    { TODO: workaround for Command modifier suppressing shift? }
+  end;
+
+  {$IFDEF VerboseKeyboard}
+  debugln(['TranslateMacKeyCode TextLen=',TextLen,' CharLen=',CharLen,' UTF8VKCharacter=',UTF8VKCharacter,' VKKeyChar=',DbgStr(VKKeyChar)]);
+  {$ENDIF}
+
+  //printable keys
+  //for these keys, send char or UTF8KeyPress
+
+  if TextLen = 0 then
+  begin
+    if OSError(
+      GetEventParameter(AEvent, kEventParamKeyUnicodes, typeUnicodeText, nil,
+        6, @TextLen, @WideBuf[1]), SName, AGetEvent, 'kEventParamKeyUnicodes') then Exit;
+  end;
+
+  if TextLen>0 then
+  begin
+    SendChar:=true;
+
+    u:=UTF16CharacterToUnicode(@WideBuf[1],CharLen);
+    if CharLen=0 then exit;
+    UTF8Character:=UnicodeToUTF8(u);
+
+    if (UTF8Character<>'') and (ord(Utf8Character[1])<=127) then //It's (true) ascii.
+      KeyChar:=Utf8Character[1]
+    else //not ascii, get the Mac character.
+      if OSError(
+        GetEventParameter(AEvent, kEventParamKeyMacCharCodes, typeChar, nil,
+          Sizeof(KeyChar), nil, @KeyChar), SName, AGetEvent,
+        'kEventParamKeyMacCharCodes') then Exit;
+
+    {$IFDEF VerboseKeyboard}
+    debugln(['TranslateMacKeyCode printable key: TextLen=',TextLen,' UTF8Character=',UTF8Character,' KeyChar=',DbgStr(KeyChar),' VKKeyChar=',DbgStr(VKKeyChar)]);
+    {$ENDIF}
+
+    // the VKKeyCode is independent of the modifier
+    // => use the VKKeyChar instead of the KeyChar
+    case VKKeyChar of
+      'a'..'z': VKKeyCode:=VK_A+ord(VKKeyChar)-ord('a');
+      'A'..'Z': VKKeyCode:=ord(VKKeyChar);
+      #27     : VKKeyCode:=VK_ESCAPE;
+      #8      : VKKeyCode:=VK_BACK;
+      ' '     : VKKeyCode:=VK_SPACE;
+      #13     : VKKeyCode:=VK_RETURN;
+      '0'..'9':
+        case KeyCode of
+          MK_NUMPAD0: VKKeyCode:=VK_NUMPAD0;
+          MK_NUMPAD1: VKKeyCode:=VK_NUMPAD1;
+          MK_NUMPAD2: VKKeyCode:=VK_NUMPAD2;
+          MK_NUMPAD3: VKKeyCode:=VK_NUMPAD3;
+          MK_NUMPAD4: VKKeyCode:=VK_NUMPAD4;
+          MK_NUMPAD5: VKKeyCode:=VK_NUMPAD5;
+          MK_NUMPAD6: VKKeyCode:=VK_NUMPAD6;
+          MK_NUMPAD7: VKKeyCode:=VK_NUMPAD7;
+          MK_NUMPAD8: VKKeyCode:=VK_NUMPAD8;
+          MK_NUMPAD9: VKKeyCode:=VK_NUMPAD9
+          else VKKeyCode:=ord(VKKeyChar);
+        end;
+      else
+      case KeyCode of
+        MK_PADDIV  : VKKeyCode:=VK_DIVIDE;
+        MK_PADMULT : VKKeyCode:=VK_MULTIPLY;
+        MK_PADSUB  : VKKeyCode:=VK_SUBTRACT;
+        MK_PADADD  : VKKeyCode:=VK_ADD;
+        MK_PADDEC  : VKKeyCode:=VK_DECIMAL;
+        MK_PADENTER:
+          begin
+            VKKeyCode:=VK_RETURN;
+            VKKeyChar:=#13;
+            UTF8Character:=VKKeyChar;
+          end;
+        MK_TILDE: VKKeyCode := VK_OEM_3;
+        MK_MINUS: VKKeyCode := VK_OEM_MINUS;
+        MK_EQUAL: VKKeyCode := VK_OEM_PLUS;
+        MK_BACKSLASH:    VKKeyCode := VK_OEM_5;
+        MK_LEFTBRACKET:  VKKeyCode := VK_OEM_4;
+        MK_RIGHTBRACKET: VKKeyCode := VK_OEM_6;
+        MK_SEMICOLON:    VKKeyCode := VK_OEM_1;
+        MK_QUOTE:  VKKeyCode := VK_OEM_7;
+        MK_COMMA:  VKKeyCode := VK_OEM_COMMA;
+        MK_PERIOD: VKKeyCode := VK_OEM_PERIOD;
+        MK_SLASH:  VKKeyCode := VK_OEM_2;
+      end;
+    end;
+
+    if VKKeyCode=VK_UNKNOWN then
+    begin
+      // There is no known VK_ code for this characther. Use a dummy keycode
+      // (E8, which is unused by Windows) so that KeyUp/KeyDown events will be
+      // triggered by LCL.
+      // Note: we can't use the raw mac keycode, since it could collide with
+      // well known VK_ keycodes (e.g on my italian ADB keyboard, keycode for
+      // "&egrave;" is 33, which is the same as VK_PRIOR)
+      VKKeyCode:=$E8;
+    end;
+
+    {$IFDEF VerboseKeyboard}
+    DebugLn('[TranslateMacKeyCode] VKKeyCode=', DbgsVKCode(VKKeyCode), ' Utf8="',
+       UTF8Character, '" VKKeyChar="', DbgStr(VKKeyChar), '" KeyChar="',DbgStr(KeyChar),'"' );
+    {$ENDIF}
+
+    Result := True;
+  end
+  else DebugLn('[TranslateMacKeyCode] Error Unable to get Unicode char RawKeyCode = ',
+    DbgsVKCode(KeyCode));*)
 end;
 
 procedure TCocoaForm.mouseEntered(event: NSEvent);

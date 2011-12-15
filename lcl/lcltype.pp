@@ -389,6 +389,8 @@ const
 // Basic keys up to $FF have values and meaning compatible with the Windows API as described here:
 // http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/WinUI/WindowsUserInterface/UserInput/VirtualKeyCodes.asp
 //
+// Starting with $100 and upwards the key constants are LCL additions
+//
   VK_UNKNOWN    = 0; // defined by LCL
   VK_LBUTTON    = 1;
   VK_RBUTTON    = 2;
@@ -608,8 +610,16 @@ const
   VK_PA1        = $FD;
   VK_OEM_CLEAR  = $FE;
 
-  VK_HIGHESTVALUE = $FE;
+  VK_HIGHESTVALUE = $FFFF;
   VK_UNDEFINED  = $FF; // defined by LCL
+
+//==============================================
+// Now LCL defined keys
+//==============================================
+
+  VK_POWER      = $100;
+  VK_CALL       = $101;
+  VK_ENDCALL    = $102;
 
 //==============================================
 //
