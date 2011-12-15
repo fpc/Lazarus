@@ -21,6 +21,8 @@ begin
 end;
 
 procedure TCDWidgetSet.CDSetFocusToControl(ALCLControl, AIntfControl: TWinControl);
+var
+  lForm: TWinControl;
 begin
   if (CDWidgetset.FocusedControl <> ALCLControl) then
   begin
@@ -35,6 +37,10 @@ begin
       LCLSendKillFocusMsg(CDWidgetset.FocusedIntfControl);
     CDWidgetset.FocusedIntfControl := AIntfControl;
     if AIntfControl <> nil then LCLSendSetFocusMsg(AIntfControl);
+
+    // Invalidate the entire window to reflect the focus change
+    lForm := Forms.GetParentForm(ALCLControl);
+    LCLIntf.InvalidateRect(lForm.Handle, nil, False);
   end;
 end;
 

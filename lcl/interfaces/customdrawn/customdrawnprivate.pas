@@ -26,7 +26,7 @@ procedure CallbackMouseDown(AWindowHandle: TCDForm; x, y: Integer; Button: TMous
 procedure CallbackMouseMove(AWindowHandle: TCDForm; x, y: Integer; ShiftState: TShiftState = []);
 procedure CallbackKeyDown(AWindowHandle: TCDForm; AKey: Word);
 procedure CallbackKeyUp(AWindowHandle: TCDForm; AKey: Word);
-procedure CallbackKeyChar(AWindowHandle: TCDForm; AKey: Word; AChar: TUTF8Char);
+procedure CallbackKeyChar(AWindowHandle: TCDForm; AKeyData: Word; AChar: TUTF8Char);
 function IsIntfControl(AControl: TWinControl): Boolean;
 
 implementation
@@ -144,23 +144,26 @@ begin
   end;
 end;
 
-procedure CallbackKeyChar(AWindowHandle: TCDForm; AKey: Word; AChar: TUTF8Char);
+procedure CallbackKeyChar(AWindowHandle: TCDForm; AKeyData: Word; AChar: TUTF8Char);
 var
   lTarget: TWinControl;
+  lCharCode: Word = 0;
 begin
   lTarget := AWindowHandle.GetFocusedControl();
   {$ifdef VerboseCDEvents}
    DebugLn(Format('CallbackKeyChar FocusedControl=%s:%s', [lTarget.Name, lTarget.ClassName]));
   {$endif}
 
-  LCLSendCharEvent(lTarget, AKey, 0, True, False, True);
+  if Length(AChar) = 1 then lCharCode := Word(AChar[1]);
+
+//  if lCharCode <> 0 then LCLSendCharEvent(lTarget, lCharCode, AKeyData, True, False, True);
   LCLSendUTF8KeyPress(lTarget, AChar, False);
 
   // If this is a interface control, send the message to the main LCL control too
   if IsIntfControl(lTarget) then
   begin
     lTarget := lTarget.Parent;
-    LCLSendCharEvent(lTarget, AKey, 0, True, False, True);
+//    if lCharCode <> 0 then LCLSendCharEvent(lTarget, lCharCode, AKeyData, True, False, True);
     LCLSendUTF8KeyPress(lTarget, AChar, False);
   end;
 end;

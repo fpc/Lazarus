@@ -489,6 +489,10 @@ var
   lKey: Word;
   lForm: TCDForm;
   KeySym: TKeySym;
+  lCurString: String;
+  lCurChar: TUTF8Char;
+  i: Integer;
+  lEndComposing: Boolean;
 begin
   lForm := TCDForm(AWinControl.Handle);
   KeySym := StartComposing(Event);
@@ -498,7 +502,19 @@ begin
 
   CallbackKeyDown(lForm, lKey);
 
-  //if (FXEvent^.xkey.state and (ControlMask or Mod1Mask)) = 0 then EndComposing;
+  // EndComposing embedded here
+  lEndComposing := CDWidgetset.ComposeStatus <> XLookupNone;
+  lEndComposing := lEndComposing and ((Event.state and (ControlMask or Mod1Mask)) = 0);
+  if lEndComposing then
+  begin
+    for i := 1 to UTF8Length(CDWidgetset.ComposeBuffer) do
+    begin
+      lCurString := CDWidgetset.ComposeBuffer;
+      lCurString := UTF8Copy(lCurString, i, 1);
+      lCurChar := lCurString;
+      CallbackKeyChar(lForm, 0, lCurChar);
+    end;
+  end;
 end;
 
 class procedure TCDWSCustomForm.EvKeyReleased(const AWinControl: TWinControl;
@@ -714,6 +730,17 @@ begin
   len := Xutf8LookupString(CDWidgetset.InputContext, @Event, @CDWidgetset.ComposeBuffer[1],
       Length(CDWidgetset.ComposeBuffer), @Result, @CDWidgetset.ComposeStatus);
   SetLength(CDWidgetset.ComposeBuffer, len);
+
+  {$ifdef VerboseCDText}
+  case CDWidgetset.ComposeStatus of
+    XBufferOverflow: DebugLn('[TCDWSCustomForm.StartComposing] Status=XBufferOverflow');
+    XLookupNone: DebugLn('[TCDWSCustomForm.StartComposing] Status=XLookupNone');
+    XLookupChars: DebugLn('[TCDWSCustomForm.StartComposing] Status=XLookupChars');
+    XLookupKeySymVal: DebugLn('[TCDWSCustomForm.StartComposing] Status=XLookupKeySym');
+    XLookupBoth: DebugLn('[TCDWSCustomForm.StartComposing] Status=XLookupBoth');
+  end;
+  {$endif}
+
   // if overflow occured, then previous SetLength() would have fixed the buffer
   // size, so run Xutf8LookupString again to read correct value.
   if CDWidgetset.ComposeStatus = XBufferOverflow then

@@ -2755,8 +2755,7 @@ begin
   if lObject is TCDWinControl then
   begin
     lWinControl := TCDWinControl(lObject).WinControl;
-    while (lWinControl <> nil) and (not (lWinControl is TCustomForm)) do
-      lWinControl := lWinControl.Parent;
+    lWinControl := Forms.GetParentForm(lWinControl);
     lFormHandle := TCDForm(lWinControl.Handle);
   end
   // Form DC
@@ -4644,9 +4643,7 @@ begin
   begin
     lControlHandle := TCDWinControl(lHandle);
     lControl := lControlHandle.WinControl;
-    while (lControl <> nil) and not (lControl is TCustomForm) do
-      lControl := lControl.Parent;
-
+    lControl := Forms.GetParentForm(lControl);
     Result := BackendInvalidateRect(lControl.Handle, Rect, BErase);
   end
   // Invalidate on a form
