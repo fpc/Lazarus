@@ -5447,17 +5447,9 @@ begin
 
     // Main menu bar
     {$IFDEF DARWIN}
-    // do not show menubar for empty menus
-    if (QtVersionMajor = 4) and (QtVersionMinor >= 6) then
-      QCoreApplication_setAttribute(QtAA_DontUseNativeMenuBar,
-        not Assigned(TCustomForm(LCLObject).Menu));
-    {$ENDIF}
-
+    MenuBar := TQtMenuBar.Create(nil);
+    {$ELSE}
     MenuBar := TQtMenuBar.Create(Result);
-
-    {$IFDEF DARWIN}
-    if (QtVersionMajor = 4) and (QtVersionMinor >= 6) then
-      QCoreApplication_setAttribute(QtAA_DontUseNativeMenuBar, False);
     {$ENDIF}
 
     FCentralWidget := QWidget_create(Result);
@@ -5533,6 +5525,8 @@ begin
   if QtWidgetSet.IsValidHandle(HWND(MenuBar)) then
   begin
     MenuBar.DetachEvents;
+    if FOwnWidget and (MenuBar.Widget <> nil) then
+      QWidget_destroy(MenuBar.Widget);
     MenuBar.Widget := nil;
     FreeThenNil(MenuBar);
   end;
@@ -12743,6 +12737,7 @@ begin
   setDefaultColor(dctFont);
   Palette.ForceColor := False;
   setVisible(FVisible);
+  QtWidgetSet.AddHandle(Self);
 end;
 
 function TQtMenuBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
