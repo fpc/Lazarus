@@ -43,7 +43,7 @@ interface
 
 uses
   LCLIntf, LCLType, LCLProc,
-  Classes, Graphics, Controls, SysUtils, Clipbrd,
+  Classes, Graphics, Controls, SysUtils, Clipbrd, SynEditHighlighter,
   SynEditMiscProcs, SynEditTypes, LazSynEditText, SynEditPointClasses;
 
 type
@@ -202,34 +202,18 @@ type
 
   { TSynSelectedColor }
 
-  TSynSelectedColor = class(TPersistent)
+  TSynSelectedColor = class(TLazSynCustomTextAttributes)
   private
-    FBG: TColor;
-    FFG: TColor;
-    FFrameColor: TColor;
-    FFrameEdges: TSynFrameEdges;
-    FFrameStyle: TSynLineStyle;
-    FStyle: TFontStyles;
-    // StyleMask = 1 => Copy Style Bits
-    // StyleMask = 0 => Invert where Style Bit = 1
-    FStyleMask: TFontStyles;
     FOnChange: TNotifyEvent;
     // 0 or -1 start/end before/after line // 1 first char
     FStartX, FEndX: Integer;
     FFrameSideColors: array[TSynFrameSide] of TColor;
     FFrameSideStyles: array[TSynFrameSide] of TSynLineStyle;
-    FUpdateCount: Integer;
-    FWasChanged: Boolean;
     function GetFrameSideColors(Side: TSynFrameSide): TColor;
     function GetFrameSideStyles(Side: TSynFrameSide): TSynLineStyle;
-    procedure SetBG(Value: TColor);
-    procedure SetFG(Value: TColor);
-    procedure SetFrameColor(const AValue: TColor);
-    procedure SetFrameEdges(const AValue: TSynFrameEdges);
-    procedure SetFrameStyle(const AValue: TSynLineStyle);
-    procedure SetStyle(const AValue : TFontStyles);
-    procedure SetStyleMask(const AValue : TFontStyles);
-    procedure DoChange;
+  protected
+    procedure DoChange; override;
+    procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
   public
     // TSynSelectedColor.Style and StyleMask describe how to modify a style,
     // but PaintLines creates an instance that contains an actual style (without mask)
@@ -243,27 +227,24 @@ type
     property EndX: Integer read FEndX write FEndX;
   public
     constructor Create;
-    procedure Assign(aSource: TPersistent); override;
     procedure Clear;
     function IsEnabled: boolean;
     function GetModifiedStyle(aStyle: TFontStyles): TFontStyles;
     procedure ModifyColors(var AForeground, ABackground, AFrameColor: TColor;
       var AStyle: TFontStyles; var AFrameStyle: TSynLineStyle);
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
-    procedure BeginUpdate;
-    procedure EndUpdate;
   published
-    property Background: TColor read FBG write SetBG default clHighLight;
-    property Foreground: TColor read FFG write SetFG default clHighLightText;
-    property FrameColor: TColor read FFrameColor write SetFrameColor default clNone;
-    property FrameStyle: TSynLineStyle read FFrameStyle write SetFrameStyle default slsSolid;
-    property FrameEdges: TSynFrameEdges read FFrameEdges write SetFrameEdges default sfeAround;
+    property Background default clHighLight;
+    property Foreground default clHighLightText;
+    property FrameColor default clNone;
+    property FrameStyle default slsSolid;
+    property FrameEdges default sfeAround;
     // FStyle = [],       FStyleMask = []        ==> no modification
     // FStyle = [fsBold], FStyleMask = []        ==> invert fsBold
     // FStyle = [],       FStyleMask = [fsBold]  ==> clear  fsBold
     // FStyle = [fsBold], FStyleMask = [fsBold]  ==> set    fsBold
-    property Style: TFontStyles read FStyle write SetStyle default [];
-    property StyleMask: TFontStyles read fStyleMask write SetStyleMask default [];
+    property Style default [];
+    property StyleMask default [];
   end;
 
   { TSynBookMarkOpt }
@@ -572,16 +553,15 @@ begin
   inherited Create;
   MergeFinalStyle := False;
   Clear;
-  FBG := clHighLight;
-  FFG := clHighLightText;
-  FUpdateCount := 0;
+  Background := clHighLight;
+  Foreground := clHighLightText;
 end;
 
 function TSynSelectedColor.GetModifiedStyle(aStyle : TFontStyles) : TFontStyles;
 begin
-  Result := fsXor(aStyle, FStyle * fsNot(FStyleMask)) // Invert Styles
-            + (FStyle*FStyleMask)                     // Set Styles
-            - (fsNot(FStyle)*FStyleMask);             // Remove Styles
+  Result := fsXor(aStyle, Style * fsNot(StyleMask)) // Invert Styles
+            + (Style*StyleMask)                     // Set Styles
+            - (fsNot(Style)*StyleMask);             // Remove Styles
 end;
 
 procedure TSynSelectedColor.ModifyColors(var AForeground, ABackground,
@@ -598,27 +578,6 @@ begin
   AStyle := GetModifiedStyle(AStyle);
 end;
 
-procedure TSynSelectedColor.BeginUpdate;
-begin
-  inc(FUpdateCount);
-end;
-
-procedure TSynSelectedColor.EndUpdate;
-begin
-  dec(FUpdateCount);
-  if (FUpdateCount = 0) and FWasChanged then
-    DoChange;
-end;
-
-procedure TSynSelectedColor.SetBG(Value: TColor);
-begin
-  if (FBG <> Value) then
-  begin
-    FBG := Value;
-    DoChange;
-  end;
-end;
-
 function TSynSelectedColor.GetFrameSideColors(Side: TSynFrameSide): TColor;
 begin
   Result := FFrameSideColors[Side];
@@ -629,66 +588,24 @@ begin
   Result := FFrameSideStyles[Side];
 end;
 
-procedure TSynSelectedColor.SetFG(Value: TColor);
-begin
-  if (FFG <> Value) then
-  begin
-    FFG := Value;
-    DoChange;
-  end;
-end;
-
-procedure TSynSelectedColor.SetFrameColor(const AValue: TColor);
-begin
-  if FFrameColor <> AValue then
-  begin
-    FFrameColor := AValue;
-    DoChange;
-  end;
-end;
-
-procedure TSynSelectedColor.SetFrameEdges(const AValue: TSynFrameEdges);
-begin
-  if FFrameEdges = AValue then exit;
-  FFrameEdges := AValue;
-  DoChange;
-end;
-
-procedure TSynSelectedColor.SetFrameStyle(const AValue: TSynLineStyle);
-begin
-  if FFrameStyle <> AValue then
-  begin
-    FFrameStyle := AValue;
-    DoChange;
-  end;
-end;
-
-procedure TSynSelectedColor.SetStyle(const AValue : TFontStyles);
-begin
-  if (FStyle <> AValue) then
-  begin
-    FStyle := AValue;
-    DoChange;
-  end;
-end;
-
-procedure TSynSelectedColor.SetStyleMask(const AValue : TFontStyles);
-begin
-  if (FStyleMask <> AValue) then
-  begin
-    FStyleMask := AValue;
-    DoChange;
-  end;
-end;
-
 procedure TSynSelectedColor.DoChange;
 begin
-  FWasChanged := True;
-  if FUpdateCount > 0 then
-    exit;
   if Assigned(FOnChange) then
     OnChange(Self);
-  FWasChanged := False;
+end;
+
+procedure TSynSelectedColor.AssignFrom(Src: TLazSynCustomTextAttributes);
+var
+  i: TSynFrameSide;
+begin
+  inherited AssignFrom(Src);
+  FStartX := TSynSelectedColor(Src).FStartX;
+  FEndX   := TSynSelectedColor(Src).FEndX;
+  for i := low(TSynFrameSide) to high(TSynFrameSide) do begin
+    FFrameSideColors[i] := TSynSelectedColor(Src).FFrameSideColors[i];
+    FFrameSideStyles[i] := TSynSelectedColor(Src).FFrameSideStyles[i];
+  end;
+  Changed; {TODO: only if really changed}
 end;
 
 procedure TSynSelectedColor.Merge(Other: TSynSelectedColor; LeftCol, RightCol: Integer);
@@ -738,9 +655,9 @@ var
 begin
   if (Other <> nil) and (FrameColor = clNone) then begin
     // Initial Values from other
-    FFrameColor := Other.FFrameColor;
-    FFrameStyle := Other.FFrameStyle;
-    FFrameEdges := Other.FFrameEdges;
+    FrameColor := Other.FrameColor;
+    FrameStyle := Other.FrameStyle;
+    FrameEdges := Other.FrameEdges;
     FStartX     := Other.FStartX;
     FEndX       := Other.FEndX;
     Other := nil;
@@ -775,9 +692,9 @@ begin
         if (Other.EndX = RightCol)  then SetSide(sfdRight, Other, True);
         SetSide(sfdBottom, Other, True);
         SetSide(sfdTop, Other, True);
-        FFrameColor := Other.FFrameColor;
-        FFrameStyle := Other.FFrameStyle;
-        FFrameEdges := Other.FFrameEdges;
+        FrameColor := Other.FrameColor;
+        FrameStyle := Other.FrameStyle;
+        FrameEdges := Other.FrameEdges;
         FStartX     := Other.FStartX;
         FEndX       := Other.FEndX;
       end;
@@ -790,54 +707,31 @@ begin
   end;
 end;
 
-procedure TSynSelectedColor.Assign(aSource : TPersistent);
-var
-  Source : TSynSelectedColor;
-  i: TSynFrameSide;
-begin
-  if Assigned(aSource) and (aSource is TSynSelectedColor) then
-  begin
-    Source := TSynSelectedColor(aSource);
-    FBG := Source.FBG;
-    FFG := Source.FFG;
-    FFrameColor := Source.FFrameColor;
-    FFrameStyle := Source.FFrameStyle;
-    FFrameEdges := Source.FFrameEdges;
-    FStyle := Source.FStyle;
-    FStyleMask := Source.FStyleMask;
-    FStartX := Source.FStartX;
-    FEndX   := Source.FEndX;
-    for i := low(TSynFrameSide) to high(TSynFrameSide) do begin
-      FFrameSideColors[i] := Source.FFrameSideColors[i];
-      FFrameSideStyles[i] := Source.FFrameSideStyles[i];
-    end;
-    DoChange; {TODO: only if really changed}
-  end;
-end;
-
 procedure TSynSelectedColor.Clear;
 var
   i: TSynFrameSide;
 begin
-  FBG := clNone;
-  FFG := clNone;
-  FFrameColor := clNone;
-  FFrameStyle := slsSolid;
-  FFrameEdges := sfeAround;
+  BeginUpdate;
+  Background := clNone;
+  Foreground := clNone;
+  FrameColor := clNone;
+  FrameStyle := slsSolid;
+  FrameEdges := sfeAround;
   for i := low(TSynFrameSide) to high(TSynFrameSide) do begin
     FFrameSideColors[i] := clNone;
     FFrameSideStyles[i] := slsSolid;
   end;
-  FStyle := [];
-  FStyleMask := [];
+  Style := [];
+  StyleMask := [];
   FStartX := -1;
   FEndX := -1;
+  EndUpdate;
 end;
 
 function TSynSelectedColor.IsEnabled: boolean;
 begin
-  Result := (FBG <> clNone) or (FFG <> clNone) or (FFrameColor <> clNone) or
-            (FStyle <> []) or (FStyleMask <> []);
+  Result := (Background <> clNone) or (Foreground <> clNone) or (FrameColor <> clNone) or
+            (Style <> []) or (StyleMask <> []);
 end;
 
 { TSynBookMarkOpt }

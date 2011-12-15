@@ -86,52 +86,78 @@ type
       hafFrameStyle, hafFrameEdges
     );
   TSynHighlighterAttrFeatures = set of TSynHighlighterAttrFeature;
+
+  { TLazSynCustomTextAttributes }
+
+  TLazSynCustomTextAttributes = class(TPersistent)
+  {strict} private
+    FUpdateCount: Integer;
+    FWasChanged: Boolean;
+
+    FBackground: TColor;
+    FForeground: TColor;
+    FFrameColor: TColor;
+    FFrameEdges: TSynFrameEdges;
+    FFrameStyle: TSynLineStyle;
+    fStyle: TFontStyles;
+    fStyleMask: TFontStyles;
+    procedure SetBackground(AValue: TColor);
+    procedure SetForeground(AValue: TColor);
+    procedure SetFrameColor(AValue: TColor);
+    procedure SetFrameEdges(AValue: TSynFrameEdges);
+    procedure SetFrameStyle(AValue: TSynLineStyle);
+    procedure SetStyle(AValue: TFontStyles);
+    procedure SetStyleMask(AValue: TFontStyles);
+  protected
+    procedure AssignFrom(Src: TLazSynCustomTextAttributes); virtual;
+    procedure Changed;
+    procedure DoChange; virtual;
+  public
+    constructor Create;
+    procedure Assign(aSource: TPersistent); override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+  public
+    property Background: TColor read FBackground write SetBackground;
+    property Foreground: TColor read FForeground write SetForeground;
+    property FrameColor: TColor read FFrameColor write SetFrameColor;
+    property FrameStyle: TSynLineStyle  read FFrameStyle write SetFrameStyle;
+    property FrameEdges: TSynFrameEdges read FFrameEdges write SetFrameEdges;
+    property Style: TFontStyles     read fStyle write SetStyle;
+    property StyleMask: TFontStyles read fStyleMask write SetStyleMask;
+  end;
+
   { TSynHighlighterAttributes }
 
-  TSynHighlighterAttributes = class(TPersistent)
+  TSynHighlighterAttributes = class(TLazSynCustomTextAttributes)
   private
-    FBackground: TColor;
     FBackgroundDefault: TColor;
-    FForeground: TColor;
     FForegroundDefault: TColor;
-    FFrameColor: TColor;
     FFrameColorDefault: TColor;
-    FFrameEdges: TSynFrameEdges;
     FFrameEdgesDefault: TSynFrameEdges;
-    FFrameStyle: TSynLineStyle;
     FFrameStyleDefault: TSynLineStyle;
-    FStyle: TFontStyles;
     FStyleDefault: TFontStyles;
-    FStyleMask: TFontStyles;
     FStyleMaskDefault: TFontStyles;
     FFeatures: TSynHighlighterAttrFeatures;
     FStoredName: string;
     FName: string;
     FOnChange: TNotifyEvent;
-    FChangeLock: Integer;
-    FIsChanged: Boolean;
-    procedure Changed; virtual;
     function GetBackgroundColorStored: boolean;
     function GetFontStyleMaskStored : boolean;
     function GetForegroundColorStored: boolean;
     function GetFrameColorStored: boolean;
     function GetFrameEdgesStored: boolean;
     function GetFrameStyleStored: boolean;
-    procedure SetBackground(Value: TColor);
-    procedure SetForeground(Value: TColor);
-    procedure SetFrameColor(const AValue: TColor);
-    procedure SetFrameEdges(const AValue: TSynFrameEdges);
-    procedure SetFrameStyle(const AValue: TSynLineStyle);
-    procedure SetStyle(Value: TFontStyles);
     function GetStyleFromInt: integer;
     procedure SetStyleFromInt(const Value: integer);
     function GetFontStyleStored: boolean;
-    procedure SetStyleMask(const AValue : TFontStyles);
     function GetStyleMaskFromInt : integer;
     procedure SetStyleMaskFromInt(const Value : integer);
+  protected
+    procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
+    procedure DoChange; override;
   public
     constructor Create(attribName: string; aStoredName: String = '');
-    procedure Assign(Source: TPersistent); override;
     procedure InternalSaveDefaultValues;
     function  LoadFromBorlandRegistry(rootKey: HKEY; attrKey, attrName: string;
                                       oldStyle: boolean): boolean; virtual;
@@ -139,8 +165,6 @@ type
     function  SaveToRegistry(Reg: TBetterRegistry): boolean;
     function  LoadFromFile(Ini : TIniFile): boolean;
     function  SaveToFile(Ini : TIniFile): boolean;
-    procedure IncChangeLock;
-    procedure DecChangeLock;
   public
     property IntegerStyle: integer read GetStyleFromInt write SetStyleFromInt;
     property IntegerStyleMask: integer read GetStyleMaskFromInt write SetStyleMaskFromInt;
@@ -149,13 +173,13 @@ type
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
     property Features: TSynHighlighterAttrFeatures read FFeatures write FFeatures;
   published
-    property Background: TColor read fBackground write SetBackground stored GetBackgroundColorStored;
-    property Foreground: TColor read fForeground write SetForeground stored GetForegroundColorStored;
-    property FrameColor: TColor read FFrameColor write SetFrameColor stored GetFrameColorStored;
-    property FrameStyle: TSynLineStyle read FFrameStyle write SetFrameStyle stored GetFrameStyleStored;
-    property FrameEdges: TSynFrameEdges read FFrameEdges write SetFrameEdges stored GetFrameEdgesStored;
-    property Style: TFontStyles read fStyle write SetStyle stored GetFontStyleStored;
-    property StyleMask: TFontStyles read fStyleMask write SetStyleMask stored GetFontStyleMaskStored;
+    property Background stored GetBackgroundColorStored;
+    property Foreground stored GetForegroundColorStored;
+    property FrameColor stored GetFrameColorStored;
+    property FrameStyle stored GetFrameStyleStored;
+    property FrameEdges stored GetFrameEdgesStored;
+    property Style stored GetFontStyleStored;
+    property StyleMask stored GetFontStyleMaskStored;
   end;
 
   TSynHighlighterCapability = (
@@ -490,52 +514,128 @@ begin
 end;
 {$ENDIF}
 
-{ TSynHighlighterAttributes }
+{ TLazSynCustomTextAttributes }
 
-procedure TSynHighlighterAttributes.Assign(Source: TPersistent);
-var
-  src: TSynHighlighterAttributes;
+procedure TLazSynCustomTextAttributes.SetBackground(AValue: TColor);
 begin
-  if Source is TSynHighlighterAttributes then begin
-    IncChangeLock;
-    try
-      src := Source as TSynHighlighterAttributes;
-      FName      := src.FName;
-      FStoredName:= src.FStoredName;
-      Background := src.FBackground;
-      Foreground := src.fForeground;
-      FrameColor := src.FFrameColor;
-      FrameStyle := src.FFrameStyle;
-      FrameEdges := src.FFrameEdges;
-      Style      := src.fStyle;
-      StyleMask  := src.fStyleMask;
-      FFeatures  := src.FFeatures;
-    finally
-      DecChangeLock;
-    end;
-  end else
-    inherited Assign(Source);
+  if FBackground = AValue then Exit;
+  FBackground := AValue;
+  Changed;
 end;
 
-procedure TSynHighlighterAttributes.Changed;
+procedure TLazSynCustomTextAttributes.SetForeground(AValue: TColor);
 begin
-  if FChangeLock > 0 then begin
-    FIsChanged := True;
+  if FForeground = AValue then Exit;
+  FForeground := AValue;
+  Changed;
+end;
+
+procedure TLazSynCustomTextAttributes.SetFrameColor(AValue: TColor);
+begin
+  if FFrameColor = AValue then Exit;
+  FFrameColor := AValue;
+  Changed;
+end;
+
+procedure TLazSynCustomTextAttributes.SetFrameEdges(AValue: TSynFrameEdges);
+begin
+  if FFrameEdges = AValue then Exit;
+  FFrameEdges := AValue;
+  Changed;
+end;
+
+procedure TLazSynCustomTextAttributes.SetFrameStyle(AValue: TSynLineStyle);
+begin
+  if FFrameStyle = AValue then Exit;
+  FFrameStyle := AValue;
+  Changed;
+end;
+
+procedure TLazSynCustomTextAttributes.SetStyle(AValue: TFontStyles);
+begin
+  if fStyle = AValue then Exit;
+  fStyle := AValue;
+  Changed;
+end;
+
+procedure TLazSynCustomTextAttributes.SetStyleMask(AValue: TFontStyles);
+begin
+  if fStyleMask = AValue then Exit;
+  fStyleMask := AValue;
+  Changed;
+end;
+
+procedure TLazSynCustomTextAttributes.Changed;
+begin
+  FWasChanged := True;
+  if FUpdateCount > 0 then
     exit;
-  end;
-  if Assigned(fOnChange) then
-    fOnChange(Self);
-  FIsChanged := False;
+  FWasChanged := False;
+  DoChange;
 end;
+
+procedure TLazSynCustomTextAttributes.AssignFrom(Src: TLazSynCustomTextAttributes);
+begin
+  //
+end;
+
+procedure TLazSynCustomTextAttributes.DoChange;
+begin
+  //
+end;
+
+constructor TLazSynCustomTextAttributes.Create;
+begin
+  inherited;
+  FUpdateCount := 0;
+  FWasChanged := False;
+end;
+
+procedure TLazSynCustomTextAttributes.Assign(aSource: TPersistent);
+var
+  Source : TLazSynCustomTextAttributes;
+  i: TSynFrameSide;
+begin
+  if Assigned(aSource) and (aSource is TLazSynCustomTextAttributes) then
+  begin
+    BeginUpdate;
+    Source := TLazSynCustomTextAttributes(aSource);
+    Foreground := Source.Foreground;
+    Background := Source.Background;
+    FrameColor := Source.FrameColor;
+    FrameStyle := Source.FrameStyle;
+    FrameEdges := Source.FrameEdges;
+    Style      := Source.FStyle;
+    StyleMask  := Source.FStyleMask;
+    AssignFrom(Source);
+    EndUpdate;
+  end
+  else
+    inherited;
+end;
+
+procedure TLazSynCustomTextAttributes.BeginUpdate;
+begin
+  inc(FUpdateCount);
+end;
+
+procedure TLazSynCustomTextAttributes.EndUpdate;
+begin
+  dec(FUpdateCount);
+  if (FUpdateCount = 0) and FWasChanged then
+    Changed;
+end;
+
+{ TSynHighlighterAttributes }
 
 constructor TSynHighlighterAttributes.Create(attribName: string; aStoredName: String = '');
 begin
   inherited Create;
   Background := clNone;
   Foreground := clNone;
-  FFrameColor := clNone;
-  FFrameStyle := slsSolid;
-  FFrameEdges := sfeAround;
+  FrameColor := clNone;
+  FrameStyle := slsSolid;
+  FrameEdges := sfeAround;
   FBackgroundDefault := clNone;
   FForegroundDefault := clNone;
   FFrameColorDefault := clNone;
@@ -551,50 +651,50 @@ end;
 
 function TSynHighlighterAttributes.GetBackgroundColorStored: boolean;
 begin
-  Result := fBackground <> fBackgroundDefault;
+  Result := Background <> fBackgroundDefault;
 end;
 
 function TSynHighlighterAttributes.GetFontStyleMaskStored : boolean;
 begin
-  Result := fStyleMask <> fStyleMaskDefault;
+  Result := StyleMask <> fStyleMaskDefault;
 end;
 
 function TSynHighlighterAttributes.GetForegroundColorStored: boolean;
 begin
-  Result := fForeground <> fForegroundDefault;
+  Result := Foreground <> fForegroundDefault;
 end;
 
 function TSynHighlighterAttributes.GetFrameColorStored: boolean;
 begin
-  Result := FFrameColor <> FFrameColorDefault;
+  Result := FrameColor <> FFrameColorDefault;
 end;
 
 function TSynHighlighterAttributes.GetFrameEdgesStored: boolean;
 begin
-  Result := FFrameEdges = FFrameEdgesDefault;
+  Result := FrameEdges = FFrameEdgesDefault;
 end;
 
 function TSynHighlighterAttributes.GetFrameStyleStored: boolean;
 begin
-  Result := FFrameStyle <> FFrameStyleDefault;
+  Result := FrameStyle <> FFrameStyleDefault;
 end;
 
 function TSynHighlighterAttributes.GetFontStyleStored: boolean;
 begin
-  Result := fStyle <> fStyleDefault;
+  Result := Style <> fStyleDefault;
 end;
 
 procedure TSynHighlighterAttributes.InternalSaveDefaultValues;
 (* Called once from TSynCustomHighlighter.Create (and only from there),
    after all Attributes where created  *)
 begin
-  fForegroundDefault := FForeground;
-  fBackgroundDefault := FBackground;
-  FFrameColorDefault := FFrameColor;
-  FFrameStyleDefault := FFrameStyle;
-  FFrameEdgesDefault := FFrameEdges;
-  fStyleDefault      := fStyle;
-  fStyleMaskDefault  := fStyleMask;
+  fForegroundDefault := Foreground;
+  fBackgroundDefault := Background;
+  FFrameColorDefault := FrameColor;
+  FFrameStyleDefault := FrameStyle;
+  FFrameEdgesDefault := FrameEdges;
+  fStyleDefault      := Style;
+  fStyleMaskDefault  := StyleMask;
 end;
 
 function TSynHighlighterAttributes.LoadFromBorlandRegistry(rootKey: HKEY;
@@ -771,57 +871,6 @@ begin
               else Result := LoadNewStyle(rootKey, attrKey, attrName);
 end; { TSynHighlighterAttributes.LoadFromBorlandRegistry }
 
-procedure TSynHighlighterAttributes.SetBackground(Value: TColor);
-begin
-  if FBackGround <> Value then
-  begin
-    FBackGround := Value;
-    Changed;
-  end;
-end;
-
-procedure TSynHighlighterAttributes.SetForeground(Value: TColor);
-begin
-  if FForeGround <> Value then
-  begin
-    FForeGround := Value;
-    Changed;
-  end;
-end;
-
-procedure TSynHighlighterAttributes.SetFrameColor(const AValue: TColor);
-begin
-  if FFrameColor <> AValue then
-  begin
-    FFrameColor := AValue;
-    Changed;
-  end;
-end;
-
-procedure TSynHighlighterAttributes.SetFrameEdges(const AValue: TSynFrameEdges);
-begin
-  if FFrameEdges = AValue then exit;
-  FFrameEdges := AValue;
-  Changed;
-end;
-
-procedure TSynHighlighterAttributes.SetFrameStyle(const AValue: TSynLineStyle);
-begin
-  if FFrameStyle <> AValue then
-  begin
-    FFrameStyle := AValue;
-    Changed;
-  end;
-end;
-
-procedure TSynHighlighterAttributes.SetStyle(Value: TFontStyles);
-begin
-  if fStyle <> Value then begin
-    fStyle := Value;
-    Changed;
-  end;
-end;
-
 function TSynHighlighterAttributes.LoadFromRegistry(Reg: TBetterRegistry): boolean;
 {$IFNDEF SYN_LAZARUS}
 var
@@ -898,18 +947,6 @@ begin
   Result := true;
 end;
 
-procedure TSynHighlighterAttributes.IncChangeLock;
-begin
-  inc(FChangeLock);
-end;
-
-procedure TSynHighlighterAttributes.DecChangeLock;
-begin
-  dec(FChangeLock);
-  if (FChangeLock = 0) and FIsChanged then
-    Changed;
-end;
-
 function TSynHighlighterAttributes.GetStyleFromInt: integer;
 begin
   if fsBold in Style then Result:= 1 else Result:= 0;
@@ -926,14 +963,6 @@ begin
   if Value and $8 <> 0 then Style:= Style + [fsStrikeout];
 end;
 
-procedure TSynHighlighterAttributes.SetStyleMask(const AValue : TFontStyles);
-begin
-  if fStyleMask <> AValue then begin
-    fStyleMask := AValue;
-    Changed;
-  end;
-end;
-
 function TSynHighlighterAttributes.GetStyleMaskFromInt : integer;
 begin
   if fsBold in StyleMask then Result:= 1 else Result:= 0;
@@ -948,6 +977,22 @@ begin
   if Value and $2 <> 0 then StyleMask:= StyleMask + [fsItalic];
   if Value and $4 <> 0 then StyleMask:= StyleMask + [fsUnderline];
   if Value and $8 <> 0 then StyleMask:= StyleMask + [fsStrikeout];
+end;
+
+procedure TSynHighlighterAttributes.AssignFrom(Src: TLazSynCustomTextAttributes);
+begin
+  inherited AssignFrom(Src);
+  FName      := TSynHighlighterAttributes(Src).FName;
+  FStoredName:= TSynHighlighterAttributes(Src).FStoredName;
+  FFeatures  := TSynHighlighterAttributes(Src).FFeatures;
+  Changed; {TODO: only if really changed}
+end;
+
+procedure TSynHighlighterAttributes.DoChange;
+begin
+  inherited DoChange;
+  if Assigned(fOnChange) then
+    fOnChange(Self);
 end;
 
 { TSynEditLinesList }

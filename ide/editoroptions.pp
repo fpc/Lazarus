@@ -4696,7 +4696,7 @@ begin
   Src := Self;
   if IsUsingSchemeGlobals then
     Src := GetSchemeGlobal;
-  aDest.IncChangeLock;
+  aDest.BeginUpdate;
   try
     aDest.Background := Src.Background;
     aDest.Foreground := Src.Foreground;
@@ -4722,7 +4722,7 @@ begin
     if aDest is TColorSchemeAttribute then
       TColorSchemeAttribute(aDest).Group := Src.Group;
   finally
-    aDest.DecChangeLock;
+    aDest.EndUpdate;
   end;
 end;
 

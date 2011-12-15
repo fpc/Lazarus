@@ -727,7 +727,6 @@ constructor TSynEditMarkupHighlightAllCaret.Create(ASynEdit: TSynEditBase);
 begin
   inherited Create(ASynEdit);
   FStateChanged := False;
-  MarkupInfo.Clear;
   HideSingleMatch := True;
   FFullWord := False;
   FWaitTime := 1500;
@@ -740,6 +739,7 @@ begin
   FTimer.Enabled := False;
   FTimer.Interval := FWaitTime;
   FTimer.OnTimer := {$IFDEF FPC}@{$ENDIF}ScrollTimerHandler;
+  MarkupInfo.Clear;
 end;
 
 destructor TSynEditMarkupHighlightAllCaret.Destroy;
