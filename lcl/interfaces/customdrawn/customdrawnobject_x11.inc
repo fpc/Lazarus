@@ -75,15 +75,6 @@ procedure TCDWidgetSet.BackendDestroy;
 begin
 end;
 
-procedure TCDWidgetSet.BackendInit;
-begin
-  InputMethod := XOpenIM(FDisplay, nil, nil, nil);
-  if InputMethod <> nil then
-    InputContext := XCreateIC(InputMethod, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, nil]);
-
-  if InputContext = nil then DebugLn('[TCDWidgetSet.BackendInit] Failed to initialize the Keyboard handling!');
-end;
-
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppInit
   Params:  None
@@ -108,7 +99,15 @@ begin
   if not Assigned(FDisplay) then
     raise Exception.Create('[TCDWidgetSet.AppInit] XOpenDisplay failed');
 
-  BackendInit();
+  // Keyboard initialization
+
+  InputMethod := XOpenIM(FDisplay, nil, nil, nil);
+  if InputMethod <> nil then
+    InputContext := XCreateIC(InputMethod, [XNInputStyle, XIMPreeditNothing or XIMStatusNothing, nil]);
+
+  if InputContext = nil then DebugLn('[TCDWidgetSet.BackendInit] Failed to initialize the Keyboard handling!');
+
+  //
 
   //if (not (woX11SkipWMHints in WindowOptions)) and (woWindow in WindowOptions) then
   //begin

@@ -513,11 +513,13 @@ end;
 class procedure TCDWSCustomForm.EvMousePressed(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
   var Event: TXButtonEvent);
 var
+  lForm: TCDForm;
   MouseButton: TMouseButton;
 begin
+  lForm := TCDForm(AWinControl.Handle);
   if XButtonToMouseButton(Event.button, MouseButton) then
   begin
-    CallbackMouseDown(TCDForm(AWinControl.Handle), Event.x, Event.y, MouseButton, []);
+    CallbackMouseDown(lForm, Event.x, Event.y, MouseButton, []);
   end
   else
   begin
@@ -545,22 +547,16 @@ end;
 class procedure TCDWSCustomForm.EvMouseReleased(const AWinControl: TWinControl; AWindowInfo: TX11WindowInfo;
   var Event: TXButtonEvent);
 var
+  lForm: TCDForm;
   MouseButton: TMouseButton;
-  lTarget: TWinControl;
-  lEventPos: TPoint;
 begin
-  lTarget := AWindowInfo.LastMouseDownControl;
-  if lTarget = nil then
-    lTarget := FindControlWhichReceivedEvent(TCustomForm(AWinControl), AWindowInfo.Children, Event.x, Event.y);
-  lEventPos := FormPosToControlPos(lTarget, Event.x, Event.y);
+  lForm := TCDForm(AWinControl.Handle);
+  XButtonToMouseButton(Event.button, MouseButton);
 
   { Release events are only for mouse buttons, and not mouse wheel moviments }
   if (Event.button >= 1) and (Event.button <= 3) then
   begin
-    XButtonToMouseButton(Event.button, MouseButton);
-
-    LCLSendMouseUpMsg(lTarget, lEventPos.x, lEventPos.y, MouseButton, []);
-    LCLSendClickedMsg(lTarget);
+    CallbackMouseUp(lForm, Event.x, Event.y, MouseButton, []);
   end;
 end;
 

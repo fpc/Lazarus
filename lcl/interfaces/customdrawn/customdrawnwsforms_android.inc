@@ -67,20 +67,23 @@ end;
 
 class procedure TCDWSCustomForm.ShowHide(const AWinControl: TWinControl);
 begin
+  {$ifdef VerboseCDForms}
+  DebugLn(Format(':>[TCDWSCustomForm.ShowHide] AWinControl=%x Handle=%x',
+    [PtrInt(AWinControl), PtrInt(AWinControl.Handle)]));
+  {$endif}
   if AWinControl.Visible then
   begin
     {$ifdef VerboseCDForms}
-    DebugLn(Format('[TCDWSCustomForm.ShowHide] Visible=True AWinControl=%x Handle=%x',
-      [PtrInt(AWinControl), PtrInt(AWinControl.Handle)]));
+    DebugLn(':<[TCDWSCustomForm.ShowHide] Showed');
     {$endif}
     ShowForm(TCDNonNativeForm(AWinControl.Handle));
   end
   else
   begin
-    {$ifdef VerboseCDForms}
-    DebugLn(Format('[TCDWSCustomForm.ShowHide] Visible=False AWinControl=%x', [PtrInt(AWinControl)]));
-    {$endif}
     HideForm(TCDNonNativeForm(AWinControl.Handle));
+    {$ifdef VerboseCDForms}
+    DebugLn(':<[TCDWSCustomForm.ShowHide] Hided');
+    {$endif}
   end;
 end;
 

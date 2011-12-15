@@ -169,7 +169,6 @@ type
     //
     procedure BackendCreate;
     procedure BackendDestroy;
-    procedure BackendInit;
   public
     // ScreenDC and Image for doing Canvas operations outside the Paint event
     // and also for text drawing operations

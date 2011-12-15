@@ -725,14 +725,14 @@ begin
     WriteLn('Trace: [WinAPI CreateRectRgn] Result: ', dbghex(Result),
      ' QRegionH: ', dbghex(PtrInt(QtRegion.Widget)));
   {$endif}
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Procedure: DeleteCriticalSection
   Params:  var CritSection: TCriticalSection
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
+procedure TCDWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
 var
   ACritSec: System.PRTLCriticalSection;
 begin
@@ -742,7 +742,7 @@ begin
   CritSection:=0;
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: DeleteDC
   Params:  none
   Returns: Nothing
@@ -1530,14 +1530,14 @@ begin
     {$endif}
     TQtDeviceContext(PS.HDC).Free;
   end;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Procedure: EnterCriticalSection
   Params:  var CritSection: TCriticalSection
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
+procedure TCDWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
 var
   ACritSec: System.PRTLCriticalSection;
 begin
@@ -1545,7 +1545,7 @@ begin
   System.EnterCriticalsection(ACritSec^);
 end;
 
-function TQtWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
+(*function TQtWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect;
   lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
 var
   i: integer;
@@ -4535,14 +4535,14 @@ end;
 function TQtWidgetSet.HideCaret(hWnd: HWND): Boolean;
 begin
   Result := (hWnd <> 0) and QtCaret.HideCaret(TQtWidget(hWnd));
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Procedure: InitializeCriticalSection
   Params: var CritSection: TCriticalSection
   Returns:
  ------------------------------------------------------------------------------}
-procedure TQtWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
+procedure TCDWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
 var
   ACritSec: System.PRTLCriticalSection;
 begin
@@ -4551,7 +4551,7 @@ begin
   CritSection:=TCriticalSection(ACritSec);
 end;
 
-function TQtWidgetSet.IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
+(*function TQtWidgetSet.IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
 var
   QtDC: TQtDeviceContext absolute dc;
   IntersectRgn, Rgn: QRegionH;
@@ -4678,20 +4678,20 @@ begin
     TQtWidget(aHandle).UpdateRegion(TQtRegion(Rgn).FHandle)
   else
     TQtWidget(aHandle).Update;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Procedure: LeaveCriticalSection
   Params:  var CritSection: TCriticalSection
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
+procedure TCDWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
 var
   ACritSec: System.PRTLCriticalSection;
 begin
   ACritSec:=System.PRTLCriticalSection(CritSection);
   System.LeaveCriticalsection(ACritSec^);
-end;*)
+end;
 
 {------------------------------------------------------------------------------
   Function: LineTo

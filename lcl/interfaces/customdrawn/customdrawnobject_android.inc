@@ -495,11 +495,6 @@ begin
   {$endif}
 end;
 
-procedure TCDWidgetSet.BackendInit;
-begin
-
-end;
-
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppInit
   Params:  None

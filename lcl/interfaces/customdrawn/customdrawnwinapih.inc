@@ -67,10 +67,10 @@ function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: strin
 function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; override;*)
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 (*function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;
-function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
+function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;*)
 
 procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
-function DeleteDC(hDC: HDC): Boolean; override;*)
+//function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
 (*function DestroyCaret(Handle : HWND): Boolean; override;
 function DestroyIcon(Handle: HICON): Boolean; override;
@@ -83,9 +83,9 @@ function DrawText(DC: HDC; Str: PChar; Count: Integer; var ARect: TRect; Flags: 
 function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;
 (*function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
-function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;
+function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;*)
 procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
-function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; override;
+(*function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; override;
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;
 function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
 function ExtCreatePen(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN; override;
@@ -156,16 +156,16 @@ function HideCaret(hWnd: HWND): Boolean; override;*)
 
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 function BackendInvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
-(*function InvalidateRgn(aHandle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; override;
+(*function InvalidateRgn(aHandle: HWND; Rgn: HRGN; Erase: Boolean): Boolean; override;*)
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
-function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
+(*function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 function IsIconic(Handle: HWND): boolean; override;
 function IsWindow(handle: HWND): boolean; override;
 function IsWindowEnabled(Handle: HWND): boolean; override;
 function IsWindowVisible(Handle: HWND): boolean; override;
-function IsZoomed(Handle: HWND): boolean; override;
+function IsZoomed(Handle: HWND): boolean; override;*)
 
-procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;*)
+procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 //function LPtoDP(DC: HDC; var Points; Count: Integer): BOOL; override;
 

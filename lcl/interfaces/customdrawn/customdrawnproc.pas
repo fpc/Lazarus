@@ -214,6 +214,9 @@ end;
 
 procedure ShowForm(ACDForm: TCDNonNativeForm);
 begin
+  {$IFDEF VerboseCDForms}
+    DebugLn(Format('ShowForm LCLForm=%s:%s', [ACDForm.LCLForm.Name, ACDForm.LCLForm.ClassName]));
+  {$ENDIF}
   ACDForm.Visible := True;
   BringFormToFront(ACDForm);
   lCurrentForm := ACDForm;
@@ -228,6 +231,8 @@ begin
     lCurrentForm := FindTopMostVisibleForm();
     LCLIntf.InvalidateRect(HWND(lCurrentForm), nil, True);
   end;
+  // Warn the LCL that the form was hidden
+  LCLSendCloseQueryMsg(ACDForm.LCLForm);
 end;
 
 procedure BringFormToFront(ACDForm: TCDNonNativeForm);
@@ -273,8 +278,16 @@ begin
   for i := lCount-1 downto 0 do
   begin
     lForm := TCDNonNativeForm(NonNativeForms.Items[i]);
-    if lForm.Visible then Exit(lForm);
+    if lForm.Visible then
+    begin
+      Result := lForm;
+      Break;
+    end;
   end;
+  {$IFDEF VerboseCDForms}
+    DebugLn(Format('FindTopMostVisibleForm FoundIndex=%d FoundForm=%s:%s',
+      [i, Result.LCLForm.Name, Result.LCLForm.ClassName]));
+  {$ENDIF}
 end;
 
 // If AForceUpdate=True then it will update even if the width and height remain the same
@@ -286,7 +299,7 @@ var
   lRawImage: TRawImage;
   lPixelSize: Byte;
 begin
-  {$IFDEF VerboseCDForms}
+  {$IFDEF VerboseCDLazCanvas}
     DebugLn(Format(':>[UpdateControlLazImageAndCanvas] Input Image: %x Canvas: %x',
       [PtrInt(AImage), PtrInt(ACanvas)]));
   {$ENDIF}
@@ -336,7 +349,7 @@ begin
     if (ACanvas <> nil) then ACanvas.Free;
     ACanvas := TLazCanvas.Create(AImage);
   end;
-  {$IFDEF VerboseCDForms}
+  {$IFDEF VerboseCDLazCanvas}
     DebugLn(Format(':<[UpdateControlLazImageAndCanvas] Output Image: %x Canvas: %x',
       [PtrInt(AImage), PtrInt(ACanvas)]));
   {$ENDIF}
