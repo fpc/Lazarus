@@ -538,7 +538,6 @@ var
   Source: PChar;
   Dest: PChar;
   SourceEnd: PChar;
-  CharLen: integer;
   SourceCopied: PChar;
 
   // Copies from SourceStart till Source to Dest and updates Dest
@@ -561,8 +560,7 @@ begin
   Dest:=PChar(Result);
   SourceEnd := Source + SourceLen;
   while Source<SourceEnd do begin
-    CharLen := UTF8CharacterLength(Source);
-    if (CharLen=1) and (Source^='\') then begin
+    if (Source^='\') then begin
       CopyPart;
       inc(Source);
       if Source^ in ['t', 'n', '"', '\'] then begin
@@ -589,7 +587,7 @@ begin
       SourceCopied := Source;
     end
     else
-      Inc(Source, CharLen);
+      Inc(Source, UTF8CharacterLength(Source));
   end;
   CopyPart;
   SetLength(Result, Dest - PChar(Result));
