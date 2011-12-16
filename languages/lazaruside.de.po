@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-09 15:59+0100\n"
+"PO-Revision-Date: 2011-12-15 18:24+0100\n"
 "Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -56,7 +56,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttoncontextmenu
 msgid "Context Menu"
-msgstr ""
+msgstr "Kontextmenü"
 
 #: lazarusidestrconsts.dlfmousesimplebuttondeclaration
 msgid "Jumps to implementation"
@@ -68,11 +68,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplebuttonhistback
 msgid "History back"
-msgstr ""
+msgstr "Historie zurück"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonhistforw
 msgid "History forward"
-msgstr ""
+msgstr "Historie vorwärts"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
@@ -106,23 +106,23 @@ msgstr "Text markieren (Zeilen)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetfreebookmark
 msgid "Set free bookmark"
-msgstr ""
+msgstr "Freies Lesezeichen setzen"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetlinefull
 msgid "Select current Line (Full)"
-msgstr ""
+msgstr "Aktuelle Zeile markieren (komplett)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetlinesmart
 msgid "Select current Line (Text)"
-msgstr ""
+msgstr "Aktuelle Zeile markieren (Text)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetpara
 msgid "Select current Paragraph"
-msgstr ""
+msgstr "Aktuellen Absatz markieren"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonsetword
 msgid "Select current Word"
-msgstr ""
+msgstr "Aktuelles Wort markieren"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonzoomreset
 msgid "Reset zoom"
@@ -169,27 +169,27 @@ msgstr "Alt-Taste aktiviert Spaltenmodus"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectaltctrllabel
 msgid "Alt-Ctrl Button"
-msgstr ""
+msgstr "Alt+Strg+Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectaltctrlwheellabel
 msgid "Alt-Ctrl Wheel"
-msgstr ""
+msgstr "Alt+Strg+Rad"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectaltlabel
 msgid "Alt Button"
-msgstr ""
+msgstr "Alt + Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectaltwheellabel
 msgid "Alt Wheel"
-msgstr ""
+msgstr "Alt + Rad"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrllabel
 msgid "Ctrl Button"
-msgstr ""
+msgstr "Strg + Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlwheellabel
 msgid "Ctrl Wheel"
-msgstr ""
+msgstr "Strg + Rad"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdrag
 #| msgid "Drag Selection (copy/paste)"
@@ -198,19 +198,19 @@ msgstr "Auswahl verschieben (kopieren/einfügen)"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectextra1label
 msgid "Extra-1 Button"
-msgstr ""
+msgstr "Extra-1 Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectextra2label
 msgid "Extra-2 Button"
-msgstr ""
+msgstr "Extra-2 Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectldoublealtlabel
 msgid "Alt Double"
-msgstr ""
+msgstr "Alt + Doppelt"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectldoublectrllabel
 msgid "Ctrl Double"
-msgstr ""
+msgstr "Strg + Doppelt"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectldoublelabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectldoublelabel"
@@ -219,7 +219,7 @@ msgstr "Doppelt"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectldoubleshiftlabel
 msgid "Shift Double"
-msgstr ""
+msgstr "Umsch + Doppelt"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectlquadlabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectlquadlabel"
@@ -254,11 +254,11 @@ msgstr "Extra 2"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
 msgid "Left 1"
-msgstr ""
+msgstr "Links 1"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmulti
 msgid "Left 2"
-msgstr ""
+msgstr "Links 2"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpageright
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageright"
@@ -272,35 +272,35 @@ msgstr "Rad"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectrightlabel
 msgid "Right Button"
-msgstr ""
+msgstr "Rechte Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrllabel
 msgid "Shift-Alt-Ctrl Button"
-msgstr ""
+msgstr "Umsch+Alt+Strg+Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrlwheellabel
 msgid "Shift-Alt-Ctrl"
-msgstr ""
+msgstr "Umsch+Alt+Strg"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltlabel
 msgid "Shift-Alt Button"
-msgstr ""
+msgstr "Umsch+Alt+Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltwheellabel
 msgid "Shift-Alt Wheel"
-msgstr ""
+msgstr "Umsch+Alt+Rad"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftctrllabel
 msgid "Shift-Ctrl Button"
-msgstr ""
+msgstr "Umsch+Strg+Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftctrlwheellabel
 msgid "Shift-Ctrl Wheel"
-msgstr ""
+msgstr "Umsch+Strg+Rad"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftlabel
 msgid "Shift Button"
-msgstr ""
+msgstr "Umsch + Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectwheellabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectwheellabel"
@@ -309,7 +309,7 @@ msgstr "Rad"
 
 #: lazarusidestrconsts.dlfmousesimpletextshiftsectwheellabel
 msgid "Shift Wheel"
-msgstr ""
+msgstr "Umsch + Rad"
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
@@ -317,7 +317,7 @@ msgstr "Änderungen wurden nicht gespeichert. Auf dieser Seite können Änderung
 
 #: lazarusidestrconsts.dlfmousesimplewheelhsrolldef
 msgid "Scroll horizontal (System speed)"
-msgstr ""
+msgstr "Horizontal scrollen (Systemgeschwindigkeit)"
 
 #: lazarusidestrconsts.dlfmousesimplewheelhsrollline
 msgid "Scroll horizontal (Single line)"
@@ -342,7 +342,7 @@ msgstr "Nichts / Vorgabe"
 
 #: lazarusidestrconsts.dlfmousesimplewheelsrolldef
 msgid "Scroll (System speed)"
-msgstr ""
+msgstr "Scrollen (Systemgeschwindigkeit)"
 
 #: lazarusidestrconsts.dlfmousesimplewheelsrollline
 msgid "Scroll (Single line)"
@@ -530,7 +530,6 @@ msgid "Visualized Special Chars"
 msgstr "Visualisierte Sonderzeichen"
 
 #: lazarusidestrconsts.dlgadditionalsrcpath
-#, fuzzy
 #| msgid "Additional Source search path for all projects (.pp;.pas)"
 msgid "Additional source search path for all projects (.pp;.pas)"
 msgstr "Zusätzlicher Quellcodesuchpfad für alle Projekte (.pp; .pas)"
@@ -568,7 +567,6 @@ msgid "Warn on compile"
 msgstr "Beim Kompilieren warnen"
 
 #: lazarusidestrconsts.dlgapplicationsettings
-#, fuzzy
 #| msgid "Application Settings"
 msgid "Application settings"
 msgstr "Programmeinstellungen"
@@ -772,7 +770,6 @@ msgid "lowercase"
 msgstr "Kleinbuchstaben"
 
 #: lazarusidestrconsts.dlgcdtpreview
-#, fuzzy
 #| msgid "Preview (Max line length = 1)"
 msgid "Preview (max line length = 1)"
 msgstr "Vorschau (Maximale Zeilenlänge = 1)"
@@ -2106,7 +2103,6 @@ msgid "Level 3 (Level 2 + slow optimizations)"
 msgstr "Stufe 3 (Stufe 2 + langsame Opt.)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-#, fuzzy
 #| msgid "Level 0 (no extra Optimizations)"
 msgid "Level 0 (no extra optimizations)"
 msgstr "Stufe 0 (keine weiteren Optimierungen)"
@@ -2837,10 +2833,9 @@ msgid "Miscellaneous"
 msgstr "Verschiedenes"
 
 #: lazarusidestrconsts.dlgpooutputsettings
-#, fuzzy
 #| msgid "Output Settings"
 msgid "Output settings"
-msgstr "Ausgabeeigenschaften"
+msgstr "Ausgabeeinstellungen"
 
 #: lazarusidestrconsts.dlgposaveicon
 msgid "Save Icon"
@@ -2859,13 +2854,11 @@ msgid "Title:"
 msgstr "Titel:"
 
 #: lazarusidestrconsts.dlgpouseappbundle
-#, fuzzy
 #| msgid "Use Application Bundle for running and debugging (darwin only)"
 msgid "Use Application Bundle for running and debugging (Darwin only)"
 msgstr "Anwendungs-Bundle für Start und Debug verwenden (nur Darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
-#, fuzzy
 #| msgid "Use manifest file to enable themes (windows only)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Themen mit Manifest-Datei einschalten (nur in Windows)"
@@ -2949,7 +2942,6 @@ msgid "Guide lines Right,Bottom"
 msgstr "Farbe für rechts unten"
 
 #: lazarusidestrconsts.dlgrightclickselects
-#, fuzzy
 #| msgid "Right Click selects"
 msgid "Right click selects"
 msgstr "Rechtsklick wählt aus"
@@ -3014,7 +3006,6 @@ msgid "Variable"
 msgstr "Variable"
 
 #: lazarusidestrconsts.dlgrunparameters
-#, fuzzy
 #| msgid "Run parameters"
 msgid "Run Parameters"
 msgstr "Start-Parameter"
@@ -3099,7 +3090,7 @@ msgstr "Eigenschaften-Variable setzen"
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
-msgstr ""
+msgstr "Zeige alle Units"
 
 #: lazarusidestrconsts.dlgshowcaps
 msgid "Show component captions"
@@ -4884,7 +4875,6 @@ msgid "Centers"
 msgstr "Zentriert"
 
 #: lazarusidestrconsts.lisceomode
-#, fuzzy
 #| msgid "Preferred Exhibition Mode"
 msgid "Preferred exhibition mode"
 msgstr "Gewünschter Darstellungsmodus"
@@ -6652,7 +6642,6 @@ msgid "Show all messages"
 msgstr "Alle Meldungen anzeigen"
 
 #: lazarusidestrconsts.liscoskipcallingcompiler
-#, fuzzy
 #| msgid "Skip calling Compiler"
 msgid "Skip calling compiler"
 msgstr "Aufruf des Compilers übergehen"
@@ -9890,7 +9879,6 @@ msgid "Toggle View Component Palette"
 msgstr "Ansicht der Komponentenpalette umschalten"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-#, fuzzy
 #| msgid "Toggle view Debug Events"
 msgid "Toggle view Debuger Event Log"
 msgstr "Ansicht der Debug-Ereignisse umschalten"
@@ -10094,7 +10082,7 @@ msgstr "JIT-Formular kompilieren"
 
 #: lazarusidestrconsts.lislazbuildbuildmany
 msgid "Build Many"
-msgstr ""
+msgstr "Viele erstellen"
 
 #: lazarusidestrconsts.lislazbuildbuildsynedit
 msgid "Build SynEdit"
@@ -10622,7 +10610,6 @@ msgid "About FPC"
 msgstr "Über FPC"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-#, fuzzy
 #| msgid "Add breakpoint"
 msgid "Add &Breakpoint"
 msgstr "Neuer Haltepunkt"
@@ -10633,7 +10620,6 @@ msgid "Add Active File to Package ..."
 msgstr "Aktive Datei zu einem Package hinzufügen ..."
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
-#, fuzzy
 #| msgid "Add jump point to history"
 msgid "Add Jump Point to History"
 msgstr "Sprungmarke speichern"
@@ -10683,7 +10669,6 @@ msgid "Clean Directory ..."
 msgstr "Verzeichnis säubern ..."
 
 #: lazarusidestrconsts.lismenucleanupcompiled
-#, fuzzy
 #| msgid "Clean up build files ..."
 msgid "Clean up Build Files ..."
 msgstr "Aufräumen und Kompilieren ..."
@@ -10991,13 +10976,11 @@ msgid "Goto Line ..."
 msgstr "Zu Zeile springen ..."
 
 #: lazarusidestrconsts.lismenuguessmisplacedifdef
-#, fuzzy
 #| msgid "Guess misplaced IFDEF/ENDIF"
 msgid "Guess Misplaced IFDEF/ENDIF"
 msgstr "Offene IFDEF/ENDIF erraten"
 
 #: lazarusidestrconsts.lismenuguessunclosedblock
-#, fuzzy
 #| msgid "Guess unclosed block"
 msgid "Guess Unclosed Block"
 msgstr "Offene Quelltextblöcke erraten"
@@ -11021,7 +11004,6 @@ msgid "Indent Selection"
 msgstr "Auswahl einrücken"
 
 #: lazarusidestrconsts.lismenuinsertchangelogentry
-#, fuzzy
 #| msgid "ChangeLog entry"
 msgid "ChangeLog Entry"
 msgstr "Eintrag für Änderungsprotokoll"
@@ -11032,10 +11014,9 @@ msgid "Insert from Character Map ..."
 msgstr "Aus der Zeichentabelle einfügen ..."
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-#, fuzzy
 #| msgid "Insert CVS keyword"
 msgid "Insert CVS Keyword"
-msgstr "CVS-Schlüsselwort"
+msgstr "CVS-Schlüsselwort einfügen"
 
 #: lazarusidestrconsts.lismenuinsertdatetime
 #| msgid "Current date and time"
@@ -11047,11 +11028,10 @@ msgid "Insert full Filename ..."
 msgstr "Vollen Dateinamen einfügen ..."
 
 #: lazarusidestrconsts.lismenuinsertgeneral
-#, fuzzy
 #| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "Insert General"
-msgstr "Allgemein"
+msgstr "Einfügen allgemein"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
 #| msgid "GPL notice"
@@ -11219,7 +11199,6 @@ msgid "Package Graph"
 msgstr "Package-Graph"
 
 #: lazarusidestrconsts.lismenupackagelinks
-#, fuzzy
 #| msgid "Package links ..."
 msgid "Package Links ..."
 msgstr "Package-Links ..."
@@ -16700,10 +16679,9 @@ msgid "Enable i18n"
 msgstr "i18n einschalten"
 
 #: lazarusidestrconsts.rsenteroneormorephrasesthatyouwanttosearchorfilterin
-#, fuzzy
 #| msgid "Enter one or more phrases that you want to Search or Filter in the list, seperated by space, or comma"
 msgid "Enter one or more phrases that you want to Search or Filter in the list, separated by space, or comma"
-msgstr "Geben Sie ein oder mehr Begriffe ein (mit Leerzeichen- oder Kommata getrennt), nach denen in der Liste gesucht oder nach denen gefiltert wird"
+msgstr "Geben Sie ein oder mehr Begriffe ein (mit Leerzeichen oder Kommata getrennt), nach denen in der Liste gesucht oder nach denen gefiltert wird"
 
 #: lazarusidestrconsts.rsfilterthelistwiththecurrentfilterexpression
 msgid "Filter the list with the current filter expression"
