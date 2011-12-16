@@ -1450,14 +1450,14 @@ begin
         CurNode.EndPos:=CurPos.EndPos;
       end;
       if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
-      if CurPos.Flag=cafPoint then begin
-        //  first identifier was unitname -> read '.' + identifier
+      while CurPos.Flag=cafPoint do begin
         if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
         if not AtomIsIdentifier(ExceptionOnError) then exit;
+        if (phpCreateNodes in Attr) then
+          CurNode.EndPos:=CurPos.EndPos;
         if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
       end;
       if (phpCreateNodes in Attr) then begin
-        CurNode.EndPos:=CurPos.StartPos;
         EndChildNode;
       end;
     end;
