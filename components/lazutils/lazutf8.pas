@@ -587,7 +587,7 @@ begin
       SourceCopied := Source;
     end
     else
-      Inc(Source, UTF8CharacterLength(Source));
+      Inc(Source); // no need for checking for UTF8, the / is never part of an UTF8 multibyte codepoint
   end;
   CopyPart;
   SetLength(Result, Dest - PChar(Result));
