@@ -35,7 +35,7 @@ uses
   // Widgetset
   WSProc, WSComCtrls, WSLCLClasses,
   // LCL-CustomDrawn
-  customdrawnproc, customdrawnwscontrols;
+  customdrawnproc, customdrawnwscontrols, customdrawnprivate;
 
 type
   { TCDWSCustomPage }
@@ -264,8 +264,8 @@ implementation
 class procedure TCDWSCustomTabControl.CreateCDControl(
   const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
-  ACDControlField := TCDPageControl.Create(AWinControl);
-//    TCDIntfButton(lCDWinControl.CDControl).LCLButton := TButton(AWinControl);
+  ACDControlField := TCDIntfPageControl.Create(AWinControl);
+  TCDIntfPageControl(ACDControlField).LCLControl := TCustomTabControl(AWinControl);
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
 end;
@@ -394,8 +394,8 @@ end;*)
 
 class procedure TCDWSTrackBar.CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
-  ACDControlField := TCDTrackBar.Create(AWinControl);
-//    TCDIntfButton(lCDWinControl.CDControl).LCLButton := TButton(AWinControl);
+  ACDControlField := TCDIntfTrackBar.Create(AWinControl);
+  TCDIntfTrackBar(ACDControlField).LCLControl := TCustomTrackBar(AWinControl);
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
 end;
@@ -521,8 +521,8 @@ end;
 
 class procedure TCDWSProgressBar.CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
-  ACDControlField := TCDProgressBar.Create(AWinControl);
-//    TCDIntfButton(lCDWinControl.CDControl).LCLButton := TButton(AWinControl);
+  ACDControlField := TCDIntfProgressBar.Create(AWinControl);
+  TCDIntfProgressBar(ACDControlField).LCLControl := TCustomProgressBar(AWinControl);
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
 end;

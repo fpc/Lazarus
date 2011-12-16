@@ -12,11 +12,48 @@ uses
   customdrawnproc, customdrawncontrols, lcltype, lclproc;
 
 type
+
+  // Standard Tab
+
   { TCDIntfButton }
 
   TCDIntfButton = class(TCDButton)
   public
     LCLControl: TButton;
+  end;
+
+  TCDIntfEdit = class(TCDEdit)
+  public
+    LCLControl: TCustomEdit;
+  end;
+
+  TCDIntfCheckBox = class(TCDCheckBox)
+  public
+    LCLControl: TCustomCheckBox;
+  end;
+
+  // Additional Tab
+
+  TCDIntfStaticText = class(TCDProgressBar)
+  public
+    LCLControl: TStaticText;
+  end;
+
+  // Common Controls Tab
+
+  TCDIntfProgressBar = class(TCDProgressBar)
+  public
+    LCLControl: TCustomProgressBar;
+  end;
+
+  TCDIntfTrackBar = class(TCDTrackBar)
+  public
+    LCLControl: TCustomTrackBar;
+  end;
+
+  TCDIntfPageControl = class(TCDPageControl)
+  public
+    LCLControl: TCustomTabControl;
   end;
 
 // These are default message handlers which backends might use to simplify their code
@@ -175,8 +212,15 @@ end;
 
 function IsIntfControl(AControl: TWinControl): Boolean;
 begin
-  Result := (AControl <> nil) and (AControl.Parent <> nil) and
-   ((AControl is TCDIntfButton) {or ...});
+  Result := (AControl <> nil) and (AControl.Parent <> nil);
+  if Result then Result :=
+    // Standard Tab
+    (AControl is TCDIntfButton) or (AControl is TCDIntfEdit) or (AControl is TCDIntfCheckBox) or
+    // Additional Tab
+    (AControl is TCDIntfStaticText) or
+    // Common Controls Tab
+    (AControl is TCDIntfProgressBar) or (AControl is TCDIntfTrackBar) or
+    (AControl is TCDIntfPageControl);
 end;
 
 end.

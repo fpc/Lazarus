@@ -815,8 +815,8 @@ end;*)
 class procedure TCDWSCustomEdit.CreateCDControl(const AWinControl: TWinControl;
   var ACDControlField: TCDControl);
 begin
-  ACDControlField := TCDEdit.Create(AWinControl);
-  //TCDIntfButton(ACDControlField).LCLControl := TButton(AWinControl);
+  ACDControlField := TCDIntfEdit.Create(AWinControl);
+  TCDIntfEdit(ACDControlField).LCLControl := TCustomEdit(AWinControl);
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Parent := AWinControl;
   ACDControlField.Align := alClient;
@@ -1065,8 +1065,8 @@ end;*)
 class procedure TCDWSCustomStaticText.CreateCDControl(
   const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
-  ACDControlField := TCDStaticText.Create(AWinControl);
-//    TCDIntfButton(lCDWinControl.CDControl).LCLButton := TButton(AWinControl);
+  ACDControlField := TCDIntfStaticText.Create(AWinControl);
+  TCDIntfStaticText(ACDControlField).LCLControl := TStaticText(AWinControl);
   ACDControlField.Parent := AWinControl;
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Align := alClient;
@@ -1178,8 +1178,8 @@ end;*)
 
 class procedure TCDWSCustomCheckBox.CreateCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
 begin
-  ACDControlField := TCDCheckBox.Create(AWinControl);
-//    TCDIntfButton(lCDWinControl.CDControl).LCLButton := TButton(AWinControl);
+  ACDControlField := TCDIntfCheckBox.Create(AWinControl);
+  TCDIntfCheckBox(ACDControlField).LCLControl := TCustomCheckBox(AWinControl);
   ACDControlField.Parent := AWinControl;
   ACDControlField.Caption := AWinControl.Caption;
   ACDControlField.Align := alClient;
