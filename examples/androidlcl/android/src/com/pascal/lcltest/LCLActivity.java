@@ -46,18 +46,28 @@ public class LCLActivity extends Activity
       //Log.v("lclproject", "LCLSurface.onKeyDown");
       super.onKeyDown(keyCode, event);
       int eventResult = LCLOnKey(KeyEvent.ACTION_DOWN, keyCode, event, (char) 0);
-      if ((eventResult | 1) != 0) postInvalidate();
+      if ((eventResult & 1) != 0) postInvalidate();
       return true;
     }
 
     @Override public boolean onKeyUp (int keyCode, KeyEvent event)
     {
       int eventResult = LCLOnKey(KeyEvent.ACTION_UP, keyCode, event, event.getDisplayLabel());
-      if ((eventResult | 1) != 0) postInvalidate();
+      if ((eventResult & 1) != 0) postInvalidate();
 
       // Handling of the Back hardware key
-      if ((eventResult | 2) != 0) return false;
-      else return true;
+      super.onKeyUp(keyCode, event);
+      if ((eventResult & 2) != 0)
+      {
+        //Log.v("lclproject", "BackKey going to home");
+        finish();
+        return false; // From the docs it seams that only returning false should do it, but calling finish() is really necessary
+      }
+      else
+      {
+        //Log.v("lclproject", "BackKey not going to home");
+        return true;
+      }
     }
 
     @Override public boolean onTouchEvent (MotionEvent event)

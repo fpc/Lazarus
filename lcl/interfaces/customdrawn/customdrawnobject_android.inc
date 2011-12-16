@@ -134,7 +134,7 @@ function Java_com_pascal_lclproject_LCLActivity_LCLOnKey(
     AEvent: jobject; AChar: jchar): jint; cdecl;
 var
   lCurForm: TCDNonNativeForm;
-  lTarget: TWinControl;
+  lTarget, lFocusedControl: TWinControl;
   lKey: Word;
   AWideText: widestring;
   AUTF8Text: string;
@@ -143,7 +143,7 @@ var
 begin
   {$ifdef VerboseCDEvents}
   __android_log_write(ANDROID_LOG_INFO,'lclapp',PChar(
-    Format('LCLOnKey called AKind=%d AKeyCode=%x AChar=%s', [AKind, AKeyCode, UTF8Encode(WideChar(AChar))])));
+    Format('[LCLOnKey] called AKind=%d AKeyCode=%x AChar=%s', [AKind, AKeyCode, UTF8Encode(WideChar(AChar))])));
   {$endif}
   eventResult := 0;
 
@@ -167,14 +167,29 @@ begin
       // Handle the Back hardware key
       if AKeyCode = AKEYCODE_BACK then
       begin
-        // The back hardware key hides the current form and shows the one bellow it
-        lForm := lCurForm;
         //DebugLn(Format('CallbackKeyUp D lForm=%x', [PtrInt(lForm)]));
+        // The back hardware key hides the current form and shows the one bellow it
+        // except if the currently focused control is a text editor, in which case
+        // it will take focus out of the text editor
+        lForm := lCurForm;
+        lFocusedControl := lForm.GetFocusedControl();
+        if (lFocusedControl <> nil) and (csRequiresKeyboardInput in lFocusedControl.ControlStyle) then
+        begin
+          //DebugLn('[LCLOnKey] Sending focus to the form');
+          CDWidgetset.CDSetFocusToControl(lForm.LCLForm, nil);
+        end
         // If this is the main form, then go back to desktop
-        if (Application.MainForm <> nil) and (lForm = TCDForm(Application.MainForm.Handle)) then
-          eventResult := eventResult or 2
+        else if (Application.MainForm <> nil) and (lForm = TCDForm(Application.MainForm.Handle)) then
+        begin
+          //DebugLn('[LCLOnKey] Back key is going to hide the application');
+          eventResult := eventResult or 2;
+        end
         // for other forms, hide them
-        else HideForm(lForm);
+        else
+        begin
+          //DebugLn('[LCLOnKey] Hiding the form');
+          HideForm(lForm);
+        end;
       end;
     end;
     //ACTION_MULTIPLE:

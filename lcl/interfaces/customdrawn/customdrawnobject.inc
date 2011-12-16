@@ -25,6 +25,8 @@ var
   lForm, OldFocusedControl: TWinControl;
 begin
   OldFocusedControl := FocusedControl;
+  if ALCLControl = nil then Exit;
+  lForm := GetParentForm(ALCLControl);
   if (FocusedControl <> ALCLControl) then
   begin
     // First kill focus in the previous control
@@ -38,6 +40,9 @@ begin
       LCLSendKillFocusMsg(FocusedIntfControl);
     FocusedIntfControl := AIntfControl;
     if AIntfControl <> nil then LCLSendSetFocusMsg(AIntfControl);
+
+    // Also mark in the window information the focus change
+    TCDForm(lForm.Handle).FocusedControl := ALCLControl;
 
     // Verify if the virtual keyboard needs to be shown/hidden
     // Only show if there is no hardware keyboard, but hide always in case
@@ -56,7 +61,6 @@ begin
       ShowVirtualKeyboard();
 
     // Invalidate the entire window to reflect the focus change
-    lForm := Forms.GetParentForm(ALCLControl);
     LCLIntf.InvalidateRect(lForm.Handle, nil, False);
   end;
 end;

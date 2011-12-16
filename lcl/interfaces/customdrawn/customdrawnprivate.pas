@@ -37,6 +37,7 @@ procedure CallbackMouseUp(AWindowHandle: TCDForm; x, y: Integer; Button: TMouseB
 var
   lTarget: TWinControl;
   lEventPos: TPoint;
+  lEventEndsInsideTheControl: Boolean;
 begin
   lTarget := AWindowHandle.LastMouseDownControl;
   AWindowHandle.LastMouseDownControl := nil;
@@ -44,14 +45,18 @@ begin
     AWindowHandle.LCLForm, AWindowHandle.Children, x, y);
   lEventPos := FormPosToControlPos(lTarget, x, y);
   LCLSendMouseUpMsg(lTarget, lEventPos.x, lEventPos.y, Button, ShiftState);
-  LCLSendClickedMsg(lTarget);
+
+  // Send a click only if the event ends inside the control
+  lEventEndsInsideTheControl := (lEventPos.X >= 0) and (lEventPos.Y >= 0)
+    and (lEventPos.X <= lTarget.Width) and (lEventPos.Y <= lTarget.Height);
+  if lEventEndsInsideTheControl then LCLSendClickedMsg(lTarget);
 
   // If this is a interface control, send the message to the main LCL control too
   if IsIntfControl(lTarget) then
   begin
     lTarget := lTarget.Parent;
     LCLSendMouseUpMsg(lTarget, lEventPos.x, lEventPos.y, Button, ShiftState);
-    LCLSendClickedMsg(lTarget);
+    if lEventEndsInsideTheControl then LCLSendClickedMsg(lTarget);
   end;
 end;
 

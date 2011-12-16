@@ -21,6 +21,10 @@ object Form2: TForm2
     Height = 25
     Top = 50
     Width = 80
+    OnExit = Edit1Exit
+    OnKeyDown = Edit1KeyDown
+    OnKeyUp = Edit1KeyUp
+    OnUTF8KeyPress = Edit1UTF8KeyPress
     TabOrder = 1
     Text = 'Edit1'
   end
