@@ -32,6 +32,9 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
       );
+    procedure Button1KeyPress(Sender: TObject; var Key: char);
+    procedure Button1KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure Button1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure FormClick(Sender: TObject);
@@ -146,7 +149,25 @@ procedure TForm1.Button1KeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   DebugLn('[TForm1.Button1KeyDown] '+ LCLProc.DbgsVKCode(Key));
-  Caption := LCLProc.DbgsVKCode(Key);
+//  Caption := 'KeyDown ' + LCLProc.DbgsVKCode(Key);
+end;
+
+procedure TForm1.Button1KeyPress(Sender: TObject; var Key: char);
+begin
+  DebugLn('KeyPress: ' + Key);
+end;
+
+procedure TForm1.Button1KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
+  );
+begin
+  DebugLn('[TForm1.Button1KeyUp] '+ LCLProc.DbgsVKCode(Key));
+//  Caption := 'KeyUp ' + LCLProc.DbgsVKCode(Key);
+end;
+
+procedure TForm1.Button1UTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+begin
+  DebugLn('UTF8KeyPress: ' + UTF8Key);
+  Caption := UTF8Key;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -161,6 +182,7 @@ end;
 procedure TForm1.Button3Click(Sender: TObject);
 begin
   Form2.Show;
+  DebugLn('Button3Click');
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

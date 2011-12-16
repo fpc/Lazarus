@@ -252,7 +252,8 @@ type
     csOwnedChildrenNotSelectable, // child controls owned by this control are NOT selectable in the designer
     csAutoSize0x0,           // if the preferred size is 0x0 then control is shrinked ot 0x0
     csAutoSizeKeepChildLeft, // when AutoSize=true do not move children horizontally
-    csAutoSizeKeepChildTop   // when AutoSize=true do not move children vertically
+    csAutoSizeKeepChildTop,  // when AutoSize=true do not move children vertically
+    csRequiresKeyboardInput  // If the device has no physical keyboard then show the virtual keyboard when this control gets focus (therefore available only to TWinControl descendents)
     );
   TControlStyle = set of TControlStyleType;
 

@@ -7,6 +7,7 @@ import android.widget.*;
 import android.util.*;
 import android.graphics.*;
 import android.view.*;
+import android.view.inputmethod.InputMethodManager;
 
 public class LCLActivity extends Activity 
 {
@@ -225,6 +226,18 @@ public class LCLActivity extends Activity
   public void LCLDoDestroyTimer()
   {
     LocalHandler.removeCallbacks(lcltimerid);
+  };
+
+  public void LCLDoHideVirtualKeyboard()
+  {
+    InputMethodManager localInputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+    localInputManager.hideSoftInputFromWindow(lclsurface.getWindowToken(), 0);
+  };
+
+  public void LCLDoShowVirtualKeyboard()
+  {
+    InputMethodManager localInputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+    localInputManager.showSoftInput(lclsurface, 0);
   };
 
   // -------------------------------------------

@@ -68,7 +68,7 @@ begin
   inherited Create(AOwner);
   //FCompStyle is set here because TEdit inherits from this.
   //TCustomMemo also inherits from here but it's create changes fcompstyle to csMemo
-  ControlStyle := ControlStyle - [csCaptureMouse];
+  ControlStyle := ControlStyle - [csCaptureMouse] + [csRequiresKeyboardInput];
   FCompStyle := csEdit;
   FMaxLength := 0;
   FHideSelection := True;

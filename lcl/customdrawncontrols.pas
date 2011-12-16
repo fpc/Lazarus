@@ -1596,7 +1596,7 @@ begin
   Width := 80;
   Height := 25;
   TabStop := True;
-  ControlStyle := ControlStyle - [csAcceptsControls];
+  ControlStyle := ControlStyle - [csAcceptsControls] + [csRequiresKeyboardInput];
 
   // State information
   FEditState.VisibleTextStart := Point(1, 1);

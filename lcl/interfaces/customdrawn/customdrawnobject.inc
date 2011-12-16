@@ -22,21 +22,38 @@ end;
 
 procedure TCDWidgetSet.CDSetFocusToControl(ALCLControl, AIntfControl: TWinControl);
 var
-  lForm: TWinControl;
+  lForm, OldFocusedControl: TWinControl;
 begin
-  if (CDWidgetset.FocusedControl <> ALCLControl) then
+  OldFocusedControl := FocusedControl;
+  if (FocusedControl <> ALCLControl) then
   begin
     // First kill focus in the previous control
-    if CDWidgetset.FocusedControl <> nil then
-      LCLSendKillFocusMsg(CDWidgetset.FocusedControl);
-    CDWidgetset.FocusedControl := ALCLControl;
+    if FocusedControl <> nil then
+      LCLSendKillFocusMsg(FocusedControl);
+    FocusedControl := ALCLControl;
     LCLSendSetFocusMsg(ALCLControl);
 
     // The same for intf controls
-    if CDWidgetset.FocusedIntfControl <> nil then
-      LCLSendKillFocusMsg(CDWidgetset.FocusedIntfControl);
-    CDWidgetset.FocusedIntfControl := AIntfControl;
+    if FocusedIntfControl <> nil then
+      LCLSendKillFocusMsg(FocusedIntfControl);
+    FocusedIntfControl := AIntfControl;
     if AIntfControl <> nil then LCLSendSetFocusMsg(AIntfControl);
+
+    // Verify if the virtual keyboard needs to be shown/hidden
+    // Only show if there is no hardware keyboard, but hide always in case
+    // the user flopped the keyboard in the mean time
+    if OldFocusedControl <> nil then
+    begin
+      if (csRequiresKeyboardInput in OldFocusedControl.ControlStyle)
+       and (not (csRequiresKeyboardInput in ALCLControl.ControlStyle)) then
+       HideVirtualKeyboard();
+
+      if (not (csRequiresKeyboardInput in OldFocusedControl.ControlStyle))
+       and (csRequiresKeyboardInput in ALCLControl.ControlStyle) then
+       ShowVirtualKeyboard();
+    end
+    else if csRequiresKeyboardInput in ALCLControl.ControlStyle then
+      ShowVirtualKeyboard();
 
     // Invalidate the entire window to reflect the focus change
     lForm := Forms.GetParentForm(ALCLControl);

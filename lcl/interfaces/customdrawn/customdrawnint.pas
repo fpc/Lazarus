@@ -280,6 +280,8 @@ var
   javaMethod_LCLDoShowMessageBox: jmethodid = nil;
   javaMethod_LCLDoCreateTimer: jmethodid = nil;
   javaMethod_LCLDoDestroyTimer: jmethodid = nil;
+  javaMethod_LCLDoHideVirtualKeyboard: jmethodid = nil;
+  javaMethod_LCLDoShowVirtualKeyboard: jmethodid = nil;
 
   // This is utilized to store the information such as invalidate requests in events
   eventResult: jint;
@@ -311,18 +313,22 @@ uses
   {$include wincallback.inc}
   {$I customdrawnobject_win.inc}
   {$I customdrawnwinapi_win.inc}
+  {$I customdrawnlclintf_win.inc}
 {$endif}
 {$ifdef CD_Cocoa}
   {$I customdrawnobject_cocoa.inc}
   {$I customdrawnwinapi_cocoa.inc}
+  {$I customdrawnlclintf_cocoa.inc}
 {$endif}
 {$ifdef CD_X11}
   {$I customdrawnobject_x11.inc}
   {$I customdrawnwinapi_x11.inc}
+  {$I customdrawnlclintf_x11.inc}
 {$endif}
 {$ifdef CD_Android}
   {$I customdrawnobject_android.inc}
   {$I customdrawnwinapi_android.inc}
+  {$I customdrawnlclintf_android.inc}
 {$endif}
 
 end.

@@ -40,14 +40,16 @@ function CreateEmptyRegion: hRGN; override;
 function CreateRubberBand(const ARect: TRect; const ABrush: HBrush = 0): HWND; override;
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
 procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
-procedure DestroyRubberBand(ARubberBand: HWND); override;
+procedure DestroyRubberBand(ARubberBand: HWND); override;*)
 
-function FontCanUTF8(Font: HFont): boolean; override;
+(*function FontCanUTF8(Font: HFont): boolean; override; // Dont implement, deprecated
 function FontIsMonoSpace(Font: HFont): boolean; override;
 
-function GetDesignerDC(WindowHandle: HWND): HDC; override;
+function GetDesignerDC(WindowHandle: HWND): HDC; override;*)
 
-function IntfSendsUTF8KeyPress: boolean; override;
+procedure HideVirtualKeyboard();
+
+(*function IntfSendsUTF8KeyPress: boolean; override;
 function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;*)
 
 function PromptUser(const DialogCaption : string;
@@ -75,6 +77,7 @@ procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); overrid
 
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;
 procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect); override;*)
+procedure ShowVirtualKeyboard();
 
 // No need to implement this one as the default is redirecting to ExtTextOut
 // which already handles UTF-8

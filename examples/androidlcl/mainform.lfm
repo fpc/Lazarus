@@ -30,6 +30,9 @@ object Form1: TForm1
     Caption = 'Move Progress'
     OnClick = Button1Click
     OnKeyDown = Button1KeyDown
+    OnKeyPress = Button1KeyPress
+    OnKeyUp = Button1KeyUp
+    OnUTF8KeyPress = Button1UTF8KeyPress
     TabOrder = 1
   end
   object ProgressBar1: TProgressBar
