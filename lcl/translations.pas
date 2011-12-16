@@ -110,6 +110,7 @@ type
     FModuleList: TStringList;
     procedure RemoveTaggedItems(aTag: Integer);
     procedure RemoveUntaggedModules;
+    function IsKey(Txt, Key: PChar): boolean;
   public
     constructor Create;
     constructor Create(const AFilename: String; Full:boolean=false);
@@ -489,6 +490,18 @@ begin
   end;
 end;
 
+function TPOFile.IsKey(Txt, Key: PChar): boolean;
+begin
+  if Txt=nil then exit(false);
+  if Key=nil then exit(true);
+  repeat
+    if Key^=#0 then exit(true);
+    if Txt^<>Key^ then exit(false);
+    inc(Key);
+    inc(Txt);
+  until false;
+end;
+
 constructor TPOFile.Create;
 begin
   inherited Create;
@@ -646,7 +659,7 @@ var
 
   function TestPrefixStr(AIndex: Integer): boolean;
   var
-    s: string;
+    s: PChar;
     l: Integer;
   begin
     case aIndex of
@@ -654,11 +667,11 @@ var
       ciMsgStr: s:=sMsgStr;
       ciPrevMsgId: s:=sPrevMsgId;
     end;
-    L := Length(s);
-    result := CompareMem(LineStart, pchar(s), L);
+    result := IsKey(LineStart, s);
     if Result then begin
       StoreCollectedLine;
       CollectedIndex := AIndex;
+      L := Length(s);
       Line:=UTF8CStringToUTF8String(LineStart+L,LineLen-L-1);
     end;
   end;
@@ -682,7 +695,7 @@ begin
     while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
     LineLen:=LineEnd-LineStart;
     if LineLen>0 then begin
-      if CompareMem(LineStart,sCommentIdentifier,3) then begin
+      if IsKey(LineStart,sCommentIdentifier) then begin
         AddEntry;
         Identifier:=copy(s,LineStart-p+4,LineLen-3);
         // the RTL creates identifier paths with point instead of colons
@@ -693,12 +706,12 @@ begin
       end else if TestPrefixStr(ciMsgId) then begin
       end else if TestPrefixStr(ciMsgStr) then begin
       end else if TestPrefixStr(ciPrevMsgId) then begin
-      end else if CompareMem(LineStart, sMsgCtxt,9) then begin
+      end else if IsKey(LineStart, sMsgCtxt) then begin
         Context:= Copy(LineStart, 10, LineLen-10);
-      end else if CompareMem(LineStart, sFlags, 3) then begin
+      end else if IsKey(LineStart, sFlags) then begin
         Flags := copy(LineStart, 4, LineLen-3);
       end else if (LineStart^='"') then begin
-        if (MsgID='') and CompareMem(LineStart,sCharSetIdentifier,35) then
+        if (MsgID='') and IsKey(LineStart,sCharSetIdentifier) then
         begin
           FCharSet:=copy(LineStart,36,LineLen-38);
           if SysUtils.CompareText(FCharSet,'UTF-8')<>0 then begin
@@ -718,7 +731,7 @@ begin
           end;
         end;
         Line := Line + UTF8CStringToUTF8String(LineStart+1,LineLen-2);
-      end else if CompareMem(LineStart, sPrevStr, 4) then begin
+      end else if IsKey(LineStart, sPrevStr) then begin
         Line := Line + UTF8CStringToUTF8String(LineStart+5,LineLen-6);
       end else if LineStart^='#' then begin
         if Comments<>'' then
