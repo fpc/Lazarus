@@ -59,6 +59,7 @@ type
     // preparations can be executed in it's user interface, for example
     property OnBeforeShow: TBeforeShowPageEvent read FOnBeforeShow write FOnBeforeShow;
     // Other events and properties
+    property BiDiMode;
     property ChildSizing;
     property Color;
     property Left stored False;
@@ -74,6 +75,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property ParentBiDiMode;
     property ParentShowHint;
     property PopupMenu;
     property TabOrder stored False;
@@ -142,6 +144,7 @@ type
     // Generic properties
     property Align;
     property Anchors;
+    property BiDiMode;
     property BorderSpacing;
     property Color;
     property Constraints;
@@ -166,6 +169,7 @@ type
     property OnStartDrag;
 //    property Options;
 //    property PageIndex;
+    property ParentBiDiMode;
     property PopupMenu;
     property TabOrder;
     property TabStop;
