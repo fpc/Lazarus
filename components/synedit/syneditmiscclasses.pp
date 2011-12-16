@@ -612,6 +612,8 @@ function TSynSelectedColor.GetFrameSideOrigin(Side: TSynFrameSide): TSynFrameEdg
 begin
   if FFrameSidesInitialized
   then Result := FFrameSideOrigin[Side]
+  else if FrameColor = clNone
+  then Result := sfeNone
   else Result := FrameEdges;
 end;
 
@@ -720,17 +722,19 @@ end;
 
 procedure TSynSelectedColor.MergeFrames(Other: TSynSelectedColor; LeftCol, RightCol: Integer);
 
-  procedure SetSide(ASide: TSynFrameSide; ASrc: TSynSelectedColor; UpdateOnly: Boolean = False);
+  procedure SetSide(ASide: TSynFrameSide; ASrc: TSynSelectedColor);
   begin
-    if (ASrc.FrameSidePriority[ASide] < FrameSidePriority[ASide]) or
-       ( (ASrc.FrameSidePriority[ASide] = FrameSidePriority[ASide]) and
-         (SynFrameEdgePriorities[ASrc.FrameSideOrigin[ASide]] < SynFrameEdgePriorities[FrameSideOrigin[ASide]]) )
+    if (FrameSideColors[ASide] <> clNone) and
+       ( (ASrc.FrameSidePriority[ASide] < FrameSidePriority[ASide]) or
+         ( (ASrc.FrameSidePriority[ASide] = FrameSidePriority[ASide]) and
+           (SynFrameEdgePriorities[ASrc.FrameSideOrigin[ASide]] < SynFrameEdgePriorities[FrameSideOrigin[ASide]]) )
+       )
     then
-      exit;
-    if UpdateOnly and (FFrameSideColors[ASide] <> clNone) then
       exit;
     FFrameSideColors[ASide] := ASrc.FrameColor;
     FFrameSideStyles[ASide] := ASrc.FrameStyle;
+    FFrameSidePriority[ASide] := ASrc.FramePriority;
+    FFrameSideOrigin[ASide]   := ASrc.FrameEdges;
     if ASide = sfdLeft then
       FStartX := ASrc.FStartX;
     if ASide = sfdRight then
@@ -745,7 +749,7 @@ begin
       FFrameSideColors[i]   := FrameSideColors[i];
       FFrameSideStyles[i]   := FrameSideStyles[i];
       FFrameSidePriority[i] := FrameSidePriority[i];
-      FFrameSideOrigin[i]   := FrameEdges;
+      FFrameSideOrigin[i]   := FrameSideOrigin[i];
     end;
     FFrameSidesInitialized := True;
   end;
@@ -757,10 +761,10 @@ begin
   case Other.FrameEdges of
     sfeAround: begin
         // UpdateOnly, frame keeps behind individual sites
-        if (Other.StartX = LeftCol) then SetSide(sfdLeft, Other, True);
-        if (Other.EndX = RightCol)  then SetSide(sfdRight, Other, True);
-        SetSide(sfdBottom, Other, True);
-        SetSide(sfdTop, Other, True);
+        if (Other.StartX = LeftCol) then SetSide(sfdLeft, Other);
+        if (Other.EndX = RightCol)  then SetSide(sfdRight, Other);
+        SetSide(sfdBottom, Other);
+        SetSide(sfdTop, Other);
         //FrameColor := Other.FrameColor;
         //FrameStyle := Other.FrameStyle;
         //FrameEdges := Other.FrameEdges;
