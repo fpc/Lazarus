@@ -27,7 +27,8 @@
   ToDo:
     -quickfix for identifier not found
     -use identifier: check package version
-    -check for unit conflict
+    -check for conflict: other unit with same name already in search path
+    -check for conflict: other identifier in scope, use unitname.identifier
     -gzip? lot of cpu, may be faster on first load
 }
 unit CodyIdentifiersDlg;
@@ -110,16 +111,23 @@ type
     cidaJumpToIdentifier
     );
 
+  TCodyIdentifierFilter = (
+    cifStartsWith,
+    cifContains
+    );
+
   { TCodyIdentifiersDlg }
 
   TCodyIdentifiersDlg = class(TForm)
     AddToImplementationUsesCheckBox: TCheckBox;
     ButtonPanel1: TButtonPanel;
+    ContainsSpeedButton: TSpeedButton;
     FilterEdit: TEdit;
     HideOtherProjectsCheckBox: TCheckBox;
     InfoLabel: TLabel;
     ItemsListBox: TListBox;
     PackageLabel: TLabel;
+    StartsSpeedButton: TSpeedButton;
     UnitLabel: TLabel;
     procedure ButtonPanel1OKButtonClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
@@ -133,6 +141,7 @@ type
     procedure ItemsListBoxClick(Sender: TObject);
     procedure ItemsListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
+    procedure StartsSpeedButtonClick(Sender: TObject);
   private
     FDlgAction: TCodyIdentifierDlgAction;
     FJumpButton: TBitBtn;
@@ -142,6 +151,7 @@ type
     FMaxItems: integer;
     FNoFilterText: string;
     FItems: TStringList;
+    FLastFilterType: TCodyIdentifierFilter;
     procedure SetDlgAction(NewAction: TCodyIdentifierDlgAction);
     procedure SetIdleConnected(AValue: boolean);
     procedure SetMaxItems(AValue: integer);
@@ -185,6 +195,7 @@ type
     property MaxItems: integer read FMaxItems write SetMaxItems;
     function OwnerToString(AnOwner: TObject): string;
     property DlgAction: TCodyIdentifierDlgAction read FDlgAction;
+    function GetFilterType: TCodyIdentifierFilter;
   end;
 
 var
@@ -667,6 +678,13 @@ begin
   FJumpButton.Name:='JumpButton';
   FJumpButton.OnClick:=@JumpButtonClick;
   FJumpButton.Caption:= crsJumpTo;
+
+  StartsSpeedButton.Down:=true;
+  StartsSpeedButton.Caption:='Starts';
+  StartsSpeedButton.Hint:='Show only identifiers starting with filter text';
+  ContainsSpeedButton.Down:=false;
+  ContainsSpeedButton.Caption:='Contains';
+  ContainsSpeedButton.Hint:='Show only identifiers containing filter text';
 end;
 
 procedure TCodyIdentifiersDlg.HideOtherProjectsCheckBoxChange(Sender: TObject);
@@ -695,9 +713,15 @@ begin
     UpdateGeneralInfo;
   end;
   if (FLastFilter<>GetFilterEditText)
-  or (FLastHideOtherProjects<>HideOtherProjectsCheckBox.Checked) then
+  or (FLastHideOtherProjects<>HideOtherProjectsCheckBox.Checked)
+  or (FLastFilterType<>GetFilterType) then
     UpdateItemsList;
   IdleConnected:=false;
+end;
+
+procedure TCodyIdentifiersDlg.StartsSpeedButtonClick(Sender: TObject);
+begin
+  UpdateItemsList;
 end;
 
 procedure TCodyIdentifiersDlg.SetIdleConnected(AValue: boolean);
@@ -748,61 +772,73 @@ var
     Node: TAVLTreeNode;
   begin
     Node:=CodyUnitDictionary.Identifiers.FindLowest;
-    //debugln(['TCodyIdentifiersDlg.UpdateItemsList Filter="',Filter,'"']);
+    debugln(['TCodyIdentifiersDlg.UpdateItemsList Filter="',FLastFilter,'" Count=',CodyUnitDictionary.Identifiers.Count]);
     while Node<>nil do begin
       Item:=TUDIdentifier(Node.Data);
-      if ComparePrefixIdent(FilterP,PChar(Pointer(Item.Name)))
-      and (AddExactMatches=(CompareIdentifiers(FilterP,PChar(Pointer(Item.Name)))=0))
-      then begin
-        if Found>MaxItems then begin
-          inc(Found); // only count, do not check
-        end else begin
-          GroupNode:=Item.DUnit.Groups.FindLowest;
-          while GroupNode<>nil do begin
-            Group:=TUDUnitGroup(GroupNode.Data);
-            GroupNode:=Item.DUnit.Groups.FindSuccessor(GroupNode);
-            if not FilenameIsAbsolute(Item.DUnit.Filename) then continue;
-            if Group.Name='' then begin
-              // it's a unit without package
-              if FLastHideOtherProjects then begin
-                // check if unit is in unit path of current owner
-                if CurUnitPath='' then continue;
-                if FindPathInSearchPath(PChar(CurUnitPath),length(CurUnitPath),
-                    PChar(CurUnitPath),length(CurUnitPath))=nil
-                then continue;
-              end;
-            end else if Group.Name=PackageNameFPCSrcDir then begin
-              // it's a FPC source directory
-              // => check if it is the current one
-              Dir:=ChompPathDelim(ExtractFilePath(Group.Filename));
-              if CompareFilenames(Dir,FPCSrcDir)<>0 then continue;
-              FPCSrcFilename:=UnitSet.GetUnitSrcFile(Item.DUnit.Name);
-              if (FPCSrcFilename<>'')
-              and (CompareFilenames(FPCSrcFilename,Item.DUnit.Filename)<>0)
-              then continue; // this is not the source for this target platform
-            end else if FileExistsCached(Group.Filename) then begin
-              // lpk exists
-            end else begin
-              // lpk does not exist any more
-              CodyUnitDictionary.CheckFileAsync(Group.Filename);
-            end;
-            s:=Item.Name+' in '+Item.DUnit.Name;
-            if Group.Name<>'' then
-              s:=s+' of '+Group.Name;
-            if FileExistsCached(Item.DUnit.Filename) then begin
-              inc(Found);
-              if Found<MaxItems then begin
-                FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Name+#10+Group.Filename);
-                sl.Add(s);
-              end;
-            end else begin
-              // unit does not exist any more
-              CodyUnitDictionary.CheckFileAsync(Item.DUnit.Filename);
-            end;
-          end;
+      Node:=CodyUnitDictionary.Identifiers.FindSuccessor(Node);
+      debugln(['AddItems checking ',Item.Name]);
+      if CompareIdentifiers(FilterP,PChar(Pointer(Item.Name)))=0 then begin
+        // exact match
+        if not AddExactMatches then continue;
+      end else begin
+        // not exact
+        if AddExactMatches then continue;
+        debugln(['AddItems ',ord(FLastFilterType),' ',Item.Name]);
+        case FLastFilterType of
+        cifStartsWith:
+          if not ComparePrefixIdent(FilterP,PChar(Pointer(Item.Name))) then continue;
+        cifContains:
+          if System.Pos(FLastFilter,Item.Name)<1 then continue;
         end;
       end;
-      Node:=CodyUnitDictionary.Identifiers.FindSuccessor(Node);
+      debugln(['AddItems name FITS ',ord(FLastFilterType),' ',Item.Name]);
+      if Found>MaxItems then begin
+        inc(Found); // only count, do not check
+        continue;
+      end;
+      GroupNode:=Item.DUnit.Groups.FindLowest;
+      while GroupNode<>nil do begin
+        Group:=TUDUnitGroup(GroupNode.Data);
+        GroupNode:=Item.DUnit.Groups.FindSuccessor(GroupNode);
+        if not FilenameIsAbsolute(Item.DUnit.Filename) then continue;
+        if Group.Name='' then begin
+          // it's a unit without package
+          if FLastHideOtherProjects then begin
+            // check if unit is in unit path of current owner
+            if CurUnitPath='' then continue;
+            if FindPathInSearchPath(PChar(CurUnitPath),length(CurUnitPath),
+                PChar(CurUnitPath),length(CurUnitPath))=nil
+            then continue;
+          end;
+        end else if Group.Name=PackageNameFPCSrcDir then begin
+          // it's a FPC source directory
+          // => check if it is the current one
+          Dir:=ChompPathDelim(ExtractFilePath(Group.Filename));
+          if CompareFilenames(Dir,FPCSrcDir)<>0 then continue;
+          FPCSrcFilename:=UnitSet.GetUnitSrcFile(Item.DUnit.Name);
+          if (FPCSrcFilename<>'')
+          and (CompareFilenames(FPCSrcFilename,Item.DUnit.Filename)<>0)
+          then continue; // this is not the source for this target platform
+        end else if FileExistsCached(Group.Filename) then begin
+          // lpk exists
+        end else begin
+          // lpk does not exist any more
+          CodyUnitDictionary.CheckFileAsync(Group.Filename);
+        end;
+        s:=Item.Name+' in '+Item.DUnit.Name;
+        if Group.Name<>'' then
+          s:=s+' of '+Group.Name;
+        if FileExistsCached(Item.DUnit.Filename) then begin
+          inc(Found);
+          if Found<MaxItems then begin
+            FItems.Add(Item.Name+#10+Item.DUnit.Filename+#10+Group.Name+#10+Group.Filename);
+            sl.Add(s);
+          end;
+        end else begin
+          // unit does not exist any more
+          CodyUnitDictionary.CheckFileAsync(Item.DUnit.Filename);
+        end;
+      end;
     end;
   end;
 
@@ -811,6 +847,7 @@ begin
   FilterP:=PChar(FLastFilter);
 
   FLastHideOtherProjects:=HideOtherProjectsCheckBox.Checked;
+  FLastFilterType:=GetFilterType;
 
   FItems.Clear;
   sl:=TStringList.Create;
@@ -818,9 +855,8 @@ begin
     Found:=0;
     UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
     FPCSrcDir:='';
-    if (UnitSet<>nil) then begin
+    if (UnitSet<>nil) then
       FPCSrcDir:=ChompPathDelim(UnitSet.FPCSourceDirectory);
-    end;
     AddItems(true);
     AddItems(false);
     if Found>sl.Count then
@@ -1241,6 +1277,14 @@ begin
     Result:='project'
   else if AnOwner is TIDEPackage then
     Result:=TIDEPackage(AnOwner).Name;
+end;
+
+function TCodyIdentifiersDlg.GetFilterType: TCodyIdentifierFilter;
+begin
+  if ContainsSpeedButton.Down then
+    exit(cifContains)
+  else
+    exit(cifStartsWith);
 end;
 
 procedure TCodyIdentifiersDlg.UpdateCurOwnerOfUnit;
