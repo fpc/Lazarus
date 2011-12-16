@@ -3431,8 +3431,17 @@ var
     Special, SpecialTab1, SpecialTab2, SpecialSpace, HasTabs: boolean;
     Fill: Integer;
   begin
-      LengthNeeded := 0;
+    LengthNeeded := 0;
     Result := 0;
+
+    if CurLogIndex >= length(CharWidths) then begin
+      // past eol (e.g. fold marker). No special handling. No support for double width chars
+      // count utf8 chars
+      for i := 0 to Count -1 do
+        if p[i] <= #$7f then inc(Result);
+      exit;
+    end;
+
     HasTabs := False;
     SrcPos:=0;
     for i := CurLogIndex to CurLogIndex + Count -1 do begin
@@ -3696,57 +3705,6 @@ var
         LCLIntf.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
         LCLIntf.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
       end;
-
-      if FFoldedLinesView.FoldType[CurLine] * [cfCollapsedFold, cfCollapsedHide] <> [] then
-      begin
-        FillFCol := Font.Color;
-        FillBCol := colEditorBG;
-        FillFrame := Font.Color;
-        FrameStyle := slsSolid;
-        FillStyle  := [];
-        MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, CurPhysPos + 3);
-        if MarkupInfo <> nil then
-          MarkupInfo.ModifyColors(FillFCol, FillBCol, FillFrame, FillStyle, FrameStyle);
-        FoldedCodeInfo := FoldedCodeColor;
-        if Assigned(FoldedCodeInfo) then
-          FoldedCodeInfo.ModifyColors(FillFCol, FillBCol, FillFrame, FillStyle, FrameStyle);
-        if (FillBCol = FillFCol) then begin // or if diff(gb,fg) < x
-          if FillBCol = colEditorBG
-          then FillFCol := not(FillBCol) and $00ffffff // or maybe Font.color ?
-          else FillFCol := colEditorBG;
-        end;
-
-        rcToken.Left := ScreenColumnToXValue(CurPhysPos+3);
-        rcToken.Right := ScreenColumnToXValue(CurPhysPos+6);
-
-        FTextDrawer.ForeColor := FillFCol;
-        FTextDrawer.BackColor := FillBCol;
-        FTextDrawer.SetStyle(FillStyle);
-
-        if Assigned(FoldedCodeInfo) and (FoldedCodeInfo.FrameColor <> clNone) then
-        begin
-          for side := low(TSynFrameSide) to high(TSynFrameSide) do begin
-            if ( (FoldedCodeInfo.FrameEdges = sfeAround) or
-                 ((FoldedCodeInfo.FrameEdges = sfeBottom) and (side = sfdBottom)) or
-                 ((FoldedCodeInfo.FrameEdges = sfeLeft) and (side = sfdLeft))
-               )
-            then
-              FTextDrawer.FrameColor[side] := FoldedCodeInfo.FrameColor
-            else
-              FTextDrawer.FrameColor[side] := clNone;
-            FTextDrawer.FrameStyle[side] := FoldedCodeInfo.FrameStyle;
-          end;
-        end;
-        if rcToken.Right > rcLine.Right then begin
-          rcToken.Right := rcLine.Right;
-          fTextDrawer.FrameColor[sfdRight] := clNone; // right side of char is not painted
-        end;
-        if rcToken.Right > rcToken.Left then begin
-          if ForceEto then fTextDrawer.ForceNextTokenWithEto;
-          fTextDrawer.ExtTextOut(rcToken.Left, rcToken.Top, ETOOptions-ETO_OPAQUE,
-                                 rcToken, '...', 3, rcLine.Bottom);
-        end;
-      end;
     end;
   end;
 
@@ -3889,10 +3847,7 @@ var
         if DefaultBGCol = clNone then DefaultBGCol := colEditorBG;
         if DefaultFGCol = clNone then DefaultFGCol := Font.Color;
 
-        FPaintLineColor.FrameColor := attr.FrameColor;
-        FPaintLineColor.FrameStyle := attr.FrameStyle;
-        FPaintLineColor.FrameEdges := attr.FrameEdges;
-        FPaintLineColor.Style      := attr.Style;
+        FPaintLineColor.Assign(attr);
         // TSynSelectedColor.Style and StyleMask describe how to modify a style,
         // but FPaintLineColor contains an actual style
         FPaintLineColor.MergeFinalStyle := True;
@@ -3901,11 +3856,8 @@ var
           FPaintLineColor.Background := colEditorBG;
         if FPaintLineColor.Foreground = clNone then
           FPaintLineColor.Foreground := Font.Color;
-        if attr.FrameColor <> clNone then begin
-          FPaintLineColor.StartX := PhysicalStartPos;
-          FPaintLineColor.EndX   := PhysicalStartPos + TokenCharLen - 1;
-          FPaintLineColor.MergeFrames(nil, PhysicalStartPos, PhysicalStartPos + TokenCharLen - 1);
-        end;
+        FPaintLineColor.StartX := PhysicalStartPos;
+        FPaintLineColor.EndX   := PhysicalStartPos + TokenCharLen - 1;
       end else
       begin
         DefaultFGCol := Font.Color;
@@ -3968,6 +3920,9 @@ var
       SubTokenByteLen := CharToByteLen(SubCharLen);
       PhysicalEndPos:= PhysicalStartPos + SubCharLen - 1;
 
+      FPaintLineColor2.CurrentStartX := PhysicalStartPos;
+      FPaintLineColor2.CurrentEndX := PhysicalEndPos;
+
       // Calculate Markup
       fMarkupManager.MergeMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1,
         PhysicalStartPos, PhysicalEndPos, FPaintLineColor2);
@@ -4004,12 +3959,10 @@ var
   procedure PaintLines;
   var
     sLine: string; // the current line
-    sToken: PChar; // highlighter token info
-    nTokenLen: integer; // Pos in Char // Len in Byte ??
-    attr: TSynHighlighterAttributes;
     ypos: Integer;
     DividerInfo: TSynDividerDrawConfigSetting;
     TV, cl: Integer;
+    TokenInfo: TLazSynDisplayTokenInfo;
   begin
     // Initialize rcLine for drawing. Note that Top and Bottom are updated
     // inside the loop. Get only the starting point for this.
@@ -4022,10 +3975,6 @@ var
     CurLine := FirstLine-1;
     while CurLine<LastLine do begin
       inc(CurLine);
-//      CurTextIndex := FFoldedLinesView.TextIndex[CurLine];
-      //CharWidths := FFoldedLinesView.GetPhysicalCharWidths(CurLine);
-
-      // Get the line.
       // Update the rcLine rect to this line.
       rcLine.Top := rcLine.Bottom;
       Inc(rcLine.Bottom, fTextHeight);
@@ -4058,8 +4007,8 @@ var
         dec(rcToken.Bottom);
       end;
 
-      while FDisplayView.GetNextHighlighterToken(sToken, nTokenLen, attr) do begin
-        DrawHiLightMarkupToken(attr,sToken,nTokenLen);
+      while FDisplayView.GetNextHighlighterToken(TokenInfo) do begin
+        DrawHiLightMarkupToken(TokenInfo.TokenAttr, TokenInfo.TokenStart, TokenInfo.TokenLength);
       end;
 
       // Draw anything that's left in the TokenAccu record. Fill to the end

@@ -119,9 +119,7 @@ type
   public
     constructor Create(ABuffer: TSynEditStringList);
     procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
-    function  GetNextHighlighterToken(out ATokenStart: PChar; out ATokenLength: integer;
-                                      out ATokenAttr: TSynHighlighterAttributes
-                                     ): Boolean; override;
+    function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
     function GetDrawDividerInfo: TSynDividerDrawConfigSetting; override;
   end;
 
@@ -352,8 +350,7 @@ begin
   FAtLineStart := True;
 end;
 
-function TLazSynDisplayBuffer.GetNextHighlighterToken(out ATokenStart: PChar; out
-  ATokenLength: integer; out ATokenAttr: TSynHighlighterAttributes): Boolean;
+function TLazSynDisplayBuffer.GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean;
 begin
   Result := False;
   if not Initialized then exit;
@@ -361,8 +358,8 @@ begin
   if CurrentTokenHighlighter = nil then begin
     Result := FAtLineStart;
     if not Result then exit;
-    ATokenStart := FBuffer.GetPChar(CurrentTokenLine, ATokenLength);
-    ATokenAttr := nil;
+    ATokenInfo.TokenStart := FBuffer.GetPChar(CurrentTokenLine, ATokenInfo.TokenLength);
+    ATokenInfo.TokenAttr := nil;
     FAtLineStart := False;
   end
   else begin
@@ -373,8 +370,8 @@ begin
     Result := not CurrentTokenHighlighter.GetEol;
     if not Result then exit;
 
-    CurrentTokenHighlighter.GetTokenEx(ATokenStart, ATokenLength);
-    ATokenAttr := CurrentTokenHighlighter.GetTokenAttribute;
+    CurrentTokenHighlighter.GetTokenEx(ATokenInfo.TokenStart, ATokenInfo.TokenLength);
+    ATokenInfo.TokenAttr := CurrentTokenHighlighter.GetTokenAttribute;
     CurrentTokenHighlighter.Next;
   end;
 end;

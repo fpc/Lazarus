@@ -106,6 +106,7 @@ type
   );
 
   TSynFrameEdges = (
+    sfeNone,
     sfeAround,      // frame around
     sfeBottom,      // bottom part of the frame
     sfeLeft         // left part of the frame
@@ -117,8 +118,23 @@ type
     sfdRight,
     sfdBottom
   );
+  TSynFrameSides = set of TSynFrameSide;
 
 const
+  SynFrameEdgeToSides: array [TSynFrameEdges] of TSynFrameSides =
+  ( [],                                       // sfeNone
+    [sfdLeft, sfdTop, sfdRight, sfdBottom],   // sfeAround
+    [sfdBottom],                              // sfeBottom
+    [sfdLeft]                                 // sfeLeft
+  );
+
+  SynFrameEdgePriorities: array [TSynFrameEdges] of integer =
+  ( 0,    // sfeNone
+    1,   // sfeAround
+    2,   // sfeBottom
+    2    // sfeLeft
+  );
+
   scTextCleared = [scCaretX, scCaretY, scLeftChar, scTopLine, scModified, scSelection];
 
 

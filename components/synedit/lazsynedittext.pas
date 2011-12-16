@@ -106,6 +106,12 @@ type
     - Can be Edited
   *)
 
+  TLazSynDisplayTokenInfo = record
+    TokenStart: PChar;
+    TokenLength: integer;
+    TokenAttr: TSynHighlighterAttributes
+  end;
+
   { TLazSynDisplayView }
 
   TLazSynDisplayView = class
@@ -118,9 +124,7 @@ type
     procedure InitHighlighterTokens(AHighlighter: TSynCustomHighlighter); virtual;
     procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); virtual;
     procedure FinishHighlighterTokens; virtual;
-    function  GetNextHighlighterToken(out ATokenStart: PChar; out ATokenLength: integer;
-                                      out ATokenAttr: TSynHighlighterAttributes
-                                     ): Boolean; virtual;
+    function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; virtual;
     function GetDrawDividerInfo: TSynDividerDrawConfigSetting; virtual;
     // todo: gutter info
   end;
@@ -402,11 +406,10 @@ begin
     FNextView.FinishHighlighterTokens;
 end;
 
-function TLazSynDisplayView.GetNextHighlighterToken(out ATokenStart: PChar; out
-  ATokenLength: integer; out ATokenAttr: TSynHighlighterAttributes): Boolean;
+function TLazSynDisplayView.GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean;
 begin
   if assigned(FNextView) then
-    Result := FNextView.GetNextHighlighterToken(ATokenStart, ATokenLength, ATokenAttr)
+    Result := FNextView.GetNextHighlighterToken(ATokenInfo)
   else
     Result := False;
 end;

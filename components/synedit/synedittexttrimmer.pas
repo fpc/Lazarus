@@ -49,9 +49,7 @@ type
     constructor Create(ATrimer: TSynEditStringTrimmingList);
     procedure FinishHighlighterTokens; override;
     procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
-    function  GetNextHighlighterToken(out ATokenStart: PChar; out ATokenLength: integer;
-                                      out ATokenAttr: TSynHighlighterAttributes
-                                     ): Boolean; override;
+    function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
   end;
 
   { TSynEditStringTrimmingList }
@@ -225,8 +223,7 @@ begin
   inherited SetHighlighterTokensLine(ALine, ARealLine);
 end;
 
-function TLazSynDisplayTrim.GetNextHighlighterToken(out ATokenStart: PChar; out
-  ATokenLength: integer; out ATokenAttr: TSynHighlighterAttributes): Boolean;
+function TLazSynDisplayTrim.GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean;
 begin
   Result := False;
   if not Initialized then exit;
@@ -236,15 +233,15 @@ begin
     if not Result then exit;
 
     FTempLineStringForPChar := FTrimer[CurrentTokenLine];
-    ATokenStart := PChar(FTempLineStringForPChar);
-    ATokenLength := length(FTempLineStringForPChar);
-    ATokenAttr := nil;
+    ATokenInfo.TokenStart := PChar(FTempLineStringForPChar);
+    ATokenInfo.TokenLength := length(FTempLineStringForPChar);
+    ATokenInfo.TokenAttr := nil;
     FAtLineStart := False;
     exit;
   end;
 
   // highlighter currently includes trimed spaces
-  Result := inherited GetNextHighlighterToken(ATokenStart, ATokenLength, ATokenAttr);
+  Result := inherited GetNextHighlighterToken(ATokenInfo);
 end;
 
 { TSynEditUndoTrimMoveTo }

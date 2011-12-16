@@ -321,13 +321,16 @@ type
 
   { TLazSynDisplayFold }
 
-  TLazSynDisplayFold = class(TLazSynDisplayView)
+  TLazSynDisplayFold = class(TLazSynDisplayViewEx)
   private
     FFoldView: TSynEditFoldedView;
+    FLineState: integer;
+    FTokenAttr: TSynHighlighterAttributes;
   public
     constructor Create(AFoldView: TSynEditFoldedView);
-    procedure InitHighlighterTokens(AHighlighter: TSynCustomHighlighter); override;
+    destructor Destroy; override;
     procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
+    function GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
   end;
 
   { TSynTextFoldedView
@@ -649,16 +652,62 @@ constructor TLazSynDisplayFold.Create(AFoldView: TSynEditFoldedView);
 begin
   inherited Create;
   FFoldView := AFoldView;
+  FTokenAttr := TSynHighlighterAttributes.Create('');
 end;
 
-procedure TLazSynDisplayFold.InitHighlighterTokens(AHighlighter: TSynCustomHighlighter);
+destructor TLazSynDisplayFold.Destroy;
 begin
-  inherited InitHighlighterTokens(AHighlighter);
+  FreeAndNil(FTokenAttr);
+  inherited Destroy;
 end;
 
 procedure TLazSynDisplayFold.SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx);
 begin
+  FLineState := 0;
+  CurrentTokenLine := ALine;
   inherited SetHighlighterTokensLine(FFoldView.ViewPosToTextIndex(ALine + 1), ARealLine);
+end;
+
+function TLazSynDisplayFold.GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean;
+const
+  MarkSpaces: string = '   ';
+  MarkDots: string = '...';
+var
+  EolAttr: TSynHighlighterAttributes;
+begin
+  case FLineState of
+    0: begin
+        Result := inherited GetNextHighlighterToken(ATokenInfo);
+        if (not Result) and
+           (FFoldView.FoldType[CurrentTokenLine + 1 - FFoldView.TopLine] * [cfCollapsedFold, cfCollapsedHide] <> [])
+        then begin
+          inc(FLineState);
+          ATokenInfo.TokenStart := PChar(MarkSpaces);
+          ATokenInfo.TokenLength := 3;
+          if Assigned(CurrentTokenHighlighter)
+          then EolAttr := CurrentTokenHighlighter.GetEndOfLineAttribute
+          else EolAttr := nil;
+          if EolAttr <> nil then begin
+            FTokenAttr.Assign(EolAttr);
+            ATokenInfo.TokenAttr := FTokenAttr;
+          end
+          else
+            ATokenInfo.TokenAttr := nil;
+          Result := True;
+        end;
+      end;
+    1: begin
+        inc(FLineState);
+        FTokenAttr.Assign(FFoldView.MarkupInfoFoldedCode);
+        FTokenAttr.SetAllPriorities(MaxInt);
+        ATokenInfo.TokenStart := PChar(MarkDots);
+        ATokenInfo.TokenLength := 3;
+        ATokenInfo.TokenAttr := FTokenAttr;
+        Result := True;
+      end;
+    else
+      Result := False;
+  end;
 end;
 
 { TSynEditFoldExportStream }
