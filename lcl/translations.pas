@@ -570,16 +570,6 @@ msgstr ""
 
 }
 const
-  sCommentIdentifier: PChar = '#: ';
-  sCharSetIdentifier: PChar = '"Content-Type: text/plain; charset=';
-  sMsgID: PChar = 'msgid "';
-  sMsgStr: PChar = 'msgstr "';
-  sMsgCtxt: Pchar = 'msgctxt "';
-  sFlags: Pchar = '#, ';
-  sPrevMsgID: PChar = '#| msgid "';
-  sPrevStr: PChar = '#| "';
-
-const
   ciNone      = 0;
   ciMsgID     = 1;
   ciMsgStr    = 2;
@@ -602,6 +592,7 @@ var
   OldLineStartPos: PtrUInt;
   NewSrc: String;
   s: String;
+  Handled: Boolean;
   
   procedure ResetVars;
   begin
@@ -656,23 +647,11 @@ var
     end
   end;
 
-  function TestPrefixStr(AIndex: Integer): boolean;
-  var
-    s: PChar;
-    l: Integer;
+  procedure StartNextLine(AIndex: Integer; TxtStart: PChar);
   begin
-    case aIndex of
-      ciMsgID: s:=sMsgId;
-      ciMsgStr: s:=sMsgStr;
-      ciPrevMsgId: s:=sPrevMsgId;
-    end;
-    result := IsKey(LineStart, s);
-    if Result then begin
-      StoreCollectedLine;
-      CollectedIndex := AIndex;
-      L := Length(s);
-      Line:=UTF8CStringToUTF8String(LineStart+L,LineLen-L-1);
-    end;
+    StoreCollectedLine;
+    CollectedIndex := AIndex;
+    Line:=UTF8CStringToUTF8String(TxtStart,LineEnd-TxtStart);
   end;
 
 begin
@@ -694,49 +673,84 @@ begin
     while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
     LineLen:=LineEnd-LineStart;
     if LineLen>0 then begin
-      if IsKey(LineStart,sCommentIdentifier) then begin
-        AddEntry;
-        Identifier:=copy(s,LineStart-p+4,LineLen-3);
-        // the RTL creates identifier paths with point instead of colons
-        // fix it:
-        for i:=1 to length(Identifier) do
-          if Identifier[i]=':' then
-            Identifier[i]:='.';
-      end else if TestPrefixStr(ciMsgId) then begin
-      end else if TestPrefixStr(ciMsgStr) then begin
-      end else if TestPrefixStr(ciPrevMsgId) then begin
-      end else if IsKey(LineStart, sMsgCtxt) then begin
-        Context:= Copy(LineStart, 10, LineLen-10);
-      end else if IsKey(LineStart, sFlags) then begin
-        Flags := copy(LineStart, 4, LineLen-3);
-      end else if (LineStart^='"') then begin
-        if (MsgID='') and IsKey(LineStart,sCharSetIdentifier) then
+      Handled:=false;
+      case LineStart^ of
+      '#':
         begin
-          FCharSet:=copy(LineStart,36,LineLen-38);
-          if SysUtils.CompareText(FCharSet,'UTF-8')<>0 then begin
-            // convert encoding to UTF-8
-            OldLineStartPos:=PtrUInt(LineStart-PChar(s))+1;
-            NewSrc:=ConvertEncoding(copy(s,OldLineStartPos,length(s)),
-                                    FCharSet,EncodingUTF8);
-            // replace text and update all pointers
-            s:=copy(s,1,OldLineStartPos-1)+NewSrc;
-            l:=length(s);
-            p:=PChar(s);
-            TextEnd:=p+l;
-            LineStart:=p+(OldLineStartPos-1);
-            LineEnd:=LineStart;
-            while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
-            LineLen:=LineEnd-LineStart;
+          case LineStart[1] of
+          ':':
+            if LineStart[2]=' ' then begin
+              // '#: '
+              AddEntry;
+              Identifier:=copy(s,LineStart-p+4,LineLen-3);
+              // the RTL creates identifier paths with point instead of colons
+              // fix it:
+              for i:=1 to length(Identifier) do
+                if Identifier[i]=':' then
+                  Identifier[i]:='.';
+              Handled:=true;
+            end;
+          '|':
+            if IsKey(LineStart,'#| msgid "') then begin
+              StartNextLine(ciPrevMsgId,LineStart+length('#| msgid "'));
+              Handled:=true;
+            end else if IsKey(LineStart, '#| "') then begin
+              Line := Line + UTF8CStringToUTF8String(LineStart+5,LineLen-6);
+              Handled:=true;
+            end;
+          ',':
+            if LineStart[2]=' ' then begin
+              // '#, '
+              Flags := copy(LineStart, 4, LineLen-3);
+              Handled:=true;
+            end;
+          end;
+          if not Handled then begin
+            // '#'
+            if Comments<>'' then
+              Comments := Comments + LineEnding;
+            Comments := Comments + Copy(LineStart, 1, LineLen);
+            Handled:=true;
           end;
         end;
-        Line := Line + UTF8CStringToUTF8String(LineStart+1,LineLen-2);
-      end else if IsKey(LineStart, sPrevStr) then begin
-        Line := Line + UTF8CStringToUTF8String(LineStart+5,LineLen-6);
-      end else if LineStart^='#' then begin
-        if Comments<>'' then
-          Comments := Comments + LineEnding;
-        Comments := Comments + Copy(LineStart, 1, LineLen);
-      end else
+      'm':
+        if IsKey(LineStart,'msgid "') then begin
+          StartNextLine(ciMsgId,LineStart+length('msgid "'));
+          Handled:=true;
+        end else if IsKey(LineStart,'msgstr "') then begin
+          StartNextLine(ciMsgStr,LineStart+length('msgstr "'));
+          Handled:=true;
+        end else if IsKey(LineStart, 'msgctxt "') then begin
+          Context:= Copy(LineStart, 10, LineLen-10);
+          Handled:=true;
+        end;
+      '"':
+        begin
+          if (MsgID='')
+          and IsKey(LineStart,'"Content-Type: text/plain; charset=') then
+          begin
+            FCharSet:=copy(LineStart,36,LineLen-38);
+            if SysUtils.CompareText(FCharSet,'UTF-8')<>0 then begin
+              // convert encoding to UTF-8
+              OldLineStartPos:=PtrUInt(LineStart-PChar(s))+1;
+              NewSrc:=ConvertEncoding(copy(s,OldLineStartPos,length(s)),
+                                      FCharSet,EncodingUTF8);
+              // replace text and update all pointers
+              s:=copy(s,1,OldLineStartPos-1)+NewSrc;
+              l:=length(s);
+              p:=PChar(s);
+              TextEnd:=p+l;
+              LineStart:=p+(OldLineStartPos-1);
+              LineEnd:=LineStart;
+              while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
+              LineLen:=LineEnd-LineStart;
+            end;
+          end;
+          Line := Line + UTF8CStringToUTF8String(LineStart+1,LineLen-2);
+          Handled:=true;
+        end;
+      end;
+      if not Handled then
         AddEntry;
     end;
     LineStart:=LineEnd+1;
