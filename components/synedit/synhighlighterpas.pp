@@ -129,6 +129,7 @@ type
     cfbtBorCommand,   // { ... }
     cfbtSlashComment, // //
     // Internal type / not configurable
+    cfbtCaseElse,     // "else" in case can have multiply statements
     cfbtNone
     );
   TPascalCodeFoldBlockTypes = set of TPascalCodeFoldBlockType;
@@ -176,6 +177,7 @@ const
       cfbtNestedComment, //cfbtBorCommand,   // { ... }
       cfbtSlashComment, // //
       // Internal type / not configurable
+      cfbtCaseElse,
       cfbtNone
     );
 
@@ -1031,6 +1033,10 @@ begin
         EndPascalCodeFoldBlock;
         if TopPascalCodeFoldBlockType in [cfbtProcedure] then
           EndPascalCodeFoldBlock;
+      end else if tfb in [cfbtCaseElse] then begin
+        EndPascalCodeFoldBlock;
+        EndPascalCodeFoldBlock; // must be cfbtCase
+        fRange := fRange - [rsAtCaseLabel];
       end else if tfb in [cfbtCase] then begin
         EndPascalCodeFoldBlock;
         fRange := fRange - [rsAtCaseLabel];
@@ -1176,8 +1182,11 @@ end;
 
 function TSynPasSyn.Func41: TtkTokenKind;
 begin
-  if KeyComp('Else') then
-    Result := tkKey
+  if KeyComp('Else') then begin
+    Result := tkKey;
+    if TopPascalCodeFoldBlockType = cfbtCase
+    then StartPascalCodeFoldBlock(cfbtCaseElse)
+  end
   else if KeyComp('Var') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0) and
         (TopPascalCodeFoldBlockType in
@@ -3925,7 +3934,8 @@ function TSynPasSyn.GetFoldConfigCount: Integer;
 begin
   // excluded cfbtNone;
   Result := ord(high(TPascalCodeFoldBlockType)) -
-            ord(low(TPascalCodeFoldBlockType));
+            ord(low(TPascalCodeFoldBlockType))
+            - 1;
 end;
 
 function TSynPasSyn.GetFoldConfigInternalCount: Integer;
