@@ -711,6 +711,7 @@ begin
   if not CodyUnitDictionary.Loaded then begin
     CodyUnitDictionary.Load;
     UpdateGeneralInfo;
+    UpdateItemsList;
   end;
   if (FLastFilter<>GetFilterEditText)
   or (FLastHideOtherProjects<>HideOtherProjectsCheckBox.Checked)
@@ -772,18 +773,16 @@ var
     Node: TAVLTreeNode;
   begin
     Node:=CodyUnitDictionary.Identifiers.FindLowest;
-    debugln(['TCodyIdentifiersDlg.UpdateItemsList Filter="',FLastFilter,'" Count=',CodyUnitDictionary.Identifiers.Count]);
+    //debugln(['TCodyIdentifiersDlg.UpdateItemsList Filter="',FLastFilter,'" Count=',CodyUnitDictionary.Identifiers.Count]);
     while Node<>nil do begin
       Item:=TUDIdentifier(Node.Data);
       Node:=CodyUnitDictionary.Identifiers.FindSuccessor(Node);
-      debugln(['AddItems checking ',Item.Name]);
       if CompareIdentifiers(FilterP,PChar(Pointer(Item.Name)))=0 then begin
         // exact match
         if not AddExactMatches then continue;
       end else begin
         // not exact
         if AddExactMatches then continue;
-        debugln(['AddItems ',ord(FLastFilterType),' ',Item.Name]);
         case FLastFilterType of
         cifStartsWith:
           if not ComparePrefixIdent(FilterP,PChar(Pointer(Item.Name))) then continue;
@@ -791,7 +790,6 @@ var
           if System.Pos(FLastFilter,Item.Name)<1 then continue;
         end;
       end;
-      debugln(['AddItems name FITS ',ord(FLastFilterType),' ',Item.Name]);
       if Found>MaxItems then begin
         inc(Found); // only count, do not check
         continue;
@@ -843,6 +841,7 @@ var
   end;
 
 begin
+  if not CodyUnitDictionary.Loaded then exit;
   FLastFilter:=GetFilterEditText;
   FilterP:=PChar(FLastFilter);
 
