@@ -1239,6 +1239,7 @@ type
     FComponentsToRelease: TFPList;
     FComponentsReleasing: TFPList;
     FCreatingForm: TForm;// currently created form (CreateForm), candidate for MainForm
+    FExtendedKeysSupport: Boolean;
     FFindGlobalComponentEnabled: boolean;
     FFlags: TApplicationFlags;
     FHint: string;
@@ -1469,6 +1470,7 @@ type
     property BidiMode: TBiDiMode read FBidiMode write SetBidiMode;
     property CaptureExceptions: boolean read FCaptureExceptions
                                         write SetCaptureExceptions;
+    property ExtendedKeysSupport: Boolean read FExtendedKeysSupport write FExtendedKeysSupport; // See VK_LSHIFT in LCLType for more details
     property FindGlobalComponentEnabled: boolean read FFindGlobalComponentEnabled
                                                write FFindGlobalComponentEnabled;
     property Flags: TApplicationFlags read FFlags write SetFlags;

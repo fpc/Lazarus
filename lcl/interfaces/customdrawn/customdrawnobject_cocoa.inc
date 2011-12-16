@@ -36,6 +36,8 @@ begin
     DebugLn('TCDWidgetSet.AppInit');
   {$ENDIF}
 
+  Application.ExtendedKeysSupport := True;
+
   delegate:=TCDAppDelegate.alloc;
 
   { Creates the application NSApp object }

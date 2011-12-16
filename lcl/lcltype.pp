@@ -532,15 +532,19 @@ const
   //MWE: And should not be used.
   //     The keys they are on map to another VK
 
-//  VK_EQUAL      = 187;
+//  VK_EQUAL      = 187; // $BB
 //  VK_COMMA      = 188;
 //  VK_POINT      = 190;
 //  VK_SLASH      = 191;
 //  VK_AT         = 192;
 
   // VK_L & VK_R - left and right Alt, Ctrl and Shift virtual keys.
-  // Used only as parameters to GetAsyncKeyState() and GetKeyState().
+  // When Application.ExtendedKeysSupport is false, these keys are
+  // used only as parameters to GetAsyncKeyState() and GetKeyState().
   // No other API or message will distinguish left and right keys in this way
+  //
+  // When Application.ExtendedKeysSupport is true, these keys will be sent
+  // on KeyDown / KeyUp instead of the generic VK_SHIFT, VK_CONTROL, etc.
   VK_LSHIFT     = $A0;
   VK_RSHIFT     = $A1;
   VK_LCONTROL   = $A2;
@@ -566,6 +570,9 @@ const
   VK_LAUNCH_MEDIA_SELECT = $B5;
   VK_LAUNCH_APP1         = $B6;
   VK_LAUNCH_APP2         = $B7;
+
+  // VK_OEM keys are utilized only when Application.ExtendedKeysSupport is false
+
   // $B8-$B9 Reserved
   VK_OEM_1               = $BA; // Used for miscellaneous characters; it can vary by keyboard.
                                 // For the US standard keyboard, the ';:' key
@@ -614,12 +621,30 @@ const
   VK_UNDEFINED  = $FF; // defined by LCL
 
 //==============================================
-// Now LCL defined keys
+// LCL aliases for more clear naming of keys
+//==============================================
+
+  VK_LCL_EQUAL      = VK_OEM_PLUS;  // The "=+" Key
+  VK_LCL_COMMA      = VK_OEM_COMMA; // The ",<" Key
+  VK_LCL_POINT      = VK_OEM_PERIOD;// The ".>" Key
+  VK_LCL_SLASH      = VK_OEM_2;     // The "/?" Key
+  VK_SEMI_COMMA     = VK_OEM_1;     // The ";:" Key
+  VK_MINUS          = VK_OEM_MINUS; // The "-_" Key
+  VK_OPEN_BRAKET    = VK_OEM_4;     // The "[{" Key
+  VK_CLOSE_BRAKET   = VK_OEM_6;     // The "]}" Key
+  VK_BACKSLASH      = VK_OEM_5;     // The "\|" Key
+  VK_TILDE          = VK_OEM_3;     // The "`~" Key
+  VK_QUOTE          = VK_OEM_7;     // The "'"" Key
+
+//==============================================
+// New LCL defined keys
 //==============================================
 
   VK_POWER      = $100;
   VK_CALL       = $101;
   VK_ENDCALL    = $102;
+  VK_LCL_AT     = $103; // Not equivalent to anything < $FF, will only be sent by a primary "@" key
+                        // but not for a @ key as secondary action of a "2" key for example
 
 //==============================================
 //

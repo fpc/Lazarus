@@ -2246,6 +2246,23 @@ begin
   VK_LAUNCH_MEDIA_SELECT: Result:='VK_LAUNCH_MEDIA_SELECT';
   VK_LAUNCH_APP1: Result:='VK_LAUNCH_APP1';
   VK_LAUNCH_APP2: Result:='VK_LAUNCH_APP2';
+  // New keys in 0.9.31+
+  VK_LCL_EQUAL: Result:='VK_LCL_EQUAL';
+  VK_LCL_COMMA: Result:='VK_LCL_COMMA';
+  VK_LCL_POINT: Result:='VK_LCL_POINT';
+  VK_LCL_SLASH: Result:='VK_LCL_SLASH';
+  VK_SEMI_COMMA:Result:='VK_SEMI_COMMA';
+  VK_MINUS     :Result:='VK_MINUS';
+  VK_OPEN_BRAKET:Result:='VK_OPEN_BRAKET';
+  VK_CLOSE_BRAKET:Result:='VK_CLOSE_BRAKET';
+  VK_BACKSLASH :Result:='VK_BACKSLASH';
+  VK_TILDE     :Result:='VK_TILDE';
+  VK_QUOTE     :Result:='VK_QUOTE';
+  //
+  VK_POWER: Result:='VK_POWER';
+  VK_CALL: Result:='VK_CALL';
+  VK_ENDCALL: Result:='VK_ENDCALL';
+  VK_LCL_AT: Result:='VK_LCL_AT';
   else
     Result:='VK_('+dbgs(c)+')';
   end;
