@@ -98,9 +98,9 @@ begin
     crsInsertFileAtCursor,nil,nil,InsertFileAtCursorCommand);
 
   // add call inherited
-  InsertCallInheritedCommand:=RegisterIDECommand(CmdCatCodeTools, 'AddCallInherited',
+  InsertCallInheritedCommand:=RegisterIDECommand(CmdCatCodeTools, 'InsertCallInherited',
     crsInsertCallInherited,
-    CleanIDEShortCut,CleanIDEShortCut,nil,@AddCallInherited);
+    CleanIDEShortCut,CleanIDEShortCut,nil,@InsertCallInherited);
   RegisterIDEMenuCommand(SrcEditSubMenuSource, 'SrcEditAddCallInherited',
     crsInsertCallInherited, nil, nil, InsertCallInheritedCommand);
   RegisterIDEMenuCommand(itmSourceInsertions, 'InsertCallInherited',

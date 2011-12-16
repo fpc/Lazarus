@@ -109,7 +109,7 @@ type
 
 procedure ExplodeAWithBlockCmd(Sender: TObject);
 procedure InsertFileAtCursor(Sender: TObject);
-procedure AddCallInherited(Sender: TObject);
+procedure InsertCallInherited(Sender: TObject);
 
 function ParseTilCursor(out Tool: TCodeTool; out CleanPos: integer;
    out Node: TCodeTreeNode; out ErrorHandled: boolean;
@@ -197,7 +197,7 @@ begin
   end;
 end;
 
-procedure AddCallInherited(Sender: TObject);
+procedure InsertCallInherited(Sender: TObject);
 
   procedure ErrorNotInMethod;
   begin
@@ -231,7 +231,7 @@ begin
     try
       ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
       if not Tool.NodeIsMethodBody(ProcNode) then begin
-        debugln(['AddCallInherited not in a method body']);
+        debugln(['InsertCallInherited not in a method body']);
         exit;
       end;
       // search the declaration (the header of the body may be incomplete)
@@ -240,8 +240,10 @@ begin
         DeclNode:=ProcNode;
       Handled:=true;
       NewCode:='inherited '+Tool.ExtractProcHead(DeclNode,
-        [phpWithoutClassName,phpWithParameterNames,phpWithoutParamTypes]);
-      //debugln(['AddCallInherited NewCode="',NewCode,'"']);
+        [phpWithoutClassName,phpWithParameterNames,phpWithoutParamTypes,
+         phpWithoutSemicolon]);
+      NewCode:=StringReplace(NewCode,';',',',[rfReplaceAll])+';';
+      //debugln(['InsertCallInherited NewCode="',NewCode,'"']);
       NewLine:=true;
       Gap:=gtNone;
       if Tool.NodeIsFunction(DeclNode) then begin
@@ -269,7 +271,7 @@ begin
         end;
         NewCode:=GetIndentStr(Indent)+NewCode;
         CleanPos:=GetLineStartPosition(Tool.Src,CleanPos);
-        //debugln(['AddCallInherited Indent=',Indent]);
+        //debugln(['InsertCallInherited Indent=',Indent]);
       end;
 
       NewCode:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
@@ -277,11 +279,11 @@ begin
       CodeToolBoss.SourceChangeCache.MainScanner:=Tool.Scanner;
       if not CodeToolBoss.SourceChangeCache.Replace(Gap,Gap,CleanPos,CleanPos,NewCode)
       then begin
-        debugln(['AddCallInherited CodeToolBoss.SourceChangeCache.Replace failed']);
+        debugln(['InsertCallInherited CodeToolBoss.SourceChangeCache.Replace failed']);
         exit;
       end;
       if not CodeToolBoss.SourceChangeCache.Apply then begin
-        debugln(['AddCallInherited CodeToolBoss.SourceChangeCache.Apply failed']);
+        debugln(['InsertCallInherited CodeToolBoss.SourceChangeCache.Apply failed']);
         exit;
       end;
     except
