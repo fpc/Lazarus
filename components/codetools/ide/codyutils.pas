@@ -220,6 +220,9 @@ var
   NewIndent: TFABIndentationPolicy;
   NewLine: Boolean;
   Gap: TGapTyp;
+  FromPos: Integer;
+  ToPos: Integer;
+  NewXY: TPoint;
 begin
   if (ParseTilCursor(Tool,CleanPos,CursorNode,Handled,true)<>cupeSuccess)
   and not Handled then begin
@@ -256,7 +259,10 @@ begin
           // store the old result value
           NewCode:='Result:='+NewCode;
         end;
-      end;
+      end else
+        NewLine:=true; // procedures always on a separate line
+      FromPos:=CleanPos;
+      ToPos:=CleanPos;
 
       if NewLine then begin
         // auto indent
@@ -269,15 +275,20 @@ begin
         and NewIndent.IndentValid then begin
           Indent:=NewIndent.Indent;
         end;
+        while (FromPos>1) and (Tool.Src[FromPos-1] in [' ',#9]) do
+          dec(FromPos);
         NewCode:=GetIndentStr(Indent)+NewCode;
-        CleanPos:=GetLineStartPosition(Tool.Src,CleanPos);
-        //debugln(['InsertCallInherited Indent=',Indent]);
+        //debugln(['InsertCallInherited Indent=',Indent,' Line="',GetLineInSrc(Tool.Src,CleanPos),'"']);
       end;
 
       NewCode:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-        NewCode,Indent,[bcfDoNotIndentFirstLine],GetPosInLine(Tool.Src,CleanPos));
+        NewCode,Indent,[bcfDoNotIndentFirstLine],GetPosInLine(Tool.Src,FromPos));
       CodeToolBoss.SourceChangeCache.MainScanner:=Tool.Scanner;
-      if not CodeToolBoss.SourceChangeCache.Replace(Gap,Gap,CleanPos,CleanPos,NewCode)
+      // move editor cursor in front of insert position
+      NewXY:=Point(GetPosInLine(Tool.Src,FromPos)+1,SrcEdit.CursorTextXY.Y);
+      //debugln(['InsertCallInherited NewXY=',dbgs(NewXY),' FromPos=',Tool.CleanPosToStr(FromPos),' ToPos=',Tool.CleanPosToStr(ToPos)]);
+      SrcEdit.CursorTextXY:=NewXY;
+      if not CodeToolBoss.SourceChangeCache.Replace(Gap,Gap,FromPos,ToPos,NewCode)
       then begin
         debugln(['InsertCallInherited CodeToolBoss.SourceChangeCache.Replace failed']);
         exit;

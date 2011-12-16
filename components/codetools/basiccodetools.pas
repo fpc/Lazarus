@@ -80,7 +80,7 @@ function InEmptyLine(const ASource: string; StartPos: integer): boolean;
 function GetLineIndent(const Source: string; Position: integer): integer;
 function GetLineIndentWithTabs(const Source: string; Position: integer;
                                TabWidth: integer): integer;
-function GetPosInLine(const Source: string; Position: integer): integer;
+function GetPosInLine(const Source: string; Position: integer): integer; // 0 based
 function GetBlockMinIndent(const Source: string;
     StartPos, EndPos: integer): integer;
 function GetIndentStr(Indent: integer): string;
@@ -4014,7 +4014,7 @@ end;
 function GetPosInLine(const Source: string; Position: integer): integer;
 begin
   Result:=0;
-  while (Position>1) and (not (Source[Position] in [#10,#13])) do begin
+  while (Position>1) and (not (Source[Position-1] in [#10,#13])) do begin
     inc(Result);
     dec(Position);
   end;
