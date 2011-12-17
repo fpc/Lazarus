@@ -1839,7 +1839,7 @@ end;
 
 function TStringToStringTree.FindNode(const Name: string): TAvgLvlTreeNode;
 begin
-   Result:=FItems.FindKey(@Name,FCompareNameWithItem);
+   Result:=FItems.FindKey(Pointer(Name),FCompareNameWithItem);
 end;
 
 function TStringToStringTree.GetNode(Node: TAvgLvlTreeNode;
