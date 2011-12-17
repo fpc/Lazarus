@@ -509,7 +509,7 @@ var
   s: String;
   NodeExt: TCodeTreeNodeExtension absolute NodeData;
 begin
-  s:=PAnsistring(p)^;
+  s:=Ansistring(p);
   Result:=CompareTextIgnoringSpace(s,NodeExt.Txt,false);
   //debugln('CompareTxtWithCodeTreeNodeExt ',NodeExt.Txt,' ',s,' ',dbgs(Result));
 end;

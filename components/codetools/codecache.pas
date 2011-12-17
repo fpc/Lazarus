@@ -268,7 +268,7 @@ type
 function CompareCodeBuffers(NodeData1, NodeData2: pointer): integer;
 function CompareAnsistringWithCodeBuffer(AString, ABuffer: pointer): integer;
 function CompareIncludedByLink(NodeData1, NodeData2: pointer): integer;
-function ComparePAnsiStringWithIncludedByLink(Key, Data: pointer): integer;
+function CompareAnsiStringWithIncludedByLink(Key, Data: pointer): integer;
 
 function CodePosition(P: integer; Code: TCodeBuffer): TCodePosition;
 function CodeXYPosition(X, Y: integer; Code: TCodeBuffer): TCodeXYPosition;
@@ -321,9 +321,9 @@ begin
   Result:=CompareFilenames(Link1.IncludeFilename,Link2.IncludeFilename);
 end;
 
-function ComparePAnsiStringWithIncludedByLink(Key, Data: pointer): integer;
+function CompareAnsiStringWithIncludedByLink(Key, Data: pointer): integer;
 begin
-  Result:=CompareFilenames(PAnsiString(Key)^,
+  Result:=CompareFilenames(AnsiString(Key),
                            TIncludedByLink(Data).IncludeFilename);
 end;
 
@@ -987,7 +987,7 @@ function TCodeCache.FindIncludeLinkAVLNode(const IncludeFilename: string
   ): TAVLTreeNode;
 begin
   Result:=FIncludeLinks.FindKey(@IncludeFilename,
-                                @ComparePAnsiStringWithIncludedByLink);
+                                @CompareAnsiStringWithIncludedByLink);
 end;
 
 function TCodeCache.FindIncludeLink(const IncludeFilename: string): string;

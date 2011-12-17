@@ -140,11 +140,11 @@ type
   end;
 
 function CompareUnitListOwners(Data1, Data2: Pointer): integer;
-function ComparePAnsiStringWithUnitListOwner(Data1, Data2: Pointer): integer;
+function CompareAnsiStringWithUnitListOwner(Data1, Data2: Pointer): integer;
 function CompareUnitFilenames(Data1, Data2: Pointer): integer;
-function ComparePAnsiStringWithUnitFilename(Data1, Data2: Pointer): integer;
+function CompareAnsiStringWithUnitFilename(Data1, Data2: Pointer): integer;
 function CompareNodeIdentifiers(Data1, Data2: Pointer): integer;
-function ComparePAnsiStringWithNodeIdentifier(Data1, Data2: Pointer): integer;
+function CompareAnsiStringWithNodeIdentifier(Data1, Data2: Pointer): integer;
 
 implementation
 
@@ -154,9 +154,9 @@ begin
                                TCodeBrowserUnitList(Data2).Owner);
 end;
 
-function ComparePAnsiStringWithUnitListOwner(Data1, Data2: Pointer): integer;
+function CompareAnsiStringWithUnitListOwner(Data1, Data2: Pointer): integer;
 begin
-  Result:=SysUtils.CompareText(PAnsiString(Data1)^,
+  Result:=SysUtils.CompareText(AnsiString(Data1),
                                TCodeBrowserUnitList(Data2).Owner);
 end;
 
@@ -166,9 +166,9 @@ begin
                            TCodeBrowserUnit(Data2).Filename);
 end;
 
-function ComparePAnsiStringWithUnitFilename(Data1, Data2: Pointer): integer;
+function CompareAnsiStringWithUnitFilename(Data1, Data2: Pointer): integer;
 begin
-  Result:=CompareFilenames(PAnsiString(Data1)^,
+  Result:=CompareFilenames(AnsiString(Data1),
                            TCodeBrowserUnit(Data2).Filename);
 end;
 
@@ -178,9 +178,9 @@ begin
                                TCodeBrowserNode(Data2).Identifier);
 end;
 
-function ComparePAnsiStringWithNodeIdentifier(Data1, Data2: Pointer): integer;
+function CompareAnsiStringWithNodeIdentifier(Data1, Data2: Pointer): integer;
 begin
-  Result:=SysUtils.CompareText(PAnsiString(Data1)^,
+  Result:=SysUtils.CompareText(AnsiString(Data1),
                                TCodeBrowserNode(Data2).Identifier);
 end;
 
@@ -380,7 +380,7 @@ begin
   Result:=nil;
   if Filename='' then exit;
   if FUnits=nil then exit;
-  Node:=FUnits.FindKey(@Filename,@ComparePAnsiStringWithUnitFilename);
+  Node:=FUnits.FindKey(@Filename,@CompareAnsiStringWithUnitFilename);
   if Node=nil then exit;
   Result:=TCodeBrowserUnit(Node.Data);
 end;
@@ -393,7 +393,7 @@ begin
   Result:=nil;
   if FUnitLists=nil then exit;
   if OwnerName='' then exit;
-  Node:=FUnitLists.FindKey(@OwnerName,@ComparePAnsiStringWithUnitListOwner);
+  Node:=FUnitLists.FindKey(@OwnerName,@CompareAnsiStringWithUnitListOwner);
   if Node=nil then exit;
   Result:=TCodeBrowserUnitList(Node.Data);
 end;

@@ -358,9 +358,9 @@ type
   end;
 
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;
-function ComparePAnsiStringWithStrToStrItem(Key, Data: Pointer): Integer;
+function CompareAnsiStringWithStrToStrItem(Key, Data: Pointer): Integer;
 function CompareStringToStringItemsI(Data1, Data2: Pointer): integer;
-function ComparePAnsiStringWithStrToStrItemI(Key, Data: Pointer): Integer;
+function CompareAnsiStringWithStrToStrItemI(Key, Data: Pointer): Integer;
 
 
 implementation
@@ -396,14 +396,14 @@ begin
                       PStringMapItem(Data2)^.Name);
 end;
 
-function ComparePAnsiStringWithStrToStrItem(Key, Data: Pointer): Integer;
+function CompareAnsiStringWithStrToStrItem(Key, Data: Pointer): Integer;
 begin
-  Result:=CompareStr(PAnsiString(Key)^,PStringMapItem(Data)^.Name);
+  Result:=CompareStr(AnsiString(Key),PStringMapItem(Data)^.Name);
 end;
 
-function ComparePAnsiStringWithStrToStrItemI(Key, Data: Pointer): Integer;
+function CompareAnsiStringWithStrToStrItemI(Key, Data: Pointer): Integer;
 begin
-  Result:=CompareText(PAnsiString(Key)^,PStringMapItem(Data)^.Name);
+  Result:=CompareText(AnsiString(Key),PStringMapItem(Data)^.Name);
 end;
 
 function TStringToPointerTree.GetValues(const s: string): Pointer;
@@ -1862,9 +1862,9 @@ end;
 constructor TStringToStringTree.Create(CaseSensitive: boolean);
 begin
   if CaseSensitive then
-    Create(@CompareStringToStringItems,@ComparePAnsiStringWithStrToStrItem)
+    Create(@CompareStringToStringItems,@CompareAnsiStringWithStrToStrItem)
   else
-    Create(@CompareStringToStringItemsI,@ComparePAnsiStringWithStrToStrItemI);
+    Create(@CompareStringToStringItemsI,@CompareAnsiStringWithStrToStrItemI);
 end;
 
 constructor TStringToStringTree.Create(const ACompareItems,
@@ -2172,9 +2172,9 @@ end;
 constructor TCustomStringMap.Create(TheCaseSensitive: boolean);
 begin
   if TheCaseSensitive then
-    Create(@CompareStringToStringItems,@ComparePAnsiStringWithStrToStrItem,true)
+    Create(@CompareStringToStringItems,@CompareAnsiStringWithStrToStrItem,true)
   else
-    Create(@CompareStringToStringItemsI,@ComparePAnsiStringWithStrToStrItemI,false);
+    Create(@CompareStringToStringItemsI,@CompareAnsiStringWithStrToStrItemI,false);
 end;
 
 constructor TCustomStringMap.Create(const ACompareItems,

@@ -125,7 +125,7 @@ type
     property Tree: TAVLTree read FTree; // tree of PStringMapItem
     function FindNode(const s: string): TAVLTreeNode;
     function Equals(OtherTree: TStringMap): boolean; reintroduce;
-    procedure Assign(Source: TStringMap); virtual; abstract;
+    procedure Assign(Source: TStringMap); virtual;
     procedure WriteDebugReport; virtual;
     function CalcMemSize: PtrUint; virtual;
     property CompareItemsFunc: TListSortCompare read GetCompareItemsFunc;
@@ -158,9 +158,9 @@ type
     function GetStrings(const s: string): string;
     procedure SetStrings(const s: string; const AValue: string);
   protected
-    procedure DisposeItem(p: PStringMapItem); virtual;
-    function ItemsAreEqual(p1, p2: PStringMapItem): boolean; virtual;
-    function CreateCopy(Src: PStringMapItem): PStringMapItem; virtual;
+    procedure DisposeItem(p: PStringMapItem); override;
+    function ItemsAreEqual(p1, p2: PStringMapItem): boolean; override;
+    function CreateCopy(Src: PStringMapItem): PStringMapItem; override;
   public
     function GetString(const Name: string; out Value: string): boolean;
     procedure Add(const Name, Value: string); virtual;
@@ -532,10 +532,12 @@ end;
 function TStringToPointerTree.CreateCopy(Src: PStringMapItem): PStringMapItem;
 var
   SrcItem: PStringToPointerTreeItem absolute Src;
+  NewItem: PStringToPointerTreeItem;
 begin
-  New(Result);
-  Result^.Name:=SrcItem^.Name;
-  Result^.Value:=SrcItem^.Value;
+  New(NewItem);
+  NewItem^.Name:=SrcItem^.Name;
+  NewItem^.Value:=SrcItem^.Value;
+  Result:=PStringMapItem(NewItem);
 end;
 
 function TStringToPointerTree.GetItem(const Name: string; out Value: Pointer
@@ -732,6 +734,22 @@ begin
   Result:=true;
 end;
 
+procedure TStringMap.Assign(Source: TStringMap);
+var
+  SrcNode: TAVLTreeNode;
+  SrcItem: PStringMapItem;
+begin
+  if (Source=nil) or (Source.ClassType<>ClassType) then
+    raise Exception.Create('invalid class');
+  Clear;
+  SrcNode:=Source.Tree.FindLowest;
+  while SrcNode<>nil do begin
+    SrcItem:=PStringMapItem(SrcNode.Data);
+    Tree.Add(CreateCopy(SrcItem));
+    SrcNode:=Source.Tree.FindSuccessor(SrcNode);
+  end;
+end;
+
 procedure TStringMap.WriteDebugReport;
 var
   Node: TAVLTreeNode;
@@ -844,10 +862,14 @@ begin
 end;
 
 function TStringToStringTree.CreateCopy(Src: PStringMapItem): PStringMapItem;
+var
+  SrcItem: PStringToStringTreeItem absolute Src;
+  NewItem: PStringToStringTreeItem;
 begin
-  New(Result);
-  Result^.Name:=Src^.Name;
-  Result^.Value:=Src^.Value;
+  New(NewItem);
+  NewItem^.Name:=SrcItem^.Name;
+  NewItem^.Value:=SrcItem^.Value;
+  Result:=PStringMapItem(NewItem);
 end;
 
 function TStringToStringTree.GetString(const Name: string; out Value: string
@@ -880,22 +902,6 @@ begin
     Item:=PStringToStringTreeItem(Node.Data);
     Result:=Result+Item^.Name+'='+Item^.Value+LineEnding;
     Node:=Tree.FindSuccessor(Node);
-  end;
-end;
-
-procedure TStringToStringTree.Assign(Source: TStringMap);
-var
-  Node: TAVLTreeNode;
-  Item: PStringToStringTreeItem;
-begin
-  if (Source=nil) or (Source.ClassType<>ClassType) then
-    raise Exception.Create('invalid class');
-  Clear;
-  Node:=Source.Tree.FindLowest;
-  while Node<>nil do begin
-    Item:=PStringToStringTreeItem(Node.Data);
-    Strings[Item^.Name]:=Item^.Value;
-    Node:=Source.Tree.FindSuccessor(Node);
   end;
 end;
 

@@ -269,7 +269,7 @@ type
   end;
   
 function CompareCTDirectoryCaches(Data1, Data2: Pointer): integer;
-function ComparePAnsiStringAndDirectoryCache(Dir, Cache: Pointer): integer;
+function CompareAnsiStringAndDirectoryCache(Dir, Cache: Pointer): integer;
 
 function ComparePCharFirstCaseInsThenCase(Data1, Data2: Pointer): integer;
 function ComparePCharCaseInsensitive(Data1, Data2: Pointer): integer;
@@ -310,9 +310,9 @@ begin
                            TCTDirectoryCache(Data2).FDirectory);
 end;
 
-function ComparePAnsiStringAndDirectoryCache(Dir, Cache: Pointer): integer;
+function CompareAnsiStringAndDirectoryCache(Dir, Cache: Pointer): integer;
 begin
-  Result:=CompareFilenames(PAnsiString(Dir)^,TCTDirectoryCache(Cache).FDirectory);
+  Result:=CompareFilenames(AnsiString(Dir),TCTDirectoryCache(Cache).FDirectory);
 end;
 
 function ComparePCharFirstCaseInsThenCase(Data1, Data2: Pointer): integer;
@@ -1398,7 +1398,7 @@ var
   Dir: String;
 begin
   Dir:=AppendPathDelim(TrimFilename(Directory));
-  Node:=FDirectories.FindKey(@Dir,@ComparePAnsiStringAndDirectoryCache);
+  Node:=FDirectories.FindKey(@Dir,@CompareAnsiStringAndDirectoryCache);
   if Node<>nil then begin
     Result:=TCTDirectoryCache(Node.Data);
     if DoReference then
