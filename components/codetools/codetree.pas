@@ -474,7 +474,7 @@ end;
 function FindCodeTreeNodeExtAVLNode(Tree: TAVLTree; const Txt: string
   ): TAVLTreeNode;
 begin
-  Result:=Tree.FindKey(@Txt,@CompareTxtWithCodeTreeNodeExt);
+  Result:=Tree.FindKey(Pointer(Txt),@CompareTxtWithCodeTreeNodeExt);
 end;
 
 function FindCodeTreeNodeExtWithIdentifier(Tree: TAVLTree; Identifier: PChar
@@ -506,12 +506,9 @@ end;
 function CompareTxtWithCodeTreeNodeExt(p: Pointer; NodeData: pointer
   ): integer;
 var
-  s: String;
   NodeExt: TCodeTreeNodeExtension absolute NodeData;
 begin
-  s:=Ansistring(p);
-  Result:=CompareTextIgnoringSpace(s,NodeExt.Txt,false);
-  //debugln('CompareTxtWithCodeTreeNodeExt ',NodeExt.Txt,' ',s,' ',dbgs(Result));
+  Result:=CompareTextIgnoringSpace(Ansistring(p),NodeExt.Txt,false);
 end;
 
 function CompareIdentifierWithCodeTreeNodeExt(p: Pointer; NodeData: pointer
