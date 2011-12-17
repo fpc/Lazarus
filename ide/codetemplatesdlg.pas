@@ -302,6 +302,10 @@ var
   Param: string;
   i: Integer;
   Attributes: TProcHeadAttributes;
+  CodeBuf: TCodeBuffer;
+  XY: TPoint;
+  p: integer;
+  StartPos: Integer;
 begin
   //debugln('CodeMacroProcedureHead A ',Parameter);
 
@@ -365,10 +369,15 @@ begin
   end;
 
   //debugln('CodeMacroProcedureHead B ',dbgs(Attributes));
-  if not CodeToolBoss.ExtractProcedureHeader(
-    SrcEdit.CodeToolsBuffer as TCodeBuffer,
-    SrcEdit.CursorTextXY.X,SrcEdit.CursorTextXY.Y,Attributes,Value) then
-  begin
+  CodeBuf:=SrcEdit.CodeToolsBuffer as TCodeBuffer;
+  XY:=SrcEdit.CursorTextXY;
+  CodeBuf.LineColToPosition(XY.Y,XY.X,p);
+  if p>0 then begin
+    StartPos:=GetIdentStartPosition(CodeBuf.Source,p);
+    XY.X += StartPos-p;
+  end;
+  if not CodeToolBoss.ExtractProcedureHeader(CodeBuf,XY.X,XY.Y,Attributes,Value)
+  then begin
     Result:=false;
     ErrorMsg:=CodeToolBoss.ErrorMessage;
     LazarusIDE.DoJumpToCodeToolBossError;
