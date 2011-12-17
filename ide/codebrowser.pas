@@ -1212,7 +1212,7 @@ procedure TCodeBrowserView.WorkFreeUnusedPackages;
       if (FWorkingParserRoot=nil)
       or (FWorkingParserRoot.UnitLists=nil)
       or (FWorkingParserRoot.UnitLists.FindKey(@PackageName,
-         @ComparePAnsiStringWithUnitListOwner)=nil)
+         @CompareAnsiStringWithUnitListOwner)=nil)
       then begin
         Result:=UnusedPackage;
         exit;
@@ -1321,7 +1321,7 @@ var
       DebugLn(['WARNING: TCodeBrowserView.WorkUpdateFiles Macros in filename ',Filename]);
       exit;
     end;
-    if NewFileList.FindKey(@Filename,@ComparePAnsiStringWithUnitFilename)<>nil
+    if NewFileList.FindKey(@Filename,@CompareAnsiStringWithUnitFilename)<>nil
     then exit;
     //DebugLn(['TCodeBrowserView.WorkUpdateFiles AddFile ',Filename]);
     NewFileList.Add(TCodeBrowserUnit.Create(Filename));
@@ -1495,7 +1495,7 @@ var
       NextNode:=List.Units.FindSuccessor(Node);
       CurUnit:=TCodeBrowserUnit(Node.Data);
       if NewFileList.FindKey(@CurUnit.Filename,
-        @ComparePAnsiStringWithUnitFilename)=nil
+        @CompareAnsiStringWithUnitFilename)=nil
       then begin
         // this unit is not part of List anymore -> delete
         RemoveUnit(CurUnit);
