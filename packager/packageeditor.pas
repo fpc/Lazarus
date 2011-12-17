@@ -1635,24 +1635,22 @@ var
   CurFile: TPkgFile;
   CurNode: TTreeNode;
   NextNode: TTreeNode;
+  FilteredBranch: TBranch;
   Filename: String;
   ena: Boolean;
 begin
   if LazPackage=nil then exit;
-  FilterEdit.RootNode:=FFilesNode;
+  FilteredBranch := FilterEdit.GetBranch(FFilesNode);
   FilterEdit.SelectedPart:=FNextSelectedPart;
   FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
   FilterEdit.SortData:=SortAlphabetically;
   FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
-  FilterEdit.Data.Clear;
   // collect and sort files
   for i:=0 to LazPackage.FileCount-1 do begin
     CurFile:=LazPackage.Files[i];
     Filename:=CurFile.GetShortFilename(true);
-    if Filename<>'' then begin
-      FilterEdit.Data.AddObject(Filename, CurFile);
-      FilterEdit.MapShortToFullFilename(Filename, CurFile.Filename);
-    end;
+    if Filename<>'' then
+      FilteredBranch.AddNodeData(Filename, CurFile, CurFile.Filename);
   end;
   FilterEdit.InvalidateFilter;               // Data is shown by FilterEdit.
 

@@ -146,7 +146,7 @@ begin
   InstallPkgSetDialog:=TInstallPkgSetDialog.Create(nil);
   try
     InstallPkgSetDialog.OldInstalledPackages:=OldInstalledPackages;
-    InstallPkgSetDialog.UpdateAvailablePackages;
+//    InstallPkgSetDialog.UpdateAvailablePackages;
     InstallPkgSetDialog.UpdateButtonStates;
     InstallPkgSetDialog.OnCheckInstallPackageList:=CheckInstallPackageList;
     Result:=InstallPkgSetDialog.ShowModal;
@@ -306,8 +306,7 @@ begin
   AddToUninstall;
 end;
 
-procedure TInstallPkgSetDialog.SetOldInstalledPackages(
-  const AValue: TPkgDependency);
+procedure TInstallPkgSetDialog.SetOldInstalledPackages(const AValue: TPkgDependency);
 begin
   if FOldInstalledPackages=AValue then exit;
   FOldInstalledPackages:=AValue;
@@ -373,25 +372,34 @@ var
   ANode: TAVLTreeNode;
   Pkg: TLazPackageID;
   PkgName: String;
+  DuplCheck: TStringList;  // Add pkg names also here to filter out duplicates.
+  FilteredBranch: TBranch;
 begin
-  if fAvailablePackages.Count=0 then
-    PackageGraph.IteratePackages(fpfSearchAllExisting,@OnIteratePackages);
-  AvailableFilterEdit.Data.Clear;
-  ANode:=fAvailablePackages.FindLowest;
-  while ANode<>nil do begin
-    Pkg:=TLazPackageID(ANode.Data);
-    if (not (Pkg is TLazPackage))
-    or (TLazPackage(Pkg).PackageType in [lptDesignTime,lptRunAndDesignTime])
-    then begin
-      if (not PackageInInstallList(Pkg.Name)) then begin
-        PkgName:=Pkg.IDAsString;
-        if (AvailableFilterEdit.Data.IndexOf(PkgName)<0) then
-          AvailableFilterEdit.Data.AddObject(PkgName,Pkg);
+  DuplCheck:=TStringList.Create;
+  try
+    if fAvailablePackages.Count=0 then
+      PackageGraph.IteratePackages(fpfSearchAllExisting,@OnIteratePackages);
+    FilteredBranch := AvailableFilterEdit.GetBranch(Nil); // All items are top level.
+    ANode:=fAvailablePackages.FindLowest;
+    while ANode<>nil do begin
+      Pkg:=TLazPackageID(ANode.Data);
+      if (not (Pkg is TLazPackage))
+      or (TLazPackage(Pkg).PackageType in [lptDesignTime,lptRunAndDesignTime])
+      then begin
+        if (not PackageInInstallList(Pkg.Name)) then begin
+          PkgName:=Pkg.IDAsString;
+          if (DuplCheck.IndexOf(PkgName)<0) then begin
+            DuplCheck.Add(PkgName);
+            FilteredBranch.AddNodeData(PkgName, Pkg);
+          end;
+        end;
       end;
+      ANode:=fAvailablePackages.FindSuccessor(ANode);
     end;
-    ANode:=fAvailablePackages.FindSuccessor(ANode);
+    AvailableFilterEdit.InvalidateFilter;
+  finally
+    DuplCheck.Free;
   end;
-  AvailableFilterEdit.InvalidateFilter;
 end;
 
 procedure TInstallPkgSetDialog.UpdateNewInstalledPackages;

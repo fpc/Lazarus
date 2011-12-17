@@ -22,6 +22,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     RightClickSelect = True
     TabOrder = 0
     OnDblClick = ItemsTreeViewDblClick
+    OnGetImageIndex = ItemsTreeViewGetImageIndex
     OnKeyDown = ItemsTreeViewKeyDown
     OnSelectionChanged = ItemsTreeViewSelectionChanged
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]

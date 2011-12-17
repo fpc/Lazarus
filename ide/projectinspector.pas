@@ -102,8 +102,8 @@ type
     procedure DirectoryHierarchySpeedButtonClick(Sender: TObject);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewDblClick(Sender: TObject);
-    procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure ItemsTreeViewGetImageIndex(Sender: TObject; Node: TTreeNode);
+    procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveDependencyDownClick(Sender: TObject);
@@ -209,6 +209,11 @@ uses
 procedure TProjectInspectorForm.ItemsTreeViewDblClick(Sender: TObject);
 begin
   OpenBitBtnClick(Self);
+end;
+
+procedure TProjectInspectorForm.ItemsTreeViewGetImageIndex(Sender: TObject; Node: TTreeNode);
+begin
+
 end;
 
 procedure TProjectInspectorForm.ItemsTreeViewKeyDown(Sender: TObject;
@@ -614,6 +619,7 @@ procedure TProjectInspectorForm.UpdateProjectFiles(Immediately: boolean);
 var
   CurFile: TUnitInfo;
   Filename: String;
+  FilteredBranch: TBranch;
 begin
   if (not Immediately) or (FUpdateLock>0) or (not Visible) then begin
     Include(FFlags,pifFilesChanged);
@@ -622,20 +628,17 @@ begin
   end;
   Exclude(FFlags,pifFilesChanged);
   if LazProject=nil then Exit;
-  FilterEdit.RootNode:=FFilesNode;
+  FilteredBranch := FilterEdit.GetBranch(FFilesNode);
   FilterEdit.SelectedPart:=FNextSelectedPart;
   FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
   FilterEdit.SortData:=SortAlphabetically;
   FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
-  FilterEdit.Data.Clear;
   // collect and sort files
   CurFile:=LazProject.FirstPartOfProject;
   while CurFile<>nil do begin
     Filename:=CurFile.GetShortFilename(true);
-    if Filename<>'' then begin
-      FilterEdit.Data.AddObject(Filename, CurFile);
-      FilterEdit.MapShortToFullFilename(Filename, CurFile.Filename);
-    end;
+    if Filename<>'' then
+      FilteredBranch.AddNodeData(Filename, CurFile, CurFile.Filename);
     CurFile:=CurFile.NextPartOfProject;
   end;
   FilterEdit.InvalidateFilter;            // Data is shown by FilterEdit.
