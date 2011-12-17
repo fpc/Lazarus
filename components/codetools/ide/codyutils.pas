@@ -287,15 +287,20 @@ begin
       // move editor cursor in front of insert position
       NewXY:=Point(GetPosInLine(Tool.Src,FromPos)+1,SrcEdit.CursorTextXY.Y);
       //debugln(['InsertCallInherited NewXY=',dbgs(NewXY),' FromPos=',Tool.CleanPosToStr(FromPos),' ToPos=',Tool.CleanPosToStr(ToPos)]);
-      SrcEdit.CursorTextXY:=NewXY;
       if not CodeToolBoss.SourceChangeCache.Replace(Gap,Gap,FromPos,ToPos,NewCode)
       then begin
         debugln(['InsertCallInherited CodeToolBoss.SourceChangeCache.Replace failed']);
         exit;
       end;
-      if not CodeToolBoss.SourceChangeCache.Apply then begin
-        debugln(['InsertCallInherited CodeToolBoss.SourceChangeCache.Apply failed']);
-        exit;
+      SrcEdit.BeginUndoBlock;
+      try
+        SrcEdit.CursorTextXY:=NewXY;
+        if not CodeToolBoss.SourceChangeCache.Apply then begin
+          debugln(['InsertCallInherited CodeToolBoss.SourceChangeCache.Apply failed']);
+          exit;
+        end;
+      finally
+        SrcEdit.EndUndoBlock;
       end;
     except
       on e: Exception do CodeToolBoss.HandleException(e);
