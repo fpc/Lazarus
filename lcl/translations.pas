@@ -83,13 +83,13 @@ type
   public
     Tag: Integer;
     Comments: string;
-    Identifier: string;
+    IdentifierLow: string; // lowercase
     Original: string;
     Translation: string;
     Flags: string;
     PreviousID: string;
     Context: string;
-    constructor Create(const TheIdentifier, TheOriginal, TheTranslated: string);
+    constructor Create(const TheIdentifierLow, TheOriginal, TheTranslated: string);
     procedure ModifyFlag(const AFlag: string; Check: boolean);
   end;
 
@@ -98,8 +98,8 @@ type
   TPOFile = class
   protected
     FItems: TFPList;// list of TPOFileItem
-    FIdentifierToItem: TStringToPointerTree; // of TPOFileItem
-    FIdentVarToItem: TStringHashList; // of TPOFileItem
+    FIdentifierLowToItem: TStringToPointerTree; // lowercase identifier to TPOFileItem
+    FIdentLowVarToItem: TStringHashList; // of TPOFileItem
     FOriginalToItem: TStringHashList; // of TPOFileItem
     FCharSet: String;
     FHeader: TPOFileItem;
@@ -458,6 +458,7 @@ var
   Module: string;
   Item,VItem: TPOFileItem;
   i, p: Integer;
+  VarName: String;
 begin
   if FModuleList=nil then
     exit;
@@ -465,11 +466,11 @@ begin
   // remove all module references that were not tagged
   for i:=FItems.Count-1 downto 0 do begin
     Item := TPOFileItem(FItems[i]);
-    p := pos('.',Item.Identifier);
+    p := pos('.',Item.IdentifierLow);
     if P=0 then
       continue; // module not found (?)
       
-    Module :=LeftStr(Item.Identifier, p-1);
+    Module :=LeftStr(Item.IdentifierLow, p-1);
     if (FModuleList.IndexOf(Module)<0) then
       continue; // module was not modified this time
 
@@ -477,12 +478,12 @@ begin
       continue; // PO item was updated
       
     // this item is not more in updated modules, delete it
-    FIdentifierToItem.Remove(Item.Identifier);
+    FIdentifierLowToItem.Remove(Item.IdentifierLow);
     // delete it also from VarToItem
-    Module := RightStr(Item.Identifier, Length(Item.Identifier)-P);
-    VItem := TPoFileItem(FIdentVarToItem.Data[Module]);
+    VarName := RightStr(Item.IdentifierLow, Length(Item.IdentifierLow)-P);
+    VItem := TPoFileItem(FIdentLowVarToItem.Data[VarName]);
     if (VItem=Item) then
-      FIdentVarToItem.Remove(Module);
+      FIdentLowVarToItem.Remove(VarName);
 
     //FOriginalToItem.Remove(Item.Original); // isn't this tricky?
     FItems.Delete(i);
@@ -507,8 +508,8 @@ begin
   inherited Create;
   FAllEntries:=true;
   FItems:=TFPList.Create;
-  FIdentifierToItem:=TStringToPointerTree.Create(false);
-  FIdentVarToItem:=TStringHashList.Create(false);
+  FIdentifierLowToItem:=TStringToPointerTree.Create(true);
+  FIdentLowVarToItem:=TStringHashList.Create(true);
   FOriginalToItem:=TStringHashList.Create(true);
 end;
 
@@ -555,8 +556,8 @@ begin
   for i:=0 to FItems.Count-1 do
     TObject(FItems[i]).Free;
   FItems.Free;
-  FIdentVarToItem.Free;
-  FIdentifierToItem.Free;
+  FIdentLowVarToItem.Free;
+  FIdentifierLowToItem.Free;
   FOriginalToItem.Free;
   inherited Destroy;
 end;
@@ -629,7 +630,7 @@ var
       if (Item<>nil) then begin
         // fix old duplicate context
         if Item.Context='' then
-          Item.Context:=Item.Identifier;
+          Item.Context:=Item.IdentifierLow;
         // set context of new duplicate
         if Context='' then
           Context := Identifier;
@@ -715,15 +716,24 @@ begin
           end;
         end;
       'm':
-        if IsKey(LineStart,'msgid "') then begin
-          StartNextLine(ciMsgId,LineStart+length('msgid "'));
-          Handled:=true;
-        end else if IsKey(LineStart,'msgstr "') then begin
-          StartNextLine(ciMsgStr,LineStart+length('msgstr "'));
-          Handled:=true;
-        end else if IsKey(LineStart, 'msgctxt "') then begin
-          Context:= Copy(LineStart, 10, LineLen-10);
-          Handled:=true;
+        if (LineStart[1]='s') and (LineStart[2]='g') then begin
+          case LineStart[3] of
+          'i':
+            if IsKey(LineStart,'msgid "') then begin
+              StartNextLine(ciMsgId,LineStart+length('msgid "'));
+              Handled:=true;
+            end;
+          's':
+            if IsKey(LineStart,'msgstr "') then begin
+              StartNextLine(ciMsgStr,LineStart+length('msgstr "'));
+              Handled:=true;
+            end;
+          'c':
+            if IsKey(LineStart, 'msgctxt "') then begin
+              Context:= Copy(LineStart, 10, LineLen-10);
+              Handled:=true;
+            end;
+          end;
         end;
       '"':
         begin
@@ -767,7 +777,7 @@ var
   p: Integer;
 begin
   if (not FAllEntries) and (TranslatedValue='') then exit;
-  Item:=TPOFileItem.Create(Identifier,OriginalValue,TranslatedValue);
+  Item:=TPOFileItem.Create(lowercase(Identifier),OriginalValue,TranslatedValue);
   Item.Comments:=Comments;
   Item.Context:=Context;
   Item.Flags:=Flags;
@@ -776,10 +786,10 @@ begin
   FItems.Add(Item);
 
   //debugln(['TPOFile.Add Identifier=',Identifier,' Orig="',dbgstr(OriginalValue),'" Transl="',dbgstr(TranslatedValue),'"']);
-  FIdentifierToItem[Identifier]:=Item;
+  FIdentifierLowToItem[Item.IdentifierLow]:=Item;
   P := Pos('.', Identifier);
   if P>0 then
-    FIdentVarToItem.Add(copy(Identifier, P+1, Length(IDentifier)), Item);
+    FIdentLowVarToItem.Add(copy(Item.IdentifierLow, P+1, Length(Item.IdentifierLow)), Item);
   
   FOriginalToItem.Add(OriginalValue,Item);
 end;
@@ -788,7 +798,7 @@ function TPOFile.Translate(const Identifier, OriginalValue: String): String;
 var
   Item: TPOFileItem;
 begin
-  Item:=TPOFileItem(FIdentifierToItem[Identifier]);
+  Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
   if Item=nil then
     Item:=TPOFileItem(FOriginalToItem.Data[OriginalValue]);
   if Item<>nil then begin
@@ -810,7 +820,7 @@ begin
     DebugLn('No header found in po file')
   else begin
     DebugLn('Comments=',FHeader.Comments);
-    DebugLn('Identifier=',FHeader.Identifier);
+    DebugLn('Identifier=',FHeader.IdentifierLow);
     DebugLn('msgid=',FHeader.Original);
     DebugLn('msgstr=', FHeader.Translation);
   end;
@@ -822,7 +832,7 @@ begin
     DebugLn('#',dbgs(i),': ');
     Item := TPOFileItem(FItems[i]);
     DebugLn('Comments=',Item.Comments);
-    DebugLn('Identifier=',Item.Identifier);
+    DebugLn('Identifier=',Item.IdentifierLow);
     DebugLn('msgid=',Item.Original);
     DebugLn('msgstr=', Item.Translation);
     DebugLn;
@@ -861,8 +871,8 @@ var
 begin
   ClearModuleList;
   UntagAll;
-  // for each string in lrt/rst list check if it's already
-  // in PO if not add it
+  // for each string in lrt/rst list check if it's already in PO
+  // if not add it
   Value := '';
   Identifier := '';
   i := 0;
@@ -975,7 +985,7 @@ begin
     Item := TPOFileItem(FItems[i]);
     if Item.Tag<>aTag then
       Continue;
-    FIdentifierToItem.Remove(Item.Identifier);
+    FIdentifierLowToItem.Remove(Item.IdentifierLow);
     //FOriginalToItem.Remove(Item.Original); // isn't this tricky?
     FItems.Delete(i);
     Item.Free;
@@ -984,8 +994,8 @@ end;
 
 function ComparePOItems(Item1, Item2: Pointer): Integer;
 begin
-  result := CompareText(TPOFileItem(Item1).Identifier,
-                        TPOFileItem(Item2).Identifier);
+  result := CompareText(TPOFileItem(Item1).IdentifierLow,
+                        TPOFileItem(Item2).IdentifierLow);
 end;
 
 procedure TPOFile.SaveToFile(const AFilename: string);
@@ -1023,8 +1033,8 @@ var
   procedure WriteItem(Item: TPOFileItem);
   begin
     WriteLst('',Item.Comments);
-    if Item.Identifier<>'' then
-      OutLst.Add('#: '+Item.Identifier);
+    if Item.IdentifierLow<>'' then
+      OutLst.Add('#: '+Item.IdentifierLow);
     if Trim(Item.Flags)<>'' then
       OutLst.Add('#, '+Trim(Item.Flags));
     if Item.PreviousID<>'' then
@@ -1124,10 +1134,10 @@ begin
     FHelperList := TStringList.Create;
 
   // try to find PO entry by identifier
-  Item:=TPOFileItem(FIdentifierToItem[Identifier]);
+  Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
   if Item<>nil then begin
     // found, update item value
-    AddToModuleList(IDentifier);
+    AddToModuleList(Identifier);
 
     if CompareMultilinedStrings(Item.Original, Original)<>0 then begin
       FModified := True;
@@ -1151,7 +1161,7 @@ begin
   if Item<>nil then begin
     // old item don't have context, add one
     if Item.Context='' then
-      Item.Context := Item.Identifier;
+      Item.Context := Item.IdentifierLow;
       
     // if old item it's already translated use translation
     if Item.Translation<>'' then
@@ -1180,7 +1190,7 @@ begin
   ClearModuleList;
   for i:=0 to BasePOFile.Items.Count-1 do begin
     Item := TPOFileItem(BasePOFile.Items[i]);
-    UpdateItem(Item.Identifier, Item.Original);
+    UpdateItem(Item.IdentifierLow, Item.Original);
   end;
   RemoveTaggedItems(0); // get rid of any item not existing in BasePOFile
 end;
@@ -1217,10 +1227,10 @@ end;
 
 { TPOFileItem }
 
-constructor TPOFileItem.Create(const TheIdentifier, TheOriginal,
+constructor TPOFileItem.Create(const TheIdentifierLow, TheOriginal,
   TheTranslated: string);
 begin
-  Identifier:=TheIdentifier;
+  IdentifierLow:=TheIdentifierLow;
   Original:=TheOriginal;
   Translation:=TheTranslated;
 end;

@@ -237,7 +237,7 @@ begin
        end;
      -1: Last:= Temp-1;
     end;
-    end;
+  end;
   if Result <> -1 then
   begin
     Result:= -1;
@@ -269,10 +269,9 @@ var
 begin
   P:= PChar(Key);
   Len:= Length(Key);
-  Result := Len;  
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
-  {$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
-  {$R-}{$Q-}
+  Result := Len;
+  {$PUSH}
+  {$R-}{$Q-} // no range, no overflow checks
   // use the last 30 characters to compute the hash
   case fCaseSensitive of
     True:
@@ -282,8 +281,7 @@ begin
       for I := Len - 1 downto 0 do
         inc(Result, cardinal(ord(UpperCaseChars[P[I]])) shl I);
   end;
-  {$IFDEF OverflowChecking}{$Q+}{$UNDEF OverflowChecking}{$ENDIF}
-  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
+  {$POP}
 end;
 
 procedure TStringHashList.Insert(Index: Integer; Item: PStringHashItem);
