@@ -87,7 +87,6 @@ type
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
 
-    procedure CalcGaps; override;
     procedure ShowFrame; override;
     procedure ShowBackGround; override;
   published
@@ -606,19 +605,6 @@ begin
   XML.SetValue(Path+'Data/RoundRect/Value', GetSaveProperty('RoundRect'));
   XML.SetValue(Path+'Data/RoundRectCurve/Value', GetSaveProperty('RoundRectCurve'));
   XML.SetValue(Path+'Data/SquaredCorners/Value', GetSaveProperty('SquaredCorners'));
-end;
-
-procedure TfrRoundRectView.CalcGaps;
-begin
-  inherited CalcGaps;
-  // Zone de text (MEMO)
-  Drect.Left := DRect.Left + (fCadre.wCurve div 4);
-  DRect.Top := DRect.Top + (fCadre.wCurve div 4);
-  DRect.Right := DRect.Right - ((fCadre.wShadow + fCadre.wCurve) div 4);
-  DRect.Bottom := DRect.Bottom - ((fCadre.wShadow + fCadre.wCurve) div 4);
-  // Position de début haut à gauche}
-  gapx := gapx + (fCadre.wCurve div 4);
-  gapy := gapy + (fCadre.wCurve div 4);
 end;
 
 procedure TfrRoundRectView.ShowBackGround;
