@@ -380,7 +380,7 @@ begin
   Result:=nil;
   if Filename='' then exit;
   if FUnits=nil then exit;
-  Node:=FUnits.FindKey(@Filename,@CompareAnsiStringWithUnitFilename);
+  Node:=FUnits.FindKey(Pointer(Filename),@CompareAnsiStringWithUnitFilename);
   if Node=nil then exit;
   Result:=TCodeBrowserUnit(Node.Data);
 end;
@@ -393,7 +393,7 @@ begin
   Result:=nil;
   if FUnitLists=nil then exit;
   if OwnerName='' then exit;
-  Node:=FUnitLists.FindKey(@OwnerName,@CompareAnsiStringWithUnitListOwner);
+  Node:=FUnitLists.FindKey(Pointer(OwnerName),@CompareAnsiStringWithUnitListOwner);
   if Node=nil then exit;
   Result:=TCodeBrowserUnitList(Node.Data);
 end;

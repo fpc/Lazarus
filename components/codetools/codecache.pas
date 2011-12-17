@@ -986,7 +986,7 @@ end;
 function TCodeCache.FindIncludeLinkAVLNode(const IncludeFilename: string
   ): TAVLTreeNode;
 begin
-  Result:=FIncludeLinks.FindKey(@IncludeFilename,
+  Result:=FIncludeLinks.FindKey(Pointer(IncludeFilename),
                                 @CompareAnsiStringWithIncludedByLink);
 end;
 

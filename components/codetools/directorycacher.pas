@@ -1398,7 +1398,7 @@ var
   Dir: String;
 begin
   Dir:=AppendPathDelim(TrimFilename(Directory));
-  Node:=FDirectories.FindKey(@Dir,@CompareAnsiStringAndDirectoryCache);
+  Node:=FDirectories.FindKey(Pointer(Dir),@CompareAnsiStringAndDirectoryCache);
   if Node<>nil then begin
     Result:=TCTDirectoryCache(Node.Data);
     if DoReference then
