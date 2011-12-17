@@ -1211,7 +1211,7 @@ procedure TCodeBrowserView.WorkFreeUnusedPackages;
       PackageName:=UnusedPackage.Owner;
       if (FWorkingParserRoot=nil)
       or (FWorkingParserRoot.UnitLists=nil)
-      or (FWorkingParserRoot.UnitLists.FindKey(@PackageName,
+      or (FWorkingParserRoot.UnitLists.FindKey(Pointer(PackageName),
          @CompareAnsiStringWithUnitListOwner)=nil)
       then begin
         Result:=UnusedPackage;
@@ -1321,7 +1321,7 @@ var
       DebugLn(['WARNING: TCodeBrowserView.WorkUpdateFiles Macros in filename ',Filename]);
       exit;
     end;
-    if NewFileList.FindKey(@Filename,@CompareAnsiStringWithUnitFilename)<>nil
+    if NewFileList.FindKey(Pointer(Filename),@CompareAnsiStringWithUnitFilename)<>nil
     then exit;
     //DebugLn(['TCodeBrowserView.WorkUpdateFiles AddFile ',Filename]);
     NewFileList.Add(TCodeBrowserUnit.Create(Filename));
@@ -1494,7 +1494,7 @@ var
     while Node<>nil do begin
       NextNode:=List.Units.FindSuccessor(Node);
       CurUnit:=TCodeBrowserUnit(Node.Data);
-      if NewFileList.FindKey(@CurUnit.Filename,
+      if NewFileList.FindKey(Pointer(CurUnit.Filename),
         @CompareAnsiStringWithUnitFilename)=nil
       then begin
         // this unit is not part of List anymore -> delete
