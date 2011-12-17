@@ -3649,8 +3649,8 @@ var
       else
         Attr := nil;
       repeat
-        MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1, NextPos);
-        NextPos := fMarkupManager.GetNextMarkupColAfterRowCol(FFoldedLinesView.TextIndex[CurLine]+1, NextPos);
+        MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(CurTextIndex+1, NextPos);
+        NextPos := fMarkupManager.GetNextMarkupColAfterRowCol(CurTextIndex+1, NextPos);
 
         if Assigned(Attr) then
         begin
@@ -3906,7 +3906,7 @@ var
 
       // Calculate Token Sublen for current Markup
       NextPhysPos := fMarkupManager.GetNextMarkupColAfterRowCol
-                       (FFoldedLinesView.TextIndex[CurLine]+1, PhysicalStartPos);
+                       (CurTextIndex+1, PhysicalStartPos);
       if NextPhysPos < 1
       then SubCharLen := TokenCharLen
       else SubCharLen := NextPhysPos - PhysicalStartPos;
@@ -3924,7 +3924,7 @@ var
       FPaintLineColor2.CurrentEndX := PhysicalEndPos;
 
       // Calculate Markup
-      fMarkupManager.MergeMarkupAttributeAtRowCol(FFoldedLinesView.TextIndex[CurLine]+1,
+      fMarkupManager.MergeMarkupAttributeAtRowCol(CurTextIndex+1,
         PhysicalStartPos, PhysicalEndPos, FPaintLineColor2);
 
       // Deal with equal colors
