@@ -774,7 +774,7 @@ type
       Key2: word; SS2: TShiftState);
     procedure AfterLoadFromFile;
     procedure BeginUndoBlock;
-    procedure BeginUpdate(WithUndoBlock: Boolean = True); deprecated;
+    procedure BeginUpdate(WithUndoBlock: Boolean = True);
     function CaretXPix: Integer;
     function CaretYPix: Integer;
     procedure ClearAll;
