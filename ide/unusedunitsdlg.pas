@@ -114,12 +114,17 @@ begin
     else
       RemoveUnits:=nil;
     if (RemoveUnits<>nil) and (RemoveUnits.Count>0) then begin
-      for i:=0 to RemoveUnits.Count-1 do begin
-        if not CodeToolBoss.RemoveUnitFromAllUsesSections(Code,RemoveUnits[i])
-        then begin
-          LazarusIDE.DoJumpToCodeToolBossError;
-          exit(mrCancel);
+      SrcEdit.BeginUndoBlock;
+      try
+        for i:=0 to RemoveUnits.Count-1 do begin
+          if not CodeToolBoss.RemoveUnitFromAllUsesSections(Code,RemoveUnits[i])
+          then begin
+            LazarusIDE.DoJumpToCodeToolBossError;
+            exit(mrCancel);
+          end;
         end;
+      finally
+        SrcEdit.EndUndoBlock;
       end;
     end;
   finally
