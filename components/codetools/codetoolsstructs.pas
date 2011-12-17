@@ -108,11 +108,10 @@ type
     FTree: TAVLTree;// tree of PStringMapItem
     FCaseSensitive: boolean;
     function GetCompareItemsFunc: TListSortCompare;
-    function FindNode(const s: string): TAVLTreeNode;
   protected
-    procedure DisposeItem(p: Pointer); virtual;
-    function ItemsAreEqual(p1, p2: Pointer): boolean; virtual;
-    procedure AssignItem(Src, Dest: Pointer); virtual;
+    procedure DisposeItem(p: PStringMapItem); virtual;
+    function ItemsAreEqual(p1, p2: PStringMapItem): boolean; virtual;
+    function CreateCopy(Src: PStringMapItem): PStringMapItem; virtual;
   public
     constructor Create(TheCaseSensitive: boolean);
     destructor Destroy; override;
@@ -124,6 +123,7 @@ type
     procedure Remove(const Name: string); virtual;
     property CaseSensitive: boolean read FCaseSensitive;
     property Tree: TAVLTree read FTree; // tree of PStringMapItem
+    function FindNode(const s: string): TAVLTreeNode;
     function Equals(OtherTree: TStringMap): boolean; reintroduce;
     procedure Assign(Source: TStringMap); virtual; abstract;
     procedure WriteDebugReport; virtual;
@@ -158,15 +158,14 @@ type
     function GetStrings(const s: string): string;
     procedure SetStrings(const s: string; const AValue: string);
   protected
-    procedure DisposeItem(p: Pointer); override;
-    function ItemsAreEqual(p1, p2: Pointer): boolean; override;
-    procedure AssignItem(Src, Dest: Pointer); override;
+    procedure DisposeItem(p: PStringMapItem); virtual;
+    function ItemsAreEqual(p1, p2: PStringMapItem): boolean; virtual;
+    function CreateCopy(Src: PStringMapItem): PStringMapItem; virtual;
   public
     function GetString(const Name: string; out Value: string): boolean;
     procedure Add(const Name, Value: string); virtual;
     property Strings[const s: string]: string read GetStrings write SetStrings; default;
     function AsText: string;
-    procedure Assign(Source: TStringMap); override;
     procedure WriteDebugReport; override;
     function CalcMemSize: PtrUint; override;
     function GetEnumerator: TStringToStringTreeEnumerator;
@@ -197,9 +196,9 @@ type
     function GetItems(const s: string): Pointer;
     procedure SetItems(const s: string; AValue: Pointer);
   protected
-    procedure DisposeItem(p: Pointer); override;
-    function ItemsAreEqual(p1, p2: Pointer): boolean; override;
-    procedure AssignItem(Src, Dest: Pointer); override;
+    procedure DisposeItem(p: PStringMapItem); override;
+    function ItemsAreEqual(p1, p2: PStringMapItem): boolean; override;
+    function CreateCopy(Src: PStringMapItem): PStringMapItem; override;
   public
     function GetItem(const Name: string; out Value: Pointer): boolean;
     procedure Add(const Name: string; const Value: Pointer); virtual;
@@ -512,7 +511,7 @@ begin
   end;
 end;
 
-procedure TStringToPointerTree.DisposeItem(p: Pointer);
+procedure TStringToPointerTree.DisposeItem(p: PStringMapItem);
 var
   Item: PStringToPointerTreeItem absolute p;
 begin
@@ -521,7 +520,7 @@ begin
   Dispose(Item);
 end;
 
-function TStringToPointerTree.ItemsAreEqual(p1, p2: Pointer): boolean;
+function TStringToPointerTree.ItemsAreEqual(p1, p2: PStringMapItem): boolean;
 var
   Item1: PStringToPointerTreeItem absolute p1;
   Item2: PStringToPointerTreeItem absolute p2;
@@ -530,13 +529,13 @@ begin
       and (Item1^.Value=Item2^.Value);
 end;
 
-procedure TStringToPointerTree.AssignItem(Src, Dest: Pointer);
+function TStringToPointerTree.CreateCopy(Src: PStringMapItem): PStringMapItem;
 var
   SrcItem: PStringToPointerTreeItem absolute Src;
-  DestItem: PStringToPointerTreeItem absolute Dest;
 begin
-  DestItem^.Name:=SrcItem^.Name;
-  DestItem^.Value:=SrcItem^.Value;
+  New(Result);
+  Result^.Name:=SrcItem^.Name;
+  Result^.Value:=SrcItem^.Value;
 end;
 
 function TStringToPointerTree.GetItem(const Name: string; out Value: Pointer
@@ -614,27 +613,20 @@ begin
   Result:=FTree.FindKey(Pointer(s),FCompareKeyItemFunc);
 end;
 
-procedure TStringMap.DisposeItem(p: Pointer);
-var
-  Item: PStringMapItem absolute p;
+procedure TStringMap.DisposeItem(p: PStringMapItem);
 begin
-  Dispose(Item);
+  Dispose(p);
 end;
 
-function TStringMap.ItemsAreEqual(p1, p2: Pointer): boolean;
-var
-  Item1: PStringMapItem absolute p1;
-  Item2: PStringMapItem absolute p2;
+function TStringMap.ItemsAreEqual(p1, p2: PStringMapItem): boolean;
 begin
-  Result:=Item1^.Name=Item2^.Name;
+  Result:=p1^.Name=p2^.Name;
 end;
 
-procedure TStringMap.AssignItem(Src, Dest: Pointer);
-var
-  SrcItem: PStringMapItem absolute Src;
-  DestItem: PStringMapItem absolute Dest;
+function TStringMap.CreateCopy(Src: PStringMapItem): PStringMapItem;
 begin
-  DestItem^.Name:=SrcItem^.Name;
+  New(Result);
+  Result^.Name:=Src^.Name;
 end;
 
 constructor TStringMap.Create(TheCaseSensitive: boolean);
@@ -835,14 +827,14 @@ begin
   end;
 end;
 
-procedure TStringToStringTree.DisposeItem(p: Pointer);
+procedure TStringToStringTree.DisposeItem(p: PStringMapItem);
 var
   Item: PStringToStringTreeItem absolute p;
 begin
   Dispose(Item);
 end;
 
-function TStringToStringTree.ItemsAreEqual(p1, p2: Pointer): boolean;
+function TStringToStringTree.ItemsAreEqual(p1, p2: PStringMapItem): boolean;
 var
   Item1: PStringToStringTreeItem absolute p1;
   Item2: PStringToStringTreeItem absolute p2;
@@ -851,13 +843,11 @@ begin
       and (Item1^.Value=Item2^.Value);
 end;
 
-procedure TStringToStringTree.AssignItem(Src, Dest: Pointer);
-var
-  SrcItem: PStringToStringTreeItem absolute Src;
-  DestItem: PStringToStringTreeItem absolute Dest;
+function TStringToStringTree.CreateCopy(Src: PStringMapItem): PStringMapItem;
 begin
-  DestItem^.Name:=SrcItem^.Name;
-  DestItem^.Value:=SrcItem^.Value;
+  New(Result);
+  Result^.Name:=Src^.Name;
+  Result^.Value:=Src^.Value;
 end;
 
 function TStringToStringTree.GetString(const Name: string; out Value: string
