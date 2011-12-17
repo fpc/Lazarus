@@ -4097,7 +4097,7 @@ msgstr "Kysy komponentin nimi kun se lomake-editorilla olevalle lomakkeelle"
 
 #: lazarusidestrconsts.lisaskforfilenameonnewfile
 msgid "Ask for file name on new file"
-msgstr "Kysytään tiedoston nimi kun luodaan uusi tiedosto"
+msgstr "Kysy tiedoston nimi uutta tiedostoa luotaessa"
 
 #: lazarusidestrconsts.lisasknameoncreate
 msgid "Ask name on create"
@@ -15620,11 +15620,11 @@ msgstr "Käännösyksikkö %s%s%s on muuttunut. Talletetaanko?"
 
 #: lazarusidestrconsts.lisunitidentifierexists
 msgid "Unit identifier exists"
-msgstr ""
+msgstr "Käännösyksikön tunniste on olemassa"
 
 #: lazarusidestrconsts.lisunitinpackage
 msgid "%s unit %s in package %s%s"
-msgstr ""
+msgstr "%s käännösyksikkö %s paketissa %s%s"
 
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
@@ -15640,7 +15640,7 @@ msgstr "Käännösyksikön nimi sisältää ..."
 
 #: lazarusidestrconsts.lisunitnotfoundinproject
 msgid "A unit not found in project %s"
-msgstr ""
+msgstr "Käännösyksikköä ei löydy projektista %s"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -15656,7 +15656,7 @@ msgstr "Käännösyksiköiden polut"
 
 #: lazarusidestrconsts.lisunitsnotfoundinproject
 msgid "Units not found in project %s"
-msgstr ""
+msgstr "Käännösyksiköitä ei löydy projektista %s"
 
 #: lazarusidestrconsts.lisunsigned
 msgid "Unsigned"
@@ -15794,11 +15794,11 @@ msgstr "Näytä projektin käännösyksiköt"
 
 #: lazarusidestrconsts.lisviewsource
 msgid "View Source"
-msgstr ""
+msgstr "Näytä lähdekoodi"
 
 #: lazarusidestrconsts.lisviewsourcedisass
 msgid "View Assembler"
-msgstr ""
+msgstr "Näytä assembler"
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"
