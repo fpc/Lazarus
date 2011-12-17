@@ -426,6 +426,7 @@ type
 
     FPaintLock: Integer;
     FPaintLockOwnerCnt: Integer;
+    FUndoBlockAtPaintLock: Integer;
     FScrollBarUpdateLock: Integer;
     FInvalidateRect: TRect;
     FIsInDecPaintLock: Boolean;
@@ -773,7 +774,7 @@ type
       Key2: word; SS2: TShiftState);
     procedure AfterLoadFromFile;
     procedure BeginUndoBlock;
-    procedure BeginUpdate;
+    procedure BeginUpdate(WithUndoBlock: Boolean = True); deprecated;
     function CaretXPix: Integer;
     function CaretYPix: Integer;
     procedure ClearAll;
@@ -1700,6 +1701,8 @@ begin
   SetInline(True);
   ControlStyle:=ControlStyle+[csOwnedChildrenNotSelectable];
   FScrollBarUpdateLock := 0;
+  FPaintLock := 0;
+  FUndoBlockAtPaintLock := 0;
 
   FStatusChangedList := TSynStatusChangedHandlerList.Create;
 
@@ -2004,6 +2007,10 @@ begin
   if FIsInDecPaintLock then exit;
   FIsInDecPaintLock := True;
   try
+    if (FUndoBlockAtPaintLock = FPaintLock) then begin
+      FUndoBlockAtPaintLock := 0;
+      EndUndoBlock;
+    end;
     if (FPaintLock=1) and HandleAllocated then begin
       ScanRanges(FLastTextChangeStamp <> TSynEditStringList(FLines).TextChangeStamp);
       if sfAfterLoadFromFileNeeded in fStateFlags then
@@ -6915,9 +6922,13 @@ begin
   //FTrimmedLinesView.Lock;
 end;
 
-procedure TCustomSynEdit.BeginUpdate;
+procedure TCustomSynEdit.BeginUpdate(WithUndoBlock: Boolean = True);
 begin
   IncPaintLock;
+  if WithUndoBlock and (FUndoBlockAtPaintLock = 0) then begin
+    FUndoBlockAtPaintLock := FPaintLock;
+    BeginUndoBlock;
+  end;
 end;
 
 procedure TCustomSynEdit.EndUndoBlock;

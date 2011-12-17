@@ -462,7 +462,7 @@ var
   end;
   procedure DoLock;
   begin
-    if UseBeginUpdate then SynEdit.BeginUpdate;
+    if UseBeginUpdate then SynEdit.BeginUpdate(False);
   end;
   procedure DoUnLock;
   begin
@@ -887,14 +887,14 @@ procedure TTestSynSelection.SetCaretSetBlock;
 
     SynEdit.LogicalCaretXY := Point(x, y);
 
-    if UpdAll then SynEdit.BeginUpdate;
-    if UpdBlock then SynEdit.BeginUpdate;
+    if UpdAll then SynEdit.BeginUpdate(False);
+    if UpdBlock then SynEdit.BeginUpdate(False);
     SynEdit.BlockBegin := Point(BBx, BBy);
     SynEdit.BlockEnd   := Point(BEx, BEy);
     TestIsBlock(Name + ' selftest',  BBx, BBy,  BEx, BEy);
     if UpdBlock then SynEdit.EndUpdate;
 
-    if UpdCaret then SynEdit.BeginUpdate;
+    if UpdCaret then SynEdit.BeginUpdate(False);
     SynEdit.LogicalCaretXY := Point(Cx, Cy);
     if UpdCaret then SynEdit.EndUpdate;
     if UpdAll then SynEdit.EndUpdate;
@@ -1066,7 +1066,7 @@ procedure TTestSynSelection.ReplaceSelText;
     SetCaretAndSel(X1,Y1, X2,Y2);
     TestIsBlock    ('Sanity, selection at begin of test (3)', X1,Y1, X2,Y2, Before);
     SynEdit.BeginUndoBlock;
-    SynEdit.BeginUpdate;
+    SynEdit.BeginUpdate(False);
     SynEdit.SelText := '';
     SynEdit.TestSetSelText(LinesToText(Replace), SelInsertMode);
     SynEdit.EndUndoBlock;
@@ -1091,7 +1091,7 @@ procedure TTestSynSelection.ReplaceSelText;
       SetLines(TheText);
       SetCaretAndSel(X1,Y1, X2,Y2);
       TestIsBlock    ('Sanity, selection at begin of test (4)', X1,Y1, X2,Y2, Before);
-      SynEdit.BeginUpdate;
+      SynEdit.BeginUpdate(False);
       SynEdit.TestSetSelText(LinesToText(Replace), SelInsertMode);
 
       SynEdit.Undo;
