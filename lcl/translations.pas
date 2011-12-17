@@ -69,7 +69,8 @@ unit Translations;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, StringHashList, LConvEncoding;
+  Classes, SysUtils, LCLProc, FileUtil, StringHashList, AvgLvlTree,
+  LConvEncoding;
 
 type
   TStringsType = (stLrt, stRst);
@@ -97,9 +98,9 @@ type
   TPOFile = class
   protected
     FItems: TFPList;// list of TPOFileItem
-    FIdentifierToItem: TStringHashList;
-    FIdentVarToItem: TStringHashList;
-    FOriginalToItem: TStringHashList;
+    FIdentifierToItem: TStringToPointerTree; // of TPOFileItem
+    FIdentVarToItem: TStringHashList; // of TPOFileItem
+    FOriginalToItem: TStringHashList; // of TPOFileItem
     FCharSet: String;
     FHeader: TPOFileItem;
     FAllEntries: boolean;
@@ -506,7 +507,7 @@ begin
   inherited Create;
   FAllEntries:=true;
   FItems:=TFPList.Create;
-  FIdentifierToItem:=TStringHashList.Create(false);
+  FIdentifierToItem:=TStringToPointerTree.Create(false);
   FIdentVarToItem:=TStringHashList.Create(false);
   FOriginalToItem:=TStringHashList.Create(true);
 end;
@@ -651,7 +652,7 @@ var
   begin
     StoreCollectedLine;
     CollectedIndex := AIndex;
-    Line:=UTF8CStringToUTF8String(TxtStart,LineEnd-TxtStart);
+    Line:=UTF8CStringToUTF8String(TxtStart,LineEnd-TxtStart-1); // -1 for the ending "
   end;
 
 begin
@@ -773,24 +774,21 @@ begin
   Item.PreviousID:=PreviousID;
   Item.Tag:=FTag;
   FItems.Add(Item);
-  
-  //debugln('TPOFile.Add %8x Tag=%d Id="%s" Org="%s" Trn="%s"',
-  //    [ptrint(Item),FTag,Identifier,dbgstr(OriginalValue),dbgstr(TranslatedValue)]);
-  FIdentifierToItem.Add(Identifier,Item);
+
+  //debugln(['TPOFile.Add Identifier=',Identifier,' Orig="',dbgstr(OriginalValue),'" Transl="',dbgstr(TranslatedValue),'"']);
+  FIdentifierToItem[Identifier]:=Item;
   P := Pos('.', Identifier);
   if P>0 then
     FIdentVarToItem.Add(copy(Identifier, P+1, Length(IDentifier)), Item);
   
-  //if FIdentifierToItem.Data[UpperCase(Identifier)]=nil then raise Exception.Create('');
   FOriginalToItem.Add(OriginalValue,Item);
-  //if FOriginalToItem.Data[OriginalValue]=nil then raise Exception.Create('');
 end;
 
 function TPOFile.Translate(const Identifier, OriginalValue: String): String;
 var
   Item: TPOFileItem;
 begin
-  Item:=TPOFileItem(FIdentifierToItem.Data[Identifier]);
+  Item:=TPOFileItem(FIdentifierToItem[Identifier]);
   if Item=nil then
     Item:=TPOFileItem(FOriginalToItem.Data[OriginalValue]);
   if Item<>nil then begin
@@ -1126,7 +1124,7 @@ begin
     FHelperList := TStringList.Create;
 
   // try to find PO entry by identifier
-  Item:=TPOFileItem(FIdentifierToItem.Data[Identifier]);
+  Item:=TPOFileItem(FIdentifierToItem[Identifier]);
   if Item<>nil then begin
     // found, update item value
     AddToModuleList(IDentifier);
