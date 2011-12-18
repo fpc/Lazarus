@@ -328,6 +328,7 @@ type
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox;
       const NewState: TCheckBoxState); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TGtk2WSCheckBox }
@@ -987,6 +988,24 @@ begin
     Gtk2WidgetSet.SetWidgetColor(LblWidget, AFont.Color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
     Gtk2WidgetSet.SetWidgetFont(LblWidget, AFont);
+  end;
+end;
+
+class procedure TGtk2WSCustomCheckBox.SetText(const AWinControl: TWinControl;
+  const AText: String);
+var
+  BoxWidget: PGtkWidget;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText') then Exit;
+  BoxWidget := PGtkWidget(AWinControl.Handle);
+  if AText = '' then
+  begin
+    gtk_button_set_label(PGtkButton(BoxWidget), '');
+    gtk_widget_hide(PGtkBin(BoxWidget)^.child);
+  end else
+  begin
+    gtk_widget_show(PGtkBin(BoxWidget)^.child);
+    gtk_button_set_label(PGtkButton(BoxWidget), PChar(AText));
   end;
 end;
 
