@@ -331,6 +331,7 @@ type
     destructor Destroy; override;
     procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
     function GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
+    function GetLinesCount: Integer; override;
   end;
 
   { TSynTextFoldedView
@@ -708,6 +709,11 @@ begin
     else
       Result := False;
   end;
+end;
+
+function TLazSynDisplayFold.GetLinesCount: Integer;
+begin
+  Result := FFoldView.Count;
 end;
 
 { TSynEditFoldExportStream }

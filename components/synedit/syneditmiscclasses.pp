@@ -210,19 +210,19 @@ type
     // 0 or -1 start/end before/after line // 1 first char
     FStartX, FEndX: Integer;
     FFrameSidesInitialized: Boolean;
-    FFrameSideColors: array[TSynFrameSide] of TColor;
-    FFrameSideStyles: array[TSynFrameSide] of TSynLineStyle;
-    FFrameSidePriority: array[TSynFrameSide] of Integer;
-    FFrameSideOrigin: array[TSynFrameSide] of TSynFrameEdges;
-    function GetFrameSideColors(Side: TSynFrameSide): TColor;
-    function GetFrameSideOrigin(Side: TSynFrameSide): TSynFrameEdges;
-    function GetFrameSidePriority(Side: TSynFrameSide): integer;
-    function GetFrameSideStyles(Side: TSynFrameSide): TSynLineStyle;
+    FFrameSideColors: array[TLazSynBorderSide] of TColor;
+    FFrameSideStyles: array[TLazSynBorderSide] of TSynLineStyle;
+    FFrameSidePriority: array[TLazSynBorderSide] of Integer;
+    FFrameSideOrigin: array[TLazSynBorderSide] of TSynFrameEdges;
+    function GetFrameSideColors(Side: TLazSynBorderSide): TColor;
+    function GetFrameSideOrigin(Side: TLazSynBorderSide): TSynFrameEdges;
+    function GetFrameSidePriority(Side: TLazSynBorderSide): integer;
+    function GetFrameSideStyles(Side: TLazSynBorderSide): TSynLineStyle;
   protected
     procedure DoChange; override;
     procedure AssignFrom(Src: TLazSynCustomTextAttributes); override;
-    property FrameSidePriority[Side: TSynFrameSide]: integer read GetFrameSidePriority;
-    property FrameSideOrigin[Side: TSynFrameSide]: TSynFrameEdges read GetFrameSideOrigin;
+    property FrameSidePriority[Side: TLazSynBorderSide]: integer read GetFrameSidePriority;
+    property FrameSideOrigin[Side: TLazSynBorderSide]: TSynFrameEdges read GetFrameSideOrigin;
   public
     // TSynSelectedColor.Style and StyleMask describe how to modify a style,
     // but PaintLines creates an instance that contains an actual style (without mask)
@@ -230,8 +230,8 @@ type
     MergeFinalStyle: Boolean;
     procedure Merge(Other: TSynSelectedColor; LeftCol, RightCol: Integer); deprecated;
     procedure MergeFrames(Other: TSynSelectedColor; LeftCol, RightCol: Integer); deprecated;
-    property FrameSideColors[Side: TSynFrameSide]: TColor read GetFrameSideColors;
-    property FrameSideStyles[Side: TSynFrameSide]: TSynLineStyle read GetFrameSideStyles;
+    property FrameSideColors[Side: TLazSynBorderSide]: TColor read GetFrameSideColors;
+    property FrameSideStyles[Side: TLazSynBorderSide]: TSynLineStyle read GetFrameSideStyles;
     property StartX: Integer read FStartX write FStartX;
     property EndX: Integer read FEndX write FEndX;
     property CurrentStartX: Integer read FCurrentStartX write FCurrentStartX;
@@ -594,21 +594,21 @@ begin
   AStyle := GetModifiedStyle(AStyle);
 end;
 
-function TSynSelectedColor.GetFrameSideColors(Side: TSynFrameSide): TColor;
+function TSynSelectedColor.GetFrameSideColors(Side: TLazSynBorderSide): TColor;
 begin
   if FFrameSidesInitialized
   then Result := FFrameSideColors[Side]
   else
   if (Side in SynFrameEdgeToSides[FrameEdges]) and (
-      (Side in [sfdTop, sfdBottom]) or
-      ( (Side = sfdLeft)  and (FCurrentStartX = FStartX) ) or
-      ( (Side = sfdRight) and (FCurrentEndX = FEndX) )
+      (Side in [bsTop, bsBottom]) or
+      ( (Side = bsLeft)  and (FCurrentStartX = FStartX) ) or
+      ( (Side = bsRight) and (FCurrentEndX = FEndX) )
      )
   then Result := FrameColor
   else Result := clNone;
 end;
 
-function TSynSelectedColor.GetFrameSideOrigin(Side: TSynFrameSide): TSynFrameEdges;
+function TSynSelectedColor.GetFrameSideOrigin(Side: TLazSynBorderSide): TSynFrameEdges;
 begin
   if FFrameSidesInitialized
   then Result := FFrameSideOrigin[Side]
@@ -617,21 +617,21 @@ begin
   else Result := FrameEdges;
 end;
 
-function TSynSelectedColor.GetFrameSidePriority(Side: TSynFrameSide): integer;
+function TSynSelectedColor.GetFrameSidePriority(Side: TLazSynBorderSide): integer;
 begin
   if FFrameSidesInitialized
   then Result := FFrameSidePriority[Side]
   else
   if (Side in SynFrameEdgeToSides[FrameEdges]) and (
-      (Side in [sfdTop, sfdBottom]) or
-      ( (Side = sfdLeft)  and (FCurrentStartX = FStartX) ) or
-      ( (Side = sfdRight) and (FCurrentEndX = FEndX) )
+      (Side in [bsTop, bsBottom]) or
+      ( (Side = bsLeft)  and (FCurrentStartX = FStartX) ) or
+      ( (Side = bsRight) and (FCurrentEndX = FEndX) )
      )
   then Result := FramePriority
   else Result := 0;
 end;
 
-function TSynSelectedColor.GetFrameSideStyles(Side: TSynFrameSide): TSynLineStyle;
+function TSynSelectedColor.GetFrameSideStyles(Side: TLazSynBorderSide): TSynLineStyle;
 begin
   if FFrameSidesInitialized
   then Result := FFrameSideStyles[Side]
@@ -649,7 +649,7 @@ end;
 
 procedure TSynSelectedColor.AssignFrom(Src: TLazSynCustomTextAttributes);
 var
-  i: TSynFrameSide;
+  i: TLazSynBorderSide;
 begin
   FFrameSidesInitialized := False;
 
@@ -662,7 +662,7 @@ begin
   FCurrentEndX   := TSynSelectedColor(Src).FCurrentEndX;
   FFrameSidesInitialized := TSynSelectedColor(Src).FFrameSidesInitialized;
 
-  for i := low(TSynFrameSide) to high(TSynFrameSide) do begin
+  for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
     FFrameSideColors[i] := TSynSelectedColor(Src).FFrameSideColors[i];
     FFrameSideStyles[i] := TSynSelectedColor(Src).FFrameSideStyles[i];
   end;
@@ -722,7 +722,7 @@ end;
 
 procedure TSynSelectedColor.MergeFrames(Other: TSynSelectedColor; LeftCol, RightCol: Integer);
 
-  procedure SetSide(ASide: TSynFrameSide; ASrc: TSynSelectedColor);
+  procedure SetSide(ASide: TLazSynBorderSide; ASrc: TSynSelectedColor);
   begin
     if (FrameSideColors[ASide] <> clNone) and
        ( (ASrc.FrameSidePriority[ASide] < FrameSidePriority[ASide]) or
@@ -735,17 +735,17 @@ procedure TSynSelectedColor.MergeFrames(Other: TSynSelectedColor; LeftCol, Right
     FFrameSideStyles[ASide] := ASrc.FrameStyle;
     FFrameSidePriority[ASide] := ASrc.FramePriority;
     FFrameSideOrigin[ASide]   := ASrc.FrameEdges;
-    if ASide = sfdLeft then
+    if ASide = bsLeft then
       FStartX := ASrc.FStartX;
-    if ASide = sfdRight then
+    if ASide = bsRight then
       FEndX := ASrc.FEndX;
   end;
 
 var
-  i: TSynFrameSide;
+  i: TLazSynBorderSide;
 begin
   if not FFrameSidesInitialized then begin
-    for i := low(TSynFrameSide) to high(TSynFrameSide) do begin
+    for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
       FFrameSideColors[i]   := FrameSideColors[i];
       FFrameSideStyles[i]   := FrameSideStyles[i];
       FFrameSidePriority[i] := FrameSidePriority[i];
@@ -761,32 +761,32 @@ begin
   case Other.FrameEdges of
     sfeAround: begin
         // UpdateOnly, frame keeps behind individual sites
-        if (Other.StartX = LeftCol) then SetSide(sfdLeft, Other);
-        if (Other.EndX = RightCol)  then SetSide(sfdRight, Other);
-        SetSide(sfdBottom, Other);
-        SetSide(sfdTop, Other);
+        if (Other.StartX = LeftCol) then SetSide(bsLeft, Other);
+        if (Other.EndX = RightCol)  then SetSide(bsRight, Other);
+        SetSide(bsBottom, Other);
+        SetSide(bsTop, Other);
         //FrameColor := Other.FrameColor;
         //FrameStyle := Other.FrameStyle;
         //FrameEdges := Other.FrameEdges;
       end;
     sfeBottom: begin
-        SetSide(sfdBottom, Other);
+        SetSide(bsBottom, Other);
       end;
     sfeLeft: begin
        // startX ?
-        SetSide(sfdLeft, Other);
+        SetSide(bsLeft, Other);
       end;
   end;
 end;
 
 procedure TSynSelectedColor.Clear;
 var
-  i: TSynFrameSide;
+  i: TLazSynBorderSide;
 begin
   BeginUpdate;
   inherited Clear;
   FFrameSidesInitialized := False;
-  for i := low(TSynFrameSide) to high(TSynFrameSide) do begin
+  for i := low(TLazSynBorderSide) to high(TLazSynBorderSide) do begin
     FFrameSideColors[i] := clNone;
     FFrameSideStyles[i] := slsSolid;
     FFrameSideOrigin[i] := sfeNone;

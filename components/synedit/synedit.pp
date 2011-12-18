@@ -83,7 +83,7 @@ uses
   // Gutter
   SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
   SynGutterLineNumber, SynGutterMarks, SynGutterLineOverview,
-  SynEditMiscClasses, SynEditHighlighter, SynTextDrawer,
+  SynEditMiscClasses, SynEditHighlighter, LazSynTextArea, SynTextDrawer,
   LResources, Clipbrd
   {$IFDEF SYN_COMPILER_4_UP}
   , StdActns
@@ -351,8 +351,8 @@ type
 
   TSynHomeMode = (synhmDefault, synhmFirstWord);
 
-  TSynCoordinateMappingFlag = (scmLimitToLines, scmIncludePartVisible);
-  TSynCoordinateMappingFlags = set of TSynCoordinateMappingFlag;
+  TSynCoordinateMappingFlag = SynEditTypes.TSynCoordinateMappingFlag;
+  TSynCoordinateMappingFlags = SynEditTypes.TSynCoordinateMappingFlags;
 
   { TCustomSynEdit }
 
@@ -417,6 +417,7 @@ type
     FStrings: TStrings;               // External TStrings based interface to the Textbuffer
     FTopLinesView: TSynEditStrings;   // The linesview that holds the real line-buffer/FLines
     FDisplayView: TLazSynDisplayView;
+    FTextArea: TLazSynTextArea;
 
     fExtraCharSpacing: integer;
     fLinesInWindow: Integer;// MG: fully visible lines in window
@@ -435,7 +436,6 @@ type
     fRightEdgeColor: TColor;
     FScrollBars: TScrollStyle;
     fTextHeight: Integer;
-    fTextOffset: Integer;
     fTopLine: Integer;
     FOldTopLine, FOldTopView: Integer;
     FLastTextChangeStamp: Int64;
@@ -711,8 +711,6 @@ type
       var AChar: TUTF8Char;
       Data: pointer); virtual;
     procedure Paint; override;
-    procedure PaintTextLines(AClip: TRect; FirstLine, LastLine,
-      FirstCol, LastCol: integer); virtual;
     procedure StartPaintBuffer(const ClipRect: TRect);
     procedure EndPaintBuffer(const ClipRect: TRect);
     function NextWordLogicalPos(WordEndForDelete : Boolean = false): TPoint;
@@ -1560,33 +1558,22 @@ end;
 
 function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint; aFlags: TSynCoordinateMappingFlags = [scmLimitToLines]): TPoint;
 // converts the client area coordinate
-// to Caret position (screen position, (1,1) based)
-// To get the text/physical position use PixelsToLogicalPos
-var
-  f: Single;
+// to Caret position (physical position, (1,1) based)
+// To get the text/logical position use PixelsToLogicalPos
 begin
-  f := ( (Pixels.X
-          + (fLeftChar-1) * fCharWidth
-          - TextLeftPixelOffset
-         ) / fCharWidth
-       )+1;
-  if (not(scmIncludePartVisible in aFlags)) and (Pixels.Y >= fLinesInWindow * fTextHeight) then begin
+  Result.X := ( (Pixels.X
+                + (fLeftChar-1) * FCharWidth
+                - FTextArea.TextBounds.Left
+                + (FCharWidth div 2)
+               ) div FCharWidth
+             )+1;
+  Pixels.Y := Pixels.Y - FTextArea.TextBounds.Top;
+  if (not(scmIncludePartVisible in aFlags)) and (Pixels.Y >= FLinesInWindow * FTextHeight) then begin
     // don't return a partially visible last line
     Pixels.Y := fLinesInWindow * fTextHeight - 1;
     if Pixels.Y < 0 then Pixels.Y := 0;
   end;
-  Result := Point(RoundOff(f), ScreenRowToRow(Pixels.Y div fTextHeight, scmLimitToLines in aFlags));
-  {$IFDEF SYN_MBCSSUPPORT}
-  if (Result.Y >= 1) and (Result.Y <= Lines.Count) then begin
-    s := Lines[Result.Y - 1];
-    if (Length(s) >= Result.x) and (ByteType(s, Result.X) = mbTrailByte) then
-      if Frac(f) >= 0.5 then
-        Dec(Result.X)
-      else
-        Inc(Result.X);
-  end;
-  fMBCSStepAside := False;
-  {$ENDIF}
+  Result := Point(Result.X, ScreenRowToRow(Pixels.Y div fTextHeight, scmLimitToLines in aFlags));
 end;
 
 function TCustomSynEdit.PixelsToLogicalPos(const Pixels: TPoint): TPoint;
@@ -1622,8 +1609,8 @@ function TCustomSynEdit.RowColumnToPixels(
 // to client area coordinate (0,0 based on canvas)
 begin
   Result:=RowCol;
-  Result.X := (Result.X - 1) * fCharWidth + fTextOffset;
-  Result.Y := RowToScreenRow(RowCol.Y) * fTextHeight;
+  Result.X := (Result.X - 1) * fCharWidth + FTextArea.TextBounds.Left - (LeftChar - 1) * fCharWidth;
+  Result.Y := RowToScreenRow(RowCol.Y) * fTextHeight + FTextArea.TextBounds.Top;
 end;
 
 procedure TCustomSynEdit.ComputeCaret(X, Y: Integer);
@@ -1801,8 +1788,6 @@ begin
   FRightGutter.OnChange := {$IFDEF FPC}@{$ENDIF}GutterChanged;
   FRightGutter.OnResize := {$IFDEF FPC}@{$ENDIF}GutterResized;
 
-  fTextOffset := TextLeftPixelOffset;
-
   ControlStyle := ControlStyle + [csOpaque, csSetCaption, csTripleClicks, csQuadClicks];
   Height := 150;
   Width := 200;
@@ -1842,6 +1827,21 @@ begin
   fLastMouseCaret := Point(-1,-1);
   FLastMousePoint := Point(-1,-1);
   fBlockIndent := 2;
+
+  FTextArea := TLazSynTextArea.Create(FTextDrawer);
+  FTextArea.TopLine := 1;
+  FTextArea.LeftChar := 1;
+  if eoHideRightMargin in SYNEDIT_DEFAULT_OPTIONS // follow default
+  then FTextArea.RightEdgeColumn := -1
+  else FTextArea.RightEdgeColumn := fRightEdge;
+  FTextArea.ExtraCharSpacing := 0;
+  FTextArea.ExtraLineSpacing := 0;
+  FTextArea.MarkupManager := fMarkupManager;
+  FTextArea.TheLinesView := FTheLinesView;
+  FTextArea.DisplayView := FDisplayView;
+  FTextArea.Highlighter := nil;
+  // colors are currently set in paint
+
 
   Font.Assign(fFontDummy);
   Font.OnChange := {$IFDEF FPC}@{$ENDIF}FontChanged;
@@ -2098,6 +2098,7 @@ begin
   FCaret.Lines := nil;
   FInternalCaret.Lines := nil;
   FMarkList.UnRegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange);
+  FreeAndNil(FTextArea);
   FreeAndNil(fTSearch);
   FreeAndNil(fMarkupManager);
   FreeAndNil(fBookMarkOpt);
@@ -3254,7 +3255,7 @@ end;
 procedure TCustomSynEdit.Paint;
 var
   rcClip, rcDraw: TRect;
-  nL1, nL2, nC1, nC2: integer;
+  nL1, nL2: integer;
 begin
   // Get the invalidated rect. Compute the invalid area in lines / columns.
   rcClip := Canvas.ClipRect;
@@ -3288,13 +3289,6 @@ begin
   Include(fStateFlags,sfPainting);
   Exclude(fStateFlags, sfHasScrolled);
   // columns
-  nC1 := LeftChar;
-  if (rcClip.Left > TextLeftPixelOffset) then
-    Inc(nC1, (rcClip.Left - TextLeftPixelOffset) div CharWidth);
-  nC2 := LeftChar +
-    ( Min(rcClip.Right, ClientWidth - TextRightPixelOffset - ScrollBarWidth)
-     - TextLeftPixelOffset + CharWidth - 1) div CharWidth;
-  // lines
   nL1 := Max(rcClip.Top div fTextHeight, 0);
   nL2 := Min((rcClip.Bottom-1) div fTextHeight,
              FFoldedLinesView.Count - FFoldedLinesView.TopLine);
@@ -3312,12 +3306,12 @@ begin
       FLeftGutter.Paint(Canvas, rcDraw, nL1, nL2);
     end;
     // Then paint the text area if it was (partly) invalidated.
-    if (rcClip.Right > TextLeftPixelOffset(False)) then begin
-      rcDraw := rcClip;
-      rcDraw.Left  := Max(rcDraw.Left, TextLeftPixelOffset(False)); // Todo: This is also checked in paintLines (together with right side)
-      rcDraw.Right := Min(rcDraw.Right, ClientWidth - TextRightPixelOffset - ScrollBarWidth);
-      PaintTextLines(rcDraw, nL1, nL2, nC1, nC2);
-    end;
+    FTextArea.ForegroundColor := Font.Color;
+    FTextArea.BackgroundColor := Color;
+    FTextArea.RightEdgeColor := RightEdgeColor;
+    FTextArea.TopLine := TopView;
+    FTextArea.LeftChar := LeftChar;
+    FTextArea.Paint(Canvas, rcClip);
     // right gutter
     if FRightGutter.Visible and (rcClip.Right > ClientWidth - FRightGutter.Width - ScrollBarWidth) then begin
       rcDraw := rcClip;
@@ -3381,729 +3375,6 @@ procedure TCustomSynEdit.FoldAll(StartLevel : Integer = 0; IgnoreNested : Boolea
 begin
   FFoldedLinesView.FoldAll(StartLevel, IgnoreNested);
   Invalidate;
-end;
-
-procedure TCustomSynEdit.PaintTextLines(AClip: TRect; FirstLine, LastLine,
-  FirstCol, LastCol: integer);
-// FirstLine, LastLine are based 0
-// FirstCol, LastCol are screen based 1 without scrolling (physical position).
-//  i.e. the real screen position is fTextOffset+Pred(FirstCol)*CharWidth
-var
-  bDoRightEdge: boolean; // right edge
-  nRightEdge: integer;
-  colEditorBG: TColor;
-    // painting the background and the text
-  rcLine, rcToken: TRect;
-  EraseLeft, DrawLeft: Integer;  // LeftSide for EraseBackground, Text
-  CurLine: integer;         // Screen-line index for the loop
-  CurTextIndex: Integer;    // Current Index in text
-  CurPhysPos, CurLogIndex : Integer; // Physical Start Position of next token in current Line
-  ForceEto: Boolean;
-  TokenAccu: record
-    Len, MaxLen: integer;
-    PhysicalStartPos, PhysicalEndPos: integer;
-    p: PChar;
-    FG, BG: TColor;
-    Style: TFontStyles;
-    FrameColor: array[TSynFrameSide] of TColor;
-    FrameStyle: array[TSynFrameSide] of TSynLineStyle;
-  end;
-  dc: HDC;
-
-  ExpandedPaintToken: string; // used to create the string sent to TextDrawer
-  CharWidths: TPhysicalCharWidths;
-
-{ local procedures }
-
-  procedure SetTokenAccuLength;
-  begin
-    ReAllocMem(TokenAccu.p,TokenAccu.MaxLen+1);
-    TokenAccu.p[TokenAccu.MaxLen]:=#0;
-  end;
-
-  function ExpandSpecialChars(var p: PChar; var Count: integer;
-    PhysicalStartPos: integer): Integer;
-  // if there are no tabs or special chars: keep p and Count untouched
-  // if there are special chars: copy p into ExpandedPaintToken buffer,
-  //                             convert tabs to spaces, and return the buffer
-  // Return DisplayCell-Count in Buffer
-  var
-    i: integer;
-    LengthNeeded: Integer;
-    DestPos: Integer;
-    SrcPos: Integer;
-    Dest: PChar;
-    c: Char;
-    CharLen: Integer;
-    Special, SpecialTab1, SpecialTab2, SpecialSpace, HasTabs: boolean;
-    Fill: Integer;
-  begin
-    LengthNeeded := 0;
-    Result := 0;
-
-    if CurLogIndex >= length(CharWidths) then begin
-      // past eol (e.g. fold marker). No special handling. No support for double width chars
-      // count utf8 chars
-      for i := 0 to Count -1 do
-        if p[i] <= #$7f then inc(Result);
-      exit;
-    end;
-
-    HasTabs := False;
-    SrcPos:=0;
-    for i := CurLogIndex to CurLogIndex + Count -1 do begin
-      Result := Result + CharWidths[i];
-      if CharWidths[i] > 1 then
-        LengthNeeded := LengthNeeded + CharWidths[i] - 1;
-      if p[SrcPos] = #9 then HasTabs := True;
-      inc(SrcPos);
-    end;
-    Special:=eoShowSpecialChars in Options;
-    if (not Special) and (LengthNeeded=0) and (not HasTabs)
-    and (FindInvalidUTF8Character(p,Count)<0) then
-      exit;
-    SpecialTab1 := Special and (vscTabAtFirst in FVisibleSpecialChars);
-    SpecialTab2 := Special and (vscTabAtLast in FVisibleSpecialChars);
-    SpecialSpace := Special and (vscSpace in FVisibleSpecialChars);
-    LengthNeeded := LengthNeeded + Count;
-    if Special then LengthNeeded:=LengthNeeded*2;
-    if length(ExpandedPaintToken)<LengthNeeded then
-      SetLength(ExpandedPaintToken,LengthNeeded+CharsInWindow);
-    //DebugLn(['ExpandSpecialChars Count=',Count,' TabCount=',TabCount,' Special=',Special,' LengthNeeded=',LengthNeeded]);
-    SrcPos:=0;
-    DestPos:=0;
-    Dest:=PChar(Pointer(ExpandedPaintToken));
-    if UseUTF8 then begin
-      while SrcPos<Count do begin
-        c:=p[SrcPos];
-        Fill := CharWidths[CurLogIndex + SrcPos] - 1;
-        if c = #9 then begin
-          // tab char, fill with spaces
-          if SpecialTab1 then begin
-            // #194#187 looks like >>
-            Dest[DestPos]   := #194;
-            Dest[DestPos+1] := #187;
-            inc(DestPos, 2);
-            dec(Fill);
-          end;
-          while Fill >= 0 do begin //for i := 0 to Fill do begin
-            Dest[DestPos]:= ' ';
-            inc(DestPos);
-            dec(Fill);
-          end;
-          if SpecialTab2 then begin
-            // #194#187 looks like >>
-            Dest[DestPos-1] := #194;
-            Dest[DestPos]   := #187;
-            inc(DestPos, 1);
-          end;
-          inc(SrcPos);
-        end
-        else begin
-          // could be UTF8 char
-          if c in [#128..#255]
-          then CharLen := UTF8CharacterStrictLength(@p[SrcPos])
-          else CharLen := 1;
-          if CharLen=0 then begin
-            // invalid character
-            Dest[DestPos]:='?';
-            inc(DestPos);
-            inc(SrcPos);
-          end else begin
-            // normal UTF-8 character
-            for i:=1 to CharLen do begin
-              Dest[DestPos]:=p[SrcPos];
-              inc(DestPos);
-              inc(SrcPos);
-            end;
-            if (c = #32) and SpecialSpace then begin
-              // #194#183 looks like .
-              Dest[DestPos-1] := #194;
-              Dest[DestPos]   := #183;
-              inc(DestPos);
-            end;
-            for i := 1 to Fill do begin
-              Dest[DestPos]:= ' ';
-              inc(DestPos);
-            end;
-          end;
-          // ToDo: pass the eto with to fTextDrawer, instead of filling with spaces
-          if Fill > 0 then ForceEto := True;
-        end;
-      end;
-    end else begin
-      // non UTF-8
-      while SrcPos<Count do begin
-        c:=p[SrcPos];
-        Fill := CharWidths[CurLogIndex + SrcPos] - 1;
-        if c = #9 then // tab char
-          Dest[DestPos] := ' '
-        else begin
-          Dest[DestPos] := p[SrcPos];
-          if Fill > 0 then ForceEto := True;
-        end;
-        inc(DestPos);
-        inc(SrcPos);
-        for i := 1 to Fill do begin
-          Dest[DestPos]:= ' ';
-          inc(DestPos);
-        end;
-      end;
-    end;
-    p:=PChar(Pointer(ExpandedPaintToken));
-    Count:=DestPos;
-    //debugln('ExpandSpecialChars Token with Tabs: "',DbgStr(copy(ExpandedPaintToken,1,Count)),'"');
-  end;
-
-  const
-    ETOOptions = ETO_OPAQUE; // Note: clipping is slow and not needed
-
-  procedure PaintToken(Token: PChar; TokenLen, FirstPhysical: integer);
-  // FirstPhysical is the physical (screen without scrolling)
-  // column of the first character
-  var
-    nX: integer;
-    tok: TRect;
-  begin
-    {debugln('PaintToken A TokenLen=',dbgs(TokenLen),
-      ' FirstPhysical=',dbgs(FirstPhysical),
-      ' Tok="'+copy(Token, 1, TokenLen),'"',
-      ' rcToken='+dbgs(rcToken.Left)+'-'+dbgs(rcToken.Right));}
-    if (rcToken.Right <= rcToken.Left) then exit;
-    // Draw the right edge under the text if necessary
-    nX := ScreenColumnToXValue(FirstPhysical); // == rcToken.Left
-    if ForceEto then fTextDrawer.ForceNextTokenWithEto;
-    if bDoRightEdge and (not (eoHideRightMargin in Options))
-    and (nRightEdge<rcToken.Right) and (nRightEdge>=rcToken.Left)
-    then begin
-      // draw background (use rcToken, so we do not delete the divider-draw-line)
-      if rcToken.Left < nRightEdge then begin
-        tok := rcToken;
-        tok.Right := nRightEdge;
-        InternalFillRect(dc, tok);
-      end;
-      if rcToken.Right > nRightEdge then begin
-        tok := rcToken;
-        tok.Left := nRightEdge;
-        tok.Bottom := rcLine.Bottom;
-        InternalFillRect(dc, tok);
-      end;
-      // draw edge (use rcLine / rcToken may be reduced)
-      LCLIntf.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
-      LCLIntf.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
-      // draw text
-      fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions-ETO_OPAQUE, rcToken,
-                             Token, TokenLen, rcLine.Bottom);
-    end else begin
-      // draw text with background
-      //debugln('PaintToken nX=',dbgs(nX),' Token=',dbgstr(copy(Token,1, TokenLen)),' rcToken=',dbgs(rcToken));
-      tok := rcToken;
-      if rcToken.Right > nRightEdge + 1 then
-        tok.Bottom := rcLine.Bottom;
-      fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions, tok,
-                             Token, TokenLen, rcLine.Bottom);
-    end;
-    rcToken.Left := rcToken.Right;
-  end;
-
-  procedure PaintHighlightToken(bFillToEOL: boolean);
-  var
-    nX1, eolx: integer;
-    NextPos : Integer;
-    MarkupInfo, FoldedCodeInfo: TSynSelectedColor;
-    FillFCol, FillBCol, FillFrame: TColor;
-    FrameStyle: TSynLineStyle;
-    FillStyle: TFontStyles;
-    tok: TRect;
-    Attr: TSynHighlighterAttributes;
-    s: TSynFrameSide;
-    side: TSynFrameSide;
-  begin
-    {debugln('PaintHighlightToken A TokenAccu: Len=',dbgs(TokenAccu.Len),
-      ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
-      ' PhysicalEndPos=',dbgs(TokenAccu.PhysicalEndPos),
-      ' "',copy(TokenAccu.p,1,TokenAccu.Len),'"');}
-
-    // Any token chars accumulated?
-    if (TokenAccu.Len > 0) then 
-    begin
-      // Initialize the colors and the font style.
-      with fTextDrawer do 
-      begin
-        SetBackColor(TokenAccu.BG);
-        SetForeColor(TokenAccu.FG);
-        SetStyle(TokenAccu.Style);
-        for s := low(TSynFrameSide) to high(TSynFrameSide) do begin
-          FrameColor[s] := TokenAccu.FrameColor[s];
-          FrameStyle[s] := TokenAccu.FrameStyle[s];
-        end;
-      end;
-      // Paint the chars
-      rcToken.Right := ScreenColumnToXValue(TokenAccu.PhysicalEndPos+1);
-      if rcToken.Right > AClip.Right then begin
-        rcToken.Right := AClip.Right;
-        fTextDrawer.FrameColor[sfdRight] := clNone; // right side of char is not painted
-      end;
-      with TokenAccu do PaintToken(p, Len, PhysicalStartPos);
-    end;
-
-    // Fill the background to the end of this line if necessary.
-    if bFillToEOL and (rcToken.Left < rcLine.Right) then begin
-      eolx := rcToken.Left; // remeber end of actual line, so we can decide to draw the right edge
-      NextPos := Min(LastCol, TokenAccu.PhysicalEndPos+1);
-      if Assigned(fHighlighter) then
-        Attr := fHighlighter.GetEndOfLineAttribute
-      else
-        Attr := nil;
-      repeat
-        MarkupInfo := fMarkupManager.GetMarkupAttributeAtRowCol(CurTextIndex+1, NextPos);
-        NextPos := fMarkupManager.GetNextMarkupColAfterRowCol(CurTextIndex+1, NextPos);
-
-        if Assigned(Attr) then
-        begin
-          FillFCol := Attr.Foreground;
-          FillBCol := Attr.Background;
-          FillFrame := Attr.FrameColor;
-          FillStyle := Attr.Style;
-          FrameStyle := Attr.FrameStyle;
-          if FillFCol = clNone then FillFCol := Font.Color;
-          if FillBCol = clNone then FillBCol := colEditorBG;
-        end else
-        begin
-          FillFCol := Font.Color;
-          FillBCol := colEditorBG;
-          FillFrame := clNone;
-          FillStyle := Font.Style;
-          FrameStyle := slsSolid;
-        end;
-
-        if Assigned(MarkupInfo) then
-          MarkupInfo.ModifyColors(FillFCol, FillBCol, FillFrame, FillStyle, FrameStyle);
-
-        fTextDrawer.BackColor := FillBCol;
-        //fTextDrawer.ForeColor := FillFCol; // for underline
-        //fTextDrawer.Style := FillStyle;
-
-        if NextPos < 1
-        then nX1 := rcLine.Right
-        else begin
-          nX1 := ScreenColumnToXValue(NextPos);
-          if nX1 > rcLine.Right
-          then nX1 := rcLine.Right;
-        end;
-
-        if nX1 > nRightEdge then begin
-          if rcToken.Left < nRightEdge then begin
-            tok := rcToken;
-            tok.Right := nRightEdge;
-            InternalFillRect(dc, tok);
-            rcToken.Left := nRightEdge;
-          end;
-          rcToken.Bottom := rcLine.Bottom;
-        end;
-        rcToken.Right := nX1;
-        InternalFillRect(dc, rcToken); {TODO: if style underline, then print spaces}
-        rcToken.Left := nX1;
-      until nX1 >= rcLine.Right;
-
-      // Draw the right edge if necessary.
-      if bDoRightEdge and (not (eoHideRightMargin in Options))
-      and (nRightEdge >= eolx) then begin // xx rc Token
-        LCLIntf.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
-        LCLIntf.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
-      end;
-    end;
-  end;
-
-  procedure AddHighlightToken(Token: PChar;
-    TokenLen, PhysicalStartPos, PhysicalEndPos: integer;
-    MarkupInfo : TSynSelectedColor);
-  var
-    CanAppend: boolean;
-    SpacesTest, IsSpaces: boolean;
-    i: integer;
-    s: TSynFrameSide;
-
-    function TokenIsSpaces: boolean;
-    var
-      pTok: PChar;
-      Cnt: Integer;
-    begin
-      if not SpacesTest then begin
-        SpacesTest := TRUE;
-        IsSpaces := not (eoShowSpecialChars in fOptions) ;
-        pTok := PChar(Pointer(Token));
-        Cnt := TokenLen;
-        while IsSpaces and (Cnt > 0) do begin
-          if not (pTok^ in [' ',#9])
-          then IsSpaces := False;
-          Inc(pTok);
-          dec(Cnt);
-        end;
-      end;
-      Result := IsSpaces;
-    end;
-
-  begin
-    {DebugLn('AddHighlightToken A TokenLen=',dbgs(TokenLen),
-      ' PhysicalStartPos=',dbgs(PhysicalStartPos),' PhysicalEndPos=',dbgs(PhysicalEndPos),
-      ' Tok="',copy(Token,1,TokenLen),'"');}
-
-    // Do we have to paint the old chars first, or can we just append?
-    CanAppend := FALSE;
-    SpacesTest := FALSE;
-
-    if (TokenAccu.Len > 0) then
-    begin
-      CanAppend :=
-        // Frame can be continued
-        (TokenAccu.FrameColor[sfdTop] = MarkupInfo.FrameSideColors[sfdTop]) and
-        (TokenAccu.FrameStyle[sfdTop] = MarkupInfo.FrameSideStyles[sfdTop]) and
-        (TokenAccu.FrameColor[sfdBottom] = MarkupInfo.FrameSideColors[sfdBottom]) and
-        (TokenAccu.FrameStyle[sfdBottom] = MarkupInfo.FrameSideStyles[sfdBottom]) and
-        (TokenAccu.FrameColor[sfdRight] = clNone) and
-        (MarkupInfo.FrameSideColors[sfdLeft] = clNone) and
-        // colors
-        (TokenAccu.BG = MarkupInfo.Background) and
-        // space-dependent
-        ( ( (TokenAccu.FG = MarkupInfo.Foreground) and
-            (TokenAccu.Style = MarkupInfo.Style)
-          ) or
-          // whitechar only token, can ignore Foreground color and certain styles (yet must match underline)
-          ( (TokenAccu.Style - [fsBold, fsItalic] = MarkupInfo.Style - [fsBold, fsItalic]) and
-            ( (TokenAccu.Style * [fsUnderline, fsStrikeOut] = []) or
-              (TokenAccu.FG = MarkupInfo.Foreground)
-            ) and
-            TokenIsSpaces
-          )
-        );
-      // If we can't append it, then we have to paint the old token chars first.
-      if not CanAppend then
-        PaintHighlightToken(FALSE);
-    end;
-
-    // Don't use AppendStr because it's more expensive.
-    //if (CurLine=TopLine) then debugln('      -t-Accu len ',dbgs(TokenAccu.Len),' pstart ',dbgs(TokenAccu.PhysicalStartPos),' p-end ',dbgs(TokenAccu.PhysicalEndPos));
-    if CanAppend then begin
-      if (TokenAccu.Len + TokenLen > TokenAccu.MaxLen) then begin
-        TokenAccu.MaxLen := TokenAccu.Len + TokenLen + 32;
-        SetTokenAccuLength;
-      end;
-      // use move() ???
-      for i := 0 to TokenLen-1 do begin
-        TokenAccu.p[TokenAccu.Len + i] := Token[i];
-      end;
-      Inc(TokenAccu.Len, TokenLen);
-      TokenAccu.PhysicalEndPos := PhysicalEndPos;
-      TokenAccu.FrameColor[sfdRight] := MarkupInfo.FrameSideColors[sfdRight];
-      TokenAccu.FrameStyle[sfdRight] := MarkupInfo.FrameSideStyles[sfdRight];
-    end else begin
-      TokenAccu.Len := TokenLen;
-      if (TokenAccu.Len > TokenAccu.MaxLen) then begin
-        TokenAccu.MaxLen := TokenAccu.Len + 32;
-        SetTokenAccuLength;
-      end;
-      for i := 0 to TokenLen-1 do begin
-        TokenAccu.p[i] := Token[i];
-      end;
-      TokenAccu.PhysicalStartPos := PhysicalStartPos;
-      TokenAccu.PhysicalEndPos := PhysicalEndPos;
-      TokenAccu.FG := MarkupInfo.Foreground;
-      TokenAccu.BG := MarkupInfo.Background;
-      TokenAccu.Style := MarkupInfo.Style;
-      for s := low(TSynFrameSide) to high(TSynFrameSide) do begin
-        TokenAccu.FrameColor[s] := MarkupInfo.FrameSideColors[s];
-        TokenAccu.FrameStyle[s] := MarkupInfo.FrameSideStyles[s];
-      end;
-    end;
-    {debugln('AddHighlightToken END CanAppend=',dbgs(CanAppend),
-      ' Len=',dbgs(TokenAccu.Len),
-      ' PhysicalStartPos=',dbgs(TokenAccu.PhysicalStartPos),
-      ' PhysicalEndPos=',dbgs(TokenAccu.PhysicalEndPos),
-      ' "',copy(TokenAccu.s,1,TokenAccu.Len),'"');}
-  end;
-
-  procedure DrawHiLightMarkupToken(attr: TSynHighlighterAttributes;
-    sToken: PChar; nTokenByteLen: integer);
-  var
-    DefaultFGCol, DefaultBGCol: TColor;
-    PhysicalStartPos: integer;
-    PhysicalEndPos: integer;
-    len: Integer;
-    SubTokenByteLen, SubCharLen, TokenCharLen : Integer;
-    NextPhysPos : Integer;
-
-    function CharToByteLen(aCharLen: Integer) : Integer;
-    begin
-      if not UseUTF8 then exit(aCharLen);
-      // tabs and double-width chars are padded with spaces
-      Result := UTF8CharToByteIndex(sToken, nTokenByteLen, aCharLen);
-      if Result < 0 then begin
-        debugln('ERROR: Could not convert CharLen (',dbgs(aCharLen),') to byteLen (maybe invalid UTF8?)',' len ',dbgs(nTokenByteLen),' Line ',dbgs(CurLine),' PhysPos ',dbgs(CurPhysPos));
-        Result := aCharLen;
-      end;
-    end;
-
-    procedure InitTokenColors;
-    begin
-      FPaintLineColor.Clear;
-      if Assigned(attr) then
-      begin
-        DefaultFGCol := attr.Foreground;
-        DefaultBGCol := attr.Background;
-        if DefaultBGCol = clNone then DefaultBGCol := colEditorBG;
-        if DefaultFGCol = clNone then DefaultFGCol := Font.Color;
-
-        FPaintLineColor.Assign(attr);
-        // TSynSelectedColor.Style and StyleMask describe how to modify a style,
-        // but FPaintLineColor contains an actual style
-        FPaintLineColor.MergeFinalStyle := True;
-        FPaintLineColor.StyleMask  := [];
-        if FPaintLineColor.Background = clNone then
-          FPaintLineColor.Background := colEditorBG;
-        if FPaintLineColor.Foreground = clNone then
-          FPaintLineColor.Foreground := Font.Color;
-        FPaintLineColor.StartX := PhysicalStartPos;
-        FPaintLineColor.EndX   := PhysicalStartPos + TokenCharLen - 1;
-      end else
-      begin
-        DefaultFGCol := Font.Color;
-        DefaultBGCol := colEditorBG;
-        FPaintLineColor.Style := Font.Style;
-      end;
-
-      FPaintLineColor.Foreground := DefaultFGCol;
-      FPaintLineColor.Background := DefaultBGCol;
-    end;
-
-  begin
-    if CurPhysPos > LastCol then exit;
-
-    PhysicalStartPos := CurPhysPos;
-    len := nTokenByteLen;
-    TokenCharLen := ExpandSpecialChars(sToken, nTokenByteLen, PhysicalStartPos);
-    CurLogIndex := CurLogIndex + len;
-    // Prepare position for next token
-    inc(CurPhysPos, TokenCharLen);
-    if CurPhysPos <= FirstCol then exit;
-
-    // Remove any Part of the Token that is before FirstCol
-    if PhysicalStartPos < FirstCol then begin
-      SubCharLen := FirstCol - PhysicalStartPos;
-      len := CharToByteLen(SubCharLen);
-      dec(TokenCharLen, SubCharLen);
-      inc(PhysicalStartPos, SubCharLen);
-      dec(nTokenByteLen, len);
-      inc(sToken, len);
-    end;
-
-    // Remove any Part of the Token that is after LastCol
-    SubCharLen := PhysicalStartPos + TokenCharLen - (LastCol + 1);
-    if SubCharLen > 0 then begin
-      dec(TokenCharLen, SubCharLen);
-      nTokenByteLen := CharToByteLen(TokenCharLen);
-    end;
-
-    InitTokenColors;
-
-    // Draw the token
-    {TODO: cache NextPhysPos, and MarkupInfo between 2 calls }
-    while (nTokenByteLen > 0) do begin
-      FPaintLineColor2.Assign(FPaintLineColor);
-
-      // Calculate Token Sublen for current Markup
-      NextPhysPos := fMarkupManager.GetNextMarkupColAfterRowCol
-                       (CurTextIndex+1, PhysicalStartPos);
-      if NextPhysPos < 1
-      then SubCharLen := TokenCharLen
-      else SubCharLen := NextPhysPos - PhysicalStartPos;
-
-      if SubCharLen > TokenCharLen then SubCharLen := TokenCharLen;
-      if SubCharLen < 1 then begin // safety for broken input...
-        debugln('ERROR: Got invalid SubCharLen ',dbgs(SubCharLen),' len ',dbgs(nTokenByteLen),' Line ',dbgs(CurLine),' PhysPos ',dbgs(CurPhysPos));
-        SubCharLen:=1;
-      end;
-
-      SubTokenByteLen := CharToByteLen(SubCharLen);
-      PhysicalEndPos:= PhysicalStartPos + SubCharLen - 1;
-
-      FPaintLineColor2.CurrentStartX := PhysicalStartPos;
-      FPaintLineColor2.CurrentEndX := PhysicalEndPos;
-
-      // Calculate Markup
-      fMarkupManager.MergeMarkupAttributeAtRowCol(CurTextIndex+1,
-        PhysicalStartPos, PhysicalEndPos, FPaintLineColor2);
-
-      // Deal with equal colors
-      if (FPaintLineColor2.Background = FPaintLineColor2.Foreground) then begin // or if diff(gb,fg) < x
-        if FPaintLineColor2.Background = DefaultBGCol then
-          FPaintLineColor2.Foreground := not(FPaintLineColor2.Background) and $00ffffff // or maybe Font.color ?
-        else
-          FPaintLineColor2.Foreground := DefaultBGCol;
-      end;
-
-      // Add to TokenAccu
-      AddHighlightToken(sToken, SubTokenByteLen,
-        PhysicalStartPos, PhysicalEndPos, FPaintLineColor2);
-
-      PhysicalStartPos:=PhysicalEndPos + 1;
-      dec(nTokenByteLen,SubTokenByteLen);
-      dec(TokenCharLen, SubCharLen);
-      inc(sToken, SubTokenByteLen);
-    end;
-  end;
-
-  {$IFDEF SYNDEBUGPRINT}
-  procedure DebugPrint(Txt: String; MinCol: Integer = 0);
-  begin
-    if CurPhysPos < MinCol then Txt := StringOfChar(' ', MinCol - CurPhysPos) + txt;
-    Setlength(CharWidths, length(CharWidths) + length(Txt));
-    FillChar(CharWidths[length(CharWidths)-length(Txt)], length(Txt), #1);
-    DrawHiLightMarkupToken(nil, PChar(Pointer(Txt)), Length(Txt));
-  end;
-  {$ENDIF}
-
-  procedure PaintLines;
-  var
-    sLine: string; // the current line
-    ypos: Integer;
-    DividerInfo: TSynDividerDrawConfigSetting;
-    TV, cl: Integer;
-    TokenInfo: TLazSynDisplayTokenInfo;
-  begin
-    // Initialize rcLine for drawing. Note that Top and Bottom are updated
-    // inside the loop. Get only the starting point for this.
-    rcLine := AClip;
-    rcLine.Bottom := FirstLine * fTextHeight;
-
-    TV := TopView - 1;
-
-    // Now loop through all the lines. The indices are valid for Lines.
-    CurLine := FirstLine-1;
-    while CurLine<LastLine do begin
-      inc(CurLine);
-      // Update the rcLine rect to this line.
-      rcLine.Top := rcLine.Bottom;
-      Inc(rcLine.Bottom, fTextHeight);
-      // Paint the lines depending on the assigned highlighter.
-      rcToken := rcLine;
-      TokenAccu.Len := 0;
-      TokenAccu.PhysicalEndPos := FirstCol - 1; // in case of an empty line
-      CurPhysPos := 1;
-      CurLogIndex := 0;
-      // Delete the whole Line
-      fTextDrawer.BackColor := colEditorBG;
-      SetBkColor(dc, ColorToRGB(colEditorBG));
-      rcLine.Left := EraseLeft;
-      InternalFillRect(dc, rcLine);
-      rcLine.Left := DrawLeft;
-      ForceEto := False;
-
-      FDisplayView.SetHighlighterTokensLine(TV + CurLine, CurTextIndex);
-      CharWidths := FTheLinesView.GetPhysicalCharWidths(CurTextIndex);
-      fMarkupManager.PrepareMarkupForRow(CurTextIndex+1);
-
-      DividerInfo := FDisplayView.GetDrawDividerInfo;
-      if (DividerInfo.Color <> clNone) and (nRightEdge > TextLeftPixelOffset(False) - 1) then
-      begin
-        ypos := rcToken.Bottom - 1;
-        cl := DividerInfo.Color;
-        if cl = clDefault then
-          cl := fRightEdgeColor;
-        fTextDrawer.DrawLine(nRightEdge, ypos, TextLeftPixelOffset(False) - 1, ypos, cl);
-        dec(rcToken.Bottom);
-      end;
-
-      while FDisplayView.GetNextHighlighterToken(TokenInfo) do begin
-        DrawHiLightMarkupToken(TokenInfo.TokenAttr, TokenInfo.TokenStart, TokenInfo.TokenLength);
-      end;
-
-      // Draw anything that's left in the TokenAccu record. Fill to the end
-      // of the invalid area with the correct colors.
-      PaintHighlightToken(TRUE);
-
-      fMarkupManager.FinishMarkupForRow(CurTextIndex+1);
-    end;
-    CurLine:=-1;
-  end;
-
-{ end local procedures }
-
-begin
-  if (AClip.Right < TextLeftPixelOffset(False)) then exit;
-  if (AClip.Left > ClientWidth - TextRightPixelOffset) then exit;
-
-  //DebugLn(['TCustomSynEdit.PaintTextLines ',dbgs(AClip)]);
-  CurLine:=-1;
-  //DebugLn('TCustomSynEdit.PaintTextLines ',DbgSName(Self),' TopLine=',dbgs(TopLine),' AClip=',dbgs(AClip));
-  colEditorBG := Color;
-  // If the right edge is visible and in the invalid area, prepare to paint it.
-  // Do this first to realize the pen when getting the dc variable.
-  bDoRightEdge := FALSE;
-  if (fRightEdge > 0) then begin // column value
-    nRightEdge := fTextOffset + fRightEdge * fCharWidth; // pixel value
-    if (nRightEdge >= AClip.Left) and (nRightEdge <= AClip.Right) then
-      bDoRightEdge := TRUE;
-    if nRightEdge > AClip.Right then
-      nRightEdge := AClip.Right; // for divider draw lines (don't draw into right gutter)
-  end
-  else
-    nRightEdge := AClip.Right;
-
-  Canvas.Pen.Color := fRightEdgeColor; // used for code folding too
-  Canvas.Pen.Width := 1;
-  // Do everything else with API calls. This (maybe) realizes the new pen color.
-  dc := Canvas.Handle;
-  SetBkMode(dc, TRANSPARENT);
-
-  // Adjust the invalid area to not include the gutter (nor the 2 ixel offset to the guttter).
-  EraseLeft := AClip.Left;
-  if (AClip.Left < TextLeftPixelOffset) then
-    AClip.Left := TextLeftPixelOffset;
-  DrawLeft := AClip.Left;
-
-  if (LastLine >= FirstLine) then begin
-    // Paint the visible text lines. To make this easier, compute first the
-    // necessary information about the selected area: is there any visible
-    // selected area, and what are its lines / columns?
-    // Moved to two local procedures to make it easier to read.
-
-    FillChar(TokenAccu,SizeOf(TokenAccu),0);
-    if Assigned(fHighlighter) then begin
-      fHighlighter.CurrentLines := FTheLinesView;
-      // Make sure the token accumulator string doesn't get reassigned to often.
-      TokenAccu.MaxLen := Max(128, fCharsInWindow * 4);
-      SetTokenAccuLength;
-    end;
-
-    FDisplayView.InitHighlighterTokens(FHighlighter);
-    fTextDrawer.Style := Font.Style;
-    fTextDrawer.BeginDrawing(dc);
-    try
-      PaintLines;
-    finally
-      fTextDrawer.EndDrawing;
-      FDisplayView.FinishHighlighterTokens;
-      ReAllocMem(TokenAccu.p,0);
-    end;
-  end;
-
-  AClip.Top := (LastLine+1) * fTextHeight;
-  if (AClip.Top < AClip.Bottom) then begin
-    // Delete the remaining area
-    SetBkColor(dc, ColorToRGB(colEditorBG));
-    AClip.Left := EraseLeft;
-    InternalFillRect(dc, AClip);
-    AClip.Left := DrawLeft;
-
-    // Draw the right edge if necessary.
-    if bDoRightEdge and (not (eoHideRightMargin in Options)) then begin
-      LCLIntf.MoveToEx(dc, nRightEdge, AClip.Top, nil);
-      LCLIntf.LineTo(dc, nRightEdge, AClip.Bottom + 1);
-    end;
-  end;
-
-  fMarkupManager.EndMarkup;
 end;
 
 procedure TCustomSynEdit.StartPaintBuffer(const ClipRect: TRect);
@@ -4463,7 +3734,6 @@ begin
   Value := Max(Value, 1);
   if Value <> fLeftChar then begin
     fLeftChar := Value;
-    fTextOffset := TextLeftPixelOffset - (LeftChar - 1) * fCharWidth;
     UpdateScrollBars;
     InvalidateLines(-1, -1);
     StatusChanged([scLeftChar]);
@@ -5757,6 +5027,9 @@ begin
   if FVisibleSpecialChars = AValue then Exit;
   FVisibleSpecialChars := AValue;
   fMarkupSpecialChar.VisibleSpecialChars := AValue;
+  if eoShowSpecialChars in Options
+  then FTextArea.VisibleSpecialChars := AValue
+  else FTextArea.VisibleSpecialChars := [];
   if eoShowSpecialChars in Options then Invalidate;
 end;
 
@@ -5961,6 +5234,9 @@ procedure TCustomSynEdit.SetRightEdge(Value: Integer);
 begin
   if fRightEdge <> Value then begin
     fRightEdge := Value;
+    if eoHideRightMargin in Options
+    then FTextArea.RightEdgeColumn := -1
+    else FTextArea.RightEdgeColumn := Value;
     Invalidate;
   end;
 end;
@@ -5973,7 +5249,7 @@ begin
   if fRightEdgeColor <> Value then begin
     fRightEdgeColor := Value;
     if HandleAllocated then begin
-      nX := fTextOffset + fRightEdge * fCharWidth;
+      nX := FTextArea.TextBounds.Left - (LeftChar - 1) * fCharWidth + fRightEdge * fCharWidth;
       rcInval := Rect(nX - 1, 0, nX + 1, ClientHeight-ScrollBarWidth);
       {$IFDEF VerboseSynEditInvalidate}
       DebugLn(['TCustomSynEdit.SetRightEdgeColor ',dbgs(rcInval)]);
@@ -6050,6 +5326,7 @@ begin
       fMarkupHighCaret.Highlighter := Value;
       fMarkupWordGroup.Highlighter := Value;
       FFoldedLinesView.Highlighter := Value;
+      FTextArea.Highlighter := Value;
       FWordBreaker.Reset;
       if fHighlighter<>nil then begin
         fTSearch.IdentChars := fHighlighter.IdentChars;
@@ -6196,6 +5473,7 @@ procedure TCustomSynEdit.SetExtraCharSpacing(const Value: integer);
 begin
   if fExtraCharSpacing=Value then exit;
   fExtraCharSpacing := Value;
+  FTextArea.ExtraCharSpacing := Value;
   FontChanged(self);
 end;
 
@@ -6214,8 +5492,6 @@ begin
 end;
 
 procedure TCustomSynEdit.ResetMouseActions;
-var
-  i: Integer;
 begin
   FMouseActions.Options := FMouseOptions;
   FMouseActions.ResetUserActions;
@@ -7115,6 +6391,7 @@ procedure TCustomSynEdit.SetExtraLineSpacing(const Value: integer);
 begin
   if fExtraLineSpacing=Value then exit;
   fExtraLineSpacing := Value;
+  FTextArea.ExtraLineSpacing := Value;
   FontChanged(self);
 end;
 
@@ -7176,7 +6453,6 @@ begin
   if (csLoading in ComponentState) then exit;
 
   GutterChanged(Sender);
-  fTextOffset := TextLeftPixelOffset - (LeftChar - 1) * fCharWidth;
 
   if HandleAllocated then begin
     RecalcCharsAndLinesInWin(False);
@@ -7498,7 +6774,6 @@ end;
 procedure TCustomSynEdit.SetOptions(Value: TSynEditorOptions);
 var
   ChangedOptions: TSynEditorOptions;
-  i: Integer;
   m: TSynEditorOption;
   MOpt: TSynEditorMouseOptions;
   f: Boolean;
@@ -7524,9 +6799,20 @@ begin
     if not Focused then
       FScreenCaret.Visible := (eoPersistentCaret in FOptions);
   end;
-  if (eoShowSpecialChars in ChangedOptions) and HandleAllocated then
-    Invalidate;
+  if (eoShowSpecialChars in ChangedOptions) then begin
+    if eoShowSpecialChars in FOptions
+    then FTextArea.VisibleSpecialChars := VisibleSpecialChars
+    else FTextArea.VisibleSpecialChars := [];
+    if HandleAllocated then
+      Invalidate;
+  end;
   fMarkupSpecialChar.Enabled := (eoShowSpecialChars in fOptions);
+
+  if (eoHideRightMargin in ChangedOptions) then begin
+    if eoHideRightMargin in FOptions
+    then FTextArea.RightEdgeColumn := -1
+    else FTextArea.RightEdgeColumn := fRightEdge;
+  end;
 
   (* Deal with deprecated Mouse values
      Those are all controlled by mouse-actions.
@@ -7583,7 +6869,6 @@ procedure TCustomSynEdit.SetMouseOptions(AValue: TSynEditorMouseOptions);
 var
   ChangedOptions: TSynEditorMouseOptions;
   m: TSynEditorOption;
-  f: Boolean;
 begin
   if FMouseOptions = AValue then Exit;
 
@@ -7645,9 +6930,25 @@ end;
 procedure TCustomSynEdit.RecalcCharsAndLinesInWin(CheckCaret: Boolean);
 var
   NewLinesInWindow: Integer;
-  w: Integer;
+  w, l, r: Integer;
 begin
   w := ClientWidth - TextLeftPixelOffset - TextRightPixelOffset - ScrollBarWidth;
+
+  if FLeftGutter.Visible
+  then l := FLeftGutter.Width
+  else l := 0;
+  if FRightGutter.Visible
+  then r := FRightGutter.Width
+  else r := 0;
+  FTextArea.SetBounds(0, l, ClientHeight - ScrollBarWidth, ClientWidth - r - ScrollBarWidth);
+
+  if FLeftGutter.Visible
+  then FTextArea.Padding[bsLeft] := GutterTextDist
+  else FTextArea.Padding[bsLeft] := 1;
+  if FRightGutter.Visible
+  then FTextArea.Padding[bsRight] := 0 //GutterTextDist
+  else FTextArea.Padding[bsRight] := 0;
+
   FCharsInWindow := Max(1, w div fCharWidth);
 
   NewLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
@@ -7660,9 +6961,10 @@ begin
   end;
 
   FScreenCaret.Lock;
-  FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
-                                ClientWidth - TextRightPixelOffset - ScrollBarWidth + 1,
-                                ClientHeight - ScrollBarWidth);
+  FScreenCaret.ClipRect := FTextArea.Bounds;
+  //FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
+  //                              ClientWidth - TextRightPixelOffset - ScrollBarWidth + 1,
+  //                              ClientHeight - ScrollBarWidth);
   FScreenCaret.ClipExtraPixel := w - fCharsInWindow * fCharWidth;
   FScreenCaret.UnLock;
 
@@ -7815,6 +7117,8 @@ begin
     FScreenCaret.CharWidth := fCharWidth;
     FScreenCaret.CharHeight := fTextHeight;
     FScreenCaret.UnLock;
+
+    FTextArea.FontChanged;
   end;
   FUseUTF8:=fTextDrawer.UseUTF8;
   FLines.IsUtf8 := FUseUTF8;
@@ -8927,7 +8231,7 @@ end;
 
 function TCustomSynEdit.ScreenColumnToXValue(Col : integer) : integer;
 begin
-  Result := fTextOffset + Pred(Col) * fCharWidth;
+  Result := FTextArea.ScreenColumnToXValue(Col);
 end;
 
 procedure TCustomSynEdit.PrimarySelectionRequest(

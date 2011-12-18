@@ -58,6 +58,9 @@ type
   TLinePos = type integer; // 1..high(Integer);
   TLineIdx = type integer; // 0..high(Integer);
 
+  TSynCoordinateMappingFlag = (scmLimitToLines, scmIncludePartVisible);
+  TSynCoordinateMappingFlags = set of TSynCoordinateMappingFlag;
+
   {$IFDEF SYN_LAZARUS}
   // NOTE: the note below is not valid for the LCL which uses UTF-8
   {$ELSE}
@@ -112,20 +115,20 @@ type
     sfeLeft         // left part of the frame
   );
 
-  TSynFrameSide = (
-    sfdLeft,
-    sfdTop,
-    sfdRight,
-    sfdBottom
+  TLazSynBorderSide = (
+    bsLeft,
+    bsTop,
+    bsRight,
+    bsBottom
   );
-  TSynFrameSides = set of TSynFrameSide;
+  TLazSynBorderSides = set of TLazSynBorderSide;
 
 const
-  SynFrameEdgeToSides: array [TSynFrameEdges] of TSynFrameSides =
+  SynFrameEdgeToSides: array [TSynFrameEdges] of TLazSynBorderSides =
   ( [],                                       // sfeNone
-    [sfdLeft, sfdTop, sfdRight, sfdBottom],   // sfeAround
-    [sfdBottom],                              // sfeBottom
-    [sfdLeft]                                 // sfeLeft
+    [bsLeft, bsTop, bsRight, bsBottom],   // sfeAround
+    [bsBottom],                              // sfeBottom
+    [bsLeft]                                 // sfeLeft
   );
 
   SynFrameEdgePriorities: array [TSynFrameEdges] of integer =

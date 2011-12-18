@@ -125,6 +125,7 @@ type
     procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); virtual;
     procedure FinishHighlighterTokens; virtual;
     function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; virtual;
+    function GetLinesCount: Integer; virtual;
     function GetDrawDividerInfo: TSynDividerDrawConfigSetting; virtual;
     // todo: gutter info
   end;
@@ -412,6 +413,14 @@ begin
     Result := FNextView.GetNextHighlighterToken(ATokenInfo)
   else
     Result := False;
+end;
+
+function TLazSynDisplayView.GetLinesCount: Integer;
+begin
+  if assigned(FNextView) then
+    Result := FNextView.GetLinesCount
+  else
+    Result := 0;
 end;
 
 function TLazSynDisplayView.GetDrawDividerInfo: TSynDividerDrawConfigSetting;

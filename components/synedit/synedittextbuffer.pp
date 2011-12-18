@@ -121,6 +121,7 @@ type
     procedure SetHighlighterTokensLine(ALine: TLineIdx; out ARealLine: TLineIdx); override;
     function  GetNextHighlighterToken(out ATokenInfo: TLazSynDisplayTokenInfo): Boolean; override;
     function GetDrawDividerInfo: TSynDividerDrawConfigSetting; override;
+    function GetLinesCount: Integer; override;
   end;
 
   { TSynEditStringList }
@@ -382,6 +383,11 @@ begin
     Result := CurrentTokenHighlighter.DrawDivider[CurrentTokenLine]
   else
     Result.Color := clNone;
+end;
+
+function TLazSynDisplayBuffer.GetLinesCount: Integer;
+begin
+  Result := FBuffer.Count;
 end;
 
 { TSynEditUndoTxtInsert }

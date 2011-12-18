@@ -196,8 +196,8 @@ type
     // current font attributes
     FColor: TColor;
     FBkColor: TColor;
-    FFrameColor: array[TSynFrameSide] of TColor;
-    FFrameStyle: array[TSynFrameSide] of TSynLineStyle;
+    FFrameColor: array[TLazSynBorderSide] of TColor;
+    FFrameStyle: array[TLazSynBorderSide] of TSynLineStyle;
     FCharExtra: Integer;
 
     // Begin/EndDrawing calling count
@@ -235,9 +235,9 @@ type
     procedure SetForeColor(Value: TColor); virtual;
     procedure SetBackColor(Value: TColor); virtual;
 
-    procedure SetFrameColor(Side: TSynFrameSide; AValue: TColor); virtual; overload;
+    procedure SetFrameColor(Side: TLazSynBorderSide; AValue: TColor); virtual; overload;
     procedure SetFrameColor(AValue: TColor); virtual; overload; //deprecated;
-    procedure SetFrameStyle(Side: TSynFrameSide; AValue: TSynLineStyle); virtual; overload;
+    procedure SetFrameStyle(Side: TLazSynBorderSide; AValue: TSynLineStyle); virtual; overload;
     //procedure SetFrameStyle(AValue: TSynLineStyle); virtual; overload;
 
     procedure SetCharExtra(Value: Integer); virtual;
@@ -252,8 +252,8 @@ type
     property BaseStyle: TFontStyles write SetBaseStyle;
     property ForeColor: TColor write SetForeColor;
     property BackColor: TColor read FBkColor write SetBackColor;
-    property FrameColor[Side: TSynFrameSide]: TColor write SetFrameColor;
-    property FrameStyle[Side: TSynFrameSide]: TSynLineStyle write SetFrameStyle;
+    property FrameColor[Side: TLazSynBorderSide]: TColor write SetFrameColor;
+    property FrameStyle[Side: TLazSynBorderSide]: TSynLineStyle write SetFrameStyle;
 
     property Style: TFontStyles write SetStyle;
     property CharExtra: Integer read FCharExtra write SetCharExtra;
@@ -885,7 +885,7 @@ end;
 
 constructor TheTextDrawer.Create(CalcExtentBaseStyle: TFontStyles; ABaseFont: TFont);
 var
-  Side: TSynFrameSide;
+  Side: TLazSynBorderSide;
 begin
   inherited Create;
 
@@ -895,7 +895,7 @@ begin
   FColor := clWindowText;
   FBkColor := clWindow;
 
-  for Side := Low(TSynFrameSide) to High(TSynFrameSide) do
+  for Side := Low(TLazSynBorderSide) to High(TLazSynBorderSide) do
   begin
     FFrameColor[Side] := clNone;
     FFrameStyle[Side] := slsSolid;
@@ -941,7 +941,7 @@ begin
   Result := ExtCreatePen(AStyle, 1, ALogBrush, 0, nil);
 end;
 
-procedure TheTextDrawer.SetFrameStyle(Side: TSynFrameSide; AValue: TSynLineStyle);
+procedure TheTextDrawer.SetFrameStyle(Side: TLazSynBorderSide; AValue: TSynLineStyle);
 begin
   if FFrameStyle[Side] <> AValue then
   begin
@@ -951,9 +951,9 @@ end;
 
 //procedure TheTextDrawer.SetFrameStyle(AValue: TSynLineStyle);
 //var
-//  Side: TSynFrameSide;
+//  Side: TLazSynBorderSide;
 //begin
-//  for Side := Low(TSynFrameSide) to High(TSynFrameSide) do
+//  for Side := Low(TLazSynBorderSide) to High(TLazSynBorderSide) do
 //    SetFrameStyle(Side, AValue);
 //end;
 
@@ -1097,7 +1097,7 @@ begin
   end;
 end;
 
-procedure TheTextDrawer.SetFrameColor(Side: TSynFrameSide; AValue: TColor);
+procedure TheTextDrawer.SetFrameColor(Side: TLazSynBorderSide; AValue: TColor);
 begin
   if FFrameColor[Side] <> AValue then
   begin
@@ -1107,9 +1107,9 @@ end;
 
 procedure TheTextDrawer.SetFrameColor(AValue: TColor);
 var
-  Side: TSynFrameSide;
+  Side: TLazSynBorderSide;
 begin
-  for Side := Low(TSynFrameSide) to High(TSynFrameSide) do
+  for Side := Low(TLazSynBorderSide) to High(TLazSynBorderSide) do
     SetFrameColor(Side, AValue);
 end;
 
@@ -1154,9 +1154,9 @@ procedure TheTextDrawer.ExtTextOut(X, Y: Integer; fuOptions: UINT;
 
   function HasFrame: Boolean;
   var
-    Side: TSynFrameSide;
+    Side: TLazSynBorderSide;
   begin
-    for Side := Low(TSynFrameSide) to High(TSynFrameSide) do
+    for Side := Low(TLazSynBorderSide) to High(TLazSynBorderSide) do
       if FFrameColor[Side] <> clNone then
         Exit(True);
     Result := False;
@@ -1176,7 +1176,7 @@ var
   DistArray: PInteger;
   Pen, OldPen: HPen;
   old: TPoint;
-  Side: TSynFrameSide;
+  Side: TLazSynBorderSide;
   LastColor: TColor;
   LastStyle: LongWord;
 begin
@@ -1193,7 +1193,7 @@ begin
     OldPen := 0;
     LastColor := clNone;
     LastStyle := PS_NULL;
-    for Side := Low(TSynFrameSide) to High(TSynFrameSide) do
+    for Side := Low(TLazSynBorderSide) to High(TLazSynBorderSide) do
     begin
       if FFrameColor[Side] <> clNone then
       begin
@@ -1209,7 +1209,7 @@ begin
         end;
 
         case Side of
-          sfdLeft:
+          bsLeft:
             begin
               MoveToEx(FDC, ARect.Left, ARect.Top, @old);
               if FFrameStyle[Side] = slsWaved then
@@ -1217,7 +1217,7 @@ begin
               else
                 LineTo(FDC, ARect.Left, FrameBottom);
             end;
-          sfdTop:
+          bsTop:
             begin
               MoveToEx(FDC, ARect.Left, ARect.Top, @old);
               if FFrameStyle[Side] = slsWaved then
@@ -1225,7 +1225,7 @@ begin
               else
                 LineTo(FDC, ARect.Right, ARect.Top);
             end;
-          sfdRight:
+          bsRight:
             begin
               if FFrameStyle[Side] = slsWaved then
               begin
@@ -1238,7 +1238,7 @@ begin
                 LineTo(FDC, ARect.Right - 1, FrameBottom);
               end;
             end;
-          sfdBottom:
+          bsBottom:
             begin
               if FFrameStyle[Side] = slsWaved then
               begin
