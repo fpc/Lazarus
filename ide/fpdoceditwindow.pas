@@ -152,6 +152,7 @@ type
     FFlags: TFPDocEditorFlags;
     fUpdateLock: Integer;
     fSourceFilename: string;
+    fDocFile: TLazFPDocFile;
     fChain: TCodeHelpElementChain;
     FOldValues: TFPDocElementValues;
     FOldVisualValues: TFPDocElementValues;
@@ -177,6 +178,7 @@ type
     procedure OnLazDocChanged(Sender: TObject; LazDocFPFile: TLazFPDocFile);
     procedure LoadGUIValues(Element: TCodeHelpElement);
     procedure MoveToInherited(Element: TCodeHelpElement);
+    function GetDefaultDocFile(CreateIfNotExists: Boolean = False): TLazFPDocFile;
     function ExtractIDFromLinkTag(const LinkTag: string; out ID, Title: string): boolean;
     function CreateElement(Element: TCodeHelpElement): Boolean;
     procedure UpdateButtons;
@@ -190,7 +192,6 @@ type
     FCurrentTopic: String;
     procedure UpdateTopicCombo;
     procedure ClearTopicControls;
-    function TopicDocFile(CreateIfNotExists: Boolean = False): TLazFPDocFile;
   public
     procedure Reset;
     procedure InvalidateChain;
@@ -518,7 +519,7 @@ var
   Dfile: TLazFPDocFile;
 begin
   if NewTopicNameEdit.Text = '' then exit;
-  Dfile := TopicDocFile(True);
+  Dfile := GetDefaultDocFile(True);
   if not assigned(DFile) then exit;
   if DFile.GetModuleTopic(NewTopicNameEdit.Text) = nil then begin
     DFile.CreateModuleTopic(NewTopicNameEdit.Text);
@@ -617,7 +618,7 @@ begin
 
   FCurrentTopic := '';
   if TopicListBox.ItemIndex < 0 then exit;
-  Dfile := TopicDocFile(True);
+  Dfile := GetDefaultDocFile(True);
   if DFile = nil then exit;
 
   Node := DFile.GetModuleTopic(TopicListBox.Items[TopicListBox.ItemIndex]);
@@ -672,8 +673,10 @@ end;
 function TFPDocEditor.GetDocFile: TLazFPDocFile;
 begin
   Result:=nil;
-  if fChain=nil then exit;
-  Result:=fChain.DocFile;
+  if fChain<>nil then
+    Result:=fChain.DocFile
+  else
+    Result:=fDocFile;
 end;
 
 function TFPDocEditor.GetSourceFilename: string;
@@ -776,6 +779,7 @@ var
   NewChain: TCodeHelpElementChain;
   CacheWasUsed: Boolean;
 begin
+  fDocFile:=nil;
   FreeAndNil(fChain);
   if fUpdateLock>0 then begin
     Include(FFlags,fpdefChainNeedsUpdate);
@@ -819,10 +823,15 @@ begin
       NewChain.WriteDebugReport;
       {$ENDIF}
       fChain:=NewChain;
+      fDocFile:=fChain.DocFile;
       NewChain:=nil;
     end;
   finally
     NewChain.Free;
+  end;
+  if (fDocFile=nil) then begin
+    // load default docfile, needed to show syntax errors in xml and for topics
+    fDocFile:=GetDefaultDocFile;
   end;
 end;
 
@@ -831,7 +840,9 @@ procedure TFPDocEditor.OnLazDocChanging(Sender: TObject;
 begin
   if fpdefWriting in FFlags then exit;
   if (fChain<>nil) and (fChain.IndexOfFile(LazDocFPFile)>=0) then
-    InvalidateChain;
+    InvalidateChain
+  else if (fDocFile<>nil) and (fDocFile=LazDocFPFile) then
+    Include(FFlags,fpdefTopicNeedsUpdate);
 end;
 
 procedure TFPDocEditor.OnLazDocChanged(Sender: TObject;
@@ -1058,7 +1069,7 @@ end;
 
 procedure TFPDocEditor.UpdateTopicCombo;
 var
-  c, i: LongInt;
+  cnt, i: LongInt;
   DFile: TLazFPDocFile;
   Topics: TStringList;
 begin
@@ -1067,34 +1078,33 @@ begin
   try
     FCurrentTopic := '';
     ClearTopicControls;
-    Dfile := TopicDocFile;
+    Dfile := DocFile;
     if not assigned(DFile) then exit;
-    c := DFile.GetModuleTopicCount;
-    for i := 0 to c - 1 do
+    cnt := DFile.GetModuleTopicCount;
+    for i := 0 to cnt - 1 do
       Topics.Add(DFile.GetModuleTopicName(i));
   finally
     TopicListBox.Items.Assign(Topics);
   end;
 end;
 
-function TFPDocEditor.TopicDocFile(CreateIfNotExists: Boolean): TLazFPDocFile;
+function TFPDocEditor.GetDefaultDocFile(CreateIfNotExists: Boolean): TLazFPDocFile;
 var
   CacheWasUsed : Boolean;
   AnOwner: TObject;
-  DFileName: String;
+  FPDocFileName: String;
 begin
   Result := nil;
-  if assigned(DocFile) then
-    Result := DocFile
-  else begin
-    DFileName := CodeHelpBoss.GetFPDocFilenameForSource(SourceFilename, true,
+  if (not CreateIfNotExists) and (fDocFile<>nil) then
+    exit(fDocFile);
+
+  FPDocFileName := CodeHelpBoss.GetFPDocFilenameForSource(SourceFilename, true,
                                       CacheWasUsed, AnOwner, CreateIfNotExists);
-    if (DFileName = '')
-    or (CodeHelpBoss.LoadFPDocFile(DFileName, [chofUpdateFromDisk], Result,
-                                   CacheWasUsed) <> chprSuccess)
-    then
-      Result := nil;
-  end;
+  if (FPDocFileName = '')
+  or (CodeHelpBoss.LoadFPDocFile(FPDocFileName, [chofUpdateFromDisk], Result,
+                                 CacheWasUsed) <> chprSuccess)
+  then
+    Result := nil;
 end;
 
 procedure TFPDocEditor.Reset;
@@ -1119,7 +1129,6 @@ begin
 
     Modified := False;
     CreateButton.Enabled:=false;
-
   finally
     Exclude(FFlags,fpdefReading);
   end;
@@ -1128,9 +1137,9 @@ end;
 procedure TFPDocEditor.InvalidateChain;
 begin
   FreeAndNil(fChain);
-  FFlags:=FFlags+[fpdefCodeCacheNeedsUpdate,fpdefChainNeedsUpdate,
-      fpdefCaptionNeedsUpdate,fpdefValueControlsNeedsUpdate,
-      fpdefInheritedControlsNeedsUpdate];
+  FFlags:=FFlags+[fpdefCodeCacheNeedsUpdate,
+      fpdefChainNeedsUpdate,fpdefCaptionNeedsUpdate,
+      fpdefValueControlsNeedsUpdate,fpdefInheritedControlsNeedsUpdate];
 end;
 
 procedure TFPDocEditor.UpdateFPDocEditor(const SrcFilename: string;
@@ -1186,14 +1195,17 @@ end;
 procedure TFPDocEditor.Save(CheckGUI: boolean);
 var
   Values: TFPDocElementValues;
-  DFile: TLazFPDocFile;
+  TopicDocFile: TLazFPDocFile;
   Node: TDOMNode;
+  Child: TDOMNode;
+  TopicChanged: Boolean;
 begin
   //DebugLn(['TFPDocEditor.Save FModified=',FModified]);
   if fpdefReading in FFlags then exit;
 
   if (not FModified)
-  and ((not CheckGUI) or (not GUIModified)) then begin
+  and ((not CheckGUI) or (not GUIModified)) then
+  begin
     SaveButton.Enabled:=false;
     Exit; // nothing changed => exit
   end;
@@ -1201,39 +1213,55 @@ begin
   FModified:=false;
   SaveButton.Enabled:=false;
 
-  DFile := nil;
-  if FCurrentTopic <> '' then begin
-    Dfile := TopicDocFile(True);
-    if DFile <> nil then begin
-      Node := DFile.GetModuleTopic(FCurrentTopic);
+  TopicChanged:=false;
+  TopicDocFile:=DocFile;
+  if FCurrentTopic <> '' then
+  begin
+    if fDocFile=nil then
+      fDocFile := GetDefaultDocFile(True);
+    TopicDocFile:=DocFile;
+    if TopicDocFile <> nil then begin
+      Node := TopicDocFile.GetModuleTopic(FCurrentTopic);
       if Node <> nil then begin
-        DFile.SetChildValue(Node, 'short', TopicShort.Text);
-        DFile.SetChildValue(Node, 'descr', TopicDescr.Text);
+        Child := Node.FindNode('short');
+        if (Child = nil)
+        or (TopicDocFile.GetChildValuesAsString(Child)<>TopicShort.Text)
+        then begin
+          TopicDocFile.SetChildValue(Node, 'short', TopicShort.Text);
+          TopicChanged:=true;
+        end;
+        Child := Node.FindNode('descr');
+        if (Child = nil)
+        or (TopicDocFile.GetChildValuesAsString(Child)<>TopicDescr.Text)
+        then begin
+          TopicDocFile.SetChildValue(Node, 'descr', TopicDescr.Text);
+          TopicChanged:=true;
+        end;
       end;
     end;
   end;
-  if (fChain=nil) or (fChain.Count=0) then begin
-    if (FCurrentTopic <> '') and (DFile <> nil) then
-      CodeHelpBoss.SaveFPDocFile(DFile)
-    else if IsVisible then
+  if (fChain=nil) or (fChain.Count=0) then
+  begin
+    if IsVisible then
       DebugLn(['TFPDocEditor.Save failed: no chain']);
-    exit;
-  end;
-  if not fChain.IsValid then begin
-    if (FCurrentTopic <> '') and (DFile <> nil) then
-      CodeHelpBoss.SaveFPDocFile(DFile)
-    else if IsVisible then
+  end else if not fChain.IsValid then
+  begin
+    if IsVisible then
       DebugLn(['TFPDocEditor.Save failed: chain not valid']);
-    exit;
-  end;
-  if (fChain[0].FPDocFile = nil) and (DFile <> nil) then
-    CodeHelpBoss.SaveFPDocFile(DFile)
-  else begin
+  end else if (fChain[0].FPDocFile <> nil) then
+  begin
     Values:=GetGUIValues;
-    if not WriteNode(fChain[0],Values,true) then begin
+    if WriteNode(fChain[0],Values,true) then
+    begin
+      // write succeeded
+      if fChain.DocFile=TopicDocFile then
+        TopicChanged:=false;
+    end else begin
       DebugLn(['TLazDocForm.Save WriteNode FAILED']);
     end;
   end;
+  if TopicChanged then
+    CodeHelpBoss.SaveFPDocFile(TopicDocFile);
 end;
 
 function TFPDocEditor.GetGUIValues: TFPDocElementValues;
