@@ -76,6 +76,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure CMVisibleChanged(var Msg: TLMessage); message CM_VISIBLECHANGED;
     procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
+    procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     // New properties.
     property ButtonWidth : Integer read GetButtonWidth write SetButtonWidth;
     property DirectInput : Boolean read GetDirectInput write SetDirectInput default True;
@@ -761,6 +762,12 @@ begin
   inherited CMEnabledChanged(Msg);
   if (FButton<>nil) then
     FButton.Enabled:=CalcButtonEnabled;
+end;
+
+procedure TCustomEditButton.CMBiDiModeChanged(var Message: TLMessage);
+begin
+  inherited;
+  DoPositionButton;
 end;
 
 function TCustomEditButton.GetMinHeight: Integer;
