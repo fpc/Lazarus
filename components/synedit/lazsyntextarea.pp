@@ -126,6 +126,7 @@ procedure TLazSynTextArea.SetExtraLineSpacing(AValue: integer);
 begin
   if FExtraLineSpacing = AValue then Exit;
   FExtraLineSpacing := AValue;
+  FTextHeight := FTextDrawer.CharHeight + FExtraLineSpacing;
   FontChanged;
 end;
 
@@ -180,7 +181,7 @@ end;
 procedure TLazSynTextArea.FontChanged;
 begin
   FCharWidth := FTextDrawer.CharWidth;  // includes extra
-  FTextHeight := FTextDrawer.CharHeight;
+  FTextHeight := FTextDrawer.CharHeight + FExtraLineSpacing;
 
   FCharsInWindow :=  0;
   FLinesInWindow :=  0;
