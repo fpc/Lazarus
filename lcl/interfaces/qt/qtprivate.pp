@@ -564,6 +564,7 @@ begin
   inherited Put(Index, S);
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
   begin
+    FOwner.BeginUpdate;
     FOwner.setItemText(Index, S);
     if FOwner is TQtCheckListBox then
     begin
@@ -573,6 +574,7 @@ begin
       else
         FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] and not QtItemIsTristate;
     end;
+    FOwner.EndUpdate;
   end;
 end;
 
@@ -581,6 +583,7 @@ begin
   inherited InsertItem(Index, S);
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
   begin
+    FOwner.BeginUpdate;
     FOwner.insertItem(Index, S);
     if FOwner is TQtCheckListBox then
     begin
@@ -590,6 +593,7 @@ begin
       else
         FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] and not QtItemIsTristate;
     end;
+    FOwner.EndUpdate;
   end;
 end;
 
@@ -598,6 +602,7 @@ begin
   inherited InsertItem(Index, S, O);
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
   begin
+    FOwner.BeginUpdate;
     FOwner.insertItem(Index, S);
 
     if FOwner is TQtCheckListBox then
@@ -608,6 +613,7 @@ begin
       else
         FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] and not QtItemIsTristate;
     end;
+    FOwner.EndUpdate;
   end;
 end;
 
@@ -658,7 +664,11 @@ procedure TQtListStrings.Delete(Index: Integer);
 begin
   inherited Delete(Index);
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
+  begin
+    FOwner.BeginUpdate;
     FOwner.removeItem(Index);
+    FOwner.EndUpdate;
+  end;
 end;
 
 procedure TQtListStrings.Move(CurIndex, NewIndex: Integer);
@@ -695,8 +705,10 @@ begin
   inherited Sort;
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
   begin
+    FOwner.BeginUpdate;
     for I := 0 to Count - 1 do
       FOwner.setItemText(I, Strings[I]);
+    FOwner.EndUpdate;
   end;
 end;
 

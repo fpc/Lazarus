@@ -10758,6 +10758,8 @@ var
   APos: TQtPoint;
   AMouseEvent: QMouseEventH;
 begin
+  if InUpdate or not GetVisible then
+    exit;
   // fires only when checkBox clicked.
   QCursor_pos(@AGlobalPos);
   QWidget_mapFromGlobal(Widget, @APos, @AGlobalPos);
