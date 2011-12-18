@@ -60,7 +60,9 @@ type
     fpdefChainNeedsUpdate,
     fpdefCaptionNeedsUpdate,
     fpdefValueControlsNeedsUpdate,
-    fpdefInheritedControlsNeedsUpdate
+    fpdefInheritedControlsNeedsUpdate,
+    fpdefTopicSettingUp,
+    fpdefTopicNeedsUpdate
     );
   TFPDocEditorFlags = set of TFPDocEditorFlag;
   
@@ -185,10 +187,10 @@ type
     procedure DoEditorUpdate(Sender: TObject);
   private
     FLastTopicControl: TControl;
-    FInTopicSetup: Boolean;
     FCurrentTopic: String;
-    procedure FillTopicCombo;
-    function TopicDocFile(CreateIfNoExists: Boolean = False): TLazFPDocFile;
+    procedure UpdateTopicCombo;
+    procedure ClearTopicControls;
+    function TopicDocFile(CreateIfNotExists: Boolean = False): TLazFPDocFile;
   public
     procedure Reset;
     procedure InvalidateChain;
@@ -290,8 +292,6 @@ begin
   InsertRemarkButton.LoadGlyphFromLazarusResource('insertremark');
   InsertURLTagSpeedButton.LoadGlyphFromLazarusResource('formatunderline');
   SaveButton.LoadGlyphFromLazarusResource('laz_save');
-
-  FInTopicSetup := false;
 
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate, @DoEditorUpdate);
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorStatus, @DoEditorUpdate);
@@ -443,6 +443,8 @@ begin
     UpdateValueControls
   else if fpdefInheritedControlsNeedsUpdate in FFlags then
     UpdateInheritedControls
+  else if fpdefTopicNeedsUpdate in FFlags then
+    UpdateTopicCombo
   else
     Done:=true;
 end;
@@ -522,7 +524,7 @@ begin
     DFile.CreateModuleTopic(NewTopicNameEdit.Text);
     CodeHelpBoss.SaveFPDocFile(DFile);
   end;
-  FillTopicCombo;
+  UpdateTopicCombo;
   TopicListBox.ItemIndex := TopicListBox.Items.IndexOf(NewTopicNameEdit.Text);
   TopicListBoxClick(Sender);
 end;
@@ -598,7 +600,7 @@ end;
 procedure TFPDocEditor.TopicDescrChange(Sender: TObject);
 begin
   if fpdefReading in FFlags then exit;
-  if FInTopicSetup then exit;
+  if fpdefTopicSettingUp in FFlags then exit;
   Modified := True;
 end;
 
@@ -611,12 +613,7 @@ begin
   if (FCurrentTopic <> '') and Modified then
     Save;
 
-  FInTopicSetup := True;
-  TopicShort.Clear;
-  TopicDescr.Clear;
-  TopicShort.Enabled := False;
-  TopicDescr.Enabled := False;
-  FInTopicSetup := false;
+  ClearTopicControls;
 
   FCurrentTopic := '';
   if TopicListBox.ItemIndex < 0 then exit;
@@ -627,17 +624,20 @@ begin
   if Node = nil then exit;
   FCurrentTopic := TopicListBox.Items[TopicListBox.ItemIndex];
 
-  FInTopicSetup := True;
-  Child := Node.FindNode('short');
-  if Child <> nil then
-    TopicShort.Text := DFile.GetChildValuesAsString(Child);
-  Child := Node.FindNode('descr');
-  if Child <> nil then
-    TopicDescr.Text := DFile.GetChildValuesAsString(Child);
-  TopicShort.Enabled := True;
-  TopicDescr.Enabled := True;
-  TopicShort.SetFocus;
-  FInTopicSetup := false;
+  Include(FFlags,fpdefTopicSettingUp);
+  try
+    Child := Node.FindNode('short');
+    if Child <> nil then
+      TopicShort.Text := DFile.GetChildValuesAsString(Child);
+    Child := Node.FindNode('descr');
+    if Child <> nil then
+      TopicDescr.Text := DFile.GetChildValuesAsString(Child);
+    TopicShort.Enabled := True;
+    TopicDescr.Enabled := True;
+    TopicShort.SetFocus;
+  finally
+    Exclude(FFlags,fpdefTopicSettingUp);
+  end;
 end;
 
 function TFPDocEditor.GetContextTitle(Element: TCodeHelpElement): string;
@@ -654,6 +654,19 @@ begin
     Result:=DocFile.Doc
   else
     Result:=nil;
+end;
+
+procedure TFPDocEditor.ClearTopicControls;
+begin
+  Include(FFlags, fpdefTopicSettingUp);
+  try
+    TopicShort.Clear;
+    TopicDescr.Clear;
+    TopicShort.Enabled := False;
+    TopicDescr.Enabled := False;
+  finally
+    Exclude(FFlags, fpdefTopicSettingUp);
+  end;
 end;
 
 function TFPDocEditor.GetDocFile: TLazFPDocFile;
@@ -1043,39 +1056,42 @@ begin
   UpdateFPDocEditor(SrcEdit.FileName, CaretPos);
 end;
 
-procedure TFPDocEditor.FillTopicCombo;
+procedure TFPDocEditor.UpdateTopicCombo;
 var
   c, i: LongInt;
   DFile: TLazFPDocFile;
+  Topics: TStringList;
 begin
-  FCurrentTopic := '';
-  FInTopicSetup := True;
-  TopicListBox.Clear;
-  TopicShort.Clear;
-  TopicDescr.Clear;
-  TopicShort.Enabled := False;
-  TopicDescr.Enabled := False;
-  FInTopicSetup := false;
-  Dfile := TopicDocFile;
-  if not assigned(DFile) then exit;
-  c := DFile.GetModuleTopicCount;
-  for i := 0 to c - 1 do begin
-    TopicListBox.Items.Add(DFile.GetModuleTopicName(i));
+  Exclude(FFlags,fpdefTopicNeedsUpdate);
+  Topics:=TStringList.Create;
+  try
+    FCurrentTopic := '';
+    ClearTopicControls;
+    Dfile := TopicDocFile;
+    if not assigned(DFile) then exit;
+    c := DFile.GetModuleTopicCount;
+    for i := 0 to c - 1 do
+      Topics.Add(DFile.GetModuleTopicName(i));
+  finally
+    TopicListBox.Items.Assign(Topics);
   end;
 end;
 
-function TFPDocEditor.TopicDocFile(CreateIfNoExists: Boolean): TLazFPDocFile;
+function TFPDocEditor.TopicDocFile(CreateIfNotExists: Boolean): TLazFPDocFile;
 var
   CacheWasUsed : Boolean;
   AnOwner: TObject;
   DFileName: String;
 begin
+  Result := nil;
   if assigned(DocFile) then
     Result := DocFile
   else begin
-    DFileName := CodeHelpBoss.GetFPDocFilenameForSource(SourceFilename, true, CacheWasUsed, AnOwner, CreateIfNoExists);
-    if (DFileName = '') or
-       (CodeHelpBoss.LoadFPDocFile(DFileName, [chofUpdateFromDisk], Result, CacheWasUsed) <> chprSuccess)
+    DFileName := CodeHelpBoss.GetFPDocFilenameForSource(SourceFilename, true,
+                                      CacheWasUsed, AnOwner, CreateIfNotExists);
+    if (DFileName = '')
+    or (CodeHelpBoss.LoadFPDocFile(DFileName, [chofUpdateFromDisk], Result,
+                                   CacheWasUsed) <> chprSuccess)
     then
       Result := nil;
   end;
@@ -1097,6 +1113,7 @@ begin
     SeeAlsoMemo.Clear;
     ErrorsMemo.Clear;
     ExampleEdit.Clear;
+    ClearTopicControls;
     for i:=Low(TFPDocItem) to high(TFPDocItem) do
       FOldVisualValues[i]:='';
 
@@ -1136,7 +1153,7 @@ begin
   fSourceFilename:=NewSrcFilename;
   
   Reset;
-  FillTopicCombo;
+  Include(FFlags,fpdefTopicNeedsUpdate);
   InvalidateChain;
 end;
 
