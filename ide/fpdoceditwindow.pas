@@ -192,6 +192,7 @@ type
     FCurrentTopic: String;
     procedure UpdateTopicCombo;
     procedure ClearTopicControls;
+    procedure UpdateTopic;
   public
     procedure Reset;
     procedure InvalidateChain;
@@ -606,39 +607,11 @@ begin
 end;
 
 procedure TFPDocEditor.TopicListBoxClick(Sender: TObject);
-var
-  DFile: TLazFPDocFile;
-  Node: TDOMNode;
-  Child: TDOMNode;
 begin
+  if fpdefTopicSettingUp in FFlags then exit;
   if (FCurrentTopic <> '') and Modified then
     Save;
-
-  ClearTopicControls;
-
-  FCurrentTopic := '';
-  if TopicListBox.ItemIndex < 0 then exit;
-  Dfile := GetDefaultDocFile(True);
-  if DFile = nil then exit;
-
-  Node := DFile.GetModuleTopic(TopicListBox.Items[TopicListBox.ItemIndex]);
-  if Node = nil then exit;
-  FCurrentTopic := TopicListBox.Items[TopicListBox.ItemIndex];
-
-  Include(FFlags,fpdefTopicSettingUp);
-  try
-    Child := Node.FindNode('short');
-    if Child <> nil then
-      TopicShort.Text := DFile.GetChildValuesAsString(Child);
-    Child := Node.FindNode('descr');
-    if Child <> nil then
-      TopicDescr.Text := DFile.GetChildValuesAsString(Child);
-    TopicShort.Enabled := True;
-    TopicDescr.Enabled := True;
-    TopicShort.SetFocus;
-  finally
-    Exclude(FFlags,fpdefTopicSettingUp);
-  end;
+  UpdateTopic;
 end;
 
 function TFPDocEditor.GetContextTitle(Element: TCodeHelpElement): string;
@@ -658,7 +631,10 @@ begin
 end;
 
 procedure TFPDocEditor.ClearTopicControls;
+var
+  OldSettingUp: boolean;
 begin
+  OldSettingUp:=fpdefTopicSettingUp in FFlags;
   Include(FFlags, fpdefTopicSettingUp);
   try
     TopicShort.Clear;
@@ -666,7 +642,8 @@ begin
     TopicShort.Enabled := False;
     TopicDescr.Enabled := False;
   finally
-    Exclude(FFlags, fpdefTopicSettingUp);
+    if not OldSettingUp then
+      Exclude(FFlags, fpdefTopicSettingUp);
   end;
 end;
 
@@ -1075,16 +1052,20 @@ var
 begin
   Exclude(FFlags,fpdefTopicNeedsUpdate);
   Topics:=TStringList.Create;
+  Include(FFlags,fpdefTopicSettingUp);
   try
-    FCurrentTopic := '';
-    ClearTopicControls;
     Dfile := DocFile;
-    if not assigned(DFile) then exit;
-    cnt := DFile.GetModuleTopicCount;
-    for i := 0 to cnt - 1 do
-      Topics.Add(DFile.GetModuleTopicName(i));
-  finally
+    if DFile<>nil then begin
+      cnt := DFile.GetModuleTopicCount;
+      for i := 0 to cnt - 1 do
+        Topics.Add(DFile.GetModuleTopicName(i));
+    end;
     TopicListBox.Items.Assign(Topics);
+    TopicListBox.ItemIndex:=TopicListBox.Items.IndexOf(FCurrentTopic);
+    UpdateTopic;
+  finally
+    Exclude(FFlags,fpdefTopicSettingUp);
+    Topics.Free;
   end;
 end;
 
@@ -1260,8 +1241,14 @@ begin
       DebugLn(['TLazDocForm.Save WriteNode FAILED']);
     end;
   end;
-  if TopicChanged then
-    CodeHelpBoss.SaveFPDocFile(TopicDocFile);
+  if TopicChanged then begin
+    Include(FFlags,fpdefWriting);
+    try
+      CodeHelpBoss.SaveFPDocFile(TopicDocFile);
+    finally
+      Exclude(FFlags,fpdefWriting);
+    end;
+  end;
 end;
 
 function TFPDocEditor.GetGUIValues: TFPDocElementValues;
@@ -1285,6 +1272,42 @@ begin
   FModified:=AValue;
   SaveButton.Enabled:=FModified;
   //debugln(['TFPDocEditor.SetModified New=',FModified]);
+end;
+
+procedure TFPDocEditor.UpdateTopic;
+var
+  Child: TDOMNode;
+  Node: TDOMNode;
+  DFile: TLazFPDocFile;
+begin
+  FCurrentTopic := '';
+  try
+    if TopicListBox.ItemIndex < 0 then exit;
+    Dfile := GetDefaultDocFile(True);
+    if DFile = nil then exit;
+
+    FCurrentTopic := TopicListBox.Items[TopicListBox.ItemIndex];
+    Node := DFile.GetModuleTopic(FCurrentTopic);
+    if Node = nil then exit;
+
+    Include(FFlags, fpdefTopicSettingUp);
+    try
+      Child := Node.FindNode('short');
+      if Child <> nil then
+        TopicShort.Text := DFile.GetChildValuesAsString(Child);
+      Child := Node.FindNode('descr');
+      if Child <> nil then
+        TopicDescr.Text := DFile.GetChildValuesAsString(Child);
+      TopicShort.Enabled := True;
+      TopicDescr.Enabled := True;
+      TopicShort.SetFocus;
+    finally
+      Exclude(FFlags, fpdefTopicSettingUp);
+    end;
+  finally
+    if FCurrentTopic='' then
+      ClearTopicControls;
+  end;
 end;
 
 function TFPDocEditor.WriteNode(Element: TCodeHelpElement;
