@@ -72,6 +72,7 @@ type
     AddLinkToInheritedButton: TButton;
     BoldFormatButton: TSpeedButton;
     BrowseExampleButton: TButton;
+    OpenXMLButton: TButton;
     ShortPanel: TPanel;
     DescrShortEdit: TEdit;
     TopicShort: TEdit;
@@ -137,6 +138,7 @@ type
     procedure LinkEditEditingDone(Sender: TObject);
     procedure MoveToInheritedButtonClick(Sender: TObject);
     procedure NewTopicButtonClick(Sender: TObject);
+    procedure OpenXMLButtonClick(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
     procedure SeeAlsoMemoChange(Sender: TObject);
@@ -185,6 +187,7 @@ type
     function GetCurrentUnitName: string;
     function GetCurrentModuleName: string;
     procedure JumpToError(Item : TFPDocItem; LineCol: TPoint);
+    procedure OpenXML;
     function GUIModified: boolean;
     procedure DoEditorUpdate(Sender: TObject);
   private
@@ -267,6 +270,8 @@ begin
   LinkLabel.Caption:=lisLink;
   CreateButton.Caption := lisCodeHelpCreateButton;
   CreateButton.Enabled:=false;
+  OpenXMLButton.Caption:=lisOpenXML;
+  OpenXMLButton.Enabled:=false;
   SaveButton.Caption := '';
   SaveButton.Enabled:=false;
   SaveButton.Hint:=lisHintSave;
@@ -529,6 +534,11 @@ begin
   UpdateTopicCombo;
   TopicListBox.ItemIndex := TopicListBox.Items.IndexOf(NewTopicNameEdit.Text);
   TopicListBoxClick(Sender);
+end;
+
+procedure TFPDocEditor.OpenXMLButtonClick(Sender: TObject);
+begin
+  OpenXML;
 end;
 
 procedure TFPDocEditor.PageControlChange(Sender: TObject);
@@ -810,6 +820,11 @@ begin
     // load default docfile, needed to show syntax errors in xml and for topics
     fDocFile:=GetDefaultDocFile;
   end;
+  OpenXMLButton.Enabled:=fDocFile<>nil;
+  if fDocFile<>nil then
+    OpenXMLButton.Hint:=fDocFile.Filename
+  else
+    OpenXMLButton.Hint:='';
 end;
 
 procedure TFPDocEditor.OnLazDocChanging(Sender: TObject;
@@ -1008,6 +1023,18 @@ begin
   end;
 end;
 
+procedure TFPDocEditor.OpenXML;
+var
+  CurDocFile: TLazFPDocFile;
+begin
+  CurDocFile:=DocFile;
+  if CurDocFile=nil then exit;
+  if FileExistsUTF8(CurDocFile.Filename) then begin
+    LazarusIDE.DoOpenEditorFile(CurDocFile.Filename,-1,-1,
+      [ofOnlyIfExists,ofRegularFile,ofUseCache]);
+  end;
+end;
+
 function TFPDocEditor.GUIModified: boolean;
 begin
   if fpdefReading in FFlags then exit;
@@ -1110,6 +1137,7 @@ begin
 
     Modified := False;
     CreateButton.Enabled:=false;
+    OpenXMLButton.Enabled:=false;
   finally
     Exclude(FFlags,fpdefReading);
   end;

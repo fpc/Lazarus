@@ -4436,6 +4436,7 @@ resourcestring
   lisCodeHelpAddLinkButton = 'Add link';
   lisCodeHelpDeleteLinkButton = 'Delete link';
   lisCodeHelpCreateButton = 'Create help item';
+  lisOpenXML = 'Open XML';
   lisCodeHelpInsertALink = 'Insert a link ...';
   lisCodeHelpInsertParagraphFormattingTag = 'Insert paragraph formatting tag';
   lisCodeHelpSaveButton = 'Save';
