@@ -7062,7 +7062,7 @@ begin
     end;
 
     QEventMouseButtonRelease:
-    QAbstractSlider_triggerAction(QAbstractSliderH(Widget),
+      QAbstractSlider_triggerAction(QAbstractSliderH(Widget),
                         QAbstractSliderSliderNoAction);
   else
     if FOwnWidget then
