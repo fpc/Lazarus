@@ -3137,6 +3137,9 @@ begin
     begin
       LastMouse.Widget := Sender;
       LastMouse.MousePos := MousePos;
+      // do not pass mouse button into keys (TShiftState). issue #20916
+      if ((MButton and QtLeftButton) = 0) and ((MButton and QtRightButton) = 0) and
+        ((MButton and QtMidButton) = 0) then
       Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
       case MButton of
         QtLeftButton: Msg.Msg := LM_LBUTTONUP;

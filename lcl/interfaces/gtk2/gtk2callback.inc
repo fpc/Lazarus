@@ -1924,6 +1924,13 @@ begin
   MessI.YPos := MappedXY.Y;
 
   ShiftState := GTKEventStateToShiftState(Event^.State);
+
+  // do not send button in shiftstate on mouse up.issue #20916
+  case event^.Button of
+    1: ShiftState := ShiftState - [ssLeft];
+    2: ShiftState := ShiftState - [ssMiddle];
+    3: ShiftState := ShiftState - [ssRight];
+  end;
   MessI.Keys := ShiftStateToKeys(ShiftState);
 
   if MessI.Msg <> LM_NULL then
