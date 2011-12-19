@@ -3823,6 +3823,7 @@ begin
     if CurNode.Parent.Desc<>ctnTypeSection then
       SaveRaiseExceptionFmt(ctsNestedDefinitionsAreNotAllowed,[GetAtom]);
   end;
+  // packed class, bitpacked object
   if LastUpAtomIs(0,'PACKED') or LastUpAtomIs(0,'BITPACKED') then begin
     ClassAtomPos:=LastAtoms.GetValueAt(0);
   end else begin
@@ -3865,17 +3866,30 @@ begin
           ReadNextAtom;
         end;
       end
-      else if UpAtomIs('EXTERNAL') and (ClassDesc in [ctnObjCClass,ctnObjCCategory]) then
-      begin
-        CreateChildNode;
-        CurNode.Desc:=ctnClassExternal;
-        ReadNextAtom;
-        if UpAtomIs('NAME') then begin
+      else if UpAtomIs('EXTERNAL') then begin
+        if (ClassDesc in [ctnObjCClass,ctnObjCCategory]) then begin
+          CreateChildNode;
+          CurNode.Desc:=ctnClassExternal;
+          ReadNextAtom;
+          if UpAtomIs('NAME') then begin
+            ReadNextAtom;
+            ReadConstant(true,false,[]);
+          end;
+          CurNode.EndPos:=CurPos.StartPos;
+          EndChildNode;
+        end else if (ClassDesc in [ctnClass]) and (Scanner.Values.IsDefined('JVM'))
+        then begin
+          CreateChildNode;
+          CurNode.Desc:=ctnClassExternal;
           ReadNextAtom;
           ReadConstant(true,false,[]);
+          if UpAtomIs('NAME') then begin
+            ReadNextAtom;
+            ReadConstant(true,false,[]);
+          end;
+          CurNode.EndPos:=CurPos.StartPos;
+          EndChildNode;
         end;
-        CurNode.EndPos:=CurPos.StartPos;
-        EndChildNode;
       end;
     end;
     if (CurPos.Flag=cafRoundBracketOpen) then begin
