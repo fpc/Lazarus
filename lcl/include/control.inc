@@ -3442,6 +3442,57 @@ begin
   DebugLn;
 end;
 
+procedure TControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
+  const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer);
+var
+  lXProportion, lYProportion: Double;
+  NewLeft, NewTop, NewHeight, NewWidth: Integer;
+begin
+  // X-axis adjustment
+  if AMode = lapAutoAdjustWithoutHorizontalScrolling then
+  begin
+    lXProportion := ANewFormWidth / AOldFormWidth;
+  end
+  else if AMode = lapAutoAdjustForDPI then
+  begin
+    lXProportion := AToDPI / AFromDPI;
+  end;
+
+  // y-axis adjustment
+  lYProportion := AToDPI / AFromDPI;
+
+  // Apply the changes
+  if (AMode = lapAutoAdjustWithoutHorizontalScrolling) or
+   (AMode = lapAutoAdjustForDPI) then
+  begin
+    if ShouldAutoAdjustLeftAndTop then
+    begin
+      NewLeft := Round(Left * lXProportion);
+      NewTop := Round(Top * lYProportion);
+    end
+    else
+    begin
+      NewLeft := Left;
+      NewTop := Top;
+    end;
+    NewWidth := Round(Width * lXProportion);
+    NewHeight := Round(Height * lYProportion);
+    SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
+  end;
+end;
+
+// The layout should only be auto-adjusted for controls with the most simple
+// default absolute positioning
+function TControl.ShouldAutoAdjustLayout: Boolean;
+begin
+  Result := (Align = alNone) and (Anchors = [akTop, akLeft])
+end;
+
+function TControl.ShouldAutoAdjustLeftAndTop: Boolean;
+begin
+  Result := Parent <> nil;
+end;
+
 procedure TControl.UpdateAnchorRules;
 begin
   UpdateBaseBounds(true,true,false);

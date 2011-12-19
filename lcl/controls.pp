@@ -880,6 +880,15 @@ type
     chtOnKeyDown
     );
 
+  TLayoutAdjustmentPolicy = (
+    lapDefault,     // widgetset dependent
+    lapFixedLayout, // A fixed absolute layout in all platforms
+    lapAutoAdjustWithoutHorizontalScrolling, // Smartphone platforms use this one,
+                                             // the x axis is stretched to fill the screen and
+                                             // the y is scaled to fit the DPI
+    lapAutoAdjustForDPI // For desktops using High DPI, scale x and y to fit the DPI
+  );
+
 {* Note on TControl.Caption
  * The VCL implementation relies on the virtual Get/SetTextBuf to
  * exchange text between widgets and VCL. This means a lot of
@@ -1347,6 +1356,10 @@ type
     property ReadBounds: TRect read FReadBounds;
     property BaseParentClientSize: TSize read FBaseParentClientSize;
     procedure WriteLayoutDebugReport(const Prefix: string); virtual;
+    procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
+      const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer); virtual;
+    function ShouldAutoAdjustLayout: Boolean; virtual;
+    function ShouldAutoAdjustLeftAndTop: Boolean; virtual;
   public
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;
@@ -1977,6 +1990,8 @@ type
     procedure ReAlign; // realign all children
     procedure ScrollBy(DeltaX, DeltaY: Integer); virtual;
     procedure WriteLayoutDebugReport(const Prefix: string); override;
+    procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
+      const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer); override;
   public
     constructor Create(TheOwner: TComponent);override;
     constructor CreateParented(AParentWindow: HWND);
