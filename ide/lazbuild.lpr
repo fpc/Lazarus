@@ -25,6 +25,9 @@ program lazbuild;
 {$mode objfpc}{$H+}
 
 uses
+  {$IFDEF unix}
+  cthreads,
+  {$ENDIF}
   Classes, SysUtils, CustApp, LCLProc, Dialogs, Forms, Controls, FileUtil,
   Interfaces, InterfaceBase, UTF8Process, LConvEncoding,
   // codetools
