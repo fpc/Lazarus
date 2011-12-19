@@ -448,6 +448,12 @@ begin
   end;
 end;
 
+function TCocoaWidgetSet.GetActiveWindow: HWND;
+begin
+  // return the currect application active window
+  Result := HWND(NSApp.keyWindow);
+end;
+
 {------------------------------------------------------------------------------
   function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 
@@ -994,6 +1000,25 @@ begin
   {$IFDEF VerboseWinAPI}
     DebugLn('[TCocoaWidgetSet.GetDC] hWnd: %x Result: %x', [hWnd, Result]);
   {$ENDIF}
+end;
+
+function TCocoaWidgetSet.GetForegroundWindow: HWND;
+//var
+//  App: NSRunningApplication;
+begin
+  // return the currect active window in the system
+{ this is not possible because we can't access another application NSApplication
+  for App in NSWorkSpace.sharedWorkspace.runningApplications do
+    if App.isActive then
+    begin
+      Result := HWND(App.keyWindow);
+      Exit;
+    end;
+}
+  if NSApp.isActive then
+    Result := HWND(NSApp.keyWindow)
+  else
+    Result := 0;
 end;
 
 function TCocoaWidgetSet.SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;

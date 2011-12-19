@@ -87,10 +87,10 @@ function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
 function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool; override;
 {function Frame(DC: HDC; const ARect: TRect): Integer; override;
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; override;
-function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
+function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;}
 
-function GetActiveWindow : HWND; override;
-function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;
+function GetActiveWindow: HWND; override;
+{function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;
 function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;}
@@ -104,8 +104,9 @@ function GetDC(hWnd: HWND): HDC; override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
 function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
-function GetFocus: HWND; override;
-function GetKeyState(nVirtKey: Integer): Smallint; override;}
+function GetFocus: HWND; override;}
+function GetForegroundWindow: HWND; override;
+{function GetKeyState(nVirtKey: Integer): Smallint; override;}
 function GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; override;
 {function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;}
 function GetParent(Handle: HWND): HWND; override;
