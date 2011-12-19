@@ -23,6 +23,7 @@ inherited RegistersDlg: TRegistersDlg
         Caption = 'Value'
       end>
     MultiSelect = True
+    PopupMenu = PopupDispType
     RowSelect = True
     SmallImages = ImageList1
     TabOrder = 0
@@ -50,12 +51,12 @@ inherited RegistersDlg: TRegistersDlg
     object ToolButton1: TToolButton
       Left = 24
       Top = 2
-      Width = 8
+      Width = 10
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
     object ToolButtonDispType: TToolButton
-      Left = 32
+      Left = 34
       Top = 2
       Caption = '...'
       DropdownMenu = PopupDispType
