@@ -1048,30 +1048,50 @@ begin
   {$ENDIF}
 end;
 
+function TCocoaWidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  if Assigned(ctx) then
+  begin
+    Result := ctx.BkColor;
+    ctx.BkColor := Color;
+  end
+  else
+    Result := CLR_INVALID;
+end;
+
+function TCocoaWidgetSet.SetBkMode(DC: HDC; bkMode: Integer): Integer;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  if Assigned(ctx) then
+  begin
+    Result := ctx.BkMode;
+    ctx.BkMode := bkMode;
+  end
+  else
+    Result := 0;
+end;
+
 function TCocoaWidgetSet.RectVisible(DC: HDC; const ARect: TRect): Boolean;
 var
   ClipBox: CGRect;
   ctx : TCocoaContext;
   R: TRect;
 begin
-  Result := False;
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx) and (ARect.Right > ARect.Left) and (ARect.Bottom > ARect.Top);
 
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.RectVisible DC: ' + DbgS(DC) + ' R: ' + DbgS(ARect));
-  {$ENDIF}
-
-  ctx:=CheckDC(DC);
-  if not Assigned(ctx) or (ARect.Right <= ARect.Left) or (ARect.Bottom <= ARect.Top) then Exit;
+  if not Result then Exit;
 
   // In Quartz 2D there is no direct access to clipping path of CGContext,
   // therefore we can only test bounding box of the clipping path.
 
   ClipBox := CGContextGetClipBoundingBox(ctx.CGContext);
   Result := IntersectRect(R, ARect, CGRectToRect(ClipBox));
-
-  {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.RectVisible Result: ' + DbgS(Result) + ' Clip: ' + DbgS(CGRectToRect(ClipBox)));
-  {$ENDIF}
 end;
 
 function TCocoaWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;

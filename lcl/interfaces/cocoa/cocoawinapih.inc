@@ -134,7 +134,6 @@ function HideCaret(hWnd: HWND): Boolean; override;}
 
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
-{function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;}
 function IsWindowEnabled(Handle: HWND): boolean; override;
 function IsWindowVisible(Handle: HWND): boolean; override;
 
@@ -163,10 +162,10 @@ function ScreenToClient(Handle: HWND; var P: TPoint): Integer; override;
 function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
 {function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;
-function SetActiveWindow(Handle: HWND): HWND; override;
+function SetActiveWindow(Handle: HWND): HWND; override;}
 function SetBKColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
-function SetCapture(AHandle: HWND): HWND; override;
+{function SetCapture(AHandle: HWND): HWND; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;}

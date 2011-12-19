@@ -122,7 +122,7 @@ type
     procedure SetBitmap(ABitmap: TCocoaBitmap);
     procedure SetImage(AImage: NSImage);
   public
-    constructor CreateDefault;
+    constructor CreateDefault(const AGlobal: Boolean = False);
     constructor Create(const ALogBrush: TLogBrush; const AGlobal: Boolean = False);
     constructor Create(const AColor: NSColor; const AGlobal: Boolean = False);
     destructor Destroy; override;
@@ -256,11 +256,11 @@ type
     CurrentPen: TCocoaPen;
     CurrentRegion: TCocoaRegion;
 
-    {BkColor: TColor;
+    BkColor: TColor;
     BkMode: Integer;
     BkBrush: TCocoaBrush;
 
-    TextColor: TColor;
+    {TextColor: TColor;
     TextBrush: TCocoaBrush;}
 
     ROP2: Integer;
@@ -271,6 +271,9 @@ type
 
   TCocoaContext = class(TObject)
   private
+    FBkBrush: TCocoaBrush;
+    FBkColor: TColor;
+    FBkMode: Integer;
     FROP2: Integer;
     FText   : TCocoaTextLayout;
     FBrush  : TCocoaBrush;
@@ -283,6 +286,8 @@ type
     FSavedDCList: TFPObjectList;
     FPenPos: TPoint;
     procedure SetBitmap(const AValue: TCocoaBitmap);
+    procedure SetBkColor(AValue: TColor);
+    procedure SetBkMode(AValue: Integer);
     procedure SetBrush(const AValue: TCocoaBrush);
     procedure SetFont(const AValue: TCocoaFont);
     procedure SetPen(const AValue: TCocoaPen);
@@ -325,6 +330,10 @@ type
     property Clipped: Boolean read FClipped;
     property PenPos: TPoint read FPenPos write FPenPos;
     property ROP2: Integer read FROP2 write SetROP2;
+
+    property BkColor: TColor read FBkColor write SetBkColor;
+    property BkMode: Integer read FBkMode write SetBkMode;
+    property BkBrush: TCocoaBrush read FBkBrush;
 
     property Brush: TCocoaBrush read FBrush write SetBrush;
     property Pen: TCocoaPen read FPen write SetPen;
@@ -710,6 +719,22 @@ begin
   end;
 end;
 
+procedure TCocoaContext.SetBkColor(AValue: TColor);
+begin
+  AValue := TColor(ColorToRGB(AValue));
+  FBkColor := AValue;
+  FBkBrush.SetColor(AValue, BkMode = OPAQUE);
+end;
+
+procedure TCocoaContext.SetBkMode(AValue: Integer);
+begin
+  if FBkMode <> AValue then
+  begin
+    FBkMode := AValue;
+    FBkBrush.SetColor(FBkColor, FBkMode = OPAQUE);
+  end;
+end;
+
 procedure TCocoaContext.SetBrush(const AValue: TCocoaBrush);
 begin
   if FBrush <> AValue then
@@ -764,12 +789,12 @@ begin
   Result.CurrentBrush := FBrush;
   Result.CurrentPen := FPen;
   Result.CurrentRegion := FRegion;
-{
+
   Result.BkColor := FBkColor;
   Result.BkMode := FBkMode;
   Result.BkBrush := FBkBrush;
 
-  Result.TextColor := FTextColor;
+{  Result.TextColor := FTextColor;
   Result.TextBrush := FTextBrush;}
 
   Result.ROP2 := FROP2;
@@ -814,11 +839,11 @@ begin
   end;
   FRegion := AData.CurrentRegion;
 
-{  FBkColor := AData.BkColor;
+  FBkColor := AData.BkColor;
   FBkMode := AData.BkMode;
   FBkBrush := AData.BkBrush;
 
-  FTextColor := AData.TextColor;
+{  FTextColor := AData.TextColor;
   FTextBrush := AData.TextBrush;}
 
   FROP2 := AData.ROP2;
@@ -828,6 +853,9 @@ end;
 constructor TCocoaContext.Create;
 begin
   inherited Create;
+
+  FBkBrush := TCocoaBrush.CreateDefault;
+
   FBrush := TCocoaBrush.CreateDefault;
   FBrush.AddRef;
   FPen := TCocoaPen.CreateDefault;
@@ -843,6 +871,7 @@ end;
 
 destructor TCocoaContext.Destroy;
 begin
+  FBkBrush.Free;
   if Assigned(FBrush) then
   begin
     FBrush.Release;
@@ -1740,9 +1769,9 @@ begin
     Ord(FColored), ACallBacks);
 end;
 
-constructor TCocoaBrush.CreateDefault;
+constructor TCocoaBrush.CreateDefault(const AGlobal: Boolean = False);
 begin
-  inherited Create(clWhite, True, False);
+  inherited Create(clWhite, True, AGlobal);
   FBitmap := nil;
   FImage := nil;
   FCGPattern := nil;
