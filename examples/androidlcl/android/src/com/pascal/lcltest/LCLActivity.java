@@ -15,7 +15,7 @@ public class LCLActivity extends Activity
   // -------------------------------------------
   // Our drawing surface
   // -------------------------------------------
-  private class LCLSurface extends SurfaceView
+  private class LCLSurface extends View
   {
     public LCLSurface(Context context)
     {
@@ -31,6 +31,7 @@ public class LCLActivity extends Activity
 
     @Override protected void onDraw(Canvas canvas)
     {
+      //Log.i("lclapp", "onDraw started");
       int lWidth = getWidth();
       int lHeight = getHeight();
 
@@ -47,6 +48,7 @@ public class LCLActivity extends Activity
       Bitmap localbitmap = Bitmap.createBitmap(lWidth, lHeight, Bitmap.Config.ARGB_8888);
       LCLDrawToBitmap(lWidth, lHeight, localbitmap);
       canvas.drawBitmap(localbitmap, 0, 0, null);
+      //Log.i("lclapp", "onDraw finished");
     }
 
     @Override public boolean onKeyDown (int keyCode, KeyEvent event)
@@ -128,7 +130,8 @@ public class LCLActivity extends Activity
     lclxdpi = (int) metrics.xdpi;
     lclydpi = (int) metrics.ydpi;
     // Don't call LCLOnConfigurationChanged, wait for a onDraw instead
-    lclsurface.postInvalidate();
+    //lclsurface.postInvalidate();
+    //Log.i("lclapp", "onConfigurationChanged finished");
   }
 
   // -------------------------------------------
