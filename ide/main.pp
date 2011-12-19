@@ -9294,7 +9294,7 @@ begin
   DiskFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(AFilename);
   if DiskFilename<>AFilename then begin
     // the case is different
-    DebugLn(['TMainIDE.DoOpenEditorFile Fixing file case: ',AFilename,' -> ',DiskFilename]);
+    DebugLn(['TMainIDE.DoOpenEditorFile Fixing file name: ',AFilename,' -> ',DiskFilename]);
     AFilename:=DiskFilename;
   end;
 
