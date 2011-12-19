@@ -34,13 +34,16 @@ public class LCLActivity extends Activity
       //Log.i("lclapp", "onDraw started");
       int lWidth = getWidth();
       int lHeight = getHeight();
-
-      // Check if we rotated in the draw event, OnConfigurationChanged can't return the new form width =(
-      // see http://stackoverflow.com/questions/2524683/how-to-get-new-width-height-of-root-layout-in-onconfigurationchanged
-      if (lWidth != lclformwidth) LCLOnConfigurationChanged(lclxdpi, lWidth); // we send xdpi because thats what the LCL uses for Screen.PixelsPerInch
+      int oldlclformwidth = lclformwidth;
 
       lclformwidth = lWidth;
       lclformheight = lHeight;
+      lclscreenwidth = lclformwidth;
+      lclscreenheight = lclformheight;
+
+      // Check if we rotated in the draw event, OnConfigurationChanged can't return the new form width =(
+      // see http://stackoverflow.com/questions/2524683/how-to-get-new-width-height-of-root-layout-in-onconfigurationchanged
+      if (lWidth != oldlclformwidth) LCLOnConfigurationChanged(lclxdpi, lWidth); // we send xdpi because thats what the LCL uses for Screen.PixelsPerInch
 
       //Log.v("lclproject", "LCLSurface.onDraw width=" + Integer.toString(lWidth)
       //  + " height=" + Integer.toString(lHeight));
@@ -251,19 +254,23 @@ public class LCLActivity extends Activity
 
   private Handler LocalHandler = new Handler();
 
+  private class LCLRunnable implements Runnable
+  {
+    public boolean Destroyed = false;
+
+    public void run()
+    {
+      int eventResult = LCLOnTimer(this);
+      if (((eventResult | 1) != 0) && (lclsurface != null)) lclsurface.postInvalidate();
+      if (this.Destroyed == false) LocalHandler.postDelayed(this, lcltimerinterval);
+    }
+  };
+
   // input:  int lcltimerinterval in milliseconds
   // output:  Runnable lcltimerid
   public void LCLDoCreateTimer()
   {
-    lcltimerid = new Runnable()
-    {
-      public void run()
-      {
-        int eventResult = LCLOnTimer(this);
-        if (((eventResult | 1) != 0) && (lclsurface != null)) lclsurface.postInvalidate();
-        LocalHandler.postDelayed(this, lcltimerinterval);
-      }
-    };
+    lcltimerid = new LCLRunnable();
 
     LocalHandler.removeCallbacks(lcltimerid);
     LocalHandler.postDelayed(lcltimerid, lcltimerinterval);
@@ -273,6 +280,7 @@ public class LCLActivity extends Activity
   public void LCLDoDestroyTimer()
   {
     LocalHandler.removeCallbacks(lcltimerid);
+    ((LCLRunnable) lcltimerid).Destroyed = true;
   };
 
   public void LCLDoHideVirtualKeyboard()

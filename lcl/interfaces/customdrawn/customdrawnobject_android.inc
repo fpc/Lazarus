@@ -807,6 +807,7 @@ function TCDWidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
 var
   lTimer: TCDTimer;
 begin
+  DebugLn('[TCDWidgetSet.DestroyTimer]');
   Result := False;
 
   lTimer := TCDTimer(TimerHandle);
