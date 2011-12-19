@@ -138,33 +138,36 @@ type
     cmOBJFPC,
     cmMacPas,
     cmISO);
+  { TCompilerModeSwitch - see fpc/compiler/globtype.pas  }
   TCompilerModeSwitch = (
-    cmsClass,
-    cmsObjpas,
-    cmsResult,
-    cmsString_pchar,
-    cmsCvar_support,
-    cmsNested_comment,
-    cmsTp_procvar,
-    cmsMac_procvar,
-    cmsRepeat_forward,
-    cmsPointer_2_procedure,
-    cmsAutoderef,
-    cmsInitfinal,
+    cmsClass,         { delphi class model }
+    cmsObjpas,        { load objpas unit }
+    cmsResult,        { result in functions }
+    cmsString_pchar,  { pchar 2 string conversion }
+    cmsCvar_support,  { cvar variable directive }
+    cmsNested_comment,{ nested comments }
+    cmsTp_procvar,    { tp style procvars (no @ needed) }
+    cmsMac_procvar,   { macpas style procvars }
+    cmsRepeat_forward,      { repeating forward declarations is needed }
+    cmsPointer_2_procedure, { allows the assignement of pointers to  procedure variables }
+    cmsAutoderef,           { does auto dereferencing of struct. vars }
+    cmsInitfinal,           { initialization/finalization for units }
     cmsAdd_pointer,
-    cmsDefault_ansistring,
-    cmsOut,
-    cmsDefault_para,
-    cmsHintdirective,
-    cmsDuplicate_names,
-    cmsProperty,
-    cmsDefault_inline,
-    cmsExcept,
-    cmsObjectiveC1,
-    cmsObjectiveC2,
-    cmsNestedProcVars,
-    cmsNonLocalGoto,
-    cmsAdvancedRecords
+    cmsDefault_ansistring, { ansistring turned on by default }
+    cmsOut,                { support the calling convention OUT }
+    cmsDefault_para,       { support default parameters }
+    cmsHintdirective,      { support hint directives }
+    cmsDuplicate_names,    { allow locals/paras to have duplicate names of globals }
+    cmsProperty,           { allow properties }
+    cmsDefault_inline,     { allow inline proc directive }
+    cmsExcept,             { allow exception-related keywords }
+    cmsObjectiveC1,        { support interfacing with Objective-C (1.0) }
+    cmsObjectiveC2,        { support interfacing with Objective-C (2.0) }
+    cmsNestedProcVars,     { support nested procedural variables }
+    cmsNonLocalGoto,       { support non local gotos (like iso pascal) }
+    cmsAdvancedRecords,    { advanced record syntax with visibility sections, methods and properties }
+    cmsISOLike_unary_minus,{ unary minus like in iso pascal: same precedence level as binary minus/plus }
+    cmsSystemcodepage      { use system codepage as compiler codepage by default, emit ansistrings with system codepage }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
@@ -560,10 +563,12 @@ type
   end;
 
 const
+  // upper case
   CompilerModeNames: array[TCompilerMode] of shortstring=(
         'FPC', 'DELPHI', 'GPC', 'TP', 'OBJFPC', 'MACPAS', 'ISO'
      );
 
+  // upper case
   CompilerModeSwitchNames: array[TCompilerModeSwitch] of shortstring=(
         'CLASS', 'OBJPAS', 'RESULT', 'PCHARTOSTRING', 'CVAR',
         'NESTEDCOMMENTS', 'CLASSICPROCVARS', 'MACPROCVARS', 'REPEATFORWARD',
@@ -571,8 +576,9 @@ const
         'ANSISTRINGS', 'OUT', 'DEFAULTPARAMETERS', 'HINTDIRECTIVE',
         'DUPLICATELOCALS', 'PROPERTIES', 'ALLOWINLINE', 'EXCEPTIONS',
         'OBJECTIVEC1', 'OBJECTIVEC2', 'NESTEDPROCVARS', 'NONLOCALGOTO',
-        'ADVANCEDRECORDS');
+        'ADVANCEDRECORDS', 'ISOLIKE_UNARY_MINUS', 'SYSTEMCODEPAGE');
 
+  // upper case
   PascalCompilerNames: array[TPascalCompiler] of shortstring=(
         'FPC', 'DELPHI'
      );
