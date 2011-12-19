@@ -401,8 +401,7 @@ begin
 
   Result := 0;
 
-{  if DC = 0 then DC := HDC(ScreenDC);
-
+  if DC = 0 then DC := HDC(ScreenDC);
   LazDC := TLazCanvas(DC);
 
   case Index of
@@ -418,17 +417,17 @@ begin
       Result := 1;
 //    SIZEPALETTE:
 //      Result := QPaintDevice_numColors(PaintDevice);
-    LOGPIXELSX:
+{    LOGPIXELSX:
       Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclxdpi;
     LOGPIXELSY:
-      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclydpi;
+      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclydpi;}
 //    VERTRES:
 //      Result := QPaintDevice_height(PaintDevice);
     NUMRESERVED:
       Result := 0;
     else
       Result := 0;
-  end;}
+  end;
 end;
 
 (*{------------------------------------------------------------------------------
@@ -823,23 +822,7 @@ begin
   if CGWarpMouseCursorPosition(CursorPos) <> noErr then Exit;
   Result := True;
 end;
-
-{------------------------------- FONT AND TEXT --------------------------------}
-
-function TCocoaWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
-var
-  ctx : TCocoaContext;
-begin
-  ctx:=CheckDC(DC);
-  if not Assigned(ctx) then begin
-    Result:=0;
-    Exit;
-  end;
-  with ctx do begin
-    Result:=RGBToColorFloat(TR, TG, TB);
-    ColorToRGBFloat(Color, TR, TG, TB);
-  end;
-end;
+*)
 
 {------------------------------------------------------------------------------
   Method:  GetSystemMetrics
@@ -848,7 +831,7 @@ end;
 
   Retrieves various system metrics.
  ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
+function TCDWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 begin
   Result := 0;
 
@@ -895,18 +878,6 @@ begin
     DebugLn('TCocoaWidgetSet.GetSystemMetrics Result: ' + DbgS(Result));
   {$ENDIF}
 end;
-
-function TCocoaWidgetSet.GetTextColor(DC: HDC) : TColorRef;
-var
-  ctx : TCocoaContext;
-begin
-  ctx:=CheckDC(DC);
-  if not Assigned(ctx) then begin
-    Result:=0;
-    Exit;
-  end;
-  with ctx do Result:=RGBToColorFloat(TR, TG, TB);
-end;*)
 
 {$ifdef CD_UseNativeText}
 {------------------------------------------------------------------------------

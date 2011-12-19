@@ -190,6 +190,9 @@ begin
   {if Application.ApplicationType = atDefault then
     Application.ApplicationType := GetWinCEPlatform();}
 
+  if Application.LayoutAdjustmentPolicy = lapDefault then
+    Application.LayoutAdjustmentPolicy := lapFixedLayout;
+
   //Init stock objects;
   FStockNullBrush := Windows.CreateSolidBrush(0);
   FStockBlackBrush := Windows.CreateSolidBrush($000000);
@@ -552,11 +555,6 @@ begin
   // 2. Recreate the main form - so it will (not) have an own taskbar item and WndParent = 0 (AppHandle)
   if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
     RecreateWnd(Application.MainForm);
-end;
-
-procedure TCDWidgetSet.ResolveDefaultLayoutAdjustmentPolicy(var AMode: TLayoutAdjustmentPolicy);
-begin
-  AMode := lapFixedLayout;
 end;
 
 {------------------------------------------------------------------------------

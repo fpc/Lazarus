@@ -90,6 +90,9 @@ begin
 //  DebugLn('TCDWidgetSet.AppInit');
   {$endif}
 
+  if Application.ApplicationType = atDefault then
+    Application.ApplicationType := atDesktop;
+
   if Application.LayoutAdjustmentPolicy = lapDefault then
     Application.LayoutAdjustmentPolicy := lapFixedLayout;
 

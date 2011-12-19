@@ -36,6 +36,12 @@ begin
     DebugLn('TCDWidgetSet.AppInit');
   {$ENDIF}
 
+  if Application.ApplicationType = atDefault then
+    Application.ApplicationType := atDesktop;
+
+  if Application.LayoutAdjustmentPolicy = lapDefault then
+    Application.LayoutAdjustmentPolicy := lapFixedLayout;
+
   Application.ExtendedKeysSupport := True;
 
   delegate:=TCDAppDelegate.alloc;
@@ -352,11 +358,6 @@ procedure InternalFinal;
 begin
   if Assigned(ScreenContext) then ScreenContext.Free;
 end;*)
-
-procedure TCDWidgetSet.ResolveDefaultLayoutAdjustmentPolicy(var AMode: TLayoutAdjustmentPolicy);
-begin
-  AMode := lapFixedLayout;
-end;
 
 { TCDAppDelegate }
 
