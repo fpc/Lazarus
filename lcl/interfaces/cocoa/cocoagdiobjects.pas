@@ -54,8 +54,18 @@ type
     property RefCount: Integer read FRefCount;
   end;
 
-  TCocoaRegionType = (crt_Empty, crt_Rectangle, crt_Complex);
-  TCocoaCombine = (cc_And, cc_Xor, cc_Or, cc_Diff, cc_Copy);
+  TCocoaRegionType = (
+    crt_Error,
+    crt_Empty,
+    crt_Rectangle,
+    crt_Complex);
+
+  TCocoaCombine = (
+    cc_And,
+    cc_Xor,
+    cc_Or,
+    cc_Diff,
+    cc_Copy);
 
   { TCocoaRegion }
 
@@ -74,6 +84,7 @@ type
     function GetType: TCocoaRegionType;
     function ContainsPoint(const P: TPoint): Boolean;
     procedure SetShape(AShape: HIShapeRef);
+    procedure Clear;
     function CombineWith(ARegion: TCocoaRegion; CombineMode: TCocoaCombine): Boolean;
   public
     property Shape: HIShapeRef read FShape write SetShape;
@@ -306,8 +317,8 @@ type
     procedure SetAntialiasing(AValue: Boolean);
 
     function GetClipRect: TRect;
-    function SetClipRegion(AClipRegion: TCocoaRegion; Mode: TCocoaCombine): Integer;
-    function CopyClipRegion(ADstRegion: TCocoaRegion): Integer;
+    function SetClipRegion(AClipRegion: TCocoaRegion; Mode: TCocoaCombine): TCocoaRegionType;
+    function CopyClipRegion(ADstRegion: TCocoaRegion): TCocoaRegionType;
 
     property PenPos: TPoint read FPenPos write FPenPos;
     property Brush: TCocoaBrush read FBrush write SetBrush;
@@ -657,7 +668,7 @@ begin
   Result := CGRectToRect(CGContextGetClipBoundingBox(CGContext));
 end;
 
-function TCocoaContext.SetClipRegion(AClipRegion: TCocoaRegion; Mode: TCocoaCombine): Integer;
+function TCocoaContext.SetClipRegion(AClipRegion: TCocoaRegion; Mode: TCocoaCombine): TCocoaRegionType;
 begin
   if FClipped then
   begin
@@ -666,26 +677,23 @@ begin
   end;
 
   if not Assigned(AClipRegion) then
-  begin
-    HIShapeSetEmpty(FClipRegion.Shape);
-    Result := LCLType.NullRegion;
-  end
+    FClipRegion.Clear
   else
   begin
     ctx.saveGraphicsState;
     FClipRegion.CombineWith(AClipRegion, Mode);
     FClipRegion.Apply(Self);
     FClipped := True;
-    Result := LCLType.ComplexRegion;
   end;
+  Result := FClipRegion.GetType;
 end;
 
-function TCocoaContext.CopyClipRegion(ADstRegion: TCocoaRegion): Integer;
+function TCocoaContext.CopyClipRegion(ADstRegion: TCocoaRegion): TCocoaRegionType;
 begin
   if Assigned(ADstRegion) and ADstRegion.CombineWith(FClipRegion, cc_Copy) then
-    Result := LCLType.ComplexRegion
+    Result := ADstRegion.GetType
   else
-    Result := LCLType.Error;
+    Result := crt_Error;
 end;
 
 procedure TCocoaContext.SetBitmap(const AValue: TCocoaBitmap);
@@ -1449,6 +1457,11 @@ procedure TCocoaRegion.SetShape(AShape: HIShapeRef);
 begin
   if Assigned(FShape) then CFRelease(FShape);
   FShape := AShape;
+end;
+
+procedure TCocoaRegion.Clear;
+begin
+  HIShapeSetEmpty(FShape)
 end;
 
 function TCocoaRegion.CombineWith(ARegion: TCocoaRegion; CombineMode: TCocoaCombine): Boolean;

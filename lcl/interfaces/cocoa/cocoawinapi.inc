@@ -26,9 +26,9 @@
 
 //##apiwiz##sps##   // Do not remove, no wizard declaration before this line
 
-function CocoaCombineMode(fnCombineMode: Integer): TCocoaCombine;
+function CocoaCombineMode(ACombineMode: Integer): TCocoaCombine;
 begin
-  case fnCombineMode of
+  case ACombineMode of
     RGN_AND:  Result:=cc_And;
     RGN_OR:   Result:=cc_Or;
     RGN_XOR:  Result:=cc_Xor;
@@ -37,6 +37,14 @@ begin
     Result:=cc_Copy;
   end;
 end;
+
+const
+  CocoaRegionTypeToWin32Map: array[TCocoaRegionType] of Integer = (
+ { crt_Error     } ERROR,
+ { crt_Empty     } NULLREGION,
+ { crt_Rectangle } SIMPLEREGION,
+ { crt_Complex   } COMPLEXREGION
+  );
 
 function TCocoaWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
 begin
@@ -367,7 +375,7 @@ var
 begin
   ctx := CheckDC(DC);
   if Assigned(ctx) then
-    Result := ctx.SetClipRegion(TCocoaRegion(rgn), CocoaCombineMode(Mode))
+    Result := CocoaRegionTypeToWin32Map[ctx.SetClipRegion(TCocoaRegion(rgn), CocoaCombineMode(Mode))]
   else
     Result := ERROR;
 end;
@@ -507,7 +515,7 @@ var
 begin
   ctx := CheckDC(DC);
   if Assigned(ctx) and (RGN <> 0) then
-    Result := ctx.CopyClipRegion(TCocoaRegion(RGN))
+    Result := CocoaRegionTypeToWin32Map[ctx.CopyClipRegion(TCocoaRegion(RGN))]
   else
     Result := ERROR;
 end;
