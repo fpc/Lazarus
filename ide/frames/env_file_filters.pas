@@ -140,8 +140,13 @@ begin
         inc(p);
       end;
     end;
-    cfg.SetValue(KeyFilterCount, Cnt);
-    cfg.WriteToDisk;
+    if Cnt>0 then begin
+      cfg.SetValue(KeyFilterCount, Cnt);
+      cfg.WriteToDisk;
+    end else if FileExistsUTF8(cfg.GetFilename) then begin
+      // delete unneeded file
+      DeleteFileUTF8(cfg.GetFilename);
+    end;
   finally
     cfg.Free;
   end;
