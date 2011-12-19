@@ -135,7 +135,7 @@ procedure TListFilterEdit.SortAndFilter;
 var
   Origi, i: Integer;
   s: string;
-  Pass, Done, Checked: Boolean;
+  Pass, Done: Boolean;
 begin
   Done:=False;
   fSortedData.Clear;

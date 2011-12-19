@@ -338,10 +338,7 @@ end;
 
 procedure TTreeFilterEdit.ApplyFilterCore;
 var
-  TVNode: TTreeNode;
   i: Integer;
-  FileN, s: string;
-  ena: Boolean;
 begin
   fFilteredTreeview.BeginUpdate;
   if Assigned(fBranches) then begin      // Filter the brances
@@ -358,8 +355,7 @@ end;
 procedure TTreeFilterEdit.SortAndFilter;
 // Copy data from fOriginalData to fSortedData in sorted order
 var
-  Origi, i: Integer;
-  FileN: string;
+  i: Integer;
 begin
   if Assigned(fBranches) then begin      // Filter the brances
     for i:=0 to fBranches.Count-1 do
