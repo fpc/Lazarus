@@ -1,7 +1,7 @@
 # Massimo Soricetti <notturno@quipo.it>, 2011.
-msgid ""
+msgid "\""
 msgstr ""
-"PO-Revision-Date: 2011-04-20 17:51+0200\n"
+"\"PO-Revision-Date: 2011-04-20 17:51+0200\n"
 "Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
@@ -12,30 +12,44 @@ msgstr ""
 "X-Generator: Virtaal 0.5.1\n"
 
 #: syndesignstringconstants.syndsbookmarks
+#, fuzzy
+#| msgid "Bookmarks\""
 msgid "Bookmarks"
-msgstr "Segnalibri"
+msgstr "Segnalibri\""
 
 #: syndesignstringconstants.syndschangemarker
+#, fuzzy
+#| msgid "Change Marker\""
 msgid "Change Marker"
-msgstr "Cambia marcatore"
+msgstr "Cambia marcatore\""
 
 #: syndesignstringconstants.syndscodefolding
+#, fuzzy
+#| msgid "Code Folding\""
 msgid "Code Folding"
-msgstr "Collassatura del codice"
+msgstr "Collassatura del codice\""
 
 #: syndesignstringconstants.syndslinenumbers
+#, fuzzy
+#| msgid "Line Numbers\""
 msgid "Line Numbers"
-msgstr "Numeri di riga"
+msgstr "Numeri di riga\""
 
 #: syndesignstringconstants.syndslineoverview
+#, fuzzy
+#| msgid "Line Overview\""
 msgid "Line Overview"
-msgstr "Sommario riga"
+msgstr "Sommario riga\""
 
 #: syndesignstringconstants.syndsresetmouseactions
+#, fuzzy
+#| msgid "Reset mouse actions\""
 msgid "Reset mouse actions"
-msgstr ""
+msgstr "\""
 
 #: syndesignstringconstants.syndsseparator
+#, fuzzy
+#| msgid "Separator\""
 msgid "Separator"
-msgstr "Separatore"
+msgstr "Separatore\""
 

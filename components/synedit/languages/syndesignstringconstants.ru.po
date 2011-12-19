@@ -1,6 +1,6 @@
-msgid ""
+msgid "\""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
+"\"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
@@ -10,30 +10,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: syndesignstringconstants.syndsbookmarks
+#, fuzzy
+#| msgid "Bookmarks\""
 msgid "Bookmarks"
-msgstr "Закладки"
+msgstr "Закладки\""
 
 #: syndesignstringconstants.syndschangemarker
+#, fuzzy
+#| msgid "Change Marker\""
 msgid "Change Marker"
-msgstr "Метка изменённой строки"
+msgstr "Метка изменённой строки\""
 
 #: syndesignstringconstants.syndscodefolding
+#, fuzzy
+#| msgid "Code Folding\""
 msgid "Code Folding"
-msgstr "Сворачивание кода"
+msgstr "Сворачивание кода\""
 
 #: syndesignstringconstants.syndslinenumbers
+#, fuzzy
+#| msgid "Line Numbers\""
 msgid "Line Numbers"
-msgstr "Номера строк"
+msgstr "Номера строк\""
 
 #: syndesignstringconstants.syndslineoverview
+#, fuzzy
+#| msgid "Line Overview\""
 msgid "Line Overview"
-msgstr "Граница строк"
+msgstr "Граница строк\""
 
 #: syndesignstringconstants.syndsresetmouseactions
+#, fuzzy
+#| msgid "Reset mouse actions\""
 msgid "Reset mouse actions"
-msgstr "Сбросить действия мыши"
+msgstr "Сбросить действия мыши\""
 
 #: syndesignstringconstants.syndsseparator
+#, fuzzy
+#| msgid "Separator\""
 msgid "Separator"
-msgstr "Линия отделения поля (лев)"
+msgstr "Линия отделения поля (лев)\""
 
