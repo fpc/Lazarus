@@ -188,6 +188,8 @@ begin
   Result := False;
   if not WSCheckHandleAllocated(AWinControl, 'GetDesignInteractive') then
     Exit;
+  if TQtWidget(AWinControl.Handle).ChildOfComplexWidget = ccwTTabControl then
+    exit;
   TabWidget := TQtTabWidget(AWinControl.Handle);
   TabBar := TabWidget.TabBar;
   p := QtPoint(AClientPos.x, AClientPos.y);

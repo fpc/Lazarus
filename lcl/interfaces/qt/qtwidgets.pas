@@ -15386,6 +15386,7 @@ var
   WidgetToNotify: QWidgetH;
   WSQtWidget: TWSWinControlClass;
   Action: QActionH;
+  AWidget: TQtWidget;
   ATabWidget: TQtTabWidget;
   ATabIndex: Integer;
 begin
@@ -15412,7 +15413,9 @@ begin
 
       if Assigned(Control) and (Control is TWinControl) then
       begin
-        if Control is TCustomTabControl then
+        AWidget := TQtWidget(TWinControl(Control).Handle);
+        if (Control is TCustomTabControl) and
+          (AWidget.ChildOfComplexWidget <> ccwTTabControl) then
           WidgetToNotify := TQtTabWidget(TWinControl(Control).Handle).TabBar.Widget
         else
           WidgetToNotify := TQtWidget(TWinControl(Control).Handle).Widget;
@@ -15425,7 +15428,8 @@ begin
 
         if WSQtWidget.GetDesignInteractive(TWinControl(Control), Pt) then
         begin
-          if Control is TCustomTabControl then
+          if (Control is TCustomTabControl) and
+            (AWidget.ChildOfComplexWidget <> ccwTTabControl) then
           begin
             ATabWidget := TQtTabWidget(TWinControl(Control).Handle);
             ATabIndex := ATabWidget.tabAt(Pt);
