@@ -125,6 +125,14 @@ begin
   Result := CallNextEventHandler(ANextHandler, AEvent);
 end;
 
+{ TCarbonToolBar }
+
+procedure TCarbonToolBar.CreateWidget(const AParams: TCreateParams);
+begin
+  CarbonWidgetFlag := cwdTToolBar;
+  inherited CreateWidget(AParams);
+end;
+
 { TCarbonControl }
 
 {------------------------------------------------------------------------------
@@ -308,6 +316,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonControl.CreateWidget(const AParams: TCreateParams);
 begin
+  CarbonWidgetFlag := cwfNone;
   AddControlPart(Widget);
   if Content <> ControlRef(Widget) then AddControlPart(Content);
 end;

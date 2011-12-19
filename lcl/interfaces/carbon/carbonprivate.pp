@@ -45,10 +45,13 @@ type
   TCarbonControlEvent = (cceValueChanged, cceIndicatorMoved, cceDoAction,
     cceDraw, cceHit);
   TCarbonControlEvents = set of TCarbonControlEvent;
+  TCarbonWidgetFlag = (cwfNone, cwdTToolBar);
 
   { TCarbonControl }
   
   TCarbonControl = class(TCarbonWidget)
+  private
+    FCarbonWidgetFlag: TCarbonWidgetFlag;
   protected
     procedure RegisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
@@ -108,6 +111,8 @@ type
     procedure SetMaximum(AValue: Integer);
     procedure SetViewSize(AValue: Integer);
   public
+    // needed to avoid "Class is" or "ClassType"
+    property CarbonWidgetFlag: TCarbonWidgetFlag read FCarbonWidgetFlag write FCarbonWidgetFlag;
   { Frame:
      = widget in controls without special frame control
      - frame area control of control
@@ -152,6 +157,13 @@ type
     function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
 
     property TextFractional: Boolean read FTextFractional write FTextFractional;
+  end;
+
+  { TCarbonToolBar }
+
+  TCarbonToolBar = class(TCarbonCustomControl)
+  protected
+    procedure CreateWidget(const AParams: TCreateParams); override;
   end;
   
   { TCarbonScrollingWinControl }
@@ -719,8 +731,14 @@ end;
 procedure TCarbonCustomControl.CreateWidget(const AParams: TCreateParams);
 var
   TmpSpec: EventTypeSpec;
+  AStyle: TControlStyle;
 begin
-  Widget := CreateCustomHIView(ParamsToHIRect(AParams), LCLObject.ControlStyle);
+  AStyle := LCLObject.ControlStyle;
+
+  if CarbonWidgetFlag = cwdTToolBar then
+    AStyle := AStyle + [csNoFocus];
+
+  Widget := CreateCustomHIView(ParamsToHIRect(AParams), AStyle);
   if Widget = nil then RaiseCreateWidgetError(LCLObject);
 
   // The event must be installed before embedding ScrollView. related to #19425

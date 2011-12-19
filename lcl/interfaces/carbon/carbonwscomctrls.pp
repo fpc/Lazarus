@@ -194,6 +194,7 @@ type
 
   TCarbonWSToolBar = class(TWSToolBar)
   published
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCarbonWSTrackBar }
@@ -223,6 +224,15 @@ implementation
 
 uses
   CarbonProc, CarbonTabs, CarbonDbgConsts;
+
+{ TCarbonWSToolBar }
+
+class function TCarbonWSToolBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+begin
+  Result := TLCLIntfHandle(TCarbonToolBar.Create(AWinControl, AParams));
+  // TCarbonCustomControl(Result).
+end;
 
 { TCarbonWSStatusBar }
 

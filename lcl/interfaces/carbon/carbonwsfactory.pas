@@ -178,7 +178,8 @@ end;
 
 function RegisterToolBar: Boolean; alias : 'WSRegisterToolBar';
 begin
-  Result := False;
+  RegisterWSComponent(TToolbar, TCarbonWSToolBar);
+  Result := True;
 end;
 
 function RegisterCustomTrackBar: Boolean; alias : 'WSRegisterCustomTrackBar';
