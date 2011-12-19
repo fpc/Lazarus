@@ -664,6 +664,17 @@ begin
   end;
 end;
 
+function TCocoaWidgetSet.GetROP2(DC: HDC): Integer;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  if Assigned(ctx) then
+    Result := ctx.ROP2
+  else
+    Result := 0;
+end;
+
 function TCocoaWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean;
 var
   PropStorage: TStringList;
@@ -676,6 +687,20 @@ begin
     if Result then
       PropStorage.AddObject(Str, TObject(Data));
   end;
+end;
+
+function TCocoaWidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  if Assigned(ctx) then
+  begin
+    Result := ctx.ROP2;
+    ctx.ROP2 := Mode;
+  end
+  else
+    Result := 0;
 end;
 
 {----------------------------- WINDOWS SCROLLING ------------------------------}

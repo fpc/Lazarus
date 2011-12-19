@@ -250,7 +250,6 @@ end;
 function TLCLCommonCallback.ResetCursorRects: Boolean;
 var
   ACursor: TCursor;
-  AControl: TControl;
   View: NSView;
 begin
   Result := False;
@@ -350,14 +349,14 @@ begin
   if (AWinControl.Handle <> 0) then
   begin
     Obj := NSObject(AWinControl.Handle);
-  {
-    if Obj.isKindOfClass_(NSView) then
+{
+    if Obj.isKindOfClass_(NSView) and obj.respondsToSelector(objcselector('fittingSize')) then
     begin
       Size := NSView(Obj).fittingSize;
       PreferredWidth := Round(Size.width);
       PreferredHeight := Round(Size.height);
     end;
-  }
+}
   end;
 end;
 

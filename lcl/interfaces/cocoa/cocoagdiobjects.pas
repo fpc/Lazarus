@@ -261,9 +261,9 @@ type
     BkBrush: TCocoaBrush;
 
     TextColor: TColor;
-    TextBrush: TCocoaBrush;
+    TextBrush: TCocoaBrush;}
 
-    ROP2: Integer;}
+    ROP2: Integer;
     PenPos: TPoint;
   end;
 
@@ -271,6 +271,7 @@ type
 
   TCocoaContext = class(TObject)
   private
+    FROP2: Integer;
     FText   : TCocoaTextLayout;
     FBrush  : TCocoaBrush;
     FPen    : TCocoaPen;
@@ -286,6 +287,7 @@ type
     procedure SetFont(const AValue: TCocoaFont);
     procedure SetPen(const AValue: TCocoaPen);
     procedure SetRegion(const AValue: TCocoaRegion);
+    procedure SetROP2(AValue: Integer);
   protected
     function SaveDCData: TCocoaDCData; virtual;
     procedure RestoreDCData(const AData: TCocoaDCData); virtual;
@@ -322,6 +324,8 @@ type
 
     property Clipped: Boolean read FClipped;
     property PenPos: TPoint read FPenPos write FPenPos;
+    property ROP2: Integer read FROP2 write SetROP2;
+
     property Brush: TCocoaBrush read FBrush write SetBrush;
     property Pen: TCocoaPen read FPen write SetPen;
     property Font: TCocoaFont read FFont write SetFont;
@@ -742,6 +746,16 @@ begin
   end;
 end;
 
+procedure TCocoaContext.SetROP2(AValue: Integer);
+begin
+  if FROP2 <> AValue then
+  begin
+    FROP2 := AValue;
+    Pen.Apply(Self);
+    Brush.Apply(Self);
+  end;
+end;
+
 function TCocoaContext.SaveDCData: TCocoaDCData;
 begin
   Result := TCocoaDCData.Create;
@@ -756,9 +770,9 @@ begin
   Result.BkBrush := FBkBrush;
 
   Result.TextColor := FTextColor;
-  Result.TextBrush := FTextBrush;
+  Result.TextBrush := FTextBrush;}
 
-  Result.ROP2 := FROP2;}
+  Result.ROP2 := FROP2;
   Result.PenPos := FPenPos;
 end;
 
@@ -805,9 +819,9 @@ begin
   FBkBrush := AData.BkBrush;
 
   FTextColor := AData.TextColor;
-  FTextBrush := AData.TextBrush;
+  FTextBrush := AData.TextBrush;}
 
-  FROP2 := AData.ROP2;}
+  FROP2 := AData.ROP2;
   FPenPos := AData.PenPos;
 end;
 
@@ -1524,9 +1538,9 @@ begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
 
-  {if UseROP2 then
+  if UseROP2 then
     AROP2 := ADC.ROP2
-  else}
+  else
     AROP2 := R2_COPYPEN;
 
   GetRGBA(AROP2, AR, AG, AB, AA);
@@ -1803,9 +1817,9 @@ var
 begin
   if ADC = nil then Exit;
 
-{  if UseROP2 then
+  if UseROP2 then
     AROP2 := ADC.ROP2
-  else}
+  else
     AROP2 := R2_COPYPEN;
 
   GetRGBA(AROP2, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
