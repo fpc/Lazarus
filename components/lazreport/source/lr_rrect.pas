@@ -550,6 +550,7 @@ begin
     Typ      := gtAddIn;
     Frames   := frAllFrames;
     BaseName := 'RoundRect';
+
     //Default values
     fCadre.SGradian:=False;
     fCadre.GradStyle:=gsHorizontal;
@@ -566,7 +567,16 @@ end;
 procedure TfrRoundRectView.Assign(From: TfrView);
 begin
   inherited Assign(From);
-  fCadre := TfrRoundRectView(From).fCadre;
+  if from is TfrRoundRectView then
+    fCadre := TfrRoundRectView(From).fCadre
+  else
+  begin
+    fCadre.wCurve:=10;
+    fCadre.sCurve:=true;
+    fCadre.SGradian:=false;
+    fCadre.wShadow:=0;
+    fCadre.Corners:=[ctTopLeft,ctBottomLeft,ctBottomRight,ctTopRight];
+  end;
 end;
 
 procedure TfrRoundRectView.LoadFromStream(Stream: TStream);
@@ -672,7 +682,10 @@ begin
 
     // Trace l'ombre
     Pen.Style := psSolid;
-    Brush.Style := bsSolid; //bsClear
+    if FillColor=clNone then
+      Brush.Style := bsClear
+    else
+      Brush.Style := bsSolid;
     Pen.Color := fCadre.SdColor;
     Pen.Width := Round(FrameWidth);
     Brush.Color := fCadre.SdColor;
@@ -702,6 +715,8 @@ begin
     end
     else
       Rectangle(x, y, x + dx + 1 - FSW, y + dy + 1 - FSW);
+
+    Brush.Style := bsSolid;
   end;
 end;
 

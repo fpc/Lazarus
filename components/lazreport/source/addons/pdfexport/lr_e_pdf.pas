@@ -385,7 +385,10 @@ begin
 
     // draw roundrect
     Data.ShapeType := frstRoundRect;
-    Data.FillColor := ColorToRGB(View.FillColor);
+    if View.FillColor=clNone then
+      Data.FillColor := clNone
+    else
+      Data.FillColor := ColorToRGB(View.FillColor);
     if View.Frames=[] then
       Data.FrameColor := Data.FillColor
     else
