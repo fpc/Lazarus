@@ -1977,6 +1977,7 @@ begin
         Key('MMX');
         Key('MODE');
         Key('MODESWITCH');
+        Key('NAMESPACE');
         Key('NOTE');
         Key('NOTES');
         Key('OBJECTCHECKS');
