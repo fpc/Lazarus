@@ -965,8 +965,6 @@ type
     function GetModified(const AnIndex: Integer): Boolean; override;
     function GetName(const AnIndex: Integer): String; override;
     function GetValue(const AnIndex: Integer): String; override;
-    function GetFormat(const AnIndex: Integer): TRegisterDisplayFormat; override;
-    procedure SetFormat(const AnIndex: Integer; const AValue: TRegisterDisplayFormat); override;
     property Debugger: TGDBMIDebugger read GetDebugger;
   public
     procedure Changed; override;
@@ -8275,36 +8273,6 @@ begin
   and (AnIndex <= High(FRegValues[Formats[AnIndex]]))
   then Result := FRegValues[Formats[AnIndex]][AnIndex]
   else Result := '';
-end;
-
-function TGDBMIRegisters.GetFormat(const AnIndex: Integer): TRegisterDisplayFormat;
-begin
-  if  (Debugger <> nil)
-  and (Debugger.State = dsPause)
-  then RegistersNeeded;
-
-  if  (FRegistersReqState = esValid)
-  and (AnIndex >= Low(FFormats))
-  and (AnIndex <= High(FFormats))
-  then Result := FFormats[AnIndex]
-  else Result := inherited;
-end;
-
-procedure TGDBMIRegisters.SetFormat(const AnIndex: Integer;
-  const AValue: TRegisterDisplayFormat);
-begin
-  if  (Debugger <> nil)
-  and (Debugger.State = dsPause)
-  then RegistersNeeded;
-
-  if  (FRegistersReqState = esValid)
-  and (AnIndex >= Low(FFormats))
-  and (AnIndex <= High(FFormats))
-  then begin
-    FFormats[AnIndex] := AValue;
-    inherited Changed;
-  end
-  else inherited SetFormat(AnIndex, AValue);
 end;
 
 procedure TGDBMIRegisters.DoGetRegisterNamesDestroyed(Sender: TObject);

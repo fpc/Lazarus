@@ -1576,18 +1576,43 @@ type
  ******************************************************************************
  ******************************************************************************}
 
+  TRegistersFormat = record
+    Name: String;
+    Format: TRegisterDisplayFormat;
+  end;
+
+  { TRegistersFormatList }
+
+  TRegistersFormatList = class
+  private
+    FCount: integer;
+    FFormats: array of TRegistersFormat;
+    function GetFormat(AName: String): TRegisterDisplayFormat;
+    procedure SetFormat(AName: String; AValue: TRegisterDisplayFormat);
+  protected
+    function IndexOf(const AName: String): integer;
+    function Add(const AName: String; AFormat: TRegisterDisplayFormat): integer;
+    property Count: Integer read FCount;
+  public
+    constructor Create;
+    procedure Clear;
+    property Format[AName: String]: TRegisterDisplayFormat read GetFormat write SetFormat; default;
+  end;
+
   { TBaseRegisters }
 
   TBaseRegisters = class(TObject)
   protected
     FUpdateCount: Integer;
+    FFormatList: TRegistersFormatList;
     function GetModified(const AnIndex: Integer): Boolean; virtual;
     function GetName(const AnIndex: Integer): String; virtual;
     function GetValue(const AnIndex: Integer): String; virtual;
-    function GetFormat(const AnIndex: Integer): TRegisterDisplayFormat; virtual;
+    function GetFormat(const AnIndex: Integer): TRegisterDisplayFormat;
     procedure SetFormat(const AnIndex: Integer; const AValue: TRegisterDisplayFormat); virtual;
     procedure ChangeUpdating; virtual;
     function  Updating: Boolean;
+    property FormatList: TRegistersFormatList read FFormatList write FFormatList;
   public
     constructor Create;
     function Count: Integer; virtual;
@@ -1622,7 +1647,6 @@ type
     function GetModified(const AnIndex: Integer): Boolean; override;
     function GetName(const AnIndex: Integer): String; override;
     function GetValue(const AnIndex: Integer): String; override;
-    function GetFormat(const AnIndex: Integer): TRegisterDisplayFormat; override;
     procedure SetFormat(const AnIndex: Integer; const AValue: TRegisterDisplayFormat); override;
   protected
     procedure NotifyChange;
@@ -1646,8 +1670,8 @@ type
     procedure Changed; virtual;
     procedure DoChange;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
+    procedure FormatChanged(const AnIndex: Integer); virtual;
     function GetCount: Integer; virtual;
-    procedure SetFormat(const AnIndex: Integer; const AValue: TRegisterDisplayFormat); override;
     procedure ChangeUpdating; override;
     property Debugger: TDebugger read FDebugger;
   public
@@ -3050,6 +3074,57 @@ begin
   for Result:=Low(TIDEBreakPointAction) to High(TIDEBreakPointAction) do
     if AnsiCompareText(s,DBGBreakPointActionNames[Result])=0 then exit;
   Result:=bpaStop;
+end;
+
+{ TRegistersFormatList }
+
+function TRegistersFormatList.GetFormat(AName: String): TRegisterDisplayFormat;
+var
+  i: Integer;
+begin
+  i := IndexOf(AName);
+  if i < 0
+  then Result := rdDefault
+  else Result := FFormats[i].Format;
+end;
+
+procedure TRegistersFormatList.SetFormat(AName: String; AValue: TRegisterDisplayFormat);
+var
+  i: Integer;
+begin
+  i := IndexOf(AName);
+  if i < 0
+  then Add(AName, AValue)
+  else FFormats[i].Format := AValue;
+end;
+
+function TRegistersFormatList.IndexOf(const AName: String): integer;
+begin
+  Result := FCount - 1;
+  while Result >= 0 do begin
+    if FFormats[Result].Name = AName then exit;
+    dec(Result);
+  end;
+end;
+
+function TRegistersFormatList.Add(const AName: String;
+  AFormat: TRegisterDisplayFormat): integer;
+begin
+  if FCount >= length(FFormats) then SetLength(FFormats, Max(Length(FFormats)*2, 16));
+  FFormats[FCount].Name := AName;
+  FFormats[FCount].Format := AFormat;
+  Result := FCount;
+  inc(FCount);
+end;
+
+constructor TRegistersFormatList.Create;
+begin
+  FCount := 0;
+end;
+
+procedure TRegistersFormatList.Clear;
+begin
+  FCount := 0;
 end;
 
 { TIDEBreakPointGroupList }
@@ -8629,17 +8704,29 @@ end;
 constructor TBaseRegisters.Create;
 begin
   inherited Create;
+  FormatList := nil;
 end;
 
 function TBaseRegisters.GetFormat(const AnIndex: Integer): TRegisterDisplayFormat;
+var
+  s: String;
 begin
   Result := rdDefault;
+  if FFormatList = nil then exit;
+  s := Names[AnIndex];
+  if s <> '' then
+    Result := FFormatList[s];
 end;
 
 procedure TBaseRegisters.SetFormat(const AnIndex: Integer;
   const AValue: TRegisterDisplayFormat);
+var
+  s: String;
 begin
-  //
+  if FFormatList = nil then exit;
+  s := Names[AnIndex];
+  if s <> '' then
+    FFormatList[s] := AValue;
 end;
 
 procedure TBaseRegisters.ChangeUpdating;
@@ -8681,6 +8768,7 @@ constructor TIDERegisters.Create;
 begin
   FNotificationList := TList.Create;
   inherited Create;
+  FFormatList := TRegistersFormatList.Create;
 end;
 
 destructor TIDERegisters.Destroy;
@@ -8693,6 +8781,7 @@ begin
   inherited;
 
   FreeAndNil(FNotificationList);
+  FreeAndNil(FFormatList);
 end;
 
 procedure TIDERegisters.RegistersChanged(Sender: TObject);
@@ -8709,6 +8798,7 @@ begin
   if FMaster <> nil
   then begin
     FMaster.OnChange := nil;
+    FMaster.FormatList := nil;
     DoNotify := FMaster.Count <> 0;
   end
   else DoNotify := False;
@@ -8718,6 +8808,7 @@ begin
   if FMaster <> nil
   then begin
     FMaster.OnChange := @RegistersChanged;
+    FMaster.FormatList := FormatList;
     DoNotify := DoNotify or (FMaster.Count <> 0);
   end;
 
@@ -8746,20 +8837,15 @@ begin
   else Result := Master.Values[AnIndex];
 end;
 
-function TIDERegisters.GetFormat(const AnIndex: Integer): TRegisterDisplayFormat;
-begin
-  if Master = nil
-  then Result := inherited GetFormat(AnIndex)
-  else Result := Master.Formats[AnIndex];
-end;
-
 procedure TIDERegisters.SetFormat(const AnIndex: Integer;
   const AValue: TRegisterDisplayFormat);
 begin
-  if Master = nil
-  then inherited SetFormat(AnIndex, AValue)
-  else Master.Formats[AnIndex] := AValue;
+  inherited SetFormat(AnIndex, AValue);
+  if Master <> nil
+  then Master.FormatChanged(AnIndex);
+  NotifyChange;
 end;
+
 
 procedure TIDERegisters.NotifyChange;
 var
@@ -8820,6 +8906,11 @@ procedure TDBGRegisters.DoStateChange(const AOldState: TDBGState);
 begin
 end;
 
+procedure TDBGRegisters.FormatChanged(const AnIndex: Integer);
+begin
+  //
+end;
+
 procedure TDBGRegisters.Changed;
 begin
   DoChange;
@@ -8828,13 +8919,6 @@ end;
 function TDBGRegisters.GetCount: Integer;
 begin
   Result := 0;
-end;
-
-procedure TDBGRegisters.SetFormat(const AnIndex: Integer;
-  const AValue: TRegisterDisplayFormat);
-begin
-  inherited SetFormat(AnIndex, AValue);
-  Changed;
 end;
 
 procedure TDBGRegisters.ChangeUpdating;
