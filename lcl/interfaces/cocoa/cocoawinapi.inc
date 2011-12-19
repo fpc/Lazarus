@@ -399,16 +399,53 @@ end;
 
 function TCocoaWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 var
-  ctx : TCocoaContext;
-  br  : TCocoaGDIObject;
+  ctx: TCocoaContext;
+  br: TCocoaGDIObject;
 begin
-  ctx:=CheckDC(DC);
-  br:=CheckGDIOBJ(Brush);
-  Result:=Assigned(ctx) and (not Assigned(br) or (br is TCocoaBrush));
+  ctx := CheckDC(DC);
+  br := CheckGDIOBJ(Brush);
+  Result := Assigned(ctx) and (not Assigned(br) or (br is TCocoaBrush));
   if not Result then Exit;
 
   with Rect do
     ctx.Rectangle(Left, Top, Right, Bottom, True, TCocoaBrush(br));
+end;
+
+function TCocoaWidgetSet.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool;
+var
+  OldRgn: TCocoaRegion;
+  R: TRect;
+  Clipped: Boolean;
+  ctx: TCocoaContext;
+  br: TCocoaGDIObject;
+  I: Integer;
+begin
+  ctx := CheckDC(DC);
+  br := CheckGDIOBJ(hbr);
+  Result := Assigned(ctx) and (not Assigned(br) or (br is TCocoaBrush));
+  if not Result then Exit;
+
+  Clipped := ctx.Clipped;
+  I := ctx.SaveDC;
+  if Clipped then
+    OldRgn := TCocoaRegion.CreateDefault;
+  try
+    if Clipped then
+      ctx.CopyClipRegion(OldRgn);
+    if SelectClipRgn(DC, RegionHnd) <> ERROR then
+    begin
+      R := TCocoaRegion(RegionHnd).GetBounds;
+      with R do
+        ctx.Rectangle(Left, Top, Right, Bottom, True, TCocoaBrush(br));
+      if Clipped then
+        SelectClipRgn(DC, HRGN(OldRgn));
+      Result := True;
+    end;
+  finally
+    if Clipped then
+      OldRgn.Free;
+    ctx.RestoreDC(I);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -562,15 +599,15 @@ end;
 
 function TCocoaWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
 var
-  r   : TRect;
+  r: TRect;
 begin
-  if Handle<>0 then begin
-    Result:=True;
-    r:=NSObject(Handle).lclFrame;
-    Width:=R.Right-R.Left;
-    Height:=R.Bottom-R.Top;
-  end else
-    Result:=False;
+  Result := Handle <> 0;
+  if Result then
+  begin
+    r := NSObject(Handle).lclFrame;
+    Width := R.Right - R.Left;
+    Height := R.Bottom - R.Top;
+  end;
 end;
 
 function TCocoaWidgetSet.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean): Boolean;
@@ -587,17 +624,58 @@ end;
 
 function TCocoaWidgetSet.UpdateWindow(Handle: HWND): Boolean;
 begin
-  Result:=InvalidateRect(Handle, nil, false);
+  Result := InvalidateRect(Handle, nil, False);
 end;
 
-function TCocoaWidgetSet.GetProp(Handle : hwnd; Str : PChar): Pointer;
+function TCocoaWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
+var
+  PropStorage: TStringList;
+  I: Integer;
 begin
-  Result:=nil;
+  if Handle <> 0 then
+  begin
+    PropStorage := NSObject(Handle).lclGetPropStorage;
+    if Assigned(PropStorage) then
+    begin
+      I := PropStorage.IndexOf(Str);
+      if I <> -1 then
+        Result := PropStorage.Objects[I]
+      else
+        Result := nil;
+    end
+    else
+      Result := nil;
+  end;
 end;
 
-function TCocoaWidgetSet.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
+function TCocoaWidgetSet.GetRgnBox(RGN: HRGN; lpRect: PRect): Longint;
 begin
-  Result:=False;
+  Result := ERROR;
+  if Assigned(lpRect) then
+    lpRect^ := Types.Rect(0, 0, 0, 0);
+
+  if not (TObject(RGN) is TCocoaRegion) then
+    Exit;
+
+  if Assigned(lpRect) then
+  begin
+    lpRect^ := TCocoaRegion(RGN).GetBounds;
+    Result := CocoaRegionTypeToWin32Map[TCocoaRegion(RGN).GetType];
+  end;
+end;
+
+function TCocoaWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean;
+var
+  PropStorage: TStringList;
+begin
+  Result := Handle <> 0;
+  if Result then
+  begin
+    PropStorage := NSObject(Handle).lclGetPropStorage;
+    Result := Assigned(PropStorage);
+    if Result then
+      PropStorage.AddObject(Str, TObject(Data));
+  end;
 end;
 
 {----------------------------- WINDOWS SCROLLING ------------------------------}

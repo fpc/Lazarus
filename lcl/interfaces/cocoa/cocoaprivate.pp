@@ -53,6 +53,7 @@ type
     function lclFrame: TRect; message 'lclFrame';
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
     function lclClientFrame: TRect; message 'lclClientFrame';
+    function lclGetPropStorage: TStringList; message 'lclGetPropStorage';
   end;
 
   { LCLViewExtension }
@@ -109,6 +110,7 @@ type
     procedure boundsDidChange;
     // misc events
     procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
+    function GetPropStorage: TStringList;
     function ResetCursorRects: Boolean;
   end;
 
@@ -154,6 +156,7 @@ type
     callback: IButtonCallback;
     function initWithFrame(frameRect: NSRect): id; override;
     function acceptsFirstResponder: Boolean; override;
+    function lclGetPropStorage: TStringList; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseEntered(event: NSEvent); override;
@@ -168,6 +171,7 @@ type
   TCocoaTextField = objcclass(NSTextField)
     callback: ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
+    function lclGetPropStorage: TStringList; override;
     procedure resetCursorRects; override;
   end;
 
@@ -185,6 +189,7 @@ type
   TCocoaTextView = objcclass(NSTextView)
     callback: ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
+    function lclGetPropStorage: TStringList; override;
     procedure resetCursorRects; override;
   end;
 
@@ -201,6 +206,7 @@ type
   public
     callback: IWindowCallback;
     function acceptsFirstResponder: Boolean; override;
+    function lclGetPropStorage: TStringList; override;
     procedure mouseUp(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
@@ -214,6 +220,7 @@ type
   TCocoaCustomControl = objcclass(NSControl)
     callback: ICommonCallback;
     procedure drawRect(dirtyRect: NSRect); override;
+    function lclGetPropStorage: TStringList; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseEntered(event: NSEvent); override;
@@ -227,6 +234,7 @@ type
 
   TCocoaScrollView = objcclass(NSScrollView)
     callback: ICommonCallback;
+    function lclGetPropStorage: TStringList; override;
     procedure resetCursorRects; override;
   end;
 
@@ -263,6 +271,7 @@ type
     function numberOfItemsInComboBox(combo: TCocoaComboBox): NSInteger;
       message 'numberOfItemsInComboBox:';
     procedure dealloc; override;
+    function lclGetPropStorage: TStringList; override;
     procedure resetCursorRects; override;
     procedure comboBoxWillPopUp(notification: NSNotification); message 'comboBoxWillPopUp:';
     procedure comboBoxWillDismiss(notification: NSNotification); message 'comboBoxWillDismiss:';
@@ -274,6 +283,7 @@ type
 
   TCocoaScrollBar = objcclass(NSScroller)
     callback: ICommonCallback;
+    function lclGetPropStorage: TStringList; override;
     procedure resetCursorRects; override;
   end;
 
@@ -295,6 +305,7 @@ type
     callback: ICommonCallback;
     list: TCocoaStringList;
     resultNS: NSString;  //use to return values to combo
+    function lclGetPropStorage: TStringList; override;
     function numberOfRowsInTableView(aTableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
     function tableView_objectValueForTableColumn_row(tableView: NSTableView;
       objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
@@ -307,12 +318,18 @@ type
 
   TCocoaGroupBox = objcclass(NSBox)
     callback: ICommonCallback;
+    function lclGetPropStorage: TStringList; override;
     procedure resetCursorRects; override;
   end;
 
 implementation
 
 { TCocoaScrollView }
+
+function TCocoaScrollView.lclGetPropStorage: TStringList;
+begin
+  Result := callback.GetPropStorage;
+end;
 
 procedure TCocoaScrollView.resetCursorRects;
 begin
@@ -322,6 +339,11 @@ end;
 
 { TCocoaScrollBar }
 
+function TCocoaScrollBar.lclGetPropStorage: TStringList;
+begin
+  Result := callback.GetPropStorage;
+end;
+
 procedure TCocoaScrollBar.resetCursorRects;
 begin
   if not callback.resetCursorRects then
@@ -329,6 +351,11 @@ begin
 end;
 
 { TCocoaGroupBox }
+
+function TCocoaGroupBox.lclGetPropStorage: TStringList;
+begin
+  Result := callback.GetPropStorage;
+end;
 
 procedure TCocoaGroupBox.resetCursorRects;
 begin
@@ -371,6 +398,11 @@ end;
 function TCocoaButton.acceptsFirstResponder: Boolean;
 begin
   Result := True;
+end;
+
+function TCocoaButton.lclGetPropStorage: TStringList;
+begin
+  Result := callback.GetPropStorage;
 end;
 
 procedure TCocoaButton.mouseUp(event: NSEvent);
@@ -424,6 +456,11 @@ begin
   Result:=true;
 end;
 
+function TCocoaTextField.lclGetPropStorage: TStringList;
+begin
+  Result := callback.GetPropStorage;
+end;
+
 procedure TCocoaTextField.resetCursorRects;
 begin
   // this will not work well because
@@ -438,6 +475,11 @@ end;
 function TCocoaTextView.acceptsFirstResponder: Boolean;
 begin
   Result:=true;
+end;
+
+function TCocoaTextView.lclGetPropStorage: TStringList;
+begin
+  Result := callback.GetPropStorage;
 end;
 
 procedure TCocoaTextView.resetCursorRects;
@@ -485,6 +527,11 @@ end;
 function TCocoaWindow.acceptsFirstResponder: Boolean;
 begin
   Result := True;
+end;
+
+function TCocoaWindow.lclGetPropStorage: TStringList;
+begin
+  Result := callback.GetPropStorage;
 end;
 
 procedure TCocoaWindow.mouseUp(event: NSEvent);
@@ -556,6 +603,11 @@ procedure TCocoaCustomControl.drawRect(dirtyRect:NSRect);
 begin
   inherited drawRect(dirtyRect);
   callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+end;
+
+function TCocoaCustomControl.lclGetPropStorage: TStringList;
+begin
+  Result := callback.GetPropStorage;
 end;
 
 procedure TCocoaCustomControl.mouseDown(event: NSEvent);
@@ -655,6 +707,11 @@ end;
 function LCLObjectExtension.lclClientFrame:TRect;
 begin
   FillChar(Result, sizeof(Result), 0);
+end;
+
+function LCLObjectExtension.lclGetPropStorage: TStringList;
+begin
+  Result := nil;
 end;
 
 { LCLControlExtension }
@@ -882,6 +939,11 @@ end;
 
 { TCocoaListView }
 
+function TCocoaListView.lclGetPropStorage: TStringList;
+begin
+  Result := callback.GetPropStorage;
+end;
+
 function TCocoaListView.numberOfRowsInTableView(aTableView:NSTableView): NSInteger;
 begin
   if Assigned(list) then
@@ -971,6 +1033,11 @@ begin
   end;
   resultNS.release;
   inherited dealloc;
+end;
+
+function TCocoaComboBox.lclGetPropStorage: TStringList;
+begin
+  Result := callback.GetPropStorage;
 end;
 
 procedure TCocoaComboBox.resetCursorRects;

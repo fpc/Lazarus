@@ -320,6 +320,7 @@ type
     function SetClipRegion(AClipRegion: TCocoaRegion; Mode: TCocoaCombine): TCocoaRegionType;
     function CopyClipRegion(ADstRegion: TCocoaRegion): TCocoaRegionType;
 
+    property Clipped: Boolean read FClipped;
     property PenPos: TPoint read FPenPos write FPenPos;
     property Brush: TCocoaBrush read FBrush write SetBrush;
     property Pen: TCocoaPen read FPen write SetPen;

@@ -24,12 +24,15 @@ type
   { TLCLCommonCallback }
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
+  private
+    FPropStorage: TStringList;
   public
     Owner: NSObject;
-    Target  : TWinControl;
-    Context : TCocoaContext;
+    Target: TWinControl;
+    Context: TCocoaContext;
     constructor Create(AOwner: NSObject; ATarget: TWinControl); virtual;
     destructor Destroy; override;
+    function GetPropStorage: TStringList;
     procedure MouseDown(x,y: Integer); virtual;
     procedure MouseUp(x,y: Integer); virtual;
     procedure MouseClick(clickCount: Integer); virtual;
@@ -119,12 +122,21 @@ begin
   inherited Create;
   Owner := AOwner;
   Target := ATarget;
+  FPropStorage := TStringList.Create;
+  FPropStorage.Sorted := True;
+  FPropStorage.Duplicates := dupAccept;
 end;
 
 destructor TLCLCommonCallback.Destroy;
 begin
   Context.Free;
+  FPropStorage.Free;
   inherited Destroy;
+end;
+
+function TLCLCommonCallback.GetPropStorage: TStringList;
+begin
+  Result := FPropStorage;
 end;
 
 procedure TLCLCommonCallback.MouseDown(x, y: Integer);

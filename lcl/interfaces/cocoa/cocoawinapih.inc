@@ -84,8 +84,8 @@ function ExtCreatePen(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyle
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
-{function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool; override;
-function Frame(DC: HDC; const ARect: TRect): Integer; override;
+function FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): Bool; override;
+{function Frame(DC: HDC; const ARect: TRect): Integer; override;
 function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TBevelCut): Boolean; override;
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 
@@ -108,10 +108,10 @@ function GetFocus: HWND; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;}
 function GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; override;
 {function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;}
-function GetParent(Handle : HWND): HWND; override;
-function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
-{function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
-function GetROP2(DC: HDC): Integer; override;}
+function GetParent(Handle: HWND): HWND; override;
+function GetProp(Handle: hwnd; Str: PChar): Pointer; override;
+function GetRgnBox(RGN: HRGN; lpRect: PRect) : Longint; override;
+{function GetROP2(DC: HDC): Integer; override;}
 function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; override;
@@ -174,7 +174,7 @@ function SetCursor(ACursor: HCURSOR): HCURSOR; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 {function SetFocus(hWnd: HWND): HWND; override;
 function SetForegroundWindow(HWnd: HWND): boolean; override;}
-function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
+function SetProp(Handle: hwnd; Str: PChar; Data: Pointer) : Boolean; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 {function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
