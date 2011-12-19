@@ -42,6 +42,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
+  SynEditMouseCmds,
   Classes, SysUtils, Math, Controls, ExtendedNotebook, LCLProc, LCLType, LResources,
   LCLIntf, FileUtil, Forms, ComCtrls, Dialogs, StdCtrls, Graphics, Translations,
   ClipBrd, types, Extctrls, Menus, HelpIntfs, LConvEncoding,
@@ -3655,7 +3656,7 @@ begin
   // create or delete breakpoint
   // find breakpoint mark at line
   Marks := nil;
-  Ctrl := ssCtrl in GetKeyShiftState;
+  Ctrl := SYNEDIT_LINK_MODIFIER in GetKeyShiftState;
   try
     SourceEditorMarks.GetMarksForLine(Self, Line, Marks, MarkCount);
     BreakFound := False;
