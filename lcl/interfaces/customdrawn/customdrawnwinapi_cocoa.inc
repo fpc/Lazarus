@@ -565,19 +565,22 @@ begin
     Result:=False;
 end;
 
+function TCDWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
+{var
+  Str: WideString;
+  TitleStr: WideString;
+  OkStr: WideString;}
+begin
+{  //TODO: Finish full implementation of MessageBox
+  Str := GetUtf8String('TQtWidgetSet.MessageBox - not implemented');
+  TitleStr := GetUtf8String(lpCaption);
+  OkStr := GetUtf8String('Ok');
+  Result := QMessageBox_information(TQtWidget(hWnd).Widget, @Str, @TitleStr, @OkStr);}
+end;
+
 (*function TCocoaWidgetSet.UpdateWindow(Handle: HWND): Boolean;
 begin
   Result:=InvalidateRect(Handle, nil, false);
-end;
-
-function TCocoaWidgetSet.GetProp(Handle : hwnd; Str : PChar): Pointer;
-begin
-  Result:=nil;
-end;
-
-function TCocoaWidgetSet.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
-begin
-  Result:=False;
 end;
 
 {----------------------------- WINDOWS SCROLLING ------------------------------}
@@ -605,81 +608,6 @@ end;
 function TCocoaWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
 begin
   Result:=False;
-end;
-
-{----------------------------------- DRAWING ----------------------------------}
-
-
-type
-  TPointArray = array [word] of TPoint;
-  PPointArray = ^TPointArray;
-
-function TCocoaWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
-var
-  ctx : TCocoaContext;
-begin
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx);
-  if not Result then Exit;
-
-  ctx.LineTo(x,y);
-end;
-
-function TCocoaWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
-var
-  ctx : TCocoaContext;
-begin
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx);
-  if not Result then Exit;
-
-  if Assigned(OldPoint) then OldPoint^:=ctx.PenPos;
-  ctx.MoveTo(x,y);
-end;
-
-function TCocoaWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean;
-var
-  ctx : TCocoaContext;
-begin
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx) and Assigned(Points) and (NumPts>=2);
-  if not Result then Exit;
-
-  ctx.Polygon(PPointArray(Points)^, NumPts, Winding);
-  Result:=True;
-end;
-
-function TCocoaWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
-var
-  ctx : TCocoaContext;
-begin
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx) and Assigned(Points) and (NumPts>0);
-  if not Result then Exit;
-
-  ctx.Polyline(PPointArray(Points)^, NumPts);
-  Result:=True;
-end;
-
-function TCocoaWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
-var
-  ctx : TCocoaContext;
-begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('[TCocoaWidgetSet.Rectangle] DC: %x X1: %d Y1: %d X2: %d Y2: %d',
-      [DC, X1, Y1, X2, Y2]);
-  {$ENDIF}
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx);
-  if not Result then Exit;
-
-  ctx.Rectangle(X1, Y1, X2, Y2, False, nil);
-  Result:=True;
-end;
-
-function TCDWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
-begin
-  Result := 0;
 end;
 
 function TCocoaWidgetSet.SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;

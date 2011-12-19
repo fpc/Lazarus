@@ -62,6 +62,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendCreate;
 begin
+  // Create the dummy screen DC
+  ScreenBitmapRawImage.Init;
+  ScreenBitmapHeight := 100;
+  ScreenBitmapWidth := 100;
+  ScreenBitmapRawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(ScreenBitmapWidth, ScreenBitmapHeight);
+  ScreenBitmapRawImage.CreateData(True);
+  ScreenImage := TLazIntfImage.Create(0, 0);
+  ScreenImage.SetRawImage(ScreenBitmapRawImage);
+  ScreenDC := TLazCanvas.Create(ScreenImage);
 end;
 
 {------------------------------------------------------------------------------
@@ -73,6 +82,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendDestroy;
 begin
+  { Release the screen DC and Image }
+  ScreenDC.Free;
+  ScreenImage.Free;
 end;
 
 {------------------------------------------------------------------------------

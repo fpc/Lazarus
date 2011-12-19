@@ -108,13 +108,10 @@ end;
   Constructor for the class
  ------------------------------------------------------------------------------}
 procedure TCDWidgetSet.BackendCreate;
-var
-  ScreenBitmapContext: CGContextRef;
 begin
   {  Creates the AutoreleasePool }
   pool := NSAutoreleasePool(NSAutoreleasePool.alloc).init;
 
-  {$ifdef CD_UseNativeText}
   { Prepares the Native DC for the ScreenDC }
 
   { NSImage / NSBitmapImageRep are very limited. They simply don't support
@@ -131,8 +128,8 @@ begin
 
     see: http://lists.apple.com/archives/carbon-dev/2006/Jan/msg01055.html
   }
-  ScreenBitmapHeight := 100;
-  ScreenBitmapWidth := 100;
+  ScreenBitmapWidth := Round(NSScreen.mainScreen.frame.size.width);
+  ScreenBitmapHeight := Round(NSScreen.mainScreen.frame.size.height);
   ScreenBitmapRawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(ScreenBitmapWidth, ScreenBitmapHeight);
   ScreenBitmapRawImage.CreateData(True);
   ScreenBitmapContext := CGBitmapContextCreate(
@@ -148,7 +145,6 @@ begin
   ScreenDC := TLazCanvas.Create(ScreenImage);
   ScreenDC.NativeDC := PtrInt(TCocoaContext.Create);
   TCocoaContext(ScreenDC.NativeDC).cgctx := ScreenBitmapContext; //NSGraphicsContext.graphicsContextWithBitmapImageRep(ScreenBitmap.imagerep);
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -161,12 +157,10 @@ begin
   {  Releases the AutoreleasePool }
   pool.release;
 
-  {$ifdef CD_UseNativeText}
-  { Release the screen DC and Image}
+  { Release the screen DC and Image }
   ScreenDC.Free;
   ScreenImage.Free;
 //  ScreenBitmap.Free;
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------

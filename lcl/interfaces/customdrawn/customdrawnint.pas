@@ -116,12 +116,6 @@ type
     function WinRegister: Boolean;
     procedure CreateAppHandle;
     {$endif}
-
-    {$ifdef CD_Cocoa}
-    pool      : NSAutoreleasePool;
-    NSApp     : NSApplication;
-    delegate  : TCDAppDelegate;
-    {$endif}
   public
     {$ifdef CD_X11}
     FDisplayName: string;
@@ -147,6 +141,12 @@ type
     {$ifdef CD_Android}
     procedure AndroidDebugLn(AStr: string);
     function AndroidKeyCodeToLCLKeyCode(AAndroidKeyCode: Integer): Word;
+    {$endif}
+    {$ifdef CD_Cocoa}
+    pool      : NSAutoreleasePool;
+    NSApp     : NSApplication;
+    delegate  : TCDAppDelegate;
+    ScreenBitmapContext: CGContextRef;
     {$endif}
   // For generic methods added in customdrawn
   // They are used internally in LCL-CustomDrawn, LCL app should not use them

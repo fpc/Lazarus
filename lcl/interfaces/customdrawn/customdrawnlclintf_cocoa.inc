@@ -158,47 +158,28 @@ end;
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
 var
-  Desc: TRawImageDescription absolute ARawImage.Description;
   screenshotImage: CGImageRef;
-  imageDataProv: CGDataProviderRef;
-  imageData: CFDataRef;
-  lBitsPerComponent, lBitsPerPixel, lBytesPerRow: size_t;
-  lDataPtr: UnivPtr;
-  lDataLength: CFIndex;
+  lRect: CGRect;
+  lScreenRawImage: TRawImage;
+  lDataLength: Integer;
 begin
   Result := True;
 
   ARawImage.Init;
-  ARawImage.Description.Init_BPP32_B8G8R8A8_BIO_TTB(0, 0);
+  ARawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(ScreenBitmapWidth, ScreenBitmapHeight);
 
-  // Take the screenshot and obtain the pixel data
+  // Take the screenshot
   screenshotImage := CGDisplayCreateImage(CGMainDisplayID()); // Requires 10.6+
-  imageDataProv := CGImageGetDataProvider(screenshotImage); // Requires 10.5+
-  imageData := CGDataProviderCopyData(imageDataProv);
 
-  // Now read the image description and convert it to our own
-  lBitsPerComponent := CGImageGetBitsPerComponent(screenshotImage);
-  ARawImage.Description.AlphaPrec := 0;
-  ARawImage.Description.RedPrec := lBitsPerComponent;
-  ARawImage.Description.GreenPrec := lBitsPerComponent;
-  ARawImage.Description.BluePrec := lBitsPerComponent;
-  ARawImage.Description.RedShift := 0;
-  ARawImage.Description.GreenShift := 8;
-  ARawImage.Description.BlueShift := 16;
-
-  ARawImage.Description.Width := CGImageGetWidth(screenshotImage);
-  ARawImage.Description.Height := CGImageGetHeight(screenshotImage);
-
-  lBitsPerPixel := CGImageGetBitsPerPixel(screenshotImage); // For now support it will give us 32
-
-  lBytesPerRow := CGImageGetBytesPerRow(screenshotImage);
+  // Draw it to our screen bitmap
+  lRect := CGRectMake(0, 0, ScreenBitmapWidth, ScreenBitmapHeight);
+  CGContextDrawImage(ScreenBitmapContext, lRect, screenshotImage);
 
   // Now copy the data
-  lDataPtr := CFDataGetBytePtr(imageData);
-  lDataLength := CFDataGetLength(imageData);
+  ScreenImage.GetRawImage(lScreenRawImage, False);
   ARawImage.CreateData(False);
-  lDataLength := Min(lDataLength, ARawImage.DataSize);
-  System.Move(lDataPtr^, ARawImage.Data^, lDataLength);
+  lDataLength := Min(lScreenRawImage.DataSize, ARawImage.DataSize);
+  System.Move(lScreenRawImage.Data^, ARawImage.Data^, lDataLength);
 end;
 
 procedure TCDWidgetset.ShowVirtualKeyboard();

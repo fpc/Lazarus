@@ -4742,20 +4742,18 @@ begin
   end;
 
   Result := True;
-end;
+end;*)
 
 function TCDWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
 begin
-  // X11 has no native dialog, so just use the one installed by Dialogs.pas
+  // X11 has no native dialogs, so just use the one installed by Dialogs.pas
   Result := Application.MessageBox(lpText, lpCaption, uType);
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: MoveToEx
   Params:  none
   Returns: Nothing
-
-
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
 begin
