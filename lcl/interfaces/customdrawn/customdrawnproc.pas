@@ -89,6 +89,8 @@ function GetCDWinControlList(const AForm: TCustomForm): TFPList;
 // Routines for non-native form managing
 procedure InitNonNativeForms();
 function GetCurrentForm(): TCDNonNativeForm;
+function GetForm(AIndex: Integer): TCDNonNativeForm;
+function GetFormCount(): Integer;
 function AddNewForm(AForm: TCustomForm): TCDNonNativeForm;
 procedure AddFormWithCDHandle(AHandle: TCDForm);
 function FindFormWithNativeHandle(AHandle: HWND): TCDForm;
@@ -173,6 +175,18 @@ begin
     DebugLn('GetCurrentForm');
   {$ENDIF}
   Result := lCurrentForm;
+end;
+
+function GetForm(AIndex: Integer): TCDNonNativeForm;
+begin
+  InitNonNativeForms();
+  Result := TCDNonNativeForm(NonNativeForms.Items[AIndex]);
+end;
+
+function GetFormCount: Integer;
+begin
+  InitNonNativeForms();
+  Result := NonNativeForms.Count;
 end;
 
 function AddNewForm(AForm: TCustomForm): TCDNonNativeForm;

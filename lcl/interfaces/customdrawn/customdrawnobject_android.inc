@@ -225,17 +225,22 @@ function Java_com_pascal_lclproject_LCLActivity_LCLOnConfigurationChanged(
 var
   lForm: TCDNonNativeForm;
   lOldDPI, lNewDPI, lOldFormWidth, lNewFormWidth: Integer;
+  i: Integer;
 begin
-  lForm := GetCurrentForm();
-  if lForm.LayoutAutoAdjusted then lOldDPI := Screen.PixelsPerInch
-  else lOldDPI := lForm.LCLForm.DesignTimeDPI;
-  lNewDPI := ANewDPI;
-  lOldFormWidth := lForm.LCLForm.Width;
-  lNewFormWidth := ANewWidth;
-  DebugLn(Format('[LCLOnConfigurationChanged] lOldDPI=%d lNewDPI=%d lOldFormWidth=%d lNewFormWidth=%d',
-    [lOldDPI, lNewDPI, lOldFormWidth, lNewFormWidth]));
-  lForm.LCLForm.AutoAdjustLayout(lapAutoAdjustWithoutHorizontalScrolling,
-    lOldDPI, lNewDPI, lOldFormWidth, lNewFormWidth);
+  for i := 0 to GetFormCount()-1 do
+  begin
+    lForm := GetForm(i);
+
+    if lForm.LayoutAutoAdjusted then lOldDPI := Screen.PixelsPerInch
+    else lOldDPI := lForm.LCLForm.DesignTimeDPI;
+    lNewDPI := ANewDPI;
+    lOldFormWidth := lForm.LCLForm.Width;
+    lNewFormWidth := ANewWidth;
+    DebugLn(Format('[LCLOnConfigurationChanged] i=%d lOldDPI=%d lNewDPI=%d lOldFormWidth=%d lNewFormWidth=%d',
+      [i, lOldDPI, lNewDPI, lOldFormWidth, lNewFormWidth]));
+    lForm.LCLForm.AutoAdjustLayout(lapAutoAdjustWithoutHorizontalScrolling,
+      lOldDPI, lNewDPI, lOldFormWidth, lNewFormWidth);
+  end;
 end;
 
 const NativeMethods: array[0..6] of JNINativeMethod=
