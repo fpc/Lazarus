@@ -37,16 +37,6 @@ uses
   GraphType, GraphMath, Themes;
 
 type
-  // Needs to be here to avoid circular unit references
-  TLayoutAdjustmentPolicy = (
-    lapDefault,     // widgetset dependent
-    lapFixedLayout, // A fixed absolute layout in all platforms
-    lapAutoAdjustWithoutHorizontalScrolling, // Smartphone platforms use this one,
-                                             // the x axis is stretched to fill the screen and
-                                             // the y is scaled to fit the DPI
-    lapAutoAdjustForDPI // For desktops using High DPI, scale x and y to fit the DPI
-  );
-
   PEventHandler = type Pointer;
   PProcessEventHandler = type Pointer;
   PPipeEventHandler = type Pointer;
@@ -180,8 +170,6 @@ type
 
     function  InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean; virtual;
     function  IsHelpKey(Key: Word; Shift: TShiftState): Boolean; virtual;
-
-    procedure ResolveDefaultLayoutAdjustmentPolicy(var AMode: TLayoutAdjustmentPolicy); virtual;
 
     // create and destroy
     function CreateTimer(Interval: integer; TimerProc: TWSTimerProc): THandle; virtual; abstract;

@@ -560,6 +560,9 @@ begin
   {$endif}
 
   Forms.MessageBoxFunction := @CDMessageBoxFunction;
+
+  if Application.LayoutAdjustmentPolicy = lapDefault then
+    Application.LayoutAdjustmentPolicy := lapAutoAdjustWithoutHorizontalScrolling;
 end;
 
 procedure TCDWidgetSet.AppRun(const ALoop: TApplicationMainLoop);
@@ -763,11 +766,6 @@ end;
 
 procedure TCDWidgetSet.AppSetMainFormOnTaskBar(const DoSet: Boolean);
 begin
-end;
-
-procedure TCDWidgetSet.ResolveDefaultLayoutAdjustmentPolicy(var AMode: TLayoutAdjustmentPolicy);
-begin
-  AMode := lapAutoAdjustWithoutHorizontalScrolling;
 end;
 
 {------------------------------------------------------------------------------

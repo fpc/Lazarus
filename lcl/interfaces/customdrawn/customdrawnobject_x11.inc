@@ -90,6 +90,9 @@ begin
 //  DebugLn('TCDWidgetSet.AppInit');
   {$endif}
 
+  if Application.LayoutAdjustmentPolicy = lapDefault then
+    Application.LayoutAdjustmentPolicy := lapFixedLayout;
+
   // Maybe it was passed as a -display parameter. Lets check first!
   if FDisplayName = '' then
     FDisplayName := XDisplayName(nil);
@@ -437,11 +440,6 @@ end;
 
 procedure TCDWidgetSet.AppSetMainFormOnTaskBar(const DoSet: Boolean);
 begin
-end;
-
-procedure TCDWidgetSet.ResolveDefaultLayoutAdjustmentPolicy(var AMode: TLayoutAdjustmentPolicy);
-begin
-  AMode := lapFixedLayout;
 end;
 
 {------------------------------------------------------------------------------

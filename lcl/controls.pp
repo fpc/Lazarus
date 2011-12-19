@@ -880,7 +880,14 @@ type
     chtOnKeyDown
     );
 
-  TLayoutAdjustmentPolicy = InterfaceBase.TLayoutAdjustmentPolicy;
+  TLayoutAdjustmentPolicy = (
+    lapDefault,     // widgetset dependent
+    lapFixedLayout, // A fixed absolute layout in all platforms
+    lapAutoAdjustWithoutHorizontalScrolling, // Smartphone platforms use this one,
+                                             // the x axis is stretched to fill the screen and
+                                             // the y is scaled to fit the DPI
+    lapAutoAdjustForDPI // For desktops using High DPI, scale x and y to fit the DPI
+  );
 
 {* Note on TControl.Caption
  * The VCL implementation relies on the virtual Get/SetTextBuf to

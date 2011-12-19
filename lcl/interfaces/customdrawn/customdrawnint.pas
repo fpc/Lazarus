@@ -209,8 +209,6 @@ type
     procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
     procedure SetDesigning(AComponent: TComponent); override;
 
-    procedure ResolveDefaultLayoutAdjustmentPolicy(var AMode: TLayoutAdjustmentPolicy); virtual;
-
     // create and destroy
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;

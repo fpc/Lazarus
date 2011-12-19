@@ -3451,7 +3451,7 @@ var
 begin
   // First resolve ladDefault
   lMode := AMode;
-  if lMode = lapDefault then Widgetset.ResolveDefaultLayoutAdjustmentPolicy(lMode);
+  if lMode = lapDefault then lMode := Application.LayoutAdjustmentPolicy;
 
   // X-axis adjustment proportion
   if lMode = lapAutoAdjustWithoutHorizontalScrolling then
