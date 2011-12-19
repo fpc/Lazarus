@@ -128,7 +128,7 @@ function TCDWidgetSet.PromptUser(const DialogCaption : string;
 begin
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: RawImage_FromDevice
   Params: ADC:
           ARect:
@@ -142,88 +142,64 @@ end;
 
   MWE: exept for the desktop, there is always a bitmep selected in the DC.
        So get this internal bitmap and pass it to RawImage_FromBitmap
+
+  Reference documentation:
+
+  Technical Q&A QA1509 Getting the pixel data from a CGImage object
+  http://developer.apple.com/library/mac/#qa/qa1509/_index.html
+
+  CGDisplayCreateImage
+  http://developer.apple.com/library/mac/#documentation/GraphicsImaging/Reference/Quartz_Services_Ref/Reference/reference.html
+
+  http://lists.apple.com/archives/cocoa-dev/2011/Feb/msg00704.html
+
+  CFDataRef
+  http://developer.apple.com/library/ios/#DOCUMENTATION/CoreFoundation/Reference/CFDataRef/Reference/reference.html
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
+function TCDWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
 var
   Desc: TRawImageDescription absolute ARawImage.Description;
-
-  //SrcWidth, SrcHeight: Integer;
-  WinID: Cardinal;
-  DCSize: TSize;
-  Pixmap: TQtPixmap;
-  Image: QImageH;
-  Context: TQtDeviceContext;
-  
-  procedure RawImage_FromImage(AImage: QImageH);
-  begin
-    ARawImage.DataSize := QImage_numBytes(AImage);
-    ARawImage.Data := GetMem(ARawImage.DataSize);
-    Move(QImage_bits(AImage)^, ARawImage.Data^, ARawImage.DataSize);
-    ARawImage.Mask := nil;
-  end;
-  
+  screenshotImage: CGImageRef;
+  imageDataProv: CGDataProviderRef;
+  imageData: CFDataRef;
+  lBitsPerComponent, lBitsPerPixel, lBytesPerRow: size_t;
+  lDataPtr: UnivPtr;
+  lDataLength: CFIndex;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI GetRawImageFromDevice] SrcDC: ', dbghex(ADC),
-     ' SrcWidth: ', dbgs(ARect.Right - ARect.Left),
-     ' SrcHeight: ', dbgs(ARect.Bottom - ARect.Top));
-  {$endif}
-
-  // todo: copy only passed rectangle
-
   Result := True;
 
   ARawImage.Init;
-  FillStandardDescription(ARawImage.Description);
-  Context := TQtDeviceContext(ADC);
+  ARawImage.Description.Init_BPP32_B8G8R8A8_BIO_TTB(0, 0);
 
-  with DCSize, Context.getDeviceSize do
-  begin
-    cx := x;
-    cy := y;
-  end;
+  // Take the screenshot and obtain the pixel data
+  screenshotImage := CGDisplayCreateImage(CGMainDisplayID()); // Requires 10.6+
+  imageDataProv := CGImageGetDataProvider(screenshotImage); // Requires 10.5+
+  imageData := CGDataProviderCopyData(imageDataProv);
 
-  if Context.Parent <> nil then
-  begin
-    Pixmap := TQtPixmap.Create(@DCSize);
-    WinID := QWidget_winId(Context.Parent);
-    try
-      // if you have dual monitors then getDeviceSize return
-      // more width than screen width, but grabWindow will only grab one
-      // screen, so its width will be less
-      // Solution: we can either pass prefered size to grabWindow or
-      // correct Description size after. I see the first solution as more correct.
-      Pixmap.grabWindow(WinID, 0, 0, DCSize.cx, DCSize.cy);
-      Image := QImage_Create;
-      Pixmap.toImage(Image);
-      RawImage_FromImage(Image);
-      QImage_destroy(Image);
-    finally
-      Pixmap.Free;
-    end;
-  end else
-  begin
-    if Context.vImage <> nil then
-      RawImage_FromImage(Context.vImage.FHandle)
-    else
-    if Context.ParentPixmap <> nil then
-    begin
-      Image := QImage_create();
-      QPixmap_toImage(Context.ParentPixmap, Image);
-      RawImage_FromImage(Image);
-      QImage_destroy(Image);
-    end else
-      Result := False;
-  end;
+  // Now read the image description and convert it to our own
+  lBitsPerComponent := CGImageGetBitsPerComponent(screenshotImage);
+  ARawImage.Description.AlphaPrec := 0;
+  ARawImage.Description.RedPrec := lBitsPerComponent;
+  ARawImage.Description.GreenPrec := lBitsPerComponent;
+  ARawImage.Description.BluePrec := lBitsPerComponent;
+  ARawImage.Description.RedShift := 0;
+  ARawImage.Description.GreenShift := 8;
+  ARawImage.Description.BlueShift := 16;
 
-  // In this case we use the size of the context
-  Desc.Width := DCSize.cx;
-  Desc.Height := DCSize.cy;
+  ARawImage.Description.Width := CGImageGetWidth(screenshotImage);
+  ARawImage.Description.Height := CGImageGetHeight(screenshotImage);
 
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI GetRawImageFromDevice]');
-  {$endif}
-end;*)
+  lBitsPerPixel := CGImageGetBitsPerPixel(screenshotImage); // For now support it will give us 32
+
+  lBytesPerRow := CGImageGetBytesPerRow(screenshotImage);
+
+  // Now copy the data
+  lDataPtr := CFDataGetBytePtr(imageData);
+  lDataLength := CFDataGetLength(imageData);
+  ARawImage.CreateData(False);
+  lDataLength := Min(lDataLength, ARawImage.DataSize);
+  System.Move(lDataPtr^, ARawImage.Data^, lDataLength);
+end;
 
 procedure TCDWidgetset.ShowVirtualKeyboard();
 begin

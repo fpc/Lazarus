@@ -129,7 +129,7 @@ function TCDWidgetSet.PromptUser(const DialogCaption : string;
 begin
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: RawImage_FromDevice
   Params: ADC:
           ARect:
@@ -145,27 +145,9 @@ end;
        So get this internal bitmap and pass it to RawImage_FromBitmap
  ------------------------------------------------------------------------------}
 function TCDWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
-var
-  Desc: TRawImageDescription absolute ARawImage.Description;
-
-  //SrcWidth, SrcHeight: Integer;
-  WinID: Cardinal;
-  DCSize: TSize;
-  Pixmap: TQtPixmap;
-  Image: QImageH;
-  Context: TQtDeviceContext;
-  
-  procedure RawImage_FromImage(AImage: QImageH);
-  begin
-    ARawImage.DataSize := QImage_numBytes(AImage);
-    ARawImage.Data := GetMem(ARawImage.DataSize);
-    Move(QImage_bits(AImage)^, ARawImage.Data^, ARawImage.DataSize);
-    ARawImage.Mask := nil;
-  end;
-
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI GetRawImageFromDevice] SrcDC: ', dbghex(ADC),
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('Trace:> [WinAPI GetRawImageFromDevice] SrcDC: ', dbghex(ADC),
      ' SrcWidth: ', dbgs(ARect.Right - ARect.Left),
      ' SrcHeight: ', dbgs(ARect.Bottom - ARect.Top));
   {$endif}
@@ -175,56 +157,7 @@ begin
   Result := True;
 
   ARawImage.Init;
-  FillStandardDescription(ARawImage.Description);
-  Context := TQtDeviceContext(ADC);
-
-  with DCSize, Context.getDeviceSize do
-  begin
-    cx := x;
-    cy := y;
-  end;
-
-  if Context.Parent <> nil then
-  begin
-    Pixmap := TQtPixmap.Create(@DCSize);
-    WinID := QWidget_winId(Context.Parent);
-    try
-      // if you have dual monitors then getDeviceSize return
-      // more width than screen width, but grabWindow will only grab one
-      // screen, so its width will be less
-      // Solution: we can either pass prefered size to grabWindow or
-      // correct Description size after. I see the first solution as more correct.
-      Pixmap.grabWindow(WinID, 0, 0, DCSize.cx, DCSize.cy);
-      Image := QImage_Create;
-      Pixmap.toImage(Image);
-      RawImage_FromImage(Image);
-      QImage_destroy(Image);
-    finally
-      Pixmap.Free;
-    end;
-  end else
-  begin
-    if Context.vImage <> nil then
-      RawImage_FromImage(Context.vImage.FHandle)
-    else
-    if Context.ParentPixmap <> nil then
-    begin
-      Image := QImage_create();
-      QPixmap_toImage(Context.ParentPixmap, Image);
-      RawImage_FromImage(Image);
-      QImage_destroy(Image);
-    end else
-      Result := False;
-  end;
-
-  // In this case we use the size of the context
-  Desc.Width := DCSize.cx;
-  Desc.Height := DCSize.cy;
-
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI GetRawImageFromDevice]');
-  {$endif}
-end;*)
+end;
 
 procedure TCDWidgetset.ShowVirtualKeyboard();
 begin

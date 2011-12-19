@@ -114,7 +114,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="384">
+    <Files Count="388">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -1908,6 +1908,22 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="customdrawnprivate"/>
       </Item384>
+      <Item385>
+        <Filename Value="customdrawn/customdrawnlclintf_android.inc"/>
+        <Type Value="Include"/>
+      </Item385>
+      <Item386>
+        <Filename Value="customdrawn/customdrawnlclintf_cocoa.inc"/>
+        <Type Value="Include"/>
+      </Item386>
+      <Item387>
+        <Filename Value="customdrawn/customdrawnlclintf_win.inc"/>
+        <Type Value="Include"/>
+      </Item387>
+      <Item388>
+        <Filename Value="customdrawn/customdrawnlclintf_x11.inc"/>
+        <Type Value="Include"/>
+      </Item388>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
