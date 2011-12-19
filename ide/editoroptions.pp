@@ -52,6 +52,7 @@ uses
   SynHighlighterPas, SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
   SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat, SynHighlighterIni,
+  SynHighlighterPo,
   // codetools
   LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
@@ -78,7 +79,7 @@ type
   TLazSyntaxHighlighter =
     (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
     lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL, lshJScript,
-    lshDiff, lshBat, lshIni);
+    lshDiff, lshBat, lshIni, lshPo);
 
   TAdditionalHilightAttribute =
     (ahaNone,              ahaTextBlock,          ahaExecutionPoint,
@@ -374,7 +375,8 @@ const
       (Count: 0; Info: nil), // jscript
       (Count: 0; Info: nil), // Diff
       (Count: 0; Info: nil), // Ini
-      (Count: 0; Info: nil)  // Bat
+      (Count: 0; Info: nil), // Bat
+      (Count: 0; Info: nil)  // PO
     );
 
 type
@@ -570,7 +572,8 @@ const
       (Count:  0; Info: nil), // jscript
       (Count:  3; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoDiff[0]), // Diff
       (Count:  0; Info: nil), // Bat
-      (Count:  0; Info: nil)  // Ini
+      (Count:  0; Info: nil), // Ini
+      (Count:  0; Info: nil)  // PO
     );
 
 const
@@ -590,7 +593,7 @@ const
     (nil, nil, TIDESynFreePasSyn, TIDESynPasSyn, TSynLFMSyn, TSynXMLSyn,
     TSynHTMLSyn, TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
     TSynPythonSyn, TSynPHPSyn, TSynSQLSyn, TSynJScriptSyn, TSynDiffSyn,
-    TSynBatSyn, TSynIniSyn);
+    TSynBatSyn, TSynIniSyn, TSynPoSyn);
 
 
 { Comments }
@@ -613,7 +616,8 @@ const
     comtCPP,   // lshJScript
     comtNone,  // Diff
     comtNone,  // Bat
-    comtNone   // Ini
+    comtNone,  // Ini
+    comtNone   // po
     );
 
 const
@@ -1427,7 +1431,8 @@ const
     'JScript',
     'Diff',
     'Bat',
-    'Ini'
+    'Ini',
+    'PO'
     );
 
 var
@@ -1474,7 +1479,8 @@ const
     lshJScript,
     lshDiff,
     lshBat,
-    lshIni
+    lshIni,
+    lshPo
     );
 
 var
@@ -2381,6 +2387,34 @@ begin
     CaretXY := Point(1,1);
   end;
   Add(NewInfo);
+
+  // create info for PO
+  NewInfo := TEditOptLanguageInfo.Create;
+  with NewInfo do
+  begin
+    TheType := lshPo;
+    DefaultCommentType := DefaultCommentTypes[TheType];
+    SynClass := LazSyntaxHighlighterClasses[TheType];
+    SetBothFilextensions('po');
+    SampleSource :=
+      '#: foo.bar'#13#10 +
+      '#, fuzzy'#13#10 +
+      '#| msgid "abc"'#13#10 +
+      'msgid "abc"'#13#10 +
+      'msgstr "123"'#13#10;
+    //MappedAttributes := TStringList.Create;
+    //with MappedAttributes do
+    //begin
+    //  Add('Comment=Comment');
+    //  Add('Key=Key');
+    //  Add('Identifier=Identifier');
+    //  Add('Space=Space');
+    //  Add('String=String');
+    //end;
+    CaretXY := Point(3,1);
+  end;
+  Add(NewInfo);
+
 end;
 
 destructor TEditOptLangList.Destroy;

@@ -151,6 +151,8 @@ resourcestring
   SYNS_AttrLineRemoved          =  'Diff Removed Line';
   SYNS_AttrLineChanged          =  'Diff Changed Line';
   SYNS_AttrLineContext          =  'Diff Context Line';
+  SYNS_AttrPrevValue            =  'Previous value';
+  SYNS_AttrFlags                =  'Flags';
   (* End of Attribute Names *)
 
 const
@@ -261,6 +263,8 @@ const
   SYNS_XML_AttrLineRemoved          =  'Diff Removed Line';
   SYNS_XML_AttrLineChanged          =  'Diff Changed Line';
   SYNS_XML_AttrLineContext          =  'Diff Context Line';
+  SYNS_XML_AttrPrevValue            =  'Previous value';
+  SYNS_XML_AttrFlags                =  'Flags';
   (* End of Stored Attribute Names *)
 
 resourcestring
@@ -326,6 +330,7 @@ resourcestring
   SYNS_FilterSynGenMsgfiles     =  'Msg files (*.msg)|*.msg';
   SYNS_FilterUNIXShellScript    =  'UNIX Shell Scripts (*.sh)|*.sh';
   SYNS_FilterTeX                =  'TeX Files (*.tex)|*.tex';
+  SYNS_FilterPo                 =  'Po Files (*.po)|*.po';
 
 {$IFDEF SYN_LAZARUS}
 // Currently the language names are used to identify the language
@@ -380,6 +385,7 @@ const
   SYNS_LangSynGenMsgfiles       =  'SynGen Msg files';
   SYNS_LangUnreal               =  'Unreal';
   SYNS_LangTeX                  =  'TeX';
+  SYNS_LangPo                  =  'po language files';
 
 resourcestring
 
