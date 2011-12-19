@@ -1205,7 +1205,7 @@ function TFont.GetCanUTF8: boolean;
 begin
   if not FCanUTF8Valid then
   begin
-    FCanUTF8 := FontCanUTF8(HFONT(Reference.Handle));
+    FCanUTF8 := {%H-}FontCanUTF8(HFONT(Reference.Handle));
     FCanUTF8Valid := True;
   end;
   Result := FCanUTF8;

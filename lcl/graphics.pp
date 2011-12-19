@@ -32,6 +32,10 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
+{$IF FPC_FULLVERSION>=20701}
+{$DEFINE HasFPCanvas1}
+{$ENDIF}
+
 uses
   SysUtils, Math, Types, Classes, Contnrs, FPCAdds, LCLversion,
   FileUtil,
@@ -1104,24 +1108,24 @@ type
     procedure RestoreHandleState; virtual;
 
     // extra drawing methods (there are more in the ancestor TFPCustomCanvas)
-    procedure Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); virtual;
-    procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual;
+    procedure Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
+    procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     //procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
     //                    TransparentColor: TColor); virtual;
     procedure Chord(x1, y1, x2, y2,
-                    Angle16Deg, Angle16DegLength: Integer); virtual;
-    procedure Chord(x1, y1, x2, y2, SX, SY, EX, EY: Integer); virtual;
+                    Angle16Deg, Angle16DegLength: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
+    procedure Chord(x1, y1, x2, y2, SX, SY, EX, EY: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
                        const Source: TRect); virtual;
     procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); virtual;
     procedure DrawFocusRect(const ARect: TRect); virtual;
     procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); virtual;
-    procedure Ellipse(const ARect: TRect); // already in fpcanvas
-    procedure Ellipse(x1, y1, x2, y2: Integer); virtual; // already in fpcanvas
-    procedure FillRect(const ARect: TRect); virtual;
-    procedure FillRect(X1,Y1,X2,Y2: Integer);
+    procedure Ellipse(const ARect: TRect); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
+    procedure Ellipse(x1, y1, x2, y2: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
+    procedure FillRect(const ARect: TRect); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
+    procedure FillRect(X1,Y1,X2,Y2: Integer); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure FloodFill(X, Y: Integer; FillColor: TColor;
-                        FillStyle: TFillStyle); virtual;
+                        FillStyle: TFillStyle); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Frame3d(var ARect: TRect; const FrameWidth: integer;
                       const Style: TGraphicsBevelCut); virtual;
     procedure Frame3D(var ARect: TRect; TopColor, BottomColor: TColor;
@@ -1133,38 +1137,38 @@ type
     function  GetTextMetrics(out TM: TLCLTextMetric): boolean; virtual;
     procedure GradientFill(ARect: TRect; AStart, AStop: TColor; ADirection: TGradientDirection);
     procedure RadialPie(x1, y1, x2, y2,
-                        StartAngle16Deg, Angle16DegLength: Integer); virtual;
+                        StartAngle16Deg, Angle16DegLength: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer); virtual;
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
                          Filled: boolean = False;
-                         Continuous: boolean = False); virtual;
+                         Continuous: boolean = False); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure PolyBezier(const Points: array of TPoint;
                          Filled: boolean = False;
-                         Continuous: boolean = False);
+                         Continuous: boolean = False); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Polygon(const Points: array of TPoint;
                       Winding: Boolean;
                       StartIndex: Integer = 0;
                       NumPts: Integer = -1);
     procedure Polygon(Points: PPoint; NumPts: Integer;
                       Winding: boolean = False); virtual;
-    procedure Polygon(const Points: array of TPoint); // already in fpcanvas
+    procedure Polygon(const Points: array of TPoint); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Polyline(const Points: array of TPoint;
                        StartIndex: Integer;
                        NumPts: Integer = -1);
     procedure Polyline(Points: PPoint; NumPts: Integer); virtual;
-    procedure Polyline(const Points: array of TPoint); // already in fpcanvas
-    procedure Rectangle(X1,Y1,X2,Y2: Integer); virtual; // already in fpcanvas
-    procedure Rectangle(const ARect: TRect); // already in fpcanvas
+    procedure Polyline(const Points: array of TPoint); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
+    procedure Rectangle(X1,Y1,X2,Y2: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
+    procedure Rectangle(const ARect: TRect); {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); virtual;
     procedure RoundRect(const Rect: TRect; RX,RY: Integer);
-    procedure TextOut(X,Y: Integer; const Text: String); virtual; // already in fpcanvas
+    procedure TextOut(X,Y: Integer; const Text: String); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure TextRect(const ARect: TRect; X, Y: integer; const Text: string);
     procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
                        const Style: TTextStyle); virtual;
-    function TextExtent(const Text: string): TSize; virtual;
-    function TextHeight(const Text: string): Integer; virtual;
-    function TextWidth(const Text: string): Integer; virtual;
+    function TextExtent(const Text: string): TSize; virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
+    function TextHeight(const Text: string): Integer; virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
+    function TextWidth(const Text: string): Integer; virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     function TextFitInfo(const Text: string; MaxWidth: Integer): Integer;
     function HandleAllocated: boolean; virtual;
     function GetUpdatedHandle(ReqState: TCanvasState): HDC; virtual;
