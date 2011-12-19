@@ -716,12 +716,12 @@ begin
   Clear;
   rmc := (emRightMouseMovesCursor in AnOptions);
 
-  AddCommand(emcNone,                False,  mbLeft, ccAny, cdDown, [], []);
+  AddCommand(emcNone,                False,  mbXLeft, ccAny, cdDown, [], []);
 
-  AddCommand(emcCodeFoldCollaps,     False, mbMiddle, ccAny, cdDown, [], [ssShift], emcoCodeFoldCollapsOne);
-  AddCommand(emcCodeFoldCollaps,     False, mbMiddle, ccAny, cdDown, [ssShift], [ssShift], emcoCodeFoldCollapsAll);
+  AddCommand(emcCodeFoldCollaps,     False, mbXMiddle, ccAny, cdDown, [], [ssShift], emcoCodeFoldCollapsOne);
+  AddCommand(emcCodeFoldCollaps,     False, mbXMiddle, ccAny, cdDown, [ssShift], [ssShift], emcoCodeFoldCollapsAll);
 
-  AddCommand(emcCodeFoldContextMenu, rmc,   mbRight, ccSingle, cdUp, [], []);
+  AddCommand(emcCodeFoldContextMenu, rmc,   mbXRight, ccSingle, cdUp, [], []);
 end;
 
 { TSynEditMouseActionsGutterFoldExpanded }
@@ -729,7 +729,7 @@ end;
 procedure TSynEditMouseActionsGutterFoldExpanded.InitForOptions(AnOptions: TSynEditorMouseOptions);
 begin
   Clear;
-  AddCommand(emcCodeFoldCollaps, False, mbLeft, ccAny, cdDown, [], [], emcoCodeFoldCollapsOne);
+  AddCommand(emcCodeFoldCollaps, False, mbXLeft, ccAny, cdDown, [], [], emcoCodeFoldCollapsOne);
 end;
 
 { TSynEditMouseActionsGutterFoldCollapsed }
@@ -737,8 +737,8 @@ end;
 procedure TSynEditMouseActionsGutterFoldCollapsed.InitForOptions(AnOptions: TSynEditorMouseOptions);
 begin
   Clear;
-  AddCommand(emcCodeFoldExpand, False, mbLeft, ccAny, cdDown, [ssCtrl], [ssCtrl], emcoCodeFoldExpandOne);
-  AddCommand(emcCodeFoldExpand, False, mbLeft, ccAny, cdDown, [], [ssCtrl], emcoCodeFoldExpandAll);
+  AddCommand(emcCodeFoldExpand, False, mbXLeft, ccAny, cdDown, [ssCtrl], [ssCtrl], emcoCodeFoldExpandOne);
+  AddCommand(emcCodeFoldExpand, False, mbXLeft, ccAny, cdDown, [], [ssCtrl], emcoCodeFoldExpandAll);
 end;
 
 

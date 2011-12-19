@@ -65,7 +65,7 @@ implementation
 const
   BtnToIndex: array [TSynMouseButton] of Integer = (0, 1, 2, 3, 4, 5, 6);
   ClickToIndex: array [ccSingle..ccAny] of Integer = (0, 1, 2, 3, 4);
-  IndexToBtn: array [0..6] of TSynMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2, mbWheelUp, mbWheelDown);
+  IndexToBtn: array [0..6] of TSynMouseButton = (mbXLeft, mbXRight, mbXMiddle, mbXExtra1, mbXExtra2, mbXWheelUp, mbXWheelDown);
   IndexToClick: array [0..4] of TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad, ccAny);
 
 function KeyMapIndexOfCommand(AKeyMap: TKeyCommandRelationList; ACmd: Word): Integer;
@@ -87,13 +87,13 @@ var
   mb: TSynMouseButton;
   cc: TSynMAClickCount;
 begin
-  ButtonName[mbLeft]:=dlgMouseOptBtnLeft;
-  ButtonName[mbRight]:=dlgMouseOptBtnRight;
-  ButtonName[mbMiddle]:=dlgMouseOptBtnMiddle;
-  ButtonName[mbExtra1]:=dlgMouseOptBtnExtra1;
-  ButtonName[mbExtra2]:=dlgMouseOptBtnExtra2;
-  ButtonName[mbWheelUp]:=dlgMouseOptBtnWheelUp;
-  ButtonName[mbWheelDown]:=dlgMouseOptBtnWheelDown;
+  ButtonName[mbXLeft]:=dlgMouseOptBtnLeft;
+  ButtonName[mbXRight]:=dlgMouseOptBtnRight;
+  ButtonName[mbXMiddle]:=dlgMouseOptBtnMiddle;
+  ButtonName[mbXExtra1]:=dlgMouseOptBtnExtra1;
+  ButtonName[mbXExtra2]:=dlgMouseOptBtnExtra2;
+  ButtonName[mbXWheelUp]:=dlgMouseOptBtnWheelUp;
+  ButtonName[mbXWheelDown]:=dlgMouseOptBtnWheelDown;
 
   ClickName[ccSingle]:=dlgMouseOptBtn1;
   ClickName[ccDouble]:=dlgMouseOptBtn2;
@@ -154,7 +154,7 @@ end;
 
 procedure TMouseaActionDialog.ButtonBoxChange(Sender: TObject);
 begin
-  DirCheck.Enabled := not(IndexToBtn[ButtonBox.ItemIndex] in [mbWheelUp, mbWheelDown]);
+  DirCheck.Enabled := not(IndexToBtn[ButtonBox.ItemIndex] in [mbXWheelUp, mbXWheelDown]);
 end;
 
 procedure TMouseaActionDialog.ActionBoxChange(Sender: TObject);
@@ -208,8 +208,8 @@ procedure TMouseaActionDialog.PaintBox1MouseWheel(Sender: TObject; Shift: TShift
   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
   if WheelDelta > 0
-  then ButtonBox.ItemIndex := BtnToIndex[mbWheelUp]
-  else ButtonBox.ItemIndex := BtnToIndex[mbWheelDown];
+  then ButtonBox.ItemIndex := BtnToIndex[mbXWheelUp]
+  else ButtonBox.ItemIndex := BtnToIndex[mbXWheelDown];
   ClickBox.ItemIndex := 4;
   ShiftCheck.Checked := ssShift in Shift;
   AltCheck.Checked   := ssAlt in Shift;

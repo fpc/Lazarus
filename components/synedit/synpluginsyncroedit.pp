@@ -1498,7 +1498,7 @@ end;
 procedure TSynPluginSyncroEditMouseActions.ResetDefaults;
 begin
   Clear;
-  AddCommand(MouseOffset + emcSynPSyncroEdGutterGlyph, False, mbLeft, ccAny, cdDown, [], []);
+  AddCommand(MouseOffset + emcSynPSyncroEdGutterGlyph, False, mbXLeft, ccAny, cdDown, [], []);
 end;
 
 { TSynEditSyncroEditKeyStrokesSelecting }

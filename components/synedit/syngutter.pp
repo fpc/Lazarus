@@ -381,8 +381,8 @@ begin
   Clear;
   rmc := (emRightMouseMovesCursor in AnOptions);
 
-  AddCommand(emcOnMainGutterClick, False, mbLeft,  ccAny, cdDown, [], []);
-  AddCommand(emcContextMenu,       rmc,   mbRight, ccSingle, cdUp, [], []);
+  AddCommand(emcOnMainGutterClick, False, mbXLeft,  ccAny, cdDown, [], []);
+  AddCommand(emcContextMenu,       rmc,   mbXRight, ccSingle, cdUp, [], []);
 end;
 
 end.

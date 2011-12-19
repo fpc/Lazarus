@@ -35,7 +35,7 @@ unit SynEditMouseCmds;
 interface
 
 uses
-  Classes, Controls, SysUtils, SynEditStrConst, SynEditPointClasses, Dialogs,
+  LazSynEditMouseCmdsTypes, Classes, Controls, SysUtils, SynEditStrConst, SynEditPointClasses, Dialogs,
   LCLProc;
 
 type
@@ -53,14 +53,22 @@ type
 
   TSynEditorMouseCommand = type word;
   TSynEditorMouseCommandOpt = type word;
-  TSynMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2, mbWheelUp, mbWheelDown);
+  TSynMouseButton = LazSynEditMouseCmdsTypes.TSynMouseButton;
   TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad, ccAny);
   TSynMAClickDir = (cdUp, cdDown);
   ESynMouseCmdError = class(Exception);
 
 const
+  mbXLeft      =  LazSynEditMouseCmdsTypes.mbLeft;
+  mbXRight     =  LazSynEditMouseCmdsTypes.mbRight;
+  mbXMiddle    =  LazSynEditMouseCmdsTypes.mbMiddle;
+  mbXExtra1    =  LazSynEditMouseCmdsTypes.mbExtra1;
+  mbXExtra2    =  LazSynEditMouseCmdsTypes.mbExtra2;
+  mbXWheelUp   =  LazSynEditMouseCmdsTypes.mbWheelUp;
+  mbXWheelDown =  LazSynEditMouseCmdsTypes.mbWheelDown;
+
   SynMouseButtonMap: Array [TMouseButton] of TSynMouseButton =
-    (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2);
+    (mbXLeft, mbXRight, mbXMiddle, mbXExtra1, mbXExtra2);
 
   SynMouseButtonBackMap: Array [TSynMouseButton] of TMouseButton =
     (Controls.mbLeft, Controls.mbRight, Controls.mbMiddle,
@@ -119,7 +127,7 @@ type
   published
     property Shift: TShiftState read FShift write SetShift                      default [];
     property ShiftMask: TShiftState read FShiftMask write SetShiftMask          default [];
-    property Button: TSynMouseButton read FButton write SetButton                  default mbLeft;
+    property Button: TSynMouseButton read FButton write SetButton                  default mbXLeft;
     property ClickCount: TSynMAClickCount read FClickCount write SetClickCount  default ccSingle;
     property ClickDir: TSynMAClickDir read FClickDir write SetClickDir          default cdUp;
     property Command: TSynEditorMouseCommand read FCommand write SetCommand;
@@ -489,7 +497,7 @@ begin
   if Collection <> nil then
     TSynEditMouseActions(Collection).AssertNoConflict(self);
 
-  if FButton in [mbWheelUp, mbWheelDown] then
+  if FButton in [mbXWheelUp, mbXWheelDown] then
     ClickDir := cdDown;
 end;
 
@@ -503,7 +511,7 @@ end;
 
 procedure TSynEditMouseAction.SetClickDir(AValue: TSynMAClickDir);
 begin
-  if FButton in [mbWheelUp, mbWheelDown] then
+  if FButton in [mbXWheelUp, mbXWheelDown] then
     AValue := cdDown;
   if FClickDir = AValue then exit;
   FClickDir := AValue;
@@ -606,7 +614,7 @@ begin
   FCommand    := 0;
   FClickCount := ccSingle;
   FClickDir   := cdUp;
-  FButton     := mbLeft;
+  FButton     := mbXLeft;
   FShift      := [];
   FShiftMask  := [];
   FMoveCaret  := False;

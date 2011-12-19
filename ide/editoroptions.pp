@@ -2589,44 +2589,44 @@ begin
   //TMouseOptGutterLeftType = (moGLDownClick, moglUpClickAndSelect);
 
   with FGutterActions do begin
-    AddCommand(emcContextMenu,         False, mbRight,  ccSingle, cdUp, [], []);
+    AddCommand(emcContextMenu,         False, mbXRight,  ccSingle, cdUp, [], []);
   end;
   with FGutterActionsFold do begin
-    AddCommand(emcCodeFoldContextMenu, False, mbRight,  ccSingle, cdUp, [], []);
+    AddCommand(emcCodeFoldContextMenu, False, mbXRight,  ccSingle, cdUp, [], []);
   end;
 
   CDir := cdDown;
   if FGutterLeft = moglUpClickAndSelect then begin
     CDir := cdUp;
     with FGutterActions do begin
-      AddCommand(emcStartSelections,   True, mbLeft, ccAny, cdDown, [],               [ssShift], emcoSelectionStart);
-      AddCommand(emcStartSelections,   True, mbLeft, ccAny, cdDown, [ssShift],        [ssShift], emcoSelectionContinue);
+      AddCommand(emcStartSelections,   True, mbXLeft, ccAny, cdDown, [],               [ssShift], emcoSelectionStart);
+      AddCommand(emcStartSelections,   True, mbXLeft, ccAny, cdDown, [ssShift],        [ssShift], emcoSelectionContinue);
     end;
   end;
   with FGutterActions do begin
-    AddCommand(emcOnMainGutterClick,   False, mbLeft,   ccAny,    CDir, [], []);  // breakpoint
+    AddCommand(emcOnMainGutterClick,   False, mbXLeft,   ccAny,    CDir, [], []);  // breakpoint
   end;
   with FGutterActionsFold do begin
-    AddCommand(emcNone,                False, mbLeft,   ccAny,    CDir, [], []);
+    AddCommand(emcNone,                False, mbXLeft,   ccAny,    CDir, [], []);
   end;
   with FGutterActionsFoldCol do begin
-    AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [ssAlt],   [ssAlt, SYNEDIT_LINK_MODIFIER], emcoCodeFoldCollapsOne);
-    AddCommand(emcCodeFoldExpand,      False, mbLeft,   ccAny,    CDir, [SYNEDIT_LINK_MODIFIER],  [ssAlt, SYNEDIT_LINK_MODIFIER], emcoCodeFoldExpandAll);
-    AddCommand(emcCodeFoldExpand,      False, mbLeft,   ccAny,    CDir, [],        [],              emcoCodeFoldExpandOne);
+    AddCommand(emcCodeFoldCollaps,     False, mbXLeft,   ccAny,    CDir, [ssAlt],   [ssAlt, SYNEDIT_LINK_MODIFIER], emcoCodeFoldCollapsOne);
+    AddCommand(emcCodeFoldExpand,      False, mbXLeft,   ccAny,    CDir, [SYNEDIT_LINK_MODIFIER],  [ssAlt, SYNEDIT_LINK_MODIFIER], emcoCodeFoldExpandAll);
+    AddCommand(emcCodeFoldExpand,      False, mbXLeft,   ccAny,    CDir, [],        [],              emcoCodeFoldExpandOne);
     // TODO: why depend on FTextMiddleClick?
     if FTextMiddleClick <> mbaNone then
-      AddCommand(emcCodeFoldCollaps,   False, mbMiddle, ccAny,    CDir, [],       [],               emcoCodeFoldCollapsOne);
+      AddCommand(emcCodeFoldCollaps,   False, mbXMiddle, ccAny,    CDir, [],       [],               emcoCodeFoldCollapsOne);
     if CDir = cdUp then
-      AddCommand(emcNone,              False, mbLeft,   ccAny,    cdDown, [], []);
+      AddCommand(emcNone,              False, mbXLeft,   ccAny,    cdDown, [], []);
   end;
   with FGutterActionsFoldExp do begin
-    AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [],       [SYNEDIT_LINK_MODIFIER], emcoCodeFoldCollapsOne);
-    AddCommand(emcCodeFoldCollaps,     False, mbLeft,   ccAny,    CDir, [SYNEDIT_LINK_MODIFIER], [SYNEDIT_LINK_MODIFIER], emcoCodeFoldCollapsAll);
+    AddCommand(emcCodeFoldCollaps,     False, mbXLeft,   ccAny,    CDir, [],       [SYNEDIT_LINK_MODIFIER], emcoCodeFoldCollapsOne);
+    AddCommand(emcCodeFoldCollaps,     False, mbXLeft,   ccAny,    CDir, [SYNEDIT_LINK_MODIFIER], [SYNEDIT_LINK_MODIFIER], emcoCodeFoldCollapsAll);
     // TODO: why depend on FTextMiddleClick?
     if FTextMiddleClick <> mbaNone then
-      AddCommand(emcCodeFoldCollaps,   False, mbMiddle, ccAny,    CDir, [],       [],       emcoCodeFoldCollapsOne);
+      AddCommand(emcCodeFoldCollaps,   False, mbXMiddle, ccAny,    CDir, [],       [],       emcoCodeFoldCollapsOne);
     if CDir = cdUp then
-      AddCommand(emcNone,              False, mbLeft,   ccAny,    cdDown, [], []);
+      AddCommand(emcNone,              False, mbXLeft,   ccAny,    cdDown, [], []);
   end;
 
 end;
@@ -2715,18 +2715,18 @@ procedure TEditorMouseOptions.ResetTextToDefault;
                                    opt2 := 50;
           end;
         mwaZoom: begin
-            AddCommand(emcWheelZoomOut, False,  mbWheelDown, ccAny, cdDown, AShift, AShiftMask);
-            AddCommand(emcWheelZoomIn,  False,  mbWheelUp,   ccAny, cdDown, AShift, AShiftMask);
+            AddCommand(emcWheelZoomOut, False,  mbXWheelDown, ccAny, cdDown, AShift, AShiftMask);
+            AddCommand(emcWheelZoomIn,  False,  mbXWheelUp,   ccAny, cdDown, AShift, AShiftMask);
           end;
       end;
 
       if AnAction in [mwaScroll, mwaScrollSingleLine, mwaScrollPage, mwaScrollPageLessOne, mwaScrollHalfPage] then begin
-        AddCommand(emcWheelVertScrollDown,       False,  mbWheelDown, ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
-        AddCommand(emcWheelVertScrollUp,         False,  mbWheelUp,   ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
+        AddCommand(emcWheelVertScrollDown,       False,  mbXWheelDown, ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
+        AddCommand(emcWheelVertScrollUp,         False,  mbXWheelUp,   ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
       end;
       if AnAction in [mwaScrollHoriz, mwaScrollHorizSingleLine, mwaScrollHorizPage, mwaScrollHorizPageLessOne, mwaScrollHorizHalfPage] then begin
-        AddCommand(emcWheelHorizScrollDown,       False,  mbWheelDown, ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
-        AddCommand(emcWheelHorizScrollUp,         False,  mbWheelUp,   ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
+        AddCommand(emcWheelHorizScrollDown,       False,  mbXWheelDown, ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
+        AddCommand(emcWheelHorizScrollUp,         False,  mbXWheelUp,   ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
       end;
 
     end;
@@ -2753,34 +2753,34 @@ begin
   if FTextShiftLeftClick = mbaNone
   then SelKey := [ssShift]
   else SelKey := [];
-  AddBtnClick(mbaSelect,                  mbLeft,   [],                      ModKeys, False, SelKey);
-  AddBtnClick(FTextShiftLeftClick,        mbLeft,   [ssShift],               ModKeys, False, SelKey);
+  AddBtnClick(mbaSelect,                  mbXLeft,   [],                      ModKeys, False, SelKey);
+  AddBtnClick(FTextShiftLeftClick,        mbXLeft,   [ssShift],               ModKeys, False, SelKey);
 
   if FTextShiftCtrlLeftClick = mbaNone
   then SelKey := [ssShift]
   else SelKey := [];
-  AddBtnClick(FTextCtrlLeftClick,         mbLeft,   [SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
-  AddBtnClick(FTextShiftCtrlLeftClick,    mbLeft,   [ssShift, SYNEDIT_LINK_MODIFIER],               ModKeys, False, SelKey);
+  AddBtnClick(FTextCtrlLeftClick,         mbXLeft,   [SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
+  AddBtnClick(FTextShiftCtrlLeftClick,    mbXLeft,   [ssShift, SYNEDIT_LINK_MODIFIER],               ModKeys, False, SelKey);
 
   if FTextShiftAltLeftClick = mbaNone
   then SelKey := [ssShift]
   else SelKey := [];
-  AddBtnClick(FTextAltLeftClick,          mbLeft,   [ssAlt],                 ModKeys, False, SelKey);
-  AddBtnClick(FTextShiftAltLeftClick,     mbLeft,   [ssShift, ssAlt],               ModKeys, False, SelKey);
+  AddBtnClick(FTextAltLeftClick,          mbXLeft,   [ssAlt],                 ModKeys, False, SelKey);
+  AddBtnClick(FTextShiftAltLeftClick,     mbXLeft,   [ssShift, ssAlt],               ModKeys, False, SelKey);
 
   if FTextShiftAltCtrlLeftClick = mbaNone
   then SelKey := [ssShift]
   else SelKey := [];
-  AddBtnClick(FTextAltCtrlLeftClick,      mbLeft, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
-  AddBtnClick(FTextShiftAltCtrlLeftClick, mbLeft, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
+  AddBtnClick(FTextAltCtrlLeftClick,      mbXLeft, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
+  AddBtnClick(FTextShiftAltCtrlLeftClick, mbXLeft, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey);
 
   SelKey := [];
-  AddBtnClick(FTextDoubleLeftClick,        mbLeft,   [], ModKeys, False, SelKey, ccDouble);
-  AddBtnClick(FTextTripleLeftClick,       mbLeft,   [], ModKeys, False, SelKey, ccTriple);
-  AddBtnClick(FTextQuadLeftClick,          mbLeft,   [], ModKeys, False, SelKey, ccQuad);
-  AddBtnClick(FTextShiftDoubleLeftClick,   mbLeft,   [ssShift],               ModKeys, False, SelKey, ccDouble);
-  AddBtnClick(FTextCtrlDoubleLeftClick,    mbLeft,   [SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey, ccDouble);
-  AddBtnClick(FTextAltDoubleLeftClick,     mbLeft,   [ssAlt],                 ModKeys, False, SelKey, ccDouble);
+  AddBtnClick(FTextDoubleLeftClick,        mbXLeft,   [], ModKeys, False, SelKey, ccDouble);
+  AddBtnClick(FTextTripleLeftClick,        mbXLeft,   [], ModKeys, False, SelKey, ccTriple);
+  AddBtnClick(FTextQuadLeftClick,          mbXLeft,   [], ModKeys, False, SelKey, ccQuad);
+  AddBtnClick(FTextShiftDoubleLeftClick,   mbXLeft,   [ssShift],               ModKeys, False, SelKey, ccDouble);
+  AddBtnClick(FTextCtrlDoubleLeftClick,    mbXLeft,   [SYNEDIT_LINK_MODIFIER], ModKeys, False, SelKey, ccDouble);
+  AddBtnClick(FTextAltDoubleLeftClick,     mbXLeft,   [ssAlt],                 ModKeys, False, SelKey, ccDouble);
 
 
   SelKey := [];
@@ -2792,14 +2792,14 @@ begin
   if FTextShiftCtrlMiddleClick     <> mbaNone then ModKeys := ModKeys + [ssShift] + [SYNEDIT_LINK_MODIFIER];
   if FTextShiftAltMiddleClick      <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt];
   if FTextShiftAltCtrlMiddleClick  <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt] + [SYNEDIT_LINK_MODIFIER];
-  AddBtnClick(FTextMiddleClick,     mbMiddle, [], ModKeys, FTextCtrlMiddleClick = mbaNone);
-  AddBtnClick(FTextShiftMiddleClick,mbMiddle, [ssShift], ModKeys);
-  AddBtnClick(FTextAltMiddleClick,  mbMiddle, [ssAlt], ModKeys);
-  AddBtnClick(FTextCtrlMiddleClick, mbMiddle, [SYNEDIT_LINK_MODIFIER], ModKeys);
-  AddBtnClick(FTextAltCtrlMiddleClick,      mbMiddle, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys);
-  AddBtnClick(FTextShiftCtrlMiddleClick,    mbMiddle, [ssShift, SYNEDIT_LINK_MODIFIER], ModKeys);
-  AddBtnClick(FTextShiftAltMiddleClick,     mbMiddle, [ssShift, ssAlt], ModKeys);
-  AddBtnClick(FTextShiftAltCtrlMiddleClick, mbMiddle, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys);
+  AddBtnClick(FTextMiddleClick,     mbXMiddle, [], ModKeys, FTextCtrlMiddleClick = mbaNone);
+  AddBtnClick(FTextShiftMiddleClick,mbXMiddle, [ssShift], ModKeys);
+  AddBtnClick(FTextAltMiddleClick,  mbXMiddle, [ssAlt], ModKeys);
+  AddBtnClick(FTextCtrlMiddleClick, mbXMiddle, [SYNEDIT_LINK_MODIFIER], ModKeys);
+  AddBtnClick(FTextAltCtrlMiddleClick,      mbXMiddle, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys);
+  AddBtnClick(FTextShiftCtrlMiddleClick,    mbXMiddle, [ssShift, SYNEDIT_LINK_MODIFIER], ModKeys);
+  AddBtnClick(FTextShiftAltMiddleClick,     mbXMiddle, [ssShift, ssAlt], ModKeys);
+  AddBtnClick(FTextShiftAltCtrlMiddleClick, mbXMiddle, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys);
 
   SelKey := [];
   ModKeys := [];
@@ -2810,14 +2810,14 @@ begin
   if FTextShiftCtrlRightClick     <> mbaNone then ModKeys := ModKeys + [ssShift] + [SYNEDIT_LINK_MODIFIER];
   if FTextShiftAltRightClick      <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt];
   if FTextShiftAltCtrlRightClick  <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt] + [SYNEDIT_LINK_MODIFIER];
-  AddBtnClick(FTextRightClick,     mbRight, [], ModKeys, FTextCtrlRightClick = mbaNone, [], ccSingle, FTextRightMoveCaret);
-  AddBtnClick(FTextShiftRightClick,mbRight, [ssShift], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
-  AddBtnClick(FTextAltRightClick,  mbRight, [ssAlt], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
-  AddBtnClick(FTextCtrlRightClick, mbRight, [SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
-  AddBtnClick(FTextAltCtrlRightClick,      mbRight, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
-  AddBtnClick(FTextShiftCtrlRightClick,    mbRight, [ssShift, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
-  AddBtnClick(FTextShiftAltRightClick,     mbRight, [ssShift, ssAlt], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
-  AddBtnClick(FTextShiftAltCtrlRightClick, mbRight, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextRightClick,     mbXRight, [], ModKeys, FTextCtrlRightClick = mbaNone, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextShiftRightClick,mbXRight, [ssShift], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextAltRightClick,  mbXRight, [ssAlt], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextCtrlRightClick, mbXRight, [SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextAltCtrlRightClick,      mbXRight, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextShiftCtrlRightClick,    mbXRight, [ssShift, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextShiftAltRightClick,     mbXRight, [ssShift, ssAlt], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
+  AddBtnClick(FTextShiftAltCtrlRightClick, mbXRight, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, FTextRightMoveCaret);
 
   SelKey := [];
   ModKeys := [];
@@ -2828,14 +2828,14 @@ begin
   if FTextShiftCtrlExtra1Click     <> mbaNone then ModKeys := ModKeys + [ssShift] + [SYNEDIT_LINK_MODIFIER];
   if FTextShiftAltExtra1Click      <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt];
   if FTextShiftAltCtrlExtra1Click  <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt] + [SYNEDIT_LINK_MODIFIER];
-  AddBtnClick(FTextExtra1Click,     mbExtra1, [], ModKeys, FTextCtrlExtra1Click = mbaNone, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextShiftExtra1Click,mbExtra1, [ssShift], ModKeys, False, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextAltExtra1Click,  mbExtra1, [ssAlt], ModKeys, False, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextCtrlExtra1Click, mbExtra1, [SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextAltCtrlExtra1Click,      mbExtra1, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextShiftCtrlExtra1Click,    mbExtra1, [ssShift, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextShiftAltExtra1Click,     mbExtra1, [ssShift, ssAlt], ModKeys, False, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextShiftAltCtrlExtra1Click, mbExtra1, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextExtra1Click,     mbXExtra1, [], ModKeys, FTextCtrlExtra1Click = mbaNone, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftExtra1Click,mbXExtra1, [ssShift], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextAltExtra1Click,  mbXExtra1, [ssAlt], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextCtrlExtra1Click, mbXExtra1, [SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextAltCtrlExtra1Click,      mbXExtra1, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftCtrlExtra1Click,    mbXExtra1, [ssShift, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftAltExtra1Click,     mbXExtra1, [ssShift, ssAlt], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftAltCtrlExtra1Click, mbXExtra1, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
 
   // TODO: on w32 extra btn do not call mouse up
   SelKey := [];
@@ -2847,14 +2847,14 @@ begin
   if FTextShiftCtrlExtra2Click     <> mbaNone then ModKeys := ModKeys + [ssShift] + [SYNEDIT_LINK_MODIFIER];
   if FTextShiftAltExtra2Click      <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt];
   if FTextShiftAltCtrlExtra2Click  <> mbaNone then ModKeys := ModKeys + [ssShift, ssAlt] + [SYNEDIT_LINK_MODIFIER];
-  AddBtnClick(FTextExtra2Click,     mbExtra2, [], ModKeys, FTextCtrlExtra2Click = mbaNone, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextShiftExtra2Click,mbExtra2, [ssShift], ModKeys, False, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextAltExtra2Click,  mbExtra2, [ssAlt], ModKeys, False, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextCtrlExtra2Click, mbExtra2, [SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextAltCtrlExtra2Click,      mbExtra2, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextShiftCtrlExtra2Click,    mbExtra2, [ssShift, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextShiftAltExtra2Click,     mbExtra2, [ssShift, ssAlt], ModKeys, False, [], ccSingle, True, cdDown);
-  AddBtnClick(FTextShiftAltCtrlExtra2Click, mbExtra2, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextExtra2Click,     mbXExtra2, [], ModKeys, FTextCtrlExtra2Click = mbaNone, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftExtra2Click,mbXExtra2, [ssShift], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextAltExtra2Click,  mbXExtra2, [ssAlt], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextCtrlExtra2Click, mbXExtra2, [SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextAltCtrlExtra2Click,      mbXExtra2, [ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftCtrlExtra2Click,    mbXExtra2, [ssShift, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftAltExtra2Click,     mbXExtra2, [ssShift, ssAlt], ModKeys, False, [], ccSingle, True, cdDown);
+  AddBtnClick(FTextShiftAltCtrlExtra2Click, mbXExtra2, [ssShift, ssAlt, SYNEDIT_LINK_MODIFIER], ModKeys, False, [], ccSingle, True, cdDown);
 
   ModKeys := [];
   if FShiftWheel         <> mwaNone then ModKeys := ModKeys + [ssShift];
@@ -2875,7 +2875,7 @@ begin
 
   if FTextDrag then
     with FSelActions do begin
-      AddCommand(emcStartDragMove, False, mbLeft, ccSingle, cdDown, [], []);
+      AddCommand(emcStartDragMove, False, mbXLeft, ccSingle, cdDown, [], []);
     end;
 end;
 
