@@ -45,7 +45,7 @@ type
   TCarbonControlEvent = (cceValueChanged, cceIndicatorMoved, cceDoAction,
     cceDraw, cceHit);
   TCarbonControlEvents = set of TCarbonControlEvent;
-  TCarbonWidgetFlag = (cwfNone, cwdTToolBar);
+  TCarbonWidgetFlag = (cwfNone, cwdTToolBar, cwdTTabControl);
 
   { TCarbonControl }
   

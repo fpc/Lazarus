@@ -71,7 +71,7 @@ type
 
   TCarbonWSCustomNotebook = class(TWSCustomTabControl)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class procedure AddPage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const AIndex: integer); override;
     class procedure MovePage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const NewIndex: integer); override;
@@ -335,7 +335,12 @@ end;
 class function TCarbonWSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonTabsControl.Create(AWinControl, AParams));
+  if AWinControl is TTabControl then
+  begin
+    Result := TLCLIntfHandle(TCarbonCustomControl.Create(AWinControl, AParams));
+    TCarbonCustomControl(Result).CarbonWidgetFlag := cwdTTabControl;
+  end else
+    Result := TLCLIntfHandle(TCarbonTabsControl.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -417,7 +422,8 @@ class procedure TCarbonWSCustomNotebook.SetPageIndex(const ATabControl: TCustomT
   const AIndex: integer);
 begin
   if not CheckHandle(ATabControl, Self, 'SetPageIndex') then Exit;
-
+  if (AIndex < 0) or (AIndex > ATabControl.PageCount - 1) then
+    exit;
   TCarbonTabsControl(ATabControl.Handle).SetPageIndex(AIndex);
 end;
 
@@ -447,8 +453,8 @@ class procedure TCarbonWSCustomNotebook.ShowTabs(const ATabControl: TCustomTabCo
   AShowTabs: boolean);
 begin
   if not CheckHandle(ATabControl, Self, 'ShowTabs') then Exit;
-
-  TCarbonTabsControl(ATabControl.Handle).ShowTabs(AShowTabs);
+  if TCarbonControl(ATabControl.Handle).CarbonWidgetFlag <> cwdTTabControl then
+    TCarbonTabsControl(ATabControl.Handle).ShowTabs(AShowTabs);
 end;
 
 { TCarbonWSCustomListView }
