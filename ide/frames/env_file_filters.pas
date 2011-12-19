@@ -77,24 +77,18 @@ begin
   cfg := GetIDEConfigStorage(FileDialogFilterConfigFile, True);
   try
     cnt := cfg.GetValue(KeyFilterCount, 0);
-    if cnt = 0 then
+    // read values
+    for i := 1 to cnt do
     begin
-      // create default values
-      Filter:=GetDefaultFileDialogFilter;
-    end
-    else
-    begin
-      // read values
-      for i := 1 to cnt do
-      begin
-        lName := cfg.GetValue(KeyFilter+IntToStr(i) + '/' + KeyFilterName, '');
-        lMask := cfg.GetValue(KeyFilter+IntToStr(i) + '/' + KeyFilterMask, '*');
-        if (lName='') or (lMask='') then continue;
-        if Filter<>'' then
-          Filter:=Filter+'|';
-        Filter:=Filter+lName+'|'+lMask;
-      end;
+      lName := cfg.GetValue(KeyFilter+IntToStr(i) + '/' + KeyFilterName, '');
+      lMask := cfg.GetValue(KeyFilter+IntToStr(i) + '/' + KeyFilterMask, '*');
+      if (lName='') or (lMask='') then continue;
+      if Filter<>'' then
+        Filter:=Filter+'|';
+      Filter:=Filter+lName+'|'+lMask;
     end;
+    if Filter='' then
+      Filter:=GetDefaultFileDialogFilter;
   finally
     cfg.Free;
   end;
