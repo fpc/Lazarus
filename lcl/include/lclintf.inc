@@ -192,7 +192,7 @@ end;
 
 function FontCanUTF8(Font: HFont): boolean;
 begin
-  Result := WidgetSet.FontCanUTF8(Font);
+  Result := WidgetSet.FontCanUTF8(Font){%H-};
 end;
 
 function FontIsMonoSpace(Font: HFont): boolean;
@@ -316,7 +316,7 @@ end;
 ------------------------------------------------------------------------------}
 function IntfSendsUTF8KeyPress: Boolean;
 begin
-  Result := WidgetSet.IntfSendsUTF8KeyPress;
+  Result := WidgetSet.IntfSendsUTF8KeyPress{%H-};
 end;
 
 {------------------------------------------------------------------------------
