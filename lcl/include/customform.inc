@@ -1905,6 +1905,7 @@ begin
   FShowInTaskbar := stDefault;
   FAlphaBlend := False;
   FAlphaBlendValue := 255;
+  FDesignTimeDPI := 96;
   // set border style before handle is allocated
   if not (fsBorderStyleChanged in FFormState) then
     FFormBorderStyle:= bsSizeable;

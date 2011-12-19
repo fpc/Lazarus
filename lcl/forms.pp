@@ -453,6 +453,7 @@ type
     FRestoredHeight: integer;
     FShowInTaskbar: TShowInTaskbar;
     FWindowState: TWindowState;
+    FDesignTimeDPI: Integer;
     function GetClientHandle: HWND;
     function GetEffectiveShowInTaskBar: TShowInTaskBar;
     function GetMonitor: TMonitor;
@@ -655,6 +656,7 @@ type
     property DefaultMonitor: TDefaultMonitor read FDefaultMonitor
       write FDefaultMonitor default dmActiveForm;
     property Designer: TIDesigner read FDesigner write FDesigner;
+    property DesignTimeDPI: Integer read FDesignTimeDPI write FDesignTimeDPI;
     property FormState: TFormState read FFormState;
     property FormStyle: TFormStyle read FFormStyle write SetFormStyle
                                    default fsNormal;

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  LCLProc, Arrow, StdCtrls, ComCtrls, LCLType, LCLIntf;
+  LCLProc, Arrow, StdCtrls, ComCtrls, LCLType, LCLIntf, InterfaceBase;
 
 type
   TSubControl = class;
@@ -143,6 +143,7 @@ procedure TForm1.Button1Click(Sender: TObject);
 begin
   DebugLn('Button1Click');
   ProgressBar1.Position := ProgressBar1.Position + 10;
+//  Self.AutoAdjustLayout(lapAutoAdjustWithoutHorizontalScrolling, 96, 150, 220, 600);
 end;
 
 procedure TForm1.Button1KeyDown(Sender: TObject; var Key: Word;

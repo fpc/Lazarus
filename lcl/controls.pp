@@ -880,14 +880,7 @@ type
     chtOnKeyDown
     );
 
-  TLayoutAdjustmentPolicy = (
-    lapDefault,     // widgetset dependent
-    lapFixedLayout, // A fixed absolute layout in all platforms
-    lapAutoAdjustWithoutHorizontalScrolling, // Smartphone platforms use this one,
-                                             // the x axis is stretched to fill the screen and
-                                             // the y is scaled to fit the DPI
-    lapAutoAdjustForDPI // For desktops using High DPI, scale x and y to fit the DPI
-  );
+  TLayoutAdjustmentPolicy = InterfaceBase.TLayoutAdjustmentPolicy;
 
 {* Note on TControl.Caption
  * The VCL implementation relies on the virtual Get/SetTextBuf to
@@ -1358,8 +1351,8 @@ type
     procedure WriteLayoutDebugReport(const Prefix: string); virtual;
     procedure AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
       const AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth: Integer); virtual;
-    function ShouldAutoAdjustLayout: Boolean; virtual;
     function ShouldAutoAdjustLeftAndTop: Boolean; virtual;
+    function ShouldAutoAdjustWidthAndHeight: Boolean; virtual;
   public
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;

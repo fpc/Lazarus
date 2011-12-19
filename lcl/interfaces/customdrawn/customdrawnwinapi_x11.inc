@@ -2768,7 +2768,7 @@ begin
     OriginDiff.X := Round(QTransform_Dx(Matrix)) - P.X;
     OriginDiff.Y := Round(QTransform_Dy(Matrix)) - P.Y;
   end;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetDeviceCaps
@@ -2776,18 +2776,16 @@ end;
   Returns: Integer
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+function TCDWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 var
-  QtDC: TQtDeviceContext;
-  PaintDevice: QPaintDeviceH;
-  PaintEngine: QPaintEngineH;
+  LazDC: TLazCanvas;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetDeviceCaps] DC ' + dbghex(DC));
   {$endif}
 
   Result := 0;
-  if DC = 0 then
+(*  if DC = 0 then
     DC := HDC(QtScreenContext);
 
   if not IsValidDC(DC) then exit;
@@ -2822,10 +2820,10 @@ begin
       Result := 0;
     else
       Result := 0;
-  end;
+  end;*)
 end;
 
-function TQtWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
+(*function TQtWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
   Result := 0;
   {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
@@ -3695,7 +3693,7 @@ begin
   end
   else
     Result := FSysColorBrushes[nIndex];
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetSystemMetrics
@@ -3704,7 +3702,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
+function TCDWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 var
   R: TRect;
 begin
@@ -3712,7 +3710,7 @@ begin
     WriteLn(Format('Trace:> [TQtWidgetSet.GetSystemMetrics] %d', [nIndex]));
   {$endif}
   Result := 0;
-  case nIndex of
+(*  case nIndex of
     SM_ARRANGE:
       begin
         {$ifdef VerboseQtWinAPI}
@@ -3985,10 +3983,10 @@ begin
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
       end;
-  end;
+  end;*)
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Function: GetTextColor
   Params:  DC     - A device context
   Returns: TColorRef

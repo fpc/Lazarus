@@ -1680,7 +1680,7 @@ begin
   DebugLn('Trace:< [WinAPI GetDC] Result: ', dbghex(Result));
   {$endif}
 end;
-begin
+*)
 
 {------------------------------------------------------------------------------
   Method: GetDeviceCaps
@@ -1689,12 +1689,13 @@ begin
 
   Returns device specific information
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+function TCDWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 begin
-  Result := Windows.GetDeviceCaps(DC, Index);
+  Result := 0;
+  if DC = 0 then Result := Windows.GetDeviceCaps(0, Index);
 end;
 
-function TWin32WidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
+(*function TWin32WidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
   WindowHandle: HWND; var OriginDiff: TPoint): boolean;
 var
   DCOrg, winOrg: Windows.POINT;

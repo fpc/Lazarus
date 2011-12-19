@@ -439,6 +439,11 @@ procedure TCDWidgetSet.AppSetMainFormOnTaskBar(const DoSet: Boolean);
 begin
 end;
 
+procedure TCDWidgetSet.ResolveDefaultLayoutAdjustmentPolicy(var AMode: TLayoutAdjustmentPolicy);
+begin
+  AMode := lapFixedLayout;
+end;
+
 {------------------------------------------------------------------------------
   function: CreateTimer
   Params: Interval:

@@ -3780,9 +3780,7 @@ procedure TWinControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
 var
   i: Integer;
 begin
-  // Only auto-adjust self if required, but always auto-adjust child objects
-  if ShouldAutoAdjustLayout then
-    inherited AutoAdjustLayout(AMode, AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth);
+  inherited AutoAdjustLayout(AMode, AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth);
 
   for i:=0 to ControlCount-1 do
     Controls[i].AutoAdjustLayout(AMode, AFromDPI, AToDPI, AOldFormWidth, ANewFormWidth);

@@ -554,6 +554,11 @@ begin
     RecreateWnd(Application.MainForm);
 end;
 
+procedure TCDWidgetSet.ResolveDefaultLayoutAdjustmentPolicy(var AMode: TLayoutAdjustmentPolicy);
+begin
+  AMode := lapFixedLayout;
+end;
+
 {------------------------------------------------------------------------------
   function: CreateTimer
   Params: Interval:

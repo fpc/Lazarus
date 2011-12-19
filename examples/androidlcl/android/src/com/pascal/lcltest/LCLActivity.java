@@ -8,6 +8,7 @@ import android.util.*;
 import android.graphics.*;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
+import android.content.res.Configuration;
 
 public class LCLActivity extends Activity 
 {
@@ -32,6 +33,13 @@ public class LCLActivity extends Activity
     {
       int lWidth = getWidth();
       int lHeight = getHeight();
+
+      // Check if we rotated in the draw event, OnConfigurationChanged can't return the new form width =(
+      // see http://stackoverflow.com/questions/2524683/how-to-get-new-width-height-of-root-layout-in-onconfigurationchanged
+      if (lWidth != lclformwidth) LCLOnConfigurationChanged(lclxdpi, lWidth); // we send xdpi because thats what the LCL uses for Screen.PixelsPerInch
+
+      lclformwidth = lWidth;
+      lclformheight = lHeight;
 
       //Log.v("lclproject", "LCLSurface.onDraw width=" + Integer.toString(lWidth)
       //  + " height=" + Integer.toString(lHeight));
@@ -94,10 +102,35 @@ public class LCLActivity extends Activity
     lclsurface = new LCLSurface(this);
     setContentView(lclsurface);
     lclsurface.postInvalidate();
+
     // Tell the LCL that an OnCreate has happened and what is our instance
+    lclformwidth = lclsurface.getWidth();
+    lclformheight = lclsurface.getHeight();
+    lclscreenwidth = lclformwidth;
+    lclscreenheight = lclformheight;
+    DisplayMetrics metrics = new DisplayMetrics();
+    getWindowManager().getDefaultDisplay().getMetrics(metrics);
+    lclxdpi = (int) metrics.xdpi;
+    lclydpi = (int) metrics.ydpi;
     LCLOnCreate(this);
   }
-  
+
+  @Override public void onConfigurationChanged (Configuration newConfig)
+  {
+    super.onConfigurationChanged(newConfig);
+
+    lclformwidth = lclsurface.getWidth();
+    lclformheight = lclsurface.getHeight();
+    lclscreenwidth = lclformwidth;
+    lclscreenheight = lclformheight;
+    DisplayMetrics metrics = new DisplayMetrics();
+    getWindowManager().getDefaultDisplay().getMetrics(metrics);
+    lclxdpi = (int) metrics.xdpi;
+    lclydpi = (int) metrics.ydpi;
+    // Don't call LCLOnConfigurationChanged, wait for a onDraw instead
+    lclsurface.postInvalidate();
+  }
+
   // -------------------------------------------
   // JNI table of Pascal functions
   // -------------------------------------------
@@ -107,6 +140,7 @@ public class LCLActivity extends Activity
   public native int LCLOnMessageBoxFinished(int Result);
   public native int LCLOnKey(int kind, int keyCode, KeyEvent event, char AChar);
   public native int LCLOnTimer(Runnable timerid);
+  public native int LCLOnConfigurationChanged(int ANewDPI, int ANewWidth);
 
   // -------------------------------------------
   // Functions exported to the Pascal side
@@ -275,6 +309,13 @@ public class LCLActivity extends Activity
   //
   public int lcltimerinterval;
   public Runnable lcltimerid;
+  //
+  public int lclxdpi;
+  public int lclydpi;
+  public int lclformwidth;
+  public int lclformheight;
+  public int lclscreenwidth;
+  public int lclscreenheight;
 
   static
   {

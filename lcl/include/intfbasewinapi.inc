@@ -1215,6 +1215,11 @@ begin
   Result := (Shift = []) and (Key = VK_F1);
 end;
 
+procedure TWidgetSet.ResolveDefaultLayoutAdjustmentPolicy(var AMode: TLayoutAdjustmentPolicy);
+begin
+  AMode := lapFixedLayout;
+end;
+
 procedure TWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
 begin
   DebugLn('TWidgetSet.InitializeCriticalSection Not implemented yet');

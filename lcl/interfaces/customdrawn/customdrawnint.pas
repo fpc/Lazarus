@@ -209,6 +209,8 @@ type
     procedure DCSetAntialiasing(CanvasHandle: HDC; AEnabled: Boolean); override;
     procedure SetDesigning(AComponent: TComponent); override;
 
+    procedure ResolveDefaultLayoutAdjustmentPolicy(var AMode: TLayoutAdjustmentPolicy); virtual;
+
     // create and destroy
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
@@ -240,6 +242,8 @@ function Java_com_pascal_lclproject_LCLActivity_LCLOnKey(
     AEvent: jobject; AChar: jchar): jint; cdecl;
 function Java_com_pascal_lclproject_LCLActivity_LCLOnTimer(
     env:PJNIEnv; this:jobject; ATimer: jobject): jint; cdecl;
+function Java_com_pascal_lclproject_LCLActivity_LCLOnConfigurationChanged(
+    env:PJNIEnv; this:jobject; ANewDPI, ANewWidth: jint): jint; cdecl;
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
 procedure JNI_OnUnload(vm:PJavaVM;reserved:pointer); cdecl;
 
@@ -273,6 +277,13 @@ var
   // Timer
   javaField_lcltimerinterval: JfieldID=nil;
   javaField_lcltimerid: JfieldID=nil;
+  // Screen Metrics
+  javaField_lclxdpi: JfieldID=nil;
+  javaField_lclydpi: JfieldID=nil;
+  javaField_lclformwidth: JfieldID=nil;
+  javaField_lclformheight: JfieldID=nil;
+  javaField_lclscreenwidth: JfieldID=nil;
+  javaField_lclscreenheight: JfieldID=nil;
 
   // Methods of our Activity
   javaMethod_LCLDoGetTextBounds: jmethodid = nil;

@@ -113,9 +113,9 @@ function GetCmdLineParamDescForInterface: string; override;
 function GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ; override;
 function GetCursorPos(var lpPoint: TPoint ): Boolean; override;*)
 function GetDC(hWnd: HWND): HDC; override;
-(*function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
+//function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
-function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
+(*function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetDoubleClickTime: UINT; override;*)
 function GetFocus: HWND; override;
@@ -133,8 +133,8 @@ function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; override;
 function GetStockObject(Value: Integer): THandle; override;*)
 function GetSysColor(nIndex: Integer): DWORD; override;
-(*function GetSysColorBrush(nIndex: Integer): HBrush; override;
-function GetSystemMetrics(nIndex: Integer): Integer; override;*)
+//function GetSysColorBrush(nIndex: Integer): HBrush; override;
+function GetSystemMetrics(nIndex: Integer): Integer; override;
 function GetTextColor(DC: HDC) : TColorRef; Override;
 function GetTextExtentExPoint(DC: HDC; Str: PChar; Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize): Boolean; override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;

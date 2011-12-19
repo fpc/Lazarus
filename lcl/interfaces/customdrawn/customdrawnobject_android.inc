@@ -116,6 +116,7 @@ begin
   __android_log_write(ANDROID_LOG_INFO, 'lclapp', 'LCLOnCreate called by LCLActivity.onCreate');
   Result := 0;
   javaActivityObject := alclactivity;
+  Screen.UpdateScreen(); // Any values read before LCLOnCreate are wrong
   Application.Run;
 end;
 
@@ -219,7 +220,25 @@ begin
   Result := eventResult;
 end;
 
-const NativeMethods: array[0..5] of JNINativeMethod=
+function Java_com_pascal_lclproject_LCLActivity_LCLOnConfigurationChanged(
+  env:PJNIEnv; this:jobject; ANewDPI, ANewWidth: jint): jint; cdecl;
+var
+  lForm: TCDNonNativeForm;
+  lOldDPI, lNewDPI, lOldFormWidth, lNewFormWidth: Integer;
+begin
+  lForm := GetCurrentForm();
+  if lForm.LayoutAutoAdjusted then lOldDPI := Screen.PixelsPerInch
+  else lOldDPI := lForm.LCLForm.DesignTimeDPI;
+  lNewDPI := ANewDPI;
+  lOldFormWidth := lForm.LCLForm.Width;
+  lNewFormWidth := ANewWidth;
+  DebugLn(Format('[LCLOnConfigurationChanged] lOldDPI=%d lNewDPI=%d lOldFormWidth=%d lNewFormWidth=%d',
+    [lOldDPI, lNewDPI, lOldFormWidth, lNewFormWidth]));
+  lForm.LCLForm.AutoAdjustLayout(lapAutoAdjustWithoutHorizontalScrolling,
+    lOldDPI, lNewDPI, lOldFormWidth, lNewFormWidth);
+end;
+
+const NativeMethods: array[0..6] of JNINativeMethod=
   ((name:'LCLDrawToBitmap';
     signature:'(IILandroid/graphics/Bitmap;)I';
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLDrawToBitmap;),
@@ -237,7 +256,10 @@ const NativeMethods: array[0..5] of JNINativeMethod=
     fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnKey;),
    (name:'LCLOnTimer';
     signature:'(Ljava/lang/Runnable;)I';
-    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnTimer;)
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnTimer;),
+   (name:'LCLOnConfigurationChanged';
+    signature:'(II)I';
+    fnPtr:@Java_com_pascal_lclproject_LCLActivity_LCLOnConfigurationChanged;)
   );
 
 function JNI_OnLoad(vm:PJavaVM;reserved:pointer):jint; cdecl;
@@ -298,6 +320,13 @@ begin
   // Timer
   javaField_lcltimerinterval := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltimerinterval', 'I');
   javaField_lcltimerid := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lcltimerid', 'Ljava/lang/Runnable;');
+  // Screen Metrics
+  javaField_lclxdpi := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclxdpi', 'I');
+  javaField_lclydpi := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclydpi', 'I');
+  javaField_lclformwidth := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclformwidth', 'I');
+  javaField_lclformheight := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclformheight', 'I');
+  javaField_lclscreenwidth := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclscreenwidth', 'I');
+  javaField_lclscreenheight := javaEnvRef^^.GetFieldID(javaEnvRef, javaActivityClass, 'lclscreenheight', 'I');
   //
   if not assigned(JavaField_lcltext) then
   begin
@@ -729,6 +758,11 @@ end;
 
 procedure TCDWidgetSet.AppSetMainFormOnTaskBar(const DoSet: Boolean);
 begin
+end;
+
+procedure TCDWidgetSet.ResolveDefaultLayoutAdjustmentPolicy(var AMode: TLayoutAdjustmentPolicy);
+begin
+  AMode := lapAutoAdjustWithoutHorizontalScrolling;
 end;
 
 {------------------------------------------------------------------------------

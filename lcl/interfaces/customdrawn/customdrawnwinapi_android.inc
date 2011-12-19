@@ -2829,64 +2829,62 @@ begin
     OriginDiff.X := Round(QTransform_Dx(Matrix)) - P.X;
     OriginDiff.Y := Round(QTransform_Dy(Matrix)) - P.Y;
   end;
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetDeviceCaps
   Params: DC: HDC; Index: Integer
   Returns: Integer
-
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+function TCDWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 var
-  QtDC: TQtDeviceContext;
-  PaintDevice: QPaintDeviceH;
-  PaintEngine: QPaintEngineH;
+  LazDC: TLazCanvas;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetDeviceCaps] DC ' + dbghex(DC));
+  {$ifdef VerboseCDWinAPI}
+    DebugLn(':>[WinAPI GetDeviceCaps] DC ' + dbghex(DC));
   {$endif}
 
   Result := 0;
-  if DC = 0 then
-    DC := HDC(QtScreenContext);
 
-  if not IsValidDC(DC) then exit;
-
-  QtDC := TQtDeviceContext(DC);
-
-  PaintEngine := QtDC.PaintEngine;
-  if PaintEngine = nil then
-    exit;
-  PaintDevice := QPaintEngine_paintDevice(PaintEngine);
+  if DC = 0 then DC := HDC(ScreenDC);
+  LazDC := TLazCanvas(DC);
 
   case Index of
-    HORZSIZE:
-      Result := QPaintDevice_widthMM(PaintDevice);
-    VERTSIZE:
-      Result := QPaintDevice_heightMM(PaintDevice);
-    HORZRES:
-      Result := QPaintDevice_width(PaintDevice);
-    BITSPIXEL:
-      Result := QPaintDevice_depth(PaintDevice);
+//    HORZSIZE:
+//      Result := QPaintDevice_widthMM(PaintDevice);
+//    VERTSIZE:
+//      Result := QPaintDevice_heightMM(PaintDevice);
+//    HORZRES:
+//      Result := QPaintDevice_width(PaintDevice);
+//    BITSPIXEL:
+//      Result := QPaintDevice_depth(PaintDevice);
     PLANES:
       Result := 1;
-    SIZEPALETTE:
-      Result := QPaintDevice_numColors(PaintDevice);
+//    SIZEPALETTE:
+//      Result := QPaintDevice_numColors(PaintDevice);
     LOGPIXELSX:
-      Result := QPaintDevice_logicalDpiX(PaintDevice);
+    begin
+      if javaEnvRef = nil then Exit;
+      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclxdpi);
+    end;
     LOGPIXELSY:
-      Result := QPaintDevice_logicalDpiY(PaintDevice);
-    VERTRES:
-      Result := QPaintDevice_height(PaintDevice);
+    begin
+      if javaEnvRef = nil then Exit;
+      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclydpi);
+    end;
+//    VERTRES:
+//      Result := QPaintDevice_height(PaintDevice);
     NUMRESERVED:
       Result := 0;
     else
       Result := 0;
   end;
+  {$ifdef VerboseCDWinAPI}
+    DebugLn(':<[WinAPI GetDeviceCaps] Result=' + dbghex(Result));
+  {$endif}
 end;
 
-function TQtWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
+(*function TQtWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
   Result := 0;
   {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
@@ -3756,7 +3754,7 @@ begin
   end
   else
     Result := FSysColorBrushes[nIndex];
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Function: GetSystemMetrics
@@ -3765,12 +3763,12 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
+function TCDWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 var
   R: TRect;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn(Format('Trace:> [TQtWidgetSet.GetSystemMetrics] %d', [nIndex]));
+  {$ifdef VerboseCDWinAPI}
+    DebugLn(Format(':>[TCDWidgetSet.GetSystemMetrics] nIndex=%d javaEnvRef=%x', [nIndex, PtrInt(javaEnvRef)]));
   {$endif}
   Result := 0;
   case nIndex of
@@ -3787,17 +3785,17 @@ begin
         {$endif}
       end;
     SM_CMONITORS:
-      Result := QDesktopWidget_numScreens(QApplication_desktop());
+      Result := 1;
     SM_CMOUSEBUTTONS:
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CMOUSEBUTTONS    ');
       end;
-    SM_CXBORDER, SM_CYBORDER:
+{    SM_CXBORDER, SM_CYBORDER:
       begin
         // size of frame around controls
         Result := QStyle_pixelMetric(QApplication_style(),
                     QStylePM_DefaultFrameWidth, nil, nil);
-      end;
+      end;}
     SM_CXCURSOR:
       begin
         Result := 32; // recomended in docs
@@ -3887,14 +3885,14 @@ begin
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMENUCHECK      ');
       end;
-    SM_CXMENUSIZE:
+{    SM_CXMENUSIZE:
       begin
         Result := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth, nil, nil);
       end;
     SM_CYMENUSIZE:
       begin
         Result := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorHeight, nil, nil);
-      end;
+      end;}
     SM_CXMIN:
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXMIN            ');
@@ -3928,15 +3926,19 @@ begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYMINTRACK       ');
       end;
     SM_CXSCREEN:
-      begin
-        QDesktopWidget_screenGeometry(QApplication_desktop(), @R, QDesktopWidget_primaryScreen(QApplication_desktop()));
-        Result := R.Right - R.Left;
-      end;
+    begin
+      Result := 100; // avoid errors if this is called too early
+      if javaEnvRef = nil then Exit;
+      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclscreenwidth);
+      if Result = 0 then Result := 100;
+    end;
     SM_CYSCREEN:
-      begin
-        QDesktopWidget_screenGeometry(QApplication_desktop(), @R, QDesktopWidget_primaryScreen(QApplication_desktop()));
-        Result := R.Bottom - R.Top;
-      end;
+    begin
+      Result := 100; // avoid errors if this is called too early
+      if javaEnvRef = nil then Exit;
+      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclscreenheight);
+      if Result = 0 then Result := 100;
+    end;
     SM_CXSIZE:
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CXSIZE           ');
@@ -3945,11 +3947,11 @@ begin
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSIZE           ');
       end;
-    SM_CXSIZEFRAME,
+{    SM_CXSIZEFRAME,
     SM_CYSIZEFRAME:
       begin
         Result := QStyle_pixelMetric(QApplication_style(), QStylePM_MDIFrameWidth, nil, nil);
-      end;
+      end;}
     SM_CXSMICON,
     SM_CYSMICON:
       begin
@@ -3964,24 +3966,26 @@ begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYSMSIZE         ');
       end;
     SM_CXVIRTUALSCREEN:
-      begin
-        Result := QWidget_width(QApplication_desktop);
-      end;
+    begin
+      if javaEnvRef = nil then Exit;
+      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclscreenwidth);
+    end;
     SM_CYVIRTUALSCREEN:
-      begin
-        Result := QWidget_height(QApplication_desktop);
-      end;
+    begin
+      if javaEnvRef = nil then Exit;
+      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclscreenheight);
+    end;
     SM_CXVSCROLL,
     SM_CYVSCROLL,
     SM_CXHSCROLL,
-    SM_CYHSCROLL:
-      begin
-        Result := QStyle_pixelMetric(QApplication_Style, QStylePM_ScrollBarExtent, nil, nil);
-      end;
+{    SM_CYHSCROLL:
+    begin
+      Result := QStyle_pixelMetric(QApplication_Style, QStylePM_ScrollBarExtent, nil, nil);
+    end;
     SM_CYCAPTION:
-      begin
-        Result := QStyle_pixelMetric(QApplication_Style, QStylePM_TitleBarHeight, nil, nil);
-      end;
+    begin
+      Result := QStyle_pixelMetric(QApplication_Style, QStylePM_TitleBarHeight, nil, nil);
+    end;}
     SM_CYKANJIWINDOW:
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYKANJIWINDOW    ');
@@ -4047,33 +4051,10 @@ begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
       end;
   end;
-end;
-
-{------------------------------------------------------------------------------
-  Function: GetTextColor
-  Params:  DC     - A device context
-  Returns: TColorRef
-
-  Gets the Font Color currently assigned to the Device Context
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetTextColor(DC: HDC) : TColorRef;
-var
-  Color: TQColor;
-  QtDC: TQtDeviceContext;
-begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI GetTextColor]');
+  {$ifdef VerboseCDWinAPI}
+    DebugLn(':<[TCDWidgetSet.GetSystemMetrics] Result=' + dbghex(Result));
   {$endif}
-
-  Result := 0;
-
-  if IsValidDC(DC) then
-  begin
-    QtDC := TQtDeviceContext(DC);
-    ColorRefToTQColor(TColorRef(QtDC.vTextColor), Color);
-    TQColorToColorRef(Color, Result);
-  end;
-end;*)
+end;
 
 {$ifdef CD_UseNativeText}
 {------------------------------------------------------------------------------

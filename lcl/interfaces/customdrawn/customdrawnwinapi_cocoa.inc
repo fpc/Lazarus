@@ -386,44 +386,52 @@ begin
 end;
 {$endif}
 
-(*function TCocoaWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
-var
-  ctx : TCocoaContext;
-  br  : TCocoaGDIObject;
-begin
-  ctx:=CheckDC(DC);
-  br:=CheckGDIOBJ(Brush);
-  Result:=Assigned(ctx) and (not Assigned(br) or (br is TCocoaBrush));
-  if not Result then Exit;
-
-  with Rect do
-    ctx.Rectangle(Left, Top, Right, Bottom, True, TCocoaBrush(br));
-end;
-
 {------------------------------------------------------------------------------
-  function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
-
-  nCmdShow:
-    SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
-------------------------------------------------------------------------------}
-function TCocoaWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+  Function: GetDeviceCaps
+  Params: DC: HDC; Index: Integer
+  Returns: Integer
+ ------------------------------------------------------------------------------}
+function TCDWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+var
+  LazDC: TLazCanvas;
 begin
-  {$ifdef VerboseCocoaWinAPI}
-    DebugLn('TCocoaWidgetSet.ShowWindow');
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[WinAPI GetDeviceCaps] DC ' + dbghex(DC));
   {$endif}
 
-  case nCmdShow of
-    SW_SHOW, SW_SHOWNORMAL:
-      NSWindow(hwnd).orderFront(nil);
-    SW_HIDE:
-      NSWindow(hwnd).orderOut(nil);
-    SW_MINIMIZE:
-      NSWindow(hwnd).miniaturize(nil);
-  end;
-  Result:=true;
+  Result := 0;
+
+{  if DC = 0 then DC := HDC(ScreenDC);
+
+  LazDC := TLazCanvas(DC);
+
+  case Index of
+//    HORZSIZE:
+//      Result := QPaintDevice_widthMM(PaintDevice);
+//    VERTSIZE:
+//      Result := QPaintDevice_heightMM(PaintDevice);
+//    HORZRES:
+//      Result := QPaintDevice_width(PaintDevice);
+//    BITSPIXEL:
+//      Result := QPaintDevice_depth(PaintDevice);
+    PLANES:
+      Result := 1;
+//    SIZEPALETTE:
+//      Result := QPaintDevice_numColors(PaintDevice);
+    LOGPIXELSX:
+      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclxdpi;
+    LOGPIXELSY:
+      Result := javaEnvRef^^.GetLongField(javaEnvRef, javaActivityObject, javaField_lclydpi;
+//    VERTRES:
+//      Result := QPaintDevice_height(PaintDevice);
+    NUMRESERVED:
+      Result := 0;
+    else
+      Result := 0;
+  end;}
 end;
 
-{------------------------------------------------------------------------------
+(*{------------------------------------------------------------------------------
   Method:  GetWindowRect
   Params:  Handle - Handle of window
            Rect   - Record for window coordinates
@@ -670,50 +678,6 @@ begin
   Result:=True;
 end;
 
-{------------------------------- SYNC OBJECTS ---------------------------------}
-
-procedure TCocoaWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
-begin
-  CritSection:=TCriticalSection(NSRecursiveLock.alloc);
-end;
-
-procedure TCocoaWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
-begin
-  if CritSection=0 then Exit;
-  NSRecursiveLock(CritSection).release;
-  CritSection:=0;
-end;
-
-procedure TCocoaWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
-begin
-  if CritSection=0 then Exit;
-  NSRecursiveLock(CritSection).lock;
-end;
-
-procedure TCocoaWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
-begin
-  if CritSection=0 then Exit;
-  NSRecursiveLock(CritSection).unlock;
-end;
-
-{------------------------------- DEVICE CONTEXT -------------------------------}
-
-function TCDWidgetSet.BackendGetDC(hWnd: HWND): HDC;
-{var
-  lFormHandle: TCDNonNativeForm;}
-begin
-//  lFormHandle := TCDNonNativeForm(hWnd);
-
-  Result := 0;
-
-  // Screen DC
-  if hWnd = 0 then Exit;
-
-{  // Form DC
-  if lFormHandle.Canvas = nil then lFormHandle.Canvas := TLazCanvas.create(nil);
-  Result := HDC(lFormHandle.Canvas);}
-end;
-
 function TCDWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
 begin
   Result := 0;
@@ -764,6 +728,29 @@ begin
   {$IFDEF VerboseWinAPI}
     DebugLn(Format('TCocoaWidgetSet.SelectObject Result: %x', [Result]));
   {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+
+  nCmdShow:
+    SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
+------------------------------------------------------------------------------}
+function TCocoaWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+begin
+  {$ifdef VerboseCocoaWinAPI}
+    DebugLn('TCocoaWidgetSet.ShowWindow');
+  {$endif}
+
+  case nCmdShow of
+    SW_SHOW, SW_SHOWNORMAL:
+      NSWindow(hwnd).orderFront(nil);
+    SW_HIDE:
+      NSWindow(hwnd).orderOut(nil);
+    SW_MINIMIZE:
+      NSWindow(hwnd).miniaturize(nil);
+  end;
+  Result:=true;
 end;
 
 function TCocoaWidgetSet.RectVisible(DC: HDC; const ARect: TRect): Boolean;

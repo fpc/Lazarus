@@ -353,6 +353,10 @@ begin
   if Assigned(ScreenContext) then ScreenContext.Free;
 end;*)
 
+procedure TCDWidgetSet.ResolveDefaultLayoutAdjustmentPolicy(var AMode: TLayoutAdjustmentPolicy);
+begin
+  AMode := lapFixedLayout;
+end;
 
 { TCDAppDelegate }
 

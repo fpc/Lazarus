@@ -3447,23 +3447,31 @@ procedure TControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
 var
   lXProportion, lYProportion: Double;
   NewLeft, NewTop, NewHeight, NewWidth: Integer;
+  lMode: TLayoutAdjustmentPolicy;
 begin
-  // X-axis adjustment
-  if AMode = lapAutoAdjustWithoutHorizontalScrolling then
+  // First resolve ladDefault
+  lMode := AMode;
+  if lMode = lapDefault then Widgetset.ResolveDefaultLayoutAdjustmentPolicy(lMode);
+
+  // X-axis adjustment proportion
+  if lMode = lapAutoAdjustWithoutHorizontalScrolling then
   begin
-    lXProportion := ANewFormWidth / AOldFormWidth;
+    if AOldFormWidth > 0 then lXProportion := ANewFormWidth / AOldFormWidth
+    else lXProportion := 1.0;
   end
-  else if AMode = lapAutoAdjustForDPI then
+  else if lMode = lapAutoAdjustForDPI then
   begin
-    lXProportion := AToDPI / AFromDPI;
+    if AFromDPI > 0 then lXProportion := AToDPI / AFromDPI
+    else lXProportion := 1.0;
   end;
 
-  // y-axis adjustment
-  lYProportion := AToDPI / AFromDPI;
+  // y-axis adjustment proportion
+  if AFromDPI > 0 then lYProportion := AToDPI / AFromDPI
+  else lYProportion := 1.0;
 
   // Apply the changes
-  if (AMode = lapAutoAdjustWithoutHorizontalScrolling) or
-   (AMode = lapAutoAdjustForDPI) then
+  if (lMode = lapAutoAdjustWithoutHorizontalScrolling) or
+   (lMode = lapAutoAdjustForDPI) then
   begin
     if ShouldAutoAdjustLeftAndTop then
     begin
@@ -3475,22 +3483,30 @@ begin
       NewLeft := Left;
       NewTop := Top;
     end;
-    NewWidth := Round(Width * lXProportion);
-    NewHeight := Round(Height * lYProportion);
+    if ShouldAutoAdjustWidthAndHeight then
+    begin
+      NewWidth := Round(Width * lXProportion);
+      NewHeight := Round(Height * lYProportion);
+    end
+    else
+    begin
+      NewWidth := Width;
+      NewHeight := Height;
+    end;
     SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
   end;
 end;
 
 // The layout should only be auto-adjusted for controls with the most simple
 // default absolute positioning
-function TControl.ShouldAutoAdjustLayout: Boolean;
-begin
-  Result := (Align = alNone) and (Anchors = [akTop, akLeft])
-end;
-
 function TControl.ShouldAutoAdjustLeftAndTop: Boolean;
 begin
-  Result := Parent <> nil;
+  Result := (Align = alNone) and (Anchors = [akTop, akLeft]) and (Parent <> nil);
+end;
+
+function TControl.ShouldAutoAdjustWidthAndHeight: Boolean;
+begin
+  Result := AutoSize = False;
 end;
 
 procedure TControl.UpdateAnchorRules;

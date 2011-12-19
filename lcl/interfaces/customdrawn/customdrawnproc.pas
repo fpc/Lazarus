@@ -51,6 +51,7 @@ type
     //
     LastMouseDownControl: TWinControl; // Stores the control which should receive the next MouseUp
     FocusedControl: TWinControl; // The control focused in the form
+    LayoutAutoAdjusted: Boolean; // Indicates if the form layout was already auto-adjusted once
     // Counter to keep track of when we requested Invalidate
     // Some systems like X11 and Win32 will keep sending unnecessary paint messages
     // so for them we just throw the previously painted image

@@ -254,7 +254,7 @@ end;
   MWE: exept for the desktop, there is always a bitmep selected in the DC.
        So get this internal bitmap and pass it to RawImage_FromBitmap
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
+function TCDWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
 begin
   {$ifdef VerboseCDWinAPI}
     DebugLn('Trace:> [WinAPI GetRawImageFromDevice] SrcDC: ', dbghex(ADC),

@@ -134,7 +134,9 @@
       <Unit2>
         <Filename Value="secondform.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form2"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="secondform"/>
       </Unit2>
     </Units>
