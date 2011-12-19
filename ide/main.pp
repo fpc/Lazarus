@@ -1179,8 +1179,8 @@ var
         vtChar: AHelp.Add(Args[i].VChar);
         vtPChar: AHelp.Add(Args[i].VPChar);
         vtPWideChar: AHelp.Add(Args[i].VPWideChar);
-        vtWideChar: AHelp.Add(Args[i].VWideChar);
-        vtWidestring: AHelp.Add(WideString(Args[i].VWideString));
+        vtWideChar: AHelp.Add(Args[i].VWideChar{%H-});
+        vtWidestring: AHelp.Add(WideString(Args[i].VWideString){%H-});
         vtObject: AHelp.Add(DbgSName(Args[i].VObject));
         vtClass: AHelp.Add(DbgSName(Args[i].VClass));
         vtPointer: AHelp.Add(Dbgs(Args[i].VPointer));
