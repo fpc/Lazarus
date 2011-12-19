@@ -2323,6 +2323,7 @@ components/synedit/languages/synmacrorecorder.pt_BR.po svneol=native#text/plain
 components/synedit/languages/synmacrorecorder.ru.po svneol=native#text/plain
 components/synedit/languages/synmacrorecorder.uk.po svneol=native#text/plain
 components/synedit/languages/synmacrorecorder.zh_CN.po svneol=native#text/utf8
+components/synedit/lazsyneditmousecmdstypes.pp svneol=native#text/pascal
 components/synedit/lazsynedittext.pas svneol=native#text/pascal
 components/synedit/lazsyntextarea.pp svneol=native#text/pascal
 components/synedit/synbeautifier.pas svneol=native#text/plain
