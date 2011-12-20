@@ -2144,6 +2144,9 @@ begin
 
       CodeTreeview.EndUpdate;
     end;
+    Caption := lisMenuViewCodeExplorer + ' - ' + ExtractFileName(FCodeFilename);
+    if HostDockSite <> nil then
+      HostDockSite.UpdateDockCaption();
   finally
     Exclude(FFlags,cevRefreshing);
     OldExpanded.Free;
