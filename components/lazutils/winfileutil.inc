@@ -432,7 +432,10 @@ var
   res : Integer;
 begin
   {$ifdef WinCE}
-  raise Exception.Create('[GetCurrentDirWide] The concept of the current directory doesn''t exist in Windows CE');
+  Result := '\';
+  // Previously we sent an exception here, which is correct, but this causes
+  // trouble with code which isnt tested for WinCE, so lets just send a dummy result instead
+  // Exception.Create('[GetCurrentDirWide] The concept of the current directory doesn''t exist in Windows CE');
   {$else}
   res:=GetCurrentDirectoryW(0, nil);
   SetLength(w, res);
