@@ -98,7 +98,7 @@ type
     FA: Boolean; // alpha: True - solid, False - clear
     function GetColorRef: TColorRef;
   public
-    constructor Create(const AColor: TColor; ASolid, AGlobal: Boolean);
+    constructor Create(const AColor: TColor; ASolid, AGlobal: Boolean); reintroduce;
     procedure SetColor(const AColor: TColor; ASolid: Boolean);
     procedure GetRGBA(AROP2: Integer; out AR, AG, AB, AA: Single);
     function CreateNSColor: NSColor;
@@ -261,8 +261,8 @@ type
     BkMode: Integer;
     BkBrush: TCocoaBrush;
 
-    {TextColor: TColor;
-    TextBrush: TCocoaBrush;}
+    TextColor: TColor;
+    TextBrush: TCocoaBrush;
 
     ROP2: Integer;
     PenPos: TPoint;
@@ -275,6 +275,8 @@ type
     FBkBrush: TCocoaBrush;
     FBkColor: TColor;
     FBkMode: Integer;
+    FTextBrush: TCocoaBrush;
+    FTextColor: TColor;
     FROP2: Integer;
     FText   : TCocoaTextLayout;
     FBrush  : TCocoaBrush;
@@ -295,12 +297,12 @@ type
     procedure SetPen(const AValue: TCocoaPen);
     procedure SetRegion(const AValue: TCocoaRegion);
     procedure SetROP2(AValue: Integer);
+    procedure SetTextColor(AValue: TColor);
   protected
     function SaveDCData: TCocoaDCData; virtual;
     procedure RestoreDCData(const AData: TCocoaDCData); virtual;
   public
     ctx: NSGraphicsContext;
-    TR,TG,TB: Single;
     constructor Create;
     destructor Destroy; override;
 
@@ -343,6 +345,9 @@ type
     property BkColor: TColor read FBkColor write SetBkColor;
     property BkMode: Integer read FBkMode write SetBkMode;
     property BkBrush: TCocoaBrush read FBkBrush;
+
+    property TextColor: TColor read FTextColor write SetTextColor;
+    property TextBrush: TCocoaBrush read FTextBrush;
 
     // selected GDI objects
     property Brush: TCocoaBrush read FBrush write SetBrush;
@@ -791,6 +796,13 @@ begin
   end;
 end;
 
+procedure TCocoaContext.SetTextColor(AValue: TColor);
+begin
+  AValue := TColor(ColorToRGB(AValue));
+  FTextColor := AValue;
+  TextBrush.SetColor(AValue, True);
+end;
+
 function TCocoaContext.SaveDCData: TCocoaDCData;
 begin
   Result := TCocoaDCData.Create;
@@ -804,8 +816,8 @@ begin
   Result.BkMode := FBkMode;
   Result.BkBrush := FBkBrush;
 
-{  Result.TextColor := FTextColor;
-  Result.TextBrush := FTextBrush;}
+  Result.TextColor := FTextColor;
+  Result.TextBrush := FTextBrush;
 
   Result.ROP2 := FROP2;
   Result.PenPos := FPenPos;
@@ -853,8 +865,8 @@ begin
   FBkMode := AData.BkMode;
   FBkBrush := AData.BkBrush;
 
-{  FTextColor := AData.TextColor;
-  FTextBrush := AData.TextBrush;}
+  FTextColor := AData.TextColor;
+  FTextBrush := AData.TextBrush;
 
   FROP2 := AData.ROP2;
   FPenPos := AData.PenPos;
@@ -865,6 +877,7 @@ begin
   inherited Create;
 
   FBkBrush := TCocoaBrush.CreateDefault;
+  FTextBrush := TCocoaBrush.CreateDefault;
 
   FBrush := TCocoaBrush.CreateDefault;
   FBrush.AddRef;
@@ -882,6 +895,8 @@ end;
 destructor TCocoaContext.Destroy;
 begin
   FBkBrush.Free;
+  FTextBrush.Free;
+
   if Assigned(FBrush) then
   begin
     FBrush.Release;
@@ -1119,7 +1134,7 @@ begin
     CGContextStrokePath(cg);
 end;
 
-procedure TCocoaContext.Ellipse(X1,Y1,X2,Y2:Integer);
+procedure TCocoaContext.Ellipse(X1, Y1, X2, Y2:Integer);
 var
   cg: CGContextRef;
   r: CGRect;
@@ -1135,8 +1150,7 @@ begin
   CGContextDrawPath(CGContext, kCGPathFillStroke);
 end;
 
-procedure TCocoaContext.TextOut(X,Y:Integer;UTF8Chars:PChar;Count:Integer;
-  CharsDelta:PInteger);
+procedure TCocoaContext.TextOut(X, Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
 var
   cg: CGContextRef;
 begin
@@ -1146,7 +1160,7 @@ begin
   CGContextScaleCTM(cg, 1, -1);
   CGContextTranslateCTM(cg, 0, -Size.cy);
 
-  CGContextSetRGBFillColor(cg, TR, TG, TB, 1);
+  FTextBrush.Apply(Self, False);
   FText.SetText(UTF8Chars, Count);
   FText.Draw(cg, X, Size.cy - Y, CharsDelta);
 

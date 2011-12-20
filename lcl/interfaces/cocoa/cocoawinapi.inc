@@ -508,6 +508,17 @@ begin
   Result := HWND(NSApp.keyWindow);
 end;
 
+function TCocoaWidgetSet.GetBkColor(DC: HDC): TColorRef;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  if Assigned(ctx) then
+    Result := ctx.BkColor
+  else
+    Result := CLR_INVALID;
+end;
+
 {------------------------------------------------------------------------------
   function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 
@@ -1433,17 +1444,16 @@ end;
 
 function TCocoaWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
 begin
-  ctx:=CheckDC(DC);
-  if not Assigned(ctx) then begin
-    Result:=0;
-    Exit;
-  end;
-  with ctx do begin
-    Result:=RGBToColorFloat(TR, TG, TB);
-    ColorToRGBFloat(Color, TR, TG, TB);
-  end;
+  ctx := CheckDC(DC);
+  if Assigned(ctx) then
+  begin
+    Result := ctx.TextColor;
+    ctx.TextColor := Color
+  end
+  else
+    Result := CLR_INVALID;
 end;
 
 {------------------------------------------------------------------------------
@@ -1503,14 +1513,13 @@ end;
 
 function TCocoaWidgetSet.GetTextColor(DC: HDC) : TColorRef;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
 begin
-  ctx:=CheckDC(DC);
-  if not Assigned(ctx) then begin
-    Result:=0;
-    Exit;
-  end;
-  with ctx do Result:=RGBToColorFloat(TR, TG, TB);
+  ctx := CheckDC(DC);
+  if Assigned(ctx) then
+    Result := ctx.TextColor
+  else
+    Result := CLR_INVALID;
 end;
 
 {------------------------------------------------------------------------------
