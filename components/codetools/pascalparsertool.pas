@@ -1086,7 +1086,7 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
    constructor Create;
    destructor Destroy;  override;
    class function X: integer;
-   static function X: integer;
+   static function X: uNameSpace.Storage.Folders.PItem;
    function Intf.Method = ImplementingMethodName;
    class operator Inc(Rec: TRec1): TRec1;
 
@@ -1560,21 +1560,18 @@ begin
         CreateChildNode;
         CurNode.Desc:=ctnIdentifier;
         CurNode.EndPos:=CurPos.EndPos;
-        EndChildNode;
       end;
-      ReadNextAtom;
-      if CurPos.Flag=cafPoint then begin
-        //  unitname.identifier -> read identifier
+      repeat
+        ReadNextAtom;
+        if CurPos.Flag<>cafPoint then break;
+        //  unitname.classname.identifier
         ReadNextAtom;
         AtomIsIdentifier(true);
-        if (pphCreateNodes in ParseAttr) then begin
-          CreateChildNode;
-          CurNode.Desc:=ctnIdentifier;
+        if (pphCreateNodes in ParseAttr) then
           CurNode.EndPos:=CurPos.EndPos;
-          EndChildNode;
-        end;
-        ReadNextAtom;
-      end;
+      until false;
+      if (pphCreateNodes in ParseAttr) then
+        EndChildNode;
       ReadGenericParam;
     end else begin
       if (Scanner.CompilerMode<>cmDelphi) then
