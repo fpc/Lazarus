@@ -162,8 +162,8 @@ function SaveDC(DC: HDC): Integer; override;
 function ScreenToClient(Handle: HWND; var P: TPoint): Integer; override;
 function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 function SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; override;
-{function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;
-function SetActiveWindow(Handle: HWND): HWND; override;}
+{function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; override;}
+function SetActiveWindow(Handle: HWND): HWND; override;
 function SetBKColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
 {function SetCapture(AHandle: HWND): HWND; override;
@@ -172,8 +172,8 @@ function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;}
 function SetCursor(ACursor: HCURSOR): HCURSOR; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
-{function SetFocus(hWnd: HWND): HWND; override;
-function SetForegroundWindow(HWnd: HWND): boolean; override;}
+{function SetFocus(hWnd: HWND): HWND; override;}
+function SetForegroundWindow(HWnd: HWND): boolean; override;
 function SetProp(Handle: hwnd; Str: PChar; Data: Pointer) : Boolean; override;
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;

@@ -1127,6 +1127,24 @@ begin
   {$ENDIF}
 end;
 
+function TCocoaWidgetSet.SetActiveWindow(Handle: HWND): HWND;
+var
+  Obj: NSObject;
+begin
+  Obj := NSObject(Handle);
+  if Assigned(Obj) and NSApp.isActive then
+  begin
+    Result := HWND(NSApp.keyWindow);
+    if Obj.isKindOfClass(NSWindow) then
+      NSwindow(Obj).makeKeyWindow
+    else
+    if Obj.isKindOfClass(NSView) then
+      NSView(Obj).window.makeKeyWindow
+    else
+      Result := 0;
+  end;
+end;
+
 function TCocoaWidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
 var
   ctx: TCocoaContext;
@@ -1216,6 +1234,25 @@ begin
   CursorPos.Y := Y;
   if CGWarpMouseCursorPosition(CursorPos) <> noErr then Exit;
   Result := True;
+end;
+
+function TCocoaWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
+var
+  Obj: NSObject;
+begin
+  Result := HWnd <> 0;
+  if Result then
+  begin
+    NSApp.activateIgnoringOtherApps(True);
+    Obj := NSObject(HWnd);
+    if Obj.isKindOfClass(NSWindow) then
+      NSwindow(Obj).makeKeyAndOrderFront(NSApp)
+    else
+    if Obj.isKindOfClass(NSView) then
+      NSView(Obj).window.makeKeyAndOrderFront(NSApp)
+    else
+      Result := False;
+  end;
 end;
 
 {------------------------------- FONT AND TEXT --------------------------------}
