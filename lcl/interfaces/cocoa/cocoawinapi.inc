@@ -642,6 +642,136 @@ begin
     lpmi^.dwFlags := 0;
 end;
 
+function TCocoaWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
+var
+  AObject: TCocoaGDIObject;
+  DIB: TDIBSection;
+  Width, Height, RequiredSize, i: Integer;
+
+  APen: TCocoaPen absolute AObject;
+  ALogPen: PLogPen absolute Buf;
+  AExtLogPen: PExtLogPen absolute Buf;
+begin
+  Result := 0;
+
+  AObject := CheckGDIObj(GDIObj);
+
+  if AObject is TCocoaBitmap then
+  begin
+    if Buf = nil then
+    begin
+      Result := SizeOf(TDIBSection);
+      Exit;
+    end;
+
+    Width := TCocoaBitmap(AObject).Width;
+    Height := TCocoaBitmap(AObject).Height;
+
+    FillChar(DIB, SizeOf(TDIBSection), 0);
+
+    {dsBM - BITMAP}
+    DIB.dsBm.bmType := $4D42;
+    DIB.dsBm.bmWidth := Width;
+    DIB.dsBm.bmHeight := Height;
+    DIB.dsBm.bmWidthBytes := 0;
+    DIB.dsBm.bmPlanes := 1;
+    DIB.dsBm.bmBitsPixel := 32;
+    DIB.dsBm.bmBits := nil;
+
+    {dsBmih - BITMAPINFOHEADER}
+    DIB.dsBmih.biSize := 40;
+    DIB.dsBmih.biWidth := Width;
+    DIB.dsBmih.biHeight := Height;
+    DIB.dsBmih.biPlanes := DIB.dsBm.bmPlanes;
+    DIB.dsBmih.biCompression := 0;
+    DIB.dsBmih.biSizeImage := 0;
+    DIB.dsBmih.biXPelsPerMeter := 0;
+    DIB.dsBmih.biYPelsPerMeter := 0;
+    DIB.dsBmih.biClrUsed   := 0;
+    DIB.dsBmih.biClrImportant := 0;
+    DIB.dsBmih.biBitCount := 32;
+
+    if BufSize >= SizeOf(TDIBSection) then
+    begin
+      PDIBSection(Buf)^ := DIB;
+      Result := SizeOf(TDIBSection);
+    end
+    else
+      if BufSize > 0 then
+      begin
+        System.Move(DIB, Buf^, BufSize);
+        Result := BufSize;
+      end;
+  end
+  else
+  if AObject is TCocoaPen then
+  begin
+    if APen.IsExtPen then
+    begin
+      RequiredSize := SizeOf(TExtLogPen);
+      if Length(APen.Dashes) > 1 then
+        inc(RequiredSize, (Length(APen.Dashes) - 1) * SizeOf(DWord));
+      if Buf = nil then
+        Result := RequiredSize
+      else
+      if BufSize >= RequiredSize then
+      begin
+        Result := RequiredSize;
+        AExtLogPen^.elpPenStyle := APen.Style;
+        if APen.IsGeometric then
+        begin
+          case APen.JoinStyle of
+            kCGLineJoinRound:
+              AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_JOIN_ROUND;
+            kCGLineJoinBevel:
+              AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_JOIN_BEVEL;
+            kCGLineJoinMiter:
+              AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_JOIN_MITER;
+          end;
+
+          case APen.CapStyle of
+            kCGLineCapRound:
+              AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_ENDCAP_ROUND;
+            kCGLineCapSquare:
+              AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_ENDCAP_SQUARE;
+            kCGLineCapButt:
+              AExtLogPen^.elpPenStyle := AExtLogPen^.elpPenStyle or PS_ENDCAP_FLAT;
+          end;
+          AExtLogPen^.elpWidth := APen.Width;
+        end
+        else
+          AExtLogPen^.elpWidth := 1;
+
+        AExtLogPen^.elpBrushStyle := BS_SOLID;
+        AExtLogPen^.elpColor := APen.ColorRef;
+        AExtLogPen^.elpHatch := 0;
+
+        AExtLogPen^.elpNumEntries := Length(APen.Dashes);
+        if AExtLogPen^.elpNumEntries > 0 then
+        begin
+          for i := 0 to AExtLogPen^.elpNumEntries - 1 do
+            PDword(@AExtLogPen^.elpStyleEntry)[i] := Trunc(APen.Dashes[i]);
+        end
+        else
+          AExtLogPen^.elpStyleEntry[0] := 0;
+      end;
+    end
+    else
+    begin
+      if Buf = nil then
+        Result := SizeOf(TLogPen)
+      else
+      if BufSize >= SizeOf(TLogPen) then
+      begin
+        Result := SizeOf(TLogPen);
+        ALogPen^.lopnStyle := APen.Style;
+        ALogPen^.lopnWidth := Types.Point(APen.Width, 0);
+        ALogPen^.lopnColor := APen.ColorRef;
+      end;
+    end;
+  end
+end;
+
 function TCocoaWidgetSet.GetParent(Handle : HWND): HWND;
 begin
   if Handle<>0 then
