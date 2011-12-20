@@ -24,6 +24,12 @@ procedure TCDWidgetSet.CDSetFocusToControl(ALCLControl, AIntfControl: TWinContro
 var
   lForm, OldFocusedControl: TWinControl;
 begin
+  {$ifdef VerboseCDForms}
+  if FocusedControl <> nil then DebugLn('[TCDWidgetSet.CDSetFocusToControl] OldFocusedControl=%s:%s', [FocusedControl.Name, FocusedControl.ClassName]);
+  if FocusedIntfControl <> nil then DebugLn('[TCDWidgetSet.CDSetFocusToControl] OldIntfFocusedControl=%s:%s', [FocusedIntfControl.Name, FocusedIntfControl.ClassName]);
+  if ALCLControl <> nil then DebugLn('[TCDWidgetSet.CDSetFocusToControl] ALCLControl=%s:%s', [ALCLControl.Name, ALCLControl.ClassName]);
+  if AIntfControl <> nil then DebugLn('[TCDWidgetSet.CDSetFocusToControl] AIntfControl=%s:%s', [AIntfControl.Name, AIntfControl.ClassName]);
+  {$endif}
   OldFocusedControl := FocusedControl;
   if ALCLControl = nil then Exit;
   lForm := GetParentForm(ALCLControl);

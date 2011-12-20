@@ -90,6 +90,7 @@ type
     procedure SetWindowOrg(AValue: TPoint);
   protected
     procedure SetColor (x,y:integer; const AValue:TFPColor); override;
+    function DoCreateDefaultFont : TFPCustomFont; override;
     // Routines broken/unimplemented/incompatible in FPC
     procedure DoRectangle (const Bounds:TRect); override;
     procedure DoRectangleFill (const Bounds:TRect); override;
@@ -207,6 +208,13 @@ begin
   if (lx >= 0) and (lx < width) and (ly >= 0) and (ly < height) then
       FImage.Colors[lx,ly] := AValue;
   {$endif}
+end;
+
+function TLazCanvas.DoCreateDefaultFont: TFPCustomFont;
+begin
+  result := TFPEmptyFont.Create;
+  Result.Size := 0; // To allow it to use the default platform size
+  Result.FPColor := colBlack;
 end;
 
 // The coordinates utilized by DoRectangle in fcl-image are not TCanvas compatible

@@ -804,6 +804,7 @@ begin
 
   // Add it to our list
   AddTimer(lTimer);
+  DebugLn(Format('[TCDWidgetSet.CreateTimer] Result=%x', [PtrInt(Result)]));
 end;
 
 {------------------------------------------------------------------------------
@@ -815,7 +816,7 @@ function TCDWidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
 var
   lTimer: TCDTimer;
 begin
-  DebugLn('[TCDWidgetSet.DestroyTimer]');
+  DebugLn(Format('[TCDWidgetSet.DestroyTimer] TimerHandle=%x', [PtrInt(TimerHandle)]));
   Result := False;
 
   lTimer := TCDTimer(TimerHandle);
@@ -830,6 +831,7 @@ begin
 
   // Remove from the list
   RemoveTimer(lTimer);
+  lTimer.Free;
 
   Result := True;
 end;

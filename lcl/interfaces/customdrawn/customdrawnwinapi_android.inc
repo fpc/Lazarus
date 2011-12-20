@@ -2186,6 +2186,7 @@ var
   lCanvas: TLazCanvas = nil;
   lWidth, lHeight: jint;
   lDestCanvas: TLazCanvas;
+  lFontSize: Integer;
 begin
   {$ifdef VerboseCDText}
     DebugLn(Format(':>[WinAPI ExtTextOut] DC=%x javaEnvRef=%x Str=%s X=%d Y=%d',
@@ -2200,15 +2201,17 @@ begin
     exit;
 
   if not IsValidDC(DC) then Exit;
-
   lDestCanvas := TLazCanvas(DC);
+
+  if (lDestCanvas.Font = nil) or (lDestCanvas.Font.Size = 0) then lFontSize := DefaultFontAndroidSize
+  else lFontSize := lDestCanvas.Font.Size;
 
   if (javaEnvRef = nil) then Exit;
 
   // Prepare the input
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
-  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, DefaultFontAndroidSize);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
 
   // Call the method to measure the text
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
@@ -4138,6 +4141,8 @@ end;
 function TCDWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 var
   lJavaString: jstring;
+  LazDC: TLazCanvas;
+  lFontSize: Integer;
 begin
   {$ifdef VerboseCDText}
     DebugLn(Format('[WinAPI GetTextExtentPoint] DC=%x javaEnvRef=%x', [DC, PtrInt(javaEnvRef)]));
@@ -4146,13 +4151,17 @@ begin
   Result := False;
 
   if not IsValidDC(DC) then Exit;
+  LazDC := TLazCanvas(DC);
+
+  if (LazDC.Font = nil) or (LazDC.Font.Size = 0) then lFontSize := DefaultFontAndroidSize
+  else lFontSize := LazDC.Font.Size;
 
   if (javaEnvRef = nil) then Exit;
 
   // Prepare the input
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, Str);
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
-  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, DefaultFontAndroidSize);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
 
   // Call the method
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
@@ -4178,6 +4187,8 @@ function TCDWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
   lAverageCharWidth: Integer;
   lJavaString: jstring;
+  LazDC: TLazCanvas;
+  lFontSize: Integer;
 begin
   {$ifdef VerboseCDText}
     DebugLn(Format('[WinAPI GetTextMetrics] DC=%x javaEnvRef=%x', [DC, PtrInt(javaEnvRef)]));
@@ -4186,13 +4197,17 @@ begin
   Result := False;
 
   if not IsValidDC(DC) then Exit;
+  LazDC := TLazCanvas(DC);
+
+  if (LazDC.Font = nil) or (LazDC.Font.Size = 0) then lFontSize := DefaultFontAndroidSize
+  else lFontSize := LazDC.Font.Size;
 
   if (javaEnvRef = nil) then Exit;
 
   // Prepare the input for getting the average width of a char
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar('x'));
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
-  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, DefaultFontAndroidSize);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
 
   // Call the method
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
@@ -4202,7 +4217,7 @@ begin
   // Prepare the input for getting the max height of a text and other metrics
   lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar('Íg'));
   javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lcltext, lJavaString);
-  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, DefaultFontAndroidSize);
+  javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, javaField_lcltextsize, lFontSize);
 
   // Call the method
   javaEnvRef^^.CallVoidMethod(javaEnvRef, javaActivityObject, javaMethod_LCLDoGetTextBounds);
