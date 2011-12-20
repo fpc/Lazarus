@@ -11898,6 +11898,10 @@ msgstr "Otevřít balíček %s?"
 msgid "Open the project %s?"
 msgstr "Otevřít projekt %s?"
 
+#: lazarusidestrconsts.lisopenxml
+msgid "Open XML"
+msgstr ""
+
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "Volby změněny, čisté překládání s -B"

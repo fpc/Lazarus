@@ -1,6 +1,6 @@
-msgid "\""
+msgid ""
 msgstr ""
-"\"Project-Id-Version: \n"
+"Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: ezik shulamy <shulamy@regba.org.il>\n"
@@ -10,1112 +10,746 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: syneditstrconst.syns_attrasp
-#, fuzzy
-#| msgid "Asp\""
 msgid "Asp"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrassembler
-#, fuzzy
-#| msgid "Assembler\""
 msgid "Assembler"
-msgstr "אסמבלר\""
+msgstr "אסמבלר"
 
 #: syneditstrconst.syns_attrattributename
-#, fuzzy
-#| msgid "Attribute Name\""
 msgid "Attribute Name"
-msgstr "שם המאפיין\""
+msgstr "שם המאפיין"
 
 #: syneditstrconst.syns_attrattributevalue
-#, fuzzy
-#| msgid "Attribute Value\""
 msgid "Attribute Value"
-msgstr "ערך המאפיין\""
+msgstr "ערך המאפיין"
 
 #: syneditstrconst.syns_attrblock
-#, fuzzy
-#| msgid "Block\""
 msgid "Block"
-msgstr "בלוק\""
+msgstr "בלוק"
 
 #: syneditstrconst.syns_attrbrackets
-#, fuzzy
-#| msgid "Brackets\""
 msgid "Brackets"
-msgstr "סוגריים\""
+msgstr "סוגריים"
 
 #: syneditstrconst.syns_attrcaselabel
-#, fuzzy
-#| msgid "Case label\""
 msgid "Case label"
-msgstr "תוית ראשיות\""
+msgstr "תוית ראשיות"
 
 #: syneditstrconst.syns_attrcdatasection
-#, fuzzy
-#| msgid "CDATA Section\""
 msgid "CDATA Section"
-msgstr "סעיף CDATA\""
+msgstr "סעיף CDATA"
 
 #: syneditstrconst.syns_attrcharacter
-#, fuzzy
-#| msgid "Character\""
 msgid "Character"
-msgstr "תו\""
+msgstr "תו"
 
 #: syneditstrconst.syns_attrchunkmarker
-#, fuzzy
-#| msgid "Diff Chunk Marker\""
 msgid "Diff Chunk Marker"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrchunkmixed
-#, fuzzy
-#| msgid "Diff Chunk Line Counts\""
 msgid "Diff Chunk Line Counts"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrchunknew
-#, fuzzy
-#| msgid "Diff Chunk New Line Count\""
 msgid "Diff Chunk New Line Count"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrchunkorig
-#, fuzzy
-#| msgid "Diff Chunk Original Line Count\""
 msgid "Diff Chunk Original Line Count"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrclass
-#, fuzzy
-#| msgid "Class\""
 msgid "Class"
-msgstr "מחלקה\""
+msgstr "מחלקה"
 
 #: syneditstrconst.syns_attrcomment
-#, fuzzy
-#| msgid "Comment\""
 msgid "Comment"
-msgstr "הערה\""
+msgstr "הערה"
 
 #: syneditstrconst.syns_attrcondition
-#, fuzzy
-#| msgid "Condition\""
 msgid "Condition"
-msgstr "תנאי\""
+msgstr "תנאי"
 
 #: syneditstrconst.syns_attrdatatype
-#, fuzzy
-#| msgid "Data type\""
 msgid "Data type"
-msgstr "סוג נתונים\""
+msgstr "סוג נתונים"
 
 #: syneditstrconst.syns_attrdefaultpackage
-#, fuzzy
-#| msgid "Default packages\""
 msgid "Default packages"
-msgstr "חבילות ברירת מחדל\""
+msgstr "חבילות ברירת מחדל"
 
 #: syneditstrconst.syns_attrdir
-#, fuzzy
-#| msgid "Direction\""
 msgid "Direction"
-msgstr "כיוון\""
+msgstr "כיוון"
 
 #: syneditstrconst.syns_attrdirective
-#, fuzzy
-#| msgid "Directive\""
 msgid "Directive"
-msgstr "הוראה\""
+msgstr "הוראה"
 
 #: syneditstrconst.syns_attrdoctypesection
-#, fuzzy
-#| msgid "DOCTYPE Section\""
 msgid "DOCTYPE Section"
-msgstr "סעיף DOCTYPE\""
+msgstr "סעיף DOCTYPE"
 
 #: syneditstrconst.syns_attrdocumentation
-#, fuzzy
-#| msgid "Documentation\""
 msgid "Documentation"
-msgstr "תיעוד\""
+msgstr "תיעוד"
 
 #: syneditstrconst.syns_attrelementname
-#, fuzzy
-#| msgid "Element Name\""
 msgid "Element Name"
-msgstr "שם האלמנט\""
+msgstr "שם האלמנט"
 
 #: syneditstrconst.syns_attrembedsql
-#, fuzzy
-#| msgid "Embedded SQL\""
 msgid "Embedded SQL"
-msgstr "משובץ SQL\""
+msgstr "משובץ SQL"
 
 #: syneditstrconst.syns_attrembedtext
-#, fuzzy
-#| msgid "Embedded text\""
 msgid "Embedded text"
-msgstr "טקסט משובץ\""
+msgstr "טקסט משובץ"
 
 #: syneditstrconst.syns_attrentityreference
-#, fuzzy
-#| msgid "Entity Reference\""
 msgid "Entity Reference"
-msgstr "מראה מקום הישות\""
+msgstr "מראה מקום הישות"
 
 #: syneditstrconst.syns_attrescapeampersand
-#, fuzzy
-#| msgid "Escape ampersand\""
 msgid "Escape ampersand"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrevent
-#, fuzzy
-#| msgid "Event\""
 msgid "Event"
-msgstr "מאורע\""
+msgstr "מאורע"
 
 #: syneditstrconst.syns_attrexception
-#, fuzzy
-#| msgid "Exception\""
 msgid "Exception"
-msgstr "חריגה\""
+msgstr "חריגה"
 
 #: syneditstrconst.syns_attrflags
 msgid "Flags"
 msgstr ""
 
 #: syneditstrconst.syns_attrfloat
-#, fuzzy
-#| msgid "Float\""
 msgid "Float"
-msgstr "צף\""
+msgstr "צף"
 
 #: syneditstrconst.syns_attrform
-#, fuzzy
-#| msgid "Form\""
 msgid "Form"
-msgstr "טופס\""
+msgstr "טופס"
 
 #: syneditstrconst.syns_attrfunction
-#, fuzzy
-#| msgid "Function\""
 msgid "Function"
-msgstr "פונקציה\""
+msgstr "פונקציה"
 
 #: syneditstrconst.syns_attrhexadecimal
-#, fuzzy
-#| msgid "Hexadecimal\""
 msgid "Hexadecimal"
-msgstr "הקסה-דצימלי\""
+msgstr "הקסה-דצימלי"
 
 #: syneditstrconst.syns_attricon
-#, fuzzy
-#| msgid "Icon reference\""
 msgid "Icon reference"
-msgstr "מראה מקום האיקון\""
+msgstr "מראה מקום האיקון"
 
 #: syneditstrconst.syns_attridedirective
-#, fuzzy
-#| msgid "IDE Directive\""
 msgid "IDE Directive"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attridentifier
-#, fuzzy
-#| msgid "Identifier\""
 msgid "Identifier"
-msgstr "מזהה\""
+msgstr "מזהה"
 
 #: syneditstrconst.syns_attrillegalchar
-#, fuzzy
-#| msgid "Illegal char\""
 msgid "Illegal char"
-msgstr "תו לא חוקי\""
+msgstr "תו לא חוקי"
 
 #: syneditstrconst.syns_attrinclude
-#, fuzzy
-#| msgid "Include\""
 msgid "Include"
-msgstr "כלול\""
+msgstr "כלול"
 
 #: syneditstrconst.syns_attrindirect
-#, fuzzy
-#| msgid "Indirect\""
 msgid "Indirect"
-msgstr "עקיף\""
+msgstr "עקיף"
 
 #: syneditstrconst.syns_attrinternalfunction
-#, fuzzy
-#| msgid "Internal function\""
 msgid "Internal function"
-msgstr "פונקציה פנימית\""
+msgstr "פונקציה פנימית"
 
 #: syneditstrconst.syns_attrinvalidsymbol
-#, fuzzy
-#| msgid "Invalid symbol\""
 msgid "Invalid symbol"
-msgstr "סמל לא חוקי\""
+msgstr "סמל לא חוקי"
 
 #: syneditstrconst.syns_attrkey
-#, fuzzy
-#| msgid "Key\""
 msgid "Key"
-msgstr "מקש\""
+msgstr "מקש"
 
 #: syneditstrconst.syns_attrlabel
-#, fuzzy
-#| msgid "Label\""
 msgid "Label"
-msgstr "תוית\""
+msgstr "תוית"
 
 #: syneditstrconst.syns_attrlineadded
-#, fuzzy
-#| msgid "Diff Added line\""
 msgid "Diff Added line"
-msgstr "השווה שורה שנוספה\""
+msgstr "השווה שורה שנוספה"
 
 #: syneditstrconst.syns_attrlinechanged
-#, fuzzy
-#| msgid "Diff Changed Line\""
 msgid "Diff Changed Line"
-msgstr "השווה שורה ששונתה\""
+msgstr "השווה שורה ששונתה"
 
 #: syneditstrconst.syns_attrlinecontext
-#, fuzzy
-#| msgid "Diff Context Line\""
 msgid "Diff Context Line"
-msgstr "השווה שורת הקשר\""
+msgstr "השווה שורת הקשר"
 
 #: syneditstrconst.syns_attrlineremoved
-#, fuzzy
-#| msgid "Diff Removed Line\""
 msgid "Diff Removed Line"
-msgstr "השווה שורה שהוסרה\""
+msgstr "השווה שורה שהוסרה"
 
 #: syneditstrconst.syns_attrmacro
-#, fuzzy
-#| msgid "Macro\""
 msgid "Macro"
-msgstr "מאקרו\""
+msgstr "מאקרו"
 
 #: syneditstrconst.syns_attrmarker
-#, fuzzy
-#| msgid "Marker\""
 msgid "Marker"
-msgstr "סמן (הדגשה)\""
+msgstr "סמן (הדגשה)"
 
 #: syneditstrconst.syns_attrmathmode
-#, fuzzy
-#| msgid "Math Mode\""
 msgid "Math Mode"
-msgstr "מצב מתמטי\""
+msgstr "מצב מתמטי"
 
 #: syneditstrconst.syns_attrmessage
-#, fuzzy
-#| msgid "Message\""
 msgid "Message"
-msgstr "הודעה\""
+msgstr "הודעה"
 
 #: syneditstrconst.syns_attrmiscellaneous
-#, fuzzy
-#| msgid "Miscellaneous\""
 msgid "Miscellaneous"
-msgstr "שונות\""
+msgstr "שונות"
 
 #: syneditstrconst.syns_attrnamespaceattrname
-#, fuzzy
-#| msgid "Namespace Attribute Name\""
 msgid "Namespace Attribute Name"
-msgstr "שם של מאפיין מרחב-השמות\""
+msgstr "שם של מאפיין מרחב-השמות"
 
 #: syneditstrconst.syns_attrnamespaceattrvalue
-#, fuzzy
-#| msgid "Namespace Attribute Value\""
 msgid "Namespace Attribute Value"
-msgstr "ערך של מאפיין מרחב-השמות\""
+msgstr "ערך של מאפיין מרחב-השמות"
 
 #: syneditstrconst.syns_attrnewfile
-#, fuzzy
-#| msgid "Diff New File\""
 msgid "Diff New File"
-msgstr "השווה קובץ חדש\""
+msgstr "השווה קובץ חדש"
 
 #: syneditstrconst.syns_attrnonreservedkeyword
-#, fuzzy
-#| msgid "Non-reserved keyword\""
 msgid "Non-reserved keyword"
-msgstr "מלת מפתח לא שמורה\""
+msgstr "מלת מפתח לא שמורה"
 
 #: syneditstrconst.syns_attrnull
-#, fuzzy
-#| msgid "Null\""
 msgid "Null"
-msgstr "אפס\""
+msgstr "אפס"
 
 #: syneditstrconst.syns_attrnumber
-#, fuzzy
-#| msgid "Number\""
 msgid "Number"
-msgstr "מספר\""
+msgstr "מספר"
 
 #: syneditstrconst.syns_attroctal
-#, fuzzy
-#| msgid "Octal\""
 msgid "Octal"
-msgstr "אוקטלי (בסיס 8)\""
+msgstr "אוקטלי (בסיס 8)"
 
 #: syneditstrconst.syns_attroperator
-#, fuzzy
-#| msgid "Operator\""
 msgid "Operator"
-msgstr "אופרטור\""
+msgstr "אופרטור"
 
 #: syneditstrconst.syns_attrorigfile
-#, fuzzy
-#| msgid "Diff Original File\""
 msgid "Diff Original File"
-msgstr "השווה קובץ מקורי\""
+msgstr "השווה קובץ מקורי"
 
 #: syneditstrconst.syns_attrplsql
-#, fuzzy
-#| msgid "Reserved word (PL/SQL)\""
 msgid "Reserved word (PL/SQL)"
-msgstr "מלה שמורה (PL/SQL)\""
+msgstr "מלה שמורה (PL/SQL)"
 
 #: syneditstrconst.syns_attrpragma
-#, fuzzy
-#| msgid "Pragma\""
 msgid "Pragma"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrpreprocessor
-#, fuzzy
-#| msgid "Preprocessor\""
 msgid "Preprocessor"
-msgstr "קדם-מעבד\""
+msgstr "קדם-מעבד"
 
 #: syneditstrconst.syns_attrprevvalue
 msgid "Previous value"
 msgstr ""
 
 #: syneditstrconst.syns_attrprocessinginstr
-#, fuzzy
-#| msgid "Processing Instruction\""
 msgid "Processing Instruction"
-msgstr "הוראות עיבוד\""
+msgstr "הוראות עיבוד"
 
 #: syneditstrconst.syns_attrqualifier
-#, fuzzy
-#| msgid "Qualifier\""
 msgid "Qualifier"
-msgstr "מסייג\""
+msgstr "מסייג"
 
 #: syneditstrconst.syns_attrregister
-#, fuzzy
-#| msgid "Register\""
 msgid "Register"
-msgstr "אוגר\""
+msgstr "אוגר"
 
 #: syneditstrconst.syns_attrreservedword
-#, fuzzy
-#| msgid "Reserved word\""
 msgid "Reserved word"
-msgstr "מלה שמורה\""
+msgstr "מלה שמורה"
 
 #: syneditstrconst.syns_attrroundbracket
-#, fuzzy
-#| msgid "Round Bracket\""
 msgid "Round Bracket"
-msgstr "סוגרים עגולים\""
+msgstr "סוגרים עגולים"
 
 #: syneditstrconst.syns_attrrpl
-#, fuzzy
-#| msgid "Rpl\""
 msgid "Rpl"
-msgstr "Rpl\""
+msgstr "Rpl"
 
 #: syneditstrconst.syns_attrrplcomment
-#, fuzzy
-#| msgid "Rpl comment\""
 msgid "Rpl comment"
-msgstr "הערת Rpl \""
+msgstr "הערת Rpl "
 
 #: syneditstrconst.syns_attrrplkey
-#, fuzzy
-#| msgid "Rpl key\""
 msgid "Rpl key"
-msgstr "מקש Rpl \""
+msgstr "מקש Rpl "
 
 #: syneditstrconst.syns_attrsasm
-#, fuzzy
-#| msgid "SASM\""
 msgid "SASM"
-msgstr "SASM\""
+msgstr "SASM"
 
 #: syneditstrconst.syns_attrsasmcomment
-#, fuzzy
-#| msgid "SASM Comment\""
 msgid "SASM Comment"
-msgstr "הערת SASM\""
+msgstr "הערת SASM"
 
 #: syneditstrconst.syns_attrsasmkey
-#, fuzzy
-#| msgid "SASM Key\""
 msgid "SASM Key"
-msgstr "מקש SASM\""
+msgstr "מקש SASM"
 
 #: syneditstrconst.syns_attrsecondreservedword
-#, fuzzy
-#| msgid "Second reserved word\""
 msgid "Second reserved word"
-msgstr "מלה שמורה שניה\""
+msgstr "מלה שמורה שניה"
 
 #: syneditstrconst.syns_attrsection
-#, fuzzy
-#| msgid "Section\""
 msgid "Section"
-msgstr "סעיף\""
+msgstr "סעיף"
 
 #: syneditstrconst.syns_attrspace
-#, fuzzy
-#| msgid "Space\""
 msgid "Space"
-msgstr "רווח\""
+msgstr "רווח"
 
 #: syneditstrconst.syns_attrspecialvariable
-#, fuzzy
-#| msgid "Special variable\""
 msgid "Special variable"
-msgstr "משתנה מיוחד\""
+msgstr "משתנה מיוחד"
 
 #: syneditstrconst.syns_attrsqlkey
-#, fuzzy
-#| msgid "SQL keyword\""
 msgid "SQL keyword"
-msgstr "מלת מפתח של SQL\""
+msgstr "מלת מפתח של SQL"
 
 #: syneditstrconst.syns_attrsqlplus
-#, fuzzy
-#| msgid "SQL*Plus command\""
 msgid "SQL*Plus command"
-msgstr "פקודת SQL*Plus\""
+msgstr "פקודת SQL*Plus"
 
 #: syneditstrconst.syns_attrsquarebracket
-#, fuzzy
-#| msgid "Square Bracket\""
 msgid "Square Bracket"
-msgstr "סוגריים מרובעים\""
+msgstr "סוגריים מרובעים"
 
 #: syneditstrconst.syns_attrstring
-#, fuzzy
-#| msgid "String\""
 msgid "String"
-msgstr "מחרוזת\""
+msgstr "מחרוזת"
 
 #: syneditstrconst.syns_attrsymbol
-#, fuzzy
-#| msgid "Symbol\""
 msgid "Symbol"
-msgstr "סמל\""
+msgstr "סמל"
 
 #: syneditstrconst.syns_attrsyntaxerror
-#, fuzzy
-#| msgid "SyntaxError\""
 msgid "SyntaxError"
-msgstr "שגיאת תחביר\""
+msgstr "שגיאת תחביר"
 
 #: syneditstrconst.syns_attrsystem
-#, fuzzy
-#| msgid "System functions and variables\""
 msgid "System functions and variables"
-msgstr "פונקציות ומשתני מערכת\""
+msgstr "פונקציות ומשתני מערכת"
 
 #: syneditstrconst.syns_attrsystemvalue
-#, fuzzy
-#| msgid "System value\""
 msgid "System value"
-msgstr "ערך מערכת\""
+msgstr "ערך מערכת"
 
 #: syneditstrconst.syns_attrtablename
-#, fuzzy
-#| msgid "Table Name\""
 msgid "Table Name"
-msgstr "שם טבלה\""
+msgstr "שם טבלה"
 
 #: syneditstrconst.syns_attrterminator
-#, fuzzy
-#| msgid "Terminator\""
 msgid "Terminator"
-msgstr "הורס\""
+msgstr "הורס"
 
 #: syneditstrconst.syns_attrtexcommand
-#, fuzzy
-#| msgid "TeX Command\""
 msgid "TeX Command"
-msgstr "פקודת TeX \""
+msgstr "פקודת TeX "
 
 #: syneditstrconst.syns_attrtext
-#, fuzzy
-#| msgid "Text\""
 msgid "Text"
-msgstr "טקסט\""
+msgstr "טקסט"
 
 #: syneditstrconst.syns_attrtextmathmode
-#, fuzzy
-#| msgid "Text in Math Mode\""
 msgid "Text in Math Mode"
-msgstr "טקסט במצב מתמטי\""
+msgstr "טקסט במצב מתמטי"
 
 #: syneditstrconst.syns_attrunknownword
-#, fuzzy
-#| msgid "Unknown word\""
 msgid "Unknown word"
-msgstr "מילה לא ידועה\""
+msgstr "מילה לא ידועה"
 
 #: syneditstrconst.syns_attruser
-#, fuzzy
-#| msgid "User functions and variables\""
 msgid "User functions and variables"
-msgstr "פונקציות ומשתני משתמש\""
+msgstr "פונקציות ומשתני משתמש"
 
 #: syneditstrconst.syns_attruserfunction
-#, fuzzy
-#| msgid "User functions\""
 msgid "User functions"
-msgstr "פונקציות משתמש\""
+msgstr "פונקציות משתמש"
 
 #: syneditstrconst.syns_attrvalue
-#, fuzzy
-#| msgid "Value\""
 msgid "Value"
-msgstr "ערך\""
+msgstr "ערך"
 
 #: syneditstrconst.syns_attrvariable
-#, fuzzy
-#| msgid "Variable\""
 msgid "Variable"
-msgstr "משתנה\""
+msgstr "משתנה"
 
 #: syneditstrconst.syns_attrwhitespace
-#, fuzzy
-#| msgid "Whitespace\""
 msgid "Whitespace"
-msgstr "סימן \"לבן\"\""
+msgstr "סימן \"לבן\""
 
 #: syneditstrconst.syns_duplicateshortcutmsg
-#, fuzzy
-#| msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)\""
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr "ההקשה  \"%s\" כבר משוייכת לפקודת עורך אחרת.  (%s)\""
+msgstr "ההקשה  \"%s\" כבר משוייכת לפקודת עורך אחרת.  (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
-#, fuzzy
-#| msgid "Mouse-Shortcut already exists\""
 msgid "Mouse-Shortcut already exists"
-msgstr "קיצור דרך-עכבר כבר קיים\""
+msgstr "קיצור דרך-עכבר כבר קיים"
 
 #: syneditstrconst.syns_emcbreakpointtoggle
-#, fuzzy
-#| msgid "Toggle Breakpoint\""
 msgid "Toggle Breakpoint"
-msgstr "החלף (כן, לא) נקודת עצירה\""
+msgstr "החלף (כן, לא) נקודת עצירה"
 
 #: syneditstrconst.syns_emccodefoldcollaps
-#, fuzzy
-#| msgid "Fold Code\""
 msgid "Fold Code"
-msgstr "קפל קוד\""
+msgstr "קפל קוד"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
-#, fuzzy
-#| msgid "Nodes,One,All,\"At Caret\",\"Current Node\"\""
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
-#, fuzzy
-#| msgid "Fold Menu\""
 msgid "Fold Menu"
-msgstr "קפל תפריט\""
+msgstr "קפל תפריט"
 
 #: syneditstrconst.syns_emccodefoldexpand
-#, fuzzy
-#| msgid "Unfold Code\""
 msgid "Unfold Code"
-msgstr "פרוש קוד\""
+msgstr "פרוש קוד"
 
 #: syneditstrconst.syns_emccodefoldexpand_opt
-#, fuzzy
-#| msgid "Nodes,One,All\""
 msgid "Nodes,One,All"
-msgstr "צמתים , אחד, הכל\""
+msgstr "צמתים , אחד, הכל"
 
 #: syneditstrconst.syns_emccontextmenu
-#, fuzzy
-#| msgid "Popup Menu\""
 msgid "Popup Menu"
-msgstr "תפריט קופץ\""
+msgstr "תפריט קופץ"
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
-#, fuzzy
-#| msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always\""
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcmouselink
-#, fuzzy
-#| msgid "Source Link\""
 msgid "Source Link"
-msgstr "קישור לקוד\""
+msgstr "קישור לקוד"
 
 #: syneditstrconst.syns_emcmouselink_opt
-#, fuzzy
-#| msgid "Underline,yes, no\""
 msgid "Underline,yes, no"
-msgstr "\"קו תחתון\" , כן, לא\""
+msgstr "\"קו תחתון\" , כן, לא"
 
 #: syneditstrconst.syns_emcnone
-#, fuzzy
-#| msgid "No Action\""
 msgid "No Action"
-msgstr "ללא פעולה\""
+msgstr "ללא פעולה"
 
 #: syneditstrconst.syns_emcpasteselection
-#, fuzzy
-#| msgid "Quick Paste Selection\""
 msgid "Quick Paste Selection"
-msgstr "העתקה מהירה של הבחירה\""
+msgstr "העתקה מהירה של הבחירה"
 
 #: syneditstrconst.syns_emcselection_opt
-#, fuzzy
-#| msgid "Mode,Begin,Continue\""
 msgid "Mode,Begin,Continue"
-msgstr "מצב, התחלה, המשך\""
+msgstr "מצב, התחלה, המשך"
 
 #: syneditstrconst.syns_emcselectline
-#, fuzzy
-#| msgid "Select Line\""
 msgid "Select Line"
-msgstr "בחר שורה\""
+msgstr "בחר שורה"
 
 #: syneditstrconst.syns_emcselectline_opt
-#, fuzzy
-#| msgid "\"Include spaces\",no,yes\""
 msgid "\"Include spaces\",no,yes"
-msgstr "\"כלול רווחים\" , לא, כן\""
+msgstr "\"כלול רווחים\" , לא, כן"
 
 #: syneditstrconst.syns_emcselectpara
-#, fuzzy
-#| msgid "Select Paragraph\""
 msgid "Select Paragraph"
-msgstr "בחר סעיף\""
+msgstr "בחר סעיף"
 
 #: syneditstrconst.syns_emcselectword
-#, fuzzy
-#| msgid "Select Word\""
 msgid "Select Word"
-msgstr "בחר מילה\""
+msgstr "בחר מילה"
 
 #: syneditstrconst.syns_emcstartcolumnselections
-#, fuzzy
-#| msgid "Column Selection\""
 msgid "Column Selection"
-msgstr "בחירת עמודה\""
+msgstr "בחירת עמודה"
 
 #: syneditstrconst.syns_emcstartdragmove
-#, fuzzy
-#| msgid "Drag Selection\""
 msgid "Drag Selection"
-msgstr "גרור את הבחירה\""
+msgstr "גרור את הבחירה"
 
 #: syneditstrconst.syns_emcstartlineselections
-#, fuzzy
-#| msgid "Line Selection\""
 msgid "Line Selection"
-msgstr "בחירת שורה\""
+msgstr "בחירת שורה"
 
 #: syneditstrconst.syns_emcstartselection
-#, fuzzy
-#| msgid "Selection\""
 msgid "Selection"
-msgstr "בחירה\""
+msgstr "בחירה"
 
 #: syneditstrconst.syns_emcsyneditcommand
-#, fuzzy
-#| msgid "IDE Command\""
 msgid "IDE Command"
-msgstr "פקודת IDE\""
+msgstr "פקודת IDE"
 
 #: syneditstrconst.syns_emcwheelhorizscrolldown
-#, fuzzy
-#| msgid "Wheel scroll down (Horizontal)\""
 msgid "Wheel scroll down (Horizontal)"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelhorizscrollup
-#, fuzzy
-#| msgid "Wheel scroll up (Horizontal)\""
 msgid "Wheel scroll up (Horizontal)"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelscrolldown
-#, fuzzy
-#| msgid "Wheel scroll down\""
 msgid "Wheel scroll down"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelscrollup
-#, fuzzy
-#| msgid "Wheel scroll up\""
 msgid "Wheel scroll up"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelscroll_opt
-#, fuzzy
-#| msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\"\""
 msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
-#, fuzzy
-#| msgid "Wheel scroll down (Vertical)\""
 msgid "Wheel scroll down (Vertical)"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelvertscrollup
-#, fuzzy
-#| msgid "Wheel scroll up (Vertical)\""
 msgid "Wheel scroll up (Vertical)"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelzoomin
-#, fuzzy
-#| msgid "Wheel zoom in\""
 msgid "Wheel zoom in"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelzoomnorm
-#, fuzzy
-#| msgid "Wheel zoom default\""
 msgid "Wheel zoom default"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelzoomout
-#, fuzzy
-#| msgid "Wheel zoom out\""
 msgid "Wheel zoom out"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_exporterformathtml
-#, fuzzy
-#| msgid "HTML\""
 msgid "HTML"
-msgstr "HTML\""
+msgstr "HTML"
 
 #: syneditstrconst.syns_exporterformatrtf
-#, fuzzy
-#| msgid "RTF\""
 msgid "RTF"
-msgstr "RTF\""
+msgstr "RTF"
 
 #: syneditstrconst.syns_filteradsp21xx
-#, fuzzy
-#| msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC\""
 msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
-msgstr "קבצי DSP  (*.dsp,*.inc)|*.DSP;*.INC\""
+msgstr "קבצי DSP  (*.dsp,*.inc)|*.DSP;*.INC"
 
 #: syneditstrconst.syns_filterasm68hc11
-#, fuzzy
-#| msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC\""
 msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-msgstr "קבצי אסמבלר 68HC11  (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC\""
+msgstr "קבצי אסמבלר 68HC11  (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
 
 #: syneditstrconst.syns_filterawk
-#, fuzzy
-#| msgid "AWK Script (*.awk)|*.awk\""
 msgid "AWK Script (*.awk)|*.awk"
-msgstr "תסריט AWK  (*.awk)|*.awk\""
+msgstr "תסריט AWK  (*.awk)|*.awk"
 
 #: syneditstrconst.syns_filterbaan
-#, fuzzy
-#| msgid "Baan 4GL Files (*.cln)|*.cln\""
 msgid "Baan 4GL Files (*.cln)|*.cln"
-msgstr "קבצי Baan 4GL  (*.cln)|*.cln\""
+msgstr "קבצי Baan 4GL  (*.cln)|*.cln"
 
 #: syneditstrconst.syns_filterbatch
-#, fuzzy
-#| msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd\""
 msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
-msgstr "קבצי MS-DOS Batch  (*.bat;*.cmd)|*.bat;*.cmd\""
+msgstr "קבצי MS-DOS Batch  (*.bat;*.cmd)|*.bat;*.cmd"
 
 #: syneditstrconst.syns_filtercache
-#, fuzzy
-#| msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int\""
 msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
-msgstr "קבצי מטמון (*.mac,*.inc,*.int)|*.mac;*.inc;*.int\""
+msgstr "קבצי מטמון (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
 
 #: syneditstrconst.syns_filtercaclipper
-#, fuzzy
-#| msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc\""
 msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
-msgstr "קבצי CA-Clippe (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc\""
+msgstr "קבצי CA-Clippe (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
 
 #: syneditstrconst.syns_filtercorbaidl
-#, fuzzy
-#| msgid "CORBA IDL files (*.idl)|*.idl\""
 msgid "CORBA IDL files (*.idl)|*.idl"
-msgstr "קבצי  CORBA IDL (*.idl)|*.idl\""
+msgstr "קבצי  CORBA IDL (*.idl)|*.idl"
 
 #: syneditstrconst.syns_filtercpm
-#, fuzzy
-#| msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf\""
 msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
-msgstr "דוחות CPM  (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf\""
+msgstr "דוחות CPM  (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
 
 #: syneditstrconst.syns_filtercpp
-#, fuzzy
-#| msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh\""
 msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
-msgstr "קבצי  C++ (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh\""
+msgstr "קבצי  C++ (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
 
 #: syneditstrconst.syns_filtercss
-#, fuzzy
-#| msgid "Cascading Stylesheets (*.css)|*.css\""
 msgid "Cascading Stylesheets (*.css)|*.css"
-msgstr "Cascading Stylesheets (*.css)|*.css\""
+msgstr "Cascading Stylesheets (*.css)|*.css"
 
 #: syneditstrconst.syns_filterdfm
-#, fuzzy
-#| msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm\""
 msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm"
-msgstr "קבצי טפסים של בורלנד (*.dfm;*.xfm)|*.dfm;*.xfm\""
+msgstr "קבצי טפסים של בורלנד (*.dfm;*.xfm)|*.dfm;*.xfm"
 
 #: syneditstrconst.syns_filterfortran
-#, fuzzy
-#| msgid "Fortran Files (*.for)|*.for\""
 msgid "Fortran Files (*.for)|*.for"
-msgstr "קבצי פורטרן  (*.for)|*.for\""
+msgstr "קבצי פורטרן  (*.for)|*.for"
 
 #: syneditstrconst.syns_filterfoxpro
-#, fuzzy
-#| msgid "Foxpro Files (*.prg)|*.prg\""
 msgid "Foxpro Files (*.prg)|*.prg"
-msgstr "קבצי Foxpro (*.prg)|*.prg \""
+msgstr "קבצי Foxpro (*.prg)|*.prg "
 
 #: syneditstrconst.syns_filtergalaxy
-#, fuzzy
-#| msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt\""
 msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
-msgstr "קבצי גאלקסי  (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt\""
+msgstr "קבצי גאלקסי  (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
 
 #: syneditstrconst.syns_filtergembase
-#, fuzzy
-#| msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM\""
 msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
-msgstr "קבצי GEMBASE  (*.dml,*.gem)|*.DML;*.GEM\""
+msgstr "קבצי GEMBASE  (*.dml,*.gem)|*.DML;*.GEM"
 
 #: syneditstrconst.syns_filtergws
-#, fuzzy
-#| msgid "GW-TEL Script Files (*.gws)|*.gws\""
 msgid "GW-TEL Script Files (*.gws)|*.gws"
-msgstr "קבצי  GW-TEL Script  (*.gws)|*.gws\""
+msgstr "קבצי  GW-TEL Script  (*.gws)|*.gws"
 
 #: syneditstrconst.syns_filterhp48
-#, fuzzy
-#| msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp\""
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
-msgstr "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp\""
+msgstr "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
 
 #: syneditstrconst.syns_filterhtml
-#, fuzzy
-#| msgid "HTML Document (*.htm,*.html)|*.htm;*.html\""
 msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
-msgstr "מסמך HTML  (*.htm,*.html)|*.htm;*.html\""
+msgstr "מסמך HTML  (*.htm,*.html)|*.htm;*.html"
 
 #: syneditstrconst.syns_filterini
-#, fuzzy
-#| msgid "INI Files (*.ini)|*.ini\""
 msgid "INI Files (*.ini)|*.ini"
-msgstr "קבצי INI  (*.ini)|*.ini\""
+msgstr "קבצי INI  (*.ini)|*.ini"
 
 #: syneditstrconst.syns_filterinno
-#, fuzzy
-#| msgid "Inno Setup Script Files (*.iss)|*.iss\""
 msgid "Inno Setup Script Files (*.iss)|*.iss"
-msgstr "קבצי  Inno Setup Script  (*.iss)|*.iss\""
+msgstr "קבצי  Inno Setup Script  (*.iss)|*.iss"
 
 #: syneditstrconst.syns_filterjava
-#, fuzzy
-#| msgid "Java Files (*.java)|*.java\""
 msgid "Java Files (*.java)|*.java"
-msgstr "קבצי ג'אוה   *.java)|*.java)\""
+msgstr "קבצי ג'אוה   *.java)|*.java)"
 
 #: syneditstrconst.syns_filterjscript
-#, fuzzy
-#| msgid "Javascript Files (*.js)|*.js\""
 msgid "Javascript Files (*.js)|*.js"
-msgstr "קבצי ג'אוה-סקריפט (*.js)|*.js\""
+msgstr "קבצי ג'אוה-סקריפט (*.js)|*.js"
 
 #: syneditstrconst.syns_filterkix
-#, fuzzy
-#| msgid "KiXtart scripts (*.kix)|*.kix\""
 msgid "KiXtart scripts (*.kix)|*.kix"
-msgstr "תסריטי KiXtart  (*.kix)|*.kix\""
+msgstr "תסריטי KiXtart  (*.kix)|*.kix"
 
 #: syneditstrconst.syns_filterlfm
-#, fuzzy
-#| msgid "Lazarus Form Files (*.lfm)|*.lfm\""
 msgid "Lazarus Form Files (*.lfm)|*.lfm"
-msgstr "קבצי טפסים של לזארוס (*.lfm)|*.lfm\""
+msgstr "קבצי טפסים של לזארוס (*.lfm)|*.lfm"
 
 #: syneditstrconst.syns_filtermodelica
-#, fuzzy
-#| msgid "Modelica Files (*.mo)|*.mo\""
 msgid "Modelica Files (*.mo)|*.mo"
-msgstr "קבצי  Modelica (*.mo)|*.mo\""
+msgstr "קבצי  Modelica (*.mo)|*.mo"
 
 #: syneditstrconst.syns_filtermodula3
-#, fuzzy
-#| msgid "Modula-3 Files (*.m3)|*.m3\""
 msgid "Modula-3 Files (*.m3)|*.m3"
-msgstr "קבצי  Modula-3  (*.m3)|*.m3\""
+msgstr "קבצי  Modula-3  (*.m3)|*.m3"
 
 #: syneditstrconst.syns_filterpascal
-#, fuzzy
-#| msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc\""
 msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
-msgstr "קבצי פסקל (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc\""
+msgstr "קבצי פסקל (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
 
 #: syneditstrconst.syns_filterperl
-#, fuzzy
-#| msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi\""
 msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
-msgstr "קבצי פרל  (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi\""
+msgstr "קבצי פרל  (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
 
 #: syneditstrconst.syns_filterphp
-#, fuzzy
-#| msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc\""
 msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
-msgstr "קבצי PHP  (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc\""
+msgstr "קבצי PHP  (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
 
 #: syneditstrconst.syns_filterpo
 msgid "Po Files (*.po)|*.po"
 msgstr ""
 
 #: syneditstrconst.syns_filterprogress
-#, fuzzy
-#| msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i\""
 msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
-msgstr "קבצי Progress (*.w,*.p,*.i)|*.w;*.p;*.i\""
+msgstr "קבצי Progress (*.w,*.p,*.i)|*.w;*.p;*.i"
 
 #: syneditstrconst.syns_filterpython
-#, fuzzy
-#| msgid "Python Files (*.py)|*.py\""
 msgid "Python Files (*.py)|*.py"
-msgstr "קבצי פייתון (*.py)|*.py\""
+msgstr "קבצי פייתון (*.py)|*.py"
 
 #: syneditstrconst.syns_filterrtf
-#, fuzzy
-#| msgid "Rich Text Format (*.rtf)|*.rtf\""
 msgid "Rich Text Format (*.rtf)|*.rtf"
-msgstr "פורמט \"טקסט עשיר\" (*.rtf)|*.rtf\""
+msgstr "פורמט \"טקסט עשיר\" (*.rtf)|*.rtf"
 
 #: syneditstrconst.syns_filtersdd
-#, fuzzy
-#| msgid "Semanta DD files (*.sdd)|*.sdd\""
 msgid "Semanta DD files (*.sdd)|*.sdd"
-msgstr "קבצי  Semanta DD  (*.sdd)|*.sdd\""
+msgstr "קבצי  Semanta DD  (*.sdd)|*.sdd"
 
 #: syneditstrconst.syns_filtersml
-#, fuzzy
-#| msgid "Standard ML Files (*.sml)|*.sml\""
 msgid "Standard ML Files (*.sml)|*.sml"
-msgstr "קבצי Standard ML (*.sml)|*.sml\""
+msgstr "קבצי Standard ML (*.sml)|*.sml"
 
 #: syneditstrconst.syns_filtersql
-#, fuzzy
-#| msgid "SQL Files (*.sql)|*.sql\""
 msgid "SQL Files (*.sql)|*.sql"
-msgstr "קבצי SQL  (*.sql)|*.sql\""
+msgstr "קבצי SQL  (*.sql)|*.sql"
 
 #: syneditstrconst.syns_filtersyngenmsgfiles
-#, fuzzy
-#| msgid "Msg files (*.msg)|*.msg\""
 msgid "Msg files (*.msg)|*.msg"
-msgstr "קבצי הודעות (*.msg)|*.msg\""
+msgstr "קבצי הודעות (*.msg)|*.msg"
 
 #: syneditstrconst.syns_filtertcltk
-#, fuzzy
-#| msgid "Tcl/Tk Files (*.tcl)|*.tcl\""
 msgid "Tcl/Tk Files (*.tcl)|*.tcl"
-msgstr "קבצי  Tcl/Tk  (*.tcl)|*.tcl\""
+msgstr "קבצי  Tcl/Tk  (*.tcl)|*.tcl"
 
 #: syneditstrconst.syns_filtertex
-#, fuzzy
-#| msgid "TeX Files (*.tex)|*.tex\""
 msgid "TeX Files (*.tex)|*.tex"
-msgstr "קבצי TeX (*.tex)|*.tex\""
+msgstr "קבצי TeX (*.tex)|*.tex"
 
 #: syneditstrconst.syns_filterunixshellscript
-#, fuzzy
-#| msgid "UNIX Shell Scripts (*.sh)|*.sh\""
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
-msgstr "תסריטי מעטפת של יוניקס (*.sh)|*.sh\""
+msgstr "תסריטי מעטפת של יוניקס (*.sh)|*.sh"
 
 #: syneditstrconst.syns_filtervbscript
-#, fuzzy
-#| msgid "VBScript Files (*.vbs)|*.vbs\""
 msgid "VBScript Files (*.vbs)|*.vbs"
-msgstr "קבצי VBScript  (*.vbs)|*.vbs\""
+msgstr "קבצי VBScript  (*.vbs)|*.vbs"
 
 #: syneditstrconst.syns_filtervisualbasic
-#, fuzzy
-#| msgid "Visual Basic Files (*.bas)|*.bas\""
 msgid "Visual Basic Files (*.bas)|*.bas"
-msgstr "קבצי ויז'ואל בייסיק  (*.bas)|*.bas\""
+msgstr "קבצי ויז'ואל בייסיק  (*.bas)|*.bas"
 
 #: syneditstrconst.syns_filterx86asm
-#, fuzzy
-#| msgid "x86 Assembly Files (*.asm)|*.ASM\""
 msgid "x86 Assembly Files (*.asm)|*.ASM"
-msgstr "קבצי אסמבלר x86  (*.asm)|*.ASM\""
+msgstr "קבצי אסמבלר x86  (*.asm)|*.ASM"
 
 #: syneditstrconst.syns_filterxml
-#, fuzzy
-#| msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd\""
 msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
-msgstr "מסמכי XML  (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd\""
+msgstr "מסמכי XML  (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 
 #: syneditstrconst.syns_previewscrollinfofmt
-#, fuzzy
-#| msgid "Page: %d\""
 msgid "Page: %d"
-msgstr "דף: d%\""
+msgstr "דף: d%"
 
 #: syneditstrconst.syns_scrollinfofmt
-#, fuzzy
-#| msgid "%d - %d\""
 msgid "%d - %d"
-msgstr "%d - %d\""
+msgstr "%d - %d"
 
 #: syneditstrconst.syns_scrollinfofmttop
-#, fuzzy
-#| msgid "Top Line: %d\""
 msgid "Top Line: %d"
-msgstr "שורה עליונה: d%\""
+msgstr "שורה עליונה: d%"
 
 #: syneditstrconst.syns_shortcutnone
-#, fuzzy
-#| msgid "<none>\""
 msgid "<none>"
-msgstr "<ללא>\""
+msgstr "<ללא>"
 
 #: syneditstrconst.syns_untitled
-#, fuzzy
-#| msgid "Untitled\""
 msgid "Untitled"
-msgstr "ללא כותרת\""
+msgstr "ללא כותרת"
 

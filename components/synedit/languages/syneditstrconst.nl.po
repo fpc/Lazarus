@@ -1,6 +1,6 @@
-msgid "\""
+msgid ""
 msgstr ""
-"\"Project-Id-Version: \n"
+"Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: 2006-07-02 15:38+0100\n"
 "Last-Translator: Darius Blaszijk <dhkblaszyk@zeelandnet.nl>\n"
@@ -10,1112 +10,748 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: syneditstrconst.syns_attrasp
-#, fuzzy
-#| msgid "Asp\""
 msgid "Asp"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrassembler
-#, fuzzy
-#| msgid "Assembler\""
 msgid "Assembler"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrattributename
-#, fuzzy
-#| msgid "Attribute Name\""
 msgid "Attribute Name"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrattributevalue
-#, fuzzy
-#| msgid "Attribute Value\""
 msgid "Attribute Value"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrblock
-#, fuzzy
-#| msgid "Block\""
 msgid "Block"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrbrackets
-#, fuzzy
-#| msgid "Brackets\""
 msgid "Brackets"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrcaselabel
-#, fuzzy
-#| msgid "Case label\""
 msgid "Case label"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrcdatasection
-#, fuzzy
-#| msgid "CDATA Section\""
 msgid "CDATA Section"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrcharacter
-#, fuzzy
-#| msgid "Character\""
 msgid "Character"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrchunkmarker
-#, fuzzy
-#| msgid "Diff Chunk Marker\""
 msgid "Diff Chunk Marker"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrchunkmixed
-#, fuzzy
-#| msgid "Diff Chunk Line Counts\""
 msgid "Diff Chunk Line Counts"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrchunknew
-#, fuzzy
-#| msgid "Diff Chunk New Line Count\""
 msgid "Diff Chunk New Line Count"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrchunkorig
-#, fuzzy
-#| msgid "Diff Chunk Original Line Count\""
 msgid "Diff Chunk Original Line Count"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrclass
-#, fuzzy
-#| msgid "Class\""
 msgid "Class"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrcomment
-#, fuzzy
-#| msgid "Comment\""
 msgid "Comment"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrcondition
-#, fuzzy
-#| msgid "Condition\""
 msgid "Condition"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrdatatype
-#, fuzzy
-#| msgid "Data type\""
 msgid "Data type"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrdefaultpackage
-#, fuzzy
-#| msgid "Default packages\""
 msgid "Default packages"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrdir
-#, fuzzy
-#| msgid "Direction\""
 msgid "Direction"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrdirective
-#, fuzzy
-#| msgid "Directive\""
 msgid "Directive"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrdoctypesection
-#, fuzzy
-#| msgid "DOCTYPE Section\""
 msgid "DOCTYPE Section"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrdocumentation
-#, fuzzy
-#| msgid "Documentation\""
 msgid "Documentation"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrelementname
-#, fuzzy
-#| msgid "Element Name\""
 msgid "Element Name"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrembedsql
-#, fuzzy
-#| msgid "Embedded SQL\""
 msgid "Embedded SQL"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrembedtext
-#, fuzzy
-#| msgid "Embedded text\""
 msgid "Embedded text"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrentityreference
-#, fuzzy
-#| msgid "Entity Reference\""
 msgid "Entity Reference"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrescapeampersand
-#, fuzzy
-#| msgid "Escape ampersand\""
 msgid "Escape ampersand"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrevent
-#, fuzzy
-#| msgid "Event\""
 msgid "Event"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrexception
-#, fuzzy
-#| msgid "Exception\""
 msgid "Exception"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrflags
 msgid "Flags"
 msgstr ""
 
 #: syneditstrconst.syns_attrfloat
-#, fuzzy
-#| msgid "Float\""
 msgid "Float"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrform
-#, fuzzy
-#| msgid "Form\""
 msgid "Form"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrfunction
-#, fuzzy
-#| msgid "Function\""
 msgid "Function"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrhexadecimal
-#, fuzzy
-#| msgid "Hexadecimal\""
 msgid "Hexadecimal"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attricon
-#, fuzzy
-#| msgid "Icon reference\""
 msgid "Icon reference"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attridedirective
-#, fuzzy
-#| msgid "IDE Directive\""
 msgid "IDE Directive"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attridentifier
-#, fuzzy
-#| msgid "Identifier\""
 msgid "Identifier"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrillegalchar
-#, fuzzy
-#| msgid "Illegal char\""
 msgid "Illegal char"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrinclude
-#, fuzzy
-#| msgid "Include\""
 msgid "Include"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrindirect
-#, fuzzy
-#| msgid "Indirect\""
 msgid "Indirect"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrinternalfunction
-#, fuzzy
-#| msgid "Internal function\""
 msgid "Internal function"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrinvalidsymbol
-#, fuzzy
-#| msgid "Invalid symbol\""
 msgid "Invalid symbol"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrkey
-#, fuzzy
-#| msgid "Key\""
 msgid "Key"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrlabel
-#, fuzzy
-#| msgid "Label\""
 msgid "Label"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrlineadded
-#, fuzzy
-#| msgid "Diff Added line\""
 msgid "Diff Added line"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrlinechanged
-#, fuzzy
-#| msgid "Diff Changed Line\""
 msgid "Diff Changed Line"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrlinecontext
-#, fuzzy
-#| msgid "Diff Context Line\""
 msgid "Diff Context Line"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrlineremoved
-#, fuzzy
-#| msgid "Diff Removed Line\""
 msgid "Diff Removed Line"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrmacro
-#, fuzzy
-#| msgid "Macro\""
 msgid "Macro"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrmarker
-#, fuzzy
-#| msgid "Marker\""
 msgid "Marker"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrmathmode
-#, fuzzy
-#| msgid "Math Mode\""
 msgid "Math Mode"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrmessage
-#, fuzzy
-#| msgid "Message\""
 msgid "Message"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrmiscellaneous
-#, fuzzy
-#| msgid "Miscellaneous\""
 msgid "Miscellaneous"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrnamespaceattrname
-#, fuzzy
-#| msgid "Namespace Attribute Name\""
 msgid "Namespace Attribute Name"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrnamespaceattrvalue
-#, fuzzy
-#| msgid "Namespace Attribute Value\""
 msgid "Namespace Attribute Value"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrnewfile
-#, fuzzy
-#| msgid "Diff New File\""
 msgid "Diff New File"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrnonreservedkeyword
-#, fuzzy
-#| msgid "Non-reserved keyword\""
 msgid "Non-reserved keyword"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrnull
-#, fuzzy
-#| msgid "Null\""
 msgid "Null"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrnumber
-#, fuzzy
-#| msgid "Number\""
 msgid "Number"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attroctal
-#, fuzzy
-#| msgid "Octal\""
 msgid "Octal"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attroperator
-#, fuzzy
-#| msgid "Operator\""
 msgid "Operator"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrorigfile
-#, fuzzy
-#| msgid "Diff Original File\""
 msgid "Diff Original File"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrplsql
-#, fuzzy
-#| msgid "Reserved word (PL/SQL)\""
 msgid "Reserved word (PL/SQL)"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrpragma
-#, fuzzy
-#| msgid "Pragma\""
 msgid "Pragma"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrpreprocessor
-#, fuzzy
-#| msgid "Preprocessor\""
 msgid "Preprocessor"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrprevvalue
 msgid "Previous value"
 msgstr ""
 
 #: syneditstrconst.syns_attrprocessinginstr
-#, fuzzy
-#| msgid "Processing Instruction\""
 msgid "Processing Instruction"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrqualifier
-#, fuzzy
-#| msgid "Qualifier\""
 msgid "Qualifier"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrregister
-#, fuzzy
-#| msgid "Register\""
 msgid "Register"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrreservedword
-#, fuzzy
-#| msgid "Reserved word\""
 msgid "Reserved word"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrroundbracket
-#, fuzzy
-#| msgid "Round Bracket\""
 msgid "Round Bracket"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrrpl
-#, fuzzy
-#| msgid "Rpl\""
 msgid "Rpl"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrrplcomment
-#, fuzzy
-#| msgid "Rpl comment\""
 msgid "Rpl comment"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrrplkey
-#, fuzzy
-#| msgid "Rpl key\""
 msgid "Rpl key"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrsasm
-#, fuzzy
-#| msgid "SASM\""
 msgid "SASM"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrsasmcomment
-#, fuzzy
-#| msgid "SASM Comment\""
 msgid "SASM Comment"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrsasmkey
-#, fuzzy
-#| msgid "SASM Key\""
 msgid "SASM Key"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrsecondreservedword
-#, fuzzy
-#| msgid "Second reserved word\""
 msgid "Second reserved word"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrsection
-#, fuzzy
-#| msgid "Section\""
 msgid "Section"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrspace
-#, fuzzy
-#| msgid "Space\""
 msgid "Space"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrspecialvariable
-#, fuzzy
-#| msgid "Special variable\""
 msgid "Special variable"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrsqlkey
-#, fuzzy
-#| msgid "SQL keyword\""
 msgid "SQL keyword"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrsqlplus
-#, fuzzy
-#| msgid "SQL*Plus command\""
 msgid "SQL*Plus command"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrsquarebracket
-#, fuzzy
-#| msgid "Square Bracket\""
 msgid "Square Bracket"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrstring
-#, fuzzy
-#| msgid "String\""
 msgid "String"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrsymbol
-#, fuzzy
-#| msgid "Symbol\""
 msgid "Symbol"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrsyntaxerror
-#, fuzzy
-#| msgid "SyntaxError\""
 msgid "SyntaxError"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrsystem
-#, fuzzy
-#| msgid "System functions and variables\""
 msgid "System functions and variables"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrsystemvalue
-#, fuzzy
-#| msgid "System value\""
 msgid "System value"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrtablename
-#, fuzzy
-#| msgid "Table Name\""
 msgid "Table Name"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrterminator
-#, fuzzy
-#| msgid "Terminator\""
 msgid "Terminator"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrtexcommand
-#, fuzzy
-#| msgid "TeX Command\""
 msgid "TeX Command"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrtext
-#, fuzzy
-#| msgid "Text\""
 msgid "Text"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrtextmathmode
-#, fuzzy
-#| msgid "Text in Math Mode\""
 msgid "Text in Math Mode"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrunknownword
-#, fuzzy
-#| msgid "Unknown word\""
 msgid "Unknown word"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attruser
-#, fuzzy
-#| msgid "User functions and variables\""
 msgid "User functions and variables"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attruserfunction
-#, fuzzy
-#| msgid "User functions\""
 msgid "User functions"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrvalue
-#, fuzzy
-#| msgid "Value\""
 msgid "Value"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrvariable
-#, fuzzy
-#| msgid "Variable\""
 msgid "Variable"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_attrwhitespace
-#, fuzzy
-#| msgid "Whitespace\""
 msgid "Whitespace"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_duplicateshortcutmsg
 #, fuzzy
-#| msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)\""
+#| msgid "Shortcut already exists"
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr "De toets \"%s\" is reeds toegewezen aan een ander editor commando. (%s)\""
+msgstr "De toets \"%s\" is reeds toegewezen aan een ander editor commando. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
-#, fuzzy
-#| msgid "Mouse-Shortcut already exists\""
 msgid "Mouse-Shortcut already exists"
-msgstr "Snelkoppeling bestaat reeds\""
+msgstr "Snelkoppeling bestaat reeds"
 
 #: syneditstrconst.syns_emcbreakpointtoggle
-#, fuzzy
-#| msgid "Toggle Breakpoint\""
 msgid "Toggle Breakpoint"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emccodefoldcollaps
-#, fuzzy
-#| msgid "Fold Code\""
 msgid "Fold Code"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
-#, fuzzy
-#| msgid "Nodes,One,All,\"At Caret\",\"Current Node\"\""
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
-#, fuzzy
-#| msgid "Fold Menu\""
 msgid "Fold Menu"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emccodefoldexpand
-#, fuzzy
-#| msgid "Unfold Code\""
 msgid "Unfold Code"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emccodefoldexpand_opt
-#, fuzzy
-#| msgid "Nodes,One,All\""
 msgid "Nodes,One,All"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emccontextmenu
-#, fuzzy
-#| msgid "Popup Menu\""
 msgid "Popup Menu"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
-#, fuzzy
-#| msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always\""
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcmouselink
-#, fuzzy
-#| msgid "Source Link\""
 msgid "Source Link"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcmouselink_opt
-#, fuzzy
-#| msgid "Underline,yes, no\""
 msgid "Underline,yes, no"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcnone
-#, fuzzy
-#| msgid "No Action\""
 msgid "No Action"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcpasteselection
-#, fuzzy
-#| msgid "Quick Paste Selection\""
 msgid "Quick Paste Selection"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcselection_opt
-#, fuzzy
-#| msgid "Mode,Begin,Continue\""
 msgid "Mode,Begin,Continue"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcselectline
-#, fuzzy
-#| msgid "Select Line\""
 msgid "Select Line"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcselectline_opt
-#, fuzzy
-#| msgid "\"Include spaces\",no,yes\""
 msgid "\"Include spaces\",no,yes"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcselectpara
-#, fuzzy
-#| msgid "Select Paragraph\""
 msgid "Select Paragraph"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcselectword
-#, fuzzy
-#| msgid "Select Word\""
 msgid "Select Word"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcstartcolumnselections
-#, fuzzy
-#| msgid "Column Selection\""
 msgid "Column Selection"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcstartdragmove
-#, fuzzy
-#| msgid "Drag Selection\""
 msgid "Drag Selection"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcstartlineselections
-#, fuzzy
-#| msgid "Line Selection\""
 msgid "Line Selection"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcstartselection
-#, fuzzy
-#| msgid "Selection\""
 msgid "Selection"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcsyneditcommand
-#, fuzzy
-#| msgid "IDE Command\""
 msgid "IDE Command"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelhorizscrolldown
-#, fuzzy
-#| msgid "Wheel scroll down (Horizontal)\""
 msgid "Wheel scroll down (Horizontal)"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelhorizscrollup
-#, fuzzy
-#| msgid "Wheel scroll up (Horizontal)\""
 msgid "Wheel scroll up (Horizontal)"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelscrolldown
-#, fuzzy
-#| msgid "Wheel scroll down\""
 msgid "Wheel scroll down"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelscrollup
-#, fuzzy
-#| msgid "Wheel scroll up\""
 msgid "Wheel scroll up"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelscroll_opt
-#, fuzzy
-#| msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\"\""
 msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
-#, fuzzy
-#| msgid "Wheel scroll down (Vertical)\""
 msgid "Wheel scroll down (Vertical)"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelvertscrollup
-#, fuzzy
-#| msgid "Wheel scroll up (Vertical)\""
 msgid "Wheel scroll up (Vertical)"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelzoomin
-#, fuzzy
-#| msgid "Wheel zoom in\""
 msgid "Wheel zoom in"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelzoomnorm
-#, fuzzy
-#| msgid "Wheel zoom default\""
 msgid "Wheel zoom default"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_emcwheelzoomout
-#, fuzzy
-#| msgid "Wheel zoom out\""
 msgid "Wheel zoom out"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_exporterformathtml
-#, fuzzy
-#| msgid "HTML\""
 msgid "HTML"
-msgstr "HTML\""
+msgstr "HTML"
 
 #: syneditstrconst.syns_exporterformatrtf
-#, fuzzy
-#| msgid "RTF\""
 msgid "RTF"
-msgstr "RTF\""
+msgstr "RTF"
 
 #: syneditstrconst.syns_filteradsp21xx
-#, fuzzy
-#| msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC\""
 msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
-msgstr "DSP bestanden (*.dsp,*.inc)|*.DSP;*.INC\""
+msgstr "DSP bestanden (*.dsp,*.inc)|*.DSP;*.INC"
 
 #: syneditstrconst.syns_filterasm68hc11
-#, fuzzy
-#| msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC\""
 msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-msgstr "68HC11 Assembler bestanden (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC\""
+msgstr "68HC11 Assembler bestanden (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
 
 #: syneditstrconst.syns_filterawk
-#, fuzzy
-#| msgid "AWK Script (*.awk)|*.awk\""
 msgid "AWK Script (*.awk)|*.awk"
-msgstr "AWK Script (*.awk)|*.awk\""
+msgstr "AWK Script (*.awk)|*.awk"
 
 #: syneditstrconst.syns_filterbaan
-#, fuzzy
-#| msgid "Baan 4GL Files (*.cln)|*.cln\""
 msgid "Baan 4GL Files (*.cln)|*.cln"
-msgstr "Baan 4GL bestanden (*.cln)|*.cln\""
+msgstr "Baan 4GL bestanden (*.cln)|*.cln"
 
 #: syneditstrconst.syns_filterbatch
-#, fuzzy
-#| msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd\""
 msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
-msgstr "MS-DOS Batch bestanden (*.bat;*.cmd)|*.bat;*.cmd\""
+msgstr "MS-DOS Batch bestanden (*.bat;*.cmd)|*.bat;*.cmd"
 
 #: syneditstrconst.syns_filtercache
-#, fuzzy
-#| msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int\""
 msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
-msgstr "Cache bestanden (*.mac,*.inc,*.int)|*.mac;*.inc;*.int\""
+msgstr "Cache bestanden (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
 
 #: syneditstrconst.syns_filtercaclipper
-#, fuzzy
-#| msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc\""
 msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
-msgstr "CA-Clipper bestanden (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc\""
+msgstr "CA-Clipper bestanden (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
 
 #: syneditstrconst.syns_filtercorbaidl
-#, fuzzy
-#| msgid "CORBA IDL files (*.idl)|*.idl\""
 msgid "CORBA IDL files (*.idl)|*.idl"
-msgstr "CORBA IDL bestanden (*.idl)|*.idl\""
+msgstr "CORBA IDL bestanden (*.idl)|*.idl"
 
 #: syneditstrconst.syns_filtercpm
-#, fuzzy
-#| msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf\""
 msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
-msgstr "CPM rapporten (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf\""
+msgstr "CPM rapporten (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
 
 #: syneditstrconst.syns_filtercpp
-#, fuzzy
-#| msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh\""
 msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
-msgstr "C++ bestanden (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh\""
+msgstr "C++ bestanden (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
 
 #: syneditstrconst.syns_filtercss
-#, fuzzy
-#| msgid "Cascading Stylesheets (*.css)|*.css\""
 msgid "Cascading Stylesheets (*.css)|*.css"
-msgstr "Cascading Stylesheets (*.css)|*.css\""
+msgstr "Cascading Stylesheets (*.css)|*.css"
 
 #: syneditstrconst.syns_filterdfm
-#, fuzzy
-#| msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm\""
 msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm"
-msgstr "Borland formulier bestanden (*.dfm;*.xfm)|*.dfm;*.xfm\""
+msgstr "Borland formulier bestanden (*.dfm;*.xfm)|*.dfm;*.xfm"
 
 #: syneditstrconst.syns_filterfortran
-#, fuzzy
-#| msgid "Fortran Files (*.for)|*.for\""
 msgid "Fortran Files (*.for)|*.for"
-msgstr "Fortran bestanden (*.for)|*.for\""
+msgstr "Fortran bestanden (*.for)|*.for"
 
 #: syneditstrconst.syns_filterfoxpro
-#, fuzzy
-#| msgid "Foxpro Files (*.prg)|*.prg\""
 msgid "Foxpro Files (*.prg)|*.prg"
-msgstr "Foxpro bestanden (*.prg)|*.prg\""
+msgstr "Foxpro bestanden (*.prg)|*.prg"
 
 #: syneditstrconst.syns_filtergalaxy
-#, fuzzy
-#| msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt\""
 msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
-msgstr "Galaxy bestanden (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt\""
+msgstr "Galaxy bestanden (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
 
 #: syneditstrconst.syns_filtergembase
-#, fuzzy
-#| msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM\""
 msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
-msgstr "GEMBASE bestanden (*.dml,*.gem)|*.DML;*.GEM\""
+msgstr "GEMBASE bestanden (*.dml,*.gem)|*.DML;*.GEM"
 
 #: syneditstrconst.syns_filtergws
-#, fuzzy
-#| msgid "GW-TEL Script Files (*.gws)|*.gws\""
 msgid "GW-TEL Script Files (*.gws)|*.gws"
-msgstr "GW-TEL Script bestanden (*.gws)|*.gws\""
+msgstr "GW-TEL Script bestanden (*.gws)|*.gws"
 
 #: syneditstrconst.syns_filterhp48
-#, fuzzy
-#| msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp\""
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
-msgstr "HP48 bestanden (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp\""
+msgstr "HP48 bestanden (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
 
 #: syneditstrconst.syns_filterhtml
-#, fuzzy
-#| msgid "HTML Document (*.htm,*.html)|*.htm;*.html\""
 msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
-msgstr "HTML Document (*.htm,*.html)|*.htm;*.html\""
+msgstr "HTML Document (*.htm,*.html)|*.htm;*.html"
 
 #: syneditstrconst.syns_filterini
-#, fuzzy
-#| msgid "INI Files (*.ini)|*.ini\""
 msgid "INI Files (*.ini)|*.ini"
-msgstr "INI bestanden (*.ini)|*.ini\""
+msgstr "INI bestanden (*.ini)|*.ini"
 
 #: syneditstrconst.syns_filterinno
-#, fuzzy
-#| msgid "Inno Setup Script Files (*.iss)|*.iss\""
 msgid "Inno Setup Script Files (*.iss)|*.iss"
-msgstr "Inno Setup Script bestanden (*.iss)|*.iss\""
+msgstr "Inno Setup Script bestanden (*.iss)|*.iss"
 
 #: syneditstrconst.syns_filterjava
-#, fuzzy
-#| msgid "Java Files (*.java)|*.java\""
 msgid "Java Files (*.java)|*.java"
-msgstr "Java bestanden (*.java)|*.java\""
+msgstr "Java bestanden (*.java)|*.java"
 
 #: syneditstrconst.syns_filterjscript
-#, fuzzy
-#| msgid "Javascript Files (*.js)|*.js\""
 msgid "Javascript Files (*.js)|*.js"
-msgstr "Javascript bestanden (*.js)|*.js\""
+msgstr "Javascript bestanden (*.js)|*.js"
 
 #: syneditstrconst.syns_filterkix
-#, fuzzy
-#| msgid "KiXtart scripts (*.kix)|*.kix\""
 msgid "KiXtart scripts (*.kix)|*.kix"
-msgstr "KiXtart scripts (*.kix)|*.kix\""
+msgstr "KiXtart scripts (*.kix)|*.kix"
 
 #: syneditstrconst.syns_filterlfm
-#, fuzzy
-#| msgid "Lazarus Form Files (*.lfm)|*.lfm\""
 msgid "Lazarus Form Files (*.lfm)|*.lfm"
-msgstr "Lazarus formulier bestanden (*.lfm)|*.lfm\""
+msgstr "Lazarus formulier bestanden (*.lfm)|*.lfm"
 
 #: syneditstrconst.syns_filtermodelica
-#, fuzzy
-#| msgid "Modelica Files (*.mo)|*.mo\""
 msgid "Modelica Files (*.mo)|*.mo"
-msgstr "Modelica bestanden (*.mo)|*.mo\""
+msgstr "Modelica bestanden (*.mo)|*.mo"
 
 #: syneditstrconst.syns_filtermodula3
-#, fuzzy
-#| msgid "Modula-3 Files (*.m3)|*.m3\""
 msgid "Modula-3 Files (*.m3)|*.m3"
-msgstr "Modula-3 bestanden (*.m3)|*.m3\""
+msgstr "Modula-3 bestanden (*.m3)|*.m3"
 
 #: syneditstrconst.syns_filterpascal
-#, fuzzy
-#| msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc\""
 msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
-msgstr "Pascal bestanden (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc\""
+msgstr "Pascal bestanden (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
 
 #: syneditstrconst.syns_filterperl
-#, fuzzy
-#| msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi\""
 msgid "Perl Files (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
-msgstr "Perl bestanden (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi\""
+msgstr "Perl bestanden (*.pl,*.pm,*.cgi)|*.pl;*.pm;*.cgi"
 
 #: syneditstrconst.syns_filterphp
-#, fuzzy
-#| msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc\""
 msgid "PHP Files (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
-msgstr "PHP bestanden (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc\""
+msgstr "PHP bestanden (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
 
 #: syneditstrconst.syns_filterpo
 msgid "Po Files (*.po)|*.po"
 msgstr ""
 
 #: syneditstrconst.syns_filterprogress
-#, fuzzy
-#| msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i\""
 msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
-msgstr "Progress bestanden (*.w,*.p,*.i)|*.w;*.p;*.i\""
+msgstr "Progress bestanden (*.w,*.p,*.i)|*.w;*.p;*.i"
 
 #: syneditstrconst.syns_filterpython
-#, fuzzy
-#| msgid "Python Files (*.py)|*.py\""
 msgid "Python Files (*.py)|*.py"
-msgstr "Python bestanden (*.py)|*.py\""
+msgstr "Python bestanden (*.py)|*.py"
 
 #: syneditstrconst.syns_filterrtf
-#, fuzzy
-#| msgid "Rich Text Format (*.rtf)|*.rtf\""
 msgid "Rich Text Format (*.rtf)|*.rtf"
-msgstr "Rich Text Format (*.rtf)|*.rtf\""
+msgstr "Rich Text Format (*.rtf)|*.rtf"
 
 #: syneditstrconst.syns_filtersdd
-#, fuzzy
-#| msgid "Semanta DD files (*.sdd)|*.sdd\""
 msgid "Semanta DD files (*.sdd)|*.sdd"
-msgstr "Semanta DD bestanden (*.sdd)|*.sdd\""
+msgstr "Semanta DD bestanden (*.sdd)|*.sdd"
 
 #: syneditstrconst.syns_filtersml
-#, fuzzy
-#| msgid "Standard ML Files (*.sml)|*.sml\""
 msgid "Standard ML Files (*.sml)|*.sml"
-msgstr "Standard ML bestanden (*.sml)|*.sml\""
+msgstr "Standard ML bestanden (*.sml)|*.sml"
 
 #: syneditstrconst.syns_filtersql
-#, fuzzy
-#| msgid "SQL Files (*.sql)|*.sql\""
 msgid "SQL Files (*.sql)|*.sql"
-msgstr "SQL bestanden (*.sql)|*.sql\""
+msgstr "SQL bestanden (*.sql)|*.sql"
 
 #: syneditstrconst.syns_filtersyngenmsgfiles
-#, fuzzy
-#| msgid "Msg files (*.msg)|*.msg\""
 msgid "Msg files (*.msg)|*.msg"
-msgstr "Msg bestanden (*.msg)|*.msg\""
+msgstr "Msg bestanden (*.msg)|*.msg"
 
 #: syneditstrconst.syns_filtertcltk
-#, fuzzy
-#| msgid "Tcl/Tk Files (*.tcl)|*.tcl\""
 msgid "Tcl/Tk Files (*.tcl)|*.tcl"
-msgstr "Tcl/Tk bestanden (*.tcl)|*.tcl\""
+msgstr "Tcl/Tk bestanden (*.tcl)|*.tcl"
 
 #: syneditstrconst.syns_filtertex
-#, fuzzy
-#| msgid "TeX Files (*.tex)|*.tex\""
 msgid "TeX Files (*.tex)|*.tex"
-msgstr "TeX bestanden (*.tex)|*.tex\""
+msgstr "TeX bestanden (*.tex)|*.tex"
 
 #: syneditstrconst.syns_filterunixshellscript
-#, fuzzy
-#| msgid "UNIX Shell Scripts (*.sh)|*.sh\""
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
-msgstr "UNIX Shell Scripts (*.sh)|*.sh\""
+msgstr "UNIX Shell Scripts (*.sh)|*.sh"
 
 #: syneditstrconst.syns_filtervbscript
-#, fuzzy
-#| msgid "VBScript Files (*.vbs)|*.vbs\""
 msgid "VBScript Files (*.vbs)|*.vbs"
-msgstr "VBScript bestanden (*.vbs)|*.vbs\""
+msgstr "VBScript bestanden (*.vbs)|*.vbs"
 
 #: syneditstrconst.syns_filtervisualbasic
-#, fuzzy
-#| msgid "Visual Basic Files (*.bas)|*.bas\""
 msgid "Visual Basic Files (*.bas)|*.bas"
-msgstr "Visual Basic bestanden (*.bas)|*.bas\""
+msgstr "Visual Basic bestanden (*.bas)|*.bas"
 
 #: syneditstrconst.syns_filterx86asm
-#, fuzzy
-#| msgid "x86 Assembly Files (*.asm)|*.ASM\""
 msgid "x86 Assembly Files (*.asm)|*.ASM"
-msgstr "x86 Assembly bestanden (*.asm)|*.ASM\""
+msgstr "x86 Assembly bestanden (*.asm)|*.ASM"
 
 #: syneditstrconst.syns_filterxml
-#, fuzzy
-#| msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd\""
 msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
-msgstr "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd\""
+msgstr "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 
 #: syneditstrconst.syns_previewscrollinfofmt
-#, fuzzy
-#| msgid "Page: %d\""
 msgid "Page: %d"
-msgstr "Pagina: %d\""
+msgstr "Pagina: %d"
 
 #: syneditstrconst.syns_scrollinfofmt
-#, fuzzy
-#| msgid "%d - %d\""
 msgid "%d - %d"
-msgstr "%d - %d\""
+msgstr "%d - %d"
 
 #: syneditstrconst.syns_scrollinfofmttop
-#, fuzzy
-#| msgid "Top Line: %d\""
 msgid "Top Line: %d"
-msgstr "\""
+msgstr ""
 
 #: syneditstrconst.syns_shortcutnone
-#, fuzzy
-#| msgid "<none>\""
 msgid "<none>"
-msgstr "<geen>\""
+msgstr "<geen>"
 
 #: syneditstrconst.syns_untitled
-#, fuzzy
-#| msgid "Untitled\""
 msgid "Untitled"
-msgstr "\""
+msgstr ""
 

@@ -12398,6 +12398,10 @@ msgstr "Buka paket %s?"
 msgid "Open the project %s?"
 msgstr "Buka proyek %s?"
 
+#: lazarusidestrconsts.lisopenxml
+msgid "Open XML"
+msgstr ""
+
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr ""

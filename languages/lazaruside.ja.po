@@ -12582,6 +12582,10 @@ msgstr "パッケージ %s を開きますか？"
 msgid "Open the project %s?"
 msgstr "プロジェクト %s を開きますか？"
 
+#: lazarusidestrconsts.lisopenxml
+msgid "Open XML"
+msgstr ""
+
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr ""

@@ -12312,6 +12312,10 @@ msgstr "Obrir el paquet %s?"
 msgid "Open the project %s?"
 msgstr "Obrir el projecte %s?"
 
+#: lazarusidestrconsts.lisopenxml
+msgid "Open XML"
+msgstr ""
+
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr ""

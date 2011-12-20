@@ -1,6 +1,6 @@
-msgid "\""
+msgid ""
 msgstr ""
-"\"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
@@ -10,44 +10,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: syndesignstringconstants.syndsbookmarks
-#, fuzzy
-#| msgid "Bookmarks\""
 msgid "Bookmarks"
-msgstr "Marcadores\""
+msgstr "Marcadores"
 
 #: syndesignstringconstants.syndschangemarker
-#, fuzzy
-#| msgid "Change Marker\""
 msgid "Change Marker"
-msgstr "Alterar Marca\""
+msgstr "Alterar Marca"
 
 #: syndesignstringconstants.syndscodefolding
-#, fuzzy
-#| msgid "Code Folding\""
 msgid "Code Folding"
-msgstr "Retração Código\""
+msgstr "Retração Código"
 
 #: syndesignstringconstants.syndslinenumbers
-#, fuzzy
-#| msgid "Line Numbers\""
 msgid "Line Numbers"
-msgstr "Números de Linha\""
+msgstr "Números de Linha"
 
 #: syndesignstringconstants.syndslineoverview
-#, fuzzy
-#| msgid "Line Overview\""
 msgid "Line Overview"
-msgstr "Resumo Linha\""
+msgstr "Resumo Linha"
 
 #: syndesignstringconstants.syndsresetmouseactions
-#, fuzzy
-#| msgid "Reset mouse actions\""
 msgid "Reset mouse actions"
-msgstr "\""
+msgstr ""
 
 #: syndesignstringconstants.syndsseparator
-#, fuzzy
-#| msgid "Separator\""
 msgid "Separator"
-msgstr "Separador\""
+msgstr "Separador"
 

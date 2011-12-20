@@ -1,6 +1,6 @@
-msgid "\""
+msgid ""
 msgstr ""
-"\"Project-Id-Version: \n"
+"Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: shulamy <shulamy@regba.org.il>\n"
@@ -10,44 +10,32 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: syndesignstringconstants.syndsbookmarks
-#, fuzzy
-#| msgid "Bookmarks\""
 msgid "Bookmarks"
-msgstr "סימניות\""
+msgstr "סימניות"
 
 #: syndesignstringconstants.syndschangemarker
-#, fuzzy
-#| msgid "Change Marker\""
 msgid "Change Marker"
-msgstr "שנה את הסמן\""
+msgstr "שנה את הסמן"
 
 #: syndesignstringconstants.syndscodefolding
 #, fuzzy
-#| msgid "Code Folding\""
+#| msgid "Code fFolding"
 msgid "Code Folding"
-msgstr "קיפול קוד\""
+msgstr "קיפול קוד"
 
 #: syndesignstringconstants.syndslinenumbers
-#, fuzzy
-#| msgid "Line Numbers\""
 msgid "Line Numbers"
-msgstr "מספרי שורות\""
+msgstr "מספרי שורות"
 
 #: syndesignstringconstants.syndslineoverview
-#, fuzzy
-#| msgid "Line Overview\""
 msgid "Line Overview"
-msgstr "סקירה של כל השורה\""
+msgstr "סקירה של כל השורה"
 
 #: syndesignstringconstants.syndsresetmouseactions
-#, fuzzy
-#| msgid "Reset mouse actions\""
 msgid "Reset mouse actions"
-msgstr "\""
+msgstr ""
 
 #: syndesignstringconstants.syndsseparator
-#, fuzzy
-#| msgid "Separator\""
 msgid "Separator"
-msgstr "מפריד\""
+msgstr "מפריד"
 

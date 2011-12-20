@@ -1,45 +1,31 @@
-msgid "\""
-msgstr "Content-Type: text/plain; charset=UTF-8\""
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: syndesignstringconstants.syndsbookmarks
-#, fuzzy
-#| msgid "Bookmarks\""
 msgid "Bookmarks"
-msgstr "\""
+msgstr ""
 
 #: syndesignstringconstants.syndschangemarker
-#, fuzzy
-#| msgid "Change Marker\""
 msgid "Change Marker"
-msgstr "\""
+msgstr ""
 
 #: syndesignstringconstants.syndscodefolding
-#, fuzzy
-#| msgid "Code Folding\""
 msgid "Code Folding"
-msgstr "\""
+msgstr ""
 
 #: syndesignstringconstants.syndslinenumbers
-#, fuzzy
-#| msgid "Line Numbers\""
 msgid "Line Numbers"
-msgstr "\""
+msgstr ""
 
 #: syndesignstringconstants.syndslineoverview
-#, fuzzy
-#| msgid "Line Overview\""
 msgid "Line Overview"
-msgstr "\""
+msgstr ""
 
 #: syndesignstringconstants.syndsresetmouseactions
-#, fuzzy
-#| msgid "Reset mouse actions\""
 msgid "Reset mouse actions"
-msgstr "\""
+msgstr ""
 
 #: syndesignstringconstants.syndsseparator
-#, fuzzy
-#| msgid "Separator\""
 msgid "Separator"
-msgstr "\""
+msgstr ""
 

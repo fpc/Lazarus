@@ -11850,6 +11850,10 @@ msgstr "Avaa paketti %s?"
 msgid "Open the project %s?"
 msgstr "Avataanko projekti %s?"
 
+#: lazarusidestrconsts.lisopenxml
+msgid "Open XML"
+msgstr ""
+
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "Asetukset muuttuivat, käännetään kaikki option -B kanssa"

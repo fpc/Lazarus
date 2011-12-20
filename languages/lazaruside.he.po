@@ -12548,6 +12548,10 @@ msgstr "האם לפתוח את החבילה %s?"
 msgid "Open the project %s?"
 msgstr "האם לפתוח את הפרויקט %s?"
 
+#: lazarusidestrconsts.lisopenxml
+msgid "Open XML"
+msgstr ""
+
 #: lazarusidestrconsts.lisoptionschangedrecompilingcleanwithb
 msgid "Options changed, recompiling clean with -B"
 msgstr "אפשרויות השתנו, הדר (נקי) מחדש עם הפרמטר  -B"
