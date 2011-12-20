@@ -5562,7 +5562,7 @@ begin
       Result:=mrCancel;
       exit;
     end;
-    if not IsDottedIdentifier(NewUnitName) then begin
+    if not IsValidUnitName(NewUnitName) then begin
       AlternativeUnitName:=NameToValidIdentifier(NewUnitName);
       Result:=IDEMessageDialogAb(lisInvalidPascalIdentifierCap,
         Format(lisInvalidPascalIdentifierText,[NewUnitName,AlternativeUnitName]),
@@ -8179,7 +8179,7 @@ begin
 
         // check program name
         NewProgramName:=ExtractFileNameOnly(AFilename);
-        if (NewProgramName='') or (not IsDottedIdentifier(NewProgramName)) then begin
+        if (NewProgramName='') or (not IsValidUnitName(NewProgramName)) then begin
           Result:=MessageDlg(lisInvalidProjectFilename,
             Format(lisisAnInvalidProjectNamePleaseChooseAnotherEGProject, ['"',
               SaveDialog.Filename, '"', #13]),

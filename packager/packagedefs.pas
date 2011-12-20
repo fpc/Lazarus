@@ -45,9 +45,9 @@ interface
 
 uses
   Classes, SysUtils, contnrs, typinfo, LCLProc, LCLType, LResources, Graphics,
-  Forms, FileProcs, FileUtil, AVL_Tree, LazConfigStorage,
-  CodeToolsCfgScript, DefineTemplates, CodeToolManager, Laz_XMLCfg, CodeCache,
-  CodeToolsStructs,
+  Forms, FileProcs, FileUtil, AVL_Tree, LazConfigStorage, Laz_XMLCfg,
+  BasicCodeTools, CodeToolsCfgScript, DefineTemplates, CodeToolManager,
+  CodeCache, CodeToolsStructs,
   PropEdits, LazIDEIntf, MacroIntf, PackageIntf, IDEOptionsIntf,
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, 
   LazarusIDEStrConsts, IDEProcs, ComponentReg,
@@ -926,7 +926,7 @@ procedure PkgVersionSaveToXMLConfig(Version: TPkgVersion; XMLConfig: TXMLConfig;
 procedure PkgVersionLoadFromXMLConfig(Version: TPkgVersion;
   XMLConfig: TXMLConfig);
 
-function IsValidUnitName(AUnitName: String): Boolean;
+function IsValidUnitName(AUnitName: String): Boolean; inline;
 
 var
   Package1: TLazPackage; // don't use it - only for options dialog
@@ -937,24 +937,8 @@ implementation
 
 
 function IsValidUnitName(AUnitName: String): Boolean;
-var
-  P: Integer;
-  UnitPart: String;
 begin
-  Result := True;
-  repeat
-    P := Pos('.', AUnitName);
-    if P > 0 then
-    begin
-      UnitPart := Copy(AUnitName, 1, P - 1);
-      Delete(AUnitName, 1, P);
-      Result := Result and IsValidIdent(UnitPart);
-    end
-    else
-      Result := IsValidIdent(AUnitName);
-    if not Result then
-      Break;
-  until P = 0;
+  Result := IsDottedIdentifier(AUnitName);
 end;
 
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
