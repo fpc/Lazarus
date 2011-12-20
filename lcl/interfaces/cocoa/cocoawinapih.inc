@@ -103,8 +103,8 @@ function GetDC(hWnd: HWND): HDC; override;
 {function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
 function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
-function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
-function GetFocus: HWND; override;}
+function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;}
+function GetFocus: HWND; override;
 function GetForegroundWindow: HWND; override;
 {function GetKeyState(nVirtKey: Integer): Smallint; override;}
 function GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; override;
@@ -172,7 +172,7 @@ function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;}
 function SetCursor(ACursor: HCURSOR): HCURSOR; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
-{function SetFocus(hWnd: HWND): HWND; override;}
+function SetFocus(Handle: HWND): HWND; override;
 function SetForegroundWindow(HWnd: HWND): boolean; override;
 function SetProp(Handle: hwnd; Str: PChar; Data: Pointer) : Boolean; override;
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;

@@ -1056,6 +1056,19 @@ begin
   {$ENDIF}
 end;
 
+function TCocoaWidgetSet.GetFocus: HWND;
+var
+  Obj: NSObject;
+begin
+  Result := HWND(NSApp.keyWindow);
+  if Result <> 0 then
+  begin
+    Obj := NSWindow(Result).firstResponder;
+    if Assigned(Obj) and Obj.isKindOfClass(NSView) then
+      Result := HWND(Obj);
+  end;
+end;
+
 function TCocoaWidgetSet.GetForegroundWindow: HWND;
 //var
 //  App: NSRunningApplication;
@@ -1234,6 +1247,29 @@ begin
   CursorPos.Y := Y;
   if CGWarpMouseCursorPosition(CursorPos) <> noErr then Exit;
   Result := True;
+end;
+
+function TCocoaWidgetSet.SetFocus(Handle: HWND): HWND;
+var
+  Obj: NSObject;
+begin
+  if Handle <> 0 then
+  begin
+    if Result = Handle then
+      Exit;
+    Obj := NSObject(Handle);
+    if Obj.isKindOfClass(NSWindow) then
+    begin
+      NSWindow(Obj).makeKeyWindow;
+      NSWindow(Obj).makeFirstResponder(nil);
+    end
+    else
+    if Obj.isKindOfClass(NSView) then
+    begin
+      NSView(Obj).window.makeKeyWindow;
+      NSView(Obj).window.makeFirstResponder(NSView(Obj));
+    end;
+  end;
 end;
 
 function TCocoaWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
