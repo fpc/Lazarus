@@ -1191,6 +1191,41 @@ begin
   {$ENDIF}
 end;
 
+function TCocoaWidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  if not Assigned(ctx) then
+    Exit(0);
+
+  // todo: change implementation for printers
+  case Index of
+    HORZSIZE:
+      Result := Round(NSScreen.mainScreen.frame.size.width / 72 * 25.4);
+    VERTSIZE:
+      Result := Round(NSScreen.mainScreen.frame.size.height / 72 * 25.4);
+    HORZRES:
+      Result := Round(NSScreen.mainScreen.frame.size.width);
+    BITSPIXEL:
+      Result := CGDisplayBitsPerPixel(CGMainDisplayID);
+    PLANES:
+      Result := 1;
+    SIZEPALETTE:
+      Result := 0;
+    LOGPIXELSX:
+      Result := 72;
+    LOGPIXELSY:
+      Result := 72;
+    VERTRES:
+      Result := Round(NSScreen.mainScreen.frame.size.height);
+    NUMRESERVED:
+      Result := 0;
+  else
+    DebugLn('TCocoaWidgetSet.GetDeviceCaps TODO Index: ' + DbgS(Index));
+  end;
+end;
+
 function TCocoaWidgetSet.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
 var
   ctx: TCocoaContext;
