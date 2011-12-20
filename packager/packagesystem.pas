@@ -3941,7 +3941,7 @@ begin
   end;
 
   PkgOutputDirectory:=AppendPathDelim(APackage.GetOutputDirectory);
-  if not ConvertRSTFiles(PkgOutputDirectory,POOutputDirectory, APackage.Name+'.po') then begin
+  if not ConvertRSTFiles(PkgOutputDirectory,POOutputDirectory) then begin
     DebugLn(['TLazPackageGraph.ConvertPackageRSTFiles FAILED: PkgOutputDirectory=',PkgOutputDirectory,' RSTOutputDirectory=',POOutputDirectory]);
     exit(mrCancel);
   end;

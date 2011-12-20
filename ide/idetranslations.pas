@@ -73,7 +73,9 @@ function GetLazarusLanguageLocalizedName(const ID: string): String;
 // collect all available translations
 procedure CollectTranslations(const LazarusDir: string);
 
-function ConvertRSTFiles(RSTDirectory, PODirectory, POFilename: string): Boolean;
+function ConvertRSTFiles(RSTDirectory, PODirectory: string;
+  POFilename: string = '' // set POFilename to gather all rst into one po file
+  ): Boolean;
 
 var
   LazarusTranslations: TLazarusTranslations = nil;
@@ -170,8 +172,8 @@ begin
   FindCloseUTF8(FileInfo);
 end;
 
-{.$define SinglePOFile}
-function ConvertRSTFiles(RSTDirectory, PODirectory, POFilename: string): Boolean;
+function ConvertRSTFiles(RSTDirectory, PODirectory: string;
+  POFilename: string): Boolean;
 var
   FileInfo: TSearchRec;
   RSTFilename: String;
@@ -206,10 +208,8 @@ begin
   // TODO: lrt files...
   FileList := nil;
   PODirectory:=AppendPathDelim(PODirectory);
-  {$ifdef SinglePOFile}
   OutputFilename:=PODirectory+POFilename;
-  {$endif}
-  
+
   if FindFirstUTF8(RSTDirectory+'*.rst',faAnyFile,FileInfo)=0
   then
   try
@@ -221,34 +221,32 @@ begin
 
       RSTFilename:=RSTDirectory+FileInfo.Name;
 
-      {$ifndef SinglePOFile}
-      OutputFilename:=PODirectory+ChangeFileExt(FileInfo.Name,'.po');
-      FileList.Clear;
-      {$endif}
+      if POFilename='' then begin
+        OutputFilename:=PODirectory+ChangeFileExt(FileInfo.Name,'.po');
+        FileList.Clear;
+      end;
 
       //DebugLn(['ConvertPackageRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
       if (not FileExistsUTF8(OutputFilename))
       or (FileAgeCached(RSTFilename)>FileAgeCached(OutputFilename)) then
       begin
         FileList.Add(RSTFilename);
-        {$ifndef SinglePOFile}
-        UpdateList;
-        if not result then
-          exit;
-        {$endif}
+        if POFilename='' then begin
+          UpdateList;
+          if not Result then
+            exit;
+        end;
       end;
     until FindNextUTF8(FileInfo)<>0;
     
-    {$ifdef SinglePOFile}
-    UpdateList;
-    {$endif}
-    
+    if POFilename<>'' then
+      UpdateList;
+
   finally
     if FileList<>nil then
       FileList.Free;
     FindCloseUTF8(FileInfo);
   end;
-
 end;
 
 {-------------------------------------------------------------------------------
