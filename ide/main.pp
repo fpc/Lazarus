@@ -4286,7 +4286,7 @@ end;
 
 function TMainIDE.UpdateProjectPOFile(AProject: TProject): TModalResult;
 var
-  Files: TStringList;
+  Files: TFilenameToPointerTree;
   POFilename: String;
   AnUnitInfo: TUnitInfo;
   CurFilename: String;
@@ -4296,6 +4296,7 @@ var
   LRTFilename: String;
   UnitOutputDir: String;
   RSTFilename: String;
+  FileList: TStringList;
 begin
   Result:=mrCancel;
   if (not AProject.EnableI18N) or AProject.IsVirtual then exit(mrOk);
@@ -4321,7 +4322,6 @@ begin
     end;
   end;
 
-
   POFileAgeValid:=false;
   if FileExistsCached(POFilename) then begin
     POFileAge:=FileAgeCached(POFilename);
@@ -4330,39 +4330,42 @@ begin
 
   //DebugLn(['TMainIDE.UpdateProjectPOFile Updating POFilename="',POFilename,'"']);
 
-  Files := TStringList.Create;
+  Files := TFilenameToPointerTree.Create(false);
+  FileList:=TStringList.Create;
   try
     AnUnitInfo:=AProject.FirstPartOfProject;
     while AnUnitInfo<>nil do begin
       CurFilename:=AnUnitInfo.Filename;
-      if (not AnUnitInfo.IsVirtual) and FilenameIsPascalSource(CurFilename) then
-      begin
-        // check .lrt file
-        LRTFilename:=ChangeFileExt(CurFilename,'.lrt');
-        if FileExistsCached(LRTFilename)
-        and ((not POFileAgeValid) or (FileAgeCached(LRTFilename)>POFileAge)) then
-          Files.Add(LRTFilename);
-        // check .rst file
-        RSTFilename:=ChangeFileExt(CurFilename,'.rst');
-
-        // the compiler puts the .rst in the unit output directory if -FU is given
-        if AProject.CompilerOptions.UnitOutputDirectory<>'' then
-        begin
-          UnitOutputDir:=AProject.GetOutputDirectory;
-          if UnitOutputDir<>'' then
-            RSTFilename:=TrimFilename(AppendPathDelim(UnitOutputDir)+ExtractFilename(RSTFilename));
-        end;
-        //DebugLn(['TMainIDE.UpdateProjectPOFile Looking for .rst file ="',RSTFilename,'"']);
-
-        if FileExistsCached(RSTFilename)
-        and ((not POFileAgeValid) or (FileAgeCached(RSTFilename)>POFileAge)) then
-          Files.Add(RSTFilename);
-      end;
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+      if not FilenameIsAbsolute(CurFilename) then continue;
+      if (AProject.MainFilename<>CurFilename)
+      and (not FilenameIsPascalSource(CurFilename)) then
+        continue;
+      // check .lrt file
+      LRTFilename:=ChangeFileExt(CurFilename,'.lrt');
+      if FileExistsCached(LRTFilename)
+      and ((not POFileAgeValid) or (FileAgeCached(LRTFilename)>POFileAge)) then
+        Files[LRTFilename]:=nil;
+      // check .rst file
+      RSTFilename:=ChangeFileExt(CurFilename,'.rst');
+      // the compiler puts the .rst in the unit output directory if -FU is given
+      if AProject.CompilerOptions.UnitOutputDirectory<>'' then
+      begin
+        UnitOutputDir:=AProject.GetOutputDirectory;
+        if UnitOutputDir<>'' then
+          RSTFilename:=TrimFilename(AppendPathDelim(UnitOutputDir)+ExtractFilename(RSTFilename));
+      end;
+      //DebugLn(['TMainIDE.UpdateProjectPOFile Looking for .rst file ="',RSTFilename,'"']);
+      if FileExistsCached(RSTFilename)
+      and ((not POFileAgeValid) or (FileAgeCached(RSTFilename)>POFileAge)) then
+        Files[RSTFilename]:=nil;
     end;
 
+    // update po files
+    if Files.Tree.Count=0 then exit(mrOk);
+    Files.GetNames(FileList);
     try
-      UpdatePoFile(Files, POFilename);
+      UpdatePoFile(FileList, POFilename);
       Result := mrOk;
     except
       on E:EPOFileError do begin
@@ -4371,9 +4374,9 @@ begin
           E.Message]), mtError, [mbOk]);
       end;
     end;
-
   finally
-    Files.Destroy;
+    FileList.Free;
+    Files.Free;
   end;
 end;
 
