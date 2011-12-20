@@ -214,6 +214,9 @@ var
   SVNLogItem: TSVNLogItem;
   i: integer;
 begin
+  if not Selected then
+    exit; // this event always fires twice, once for select and once for unselect
+
   RevNo := StrToInt(Item.Caption);
 
   SVNLogItem := FindSVNLogItemByRevision(LogList, RevNo);
