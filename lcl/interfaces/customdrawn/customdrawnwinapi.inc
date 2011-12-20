@@ -323,26 +323,28 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI CreateCompatibleBitmap] Bitmap:', dbghex(Result));
   {$endif}
-end;
+end;*)
 
 {------------------------------------------------------------------------------
-  Method:  TQtWidgetSet.CreateBitmap
+  Method:  CreateBitmap
   Params:
   Returns:
 
   This functions is for TBitmap support.
-  Specifically it´s utilized on when a handle for a bitmap is needed
+  Specifically it is utilized on when a handle for a bitmap is needed
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateBitmap(Width, Height: Integer;
+function TCDWidgetSet.CreateBitmap(Width, Height: Integer;
   Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 var
-  Format: QImageFormat;
-  NewBits: PByte;
+  lRawImage: TRawImage;
+  lMask: HBitmap;
+  NewBits: Pointer;
   NewBitsSize: PtrUInt;
-  ARowStride, RSS: Integer;
+  RSS: PtrUInt;
+  ARowStride: PtrUInt;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:> [WinAPI CreateBitmap]',
+  {$ifdef VerboseCDBitmap}
+    DebugLn('Trace:> [WinAPI CreateBitmap]',
      ' Width:', dbgs(Width),
      ' Height:', dbgs(Height),
      ' Planes:', dbgs(Planes),
@@ -351,39 +353,49 @@ begin
   {$endif}
 
   // for win32 data is aligned to WORD
-  // for qt we must realign data to DWORD
+  // for ARM speed optimization the best is realign data to DWORD
+
+  Result := 0;
+  NewBits := nil;
+  lRawImage.Init;
 
   case BitCount of
-    1: Format := QImageFormat_Mono;
-    15, 16: Format := QImageFormat_RGB16;
-    24: Format := QImageFormat_RGB32;
-    32: Format := QImageFormat_ARGB32;
+    1: lRawImage.Description.Init_BPP1(Width, Height);
+    15, 16: lRawImage.Description.Init_BPP16_R5G6B5(Width, Height);
+    24: lRawImage.Description.Init_BPP24_B8G8R8_BIO_TTB(Width, Height);
+    32: lRawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(Width, Height);
   else
-    Format := QImageFormat_ARGB32;
+    lRawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(Width, Height);
   end;
 
   RSS := GetBytesPerLine(Width, BitCount, rileWordBoundary);
   if BitmapBits <> nil then
   begin
     ARowStride := GetBytesPerLine(Width, BitCount, rileDWordBoundary);
-    if not CopyImageData(Width, Height, RSS, BitCount, BitmapBits, Rect(0, 0, Width, Height),
+    if not CopyImageData(Width, Height, RSS, BitCount, BitmapBits, Types.Rect(0, 0, Width, Height),
       riloBottomToTop, riloBottomToTop, rileDWordBoundary, NewBits, NewBitsSize) then
     begin
       // this was never tested
       ARowStride := RSS;
-      NewBits := AllocMem(RSS * Height);
-      Move(BitmapBits^, NewBits^, RSS * Height);
+      NewBitsSize := RSS * Height;
+      NewBits := AllocMem(NewBitsSize);
+      System.Move(BitmapBits^, NewBits^, NewBitsSize);
     end;
-    Result := HBitmap(TQtImage.Create(NewBits, Width, Height, ARowStride, Format, True));
+    lRawImage.Data := NewBits;
+    lRawImage.DataSize := NewBitsSize;
+    //Result := HBitmap(TQtImage.Create(NewBits, Width, Height, ARowStride, Format, True));
+    RawImage_CreateBitmaps(lRawImage, Result, lMask, True);
   end
   else
-    Result := HBitmap(TQtImage.Create(nil, Width, Height, Format));
+  begin
+    lRawImage.CreateData(True);
+    RawImage_CreateBitmaps(lRawImage, Result, lMask, True);
+  end;
 
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('Trace:< [WinAPI CreateBitmap] Bitmap:', dbghex(Result));
+  {$ifdef VerboseCDBitmap}
+    DebugLn('Trace:< [WinAPI CreateBitmap] Bitmap:', dbghex(Result));
   {$endif}
-end;*)
-
+end;
 
 {------------------------------------------------------------------------------
   Function:  CreateBrushIndirect
@@ -742,23 +754,22 @@ begin
   CritSection:=0;
 end;
 
-(*{------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
   Function: DeleteDC
   Params:  none
   Returns: Nothing
-
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.DeleteDC(hDC: HDC): Boolean;
+function TCDWidgetSet.DeleteDC(hDC: HDC): Boolean;
 begin
-  {$ifdef VerboseQtWinAPI}
-    WriteLn('[WinAPI DeleteDC] Handle: ', dbghex(hDC));
+  {$ifdef VerboseCDWinAPI}
+    DebugLn('[WinAPI DeleteDC] Handle: ', dbghex(hDC));
   {$endif}
 
   Result := False;
   if not IsValidDC(hDC) then exit;
-
-  TQtDeviceContext(hDC).Free;
-end;*)
+  Result := True;
+  TLazCanvas(hDC).Free;
+end;
 
 {------------------------------------------------------------------------------
   Function: DeleteObject
@@ -769,8 +780,6 @@ end;*)
 function TCDWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 var
   aObject: TObject;
-//  APaintEngine: QPaintEngineH;
-//  APainter: QPainterH;
   {$ifdef VerboseCDDrawing}
     ObjType: string;
   {$endif}
@@ -812,32 +821,21 @@ begin
   {------------------------------------------------------------------------------
     Image
    ------------------------------------------------------------------------------}
-(*  else if aObject is TQtImage then
+  else if aObject is TCDBitmap then
   begin
-    {$ifdef VerboseQtWinAPI}
+    {$ifdef VerboseCDWinAPI}
       ObjType := 'Image';
     {$endif}
-
-    // we must stop paintdevice before destroying
-
-    APaintEngine := QImage_paintEngine(TQtImage(AObject).FHandle);
-
-    if (APaintEngine <> nil) and QPaintEngine_isActive(APaintEngine) then
-    begin
-      APainter := QPaintEngine_painter(APaintEngine);
-      if APainter <> nil then
-        QPainter_end(APainter);
-    end;
   end
   {------------------------------------------------------------------------------
     Region
    ------------------------------------------------------------------------------}
-  else if aObject is TQtRegion then
+  else if aObject is TLazRegion then
   begin
-    {$ifdef VerboseQtWinAPI}
+    {$ifdef VerboseCDWinAPI}
       ObjType := 'Region';
     {$endif}
-  end               *)
+  end
   {------------------------------------------------------------------------------
     Pen
    ------------------------------------------------------------------------------}

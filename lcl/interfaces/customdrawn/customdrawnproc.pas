@@ -69,9 +69,12 @@ type
     Visible: Boolean;
   end;
 
+  { TCDBitmap }
+
   TCDBitmap = class
   public
     Image: TLazIntfImage;
+    destructor Destroy; override;
   end;
 
   TCDTimer = class
@@ -621,6 +624,14 @@ begin
     if lTimer.NativeHandle = ANativeHandle then
       Exit(lTimer);
   end;
+end;
+
+{ TCDBitmap }
+
+destructor TCDBitmap.Destroy;
+begin
+  if Image <> nil then Image.Free;
+  inherited Destroy;
 end;
 
 { TCDBaseControl }

@@ -311,7 +311,7 @@ begin
   // Copy the data
   if ARawImage.DataSize > 0 then
   begin
-    NewData := GetMem(ARawImage.DataSize);
+    NewData := AllocMem(ARawImage.DataSize);
     System.Move(ARawImage.Data^, NewData^, ARawImage.DataSize);
   end
   else

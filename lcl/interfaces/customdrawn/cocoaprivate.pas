@@ -13,7 +13,7 @@ uses
   // Custom Drawn Canvas
   IntfGraphics, lazcanvas, customdrawnproc,
   // Libs
-  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
+  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects, lazutf8sysutils,
   //
   Forms, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc, GraphType;
 
@@ -627,7 +627,13 @@ var
   lRawImage: TRawImage;
   AImage: TLazIntfImage;
   ACanvas: TLazCanvas;
+  {$IFDEF VerboseCDPaintProfiler}
+  lTimeStart: TDateTime;
+  {$ENDIF}
 begin
+  {$IFDEF VerboseCDPaintProfiler}
+  lTimeStart := NowUTC();
+  {$ENDIF}
   if not Assigned(Context) then Context:=TCocoaContext.Create;
 
   Context.ctx:=ControlContext;
@@ -649,6 +655,9 @@ begin
     Cocoa_RawImage_CreateBitmaps(lRawImage, lBitmap, lMask, True);
     Context.DrawBitmap(0, 0, TCocoaBitmap(lBitmap));
   end;
+  {$IFDEF VerboseCDPaintProfiler}
+  DebugLn(Format('[TCocoaCustomControl.Draw] Paint duration: %d ms', [DateTimeToMilliseconds(NowUTC() - lTimeStart)]));
+  {$ENDIF}
 end;
 
 function RectToViewCoord(view: NSView; const r: TRect): NSRect;

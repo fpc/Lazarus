@@ -54,8 +54,8 @@ function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   Formats: PClipboardFormat): boolean; override;
 function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; override;
 
-function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;
-function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;*)
+function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;*)
+function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 (*function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;*)
@@ -70,7 +70,7 @@ function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;*)
 
 procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
-//function DeleteDC(hDC: HDC): Boolean; override;
+function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
 (*function DestroyCaret(Handle : HWND): Boolean; override;
 function DestroyIcon(Handle: HICON): Boolean; override;
