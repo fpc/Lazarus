@@ -21,14 +21,15 @@ const
 
 function GetNSPoint(x,y: single): NSPoint; inline;
 
-function GetCGRect(x1, y1, x2, y2: Integer): CGRect;
+function GetCGRect(x1, y1, x2, y2: Integer): CGRect; inline;
+function RectToCGRect(const R: TRect): CGRect;
 function CGRectToRect(const c: CGRect): TRect;
 
 function GetNSRect(x, y, width, height: Integer): NSRect; inline;
 function RectToNSRect(const r: TRect): NSRect;
 
-procedure NSToLCLRect(const ns: NSRect; var lcl: TRect); overload;
-procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; var lcl: TRect); overload;
+procedure NSToLCLRect(const ns: NSRect; out lcl: TRect); overload;
+procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect); overload;
 
 procedure LCLToNSRect(const lcl: TRect; var ns: NSRect); overload;
 procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; var ns: NSRect); overload;
@@ -139,49 +140,69 @@ end;
 
 function GetNSRect(x, y, width, height: Integer): NSRect;
 begin
-  Result.origin.x:=x;
-  Result.origin.y:=y;
-  Result.size.width:=width;
-  Result.size.height:=height;
+  with Result do
+  begin
+    origin.x := x;
+    origin.y := y;
+    size.width := width;
+    size.height := height;
+  end;
 end;
 
 function GetCGRect(x1, y1, x2, y2: Integer): CGRect;
 begin
-  Result.origin.x:=x1;
-  Result.origin.y:=y1;
-  Result.size.width:=x2-x1;
-  Result.size.height:=y2-y1;
+  with Result do
+  begin
+    origin.x := x1;
+    origin.y := y1;
+    size.width := x2 - x1;
+    size.height := y2 - y1;
+  end;
+end;
+
+function RectToCGRect(const R: TRect): CGRect;
+begin
+  with R do
+    Result := GetCGRect(Left, Top, Right, Bottom);
 end;
 
 function CGRectToRect(const c:CGRect):TRect;
 begin
-  with Result do begin
-    Left:=round(c.origin.x);
-    Top:=round(c.origin.y);
-    Right:=round(c.origin.x+c.size.width);
-    Bottom:=round(c.origin.y+c.size.height);
+  with Result do
+  begin
+    Left := Round(c.origin.x);
+    Top := Round(c.origin.y);
+    Right := Round(c.origin.x + c.size.width);
+    Bottom := Round(c.origin.y + c.size.height);
   end;
 end;
 
 function RectToNSRect(const r: TRect): NSRect;
 begin
-  Result:=GetNSRect(r.Left,r.Top,r.Right-r.Left,r.Bottom-r.Top);
+  with R do
+    Result := GetNSRect(Left, Top, Right - Left, Bottom - Top);
 end;
 
-procedure NSToLCLRect(const ns: NSRect; var lcl: TRect);
+procedure NSToLCLRect(const ns: NSRect; out lcl: TRect);
 begin
-  lcl.Left:=round(ns.origin.x);
-  lcl.Top:=round(ns.origin.y);
-  lcl.Right:=round(ns.origin.x+ns.size.width);
-  lcl.Bottom:=round(ns.origin.y+ns.size.height);
+  with lcl do
+  begin
+    Left := Round(ns.origin.x);
+    Top := Round(ns.origin.y);
+    Right := Round(ns.origin.x + ns.size.width);
+    Bottom := Round(ns.origin.y + ns.size.height);
+  end;
 end;
 
-procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; var lcl: TRect);
+procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
 begin
-  lcl.Left:=Round(ns.origin.x);
-  lcl.Top:=Round(ParentHeight-ns.size.height-ns.origin.y);
-  lcl.Right:=Round(ns.origin.x+ns.size.width);
-  lcl.Bottom:=Round(lcl.Top+ns.size.height);
+  with lcl do
+  begin
+    Left := Round(ns.origin.x);
+    Top := Round(ParentHeight - ns.size.height - ns.origin.y);
+    Right := Round(ns.origin.x + ns.size.width);
+    Bottom := Round(lcl.Top + ns.size.height);
+  end;
 end;
 
 procedure LCLToNSRect(const lcl: TRect; var ns: NSRect); overload;
