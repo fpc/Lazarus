@@ -31,8 +31,9 @@ interface
 
 uses
   Classes, SysUtils, GetText, LCLProc, Translations,
-  IDEProcs, FileProcs,
-  avl_tree, LazarusIDEStrConsts;
+  IDEProcs, FileProcs, avl_tree,
+  CodeToolManager, DirectoryCacher,
+  LazarusIDEStrConsts;
   { IDE Language (Human, not computer) }
 
 type
@@ -174,31 +175,26 @@ end;
 
 function ConvertRSTFiles(RSTDirectory, PODirectory: string;
   POFilename: string): Boolean;
-var
-  FileInfo: TSearchRec;
-  RSTFilename: String;
-  OutputFilename: String;
-  FileList: TStringList;
-
-  procedure UpdateList;
-  begin
-    try
-      UpdatePoFile(FileList, OutputFilename);
-      Result := true;
-    except
-      on E: Exception do begin
-        DebugLn(['ConvertRSTFiles.UpdateList OutputFilename="',OutputFilename,'" ',E.Message]);
-        Result := false;
-      end;
-    end;
+type
+  TItem = record
+    OutputFilename: String;
+    RSTFileList: TStringList;
   end;
-  
+  PItem = ^TItem;
+var
+  Items: TFPList; // list of PItem
+  RSTFilename: String;
+  Dir: TCTDirectoryCache;
+  Files: TStrings;
+  i: Integer;
+  Item: PItem;
 begin
   Result:=true;
-  if (RSTDirectory='') then exit;// nothing to do
-  RSTDirectory:=AppendPathDelim(RSTDirectory);
-  PODirectory:=AppendPathDelim(PODirectory);
-  if not DirectoryIsWritableCached(PODirectory) then begin
+  if (RSTDirectory='') or (PODirectory='') then exit;// nothing to do
+  RSTDirectory:=AppendPathDelim(TrimFilename(RSTDirectory));
+  PODirectory:=AppendPathDelim(TrimFilename(PODirectory));
+  if (not FilenameIsAbsolute(PODirectory))
+  or (not DirectoryIsWritableCached(PODirectory)) then begin
     // only update writable directories
     DebugLn(['ConvertRSTFiles skipping read only directory ',RSTDirectory]);
     exit(true);
@@ -206,46 +202,57 @@ begin
 
   // find all .rst files in package output directory
   // TODO: lrt files...
-  FileList := nil;
   PODirectory:=AppendPathDelim(PODirectory);
-  OutputFilename:=PODirectory+POFilename;
 
-  if FindFirstUTF8(RSTDirectory+'*.rst',faAnyFile,FileInfo)=0
-  then
+  Dir:=CodeToolBoss.DirectoryCachePool.GetCache(RSTDirectory,true,true);
+  Files:=nil;
+  Dir.GetFiles(Files,false);
+  if Files=nil then exit(true);
+  Items:=TFPList.Create;
   try
-    FileList:=TStringList.Create;
-    repeat
-      // check if special file
-      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
-        continue;
-
-      RSTFilename:=RSTDirectory+FileInfo.Name;
-
-      if POFilename='' then begin
-        OutputFilename:=PODirectory+ChangeFileExt(FileInfo.Name,'.po');
-        FileList.Clear;
+    Item:=nil;
+    // collect all rst/po files that needs update
+    for i:=0 to Files.Count-1 do begin
+      if CompareFileExt(Files[i],'.rst',false)<>0 then continue;
+      RSTFilename:=RSTDirectory+Files[i];
+      if (POFilename='') or (Item=nil) then begin
+        New(Item);
+        Item^.RSTFileList:=TStringList.Create;
+        if POFilename='' then
+          Item^.OutputFilename:=PODirectory+ChangeFileExt(Files[i],'.po')
+        else
+          Item^.OutputFilename:=PODirectory+POFilename;
+        Items.Add(Item);
       end;
 
-      //DebugLn(['ConvertPackageRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
-      if (not FileExistsUTF8(OutputFilename))
-      or (FileAgeCached(RSTFilename)>FileAgeCached(OutputFilename)) then
-      begin
-        FileList.Add(RSTFilename);
-        if POFilename='' then begin
-          UpdateList;
-          if not Result then
-            exit;
-        end;
+      //DebugLn(['ConvertRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',Item^.OutputFilename]);
+      if (not FileExistsCached(Item^.OutputFilename))
+      or (FileAgeCached(RSTFilename)>FileAgeCached(Item^.OutputFilename)) then
+        Item^.RSTFileList.Add(RSTFilename);
+    end;
+    // update rst/po files
+    try
+      for i:=0 to Items.Count-1 do begin
+        Item:=PItem(Items[i]);
+        if Item^.RSTFileList.Count=0 then continue;
+        UpdatePoFile(Item^.RSTFileList, Item^.OutputFilename);
       end;
-    until FindNextUTF8(FileInfo)<>0;
-    
-    if POFilename<>'' then
-      UpdateList;
-
+      Result:=true;
+    except
+      on E: Exception do begin
+        DebugLn(['ConvertRSTFiles.UpdateList OutputFilename="',Item^.OutputFilename,'" ',E.Message]);
+        Result := false;
+      end;
+    end;
   finally
-    if FileList<>nil then
-      FileList.Free;
-    FindCloseUTF8(FileInfo);
+    for i:=0 to Items.Count-1 do begin
+      Item:=PItem(Items[i]);
+      Item^.RSTFileList.Free;
+      Dispose(Item);
+    end;
+    Items.Free;
+    Files.Free;
+    Dir.Release;
   end;
 end;
 
