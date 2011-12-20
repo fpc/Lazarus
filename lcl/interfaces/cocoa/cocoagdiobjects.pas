@@ -9,7 +9,7 @@ interface
 
 uses
   MacOSAll, // for CGContextRef
-  LCLtype, LCLProc, Graphics,
+  LCLtype, LCLProc, Graphics, Controls,
   CocoaAll, CocoaUtils,
   SysUtils, Classes, Contnrs, Types, Math;
 
@@ -154,6 +154,7 @@ type
     constructor CreateDefault;
     constructor Create(const ALogPen: TLogPen; const AGlobal: Boolean = False);
     constructor Create(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord);
+    constructor Create(const ABrush: TCocoaBrush; const AGlobal: Boolean = False);
     procedure Apply(ADC: TCocoaContext; UseROP2: Boolean = True);
 
     property Width: Integer read FWidth;
@@ -308,6 +309,9 @@ type
 
     function InitDraw(width, height: Integer): Boolean;
 
+    // drawing functions
+    procedure DrawBitmap(X,Y: Integer; ABitmap: TCocoaBitmap);
+    procedure DrawFocusRect(ARect: TRect);
     procedure MoveTo(x,y: Integer);
     procedure LineTo(x,y: Integer);
     procedure Polygon(const Points: array of TPoint; NumPts: Integer; Winding: boolean);
@@ -315,12 +319,15 @@ type
     procedure Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure TextOut(X,Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
+    procedure Frame(const R: TRect);
+    procedure Frame3d(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
+    procedure FrameRect(const ARect: TRect; const Brush: TCocoaBrush);
+
     function GetTextExtentPoint(AStr: PChar; ACount: Integer; var Size: TSize): Boolean;
     function GetTextMetrics(var TM: TTextMetric): Boolean;
-    procedure DrawBitmap(X,Y: Integer; ABitmap: TCocoaBitmap);
-    procedure DrawFocusRect(ARect: TRect);
     procedure SetOrigin(X,Y: Integer);
     procedure GetOrigin(var X,Y: Integer);
+
     function CGContext: CGContextRef; virtual;
     procedure SetAntialiasing(AValue: Boolean);
 
@@ -336,6 +343,7 @@ type
     property BkMode: Integer read FBkMode write SetBkMode;
     property BkBrush: TCocoaBrush read FBkBrush;
 
+    // selected GDI objects
     property Brush: TCocoaBrush read FBrush write SetBrush;
     property Pen: TCocoaPen read FPen write SetPen;
     property Font: TCocoaFont read FFont write SetFont;
@@ -1147,6 +1155,56 @@ begin
   CGContextScaleCTM(cg, 1, -1);
 end;
 
+procedure TCocoaContext.Frame(const R: TRect);
+begin
+  Rectangle(R.Left, R.Top, R.Right + 1, R.Bottom + 1, False, nil);
+end;
+
+procedure TCocoaContext.Frame3d(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
+var
+  I, D: Integer;
+  DrawInfo: HIThemeGroupBoxDrawInfo;
+begin
+  if Style = bvRaised then
+  begin
+    GetThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, D);
+
+    // draw frame as group box
+    DrawInfo.version := 0;
+    DrawInfo.state := kThemeStateActive;
+    DrawInfo.kind := kHIThemeGroupBoxKindPrimary;
+
+    for I := 1 to FrameWidth do
+    begin
+      HIThemeDrawGroupBox(RectToCGRect(ARect), DrawInfo, CGContext, kHIThemeOrientationNormal);
+      InflateRect(ARect, -D, -D);
+    end;
+  end;
+end;
+
+procedure TCocoaContext.FrameRect(const ARect: TRect; const Brush: TCocoaBrush);
+var
+  NewPen: TCocoaPen;
+begin
+  NewPen := TCocoaPen.Create(Brush);
+  try
+    NewPen.Apply(Self);
+
+    MoveTo(ARect.Left, ARect.Top);
+    LineTo(ARect.Right - 1, ARect.Top);
+    MoveTo(ARect.Left, ARect.Bottom - 1);
+    LineTo(ARect.Right - 1, ARect.Bottom - 1);
+    MoveTo(ARect.Right - 1, ARect.Top);
+    LineTo(ARect.Right - 1, ARect.Bottom - 1);
+    MoveTo(ARect.Left, ARect.Top);
+    LineTo(ARect.Left, ARect.Bottom - 1);
+
+    Pen.Apply(Self);
+  finally
+    NewPen.Free;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  GetTextExtentPoint
   Params:  Str   - Text string
@@ -1710,6 +1768,15 @@ begin
   end;
 
   FStyle := dwPenStyle and PS_STYLE_MASK;
+end;
+
+constructor TCocoaPen.Create(const ABrush: TCocoaBrush; const AGlobal: Boolean);
+begin
+  inherited Create(ABrush.ColorRef, True, AGlobal);
+  FStyle := PS_SOLID;
+  FWidth := 1;
+  FIsExtPen := False;
+  Dashes := nil;
 end;
 
 { TCocoaBrush }
