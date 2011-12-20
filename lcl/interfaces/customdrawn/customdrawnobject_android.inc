@@ -117,6 +117,8 @@ begin
   Result := 0;
   javaActivityObject := alclactivity;
   Screen.UpdateScreen(); // Any values read before LCLOnCreate are wrong
+  // Update the font size
+  CDWidgetset.DefaultFontAndroidSize := Round(16 * (Screen.PixelsPerInch / 125));
   Application.Run;
 end;
 
@@ -241,6 +243,9 @@ begin
     lForm.LCLForm.AutoAdjustLayout(lapAutoAdjustWithoutHorizontalScrolling,
       lOldDPI, lNewDPI, lOldFormWidth, lNewFormWidth);
   end;
+
+  // Update the font size
+  CDWidgetset.DefaultFontAndroidSize := Round(16 * (ANewDPI / 125));
 end;
 
 const NativeMethods: array[0..6] of JNINativeMethod=

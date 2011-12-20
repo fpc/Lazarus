@@ -3490,6 +3490,8 @@ begin
     end
     else
     begin
+      // Give a shake at the autosize to recalculate font sizes for example
+      if AutoSize then AdjustSize();
       NewWidth := Width;
       NewHeight := Height;
     end;
@@ -3506,7 +3508,7 @@ end;
 
 function TControl.ShouldAutoAdjustWidthAndHeight: Boolean;
 begin
-  Result := AutoSize = False;
+  Result := (Align = alNone) and (Anchors = [akTop, akLeft]) and (AutoSize = False);
 end;
 
 procedure TControl.UpdateAnchorRules;

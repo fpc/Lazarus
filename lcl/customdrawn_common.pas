@@ -12,7 +12,7 @@ uses
   // LCL -> Use only TForm, TWinControl, TCanvas and TLazIntfImage
   Graphics, Controls, LCLType,
   // Others only for types
-  StdCtrls, ComCtrls,
+  StdCtrls, ComCtrls, Forms,
   //
   customdrawndrawers, ExtCtrls;
 
@@ -34,6 +34,7 @@ type
     function GetColor(AColorID: Integer): TColor; override;
     function GetClientArea(ADest: TCanvas; ASize: TSize; AControlId: TCDControlID;
       AState: TCDControlState; AStateEx: TCDControlStateEx): TRect; override;
+    function DPIAdjustment(const AValue: Integer): Integer;
     // General drawing routines
     procedure DrawFocusRect(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
     procedure DrawRaisedFrame(ADest: TCanvas; ADestPos: TPoint; ASize: TSize); override;
@@ -159,8 +160,8 @@ begin
   TCDEDIT_TOP_TEXT_SPACING: Result := 3;
   TCDEDIT_BOTTOM_TEXT_SPACING: Result := 3;
   //
-  TCDCHECKBOX_SQUARE_HALF_HEIGHT: Result := 7;
-  TCDCHECKBOX_SQUARE_HEIGHT: Result := 15;
+  TCDCHECKBOX_SQUARE_HALF_HEIGHT: Result := Floor(GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT)/2);
+  TCDCHECKBOX_SQUARE_HEIGHT: Result := DPIAdjustment(15);
   //
   TCDRADIOBUTTON_CIRCLE_HEIGHT: Result := 15;
   //
@@ -173,7 +174,7 @@ begin
   TCDTRACKBAR_LEFT_SPACING: Result := 9;
   TCDTRACKBAR_RIGHT_SPACING: Result := 9;
   TCDTRACKBAR_TOP_SPACING: Result := 5;
-  TCDTRACKBAR_FRAME_HEIGHT: Result := 17;
+  TCDTRACKBAR_FRAME_HEIGHT: Result := DPIAdjustment(17);
   //
   TCDLISTVIEW_COLUMN_LEFT_SPACING:  Result := 10;
   TCDLISTVIEW_COLUMN_RIGHT_SPACING: Result := 10;
@@ -301,6 +302,12 @@ begin
     Result.Bottom := Result.Bottom - 2;
   end;
   end;
+end;
+
+function TCDDrawerCommon.DPIAdjustment(const AValue: Integer): Integer;
+begin
+  if Screen.PixelsPerInch <= 125 then Result := AValue
+  else Result := Round(AValue * Screen.PixelsPerInch / 125);
 end;
 
 procedure TCDDrawerCommon.DrawFocusRect(ADest: TCanvas; ADestPos: TPoint;
@@ -436,15 +443,32 @@ end;
 procedure TCDDrawerCommon.DrawTickmark(ADest: TCanvas; ADestPos: TPoint);
 var
   i: Integer;
+  lSpacing5, lFirstLinesEnd, lSecondLinesEnd: Integer;
 begin
   ADest.Pen.Color := clBlack;
   ADest.Pen.Style := psSolid;
+
+  if Screen.PixelsPerInch <= 125 then
+  begin
+    // 4 lines going down and to the right
+    for i := 0 to 3 do
+      ADest.Line(ADestPos.X+2+i, ADestPos.Y+2+i, ADestPos.X+2+i, ADestPos.Y+5+i);
+    // Now 5 lines going up and to the right
+    for i := 4 to 8 do
+     ADest.Line(ADestPos.X+2+i, ADestPos.Y+2+6-i, ADestPos.X+2+i, ADestPos.Y+5+6-i);
+    Exit;
+  end;
+
+  lSpacing5 := DPIAdjustment(5);
+  lFirstLinesEnd := DPIAdjustment(4)-1;
+  lSecondLinesEnd := DPIAdjustment(9)-1;
+
   // 4 lines going down and to the right
-  for i := 0 to 3 do
-    ADest.Line(ADestPos.X+2+i, ADestPos.Y+2+i, ADestPos.X+2+i, ADestPos.Y+5+i);
+  for i := 0 to lFirstLinesEnd do
+    ADest.Line(ADestPos.X+2+i, ADestPos.Y+2+i, ADestPos.X+2+i, ADestPos.Y+lSpacing5+i);
   // Now 5 lines going up and to the right
-  for i := 4 to 8 do
-    ADest.Line(ADestPos.X+2+i, ADestPos.Y+2+6-i, ADestPos.X+2+i, ADestPos.Y+5+6-i);
+  for i := lFirstLinesEnd+1 to lSecondLinesEnd do
+    ADest.Line(ADestPos.X+2+i, ADestPos.Y+2+lFirstLinesEnd*2-i, ADestPos.X+2+i, ADestPos.Y+2+lFirstLinesEnd*2+lSpacing5-i);
 end;
 
 procedure TCDDrawerCommon.DrawSlider(ADest: TCanvas; ADestPos: TPoint;
@@ -452,7 +476,11 @@ procedure TCDDrawerCommon.DrawSlider(ADest: TCanvas; ADestPos: TPoint;
 var
   lPoints: array[0..4] of TPoint;
   lSliderBottom: Integer;
+  lSpacing5, lSpacing10: Integer;
 begin
+  lSpacing5 := (ASize.cx-1)div 2;
+  lSpacing10 := (ASize.cx-1);
+
   ADest.Brush.Color := Palette.BtnFace;
   ADest.Brush.Style := bsSolid;
   ADest.Pen.Color := WIN2000_FRAME_WHITE;
@@ -461,55 +489,55 @@ begin
   begin
     lSliderBottom := ADestPos.Y+ASize.CY;
     // outter white frame
-    lPoints[0] := Point(ADestPos.X+5, lSliderBottom);
-    lPoints[1] := Point(ADestPos.X, lSliderBottom-5);
+    lPoints[0] := Point(ADestPos.X+lSpacing5, lSliderBottom);
+    lPoints[1] := Point(ADestPos.X, lSliderBottom-lSpacing5);
     lPoints[2] := Point(ADestPos.X, ADestPos.Y);
-    lPoints[3] := Point(ADestPos.X+10, ADestPos.Y);
-    lPoints[4] := Point(ADestPos.X+10, lSliderBottom-5);
+    lPoints[3] := Point(ADestPos.X+lSpacing10, ADestPos.Y);
+    lPoints[4] := Point(ADestPos.X+lSpacing10, lSliderBottom-lSpacing5);
     ADest.Polygon(lPoints);
     // left-top inner frame
     ADest.Pen.Color := WIN2000_FRAME_LIGHT_GRAY;
-    ADest.MoveTo(ADestPos.X+5, lSliderBottom-1);
-    ADest.LineTo(ADestPos.X+1, lSliderBottom-5);
+    ADest.MoveTo(ADestPos.X+lSpacing5, lSliderBottom-1);
+    ADest.LineTo(ADestPos.X+1, lSliderBottom-lSpacing5);
     ADest.LineTo(ADestPos.X+1, ADestPos.Y+1);
-    ADest.LineTo(ADestPos.X+9, ADestPos.Y+1);
+    ADest.LineTo(ADestPos.X+lSpacing10-1, ADestPos.Y+1);
     // right inner frame
     ADest.Pen.Color := WIN2000_FRAME_GRAY;
-    ADest.MoveTo(ADestPos.X+5, lSliderBottom-1);
-    ADest.LineTo(ADestPos.X+9, lSliderBottom-5);
-    ADest.LineTo(ADestPos.X+9, ADestPos.Y);
+    ADest.MoveTo(ADestPos.X+lSpacing5, lSliderBottom-1);
+    ADest.LineTo(ADestPos.X+lSpacing10-1, lSliderBottom-lSpacing5);
+    ADest.LineTo(ADestPos.X+lSpacing10-1, ADestPos.Y);
     // right outter frame
     ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
-    ADest.MoveTo(ADestPos.X+5, lSliderBottom);
-    ADest.LineTo(ADestPos.X+10, lSliderBottom-5);
-    ADest.LineTo(ADestPos.X+10, ADestPos.Y-1);
+    ADest.MoveTo(ADestPos.X+lSpacing5, lSliderBottom);
+    ADest.LineTo(ADestPos.X+lSpacing10, lSliderBottom-lSpacing5);
+    ADest.LineTo(ADestPos.X+lSpacing10, ADestPos.Y-1);
   end
   else
   begin
     lSliderBottom := ADestPos.Y+ASize.CY;
     // outter white frame
-    lPoints[0] := Point(lSliderBottom, ADestPos.X+5);
-    lPoints[1] := Point(lSliderBottom-5, ADestPos.X);
+    lPoints[0] := Point(lSliderBottom, ADestPos.X+lSpacing5);
+    lPoints[1] := Point(lSliderBottom-lSpacing5, ADestPos.X);
     lPoints[2] := Point(ADestPos.Y, ADestPos.X);
-    lPoints[3] := Point(ADestPos.Y, ADestPos.X+10);
-    lPoints[4] := Point(lSliderBottom-5, ADestPos.X+10);
+    lPoints[3] := Point(ADestPos.Y, ADestPos.X+lSpacing10);
+    lPoints[4] := Point(lSliderBottom-lSpacing5, ADestPos.X+lSpacing10);
     ADest.Polygon(lPoints);
     // left-top inner frame
     ADest.Pen.Color := WIN2000_FRAME_LIGHT_GRAY;
-    ADest.MoveTo(lSliderBottom-1, ADestPos.X+5);
-    ADest.LineTo(lSliderBottom-5, ADestPos.X+1);
+    ADest.MoveTo(lSliderBottom-1, ADestPos.X+lSpacing5);
+    ADest.LineTo(lSliderBottom-lSpacing5, ADestPos.X+1);
     ADest.LineTo(ADestPos.Y+1, ADestPos.X+1);
-    ADest.LineTo(ADestPos.Y+1, ADestPos.X+9);
+    ADest.LineTo(ADestPos.Y+1, ADestPos.X+lSpacing10-1);
     // right inner frame
     ADest.Pen.Color := WIN2000_FRAME_GRAY;
-    ADest.MoveTo(lSliderBottom-1, ADestPos.X+5);
-    ADest.LineTo(lSliderBottom-5, ADestPos.X+9);
-    ADest.LineTo(ADestPos.Y, ADestPos.X+9);
+    ADest.MoveTo(lSliderBottom-1, ADestPos.X+lSpacing5);
+    ADest.LineTo(lSliderBottom-lSpacing5, ADestPos.X+lSpacing10-1);
+    ADest.LineTo(ADestPos.Y, ADestPos.X+lSpacing10-1);
     // right outter frame
     ADest.Pen.Color := WIN2000_FRAME_DARK_GRAY;
-    ADest.MoveTo(lSliderBottom, ADestPos.X+5);
-    ADest.LineTo(lSliderBottom-5, ADestPos.X+10);
-    ADest.LineTo(ADestPos.Y-1, ADestPos.X+10);
+    ADest.MoveTo(lSliderBottom, ADestPos.X+lSpacing5);
+    ADest.LineTo(lSliderBottom-lSpacing5, ADestPos.X+lSpacing10);
+    ADest.LineTo(ADestPos.Y-1, ADestPos.X+lSpacing10);
   end;
 end;
 
@@ -828,9 +856,10 @@ procedure TCDDrawerCommon.DrawCheckBox(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
   lColor: TColor;
-  lSquareHeight: Integer;
+  lSquareHeight, lValue3: Integer;
 begin
   lSquareHeight := GetMeasures(TCDCHECKBOX_SQUARE_HEIGHT);
+  lValue3 := DPIAdjustment(3);
 
   // Background
   lColor := AStateEx.ParentRGBColor;
@@ -844,7 +873,7 @@ begin
 
   // The Tickmark
   if csfOn in AState then
-    DrawTickmark(ADest, Point(3, ASize.cy div 2 - GetMeasures(TCDCHECKBOX_SQUARE_HALF_HEIGHT)+3));
+    DrawTickmark(ADest, Point(lValue3, ASize.cy div 2 - GetMeasures(TCDCHECKBOX_SQUARE_HALF_HEIGHT)+lValue3));
 
   // The text selection
   if csfHasFocus in AState then
@@ -1191,7 +1220,10 @@ var
   pStepWidth, lTickmarkLeftFloat: Double;
   lPoint: TPoint;
   lSize, lMeasureSize: TSize;
+  lValue5, lValue11: Integer;
 begin
+  lValue5 := DPIAdjustment(5);
+  lValue11 := DPIAdjustment(11);
   // The orientation i
   if csfHorizontal in AState then lMeasureSize := ASize
   else lMeasureSize := Size(ASize.CY, ASize.CX);
@@ -1245,8 +1277,8 @@ begin
     // Draw the slider
     if i = AStateEx.Position then
       DrawSlider(ADest,
-        Point(lTickmarkLeft-5, GetMeasures(TCDTRACKBAR_TOP_SPACING)-2),
-        Size(11, GetMeasures(TCDTRACKBAR_FRAME_HEIGHT)+5), AState);
+        Point(lTickmarkLeft-lValue5, GetMeasures(TCDTRACKBAR_TOP_SPACING)-2),
+        Size(lValue11, GetMeasures(TCDTRACKBAR_FRAME_HEIGHT)+lValue5), AState);
 
     lTickmarkLeftFloat := lTickmarkLeftFloat + pStepWidth;
     lTickmarkLeft := Round(lTickmarkLeftFloat);

@@ -2785,42 +2785,35 @@ begin
   {$endif}
 
   Result := 0;
-(*  if DC = 0 then
-    DC := HDC(QtScreenContext);
-
+  if DC = 0 then DC := HDC(ScreenDC);
   if not IsValidDC(DC) then exit;
 
-  QtDC := TQtDeviceContext(DC);
-
-  PaintEngine := QtDC.PaintEngine;
-  if PaintEngine = nil then
-    exit;
-  PaintDevice := QPaintEngine_paintDevice(PaintEngine);
+  LazDC := TLazCanvas(DC);
 
   case Index of
-    HORZSIZE:
+{    HORZSIZE:
       Result := QPaintDevice_widthMM(PaintDevice);
     VERTSIZE:
       Result := QPaintDevice_heightMM(PaintDevice);
     HORZRES:
       Result := QPaintDevice_width(PaintDevice);
     BITSPIXEL:
-      Result := QPaintDevice_depth(PaintDevice);
+      Result := QPaintDevice_depth(PaintDevice);}
     PLANES:
       Result := 1;
-    SIZEPALETTE:
-      Result := QPaintDevice_numColors(PaintDevice);
-    LOGPIXELSX:
-      Result := QPaintDevice_logicalDpiX(PaintDevice);
-    LOGPIXELSY:
-      Result := QPaintDevice_logicalDpiY(PaintDevice);
-    VERTRES:
-      Result := QPaintDevice_height(PaintDevice);
+{    SIZEPALETTE:
+      Result := QPaintDevice_numColors(PaintDevice);}
+    LOGPIXELSX: // DPI
+      Result := 96;
+    LOGPIXELSY: // DPI
+      Result := 96;
+{    VERTRES:
+      Result := QPaintDevice_height(PaintDevice);}
     NUMRESERVED:
       Result := 0;
-    else
-      Result := 0;
-  end;*)
+  else
+    Result := 0;
+  end;
 end;
 
 (*function TQtWidgetSet.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
