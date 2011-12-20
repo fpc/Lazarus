@@ -63,6 +63,8 @@ type
     ToolButtonPower: TToolButton;
     procedure actPowerExecute(Sender: TObject);
     procedure DispDefaultClick(Sender: TObject);
+    procedure lvRegistersMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
+      Y: Integer);
     procedure lvRegistersSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure ToolButtonDispTypeClick(Sender: TObject);
   private
@@ -189,6 +191,13 @@ begin
     FRegisters.EndUpdate;
   end;
   lvRegistersSelectItem(nil, nil, True);
+end;
+
+procedure TRegistersDlg.lvRegistersMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbRight then
+    PopupDispType.PopUp;
 end;
 
 procedure TRegistersDlg.lvRegistersSelectItem(Sender: TObject; Item: TListItem;

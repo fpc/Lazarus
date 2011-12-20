@@ -23,11 +23,11 @@ inherited RegistersDlg: TRegistersDlg
         Caption = 'Value'
       end>
     MultiSelect = True
-    PopupMenu = PopupDispType
     RowSelect = True
     SmallImages = ImageList1
     TabOrder = 0
     ViewStyle = vsReport
+    OnMouseUp = lvRegistersMouseUp
     OnSelectItem = lvRegistersSelectItem
   end
   object ToolBar1: TToolBar[1]
