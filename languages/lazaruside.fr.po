@@ -10801,10 +10801,8 @@ msgid "Close"
 msgstr "Fermer"
 
 #: lazarusidestrconsts.lismenucloseall
-#, fuzzy
-#| msgid "Close a&ll editor files"
 msgid "Close A&ll Editor Files"
-msgstr "Fermer tous les fichiers de l'édituer"
+msgstr "Fermer tous les fichiers de l'éditeur"
 
 #: lazarusidestrconsts.lismenucloseproject
 msgid "Close Project"
