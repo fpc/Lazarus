@@ -1996,7 +1996,6 @@ begin
         Key('REFERENCEINFO');
         Key('SETC');
         Key('STACKFRAMES');
-        Key('STATIC');
         Key('STOP');
         Key('THREADING');
         Key('TYPEADDRESS');
