@@ -304,15 +304,30 @@ begin
     Ico.Destroy;
 end;
 
+function TCocoaWidgetSet.DrawFocusRect(DC: HDC; const Rect: TRect): boolean;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx);
+  if Result then
+    ctx.DrawFocusRect(Rect);
+end;
+
+function TCocoaWidgetSet.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal;
+  grfFlags: Cardinal): Boolean;
+begin
+  Result := inherited DrawEdge(DC, Rect, edge, grfFlags);
+end;
+
 function TCocoaWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
 begin
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx);
-  if not Result then Exit;
-
-  ctx.Ellipse(x1, y1, x2, y2);
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx);
+  if Result then
+    ctx.Ellipse(x1, y1, x2, y2);
 end;
 
 function TCocoaWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;

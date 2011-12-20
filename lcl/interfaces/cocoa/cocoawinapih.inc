@@ -66,9 +66,9 @@ function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
 {function DestroyCaret(Handle : HWND): Boolean; override;}
 function DestroyIcon(Handle: HICON): Boolean; override;
-{function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL; override;
+{function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL; override;}
 function DrawFocusRect(DC: HDC; const Rect: TRect): boolean; override;
-function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean; override;}
+function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean; override;
 //function DrawText(DC: HDC; Str: PChar; Count: Integer; var ARect: TRect; Flags: Cardinal): Integer; override;
 
 function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;

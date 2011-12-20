@@ -318,6 +318,7 @@ type
     function GetTextExtentPoint(AStr: PChar; ACount: Integer; var Size: TSize): Boolean;
     function GetTextMetrics(var TM: TTextMetric): Boolean;
     procedure DrawBitmap(X,Y: Integer; ABitmap: TCocoaBitmap);
+    procedure DrawFocusRect(ARect: TRect);
     procedure SetOrigin(X,Y: Integer);
     procedure GetOrigin(var X,Y: Integer);
     function CGContext: CGContextRef; virtual;
@@ -954,7 +955,7 @@ end;
 
 function TCocoaContext.InitDraw(width,height:Integer): Boolean;
 var
-  cg  : CGContextRef;
+  cg: CGContextRef;
 begin
   cg:=CGContext;
   Result:=Assigned(cg);
@@ -977,13 +978,13 @@ end;
 
 procedure TCocoaContext.LineTo(x, y: Integer);
 var
-  cg  : CGContextRef;
-  p   : array [0..1] of CGPoint;
+  cg: CGContextRef;
+  p: array [0..1] of CGPoint;
   deltaX, deltaY, absDeltaX, absDeltaY: Integer;
   clipDeltaX, clipDeltaY: Float32;
   tx,ty:Float32;
 begin
-  cg:=CGContext;
+  cg := CGContext;
   if not Assigned(cg) then Exit;
 
   deltaX := X - PenPos.x;
@@ -1030,11 +1031,12 @@ end;
 
 procedure CGContextAddLCLPoints(cg: CGContextRef; const Points: array of TPoint;NumPts:Integer);
 var
-  cp  : array of CGPoint;
-  i   : Integer;
+  cp: array of CGPoint;
+  i: Integer;
 begin
   SetLength(cp, NumPts);
-  for i:=0 to NumPts-1 do begin
+  for i:=0 to NumPts-1 do
+  begin
     cp[i].x:=Points[i].X+0.5;
     cp[i].y:=Points[i].Y+0.5;
   end;
@@ -1043,7 +1045,7 @@ end;
 
 procedure CGContextAddLCLRect(cg: CGContextRef; x1, y1, x2, y2: Integer); overload;
 var
-  r  : CGRect;
+  r: CGRect;
 begin
   r.origin.x:=x1+0.5;
   r.origin.y:=y1+0.5;
@@ -1060,9 +1062,9 @@ end;
 procedure TCocoaContext.Polygon(const Points:array of TPoint;NumPts:Integer;
   Winding:boolean);
 var
-  cg  : CGContextRef;
+  cg: CGContextRef;
 begin
-  cg:=CGContext;
+  cg := CGContext;
   if not Assigned(cg) or (NumPts<=0) then Exit;
 
   CGContextBeginPath(cg);
@@ -1077,9 +1079,9 @@ end;
 
 procedure TCocoaContext.Polyline(const Points: array of TPoint; NumPts: Integer);
 var
-  cg  : CGContextRef;
+  cg: CGContextRef;
 begin
-  cg:=CGContext;
+  cg := CGContext;
   if not Assigned(cg) or (NumPts<=0) then Exit;
 
   CGContextBeginPath(cg);
@@ -1089,29 +1091,31 @@ end;
 
 procedure TCocoaContext.Rectangle(X1,Y1,X2,Y2:Integer;FillRect:Boolean; UseBrush: TCocoaBrush);
 var
-  cg  : CGContextRef;
+  cg: CGContextRef;
 begin
-  cg:=CGContext;
+  cg := CGContext;
   if not Assigned(cg) then Exit;
 
   CGContextBeginPath(cg);
-  CGContextAddLCLRect(cg, X1,Y1,X2,Y2);
-  if FillRect then begin
+  CGContextAddLCLRect(cg, X1, Y1, X2, Y2);
+  if FillRect then
+  begin
     //using the brush
     if Assigned(UseBrush) then UseBrush.Apply(Self);
     CGContextFillPath(cg);
     //restore the brush
     if Assigned(UseBrush) and Assigned(FBrush) then FBrush.Apply(Self);
-  end else
+  end
+  else
     CGContextStrokePath(cg);
 end;
 
 procedure TCocoaContext.Ellipse(X1,Y1,X2,Y2:Integer);
 var
-  cg : CGContextRef;
-  r  : CGRect;
+  cg: CGContextRef;
+  r: CGRect;
 begin
-  cg:=CGContext;
+  cg := CGContext;
   if not Assigned(cg) then Exit;
   r.origin.x:=x1+0.5;
   r.origin.y:=y1+0.5;
@@ -1125,9 +1129,9 @@ end;
 procedure TCocoaContext.TextOut(X,Y:Integer;UTF8Chars:PChar;Count:Integer;
   CharsDelta:PInteger);
 var
-  cg      : CGContextRef;
+  cg: CGContextRef;
 begin
-  cg:=CGContext;
+  cg := CGContext;
   if not Assigned(cg) then Exit;
 
   CGContextScaleCTM(cg, 1, -1);
@@ -1255,25 +1259,38 @@ begin
   NSGraphicsContext.restoreGraphicsState();
 end;
 
+procedure TCocoaContext.DrawFocusRect(ARect: TRect);
+var
+  AOutSet: SInt32;
+begin
+  // LCL thinks that focus cannot be drawn outside focus rects, but carbon do that
+  // => correct rect
+  GetThemeMetric(kThemeMetricFocusRectOutset, AOutSet);
+  InflateRect(ARect, -AOutSet, -AOutSet);
+  HIThemeDrawFocusRect(RectToCGRect(ARect), True, CGContext, kHIThemeOrientationNormal);
+end;
+
 procedure TCocoaContext.SetOrigin(X,Y:Integer);
 var
-  cg  : CGContextRef;
+  cg: CGContextRef;
 begin
-  cg:=CGContext;
-  if not Assigned(cg) then Exit;
-  if Assigned(cg) then CGContextTranslateCTM(cg, X, Y);
+  cg := CGContext;
+  if Assigned(cg) then
+    CGContextTranslateCTM(cg, X, Y);
 end;
 
 procedure TCocoaContext.GetOrigin(var X,Y: Integer);
 var
-  cg  : CGContextRef;
-  t   : CGAffineTransform;
+  cg: CGContextRef;
+  t: CGAffineTransform;
 begin
-  cg:=CGContext;
-  if not Assigned(cg) then Exit;
-  t:=CGContextGetCTM(cg);
-  X := Round(t.tx);
-  Y := ContextSize.cy - Round(t.ty);
+  cg := CGContext;
+  if Assigned(cg) then
+  begin
+    t := CGContextGetCTM(cg);
+    X := Round(t.tx);
+    Y := ContextSize.cy - Round(t.ty);
+  end;
 end;
 
 
