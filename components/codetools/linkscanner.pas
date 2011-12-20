@@ -168,7 +168,6 @@ type
     cmsAdvancedRecords,    { advanced record syntax with visibility sections, methods and properties }
     cmsISOLike_unary_minus,{ unary minus like in iso pascal: same precedence level as binary minus/plus }
     cmsSystemcodepage,     { use system codepage as compiler codepage by default, emit ansistrings with system codepage }
-    cmsCS_Pointermath,     { ? see http://wiki.freepascal.org/FPC_JVM/Language }
     cmsUnicodeStrings      { ? see http://wiki.freepascal.org/FPC_JVM/Language }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
@@ -579,7 +578,7 @@ const
         'DUPLICATELOCALS', 'PROPERTIES', 'ALLOWINLINE', 'EXCEPTIONS',
         'OBJECTIVEC1', 'OBJECTIVEC2', 'NESTEDPROCVARS', 'NONLOCALGOTO',
         'ADVANCEDRECORDS', 'ISOLIKE_UNARY_MINUS', 'SYSTEMCODEPAGE',
-        'CS_POINTERMATH', 'UNICODESTRINGS');
+        'UNICODESTRINGS');
 
   // upper case
   PascalCompilerNames: array[TPascalCompiler] of shortstring=(

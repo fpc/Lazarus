@@ -1989,6 +1989,7 @@ begin
         Key('PACKENUM');
         Key('PACKRECORDS');
         Key('PACKSET');
+        Key('POINTERMATH');
         Key('POP');
         Key('PUSH');
         Key('RANGECHECKS');
