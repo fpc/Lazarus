@@ -177,6 +177,7 @@ function ConvertRSTFiles(RSTDirectory, PODirectory: string;
   POFilename: string): Boolean;
 type
   TItem = record
+    NeedUpdate: boolean;
     OutputFilename: String;
     RSTFileList: TStringList;
   end;
@@ -188,6 +189,8 @@ var
   Files: TStrings;
   i: Integer;
   Item: PItem;
+  j: Integer;
+  OutputFilename: String;
 begin
   Result:=true;
   if (RSTDirectory='') or (PODirectory='') then exit;// nothing to do
@@ -213,28 +216,40 @@ begin
     Item:=nil;
     // collect all rst/po files that needs update
     for i:=0 to Files.Count-1 do begin
-      if CompareFileExt(Files[i],'.rst',false)<>0 then continue;
+      if (CompareFileExt(Files[i],'.rst',false)<>0)
+      and (CompareFileExt(Files[i],'.lrt',false)<>0)
+      then continue;
       RSTFilename:=RSTDirectory+Files[i];
-      if (POFilename='') or (Item=nil) then begin
+      if POFilename='' then
+        OutputFilename:=PODirectory+ChangeFileExt(Files[i],'.po')
+      else
+        OutputFilename:=PODirectory+POFilename;
+      //DebugLn(['ConvertRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);
+      Item:=nil;
+      for j:=0 to Items.Count-1 do
+        if CompareFilenames(PItem(Items[j])^.OutputFilename,OutputFilename)=0
+        then begin
+          Item:=PItem(Items[j]);
+          break;
+        end;
+      if (Item=nil) then begin
         New(Item);
+        Item^.NeedUpdate:=false;
         Item^.RSTFileList:=TStringList.Create;
-        if POFilename='' then
-          Item^.OutputFilename:=PODirectory+ChangeFileExt(Files[i],'.po')
-        else
-          Item^.OutputFilename:=PODirectory+POFilename;
+        Item^.OutputFilename:=OutputFilename;
         Items.Add(Item);
       end;
-
-      //DebugLn(['ConvertRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',Item^.OutputFilename]);
-      if (not FileExistsCached(Item^.OutputFilename))
-      or (FileAgeCached(RSTFilename)>FileAgeCached(Item^.OutputFilename)) then
-        Item^.RSTFileList.Add(RSTFilename);
+      Item^.RSTFileList.Add(RSTFilename);
+      if (not Item^.NeedUpdate)
+      or (not FileExistsCached(OutputFilename))
+      or (FileAgeCached(RSTFilename)>FileAgeCached(OutputFilename)) then
+        Item^.NeedUpdate:=true;
     end;
     // update rst/po files
     try
       for i:=0 to Items.Count-1 do begin
         Item:=PItem(Items[i]);
-        if Item^.RSTFileList.Count=0 then continue;
+        if (not Item^.NeedUpdate) or (Item^.RSTFileList.Count=0) then continue;
         UpdatePoFile(Item^.RSTFileList, Item^.OutputFilename);
       end;
       Result:=true;

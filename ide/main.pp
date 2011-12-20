@@ -4321,6 +4321,7 @@ begin
     end;
   end;
 
+
   POFileAgeValid:=false;
   if FileExistsCached(POFilename) then begin
     POFileAge:=FileAgeCached(POFilename);
