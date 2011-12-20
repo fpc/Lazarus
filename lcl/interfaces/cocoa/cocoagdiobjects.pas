@@ -286,6 +286,7 @@ type
     FClipRegion: TCocoaRegion;
     FSavedDCList: TFPObjectList;
     FPenPos: TPoint;
+    FSize: TSize;
     procedure SetBitmap(const AValue: TCocoaBitmap);
     procedure SetBkColor(AValue: TColor);
     procedure SetBkMode(AValue: Integer);
@@ -298,9 +299,8 @@ type
     function SaveDCData: TCocoaDCData; virtual;
     procedure RestoreDCData(const AData: TCocoaDCData); virtual;
   public
-    ContextSize : TSize;
-    ctx      : NSGraphicsContext;
-    TR,TG,TB : Single;
+    ctx: NSGraphicsContext;
+    TR,TG,TB: Single;
     constructor Create;
     destructor Destroy; override;
 
@@ -338,6 +338,7 @@ type
     property Clipped: Boolean read FClipped;
     property PenPos: TPoint read FPenPos write FPenPos;
     property ROP2: Integer read FROP2 write SetROP2;
+    property Size: TSize read FSize;
 
     property BkColor: TColor read FBkColor write SetBkColor;
     property BkMode: Integer read FBkMode write SetBkMode;
@@ -961,16 +962,16 @@ begin
 
 end;
 
-function TCocoaContext.InitDraw(width,height:Integer): Boolean;
+function TCocoaContext.InitDraw(width, height:Integer): Boolean;
 var
   cg: CGContextRef;
 begin
-  cg:=CGContext;
-  Result:=Assigned(cg);
+  cg := CGContext;
+  Result := Assigned(cg);
   if not Result then Exit;
 
-  ContextSize.cx:=width;
-  ContextSize.cy:=height;
+  FSize.cx := width;
+  FSize.cy := height;
 
   CGContextTranslateCTM(cg, 0, height);
   CGContextScaleCTM(cg, 1, -1);
@@ -1143,15 +1144,15 @@ begin
   if not Assigned(cg) then Exit;
 
   CGContextScaleCTM(cg, 1, -1);
-  CGContextTranslateCTM(cg, 0, -ContextSize.cy);
+  CGContextTranslateCTM(cg, 0, -Size.cy);
 
   CGContextSetRGBFillColor(cg, TR, TG, TB, 1);
-  fText.SetText(UTF8Chars, Count);
-  fText.Draw(cg, X, ContextSize.cy-Y, CharsDelta);
+  FText.SetText(UTF8Chars, Count);
+  FText.Draw(cg, X, Size.cy - Y, CharsDelta);
 
   if Assigned(FBrush) then FBrush.Apply(Self);
 
-  CGContextTranslateCTM(cg, 0, ContextSize.cy);
+  CGContextTranslateCTM(cg, 0, Size.cy);
   CGContextScaleCTM(cg, 1, -1);
 end;
 
@@ -1347,7 +1348,7 @@ begin
   begin
     t := CGContextGetCTM(cg);
     X := Round(t.tx);
-    Y := ContextSize.cy - Round(t.ty);
+    Y := Size.cy - Round(t.ty);
   end;
 end;
 

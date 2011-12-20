@@ -1106,18 +1106,12 @@ end;
 
 function TCocoaWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
-  ctx : TCocoaContext;
+  ctx: TCocoaContext;
 begin
-  {$IFDEF VerboseWinAPI}
-    DebugLn('[TCocoaWidgetSet.Rectangle] DC: %x X1: %d Y1: %d X2: %d Y2: %d',
-      [DC, X1, Y1, X2, Y2]);
-  {$ENDIF}
-  ctx:=CheckDC(DC);
-  Result:=Assigned(ctx);
-  if not Result then Exit;
-
-  ctx.Rectangle(X1, Y1, X2, Y2, False, nil);
-  Result:=True;
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx);
+  if Result then
+    ctx.Rectangle(X1, Y1, X2, Y2, False, nil);
 end;
 
 {------------------------------- SYNC OBJECTS ---------------------------------}
@@ -1184,6 +1178,20 @@ begin
   {$IFDEF VerboseWinAPI}
     DebugLn('[TCocoaWidgetSet.GetDC] hWnd: %x Result: %x', [hWnd, Result]);
   {$ENDIF}
+end;
+
+function TCocoaWidgetSet.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
+var
+  ctx: TCocoaContext;
+begin
+  ctx := CheckDC(DC);
+  Result := Assigned(ctx);
+  if Result then
+    with ctx.Size do
+    begin
+      P.X := cx;
+      P.Y := cy;
+    end;
 end;
 
 function TCocoaWidgetSet.GetFocus: HWND;

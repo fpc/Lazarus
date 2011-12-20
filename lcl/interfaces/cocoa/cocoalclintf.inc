@@ -410,18 +410,17 @@ end;
   Retrieves the standard image format utilized by Carbon
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): Boolean;
-var
-  P: TPoint;
 begin
   Result := False;
 
   FillStandardDescription(ADesc);
-  if (ADC <> 0) and CheckDC(ADC, 'RawImage_DescriptionFromDevice')
-  then begin
-    P.X := TCocoaContext(ADC).ContextSize.cx;
-    P.Y := TCocoaContext(ADC).ContextSize.cy;
-    ADesc.Width := P.X;
-    ADesc.Height := P.Y
+  if (ADC <> 0) and CheckDC(ADC, 'RawImage_DescriptionFromDevice') then
+  begin
+    with TCocoaContext(ADC).Size do
+    begin
+      ADesc.Width := cx;
+      ADesc.Height := cy;
+    end;
   end;
 
   Result := True;

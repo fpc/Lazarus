@@ -101,9 +101,9 @@ function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
 function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
 function GetDC(hWnd: HWND): HDC; override;
 {function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
-function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
-function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
-function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;}
+function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override; }
+function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; override;
+{function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; override;}
 function GetFocus: HWND; override;
 function GetForegroundWindow: HWND; override;
 {function GetKeyState(nVirtKey: Integer): Smallint; override;}
