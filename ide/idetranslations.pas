@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, GetText, LCLProc, Translations,
   IDEProcs, FileProcs, avl_tree,
-  CodeToolManager, DirectoryCacher,
+  CodeToolManager, DirectoryCacher, CodeCache,
   LazarusIDEStrConsts;
   { IDE Language (Human, not computer) }
 
@@ -64,6 +64,8 @@ type
     property Count: integer read FCount;
     property Items[Index: integer]: TLazarusTranslation read GetItems; default;
   end;
+
+  PPOFile = ^TPOFile;
   
 // translate all resource strings
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
@@ -77,6 +79,12 @@ procedure CollectTranslations(const LazarusDir: string);
 function ConvertRSTFiles(RSTDirectory, PODirectory: string;
   POFilename: string = '' // set POFilename to gather all rst into one po file
   ): Boolean;
+procedure UpdatePoFileAndTranslations(SrcFiles: TStrings;
+  const POFilename: string);
+procedure UpdateBasePoFile(SrcFiles: TStrings;
+  const POFilename: string; POFile: PPOFile = nil);
+function FindTranslatedPoFiles(const BasePOFilename: string): TStringList;
+procedure UpdateTranslatedPoFile(const BasePOFile: TPOFile; TranslatedFilename: string);
 
 var
   LazarusTranslations: TLazarusTranslations = nil;
@@ -250,7 +258,7 @@ begin
       for i:=0 to Items.Count-1 do begin
         Item:=PItem(Items[i]);
         if (not Item^.NeedUpdate) or (Item^.RSTFileList.Count=0) then continue;
-        UpdatePoFile(Item^.RSTFileList, Item^.OutputFilename);
+        UpdatePoFileAndTranslations(Item^.RSTFileList, Item^.OutputFilename);
       end;
       Result:=true;
     except
@@ -268,6 +276,148 @@ begin
     Items.Free;
     Files.Free;
     Dir.Release;
+  end;
+end;
+
+procedure UpdatePoFileAndTranslations(SrcFiles: TStrings;
+  const POFilename: string);
+var
+  BasePOFile: TPOFile;
+  TranslatedFiles: TStringList;
+  TranslatedFilename: String;
+begin
+  BasePOFile:=nil;
+  UpdateBasePoFile(SrcFiles,POFilename,@BasePOFile);
+  if BasePOFile=nil then exit;
+  TranslatedFiles:=nil;
+  try
+    TranslatedFiles:=FindTranslatedPoFiles(POFilename);
+    if TranslatedFiles=nil then exit;
+    for TranslatedFilename in TranslatedFiles do begin
+      if FileAgeCached(TranslatedFilename)>=FileAgeCached(POFilename) then
+        continue;
+      UpdateTranslatedPoFile(BasePOFile,TranslatedFilename);
+    end;
+  finally
+    TranslatedFiles.Free;
+    BasePOFile.Free;
+  end;
+end;
+
+procedure UpdateBasePoFile(SrcFiles: TStrings;
+  const POFilename: string; POFile: PPOFile);
+var
+  BasePOFile: TPOFile;
+  i: Integer;
+  Filename: String;
+  POBuf: TCodeBuffer;
+  FileType: TStringsType;
+  SrcBuf: TCodeBuffer;
+  SrcLines: TStringList;
+  OldChangeStep: Integer;
+begin
+  POBuf:=CodeToolBoss.LoadFile(POFilename,true,false);
+  SrcLines:=TStringList.Create;
+  BasePOFile := TPOFile.Create;
+  try
+    if POBuf<>nil then
+      BasePOFile.ReadPOText(POBuf.Source);
+    BasePOFile.Tag:=1;
+
+    // Update po file with lrt or/and rst files
+    for i:=0 to SrcFiles.Count-1 do begin
+      Filename:=SrcFiles[i];
+      if CompareFileExt(Filename,'.lrt',false)=0 then
+        FileType:=stLrt
+      else if CompareFileExt(Filename,'.rst',false)=0 then
+        FileType:=stRst
+      else
+        continue;
+      SrcBuf:=CodeToolBoss.LoadFile(Filename,true,false);
+      if SrcBuf=nil then continue;
+      SrcLines.Text:=SrcBuf.Source;
+      BasePOFile.UpdateStrings(SrcLines,FileType);
+    end;
+    SrcLines.Clear;
+    BasePOFile.SaveToStrings(SrcLines);
+    if POBuf=nil then begin
+      POBuf:=CodeToolBoss.CreateFile(POFilename);
+      if POBuf=nil then exit;
+    end;
+    OldChangeStep:=POBuf.ChangeStep;
+    //debugln(['UpdateBasePoFile ',POFilename,' Modified=',POBuf.Source<>SrcLines.Text]);
+    POBuf.Source:=SrcLines.Text;
+    if (not POBuf.IsVirtual) and (OldChangeStep<>POBuf.ChangeStep) then begin
+      debugln(['UpdateBasePoFile saving ',POBuf.Filename]);
+      POBuf.Save;
+    end;
+  finally
+    SrcLines.Free;
+    if POFile<>nil then
+      POFile^:=BasePOFile
+    else
+      BasePOFile.Free;
+  end;
+end;
+
+function FindTranslatedPoFiles(const BasePOFilename: string): TStringList;
+var
+  Path: String;
+  Name: String;
+  NameOnly: String;
+  Dir: TCTDirectoryCache;
+  Files: TStrings;
+  Filename: String;
+begin
+  Result:=TStringList.Create;
+  Path:=ExtractFilePath(BasePOFilename);
+  Name:=ExtractFileName(BasePOFilename);
+  NameOnly:=ExtractFileNameOnly(Name);
+  Dir:=CodeToolBoss.DirectoryCachePool.GetCache(Path);
+  Files:=TStringList.Create;
+  try
+    Dir.GetFiles(Files,false);
+    for Filename in Files do begin
+      if CompareFilenames(Filename,Name)=0 then continue;
+      if CompareFileExt(Filename,'.po',false)<>0 then continue;
+      if (CompareFilenames(LeftStr(Filename,length(NameOnly)),NameOnly)<>0)
+      then
+        continue;
+      Result.Add(Path+Filename);
+    end;
+  finally
+    Files.Free;
+    Dir.Release;
+  end;
+end;
+
+procedure UpdateTranslatedPoFile(const BasePOFile: TPOFile;
+  TranslatedFilename: string);
+var
+  POBuf: TCodeBuffer;
+  POFile: TPOFile;
+  Lines: TStringList;
+  OldChangeStep: Integer;
+begin
+  POFile := TPOFile.Create;
+  Lines:=TStringList.Create;
+  try
+    POBuf:=CodeToolBoss.LoadFile(TranslatedFilename,true,false);
+    if POBuf<>nil then
+      POFile.ReadPOText(POBuf.Source);
+    POFile.Tag:=1;
+    POFile.UpdateTranslation(BasePOFile);
+    POFile.SaveToStrings(Lines);
+    OldChangeStep:=POBuf.ChangeStep;
+    //debugln(['UpdateTranslatedPoFile ',POBuf.Filename,' Modified=',POBuf.Source<>Lines.Text]);
+    POBuf.Source:=Lines.Text;
+    if (not POBuf.IsVirtual) and (OldChangeStep<>POBuf.ChangeStep) then begin
+      //debugln(['UpdateTranslatedPoFile saving ',POBuf.Filename]);
+      POBuf.Save;
+    end;
+  finally
+    Lines.Free;
+    POFile.Free;
   end;
 end;
 

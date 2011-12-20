@@ -124,6 +124,7 @@ type
     procedure Report;
     procedure CreateHeader;
     procedure UpdateStrings(InputLines:TStrings; SType: TStringsType);
+    procedure SaveToStrings(OutLst: TStrings);
     procedure SaveToFile(const AFilename: string);
     procedure UpdateItem(const Identifier: string; Original: string);
     procedure UpdateTranslation(BasePOFile: TPOFile);
@@ -148,7 +149,6 @@ var
     // if you don't use UTF-8, install a proper widestring manager and set this
     // to false.
 
-
 // translate resource strings for one unit
 function TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
   Lang, FallbackLang: string):TTranslateUnitResult; overload;
@@ -167,6 +167,12 @@ function UpdatePoFile(Files: TStrings; const POFilename: string): boolean;
 
 implementation
 
+function ComparePOItems(Item1, Item2: Pointer): Integer;
+begin
+  Result := CompareText(TPOFileItem(Item1).IdentifierLow,
+                        TPOFileItem(Item2).IdentifierLow);
+end;
+
 function UTF8ToSystemCharSet(const s: string): string; inline;
 begin
   if SystemCharSetIsUTF8 then
@@ -177,7 +183,6 @@ begin
   Result:=UTF8ToSys(s);
   {$ENDIF}
 end;
-
 
 function StrToPoStr(const s:string):string;
 var
@@ -975,32 +980,8 @@ begin
   RemoveUntaggedModules;
 end;
 
-procedure TPOFile.RemoveTaggedItems(aTag: Integer);
+procedure TPOFile.SaveToStrings(OutLst: TStrings);
 var
-  Item: TPOFileItem;
-  i: Integer;
-begin
-  // get rid of all entries that have Tag=aTag
-  for i:=FItems.Count-1 downto 0 do begin
-    Item := TPOFileItem(FItems[i]);
-    if Item.Tag<>aTag then
-      Continue;
-    FIdentifierLowToItem.Remove(Item.IdentifierLow);
-    //FOriginalToItem.Remove(Item.Original); // isn't this tricky?
-    FItems.Delete(i);
-    Item.Free;
-  end;
-end;
-
-function ComparePOItems(Item1, Item2: Pointer): Integer;
-begin
-  result := CompareText(TPOFileItem(Item1).IdentifierLow,
-                        TPOFileItem(Item2).IdentifierLow);
-end;
-
-procedure TPOFile.SaveToFile(const AFilename: string);
-var
-  OutLst: TStringList;
   j: Integer;
 
   procedure WriteLst(const AProp, AValue: string );
@@ -1010,7 +991,7 @@ var
   begin
     if (AValue='') and (AProp='') then
       exit;
-      
+
     FHelperList.Text:=AValue;
     if FHelperList.Count=1 then begin
       if AProp='' then OutLst.Add(FHelperList[0])
@@ -1029,7 +1010,7 @@ var
       end;
     end;
   end;
-  
+
   procedure WriteItem(Item: TPOFileItem);
   begin
     WriteLst('',Item.Comments);
@@ -1045,31 +1026,52 @@ var
     WriteLst('msgstr', StrToPoStr(Item.Translation));
     OutLst.Add('');
   end;
-  
+
 begin
   if FHeader=nil then
     CreateHeader;
-    
+
   if FHelperList=nil then
     FHelperList:=TStringList.Create;
-    
+
+  // write header
+  WriteItem(FHeader);
+
+  // Sort list of items by identifier
+  FItems.Sort(@ComparePOItems);
+
+  for j:=0 to Fitems.Count-1 do
+    WriteItem(TPOFileItem(FItems[j]));
+end;
+
+procedure TPOFile.RemoveTaggedItems(aTag: Integer);
+var
+  Item: TPOFileItem;
+  i: Integer;
+begin
+  // get rid of all entries that have Tag=aTag
+  for i:=FItems.Count-1 downto 0 do begin
+    Item := TPOFileItem(FItems[i]);
+    if Item.Tag<>aTag then
+      Continue;
+    FIdentifierLowToItem.Remove(Item.IdentifierLow);
+    //FOriginalToItem.Remove(Item.Original); // isn't this tricky?
+    FItems.Delete(i);
+    Item.Free;
+  end;
+end;
+
+procedure TPOFile.SaveToFile(const AFilename: string);
+var
+  OutLst: TStringList;
+begin
   OutLst := TStringList.Create;
   try
-    // write header
-    WriteItem(FHeader);
-    
-    // Sort list of items by identifier
-    FItems.Sort(@ComparePOItems);
-    
-    for j:=0 to Fitems.Count-1 do
-      WriteItem(TPOFileItem(FItems[j]));
-      
+    SaveToStrings(OutLst);
     OutLst.SaveToFile(UTF8ToSys(AFilename));
-    
   finally
     OutLst.Free;
   end;
-  
 end;
 
 function SkipLineEndings(var P: PChar; var DecCount: Integer): Integer;

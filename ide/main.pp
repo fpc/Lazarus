@@ -4365,7 +4365,7 @@ begin
     if Files.Tree.Count=0 then exit(mrOk);
     Files.GetNames(FileList);
     try
-      UpdatePoFile(FileList, POFilename);
+      UpdatePoFileAndTranslations(FileList, POFilename);
       Result := mrOk;
     except
       on E:EPOFileError do begin
