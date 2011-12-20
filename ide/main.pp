@@ -4339,7 +4339,7 @@ begin
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
       if not FilenameIsAbsolute(CurFilename) then continue;
       if (AProject.MainFilename<>CurFilename)
-      and (not FilenameIsPascalSource(CurFilename)) then
+      and (not FilenameIsPascalUnit(CurFilename)) then
         continue;
       // check .lrt file
       LRTFilename:=ChangeFileExt(CurFilename,'.lrt');

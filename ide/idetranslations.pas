@@ -307,21 +307,6 @@ begin
   // IDE
   TranslateUnitResourceStrings('LazarusIDEStrConsts',
     Dir+'languages/lazaruside'+Ext,Lang,FallbackLang);
-  // LCL
-  TranslateUnitResourceStrings('LclStrConsts',
-    Dir+'lcl/languages/lclstrconsts'+Ext,Lang,FallbackLang);
-  // IDEIntf
-  TranslateUnitResourceStrings('ObjInspStrConsts',
-    Dir+'ideintf/languages/objinspstrconsts'+Ext,Lang,FallbackLang);
-  // CodeTools
-  TranslateUnitResourceStrings('CodeToolsStrConsts',
-    Dir+'components/codetools/languages/codetoolsstrconsts'+Ext,Lang,FallbackLang);
-  // SynEdit
-  TranslateUnitResourceStrings('SynEditStrConst',
-    Dir+'components/synedit/languages/syneditstrconst'+Ext,Lang,FallbackLang);
-  // SynMacroRecorder
-  TranslateUnitResourceStrings('SynMacroRecorder',
-    Dir+'components/synedit/languages/synmacrorecorder'+Ext,Lang,FallbackLang);
   // GDB MI interface
   TranslateUnitResourceStrings('GDBMIDebugger',
     Dir+'languages/gdbmidebugger'+Ext,Lang,FallbackLang);
