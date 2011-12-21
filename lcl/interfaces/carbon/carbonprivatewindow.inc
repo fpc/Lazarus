@@ -98,7 +98,7 @@ const
         SizeOf(ClickCount), nil, @ClickCount),
       SName, SGetEvent, 'kEventParamClickCount') then Exit;
 
-    Result := ClickCount;
+    Result := Integer(ClickCount);
     {debugln('GetClickCount ClickCount=',dbgs(ClickCount));}
   end;
 

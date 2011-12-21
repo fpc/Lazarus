@@ -252,7 +252,10 @@ begin
 
     // this does not return until the mouse is released
     LastMousePos := AWidget.GetMousePos;
-    Result := CallNextEventHandler(ANextHandler, AEvent);
+    if DragManager.IsDragging then
+      Result := noErr
+    else
+      Result := CallNextEventHandler(ANextHandler, AEvent);
     if OSError(
       SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP,
         SizeOf(OldActionUPP), @OldActionUPP), SName, SSetEvent, SControlAction) then Exit;
