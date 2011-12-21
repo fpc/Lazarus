@@ -193,7 +193,9 @@ type
     procedure AppRun(const ALoop: TApplicationMainLoop); override;
     procedure AppWaitMessage; override;
     procedure AppProcessMessages; override;
+    {$ifdef CD_X11}
     procedure AppProcessMessage;
+    {$endif}
     procedure AppTerminate; override;
     procedure AppMinimize; override;
     procedure AppRestore; override;
