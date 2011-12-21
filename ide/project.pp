@@ -2548,7 +2548,6 @@ begin
   FBookmarks := TProjectBookmarkList.Create;
 
   FMacroEngine:=TTransferMacroList.Create;
-  FMacroEngine.MarkUnhandledMacros:=false;
   FMacroEngine.OnSubstitution:=@OnMacroEngineSubstitution;
   FBuildModes:=TProjectBuildModes.Create(nil);
   FBuildModes.LazProject:=Self;
@@ -5510,17 +5509,9 @@ begin
   end;
 
   // check local macros
-  {if CompareText(MacroName,'PkgOutDir')=0 then begin
-    Handled:=true;
-    if Data=CompilerOptionMacroNormal then
-      s:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir)
-    else
-      s:=CompilerOptions.ParsedOpts.GetParsedPIValue(pcosOutputDir);
-  end
-  else if CompareText(MacroName,'PkgDir')=0 then begin
-    Handled:=true;
-    s:=FDirectory;
-  end;}
+
+  // check global macros
+  GlobalMacroList.ExecuteMacro(MacroName,s,Data,Handled,Abort,Depth);
 end;
 
 function TProject.SearchFile(const ShortFilename: string;
@@ -5779,8 +5770,8 @@ begin
     CompOpts:=TProjectCompilerOptions(Owner);
     //debugln(['TProjectCompilationToolOptions.SubstituteMacros ',DbgSName(Owner),' ',CompOpts.LazProject<>nil]);
     s:=CompOpts.SubstituteProjectMacros(s,false);
-  end;
-  inherited SubstituteMacros(s);
+  end else
+    inherited SubstituteMacros(s);
 end;
 
 procedure TProjectCompilationToolOptions.Clear;

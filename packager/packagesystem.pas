@@ -4337,7 +4337,6 @@ begin
   // (this way the fallback creates the same amount of target directories)
   Dir:=APackage.CompilerOptions.ParsedOpts.UnparsedValues[pcosOutputDir];
   Dir:=APackage.SubstitutePkgMacros(Dir,false);
-  GlobalMacroList.SubstituteStr(Dir);
   if FilenameIsAbsolute(Dir) then begin
     // it is not relative => create a default one
     Dir:='$(TargetOS)-$(TargetCPU)';

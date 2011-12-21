@@ -1598,13 +1598,11 @@ begin
   if fFullFilenameStamp<>CompilerParseStamp then begin
     fFullFilename:=Filename;
     fFullFilenameStamp:=CompilerParseStamp;
-    if LazPackage<>nil then begin
-      // substitute locally
-      LazPackage.SubstitutePkgMacros(fFullFilename,false);
-    end;
-    // substitute globally
-    IDEMacros.SubstituteMacros(fFullFilename);
-    fFullFilename:=CleanAndExpandFilename(fFullFilename);
+    if LazPackage<>nil then
+      LazPackage.SubstitutePkgMacros(fFullFilename,false)
+    else
+      IDEMacros.SubstituteMacros(fFullFilename);
+    fFullFilename:=TrimAndExpandFilename(fFullFilename);
   end;
   Result:=fFullFilename;
 end;
@@ -2135,15 +2133,21 @@ begin
       s:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir)
     else
       s:=CompilerOptions.ParsedOpts.GetParsedPIValue(pcosOutputDir);
+    exit;
   end
   else if CompareText(MacroName,'PkgDir')=0 then begin
     Handled:=true;
     s:=FDirectory;
+    exit;
   end
   else if CompareText(MacroName,'PkgName')=0 then begin
     Handled:=true;
     s:=Name;
+    exit;
   end;
+
+  // check global macros
+  GlobalMacroList.ExecuteMacro(MacroName,s,Data,Handled,Abort,Depth);
 end;
 
 procedure TLazPackage.SetUserReadOnly(const AValue: boolean);
@@ -2511,7 +2515,6 @@ begin
   FFiles:=TFPList.Create;
   FRemovedFiles:=TFPList.Create;
   FMacros:=TTransferMacroList.Create;
-  FMacros.MarkUnhandledMacros:=false;
   FMacros.OnSubstitution:=@OnMacroListSubstitution;
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
   FLazCompilerOptions:=FCompilerOptions;

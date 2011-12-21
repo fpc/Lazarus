@@ -13550,6 +13550,9 @@ var MacroLName:string;
 begin
   if TheMacro=nil then begin
     DebugLn('WARNING: Macro not defined: "'+MacroName+'".');
+    {$IFDEF VerboseMacroNotDefined}
+    DumpStack;
+    {$ENDIF}
     s:='';
     //MessageDlg('Unknown Macro','Macro not defined: "'+s+'".',mtError,[mbAbort],0);
     Handled:=true;

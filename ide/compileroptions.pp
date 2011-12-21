@@ -3771,29 +3771,35 @@ begin
   s:=OptionText;
 
   // parse locally (macros depending on owner, like pkgdir and build macros)
-  //DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
   if Assigned(OnLocalSubstitute) then
-    s:=OnLocalSubstitute(s,PlatformIndependent);
-  // parse globally (general macros)
-  //DebugLn(['TParsedCompilerOptions.DoParseOption global "',s,'" ...']);
-  s:=ParseString(Self,s,PlatformIndependent);
+  begin
+    //DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
+    s:=OnLocalSubstitute(s,PlatformIndependent)
+  end else
+  begin
+    //DebugLn(['TParsedCompilerOptions.DoParseOption global "',s,'" ...']);
+    s:=ParseString(Self,s,PlatformIndependent);
+  end;
   //DebugLn(['TParsedCompilerOptions.DoParseOption complete "',s,'" ...']);
   // improve
   if Option=pcosBaseDir then
     // base directory
     s:=AppendPathDelim(TrimFilename(s))
-  else if Option in ParsedCompilerFilenames then begin
+  else if Option in ParsedCompilerFilenames then
+  begin
     // make filename absolute
     MakeFilenameAbsolute(s);
   end
-  else if Option in ParsedCompilerDirectories then begin
+  else if Option in ParsedCompilerDirectories then
+  begin
     // make directory absolute
     s:=TrimFilename(s);
     if Option<>pcosBaseDir then
       MakeFilenameAbsolute(s);
     s:=AppendPathDelim(s);
   end
-  else if Option in ParsedCompilerSearchPaths then begin
+  else if Option in ParsedCompilerSearchPaths then
+  begin
     // make search paths absolute
     BaseDirectory:=GetBaseDir;
     s:=TrimSearchPath(s,BaseDirectory);
