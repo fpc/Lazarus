@@ -5,7 +5,7 @@ unit uasynccall;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls;
 
   
@@ -31,6 +31,8 @@ var
   Form1: TForm1; 
 
 implementation
+
+{$R *.lfm}
 
 type
   TMyData = record
@@ -122,9 +124,6 @@ begin
       [MyData.S, MyData.Data]));
   Dispose(PMyData(Data));
 end;
-
-initialization
-  {$I uasynccall.lrs}
 
 end.
 

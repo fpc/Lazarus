@@ -5,7 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   LMessages, LCLIntf;
 
 const
@@ -31,6 +31,8 @@ var
   Form1: TForm1; 
 
 implementation
+
+{$R *.lfm}
 
 { TForm1 }
 
@@ -84,9 +86,6 @@ begin
   end;
   Memo1.Lines.Add('got message from: ' + S);
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 
