@@ -432,9 +432,11 @@ begin
   lTimeoutInterval := GetSmallestTimerInterval();
   // Limit the maximum interval, even if only to process Application.OnIdle or
   // for general safety
-  if (lTimeoutInterval <= 0) or (lTimeoutInterval >= 1000) then lTimeoutInterval := 1000;
+  if (lTimeoutInterval < 0) or (lTimeoutInterval >= 1000) then lTimeoutInterval := 1000;
+  // To avoid consuming too much CPU, if the interval is zero, act as if it was 1
+  if lTimeoutInterval = 0 then lTimeoutInterval := 1;
 
-  while True do
+  while not Application.Terminated do
   begin
     xconnnum := XConnectionNumber(FDisplay);
     XFlush(FDisplay);
@@ -470,7 +472,12 @@ begin
       if selectresult <> 0 then  // We got a X event or the timeout happened
         Exit
       else
-        Continue; // nothing further to do here!
+      begin
+        // Process standard application Idle
+        if not Application.Terminated then Application.Idle(False);
+
+        Continue; // Go back and keep waiting for a message
+      end;
     end;
   end;
   {$endif}
