@@ -53,6 +53,7 @@ type
     //this is created and destroyed as needed
     //it only holds items which are about to be changed the list is emptied in Gtk2_ItemSelectionChanged
     ItemCache: TStringList;
+    OldTreeSelection: PGList; // needed only by gtk < 2.10 ! issue #19820
     Images: TList;
   end;
 

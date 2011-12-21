@@ -25,6 +25,11 @@ type
 ////   Event Code  /////////////////////
 ////////////////////////////////////////
 
+function IsOldGtk2: Boolean;
+begin
+  Result := (gtk_major_version = 2) and (gtk_minor_version < 10);
+end;
+
 procedure Gtk2_ItemCheckedChanged(renderer: PGtkCellRendererToggle; PathStr: Pgchar; WidgetInfo: PWidgetInfo);cdecl;
 var
   LV: TLVHack;
@@ -46,7 +51,7 @@ var
   column: PGtkTreeViewColumn;
   cell: PGtkCellRenderer;
 begin
-  //DebugLn('Gtk2_ItemFocusChanged');
+  // DebugLn('Gtk2_ItemFocusChanged');
   // the defocus of the oldrow isn't send
   if GTK_IS_TREE_VIEW(Widget) then
     gtk_tree_view_get_cursor(PGtkTreeView(Widget), path, column)
@@ -174,14 +179,86 @@ var
   Widgets: PTVWidgets;
   AIndex: String;
   i: Integer;
+  Indices: Integer;
+  ListIndex: Integer;
+  List: PgList;
+  Path: PGtkTreePath;
 begin
-  //DebugLn('Gtk2_ItemSelectionChanged');
+  // DebugLn('Gtk2_ItemSelectionChanged');
   Widgets := PTVWidgets(WidgetInfo^.UserData);
   msg.Msg := CN_NOTIFY;
-  if (widgets = nil) or (Widgets^.ItemCache = nil) or (Widgets^.ItemCache.Count=0) then
+  if (widgets = nil) or (Widgets^.ItemCache = nil) or
+    (Widgets^.ItemCache.Count=0) then
   begin
-    //debugln(' Gtk2_ItemSelectionChanged  ItemCache=nil ',tComponent(widgetInfo^.lclObject).name);
-    Exit;
+    // debugln(' Gtk2_ItemSelectionChanged  ItemCache=nil ',tComponent(widgetInfo^.lclObject).name);
+    if IsOldGtk2 and (Widgets <> nil) and (Widgets^.ItemCache <> nil) then
+    begin
+      // debugLn('ItemsCache is valid ! count ',dbgs(Widgets^.ItemCache.Count));
+      List := gtk_tree_selection_get_selected_rows(Selection, nil);
+      if (List <> nil) then
+      begin
+        if Assigned(Widgets^.OldTreeSelection) then
+        begin
+          // we must iterate because of multiselections
+          for i := 0 to g_list_length(Widgets^.OldTreeSelection) - 1 do
+          begin
+            Path := g_list_nth_data(Widgets^.OldTreeSelection, i);
+            if Path <> nil then
+            begin
+              Indices := gtk_tree_path_get_indices(Path)^;
+              ListIndex := Widgets^.ItemCache.IndexOf(IntToStr(Indices));
+              if ListIndex = -1 then
+                Widgets^.ItemCache.AddObject(IntToStr(Indices), TObject(1))
+              else
+                Widgets^.ItemCache.Objects[ListIndex] := TObject(1);
+            end;
+          end;
+          g_list_free(Widgets^.OldTreeSelection);
+          Widgets^.OldTreeSelection := nil;
+          Widgets^.OldTreeSelection := g_list_alloc;
+          // we must iterate because of multiselections
+          for i := 0 to g_list_length(List) - 1 do
+            g_list_append(Widgets^.OldTreeSelection, g_list_nth_data(List, i));
+        end;
+        // now compare new selection (add or set as selected)
+        for i := 0 to g_list_length(List) - 1 do
+        begin
+          Path := g_list_nth_data(List, i);
+          if Path <> nil then
+          begin
+            Indices := gtk_tree_path_get_indices(Path)^;
+            ListIndex := Widgets^.ItemCache.IndexOf(IntToStr(Indices));
+            if ListIndex = -1 then
+              Widgets^.ItemCache.AddObject(IntToStr(Indices), TObject(0))
+            else
+              Widgets^.ItemCache.Objects[ListIndex] := TObject(0);
+          end;
+        end;
+      end else
+      begin
+        // complete selection is clear !
+        if Assigned(Widgets^.OldTreeSelection) then
+        begin
+          for i := 0 to g_list_length(Widgets^.OldTreeSelection) - 1 do
+          begin
+            Path := g_list_nth_data(Widgets^.OldTreeSelection, i);
+            if Path <> nil then
+            begin
+              Indices := gtk_tree_path_get_indices(Path)^;
+              ListIndex := Widgets^.ItemCache.IndexOf(IntToStr(Indices));
+              if ListIndex = -1 then
+                Widgets^.ItemCache.AddObject(IntToStr(Indices), TObject(1))
+              else
+                Widgets^.ItemCache.Objects[ListIndex] := TObject(1);
+            end;
+          end;
+          g_list_free(Widgets^.OldTreeSelection);
+          Widgets^.OldTreeSelection := nil;
+          Widgets^.OldTreeSelection := g_list_alloc;
+        end;
+      end;
+    end else
+      Exit;
   end;
 
   // DebugLn('Gtk2_ItemSelectionChanged Trigger OnSelectItem ? ', dbgs(not (wwiInvalidEvent in Widgets^.WidgetInfo^.Flags)));
@@ -195,7 +272,6 @@ begin
     BroadcastListSelection(WidgetInfo^.LCLObject, PtrUInt(Widgets^.MainView),
       StrToInt(AIndex), Widgets^.ItemCache.Objects[i] <> nil);
   end;
-
   Widgets^.ItemCache.Clear;
 end;
 
@@ -580,7 +656,10 @@ begin
 
   if GTK_IS_TREE_VIEW(Widgets^.MainView) then
   begin
-    gtk_tree_selection_set_select_function(Widgets^.TreeSelection,TGtkTreeSelectionFunc(@Gtk2WSLV_ItemSelected), gpointer(AWidgetInfo),nil);
+    if IsOldGtk2 then
+      // bug in 2.8, issue #19820
+    else
+      gtk_tree_selection_set_select_function(Widgets^.TreeSelection,TGtkTreeSelectionFunc(@Gtk2WSLV_ItemSelected), gpointer(AWidgetInfo),nil);
     SignalConnect(PGtkWidget(Widgets^.TreeSelection), 'changed',           @Gtk2_ItemSelectionChanged,    AWidgetInfo);
     SignalConnect(PGtkWidget(Widgets^.MainView),      'toggle-cursor-row', @Gtk2_ItemFocusChanged,        AWidgetInfo);
   end
@@ -1499,6 +1578,8 @@ begin
     end
     else
     begin
+      if IsOldGtk2 then
+        OldTreeSelection := g_list_alloc;
       MainView := gtk_tree_view_new_with_model(TreeModel);
       TreeSelection := PGtkTreeSelection(gtk_tree_view_get_selection(PGtkTreeView(MainView)));
     end;
@@ -1544,6 +1625,9 @@ begin
   if Widgets^.ItemCache <> nil then
     Widgets^.ItemCache.Free;
   Widgets^.ItemCache := nil;
+  if Widgets^.OldTreeSelection <> nil then
+    g_list_free(Widgets^.OldTreeSelection);
+  Widgets^.OldTreeSelection := nil;
   if Widgets^.Images <> nil then
   begin
     for i := 0 to Widgets^.Images.Count-1 do
