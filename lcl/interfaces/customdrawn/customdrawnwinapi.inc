@@ -823,7 +823,7 @@ begin
    ------------------------------------------------------------------------------}
   else if aObject is TCDBitmap then
   begin
-    {$ifdef VerboseCDWinAPI}
+    {$ifdef VerboseCDDrawing}
       ObjType := 'Image';
     {$endif}
   end
@@ -832,7 +832,7 @@ begin
    ------------------------------------------------------------------------------}
   else if aObject is TLazRegion then
   begin
-    {$ifdef VerboseCDWinAPI}
+    {$ifdef VerboseCDDrawing}
       ObjType := 'Region';
     {$endif}
   end

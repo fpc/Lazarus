@@ -94,6 +94,16 @@ begin
   inherited Create;
   FTimerData := TList.Create;
 
+  // Create the dummy screen DC
+  ScreenBitmapRawImage.Init;
+  ScreenBitmapHeight := 100;
+  ScreenBitmapWidth := 100;
+  ScreenBitmapRawImage.Description.Init_BPP32_A8R8G8B8_BIO_TTB(ScreenBitmapWidth, ScreenBitmapHeight);
+  ScreenBitmapRawImage.CreateData(True);
+  ScreenImage := TLazIntfImage.Create(0, 0);
+  ScreenImage.SetRawImage(ScreenBitmapRawImage);
+  ScreenDC := TLazCanvas.Create(ScreenImage);
+
   // Metrics always fail because SPI_GETNONCLIENTMETRICS doesn't exist under WinCE
   // So we need to get the fonts by other means
   FMetrics.cbSize := SizeOf(FMetrics);
@@ -121,7 +131,7 @@ procedure TCDWidgetSet.BackendDestroy;
   n: integer;
   TimerInfo : PWinCETimerInfo;}
 begin
-  //DebugLn('Trace:TWinCEWidgetSet is being destroyed');
+  DebugLn('[TCDWidgetSet.BackendDestroy]');
 
 {  n := FTimerData.Count;
   if (n > 0) then
@@ -160,6 +170,10 @@ begin
   Windows.UnregisterClass(@ClsName, System.HInstance);
 
   inherited Destroy;}
+
+  { Release the screen DC and Image }
+  ScreenDC.Free;
+  ScreenImage.Free;
 end;
 
 {------------------------------------------------------------------------------

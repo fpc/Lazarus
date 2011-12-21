@@ -2019,7 +2019,7 @@ begin
   if NIndex = COLOR_FORM then
     NIndex := COLOR_BTNFACE;
   Result := Windows.GetSysColorBrush(nIndex);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  GetSystemMetrics
@@ -2028,12 +2028,12 @@ end;
 
   Retrieves various system metrics.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetSystemMetrics(NIndex: Integer): Integer;
+function TCDWidgetSet.GetSystemMetrics(NIndex: Integer): Integer;
 begin
   Result := Windows.GetSystemMetrics(NIndex);
 end;
 
-function TWin32WidgetSet.GetTextColor(DC: HDC): TColorRef;
+(*function TWin32WidgetSet.GetTextColor(DC: HDC): TColorRef;
 begin
   Result := TColorRef(Windows.GetTextColor(DC));
 end;
@@ -2505,7 +2505,7 @@ end;
 function TWin32WidgetSet.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
 begin
   Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width, Height, Mask, XMask, YMask, SRCCOPY);
-end;
+end;*)
 
 {------------------------------------------------------------------------------
   Method:  MessageBox
@@ -2537,7 +2537,7 @@ begin
     PWideChar(WideLPCaption), UType);
 end;
 
-function TWin32WidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
+(*function TWin32WidgetSet.MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR;
 begin
   Result := MultiMon.MonitorFromPoint(ptScreenCoords, dwFlags);
 end;
